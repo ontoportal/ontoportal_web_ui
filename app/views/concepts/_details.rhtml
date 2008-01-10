@@ -1,0 +1,40 @@
+
+<table class="details" cellpadding="0" cellspacing="0">
+	<tr>
+		<td class="label" >ID:</td>
+		<td><%=@concept.id%></td>
+	</tr>
+
+<%@concept.properties.each_pair{|key,value| %>
+	
+	
+	<tr>
+	<% if false%>	<td class="label"><%=link_to_prototype_dialog( "(Proposals)", {:url =>"/margin_notes/show?concept_id=#{encode_param(@concept.id)}&property=#{encode_param(key)}&old=#{encode_param(value)}", :options=> {:method=> 'get'}},'form', {:title => "Proposals for #{@concept.name.titleize} #{key.titleize}", :width =>970,:height=>500})%> <%="#{remove_owl_notation(key)}:"%> </td> <%end%>
+		<td class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
+		<td><%="#{value}"%></td>
+	</tr>
+<% } %>
+</table>
+
+<table class="details" cellpadding="0" cellspacing="0">
+<%unless @concept.parent.nil?%>
+	<tr>
+		<td class="label">Superclass:</td>
+		<td ><%=@concept.parent.name%></td>
+	</tr>
+<%end%>
+
+<%unless @concept.child_size<1%>
+<%sorted_children = @concept.children.sort{|a,b| a.parent_association <=> b.parent_association}%>
+	<tr>
+		<td class="label">Sub Classes:</td>
+		<td><% for child in sorted_children%>
+			<%=link_to child.name, uri_url(:ontology=>to_param(child.ontology_name),:id =>child.id)%>,
+			<%end%>
+		</td>
+	</tr>
+<%end%>
+
+
+</table>
+

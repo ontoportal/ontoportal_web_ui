@@ -1,0 +1,20 @@
+<select value="neighbor" onchange="toggleHide(this.value,'images')">	
+	<option value="neighbor">Show Network Neighborhood</option>
+	<option value="root">Show Hierarchy To Root</option>
+</select>
+<%if false%>
+<%=link_to "Visualize", jam_url(:id => @concept.properties["code"],:ontology=>@concept.ontology_name.to_param) ,:target=>"new"%>
+<br>
+<%end%>
+<div id="neighbor" name="images">
+<%=@concept.networkNeighborhood%>
+</div>
+<div id="root" name="images" style="display:none;">
+<%=@concept.pathToRootImage%>
+</div>
+
+<script type="text/javascript">
+function onClickGraphNode(nodeId){
+	window.location="/<%=@ontology.to_param%>/"+nodeId
+}
+</script>

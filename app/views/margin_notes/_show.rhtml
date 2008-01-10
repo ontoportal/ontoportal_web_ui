@@ -1,0 +1,43 @@
+<div id ="notes">
+	<%if @margin_notes.size<1%>	
+		<h1>There are currently no marginal notes for this concept.</h1>
+	<%end%>
+<%=draw_note_tree(@margin_notes)%>
+</div>
+
+<div id="form" style="display:none;clear:both;">
+<div id="commentForm" name="forms">
+<% remote_form_for(:margin_note, :url => margin_notes_path,:update =>"notes",:complete=>"toggleHide('form','');toggleHide('buttons','');refreshCache('#{@margin_note.concept_id}')") do |f| %>
+	<%=hidden_field 'margin_note', 'concept_id'%>
+	<%unless @ontology.nil?%>
+	<%=hidden_field 'margin_note', 'ontology_id', :value=>@ontology.name%>
+	<%end%>
+	<%=hidden_field 'margin_note', 'mapping_id'%>
+	<%=hidden_field 'margin_note', 'parent_id', :id=>'noteParent'%>
+
+<fieldset>
+	<legend>New Marginal Note</legend>
+<table>
+	<tr>
+		<td>Note Type:</td>
+		<td><%=
+                options = MarginNote::NOTE_TYPES                       
+                select('margin_note','note_type',options.invert)
+                %></td>
+	</tr>
+	<tr>
+		<td>Subject:</td><td><%=text_field 'margin_note', 'subject',:size=>70%></td>
+	<tr>
+		<td>Note:</td><td><%=text_area 'margin_note', 'comment',:rows=>15,:cols=>70%></td>
+	</tr>
+ 	<tr>
+		<td colspan="2" align="right"><%= submit_tag "Save" ,:class =>"blueButton"%> <%if @modal%><input type="button" value="Close" onclick="Dialog.cancelCallback()" class='blueButton'><%end%></td>
+</table>
+</fieldset>
+<% end %>
+</div>
+</div>
+<div id="buttons" style="clear:both;">
+<input type="button" class ="blueButton" value="New Thread" onclick ="toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='';"> 
+<%if @modal%><input type="button" value="Close" onclick="Dialog.cancelCallback()" class='blueButton'><%end%>
+</div>

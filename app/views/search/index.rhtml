@@ -1,0 +1,44 @@
+<%  remote_form_for(:search, :url => {:controller =>'search',:action=>'concept'}, :update =>'mapping_window',:loading=>"	YAHOO.example.container.wait.show();",:complete=>'YAHOO.example.container.wait.hide();') do |f| %>
+<div class="box" id="searchBox">
+	<div class="header">Search Ontologies</div>
+
+	<fieldset style="float:left;margin:10px;width:300px;height:110px;">
+		<legend>Select Ontologies</legend>
+
+	<%=
+                options = {"All"=>"All"}
+				for ontology in @ontologies
+				options.merge!(ontology.name => ontology.name)
+				end 
+				options = options.sort                     
+                select('search','ontologies',options,{},{:multiple=>true,:size=>6})
+                %>
+	</fieldset>	
+	
+	<fieldset style="float:left;margin:10px;width:300px;height:110px;">
+		<legend>Search Query</legend>
+		<table>
+			<tr>
+				<td nowrap>Search Text:</td>
+				<td><%=text_field "search","keyword",:size=>30%></td>
+			</tr>
+			<tr>
+				<td nowrap>Search In:</td>
+				<td><%=check_box "search","class_name"%>Class/Type Name <%=check_box "search","attributes"%>Attributes</td>
+			</tr>
+			<tr>
+				<td nowrap>Search Type:</td>
+				<td><%=radio_button "search","search_type","contains"%>Contains <%=radio_button "search","search_type","sounds"%>Sounds Like</td>
+			</tr>
+			<tr>
+				<td nowrap>Include Obsolete:</td>
+				<td><%=check_box "search","obsolete"%></td>
+			</tr>
+		</table>
+		
+	</fieldset>
+
+
+
+</div>
+<%end%>

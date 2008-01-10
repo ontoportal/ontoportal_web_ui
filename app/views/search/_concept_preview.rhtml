@@ -1,0 +1,16 @@
+<fieldset style="width:300px;">
+<legend>Preview of <%=@concept.name%>, <%=@concept.id%></legend>
+<div style="overflow:auto;width:300px"><%=@concept.networkNeighborhood()%></div>
+<br>
+Children:
+<ul>
+<% 
+unless @children.nil?
+	for child in @children%>
+		<li>Name: <%=child.name%> ID:<%=child.id%></li>
+	<%end%>
+<%end%>
+</ul>
+
+
+</fieldset>

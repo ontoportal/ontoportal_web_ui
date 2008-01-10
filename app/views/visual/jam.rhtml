@@ -1,0 +1,23 @@
+<applet code="org.ncbo.uvic.shrimp.BioPortalApplet.class" width="750" height="500"
+ 		archive="/applet.jar,
+		/cajun.jar, 
+		/layouts.jar,
+		/piccolo.jar, 
+		/piccolox.jar, 
+		/axis.jar,
+		/axis-ant.jar,
+        /commons-discovery-0.2.jar,
+        /commons-logging-1.0.4.jar,
+        /jaxrpc.jar,
+        /log4j-1.2.8.jar,
+        /saaj.jar,
+        /wsdl4j-1.5.1.jar">
+		Your browser is ignoring the &lt;APPLET&gt; tag! 
+
+		<param name="ontology" value="<%=@ontology%>"/>
+		<param name="nodeId" value="<%=@concept%>"/>
+		<!-- param name="query" value="vivo"/-->
+
+		<param name="searchMode" value="contains"/>
+
+		</applet>
