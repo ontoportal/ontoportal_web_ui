@@ -15,7 +15,7 @@ class ConceptsController < ApplicationController
       show_ajax_request
     else
       show_uri_request
-      render '/ontologies/visualize'
+      render :file=> '/ontologies/visualize',:use_full_path =>true, :layout=>'ontology'
     end
   end
 

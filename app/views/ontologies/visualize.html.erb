@@ -1,6 +1,6 @@
 
 <div id="leftbar" class="leftbar">
-<%=render :partial => 'treeview'%>
+<%=render :partial => '/ontologies/treeview'%>
 
 </div>
 <div id="dragSpot"></div>
@@ -26,7 +26,7 @@
     	<div class="yui-content" id = "content" >
         	<div id="tab1"><%=render :partial =>'/concepts/images'%></div>
         	<div id="tab2"><%=render :partial =>'/concepts/details'%></div>
-        <% #commented out code from the proty
+        <% #commented out code from the prototype
 			if false%>
 			<div id="tab3"><%=render :partial =>'/margin_notes/show'%></div>
 			<div id="tab4"><%=render :partial =>'/mappings/concept_mappings'%></div>
@@ -38,29 +38,7 @@
 
 <script type="text/javascript">
 	
-	function buildTabs(){
-    var tabView = new YAHOO.widget.TabView('tabframe');
-	
-	//YAHOO.namespace("feed");
-	//YAHOO.feed.feed = new YAHOO.widget.Panel("feedPanel", { context:["feed","tr","br"], width:"320px", visible:false,draggable:false,constraintoviewport:true  } ); 
-	//YAHOO.feed.feed.render();
-	//YAHOO.util.Event.addListener("feed", "click", YAHOO.feed.feed.show, YAHOO.feed.feed, true); 
-	
-	var split = new Ext.SplitBar("dragSpot", "leftbar",
-                   Ext.SplitBar.HORIZONTAL, Ext.SplitBar.LEFT);
-split.setAdapter(new Ext.SplitBar.AbsoluteLayoutAdapter("container"));
-split.minSize = 100;
-split.maxSize = 400;
-split.animate = true;
-split.on('moved', splitterMoved);
-	}
-	
-	function splitterMoved(splitbar,newSize){
-		var rightSide = Ext.get('centerContent');
-		var tabFrame = Ext.get('tabframe');
-		var leftSide = Ext.get('leftbar');
-		
-	}
+
 	
 	
 

@@ -1,0 +1,18 @@
+<% form_for(:user, :url => {:controller => 'login',:action=>'create'}) do |f| %>
+
+			 <table >
+			     <tr>
+			         <td nowrap align="right" >User Name:</td>
+			         <td><%= text_field 'user','user_name',:size=>15%></td>
+			     </tr>
+			     <tr>
+			         <td nowrap align="right" >Password:</td>
+			         <td><%= password_field 'user','password',:size=>15%></td>
+			     </tr>
+			     <tr>
+			         <td colspan="2" align="right"><%= submit_tag "Login"%></td>
+			     </tr>
+			 </table>
+			 <span style="font-size:1.2em;">Not Registered Yet?  <%=link_to "Sign Up",new_user_path%></span>
+	
+<% end %>

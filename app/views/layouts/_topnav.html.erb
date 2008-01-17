@@ -1,0 +1,13 @@
+
+<span style="float:right">
+	<%if session[:user].nil?%>
+		<%=link_to "Sign In" ,:controller =>'login'%> &nbsp; <%=link_to "Register", new_user_path%>
+	<%else%>
+		<%=link_to "Log Out",:controller =>'login',:action=>'destroy'%>
+	<%end%> </span>
+<ul class="yui-nav" id="topNav">
+		<li <%if controller.controller_name.eql?("home")%>class="selected" <%end%>><a href="/"><em>Home</a></em></li>
+    	<li <%if controller.controller_name.eql?("ontologies") || controller.controller_name.eql?("concepts")%>class="selected" <%end%>><a href="/ontologies"><em>Browse</em></a></li>
+    	<li <%if controller.controller_name.eql?("search")%>class="selected" <%end%>><a href="/search"><em>Search</em></a></li>
+
+	</ul>  

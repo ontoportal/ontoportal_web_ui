@@ -1,8 +1,10 @@
-<%  remote_form_for(:search, :url => {:controller =>'search',:action=>'concept'}, :update =>'mapping_window',:loading=>"	YAHOO.example.container.wait.show();",:complete=>'YAHOO.example.container.wait.hide();') do |f| %>
+
+
+<%  remote_form_for(:search, :url => {:controller =>'search',:action=>'search'}, :update =>'results',:loading=>"YAHOO.wait.container.wait.show();",:complete=>'YAHOO.wait.container.wait.hide();') do |f| %>
 <div class="box" id="searchBox">
 	<div class="header">Search Ontologies</div>
 
-	<fieldset style="float:left;margin:10px;width:300px;height:110px;">
+	<fieldset style="float:left;margin:10px;width:300px;height:130px;">
 		<legend>Select Ontologies</legend>
 
 	<%=
@@ -11,11 +13,11 @@
 				options.merge!(ontology.name => ontology.name)
 				end 
 				options = options.sort                     
-                select('search','ontologies',options,{},{:multiple=>true,:size=>6})
+                select('search','ontologies',options,{},{:multiple=>true,:size=>8})
                 %>
 	</fieldset>	
 	
-	<fieldset style="float:left;margin:10px;width:300px;height:110px;">
+	<fieldset style="float:left;margin:10px;width:300px;height:130px;">
 		<legend>Search Query</legend>
 		<table>
 			<tr>
@@ -34,6 +36,9 @@
 				<td nowrap>Include Obsolete:</td>
 				<td><%=check_box "search","obsolete"%></td>
 			</tr>
+			<tr>
+				<td colspan="2" align="right"><%=submit_tag 'Search'%></td>
+			</tr>
 		</table>
 		
 	</fieldset>
@@ -42,3 +47,13 @@
 
 </div>
 <%end%>
+<div id="results">
+	
+</div>
+
+<script type="text/javascript">
+
+YAHOO.util.Event.onDOMReady(buildSearchWait()); 
+
+
+</script>

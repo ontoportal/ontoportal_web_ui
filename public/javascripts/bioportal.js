@@ -189,4 +189,100 @@ function newProposal(string){
 	}
 	
 	
+ 
+function buildWait(){
+   YAHOO.namespace("wait.container");
+	// Initialize the temporary Panel to display while waiting for external content to load
+	YAHOO.wait.container.wait = new YAHOO.widget.Panel("wait",  
+				{ width:"240px", 
+				  fixedcenter:true, 
+				  close:false, 
+				  draggable:false, 
+				  zindex:4,
+				  modal:true,
+				  visible:false
+				} 
+			);
+
+	YAHOO.wait.container.wait.setHeader("Loading, please wait...");
+	YAHOO.wait.container.wait.setBody('<img src="http://us.i1.yimg.com/us.yimg.com/i/us/per/gr/gp/rel_interstitial_loading.gif" />');
+	YAHOO.wait.container.wait.render(document.body);
+	
+	
+	
+}
+
+	
+ 
+function buildSearchWait(){
+   YAHOO.namespace("wait.container");
+	// Initialize the temporary Panel to display while waiting for external content to load
+	YAHOO.wait.container.wait = new YAHOO.widget.Panel("wait",  
+				{ width:"240px", 
+				  fixedcenter:true, 
+				  close:false, 
+				  draggable:false, 
+				  zindex:4,
+				  modal:true,
+				  visible:false
+				} 
+			);
+
+	YAHOO.wait.container.wait.setHeader("Searching, please wait...");
+	YAHOO.wait.container.wait.setBody('<img src="http://us.i1.yimg.com/us.yimg.com/i/us/per/gr/gp/rel_interstitial_loading.gif" />');
+	YAHOO.wait.container.wait.render(document.body);
+	
+	
+	
+}
+
+
+
+// Selects the current clicked node.
+function toggleSelected(node){
+
+	var index=1;
+	
+	// can get in endless loop if you jump to a node that is free floating.
+	nullCount = 0;
+	while (nullCount < 20){
+		if(tree.getNodeByIndex(index)!=null){
+			if (tree.getNodeByIndex(index).labelStyle=='ygtvlabel-selected'){
+				tree.getNodeByIndex(index).labelStyle='ygtvlabel'
+				break;
+			}
+		}else{
+			nullCount ++;
+		}
+	index++;
+	}
+	node.labelStyle="ygtvlabel-selected";	
+	
+}
+
+	function buildTabs(){
+	    var tabView = new YAHOO.widget.TabView('tabframe');
+		
+		//YAHOO.namespace("feed");
+		//YAHOO.feed.feed = new YAHOO.widget.Panel("feedPanel", { context:["feed","tr","br"], width:"320px", visible:false,draggable:false,constraintoviewport:true  } ); 
+		//YAHOO.feed.feed.render();
+		//YAHOO.util.Event.addListener("feed", "click", YAHOO.feed.feed.show, YAHOO.feed.feed, true); 
+		
+		var split = new Ext.SplitBar("dragSpot", "leftbar",
+	                   Ext.SplitBar.HORIZONTAL, Ext.SplitBar.LEFT);
+			split.setAdapter(new Ext.SplitBar.AbsoluteLayoutAdapter("container"));
+			split.minSize = 100;
+			split.maxSize = 400;
+			split.animate = true;
+			split.on('moved', splitterMoved);
+	}
+	
+	function splitterMoved(splitbar,newSize){
+		var rightSide = Ext.get('centerContent');
+		var tabFrame = Ext.get('tabframe');
+		var leftSide = Ext.get('leftbar');
+		
+	}
+	
+	
 

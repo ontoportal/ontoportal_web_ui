@@ -24,11 +24,7 @@ var dmp = new diff_match_patch();
 	<%unless @ontology.nil?%>
 	<span id="ontologyName"><%=@ontology.name%></span>
 	<%end%>
-	<ul class="yui-nav" id="topNav">
-		<li><a href="/"><em>Home</em></a></li>
-    	<li class="selected"><a href="/ontologies"><em>Browse</em></a></li>
-    	<li ><a href="/search"><em>Search</em></a></li>
-	</ul>            
+		<%=render :partial =>'layouts/topnav'%>            
 	<div class="yui-content-main" style="width:100%;overflow:hidden;white-space:nowrap;">
 		<%=yield%>
 

@@ -12,4 +12,44 @@ class ApplicationController < ActionController::Base
     name.gsub('_'," ")
   end
   
+  def redirect_to_browse
+    redirect_to "/ontologies"
+  end
+  
+  def redirect_to_home
+    redirect_to "/"
+  end
+  
+  def authorize
+    unless session[:user]
+      flash[:notice] = "Please log in"
+      redirect_to_home
+    end
+  end
+  
+  def isAdmin
+    if session[:user].nil? || !session[:user].admin
+      return false
+    else
+      return true
+    end
+  
+  end
+
+  def authorize_owner(id=nil?)
+    if id.nil? 
+      id = params[:id].to_i
+    end
+    
+     if session[:user].nil?
+        redirect_to_home
+     else
+       unless session[:user].id.eql?(id) || session[:user].admin
+         redirect_to_home      
+       end
+     end
+     
+  end 
+  
+  
 end

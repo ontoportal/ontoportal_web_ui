@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 2) do
+ActiveRecord::Schema.define(:version => 3) do
 
   create_table "mappings", :force => true do |t|
     t.integer  "user_id"
@@ -31,6 +31,17 @@ ActiveRecord::Schema.define(:version => 2) do
     t.string   "subject"
     t.string   "ontology_id"
     t.text     "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "users", :force => true do |t|
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "email"
+    t.string   "phone"
+    t.string   "user_id"
+    t.string   "password"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

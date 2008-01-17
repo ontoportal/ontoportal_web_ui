@@ -12,12 +12,7 @@
 <%=link_to image_tag('ncbo_logo_portal.gif'),"/"%>
 <br>
 <div class="yui-navset">
-	<ul class="yui-nav" id="topNav">
-		<li class="selected"><a href="/"><em>Home</a></em></li>
-    	<li ><a href="/ontologies"><em>Browse</em></a></li>
-    	<li ><a href="/search"><em>Search</em></a></li>
-
-	</ul>            
+	<%=render :partial =>'layouts/topnav'%>          
 	<div class="yui-content-main" id = "content">
 		<%=yield%>
 

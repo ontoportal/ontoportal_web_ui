@@ -1,0 +1,85 @@
+<%form_for (:ontology, :url=> ontologies_path) do%>
+
+
+        <h1>Submit New Ontology - Project Information (Step 1 of 4)</h1>
+<table >
+	<tr>
+		<td>Ontology Name: </td><td><%=text_field :ontology, :name%></td>
+	</tr>
+	<tr>
+		<td>Categories:</td><td></td>
+	</tr>
+	<tr>
+		<td>Supported Languages</td><td></td>
+	</tr>
+	<tr>
+		<td>Contact Name</td><td><%=text_field :ontology, :contact_name%></td>
+	</tr>
+	<tr>
+		<td>Contact Email</td><td><%= text_field :ontology, :contact_email%></td>
+	</tr>
+	<tr>
+		<td>Home Page</td><td><%= text_field :ontology, :homepage%></td>
+	</tr>
+	<tr>
+		<td>Documentation Page</td><td><%= text_field :ontology, :documentation_page%></td>
+	</tr>
+	<tr>
+		<td>Publications page</td><td><%= text_field :ontology, :publications_page%></td>
+	</tr>
+	<tr>
+		<td>Description</td><td><%= text_area :ontology, :description%></td>
+	</tr>
+	<tr>
+		<td>Keywords</td><td><%= text_field :ontology, :keywords%></td>
+	</tr>
+	<tr>
+		<td>Key Classes/Types</td><td><%= text_field :ontology, :key_class%></td>
+	</tr>
+	<tr>
+		<td>Intended Applications</td><td></td>
+	</tr>
+	<tr>
+		<td>Example Use</td><td><%= text_area :ontology, :example_use%></td>
+	</tr>
+	
+	
+	
+	
+</table>
+
+<table>
+	<tr>
+		<td>Format</td><td></td>
+	</tr>
+	<tr>
+		<td>File Location</td><td><%=radio_button :ontology,:location,:upload%>Upload <br><%=radio_button :ontology,:location,:remote%>Remote</td>
+	</tr>
+	<tr>
+		<td>File</td><td><%=file_field :ontology,:file%></td>
+	</tr>
+	<tr>
+		<td>Version</td><td><%=text_field :ontology, :version%></td>
+	</tr>
+	<tr>
+		<td>Release Date</td><td><%=date_select :ontology,:release_date%></td>
+	</tr>
+	<tr>
+		<td>Status</td><td></td>
+	</tr>
+	
+</table>
+
+<table>
+	<tr>
+		<td>Foundry Inclusion</td><td><%=check_box :ontology, :foundry%></td>
+	</tr>
+</table>
+
+
+
+
+
+
+
+<%end%>

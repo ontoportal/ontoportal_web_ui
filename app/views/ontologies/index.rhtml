@@ -13,7 +13,7 @@
 	<td><%=link_to ontology.name, ontology_url(:ontology => ontology)%></td>
 	<td><%=ontology.coreFormat%></td>
 	<td><%=ontology.currentVersion%></td>
-	<td><%=link_to "Visualize", visualize_url(:ontology => ontology)%></td>
+	<td><%if ontology.currentVersion.eql?("See Remote Site")%>Visualization Unavailable<%else%><%=link_to "Visualize", visualize_url(:ontology => ontology)%><%end%></td>
   </tr>
 <% end %>
 </table>

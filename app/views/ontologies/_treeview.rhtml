@@ -4,52 +4,6 @@
 <script type="text/javascript">
 
 
- 
-function buildWait(){
-   YAHOO.namespace("example.container");
-	// Initialize the temporary Panel to display while waiting for external content to load
-	YAHOO.example.container.wait = new YAHOO.widget.Panel("wait",  
-				{ width:"240px", 
-				  fixedcenter:true, 
-				  close:false, 
-				  draggable:false, 
-				  zindex:4,
-				  modal:true,
-				  visible:false
-				} 
-			);
-
-	YAHOO.example.container.wait.setHeader("Loading, please wait...");
-	YAHOO.example.container.wait.setBody('<img src="http://us.i1.yimg.com/us.yimg.com/i/us/per/gr/gp/rel_interstitial_loading.gif" />');
-	YAHOO.example.container.wait.render(document.body);
-	
-	
-	
-}
-
-
-
-// Selects the current clicked node.
-function toggleSelected(node){
-
-	var index=1;
-	
-	// can get in endless loop if you jump to a node that is free floating.
-	nullCount = 0;
-	while (nullCount < 20){
-		if(tree.getNodeByIndex(index)!=null){
-			if (tree.getNodeByIndex(index).labelStyle=='ygtvlabel-selected'){
-				tree.getNodeByIndex(index).labelStyle='ygtvlabel'
-				break;
-			}
-		}else{
-			nullCount ++;
-		}
-	index++;
-	}
-	node.labelStyle="ygtvlabel-selected";	
-	
-}
 
 // adds a node to the tree
 function addTreeNode(rootNode, nodeInfo) {
@@ -168,14 +122,14 @@ function loadNodeData(node, fnLoadComplete) {
 							//document.getElementById('tab4').innerHTML=tabData[3]
 							//document.getElementById('tab5').innerHTML=tabData[4]					
 					 tree.draw();
-						YAHOO.example.container.wait.hide();
+						YAHOO.wait.container.wait.hide();
 						setCache(node_id,tabData)
 					
 			};	
 			
 			var responseFailure = function(o){
 				alert('responseFailure: ' +	o.statusText);
-					YAHOO.example.container.wait.hide();
+					YAHOO.wait.container.wait.hide();
 			};
 
 			var callback =
@@ -195,11 +149,12 @@ function loadNodeData(node, fnLoadComplete) {
 			 tree.draw();
 				
 		}else{
-			YAHOO.example.container.wait.show();
+			YAHOO.wait.container.wait.show();
 		YAHOO.util.Connect.asyncRequest('GET','/<%=@ontology.to_param%>/'+node_id+"?callback=load",callback);		
 		}	
 		
 		}
+		
 function init(){
 	
 	buildWait();

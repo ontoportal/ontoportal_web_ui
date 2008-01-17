@@ -27,7 +27,7 @@ class OntologiesController < ApplicationController
 
   # GET/ontologies/(id)/visualize
   def visualize
-    #create a new ontology object to query from
+    #Set the ontology we are viewing
     @ontology = OntologyWrapper.new()
     @ontology.name = undo_param(params[:ontology])
     #get the top level nodes for the root
@@ -37,14 +37,14 @@ class OntologiesController < ApplicationController
     @concept = DataAccess.getNode(@ontology.name,@root.children.first.id)
  
     #gets the initial mappings
-    @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.name, :source_id => @concept.id})
+    #@mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.name, :source_id => @concept.id})
     
     #gets the initial margin notes
-    @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @ontology.name, :concept_id => @concept.id,:parent_id => nil})
+    #@margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @ontology.name, :concept_id => @concept.id,:parent_id => nil})
     
     #gets the initial Ontrez Results
     
-    @resource = []
+    #@resource = []
     #if(@concept.properties["UMLS_CUI"]!=nil)   
     #  @resource = ResourceWrapper.gatherResourcesCui(@concept.properties["UMLS_CUI"])
     #else
@@ -53,9 +53,9 @@ class OntologiesController < ApplicationController
     # end
   
   
-    @margin_note = MarginNote.new
-    @margin_note.concept_id = @concept.id
-    @margin_note.ontology_id = @ontology.name
+    #@margin_note = MarginNote.new
+    #@margin_note.concept_id = @concept.id
+    #@margin_note.ontology_id = @ontology.name
  
    # @ontology = Ontology.find(params[:id], :include =>:concepts)  -- Active Record
    # @mappings = Mapping.find(:all, :conditions=>{:source_id => @ontology.concepts.first.id},:include =>:destination)

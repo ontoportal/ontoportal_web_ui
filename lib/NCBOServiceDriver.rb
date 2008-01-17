@@ -4,7 +4,7 @@ require 'NCBOServiceMappingRegistry.rb'
 require 'soap/rpc/driver'
 
 class NCBOWebserviceEndpoint < ::SOAP::RPC::Driver
-  DefaultEndpointUrl = "http://cbioapprd.Stanford.EDU:8080/ncboservicebeans/NCBOWebserviceBean"
+  DefaultEndpointUrl = "http://ncbo-bioportal-stage1.stanford.edu/ncboservicebeans/NCBOWebserviceBean"
   NsBeans = "http://org.ncbo.stanford.server/beans"
 
   Methods = [
