@@ -20,7 +20,7 @@ class OntologyWrapper
   
  
   def to_param    
-     "#{name.gsub(" ","_")}"
+     "#{name.gsub(" ","_").gsub("/","")}"
   end
   
   def initialize(ontology = nil)

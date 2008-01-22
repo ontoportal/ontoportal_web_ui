@@ -30,8 +30,9 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id.:format'
   map.connect ':controller/:action/:id'
-  map.visualize 'visualize/:ontology', :controller=>'ontologies', :action =>'visualize',:requirements => { :ontology => /.*/ }
-  map.ontology ':ontology', :controller => 'ontologies', :action => 'show',:requirements => { :ontology => /.*/ }
-  map.uri ':ontology/:id', :controller => 'concepts', :action => 'show',:requirements => { :ontology => /.*/ }
+  map.visualize 'visualize/:ontology', :controller=>'ontologies', :action =>'visualize',:requirements => { :ontology => %r([^/?]+) }
+  map.uri ':ontology/:id', :controller => 'concepts', :action => 'show',:requirements => { :ontology => %r([^/?]+) ,:id => %r([^/?]+)}
+  map.ontology ':ontology', :controller => 'ontologies', :action => 'show',:requirements => { :ontology => %r([^/?]+) }
+ 
   map.jam 'jambalaya/:ontology/:id', :controller => 'visual', :action => 'jam'
 end

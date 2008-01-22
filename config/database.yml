@@ -33,10 +33,11 @@ test:
   password:
   socket: /tmp/mysql.sock
 
+
 production:
   adapter: mysql
-  encoding: utf8
-  database: BioPortalGui_production
+  socket: /var/lib/mysql/mysql.sock
+  database: ncbo_production
   username: root
-  password: 
-  socket: /tmp/mysql.sock
+  password: ncbomysql
+  host: localhost
