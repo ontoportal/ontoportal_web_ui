@@ -37,7 +37,7 @@ test:
 production:
   adapter: mysql
   socket: /var/lib/mysql/mysql.sock
-  database: ncbo_production
+  database: ncbo_gui_production
   username: root
   password: ncbomysql
   host: localhost

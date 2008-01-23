@@ -28,10 +28,11 @@
 	<tr>
 		<td>Subject:</td><td><%=text_field 'margin_note', 'subject',:size=>70,:id=>'note_subject'%></td>
 	<tr>
-		<td>Note:</td><td><%=text_area 'margin_note', 'comment',:rows=>15,:cols=>70,:id=>'note_comment'%></td>
+		<td>Note:</td><td><%=text_area 'margin_note' ,'comment',:cols=>70,:rows=>10, :id=>'note_comment'%>
+			</td>
 	</tr>
  	<tr>
-		<td colspan="2" align="right"><%= submit_tag "Save" ,:class =>"blueButton"%> <%if @modal%><input type="button" value="Close" onclick="Dialog.cancelCallback()" class='blueButton'><%end%></td>
+		<td colspan="2" align="right"><%= submit_tag "Save" ,:class =>"blueButton",:onclick=>'saveNote()'%> <%if @modal%><input type="button" value="Close" onclick="Dialog.cancelCallback()" class='blueButton'><%end%></td>
 </table>
 </fieldset>
 <% end %>
@@ -41,3 +42,10 @@
 <input type="button" class ="blueButton" value="New Thread" onclick ="toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='';"> 
 <%if @modal%><input type="button" value="Close" onclick="Dialog.cancelCallback()" class='blueButton'><%end%>
 </div>
+
+
+<script>
+buildMCE()
+</script>
+
+
