@@ -65,7 +65,7 @@ function loadNodeData(node, fnLoadComplete) {
 		};
 		
 		// simple Yahoo ajax call
-		var cObj = YAHOO.util.Connect.asyncRequest('GET','/<%=@ontology.to_param%>/'+id+"?callback=children",callback);
+		var cObj = YAHOO.util.Connect.asyncRequest('GET','/ont/<%=@ontology.to_param%>/'+id+"?callback=children",callback);
 	}
 
 
@@ -150,7 +150,7 @@ function loadNodeData(node, fnLoadComplete) {
 				
 		}else{
 			YAHOO.wait.container.wait.show();
-		YAHOO.util.Connect.asyncRequest('GET','/<%=@ontology.to_param%>/'+node_id+"?callback=load",callback);		
+		YAHOO.util.Connect.asyncRequest('GET','/ont/<%=@ontology.to_param%>/'+node_id+"?callback=load",callback);		
 		}	
 		
 		}

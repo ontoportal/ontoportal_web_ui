@@ -31,8 +31,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/:action/:id.:format'
   map.connect ':controller/:action/:id'
   map.visualize 'visualize/:ontology', :controller=>'ontologies', :action =>'visualize',:requirements => { :ontology => %r([^/?]+) }
-  map.uri ':ontology/:id', :controller => 'concepts', :action => 'show',:requirements => { :ontology => %r([^/?]+) ,:id => %r([^/?]+)}
-  map.ontology ':ontology', :controller => 'ontologies', :action => 'show',:requirements => { :ontology => %r([^/?]+) }
+  map.uri '/ont/:ontology/:id', :controller => 'concepts', :action => 'show',:requirements => { :ontology => %r([^/?]+) ,:id => %r([^/?]+)}
+  map.ontology '/ont/:ontology', :controller => 'ontologies', :action => 'show',:requirements => { :ontology => %r([^/?]+) }
  
   #map.jam 'jambalaya/:ontology/:id', :controller => 'visual', :action => 'jam'
 end
