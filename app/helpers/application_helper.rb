@@ -36,7 +36,10 @@ module ApplicationHelper
   def draw_note_tree_leaves(notes,level,output)
 
   for note in notes
-  name = cycle("Bill Bug","MaryAnn Martone")
+    name="Anonymous"
+    unless note.user.nil?
+      name=note.user.user_name
+    end
   headertext=""
   notetext=""
   if note.note_type.eql?(5)
@@ -58,7 +61,7 @@ module ApplicationHelper
           <div class=\"header_top\"></div>
           #{headertext}
             <div>
-              <div><span class=\"sender\" style=\"float:right\">#{name} at #{note.created_on.strftime('%m/%d/%y %H:%M')}</span>
+              <div><span class=\"sender\" style=\"float:right\">#{name} at #{note.created_at.strftime('%m/%d/%y %H:%M')}</span>
                 <div class=\"sender\">#{note.type_label.titleize}: #{note.subject}</div>
               </div>
             </div>

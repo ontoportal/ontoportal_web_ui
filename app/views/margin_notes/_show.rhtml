@@ -7,7 +7,7 @@
 
 <div id="form" style="display:none;clear:both;">
 <div id="commentForm" name="forms">
-<% remote_form_for(:margin_note, :url => margin_notes_path,:update =>"notes",:complete=>"toggleHide('form','');toggleHide('buttons','');refreshCache('#{@margin_note.concept_id}')") do |f| %>
+<% remote_form_for(:margin_note, :url => margin_notes_path,:update =>"notes",:complete=>"toggleHide('form','');toggleHide('buttons','');refreshCache('#{@concept.id}')") do |f| %>
 	<%=hidden_field 'margin_note', 'concept_id'%>
 	<%unless @ontology.nil?%>
 	<%=hidden_field 'margin_note', 'ontology_id', :value=>@ontology.name%>

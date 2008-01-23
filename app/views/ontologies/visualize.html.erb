@@ -12,11 +12,11 @@
     	<ul class="yui-nav">
         	<li class="selected"><a href="#tab1"><em>Visualization</em></a></li>
         	<li ><a href="#tab2"><em>Class/Type Details</em></a></li>
-        	
+        	<li><a href="#tab3"><em>Marginal Notes</em></a></li>
 			<%
 			#commented out code from the prototype
 			if false%>
-			<li><a href="#tab3"><em>Marginal Notes</em></a></li>
+			
 			<li><a href="#tab4"><em>Mappings</em></a></li>
 			<li><a href="#tab5"><em>Resources</em></a></li>			
 			<%end%>
@@ -26,9 +26,10 @@
     	<div class="yui-content" id = "content" >
         	<div id="tab1"><%=render :partial =>'/concepts/images'%></div>
         	<div id="tab2"><%=render :partial =>'/concepts/details'%></div>
+			<div id="tab3"><%=render :partial =>'/margin_notes/show'%></div>
         <% #commented out code from the prototype
 			if false%>
-			<div id="tab3"><%=render :partial =>'/margin_notes/show'%></div>
+			
 			<div id="tab4"><%=render :partial =>'/mappings/concept_mappings'%></div>
 			<div id="tab5"><%=render :partial =>'/concepts/resources'%></div> 
 		<%end%>

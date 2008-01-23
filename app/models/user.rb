@@ -1,6 +1,8 @@
 require "digest/sha1"
 class User< ActiveRecord::Base
   
+  has_many :margin_notes
+  
   attr_accessor :validate_password  
   attr_accessor :password
   

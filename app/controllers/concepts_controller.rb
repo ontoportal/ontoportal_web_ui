@@ -45,8 +45,12 @@ class ConceptsController < ApplicationController
   
   def gather_details
    # @mappings = Mapping.find(:all, :conditions=>{:source_ont => @concept.ontology_name, :source_id => @concept.id})
-   # @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_name, :concept_id => @concept.id,:parent_id =>nil})
-
+    
+    #builds the margin note tab
+    @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_name, :concept_id => @concept.id,:parent_id =>nil},:include=>:user)
+    @margin_note = MarginNote.new
+    @margin_note.concept_id = @concept.id
+    @margin_note.ontology_id = @concept.ontology_name
    
    # @resource = []
    # if(@concept.properties["UMLS_CUI"]!=nil)
@@ -55,9 +59,7 @@ class ConceptsController < ApplicationController
    #    @resource = ResourceWrapper.gatherResources(@concept.id.gsub("_",":"),@concept.ontology_name)
    # end
     
-    #@margin_note = MarginNote.new
-    #@margin_note.concept_id = @concept.id
-    #@margin_note.ontology_id = @concept.ontology_name
+    
   end
   
   def build_tree

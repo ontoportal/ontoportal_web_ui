@@ -1,5 +1,6 @@
 class MarginNote < ActiveRecord::Base
   acts_as_tree :order =>:id
+  belongs_to :user
   
   NOTE_TYPES = {
   1 => "Advice",

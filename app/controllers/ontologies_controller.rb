@@ -40,7 +40,13 @@ class OntologiesController < ApplicationController
     #@mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.name, :source_id => @concept.id})
     
     #gets the initial margin notes
-    #@margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @ontology.name, :concept_id => @concept.id,:parent_id => nil})
+    @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @ontology.name, :concept_id => @concept.id,:parent_id => nil},:include=>:user)
+    @margin_note = MarginNote.new
+    @margin_note.concept_id = @concept.id
+    @margin_note.ontology_id = @ontology.name
+    
+    
+    
     
     #gets the initial Ontrez Results
     
@@ -53,9 +59,7 @@ class OntologiesController < ApplicationController
     # end
   
   
-    #@margin_note = MarginNote.new
-    #@margin_note.concept_id = @concept.id
-    #@margin_note.ontology_id = @ontology.name
+   
  
    # @ontology = Ontology.find(params[:id], :include =>:concepts)  -- Active Record
    # @mappings = Mapping.find(:all, :conditions=>{:source_id => @ontology.concepts.first.id},:include =>:destination)
