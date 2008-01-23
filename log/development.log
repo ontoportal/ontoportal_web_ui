@@ -13699,3 +13699,755 @@ Processing MarginNotesController#create (for 127.0.0.1 at 2008-01-22 16:19:08) [
   [4;35;1mSQL (0.000178)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
 Rendered margin_notes/_update (0.00761)
 Completed in 0.02862 (34 reqs/sec) | Rendering: 0.00632 (22%) | DB: 0.00876 (30%) | 200 OK [http://localhost/margin_notes]
+
+
+Processing OntologiesController#visualize (for 127.0.0.1 at 2008-01-22 16:25:56) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg5sYXN0X25hbWUiDUdyaWZmaXRoIg51c2VyX25h%0AbWUiC25ncmlmZiIKZW1haWwiFG5ncmlmZkBzdGFuZm9yZCIPY3JlYXRlZF9h%0AdCIYMjAwOC0wMS0xNiAxMjoyMjozNToSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7BjoLbm90%0AaWNlIilNYXJnaW5Ob3RlIHdhcyBzdWNjZXNzZnVsbHkgY3JlYXRlZC4GOgpA%0AdXNlZHsGOwxU--cdfde6786a68eb6c8b87dcf8c70e4c8fead3f74b
+  Parameters: {"ontology"=>"Amino_Acid", "action"=>"visualize", "controller"=>"ontologies"}
+  [4;36;1mMarginNote Columns (0.003273)[0m   [0;1mSHOW FIELDS FROM `margin_notes`[0m
+  [4;35;1mSQL (0.090941)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid') [0m
+  [4;36;1mMapping Columns (0.002124)[0m   [0;1mSHOW FIELDS FROM `mappings`[0m
+  [4;35;1mSQL (0.000349)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000230)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AminoAcid') [0m
+  [4;35;1mSQL (0.000204)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000207)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AromaticAminoAcid') [0m
+  [4;35;1mSQL (0.000169)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AromaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000212)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'LargeAliphaticAminoAcid') [0m
+  [4;35;1mSQL (0.000195)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'LargeAliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000196)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'NegativeChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000191)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'NegativeChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000198)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'PositiveChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000192)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'PositiveChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000201)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'RefiningFeature') [0m
+  [4;35;1mSQL (0.000187)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'RefiningFeature' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000212)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'TinyPolarAminoAcid') [0m
+  [4;35;1mSQL (0.000192)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'TinyPolarAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mUser Columns (0.003287)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mMarginNote Load Including Associations (0.000584)[0m   [0mSELECT `margin_notes`.`id` AS t0_r0, `margin_notes`.`parent_id` AS t0_r1, `margin_notes`.`mapping_id` AS t0_r2, `margin_notes`.`note_type` AS t0_r3, `margin_notes`.`user_id` AS t0_r4, `margin_notes`.`concept_id` AS t0_r5, `margin_notes`.`subject` AS t0_r6, `margin_notes`.`ontology_id` AS t0_r7, `margin_notes`.`comment` AS t0_r8, `margin_notes`.`created_at` AS t0_r9, `margin_notes`.`updated_at` AS t0_r10, `users`.`id` AS t1_r0, `users`.`first_name` AS t1_r1, `users`.`last_name` AS t1_r2, `users`.`email` AS t1_r3, `users`.`phone` AS t1_r4, `users`.`user_name` AS t1_r5, `users`.`hashed_password` AS t1_r6, `users`.`created_at` AS t1_r7, `users`.`updated_at` AS t1_r8, `users`.`admin` AS t1_r9 FROM `margin_notes` LEFT OUTER JOIN `users` ON `users`.id = `margin_notes`.user_id WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+Rendering template within layouts/ontology
+Rendering ontologies/visualize
+Rendered /ontologies/_treeview (0.00071)
+Rendered /concepts/_images (1.19840)
+Rendered /concepts/_details (0.19724)
+  [4;36;1mSQL (0.000362)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;35;1mMarginNote Load (0.000260)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;36;1mSQL (0.000278)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;35;1mMarginNote Load (0.000291)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;36;1mSQL (0.000328)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;35;1mSQL (0.000273)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+Rendered /margin_notes/_show (0.01257)
+Rendered layouts/_topnav (0.00047)
+Completed in 2.07609 (0 reqs/sec) | Rendering: 1.41191 (68%) | DB: 0.10514 (5%) | 200 OK [http://localhost/visualize/Amino_Acid]
+
+
+Processing OntologiesController#visualize (for 127.0.0.1 at 2008-01-22 16:26:33) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg51c2VyX25hbWUiC25ncmlmZiIObGFzdF9uYW1l%0AIg1HcmlmZml0aCIPY3JlYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIK%0AZW1haWwiFG5ncmlmZkBzdGFuZm9yZDoSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e70ab75c85027832d1c51f4bf9beb351a98e868f
+  Parameters: {"ontology"=>"Amino_Acid", "action"=>"visualize", "controller"=>"ontologies"}
+  [4;36;1mMarginNote Columns (0.002914)[0m   [0;1mSHOW FIELDS FROM `margin_notes`[0m
+  [4;35;1mSQL (0.001562)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid') [0m
+  [4;36;1mMapping Columns (0.001610)[0m   [0;1mSHOW FIELDS FROM `mappings`[0m
+  [4;35;1mSQL (0.001376)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000314)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AminoAcid') [0m
+  [4;35;1mSQL (0.000196)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000183)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AromaticAminoAcid') [0m
+  [4;35;1mSQL (0.000145)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AromaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000177)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'LargeAliphaticAminoAcid') [0m
+  [4;35;1mSQL (0.000141)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'LargeAliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000168)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'NegativeChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000168)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'NegativeChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000153)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'PositiveChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000141)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'PositiveChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000152)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'RefiningFeature') [0m
+  [4;35;1mSQL (0.000137)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'RefiningFeature' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000152)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'TinyPolarAminoAcid') [0m
+  [4;35;1mSQL (0.000159)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'TinyPolarAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mUser Columns (0.005004)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mMarginNote Load Including Associations (0.001898)[0m   [0mSELECT `margin_notes`.`id` AS t0_r0, `margin_notes`.`parent_id` AS t0_r1, `margin_notes`.`mapping_id` AS t0_r2, `margin_notes`.`note_type` AS t0_r3, `margin_notes`.`user_id` AS t0_r4, `margin_notes`.`concept_id` AS t0_r5, `margin_notes`.`subject` AS t0_r6, `margin_notes`.`ontology_id` AS t0_r7, `margin_notes`.`comment` AS t0_r8, `margin_notes`.`created_at` AS t0_r9, `margin_notes`.`updated_at` AS t0_r10, `users`.`id` AS t1_r0, `users`.`first_name` AS t1_r1, `users`.`last_name` AS t1_r2, `users`.`email` AS t1_r3, `users`.`phone` AS t1_r4, `users`.`user_name` AS t1_r5, `users`.`hashed_password` AS t1_r6, `users`.`created_at` AS t1_r7, `users`.`updated_at` AS t1_r8, `users`.`admin` AS t1_r9 FROM `margin_notes` LEFT OUTER JOIN `users` ON `users`.id = `margin_notes`.user_id WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+Rendering template within layouts/ontology
+Rendering ontologies/visualize
+Rendered /ontologies/_treeview (0.00062)
+Rendered /concepts/_images (1.19191)
+Rendered /concepts/_details (0.38105)
+  [4;36;1mSQL (0.000331)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;35;1mMarginNote Load (0.000245)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;36;1mSQL (0.000192)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;35;1mMarginNote Load (0.000227)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;36;1mSQL (0.000204)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;35;1mSQL (0.000224)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+Rendered /margin_notes/_show (0.00875)
+Rendered layouts/_topnav (0.00047)
+Completed in 2.25785 (0 reqs/sec) | Rendering: 1.58566 (70%) | DB: 0.01817 (0%) | 200 OK [http://localhost/visualize/Amino_Acid]
+
+
+Processing OntologiesController#visualize (for 127.0.0.1 at 2008-01-22 16:33:17) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg5sYXN0X25hbWUiDUdyaWZmaXRoIg51c2VyX25h%0AbWUiC25ncmlmZiIKZW1haWwiFG5ncmlmZkBzdGFuZm9yZCIPY3JlYXRlZF9h%0AdCIYMjAwOC0wMS0xNiAxMjoyMjozNToSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e1359f3409af3ce3b6299c00a11ed630746c1c96
+  Parameters: {"ontology"=>"Amino_Acid", "action"=>"visualize", "controller"=>"ontologies"}
+  [4;36;1mMarginNote Columns (0.026127)[0m   [0;1mSHOW FIELDS FROM `margin_notes`[0m
+  [4;35;1mSQL (0.001049)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid') [0m
+  [4;36;1mMapping Columns (0.002416)[0m   [0;1mSHOW FIELDS FROM `mappings`[0m
+  [4;35;1mSQL (0.000303)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000283)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AminoAcid') [0m
+  [4;35;1mSQL (0.000187)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000219)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AromaticAminoAcid') [0m
+  [4;35;1mSQL (0.000172)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AromaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000212)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'LargeAliphaticAminoAcid') [0m
+  [4;35;1mSQL (0.000174)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'LargeAliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000188)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'NegativeChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000183)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'NegativeChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000193)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'PositiveChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000275)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'PositiveChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000309)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'RefiningFeature') [0m
+  [4;35;1mSQL (0.000179)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'RefiningFeature' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000178)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'TinyPolarAminoAcid') [0m
+  [4;35;1mSQL (0.002475)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'TinyPolarAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mUser Columns (0.001572)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mMarginNote Load Including Associations (0.001698)[0m   [0mSELECT `margin_notes`.`id` AS t0_r0, `margin_notes`.`parent_id` AS t0_r1, `margin_notes`.`mapping_id` AS t0_r2, `margin_notes`.`note_type` AS t0_r3, `margin_notes`.`user_id` AS t0_r4, `margin_notes`.`concept_id` AS t0_r5, `margin_notes`.`subject` AS t0_r6, `margin_notes`.`ontology_id` AS t0_r7, `margin_notes`.`comment` AS t0_r8, `margin_notes`.`created_at` AS t0_r9, `margin_notes`.`updated_at` AS t0_r10, `users`.`id` AS t1_r0, `users`.`first_name` AS t1_r1, `users`.`last_name` AS t1_r2, `users`.`email` AS t1_r3, `users`.`phone` AS t1_r4, `users`.`user_name` AS t1_r5, `users`.`hashed_password` AS t1_r6, `users`.`created_at` AS t1_r7, `users`.`updated_at` AS t1_r8, `users`.`admin` AS t1_r9 FROM `margin_notes` LEFT OUTER JOIN `users` ON `users`.id = `margin_notes`.user_id WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+Rendering template within layouts/ontology
+Rendering ontologies/visualize
+Rendered /ontologies/_treeview (0.00073)
+Rendered /concepts/_images (1.18339)
+Rendered /concepts/_details (0.20094)
+  [4;36;1mSQL (0.000366)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;35;1mMarginNote Load (0.000240)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;36;1mSQL (0.000216)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;35;1mMarginNote Load (0.000198)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;36;1mSQL (0.000214)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;35;1mSQL (0.000289)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+Rendered /margin_notes/_show (0.01092)
+Rendered layouts/_topnav (0.00043)
+Completed in 2.16598 (0 reqs/sec) | Rendering: 1.39915 (64%) | DB: 0.03992 (1%) | 200 OK [http://localhost/visualize/Amino_Acid]
+
+
+Processing OntologiesController#visualize (for 127.0.0.1 at 2008-01-22 16:34:10) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg51c2VyX25hbWUiC25ncmlmZiIObGFzdF9uYW1l%0AIg1HcmlmZml0aCIPY3JlYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIK%0AZW1haWwiFG5ncmlmZkBzdGFuZm9yZDoSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e70ab75c85027832d1c51f4bf9beb351a98e868f
+  Parameters: {"ontology"=>"Amino_Acid", "action"=>"visualize", "controller"=>"ontologies"}
+  [4;36;1mMarginNote Columns (0.003057)[0m   [0;1mSHOW FIELDS FROM `margin_notes`[0m
+  [4;35;1mSQL (0.001593)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid') [0m
+  [4;36;1mMapping Columns (0.002060)[0m   [0;1mSHOW FIELDS FROM `mappings`[0m
+  [4;35;1mSQL (0.000312)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000828)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AminoAcid') [0m
+  [4;35;1mSQL (0.000199)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000211)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AromaticAminoAcid') [0m
+  [4;35;1mSQL (0.000187)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AromaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000212)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'LargeAliphaticAminoAcid') [0m
+  [4;35;1mSQL (0.000188)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'LargeAliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000204)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'NegativeChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000187)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'NegativeChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000200)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'PositiveChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000186)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'PositiveChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000188)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'RefiningFeature') [0m
+  [4;35;1mSQL (0.000187)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'RefiningFeature' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000185)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'TinyPolarAminoAcid') [0m
+  [4;35;1mSQL (0.000213)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'TinyPolarAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mUser Columns (0.002982)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mMarginNote Load Including Associations (0.000712)[0m   [0mSELECT `margin_notes`.`id` AS t0_r0, `margin_notes`.`parent_id` AS t0_r1, `margin_notes`.`mapping_id` AS t0_r2, `margin_notes`.`note_type` AS t0_r3, `margin_notes`.`user_id` AS t0_r4, `margin_notes`.`concept_id` AS t0_r5, `margin_notes`.`subject` AS t0_r6, `margin_notes`.`ontology_id` AS t0_r7, `margin_notes`.`comment` AS t0_r8, `margin_notes`.`created_at` AS t0_r9, `margin_notes`.`updated_at` AS t0_r10, `users`.`id` AS t1_r0, `users`.`first_name` AS t1_r1, `users`.`last_name` AS t1_r2, `users`.`email` AS t1_r3, `users`.`phone` AS t1_r4, `users`.`user_name` AS t1_r5, `users`.`hashed_password` AS t1_r6, `users`.`created_at` AS t1_r7, `users`.`updated_at` AS t1_r8, `users`.`admin` AS t1_r9 FROM `margin_notes` LEFT OUTER JOIN `users` ON `users`.id = `margin_notes`.user_id WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+Rendering template within layouts/ontology
+Rendering ontologies/visualize
+Rendered /ontologies/_treeview (0.00096)
+Rendered /concepts/_images (1.09013)
+Rendered /concepts/_details (0.27533)
+  [4;36;1mSQL (0.000349)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;35;1mMarginNote Load (0.000388)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;36;1mSQL (0.000220)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;35;1mMarginNote Load (0.000398)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;36;1mSQL (0.000234)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;35;1mSQL (0.000204)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+Rendered /margin_notes/_show (0.00958)
+Rendered layouts/_topnav (0.00043)
+Completed in 2.30075 (0 reqs/sec) | Rendering: 1.37904 (59%) | DB: 0.01588 (0%) | 200 OK [http://localhost/visualize/Amino_Acid]
+
+
+Processing OntologiesController#visualize (for 127.0.0.1 at 2008-01-22 16:34:15) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg5sYXN0X25hbWUiDUdyaWZmaXRoIg51c2VyX25h%0AbWUiC25ncmlmZiIKZW1haWwiFG5ncmlmZkBzdGFuZm9yZCIPY3JlYXRlZF9h%0AdCIYMjAwOC0wMS0xNiAxMjoyMjozNToSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e1359f3409af3ce3b6299c00a11ed630746c1c96
+  Parameters: {"ontology"=>"Amino_Acid", "action"=>"visualize", "controller"=>"ontologies"}
+  [4;36;1mMarginNote Columns (0.003323)[0m   [0;1mSHOW FIELDS FROM `margin_notes`[0m
+  [4;35;1mSQL (0.001536)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid') [0m
+  [4;36;1mMapping Columns (0.001878)[0m   [0;1mSHOW FIELDS FROM `mappings`[0m
+  [4;35;1mSQL (0.001310)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000222)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AminoAcid') [0m
+  [4;35;1mSQL (0.000180)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000267)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AromaticAminoAcid') [0m
+  [4;35;1mSQL (0.000199)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AromaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000181)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'LargeAliphaticAminoAcid') [0m
+  [4;35;1mSQL (0.000146)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'LargeAliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000164)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'NegativeChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000149)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'NegativeChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000200)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'PositiveChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000197)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'PositiveChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000194)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'RefiningFeature') [0m
+  [4;35;1mSQL (0.000188)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'RefiningFeature' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000180)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'TinyPolarAminoAcid') [0m
+  [4;35;1mSQL (0.000194)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'TinyPolarAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mUser Columns (0.003625)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mMarginNote Load Including Associations (0.002059)[0m   [0mSELECT `margin_notes`.`id` AS t0_r0, `margin_notes`.`parent_id` AS t0_r1, `margin_notes`.`mapping_id` AS t0_r2, `margin_notes`.`note_type` AS t0_r3, `margin_notes`.`user_id` AS t0_r4, `margin_notes`.`concept_id` AS t0_r5, `margin_notes`.`subject` AS t0_r6, `margin_notes`.`ontology_id` AS t0_r7, `margin_notes`.`comment` AS t0_r8, `margin_notes`.`created_at` AS t0_r9, `margin_notes`.`updated_at` AS t0_r10, `users`.`id` AS t1_r0, `users`.`first_name` AS t1_r1, `users`.`last_name` AS t1_r2, `users`.`email` AS t1_r3, `users`.`phone` AS t1_r4, `users`.`user_name` AS t1_r5, `users`.`hashed_password` AS t1_r6, `users`.`created_at` AS t1_r7, `users`.`updated_at` AS t1_r8, `users`.`admin` AS t1_r9 FROM `margin_notes` LEFT OUTER JOIN `users` ON `users`.id = `margin_notes`.user_id WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+Rendering template within layouts/ontology
+Rendering ontologies/visualize
+Rendered /ontologies/_treeview (0.00061)
+Rendered /concepts/_images (1.14436)
+Rendered /concepts/_details (0.16292)
+  [4;36;1mSQL (0.000310)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;35;1mMarginNote Load (0.000188)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;36;1mSQL (0.000161)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;35;1mMarginNote Load (0.000161)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;36;1mSQL (0.000141)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;35;1mSQL (0.000175)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+Rendered /margin_notes/_show (0.00794)
+Rendered layouts/_topnav (0.00036)
+Completed in 1.87401 (0 reqs/sec) | Rendering: 1.31921 (70%) | DB: 0.01753 (0%) | 200 OK [http://localhost/visualize/Amino_Acid]
+
+
+Processing HomeController#index (for 127.0.0.1 at 2008-01-22 16:47:37) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg51c2VyX25hbWUiC25ncmlmZiIObGFzdF9uYW1l%0AIg1HcmlmZml0aCIPY3JlYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIK%0AZW1haWwiFG5ncmlmZkBzdGFuZm9yZDoSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e70ab75c85027832d1c51f4bf9beb351a98e868f
+  Parameters: {"action"=>"index", "controller"=>"home"}
+Rendering template within layouts/home
+Rendering home/index
+Rendered layouts/_topnav (0.00033)
+Completed in 0.00575 (173 reqs/sec) | Rendering: 0.00306 (53%) | DB: 0.00000 (0%) | 200 OK [http://localhost/]
+  [4;36;1mUser Columns (0.003176)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+
+
+Processing OntologiesController#index (for 127.0.0.1 at 2008-01-22 16:47:39) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg5sYXN0X25hbWUiDUdyaWZmaXRoIg51c2VyX25h%0AbWUiC25ncmlmZiIKZW1haWwiFG5ncmlmZkBzdGFuZm9yZCIPY3JlYXRlZF9h%0AdCIYMjAwOC0wMS0xNiAxMjoyMjozNToSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e1359f3409af3ce3b6299c00a11ed630746c1c96
+  Parameters: {"action"=>"index", "controller"=>"ontologies"}
+Rendering template within layouts/ontology
+Rendering ontologies/index
+Rendered layouts/_topnav (0.00055)
+Completed in 0.53065 (1 reqs/sec) | Rendering: 0.11147 (21%) | DB: 0.00318 (0%) | 200 OK [http://localhost/ontologies]
+  [4;35;1mUser Columns (0.002777)[0m   [0mSHOW FIELDS FROM `users`[0m
+
+
+Processing OntologiesController#visualize (for 127.0.0.1 at 2008-01-22 16:47:47) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg51c2VyX25hbWUiC25ncmlmZiIObGFzdF9uYW1l%0AIg1HcmlmZml0aCIPY3JlYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIK%0AZW1haWwiFG5ncmlmZkBzdGFuZm9yZDoSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e70ab75c85027832d1c51f4bf9beb351a98e868f
+  Parameters: {"ontology"=>"Amino_Acid", "action"=>"visualize", "controller"=>"ontologies"}
+  [4;36;1mMarginNote Columns (0.002552)[0m   [0;1mSHOW FIELDS FROM `margin_notes`[0m
+  [4;35;1mSQL (0.001506)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid') [0m
+  [4;36;1mMapping Columns (0.003024)[0m   [0;1mSHOW FIELDS FROM `mappings`[0m
+  [4;35;1mSQL (0.000274)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000288)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AminoAcid') [0m
+  [4;35;1mSQL (0.000252)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000423)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AromaticAminoAcid') [0m
+  [4;35;1mSQL (0.000252)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AromaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000298)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'LargeAliphaticAminoAcid') [0m
+  [4;35;1mSQL (0.000170)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'LargeAliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000168)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'NegativeChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000135)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'NegativeChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000163)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'PositiveChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000139)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'PositiveChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000157)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'RefiningFeature') [0m
+  [4;35;1mSQL (0.000887)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'RefiningFeature' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000186)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'TinyPolarAminoAcid') [0m
+  [4;35;1mSQL (0.000142)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'TinyPolarAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mUser Columns (0.004524)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mMarginNote Load Including Associations (0.002025)[0m   [0mSELECT `margin_notes`.`id` AS t0_r0, `margin_notes`.`parent_id` AS t0_r1, `margin_notes`.`mapping_id` AS t0_r2, `margin_notes`.`note_type` AS t0_r3, `margin_notes`.`user_id` AS t0_r4, `margin_notes`.`concept_id` AS t0_r5, `margin_notes`.`subject` AS t0_r6, `margin_notes`.`ontology_id` AS t0_r7, `margin_notes`.`comment` AS t0_r8, `margin_notes`.`created_at` AS t0_r9, `margin_notes`.`updated_at` AS t0_r10, `users`.`id` AS t1_r0, `users`.`first_name` AS t1_r1, `users`.`last_name` AS t1_r2, `users`.`email` AS t1_r3, `users`.`phone` AS t1_r4, `users`.`user_name` AS t1_r5, `users`.`hashed_password` AS t1_r6, `users`.`created_at` AS t1_r7, `users`.`updated_at` AS t1_r8, `users`.`admin` AS t1_r9 FROM `margin_notes` LEFT OUTER JOIN `users` ON `users`.id = `margin_notes`.user_id WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+Rendering template within layouts/ontology
+Rendering ontologies/visualize
+Rendered /ontologies/_treeview (0.00072)
+Rendered /concepts/_images (1.55400)
+Rendered /concepts/_details (0.51053)
+  [4;36;1mSQL (0.000326)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;35;1mMarginNote Load (0.000263)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;36;1mSQL (0.000194)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;35;1mMarginNote Load (0.000213)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;36;1mSQL (0.000184)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;35;1mSQL (0.000226)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+Rendered /margin_notes/_show (0.00934)
+Rendered layouts/_topnav (0.00063)
+Completed in 3.23054 (0 reqs/sec) | Rendering: 2.07838 (64%) | DB: 0.02175 (0%) | 200 OK [http://localhost/visualize/Amino_Acid]
+
+
+Processing ConceptsController#show (for 127.0.0.1 at 2008-01-22 16:48:07) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg5sYXN0X25hbWUiDUdyaWZmaXRoIg51c2VyX25h%0AbWUiC25ncmlmZiIKZW1haWwiFG5ncmlmZkBzdGFuZm9yZCIPY3JlYXRlZF9h%0AdCIYMjAwOC0wMS0xNiAxMjoyMjozNToSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e1359f3409af3ce3b6299c00a11ed630746c1c96
+  Parameters: {"ontology"=>"Amino_Acid", "action"=>"show", "callback"=>"children", "id"=>"AminoAcid", "controller"=>"concepts"}
+  [4;36;1mMarginNote Columns (0.003246)[0m   [0;1mSHOW FIELDS FROM `margin_notes`[0m
+  [4;35;1mSQL (0.000537)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'SpecificAminoAcid') [0m
+  [4;36;1mMapping Columns (0.002192)[0m   [0;1mSHOW FIELDS FROM `mappings`[0m
+  [4;35;1mSQL (0.001192)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'SpecificAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+Rendered concepts/_childNodes (0.00083)
+Completed in 0.59031 (1 reqs/sec) | Rendering: 0.00142 (0%) | DB: 0.00717 (1%) | 200 OK [http://localhost/Amino_Acid/AminoAcid?callback=children]
+  [4;36;1mUser Columns (0.001932)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+
+
+Processing MarginNotesController#create (for 127.0.0.1 at 2008-01-22 16:48:36) [POST]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg51c2VyX25hbWUiC25ncmlmZiIObGFzdF9uYW1l%0AIg1HcmlmZml0aCIPY3JlYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIK%0AZW1haWwiFG5ncmlmZkBzdGFuZm9yZDoSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e70ab75c85027832d1c51f4bf9beb351a98e868f
+  Parameters: {"commit"=>"Save", "margin_note"=>{"concept_id"=>"AliphaticAminoAcid", "note_type"=>"2", "ontology_id"=>"Amino Acid", "mapping_id"=>"", "subject"=>"dfasdf", "parent_id"=>"", "comment"=>"asdfasdf"}, "authenticity_token"=>"671535005690aaaac2602da79d4014fa6574b4cd", "action"=>"create", "controller"=>"margin_notes"}
+  [4;35;1mMarginNote Columns (0.003116)[0m   [0mSHOW FIELDS FROM `margin_notes`[0m
+  [4;36;1mUser Columns (0.002168)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mSQL (0.000092)[0m   [0mBEGIN[0m
+  [4;36;1mMarginNote Create (0.023874)[0m   [0;1mINSERT INTO `margin_notes` (`concept_id`, `note_type`, `updated_at`, `ontology_id`, `mapping_id`, `subject`, `user_id`, `comment`, `parent_id`, `created_at`) VALUES('AliphaticAminoAcid', 2, '2008-01-22 16:48:36', 'Amino Acid', NULL, 'dfasdf', 2, 'asdfasdf', NULL, '2008-01-22 16:48:36')[0m
+  [4;35;1mSQL (0.000918)[0m   [0mCOMMIT[0m
+  [4;36;1mMarginNote Load (0.000547)[0m   [0;1mSELECT * FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+  [4;35;1mSQL (0.000279)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;36;1mMarginNote Load (0.000241)[0m   [0;1mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;35;1mSQL (0.000298)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;36;1mMarginNote Load (0.000236)[0m   [0;1mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;35;1mSQL (0.000178)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;36;1mUser Load (0.000218)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;35;1mSQL (0.001887)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+  [4;36;1mCACHE (0.000000)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;35;1mSQL (0.000274)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 8) [0m
+Rendered margin_notes/_update (0.01091)
+Completed in 0.05513 (18 reqs/sec) | Rendering: 0.00782 (14%) | DB: 0.03626 (65%) | 200 OK [http://localhost/margin_notes]
+
+
+Processing MarginNotesController#create (for 127.0.0.1 at 2008-01-22 16:49:00) [POST]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg5sYXN0X25hbWUiDUdyaWZmaXRoIg51c2VyX25h%0AbWUiC25ncmlmZiIKZW1haWwiFG5ncmlmZkBzdGFuZm9yZCIPY3JlYXRlZF9h%0AdCIYMjAwOC0wMS0xNiAxMjoyMjozNToSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7BjoLbm90%0AaWNlIilNYXJnaW5Ob3RlIHdhcyBzdWNjZXNzZnVsbHkgY3JlYXRlZC4GOgpA%0AdXNlZHsGOwxU--cdfde6786a68eb6c8b87dcf8c70e4c8fead3f74b
+  Parameters: {"commit"=>"Save", "margin_note"=>{"concept_id"=>"AliphaticAminoAcid", "note_type"=>"2", "ontology_id"=>"Amino Acid", "mapping_id"=>"", "subject"=>"dfasdf", "parent_id"=>"", "comment"=>"asdfasdf"}, "authenticity_token"=>"671535005690aaaac2602da79d4014fa6574b4cd", "action"=>"create", "controller"=>"margin_notes"}
+  [4;36;1mMarginNote Columns (0.002391)[0m   [0;1mSHOW FIELDS FROM `margin_notes`[0m
+  [4;35;1mUser Columns (0.001655)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mSQL (0.000133)[0m   [0;1mBEGIN[0m
+  [4;35;1mMarginNote Create (0.000205)[0m   [0mINSERT INTO `margin_notes` (`concept_id`, `note_type`, `updated_at`, `ontology_id`, `mapping_id`, `subject`, `user_id`, `comment`, `parent_id`, `created_at`) VALUES('AliphaticAminoAcid', 2, '2008-01-22 16:49:00', 'Amino Acid', NULL, 'dfasdf', 2, 'asdfasdf', NULL, '2008-01-22 16:49:00')[0m
+  [4;36;1mSQL (0.000565)[0m   [0;1mCOMMIT[0m
+  [4;35;1mMarginNote Load (0.000590)[0m   [0mSELECT * FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+  [4;36;1mSQL (0.000221)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;35;1mMarginNote Load (0.000246)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;36;1mSQL (0.000196)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;35;1mMarginNote Load (0.000215)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;36;1mSQL (0.000208)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;35;1mUser Load (0.000220)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;36;1mSQL (0.000195)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+  [4;35;1mCACHE (0.000000)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;36;1mSQL (0.000186)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 8) [0m
+  [4;35;1mCACHE (0.000000)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;36;1mSQL (0.000203)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 9) [0m
+Rendered margin_notes/_update (0.00944)
+Completed in 0.02623 (38 reqs/sec) | Rendering: 0.00803 (30%) | DB: 0.00743 (28%) | 200 OK [http://localhost/margin_notes]
+
+
+Processing OntologiesController#visualize (for 127.0.0.1 at 2008-01-22 16:50:00) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg51c2VyX25hbWUiC25ncmlmZiIObGFzdF9uYW1l%0AIg1HcmlmZml0aCIPY3JlYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIK%0AZW1haWwiFG5ncmlmZkBzdGFuZm9yZDoSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7BjoLbm90%0AaWNlIilNYXJnaW5Ob3RlIHdhcyBzdWNjZXNzZnVsbHkgY3JlYXRlZC4GOgpA%0AdXNlZHsGOwxU--ee031c4754453e22cc05cee0a3f48389ca7c0013
+  Parameters: {"ontology"=>"Amino_Acid", "action"=>"visualize", "controller"=>"ontologies"}
+  [4;35;1mMarginNote Columns (0.003066)[0m   [0mSHOW FIELDS FROM `margin_notes`[0m
+  [4;36;1mSQL (0.001477)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid') [0m
+  [4;35;1mMapping Columns (0.002175)[0m   [0mSHOW FIELDS FROM `mappings`[0m
+  [4;36;1mSQL (0.003365)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000278)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AminoAcid') [0m
+  [4;36;1mSQL (0.000156)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000149)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AromaticAminoAcid') [0m
+  [4;36;1mSQL (0.000143)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AromaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000186)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'LargeAliphaticAminoAcid') [0m
+  [4;36;1mSQL (0.000346)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'LargeAliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000176)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'NegativeChargedAminoAcid') [0m
+  [4;36;1mSQL (0.000156)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'NegativeChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000161)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'PositiveChargedAminoAcid') [0m
+  [4;36;1mSQL (0.000151)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'PositiveChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000161)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'RefiningFeature') [0m
+  [4;36;1mSQL (0.000150)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'RefiningFeature' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000159)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'TinyPolarAminoAcid') [0m
+  [4;36;1mSQL (0.000152)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'TinyPolarAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mUser Columns (0.004294)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mMarginNote Load Including Associations (0.002177)[0m   [0;1mSELECT `margin_notes`.`id` AS t0_r0, `margin_notes`.`parent_id` AS t0_r1, `margin_notes`.`mapping_id` AS t0_r2, `margin_notes`.`note_type` AS t0_r3, `margin_notes`.`user_id` AS t0_r4, `margin_notes`.`concept_id` AS t0_r5, `margin_notes`.`subject` AS t0_r6, `margin_notes`.`ontology_id` AS t0_r7, `margin_notes`.`comment` AS t0_r8, `margin_notes`.`created_at` AS t0_r9, `margin_notes`.`updated_at` AS t0_r10, `users`.`id` AS t1_r0, `users`.`first_name` AS t1_r1, `users`.`last_name` AS t1_r2, `users`.`email` AS t1_r3, `users`.`phone` AS t1_r4, `users`.`user_name` AS t1_r5, `users`.`hashed_password` AS t1_r6, `users`.`created_at` AS t1_r7, `users`.`updated_at` AS t1_r8, `users`.`admin` AS t1_r9 FROM `margin_notes` LEFT OUTER JOIN `users` ON `users`.id = `margin_notes`.user_id WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+Rendering template within layouts/ontology
+Rendering ontologies/visualize
+Rendered /ontologies/_treeview (0.00078)
+Rendered /concepts/_images (1.11991)
+Rendered /concepts/_details (0.28692)
+  [4;35;1mSQL (0.000346)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;36;1mMarginNote Load (0.000346)[0m   [0;1mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;35;1mSQL (0.000198)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;36;1mMarginNote Load (0.000241)[0m   [0;1mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;35;1mSQL (0.000195)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;36;1mSQL (0.000245)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+  [4;35;1mSQL (0.000217)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 8) [0m
+  [4;36;1mSQL (0.000197)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 9) [0m
+Rendered /margin_notes/_show (0.01275)
+Rendered layouts/_topnav (0.00045)
+Completed in 2.05885 (0 reqs/sec) | Rendering: 1.42350 (69%) | DB: 0.02106 (1%) | 200 OK [http://localhost/visualize/Amino_Acid]
+
+
+Processing ConceptsController#show (for 127.0.0.1 at 2008-01-22 16:50:03) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg5sYXN0X25hbWUiDUdyaWZmaXRoIg51c2VyX25h%0AbWUiC25ncmlmZiIKZW1haWwiFG5ncmlmZkBzdGFuZm9yZCIPY3JlYXRlZF9h%0AdCIYMjAwOC0wMS0xNiAxMjoyMjozNToSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e1359f3409af3ce3b6299c00a11ed630746c1c96
+  Parameters: {"1190229104"=>nil, "ontology"=>"javascripts", "action"=>"show", "id"=>"yahoo.js", "controller"=>"concepts"}
+
+
+NoMethodError (You have a nil object when you didn't expect it!
+The error occurred while evaluating nil.gsub):
+    /app/models/node_wrapper.rb:35:in `initialize'
+    /app/models/node_wrapper.rb:34:in `each'
+    /app/models/node_wrapper.rb:34:in `initialize'
+    /lib/BioPortalWebservice.rb:26:in `new'
+    /lib/BioPortalWebservice.rb:26:in `getNode'
+    /lib/BioPortalWebservice.rb:24:in `each'
+    /lib/BioPortalWebservice.rb:24:in `getNode'
+    /app/controllers/concepts_controller.rb:10:in `show'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/base.rb:1158:in `send'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/base.rb:1158:in `perform_action_without_filters'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/filters.rb:697:in `call_filters'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/filters.rb:689:in `perform_action_without_benchmark'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/benchmarking.rb:68:in `perform_action_without_rescue'
+    /usr/local/lib/ruby/1.8/benchmark.rb:293:in `measure'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/benchmarking.rb:68:in `perform_action_without_rescue'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/rescue.rb:199:in `perform_action_without_caching'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/caching.rb:678:in `perform_action'
+    /usr/local/lib/ruby/gems/1.8/gems/activerecord-2.0.2/lib/active_record/connection_adapters/abstract/query_cache.rb:33:in `cache'
+    /usr/local/lib/ruby/gems/1.8/gems/activerecord-2.0.2/lib/active_record/query_cache.rb:8:in `cache'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/caching.rb:677:in `perform_action'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/base.rb:524:in `send'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/base.rb:524:in `process_without_filters'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/filters.rb:685:in `process_without_session_management_support'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/session_management.rb:123:in `process'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/base.rb:388:in `process'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/dispatcher.rb:171:in `handle_request'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/dispatcher.rb:115:in `dispatch'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/dispatcher.rb:126:in `dispatch_cgi'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/dispatcher.rb:9:in `dispatch'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/rails.rb:78:in `process'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/rails.rb:76:in `synchronize'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/rails.rb:76:in `process'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:618:in `process_client'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:617:in `each'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:617:in `process_client'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:736:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:736:in `initialize'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:736:in `new'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:736:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:720:in `initialize'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:720:in `new'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:720:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/configurator.rb:271:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/configurator.rb:270:in `each'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/configurator.rb:270:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/bin/mongrel_rails:127:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/command.rb:211:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/bin/mongrel_rails:243
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:489:in `load'
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:489:in `load'
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:342:in `new_constants_in'
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:489:in `load'
+    /usr/local/lib/ruby/gems/1.8/gems/rails-2.0.2/lib/commands/servers/mongrel.rb:64
+    /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in `gem_original_require'
+    /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in `require'
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:496:in `require'
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:342:in `new_constants_in'
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:496:in `require'
+    /usr/local/lib/ruby/gems/1.8/gems/rails-2.0.2/lib/commands/server.rb:39
+    /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in `gem_original_require'
+    /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in `require'
+    script/server:3
+
+  [4;35;1mUser Columns (0.003166)[0m   [0mSHOW FIELDS FROM `users`[0m
+Rendering /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/templates/rescues/layout.erb (internal_server_error)
+
+
+Processing OntologiesController#visualize (for 127.0.0.1 at 2008-01-22 16:50:24) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg51c2VyX25hbWUiC25ncmlmZiIObGFzdF9uYW1l%0AIg1HcmlmZml0aCIPY3JlYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIK%0AZW1haWwiFG5ncmlmZkBzdGFuZm9yZDoSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e70ab75c85027832d1c51f4bf9beb351a98e868f
+  Parameters: {"ontology"=>"Amino_Acid", "action"=>"visualize", "controller"=>"ontologies"}
+  [4;36;1mMarginNote Columns (0.003794)[0m   [0;1mSHOW FIELDS FROM `margin_notes`[0m
+  [4;35;1mSQL (0.000447)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid') [0m
+  [4;36;1mMapping Columns (0.002490)[0m   [0;1mSHOW FIELDS FROM `mappings`[0m
+  [4;35;1mSQL (0.000560)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000268)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AminoAcid') [0m
+  [4;35;1mSQL (0.000218)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000264)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AromaticAminoAcid') [0m
+  [4;35;1mSQL (0.000232)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AromaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000251)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'LargeAliphaticAminoAcid') [0m
+  [4;35;1mSQL (0.000232)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'LargeAliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000254)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'NegativeChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000237)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'NegativeChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000249)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'PositiveChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000219)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'PositiveChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000302)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'RefiningFeature') [0m
+  [4;35;1mSQL (0.000202)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'RefiningFeature' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000247)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'TinyPolarAminoAcid') [0m
+  [4;35;1mSQL (0.000186)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'TinyPolarAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mUser Columns (0.002496)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mMarginNote Load Including Associations (0.001974)[0m   [0mSELECT `margin_notes`.`id` AS t0_r0, `margin_notes`.`parent_id` AS t0_r1, `margin_notes`.`mapping_id` AS t0_r2, `margin_notes`.`note_type` AS t0_r3, `margin_notes`.`user_id` AS t0_r4, `margin_notes`.`concept_id` AS t0_r5, `margin_notes`.`subject` AS t0_r6, `margin_notes`.`ontology_id` AS t0_r7, `margin_notes`.`comment` AS t0_r8, `margin_notes`.`created_at` AS t0_r9, `margin_notes`.`updated_at` AS t0_r10, `users`.`id` AS t1_r0, `users`.`first_name` AS t1_r1, `users`.`last_name` AS t1_r2, `users`.`email` AS t1_r3, `users`.`phone` AS t1_r4, `users`.`user_name` AS t1_r5, `users`.`hashed_password` AS t1_r6, `users`.`created_at` AS t1_r7, `users`.`updated_at` AS t1_r8, `users`.`admin` AS t1_r9 FROM `margin_notes` LEFT OUTER JOIN `users` ON `users`.id = `margin_notes`.user_id WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+Rendering template within layouts/ontology
+Rendering ontologies/visualize
+Rendered /ontologies/_treeview (0.00078)
+Rendered /concepts/_images (1.30376)
+Rendered /concepts/_details (0.27903)
+  [4;36;1mSQL (0.000320)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;35;1mMarginNote Load (0.000252)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;36;1mSQL (0.000202)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;35;1mMarginNote Load (0.000309)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;36;1mSQL (0.000214)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;35;1mSQL (0.000223)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+  [4;36;1mSQL (0.000191)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 8) [0m
+  [4;35;1mSQL (0.000183)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 9) [0m
+Rendered /margin_notes/_show (0.01096)
+Rendered layouts/_topnav (0.00044)
+Completed in 2.41872 (0 reqs/sec) | Rendering: 1.59730 (66%) | DB: 0.02018 (0%) | 200 OK [http://localhost/visualize/Amino_Acid]
+
+
+Processing ConceptsController#show (for 127.0.0.1 at 2008-01-22 16:50:27) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg5sYXN0X25hbWUiDUdyaWZmaXRoIg51c2VyX25h%0AbWUiC25ncmlmZiIKZW1haWwiFG5ncmlmZkBzdGFuZm9yZCIPY3JlYXRlZF9h%0AdCIYMjAwOC0wMS0xNiAxMjoyMjozNToSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e1359f3409af3ce3b6299c00a11ed630746c1c96
+  Parameters: {"1190229104"=>nil, "ontology"=>"javascripts", "action"=>"show", "id"=>"yahoo.js", "controller"=>"concepts"}
+
+
+NoMethodError (You have a nil object when you didn't expect it!
+The error occurred while evaluating nil.gsub):
+    /app/models/node_wrapper.rb:35:in `initialize'
+    /app/models/node_wrapper.rb:34:in `each'
+    /app/models/node_wrapper.rb:34:in `initialize'
+    /lib/BioPortalWebservice.rb:26:in `new'
+    /lib/BioPortalWebservice.rb:26:in `getNode'
+    /lib/BioPortalWebservice.rb:24:in `each'
+    /lib/BioPortalWebservice.rb:24:in `getNode'
+    /app/controllers/concepts_controller.rb:10:in `show'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/base.rb:1158:in `send'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/base.rb:1158:in `perform_action_without_filters'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/filters.rb:697:in `call_filters'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/filters.rb:689:in `perform_action_without_benchmark'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/benchmarking.rb:68:in `perform_action_without_rescue'
+    /usr/local/lib/ruby/1.8/benchmark.rb:293:in `measure'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/benchmarking.rb:68:in `perform_action_without_rescue'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/rescue.rb:199:in `perform_action_without_caching'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/caching.rb:678:in `perform_action'
+    /usr/local/lib/ruby/gems/1.8/gems/activerecord-2.0.2/lib/active_record/connection_adapters/abstract/query_cache.rb:33:in `cache'
+    /usr/local/lib/ruby/gems/1.8/gems/activerecord-2.0.2/lib/active_record/query_cache.rb:8:in `cache'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/caching.rb:677:in `perform_action'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/base.rb:524:in `send'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/base.rb:524:in `process_without_filters'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/filters.rb:685:in `process_without_session_management_support'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/session_management.rb:123:in `process'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/base.rb:388:in `process'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/dispatcher.rb:171:in `handle_request'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/dispatcher.rb:115:in `dispatch'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/dispatcher.rb:126:in `dispatch_cgi'
+    /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/dispatcher.rb:9:in `dispatch'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/rails.rb:78:in `process'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/rails.rb:76:in `synchronize'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/rails.rb:76:in `process'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:618:in `process_client'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:617:in `each'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:617:in `process_client'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:736:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:736:in `initialize'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:736:in `new'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:736:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:720:in `initialize'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:720:in `new'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel.rb:720:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/configurator.rb:271:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/configurator.rb:270:in `each'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/configurator.rb:270:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/bin/mongrel_rails:127:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/lib/mongrel/command.rb:211:in `run'
+    /usr/local/lib/ruby/gems/1.8/gems/mongrel-1.0.1/bin/mongrel_rails:243
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:489:in `load'
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:489:in `load'
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:342:in `new_constants_in'
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:489:in `load'
+    /usr/local/lib/ruby/gems/1.8/gems/rails-2.0.2/lib/commands/servers/mongrel.rb:64
+    /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in `gem_original_require'
+    /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in `require'
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:496:in `require'
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:342:in `new_constants_in'
+    /usr/local/lib/ruby/gems/1.8/gems/activesupport-2.0.2/lib/active_support/dependencies.rb:496:in `require'
+    /usr/local/lib/ruby/gems/1.8/gems/rails-2.0.2/lib/commands/server.rb:39
+    /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in `gem_original_require'
+    /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in `require'
+    script/server:3
+
+  [4;36;1mUser Columns (0.003026)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+Rendering /usr/local/lib/ruby/gems/1.8/gems/actionpack-2.0.2/lib/action_controller/templates/rescues/layout.erb (internal_server_error)
+
+
+Processing OntologiesController#visualize (for 127.0.0.1 at 2008-01-22 16:50:43) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg51c2VyX25hbWUiC25ncmlmZiIObGFzdF9uYW1l%0AIg1HcmlmZml0aCIPY3JlYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIK%0AZW1haWwiFG5ncmlmZkBzdGFuZm9yZDoSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e70ab75c85027832d1c51f4bf9beb351a98e868f
+  Parameters: {"ontology"=>"Amino_Acid", "action"=>"visualize", "controller"=>"ontologies"}
+  [4;35;1mMarginNote Columns (0.002992)[0m   [0mSHOW FIELDS FROM `margin_notes`[0m
+  [4;36;1mSQL (0.001865)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid') [0m
+  [4;35;1mMapping Columns (0.001912)[0m   [0mSHOW FIELDS FROM `mappings`[0m
+  [4;36;1mSQL (0.000361)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000226)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AminoAcid') [0m
+  [4;36;1mSQL (0.000210)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000216)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AromaticAminoAcid') [0m
+  [4;36;1mSQL (0.001688)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AromaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000234)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'LargeAliphaticAminoAcid') [0m
+  [4;36;1mSQL (0.000187)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'LargeAliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000230)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'NegativeChargedAminoAcid') [0m
+  [4;36;1mSQL (0.000183)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'NegativeChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000298)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'PositiveChargedAminoAcid') [0m
+  [4;36;1mSQL (0.000182)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'PositiveChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000205)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'RefiningFeature') [0m
+  [4;36;1mSQL (0.000175)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'RefiningFeature' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mSQL (0.000179)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'TinyPolarAminoAcid') [0m
+  [4;36;1mSQL (0.000161)[0m   [0;1mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'TinyPolarAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;35;1mUser Columns (0.003191)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mMarginNote Load Including Associations (0.000718)[0m   [0;1mSELECT `margin_notes`.`id` AS t0_r0, `margin_notes`.`parent_id` AS t0_r1, `margin_notes`.`mapping_id` AS t0_r2, `margin_notes`.`note_type` AS t0_r3, `margin_notes`.`user_id` AS t0_r4, `margin_notes`.`concept_id` AS t0_r5, `margin_notes`.`subject` AS t0_r6, `margin_notes`.`ontology_id` AS t0_r7, `margin_notes`.`comment` AS t0_r8, `margin_notes`.`created_at` AS t0_r9, `margin_notes`.`updated_at` AS t0_r10, `users`.`id` AS t1_r0, `users`.`first_name` AS t1_r1, `users`.`last_name` AS t1_r2, `users`.`email` AS t1_r3, `users`.`phone` AS t1_r4, `users`.`user_name` AS t1_r5, `users`.`hashed_password` AS t1_r6, `users`.`created_at` AS t1_r7, `users`.`updated_at` AS t1_r8, `users`.`admin` AS t1_r9 FROM `margin_notes` LEFT OUTER JOIN `users` ON `users`.id = `margin_notes`.user_id WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+Rendering template within layouts/ontology
+Rendering ontologies/visualize
+Rendered /ontologies/_treeview (0.00075)
+Rendered /concepts/_images (1.21170)
+Rendered /concepts/_details (0.16774)
+  [4;35;1mSQL (0.000332)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;36;1mMarginNote Load (0.000259)[0m   [0;1mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;35;1mSQL (0.000186)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;36;1mMarginNote Load (0.000227)[0m   [0;1mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;35;1mSQL (0.000318)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;36;1mSQL (0.000255)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+  [4;35;1mSQL (0.000181)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 8) [0m
+  [4;36;1mSQL (0.000164)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 9) [0m
+Rendered /margin_notes/_show (0.01203)
+Rendered layouts/_topnav (0.00057)
+Completed in 2.16752 (0 reqs/sec) | Rendering: 1.39664 (64%) | DB: 0.02036 (0%) | 200 OK [http://localhost/visualize/Amino_Acid]
+
+
+Processing MarginNotesController#create (for 127.0.0.1 at 2008-01-22 16:50:59) [POST]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg5sYXN0X25hbWUiDUdyaWZmaXRoIg51c2VyX25h%0AbWUiC25ncmlmZiIKZW1haWwiFG5ncmlmZkBzdGFuZm9yZCIPY3JlYXRlZF9h%0AdCIYMjAwOC0wMS0xNiAxMjoyMjozNToSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e1359f3409af3ce3b6299c00a11ed630746c1c96
+  Parameters: {"commit"=>"Save", "margin_note"=>{"concept_id"=>"AliphaticAminoAcid", "note_type"=>"2", "ontology_id"=>"Amino Acid", "mapping_id"=>"", "subject"=>"dfasdf", "parent_id"=>"", "comment"=>"asdfasdf"}, "authenticity_token"=>"671535005690aaaac2602da79d4014fa6574b4cd", "action"=>"create", "controller"=>"margin_notes"}
+  [4;35;1mMarginNote Columns (0.002788)[0m   [0mSHOW FIELDS FROM `margin_notes`[0m
+  [4;36;1mUser Columns (0.001957)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mSQL (0.000252)[0m   [0mBEGIN[0m
+  [4;36;1mMarginNote Create (0.000267)[0m   [0;1mINSERT INTO `margin_notes` (`concept_id`, `note_type`, `updated_at`, `ontology_id`, `mapping_id`, `subject`, `user_id`, `comment`, `parent_id`, `created_at`) VALUES('AliphaticAminoAcid', 2, '2008-01-22 16:50:59', 'Amino Acid', NULL, 'dfasdf', 2, 'asdfasdf', NULL, '2008-01-22 16:50:59')[0m
+  [4;35;1mSQL (0.000791)[0m   [0mCOMMIT[0m
+  [4;36;1mMarginNote Load (0.000533)[0m   [0;1mSELECT * FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+  [4;35;1mSQL (0.000252)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;36;1mMarginNote Load (0.000302)[0m   [0;1mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;35;1mSQL (0.000199)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;36;1mMarginNote Load (0.000234)[0m   [0;1mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;35;1mSQL (0.000263)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;36;1mUser Load (0.000266)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;35;1mSQL (0.000271)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+  [4;36;1mCACHE (0.000000)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;35;1mSQL (0.000190)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 8) [0m
+  [4;36;1mCACHE (0.000000)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;35;1mSQL (0.000183)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 9) [0m
+  [4;36;1mCACHE (0.000000)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;35;1mSQL (0.000198)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 10) [0m
+Rendered margin_notes/_update (0.01181)
+Completed in 0.09253 (10 reqs/sec) | Rendering: 0.00996 (10%) | DB: 0.00895 (9%) | 200 OK [http://localhost/margin_notes]
+
+
+Processing OntologiesController#visualize (for 127.0.0.1 at 2008-01-22 16:52:59) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg51c2VyX25hbWUiC25ncmlmZiIObGFzdF9uYW1l%0AIg1HcmlmZml0aCIPY3JlYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIK%0AZW1haWwiFG5ncmlmZkBzdGFuZm9yZDoSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7BjoLbm90%0AaWNlIilNYXJnaW5Ob3RlIHdhcyBzdWNjZXNzZnVsbHkgY3JlYXRlZC4GOgpA%0AdXNlZHsGOwxU--ee031c4754453e22cc05cee0a3f48389ca7c0013
+  Parameters: {"ontology"=>"Amino_Acid", "action"=>"visualize", "controller"=>"ontologies"}
+  [4;36;1mMarginNote Columns (0.004171)[0m   [0;1mSHOW FIELDS FROM `margin_notes`[0m
+  [4;35;1mSQL (0.001452)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid') [0m
+  [4;36;1mMapping Columns (0.001620)[0m   [0;1mSHOW FIELDS FROM `mappings`[0m
+  [4;35;1mSQL (0.001121)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000161)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AminoAcid') [0m
+  [4;35;1mSQL (0.000138)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000160)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AromaticAminoAcid') [0m
+  [4;35;1mSQL (0.000155)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AromaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000162)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'LargeAliphaticAminoAcid') [0m
+  [4;35;1mSQL (0.000152)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'LargeAliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000168)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'NegativeChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000152)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'NegativeChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000164)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'PositiveChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000140)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'PositiveChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000149)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'RefiningFeature') [0m
+  [4;35;1mSQL (0.000150)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'RefiningFeature' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000170)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'TinyPolarAminoAcid') [0m
+  [4;35;1mSQL (0.000147)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'TinyPolarAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mUser Columns (0.003621)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mMarginNote Load Including Associations (0.000590)[0m   [0mSELECT `margin_notes`.`id` AS t0_r0, `margin_notes`.`parent_id` AS t0_r1, `margin_notes`.`mapping_id` AS t0_r2, `margin_notes`.`note_type` AS t0_r3, `margin_notes`.`user_id` AS t0_r4, `margin_notes`.`concept_id` AS t0_r5, `margin_notes`.`subject` AS t0_r6, `margin_notes`.`ontology_id` AS t0_r7, `margin_notes`.`comment` AS t0_r8, `margin_notes`.`created_at` AS t0_r9, `margin_notes`.`updated_at` AS t0_r10, `users`.`id` AS t1_r0, `users`.`first_name` AS t1_r1, `users`.`last_name` AS t1_r2, `users`.`email` AS t1_r3, `users`.`phone` AS t1_r4, `users`.`user_name` AS t1_r5, `users`.`hashed_password` AS t1_r6, `users`.`created_at` AS t1_r7, `users`.`updated_at` AS t1_r8, `users`.`admin` AS t1_r9 FROM `margin_notes` LEFT OUTER JOIN `users` ON `users`.id = `margin_notes`.user_id WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+Rendering template within layouts/ontology
+Rendering ontologies/visualize
+Rendered /ontologies/_treeview (0.00073)
+Rendered /concepts/_images (1.18769)
+Rendered /concepts/_details (1.52226)
+  [4;36;1mSQL (0.000337)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;35;1mMarginNote Load (0.000275)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;36;1mSQL (0.000173)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;35;1mMarginNote Load (0.000311)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;36;1mSQL (0.000187)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;35;1mSQL (0.000216)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+  [4;36;1mSQL (0.000187)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 8) [0m
+  [4;35;1mSQL (0.000188)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 9) [0m
+  [4;36;1mSQL (0.000211)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 10) [0m
+Rendered /margin_notes/_show (0.01298)
+Rendered layouts/_topnav (0.00042)
+Completed in 3.46224 (0 reqs/sec) | Rendering: 2.72614 (78%) | DB: 0.01683 (0%) | 200 OK [http://localhost/visualize/Amino_Acid]
+
+
+Processing MarginNotesController#create (for 127.0.0.1 at 2008-01-22 16:53:42) [POST]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg5sYXN0X25hbWUiDUdyaWZmaXRoIg51c2VyX25h%0AbWUiC25ncmlmZiIKZW1haWwiFG5ncmlmZkBzdGFuZm9yZCIPY3JlYXRlZF9h%0AdCIYMjAwOC0wMS0xNiAxMjoyMjozNToSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e1359f3409af3ce3b6299c00a11ed630746c1c96
+  Parameters: {"commit"=>"Save", "margin_note"=>{"concept_id"=>"AliphaticAminoAcid", "note_type"=>"2", "ontology_id"=>"Amino Acid", "mapping_id"=>"", "subject"=>"dfasdf", "parent_id"=>"", "comment"=>"asdfasdf"}, "authenticity_token"=>"671535005690aaaac2602da79d4014fa6574b4cd", "action"=>"create", "controller"=>"margin_notes"}
+  [4;35;1mMarginNote Columns (0.002427)[0m   [0mSHOW FIELDS FROM `margin_notes`[0m
+  [4;36;1mUser Columns (0.001712)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mSQL (0.000446)[0m   [0mBEGIN[0m
+  [4;36;1mMarginNote Create (0.000207)[0m   [0;1mINSERT INTO `margin_notes` (`concept_id`, `note_type`, `updated_at`, `ontology_id`, `mapping_id`, `subject`, `user_id`, `comment`, `parent_id`, `created_at`) VALUES('AliphaticAminoAcid', 2, '2008-01-22 16:53:42', 'Amino Acid', NULL, 'dfasdf', 2, 'asdfasdf', NULL, '2008-01-22 16:53:42')[0m
+  [4;35;1mSQL (0.022389)[0m   [0mCOMMIT[0m
+  [4;36;1mMarginNote Load (0.000506)[0m   [0;1mSELECT * FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+  [4;35;1mSQL (0.000426)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;36;1mMarginNote Load (0.000237)[0m   [0;1mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;35;1mSQL (0.000238)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;36;1mMarginNote Load (0.000284)[0m   [0;1mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;35;1mSQL (0.000310)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;36;1mUser Load (0.000256)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;35;1mSQL (0.000223)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+  [4;36;1mCACHE (0.000000)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;35;1mSQL (0.000191)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 8) [0m
+  [4;36;1mCACHE (0.000000)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;35;1mSQL (0.000186)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 9) [0m
+  [4;36;1mCACHE (0.000000)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;35;1mSQL (0.000207)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 10) [0m
+  [4;36;1mCACHE (0.000000)[0m   [0;1mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;35;1mSQL (0.000178)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 11) [0m
+Rendered margin_notes/_update (0.01290)
+Completed in 0.05282 (18 reqs/sec) | Rendering: 0.01066 (20%) | DB: 0.03042 (57%) | 200 OK [http://localhost/margin_notes]
+
+
+Processing OntologiesController#visualize (for 127.0.0.1 at 2008-01-22 16:54:15) [GET]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg51c2VyX25hbWUiC25ncmlmZiIObGFzdF9uYW1l%0AIg1HcmlmZml0aCIPY3JlYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIK%0AZW1haWwiFG5ncmlmZkBzdGFuZm9yZDoSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7BjoLbm90%0AaWNlIilNYXJnaW5Ob3RlIHdhcyBzdWNjZXNzZnVsbHkgY3JlYXRlZC4GOgpA%0AdXNlZHsGOwxU--ee031c4754453e22cc05cee0a3f48389ca7c0013
+  Parameters: {"ontology"=>"Amino_Acid", "action"=>"visualize", "controller"=>"ontologies"}
+  [4;36;1mMarginNote Columns (0.003164)[0m   [0;1mSHOW FIELDS FROM `margin_notes`[0m
+  [4;35;1mSQL (0.265078)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid') [0m
+  [4;36;1mMapping Columns (0.002728)[0m   [0;1mSHOW FIELDS FROM `mappings`[0m
+  [4;35;1mSQL (0.001683)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000316)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AminoAcid') [0m
+  [4;35;1mSQL (0.000278)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000294)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AromaticAminoAcid') [0m
+  [4;35;1mSQL (0.000263)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'AromaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000279)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'LargeAliphaticAminoAcid') [0m
+  [4;35;1mSQL (0.000264)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'LargeAliphaticAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000290)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'NegativeChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000268)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'NegativeChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000277)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'PositiveChargedAminoAcid') [0m
+  [4;35;1mSQL (0.000267)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'PositiveChargedAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000287)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'RefiningFeature') [0m
+  [4;35;1mSQL (0.000444)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'RefiningFeature' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mSQL (0.000316)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'TinyPolarAminoAcid') [0m
+  [4;35;1mSQL (0.000264)[0m   [0mSELECT count(*) AS count_all FROM `mappings` WHERE (`mappings`.`source_id` = 'TinyPolarAminoAcid' AND `mappings`.`source_ont` = 'Amino Acid') [0m
+  [4;36;1mUser Columns (0.003078)[0m   [0;1mSHOW FIELDS FROM `users`[0m
+  [4;35;1mMarginNote Load Including Associations (0.001295)[0m   [0mSELECT `margin_notes`.`id` AS t0_r0, `margin_notes`.`parent_id` AS t0_r1, `margin_notes`.`mapping_id` AS t0_r2, `margin_notes`.`note_type` AS t0_r3, `margin_notes`.`user_id` AS t0_r4, `margin_notes`.`concept_id` AS t0_r5, `margin_notes`.`subject` AS t0_r6, `margin_notes`.`ontology_id` AS t0_r7, `margin_notes`.`comment` AS t0_r8, `margin_notes`.`created_at` AS t0_r9, `margin_notes`.`updated_at` AS t0_r10, `users`.`id` AS t1_r0, `users`.`first_name` AS t1_r1, `users`.`last_name` AS t1_r2, `users`.`email` AS t1_r3, `users`.`phone` AS t1_r4, `users`.`user_name` AS t1_r5, `users`.`hashed_password` AS t1_r6, `users`.`created_at` AS t1_r7, `users`.`updated_at` AS t1_r8, `users`.`admin` AS t1_r9 FROM `margin_notes` LEFT OUTER JOIN `users` ON `users`.id = `margin_notes`.user_id WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+Rendering template within layouts/ontology
+Rendering ontologies/visualize
+Rendered /ontologies/_treeview (0.00078)
+Rendered /concepts/_images (1.27027)
+Rendered /concepts/_details (0.34714)
+  [4;36;1mSQL (0.000444)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;35;1mMarginNote Load (0.000261)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;36;1mSQL (0.000195)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;35;1mMarginNote Load (0.000246)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;36;1mSQL (0.000214)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;35;1mSQL (0.000229)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+  [4;36;1mSQL (0.000161)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 8) [0m
+  [4;35;1mSQL (0.000189)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 9) [0m
+  [4;36;1mSQL (0.000261)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 10) [0m
+  [4;35;1mSQL (0.000245)[0m   [0mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 11) [0m
+Rendered /margin_notes/_show (0.01317)
+Rendered layouts/_topnav (0.00045)
+Completed in 2.64888 (0 reqs/sec) | Rendering: 1.63370 (61%) | DB: 0.28358 (10%) | 200 OK [http://localhost/visualize/Amino_Acid]
+
+
+Processing MarginNotesController#create (for 127.0.0.1 at 2008-01-22 16:54:44) [POST]
+  Session ID: BAh7CDoMY3NyZl9pZCIlYmUxOGRiZWRhN2ZiYWM1ODk1MmY5NjU2YmExZjQw%0AM2E6CXVzZXJvOglVc2VyCDoWQGF0dHJpYnV0ZXNfY2FjaGV7ADoQQGF0dHJp%0AYnV0ZXN7DyIPdXBkYXRlZF9hdCIYMjAwOC0wMS0xNiAxMjoyMjozNSIUaGFz%0AaGVkX3Bhc3N3b3JkIi02NjMwMGU4ZWE2NGZiYzY0MzQ2NzY5ZjQ3NDczZDc2%0ANmEyMzM5OGNhIgphZG1pbiIGMSIHaWQiBjIiCnBob25lIgwzMjQyMzQzIg9m%0AaXJzdF9uYW1lIglOaWNrIg5sYXN0X25hbWUiDUdyaWZmaXRoIg51c2VyX25h%0AbWUiC25ncmlmZiIKZW1haWwiFG5ncmlmZkBzdGFuZm9yZCIPY3JlYXRlZF9h%0AdCIYMjAwOC0wMS0xNiAxMjoyMjozNToSQG1hcmdpbl9ub3RlczAiCmZsYXNo%0ASUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1%0Ac2VkewA%3D--e1359f3409af3ce3b6299c00a11ed630746c1c96
+  Parameters: {"commit"=>"Save", "margin_note"=>{"concept_id"=>"AliphaticAminoAcid", "note_type"=>"2", "ontology_id"=>"Amino Acid", "mapping_id"=>"", "subject"=>"dfasdf", "parent_id"=>"", "comment"=>"asdfasdf"}, "authenticity_token"=>"671535005690aaaac2602da79d4014fa6574b4cd", "action"=>"create", "controller"=>"margin_notes"}
+  [4;36;1mMarginNote Columns (0.028338)[0m   [0;1mSHOW FIELDS FROM `margin_notes`[0m
+  [4;35;1mUser Columns (0.073810)[0m   [0mSHOW FIELDS FROM `users`[0m
+  [4;36;1mSQL (0.031333)[0m   [0;1mBEGIN[0m
+  [4;35;1mMarginNote Create (0.000354)[0m   [0mINSERT INTO `margin_notes` (`concept_id`, `note_type`, `updated_at`, `ontology_id`, `mapping_id`, `subject`, `user_id`, `comment`, `parent_id`, `created_at`) VALUES('AliphaticAminoAcid', 2, '2008-01-22 16:54:44', 'Amino Acid', NULL, 'dfasdf', 2, 'asdfasdf', NULL, '2008-01-22 16:54:44')[0m
+  [4;36;1mSQL (0.047195)[0m   [0;1mCOMMIT[0m
+  [4;35;1mMarginNote Load (0.000573)[0m   [0mSELECT * FROM `margin_notes` WHERE (`margin_notes`.`ontology_id` = 'Amino Acid' AND `margin_notes`.`concept_id` = 'AliphaticAminoAcid' AND `margin_notes`.`parent_id` IS NULL) [0m
+  [4;36;1mSQL (0.000280)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 4) [0m
+  [4;35;1mMarginNote Load (0.000275)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 4) ORDER BY id[0m
+  [4;36;1mSQL (0.000229)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 5) [0m
+  [4;35;1mMarginNote Load (0.000251)[0m   [0mSELECT * FROM `margin_notes` WHERE (margin_notes.parent_id = 5) ORDER BY id[0m
+  [4;36;1mSQL (0.000193)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 6) [0m
+  [4;35;1mUser Load (0.117936)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;36;1mSQL (0.000321)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 7) [0m
+  [4;35;1mCACHE (0.000000)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;36;1mSQL (0.000204)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 8) [0m
+  [4;35;1mCACHE (0.000000)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;36;1mSQL (0.000230)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 9) [0m
+  [4;35;1mCACHE (0.000000)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;36;1mSQL (0.000205)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 10) [0m
+  [4;35;1mCACHE (0.000000)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;36;1mSQL (0.000200)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 11) [0m
+  [4;35;1mCACHE (0.000000)[0m   [0mSELECT * FROM `users` WHERE (`users`.`id` = 2) [0m
+  [4;36;1mSQL (0.000197)[0m   [0;1mSELECT count(*) AS count_all FROM `margin_notes` WHERE (margin_notes.parent_id = 12) [0m
+Rendered margin_notes/_update (0.13180)
+Completed in 0.32744 (3 reqs/sec) | Rendering: 0.01183 (3%) | DB: 0.30212 (92%) | 200 OK [http://localhost/margin_notes]

@@ -284,5 +284,8 @@ function toggleSelected(node){
 		
 	}
 	
-	
+	function resetNoteForm(){		
+		document.getElementById("note_subject").value=""
+		document.getElementById("note_comment").value=""
+	}
 

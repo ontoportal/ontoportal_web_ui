@@ -7,7 +7,7 @@
 
 <div id="form" style="display:none;clear:both;">
 <div id="commentForm" name="forms">
-<% remote_form_for(:margin_note, :url => margin_notes_path,:update =>"notes",:complete=>"toggleHide('form','');toggleHide('buttons','');refreshCache('#{@concept.id}')") do |f| %>
+<% remote_form_for(:margin_note, :url => margin_notes_path,:update =>"notes",:complete=>"resetNoteForm();toggleHide('form','');toggleHide('buttons','');refreshCache('#{@concept.id}')") do |f| %>
 	<%=hidden_field 'margin_note', 'concept_id'%>
 	<%unless @ontology.nil?%>
 	<%=hidden_field 'margin_note', 'ontology_id', :value=>@ontology.name%>
@@ -22,13 +22,13 @@
 		<td>Note Type:</td>
 		<td><%=
                 options = MarginNote::NOTE_TYPES                       
-                select('margin_note','note_type',options.invert)
+                select('margin_note','note_type',options.invert,:id=>'note_type')
                 %></td>
 	</tr>
 	<tr>
-		<td>Subject:</td><td><%=text_field 'margin_note', 'subject',:size=>70%></td>
+		<td>Subject:</td><td><%=text_field 'margin_note', 'subject',:size=>70,:id=>'note_subject'%></td>
 	<tr>
-		<td>Note:</td><td><%=text_area 'margin_note', 'comment',:rows=>15,:cols=>70%></td>
+		<td>Note:</td><td><%=text_area 'margin_note', 'comment',:rows=>15,:cols=>70,:id=>'note_comment'%></td>
 	</tr>
  	<tr>
 		<td colspan="2" align="right"><%= submit_tag "Save" ,:class =>"blueButton"%> <%if @modal%><input type="button" value="Close" onclick="Dialog.cancelCallback()" class='blueButton'><%end%></td>
