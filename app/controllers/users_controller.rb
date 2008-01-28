@@ -33,8 +33,15 @@ class UsersController < ApplicationController
 
   # GET /users/1;edit
   def edit
-   
-      @user = User.find(params[:id])
+    
+  @user = User.find(params[:id])
+  if(params[:password].eql?("true"))
+    @user.validate_password = true
+  end
+  
+  render :action =>'edit'
+
+    
    
   end
 
@@ -59,14 +66,13 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.xml
   def update
-    if authorize_owner(params[:id])
-       
+  
       @user = User.find(params[:id])
   
       respond_to do |format|
         if @user.update_attributes(params[:user])
           flash[:notice] = 'User was successfully updated.'
-          format.html { redirect_to user_url(@user) }
+          format.html { redirect_to edit_user_url(@user) }
           format.xml  { head :ok }
         else
           format.html { render :action => "edit" }
@@ -74,17 +80,13 @@ class UsersController < ApplicationController
         end
       end
     
-    else
-      redirect_to_home
-    end
-    
   end
 
   # DELETE /users/1
   # DELETE /users/1.xml
   def destroy
     
-    if authorize_owner(params[:id])
+  
       @user = User.find(params[:id])
       @user.destroy
   
@@ -92,9 +94,6 @@ class UsersController < ApplicationController
         format.html { redirect_to users_url }
         format.xml  { head :ok }
       end
-    else
-      redirect_to_home
-    end
     
   end
 end

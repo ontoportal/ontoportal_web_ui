@@ -7,9 +7,9 @@ class User< ActiveRecord::Base
   attr_accessor :password
   
   validates_length_of :password, :if=>:validate_password , :minimum =>8, :too_short=> "Please enter a password 8 characters long"
-  validates_uniqueness_of :user_id,:email
+  validates_uniqueness_of :user_name,:email
   validates_confirmation_of  :password  ,:email
-  validates_presence_of :user_id,:email
+  validates_presence_of :user_name,:email
  
  
  

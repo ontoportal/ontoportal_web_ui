@@ -42,14 +42,26 @@ class ApplicationController < ActionController::Base
     end
     
      if session[:user].nil?
+       puts "User is Nil"
         redirect_to_home
      else
-       unless session[:user].id.eql?(id) || session[:user].admin
+       if !session[:user].id.to_s.eql?(id) && !session[:user].admin
+         puts "User is #{session[:user].id} admin is #{session[:user].admin}"
          redirect_to_home      
        end
      end
      
   end 
+  
+  
+  def newpass( len )
+    chars = ("a".."z").to_a + ("A".."Z").to_a + ("1".."9").to_a
+    newpass = ""
+    1.upto(len) { |i| newpass << chars[rand(chars.size-1)] }
+    return newpass
+  end
+
+  
   
   
 end

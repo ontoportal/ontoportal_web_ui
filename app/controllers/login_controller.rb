@@ -31,6 +31,26 @@ class LoginController < ApplicationController
   end
 
 
+  def lost_password
+    
+  end
+  
+  def send_pass
+    user = User.find(:first,:conditions=>{:email=>params[:email]})
+    if user.nil?
+      flash[:notice]="No user was created with that email address"
+      redirect_to :action=>'lost_password'
+    else       
+      new_password = newpass(8)
+      user.password = new_password
+      user.save
+      Notifier.deliver_lost_password(user,new_password)
+      flash[:notice]="Your Password has been sent to your email address."
+      redirect_to_home
+    end
+  end
+
+
 
 
 end

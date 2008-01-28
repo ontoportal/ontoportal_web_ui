@@ -58,3 +58,10 @@ Rails::Initializer.run do |config|
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
 end
+
+
+ActionMailer::Base.smtp_settings = {
+  :address  => "smtp.stanford.edu",
+  :port  => 25, 
+  :domain  => "ncbo-ror1.stanford.edu",
+    } 
