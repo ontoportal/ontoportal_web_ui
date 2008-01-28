@@ -37,7 +37,7 @@ class OntologiesController < ApplicationController
     @concept = DataAccess.getNode(@ontology.name,@root.children.first.id)
  
     #gets the initial mappings
-    #@mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.name, :source_id => @concept.id})
+    @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.name, :source_id => @concept.id},:include=>:user)
     
     #gets the initial margin notes
     @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @ontology.name, :concept_id => @concept.id,:parent_id => nil},:include=>:user)
@@ -59,13 +59,6 @@ class OntologiesController < ApplicationController
     # end
   
   
-   
- 
-   # @ontology = Ontology.find(params[:id], :include =>:concepts)  -- Active Record
-   # @mappings = Mapping.find(:all, :conditions=>{:source_id => @ontology.concepts.first.id},:include =>:destination)
-  #  @margin_notes = MarginNote.find(:all, :conditions => {:concept_id =>@ontology.concepts.first.id})
-  #  @concept_id = @ontology.concepts.first.id
-
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @ontology.to_xml }

@@ -7,7 +7,7 @@ class SearchController < ApplicationController
   def concept
     puts params[:ontology]
     puts params[:name]
-    @concepts = getNodeNameContains([undo_param(params[:ontology])],params[:name])
+    @concepts = DataAccess.getNodeNameContains([undo_param(params[:ontology])],params[:name])
     puts "In Search Controller: #{@concepts}"
     for concept in @concepts
     puts "-----"
@@ -21,7 +21,7 @@ class SearchController < ApplicationController
   end
   
   def concept_preview
-    @concept = getNode(undo_param(params[:ontology]),params[:id])
+    @concept = DataAccess.getNode(undo_param(params[:ontology]),params[:id])
     @children = @concept.children
     render :partial =>'concept_preview'
   end

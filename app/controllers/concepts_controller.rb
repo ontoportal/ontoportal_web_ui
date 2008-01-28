@@ -44,7 +44,8 @@ class ConceptsController < ApplicationController
   end
   
   def gather_details
-   # @mappings = Mapping.find(:all, :conditions=>{:source_ont => @concept.ontology_name, :source_id => @concept.id})
+    #builds the mapping tab
+    @mappings = Mapping.find(:all, :conditions=>{:source_ont => @concept.ontology_name, :source_id => @concept.id},:include=>:user)
     
     #builds the margin note tab
     @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_name, :concept_id => @concept.id,:parent_id =>nil},:include=>:user)

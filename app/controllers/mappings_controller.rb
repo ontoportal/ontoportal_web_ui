@@ -6,8 +6,7 @@ class MappingsController < ApplicationController
     @mapping = Mapping.new
     @mapping.source_id = params[:source_id]
     @mapping.source_ont = undo_param(params[:ontology])
-    @ontologies = getOntologyList()
-    @concepts = Concept.find(:all)
+    @ontologies = DataAccess.getOntologyList()
   end
 
   # GET /mappings/1;edit
@@ -20,7 +19,7 @@ class MappingsController < ApplicationController
   # POST /mappings.xml
   def create
     @mapping = Mapping.new(params[:mapping])
-    @mapping.user = "Mark Musen"
+    @mapping.user_id = session[:user].id
     @mapping.save
     @mappings =  Mapping.find(:all, :conditions=>{:source_ont => @mapping.source_ont, :source_id => @mapping.source_id})
     @ontology = OntologyWrapper.new()

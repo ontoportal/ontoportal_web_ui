@@ -1,4 +1,6 @@
 class Mapping < ActiveRecord::Base
+  
+  belongs_to :user
 
 
   def source_node

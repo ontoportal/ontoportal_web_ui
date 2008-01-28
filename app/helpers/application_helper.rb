@@ -17,9 +17,9 @@ module ApplicationHelper
      "#{encode_param(string.gsub(" ","_"))}"
   end
   
-  def draw_note_tree(notes)
+  def draw_note_tree(notes,key)
     output = ""
-    draw_note_tree_leaves(notes,0,output)
+    draw_note_tree_leaves(notes,0,output,key)
     return output
   end
   
@@ -33,7 +33,7 @@ module ApplicationHelper
   end
   
   
-  def draw_note_tree_leaves(notes,level,output)
+  def draw_note_tree_leaves(notes,level,output,key)
 
   for note in notes
     name="Anonymous"
@@ -74,7 +74,7 @@ module ApplicationHelper
             <div>
               <div>
                #{notetext}
-                <div id=\"insert\"><a href=\"\#\" onclick =\"toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='#{note.id}'\">Reply</a></div>
+                <div id=\"insert\"><a href=\"\#\" onclick =\"buildEditor('#{key}');toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='#{note.id}'\">Reply</a></div>
               </div>
             </div>
           </div>
@@ -86,7 +86,7 @@ module ApplicationHelper
         </div>
         </div>"
         if(!note.children.nil? && note.children.size>0)
-          draw_note_tree_leaves(note.children,level+1,output)
+          draw_note_tree_leaves(note.children,level+1,output,key)
         end
     end
     

@@ -1,5 +1,5 @@
 <center><h4>Point-to-Point Mapping from <%=remove_owl_notation(@mapping.source_id)%> to :</h4></center>
-<%  remote_form_for(:search, :url => {:controller =>'search',:action=>'concept'}, :update =>'mapping_window',:loading=>"YAHOO.example.container.wait.show();",:complete=>'YAHOO.example.container.wait.hide();') do |f| %>
+<%  remote_form_for(:search, :url => {:controller =>'search',:action=>'concept'}, :update =>'mapping_window',:loading=>"YAHOO.wait.container.wait.show();",:complete=>'YAHOO.wait.container.wait.hide();') do |f| %>
 <table>
 	<tr>
 		<td>Ontology:</td>
@@ -13,7 +13,7 @@
 		<td>Search:</td>
 		<td><input type="text" name="name"></td>
 	</tr>
-	<tr><td colspan="2"nowrap>	<%= submit_tag "Search",:onclick=>"hide('searchClose')", :class=>'blueButton'%> <input id="searchClose"type="button" value="Close" onclick="Dialog.cancelCallback()" class="blueButton"> 
+	<tr><td colspan="2"nowrap>	<%= submit_tag "Search",:onclick=>"hide('searchClose');", :class=>'blueButton'%> <input id="searchClose"type="button" value="Close" onclick="Dialog.cancelCallback()" class="blueButton"> 
 	<% end %></td>
 		</tr>
 </table>

@@ -20,8 +20,8 @@
 		<%if map.map_type.eql?("Human")%>	
 	<tr class="human">
 		<td><%= link_to "#{dest_node.ontology_name} => #{dest_node.name}", uri_url(:ontology=>to_param(dest_node.ontology_name),:id =>dest_node.id) %></td>
-		<td><%=map.user%></td>
-		<td><%=map.created_on%></td> 
+		<td><%=map.user.user_name%></td>
+		<td><%=map.created_at.strftime("%m/%d/%y")%></td> 
 		<td> <%=link_to_prototype_dialog( "View Margin Notes", {:url =>"/margin_notes/show?mapping_id=#{map.id}", :options=> {:method=> 'get'}},'form', {:title => "Margin Notes for Mapping: #{dest_node.ontology_name.titleize} => #{dest_node.name.titleize}", :width =>700,:height=>400})%></td>
 	</tr>
 		<%end%>
@@ -35,8 +35,8 @@
 			<% dest_node = map.dest_node%>	
 	<tr class="auto">
 		<td><%= link_to "#{dest_node.ontology_name} => #{dest_node.name}", uri_url(:ontology=>to_param(dest_node.ontology_name),:id =>dest_node.id) %></td>
-		<td><%=map.user%></td>
-		<td><%=map.created_on%></td> 
+		<td><%=map.user.user_name%></td>
+		<td><%=map.created_at.strftime("%m/%d/%y")%></td> 
 			<td> <%=link_to_prototype_dialog( "View Margin Notes", {:url =>"/margin_notes/show?mapping_id=#{map.id}", :options=> {:method=> 'get'}},'form', {:title => "Margin Notes for Mapping: #{dest_node.ontology_name.titleize} => #{dest_node.name.titleize}", :width =>700,:height=>400})%></td>
 		</tr>
 		<%end%>

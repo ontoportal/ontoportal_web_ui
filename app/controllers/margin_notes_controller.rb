@@ -35,6 +35,7 @@ class MarginNotesController < ApplicationController
   # POST /margin_notes.xml
   def create
     @margin_note = MarginNote.new(params[:margin_note])
+    @key = params[:key]
     unless session[:user].nil?
       @margin_note.user_id = session[:user].id
     end
