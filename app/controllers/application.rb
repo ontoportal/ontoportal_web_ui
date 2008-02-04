@@ -8,6 +8,8 @@ class ApplicationController < ActionController::Base
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery # :secret => 'ba3e1ab68d3ab8bd1a1e109dfad93d30'
   
+  
+  
   def undo_param(name)
     name.gsub('_'," ")
   end
@@ -61,7 +63,55 @@ class ApplicationController < ActionController::Base
     return newpass
   end
 
-  
-  
+  def add_to_tab(ontology, concept)    
+    
+    array = session[:ontologies] || []
+    found = false
+    for item in array
+      if item.ontology.eql?(ontology.name)
+        item = History.new(ontology,concept)
+        found=true
+      end
+    end
+    
+    unless found
+      array << History.new(ontology,concept)    
+    end
+
+    session[:ontologies]=array
+  end
+
+  def update_tab(ontology,concept)
+
+      array = session[:ontologies] || []
+     puts concept.inspect
+      for item in array
+        if item.ontology.eql?(ontology)
+          puts "Ontology being updated"
+          item.concept = concept     
+        end
+      end
+      
+    session[:ontologies]=array
+    
+    puts "-----------"
+    puts array.inspect
+    puts "------------"
+    
+  end
+
+  def remove_tab(ontology_name)
+    array = session[:ontologies]
+    for item in array
+      if item.ontology.eql?(ontology_name)
+        puts "Should be removing"
+        array.delete(item)
+      end
+    end
+    
+    puts array.inspect
+    session[:ontologies]=array
+    
+  end
   
 end

@@ -57,7 +57,9 @@ class OntologiesController < ApplicationController
     #    puts "---------looping through gather resource--------------"
     #   @resource = ResourceWrapper.gatherResources(@concept.id.gsub("_",":"),@concept.ontology_name)
     # end
-  
+    
+    add_to_tab(@ontology,@concept)
+    
   
     respond_to do |format|
       format.html # show.rhtml

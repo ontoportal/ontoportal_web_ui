@@ -45,14 +45,22 @@ javascripts = "resetNoteForm(#{uniq});toggleHide('form','');toggleHide('buttons'
 			</td>
 	</tr>
  	<tr>
-		<td colspan="2" align="right"><%= submit_tag "Save" ,:class =>"blueButton",:onclick=>"saveNote()"%> <%if @modal%><input type="button" value="Close" onclick="Dialog.cancelCallback()" class='blueButton'><%end%></td>
+		<td colspan="2" align="right">			
+				<%= submit_tag "Save" ,:class =>"blueButton",:onclick=>"saveNote()"%> | 
+				<input class="blueButton" type="button" value="Cancel" onclick="resetNoteForm(<%="#{uniq}"%>);toggleHide('form','');toggleHide('buttons','');destroyEditor();"> 			
+			 <%if @modal%>| <input type="button" value="Close" onclick="Dialog.cancelCallback()" class='blueButton'><%end%></td>
 </table>
 </fieldset>
 <% end %>
 </div>
 </div>
 <div id="buttons" style="clear:both;">
-<input type="button" class ="blueButton" value="New Thread" onclick ="buildEditor('<%=uniq%>');toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='';"> 
+<%if session[:user].nil? %>
+	<br>
+	<%=link_to "Log In to Add Marginal Notes",:controller=>'login'%>
+<%else%>
+	<input type="button" class ="blueButton" value="New Thread" onclick ="buildEditor('<%=uniq%>');toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='';"> 
+<%end%>
 <%if @modal%><input type="button" value="Close" onclick="Dialog.cancelCallback()" class='blueButton'><%end%>
 </div>
 

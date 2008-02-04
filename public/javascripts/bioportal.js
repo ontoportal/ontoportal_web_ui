@@ -314,5 +314,42 @@ function saveNote(){
 	myEditor.destroy();
 }
 
+function destroyEditor(){
+		myEditor.clearEditorDoc();
+		myEditor.destroy();
+		
+}
 
 
+function remove_tab(link,ontology){
+	tab= document.getElementById("tab"+ontology)
+	xbutton = link.parentNode
+	parent = xbutton.parentNode
+	
+	parent.removeChild(tab)
+	parent.removeChild(xbutton)
+	
+			var responseSuccess = function(o)
+			{
+			
+				
+			}
+
+			var responseFailure = function(o){
+				
+			}
+
+			var callback =
+			{
+				success:responseSuccess,
+				failure:responseFailure
+			};
+
+
+			// Show the Panel 
+			var cObj = YAHOO.util.Connect.asyncRequest("GET","/tab/remove/"+ontology,callback);
+	
+	
+
+
+}

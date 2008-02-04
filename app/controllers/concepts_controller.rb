@@ -60,6 +60,7 @@ class ConceptsController < ApplicationController
    #    @resource = ResourceWrapper.gatherResources(@concept.id.gsub("_",":"),@concept.ontology_name)
    # end
     
+    update_tab(@ontology.name,@concept.id)
     
   end
   

@@ -26,12 +26,12 @@
 	
 <%=link_to image_tag('ncbo_logo_portal.gif'),"/"%>
 <br>
-<div class="yui-navset" style="margin-left:5px;overflow:hidden;white-space:nowrap;width:100%;">
+<div class="yui-navset" >
 	<%unless @ontology.nil?%>
 	<span id="ontologyName"><%=@ontology.name%></span>
 	<%end%>
 		<%=render :partial =>'layouts/topnav'%>            
-	<div class="yui-content-main" style="width:100%;overflow:hidden;white-space:nowrap;">
+	<div class="yui-content-main" >
 		<%=yield%>
 
 	</div>

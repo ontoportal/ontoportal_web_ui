@@ -4,11 +4,22 @@
 		<%=link_to "Sign In" ,:controller =>'login'%> &nbsp; <%=link_to "Register", new_user_path%>
 	<%else%>
 		<%=link_to "My Account", edit_user_path(session[:user])%>
-		<%=link_to "Log Out",:controller =>'login',:action=>'destroy'%>
+		<%=link_to "Log Out",logout_url%>
 	<%end%> </span>
 <ul class="yui-nav" id="topNav">
-		<li <%if controller.controller_name.eql?("home")%>class="selected" <%end%>><a href="/"><em>Home</a></em></li>
-    	<li <%if controller.controller_name.eql?("ontologies") || controller.controller_name.eql?("concepts")%>class="selected" <%end%>><a href="/ontologies"><em>Browse</em></a></li>
+		<li <%if controller.controller_name.eql?("home")%>class="selected" <%end%>><a href="/"><em>Home</em></a></li>
+    	<li <%if controller.controller_name.eql?("ontologies") && controller.action_name.eql?("index")%>class="selected" <%end%>><a href="/ontologies"><em>Browse</em></a></li>
     	<li <%if controller.controller_name.eql?("search")%>class="selected" <%end%>><a href="/search"><em>Search</em></a></li>
-
+		<%unless session[:ontologies].nil?%>
+			<%for tab in session[:ontologies]%>
+				<%if !@ontology.nil? && @ontology.name.eql?(tab.ontology)%>
+				<li id="tab<%=to_param(tab.ontology)%>" class="selected"><%=link_to "<em>#{tab.ontology} &nbsp;&nbsp;</em>",uri_url(:ontology=>to_param(tab.ontology),:id=>tab.concept)%></li>
+				<li><a href='#' id="closeTab_select" onclick="remove_tab(this,'<%=to_param(tab.ontology)%>')">(X)</a></li>
+				<%else%>
+				<li id="tab<%=to_param(tab.ontology)%>" ><%=link_to "<em>#{tab.ontology} &nbsp;&nbsp;</em>",uri_url(:ontology=>to_param(tab.ontology),:id=>tab.concept)%></li>
+				<li><a href='#'  id="closeTab" onclick="remove_tab(this,'<%=to_param(tab.ontology)%>')">(X)</a></li>
+				
+				<%end%>
+			<%end%>
+		<%end%>
 	</ul>  

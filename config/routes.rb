@@ -8,6 +8,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :concepts
 
   map.resources :ontologies
+  
+  map.resources :login
 
   # The priority is based upon order of creation: first created -> highest priority.
   
@@ -30,9 +32,11 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id.:format'
   map.connect ':controller/:action/:id'
+  map.logout 'logout',:controller=>'login',:action=>'destroy'
   map.visualize 'visualize/:ontology', :controller=>'ontologies', :action =>'visualize',:requirements => { :ontology => %r([^/?]+) }
   map.uri ':ontology/:id', :controller => 'concepts', :action => 'show',:requirements => { :ontology => %r([^/?]+) ,:id => %r([^/?]+)}
   map.ontology ':ontology', :controller => 'ontologies', :action => 'show',:requirements => { :ontology => %r([^/?]+) }
- 
+  map.remove_tab '/tab/remove/:ontology',:controller=>'history',:action=>'remove'
+  map.update_tab '/tab/update/:ontology/:concept',:controller=>'history',:action=>'update'
   #map.jam 'jambalaya/:ontology/:id', :controller => 'visual', :action => 'jam'
 end

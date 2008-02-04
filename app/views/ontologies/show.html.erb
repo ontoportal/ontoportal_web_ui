@@ -1,7 +1,53 @@
+
+
 <h1><%=@ontology.name%></h1>
 
-<li>Core Format: <%=@ontology.coreFormat%></li>
-<li>Current Version: <%=@ontology.currentVersion%></li>
-<li>Download Path: <%=@ontology.downloadPath%></li>
-<li>Metadata Path: <%=@ontology.metadataPath%></li>
-<li>Release Date:<%=@ontology.releaseDate%></li>
+<h3>Ontology MetaData</h3>
+
+<table class="metadata" cellpadding="0" cellspacing="0">
+	<tr>
+		<td>
+			<ul>
+			<li><label>Ontology Name:</label><%=@ontology.name%></li>
+			<li><label>Content Location:</label> </li>			
+			<li><label>Format:</label> <%=@ontology.coreFormat%></li>
+			<li><label>Categories:</label></li>
+			<li><label>Keywords:</label></li>
+			<li><label>Key Classes/Types:</label></li>
+			<li><label>Intended Application:</label></li>
+			</ul>
+			
+		</td>
+		<td>
+			<ul>
+			<li><label>Contact(s):</label></li>
+			<li><label>Home Page:</label></li>
+			<li><label>Documentation Page:</label> </li>
+			<li><label>Publications Page:</label> </li>
+			<li><label>Supported Languages:</label> </li>
+			<li><label>Example Use:</label></li>
+			<li><label>Description:</label></li>
+			</ul>
+
+		</td>
+	</tr>
+</table>
+</fieldset>
+
+<h3>Versions</h3>
+	<table class="versions" cellpadding="0" cellspacing="0">
+		<tr>
+			<th>Version Number</th>
+			<th>Release Date</th>
+			<th>Status</th>
+			<th></th>
+			<th></th>
+		</tr>
+		<tr>
+			<td><%=@ontology.currentVersion%></td>
+			<td><%=@ontology.releaseDate%></td>
+			<td></td>
+			<td><a href="<%=@ontology.downloadPath%>">Download (100.00KB)</a></td>
+			<td><%=link_to "Visualize",visualize_url(:ontology => @ontology)%></td>
+		</tr>
+	</table>

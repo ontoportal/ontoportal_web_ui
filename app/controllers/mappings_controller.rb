@@ -7,6 +7,7 @@ class MappingsController < ApplicationController
     @mapping.source_id = params[:source_id]
     @mapping.source_ont = undo_param(params[:ontology])
     @ontologies = DataAccess.getOntologyList()
+    @name = params[:source_name]
   end
 
   # GET /mappings/1;edit

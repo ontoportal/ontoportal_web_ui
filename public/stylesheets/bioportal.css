@@ -1,4 +1,7 @@
-
+label{
+	font-weight:bold;
+	margin-right:5px;
+}
 
 *{
 	font-family:Helvetica, Verdana,sans-serif;
@@ -37,7 +40,7 @@ a:hover{
 .content{
 	width:80%;
 	overflow:hidden;
-	white-space:nowrap;
+	
 
 	
 }
@@ -87,9 +90,8 @@ border-bottom:1px dotted gray;
 	padding-left:10px;
 	font-weight:bold;
 	font-size:16px;
-	white-space:nowrap;
 	vertical-align:top;
-	width:200px;
+	width:100px;
 
 }
 .mapping{
@@ -568,9 +570,74 @@ h4{
 .annotations td{
 	border-top:solid #c0c0c0 1px;
 }
-.annotations tr:hover{
-	background-color:#F9F9F9;
+
+.versions{
+	width:800px;
+	margin-bottom:100px;
+	margin-left:10px;
+}
+.versions th{
+	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	color: #fff;
+	text-align:left;
+	padding: 0.25em .75em;
+	white-space:nowrap;
+	height:20px;
+	font-family:sans-serif;
+	font-size:15px;
+	font-weight:normal;
+	border-bottom:1px solid #535353;
 }
 
+.versions td{
+	padding:5px;
+	border-top:1px solid #e3e3e3;
+	border-bottom:1px solid #e3e3e3;
+	border-right:1px solid #e3e3e3;
+	border-left:1px solid #e3e3e3;
+}
 
+.metadata{
+	
+}
 
+.metadata td li{
+    padding:10px;
+	width:400px;
+	border-top:1px solid #e3e3e3;
+	border-bottom:1px solid #e3e3e3;
+	border-right:1px solid #e3e3e3;
+	border-left:1px solid #e3e3e3;
+	list-style:none;
+}
+.metadata td li label{
+	
+	font-size:13px;
+	font-weight:bold;	
+	margin-right:10px;
+}	
+
+#closeTab{
+	font-size:11px;
+
+	background:none;
+	border:0px;
+	position:relative;
+	color:black;
+	top:-18px;
+	left:-20px;
+	
+	
+}
+#closeTab_select{
+	font-size:12px;
+	font-weight:bold;
+	background:none;
+	border:0px;
+	position:relative;
+	color:white;
+	top:-21px;
+	left:-22px;
+	
+	
+}

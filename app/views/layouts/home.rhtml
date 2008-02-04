@@ -5,7 +5,9 @@
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <!-- Dependency source files --> 
   <%=stylesheet_link_tag 'bioportal','tabview','container'%>
-  <%=javascript_include_tag 'yahoo-min',"tabview","bioportal"%>
+  <script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/utilities/utilities.js"></script> 
+  <script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/tabview/tabview-min.js"></script>
+  <%=javascript_include_tag "bioportal"%>
 
 </head>
 <body class=" yui-skin-sam">

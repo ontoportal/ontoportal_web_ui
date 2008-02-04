@@ -26,11 +26,11 @@
 			</tr>
 			<tr>
 				<td nowrap>Search In:</td>
-				<td><%=check_box "search","class_name"%>Class/Type Name <%=check_box "search","attributes"%>Attributes</td>
+				<td><%=check_box "search","class_name",:checked=>"checked"%>Class/Type Name <%=check_box "search","attributes"%>Attributes</td>
 			</tr>
 			<tr>
 				<td nowrap>Search Type:</td>
-				<td><%=radio_button "search","search_type","contains"%>Contains <%=radio_button "search","search_type","sounds"%>Sounds Like</td>
+				<td><%=radio_button "search","search_type","contains",{:checked=>"checked"}%>Contains <%=radio_button "search","search_type","sounds"%>Sounds Like</td>
 			</tr>
 			<tr>
 				<td nowrap>Include Obsolete:</td>
