@@ -24,28 +24,28 @@
 }
 
 .dialog_w {
-  background: transparent url(alphacube/frame-left.gif) repeat-y top left;			
+  background: transparent url(/images/frame-left.gif) repeat-y top left;			
   width:7px;
 }
 
 .dialog_e {
-  background: transparent url(alphacube/frame-right.gif) repeat-y top right;			
+  background: transparent url(/images/frame-right.gif) repeat-y top right;			
   width:7px;	  
 }
 
 .dialog_sw {
-  background: transparent url(alphacube/bottom-left-c.gif) no-repeat 0 0;			
+  background: transparent url(/images/bottom-left-c.gif) no-repeat 0 0;			
   width:7px;
   height:7px;
 }
 
 .dialog_s {
-  background: transparent url(alphacube/bottom-middle.gif) repeat-x 0 0;			
+  background: transparent url(/images/bottom-middle.gif) repeat-x 0 0;			
   height:7px;
 }
 
 .dialog_se, .dialog_sizer  {
-  background: transparent url(alphacube/bottom-right-c.gif) no-repeat 0 0;			
+  background: transparent url(/images/bottom-right-c.gif) no-repeat 0 0;			
   width:7px;
   height:7px;
 }
@@ -57,7 +57,7 @@
 .dialog_close {
 	width: 23px;
 	height: 23px;
-	background: transparent url(alphacube/button-close-focus.gif) no-repeat 0 0;			
+	background: transparent url(/images/button-close-focus.gif) no-repeat 0 0;			
 	position:absolute;
 	top:0px;
 	right:11px;
@@ -68,7 +68,7 @@
 .dialog_minimize {
 	width: 23px;
 	height: 23px;
-	background: transparent url(alphacube/button-min-focus.gif) no-repeat 0 0;			
+	background: transparent url(/images/button-min-focus.gif) no-repeat 0 0;			
 	position:absolute;
 	top:0px;
 	right:55px;
@@ -79,7 +79,7 @@
 .dialog_maximize {
 	width: 23px;
 	height: 23px;
-	background: transparent url(alphacube/button-max-focus.gif) no-repeat 0 0;			
+	background: transparent url(/images/button-max-focus.gif) no-repeat 0 0;			
 	position:absolute;
 	top:0px;
 	right:33px;
