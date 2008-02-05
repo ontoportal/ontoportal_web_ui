@@ -5,6 +5,9 @@
 	<th>Ontology Name</th>
 	<th>Format</th>
 	<th>Version</th>
+	<th>Author</th>
+	<th>Date</th>
+	<th>Latest Note</th>
 	<th></th>
   </tr>
   
@@ -13,6 +16,13 @@
 	<td><%=link_to ontology.name, ontology_url(:ontology => ontology)%></td>
 	<td><%=ontology.coreFormat%></td>
 	<td><%=ontology.currentVersion%></td>
+	<td></td>
+	<td></td>
+	<td><% unless @notes[ontology.name].nil?%>
+		<%=@notes[ontology.name].subject%> By: <%=@notes[ontology.name].user.user_name%>
+		<br>
+		<%=truncate(@notes[ontology.name].comment,100)%><%end%>
+		</td>
 	<td><%if ontology.currentVersion.eql?("See Remote Site")%>Visualization Unavailable<%else%><%=link_to "Visualize", visualize_url(:ontology => ontology)%><%end%></td>
   </tr>
 <% end %>

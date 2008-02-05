@@ -21,6 +21,8 @@ class SearchController < ApplicationController
   end
   
   def concept_preview
+    @ontology = OntologyWrapper.new
+    @ontology.name=undo_param(params[:ontology])
     @concept = DataAccess.getNode(undo_param(params[:ontology]),params[:id])
     @children = @concept.children
     render :partial =>'concept_preview'

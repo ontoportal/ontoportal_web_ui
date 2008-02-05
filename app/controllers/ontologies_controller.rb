@@ -11,6 +11,15 @@ class OntologiesController < ApplicationController
  #   loadProtege()
    # @ontologies = Ontology.find(:all) -- Active Record
     @ontologies = DataAccess.getOntologyList() # -- WebService
+    @notes={}
+    for ont in @ontologies
+      note = MarginNote.find(:first,:conditions=>{:ontology_id => ont.name},:order=>'margin_notes.id desc',:include=>:user)
+
+      unless note.nil?
+        @notes[ont.name]=note
+      end
+
+    end
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @ontologies.to_xml }
@@ -38,7 +47,7 @@ class OntologiesController < ApplicationController
  
     #gets the initial mappings
     @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.name, :source_id => @concept.id},:include=>:user)
-    
+    @mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
     #gets the initial margin notes
     @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @ontology.name, :concept_id => @concept.id,:parent_id => nil},:include=>:user)
     @margin_note = MarginNote.new
@@ -58,7 +67,7 @@ class OntologiesController < ApplicationController
     #   @resource = ResourceWrapper.gatherResources(@concept.id.gsub("_",":"),@concept.ontology_name)
     # end
     
-    add_to_tab(@ontology,@concept)
+    update_tab(@ontology.name,@concept.id)
     
   
     respond_to do |format|

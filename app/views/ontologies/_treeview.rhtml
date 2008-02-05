@@ -147,6 +147,8 @@ function loadNodeData(node, fnLoadComplete) {
 			document.getElementById('tab4').innerHTML=tabData[3]
 			//document.getElementById('tab5').innerHTML=tabData[4]	
 			 tree.draw();
+			 
+			 update_tab('<%=@ontology.to_param%>',node_id)
 				
 		}else{
 			YAHOO.wait.container.wait.show();

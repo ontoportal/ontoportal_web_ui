@@ -321,15 +321,9 @@ function destroyEditor(){
 }
 
 
-function remove_tab(link,ontology){
-	tab= document.getElementById("tab"+ontology)
-	xbutton = link.parentNode
-	parent = xbutton.parentNode
+function update_tab(ontology,concept){
 	
-	parent.removeChild(tab)
-	parent.removeChild(xbutton)
-	
-			var responseSuccess = function(o)
+	var responseSuccess = function(o)
 			{
 			
 				
@@ -347,9 +341,46 @@ function remove_tab(link,ontology){
 
 
 			// Show the Panel 
+			var cObj = YAHOO.util.Connect.asyncRequest("GET","/tab/update/"+ontology+"/"+concept,callback);
+	
+	
+	
+}
+
+
+function remove_tab(link,ontology,redirect){
+	
+	
+			var responseSuccess = function(o)
+			{
+				
+				
+			}
+
+			var responseFailure = function(o){
+				
+			}
+
+			var callback =
+			{
+				success:responseSuccess,
+				failure:responseFailure
+			};
+
+
+			// Show the Panel 
 			var cObj = YAHOO.util.Connect.asyncRequest("GET","/tab/remove/"+ontology,callback);
 	
+	if(redirect){
+					window.location="/ontologies"
+	}else{
+		tab= document.getElementById("tab"+ontology)
+		xbutton = link.parentNode
+		parent = xbutton.parentNode
 	
+		parent.removeChild(tab)
+		parent.removeChild(xbutton)
+	}
 
 
 }

@@ -63,13 +63,13 @@ class ApplicationController < ActionController::Base
     return newpass
   end
 
-  def add_to_tab(ontology, concept)    
+  def update_tab(ontology, concept)    
     
     array = session[:ontologies] || []
     found = false
     for item in array
-      if item.ontology.eql?(ontology.name)
-        item = History.new(ontology,concept)
+      if item.ontology.eql?(ontology)
+        item.concept=concept
         found=true
       end
     end
@@ -79,25 +79,6 @@ class ApplicationController < ActionController::Base
     end
 
     session[:ontologies]=array
-  end
-
-  def update_tab(ontology,concept)
-
-      array = session[:ontologies] || []
-     puts concept.inspect
-      for item in array
-        if item.ontology.eql?(ontology)
-          puts "Ontology being updated"
-          item.concept = concept     
-        end
-      end
-      
-    session[:ontologies]=array
-    
-    puts "-----------"
-    puts array.inspect
-    puts "------------"
-    
   end
 
   def remove_tab(ontology_name)

@@ -1,5 +1,5 @@
 <fieldset style="width:300px;">
-<legend>Preview of <%=@concept.name%>, <%=@concept.id%></legend>
+<legend>Preview of <%=link_to "#{@concept.name},#{@concept.id}",uri_url(:ontology=>@ontology,:id=>@concept.id),:target=>"_new"%></legend>
 <div style="overflow:auto;width:300px"><%=@concept.networkNeighborhood()%></div>
 <br>
 <ul>
