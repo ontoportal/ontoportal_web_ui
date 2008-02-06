@@ -16,3 +16,16 @@ config.action_controller.perform_caching             = true
 
 # Disable delivery errors, bad email addresses will be ignored
 # config.action_mailer.raise_delivery_errors = false
+
+
+memcache_options = {
+  :c_threshold => 10_000,
+  :compression => true,
+  :debug => false,
+  :namespace => 'BioPortal',
+  :readonly => false,
+  :urlencode => false
+}
+
+CACHE = MemCache.new memcache_options
+CACHE.servers = 'localhost:11211'

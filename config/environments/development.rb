@@ -16,3 +16,16 @@ config.action_view.cache_template_extensions         = false
 
 # Don't care if the mailer can't send
 config.action_mailer.raise_delivery_errors = false
+
+
+memcache_options = {
+  :c_threshold => 10_000,
+  :compression => true,
+  :debug => true,
+  :namespace => 'BioPortal',
+  :readonly => false,
+  :urlencode => false
+}
+
+CACHE = MemCache.new memcache_options
+CACHE.servers = 'ncbo-ror1:11211'

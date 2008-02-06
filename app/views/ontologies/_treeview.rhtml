@@ -120,7 +120,8 @@ function loadNodeData(node, fnLoadComplete) {
 							document.getElementById('tab2').innerHTML=tabData[1]
 							document.getElementById('tab3').innerHTML=tabData[2]
 							document.getElementById('tab4').innerHTML=tabData[3]
-							//document.getElementById('tab5').innerHTML=tabData[4]					
+							document.getElementById('tab5').innerHTML=tabData[4]					
+							
 					 tree.draw();
 						YAHOO.wait.container.wait.hide();
 						setCache(node_id,tabData)
@@ -145,7 +146,7 @@ function loadNodeData(node, fnLoadComplete) {
 			document.getElementById('tab2').innerHTML=tabData[1]
 			document.getElementById('tab3').innerHTML=tabData[2]
 			document.getElementById('tab4').innerHTML=tabData[3]
-			//document.getElementById('tab5').innerHTML=tabData[4]	
+			document.getElementById('tab5').innerHTML=tabData[4]	
 			 tree.draw();
 			 
 			 update_tab('<%=@ontology.to_param%>',node_id)

@@ -1,3 +1,4 @@
+require "set"
 class OntologiesController < ApplicationController
  
   #caches_page :index
@@ -36,37 +37,64 @@ class OntologiesController < ApplicationController
 
   # GET/ontologies/(id)/visualize
   def visualize
+    
+    sids = []
+    
     #Set the ontology we are viewing
     @ontology = OntologyWrapper.new()
     @ontology.name = undo_param(params[:ontology])
-    #get the top level nodes for the root
-    @root = TreeNode.new()
-    @root.set_children(@ontology.topLevelNodes)
-    #get the initial concept to display
-    @concept = DataAccess.getNode(@ontology.name,@root.children.first.id)
- 
-    #gets the initial mappings
-    @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.name, :source_id => @concept.id},:include=>:user)
-    @mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
-    #gets the initial margin notes
-    @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @ontology.name, :concept_id => @concept.id,:parent_id => nil},:include=>:user)
-    @margin_note = MarginNote.new
-    @margin_note.concept_id = @concept.id
-    @margin_note.ontology_id = @ontology.name
     
-    
-    
-    
-    #gets the initial Ontrez Results
-    
-    #@resource = []
-    #if(@concept.properties["UMLS_CUI"]!=nil)   
-    #  @resource = ResourceWrapper.gatherResourcesCui(@concept.properties["UMLS_CUI"])
-    #else
-    #    puts "---------looping through gather resource--------------"
-    #   @resource = ResourceWrapper.gatherResources(@concept.id.gsub("_",":"),@concept.ontology_name)
-    # end
-    
+   
+        
+      
+      
+      #get the top level nodes for the root
+      @root = TreeNode.new()
+      @root.set_children(@ontology.topLevelNodes)
+      #get the initial concept to display
+      @concept = DataAccess.getNode(@ontology.name,@root.children.first.id)
+   
+   
+      sids << spawn(:method => :thread) do
+        #gets the initial mappings
+        @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.name, :source_id => @concept.id},:include=>:user)
+        @mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
+        #gets the initial margin notes
+        @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @ontology.name, :concept_id => @concept.id,:parent_id => nil},:include=>:user)
+        @margin_note = MarginNote.new
+        @margin_note.concept_id = @concept.id
+        @margin_note.ontology_id = @ontology.name
+        
+        puts "---------------------------------"
+        puts "Finished Gathering Database Info"
+        puts "---------------------------------"
+      end
+      
+      
+      
+      #gets the initial Ontrez Results
+     
+      @resources = []
+      sids << spawn(:method => :thread) do
+        if(@concept.properties["UMLS_CUI"]!=nil)
+          #@resources = OntrezService.gatherResourcesCui(@concept.properties["UMLS_CUI"])
+        else
+          @resources = OBDWrapper.gatherResources(@ontology.to_param,@concept.id.gsub("_",":"))
+        end
+        
+              puts "---------------------------------"
+        puts "Finished Gathering Ontrez Info"
+        puts "---------------------------------"
+  
+        
+      end
+      
+            puts "---------------------------------"
+        puts "Waiting......"
+        puts "---------------------------------"
+  
+      wait(sids)
+         
     update_tab(@ontology.name,@concept.id)
     
   

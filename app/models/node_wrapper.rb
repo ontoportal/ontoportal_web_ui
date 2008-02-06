@@ -46,8 +46,7 @@ class NodeWrapper
      DataAccess.getPathToRootImage(self.ontology_name,self.id,relationships)
    end
    
-   def children(relationship=["is_a"])    
-     
+   def children(relationship=["is_a"])       
      DataAccess.getChildNodes(self.ontology_name,self.id,relationship)
    end
    

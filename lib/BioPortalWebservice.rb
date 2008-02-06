@@ -18,15 +18,13 @@ class BioPortalWebservice
       #@@soap.wiredump_dev = STDOUT 
      
        def getNode(ontology,node_id)
-          puts "Get Node ---- Ontology: #{ontology}  Node: #{node_id}"
          results = @@soap.getNode(ontology,node_id)
-
          for result in results
-           puts "Node Contents #{result.inspect}"
            node = NodeWrapper.new(result)
            node.ontology_name = ontology
            return  node
          end
+         
        end
 
       def getChildNodes(ontology,node_id,associations)
@@ -44,10 +42,7 @@ class BioPortalWebservice
          if !result.result.nil?
             for associationResultArray in result.result 
               if !associationResultArray.nodeBeanResultArr.nil?
-                association = associationResultArray.associationName
-                puts "----------------------------"
-                puts "Association #{association}  result size: #{associationResultArray.nodeBeanResultArr.length}"
-                puts "----------------------------"
+                association = associationResultArray.associationName                
                 for remote_node in associationResultArray.nodeBeanResultArr 
                   node = NodeWrapper.new(remote_node)
                   node.ontology_name = ontology     
@@ -170,16 +165,7 @@ class BioPortalWebservice
             return "<img src=\"#{result.to_s}\">"
           end
           
-          def getPathToRoot(entryNode)
-            
-             path=[]
-             node = entryNode.parent
-             while !node.nil?
-                path<<node
-                node = node.parent
-             end
-            return path
-          end
+          
         
     end
 

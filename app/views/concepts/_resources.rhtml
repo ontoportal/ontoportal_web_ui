@@ -2,18 +2,18 @@
 <table class="resources" cellpadding=0 cellspacing=0>
 <%
 	index = 0;
-	for resource in @resource
+	for resource in @resources
 
-	if resource["annotations"].size.to_i >0%>
+	if resource.count >0%>
         <tr class="mainresource" onclick = "toggleHide('<%="annotation#{index}"%>','annotations')">
       <%else%>
         <tr class="mainresource">
       <%end%>
 
-		<td><img src="<%=resource["logo"]%>" width="100px"><br><%=resource["name"]%></td><td><%=resource["desc"]%></td><td>Elements:<%=resource["num"]%></td>
+		<td><img src="<%=resource.logo%>" width="100px"><br><%=resource.name%></td><td><%=resource.description%></td><td>Elements:<%=resource.count%></td>
      </tr>
 
-		<% if resource["annotations"].size.to_i >0%>
+		<% if resource.count >0%>
        <tr name = "annotations" id = "<%="annotation#{index}"%>" style="display:none;"><td colspan=3>
         <table class="annotations" cellpadding=0 cellspacing=0>
         <tr>
@@ -25,14 +25,14 @@
         
       	<%end%>
       
-     <% for annotation in resource["annotations"]%>
+     <% for annotation in resource.annotations%>
        <tr>
-          <td><%=annotation["local"]%></td><td><%=annotation["key"]%></td><td><a href="<%=annotation["url"]%>" target="_new">View Element</a></td>
+          <td><%=annotation.local_id%></td><td><%=annotation.item_key%></td><td><a href="<%=annotation.url%>" target="_new">View Element</a></td>
        </tr>
       
 	  <%end%>
       
-	 <% if resource["annotations"].size.to_i >0%>
+	 <% if resource.count >0%>
         </table>
        </td></tr>
      <%end%>

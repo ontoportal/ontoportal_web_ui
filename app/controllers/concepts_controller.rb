@@ -7,6 +7,7 @@ class ConceptsController < ApplicationController
   # GET /concepts/1
   # GET /concepts/1.xml
   def show
+   
     @concept =  DataAccess.getNode(undo_param(params[:ontology]),params[:id])
     @concept_id = params[:id]
     @ontology = OntologyWrapper.new()
@@ -44,23 +45,32 @@ class ConceptsController < ApplicationController
   end
   
   def gather_details
-    #builds the mapping tab
-    @mappings = Mapping.find(:all, :conditions=>{:source_ont => @concept.ontology_name, :source_id => @concept.id},:include=>:user)    
-    @mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
     
+     sids = []
     
-    #builds the margin note tab
-    @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_name, :concept_id => @concept.id,:parent_id =>nil},:include=>:user)
-    @margin_note = MarginNote.new
-    @margin_note.concept_id = @concept.id
-    @margin_note.ontology_id = @concept.ontology_name
+    sids << spawn(:method => :thread) do
+      #builds the mapping tab
+      @mappings = Mapping.find(:all, :conditions=>{:source_ont => @concept.ontology_name, :source_id => @concept.id},:include=>:user)    
+      @mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
+      
+      
+      #builds the margin note tab
+      @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_name, :concept_id => @concept.id,:parent_id =>nil},:include=>:user)
+      @margin_note = MarginNote.new
+      @margin_note.concept_id = @concept.id
+      @margin_note.ontology_id = @concept.ontology_name
+    end   
    
-   # @resource = []
-   # if(@concept.properties["UMLS_CUI"]!=nil)
-   #  @resource = ResourceWrapper.gatherResourcesCui(@concept.properties["UMLS_CUI"])
-   # else
-   #    @resource = ResourceWrapper.gatherResources(@concept.id.gsub("_",":"),@concept.ontology_name)
-   # end
+    sids << spawn(:method => :thread) do   
+      @resources = []
+      if(@concept.properties["UMLS_CUI"]!=nil)
+        #@resources = OntrezService.gatherResourcesCui(@concept.properties["UMLS_CUI"])
+      else
+        @resources = OBDWrapper.gatherResources(param(@concept.ontology_name),@concept.id.gsub("_",":"))
+      end
+    end
+    
+    wait(sids)
     
     update_tab(@ontology.name,@concept.id)
     
@@ -81,15 +91,25 @@ class ConceptsController < ApplicationController
   
   def expand_tree(children_list, path_array)
     #Pop actually removes the LAST item from the array
+    puts "Path is #{path_array.inspect}"
     target = path_array.pop
+    puts "Target is #{target}"
+    found = false
     if target.nil?
       return
     end
     for child in children_list
+      puts "Child #{child}"
       if child.id.eql?(target.id)
+        found = true
         child.set_children(DataAccess.getChildNodes(child.ontology_name,child.id,nil))
+        puts "Children Set for #{child.id} and they are #{child.children.inspect}"
         expand_tree(child.children,path_array)
       end
+    end
+    
+    if !found
+      expand_tree(children_list,path_array)
     end
     
   end
