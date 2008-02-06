@@ -1,11 +1,10 @@
 require 'BioPortalWebservice'
 class DataAccess
-  SERVICE = BioPortalWebservice
+  SERVICE = BioPortalWebservice #sets what backend we are using
   
   
-  class << self
     
-    def getNode(ontology,node_id)
+    def self.getNode(ontology,node_id)
       if CACHE.get("#{param(ontology)}::#{node_id}").nil?
         node = SERVICE.getNode(ontology,node_id)  
         CACHE.set("#{param(ontology)}::#{node_id}",node)
@@ -15,7 +14,7 @@ class DataAccess
       end
     end
     
-    def getChildNodes(ontology,node_id,associations)
+    def self.getChildNodes(ontology,node_id,associations)
       if CACHE.get("#{param(ontology)}::#{node_id}_children::#{associations}").nil?
         children = SERVICE.getChildNodes(ontology,node_id,associations)
         CACHE.set("#{param(ontology)}::#{node_id}_children::#{associations}",children)
@@ -28,7 +27,7 @@ class DataAccess
       end
     end
     
-    def getParentNodes(ontology,node_id,associations)
+    def self.getParentNodes(ontology,node_id,associations)
       if CACHE.get("#{param(ontology)}::#{node_id}_parent::#{associations}").nil?
         parent = SERVICE.getParentNodes(ontology,node_id,associations)
         CACHE.set("#{param(ontology)}::#{node_id}_parent::#{associations}",parent)
@@ -41,7 +40,7 @@ class DataAccess
       end
     end
     
-    def getTopLevelNodes(ontology)
+    def self.getTopLevelNodes(ontology)
       if CACHE.get("#{param(ontology)}::_top").nil?
         topNodes = SERVICE.getTopLevelNodes(ontology)
         CACHE.set("#{param(ontology)}::_top",topNodes)
@@ -54,7 +53,7 @@ class DataAccess
       end
     end
     
-    def getOntologyList
+    def self.getOntologyList
       if CACHE.get("ontology_list").nil?
         list = SERVICE.getOntologyList
         CACHE.set("ontology_list",list)
@@ -67,7 +66,7 @@ class DataAccess
       end
     end
     
-    def getOntology(ontology)
+    def self.getOntology(ontology)
       if CACHE.get("#{param(ontology)}::_details").nil?
         details = SERVICE.getOntology(ontology)
         CACHE.set("#{param(ontology)}::_details",details)
@@ -80,7 +79,7 @@ class DataAccess
       end
     end
     
-    def getNodeNameContains(ontologies,search)      
+    def self.getNodeNameContains(ontologies,search)      
       if CACHE.get("#{param(ontologies.join("|"))}::_search::#{search}").nil?
         results = SERVICE.getNodeNameContains(ontologies,search)
         CACHE.set("#{ontologies.join("|")}::_search::#{search}",results)
@@ -93,7 +92,7 @@ class DataAccess
       end
     end
     
-    def getNetworkNeighborhoodImage(ontology,node_id,associations=nil)
+    def self.getNetworkNeighborhoodImage(ontology,node_id,associations=nil)
       if CACHE.get("#{param(ontology)}::#{node_id}_nnImage::#{associations}").nil?
         image = SERVICE.getNetworkNeighborhoodImage(ontology,node_id,associations) 
         CACHE.set("#{param(ontology)}::#{node_id}_nnImage::#{associations}",image)
@@ -106,7 +105,7 @@ class DataAccess
       end
     end
     
-    def getPathToRootImage(ontology,node_id,associations=nil)
+    def self.getPathToRootImage(ontology,node_id,associations=nil)
       if CACHE.get("#{param(ontology)}::#{node_id}_ptrImage::#{associations}")
         image = SERVICE.getPathToRootImage(ontology,node_id,associations)  
         CACHE.set("#{param(ontology)}::#{node_id}_ptrImage::#{associations}",image)
@@ -119,7 +118,7 @@ class DataAccess
       end
     end
     
-    def getPathToRoot(entryNode)
+    def self.getPathToRoot(entryNode)
       puts "In Path To Root"
       path=[]
       node = entryNode.parent
@@ -133,15 +132,9 @@ class DataAccess
       return path
     end
     
-    def param(string)
-    return string.gsub(" ","_")
-  end
-  
-    
-    
-  end
-  
-
-  
+    def self.param(string)
+      return string.gsub(" ","_")
+    end
+   
   
 end

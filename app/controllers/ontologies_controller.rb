@@ -9,13 +9,12 @@ class OntologiesController < ApplicationController
   # GET /ontologies
   # GET /ontologies.xml
   def index
- #   loadProtege()
-   # @ontologies = Ontology.find(:all) -- Active Record
-    @ontologies = DataAccess.getOntologyList() # -- WebService
-    @notes={}
+    @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
+    
+    @notes={} # Gets list of notes for the ontologies
     for ont in @ontologies
+      #gets last note.. not the best way to do this
       note = MarginNote.find(:first,:conditions=>{:ontology_id => ont.name},:order=>'margin_notes.id desc',:include=>:user)
-
       unless note.nil?
         @notes[ont.name]=note
       end
@@ -30,15 +29,14 @@ class OntologiesController < ApplicationController
   # GET /ontologies/1
   # GET /ontologies/1.xml
   def show
-    @ontology = DataAccess.getOntology(undo_param(params[:ontology]))
-    
+    @ontology = DataAccess.getOntology(undo_param(params[:ontology])) # shows the metadata    
   end
 
 
-  # GET/ontologies/(id)/visualize
+  # GET /visualize/:ontology
   def visualize
     
-    sids = []
+    sids = [] #holds the tread IDs
     
     #Set the ontology we are viewing
     @ontology = OntologyWrapper.new()
@@ -55,47 +53,38 @@ class OntologiesController < ApplicationController
       @concept = DataAccess.getNode(@ontology.name,@root.children.first.id)
    
    
-      sids << spawn(:method => :thread) do
+      sids << spawn(:method => :thread) do #threading to improve speed
         #gets the initial mappings
         @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.name, :source_id => @concept.id},:include=>:user)
-        @mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
+        #@mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
         #gets the initial margin notes
         @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @ontology.name, :concept_id => @concept.id,:parent_id => nil},:include=>:user)
         @margin_note = MarginNote.new
         @margin_note.concept_id = @concept.id
         @margin_note.ontology_id = @ontology.name
-        
-        puts "---------------------------------"
-        puts "Finished Gathering Database Info"
-        puts "---------------------------------"
+              
       end
       
       
       
-      #gets the initial Ontrez Results
+    
      
       @resources = []
       sids << spawn(:method => :thread) do
+        
+          #gets the initial Ontrez Results
+          
         if(@concept.properties["UMLS_CUI"]!=nil)
           #@resources = OntrezService.gatherResourcesCui(@concept.properties["UMLS_CUI"])
         else
           @resources = OBDWrapper.gatherResources(@ontology.to_param,@concept.id.gsub("_",":"))
-        end
-        
-              puts "---------------------------------"
-        puts "Finished Gathering Ontrez Info"
-        puts "---------------------------------"
-  
-        
+        end        
       end
-      
-            puts "---------------------------------"
-        puts "Waiting......"
-        puts "---------------------------------"
+           
   
-      wait(sids)
+      wait(sids) #wait for threads to finish
          
-    update_tab(@ontology.name,@concept.id)
+    update_tab(@ontology.name,@concept.id) #update the tab with the current concept
     
   
     respond_to do |format|
@@ -104,36 +93,5 @@ class OntologiesController < ApplicationController
     end
   end
 
-  # GET /ontologies/new
-  #not implemented
-  def new
   
-  end
-
-  # GET /ontologies/1;edit
-  #not implemented
-  def edit
-   
-  end
-
-  # POST /ontologies
-  # POST /ontologies.xml
-  #not implemented
-  def create
-    
-  end
-
-  # PUT /ontologies/1
-  # PUT /ontologies/1.xml
-  #not implemented
-  def update
- 
-  end
-
-  # DELETE /ontologies/1
-  # DELETE /ontologies/1.xml
-  #not implemented
-  def destroy
-   
-  end
 end

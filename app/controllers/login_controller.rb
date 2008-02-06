@@ -5,17 +5,18 @@ class LoginController < ApplicationController
   
   layout 'home'
   def index
-    
+    #sets the redirect properties
+    session[:redirect]={:ontology=>undo_param(params[:redirect]),:tab=>params[:tab]}   
   end
   
   
-  def create
+  def create # logs in a user
       @user = User.new(params[:user])
       logged_in_user = @user.try_to_login
       if logged_in_user
         session[:user] = logged_in_user
         flash[:notice] = "Welcome "+@user.user_name.to_s+"."
-        redirect_to_home
+        redirect_to_history
       else
         flash[:notice] = "Invalid user name/password combination"
         render :action=>'index'
@@ -24,7 +25,7 @@ class LoginController < ApplicationController
   
   # DELETE /login
   # DELETE /login.xml
-  def destroy
+  def destroy #logs out a user
     session[:user] = nil
     flash[:notice] = "Logged out"
     redirect_to_home
@@ -35,7 +36,7 @@ class LoginController < ApplicationController
     
   end
   
-  def send_pass
+  def send_pass #sends a new password to the user
     user = User.find(:first,:conditions=>{:email=>params[:email]})
     if user.nil?
       flash[:notice]="No user was created with that email address"

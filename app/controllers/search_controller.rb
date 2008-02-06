@@ -4,23 +4,13 @@ class SearchController < ApplicationController
     @ontologies = DataAccess.getOntologyList() 
   end
   
-  def concept
-    puts params[:ontology]
-    puts params[:name]
-    @concepts = DataAccess.getNodeNameContains([undo_param(params[:ontology])],params[:name])
-    puts "In Search Controller: #{@concepts}"
-    for concept in @concepts
-    puts "-----"
-    puts concept
-    puts "-----"
-    puts concept.name
-    puts concept.id
-    end
+  def concept #search for concept for mappings
+    @concepts = DataAccess.getNodeNameContains([undo_param(params[:ontology])],params[:name])    
     @ontology_name = undo_param(params[:ontology])
     render :partial => 'concepts'    
   end
   
-  def concept_preview
+  def concept_preview #get the priview of the concept for mapping
     @ontology = OntologyWrapper.new
     @ontology.name=undo_param(params[:ontology])
     @concept = DataAccess.getNode(undo_param(params[:ontology]),params[:id])
@@ -28,7 +18,7 @@ class SearchController < ApplicationController
     render :partial =>'concept_preview'
   end
   
-  def search
+  def search # full search
     
     @results = []
     @ontologies = params[:search][:ontologies]

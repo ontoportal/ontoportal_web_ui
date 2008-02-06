@@ -7,11 +7,11 @@ class OntrezService
   #    @ = Ontology Name
   
   ONTREZ_URL="http://ncbolabs-dev1.stanford.edu:8080/Ontrez_v1_API"
-  CLASS_STRING="/result/ontology/@/classID/#"
+  CLASS_STRING="/result/ontology/@/classID/#/from/0/number/15"
   
-  class << self
+  
     
-    def gatherResources(ontology_name,concept_id)
+    def self.gatherResources(ontology_name,concept_id)
       resources = []
 
       doc = REXML::Document.new(open(ONTREZ_URL+CLASS_STRING.gsub("@",ontology_name).gsub("#",concept_id)))
@@ -19,6 +19,7 @@ class OntrezService
       puts "Retrieved Doc"
       puts "--------------"
       puts "Beginning Parsing"
+      puts doc.inspect
     doc.elements.each("*/resultLines/ontrez\.user\.OntrezResultLine"){ |element|    
       
       resource = Resource.new   
@@ -34,7 +35,7 @@ class OntrezService
           resource.context_numbers[entry.elements["string"].get_text.value]=entry.elements["int"].get_text.value    
       }
     
-      element.elements["lineAnnotations"].elements.each("ontrez\.annotation\.Annotation") {|annot|
+      element.elements["lineDetails"].elements["lineAnnotations"].elements.each("ontrez\.annotation\.Annotation") {|annot|
           annotation = Annotation.new
           annotation.local_id = annot.elements["elementLocalID"].get_text.value
           annotation.term_id = annot.elements["termID"].get_text.value
@@ -57,7 +58,7 @@ class OntrezService
     
   
   
-  end
+ 
    
 end
 
