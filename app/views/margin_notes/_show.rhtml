@@ -22,7 +22,7 @@ javascripts = "resetNoteForm(#{uniq});toggleHide('form','');toggleHide('buttons'
 <% remote_form_for(:margin_note, :url => margin_notes_path,:update =>"notes",:complete=>"#{javascripts}") do |f| %>
 	<%=hidden_field 'margin_note', 'concept_id'%>
 	<%unless @ontology.nil?%>
-	<%=hidden_field 'margin_note', 'ontology_id', :value=>@ontology.name%>
+		<%=hidden_field 'margin_note', 'ontology_id', :value=>@ontology.name%>
 	<%end%>
 	<%=hidden_field 'margin_note', 'mapping_id'%>
 	<%=hidden_field 'margin_note', 'parent_id', :id=>'noteParent'%>
@@ -57,7 +57,7 @@ javascripts = "resetNoteForm(#{uniq});toggleHide('form','');toggleHide('buttons'
 <div id="buttons" style="clear:both;">
 <%if session[:user].nil? %>
 	<br>
-	<%=link_to "Log In to Add Marginal Notes",:controller=>'login'%>
+	<input type="button" class ="blueButton" value="New Thread" onclick ="window.location='/login?redirect=<%=@ontology.to_param%>'"> 
 <%else%>
 	<input type="button" class ="blueButton" value="New Thread" onclick ="buildEditor('<%=uniq%>');toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='';"> 
 <%end%>

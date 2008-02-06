@@ -1,6 +1,6 @@
 <br>
 <%if session[:user].nil?%>
-	<%=link_to "Log In to Add Mappings",:controller=>'login'%>
+	<input type="button" class ="blueButton" value="New Point-to-Point Mapping" onclick ="window.location='/login?redirect=<%=@ontology.to_param%>'"> 
 <%else%>
 <span class="blueButton"><%=link_to_prototype_dialog( "New Point-to-Point Mapping", {:url =>new_mapping_path(:ontology=>@ontology,:source_id =>@concept.id,:source_name =>@concept.name), :options=> {:method=> 'get'}},'form', {:title => "New Mapping  For #{remove_owl_notation(@concept.name)}", :width =>800,:height=>600})%></span>
 <%end%>

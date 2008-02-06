@@ -45,50 +45,5 @@
 
 </table>
 
-<h3>Mappings To <%=@concept.name%></h3>
-<table class="mapping" cellpadding="0" cellspacing="0">
-	<tr>
-		<th>Mapping From</th>
-		<th>Mapped By</th>
-		<th>Mapped On</th>
-		<th>Marginal Notes</th>
-	</tr>
-<!--	<tr>
-		<td align="left" class="label"colspan="4">Human Mappings</td>
-	</tr> -->
-	<%if @mappings_from.size<1%>
-	<tr>
-		<td colspan="4">There are currently no mappings for this concept.</td>
-	</tr>
-	<%end%>
-	
-	<%for map in @mappings_from%>
-	<% dest_node = map.dest_node%>
-		<%if map.map_type.eql?("Human")%>
 
-	<tr class="human">
-		<td><%= link_to "#{dest_node.name} (#{dest_node.ontology_name})" , uri_url(:ontology=>to_param(dest_node.ontology_name),:id =>dest_node.id) %></td>
-		<td><%=map.user.user_name%></td>
-		<td><%=map.created_at.strftime("%m/%d/%y")%></td> 
-		<td> <%=link_to_prototype_dialog( "View Marginal Notes", {:url =>"/margin_notes/show?mapping_id=#{map.id}", :options=> {:method=> 'get'}},'form', {:title => "Margin Notes for Mapping: #{dest_node.ontology_name.titleize} => #{dest_node.name.titleize}", :width =>700,:height=>400})%></td>
-	</tr>
-		<%end%>
-	<%end%>
-	
-<!--	<tr>
-		<td align="left" class="label" colspan="4">Automated Mappings</td>
-	</tr>-->
-	<%for map in @mappings_from%>
-		<%if map.map_type.eql?("Automatic")%>
-			<% dest_node = map.dest_node%>	
-	<tr class="auto">
-		<td><%= link_to "#{dest_node.name} (#{dest_node.ontology_name})", uri_url(:ontology=>to_param(dest_node.ontology_name),:id =>dest_node.id) %></td>
-		<td><%=map.user.user_name%></td>
-		<td><%=map.created_at.strftime("%m/%d/%y")%></td> 
-			<td> <%=link_to_prototype_dialog( "View Marginal Notes", {:url =>"/margin_notes/show?mapping_id=#{map.id}", :options=> {:method=> 'get'}},'form', {:title => "Margin Notes for Mapping: #{dest_node.ontology_name.titleize} => #{dest_node.name.titleize}", :width =>700,:height=>400})%></td>
-		</tr>
-		<%end%>
-	<%end%>
-
-</table>
 
