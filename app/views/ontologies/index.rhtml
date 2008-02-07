@@ -8,7 +8,7 @@
 	<th>Author</th>
 	<th>Date</th>
 	<th>Latest Note</th>
-	<th></th>
+	<th>&nbsp;</th>
   </tr>
   
 <% for ontology in @ontologies %>
@@ -16,13 +16,13 @@
 	<td><%=link_to ontology.name, ontology_url(:ontology => ontology)%></td>
 	<td><%=ontology.coreFormat%></td>
 	<td><%=ontology.currentVersion%></td>
-	<td></td>
-	<td></td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
 	<td><% unless @notes[ontology.name].nil?%>
 		<%=@notes[ontology.name].subject%> By: <%=@notes[ontology.name].user.user_name%>
 		<br>
 		<%=truncate(@notes[ontology.name].comment,100)%><%end%>
-		</td>
+	&nbsp;</td>
 	<td><%if ontology.currentVersion.eql?("See Remote Site")%>Visualization Unavailable<%else%><%=link_to "Visualize", visualize_url(:ontology => ontology)%><%end%></td>
   </tr>
 <% end %>

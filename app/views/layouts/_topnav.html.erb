@@ -13,12 +13,9 @@
 		<%unless session[:ontologies].nil?%>
 			<%for tab in session[:ontologies]%>
 				<%if !@ontology.nil? && @ontology.name.eql?(tab.ontology)%>
-				<li id="tab<%=to_param(tab.ontology)%>" class="selected"><%=link_to "<em>#{tab.ontology} &nbsp;&nbsp;</em>",uri_url(:ontology=>to_param(tab.ontology),:id=>tab.concept)%></li>
-				<li><a href='#' id="closeTab_select" onclick="remove_tab(this,'<%=to_param(tab.ontology)%>',true)">(X)</a></li>
+				<li id="tab<%=to_param(tab.ontology)%>" class="selected"><%=link_to "<em>#{tab.ontology} &nbsp;&nbsp;<span class=\"close\" onclick=\"remove_tab(this,'#{to_param(tab.ontology)}',true);return false;\">(X)</span></em>",uri_url(:ontology=>to_param(tab.ontology),:id=>tab.concept)%></li>				
 				<%else%>
-				<li id="tab<%=to_param(tab.ontology)%>" ><%=link_to "<em>#{tab.ontology} &nbsp;&nbsp;</em>",uri_url(:ontology=>to_param(tab.ontology),:id=>tab.concept)%></li>
-				<li><a href='#'  id="closeTab" onclick="remove_tab(this,'<%=to_param(tab.ontology)%>',false)">(X)</a></li>
-				
+				<li id="tab<%=to_param(tab.ontology)%>" ><%=link_to "<em>#{tab.ontology} &nbsp;&nbsp; <span class=\"close\" onclick=\"remove_tab(this,'#{to_param(tab.ontology)}',false)\">(X)</span></em>",uri_url(:ontology=>to_param(tab.ontology),:id=>tab.concept)%></li>
 				<%end%>
 			<%end%>
 		<%end%>

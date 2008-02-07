@@ -349,11 +349,18 @@ function update_tab(ontology,concept){
 
 
 function remove_tab(link,ontology,redirect){
-	
+
 	
 			var responseSuccess = function(o)
 			{
-				
+				if(redirect){
+					window.location="/ontologies"
+				}else{
+					tab= document.getElementById("tab"+ontology)		
+					parent = tab.parentNode	
+					parent.removeChild(tab)
+		
+				}
 				
 			}
 
@@ -371,16 +378,7 @@ function remove_tab(link,ontology,redirect){
 			// Show the Panel 
 			var cObj = YAHOO.util.Connect.asyncRequest("GET","/tab/remove/"+ontology,callback);
 	
-	if(redirect){
-					window.location="/ontologies"
-	}else{
-		tab= document.getElementById("tab"+ontology)
-		xbutton = link.parentNode
-		parent = xbutton.parentNode
 	
-		parent.removeChild(tab)
-		parent.removeChild(xbutton)
-	}
 
 
 }

@@ -616,28 +616,13 @@ h4{
 	font-weight:bold;	
 	margin-right:10px;
 }	
-
-#closeTab{
+.close{
 	font-size:11px;
-
-	background:none;
-	border:0px;
+	margin:0px;
+	display:inline;
+	padding:0px;
 	position:relative;
-	color:black;
-	top:-18px;
-	left:-20px;
-	
-	
-}
-#closeTab_select{
-	font-size:12px;
+	top:-5px;
 	font-weight:bold;
-	background:none;
-	border:0px;
-	position:relative;
-	color:white;
-	top:-21px;
-	left:-22px;
-	
-	
 }
+
