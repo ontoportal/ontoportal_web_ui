@@ -83,6 +83,7 @@ class ConceptsController < ApplicationController
     #find path to root    
     path = @concept.path_to_root
     
+    puts "Path is #{path.inspect}"
     # create path and top nodes
     @root = TreeNode.new()
     @root.set_children(DataAccess.getTopLevelNodes(@concept.ontology_name))
@@ -98,15 +99,18 @@ class ConceptsController < ApplicationController
     if target.nil?
       return
     end
+    puts "Looking for #{target}"
     for child in children_list
       if child.id.eql?(target.id)
         found = true
         child.set_children(DataAccess.getChildNodes(child.ontology_name,child.id,nil))
+        puts "#{target} found.. expanding..."
         expand_tree(child.children,path_array)
       end
     end
     
     if !found #failsafe for a node that isnt considered a 'top node' e.g. Amino Acids Ontology
+      puts "calling the failsafe"
       expand_tree(children_list,path_array)
     end
     

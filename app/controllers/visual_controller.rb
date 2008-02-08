@@ -1,7 +1,7 @@
 class VisualController < ApplicationController
   
   def jam
-    @concept = params[:id].gsub("_",":")
+    @concept = params[:id]
     @ontology = params[:ontology]
   end
   

@@ -15,8 +15,7 @@ class OntologyWrapper
   "HL7"=>4
   
   }
-  
-  
+   
   
  
   def to_param    

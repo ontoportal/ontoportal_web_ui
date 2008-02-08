@@ -10,7 +10,7 @@
 			<ul>
 			<li><label>Ontology Name:</label><%=@ontology.name%></li>
 			<li><label>Content Location:</label> </li>			
-			<li><label>Format:</label> <%=@ontology.coreFormat%></li>
+			<li><label>Format:</label> <%if @ontology.coreFormat.eql?("OBO")%><%=@ontology.coreFormat+"F"%><%else%><%=@ontology.coreFormat%><%end%></li>
 			<li><label>Categories:</label></li>
 			<li><label>Keywords:</label></li>
 			<li><label>Key Classes/Types:</label></li>
@@ -48,6 +48,6 @@
 			<td><%=@ontology.releaseDate%></td>
 			<td></td>
 			<td><a href="<%=@ontology.downloadPath%>">Download (100.00KB)</a></td>
-			<td><%=link_to "Visualize",visualize_url(:ontology => @ontology)%></td>
+			<td><%=link_to "Explore",visualize_url(:ontology => @ontology)%></td>
 		</tr>
 	</table>

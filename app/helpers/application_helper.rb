@@ -73,9 +73,13 @@ module ApplicationHelper
           <div class=\"messages\">
             <div>
               <div>
-               #{notetext}
-                <div id=\"insert\"><a href=\"\#\" onclick =\"buildEditor('#{key}');toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='#{note.id}'\">Reply</a></div>
-              </div>
+               #{notetext}"
+               if session[:user].nil?
+                 output << "<div id=\"insert\"><a href=\"\/login?redirect=#{@ontology.to_param}\">Reply</a></div>"
+               else
+                output << "<div id=\"insert\"><a href=\"\#\" onclick =\"buildEditor('#{key}');toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='#{note.id}'\">Reply</a></div>"
+               end
+   output << "</div>
             </div>
           </div>
           <div class=\"messages_bottom\">
@@ -124,7 +128,7 @@ module ApplicationHelper
       end
     
       
-        string <<"var myobj = \{ label: \"#{child.name} #{icons}\", id:\"#{child.id}\",href:\"javascript:onClickTreeNode('#{child.id}')\" \};\n
+        string <<"var myobj = \{ label: \"#{child.name} #{icons}\", id:\"#{child.id}\",href:\"javascript:onClickTreeNode('#{child.id}','#{child.name}')\" \};\n
     		   		    var Node#{child.id.to_s.gsub(":","")} = new YAHOO.widget.MenuNode(myobj, #{parent}, #{child.expanded});\n"
     		   		
     				if child.child_size>0 && !child.expanded

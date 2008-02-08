@@ -9,8 +9,8 @@ class BioPortalWebservice
   class << self
     
       #WSDL_URL = "http://ncbo-bioportal1.stanford.edu/ncboservicebeans/NCBOWebserviceBean?wsdl" 
-      WSDL_URL = "http://ncbo-bioportal-stage1.stanford.edu/ncboservicebeans/NCBOWebserviceBean?wsdl" 
-      #WSDL_URL = "http://www.bioontology.org/ncboservicebeans/NCBOWebserviceBean?wsdl"
+      #WSDL_URL = "http://ncbo-bioportal-stage1.stanford.edu/ncboservicebeans/NCBOWebserviceBean?wsdl" 
+      WSDL_URL = "http://www.bioontology.org/ncboservicebeans/NCBOWebserviceBean?wsdl"
       #WSDL_URL = "http://171.65.32.37/ncboservicebeans/NCBOWebserviceBean?wsdl"
       #WSDL_URL = "http://cbioaptst.stanford.edu/ncboservicebeans/NCBOWebserviceBean?wsdl" 
   

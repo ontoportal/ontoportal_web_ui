@@ -39,14 +39,10 @@ class TreeNode
   end
     
    def expanded
-     puts "calling expanded"
      if !children.nil? && children.length>0
-       puts "I have children"
       return true
      else
-      puts "I dont have children"
-      return false
-      
+      return false      
      end
    end
    def to_s

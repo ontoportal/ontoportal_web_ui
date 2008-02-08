@@ -3,9 +3,10 @@
 	<option value="root">Show Hierarchy To Root</option>
 </select>
 <%if false%>
-<%=link_to "Visualize", jam_url(:id => @concept.properties["code"],:ontology=>@concept.ontology_name.to_param) ,:target=>"new"%>
-<br>
+<%=link_to "Visualize", jam_url(:id => @concept.id,:ontology=>@concept.ontology_name.to_param) ,:target=>"new"%>
 <%end%>
+<br>
+
 <div id="neighbor" name="images">
 <%=@concept.networkNeighborhood%>
 </div>

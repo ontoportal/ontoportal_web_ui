@@ -42,7 +42,7 @@ class NodeWrapper
      DataAccess.getNetworkNeighborhoodImage(self.ontology_name,self.id,relationships)
    end
    
-   def pathToRootImage(relationships = nil)         
+   def pathToRootImage(relationships = nil) 
      DataAccess.getPathToRootImage(self.ontology_name,self.id,relationships)
    end
    
@@ -51,8 +51,8 @@ class NodeWrapper
    end
    
    def parent(relationship=["is_a"])
-     # Only returning the first instance for now, some concepts have mulitple parents!
-     DataAccess.getParentNodes(self.ontology_name,self.id,relationship).first
+    
+     DataAccess.getParentNodes(self.ontology_name,self.id,relationship)
    end
    
    def path_to_root

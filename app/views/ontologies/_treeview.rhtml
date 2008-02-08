@@ -7,7 +7,7 @@
 
 // adds a node to the tree
 function addTreeNode(rootNode, nodeInfo) {
-		var newNodeDetails = "javascript:onClickTreeNode('" + nodeInfo.ontology_node_id + "');";
+		var newNodeDetails = "javascript:onClickTreeNode('" + nodeInfo.ontology_node_id + "','"+nodeInfo.ontology_node_name+"');";
 		var newNodeData = { label:nodeInfo.ontology_node_name, id:nodeInfo.ontology_node_id, href:newNodeDetails };
 		var newNode = new YAHOO.widget.MenuNode(newNodeData, rootNode, false);
 		if (nodeInfo.ontology_node_child_count > 0) {
@@ -31,7 +31,7 @@ function loadNodeData(node, fnLoadComplete) {
 				for (var i=0; i < respObj.nodes.length; i++) {
 //					var name = respObj.nodes[i].ontology_node_name + " (" + respObj.nodes[i].ontology_node_parent_assoc + ")";
 					var name = respObj.nodes[i].ontology_node_name;
-					var nodeDetails = "javascript:onClickTreeNode('" + respObj.nodes[i].ontology_node_id + "');";
+					var nodeDetails = "javascript:onClickTreeNode('" + respObj.nodes[i].ontology_node_id + "','"+name+"');";
 					var newNodeData = { label:name, id:respObj.nodes[i].ontology_node_id, href:nodeDetails };
 					var newNode = new YAHOO.widget.MenuNode(newNodeData, node, false);
 					if (respObj.nodes[i].ontology_node_child_count > 0) {
@@ -108,8 +108,11 @@ function loadNodeData(node, fnLoadComplete) {
 		}
 		
 		// what happens when someone clicks the LABEL of the tree nodes
-		function onClickTreeNode(node_id) {
+		function onClickTreeNode(node_id,node_label) {
 		
+			// sets the label
+			document.getElementById("name_label").firstChild.nodeValue=node_label
+			 
 			
 			var responseSuccess = function(o)
 			{
