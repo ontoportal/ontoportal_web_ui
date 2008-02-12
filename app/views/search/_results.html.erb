@@ -1,12 +1,12 @@
 <table class="ontologies" cellpadding="0" cellspacing="0">
 	<% for ontology in @ontologies%>
 	<tr>
-		<th colspan=2><%=ontology%></th>
+		<th colspan=2><b><%=ontology%></b></th>
 	</tr>
 		<%for result in @results%>
 			<% if result.ontology_name.eql?(ontology)%>
 				<tr class="<%= cycle("odd", "even")%>">
-					<td><%=highlight(result.name,@keyword)%></td><td><%=link_to "Visualize",uri_url(:ontology=>ontology,:id=>result.id)%></td>
+					<td><%=highlight(result.name,@keyword)%></td><td><%=link_to "Explore",uri_url(:ontology=>ontology,:id=>result.id)%></td>
 				</tr>
 			<%end%>	
 		

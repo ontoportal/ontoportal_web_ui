@@ -69,7 +69,7 @@ class DataAccess
     def self.getNodeNameContains(ontologies,search)      
       if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil?
         results = SERVICE.getNodeNameContains(ontologies,search)
-        CACHE.set("#{param(ontologies.join("|"))}::_search::#{search}",results)
+        CACHE.set("#{param(ontologies.join("|"))}::_search::#{param(search)}",results)
         return results
       else
         return CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}")
