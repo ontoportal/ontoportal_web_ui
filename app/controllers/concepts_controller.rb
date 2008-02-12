@@ -66,7 +66,7 @@ class ConceptsController < ApplicationController
        #Connects to the ontrez service to gather resources
                     
         if(@concept.properties["UMLS_CUI"]!=nil)
-          #@resources = OntrezService.gatherResourcesCui(@concept.properties["UMLS_CUI"])
+          @resources = OBDWrapper.gatherResourcesCui(@concept.properties["UMLS_CUI"])
         else
           @resources = OBDWrapper.gatherResources(@ontology.to_param,@concept.id.gsub("_",":"))
         end

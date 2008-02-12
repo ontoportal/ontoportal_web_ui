@@ -72,10 +72,9 @@ class OntologiesController < ApplicationController
       @resources = []
       sids << spawn(:method => :thread) do
         
-          #gets the initial Ontrez Results
-          
+        #gets the initial Ontrez Results          
         if(@concept.properties["UMLS_CUI"]!=nil)
-          #@resources = OntrezService.gatherResourcesCui(@concept.properties["UMLS_CUI"])
+          @resources = OBDWrapper.gatherResourcesCui(@concept.properties["UMLS_CUI"])
         else
           @resources = OBDWrapper.gatherResources(@ontology.to_param,@concept.id.gsub("_",":"))
         end        

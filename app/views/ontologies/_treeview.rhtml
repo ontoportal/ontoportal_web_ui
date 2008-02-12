@@ -31,7 +31,11 @@ function loadNodeData(node, fnLoadComplete) {
 				for (var i=0; i < respObj.nodes.length; i++) {
 //					var name = respObj.nodes[i].ontology_node_name + " (" + respObj.nodes[i].ontology_node_parent_assoc + ")";
 					var name = respObj.nodes[i].ontology_node_name;
-					var nodeDetails = "javascript:onClickTreeNode('" + respObj.nodes[i].ontology_node_id + "','"+name+"');";
+					
+					var text_name = name.split("<")[0]
+					
+					
+					var nodeDetails = "javascript:onClickTreeNode('" + respObj.nodes[i].ontology_node_id + "','"+text_name+"');";
 					var newNodeData = { label:name, id:respObj.nodes[i].ontology_node_id, href:nodeDetails };
 					var newNode = new YAHOO.widget.MenuNode(newNodeData, node, false);
 					if (respObj.nodes[i].ontology_node_child_count > 0) {

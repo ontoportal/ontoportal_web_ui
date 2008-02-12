@@ -129,7 +129,7 @@ obj.wiredump_dev = STDOUT
 #   result          NCBOOntologyList - {http://org.ncbo.stanford.server/beans}NCBOOntologyList
 #
 
-puts obj.getNCBOOntologies
+#puts obj.getNCBOOntologies
 
 # SYNOPSIS
 #   getNCBOOntologiesByCategory(string_1)

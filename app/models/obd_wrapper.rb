@@ -5,19 +5,33 @@ class OBDWrapper
   
   def self.gatherResources(ontology,concept)
     if CACHE.get("#{ontology}::#{concept}_resource").nil?
-       #begin
-        
+      begin
         resources = OntrezService.gatherResources(ontology,concept)
         CACHE.set("#{ontology}::#{concept}_resource",resources)
         return resources
-      # rescue Exception => e
-      #  puts e 
-       #   return []
-      # end
+      rescue Exception => e
+        puts e 
+        return []
+      end
                   
     else
       return CACHE.get("#{ontology}::#{concept}_resource")
     end
+  end
+  
+  def self.gatherResourcesCui(cui)
+    if CACHE.get("CUI::#{cui}_resource").nil?
+      begin        
+        resources = OntrezService.gatherResourcesByCui(cui)
+        CACHE.set("CUI::#{cui}_resource",resources)
+        return resources
+      rescue Exception => e
+        puts e 
+        return []
+      end                  
+    else
+      return CACHE.get("CUI::#{cui}_resource").nil?
+    end    
   end
   
   

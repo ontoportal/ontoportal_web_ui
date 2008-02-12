@@ -1,6 +1,6 @@
 <select value="neighbor" onchange="toggleHide(this.value,'images')">	
 	<option value="neighbor">Show Network Neighborhood</option>
-	<option value="root">Show Hierarchy To Root</option>
+	<option value="root">Show Hierarchy To Root (All Relationships)</option>
 </select>
 <%if false%>
 <%=link_to "Visualize", jam_url(:id => @concept.id,:ontology=>@concept.ontology_name.to_param) ,:target=>"new"%>

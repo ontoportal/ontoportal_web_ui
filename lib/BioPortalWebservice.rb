@@ -125,7 +125,27 @@ class BioPortalWebservice
         
       end
       
-      
+       def getNodeNameExactMatch(ontologies,search)
+        puts "Ontologies: #{ontologies} Term: #{search}"
+         
+          nodes =[]
+          stringList = StringList.new(1,ontologies)
+          results = @@soap.getNodeNameExactMatch(stringList,search,true)
+
+          for result in results
+            for search_result in  result.result
+              label = search_result.ontologyDisplayLabel
+                for remote_node in search_result.nodeBeanArr  
+                node= NodeWrapper.new(remote_node)
+                node.ontology_name = label
+                puts node.name
+                nodes << node
+                end
+            end  
+          end
+          return nodes
+       end   
+         
        def getNodeNameContains(ontologies,search)
          puts "Ontologies: #{ontologies} Term: #{search}"
          

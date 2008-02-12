@@ -377,8 +377,16 @@ function remove_tab(link,ontology,redirect){
 
 			// Show the Panel 
 			var cObj = YAHOO.util.Connect.asyncRequest("GET","/tab/remove/"+ontology,callback);
-	
-	
-
 
 }
+
+function makeBig(item){
+
+	item.style.fontWeight = "900";
+}
+
+function makeNormal(item){
+	item.style.fontWeight = ""
+	
+}
+

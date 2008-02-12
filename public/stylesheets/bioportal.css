@@ -617,13 +617,15 @@ h4{
 	margin-right:10px;
 }	
 .close{
-	font-size:11px;
+	
 	margin:0px;
 	display:inline;
 	padding:0px;
 	position:relative;
 	top:-5px;
-	font-weight:bold;
+	/*font-weight:bold;*/
+	font-size:11px;
+	
 }
 
 #name_label{
