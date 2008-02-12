@@ -30,7 +30,7 @@ class OBDWrapper
         return []
       end                  
     else
-      return CACHE.get("CUI::#{cui}_resource").nil?
+      return CACHE.get("CUI::#{cui}_resource")
     end    
   end
   
