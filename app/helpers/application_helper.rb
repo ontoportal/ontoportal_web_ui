@@ -128,7 +128,7 @@ module ApplicationHelper
       end
     
       
-        string <<"var myobj = \{ label: \"#{child.name} #{icons}\", id:\"#{child.id}\",href:\"javascript:onClickTreeNode('#{child.id}','#{child.name}')\" \};\n
+        string <<"var myobj = \{ label: \"#{clean(child.name)} #{icons}\", id:\"#{child.id}\",href:\"javascript:onClickTreeNode('#{child.id}','#{clean(child.name)}')\" \};\n
     		   		    var Node#{child.id.to_s.gsub(":","")} = new YAHOO.widget.MenuNode(myobj, #{parent}, #{child.expanded});\n"
     		   		
     				if child.child_size>0 && !child.expanded
