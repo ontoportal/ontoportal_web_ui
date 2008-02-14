@@ -61,7 +61,7 @@ Rails::Initializer.run do |config|
     config.active_record.allow_concurrency=true
 end
 
-
+ExceptionNotifier.exception_recipients = %w(ngriff@stanford.edu) 
 
 ActionMailer::Base.smtp_settings = {
   :address  => "smtp.stanford.edu",
