@@ -80,6 +80,14 @@ class OntologiesController < ApplicationController
         end        
       end
            
+           
+           
+       # for demo only
+      if @ontology.name.eql?("Software Resource Ontology")
+        @software = NcbcSoftware.find(:all,:conditions=>{:ontology_label=>@concept.id})        
+      end
+      #------------------
+           
   
       wait(sids) #wait for threads to finish
          

@@ -14,7 +14,10 @@
         	<li ><a href="#tab2"><em>Details</em></a></li>
         	<li><a href="#tab3"><em>Marginal Notes</em></a></li>
 			<li><a href="#tab4"><em>Mappings</em></a></li>		
-			<li><a href="#tab5"><em>Resources</em></a></li>			
+			<li><a href="#tab5"><em>Resources</em></a></li>
+			<%if @ontology.name.eql?("Software Resource Ontology")%>			
+			<li><a href="#tab6"><em>NCBC Software</em></a></li>
+			<%end%>
     	</ul> 
 		   
 		        
@@ -24,6 +27,9 @@
 			<div id="tab3"><%=render :partial =>'/margin_notes/show'%></div>
 			<div id="tab4"><%=render :partial =>'/mappings/concept_mappings'%></div>
 			<div id="tab5"><%=render :partial =>'/concepts/resources'%></div>
+			<%if @ontology.name.eql?("Software Resource Ontology")%>	
+				<div id="tab6"><%=render :partial =>'/concepts/software'%></div>
+			<%end%>
     	</div>
 	</div>
 </div>

@@ -73,6 +73,12 @@ class ConceptsController < ApplicationController
        
     end
     
+    
+     if @ontology.name.eql?("Software Resource Ontology")
+        @software = NcbcSoftware.find(:all,:conditions=>{:ontology_label=>@concept.id})        
+      end
+    
+    
     wait(sids) #waits for threads to finish
     
     update_tab(@ontology.name,@concept.id) #updates the 'history' tab with the current node
