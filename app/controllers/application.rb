@@ -29,8 +29,10 @@ class ApplicationController < ActionController::Base
     name.gsub(' ',"_")
   end
   
-  def undo_param(name) #Undo Paramaterization
-    name.gsub('_'," ")
+  def undo_param(name) #Undo Paramaterization   
+    unless name.nil?
+      name.gsub('_'," ")
+    end
   end
   
   def redirect_to_browse # Redirect to the browse Ontologies page
@@ -43,7 +45,7 @@ class ApplicationController < ActionController::Base
   
   def redirect_to_history # Redirects to the correct tab through the history system
     if session[:redirect].nil?
-      redirect_to_home
+      redirect_to_home    
     else
       tab = find_tab(session[:redirect][:ontology])
       session[:redirect]=nil

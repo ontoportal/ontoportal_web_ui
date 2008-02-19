@@ -1,7 +1,7 @@
 
 <span style="float:right">
 	<%if session[:user].nil?%>
-		<%=link_to "Sign In" ,:controller =>'login'%> &nbsp; <%=link_to "Register", new_user_path%>
+		<%=link_to "Sign In" ,:controller =>'login'%> &nbsp; <%=link_to "Register", new_user_path(:redirect=>@ontology)%>
 	<%else%>
 		<%=link_to "My Account", edit_user_path(session[:user])%>
 		<%=link_to "Log Out",logout_url%>

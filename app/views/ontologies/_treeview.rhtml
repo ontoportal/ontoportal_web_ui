@@ -128,7 +128,10 @@ function loadNodeData(node, fnLoadComplete) {
 							document.getElementById('tab3').innerHTML=tabData[2]
 							document.getElementById('tab4').innerHTML=tabData[3]
 							document.getElementById('tab5').innerHTML=tabData[4]	
+							
+								<%if @ontology.name.eql?("Software Resource Ontology")%>		
 							document.getElementById('tab6').innerHTML=tabData[5]				
+							<%end%>
 							
 					 tree.draw();
 						YAHOO.wait.container.wait.hide();
@@ -155,7 +158,9 @@ function loadNodeData(node, fnLoadComplete) {
 			document.getElementById('tab3').innerHTML=tabData[2]
 			document.getElementById('tab4').innerHTML=tabData[3]
 			document.getElementById('tab5').innerHTML=tabData[4]	
+			<%if @ontology.name.eql?("Software Resource Ontology")%>		
 			document.getElementById('tab6').innerHTML=tabData[5]	
+			<%end%>
 			 tree.draw();
 			 
 			 update_tab('<%=@ontology.to_param%>',node_id)

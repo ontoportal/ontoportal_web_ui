@@ -6,7 +6,9 @@ class LoginController < ApplicationController
   layout 'home'
   def index
     #sets the redirect properties
-    session[:redirect]={:ontology=>undo_param(params[:redirect]),:tab=>params[:tab]}   
+    unless params[:redirect].nil?
+      session[:redirect]={:ontology=>undo_param(params[:redirect]),:tab=>params[:tab]}   
+    end
   end
   
   

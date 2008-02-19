@@ -73,7 +73,8 @@ class ConceptsController < ApplicationController
        
     end
     
-    
+     # for demo only
+     @software=[]
      if @ontology.name.eql?("Software Resource Ontology")
         @software = NcbcSoftware.find(:all,:conditions=>{:ontology_label=>@concept.id})        
       end
