@@ -127,7 +127,7 @@ class BioPortalWebservice
       
        def getNodeNameExactMatch(ontologies,search)
         puts "Ontologies: #{ontologies} Term: #{search}"
-         
+         begin
           nodes =[]
           stringList = StringList.new(1,ontologies)
           results = @@soap.getNodeNameExactMatch(stringList,search,true)
@@ -144,11 +144,14 @@ class BioPortalWebservice
             end  
           end
           return nodes
+        rescue Exception =>e
+          return []
+        end
        end   
          
        def getNodeNameContains(ontologies,search)
          puts "Ontologies: #{ontologies} Term: #{search}"
-         
+         begin
           nodes =[]
           stringList = StringList.new(1,ontologies)
           results = @@soap.getNodeNameContains(stringList,search,true)
@@ -165,6 +168,9 @@ class BioPortalWebservice
             end  
           end
           return nodes
+         rescue Exception => e
+          return []
+         end
         end
         
          def getNetworkNeighborhoodImage(ontology,node_id,associations=nil)
