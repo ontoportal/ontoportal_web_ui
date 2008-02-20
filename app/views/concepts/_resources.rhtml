@@ -15,20 +15,18 @@
 
 		<% if resource.count >0%>
        <tr name = "annotations" id = "<%="annotation#{index}"%>" style="display:none;"><td colspan=3>
-        <table class="annotations" cellpadding=0 cellspacing=0>
-        <tr>
-           <th>Element ID</th>
-           <th>Annotation Context</th>
-           <th>Element Link</th>
-         </tr>
-           
+        <table class="annotations" cellpadding=0 cellspacing=0>                   
         
       	<%end%>
       
      <% for annotation in resource.annotations%>
-       <tr>
-          <td><%=annotation.local_id%></td><td><%=annotation.item_key%></td><td><a href="<%=annotation.url%>" target="_new">View Element</a></td>
-       </tr>
+	 <%color = cycle("even","odd") %>
+       <tr class="<%=color%>" >
+          <td colspan="2" style="padding:3px;"><a href="<%=annotation.url%>" target="_new"><%=annotation.description%></a></td>
+       </tr>	   
+	   <tr  class="<%=color%>" >
+	   		<td style="border-top:0px;padding:3px;">ID: <%=annotation.local_id%></td><td  style="border-top:0px;padding:3px;"> Annotation Context: <%=annotation.item_key%></td>
+	   </tr>
       
 	  <%end%>
       

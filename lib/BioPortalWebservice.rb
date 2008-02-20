@@ -145,6 +145,7 @@ class BioPortalWebservice
           end
           return nodes
         rescue Exception =>e
+          puts e.backtrace.join("\n")
           return []
         end
        end   
@@ -168,10 +169,100 @@ class BioPortalWebservice
             end  
           end
           return nodes
-         rescue Exception => e
+        rescue Exception => e
+          puts e.backtrace.join("\n")
           return []
          end
         end
+        
+        def getNodeNameSoundsLike(ontologies,search)
+         puts "Ontologies: #{ontologies} Term: #{search}"
+         begin
+          nodes =[]
+          stringList = StringList.new(1,ontologies)
+          results = @@soap.getNodeNameSoundsLike(stringList,search,true)
+
+          for result in results
+            for search_result in  result.result
+              label = search_result.ontologyDisplayLabel
+                for remote_node in search_result.nodeBeanArr  
+                node= NodeWrapper.new(remote_node)
+                node.ontology_name = label
+                puts node.name
+                nodes << node
+                end
+            end  
+          end
+          return nodes
+         rescue Exception => e
+          puts e.backtrace.join("\n")
+          return []
+         end
+        end
+        
+                
+        def getAttributeValueContains(ontologies,search)
+         puts "Ontologies: #{ontologies} Term: #{search}"
+         attributes=nil
+         for ontology in ontologies
+           attributes = attributes || @@soap.getAttributesForOntology(ontology)
+           puts attributes.inspect
+         end
+         
+         begin
+          nodes =[]
+          stringList = StringList.new(1,ontologies)
+          results = @@soap.getAttributeValueContains(stringList,search,attributes,true)
+          puts "Results::::: #{results.inspect}"
+          for result in results
+            for search_result in  result.result
+              label = search_result.ontologyDisplayLabel
+                for remote_node in search_result.nodeBeanArr  
+                node= NodeWrapper.new(remote_node)
+                node.ontology_name = label
+                puts node.name
+                nodes << node
+                end
+            end  
+          end
+          return nodes
+        rescue Exception => e
+          puts e.backtrace.join("\n")
+          return []
+         end
+       end
+       
+          def getAttributeValueSoundsLike(ontologies,search)
+         puts "Ontologies: #{ontologies} Term: #{search}"
+          attributes=nil
+         for ontology in ontologies
+           attributes = attributes || @@soap.getAttributesForOntology(ontology)
+           puts attributes.inspect
+         end
+         
+         begin
+          nodes =[]
+          stringList = StringList.new(1,ontologies)
+          results = @@soap.getAttributeValueSoundsLike(stringList,search,attributes,true)
+          puts "Results::::: #{results.inspect}"
+          for result in results
+            for search_result in  result.result
+              label = search_result.ontologyDisplayLabel
+                for remote_node in search_result.nodeBeanArr  
+                node= NodeWrapper.new(remote_node)
+                node.ontology_name = label
+                puts node.name
+                nodes << node
+                end
+            end  
+          end
+          return nodes
+         rescue Exception => e
+          puts e.backtrace.join("\n")
+          return []
+         end
+        end
+       
         
          def getNetworkNeighborhoodImage(ontology,node_id,associations=nil)
             stringList = nil

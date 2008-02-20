@@ -13,7 +13,7 @@
 				options.merge!(ontology.name => ontology.name)
 				end 
 				options = options.sort                     
-                select('search','ontologies',options,{},{:multiple=>true,:size=>8})
+                select('search','ontologies',options,{:selected=>"All"},{:multiple=>true,:size=>8})
                 %>
 	</fieldset>	
 	

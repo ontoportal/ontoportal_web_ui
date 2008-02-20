@@ -13,10 +13,11 @@
         	<li class="selected"><a href="#tab1"><em>Visualization</em></a></li>
         	<li ><a href="#tab2"><em>Details</em></a></li>
         	<li><a href="#tab3"><em>Marginal Notes</em></a></li>
-			<li><a href="#tab4"><em>Mappings</em></a></li>		
-			<li><a href="#tab5"><em>Resources</em></a></li>
+			<li><a href="#tab4"><em>Mappings</em></a></li>					
 			<%if @ontology.name.eql?("Software Resource Ontology")%>			
-			<li><a href="#tab6"><em>NCBC Software</em></a></li>
+			<li><a href="#tab6"><em>Resources</em></a></li>
+			<%else%>
+			<li><a href="#tab5"><em>Resources</em></a></li>
 			<%end%>
     	</ul> 
 		   

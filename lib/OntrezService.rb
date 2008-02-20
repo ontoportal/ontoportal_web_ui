@@ -7,8 +7,9 @@ class OntrezService
   #    @ = Ontology Name
   
   ONTREZ_URL="http://ncbolabs-dev1.stanford.edu:8080/Ontrez_v1_API"
-  CLASS_STRING="/result/ontology/@/classID/#/from/0/number/15"
-  CUI_STRING="/result/cui/#/from/0/number/15"
+  #ONTREZ_URL="http://171.65.32.224:8080/Ontrez_v1_API"
+  CLASS_STRING="/result/ontology/@/classID/#/from/0/number/15/metadata"
+  CUI_STRING="/result/cui/#/from/0/number/15/metadata"
     
     def self.gatherResources(ontology_name,concept_id)
       resources = []
@@ -34,12 +35,13 @@ class OntrezService
           resource.context_numbers[entry.elements["string"].get_text.value]=entry.elements["int"].get_text.value    
       }
     
-      element.elements["lineDetails"].elements["lineAnnotations"].elements.each("ontrez\.annotation\.Annotation") {|annot|
+      element.elements["lineDetailsWithMetadata"].elements["lineAnnotationsForBP"].elements.each("ontrez\.annotation\.AnnotationForBioPortal") {|annot|
           annotation = Annotation.new
           annotation.local_id = annot.elements["elementLocalID"].get_text.value
           annotation.term_id = annot.elements["termID"].get_text.value
           annotation.item_key = annot.elements["itemKey"].get_text.value
           annotation.url = annot.elements["url"].get_text.value
+          annotation.description = annot.elements["metaDataText"].get_text.value
         
           resource.annotations << annotation
       }

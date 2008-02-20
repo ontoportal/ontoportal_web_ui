@@ -66,6 +66,16 @@ class DataAccess
       end
     end
     
+    def self.getNodeNameSoundsLike(ontologies,search)
+      if CACHE.get("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}").nil?
+        results = SERVICE.getNodeNameContains(ontologies,search)
+        CACHE.set("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}",results)
+        return results
+      else
+        return CACHE.get("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}")
+      end
+    end
+    
     def self.getNodeNameContains(ontologies,search)      
       if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil?
         results = SERVICE.getNodeNameContains(ontologies,search)
@@ -75,6 +85,33 @@ class DataAccess
         return CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}")
       end
     end
+    
+    def self.getAttributeValueContains(ontologies,search)
+       if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}").nil?
+        results = SERVICE.getAttributeValueContains(ontologies,search)
+        CACHE.set("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}",results)
+        return results
+      else
+        return CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}")
+      end
+      
+      
+    end
+    
+    def self.getAttributeValueSoundsLike(ontologies,search)
+       if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}").nil?
+        results = SERVICE.getAttributeValueSoundsLike(ontologies,search)
+        CACHE.set("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}",results)
+        return results
+      else
+        return CACHE.get("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}")
+      end
+      
+      
+    end
+    
+    
+    
     
     def self.getNetworkNeighborhoodImage(ontology,node_id,associations=nil)
       if CACHE.get("#{param(ontology)}::#{node_id}_nnImage::#{associations}").nil?

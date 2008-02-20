@@ -7,7 +7,7 @@
 		<%for result in @results%>
 			<% if result.ontology_name.eql?(ontology)%>
 				<tr class="<%= cycle("odd", "even")%>">
-					<td><%=highlight(result.name,@keyword)%></td><td><%=link_to "Explore",uri_url(:ontology=>ontology,:id=>result.id)%></td>
+					<td><%=link_to highlight(result.name,@keyword),uri_url(:ontology=>ontology,:id=>result.id)%></td>
 				</tr>
 			<%end%>	
 		
