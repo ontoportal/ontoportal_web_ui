@@ -60,7 +60,7 @@ class OntrezService
       def self.gatherResourcesByCui(cui)
       resources = []
 
-      doc = REXML::Document.new(open(ONTREZ_URL+CUI_STRING.gsub("#",cui)))
+      doc = REXML::Document.new(open(ONTREZ_URL+CLASS_STRING.gsub("@",ontology_name).gsub("#",concept_id)))
 #      puts doc.inspect
       puts "Retrieved Doc"
       puts "--------------"
@@ -81,12 +81,13 @@ class OntrezService
           resource.context_numbers[entry.elements["string"].get_text.value]=entry.elements["int"].get_text.value    
       }
     
-      element.elements["lineDetails"].elements["lineAnnotations"].elements.each("ontrez\.annotation\.Annotation") {|annot|
+      element.elements["lineDetailsWithMetadata"].elements["lineAnnotationsForBP"].elements.each("ontrez\.annotation\.AnnotationForBioPortal") {|annot|
           annotation = Annotation.new
           annotation.local_id = annot.elements["elementLocalID"].get_text.value
           annotation.term_id = annot.elements["termID"].get_text.value
           annotation.item_key = annot.elements["itemKey"].get_text.value
           annotation.url = annot.elements["url"].get_text.value
+          annotation.description = annot.elements["metaDataText"].get_text.value
         
           resource.annotations << annotation
       }
