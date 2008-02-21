@@ -77,7 +77,7 @@ module ApplicationHelper
                if session[:user].nil?
                  output << "<div id=\"insert\"><a href=\"\/login?redirect=#{@ontology.to_param}\">Reply</a></div>"
                else
-                output << "<div id=\"insert\"><a href=\"\#\" onclick =\"buildEditor('#{key}');toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='#{note.id};document.getElementById('note_subject#{key}').value='RE:#{note.subject}';\">Reply</a></div>"
+                output << "<div id=\"insert\"><a href=\"\#\" onclick =\"buildEditor('#{key}');toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='#{note.id}';document.getElementById('note_subject#{key}').value='RE:#{note.subject}';\">Reply</a></div>"
                end
    output << "</div>
             </div>
