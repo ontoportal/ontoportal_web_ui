@@ -60,7 +60,7 @@ class OntrezService
       def self.gatherResourcesByCui(cui)
       resources = []
 
-      doc = REXML::Document.new(open(ONTREZ_URL+CLASS_STRING.gsub("@",ontology_name).gsub("#",concept_id)))
+      doc = REXML::Document.new(open(ONTREZ_URL+CLASS_STRING.gsub("#",concept_id)))
 #      puts doc.inspect
       puts "Retrieved Doc"
       puts "--------------"
