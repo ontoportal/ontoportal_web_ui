@@ -130,7 +130,7 @@ function loadNodeData(node, fnLoadComplete) {
 							
 							
 								<%if @ontology.name.eql?("Software Resource Ontology")%>		
-							document.getElementById('tab6').innerHTML=tabData[5]				
+							document.getElementById('tab5').innerHTML=tabData[5]				
 							<%else%>
 							document.getElementById('tab5').innerHTML=tabData[4]	
 							<%end%>
@@ -160,11 +160,12 @@ function loadNodeData(node, fnLoadComplete) {
 			document.getElementById('tab3').innerHTML=tabData[2]
 			document.getElementById('tab4').innerHTML=tabData[3]
 				
-								<%if @ontology.name.eql?("Software Resource Ontology")%>		
-							document.getElementById('tab6').innerHTML=tabData[5]				
+							<%if @ontology.name.eql?("Software Resource Ontology")%>		
+							document.getElementById('tab5').innerHTML=tabData[5]				
 							<%else%>
 							document.getElementById('tab5').innerHTML=tabData[4]	
 							<%end%>
+							
 							
 			 tree.draw();
 			 
