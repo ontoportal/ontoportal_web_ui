@@ -139,6 +139,7 @@ class DataAccess
       puts "Parent is #{node}"
       
       while !node.nil?
+        puts node
         path<<node
         node = node.parent
       end

@@ -89,8 +89,9 @@ class ConceptsController < ApplicationController
   def build_tree
     #find path to root    
     path = @concept.path_to_root
-    
+    puts "Path To Root-------------"
     puts "Path is #{path.inspect}"
+    puts "--------------------------"
     # create path and top nodes
     @root = TreeNode.new()
     @root.set_children(DataAccess.getTopLevelNodes(@concept.ontology_name))

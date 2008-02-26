@@ -13,11 +13,25 @@ class NodeWrapper
 
    
    def mapping_count
-     Mapping.count(:conditions=>{:source_ont => self.ontology_name, :source_id => self.id})
+     if CACHE.get("#{self.ontology_name.gsub(" ","_")}::#{self.id}_MappingCount").nil?
+        count = Mapping.count(:conditions=>{:source_ont => self.ontology_name, :source_id => self.id})
+        CACHE.set("#{self.ontology_name.gsub(" ","_")}::#{self.id}_MappingCount",count)
+        return count
+     else
+        return CACHE.get("#{self.ontology_name.gsub(" ","_")}::#{self.id}_MappingCount")
+     end
+   
    end
    
    def note_count
-     MarginNote.count(:conditions=>{:ontology_id => self.ontology_name, :concept_id =>self.id})
+     if CACHE.get("#{self.ontology_name.gsub(" ","_")}::#{self.id}_NoteCount").nil?
+        count = MarginNote.count(:conditions=>{:ontology_id => self.ontology_name, :concept_id =>self.id})
+        CACHE.set("#{self.ontology_name.gsub(" ","_")}::#{self.id}_NoteCount",count)
+        return count
+     else
+        return CACHE.get("#{self.ontology_name.gsub(" ","_")}::#{self.id}_NoteCount")
+     end
+
    end
    
    def initialize(object=nil)

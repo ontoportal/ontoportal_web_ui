@@ -4,7 +4,7 @@
 <div class="box" id="searchBox">
 	<div class="header">Search Ontologies</div>
 
-	<fieldset style="float:left;margin:10px;width:300px;height:130px;">
+	<fieldset style="float:left;margin:10px;">
 		<legend>Select Ontologies</legend>
 
 	<%=
@@ -13,11 +13,11 @@
 				options.merge!(ontology.name => ontology.name)
 				end 
 				options = options.sort                     
-                select('search','ontologies',options,{:selected=>"All"},{:multiple=>true,:size=>8})
+                select('search','ontologies',options,{:selected=>"All"},{:multiple=>true,:size=>8,:style=>'float:left;'})
                 %>
 	</fieldset>	
 	
-	<fieldset style="float:left;margin:10px;width:300px;height:130px;">
+	<fieldset style="margin:10px;width:400px;">
 		<legend>Search Query</legend>
 		<table>
 			<tr>

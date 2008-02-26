@@ -16,5 +16,13 @@ class Notifier < ActionMailer::Base
     body :user=> user, :password=>password
   end
   
+  def error(error)
+    
+    recipients "ngriff@stanford.edu"
+    from "admin@bioontology.org"
+    subject "Exception Mailer"
+    body :exception_message => error.message, :trace => error.backtrace
+    
+  end
   
 end

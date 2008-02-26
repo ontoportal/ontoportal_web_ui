@@ -10,6 +10,7 @@ class OBDWrapper
         CACHE.set("#{ontology}::#{concept}_resource",resources)
         return resources
       rescue Exception => e
+        Notifier.deliver_error(e)
         puts e.backtrace.join("\n")
         return []
       end
@@ -26,6 +27,7 @@ class OBDWrapper
         CACHE.set("CUI::#{cui}_resource",resources)
         return resources
       rescue Exception => e
+        Notifier.deliver_error(e)
         puts e.backtrace.join("\n")
         return []
       end                  

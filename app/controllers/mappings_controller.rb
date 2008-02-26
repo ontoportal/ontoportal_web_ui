@@ -18,6 +18,10 @@ class MappingsController < ApplicationController
     @mapping.user_id = session[:user].id
     @mapping.save
     
+    count = Mapping.count(:conditions=>{:source_ont => @mapping.source_ont, :source_id => @mapping.source_id})
+    CACHE.set("#{@mapping.source_ont.gsub(" ","_")}::#{@mapping.source_id}_MappingCount",count)
+    
+    
     #repopulates table
     @mappings =  Mapping.find(:all, :conditions=>{:source_ont => @mapping.source_ont, :source_id => @mapping.source_id})
     @ontology = OntologyWrapper.new()
