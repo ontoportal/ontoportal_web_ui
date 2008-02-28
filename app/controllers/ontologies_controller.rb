@@ -91,9 +91,9 @@ class OntologiesController < ApplicationController
            
   
       wait(sids) #wait for threads to finish
-         
+    unless @concept.id.empty?
     update_tab(@ontology.name,@concept.id) #update the tab with the current concept
-    
+    end
   
     respond_to do |format|
       format.html # show.rhtml
