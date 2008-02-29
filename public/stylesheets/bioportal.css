@@ -616,18 +616,73 @@ h4{
 	font-weight:bold;	
 	margin-right:10px;
 }	
-.close{
-	
-	margin:0px;
-	display:inline;
-	padding:0px;
-	position:relative;
-	top:-5px;
-	/*font-weight:bold;*/
-	font-size:11px;
-	
-}
+
 
 #name_label{
 	padding-left:10px;
 }
+
+
+
+
+ .topnav a.close, .topnav a.close:hover{
+ 	
+	display:block;
+
+	position:absolute;
+	top:0px;
+	right:0px;
+	
+	width:12px;
+	height:12px;
+	background-image:url("/images/arrows.gif");
+}
+ .topnav a.close{
+	background-position:-60px 0px;
+}
+ .topnav a.close:hover{
+	background-position:-60px -12px;
+}
+
+ul.topnav{
+float:left;
+vertical-align:baseline;
+border-bottom:2px solid #2647a0;
+width:100%;
+margin:0px;
+padding:0px;
+}
+.topnav li{
+	vertical-align:baseline;
+	margin:0px -1px -2px 0px;
+	position:relative;
+	float:left;
+	display:block;
+	padding:3px 14px 3px 9px;
+	background: #d8d8d8 url(sprite.png) repeat-x;
+	border: solid #a3a3a3;
+	border-width: 1px 1px;
+	color: #000;
+	text-decoration: none;
+}
+
+.topnav li.selected{
+	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	color:white;
+	font-family:sans-serif;
+	font-size:15px;
+	border-color: #243356;
+	
+}
+
+.topnav li.selected a{
+	text-decoration:none;
+	color:white;
+}
+
+.topnav li a{
+	text-decoration:none;
+	color:black;
+}
+
+

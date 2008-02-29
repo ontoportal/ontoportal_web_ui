@@ -46,7 +46,7 @@ class NodeWrapper
    
    unless object.propertyValuePair.nil?
       for property in object.propertyValuePair
-       properties[property.key]= property.value.gsub("[","").gsub("]","")
+       properties[property.key]= property.value.gsub("[","").gsub("]","") 
       end       
    end
     

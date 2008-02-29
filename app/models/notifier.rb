@@ -25,4 +25,14 @@ class Notifier < ActionMailer::Base
     
   end
   
+  def endlessloop(node)
+    recipients "ngriff@stanford.edu"
+    from "admin@bioontology.org"
+    subject "Exception Mailer"
+    body :node => node.inspect
+    
+    
+    
+  end
+  
 end

@@ -140,6 +140,10 @@ class DataAccess
       
       while !node.nil?
         puts node
+        if path.include?(node)
+          Notifier.deliver_endlessloop(node)                
+          break
+        end
         path<<node
         node = node.parent
       end

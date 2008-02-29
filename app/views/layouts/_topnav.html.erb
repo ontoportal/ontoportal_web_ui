@@ -6,17 +6,18 @@
 		<%=link_to "My Account", edit_user_path(session[:user])%>
 		<%=link_to "Log Out",logout_url%>
 	<%end%> </span>
-<ul class="yui-nav" id="topNav">
+<ul class="topnav">
 		<li <%if controller.controller_name.eql?("home")%>class="selected" <%end%>><a href="/"><em>Home</em></a></li>
     	<li <%if controller.controller_name.eql?("ontologies") && controller.action_name.eql?("index")%>class="selected" <%end%>><a href="/ontologies"><em>Browse</em></a></li>
     	<li <%if controller.controller_name.eql?("search")%>class="selected" <%end%>><a href="/search"><em>Search</em></a></li>
 		<%unless session[:ontologies].nil?%>
 			<%for tab in session[:ontologies]%>
 				<%if !@ontology.nil? && @ontology.name.eql?(tab.ontology)%>
-				<li id="tab<%=to_param(tab.ontology)%>" class="selected"><%=link_to "<em>#{tab.ontology} &nbsp;&nbsp;<span class=\"close\" onmouseout=\"makeNormal(this)\" onmouseover=\"makeBig(this)\" onclick=\"remove_tab(this,'#{to_param(tab.ontology)}',true);return false;\">(X)</span></em>",uri_url(:ontology=>to_param(tab.ontology),:id=>tab.concept)%></li>				
+				<li id="tab<%=to_param(tab.ontology)%>" class="selected"><%=link_to "<em>#{tab.ontology}</em>",uri_url(:ontology=>to_param(tab.ontology),:id=>tab.concept)%><a href="#" class="close"  onclick="remove_tab(this,'<%=to_param(tab.ontology)%>',true);return false;">&nbsp;</a></li>				
 				<%else%>
-				<li id="tab<%=to_param(tab.ontology)%>" ><%=link_to "<em>#{tab.ontology} &nbsp;&nbsp; <span class=\"close\" onmouseout=\"makeNormal(this)\" onmouseover=\"makeBig(this)\"  onclick=\"remove_tab(this,'#{to_param(tab.ontology)}',false);return false;\">(X)</span></em>",uri_url(:ontology=>to_param(tab.ontology),:id=>tab.concept)%></li>
+				<li id="tab<%=to_param(tab.ontology)%>" ><%=link_to "<em>#{tab.ontology} &nbsp;&nbsp;</em>",uri_url(:ontology=>to_param(tab.ontology),:id=>tab.concept)%> <a href="#" class="close"  onclick="remove_tab(this,'<%=to_param(tab.ontology)%>',false);return false;">&nbsp;</a></li>
 				<%end%>
 			<%end%>
 		<%end%>
 	</ul>  
+	<div style="clear:both;"/>
