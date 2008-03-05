@@ -75,7 +75,7 @@ class ConceptsController < ApplicationController
     
      # for demo only
      @software=[]
-     if @ontology.name.eql?("Software Resource Ontology")
+     if @ontology.name.eql?("Biomedical Resource Ontology")
         @software = NcbcSoftware.find(:all,:conditions=>{:ontology_label=>@concept.id})        
       end
     
