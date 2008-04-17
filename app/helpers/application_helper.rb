@@ -13,6 +13,12 @@ module ApplicationHelper
     return string.gsub("\n",'')
   end
   
+  def clean_id(string)
+    string.gsub!(":","")
+    string.gsub!("-","_")
+    return string
+  end
+  
   def to_param(string)
      "#{encode_param(string.gsub(" ","_"))}"
   end
@@ -129,17 +135,17 @@ module ApplicationHelper
     
       
         string <<"var myobj = \{ label: \"#{clean(child.name)} #{icons}\", id:\"#{child.id}\",href:\"javascript:onClickTreeNode('#{child.id}','#{clean(child.name)}')\" \};\n
-    		   		    var Node#{child.id.to_s.gsub(":","")} = new YAHOO.widget.MenuNode(myobj, #{parent}, #{child.expanded});\n"
+    		   		    var Node#{clean_id(child.id.to_s)} = new YAHOO.widget.MenuNode(myobj, #{parent}, #{child.expanded});\n"
     		   		
     				if child.child_size>0 && !child.expanded
-    				  string << "Node#{child.id.gsub(":","")}.setDynamicLoad(loadNodeData);\n"
+    				  string << "Node#{clean_id(child.id)}.setDynamicLoad(loadNodeData);\n"
   				  end
 
     				
     				if child.id.eql?(id)
-    				 string<< "Node#{child.id.gsub(":","")}.labelStyle=\"ygtvlabel-selected\"\n";	
+    				 string<< "Node#{clean_id(child.id)}.labelStyle=\"ygtvlabel-selected\"\n";	
     				end
-    				    				build_tree(child,"Node#{child.id.to_s.gsub(":","")}",string,id)
+    				    				build_tree(child,"Node#{clean_id(child.id.to_s)}",string,id)
       
       end
       

@@ -1,5 +1,6 @@
 
-<div id="leftbar" class="leftbar">
+<div id="leftbar" class="leftbar"><br>
+<span class="tree_metadata"><%=link_to "View Ontology Metadata", ontology_url(:ontology => @ontology)%></span>
 <%=render :partial => '/ontologies/treeview'%>
 
 </div>

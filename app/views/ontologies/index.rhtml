@@ -7,7 +7,8 @@
 	<th>Version</th>
 	<th>Author</th>
 	<th>Date</th>
-	<th>Latest Note</th>
+	<th>Related Projects</th>
+	<th>Reviews
 	<th>&nbsp;</th>
   </tr>
   
@@ -18,11 +19,8 @@
 	<td><%=ontology.currentVersion%></td>
 	<td>&nbsp;</td>
 	<td>&nbsp;</td>
-	<td><% unless @notes[ontology.name].nil?%>
-		<%=@notes[ontology.name].subject%> By: <%=@notes[ontology.name].user.user_name%>
-		<br>
-		<%=strip_tags(truncate(@notes[ontology.name].comment,100))%><%end%>
-	&nbsp;</td>
+	<td><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology)%></td>
+	<td><%= link_to "See All #{ontology.reviews} Reviews",reviews_path(:ontology=>ontology)%></td>
 	<td><%if ontology.currentVersion.eql?("See Remote Site")%>Exploring Unavailable<%else%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%end%></td>
   </tr>
 <% end %>

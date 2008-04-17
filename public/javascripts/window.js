@@ -1394,6 +1394,7 @@ var Windows = {
 };
 
 var Dialog = {
+  dialogs: null,
   dialogId: null,
   onCompleteFunc: null,
   callFunc: null, 
@@ -1549,6 +1550,7 @@ var Dialog = {
     
     win.cancelCallback = parameters.onCancel || parameters.cancel; 
     win.okCallback = parameters.onOk || parameters.ok;
+    this.dialog = win;
     return win;    
   },
   

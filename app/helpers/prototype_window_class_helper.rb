@@ -41,7 +41,7 @@ module PrototypeWindowClassHelper
    
       case content
         when Hash then params_for_javascript( content )
-        when String then "'#{content}'"
+        when String then "document.getElementById('#{content}').innerHTML"
         else
             nil
         end
@@ -79,7 +79,7 @@ module PrototypeWindowClassHelper
         options.merge!( :cancel => JsCode.new(js_cancel) ) if cancel_url
         options.merge!( :windowParameters => {} ) if !options.has_key?(:windowParameters)
        
-        js_code = "Dialog.confirm( '#{content}',  #{params_for_javascript( options )} ); "
+        js_code = "var dialog = Dialog.confirm( '#{content}',  #{params_for_javascript( options )} ); "
         content_tag(
                "a", name,
                html_options.merge({
@@ -89,7 +89,7 @@ module PrototypeWindowClassHelper
    
    
    
-    def link_to_prototype_window( name, window_id, options = {} , html_options = {} )
+    def link_to_prototype_window( name, window_id, options = {} , html_options = {} ,content_id=nil)
        
         #window_id must be unique and it's destroyed on window close.
         #options for this helper: http://prototype-window.xilinus.com/documentation.html#initialize
@@ -97,6 +97,9 @@ module PrototypeWindowClassHelper
         options.merge!( :windowParameters => {} ) if !options.has_key?(:windowParameters)
      
         js_code ="var win = new Window( '#{window_id}', #{params_for_javascript(options) } );  win.show();  win.setDestroyOnClose();"
+        unless content_id.nil?
+          js_code << " win.setContent(#{content_id},false,false); win.showCenter();"
+        end
         content_tag(
                "a", name,
                html_options.merge({

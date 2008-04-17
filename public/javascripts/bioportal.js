@@ -380,13 +380,68 @@ function remove_tab(link,ontology,redirect){
 
 }
 
-function makeBig(item){
-
-	item.style.fontWeight = "900";
+function selectTab(id,tab){
+    nav = document.getElementById(id);
+    for(var x=0; x<nav.childNodes.length; x++){
+        nav.childNodes[x].className="";
+    }
+   
+    document.getElementById(tab).className="selected";
+    
 }
 
-function makeNormal(item){
-	item.style.fontWeight = ""
-	
+function updateOntologyList(ontology){
+    list = document.getElementById("ontologieslist")
+    if(ontology.checked){
+        var s= document.createElement("LI");
+        var v= document.createElement("INPUT");
+        v.type="hidden"
+        v.value=1
+        v.name=ontology.name
+        v.id="hid_"+ontology.nextSibling.nodeValue;
+        s.id="id_"+ontology.nextSibling.nodeValue;
+        s.innerHTML= ontology.nextSibling.nodeValue
+        list.appendChild(s);
+        list.appendChild(v);
+        ontology.parentNode.innerHTML = ontology.parentNode.innerHTML.replace(">","checked >")
+    }else{
+        list.removeChild(document.getElementById("id_"+ontology.nextSibling.nodeValue))
+        list.removeChild(document.getElementById("hid_"+ontology.nextSibling.nodeValue))
+        ontology.parentNode.innerHTML = ontology.parentNode.innerHTML.replace("checked","")
+    }
+    
+    
 }
+
+function hover_on_BG(cell){
+    if(!cell.firstChild.checked){        
+        cell.style.background="#DFDFDF";
+    }
+}
+
+function hover_off_BG(cell){
+    if(!cell.firstChild.checked){        
+        cell.style.background="white";
+    }
+}
+
+var dialog;
+
+function toggleBG(cell,bgcolor){
+    if(cell.firstChild.checked){
+      
+        cell.style.backgroundColor=bgcolor;
+    }else{
+
+        cell.style.backgroundColor=bgcolor;
+    }
+    
+    
+}
+
+function updateContent(){
+    
+    document.getElementById('ontologies').innerHTML = Dialog.dialog.getContent().innerHTML
+}
+
 

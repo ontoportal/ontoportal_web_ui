@@ -29,7 +29,14 @@ class OntologiesController < ApplicationController
   # GET /ontologies/1
   # GET /ontologies/1.xml
   def show
-    @ontology = DataAccess.getOntology(undo_param(params[:ontology])) # shows the metadata    
+    @ontology = DataAccess.getOntology(undo_param(params[:ontology])) # shows the metadata 
+
+      if request.xhr? 
+        render :action => "show", :layout => false 
+      else 
+        render :action=>'show'
+      end
+
   end
 
 

@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   
   
  
-  def param(name) # Paramaterizes URLs without encoding
+  def to_param(name) # Paramaterizes URLs without encoding
     name.gsub(' ',"_")
   end
   
@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
     else
       tab = find_tab(session[:redirect][:ontology])
       session[:redirect]=nil
-      redirect_to uri_url (:ontology=>param(tab.ontology),:id=>tab.concept)
+      redirect_to uri_url(:ontology=>param(tab.ontology),:id=>tab.concept)
     end
   end
   

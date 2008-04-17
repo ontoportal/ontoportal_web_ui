@@ -598,7 +598,7 @@ h4{
 }
 
 .metadata{
-	
+	border:1px solid gray;
 }
 
 .metadata td li{
@@ -617,6 +617,18 @@ h4{
 	margin-right:10px;
 }	
 
+.metadata th.header {
+    background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	color: #fff;
+	border-bottom:2px groove;
+	padding: 0.25em .75em;
+	white-space:nowrap;
+	height:20px;
+	font-family:sans-serif;
+	font-weight:normal;
+	font-size:15px;
+	text-align:left;
+}
 
 #name_label{
 	padding-left:10px;
@@ -685,4 +697,92 @@ padding:0px;
 	color:black;
 }
 
+.reviews{
+	width:800px;
+	margin-bottom:10px;
+	margin-left:10px;
+}
+.reviews th{
+	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	color: #fff;
+	text-align:left;
+	padding: 0.25em .75em;
+	white-space:nowrap;
+	height:20px;
+	font-family:sans-serif;
+	font-size:15px;
+	font-weight:normal;
+	border-bottom:1px solid #535353;
+}
 
+.reviews th a {
+    color:white;
+    font-size:15px;
+    font-weight:bold;
+}
+.reviews td{
+	padding:5px;
+	border-top:1px solid #e3e3e3;
+	border-bottom:1px solid #e3e3e3;
+	border-right:1px solid #e3e3e3;
+	border-left:1px solid #e3e3e3;
+}
+
+
+
+
+
+.rateStatus{float:left; clear:both; width:100%; height:20px;}
+.rateMe{padding:0px; margin:0px;}
+.rateMe li{float:left;list-style:none;}
+.rateMe li a:hover,
+.rateMe .on{background:url(/images/star_on.gif) no-repeat;}
+.rateMe a{float:left;background:url(/images/star_off.gif) no-repeat;width:12px; height:12px;}
+.ratingSaved{display:none;}
+.saved{color:red; }
+
+
+.tree_metadata a{
+    font-size:14px;
+    margin:5px;
+
+    font-weight:bold;
+}
+
+
+
+.fieldWithErrors {
+  padding: 1px;
+  background-color: #FFBBBB;
+  display: table;
+}
+
+#errorExplanation {
+  width: 400px;
+  border: 1px solid #FFBBBB;
+  padding: 7px;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+}
+
+#errorExplanation h2 {
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 5px 5px 15px;
+  font-size: 12px;
+  margin: -7px;
+  background-color: #c00;
+  color: #fff;
+}
+
+#errorExplanation p {
+  color: #333;
+  margin-bottom: 0;
+  padding: 5px;
+}
+
+#errorExplanation ul li {
+  font-size: 12px;
+  list-style: square;
+}

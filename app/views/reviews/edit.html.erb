@@ -1,0 +1,12 @@
+<h1>Editing review</h1>
+
+<%= error_messages_for :review %>
+
+<% form_for(@review) do |f| %>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @review %> |
+<%= link_to 'Back', reviews_path %>

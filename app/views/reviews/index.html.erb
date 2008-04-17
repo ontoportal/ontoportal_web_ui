@@ -1,0 +1,40 @@
+<br>
+<%if session[:user].nil?%>
+	<input type="button" class ="blueButton" value="Review Ontology" onclick ="window.location='/login'"> 
+<%else%>
+<span class="blueButton"><%=link_to "Review Ontology",new_review_path(:ontology=>to_param(@ontology))%></span>
+<%end%>
+
+
+<br><br>
+<% for review in @reviews %>
+<table class="reviews" cellpadding="0" cellspacing="0">
+
+	<tr>
+		<td>
+			<div style="float:left;border:1px solid gray;margin:7px;padding:5px;">
+			<%for rating in review.ratings%>				
+				<div class="rateMe" >
+					<%if rating.value.eql?(0)%>
+					<span style="float:left;">Not Rated</span>
+					<%else%>
+				    <a <% if rating.value >= 1%>class="on"<%end%> ></a>
+				    <a <% if rating.value >= 2%>class="on"<%end%> ></a>
+				    <a <% if rating.value >= 3%>class="on"<%end%> ></a>
+				    <a <% if rating.value >= 4%>class="on"<%end%> ></a>
+				    <a <% if rating.value >= 5%>class="on"<%end%> ></a>
+					<%end%>
+				</div>
+				<b>&nbsp;<%=rating.rating_type.name%></b>					
+			<%end%>
+			</div>
+			<p><%=review.review%></p>
+			
+		</td>
+	</tr>
+
+</table>
+<% end %>
+
+
+
