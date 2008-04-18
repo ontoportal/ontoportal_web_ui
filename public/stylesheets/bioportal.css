@@ -786,3 +786,15 @@ padding:0px;
   font-size: 12px;
   list-style: square;
 }
+
+.reviewheader{
+    width:100%;
+    padding:5px;
+    font-size:15px;
+    font-weight:bold;
+    text-align:center;
+    background-color:#EFEFEF;
+}
+.reviewheader a{
+    font-size:15px;
+}

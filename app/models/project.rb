@@ -1,7 +1,7 @@
 class Project < ActiveRecord::Base
   belongs_to :user
-  has_many :reviews
-  has_many :uses
+  has_many :reviews, :dependent=>:delete_all
+  has_many :uses, :dependent=>:delete_all
   
   
   

@@ -28,7 +28,7 @@
 		<tr>
 	<%end%>		
 	
-		<td style="border:1px solid gray;cursor:pointer;" onmouseover="hover_on_BG(this);" onmouseout="hover_off_BG(this);" onclick="this.firstChild.click();toggleBG(this,'#DDFFDD');"><input type="checkbox" name="ontologies[<%=ontology.name%>]" onchange="updateOntologyList(this);" ><%=ontology.name%></td>
+		<td <%if @usedOntologies.include?(ontology.name)%> style="border:1px solid gray;cursor:pointer;background-color:#DDFFDD;" <%else%> style="border:1px solid gray;cursor:pointer;"<%end%> onmouseover="hover_on_BG(this);" onmouseout="hover_off_BG(this);" onclick="this.firstChild.click();toggleBG(this,'#DDFFDD');"><input type="checkbox"  <%if @usedOntologies.include?(ontology.name)%> checked <%end%>name="ontologies[<%=ontology.name%>]" onclick="updateOntologyList(this);" ><%=ontology.name%></td>
 	
 	<%if count==3%>
 		</tr>		

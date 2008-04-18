@@ -54,6 +54,8 @@ class ProjectsController < ApplicationController
   # GET /projects/1/edit
   def edit
     @project = Project.find(params[:id])
+    @ontologies = DataAccess.getOntologyList()
+    @usedOntologies = @project.uses.collect{|used| used.ontology}
   end
 
   # POST /projects
@@ -85,14 +87,26 @@ class ProjectsController < ApplicationController
   # PUT /projects/1.xml
   def update
     @project = Project.find(params[:id])
+    @project.uses = []
+    unless params[:ontologies].nil?
+      for ontology in params[:ontologies].keys
+        
+        @project.uses << Use.new(:ontology=>ontology)
+      end
+    end
 
     respond_to do |format|
       if @project.update_attributes(params[:project])
+        
+        
+        
+        
         flash[:notice] = 'Project was successfully updated.'
-        format.html { redirect_to(@project) }
+         format.html { redirect_to :controller=>:reviews, :action=>:new, :project=>@project.id}
         format.xml  { head :ok }
       else
         @ontologies = DataAccess.getOntologyList()
+         @usedOntologies = @project.uses.collect{|used| used.ontology}
         format.html { render :action => "edit" }
         format.xml  { render :xml => @project.errors, :status => :unprocessable_entity }
       end

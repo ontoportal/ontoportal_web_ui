@@ -4,6 +4,18 @@ require 'uri'
 module ApplicationHelper
   
   
+  def isOwner?(id)
+    unless session[:user].nil?
+      if session[:user].admin
+        return true        
+      elsif session[:user].id.eql?(id)
+        return true
+      else
+        return false
+      end
+    end
+  end
+  
   def encode_param(string)
     return URI.escape(string, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
   end

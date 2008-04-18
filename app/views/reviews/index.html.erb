@@ -11,7 +11,7 @@
 <table class="reviews" cellpadding="0" cellspacing="0">
 
 	<tr>
-		<td>
+		<td><div class="reviewheader">Review By <%=review.user.user_name%> <%unless review.project.nil?%> From Project <%=link_to review.project.name,project_path(review.project)%><%end%><%if isOwner?(review.id)%> <%=link_to "Edit Review",edit_review_path(review)%> <%= link_to 'Delete Review', review, :confirm => 'Are you sure?', :method => :delete %><%end%></div>
 			<div style="float:left;border:1px solid gray;margin:7px;padding:5px;">
 			<%for rating in review.ratings%>				
 				<div class="rateMe" >

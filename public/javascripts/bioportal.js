@@ -428,11 +428,10 @@ function hover_off_BG(cell){
 var dialog;
 
 function toggleBG(cell,bgcolor){
-    if(cell.firstChild.checked){
-      
+  
+    if(cell.firstChild.checked){      
         cell.style.backgroundColor=bgcolor;
     }else{
-
         cell.style.backgroundColor=bgcolor;
     }
     

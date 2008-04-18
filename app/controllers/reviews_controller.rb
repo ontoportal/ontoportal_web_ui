@@ -39,14 +39,23 @@ class ReviewsController < ApplicationController
     unless params[:project].nil?
     project = Project.find(params[:project])
       for ontology_used in project.uses
-        @reviews << Review.new(:ontology=> ontology_used.ontology,:project_id=>project.id)
+        review = Review.find_or_initialize_by_ontology_and_project_id(ontology_used.ontology,project.id)
+        unless review.id
+          @reviews << review
+        end
       end
     else    
       @reviews << Review.new(:ontology=>params[:ontology])
     end
     @ontologies = DataAccess.getOntologyList()
     respond_to do |format|
-      format.html # new.html.erb
+
+
+      format.html {
+        if @reviews.empty?
+          redirect_to project_path(params[:project])
+        end                
+      }
       format.xml  { render :xml => @review }
     end
   end
@@ -64,6 +73,7 @@ class ReviewsController < ApplicationController
       if key.include?("review")
         review = Review.new(:review=>params[key][:review],:ontology=>undo_param(params[key][:ontology]),:project_id=>params[key][:project_id])
         ontology = review.ontology
+        project = review.project_id
         for rating_key in params[key].keys
           if rating_key.include?("ratings")
             puts params[key][rating_key].inspect
@@ -72,6 +82,7 @@ class ReviewsController < ApplicationController
 
           end            
         end
+        review.user_id = session[:user].id
         review.save
       end
     end
@@ -81,7 +92,13 @@ class ReviewsController < ApplicationController
     respond_to do |format|
 
         flash[:notice] = 'Review was successfully created.'
-        format.html { redirect_to reviews_path(:ontology=>to_param(ontology)) }
+        format.html { 
+          if project.nil?
+          redirect_to reviews_path(:ontology=>to_param(ontology)) 
+          else
+          redirect_to project_path(project)
+          end
+          }
         format.xml  { render :xml => @review, :status => :created, :location => @review }
     end
   end
@@ -90,11 +107,19 @@ class ReviewsController < ApplicationController
   # PUT /reviews/1.xml
   def update
     @review = Review.find(params[:id])
-
+    ratings = Hash[*(@review.ratings.map{|rate| [rate.id, rate] }.flatten)]
+     for rating_key in params.keys
+        if rating_key.include?("ratings")          
+          puts rating_key.split("-")[1].to_i
+          ratings[rating_key.split("-")[1].to_i].value=params[rating_key].to_i
+          ratings[rating_key.split("-")[1].to_i].save          
+        end            
+      end
     respond_to do |format|
       if @review.update_attributes(params[:review])
+
         flash[:notice] = 'Review was successfully updated.'
-        format.html { redirect_to(@review) }
+        format.html { redirect_to reviews_path(:ontology=>to_param(@review.ontology)) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
