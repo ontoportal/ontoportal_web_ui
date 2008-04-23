@@ -61,17 +61,7 @@ class ConceptsController < ApplicationController
       @margin_note.ontology_id = @concept.ontology_name
     end   
       
-      @resources = []
-    sids << spawn(:method => :thread) do   
-       #Connects to the ontrez service to gather resources
-                    
-        if(@concept.properties["UMLS_CUI"]!=nil)
-          @resources = OBDWrapper.gatherResourcesCui(@concept.properties["UMLS_CUI"])
-        else
-          @resources = OBDWrapper.gatherResources(@ontology.to_param,@concept.id.gsub("_",":"))
-        end
-       
-    end
+   
     
      # for demo only
      @software=[]

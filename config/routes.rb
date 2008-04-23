@@ -33,8 +33,8 @@ ActionController::Routing::Routes.draw do |map|
   # instead of a file named 'wsdl'
   map.connect ':controller/service.wsdl', :action => 'wsdl'
 
-  
-  
+  map.obr '/resources/:ontology/:id',:controller=>'resources',:action=>'show'
+  map.ajax '/ajax/',:controller=>'ajax_proxy',:action=>'get'  
   map.logout '/logout',:controller=>'login',:action=>'destroy'
   map.visualize '/visualize/:ontology', :controller=>'ontologies', :action =>'visualize',:requirements => { :ontology => %r([^/?]+) }
   map.uri '/visualize/:ontology/:id', :controller => 'concepts', :action => 'show',:requirements => { :ontology => %r([^/?]+) ,:id => %r([^/?]+)}

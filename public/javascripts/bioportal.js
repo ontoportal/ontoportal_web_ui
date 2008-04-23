@@ -7,6 +7,14 @@ var que= new Array();
 var queIndex = 0;
 var thread=0;
 var currentOntology;
+var currentConcept;
+
+    function setOntology(ontology){
+        currentOntology = ontology;
+    }
+    function setConcept(concept){
+        currentConcept = concept;
+    }
 
 // Invalidate and Refetch
 	function refreshCache(nodeID){
@@ -90,6 +98,43 @@ var currentOntology;
 		}
 	
 	
+function callTab(tab_num,url){
+    
+    
+    	var responseSuccess = function(o)
+		{
+			var respTxt = o.responseText;
+			
+			if (cache[currentConcept]!=null){
+			    cache[currentConcept][6]=respTxt
+		    }
+			
+			
+			document.getElementById("tab"+tab_num).innerHTML=respTxt
+			YAHOO.wait.container.wait.hide();
+		}	
+		
+		var responseFailure = function(o){
+			YAHOO.wait.container.wait.hide();
+		}
+
+		var callback =
+		{
+			success:responseSuccess,
+			failure:responseFailure
+		};
+		
+	// see's if item is already in cache, if not it makes the ajax call
+//	if(getCache(concept)!=null && getCache(concept)[tab_num]!=null){		
+ //       document.getElementById("tab"+tab_num).innerHTML=getCache(concept)[tab_num];
+  //  }else{
+	YAHOO.wait.container.wait.show();
+		YAHOO.util.Connect.asyncRequest('GET',url.replace("@ontology@",currentOntology).replace("@concept@",currentConcept),callback);
+//    }
+    
+    
+}
+
 //-------------------------------
 	
 		function updateArea(method,url,object_id){

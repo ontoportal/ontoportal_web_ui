@@ -2,7 +2,7 @@
 <%if session[:user].nil?%>
 	<input type="button" class ="blueButton" value="Review Ontology" onclick ="window.location='/login'"> 
 <%else%>
-<span class="blueButton"><%=link_to "Review Ontology",new_review_path(:ontology=>to_param(@ontology))%></span>
+<span class="blueButton"><%=link_to "Review Ontology",new_review_path(:ontology=>to_param(@ontology_name))%></span>
 <%end%>
 
 

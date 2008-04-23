@@ -8,6 +8,7 @@ class OBDWrapper
       begin
         resources = OntrezService.gatherResources(ontology,concept)
         CACHE.set("#{ontology}::#{concept}_resource",resources)
+        puts "resources are : #{resources.inspect}"
         return resources
       rescue Exception => e
         Notifier.deliver_error(e)

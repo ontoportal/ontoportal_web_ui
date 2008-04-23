@@ -3,6 +3,7 @@
 
 <script type="text/javascript">
 
+setOntology('<%=to_param(@ontology.name)%>');
 
 
 // adds a node to the tree
@@ -116,7 +117,7 @@ function loadNodeData(node, fnLoadComplete) {
 		
 			// sets the label
 			document.getElementById("name_label").firstChild.nodeValue=node_label
-			 
+			setConcept(node_id) 
 			
 			var responseSuccess = function(o)
 			{
@@ -130,9 +131,7 @@ function loadNodeData(node, fnLoadComplete) {
 							
 							
 								<%if @ontology.name.eql?("Biomedical Resource Ontology")%>		
-							document.getElementById('tab5').innerHTML=tabData[5]				
-							<%else%>
-							document.getElementById('tab5').innerHTML=tabData[4]	
+							document.getElementById('tab5').innerHTML=tabData[4]				
 							<%end%>
 							
 					 tree.draw();
@@ -161,9 +160,7 @@ function loadNodeData(node, fnLoadComplete) {
 			document.getElementById('tab4').innerHTML=tabData[3]
 				
 							<%if @ontology.name.eql?("Biomedical Resource Ontology")%>		
-							document.getElementById('tab5').innerHTML=tabData[5]				
-							<%else%>
-							document.getElementById('tab5').innerHTML=tabData[4]	
+							document.getElementById('tab5').innerHTML=tabData[4]				
 							<%end%>
 							
 							
