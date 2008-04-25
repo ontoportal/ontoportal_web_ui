@@ -12,6 +12,7 @@
     	<li <%if controller.controller_name.eql?("ontologies") && controller.action_name.eql?("index")%>class="selected" <%end%>><a href="/ontologies"><em>Browse</em></a></li>
     	<li <%if controller.controller_name.eql?("search")%>class="selected" <%end%>><a href="/search"><em>Search</em></a></li>
     	<li <%if controller.controller_name.eql?("projects")%>class="selected" <%end%>><a href="/projects"><em>Projects</em></a></li>
+		<li <%if controller.controller_name.eql?("mappings")%>class="selected" <%end%>><a href="/mappings"><em>Mappings</em></a></li>
 		<%unless session[:ontologies].nil?%>
 			<%for tab in session[:ontologies]%>
 				<%if !@ontology.nil? && @ontology.name.eql?(tab.ontology)%>

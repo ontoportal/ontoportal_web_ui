@@ -1,0 +1,26 @@
+
+<p style="font-size:15px;font-weight:bold;padding:10px;border:1px solid #cfcfcf;">Display Mapping Count for 
+<%=
+            options ={}
+			for ontology in @ontologies
+			options.merge!(ontology.name => ontology.name)
+			end 
+			options = options.sort                     
+            select('search','ontologies',options,{:selected=>"All"},{:onchange=>"updateArea('GET','/mappings/count/'+this.value,'mappingCount');document.getElementById('mappings').innerHTML='';"})
+            %>
+
+
+<div id="mappingCount" style="text-align:center;">
+	
+	
+</div>
+<div id="mappings" style="text-align:center;">
+</div>
+
+
+<script type="text/javascript">
+
+YAHOO.util.Event.onDOMReady(buildWait()); 
+
+
+</script>

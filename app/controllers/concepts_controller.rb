@@ -7,8 +7,10 @@ class ConceptsController < ApplicationController
   # GET /concepts/1
   # GET /concepts/1.xml
   def show
-   
+    time = Time.now
+    puts "Starting Retrieval"
     @concept =  DataAccess.getNode(undo_param(params[:ontology]),params[:id])
+    puts "Finished in #{Time.now- time}"
       #@concept_id = params[:id] # Removed to see if even used
     
     @ontology = OntologyWrapper.new()
@@ -28,14 +30,18 @@ class ConceptsController < ApplicationController
   def show_ajax_request
      case params[:callback]
         when 'load' # Load pulls in all the details of a node
+          time = Time.now
           gather_details
+          puts "Finished Details in #{Time.now - time}"
           render :partial => 'load'
         when 'children' # Children is called only for drawing the tree
           @children =[]
           for child in @concept.children
             @children << TreeNode.new(child)
           end
+          time = Time.now
           render :partial => 'childNodes'
+                    puts "Finished Details in #{Time.now - time}"
       end    
   end
   

@@ -111,6 +111,22 @@ function callTab(tab_num,url){
 			
 			
 			document.getElementById("tab"+tab_num).innerHTML=respTxt
+			var search = respTxt;
+                var script;
+
+                while( script = search.match(/(<script[^>]+javascript[^>]+>\s*(<!--)?)/i))
+                {
+                  search = search.substr(search.indexOf(RegExp.$1) + RegExp.$1.length);
+
+                  if (!(endscript = search.match(/((-->)?\s*<\/script>)/))) break;
+
+                  block = search.substr(0, search.indexOf(RegExp.$1));
+                  search = search.substring(block.length + RegExp.$1.length);
+
+                  var oScript = document.createElement('script');
+                  oScript.text = block;
+                  document.getElementsByTagName("head").item(0).appendChild(oScript);
+                }
 			YAHOO.wait.container.wait.hide();
 		}	
 		
@@ -137,7 +153,7 @@ function callTab(tab_num,url){
 
 //-------------------------------
 	
-		function updateArea(method,url,object_id){
+function updateArea(method,url,object_id){
 	
 			var responseSuccess = function(o)
 			{
@@ -483,9 +499,10 @@ function toggleBG(cell,bgcolor){
     
 }
 
-function updateContent(){
-    
+function updateContent(){    
     document.getElementById('ontologies').innerHTML = Dialog.dialog.getContent().innerHTML
 }
+
+
 
 

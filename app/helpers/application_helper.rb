@@ -26,9 +26,9 @@ module ApplicationHelper
   end
   
   def clean_id(string)
-    string.gsub!(":","")
-    string.gsub!("-","_")
-    return string
+    new_string = string.gsub(":","").gsub("-","_")
+
+    return new_string
   end
   
   def to_param(string)
@@ -153,8 +153,9 @@ module ApplicationHelper
     				  string << "Node#{clean_id(child.id)}.setDynamicLoad(loadNodeData);\n"
   				  end
 
-    				
+    				puts "Child ID #{child.id} VS #{id}"
     				if child.id.eql?(id)
+    				  puts" I found the selected Node #{id}"
     				 string<< "Node#{clean_id(child.id)}.labelStyle=\"ygtvlabel-selected\"\n";	
     				end
     				    				build_tree(child,"Node#{clean_id(child.id.to_s)}",string,id)

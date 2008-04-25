@@ -1,0 +1,29 @@
+<%if @source_counts.empty? && @dest_counts.empty?%>
+<h1>No Mappings Found</h1>
+<%else%>
+
+<table class="counts" cellpadding="0" cellspacing="0">
+	<%unless @source_counts.empty?%>
+	<tr>
+		<th>Ontology Mapped To</th>
+		<th class="last">Mapping Count</th>
+	</tr>
+	<%for mapping in @source_counts%>
+	<tr>
+		<td><%=link_to_remote mapping['destination_ont'] ,:update=>'mappings',:url=>"/mappings/show/#{params[:ontology]}?target=#{mapping['destination_ont']}",:loading=>"YAHOO.wait.container.wait.show();",:complete=>'YAHOO.wait.container.wait.hide();'%></td><td class="last"><%=mapping['count']%></td>
+	</tr>
+	<%end%>	
+	<%end%>
+	<%unless @dest_counts.empty?%>
+	<tr>
+		<th>Ontology Mapped From</th>
+		<th class="last">Mapping Count</th>
+	</tr>
+	<%for mapping in @dest_counts%>
+	<tr>
+		<td><%=link_to_remote mapping['source_ont'] ,:update=>'mappings',:url=>"/mappings/show/#{mapping['source_ont']}?target=#{params[:ontology]}",:loading=>"YAHOO.wait.container.wait.show();",:complete=>'YAHOO.wait.container.wait.hide();'%></td><td class="last"><%=mapping['count']%></td>
+	</tr>
+	<%end%>
+	<%end%>
+</table>
+<%end%>
