@@ -22,24 +22,32 @@ class MappingsController < ApplicationController
   end
   
   def show
-    @mapping_pages = Mapping.paginate(:page => params[:page], :per_page => 100 ,:conditions=>{:source_ont=>params[:id],:destination_ont=>params[:target]},:order=>'source_id',:include=>:user,:limit=>400)
+    #Select *, count(*) as count from mappings where source_ont = 'NCI Thesaurus' and destination_ont = 'Mouse adult gross anatomy' group by destination_id order by count desc limit 100 OFFSET 0 
+    
+    @mapping_pages = Mapping.paginate_by_sql("Select source_id, count(*) as count from mappings where source_ont = '#{params[:id]}' and destination_ont = '#{params[:target]}' group by source_id order by count desc",:page => params[:page], :per_page => 100,:include=>'users')
+    mapping_objects = Mapping.find(:all,:conditions=>["source_ont = '#{params[:id]}' AND destination_ont = '#{params[:target]}' AND source_id IN (?)",@mapping_pages.collect{|item| item[:source_id]}.flatten])
+#    @mapping_pages = Mapping.paginate(:page => params[:page], :per_page => 100 ,:conditions=>{:source_ont=>params[:id],:destination_ont=>params[:target]},:order=>'count()',:include=>:user)
     @mappings = {}
-    for map in @mapping_pages
+    for map in mapping_objects
+      puts map.source_id
       if @mappings[map.source_id].nil?
-        @mappings[map.source_id] = [{:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.user_name],:count=>1}]
+        puts "new mapping"
+        @mappings[map.source_id] = [{:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.user_name],:count=>1}]
       else
+        puts "Mapping exists"
         @mappings[map.source_id]
         found = false
         for mapping in @mappings[map.source_id]
-          
+          puts map.destination_id
           if mapping[:destination_id].eql?(map.destination_id)
             found = true
             mapping[:users]<<map.user.user_name
             mapping[:count]+= 1
+            puts "adding to count #{mapping[:count]}"
           end  
         end
         unless found
-         @mappings[map.source_id]<< {:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.user_name],:count=>1}
+         @mappings[map.source_id]<< {:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.user_name],:count=>1}
         end
       end
     end

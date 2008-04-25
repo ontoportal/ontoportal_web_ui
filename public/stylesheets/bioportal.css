@@ -821,7 +821,9 @@ padding:0px;
 
 .maps td{
 	padding:5px;
-	border-bottom:1px solid #e3e3e3;
+	border-bottom:1px solid white;
+	border-top:1px solid #C0C0C0;
+	background-color:#EFEFEF;
 }
 
 .counts{
