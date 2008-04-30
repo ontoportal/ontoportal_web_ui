@@ -1,21 +1,25 @@
-<select value="neighbor" onchange="toggleHide(this.value,'images')">	
-	<option value="neighbor">Show Network Neighborhood</option>
-	<option value="root">Show Hierarchy To Root (All Relationships)</option>
-</select>
-<%if false%>
-<%=link_to "Visualize", jam_url(:id => @concept.id,:ontology=>@concept.ontology_name.to_param) ,:target=>"new"%>
-<%end%>
-<br>
 
-<div id="neighbor" name="images">
-<%=@concept.networkNeighborhood%>
-</div>
-<div id="root" name="images" style="display:none;">
-<%=@concept.pathToRootImage%>
-</div>
 
-<script type="text/javascript">
-function onClickGraphNode(nodeId){
-	window.location="/<%=@ontology.to_param%>/"+nodeId
-}
-</script>
+  	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+			id="FlexoViz" width="100%" height="100%"
+			codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+			<param name="movie" value="/flex/FlexoViz.swf" />
+			<param name="quality" value="high" />
+			<param name="bgcolor" value="#869ca7" />
+			<param name="allowScriptAccess" value="sameDomain" />		
+			<embed src="/flex/FlexoViz.swf" quality="high" bgcolor="#869ca7"
+				width="100%" height="400px" name="FlexoViz" align="middle"
+				play="true"
+				loop="false"
+				quality="high"
+				allowScriptAccess="always"
+				type="application/x-shockwave-flash"
+				pluginspage="http://www.adobe.com/go/getflashplayer"
+				movie = "/flex/FlexoViz.swf" 
+				flashVars="ontology=<%=@ontology.name%>&nodeid=<%=@concept.id%>"
+
+				
+				
+				
+			</embed>
+	</object>

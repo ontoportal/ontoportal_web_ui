@@ -46,33 +46,6 @@ var requiredRevision = 28;
 <body scroll="no">
 <script language="JavaScript" type="text/javascript">
 <!--
-
-/*
-function getURLParameter(paramName, defaultValue) {
-	if (defaultValue == null) {
-		defaultValue = "";
-	}
-	var ret = defaultValue;
-	var href = location.href;
-	var str = paramName + "=";
-	var index = href.lastIndexOf(str);
-	if (index != -1) {
-		var sub = href.substr(index + str.length);
-		index = sub.indexOf("&");
-		if (index != -1) {
-			sub = sub.substr(0, index);
-		}
-		ret = sub;
-	}
-	return ret;
-}
-
-var ontology = getURLParameter("ontology", "Cell type");
-var nodeID = getURLParameter("nodeID", "");
-var searchMode = getURLParameter("searchMode", "contains");
-var flashVars = "ontology=" + ontology + "&nodeID=" + nodeID + "&searchMode=" + searchMode;
-*/
-
 // Version check for the Flash Player that has the ability to start Player Product Install (6.0r65)
 var hasProductInstall = DetectFlashVer(6, 0, 65);
 
@@ -115,8 +88,8 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			"name", "FlexoViz",
 			"allowScriptAccess","sameDomain",
 			"type", "application/x-shockwave-flash",
-			"pluginspage", "http://www.adobe.com/go/getflashplayer",
-			"flashVars", "ontology=Cell type&nodeID=CL:0000003" 
+			"flashVars", "ontology=Gene Ontology",
+			"pluginspage", "http://www.adobe.com/go/getflashplayer"
 	);
   } else {  // flash is too old or we can't detect the plugin
     var alternateContent = 'Alternate HTML content should be placed here. '
@@ -134,7 +107,6 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			<param name="quality" value="high" />
 			<param name="bgcolor" value="#869ca7" />
 			<param name="allowScriptAccess" value="sameDomain" />
-			<param name="flashVars" value="ontology=Cell type&nodeID=CL:0000003"/>
 			<embed src="FlexoViz.swf" quality="high" bgcolor="#869ca7"
 				width="100%" height="100%" name="FlexoViz" align="middle"
 				play="true"
