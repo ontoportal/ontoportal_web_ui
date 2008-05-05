@@ -8,9 +8,9 @@ class ResourcesController < ApplicationController
        @resources = []
 
           if(@concept.properties["UMLS_CUI"]!=nil)
-            @resources = OBDWrapper.gatherResourcesCui(@concept.properties["UMLS_CUI"])
+            @resources = OBDWrapper.gatherResourcesCui(@concept)
           else
-            @resources = OBDWrapper.gatherResources(@ontology.to_param,@concept.id.gsub("_",":"))
+            @resources = OBDWrapper.gatherResources(@ontology.to_param,@concept)
           end
 
   render :partial=> 'resources'

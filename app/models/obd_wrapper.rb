@@ -4,10 +4,11 @@ class OBDWrapper
 
   
   def self.gatherResources(ontology,concept)
-    if CACHE.get("#{ontology}::#{concept}_resource").nil?
+    if CACHE.get("#{ontology}::#{concept.id}_resource").nil?
       begin
-        resources = OntrezService.gatherResources(ontology,concept)
-        CACHE.set("#{ontology}::#{concept}_resource",resources)
+        resources = OntrezService.gatherResources(ontology,concept.id.to_s.gsub("_",":"))
+        resources << OntrezService.parseNextBio(concept.name)
+        CACHE.set("#{ontology}::#{concept.id}_resource",resources)
         puts "resources are : #{resources.inspect}"
         return resources
       rescue Exception => e
@@ -17,15 +18,16 @@ class OBDWrapper
       end
                   
     else
-      return CACHE.get("#{ontology}::#{concept}_resource")
+      return CACHE.get("#{ontology}::#{concept.id}_resource")
     end
   end
   
-  def self.gatherResourcesCui(cui)
-    if CACHE.get("CUI::#{cui}_resource").nil?
+  def self.gatherResourcesCui(concept)
+    if CACHE.get("CUI::#{concept.properties["UMLS_CUI"]}_resource").nil?
       begin        
-        resources = OntrezService.gatherResourcesByCui(cui)
-        CACHE.set("CUI::#{cui}_resource",resources)
+        resources = OntrezService.gatherResourcesByCui(concept.properties["UMLS_CUI"])
+        resources << OntrezService.parseNextBio(concept.name)
+        CACHE.set("CUI::#{concept.properties["UMLS_CUI"]}_resource",resources)
         return resources
       rescue Exception => e
         Notifier.deliver_error(e)
@@ -33,7 +35,7 @@ class OBDWrapper
         return []
       end                  
     else
-      return CACHE.get("CUI::#{cui}_resource")
+      return CACHE.get("CUI::#{concept.properties["UMLS_CUI"]}_resource")
     end    
   end
   

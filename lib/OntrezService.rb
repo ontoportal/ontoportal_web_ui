@@ -6,10 +6,11 @@ class OntrezService
   #   \# = CONCEPT_ID  
   #    @ = Ontology Name
   
-  ONTREZ_URL="http://ncbolabs-dev1.stanford.edu:8080/Ontrez_v1_API"
+  ONTREZ_URL="http://ncbolabs-dev2.stanford.edu:8080/Ontrez_v1_API"
   #ONTREZ_URL="http://171.65.32.224:8080/Ontrez_v1_API"
   CLASS_STRING="/result/ontology/@/classID/#/from/0/number/15/metadata"
   CUI_STRING="/result/cui/#/from/0/number/15/metadata"
+  NEXTBIO_URL="http://www.nextbio.com/b/api/searchcount.api?q=#&details=true&apikey=2346462a645f102ba7f2001d096b4f04"
     
     def self.gatherResources(ontology_name,concept_id)
       resources = []
@@ -51,11 +52,50 @@ class OntrezService
       
       
     }
+    
+    parseNextBio(concept)
+    
     puts "Finished Parsing"
     return resources
 
     end
     
+    
+    
+      def self.parseNextBio(text)
+        doc = REXML::Document.new(open(NEXTBIO_URL.gsub("#",text.gsub(" ","%20"))))
+        resource = Resource.new   
+        resource.context_numbers = {}
+        resource.annotations = []
+        resource.name ="NextBio"
+        resource.url="http://www.nextbio.com"
+        resource.description ="NextBio"
+        resource.logo ="http://www.nextbio.com/b/s/images2/common/nbLogoSmBeta.png"
+        resource.count = doc.elements["NBResultSummary"].elements["count"].get_text.value.to_i
+          doc.elements.each("*/details"){ |detail| 
+              detail.elements.each { |element| 
+                resource.context_numbers[element.name]=element.get_text.value          
+              }
+            }
+          doc.elements.each("*/results"){ |results|
+              results.elements.each { |result|
+                annotation = Annotation.new
+                annotation.local_id = result.elements["name"].get_text.value unless result.elements["name"].nil?
+                annotation.term_id = result.elements["name"].get_text.value unless result.elements["name"].nil?
+                annotation.item_key = result.elements["name"].get_text.value unless result.elements["name"].nil?
+                annotation.url = result.elements["url"].get_text.value unless result.elements["url"].nil?
+                if result.elements["title"].nil?
+                  annotation.description =  result.elements["name"].get_text.value
+                else                  
+                  annotation.description = result.elements["title"].get_text.value
+                end
+                
+                resource.annotations << annotation            
+                }
+            
+            }  
+        return resource  
+      end
     
       def self.gatherResourcesByCui(cui)
       resources = []
@@ -108,3 +148,5 @@ class OntrezService
    
 end
 
+
+OntrezService.parseNextBio("cell")
