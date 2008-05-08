@@ -12,6 +12,11 @@ class MappingLoader
     source_id_position=params[:source_position].to_i
     dest_id_position=params[:dest_position].to_i
     user_id = params[:user]
+    if params[:comment].empty?
+      comment_position= -1
+    else
+      comment_position = params[:comment]
+    end
     map_source = params[:map_source]
     relationship_type= params[:relationship]
     if params[:delimiter].eql?("t")
@@ -86,7 +91,7 @@ class MappingLoader
         mapping.user_id = user_id
         mapping.map_source = map_source
         mapping.relationship_type = relationship_type
-        mapping.comment=items[2]
+        mapping.comment= items[comment_position] unless (comment_position < 1 || items[comment_position].nil?)
         mapping.save
     end
   
