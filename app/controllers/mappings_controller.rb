@@ -1,3 +1,4 @@
+require 'MappingLoader'
 class MappingsController < ApplicationController
  
 
@@ -56,20 +57,20 @@ class MappingsController < ApplicationController
     render :partial=>'show'
   end
   
+  def upload
+    @ontologies = @ontologies = DataAccess.getOntologyList()
+  end
+  
+  
   def process_mappings
-    mappings = Mapping.find(:all,:conditions=>{:source_name=>nil})
     
-    for map in mappings
-      begin
-      map.source_name = map.source_node.name
-      map.destination_name = map.dest_node.name
-      map.save
-      puts map.inspect
-      rescue Exception=>e
-        puts e
-      end
-    end
     
+    
+      MappingLoader.processMappings(params,session[:user].id)
+    
+     flash[:notice] = 'Mappings are processed'
+     @ontologies = @ontologies = DataAccess.getOntologyList()
+     render :action=>:upload
   end
   
   def new

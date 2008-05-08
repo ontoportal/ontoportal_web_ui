@@ -43,7 +43,7 @@ class OntologiesController < ApplicationController
   # GET /visualize/:ontology
   def visualize
     
-    sids = [] #holds the tread IDs
+   
     
     #Set the ontology we are viewing
     @ontology = OntologyWrapper.new()
@@ -60,7 +60,7 @@ class OntologiesController < ApplicationController
       @concept = DataAccess.getNode(@ontology.name,@root.children.first.id)
    
    
-      sids << spawn(:method => :thread) do #threading to improve speed
+      
         #gets the initial mappings
         @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.name, :source_id => @concept.id},:include=>:user)
         #@mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
@@ -70,23 +70,9 @@ class OntologiesController < ApplicationController
         @margin_note.concept_id = @concept.id
         @margin_note.ontology_id = @ontology.name
               
-      end
+ 
       
       
-      
-    
-     
-      @resources = []
-      sids << spawn(:method => :thread) do
-        
-        #gets the initial Ontrez Results          
-        if(@concept.properties["UMLS_CUI"]!=nil)
-          @resources = OBDWrapper.gatherResourcesCui(@concept.properties["UMLS_CUI"])
-        else
-          @resources = OBDWrapper.gatherResources(@ontology.to_param,@concept.id.gsub("_",":"))
-        end        
-      end
-           
            
            
        # for demo only
@@ -97,7 +83,7 @@ class OntologiesController < ApplicationController
       #------------------
            
   
-      wait(sids) #wait for threads to finish
+   
     unless @concept.id.empty?
     update_tab(@ontology.name,@concept.id) #update the tab with the current concept
     end

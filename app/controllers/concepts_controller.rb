@@ -53,9 +53,9 @@ class ConceptsController < ApplicationController
   
   def gather_details  #gathers the information for a node
     
-     sids = [] #stores the thread IDs
+ #    sids = [] #stores the thread IDs
     
-    sids << spawn(:method => :thread) do  #threaded implementation to improve performance
+  #  sids << spawn(:method => :thread) do  #threaded implementation to improve performance
       #builds the mapping tab
       @mappings = Mapping.find(:all, :conditions=>{:source_ont => @concept.ontology_name, :source_id => @concept.id},:include=>:user)    
       
@@ -65,7 +65,7 @@ class ConceptsController < ApplicationController
       @margin_note = MarginNote.new
       @margin_note.concept_id = @concept.id
       @margin_note.ontology_id = @concept.ontology_name
-    end   
+   # end   
       
    
     
@@ -76,7 +76,7 @@ class ConceptsController < ApplicationController
       end
     
     
-    wait(sids) #waits for threads to finish
+    #wait(sids) #waits for threads to finish
     
     update_tab(@ontology.name,@concept.id) #updates the 'history' tab with the current node
     

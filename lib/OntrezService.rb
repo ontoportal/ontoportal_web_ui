@@ -10,7 +10,7 @@ class OntrezService
   #ONTREZ_URL="http://171.65.32.224:8080/Ontrez_v1_API"
   CLASS_STRING="/result/ontology/@/classID/#/from/0/number/15/metadata"
   CUI_STRING="/result/cui/#/from/0/number/15/metadata"
-  NEXTBIO_URL="http://www.nextbio.com/b/api/searchcount.api?q=#&details=true&apikey=2346462a645f102ba7f2001d096b4f04"
+  NEXTBIO_URL="http://www.nextbio.com/b/api/searchcount.api?q=#&details=true&apikey=2346462a645f102ba7f2001d096b4f04&type=study"
     
     def self.gatherResources(ontology_name,concept_id)
       resources = []
@@ -53,7 +53,6 @@ class OntrezService
       
     }
     
-    parseNextBio(concept)
     
     puts "Finished Parsing"
     return resources
@@ -69,7 +68,12 @@ class OntrezService
         resource.annotations = []
         resource.name ="NextBio"
         resource.url="http://www.nextbio.com"
-        resource.description ="NextBio"
+        resource.description ="NextBio's data
+        and literature search engine makes massive amounts of disparate
+        biological, clinical and chemical data from public and proprietary
+        sources searchable, regardless of data type and origin, empowering
+        researchers to quickly understand their own experimental results
+        within the context of other research."
         resource.logo ="http://www.nextbio.com/b/s/images2/common/nbLogoSmBeta.png"
         resource.count = doc.elements["NBResultSummary"].elements["count"].get_text.value.to_i
           doc.elements.each("*/details"){ |detail| 
