@@ -1,9 +1,15 @@
 <br>
-<h1><%flash[:notice]%></h1>
+<h1><%=flash[:notice]%></h1>
 
 <% form_tag ("/process/mapping", {:multipart => true}) do %>
     <label for="file">File:</label> 
     <%= file_field_tag "file" %>
+<br>
+
+	<label for="user">User:</label>
+	<select name="user">
+		<%=options_from_collection_for_select(@users, "id", "user_name", selected = nil)%>	
+	</select>
 
 <br>
 	<label for="source">Source Ontology:</label>

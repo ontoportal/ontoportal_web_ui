@@ -59,6 +59,7 @@ class MappingsController < ApplicationController
   
   def upload
     @ontologies = @ontologies = DataAccess.getOntologyList()
+        @users = User.find(:all)
   end
   
   
@@ -66,10 +67,11 @@ class MappingsController < ApplicationController
     
     
     
-      MappingLoader.processMappings(params,session[:user].id)
+      MappingLoader.processMappings(params)
     
      flash[:notice] = 'Mappings are processed'
      @ontologies = @ontologies = DataAccess.getOntologyList()
+     @users = User.find(:all)
      render :action=>:upload
   end
   

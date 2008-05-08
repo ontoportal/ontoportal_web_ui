@@ -1,6 +1,6 @@
 class MappingLoader
   
-  def self.processMappings(params,user)
+  def self.processMappings(params)
     
    
      
@@ -11,7 +11,7 @@ class MappingLoader
     name_lookup = params[:names]
     source_id_position=params[:source_position].to_i
     dest_id_position=params[:dest_position].to_i
-    user_id = user
+    user_id = params[:user]
     map_source = params[:map_source]
     relationship_type= params[:relationship]
     if params[:delimiter].eql?("t")
