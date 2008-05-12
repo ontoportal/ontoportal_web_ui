@@ -1,3 +1,4 @@
+require 'BioPortalWebservice'
 class MappingLoader
   
   def self.processMappings(params)
@@ -15,7 +16,7 @@ class MappingLoader
     if params[:comment].empty?
       comment_position= -1
     else
-      comment_position = params[:comment]
+      comment_position = params[:comment].to_i
     end
     map_source = params[:map_source]
     relationship_type= params[:relationship]
@@ -27,8 +28,9 @@ class MappingLoader
 
     source_ontologies =[source]
     dest_ontologies = [dest]
-    file.each do |record|
+    file.read.each do |record|
        items = record.split(delimiter)
+       puts items.inspect
        if items.size <1
          items = record.split(" ")
        end
@@ -41,7 +43,7 @@ class MappingLoader
 
       if name_lookup  
         begin
-          source_node = DataAccess.getNodeNameExactMatch(source_ontologies,items[source_id_position].chomp)[0]
+          source_node = BioPortalWebservice.getNodeNameExactMatch(source_ontologies,items[source_id_position].chomp)[0]
         rescue Exception =>e
           puts e
           source_node = nil
@@ -55,7 +57,7 @@ class MappingLoader
         mapping.source_id = source_node.id
 
         begin
-          dest_node = DataAccess.getNodeNameExactMatch(dest_ontologies,items[dest_id_position].chomp)[0]
+          dest_node = BioPortalWebservice.getNodeNameExactMatch(dest_ontologies,items[dest_id_position].chomp)[0]
         rescue Exception => e
           puts e
           dest_node = nil

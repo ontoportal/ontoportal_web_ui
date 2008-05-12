@@ -54,7 +54,7 @@ function loadNodeData(node, fnLoadComplete) {
 			
 				
 			// redraws the tree -- needs to be done every time the nodes are modified
-		
+
 			tree.draw();
 			fnLoadComplete();	
 		}
@@ -137,7 +137,7 @@ function loadNodeData(node, fnLoadComplete) {
 					 tree.draw();
 						YAHOO.wait.container.wait.hide();
 						setCache(node_id,tabData)
-					
+
 			};	
 			
 			var responseFailure = function(o){
@@ -172,7 +172,8 @@ function loadNodeData(node, fnLoadComplete) {
 			YAHOO.wait.container.wait.show();
 		YAHOO.util.Connect.asyncRequest('GET','/visualize/<%=@ontology.to_param%>/'+node_id+"?callback=load",callback);		
 		}	
-		
+		tabs.set('activeIndex', 0);
+				
 		}
 		
 function init(){

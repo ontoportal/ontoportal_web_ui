@@ -320,9 +320,9 @@ function toggleSelected(node){
 	node.labelStyle="ygtvlabel-selected";	
 	
 }
-
+var tabs=null;
 	function buildTabs(){
-	    var tabView = new YAHOO.widget.TabView('tabframe');
+	    tabs = new YAHOO.widget.TabView('tabframe');
 		
 		//YAHOO.namespace("feed");
 		//YAHOO.feed.feed = new YAHOO.widget.Panel("feedPanel", { context:["feed","tr","br"], width:"320px", visible:false,draggable:false,constraintoviewport:true  } ); 

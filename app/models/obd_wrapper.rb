@@ -5,18 +5,27 @@ class OBDWrapper
   
   def self.gatherResources(ontology,concept)
     if CACHE.get("#{ontology}::#{concept.id}_resource").nil?
+      resources=[]
+      cache=true
       begin
-        resources = OntrezService.gatherResources(ontology,concept.id.to_s.gsub("_",":"))
-        resources << OntrezService.parseNextBio(concept.name)
+        resources << OntrezService.gatherResources(ontology,concept.id.to_s.gsub("_",":"))
+      rescue Exception => e
+        cache=false
+          Notifier.deliver_error(e)
+          puts e.backtrace.join("\n")
+      end
+      begin
+        resources << OntrezService.parseNextBio(concept.name)              
+      rescue Exception => e
+        cache=false
+        Notifier.deliver_error(e)
+        puts e.backtrace.join("\n")      
+      end
+      if cache
         CACHE.set("#{ontology}::#{concept.id}_resource",resources)
+      end
         puts "resources are : #{resources.inspect}"
         return resources
-      rescue Exception => e
-        Notifier.deliver_error(e)
-        puts e.backtrace.join("\n")
-        return []
-      end
-                  
     else
       return CACHE.get("#{ontology}::#{concept.id}_resource")
     end
@@ -24,16 +33,28 @@ class OBDWrapper
   
   def self.gatherResourcesCui(concept)
     if CACHE.get("CUI::#{concept.properties["UMLS_CUI"]}_resource").nil?
+      resources = []
+      cache=true
       begin        
         resources = OntrezService.gatherResourcesByCui(concept.properties["UMLS_CUI"])
-        resources << OntrezService.parseNextBio(concept.name)
-        CACHE.set("CUI::#{concept.properties["UMLS_CUI"]}_resource",resources)
-        return resources
       rescue Exception => e
-        Notifier.deliver_error(e)
-        puts e.backtrace.join("\n")
-        return []
-      end                  
+          cache=false
+          Notifier.deliver_error(e)
+          puts e.backtrace.join("\n")
+          return []
+      end
+      begin
+        resources << OntrezService.parseNextBio(concept.name)
+        rescue Exception => e
+          cache=false
+          Notifier.deliver_error(e)
+          puts e.backtrace.join("\n")
+          return []
+        end
+        if cache
+          CACHE.set("CUI::#{concept.properties["UMLS_CUI"]}_resource",resources)
+        end
+        return resources               
     else
       return CACHE.get("CUI::#{concept.properties["UMLS_CUI"]}_resource")
     end    
