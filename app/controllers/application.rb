@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
     else
       tab = find_tab(session[:redirect][:ontology])
       session[:redirect]=nil
-      redirect_to uri_url(:ontology=>param(tab.ontology),:id=>tab.concept)
+      redirect_to uri_url(:ontology=>param(tab.ontology_id),:id=>tab.concept)
     end
   end
   
@@ -70,15 +70,18 @@ class ApplicationController < ActionController::Base
   
   end
 
-  def authorize_owner(id=nil?) # Verifies that a user owns an object
+  def authorize_owner(id=nil) # Verifies that a user owns an object
+    puts id
     if id.nil? 
+      puts params[:id]
       id = params[:id].to_i
     end
-    
+    puts "new id #{id}"
      if session[:user].nil?
         redirect_to_home
      else
-       if !session[:user].id.to_s.eql?(id) && !session[:user].admin
+       puts "#{session[:user].id.to_i} vs #{id} "
+       if !session[:user].id.to_i.eql?(id) && !session[:user].admin?
          redirect_to_home      
        end
      end
@@ -98,29 +101,29 @@ class ApplicationController < ActionController::Base
     array = session[:ontologies] || []
     found = false
     for item in array
-      if item.ontology.eql?(ontology)
+      if item.ontology_id.eql?(ontology.id)
         item.concept=concept
         found=true
       end
     end
     
     unless found
-      array << History.new(ontology,concept)    
+      array << History.new(ontology.id,ontology.display_label,concept)    
     end
 
     session[:ontologies]=array
   end
 
-  def remove_tab(ontology_name) # Removes a 'history' tab
+  def remove_tab(ontology_id) # Removes a 'history' tab
     array = session[:ontologies]    
-    array.delete(find_tab(ontology_name))        
+    array.delete(find_tab(ontology_id))        
     session[:ontologies]=array   
   end
   
-  def find_tab(ontology_name) # Returns a specific 'history' tab
+  def find_tab(ontology_id) # Returns a specific 'history' tab
     array = session[:ontologies]
     for item in array
-      if item.ontology.eql?(ontology_name)
+      if item.ontology_id.eql?(ontology_id)
         return item        
       end
     end

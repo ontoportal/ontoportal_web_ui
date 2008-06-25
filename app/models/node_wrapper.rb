@@ -7,29 +7,30 @@ class NodeWrapper
   attr_accessor :isActive
   attr_accessor :properties
   attr_accessor :ontology_name 
+  attr_accessor :ontology_id
   attr_accessor :child_size
   attr_accessor :children
   attr_accessor :parent_association
 
    
    def mapping_count
-     if CACHE.get("#{self.ontology_name.gsub(" ","_")}::#{self.id}_MappingCount").nil?
+     if CACHE.get("#{self.ontology_id}::#{self.id}_MappingCount").nil?
         count = Mapping.count(:conditions=>{:source_ont => self.ontology_name, :source_id => self.id})
-        CACHE.set("#{self.ontology_name.gsub(" ","_")}::#{self.id}_MappingCount",count)
+        CACHE.set("#{self.ontology_id}::#{self.id}_MappingCount",count)
         return count
      else
-        return CACHE.get("#{self.ontology_name.gsub(" ","_")}::#{self.id}_MappingCount")
+        return CACHE.get("#{self.ontology_id}::#{self.id}_MappingCount")
      end
    
    end
    
    def note_count
-     if CACHE.get("#{self.ontology_name.gsub(" ","_")}::#{self.id}_NoteCount").nil?
+     if CACHE.get("#{self.ontology_id}::#{self.id}_NoteCount").nil?
         count = MarginNote.count(:conditions=>{:ontology_id => self.ontology_name, :concept_id =>self.id})
-        CACHE.set("#{self.ontology_name.gsub(" ","_")}::#{self.id}_NoteCount",count)
+        CACHE.set("#{self.ontology_id}::#{self.id}_NoteCount",count)
         return count
      else
-        return CACHE.get("#{self.ontology_name.gsub(" ","_")}::#{self.id}_NoteCount")
+        return CACHE.get("#{self.ontology_id}::#{self.id}_NoteCount")
      end
 
    end
@@ -60,9 +61,9 @@ class NodeWrapper
      DataAccess.getPathToRootImage(self.ontology_name,self.id,relationships)
    end
    
-   def children(relationship=["is_a"])       
-     DataAccess.getChildNodes(self.ontology_name,self.id,relationship)
-   end
+  # def children(relationship=["is_a"])       
+  #   DataAccess.getChildNodes(self.ontology_name,self.id,relationship)
+  # end
    
    def parent(relationship=["is_a"])
     
@@ -70,7 +71,7 @@ class NodeWrapper
    end
    
    def path_to_root
-     DataAccess.getPathToRoot(self)    
+     DataAccess.getPathToRoot(self.ontology_id,self.id)    
    end
    
    def to_s

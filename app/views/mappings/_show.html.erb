@@ -2,28 +2,32 @@
 	<legend>Filter</legend>
 <% remote_form_for :mapping, nil, :url => "/mappings/show/#{@ontology}", :html => { :method => :get },:update=>'mappings' do |f| %>
 <input type="hidden" name="target" value="<%=@destination_ont%>">
-
+<p>
+<b>User:</b>
 <select name="user">
 		<option value="">Any</option>
 		<%=options_from_collection_for_select(@users, "id", "user_name",params[:user].to_i)%>	
 </select>
+</p>
+<p>
+<b>Source:</b>
 <select name="map_source">
 		<option value="" >Any</option>
 		<%=options_for_select(@map_sources,params[:map_source])%>	
 </select>
+</p>
 
-
-<%= submit_tag "Filter", :class=>'blueButton'%> 
+<%= submit_tag "Filter", :class=>'blueButton',:style=>'float:left;'%> 
  <% end %>
 
-<form action="/mappings/show/<%=@ontology%>" method="GET">
+<div style="float:left;"><form action="/mappings/show/<%=@ontology%>" method="GET">
 	<input type="hidden" name="target" value="<%=@destination_ont%>">
 	<input type="hidden" name="user" value="<%=params[:user]%>">
 	<input type="hidden" name="map_source" value="<%=params[:map_source]%>">
 <input type="submit" name="rdf" value="Export Current Results To RDF" class="blueButton">
 
 </form>
-
+</div>
 </fieldset>
 <%= will_paginate @mapping_pages,:update=>'mappings',:params=>{:target=>params[:target],:user=>params[:user],:map_source=>params[:map_source]} %>
 <table class="maps" cellpadding="0" cellspacing="0">

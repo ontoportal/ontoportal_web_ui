@@ -2,13 +2,29 @@
 <table class="ontologies" cellpadding="0" cellspacing="0">
 	<% for ontology in @ontologies%>
 	<tr>
-		<th colspan=2><b><%=ontology%></b></th>
+		<th colspan=2><b><%=ontology.display_label%></b></th>
+	</tr>
+	<tr>
+		<th style='background:none;color:black;font-weight:bold;'>Concept Name</th>
+		<th style='background:none;color:black;font-weight:bold;'>Found In</th>
 	</tr>
 		<%for result in @results%>
-			<% if result.ontology_name.eql?(ontology)%>
+			<% if result[:version_id].to_i.eql?(ontology.id.to_i)%>
+				<%for concept in result[:names]%>
 				<tr class="<%= cycle("odd", "even")%>">
-					<td><%=link_to highlight(result.name,@keyword),uri_url(:ontology=>ontology,:id=>result.id)%></td>
+					<td><%=link_to highlight(concept.name,@keyword),uri_url(:ontology=>ontology,:id=>result.id)%></td><td>Concept Name</td>
 				</tr>
+				<%end%>
+				<%for concept in result[:properties]%>
+				<tr class="<%= cycle("odd", "even")%>">
+					<td><%=link_to highlight(concept.name,@keyword),uri_url(:ontology=>ontology,:id=>result.id)%></td><td>Concept Properties</td>
+				</tr>
+				<%end%>
+				<%for concept in result[:metadata]%>
+				<tr class="<%= cycle("odd", "even")%>">
+					<td><%=link_to highlight(concept.name,@keyword),uri_url(:ontology=>ontology,:id=>result.id)%></td><td>MetaData</td>
+				</tr>
+				<%end%>
 			<%end%>	
 		
 		

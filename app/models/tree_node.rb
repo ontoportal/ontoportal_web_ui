@@ -26,6 +26,9 @@ class TreeNode
     if node_object.mapping_count >0
       self.map_icon = true
     end
+    unless node_object.children.empty?
+      self.set_children(node_object.children)
+    end
   end
 
   

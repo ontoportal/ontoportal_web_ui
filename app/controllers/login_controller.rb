@@ -13,11 +13,12 @@ class LoginController < ApplicationController
   
   
   def create # logs in a user
-      @user = User.new(params[:user])
-      logged_in_user = @user.try_to_login
+#      @user = User.new(params[:user])
+#      logged_in_user = @user.try_to_login
+      logged_in_user = DataAccess.authenticateUser(params[:user][:username],params[:user][:password])
       if logged_in_user
         session[:user] = logged_in_user
-        flash[:notice] = "Welcome "+@user.user_name.to_s+"."
+        flash[:notice] = "Welcome "+logged_in_user.username.to_s+"."
         redirect_to_history
       else
         flash[:notice] = "Invalid user name/password combination"

@@ -67,7 +67,7 @@ class OntrezService
         resource.context_numbers = {}
         resource.annotations = []
         resource.name ="NextBio"
-        resource.url="http://www.nextbio.com"
+        resource.url="http://www.nextbio.com/b/home/generalSearch.nb?q=#{text}#sitype=STUDY"
         resource.description ="NextBio's data
         and literature search engine makes massive amounts of disparate
         biological, clinical and chemical data from public and proprietary
@@ -88,11 +88,11 @@ class OntrezService
                 annotation.term_id = result.elements["name"].get_text.value unless result.elements["name"].nil?
                 annotation.item_key = result.elements["name"].get_text.value unless result.elements["name"].nil?
                 annotation.url = result.elements["url"].get_text.value unless result.elements["url"].nil?
-                if result.elements["title"].nil?
+               
                   annotation.description =  result.elements["name"].get_text.value
-                else                  
-                  annotation.description = result.elements["title"].get_text.value
-                end
+                                 
+                  #annotation.description = result.elements["title"].get_text.value
+                
                 
                 resource.annotations << annotation            
                 }

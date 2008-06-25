@@ -153,12 +153,10 @@ module ApplicationHelper
     				  string << "Node#{clean_id(child.id)}.setDynamicLoad(loadNodeData);\n"
   				  end
 
-    				puts "Child ID #{child.id} VS #{id}"
     				if child.id.eql?(id)
-    				  puts" I found the selected Node #{id}"
     				 string<< "Node#{clean_id(child.id)}.labelStyle=\"ygtvlabel-selected\"\n";	
     				end
-    				    				build_tree(child,"Node#{clean_id(child.id.to_s)}",string,id)
+    		build_tree(child,"Node#{clean_id(child.id.to_s)}",string,id)
       
       end
       

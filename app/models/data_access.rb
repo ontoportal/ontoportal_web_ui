@@ -1,27 +1,27 @@
-require 'BioPortalWebservice'
+require 'BioPortalRestfulCore'
 class DataAccess
-  SERVICE = BioPortalWebservice #sets what backend we are using
+  SERVICE = BioPortalRestfulCore #sets what backend we are using
   
   
     
     def self.getNode(ontology,node_id)
-      if CACHE.get("#{param(ontology)}::#{node_id}").nil?
+ #     if CACHE.get("#{param(ontology)}::#{node_id}").nil?
         node = SERVICE.getNode(ontology,node_id)  
-        CACHE.set("#{param(ontology)}::#{node_id}",node)
+  #      CACHE.set("#{param(ontology)}::#{node_id}",node)
         return node
-      else
-        return CACHE.get("#{param(ontology)}::#{node_id}")
-      end
+    #  else
+     #   return CACHE.get("#{param(ontology)}::#{node_id}")
+    #  end
     end
     
     def self.getChildNodes(ontology,node_id,associations)
-      if CACHE.get("#{param(ontology)}::#{node_id}_children::#{associations}").nil?
-        children = SERVICE.getChildNodes(ontology,node_id,associations)
-        CACHE.set("#{param(ontology)}::#{node_id}_children::#{associations}",children)
+  #    if CACHE.get("#{param(ontology)}::#{node_id}_children::#{associations}").nil?
+        children = SERVICE.getNode(ontology,node_id,associations).children
+  #      CACHE.set("#{param(ontology)}::#{node_id}_children::#{associations}",children)
         return children
-      else        
-        return CACHE.get("#{param(ontology)}::#{node_id}_children::#{associations}")
-      end
+   #   else        
+    #    return CACHE.get("#{param(ontology)}::#{node_id}_children::#{associations}")
+    #  end
     end
     
     def self.getParentNodes(ontology,node_id,associations)
@@ -37,33 +37,44 @@ class DataAccess
     end
     
     def self.getTopLevelNodes(ontology)
-      if CACHE.get("#{param(ontology)}::_top").nil?
+ #     if CACHE.get("#{param(ontology)}::_top").nil?
         topNodes = SERVICE.getTopLevelNodes(ontology)
-        CACHE.set("#{param(ontology)}::_top",topNodes)
+  #      CACHE.set("#{param(ontology)}::_top",topNodes)
         return topNodes
-      else
-        return CACHE.get("#{param(ontology)}::_top")
-      end
+    #  else
+     #   return CACHE.get("#{param(ontology)}::_top")
+    #  end
     end
     
     def self.getOntologyList
-      if CACHE.get("ontology_list").nil?
+      if CACHE.get("ont_list").nil?
         list = SERVICE.getOntologyList
-        CACHE.set("ontology_list",list)
+        CACHE.set("ont_list",list)
         return list
       else
-        return CACHE.get("ontology_list")
+        return CACHE.get("ont_list")
       end
     end
+
+       def self.getOntologyVersions(ontology)
+    #     if CACHE.get("#{ontology}::_details").nil?
+           details = SERVICE.getOntologyVersions(ontology)
+     #      CACHE.set("#{ontology}::_details",details)
+           return details
+      #   else
+       #    return CACHE.get("#{ontology}::_details")
+       #  end
+       end
+
     
     def self.getOntology(ontology)
-      if CACHE.get("#{param(ontology)}::_details").nil?
+ #     if CACHE.get("#{ontology}::_details").nil?
         details = SERVICE.getOntology(ontology)
-        CACHE.set("#{param(ontology)}::_details",details)
+  #      CACHE.set("#{ontology}::_details",details)
         return details
-      else
-        return CACHE.get("#{param(ontology)}::_details")
-      end
+   #   else
+    #    return CACHE.get("#{ontology}::_details")
+    #  end
     end
     
     def self.getNodeNameSoundsLike(ontologies,search)
@@ -77,15 +88,49 @@ class DataAccess
     end
     
     def self.getNodeNameContains(ontologies,search)      
-      if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil?
+  #    if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil?
         results = SERVICE.getNodeNameContains(ontologies,search)
-        CACHE.set("#{param(ontologies.join("|"))}::_search::#{param(search)}",results)
+   #     CACHE.set("#{param(ontologies.join("|"))}::_search::#{param(search)}",results)
         return results
-      else
-        return CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}")
-      end
+    #  else
+     #   return CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}")
+    #  end
     end
     
+    def self.getUsers
+    #    if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil?
+          results = SERVICE.getUsers
+     #     CACHE.set("#{param(ontologies.join("|"))}::_search::#{param(search)}",results)
+          return results
+      #  else
+       #   return CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}")
+      #  end
+    end
+    
+     def self.getUser(user_id)
+      #    if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil?
+            results = SERVICE.getUser(user_id)
+       #     CACHE.set("#{param(ontologies.join("|"))}::_search::#{param(search)}",results)
+            return results
+        #  else
+         #   return CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}")
+        #  end
+      end
+    
+    def self.authenticateUser(username,password)    
+      user = SERVICE.authenticateUser(username,password)
+      return user
+    end
+      
+    def self.createUser(params)    
+      user = SERVICE.createUser(params)
+      return user
+    end
+    
+     def updateUser(params)
+      user = SERVICE.updateUser(params)
+      return user
+    end
     def self.getAttributeValueContains(ontologies,search)
        if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}").nil?
         results = SERVICE.getAttributeValueContains(ontologies,search)
@@ -133,24 +178,8 @@ class DataAccess
       end
     end
     
-    def self.getPathToRoot(entryNode)      
-      path=[]
-      node = entryNode.parent
-      puts "Parent is #{node}"
-      
-      while !node.nil?
-        puts node
-        for item in path
-          if item.id.eql?(node.id)
-          Notifier.deliver_endlessloop(node)                
-          return path  
-          end
-        end
-        path<<node
-        node = node.parent
-      end
-      
-      return path
+    def self.getPathToRoot(ontology,source)      
+      return SERVICE.getPathToRoot(ontology,source)
     end
     
     def self.param(string)

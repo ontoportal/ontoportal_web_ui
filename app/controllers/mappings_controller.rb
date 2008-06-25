@@ -48,7 +48,7 @@ class MappingsController < ApplicationController
     @users = User.find(:all)
     for map in mapping_objects
       puts map.source_id
-      @map_sources << map.map_source.gsub(/<a.*?a>/mi, "")
+      @map_sources << map.map_source.gsub(/<a.*?a>/mi, "")  unless map.map_source.nil?
       @map_sources.uniq!
       
       if @mappings[map.source_id].nil?
@@ -63,6 +63,7 @@ class MappingsController < ApplicationController
           if mapping[:destination_id].eql?(map.destination_id)
             found = true
             mapping[:users]<<map.user.user_name
+            mapping[:users].uniq!
             mapping[:count]+= 1
             puts "adding to count #{mapping[:count]}"
           end  
@@ -77,7 +78,7 @@ class MappingsController < ApplicationController
     if params[:rdf].nil?
       render :partial=>'show'
     else
-      send_data to_RDF(mapping_objects), :type => 'text/xml', :disposition => 'attachment; filename=mappings.rdf'
+      send_data to_RDF(mapping_objects), :type => 'text/html', :disposition => 'attachment; filename=mappings.rdf'
     end
   end
   
@@ -113,6 +114,8 @@ class MappingsController < ApplicationController
     #creates mapping
     @mapping = Mapping.new(params[:mapping])
     @mapping.user_id = session[:user].id
+    @mapping.source_name=DataAccess.getNode(@mapping.source_ont,@mapping.source_id).name
+    @mapping.destination_name=DataAccess.getNode(@mapping.destination_ont,@mapping.destination_id).name
     @mapping.save
     
     count = Mapping.count(:conditions=>{:source_ont => @mapping.source_ont, :source_id => @mapping.source_id})
@@ -131,8 +134,7 @@ class MappingsController < ApplicationController
 private
 
   def to_RDF(mappings)
-    rdf_text = "
-     <?xml version=\"1.0\"?>
+    rdf_text = "<?xml version='1.0' encoding='UTF-8'?>
 
 
      <!DOCTYPE rdf:RDF [

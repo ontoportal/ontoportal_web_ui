@@ -15,7 +15,7 @@
         	<li ><a href="#tab2"><em>Details</em></a></li>
         	<li><a href="#tab3"><em>Marginal Notes</em></a></li>
 			<li><a href="#tab4"><em>Mappings</em></a></li>				
-			<%if @ontology.name.eql?("Biomedical Resource Ontology")%>	
+			<%if @ontology.display_label.eql?("Biomedical Resource Ontology")%>	
 			<li><a href="#tab5" ><em>Resources</em></a></li>			
 			<%else%>							
 			<li><a href="#tab5" onclick="callTab(5,'/resources/@ontology@/@concept@')"><em>Resources</em></a></li>
@@ -31,7 +31,7 @@
 			<div id="tab3"><%=render :partial =>'/margin_notes/show'%></div>
 			<div id="tab4"><%=render :partial =>'/mappings/concept_mappings'%></div>
 			
-			<%if @ontology.name.eql?("Biomedical Resource Ontology")%>	
+			<%if @ontology.display_label.eql?("Biomedical Resource Ontology")%>	
 				<div id="tab5"><%=render :partial =>'/concepts/software'%></div>
 			<%else%>
 			<div id="tab5"></div>

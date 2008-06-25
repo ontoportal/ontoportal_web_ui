@@ -8,7 +8,7 @@ class OBDWrapper
       resources=[]
       cache=true
       begin
-        resources << OntrezService.gatherResources(ontology,concept.id.to_s.gsub("_",":"))
+        resources = OntrezService.gatherResources(ontology,concept.id.to_s.gsub("_",":"))
       rescue Exception => e
         cache=false
           Notifier.deliver_error(e)

@@ -21,7 +21,11 @@ class SearchController < ApplicationController
   def search # full search
     
     @results = []
-    @ontologies = params[:search][:ontologies]
+    ontologies = params[:search][:ontologies]
+    @ontologies = []
+    for ontology in ontologies
+      @ontologies << DataAccess.getOntology(ontology)
+    end
     @keyword = params[:search][:keyword]
 
     if params[:search][:class_name].eql?("1")

@@ -1,5 +1,5 @@
 
-
+<h2><%=link_to "Submit New Ontology", new_ontology_path%></h2>
 <table class="ontologies" cellpadding="0" cellspacing="0">
   <tr>
 	<th>Ontology Name</th>
@@ -14,14 +14,14 @@
   
 <% for ontology in @ontologies %>
   <tr class="<%= cycle("odd", "even")%>">
-	<td><%=link_to ontology.name, ontology_url(:ontology => ontology)%></td>
-	<td><%if ontology.coreFormat.eql?("OBO")%><%=ontology.coreFormat+"F"%><%else%><%=ontology.coreFormat%><%end%></td>
-	<td><%=ontology.currentVersion%></td>
+	<td><%=link_to ontology.display_label, ontology_url(:ontology => ontology)%></td>
+	<td><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format%><%end%></td>
+	<td><%=ontology.version_number%></td>
 	<td>&nbsp;</td>
 	<td>&nbsp;</td>
 	<td><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology)%></td>
 	<td><%= link_to "See All #{ontology.reviews} Reviews",reviews_path(:ontology=>ontology)%></td>
-	<td><%if ontology.currentVersion.eql?("See Remote Site")%>Exploring Unavailable<%else%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%end%></td>
+	<td><%if ontology.version_number.eql?("See Remote Site")%>Exploring Unavailable<%else%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%end%></td>
   </tr>
 <% end %>
 </table>

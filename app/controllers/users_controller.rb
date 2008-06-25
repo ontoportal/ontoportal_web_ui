@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   
   def index
     
-    @users = User.find(:all)
+    @users = DataAccess.getUsers
 
     respond_to do |format|
       format.html # index.rhtml
@@ -20,7 +20,7 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
-    @user = User.find(params[:id])
+    @user = DataAccess.getUser(params[:id])
  
   
  
@@ -28,13 +28,13 @@ class UsersController < ApplicationController
 
   # GET /users/new
   def new
-    @user = User.new
+    @user = UserWrapper.new
   end
 
   # GET /users/1;edit
   def edit
-    
-  @user = User.find(params[:id])
+  @user = DataAccess.getUser(params[:id])
+#  @user = User.find(params[:id])
   if(params[:password].eql?("true"))
     @user.validate_password = true
   end
@@ -48,17 +48,17 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.xml
   def create
-    @user = User.new(params[:user])
+#    @user = User.new(params[:user])
+    @user = DataAccess.createUser(params[:user])
 
     respond_to do |format|
-      if @user.save
+      if @user
         flash[:notice] = 'User was successfully created.'
         session[:user]=@user
         format.html { redirect_to_browse }
         format.xml  { head :created, :location => user_url(@user) }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @user.errors.to_xml }
       end
     end
   end

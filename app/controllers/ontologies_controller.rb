@@ -14,9 +14,9 @@ class OntologiesController < ApplicationController
     @notes={} # Gets list of notes for the ontologies
     for ont in @ontologies
       #gets last note.. not the best way to do this
-      note = MarginNote.find(:first,:conditions=>{:ontology_id => ont.name},:order=>'margin_notes.id desc',:include=>:user)
+      note = MarginNote.find(:first,:conditions=>{:ontology_id => ont.id},:order=>'margin_notes.id desc',:include=>:user)
       unless note.nil?
-        @notes[ont.name]=note
+        @notes[ont.id]=note
       end
 
     end
@@ -29,8 +29,8 @@ class OntologiesController < ApplicationController
   # GET /ontologies/1
   # GET /ontologies/1.xml
   def show
-    @ontology = DataAccess.getOntology(undo_param(params[:ontology])) # shows the metadata 
-
+    @ontology = DataAccess.getOntology(params[:ontology]) # shows the metadata 
+    @versions = DataAccess.getOntologyVersions(@ontology.ontology_id)
       if request.xhr? 
         render :action => "show", :layout => false 
       else 
@@ -38,6 +38,11 @@ class OntologiesController < ApplicationController
       end
 
   end
+  
+  def new
+    @ontology = OntologyWrapper.new
+  end
+
 
 
   # GET /visualize/:ontology
@@ -46,29 +51,31 @@ class OntologiesController < ApplicationController
    
     
     #Set the ontology we are viewing
-    @ontology = OntologyWrapper.new()
-    @ontology.name = undo_param(params[:ontology])
+    puts " Ontology #{params[:ontology]}"
+    @ontology = DataAccess.getOntology(params[:ontology])
     
-   
-        
+          
       
       
       #get the top level nodes for the root
       @root = TreeNode.new()
-      @root.set_children(@ontology.topLevelNodes)
+      nodes = @ontology.topLevelNodes
+      puts "Inspecting after toplevel nodes called #{nodes.inspect}"
+      @root.set_children(nodes)
       #get the initial concept to display
-      @concept = DataAccess.getNode(@ontology.name,@root.children.first.id)
+      puts "Nodes Children: #{@root.children.inspect}"
+      @concept = DataAccess.getNode(@ontology.id,@root.children.first.id)
    
-   
+   puts @concept.inspect
       
         #gets the initial mappings
-        @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.name, :source_id => @concept.id},:include=>:user)
+        @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.id, :source_id => @concept.id},:include=>:user)
         #@mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
         #gets the initial margin notes
-        @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @ontology.name, :concept_id => @concept.id,:parent_id => nil},:include=>:user)
+        @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @ontology.id, :concept_id => @concept.id,:parent_id => nil},:include=>:user)
         @margin_note = MarginNote.new
         @margin_note.concept_id = @concept.id
-        @margin_note.ontology_id = @ontology.name
+        @margin_note.ontology_id = @ontology.id
               
  
       
@@ -77,15 +84,15 @@ class OntologiesController < ApplicationController
            
        # for demo only
        @software=[]
-      if @ontology.name.eql?("Biomedical Resource Ontology")
+      if @ontology.display_label.eql?("Biomedical Resource Ontology")
         @software = NcbcSoftware.find(:all,:conditions=>{:ontology_label=>@concept.id})        
       end
       #------------------
            
   
    
-    unless @concept.id.empty?
-    update_tab(@ontology.name,@concept.id) #update the tab with the current concept
+    unless @concept.id.to_s.empty?
+    update_tab(@ontology,@concept.id) #update the tab with the current concept
     end
   
     respond_to do |format|

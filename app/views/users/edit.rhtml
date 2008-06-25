@@ -4,10 +4,10 @@
 <table>
 	<% if @user.validate_password.nil?%>
 	<tr>
-		<td>First Name:</td><td><%=text_field :user, :first_name%></td>
+		<td>First Name:</td><td><%=text_field :user, :firstname%></td>
 	</tr>
 	<tr>
-		<td>Last Name:</td><td><%=text_field :user, :last_name%></td>
+		<td>Last Name:</td><td><%=text_field :user, :lastname%></td>
 	</tr>
 	<tr>
 		<td>Email Address:</td><td><%=text_field :user, :email%></td>
@@ -16,7 +16,7 @@
 		<td>Phone Number:</td><td><%=text_field :user, :phone%></td>
 	</tr>
 	<tr>
-		<td>User Name:</td><td><%=text_field :user, :user_name%></td>		
+		<td>User Name:</td><td><%=text_field :user, :username%></td>		
 	</tr>
 	<%else%>
 	<tr>

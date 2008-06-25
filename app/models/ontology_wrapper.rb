@@ -1,11 +1,29 @@
 class OntologyWrapper 
 
-  attr_accessor :name  
-  attr_accessor :coreFormat
-  attr_accessor :currentVersion
-  attr_accessor :downloadPath
-  attr_accessor :metadataPath
-  attr_accessor :releaseDate
+  attr_accessor :display_label
+  attr_accessor :id
+  attr_accessor :ontology_id
+  attr_accessor :user_id
+  attr_accessor :parent_id
+  attr_accessor :format
+  attr_accessor :version_number
+  attr_accessor :internal_version
+  attr_accessor :version_status
+  attr_accessor :is_current
+  attr_accessor :is_remote
+  attr_accessor :is_reviewed
+  attr_accessor :status_id
+  attr_accessor :date_released
+  attr_accessor :contact_name
+  attr_accessor :contact_email
+  attr_accessor :is_foundry
+  attr_accessor :file_path
+  attr_accessor :urn
+  attr_accessor :homepage
+  attr_accessor :documentation
+  attr_accessor :publication
+  
+  attr_accessor :versions
   attr_accessor :project_count
   attr_accessor :review_count
   
@@ -18,34 +36,34 @@ class OntologyWrapper
   
   }
   
+  STATUS={
+    "Waiting"=>1,
+    "Parsing"=>2,
+    "Ready"=>3,
+    "Error"=>4,
+    "Not Applicable"=>5
+  }
+  
+  
   def reviews
     if self.review_count.nil?
-      self.review_count = Review.count(:conditions=>{:ontology=>self.name})
+      self.review_count = Review.count(:conditions=>{:ontology=>self.id})
     end
     return self.review_count
   end
   
   def projects
     if self.project_count.nil?
-      self.project_count = Project.count(:conditions=>"uses.ontology = '#{self.name}'",:include=>:uses)
+      self.project_count = Project.count(:conditions=>"uses.ontology = '#{self.id}'",:include=>:uses)
     end
     return self.project_count
   end
  
   def to_param    
-     "#{name.gsub(" ","_").gsub("/","")}"
-  end
-  
-  def initialize(ontology = nil)
-    unless ontology.nil?
-      self.name = ontology.displayLabel
-      self.coreFormat = ontology.coreFormat
-      self.currentVersion = ontology.currentVersion
-      self.releaseDate = ontology.releaseDate
-    end
+     "#{id}"
   end
   
   def topLevelNodes
-       DataAccess.getTopLevelNodes(self.name)     
+       DataAccess.getTopLevelNodes(self.id)     
   end
 end
