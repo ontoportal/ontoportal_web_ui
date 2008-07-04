@@ -5,13 +5,13 @@ class DataAccess
   
     
     def self.getNode(ontology,node_id)
- #     if CACHE.get("#{param(ontology)}::#{node_id}").nil?
+      if CACHE.get("#{param(ontology)}::#{node_id}").nil?
         node = SERVICE.getNode(ontology,node_id)  
-  #      CACHE.set("#{param(ontology)}::#{node_id}",node)
+        CACHE.set("#{param(ontology)}::#{node_id}",node)
         return node
-    #  else
-     #   return CACHE.get("#{param(ontology)}::#{node_id}")
-    #  end
+      else
+        return CACHE.get("#{param(ontology)}::#{node_id}")
+      end
     end
     
     def self.getChildNodes(ontology,node_id,associations)
@@ -37,34 +37,27 @@ class DataAccess
     end
     
     def self.getTopLevelNodes(ontology)
- #     if CACHE.get("#{param(ontology)}::_top").nil?
+      if CACHE.get("#{param(ontology)}::_top").nil?
         topNodes = SERVICE.getTopLevelNodes(ontology)
-  #      CACHE.set("#{param(ontology)}::_top",topNodes)
+        CACHE.set("#{param(ontology)}::_top",topNodes)
         return topNodes
-    #  else
-     #   return CACHE.get("#{param(ontology)}::_top")
-    #  end
+      else
+        return CACHE.get("#{param(ontology)}::_top")
+      end
     end
     
     def self.getOntologyList
-#      if CACHE.get("ont_list").nil?
+      if CACHE.get("ont_list").nil?
         list = SERVICE.getOntologyList
- #       CACHE.set("ont_list",list)
-  nonObo=[]
-   for item in list
-     if !item.format.include?("OBO")
-       nonObo << item
-     end
-   end
- return nonObo
-#        return list
-  #    else
-  #      return CACHE.get("ont_list")
-  #    end
+        CACHE.set("ont_list",list)
+        return list
+      else
+        return CACHE.get("ont_list")
+      end
     end
     
     def self.getActiveOntologies
-      #      if CACHE.get("ont_list").nil?
+            if CACHE.get("act_ont_list").nil?
               list = SERVICE.getOntologyList
               activeOntologies = []
               for item in list
@@ -72,33 +65,33 @@ class DataAccess
                   activeOntologies << item
                 end
               end
-       #       CACHE.set("ont_list",list)
+              CACHE.set("act_ont_list",activeOntologies)
               return activeOntologies
-        #    else
-        #      return CACHE.get("ont_list")
-        #    end
+            else
+              return CACHE.get("act_ont_list")
+            end
       
     end
 
        def self.getOntologyVersions(ontology)
-    #     if CACHE.get("#{ontology}::_details").nil?
+         if CACHE.get("#{ontology}::_details").nil?
            details = SERVICE.getOntologyVersions(ontology)
-     #      CACHE.set("#{ontology}::_details",details)
+           CACHE.set("#{ontology}::_details",details)
            return details
-      #   else
-       #    return CACHE.get("#{ontology}::_details")
-       #  end
+         else
+           return CACHE.get("#{ontology}::_details")
+         end
        end
 
     
     def self.getOntology(ontology)
- #     if CACHE.get("#{ontology}::_details").nil?
+      if CACHE.get("#{ontology}::_details").nil?
         details = SERVICE.getOntology(ontology)
-  #      CACHE.set("#{ontology}::_details",details)
+        CACHE.set("#{ontology}::_details",details)
         return details
-   #   else
-    #    return CACHE.get("#{ontology}::_details")
-    #  end
+      else
+        return CACHE.get("#{ontology}::_details")
+      end
     end
     
     def self.getLastestOntology(ontology)
@@ -117,13 +110,13 @@ class DataAccess
     end
     
     def self.getNodeNameContains(ontologies,search)      
-  #    if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil?
+      if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil?
         results = SERVICE.getNodeNameContains(ontologies,search)
-   #     CACHE.set("#{param(ontologies.join("|"))}::_search::#{param(search)}",results)
+        CACHE.set("#{param(ontologies.join("|"))}::_search::#{param(search)}",results)
         return results
-    #  else
-     #   return CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}")
-    #  end
+      else
+        return CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}")
+      end
     end
     
     def self.getUsers
@@ -163,11 +156,14 @@ class DataAccess
     
     def self.createOntology(params)
       ontology = SERVICE.createOntology(params)
+      CACHE.set("act_ont_list",nil)
+      CACHE.set("ont_list",nil)
       return ontology
     end
     
     def self.updateOntology(params)
       ontology = SERVICE.updateOntology(params)
+      CACHE.set("#{params[:id]}::_details",nil)
       return ontology
     end
     
@@ -179,13 +175,13 @@ class DataAccess
     
     
     def self.getAttributeValueContains(ontologies,search)
-     #  if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}").nil?
+       if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}").nil?
         results = SERVICE.getAttributeValueContains(ontologies,search)
-  #      CACHE.set("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}",results)
+        CACHE.set("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}",results)
         return results
-   #   else
-  #      return CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}")
-  #    end
+      else
+        return CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}")
+      end
       
       
     end
