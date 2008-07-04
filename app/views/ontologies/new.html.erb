@@ -1,37 +1,41 @@
-<%form_for (:ontology, :url=> ontologies_path) do%>
+<%form_tag ("/ontologies", {:multipart => true}) do%>
 
-
-        <h1>Submit New Ontology - Project Information (Step 1 of 4)</h1>
+<%if @ontology.ontologyId.nil?%>
+        <h1>Submit New Ontology</h1>
+<%else%>
+<h1> Submit New Version</h1>
+<%end%>
+<%=hidden_field :ontology, :ontologyId%>
 <table >
 	<tr>
-		<td>Ontology Name: </td><td><%=text_field :ontology, :display_label%></td>
+		<td>Ontology Name: </td><td><%=text_field :ontology, :displayLabel%></td>
 	</tr>
 	<tr>
 		<td>Ontology Format: </td><td><%=text_field :ontology, :format%></td>
 	</tr>	
 	<tr>
-		<td>Ontology Version: </td><td><%=text_field :ontology, :version_number%></td>
+		<td>Ontology Version: </td><td><%=text_field :ontology, :versionNumber%></td>
 	</tr>	
 	<tr>
-		<td>Date Released: </td><td><%=text_field :ontology, :date_released%></td>
+		<td>Date Released: </td><td><%=text_field :ontology, :dateReleased%></td>
 	</tr>	
 	<tr>
-		<td>File Location</td><td><%=radio_button :ontology,:is_remote,:false%>Upload <br><%=radio_button :ontology,:is_remote,true%>Remote</td>
+		<td>File Location</td><td><%=radio_button :ontology,:isRemote,0 %>Upload <br><%=radio_button :ontology,:isRemote,1%>Remote</td>
 	</tr>
 	<tr>
 		<td>Location URL</td><td><%=text_field :ontology,:urn%></td>
 	</tr>
 	<tr>
-		<td>File</td><td><%=file_field :ontology,:file%></td>
+		<td>File</td><td><%=file_field :ontology,:filePath%></td>
 	</tr>
 	<tr>
 		<td>Categories:</td><td></td>
 	</tr>
 	<tr>
-		<td>Contact Name</td><td><%=text_field :ontology, :contact_name%></td>
+		<td>Contact Name</td><td><%=text_field :ontology, :contactName%></td>
 	</tr>
 	<tr>
-		<td>Contact Email</td><td><%= text_field :ontology, :contact_email%></td>
+		<td>Contact Email</td><td><%= text_field :ontology, :contactEmail%></td>
 	</tr>
 	<tr>
 		<td>Home Page</td><td><%= text_field :ontology, :homepage%></td>
@@ -49,15 +53,7 @@
 	
 </table>
 
-<table>
-	<tr>
-		<td>Format</td><td></td>
-	</tr>
-
-	
-</table>
-
-
+<%=submit_tag "Upload"%>
 
 
 

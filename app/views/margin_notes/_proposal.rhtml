@@ -56,7 +56,7 @@
 	<% remote_form_for(:margin_note, :url => margin_notes_path,:update =>"notes",:complete=>"document.getElementById('form').style.display='none';document.getElementById('buttons').style.display='';") do |f| %>
 	<%=hidden_field 'margin_note', 'concept_id'%>
 	<%unless @ontology.nil?%>
-	<%=hidden_field 'margin_note', 'ontology_id', :value=>@ontology.name%>
+	<%=hidden_field 'margin_note', 'ontology_id', :value=>@ontology.id%>
 	<%end%>
 	<%=hidden_field 'margin_note', 'mapping_id'%>
 	<%=hidden_field 'margin_note', 'parent_id', :id=>'noteParent'%>

@@ -6,7 +6,6 @@ class UserWrapper
     attr_accessor :email
     attr_accessor :firstname
     attr_accessor :lastname
-    attr_accessor :display_label
     attr_accessor :roles
     attr_accessor :phone
     attr_accessor :session_id
@@ -32,6 +31,19 @@ class UserWrapper
       else
         return false
       end
+    end
+    
+    def initialize(params={})
+      self.id = params[:id]
+      self.username = params[:username]
+      self.email = params[:email]
+      self.firstname= params[:firstname]
+      self.lastname = params[:lastname]
+      self.roles = params[:roles]
+      self.phone = params[:phone]
+      self.session_id = params[:session_id]
+      self.email_confirmation = params[:email_confirmation]
+      
     end
 
     

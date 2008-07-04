@@ -48,16 +48,18 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.xml
   def create
-#    @user = User.new(params[:user])
-    @user = DataAccess.createUser(params[:user])
+#    @user = User.new(params[:user])  
+    @errors = validate(params[:user])
 
     respond_to do |format|
-      if @user
+      if @errors.size <1
+        @user = DataAccess.createUser(params[:user])
         flash[:notice] = 'User was successfully created.'
         session[:user]=@user
         format.html { redirect_to_browse }
         format.xml  { head :created, :location => user_url(@user) }
       else
+        @user = UserWrapper.new(params[:user])
         format.html { render :action => "new" }
       end
     end
@@ -67,19 +69,10 @@ class UsersController < ApplicationController
   # PUT /users/1.xml
   def update
   
-      @user = User.find(params[:id])
-  
-      respond_to do |format|
-        if @user.update_attributes(params[:user])
-          flash[:notice] = 'User was successfully updated.'
-          format.html { redirect_to edit_user_url(@user) }
-          format.xml  { head :ok }
-        else
-          format.html { render :action => "edit" }
-          format.xml  { render :xml => @user.errors.to_xml }
-        end
-      end
-    
+      @user = DataAccess.updateUser(params[:user],params[:id])
+     
+      flash[:notice] = 'User was successfully updated.'    
+      redirect_to user_path(@user.id)
   end
 
   # DELETE /users/1
@@ -94,6 +87,37 @@ class UsersController < ApplicationController
         format.html { redirect_to users_url }
         format.xml  { head :ok }
       end
+    
+  end
+  
+  
+private 
+
+  def validate(params)
+    errors=[]
+    if params[:email].nil? || params[:email].length <1
+      errors << "Please Enter an Email Address"
+    end
+    if params[:email_confirmation].nil? || params[:email_confirmation].length <1
+      errors << "Please Confirm Your Email Address"
+    end
+    if !params[:email].eql?(params[:email_confirmation])
+      errors << "Your Email and Email Confirmation Do Not Match"
+    end
+    if params[:username].nil? || params[:username].length <1
+      errors << "Please Enter a User Name"
+    end
+    if params[:password].nil? || params[:password].length <1
+      errors << "Please Enter a Password Address"
+    end
+    if params[:password_confirmation].nil? || params[:password_confirmation].length <1
+      errors << "Please Confirm Your Password"
+    end
+    if !params[:password].eql?(params[:password_confirmation])
+      errors << "Your Password and Password Confirmation Do Not Match"
+    end
+    
+    return errors
     
   end
 end

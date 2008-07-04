@@ -6,12 +6,15 @@ class NodeWrapper
   attr_accessor :name  
   attr_accessor :isActive
   attr_accessor :properties
-  attr_accessor :ontology_name 
   attr_accessor :ontology_id
   attr_accessor :child_size
   attr_accessor :children
   attr_accessor :parent_association
 
+   
+   def ontology_name
+     return DataAccess.getOntology(self.ontology_id).displayLabel
+   end
    
    def mapping_count
      if CACHE.get("#{self.ontology_id}::#{self.id}_MappingCount").nil?

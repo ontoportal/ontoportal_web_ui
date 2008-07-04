@@ -20,9 +20,9 @@
 	
 
 	<tr class="human">
-		<td><%= link_to "#{dest_node.name} (#{dest_node.ontology_name})" , uri_url(:ontology=>to_param(dest_node.ontology_name),:id =>dest_node.id) %></td>
+		<td><%= link_to "#{dest_node.name} (#{dest_node.ontology_name})" , uri_url(:ontology=>dest_node.ontology_id,:id =>dest_node.id) %></td>
 		<td><%=map.map_source%></td>
-		<td><%=map.user.user_name%></td>
+		<td><%=map.user.username%></td>
 		<td><%=map.created_at.strftime("%m/%d/%y")%></td> 
 		<td> <%=link_to_prototype_dialog( "View Notes", {:url =>"/margin_notes/show?mapping_id=#{map.id}", :options=> {:method=> 'get'}},'form', {:title => "Margin Notes for Mapping: #{dest_node.ontology_name.titleize} => #{dest_node.name.titleize}", :width =>700,:height=>400})%></td>
 	</tr>

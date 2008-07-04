@@ -108,7 +108,7 @@ class ApplicationController < ActionController::Base
     end
     
     unless found
-      array << History.new(ontology.id,ontology.display_label,concept)    
+      array << History.new(ontology.id,ontology.displayLabel,concept)    
     end
 
     session[:ontologies]=array

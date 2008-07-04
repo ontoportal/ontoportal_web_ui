@@ -1,6 +1,6 @@
 <%unless request.xhr?%>
 
-<h1><%=@ontology.display_label%></h1>
+<h1><%=@ontology.displayLabel%></h1> <%=link_to "Submit New Version",new_ontology_path(:id=>@ontology.ontologyId)%> <%=link_to "Edit Ontology",edit_ontology_path(:id=>@ontology.id)%>
 
 <ul class="topnav" id="subnav">
 		<li id="meta"class="selected"><%=link_to_remote "<em>MetaData</em>",:update=>'ontology_content',:method=>'GET',:url=>ontology_url(:ontology => @ontology),:complete=>"selectTab('subnav','meta')"%></li>
@@ -16,7 +16,7 @@
 	<tr>
 		<td>
 			<ul>
-			<li><label>Ontology Name:</label><%=@ontology.display_label%></li>
+			<li><label>Ontology Name:</label><%=@ontology.displayLabel%></li>
 			<li><label>Format:</label> <%if @ontology.format.eql?("OBO")%><%=@ontology.format+"F"%><%else%><%=@ontology.format%><%end%></li>
 			<li><label>Categories:</label></li>
 			</ul>
@@ -24,7 +24,7 @@
 		</td>
 		<td>
 			<ul>
-			<li><label>Contact(s):</label><%=@ontology.contact_name%></li>
+			<li><label>Contact(s):</label><%=@ontology.contactName%></li>
 			<li><label>Home Page:</label><%=@ontology.homepage%></li>
 			<li><label>Documentation Page:</label><%=@ontology.documentation%> </li>
 			<li><label>Publications Page:</label><%=@ontology.publication%> </li>
@@ -46,11 +46,11 @@
 		</tr>
 		<%for version in @versions%>
 		<tr>
-			<td><%=version.version_number%></td>
-			<td><%=version.date_released%></td>
-			<td><%=version.version_status%></td>
-			<td><a href="<%=version.file_path%>">Download</a></td>
-			<td><%=link_to "Explore",visualize_url(:ontology => version)%></td>
+			<td><%=version.versionNumber%></td>
+			<td><%=version.dateReleased%></td>
+			<td><%=version.versionStatus%></td>
+			<td><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download</a></td>
+			<td><%if !version.statusId.to_i.eql?(3)%>Exploring Unavailable<%else%><%=link_to "Explore", visualize_url(:ontology => version)%><%end%></td>
 		</tr>
 		<%end%>
 	</table>

@@ -1,6 +1,6 @@
 class Mapping < ActiveRecord::Base
   
-  belongs_to :user
+
 
 
   def source_node
@@ -11,4 +11,9 @@ class Mapping < ActiveRecord::Base
     DataAccess.getNode(self.destination_ont,self.destination_id)
   end
 
+
+  
+  def user
+    return DataAccess.getUser(self.user_id)
+  end
 end

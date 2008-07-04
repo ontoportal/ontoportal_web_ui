@@ -5,7 +5,7 @@
 		<td>Ontology:</td>
 		<td><select name="ontology" style="width:200px" onchange="document.getElementById('destination_ontology').value=this.value">
 			<%for option in @ontologies%>
-			<option value="<%=option.name %>"><%=option.name%></option>
+			<option value="<%=option.id %>"><%=option.displayLabel%></option>
 			<%end%>
 	</tr>
 	<tr>
@@ -24,7 +24,7 @@
 	<%=hidden_field :mapping, :source_ont%>
 	<%=hidden_field :mapping, :source_id%>
 	<%=hidden_field :mapping, :map_type,:value=>"Human"%>
-	<%=hidden_field :mapping, :destination_ont,:id=>'destination_ontology',:value => @ontologies.first.name%>
+	<%=hidden_field :mapping, :destination_ont,:id=>'destination_ontology',:value => @ontologies.first.id%>
 	<div id="mapping_window" style="overflow:auto;">
 
 	</div>

@@ -54,10 +54,10 @@ class ConceptsController < ApplicationController
     
   #  sids << spawn(:method => :thread) do  #threaded implementation to improve performance
       #builds the mapping tab
-      @mappings = Mapping.find(:all, :conditions=>{:source_ont => @concept.ontology_id, :source_id => @concept.id},:include=>:user)    
+      @mappings = Mapping.find(:all, :conditions=>{:source_ont => @concept.ontology_id, :source_id => @concept.id})    
       
       #builds the margin note tab
-      @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_id, :concept_id => @concept.id,:parent_id =>nil},:include=>:user)
+      @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_id, :concept_id => @concept.id,:parent_id =>nil})
       #needed to prepopulate the margin note
       @margin_note = MarginNote.new
       @margin_note.concept_id = @concept.id
@@ -68,7 +68,7 @@ class ConceptsController < ApplicationController
     
      # for demo only
      @software=[]
-     if @ontology.display_label.eql?("Biomedical Resource Ontology")
+     if @ontology.displayLabel.eql?("Biomedical Resource Ontology")
         @software = NcbcSoftware.find(:all,:conditions=>{:ontology_label=>@concept.id})        
       end
     

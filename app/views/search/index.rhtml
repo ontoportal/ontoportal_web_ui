@@ -8,11 +8,12 @@
 		<legend>Select Ontologies</legend>
 
 	<%=
-                options = {"All"=>"All"}
+                options = {}
 				for ontology in @ontologies
-				options.merge!(ontology.display_label => ontology.id)
+				options.merge!(ontology.displayLabel => ontology.id)
 				end 
-				options = options.sort                     
+				options = options.sort     
+				options.insert(0,"All")                
                 select('search','ontologies',options,{:selected=>"All"},{:multiple=>true,:size=>8,:style=>'float:left;'})
                 %>
 	</fieldset>	
@@ -30,7 +31,7 @@
 			</tr>
 			<tr>
 				<td nowrap>Search Type:</td>
-				<td><%=radio_button "search","search_type","contains",{:checked=>"checked"}%>Contains <%=radio_button "search","search_type","sounds"%>Sounds Like</td>
+				<td><%=radio_button "search","search_type","contains",{:checked=>"checked"}%>Contains <!--<%=radio_button "search","search_type","sounds"%>Sounds Like --></td>
 			</tr>
 			<tr>
 				<td nowrap>Include Obsolete:</td>
@@ -48,6 +49,13 @@
 </div>
 <%end%>
 <div id="results">
+	<%if session[:search]
+		@results = session[:search][:results]
+		@ontologies = session[:search][:ontologies]
+		@keyword = session[:search][:keyword]
+		%>
+		<%=render :partial=>'results'%>
+	<%end%>
 	
 </div>
 

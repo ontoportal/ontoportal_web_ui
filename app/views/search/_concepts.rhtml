@@ -1,8 +1,8 @@
 <%if @concepts.size > 0%>
 	<div>
 		<div style="float:left;margin:10px;"id="select">
-			<select name="mapping[destination_id]" style="width:200px" size="18" onchange="updateArea('GET','/search/concept_preview?ontology=<%=to_param(@ontology_name)%>&id='+this.value,'map_info')">
-			<%=options_from_collection_for_select(@concepts, "id", "name") %>
+			<select name="mapping[destination_id]" style="width:200px" size="18" onchange="updateArea('GET','/search/concept_preview?ontology=<%=@ontology.id%>&id='+this.value,'map_info')">
+			<%=options_from_collection_for_select(@concepts.first[:names], "id", "name") %>
 			</select>
 			
 		</div>

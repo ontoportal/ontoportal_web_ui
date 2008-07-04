@@ -104,8 +104,10 @@ class MappingsController < ApplicationController
     @mapping = Mapping.new
     @mapping.source_id = params[:source_id]
     @mapping.source_ont = undo_param(params[:ontology])
-    @ontologies = DataAccess.getOntologyList() #populates dropdown
+    @ontologies = DataAccess.getActiveOntologies() #populates dropdown
     @name = params[:source_name] #used for display
+    
+    render :layout=>false
   end
 
   # POST /mappings
@@ -124,8 +126,7 @@ class MappingsController < ApplicationController
     
     #repopulates table
     @mappings =  Mapping.find(:all, :conditions=>{:source_ont => @mapping.source_ont, :source_id => @mapping.source_id})
-    @ontology = OntologyWrapper.new()
-    @ontology.name = @mapping.source_ont
+    @ontology = DataAccess.getOntology(@mapping.source_ont)
     render :partial =>'mapping_table'
      
 

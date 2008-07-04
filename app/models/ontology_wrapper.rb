@@ -1,23 +1,23 @@
 class OntologyWrapper 
 
-  attr_accessor :display_label
+  attr_accessor :displayLabel
   attr_accessor :id
-  attr_accessor :ontology_id
-  attr_accessor :user_id
-  attr_accessor :parent_id
+  attr_accessor :ontologyId
+  attr_accessor :userId
+  attr_accessor :parentId
   attr_accessor :format
-  attr_accessor :version_number
-  attr_accessor :internal_version
-  attr_accessor :version_status
-  attr_accessor :is_current
-  attr_accessor :is_remote
-  attr_accessor :is_reviewed
-  attr_accessor :status_id
-  attr_accessor :date_released
-  attr_accessor :contact_name
-  attr_accessor :contact_email
-  attr_accessor :is_foundry
-  attr_accessor :file_path
+  attr_accessor :versionNumber
+  attr_accessor :internalVersion
+  attr_accessor :versionStatus
+  attr_accessor :isCurrent
+  attr_accessor :isRemote
+  attr_accessor :isReviewed
+  attr_accessor :statusId
+  attr_accessor :dateReleased
+  attr_accessor :contactName
+  attr_accessor :contactEmail
+  attr_accessor :isFoundry
+  attr_accessor :filePath
   attr_accessor :urn
   attr_accessor :homepage
   attr_accessor :documentation

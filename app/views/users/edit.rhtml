@@ -15,10 +15,13 @@
 	<tr>
 		<td>Phone Number:</td><td><%=text_field :user, :phone%></td>
 	</tr>
-	<tr>
-		<td>User Name:</td><td><%=text_field :user, :username%></td>		
-	</tr>
+	<%=hidden_field :user, :username%>
 	<%else%>
+	<%=hidden_field :user, :username%>
+	<%=hidden_field :user, :firstname%>
+	<%=hidden_field :user, :lastname%>
+	<%=hidden_field :user, :email%>
+	<%=hidden_field :user, :phone%>
 	<tr>
 		<td>Password:</td><td><%=password_field :user, :password%></td>
 	</tr>

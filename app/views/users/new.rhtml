@@ -3,6 +3,18 @@
 
 
 <% form_for(:user, :url => users_path) do |f| %>
+<%unless @errors.nil?%>
+<div style="color:red;">
+Errors On Form
+<ul>
+
+<%for error in @errors%>
+<li><%=error%></li>
+<%end%>
+
+</ul>
+</div>
+<%end%>
 
 <%=render :partial =>'form'%>
   <p>

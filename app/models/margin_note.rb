@@ -1,6 +1,6 @@
 class MarginNote < ActiveRecord::Base
   acts_as_tree :order =>:id
-  belongs_to :user
+
   
   NOTE_TYPES = {
   1 => "Advice",
@@ -12,8 +12,12 @@ class MarginNote < ActiveRecord::Base
   7 => "SeeAlso"
   }
   
-    def type_label  
+  def type_label  
     return NOTE_TYPES[self.note_type]
+  end
+  
+  def user
+    return DataAccess.getUser(self.user_id)
   end
   
 end

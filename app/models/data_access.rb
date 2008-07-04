@@ -47,13 +47,37 @@ class DataAccess
     end
     
     def self.getOntologyList
-      if CACHE.get("ont_list").nil?
+#      if CACHE.get("ont_list").nil?
         list = SERVICE.getOntologyList
-        CACHE.set("ont_list",list)
-        return list
-      else
-        return CACHE.get("ont_list")
-      end
+ #       CACHE.set("ont_list",list)
+  nonObo=[]
+   for item in list
+     if !item.format.include?("OBO")
+       nonObo << item
+     end
+   end
+ return nonObo
+#        return list
+  #    else
+  #      return CACHE.get("ont_list")
+  #    end
+    end
+    
+    def self.getActiveOntologies
+      #      if CACHE.get("ont_list").nil?
+              list = SERVICE.getOntologyList
+              activeOntologies = []
+              for item in list
+                if item.statusId.to_i.eql?(3)&& !item.format.include?("OBO")
+                  activeOntologies << item
+                end
+              end
+       #       CACHE.set("ont_list",list)
+              return activeOntologies
+        #    else
+        #      return CACHE.get("ont_list")
+        #    end
+      
     end
 
        def self.getOntologyVersions(ontology)
@@ -75,6 +99,11 @@ class DataAccess
    #   else
     #    return CACHE.get("#{ontology}::_details")
     #  end
+    end
+    
+    def self.getLastestOntology(ontology)
+      details = SERVICE.getLatestOntology(ontology)
+      return details
     end
     
     def self.getNodeNameSoundsLike(ontologies,search)
@@ -127,18 +156,36 @@ class DataAccess
       return user
     end
     
-     def updateUser(params)
-      user = SERVICE.updateUser(params)
+     def self.updateUser(params,id)
+      user = SERVICE.updateUser(params,id)
       return user
     end
+    
+    def self.createOntology(params)
+      ontology = SERVICE.createOntology(params)
+      return ontology
+    end
+    
+    def self.updateOntology(params)
+      ontology = SERVICE.updateOntology(params)
+      return ontology
+    end
+    
+    def self.download(id)
+      return SERVICE.download(id)
+    end
+    
+    
+    
+    
     def self.getAttributeValueContains(ontologies,search)
-       if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}").nil?
+     #  if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}").nil?
         results = SERVICE.getAttributeValueContains(ontologies,search)
-        CACHE.set("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}",results)
+  #      CACHE.set("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}",results)
         return results
-      else
-        return CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}")
-      end
+   #   else
+  #      return CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}")
+  #    end
       
       
     end
@@ -158,33 +205,33 @@ class DataAccess
     
     
     
-    def self.getNetworkNeighborhoodImage(ontology,node_id,associations=nil)
-      if CACHE.get("#{param(ontology)}::#{node_id}_nnImage::#{associations}").nil?
-        image = SERVICE.getNetworkNeighborhoodImage(ontology,node_id,associations) 
-        CACHE.set("#{param(ontology)}::#{node_id}_nnImage::#{associations}",image)
-        return image
-      else
-        return CACHE.get("#{param(ontology)}::#{node_id}_nnImage::#{associations}")
-      end
-    end
+#    def self.getNetworkNeighborhoodImage(ontology,node_id,associations=nil)
+#      if CACHE.get("#{param(ontology)}::#{node_id}_nnImage::#{associations}").nil?
+#        image = SERVICE.getNetworkNeighborhoodImage(ontology,node_id,associations) 
+#        CACHE.set("#{param(ontology)}::#{node_id}_nnImage::#{associations}",image)
+#        return image
+#      else
+#        return CACHE.get("#{param(ontology)}::#{node_id}_nnImage::#{associations}")
+#      end
+#    end
     
-    def self.getPathToRootImage(ontology,node_id,associations=nil)
-      if CACHE.get("#{param(ontology)}::#{node_id}_ptrImage::#{associations}").nil?
-        image = SERVICE.getPathToRootImage(ontology,node_id,associations) 
-        CACHE.set("#{param(ontology)}::#{node_id}_ptrImage::#{associations}",image)
-        return image
-      else
-        return CACHE.get("#{param(ontology)}::#{node_id}_ptrImage::#{associations}")
-      end
-    end
+#    def self.getPathToRootImage(ontology,node_id,associations=nil)
+#      if CACHE.get("#{param(ontology)}::#{node_id}_ptrImage::#{associations}").nil?
+#        image = SERVICE.getPathToRootImage(ontology,node_id,associations) 
+#        CACHE.set("#{param(ontology)}::#{node_id}_ptrImage::#{associations}",image)
+#        return image
+#      else
+#        return CACHE.get("#{param(ontology)}::#{node_id}_ptrImage::#{associations}")
+#      end
+#    end
     
     def self.getPathToRoot(ontology,source)      
       return SERVICE.getPathToRoot(ontology,source)
     end
     
-    def self.param(string)
-      return string.gsub(" ","_")
-    end
+#    def self.param(string)
+#      return string.gsub(" ","_")
+#    end
    
   
 end

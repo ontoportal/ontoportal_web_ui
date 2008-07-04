@@ -40,7 +40,7 @@ ActionController::Routing::Routes.draw do |map|
   map.logout '/logout',:controller=>'login',:action=>'destroy'
   map.visualize '/visualize/:ontology', :controller=>'ontologies', :action =>'visualize',:requirements => { :ontology => %r([^/?]+) }
   map.uri '/visualize/:ontology/:id', :controller => 'concepts', :action => 'show',:requirements => { :ontology => %r([^/?]+) ,:id => %r([^/?]+)}
-  map.ontology '/ontology/:ontology', :controller => 'ontologies', :action => 'show',:requirements => { :ontology => %r([^/?]+) }
+  #map.ontology '/ontology/:ontology', :controller => 'ontologies', :action => 'show',:requirements => { :ontology => %r([^/?]+) }
   map.remove_tab '/tab/remove/:ontology',:controller=>'history',:action=>'remove'
   map.update_tab '/tab/update/:ontology/:concept',:controller=>'history',:action=>'update'
 

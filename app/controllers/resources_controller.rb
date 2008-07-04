@@ -1,16 +1,16 @@
 class ResourcesController < ApplicationController
 
   def show
-     @concept =  DataAccess.getNode(undo_param(params[:ontology]),params[:id])
+     @concept =  DataAccess.getNode(params[:ontology],params[:id])
+     @ontology = DataAccess.getOntology(params[:ontology])
       puts @concept.inspect
-       @ontology = OntologyWrapper.new()
-       @ontology.name = @concept.ontology_name
+    
        @resources = []
 
           if(@concept.properties["UMLS_CUI"]!=nil)
             @resources = OBDWrapper.gatherResourcesCui(@concept)
           else
-            @resources = OBDWrapper.gatherResources(@ontology.to_param,@concept)
+            @resources = OBDWrapper.gatherResources(to_param(@ontology.displayLabel),@concept)
           end
 
   render :partial=> 'resources'

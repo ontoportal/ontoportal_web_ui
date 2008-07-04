@@ -56,7 +56,7 @@ module ApplicationHelper
   for note in notes
     name="Anonymous"
     unless note.user.nil?
-      name=note.user.user_name
+      name=note.user.username
     end
   headertext=""
   notetext=""

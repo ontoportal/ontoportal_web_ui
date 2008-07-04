@@ -3,6 +3,7 @@
 	<%if session[:user].nil?%>
 		<%=link_to "Sign In" ,:controller =>'login'%> &nbsp; <%=link_to "Register", new_user_path(:redirect=>@ontology)%>
 	<%else%>
+		Logged In As <%=session[:user].username%>
 		<%=link_to "My Projects", projects_path(:user=>session[:user].id)%> | 
 		<%=link_to "My Account", edit_user_path(session[:user])%> | 
 		<%=link_to "Log Out",logout_url%>

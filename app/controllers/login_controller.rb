@@ -15,13 +15,19 @@ class LoginController < ApplicationController
   def create # logs in a user
 #      @user = User.new(params[:user])
 #      logged_in_user = @user.try_to_login
-      logged_in_user = DataAccess.authenticateUser(params[:user][:username],params[:user][:password])
-      if logged_in_user
-        session[:user] = logged_in_user
-        flash[:notice] = "Welcome "+logged_in_user.username.to_s+"."
-        redirect_to_history
+
+      @errors = validate(params[:user])
+      if @errors.size <1
+        logged_in_user = DataAccess.authenticateUser(params[:user][:username],params[:user][:password])
+        if logged_in_user
+          session[:user] = logged_in_user
+          flash[:notice] = "Welcome "+logged_in_user.username.to_s+"."
+          redirect_to_history
+        else
+          @errors << "Invalid user name/password combination"
+          render :action=>'index'
+        end
       else
-        flash[:notice] = "Invalid user name/password combination"
         render :action=>'index'
       end
   end
@@ -54,7 +60,21 @@ class LoginController < ApplicationController
     end
   end
 
+private 
 
+  def validate(params)
+       errors=[]
+       
+       if params[:username].nil? || params[:username].length <1
+         errors << "Please Enter a User Name"
+       end
+       if params[:password].nil? || params[:password].length <1
+         errors << "Please Enter a Password"
+       end
+     
+       return errors
+
+     end
 
 
 end

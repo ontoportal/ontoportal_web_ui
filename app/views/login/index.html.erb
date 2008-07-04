@@ -1,5 +1,16 @@
 <% form_for(:user, :url => {:controller => 'login',:action=>'create'}) do |f| %>
-<p style="color:red;"><%=flash[:notice]%></p>
+<%unless @errors.nil?%>
+<div style="color:red;">
+Errors On Form
+<ul>
+
+<%for error in @errors%>
+<li><%=error%></li>
+<%end%>
+
+</ul>
+</div>
+<%end%>
 			 <table >
 			     <tr>
 			         <td nowrap align="right" >User Name:</td>

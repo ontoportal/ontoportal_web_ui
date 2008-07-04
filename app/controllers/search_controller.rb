@@ -1,19 +1,18 @@
 class SearchController < ApplicationController
   
   def index
-    @ontologies = DataAccess.getOntologyList() 
+    @ontologies = DataAccess.getActiveOntologies() 
   end
   
   def concept #search for concept for mappings
-    @concepts = DataAccess.getNodeNameContains([undo_param(params[:ontology])],params[:name])    
-    @ontology_name = undo_param(params[:ontology])
+    @concepts = DataAccess.getNodeNameContains([params[:ontology]],params[:name])    
+    @ontology = DataAccess.getOntology(params[:ontology])
     render :partial => 'concepts'    
   end
   
   def concept_preview #get the priview of the concept for mapping
-    @ontology = OntologyWrapper.new
-    @ontology.name=undo_param(params[:ontology])
-    @concept = DataAccess.getNode(undo_param(params[:ontology]),params[:id])
+    @ontology = DataAccess.getOntology(params[:ontology])
+    @concept = DataAccess.getNode(params[:ontology],params[:id])
     @children = @concept.children
     render :partial =>'concept_preview'
   end
@@ -45,6 +44,10 @@ class SearchController < ApplicationController
       
     end
 
+    session[:search]={}
+    session[:search][:results]=@results
+    session[:search][:ontologies]=@ontologies
+    session[:search][:keyword]=@keyword
     
     respond_to do |format|
       format.html { render :partial =>'results'}
