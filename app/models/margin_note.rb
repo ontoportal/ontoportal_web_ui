@@ -20,4 +20,9 @@ class MarginNote < ActiveRecord::Base
     return DataAccess.getUser(self.user_id)
   end
   
+  def after_create
+    CACHE.delete("#{self.ontology_id}::#{self.concept_id}_NoteCount")
+  end
+  
+  
 end

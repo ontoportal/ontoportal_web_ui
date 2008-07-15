@@ -10,7 +10,7 @@
 	</tr>
 	<%for mapping in @source_counts%>
 	<tr>
-		<td><%=link_to_remote mapping['destination_ont'] ,:update=>'mappings',:url=>"/mappings/show/#{params[:ontology]}?target=#{mapping['destination_ont']}",:loading=>"YAHOO.wait.container.wait.show();",:complete=>'YAHOO.wait.container.wait.hide();'%></td><td class="last"><%=mapping['count']%></td>
+		<td><%=link_to_remote mapping['destination_ont_name'] ,:update=>'mappings',:url=>"/mappings/show/#{params[:ontology]}?target=#{mapping['destination_ont']}",:loading=>"YAHOO.wait.container.wait.show();",:complete=>'YAHOO.wait.container.wait.hide();'%></td><td class="last"><%=mapping['count']%></td>
 	</tr>
 	<%end%>	
 	<%end%>
@@ -21,7 +21,7 @@
 	</tr>
 	<%for mapping in @dest_counts%>
 	<tr>
-		<td><%=link_to_remote mapping['source_ont'] ,:update=>'mappings',:url=>"/mappings/show/#{mapping['source_ont']}?target=#{params[:ontology]}",:loading=>"YAHOO.wait.container.wait.show();",:complete=>'YAHOO.wait.container.wait.hide();'%></td><td class="last"><%=mapping['count']%></td>
+		<td><%=link_to_remote mapping['source_ont_name'] ,:update=>'mappings',:url=>"/mappings/show/#{mapping['source_ont']}?target=#{params[:ontology]}",:loading=>"YAHOO.wait.container.wait.show();",:complete=>'YAHOO.wait.container.wait.hide();'%></td><td class="last"><%=mapping['count']%></td>
 	</tr>
 	<%end%>
 	<%end%>

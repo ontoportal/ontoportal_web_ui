@@ -12,11 +12,11 @@ class MappingsController < ApplicationController
   
   def count
     @source_counts =[]
-    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,destination_ont from mappings  where source_ont like '#{params[:ontology]}' group by destination_ont")
+    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,destination_ont,destination_ont_name,source_ont_name from mappings  where source_ont like '#{params[:ontology]}' group by destination_ont")
      names.each_hash(with_table=false) {|x| @source_counts<<x}
     
     @dest_counts = []
-    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,source_ont from mappings  where destination_ont like '#{params[:ontology]}' group by source_ont")
+    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,source_ont,destination_ont_name,source_ont_name from mappings  where destination_ont like '#{params[:ontology]}' group by source_ont")
     names.each_hash(with_table=false) {|x| @dest_counts<<x} 
     
     render :partial =>'count'
@@ -53,7 +53,7 @@ class MappingsController < ApplicationController
       
       if @mappings[map.source_id].nil?
         puts "new mapping"
-        @mappings[map.source_id] = [{:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.user_name],:count=>1}]
+        @mappings[map.source_id] = [{:source_ont_name=>map.source_ont_name,:destination_ont_name=>map.destination_ont_name,:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.username],:count=>1}]
       else
         puts "Mapping exists"
         @mappings[map.source_id]
@@ -69,7 +69,7 @@ class MappingsController < ApplicationController
           end  
         end
         unless found
-         @mappings[map.source_id]<< {:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.user_name],:count=>1}
+         @mappings[map.source_id]<< {:source_ont_name=>map.source_ont_name,:destination_ont_name=>map.destination_ont_name,:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.username],:count=>1}
         end
       end
     end
@@ -117,12 +117,11 @@ class MappingsController < ApplicationController
     @mapping = Mapping.new(params[:mapping])
     @mapping.user_id = session[:user].id
     @mapping.source_name=DataAccess.getNode(@mapping.source_ont,@mapping.source_id).name
+    @mapping.source_ont_name = DataAccess.getOntology(@mapping.source_ont).displayLabel
     @mapping.destination_name=DataAccess.getNode(@mapping.destination_ont,@mapping.destination_id).name
+    @mapping.destination_ont_name = DataAccess.getOntology(@mapping.destination_ont).displayLabel
     @mapping.save
-    
-    count = Mapping.count(:conditions=>{:source_ont => @mapping.source_ont, :source_id => @mapping.source_id})
-    CACHE.set("#{@mapping.source_ont.gsub(" ","_")}::#{@mapping.source_id}_MappingCount",count)
-    
+        
     
     #repopulates table
     @mappings =  Mapping.find(:all, :conditions=>{:source_ont => @mapping.source_ont, :source_id => @mapping.source_id})

@@ -49,14 +49,13 @@ class ApplicationController < ActionController::Base
     else
       tab = find_tab(session[:redirect][:ontology])
       session[:redirect]=nil
-      redirect_to uri_url(:ontology=>param(tab.ontology_id),:id=>tab.concept)
+      redirect_to uri_url(:ontology=>tab.ontology_id,:id=>tab.concept)
     end
   end
   
   
   def authorize  # Verifies if user is logged in
-    unless session[:user]
-      flash[:notice] = "Please log in"
+    unless session[:user]      
       redirect_to_home
     end
   end

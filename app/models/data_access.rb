@@ -2,16 +2,16 @@ require 'BioPortalRestfulCore'
 class DataAccess
   SERVICE = BioPortalRestfulCore #sets what backend we are using
   
-  
+  CACHE_EXPIRE_TIME=60*60
     
     def self.getNode(ontology,node_id)
-      if CACHE.get("#{param(ontology)}::#{node_id}").nil?
+#      if CACHE.get("#{param(ontology)}::#{node_id}").nil?
         node = SERVICE.getNode(ontology,node_id)  
-        CACHE.set("#{param(ontology)}::#{node_id}",node)
+#        CACHE.set("#{param(ontology)}::#{node_id}",node)
         return node
-      else
-        return CACHE.get("#{param(ontology)}::#{node_id}")
-      end
+#      else
+#        return CACHE.get("#{param(ontology)}::#{node_id}")
+#      end
     end
     
     def self.getChildNodes(ontology,node_id,associations)
@@ -49,7 +49,7 @@ class DataAccess
     def self.getOntologyList
       if CACHE.get("ont_list").nil?
         list = SERVICE.getOntologyList
-        CACHE.set("ont_list",list)
+        CACHE.set("ont_list",list,CACHE_EXPIRE_TIME)
         return list
       else
         return CACHE.get("ont_list")
@@ -65,7 +65,7 @@ class DataAccess
                   activeOntologies << item
                 end
               end
-              CACHE.set("act_ont_list",activeOntologies)
+              CACHE.set("act_ont_list",activeOntologies,CACHE_EXPIRE_TIME)
               return activeOntologies
             else
               return CACHE.get("act_ont_list")
@@ -74,12 +74,12 @@ class DataAccess
     end
 
        def self.getOntologyVersions(ontology)
-         if CACHE.get("#{ontology}::_details").nil?
+         if CACHE.get("#{ontology}::_versions").nil?
            details = SERVICE.getOntologyVersions(ontology)
-           CACHE.set("#{ontology}::_details",details)
+           CACHE.set("#{ontology}::_versions",details,CACHE_EXPIRE_TIME)
            return details
          else
-           return CACHE.get("#{ontology}::_details")
+           return CACHE.get("#{ontology}::_versions")
          end
        end
 
@@ -87,7 +87,7 @@ class DataAccess
     def self.getOntology(ontology)
       if CACHE.get("#{ontology}::_details").nil?
         details = SERVICE.getOntology(ontology)
-        CACHE.set("#{ontology}::_details",details)
+        CACHE.set("#{ontology}::_details",details,CACHE_EXPIRE_TIME)
         return details
       else
         return CACHE.get("#{ontology}::_details")
@@ -156,14 +156,17 @@ class DataAccess
     
     def self.createOntology(params)
       ontology = SERVICE.createOntology(params)
-      CACHE.set("act_ont_list",nil)
-      CACHE.set("ont_list",nil)
+      CACHE.delete("act_ont_list")
+      CACHE.delete("ont_list",nil)
+        unless(params[:ontologyId].nil?)
+          CACHE.delete("#{params[:ontologyId]}::_versions")
+        end
       return ontology
     end
     
     def self.updateOntology(params)
       ontology = SERVICE.updateOntology(params)
-      CACHE.set("#{params[:id]}::_details",nil)
+      CACHE.delete("#{params[:id]}::_details")
       return ontology
     end
     
@@ -225,9 +228,9 @@ class DataAccess
       return SERVICE.getPathToRoot(ontology,source)
     end
     
-#    def self.param(string)
-#      return string.gsub(" ","_")
-#    end
+    def self.param(string)
+      return string.gsub(" ","_")
+    end
    
   
 end

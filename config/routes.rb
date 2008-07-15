@@ -31,6 +31,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
+  map.connect '/exhibit/:ontology/:id',:controller=>'concepts',:action=>'exhibit'
   map.upload_mappings '/upload/mapping',:controller=>'mappings',:action=>'upload'
   map.process_mappings '/process/mapping',:controller=>'mappings',:action=>'process_mappings'
   map.connect ':controller/service.wsdl', :action => 'wsdl'

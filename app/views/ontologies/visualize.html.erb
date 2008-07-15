@@ -1,12 +1,12 @@
 
 <div id="leftbar" class="leftbar"><br>
-<span class="tree_metadata"><%=link_to "View Ontology Metadata", ontology_url(:ontology => @ontology)%></span>
+<span class="tree_metadata"><%=link_to "View Ontology Metadata", ontology_url(:id => @ontology.id)%></span>
 <%=render :partial => '/ontologies/treeview'%>
 
 </div>
 <div id="dragSpot"></div>
 
-<div  id="centerContent" class="content">
+<div  id="centerContent" class="content" >
 <h1 id="name_label"><%=@concept.name%></h1>
 
 	<div id="tabframe" class="yui-navset">
@@ -25,7 +25,7 @@
     	</ul> 
 		   
 		        
-    	<div class="yui-content" id = "content" >
+    	<div class="yui-content" id = "content">
         	<div id="tab1"><%=render :partial =>'/concepts/images'%></div>
         	<div id="tab2"><%=render :partial =>'/concepts/details'%></div>
 			<div id="tab3"><%=render :partial =>'/margin_notes/show'%></div>

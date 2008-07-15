@@ -48,9 +48,15 @@ class BioPortalRestfulCore
          node = nil
          doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology).gsub("%CONC%",node_id)))
          time = Time.now
+#          puts "#########Full Doc############"
+#          puts doc.to_s
+#          puts "#####################"
           doc.elements.each("*/data/classbean"){ |element|  
           node = parseConcept(element,ontology)
          }
+#         puts "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+#         puts node.inspect
+#         puts "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
          puts "getNode Parse Time: #{Time.now-time}"
          return node
        end
@@ -328,9 +334,9 @@ private
     query = 
       params.collect {|p| '--' + boundary + "\r\n" + p}.join('') + "--" + boundary + "--\r\n"
     uri = URI.parse(url)
-    puts "==========="
-    puts query
-    puts "=========== "
+#    puts "==========="
+#    puts query
+#    puts "=========== "
     response = Net::HTTP.new(uri.host,"8080").start.
       post2(uri.path,
             query,
@@ -389,10 +395,10 @@ private
         resultHash[:metadata]<<parseConcept(element,resultHash[:version_id])
     }
     
-    puts "Results Hash"
-    puts "----------------"
-    puts resultHash.inspect
-    puts "-----------------"
+#    puts "Results Hash"
+#    puts "----------------"
+#    puts resultHash.inspect
+#    puts "-----------------"
     return resultHash
     
     
@@ -450,6 +456,11 @@ private
     
   end
 
+  def self.errorCheck(doc)
+    
+    
+  end
+
   def self.parseConcept(classbeanXML,ontology)
 
 
@@ -461,13 +472,29 @@ private
          node.children =[]
          node.properties ={}
          classbeanXML.elements["relations"].elements.each("entry"){ |entry|
-         
+#           puts "##########Element###########"
+#            puts entry.to_s
+
              case entry.elements["string"].get_text.value
-               when SUBCLASS  
+               when SUBCLASS
+                if entry.elements["list"].attributes["reference"]
+                   entry.elements["list"].elements.each(entry.elements["list"].attributes["reference"]){|element|
+                     element.elements.each{|classbean|
+#                        puts "------------Reference Item in list----------"
+#                         puts classbean.to_s
+#                         puts "--------------------------------"
+                         node.children<<parseConcept(classbean,ontology)
+                         }
+                     }
+                   
+                else
                   entry.elements["list"].elements.each {|element|
-                     
+#                    puts "------------item in list----------"
+#                      puts element.to_s
+#                      puts "--------------------------------"
                       node.children<<parseConcept(element,ontology)
-                  }                 
+                  } 
+                end                
                when SUPERCLASS
               
                when CHILDCOUNT
@@ -475,7 +502,7 @@ private
                else                                  
                  node.properties[entry.elements["string"].get_text.value] = entry.elements["list"].elements.map{|element| element.get_text.value}.join(" ,") rescue ""
                end
-
+ #           puts "#####################"
         }
         return node
   end

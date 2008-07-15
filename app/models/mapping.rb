@@ -11,7 +11,9 @@ class Mapping < ActiveRecord::Base
     DataAccess.getNode(self.destination_ont,self.destination_id)
   end
 
-
+  def after_create
+    CACHE.delete("#{self.source_ont}::#{self.source_id}_MappingCount")
+  end
   
   def user
     return DataAccess.getUser(self.user_id)

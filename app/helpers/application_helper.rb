@@ -6,7 +6,7 @@ module ApplicationHelper
   
   def isOwner?(id)
     unless session[:user].nil?
-      if session[:user].admin
+      if session[:user].admin?
         return true        
       elsif session[:user].id.eql?(id)
         return true

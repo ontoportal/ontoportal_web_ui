@@ -37,12 +37,7 @@ class MarginNotesController < ApplicationController
       @margin_note.user_id = session[:user].id
     end
     
-      if @margin_note.save
-        
-        # Updates the Cache
-        count = MarginNote.count(:conditions=>{:ontology_id => @margin_note.ontology_id, :concept_id =>@margin_note.concept_id})
-        CACHE.set("#{ @margin_note.ontology_id.gsub(" ","_")}::#{@margin_note.concept_id}_NoteCount",count)
-        
+      if @margin_note.save               
         flash[:notice] = 'MarginNote was successfully created.'
         
       else

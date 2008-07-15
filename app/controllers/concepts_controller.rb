@@ -22,6 +22,73 @@ class ConceptsController < ApplicationController
     end
   end
 
+  def exhibit
+      time = Time.now
+       puts "Starting Retrieval"
+       @concept =  DataAccess.getNode(params[:ontology],params[:id])
+       puts "Finished in #{Time.now- time}"
+
+       string =""
+       string <<"{
+           \"items\" : [\n
+
+       	{\n
+       \"title\": \"#{@concept.name}\" , \n
+       \"label\": \"#{@concept.id}\" \n"
+       for property in @concept.properties.keys
+         if @concept.properties[property].empty?
+           next
+         end
+         
+           string << " , "
+         
+           string << "\"#{property.gsub(":","")}\" : \"#{@concept.properties[property]}\"\n"
+           
+       end
+
+       if @concept.children.length > 0
+         string << "} , \n"
+       else
+         string <<"}"
+       end
+
+
+       for child in @concept.children
+         string <<"{
+         \"title\" : \"#{child.name}\" , \n
+         \"label\": \"#{child.id}\"  \n"
+         for property in child.properties.keys
+           if child.properties[property].empty?
+             next
+           end
+
+           string << " , "
+           
+             string << "\"#{property.gsub(":","")}\" : \"#{child.properties[property]}\"\n"
+         end
+         if child.eql?(@concept.children.last)
+           string << "}"
+          else
+            string << "} , "
+         end
+       end
+
+        response.headers['Content-Type'] = "text/html" 
+        
+       	string<< "]}"
+
+
+
+
+
+
+
+       render :text=> string
+
+
+   end
+
+
   
   # PRIVATE -----------------------------------------
   private

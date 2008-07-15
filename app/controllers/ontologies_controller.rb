@@ -1,4 +1,4 @@
-require "set"
+
 class OntologiesController < ApplicationController
  
   #caches_page :index
@@ -44,6 +44,7 @@ class OntologiesController < ApplicationController
       params[:ontology][:isCurrent]=1
       params[:ontology][:isReviewed]=1
       params[:ontology][:isFoundry]=0
+      params[:ontology][:userId]=
       @ontology = DataAccess.updateOntology(params[:ontology])
       redirect_to ontology_path(@ontology)
   end
@@ -124,7 +125,42 @@ class OntologiesController < ApplicationController
   end
   
 
-    
+  def exhibit
+      time = Time.now
+       puts "Starting Retrieval"
+       @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
+       puts "Finished in #{Time.now- time}"
+
+       string =""
+       string <<"{
+           \"items\" : [\n"
+
+       
+
+       for ont in @ontologies
+         string <<"{
+         \"title\" : \"#{ont.displayLabel}\" , \n
+         \"label\": \"#{ont.id}\",  \n
+         \"ontologyId\": \"#{ont.ontologyId}\",\n
+         \"version\": \"#{ont.versionNumber}\",\n
+         \"status\":\"#{ont.versionStatus}\",\n
+         \"format\":\"#{ont.format}\"\n
+                  "
+         
+         if ont.eql?(@ontologies.last)
+           string << "}"
+          else
+            string << "} , "
+         end
+       end
+
+        response.headers['Content-Type'] = "text/html" 
+        
+       	string<< "]}"
+       render :text=> string
+
+
+   end  
 
   
 end
