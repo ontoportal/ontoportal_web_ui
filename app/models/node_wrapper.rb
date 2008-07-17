@@ -18,7 +18,7 @@ class NodeWrapper
    
    def mapping_count
      if CACHE.get("#{self.ontology_id}::#{self.id}_MappingCount").nil?
-        count = Mapping.count(:conditions=>{:source_ont => self.ontology_name, :source_id => self.id})
+        count = Mapping.count(:conditions=>{:source_ont => self.ontology_id, :source_id => self.id})
         CACHE.set("#{self.ontology_id}::#{self.id}_MappingCount",count)
         return count
      else
@@ -29,7 +29,7 @@ class NodeWrapper
    
    def note_count
      if CACHE.get("#{self.ontology_id}::#{self.id}_NoteCount").nil?
-        count = MarginNote.count(:conditions=>{:ontology_id => self.ontology_name, :concept_id =>self.id})
+        count = MarginNote.count(:conditions=>{:ontology_id => self.ontology_id, :concept_id =>self.id})
         CACHE.set("#{self.ontology_id}::#{self.id}_NoteCount",count)
         return count
      else

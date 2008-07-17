@@ -54,10 +54,17 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @errors.size <1
         @user = DataAccess.createUser(params[:user])
+        if @user.kind_of?(Hash) && @user[:error]        
+          @errors << @user[:longMessage]
+          @user = UserWrapper.new(params[:user])
+          format.html { render :action => "new" }
+        else
+        
         flash[:notice] = 'User was successfully created.'
         session[:user]=@user
         format.html { redirect_to_browse }
         format.xml  { head :created, :location => user_url(@user) }
+        end
       else
         @user = UserWrapper.new(params[:user])
         format.html { render :action => "new" }
@@ -70,9 +77,13 @@ class UsersController < ApplicationController
   def update
   
       @user = DataAccess.updateUser(params[:user],params[:id])
-     
-      flash[:notice] = 'User was successfully updated.'    
+      if @user.kind_of?(Hash) && @user[:error]        
+        flash[:notice]= @user[:longMessage]
+        redirect_to edit_user_path(params[:id])
+      else
+      flash[:notice] = 'User was successfully updated.'          
       redirect_to user_path(@user.id)
+      end
   end
 
   # DELETE /users/1
@@ -95,10 +106,14 @@ private
 
   def validate(params)
     errors=[]
-    if params[:email].nil? || params[:email].length <1
+    if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
       errors << "Please Enter an Email Address"
     end
-    if params[:email_confirmation].nil? || params[:email_confirmation].length <1
+    
+    if !params[:phone].nil? &&  !params[:phone].match(/^(1\s*[-\/\.]?)?(\((\d{3})\)|(\d{3}))\s*[-\/\.]?\s*(\d{3})\s*[-\/\.]?\s*(\d{4})\s*(([xX]|[eE][xX][tT])\.?\s*(\d+))*$/i)
+      errors << "Please enter a valid phone number"
+    end
+    if params[:email_confirmation].nil? || params[:email_confirmation].length <1 
       errors << "Please Confirm Your Email Address"
     end
     if !params[:email].eql?(params[:email_confirmation])
@@ -108,7 +123,7 @@ private
       errors << "Please Enter a User Name"
     end
     if params[:password].nil? || params[:password].length <1
-      errors << "Please Enter a Password Address"
+      errors << "Please Enter a Password"
     end
     if params[:password_confirmation].nil? || params[:password_confirmation].length <1
       errors << "Please Confirm Your Password"

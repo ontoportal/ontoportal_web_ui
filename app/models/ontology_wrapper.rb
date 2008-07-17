@@ -37,12 +37,16 @@ class OntologyWrapper
   }
   
   STATUS={
-    "Waiting"=>1,
+    "Waiting For Parsing"=>1,
     "Parsing"=>2,
     "Ready"=>3,
     "Error"=>4,
     "Not Applicable"=>5
   }
+  
+  FORMAT=["OBO","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE","LEXGRID_XML"]
+    
+  
   
   
   def reviews

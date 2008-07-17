@@ -4,7 +4,7 @@ class BioPortalRestfulCore
   
   #Resources
 #    BASE_URL="http://ncbo-core-dev1:8080/bioportal/rest"
-    BASE_URL="http://ncbo-core-load1:8080/bioportal/rest"
+    BASE_URL="http://ncbo-core-load1.stanford.edu:8080/bioportal/rest"
     #BASE_URL="http://171.65.32.220:8080/bioportal/rest"
     
     ONTOLOGIES_PATH = "/ontologies/%ONT%"
@@ -47,6 +47,13 @@ class BioPortalRestfulCore
        def self.getNode(ontology,node_id)
          node = nil
          doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology).gsub("%CONC%",node_id)))
+         node = errorCheck(doc)
+         
+         unless node.nil?
+           return node
+         end
+         
+         
          time = Time.now
 #          puts "#########Full Doc############"
 #          puts doc.to_s
@@ -66,6 +73,13 @@ class BioPortalRestfulCore
         node = nil
          doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology).gsub("%CONC%","root")))
          time = Time.now
+         node = errorCheck(doc)         
+         unless node.nil?
+           return node
+         end
+         
+                   puts "I should be Nil: #{node}"
+         
           doc.elements.each("*/data/classbean"){ |element|  
           node = parseConcept(element,ontology)
          }
@@ -74,8 +88,16 @@ class BioPortalRestfulCore
       end
 
       def self.getOntologyList
-        ontologies=[];
+        ontologies=nil
          doc = REXML::Document.new(open(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")))
+         
+         ontologies = errorCheck(doc)
+         
+         unless ontologies.nil?
+           return ontologies
+         end
+
+         ontologies = []
          time = Time.now
           doc.elements.each("*/data/list/ontology"){ |element| 
           ontologies << parseOntology(element)
@@ -85,8 +107,17 @@ class BioPortalRestfulCore
       end
       
       def self.getOntologyVersions(ontology)
-        ontologies=[];
+
          doc = REXML::Document.new(open(BASE_URL+VERSIONS_PATH.gsub("%ONT%",ontology)))
+        
+         ontologies = errorCheck(doc)
+
+         unless ontologies.nil?
+           return ontologies
+         end
+
+        ontologies=[]
+
          time = Time.now
           doc.elements.each("*/data/list/ontology"){ |element|  
           ontologies << parseOntology(element)
@@ -100,7 +131,19 @@ class BioPortalRestfulCore
       def self.getOntology(ontology)
         ont = nil
         puts "Ontology: #{ontology}"
+        begin
           doc = REXML::Document.new(open(BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology)))
+        rescue Exception=>e
+          doc =  REXML::Document.new(e.io.read)
+          puts doc.inspect
+        end
+            ont = errorCheck(doc)
+
+             unless ont.nil?
+               return ont
+             end
+          puts "I should be Nil: #{ont}"
+          
          time = Time.now
             doc.elements.each("*/data/ontology"){ |element|  
             ont = parseOntology(element)
@@ -117,6 +160,13 @@ class BioPortalRestfulCore
           ont = nil
           puts "Ontology: #{ontology}"
             doc = REXML::Document.new(open(BASE_URL + PARSE_ONTOLOGY.gsub("%ONT%",ontology)))
+            
+                 ont = errorCheck(doc)
+
+                   unless ont.nil?
+                     return ont
+                   end
+            
            time = Time.now
               doc.elements.each("*/data/ontology"){ |element|  
               ont = parseOntology(element)
@@ -133,6 +183,13 @@ class BioPortalRestfulCore
          ont = nil
           puts "Ontology: #{ontology}"
             doc = REXML::Document.new(open(BASE_URL + VIRTUAL_URI_PATH.gsub("%ONT%",ontology).gsub("%CONC%","")))
+            
+              ont = errorCheck(doc)
+
+                 unless ont.nil?
+                   return ont
+                 end
+            
            time = Time.now
               doc.elements.each("*/data/ontology"){ |element|  
               ont = parseOntology(element)
@@ -149,6 +206,13 @@ class BioPortalRestfulCore
       def self.getPathToRoot(ontology,source,light=nil)
            root = nil
            doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology).gsub("%CONC%",source)+"?light=false"))
+           
+             root = errorCheck(doc)
+
+                unless root.nil?
+                  return root
+                end
+           
            time = Time.now
             doc.elements.each("*/data/classbean"){ |element|  
             root = parseConcept(element,ontology)
@@ -164,9 +228,16 @@ class BioPortalRestfulCore
        end   
          
        def self.getNodeNameContains(ontologies,search)
-          results = []
-          puts "URL: #{BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies.join(",")).gsub("%query%",search)}"
+
             doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies.join(",")).gsub("%query%",search)))
+           
+               results = errorCheck(doc)
+
+                  unless results.nil?
+                    return results
+                  end 
+          results = []
+            
             time = Time.now
              doc.elements.each("*/data/list/searchresultbean"){ |element|  
              results << parseSearchResults(element)
@@ -176,8 +247,15 @@ class BioPortalRestfulCore
         end
         
         def self.getUsers
-          results = []
+
           doc = REXML::Document.new(open(BASE_URL+USERS_PATH))
+          
+               results = errorCheck(doc)
+
+                  unless results.nil?
+                    return results
+                  end
+          results = []          
           time = Time.now
            doc.elements.each("*/data/list/user"){ |element|  
            results << parseUser(element)
@@ -190,6 +268,13 @@ class BioPortalRestfulCore
         def self.getUser(user_id)
           user=nil
           doc = REXML::Document.new(open(BASE_URL+USER_PATH.gsub("%USR%",user_id.to_s)))
+          
+                  user = errorCheck(doc)
+
+                      unless user.nil?
+                        return user
+                      end
+          
           time = Time.now
            doc.elements.each("*/data/user"){ |element|  
            user = parseUser(element)
@@ -203,32 +288,49 @@ class BioPortalRestfulCore
           puts BASE_URL+AUTH_PATH+"?username=#{username}&password=#{password}&applicationid=#{APPLICATION_ID}"
           begin
           doc = REXML::Document.new(open(BASE_URL+AUTH_PATH+"?username=#{username}&password=#{password}&applicationid=#{APPLICATION_ID}"))
+          rescue Exception=>e
+            doc =  REXML::Document.new(e.io.read)
+            puts doc.to_s
+          end
+             user = errorCheck(doc)
+
+                  unless user.nil?
+                    return user
+                  end
+          
           time = Time.now
            doc.elements.each("*/data/user"){ |element|  
            user = parseUser(element)
-           user.session_id = doc.elements["success"].elements["sessionID"].get_text.value
+           user.session_id = doc.elements["success"].elements["sessionId"].get_text.value
            
           }
            puts "authenticateUser Parse Time: #{Time.now-time}"   
-          rescue 
-            puts "User Is Invalid"
-          end
+          
+          
                     
         return user
         end
         
         def self.createUser(params)
           user = nil
-#            begin
+            begin
             doc = REXML::Document.new(postToRestlet(BASE_URL+USERS_PATH.gsub("%USR%","")+"?&applicationid=#{APPLICATION_ID}",params))
+            rescue Exception=>e
+              doc =  REXML::Document.new(e.io.read)
+              puts doc.to_s
+            end
+               user = errorCheck(doc)
+
+                    unless user.nil?
+                      return user
+                    end
+            
             time = Time.now
              doc.elements.each("*/data/user"){ |element|  
              user = parseUser(element)
             }
              puts "createUser Parse Time: #{Time.now-time}"   
-#            rescue 
-#              puts "User Is Invalid"
-#            end
+
 
           return user
         end
@@ -238,16 +340,24 @@ class BioPortalRestfulCore
         
         def self.updateUser(params,id)
           user = nil
-        #            begin
+          begin
           doc = REXML::Document.new(putToRestlet(BASE_URL+USER_PATH.gsub("%USR%",id)+"?&applicationid=#{APPLICATION_ID}",params))
+          rescue Exception=>e
+            doc =  REXML::Document.new(e.io.read)
+            puts doc.to_s
+          end
+             user = errorCheck(doc)
+
+                  unless user.nil?
+                    return user
+                  end
+          
             time = Time.now
             doc.elements.each("*/data/user"){ |element|  
             user = parseUser(element)
           }
           puts "updateUser Parse Time: #{Time.now-time}"   
-        #            rescue 
-        #              puts "User Is Invalid"
-        #            end
+
 
           return user
         end  
@@ -255,31 +365,49 @@ class BioPortalRestfulCore
         
         def self.createOntology(params)
             ontology = nil
-  #            begin
+              begin
               doc = REXML::Document.new(postMultiPart(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?&applicationid=#{APPLICATION_ID}",params))
+              rescue Exception=>e
+                doc =  REXML::Document.new(e.io.read)
+                puts doc.to_s
+              end
+                 ontology = errorCheck(doc)
+
+                      unless ontology.nil?
+                        return ontology
+                      end
+              
               time = Time.now
                doc.elements.each("*/data/ontology"){ |element|  
                ontology = parseOntology(element)
               }
                puts "createOntology Parse Time: #{Time.now-time}"   
-  #            rescue 
-  #              puts "User Is Invalid"
-  #            end
+
 
             return ontology
           end
         
         def self.updateOntology(params)
                   ontology = nil
-        #            begin
+                    begin
                     doc = REXML::Document.new(putToRestlet(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?&applicationid=#{APPLICATION_ID}",params))
+                    rescue Exception=>e
+                       doc =  REXML::Document.new(e.io.read)
+                       puts doc.to_s
+                     end
+                    
+                         ontology = errorCheck(doc)
+
+                              unless ontology.nil?
+                                return ontology
+                              end
                     puts doc
                     time = Time.now
                      doc.elements.each("*/data/ontology"){ |element|  
                      ontology = parseOntology(element)
                     }
                      puts "updateOntology Parse Time: #{Time.now-time}"   
-
+                   
                   return ontology          
           
         end
@@ -295,8 +423,14 @@ class BioPortalRestfulCore
         
                 
         def self.getAttributeValueContains(ontologies,search)
-            results = []
+
               doc = REXML::Document.new(open(BASE_URL+PROPERTY_SEARCH_PATH.gsub("%ONT%",ontologies.join(",")).gsub("%query%",search)))
+                   results = errorCheck(doc)
+
+                        unless results.nil?
+                          return results
+                        end
+            results = []              
               time = Time.now
                doc.elements.each("*/data/list/searchresultbean"){ |element|  
                results << parseSearchResults(element)
@@ -457,8 +591,18 @@ private
   end
 
   def self.errorCheck(doc)
-    
-    
+    response=nil
+    errorHolder={}
+    doc.elements.each("org.ncbo.stanford.bean.response.ErrorStatusBean"){ |element|  
+     errorHolder[:error]=true
+     errorHolder[:shortMessage]= element.elements["shortMessage"].get_text.value
+     errorHolder[:longMessage]=element.elements["longMessage"].get_text.value
+     response=errorHolder
+    }
+    puts "##########Error Check###########"
+    puts "Error Check is Returning #{response.nil?}"
+    puts "#####################"
+    return response
   end
 
   def self.parseConcept(classbeanXML,ontology)
@@ -500,7 +644,7 @@ private
                when CHILDCOUNT
                  node.child_size = entry.elements["int"].get_text.value.to_i
                else                                  
-                 node.properties[entry.elements["string"].get_text.value] = entry.elements["list"].elements.map{|element| element.get_text.value}.join(" ,") rescue ""
+                 node.properties[entry.elements["string"].get_text.value] = entry.elements["list"].elements.map{|element| element.get_text.value unless element.get_text.value.empty?}.join(" , ") rescue ""
                end
  #           puts "#####################"
         }

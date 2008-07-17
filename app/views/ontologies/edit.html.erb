@@ -1,3 +1,19 @@
+
+<%unless @errors.nil?%>
+<div style="color:red;">
+Errors On Form
+<ul>
+
+<%for error in @errors%>
+<li><%=error%></li>
+<%end%>
+
+
+</ul>
+</div>
+<%end%>
+
+
 <% form_for(:ontology, :url => ontology_path(@ontology.id), :html => { :method => :put }) do |f| %>
 <%if @ontology.ontologyId.nil?%>
         <h1>Submit New Ontology</h1>

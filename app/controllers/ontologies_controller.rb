@@ -40,13 +40,23 @@ class OntologiesController < ApplicationController
   end
   
   def update
-    puts "Im trying to update teh ontology"
-      params[:ontology][:isCurrent]=1
       params[:ontology][:isReviewed]=1
       params[:ontology][:isFoundry]=0
-      params[:ontology][:userId]=
-      @ontology = DataAccess.updateOntology(params[:ontology])
-      redirect_to ontology_path(@ontology)
+      params[:ontology][:userId]=session[:user].id
+      @errors = validate(params[:ontology])
+      if @errors.length < 1
+      @ontology = DataAccess.updateOntology(params[:ontology])      
+     
+        if @ontology.kind_of?(Hash) && @ontology[:error]        
+          flash[:notice]=@ontology[:longMessage]
+         redirect_to ontology_path(:id=>params[:ontology][:id])
+        else
+      
+          redirect_to ontology_path(@ontology)
+        end
+      else
+        render :action=> 'edit'
+      end
   end
   
   
@@ -118,9 +128,31 @@ class OntologiesController < ApplicationController
     params[:ontology][:isReviewed]=1
     params[:ontology][:isFoundry]=0
     params[:ontology][:userId]=session[:user].id
-
+      @errors = validate(params[:ontology])
+      if @errors.length < 1
     @ontology = DataAccess.createOntology(params[:ontology])
-    redirect_to ontology_path(@ontology)
+      if @ontology.kind_of?(Hash) && @ontology[:error]        
+        flash[:notice]=@ontology[:longMessage]
+         if(params[:ontology][:ontologyId].empty?)
+            @ontology = OntologyWrapper.new
+          else
+            @ontology = DataAccess.getLastestOntology(params[:ontology][:ontologyId])
+          end
+      else
+    
+        redirect_to ontology_path(@ontology)
+      end
+    
+  
+    else
+      if(params[:ontology][:ontologyId].empty?)
+        @ontology = OntologyWrapper.new
+      else
+        @ontology = DataAccess.getLastestOntology(params[:ontology][:ontologyId])
+      end
+      
+    render :action=>'new'
+    end
     
   end
   
@@ -161,6 +193,30 @@ class OntologiesController < ApplicationController
 
 
    end  
+   private 
 
+     def validate(params)
+       errors=[]
+       if params[:displayLabel].nil? || params[:displayLabel].length <1
+         errors << "Please Enter an Ontology Name"
+       end
+       if params[:versionNumber].nil? || params[:versionNumber].length <1
+         errors << "Please Enter an Ontology Version"
+       end
+       if params[:dateReleased].nil? || params[:dateReleased].length <1
+         errors << "Please Enter the Date Released"
+       end
+       if params[:isRemote].to_i.eql?(0) && (params[:filePath].nil? || params[:filePath].length <1)
+         errors << "Please Choose a File"
+       end
+       if params[:isRemote].to_i.eql?(1) && (params[:urn].nil? || params[:urn].length <1)
+         errors << "Please Enter a URL"
+       end
+        if params[:contactEmail].nil? || params[:contactEmail].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
+          errors << "Please Enter the Contact Email"
+        end
+       return errors
+
+     end
   
 end

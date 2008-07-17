@@ -7,39 +7,43 @@ class DataAccess
     def self.getNode(ontology,node_id)
 #      if CACHE.get("#{param(ontology)}::#{node_id}").nil?
         node = SERVICE.getNode(ontology,node_id)  
+        #unless node[:error]
 #        CACHE.set("#{param(ontology)}::#{node_id}",node)
+       #end
         return node
 #      else
 #        return CACHE.get("#{param(ontology)}::#{node_id}")
 #      end
     end
     
-    def self.getChildNodes(ontology,node_id,associations)
+ #   def self.getChildNodes(ontology,node_id,associations)
   #    if CACHE.get("#{param(ontology)}::#{node_id}_children::#{associations}").nil?
-        children = SERVICE.getNode(ontology,node_id,associations).children
+#        children = SERVICE.getNode(ontology,node_id,associations).children
   #      CACHE.set("#{param(ontology)}::#{node_id}_children::#{associations}",children)
-        return children
+#        return children
    #   else        
     #    return CACHE.get("#{param(ontology)}::#{node_id}_children::#{associations}")
     #  end
-    end
+#    end
     
-    def self.getParentNodes(ontology,node_id,associations)
-      if CACHE.get("#{param(ontology)}::#{node_id}_parent::#{associations}").nil?
-         # Only returning the first instance for now, some concepts have mulitple parents!
-        parent = SERVICE.getParentNodes(ontology,node_id,associations).first
-        puts "Setting Parent to #{parent.inspect}"
-        CACHE.set("#{param(ontology)}::#{node_id}_parent::#{associations}",parent)
-        return parent
-      else
-        return CACHE.get("#{param(ontology)}::#{node_id}_parent::#{associations}")
-      end
-    end
+#    def self.getParentNodes(ontology,node_id,associations)
+#      if CACHE.get("#{param(ontology)}::#{node_id}_parent::#{associations}").nil?
+#         # Only returning the first instance for now, some concepts have mulitple parents!
+#        parent = SERVICE.getParentNodes(ontology,node_id,associations).first
+#        puts "Setting Parent to #{parent.inspect}"
+#        CACHE.set("#{param(ontology)}::#{node_id}_parent::#{associations}",parent)
+#        return parent
+#      else
+#        return CACHE.get("#{param(ontology)}::#{node_id}_parent::#{associations}")
+#      end
+#    end
     
     def self.getTopLevelNodes(ontology)
       if CACHE.get("#{param(ontology)}::_top").nil?
         topNodes = SERVICE.getTopLevelNodes(ontology)
-        CACHE.set("#{param(ontology)}::_top",topNodes)
+        unless topNodes.kind_of?(Hash) && topNodes[:error] 
+          CACHE.set("#{param(ontology)}::_top",topNodes)
+        end
         return topNodes
       else
         return CACHE.get("#{param(ontology)}::_top")
@@ -49,7 +53,11 @@ class DataAccess
     def self.getOntologyList
       if CACHE.get("ont_list").nil?
         list = SERVICE.getOntologyList
-        CACHE.set("ont_list",list,CACHE_EXPIRE_TIME)
+        
+        unless list.kind_of?(Hash)  && list[:error] 
+          CACHE.set("ont_list",list,CACHE_EXPIRE_TIME)
+        end
+        
         return list
       else
         return CACHE.get("ont_list")
@@ -59,14 +67,18 @@ class DataAccess
     def self.getActiveOntologies
             if CACHE.get("act_ont_list").nil?
               list = SERVICE.getOntologyList
+              unless list..kind_of?(Hash) && list[:error]
+              
               activeOntologies = []
               for item in list
-                if item.statusId.to_i.eql?(3)&& !item.format.include?("OBO")
+                if item.statusId.to_i.eql?(3)
                   activeOntologies << item
                 end
               end
               CACHE.set("act_ont_list",activeOntologies,CACHE_EXPIRE_TIME)
-              return activeOntologies
+              list = activeOntologies
+              end
+              return list
             else
               return CACHE.get("act_ont_list")
             end
@@ -76,7 +88,9 @@ class DataAccess
        def self.getOntologyVersions(ontology)
          if CACHE.get("#{ontology}::_versions").nil?
            details = SERVICE.getOntologyVersions(ontology)
-           CACHE.set("#{ontology}::_versions",details,CACHE_EXPIRE_TIME)
+           unless details.kind_of?(Hash) && details[:error]
+             CACHE.set("#{ontology}::_versions",details,CACHE_EXPIRE_TIME)
+           end
            return details
          else
            return CACHE.get("#{ontology}::_versions")
@@ -87,7 +101,9 @@ class DataAccess
     def self.getOntology(ontology)
       if CACHE.get("#{ontology}::_details").nil?
         details = SERVICE.getOntology(ontology)
-        CACHE.set("#{ontology}::_details",details,CACHE_EXPIRE_TIME)
+        unless details.kind_of?(Hash) && details[:error]
+          CACHE.set("#{ontology}::_details",details,CACHE_EXPIRE_TIME)
+        end        
         return details
       else
         return CACHE.get("#{ontology}::_details")
@@ -102,7 +118,9 @@ class DataAccess
     def self.getNodeNameSoundsLike(ontologies,search)
       if CACHE.get("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}").nil?
         results = SERVICE.getNodeNameContains(ontologies,search)
-        CACHE.set("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}",results)
+        unless results.kind_of?(Hash) && results[:error]
+          CACHE.set("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}",results)
+        end
         return results
       else
         return CACHE.get("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}")
@@ -112,7 +130,9 @@ class DataAccess
     def self.getNodeNameContains(ontologies,search)      
       if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil?
         results = SERVICE.getNodeNameContains(ontologies,search)
-        CACHE.set("#{param(ontologies.join("|"))}::_search::#{param(search)}",results)
+        unless results.kind_of?(Hash) && results[:error]
+          CACHE.set("#{param(ontologies.join("|"))}::_search::#{param(search)}",results)
+        end
         return results
       else
         return CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}")
@@ -120,23 +140,13 @@ class DataAccess
     end
     
     def self.getUsers
-    #    if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil?
-          results = SERVICE.getUsers
-     #     CACHE.set("#{param(ontologies.join("|"))}::_search::#{param(search)}",results)
+          results = SERVICE.getUsers          
           return results
-      #  else
-       #   return CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}")
-      #  end
     end
     
      def self.getUser(user_id)
-      #    if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil?
             results = SERVICE.getUser(user_id)
-       #     CACHE.set("#{param(ontologies.join("|"))}::_search::#{param(search)}",results)
             return results
-        #  else
-         #   return CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}")
-        #  end
       end
     
     def self.authenticateUser(username,password)    
@@ -157,7 +167,7 @@ class DataAccess
     def self.createOntology(params)
       ontology = SERVICE.createOntology(params)
       CACHE.delete("act_ont_list")
-      CACHE.delete("ont_list",nil)
+      CACHE.delete("ont_list")
         unless(params[:ontologyId].nil?)
           CACHE.delete("#{params[:ontologyId]}::_versions")
         end

@@ -1,4 +1,21 @@
+
+
 <%form_tag ("/ontologies", {:multipart => true}) do%>
+
+
+<%unless @errors.nil?%>
+<div style="color:red;">
+Errors On Form
+<ul>
+
+<%for error in @errors%>
+<li><%=error%></li>
+<%end%>
+
+
+</ul>
+</div>
+<%end%>
 
 <%if @ontology.ontologyId.nil?%>
         <h1>Submit New Ontology</h1>
@@ -11,7 +28,10 @@
 		<td>Ontology Name: </td><td><%=text_field :ontology, :displayLabel%></td>
 	</tr>
 	<tr>
-		<td>Ontology Format: </td><td><%=text_field :ontology, :format%></td>
+		<td>Ontology Format: </td><td><select name="ontology[format]" style="width:200px" >
+			<%for option in OntologyWrapper::FORMAT%>
+			<option value="<%=option %>"><%=option%></option>
+			<%end%></td>
 	</tr>	
 	<tr>
 		<td>Ontology Version: </td><td><%=text_field :ontology, :versionNumber%></td>
@@ -20,12 +40,12 @@
 		<td>Date Released: </td><td><%=text_field :ontology, :dateReleased%></td>
 	</tr>	
 	<tr>
-		<td>File Location</td><td><%=radio_button :ontology,:isRemote,0 %>Upload <br><%=radio_button :ontology,:isRemote,1%>Remote</td>
+		<td>File Location</td><td><%=radio_button :ontology,:isRemote,0%>Upload <br><%=radio_button :ontology,:isRemote,1%>Remote</td>
 	</tr>
 	<tr>
 		<td>Location URL</td><td><%=text_field :ontology,:urn%></td>
 	</tr>
-	<tr>
+	<tr >
 		<td>File</td><td><%=file_field :ontology,:filePath%></td>
 	</tr>
 	<tr>
