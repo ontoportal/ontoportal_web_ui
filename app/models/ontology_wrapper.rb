@@ -47,6 +47,30 @@ class OntologyWrapper
   FORMAT=["OBO","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE","LEXGRID_XML"]
     
   
+  def from_params(params)
+    self.displayLabel = params[:displayLabel]   
+    self.id= params[:id]   
+    self.ontologyId= params[:ontologyId]   
+    self.userId= params[:userId]   
+    self.parentId= params[:parentId]   
+    self.format= params[:format]   
+    self.versionNumber= params[:versionNumber]   
+    self.internalVersion= params[:internalVersion]   
+    self.versionStatus= params[:versionStatus]   
+    self.isCurrent= params[:isCurrent]   
+    self.isRemote= params[:isRemote]   
+    self.isReviewed= params[:isReviewed]   
+    self.statusId= params[:statusId]   
+    self.dateReleased= params[:dateReleased]   
+    self.contactName= params[:contactName]   
+    self.contactEmail= params[:contactEmail]   
+    self.isFoundry= params[:isFoundry]   
+    self.filePath= params[:filePath]   
+    self.urn= params[:urn]   
+    self.homepage= params[:homepage]   
+    self.documentation= params[:documentation]   
+    self.publication= params[:publication]   
+  end
   
   
   def reviews

@@ -388,6 +388,7 @@ class BioPortalRestfulCore
           end
         
         def self.updateOntology(params)
+          puts "UPdating Ontology#############"
                   ontology = nil
                     begin
                     doc = REXML::Document.new(putToRestlet(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?&applicationid=#{APPLICATION_ID}",params))
@@ -401,7 +402,7 @@ class BioPortalRestfulCore
                               unless ontology.nil?
                                 return ontology
                               end
-                    puts doc
+                    puts doc.to_s
                     time = Time.now
                      doc.elements.each("*/data/ontology"){ |element|  
                      ontology = parseOntology(element)
@@ -594,12 +595,14 @@ private
     response=nil
     errorHolder={}
     doc.elements.each("org.ncbo.stanford.bean.response.ErrorStatusBean"){ |element|  
+      
      errorHolder[:error]=true
      errorHolder[:shortMessage]= element.elements["shortMessage"].get_text.value
      errorHolder[:longMessage]=element.elements["longMessage"].get_text.value
      response=errorHolder
     }
     puts "##########Error Check###########"
+    puts doc.to_s
     puts "Error Check is Returning #{response.nil?}"
     puts "#####################"
     return response

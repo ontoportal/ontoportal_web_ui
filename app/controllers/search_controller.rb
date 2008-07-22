@@ -22,8 +22,13 @@ class SearchController < ApplicationController
     @results = []
     ontologies = params[:search][:ontologies]
     @ontologies = []
-    for ontology in ontologies
-      @ontologies << DataAccess.getOntology(ontology)
+    if ontologies.include?("0")
+      #search all ontologies
+      @ontologies << DataAccess.getOntologyList()
+    else
+      for ontology in ontologies
+        @ontologies << DataAccess.getOntology(ontology)
+      end
     end
     @keyword = params[:search][:keyword]
 

@@ -42,10 +42,11 @@ class OntologiesController < ApplicationController
   def update
       params[:ontology][:isReviewed]=1
       params[:ontology][:isFoundry]=0
-      params[:ontology][:userId]=session[:user].id
-      @errors = validate(params[:ontology])
+    
+      @errors = validate(params[:ontology],true)
       if @errors.length < 1
-      @ontology = DataAccess.updateOntology(params[:ontology])      
+        puts("I should be updating")
+        @ontology = DataAccess.updateOntology(params[:ontology])      
      
         if @ontology.kind_of?(Hash) && @ontology[:error]        
           flash[:notice]=@ontology[:longMessage]
@@ -55,6 +56,8 @@ class OntologiesController < ApplicationController
           redirect_to ontology_path(@ontology)
         end
       else
+        @ontology = OntologyWrapper.new
+        @ontology.from_params(params[:ontology])
         render :action=> 'edit'
       end
   end
@@ -195,7 +198,7 @@ class OntologiesController < ApplicationController
    end  
    private 
 
-     def validate(params)
+     def validate(params, isupdate=false)
        errors=[]
        if params[:displayLabel].nil? || params[:displayLabel].length <1
          errors << "Please Enter an Ontology Name"
@@ -206,13 +209,15 @@ class OntologiesController < ApplicationController
        if params[:dateReleased].nil? || params[:dateReleased].length <1
          errors << "Please Enter the Date Released"
        end
-       if params[:isRemote].to_i.eql?(0) && (params[:filePath].nil? || params[:filePath].length <1)
-         errors << "Please Choose a File"
+       unless isupdate
+         if params[:isRemote].to_i.eql?(0) && (params[:filePath].nil? || params[:filePath].length <1)
+           errors << "Please Choose a File"
+         end
+         if params[:isRemote].to_i.eql?(1) && (params[:urn].nil? || params[:urn].length <1)
+           errors << "Please Enter a URL"
+         end
        end
-       if params[:isRemote].to_i.eql?(1) && (params[:urn].nil? || params[:urn].length <1)
-         errors << "Please Enter a URL"
-       end
-        if params[:contactEmail].nil? || params[:contactEmail].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
+        if params[:contactEmail].nil? || params[:contactEmail].length <1 || !params[:contactEmail].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
           errors << "Please Enter the Contact Email"
         end
        return errors

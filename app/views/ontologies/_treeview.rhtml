@@ -116,7 +116,8 @@ function loadNodeData(node, fnLoadComplete) {
 		function onClickTreeNode(node_id,node_label) {
 		
 			// sets the label
-			document.getElementById("name_label").firstChild.nodeValue=node_label
+			document.getElementById("name_label").firstChild.nodeValue=node_label;
+			document.getElementById("link_label").firstChild.href="/visualize/"+currentOntology+"/"+node_id;
 			setConcept(node_id) 
 			
 			var responseSuccess = function(o)

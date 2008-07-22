@@ -6,7 +6,8 @@ class HistoryController < ApplicationController
   end
   
   def update # updates the 'history' tab to point to the new node
-    update_tab(undo_param(params[:ontology]),params[:concept])
+    ontology = DataAccess.getOntology(params[:ontology])
+    update_tab(ontology,params[:concept])
     render :text =>"success"
   end
   
