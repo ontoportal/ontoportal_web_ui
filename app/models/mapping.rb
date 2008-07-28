@@ -4,11 +4,11 @@ class Mapping < ActiveRecord::Base
 
 
   def source_node
-    DataAccess.getNode(self.source_ont,self.source_id)
+    DataAccess.getNode(self.source_version_id,self.source_id)
   end
   
   def dest_node
-    DataAccess.getNode(self.destination_ont,self.destination_id)
+    DataAccess.getNode(self.destination_version_id,self.destination_id)
   end
 
   def after_create

@@ -15,39 +15,17 @@ class DataAccess
 #        return CACHE.get("#{param(ontology)}::#{node_id}")
 #      end
     end
-    
- #   def self.getChildNodes(ontology,node_id,associations)
-  #    if CACHE.get("#{param(ontology)}::#{node_id}_children::#{associations}").nil?
-#        children = SERVICE.getNode(ontology,node_id,associations).children
-  #      CACHE.set("#{param(ontology)}::#{node_id}_children::#{associations}",children)
-#        return children
-   #   else        
-    #    return CACHE.get("#{param(ontology)}::#{node_id}_children::#{associations}")
-    #  end
-#    end
-    
-#    def self.getParentNodes(ontology,node_id,associations)
-#      if CACHE.get("#{param(ontology)}::#{node_id}_parent::#{associations}").nil?
-#         # Only returning the first instance for now, some concepts have mulitple parents!
-#        parent = SERVICE.getParentNodes(ontology,node_id,associations).first
-#        puts "Setting Parent to #{parent.inspect}"
-#        CACHE.set("#{param(ontology)}::#{node_id}_parent::#{associations}",parent)
-#        return parent
-#      else
-#        return CACHE.get("#{param(ontology)}::#{node_id}_parent::#{associations}")
-#      end
-#    end
-    
+
     def self.getTopLevelNodes(ontology)
-      if CACHE.get("#{param(ontology)}::_top").nil?
+ #     if CACHE.get("#{param(ontology)}::_top").nil?
         topNodes = SERVICE.getTopLevelNodes(ontology)
-        unless topNodes.kind_of?(Hash) && topNodes[:error] 
-          CACHE.set("#{param(ontology)}::_top",topNodes)
-        end
+#        unless topNodes.kind_of?(Hash) && topNodes[:error] 
+ #         CACHE.set("#{param(ontology)}::_top",topNodes)
+#        end
         return topNodes
-      else
-        return CACHE.get("#{param(ontology)}::_top")
-      end
+#      else
+#        return CACHE.get("#{param(ontology)}::_top")
+#      end
     end
     
     def self.getOntologyList
@@ -110,7 +88,7 @@ class DataAccess
       end
     end
     
-    def self.getLastestOntology(ontology)
+    def self.getLatestOntology(ontology)
       details = SERVICE.getLatestOntology(ontology)
       return details
     end

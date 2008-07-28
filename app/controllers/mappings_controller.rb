@@ -11,12 +11,16 @@ class MappingsController < ApplicationController
   end
   
   def count
+    ontology = DataAccess.getOntology(params[:ontology])
+    
+    @ontology_id=ontology.ontologyId
+    
     @source_counts =[]
-    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,destination_ont,destination_ont_name,source_ont_name from mappings  where source_ont like '#{params[:ontology]}' group by destination_ont")
+    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,destination_ont,destination_ont_name,source_ont_name from mappings  where source_ont like '#{ontology.ontologyId}' group by destination_ont")
      names.each_hash(with_table=false) {|x| @source_counts<<x}
     
     @dest_counts = []
-    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,source_ont,destination_ont_name,source_ont_name from mappings  where destination_ont like '#{params[:ontology]}' group by source_ont")
+    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,source_ont,destination_ont_name,source_ont_name from mappings  where destination_ont like '#{ontology.ontologyId}' group by source_ont")
     names.each_hash(with_table=false) {|x| @dest_counts<<x} 
     
     render :partial =>'count'
@@ -37,15 +41,17 @@ class MappingsController < ApplicationController
     end
     
     @mapping_pages = Mapping.paginate_by_sql("Select source_id, count(*) as count from mappings where source_ont = '#{params[:id]}' and destination_ont = '#{params[:target]}' #{expanded_query} group by source_id order by count desc",:page => params[:page], :per_page => 100,:include=>'users')
+  
   if params[:rdf].nil?
     mapping_objects = Mapping.find(:all,:conditions=>["source_ont = '#{params[:id]}' AND destination_ont = '#{params[:target]}' AND source_id IN (?) #{expanded_query}",@mapping_pages.collect{|item| item[:source_id]}.flatten])
   else
     mapping_objects =  Mapping.find(:all,:conditions=>["source_ont = '#{params[:id]}' AND destination_ont = '#{params[:target]}'  #{expanded_query}"])
   end
+  
 #    @mapping_pages = Mapping.paginate(:page => params[:page], :per_page => 100 ,:conditions=>{:source_ont=>params[:id],:destination_ont=>params[:target]},:order=>'count()',:include=>:user)
     @mappings = {}
     @map_sources = []
-    @users = User.find(:all)
+    @users = DataAccess.getUsers
     for map in mapping_objects
       puts map.source_id
       @map_sources << map.map_source.gsub(/<a.*?a>/mi, "")  unless map.map_source.nil?
@@ -62,7 +68,7 @@ class MappingsController < ApplicationController
           puts map.destination_id
           if mapping[:destination_id].eql?(map.destination_id)
             found = true
-            mapping[:users]<<map.user.user_name
+            mapping[:users]<<map.user.username
             mapping[:users].uniq!
             mapping[:count]+= 1
             puts "adding to count #{mapping[:count]}"
@@ -84,7 +90,7 @@ class MappingsController < ApplicationController
   
   def upload
     @ontologies = @ontologies = DataAccess.getOntologyList()
-        @users = User.find(:all)
+    @users = User.find(:all)
   end
   
   
@@ -101,9 +107,11 @@ class MappingsController < ApplicationController
   end
   
   def new
+    ontology = DataAccess.getOntology(params[:ontology])
     @mapping = Mapping.new
     @mapping.source_id = params[:source_id]
-    @mapping.source_ont = undo_param(params[:ontology])
+    @mapping.source_ont = ontology.ontologyId
+    @mapping.source_version_id=ontology.id
     @ontologies = DataAccess.getActiveOntologies() #populates dropdown
     @name = params[:source_name] #used for display
     
@@ -115,17 +123,39 @@ class MappingsController < ApplicationController
   def create
     #creates mapping
     @mapping = Mapping.new(params[:mapping])
+    
+    destination_ontology = DataAccess.getOntology(@mapping.destination_version_id)
+    
+
     @mapping.user_id = session[:user].id
-    @mapping.source_name=DataAccess.getNode(@mapping.source_ont,@mapping.source_id).name
-    @mapping.source_ont_name = DataAccess.getOntology(@mapping.source_ont).displayLabel
-    @mapping.destination_name=DataAccess.getNode(@mapping.destination_ont,@mapping.destination_id).name
-    @mapping.destination_ont_name = DataAccess.getOntology(@mapping.destination_ont).displayLabel
+    @mapping.source_name=DataAccess.getNode(@mapping.source_version_id,@mapping.source_id).name
+    @mapping.source_ont_name = DataAccess.getOntology(@mapping.source_version_id).displayLabel
+    @mapping.destination_name=DataAccess.getNode(@mapping.destination_version_id,@mapping.destination_id).name
+    @mapping.destination_ont_name = destination_ontology.displayLabel
+    @mapping.destination_ont = destination_ontology.ontologyId
     @mapping.save
+    
+    if params[:bidirectional].eql?("on")
+      reverse = Mapping.new
+      reverse.user_id = session[:user].id
+      reverse.source_id = @mapping.destination_id
+      reverse.destination_id = @mapping.source_id   
+      reverse.source_version_id = @mapping.destination_version_id   
+      reverse.destination_version_id = @mapping.source_version_id
+      reverse.source_ont = @mapping.destination_ont
+      reverse.source_name = @mapping.destination_name
+      reverse.source_ont_name = @mapping.destination_ont_name
+      reverse.destination_name = @mapping.source_name
+      reverse.destination_ont_name = @mapping.source_ont_name
+      reverse.destination_ont = @mapping.source_ont
+      reverse.save
+      
+    end
         
     
     #repopulates table
     @mappings =  Mapping.find(:all, :conditions=>{:source_ont => @mapping.source_ont, :source_id => @mapping.source_id})
-    @ontology = DataAccess.getOntology(@mapping.source_ont)
+    @ontology = DataAccess.getOntology(@mapping.source_version_id)
     render :partial =>'mapping_table'
      
 

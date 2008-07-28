@@ -117,7 +117,9 @@ function loadNodeData(node, fnLoadComplete) {
 		
 			// sets the label
 			document.getElementById("name_label").firstChild.nodeValue=node_label;
-			document.getElementById("link_label").firstChild.href="/visualize/"+currentOntology+"/"+node_id;
+			//sets the link next to the label
+			document.getElementById("link_label").firstChild.nextSibling.href="/visualize/"+currentOntology+"/"+node_id;
+
 			setConcept(node_id) 
 			
 			var responseSuccess = function(o)

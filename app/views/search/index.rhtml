@@ -13,7 +13,7 @@
 				options.merge!(ontology.displayLabel => ontology.id)
 				end 
 				options = options.sort     
-				options.insert(0,"All"=>0)                
+				options.insert(0,["All",0])                
                 select('search','ontologies',options,{:selected=>"All"},{:multiple=>true,:size=>8,:style=>'float:left;'})
                 %>
 	</fieldset>	

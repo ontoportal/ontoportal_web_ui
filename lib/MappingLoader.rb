@@ -43,7 +43,7 @@ class MappingLoader
 
       if name_lookup  
         begin
-          source_node = BioPortalWebservice.getNodeNameExactMatch(source_ontologies,items[source_id_position].chomp)[0]
+          source_node = BioPortalRestfulCore.getNodeNameContains(source_ontologies,items[source_id_position].chomp)[:names].first.id
         rescue Exception =>e
           puts e
           source_node = nil
@@ -57,7 +57,7 @@ class MappingLoader
         mapping.source_id = source_node.id
 
         begin
-          dest_node = BioPortalWebservice.getNodeNameExactMatch(dest_ontologies,items[dest_id_position].chomp)[0]
+          dest_node = BioPortalRestfulCore.getNodeNameContains(dest_ontologies,items[dest_id_position].chomp)[:names].first.id
         rescue Exception => e
           puts e
           dest_node = nil

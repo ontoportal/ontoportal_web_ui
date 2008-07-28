@@ -6,8 +6,8 @@ class ReviewsController < ApplicationController
   layout 'home'
   
   def index
-    @reviews = Review.find(:all,:conditions=>{:ontology=>undo_param(params[:ontology])},:include=>:ratings)
-    @ontology_name=undo_param(params[:ontology])
+    @reviews = Review.find(:all,:conditions=>{:ontology_id=>params[:ontology]},:include=>:ratings)
+    @ontology_name=DataAccess.getOntology(params[:ontology]).displayLabel
     respond_to do |format|
       format.html {
         if request.xhr? 
@@ -39,7 +39,7 @@ class ReviewsController < ApplicationController
     unless params[:project].nil?
     project = Project.find(params[:project])
       for ontology_used in project.uses
-        review = Review.find_or_initialize_by_ontology_and_project_id(ontology_used.ontology,project.id)
+        review = Review.find_or_initialize_by_ontology_id_and_project_id(ontology_used.ontology_id,project.id)
         unless review.id
           review.user_id = session[:user].id
           @reviews << review

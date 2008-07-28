@@ -46,7 +46,9 @@ class BioPortalRestfulCore
 
        def self.getNode(ontology,node_id)
          node = nil
-         doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology).gsub("%CONC%",node_id)))
+         
+         puts "Requesting : #{BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)}"
+         doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)))
          node = errorCheck(doc)
          
          unless node.nil?
@@ -71,7 +73,7 @@ class BioPortalRestfulCore
 
       def self.getTopLevelNodes(ontology)
         node = nil
-         doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology).gsub("%CONC%","root")))
+         doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","root")))
          time = Time.now
          node = errorCheck(doc)         
          unless node.nil?
@@ -132,7 +134,7 @@ class BioPortalRestfulCore
         ont = nil
         puts "Ontology: #{ontology}"
         begin
-          doc = REXML::Document.new(open(BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology)))
+          doc = REXML::Document.new(open(BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology.to_s)))
         rescue Exception=>e
           doc =  REXML::Document.new(e.io.read)
           puts doc.inspect
@@ -228,9 +230,13 @@ class BioPortalRestfulCore
        end   
          
        def self.getNodeNameContains(ontologies,search)
-
+        begin
+          puts BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies.join(",")).gsub("%query%",search)
             doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies.join(",")).gsub("%query%",search)))
-           
+           rescue Exception=>e
+              #doc =  REXML::Document.new(e.io.read)
+              puts doc.to_s
+            end   
                results = errorCheck(doc)
 
                   unless results.nil?
@@ -445,9 +451,7 @@ class BioPortalRestfulCore
         end
        
         
-         def getNetworkNeighborhoodImage(ontology,node_id,associations=nil)
-          
-        end
+    
           
 
 
@@ -486,7 +490,7 @@ private
      return "Content-Disposition: form-data; name=\"#{CGI::escape(key)}\"\r\n" + 
             "\r\n" + 
             "#{value}\r\n"
-   end
+  end
 
    def self.file_to_multipart(key,filename,mime_type,content)
      return "Content-Disposition: form-data; name=\"#{CGI::escape(key)}\"; filename=\"#{filename}\"\r\n" +
@@ -615,7 +619,7 @@ private
        node.child_size=0
          node.id = classbeanXML.elements["id"].get_text.value
          node.name = classbeanXML.elements["label"].get_text.value
-         node.ontology_id = ontology
+         node.version_id = ontology
          node.children =[]
          node.properties ={}
          classbeanXML.elements["relations"].elements.each("entry"){ |entry|

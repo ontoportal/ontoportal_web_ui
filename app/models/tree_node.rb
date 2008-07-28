@@ -36,6 +36,7 @@ class TreeNode
     self.children =[]
     unless node_list.nil?
       for node in node_list
+        puts node.inspect
         self.children << TreeNode.new(node)
       end
     end

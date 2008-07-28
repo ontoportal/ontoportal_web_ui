@@ -21,6 +21,23 @@ class ConceptsController < ApplicationController
       render :file=> '/ontologies/visualize',:use_full_path =>true, :layout=>'ontology' # done this way to share a view
     end
   end
+  
+  def virtual
+    time = Time.now
+    puts "Starting Retrieval"
+    @ontology = DataAccess.getLatestOntology(params[:ontology])
+    @concept =  DataAccess.getNode(@ontology.id,params[:id])
+    puts "Finished in #{Time.now- time}"
+      #@concept_id = params[:id] # Removed to see if even used
+    
+    if request.xhr?    
+      show_ajax_request # process an ajax call
+    else
+      show_uri_request # process a full call
+      render :file=> '/ontologies/visualize',:use_full_path =>true, :layout=>'ontology' # done this way to share a view
+    end
+  end
+  
 
   def exhibit
       time = Time.now

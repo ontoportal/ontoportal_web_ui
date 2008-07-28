@@ -6,14 +6,18 @@ class NodeWrapper
   attr_accessor :name  
   attr_accessor :isActive
   attr_accessor :properties
-  attr_accessor :ontology_id
+  attr_accessor :version_id
   attr_accessor :child_size
   attr_accessor :children
   attr_accessor :parent_association
 
    
    def ontology_name
-     return DataAccess.getOntology(self.ontology_id).displayLabel
+     return DataAccess.getOntology(self.version_id).displayLabel
+   end
+   
+   def ontology_id
+     return DataAccess.getOntology(self.version_id).ontologyId
    end
    
    def mapping_count
@@ -74,7 +78,7 @@ class NodeWrapper
    end
    
    def path_to_root
-     DataAccess.getPathToRoot(self.ontology_id,self.id)    
+     DataAccess.getPathToRoot(self.version_id,self.id)    
    end
    
    def to_s

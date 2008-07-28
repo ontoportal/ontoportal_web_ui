@@ -91,7 +91,7 @@ class OntologiesController < ApplicationController
    puts @concept.inspect
       
         #gets the initial mappings
-        @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.id, :source_id => @concept.id})
+        @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.ontologyId, :source_id => @concept.id})
         #@mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
         #gets the initial margin notes
         @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @ontology.id, :concept_id => @concept.id,:parent_id => nil})

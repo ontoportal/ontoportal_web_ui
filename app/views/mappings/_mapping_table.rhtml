@@ -20,7 +20,7 @@
 	
 
 	<tr class="human">
-		<td><%= link_to "#{dest_node.name} (#{dest_node.ontology_name})" , uri_url(:ontology=>dest_node.ontology_id,:id =>dest_node.id) %></td>
+		<td><%= link_to "#{dest_node.name} (#{dest_node.ontology_name})" , uri_url(:ontology=>dest_node.version_id,:id =>dest_node.id) %></td>
 		<td><%=map.map_source%></td>
 		<td><%=map.user.username%></td>
 		<td><%=map.created_at.strftime("%m/%d/%y")%></td> 

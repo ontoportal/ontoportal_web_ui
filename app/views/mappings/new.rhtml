@@ -22,9 +22,10 @@
 
 <%  remote_form_for(:mapping, :url => mappings_path,:update=>'mapping_details',:complete=>"refreshCache('#{@mapping.source_id}')") do |f| %>
 	<%=hidden_field :mapping, :source_ont%>
+	<%=hidden_field :mapping, :source_version_id%>
 	<%=hidden_field :mapping, :source_id%>
 	<%=hidden_field :mapping, :map_type,:value=>"Human"%>
-	<%=hidden_field :mapping, :destination_ont,:id=>'destination_ontology',:value => @ontologies.first.id%>
+	<%=hidden_field :mapping, :destination_version_id,:id=>'destination_ontology',:value => @ontologies.first.id%>
 	<div id="mapping_window" style="overflow:auto;">
 
 	</div>
