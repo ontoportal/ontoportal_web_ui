@@ -122,7 +122,7 @@ class OntologiesController < ApplicationController
     if(params[:id].nil?)
       @ontology = OntologyWrapper.new
     else
-      @ontology = DataAccess.getLastestOntology(params[:id])
+      @ontology = DataAccess.getLatestOntology(params[:id])
     end
   end
   
@@ -130,6 +130,7 @@ class OntologiesController < ApplicationController
     params[:ontology][:isCurrent]=1
     params[:ontology][:isReviewed]=1
     params[:ontology][:isFoundry]=0
+    params[:ontology][:isManual]=1
     params[:ontology][:userId]=session[:user].id
       @errors = validate(params[:ontology])
       if @errors.length < 1
@@ -139,7 +140,7 @@ class OntologiesController < ApplicationController
          if(params[:ontology][:ontologyId].empty?)
             @ontology = OntologyWrapper.new
           else
-            @ontology = DataAccess.getLastestOntology(params[:ontology][:ontologyId])
+            @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
           end
       else
     
@@ -151,7 +152,7 @@ class OntologiesController < ApplicationController
       if(params[:ontology][:ontologyId].empty?)
         @ontology = OntologyWrapper.new
       else
-        @ontology = DataAccess.getLastestOntology(params[:ontology][:ontologyId])
+        @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
       end
       
     render :action=>'new'

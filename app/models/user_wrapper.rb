@@ -45,6 +45,20 @@ class UserWrapper
       self.email_confirmation = params[:email_confirmation]
       
     end
+    
+    def to_h
+      params={}
+      params[:id]= self.id
+      params[:username] = self.username 
+      params[:email] = self.email
+      params[:firstname] = self.firstname
+      params[:lastname] =  self.lastname 
+      params[:roles] = self.roles
+      params[:phone] = self.phone
+      params[:session_id] = self.session_id  
+      params[:password]= self.password
+      return params
+    end
 
     
 end

@@ -17,6 +17,7 @@ class OntologyWrapper
   attr_accessor :contactName
   attr_accessor :contactEmail
   attr_accessor :isFoundry
+  attr_accessor :isManual
   attr_accessor :filePath
   attr_accessor :urn
   attr_accessor :homepage
@@ -69,7 +70,8 @@ class OntologyWrapper
     self.urn= params[:urn]   
     self.homepage= params[:homepage]   
     self.documentation= params[:documentation]   
-    self.publication= params[:publication]   
+    self.publication= params[:publication]  
+    self.isManual = params[:isManual] 
   end
   
   

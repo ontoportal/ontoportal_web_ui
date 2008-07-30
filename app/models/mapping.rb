@@ -8,7 +8,7 @@ class Mapping < ActiveRecord::Base
   end
   
   def dest_node
-    DataAccess.getNode(self.destination_version_id,self.destination_id)
+    DataAccess.getNode(self.destination_version_id,self.destination_id) rescue nil
   end
 
   def after_create

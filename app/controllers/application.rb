@@ -20,6 +20,7 @@ class ApplicationController < ActionController::Base
     OntologyWrapper
     Resource
     TreeNode
+    UserWrapper
   end
   
   

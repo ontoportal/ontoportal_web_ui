@@ -26,7 +26,7 @@
 	<td>&nbsp;</td>
 	<td><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology)%></td>
 	<td><%= link_to "See All #{ontology.reviews} Reviews",reviews_path(:ontology=>ontology)%></td>
-	<td><%if !ontology.statusId.to_i.eql?(3)%>Exploring Unavailable<%else%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%end%></td>
+	<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>Exploring Unavailable<%end%></td>
   </tr>
 <% end %>
 </table>

@@ -48,7 +48,10 @@ class BioPortalRestfulCore
          node = nil
          
          puts "Requesting : #{BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)}"
+          begin
          doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)))
+          rescue
+          end
          node = errorCheck(doc)
          
          unless node.nil?
@@ -349,6 +352,8 @@ class BioPortalRestfulCore
           begin
           doc = REXML::Document.new(putToRestlet(BASE_URL+USER_PATH.gsub("%USR%",id)+"?&applicationid=#{APPLICATION_ID}",params))
           rescue Exception=>e
+            puts e.message
+            puts e.backtrace
             doc =  REXML::Document.new(e.io.read)
             puts doc.to_s
           end
@@ -508,6 +513,7 @@ private
   end
 
   def self.putToRestlet(url,paramsHash)
+    puts paramsHash.inspect
     paramsHash["method"]="PUT"
     puts paramsHash.inspect
     res = Net::HTTP.post_form(URI.parse(url),paramsHash)
@@ -587,6 +593,7 @@ private
     ontology.contactEmail = ontologybeanXML.elements["contactEmail"].get_text.value rescue   ""
     ontology.urn = ontologybeanXML.elements["urn"].get_text.value rescue    ""
     ontology.isFoundry = ontologybeanXML.elements["isFoundry"].get_text.value rescue   ""
+    ontology.isManual = ontologybeanXML.elements["isManual"].get_text.value rescue   ""
     ontology.filePath = ontologybeanXML.elements["filePath"].get_text.value rescue   ""
     ontology.homepage = ontologybeanXML.elements["homepage"].get_text.value rescue   ""
     ontology.documentation = ontologybeanXML.elements["documentation"].get_text.value rescue   ""
@@ -613,7 +620,9 @@ private
   end
 
   def self.parseConcept(classbeanXML,ontology)
-
+    puts "----------------Parsing Piece-------------"
+    puts classbeanXML
+    puts "------------------------------------------"
 
        node = NodeWrapper.new
        node.child_size=0
@@ -631,10 +640,14 @@ private
                 if entry.elements["list"].attributes["reference"]
                    entry.elements["list"].elements.each(entry.elements["list"].attributes["reference"]){|element|
                      element.elements.each{|classbean|
-#                        puts "------------Reference Item in list----------"
-#                         puts classbean.to_s
-#                         puts "--------------------------------"
-                         node.children<<parseConcept(classbean,ontology)
+                        puts "------------Reference Item in list----------"
+                         puts classbean.to_s
+                         puts "--------------------------------"
+                         #issue with using reference.. for some reason pulls in extra guys sometimes
+                         puts classbean.name
+                         if classbean.name.eql?("classbean")
+                           node.children<<parseConcept(classbean,ontology)
+                         end
                          }
                      }
                    
@@ -651,7 +664,12 @@ private
                when CHILDCOUNT
                  node.child_size = entry.elements["int"].get_text.value.to_i
                else                                  
-                 node.properties[entry.elements["string"].get_text.value] = entry.elements["list"].elements.map{|element| element.get_text.value unless element.get_text.value.empty?}.join(" , ") rescue ""
+                 node.properties[entry.elements["string"].get_text.value] = entry.elements["list"].elements.map{|element| 
+                   if(element.name.eql?("classbean"))
+                      parseConcept(element,ontology).name 
+                  else 
+                    element.get_text.value unless element.get_text.value.empty? 
+                  end}.join(" , ") #rescue ""
                end
  #           puts "#####################"
         }

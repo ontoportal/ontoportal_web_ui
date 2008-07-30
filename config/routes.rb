@@ -39,6 +39,7 @@ ActionController::Routing::Routes.draw do |map|
   map.obr '/resources/:ontology/:id',:controller=>'resources',:action=>'show'
   map.ajax '/ajax/',:controller=>'ajax_proxy',:action=>'get'  
   map.logout '/logout',:controller=>'login',:action=>'destroy'
+  map.lost_pass '/lost_pass',:controller=>'login',:action=>'lost_password'
   map.visualize '/visualize/:ontology', :controller=>'ontologies', :action =>'visualize',:requirements => { :ontology => %r([^/?]+) }
   map.uri '/visualize/:ontology/:id', :controller => 'concepts', :action => 'show',:requirements => { :id => %r([^/?]+)}
 

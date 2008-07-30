@@ -42,7 +42,7 @@ class MappingsController < ApplicationController
     
     @mapping_pages = Mapping.paginate_by_sql("Select source_id, count(*) as count from mappings where source_ont = '#{params[:id]}' and destination_ont = '#{params[:target]}' #{expanded_query} group by source_id order by count desc",:page => params[:page], :per_page => 100,:include=>'users')
   
-  if params[:rdf].nil?
+    if params[:rdf].nil?
     mapping_objects = Mapping.find(:all,:conditions=>["source_ont = '#{params[:id]}' AND destination_ont = '#{params[:target]}' AND source_id IN (?) #{expanded_query}",@mapping_pages.collect{|item| item[:source_id]}.flatten])
   else
     mapping_objects =  Mapping.find(:all,:conditions=>["source_ont = '#{params[:id]}' AND destination_ont = '#{params[:target]}'  #{expanded_query}"])

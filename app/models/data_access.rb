@@ -118,13 +118,41 @@ class DataAccess
     end
     
     def self.getUsers
-          results = SERVICE.getUsers          
+      if CACHE.get("user_list").nil?
+          results = SERVICE.getUsers  
+          unless results.kind_of?(Hash) && results[:error]
+            CACHE.set("user_list",results)
+          end        
           return results
+      else
+        return CACHE.get("user_list")
+      end
     end
     
+    def self.getUserByEmail(email)
+      found_user = nil
+       users =self.getUsers
+       for user in users
+         if user.email.eql?(email)
+            found_user = user
+         end
+       end
+       return found_user              
+    end
+    
+    
      def self.getUser(user_id)
+       if CACHE.get("user::#{user_id}")
             results = SERVICE.getUser(user_id)
+            puts results.inspect
+            unless results.kind_of?(Hash) && results[:error]
+              CACHE.set("user::#{user_id}",results)
+            end        
+       
             return results
+        else
+          return CACHE.get("user::#{user_id}")
+        end
       end
     
     def self.authenticateUser(username,password)    
@@ -134,11 +162,14 @@ class DataAccess
       
     def self.createUser(params)    
       user = SERVICE.createUser(params)
+      CACHE.delete("user_list")
       return user
     end
     
      def self.updateUser(params,id)
       user = SERVICE.updateUser(params,id)
+      CACHE.delete("user_list")
+      CACHE.delete("user::#{id}")
       return user
     end
     
