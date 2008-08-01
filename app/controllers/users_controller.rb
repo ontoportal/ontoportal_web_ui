@@ -110,7 +110,7 @@ private
       errors << "Please Enter an Email Address"
     end
     
-    if !params[:phone].nil? 
+    if !params[:phone].nil? && params[:phone].length >0 
       if  !params[:phone].match(/^(1\s*[-\/\.]?)?(\((\d{3})\)|(\d{3}))\s*[-\/\.]?\s*(\d{3})\s*[-\/\.]?\s*(\d{4})\s*(([xX]|[eE][xX][tT])\.?\s*(\d+))*$/i)
         errors << "Please enter a valid phone number"
       end

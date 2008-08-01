@@ -49,10 +49,10 @@ class SearchController < ApplicationController
       
     end
 
-    session[:search]={}
-    session[:search][:results]=@results
-    session[:search][:ontologies]=@ontologies
-    session[:search][:keyword]=@keyword
+#    session[:search]={}
+#    session[:search][:results]=@results
+#    session[:search][:ontologies]=@ontologies
+#    session[:search][:keyword]=@keyword
     
     respond_to do |format|
       format.html { render :partial =>'results'}

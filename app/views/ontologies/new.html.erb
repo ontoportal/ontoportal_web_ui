@@ -37,7 +37,7 @@ Errors On Form
 		<td>Ontology Version: </td><td><%=text_field :ontology, :versionNumber%></td>
 	</tr>	
 	<tr>
-		<td>Date Released: </td><td><%=text_field :ontology, :dateReleased%></td>
+		<td>Date Released: </td><td><%= calendar_date_select_tag "ontology[dateReleased]", "", :popup => :force %></td>
 	</tr>	
 	<tr>
 		<td>File Location</td><td><%=radio_button :ontology,:isRemote,0%>Upload <br><%=radio_button :ontology,:isRemote,1%>Remote</td>

@@ -605,6 +605,7 @@ private
   def self.errorCheck(doc)
     response=nil
     errorHolder={}
+    begin
     doc.elements.each("org.ncbo.stanford.bean.response.ErrorStatusBean"){ |element|  
       
      errorHolder[:error]=true
@@ -612,6 +613,8 @@ private
      errorHolder[:longMessage]=element.elements["longMessage"].get_text.value
      response=errorHolder
     }
+    rescue
+    end
     puts "##########Error Check###########"
     puts doc.to_s
     puts "Error Check is Returning #{response.nil?}"

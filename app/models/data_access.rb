@@ -7,7 +7,7 @@ class DataAccess
     def self.getNode(ontology,node_id)
 #      if CACHE.get("#{param(ontology)}::#{node_id}").nil?
         node = SERVICE.getNode(ontology,node_id)  
-        #unless node[:error]
+        #unless  node.kind_of?(Hash) && node[:error]
 #        CACHE.set("#{param(ontology)}::#{node_id}",node)
        #end
         return node
@@ -45,7 +45,7 @@ class DataAccess
     def self.getActiveOntologies
             if CACHE.get("act_ont_list").nil?
               list = SERVICE.getOntologyList
-              unless list..kind_of?(Hash) && list[:error]
+              unless list.kind_of?(Hash) && list[:error]
               
               activeOntologies = []
               for item in list
@@ -142,7 +142,8 @@ class DataAccess
     
     
      def self.getUser(user_id)
-       if CACHE.get("user::#{user_id}")
+       if CACHE.get("user::#{user_id}").nil?
+         puts "not getting user #{user_id} from cache"
             results = SERVICE.getUser(user_id)
             puts results.inspect
             unless results.kind_of?(Hash) && results[:error]
@@ -151,6 +152,7 @@ class DataAccess
        
             return results
         else
+          puts "Getting user #{user_id} from cache"
           return CACHE.get("user::#{user_id}")
         end
       end
