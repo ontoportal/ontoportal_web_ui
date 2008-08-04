@@ -2,9 +2,10 @@ require 'OntrezService'
 
 class OBDWrapper
 
-  
+   NO_CACHE = false
+   
   def self.gatherResources(ontology,concept)
-    if CACHE.get("#{ontology}::#{concept.id}_resource").nil?
+    if CACHE.get("#{ontology}::#{concept.id}_resource").nil? || NO_CACHE 
       resources=[]
       cache=true
       begin
@@ -24,7 +25,6 @@ class OBDWrapper
       if cache
         CACHE.set("#{ontology}::#{concept.id}_resource",resources)
       end
-        puts "resources are : #{resources.inspect}"
         return resources
     else
       return CACHE.get("#{ontology}::#{concept.id}_resource")
@@ -32,7 +32,7 @@ class OBDWrapper
   end
   
   def self.gatherResourcesCui(concept)
-    if CACHE.get("CUI::#{concept.properties["UMLS_CUI"]}_resource").nil?
+    if CACHE.get("CUI::#{concept.properties["UMLS_CUI"]}_resource").nil?  || NO_CACHE 
       resources = []
       cache=true
       begin        

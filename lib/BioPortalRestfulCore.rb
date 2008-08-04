@@ -576,7 +576,7 @@ private
 
     ontology = OntologyWrapper.new
     ontology.id = ontologybeanXML.elements["id"].get_text.value
-    ontology.displayLabel= ontologybeanXML.elements["displayLabel"].get_text.value
+    ontology.displayLabel= ontologybeanXML.elements["displayLabel"].get_text.value 
     ontology.ontologyId = ontologybeanXML.elements["ontologyId"].get_text.value
     ontology.userId = ontologybeanXML.elements["userId"].get_text.value rescue ""
     ontology.parentId = ontologybeanXML.elements["parentId"].get_text.value rescue ""
@@ -614,7 +614,7 @@ private
      response=errorHolder
     }
     rescue
-    end
+      end
     puts "##########Error Check###########"
     puts doc.to_s
     puts "Error Check is Returning #{response.nil?}"
@@ -630,7 +630,7 @@ private
        node = NodeWrapper.new
        node.child_size=0
          node.id = classbeanXML.elements["id"].get_text.value
-         node.name = classbeanXML.elements["label"].get_text.value
+         node.name = classbeanXML.elements["label"].get_text.value rescue node.id
          node.version_id = ontology
          node.children =[]
          node.properties ={}

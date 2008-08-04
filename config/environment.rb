@@ -68,4 +68,4 @@ ActionMailer::Base.smtp_settings = {
   :port  => 25, 
   :domain  => "ncbo-ror1.stanford.edu",
     } 
-CalendarDateSelect.format = :db
+CalendarDateSelect.format = :american

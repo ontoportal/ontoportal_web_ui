@@ -15,11 +15,14 @@ class OntrezService
     def self.gatherResources(ontology_name,concept_id)
       resources = []
 
+      
+
       doc = REXML::Document.new(open(ONTREZ_URL+CLASS_STRING.gsub("@",ontology_name).gsub("#",concept_id)))
-#      puts doc.inspect
+      puts "URL:------#{ONTREZ_URL+CLASS_STRING.gsub("@",ontology_name).gsub("#",concept_id)}----------"
       puts "Retrieved Doc"
       puts "--------------"
       puts "Beginning Parsing"
+      
       puts doc.inspect
     doc.elements.each("*/resultLines/ontrez\.user\.OntrezResultLine"){ |element|    
       
@@ -62,7 +65,8 @@ class OntrezService
     
     
       def self.parseNextBio(text)
-        doc = REXML::Document.new(open(NEXTBIO_URL.gsub("#",text.gsub(" ","%20"))))
+        doc = REXML::Document.new(open(NEXTBIO_URL.gsub("#",text.gsub(" ","%20").gsub("_","%20"))))
+#        puts "NextBIO URL:#{NEXTBIO_URL.gsub("#",text.gsub(" ","%20").gsub("_","%20"))}"
         resource = Resource.new   
         resource.context_numbers = {}
         resource.annotations = []
@@ -106,10 +110,12 @@ class OntrezService
 
       doc = REXML::Document.new(open(ONTREZ_URL+CUI_STRING.gsub("#",cui)))
 #      puts doc.inspect
+      puts "URL:------#{ONTREZ_URL+CUI_STRING.gsub("#",cui)}----------"
       puts "Retrieved Doc"
       puts "--------------"
       puts "Beginning Parsing"
-      puts doc.inspect
+      time=Time.now
+   #   puts doc.inspect
     doc.elements.each("*/resultLines/ontrez\.user\.OntrezResultLine"){ |element|    
       
       resource = Resource.new   
@@ -141,7 +147,7 @@ class OntrezService
       
       
     }
-    puts "Finished Parsing"
+    puts "Finished Parsing #{Time.now-time}"
     return resources
 
     end

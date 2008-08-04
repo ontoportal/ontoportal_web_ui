@@ -26,7 +26,7 @@ module ApplicationHelper
   end
   
   def clean_id(string)
-    new_string = string.gsub(":","").gsub("-","_")
+    new_string = string.gsub(":","").gsub("-","_").gsub(".","_")
 
     return new_string
   end

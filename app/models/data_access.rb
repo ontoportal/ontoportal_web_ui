@@ -3,33 +3,35 @@ class DataAccess
   SERVICE = BioPortalRestfulCore #sets what backend we are using
   
   CACHE_EXPIRE_TIME=60*60
+  NO_CACHE = false
+    
     
     def self.getNode(ontology,node_id)
-#      if CACHE.get("#{param(ontology)}::#{node_id}").nil?
+      if CACHE.get("#{param(ontology)}::#{node_id}").nil? || NO_CACHE
         node = SERVICE.getNode(ontology,node_id)  
-        #unless  node.kind_of?(Hash) && node[:error]
-#        CACHE.set("#{param(ontology)}::#{node_id}",node)
-       #end
+        unless  node.kind_of?(Hash) && node[:error]
+        CACHE.set("#{param(ontology)}::#{node_id}",node)
+       end
         return node
-#      else
-#        return CACHE.get("#{param(ontology)}::#{node_id}")
-#      end
+      else
+        return CACHE.get("#{param(ontology)}::#{node_id}")
+      end
     end
 
     def self.getTopLevelNodes(ontology)
- #     if CACHE.get("#{param(ontology)}::_top").nil?
+      if CACHE.get("#{param(ontology)}::_top").nil? || NO_CACHE
         topNodes = SERVICE.getTopLevelNodes(ontology)
-#        unless topNodes.kind_of?(Hash) && topNodes[:error] 
- #         CACHE.set("#{param(ontology)}::_top",topNodes)
-#        end
+        unless topNodes.kind_of?(Hash) && topNodes[:error] 
+          CACHE.set("#{param(ontology)}::_top",topNodes)
+        end
         return topNodes
-#      else
-#        return CACHE.get("#{param(ontology)}::_top")
-#      end
+      else
+        return CACHE.get("#{param(ontology)}::_top")
+      end
     end
     
     def self.getOntologyList
-      if CACHE.get("ont_list").nil?
+      if CACHE.get("ont_list").nil? || NO_CACHE
         list = SERVICE.getOntologyList
         
         unless list.kind_of?(Hash)  && list[:error] 
@@ -43,7 +45,7 @@ class DataAccess
     end
     
     def self.getActiveOntologies
-            if CACHE.get("act_ont_list").nil?
+            if CACHE.get("act_ont_list").nil? || NO_CACHE
               list = SERVICE.getOntologyList
               unless list.kind_of?(Hash) && list[:error]
               
@@ -64,7 +66,7 @@ class DataAccess
     end
 
        def self.getOntologyVersions(ontology)
-         if CACHE.get("#{ontology}::_versions").nil?
+         if CACHE.get("#{ontology}::_versions").nil? || NO_CACHE
            details = SERVICE.getOntologyVersions(ontology)
            unless details.kind_of?(Hash) && details[:error]
              CACHE.set("#{ontology}::_versions",details,CACHE_EXPIRE_TIME)
@@ -77,7 +79,7 @@ class DataAccess
 
     
     def self.getOntology(ontology)
-      if CACHE.get("#{ontology}::_details").nil?
+      if CACHE.get("#{ontology}::_details").nil? || NO_CACHE
         details = SERVICE.getOntology(ontology)
         unless details.kind_of?(Hash) && details[:error]
           CACHE.set("#{ontology}::_details",details,CACHE_EXPIRE_TIME)
@@ -94,7 +96,7 @@ class DataAccess
     end
     
     def self.getNodeNameSoundsLike(ontologies,search)
-      if CACHE.get("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}").nil?
+      if CACHE.get("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}").nil? || NO_CACHE
         results = SERVICE.getNodeNameContains(ontologies,search)
         unless results.kind_of?(Hash) && results[:error]
           CACHE.set("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}",results)
@@ -106,7 +108,7 @@ class DataAccess
     end
     
     def self.getNodeNameContains(ontologies,search)      
-      if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil?
+      if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil? || NO_CACHE
         results = SERVICE.getNodeNameContains(ontologies,search)
         unless results.kind_of?(Hash) && results[:error]
           CACHE.set("#{param(ontologies.join("|"))}::_search::#{param(search)}",results)
@@ -118,7 +120,7 @@ class DataAccess
     end
     
     def self.getUsers
-      if CACHE.get("user_list").nil?
+      if CACHE.get("user_list").nil? || NO_CACHE
           results = SERVICE.getUsers  
           unless results.kind_of?(Hash) && results[:error]
             CACHE.set("user_list",results)
@@ -142,7 +144,7 @@ class DataAccess
     
     
      def self.getUser(user_id)
-       if CACHE.get("user::#{user_id}").nil?
+       if CACHE.get("user::#{user_id}").nil? || NO_CACHE
          puts "not getting user #{user_id} from cache"
             results = SERVICE.getUser(user_id)
             puts results.inspect
@@ -199,7 +201,7 @@ class DataAccess
     
     
     def self.getAttributeValueContains(ontologies,search)
-       if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}").nil?
+       if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}").nil? || NO_CACHE
         results = SERVICE.getAttributeValueContains(ontologies,search)
         CACHE.set("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}",results)
         return results
@@ -211,7 +213,7 @@ class DataAccess
     end
     
     def self.getAttributeValueSoundsLike(ontologies,search)
-       if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}").nil?
+       if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}").nil? || NO_CACHE
         results = SERVICE.getAttributeValueSoundsLike(ontologies,search)
         CACHE.set("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}",results)
         return results
