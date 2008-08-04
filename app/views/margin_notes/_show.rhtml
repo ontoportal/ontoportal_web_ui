@@ -2,7 +2,7 @@
 uniq = Time.now.to_i
 javascripts = "resetNoteForm(#{uniq});toggleHide('form','');toggleHide('buttons','');"
  unless @concept.nil?
-	javascripts << "refreshCache('#{@concept.id}')"
+	javascripts << "refreshCache('#{@concept.id}');"
  end
 
 %>
