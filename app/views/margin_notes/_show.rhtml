@@ -1,6 +1,6 @@
 <%
 uniq = Time.now.to_i
-javascripts = "resetNoteForm(#{uniq});toggleHide('form','');toggleHide('buttons','');"
+javascripts = "resetNoteForm(#{uniq});"
  unless @concept.nil?
 	javascripts << "refreshCache('#{@concept.id}');"
  end
@@ -46,8 +46,10 @@ javascripts = "resetNoteForm(#{uniq});toggleHide('form','');toggleHide('buttons'
 	</tr>
  	<tr>
 		<td colspan="2" align="right">			
-				<%= submit_tag "Save" ,:class =>"blueButton",:onclick=>"saveNote()"%> | 
-				<input class="blueButton" type="button" value="Cancel" onclick="resetNoteForm(<%="#{uniq}"%>);toggleHide('form','');toggleHide('buttons','');destroyEditor();"> 			
+				<%= submit_tag "Save" ,:class =>"blueButton",:onclick=>"saveNote();Dialog.cancelCallback();"%> | 
+
+				<input class="blueButton" type="button" value="Cancel" onclick="Dialog.cancelCallback();destroyEditor();"> 			
+	<!--							<input class="blueButton" type="button" value="Cancel" onclick="resetNoteForm(<%="#{uniq}"%>);toggleHide('form','');toggleHide('buttons','');destroyEditor();"> 			-->
 			 <%if @modal%>| <input type="button" value="Close" onclick="Dialog.cancelCallback()" class='blueButton'><%end%></td>
 </table>
 </fieldset>
@@ -59,7 +61,10 @@ javascripts = "resetNoteForm(#{uniq});toggleHide('form','');toggleHide('buttons'
 	<br>
 	<input type="button" class ="blueButton" value="New Thread" onclick ="window.location='/login?redirect=<%=@ontology.to_param%>'"> 
 <%else%>
-	<input type="button" class ="blueButton" value="New Thread" onclick ="buildEditor('<%=uniq%>');toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='';"> 
+<br>
+<span class="blueButton" onclick="buildEditor('<%=uniq%>');"><%=link_to_prototype_dialog( "New Marginal Note", "commentForm",'form',  {:title => "New Marginal Note", :width =>800,:height=>500},{})%></span>
+
+<!--	<input type="button" class ="blueButton" value="New Thread" onclick ="buildEditor('<%=uniq%>');toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='';">  -->
 <%end%>
 <%if @modal%><input type="button" value="Close" onclick="Dialog.cancelCallback()" class='blueButton'><%end%>
 </div>

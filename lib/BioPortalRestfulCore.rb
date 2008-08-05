@@ -234,8 +234,7 @@ class BioPortalRestfulCore
          
        def self.getNodeNameContains(ontologies,search)
         begin
-          puts BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies.join(",")).gsub("%query%",search)
-            doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies.join(",")).gsub("%query%",search)))
+            doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies.join(",")).gsub("%query%",search.gsub(" ","%20"))))
            rescue Exception=>e
               #doc =  REXML::Document.new(e.io.read)
               puts doc.to_s
@@ -436,7 +435,7 @@ class BioPortalRestfulCore
                 
         def self.getAttributeValueContains(ontologies,search)
 
-              doc = REXML::Document.new(open(BASE_URL+PROPERTY_SEARCH_PATH.gsub("%ONT%",ontologies.join(",")).gsub("%query%",search)))
+              doc = REXML::Document.new(open(BASE_URL+PROPERTY_SEARCH_PATH.gsub("%ONT%",ontologies.join(",")).gsub("%query%",search.gsub(" ","%20"))))
                    results = errorCheck(doc)
 
                         unless results.nil?

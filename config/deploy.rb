@@ -16,3 +16,8 @@ set :user,"ngriff"
 role :app, "ncbo-ror1.stanford.edu"
 role :web, "ncbo-ror1.stanford.edu"
 role :db,  "ncbo-ror1.stanford.edu", :primary => true
+
+
+#role :app, "ncbo-ror-prod1.stanford.edu"
+#role :web, "ncbo-ror-prod1.stanford.edu"
+#role :db,  "ncbo-ror-prod1.stanford.edu", :primary => true

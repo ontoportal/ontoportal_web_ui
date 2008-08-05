@@ -348,6 +348,7 @@ var tabs=null;
 	function resetNoteForm(uniq){		
 		document.getElementById("note_subject"+uniq).value=""
 		document.getElementById("note_comment"+uniq).value=""
+		document.getElementById('noteParent'+uniq).value="";
 	}
 
 
@@ -373,6 +374,7 @@ myEditor.render();
 function saveNote(){
 	myEditor.saveHTML();
 	myEditor.destroy();
+
 }
 
 function destroyEditor(){

@@ -77,50 +77,6 @@
 			<key>firstVisibleLine</key>
 			<integer>27</integer>
 		</dict>
-		<key>app/controllers/mappings_controller.rb</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>21</integer>
-				<key>line</key>
-				<integer>45</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>12</integer>
-		</dict>
-		<key>app/controllers/ontologies_controller.rb</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>33</integer>
-				<key>line</key>
-				<integer>132</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>18</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>34</integer>
-				<key>line</key>
-				<integer>132</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>33</integer>
-				<key>line</key>
-				<integer>132</integer>
-			</dict>
-		</dict>
 		<key>app/controllers/reviews_controller.rb</key>
 		<dict>
 			<key>caret</key>
@@ -149,20 +105,6 @@
 			<key>firstVisibleLine</key>
 			<integer>26</integer>
 		</dict>
-		<key>app/controllers/users_controller.rb</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>10</integer>
-				<key>line</key>
-				<integer>34</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>20</integer>
-		</dict>
 		<key>app/controllers/visual_controller.rb</key>
 		<dict>
 			<key>caret</key>
@@ -178,20 +120,6 @@
 			<integer>0</integer>
 		</dict>
 		<key>app/helpers/ajax_helper.rb</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>app/helpers/ajax_proxy_helper.rb</key>
 		<dict>
 			<key>caret</key>
 			<dict>
@@ -269,20 +197,6 @@
 				<integer>38</integer>
 				<key>line</key>
 				<integer>5</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>app/models/mapping.rb</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>82</integer>
-				<key>line</key>
-				<integer>10</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -478,23 +392,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>30</integer>
+				<integer>47</integer>
 				<key>line</key>
-				<integer>31</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>7</integer>
-		</dict>
-		<key>app/views/layouts/visual.rhtml</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
+				<integer>20</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -543,33 +443,33 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>app/views/ontologies/edit.html.erb</key>
+		<key>app/views/ontologies/_treeview.rhtml</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
 				<integer>36</integer>
 				<key>line</key>
-				<integer>24</integer>
+				<integer>119</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>9</integer>
+			<integer>99</integer>
 		</dict>
-		<key>app/views/ontologies/index.rhtml</key>
+		<key>app/views/ontologies/new.html.erb</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>105</integer>
 				<key>line</key>
-				<integer>28</integer>
+				<integer>39</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>24</integer>
 		</dict>
 		<key>app/views/reviews/new.html.erb</key>
 		<dict>
@@ -673,34 +573,6 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>app/views/users/index.rhtml</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>44</integer>
-				<key>line</key>
-				<integer>18</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>app/views/users/show.rhtml</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>49</integer>
-				<key>line</key>
-				<integer>17</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
 		<key>app/views/visual/jam.rhtml</key>
 		<dict>
 			<key>caret</key>
@@ -757,6 +629,20 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>config/environment.rb</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>31</integer>
+				<key>line</key>
+				<integer>70</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>30</integer>
+		</dict>
 		<key>config/routes.rb</key>
 		<dict>
 			<key>caret</key>
@@ -776,14 +662,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>10</integer>
+				<integer>6</integer>
 				<key>line</key>
-				<integer>53</integer>
+				<integer>616</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>42</integer>
 		</dict>
 		<key>lib/NCBOService.rb</key>
 		<dict>
@@ -859,6 +745,20 @@
 				<integer>586</integer>
 			</dict>
 		</dict>
+		<key>public/javascripts/calendar_date_select/calendar_date_select.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>public/stylesheets/bioportal.css</key>
 		<dict>
 			<key>caret</key>
@@ -873,35 +773,80 @@
 			<key>firstVisibleLine</key>
 			<integer>802</integer>
 		</dict>
+		<key>vendor/plugins/calendar_date_select/init.rb</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>vendor/plugins/calendar_date_select/lib/calendar_date_select.rb</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>25</integer>
+				<key>line</key>
+				<integer>42</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>22</integer>
+				<key>line</key>
+				<integer>42</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>29</integer>
+				<key>line</key>
+				<integer>42</integer>
+			</dict>
+		</dict>
+		<key>vendor/plugins/calendar_date_select/lib/includes_helper.rb</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>13</integer>
+				<key>line</key>
+				<integer>17</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
+		<string>app/views/ontologies/_treeview.rhtml</string>
+		<string>public/javascripts/calendar_date_select/calendar_date_select.js</string>
+		<string>app/views/ontologies/new.html.erb</string>
 		<string>lib/BioPortalRestfulCore.rb</string>
-		<string>app/controllers/mappings_controller.rb</string>
-		<string>app/models/mapping.rb</string>
-		<string>app/views/mappings/_mapping_table.rhtml</string>
-		<string>app/controllers/ontologies_controller.rb</string>
-		<string>app/views/ontologies/index.rhtml</string>
-		<string>app/views/ontologies/edit.html.erb</string>
-		<string>app/models/ontology_wrapper.rb</string>
-		<string>app/views/login/lost_password.html.erb</string>
-		<string>app/controllers/login_controller.rb</string>
-		<string>app/controllers/application.rb</string>
-		<string>app/models/user.rb</string>
-		<string>app/models/data_access.rb</string>
-		<string>app/controllers/search_controller.rb</string>
-		<string>app/models/user_wrapper.rb</string>
-		<string>app/controllers/visual_controller.rb</string>
-		<string>app/controllers/users_controller.rb</string>
-		<string>app/models/history.rb</string>
-		<string>app/views/home/index.rhtml</string>
-		<string>app/views/home/user.rhtml</string>
-		<string>config/routes.rb</string>
-		<string>app/views/login/index.html.erb</string>
+		<string>app/views/layouts/ontology.rhtml</string>
+		<string>vendor/plugins/calendar_date_select/init.rb</string>
+		<string>vendor/plugins/calendar_date_select/lib/calendar_date_select.rb</string>
+		<string>config/environment.rb</string>
+		<string>vendor/plugins/calendar_date_select/lib/includes_helper.rb</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{334, 87}, {1107, 769}}</string>
+	<string>{{545, 109}, {1107, 769}}</string>
 </dict>
 </plist>
