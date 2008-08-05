@@ -38,7 +38,7 @@ a:hover{
 	background-color:white;
 }
 .content{
-	width:80%;
+/*	width:80%; */
 	overflow:hidden;
 	
 
@@ -72,7 +72,7 @@ color:#3A3C72;
 border-bottom:1px dotted gray;
 }
 .details{
-	width:100%;
+/*	width:100%; */
 	border-bottom:dotted 1px black;
 	
 }
