@@ -1,6 +1,20 @@
 <%if @results.size > 0%>
 <table class="ontologies" cellpadding="0" cellspacing="0">
-	<% for ontology in @ontologies%>
+<%
+result_ontologies = []
+for result in @results
+	if !result[:names].empty? || !result[:properties].empty? || !result[:metadata].empty?
+		result_ontologies << result[:version_id].to_i
+	end
+end
+%>
+	
+	
+	<% for ontology in @ontologies%>	
+	<%unless result_ontologies.include?(ontology.id.to_i)
+		next
+	end
+		%>
 	<tr>
 		<th colspan=2><b><%=ontology.displayLabel%></b></th>
 	</tr>

@@ -17,19 +17,20 @@
 	
 	<%for map in @mappings%>
 	<% dest_node = map.dest_node
-	
-	if dest_node.nil?
-		next
-	end
+
 	%>
 	
 	
 	<tr class="human">
-		<td><%= link_to "#{dest_node.name} (#{dest_node.ontology_name})" , uri_url(:ontology=>dest_node.version_id,:id =>dest_node.id) %></td>
+		<td><%= if dest_node.nil? 
+			"#{map.destination_name} (#{map.destination_ont_name})"
+			else
+			link_to "#{map.destination_name} (#{map.destination_ont_name})" , uri_url(:ontology=>map.destination_version_id,:id =>map.destination_id)
+			end %></td>
 		<td><%=map.map_source%></td>
-		<td><%=map.user.username%></td>
+		<td><%=map.user.username rescue ""%></td>
 		<td><%=map.created_at.strftime("%m/%d/%y")%></td> 
-		<td> <%=link_to_prototype_dialog( "View Notes", {:url =>"/margin_notes/show?mapping_id=#{map.id}", :options=> {:method=> 'get'}},'form', {:title => "Margin Notes for Mapping: #{dest_node.ontology_name.titleize} => #{dest_node.name.titleize}", :width =>700,:height=>400})%></td>
+		<td> <%=link_to_prototype_dialog( "View Notes", {:url =>"/margin_notes/show?mapping_id=#{map.id}", :options=> {:method=> 'get'}},'form', {:title => "Margin Notes for Mapping: #{map.destination_ont_name} => #{map.destination_name.titleize}", :width =>700,:height=>400})%></td>
 	</tr>
 	
 	<%end%>

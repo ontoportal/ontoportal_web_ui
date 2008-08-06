@@ -24,7 +24,7 @@ class SearchController < ApplicationController
     @ontologies = []
     if ontologies.include?("0")
       #search all ontologies
-      @ontologies << DataAccess.getOntologyList()
+      @ontologies = DataAccess.getOntologyList()
     else
       for ontology in ontologies
         @ontologies << DataAccess.getOntology(ontology)

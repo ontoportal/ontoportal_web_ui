@@ -247,7 +247,7 @@ private
              <mappings:target rdf:resource='http://alpha.bioontology.org/#{to_param(mapping.destination_ont)}/#{mapping.destination_id}'/>
          </mappings:One_to_one_mapping>
          <mappings:Mapping_Metadata rdf:ID=\"#{count+1}\">
-             <mappings:author rdf:datatype=\"&xsd;string\">#{mapping.user.user_name}</mappings:author>
+             <mappings:author rdf:datatype=\"&xsd;string\">#{mapping.user.username}</mappings:author>
              <mappings:mapping_source rdf:datatype=\"&xsd;string\">#{mapping.map_source}</mappings:mapping_source>
              <mappings:comment rdf:datatype=\"&xsd;string\">#{mapping.comment}</mappings:comment>
              <mappings:date rdf:datatype=\"&xsd;date\">#{mapping.created_at}</mappings:date>

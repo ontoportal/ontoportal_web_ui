@@ -8,8 +8,8 @@
 <%end%>
 <ul class="topnav" id="subnav">
 		<li id="meta"class="selected"><%=link_to_remote "<em>MetaData</em>",:update=>'ontology_content',:method=>'GET',:url=>ontology_url(:ontology => @ontology),:complete=>"selectTab('subnav','meta')"%></li>
-		<li id="proj"><%=link_to_remote "<em>Projects</em>",:update=>'ontology_content',:method=>'GET',:url=>projects_path(:ontology=>@ontology),:complete=>"selectTab('subnav','proj')"%></li>
-    	<li id="rev"><%=link_to_remote "<em>Reviews</em>",:update=>'ontology_content',:method=>'GET',:url=>reviews_path(:ontology=>@ontology),:complete=>"selectTab('subnav','rev')"%></li>
+<!--		<li id="proj"><%=link_to_remote "<em>Projects</em>",:update=>'ontology_content',:method=>'GET',:url=>projects_path(:ontology=>@ontology),:complete=>"selectTab('subnav','proj')"%></li>
+    	<li id="rev"><%=link_to_remote "<em>Reviews</em>",:update=>'ontology_content',:method=>'GET',:url=>reviews_path(:ontology=>@ontology),:complete=>"selectTab('subnav','rev')"%></li> -->
 	</ul>  
 	<div style="clear:both;"/>
 <div id="ontology_content">

@@ -252,7 +252,7 @@ class DataAccess
     end
     
     def self.param(string)
-      return string.gsub(" ","_")
+      return string.to_s.gsub(" ","_")
     end
    
   

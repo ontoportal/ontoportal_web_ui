@@ -66,6 +66,6 @@ ExceptionNotifier.exception_recipients = %w(ngriff@stanford.edu)
 ActionMailer::Base.smtp_settings = {
   :address  => "smtp.stanford.edu",
   :port  => 25, 
-  :domain  => "ncbo-ror1.stanford.edu",
+  :domain  => "ncbo-ror-prod1.stanford.edu",
     } 
 CalendarDateSelect.format = :american

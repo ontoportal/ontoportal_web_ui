@@ -38,6 +38,6 @@ production:
   adapter: mysql
   socket: /var/lib/mysql/mysql.sock
   database: ncbo_new_production
-  username: root
-  password: ncbomysql
+  username: bioportalgui
+  password: ncbogui123
   host: localhost

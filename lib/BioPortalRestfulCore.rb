@@ -4,7 +4,8 @@ class BioPortalRestfulCore
   
   #Resources
 #    BASE_URL="http://ncbo-core-dev1:8080/bioportal/rest"
-    BASE_URL="http://ncbo-core-load1.stanford.edu:8080/bioportal/rest"
+  #  BASE_URL="http://ncbo-core-load1.stanford.edu:8080/bioportal/rest"
+    BASE_URL="http://ncbo-core-prod1.stanford.edu:8080/bioportal/rest"
     #BASE_URL="http://171.65.32.220:8080/bioportal/rest"
     
     ONTOLOGIES_PATH = "/ontologies/%ONT%"
@@ -113,7 +114,7 @@ class BioPortalRestfulCore
       
       def self.getOntologyVersions(ontology)
 
-         doc = REXML::Document.new(open(BASE_URL+VERSIONS_PATH.gsub("%ONT%",ontology)))
+         doc = REXML::Document.new(open(BASE_URL+VERSIONS_PATH.gsub("%ONT%",ontology.to_s)))
         
          ontologies = errorCheck(doc)
 
@@ -164,7 +165,7 @@ class BioPortalRestfulCore
       def self.parseOntology(ontology)
           ont = nil
           puts "Ontology: #{ontology}"
-            doc = REXML::Document.new(open(BASE_URL + PARSE_ONTOLOGY.gsub("%ONT%",ontology)))
+            doc = REXML::Document.new(open(BASE_URL + PARSE_ONTOLOGY.gsub("%ONT%",ontology.to_s)))
             
                  ont = errorCheck(doc)
 
@@ -187,7 +188,7 @@ class BioPortalRestfulCore
       def self.getLatestOntology(ontology)
          ont = nil
           puts "Ontology: #{ontology}"
-            doc = REXML::Document.new(open(BASE_URL + VIRTUAL_URI_PATH.gsub("%ONT%",ontology).gsub("%CONC%","")))
+            doc = REXML::Document.new(open(BASE_URL + VIRTUAL_URI_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","")))
             
               ont = errorCheck(doc)
 
@@ -210,7 +211,7 @@ class BioPortalRestfulCore
       
       def self.getPathToRoot(ontology,source,light=nil)
            root = nil
-           doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology).gsub("%CONC%",source)+"?light=false"))
+           doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"?light=false"))
            
              root = errorCheck(doc)
 
@@ -349,7 +350,7 @@ class BioPortalRestfulCore
         def self.updateUser(params,id)
           user = nil
           begin
-          doc = REXML::Document.new(putToRestlet(BASE_URL+USER_PATH.gsub("%USR%",id)+"?&applicationid=#{APPLICATION_ID}",params))
+          doc = REXML::Document.new(putToRestlet(BASE_URL+USER_PATH.gsub("%USR%",id.to_s)+"?&applicationid=#{APPLICATION_ID}",params))
           rescue Exception=>e
             puts e.message
             puts e.backtrace
@@ -679,3 +680,4 @@ private
   end
 
 end
+  
