@@ -413,15 +413,20 @@ function update_tab(ontology,concept){
 
 function remove_tab(link,ontology,redirect){
 
-	
+
 			var responseSuccess = function(o)
 			{
+
 				if(redirect){
 					window.location="/ontologies"
 				}else{
 					tab= document.getElementById("tab"+ontology)		
-					parent = tab.parentNode	
-					parent.removeChild(tab)
+					try{
+					    tab.parentNode.removeChild(tab);
+				    }catch(e){
+				        tab.style.display='none';
+				    }
+
 		
 				}
 				

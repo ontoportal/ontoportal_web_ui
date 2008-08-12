@@ -11,7 +11,7 @@
 	<th>Format</th>
 	<th>Version</th>
 	<th>Author</th>
-	<th>Date</th>
+	<th>Uploaded On</th>
 <!--	<th>Related Projects</th>
 	<th>Reviews</th> -->
 	<th>&nbsp;</th>
@@ -22,11 +22,11 @@
 	<td><%=link_to ontology.displayLabel, ontology_path(:id=>ontology.id)%></td>
 	<td><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format%><%end%></td>
 	<td><%=ontology.versionNumber%></td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
+	<td><%=ontology.contactName%></td>
+	<td><%=ontology.dateCreated%></td>
 <!--	<td><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology)%></td>
 	<td><%= link_to "See All #{ontology.reviews} Reviews",reviews_path(:ontology=>ontology)%></td> -->
-	<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>Exploring Unavailable<%end%></td>
+	<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%><%end%></td>
   </tr>
 <% end %>
 </table>

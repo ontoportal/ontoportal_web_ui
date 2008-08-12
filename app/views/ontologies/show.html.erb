@@ -54,7 +54,7 @@
 			<td><%=version.dateReleased%></td>
 			<td><%=version.versionStatus%></td>
 			<td><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download</a></td>
-			<td><%if version.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => version)%><%elsif version.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>Exploring Unavailable<%end%></td>
+			<td><%if version.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => version)%><%elsif version.statusId.to_i.eql?(1)%>Parsing Ontology<%else%><%end%></td>
 		</tr>
 		<%end%>
 	</table>

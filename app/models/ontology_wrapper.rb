@@ -23,6 +23,7 @@ class OntologyWrapper
   attr_accessor :homepage
   attr_accessor :documentation
   attr_accessor :publication
+  attr_accessor :dateCreated
   
   attr_accessor :versions
   attr_accessor :project_count
@@ -74,6 +75,9 @@ class OntologyWrapper
     self.isManual = params[:isManual] 
   end
   
+  def map_count
+    count = Mapping.find(:all,:conditions=>{:source_ont=>self.ontologyId}).size
+  end
   
   def reviews
     if self.review_count.nil?

@@ -37,7 +37,7 @@ test:
 production:
   adapter: mysql
   socket: /var/lib/mysql/mysql.sock
-  database: ncbo_new_production
+  database: NCBO_Production
   username: bioportalgui
   password: ncbogui123
   host: localhost

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title></title>
+	<title>BioPortal Ontology Visualization</title>
 </head>
 
 <body scroll="no" style="margin:0px;overflow:hidden;">
@@ -21,13 +21,13 @@ var requiredRevision = 28;
 <script src="AC_OETags.js" language="javascript" type="text/javascript"></script>
 
 <!--  BEGIN Browser History required section -->
-<style type="text/css">
+<!-- style type="text/css">
 #ie_historyFrame { width: 0px; height: 0px; display:none }
 #firefox_anchorDiv { width: 0px; height: 0px; display:none }
 #safari_formDiv { width: 0px; height: 0px; display:none }
 #safari_rememberDiv { width: 0px; height: 0px; display:none }
-</style>
-<script src="history/history.js" language="javascript"></script>
+</style -->
+<!-- script src="history/history.js" language="javascript"></script -->
 <!--  END Browser History required section -->
 
 <script language="javascript" type="text/javascript">
@@ -73,7 +73,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			"name", "FlexoViz",
 			"allowScriptAccess","always",
 			"type", "application/x-shockwave-flash",
-			"flashVars", "ontology=4519&nodeid=K&debug=false&server=http://ncbo-core-prod1.stanford.edu:8080/bioportal/rest/",
+			"flashVars", "server=http://ncbo-core-prod1.stanford.edu:8080/bioportal/rest/",
 			"pluginspage", "http://www.adobe.com/go/getflashplayer"
 	);
 	
@@ -101,63 +101,11 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 				quality="high"
 				allowScriptAccess="always"
 				type="application/x-shockwave-flash"
-				flashVars="ontology=3905&nodeid=Entry&server=http://ncbo-core-prod1.stanford.edu:8080/bioportal/rest/"
+				flashVars="server=http://ncbo-core-prod1.stanford.edu:8080/bioportal/rest/"
 				pluginspage="http://www.adobe.com/go/getflashplayer">
 			</embed>
 	</object>
 </noscript>
-
-<script>
-
-function getApp() {
-	var app = document.getElementById("FlexoViz");
-	return app;
-}
-
-/** 
- * Selects on the node with the given id
- * @param id the id of the node to focus on
- */
-function selectNode(id) {
-	var app = getApp();
-	if (app != null) {
-		app.selectNode(id);
-	} else {
-		alert("Could not select the concept with ID " + id);
-	}
-}
-
-/** 
- * Focusses on the node with the given id
- * @param id the id of the node to focus on
- * @param option the graph view setting (optional), one of "Neighborhood", "Hierarchy To Root", "Parents", or "Children"
- *		defaults to "Neighborhood"
- */
-function focusOnNode(id, option) {
-	var app = getApp();
-	if (app != null) {
-		app.focusOnNode(id, option);
-	} else {
-		alert("Could not focus on the concept with ID " + id);
-	}
-}
-
-// TESTING
-function selectNodeTest() {
-	var id = document.myform.idTextBox.value;
-	selectNode(id);
-}
-
-// TESTING
-function focusOnNodeTest() {
-	var sel = document.myform.graphViewSelect;
-	var id = document.myform.idTextBox.value;
-	var option = sel.options[sel.selectedIndex].value;
-	focusOnNode(id, option);
-}
-
-</script>
-
 
 </body>
 </html>

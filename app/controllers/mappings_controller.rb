@@ -7,7 +7,18 @@ class MappingsController < ApplicationController
   layout 'search'
   
   def index
-    @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
+    ontology_list = DataAccess.getOntologyList() # -- Gets list of ontologies
+    mapped_ontologies_ids = ActiveRecord::Base.connection().execute("SELECT distinct(source_ont) as count from mappings")
+    mapped_ontologies=[]
+    mapped_ontologies_ids.each_hash(with_table=false) {|x| mapped_ontologies<<x['count']}
+    @ontologies=[]
+    puts "Ontologies are #{mapped_ontologies.inspect}"
+    for ontology in ontology_list
+      if mapped_ontologies.include?(ontology.ontologyId)
+        @ontologies << ontology
+      end
+    end
+
   end
   
   def count
@@ -16,11 +27,11 @@ class MappingsController < ApplicationController
     @ontology_id=ontology.ontologyId
     
     @source_counts =[]
-    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,destination_ont,destination_ont_name,source_ont_name from mappings  where source_ont like '#{ontology.ontologyId}' group by destination_ont")
+    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,destination_ont,destination_ont_name,source_ont_name from mappings  where source_ont =#{ontology.ontologyId}  group by destination_ont")
      names.each_hash(with_table=false) {|x| @source_counts<<x}
     
     @dest_counts = []
-    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,source_ont,destination_ont_name,source_ont_name from mappings  where destination_ont like '#{ontology.ontologyId}' group by source_ont")
+    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,source_ont,destination_ont_name,source_ont_name from mappings  where destination_ont = #{ontology.ontologyId} group by source_ont")
     names.each_hash(with_table=false) {|x| @dest_counts<<x} 
     
     render :partial =>'count'

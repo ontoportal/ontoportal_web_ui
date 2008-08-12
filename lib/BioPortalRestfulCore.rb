@@ -598,6 +598,8 @@ private
     ontology.homepage = ontologybeanXML.elements["homepage"].get_text.value rescue   ""
     ontology.documentation = ontologybeanXML.elements["documentation"].get_text.value rescue   ""
     ontology.publication = ontologybeanXML.elements["publication"].get_text.value rescue   ""
+    ontology.dateCreated = Date.parse(ontologybeanXML.elements["dateCreated"].get_text.value).strftime('%m/%d/%Y')
+     
     return ontology
     
   end

@@ -3,11 +3,11 @@
 <%=
             options ={}
 			for ontology in @ontologies
-			options.merge!(ontology.displayLabel => ontology.id)
+			options.merge!(ontology.displayLabel+ " (#{ontology.map_count})" => ontology.id)
 			end 
 			options = options.sort                     
             select('search','ontologies',options,{:selected=>"All"},{:onchange=>"updateArea('GET','/mappings/count/'+this.value,'mappingCount');document.getElementById('mappings').innerHTML='';"})
-            %>
+            %> (Only Ontologies with Mappings are displayed)
 
 
 <div id="mappingCount" style="text-align:center;overflow:hidden;padding:10px;">
@@ -20,7 +20,8 @@
 
 <script type="text/javascript">
 
+try{
 YAHOO.util.Event.onDOMReady(buildWait()); 
-
+}catch(e){}
 
 </script>

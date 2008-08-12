@@ -61,11 +61,11 @@ module ApplicationHelper
   headertext=""
   notetext=""
   if note.note_type.eql?(5)
-    headertext<< "<div class=\"header\" onclick=\"toggleHide('note_body#{note.id}','hiddenNote');compare('#{note.id}')\">"
+    headertext<< "<div class=\"header\" onclick=\"toggleHide('note_body#{note.id}','');compare('#{note.id}')\">"
     notetext << " <input type=\"hidden\" id=\"note_value#{note.id}\" value=\"#{note.comment}\"> 
                   <span class=\"message\" id=\"note_text#{note.id}\">#{note.comment}</span>"
   else
-    headertext<< "<div class=\"header\" onclick=\"toggleHide('note_body#{note.id}','hiddenNote')\">"
+    headertext<< "<div class=\"header\" onclick=\"toggleHide('note_body#{note.id}','')\">"
     
     notetext<< "<span class=\"message\" id=\"note_text#{note.id}\">#{simple_format(note.comment)}</span>"
   end

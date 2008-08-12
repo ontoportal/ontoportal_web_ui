@@ -1,6 +1,6 @@
 <fieldset style="width:300px;">
 <legend>Preview of <%=link_to "#{@concept.name},#{@concept.id}",uri_url(:ontology=>@ontology,:id=>@concept.id),:target=>"_new"%></legend>
-<!--><div style="overflow:auto;width:300px"></div>-->
+<!--<div style="overflow:auto;width:300px"></div>-->
 <br>
 <ul>
 <%@concept.properties.each_pair{|key,value| %>		
