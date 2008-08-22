@@ -81,14 +81,14 @@ class OntologyWrapper
   
   def reviews
     if self.review_count.nil?
-      self.review_count = Review.count(:conditions=>{:ontology=>self.id})
+      self.review_count = Review.count(:conditions=>{:ontology_id=>self.ontologyId})
     end
     return self.review_count
   end
   
   def projects
     if self.project_count.nil?
-      self.project_count = Project.count(:conditions=>"uses.ontology = '#{self.id}'",:include=>:uses)
+      self.project_count = Project.count(:conditions=>"uses.ontology_id = '#{self.ontologyId}'",:include=>:uses)
     end
     return self.project_count
   end

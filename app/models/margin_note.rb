@@ -21,7 +21,15 @@ class MarginNote < ActiveRecord::Base
   end
   
   def after_create
-    CACHE.delete("#{self.ontology_id}::#{self.concept_id}_NoteCount")
+    CACHE.delete("#{self.ontology_version_id}::#{self.concept_id}_NoteCount")
+  end
+  
+  def ontology
+    DataAccess.getOntology(self.ontology_version_id)
+  end
+  
+  def concept
+    DataAccess.getNode(self.ontology_version_id,self.concept_id)
   end
   
   

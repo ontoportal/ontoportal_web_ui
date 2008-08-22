@@ -28,7 +28,7 @@
 		<tr>
 	<%end%>		
 	
-		<td <%if !@usedOntologies.nil? && @usedOntologies.include?(ontology.id)%> style="border:1px solid gray;cursor:pointer;background-color:#DDFFDD;" <%else%> style="border:1px solid gray;cursor:pointer;"<%end%> onmouseover="hover_on_BG(this);" onmouseout="hover_off_BG(this);" ><input type="checkbox"  <%if !@usedOntologies.nil? && @usedOntologies.include?(ontology.id)%> checked <%end%>name="ontologies[<%=ontology.id%>]" onclick="updateOntologyList(this);" ><%=ontology.displayLabel%></td>
+		<td <%if !@usedOntologies.nil? && @usedOntologies.include?(ontology.ontologyId)%> style="border:1px solid gray;cursor:pointer;background-color:#DDFFDD;" <%else%> style="border:1px solid gray;cursor:pointer;"<%end%> onmouseover="hover_on_BG(this);" onmouseout="hover_off_BG(this);" ><input type="checkbox"  <%if !@usedOntologies.nil? && @usedOntologies.include?(ontology.ontologyId)%> checked <%end%>name="ontologies[<%=ontology.ontologyId%>]" onclick="updateOntologyList(this);" ><%=ontology.displayLabel%></td>
 	
 	<%if count==3%>
 		</tr>		
@@ -47,7 +47,7 @@
 
 <ul id="ontologieslist">
 	<%for use in @project.uses%>
-		<li id="id_<%=use.ontology%>"><%=use.ontology%></li>
-		<input type="hidden" id="hid_<%=use.ontology%>" name="ontologies[<%=use.ontology%>]" value=1>
+		<li id="id_<%=use.ontology_id%>"><%=use.ontology.displayLabel%></li>
+		<input type="hidden" id="hid_<%=use.ontology_id%>" name="ontologies[<%=use.ontology_id%>]" value=1>
 	<%end%>
 </ul>

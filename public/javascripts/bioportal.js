@@ -273,6 +273,28 @@ function buildWait(){
 	
 }
 
+function buildTabWait(){
+   YAHOO.namespace("tabwait.container");
+	// Initialize the temporary Panel to display while waiting for external content to load
+	YAHOO.tabwait.container.wait = new YAHOO.widget.Panel("tabwait",  
+				{ width:"240px", 
+				  fixedcenter:true, 
+				  close:false, 
+				  draggable:false, 
+				  zindex:4,
+				  modal:true,
+				  visible:false
+				} 
+			);
+
+	YAHOO.tabwait.container.wait.setHeader("Building Tree, please wait...");
+	YAHOO.tabwait.container.wait.setBody('<img src="http://us.i1.yimg.com/us.yimg.com/i/us/per/gr/gp/rel_interstitial_loading.gif" />');
+	YAHOO.tabwait.container.wait.render(document.body);
+	
+	
+	
+}
+
 	
  
 function buildSearchWait(){

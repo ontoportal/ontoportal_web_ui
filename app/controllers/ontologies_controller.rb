@@ -11,6 +11,11 @@ class OntologiesController < ApplicationController
   def index
     @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
     
+    @last_notes= MarginNote.find(:all,:order=>'created_at desc',:limit=>5)    
+    @last_mappings = Mapping.find(:all,:order=>'created_at desc',:limit=>5)
+    
+    
+    
     @notes={} # Gets list of notes for the ontologies
 #    for ont in @ontologies
       #gets last note.. not the best way to do this
@@ -94,10 +99,10 @@ class OntologiesController < ApplicationController
         @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.ontologyId, :source_id => @concept.id})
         #@mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
         #gets the initial margin notes
-        @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @ontology.id, :concept_id => @concept.id,:parent_id => nil})
+        @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_version_id => @ontology.id, :concept_id => @concept.id,:parent_id => nil})
         @margin_note = MarginNote.new
         @margin_note.concept_id = @concept.id
-        @margin_note.ontology_id = @ontology.id
+        @margin_note.ontology_version_id = @ontology.id
         
        # for demo only
        @software=[]

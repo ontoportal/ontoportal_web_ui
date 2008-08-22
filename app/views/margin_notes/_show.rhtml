@@ -22,7 +22,8 @@ javascripts = "resetNoteForm(#{uniq});"
 <% remote_form_for(:margin_note, :url => margin_notes_path,:update =>"notes",:complete=>"#{javascripts}") do |f| %>
 	<%=hidden_field 'margin_note', 'concept_id'%>
 	<%unless @ontology.nil?%>
-		<%=hidden_field 'margin_note', 'ontology_id', :value=>@ontology.id%>
+		<%=hidden_field 'margin_note', 'ontology_version_id', :value=>@ontology.id%>
+		<%=hidden_field 'margin_note', 'ontology_id', :value=>@ontology.ontologyId%>
 	<%end%>
 	<%=hidden_field 'margin_note', 'mapping_id'%>
 	<%=hidden_field 'margin_note', 'parent_id', :id=>'noteParent'%>
@@ -39,7 +40,7 @@ javascripts = "resetNoteForm(#{uniq});"
                 %></td>
 	</tr>
 	<tr>
-		<td>Subject:</td><td><%=text_field 'margin_note', 'subject',:size=>70,:id=>"note_subject#{uniq}"%></td>
+		<td>Subject:</td><td><%=text_field 'margin_note', 'subject',:size=>70,:id=>"note_subject#{uniq}",:maxlength=>39%></td>
 	<tr>
 		<td>Note:</td><td><%=text_area 'margin_note' ,'comment',:cols=>70,:rows=>10, :id=>"note_comment#{uniq}"%>
 			</td>

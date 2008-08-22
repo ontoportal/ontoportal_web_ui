@@ -5,31 +5,69 @@
 <%else%>
 	<span class="blueButton"><%=link_to "Submit New Ontology",new_ontology_path%></span>
 <%end%>
-<table class="ontologies" cellpadding="0" cellspacing="0">
+<div style="overflow:auto;width:1000px;">
+<div style="float:left;width:650px;overflow:auto;padding:4px;">
+<table class="ontologies" style="width:650px;"cellpadding="0" cellspacing="0">
   <tr>
-	<th>Ontology Name</th>
-	<th>Format</th>
-	<th>Version</th>
+	<th  style="width:200px;">Ontology Name</th>
+	<th style="width:50px;">Format</th>
+	<th  style="width:50px;">Version</th>
 	<th>Author</th>
 	<th>Uploaded On</th>
-<!--	<th>Related Projects</th>
-	<th>Reviews</th> -->
 	<th>&nbsp;</th>
   </tr>
   
 <% for ontology in @ontologies %>
   <tr class="<%= cycle("odd", "even")%>">
-	<td><%=link_to ontology.displayLabel, ontology_path(:id=>ontology.id)%></td>
-	<td><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format%><%end%></td>
-	<td><%=ontology.versionNumber%></td>
+	<td style="width:200px;"><b><%=link_to ontology.displayLabel, ontology_path(:id=>ontology.id)%></b>
+		<ul style="padding-left:20px;">
+			<li style="margin-bottom:4px;"><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology.ontologyId)%></li>
+			<li><%= link_to "See All #{ontology.reviews} Reviews",reviews_path(:ontology=>ontology.ontologyId)%></li>
+		</ul>
+		</td>
+	<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format%><%end%></td>
+	<td  style="width:50px;"><%=ontology.versionNumber%></td>
 	<td><%=ontology.contactName%></td>
 	<td><%=ontology.dateCreated%></td>
-<!--	<td><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology)%></td>
-	<td><%= link_to "See All #{ontology.reviews} Reviews",reviews_path(:ontology=>ontology)%></td> -->
-	<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%><%end%></td>
+	<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
   </tr>
 <% end %>
 </table>
+</div>
+<div>
+	<br>
+	<table class="versions" style="width:300px">
+		<tr>
+			<th>Latest Marginal Notes</th>
+		</tr>
+		<%for note in @last_notes%>
+		<tr>
+		<td><%=link_to note.subject,uri_url(:ontology=>note.ontology_version_id,:id=>note.concept_id)%>
+			<br>
+			<span style="color:#AAAAAA"><%=note.ontology.displayLabel%> (<%=note.concept.name%>) <%=note.created_at.strftime("%m/%d/%y")%> <%=note.user.username%></span>
+			<p><%= truncate(strip_tags(note.comment),100)%>&nbsp;</p>
+		</td>
+		</tr>
+		<%end%>
+		<tr>
+			<th>Latest Mappings</th>
+		</tr>
+		
+		<%for map in @last_mappings%>
+		<tr>
+		<td>	<%= if map.dest_node.nil? 
+				"#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})"
+				else
+				link_to "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})" , uri_url(:ontology=>map.destination_version_id,:id =>map.destination_id)
+				end %>
+				<br>
+					<span style="color:#AAAAAA"><%=map.map_source%><%=map.created_at.strftime("%m/%d/%y")%> <%=map.user.username%></span>
+				</td>
+		</tr>
+		<%end%>
+	</table>
 
-<br />
+</div>
+<div style="clear:both;"></div>
+</div>
 

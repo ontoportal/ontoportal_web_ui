@@ -9,10 +9,10 @@
 <%count = 0%>
 <%for review in @reviews%>
 
-<%=hidden_field_tag "review#{count}[ontology]",review.ontology%>
+<%=hidden_field_tag "review#{count}[ontology_id]",review.ontology_id%>
 <%=hidden_field_tag "review#{count}[project_id]",review.project_id%>
 <fieldset>
-	<legend><b>Review For <%=review.ontology%></b></legend>
+	<legend><b>Review For <%=review.ontology.displayLabel%></b></legend>
 <table>
 	<tr>
 		<td>Ratings<br>

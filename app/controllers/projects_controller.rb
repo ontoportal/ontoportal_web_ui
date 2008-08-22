@@ -31,9 +31,9 @@ class ProjectsController < ApplicationController
   # GET /projects/1.xml
   def show
     @project = Project.find(params[:id],:include=>:uses)
-    ontologies = @project.uses.collect{|use| use.ontology}
-    reviews = Review.find(:all,:conditions=>["ontology in (?) AND project_id = #{params[:id]}",ontologies],:include=>:ratings)
-    @reviews = Hash[*(reviews.map{|rev| [rev.ontology, rev] }.flatten)]
+    ontologies = @project.uses.collect{|use| use.ontology_id}
+    reviews = Review.find(:all,:conditions=>["ontology_id in (?) AND project_id = #{params[:id]}",ontologies],:include=>:ratings)
+    @reviews = Hash[*(reviews.map{|rev| [rev.ontology_id, rev] }.flatten)]
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @project }
@@ -65,7 +65,7 @@ class ProjectsController < ApplicationController
     @project.user_id = session[:user].id
     unless params[:ontologies].nil?
       for ontology in params[:ontologies].keys
-        @project.uses << Use.new(:ontology=>ontology)
+        @project.uses << Use.new(:ontology_id=>ontology)
       end
     end
 
@@ -91,7 +91,7 @@ class ProjectsController < ApplicationController
     unless params[:ontologies].nil?
       for ontology in params[:ontologies].keys
         
-        @project.uses << Use.new(:ontology=>ontology)
+        @project.uses << Use.new(:ontology_id=>ontology)
       end
     end
 

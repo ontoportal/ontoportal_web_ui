@@ -7,7 +7,7 @@ class ReviewsController < ApplicationController
   
   def index
     @reviews = Review.find(:all,:conditions=>{:ontology_id=>params[:ontology]},:include=>:ratings)
-    @ontology_name=DataAccess.getOntology(params[:ontology]).displayLabel
+    @ontology=DataAccess.getLatestOntology(params[:ontology])
     respond_to do |format|
       format.html {
         if request.xhr? 
@@ -46,7 +46,7 @@ class ReviewsController < ApplicationController
         end
       end
     else    
-      @reviews << Review.new(:ontology=>params[:ontology],:user_id=>session[:user].id)
+      @reviews << Review.new(:ontology_id=>params[:ontology],:user_id=>session[:user].id)
     end
     @ontologies = DataAccess.getOntologyList()
     respond_to do |format|
@@ -72,8 +72,8 @@ class ReviewsController < ApplicationController
     
     for key in params.keys
       if key.include?("review")
-        review = Review.new(:review=>params[key][:review],:ontology=>undo_param(params[key][:ontology]),:project_id=>params[key][:project_id])
-        ontology = review.ontology
+        review = Review.new(:review=>params[key][:review],:ontology_id=>undo_param(params[key][:ontology_id]),:project_id=>params[key][:project_id])
+        ontology = review.ontology_id
         project = review.project_id
         for rating_key in params[key].keys
           if rating_key.include?("ratings")
@@ -120,7 +120,7 @@ class ReviewsController < ApplicationController
       if @review.update_attributes(params[:review])
 
         flash[:notice] = 'Review was successfully updated.'
-        format.html { redirect_to reviews_path(:ontology=>to_param(@review.ontology)) }
+        format.html { redirect_to reviews_path(:ontology=>to_param(@review.ontology_id)) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

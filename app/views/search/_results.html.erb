@@ -26,17 +26,17 @@ end
 			<% if result[:version_id].to_i.eql?(ontology.id.to_i)%>
 				<%for concept in result[:names]%>
 				<tr class="<%= cycle("odd", "even")%>">
-					<td><%=link_to highlight(concept.name,@keyword),uri_url(:ontology=>ontology,:id=>concept.id)%></td><td>Concept Name</td>
+					<td><%=link_to highlight(concept.name,@keyword),uri_url(:ontology=>ontology,:id=>concept.id),:onclick=>"YAHOO.tabwait.container.wait.show();"%></td><td>Concept Name</td>
 				</tr>
 				<%end%>
 				<%for concept in result[:properties]%>
 				<tr class="<%= cycle("odd", "even")%>">
-					<td><%=link_to highlight(concept.name,@keyword),uri_url(:ontology=>ontology,:id=>concept.id)%></td><td>Concept Properties</td>
+					<td><%=link_to highlight(concept.name,@keyword),uri_url(:ontology=>ontology,:id=>concept.id),:onclick=>"YAHOO.tabwait.container.wait.show();"%></td><td>Concept Properties</td>
 				</tr>
 				<%end%>
 				<%for concept in result[:metadata]%>
 				<tr class="<%= cycle("odd", "even")%>">
-					<td><%=link_to highlight(concept.name,@keyword),uri_url(:ontology=>ontology,:id=>concept.id)%></td><td>MetaData</td>
+					<td><%=link_to highlight(concept.name,@keyword),uri_url(:ontology=>ontology,:id=>concept.id),:onclick=>"YAHOO.tabwait.container.wait.show();"%></td><td>MetaData</td>
 				</tr>
 				<%end%>
 			<%end%>	

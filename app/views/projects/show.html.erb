@@ -26,13 +26,13 @@
 	<table class="reviews" cellpadding="0" cellspacing="0">
 
 		<tr>
-			<th><%=link_to uses.ontology,ontology_url(:ontology => to_param(uses.ontology))%></th>
+			<th><%=link_to uses.ontology.displayLabel,visualize_url(:ontology => uses.ontology)%></th>
 
 		</tr>
 		<tr>
 			<td>
 				<div style="float:left;border:1px solid gray;margin:7px;padding:5px;">
-				<%for rating in @reviews[uses.ontology].ratings%>				
+				<%for rating in @reviews[uses.ontology_id].ratings%>				
 					<div class="rateMe" >
 						<%if rating.value.eql?(0)%>
 						<span style="float:left;">Not Rated</span>
@@ -47,7 +47,7 @@
 					<b>&nbsp;<%=rating.rating_type.name%></b>					
 				<%end%>
 				</div>
-				<p><%=@reviews[uses.ontology].review%></p>
+				<p><%=@reviews[uses.ontology_id].review%></p>
 				
 			</td>
 		</tr>

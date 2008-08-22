@@ -188,6 +188,7 @@ class BioPortalRestfulCore
       def self.getLatestOntology(ontology)
          ont = nil
           puts "Ontology: #{ontology}"
+          puts BASE_URL + VIRTUAL_URI_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","")
             doc = REXML::Document.new(open(BASE_URL + VIRTUAL_URI_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","")))
             
               ont = errorCheck(doc)
@@ -588,7 +589,7 @@ private
     ontology.isRemote = ontologybeanXML.elements["isRemote"].get_text.value rescue   ""
     ontology.isReviewed = ontologybeanXML.elements["isReviewed"].get_text.value rescue   ""
     ontology.statusId = ontologybeanXML.elements["statusId"].get_text.value rescue   ""
-    ontology.dateReleased = ontologybeanXML.elements["dateReleased"].get_text.value rescue   ""
+    ontology.dateReleased =  Date.parse(ontologybeanXML.elements["dateReleased"].get_text.value).strftime('%m/%d/%Y') rescue   ""
     ontology.contactName = ontologybeanXML.elements["contactName"].get_text.value rescue   ""
     ontology.contactEmail = ontologybeanXML.elements["contactEmail"].get_text.value rescue   ""
     ontology.urn = ontologybeanXML.elements["urn"].get_text.value rescue    ""
@@ -598,7 +599,7 @@ private
     ontology.homepage = ontologybeanXML.elements["homepage"].get_text.value rescue   ""
     ontology.documentation = ontologybeanXML.elements["documentation"].get_text.value rescue   ""
     ontology.publication = ontologybeanXML.elements["publication"].get_text.value rescue   ""
-    ontology.dateCreated = Date.parse(ontologybeanXML.elements["dateCreated"].get_text.value).strftime('%m/%d/%Y')
+    ontology.dateCreated = Date.parse(ontologybeanXML.elements["dateCreated"].get_text.value).strftime('%m/%d/%Y') rescue ""
      
     return ontology
     

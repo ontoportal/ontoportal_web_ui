@@ -1,8 +1,7 @@
 class CreateReviews < ActiveRecord::Migration
   def self.up
     create_table :reviews do |t|
-      t.integer :user_id
-      t.string :ontology
+      t.integer :user_id,:ontology_id,:project_id
       t.text :review
       t.timestamps
     end

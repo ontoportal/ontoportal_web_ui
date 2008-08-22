@@ -141,11 +141,11 @@ class ConceptsController < ApplicationController
       @mappings = Mapping.find(:all, :conditions=>{:source_ont => @concept.ontology_id, :source_id => @concept.id})    
       
       #builds the margin note tab
-      @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.version_id, :concept_id => @concept.id,:parent_id =>nil})
+      @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_version_id => @concept.version_id, :concept_id => @concept.id,:parent_id =>nil})
       #needed to prepopulate the margin note
       @margin_note = MarginNote.new
       @margin_note.concept_id = @concept.id
-      @margin_note.ontology_id = @concept.version_id
+      @margin_note.ontology_version_id = @concept.version_id
    # end   
       
    
