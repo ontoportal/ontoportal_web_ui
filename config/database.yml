@@ -33,11 +33,22 @@ test:
   password:
   socket: /tmp/mysql.sock
 
-
+#ncboadmin
+#ncbo123
+#Stage
 production:
   adapter: mysql
   socket: /var/lib/mysql/mysql.sock
   database: NCBO_Production
-  username: bioportalgui
-  password: ncbogui123
+  username: ncboadmin
+  password: ncbo123
   host: localhost
+
+#Production
+#production:
+#  adapter: mysql
+#  socket: /var/lib/mysql/mysql.sock
+#  database: NCBO_Production
+#  username: bioportalgui
+#  password: ncbogui123
+#  host: localhost
