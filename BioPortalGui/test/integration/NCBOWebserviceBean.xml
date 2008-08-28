@@ -1,0 +1,588 @@
+<definitions name="NCBOService" targetNamespace="http://org.ncbo.stanford.server/beans" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://beans.server.stanford.ncbo.org/jaws" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://org.ncbo.stanford.server/beans" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <types>
+  <schema elementFormDefault="qualified" targetNamespace="http://org.ncbo.stanford.server/beans" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://beans.server.stanford.ncbo.org/jaws" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://org.ncbo.stanford.server/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <import namespace="http://beans.server.stanford.ncbo.org/jaws"/>
+   <complexType name="AssociationBeanResult">
+    <sequence>
+     <element name="associationName" nillable="true" type="string"/>
+     <element maxOccurs="unbounded" minOccurs="0" name="nodeBeanResultArr" nillable="true" type="tns:NodeBeanResult"/>
+    </sequence>
+   </complexType>
+   <complexType name="AssociationBeanResultList">
+    <sequence>
+     <element name="dummyForJbossBug" type="int"/>
+     <element maxOccurs="unbounded" minOccurs="0" name="result" nillable="true" type="ns2:AssociationBeanResult"/>
+    </sequence>
+   </complexType>
+   <complexType name="NCBOOntology">
+    <sequence>
+     <element name="coreFormat" nillable="true" type="string"/>
+     <element name="currentVersion" nillable="true" type="string"/>
+     <element name="displayLabel" nillable="true" type="string"/>
+     <element name="downloadPath" nillable="true" type="string"/>
+     <element name="metadataPath" nillable="true" type="string"/>
+     <element name="releaseDate" type="long"/>
+    </sequence>
+   </complexType>
+   <complexType name="NCBOOntologyList">
+    <sequence>
+     <element name="dummyForJbossBug" type="int"/>
+     <element maxOccurs="unbounded" minOccurs="0" name="result" nillable="true" type="tns:NCBOOntology"/>
+    </sequence>
+   </complexType>
+   <complexType name="NodeBeanResult">
+    <sequence>
+     <element name="id" nillable="true" type="string"/>
+     <element name="isActive" type="boolean"/>
+     <element name="name" nillable="true" type="string"/>
+     <element maxOccurs="unbounded" minOccurs="0" name="propertyValuePair" nillable="true" type="ns2:PropertyValue"/>
+    </sequence>
+   </complexType>
+   <complexType name="SearchBeanResultList">
+    <sequence>
+     <element name="dummyForJbossBug" type="int"/>
+     <element maxOccurs="unbounded" minOccurs="0" name="result" nillable="true" type="ns2:SearchBeanResult"/>
+    </sequence>
+   </complexType>
+   <complexType name="StringList">
+    <sequence>
+     <element name="dummyForJbossBug" type="int"/>
+     <element maxOccurs="unbounded" minOccurs="0" name="stringArr" nillable="true" type="string"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema elementFormDefault="qualified" targetNamespace="http://beans.server.stanford.ncbo.org/jaws" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://org.ncbo.stanford.server/beans" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://beans.server.stanford.ncbo.org/jaws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <import namespace="http://org.ncbo.stanford.server/beans"/>
+   <complexType name="AssociationBeanResult">
+    <sequence>
+     <element name="associationName" nillable="true" type="string"/>
+     <element maxOccurs="unbounded" minOccurs="0" name="nodeBeanResultArr" nillable="true" type="tns:NodeBeanResult"/>
+    </sequence>
+   </complexType>
+   <complexType name="NodeBeanResult">
+    <sequence>
+     <element name="id" nillable="true" type="string"/>
+     <element name="isActive" type="boolean"/>
+     <element name="name" nillable="true" type="string"/>
+     <element maxOccurs="unbounded" minOccurs="0" name="propertyValuePair" nillable="true" type="tns:PropertyValue"/>
+    </sequence>
+   </complexType>
+   <complexType name="PropertyValue">
+    <sequence>
+     <element name="key" nillable="true" type="string"/>
+     <element name="value" nillable="true" type="string"/>
+    </sequence>
+   </complexType>
+   <complexType name="SearchBeanResult">
+    <sequence>
+     <element name="countRemaining" type="int"/>
+     <element maxOccurs="unbounded" minOccurs="0" name="nodeBeanArr" nillable="true" type="ns1:NodeBeanResult"/>
+     <element name="ontologyDisplayLabel" nillable="true" type="string"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </types>
+ <message name="NCBOWebserviceEndpoint_getNodeIdContainsResponse">
+  <part name="result" type="tns:SearchBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getAttributeValueStartsWith">
+  <part name="StringList_1" type="tns:StringList"/>
+  <part name="String_1" type="xsd:string"/>
+  <part name="StringList_2" type="tns:StringList"/>
+  <part name="boolean_1" type="xsd:boolean"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getAttributeValueContains">
+  <part name="StringList_1" type="tns:StringList"/>
+  <part name="String_1" type="xsd:string"/>
+  <part name="StringList_2" type="tns:StringList"/>
+  <part name="boolean_1" type="xsd:boolean"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeNameStartsWithResponse">
+  <part name="result" type="tns:SearchBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeNameStartsWith">
+  <part name="StringList_1" type="tns:StringList"/>
+  <part name="String_1" type="xsd:string"/>
+  <part name="boolean_1" type="xsd:boolean"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getParentNodesResponse">
+  <part name="result" type="tns:AssociationBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNCBOOntology">
+  <part name="String_1" type="xsd:string"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeIdEndsWithResponse">
+  <part name="result" type="tns:SearchBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getTopLevelNodesResponse">
+  <part name="result" type="tns:AssociationBeanResult"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeResponse">
+  <part name="result" type="tns:NodeBeanResult"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNetworkNeighborhoodImageUrlResponse">
+  <part name="result" type="xsd:string"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getChildNodes">
+  <part name="String_1" type="xsd:string"/>
+  <part name="String_2" type="xsd:string"/>
+  <part name="StringList_1" type="tns:StringList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getAttributeValueSoundsLike">
+  <part name="StringList_1" type="tns:StringList"/>
+  <part name="String_1" type="xsd:string"/>
+  <part name="StringList_2" type="tns:StringList"/>
+  <part name="boolean_1" type="xsd:boolean"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getAssociationsForOntologyResponse">
+  <part name="result" type="tns:StringList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeIdExactMatch">
+  <part name="StringList_1" type="tns:StringList"/>
+  <part name="String_1" type="xsd:string"/>
+  <part name="boolean_1" type="xsd:boolean"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeNameContains">
+  <part name="StringList_1" type="tns:StringList"/>
+  <part name="String_1" type="xsd:string"/>
+  <part name="boolean_1" type="xsd:boolean"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getHierarchyToRootImageUrl">
+  <part name="String_1" type="xsd:string"/>
+  <part name="String_2" type="xsd:string"/>
+  <part name="StringList_1" type="tns:StringList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getAttributesForOntology">
+  <part name="String_1" type="xsd:string"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getAssociationsForOntology">
+  <part name="String_1" type="xsd:string"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNCBOOntologiesByCategoryResponse">
+  <part name="result" type="tns:NCBOOntologyList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeNameExactMatchResponse">
+  <part name="result" type="tns:SearchBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeNameEndsWithResponse">
+  <part name="result" type="tns:SearchBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getChildNodesResponse">
+  <part name="result" type="tns:AssociationBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getHierarchyToRootImageUrlResponse">
+  <part name="result" type="xsd:string"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeNameExactMatch">
+  <part name="StringList_1" type="tns:StringList"/>
+  <part name="String_1" type="xsd:string"/>
+  <part name="boolean_1" type="xsd:boolean"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getParentNodes">
+  <part name="String_1" type="xsd:string"/>
+  <part name="String_2" type="xsd:string"/>
+  <part name="StringList_1" type="tns:StringList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getAttributeValueContainsResponse">
+  <part name="result" type="tns:SearchBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeNameSoundsLike">
+  <part name="StringList_1" type="tns:StringList"/>
+  <part name="String_1" type="xsd:string"/>
+  <part name="boolean_1" type="xsd:boolean"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeIdExactMatchResponse">
+  <part name="result" type="tns:SearchBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeIdEndsWith">
+  <part name="StringList_1" type="tns:StringList"/>
+  <part name="String_1" type="xsd:string"/>
+  <part name="boolean_1" type="xsd:boolean"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeNameSoundsLikeResponse">
+  <part name="result" type="tns:SearchBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNetworkNeighborhoodImageUrl">
+  <part name="String_1" type="xsd:string"/>
+  <part name="String_2" type="xsd:string"/>
+  <part name="StringList_1" type="tns:StringList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeNameContainsResponse">
+  <part name="result" type="tns:SearchBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeIdStartsWithResponse">
+  <part name="result" type="tns:SearchBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeIdStartsWith">
+  <part name="StringList_1" type="tns:StringList"/>
+  <part name="String_1" type="xsd:string"/>
+  <part name="boolean_1" type="xsd:boolean"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getTopLevelNodes">
+  <part name="String_1" type="xsd:string"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeNameEndsWith">
+  <part name="StringList_1" type="tns:StringList"/>
+  <part name="String_1" type="xsd:string"/>
+  <part name="boolean_1" type="xsd:boolean"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getAttributeValueEndsWithResponse">
+  <part name="result" type="tns:SearchBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNCBOOntologiesResponse">
+  <part name="result" type="tns:NCBOOntologyList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNCBOOntologies"/>
+ <message name="NCBOWebserviceEndpoint_getNCBOOntologiesByCategory">
+  <part name="String_1" type="xsd:string"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getAttributeValueStartsWithResponse">
+  <part name="result" type="tns:SearchBeanResultList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getAttributesForOntologyResponse">
+  <part name="result" type="tns:StringList"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNCBOOntologyResponse">
+  <part name="result" type="tns:NCBOOntology"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNodeIdContains">
+  <part name="StringList_1" type="tns:StringList"/>
+  <part name="String_1" type="xsd:string"/>
+  <part name="boolean_1" type="xsd:boolean"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getNode">
+  <part name="String_1" type="xsd:string"/>
+  <part name="String_2" type="xsd:string"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getAttributeValueEndsWith">
+  <part name="StringList_1" type="tns:StringList"/>
+  <part name="String_1" type="xsd:string"/>
+  <part name="StringList_2" type="tns:StringList"/>
+  <part name="boolean_1" type="xsd:boolean"/>
+ </message>
+ <message name="NCBOWebserviceEndpoint_getAttributeValueSoundsLikeResponse">
+  <part name="result" type="tns:SearchBeanResultList"/>
+ </message>
+ <portType name="NCBOWebserviceEndpoint">
+  <operation name="getAssociationsForOntology" parameterOrder="String_1">
+   <input message="tns:NCBOWebserviceEndpoint_getAssociationsForOntology"/>
+   <output message="tns:NCBOWebserviceEndpoint_getAssociationsForOntologyResponse"/>
+  </operation>
+  <operation name="getAttributeValueContains" parameterOrder="StringList_1 String_1 StringList_2 boolean_1">
+   <input message="tns:NCBOWebserviceEndpoint_getAttributeValueContains"/>
+   <output message="tns:NCBOWebserviceEndpoint_getAttributeValueContainsResponse"/>
+  </operation>
+  <operation name="getAttributeValueEndsWith" parameterOrder="StringList_1 String_1 StringList_2 boolean_1">
+   <input message="tns:NCBOWebserviceEndpoint_getAttributeValueEndsWith"/>
+   <output message="tns:NCBOWebserviceEndpoint_getAttributeValueEndsWithResponse"/>
+  </operation>
+  <operation name="getAttributeValueSoundsLike" parameterOrder="StringList_1 String_1 StringList_2 boolean_1">
+   <input message="tns:NCBOWebserviceEndpoint_getAttributeValueSoundsLike"/>
+   <output message="tns:NCBOWebserviceEndpoint_getAttributeValueSoundsLikeResponse"/>
+  </operation>
+  <operation name="getAttributeValueStartsWith" parameterOrder="StringList_1 String_1 StringList_2 boolean_1">
+   <input message="tns:NCBOWebserviceEndpoint_getAttributeValueStartsWith"/>
+   <output message="tns:NCBOWebserviceEndpoint_getAttributeValueStartsWithResponse"/>
+  </operation>
+  <operation name="getAttributesForOntology" parameterOrder="String_1">
+   <input message="tns:NCBOWebserviceEndpoint_getAttributesForOntology"/>
+   <output message="tns:NCBOWebserviceEndpoint_getAttributesForOntologyResponse"/>
+  </operation>
+  <operation name="getChildNodes" parameterOrder="String_1 String_2 StringList_1">
+   <input message="tns:NCBOWebserviceEndpoint_getChildNodes"/>
+   <output message="tns:NCBOWebserviceEndpoint_getChildNodesResponse"/>
+  </operation>
+  <operation name="getHierarchyToRootImageUrl" parameterOrder="String_1 String_2 StringList_1">
+   <input message="tns:NCBOWebserviceEndpoint_getHierarchyToRootImageUrl"/>
+   <output message="tns:NCBOWebserviceEndpoint_getHierarchyToRootImageUrlResponse"/>
+  </operation>
+  <operation name="getNCBOOntologies">
+   <input message="tns:NCBOWebserviceEndpoint_getNCBOOntologies"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNCBOOntologiesResponse"/>
+  </operation>
+  <operation name="getNCBOOntologiesByCategory" parameterOrder="String_1">
+   <input message="tns:NCBOWebserviceEndpoint_getNCBOOntologiesByCategory"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNCBOOntologiesByCategoryResponse"/>
+  </operation>
+  <operation name="getNCBOOntology" parameterOrder="String_1">
+   <input message="tns:NCBOWebserviceEndpoint_getNCBOOntology"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNCBOOntologyResponse"/>
+  </operation>
+  <operation name="getNetworkNeighborhoodImageUrl" parameterOrder="String_1 String_2 StringList_1">
+   <input message="tns:NCBOWebserviceEndpoint_getNetworkNeighborhoodImageUrl"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNetworkNeighborhoodImageUrlResponse"/>
+  </operation>
+  <operation name="getNode" parameterOrder="String_1 String_2">
+   <input message="tns:NCBOWebserviceEndpoint_getNode"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNodeResponse"/>
+  </operation>
+  <operation name="getNodeIdContains" parameterOrder="StringList_1 String_1 boolean_1">
+   <input message="tns:NCBOWebserviceEndpoint_getNodeIdContains"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNodeIdContainsResponse"/>
+  </operation>
+  <operation name="getNodeIdEndsWith" parameterOrder="StringList_1 String_1 boolean_1">
+   <input message="tns:NCBOWebserviceEndpoint_getNodeIdEndsWith"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNodeIdEndsWithResponse"/>
+  </operation>
+  <operation name="getNodeIdExactMatch" parameterOrder="StringList_1 String_1 boolean_1">
+   <input message="tns:NCBOWebserviceEndpoint_getNodeIdExactMatch"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNodeIdExactMatchResponse"/>
+  </operation>
+  <operation name="getNodeIdStartsWith" parameterOrder="StringList_1 String_1 boolean_1">
+   <input message="tns:NCBOWebserviceEndpoint_getNodeIdStartsWith"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNodeIdStartsWithResponse"/>
+  </operation>
+  <operation name="getNodeNameContains" parameterOrder="StringList_1 String_1 boolean_1">
+   <input message="tns:NCBOWebserviceEndpoint_getNodeNameContains"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNodeNameContainsResponse"/>
+  </operation>
+  <operation name="getNodeNameEndsWith" parameterOrder="StringList_1 String_1 boolean_1">
+   <input message="tns:NCBOWebserviceEndpoint_getNodeNameEndsWith"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNodeNameEndsWithResponse"/>
+  </operation>
+  <operation name="getNodeNameExactMatch" parameterOrder="StringList_1 String_1 boolean_1">
+   <input message="tns:NCBOWebserviceEndpoint_getNodeNameExactMatch"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNodeNameExactMatchResponse"/>
+  </operation>
+  <operation name="getNodeNameSoundsLike" parameterOrder="StringList_1 String_1 boolean_1">
+   <input message="tns:NCBOWebserviceEndpoint_getNodeNameSoundsLike"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNodeNameSoundsLikeResponse"/>
+  </operation>
+  <operation name="getNodeNameStartsWith" parameterOrder="StringList_1 String_1 boolean_1">
+   <input message="tns:NCBOWebserviceEndpoint_getNodeNameStartsWith"/>
+   <output message="tns:NCBOWebserviceEndpoint_getNodeNameStartsWithResponse"/>
+  </operation>
+  <operation name="getParentNodes" parameterOrder="String_1 String_2 StringList_1">
+   <input message="tns:NCBOWebserviceEndpoint_getParentNodes"/>
+   <output message="tns:NCBOWebserviceEndpoint_getParentNodesResponse"/>
+  </operation>
+  <operation name="getTopLevelNodes" parameterOrder="String_1">
+   <input message="tns:NCBOWebserviceEndpoint_getTopLevelNodes"/>
+   <output message="tns:NCBOWebserviceEndpoint_getTopLevelNodesResponse"/>
+  </operation>
+ </portType>
+ <binding name="NCBOWebserviceEndpointBinding" type="tns:NCBOWebserviceEndpoint">
+  <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+  <operation name="getAssociationsForOntology">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getAttributeValueContains">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getAttributeValueEndsWith">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getAttributeValueSoundsLike">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getAttributeValueStartsWith">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getAttributesForOntology">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getChildNodes">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getHierarchyToRootImageUrl">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNCBOOntologies">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNCBOOntologiesByCategory">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNCBOOntology">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNetworkNeighborhoodImageUrl">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNode">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNodeIdContains">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNodeIdEndsWith">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNodeIdExactMatch">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNodeIdStartsWith">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNodeNameContains">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNodeNameEndsWith">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNodeNameExactMatch">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNodeNameSoundsLike">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getNodeNameStartsWith">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getParentNodes">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+  <operation name="getTopLevelNodes">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </input>
+   <output>
+    <soap:body namespace="http://org.ncbo.stanford.server/beans" use="literal"/>
+   </output>
+  </operation>
+ </binding>
+ <service name="NCBOService">
+  <port binding="tns:NCBOWebserviceEndpointBinding" name="NCBOWebserviceEndpointPort">
+   <soap:address location="http://cbioapprd.Stanford.EDU:8080/ncboservicebeans/NCBOWebserviceBean"/>
+  </port>
+ </service>
+</definitions>

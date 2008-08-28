@@ -1,0 +1,43 @@
+<h1>Editing review</h1>
+<script type="text/javascript" language="javascript" src="/javascripts/ratingsys.js"></script>  
+<%= error_messages_for :review %>
+
+<% form_for(@review) do |f| %>
+
+
+<fieldset>
+	<legend><b>Review For <%=@review.ontology.displayLabel%></b></legend>
+<table>
+	<tr>
+		<td>Ratings<br>
+
+			<%for rating in @review.ratings%>
+			<%=hidden_field_tag "ratings-#{rating.id}",rating.value,:id=>"ratings-#{rating.id}"%>
+			<div style="padding:2px;border-top:1px solid gray;">
+			
+			<div class="rateMe" title="Rate Me...">
+			    <a onclick="rateIt(this)" id="<%="ratings-#{rating.id}_1"%>" <% if rating.value >= 1%>class="on"<%end%>onmouseover="rating(this)" onmouseout="off(this)"></a>
+			    <a onclick="rateIt(this)" id="<%="ratings-#{rating.id}_2"%>" <% if rating.value >= 2%>class="on"<%end%>onmouseover="rating(this)" onmouseout="off(this)"></a>
+			    <a onclick="rateIt(this)" id="<%="ratings-#{rating.id}_3"%>" <% if rating.value >= 3%>class="on"<%end%>onmouseover="rating(this)" onmouseout="off(this)"></a>
+			    <a onclick="rateIt(this)" id="<%="ratings-#{rating.id}_4"%>" <% if rating.value >= 4%>class="on"<%end%>onmouseover="rating(this)" onmouseout="off(this)"></a>
+			    <a onclick="rateIt(this)" id="<%="ratings-#{rating.id}_5"%>" <% if rating.value >= 5%>class="on"<%end%>onmouseover="rating(this)" onmouseout="off(this)"></a>
+			</div>
+			<b>&nbsp;<%=rating.rating_type.name%></b>
+					
+			</div>
+			<%end%>
+			
+			</td>
+	</tr>
+	<tr>
+		<td><%=text_area :review, :review,:cols=>80,:rows=>5%></td>
+	</tr>
+</table>
+</fieldset>
+
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+

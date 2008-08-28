@@ -1,0 +1,52 @@
+<fieldset style="text-align:left;width:600px;">
+	<legend>Filter</legend>
+<% remote_form_for :mapping, nil, :url => "/mappings/show/#{@ontology}", :html => { :method => :get },:update=>'mappings' do |f| %>
+<input type="hidden" name="target" value="<%=@destination_ont%>">
+<p>
+<b>User:</b>
+<select name="user">
+		<option value="">Any</option>
+		<%=options_from_collection_for_select(@users, "id", "username",params[:user].to_i)%>	
+</select>
+</p>
+<p>
+<b>Source:</b>
+<select name="map_source">
+		<option value="" >Any</option>
+		<%=options_for_select(@map_sources,params[:map_source])%>	
+</select>
+</p>
+
+<%= submit_tag "Filter", :class=>'blueButton',:style=>'float:left;'%> 
+ <% end %>
+
+<div style="float:left;"><form action="/mappings/show/<%=@ontology%>" method="GET">
+	<input type="hidden" name="target" value="<%=@destination_ont%>">
+	<input type="hidden" name="user" value="<%=params[:user]%>">
+	<input type="hidden" name="map_source" value="<%=params[:map_source]%>">
+<input type="submit" name="rdf" value="Export Current Results To RDF" class="blueButton">
+
+</form>
+</div>
+</fieldset>
+<%= will_paginate @mapping_pages,:update=>'mappings',:params=>{:target=>params[:target],:user=>params[:user],:map_source=>params[:map_source]} %>
+<table class="maps" cellpadding="0" cellspacing="0">
+	<tr>
+		<th>Concept</th>
+		<th>Maps To</th>
+	</tr>
+	<%for mapping in @mappings%>
+	<tr >
+		<td class="map_source"> <div style="border:1px solid gray;background-color:white;"><%=link_to "#{mapping[1][0][:source_ont_name]} : #{mapping[1][0][:source_name]} -->",virtual_url(:ontology=>to_param(params[:id]),:id=>mapping[0])%></div></td>
+		<td >
+			<%for map in mapping[1]%>
+			<div class="map_target" style="border:1px solid gray;background-color:white;">				
+				<%=link_to "#{map[:destination_ont_name]} : #{map[:destination_name]} (#{map[:count]})",virtual_url(:ontology=>map[:destination_ont],:id=>map[:destination_id]),:style=>"font-weight:bold;font-size:1#{map[:count]}px;"%>
+				<span class="mapped_by">Mapped By <%for user in map[:users]%> <%=user%> <%unless user.eql?map[:users].last%>,<%end%>  <%end%></span>
+			</div>
+			<%end%>
+		</td>
+	<%end%>		
+</table>
+
+<%= will_paginate @mapping_pages,:update=>'mappings' %>

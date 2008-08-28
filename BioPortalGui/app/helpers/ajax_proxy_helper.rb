@@ -1,0 +1,2 @@
+module AjaxProxyHelper
+end

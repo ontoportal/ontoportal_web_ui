@@ -1,0 +1,192 @@
+<div id="treeDiv1" style="margin-top:5px;float:left;">
+</div>
+
+<script type="text/javascript">
+
+setOntology('<%=@ontology.id%>');
+setConcept('<%=@concept.id%>');
+
+// adds a node to the tree
+function addTreeNode(rootNode, nodeInfo) {
+		var newNodeDetails = "javascript:onClickTreeNode('" + nodeInfo.ontology_node_id + "','"+nodeInfo.ontology_node_name+"');";
+		var newNodeData = { label:nodeInfo.ontology_node_name, id:nodeInfo.ontology_node_id, href:newNodeDetails };
+		var newNode = new YAHOO.widget.MenuNode(newNodeData, rootNode, false);
+		if (nodeInfo.ontology_node_child_count > 0) {
+			newNode.setDynamicLoad(loadNodeData);
+		}		
+	}
+
+// Ajax call to load in the child nodes
+function loadNodeData(node, fnLoadComplete) {
+		var id = node.data.id;
+
+		var responseSuccess = function(o)
+		{
+			var nodeQue=new Array();
+
+			var respTxt = o.responseText;
+			// turns text into JSon
+			var respObj = eval('(' + respTxt + ')');
+
+			if ( typeof(respObj.nodes) != "undefined") {
+				for (var i=0; i < respObj.nodes.length; i++) {
+//					var name = respObj.nodes[i].ontology_node_name + " (" + respObj.nodes[i].ontology_node_parent_assoc + ")";
+					var name = respObj.nodes[i].ontology_node_name;
+					
+					var text_name = name.split("<")[0]
+					
+					
+					var nodeDetails = "javascript:onClickTreeNode('" + respObj.nodes[i].ontology_node_id + "','"+text_name+"');";
+					var newNodeData = { label:name, id:respObj.nodes[i].ontology_node_id, href:nodeDetails };
+					var newNode = new YAHOO.widget.MenuNode(newNodeData, node, false);
+					if (respObj.nodes[i].ontology_node_child_count > 0) {
+						// tells if it needs to be ajaxable, hides + sign if no children
+						newNode.setDynamicLoad(loadNodeData);
+					}
+					
+					// Que up the children
+					nodeQue[i]=respObj.nodes[i].ontology_node_id
+					
+				}
+			}
+			// sets up the nodes to be que'd
+		    queData(nodeQue,'<%=@ontology.to_param%>')
+			
+				
+			// redraws the tree -- needs to be done every time the nodes are modified
+
+			tree.draw();
+			fnLoadComplete();	
+		}
+		
+		var responseFailure = function(o){
+			alert('responseFailure: ' +	o.statusText);
+		}
+		
+		var callback =
+		{
+			success:responseSuccess,
+			failure:responseFailure
+		};
+		
+		// simple Yahoo ajax call
+		var cObj = YAHOO.util.Connect.asyncRequest('GET','/visualize/<%=@ontology.to_param%>/'+id+"?callback=children",callback);
+	}
+
+
+
+
+	
+
+	
+		//Builds the initial tree on load
+        function buildTree() {
+		   var nodeQue=new Array();
+		   //create a new tree:
+		   tree = new YAHOO.widget.TreeView("treeDiv1");
+		   
+		   //turn dynamic loading on for entire tree:
+		   // tree.setDynamicLoad(loadNodeData);
+		   
+		   //get root node for tree:
+		   var root = tree.getRoot();
+		   
+		   //add child nodes for tree; 
+
+			<%=draw_tree(@root,@concept.id )%>
+			<% x = 0; 
+			for child in @root.children %>
+			nodeQue[<%=x%>]="<%=child.id%>"
+			<%x = x+1%>
+			<%end%>
+			// sets up the nodes to be que'd
+		    queData(nodeQue,'<%=@ontology.to_param%>')
+				
+		// tells the tree that when it is clicked to activate the toggleSelected
+		tree.subscribe("labelClick", function(node) { 
+			toggleSelected(node) 
+	    });	
+		   
+		   //render tree with these toplevel nodes; all descendants of these nodes
+		   //will be generated as needed by the dynamic loader.
+		   tree.draw();
+		}
+		
+		// what happens when someone clicks the LABEL of the tree nodes
+		function onClickTreeNode(node_id,node_label) {
+		
+			// sets the label
+			document.getElementById("name_label").firstChild.nodeValue=node_label;
+			//sets the link next to the label
+			document.getElementById("link_label").firstChild.nextSibling.href="/visualize/"+currentOntology+"/"+node_id;
+
+			setConcept(node_id) 
+			
+			var responseSuccess = function(o)
+			{
+				var respTxt = o.responseText;
+				tabData = respTxt.split("|||")
+					// the tabs
+							document.getElementById('tab1').innerHTML=tabData[0]
+							document.getElementById('tab2').innerHTML=tabData[1]
+							document.getElementById('tab3').innerHTML=tabData[2]
+							document.getElementById('tab4').innerHTML=tabData[3]
+							
+							
+								<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>		
+							document.getElementById('tab5').innerHTML=tabData[4]				
+							<%end%>
+							
+					 tree.draw();
+						YAHOO.wait.container.wait.hide();
+						setCache(node_id,tabData)
+
+			};	
+			
+			var responseFailure = function(o){
+				alert('responseFailure: ' +	o.statusText);
+					YAHOO.wait.container.wait.hide();
+			};
+
+			var callback =
+			{
+				success:responseSuccess,
+				failure:responseFailure
+			};
+			
+		
+		if(getCache(node_id)!=null){
+			tabData = getCache(node_id)
+			document.getElementById('tab1').innerHTML=tabData[0]
+			document.getElementById('tab2').innerHTML=tabData[1]
+			document.getElementById('tab3').innerHTML=tabData[2]
+			document.getElementById('tab4').innerHTML=tabData[3]
+				
+							<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>		
+							document.getElementById('tab5').innerHTML=tabData[4]				
+							<%end%>
+							
+							
+			 tree.draw();
+			 
+			 update_tab('<%=@ontology.to_param%>',node_id)
+				
+		}else{
+			YAHOO.wait.container.wait.show();
+		YAHOO.util.Connect.asyncRequest('GET','/visualize/<%=@ontology.to_param%>/'+node_id+"?callback=load",callback);		
+		}	
+		tabs.set('activeIndex', 0);
+				
+		}
+		
+function init(){
+	
+	buildWait();
+	buildTree();
+	
+}
+		
+YAHOO.util.Event.onDOMReady(init); 
+
+
+</script>

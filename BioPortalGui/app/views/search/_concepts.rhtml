@@ -1,0 +1,16 @@
+<%if @concepts.size > 0%>
+	<div>
+		<div style="float:left;margin:10px;"id="select">
+			<select name="mapping[destination_id]" style="width:200px" size="18" onchange="updateArea('GET','/search/concept_preview?ontology=<%=@ontology.id%>&id='+this.value,'map_info')">
+			<%=options_from_collection_for_select(@concepts.first[:names], "id", "name") %>
+			</select>
+			
+		</div>
+		<div style="float:left;margin:10px;"id="map_info"></div>
+	</div>
+  	<div style="clear:both;white-space:nowrap">
+    <%= submit_tag "Create" ,:onclick=>"Dialog.cancelCallback()", :class=>'blueButton'%> &nbsp;&nbsp; <input type="checkbox" name="bidirectional" checked='checked'>Bi-Directional?
+  	</div>
+<%else%>
+<h1>No Results Found</h1>
+<%end%>

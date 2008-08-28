@@ -1,0 +1,33 @@
+<center><h4>Point-to-Point Mapping from <%=@name%> to :</h4></center>
+<%  remote_form_for(:search, :url => {:controller =>'search',:action=>'concept'}, :update =>'mapping_window',:loading=>"YAHOO.wait.container.wait.show();",:complete=>'YAHOO.wait.container.wait.hide();') do |f| %>
+<table>
+	<tr>
+		<td>Ontology:</td>
+		<td><select name="ontology" style="width:200px" onchange="document.getElementById('destination_ontology').value=this.value">
+			<%for option in @ontologies%>
+			<option value="<%=option.id %>"><%=option.displayLabel%></option>
+			<%end%>
+	</tr>
+	<tr>
+		</select></td>
+		<td>Search:</td>
+		<td><input type="text" name="name"></td>
+	</tr>
+	<tr><td colspan="2"nowrap>	<%= submit_tag "Search", :class=>'blueButton'%> <input id="searchClose" type="button" value="Cancel" onclick="Dialog.cancelCallback()" class="blueButton"> 
+	<% end %></td>
+		</tr>
+</table>
+
+
+
+<%  remote_form_for(:mapping, :url => mappings_path,:update=>'mapping_details',:complete=>"refreshCache('#{@mapping.source_id}')") do |f| %>
+	<%=hidden_field :mapping, :source_ont%>
+	<%=hidden_field :mapping, :source_version_id%>
+	<%=hidden_field :mapping, :source_id%>
+	<%=hidden_field :mapping, :map_type,:value=>"Human"%>
+	<%=hidden_field :mapping, :destination_version_id,:id=>'destination_ontology',:value => @ontologies.first.id%>
+	<div id="mapping_window" style="overflow:auto;">
+
+	</div>
+<% end %>
+

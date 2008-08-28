@@ -1,0 +1,83 @@
+
+
+<%form_tag ("/ontologies", {:multipart => true}) do%>
+
+
+<%unless @errors.nil?%>
+<div style="color:red;">
+Errors On Form
+<ul>
+
+<%for error in @errors%>
+<li><%=error%></li>
+<%end%>
+
+
+</ul>
+</div>
+<%end%>
+
+<%if @ontology.ontologyId.nil?%>
+        <h1>Submit New Ontology</h1>
+<%else%>
+<h1> Submit New Version</h1>
+<%end%>
+<%=hidden_field :ontology, :ontologyId%>
+<table >
+	<tr>
+		<td>Ontology Name: </td><td><%=text_field :ontology, :displayLabel%></td>
+	</tr>
+	<tr>
+		<td>Ontology Format: </td><td><select name="ontology[format]" style="width:200px" >
+			<%for option in OntologyWrapper::FORMAT%>
+			<option value="<%=option %>"><%=option%></option>
+			<%end%></td>
+	</tr>	
+	<tr>
+		<td>Ontology Version: </td><td><%=text_field :ontology, :versionNumber%></td>
+	</tr>	
+	<tr>
+		<td>Date Released: </td><td><%= calendar_date_select_tag "ontology[dateReleased]", "", :popup => :force %></td>
+	</tr>	
+	<tr>
+		<td>File Location</td><td><%=radio_button :ontology,:isRemote,0%>Upload <br><%=radio_button :ontology,:isRemote,1%>Remote</td>
+	</tr>
+	<tr>
+		<td>Location URL</td><td><%=text_field :ontology,:urn%></td>
+	</tr>
+	<tr >
+		<td>File</td><td><%=file_field :ontology,:filePath%></td>
+	</tr>
+	<tr>
+		<td>Categories:</td><td></td>
+	</tr>
+	<tr>
+		<td>Contact Name</td><td><%=text_field :ontology, :contactName%></td>
+	</tr>
+	<tr>
+		<td>Contact Email</td><td><%= text_field :ontology, :contactEmail%></td>
+	</tr>
+	<tr>
+		<td>Home Page</td><td><%= text_field :ontology, :homepage%></td>
+	</tr>
+	<tr>
+		<td>Documentation Page</td><td><%= text_field :ontology, :documentation%></td>
+	</tr>
+	<tr>
+		<td>Publications page</td><td><%= text_field :ontology, :publication%></td>
+	</tr>
+
+	
+	
+	
+	
+</table>
+
+<%=submit_tag "Upload"%>
+
+
+
+
+
+
+<%end%>

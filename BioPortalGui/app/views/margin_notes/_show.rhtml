@@ -1,0 +1,74 @@
+<%
+uniq = Time.now.to_i
+javascripts = "resetNoteForm(#{uniq});"
+ unless @concept.nil?
+	javascripts << "refreshCache('#{@concept.id}');"
+ end
+
+%>
+
+<div id ="notes">
+	<%if @margin_notes.size<1%>	
+		<h1>There are currently no marginal notes for this concept.</h1>
+	<%end%>
+<%=draw_note_tree(@margin_notes,uniq)%>
+</div>
+
+<div id="form" style="display:none;clear:both;">
+<div id="commentForm" name="forms">
+
+
+	
+<% remote_form_for(:margin_note, :url => margin_notes_path,:update =>"notes",:complete=>"#{javascripts}") do |f| %>
+	<%=hidden_field 'margin_note', 'concept_id'%>
+	<%unless @ontology.nil?%>
+		<%=hidden_field 'margin_note', 'ontology_version_id', :value=>@ontology.id%>
+		<%=hidden_field 'margin_note', 'ontology_id', :value=>@ontology.ontologyId%>
+	<%end%>
+	<%=hidden_field 'margin_note', 'mapping_id'%>
+	<%=hidden_field 'margin_note', 'parent_id', :id=>'noteParent'%>
+	<%=hidden_field_tag 'key', uniq%>
+
+<fieldset>
+	<legend>New Marginal Note</legend>
+<table>
+	<tr>
+		<td>Note Type:</td>
+		<td><%=
+                options = MarginNote::NOTE_TYPES                       
+                select('margin_note','note_type',options.invert,:id=>'note_type')
+                %></td>
+	</tr>
+	<tr>
+		<td>Subject:</td><td><%=text_field 'margin_note', 'subject',:size=>70,:id=>"note_subject#{uniq}",:maxlength=>39%></td>
+	<tr>
+		<td>Note:</td><td><%=text_area 'margin_note' ,'comment',:cols=>70,:rows=>10, :id=>"note_comment#{uniq}"%>
+			</td>
+	</tr>
+ 	<tr>
+		<td colspan="2" align="right">			
+				<%= submit_tag "Save" ,:class =>"blueButton",:onclick=>"saveNote();Dialog.cancelCallback();"%> | 
+
+				<input class="blueButton" type="button" value="Cancel" onclick="Dialog.cancelCallback();destroyEditor();"> 			
+	<!--							<input class="blueButton" type="button" value="Cancel" onclick="resetNoteForm(<%="#{uniq}"%>);toggleHide('form','');toggleHide('buttons','');destroyEditor();"> 			-->
+			 <%if @modal%>| <input type="button" value="Close" onclick="Dialog.cancelCallback()" class='blueButton'><%end%></td>
+</table>
+</fieldset>
+<% end %>
+</div>
+</div>
+<div id="buttons" style="clear:both;">
+<%if session[:user].nil? %>
+	<br>
+	<input type="button" class ="blueButton" value="New Thread" onclick ="window.location='/login?redirect=<%=@ontology.to_param%>'"> 
+<%else%>
+<br>
+<span class="blueButton" onclick="buildEditor('<%=uniq%>');"><%=link_to_prototype_dialog( "New Marginal Note", "commentForm",'form',  {:title => "New Marginal Note", :width =>800,:height=>500},{})%></span>
+
+<!--	<input type="button" class ="blueButton" value="New Thread" onclick ="buildEditor('<%=uniq%>');toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='';">  -->
+<%end%>
+<%if @modal%><input type="button" value="Close" onclick="Dialog.cancelCallback()" class='blueButton'><%end%>
+</div>
+
+
+

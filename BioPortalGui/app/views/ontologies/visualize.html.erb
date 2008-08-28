@@ -1,0 +1,62 @@
+
+<div id="leftbar" class="leftbar"><br>
+<span class="tree_metadata"><%=link_to "View Ontology Metadata", ontology_url(:id => @ontology.id)%></span>
+<%=render :partial => '/ontologies/treeview'%>
+
+</div>
+<div id="dragSpot"></div>
+
+<div  id="centerContent" class="content" >
+<h1 id="name_label"><%=@concept.name%> <span id="link_label"> (<%=link_to "Link To Concept",uri_url(:ontology=>@ontology,:id=>@concept.id)%>)</span></h1>
+
+	<div id="tabframe" class="yui-navset">
+    	<ul class="yui-nav">
+        	
+        	<li class="selected"><a href="#tab2"><em>Details</em></a></li>
+			<li ><a href="#tab1"><em>Visualization</em></a></li>
+        	<li><a href="#tab3"><em>Marginal Notes</em></a></li>
+			<li><a href="#tab4"><em>Mappings</em></a></li>				
+			<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>	
+			<li><a href="#tab5" ><em>Resources</em></a></li>			
+			<%else%>							
+			<li><a href="#tab5" onclick="callTab(5,'/resources/@ontology@/@concept@')"><em>Resources</em></a></li>
+			<%end%>
+			
+			
+    	</ul> 
+		   
+		        
+    	<div class="yui-content" id = "content">
+        	
+        	<div id="tab2"><%=render :partial =>'/concepts/details'%></div>
+			<div id="tab1"><%=render :partial =>'/concepts/images'%></div>
+			<div id="tab3"><%=render :partial =>'/margin_notes/show'%></div>
+			<div id="tab4"><%=render :partial =>'/mappings/concept_mappings'%></div>
+			
+			<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>	
+				<div id="tab5"><%=render :partial =>'/concepts/software'%></div>
+			<%else%>
+			<div id="tab5"></div>
+			<%end%>
+			
+    	</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	
+
+	
+	
+
+
+YAHOO.util.Event.onDOMReady(buildTabs); 
+</script>
+
+		
+
+
+
+
+
+

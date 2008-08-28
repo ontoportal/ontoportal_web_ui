@@ -1,0 +1,63 @@
+<%unless request.xhr?%>
+
+<h1><%=@ontology.displayLabel%></h1> 
+
+<%if !session[:user].nil? && (session[:user].id.to_i.eql?(@ontology.userId.to_i) || session[:user].admin?)%>
+<span class="blueButton"><%=link_to "Submit New Version",new_ontology_path(:id=>@ontology.ontologyId)%></span>
+<span class="blueButton"><%=link_to "Edit Ontology",edit_ontology_path(:id=>@ontology.id)%></span>
+<%end%>
+<ul class="topnav" id="subnav">
+		<li id="meta"class="selected"><%=link_to_remote "<em>MetaData</em>",:update=>'ontology_content',:method=>'GET',:url=>ontology_url(:ontology => @ontology),:complete=>"selectTab('subnav','meta')"%></li>
+		<li id="proj"><%=link_to_remote "<em>Projects</em>",:update=>'ontology_content',:method=>'GET',:url=>projects_path(:ontology=>@ontology.ontologyId),:complete=>"selectTab('subnav','proj')"%></li>
+    	<li id="rev"><%=link_to_remote "<em>Reviews</em>",:update=>'ontology_content',:method=>'GET',:url=>reviews_path(:ontology=>@ontology.ontologyId),:complete=>"selectTab('subnav','rev')"%></li>
+	</ul>  
+	<div style="clear:both;"/>
+<div id="ontology_content">
+<%end%>
+<h3>Ontology MetaData</h3>
+
+<table class="metadata" cellpadding="0" cellspacing="0">
+	<tr>
+		<td>
+			<ul>
+			<li><label>Ontology Name:</label><%=@ontology.displayLabel%></li>
+			<li><label>Format:</label> <%if @ontology.format.eql?("OBO")%><%=@ontology.format+"F"%><%else%><%=@ontology.format%><%end%></li>
+			<li><label>Categories:</label></li>
+			</ul>
+			
+		</td>
+		<td>
+			<ul>
+			<li><label>Contact(s):</label><%=@ontology.contactName%></li>
+			<li><label>Home Page:</label><%=@ontology.homepage%></li>
+			<li><label>Documentation Page:</label><%=@ontology.documentation%> </li>
+			<li><label>Publications Page:</label><%=@ontology.publication%> </li>
+			</ul>
+
+		</td>
+	</tr>
+</table>
+</fieldset>
+
+<h3>Versions</h3>
+	<table class="versions" cellpadding="0" cellspacing="0">
+		<tr>
+			<th>Version Number</th>
+			<th>Release Date</th>
+			<th>Status</th>
+			<th></th>
+			<th></th>
+		</tr>
+		<%for version in @versions%>
+		<tr>
+			<td><%=version.versionNumber%></td>
+			<td><%=version.dateReleased%></td>
+			<td><%=version.versionStatus%></td>
+			<td><% if version.isRemote%><a href="<%=@ontology.homepage%>"><%else%><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download</a><%end%></td>
+			<td><%if version.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => version)%><%elsif version.statusId.to_i.eql?(1)%>Parsing Ontology<%else%><%end%></td>
+		</tr>
+		<%end%>
+	</table>
+<%unless request.xhr?%>
+</div>
+<%end%>

@@ -1,0 +1,42 @@
+
+<table class="resources" cellpadding=0 cellspacing=0>
+<%
+	index = 0;
+	for resource in @resources
+    puts "Resource : #{resource.inspect}"
+	if resource.count >0%>
+        <tr class="mainresource" onclick = "toggleHide('<%="annotation#{index}"%>','annotations')">
+      <%else%>
+        <tr class="mainresource">
+      <%end%>
+
+		<td><img src="<%=resource.logo%>" width="100px"><br><%=resource.name%></td><td><%=resource.description%></td><td>Annotations:<%=resource.count%></td>
+     </tr>
+
+		<% if resource.count >0%>
+       <tr name = "annotations" id = "<%="annotation#{index}"%>" style="display:none;"><td colspan=3>
+        <table class="annotations" cellpadding=0 cellspacing=0>                   
+        
+      	<%end%>
+      
+     <% for annotation in resource.annotations%>
+	 <%color = cycle("even","odd") %>
+       <tr class="<%=color%>" >
+          <td colspan="2" style="padding:3px;"><a href="<%=annotation.url%>" target="_new"><%=annotation.description%></a></td>
+       </tr>	   
+	   <tr  class="<%=color%>" >
+	   		<td style="border-top:0px;padding:3px;">ID: <%=annotation.local_id%></td><td  style="border-top:0px;padding:3px;"> Annotation Context: <%=annotation.item_key%></td>
+	   </tr>
+      
+	  <%end%>
+      
+	 <% if resource.count >0%>
+        </table>
+       </td></tr>
+     <%end%>
+	  
+	  <%index = index +1
+
+    end%>
+	
+</table>

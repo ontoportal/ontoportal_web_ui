@@ -1,0 +1,25 @@
+<% #JSon format for the tree %>
+<%
+output = "{\"nodes\":["
+for child in @children
+icons = ""
+ 	if(child.note_icon)
+        icons << "<img src='/images/notes_icon.png'style='vertical-align:bottom;'>"
+    end
+    if(child.map_icon)
+        icons << "<img src='/images/map_icon.png' style='vertical-align:bottom;'>"
+    end
+
+
+output << "{\"ontology_node_name\":\"#{clean(child.name)} #{icons}\""
+output <<",\"ontology_node_child_count\":#{child.child_size}"
+output << ",\"ontology_node_parent_assoc\":\"is_a\",\"ontology_node_id\":\"#{child.id}\"}"
+	
+	unless child.eql?(@children.last)
+		output << ","
+	end
+
+end
+output << "]}"
+%>	  
+<%=output%>
