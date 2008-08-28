@@ -20,10 +20,13 @@
 <% for ontology in @ontologies %>
   <tr class="<%= cycle("odd", "even")%>">
 	<td style="width:200px;"><b><%=link_to ontology.displayLabel, ontology_path(:id=>ontology.id)%></b>
+	<%
+	if false%>
 		<ul style="padding-left:20px;">
 			<li style="margin-bottom:4px;"><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology.ontologyId)%></li>
 			<li><%= link_to "See All #{ontology.reviews} Reviews",reviews_path(:ontology=>ontology.ontologyId)%></li>
 		</ul>
+	<%end%>
 		</td>
 	<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format%><%end%></td>
 	<td  style="width:50px;"><%=ontology.versionNumber%></td>

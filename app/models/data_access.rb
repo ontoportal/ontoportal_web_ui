@@ -7,6 +7,7 @@ class DataAccess
     
     
     def self.getNode(ontology,node_id)
+      puts "Calling DataAccess.getNode(#{ontology},#{node_id})"
       if CACHE.get("#{param(ontology)}::#{node_id}").nil? || NO_CACHE
         node = SERVICE.getNode(ontology,node_id)  
         unless  node.kind_of?(Hash) && node[:error]
@@ -19,6 +20,7 @@ class DataAccess
     end
 
     def self.getTopLevelNodes(ontology)
+      puts "Calling DataAccess.getTopLevelNodes(#{ontology})"
       if CACHE.get("#{param(ontology)}::_top").nil? || NO_CACHE
         topNodes = SERVICE.getTopLevelNodes(ontology)
         unless topNodes.kind_of?(Hash) && topNodes[:error] 
@@ -31,10 +33,14 @@ class DataAccess
     end
     
     def self.getOntologyList
+      puts "Calling DataAccess.getOntologyList()"
       if CACHE.get("ont_list").nil? || NO_CACHE
         list = SERVICE.getOntologyList
         
         unless list.kind_of?(Hash)  && list[:error] 
+          for item in list
+            item.preload_ontology            
+          end
           CACHE.set("ont_list",list,CACHE_EXPIRE_TIME)
         end
         
@@ -45,6 +51,7 @@ class DataAccess
     end
     
     def self.getActiveOntologies
+      puts "Calling DataAccess.getActiveOntologies()"      
             if CACHE.get("act_ont_list").nil? || NO_CACHE
               list = SERVICE.getOntologyList
               unless list.kind_of?(Hash) && list[:error]
@@ -79,6 +86,7 @@ class DataAccess
 
     
     def self.getOntology(ontology)
+      puts "Calling DataAccess.getOntology(#{ontology})"            
       if CACHE.get("#{ontology}::_details").nil? || NO_CACHE
         details = SERVICE.getOntology(ontology)
         unless details.kind_of?(Hash) && details[:error]
@@ -91,6 +99,7 @@ class DataAccess
     end
     
     def self.getLatestOntology(ontology)
+      puts "Calling DataAccess.getLatestOntology(#{ontology})"                  
       details = SERVICE.getLatestOntology(ontology)
       return details
     end

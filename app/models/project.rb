@@ -10,4 +10,9 @@ class Project < ActiveRecord::Base
    validates_presence_of :name,:description,:homepage
   
   
+  def after_create
+    for use in self.uses
+      CACHE.delete("#{use.ontology_id}::ProjectCount")      
+    end
+  end
 end

@@ -25,9 +25,9 @@ class OntologyWrapper
   attr_accessor :publication
   attr_accessor :dateCreated
   
+  attr_accessor :reviews
+  attr_accessor :projects
   attr_accessor :versions
-  attr_accessor :project_count
-  attr_accessor :review_count
   
   FILTERS={
   "All"=>0,
@@ -79,18 +79,36 @@ class OntologyWrapper
     count = Mapping.find(:all,:conditions=>{:source_ont=>self.ontologyId}).size
   end
   
-  def reviews
-    if self.review_count.nil?
-      self.review_count = Review.count(:conditions=>{:ontology_id=>self.ontologyId})
-    end
-    return self.review_count
+  
+  def preload_ontology
+     self.reviews = load_reviews
+     self.projects = load_projects
   end
   
-  def projects
-    if self.project_count.nil?
-      self.project_count = Project.count(:conditions=>"uses.ontology_id = '#{self.ontologyId}'",:include=>:uses)
-    end
-    return self.project_count
+  def load_reviews
+
+      if CACHE.get("#{self.ontologyId}::ReviewCount").nil?
+            puts "calling Reviews No Cache"
+          count = Review.count(:conditions=>{:ontology_id=>self.ontologyId})
+          CACHE.set("#{self.ontologyId}::ReviewCount",count)
+          return count
+       else
+             puts "calling Reviews Cache"
+          return CACHE.get("#{self.ontologyId}::ReviewCount")
+       end
+  end
+  
+  def load_projects
+
+    if CACHE.get("#{self.ontologyId}::ProjectCount").nil?
+    puts "calling Projects No Cache"    
+        count = Project.count(:conditions=>"uses.ontology_id = '#{self.ontologyId}'",:include=>:uses)
+        CACHE.set("#{self.ontologyId}::ProjectCount",count)
+        return count
+     else
+    puts "calling Projects Cache"    
+        return CACHE.get("#{self.ontologyId}::ProjectCount")
+     end
   end
  
   def to_param    

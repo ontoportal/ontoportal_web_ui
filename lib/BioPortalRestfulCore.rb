@@ -4,9 +4,9 @@ class BioPortalRestfulCore
   
   #Resources
 #    BASE_URL="http://ncbo-core-dev1:8080/bioportal/rest"
-  #  BASE_URL="http://ncbo-core-load1.stanford.edu:8080/bioportal/rest"
+    #BASE_URL="http://ncbo-core-load1.stanford.edu:8080/bioportal/rest"
     BASE_URL="http://ncbo-core-prod1.stanford.edu:8080/bioportal/rest"
-    #BASE_URL="http://171.65.32.220:8080/bioportal/rest"
+    #BASE_URL="http://ncbo-core-stage1.stanford.edu:8080/bioportal/rest"
     
     ONTOLOGIES_PATH = "/ontologies/%ONT%"
     CONCEPT_PATH ="/concepts/%ONT%/%CONC%"
