@@ -34,17 +34,32 @@ class SearchController < ApplicationController
 
     if params[:search][:class_name].eql?("1")
       if params[:search][:search_type].eql?("contains")
-        @results= @results | DataAccess.getNodeNameContains(params[:search][:ontologies],params[:search][:keyword])
+        result = DataAccess.getNodeNameContains(params[:search][:ontologies],params[:search][:keyword])
+        unless result.kind_of?(Hash) 
+          @results= @results + result
+        end
       elsif params[:search][:search_type].eql?("sounds")
-        @results= @results | DataAccess.getNodeNameSoundsLike(params[:search][:ontologies],params[:search][:keyword])
+        result = DataAccess.getNodeNameSoundsLike(params[:search][:ontologies],params[:search][:keyword])
+        unless result.kind_of?(Hash) 
+          @results= @results + result
+        end
+
       end 
     end
   
     if params[:search][:attributes].eql?("1")
       if params[:search][:search_type].eql?("contains")
-        @results= @results | DataAccess.getAttributeValueContains(params[:search][:ontologies],params[:search][:keyword])
+        result =  DataAccess.getAttributeValueContains(params[:search][:ontologies],params[:search][:keyword])
+        unless result.kind_of?(Hash) 
+          @results= @results + result
+        end
+        
       elsif params[:search][:search_type].eql?("sounds")
-        @results= @results | DataAccess.getAttributeValueSoundsLike(params[:search][:ontologies],params[:search][:keyword])        
+        result = DataAccess.getAttributeValueSoundsLike(params[:search][:ontologies],params[:search][:keyword])        
+        unless result.kind_of?(Hash) 
+          @results= @results + result
+        end
+        
       end 
       
     end

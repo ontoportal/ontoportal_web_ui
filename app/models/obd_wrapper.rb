@@ -60,5 +60,18 @@ class OBDWrapper
     end    
   end
   
+  def self.pageResources(ontology_name,concept_id,resource_name,page_start,page_end)
+    resources = []
+
+    begin        
+      resources = OntrezService.pageResources(ontology_name,concept_id,resource_name,page_start,page_end)
+        rescue Exception => e
+      
+            Notifier.deliver_error(e)
+            puts e.backtrace.join("\n")
+            return []
+        end
+  end
+  
   
 end

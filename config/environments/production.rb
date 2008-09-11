@@ -24,7 +24,7 @@ memcache_options = {
   :debug => false,
   :namespace => 'BioPortal',
   :readonly => false,
-  :urlencode => false
+  :urlencode => true
 }
 
 CACHE = MemCache.new memcache_options

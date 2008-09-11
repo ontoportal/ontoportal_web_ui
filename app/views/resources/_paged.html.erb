@@ -1,0 +1,22 @@
+ <table class="annotations" cellpadding=0 cellspacing=0>    
+<% for annotation in @annotations%>
+<%color = cycle("even","odd") %>
+  <tr class="<%=color%>" >
+     <td colspan="2" style="padding:3px;"><a href="<%=annotation.url%>" target="_new"><%=annotation.description%></a></td>
+  </tr>	   
+  <tr  class="<%=color%>" >
+  		<td style="border-top:0px;padding:3px;">ID: <%=annotation.local_id%></td><td  style="border-top:0px;padding:3px;"> Annotation Context: <%=annotation.item_key%></td>
+  </tr>
+ 
+ <%end%>
+	<tr>
+		<td colspan="2" align="right">
+			<%if params[:start].to_i > 0%>
+		<%=link_to_remote "&lt;&lt; Previous Page" ,:url=>"/respage/?ontology=#{@ontology.id}&concept=#{@concept.id}&resource=#{params[:resource]}&start=#{params[:start].to_i-10}&end=#{params[:start]}&index=#{params[:index]}",:update=>"innerannot#{params[:index]}",:method=>'GET' %>
+		<%end%>
+		 &nbsp;&nbsp; 
+		<%if params[:end].to_i <= params[:total].to_i+10%>
+		<%=link_to_remote "Next Page &gt;&gt;" ,:url=>"/respage/?ontology=#{@ontology.id}&concept=#{@concept.id}&resource=#{params[:resource]}&start=#{params[:end]}&end=#{params[:end].to_i+10}&index=#{params[:index]}",:update=>"innerannot#{params[:index]}" ,:method=>'GET'%></td>
+		<%end%>
+	</tr>
+</table>

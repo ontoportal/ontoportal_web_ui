@@ -15,6 +15,7 @@
 
 		<% if resource.count >0%>
        <tr name = "annotations" id = "<%="annotation#{index}"%>" style="display:none;"><td colspan=3>
+		<div id="innerannot<%=index%>" >
         <table class="annotations" cellpadding=0 cellspacing=0>                   
         
       	<%end%>
@@ -31,7 +32,11 @@
 	  <%end%>
       
 	 <% if resource.count >0%>
+		<tr>
+			<td colspan="2" align="right"> <%=link_to_remote "Next Page &gt;&gt;" ,:url=>"/respage/?ontology=#{@ontology.id}&concept=#{@concept.id}&resource=#{resource.shortname}&start=10&end=20&index=#{index}&total=#{resource.count}",:update=>"innerannot#{index}" ,:method=>'GET'%></td>
+		</tr>
         </table>
+		</div>
        </td></tr>
      <%end%>
 	  

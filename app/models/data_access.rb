@@ -8,14 +8,14 @@ class DataAccess
     
     def self.getNode(ontology,node_id)
       puts "Calling DataAccess.getNode(#{ontology},#{node_id})"
-      if CACHE.get("#{param(ontology)}::#{node_id}").nil? || NO_CACHE
+      if CACHE.get("#{param(ontology)}::#{node_id.gsub(" ","%20")}").nil? || NO_CACHE
         node = SERVICE.getNode(ontology,node_id)  
         unless  node.kind_of?(Hash) && node[:error]
-        CACHE.set("#{param(ontology)}::#{node_id}",node)
+        CACHE.set("#{param(ontology)}::#{node_id.gsub(" ","%20")}",node)
        end
         return node
       else
-        return CACHE.get("#{param(ontology)}::#{node_id}")
+        return CACHE.get("#{param(ontology)}::#{node_id.gsub(" ","%20")}")
       end
     end
 
