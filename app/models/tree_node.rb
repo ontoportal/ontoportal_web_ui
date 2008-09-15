@@ -11,7 +11,7 @@ class TreeNode
   
   def initialize(object=nil)
       unless object.nil?
-        self.id = object.id
+        self.id = object.id.gsub(" ","%20")
         initialize_node(object)
       end
   end

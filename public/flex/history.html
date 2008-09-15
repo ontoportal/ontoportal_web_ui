@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+	<title>BioPortal Ontology Visualization Version History</title>
+	<style type="text/css">
+	.title {
+		font-size: 12pt;
+		font-weight: bold;
+		color: 	#316AC5;
+	}
+	.list {
+		color: #000000;
+		font-weight: normal;
+		font-size: small;
+	}
+	.bold {
+		color: #336699;
+		font-weight: bold;
+		font-size: small;
+	}
+	hr.thick {
+		width:	100%;
+		height: 2px;
+		color: #7BA4E0;
+		background-color: #7BA4E0;
+	}
+	</style>
+	</head>
+<body>
+<br/>
+<table cellpadding="2" cellspacing="2" width="95%" align="center">
+<tr>
+	<td colspan="2" class="title"><h2>BioPortal Ontology Visualization Version History:</h2></td>
+</tr>
+<tr>
+	<td colspan="2"><hr class="thick"/><br/></td>
+</tr>
+
+<tr>
+	<td class="bold">Version:</td>
+	<td class="bold">2.0.4</td>
+</tr>
+<tr>
+	<td class="bold">Date:</td>
+	<td class="bold">September 10th, 2008</td>
+</tr>
+<tr>
+	<td class="bold" valign="top">Changes:</td>
+	<td class="list">
+		<!-- 2.0.4 September 10th, 2008 -->
+		<li>Fixed the tree and grid layouts to ensure that a minimum separation of 20 pixels exists between each node</li>
+		<li>Changed the graph to center on a focussed node <b>after</b> the layout animation has finished, it is smoother this way</li> 
+		<!-- 2.0.3 August 26st, 2008 -->
+		<li>Added a warning dialog when too many (>40 nodes) are going to be displayed on the screen, this warning can be turned off</li>
+		<li>Improved the node and arc tooltip configuration (under the Node and Arc menus)</li>
+		<li>Added support for passing in the <b>ontology</b> and <b>nodeid</b> parameters in the browser URL.
+			By default it looks at the application parameters first, then the browser url.</li> 
+		<li>Fixed some problems with the REST XML parser and adding relationships
+		<li>Added a double click handler on the BasicFlexoViz which opens the direct link to the clicked concept in the current window</li>
+		<li>Minor fixes to the vertical tree layout when there are multiple roots in the tree</li>
+		<li>Added scroll-to-node support so that a single node can be centered in the screen when the graph has scrollbars</li>
+		<li>Added all concept properties as a tooltip, including comments, definitions, synonyms, etc</li>
+	</td>
+</tr>
+<tr>
+	<td colspan="2"><br/><hr class="thick"/><br/></td>
+</tr>
+<tr>
+	<td class="bold">Version:</td>
+	<td class="bold">2.0.0</td>
+</tr>
+<tr>
+	<td class="bold">Date:</td>
+	<td class="bold">August 8th, 2008</td>
+</tr>
+<tr>
+	<td class="bold" valign="top">Changes:</td>
+	<td class="list">
+		<!-- 2.0.0 - 2.0.2 July -August, 2008 -->
+		<li>Released with BioPortal 2.0</li>
+		<li>Added the 'Hide Orphans' action under the Arc Types panel - this action hides all unconnected nodes</li>
+		<li>Improved debugging support</li>
+		<li>Added some content to the help panel on the ontology navigation actions</li>
+		<li>Added the "Fit To Screen" and "Expand Graph" actions to the full FlexoViz toolbar</li>
+		<li>In the full version you can now choose which ontology to load from the Ontology menu</li>
+		<li>Added descriptions, comments, and synonyms to concept tooltips</li>
+	</td>
+</tr>
+<tr>
+	<td colspan="2"><br/><hr class="thick"/><br/></td>
+</tr>
+</table>
+
+</body>
+</html>

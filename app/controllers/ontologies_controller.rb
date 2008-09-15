@@ -138,7 +138,7 @@ class OntologiesController < ApplicationController
     params[:ontology][:isManual]=1
     params[:ontology][:userId]=session[:user].id
       @errors = validate(params[:ontology])
-      if @errors.length < 1
+    if @errors.length < 1
     @ontology = DataAccess.createOntology(params[:ontology])
       if @ontology.kind_of?(Hash) && @ontology[:error]        
         flash[:notice]=@ontology[:longMessage]
@@ -147,6 +147,7 @@ class OntologiesController < ApplicationController
           else
             @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
           end
+        render :action=>'new'  
       else
     
         redirect_to ontology_path(@ontology)

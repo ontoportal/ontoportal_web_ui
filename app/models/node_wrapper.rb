@@ -47,7 +47,7 @@ class NodeWrapper
        return
      end
    self.name = object.name
-   self.id = object.id
+   self.id = object.id.gsub(" ","%20")
    self.isActive = object.isActive
    self.properties = {}
    self.child_size = object.children.to_i
