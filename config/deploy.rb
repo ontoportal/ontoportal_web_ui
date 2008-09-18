@@ -1,6 +1,6 @@
 
 set :application, "BioPortal"
-set :repository,  "https://bmir-gforge.stanford.edu/svn/bioportalui/BioPortalGui"
+set :repository,  "https://bmir-gforge.stanford.edu/svn/bioportalui/1005"
 set :svn_username, "ngriff"
 set :svn_password, Proc.new {Capistrano::CLI::password_prompt('SVN Password:')}
 

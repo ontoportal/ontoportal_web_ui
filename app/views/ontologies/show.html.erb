@@ -53,7 +53,7 @@
 			<td><%=version.versionNumber%></td>
 			<td><%=version.dateReleased%></td>
 			<td><%=version.versionStatus%></td>
-			<td><% if version.isRemote%><a href="<%=@ontology.homepage%>"><%else%><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download</a><%end%></td>
+			<td><% if version.isRemote.to_i.eql?(1)%><a href="<%=@ontology.homepage%>"><%else%><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download</a><%end%></td>
 			<td><%if version.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => version)%><%elsif version.statusId.to_i.eql?(1)%>Parsing Ontology<%else%><%end%></td>
 		</tr>
 		<%end%>
