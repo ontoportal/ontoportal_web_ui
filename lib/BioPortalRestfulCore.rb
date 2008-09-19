@@ -669,13 +669,17 @@ private
               
                when CHILDCOUNT
                  node.child_size = entry.elements["int"].get_text.value.to_i
-               else                                  
+               else                
+                 begin                  
                  node.properties[entry.elements["string"].get_text.value] = entry.elements["list"].elements.map{|element| 
                    if(element.name.eql?("classbean"))
                       parseConcept(element,ontology).name 
                   else 
                     element.get_text.value unless element.get_text.value.empty? 
                   end}.join(" , ") #rescue ""
+                  rescue
+                    
+                  end
                end
  #           puts "#####################"
         }
