@@ -5,6 +5,7 @@ class MappingsController < ApplicationController
   # GET /mappings/new
   
   layout 'search'
+  before_filter :authorize, :only=>[:create,:new]
   
   def index
     ontology_list = DataAccess.getOntologyList() # -- Gets list of ontologies

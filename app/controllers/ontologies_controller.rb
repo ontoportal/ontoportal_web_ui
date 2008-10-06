@@ -6,6 +6,8 @@ class OntologiesController < ApplicationController
   helper :concepts  
   layout 'ontology'
   
+  before_filter :authorize, :only=>[:edit,:update,:create,:new]
+  
   # GET /ontologies
   # GET /ontologies.xml
   def index
@@ -47,7 +49,9 @@ class OntologiesController < ApplicationController
   def update
       params[:ontology][:isReviewed]=1
       params[:ontology][:isFoundry]=0
-    
+    unless authorize_owner(params[:ontology][:userId].to_i)
+      return
+    end
       @errors = validate(params[:ontology],true)
       if @errors.length < 1
         puts("I should be updating")
@@ -63,6 +67,7 @@ class OntologiesController < ApplicationController
       else
         @ontology = OntologyWrapper.new
         @ontology.from_params(params[:ontology])
+        @ontology.id = params[:id]
         render :action=> 'edit'
       end
   end
@@ -70,6 +75,7 @@ class OntologiesController < ApplicationController
   
   def edit
     @ontology = DataAccess.getOntology(params[:id])
+     authorize_owner(@ontology.userId)    
   end
 
   # GET /visualize/:ontology
@@ -156,7 +162,7 @@ class OntologiesController < ApplicationController
   
     else
       if(params[:ontology][:ontologyId].empty?)
-        @ontology = OntologyWrapper.new
+        @ontology = DataAccess.getOntology(params[:id])
       else
         @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
       end

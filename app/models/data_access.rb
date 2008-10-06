@@ -197,6 +197,7 @@ class DataAccess
     end
     
     def self.updateOntology(params)
+      puts "UPDATING ONTOLOGY #{params.inspect}"
       ontology = SERVICE.updateOntology(params)
       CACHE.delete("#{params[:id]}::_details")
       return ontology

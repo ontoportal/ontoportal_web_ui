@@ -23,6 +23,7 @@
 			<li><label>Ontology Name:</label><%=@ontology.displayLabel%></li>
 			<li><label>Format:</label> <%if @ontology.format.eql?("OBO")%><%=@ontology.format+"F"%><%else%><%=@ontology.format%><%end%></li>
 			<li><label>Categories:</label></li>
+			<li><label>Contact Email:</label><%=@ontology.contactEmail%></li>
 			</ul>
 			
 		</td>

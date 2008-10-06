@@ -3,6 +3,9 @@ class MarginNotesController < ApplicationController
   # GET /margin_notes.xml
   
   layout 'ontology'
+  
+    before_filter :authorize, :only=>[:create]
+  
   def index
   
   end
@@ -34,8 +37,9 @@ class MarginNotesController < ApplicationController
     @key = params[:key] # Timestamp passed from view -- needed to recreate unique form ID
 
     unless session[:user].nil?
+      
       @margin_note.user_id = session[:user].id
-    end
+
     
       if @margin_note.save               
         flash[:notice] = 'MarginNote was successfully created.'
@@ -51,7 +55,7 @@ class MarginNotesController < ApplicationController
       elsif !@margin_note.mapping_id.nil? # fetches mapping marginal notes
          @margin_notes = MarginNote.find(:all, :conditions => {:mapping_id =>@margin_note.mapping_id, :parent_id =>nil})
       end
-    
+    end    
     #prepopulates new marginal note
     @margin_note = MarginNote.new
     @margin_note.concept_id = params[:concept_id]

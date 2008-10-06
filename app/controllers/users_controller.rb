@@ -34,6 +34,7 @@ class UsersController < ApplicationController
   # GET /users/1;edit
   def edit
   @user = DataAccess.getUser(params[:id])
+  
 #  @user = User.find(params[:id])
   if(params[:password].eql?("true"))
     @user.validate_password = true

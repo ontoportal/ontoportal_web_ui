@@ -1,5 +1,6 @@
 
 <div id="leftbar" class="leftbar"><br>
+	<center><span class="tree_metadata" style="font-weight:bold;font-size:14px;"><%=@ontology.displayLabel%> v.<%=@ontology.versionNumber%></span></center><br>
 <span class="tree_metadata"><%=link_to "View Ontology Metadata", ontology_url(:id => @ontology.id)%></span>
 <%=render :partial => '/ontologies/treeview'%>
 
