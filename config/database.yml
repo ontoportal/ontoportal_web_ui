@@ -30,7 +30,7 @@ test:
   encoding: utf8
   database: BioPortalGui_test
   username: root
-  password:
+  password: gojava
   socket: /tmp/mysql.sock
 
 #ncboadmin

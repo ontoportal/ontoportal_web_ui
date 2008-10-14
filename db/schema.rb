@@ -13,14 +13,22 @@ ActiveRecord::Schema.define(:version => 8) do
 
   create_table "mappings", :force => true do |t|
     t.integer  "user_id"
+    t.integer  "source_ont",             :limit => 255
+    t.integer  "destination_ont",        :limit => 255
+    t.integer  "source_version_id"
+    t.integer  "destination_version_id"
     t.string   "source_id"
     t.string   "destination_id"
     t.string   "map_type"
-    t.string   "source_ont"
-    t.string   "destination_ont"
+    t.string   "map_source"
+    t.string   "relationship_type"
+    t.string   "source_name"
+    t.string   "destination_name"
+    t.string   "source_ont_name"
+    t.string   "destination_ont_name"
+    t.text     "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "map_source",      :limit => 50
   end
 
   create_table "margin_notes", :force => true do |t|
@@ -28,27 +36,13 @@ ActiveRecord::Schema.define(:version => 8) do
     t.integer  "mapping_id"
     t.integer  "note_type"
     t.integer  "user_id"
+    t.integer  "ontology_id"
+    t.integer  "ontology_version_id"
     t.string   "concept_id"
     t.string   "subject"
-    t.string   "ontology_id"
     t.text     "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "ncbc_softwares", :force => true do |t|
-    t.string "name",           :limit => 50
-    t.text   "description"
-    t.string "keywords"
-    t.string "authors"
-    t.string "ontology_label"
-    t.string "organization"
-    t.string "url"
-    t.string "data_input"
-    t.string "data_output"
-    t.string "resource_type"
-    t.string "rls_version"
-    t.string "license"
   end
 
   create_table "projects", :force => true do |t|
@@ -57,9 +51,9 @@ ActiveRecord::Schema.define(:version => 8) do
     t.string   "people"
     t.string   "homepage"
     t.text     "description"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id"
   end
 
   create_table "rating_types", :force => true do |t|
@@ -78,11 +72,11 @@ ActiveRecord::Schema.define(:version => 8) do
 
   create_table "reviews", :force => true do |t|
     t.integer  "user_id"
-    t.string   "ontology"
+    t.integer  "ontology_id"
+    t.integer  "project_id"
     t.text     "review"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "project_id"
   end
 
   create_table "users", :force => true do |t|
@@ -92,14 +86,14 @@ ActiveRecord::Schema.define(:version => 8) do
     t.string   "phone"
     t.string   "user_name"
     t.string   "hashed_password"
+    t.boolean  "admin"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "admin"
   end
 
   create_table "uses", :force => true do |t|
     t.integer  "project_id"
-    t.string   "ontology"
+    t.integer  "ontology_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

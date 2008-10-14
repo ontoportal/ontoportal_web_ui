@@ -152,7 +152,7 @@ class ConceptsController < ApplicationController
     
      # for demo only
      @software=[]
-     if @ontology.displayLabel.eql?("Biomedical Resource Ontology")
+     if @ontology.ontologyId.to_s.eql?("1104")
         @software = NcbcSoftware.find(:all,:conditions=>{:ontology_label=>@concept.id})        
       end
     
