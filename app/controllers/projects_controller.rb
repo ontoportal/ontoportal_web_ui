@@ -7,7 +7,7 @@ class ProjectsController < ApplicationController
   def index
 
     if params[:ontology]
-      @projects = Project.find(:all,:conditions=>"uses.ontology = '#{undo_param(params[:ontology])}'",:include=>:uses)
+      @projects = Project.find(:all,:conditions=>"uses.ontology_id = '#{undo_param(params[:ontology])}'",:include=>:uses)
     elsif params[:user]
       @projects = Project.find(:all,:conditions=>{:user_id=>params[:user]})
     else
