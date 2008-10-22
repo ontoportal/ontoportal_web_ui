@@ -25,6 +25,10 @@ class OntologyWrapper
   attr_accessor :publication
   attr_accessor :dateCreated
   
+  attr_accessor :synonymSlot
+  attr_accessor :preferredNameSlot
+  
+  
   attr_accessor :reviews
   attr_accessor :projects
   attr_accessor :versions

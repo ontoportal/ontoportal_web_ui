@@ -35,4 +35,15 @@ class Notifier < ActionMailer::Base
     
   end
   
+  def feedback(name,email,comment)
+    recipients "ngriff@stanford.edu"
+    from "admin@bioontology.org"
+    subject "Feedback"
+    body :name => name, :email=>email,:comment=>comment
+    
+    
+    
+  end
+  
+  
 end

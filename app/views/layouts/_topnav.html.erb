@@ -7,7 +7,9 @@
 		<%=link_to "My Projects", projects_path(:user=>session[:user].id)%> | 
 		<%=link_to "My Account", edit_user_path(session[:user])%> | 
 		<%=link_to "Log Out",logout_url%>
-	<%end%> </span>
+	<%end%> 
+	&nbsp;&nbsp;<a href="/feedback" style="font-weight:bold;font-size:14px;">Send Feedback</a>
+	</span>
 <ul class="topnav">
 		<li <%if controller.controller_name.eql?("home")%>class="selected" <%end%>><a href="/"><em>Home</em></a></li>
     	<li <%if controller.controller_name.eql?("ontologies") && controller.action_name.eql?("index")%>class="selected" <%end%>><a href="/ontologies"><em>Browse</em></a></li>
