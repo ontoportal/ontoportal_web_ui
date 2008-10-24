@@ -10,7 +10,9 @@
 
 <%@concept.properties.each_pair{|key,value| %>
 	
-	
+	<%if key.eql?("type")|| key.eql?("rdf:type")
+		next
+	end%>
 	<tr>
 		<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
 		<td ><%="#{value}"%></td>

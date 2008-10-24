@@ -1,4 +1,6 @@
 require 'BioPortalRestfulCore'
+require "digest/sha1"
+
 class DataAccess
   SERVICE = BioPortalRestfulCore #sets what backend we are using
   
@@ -105,26 +107,32 @@ class DataAccess
     end
     
     def self.getNodeNameSoundsLike(ontologies,search)
-      if CACHE.get("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}").nil? || NO_CACHE
+      #prevents long keys
+      cache_key = Digest::SHA1.hexdigest("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}");
+      
+      if CACHE.get(cache_key).nil? || NO_CACHE
         results = SERVICE.getNodeNameContains(ontologies,search)
         unless results.kind_of?(Hash) && results[:error]
-          CACHE.set("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}",results)
+          CACHE.set(cache_key,results)
         end
         return results
       else
-        return CACHE.get("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}")
+        return CACHE.get(cache_key)
       end
     end
     
-    def self.getNodeNameContains(ontologies,search)      
-      if CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}").nil? || NO_CACHE
+    def self.getNodeNameContains(ontologies,search) 
+      #prevents long keys
+      cache_key = Digest::SHA1.hexdigest("#{param(ontologies.join("|"))}::_search::#{param(search)}")
+           
+      if CACHE.get(cache_key).nil? || NO_CACHE
         results = SERVICE.getNodeNameContains(ontologies,search)
         unless results.kind_of?(Hash) && results[:error]
-          CACHE.set("#{param(ontologies.join("|"))}::_search::#{param(search)}",results)
+          CACHE.set(cache_key,results)
         end
         return results
       else
-        return CACHE.get("#{param(ontologies.join("|"))}::_search::#{param(search)}")
+        return CACHE.get(cache_key)
       end
     end
     

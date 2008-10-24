@@ -46,6 +46,15 @@ class OntologiesController < ApplicationController
 
   end
   
+  def virtual
+     time = Time.now
+     @ontology = DataAccess.getLatestOntology(params[:ontology])
+
+     redirect_to "/visualize/#{@ontology.id}"
+   end
+  
+  
+  
   def update
       params[:ontology][:isReviewed]=1
       params[:ontology][:isFoundry]=0

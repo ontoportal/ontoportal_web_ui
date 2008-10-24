@@ -21,6 +21,17 @@ class SearchController < ApplicationController
     
     @results = []
     ontologies = params[:search][:ontologies]
+    if ontologies.nil? || ontologies.empty?
+      render :text=>"<h1 style='color:red'>Please select an ontology</h1>"
+      return
+    end
+    
+    if params[:search][:keyword].empty?
+        render :text=>"<h1 style='color:red'>Please Enter a Search Term</h1>"
+        return
+      end
+      
+    
     @ontologies = []
     if ontologies.include?("0")
       #search all ontologies

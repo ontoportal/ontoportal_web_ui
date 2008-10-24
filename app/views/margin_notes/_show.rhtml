@@ -9,7 +9,7 @@ javascripts = "resetNoteForm(#{uniq});"
 
 <div id ="notes">
 	<%if @margin_notes.size<1%>	
-		<h1>There are currently no marginal notes for this concept.</h1>
+		<h1>There are currently no notes for this concept.</h1>
 	<%end%>
 <%=draw_note_tree(@margin_notes,uniq)%>
 </div>
@@ -30,7 +30,7 @@ javascripts = "resetNoteForm(#{uniq});"
 	<%=hidden_field_tag 'key', uniq%>
 
 <fieldset>
-	<legend>New Marginal Note</legend>
+	<legend>New Note</legend>
 <table>
 	<tr>
 		<td>Note Type:</td>
