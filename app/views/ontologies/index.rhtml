@@ -1,4 +1,25 @@
+<script type="text/javascript" src="/javascripts/jquery.js"></script>
+<script type="text/javascript" src="/javascripts/jquery.dataTables.min.js"></script>
 
+<script type="text/javascript">
+
+$(document).ready(function() {
+	$('#ontologies').dataTable({bLengthChange:false,iDisplayLength:800,
+		"aoData": [
+			
+			{ "sType": "html" },
+			null,
+			null,
+			null,
+			null,
+			null
+			
+		]
+ });
+	
+} );
+
+</script>
 <%if session[:user].nil? %>
 
 	<input type="button" class ="blueButton" value="Submit New Ontology" onclick ="window.location='/login'"> 
@@ -7,34 +28,36 @@
 <%end%>
 <div style="overflow:auto;width:1000px;">
 <div style="float:left;width:650px;overflow:auto;padding:4px;">
-<table class="ontologies" style="width:650px;"cellpadding="0" cellspacing="0">
+<table id="ontologies"class="ontologies" style="width:650px;"cellpadding="0" cellspacing="0">
+		<thead>
   <tr>
 	<th  style="width:200px;">Ontology Name</th>
 	<th style="width:50px;">Format</th>
 	<th  style="width:50px;">Version</th>
 	<th>Author</th>
 	<th>Uploaded On</th>
-	<th>&nbsp;</th>
+	<th>Status</th>
   </tr>
-  
+  </thead>
+<tbody>
 <% for ontology in @ontologies %>
-  <tr class="<%= cycle("odd", "even")%>">
+  <tr >
 	<td style="width:200px;"><b><%=link_to ontology.displayLabel, ontology_path(:id=>ontology.id)%></b>
-	<%
-	if false%>
+	<%if false%>
 		<ul style="padding-left:20px;">
 			<li style="margin-bottom:4px;"><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology.ontologyId)%></li>
 			<li><%= link_to "See All #{ontology.reviews} Reviews",reviews_path(:ontology=>ontology.ontologyId)%></li>
 		</ul>
 	<%end%>
 		</td>
-	<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format%><%end%></td>
+	<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
 	<td  style="width:50px;"><%=ontology.versionNumber%></td>
 	<td><%=ontology.contactName%></td>
 	<td><%=ontology.dateCreated%></td>
 	<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
   </tr>
 <% end %>
+</tbody>
 </table>
 </div>
 <div>

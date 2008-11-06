@@ -1,5 +1,4 @@
-<%if @results.size > 0%>
-<table class="ontologies" cellpadding="0" cellspacing="0">
+
 <%
 result_ontologies = []
 for result in @results
@@ -8,6 +7,10 @@ for result in @results
 	end
 end
 %>
+
+
+<%if result_ontologies.size > 0%>
+<table class="ontologies" cellpadding="0" cellspacing="0">
 	
 	
 	<% for ontology in @ontologies%>	

@@ -13,14 +13,14 @@
 	<div id="tabframe" class="yui-navset">
     	<ul class="yui-nav">
         	
-        	<li class="selected"><a href="#tab2"><em>Details</em></a></li>
-			<li ><a href="#tab1"><em>Visualization</em></a></li>
-        	<li><a href="#tab3"><em>Notes</em></a></li>
-			<li><a href="#tab4"><em>Mappings</em></a></li>				
+        	<li class="selected"><a href="#t_tab2"><em>Details</em></a></li>
+			<li ><a href="#t_tab1"><em>Visualization</em></a></li>
+        	<li><a href="#t_tab3"><em>Notes</em></a></li>
+			<li><a href="#t_tab4"><em>Mappings</em></a></li>				
 			<%if @ontology.ontologyId.to_s.eql?("1104")%>	
-			<li><a href="#tab5" ><em>Resources</em></a></li>			
+			<li><a href="#t_tab5" ><em>Resources</em></a></li>			
 			<%else%>							
-			<li><a href="#tab5" onclick="callTab(5,'/resources/@ontology@/@concept@')"><em>Resources</em></a></li>
+			<li><a href="#t_tab5" onclick="callTab(5,'/resources/@ontology@/@concept@')"><em>Resources</em></a></li>
 			<%end%>
 			
 			
@@ -29,15 +29,15 @@
 		        
     	<div class="yui-content" id = "content">
         	
-        	<div id="tab2"><%=render :partial =>'/concepts/details'%></div>
-			<div id="tab1"><%=render :partial =>'/concepts/images'%></div>
-			<div id="tab3"><%=render :partial =>'/margin_notes/show'%></div>
-			<div id="tab4"><%=render :partial =>'/mappings/concept_mappings'%></div>
+        	<div id="t_tab2"><%=render :partial =>'/concepts/details'%></div>
+			<div id="t_tab1"><%=render :partial =>'/concepts/images'%></div>
+			<div id="t_tab3"><%=render :partial =>'/margin_notes/show'%></div>
+			<div id="t_tab4"><%=render :partial =>'/mappings/concept_mappings'%></div>
 			
 			<%if @ontology.ontologyId.to_s.eql?("1104")%>	
-				<div id="tab5"><%=render :partial =>'/concepts/software'%></div>
+				<div id="t_tab5"><%=render :partial =>'/concepts/software'%></div>
 			<%else%>
-			<div id="tab5"></div>
+			<div id="t_tab5"></div>
 			<%end%>
 			
     	</div>

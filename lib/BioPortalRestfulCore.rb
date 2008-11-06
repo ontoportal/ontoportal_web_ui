@@ -4,7 +4,7 @@ class BioPortalRestfulCore
   
   #Resources
 #    BASE_URL="http://ncbo-core-dev1:8080/bioportal/rest"
-    BASE_URL="http://ncbo-core-load1.stanford.edu:8080/bioportal/rest"
+    BASE_URL=$REST_URL
     #BASE_URL="http://rest.bioontology.org/bioportal/rest"
     #BASE_URL="http://ncbo-core-stage1.stanford.edu/bioportal/rest"
     
@@ -51,8 +51,11 @@ class BioPortalRestfulCore
          puts "Requesting : #{BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)}"
           begin
          doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)))
-          rescue
+                   puts doc.to_s
+          rescue Exception=>e
+            puts e.inspect
           end
+          puts doc.to_s
          node = errorCheck(doc)
          
          unless node.nil?
@@ -238,7 +241,7 @@ class BioPortalRestfulCore
         begin
             doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies.join(",")).gsub("%query%",search.gsub(" ","%20"))))
            rescue Exception=>e
-              #doc =  REXML::Document.new(e.io.read)
+              doc =  REXML::Document.new(e.io.read)
               puts doc.to_s
             end   
                results = errorCheck(doc)

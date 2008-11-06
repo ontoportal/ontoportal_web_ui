@@ -163,6 +163,7 @@ border-bottom:1px dotted gray;
 	font-size:15px;
 	font-weight:normal;
 	border-bottom:1px solid #535353;
+	cursor:pointer;
 	/*none/hidden/dotted/dashed/solid/double/groove/ridge/inset/outset;;*/
 }
 .even{
@@ -170,6 +171,16 @@ border-bottom:1px dotted gray;
 }
 .odd{
 	background-color: #f2f6f2;
+}
+
+th.sorting_asc{
+    background:none;
+    background-color:#2647a0;
+}
+th.sorting_desc{
+    background:none;
+    background-color:#2647a0;
+
 }
 
 .subject{
