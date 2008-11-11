@@ -21,7 +21,7 @@
 				<%if !@ontology.nil? && @ontology.id.eql?(tab.ontology_id)%>
 				<li id="tab<%=to_param(tab.ontology_id)%>" class="selected"><%=link_to "<em>#{tab.ontology_name}</em>",uri_url(:ontology=>tab.ontology_id,:id=>tab.concept)%><a href="#" class="close"  onclick="remove_tab(this,'<%=to_param(tab.ontology_id)%>',true);return false;">&nbsp;</a></li>				
 				<%else%>
-				<li id="tab<%=to_param(tab.ontology_id)%>" ><%=link_to "<em>#{tab.ontology_name} &nbsp;&nbsp;</em>",uri_url(:ontology=>tab.ontology_id,:id=>tab.concept),:onclick=>"YAHOO.tabwait.container.wait.show();"%> <a href="#" class="close"  onclick="remove_tab(this,'<%=to_param(tab.ontology_id)%>',false);return false;">&nbsp;</a></li>
+				<li id="tab<%=to_param(tab.ontology_id)%>" ><%=link_to "<em>#{tab.ontology_name} &nbsp;&nbsp;</em>",uri_url(:ontology=>tab.ontology_id,:id=>tab.concept),:onclick=>"setTimeout('YAHOO.tabwait.container.wait.show()',2000);"%> <a href="#" class="close"  onclick="remove_tab(this,'<%=to_param(tab.ontology_id)%>',false);return false;">&nbsp;</a></li>
 				<%end%>
 			<%end%>
 		<%end%>

@@ -1,4 +1,22 @@
 <%form_tag('/send_feedback') do%>
+
+
+<br>
+<p style="font-size:14px">
+Support is available for Questions, Error reports, Feature requests, Ontology
+submissions, etc. Please include the following (but all are optional):
+</p>
+<ul>   
+ <li style="font-size:14px"> Your email, so we can respond.</li>
+ <li style="font-size:14px"> If you are describing an error, details of how the error occurred,including:
+       <ul>
+   		   <li style="font-size:14px"> URL of the page resulting in the error</li>
+           <li style="font-size:14px"> Exact steps to replicate the error</li>
+           <li style="font-size:14px"> Full error message, if any</li>
+		</ul>
+  </li>
+</ul>
+
 <table>
 	<tr>
 		<td align="right">First Name:</td><td align="left"><input type="text" name="name" style="width:180px"></td>
@@ -7,7 +25,7 @@
 		<td align="right">Email Address:</td><td align="left"><input type="text" name="email" style="width:180px"></td>
 	</tr>
 	<tr>
-		<td colspan="2">Comment:</td>
+		<td align= "right" >Comment:</td><td>&nbsp;</td>
 	</tr>
 	<tr>
 		<td colspan="2"><textarea name="comment" cols='60' rows=8></textarea></td>

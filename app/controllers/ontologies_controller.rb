@@ -152,6 +152,7 @@ class OntologiesController < ApplicationController
     params[:ontology][:isFoundry]=0
     params[:ontology][:isManual]=1
     params[:ontology][:userId]=session[:user].id
+    puts "File Size: #{params[:ontology][:filePath].size}"
       @errors = validate(params[:ontology])
     if @errors.length < 1
     @ontology = DataAccess.createOntology(params[:ontology])
@@ -171,9 +172,11 @@ class OntologiesController < ApplicationController
   
     else
       if(params[:ontology][:ontologyId].empty?)
-        @ontology = DataAccess.getOntology(params[:id])
+        @ontology = OntologyWrapper.new
+        @ontology.from_params(params[:ontology])
       else
         @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
+        @ontology.from_params(params[:ontology])
       end
       
     render :action=>'new'
@@ -235,6 +238,11 @@ class OntologiesController < ApplicationController
          if params[:isRemote].to_i.eql?(0) && (params[:filePath].nil? || params[:filePath].length <1)
            errors << "Please Choose a File"
          end
+         if params[:isRemote].to_i.eql?(0) && params[:filePath].size.to_i > 20000
+            errors << "File is too large"
+         end
+         
+         
          if params[:isRemote].to_i.eql?(1) && (params[:urn].nil? || params[:urn].length <1)
            errors << "Please Enter a URL"
          end
