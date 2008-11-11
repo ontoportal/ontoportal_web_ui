@@ -1,4 +1,3 @@
-require 'BioPortalWebservice'
 class MappingLoader
   
   def self.processMappings(params)

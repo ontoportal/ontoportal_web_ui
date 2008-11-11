@@ -127,14 +127,14 @@ function loadNodeData(node, fnLoadComplete) {
 				var respTxt = o.responseText;
 				tabData = respTxt.split("|||")
 					// the tabs
-							document.getElementById('tab1').innerHTML=tabData[0]
-							document.getElementById('tab2').innerHTML=tabData[1]
-							document.getElementById('tab3').innerHTML=tabData[2]
-							document.getElementById('tab4').innerHTML=tabData[3]
+							document.getElementById('t_tab1').innerHTML=tabData[0]
+							document.getElementById('t_tab2').innerHTML=tabData[1]
+							document.getElementById('t_tab3').innerHTML=tabData[2]
+							document.getElementById('t_tab4').innerHTML=tabData[3]
 							
 							
 								<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>		
-							document.getElementById('tab5').innerHTML=tabData[4]				
+							document.getElementById('t_tab5').innerHTML=tabData[4]				
 							<%end%>
 							
 					 tree.draw();
@@ -157,13 +157,13 @@ function loadNodeData(node, fnLoadComplete) {
 		
 		if(getCache(node_id)!=null){
 			tabData = getCache(node_id)
-			document.getElementById('tab1').innerHTML=tabData[0]
-			document.getElementById('tab2').innerHTML=tabData[1]
-			document.getElementById('tab3').innerHTML=tabData[2]
-			document.getElementById('tab4').innerHTML=tabData[3]
+			document.getElementById('t_tab1').innerHTML=tabData[0]
+			document.getElementById('t_tab2').innerHTML=tabData[1]
+			document.getElementById('t_tab3').innerHTML=tabData[2]
+			document.getElementById('t_tab4').innerHTML=tabData[3]
 				
 							<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>		
-							document.getElementById('tab5').innerHTML=tabData[4]				
+							document.getElementById('t_tab5').innerHTML=tabData[4]				
 							<%end%>
 							
 							
