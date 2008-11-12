@@ -1,23 +1,23 @@
-<script type="text/javascript" src="/javascripts/jquery.js"></script>
 <script type="text/javascript" src="/javascripts/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
 
-$(document).ready(function() {
-	$('#ontologies').dataTable({bLengthChange:false,iDisplayLength:800,
+jQuery(document).ready(function() {
+	jQuery('#ontologies').dataTable(
+		{
+		bLengthChange:false,
+		iDisplayLength:800,
+		"oLanguage":{"sSearch":"Filter Ontologies"},
 		"aoData": [
-			
 			{ "sType": "html" },
 			null,
 			null,
 			null,
 			null,
-			null
-			
-		]
- });
+			null]
+	});
 	
-} );
+});
 
 </script>
 <%if session[:user].nil? %>
@@ -58,6 +58,8 @@ $(document).ready(function() {
   </tr>
 <% end %>
 </tbody>
+<tfoot>
+</tfoot>
 </table>
 </div>
 <div>
