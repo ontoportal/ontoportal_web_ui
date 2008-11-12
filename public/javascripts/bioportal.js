@@ -110,7 +110,7 @@ function callTab(tab_num,url){
 		    }
 			
 			
-			document.getElementById("tab"+tab_num).innerHTML=respTxt
+			document.getElementById("t_tab"+tab_num).innerHTML=respTxt
 			var search = respTxt;
                 var script;
 
