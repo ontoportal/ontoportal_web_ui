@@ -1,9 +1,26 @@
 <script type="text/javascript" src="/javascripts/jquery.dataTables.min.js"></script>
+<script src="/javascripts/jquery.cursorMessage.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="./stylesheets/jquery.cursorMessage.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
 <script type="text/javascript">
+var dtable;
+function drawMessage(text){
+		jQuery.cursorMessage(text,{"hideTimeout":3000});
+}
+
+function filterBySelection(selectbox){
+//	alert(selectbox.value);
+	if(selectbox.value == 0){
+		dtable.fnFilter( "",7 );
+	}else{
+		dtable.fnFilter( selectbox.value,7 );
+	}
+	
+}
+
 
 jQuery(document).ready(function() {
-	jQuery('#ontologies').dataTable(
+	dtable = jQuery('#ontologies').dataTable(
 		{
 		bLengthChange:false,
 		iDisplayLength:800,
@@ -14,7 +31,18 @@ jQuery(document).ready(function() {
 			null,
 			null,
 			null,
-			null]
+			null,
+			{"bSearchable":false,"bVisible":false},
+			{"bSearchable":false,"bVisible":false}],
+			"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+						/* Append the grade to the default row class name */
+						jQuery(nRow).hover(function(){
+							drawMessage(aData[6]);
+							
+						},function(){jQuery._hideCursorMessage();});
+						return nRow;
+					}
+			
 	});
 	
 });
@@ -26,9 +54,17 @@ jQuery(document).ready(function() {
 <%else%>
 	<span class="blueButton"><%=link_to "Submit New Ontology",new_ontology_path%></span>
 <%end%>
-<div style="overflow:auto;width:1000px;">
-<div style="float:left;width:650px;overflow:auto;padding:4px;">
-<table id="ontologies"class="ontologies" style="width:650px;"cellpadding="0" cellspacing="0">
+
+<div style="width:1150px;">
+<div style="float:left;width:800px;padding:4px;">
+	Filter by Category<select onclick ="filterBySelection(this)"  name="cat">
+		<option value="0" selected="selected">All Categories</option>
+			<%for category in @categories.keys%>
+			<option value="<%=@categories[category][:id]%>"><%=@categories[category][:name]%></option>
+			<%end%>
+	</select>
+	<br>
+<table id="ontologies"class="ontologies" cellpadding="0" cellspacing="0">
 		<thead>
   <tr>
 	<th  style="width:200px;">Ontology Name</th>
@@ -37,12 +73,14 @@ jQuery(document).ready(function() {
 	<th>Author</th>
 	<th>Uploaded On</th>
 	<th>Status</th>
+	<th>Description</th>
+	<th>categories</th>
   </tr>
   </thead>
 <tbody>
 <% for ontology in @ontologies %>
   <tr >
-	<td style="width:200px;"><b><%=link_to ontology.displayLabel, ontology_path(:id=>ontology.id)%></b>
+	<td style="width:200px;"><b><%=link_to ontology.displayLabel + "(#{ontology.abbreviation})", ontology_path(:id=>ontology.id)%></b>
 	<%if false%>
 		<ul style="padding-left:20px;">
 			<li style="margin-bottom:4px;"><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology.ontologyId)%></li>
@@ -55,6 +93,10 @@ jQuery(document).ready(function() {
 	<td><%=ontology.contactName%></td>
 	<td><%=ontology.dateCreated%></td>
 	<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
+	<td>Description: <%=ontology.description%>
+		<br>
+		Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%></td>
+	<td> <%=ontology.categories.join(" ")%></td>
   </tr>
 <% end %>
 </tbody>
@@ -62,7 +104,7 @@ jQuery(document).ready(function() {
 </tfoot>
 </table>
 </div>
-<div>
+<div style="padding-top:60px">
 	<br>
 	<table class="versions" style="width:300px">
 		<tr>
@@ -98,4 +140,5 @@ jQuery(document).ready(function() {
 </div>
 <div style="clear:both;"></div>
 </div>
+
 

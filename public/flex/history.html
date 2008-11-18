@@ -38,15 +38,27 @@
 
 <tr>
 	<td class="bold">Version:</td>
-	<td class="bold">2.0.4</td>
+	<td class="bold">2.0.6</td>
 </tr>
 <tr>
 	<td class="bold">Date:</td>
-	<td class="bold">September 10th, 2008</td>
+	<td class="bold">November 17th, 2008</td>
 </tr>
 <tr>
 	<td class="bold" valign="top">Changes:</td>
 	<td class="list">
+		<!-- 2.0.6 November 17th, 2008 -->
+		<li>Added a warning dialog which gets displayed before a node is expanded IF it has more than 50 children</li>
+		<li>Fixed the ontology chooser dialog to only display local ontologies (remote ones can't be visualized)</li>
+		<!-- 2.0.5 October 2nd, 2008 -->
+		<li>Some minor performance improvements</li>
+		<li>Added a menu item under the Nodes menu which lets you choose which property to use for node labeling (e.g. Prefered_Name, rdfs:label, etc)</li>
+		<li>Added shortcut keys for showing/focussing on the neighborhood (N) and hierarchy to root (H) of the selected node</li>
+		<li>Changed the graph to now have a blue border when it is focussed</li>
+		<li>Changed the plus icon to be rendered below the node indicating the it has hidden children</li>
+		<li>Added a new search results panel for displaying multiple search results (instead of just showing the neighborhood for all)</li>
+		<li>Added "part of" to the list of inverted arc types</li>
+		<li>Also added an "invert" menu item arcs context menu in the full version, it changes the arrow head direction</li>
 		<!-- 2.0.4 September 10th, 2008 -->
 		<li>Fixed the tree and grid layouts to ensure that a minimum separation of 20 pixels exists between each node</li>
 		<li>Changed the graph to center on a focussed node <b>after</b> the layout animation has finished, it is smoother this way</li> 

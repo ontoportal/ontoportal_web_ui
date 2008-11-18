@@ -12,7 +12,7 @@ class OntologiesController < ApplicationController
   # GET /ontologies.xml
   def index
     @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
-    
+    @categories = DataAccess.getCategories()
     @last_notes= MarginNote.find(:all,:order=>'created_at desc',:limit=>5)    
     @last_mappings = Mapping.find(:all,:order=>'created_at desc',:limit=>5)
     
@@ -37,6 +37,7 @@ class OntologiesController < ApplicationController
   # GET /ontologies/1.xml
   def show
     @ontology = DataAccess.getOntology(params[:id]) # shows the metadata 
+    @categories = DataAccess.getCategories()
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
       if request.xhr? 
         render :action => "show", :layout => false 

@@ -20,16 +20,6 @@ var requiredRevision = 28;
 </script>
 <script src="AC_OETags.js" language="javascript" type="text/javascript"></script>
 
-<!--  BEGIN Browser History required section -->
-<!-- style type="text/css">
-#ie_historyFrame { width: 0px; height: 0px; display:none }
-#firefox_anchorDiv { width: 0px; height: 0px; display:none }
-#safari_formDiv { width: 0px; height: 0px; display:none }
-#safari_rememberDiv { width: 0px; height: 0px; display:none }
-</style -->
-<!-- script src="history/history.js" language="javascript"></script -->
-<!--  END Browser History required section -->
-
 <script language="javascript" type="text/javascript">
 <!--
 // Version check for the Flash Player that has the ability to start Player Product Install (6.0r65)
@@ -73,7 +63,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			"name", "FlexoViz",
 			"allowScriptAccess","always",
 			"type", "application/x-shockwave-flash",
-			"flashVars", "server=http://ncbo-core-prod1.stanford.edu:8080/bioportal/rest/",
+			"flashVars", "server=http://rest.bioontology.org/bioportal/rest/",
 			"pluginspage", "http://www.adobe.com/go/getflashplayer"
 	);
 	
@@ -101,7 +91,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 				quality="high"
 				allowScriptAccess="always"
 				type="application/x-shockwave-flash"
-				flashVars="server=http://ncbo-core-prod1.stanford.edu:8080/bioportal/rest/"
+				flashVars="server=http://rest.bioontology.org/bioportal/rest/"
 				pluginspage="http://www.adobe.com/go/getflashplayer">
 			</embed>
 	</object>

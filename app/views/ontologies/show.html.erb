@@ -23,7 +23,7 @@
 			<li><label>Ontology Name:</label><%=@ontology.displayLabel%></li>
 			<li><label>Ontology Id:</label><%=@ontology.ontologyId%></li>
 			<li><label>Format:</label> <%if @ontology.format.eql?("OBO")%><%=@ontology.format+"F"%><%else%><%=@ontology.format.split("-")[0]%><%end%></li>
-			<li><label>Categories:</label></li>
+			<li><label>Categories:</label><%for cat in @ontology.categories%><%=@categories[cat.to_s][:name]%> <%end%></li>
 			<li><label>Contact Email:</label><%=@ontology.contactEmail%></li>
 			</ul>
 			
@@ -34,10 +34,14 @@
 			<li><label>Home Page:</label><%=@ontology.homepage%></li>
 			<li><label>Documentation Page:</label><%=@ontology.documentation%> </li>
 			<li><label>Publications Page:</label><%=@ontology.publication%> </li>
+
 			</ul>
 
 		</td>
+		
 	</tr>
+	<tr>
+		<td colspan=2><ul><li><label>Description:</label><%=@ontology.description%></li></li>
 </table>
 </fieldset>
 

@@ -28,10 +28,16 @@ Errors On Form
 		<td>Ontology Name: </td><td><%=text_field :ontology, :displayLabel%></td>
 	</tr>
 	<tr>
-		<td>Ontology Format: </td><td><select name="ontology[format]" style="width:200px" >
-			<%for option in OntologyWrapper::FORMAT%>
-			<option value="<%=option %>"><%=option%></option>
-			<%end%></td>
+		<td>Ontology Format: </td><td><select name="ontology[format]" style="width:200px" >			
+			<option value="OBO">OBO</option>
+			<option value="OWL">OWL</option>
+			<option value="OWL-DL">-&nbsp;&nbsp;OWL-DL</option>
+			<option value="OWL-FULL">-&nbsp;&nbsp;OWL-FULL</option>
+			<option value="OWL-LITE">-&nbsp;&nbsp;OWL-LITE</option>
+			<option value="PROTEGE">PROTEGE</option>
+			<option value="LEXGRID_XML">LEXGRID_XML</option>
+			</select>
+			</td>
 	</tr>	
 	<tr>
 		<td>Ontology Version: </td><td><%=text_field :ontology, :versionNumber%></td>

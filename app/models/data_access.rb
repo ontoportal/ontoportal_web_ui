@@ -51,6 +51,23 @@ class DataAccess
         return CACHE.get("ont_list")
       end
     end
+
+    def self.getCategories
+      puts "Calling DataAccess.getCategories()"
+      if CACHE.get("categories").nil? || NO_CACHE
+        list = SERVICE.getCategories
+        
+        unless list.kind_of?(Hash)  && list[:error]         
+          CACHE.set("categories",list,CACHE_EXPIRE_TIME)
+        end
+        
+        return list
+      else
+        return CACHE.get("categories")
+      end
+    end
+
+
     
     def self.getActiveOntologies
       puts "Calling DataAccess.getActiveOntologies()"      

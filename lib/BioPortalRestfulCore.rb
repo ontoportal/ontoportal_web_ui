@@ -9,6 +9,8 @@ class BioPortalRestfulCore
     #BASE_URL="http://ncbo-core-stage1.stanford.edu/bioportal/rest"
     
     ONTOLOGIES_PATH = "/ontologies/%ONT%"
+    CATEGORIES_PATH = "/categories/"
+
     CONCEPT_PATH ="/concepts/%ONT%/%CONC%"
     PATH_PATH = "/path/%ONT%/%CONC%/root"
     VERSIONS_PATH="/ontologies/versions/%ONT%"
@@ -44,6 +46,29 @@ class BioPortalRestfulCore
 #    3205
 #    4525
  
+
+      def self.getCategories()
+         categories=nil
+           doc = REXML::Document.new(open(BASE_URL+CATEGORIES_PATH))
+
+           categories = errorCheck(doc)
+           puts "Categories : #{categories}"
+           unless categories.nil?
+             return categories
+           end
+
+           categories = {}
+           time = Time.now
+            doc.elements.each("*/data/list/categorybean"){ |element| 
+              category = parseCategory(element)
+            categories[category[:id].to_s]=category 
+           }
+           puts "getCategories Parse Time: #{Time.now-time}"
+           puts "Categories: #{categories.inspect}"
+          return categories
+        
+        
+      end
 
        def self.getNode(ontology,node_id)
          node = nil
@@ -554,6 +579,15 @@ private
     
   end
 
+
+
+  def self.parseCategory(categorybeanXML)
+    category ={}
+    category[:name]=categorybeanXML.elements["name"].get_text.value rescue ""
+    category[:id]=categorybeanXML.elements["id"].get_text.value rescue ""
+    category[:parentId]=categorybeanXML.elements["parentId"].get_text.value rescue ""    
+    return category
+  end
   def self.parseUser(userbeanXML)
     user = UserWrapper.new
     
@@ -605,6 +639,14 @@ private
     ontology.dateCreated = Date.parse(ontologybeanXML.elements["dateCreated"].get_text.value).strftime('%m/%d/%Y') rescue ""
     ontology.preferredNameSlot=ontologybeanXML.elements["preferredNameSlot"].get_text.value rescue ""
     ontology.synonymSlot=ontologybeanXML.elements["synonymSlot"].get_text.value rescue ""
+    ontology.description=ontologybeanXML.elements["description"].get_text.value rescue ""
+    ontology.abbreviation=ontologybeanXML.elements["abbreviation"].get_text.value rescue ""    
+    ontology.categories = []
+
+    ontologybeanXML.elements["categoryIds"].elements.each{|element|
+      ontology.categories<< element.get_text.value
+    }
+    
     return ontology
     
   end

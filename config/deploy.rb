@@ -1,6 +1,6 @@
 
 set :application, "BioPortal"
-set :repository,  "https://bmir-gforge.stanford.edu/svn/bioportalui/BioPortalGui"
+set :repository,  "https://bmir-gforge.stanford.edu/svn/bioportalui/trunk"
 set :svn_username, "ngriff"
 set :svn_password, Proc.new {Capistrano::CLI::password_prompt('SVN Password:')}
 
@@ -14,9 +14,9 @@ set :user,"ngriff"
 # set :scm, :subversion
 
 #alpha
-role :app, "ncbo-ror1.stanford.edu"
-role :web, "ncbo-ror1.stanford.edu"
-role :db,  "ncbo-ror1.stanford.edu", :primary => true
+#role :app, "ncbo-ror1.stanford.edu"
+#role :web, "ncbo-ror1.stanford.edu"
+#role :db,  "ncbo-ror1.stanford.edu", :primary => true
 
 #stage
 #role :app, "ncbo-ror-stage1.stanford.edu"
@@ -25,6 +25,6 @@ role :db,  "ncbo-ror1.stanford.edu", :primary => true
 
 
 #production
-#role :app, "ncbo-ror-prod1.stanford.edu"
-#role :web, "ncbo-ror-prod1.stanford.edu"
-#role :db,  "ncbo-ror-prod1.stanford.edu", :primary => true
+role :app, "ncbo-ror-prod1.stanford.edu"
+role :web, "ncbo-ror-prod1.stanford.edu"
+role :db,  "ncbo-ror-prod1.stanford.edu", :primary => true

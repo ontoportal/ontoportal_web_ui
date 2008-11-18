@@ -25,6 +25,10 @@ class OntologyWrapper
   attr_accessor :publication
   attr_accessor :dateCreated
   
+  attr_accessor :description
+  attr_accessor :abbreviation
+  attr_accessor :categories
+  
   attr_accessor :synonymSlot
   attr_accessor :preferredNameSlot
   
@@ -76,7 +80,10 @@ class OntologyWrapper
     self.homepage= params[:homepage]   
     self.documentation= params[:documentation]   
     self.publication= params[:publication]  
-    self.isManual = params[:isManual] 
+    self.isManual = params[:isManual]
+    self.description= params[:description]
+    self.categories = params[:categories]
+    self.abbreviation = params[:abbreviation]
   end
   
   def map_count

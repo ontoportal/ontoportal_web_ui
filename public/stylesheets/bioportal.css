@@ -173,15 +173,17 @@ border-bottom:1px dotted gray;
 	background-color: #f2f6f2;
 }
 
-th.sorting_asc{
-    background:none;
-    background-color:#2647a0;
-}
-th.sorting_desc{
-    background:none;
-    background-color:#2647a0;
+th.sorting_asc {
+   	background:#3454a7 url('/images/sort_asc.png') no-repeat center right;
+   }
 
-}
+   th.sorting_desc {
+   	background:#3454a7 url('/images/sort_dsc.png') no-repeat center right;
+   }
+
+   th.sorting {
+   	background:#3454a7 url('/images/sort_both.png') no-repeat center right;
+   }
 
 .subject{
 	background: #bfdaff url(sprite.png) repeat-x left -1300px;
