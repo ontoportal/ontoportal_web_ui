@@ -79,8 +79,14 @@ jQuery(document).ready(function() {
   </thead>
 <tbody>
 <% for ontology in @ontologies %>
-  <tr >
-	<td style="width:200px;"><b><%=link_to ontology.displayLabel + "(#{ontology.abbreviation})", ontology_path(:id=>ontology.id)%></b>
+
+	<%label = ontology.displayLabel
+	unless ontology.abbreviation.empty?
+		label << " <br/>(#{ontology.abbreviation})"
+	end
+	%>
+  <tr>
+	<td style="width:200px;"><b><%=link_to label, ontology_path(:id=>ontology.id)%></b>
 	<%if false%>
 		<ul style="padding-left:20px;">
 			<li style="margin-bottom:4px;"><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology.ontologyId)%></li>
@@ -93,9 +99,9 @@ jQuery(document).ready(function() {
 	<td><%=ontology.contactName%></td>
 	<td><%=ontology.dateCreated%></td>
 	<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
-	<td>Description: <%=ontology.description%>
+	<td><%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
 		<br>
-		Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%></td>
+		<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>
 	<td> <%=ontology.categories.join(" ")%></td>
   </tr>
 <% end %>

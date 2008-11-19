@@ -26,6 +26,13 @@ Errors On Form
 		<td>Ontology Name: </td><td><%=text_field :ontology, :displayLabel%></td>
 	</tr>
 	<tr>
+		<td>Ontology Description:</td><td><%= text_field :ontology, :description%></td>
+	</tr>
+	<tr>
+		<td>Ontology Abbreviation:</td><td><%= text_field :ontology, :abbreviation%></td>
+	</tr>
+	
+	<tr>
 		<td>Ontology Format: </td><td><%=text_field :ontology, :format%></td>
 	</tr>	
 	<tr>
@@ -54,7 +61,11 @@ Errors On Form
 	
 	
 	<tr>
-		<td>Categories:</td><td></td>
+		<td>Categories:</td><td><select name="ontology[categoryId][]" multiple="multiple" size="6">
+			<%for key in @categories.keys%>
+			<option value="<%=@categories[key][:id]%>" <%if @ontology.categories.include?(key)%>selected <%end%>><%=@categories[key][:name]%></option>
+			<%end%>
+			</select></td>
 	</tr>
 	<tr>
 		<td>Contact Name</td><td><%=text_field :ontology, :contactName%></td>

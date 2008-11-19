@@ -85,7 +85,9 @@ class OntologiesController < ApplicationController
   
   def edit
     @ontology = DataAccess.getOntology(params[:id])
-     authorize_owner(@ontology.userId)    
+     authorize_owner(@ontology.userId)  
+     @categories = DataAccess.getCategories()
+       
   end
 
   # GET /visualize/:ontology
@@ -145,6 +147,8 @@ class OntologiesController < ApplicationController
     else
       @ontology = DataAccess.getLatestOntology(params[:id])
     end
+    @categories = DataAccess.getCategories()
+    puts @categories.inspect
   end
   
   def create
@@ -239,7 +243,7 @@ class OntologiesController < ApplicationController
          if params[:isRemote].to_i.eql?(0) && (params[:filePath].nil? || params[:filePath].length <1)
            errors << "Please Choose a File"
          end
-         if params[:isRemote].to_i.eql?(0) && params[:filePath].size.to_i > 20000
+         if params[:isRemote].to_i.eql?(0) && params[:filePath].size.to_i > 20000000
             errors << "File is too large"
          end
          

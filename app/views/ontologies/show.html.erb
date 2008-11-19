@@ -1,5 +1,5 @@
 <%unless request.xhr?%>
-
+<br/>
 <h1><%=@ontology.displayLabel%></h1> 
 
 <%if !session[:user].nil? && (session[:user].id.to_i.eql?(@ontology.userId.to_i) || session[:user].admin?)%>

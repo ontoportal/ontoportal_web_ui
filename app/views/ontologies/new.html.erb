@@ -28,6 +28,13 @@ Errors On Form
 		<td>Ontology Name: </td><td><%=text_field :ontology, :displayLabel%></td>
 	</tr>
 	<tr>
+		<td>Ontology Description:</td><td><%= text_field :ontology, :description%></td>
+	</tr>
+	<tr>
+		<td>Ontology Abbreviation:</td><td><%= text_field :ontology, :abbreviation%></td>
+	</tr>
+	
+	<tr>
 		<td>Ontology Format: </td><td><select name="ontology[format]" style="width:200px" >			
 			<option value="OBO">OBO</option>
 			<option value="OWL">OWL</option>
@@ -46,7 +53,12 @@ Errors On Form
 		<td>Date Released: </td><td><%= calendar_date_select_tag "ontology[dateReleased]", "", :popup => :force %></td>
 	</tr>	
 	<tr>
-		<td>File Location</td><td><%=radio_button :ontology,:isRemote,0%>Upload <br><%=radio_button :ontology,:isRemote,1%>Remote</td>
+		<td>File Location</td><td><%=radio_button :ontology,:isRemote,0%>Upload (choose this option if you want users to be able to explore and search
+		your ontology in BioPortal)
+		 <br><%=radio_button :ontology,:isRemote,1%>Remote (choose t his option if you want users to search and view only the
+		*metadata* for your ontology (but not its classes and properties)
+
+		 </td>
 	</tr>
 	<tr>
 		<td>Location URL</td><td><%=text_field :ontology,:urn%></td>
@@ -64,24 +76,27 @@ Errors On Form
 	</tr>
 	
 	<tr>
-		<td>Categories:</td><td></td>
+		<td>Categories:</td><td><select name="ontology[categoryId][]" multiple="multiple" size="6">
+			<%for key in @categories.keys%>
+			<option value="<%=@categories[key][:id]%>" <%if !@ontology.categories.nil? && @ontology.categories.include?(key)%>selected <%end%>><%=@categories[key][:name]%></option>
+			<%end%>
+			</select></td>
 	</tr>
 	<tr>
-		<td>Contact Name</td><td><%=text_field :ontology, :contactName%></td>
+		<td>Contact Name:</td><td><%=text_field :ontology, :contactName%></td>
 	</tr>
 	<tr>
-		<td>Contact Email</td><td><%= text_field :ontology, :contactEmail%></td>
+		<td>Contact Email:</td><td><%= text_field :ontology, :contactEmail%></td>
 	</tr>
 	<tr>
-		<td>Home Page</td><td><%= text_field :ontology, :homepage%></td>
+		<td>Home Page:</td><td><%= text_field :ontology, :homepage%></td>
 	</tr>
 	<tr>
-		<td>Documentation Page</td><td><%= text_field :ontology, :documentation%></td>
+		<td>Documentation Page:</td><td><%= text_field :ontology, :documentation%></td>
 	</tr>
 	<tr>
-		<td>Publications page</td><td><%= text_field :ontology, :publication%></td>
+		<td>Publications Page:</td><td><%= text_field :ontology, :publication%></td>
 	</tr>
-
 	
 	
 	
