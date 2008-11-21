@@ -28,7 +28,7 @@ Errors On Form
 		<td>Ontology Name: </td><td><%=text_field :ontology, :displayLabel%></td>
 	</tr>
 	<tr>
-		<td>Ontology Description:</td><td><%= text_field :ontology, :description%></td>
+		<td>Ontology Description:</td><td><%= text_area :ontology, :description,:rows=>5%></td>
 	</tr>
 	<tr>
 		<td>Ontology Abbreviation:</td><td><%= text_field :ontology, :abbreviation%></td>
@@ -50,12 +50,12 @@ Errors On Form
 		<td>Ontology Version: </td><td><%=text_field :ontology, :versionNumber%></td>
 	</tr>	
 	<tr>
-		<td>Date Released: </td><td><%= calendar_date_select_tag "ontology[dateReleased]", "", :popup => :force %></td>
+		<td>Date Released: </td><td><%= calendar_date_select_tag "ontology[dateReleased]", @ontology.dateReleased, :popup => :force %></td>
 	</tr>	
 	<tr>
 		<td>File Location</td><td><%=radio_button :ontology,:isRemote,0%>Upload (choose this option if you want users to be able to explore and search
 		your ontology in BioPortal)
-		 <br><%=radio_button :ontology,:isRemote,1%>Remote (choose t his option if you want users to search and view only the
+		 <br><%=radio_button :ontology,:isRemote,1%>Remote (choose this option if you want users to search and view only the
 		*metadata* for your ontology (but not its classes and properties)
 
 		 </td>
@@ -77,8 +77,10 @@ Errors On Form
 	
 	<tr>
 		<td>Categories:</td><td><select name="ontology[categoryId][]" multiple="multiple" size="6">
-			<%for key in @categories.keys%>
-			<option value="<%=@categories[key][:id]%>" <%if !@ontology.categories.nil? && @ontology.categories.include?(key)%>selected <%end%>><%=@categories[key][:name]%></option>
+			<%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
+			<%for cat in cats%>
+			
+			<option value="<%=cat[:id]%>" <%if !@ontology.categories.nil? && @ontology.categories.include?(cat[:id])%>selected <%end%>><%=cat[:name]%></option>
 			<%end%>
 			</select></td>
 	</tr>

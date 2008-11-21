@@ -21,7 +21,7 @@
 	<strong>Scheduled Maintenance:</strong> The Bioportal Website and Restful services will be down on <strong>Nov 20th</strong> for updates.
 		</div> -->
 	
-<%=link_to image_tag('ncbo_logo_portal.gif'),"http://www.bioontology.org"%>
+<%=link_to image_tag('ncbo_logo_portal.gif'),"/"%>
 <br>
 <div class="yui-navset">
 	<%=render :partial =>'layouts/topnav'%>          
@@ -44,6 +44,7 @@ buildTabWait();
 </script>
 
 
+<%=render :partial =>'layouts/footer'%>          
 	
 </body>
 </html>

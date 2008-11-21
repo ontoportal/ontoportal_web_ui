@@ -59,8 +59,10 @@ jQuery(document).ready(function() {
 <div style="float:left;width:800px;padding:4px;">
 	Filter by Category<select onclick ="filterBySelection(this)"  name="cat">
 		<option value="0" selected="selected">All Categories</option>
-			<%for category in @categories.keys%>
-			<option value="<%=@categories[category][:id]%>"><%=@categories[category][:name]%></option>
+			<%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
+			<%for cat in cats%>
+			
+			<option value="<%=cat[:id]%>" ><%=cat[:name]%></option>
 			<%end%>
 	</select>
 	<br>

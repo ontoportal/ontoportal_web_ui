@@ -59,9 +59,11 @@ class OntologiesController < ApplicationController
   def update
       params[:ontology][:isReviewed]=1
       params[:ontology][:isFoundry]=0
-    unless authorize_owner(params[:ontology][:userId].to_i)
+    unless !authorize_owner(params[:ontology][:userId].to_i)
       return
     end
+    
+    
       @errors = validate(params[:ontology],true)
       if @errors.length < 1
         puts("I should be updating")
@@ -71,21 +73,28 @@ class OntologiesController < ApplicationController
           flash[:notice]=@ontology[:longMessage]
          redirect_to ontology_path(:id=>params[:ontology][:id])
         else
-      
+        puts("There is an error")
           redirect_to ontology_path(@ontology)
         end
       else
+        puts "There was an error validating"
         @ontology = OntologyWrapper.new
         @ontology.from_params(params[:ontology])
         @ontology.id = params[:id]
+        @categories = DataAccess.getCategories()
+        
         render :action=> 'edit'
       end
+      
+      puts "I fell through"
   end
   
   
   def edit
     @ontology = DataAccess.getOntology(params[:id])
-     authorize_owner(@ontology.userId)  
+    
+
+     authorize_owner(@ontology.userId.to_i)  
      @categories = DataAccess.getCategories()
        
   end
@@ -179,9 +188,13 @@ class OntologiesController < ApplicationController
       if(params[:ontology][:ontologyId].empty?)
         @ontology = OntologyWrapper.new
         @ontology.from_params(params[:ontology])
+        @categories = DataAccess.getCategories()
+        
       else
         @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
         @ontology.from_params(params[:ontology])
+        @categories = DataAccess.getCategories()
+        
       end
       
     render :action=>'new'
