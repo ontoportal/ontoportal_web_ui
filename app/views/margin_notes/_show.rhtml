@@ -63,7 +63,7 @@ javascripts = "resetNoteForm(#{uniq});"
 	<input type="button" class ="blueButton" value="New Thread" onclick ="window.location='/login?redirect=<%=@ontology.to_param%>'"> 
 <%else%>
 <br>
-<span class="blueButton" onclick="buildEditor('<%=uniq%>');"><%=link_to_prototype_dialog( "New Marginal Note", "commentForm",'form',  {:title => "New Marginal Note", :width =>800,:height=>500},{})%></span>
+<span class="blueButton" onclick="buildEditor('<%=uniq%>');"><%=link_to_prototype_dialog( "New Note", "commentForm",'form',  {:title => "New Marginal Note", :width =>800,:height=>500},{})%></span>
 
 <!--	<input type="button" class ="blueButton" value="New Thread" onclick ="buildEditor('<%=uniq%>');toggleHide('form','');toggleHide('buttons','');document.getElementById('noteParent').value='';">  -->
 <%end%>

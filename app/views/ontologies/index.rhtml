@@ -88,7 +88,7 @@ jQuery(document).ready(function() {
 	end
 	%>
   <tr>
-	<td style="width:200px;"><b><%=link_to label, ontology_path(:id=>ontology.id)%></b>
+	<td style="width:200px;"><%=link_to label, ontology_path(:id=>ontology.id)%>
 	<%if false%>
 		<ul style="padding-left:20px;">
 			<li style="margin-bottom:4px;"><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology.ontologyId)%></li>

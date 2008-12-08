@@ -54,7 +54,7 @@ class OntologyWrapper
     "Not Applicable"=>5
   }
   
-  FORMAT=["OBO","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE","LEXGRID_XML"]
+  FORMAT=["OBO","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE","LEXGRID_XML","RRF"]
     
   
   def from_params(params)

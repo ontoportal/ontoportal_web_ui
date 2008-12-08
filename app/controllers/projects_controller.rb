@@ -72,6 +72,13 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.save
+        
+              #adds project to syndication
+               event = EventItem.new
+               event.type="Project"
+               event.type_id=@project.id
+               event.save
+        
         flash[:notice] = 'Project was successfully created.'
         format.html { redirect_to :controller=>:reviews, :action=>:new, :project=>@project.id}
         format.xml  { render :xml => @project, :status => :created, :location => @project }

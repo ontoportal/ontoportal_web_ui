@@ -1,14 +1,15 @@
 
 <span style="float:right">
 	<%if session[:user].nil?%>
-		<%=link_to "Sign In" ,:controller =>'login'%> &nbsp; <%=link_to "Register", new_user_path(:redirect=>@ontology)%>
+		<%=link_to "Sign In" ,:controller =>'login'%> | <%=link_to "Register", new_user_path(:redirect=>@ontology)%> | 
 	<%else%>
 		Logged In As <%=session[:user].username%>
 		<%=link_to "My Projects", projects_path(:user=>session[:user].id)%> | 
 		<%=link_to "My Account", edit_user_path(session[:user])%> | 
 		<%=link_to "Log Out",logout_url%> |
-		<a href="/home/release">Help/About</a>
 	<%end%> 
+	 <a href="/home/release">Help/About</a>
+	
 	&nbsp;&nbsp;<a href="/feedback" style="font-weight:bold;font-size:14px;">Send Feedback</a>
 	</span>
 <ul class="topnav">

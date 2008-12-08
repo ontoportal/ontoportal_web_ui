@@ -32,12 +32,12 @@ class NodeWrapper
    end
    
    def note_count
-     if CACHE.get("#{self.version_id}::#{self.id.gsub(" ","%20")}_NoteCount").nil?
-        count = MarginNote.count(:conditions=>{:ontology_version_id => self.version_id, :concept_id =>self.id})
-        CACHE.set("#{self.version_id}::#{self.id.gsub(" ","%20")}_NoteCount",count)
+     if CACHE.get("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_NoteCount").nil?
+        count = MarginNote.count(:conditions=>{:ontology_id => self.ontology_id, :concept_id =>self.id})
+        CACHE.set("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_NoteCount",count)
         return count
      else
-        return CACHE.get("#{self.version_id}::#{self.id.gsub(" ","%20")}_NoteCount")
+        return CACHE.get("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_NoteCount")
      end
 
    end

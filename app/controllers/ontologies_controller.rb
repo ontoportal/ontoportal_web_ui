@@ -125,11 +125,13 @@ class OntologiesController < ApplicationController
         #gets the initial mappings
         @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.ontologyId, :source_id => @concept.id})
         #@mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
-        #gets the initial margin notes
-        @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_version_id => @ontology.id, :concept_id => @concept.id,:parent_id => nil})
-        @margin_note = MarginNote.new
-        @margin_note.concept_id = @concept.id
-        @margin_note.ontology_version_id = @ontology.id
+        #builds the margin note tab
+         @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_id, :concept_id => @concept.id,:parent_id =>nil})
+         #needed to prepopulate the margin note
+         @margin_note = MarginNote.new
+         @margin_note.concept_id = @concept.id
+         @margin_note.ontology_version_id = @concept.version_id
+         @margin_note.ontology_id=@concept.ontology_id
         
        # for demo only
        @software=[]
@@ -179,6 +181,14 @@ class OntologiesController < ApplicationController
           end
         render :action=>'new'  
       else
+    
+    
+        #adds ontology to syndication
+         event = EventItem.new
+         event.event_type="Ontology"
+         event.event_type_id=@ontology.ontologyId
+         event.ontology_id=@ontology.ontologyId
+         event.save
     
         redirect_to ontology_path(@ontology)
       end

@@ -168,6 +168,17 @@ class MappingsController < ApplicationController
     #repopulates table
     @mappings =  Mapping.find(:all, :conditions=>{:source_ont => @mapping.source_ont, :source_id => @mapping.source_id})
     @ontology = DataAccess.getOntology(@mapping.source_version_id)
+    
+    
+    #adds mapping to syndication
+    event = EventItem.new
+    event.event_type="Mapping"
+    event.event_type_id=@mapping.id
+    event.ontology_id= @mapping.source_ont
+    event.save
+    
+    
+    
     render :partial =>'mapping_table'
      
 

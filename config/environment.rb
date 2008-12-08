@@ -61,8 +61,8 @@ Rails::Initializer.run do |config|
 end
 
     #$REST_URL="http://ncbo-core-dev1:8080/bioportal/rest"
-    $REST_URL="http://ncbo-core-load1.stanford.edu/bioportal/rest"
-    #$REST_URL="http://rest.bioontology.org/bioportal/rest"
+    #$REST_URL="http://ncbo-core-load1.stanford.edu/bioportal/rest"
+    $REST_URL="http://rest.bioontology.org/bioportal/rest"
     #$REST_URL="http://ncbo-core-stage1.stanford.edu/bioportal/rest"
 
 ExceptionNotifier.exception_recipients = %w(ngriff@stanford.edu) 
