@@ -14,7 +14,9 @@ class BioPortalRestfulCore
     CONCEPT_PATH ="/concepts/%ONT%/%CONC%"
     PATH_PATH = "/path/%ONT%/%CONC%/root"
     VERSIONS_PATH="/ontologies/versions/%ONT%"
-    SEARCH_PATH="/search/concepts/%query%?ontologies=%ONT%"
+    
+#    http://ncbo-core-dev1.stanford.edu/bioportal/rest/search/cell?includeproperties=1&ontologyids=1070,%201032&pagesize=50&pagenum=2&isexactmatch=0
+    SEARCH_PATH="/search/%query%?%ONT%"
     PROPERTY_SEARCH_PATH="/search/properties/%query%?ontologies=%ONT%"
     VIRTUAL_URI_PATH="/virtual/%ONT%/%CONC%"
     META_SEARCH_PATH="/search/meta/%query%"
@@ -59,7 +61,7 @@ class BioPortalRestfulCore
 
            categories = {}
            time = Time.now
-            doc.elements.each("*/data/list/categorybean"){ |element| 
+            doc.elements.each("*/data/list/categoryBean"){ |element| 
               category = parseCategory(element)
             categories[category[:id].to_s]=category 
            }
@@ -92,7 +94,7 @@ class BioPortalRestfulCore
 #          puts "#########Full Doc############"
 #          puts doc.to_s
 #          puts "#####################"
-          doc.elements.each("*/data/classbean"){ |element|  
+          doc.elements.each("*/data/classBean"){ |element|  
           node = parseConcept(element,ontology)
          }
 #         puts "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -114,7 +116,7 @@ class BioPortalRestfulCore
          
                    puts "I should be Nil: #{node}"
          
-          doc.elements.each("*/data/classbean"){ |element|  
+          doc.elements.each("*/data/classBean"){ |element|  
           node = parseConcept(element,ontology)
          }
          puts "getTopLevelNodes Parse Time: #{Time.now-time}"
@@ -133,10 +135,11 @@ class BioPortalRestfulCore
 
          ontologies = []
          time = Time.now
-          doc.elements.each("*/data/list/ontology"){ |element| 
+          doc.elements.each("*/data/list/ontologyBean"){ |element| 
           ontologies << parseOntology(element)
          }
          puts "getOntologyList Parse Time: #{Time.now-time}"
+         puts ontologies.size
         return ontologies
       end
       
@@ -153,7 +156,7 @@ class BioPortalRestfulCore
         ontologies=[]
 
          time = Time.now
-          doc.elements.each("*/data/list/ontology"){ |element|  
+          doc.elements.each("*/data/list/ontologyBean"){ |element|  
           ontologies << parseOntology(element)
          }
          puts "getOntologyVersions Parse Time: #{Time.now-time}"
@@ -179,7 +182,7 @@ class BioPortalRestfulCore
           puts "I should be Nil: #{ont}"
           
          time = Time.now
-            doc.elements.each("*/data/ontology"){ |element|  
+            doc.elements.each("*/data/ontologyBean"){ |element|  
             ont = parseOntology(element)
           }                    
          puts "getOntology Parse Time: #{Time.now-time}"
@@ -202,7 +205,7 @@ class BioPortalRestfulCore
                    end
             
            time = Time.now
-              doc.elements.each("*/data/ontology"){ |element|  
+              doc.elements.each("*/data/ontologyBean"){ |element|  
               ont = parseOntology(element)
             }                    
            puts "getOntology Parse Time: #{Time.now-time}"
@@ -226,7 +229,7 @@ class BioPortalRestfulCore
                  end
             
            time = Time.now
-              doc.elements.each("*/data/ontology"){ |element|  
+              doc.elements.each("*/data/ontologyBean"){ |element|  
               ont = parseOntology(element)
             }                    
            puts "getOntology Parse Time: #{Time.now-time}"
@@ -249,7 +252,7 @@ class BioPortalRestfulCore
                 end
            
            time = Time.now
-            doc.elements.each("*/data/classbean"){ |element|  
+            doc.elements.each("*/data/classBean"){ |element|  
             root = parseConcept(element,ontology)
            }
          puts "getPathToRoot Parse Time: #{Time.now-time}"
@@ -257,14 +260,54 @@ class BioPortalRestfulCore
         
       end
       
-       def getNodeNameExactMatch(ontologies,search)
+       def self.getNodeNameExact(ontologies,search,page)
+         
+         if ontologies.to_s.eql?("0")
+           ontologies=""
+         else
+           ontologies = "ontologyids=#{ontologies.join(",")}"
+         end
+         
+         puts BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=1&pagesize=50&pagenum=#{page}&includeproperties=0"
+         begin
+             doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=1&pagesize=50&pagenum=#{page}&includeproperties=0"))
+            rescue Exception=>e
+               doc =  REXML::Document.new(e.io.read)
+               puts doc.to_s
+             end   
+                results = errorCheck(doc)
+
+                   unless results.nil?
+                     return results
+                   end 
+           results = []
+
+             time = Time.now
+              doc.elements.each("*/data/page/contents"){ |element|  
+              results = parseSearchResults(element)
+             }
+             pages = 1
+             
+             doc.elements.each("*/data/page"){|element|
+               pages = element.elements["numPages"].get_text.value
+               }
+             
+
+           return results,pages
 
         
        end   
+       def self.getNodeNameContains(ontologies,search,page)
          
-       def self.getNodeNameContains(ontologies,search)
+         if ontologies.to_s.eql?("0")
+           ontologies=""
+         else
+           ontologies = "ontologyids=#{ontologies.join(",")}"
+         end
+         
+         
         begin
-            doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies.join(",")).gsub("%query%",search.gsub(" ","%20"))))
+            doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0"))
            rescue Exception=>e
               doc =  REXML::Document.new(e.io.read)
               puts doc.to_s
@@ -277,11 +320,18 @@ class BioPortalRestfulCore
           results = []
             
             time = Time.now
-             doc.elements.each("*/data/list/searchresultbean"){ |element|  
-             results << parseSearchResults(element)
+             doc.elements.each("*/data/page/contents"){ |element|  
+             results = parseSearchResults(element)
             }
-          puts "getNodeNameContains Parse Time: #{Time.now-time}"
-          return results
+              pages = 1
+
+              doc.elements.each("*/data/page"){|element|
+                pages = element.elements["numPages"].get_text.value
+                }
+
+
+            return results,pages
+ 
         end
         
         def self.getUsers
@@ -295,7 +345,7 @@ class BioPortalRestfulCore
                   end
           results = []          
           time = Time.now
-           doc.elements.each("*/data/list/user"){ |element|  
+           doc.elements.each("*/data/list/userBean"){ |element|  
            results << parseUser(element)
           }
         puts "getUsers Parse Time: #{Time.now-time}"
@@ -314,7 +364,7 @@ class BioPortalRestfulCore
                       end
           
           time = Time.now
-           doc.elements.each("*/data/user"){ |element|  
+           doc.elements.each("*/data/userBean"){ |element|  
            user = parseUser(element)
           }
         puts "getUsers Parse Time: #{Time.now-time}"
@@ -337,7 +387,7 @@ class BioPortalRestfulCore
                   end
           
           time = Time.now
-           doc.elements.each("*/data/user"){ |element|  
+           doc.elements.each("*/data/userBean"){ |element|  
            user = parseUser(element)
            user.session_id = doc.elements["success"].elements["sessionId"].get_text.value
            
@@ -364,7 +414,7 @@ class BioPortalRestfulCore
                     end
             
             time = Time.now
-             doc.elements.each("*/data/user"){ |element|  
+             doc.elements.each("*/data/userBean"){ |element|  
              user = parseUser(element)
             }
              puts "createUser Parse Time: #{Time.now-time}"   
@@ -393,7 +443,7 @@ class BioPortalRestfulCore
                   end
           
             time = Time.now
-            doc.elements.each("*/data/user"){ |element|  
+            doc.elements.each("*/data/userBean"){ |element|  
             user = parseUser(element)
           }
           puts "updateUser Parse Time: #{Time.now-time}"   
@@ -418,7 +468,7 @@ class BioPortalRestfulCore
                       end
               
               time = Time.now
-               doc.elements.each("*/data/ontology"){ |element|  
+               doc.elements.each("*/data/ontologyBean"){ |element|  
                ontology = parseOntology(element)
               }
                puts "createOntology Parse Time: #{Time.now-time}"   
@@ -444,7 +494,7 @@ class BioPortalRestfulCore
                               end
                     puts doc.to_s
                     time = Time.now
-                     doc.elements.each("*/data/ontology"){ |element|  
+                     doc.elements.each("*/data/ontologyBean"){ |element|  
                      ontology = parseOntology(element)
                     }
                      puts "updateOntology Parse Time: #{Time.now-time}"   
@@ -457,31 +507,79 @@ class BioPortalRestfulCore
           return BASE_URL+"/ontologies/download/#{id}"
         end
               
-        
-        def getNodeNameSoundsLike(ontologies,search)
-        
-        end
-        
+   
                 
-        def self.getAttributeValueContains(ontologies,search)
-
-              doc = REXML::Document.new(open(BASE_URL+PROPERTY_SEARCH_PATH.gsub("%ONT%",ontologies.join(",")).gsub("%query%",search.gsub(" ","%20"))))
-                   results = errorCheck(doc)
+        def self.getAttributeValueContains(ontologies,search,page)
+          if ontologies.to_s.eql?("0")
+            ontologies=""
+          else
+            ontologies = "ontologyids=#{ontologies.join(",")}"
+          end
+          
+          
+              begin
+                  doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=1"))
+                 rescue Exception=>e
+                    doc =  REXML::Document.new(e.io.read)
+                    puts doc.to_s
+                  end   
+                     results = errorCheck(doc)
 
                         unless results.nil?
                           return results
-                        end
-            results = []              
-              time = Time.now
-               doc.elements.each("*/data/list/searchresultbean"){ |element|  
-               results << parseSearchResults(element)
-              }
-            puts "getNodeNameContains Parse Time: #{Time.now-time}"
-            return results
+                        end 
+                results = []
+
+                  time = Time.now
+                   doc.elements.each("*/data/page/contents"){ |element|  
+                   results =parseSearchResults(element)
+                  }
+                    pages = 1
+
+                    doc.elements.each("*/data/page"){|element|
+                      pages = element.elements["numPages"].get_text.value
+                      }
+
+
+                  return results,pages
+               
        end
        
-        def getAttributeValueSoundsLike(ontologies,search)
-        
+        def self.getAttributeValueExact(ontologies,search,page)
+          
+          if ontologies.to_s.eql?("0")
+            ontologies=""
+          else
+            ontologies = "ontologyids=#{ontologies.join(",")}"
+          end
+          
+          
+              begin
+                  doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=1&pagesize=50&pagenum=#{page}&includeproperties=1"))
+                 rescue Exception=>e
+                    doc =  REXML::Document.new(e.io.read)
+                    puts doc.to_s
+                  end   
+                     results = errorCheck(doc)
+
+                        unless results.nil?
+                          return results
+                        end 
+                results = []
+
+                  time = Time.now
+                   doc.elements.each("*/data/page/contents"){ |element|  
+                   results = parseSearchResults(element)
+                  }
+                    pages = 1
+
+                    doc.elements.each("*/data/page"){|element|
+                      pages = element.elements["numPages"].get_text.value
+                      }
+
+
+                  return results,pages
+         
         end
        
         
@@ -550,32 +648,52 @@ private
      return res.body
   end
 
-  def self.parseSearchResults(searchResultBean)
-    resultHash={}
-    
-    resultHash[:version_id]= searchResultBean.elements["ontologyVersionId"].get_text.value
-    resultHash[:names] = []
-    searchResultBean.elements["names"].elements.each {|element|       
-        resultHash[:names]<<parseConcept(element,resultHash[:version_id])
-    }
-    
-    resultHash[:properties] = []
-    searchResultBean.elements["properties"].elements.each {|element|       
-        resultHash[:properties]<<parseConcept(element,resultHash[:version_id])
-    }
-    
-    resultHash[:metadata] = []
-    searchResultBean.elements["metadata"].elements.each {|element|       
-        resultHash[:metadata]<<parseConcept(element,resultHash[:version_id])
-    }
+#  def self.parseSearchResults(searchResultBean)
+#    resultHash={}
+#    
+#    resultHash[:version_id]= searchResultBean.elements["ontologyVersionId"].get_text.value
+#    resultHash[:names] = []
+#    searchResultBean.elements["names"].elements.each {|element|       
+#        resultHash[:names]<<parseConcept(element,resultHash[:version_id])
+#    }
+#    
+#    resultHash[:properties] = []
+#    searchResultBean.elements["properties"].elements.each {|element|       
+#        resultHash[:properties]<<parseConcept(element,resultHash[:version_id])
+#    }
+#    
+#    resultHash[:metadata] = []
+#    searchResultBean.elements["metadata"].elements.each {|element|       
+#        resultHash[:metadata]<<parseConcept(element,resultHash[:version_id])
+#    }
     
 #    puts "Results Hash"
 #    puts "----------------"
 #    puts resultHash.inspect
 #    puts "-----------------"
-    return resultHash
+#    return resultHash   
+#  end
+
+  def self.parseSearchResults(searchContents)
     
-    
+    searchResults =[]
+    searchResultList = searchContents.elements["searchResultList"]
+
+     searchResultList.elements.each("searchBean"){|searchBean|
+       search_item = {}
+       search_item[:ontologyDisplayLabel]=searchBean.elements["ontologyDisplayLabel"].get_text.value
+       search_item[:ontologyVersionId]=searchBean.elements["ontologyVersionId"].get_text.value
+       search_item[:ontologyId]=searchBean.elements["ontologyId"].get_text.value
+       search_item[:ontologyDisplayLabel]=searchBean.elements["ontologyDisplayLabel"].get_text.value
+       search_item[:recordType]=searchBean.elements["recordType"].get_text.value
+       search_item[:conceptId]=searchBean.elements["conceptId"].get_text.value
+       search_item[:conceptIdShort]=searchBean.elements["conceptIdShort"].get_text.value
+       search_item[:preferredName]=searchBean.elements["preferredName"].get_text.value
+       search_item[:contents]=searchBean.elements["contents"].get_text.value
+       searchResults<< search_item
+       }
+
+    return searchResults
     
   end
 
@@ -697,7 +815,7 @@ private
                          puts "--------------------------------"
                          #issue with using reference.. for some reason pulls in extra guys sometimes
                          puts classbean.name
-                         if classbean.name.eql?("classbean")
+                         if classbean.name.eql?("classBean")
                            node.children<<parseConcept(classbean,ontology)
                          end
                          }
@@ -718,7 +836,7 @@ private
                else                
                  begin                  
                  node.properties[entry.elements["string"].get_text.value] = entry.elements["list"].elements.map{|element| 
-                   if(element.name.eql?("classbean"))
+                   if(element.name.eql?("classBean"))
                       parseConcept(element,ontology).name 
                   else 
                     element.get_text.value unless element.get_text.value.empty? 

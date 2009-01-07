@@ -4,7 +4,7 @@
 
 <%if !session[:user].nil? && (session[:user].id.to_i.eql?(@ontology.userId.to_i) || session[:user].admin?)%>
 <span class="blueButton"><%=link_to "Submit New Version",new_ontology_path(:id=>@ontology.ontologyId)%></span>
-<span class="blueButton"><%=link_to "Edit Ontology",edit_ontology_path(:id=>@ontology.id)%></span>
+<span class="blueButton"><%=link_to "Edit Ontology Information",edit_ontology_path(:id=>@ontology.id)%></span>
 <%end%>
 <ul class="topnav" id="subnav">
 		<li id="meta"class="selected"><%=link_to_remote "<em>MetaData</em>",:update=>'ontology_content',:method=>'GET',:url=>ontology_url(:ontology => @ontology),:complete=>"selectTab('subnav','meta')"%></li>
@@ -54,7 +54,7 @@
 			<th></th>
 			<th></th>
 		</tr>
-		<%for version in @versions%>
+		<%for version in @versions.reverse%>
 		<tr>
 			<td><%=version.versionNumber%></td>
 			<td><%=version.dateReleased%></td>

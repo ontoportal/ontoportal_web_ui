@@ -2,6 +2,9 @@
 <script src="/javascripts/jquery.cursorMessage.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" href="./stylesheets/jquery.cursorMessage.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
+
+
+
 <script type="text/javascript">
 var dtable;
 function drawMessage(text){
@@ -19,6 +22,24 @@ function filterBySelection(selectbox){
 }
 
 
+function filterByGroup(selectbox){
+//	alert(selectbox.value);
+	if(selectbox.value == 0){
+		dtable.fnFilter( "",8 );
+	}else{
+		dtable.fnFilter( selectbox.value,8 );
+	}
+	
+}
+function filterByParam(param){
+//	alert(selectbox.value);
+		dtable.fnFilter( param,8 );
+
+	
+}
+
+
+
 jQuery(document).ready(function() {
 	dtable = jQuery('#ontologies').dataTable(
 		{
@@ -33,10 +54,12 @@ jQuery(document).ready(function() {
 			null,
 			null,
 			{"bSearchable":false,"bVisible":false},
+			{"bSearchable":false,"bVisible":false},
 			{"bSearchable":false,"bVisible":false}],
 			"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
 						/* Append the grade to the default row class name */
-						jQuery(nRow).hover(function(){
+						children = jQuery(nRow).children()
+						jQuery(children[0]).hover(function(){
 							drawMessage(aData[6]);
 							
 						},function(){jQuery._hideCursorMessage();});
@@ -45,11 +68,40 @@ jQuery(document).ready(function() {
 			
 	});
 	
+	<%if params[:filter]%>
+	filterByParam("<%=params[:filter]%>")
+	<%end%>
+	
 });
 
-</script>
-<%if session[:user].nil? %>
 
+
+</script>
+
+<%
+filter_groups = {
+	"OBO"=>"OBO Foundry",
+	"caBIG"=>"Cancer Biomedical Informatics Grid",
+	"NCIBI"=>"National Center for Integrative Biomedical Informatics",
+	"CTSA"=>"Clinical and Translational Science Awards",
+	"WHO-FIC"=>"The WHO Family of International Classifications",
+	"PSI"=>"Proteomics Standards Initiative",
+	"MSI"=>"Metabolomics Standards Initiative"	
+}
+
+# "id"=>["groups"]
+ontology_groups = {
+	
+}
+
+%>
+
+
+
+
+
+
+<%if session[:user].nil? %>
 	<input type="button" class ="blueButton" value="Submit New Ontology" onclick ="window.location='/login'"> 
 <%else%>
 	<span class="blueButton"><%=link_to "Submit New Ontology",new_ontology_path%></span>
@@ -66,6 +118,14 @@ jQuery(document).ready(function() {
 			<%end%>
 	</select>
 	<br>
+	Filter by Group<select onclick ="filterByGroup(this)"  name="cat">
+		<option value="0" selected="selected">All Groups</option>
+			
+			<%for key in filter_groups.keys%>
+			
+			<option value="<%=key%>" >(<%=key%>) <%=filter_groups[key]%></option>
+			<%end%>
+	</select>
 <table id="ontologies"class="ontologies" cellpadding="0" cellspacing="0">
 		<thead>
   <tr>
@@ -76,7 +136,8 @@ jQuery(document).ready(function() {
 	<th>Uploaded On</th>
 	<th>Status</th>
 	<th>Description</th>
-	<th>categories</th>
+	<th  style="display:none;">categories</th>
+	<th  style="display:none;">groups</th>
   </tr>
   </thead>
 <tbody>
@@ -104,7 +165,8 @@ jQuery(document).ready(function() {
 	<td><%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
 		<br>
 		<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>
-	<td> <%=ontology.categories.join(" ")%></td>
+	<td style="display:none;"> <%=ontology.categories.join(" ")%></td>
+	<td style="display:none;"><%=ontology.format%>,<%if !ontology_groups[ontology.ontologyId].nil?%><%=ontology_groups[ontology.ontologyId].join(",")%><%end%></td>
   </tr>
 <% end %>
 </tbody>
@@ -122,7 +184,7 @@ jQuery(document).ready(function() {
 		<tr>
 		<td><%=link_to note.subject,uri_url(:ontology=>note.ontology_version_id,:id=>note.concept_id)%>
 			<br>
-			<span style="color:#AAAAAA"><%=note.ontology.displayLabel%> (<%=note.concept.name%>) <%=note.created_at.strftime("%m/%d/%y")%> <%=note.user.username%></span>
+			<span style="color:#AAAAAA"><%=link_to "#{note.ontology.displayLabel} (#{note.concept.name})" ,uri_url(:ontology=>note.ontology_version_id,:id=>note.concept_id)%> <%=note.created_at.strftime("%m/%d/%y")%> <%=note.user.username%></span>
 			<p><%= truncate(strip_tags(note.comment),100)%>&nbsp;</p>
 		</td>
 		</tr>

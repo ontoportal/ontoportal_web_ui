@@ -18,4 +18,9 @@ class Mapping < ActiveRecord::Base
   def user
     return DataAccess.getUser(self.user_id)
   end
+  
+  
+  def ontology
+    DataAccess.getOntology(self.source_version_id)
+  end
 end

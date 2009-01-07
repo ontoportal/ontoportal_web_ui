@@ -103,7 +103,7 @@ class DataAccess
          end
        end
 
-    
+
     def self.getOntology(ontology)
       puts "Calling DataAccess.getOntology(#{ontology})"            
       if CACHE.get("#{ontology}::_details").nil? || NO_CACHE
@@ -123,34 +123,36 @@ class DataAccess
       return details
     end
     
-    def self.getNodeNameSoundsLike(ontologies,search)
+    def self.getNodeNameExact(ontologies,search,page)
       #prevents long keys
-      cache_key = Digest::SHA1.hexdigest("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}");
+   #   cache_key = Digest::SHA1.hexdigest("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}");
       
-      if CACHE.get(cache_key).nil? || NO_CACHE
-        results = SERVICE.getNodeNameContains(ontologies,search)
-        unless results.kind_of?(Hash) && results[:error]
-          CACHE.set(cache_key,results)
-        end
-        return results
-      else
-        return CACHE.get(cache_key)
-      end
+    #  if CACHE.get(cache_key).nil? || NO_CACHE
+        results,pages = SERVICE.getNodeNameExact(ontologies,search,page)
+
+#        unless results.kind_of?(Hash) && results[:error]
+  #        CACHE.set(cache_key,results)
+ #       end
+        return results,pages
+ #     else
+#        return CACHE.get(cache_key)
+#      end
     end
     
-    def self.getNodeNameContains(ontologies,search) 
+    def self.getNodeNameContains(ontologies,search,page) 
       #prevents long keys
-      cache_key = Digest::SHA1.hexdigest("#{param(ontologies.join("|"))}::_search::#{param(search)}")
+  #    cache_key = Digest::SHA1.hexdigest("#{param(ontologies.join("|"))}::_search::#{param(search)}")
            
-      if CACHE.get(cache_key).nil? || NO_CACHE
-        results = SERVICE.getNodeNameContains(ontologies,search)
-        unless results.kind_of?(Hash) && results[:error]
-          CACHE.set(cache_key,results)
-        end
-        return results
-      else
-        return CACHE.get(cache_key)
-      end
+   #   if CACHE.get(cache_key).nil? || NO_CACHE
+        results,pages = SERVICE.getNodeNameContains(ontologies,search,page)
+        
+#        unless results.kind_of?(Hash) && results[:error]
+   #       CACHE.set(cache_key,results)
+#        end
+        return results,pages
+#      else
+#        return CACHE.get(cache_key)
+#      end
     end
     
     def self.getUsers
@@ -235,26 +237,26 @@ class DataAccess
     
     
     
-    def self.getAttributeValueContains(ontologies,search)
-       if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}").nil? || NO_CACHE
-        results = SERVICE.getAttributeValueContains(ontologies,search)
-        CACHE.set("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}",results)
-        return results
-      else
-        return CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}")
-      end
+    def self.getAttributeValueContains(ontologies,search,page)
+#       if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}").nil? || NO_CACHE
+        results,pages = SERVICE.getAttributeValueContains(ontologies,search,page)
+#        CACHE.set("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}",results)
+        return results,pages
+#      else
+#        return CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}")
+#      end
       
       
     end
     
-    def self.getAttributeValueSoundsLike(ontologies,search)
-       if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}").nil? || NO_CACHE
-        results = SERVICE.getAttributeValueSoundsLike(ontologies,search)
-        CACHE.set("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}",results)
-        return results
-      else
-        return CACHE.get("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}")
-      end
+    def self.getAttributeValueExact(ontologies,search,page)
+#       if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}").nil? || NO_CACHE
+        results,pages = SERVICE.getAttributeValueExact(ontologies,search,page)
+#        CACHE.set("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}",results)
+        return results,pages
+#      else
+#        return CACHE.get("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}")
+#     end
       
       
     end

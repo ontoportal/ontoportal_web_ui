@@ -34,6 +34,8 @@ Errors On Form
 		<td>Ontology Abbreviation:</td><td><%= text_field :ontology, :abbreviation%></td>
 	</tr>
 	
+	
+	<%if @ontology.ontologyId.nil?%>
 	<tr>
 		<td>Ontology Format: </td><td><select name="ontology[format]" style="width:200px" >			
 			<option value="OBO">OBO</option>
@@ -47,6 +49,13 @@ Errors On Form
 			</select>
 			</td>
 	</tr>	
+	<%else%>
+	<tr>
+		<td>Ontology Format: <%=@ontology.format%>
+			<%=hidden_field :ontology, :format%></td>
+	</tr>
+	<%end%>
+	
 	<tr>
 		<td>Ontology Version: </td><td><%=text_field :ontology, :versionNumber%></td>
 	</tr>	

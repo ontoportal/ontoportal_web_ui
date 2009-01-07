@@ -1,5 +1,20 @@
 
 
+<script type="text/javascript">
+
+	function postData(params){
+		YAHOO.wait.container.wait.show();
+		jQuery.post("/search/search",params ,
+		  function(data){
+		    jQuery("#results").html(data)
+		YAHOO.wait.container.wait.hide();
+		  });
+	
+		
+	}
+
+</script>
+
 <%  remote_form_for(:search, :url => {:controller =>'search',:action=>'search'}, :update =>'results',:loading=>"YAHOO.wait.container.wait.show();",:complete=>'YAHOO.wait.container.wait.hide();') do |f| %>
 <div class="box" id="searchBox">
 	<div class="header">Search Ontologies</div>
@@ -13,8 +28,8 @@
 				options.merge!(ontology.displayLabel => ontology.id)
 				end 
 				options = options.sort     
-				#options.insert(0,["All",0])                
-                select('search','ontologies',options,{:selected=>"All"},{:multiple=>true,:size=>8,:style=>'float:left;'})
+				options.insert(0,["All",0])                
+                select('search','ontologies',options,{:selected=>"0"},{:multiple=>true,:size=>8,:style=>'float:left;'})
                 %>
 	</fieldset>	
 	
@@ -27,16 +42,13 @@
 			</tr>
 			<tr>
 				<td nowrap>Search In:</td>
-				<td><%=check_box "search","class_name",:checked=>"checked"%>Class/Type Name <%=check_box "search","attributes"%>Attributes</td>
+				<td><%=check_box "search","attributes"%>Include Attributes?</td>
 			</tr>
 			<tr>
 				<td nowrap>Search Type:</td>
-				<td><%=radio_button "search","search_type","contains",{:checked=>"checked"}%>Contains <!--<%=radio_button "search","search_type","sounds"%>Sounds Like --></td>
+				<td><%=radio_button "search","search_type","contains",{:checked=>"checked"}%>Contains <%=radio_button "search","search_type","exact"%>Exact Match</td>
 			</tr>
-			<tr>
-				<td nowrap>Include Obsolete:</td>
-				<td><%=check_box "search","obsolete"%></td>
-			</tr>
+
 			<tr>
 				<td colspan="2" align="right"><%=submit_tag 'Search'%></td>
 			</tr>
@@ -49,13 +61,6 @@
 </div>
 <%end%>
 <div id="results">
-	<%if session[:search]
-		@results = session[:search][:results]
-		@ontologies = session[:search][:ontologies]
-		@keyword = session[:search][:keyword]
-		%>
-		<%=render :partial=>'results'%>
-	<%end%>
 	
 </div>
 

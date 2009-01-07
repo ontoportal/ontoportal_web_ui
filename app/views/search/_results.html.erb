@@ -1,52 +1,26 @@
 
-<%
-result_ontologies = []
-for result in @results
-	if !result[:names].empty? || !result[:properties].empty? || !result[:metadata].empty?
-		result_ontologies << result[:version_id].to_i
-	end
-end
-%>
 
 
-<%if result_ontologies.size > 0%>
+<%if @results.size > 0%>
+
+
 <table class="ontologies" cellpadding="0" cellspacing="0">
 	
-	
-	<% for ontology in @ontologies%>	
-	<%unless result_ontologies.include?(ontology.id.to_i)
-		next
-	end
-		%>
-	<tr>
-		<th colspan=2><b><%=ontology.displayLabel%></b></th>
-	</tr>
+<tr>
+	<td colspan="3" align="right" style='background:none;color:black;font-weight:bold;'>
+		<%if params[:page].to_i >1 %> <a href="#" onclick='postData({ "page":"<%=params[:page].to_i-1%>", "search[keyword]": "<%=params[:search][:keyword]%>", "search[attributes]": "<%=params[:search][:attributes]%>", "search[search_type]":"<%=params[:search][:search_type]%>",<%for ontology in params[:search][:ontologies]%>"search[ontologies][]":"<%=ontology%>"<%if !ontology.eql?(params[:search][:ontologies].last)%>,<%end%><%end%> });return false;'>&lt;&lt; Previous Page </a><%end%>  Page <%=params[:page] || 1%> of <%=@pages%>  <%if !params[:page].to_i.eql?(@pages.to_i)%> <a href="#" onclick='postData({ "page":"<%=params[:page].to_i+1%>", "search[keyword]": "<%=params[:search][:keyword]%>", "search[attributes]": "<%=params[:search][:attributes]%>", "search[search_type]":"<%=params[:search][:search_type]%>",<%for ontology in params[:search][:ontologies]%>"search[ontologies][]":"<%=ontology%>"<%if !ontology.eql?(params[:search][:ontologies].last)%>,<%end%><%end%> });return false;'>Next Page &gt;&gt;</a><%end%>
+	</td>		
+</tr>
 	<tr>
 		<th style='background:none;color:black;font-weight:bold;'>Concept Name</th>
 		<th style='background:none;color:black;font-weight:bold;'>Found In</th>
+		<th style='background:none;color:black;font-weight:bold;'>Ontology</th>
 	</tr>
 		<%for result in @results%>
-			<% if result[:version_id].to_i.eql?(ontology.id.to_i)%>
-				<%for concept in result[:names]%>
-				<tr class="<%= cycle("odd", "even")%>">
-					<td><%=link_to highlight(concept.name,@keyword),uri_url(:ontology=>ontology,:id=>concept.id),:onclick=>"YAHOO.tabwait.container.wait.show();"%></td><td>Concept Name</td>
-				</tr>
-				<%end%>
-				<%for concept in result[:properties]%>
-				<tr class="<%= cycle("odd", "even")%>">
-					<td><%=link_to highlight(concept.name,@keyword),uri_url(:ontology=>ontology,:id=>concept.id),:onclick=>"YAHOO.tabwait.container.wait.show();"%></td><td>Concept Properties</td>
-				</tr>
-				<%end%>
-				<%for concept in result[:metadata]%>
-				<tr class="<%= cycle("odd", "even")%>">
-					<td><%=link_to highlight(concept.name,@keyword),uri_url(:ontology=>ontology,:id=>concept.id),:onclick=>"YAHOO.tabwait.container.wait.show();"%></td><td>MetaData</td>
-				</tr>
-				<%end%>
-			<%end%>	
-		
-		
+			<tr class="<%= cycle("odd", "even")%>">
+				<td><%=link_to highlight(result[:contents],@keyword),uri_url(:ontology=>result[:ontologyVersionId],:id=>result[:conceptIdShort]),:onclick=>"YAHOO.tabwait.container.wait.show();"%></td><td><%=result[:recordType].titleize%></td><td><%=result[:ontologyDisplayLabel]%></td>
+			</tr>
 		<%end%>
-	<%end%>
 </table>
 <%else%>
 <h1>No Results Found</h1>
