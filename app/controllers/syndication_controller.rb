@@ -9,7 +9,7 @@ class SyndicationController < ApplicationController
     if params[:ontologies].nil?
       events = EventItem.find(:all,:order=>"created_at desc",:limit=>20)
     else
-      events = EventItem.find(:all,:conditions=>{:ontology_id=>params[:ontologies].split(",")},:order=>"created_at desc",:limit=>20))
+      events = EventItem.find(:all,:conditions=>{:ontology_id=>params[:ontologies].split(",")},:order=>"created_at desc",:limit=>20)
     end
     feed_items=[]
     

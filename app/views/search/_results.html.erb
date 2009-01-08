@@ -18,9 +18,18 @@
 	</tr>
 		<%for result in @results%>
 			<tr class="<%= cycle("odd", "even")%>">
-				<td><%=link_to highlight(result[:contents],@keyword),uri_url(:ontology=>result[:ontologyVersionId],:id=>result[:conceptIdShort]),:onclick=>"YAHOO.tabwait.container.wait.show();"%></td><td><%=result[:recordType].titleize%></td><td><%=result[:ontologyDisplayLabel]%></td>
+				<td><%=link_to highlight(result[:contents],@keyword),uri_url(:ontology=>result[:ontologyVersionId],:id=>result[:conceptIdShort]),:onclick=>"YAHOO.tabwait.container.wait.show();"%></td>
+				<td><%=result[:recordType].titleize.gsub("Record Type","")%></td>
+				<td><%=link_to result[:ontologyDisplayLabel], ontology_path(:id=>result[:ontologyVersionId])%></td>
 			</tr>
 		<%end%>
+		
+		<tr>
+			<td colspan="3" align="right" style='background:none;color:black;font-weight:bold;'>
+				<%if params[:page].to_i >1 %> <a href="#" onclick='postData({ "page":"<%=params[:page].to_i-1%>", "search[keyword]": "<%=params[:search][:keyword]%>", "search[attributes]": "<%=params[:search][:attributes]%>", "search[search_type]":"<%=params[:search][:search_type]%>",<%for ontology in params[:search][:ontologies]%>"search[ontologies][]":"<%=ontology%>"<%if !ontology.eql?(params[:search][:ontologies].last)%>,<%end%><%end%> });return false;'>&lt;&lt; Previous Page </a><%end%>  Page <%=params[:page] || 1%> of <%=@pages%>  <%if !params[:page].to_i.eql?(@pages.to_i)%> <a href="#" onclick='postData({ "page":"<%=params[:page].to_i+1%>", "search[keyword]": "<%=params[:search][:keyword]%>", "search[attributes]": "<%=params[:search][:attributes]%>", "search[search_type]":"<%=params[:search][:search_type]%>",<%for ontology in params[:search][:ontologies]%>"search[ontologies][]":"<%=ontology%>"<%if !ontology.eql?(params[:search][:ontologies].last)%>,<%end%><%end%> });return false;'>Next Page &gt;&gt;</a><%end%>
+			</td>		
+		</tr>
+		
 </table>
 <%else%>
 <h1>No Results Found</h1>

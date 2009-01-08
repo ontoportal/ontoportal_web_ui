@@ -30,6 +30,7 @@ function filterByGroup(selectbox){
 		dtable.fnFilter( selectbox.value,8 );
 	}
 	
+	jQuery("#filterlink").href="http://bioportal.bioontology.org/?filter="+selectbox.value
 }
 function filterByParam(param){
 //	alert(selectbox.value);
@@ -125,7 +126,7 @@ ontology_groups = {
 			
 			<option value="<%=key%>" >(<%=key%>) <%=filter_groups[key]%></option>
 			<%end%>
-	</select>
+	</select> <a href="http://bioportal.bioontology.org" id="filterlink">Link To This Filter</a>
 <table id="ontologies"class="ontologies" cellpadding="0" cellspacing="0">
 		<thead>
   <tr>
@@ -156,6 +157,9 @@ ontology_groups = {
 			<li><%= link_to "See All #{ontology.reviews} Reviews",reviews_path(:ontology=>ontology.ontologyId)%></li>
 		</ul>
 	<%end%>
+	<br>
+	<br>
+	<a href="/syndication/rss?ontologies=<%=ontology.id%>" style="text-decoration:none;"><img src="/images/feed-icon.png" height=16 width=16 border=0 > Subscribe</a>
 		</td>
 	<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
 	<td  style="width:50px;"><%=ontology.versionNumber%></td>
@@ -184,7 +188,7 @@ ontology_groups = {
 		<tr>
 		<td><%=link_to note.subject,uri_url(:ontology=>note.ontology_version_id,:id=>note.concept_id)%>
 			<br>
-			<span style="color:#AAAAAA"><%=link_to "#{note.ontology.displayLabel} (#{note.concept.name})" ,uri_url(:ontology=>note.ontology_version_id,:id=>note.concept_id)%> <%=note.created_at.strftime("%m/%d/%y")%> <%=note.user.username%></span>
+			<span style="color:#AAAAAA"><%=link_to "#{note.concept.name} (#{note.ontology.displayLabel})" ,uri_url(:ontology=>note.ontology_version_id,:id=>note.concept_id)%> <%=note.created_at.strftime("%m/%d/%y")%> <%=note.user.username%></span>
 			<p><%= truncate(strip_tags(note.comment),100)%>&nbsp;</p>
 		</td>
 		</tr>

@@ -19,12 +19,12 @@ set :user,"ngriff"
 #role :db,  "ncbo-ror1.stanford.edu", :primary => true
 
 #stage
-#role :app, "ncbo-ror-stage1.stanford.edu"
-#role :web, "ncbo-ror-stage1.stanford.edu"
-#role :db,  "ncbo-ror-stage1.stanford.edu", :primary => true
+role :app, "ncbo-ror-stage1.stanford.edu"
+role :web, "ncbo-ror-stage1.stanford.edu"
+role :db,  "ncbo-ror-stage1.stanford.edu", :primary => true
 
 
 #production
-role :app, "ncbo-ror-prod1.stanford.edu"
-role :web, "ncbo-ror-prod1.stanford.edu"
-role :db,  "ncbo-ror-prod1.stanford.edu", :primary => true
+#role :app, "ncbo-ror-prod1.stanford.edu"
+#role :web, "ncbo-ror-prod1.stanford.edu"
+#role :db,  "ncbo-ror-prod1.stanford.edu", :primary => true

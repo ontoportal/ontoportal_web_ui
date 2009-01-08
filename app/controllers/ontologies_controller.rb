@@ -186,7 +186,7 @@ class OntologiesController < ApplicationController
         #adds ontology to syndication
          event = EventItem.new
          event.event_type="Ontology"
-         event.event_type_id=@ontology.ontologyId
+         event.event_type_id=@ontology.id
          event.ontology_id=@ontology.ontologyId
          event.save
     

@@ -25,10 +25,10 @@
 	<%=
                 options = {}
 				for ontology in @ontologies
-				options.merge!(ontology.displayLabel => ontology.id)
+				options.merge!(ontology.displayLabel => ontology.ontologyId)
 				end 
 				options = options.sort     
-				options.insert(0,["All",0])                
+				options.insert(0,["All","0"])                
                 select('search','ontologies',options,{:selected=>"0"},{:multiple=>true,:size=>8,:style=>'float:left;'})
                 %>
 	</fieldset>	
@@ -41,8 +41,8 @@
 				<td><%=text_field "search","keyword",:size=>30%></td>
 			</tr>
 			<tr>
-				<td nowrap>Search In:</td>
-				<td><%=check_box "search","attributes"%>Include Attributes?</td>
+				<td nowrap>&nbsp;</td>
+				<td><%=check_box "search","attributes"%>Include search in attributes</td>
 			</tr>
 			<tr>
 				<td nowrap>Search Type:</td>

@@ -305,7 +305,7 @@ class BioPortalRestfulCore
            ontologies = "ontologyids=#{ontologies.join(",")}"
          end
          
-         
+         puts BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0"
         begin
             doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0"))
            rescue Exception=>e
