@@ -265,10 +265,10 @@ class BioPortalRestfulCore
          if ontologies.to_s.eql?("0")
            ontologies=""
          else
-           ontologies = "ontologyids=#{ontologies.join(",")}"
+           ontologies = "ontologyids=#{ontologies.join(",")}&"
          end
          
-         puts BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=1&pagesize=50&pagenum=#{page}&includeproperties=0"
+         puts BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"isexactmatch=1&pagesize=50&pagenum=#{page}&includeproperties=0"
          begin
              doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=1&pagesize=50&pagenum=#{page}&includeproperties=0"))
             rescue Exception=>e
@@ -302,10 +302,10 @@ class BioPortalRestfulCore
          if ontologies.to_s.eql?("0")
            ontologies=""
          else
-           ontologies = "ontologyids=#{ontologies.join(",")}"
+           ontologies = "ontologyids=#{ontologies.join(",")}&"
          end
          
-         puts BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0"
+         puts BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0"
         begin
             doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0"))
            rescue Exception=>e
@@ -513,12 +513,12 @@ class BioPortalRestfulCore
           if ontologies.to_s.eql?("0")
             ontologies=""
           else
-            ontologies = "ontologyids=#{ontologies.join(",")}"
+            ontologies = "ontologyids=#{ontologies.join(",")}&"
           end
           
           
               begin
-                  doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=1"))
+                  doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=1"))
                  rescue Exception=>e
                     doc =  REXML::Document.new(e.io.read)
                     puts doc.to_s
@@ -550,12 +550,12 @@ class BioPortalRestfulCore
           if ontologies.to_s.eql?("0")
             ontologies=""
           else
-            ontologies = "ontologyids=#{ontologies.join(",")}"
+            ontologies = "ontologyids=#{ontologies.join(",")}&"
           end
           
           
               begin
-                  doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=1&pagesize=50&pagenum=#{page}&includeproperties=1"))
+                  doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"isexactmatch=1&pagesize=50&pagenum=#{page}&includeproperties=1"))
                  rescue Exception=>e
                     doc =  REXML::Document.new(e.io.read)
                     puts doc.to_s
