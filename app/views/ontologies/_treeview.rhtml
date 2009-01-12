@@ -1,6 +1,11 @@
 <div id="treeDiv1" style="margin-top:5px;float:left;">
 </div>
 
+<%if @root.children.empty?%>
+No Root Concept Defined.
+<%end%>
+
+
 <script type="text/javascript">
 
 setOntology('<%=@ontology.id%>');
