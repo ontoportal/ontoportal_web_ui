@@ -8,7 +8,7 @@
 <div id="dragSpot"></div>
 
 <div  id="centerContent" class="content" >
-<h1 id="name_label"><%=@concept.name%> <span id="link_label"> (<%=link_to "Link To Concept in BioPortal",uri_url(:ontology=>@ontology,:id=>@concept.id)%>)</span></h1>
+<h1 id="name_label"><%=@concept.name%> <span id="link_label"> (<%=link_to "Get a direct link to this concept in BioPortal",uri_url(:ontology=>@ontology,:id=>@concept.id)%>)</span></h1>
 
 	<div id="tabframe" class="yui-navset">
     	<ul class="yui-nav">

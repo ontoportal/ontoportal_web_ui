@@ -5,7 +5,7 @@
 		<td>Ontology:</td>
 		<td><select name="ontology" style="width:200px" onchange="document.getElementById('destination_ontology').value=this.value">
 			<%for option in @ontologies%>
-			<option value="<%=option.id %>"><%=option.displayLabel%></option>
+			<option value="<%=option.ontologyId %>"><%=option.displayLabel%></option>
 			<%end%>
 	</tr>
 	<tr>

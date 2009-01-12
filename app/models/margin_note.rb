@@ -21,7 +21,7 @@ class MarginNote < ActiveRecord::Base
   end
   
   def after_create
-    CACHE.delete("#{self.ontology_version_id}::#{self.concept_id}_NoteCount")
+    CACHE.delete("#{self.ontology_id}::#{self.concept_id}_NoteCount")
   end
   
   def ontology

@@ -30,7 +30,7 @@ function filterByGroup(selectbox){
 		dtable.fnFilter( selectbox.value,8 );
 	}
 	
-	jQuery("#filterlink").href="http://bioportal.bioontology.org/?filter="+selectbox.value
+	jQuery("#filterlink").attr("href","http://bioportal.bioontology.org/?filter="+selectbox.value)
 }
 function filterByParam(param){
 //	alert(selectbox.value);
@@ -159,7 +159,7 @@ ontology_groups = {
 	<%end%>
 	<br>
 	<br>
-	<a href="/syndication/rss?ontologies=<%=ontology.id%>" style="text-decoration:none;"><img src="/images/feed-icon.png" height=16 width=16 border=0 > Subscribe</a>
+	<a href="/syndication/rss?ontologies=<%=ontology.ontologyId%>" style="text-decoration:none;"><img src="/images/feed-icon.png" height=16 width=16 border=0 > Subscribe</a>
 		</td>
 	<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
 	<td  style="width:50px;"><%=ontology.versionNumber%></td>
