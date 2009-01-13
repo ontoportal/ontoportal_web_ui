@@ -189,7 +189,9 @@ class OntologiesController < ApplicationController
          event.event_type_id=@ontology.id
          event.ontology_id=@ontology.ontologyId
          event.save
-    
+         flash[:notice]="Thank you for submitting your ontology to BioPortal.
+          We will now put your ontology in the queue to be processed.
+           Please keep in mind that it may take up to several hours before BioPortal users will be able to explore and search yoru ontology"
         redirect_to ontology_path(@ontology)
       end
     

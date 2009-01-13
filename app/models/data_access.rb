@@ -5,7 +5,7 @@ class DataAccess
   SERVICE = BioPortalRestfulCore #sets what backend we are using
   
   CACHE_EXPIRE_TIME=60*60*3
-  NO_CACHE = true
+  NO_CACHE = false
     
     
     def self.getNode(ontology,node_id)

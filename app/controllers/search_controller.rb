@@ -8,8 +8,8 @@ class SearchController < ApplicationController
   end
   
   def concept #search for concept for mappings
-    @concepts,@pages = DataAccess.getNodeNameContains([params[:ontology]],params[:name],1)    
-    @ontology = DataAccess.getLatestOntology(params[:ontology])
+    @ontology = DataAccess.getOntology(params[:ontology])
+    @concepts,@pages = DataAccess.getNodeNameContains([@ontology.ontologyId],params[:name],1)    
     render :partial => 'concepts'    
   end
   

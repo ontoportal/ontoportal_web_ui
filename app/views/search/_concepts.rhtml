@@ -3,7 +3,7 @@
 		<div style="float:left;margin:10px;"id="select">
 			<select name="mapping[destination_id]" style="width:200px" size="18" onchange="updateArea('GET','/search/concept_preview?ontology=<%=@ontology.id%>&id='+this.value,'map_info')">
 				<%for option in @concepts%>
-				<option value="<%=option[:conceptIdShort]%>"><%=option[:contents]%></option>
+				<option value="<%=option[:conceptIdShort]%>"><%=option[:preferredName]%></option>
 				<%end%>
 			</select>
 			
