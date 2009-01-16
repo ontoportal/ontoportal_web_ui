@@ -17,10 +17,10 @@
 development:
   adapter: mysql
   encoding: utf8
-  database: BioPortalGui_development
-  username: root
-  password: gojava
-  socket: /tmp/mysql.sock
+  database: database_name
+  username: username
+  password: password
+  host: localhost
 
 # Warning: The database defined as 'test' will be erased and
 # re-generated from your development database when you run 'rake'.
@@ -28,10 +28,10 @@ development:
 test:
   adapter: mysql
   encoding: utf8
-  database: BioPortalGui_test
-  username: root
-  password: gojava
-  socket: /tmp/mysql.sock
+  database: database_name
+  username: username
+  password: password
+  host: localhost
 
 #ncboadmin
 #ncbo123
@@ -39,9 +39,9 @@ test:
 production:
   adapter: mysql
   socket: /var/lib/mysql/mysql.sock
-  database: NCBO_Production
-  username: ncboadmin
-  password: ncbo123
+  database: database_name
+  username: username
+  password: password
   host: localhost
 
 #Production

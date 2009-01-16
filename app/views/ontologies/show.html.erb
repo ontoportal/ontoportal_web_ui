@@ -1,5 +1,10 @@
 
+<%if flash[:notice]%>
+<div style="padding:5px;border:1px solid gray;font-size:14px; background-color:#ffffcc;">
 <p><%=flash[:notice]%></p>
+</div>
+<%end%>
+
 <%unless request.xhr?%>
 <br/>
 <h1><%=@ontology.displayLabel%></h1> 
