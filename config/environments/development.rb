@@ -28,4 +28,4 @@ memcache_options = {
 }
 
 CACHE = MemCache.new memcache_options
-CACHE.servers = 'ncbo-ror1:11211'
+CACHE.servers = 'ncbo-ror-dev1:11211'

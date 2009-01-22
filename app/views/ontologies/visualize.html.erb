@@ -10,17 +10,53 @@
 <div  id="centerContent" class="content" >
 <h1 id="name_label"><%=@concept.name%> <span id="link_label"> (<%=link_to "Get a direct link to this concept in BioPortal",uri_url(:ontology=>@ontology,:id=>@concept.id)%>)</span></h1>
 
+<script type="text/javascript">
+jQuery(document).ready(function(){
+	
+	
+
+ loc = new String(document.location)
+	if(loc.search("#t_tab")>=0){
+		jQuery(".tab_container").hide();
+		id = "#"+ loc.split("#")[1].replace(":","")
+		jQuery(id).show();
+		jQuery(".tab").removeClass("selected");
+		jQuery(jQuery("a[href='"+id+"']").parents().get(0)).addClass("selected");
+	}
+	
+	jQuery(".tab").click(function(){
+		
+		jQuery(".tab_container").hide();
+		target = jQuery(this).children("a:first").attr("href").replace(":","") 
+		jQuery(target).show();
+		jQuery(".tab").removeClass("selected");
+		jQuery(this).addClass("selected");
+		return false;
+	});
+	
+	
+	
+});
+</script>
+
+<style>
+.tab_container{
+	display:none;
+}
+</style>
+
 	<div id="tabframe" class="yui-navset">
     	<ul class="yui-nav">
         	
-        	<li class="selected"><a href="#t_tab2"><em>Details</em></a></li>
-			<li ><a href="#t_tab1"><em>Visualization</em></a></li>
-        	<li><a href="#t_tab3"><em>Notes</em></a></li>
-			<li><a href="#t_tab4"><em>Mappings</em></a></li>				
+			
+        	<li class="selected tab"><a href="#t_tab2"><em>Details</em></a></li>
+			<li class="tab"><a  href="#t_tab1:"><em>Visualization</em></a></li>
+        	<li class="tab"><a  href="#t_tab3:"><em>Notes</em></a></li>
+			<li class="tab"><a  href="#t_tab4:"><em>Mappings</em></a></li>				
 			<%if @ontology.ontologyId.to_s.eql?("1104")%>	
-			<li><a href="#t_tab5" ><em>Resources</em></a></li>			
+			<li class="tab"><a  href="#t_tab5:" ><em>Resources</em></a></li>			
 			<%else%>							
-			<li><a href="#t_tab5" onclick="callTab(5,'/resources/@ontology@/@concept@')"><em>Resources</em></a></li>
+			<li class="tab"><a  href="#t_tab5:" onclick="callTab(5,'/resources/@ontology@/@concept@')"><em>Resources</em></a></li>
 			<%end%>
 			
 			
@@ -29,15 +65,15 @@
 		        
     	<div class="yui-content" id = "content">
         	
-        	<div id="t_tab2"><%=render :partial =>'/concepts/details'%></div>
-			<div id="t_tab1"><%=render :partial =>'/concepts/images'%></div>
-			<div id="t_tab3"><%=render :partial =>'/margin_notes/show'%></div>
-			<div id="t_tab4"><%=render :partial =>'/mappings/concept_mappings'%></div>
+        	<div style="display:block;" class="tab_container" id="t_tab2"><%=render :partial =>'/concepts/details'%></div>
+			<div class="tab_container" id="t_tab1"><%=render :partial =>'/concepts/images'%></div>
+			<div class="tab_container" id="t_tab3"><%=render :partial =>'/margin_notes/show'%></div>
+			<div class="tab_container" id="t_tab4"><%=render :partial =>'/mappings/concept_mappings'%></div>
 			
 			<%if @ontology.ontologyId.to_s.eql?("1104")%>	
-				<div id="t_tab5"><%=render :partial =>'/concepts/software'%></div>
+				<div class="tab_container" id="t_tab5"><%=render :partial =>'/concepts/software'%></div>
 			<%else%>
-			<div id="t_tab5"></div>
+			<div class="tab_container" id="t_tab5"></div>
 			<%end%>
 			
     	</div>
@@ -51,7 +87,7 @@
 	
 
 
-YAHOO.util.Event.onDOMReady(buildTabs); 
+//YAHOO.util.Event.onDOMReady(buildTabs); 
 </script>
 
 		

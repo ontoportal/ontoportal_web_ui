@@ -133,8 +133,11 @@ module ApplicationHelper
 
   def build_tree(node,parent,string,id)
     if parent.nil?
-      parent = 'root'
+      draw_root = ''
+    else
+      draw_root = ""
     end
+    
     unless node.children.nil? || node.children.length <1
       for child in node.children
       icons = ""
@@ -146,17 +149,19 @@ module ApplicationHelper
       end
     
       
-        string <<"var myobj = \{ label: \"#{clean(child.name)} #{icons}\", id:\"#{child.id}\",href:\"javascript:onClickTreeNode('#{child.id}','#{clean(child.name)}')\" \};\n
-    		   		    var Node#{clean_id(child.id.to_s)} = new YAHOO.widget.MenuNode(myobj, #{parent}, #{child.expanded});\n"
+        string <<"<li #{draw_root} id=\"#{child.id}\"><span>#{child.name} #{icons}</span>"
     		   		
     				if child.child_size>0 && !child.expanded
-    				  string << "Node#{clean_id(child.id)}.setDynamicLoad(loadNodeData);\n"
+    				  string << "<ul class=\"ajax\">
+  							            <li id='#{child.id}'>{url:/visualize/#{child.ontology_id}/#{child.id}?callback=children}</li>
+  						            </ul>"
   				  end
 
     				if child.id.eql?(id)
-    				 string<< "Node#{clean_id(child.id)}.labelStyle=\"ygtvlabel-selected\"\n";	
+#    				 string<< "Node#{clean_id(child.id)}.labelStyle=\"ygtvlabel-selected\"\n";	
     				end
-    		build_tree(child,"Node#{clean_id(child.id.to_s)}",string,id)
+    				string <<"</li>"
+    		build_tree(child,"child",string,id)
       
       end
       

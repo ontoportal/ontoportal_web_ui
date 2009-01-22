@@ -1,197 +1,277 @@
-<div id="treeDiv1" style="margin-top:5px;float:left;">
-</div>
 
-<%if @root.children.empty?%>
-No Root Concept Defined.
-<%end%>
+<style>
 
-
-<script type="text/javascript">
-
-setOntology('<%=@ontology.id%>');
-setConcept('<%=@concept.id%>');
-
-// adds a node to the tree
-function addTreeNode(rootNode, nodeInfo) {
-		var newNodeDetails = "javascript:onClickTreeNode('" + nodeInfo.ontology_node_id + "','"+nodeInfo.ontology_node_name+"');";
-		var newNodeData = { label:nodeInfo.ontology_node_name, id:nodeInfo.ontology_node_id, href:newNodeDetails };
-		var newNode = new YAHOO.widget.MenuNode(newNodeData, rootNode, false);
-		if (nodeInfo.ontology_node_child_count > 0) {
-			newNode.setDynamicLoad(loadNodeData);
-		}		
-	}
-
-// Ajax call to load in the child nodes
-function loadNodeData(node, fnLoadComplete) {
-		var id = node.data.id;
-
-		var responseSuccess = function(o)
-		{
-			var nodeQue=new Array();
-
-			var respTxt = o.responseText;
-			// turns text into JSon
-			var respObj = eval('(' + respTxt + ')');
-
-			if ( typeof(respObj.nodes) != "undefined") {
-				for (var i=0; i < respObj.nodes.length; i++) {
-//					var name = respObj.nodes[i].ontology_node_name + " (" + respObj.nodes[i].ontology_node_parent_assoc + ")";
-					var name = respObj.nodes[i].ontology_node_name;
-					
-					var text_name = name.split("<")[0]
-					
-					
-					var nodeDetails = "javascript:onClickTreeNode('" + respObj.nodes[i].ontology_node_id + "','"+text_name+"');";
-					var newNodeData = { label:name, id:respObj.nodes[i].ontology_node_id, href:nodeDetails };
-					var newNode = new YAHOO.widget.MenuNode(newNodeData, node, false);
-					if (respObj.nodes[i].ontology_node_child_count > 0) {
-						// tells if it needs to be ajaxable, hides + sign if no children
-						newNode.setDynamicLoad(loadNodeData);
-					}
-					
-					// Que up the children
-					nodeQue[i]=respObj.nodes[i].ontology_node_id
-					
-				}
-			}
-			// sets up the nodes to be que'd
-		    queData(nodeQue,'<%=@ontology.to_param%>')
-			
-				
-			// redraws the tree -- needs to be done every time the nodes are modified
-
-			tree.draw();
-			fnLoadComplete();	
-		}
-		
-		var responseFailure = function(o){
-			alert('responseFailure: ' +	o.statusText);
-		}
-		
-		var callback =
-		{
-			success:responseSuccess,
-			failure:responseFailure
-		};
-		
-		// simple Yahoo ajax call
-		var cObj = YAHOO.util.Connect.asyncRequest('GET','/visualize/<%=@ontology.to_param%>/'+id+"?callback=children",callback);
-	}
-
-
-
-
+.simpleTree
+{
 	
-
-	
-		//Builds the initial tree on load
-        function buildTree() {
-		   var nodeQue=new Array();
-		   //create a new tree:
-		   tree = new YAHOO.widget.TreeView("treeDiv1");
-		   
-		   //turn dynamic loading on for entire tree:
-		   // tree.setDynamicLoad(loadNodeData);
-		   
-		   //get root node for tree:
-		   var root = tree.getRoot();
-		   
-		   //add child nodes for tree; 
-
-			<%=draw_tree(@root,@concept.id )%>
-			<% x = 0; 
-			for child in @root.children %>
-			nodeQue[<%=x%>]="<%=child.id%>"
-			<%x = x+1%>
-			<%end%>
-			// sets up the nodes to be que'd
-		    queData(nodeQue,'<%=@ontology.to_param%>')
-				
-		// tells the tree that when it is clicked to activate the toggleSelected
-		tree.subscribe("labelClick", function(node) { 
-			toggleSelected(node) 
-	    });	
-		   
-		   //render tree with these toplevel nodes; all descendants of these nodes
-		   //will be generated as needed by the dynamic loader.
-		   tree.draw();
-		}
-		
-		// what happens when someone clicks the LABEL of the tree nodes
-		function onClickTreeNode(node_id,node_label) {
-		
-			// sets the label
-			document.getElementById("name_label").firstChild.nodeValue=node_label;
-			//sets the link next to the label
-			document.getElementById("link_label").firstChild.nextSibling.href="/visualize/"+currentOntology+"/"+node_id;
-
-			setConcept(node_id) 
-			
-			var responseSuccess = function(o)
-			{
-				var respTxt = o.responseText;
-				tabData = respTxt.split("|||")
-					// the tabs
-							document.getElementById('t_tab1').innerHTML=tabData[0]
-							document.getElementById('t_tab2').innerHTML=tabData[1]
-							document.getElementById('t_tab3').innerHTML=tabData[2]
-							document.getElementById('t_tab4').innerHTML=tabData[3]
-							
-							
-								<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>		
-							document.getElementById('t_tab5').innerHTML=tabData[4]				
-							<%end%>
-							
-					 tree.draw();
-						YAHOO.wait.container.wait.hide();
-						setCache(node_id,tabData)
-
-			};	
-			
-			var responseFailure = function(o){
-				alert('responseFailure: ' +	o.statusText);
-					YAHOO.wait.container.wait.hide();
-			};
-
-			var callback =
-			{
-				success:responseSuccess,
-				failure:responseFailure
-			};
-			
-		
-		if(getCache(node_id)!=null){
-			tabData = getCache(node_id)
-			document.getElementById('t_tab1').innerHTML=tabData[0]
-			document.getElementById('t_tab2').innerHTML=tabData[1]
-			document.getElementById('t_tab3').innerHTML=tabData[2]
-			document.getElementById('t_tab4').innerHTML=tabData[3]
-				
-							<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>		
-							document.getElementById('t_tab5').innerHTML=tabData[4]				
-							<%end%>
-							
-							
-			 tree.draw();
-			 
-			 update_tab('<%=@ontology.to_param%>',node_id)
-				
-		}else{
-			YAHOO.wait.container.wait.show();
-		YAHOO.util.Connect.asyncRequest('GET','/visualize/<%=@ontology.to_param%>/'+node_id+"?callback=load",callback);		
-		}	
-		tabs.set('activeIndex', 0);
-				
-		}
-		
-function init(){
-	
-	buildWait();
-	buildTree();
-	
+	margin:0;
+	padding:0;
+	/*
+	overflow:auto;
+	width: 250px;
+	height:350px;
+	overflow:auto;
+	border: 1px solid #444444;
+	*/
 }
-		
-YAHOO.util.Event.onDOMReady(init); 
+.simpleTree li
+{
+	list-style: none;
+	margin:0;
+	padding:0 0 0 34px;
+	line-height: 14px;
+}
+.simpleTree li span
+{
+	display:inline;
+	clear: left;
+	white-space: nowrap;
+}
+.simpleTree ul
+{
+	margin:0; 
+	padding:0;
+}
+.simpleTree .root
+{
+	margin-left:-16px;
+	/*background: url(/images/tree/root.gif) no-repeat 16px 0 #ffffff;*/
+}
+.simpleTree .line
+{
+	margin:0 0 0 -16px;
+	padding:0;
+	line-height: 3px;
+	height:3px;
+	font-size:3px;
+	background: url(/images/tree/line_bg.gif) 0 0 no-repeat transparent;
+}
+.simpleTree .line-last
+{
+	margin:0 0 0 -16px;
+	padding:0;
+	line-height: 3px;
+	height:3px;
+	font-size:3px;
+	background: url(/images/tree/spacer.gif) 0 0 no-repeat transparent;
+}
+.simpleTree .line-over
+{
+	margin:0 0 0 -16px;
+	padding:0;
+	line-height: 3px;
+	height:3px;
+	font-size:3px;
+	background: url(/images/tree/line_bg_over.gif) 0 0 no-repeat transparent;
+}
+.simpleTree .line-over-last
+{
+	margin:0 0 0 -16px;
+	padding:0;
+	line-height: 3px;
+	height:3px;
+	font-size:3px;
+	background: url(/images/tree/line_bg_over_last.gif) 0 0 no-repeat transparent;
+}
+.simpleTree .folder-open
+{
+	margin-left:-16px;
+	background: url(/images/tree/collapsable.gif) 0 -2px no-repeat #fff;
+}
+.simpleTree .folder-open-last
+{
+	margin-left:-16px;
+	background: url(/images/tree/collapsable-last.gif) 0 -2px no-repeat #fff;
+}
+.simpleTree .folder-close
+{
+	margin-left:-16px;
+	background: url(/images/tree/expandable.gif) 0 -2px no-repeat #fff;
+}
+.simpleTree .folder-close-last
+{
+	margin-left:-16px;
+	background: url(/images/tree/expandable-last.gif) 0 -2px no-repeat #fff;
+}
+.simpleTree .doc
+{
+	margin-left:-16px;
+	background: url(/images/tree/leaf.gif) 0 -1px no-repeat #fff;
+}
+.simpleTree .doc-last
+{
+	margin-left:-16px;
+	background: url(/images/tree/leaf-last.gif) 0 -1px no-repeat #fff;
+}
+.simpleTree .ajax
+{
+	background: url(/images/tree/spinner.gif) no-repeat 0 0 #ffffff;
+	height: 16px;
+	display:none;
+}
+.simpleTree .ajax li
+{
+	display:none;
+	margin:0; 
+	padding:0;
+}
+.simpleTree .trigger
+{
+	display:inline;
+	margin-left:-32px;
+	width: 28px;
+	height: 11px;
+	cursor:pointer;
+}
+.simpleTree .text
+{
+	cursor: default;
+}
+.simpleTree .active
+{
+	cursor: default;
+	background-color:#F7BE77;
+	padding:0px 2px;
+	border: 1px dashed #444;
+}
+#drag_container
+{
+	background:#ffffff;
+	color:#000;
+	font: normal 11px arial, tahoma, helvetica, sans-serif;
+	border: 1px dashed #767676;
+}
+#drag_container ul
+{
+	list-style: none;
+	padding:0;
+	margin:0;
+}
+
+#drag_container li
+{
+	list-style: none;
+	background-color:#ffffff;
+	line-height:18px;
+	white-space: nowrap;
+	padding:1px 1px 0px 16px;
+	margin:0;
+}
+#drag_container li span
+{
+	padding:0;
+}
+
+#drag_container li.doc, #drag_container li.doc-last
+{
+	background: url(/images/tree/leaf.gif) no-repeat -17px 0 #ffffff;
+}
+#drag_container .folder-close, #drag_container .folder-close-last
+{
+	background: url(/images/tree/expandable.gif) no-repeat -17px 0 #ffffff;
+}
+
+#drag_container .folder-open, #drag_container .folder-open-last
+{
+	background: url(/images/tree/collapsable.gif) no-repeat -17px 0 #ffffff;
+}
+.contextMenu
+{
+	display:none;
+}
+</style>
+
+
+<script type="text/javascript" src="/javascripts/jquery.simple.tree.js"></script>
+<script type="text/javascript" src="/javascripts/jquery.blockUI.js"></script>
+<script type="text/javascript">
+var simpleTreeCollection;
+jQuery(document).ready(function(){
+	simpleTreeCollection = jQuery('.simpleTree').simpleTree({
+		autoclose: false, drag:false,
+		afterClick:function(node){
+//			alert("text-"+$('span:first',node).text());
+			nodeClicked(jQuery(node).attr("id"),jQuery('span:first',node).text())
+		},
+		afterDblClick:function(node){
+			//alert("text-"+$('span:first',node).text());
+		},
+		afterAjax:function()
+		{
+			
+			//alert('Loaded');
+		},
+		animate:true
+		//,docToFolderConvert:true
+	});
+});
+
+
+function nodeClicked(node_id,node_label) {
+
+	// sets the label
+	document.getElementById("name_label").firstChild.nodeValue=node_label;
+	//sets the link next to the label
+	document.getElementById("link_label").firstChild.nextSibling.href="/visualize/"+currentOntology+"/"+node_id;
+
+	setConcept(node_id) 
+	
+
+
+
+	if(getCache(node_id)!=null){
+		tabData = getCache(node_id)
+		document.getElementById('t_tab1').innerHTML=tabData[0]
+		document.getElementById('t_tab2').innerHTML=tabData[1]
+		document.getElementById('t_tab3').innerHTML=tabData[2]
+		document.getElementById('t_tab4').innerHTML=tabData[3]
+
+						<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>		
+						document.getElementById('t_tab5').innerHTML=tabData[4]				
+						<%end%>
+
+		 update_tab('<%=@ontology.to_param%>',node_id)
+
+	}else{
+		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Concept...</h1>' }); 
+        
+		jQuery.get('/visualize/<%=@ontology.to_param%>/'+node_id+'?callback=load' ,
+		  function(data){
+		    tabData = data.split("|||")
+				// the tabs
+						document.getElementById('t_tab1').innerHTML=tabData[0]
+						document.getElementById('t_tab2').innerHTML=tabData[1]
+						document.getElementById('t_tab3').innerHTML=tabData[2]
+						document.getElementById('t_tab4').innerHTML=tabData[3]
+
+
+							<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>		
+						document.getElementById('t_tab5').innerHTML=tabData[4]				
+						<%end%>
+
+					setCache(node_id,tabData)
+					jQuery.unblockUI();	
+
+		  });
+	}	
+	tabs.set('activeIndex', 0);
+
+}
+
+	
+	
+
+
 
 
 </script>
+
+<ul class="simpleTree">
+	<li class="root">
+		<ul>
+		<%=draw_tree(@root,@concept.id )%>
+		</ul>
+	</li>
+
+</ul>
+

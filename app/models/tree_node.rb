@@ -1,6 +1,7 @@
 class TreeNode
   attr_accessor :name
   attr_accessor :id
+  attr_accessor :ontology_id
   attr_accessor :children 
   attr_accessor :ontology_name
   attr_accessor :child_size
@@ -19,7 +20,8 @@ class TreeNode
   def initialize_node(node_object)
     self.name= node_object.name
     self.child_size = node_object.child_size
-    self.ontology_name = node_object.ontology_name   
+    self.ontology_name = node_object.ontology_name  
+    self.ontology_id= node_object.version_id 
     if node_object.note_count >0
       self.note_icon = true
     end
