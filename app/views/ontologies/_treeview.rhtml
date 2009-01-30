@@ -1,6 +1,15 @@
 
 <style>
 
+#bd ul.simpleTree li{
+	margin-left:0px;
+}
+
+#bd ul.simpleTree{
+	margin-left:0px;
+	margin-bottom:0px;
+}
+
 .simpleTree
 {
 	
@@ -18,7 +27,7 @@
 {
 	list-style: none;
 	margin:0;
-	padding:0 0 0 34px;
+	padding:0 0 0 22px;
 	line-height: 14px;
 }
 .simpleTree li span
@@ -30,8 +39,14 @@
 .simpleTree ul
 {
 	margin:0; 
+
 	padding:0;
 }
+
+.simpleTree .root ul{
+		margin:0; 
+}
+
 .simpleTree .root
 {
 	margin-left:-16px;
@@ -130,9 +145,9 @@
 .simpleTree .active
 {
 	cursor: default;
-	background-color:#F7BE77;
+	background-color:#e2ebf0;
 	padding:0px 2px;
-	border: 1px dashed #444;
+	border: 1px dashed #ddd;
 }
 #drag_container
 {
@@ -203,7 +218,16 @@ jQuery(document).ready(function(){
 		},
 		animate:true
 		//,docToFolderConvert:true
+		
+		
+	// Set values
+	
+		
 	});
+	
+	setConcept("<%=@concept.id%>");
+	setOntology("<%=@ontology.id%>");
+	
 });
 
 
@@ -231,6 +255,8 @@ function nodeClicked(node_id,node_label) {
 						<%end%>
 
 		 update_tab('<%=@ontology.to_param%>',node_id)
+		tb_init('a.thickbox, area.thickbox, input.thickbox');
+		
 
 	}else{
 		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Concept...</h1>' }); 
@@ -251,10 +277,11 @@ function nodeClicked(node_id,node_label) {
 
 					setCache(node_id,tabData)
 					jQuery.unblockUI();	
+					tb_init('a.thickbox, area.thickbox, input.thickbox');
 
 		  });
 	}	
-	tabs.set('activeIndex', 0);
+	
 
 }
 

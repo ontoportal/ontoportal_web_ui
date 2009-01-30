@@ -1,4 +1,5 @@
-<table class="mapping" cellpadding="0" cellspacing="0">
+<table class="zebra" width="100%">
+	<thead>
 	<tr>
 		<th>Mapping To</th>
 		<th>Source</th>
@@ -6,12 +7,13 @@
 		<th>Mapped On</th>
 		<th>Notes</th>
 	</tr>
+	</thead>
 <!--	<tr>
 		<td align="left" class="label"colspan="4">Human Mappings</td>
 	</tr> -->
 	<%if @mappings.size<1%>
 	<tr>
-		<td colspan="4">There are currently no mappings for this concept.</td>
+		<td colspan="5">There are currently no mappings for this concept.</td>
 	</tr>
 	<%end%>
 	

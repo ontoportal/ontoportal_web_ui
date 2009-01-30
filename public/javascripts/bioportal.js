@@ -15,6 +15,13 @@ var currentConcept;
     function setConcept(concept){
         currentConcept = concept;
     }
+    
+    function getOntology(){
+        return currentOntology;
+    }
+    function getConcept(){
+        return currentConcept;
+    }
 
 // Invalidate and Refetch
 	function refreshCache(nodeID){
@@ -98,58 +105,7 @@ var currentConcept;
 		}
 	
 	
-function callTab(tab_num,url){
-    
-    
-    	var responseSuccess = function(o)
-		{
-			var respTxt = o.responseText;
-			
-			if (cache[currentConcept]!=null){
-			    cache[currentConcept][6]=respTxt
-		    }
-			
-			
-			document.getElementById("t_tab"+tab_num).innerHTML=respTxt
-			var search = respTxt;
-                var script;
 
-                while( script = search.match(/(<script[^>]+javascript[^>]+>\s*(<!--)?)/i))
-                {
-                  search = search.substr(search.indexOf(RegExp.$1) + RegExp.$1.length);
-
-                  if (!(endscript = search.match(/((-->)?\s*<\/script>)/))) break;
-
-                  block = search.substr(0, search.indexOf(RegExp.$1));
-                  search = search.substring(block.length + RegExp.$1.length);
-
-                  var oScript = document.createElement('script');
-                  oScript.text = block;
-                  document.getElementsByTagName("head").item(0).appendChild(oScript);
-                }
-			YAHOO.wait.container.wait.hide();
-		}	
-		
-		var responseFailure = function(o){
-			YAHOO.wait.container.wait.hide();
-		}
-
-		var callback =
-		{
-			success:responseSuccess,
-			failure:responseFailure
-		};
-		
-	// see's if item is already in cache, if not it makes the ajax call
-//	if(getCache(concept)!=null && getCache(concept)[tab_num]!=null){		
- //       document.getElementById("tab"+tab_num).innerHTML=getCache(concept)[tab_num];
-  //  }else{
-	YAHOO.wait.container.wait.show();
-		YAHOO.util.Connect.asyncRequest('GET',url.replace("@ontology@",currentOntology).replace("@concept@",currentConcept),callback);
-//    }
-    
-    
-}
 
 //-------------------------------
 	
@@ -532,6 +488,38 @@ function updateContent(){
     document.getElementById('ontologies').innerHTML = Dialog.dialog.getContent().innerHTML
 }
 
+//------------------------------------- JQuery Rewrite Functions ---------------------------------
 
+ function ajaxForm(form,target,callback){
+      // let's start the jQuery while I wait.
+     // step 1: onload - capture the submit event on the form.
+    
+         // now we're going to capture *all* the fields in the
+         // form and submit it via ajax.
+         
+         // :input is a macro that grabs all input types, select boxes
+         // textarea, etc.  Then I'm using the context of the form from 
+         // the initial '#contactForm' to narrow down our selector
+         var inputs = [];
+         $(':input', form).each(function() {
+           inputs.push(this.name + '=' + escape(this.value));
+         })
+         
+         // now if I join our inputs using '&' we'll have a query string
+         jQuery.post(form.action, inputs.join('&'), function(data) { 
+			jQuery(target).html(data);
+			if(callback)
+			    callback()
+			
+			    tb_init('a.thickbox, area.thickbox, input.thickbox');
+            
+           }
+           
+         ); // checkout http://jquery.com/api for more syntax and options on this method.
+         
+         // re-test...
+         // by default - we'll always return false so it doesn't redirect the user.
+         return false;
+}
 
 

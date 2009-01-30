@@ -1,29 +1,94 @@
+<script src="/javascripts/jquery.resizer.js" type="text/javascript" charset="utf-8"></script>
+<script src="/javascripts/jquery.thickbox.compressed.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/stylesheets/layout/thickbox.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
-<div id="leftbar" class="leftbar"><br>
-	<center><span class="tree_metadata" style="font-weight:bold;font-size:14px;"><%=@ontology.displayLabel%> v.<%=@ontology.versionNumber%></span></center><br>
-<span class="tree_metadata"><%=link_to "View Ontology Metadata", ontology_url(:id => @ontology.id)%></span>
-<%=render :partial => '/ontologies/treeview'%>
+
+
+<div id="bd_hd">
+	<h1><%=link_to @ontology.displayLabel, ontology_url(:id => @ontology.id)%></h1>
+	<form>
+		<select>
+			<option name="Explore">Explore</option><option name="Version 1.8">Version 1.8</option>
+			<option name="Version 1.9">Version 1.9</option>
+		</select>
+	</form>
+	<h1 id="name_label"><%=@concept.name%> <span id="link_label"> (<%=link_to "Get a direct link to this concept in BioPortal",uri_url(:ontology=>@ontology,:id=>@concept.id)%>)</span></h1>
+	<br clear="all" />
+	
+</div>
+
+<div id="bd_content" class="explore">
+	<div id="sidebar">
+		
+		<div id="sd_hd">
+			<h2><a href="metadata.html">View Ontology MetaData</a></h2>
+		</div>
+		
+		<div id="sd_content">
+			<%=render :partial => '/ontologies/treeview'%>
+		</div>
+		
+		<div id="sd_ft">
+			<p>BioPortal v2.0<br />A service of the <a href="../index.html">NCBO</a></p>
+		</div>
+		<div id="grab-point" >&nbsp;</div>
+	</div>
+	
+	<div id="container">
+		
+		<div class="tabs">
+			<ul>
+					<li class="selected tab first" id="t_tab2_top"><a href="#t_tab2:">Details</a></li>
+					<li class="tab" id="t_tab1_top"><a  href="#t_tab1:">Visualization</a></li>
+		        	<li class="tab" id="t_tab3_top"><a  href="#t_tab3:">Notes</a></li>
+					<li class="tab" id="t_tab4_top"><a  href="#t_tab4:">Mappings</a></li>				
+					<%if @ontology.ontologyId.to_s.eql?("1104")%>	
+					<li class="tab" id="t_tab5_top"><a  href="#t_tab5:" >Resources</a></li>			
+					<%else%>							
+					<li class="tab" id="t_tab5_top" onclick="callTab(5,'/resources/@ontology@/@concept@')"><a  href="#t_tab5:" alt="callTab(5,'/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resources</a></li>
+					<%end%>
+		
+			</ul>
+		</div>
+		<div id="contents">
+			
+	        	<div style="display:block;" class="tab_container" id="t_tab2"><%=render :partial =>'/concepts/details'%></div>
+				<div class="tab_container" id="t_tab1"><%=render :partial =>'/concepts/images'%></div>
+				<div class="tab_container" id="t_tab3"><%=render :partial =>'/margin_notes/show'%></div>
+				<div class="tab_container" id="t_tab4"><%=render :partial =>'/mappings/concept_mappings'%></div>
+
+				<%if @ontology.ontologyId.to_s.eql?("1104")%>	
+					<div class="tab_container" id="t_tab5"><%=render :partial =>'/concepts/software'%></div>
+				<%else%>
+				<div class="tab_container" id="t_tab5"></div>
+				<%end%>
+		</div>
+	</div>
+	
 
 </div>
-<div id="dragSpot"></div>
-
-<div  id="centerContent" class="content" >
-<h1 id="name_label"><%=@concept.name%> <span id="link_label"> (<%=link_to "Get a direct link to this concept in BioPortal",uri_url(:ontology=>@ontology,:id=>@concept.id)%>)</span></h1>
 
 <script type="text/javascript">
 jQuery(document).ready(function(){
 	
 	
-
+//Auto loads the correct tab
  loc = new String(document.location)
 	if(loc.search("#t_tab")>=0){
 		jQuery(".tab_container").hide();
 		id = "#"+ loc.split("#")[1].replace(":","")
 		jQuery(id).show();
 		jQuery(".tab").removeClass("selected");
-		jQuery(jQuery("a[href='"+id+"']").parents().get(0)).addClass("selected");
+		jQuery(id+"_top").addClass("selected")
+		tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0))
+		tab_li.addClass("selected");
+		a = jQuery("a[href='"+id+":']")
+		eval(a.attr("alt"));
+
+		
 	}
 	
+	// the tab system
 	jQuery(".tab").click(function(){
 		
 		jQuery(".tab_container").hide();
@@ -31,12 +96,53 @@ jQuery(document).ready(function(){
 		jQuery(target).show();
 		jQuery(".tab").removeClass("selected");
 		jQuery(this).addClass("selected");
-		return false;
+
+//		return false;
 	});
 	
 	
+	//Resizer, due to css issues we're gonna rig it up to be set params
+//	$('#grab-point').resize({target:'#sidebar',y:false,x:450,min_width:300});
+
+	$('#grab-point').click(function(){
+		
+		sidebar= $("#sidebar")
+		container = $("#container")
+		
+		if(sidebar.css("width")=="450px"){
+			sidebar.css("width","300px")
+			container.css("padding-left","301px")
+			$(this).css("background","url('/images/layout/bar-ext.gif') repeat-y")
+		}else{
+			sidebar.css("width","450px")
+			container.css("padding-left","451px")
+			$(this).css("background","url('/images/layout/bar-con.gif') repeat-y")
+		}
+		
+	})
+	
 	
 });
+
+function callTab(tab_num,url){
+    
+		if(getCache(getConcept())!=null && getCache(getConcept())[tab_num]!=null){		
+	        jQuery("#t_tab"+tab_num).innerHTML=getCache(getConcept())[tab_num];
+	    }else{
+			jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Resources...</h1>' }); 
+    		jQuery.get(url.replace("@ontology@",getOntology()).replace("@concept@",getConcept()),function(data){
+				if (getCache(getConcept())!=null){
+			    	getCache(getConcept())[6]=data
+		    	}
+				jQuery("#t_tab"+tab_num).html(data)
+				jQuery.unblockUI();	
+				
+			});
+		}
+
+}
+
+
 </script>
 
 <style>
@@ -45,53 +151,7 @@ jQuery(document).ready(function(){
 }
 </style>
 
-	<div id="tabframe" class="yui-navset">
-    	<ul class="yui-nav">
-        	
-			
-        	<li class="selected tab"><a href="#t_tab2"><em>Details</em></a></li>
-			<li class="tab"><a  href="#t_tab1:"><em>Visualization</em></a></li>
-        	<li class="tab"><a  href="#t_tab3:"><em>Notes</em></a></li>
-			<li class="tab"><a  href="#t_tab4:"><em>Mappings</em></a></li>				
-			<%if @ontology.ontologyId.to_s.eql?("1104")%>	
-			<li class="tab"><a  href="#t_tab5:" ><em>Resources</em></a></li>			
-			<%else%>							
-			<li class="tab"><a  href="#t_tab5:" onclick="callTab(5,'/resources/@ontology@/@concept@')"><em>Resources</em></a></li>
-			<%end%>
-			
-			
-    	</ul> 
-		   
-		        
-    	<div class="yui-content" id = "content">
-        	
-        	<div style="display:block;" class="tab_container" id="t_tab2"><%=render :partial =>'/concepts/details'%></div>
-			<div class="tab_container" id="t_tab1"><%=render :partial =>'/concepts/images'%></div>
-			<div class="tab_container" id="t_tab3"><%=render :partial =>'/margin_notes/show'%></div>
-			<div class="tab_container" id="t_tab4"><%=render :partial =>'/mappings/concept_mappings'%></div>
-			
-			<%if @ontology.ontologyId.to_s.eql?("1104")%>	
-				<div class="tab_container" id="t_tab5"><%=render :partial =>'/concepts/software'%></div>
-			<%else%>
-			<div class="tab_container" id="t_tab5"></div>
-			<%end%>
-			
-    	</div>
-	</div>
-</div>
-
-<script type="text/javascript">
 	
-
-	
-	
-
-
-//YAHOO.util.Event.onDOMReady(buildTabs); 
-</script>
-
-		
-
 
 
 

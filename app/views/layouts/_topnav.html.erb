@@ -1,32 +1,35 @@
-
-<span style="float:right">
-	<%if session[:user].nil?%>
-		<%=link_to "Sign In" ,:controller =>'login'%> | <%=link_to "Register", new_user_path(:redirect=>@ontology)%> | 
-	<%else%>
-		Logged In As <%=session[:user].username%>
-		<%=link_to "My Projects", projects_path(:user=>session[:user].id)%> | 
-		<%=link_to "My Account", edit_user_path(session[:user])%> | 
-		<%=link_to "Log Out",logout_url%> |
-	<%end%> 
-	 <a href="/home/release">Help/About</a>
-	
-	&nbsp;&nbsp;<a href="/feedback" style="font-weight:bold;font-size:14px;">Send Feedback</a> &nbsp; <a href="/syndication/rss"><img src="/images/feed-icon.png" border=0></a>
-	</span>
-<ul class="topnav">
-	<%if false%>	<li <%if controller.controller_name.eql?("home")%>class="selected" <%end%>><a href="/"><em>Home</em></a></li> <%end%>
-    	<li <%if controller.controller_name.eql?("ontologies") && controller.action_name.eql?("index")%>class="selected" <%end%>><a href="/ontologies"><em>Browse</em></a></li>
-    	<li <%if controller.controller_name.eql?("search")%>class="selected" <%end%>><a href="/search"><em>Search</em></a></li>
-    	<li <%if controller.controller_name.eql?("projects")%>class="selected" <%end%>><a href="/projects"><em>Projects</em></a></li>
-		<li <%if controller.controller_name.eql?("mappings")%>class="selected" <%end%>><a href="/mappings"><em>All Mappings</em></a></li>
-
+<div id="hd">
+	<ul>	
+		<li><a href="/" title="Home"><img src="/images/layout/nav_logo.png" /></a></li>
+		<li><a href="/" title="Browse" ><img name="img10" src="/images/layout/nav_browse.png" /></a></li>
+		<li><a href="/search" title="Search"  /><img name="img11" src="/images/layout/nav_search.png" /></a></li>
+		<li><a href="/mappings" title="All Mappings" ><img name="img12" src="/images/layout/nav_search_allmappings.png" /></a></li>
+		<li><a href="/projects" title="Projects" ><img name="img12" src="/images/layout/nav_search_allmappings.png" /></a></li>
+	</ul>
+	<ul class="alignright">
+		<%if session[:user].nil?%>
+			<li><%=link_to "Sign In" ,:controller =>'login'%></li>
+			<li><%=link_to "Register", new_user_path(:redirect=>@ontology)%></li>
+		<%else%>
+			<li><%=link_to "My Projects", projects_path(:user=>session[:user].id)%></li>
+			<li><%=link_to "My Account", edit_user_path(session[:user])%></li>
+			<li><%=link_to "Log Out",logout_url%></li>
+		<%end%> 
+		 	<li><a href="/home/release">Help/About</a></li>
+			<li><a href="/feedback" style="font-weight:bold;font-size:14px;">Send Feedback</a> </li>
+			<li><a href="/syndication/rss"><img src="/images/feed-icon.png" border=0></a></li>
+	</ul>
+</div>
+<div class="tabs">
+	<ul>
 		<%unless session[:ontologies].nil?%>
 			<%for tab in session[:ontologies]%>
 				<%if !@ontology.nil? && @ontology.id.eql?(tab.ontology_id)%>
-				<li id="tab<%=to_param(tab.ontology_id)%>" class="selected"><%=link_to "<em>#{tab.ontology_name}</em>",uri_url(:ontology=>tab.ontology_id,:id=>tab.concept)%><a href="#" class="close"  onclick="remove_tab(this,'<%=to_param(tab.ontology_id)%>',true);return false;">&nbsp;</a></li>				
+				<li id="tab<%=to_param(tab.ontology_id)%>" class="selected"><a href="#" class="close"  onclick="remove_tab(this,'<%=to_param(tab.ontology_id)%>',true);return false;"><img src="/images/layout/subnav_close_over.png" /></a><%=link_to "<em>#{tab.ontology_name}</em>",uri_url(:ontology=>tab.ontology_id,:id=>tab.concept)%></li>				
 				<%else%>
-				<li id="tab<%=to_param(tab.ontology_id)%>" ><%=link_to "<em>#{tab.ontology_name} &nbsp;&nbsp;</em>",uri_url(:ontology=>tab.ontology_id,:id=>tab.concept),:onclick=>"setTimeout('YAHOO.tabwait.container.wait.show()',2000);"%> <a href="#" class="close"  onclick="remove_tab(this,'<%=to_param(tab.ontology_id)%>',false);return false;">&nbsp;</a></li>
+				<li id="tab<%=to_param(tab.ontology_id)%>" ><a href="#" class="close"  onclick="remove_tab(this,'<%=to_param(tab.ontology_id)%>',false);return false;"><img src="/images/layout/subnav_close.png" /></a><%=link_to "<em>#{tab.ontology_name} &nbsp;&nbsp;</em>",uri_url(:ontology=>tab.ontology_id,:id=>tab.concept),:onclick=>"setTimeout('YAHOO.tabwait.container.wait.show()',2000);"%> </li>
 				<%end%>
 			<%end%>
 		<%end%>
-	</ul>  
-	<div style="clear:both;"/>
+	</ul>
+</div>

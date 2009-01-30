@@ -4,6 +4,8 @@ class MarginNotesController < ApplicationController
   
   layout 'ontology'
   
+  skip_before_filter :verify_authenticity_token
+
     before_filter :authorize, :only=>[:create]
   
   def index

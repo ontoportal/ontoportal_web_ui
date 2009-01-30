@@ -5,42 +5,18 @@
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title><%unless @ontology.nil?%><%=@ontology.displayLabel%><%end%></title>
   <!-- Dependency source files --> 
-  <%=stylesheet_link_tag 'bioportal','tabview','container','treeview'%>
-  	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.4.1/build/editor/assets/skins/sam/simpleeditor.css">
+  <%=stylesheet_link_tag 'layout/bioportal'%>
 	<script type="text/javascript" src="/javascripts/jquery.js"></script>
 	
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/utilities/utilities.js"></script> 
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/treeview/treeview-min.js"></script> 
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/container/container-min.js"></script> 
-<!--	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/tabview/tabview-min.js"></script> -->
-	<script type="text/javascript" src="http://yui.yahooapis.com/2.4.1/build/editor/simpleeditor-beta.js"></script>
-  <%=javascript_include_tag "bioportal"%>
-
-  <%= stylesheet_link_tag 'alphacube' %>
-  <%= stylesheet_link_tag 'ext-all' %>
-  <%= javascript_include_tag 'prototype','effects','window','ext'%>
-	<%= calendar_date_select_includes "silver",'db' %>
-  
+  <%=javascript_include_tag "bioportal"%>  
 
 </head>
-<body class="yui-skin-sam">
-		<!-- Maintence Area -->
-		<div style="padding:5px;border:1px solid gray;font-size:14px; background-color:#ffffcc;float:right;width:600px;">
-		<!--<strong>Scheduled Maintenance:</strong> The Bioportal Website and Restful services will be down on <strong>Nov 20th</strong> for updates. -->
-		If you have mappings between concepts in BioPortal ontologies that you created in another tool and would like to upload to BioPortal, please <a href="mailto:bioontology-support@mailman.stanford.edu">contact us</a>
+<body>
+						<%=render :partial =>'layouts/topnav'%>            			
+		
+			<div id="bd">
+				<%=yield%>	
 			</div>
-
-	<%=link_to image_tag('ncbo_logo_portal.gif'),"/"%>
-	<div style="clear:both;"></div>
-<br>
-<div class="yui-navset" >
-	
-		<%=render :partial =>'layouts/topnav'%>            
-	<div class="yui-content-main">
-		<%=yield%>
-
-	</div>
-</div>
 
 
 	<%=render :partial =>'layouts/footer'%>          

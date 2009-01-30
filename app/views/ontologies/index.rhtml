@@ -40,12 +40,18 @@ function filterByParam(param){
 }
 
 
+function customFilterBox(value){
+	dtable.fnFilter( value);
+}
+
 
 jQuery(document).ready(function() {
 	dtable = jQuery('#ontologies').dataTable(
 		{
 		bLengthChange:false,
 		iDisplayLength:800,
+		asStripClasses:["","alt"],
+		bFilter:false,
 		"oLanguage":{"sSearch":"Filter Ontologies"},
 		"aoData": [
 			{ "sType": "html" },
@@ -162,32 +168,51 @@ ontology_groups = {
 
 
 
-<%if session[:user].nil? %>
-	<input type="button" class ="blueButton" value="Submit New Ontology" onclick ="window.location='/login'"> 
-<%else%>
-	<span class="blueButton"><%=link_to "Submit New Ontology",new_ontology_path%></span>
-<%end%>
+
 
 <div style="width:1150px;">
 <div style="float:left;width:800px;padding:4px;">
-	Filter by Category<select onclick ="filterBySelection(this)"  name="cat">
+	<br/>
+	<table class="form">
+		
+		<tr><th>Submit Ontology</th><td class="top"><%if session[:user].nil? %>
+			<input type="button" class ="blueButton" value="Submit New Ontology" onclick ="window.location='/login'"> 
+		<%else%>
+			<span class="blueButton"><%=link_to "Submit New Ontology",new_ontology_path%></span>
+		<%end%></td>
+		</tr>
+		<tr>
+			<td colspan="2">&nbsp;</td>
+		</tr>
+		
+		
+	<tr>	
+	<th>Filter by Category</td><td class="top"><select onclick ="filterBySelection(this)"  name="cat">
 		<option value="0" selected="selected">All Categories</option>
 			<%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
 			<%for cat in cats%>
 			
 			<option value="<%=cat[:id]%>" ><%=cat[:name]%></option>
 			<%end%>
-	</select>
-	<br>
-	Filter by Group<select onclick ="filterByGroup(this)"  name="cat">
+	</select></td>
+	</tr>
+	<tr>
+		<th>Filter by Group</td><td><select onclick ="filterByGroup(this)"  name="cat">
 		<option value="0" selected="selected">All Groups</option>
 			
 			<%for key in filter_groups.keys%>
 			
 			<option value="<%=key%>" >(<%=key%>) <%=filter_groups[key]%></option>
 			<%end%>
-	</select> <a href="http://bioportal.bioontology.org" id="filterlink">Link To This Filter</a>
-<table id="ontologies"class="ontologies" cellpadding="0" cellspacing="0">
+	</select> <a href="http://bioportal.bioontology.org" id="filterlink">Link To This Filter</a></td>
+	</tr>
+	
+	<tr>
+		<th>Filter by Text</td><td><input type="text" name="filt" onkeyup="customFilterBox(this.value)"></td>
+	</tr>
+	
+	</table>
+<table id="ontologies" class="zebra" cellpadding="0" cellspacing="0">
 		<thead>
   <tr>
 	<th  style="width:200px;">Ontology Name</th>
@@ -226,7 +251,7 @@ ontology_groups = {
 	<td><%=ontology.contactName%></td>
 	<td><%=ontology.dateCreated%></td>
 	<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
-	<td><%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
+	<td style="display:none;"><%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
 		<br>
 		<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>
 	<td style="display:none;"> <%=ontology.categories.join(" ")%></td>
@@ -240,10 +265,13 @@ ontology_groups = {
 </div>
 <div style="padding-top:60px">
 	<br>
-	<table class="versions" style="width:300px">
+	<table class="zebra" style="width:300px">
+		<thead>
 		<tr>
 			<th>Latest Notes</th>
 		</tr>
+		</thead>
+		<tbody>
 		<%for note in @last_notes%>
 		<tr>
 		<td><%=link_to note.subject,uri_url(:ontology=>note.ontology_version_id,:id=>note.concept_id)%>
@@ -253,10 +281,13 @@ ontology_groups = {
 		</td>
 		</tr>
 		<%end%>
+		</tbody>
+		<thead>
 		<tr>
 			<th>Latest Mappings</th>
 		</tr>
-		
+		</thead>
+		<tbody>
 		<%for map in @last_mappings%>
 		<tr>
 		<td>	<%= if map.dest_node.nil? 
@@ -269,6 +300,7 @@ ontology_groups = {
 				</td>
 		</tr>
 		<%end%>
+		</tbody>
 	</table>
 
 </div>

@@ -31,10 +31,10 @@
 */
 
 
-jQuery.fn.simpleTree = function(opt){
+$.fn.simpleTree = function(opt){
 	return this.each(function(){
 		var TREE = this;
-		var ROOT = jQuery('.root',this);
+		var ROOT = $('.root',this);
 		var mousePressed = false;
 		var mouseMoved = false;
 		var dragMoveType = false;
@@ -56,14 +56,14 @@ jQuery.fn.simpleTree = function(opt){
 			afterContextMenu:	false,
 			docToFolderConvert:false
 		};
-		TREE.option = jQuery.extend(TREE.option,opt);
-		jQuery.extend(this, {getSelected: function(){
-			return jQuery('span.active', this).parent();
+		TREE.option = $.extend(TREE.option,opt);
+		$.extend(this, {getSelected: function(){
+			return $('span.active', this).parent();
 		}});
 		TREE.closeNearby = function(obj)
 		{
-			jQuery(obj).siblings().filter('.folder-open, .folder-open-last').each(function(){
-				var childUl = jQuery('>ul',this);
+			$(obj).siblings().filter('.folder-open, .folder-open-last').each(function(){
+				var childUl = $('>ul',this);
 				var className = this.className;
 				this.className = className.replace('open','close');
 				if(TREE.option.animate)
@@ -76,7 +76,7 @@ jQuery.fn.simpleTree = function(opt){
 		};
 		TREE.nodeToggle = function(obj)
 		{
-			var childUl = jQuery('>ul',obj);
+			var childUl = $('>ul',obj);
 			if(childUl.is(':visible')){
 				obj.className = obj.className.replace('open','close');
 
@@ -103,13 +103,13 @@ jQuery.fn.simpleTree = function(opt){
 		};
 		TREE.setAjaxNodes = function(node, parentId, callback)
 		{
-			if(jQuery.inArray(parentId,ajaxCache) == -1){
+			if($.inArray(parentId,ajaxCache) == -1){
 				ajaxCache[ajaxCache.length]=parentId;
-				var url = jQuery.trim(jQuery('>li', node).text());
+				var url = $.trim($('>li', node).text());
 				if(url && url.indexOf('url:'))
 				{
-					url=jQuery.trim(url.replace(/.*\{url:(.*)\}/i ,'jQuery1'));
-					jQuery.ajax({
+					url=$.trim(url.replace(/.*\{url:(.*)\}/i ,'$1'));
+					$.ajax({
 						type: "GET",
 						url: url,
 						contentType:'html',
@@ -117,7 +117,7 @@ jQuery.fn.simpleTree = function(opt){
 						success: function(responce){
 							node.removeAttr('class');
 							node.html(responce);
-							jQuery.extend(node,{url:url});
+							$.extend(node,{url:url});
 							TREE.setTreeNodes(node, true);
 							if(typeof TREE.option.afterAjax == 'function')
 							{
@@ -135,68 +135,68 @@ jQuery.fn.simpleTree = function(opt){
 		};
 		TREE.setTreeNodes = function(obj, useParent){
 			obj = useParent? obj.parent():obj;
-			jQuery('li>span', obj).addClass('text')
+			$('li>span', obj).addClass('text')
 			.bind('selectstart', function() {
 				return false;
 			}).click(function(){
-				jQuery('.active',TREE).attr('class','text');
+				$('.active',TREE).attr('class','text');
 				if(this.className=='text')
 				{
 					this.className='active';
 				}
 				if(typeof TREE.option.afterClick == 'function')
 				{
-					TREE.option.afterClick(jQuery(this).parent());
+					TREE.option.afterClick($(this).parent());
 				}
 				return false;
 			}).dblclick(function(){
 				mousePressed = false;
-				TREE.nodeToggle(jQuery(this).parent().get(0));
+				TREE.nodeToggle($(this).parent().get(0));
 				if(typeof TREE.option.afterDblClick == 'function')
 				{
-					TREE.option.afterDblClick(jQuery(this).parent());
+					TREE.option.afterDblClick($(this).parent());
 				}
 				return false;
 				// added by Erik Dohmen (2BinBusiness.nl) to make context menu actions
 				// available
 			}).bind("contextmenu",function(){
-				jQuery('.active',TREE).attr('class','text');
+				$('.active',TREE).attr('class','text');
 				if(this.className=='text')
 				{
 					this.className='active';
 				}
 				if(typeof TREE.option.afterContextMenu == 'function')
 				{
-					TREE.option.afterContextMenu(jQuery(this).parent());
+					TREE.option.afterContextMenu($(this).parent());
 				}
 				return false;
 			}).mousedown(function(event){
 				mousePressed = true;
-				cloneNode = jQuery(this).parent().clone();
-				var LI = jQuery(this).parent();
+				cloneNode = $(this).parent().clone();
+				var LI = $(this).parent();
 				if(TREE.option.drag)
 				{
-					jQuery('>ul', cloneNode).hide();
-					jQuery('body').append('<div id="drag_container"><ul></ul></div>');
-					jQuery('#drag_container').hide().css({opacity:'0.8'});
-					jQuery('#drag_container >ul').append(cloneNode);
-					jQuery("<img>").attr({id	: "tree_plus",src	: "images/plus.gif"}).css({width: "7px",display: "block",position: "absolute",left	: "5px",top: "5px", display:'none'}).appendTo("body");
-					jQuery(document).bind("mousemove", {LI:LI}, TREE.dragStart).bind("mouseup",TREE.dragEnd);
+					$('>ul', cloneNode).hide();
+					$('body').append('<div id="drag_container"><ul></ul></div>');
+					$('#drag_container').hide().css({opacity:'0.8'});
+					$('#drag_container >ul').append(cloneNode);
+					$("<img>").attr({id	: "tree_plus",src	: "images/plus.gif"}).css({width: "7px",display: "block",position: "absolute",left	: "5px",top: "5px", display:'none'}).appendTo("body");
+					$(document).bind("mousemove", {LI:LI}, TREE.dragStart).bind("mouseup",TREE.dragEnd);
 				}
 				return false;
 			}).mouseup(function(){
 				if(mousePressed && mouseMoved && dragNode_source)
 				{
-					TREE.moveNodeToFolder(jQuery(this).parent());
+					TREE.moveNodeToFolder($(this).parent());
 				}
 				TREE.eventDestroy();
 			});
-			jQuery('li', obj).each(function(i){
+			$('li', obj).each(function(i){
 				var className = this.className;
 				var open = false;
 				var cloneNode=false;
 				var LI = this;
-				var childNode = jQuery('>ul',this);
+				var childNode = $('>ul',this);
 				if(childNode.size()>0){
 					var setClassName = 'folder-';
 					if(className && className.indexOf('open')>=0){
@@ -205,93 +205,93 @@ jQuery.fn.simpleTree = function(opt){
 					}else{
 						setClassName=setClassName+'close';
 					}
-					this.className = setClassName + (jQuery(this).is(':last-child')? '-last':'');
+					this.className = setClassName + ($(this).is(':last-child')? '-last':'');
 
 					if(!open || className.indexOf('ajax')>=0)childNode.hide();
 
 					TREE.setTrigger(this);
 				}else{
 					var setClassName = 'doc';
-					this.className = setClassName + (jQuery(this).is(':last-child')? '-last':'');
+					this.className = setClassName + ($(this).is(':last-child')? '-last':'');
 				}
 			}).before('<li class="line">&nbsp;</li>')
 			.filter(':last-child').after('<li class="line-last"></li>');
-			TREE.setEventLine(jQuery('.line, .line-last', obj));
+			TREE.setEventLine($('.line, .line-last', obj));
 		};
 		TREE.setTrigger = function(node){
-			jQuery('>span',node).before('<img class="trigger" src="images/spacer.gif" border=0>');
-			var trigger = jQuery('>.trigger', node);
+			$('>span',node).before('<img class="trigger" src="images/spacer.gif" border=0>');
+			var trigger = $('>.trigger', node);
 			trigger.click(function(event){
 				TREE.nodeToggle(node);
 			});
-			if(!jQuery.browser.msie)
+			if(!$.browser.msie)
 			{
 				trigger.css('float','left');
 			}
 		};
 		TREE.dragStart = function(event){
-			var LI = jQuery(event.data.LI);
+			var LI = $(event.data.LI);
 			if(mousePressed)
 			{
 				mouseMoved = true;
 				if(dragDropTimer) clearTimeout(dragDropTimer);
-				if(jQuery('#drag_container:not(:visible)')){
-					jQuery('#drag_container').show();
+				if($('#drag_container:not(:visible)')){
+					$('#drag_container').show();
 					LI.prev('.line').hide();
 					dragNode_source = LI;
 				}
-				jQuery('#drag_container').css({position:'absolute', "left" : (event.pageX + 5), "top": (event.pageY + 15) });
+				$('#drag_container').css({position:'absolute', "left" : (event.pageX + 5), "top": (event.pageY + 15) });
 				if(LI.is(':visible'))LI.hide();
 				var temp_move = false;
-				if(event.target.tagName.toLowerCase()=='span' && jQuery.inArray(event.target.className, Array('text','active','trigger'))!= -1)
+				if(event.target.tagName.toLowerCase()=='span' && $.inArray(event.target.className, Array('text','active','trigger'))!= -1)
 				{
 					var parent = event.target.parentNode;
-					var offs = jQuery(parent).offset({scroll:false});
+					var offs = $(parent).offset({scroll:false});
 					var screenScroll = {x : (offs.left - 3),y : event.pageY - offs.top};
-					var isrc = jQuery("#tree_plus").attr('src');
-					var ajaxChildSize = jQuery('>ul.ajax',parent).size();
-					var ajaxChild = jQuery('>ul.ajax',parent);
+					var isrc = $("#tree_plus").attr('src');
+					var ajaxChildSize = $('>ul.ajax',parent).size();
+					var ajaxChild = $('>ul.ajax',parent);
 					screenScroll.x += 19;
 					screenScroll.y = event.pageY - screenScroll.y + 5;
 
 					if(parent.className.indexOf('folder-close')>=0 && ajaxChildSize==0)
 					{
-						if(isrc.indexOf('minus')!=-1)jQuery("#tree_plus").attr('src','images/plus.gif');
-						jQuery("#tree_plus").css({"left": screenScroll.x, "top": screenScroll.y}).show();
+						if(isrc.indexOf('minus')!=-1)$("#tree_plus").attr('src','images/plus.gif');
+						$("#tree_plus").css({"left": screenScroll.x, "top": screenScroll.y}).show();
 						dragDropTimer = setTimeout(function(){
 							parent.className = parent.className.replace('close','open');
-							jQuery('>ul',parent).show();
+							$('>ul',parent).show();
 						}, 700);
 					}else if(parent.className.indexOf('folder')>=0 && ajaxChildSize==0){
-						if(isrc.indexOf('minus')!=-1)jQuery("#tree_plus").attr('src','images/plus.gif');
-						jQuery("#tree_plus").css({"left": screenScroll.x, "top": screenScroll.y}).show();
+						if(isrc.indexOf('minus')!=-1)$("#tree_plus").attr('src','images/plus.gif');
+						$("#tree_plus").css({"left": screenScroll.x, "top": screenScroll.y}).show();
 					}else if(parent.className.indexOf('folder-close')>=0 && ajaxChildSize>0)
 					{
 						mouseMoved = false;
-						jQuery("#tree_plus").attr('src','images/minus.gif');
-						jQuery("#tree_plus").css({"left": screenScroll.x, "top": screenScroll.y}).show();
+						$("#tree_plus").attr('src','images/minus.gif');
+						$("#tree_plus").css({"left": screenScroll.x, "top": screenScroll.y}).show();
 
-						jQuery('>ul',parent).show();
+						$('>ul',parent).show();
 						/*
 							Thanks for the idea of Erik Dohmen
 						*/
 						TREE.setAjaxNodes(ajaxChild,parent.id, function(){
 							parent.className = parent.className.replace('close','open');
 							mouseMoved = true;
-							jQuery("#tree_plus").attr('src','images/plus.gif');
-							jQuery("#tree_plus").css({"left": screenScroll.x, "top": screenScroll.y}).show();
+							$("#tree_plus").attr('src','images/plus.gif');
+							$("#tree_plus").css({"left": screenScroll.x, "top": screenScroll.y}).show();
 						});
 
 					}else{
 						if(TREE.option.docToFolderConvert)
 						{
-							jQuery("#tree_plus").css({"left": screenScroll.x, "top": screenScroll.y}).show();
+							$("#tree_plus").css({"left": screenScroll.x, "top": screenScroll.y}).show();
 						}else{
-							jQuery("#tree_plus").hide();
+							$("#tree_plus").hide();
 						}
 					}
 				}else{
-					jQuery("#tree_plus").hide();
+					$("#tree_plus").hide();
 				}
 				return false;
 			}
@@ -315,7 +315,7 @@ jQuery.fn.simpleTree = function(opt){
 			}).mouseup(function(){
 				if(mousePressed && dragNode_source && mouseMoved)
 				{
-					dragNode_destination = jQuery(this).parents('li:first');
+					dragNode_destination = $(this).parents('li:first');
 					TREE.moveNodeToLine(this);
 					TREE.eventDestroy();
 				}
@@ -337,7 +337,7 @@ jQuery.fn.simpleTree = function(opt){
 		{
 			if(line.className.indexOf('last')>=0)
 			{
-				var prev = jQuery(line).prev();
+				var prev = $(line).prev();
 				if(prev.size()>0)
 				{
 					prev[0].className = prev[0].className.replace('-last','');
@@ -350,11 +350,11 @@ jQuery.fn.simpleTree = function(opt){
 			// added by Erik Dohmen (2BinBusiness.nl), the unbind mousemove TREE.dragStart action
 			// like this other mousemove actions binded through other actions ain't removed (use it myself
 			// to determine location for context menu)
-			jQuery(document).unbind('mousemove',TREE.dragStart).unbind('mouseup').unbind('mousedown');
-			jQuery('#drag_container, #tree_plus').remove();
+			$(document).unbind('mousemove',TREE.dragStart).unbind('mouseup').unbind('mousedown');
+			$('#drag_container, #tree_plus').remove();
 			if(dragNode_source)
 			{
-				jQuery(dragNode_source).show().prev('.line').show();
+				$(dragNode_source).show().prev('.line').show();
 			}
 			dragNode_destination = dragNode_source = mousePressed = mouseMoved = false;
 			//ajaxCache = Array();
@@ -363,11 +363,11 @@ jQuery.fn.simpleTree = function(opt){
 			node[0].className = node[0].className.replace('doc','folder-open');
 			node.append('<ul><li class="line-last"></li></ul>');
 			TREE.setTrigger(node[0]);
-			TREE.setEventLine(jQuery('.line, .line-last', node));
+			TREE.setEventLine($('.line, .line-last', node));
 		};
 		TREE.convertToDoc = function(node){
-			jQuery('>ul', node).remove();
-			jQuery('img', node).remove();
+			$('>ul', node).remove();
+			$('img', node).remove();
 			node[0].className = node[0].className.replace(/folder-(open|close)/gi , 'doc');
 		};
 		TREE.moveNodeToFolder = function(node)
@@ -379,7 +379,7 @@ jQuery.fn.simpleTree = function(opt){
 				TREE.convertToFolder(node);
 			}
 			TREE.checkNodeIsLast(dragNode_source[0]);
-			var lastLine = jQuery('>ul >.line-last', node);
+			var lastLine = $('>ul >.line-last', node);
 			if(lastLine.size()>0)
 			{
 				TREE.moveNodeToLine(lastLine[0]);
@@ -388,41 +388,41 @@ jQuery.fn.simpleTree = function(opt){
 		TREE.moveNodeToLine = function(node){
 			TREE.checkNodeIsLast(dragNode_source[0]);
 			TREE.checkLineIsLast(node);
-			var parent = jQuery(dragNode_source).parents('li:first');
-			var line = jQuery(dragNode_source).prev('.line');
-			jQuery(node).before(dragNode_source);
-			jQuery(dragNode_source).before(line);
+			var parent = $(dragNode_source).parents('li:first');
+			var line = $(dragNode_source).prev('.line');
+			$(node).before(dragNode_source);
+			$(dragNode_source).before(line);
 			node.className = node.className.replace('-over','');
-			var nodeSize = jQuery('>ul >li', parent).not('.line, .line-last').filter(':visible').size();
+			var nodeSize = $('>ul >li', parent).not('.line, .line-last').filter(':visible').size();
 			if(TREE.option.docToFolderConvert && nodeSize==0)
 			{
 				TREE.convertToDoc(parent);
 			}else if(nodeSize==0)
 			{
 				parent[0].className=parent[0].className.replace('open','close');
-				jQuery('>ul',parent).hide();
+				$('>ul',parent).hide();
 			}
 
 			// added by Erik Dohmen (2BinBusiness.nl) select node
-			if(jQuery('span:first',dragNode_source).attr('class')=='text')
+			if($('span:first',dragNode_source).attr('class')=='text')
 			{
-				jQuery('.active',TREE).attr('class','text');
-				jQuery('span:first',dragNode_source).attr('class','active');
+				$('.active',TREE).attr('class','text');
+				$('span:first',dragNode_source).attr('class','active');
 			}
 
 			if(typeof(TREE.option.afterMove) == 'function')
 			{
-				var pos = jQuery(dragNode_source).prevAll(':not(.line)').size();
-				TREE.option.afterMove(jQuery(node).parents('li:first'), jQuery(dragNode_source), pos);
+				var pos = $(dragNode_source).prevAll(':not(.line)').size();
+				TREE.option.afterMove($(node).parents('li:first'), $(dragNode_source), pos);
 			}
 		};
 
 		TREE.addNode = function(id, text, callback)
 		{
-			var temp_node = jQuery('<li><ul><li id="'+id+'"><span>'+text+'</span></li></ul></li>');
+			var temp_node = $('<li><ul><li id="'+id+'"><span>'+text+'</span></li></ul></li>');
 			TREE.setTreeNodes(temp_node);
 			dragNode_destination = TREE.getSelected();
-			dragNode_source = jQuery('.doc-last',temp_node);
+			dragNode_source = $('.doc-last',temp_node);
 			TREE.moveNodeToFolder(dragNode_destination);
 			temp_node.remove();
 			if(typeof(callback) == 'function')

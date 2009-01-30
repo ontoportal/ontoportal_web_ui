@@ -1,0 +1,162 @@
+<style type="text/css">
+
+/* Initialize */
+/* Adapted from YUI Library: http://yui.yahooapis.com/2.5.1/build/reset-fonts-grids/reset-fonts-grids.css */
+html { color:#000;background:#FFF; }
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td { margin:0;padding:0; }
+table { border-collapse:collapse;border-spacing:0; }
+fieldset,img { border:0; }
+address,caption,cite,code,dfn,em,strong,th,var { font-style:normal;font-weight:normal; }
+ul li { list-style:none; }
+caption,th { text-align:left; }
+h1,h2,h3,h4,h5,h6 { font-size:100%;font-weight:normal; }
+q:before,q:after { content:''; }
+abbr,acronym { border:0;font-variant:normal; }
+sup { vertical-align:text-top; }
+sub { vertical-align:text-bottom; }
+input,textarea,select { font-family:inherit;font-size:inherit;font-weight:inherit; }
+input,textarea,select { *font-size:100%; }
+legend { color:#000; }
+body { font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small; }
+table { font-size:inherit;font:100%; }
+pre,code,kbd,samp,tt { font-family:monospace;*font-size:108%;line-height:100%; }
+body { text-align:center; }
+#ft { clear:both; }
+/* end YUI font grid reset */
+
+body { background: #fff; font-family: "Myriad Pro", "Myriad Web Pro", "Myriad Web", "Myriad", "Trebuchet MS","Tahoma","Helvetica", "Arial",sans-serif; }
+h1 { font-size:160%; }
+h2 { font-size:140%; margin-bottom:15px; }
+h3 { font-size:110%; margin-bottom:5px; font-weight:bold; }
+h4 { font-size:100%; }
+h5 { font-size:100%; }
+p { margin-bottom:15px; }
+a { color:#234979; }
+a:hover { text-decoration:none; }
+small { font-size:60%; }
+strong { font-weight:bold; }
+
+h1 a, h2 a { text-decoration:none; }
+h1 a:hover, h2 a:hover { text-decoration:underline; }
+
+.alignright { float:right; }
+.alignleft { float:left; }
+
+#hd { background: url('/images/layout/header_bg.png') repeat-x; width:100%;*width:60.06em;min-width:1200px; height:43px; margin:auto; text-align:left;white-space:nowrap; }
+#hd ul { padding:0 5px; }
+#hd ul li { display:inline; float:left; }
+#hd ul.alignright { padding:10px 0 0; }
+#hd ul.alignright li { display:inline; float:left; padding-left:15px; }
+#hd ul li a { color:#fff; }
+
+.tabs { float:left; width:100%; background:url("/images/layout/subnav_bg.png") repeat-x; height:24px; display:block; border-bottom:1px solid #bcc6d0; font-size:90%; }
+.tabs ul { margin:0; }
+.tabs li { float:left; display:inline; border-left:1px solid #bcc6d0; height:24px; }
+.tabs li:hover { background:#efefef; }
+.tabs li.first { border-left:none; padding-left:20px; }
+.tabs a { float:left; display:block; padding:5px 20px 5px 5px; color:#000; text-decoration:none; }
+.tabs a.close { padding:6px 0 0 5px; }
+.tabs li.selected { background:#234979; border-top:1px solid #8ca0b9; height:23px; }
+.tabs li.selected a { color:#fff; padding-top:4px; }
+
+#bd { background: #fff; width:100%;*width:60.06em;min-width:800px;  text-align:left; float:left; }
+	#bd #bd_hd { width:100%; float:left; white-space:nowrap;overflow:hidden;margin:15px 25px 15px 25px; }
+	#bd #bd_hd h1 { font-size:120%; float:left; width:auto; display:inline; margin-right:10px; }
+	#bd #bd_hd form { font-size:90%; float:left; display:inline; margin-right:10px;}
+	#bd h2 { font-size:120%; font-weight:bold; margin-bottom:10px; }
+	#bd hr { border:0; height:1px; color:#e9eaeb; background:#e9eaeb; margin:10px 0; }
+	
+/*	#bd ul { margin-bottom:15px; }
+	#bd ul li { list-style-image: url('/images/layout/bullet_arrow.png'); margin-left:20px; }
+	#bd ol li { margin-left:25px; padding-bottom:10px; }
+*/
+	
+	#bd #bd_content { display:block; float:left; padding-left:25px; }
+	#bd #bd_content.explore { width:100%; border-top:1px solid #e9eaeb; padding-left:0; }
+
+	#sidebar { float:left; width:300px; margin:0 0 20px 0;  font-size:90%;position:relative;min-height:450px;}
+	#sidebar #sd_hd { background:#dadde0; height:24px; border-bottom:1px solid #bcc6d0;  display:block; float:left; width:100%;}
+	#sidebar #sd_hd h2 { padding:5px 0 0 25px; font-weight:normal; }
+	#sidebar #sd_content { display:block; 
+	    /*padding:0 0 25px 25px;*/
+        overflow:auto;
+	     float:left;
+	     width:100%;
+	     height:100%;
+	     min-height:350px; }
+	     
+	#grab-point{background:url('/images/layout/bar-ext.gif') repeat-y;width:5px;height:100%;min-height:350px;position:absolute;top:24px;right:0;border-right:1px solid #ccc;border-left:1px solid #ccc;}
+	     
+	#sidebar #sd_ft { float:left; width:300px; color:#7f7f7f; }
+	#sidebar #sd_ft p { padding:5px 0 0 25px; }
+
+	#bd #bd_content #container { padding-left:301px; position:relative; background:url("/images/layout/subnav_bg.png") repeat-x;}
+	#bd #bd_content #container .tabs { height:24px; float:left; }
+	#bd #bd_content #container .tabs ul { margin:0; float:left; }
+	#bd #bd_content #container .tabs li { margin:0; }
+	#bd #bd_content #container .tabs li.first { padding-left:0; }
+	#bd #bd_content #container .tabs a { padding:5px 15px 0 15px; }
+	#bd #bd_content #container #contents { float:left; padding:10px; width:90%;}
+	
+	legend { font-weight:bold; }
+	fieldset { float:left; margin-right:25px; }
+	
+/* Tables */
+
+.minimal { font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif; font-size: 12px; background: #fff; text-align: left; border-collapse:separate; }
+.minimal caption { padding: 0 0 5px 0; width: 100%; font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; text-align: right; }
+.minimal thead th { font-size: 14px; font-weight: normal; color: #039; padding: 10px 8px; border-bottom: 2px solid #6678b1; }
+.minimal tbody td { border-bottom: 1px solid #ccc; color: #669; padding: 6px 8px; }
+.minimal tbody tr:hover td { color: #234979; background: #f5fafa; border-bottom: 1px solid #ccc; }
+
+.basic { background:#fff; }
+.basic caption { padding: 0 0 5px 0; width: 100%; font: italic 95% "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; text-align: right; }
+.basic thead th, .basic tbody th { font-weight:bold; font-size:90%; padding: 2px 20px 2px 0; }
+.basic tbody td { padding: 2px 20px 2px 0; }
+.basic tbody tr:hover td, .basic tbody tr:hover th { background: #f5fafa; border-bottom: 1px solid #ccc; }
+
+.zebra caption { padding: 0 0 5px 0; width: 100%; font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; text-align: right; }
+.zebra th { white-space:nowrap; font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #e2ebf0; }
+.zebra tbody th { font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #fff; }
+.zebra th.alt { border-left: 1px solid #C1DAD7; border-top: 0; background: #f5fafa; font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #797268; }
+.zebra th.nobg { border-top: 0; border-left: 0; border-right: 1px solid #C1DAD7; background: none; }
+.zebra td { border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; padding: 6px 6px 6px 12px; color: #000; }
+.zebra td.alt { background: #f5fafa; color: #000; }
+.zebra tr { border-left: 1px solid #C1DAD7; color: #000; }
+.zebra tr.alt { border-left: 1px solid #C1DAD7; background: #f5fafa; color: #000; }
+
+.form caption { padding: 0 0 5px 0; width: 100%; font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; text-align: right; }
+.form th { white-space:nowrap; font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #e2ebf0; }
+.form th.alt { border-left: 1px solid #C1DAD7; border-top: 0; background: #f5fafa; font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #797268; }
+.form th.nobg { border-top: 0; border-left: 0; border-right: 1px solid #C1DAD7; background: none; }
+.form td { border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; padding: 6px 6px 6px 12px; color: #000; }
+.form td.alt { background: #f5fafa; color: #000; }
+.form tr { border-left: 1px solid #C1DAD7; color: #000; }
+.form tr.alt { border-left: 1px solid #C1DAD7; background: #f5fafa; color: #000; }
+.form td.top { border-top: 1px solid #C1DAD7; }
+
+
+/* Notes*/
+.notetype{font:12px bold "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; }
+.header { cursor:pointer; font:11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-align: left; padding: 6px 6px 6px 12px; background: #e2ebf0; }
+.message{background: #ECF5FB;}
+.sender{padding:5px;border: 1px solid #C1DAD7;}
+.hiddenNote{background-color:gray;}
+.messages{padding:10px;background: #FCFCFC;border-bottom: 1px solid #C1DAD7;border-left: 1px solid #C1DAD7;border-right: 1px solid #C1DAD7;}
+
+/* Resources Tab*/
+
+.resources caption { padding: 0 0 5px 0; width: 100%; font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; text-align: right; }
+.resources th { white-space:nowrap; font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #e2ebf0; }
+.resources tbody th { font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #fff; }
+.resources th.alt { border-left: 1px solid #C1DAD7; border-top: 0; background: #f5fafa; font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #797268; }
+.resources th.nobg { border-top: 0; border-left: 0; border-right: 1px solid #C1DAD7; background: none; }
+.resources td { border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; padding: 6px 6px 6px 12px; color: #000; }
+.resources td.alt { background: #f5fafa; color: #000; }
+.resources tr { border-left: 1px solid #C1DAD7; color: #000; }
+.resources tr.alt { border-left: 1px solid #C1DAD7; background: #f5fafa; color: #000; }
+ tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-align: left; padding: 6px 6px 6px 12px; background: #e2ebf0; }
+
+
+
+</style>

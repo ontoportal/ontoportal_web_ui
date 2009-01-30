@@ -1,5 +1,6 @@
 <center><h4>Point-to-Point Mapping from <%=@name%> to :</h4></center>
-<%  remote_form_for(:search, :url => {:controller =>'search',:action=>'concept'}, :update =>'mapping_window',:loading=>"YAHOO.wait.container.wait.show();",:complete=>'YAHOO.wait.container.wait.hide();') do |f| %>
+<% form_for(:search, :url => {:controller =>'search',:action=>'concept'}, :html=>{:onsubmit=>"ajaxForm(this,'#mapping_window',null);return false;"}) do |f| %>
+
 <table>
 	<tr>
 		<td>Ontology:</td>
@@ -19,8 +20,8 @@
 </table>
 
 
+<% form_for(:mapping, :url => mappings_path, :html=>{:onsubmit=>"ajaxForm(this,'#mapping_details',tb_remove());refreshCache('#{@mapping.source_id}');return false;"}) do |f| %>
 
-<%  remote_form_for(:mapping, :url => mappings_path,:update=>'mapping_details',:complete=>"refreshCache('#{@mapping.source_id}')") do |f| %>
 	<%=hidden_field :mapping, :source_ont%>
 	<%=hidden_field :mapping, :source_version_id%>
 	<%=hidden_field :mapping, :source_id%>

@@ -35,11 +35,6 @@ module ApplicationHelper
      "#{encode_param(string.gsub(" ","_"))}"
   end
   
-  def draw_note_tree(notes,key)
-    output = ""
-    draw_note_tree_leaves(notes,0,output,key)
-    return output
-  end
   
   def remove_owl_notation(string)    
     strings = string.split(":")
@@ -49,6 +44,14 @@ module ApplicationHelper
       return strings[1].titleize
     end
   end
+  
+  
+  def draw_note_tree(notes,key)
+    output = ""
+    draw_note_tree_leaves(notes,0,output,key)
+    return output
+  end
+ 
   
   
   def draw_note_tree_leaves(notes,level,output,key)
@@ -65,7 +68,7 @@ module ApplicationHelper
     notetext << " <input type=\"hidden\" id=\"note_value#{note.id}\" value=\"#{note.comment}\"> 
                   <span class=\"message\" id=\"note_text#{note.id}\">#{note.comment}</span>"
   else
-    headertext<< "<div class=\"header\" onclick=\"toggleHide('note_body#{note.id}','')\">"
+    headertext<< "<div onclick=\"toggleHide('note_body#{note.id}','')\">"
     
     notetext<< "<span class=\"message\" id=\"note_text#{note.id}\">#{simple_format(note.comment)}</span>"
   end
@@ -73,18 +76,14 @@ module ApplicationHelper
   
     output << "
         <div style=\"clear:both;margin-left:#{level*20}px;\">
-        <div class=\"ygtvln\" style=\"float:left;\"></div>
-        <div class=\"outgoing\" style=\"float:left;width:500px;\">  
-          
-          <div class=\"header_top\"></div>
+        <div  style=\"float:left;width:100%\">  
           #{headertext}
-            <div>
-              <div><span class=\"sender\" style=\"float:right\">#{name} at #{note.created_at.strftime('%m/%d/%y %H:%M')}</span>
-                <div class=\"sender\">#{note.type_label.titleize}: #{note.subject}</div>
+              <div>
+                <span class=\"sender\" style=\"float:right\">#{name} at #{note.created_at.strftime('%m/%d/%y %H:%M')}</span>
+                <div class=\"header\"><span class=\"notetype\">#{note.type_label.titleize}:</span> #{note.subject}</div>
+                              <div style=\"clear:both\"></div>
               </div>
-            </div>
-            <div class=\"left\"></div>
-            <div class=\"right\"></div>
+
           </div>
         
           <div name=\"hiddenNote\" id=\"note_body#{note.id}\" style=\"display:none;\">
@@ -95,15 +94,12 @@ module ApplicationHelper
                if session[:user].nil?
                  output << "<div id=\"insert\"><a href=\"\/login?redirect=#{@ontology.to_param}\">Reply</a></div>"
                else
-                output << "<div id=\"insert\"><a href=\"\#\" onclick =\"Dialog.form( document.getElementById('commentForm').innerHTML,  {height: 500, title: 'New Marginal Note', width: 800, windowParameters: {}} ); buildEditor('#{key}');document.getElementById('noteParent').value='#{note.id}';document.getElementById('note_subject#{key}').value='RE:#{note.subject}';\">Reply</a></div>"
+                output << "<div id=\"insert\"><a href=\"#TB_inline?height=400&width=600&inlineId=commentForm\" class=\"thickbox\" onclick =\"document.getElementById('noteParent').value='#{note.id}';document.getElementById('note_subject#{key}').value='RE:#{note.subject}';\">Reply</a></div>"
                end
    output << "</div>
             </div>
           </div>
-          <div class=\"messages_bottom\">
-            <div class=\"left\"></div>
-            <div class=\"right\"></div>
-          </div>
+
           </div>
         </div>
         </div>"
@@ -147,9 +143,13 @@ module ApplicationHelper
       if(child.map_icon)
         icons << "<img src='/images/map_icon.png' style='vertical-align:bottom;' title='Concept Has Mappings'>"
       end
-    
+
+      active_style =""
+			if child.id.eql?(id)
+			 active_style="class='active'"
+			end    
       
-        string <<"<li #{draw_root} id=\"#{child.id}\"><span>#{child.name} #{icons}</span>"
+        string <<"<li #{draw_root}  id=\"#{child.id}\"><span #{active_style}>#{child.name} #{icons}</span>"
     		   		
     				if child.child_size>0 && !child.expanded
     				  string << "<ul class=\"ajax\">
@@ -157,9 +157,6 @@ module ApplicationHelper
   						            </ul>"
   				  end
 
-    				if child.id.eql?(id)
-#    				 string<< "Node#{clean_id(child.id)}.labelStyle=\"ygtvlabel-selected\"\n";	
-    				end
     				string <<"</li>"
     		build_tree(child,"child",string,id)
       

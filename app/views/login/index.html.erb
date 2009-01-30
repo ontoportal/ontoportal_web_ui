@@ -11,14 +11,15 @@ Errors On Form
 </ul>
 </div>
 <%end%>
-			 <table >
+<center>
+			 <table class="form" width="400px" style="margin-top:30px">
 			     <tr>
-			         <td nowrap align="right" >User Name:</td>
-			         <td><%= text_field 'user','username',:size=>15%></td>
+			         <th nowrap align="right" >User Name:</th>
+			         <td class="top"><%= text_field 'user','username',:size=>25%></td>
 			     </tr>
 			     <tr>
-			         <td nowrap align="right" >Password:</td>
-			         <td><%= password_field 'user','password',:size=>15%></td>
+			         <th nowrap align="right" >Password:</th>
+			         <td><%= password_field 'user','password',:size=>25%></td>
 			     </tr>
 			     <tr>
 			         <td colspan="2" align="right"><%= submit_tag "Login"%></td>
@@ -26,6 +27,6 @@ Errors On Form
 			 </table>
 			 <span style="font-size:1.2em;">Not Registered Yet?  <%=link_to "Sign Up",new_user_path%></span><br><br>
 			<span style="font-size:1.2em;"><%=link_to "Lost Password",'/lost_pass'%></span><br><br>
-
+</center>
 	
 <% end %>

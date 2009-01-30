@@ -3,7 +3,7 @@ class LoginController < ApplicationController
   # POST /login
   # POST /login.xml
   
-  layout 'home'
+  layout 'ontology'
   def index
     #sets the redirect properties
     unless params[:redirect].nil?

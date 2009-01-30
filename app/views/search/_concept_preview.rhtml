@@ -2,10 +2,16 @@
 <legend>Preview of <%=link_to "#{@concept.name},#{@concept.id}",uri_url(:ontology=>@ontology,:id=>@concept.id),:target=>"_new"%></legend>
 <!--<div style="overflow:auto;width:300px"></div>-->
 <br>
-<ul>
-<%@concept.properties.each_pair{|key,value| %>		
-	<li><label><%="#{remove_owl_notation(key)}:"%></label><%="#{value}"%></li>	
+<table class="minimal">
+	<tbody>		
+<%@concept.properties.each_pair{|key,value| %>
+
+	<tr>
+	<td><%="#{remove_owl_notation(key)}:"%></td><td><%="#{value}"%></td>	
+	</tr>
+	
 <% } %>
-</ul>
+</tbody>
+</table>
 
 </fieldset>
