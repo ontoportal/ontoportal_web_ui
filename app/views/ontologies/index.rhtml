@@ -274,9 +274,18 @@ ontology_groups = {
 		<tbody>
 		<%for note in @last_notes%>
 		<tr>
-		<td><%=link_to note.subject,uri_url(:ontology=>note.ontology_version_id,:id=>note.concept_id)%>
+		<td>
+		<%if note.mapping_id.nil?%>
+		<%=link_to note.subject,uri_url(:ontology=>note.ontology_version_id,:id=>note.concept_id)%>
 			<br>
 			<span style="color:#AAAAAA"><%=link_to "#{note.concept.name} (#{note.ontology.displayLabel})" ,uri_url(:ontology=>note.ontology_version_id,:id=>note.concept_id)%> <%=note.created_at.strftime("%m/%d/%y")%> <%=note.user.username%></span>
+		
+		<%else%>
+		<%=link_to note.subject,uri_url(:ontology=>note.mapping.source_version_id,:id=>note.mapping.source_id)%>
+			<br>
+			<span style="color:#AAAAAA"><%=link_to "#{note.mapping.source_name} (#{note.mapping.source_ont_name})" ,uri_url(:ontology=>note.mapping.source_version_id,:id=>note.mapping.source_id)%> <%=note.created_at.strftime("%m/%d/%y")%> <%=note.user.username%></span>
+		<%end%>
+			
 			<p><%= truncate(strip_tags(note.comment),100)%>&nbsp;</p>
 		</td>
 		</tr>

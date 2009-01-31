@@ -2,6 +2,7 @@ class SearchController < ApplicationController
   
   skip_before_filter :verify_authenticity_token
   
+  layout 'ontology'
   
   def index
     @ontologies = DataAccess.getActiveOntologies() 

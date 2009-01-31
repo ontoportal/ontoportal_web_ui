@@ -4,22 +4,24 @@
 <%if @results.size > 0%>
 
 
-<table class="ontologies" cellpadding="0" cellspacing="0">
+<table class="zebra" cellpadding="0" cellspacing="0" width="80%">
 	
 <tr>
 	<td colspan="3" align="right" style='background:none;color:black;font-weight:bold;'>
 		<%if params[:page].to_i >1 %> <a href="#" onclick='postData({ "page":"<%=params[:page].to_i-1%>", "search[keyword]": "<%=params[:search][:keyword]%>", "search[attributes]": "<%=params[:search][:attributes]%>", "search[search_type]":"<%=params[:search][:search_type]%>",<%for ontology in params[:search][:ontologies]%>"search[ontologies][]":"<%=ontology%>"<%if !ontology.eql?(params[:search][:ontologies].last)%>,<%end%><%end%> });return false;'>&lt;&lt; Previous Page </a><%end%>  Page <%=params[:page] || 1%> of <%=@pages%>  <%if !params[:page].to_i.eql?(@pages.to_i)%> <a href="#" onclick='postData({ "page":"<%=params[:page].to_i+1%>", "search[keyword]": "<%=params[:search][:keyword]%>", "search[attributes]": "<%=params[:search][:attributes]%>", "search[search_type]":"<%=params[:search][:search_type]%>",<%for ontology in params[:search][:ontologies]%>"search[ontologies][]":"<%=ontology%>"<%if !ontology.eql?(params[:search][:ontologies].last)%>,<%end%><%end%> });return false;'>Next Page &gt;&gt;</a><%end%>
 	</td>		
 </tr>
+<thead>
 	<tr>
-		<th style='background:none;color:black;font-weight:bold;'>Concept Name</th>
-		<th style='background:none;color:black;font-weight:bold;'>Found In</th>
-		<th style='background:none;color:black;font-weight:bold;'>Ontology</th>
+		<th >Concept Name</th>
+		<th >Found In</th>
+		<th >Ontology</th>
+</thead>
 	</tr>
 		<%for result in @results%>
 		<%begin
 		#catch exceptions and dont draw row
-		row =	"<tr class=\"#{cycle("odd", "even")}\">
+		row =	"<tr class=\"#{cycle("", "alt")}\">
 				<td>#{link_to highlight(result[:contents],@keyword),uri_url(:ontology=>result[:ontologyVersionId],:id=>result[:conceptIdShort]),:onclick=>"YAHOO.tabwait.container.wait.show();"}</td>
 				<td>#{result[:recordType].titleize.gsub("Record Type","")}</td>
 				<td>#{link_to result[:ontologyDisplayLabel], ontology_path(:id=>result[:ontologyVersionId])}</td>

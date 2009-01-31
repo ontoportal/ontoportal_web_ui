@@ -19,6 +19,7 @@ class MarginNotesController < ApplicationController
       @margin_notes = MarginNote.find(:all, :conditions => {:ontology_version_id => params[:ontology_version_id],:concept_id =>params[:concept_id],:parent_id =>nil})
     elsif !params[:mapping_id].nil? # gets Mapping marginal note
       @margin_notes = MarginNote.find(:all, :conditions => {:mapping_id =>params[:mapping_id],:parent_id =>nil})
+      @modal=true
     end
     
     #prepopulates marginal note

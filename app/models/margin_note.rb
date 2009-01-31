@@ -1,5 +1,6 @@
 class MarginNote < ActiveRecord::Base
   acts_as_tree :order =>:id
+  belongs_to :mapping
 
   
   NOTE_TYPES = {

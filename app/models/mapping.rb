@@ -1,5 +1,6 @@
 class Mapping < ActiveRecord::Base
   
+  has_many :margin_notes
 
 
 

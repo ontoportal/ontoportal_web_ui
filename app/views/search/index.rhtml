@@ -2,20 +2,27 @@
 
 <script type="text/javascript">
 
-	function postData(params){
-		YAHOO.wait.container.wait.show();
-		jQuery.post("/search/search",params ,
-		  function(data){
-		    jQuery("#results").html(data)
-		YAHOO.wait.container.wait.hide();
-		  });
-	
+	function searchFunctions(form,target){
+		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Searching Ontologies...</h1>' }); 
+		ajaxForm(form,target,function(){
+			jQuery.unblockUI();	
+		});
 		
 	}
+	function postData(params){
+		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Searching Ontologies...</h1>' }); 
+			jQuery.post("/search/search",params ,
+			  function(data){
+			    jQuery("#results").html(data)
+				jQuery.unblockUI();	
+			  });
+
+
+		}
 
 </script>
+<% form_for(:search, :url => {:controller =>'search',:action=>'search'},:html=>{:onsubmit=>"searchFunctions(this,'#results');return false;"}) do |f| %>
 
-<%  remote_form_for(:search, :url => {:controller =>'search',:action=>'search'}, :update =>'results',:loading=>"YAHOO.wait.container.wait.show();",:complete=>'YAHOO.wait.container.wait.hide();') do |f| %>
 <div class="box" id="searchBox">
 	<div class="header">Search Ontologies</div>
 
@@ -56,16 +63,10 @@
 		
 	</fieldset>
 
-
+<div style="clear:both;"></div>
 
 </div>
 <%end%>
 <div id="results">
 	
 </div>
-
-<script type="text/javascript">
-try{
-YAHOO.util.Event.onDOMReady(buildSearchWait()); 
-}catch(e){}
-</script>
