@@ -60,7 +60,7 @@ Rails::Initializer.run do |config|
     config.active_record.allow_concurrency=true
 end
 
-    #$REST_URL="http://ncbo-core-dev1:8080/bioportal"
+    #$REST_URL="http://localhost:8080/bioportal"
     #$REST_URL="http://ncbo-core-load1.stanford.edu/bioportal"
     #$REST_URL="http://rest.bioontology.org/bioportal"
     $REST_URL="http://ncbo-core-stage1.stanford.edu/bioportal"

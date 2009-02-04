@@ -15,7 +15,9 @@ class ConceptsController < ApplicationController
     
       @ontology = DataAccess.getOntology(params[:ontology])
     if request.xhr?    
+      puts "its an ajax call"
       show_ajax_request # process an ajax call
+      puts "Children #{@children.inspect}"
     else
       show_uri_request # process a full call
       render :file=> '/ontologies/visualize',:use_full_path =>true, :layout=>'ontology' # done this way to share a view

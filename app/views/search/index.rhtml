@@ -23,7 +23,7 @@
 </script>
 <% form_for(:search, :url => {:controller =>'search',:action=>'search'},:html=>{:onsubmit=>"searchFunctions(this,'#results');return false;"}) do |f| %>
 
-<div class="box" id="searchBox">
+<div class="box" id="searchBox" style="border:1px solid #C1DAD7;margin:15px;">
 	<div class="header">Search Ontologies</div>
 
 	<fieldset style="float:left;margin:10px;">
@@ -42,17 +42,17 @@
 	
 	<fieldset style="margin:10px;width:400px;">
 		<legend>Search Query</legend>
-		<table>
+		<table class="form">
 			<tr>
-				<td nowrap>Search Text:</td>
-				<td><%=text_field "search","keyword",:size=>30%></td>
+				<th nowrap>Search Text:</th>
+				<td class="top"><%=text_field "search","keyword",:size=>30%></td>
 			</tr>
 			<tr>
 				<td nowrap>&nbsp;</td>
 				<td><%=check_box "search","attributes"%>Include search in attributes</td>
 			</tr>
 			<tr>
-				<td nowrap>Search Type:</td>
+				<th nowrap>Search Type:</th>
 				<td><%=radio_button "search","search_type","contains",{:checked=>"checked"}%>Contains <%=radio_button "search","search_type","exact"%>Exact Match</td>
 			</tr>
 
@@ -67,6 +67,6 @@
 
 </div>
 <%end%>
-<div id="results">
+<div id="results" style="margin:15px">
 	
 </div>

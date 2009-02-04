@@ -10,18 +10,93 @@
 		<td nowrap class="label" >ID:</td>
 		<td><%=@concept.id%></td>
 	</tr>
-
-<%@concept.properties.each_pair{|key,value| %>
-	
-	<%if key.eql?("type")|| key.eql?("rdf:type")
-		next
-	end%>
+	<%unless @concept.fullId.nil? || @concept.fullId.eql?("")%>
 	<tr>
-		<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
-		<td ><%="#{value}"%></td>
+		<td nowrap class="label" >Full Id:</td>
+		<td><a href="<%=@concept.fullId%>"><%=@concept.fullId%></a></td>
 	</tr>
+	<%end%>
 	
-<% } %>
+	
+	<%
+	keys = @concept.properties.keys
+	
+	top_keys=[
+		"description",
+		"comment"]
+	bottom_keys=[
+		"disjoint",
+		"subclass",
+		"is_a"]
+	top_set=[]
+	bottom_set=[]
+	leftover=[]
+	for key in keys
+		top=false
+		bottom=false
+		top_keys.each{|top_key| 
+			if key.downcase.include?(top_key)
+				top_set << key
+				top=true
+			end}
+		bottom_keys.each{|bottom_key| 
+			if key.downcase.include?(bottom_key)
+				bottom_set << key
+				bottom=true
+			end}
+			
+		if !top && !bottom
+			leftover << key	
+		end
+	end
+	
+	
+	%>
+
+	<%for key in top_set%>
+	
+		<%if key.eql?("type")|| key.eql?("rdf:type")
+			next
+		end%>
+		<%unless @concept.properties[key].empty?%>
+	
+		<tr>
+			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
+			<td ><%=auto_link("#{@concept.properties[key]}", :all, :target => "_blank")%></td>
+		</tr>
+		<%end%>
+	
+	
+	<%end%>
+	
+
+	<%for key in leftover%>
+		<%if key.eql?("type")|| key.eql?("rdf:type")
+			next
+		end%>
+		<%unless @concept.properties[key].empty?%>
+
+		<tr>
+			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
+			<td ><%=auto_link("#{@concept.properties[key]}", :all, :target => "_blank")%></td>
+		</tr>
+		<%end%>
+
+	<%end%>
+
+	<%for key in bottom_set%>
+		<%if key.eql?("type")|| key.eql?("rdf:type")
+			next
+		end%>
+		<%unless @concept.properties[key].empty?%>
+
+		<tr>
+			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
+			<td ><%=auto_link("#{@concept.properties[key]}", :all, :target => "_blank")%></td>
+		</tr>
+		<%end%>
+
+	<%end%>
 </table>
 
 

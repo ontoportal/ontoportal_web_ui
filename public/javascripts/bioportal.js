@@ -362,79 +362,7 @@ function destroyEditor(){
 }
 
 
-function update_tab(ontology,concept){
-	
-	var responseSuccess = function(o)
-			{
-			
-				
-			}
 
-			var responseFailure = function(o){
-				
-			}
-
-			var callback =
-			{
-				success:responseSuccess,
-				failure:responseFailure
-			};
-
-
-			// Show the Panel 
-			var cObj = YAHOO.util.Connect.asyncRequest("GET","/tab/update/"+ontology+"/"+concept,callback);
-	
-	
-	
-}
-
-
-function remove_tab(link,ontology,redirect){
-
-
-			var responseSuccess = function(o)
-			{
-
-				if(redirect){
-					window.location="/ontologies"
-				}else{
-					tab= document.getElementById("tab"+ontology)		
-					try{
-					    tab.parentNode.removeChild(tab);
-				    }catch(e){
-				        tab.style.display='none';
-				    }
-
-		
-				}
-				
-			}
-
-			var responseFailure = function(o){
-				
-			}
-
-			var callback =
-			{
-				success:responseSuccess,
-				failure:responseFailure
-			};
-
-
-			// Show the Panel 
-			var cObj = YAHOO.util.Connect.asyncRequest("GET","/tab/remove/"+ontology,callback);
-
-}
-
-function selectTab(id,tab){
-    nav = document.getElementById(id);
-    for(var x=0; x<nav.childNodes.length; x++){
-        nav.childNodes[x].className="";
-    }
-   
-    document.getElementById(tab).className="selected";
-    
-}
 
 function updateOntologyList(ontology){
     list = document.getElementById("ontologieslist")
@@ -522,4 +450,35 @@ function updateContent(){
          return false;
 }
 
+function update_tab(ontology,concept){
+	
 
+	        jQuery.get("/tab/update/"+ontology+"/"+concept)
+	
+	
+}
+
+
+function remove_tab(link,ontology,redirect){
+
+			jQuery.get("/tab/remove/"+ontology,function(){
+			    	if(redirect){
+    					window.location="/ontologies"
+    				}else{
+    					jQuery("#tab"+ontology).remove()    					
+
+    				}
+                
+			})	        
+
+}
+
+function selectTab(id,tab){
+    nav = document.getElementById(id);
+    for(var x=0; x<nav.childNodes.length; x++){
+        nav.childNodes[x].className="";
+    }
+   
+    document.getElementById(tab).className="selected";
+    
+}

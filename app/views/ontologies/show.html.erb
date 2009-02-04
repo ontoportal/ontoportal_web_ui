@@ -1,59 +1,74 @@
 
+<script type="text/javascript">
+	function meta_tab_clicked(content,tab){
+		jQuery(".tab_content").hide();
+		jQuery(content).show();
+		jQuery(".tab").removeClass("selected");
+		jQuery(tab).parent().addClass("selected");
+		return false;
+		
+	}
+
+</script>
+
+
+<div style="padding:5px;">
 <%if flash[:notice]%>
 <div style="padding:5px;border:1px solid gray;font-size:14px; background-color:#ffffcc;">
 <p><%=flash[:notice]%></p>
 </div>
 <%end%>
 
-<%unless request.xhr?%>
-<br/>
 <h1><%=@ontology.displayLabel%></h1> 
 
 <%if !session[:user].nil? && (session[:user].id.to_i.eql?(@ontology.userId.to_i) || session[:user].admin?)%>
-<span class="blueButton"><%=link_to "Submit New Version",new_ontology_path(:id=>@ontology.ontologyId)%></span>
-<span class="blueButton"><%=link_to "Edit Ontology Information",edit_ontology_path(:id=>@ontology.id)%></span>
-<%end%>
-<ul class="topnav" id="subnav">
-		<li id="meta"class="selected"><%=link_to_remote "<em>MetaData</em>",:update=>'ontology_content',:method=>'GET',:url=>ontology_url(:ontology => @ontology),:complete=>"selectTab('subnav','meta')"%></li>
-		<li id="proj"><%=link_to_remote "<em>Projects</em>",:update=>'ontology_content',:method=>'GET',:url=>projects_path(:ontology=>@ontology.ontologyId),:complete=>"selectTab('subnav','proj')"%></li>
-    	<li id="rev"><%=link_to_remote "<em>Reviews</em>",:update=>'ontology_content',:method=>'GET',:url=>reviews_path(:ontology=>@ontology.ontologyId),:complete=>"selectTab('subnav','rev')"%></li>
-	</ul>  
-	<div style="clear:both;"/>
-<div id="ontology_content">
-<%end%>
-<h3>Ontology MetaData</h3>
-
-<table class="metadata" cellpadding="0" cellspacing="0">
+<table class="form">
 	<tr>
-		<td>
-			<ul>
-			<li><label>Ontology Name:</label><%=@ontology.displayLabel%></li>
-			<li><label>Ontology Id:</label><%=@ontology.ontologyId%></li>
-			<li><label>Format:</label> <%if @ontology.format.eql?("OBO")%><%=@ontology.format+"F"%><%else%><%=@ontology.format.split("-")[0]%><%end%></li>
-			<li><label>Categories:</label><%for cat in @ontology.categories%><%=@categories[cat.to_s][:name]%> <%end%></li>
-			<li><label>Contact Email:</label><%=@ontology.contactEmail%></li>
-			</ul>
-			
-		</td>
-		<td>
-			<ul>
-			<li><label>Contact(s):</label><%=@ontology.contactName%></li>
-			<li><label>Home Page:</label><%=@ontology.homepage%></li>
-			<li><label>Documentation Page:</label><%=@ontology.documentation%> </li>
-			<li><label>Publications Page:</label><%=@ontology.publication%> </li>
+		<th>Actions</th>
+			<td class="top"><%=link_to "Submit New Version",new_ontology_path(:id=>@ontology.ontologyId)%></td>
+			<td class="top"><%=link_to "Edit Ontology Information",edit_ontology_path(:id=>@ontology.id)%></td>
+	</tr>
+</table>
+<%end%>
 
-			</ul>
+<div class="tabs" style="margin-top:5px;margin-bottom:10px;border-top:1px solid #CFCFCF;">
+	<ul >
+		<li id="meta" class="selected tab"><a href="#" onclick="meta_tab_clicked('#metadata',this)">Metadata</a></li>
+		<li id="proj" class="tab"><a href="#" onclick="meta_tab_clicked('#projects',this)">Projects</a></li>
+    	<li id="rev" class="tab"><a href="#" onclick="meta_tab_clicked('#reviews',this)">Reviews</a></li>
+	</ul>  
+</div>
 
-		</td>
-		
+<div id="metadata" class="tab_content">
+<h2>Ontology MetaData</h2>
+
+<table class="form" width="80%">
+	<tr>
+			<th>Ontology Name:</th><td class="top"><%=@ontology.displayLabel%></td> <th>Contact(s):</th><td class="top"><%=@ontology.contactName%></td>
 	</tr>
 	<tr>
-		<td colspan=2><ul><li><label>Description:</label><%=@ontology.description%></li></li>
+			<th>Ontology Id:</th><td><%=@ontology.ontologyId%></td> <th>Home Page:</th><td><%=@ontology.homepage%></td>
+	</tr>
+	<tr>
+			<th>Format:</th><td><%if @ontology.format.eql?("OBO")%><%=@ontology.format+"F"%><%else%><%=@ontology.format.split("-")[0]%><%end%></td><th> Documentation Page:</th><td><%=@ontology.documentation%></td>
+	</tr>
+	<tr>
+			<th>Categories:</th><td><%for cat in @ontology.categories%><%=@categories[cat.to_s][:name]%> <%end%></td> <th>Publications Page:</th><td><%=@ontology.publication%></td>
+	</tr>
+	<tr>
+			<th>Contact Email:</th><td><%=@ontology.contactEmail%></td><td>&nbsp;</td><td>&nbsp;</td>
+	</tr>
+
+
+
+	<tr>
+		<th >Description:</th><td colspan=3><%=@ontology.description%></td>
+	</tr>
 </table>
-</fieldset>
 
 <h3>Versions</h3>
-	<table class="versions" cellpadding="0" cellspacing="0">
+	<table class="zebra" cellpadding="0" cellspacing="0" width="80%">
+		<thead>
 		<tr>
 			<th>Version Number</th>
 			<th>Release Date</th>
@@ -61,8 +76,9 @@
 			<th></th>
 			<th></th>
 		</tr>
+		</thead>
 		<%for version in @versions.reverse%>
-		<tr>
+		<tr <%=cycle("","class='alt'")%>>
 			<td><%=version.versionNumber%></td>
 			<td><%=version.dateReleased%></td>
 			<td><%=version.versionStatus%></td>
@@ -71,6 +87,83 @@
 		</tr>
 		<%end%>
 	</table>
-<%unless request.xhr?%>
+
 </div>
-<%end%>
+
+<div id="projects" style="display:none;" class="tab_content">
+	<br>
+	<%if session[:user].nil?%>
+		<input type="button" class ="blueButton" value="Add Project" onclick ="window.location='/login'"> 
+	<%else%>
+	<span class="blueButton"><%=link_to "Add Project",new_project_path%></span>
+	<%end%>
+
+
+	<br>
+	<br>
+	<table class="metadata" style="border:0px;"width="70%" cellpadding="0" cellspacing="0">
+		<tr>
+			<th class="header" colspan="2">Projects</th>
+		</tr>
+
+		<%for project in @projects%>
+		<tr>
+			<td colspan="2"style="padding:10px;border-bottom:1px solid #9F9F9F;font-size:17px;font-weight:bold;"><%=link_to project.name, project,:style=>"text-decoration:none;"%> <%if isOwner?(project.id)%><%=link_to "Edit Project",edit_project_path(project)%> <%= link_to 'Delete Project', project, :confirm => 'Are you sure?', :method => :delete %><%end%></td>
+		</tr>
+		<tr style="background-color:#EFEFEF">
+			<td  colspan="2" style="padding:10px;border-bottom:1px solid #9F9F9F"><%=project.description%></td>
+		</tr>
+		<tr>
+			<th style="width:100px;text-align:left;padding:5px;">People:</th><td align="left"style="padding-top:5px;width:100%;"><%=project.people%></td>
+		</tr>
+		<tr>
+			<th style="width:100px;text-align:left;padding:5px;">Institution:</th><td align="left"style="padding-top:5px;width:100%;"><%=project.institution%></td>
+		</tr>
+		<tr>
+			<th style="width:100px;text-align:left;padding:5px;">Homepage:</th><td align="left"style="padding-top:5px;width:100%;"><%=link_to project.homepage, project.homepage%></td>
+		</tr>
+
+		<tr>
+			<td colspan="2" style="width:100%;margin-bottom:15px;"><hr></td>
+		</tr>
+		<%end%>
+	</table>
+</div>
+<div id="reviews" style="display:none;" class="tab_content">
+	<%if session[:user].nil?%>
+		<input type="button" class ="blueButton" value="Review Ontology" onclick ="window.location='/login'"> 
+	<%else%>
+	<span class="blueButton"><%=link_to "Review Ontology",new_review_path(:ontology=>@ontology.ontologyId)%></span>
+	<%end%>
+
+
+	<br><br>
+	<% for review in @reviews %>
+	<table class="reviews" cellpadding="0" cellspacing="0">
+
+		<tr>
+			<td><div class="reviewheader">Review By <%=review.user.username%> <%unless review.project.nil?%> From Project <%=link_to review.project.name,project_path(review.project)%><%end%><%if isOwner?(review.id)%> <%=link_to "Edit Review",edit_review_path(review)%> <%end%></div>
+				<div style="float:left;border:1px solid gray;margin:7px;padding:5px;white-space:nowrap;width:250px;">
+				<%for rating in review.ratings%>				
+					<div class="rateMe" >
+						<%if rating.value.eql?(0)%>
+						<span style="float:left;">Not Rated</span>
+						<%else%>
+					    <a <% if rating.value >= 1%>class="on"<%end%> ></a>
+					    <a <% if rating.value >= 2%>class="on"<%end%> ></a>
+					    <a <% if rating.value >= 3%>class="on"<%end%> ></a>
+					    <a <% if rating.value >= 4%>class="on"<%end%> ></a>
+					    <a <% if rating.value >= 5%>class="on"<%end%> ></a>
+						<%end%>
+					</div>
+					<b>&nbsp;<%=rating.rating_type.name%></b>					
+				<%end%>
+				</div>
+				<p><%=review.review%></p>
+
+			</td>
+		</tr>
+
+	</table>
+	<% end %>
+</div>

@@ -1,6 +1,7 @@
 class TreeNode
   attr_accessor :name
   attr_accessor :id
+  attr_accessor :fullId
   attr_accessor :ontology_id
   attr_accessor :children 
   attr_accessor :ontology_name
@@ -13,6 +14,7 @@ class TreeNode
   def initialize(object=nil)
       unless object.nil?
         self.id = object.id.gsub(" ","%20")
+        self.fullId = object.fullId
         initialize_node(object)
       end
   end

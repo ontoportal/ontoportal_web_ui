@@ -477,11 +477,11 @@ class BioPortalRestfulCore
             return ontology
           end
         
-        def self.updateOntology(params)
-          puts "UPdating Ontology#############"
+        def self.updateOntology(params,version_id)
+          puts "UPdating Ontology############# #{version_id}"
                   ontology = nil
                     begin
-                    doc = REXML::Document.new(putToRestlet(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?&applicationid=#{APPLICATION_ID}",params))
+                    doc = REXML::Document.new(putToRestlet(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%",version_id)+"?&applicationid=#{APPLICATION_ID}",params))
                     rescue Exception=>e
                        doc =  REXML::Document.new(e.io.read)
                        puts doc.to_s
@@ -643,6 +643,7 @@ private
     puts paramsHash.inspect
     paramsHash["method"]="PUT"
     puts paramsHash.inspect
+    puts "URL=> #{url}"
     res = Net::HTTP.post_form(URI.parse(url),paramsHash)
      puts res.body
      return res.body
@@ -797,6 +798,8 @@ private
        node = NodeWrapper.new
        node.child_size=0
          node.id = classbeanXML.elements["id"].get_text.value
+         node.fullId = classbeanXML.elements["fullId"].get_text.value rescue ""
+         
          node.name = classbeanXML.elements["label"].get_text.value rescue node.id
          node.version_id = ontology
          node.children =[]

@@ -15,9 +15,7 @@ class OntologiesController < ApplicationController
     @categories = DataAccess.getCategories()
     @last_notes= MarginNote.find(:all,:order=>'created_at desc',:limit=>5)    
     @last_mappings = Mapping.find(:all,:order=>'created_at desc',:limit=>5)
-    
-    
-    
+  
     @notes={} # Gets list of notes for the ontologies
 #    for ont in @ontologies
       #gets last note.. not the best way to do this
@@ -36,14 +34,18 @@ class OntologiesController < ApplicationController
   # GET /ontologies/1
   # GET /ontologies/1.xml
   def show
+    #Grab Metadata
     @ontology = DataAccess.getOntology(params[:id]) # shows the metadata 
     @categories = DataAccess.getCategories()
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
-      if request.xhr? 
-        render :action => "show", :layout => false 
-      else 
+    
+    #Grab Reviews Tab
+    @reviews = Review.find(:all,:conditions=>{:ontology_id=>params[:ontology]},:include=>:ratings)
+    
+    #Grab projects tab
+      @projects = Project.find(:all,:conditions=>"uses.ontology_id = '#{undo_param(params[:ontology])}'",:include=>:uses)
         render :action=>'show'
-      end
+
 
   end
   
@@ -67,17 +69,15 @@ class OntologiesController < ApplicationController
       @errors = validate(params[:ontology],true)
       if @errors.length < 1
         puts("I should be updating")
-        @ontology = DataAccess.updateOntology(params[:ontology])      
+        @ontology = DataAccess.updateOntology(params[:ontology],params[:id])      
      
         if @ontology.kind_of?(Hash) && @ontology[:error]        
           flash[:notice]=@ontology[:longMessage]
-         redirect_to ontology_path(:id=>params[:ontology][:id])
+         redirect_to ontology_path(:id=>params[:id])
         else
-        puts("There is an error")
           redirect_to ontology_path(@ontology)
         end
       else
-        puts "There was an error validating"
         @ontology = OntologyWrapper.new
         @ontology.from_params(params[:ontology])
         @ontology.id = params[:id]
@@ -102,7 +102,6 @@ class OntologiesController < ApplicationController
   # GET /visualize/:ontology
   def visualize
     
-   
     
     #Set the ontology we are viewing
     puts " Ontology #{params[:ontology]}"

@@ -3,6 +3,7 @@ class NodeWrapper
  
  
   attr_accessor :id
+  attr_accessor :fullId
   attr_accessor :name  
   attr_accessor :isActive
   attr_accessor :properties
@@ -48,6 +49,7 @@ class NodeWrapper
      end
    self.name = object.name
    self.id = object.id.gsub(" ","%20")
+   self.fullId= object.fullId
    self.isActive = object.isActive
    self.properties = {}
    self.child_size = object.children.to_i

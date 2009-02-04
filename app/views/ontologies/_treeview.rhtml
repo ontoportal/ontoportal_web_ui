@@ -199,6 +199,19 @@
 
 <script type="text/javascript" src="/javascripts/jquery.simple.tree.js"></script>
 <script type="text/javascript">
+
+
+jQuery.fn.extend({
+  scrollTo : function(speed, easing) {
+    return this.each(function() {
+      var targetOffset = $(this).offset().top;
+      $('html,body').animate({scrollTop: targetOffset}, speed, easing);
+    });
+  }
+});
+
+
+
 var simpleTreeCollection;
 jQuery(document).ready(function(){
 	simpleTreeCollection = jQuery('.simpleTree').simpleTree({
@@ -226,6 +239,8 @@ jQuery(document).ready(function(){
 	
 	setConcept("<%=@concept.id%>");
 	setOntology("<%=@ontology.id%>");
+	$('span.active').scrollTo(1);
+	
 	
 });
 

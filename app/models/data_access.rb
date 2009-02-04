@@ -223,10 +223,10 @@ class DataAccess
       return ontology
     end
     
-    def self.updateOntology(params)
+    def self.updateOntology(params,version_id)
       puts "UPDATING ONTOLOGY #{params.inspect}"
-      ontology = SERVICE.updateOntology(params)
-      CACHE.delete("#{params[:id]}::_details")
+      ontology = SERVICE.updateOntology(params,version_id)
+      CACHE.delete("#{version_id}::_details")
       return ontology
     end
     

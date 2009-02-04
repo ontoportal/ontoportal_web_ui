@@ -1,4 +1,18 @@
+<script src="/javascripts/ui.core.js" type="text/javascript" charset="utf-8"></script>
+<script src="/javascripts/ui.datepicker.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/stylesheets/layout/ui.core.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="/stylesheets/layout/ui.datepicker.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="/stylesheets/layout/ui.theme.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
+<script type="text/javascript">
+$(function() {
+		$("#datepicker").datepicker({showOn: 'button', buttonImage: '/images/calendar.gif', buttonImageOnly: true});
+	});
+
+</script>
+
+
+<div  style="margin:10px;">
 
 <%form_tag ("/ontologies", {:multipart => true}) do%>
 
@@ -23,21 +37,21 @@ Errors On Form
 <h1> Submit New Version</h1>
 <%end%>
 <%=hidden_field :ontology, :ontologyId%>
-<table >
+<table class="form" width="70%">
 	<tr>
-		<td>Ontology Name: </td><td><%=text_field :ontology, :displayLabel%></td>
+		<th>Ontology Name: </th><td class="top"><%=text_field :ontology, :displayLabel%></td>
 	</tr>
 	<tr>
-		<td>Ontology Description:</td><td><%= text_area :ontology, :description,:rows=>5%></td>
+		<th>Ontology Description:</th><td><%= text_area :ontology, :description,:rows=>5%></td>
 	</tr>
 	<tr>
-		<td>Ontology Abbreviation:</td><td><%= text_field :ontology, :abbreviation%></td>
+		<th>Ontology Abbreviation:</th><td><%= text_field :ontology, :abbreviation%></td>
 	</tr>
 	
 	
 	<%if @ontology.ontologyId.nil?%>
 	<tr>
-		<td>Ontology Format: </td><td><select name="ontology[format]" style="width:200px" >			
+		<th>Ontology Format: </th><td><select name="ontology[format]" style="width:200px" >			
 			<option value="OBO">OBO</option>
 			<option value="OWL">OWL</option>
 			<option value="OWL-DL">-&nbsp;&nbsp;OWL-DL</option>
@@ -51,19 +65,19 @@ Errors On Form
 	</tr>	
 	<%else%>
 	<tr>
-		<td>Ontology Format: <%=@ontology.format%>
+		<th>Ontology Format:</th><td> <%=@ontology.format%>
 			<%=hidden_field :ontology, :format%></td>
 	</tr>
 	<%end%>
 	
 	<tr>
-		<td>Ontology Version: </td><td><%=text_field :ontology, :versionNumber%></td>
+		<th>Ontology Version: </th><td><%=text_field :ontology, :versionNumber%></td>
 	</tr>	
 	<tr>
-		<td>Date Released: </td><td><%= calendar_date_select_tag "ontology[dateReleased]", @ontology.dateReleased, :popup => :force %></td>
+		<th>Date Released: </th><td><%= text_field :ontology, :dateReleased,:id=>"datepicker"%></td>
 	</tr>	
 	<tr>
-		<td>File Location</td><td><%=radio_button :ontology,:isRemote,0%>Upload (choose this option if you want users to be able to explore and search
+		<th>File Location</th><td><%=radio_button :ontology,:isRemote,0%>Upload (choose this option if you want users to be able to explore and search
 		your ontology in BioPortal)
 		 <br><%=radio_button :ontology,:isRemote,1%>Remote (choose this option if you want users to search and view only the
 		*metadata* for your ontology (but not its classes and properties)
@@ -71,22 +85,22 @@ Errors On Form
 		 </td>
 	</tr>
 	<tr>
-		<td>Location URL</td><td><%=text_field :ontology,:urn%></td>
+		<th>Location URL</th><td><%=text_field :ontology,:urn%></td>
 	</tr>
 	<tr >
-		<td>File</td><td><%=file_field :ontology,:filePath%></td>
-	</tr>
-	
-	<tr >
-		<td>Prefered Name Slot (Owl Only)</td><td><%=text_field :ontology,:preferredNameSlot%></td>
+		<th>File</th><td><%=file_field :ontology,:filePath%></td>
 	</tr>
 	
 	<tr >
-		<td>Synonym Slot (Owl Only)</td><td><%=text_field :ontology,:synonymSlot%></td>
+		<th>Prefered Name Slot (Owl Only) (e.g. rdfs:label)</th><td><%=text_field :ontology,:preferredNameSlot%></td>
+	</tr>
+	
+	<tr >
+		<th>Synonym Slot (Owl Only) (e.g. rdfs:label)</th><td><%=text_field :ontology,:synonymSlot%></td>
 	</tr>
 	
 	<tr>
-		<td>Categories:</td><td><select name="ontology[categoryId][]" multiple="multiple" size="6">
+		<th>Categories:</th><td><select name="ontology[categoryId][]" multiple="multiple" size="6">
 			<%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
 			<%for cat in cats%>
 			
@@ -95,27 +109,28 @@ Errors On Form
 			</select></td>
 	</tr>
 	<tr>
-		<td>Contact Name:</td><td><%=text_field :ontology, :contactName%></td>
+		<th>Contact Name:</th><td><%=text_field :ontology, :contactName%></td>
 	</tr>
 	<tr>
-		<td>Contact Email:</td><td><%= text_field :ontology, :contactEmail%></td>
+		<th>Contact Email:</th><td><%= text_field :ontology, :contactEmail%></td>
 	</tr>
 	<tr>
-		<td>Home Page:</td><td><%= text_field :ontology, :homepage%></td>
+		<th>Home Page:</th><td><%= text_field :ontology, :homepage%></td>
 	</tr>
 	<tr>
-		<td>Documentation Page:</td><td><%= text_field :ontology, :documentation%></td>
+		<th>Documentation Page:</th><td><%= text_field :ontology, :documentation%></td>
 	</tr>
 	<tr>
-		<td>Publications Page:</td><td><%= text_field :ontology, :publication%></td>
+		<th>Publications Page:</th><td><%= text_field :ontology, :publication%></td>
 	</tr>
 	
 	
-	
+	<tr>
+		<td colspan="2" align="right"><%=submit_tag "Upload"%></td>
+	</tr>
 	
 </table>
 
-<%=submit_tag "Upload"%>
 
 
 
@@ -123,3 +138,4 @@ Errors On Form
 
 
 <%end%>
+</div>

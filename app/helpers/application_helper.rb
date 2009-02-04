@@ -152,17 +152,26 @@ module ApplicationHelper
 			if child.id.eql?(id)
 			 active_style="class='active'"
 			end    
+			open = ""
+      if child.expanded
+        open = "class='open'"
+      end
+        
       
-        string <<"<li #{draw_root}  id=\"#{child.id}\"><span #{active_style}>#{child.name} #{icons}</span>"
+        string <<"<li #{open} #{draw_root}  id=\"#{child.id}\"><span #{active_style}>#{child.name} #{icons}</span>"
     		   		
     				if child.child_size>0 && !child.expanded
     				  string << "<ul class=\"ajax\">
   							            <li id='#{child.id}'>{url:/visualize/#{child.ontology_id}/#{child.id}?callback=children}</li>
   						            </ul>"
-  				  end
-
+  				  elsif child.expanded
+    				  string << "<ul>"
+    		      build_tree(child,"child",string,id)
+    		      string <<"</ul>"
+    		    end
+    		    
     				string <<"</li>"
-    		build_tree(child,"child",string,id)
+    				
       
       end
       
