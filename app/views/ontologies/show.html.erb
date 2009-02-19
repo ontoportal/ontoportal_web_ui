@@ -1,3 +1,8 @@
+<script src="/javascripts/jquery.rating.pack.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/stylesheets/layout/jquery.rating.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<script src="/javascripts/JqueryPlugins/tagcloud/jquery.tagcloud.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="/javascripts/JqueryPlugins/tagcloud/jquery.tinysort.min.js" type="text/javascript" charset="utf-8"></script>
+
 
 <script type="text/javascript">
 	function meta_tab_clicked(content,tab){
@@ -8,6 +13,12 @@
 		return false;
 		
 	}
+	
+	jQuery(document).ready(function()  {
+		$("#notes").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14})
+		$("#mappings").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14})
+		
+	});
 
 </script>
 
@@ -20,11 +31,9 @@
 <%end%>
 
 <h1><%=@ontology.displayLabel%></h1> 
-
 <%if !session[:user].nil? && (session[:user].id.to_i.eql?(@ontology.userId.to_i) || session[:user].admin?)%>
 <table class="form">
 	<tr>
-		<th>Actions</th>
 			<td class="top"><%=link_to "Submit New Version",new_ontology_path(:id=>@ontology.ontologyId)%></td>
 			<td class="top"><%=link_to "Edit Ontology Information",edit_ontology_path(:id=>@ontology.id)%></td>
 	</tr>
@@ -34,40 +43,39 @@
 <div class="tabs" style="margin-top:5px;margin-bottom:10px;border-top:1px solid #CFCFCF;">
 	<ul >
 		<li id="meta" class="selected tab"><a href="#" onclick="meta_tab_clicked('#metadata',this)">Metadata</a></li>
-		<li id="proj" class="tab"><a href="#" onclick="meta_tab_clicked('#projects',this)">Projects</a></li>
-    	<li id="rev" class="tab"><a href="#" onclick="meta_tab_clicked('#reviews',this)">Reviews</a></li>
+		<li id="proj" class="tab"><a href="#" onclick="meta_tab_clicked('#projects',this)">Projects (<%=@projects.size%>)</a></li>
+    	<li id="rev" class="tab"><a href="#" onclick="meta_tab_clicked('#reviews',this)">Reviews (<%=@reviews.size%>)</a></li>
 	</ul>  
 </div>
 
 <div id="metadata" class="tab_content">
-<h2>Ontology MetaData</h2>
-
-<table class="form" width="80%">
+<div style="float:left;width:60%;">
+<br/>
+<table class="form" width="100%">
 	<tr>
 			<th>Ontology Name:</th><td class="top"><%=@ontology.displayLabel%></td> <th>Contact(s):</th><td class="top"><%=@ontology.contactName%></td>
 	</tr>
 	<tr>
-			<th>Ontology Id:</th><td><%=@ontology.ontologyId%></td> <th>Home Page:</th><td><%=@ontology.homepage%></td>
+			<th>Ontology Id:</th><td><%=@ontology.ontologyId%></td> <th>Home Page:</th><td><%=auto_link("#{@ontology.homepage}", :all, :target => "_blank")%></td>
 	</tr>
 	<tr>
-			<th>Format:</th><td><%if @ontology.format.eql?("OBO")%><%=@ontology.format+"F"%><%else%><%=@ontology.format.split("-")[0]%><%end%></td><th> Documentation Page:</th><td><%=@ontology.documentation%></td>
+			<th>Format:</th><td><%if @ontology.format.eql?("OBO")%><%=@ontology.format+"F"%><%else%><%=@ontology.format.split("-")[0]%><%end%></td><th> Documentation Page:</th><td><%=auto_link("#{@ontology.documentation}", :all, :target => "_blank")%></td>
 	</tr>
 	<tr>
-			<th>Categories:</th><td><%for cat in @ontology.categories%><%=@categories[cat.to_s][:name]%> <%end%></td> <th>Publications Page:</th><td><%=@ontology.publication%></td>
+			<th>Categories:</th><td><%for cat in @ontology.categories%><%=@categories[cat.to_s][:name]%><br/> <%end%></td> <th>Publications Page:</th><td><%=auto_link("#{@ontology.publication}", :all, :target => "_blank")%></td>
 	</tr>
 	<tr>
 			<th>Contact Email:</th><td><%=@ontology.contactEmail%></td><td>&nbsp;</td><td>&nbsp;</td>
 	</tr>
-
-
 
 	<tr>
 		<th >Description:</th><td colspan=3><%=@ontology.description%></td>
 	</tr>
 </table>
 
-<h3>Versions</h3>
-	<table class="zebra" cellpadding="0" cellspacing="0" width="80%">
+<br/>
+<br/>
+	<table class="zebra" cellpadding="0" cellspacing="0" width="100%">
 		<thead>
 		<tr>
 			<th>Version Number</th>
@@ -87,28 +95,43 @@
 		</tr>
 		<%end%>
 	</table>
+	
+</div>
+
+	<div style="float:left;padding-left:10px">
+		<h2>Notes</h2>
+		<%if @notes.size <1%>
+		No Notes Created yet
+		<%end%>
+		<ul id="notes" style="border-top:1px solid #C1DAD7;border-bottom:1px solid #C1DAD7;width:300px;padding:10px">
+		<%for note in @notes%>
+			<li value="<%=note[1]%>"><a href="/visualize/<%=@ontology.id%>/<%=note[0]%>#t_tab3:"><%=note[0]%></a></li>
+		<%end%>
+		</ul>
+		<br/>
+		<h2>Mappings</h2>
+		<%if @mappings.size <1%>
+		No Mappings Created yet
+		<%end%>
+		<ul id="mappings" style="border-top:1px solid #C1DAD7;border-bottom:1px solid #C1DAD7;width:300px;padding:10px">
+		<%for mapping in @mappings%>
+			<li value="<%=mapping[1]%>"><a href="/visualize/<%=@ontology.id%>/<%=mapping[0]%>#t_tab4:"><%=mapping[0]%></a></li>
+		<%end%>
+		</ul>
+	</div>
+
+<div style="clear:both;"></div>
 
 </div>
 
 <div id="projects" style="display:none;" class="tab_content">
-	<br>
-	<%if session[:user].nil?%>
-		<input type="button" class ="blueButton" value="Add Project" onclick ="window.location='/login'"> 
-	<%else%>
-	<span class="blueButton"><%=link_to "Add Project",new_project_path%></span>
-	<%end%>
-
 
 	<br>
-	<br>
-	<table class="metadata" style="border:0px;"width="70%" cellpadding="0" cellspacing="0">
-		<tr>
-			<th class="header" colspan="2">Projects</th>
-		</tr>
+	<table class="zebra" style="border:0px;"width="60%" cellpadding="0" cellspacing="0">
 
 		<%for project in @projects%>
 		<tr>
-			<td colspan="2"style="padding:10px;border-bottom:1px solid #9F9F9F;font-size:17px;font-weight:bold;"><%=link_to project.name, project,:style=>"text-decoration:none;"%> <%if isOwner?(project.id)%><%=link_to "Edit Project",edit_project_path(project)%> <%= link_to 'Delete Project', project, :confirm => 'Are you sure?', :method => :delete %><%end%></td>
+			<td colspan="2" class="pheader"><%=link_to project.name, project,:style=>"text-decoration:none;"%> <%if isOwner?(project.id)%><%=link_to "Edit Project",edit_project_path(project)%> <%= link_to 'Delete Project', project, :confirm => 'Are you sure?', :method => :delete %><%end%></td>
 		</tr>
 		<tr style="background-color:#EFEFEF">
 			<td  colspan="2" style="padding:10px;border-bottom:1px solid #9F9F9F"><%=project.description%></td>
@@ -130,40 +153,50 @@
 	</table>
 </div>
 <div id="reviews" style="display:none;" class="tab_content">
-	<%if session[:user].nil?%>
-		<input type="button" class ="blueButton" value="Review Ontology" onclick ="window.location='/login'"> 
-	<%else%>
-	<span class="blueButton"><%=link_to "Review Ontology",new_review_path(:ontology=>@ontology.ontologyId)%></span>
-	<%end%>
-
 
 	<br><br>
+	<table class="zebra" cellpadding="0" cellspacing="0" width="60%">
+	
 	<% for review in @reviews %>
-	<table class="reviews" cellpadding="0" cellspacing="0">
+
+		<thead>
+		<tr>
+
+			<th>Review By <%=review.user.username%> <%unless review.project.nil?%> From Project <%=link_to review.project.name,project_path(review.project)%><%end%><%if isOwner?(review.user_id)%> <%=link_to "Edit Review",edit_review_path(review)%> <%end%></th>
+		</tr>
+		</thead>
 
 		<tr>
-			<td><div class="reviewheader">Review By <%=review.user.username%> <%unless review.project.nil?%> From Project <%=link_to review.project.name,project_path(review.project)%><%end%><%if isOwner?(review.id)%> <%=link_to "Edit Review",edit_review_path(review)%> <%end%></div>
-				<div style="float:left;border:1px solid gray;margin:7px;padding:5px;white-space:nowrap;width:250px;">
+				<td><div class="star_ratings">
 				<%for rating in review.ratings%>				
-					<div class="rateMe" >
+				<li>
 						<%if rating.value.eql?(0)%>
 						<span style="float:left;">Not Rated</span>
 						<%else%>
-					    <a <% if rating.value >= 1%>class="on"<%end%> ></a>
-					    <a <% if rating.value >= 2%>class="on"<%end%> ></a>
-					    <a <% if rating.value >= 3%>class="on"<%end%> ></a>
-					    <a <% if rating.value >= 4%>class="on"<%end%> ></a>
-					    <a <% if rating.value >= 5%>class="on"<%end%> ></a>
+						<input name="star_<%=rating.id%>" type="radio" class="star" value="1" <% if rating.value.to_i.eql?(1)%> checked="checked" <%end%> disabled="disabled" /> 
+						<input name="star_<%=rating.id%>" type="radio" class="star" value="2" <% if rating.value.to_i.eql?(2)%> checked="checked" <%end%>disabled="disabled" /> 
+						<input name="star_<%=rating.id%>" type="radio" class="star" value="3" <% if rating.value.to_i.eql?(3)%> checked="checked" <%end%>disabled="disabled" /> 
+						<input name="star_<%=rating.id%>" type="radio" class="star" value="4" <% if rating.value.to_i.eql?(4)%> checked="checked" <%end%>disabled="disabled" /> 
+						<input name="star_<%=rating.id%>" type="radio" class="star" value="5" <% if rating.value.to_i.eql?(5)%> checked="checked" <%end%>disabled="disabled" />
+
+
 						<%end%>
-					</div>
-					<b>&nbsp;<%=rating.rating_type.name%></b>					
+					<b>&nbsp;<%=rating.rating_type.name%></b>
+				</li>
+
 				<%end%>
 				</div>
 				<p><%=review.review%></p>
 
 			</td>
 		</tr>
-
-	</table>
 	<% end %>
+</table>
+
+
+
 </div>
+
+
+	
+

@@ -3,7 +3,6 @@
 <%
 	index = 0;
 	for resource in @resources
-    puts "Resource : #{resource.inspect}"
 	if resource.count >0%>
         <tr class="mainresource" onclick = "toggleHide('<%="annotation#{index}"%>','annotations')">
       <%else%>

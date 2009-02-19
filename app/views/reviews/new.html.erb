@@ -1,34 +1,26 @@
+<script src="/javascripts/jquery.rating.pack.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/stylesheets/layout/jquery.rating.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
-<script type="text/javascript" language="javascript" src="/javascripts/ratingsys.js"></script>  
-
-<h1>New review</h1>
+<% form_for(:review,:url=>reviews_path,:html=>{:onsubmit=>"ajaxForm(this,'##{@review.ontology_id}_review',function(){tb_remove();$('input.star').rating();} );return false;"}) do  %>
 
 
-<% form_tag('/reviews',:method => 'post') do  %>
-
-<%count = 0%>
-<%for review in @reviews%>
-
-<%=hidden_field_tag "review#{count}[ontology_id]",review.ontology_id%>
-<%=hidden_field_tag "review#{count}[project_id]",review.project_id%>
+<%=hidden_field :review,:ontology_id%>
+<%=hidden_field :review,:project_id%>
+<%=hidden_field :review,:user_id%>
 <fieldset>
-	<legend><b>Review For <%=review.ontology.displayLabel%></b></legend>
+	<legend><b>Review For <%=@review.ontology.displayLabel%></b></legend>
 <table>
 	<tr>
 		<td>Ratings<br>
 			<%rating_count = 0%>
 			<%for rating in @rating_types%>
-			<%=hidden_field_tag "review#{count}[ratings#{rating_count}][value]","0",:id=>"review#{count}[ratings#{rating_count}[value]]"%>
-			<%=hidden_field_tag "review#{count}[ratings#{rating_count}][rating_type_id]",rating.id%>
 			<div style="padding:2px;border-top:1px solid gray;">
-			
-			<div class="rateMe" title="Rate Me...">
-			    <a onclick="rateIt(this)" id="<%="review#{count}[ratings#{rating_count}[value]]_1"%>" title="ehh..." onmouseover="rating(this)" onmouseout="off(this)"></a>
-			    <a onclick="rateIt(this)" id="<%="review#{count}[ratings#{rating_count}[value]]_2"%>" title="Not Bad" onmouseover="rating(this)" onmouseout="off(this)"></a>
-			    <a onclick="rateIt(this)" id="<%="review#{count}[ratings#{rating_count}[value]]_3"%>" title="Pretty Good" onmouseover="rating(this)" onmouseout="off(this)"></a>
-			    <a onclick="rateIt(this)" id="<%="review#{count}[ratings#{rating_count}[value]]_4"%>" title="Pretty Good" onmouseover="rating(this)" onmouseout="off(this)"></a>
-			    <a onclick="rateIt(this)" id="<%="review#{count}[ratings#{rating_count}[value]]_5"%>" title="Pretty Good" onmouseover="rating(this)" onmouseout="off(this)"></a>
-			</div>
+				<input name="star_<%=rating.id%>" type="radio" class="star" value="1" /> 
+				<input name="star_<%=rating.id%>" type="radio" class="star" value="2" /> 
+				<input name="star_<%=rating.id%>" type="radio" class="star" value="3" /> 
+				<input name="star_<%=rating.id%>" type="radio" class="star" value="4" /> 
+				<input name="star_<%=rating.id%>" type="radio" class="star" value="5" />
+
 			<b>&nbsp;<%=rating.name%></b>
 			
 			<%rating_count += 1%>
@@ -38,17 +30,15 @@
 			</td>
 	</tr>
 	<tr>
-		<td><%=text_area_tag "review#{count}[review]",{},:cols=>80,:rows=>5%></td>
+		<td><%=text_area :review, :review,:cols=>80,:rows=>5%></td>
 	</tr>
 </table>
 </fieldset>
-<%count = count +1%>
-<%end%>
 
 
 
     <%=submit_tag "Submit Reviews",:class=>"blueButton"%>
   </p>
-<% end %>
+<%end%>
 
 

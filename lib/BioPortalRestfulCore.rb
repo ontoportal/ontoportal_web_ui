@@ -54,7 +54,6 @@ class BioPortalRestfulCore
            doc = REXML::Document.new(open(BASE_URL+CATEGORIES_PATH))
 
            categories = errorCheck(doc)
-           puts "Categories : #{categories}"
            unless categories.nil?
              return categories
            end
@@ -66,7 +65,6 @@ class BioPortalRestfulCore
             categories[category[:id].to_s]=category 
            }
            puts "getCategories Parse Time: #{Time.now-time}"
-           puts "Categories: #{categories.inspect}"
           return categories
         
         
@@ -78,11 +76,9 @@ class BioPortalRestfulCore
          puts "Requesting : #{BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)}"
           begin
          doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)))
-                   puts doc.to_s
           rescue Exception=>e
             puts e.inspect
           end
-          puts doc.to_s
          node = errorCheck(doc)
          
          unless node.nil?
@@ -113,9 +109,7 @@ class BioPortalRestfulCore
          unless node.nil?
            return node
          end
-         
-                   puts "I should be Nil: #{node}"
-         
+                  
           doc.elements.each("*/data/classBean"){ |element|  
           node = parseConcept(element,ontology)
          }
@@ -167,7 +161,6 @@ class BioPortalRestfulCore
       
       def self.getOntology(ontology)
         ont = nil
-        puts "Ontology: #{ontology}"
         begin
           doc = REXML::Document.new(open(BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology.to_s)))
         rescue Exception=>e
@@ -179,7 +172,6 @@ class BioPortalRestfulCore
              unless ont.nil?
                return ont
              end
-          puts "I should be Nil: #{ont}"
           
          time = Time.now
             doc.elements.each("*/data/ontologyBean"){ |element|  
@@ -218,7 +210,6 @@ class BioPortalRestfulCore
       end
       def self.getLatestOntology(ontology)
          ont = nil
-          puts "Ontology: #{ontology}"
           puts BASE_URL + VIRTUAL_URI_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","")
             doc = REXML::Document.new(open(BASE_URL + VIRTUAL_URI_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","")))
             
@@ -478,7 +469,6 @@ class BioPortalRestfulCore
           end
         
         def self.updateOntology(params,version_id)
-          puts "UPdating Ontology############# #{version_id}"
                   ontology = nil
                     begin
                     doc = REXML::Document.new(putToRestlet(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%",version_id)+"?&applicationid=#{APPLICATION_ID}",params))
@@ -612,8 +602,7 @@ private
       post2(uri.path,
             query,
             "Content-type" => "multipart/form-data; boundary=" + boundary)
-    puts response.inspect
-    puts response.body
+
     return response.body
     
   end
@@ -635,17 +624,12 @@ private
 
   def self.postToRestlet(url,paramsHash)
     res = Net::HTTP.post_form(URI.parse(url),paramsHash)
-    puts res.body
     return res.body
   end
 
   def self.putToRestlet(url,paramsHash)
-    puts paramsHash.inspect
     paramsHash["method"]="PUT"
-    puts paramsHash.inspect
-    puts "URL=> #{url}"
     res = Net::HTTP.post_form(URI.parse(url),paramsHash)
-     puts res.body
      return res.body
   end
 
@@ -783,17 +767,12 @@ private
     }
     rescue
       end
-    puts "##########Error Check###########"
-    puts doc.to_s
-    puts "Error Check is Returning #{response.nil?}"
-    puts "#####################"
+
     return response
   end
 
   def self.parseConcept(classbeanXML,ontology)
-    puts "----------------Parsing Piece-------------"
-    puts classbeanXML
-    puts "------------------------------------------"
+
 
        node = NodeWrapper.new
        node.child_size=0
@@ -813,11 +792,8 @@ private
                 if entry.elements["list"].attributes["reference"]
                    entry.elements["list"].elements.each(entry.elements["list"].attributes["reference"]){|element|
                      element.elements.each{|classbean|
-                        puts "------------Reference Item in list----------"
-                         puts classbean.to_s
-                         puts "--------------------------------"
+
                          #issue with using reference.. for some reason pulls in extra guys sometimes
-                         puts classbean.name
                          if classbean.name.eql?("classBean")
                            node.children<<parseConcept(classbean,ontology)
                          end

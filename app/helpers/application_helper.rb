@@ -86,7 +86,7 @@ module ApplicationHelper
 
           </div>
         
-          <div name=\"hiddenNote\" id=\"note_body#{note.id}\" style=\"display:none;\">
+          <div name=\"hiddenNote\" id=\"note_body#{note.id}\" >
           <div class=\"messages\">
             <div>
               <div>

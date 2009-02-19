@@ -1,0 +1,116 @@
+
+
+<script type="text/javascript">
+
+	function searchFunctions(form,target){
+		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Searching Ontologies...</h1>' }); 
+		ajaxForm(form,target,function(){
+			jQuery.unblockUI();	
+		});
+		
+	}
+	function postData(params){
+		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Searching Ontologies...</h1>' }); 
+			jQuery.post("/search/search",params ,
+			  function(data){
+			    jQuery("#results").html(data)
+				jQuery.unblockUI();	
+			  });
+
+
+		}
+
+</script>
+<% form_for(:search, :url => {:controller =>'search',:action=>'search'},:html=>{:onsubmit=>"searchFunctions(this,'#results');return false;"}) do |f| %>
+
+<div class="box" id="searchBox" style="border:1px solid #C1DAD7;margin:15px;">
+	<div class="header">Search Ontologies</div>
+
+	<fieldset style="float:left;margin:10px;">
+		<legend>Select Ontologies</legend>
+
+	<%=
+                options = {}
+				for ontology in @ontologies
+				options.merge!(ontology.displayLabel => ontology.ontologyId)
+				end 
+				options = options.sort     
+				options.insert(0,["All","0"])                
+                select('search','ontologies',options,{:selected=>"0"},{:multiple=>true,:size=>8,:style=>'float:left;'})
+                %>
+	</fieldset>	
+	
+	<fieldset style="margin:10px;width:400px;">
+		<legend>Search Query</legend>
+		<table class="form">
+			<tr>
+				<th nowrap>Search Text:</th>
+				<td class="top"><%=text_field "search","keyword",:size=>30,:value=>params[:search][:keyword]%></td>
+			</tr>
+			<tr>
+				<td nowrap>&nbsp;</td>
+				<td><%=check_box "search","attributes",:value=>1%> Include search in attributes</td>
+			</tr>
+			<tr>
+				<th nowrap>Search Type:</th>
+				<td><%=radio_button "search","search_type","contains",{:checked=>"checked"}%>Contains <%=radio_button "search","search_type","exact"%>Exact Match</td>
+			</tr>
+
+			<tr>
+				<td colspan="2" align="right"><%=submit_tag 'Search'%></td>
+			</tr>
+		</table>
+		
+	</fieldset>
+
+<div style="clear:both;"></div>
+
+</div>
+<%end%>
+<div id="results" style="margin:15px">
+	
+
+
+	<%if @results.size > 0%>
+
+
+	<table class="zebra" cellpadding="0" cellspacing="0" width="80%">
+
+	<tr>
+		<td colspan="3" align="right" style='background:none;color:black;font-weight:bold;'>
+			<%if params[:page].to_i >1 %> <a href="#" onclick='postData({ "page":"<%=params[:page].to_i-1%>", "search[keyword]": "<%=params[:search][:keyword]%>", "search[attributes]": "false", "search[search_type]":"contains",<%for ontology in params[:search][:ontologies]%>"search[ontologies]":"<%=ontology%>"<%if !ontology.eql?(params[:search][:ontologies].last)%>,<%end%><%end%> });return false;'>&lt;&lt; Previous Page </a><%end%>  Page <%=params[:page] || 1%> of <%=@pages%>  <%if !params[:page].to_i.eql?(@pages.to_i)%> <a href="#" onclick='postData({ "page":"<%=params[:page].to_i+1%>", "search[keyword]": "<%=params[:search][:keyword]%>", "search[attributes]": "<%=params[:search][:attributes]%>", "search[search_type]":"<%=params[:search][:search_type]%>","search[ontologies]":"0"});return false;'>Next Page &gt;&gt;</a><%end%>
+		</td>		
+	</tr>
+	<thead>
+		<tr>
+			<th >Concept Name</th>
+			<th >Found In</th>
+			<th >Ontology</th>
+	</thead>
+		</tr>
+			<%for result in @results%>
+			<%begin
+			#catch exceptions and dont draw row
+			row =	"<tr class=\"#{cycle("", "alt")}\">
+					<td>#{link_to highlight(result[:contents],@keyword),uri_url(:ontology=>result[:ontologyVersionId],:id=>result[:conceptIdShort]),:onclick=>"jQuery.blockUI({ message: '<h1><img src=\"/images/tree/spinner.gif\" /> Building Tree...</h1>' }); "}</td>
+					<td>#{result[:recordType].titleize.gsub("Record Type","")}</td>
+					<td>#{link_to result[:ontologyDisplayLabel], ontology_path(:id=>result[:ontologyVersionId])}</td>
+				</tr>"%>
+				<%=row%>
+			<%rescue
+			  end
+			%>
+			<%end%>
+
+			<tr>
+				<td colspan="3" align="right" style='background:none;color:black;font-weight:bold;'>
+					<%if params[:page].to_i >1 %> <a href="#" onclick='postData({ "page":"<%=params[:page].to_i-1%>", "search[keyword]": "<%=params[:search][:keyword]%>", "search[attributes]": "<%=params[:search][:attributes]%>", "search[search_type]":"<%=params[:search][:search_type]%>",<%for ontology in params[:search][:ontologies]%>"search[ontologies][]":"<%=ontology%>"<%if !ontology.eql?(params[:search][:ontologies].last)%>,<%end%><%end%> });return false;'>&lt;&lt; Previous Page </a><%end%>  Page <%=params[:page] || 1%> of <%=@pages%>  <%if !params[:page].to_i.eql?(@pages.to_i)%> <a href="#" onclick='postData({ "page":"<%=params[:page].to_i+1%>", "search[keyword]": "<%=params[:search][:keyword]%>", "search[attributes]": "<%=params[:search][:attributes]%>", "search[search_type]":"<%=params[:search][:search_type]%>",<%for ontology in params[:search][:ontologies]%>"search[ontologies][]":"<%=ontology%>"<%if !ontology.eql?(params[:search][:ontologies].last)%>,<%end%><%end%> });return false;'>Next Page &gt;&gt;</a><%end%>
+				</td>		
+			</tr>
+
+	</table>
+	<%else%>
+	<h1>No Results Found</h1>
+	<%end%>
+
+</div>

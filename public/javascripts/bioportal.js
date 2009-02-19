@@ -109,36 +109,6 @@ var currentConcept;
 
 //-------------------------------
 	
-function updateArea(method,url,object_id){
-	
-			var responseSuccess = function(o)
-			{
-				var path;
-				var dirs;
-				var files;
-				var respTxt = o.responseText;
-
-				document.getElementById(object_id).innerHTML=respTxt
-				YAHOO.wait.container.wait.hide();
-				
-			}
-
-			var responseFailure = function(o){
-				YAHOO.wait.container.wait.hide();
-				alert('responseFailure: ' +	o.statusText);
-			}
-
-			var callback =
-			{
-				success:responseSuccess,
-				failure:responseFailure
-			};
-
-			// Show the Panel 
-			YAHOO.wait.container.wait.show();
-			var cObj = YAHOO.util.Connect.asyncRequest(method,url,callback);
-		}
-	
 	
 function toggleHide(id,name_to_hide){
 	toggle = true;
@@ -430,9 +400,13 @@ function updateContent(){
          // the initial '#contactForm' to narrow down our selector
          var inputs = [];
          $(':input', form).each(function() {
-           inputs.push(this.name + '=' + escape(this.value));
+
+           if (this.type=="checkbox" && this.checked){
+            inputs.push(this.name + '=' + escape(this.value));
+           }else if (this.type!="checkbox"){
+            inputs.push(this.name + '=' + escape(this.value));
+           }
          })
-         
          // now if I join our inputs using '&' we'll have a query string
          jQuery.post(form.action, inputs.join('&'), function(data) { 
 			jQuery(target).html(data);

@@ -185,7 +185,7 @@ function install(el, opts) {
     var lyr1 = (jQuery.browser.msie) ? jQuery('<iframe class="blockUI" style="z-index:'+ z++ +';display:none;border:none;margin:0;padding:0;position:absolute;width:100%;height:100%;top:0;left:0" src="javascript:false;"></iframe>')
                                 : jQuery('<div class="blockUI" style="display:none"></div>');
     var lyr2 = jQuery('<div class="blockUI blockOverlay" style="z-index:'+ z++ +';display:none;cursor:wait;border:none;margin:0;padding:0;width:100%;height:100%;top:0;left:0"></div>');
-    var lyr3 = full ? jQuery('<div class="blockUI blockMsg blockPage" style="z-index:'+z+';display:none;position:fixed"></div>')
+    var lyr3 = full ? jQuery('<div class="blockUI blockMsg blockPage" style="z-index:'+z+';display:none;position:fixed"><image style="float:right;" onclick="jQuery.unblockUI();" alt="cancel" src="/images/button-close-focus.gif"><div style="clear:both;"></div></div>')
                     : jQuery('<div class="blockUI blockMsg blockElement" style="z-index:'+z+';display:none;position:absolute"></div>');
 
     // if we have a message, style it

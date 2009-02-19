@@ -4,7 +4,7 @@ class MappingsController < ApplicationController
 
   # GET /mappings/new
   
-  layout 'search'
+  layout 'ontology'
   before_filter :authorize, :only=>[:create,:new]
   
   def index

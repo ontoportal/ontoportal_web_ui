@@ -1,40 +1,147 @@
-<span style="font-size:15px;font-weight:bold;color:green;"><%=flash[:notice]%></span>
-	<div class="stats" style="float:right;">
-		<div class="header">Statistics</div>
-	<ul>
-		<li>Total Number of Ontologies: 111</li>
-		<li>NCBO Library:  78</li>	
-		<li>Remote Ontologies: 33</li>
-		<li>Number of Classes/Types:  500109*</li>
-	</ul>
-	*from ontologies that have been parsed and indexed
+<script src="/javascripts/JqueryPlugins/treetable/javascripts/jquery.treeTable.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/javascripts/JqueryPlugins/treetable/stylesheets/jquery.treeTable.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+
+<% form_for(:search, :url => {:controller =>'search',:action=>'search'}) do |f| %>
+<%=hidden_field :search, :ontologies, :value=>"0"%>
+<%=hidden_field :search, :search_type, :value=>"contains"%>
+
+
+<script type="text/javascript">
+  
+$(document).ready(function()  {
+  $("#tree").treeTable();
+});
+  
+</script>
+
+
+<center>
+		<table class="form">
+			<tr>
+				<td align="center" style="border:0px;border-left:1px white solid;font-size:16px;font-weight:bold">Search Ontologies</td>
+			</tr>
+			<tr>				
+				<td class="top"><%=text_field "search","keyword",:size=>50%> <%=submit_tag 'Search'%></td>
+			</tr>
+
+		</table>
+		
+	</fieldset>
+</center>
+<%end%>
+
+
+<center>
+<h2>Browse By category</h2>
+<table  id="tree" class="zebra" width="80%">
+	
+  <%for category in @sorted_categories%>
+  <tr id="node-c<%=category[:id]%>" class="header">
+    <td><%=category[:name]%></td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>				
+  </tr>
+
+	
+	
+	<%for child in category[:children]%>
+
+	  <tr id="node-c<%=child[:id]%>" class="child-of-node-c<%=category[:id]%> header">
+	    <td><%=child[:name]%></td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>				
+	  </tr>
+	
+	
+		<%for sub_child in child[:children]%>
+
+		  <tr id="node-c<%=sub_child[:id]%>" class="child-of-node-c<%=child[:id]%> header">
+		    <td><%=sub_child[:name]%></td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>				
+		  </tr>
+				<%for ontology in @sorted_ontologies[sub_child[:id]]%>
+					<tr id="node-o<%=ontology.id%>" class="child-of-node-c<%=sub_child[:id]%> <%=cycle("","alt")%>">
+						<td><%=ontology.displayLabel%></td>
+						<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
+						<td  style="width:50px;"><%=ontology.versionNumber%></td>
+						<td><%=ontology.contactName%></td>
+						<td><%=ontology.dateCreated%></td>
+						<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
+					</tr>
+				<%end%>
+
+		<%end%>
+	
+	
+	
+	
+			<%for ontology in @sorted_ontologies[child[:id]]%>
+				<tr id="node-o<%=ontology.id%>" class="child-of-node-c<%=child[:id]%> <%=cycle("","alt")%>">
+					<td><%=ontology.displayLabel%></td>
+					<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
+					<td  style="width:50px;"><%=ontology.versionNumber%></td>
+					<td><%=ontology.contactName%></td>
+					<td><%=ontology.dateCreated%></td>
+					<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
+				</tr>
+			<%end%>
+		
+		
+		
+			
+		
+	<%end%>
+	
+	
+	<%for ontology in @sorted_ontologies[category[:id]]%>
+		<tr id="node-o<%=ontology.id%>" class="child-of-node-c<%=category[:id]%> <%=cycle("","alt")%>">
+			<td><%=ontology.displayLabel%></td>
+			<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
+			<td  style="width:50px;"><%=ontology.versionNumber%></td>
+			<td><%=ontology.contactName%></td>
+			<td><%=ontology.dateCreated%></td>
+			<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
+		</tr>
+
+	<%end%>
+	
+  <%end%>
+
+
+
+  <tr id="node-c0" class="header">
+	<td>No Category</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+  </tr>
+	<%for ontology in @sorted_ontologies["0"]%>
+	<tr id="node-o<%=ontology.id%>" class="child-of-node-c0">
+		<td><%=ontology.displayLabel%></td>
+		<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
+		<td  style="width:50px;"><%=ontology.versionNumber%></td>
+		<td><%=ontology.contactName%></td>
+		<td><%=ontology.dateCreated%></td>
+		<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
+	</tr>
+	<%end%>
 	
 		
-	</div>
+	
+	
+</table>
+</center>
 
-<div style="float:left;width:60%;">
-<h1>Welcome</h1>
-<p>Welcome to the National Center for Biomedical Ontology’s BioPortal. BioPortal is a Web-based application for accessing and sharing biomedical ontologies.</p>
-<p>New features in BioPortal 2.0 include:
-	<ul>
-		<li>Full ontology navigation using <b>Flash visualization</b></li>
-		<li><b>Web-service access</b> to BioPortal content and capabilities, which enables developers to use our BioPortal services in their tools.</li>
-		<li>Ability to add <b>Marginal Notes</b> to classes in BioPortal ontologies, a feature that enables the community to comment on ontologies and to discuss their contents</li>
-		<li>Ability to create <b>Point to Point Mappings</b> between concepts in different BioPortal ontologies</li>
-		<li><b>Bulk export of ontology-to-ontology mappings</b> in RDF format</li>
-		<li><b>Navigation of multiple ontologies</b>, which enables users to have several ontologies opened simultaneously in different tabs in the user interface</li>
-		<li><b>BioPortal URIs for all ontology content</b>, which enable developers to access and share BioPortal content from their applications</li>
-		<li><b>Improved support through Protégé</b> for ontologies in OWL format</li>
-	</ul>
-<h1>Getting Started</h1>
-<p>BioPortal allows users to browse, upload, download, search, comment on, and create mappings for ontologies.<a href="http://www.bioontology.org/videos/demos/BioPortal_2.0_Demo.html">Watch the demo here.</a></p>
-<h1>Browse The Library</h1>
-<p>Users can browse and explore individual ontologies by navigating either a tree structure or an animated graphical view. Users can also view mappings and ontology metadata, and download ontologies. </p>
-
-<p>Additionally, users who are signed in may also submit a new ontology to the library. All submissions to the library are reviewed.</p>
-
-<%=link_to image_tag('browse_button.gif'),ontologies_url%>
-<h1>Search The Library</h1>
-<p>Users may search ontology content across all ontologies, within certain ontologies or in a specific ontology in the library. As well as searching by class name or id, attributes such as synonyms can be queried. Users can search ontology content and metadata, which contains project information about an ontology.</p>
-<%=link_to image_tag('search_button.gif'),:controller=>'search'%>
-</div>

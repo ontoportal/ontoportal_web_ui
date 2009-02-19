@@ -1,53 +1,62 @@
+<script src="/javascripts/fcbklistselection.min.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/stylesheets/layout/fcbklistselection.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
-<table>
+
+<div style="padding:10px">
+
+<table class="form" width="60%">
 	<tr>
-		<td>Project Name:*</td><td><%=text_field :project, :name%></td>
+		<th>Project Name:*</th><td class="top"><%=text_field :project, :name%></td>
 	</tr>
 	<tr>
-		<td>Institution:</td><td><%=text_field :project, :institution%></td>
+		<th>Institution:</th><td><%=text_field :project, :institution%></td>
 	</tr>
 	<tr>
-		<td>People:</td><td><%=text_field :project, :people%></td>
+		<th>People:</th><td><%=text_field :project, :people%></td>
 	</tr>
 	<tr>
-		<td>Homepage:*</td><td><%=text_field :project, :homepage%></td>
+		<th>Homepage:*</th><td><%=text_field :project, :homepage%></td>
 	</tr>
 	<tr>
-		<td>Description:*</td><td><%=text_area :project, :description%></td>
+		<th>Description:*</th><td><%=text_area :project, :description, :rows=>6%></td>
 	</tr>
 </table>
 
-<span class="blueButton"><%=link_to_prototype_dialog( "Select Ontologies Used","ontologies",'form', {:title => "Add Ontologies To Project", :width =>600,:height=>400})%></span>
-<div id="ontologies" style="display:none;">
-<div style="height:350px;overflow:auto;border-bottom:1px solid black;">
-	<table>
-<%count = 1%>
 
-<%for ontology in @ontologies%>
-	<%if count==1%>
-		<tr>
-	<%end%>		
-	
-		<td <%if !@usedOntologies.nil? && @usedOntologies.include?(ontology.ontologyId)%> style="border:1px solid gray;cursor:pointer;background-color:#DDFFDD;" <%else%> style="border:1px solid gray;cursor:pointer;"<%end%> onmouseover="hover_on_BG(this);" onmouseout="hover_off_BG(this);" ><input type="checkbox"  <%if !@usedOntologies.nil? && @usedOntologies.include?(ontology.ontologyId)%> checked <%end%>name="ontologies[<%=ontology.ontologyId%>]" onclick="updateOntologyList(this);" ><%=ontology.displayLabel%></td>
-	
-	<%if count==3%>
-		</tr>		
-		
-	<% count = 1
-	else
-	count = count +1
-	end%>
-<%end%>		
-	</table>	
-</div>
-<br>
-<input type="button" value="Finished" onclick="updateContent();Dialog.cancelCallback();" class="blueButton">
-<br>
-</div>
 
-<ul id="ontologieslist">
-	<%for use in @project.uses%>
-		<li id="id_<%=use.ontology_id%>"><%=use.ontology.displayLabel%></li>
-		<input type="hidden" id="hid_<%=use.ontology_id%>" name="ontologies[<%=use.ontology_id%>]" value=1>
+<h2>Select Ontologies Used
+
+<ul id="fcbklist">
+	<%for ontology in @ontologies%>
+    <li>        
+        <strong><%=ontology.displayLabel%></strong><br /> 
+        <span class="fcbkitem_text"></span>
+        <input type="hidden"  value="<%=ontology.ontologyId%>" <%if !@usedOntologies.nil? && @usedOntologies.include?(ontology.ontologyId.to_i)%> checked="checked" <%end%>/>       
+    </li>
 	<%end%>
+  
 </ul>
+
+
+
+</div>
+
+
+<script type="text/javascript" language="JavaScript">
+var fcbklist;
+    $(document).ready(function() {
+      //id(ul id),width,height(element height),row(elements in row)        
+      fcbklist = $.fcbkListSelection("#fcbklist","800","50","5");
+		$("#form").submit(function(){gatherValues();})
+    });    
+
+	function gatherValues(){
+		 eval("values = "+$("#fcbklist_values").val());
+		for(val in values){
+			$("#form").append("<input type='hidden' name='ontologies[]' value='"+values[val]+"'/>")
+		}
+
+	}
+	
+
+</script>

@@ -1,0 +1,413 @@
+<script src="/javascripts/JqueryPlugins/treetable/javascripts/jquery.treeTable.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/javascripts/JqueryPlugins/treetable/stylesheets/jquery.treeTable.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+
+<% form_for(:search, :url => {:controller =>'search',:action=>'search'}) do |f| %>
+<%=hidden_field :search, :ontologies, :value=>"0"%>
+<%=hidden_field :search, :search_type, :value=>"contains"%>
+
+
+<script type="text/javascript">
+  
+$(document).ready(function()  {
+  $("#tree").treeTable();
+});
+  
+</script>
+
+
+<div id="outer" style="padding-left:50px;padding-top:15px;">
+<div style="float:left;">
+<img style="margin-bottom:-2px;cursor:pointer;" src="/images/layout/so_large.png" onclick="jQuery('.hideable').hide();jQuery('#search').show();jQuery('.tab').removeClass('selected');jQuery(this).parent().addClass('selected');"/><br/>
+<img style="margin-bottom:-2px;cursor:pointer;" src="/images/layout/bbc_large.png" onclick="jQuery('.hideable').hide();jQuery('#browse').show();jQuery('.tab').removeClass('selected');jQuery(this).parent().addClass('selected');"/><br/>
+<img style="margin-bottom:-2px;cursor:pointer;" src="/images/layout/ol_large.png" onclick="jQuery('.hideable').hide();jQuery('#filter').show();jQuery('.tab').removeClass('selected');jQuery(this).parent().addClass('selected');"/><br/>
+</div>
+
+
+
+<div id="search" class="hideable" style="border:1px solid #C1DAD7;float:left;width:70%;padding:50px;">
+	<center>
+		<table  width="100%">
+
+			<tr>
+				<td align="center"><h1>Search For Concepts</h1></td>
+			</tr>
+			<tr>				
+				<td align="center"><%=text_field "search","keyword",:size=>50%> <%=submit_tag 'Search'%></td>
+			</tr>
+
+		</table>
+	</center>
+
+
+<%end%>
+</div>
+
+
+
+<div id="browse" style="display:none;border:1px solid #C1DAD7;float:left;width:70%;padding:10px;" class="hideable">
+<table  id="tree" class="zebra" width="100%">
+	
+  <%for category in @sorted_categories%>
+  <tr id="node-c<%=category[:id]%>" class="header">
+    <td><%=category[:name]%></td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>				
+  </tr>
+
+	
+	
+	<%for child in category[:children]%>
+
+	  <tr id="node-c<%=child[:id]%>" class="child-of-node-c<%=category[:id]%> header">
+	    <td><%=child[:name]%></td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>				
+	  </tr>
+	
+	
+		<%for sub_child in child[:children]%>
+
+		  <tr id="node-c<%=sub_child[:id]%>" class="child-of-node-c<%=child[:id]%> header">
+		    <td><%=sub_child[:name]%></td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>				
+		  </tr>
+				<%for ontology in @sorted_ontologies[sub_child[:id]]%>
+					<tr id="node-o<%=ontology.id%>" class="child-of-node-c<%=sub_child[:id]%> <%=cycle("","alt")%>">
+						<td><%=ontology.displayLabel%></td>
+						<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
+						<td  style="width:50px;"><%=ontology.versionNumber%></td>
+						<td><%=ontology.contactName%></td>
+						<td><%=ontology.dateCreated%></td>
+						<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
+					</tr>
+				<%end%>
+
+		<%end%>
+	
+	
+	
+	
+			<%for ontology in @sorted_ontologies[child[:id]]%>
+				<tr id="node-o<%=ontology.id%>" class="child-of-node-c<%=child[:id]%> <%=cycle("","alt")%>">
+					<td><%=ontology.displayLabel%></td>
+					<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
+					<td  style="width:50px;"><%=ontology.versionNumber%></td>
+					<td><%=ontology.contactName%></td>
+					<td><%=ontology.dateCreated%></td>
+					<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
+				</tr>
+			<%end%>
+		
+		
+		
+			
+		
+	<%end%>
+	
+	
+	<%for ontology in @sorted_ontologies[category[:id]]%>
+		<tr id="node-o<%=ontology.id%>" class="child-of-node-c<%=category[:id]%> <%=cycle("","alt")%>">
+			<td><%=ontology.displayLabel%></td>
+			<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
+			<td  style="width:50px;"><%=ontology.versionNumber%></td>
+			<td><%=ontology.contactName%></td>
+			<td><%=ontology.dateCreated%></td>
+			<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
+		</tr>
+
+	<%end%>
+	
+  <%end%>
+
+
+
+  <tr id="node-c0" class="header">
+	<td>No Category</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+  </tr>
+	<%for ontology in @sorted_ontologies["0"]%>
+	<tr id="node-o<%=ontology.id%>" class="child-of-node-c0">
+		<td><%=ontology.displayLabel%></td>
+		<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
+		<td  style="width:50px;"><%=ontology.versionNumber%></td>
+		<td><%=ontology.contactName%></td>
+		<td><%=ontology.dateCreated%></td>
+		<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
+	</tr>
+	<%end%>
+	
+		
+	
+	
+</table>
+</div>
+<div id="filter" style="display:none;border:1px solid #C1DAD7;float:left;width:70%;padding:10px;" class="hideable" >
+	<script type="text/javascript" src="/javascripts/jquery.dataTables.min.js"></script>
+	
+	<script src="/javascripts/jquery.cursorMessage.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="./stylesheets/jquery.cursorMessage.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+
+
+
+	<script type="text/javascript">
+	var dtable;
+	function drawMessage(text){
+			jQuery.cursorMessage(text,{"hideTimeout":3000});
+	}
+
+	function filterBySelection(selectbox){
+	//	alert(selectbox.value);
+		if(selectbox.value == 0){
+			dtable.fnFilter( "",7 );
+		}else{
+			dtable.fnFilter( selectbox.value,7 );
+		}
+
+	}
+
+
+	function filterByGroup(selectbox){
+	//	alert(selectbox.value);
+		if(selectbox.value == 0){
+			dtable.fnFilter( "",8 );
+		}else{
+			dtable.fnFilter( selectbox.value,8 );
+		}
+
+		jQuery("#filterlink").attr("href","http://bioportal.bioontology.org/?filter="+selectbox.value)
+	}
+	function filterByParam(param){
+	//	alert(selectbox.value);
+			dtable.fnFilter( param,8 );
+
+
+	}
+
+
+	function customFilterBox(value){
+		dtable.fnFilter( value);
+	}
+
+
+	jQuery(document).ready(function() {
+		dtable = jQuery('#ontologies').dataTable(
+			{
+			bLengthChange:false,
+			iDisplayLength:800,
+			asStripClasses:["","alt"],
+			bFilter:false,
+			"oLanguage":{"sSearch":"Filter Ontologies"},
+			"aoData": [
+				{ "sType": "html" },
+				null,
+				null,
+				null,
+				null,
+				null,
+				{"bSearchable":false,"bVisible":false},
+				{"bSearchable":false,"bVisible":false},
+				{"bSearchable":false,"bVisible":false}],
+				"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+							/* Append the grade to the default row class name */
+							children = jQuery(nRow).children()
+							jQuery(children[0]).hover(function(){
+								drawMessage(aData[6]);
+
+							},function(){jQuery._hideCursorMessage();});
+							return nRow;
+						}
+
+		});
+
+		<%if params[:filter]%>
+		filterByParam("<%=params[:filter]%>")
+		<%end%>
+
+	});
+
+
+
+	</script>
+
+	<%
+	filter_groups = {
+		"OBOFoundry"=>"OBO Foundry",
+		"caBIG"=>"Cancer Biomedical Informatics Grid",
+	#	"NCIBI"=>"National Center for Integrative Biomedical Informatics",
+	#	"CTSA"=>"Clinical and Translational Science Awards",
+		"WHO-FIC"=>"The WHO Family of International Classifications",
+		"PSI"=>"Proteomics Standards Initiative",
+		"MSI"=>"Metabolomics Standards Initiative"	
+	}
+
+	# "id"=>["groups"]
+	ontology_groups = {
+		1090=>["OBOFoundry"],
+		1070=>["OBOFoundry"],
+		1049=>["OBOFoundry"],
+		1048=>["OBOFoundry"],
+		1067=>["OBOFoundry"],
+		1006=>["OBOFoundry"],
+		1102=>["OBOFoundry"],
+		1037=>["OBOFoundry"],
+		1007=>["OBOFoundry"],
+		1063=>["OBOFoundry"],
+		1008=>["OBOFoundry"],
+		1016=>["OBOFoundry"],
+		1015=>["OBOFoundry"],
+		1069=>["OBOFoundry"],
+		1012=>["OBOFoundry"],
+		1064=>["OBOFoundry"],
+		1071=>["OBOFoundry"],
+		1019=>["OBOFoundry"],
+		1021=>["OBOFoundry"],
+		1022=>["OBOFoundry"],
+		1009=>["OBOFoundry"],
+		1092=>["OBOFoundry"],
+		1025=>["OBOFoundry"],
+		1105=>["OBOFoundry","PSI"],
+		1027=>["OBOFoundry"],
+		1131=>["MGED","caBIG"],
+		1103=>["OBOFoundry"],
+		1030=>["OBOFoundry"],
+		1077=>["OBOFoundry"],
+		1000=>["OBOFoundry"],
+		1010=>["OBOFoundry"],
+		1031=>["OBOFoundry"],
+		1083=>["caBIG"],
+		1032=>["caBIG"],
+		1033=>["OBOFoundry","MSI"],
+		1042=>["OBOFoundry"],
+		1123=>["OBOFoundry"],
+		1094=>["OBOFoundry"],
+		1107=>["OBOFoundry"],
+		1038=>["OBOFoundry"],
+		1108=>["OBOFoundry"],
+		1041=>["OBOFoundry"],
+		1062=>["OBOFoundry"],
+		1040=>["OBOFoundry","PSI"],
+		1044=>["PSI"],
+		1109=>["OBOFoundry"],
+		1078=>["OBOFoundry"],
+		1091=>["OBOFoundry"],
+		1093=>["OBOFoundry"],
+		1145=>["OBOFoundry"],
+		1046=>["OBOFoundry"],
+		1110=>["OBOFoundry"],
+		1081=>["OBOFoundry"],
+		1065=>["OBOFoundry"],
+		1112=>["OBOFoundry"],
+		1095=>["OBOFoundry"],
+		1115=>["OBOFoundry"],
+		1051=>["OBOFoundry"],
+		1057=>["caBIG"],
+		1101=>["WHO-FIC"]
+
+	}
+
+	%>
+
+
+
+	
+	
+		<table class="form" width="100%">
+
+	
+
+		<tr>	
+		<th>Filter by Category</td><td class="top"><select onclick ="filterBySelection(this)"  name="cat">
+			<option value="0" selected="selected">All Categories</option>
+				<%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
+				<%for cat in cats%>
+
+				<option value="<%=cat[:id]%>" ><%=cat[:name]%></option>
+				<%end%>
+		</select></td>
+		</tr>
+		<tr>
+			<th>Filter by Group</td><td><select onclick ="filterByGroup(this)"  name="cat">
+			<option value="0" selected="selected">All Groups</option>
+
+				<%for key in filter_groups.keys%>
+
+				<option value="<%=key%>" >(<%=key%>) <%=filter_groups[key]%></option>
+				<%end%>
+		</select> <a href="http://bioportal.bioontology.org" id="filterlink">Link To This Filter</a></td>
+		</tr>
+
+		<tr>
+			<th>Filter by Text</td><td><input type="text" name="filt" onkeyup="customFilterBox(this.value)"></td>
+		</tr>
+
+		</table>
+	<table id="ontologies" class="zebra" cellpadding="0" cellspacing="0" width="100%">
+			<thead>
+	  <tr>
+		<th  style="width:200px;">Ontology Name</th>
+		<th style="width:50px;">Format</th>
+		<th  style="width:50px;">Version</th>
+		<th>Author</th>
+		<th>Uploaded On</th>
+		<th>Status</th>
+		<th>Description</th>
+		<th  style="display:none;">categories</th>
+		<th  style="display:none;">groups</th>
+	  </tr>
+	  </thead>
+	<tbody>
+	<% for ontology in @ontologies %>
+
+		<%label = ontology.displayLabel
+		unless ontology.abbreviation.empty?
+			label << " <br/>(#{ontology.abbreviation})"
+		end
+		%>
+	  <tr>
+		<td style="width:200px;"><%=link_to label, ontology_path(:id=>ontology.id)%>
+		<%if false%>
+			<ul style="padding-left:20px;">
+				<li style="margin-bottom:4px;"><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology.ontologyId)%></li>
+				<li><%= link_to "See All #{ontology.reviews} Reviews",reviews_path(:ontology=>ontology.ontologyId)%></li>
+			</ul>
+		<%end%>
+		<br>
+		<br>
+		<a href="/syndication/rss?ontologies=<%=ontology.ontologyId%>" style="text-decoration:none;"><img src="/images/feed-icon.png" height=16 width=16 border=0 > Subscribe</a>
+			</td>
+		<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
+		<td  style="width:50px;"><%=ontology.versionNumber%></td>
+		<td><%=ontology.contactName%></td>
+		<td><%=ontology.dateCreated%></td>
+		<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
+		<td style="display:none;"><%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
+			<br>
+			<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>
+		<td style="display:none;"> <%=ontology.categories.join(" ")%></td>
+		<td style="display:none;"><%if !ontology_groups[ontology.ontologyId.to_i].nil?%><%=ontology_groups[ontology.ontologyId.to_i].join(" , ")%><%end%></td>
+	  </tr>
+	<% end %>
+	</tbody>
+	<tfoot>
+	</tfoot>
+	</table>
+</div>
+
+<div style="clear:both;"></div>
+</div>

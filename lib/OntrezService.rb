@@ -18,7 +18,35 @@ class OntrezService
   
   PAGING_CLASS_STRING ="/result/ontology/@/classID/#/from/$S$/number/$E$/resource/*R*/metadata"
   PAGING_CUI_STRING="/result/cui/#/from/$S$/number/$E$/resource/*R*/metadata"
-    def self.gatherResources(ontology_name,concept_id)
+  
+
+  def self.gatherResources(ontology_version_id,concept_id)
+    resources = []
+    puts "===================================="
+  #  puts "Gathering Resource From URL: #{ONTREZ_URL+CLASS_STRING.gsub("@",ontology_name).gsub("#",concept_id)}"
+    puts "===================================="
+    
+    oba_url = "http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr/@/#/PGGE/false/1/10"
+    
+    doc = REXML::Document.new(open(oba_url.gsub("@",ontology_version_id.to_s).gsub("#",concept_id)))
+
+    puts "Beginning Parsing"
+    
+  #  puts doc.inspect
+    resources = parseOBS(doc)
+  
+  
+  puts "Resources: \n #{resources.inspect}"
+  puts "Finished Parsing"
+  return resources
+
+  end
+
+
+
+  
+  
+    def self.gatherResources_old(ontology_name,concept_id)
       resources = []
       puts "===================================="
       puts "Gathering Resource From URL: #{ONTREZ_URL+CLASS_STRING.gsub("@",ontology_name).gsub("#",concept_id)}"
@@ -116,6 +144,28 @@ class OntrezService
     end
     
  private 
+ 
+ 
+ def self.parseOBS(doc)
+   resources =[]
+   
+    resource =  Resource.new
+    resource.name = "The Pharmacogenetics and Pharmacogenomics Knowledge Base"
+    resource.shortname = "PGGE"
+    resource.url = "http://www.pharmgkb.org/"
+    resource.description = "PharmGKB curates information that establishes knowledge about the relationships among drugs, diseases and genes, including their variations and gene products."
+    resource.logo = "https://www.pharmgkb.org/images/header/title.png"
+    
+    doc.elements.each("*/statistics/obs\.common\.beans\.StatisticsBean"){ |statistic|
+        resource.count = statistic.elements["nbAnnotation"].get_text.value.to_i      
+      }
+    
+    resource.context_numbers = {}
+    resource.annotations = []
+    
+    resources << resource
+
+ end
  
  def self.parseResources(doc)
  resources =[]

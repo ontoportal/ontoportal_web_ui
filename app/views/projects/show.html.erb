@@ -1,56 +1,75 @@
+<script src="/javascripts/jquery.rating.pack.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/stylesheets/layout/jquery.rating.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+
+<%if session[:user].id.to_i.eql?(@project.user_id)%>
+<%=link_to "Edit Project",edit_project_path(@project)%>
+<%end%>
 <br>
 
-<table class="metadata" cellpadding="0" cellspacing="0">
+<table class="form" cellpadding="0" cellspacing="0" width="70%">
 	<tr>
-		<td>
-			<ul>
-			<li><label>Project Name:</label><%=@project.name%></li>			
-			<li><label>Description:</label><%=@project.description%></li>
-			</ul>
-			
-		</td>
-		<td>
-			<ul>
-			<li><label>Institution:</label><%=@project.institution%></li>
-			<li><label>People:</label><%=@project.people%></li>
-			<li><label>Home Page:</label><%=link_to @project.homepage, @project.homepage%></li>
-			</ul>
-
-		</td>
+		<th>Project Name:</th><td class="top"><%=@project.name%></td>
+		<th>Description:</th><td class="top"><%=@project.description%></td>
+	</tr>
+	<tr>
+		<th>Institution:</th><td><%=@project.institution%></td>
+		<th>People:</th><td><%=@project.people%></td>
+	</tr>
+	<tr>
+		<th>Home Page:</th><td colspan=3><%=link_to @project.homepage, @project.homepage%></td>
+		
 	</tr>
 </table>
-</fieldset>
 
-<h3>Ontologies Used</h3>
+
+<h2>Ontologies Used</h2>
+<hr>
+
+	<table class="zebra" cellpadding="0" cellspacing="0" width="70%">
 <%for uses in @project.uses%>
-	<table class="reviews" cellpadding="0" cellspacing="0">
-
+		<thead>
 		<tr>
-			<th><%=link_to uses.ontology.displayLabel,visualize_url(:ontology => uses.ontology_id)%></th>
+			<th><a href="/virtual/<%=uses.ontology_id%>"> <%=uses.ontology.displayLabel%></a></th>
 
 		</tr>
+		</thead>
+		<%if !@reviews[uses.ontology_id].nil?%>
 		<tr>
-			<td>
-				<div style="float:left;border:1px solid gray;margin:7px;padding:5px;">
+			<td id="<%=uses.ontology_id%>_review" >
+				<div class="star_ratings">
 				<%for rating in @reviews[uses.ontology_id].ratings%>				
-					<div class="rateMe" >
+				<li>
 						<%if rating.value.eql?(0)%>
 						<span style="float:left;">Not Rated</span>
 						<%else%>
-					    <a <% if rating.value >= 1%>class="on"<%end%> ></a>
-					    <a <% if rating.value >= 2%>class="on"<%end%> ></a>
-					    <a <% if rating.value >= 3%>class="on"<%end%> ></a>
-					    <a <% if rating.value >= 4%>class="on"<%end%> ></a>
-					    <a <% if rating.value >= 5%>class="on"<%end%> ></a>
+						<input name="star_<%=rating.id%>" type="radio" class="star" value="1" <% if rating.value.to_i.eql?(1)%> checked="checked" <%end%> disabled="disabled" /> 
+						<input name="star_<%=rating.id%>" type="radio" class="star" value="2" <% if rating.value.to_i.eql?(2)%> checked="checked" <%end%>disabled="disabled" /> 
+						<input name="star_<%=rating.id%>" type="radio" class="star" value="3" <% if rating.value.to_i.eql?(3)%> checked="checked" <%end%>disabled="disabled" /> 
+						<input name="star_<%=rating.id%>" type="radio" class="star" value="4" <% if rating.value.to_i.eql?(4)%> checked="checked" <%end%>disabled="disabled" /> 
+						<input name="star_<%=rating.id%>" type="radio" class="star" value="5" <% if rating.value.to_i.eql?(5)%> checked="checked" <%end%>disabled="disabled" />
+
+						
 						<%end%>
-					</div>
-					<b>&nbsp;<%=rating.rating_type.name%></b>					
+					<b>&nbsp;<%=rating.rating_type.name%></b>
+				</li>
+					
 				<%end%>
 				</div>
 				<p><%=@reviews[uses.ontology_id].review%></p>
-				
+				<%if session[:user].id.to_i.eql?(@project.user_id)%>
+					<a href="/reviews/<%=@reviews[uses.ontology_id].id%>/edit?height=500&width=600" title="Edit Review For <%=uses.ontology.displayLabel%>" class="thickbox">Edit Review</a>
+				<%end%>
 			</td>
 		</tr>
-
-	</table>
+		<%else%>
+			<tr>
+				<td id="<%=uses.ontology_id%>_review">Not Reviewed Yet 
+				<%if session[:user].id.to_i.eql?(@project.user_id)%>
+					<a href="/reviews/new?project=<%=@project.id%>&ontology=<%=uses.ontology_id%>&height=500&width=600" title="Review For <%=uses.ontology.displayLabel%>" class="thickbox">Review This Ontology</a>
+				<%end%>
+				</td>
+			</tr>
+		<%end%>
 <%end%>
+	</table>

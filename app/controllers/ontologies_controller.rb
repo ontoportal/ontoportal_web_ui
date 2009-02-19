@@ -38,12 +38,31 @@ class OntologiesController < ApplicationController
     @ontology = DataAccess.getOntology(params[:id]) # shows the metadata 
     @categories = DataAccess.getCategories()
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
+
+      note_tag_query = "select concept_id,count(concept_id) as con_count from margin_notes where ontology_id = #{@ontology.ontologyId} group by concept_id order by concept_id"
+      @notes = ActiveRecord::Base.connection.select_rows(note_tag_query);
+      
+      if @notes.size > 100
+        note_tag_query = "select concept_id,count(concept_id) as con_count from margin_notes where ontology_id = #{@ontology.ontologyId} group by concept_id order by con_count limit 100 "
+        @notes = ActiveRecord::Base.connection.select_rows(note_tag_query);
+      end
+
+      mapping_tag_query = "select source_id,count(source_id) as con_count from mappings where source_ont = #{@ontology.ontologyId} group by source_id order by source_id"            
+      @mappings = ActiveRecord::Base.connection.select_rows(mapping_tag_query);
+      
+      if @mappings.size > 100
+        mapping_tag_query = "select source_id,count(source_id) as con_count from mappings where source_ont = #{@ontology.ontologyId} group by source_id order by con_count limit 100"
+        @mappings = ActiveRecord::Base.connection.select_rows(mapping_tag_query);        
+      end
+
     
+    puts @notes.inspect
+    puts @mappings.inspect
     #Grab Reviews Tab
-    @reviews = Review.find(:all,:conditions=>{:ontology_id=>params[:ontology]},:include=>:ratings)
+    @reviews = Review.find(:all,:conditions=>{:ontology_id=>@ontology.ontologyId},:include=>:ratings)
     
     #Grab projects tab
-      @projects = Project.find(:all,:conditions=>"uses.ontology_id = '#{undo_param(params[:ontology])}'",:include=>:uses)
+      @projects = Project.find(:all,:conditions=>"uses.ontology_id = '#{@ontology.ontologyId}'",:include=>:uses)
         render :action=>'show'
 
 
@@ -54,9 +73,12 @@ class OntologiesController < ApplicationController
      @ontology = DataAccess.getLatestOntology(params[:ontology])
 
      redirect_to "/visualize/#{@ontology.id}"
-   end
+  end
   
-  
+  def download_latest
+    @ontology = DataAccess.getLatestOntology(params[:id])
+    redirect_to "http://rest.bioontology.org/bioportal/ontologies/download/#{@ontology.id}"
+  end
   
   def update
       params[:ontology][:isReviewed]=1
@@ -166,7 +188,9 @@ class OntologiesController < ApplicationController
     params[:ontology][:isReviewed]=1
     params[:ontology][:isFoundry]=0
     params[:ontology][:isManual]=1
-    params[:ontology][:userId]=session[:user].id
+    if (session[:user].admin? && params[:ontology][:userId].nil?) || !session[:user].admin?
+      params[:ontology][:userId]= session[:user].id
+    end
     puts "File Size: #{params[:ontology][:filePath].size}"
       @errors = validate(params[:ontology])
     if @errors.length < 1

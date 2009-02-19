@@ -37,6 +37,8 @@ Errors On Form
 <h1> Submit New Version</h1>
 <%end%>
 <%=hidden_field :ontology, :ontologyId%>
+<%=hidden_field :ontology, :userId%>
+
 <table class="form" width="70%">
 	<tr>
 		<th>Ontology Name: </th><td class="top"><%=text_field :ontology, :displayLabel%></td>

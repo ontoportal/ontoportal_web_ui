@@ -1,29 +1,29 @@
-<h1>Editing review</h1>
-<script type="text/javascript" language="javascript" src="/javascripts/ratingsys.js"></script>  
-<%= error_messages_for :review %>
+<script src="/javascripts/jquery.rating.pack.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/stylesheets/layout/jquery.rating.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
-<% form_for(@review) do |f| %>
+<% form_for(:review, :url=>review_path(@review), :html=>{:onsubmit=>"ajaxForm(this,'##{@review.ontology_id}_review',function(){tb_remove();$('input.star').rating();} );return false;"}) do  %>
 
-
+<input type="hidden" value="put" name="_method"/>
+<%=hidden_field :review,:ontology_id%>
+<%=hidden_field :review,:project_id%>
+<%=hidden_field :review,:user_id%>
 <fieldset>
 	<legend><b>Review For <%=@review.ontology.displayLabel%></b></legend>
 <table>
 	<tr>
 		<td>Ratings<br>
-
+			<%rating_count = 0%>
 			<%for rating in @review.ratings%>
-			<%=hidden_field_tag "ratings-#{rating.id}",rating.value,:id=>"ratings-#{rating.id}"%>
 			<div style="padding:2px;border-top:1px solid gray;">
-			
-			<div class="rateMe" title="Rate Me...">
-			    <a onclick="rateIt(this)" id="<%="ratings-#{rating.id}_1"%>" <% if rating.value >= 1%>class="on"<%end%>onmouseover="rating(this)" onmouseout="off(this)"></a>
-			    <a onclick="rateIt(this)" id="<%="ratings-#{rating.id}_2"%>" <% if rating.value >= 2%>class="on"<%end%>onmouseover="rating(this)" onmouseout="off(this)"></a>
-			    <a onclick="rateIt(this)" id="<%="ratings-#{rating.id}_3"%>" <% if rating.value >= 3%>class="on"<%end%>onmouseover="rating(this)" onmouseout="off(this)"></a>
-			    <a onclick="rateIt(this)" id="<%="ratings-#{rating.id}_4"%>" <% if rating.value >= 4%>class="on"<%end%>onmouseover="rating(this)" onmouseout="off(this)"></a>
-			    <a onclick="rateIt(this)" id="<%="ratings-#{rating.id}_5"%>" <% if rating.value >= 5%>class="on"<%end%>onmouseover="rating(this)" onmouseout="off(this)"></a>
-			</div>
+				<input name="star_<%=rating.id%>" type="radio" class="star" value="1" <%if rating.value.eql?(1)%>checked="checked"<%end%> /> 
+				<input name="star_<%=rating.id%>" type="radio" class="star" value="2" <%if rating.value.eql?(2)%>checked="checked"<%end%> /> 
+				<input name="star_<%=rating.id%>" type="radio" class="star" value="3" <%if rating.value.eql?(3)%>checked="checked"<%end%> /> 
+				<input name="star_<%=rating.id%>" type="radio" class="star" value="4" <%if rating.value.eql?(4)%>checked="checked"<%end%> /> 
+				<input name="star_<%=rating.id%>" type="radio" class="star" value="5" <%if rating.value.eql?(5)%>checked="checked"<%end%> />
+
 			<b>&nbsp;<%=rating.rating_type.name%></b>
-					
+			
+			<%rating_count += 1%>
 			</div>
 			<%end%>
 			
@@ -36,8 +36,9 @@
 </fieldset>
 
 
-  <p>
-    <%= f.submit "Update" %>
+
+    <%=submit_tag "Submit Reviews",:class=>"blueButton"%>
   </p>
-<% end %>
+<%end%>
+
 

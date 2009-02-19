@@ -1,4 +1,3 @@
-<style type="text/css">
 
 /* Initialize */
 /* Adapted from YUI Library: http://yui.yahooapis.com/2.5.1/build/reset-fonts-grids/reset-fonts-grids.css */
@@ -74,14 +73,14 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 	#bd #bd_content { display:block; float:left; padding-left:25px; }
 	#bd #bd_content.explore { width:100%; border-top:1px solid #e9eaeb; padding-left:0; }
 
-	#sidebar { float:left; width:300px; margin:0 0 20px 0;  font-size:90%;position:relative;min-height:450px;}
+	#sidebar { float:left; width:300px; margin:0 0 20px 0;  font-size:90%;position:relative;min-height:450px; height:600px;}
 	#sidebar #sd_hd { background:#dadde0; height:24px; border-bottom:1px solid #bcc6d0;  display:block; float:left; width:100%;}
 	#sidebar #sd_hd h2 { padding:5px 0 0 25px; font-weight:normal; }
 	#sidebar #sd_content { display:block; 
 	    /*padding:0 0 25px 25px;*/
         overflow:auto;
 	     float:left;
-	     width:100%;
+	     width:96%;
 	     height:100%;
 	     min-height:350px; }
 	     
@@ -137,12 +136,14 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 
 
 /* Notes*/
+
 .notetype{font:12px bold "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; }
 .header { cursor:pointer; font:11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-align: left; padding: 6px 6px 6px 12px; background: #e2ebf0; }
 .message{background: #ECF5FB;}
 .sender{padding:5px;border: 1px solid #C1DAD7;}
 .hiddenNote{background-color:gray;}
 .messages{padding:10px;background: #FCFCFC;border-bottom: 1px solid #C1DAD7;border-left: 1px solid #C1DAD7;border-right: 1px solid #C1DAD7;}
+
 
 /* Resources Tab*/
 
@@ -157,6 +158,20 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 .resources tr.alt { border-left: 1px solid #C1DAD7; background: #f5fafa; color: #000; }
  tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-align: left; padding: 6px 6px 6px 12px; background: #e2ebf0; }
 
+/* Ratings */
+.star_ratings{
+    color: #234979; 
+    border: 1px solid #C1DAD7;
+    background: #e2ebf0; 
+    width:300px;
+    float:left;
+    margin-right:10px;
 
+}
+.star_ratings li{
+    list-style:none;
+    border-bottom:1px solid white;
+}
 
-</style>
+/*Projects */
+.pheader { cursor:pointer; font-weight:bold; font:14px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 1px; text-align: left; padding: 6px 6px 6px 12px; background: #e2ebf0; }

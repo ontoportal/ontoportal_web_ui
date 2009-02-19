@@ -38,15 +38,19 @@ class SearchController < ApplicationController
     
     @keyword = params[:search][:keyword]
 
-    if params[:search][:attributes].nil? || params[:search][:attributes].eql?("0")
+    if params[:search][:attributes].nil? || params[:search][:attributes].eql?("0") || params[:search][:attributes].eql?("")
+      puts "no attributes"
       if params[:search][:search_type].eql?("contains")
+        puts "contains"
         @results,@pages = DataAccess.getNodeNameContains(params[:search][:ontologies],params[:search][:keyword],params[:page]||1)
 
       elsif params[:search][:search_type].eql?("exact")
+        puts "Exact"
         @results,@pages = DataAccess.getNodeNameExact(params[:search][:ontologies],params[:search][:keyword],params[:page]||1)
 
 
       end 
+      puts "did i fall through?"
     end
   
     if params[:search][:attributes].eql?("1")
@@ -77,9 +81,13 @@ class SearchController < ApplicationController
       params[:page]=1
     end
     
-    respond_to do |format|
-      format.html { render :partial =>'results'}
-      format.xml  { render :xml => @results.to_xml }
+    if request.xhr?
+      puts "IM ajax"
+      render :partial =>'results'
+    else
+      puts "Im not ajax"
+      @ontologies = DataAccess.getActiveOntologies() 
+      render :action=>'results'
     end
     
     

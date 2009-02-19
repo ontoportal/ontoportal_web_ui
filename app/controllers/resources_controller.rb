@@ -6,12 +6,17 @@ class ResourcesController < ApplicationController
       puts @concept.inspect
     
        @resources = []
+# Old ONtrez
+        #  if(@concept.properties["UMLS_CUI"]!=nil)
+        #    @resources = OBDWrapper.gatherResourcesCui(@concept)
+        #  else
+        #    @resources = OBDWrapper.gatherResources(to_param(@ontology.displayLabel),@concept)
+        #  end
+#New OBA
 
-          if(@concept.properties["UMLS_CUI"]!=nil)
-            @resources = OBDWrapper.gatherResourcesCui(@concept)
-          else
-            @resources = OBDWrapper.gatherResources(to_param(@ontology.displayLabel),@concept)
-          end
+    @resources = OBDWrapper.gatherResources(@ontology.id,@concept)
+
+
 
   render :partial=> 'resources'
     

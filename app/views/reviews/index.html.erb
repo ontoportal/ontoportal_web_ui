@@ -1,3 +1,7 @@
+<script src="/javascripts/jquery.rating.pack.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/stylesheets/layout/jquery.rating.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+
 <br>
 <%if session[:user].nil?%>
 	<input type="button" class ="blueButton" value="Review Ontology" onclick ="window.location='/login'"> 
@@ -7,25 +11,35 @@
 
 
 <br><br>
-<% for review in @reviews %>
-<table class="reviews" cellpadding="0" cellspacing="0">
+<h1>Reviews for <%=@ontology.displayLabel%></h1>
+<table class="zebra" cellpadding="0" cellspacing="0" width="70%">
 
+<% for review in @reviews %>
+	<thead>
 	<tr>
-		<td><div class="reviewheader">Review By <%=review.user.username%> <%unless review.project.nil?%> From Project <%=link_to review.project.name,project_path(review.project)%><%end%><%if isOwner?(review.id)%> <%=link_to "Edit Review",edit_review_path(review)%> <%end%></div>
-			<div style="float:left;border:1px solid gray;margin:7px;padding:5px;white-space:nowrap;width:250px;">
+
+		<th>Review By <%=review.user.username%> <%unless review.project.nil?%> From Project <%=link_to review.project.name,project_path(review.project)%><%end%><%if isOwner?(review.user_id)%> <%=link_to "Edit Review",edit_review_path(review)%> <%end%></th>
+	</tr>
+	</thead>
+	
+	<tr>
+			<td><div class="star_ratings">
 			<%for rating in review.ratings%>				
-				<div class="rateMe" >
+			<li>
 					<%if rating.value.eql?(0)%>
 					<span style="float:left;">Not Rated</span>
 					<%else%>
-				    <a <% if rating.value >= 1%>class="on"<%end%> ></a>
-				    <a <% if rating.value >= 2%>class="on"<%end%> ></a>
-				    <a <% if rating.value >= 3%>class="on"<%end%> ></a>
-				    <a <% if rating.value >= 4%>class="on"<%end%> ></a>
-				    <a <% if rating.value >= 5%>class="on"<%end%> ></a>
+					<input name="star_<%=rating.id%>" type="radio" class="star" value="1" <% if rating.value.to_i.eql?(1)%> checked="checked" <%end%> disabled="disabled" /> 
+					<input name="star_<%=rating.id%>" type="radio" class="star" value="2" <% if rating.value.to_i.eql?(2)%> checked="checked" <%end%>disabled="disabled" /> 
+					<input name="star_<%=rating.id%>" type="radio" class="star" value="3" <% if rating.value.to_i.eql?(3)%> checked="checked" <%end%>disabled="disabled" /> 
+					<input name="star_<%=rating.id%>" type="radio" class="star" value="4" <% if rating.value.to_i.eql?(4)%> checked="checked" <%end%>disabled="disabled" /> 
+					<input name="star_<%=rating.id%>" type="radio" class="star" value="5" <% if rating.value.to_i.eql?(5)%> checked="checked" <%end%>disabled="disabled" />
+
+
 					<%end%>
-				</div>
-				<b>&nbsp;<%=rating.rating_type.name%></b>					
+				<b>&nbsp;<%=rating.rating_type.name%></b>
+			</li>
+
 			<%end%>
 			</div>
 			<p><%=review.review%></p>
@@ -33,8 +47,8 @@
 		</td>
 	</tr>
 
-</table>
 <% end %>
+</table>
 
 
 

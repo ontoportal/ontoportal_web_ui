@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   
   before_filter :authorize_owner, :only=>[:index,:edit,:destroy]
   
-  layout 'home'
+  layout 'ontology'
   
   def index
     

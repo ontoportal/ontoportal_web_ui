@@ -2,7 +2,7 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.xml
   
-  layout 'home'
+  layout 'ontology'
   
   def index
 
@@ -55,7 +55,7 @@ class ProjectsController < ApplicationController
   def edit
     @project = Project.find(params[:id])
     @ontologies = DataAccess.getOntologyList()
-    @usedOntologies = @project.uses.collect{|used| used.ontology}
+    @usedOntologies = @project.uses.collect{|used| used.ontology_id.to_i}
   end
 
   # POST /projects
@@ -64,7 +64,7 @@ class ProjectsController < ApplicationController
     @project = Project.new(params[:project])
     @project.user_id = session[:user].id
     unless params[:ontologies].nil?
-      for ontology in params[:ontologies].keys
+      for ontology in params[:ontologies]
         @project.uses << Use.new(:ontology_id=>ontology)
       end
     end
@@ -75,12 +75,12 @@ class ProjectsController < ApplicationController
         
               #adds project to syndication
                event = EventItem.new
-               event.type="Project"
-               event.type_id=@project.id
+               event.event_type="Project"
+               event.event_type_id=@project.id
                event.save
         
         flash[:notice] = 'Project was successfully created.'
-        format.html { redirect_to :controller=>:reviews, :action=>:new, :project=>@project.id}
+        format.html { redirect_to @project}
         format.xml  { render :xml => @project, :status => :created, :location => @project }
       else
         @ontologies = DataAccess.getOntologyList()
@@ -96,7 +96,7 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
     @project.uses = []
     unless params[:ontologies].nil?
-      for ontology in params[:ontologies].keys
+      for ontology in params[:ontologies]
         
         @project.uses << Use.new(:ontology_id=>ontology)
       end
@@ -109,7 +109,7 @@ class ProjectsController < ApplicationController
         
         
         flash[:notice] = 'Project was successfully updated.'
-         format.html { redirect_to :controller=>:reviews, :action=>:new, :project=>@project.id}
+         format.html { redirect_to @project}
         format.xml  { head :ok }
       else
         @ontologies = DataAccess.getOntologyList()

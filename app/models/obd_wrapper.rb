@@ -2,7 +2,7 @@ require 'OntrezService'
 
 class OBDWrapper
 
-   NO_CACHE = false
+   NO_CACHE = true
    
   def self.gatherResources(ontology,concept)
     if CACHE.get("#{ontology}::#{concept.id}_resource").nil? || NO_CACHE 
@@ -12,7 +12,9 @@ class OBDWrapper
         resources = OntrezService.gatherResources(ontology,concept.id.to_s.gsub("_",":"))
       rescue Exception => e
         cache=false
-          Notifier.deliver_error(e)
+        
+#          Notifier.deliver_error(e)
+          puts e.message
           puts e.backtrace.join("\n")
       end
       begin
