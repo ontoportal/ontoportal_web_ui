@@ -40,7 +40,10 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/service.wsdl', :action => 'wsdl'
   map.mapping_count '/mappings/count/:ontology',:controller=>'mappings',:action=>'count'
   map.obrpage '/respage/',:controller=>'resources',:action=>'page'
+
+  map.obr_details '/res_details/:id',:controller=>'resources',:action=>'details'
   map.obr '/resources/:ontology/:id',:controller=>'resources',:action=>'show'
+  
   map.ajax '/ajax/',:controller=>'ajax_proxy',:action=>'get'  
   map.logout '/logout',:controller=>'login',:action=>'destroy'
   map.lost_pass '/lost_pass',:controller=>'login',:action=>'lost_password'

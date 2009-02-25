@@ -1,147 +1,138 @@
-<script src="/javascripts/JqueryPlugins/treetable/javascripts/jquery.treeTable.js" type="text/javascript" charset="utf-8"></script>
-<link rel="stylesheet" href="/javascripts/JqueryPlugins/treetable/stylesheets/jquery.treeTable.css" type="text/css" media="screen" title="no title" charset="utf-8">
-
-
-<% form_for(:search, :url => {:controller =>'search',:action=>'search'}) do |f| %>
-<%=hidden_field :search, :ontologies, :value=>"0"%>
-<%=hidden_field :search, :search_type, :value=>"contains"%>
-
-
-<script type="text/javascript">
-  
-$(document).ready(function()  {
-  $("#tree").treeTable();
-});
-  
-</script>
-
-
+<br/>
+<br/>
 <center>
-		<table class="form">
-			<tr>
-				<td align="center" style="border:0px;border-left:1px white solid;font-size:16px;font-weight:bold">Search Ontologies</td>
-			</tr>
-			<tr>				
-				<td class="top"><%=text_field "search","keyword",:size=>50%> <%=submit_tag 'Search'%></td>
-			</tr>
-
-		</table>
-		
-	</fieldset>
+	<%=image_tag('ncbo_logo_portal.gif')%>
 </center>
-<%end%>
 
-
-<center>
-<h2>Browse By category</h2>
-<table  id="tree" class="zebra" width="80%">
-	
-  <%for category in @sorted_categories%>
-  <tr id="node-c<%=category[:id]%>" class="header">
-    <td><%=category[:name]%></td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>				
-  </tr>
-
-	
-	
-	<%for child in category[:children]%>
-
-	  <tr id="node-c<%=child[:id]%>" class="child-of-node-c<%=category[:id]%> header">
-	    <td><%=child[:name]%></td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>				
-	  </tr>
-	
-	
-		<%for sub_child in child[:children]%>
-
-		  <tr id="node-c<%=sub_child[:id]%>" class="child-of-node-c<%=child[:id]%> header">
-		    <td><%=sub_child[:name]%></td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>				
-		  </tr>
-				<%for ontology in @sorted_ontologies[sub_child[:id]]%>
-					<tr id="node-o<%=ontology.id%>" class="child-of-node-c<%=sub_child[:id]%> <%=cycle("","alt")%>">
-						<td><%=ontology.displayLabel%></td>
-						<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
-						<td  style="width:50px;"><%=ontology.versionNumber%></td>
-						<td><%=ontology.contactName%></td>
-						<td><%=ontology.dateCreated%></td>
-						<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
+<table width="100%">
+	<tr>
+		<td>
+			<% form_for(:search, :url => {:controller =>'search',:action=>'search'}) do |f| %>
+			<%=hidden_field :search, :ontologies, :value=>"0"%>
+			<%=hidden_field :search, :search_type, :value=>"contains"%>
+			<fieldset>
+				<legend>Search all ontologies</legend>
+				<table>
+					<tr>				
+						<td nowrap><%=text_field "search","keyword",:size=>30%> <%=submit_tag 'Search',:class=>'home_button'%></td>
 					</tr>
-				<%end%>
+					<tr>
+						<td style="padding-left:15px"><a href="#">Advanced Search</a></td>
+					</tr>
 
-		<%end%>
-	
-	
-	
-	
-			<%for ontology in @sorted_ontologies[child[:id]]%>
-				<tr id="node-o<%=ontology.id%>" class="child-of-node-c<%=child[:id]%> <%=cycle("","alt")%>">
-					<td><%=ontology.displayLabel%></td>
-					<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
-					<td  style="width:50px;"><%=ontology.versionNumber%></td>
-					<td><%=ontology.contactName%></td>
-					<td><%=ontology.dateCreated%></td>
-					<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
-				</tr>
+				</table>
+		
+			</fieldset>
 			<%end%>
-		
-		
-		
+		</td>
+		<td>
+			<fieldset>
+				<legend>Find an ontology</legend>
+				<table>
+					<tr>				
+						<td nowrap><input class="home_input" type="text" name="ontology" size="30" id="find_ontology"> <input type="button" value="Explore" class="home_button"></td>
+					</tr>
+					<tr>
+						<td style="padding-left:15px"><a href="#">Browse Ontologies</a></td>
+					</tr>
+
+				</table>
+	
+			</fieldset>
+		</td>
+		<td>
+			<fieldset>
+			<legend>Search resources</legend>
+			<table>
+				<tr>				
+					<td nowrap><input type="text" name="resources" size="30"> <input class="home_button" type="button" value="Search"></td>
+				</tr>
+				<tr>
+					<td style="padding-left:15px"><a href="#">Advanced Resource Search</a></td>
+				</tr>
+
+			</table>
+
+			</fieldset>
+		</td>
+</tr>
+
+<tr>
+	<td valign='top'>
+		<fieldset>
+			<legend>Most Active Ontologies</legend>
+		<table class="minimal" width="100%">
+			<thead>
+			<tr>
+				<th>Ontology</th>
+				<th>Version</th>
+				<th>Notes</th>
+				<th>Mappings</th>
+			</tr>
+			</thead>
+			<%count = 0%>
+			<%for ont in @ontologies%>
+			<tr>
+				<td><%=ont.displayLabel%></td>
+				<td><%=ont.versionNumber%></td>
+				<td>100</td>
+				<td>521</td>
+			</tr>
+				
+				
+			<%count +=1%>
+			<%if count >5
+				break;
+			  end
+			%>
 			
+			<%end%>
+		</table>
+		</fieldset>
+	</td>
+	<td valign="top">
+		<fieldset>
+			<legend>Active Users</legend>
+			<table class="minimal" width="100%">
+				<thead>
+				<tr>
+					<th>User</th>
+					<th>Notes</th>
+					<th>Mappings</th>
+				</tr>
+				</thead>
+				<% 5.times do%>
+				<tr>
+					<td>Joeuser</td>
+					<td>123</td>
+					<td>100</td>
+				</tr>
+
+
+				<%end%>
+			</table>
+		</fieldset>
+	</td>
+	<td valign="top">
+		<fieldset>
+		<legend>Statistics</legend>
+		<table class="minimal" width="100%">
 		
-	<%end%>
-	
-	
-	<%for ontology in @sorted_ontologies[category[:id]]%>
-		<tr id="node-o<%=ontology.id%>" class="child-of-node-c<%=category[:id]%> <%=cycle("","alt")%>">
-			<td><%=ontology.displayLabel%></td>
-			<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
-			<td  style="width:50px;"><%=ontology.versionNumber%></td>
-			<td><%=ontology.contactName%></td>
-			<td><%=ontology.dateCreated%></td>
-			<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
-		</tr>
+			<tr>
+				<td>Ontologies</td>
+				<td>123</td>
+			</tr>
+			<tr>
+				<td>Concepts</td>
+				<td>635,234</td>
+			</tr>
+			<tr>
+				<td>Resources</td>
+				<td>Alot</td>
+			</tr>
+		</table>
+	</fieldset></td>
+</tr>
 
-	<%end%>
-	
-  <%end%>
-
-
-
-  <tr id="node-c0" class="header">
-	<td>No Category</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-  </tr>
-	<%for ontology in @sorted_ontologies["0"]%>
-	<tr id="node-o<%=ontology.id%>" class="child-of-node-c0">
-		<td><%=ontology.displayLabel%></td>
-		<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+"F"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
-		<td  style="width:50px;"><%=ontology.versionNumber%></td>
-		<td><%=ontology.contactName%></td>
-		<td><%=ontology.dateCreated%></td>
-		<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
-	</tr>
-	<%end%>
-	
-		
-	
-	
 </table>
-</center>
 

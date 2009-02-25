@@ -28,7 +28,6 @@
 
 	<fieldset style="float:left;margin:10px;">
 		<legend>Select Ontologies</legend>
-
 	<%=
                 options = {}
 				for ontology in @ontologies
@@ -36,7 +35,7 @@
 				end 
 				options = options.sort     
 				options.insert(0,["All","0"])                
-                select('search','ontologies',options,{:selected=>"0"},{:multiple=>true,:size=>8,:style=>'float:left;'})
+                select('search','ontologies',options,{:selected=> "0"},{:multiple=>true,:size=>8,:style=>'float:left;'})
                 %>
 	</fieldset>	
 	

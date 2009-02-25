@@ -22,11 +22,14 @@ class OntrezService
 
   def self.gatherResources(ontology_version_id,concept_id)
     resources = []
-    puts "===================================="
-  #  puts "Gathering Resource From URL: #{ONTREZ_URL+CLASS_STRING.gsub("@",ontology_name).gsub("#",concept_id)}"
-    puts "===================================="
     
-    oba_url = "http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr/@/#/PGGE/false/1/10"
+    oba_url = "http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr/byconcept/@/#/AE/false/true/1/10"
+
+    puts "===================================="
+    puts "Gathering Resource From URL: #{oba_url.gsub("@",ontology_version_id.to_s).gsub("#",concept_id)}"
+    puts "===================================="
+
+
     
     doc = REXML::Document.new(open(oba_url.gsub("@",ontology_version_id.to_s).gsub("#",concept_id)))
 
@@ -42,6 +45,29 @@ class OntrezService
 
   end
 
+
+  def self.gatherResourcesDetails(ontology_version_id,concept_id,resource,element)
+     resources = []
+
+     oba_url = "http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr/details/concept/@/#/resource/%/element/"
+     puts "===================================="
+     puts "Gathering Resource From URL: #{oba_url.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource)+element}"
+     puts "===================================="
+
+     
+     doc = REXML::Document.new(open(oba_url.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource)+element))
+
+     puts "Beginning Parsing"
+
+   #  puts doc.inspect
+     resources = parseOBSDetails(doc)
+
+
+   puts "Resources: \n #{resources.inspect}"
+   puts "Finished Parsing"
+   return resources
+
+   end
 
 
   
@@ -150,11 +176,11 @@ class OntrezService
    resources =[]
    
     resource =  Resource.new
-    resource.name = "The Pharmacogenetics and Pharmacogenomics Knowledge Base"
-    resource.shortname = "PGGE"
-    resource.url = "http://www.pharmgkb.org/"
-    resource.description = "PharmGKB curates information that establishes knowledge about the relationships among drugs, diseases and genes, including their variations and gene products."
-    resource.logo = "https://www.pharmgkb.org/images/header/title.png"
+    resource.name = "ArrayExpress"
+    resource.shortname = "AE"
+    resource.url = "http://www.ebi.ac.uk/arrayexpress/"
+    resource.description = "ArrayExpress is a public repository for microarray data, which is aimed at storing MIAME-compliant data in accordance with MGED recommendations. The ArrayExpress Data Warehouse stores gene-indexed expression profiles from a curated subset of experiments in the repository."
+    resource.logo = "http://www.ebi.ac.uk/microarray-as/aer/include/aelogo.png"
     
     doc.elements.each("*/statistics/obs\.common\.beans\.StatisticsBean"){ |statistic|
         resource.count = statistic.elements["nbAnnotation"].get_text.value.to_i      
@@ -162,10 +188,43 @@ class OntrezService
     
     resource.context_numbers = {}
     resource.annotations = []
+
+    doc.elements.each("*/annotations/obs\.common\.beans\.ObrAnnotationBean"){ |statistic|
+        annotation = Annotation.new
+        annotation.score = statistic.elements["score"].get_text.value
+        annotation.local_id= statistic.elements["localElementID"].get_text.value
+        resource.annotations << annotation
+      }
+
+
     
     resources << resource
 
  end
+ 
+ def self.parseOBSDetails(doc)
+    details =[]
+
+
+     
+
+     doc.elements.each("*/obs\.common\.beans\.ObrAnnotationBean"){ |annotation|
+       detail = {}
+        context = annotation.elements["context"]
+        detail[:class]=context.attributes["class"]
+          detail[:isDirect] = context.elements["isDirect"].get_text.value
+          detail[:termID] = context.elements["termID"].get_text.value
+          detail[:termName] = context.elements["termName"].get_text.value
+          detail[:from] = context.elements["from"].get_text.value
+          detail[:to] = context.elements["to"].get_text.value
+          
+          details << detail
+       }
+
+     return details
+
+  end
+ 
  
  def self.parseResources(doc)
  resources =[]

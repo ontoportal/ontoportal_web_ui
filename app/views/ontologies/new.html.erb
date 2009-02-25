@@ -39,9 +39,9 @@ Errors On Form
 <%=hidden_field :ontology, :ontologyId%>
 <%=hidden_field :ontology, :userId%>
 
-<table class="form" width="70%">
+<table class="form" width="90%">
 	<tr>
-		<th>Ontology Name: </th><td class="top"><%=text_field :ontology, :displayLabel%></td>
+		<th>Ontology Name: </th><td class="top"><%=text_field :ontology, :displayLabel%><span class="asterik"> * required</span></td>
 	</tr>
 	<tr>
 		<th>Ontology Description:</th><td><%= text_area :ontology, :description,:rows=>5%></td>
@@ -54,15 +54,16 @@ Errors On Form
 	<%if @ontology.ontologyId.nil?%>
 	<tr>
 		<th>Ontology Format: </th><td><select name="ontology[format]" style="width:200px" >			
-			<option value="OBO">OBO</option>
+
 			<option value="OWL">OWL</option>
 			<option value="OWL-DL">-&nbsp;&nbsp;OWL-DL</option>
 			<option value="OWL-FULL">-&nbsp;&nbsp;OWL-FULL</option>
 			<option value="OWL-LITE">-&nbsp;&nbsp;OWL-LITE</option>
+			<option value="OBO">OBO</option>
 			<option value="PROTEGE">PROTEGE</option>
 			<option value="LEXGRID_XML">LEXGRID_XML</option>
 			<option value="RRF">RRF</option>
-			</select>
+			</select><span class="asterik"> * required</span>
 			</td>
 	</tr>	
 	<%else%>
@@ -73,24 +74,26 @@ Errors On Form
 	<%end%>
 	
 	<tr>
-		<th>Ontology Version: </th><td><%=text_field :ontology, :versionNumber%></td>
+		<th>Ontology Version: </th><td><%=text_field :ontology, :versionNumber%><span class="asterik"> * required</span></td>
 	</tr>	
 	<tr>
-		<th>Date Released: </th><td><%= text_field :ontology, :dateReleased,:id=>"datepicker"%></td>
+		<th>Date Released: </th><td><%= text_field :ontology, :dateReleased,:id=>"datepicker"%><span class="asterik"> * required</span></td>
 	</tr>	
 	<tr>
-		<th>File Location</th><td><%=radio_button :ontology,:isRemote,0%>Upload (choose this option if you want users to be able to explore and search
-		your ontology in BioPortal)
-		 <br><%=radio_button :ontology,:isRemote,1%>Remote (choose this option if you want users to search and view only the
-		*metadata* for your ontology (but not its classes and properties)
-
+		<th>File Location</th><td><%=radio_button :ontology,:isRemote,0,:onclick=>"$('.hidden_field').hide();$('#upload').show();"%> Upload <br/><span style="font-size:11px;">(choose this option if you want users to be able to explore and search
+		your ontology in BioPortal)</span><br/>
+		<hr/>
+		<%=radio_button :ontology,:isRemote,1,:onclick=>"$('.hidden_field').hide();$('#remote').show();"%> Remote <br/><span style="font-size:11px;">(choose this option if you want users to search and view only the
+		*metadata* for your ontology (but not its classes and properties)</span>
+		<br/>
+		<span class="asterik"> * required</span>
 		 </td>
 	</tr>
-	<tr>
-		<th>Location URL</th><td><%=text_field :ontology,:urn%></td>
+	<tr class="hidden_field" id="remote" <%if !@ontology.isRemote %>style="display:none;"<%end%>>
+		<th>Location URL</th><td><%=text_field :ontology,:urn%><span class="asterik"> * required</span></td>
 	</tr>
-	<tr >
-		<th>File</th><td><%=file_field :ontology,:filePath%></td>
+	<tr class="hidden_field" id="upload" <%if @ontology.isRemote %>style="display:none;"<%end%>>
+		<th>File</th><td><%=file_field :ontology,:filePath%><span class="asterik"> * required</span></td>
 	</tr>
 	
 	<tr >
@@ -114,7 +117,7 @@ Errors On Form
 		<th>Contact Name:</th><td><%=text_field :ontology, :contactName%></td>
 	</tr>
 	<tr>
-		<th>Contact Email:</th><td><%= text_field :ontology, :contactEmail%></td>
+		<th>Contact Email:</th><td><%= text_field :ontology, :contactEmail%><span class="asterik"> * required</span></td>
 	</tr>
 	<tr>
 		<th>Home Page:</th><td><%= text_field :ontology, :homepage%></td>

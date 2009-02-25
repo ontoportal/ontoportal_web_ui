@@ -22,6 +22,15 @@ class ResourcesController < ApplicationController
     
     
   end
+
+
+  def details
+
+    @details = OBDWrapper.gatherResourcesDetails(params[:ontology],params[:id],params[:resource],params[:element])
+    
+    render :partial=>'details'
+  end
+
   
   def page
      @concept =  DataAccess.getNode(params[:ontology],params[:concept])

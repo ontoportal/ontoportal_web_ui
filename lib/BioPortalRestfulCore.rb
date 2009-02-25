@@ -448,6 +448,7 @@ class BioPortalRestfulCore
             ontology = nil
               begin
               doc = REXML::Document.new(postMultiPart(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?&applicationid=#{APPLICATION_ID}",params))
+              puts doc.to_s
               rescue Exception=>e
                 doc =  REXML::Document.new(e.io.read)
                 puts doc.to_s
@@ -813,14 +814,17 @@ private
                when CHILDCOUNT
                  node.child_size = entry.elements["int"].get_text.value.to_i
                else                
-                 begin                  
+                 begin
                  node.properties[entry.elements["string"].get_text.value] = entry.elements["list"].elements.map{|element| 
                    if(element.name.eql?("classBean"))
-                      parseConcept(element,ontology).name 
-                  else 
+                      parseConcept(element,ontology).name                    
+                   else 
                     element.get_text.value unless element.get_text.value.empty? 
-                  end}.join(" , ") #rescue ""
-                  rescue
+                    
+                   end}.join(" , ") #rescue ""
+                  rescue Exception =>e
+                    puts e.message
+                    puts e.backtrace
                     
                   end
                end

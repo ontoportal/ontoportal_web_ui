@@ -93,4 +93,24 @@ class SearchController < ApplicationController
     
   end
   
+  def json_search
+    
+    @results,@pages = DataAccess.getNodeNameContains([params[:id]],params[:q],1)
+    
+    response = ""
+    
+    for result in @results
+      record_type = result[:recordType].titleize.gsub("Record Type","").split(" ")
+      record_type_value = ""
+      for type in record_type
+        record_type_value<< type[0]
+      end
+      
+      response << "#{result[:contents]}|#{result[:conceptIdShort]}|#{record_type_value}\n"
+    end        
+    
+    render :text=>response
+    
+  end
+  
 end

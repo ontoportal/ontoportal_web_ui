@@ -1,0 +1,25 @@
+
+<table class="minimal" cellpadding=0 cellspacing=0>
+
+	<thead>
+		<th>Class</th>
+		<th>Is direct</th>
+		<th>Term ID</th>
+		<th>Term Name</th>
+		<th>From</th>
+		<th>To</th>
+	</thead>
+
+	<%for detail in @details%>
+	<tr>
+		<td><%=detail[:class].split(".").last.gsub("ContextBean","")%></td>
+		<td><%=detail[:isDirect]%></td>
+		<td><%=detail[:termID]%></td>
+		<td><%=detail[:termName]%></td>
+		<td><%=detail[:from]%></td>
+		<td><%=detail[:to]%></td>
+	
+	</tr>
+	<%end%>
+	
+</table>

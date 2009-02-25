@@ -59,13 +59,9 @@ class HomeController < ApplicationController
     end
     
     
-     if params[:ver].eql?("2")
-       render :action=>"index2"
-     end
-      if params[:ver].eql?("3")
-        render :action=>"index3"
-      end
-     
+     if !params[:ver].nil?
+       render :action=> "index#{params[:ver]}"
+     end     
      
   end
 

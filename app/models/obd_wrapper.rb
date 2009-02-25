@@ -33,6 +33,12 @@ class OBDWrapper
     end
   end
   
+  def self.gatherResourcesDetails(ontology_version_id,concept_id,resource,element)  
+      details = OntrezService.gatherResourcesDetails(ontology_version_id,concept_id,resource,element)
+      return details
+  end
+  
+  
   def self.gatherResourcesCui(concept)
     if CACHE.get("CUI::#{concept.properties["UMLS_CUI"]}_resource").nil?  || NO_CACHE 
       resources = []

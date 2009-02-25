@@ -32,11 +32,11 @@
 	<%=
                 options = {}
 				for ontology in @ontologies
-				options.merge!(ontology.displayLabel => ontology.ontologyId)
+				options.merge!(ontology.displayLabel => ontology.ontologyId.to_s)
 				end 
 				options = options.sort     
 				options.insert(0,["All","0"])                
-                select('search','ontologies',options,{:selected=>"0"},{:multiple=>true,:size=>8,:style=>'float:left;'})
+                select('search','ontologies',options,{:selected=>params[:search][:ontologies]},{:multiple=>true,:size=>8,:style=>'float:left;'})
                 %>
 	</fieldset>	
 	

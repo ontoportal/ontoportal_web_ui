@@ -126,7 +126,6 @@ class OntologiesController < ApplicationController
     
     
     #Set the ontology we are viewing
-    puts " Ontology #{params[:ontology]}"
     @ontology = DataAccess.getOntology(params[:ontology])
     
           
@@ -135,13 +134,18 @@ class OntologiesController < ApplicationController
       #get the top level nodes for the root
       @root = TreeNode.new()
       nodes = @ontology.topLevelNodes
-      puts "Inspecting after toplevel nodes called #{nodes.inspect}"
+      
+      for node in nodes
+        if node.name.downcase.include?("obsolete") || node.name.downcase.include?("deprecated")
+          nodes.delete(node)
+          nodes.push(node)
+        end
+      end
+      
       @root.set_children(nodes)
       #get the initial concept to display
-      puts "Nodes Children: #{@root.children.inspect}"
       @concept = DataAccess.getNode(@ontology.id,@root.children.first.id)
    
-   puts @concept.inspect
       
         #gets the initial mappings
         @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.ontologyId, :source_id => @concept.id})
@@ -188,7 +192,7 @@ class OntologiesController < ApplicationController
     params[:ontology][:isReviewed]=1
     params[:ontology][:isFoundry]=0
     params[:ontology][:isManual]=1
-    if (session[:user].admin? && params[:ontology][:userId].nil?) || !session[:user].admin?
+    if (session[:user].admin? && (params[:ontology][:userId].nil? || params[:ontology][:userId].empty?)) || !session[:user].admin?
       params[:ontology][:userId]= session[:user].id
     end
     puts "File Size: #{params[:ontology][:filePath].size}"
@@ -205,7 +209,7 @@ class OntologiesController < ApplicationController
         render :action=>'new'  
       else
     
-    
+      puts "Ontology Error: #{@ontology.inspect}"
         #adds ontology to syndication
          event = EventItem.new
          event.event_type="Ontology"
@@ -291,7 +295,7 @@ class OntologiesController < ApplicationController
          if params[:isRemote].to_i.eql?(0) && (params[:filePath].nil? || params[:filePath].length <1)
            errors << "Please Choose a File"
          end
-         if params[:isRemote].to_i.eql?(0) && params[:filePath].size.to_i > 20000000
+         if params[:isRemote].to_i.eql?(0) && params[:filePath].size.to_i > 20000000 && !session[:user].admin?
             errors << "File is too large"
          end
          

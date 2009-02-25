@@ -2,9 +2,20 @@
 /* Initialize */
 /* Adapted from YUI Library: http://yui.yahooapis.com/2.5.1/build/reset-fonts-grids/reset-fonts-grids.css */
 html { color:#000;background:#FFF; }
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td { margin:0;padding:0; }
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,input,textarea,p,blockquote,th,td { margin:0;padding:0; }
 table { border-collapse:collapse;border-spacing:0; }
-fieldset,img { border:0; }
+img { border:0; }
+
+legend{
+    margin:10px;
+    padding:5px;
+}
+fieldset{
+    margin:10px;
+    padding:0px 10px 10px 10px;
+
+}
+
 address,caption,cite,code,dfn,em,strong,th,var { font-style:normal;font-weight:normal; }
 ul li { list-style:none; }
 caption,th { text-align:left; }
@@ -61,7 +72,7 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 #bd { background: #fff; width:100%;*width:60.06em;min-width:800px;  text-align:left; float:left; }
 	#bd #bd_hd { width:100%; float:left; white-space:nowrap;overflow:hidden;margin:15px 25px 15px 25px; }
 	#bd #bd_hd h1 { font-size:120%; float:left; width:auto; display:inline; margin-right:10px; }
-	#bd #bd_hd form { font-size:90%; float:left; display:inline; margin-right:10px;}
+	#bd #bd_hd h3 { font-size:100%; float:left; display:inline; margin-right:10px;margin-top:2px;}
 	#bd h2 { font-size:120%; font-weight:bold; margin-bottom:10px; }
 	#bd hr { border:0; height:1px; color:#e9eaeb; background:#e9eaeb; margin:10px 0; }
 	
@@ -97,8 +108,7 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 	#bd #bd_content #container .tabs a { padding:5px 15px 0 15px; }
 	#bd #bd_content #container #contents { float:left; padding:10px; width:90%;}
 	
-	legend { font-weight:bold; }
-	fieldset { float:left; margin-right:25px; }
+
 	
 /* Tables */
 
@@ -175,3 +185,30 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 
 /*Projects */
 .pheader { cursor:pointer; font-weight:bold; font:14px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 1px; text-align: left; padding: 6px 6px 6px 12px; background: #e2ebf0; }
+
+#qsearch{
+    padding:3px;
+    border-bottom:1px solid #C1DAD7;
+    border-left:1px solid #C1DAD7;    
+    border-right:1px solid #C1DAD7;
+}
+
+.home_button{
+    background-image:url('/images/layout/home_button.png');
+    height:37px;
+    width:106px;
+    border:0px;
+    color:white;
+}
+.home_input {
+    
+}
+
+.asterik{
+    color:red;
+    font-weight:bold;
+}
+
+#tag_clouds a{
+    text-decoration:none;
+}
