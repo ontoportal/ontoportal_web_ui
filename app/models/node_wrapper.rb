@@ -1,3 +1,4 @@
+require 'uri'
 class NodeWrapper
  
  
@@ -12,6 +13,10 @@ class NodeWrapper
   attr_accessor :children
   attr_accessor :parent_association
 
+   
+   def to_param
+     "#{URI.escape(self.id,":/?#!")}"
+   end
    
    def ontology_name
      return DataAccess.getOntology(self.version_id).displayLabel

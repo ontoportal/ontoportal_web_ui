@@ -10,12 +10,17 @@ class OntrezService
   #   $E$ = Page End
   
   
-  ONTREZ_URL="http://ncbolabs-dev2.stanford.edu:8080/Ontrez_v1_API"
+  ONTREZ_URL="http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr"
   #ONTREZ_URL="http://171.65.32.224:8080/Ontrez_v1_API"
+  
+  RESOURCE_BY_CONCEPT="/byconcept/@/#/%/false/true/1/10"
+  PAGING_RESOURCE_BY_CONCEPT="/byconcept/@/#/%/false/true/$S$/10"
+  RESOURCES="/resources"
+  DETAILS="/details/concept/@/#/resource/%/element/"
+  
   CLASS_STRING="/result/ontology/@/classID/#/from/0/number/15/metadata"
   CUI_STRING="/result/cui/#/from/0/number/15/metadata"
   NEXTBIO_URL="http://www.nextbio.com/b/api/searchcount.api?q=#&details=true&apikey=2346462a645f102ba7f2001d096b4f04&type=study"
-  
   PAGING_CLASS_STRING ="/result/ontology/@/classID/#/from/$S$/number/$E$/resource/*R*/metadata"
   PAGING_CUI_STRING="/result/cui/#/from/$S$/number/$E$/resource/*R*/metadata"
   
@@ -23,21 +28,25 @@ class OntrezService
   def self.gatherResources(ontology_version_id,concept_id)
     resources = []
     
-    oba_url = "http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr/byconcept/@/#/AE/false/true/1/10"
-
-    puts "===================================="
-    puts "Gathering Resource From URL: #{oba_url.gsub("@",ontology_version_id.to_s).gsub("#",concept_id)}"
-    puts "===================================="
-
-
+    #oba_url = "http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr/byconcept/@/#/AE/false/true/1/10"
+    doc = REXML::Document.new(open(ONTREZ_URL+RESOURCES))    
+    doc.elements.each("*/obs\.obr\.populate\.Resource"){|resource|
+      new_resource = Resource.new
+      new_resource.name=resource.elements["resourceName"].get_text.value
+      new_resource.shortname=resource.elements["resourceID"].get_text.value
+      new_resource.url=resource.elements["resourceURL"].get_text.value
+      new_resource.description=resource.elements["resourceDescription"].get_text.value
+      new_resource.logo=resource.elements["resourceLogo"].get_text.value
+      resources << new_resource
+      }
     
-    doc = REXML::Document.new(open(oba_url.gsub("@",ontology_version_id.to_s).gsub("#",concept_id)))
-
-    puts "Beginning Parsing"
     
-  #  puts doc.inspect
-    resources = parseOBS(doc)
-  
+
+    for resource in resources
+      puts "URL: #{ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%SHORTNAME%",resource.shortname)}"
+      doc = REXML::Document.new(open(ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource.shortname)))    
+      parseOBS(doc,resource)
+    end
   
   puts "Resources: \n #{resources.inspect}"
   puts "Finished Parsing"
@@ -49,13 +58,13 @@ class OntrezService
   def self.gatherResourcesDetails(ontology_version_id,concept_id,resource,element)
      resources = []
 
-     oba_url = "http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr/details/concept/@/#/resource/%/element/"
+     #oba_url = "http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr/details/concept/@/#/resource/%/element/"
      puts "===================================="
-     puts "Gathering Resource From URL: #{oba_url.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource)+element}"
+     puts "Gathering Resource From URL:|#{ONTREZ_URL+DETAILS.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource)+element}|"
      puts "===================================="
 
      
-     doc = REXML::Document.new(open(oba_url.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource)+element))
+     doc = REXML::Document.new(open(ONTREZ_URL+DETAILS.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource)+element.strip))
 
      puts "Beginning Parsing"
 
@@ -68,6 +77,22 @@ class OntrezService
    return resources
 
    end
+
+    
+    def self.pageResources(ontology_version_id,concept_id,resource_name,page_start,page_end)
+      
+      puts "Parsing URL #{ONTREZ_URL+PAGING_RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id).gsub("#",concept_id).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name)}"
+         doc = REXML::Document.new(open(ONTREZ_URL+PAGING_RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id).gsub("#",concept_id).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name)))
+
+          puts "Beginning Parsing"
+          new_resource = Resource.new
+
+          puts doc
+           parseOBS(doc,new_resource)
+
+          return new_resource
+
+    end
 
 
   
@@ -88,21 +113,7 @@ class OntrezService
     return resources
 
     end
-    
-    def self.pageResources(ontology_name,concept_id,resource_name,page_start,page_end)
-      resources=[]
-      
-      puts "Parsing URL #{ONTREZ_URL+PAGING_CLASS_STRING.gsub("@",ontology_name.gsub(" ","%20")).gsub("#",concept_id).gsub("$S$",page_start).gsub("$E$",page_end).gsub("*R*",resource_name)}"
-         doc = REXML::Document.new(open(ONTREZ_URL+PAGING_CLASS_STRING.gsub("@",ontology_name.gsub(" ","%20")).gsub("#",concept_id).gsub("$S$",page_start).gsub("$E$",page_end).gsub("*R*",resource_name)))
-
-          puts "Beginning Parsing"
-
-          puts doc
-          resources = parseAnnotations(doc)
-
-          return resources
-
-    end
+  
 
     def self.pageResourcesByCui(cui,resource_name,page_start,page_end)
     
@@ -172,15 +183,8 @@ class OntrezService
  private 
  
  
- def self.parseOBS(doc)
-   resources =[]
+ def self.parseOBS(doc,resource)
    
-    resource =  Resource.new
-    resource.name = "ArrayExpress"
-    resource.shortname = "AE"
-    resource.url = "http://www.ebi.ac.uk/arrayexpress/"
-    resource.description = "ArrayExpress is a public repository for microarray data, which is aimed at storing MIAME-compliant data in accordance with MGED recommendations. The ArrayExpress Data Warehouse stores gene-indexed expression profiles from a curated subset of experiments in the repository."
-    resource.logo = "http://www.ebi.ac.uk/microarray-as/aer/include/aelogo.png"
     
     doc.elements.each("*/statistics/obs\.common\.beans\.StatisticsBean"){ |statistic|
         resource.count = statistic.elements["nbAnnotation"].get_text.value.to_i      
@@ -196,10 +200,6 @@ class OntrezService
         resource.annotations << annotation
       }
 
-
-    
-    resources << resource
-
  end
  
  def self.parseOBSDetails(doc)
@@ -212,12 +212,25 @@ class OntrezService
        detail = {}
         context = annotation.elements["context"]
         detail[:class]=context.attributes["class"]
+        case detail[:class]                            
+        when "obs.common.beans.MgrepContextBean"
+          detail[:contextName] = context.elements["contextName"].get_text.value
           detail[:isDirect] = context.elements["isDirect"].get_text.value
           detail[:termID] = context.elements["termID"].get_text.value
           detail[:termName] = context.elements["termName"].get_text.value
           detail[:from] = context.elements["from"].get_text.value
-          detail[:to] = context.elements["to"].get_text.value
-          
+          detail[:to] = context.elements["to"].get_text.value          
+        when "obs.common.beans.IsaContextBean"
+          detail[:contextName] = context.elements["contextName"].get_text.value
+          detail[:isDirect] = context.elements["isDirect"].get_text.value
+          detail[:childConceptID]= context.elements["childConceptID"].get_text.value
+          detail[:level]= context.elements["level"].get_text.value
+        when "obs.common.beans.MappingContextBean"
+          detail[:contextName] = context.elements["contextName"].get_text.value
+          detail[:isDirect] = context.elements["isDirect"].get_text.value
+          detail[:mappedConceptID] = context.elements["mappedConceptID"].get_text.value
+          detail[:mappingType] = context.elements["mappingType"].get_text.value
+        end
           details << detail
        }
 

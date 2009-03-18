@@ -9,6 +9,10 @@ class TreeNode
   attr_accessor :note_icon
   attr_accessor :map_icon
   
+  def to_param
+    "#{URI.escape(self.id,":/?#!")}"
+  end
+  
   
   
   def initialize(object=nil)

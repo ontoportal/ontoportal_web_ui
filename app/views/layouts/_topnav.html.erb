@@ -1,24 +1,24 @@
 <div id="hd">
 	<ul>	
 		<li><a href="/" title="Home"><img src="/images/layout/nav_logo.png" /></a></li>
-		<li><a href="/" title="Browse" ><img name="img10" src="/images/layout/nav_browse.png" /></a></li>
+		<li><a href="/ontologies" title="Browse" ><img name="img10" src="/images/layout/nav_browse.png" /></a></li>
 		<li><a href="/search" title="Search"  /><img name="img11" src="/images/layout/nav_search.png" /></a></li>
-		<li><a href="/projects" title="Projects" ><img name="img12" src="/images/layout/nav_projects.png" /></a></li>
+		<li><a href="/annotate" title="Annotate" ><img name="img12" src="/images/layout/nav_annotate.png" /></a></li>
 		<li><a href="/mappings" title="All Mappings" ><img name="img13" src="/images/layout/nav_search_allmappings.png" /></a></li>
-
+		<li><a href="/mappings" title="All Resources" ><img name="img13" src="/images/layout/nav_resources.png" /></a></li>
 	</ul>
 	<ul class="alignright">
 		<%if session[:user].nil?%>
 			<li><%=link_to "Sign In" ,:controller =>'login'%></li>
 			<li><%=link_to "Register", new_user_path(:redirect=>@ontology)%></li>
 		<%else%>
-			<li><%=link_to "My Projects", projects_path(:user=>session[:user].id)%></li>
-			<li><%=link_to "My Account", edit_user_path(session[:user])%></li>
-			<li><%=link_to "Log Out",logout_url%></li>
+		<!--	<li><%=link_to "My Projects", projects_path(:user=>session[:user].id)%></li> -->
+			<li><span style="color:white">Logged In As <%=session[:user].username%></span> <br/><%=link_to "My Account", edit_user_path(session[:user])%> <%=link_to "Log Out",logout_url%></li>
+
 		<%end%> 
 		 	<li><a href="/home/release">Help/About</a></li>
 			<li><a href="/feedback" style="font-weight:bold;font-size:14px;">Send Feedback</a> </li>
-			<li><a href="/syndication/rss"><img src="/images/feed-icon.png" border=0></a></li>
+			<li><a href="/syndication/rss"><img src="/images/feed-icon.png" border="0"></a></li>
 	</ul>
 </div>
 <div class="tabs">
@@ -26,7 +26,7 @@
 		<%unless session[:ontologies].nil?%>
 			<%for tab in session[:ontologies]%>
 				<%if !@ontology.nil? && @ontology.id.eql?(tab.ontology_id)%>
-				<li id="tab<%=to_param(tab.ontology_id)%>" class="selected"><a href="#" class="close"  onclick="remove_tab(this,'<%=to_param(tab.ontology_id)%>',true);return false;"><img src="/images/layout/subnav_close_over.png" /></a><%=link_to "<em>#{tab.ontology_name}</em>",uri_url(:ontology=>tab.ontology_id,:id=>tab.concept)%></li>				
+				<li id="tab<%=to_param(tab.ontology_id)%>" class="selected"><a href="#" class="close"  onclick="remove_tab(this,'<%=to_param(tab.ontology_id)%>',true);return false;"><img src="/images/layout/subnav_close_over.png" /></a><%=link_to "<em>#{tab.ontology_name}</em>",uri_url(:ontology=>tab.ontology_id,:id=>encode_param(tab.concept))%></li>				
 				<%else%>
 				<li id="tab<%=to_param(tab.ontology_id)%>" ><a href="#" class="close"  onclick="remove_tab(this,'<%=to_param(tab.ontology_id)%>',false);return false;"><img src="/images/layout/subnav_close.png" /></a><%=link_to "<em>#{tab.ontology_name} &nbsp;&nbsp;</em>",uri_url(:ontology=>tab.ontology_id,:id=>tab.concept),:onclick=>"setTimeout('YAHOO.tabwait.container.wait.show()',2000);"%> </li>
 				<%end%>

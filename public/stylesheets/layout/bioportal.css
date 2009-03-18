@@ -82,7 +82,7 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 */
 	
 	#bd #bd_content { display:block; float:left; padding-left:25px; }
-	#bd #bd_content.explore { width:100%; border-top:1px solid #e9eaeb; padding-left:0; }
+	#bd #bd_content.explore { width:100%; border-top:1px solid #e9eaeb; padding-left:0; padding-bottom:5px; }
 
 	#sidebar { float:left; width:300px; margin:0 0 20px 0;  font-size:90%;position:relative;min-height:450px; height:600px;}
 	#sidebar #sd_hd { background:#dadde0; height:24px; border-bottom:1px solid #bcc6d0;  display:block; float:left; width:100%;}

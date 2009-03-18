@@ -41,7 +41,7 @@ icons = ""
 	output << "<li id='#{child.id}'><span>#{child.name} #{icons}</span>"
 		if child.child_size>0 && !child.expanded
 	  		output << "<ul class=\"ajax\">
-			            <li id='#{child.id}'>{url:/visualize/#{child.ontology_id}/#{child.id}?callback=children}</li>
+			            <li id='#{child.id}'>{url:/visualize/#{child.ontology_id}/#{encode_param(child.id)}?callback=children}</li>
 		            </ul>"
 		
   		end

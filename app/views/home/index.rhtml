@@ -1,13 +1,115 @@
+<%@title = "Welcome to the NCBO Bioportal"%>
+<link rel="stylesheet" href="/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<script src="/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.js" type="text/javascript" charset="utf-8"></script>
+
+<link rel="stylesheet" type="text/css" href="/javascripts/JqueryPlugins/superfish/superfish.css" media="screen">
+<link rel="stylesheet" href="/javascripts/JqueryPlugins/superfish/superfish-vertical.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+<script src="/javascripts/JqueryPlugins/superfish/hoverIntent.js" type="text/javascript" charset="utf-8"></script>
+<script src="/javascripts/JqueryPlugins/superfish/superfish.js" type="text/javascript" charset="utf-8"></script>
+
+
+
+<script type="text/javascript">
+var searchbox;
+var resourcebox;
+
+function jumpToValue(li){
+	if( li == null ){
+	// Im doing a search	
+	
+	return false;
+	}
+
+		// if coming from an AJAX call, let's use the CityId as the value
+		if( !!li.extra ){
+			
+			var sValue = li.extra[0];
+			
+			document.location="/visualize/"+sValue;
+			jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Ontology...</h1>' }); 
+			return
+		}
+
+	
+}
+
+
+function formatItem(row) {
+ 	return row[0];
+}
+
+
+function jumpToValueResource(li){
+	if( li == null ){
+	// Im doing a search	
+	
+	var search = confirm("Concept could not be found..\n Press OK to go to the Search page or Cancel to continue browsing")
+		if(search){
+			jQuery("#search_keyword").val(jQuery("#search_box").val())
+			jQuery("#search_form").submit()
+			return
+		}
+	}
+
+		// if coming from an AJAX call, let's use the CityId as the value
+		if( !!li.extra ){
+			
+			var sValue = li.extra[0];
+			
+			alert("id jump to the resources now")
+			return
+		}
+
+	
+}
+
+function formatItemResource(row) {
+ 	return row[0] + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
+}
+
+
+
+
+
+<%names = @ontologies.map{|ont| "[\"#{ont.displayLabel}\",\"#{ont.id}\"]"}
+  abrv = @ontologies.map{|ont|
+	"[\"#{ont.abbreviation} - #{ont.displayLabel}\",\"#{ont.id}\"]"
+	}
+	
+names = names | abrv%>
+
+
+var ontologies_array=[<%=names.join(",")%>]
+$(document).ready(function(){
+	 $("#find_ontology").autocompleteArray(ontologies_array, { minChars:1,matchSubset:1,maxItemsToShow:20,onFindValue:jumpToValue,formatItem:formatItem });
+	searchbox =  $("#find_ontology")[0].autocompleter;
+	
+	 $("#find_resource").autocomplete("/search/json_search/0", { cacheLength:1,matchSubset:0, minChars:3,maxItemsToShow:10,onFindValue:jumpToValueResource,formatItem:formatItemResource });
+	resourcebox =  $("#find_resource")[0].autocompleter;
+	
+	
+	jQuery('ul.sf-menu').superfish({
+			animation: {height:'show'},   // slide-down effect without fade-in 
+            delay:     1200               // 1.2 second delay on mouseout);
+		});
+	
+});
+
+
+
+
+
+
+</script>
 <br/>
 <br/>
-<center>
-	<%=image_tag('ncbo_logo_portal.gif')%>
-</center>
+
 
 <table width="100%">
 	<tr>
-		<td>
-			<% form_for(:search, :url => {:controller =>'search',:action=>'search'}) do |f| %>
+		<td valign="top" width="33%">
+			<% form_for(:search, :url => {:controller =>'search',:action=>'fetch_results'}) do |f| %>
 			<%=hidden_field :search, :ontologies, :value=>"0"%>
 			<%=hidden_field :search, :search_type, :value=>"contains"%>
 			<fieldset>
@@ -17,7 +119,7 @@
 						<td nowrap><%=text_field "search","keyword",:size=>30%> <%=submit_tag 'Search',:class=>'home_button'%></td>
 					</tr>
 					<tr>
-						<td style="padding-left:15px"><a href="#">Advanced Search</a></td>
+						<td style="padding-left:15px"><a href="/search">Advanced Search</a></td>
 					</tr>
 
 				</table>
@@ -25,27 +127,56 @@
 			</fieldset>
 			<%end%>
 		</td>
-		<td>
+		<td valign="top" width="33%">
 			<fieldset>
 				<legend>Find an ontology</legend>
 				<table>
 					<tr>				
-						<td nowrap><input class="home_input" type="text" name="ontology" size="30" id="find_ontology"> <input type="button" value="Explore" class="home_button"></td>
+						<td nowrap><input class="home_input" type="text" name="ontology" size="30" id="find_ontology"> <input type="button" value="Explore" class="home_button" onclick="searchbox.findValue()"></td>
 					</tr>
 					<tr>
-						<td style="padding-left:15px"><a href="#">Browse Ontologies</a></td>
+						<td style="padding-left:15px">
+							<ul class="sf-menu sf-vertical">
+										<li>
+											<a href="#" style="white-space:nowrap;background:#fff;border:1px solid #fff;text-decoration:underline;padding:0px;">Browse Ontologies ></a>
+											<ul>
+												<li>
+													<a href="/ontologies">All</a>
+												</li>
+												<li>
+													<a href="/ontologies?filter=OBOFoundry">OBO Foundry</a>
+												</li>
+												<li >
+													<a href="/ontologies?filter=caBIG">Cancer Biomedical Informatics Grid</a>
+												</li>
+												<li>
+													<a href="/ontologies?filter=WHO-FIC">The WHO Family of International Classifications</a>
+												</li>
+												<li>
+													<a href="/ontologies?filter=PSI">Proteomics Standards Initiative</a>
+												</li>
+												<li>
+													<a href="/ontologies?filter=MSI">Metabolomics Standards Initiative</a>
+												</li>												
+											</ul>
+
+										</li>
+								</ul>
+							
+						</td>
 					</tr>
 
 				</table>
 	
 			</fieldset>
 		</td>
-		<td>
+		<td valign="top" width="33%">
 			<fieldset>
 			<legend>Search resources</legend>
 			<table>
 				<tr>				
-					<td nowrap><input type="text" name="resources" size="30"> <input class="home_button" type="button" value="Search"></td>
+
+					<td nowrap><input type="text" id="find_resource" size="30"> <input class="home_button" type="button" value="Search" onclick="resourcebox.findValue()"></td>
 				</tr>
 				<tr>
 					<td style="padding-left:15px"><a href="#">Advanced Resource Search</a></td>
@@ -70,68 +201,91 @@
 				<th>Mappings</th>
 			</tr>
 			</thead>
-			<%count = 0%>
-			<%for ont in @ontologies%>
+			<%for ont in @active_totals%>
+			<% if ont[0].nil?
+				next
+			   end
+			%>
+			<%ontology = @ontology_hash[ont[0]]%>
 			<tr>
-				<td><%=ont.displayLabel%></td>
-				<td><%=ont.versionNumber%></td>
-				<td>100</td>
-				<td>521</td>
+				<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to ontology.displayLabel, visualize_url(:ontology => ontology)%><%else ontology.statusId.to_i.eql?(1)%><%=link_to ontology.displayLabel, ontology_path(:id=>ontology.id)%><%end%></td>
+				<td><%=ontology.versionNumber%></td>
+				<td><%=ont[1]%></td>
+				<td><%=ont[2]%></td>
 			</tr>
 				
-				
-			<%count +=1%>
-			<%if count >5
-				break;
-			  end
-			%>
 			
 			<%end%>
 		</table>
 		</fieldset>
-	</td>
-	<td valign="top">
-		<fieldset>
-			<legend>Active Users</legend>
+			<fieldset>
+			<legend>Statistics</legend>
 			<table class="minimal" width="100%">
-				<thead>
-				<tr>
-					<th>User</th>
-					<th>Notes</th>
-					<th>Mappings</th>
-				</tr>
-				</thead>
-				<% 5.times do%>
-				<tr>
-					<td>Joeuser</td>
-					<td>123</td>
-					<td>100</td>
-				</tr>
 
-
-				<%end%>
+				<tr>
+					<td>Ontologies</td>
+					<td><%=@ontologies.size%></td>
+				</tr>
+				<tr>
+					<td>Concepts</td>
+					<td><%=@ontologies.size*1000%></td>
+				</tr>
+				<tr>
+					<td>Resources</td>
+					<td>Alot</td>
+				</tr>
 			</table>
 		</fieldset>
 	</td>
 	<td valign="top">
 		<fieldset>
-		<legend>Statistics</legend>
-		<table class="minimal" width="100%">
+			<legend>Latest Notes</legend>
+			<table class="minimal" style="width:300px">
+			
+				<tbody>
+				<%for note in @last_notes%>
+				<tr>
+				<td>
+				<%if note.mapping_id.nil?%>
+				<%=link_to note.subject,uri_url(:ontology=>note.ontology_version_id,:id=>note.concept_id)%>
+					<br>
+					<span style="color:#AAAAAA"><%=link_to "#{note.concept.name} (#{note.ontology.displayLabel})" ,"/visualize/#{note.ontology_version_id}/#{note.concept_id}#t_tab3:"%> <%=note.created_at.strftime("%m/%d/%y")%> <%=note.user.username%></span>
+
+				<%else%>
+				<%=link_to note.subject,uri_url(:ontology=>note.mapping.source_version_id,:id=>note.mapping.source_id)%>
+					<br>
+					<span style="color:#AAAAAA"><%=link_to "#{note.mapping.source_name} (#{note.mapping.source_ont_name})" ,"/visualize/#{note.mapping.source_version_id}/#{note.mapping.source_id}#t_tab4:"%> <%=note.created_at.strftime("%m/%d/%y")%> <%=note.user.username%></span>
+				<%end%>
+
+					<p><%= truncate(strip_tags(note.comment),100)%>&nbsp;</p>
+				</td>
+				</tr>
+				<%end%>
+				</tbody>
 		
-			<tr>
-				<td>Ontologies</td>
-				<td>123</td>
-			</tr>
-			<tr>
-				<td>Concepts</td>
-				<td>635,234</td>
-			</tr>
-			<tr>
-				<td>Resources</td>
-				<td>Alot</td>
-			</tr>
-		</table>
-	</fieldset></td>
+			</table>
+		</fieldset>
+	</td>
+	<td valign="top">
+		<fieldset>
+			<legend>Latest Mappings</legend>
+			<table class="minimal" style="width:300px">
+			<tbody>
+				<%for map in @last_mappings%>
+				<tr>
+					<td>	<%= if map.dest_node.nil? 
+							"#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})"
+							else
+								link_to "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})" , "/visualize/#{map.source_version_id}/#{map.source_id}#t_tab4:"
+							end %>
+						<br>
+							<span style="color:#AAAAAA"><%=map.map_source%><%=map.created_at.strftime("%m/%d/%y")%> <%=map.user.username%></span>
+					</td>
+				</tr>
+				<%end%>
+				</tbody>
+			</table>
+	</td>
 </tr>
 
 </table>

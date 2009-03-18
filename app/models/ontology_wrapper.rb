@@ -123,7 +123,7 @@ class OntologyWrapper
   end
  
   def to_param    
-     "#{id}"
+     "#{self.id}"
   end
   
   def topLevelNodes

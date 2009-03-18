@@ -35,14 +35,14 @@ class ResourcesController < ApplicationController
   def page
      @concept =  DataAccess.getNode(params[:ontology],params[:concept])
      @ontology = DataAccess.getOntology(params[:ontology])
-      puts @concept.inspect
     
-       @annotations = []
+       @resource = Resource.new
+       @resource.shortname=params[:resource]
 
           if(@concept.properties["UMLS_CUI"]!=nil)
-            @resources = OBDWrapper.gatherResourcesCui(@concept)
+            @resource = OBDWrapper.gatherResourcesCui(@concept)
           else
-            @annotations = OBDWrapper.pageResources(@ontology.displayLabel,@concept.id,params[:resource],params[:start],params[:end])
+            @resource = OBDWrapper.pageResources(@ontology.id,@concept.id,params[:resource],params[:start],params[:end])
           end
 
   render :partial=> 'paged'

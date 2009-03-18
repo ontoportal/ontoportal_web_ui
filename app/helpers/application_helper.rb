@@ -142,10 +142,10 @@ module ApplicationHelper
       for child in node.children
       icons = ""
       if(child.note_icon)
-        icons << "<img src='/images/notes_icon.png'style='vertical-align:bottom;' title='Concept Has Margin Notes'>"
+        icons << "<img src='/images/notes_icon.png'style='vertical-align:bottom;'height='15px' title='Concept Has Margin Notes'>"
       end
       if(child.map_icon)
-        icons << "<img src='/images/map_icon.png' style='vertical-align:bottom;' title='Concept Has Mappings'>"
+        icons << "<img src='/images/map_icon.png' style='vertical-align:bottom;' height='15px' title='Concept Has Mappings'>"
       end
 
       active_style =""
@@ -162,7 +162,7 @@ module ApplicationHelper
     		   		
     				if child.child_size>0 && !child.expanded
     				  string << "<ul class=\"ajax\">
-  							            <li id='#{child.id}'>{url:/visualize/#{child.ontology_id}/#{child.id}?callback=children}</li>
+  							            <li id='#{child.id}'>{url:/visualize/#{child.ontology_id}/#{URI.escape(child.id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}?callback=children}</li>
   						            </ul>"
   				  elsif child.expanded
     				  string << "<ul>"

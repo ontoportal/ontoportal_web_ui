@@ -27,13 +27,14 @@ ActionController::Routing::Routes.draw do |map|
 
   # You can have the root of your site routed by hooking up '' 
   # -- just remember to delete public/index.html.
-   map.connect '', :controller => "ontologies"
+   map.connect '', :controller => "home"
 
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
   
   map.connect '/feedback',:controller=>'home',:action=>'feedback'
   map.connect '/send_feedback',:controller=>'home',:action=>'send_feedback'
+  map.connect '/annotate',:controller=>'home',:action=>'annotate'
   map.connect '/exhibit/:ontology/:id',:controller=>'concepts',:action=>'exhibit'
   map.upload_mappings '/upload/mapping',:controller=>'mappings',:action=>'upload'
   map.process_mappings '/process/mapping',:controller=>'mappings',:action=>'process_mappings'

@@ -292,5 +292,9 @@ class DataAccess
       return string.to_s.gsub(" ","_")
     end
    
+    def self.getDiffs(ontology)
+      pairs = SERVICE.getDiffs(ontology)
+      return pairs
+    end
   
 end

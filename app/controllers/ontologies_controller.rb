@@ -39,6 +39,8 @@ class OntologiesController < ApplicationController
     @categories = DataAccess.getCategories()
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
 
+    @diffs = DataAccess.getDiffs(@ontology.ontologyId)
+
       note_tag_query = "select concept_id,count(concept_id) as con_count from margin_notes where ontology_id = #{@ontology.ontologyId} group by concept_id order by concept_id"
       @notes = ActiveRecord::Base.connection.select_rows(note_tag_query);
       

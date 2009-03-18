@@ -1,5 +1,7 @@
 require "rexml/document"
 require 'open-uri'
+require 'uri'
+
 class BioPortalRestfulCore
   
   #Resources
@@ -11,7 +13,7 @@ class BioPortalRestfulCore
     ONTOLOGIES_PATH = "/ontologies/%ONT%"
     CATEGORIES_PATH = "/categories/"
 
-    CONCEPT_PATH ="/concepts/%ONT%/%CONC%"
+    CONCEPT_PATH ="/concepts/%ONT%/?conceptid=%CONC%"
     PATH_PATH = "/path/%ONT%/%CONC%/root"
     VERSIONS_PATH="/ontologies/versions/%ONT%"
     
@@ -26,6 +28,8 @@ class BioPortalRestfulCore
     PARSE_ONTOLOGY = "/ontologies/parse/%ONT%"
     PARSE_BATCH = "/ontologies/parsebatch/%START%/%END%"
     
+    DIFFS_PATH="/diffs/%ONT%"
+    DOWNLOAD_DIFF="/diffs/download/%VER1%/%VER2%"
     
   #Constants
     SUPERCLASS="SuperClass"
@@ -75,7 +79,7 @@ class BioPortalRestfulCore
          
          puts "Requesting : #{BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)}"
           begin
-         doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)))
+         doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))))
           rescue Exception=>e
             puts e.inspect
           end
@@ -572,8 +576,40 @@ class BioPortalRestfulCore
                   return results,pages
          
         end
-       
         
+        def self.getDiffs(ontology)
+            puts BASE_URL+DIFFS_PATH.gsub("%ONT%",ontology)
+          begin
+
+            doc = REXML::Document.new(open(BASE_URL+DIFFS_PATH.gsub("%ONT%",ontology)))
+          rescue Exception=>e
+            doc =  REXML::Document.new(e.io.read)
+            puts doc.to_s
+          end   
+          results = errorCheck(doc)
+
+          unless results.nil?
+            return results
+          end          
+          
+          pairs = []
+          doc.elements.each("*/data/list") {|pair|
+            puts pair.inspect
+            pair.elements.each{|list|
+              pair = []
+              list.elements.each{|item|
+                 pair << item.get_text.value
+              }
+              pairs << pair
+              }
+            
+            }
+          return pairs
+        end
+       
+        def self.diffDownload(ver1,ver2)          
+          return BASE_URL+"/diffs/download/#{ver1}/#{ver2}"
+        end
     
           
 

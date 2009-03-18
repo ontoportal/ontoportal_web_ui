@@ -48,8 +48,9 @@ jQuery.autocomplete = function(input, options) {
 		// loop through the array and create a lookup structure
 		for( var i=0; i < options.data.length; i++ ){
 			// if row is a string, make an array otherwise just reference the array
-			row = ((typeof options.data[i] == "string") ? [options.data[i]] : options.data[i]);
 
+			row = ((typeof options.data[i] == "string") ? [options.data[i]] : options.data[i]);
+            
 			// if the length is zero, don't add to list
 			if( row[0].length > 0 ){
 				// get the first character
@@ -66,6 +67,7 @@ jQuery.autocomplete = function(input, options) {
 			// increase the cache size
 			options.cacheLength++;
 			// add to the cache
+			
 			addToCache(k, stMatchSets[k]);
 		}
 	}
@@ -344,7 +346,7 @@ jQuery.autocomplete = function(input, options) {
 
 	function loadFromCache(q) {
 		if (!q) return null;
-		if (cache.data[q]) return cache.data[q];
+		if (cache.data[q]) return cache.data[q];	    
 		if (options.matchSubset) {
 			for (var i = q.length - 1; i >= options.minChars; i--) {
 				var qs = q.substr(0, i);
@@ -460,7 +462,6 @@ jQuery.fn.autocomplete = function(url, options, data) {
 	options.url = url;
 	// set some bulk local data
 	options.data = ((typeof data == "object") && (data.constructor == Array)) ? data : null;
-
 	// Set default values for required options
 	options.inputClass = options.inputClass || "ac_input";
 	options.resultsClass = options.resultsClass || "ac_results";
@@ -469,7 +470,7 @@ jQuery.fn.autocomplete = function(url, options, data) {
 	options.minChars = options.minChars || 1;
 	options.delay = options.delay || 400;
 	options.matchCase = options.matchCase || 0;
-	options.matchSubset = options.matchSubset || 1;
+	options.matchSubset = options.matchSubset || 0;
 	options.matchContains = options.matchContains || 0;
 	options.cacheLength = options.cacheLength || 1;
 	options.mustMatch = options.mustMatch || 0;
@@ -480,7 +481,6 @@ jQuery.fn.autocomplete = function(url, options, data) {
 	options.maxItemsToShow = options.maxItemsToShow || -1;
 	options.autoFill = options.autoFill || false;
 	options.width = parseInt(options.width, 10) || 0;
-
 	this.each(function() {
 		var input = this;
 		new jQuery.autocomplete(input, options);

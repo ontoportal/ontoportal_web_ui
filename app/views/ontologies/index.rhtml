@@ -1,6 +1,9 @@
+<%@title = "Ontology Listing"%>
 <script type="text/javascript" src="/javascripts/jquery.dataTables.min.js"></script>
 <script src="/javascripts/jquery.cursorMessage.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" href="./stylesheets/jquery.cursorMessage.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<script src="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.min.js" type="text/javascript" charset="utf-8"></script>
 
 
 
@@ -33,10 +36,8 @@ function filterByGroup(selectbox){
 	jQuery("#filterlink").attr("href","http://bioportal.bioontology.org/?filter="+selectbox.value)
 }
 function filterByParam(param){
-//	alert(selectbox.value);
-		dtable.fnFilter( param,8 );
 
-	
+		dtable.fnFilter(param,8 );	
 }
 
 
@@ -66,17 +67,25 @@ jQuery(document).ready(function() {
 			"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
 						/* Append the grade to the default row class name */
 						children = jQuery(nRow).children()
-						jQuery(children[0]).hover(function(){
-							drawMessage(aData[6]);
-							
-						},function(){jQuery._hideCursorMessage();});
+						jQuery(children[0]).tooltip({ 
+							bodyHandler: function() {return aData[6]},
+						    track: true, 
+						    delay: 0, 
+						    showURL: false, 
+						    opacity: 1, 
+						    fixPNG: true, 
+						    showBody: " - ", 
+						    extraClass: "pretty fancy", 
+						    top: 10, 
+						    left: 5 
+						});					
 						return nRow;
 					}
-			
+
 	});
 	
 	<%if params[:filter]%>
-	filterByParam("<%=params[:filter]%>")
+	setTimeout('filterByParam("<%=params[:filter]%>")',2000);
 	<%end%>
 	
 });
@@ -157,8 +166,8 @@ ontology_groups = {
 	1115=>["OBOFoundry"],
 	1051=>["OBOFoundry"],
 	1057=>["caBIG"],
-	1101=>["WHO-FIC"]
-	
+	1101=>["WHO-FIC"],
+	1041=>["PSI"]
 }
 
 %>
@@ -170,15 +179,14 @@ ontology_groups = {
 
 
 
-<div style="width:1150px;">
-<div style="float:left;width:800px;padding:4px;">
+<div style="width:100%">
 	<br/>
 	<table class="form">
 		
 		<tr><th>Submit Ontology</th><td class="top"><%if session[:user].nil? %>
-			<input type="button" class ="blueButton" value="Submit New Ontology" onclick ="window.location='/login'"> 
+			<a href="/login">Submit New Ontology</a>
 		<%else%>
-			<span class="blueButton"><%=link_to "Submit New Ontology",new_ontology_path%></span>
+			<%=link_to "Submit New Ontology",new_ontology_path%>
 		<%end%></td>
 		</tr>
 		<tr>
@@ -198,11 +206,11 @@ ontology_groups = {
 	</tr>
 	<tr>
 		<th>Filter by Group</td><td><select onclick ="filterByGroup(this)"  name="cat">
-		<option value="0" selected="selected">All Groups</option>
+		<option value="0" <%if params[:filter].nil?%>selected="selected"<%end%> >All Groups</option>
 			
 			<%for key in filter_groups.keys%>
 			
-			<option value="<%=key%>" >(<%=key%>) <%=filter_groups[key]%></option>
+			<option value="<%=key%>" <%if !params[:filter].nil? && key.include?(params[:filter])%>selected="selected"<%end%>>(<%=key%>) <%=filter_groups[key]%></option>
 			<%end%>
 	</select> <a href="http://bioportal.bioontology.org" id="filterlink">Link To This Filter</a></td>
 	</tr>
@@ -221,9 +229,9 @@ ontology_groups = {
 	<th>Author</th>
 	<th>Uploaded On</th>
 	<th>Status</th>
-	<th>Description</th>
-	<th  style="display:none;">categories</th>
-	<th  style="display:none;">groups</th>
+	<th style="display:none;">Description</th>
+	<th style="display:none;">categories</th>
+	<th style="display:none;">groups</th>
   </tr>
   </thead>
 <tbody>
@@ -263,6 +271,8 @@ ontology_groups = {
 </tfoot>
 </table>
 </div>
+
+<%if false%>
 <div style="padding-top:60px">
 	<br>
 	<table class="zebra" style="width:300px">
@@ -313,7 +323,8 @@ ontology_groups = {
 	</table>
 
 </div>
+
 <div style="clear:both;"></div>
-</div>
+<%end%>
 
 

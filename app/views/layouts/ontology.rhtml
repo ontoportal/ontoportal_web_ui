@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <title><%unless @ontology.nil?%><%=@ontology.displayLabel%><%end%></title>
+  <title><%if @title.nil?%>NCBO Bioportal<%else%><%="NCBO Bioportal: #{@title}"%><%end%></title>
   <!-- Dependency source files --> 
   <%=stylesheet_link_tag 'layout/bioportal'%>
 	<script type="text/javascript" src="/javascripts/jquery.js"></script>

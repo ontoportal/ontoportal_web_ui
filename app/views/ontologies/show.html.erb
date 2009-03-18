@@ -1,3 +1,5 @@
+<%@title = "#{@ontology.displayLabel} Ontology"%>
+
 <script src="/javascripts/jquery.rating.pack.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" href="/stylesheets/layout/jquery.rating.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <script src="/javascripts/JqueryPlugins/tagcloud/jquery.tagcloud.min.js" type="text/javascript" charset="utf-8"></script>
@@ -45,11 +47,13 @@
 		<li id="meta" class="selected tab"><a href="#" onclick="meta_tab_clicked('#metadata',this)">Metadata</a></li>
 		<li id="proj" class="tab"><a href="#" onclick="meta_tab_clicked('#projects',this)">Projects (<%=@projects.size%>)</a></li>
     	<li id="rev" class="tab"><a href="#" onclick="meta_tab_clicked('#reviews',this)">Reviews (<%=@reviews.size%>)</a></li>
+		<li id="widget" class="tab"><a href="#" onclick="meta_tab_clicked('#widgets',this)">Ontology Widgets</a></li>
 	</ul>  
 </div>
 
-<div id="metadata" class="tab_content">
-<div style="float:left;width:60%;">
+<div id="metadata" class="tab_content" >
+<div style="width:100%;min-width:900px">
+<div style="float:left;width:60%;overflow:hidden;min-width:550px">
 <br/>
 <table class="form" width="100%">
 	<tr>
@@ -67,7 +71,6 @@
 	<tr>
 			<th>Contact Email:</th><td><%=@ontology.contactEmail%></td><td>&nbsp;</td><td>&nbsp;</td>
 	</tr>
-
 	<tr>
 		<th >Description:</th><td colspan=3><%=@ontology.description%></td>
 	</tr>
@@ -80,25 +83,33 @@
 		<tr>
 			<th>Version Number</th>
 			<th>Release Date</th>
-			<th>Status</th>
-			<th></th>
-			<th></th>
+			<th>Download Diff File</th>
+			<th>Ontology File</th>
+			<th>Visualize</th>
 		</tr>
 		</thead>
 		<%for version in @versions.reverse%>
+		
 		<tr <%=cycle("","class='alt'")%>>
 			<td><%=version.versionNumber%></td>
 			<td><%=version.dateReleased%></td>
-			<td><%=version.versionStatus%></td>
-			<td><% if version.isRemote.to_i.eql?(1)%><a href="<%=@ontology.homepage%>"><%else%><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download</a><%end%></td>
+			<td>
+				<% for diff in @diffs%>
+					<%if diff[1].to_i.eql?(version.id.to_i)%>
+						<a href="http://ncbo-core-stage1.stanford.edu/bioportal/diffs/download/<%=diff[0]%>/<%=diff[1]%>">Download Diff of previous version</a>
+					<%end%>
+				<%end%>
+				&nbsp;
+			</td>
+			<td><% if version.isRemote.to_i.eql?(1)%><a href="<%=@ontology.homepage%>"><%else%><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download Ontology</a><%end%></td>
 			<td><%if version.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => version)%><%elsif version.statusId.to_i.eql?(1)%>Parsing Ontology<%else%><%end%></td>
 		</tr>
 		<%end%>
 	</table>
 	
 </div>
-
-	<div style="float:left;padding-left:10px" id="tag_clouds">
+<br/>
+	<div style="float:left;width:300px;padding-left:10px;" id="tag_clouds">
 		<h2>Notes</h2>
 		<%if @notes.size <1%>
 		No Notes Created yet
@@ -121,7 +132,7 @@
 	</div>
 
 <div style="clear:both;"></div>
-
+</div>
 </div>
 
 <div id="projects" style="display:none;" class="tab_content">
@@ -192,9 +203,98 @@
 		</tr>
 	<% end %>
 </table>
+</div>
 
-
-
+<div id="widgets" style="display:none;" class="tab_content">
+<table class="minimal" style="float:left;" >
+	<tr>
+		<td align="center"><h2>Quick Jump Widget for <%=@ontology.displayLabel%></h2>
+		<fieldset>
+		<script type="text/javascript">
+		var BP_ontology_id = "<%=@ontology.ontologyId%>"
+		</script>
+		<script src="/javascripts/widgets/quick_jump.js" type="text/javascript" charset="utf-8"></script>
+		</fieldset>
+		<br/>
+		<br/>
+				<b>Copy the code below and paste on your website to add the widget for this ontology.</b><br/><br/>
+		<textarea rows=4 cols=70>
+<script type="text/javascript">
+var BP_ontology_id = "<%=@ontology.ontologyId%>"
+</script>
+<script src="http://stage.bioontology.org/javascripts/widgets/quick_jump.js" type="text/javascript" charset="utf-8"></script>
+		</textarea>
+		</td>
+	</tr>
+		<tr>
+			<td align="center"><h2>Feed Widget for <%=@ontology.displayLabel%></h2>
+			<fieldset>
+			<script type="text/javascript">
+			var BP_ontology_id = "<%=@ontology.ontologyId%>"
+			</script>
+			<script src="/javascripts/widgets/feed_widget.js" type="text/javascript" charset="utf-8"></script>
+			</fieldset>
+			<br/>
+			<br/>
+					<b>Copy the code below and paste on your website to add the widget for this ontology.</b><br/><br/>
+			<textarea rows=4 cols=70>
+	<script type="text/javascript">
+	var BP_ontology_id = "<%=@ontology.ontologyId%>"
+	</script>
+	<script src="http://stage.bioontology.org/javascripts/widgets/feed_widget.js" type="text/javascript" charset="utf-8"></script>
+			</textarea>
+			</td>
+		</tr>
+	</tr>
+		<tr>
+			<td align="center"><h2>Visualize Widget for <%=@ontology.displayLabel%></h2>
+			
+				<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+						id="FlexoViz" width="300px" height="300px"
+						codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+						<param name="movie" value="http://keg.cs.uvic.ca/ncbo/flexviz/FlexoViz.swf" />
+						<param name="quality" value="high" />
+						<param name="bgcolor" value="#ffffff" />
+						<param name="allowScriptAccess" value="always" />
+						<embed src="http://keg.cs.uvic.ca/ncbo/flexviz/FlexoViz.swf" bgcolor="#ffffff"
+							width="100%" height="100%" name="FlexoViz" align="middle"
+							play="true"
+							loop="false"
+							quality="high"
+							allowScriptAccess="always"
+							type="application/x-shockwave-flash"
+							flashVars="widget=true&ontology=<%=@ontology.id%>&server=http://ncbo-core-stage1.stanford.edu/bioportal/"
+							pluginspage="http://www.adobe.com/go/getflashplayer">
+						</embed>
+				</object>
+			<br/>
+			<br/>
+					<b>Copy the code below and paste on your website to add the widget for this ontology.</b><br/><br/>
+			<textarea rows=4 cols=70>
+				<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+						id="FlexoViz" width="100%" height="100%"
+						codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+						<param name="movie" value="http://keg.cs.uvic.ca/ncbo/flexviz/FlexoViz.swf" />
+						<param name="quality" value="high" />
+						<param name="bgcolor" value="#ffffff" />
+						<param name="allowScriptAccess" value="always" />
+						<embed src="http://keg.cs.uvic.ca/ncbo/flexviz/FlexoViz.swf" bgcolor="#ffffff"
+							width="100%" height="100%" name="FlexoViz" align="middle"
+							play="true"
+							loop="false"
+							quality="high"
+							allowScriptAccess="always"
+							type="application/x-shockwave-flash"
+							flashVars="widget=true&ontology=<%=@ontology.id%>&server=http://rest.bioontology.org/bioportal/"
+							pluginspage="http://www.adobe.com/go/getflashplayer">
+						</embed>
+				</object>
+			</textarea>
+			</td>
+		</tr>	
+	
+</table>
+<div style="clear:both;"></div>
 </div>
 
 

@@ -411,7 +411,7 @@ function updateContent(){
          jQuery.post(form.action, inputs.join('&'), function(data) { 
 			jQuery(target).html(data);
 			if(callback)
-			    callback()
+			    callback();
 			
 			    tb_init('a.thickbox, area.thickbox, input.thickbox');
             

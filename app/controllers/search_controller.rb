@@ -5,7 +5,7 @@ class SearchController < ApplicationController
   layout 'ontology'
   
   def index
-    @ontologies = DataAccess.getActiveOntologies() 
+  #  @ontologies = DataAccess.getActiveOntologies() 
   end
   
   def concept #search for concept for mappings
@@ -19,6 +19,15 @@ class SearchController < ApplicationController
     @concept = DataAccess.getNode(params[:ontology],params[:id])
     @children = @concept.children
     render :partial =>'concept_preview'
+  end
+  
+  def fetch_results
+    @query = params[:search][:keyword]
+    @ontologies = params[:search][:ontologies]
+    if @ontologies.eql?("0") || @ontologies.first.eql?("0")
+      @ontologies = ""
+    end
+    render :action=>'results'
   end
   
   def search # full search
@@ -39,18 +48,14 @@ class SearchController < ApplicationController
     @keyword = params[:search][:keyword]
 
     if params[:search][:attributes].nil? || params[:search][:attributes].eql?("0") || params[:search][:attributes].eql?("")
-      puts "no attributes"
       if params[:search][:search_type].eql?("contains")
-        puts "contains"
         @results,@pages = DataAccess.getNodeNameContains(params[:search][:ontologies],params[:search][:keyword],params[:page]||1)
 
       elsif params[:search][:search_type].eql?("exact")
-        puts "Exact"
         @results,@pages = DataAccess.getNodeNameExact(params[:search][:ontologies],params[:search][:keyword],params[:page]||1)
 
 
       end 
-      puts "did i fall through?"
     end
   
     if params[:search][:attributes].eql?("1")
@@ -68,10 +73,8 @@ class SearchController < ApplicationController
   
     end
 
-        puts "----- debug of results-------"
         puts @results.inspect
         puts @pages.inspect
-                puts "-------------------------"
 #    session[:search]={}
 #    session[:search][:results]=@results
 #    session[:search][:ontologies]=@ontologies
@@ -98,7 +101,7 @@ class SearchController < ApplicationController
     @results,@pages = DataAccess.getNodeNameContains([params[:id]],params[:q],1)
     
     response = ""
-    
+    puts "Results: #{@results.inspect}"
     for result in @results
       record_type = result[:recordType].titleize.gsub("Record Type","").split(" ")
       record_type_value = ""
@@ -106,8 +109,13 @@ class SearchController < ApplicationController
         record_type_value<< type[0]
       end
       
-      response << "#{result[:contents]}|#{result[:conceptIdShort]}|#{record_type_value}\n"
+      response << "#{result[:contents]}|#{result[:conceptIdShort]}|#{result[:recordType].titleize.gsub("Record Type","").downcase}~!~"
     end        
+    
+    if params[:response].eql?("json")
+      puts "Response is #{response}"
+      response = "#{params[:callback]}({data:'#{response}'})"
+    end
     
     render :text=>response
     

@@ -1,22 +1,22 @@
  <table class="annotations" cellpadding=0 cellspacing=0 width="100%">    
-<% for annotation in @annotations%>
-<%color = cycle("","alt") %>
-  <tr class="<%=color%>" >
-     <td colspan="2" style="padding:3px;"><a href="<%=annotation.url%>" target="_new"><%=annotation.description%></a></td>
-  </tr>	   
-  <tr  class="<%=color%>" >
-  		<td style="border-top:0px;padding:3px;">ID: <%=annotation.local_id%></td><td  style="border-top:0px;padding:3px;"> Annotation Context: <%=annotation.item_key%></td>
-  </tr>
- 
- <%end%>
+     <% for annotation in @resource.annotations%>
+	 <%color = cycle("","alt") %>
+       <tr class="<%=color%>" >
+          <td colspan="2" style="padding:3px;"><a class="thickbox" href="/res_details/<%=@concept.id%>?ontology=<%=@ontology.id%>&resource=<%=@resource.shortname%>&element=<%=annotation.local_id%>&height=500&width=600">Description holder<%=annotation.description%></a></td>
+       </tr>	   
+	   <tr  class="<%=color%>" >
+	   		<td style="border-top:0px;padding:3px;">ID: <%=annotation.local_id%></td><td  style="border-top:0px;padding:3px;"> Score: <%=annotation.score%></td>
+	   </tr>
+      
+	  <%end%>
 	<tr>
 		<td colspan="2" align="right">
 			<%if params[:start].to_i > 0%>
-			<a href="#" onclick="jQuery('#innerannot<%=params[:index]%>').load('/respage/?ontology=<%=@ontology.id%>&concept=<%=@concept.id%>&resource=<%=params[:resource]%>&start=<%=params[:start].to_i-10%>&end=<%=params[:start]%>&index=<%=params[:index]%>');return false;">&lt;&lt; Previous Page</a>
+			<a href="#" onclick="jQuery('#innerannot<%=params[:index]%>').load('/respage/?ontology=<%=@ontology.id%>&concept=<%=@concept.id%>&resource=<%=params[:resource]%>&start=<%=params[:start].to_i-10%>&end=<%=params[:start]%>&index=<%=params[:index]%>&total=<%=params[:total]%>');return false;">&lt;&lt; Previous Page</a>
 		<%end%>
 		 &nbsp;&nbsp; 
 		<%if params[:end].to_i <= params[:total].to_i+10%>
-				<a href="#" onclick="jQuery('#innerannot<%=params[:index]%>').load('/respage/?ontology=<%=@ontology.id%>&concept=<%=@concept.id%>&resource=<%=params[:resource]%>&start=<%=params[:end]%>&end=<%=params[:end].to_i+10%>&index=<%=params[:index]%>');return false;">Next Page &gt;&gt;</a>
+				<a href="#" onclick="jQuery('#innerannot<%=params[:index]%>').load('/respage/?ontology=<%=@ontology.id%>&concept=<%=@concept.id%>&resource=<%=params[:resource]%>&start=<%=params[:end]%>&end=<%=params[:end].to_i+10%>&index=<%=params[:index]%>&total=<%=params[:total]%>');return false;">Next Page &gt;&gt;</a>
 		<%end%>
 	</tr>
 </table>

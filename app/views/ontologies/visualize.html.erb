@@ -1,5 +1,9 @@
+<%@title = "#{@ontology.displayLabel} Ontology - #{@concept.name}"%>
 <script src="/javascripts/jquery.resizer.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" href="/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<script src="/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js" type="text/javascript" charset="utf-8"></script>
+
+
 <script type="text/javascript">
 var searchbox;
 
@@ -34,7 +38,7 @@ function formatItem(row) {
 
 
 $(document).ready(function(){
-	 $("#search_box").autocomplete("/search/json_search/<%=@ontology.ontologyId%>", { minChars:3,maxItemsToShow:20,onFindValue:jumpToValue,formatItem:formatItem });
+	 $("#search_box").autocomplete("/search/json_search/<%=@ontology.ontologyId%>", { lineSeparator:"~!~",matchSubset:0,minChars:3,maxItemsToShow:20,onFindValue:jumpToValue,formatItem:formatItem });
 	searchbox =  $("#search_box")[0].autocompleter;
 	
 });
@@ -42,7 +46,6 @@ $(document).ready(function(){
 
 
 </script>
-<script src="/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.js" type="text/javascript" charset="utf-8"></script>
 
 
 
@@ -51,7 +54,7 @@ $(document).ready(function(){
 
 	<h3>Version <%=@ontology.versionNumber%></h3>
 
-	<h1 id="name_label"><%=@concept.name%> <span id="link_label"> (<%=link_to "Get a direct link to this concept in BioPortal",uri_url(:ontology=>@ontology,:id=>@concept.id)%>)</span></h1>
+	<h1 id="name_label"><%=@concept.name%> <span id="link_label"> (<%=link_to "Get a direct link to this concept in BioPortal",uri_url(:ontology=>@ontology.to_param,:id=>@concept.to_param)%>)</span></h1>
 	<br clear="all" />
 	
 </div>
@@ -60,7 +63,7 @@ $(document).ready(function(){
 	<div id="sidebar">
 		
 		<div id="sd_hd">
-			<h2><%=link_to "View Ontology Metadata", ontology_url(:id => @ontology.id)%></h2>
+			<h2><%=link_to "View Ontology Details", ontology_url(:id => @ontology.id)%></h2>
 		</div>
 		<div id="qsearch" >
 		Jump To:<input type="textbox" id="search_box" size="30"> <input type="button" value="Go" onclick="searchbox.findValue()">
@@ -71,10 +74,9 @@ $(document).ready(function(){
 			<%=render :partial => '/ontologies/treeview'%>
 		</div>
 		
-		<div id="sd_ft">
-			<p>BioPortal v2.0<br />A service of the <a href="../index.html">NCBO</a></p>
-		</div>
 		<div id="grab-point" >&nbsp;</div>
+		<div style="clear:both;"></div>
+		<br/>
 	</div>
 	
 	<div id="container">
@@ -187,6 +189,101 @@ function callTab(tab_num,url){
 }
 
 
+
+
+// actions for interacting with the graph
+
+// gets the flash application
+function getApp() {
+	// first try the basic flexviz
+	var app = document.getElementById("BasicFlexoViz");
+	if (app == null) {
+		// try the full version
+		app = document.getElementById("FlexoViz");
+	}
+	return app;
+}
+
+/** 
+ * Selects on the node with the given id
+ * @param id the id of the node to focus on
+ */
+function selectNodeByID(id) {
+	var app = getApp();
+	if (app) {
+		if (app.selectNodeByID) {
+			app.selectNodeByID(id);
+		} else {
+			alert("Could not select the concept with ID '" + id + "'.");
+		}
+	} else {
+		alert("Could not get Flash object, JavaScript/Flex communication failed.");
+	}
+}
+
+/** 
+ * Focusses on the node with the given id
+ * @param id the id of the node to focus on
+ * @param option the graph view setting (optional), one of "Neighborhood", "Hierarchy To Root", "Parents", or "Children"
+ *		defaults to "Neighborhood"
+ */
+function searchByID(id, option) {
+	var app = getApp();
+	if (app) {
+		if (app.searchByID) {
+			app.searchByID(id);
+		} else {
+			alert("Could not search for the concept with ID '" + id + "'.");
+		}
+	} else {
+		alert("Could not get Flash object, JavaScript/Flex communication failed.");
+	}
+}
+
+/** 
+ * Performs a search on the given text and shows
+ * the appropriate graph - either the neighborhood, or the hierarchy to root
+ * @param searchText the text to search for
+ * @param option the graph view setting (optional), one of "Neighborhood", "Hierarchy To Root", "Parents", or "Children"
+ *		defaults to "Neighborhood"
+ */
+function searchByName(searchText, option) {
+	var app = getApp();
+	if (app) {
+		if (app.searchByName) {
+			app.searchByName(searchText);
+		} else {
+			alert("Could not search for the concept with nane '" + id + "'.");
+		}
+	} else {
+		alert("Could not get Flash object, JavaScript/Flex communication failed.");
+	}
+}
+
+/**
+ * The basic version of FlexViz calls this function when a node is double clicked.
+ */
+
+function flexVizNodeClicked(id,currentNode) {
+	if (jQuery("#"+id).size()==0){
+		
+		jQuery("#"+currentNode+" .trigger").trigger('click');
+	
+		setTimeout('tryClick("'+id+'")',1000);
+	}else{	
+	jQuery("#"+id+" span").trigger('click');
+	}
+}
+
+function tryClick(id)
+{
+
+	if(jQuery("#"+id+" span").size()>0)
+		jQuery("#"+id+" span").trigger('click');
+	else
+		setTimeout('tryClick("'+id+'")',1000)
+}
+
 </script>
 
 <style>
@@ -198,7 +295,7 @@ function callTab(tab_num,url){
 	
 
 
-<% form_for(:search, :url => {:controller =>'search',:action=>'search'},:html=>{:id=>'search_form'}) do |f| %>
+<% form_for(:search, :url => {:controller =>'search',:action=>'fetch_results'},:html=>{:id=>'search_form'}) do |f| %>
 <input type="hidden" name="search[ontologies][]" value="<%=@ontology.ontologyId%>">
 <%=hidden_field :search, :search_type, :value=>"contains"%>
 <%=hidden_field :search, :keyword, :value=>"",:id=>"search_keyword"%>
