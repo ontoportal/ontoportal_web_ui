@@ -35,6 +35,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/feedback',:controller=>'home',:action=>'feedback'
   map.connect '/send_feedback',:controller=>'home',:action=>'send_feedback'
   map.connect '/annotate',:controller=>'home',:action=>'annotate'
+  map.connect '/all_resources',:controller =>'home',:action=>'all_resources'
   map.connect '/exhibit/:ontology/:id',:controller=>'concepts',:action=>'exhibit'
   map.upload_mappings '/upload/mapping',:controller=>'mappings',:action=>'upload'
   map.process_mappings '/process/mapping',:controller=>'mappings',:action=>'process_mappings'
@@ -50,6 +51,7 @@ ActionController::Routing::Routes.draw do |map|
   map.lost_pass '/lost_pass',:controller=>'login',:action=>'lost_password'
   map.visualize '/visualize/:ontology', :controller=>'ontologies', :action =>'visualize',:requirements => { :ontology => %r([^/?]+) }
   map.uri '/visualize/:ontology/:id', :controller => 'concepts', :action => 'show',:requirements => { :id => %r([^/?]+)}
+  map.connect '/visconcepts/:ontology/', :controller => 'concepts', :action => 'show',:requirements => { :id => %r([^/?]+)}
 
   map.virtual_ont '/virtual/:ontology', :controller => 'ontologies', :action => 'virtual',:requirements => { :ontology => %r([^/?]+) ,:id => %r([^/?]+)}
   map.virtual '/virtual/:ontology/:id', :controller => 'concepts', :action => 'virtual',:requirements => { :ontology => %r([^/?]+) ,:id => %r([^/?]+)}

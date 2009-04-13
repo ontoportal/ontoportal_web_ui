@@ -22,12 +22,11 @@
      <% for annotation in resource.annotations%>
 	 <%color = cycle("","alt") %>
        <tr class="<%=color%>" >
-          <td colspan="2" style="padding:3px;"><a class="thickbox" href="/res_details/<%=@concept.id%>?ontology=<%=@ontology.id%>&resource=<%=resource.shortname%>&element=<%=annotation.local_id%>&height=500&width=600">Description holder<%=annotation.description%></a></td>
+          <td colspan="2" style="padding:3px;"><a class="thickbox" href="/res_details/<%=@concept.id%>?ontology=<%=@ontology.id%>&resource=<%=resource.shortname%>&element=<%=annotation.local_id%>&height=500&width=600"><%=annotation.description || "Description holder"%></a></td>
        </tr>	   
 	   <tr  class="<%=color%>" >
 	   		<td style="border-top:0px;padding:3px;">ID: <%=annotation.local_id%></td><td  style="border-top:0px;padding:3px;"> Score: <%=annotation.score%></td>
-	   </tr>
-      
+	   </tr>      
 	  <%end%>
       
 	 <% if resource.count >0%>

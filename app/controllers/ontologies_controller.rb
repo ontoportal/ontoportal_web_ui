@@ -136,7 +136,7 @@ class OntologiesController < ApplicationController
       #get the top level nodes for the root
       @root = TreeNode.new()
       nodes = @ontology.topLevelNodes
-      
+      nodes.sort!{|x,y| x.name.downcase<=>y.name.downcase}
       for node in nodes
         if node.name.downcase.include?("obsolete") || node.name.downcase.include?("deprecated")
           nodes.delete(node)

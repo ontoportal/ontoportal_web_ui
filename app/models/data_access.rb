@@ -4,12 +4,12 @@ require "digest/sha1"
 class DataAccess
   SERVICE = BioPortalRestfulCore #sets what backend we are using
   
-  CACHE_EXPIRE_TIME=60*60*3
+  CACHE_EXPIRE_TIME=60*60*1
   NO_CACHE = false
     
     
     def self.getNode(ontology,node_id)
-      puts "Calling DataAccess.getNode(#{ontology},#{node_id})"
+ #     puts "Calling DataAccess.getNode(#{ontology},#{node_id})"
       if CACHE.get("#{param(ontology)}::#{node_id.gsub(" ","%20")}").nil? || NO_CACHE
         node = SERVICE.getNode(ontology,node_id)  
         unless  node.kind_of?(Hash) && node[:error]
@@ -22,7 +22,7 @@ class DataAccess
     end
 
     def self.getTopLevelNodes(ontology)
-      puts "Calling DataAccess.getTopLevelNodes(#{ontology})"
+  #    puts "Calling DataAccess.getTopLevelNodes(#{ontology})"
       if CACHE.get("#{param(ontology)}::_top").nil? || NO_CACHE
         topNodes = SERVICE.getTopLevelNodes(ontology)
         unless topNodes.kind_of?(Hash) && topNodes[:error] 
@@ -35,7 +35,7 @@ class DataAccess
     end
     
     def self.getOntologyList
-      puts "Calling DataAccess.getOntologyList()"
+  #    puts "Calling DataAccess.getOntologyList()"
       if CACHE.get("ont_list").nil? || NO_CACHE
         list = SERVICE.getOntologyList
         
@@ -53,7 +53,7 @@ class DataAccess
     end
 
     def self.getCategories
-      puts "Calling DataAccess.getCategories()"
+ #     puts "Calling DataAccess.getCategories()"
       if CACHE.get("categories").nil? || NO_CACHE
         list = SERVICE.getCategories
         
@@ -70,7 +70,7 @@ class DataAccess
 
     
     def self.getActiveOntologies
-      puts "Calling DataAccess.getActiveOntologies()"      
+ #     puts "Calling DataAccess.getActiveOntologies()"      
             if CACHE.get("act_ont_list").nil? || NO_CACHE
               list = SERVICE.getOntologyList
               unless list.kind_of?(Hash) && list[:error]
@@ -105,7 +105,7 @@ class DataAccess
 
 
     def self.getOntology(ontology)
-      puts "Calling DataAccess.getOntology(#{ontology})"            
+  #    puts "Calling DataAccess.getOntology(#{ontology})"            
       if CACHE.get("#{ontology}::_details").nil? || NO_CACHE
         details = SERVICE.getOntology(ontology)
         unless details.kind_of?(Hash) && details[:error]
@@ -118,7 +118,7 @@ class DataAccess
     end
     
     def self.getLatestOntology(ontology)
-      puts "Calling DataAccess.getLatestOntology(#{ontology})"                  
+  #    puts "Calling DataAccess.getLatestOntology(#{ontology})"                  
       details = SERVICE.getLatestOntology(ontology)
       return details
     end
@@ -181,7 +181,6 @@ class DataAccess
     
      def self.getUser(user_id)
        if CACHE.get("user::#{user_id}").nil? || NO_CACHE
-         puts "not getting user #{user_id} from cache"
             results = SERVICE.getUser(user_id)
             puts results.inspect
             unless results.kind_of?(Hash) && results[:error]
@@ -190,7 +189,6 @@ class DataAccess
        
             return results
         else
-          puts "Getting user #{user_id} from cache"
           return CACHE.get("user::#{user_id}")
         end
       end
@@ -219,14 +217,20 @@ class DataAccess
       CACHE.delete("ont_list")
         unless(params[:ontologyId].nil?)
           CACHE.delete("#{params[:ontologyId]}::_versions")
+          CACHE.delete("#{params[:ontologyId]}::_details")
         end
+        
       return ontology
     end
     
     def self.updateOntology(params,version_id)
-      puts "UPDATING ONTOLOGY #{params.inspect}"
+#      puts "UPDATING ONTOLOGY #{params.inspect}"
       ontology = SERVICE.updateOntology(params,version_id)
       CACHE.delete("#{version_id}::_details")
+      CACHE.delete("ont_list")
+        unless(params[:ontologyId].nil?)
+          CACHE.delete("#{params[:ontologyId]}::_versions")
+        end
       return ontology
     end
     

@@ -17,8 +17,12 @@
 	}
 	
 	jQuery(document).ready(function()  {
+		<%if @notes.size>0%>
 		$("#notes").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14})
+		<%end%>
+		<%if @mappings.size >0%>
 		$("#mappings").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14})
+		<%end%>
 		
 	});
 
@@ -32,7 +36,7 @@
 </div>
 <%end%>
 
-<h1><%=@ontology.displayLabel%></h1> 
+<h1><%=@ontology.displayLabel%></h1> <a href="/syndication/rss?ontologies=<%=@ontology.ontologyId%>" style="text-decoration:none;"><img src="/images/feed-icon.png" height=16 width=16 border=0 > Subscribe</a>
 <%if !session[:user].nil? && (session[:user].id.to_i.eql?(@ontology.userId.to_i) || session[:user].admin?)%>
 <table class="form">
 	<tr>
@@ -83,26 +87,26 @@
 		<tr>
 			<th>Version Number</th>
 			<th>Release Date</th>
-			<th>Download Diff File</th>
 			<th>Ontology File</th>
 			<th>Visualize</th>
+			<th>Download Diff File</th>			
 		</tr>
 		</thead>
 		<%for version in @versions.reverse%>
 		
 		<tr <%=cycle("","class='alt'")%>>
 			<td><%=version.versionNumber%></td>
-			<td><%=version.dateReleased%></td>
-			<td>
+			<td><%=version.dateReleased%></td>			
+			<td><% if version.isRemote.to_i.eql?(1)%><a href="<%=@ontology.homepage%>"><%else%><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download Ontology</a><%end%></td>
+			<td><%if version.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => version)%><%elsif version.statusId.to_i.eql?(1)%>Parsing Ontology<%else%><%end%></td>
+			<td >
 				<% for diff in @diffs%>
 					<%if diff[1].to_i.eql?(version.id.to_i)%>
-						<a href="http://ncbo-core-stage1.stanford.edu/bioportal/diffs/download/<%=diff[0]%>/<%=diff[1]%>">Download Diff of previous version</a>
+						Download Diff with previous version <br/>( <a href="http://ncbo-core-stage1.stanford.edu/bioportal/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=txt">Txt</a> | <a href="http://ncbo-core-stage1.stanford.edu/bioportal/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=rdf">RDF</a> )
 					<%end%>
 				<%end%>
 				&nbsp;
 			</td>
-			<td><% if version.isRemote.to_i.eql?(1)%><a href="<%=@ontology.homepage%>"><%else%><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download Ontology</a><%end%></td>
-			<td><%if version.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => version)%><%elsif version.statusId.to_i.eql?(1)%>Parsing Ontology<%else%><%end%></td>
 		</tr>
 		<%end%>
 	</table>
@@ -164,8 +168,13 @@
 	</table>
 </div>
 <div id="reviews" style="display:none;" class="tab_content">
-
-	<br><br>
+<%if session[:user].nil? %>
+	<br>
+		<a href="/login?redirect=/ontologies/<%=@ontology.id%>">Review This Ontology</a>
+<%else%>
+<h2><a href="/reviews/new?ontology=<%=@ontology.ontologyId%>&height=500&width=600" title="Review For <%=@ontology.displayLabel%>" class="thickbox">Review This Ontology</a></h2>
+<%end%>
+	<br>
 	<table class="zebra" cellpadding="0" cellspacing="0" width="60%">
 	
 	<% for review in @reviews %>
@@ -201,12 +210,16 @@
 
 			</td>
 		</tr>
+		<tr>
+			<td id="<%=@ontology.ontologyId%>_review"></td>
+		</tr>
 	<% end %>
 </table>
 </div>
 
 <div id="widgets" style="display:none;" class="tab_content">
 <table class="minimal" style="float:left;" >
+	<%if false%>
 	<tr>
 		<td align="center"><h2>Quick Jump Widget for <%=@ontology.displayLabel%></h2>
 		<fieldset>
@@ -226,6 +239,7 @@ var BP_ontology_id = "<%=@ontology.ontologyId%>"
 		</textarea>
 		</td>
 	</tr>
+	<%end%>
 		<tr>
 			<td align="center"><h2>Feed Widget for <%=@ontology.displayLabel%></h2>
 			<fieldset>

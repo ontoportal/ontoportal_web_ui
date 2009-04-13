@@ -55,7 +55,7 @@ $(document).ready(function(){
 	<h3>Version <%=@ontology.versionNumber%></h3>
 
 	<h1 id="name_label"><%=@concept.name%> <span id="link_label"> (<%=link_to "Get a direct link to this concept in BioPortal",uri_url(:ontology=>@ontology.to_param,:id=>@concept.to_param)%>)</span></h1>
-	<br clear="all" />
+	<br style="clear:all;" />
 	
 </div>
 
@@ -66,7 +66,7 @@ $(document).ready(function(){
 			<h2><%=link_to "View Ontology Details", ontology_url(:id => @ontology.id)%></h2>
 		</div>
 		<div id="qsearch" >
-		Jump To:<input type="textbox" id="search_box" size="30"> <input type="button" value="Go" onclick="searchbox.findValue()">
+		Jump To: <input type="textbox" id="search_box" size="30"> <input type="button" value="Go" onclick="searchbox.findValue()">
 		</div>		
 		<div id="sd_content">
 
@@ -88,9 +88,9 @@ $(document).ready(function(){
 		        	<li class="tab" id="t_tab3_top"><a  href="#t_tab3:">Notes</a></li>
 					<li class="tab" id="t_tab4_top"><a  href="#t_tab4:">Mappings</a></li>				
 					<%if @ontology.ontologyId.to_s.eql?("1104")%>	
-					<li class="tab" id="t_tab5_top"><a  href="#t_tab5:" >Resources</a></li>			
+					<li class="tab" id="t_tab5_top"><a  href="#t_tab5:" >Resources <sub style="valign:bottom;">alpha</sub></a></li>			
 					<%else%>							
-					<li class="tab" id="t_tab5_top" onclick="callTab(5,'/resources/@ontology@/@concept@');"><a  href="#t_tab5:" alt="callTab(5,'/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resources</a></li>
+					<li class="tab" id="t_tab5_top" onclick="callTab(5,'/resources/@ontology@/@concept@');"><a  href="#t_tab5:" alt="callTab(5,'/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resources <sub class="beta">alpha</sub</a></li>
 					<%end%>
 		
 			</ul>

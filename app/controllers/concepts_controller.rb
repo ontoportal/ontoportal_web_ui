@@ -117,12 +117,13 @@ class ConceptsController < ApplicationController
         when 'load' # Load pulls in all the details of a node
           time = Time.now
           gather_details
-          puts "Finished Details in #{Time.now - time}"
+    #      puts "Finished Details in #{Time.now - time}"
           render :partial => 'load'
         when 'children' # Children is called only for drawing the tree
           @children =[]
           for child in @concept.children
             @children << TreeNode.new(child)
+            @children.sort!{|x,y| x.name.downcase<=>y.name.downcase}
           end
           render :partial => 'childNodes'
       end    
@@ -131,7 +132,7 @@ class ConceptsController < ApplicationController
   def show_uri_request # gathers the full set of data for a node
     gather_details
     build_tree
-
+    puts "Full data------"
   end
   
   def gather_details  #gathers the information for a node

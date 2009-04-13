@@ -63,17 +63,15 @@ class MappingsController < ApplicationController
 #    @mapping_pages = Mapping.paginate(:page => params[:page], :per_page => 100 ,:conditions=>{:source_ont=>params[:id],:destination_ont=>params[:target]},:order=>'count()',:include=>:user)
     @mappings = {}
     @map_sources = []
-    @users = DataAccess.getUsers
+    @users = DataAccess.getUsers.sort{|x,y| x.username.downcase <=> y.username.downcase}
     for map in mapping_objects
       puts map.source_id
       @map_sources << map.map_source.gsub(/<a.*?a>/mi, "")  unless map.map_source.nil?
       @map_sources.uniq!
       
       if @mappings[map.source_id].nil?
-        puts "new mapping"
         @mappings[map.source_id] = [{:source_ont_name=>map.source_ont_name,:destination_ont_name=>map.destination_ont_name,:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.username],:count=>1}]
       else
-        puts "Mapping exists"
         @mappings[map.source_id]
         found = false
         for mapping in @mappings[map.source_id]
@@ -83,7 +81,6 @@ class MappingsController < ApplicationController
             mapping[:users]<<map.user.username
             mapping[:users].uniq!
             mapping[:count]+= 1
-            puts "adding to count #{mapping[:count]}"
           end  
         end
         unless found
@@ -93,7 +90,7 @@ class MappingsController < ApplicationController
     end
     @mappings = @mappings.sort {|a,b| b[1].length<=>a[1].length}   #=> [["c", 10], ["a", 20], ["b", 30]]
 
-    if params[:rdf].nil?
+    if params[:rdf].nil? || !params[:rdf].eql?("rdf")
       render :partial=>'show'
     else
       send_data to_RDF(mapping_objects), :type => 'text/html', :disposition => 'attachment; filename=mappings.rdf'

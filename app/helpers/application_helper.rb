@@ -92,7 +92,7 @@ module ApplicationHelper
               <div>
                #{notetext}"
                if session[:user].nil?
-                 output << "<div id=\"insert\"><a href=\"\/login?redirect=#{@ontology.to_param}\">Reply</a></div>"
+                 output << "<div id=\"insert\"><a href=\"\/login?redirect=/visconcepts/#{@ontology.to_param}/?id=#{@concept.id}#t_tab3:\">Reply</a></div>"
                else
                  if @modal
                     output << "<div id=\"insert\"><a href=\"#\"  onclick =\"document.getElementById('m_noteParent').value='#{note.id}';document.getElementById('m_note_subject#{key}').value='RE:#{note.subject}';jQuery('#modal_form').html(jQuery('#modal_comment').html());return false;\">Reply</a></div>"                
@@ -156,13 +156,29 @@ module ApplicationHelper
       if child.expanded
         open = "class='open'"
       end
+     
+     
+      relation = ""
+      unless node.properties.nil?
+  	    for key in node.properties.keys
+  		    concepts = node.properties[key].split(",").map{|x| x.strip}
+  		    if concepts.include?(child.name)
+  			    if key.include?("is_a")
+  				    relation << " <img src='/images/is_a.gif' style='vertical-align:middle;'>"
+  			    elsif key.include?("part")
+  				    relation << " <img src='/images/part_of.gif' style='vertical-align:middle;'>"
+  			    end
+  		    end
+  	    end
+      end
+
         
       
-        string <<"<li #{open} #{draw_root}  id=\"#{child.id}\"><span #{active_style}>#{child.name} #{icons}</span>"
+        string <<"<li #{open} #{draw_root}  id=\"#{child.id}\"><span #{active_style}> #{relation} #{child.name} #{icons}</span>"
     		   		
     				if child.child_size>0 && !child.expanded
     				  string << "<ul class=\"ajax\">
-  							            <li id='#{child.id}'>{url:/visualize/#{child.ontology_id}/#{URI.escape(child.id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}?callback=children}</li>
+  							            <li id='#{child.id}'>{url:/visconcepts/#{child.ontology_id}/?id=#{URI.escape(child.id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}&callback=children}</li>
   						            </ul>"
   				  elsif child.expanded
     				  string << "<ul>"

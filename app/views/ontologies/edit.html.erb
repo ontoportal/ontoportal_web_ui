@@ -1,3 +1,17 @@
+<script src="/javascripts/ui.core.js" type="text/javascript" charset="utf-8"></script>
+<script src="/javascripts/ui.datepicker.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="/stylesheets/layout/ui.core.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="/stylesheets/layout/ui.datepicker.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="/stylesheets/layout/ui.theme.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+<script type="text/javascript">
+$(function() {
+		$("#datepicker").datepicker({showOn: 'button', buttonImage: '/images/calendar.gif', buttonImageOnly: true});
+	});
+
+</script>
+<div  style="margin:10px;">
+
 <%@title = "Editing #{@ontology.displayLabel} Ontology"%>
 <%unless @errors.nil?%>
 <div style="color:red;">
@@ -21,9 +35,10 @@ Errors On Form
 <%=hidden_field :ontology, :ontologyId%>
 <%=hidden_field :ontology, :userId%>
 <%=hidden_field :ontology, :isManual%>
-<table >
+<br/>
+<table  class="form" width="90%">
 	<tr>
-		<td>Ontology Name: </td><td><%=text_field :ontology, :displayLabel%></td>
+		<td  class="top">Ontology Name: </td><td  class="top"><%=text_field :ontology, :displayLabel%></td>
 	</tr>
 	<tr>
 		<td>Ontology Description:</td><td><%= text_area :ontology, :description,:rows=>6%></td>
@@ -39,7 +54,7 @@ Errors On Form
 		<td>Ontology Version: </td><td><%=text_field :ontology, :versionNumber%></td>
 	</tr>	
 	<tr>
-		<td>Date Released: </td><td><%= calendar_date_select_tag "ontology[dateReleased]", "#{@ontology.dateReleased}", :popup => :force %></td>
+		<td>Date Released: </td><td><%= text_field :ontology, :dateReleased,:id=>"datepicker"%></td>
 	</tr>	
 	
 	 <%=hidden_field  :ontology,:isRemote%>
@@ -99,3 +114,4 @@ Errors On Form
 
 
 <%end%>
+</div>

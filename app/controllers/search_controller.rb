@@ -107,9 +107,8 @@ class SearchController < ApplicationController
       record_type_value = ""
       for type in record_type
         record_type_value<< type[0]
-      end
-      
-      response << "#{result[:contents]}|#{result[:conceptIdShort]}|#{result[:recordType].titleize.gsub("Record Type","").downcase}~!~"
+      end      
+      response << "#{result[:contents]}|#{result[:conceptIdShort]}|#{result[:recordType].titleize.gsub("Record Type","").downcase}|#{result[:ontologyVersionId]}~!~"
     end        
     
     if params[:response].eql?("json")

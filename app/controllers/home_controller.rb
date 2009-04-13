@@ -119,7 +119,30 @@ class HomeController < ApplicationController
   def feedback
     
   end
+  
+  def all_resources
+    @concept=params[:concept]
+    @ontology=params[:ontology]
+    @search=params[:search]
+  end
+  
   def send_feedback    
+    if params[:name].nil? || params[:name].empty?
+      flash[:notice]= "Please include your name"
+      render :action=>'feedback'
+      return
+    end
+    if params[:email].nil? || params[:email].empty?
+      flash[:notice]= "Please include your email"
+      render :action=>'feedback'
+      return
+    end
+    if params[:comment].nil? || params[:comment].empty?          
+      flash[:notice]= "Please include your comment"
+      render :action=>'feedback'
+      return
+    end
+
     Notifier.deliver_feedback(params[:name],params[:email],params[:comment])   
     flash[:notice]="Feedback has been sent"
     redirect_to_home

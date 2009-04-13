@@ -6,9 +6,8 @@ class LoginController < ApplicationController
   layout 'ontology'
   def index
     #sets the redirect properties
-    unless params[:redirect].nil?
-      session[:redirect]={:ontology=>undo_param(params[:redirect]),:tab=>params[:tab]}   
-    end
+      session[:redirect]=params[:redirect]
+
   end
   
   
@@ -22,7 +21,9 @@ class LoginController < ApplicationController
         if logged_in_user
           session[:user] = logged_in_user
           flash[:notice] = "Welcome "+logged_in_user.username.to_s+"."
-          redirect_to_history
+          redirect = session[:redirect]
+          puts "redirect is #{redirect}"
+          redirect_to redirect
         else
           @errors << "Invalid user name/password combination"
           render :action=>'index'

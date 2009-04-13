@@ -399,8 +399,8 @@ function updateContent(){
          // textarea, etc.  Then I'm using the context of the form from 
          // the initial '#contactForm' to narrow down our selector
          var inputs = [];
-         $(':input', form).each(function() {
 
+         $(form).find(':input').each(function() {
            if (this.type=="checkbox" && this.checked){
             inputs.push(this.name + '=' + escape(this.value));
            }else if (this.type!="checkbox"){
@@ -409,6 +409,7 @@ function updateContent(){
          })
          // now if I join our inputs using '&' we'll have a query string
          jQuery.post(form.action, inputs.join('&'), function(data) { 
+//             alert(data)
 			jQuery(target).html(data);
 			if(callback)
 			    callback();

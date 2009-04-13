@@ -1,6 +1,8 @@
 <script src="/javascripts/jquery.rating.pack.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" href="/stylesheets/layout/jquery.rating.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
+
+
 <% form_for(:review,:url=>reviews_path,:html=>{:onsubmit=>"ajaxForm(this,'##{@review.ontology_id}_review',function(){tb_remove();$('input.star').rating();} );return false;"}) do  %>
 
 

@@ -68,7 +68,7 @@ class BioPortalRestfulCore
               category = parseCategory(element)
             categories[category[:id].to_s]=category 
            }
-           puts "getCategories Parse Time: #{Time.now-time}"
+     #      puts "getCategories Parse Time: #{Time.now-time}"
           return categories
         
         
@@ -77,7 +77,7 @@ class BioPortalRestfulCore
        def self.getNode(ontology,node_id)
          node = nil
          
-         puts "Requesting : #{BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)}"
+ #        puts "Requesting : #{BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)}"
           begin
          doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))))
           rescue Exception=>e
@@ -100,7 +100,7 @@ class BioPortalRestfulCore
 #         puts "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 #         puts node.inspect
 #         puts "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-         puts "getNode Parse Time: #{Time.now-time}"
+ #        puts "getNode Parse Time: #{Time.now-time}"
          return node
        end
       
@@ -117,7 +117,7 @@ class BioPortalRestfulCore
           doc.elements.each("*/data/classBean"){ |element|  
           node = parseConcept(element,ontology)
          }
-         puts "getTopLevelNodes Parse Time: #{Time.now-time}"
+ #        puts "getTopLevelNodes Parse Time: #{Time.now-time}"
         return node.children
       end
 
@@ -136,8 +136,8 @@ class BioPortalRestfulCore
           doc.elements.each("*/data/list/ontologyBean"){ |element| 
           ontologies << parseOntology(element)
          }
-         puts "getOntologyList Parse Time: #{Time.now-time}"
-         puts ontologies.size
+#         puts "getOntologyList Parse Time: #{Time.now-time}"
+#         puts ontologies.size
         return ontologies
       end
       
@@ -157,7 +157,7 @@ class BioPortalRestfulCore
           doc.elements.each("*/data/list/ontologyBean"){ |element|  
           ontologies << parseOntology(element)
          }
-         puts "getOntologyVersions Parse Time: #{Time.now-time}"
+#         puts "getOntologyVersions Parse Time: #{Time.now-time}"
         return ontologies
       end
       
@@ -181,7 +181,7 @@ class BioPortalRestfulCore
             doc.elements.each("*/data/ontologyBean"){ |element|  
             ont = parseOntology(element)
           }                    
-         puts "getOntology Parse Time: #{Time.now-time}"
+ #        puts "getOntology Parse Time: #{Time.now-time}"
          
       #  if versions
        #   doc = REXML::Document.new(open(BASE_URL+ONTOLOGY_PATH.gsub("%ONT%",ontology)))
@@ -191,7 +191,7 @@ class BioPortalRestfulCore
       
       def self.parseOntology(ontology)
           ont = nil
-          puts "Ontology: #{ontology}"
+ #         puts "Ontology: #{ontology}"
             doc = REXML::Document.new(open(BASE_URL + PARSE_ONTOLOGY.gsub("%ONT%",ontology.to_s)))
             
                  ont = errorCheck(doc)
@@ -204,7 +204,7 @@ class BioPortalRestfulCore
               doc.elements.each("*/data/ontologyBean"){ |element|  
               ont = parseOntology(element)
             }                    
-           puts "getOntology Parse Time: #{Time.now-time}"
+ #          puts "getOntology Parse Time: #{Time.now-time}"
 
         #  if versions
          #   doc = REXML::Document.new(open(BASE_URL+ONTOLOGY_PATH.gsub("%ONT%",ontology)))
@@ -227,7 +227,7 @@ class BioPortalRestfulCore
               doc.elements.each("*/data/ontologyBean"){ |element|  
               ont = parseOntology(element)
             }                    
-           puts "getOntology Parse Time: #{Time.now-time}"
+ #          puts "getOntology Parse Time: #{Time.now-time}"
 
         #  if versions
          #   doc = REXML::Document.new(open(BASE_URL+ONTOLOGY_PATH.gsub("%ONT%",ontology)))
@@ -250,7 +250,7 @@ class BioPortalRestfulCore
             doc.elements.each("*/data/classBean"){ |element|  
             root = parseConcept(element,ontology)
            }
-         puts "getPathToRoot Parse Time: #{Time.now-time}"
+  #       puts "getPathToRoot Parse Time: #{Time.now-time}"
            return root
         
       end
@@ -300,7 +300,7 @@ class BioPortalRestfulCore
            ontologies = "ontologyids=#{ontologies.join(",")}&"
          end
          
-         puts BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0"
+#        puts BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0"
         begin
             doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0"))
            rescue Exception=>e
@@ -343,7 +343,7 @@ class BioPortalRestfulCore
            doc.elements.each("*/data/list/userBean"){ |element|  
            results << parseUser(element)
           }
-        puts "getUsers Parse Time: #{Time.now-time}"
+ #       puts "getUsers Parse Time: #{Time.now-time}"
         return results
           
         end
@@ -362,13 +362,13 @@ class BioPortalRestfulCore
            doc.elements.each("*/data/userBean"){ |element|  
            user = parseUser(element)
           }
-        puts "getUsers Parse Time: #{Time.now-time}"
+ #       puts "getUsers Parse Time: #{Time.now-time}"
         return user
         end
 
         def self.authenticateUser(username,password)
           user=nil
-          puts BASE_URL+AUTH_PATH+"?username=#{username}&password=#{password}&applicationid=#{APPLICATION_ID}"
+   #       puts BASE_URL+AUTH_PATH+"?username=#{username}&password=#{password}&applicationid=#{APPLICATION_ID}"
           begin
           doc = REXML::Document.new(open(BASE_URL+AUTH_PATH+"?username=#{username}&password=#{password}&applicationid=#{APPLICATION_ID}"))
           rescue Exception=>e
@@ -387,7 +387,7 @@ class BioPortalRestfulCore
            user.session_id = doc.elements["success"].elements["sessionId"].get_text.value
            
           }
-           puts "authenticateUser Parse Time: #{Time.now-time}"   
+#           puts "authenticateUser Parse Time: #{Time.now-time}"   
           
           
                     
@@ -412,7 +412,7 @@ class BioPortalRestfulCore
              doc.elements.each("*/data/userBean"){ |element|  
              user = parseUser(element)
             }
-             puts "createUser Parse Time: #{Time.now-time}"   
+  #           puts "createUser Parse Time: #{Time.now-time}"   
 
 
           return user
@@ -441,7 +441,7 @@ class BioPortalRestfulCore
             doc.elements.each("*/data/userBean"){ |element|  
             user = parseUser(element)
           }
-          puts "updateUser Parse Time: #{Time.now-time}"   
+  #        puts "updateUser Parse Time: #{Time.now-time}"   
 
 
           return user
@@ -467,7 +467,7 @@ class BioPortalRestfulCore
                doc.elements.each("*/data/ontologyBean"){ |element|  
                ontology = parseOntology(element)
               }
-               puts "createOntology Parse Time: #{Time.now-time}"   
+ #              puts "createOntology Parse Time: #{Time.now-time}"   
 
 
             return ontology
@@ -492,7 +492,7 @@ class BioPortalRestfulCore
                      doc.elements.each("*/data/ontologyBean"){ |element|  
                      ontology = parseOntology(element)
                     }
-                     puts "updateOntology Parse Time: #{Time.now-time}"   
+ #                    puts "updateOntology Parse Time: #{Time.now-time}"   
                    
                   return ontology          
           
@@ -578,7 +578,7 @@ class BioPortalRestfulCore
         end
         
         def self.getDiffs(ontology)
-            puts BASE_URL+DIFFS_PATH.gsub("%ONT%",ontology)
+ #           puts BASE_URL+DIFFS_PATH.gsub("%ONT%",ontology)
           begin
 
             doc = REXML::Document.new(open(BASE_URL+DIFFS_PATH.gsub("%ONT%",ontology)))
@@ -601,8 +601,7 @@ class BioPortalRestfulCore
                  pair << item.get_text.value
               }
               pairs << pair
-              }
-            
+              }            
             }
           return pairs
         end
@@ -645,9 +644,16 @@ private
   end
 
   def self.text_to_multipart(key,value)
+    puts "Class is #{value.class.to_s.downcase}"
+    if value.class.to_s.downcase.eql?("array")
+     return "Content-Disposition: form-data; name=\"#{CGI::escape(key)}\"\r\n" + 
+            "\r\n" + 
+            "#{value.join(",")}\r\n"
+    else
      return "Content-Disposition: form-data; name=\"#{CGI::escape(key)}\"\r\n" + 
             "\r\n" + 
             "#{value}\r\n"
+    end
   end
 
    def self.file_to_multipart(key,filename,mime_type,content)
@@ -660,12 +666,23 @@ private
 
 
   def self.postToRestlet(url,paramsHash)
+
+    for param in paramsHash.keys
+      if paramsHash[param].class.to_s.downcase.eql?("array")
+        paramsHash[param] = paramsHash[param].join(",")
+      end
+    end
     res = Net::HTTP.post_form(URI.parse(url),paramsHash)
     return res.body
   end
 
   def self.putToRestlet(url,paramsHash)
     paramsHash["method"]="PUT"
+    for param in paramsHash.keys
+      if paramsHash[param].class.to_s.downcase.eql?("array")
+        paramsHash[param] = paramsHash[param].join(",")
+      end
+    end
     res = Net::HTTP.post_form(URI.parse(url),paramsHash)
      return res.body
   end
@@ -703,15 +720,15 @@ private
 
      searchResultList.elements.each("searchBean"){|searchBean|
        search_item = {}
-       search_item[:ontologyDisplayLabel]=searchBean.elements["ontologyDisplayLabel"].get_text.value
-       search_item[:ontologyVersionId]=searchBean.elements["ontologyVersionId"].get_text.value
-       search_item[:ontologyId]=searchBean.elements["ontologyId"].get_text.value
-       search_item[:ontologyDisplayLabel]=searchBean.elements["ontologyDisplayLabel"].get_text.value
-       search_item[:recordType]=searchBean.elements["recordType"].get_text.value
-       search_item[:conceptId]=searchBean.elements["conceptId"].get_text.value
-       search_item[:conceptIdShort]=searchBean.elements["conceptIdShort"].get_text.value
-       search_item[:preferredName]=searchBean.elements["preferredName"].get_text.value
-       search_item[:contents]=searchBean.elements["contents"].get_text.value
+       search_item[:ontologyDisplayLabel]=searchBean.elements["ontologyDisplayLabel"].get_text.value.strip
+       search_item[:ontologyVersionId]=searchBean.elements["ontologyVersionId"].get_text.value.strip
+       search_item[:ontologyId]=searchBean.elements["ontologyId"].get_text.value.strip
+       search_item[:ontologyDisplayLabel]=searchBean.elements["ontologyDisplayLabel"].get_text.value.strip
+       search_item[:recordType]=searchBean.elements["recordType"].get_text.value.strip
+       search_item[:conceptId]=searchBean.elements["conceptId"].get_text.value.strip
+       search_item[:conceptIdShort]=searchBean.elements["conceptIdShort"].get_text.value.strip
+       search_item[:preferredName]=searchBean.elements["preferredName"].get_text.value.strip
+       search_item[:contents]=searchBean.elements["contents"].get_text.value.strip
        searchResults<< search_item
        }
 
@@ -723,25 +740,25 @@ private
 
   def self.parseCategory(categorybeanXML)
     category ={}
-    category[:name]=categorybeanXML.elements["name"].get_text.value rescue ""
-    category[:id]=categorybeanXML.elements["id"].get_text.value rescue ""
-    category[:parentId]=categorybeanXML.elements["parentId"].get_text.value rescue ""    
+    category[:name]=categorybeanXML.elements["name"].get_text.value.strip rescue ""
+    category[:id]=categorybeanXML.elements["id"].get_text.value.strip rescue ""
+    category[:parentId]=categorybeanXML.elements["parentId"].get_text.value.strip rescue ""    
     return category
   end
   def self.parseUser(userbeanXML)
     user = UserWrapper.new
     
-    user.id=userbeanXML.elements["id"].get_text.value
-    user.username=userbeanXML.elements["username"].get_text.value
-    user.email=userbeanXML.elements["email"].get_text.value
-    user.firstname=userbeanXML.elements["firstname"].get_text.value rescue ""
-    user.lastname=userbeanXML.elements["lastname"].get_text.value rescue ""
-    user.phone=userbeanXML.elements["id"].get_text.value rescue ""
+    user.id=userbeanXML.elements["id"].get_text.value.strip
+    user.username=userbeanXML.elements["username"].get_text.value.strip
+    user.email=userbeanXML.elements["email"].get_text.value.strip
+    user.firstname=userbeanXML.elements["firstname"].get_text.value.strip rescue ""
+    user.lastname=userbeanXML.elements["lastname"].get_text.value.strip rescue ""
+    user.phone=userbeanXML.elements["id"].get_text.value.strip rescue ""
     
     roles = []   
     begin
     userbeanXML.elements["roles"].elements.each("string"){ |role|
-     roles << role.get_text.value
+     roles << role.get_text.value.strip
     } 
     rescue
     end
@@ -753,38 +770,38 @@ private
   def self.parseOntology(ontologybeanXML)
 
     ontology = OntologyWrapper.new
-    ontology.id = ontologybeanXML.elements["id"].get_text.value
-    ontology.displayLabel= ontologybeanXML.elements["displayLabel"].get_text.value 
-    ontology.ontologyId = ontologybeanXML.elements["ontologyId"].get_text.value
-    ontology.userId = ontologybeanXML.elements["userId"].get_text.value rescue ""
-    ontology.parentId = ontologybeanXML.elements["parentId"].get_text.value rescue ""
-    ontology.format = ontologybeanXML.elements["format"].get_text.value rescue  ""
-    ontology.versionNumber = ontologybeanXML.elements["versionNumber"].get_text.value rescue ""
-    ontology.internalVersion = ontologybeanXML.elements["internalVersionNumber"].get_text.value
-    ontology.versionStatus = ontologybeanXML.elements["versionStatus"].get_text.value rescue ""
-    ontology.isCurrent = ontologybeanXML.elements["isCurrent"].get_text.value rescue ""
-    ontology.isRemote = ontologybeanXML.elements["isRemote"].get_text.value rescue ""
-    ontology.isReviewed = ontologybeanXML.elements["isReviewed"].get_text.value rescue ""
-    ontology.statusId = ontologybeanXML.elements["statusId"].get_text.value rescue ""
+    ontology.id = ontologybeanXML.elements["id"].get_text.value.strip
+    ontology.displayLabel= ontologybeanXML.elements["displayLabel"].get_text.value .strip
+    ontology.ontologyId = ontologybeanXML.elements["ontologyId"].get_text.value.strip
+    ontology.userId = ontologybeanXML.elements["userId"].get_text.value.strip rescue ""
+    ontology.parentId = ontologybeanXML.elements["parentId"].get_text.value.strip rescue ""
+    ontology.format = ontologybeanXML.elements["format"].get_text.value.strip rescue  ""
+    ontology.versionNumber = ontologybeanXML.elements["versionNumber"].get_text.value.strip rescue ""
+    ontology.internalVersion = ontologybeanXML.elements["internalVersionNumber"].get_text.value.strip
+    ontology.versionStatus = ontologybeanXML.elements["versionStatus"].get_text.value.strip rescue ""
+    ontology.isCurrent = ontologybeanXML.elements["isCurrent"].get_text.value.strip rescue ""
+    ontology.isRemote = ontologybeanXML.elements["isRemote"].get_text.value.strip rescue ""
+    ontology.isReviewed = ontologybeanXML.elements["isReviewed"].get_text.value.strip rescue ""
+    ontology.statusId = ontologybeanXML.elements["statusId"].get_text.value.strip rescue ""
     ontology.dateReleased =  Date.parse(ontologybeanXML.elements["dateReleased"].get_text.value).strftime('%m/%d/%Y') rescue ""
-    ontology.contactName = ontologybeanXML.elements["contactName"].get_text.value rescue ""
-    ontology.contactEmail = ontologybeanXML.elements["contactEmail"].get_text.value rescue ""
-    ontology.urn = ontologybeanXML.elements["urn"].get_text.value rescue ""
-    ontology.isFoundry = ontologybeanXML.elements["isFoundry"].get_text.value rescue ""
-    ontology.isManual = ontologybeanXML.elements["isManual"].get_text.value rescue ""
-    ontology.filePath = ontologybeanXML.elements["filePath"].get_text.value rescue ""
-    ontology.homepage = ontologybeanXML.elements["homepage"].get_text.value rescue ""
-    ontology.documentation = ontologybeanXML.elements["documentation"].get_text.value rescue ""
-    ontology.publication = ontologybeanXML.elements["publication"].get_text.value rescue ""
+    ontology.contactName = ontologybeanXML.elements["contactName"].get_text.value.strip rescue ""
+    ontology.contactEmail = ontologybeanXML.elements["contactEmail"].get_text.value.strip rescue ""
+    ontology.urn = ontologybeanXML.elements["urn"].get_text.value.strip rescue ""
+    ontology.isFoundry = ontologybeanXML.elements["isFoundry"].get_text.value.strip rescue ""
+    ontology.isManual = ontologybeanXML.elements["isManual"].get_text.value.strip rescue ""
+    ontology.filePath = ontologybeanXML.elements["filePath"].get_text.value.strip rescue ""
+    ontology.homepage = ontologybeanXML.elements["homepage"].get_text.value.strip rescue ""
+    ontology.documentation = ontologybeanXML.elements["documentation"].get_text.value.strip rescue ""
+    ontology.publication = ontologybeanXML.elements["publication"].get_text.value.strip rescue ""
     ontology.dateCreated = Date.parse(ontologybeanXML.elements["dateCreated"].get_text.value).strftime('%m/%d/%Y') rescue ""
-    ontology.preferredNameSlot=ontologybeanXML.elements["preferredNameSlot"].get_text.value rescue ""
-    ontology.synonymSlot=ontologybeanXML.elements["synonymSlot"].get_text.value rescue ""
-    ontology.description=ontologybeanXML.elements["description"].get_text.value rescue ""
-    ontology.abbreviation=ontologybeanXML.elements["abbreviation"].get_text.value rescue ""    
+    ontology.preferredNameSlot=ontologybeanXML.elements["preferredNameSlot"].get_text.value.strip rescue ""
+    ontology.synonymSlot=ontologybeanXML.elements["synonymSlot"].get_text.value.strip rescue ""
+    ontology.description=ontologybeanXML.elements["description"].get_text.value.strip rescue ""
+    ontology.abbreviation=ontologybeanXML.elements["abbreviation"].get_text.value.strip rescue ""    
     ontology.categories = []
 
     ontologybeanXML.elements["categoryIds"].elements.each{|element|
-      ontology.categories<< element.get_text.value
+      ontology.categories<< element.get_text.value.strip
     }
     
     return ontology
@@ -798,8 +815,8 @@ private
     doc.elements.each("org.ncbo.stanford.bean.response.ErrorStatusBean"){ |element|  
       
      errorHolder[:error]=true
-     errorHolder[:shortMessage]= element.elements["shortMessage"].get_text.value
-     errorHolder[:longMessage]=element.elements["longMessage"].get_text.value
+     errorHolder[:shortMessage]= element.elements["shortMessage"].get_text.value.strip
+     errorHolder[:longMessage]=element.elements["longMessage"].get_text.value.strip
      response=errorHolder
     }
     rescue
@@ -824,7 +841,7 @@ private
 #           puts "##########Element###########"
 #            puts entry.to_s
 
-             case entry.elements["string"].get_text.value
+             case entry.elements["string"].get_text.value.strip
                when SUBCLASS
                 if entry.elements["list"].attributes["reference"]
                    entry.elements["list"].elements.each(entry.elements["list"].attributes["reference"]){|element|

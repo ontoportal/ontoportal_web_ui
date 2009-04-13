@@ -8,7 +8,8 @@ class TreeNode
   attr_accessor :child_size
   attr_accessor :note_icon
   attr_accessor :map_icon
-  
+  attr_accessor :properties
+
   def to_param
     "#{URI.escape(self.id,":/?#!")}"
   end
@@ -37,6 +38,12 @@ class TreeNode
     unless node_object.children.empty?
       self.set_children(node_object.children)
     end
+    if node_object.properties.nil?
+      self.properties ={}
+    else
+      self.properties = node_object.properties
+    end
+    
   end
 
   

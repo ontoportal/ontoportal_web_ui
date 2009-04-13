@@ -13,7 +13,7 @@ class OntrezService
   ONTREZ_URL="http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr"
   #ONTREZ_URL="http://171.65.32.224:8080/Ontrez_v1_API"
   
-  RESOURCE_BY_CONCEPT="/byconcept/@/#/%/false/true/1/10"
+  RESOURCE_BY_CONCEPT="/byconcept/@/#/%/false/true/0/10"
   PAGING_RESOURCE_BY_CONCEPT="/byconcept/@/#/%/false/true/$S$/10"
   RESOURCES="/resources"
   DETAILS="/details/concept/@/#/resource/%/element/"
@@ -43,7 +43,7 @@ class OntrezService
     
 
     for resource in resources
-      puts "URL: #{ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%SHORTNAME%",resource.shortname)}"
+      puts "URL: #{ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource.shortname)}"
       doc = REXML::Document.new(open(ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource.shortname)))    
       parseOBS(doc,resource)
     end

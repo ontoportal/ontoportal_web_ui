@@ -430,7 +430,6 @@ jQuery.autocomplete = function(input, options) {
 				li.extra = extra;
 			}
 		}
-
 		if( options.onFindValue ) setTimeout(function() { options.onFindValue(li) }, 1);
 	}
 

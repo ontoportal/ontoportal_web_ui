@@ -84,6 +84,9 @@ class OntologyWrapper
     self.description= params[:description]
     self.categories = params[:categories]
     self.abbreviation = params[:abbreviation]
+    self.synonymSlot = params[:synonymSlot]
+    self.preferredNameSlot = params[:preferredNameSlot]
+    
   end
   
   def map_count

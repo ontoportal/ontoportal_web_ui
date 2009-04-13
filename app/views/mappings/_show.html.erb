@@ -1,5 +1,5 @@
 <h2>filter</h2>
-<% form_for :mapping, nil, :url => "/mappings/show/#{@ontology}", :html => { :onsubmit => 'ajaxForm(this,"#mappings",null);return false;' } do |f| %>
+<% form_for :mapping, nil, :url => "/mappings/show/#{@ontology}", :html => { :id=>'filter',:onsubmit => 'ajaxForm(this,"#mappings",null);return false;' } do |f| %>
 <input type="hidden" name="target" value="<%=@destination_ont%>">
 <table class="form">
 	<tr>
@@ -27,13 +27,7 @@
 <% end %>
 </table>
 
-	<form action="/mappings/show/<%=@ontology%>" method="GET">
-		<input type="hidden" name="target" value="<%=@destination_ont%>">
-		<input type="hidden" name="user" value="<%=params[:user]%>">
-		<input type="hidden" name="map_source" value="<%=params[:map_source]%>">
-		<input type="submit" name="rdf" value="Export Current Results To RDF" class="blueButton">
-
-	</form>
+		<input type="button" value="Export Current Results To RDF" class="blueButton" onclick="window.location='/mappings/show/<%=@ontology%>?target=<%=@destination_ont%>&user=<%=params[:user]%>&map_source=<%=params[:map_source]%>&rdf=rdf'">
 
 
 
