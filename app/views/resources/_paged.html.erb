@@ -18,5 +18,6 @@
 		<%if params[:end].to_i <= params[:total].to_i+10%>
 				<a href="#" onclick="jQuery('#innerannot<%=params[:index]%>').load('/respage/?ontology=<%=@ontology.id%>&concept=<%=@concept.id%>&resource=<%=params[:resource]%>&start=<%=params[:end]%>&end=<%=params[:end].to_i+10%>&index=<%=params[:index]%>&total=<%=params[:total]%>');return false;">Next Page &gt;&gt;</a>
 		<%end%>
+		</td>
 	</tr>
 </table>

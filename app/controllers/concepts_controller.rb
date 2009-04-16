@@ -28,16 +28,32 @@ class ConceptsController < ApplicationController
     time = Time.now
     puts "Starting Retrieval"
     @ontology = DataAccess.getLatestOntology(params[:ontology])
+    @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     @concept =  DataAccess.getNode(@ontology.id,params[:id])
-    puts "Finished in #{Time.now- time}"
-      #@concept_id = params[:id] # Removed to see if even used
-    
-    if request.xhr?    
-      show_ajax_request # process an ajax call
-    else
-      show_uri_request # process a full call
-      render :file=> '/ontologies/visualize',:use_full_path =>true, :layout=>'ontology' # done this way to share a view
+
+      @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
+
+    if @ontology.isRemote.to_i.eql?(1)
+      redirect_to "/ontologies/#{@ontology.id}"
+      return
     end
+    
+    if @ontology.versionStatus.to_i.eql?(3)
+      redirect_to "/visualize/#{@ontology.id}/#{@concept.id}"
+      return
+    else
+      for version in @versions
+        if version.versionStatus.to_i.eql?(3)
+          redirect_to "/visualize/#{version.id}/#{@concept.id}"
+          return
+        end
+      end
+      
+      redirect_to "/ontologies/#{@ontology.id}"
+      return
+    end
+    
+    
   end
   
 

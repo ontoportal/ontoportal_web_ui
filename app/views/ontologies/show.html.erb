@@ -36,7 +36,7 @@
 </div>
 <%end%>
 
-<h1><%=@ontology.displayLabel%></h1> <a href="/syndication/rss?ontologies=<%=@ontology.ontologyId%>" style="text-decoration:none;"><img src="/images/feed-icon.png" height=16 width=16 border=0 > Subscribe</a>
+<h1><%=@ontology.displayLabel%> &nbsp;&nbsp;&nbsp;&nbsp;<a href="/syndication/rss?ontologies=<%=@ontology.ontologyId%>" style="text-decoration:none;font-size:14px;"><img src="/images/feed-icon.png" height=16 width=16 border=0 > Subscribe</a></h1> 
 <%if !session[:user].nil? && (session[:user].id.to_i.eql?(@ontology.userId.to_i) || session[:user].admin?)%>
 <table class="form">
 	<tr>
@@ -142,7 +142,7 @@
 <div id="projects" style="display:none;" class="tab_content">
 
 	<br>
-	<table class="zebra" style="border:0px;"width="60%" cellpadding="0" cellspacing="0">
+	<table class="zebra" style="border:0px;float:left;"width="60%" cellpadding="0" cellspacing="0">
 
 		<%for project in @projects%>
 		<tr>
@@ -162,11 +162,12 @@
 		</tr>
 
 		<tr>
-			<td colspan="2" style="width:100%;margin-bottom:15px;"><hr></td>
+			<td colspan="2" style="width:100%;margin-bottom:15px;"><hr/></td>
 		</tr>
 		<%end%>
 	</table>
 </div>
+
 <div id="reviews" style="display:none;" class="tab_content">
 <%if session[:user].nil? %>
 	<br>
@@ -211,7 +212,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td id="<%=@ontology.ontologyId%>_review"></td>
+			<td id="<%=@ontology.ontologyId%>_review">&nbsp;</td>
 		</tr>
 	<% end %>
 </table>

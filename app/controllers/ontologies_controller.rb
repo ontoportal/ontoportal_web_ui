@@ -74,7 +74,27 @@ class OntologiesController < ApplicationController
      time = Time.now
      @ontology = DataAccess.getLatestOntology(params[:ontology])
 
-     redirect_to "/visualize/#{@ontology.id}"
+    @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
+
+    if @ontology.isRemote.to_i.eql?(1)
+      redirect_to "/ontologies/#{@ontology.id}"
+      return
+    end
+    
+    if @ontology.versionStatus.to_i.eql?(3)
+      redirect_to "/visualize/#{@ontology.id}"
+      return
+    else
+      for version in @versions
+        if version.versionStatus.to_i.eql?(3)
+          redirect_to "/visualize/#{version.id}"
+          return
+        end
+      end
+      
+      redirect_to "/ontologies/#{@ontology.id}"
+      return
+    end
   end
   
   def download_latest

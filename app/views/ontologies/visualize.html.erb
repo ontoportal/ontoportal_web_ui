@@ -33,7 +33,7 @@ function jumpToValue(li){
 }
 
 function formatItem(row) {
- 	return row[0] + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
+ 	return row[0] + " <span style='font-size:9px;color:blue;' >(" + row[2] + ")</span>";
 }
 
 
@@ -66,7 +66,7 @@ $(document).ready(function(){
 			<h2><%=link_to "View Ontology Details", ontology_url(:id => @ontology.id)%></h2>
 		</div>
 		<div id="qsearch" >
-		Jump To: <input type="textbox" id="search_box" size="30"> <input type="button" value="Go" onclick="searchbox.findValue()">
+		Jump To: <input type="textbox" id="search_box" size="30"/> <input type="button" value="Go" onclick="searchbox.findValue()"/>
 		</div>		
 		<div id="sd_content">
 
@@ -90,7 +90,7 @@ $(document).ready(function(){
 					<%if @ontology.ontologyId.to_s.eql?("1104")%>	
 					<li class="tab" id="t_tab5_top"><a  href="#t_tab5:" >Resources <sub style="valign:bottom;">alpha</sub></a></li>			
 					<%else%>							
-					<li class="tab" id="t_tab5_top" onclick="callTab(5,'/resources/@ontology@/@concept@');"><a  href="#t_tab5:" alt="callTab(5,'/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resources <sub class="beta">alpha</sub</a></li>
+					<li class="tab" id="t_tab5_top" onclick="callTab(5,'/resources/@ontology@/@concept@');"><a  href="#t_tab5:" alt="callTab(5,'/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resources <sub class="beta">alpha</sub></a></li>
 					<%end%>
 		
 			</ul>

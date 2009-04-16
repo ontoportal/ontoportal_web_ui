@@ -10,26 +10,26 @@ class BioPortalRestfulCore
     #BASE_URL="http://rest.bioontology.org/bioportal/rest"
     #BASE_URL="http://ncbo-core-stage1.stanford.edu/bioportal/rest"
     
-    ONTOLOGIES_PATH = "/ontologies/%ONT%"
-    CATEGORIES_PATH = "/categories/"
+    ONTOLOGIES_PATH = "/ontologies/%ONT%?email=ngriff@stanford.edu"
+    CATEGORIES_PATH = "/categories/?email=ngriff@stanford.edu"
 
     CONCEPT_PATH ="/concepts/%ONT%/?conceptid=%CONC%"
-    PATH_PATH = "/path/%ONT%/%CONC%/root"
-    VERSIONS_PATH="/ontologies/versions/%ONT%"
+    PATH_PATH = "/path/%ONT%/%CONC%/root?email=ngriff@stanford.edu"
+    VERSIONS_PATH="/ontologies/versions/%ONT%?email=ngriff@stanford.edu"
     
 #    http://ncbo-core-dev1.stanford.edu/bioportal/rest/search/cell?includeproperties=1&ontologyids=1070,%201032&pagesize=50&pagenum=2&isexactmatch=0
-    SEARCH_PATH="/search/%query%?%ONT%"
-    PROPERTY_SEARCH_PATH="/search/properties/%query%?ontologies=%ONT%"
-    VIRTUAL_URI_PATH="/virtual/%ONT%/%CONC%"
+    SEARCH_PATH="/search/%query%?%ONT%&email=ngriff@stanford.edu"
+    PROPERTY_SEARCH_PATH="/search/properties/%query%?ontologies=%ONT%&email=ngriff@stanford.edu"
+    VIRTUAL_URI_PATH="/virtual/%ONT%/%CONC%?email=ngriff@stanford.edu"
     META_SEARCH_PATH="/search/meta/%query%"
-    USERS_PATH="/users"
-    USER_PATH = "/users/%USR%"
-    AUTH_PATH = "/auth"
-    PARSE_ONTOLOGY = "/ontologies/parse/%ONT%"
-    PARSE_BATCH = "/ontologies/parsebatch/%START%/%END%"
+    USERS_PATH="/users?email=ngriff@stanford.edu"
+    USER_PATH = "/users/%USR%?email=ngriff@stanford.edu"
+    AUTH_PATH = "/auth?email=ngriff@stanford.edu"
+    PARSE_ONTOLOGY = "/ontologies/parse/%ONT%?email=ngriff@stanford.edu"
+    PARSE_BATCH = "/ontologies/parsebatch/%START%/%END%?email=ngriff@stanford.edu"
     
-    DIFFS_PATH="/diffs/%ONT%"
-    DOWNLOAD_DIFF="/diffs/download/%VER1%/%VER2%"
+    DIFFS_PATH="/diffs/%ONT%?email=ngriff@stanford.edu"
+    DOWNLOAD_DIFF="/diffs/download/%VER1%/%VER2%?email=ngriff@stanford.edu"
     
   #Constants
     SUPERCLASS="SuperClass"

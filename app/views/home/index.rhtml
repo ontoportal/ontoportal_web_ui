@@ -27,7 +27,7 @@ function jumpToValue(li){
 			
 			var sValue = li.extra[0];
 			
-			document.location="/visualize/"+sValue;
+			document.location="/virtual/"+sValue;
 			jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Ontology...</h1>' }); 
 			return
 		}
@@ -73,9 +73,9 @@ function formatItemResource(row) {
 
 
 
-<%names = @ontologies.map{|ont| "[\"#{ont.displayLabel}\",\"#{ont.id}\"]"}
+<%names = @ontologies.map{|ont| "[\"#{ont.displayLabel}\",\"#{ont.ontologyId}\"]"}
   abrv = @ontologies.map{|ont|
-	"[\"#{ont.abbreviation} - #{ont.displayLabel}\",\"#{ont.id}\"]"
+	"[\"#{ont.abbreviation} - #{ont.displayLabel}\",\"#{ont.ontologyId}\"]"
 	}
 	
 names = names | abrv%>
