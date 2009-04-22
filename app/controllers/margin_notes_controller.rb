@@ -45,10 +45,10 @@ class MarginNotesController < ApplicationController
 
     
       if @margin_note.save               
-        flash[:notice] = 'MarginNote was successfully created.'
+        flash[:notice] = 'Note was successfully created.'
         
       else
-        flash[:notice] = 'Error creating MarginNote'
+        flash[:notice] = 'Error creating Note'
       end
       
       #repopulates tab

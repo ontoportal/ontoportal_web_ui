@@ -67,7 +67,7 @@ javascripts = "resetNoteForm(#{uniq});"
                 %></td>
 	</tr>
 	<tr>
-		<th>Subject:</th><td><%=text_field 'margin_note', 'subject',:size=>70,:id=>"m_note_subject#{uniq}",:maxlength=>39%></td>
+		<th>Subject:</th><td><%=text_field 'margin_note', 'subject',:size=>70,:id=>"m_note_subject#{uniq}",:maxlength=>100%></td>
 	<tr>
 		<th>Note:</th><td><%=text_area 'margin_note' ,'comment',:cols=>70,:rows=>10, :id=>"note_comment#{uniq}"%>
 			</td>
@@ -106,7 +106,7 @@ javascripts = "resetNoteForm(#{uniq});"
                 %></td>
 	</tr>
 	<tr>
-		<th>Subject:</th><td><%=text_field 'margin_note', 'subject',:size=>70,:id=>"note_subject#{uniq}",:maxlength=>39%></td>
+		<th>Subject:</th><td><%=text_field 'margin_note', 'subject',:size=>70,:id=>"note_subject#{uniq}",:maxlength=>100%></td>
 	<tr>
 		<th>Note:</th><td><%=text_area 'margin_note' ,'comment',:cols=>70,:rows=>10, :id=>"note_comment#{uniq}"%>
 			</td>
