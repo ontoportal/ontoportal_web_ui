@@ -238,7 +238,8 @@ class BioPortalRestfulCore
       
       def self.getPathToRoot(ontology,source,light=nil)
            root = nil
-           doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"?light=false"))
+           puts "CALLING PATH TO ROOT WITH: #{BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"?light=false"}"
+           doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"&light=false"))
            
              root = errorCheck(doc)
 
