@@ -875,7 +875,7 @@ private
                    else 
                     element.get_text.value unless element.get_text.value.empty? 
                     
-                   end}.join(" , ") #rescue ""
+                   end}.join(" | ") #rescue ""
                   rescue Exception =>e
                     puts e.message
                     puts e.backtrace
