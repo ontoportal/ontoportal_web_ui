@@ -81,17 +81,16 @@ class OntologiesController < ApplicationController
       return
     end
     
-    if @ontology.versionStatus.to_i.eql?(3)
+    if @ontology.statusId.to_i.eql?(3)
       redirect_to "/visualize/#{@ontology.id}"
       return
     else
       for version in @versions
-        if version.versionStatus.to_i.eql?(3)
+        if version.statusId.to_i.eql?(3)
           redirect_to "/visualize/#{version.id}"
           return
         end
       end
-      
       redirect_to "/ontologies/#{@ontology.id}"
       return
     end

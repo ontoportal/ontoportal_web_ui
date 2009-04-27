@@ -28,6 +28,7 @@
     var searchbox;
 
     function jumpToValue(li){
+    //    alert(li.extra)
         
     	if( li == null ){
     	// Im doing a search	
@@ -42,6 +43,7 @@
     		if( !!li.extra ){
 
     			var sValue = li.extra[0];
+              //  alert("http://stage.bioontology.org/virtual/"+BP_ontology_id+"/"+sValue)
     			document.location="http://stage.bioontology.org/virtual/"+BP_ontology_id+"/"+sValue;
     	//		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Concept...</h1>' }); 
     			return
@@ -67,8 +69,11 @@
     function setup_functions(){
         jQuery("#BP_search_box").autocomplete("http://stage.bioontology.org/search/json_search/"+BP_ontology_id, { lineSeparator:"~!~",matchSubset:0,minChars:3,maxItemsToShow:20,onFindValue:jumpToValue,formatItem:formatItem });
         searchbox =  jQuery("#BP_search_box")[0].autocompleter;	    	    	    
+	  //  alert(searchbox)
     }
     function jump_clicked(){
+     //   alert("clicked");
+//alert(searchbox)
         searchbox.findValue();
     }
 

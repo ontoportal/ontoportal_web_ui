@@ -108,7 +108,20 @@ class SearchController < ApplicationController
       for type in record_type
         record_type_value<< type[0]
       end      
-      response << "#{result[:contents]}|#{result[:conceptIdShort]}|#{result[:recordType].titleize.gsub("Record Type","").downcase}|#{result[:ontologyVersionId]}~!~"
+      
+      target_value = result[:preferredName]
+      case params[:target]      
+      when "name" : target_value = result[:preferredName]        
+      when "shortid" : target_value = result[:conceptIdShort]
+      when "uri" : target_value = result[:conceptId]
+      else
+        target_value = result[:preferredName]
+      end
+      
+      puts params[:target]
+      puts target_value
+      
+      response << "#{target_value}|#{result[:conceptIdShort]}|#{result[:recordType].titleize.gsub("Record Type","").downcase}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}~!~"
     end        
     
     if params[:response].eql?("json")

@@ -38,12 +38,12 @@ class ConceptsController < ApplicationController
       return
     end
     
-    if @ontology.versionStatus.to_i.eql?(3)
+    if @ontology.statusId.to_i.eql?(3)
       redirect_to "/visualize/#{@ontology.id}/#{@concept.id}"
       return
     else
       for version in @versions
-        if version.versionStatus.to_i.eql?(3)
+        if version.statusId.to_i.eql?(3)
           redirect_to "/visualize/#{version.id}/#{@concept.id}"
           return
         end

@@ -926,3 +926,8 @@ padding:0px;
 	background-color: #FFFFFF
 }
 
+.blue-highlight{
+	border:1px #AFAFAF dashed;
+	background-color:#f5fafa;
+	padding:5px;
+}

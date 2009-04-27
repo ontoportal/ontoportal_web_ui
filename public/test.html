@@ -2,25 +2,49 @@
 <html>
 	<head>
 <link rel="stylesheet" href="/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<script src="javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+<script src="http://stage.bioontology.org/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js"type="text/javascript" charset="utf-8"></script>
 
-<script src="/javascripts/jquery.js" type="text/javascript" charset="utf-8">
-</script>
 <script type="text/javascript">
 
-$(document).ready(function(){
-	 $("#input_box").autocomplete("/search/json_search/1006", { minChars:3,maxItemsToShow:20,autoFill:true });
+
+
+function formatItem(row) {	
+ 	return row[5] + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
+}
+
+
+
+    
+function setup_functions(){
+ 	
+	jQuery("input[class*='bp_form_complete']").each(function(){
+		values = this.className.split("-");
+		ontology_id = values[1];
+		target_property = values[2];
+		jQuery(this).autocomplete("http://stage.bioontology.org/search/json_search/"+ontology_id, { extraParams:{'target':target_property},lineSeparator:"~!~",matchSubset:0,minChars:3,maxItemsToShow:20,formatItem:formatItem });	
+	});
+    
+ //   searchbox =  jQuery("#BP_search_box")[0].autocompleter;	    	    	    
+}
+
+
+ $(document).ready(function(){
+	setup_functions()
+	
 });
 
 </script>
-<script src="/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.js" type="text/javascript" charset="utf-8"></script>
 
 
 		<title></title>
 	</head>
 	<body>
 		
-		<input type="textbox" id="input_box">
-		
-		
+		NCI<input type="text" name="part"class="bp_form_complete-1032-uri"/><br/>
+		Amino<input type="text" name="chemical"class="bp_form_complete-1054-shortid"/><br/>
+		NCI<input type="text" name="x"class="bp_form_complete-1032-name"/><br/>
+		NCI<input type="text" name="y"class="bp_form_complete-1032-shortid"/><br/>		
+
 	</body>
 </html>

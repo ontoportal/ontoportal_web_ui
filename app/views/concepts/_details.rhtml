@@ -32,6 +32,9 @@
 	bottom_set=[]
 	leftover=[]
 	for key in keys
+		#if key.include?("[R]")			
+		#	next
+		#end
 		top=false
 		bottom=false
 		top_keys.each{|top_key| 
@@ -55,14 +58,14 @@
 
 	<%for key in top_set%>
 	
-		<%if key.eql?("type")|| key.eql?("rdf:type")
+		<%if key.eql?("type")|| key.eql?("rdf:type") || key.include?("[R]")	
 			next
 		end%>
 		<%unless @concept.properties[key].empty?%>
 	
 		<tr>
 			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
-			<td ><%=auto_link("#{@concept.properties[key]}", :all, :target => "_blank")%></td>
+			<td ><%=auto_link("#{@concept.properties[key].split("|").join("<br/>")}", :all, :target => "_blank")%></td>
 		</tr>
 		<%end%>
 	
@@ -71,28 +74,28 @@
 	
 
 	<%for key in leftover%>
-		<%if key.eql?("type")|| key.eql?("rdf:type")
+		<%if key.eql?("type")|| key.eql?("rdf:type")|| key.include?("[R]")	
 			next
 		end%>
 		<%unless @concept.properties[key].empty?%>
 
 		<tr>
 			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
-			<td ><%=auto_link("#{@concept.properties[key]}", :all, :target => "_blank")%></td>
+			<td ><%=auto_link("#{@concept.properties[key].split("|").join("<br/>")}", :all, :target => "_blank")%></td>
 		</tr>
 		<%end%>
 
 	<%end%>
 
 	<%for key in bottom_set%>
-		<%if key.eql?("type")|| key.eql?("rdf:type")
+		<%if key.eql?("type")|| key.eql?("rdf:type")|| key.include?("[R]")	
 			next
 		end%>
 		<%unless @concept.properties[key].empty?%>
 
 		<tr>
 			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
-			<td ><%=auto_link("#{@concept.properties[key]}", :all, :target => "_blank")%></td>
+			<td ><%=auto_link("#{@concept.properties[key].split("|").join("<br/>")}", :all, :target => "_blank")%></td>
 		</tr>
 		<%end%>
 

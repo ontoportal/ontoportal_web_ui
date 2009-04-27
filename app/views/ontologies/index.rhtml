@@ -235,7 +235,7 @@ ontology_groups = {
 	<th style="display:none;">Description</th>
 	<th style="display:none;">categories</th>
 	<th style="display:none;">groups</th>
-	<th>RSS</th>
+	<th>OboFoundry</th>
   </tr>
   </thead>
 <tbody>
@@ -265,7 +265,7 @@ ontology_groups = {
 		<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>
 	<td style="display:none;"> <%=ontology.categories.join(" ")%></td>
 	<td style="display:none;"><%if !ontology_groups[ontology.ontologyId.to_i].nil?%><%=ontology_groups[ontology.ontologyId.to_i].join(" , ")%><%end%></td>
-	<td><a href="/syndication/rss?ontologies=<%=ontology.ontologyId%>" style="text-decoration:none;"><img src="/images/feed-icon.png" height=16 width=16 border=0 > Subscribe</a></td>
+	<td><%if ontology.isFoundry.to_i.eql?(1)%>Yes<%else%>No<%end%></td>
   </tr>
 <% end %>
 </tbody>

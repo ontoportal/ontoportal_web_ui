@@ -213,3 +213,9 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 #tag_clouds a{
     text-decoration:none;
 }
+
+.blue-highlight{
+	border:1px #AFAFAF dashed;
+	background-color:#f5fafa;
+	padding:5px;
+}

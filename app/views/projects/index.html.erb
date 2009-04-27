@@ -1,15 +1,16 @@
 <%@title = "Project Listing"%>
-<br>
+<div style="padding:10px;">
+
+<div class="blue-highlight" style="width:100px;text-align:center;">
 <%if session[:user].nil?%>
 	<input type="button" class ="blueButton" value="Add Project" onclick ="window.location='/login'"> 
 <%else%>
 <span class="blueButton"><%=link_to "Add Project",new_project_path%></span>
 <%end%>
-
+</div>
 
 <br>
 <br>
-<div style="padding:10px;">
 <h1> Projects</h1>
 <table class="zebra" style="border:0px;"width="90%" cellpadding="0" cellspacing="0">
 
