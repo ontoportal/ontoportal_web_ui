@@ -231,11 +231,12 @@ ontology_groups = {
 	<th  style="width:50px;">Version</th>
 	<th>Author</th>
 	<th>Uploaded On</th>
-	<th>Status</th>
+	<th>Group</th>
+
 	<th style="display:none;">Description</th>
 	<th style="display:none;">categories</th>
 	<th style="display:none;">groups</th>
-	<th>OboFoundry</th>
+	<th>Status</th>
   </tr>
   </thead>
 <tbody>
@@ -259,13 +260,13 @@ ontology_groups = {
 	<td  style="width:50px;"><%=ontology.versionNumber%></td>
 	<td><%=ontology.contactName%></td>
 	<td><%=ontology.dateCreated%></td>
-	<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
+	<td><%if !ontology_groups[ontology.ontologyId.to_i].nil?%><%=ontology_groups[ontology.ontologyId.to_i].join("")%><%end%></td>
 	<td style="display:none;"><%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
 		<br>
 		<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>
 	<td style="display:none;"> <%=ontology.categories.join(" ")%></td>
 	<td style="display:none;"><%if !ontology_groups[ontology.ontologyId.to_i].nil?%><%=ontology_groups[ontology.ontologyId.to_i].join(" , ")%><%end%></td>
-	<td><%if ontology.isFoundry.to_i.eql?(1)%>Yes<%else%>No<%end%></td>
+	<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
   </tr>
 <% end %>
 </tbody>
