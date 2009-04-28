@@ -10,26 +10,26 @@ class BioPortalRestfulCore
     #BASE_URL="http://rest.bioontology.org/bioportal/rest"
     #BASE_URL="http://ncbo-core-stage1.stanford.edu/bioportal/rest"
     
-    ONTOLOGIES_PATH = "/ontologies/%ONT%?email=ngriff@stanford.edu"
-    CATEGORIES_PATH = "/categories/?email=ngriff@stanford.edu"
+    ONTOLOGIES_PATH = "/ontologies/%ONT%"
+    CATEGORIES_PATH = "/categories/"
 
     CONCEPT_PATH ="/concepts/%ONT%/?conceptid=%CONC%"
-    PATH_PATH = "/path/%ONT%/%CONC%/root?email=ngriff@stanford.edu"
-    VERSIONS_PATH="/ontologies/versions/%ONT%?email=ngriff@stanford.edu"
+    PATH_PATH = "/path/%ONT%/%CONC%/root"
+    VERSIONS_PATH="/ontologies/versions/%ONT%"
     
 #    http://ncbo-core-dev1.stanford.edu/bioportal/rest/search/cell?includeproperties=1&ontologyids=1070,%201032&pagesize=50&pagenum=2&isexactmatch=0
-    SEARCH_PATH="/search/%query%?%ONT%&email=ngriff@stanford.edu"
-    PROPERTY_SEARCH_PATH="/search/properties/%query%?ontologies=%ONT%&email=ngriff@stanford.edu"
-    VIRTUAL_URI_PATH="/virtual/%ONT%/%CONC%?email=ngriff@stanford.edu"
+    SEARCH_PATH="/search/%query%?%ONT%"
+    PROPERTY_SEARCH_PATH="/search/properties/%query%?ontologies=%ONT%"
+    VIRTUAL_URI_PATH="/virtual/%ONT%/%CONC%"
     META_SEARCH_PATH="/search/meta/%query%"
-    USERS_PATH="/users?email=ngriff@stanford.edu"
-    USER_PATH = "/users/%USR%?email=ngriff@stanford.edu"
-    AUTH_PATH = "/auth?email=ngriff@stanford.edu"
-    PARSE_ONTOLOGY = "/ontologies/parse/%ONT%?email=ngriff@stanford.edu"
-    PARSE_BATCH = "/ontologies/parsebatch/%START%/%END%?email=ngriff@stanford.edu"
+    USERS_PATH="/users"
+    USER_PATH = "/users/%USR%"
+    AUTH_PATH = "/auth"
+    PARSE_ONTOLOGY = "/ontologies/parse/%ONT%"
+    PARSE_BATCH = "/ontologies/parsebatch/%START%/%END%"
     
-    DIFFS_PATH="/diffs/%ONT%?email=ngriff@stanford.edu"
-    DOWNLOAD_DIFF="/diffs/download/%VER1%/%VER2%?email=ngriff@stanford.edu"
+    DIFFS_PATH="/diffs/%ONT%"
+    DOWNLOAD_DIFF="/diffs/download/%VER1%/%VER2%"
     
   #Constants
     SUPERCLASS="SuperClass"
@@ -238,7 +238,7 @@ class BioPortalRestfulCore
       
       def self.getPathToRoot(ontology,source,light=nil)
            root = nil
-           doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"&light=false"))
+           doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"?light=false"))
            
              root = errorCheck(doc)
 
@@ -370,7 +370,7 @@ class BioPortalRestfulCore
           user=nil
    #       puts BASE_URL+AUTH_PATH+"?username=#{username}&password=#{password}&applicationid=#{APPLICATION_ID}"
           begin
-          doc = REXML::Document.new(open(BASE_URL+AUTH_PATH+"&username=#{username}&password=#{password}&applicationid=#{APPLICATION_ID}"))
+          doc = REXML::Document.new(open(BASE_URL+AUTH_PATH+"?username=#{username}&password=#{password}&applicationid=#{APPLICATION_ID}"))
           rescue Exception=>e
             doc =  REXML::Document.new(e.io.read)
             puts doc.to_s
@@ -397,7 +397,7 @@ class BioPortalRestfulCore
         def self.createUser(params)
           user = nil
             begin
-            doc = REXML::Document.new(postToRestlet(BASE_URL+USERS_PATH.gsub("%USR%","")+"&applicationid=#{APPLICATION_ID}",params))
+            doc = REXML::Document.new(postToRestlet(BASE_URL+USERS_PATH.gsub("%USR%","")+"?applicationid=#{APPLICATION_ID}",params))
             rescue Exception=>e
               doc =  REXML::Document.new(e.io.read)
               puts doc.to_s
@@ -424,7 +424,7 @@ class BioPortalRestfulCore
         def self.updateUser(params,id)
           user = nil
           begin
-          doc = REXML::Document.new(putToRestlet(BASE_URL+USER_PATH.gsub("%USR%",id.to_s)+"&applicationid=#{APPLICATION_ID}",params))
+          doc = REXML::Document.new(putToRestlet(BASE_URL+USER_PATH.gsub("%USR%",id.to_s)+"?applicationid=#{APPLICATION_ID}",params))
           rescue Exception=>e
             puts e.message
             puts e.backtrace
@@ -450,8 +450,9 @@ class BioPortalRestfulCore
         
         def self.createOntology(params)
             ontology = nil
+            puts "Create URL: "+(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?applicationid=#{APPLICATION_ID}")
               begin
-              doc = REXML::Document.new(postMultiPart(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"&applicationid=#{APPLICATION_ID}",params))
+              doc = REXML::Document.new(postMultiPart(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?applicationid=#{APPLICATION_ID}",params))
               puts doc.to_s
               rescue Exception=>e
                 doc =  REXML::Document.new(e.io.read)
@@ -476,7 +477,7 @@ class BioPortalRestfulCore
         def self.updateOntology(params,version_id)
                   ontology = nil
                     begin
-                    doc = REXML::Document.new(putToRestlet(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%",version_id)+"&applicationid=#{APPLICATION_ID}",params))
+                    doc = REXML::Document.new(putToRestlet(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%",version_id)+"?applicationid=#{APPLICATION_ID}",params))
                     rescue Exception=>e
                        doc =  REXML::Document.new(e.io.read)
                        puts doc.to_s
@@ -513,7 +514,7 @@ class BioPortalRestfulCore
           
           
               begin
-                  doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=1"))
+                  doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=1"))
                  rescue Exception=>e
                     doc =  REXML::Document.new(e.io.read)
                     puts doc.to_s
@@ -550,7 +551,7 @@ class BioPortalRestfulCore
           
           
               begin
-                  doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"isexactmatch=1&pagesize=50&pagenum=#{page}&includeproperties=1"))
+                  doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=1&pagesize=50&pagenum=#{page}&includeproperties=1"))
                  rescue Exception=>e
                     doc =  REXML::Document.new(e.io.read)
                     puts doc.to_s
@@ -634,7 +635,7 @@ private
 #    puts "==========="
 #    puts query
 #    puts "=========== "
-    response = Net::HTTP.new(uri.host,"8080").start.
+    response = Net::HTTP.new(uri.host,"80").start.
       post2(uri.path,
             query,
             "Content-type" => "multipart/form-data; boundary=" + boundary)
