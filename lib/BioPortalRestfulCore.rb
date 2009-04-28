@@ -238,7 +238,6 @@ class BioPortalRestfulCore
       
       def self.getPathToRoot(ontology,source,light=nil)
            root = nil
-           puts "CALLING PATH TO ROOT WITH: #{BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"?light=false"}"
            doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"&light=false"))
            
              root = errorCheck(doc)
@@ -371,7 +370,7 @@ class BioPortalRestfulCore
           user=nil
    #       puts BASE_URL+AUTH_PATH+"?username=#{username}&password=#{password}&applicationid=#{APPLICATION_ID}"
           begin
-          doc = REXML::Document.new(open(BASE_URL+AUTH_PATH+"?username=#{username}&password=#{password}&applicationid=#{APPLICATION_ID}"))
+          doc = REXML::Document.new(open(BASE_URL+AUTH_PATH+"&username=#{username}&password=#{password}&applicationid=#{APPLICATION_ID}"))
           rescue Exception=>e
             doc =  REXML::Document.new(e.io.read)
             puts doc.to_s
@@ -398,7 +397,7 @@ class BioPortalRestfulCore
         def self.createUser(params)
           user = nil
             begin
-            doc = REXML::Document.new(postToRestlet(BASE_URL+USERS_PATH.gsub("%USR%","")+"?&applicationid=#{APPLICATION_ID}",params))
+            doc = REXML::Document.new(postToRestlet(BASE_URL+USERS_PATH.gsub("%USR%","")+"&applicationid=#{APPLICATION_ID}",params))
             rescue Exception=>e
               doc =  REXML::Document.new(e.io.read)
               puts doc.to_s
@@ -425,7 +424,7 @@ class BioPortalRestfulCore
         def self.updateUser(params,id)
           user = nil
           begin
-          doc = REXML::Document.new(putToRestlet(BASE_URL+USER_PATH.gsub("%USR%",id.to_s)+"?&applicationid=#{APPLICATION_ID}",params))
+          doc = REXML::Document.new(putToRestlet(BASE_URL+USER_PATH.gsub("%USR%",id.to_s)+"&applicationid=#{APPLICATION_ID}",params))
           rescue Exception=>e
             puts e.message
             puts e.backtrace
@@ -452,7 +451,7 @@ class BioPortalRestfulCore
         def self.createOntology(params)
             ontology = nil
               begin
-              doc = REXML::Document.new(postMultiPart(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?&applicationid=#{APPLICATION_ID}",params))
+              doc = REXML::Document.new(postMultiPart(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"&applicationid=#{APPLICATION_ID}",params))
               puts doc.to_s
               rescue Exception=>e
                 doc =  REXML::Document.new(e.io.read)
@@ -477,7 +476,7 @@ class BioPortalRestfulCore
         def self.updateOntology(params,version_id)
                   ontology = nil
                     begin
-                    doc = REXML::Document.new(putToRestlet(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%",version_id)+"?&applicationid=#{APPLICATION_ID}",params))
+                    doc = REXML::Document.new(putToRestlet(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%",version_id)+"&applicationid=#{APPLICATION_ID}",params))
                     rescue Exception=>e
                        doc =  REXML::Document.new(e.io.read)
                        puts doc.to_s
@@ -888,4 +887,3 @@ private
   end
 
 end
-  
