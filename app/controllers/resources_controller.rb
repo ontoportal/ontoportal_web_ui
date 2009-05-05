@@ -14,7 +14,7 @@ class ResourcesController < ApplicationController
         #  end
 #New OBA
 
-    @resources = OBDWrapper.gatherResources(@ontology.id,@concept)
+    @resources = OBDWrapper.gatherResources(@ontology.ontologyId,@concept)
 
 
 
@@ -42,7 +42,7 @@ class ResourcesController < ApplicationController
           if(@concept.properties["UMLS_CUI"]!=nil)
             @resource = OBDWrapper.gatherResourcesCui(@concept)
           else
-            @resource = OBDWrapper.pageResources(@ontology.id,@concept.id,params[:resource],params[:start],params[:end])
+            @resource = OBDWrapper.pageResources(@ontology.ontologyId,@concept.id,params[:resource],params[:start],params[:end])
           end
 
   render :partial=> 'paged'

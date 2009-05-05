@@ -13,10 +13,10 @@ class OntrezService
   ONTREZ_URL="http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr"
   #ONTREZ_URL="http://171.65.32.224:8080/Ontrez_v1_API"
   
-  RESOURCE_BY_CONCEPT="/byconcept/@/#/%/false/true/0/10"
-  PAGING_RESOURCE_BY_CONCEPT="/byconcept/@/#/%/false/true/$S$/10"
+  RESOURCE_BY_CONCEPT="/byconcept/virtual/@/#/%/false/true/0/10"
+  PAGING_RESOURCE_BY_CONCEPT="/byconcept/virtual/@/#/%/false/true/$S$/10"
   RESOURCES="/resources"
-  DETAILS="/details/concept/@/#/resource/%/element/"
+  DETAILS="/details/concept/virtual/@/#/resource/%/element/"
   
   CLASS_STRING="/result/ontology/@/classID/#/from/0/number/15/metadata"
   CUI_STRING="/result/cui/#/from/0/number/15/metadata"
@@ -25,7 +25,7 @@ class OntrezService
   PAGING_CUI_STRING="/result/cui/#/from/$S$/number/$E$/resource/*R*/metadata"
   
 
-  def self.gatherResources(ontology_version_id,concept_id)
+  def self.gatherResources(ontology_id,concept_id)
     resources = []
     
     #oba_url = "http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr/byconcept/@/#/AE/false/true/1/10"
@@ -43,8 +43,8 @@ class OntrezService
     
 
     for resource in resources
-      puts "URL: #{ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource.shortname)}"
-      doc = REXML::Document.new(open(ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource.shortname)))    
+  #    puts "URL: #{ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource.shortname)}"
+      doc = REXML::Document.new(open(ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_id.to_s).gsub("#",concept_id).gsub("%",resource.shortname)))    
       parseOBS(doc,resource)
     end
   
@@ -55,16 +55,16 @@ class OntrezService
   end
 
 
-  def self.gatherResourcesDetails(ontology_version_id,concept_id,resource,element)
+  def self.gatherResourcesDetails(ontology_id,concept_id,resource,element)
      resources = []
 
      #oba_url = "http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr/details/concept/@/#/resource/%/element/"
-     puts "===================================="
-     puts "Gathering Resource From URL:|#{ONTREZ_URL+DETAILS.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource)+element}|"
-     puts "===================================="
+ #    puts "===================================="
+ #    puts "Gathering Resource From URL:|#{ONTREZ_URL+DETAILS.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource)+element}|"
+  #   puts "===================================="
 
      
-     doc = REXML::Document.new(open(ONTREZ_URL+DETAILS.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource)+element.strip))
+     doc = REXML::Document.new(open(ONTREZ_URL+DETAILS.gsub("@",ontology_.to_s).gsub("#",concept_id).gsub("%",resource)+element.strip))
 
      puts "Beginning Parsing"
 
@@ -79,10 +79,10 @@ class OntrezService
    end
 
     
-    def self.pageResources(ontology_version_id,concept_id,resource_name,page_start,page_end)
+    def self.pageResources(ontology_id,concept_id,resource_name,page_start,page_end)
       
-      puts "Parsing URL #{ONTREZ_URL+PAGING_RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id).gsub("#",concept_id).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name)}"
-         doc = REXML::Document.new(open(ONTREZ_URL+PAGING_RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id).gsub("#",concept_id).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name)))
+#      puts "Parsing URL #{ONTREZ_URL+PAGING_RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id).gsub("#",concept_id).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name)}"
+         doc = REXML::Document.new(open(ONTREZ_URL+PAGING_RESOURCE_BY_CONCEPT.gsub("@",ontology_id).gsub("#",concept_id).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name)))
 
           puts "Beginning Parsing"
           new_resource = Resource.new
