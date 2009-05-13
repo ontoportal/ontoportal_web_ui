@@ -219,7 +219,12 @@
 </div>
 
 <div id="widgets" style="display:none;" class="tab_content">
-<table class="minimal" style="float:left;" >
+
+<div style="float:left;">
+<h1>Adding a NCBO Widget To Your Site</h1>
+To add a prebuilt widget to your site, simply copy the text in the textarea and paste it into your HTML.
+<hr/>
+<table class="minimal" >
 	<%if false%>
 	<tr>
 		<td align="center"><h2>Quick Jump Widget for <%=@ontology.displayLabel%></h2>
@@ -240,9 +245,10 @@ var BP_ontology_id = "<%=@ontology.ontologyId%>"
 		</textarea>
 		</td>
 	</tr>
+
 	<%end%>
-		<tr>
-			<td align="center"><h2>Feed Widget for <%=@ontology.displayLabel%></h2>
+		<tr >
+			<td align="center" ><h2>Feed Widget for <%=@ontology.displayLabel%></h2>
 			<fieldset>
 			<script type="text/javascript">
 			var BP_ontology_id = "<%=@ontology.ontologyId%>"
@@ -309,6 +315,50 @@ var BP_ontology_id = "<%=@ontology.ontologyId%>"
 		</tr>	
 	
 </table>
+<hr/>
+<h1>Advanced NCBO Widgets</h1>
+
+
+<h2>Adding the Jump-to widget to your site</h2>
+
+The easiest way to add a jump-to widget is the following:
+<ul>				<b>Copy the code below and paste on your website to add the widget for this ontology.</b><br/><br/>
+
+<li>Right click and chose "save link as" to download the <a href="/javascripts/widgets/quick_jump.js">quick_jump.js file </a> and put it on your server</li>
+<li> Copy and paste the HTML below making sure to change the path to point to where you put the javascript file on your server. </li>
+<textarea rows=4 cols=70>
+<script type="text/javascript">
+var BP_ontology_id = "<%=@ontology.ontologyId%>"
+</script>
+<script src="/quick_jump.js" type="text/javascript" charset="utf-8"></script>
+</textarea>
+
+</ul>
+<hr>
+
+<h2>Adding the Term-Selection widget to your web form</h2>
+
+<ul>
+<li>Right click and chose "save link as" to download the <a href="/javascripts/widgets/form_complete.js">form_complete.js file </a> and put it on your server</li>
+	<li>Include the form_complete.js file in your header on the page you want it to be on.</li>
+	<li> On your form, specifiy the fields you want to be auto completed by the ontologies by specifying the class in the following format bp_form_complete-ontology_id-value.
+		e.g. bp_form_complete-1032-uri  will use the NCIT ontology (1032) and populate the field with the URI.</li>
+	<li>Use the ontology ID of your choosing to auto complete the form.  Valid values to be put into the fields are "uri" - The complete URI, "shortid" - the short ID used by bioportal, "name" - the name of the concept.</li>
+	
+	<b>Example Fields:</b><br/>
+<textarea rows=4 cols=70>
+NCIT<input type="text" name="part"class="bp_form_complete-1032-uri"/><br/>
+AminoAcid<input type="text" name="chemical"class="bp_form_complete-1054-shortid"/><br/>
+NCIT<input type="text" name="x"class="bp_form_complete-1032-name"/><br/>
+NCIT<input type="text" name="y"class="bp_form_complete-1032-shortid"/><br/>		
+	</textarea>
+
+</ul>
+	<hr>
+<h2>Referencing an ontology in your widgets</h2>
+Most of the time you would want your widget to use the latest version of your ontology of interest  that is available in BioPortal. Thus, you would want to use the ontology id and not the version is in your widget. To find out the ontology id, go to the "Ontology Details" page for your ontology of interest in <a href="http://bioportal.bioontology.org">BioPortal</a> (e.g., the page for <a href="http://bioportal.bioontology.org/ontologies/39478">NCI Thesaurus</a>)</li>. You will find the ontology id on the Metadata tab there (e.g., the ontology id for NCI Thesaurus is 1032).
+
+</div>
 <div style="clear:both;"></div>
 </div>
 

@@ -43,7 +43,7 @@ class OntrezService
     
 
     for resource in resources
-  #    puts "URL: #{ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id.to_s).gsub("#",concept_id).gsub("%",resource.shortname)}"
+      puts "URL: #{ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_id.to_s).gsub("#",concept_id).gsub("%",resource.shortname)}"
       doc = REXML::Document.new(open(ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_id.to_s).gsub("#",concept_id).gsub("%",resource.shortname)))    
       parseOBS(doc,resource)
     end
