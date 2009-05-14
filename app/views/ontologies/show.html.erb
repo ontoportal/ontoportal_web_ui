@@ -18,13 +18,56 @@
 	
 	jQuery(document).ready(function()  {
 		<%if @notes.size>0%>
-		$("#notes").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14})
+		jQuery("#notes").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14})
 		<%end%>
 		<%if @mappings.size >0%>
-		$("#mappings").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14})
+		jQuery("#mappings").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14})
 		<%end%>
 		
 	});
+	
+	
+	var searchbox;
+
+function jumpToValue(li){
+	if( li == null ){
+	// Im doing a search	
+	
+	var search = confirm("Concept could not be found..\n Press OK to go to the Search page or Cancel to continue browsing")
+		if(search){
+			jQuery("#search_keyword").val(jQuery("#search_box").val())
+			jQuery("#search_form").submit()
+			return
+		}
+	}
+
+		// if coming from an AJAX call, let's use the CityId as the value
+		if( !!li.extra ){
+			
+			var sValue = li.extra[0];
+			
+			document.location="/visualize/<%=@ontology.id%>/"+sValue;
+			jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Concept...</h1>' }); 
+			return
+		}
+
+	
+}
+
+function formatItem(row) {
+ 	return row[0] + " <span style='font-size:9px;color:blue;' >(" + row[2] + ")</span>";
+}
+
+
+$(document).ready(function(){
+	 $("#search_box").autocomplete("/search/json_search/<%=@ontology.ontologyId%>", { lineSeparator:"~!~",matchSubset:0,minChars:3,maxItemsToShow:20,onFindValue:jumpToValue,formatItem:formatItem });
+	searchbox =  $("#search_box")[0].autocompleter;
+	
+});
+
+
+
+	
 
 </script>
 
@@ -221,42 +264,137 @@
 <div id="widgets" style="display:none;" class="tab_content">
 
 <div style="float:left;">
-<h1>Adding a NCBO Widget To Your Site</h1>
-To add a prebuilt widget to your site, simply copy the text in the textarea and paste it into your HTML.
-<hr/>
-<table class="minimal" >
-	<%if false%>
+<h1>Adding a NCBO Widgets for <%=@ontology.displayLabel%> To Your Site</h1>
+<h2>Step1 Select a widget:</h2><hr/>
+
+	<center>
+
+<style>
+#widget_table td{
+	border:1px solid #EFEFEF;
+	padding:10px;
+}
+#widget_table th{
+	font-size:15px;
+	font-weight:bold;
+	background-color:#f5fafa;
+	padding:5px;
+}
+.getcode{
+font-weight:bold;
+font-size:15px;
+		background-color:#f5fafa;
+		border:1px solid #AAAAAA;
+		padding:3px 10px 3px 10px;
+
+		text-decoration:none;
+}
+
+</style>
+
+<table width="80%" id="widget_table">
+	
 	<tr>
-		<td align="center"><h2>Quick Jump Widget for <%=@ontology.displayLabel%></h2>
-		<fieldset>
-		<script type="text/javascript">
-		var BP_ontology_id = "<%=@ontology.ontologyId%>"
-		</script>
-		<script src="/javascripts/widgets/quick_jump.js" type="text/javascript" charset="utf-8"></script>
-		</fieldset>
-		<br/>
-		<br/>
-				<b>Copy the code below and paste on your website to add the widget for this ontology.</b><br/><br/>
-		<textarea rows=4 cols=70>
-<script type="text/javascript">
-var BP_ontology_id = "<%=@ontology.ontologyId%>"
-</script>
-<script src="http://stage.bioontology.org/javascripts/widgets/quick_jump.js" type="text/javascript" charset="utf-8"></script>
-		</textarea>
+		<th>Widget Description</th>
+		<th style="border-left:1px solid #EFEFEF;">Widget Demonstration</th>
+	</tr>
+	
+	<tr>
+		<td><h3>Type a term in <%=@ontology.displayLabel%> and jump to it in BioPortal</h3><br/><a href="#TB_inline?height=400&width=600&inlineId=jump" class="thickbox getcode" >Get Code</a></td>
+		<td>
+			
+		Jump To: <input type="textbox" id="search_box" size="30"/> <input type="button" value="Go" onclick="searchbox.findValue()"/>
+		
+
+		<div id="jump" style="display:none;">
+			<h2>Step2 Follow the Instructions:</h2><hr/>
+		<ul>
+			<li>- Download the ["<a rel="nofollow" title="http://bioportal.bioontology.org/javascripts/widgets/quick_jump.js" class="external free" href="http://bioportal.bioontology.org/javascripts/widgets/quick_jump.js">http://bioportal.bioontology.org/javascripts/widgets/quick_jump.js</a> <b>quick_jump.js file</b>] and put it on your server</li>
+			<li>- Copy the code from the Ontology Widgets page in Bioportal and paste it to your HTML page</li>
+			<li>- In the code that you just pasted, make sure to change the path to the quick_jump.js file to point to the location where you put the file (relative to your HTML file)
+				<ul>
+					<li>&nbsp;&nbsp;- For example, if you put the quick_jump.js file in the same directory as your HTML file, you will have:</li>
+				</ul>
+			</li>
+		</ul>
+			<textarea rows=4 cols=70>
+			<script type="text/javascript">
+			var BP_ontology_id = "<%=@ontology.ontologyId%>"
+			</script>
+			<script src="/quick_jump.js" type="text/javascript" charset="utf-8"></script>
+			</textarea>
+
+			</ul>
+			
+			<br/>
+			<h2>Referencing an ontology in your widgets</h2>
+			<hr/>
+			<p>
+Most of the time you would want your widget to use the latest version of your ontology of interest  that is available in BioPortal.
+ Thus, you would want to use the ontology id and not the version is in your widget.
+ <br/>For more help visit <a href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
+</p>
+			
+		</div>
 		</td>
 	</tr>
+	
 
-	<%end%>
+	
+	<tr >
+			<td ><h3>Fill in a field in your form with a term from <%=@ontology.displayLabel%></h3><br/><a href="#TB_inline?height=400&width=600&inlineId=form" class="thickbox getcode" >Get Code</a>
+			</td>
+			<td>
+			<script src="/javascripts/widgets/form_complete.js" type="text/javascript" charset="utf-8"></script>
+
+				
+			Example 1 (start typing the term name to get its full URI)<br/><input type="text" name="a" class="bp_form_complete-<%=@ontology.ontologyId%>-uri" size="100"/><br/>
+			Example 2 (get the ID for a concept)<br/><input type="text" name="b" class="bp_form_complete-<%=@ontology.ontologyId%>-shortid" size="100"/><br/>
+			Example 3 (get the preferred name for a concept)<br/><input type="text" name="c" class="bp_form_complete-<%=@ontology.ontologyId%>-name" size="100"/><br/>
+			
+			<div id="form" style="display:none;">
+
+			<h2>Step2 Follow the Instructions:</h2><hr/>
+			<ul><li> Download the <a rel="nofollow" title="http://bioportal.bioontology.org/javascripts/widgets/form_complete.js" class="external free" href="http://bioportal.bioontology.org/javascripts/widgets/form_complete.js">http://bioportal.bioontology.org/javascripts/widgets/form_complete.js</a> <b>form_complete.js file</b> and put it on your server
+</li>
+<li>- In the header for the page where you want the form field, include the <b>form_complete.js</b> file</li>
+<li>- On your form, for the fields where you want to use the term-selection widget, specify the class in the following format: <code>bp_form_complete-{ontology_id}-{value}</code>
+	<ul>
+	<li>&nbsp;&nbsp;- For example, <code>bp_form_complete-1032-uri</code> will use NCI Thesaurus (ontology id is 1032) and will put the term URI in the field after the user selects the term from the pull-down list.</li>
+	<li>&nbsp;&nbsp;- You can use the following values:
+		<ul><li>&nbsp;&nbsp;&nbsp;- <code>uri</code>: put the complete URI of the concept (e.g., <a rel="nofollow" title="http://bioportal.bioontology.org/visualize/39478/Common_Neoplasm" class="external free" href="http://bioportal.bioontology.org/visualize/39478/Common_Neoplasm">http://bioportal.bioontology.org/visualize/39478/Common_Neoplasm</a>);</li>
+			<li>&nbsp;&nbsp;&nbsp;- <code>shortid</code>: put the short id of the concept, as used in BioPortal (e.g., "Common_Neoplasm");</li>
+			<li>&nbsp;&nbsp;&nbsp;- <code>name</code>: put the preferred name of the concept (e.g., "Common Neoplasm");</li>
+		</ul>
+	</li>
+	</ul>
+</li>
+</ul>
+
+			<br/>
+			<h2>Referencing an ontology in your widgets</h2>
+			<hr/>
+			<p>
+Most of the time you would want your widget to use the latest version of your ontology of interest  that is available in BioPortal.
+ Thus, you would want to use the ontology id and not the version is in your widget. 
+ <br/>For more help visit <a href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
+</p>
+				
+			</div>
+			</td>
+	</tr>
+		
 		<tr >
-			<td align="center" ><h2>Feed Widget for <%=@ontology.displayLabel%></h2>
-			<fieldset>
+			<td ><h3>Get RSS feed for changes in <%=@ontology.displayLabel%></h3><br/><a href="#TB_inline?height=400&width=600&inlineId=feed" class="thickbox getcode" >Get Code</a>
+			</td>
+			<td>
 			<script type="text/javascript">
 			var BP_ontology_id = "<%=@ontology.ontologyId%>"
 			</script>
 			<script src="/javascripts/widgets/feed_widget.js" type="text/javascript" charset="utf-8"></script>
-			</fieldset>
-			<br/>
-			<br/>
+			<div id="feed" style="display:none;">
+			<h2>Step2 Follow the Instructions:</h2><hr/>
+
 					<b>Copy the code below and paste on your website to add the widget for this ontology.</b><br/><br/>
 			<textarea rows=4 cols=70>
 	<script type="text/javascript">
@@ -264,11 +402,24 @@ var BP_ontology_id = "<%=@ontology.ontologyId%>"
 	</script>
 	<script src="http://stage.bioontology.org/javascripts/widgets/feed_widget.js" type="text/javascript" charset="utf-8"></script>
 			</textarea>
+			
+			<br/>
+			<h2>Referencing an ontology in your widgets</h2>
+			<hr/>
+			<p>
+Most of the time you would want your widget to use the latest version of your ontology of interest  that is available in BioPortal.
+ Thus, you would want to use the ontology id and not the version is in your widget. 
+ <br/>For more help visit <a href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
+</p>
+			
+			</div>
 			</td>
-		</tr>
 	</tr>
+	
 		<tr>
-			<td align="center"><h2>Visualize Widget for <%=@ontology.displayLabel%></h2>
+			<td><h3>Visualize <%=@ontology.displayLabel%></h3><br/><a href="#TB_inline?height=400&width=600&inlineId=visual" class="thickbox getcode" >Get Code</a>
+			</td>
+			<td>
 			
 				<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 						id="FlexoViz" width="300px" height="300px"
@@ -288,8 +439,8 @@ var BP_ontology_id = "<%=@ontology.ontologyId%>"
 							pluginspage="http://www.adobe.com/go/getflashplayer">
 						</embed>
 				</object>
-			<br/>
-			<br/>
+				<div id ="visual" style="display:none"
+			<h2>Step2 Follow the Instructions:</h2><hr/>
 					<b>Copy the code below and paste on your website to add the widget for this ontology.</b><br/><br/>
 			<textarea rows=4 cols=70>
 				<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
@@ -311,53 +462,28 @@ var BP_ontology_id = "<%=@ontology.ontologyId%>"
 						</embed>
 				</object>
 			</textarea>
+			<br/>
+			<h2>Referencing an ontology in your widgets</h2>
+			<hr/>
+			<p>
+Most of the time you would want your widget to use the latest version of your ontology of interest  that is available in BioPortal.
+ Thus, you would want to use the ontology id and not the version is in your widget. 
+ <br/>For more help visit <a href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
+</p>
+
+			</div>
 			</td>
 		</tr>	
 	
-</table>
-<hr/>
-<h1>Advanced NCBO Widgets</h1>
-
-
-<h2>Adding the Jump-to widget to your site</h2>
-
-The easiest way to add a jump-to widget is the following:
-<ul>				<b>Copy the code below and paste on your website to add the widget for this ontology.</b><br/><br/>
-
-<li>Right click and chose "save link as" to download the <a href="/javascripts/widgets/quick_jump.js">quick_jump.js file </a> and put it on your server</li>
-<li> Copy and paste the HTML below making sure to change the path to point to where you put the javascript file on your server. </li>
-<textarea rows=4 cols=70>
-<script type="text/javascript">
-var BP_ontology_id = "<%=@ontology.ontologyId%>"
-</script>
-<script src="/quick_jump.js" type="text/javascript" charset="utf-8"></script>
-</textarea>
-
-</ul>
-<hr>
-
-<h2>Adding the Term-Selection widget to your web form</h2>
-
-<ul>
-<li>Right click and chose "save link as" to download the <a href="/javascripts/widgets/form_complete.js">form_complete.js file </a> and put it on your server</li>
-	<li>Include the form_complete.js file in your header on the page you want it to be on.</li>
-	<li> On your form, specifiy the fields you want to be auto completed by the ontologies by specifying the class in the following format bp_form_complete-ontology_id-value.
-		e.g. bp_form_complete-1032-uri  will use the NCIT ontology (1032) and populate the field with the URI.</li>
-	<li>Use the ontology ID of your choosing to auto complete the form.  Valid values to be put into the fields are "uri" - The complete URI, "shortid" - the short ID used by bioportal, "name" - the name of the concept.</li>
 	
-	<b>Example Fields:</b><br/>
-<textarea rows=4 cols=70>
-NCIT<input type="text" name="part"class="bp_form_complete-1032-uri"/><br/>
-AminoAcid<input type="text" name="chemical"class="bp_form_complete-1054-shortid"/><br/>
-NCIT<input type="text" name="x"class="bp_form_complete-1032-name"/><br/>
-NCIT<input type="text" name="y"class="bp_form_complete-1032-shortid"/><br/>		
-	</textarea>
+	
+	
+	
+	
+</table>
 
-</ul>
-	<hr>
-<h2>Referencing an ontology in your widgets</h2>
-Most of the time you would want your widget to use the latest version of your ontology of interest  that is available in BioPortal. Thus, you would want to use the ontology id and not the version is in your widget. To find out the ontology id, go to the "Ontology Details" page for your ontology of interest in <a href="http://bioportal.bioontology.org">BioPortal</a> (e.g., the page for <a href="http://bioportal.bioontology.org/ontologies/39478">NCI Thesaurus</a>)</li>. You will find the ontology id on the Metadata tab there (e.g., the ontology id for NCI Thesaurus is 1032).
 
+</center>
 </div>
 <div style="clear:both;"></div>
 </div>
