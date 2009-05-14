@@ -74,7 +74,7 @@ class OntologiesController < ApplicationController
      time = Time.now
      @ontology = DataAccess.getLatestOntology(params[:ontology])
 
-    @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
+    @versions = DataAccess.getOntologyVersions(@ontology.ontologyId).sort{|x,y| x.id <=> y.id}
 
     if @ontology.isRemote.to_i.eql?(1)
       redirect_to "/ontologies/#{@ontology.id}"
