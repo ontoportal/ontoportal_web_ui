@@ -80,10 +80,13 @@ function formatItemResource(row) {
 	
 names = names | abrv%>
 
+function selectFindOntology(){
+$('#find_ontology').focus();
+}
 
 var ontologies_array=[<%=names.join(",")%>]
 $(document).ready(function(){
-	 $("#find_ontology").autocompleteArray(ontologies_array, { minChars:1,matchSubset:1,maxItemsToShow:20,onFindValue:jumpToValue,formatItem:formatItem });
+	 $("#find_ontology").autocompleteArray(ontologies_array, { minChars:1,matchSubset:1,maxItemsToShow:20,onFindValue:jumpToValue,formatItem:formatItem,onItemSelect:selectFindOntology });
 	searchbox =  $("#find_ontology")[0].autocompleter;
 	
 	 $("#find_resource").autocomplete("/search/json_search/0", { lineSeparator:"~!~",cacheLength:1,matchSubset:0, minChars:3,maxItemsToShow:10,onFindValue:jumpToValueResource,formatItem:formatItemResource });
@@ -98,11 +101,20 @@ $(document).ready(function(){
 });
 
 
-
-
-
+function greybox(box){
+	
+	if($(box).hasClass("greyed")){
+		$(box).removeClass('greyed');
+		$(box).val("");
+	}
+}
 
 </script>
+<style>
+.greyed{
+	color:#CFCFCF;
+}
+</style>
 <br/>
 <br/>
 
@@ -117,7 +129,7 @@ $(document).ready(function(){
 				<legend>Search all ontologies</legend>
 				<table>
 					<tr>				
-						<td nowrap><%=text_field "search","keyword",:size=>30%> <%=submit_tag 'Search',:class=>'home_button'%></td>
+						<td nowrap><input type="text" name="search[keyword]" style="width:190px;" size='30' class="greyed"  onclick="greybox(this)" value="Enter search term, e.,g. melanoma"/><%=submit_tag 'Search',:class=>'home_button'%></td>
 					</tr>
 					<tr>
 						<td style="padding-left:15px"><a href="/search">Advanced Search</a></td>
@@ -133,7 +145,7 @@ $(document).ready(function(){
 				<legend>Find an ontology</legend>
 				<table>
 					<tr>				
-						<td nowrap><input class="home_input" type="text" name="ontology" size="30" id="find_ontology"> <input type="button" value="Explore" class="home_button" onclick="searchbox.findValue()"></td>
+						<td nowrap><input class="home_input greyed" type="text" name="ontology" style="width:240px;" size="30" id="find_ontology"  onclick="greybox(this)" value="Enter ontology name, e.g., NCI Thesaurus"> <input type="button" value="Explore" class="home_button" onclick="searchbox.findValue()"></td>
 					</tr>
 					<tr>
 						<td style="padding-left:15px;height:10px;">
@@ -174,7 +186,7 @@ $(document).ready(function(){
 			<table>
 				<tr>				
 
-					<td nowrap><input type="text" id="find_resource" size="30"> <input class="home_button" type="button" value="Search" onclick="resourcebox.findValue()"></td>
+					<td nowrap><input type="text" id="find_resource" size="30" class="greyed" style="width:240px;" size="30" id="find_ontology"  onclick="greybox(this)" value="Enter a term, e.g., Melanoma" > <input class="home_button" type="button" value="Search" onclick="resourcebox.findValue()"></td>
 				</tr>
 				<tr>
 					<td style="padding-left:15px"><a href="/all_resources">Advanced Resource Search</a></td>

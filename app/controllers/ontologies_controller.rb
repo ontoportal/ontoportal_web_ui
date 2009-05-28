@@ -58,8 +58,7 @@ class OntologiesController < ApplicationController
       end
 
     
-    puts @notes.inspect
-    puts @mappings.inspect
+
     #Grab Reviews Tab
     @reviews = Review.find(:all,:conditions=>{:ontology_id=>@ontology.ontologyId},:include=>:ratings)
     

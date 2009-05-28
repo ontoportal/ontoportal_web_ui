@@ -102,12 +102,10 @@ class OntologyWrapper
   def load_reviews
 
       if CACHE.get("#{self.ontologyId}::ReviewCount").nil?
-            puts "calling Reviews No Cache"
           count = Review.count(:conditions=>{:ontology_id=>self.ontologyId})
           CACHE.set("#{self.ontologyId}::ReviewCount",count)
           return count
        else
-             puts "calling Reviews Cache"
           return CACHE.get("#{self.ontologyId}::ReviewCount")
        end
   end
@@ -115,12 +113,10 @@ class OntologyWrapper
   def load_projects
 
     if CACHE.get("#{self.ontologyId}::ProjectCount").nil?
-    puts "calling Projects No Cache"    
         count = Project.count(:conditions=>"uses.ontology_id = '#{self.ontologyId}'",:include=>:uses)
         CACHE.set("#{self.ontologyId}::ProjectCount",count)
         return count
      else
-    puts "calling Projects Cache"    
         return CACHE.get("#{self.ontologyId}::ProjectCount")
      end
   end

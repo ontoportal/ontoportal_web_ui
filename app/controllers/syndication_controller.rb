@@ -77,6 +77,18 @@ class SyndicationController < ApplicationController
       
       json_response << "])"
       
+          #dont save it if its a test
+  #  begin
+    if !request.env['HTTP_REFERER'].nil? && !request.env["HTTP_REFERER"].downcase.include?("bioontology.org")
+      widget_log = WidgetLog.find_or_initialize_by_referer_and_widget(request.env["HTTP_REFERER"],'feed')
+      if widget_log.id.nil?
+        widget_log.count=1
+      else
+        widget_log.count+=1
+      end
+      widget_log.save
+    end
+      
       render :text=>json_response
     end
     

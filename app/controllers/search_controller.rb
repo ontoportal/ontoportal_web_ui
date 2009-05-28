@@ -73,8 +73,6 @@ class SearchController < ApplicationController
   
     end
 
-        puts @results.inspect
-        puts @pages.inspect
 #    session[:search]={}
 #    session[:search][:results]=@results
 #    session[:search][:ontologies]=@ontologies
@@ -85,10 +83,8 @@ class SearchController < ApplicationController
     end
     
     if request.xhr?
-      puts "IM ajax"
       render :partial =>'results'
     else
-      puts "Im not ajax"
       @ontologies = DataAccess.getActiveOntologies() 
       render :action=>'results'
     end
@@ -99,9 +95,8 @@ class SearchController < ApplicationController
   def json_search
     
     @results,@pages = DataAccess.getNodeNameContains([params[:id]],params[:q],1)
-    
+
     response = ""
-    puts "Results: #{@results.inspect}"
     for result in @results
       record_type = result[:recordType].titleize.gsub("Record Type","").split(" ")
       record_type_value = ""
@@ -116,18 +111,37 @@ class SearchController < ApplicationController
       when "uri" : target_value = result[:conceptId]
       else
         target_value = result[:preferredName]
-      end
-      
-      puts params[:target]
-      puts target_value
+      end      
       
       response << "#{target_value}|#{result[:conceptIdShort]}|#{result[:recordType].titleize.gsub("Record Type","").downcase}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}~!~"
     end        
     
     if params[:response].eql?("json")
-      puts "Response is #{response}"
       response = "#{params[:callback]}({data:'#{response}'})"
     end
+    
+    #default widget
+    @widget="jump"
+    if !params[:target].nil?
+      #this is the form widget
+      @widget="form"
+    end
+
+    #dont save it if its a test
+  #  begin
+    if !request.env['HTTP_REFERER'].nil? && !request.env["HTTP_REFERER"].downcase.include?("bioontology.org")
+      widget_log = WidgetLog.find_or_initialize_by_referer_and_widget(request.env["HTTP_REFERER"],@widget)
+      if widget_log.id.nil?
+        widget_log.count=1
+      else
+        widget_log.count+=1
+      end
+      widget_log.save
+    end
+#    rescue Exception=>e
+      
+#    end
+    
     
     render :text=>response
     
