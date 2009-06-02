@@ -67,6 +67,8 @@ $(document).ready(function(){
 		</div>
 		<div id="qsearch" >
 		Jump To: <input type="textbox" id="search_box" size="30"/> <input type="button" value="Go" onclick="searchbox.findValue()"/>
+		
+		&nbsp;<a class="thickbox" href ="#TB_inline?height=300&width=300&inlineId=legend">Icon Legend</a>
 		</div>		
 		<div id="sd_content">
 
@@ -302,3 +304,21 @@ function tryClick(id)
 <%end%>
 
 
+
+<div id="legend">
+	<style>
+	.icon_legend li{
+		border:1px solid #efefef;
+		margin:10px;
+		padding:10px;
+	}
+	</style>
+<ul class="icon_legend">
+	<h3>Icon Legend</h3>
+	<li><img src="/images/notes_icon.png"> : Concept has Marginal Notes</li>
+	<li><img src="/images/map_icon.png"> : Concept has Mappings</li>
+	<li><img src="/images/is_a.gif"> : Relationship is "IS_A"</li>
+	<li><img src="/images/part_of.gif"> : Relationship is "PART_OF"</li>
+	
+</ul>
+</div>
