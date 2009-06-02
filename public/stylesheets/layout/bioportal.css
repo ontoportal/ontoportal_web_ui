@@ -126,8 +126,8 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 .basic tbody tr:hover td, .basic tbody tr:hover th { background: #f5fafa; border-bottom: 1px solid #ccc; }
 
 .zebra caption { padding: 0 0 5px 0; width: 100%; font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; text-align: right; }
-.zebra th { white-space:nowrap; font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #e2ebf0; }
-.zebra tbody th { font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #fff; }
+.zebra th { white-space:nowrap; font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background-color: #e2ebf0; }
+.zebra tbody th { font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background-color: #fff; }
 .zebra th.alt { border-left: 1px solid #C1DAD7; border-top: 0; background: #f5fafa; font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #797268; }
 .zebra th.nobg { border-top: 0; border-left: 0; border-right: 1px solid #C1DAD7; background: none; }
 .zebra td { border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; padding: 6px 6px 6px 12px; color: #000; }
@@ -218,4 +218,14 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 	border:1px #AFAFAF dashed;
 	background-color:#f5fafa;
 	padding:5px;
+}
+.sorting_asc{
+    background-image:url( "/images/layout/asc.png");
+    background-repeat:no-repeat;
+    background-position:100%;
+}
+.sorting_desc{
+    background-image:url("/images/layout/desc.png");
+    background-repeat:no-repeat;
+    background-position:100%;
 }
