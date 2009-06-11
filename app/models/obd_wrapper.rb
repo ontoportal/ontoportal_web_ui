@@ -17,6 +17,11 @@ class OBDWrapper
           puts e.message
           puts e.backtrace.join("\n")
       end
+      # makes it so no resources show if ontrez is broken
+      if resources.empty?
+        return resources
+      end
+      
       begin
         resources << OntrezService.parseNextBio(concept.name)              
       rescue Exception => e

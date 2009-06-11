@@ -2,6 +2,9 @@
    This tab shows records in public data sources that we have automatically annotated with the terms associated with the class <%=@concept.name%> or 
 its subclasses based on the textual descriptions of those records.
 </p>
+<%if @resources.empty?%>
+<h1>The resources tab is currently undergoing maintenance.</h1>
+<%else%>
 <table class="resources" cellpadding=0 cellspacing=0>
 <%
 	index = 0;
@@ -46,3 +49,4 @@ its subclasses based on the textual descriptions of those records.
     end%>
 	
 </table>
+<%end%>
