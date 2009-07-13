@@ -3,7 +3,6 @@ class ResourcesController < ApplicationController
   def show
      @concept =  DataAccess.getNode(params[:ontology],params[:id])
      @ontology = DataAccess.getOntology(params[:ontology])
-      puts @concept.inspect
     
        @resources = []
 # Old ONtrez

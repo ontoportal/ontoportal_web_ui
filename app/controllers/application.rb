@@ -72,16 +72,16 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_owner(id=nil) # Verifies that a user owns an object
-    puts id
+    #puts id
     if id.nil? 
-      puts params[:id]
+      #puts params[:id]
       id = params[:id].to_i
     end
-    puts "new id #{id}"
+    #puts "new id #{id}"
      if session[:user].nil?
         redirect_to_home
      else
-       puts "#{session[:user].id.to_i} vs #{id} "
+       #puts "#{session[:user].id.to_i} vs #{id} "
        if !session[:user].id.to_i.eql?(id) && !session[:user].admin?
          redirect_to_home      
        end

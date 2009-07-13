@@ -37,6 +37,9 @@ class OntologyWrapper
   attr_accessor :projects
   attr_accessor :versions
   
+  attr_accessor :view_ids
+  attr_accessor :view_beans
+  
   FILTERS={
   "All"=>0,
   "OBO Foundry"=>1,
@@ -56,6 +59,16 @@ class OntologyWrapper
   
   FORMAT=["OBO","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE","LEXGRID_XML","RRF"]
     
+    
+  def views
+    if self.view_beans.nil?
+      self.view_beans = []
+      for id in view_ids
+        self.view_beans << DataAccess.getView(id)
+      end      
+    end
+    return self.view_beans
+  end
   
   def from_params(params)
     self.displayLabel = params[:displayLabel]   
@@ -125,7 +138,7 @@ class OntologyWrapper
      "#{self.id}"
   end
   
-  def topLevelNodes
-       DataAccess.getTopLevelNodes(self.id)     
+  def topLevelNodes(view=false)
+       DataAccess.getTopLevelNodes(self.id,view)     
   end
 end

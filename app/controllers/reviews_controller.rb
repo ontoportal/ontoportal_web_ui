@@ -90,10 +90,10 @@ class ReviewsController < ApplicationController
   def update
     @review = Review.find(params[:id])
     ratings = Hash[*(@review.ratings.map{|rate| [rate.id.to_i, rate] }.flatten)]
-    puts ratings.inspect
+    #puts ratings.inspect
      for rating_key in params.keys
         if rating_key.include?("star")          
-          puts rating_key.split("_")[1].to_i
+          #puts rating_key.split("_")[1].to_i
           ratings[rating_key.split("_")[1].to_i].value=params[rating_key].to_i
           ratings[rating_key.split("_")[1].to_i].save          
         end            

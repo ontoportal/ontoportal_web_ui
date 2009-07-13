@@ -17,6 +17,8 @@ class BioPortalRestfulCore
     PATH_PATH = "/path/%ONT%/%CONC%/root"
     VERSIONS_PATH="/ontologies/versions/%ONT%"
     
+    VIEW_PATH = "/ontologies/view/%VIEW%"
+    VIEW_CONCEPT_PATH = "/concepts/view/%VIEW%/?conceptid=%CONC%"
 #    http://ncbo-core-dev1.stanford.edu/bioportal/rest/search/cell?includeproperties=1&ontologyids=1070,%201032&pagesize=50&pagenum=2&isexactmatch=0
     SEARCH_PATH="/search/%query%?%ONT%"
     PROPERTY_SEARCH_PATH="/search/properties/%query%?ontologies=%ONT%"
@@ -52,7 +54,23 @@ class BioPortalRestfulCore
 #    3205
 #    4525
  
-
+      
+      def self.getView(view_id)
+        view = nil
+#        begin
+          doc = REXML::Document.new(open(BASE_URL + VIEW_PATH.gsub("%VIEW%",view_id)))
+          
+            doc.elements.each("*/data/ontologyViewBean"){ |element|  
+              view = parseOntology(element)
+            }  
+#        rescue Exception =>e
+          
+#        end
+        return view
+      end
+      
+      
+      
       def self.getCategories()
          categories=nil
            doc = REXML::Document.new(open(BASE_URL+CATEGORIES_PATH))
@@ -74,14 +92,18 @@ class BioPortalRestfulCore
         
       end
 
-       def self.getNode(ontology,node_id)
+       def self.getNode(ontology,node_id,view = false)
          node = nil
          
  #        puts "Requesting : #{BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)}"
           begin
-         doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))))
+            
+            if view
+              doc = REXML::Document.new(open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))))
+            else
+              doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))))
+            end
           rescue Exception=>e
-            puts e.inspect
           end
          node = errorCheck(doc)
          
@@ -105,9 +127,14 @@ class BioPortalRestfulCore
        end
       
 
-      def self.getTopLevelNodes(ontology)
+      def self.getTopLevelNodes(ontology,view = false)
         node = nil
-         doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","root")))
+          if view
+            doc = REXML::Document.new(open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%","root")))
+            
+          else
+            doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","root")))
+          end
          time = Time.now
          node = errorCheck(doc)         
          unless node.nil?
@@ -117,7 +144,7 @@ class BioPortalRestfulCore
           doc.elements.each("*/data/classBean"){ |element|  
           node = parseConcept(element,ontology)
          }
- #        puts "getTopLevelNodes Parse Time: #{Time.now-time}"
+
         return node.children
       end
 
@@ -169,7 +196,7 @@ class BioPortalRestfulCore
           doc = REXML::Document.new(open(BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology.to_s)))
         rescue Exception=>e
           doc =  REXML::Document.new(e.io.read)
-          puts doc.inspect
+
         end
             ont = errorCheck(doc)
 
@@ -214,7 +241,7 @@ class BioPortalRestfulCore
       end
       def self.getLatestOntology(ontology)
          ont = nil
-          puts BASE_URL + VIRTUAL_URI_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","")
+
             doc = REXML::Document.new(open(BASE_URL + VIRTUAL_URI_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","")))
             
               ont = errorCheck(doc)
@@ -263,12 +290,12 @@ class BioPortalRestfulCore
            ontologies = "ontologyids=#{ontologies.join(",")}&"
          end
          
-         puts BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"isexactmatch=1&pagesize=50&pagenum=#{page}&includeproperties=0"
+
          begin
              doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=1&pagesize=50&pagenum=#{page}&includeproperties=0"))
             rescue Exception=>e
                doc =  REXML::Document.new(e.io.read)
-               puts doc.to_s
+
              end   
                 results = errorCheck(doc)
 
@@ -305,7 +332,7 @@ class BioPortalRestfulCore
             doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15"))
            rescue Exception=>e
               doc =  REXML::Document.new(e.io.read)
-              puts doc.to_s
+
             end   
                results = errorCheck(doc)
 
@@ -373,7 +400,7 @@ class BioPortalRestfulCore
           doc = REXML::Document.new(open(BASE_URL+AUTH_PATH+"?username=#{username}&password=#{password}&applicationid=#{APPLICATION_ID}"))
           rescue Exception=>e
             doc =  REXML::Document.new(e.io.read)
-            puts doc.to_s
+
           end
              user = errorCheck(doc)
 
@@ -400,7 +427,7 @@ class BioPortalRestfulCore
             doc = REXML::Document.new(postToRestlet(BASE_URL+USERS_PATH.gsub("%USR%","")+"?applicationid=#{APPLICATION_ID}",params))
             rescue Exception=>e
               doc =  REXML::Document.new(e.io.read)
-              puts doc.to_s
+
             end
                user = errorCheck(doc)
 
@@ -426,10 +453,8 @@ class BioPortalRestfulCore
           begin
           doc = REXML::Document.new(putToRestlet(BASE_URL+USER_PATH.gsub("%USR%",id.to_s)+"?applicationid=#{APPLICATION_ID}",params))
           rescue Exception=>e
-            puts e.message
-            puts e.backtrace
             doc =  REXML::Document.new(e.io.read)
-            puts doc.to_s
+
           end
              user = errorCheck(doc)
 
@@ -450,13 +475,11 @@ class BioPortalRestfulCore
         
         def self.createOntology(params)
             ontology = nil
-            puts "Create URL: "+(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?applicationid=#{APPLICATION_ID}")
               begin
               doc = REXML::Document.new(postMultiPart(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?applicationid=#{APPLICATION_ID}",params))
-              puts doc.to_s
+
               rescue Exception=>e
                 doc =  REXML::Document.new(e.io.read)
-                puts doc.to_s
               end
                  ontology = errorCheck(doc)
 
@@ -480,7 +503,7 @@ class BioPortalRestfulCore
                     doc = REXML::Document.new(putToRestlet(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%",version_id)+"?applicationid=#{APPLICATION_ID}",params))
                     rescue Exception=>e
                        doc =  REXML::Document.new(e.io.read)
-                       puts doc.to_s
+
                      end
                     
                          ontology = errorCheck(doc)
@@ -488,7 +511,7 @@ class BioPortalRestfulCore
                               unless ontology.nil?
                                 return ontology
                               end
-                    puts doc.to_s
+
                     time = Time.now
                      doc.elements.each("*/data/ontologyBean"){ |element|  
                      ontology = parseOntology(element)
@@ -517,7 +540,7 @@ class BioPortalRestfulCore
                   doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=1"))
                  rescue Exception=>e
                     doc =  REXML::Document.new(e.io.read)
-                    puts doc.to_s
+
                   end   
                      results = errorCheck(doc)
 
@@ -554,7 +577,7 @@ class BioPortalRestfulCore
                   doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=1&pagesize=50&pagenum=#{page}&includeproperties=1"))
                  rescue Exception=>e
                     doc =  REXML::Document.new(e.io.read)
-                    puts doc.to_s
+
                   end   
                      results = errorCheck(doc)
 
@@ -585,7 +608,6 @@ class BioPortalRestfulCore
             doc = REXML::Document.new(open(BASE_URL+DIFFS_PATH.gsub("%ONT%",ontology)))
           rescue Exception=>e
             doc =  REXML::Document.new(e.io.read)
-            puts doc.to_s
           end   
           results = errorCheck(doc)
 
@@ -595,7 +617,7 @@ class BioPortalRestfulCore
           
           pairs = []
           doc.elements.each("*/data/list") {|pair|
-            puts pair.inspect
+
             pair.elements.each{|list|
               pair = []
               list.elements.each{|item|
@@ -645,7 +667,7 @@ private
   end
 
   def self.text_to_multipart(key,value)
-    puts "Class is #{value.class.to_s.downcase}"
+
     if value.class.to_s.downcase.eql?("array")
      return "Content-Disposition: form-data; name=\"#{CGI::escape(key)}\"\r\n" + 
             "\r\n" + 
@@ -805,6 +827,14 @@ private
       ontology.categories<< element.get_text.value.strip
     }
     
+    ontology.view_ids = []
+    begin
+    ontologybeanXML.elements["hasViews"].elements.each{|element|
+      ontology.view_ids<< element.get_text.value.strip
+    }
+    rescue
+    end
+    
     return ontology
     
   end
@@ -877,8 +907,7 @@ private
                     
                    end}.join(" | ") #rescue ""
                   rescue Exception =>e
-                    puts e.message
-                    puts e.backtrace
+
                     
                   end
                end

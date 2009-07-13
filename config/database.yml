@@ -31,7 +31,7 @@ test:
   database: BioPortalGui_test
   username: root
   password: gojava
-  socket: /tmp/mysql.sock
+  socket: localhost
 
 #ncboadmin
 #ncbo123

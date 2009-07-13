@@ -14,8 +14,8 @@ class OBDWrapper
         cache=false
         
 #          Notifier.deliver_error(e)
-          puts e.message
-          puts e.backtrace.join("\n")
+          #puts e.message
+          #puts e.backtrace.join("\n")
       end
       # makes it so no resources show if ontrez is broken
       if resources.empty?
@@ -27,7 +27,7 @@ class OBDWrapper
       rescue Exception => e
         cache=false
         Notifier.deliver_error(e)
-        puts e.backtrace.join("\n")      
+        #puts e.backtrace.join("\n")      
       end
       if cache
         CACHE.set("#{ontology}::#{concept.id}_resource",resources)
@@ -53,7 +53,7 @@ class OBDWrapper
       rescue Exception => e
           cache=false
           Notifier.deliver_error(e)
-          puts e.backtrace.join("\n")
+          #puts e.backtrace.join("\n")
           return []
       end
       begin
@@ -61,7 +61,7 @@ class OBDWrapper
         rescue Exception => e
           cache=false
           Notifier.deliver_error(e)
-          puts e.backtrace.join("\n")
+          #puts e.backtrace.join("\n")
           return []
         end
         if cache
@@ -81,7 +81,7 @@ class OBDWrapper
         rescue Exception => e
       
             Notifier.deliver_error(e)
-            puts e.backtrace.join("\n")
+            #puts e.backtrace.join("\n")
             return resource
         end
   end

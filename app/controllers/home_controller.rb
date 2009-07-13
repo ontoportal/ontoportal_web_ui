@@ -79,7 +79,7 @@ class HomeController < ApplicationController
     end
     
     @category_tree = @categories.clone
-    puts @category_tree.inspect
+    #puts @category_tree.inspect
     
     
     for value in @category_tree.values

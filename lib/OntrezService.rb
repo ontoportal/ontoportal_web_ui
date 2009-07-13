@@ -43,13 +43,13 @@ class OntrezService
     
 
     for resource in resources
-      puts "URL: #{ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_id.to_s).gsub("#",concept_id).gsub("%",resource.shortname)}"
+      #puts "URL: #{ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_id.to_s).gsub("#",concept_id).gsub("%",resource.shortname)}"
       doc = REXML::Document.new(open(ONTREZ_URL+RESOURCE_BY_CONCEPT.gsub("@",ontology_id.to_s).gsub("#",concept_id).gsub("%",resource.shortname)))    
       parseOBS(doc,resource)
     end
   
-  puts "Resources: \n #{resources.inspect}"
-  puts "Finished Parsing"
+  #puts "Resources: \n #{resources.inspect}"
+  #puts "Finished Parsing"
   return resources
 
   end
@@ -66,14 +66,14 @@ class OntrezService
      
      doc = REXML::Document.new(open(ONTREZ_URL+DETAILS.gsub("@",ontology_.to_s).gsub("#",concept_id).gsub("%",resource)+element.strip))
 
-     puts "Beginning Parsing"
+     #puts "Beginning Parsing"
 
    #  puts doc.inspect
      resources = parseOBSDetails(doc)
 
 
-   puts "Resources: \n #{resources.inspect}"
-   puts "Finished Parsing"
+   #puts "Resources: \n #{resources.inspect}"
+   #puts "Finished Parsing"
    return resources
 
    end
@@ -84,10 +84,10 @@ class OntrezService
 #      puts "Parsing URL #{ONTREZ_URL+PAGING_RESOURCE_BY_CONCEPT.gsub("@",ontology_version_id).gsub("#",concept_id).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name)}"
          doc = REXML::Document.new(open(ONTREZ_URL+PAGING_RESOURCE_BY_CONCEPT.gsub("@",ontology_id).gsub("#",concept_id).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name)))
 
-          puts "Beginning Parsing"
+          #puts "Beginning Parsing"
           new_resource = Resource.new
 
-          puts doc
+          #puts doc
            parseOBS(doc,new_resource)
 
           return new_resource
@@ -99,17 +99,17 @@ class OntrezService
   
     def self.gatherResources_old(ontology_name,concept_id)
       resources = []
-      puts "===================================="
-      puts "Gathering Resource From URL: #{ONTREZ_URL+CLASS_STRING.gsub("@",ontology_name).gsub("#",concept_id)}"
-      puts "===================================="
+      #puts "===================================="
+      #puts "Gathering Resource From URL: #{ONTREZ_URL+CLASS_STRING.gsub("@",ontology_name).gsub("#",concept_id)}"
+      #puts "===================================="
       doc = REXML::Document.new(open(ONTREZ_URL+CLASS_STRING.gsub("@",ontology_name.gsub(" ","%20")).gsub("#",concept_id)))
 
-      puts "Beginning Parsing"
+      #puts "Beginning Parsing"
       
     #  puts doc.inspect
       resources = parseResources(doc)
     
-    puts "Finished Parsing"
+    #puts "Finished Parsing"
     return resources
 
     end
@@ -167,14 +167,14 @@ class OntrezService
 
       doc = REXML::Document.new(open(ONTREZ_URL+CUI_STRING.gsub("#",cui)))
 #      puts doc.inspect
-      puts "URL:------#{ONTREZ_URL+CUI_STRING.gsub("#",cui)}----------"
-      puts "Retrieved Doc"
-      puts "--------------"
-      puts "Beginning Parsing"
+      #puts "URL:------#{ONTREZ_URL+CUI_STRING.gsub("#",cui)}----------"
+      #puts "Retrieved Doc"
+      #puts "--------------"
+      #puts "Beginning Parsing"
       time=Time.now
    #   puts doc.inspect
     resources = parseResources(doc)
-    puts "Finished Parsing #{Time.now-time}"
+    #puts "Finished Parsing #{Time.now-time}"
 
     return resources 
 
@@ -285,7 +285,7 @@ class OntrezService
   resources =[]
   doc.elements.each("/ontrez\.user\.OntrezResultDetailsWithMetadata/lineAnnotationsForBP/ontrez\.annotation\.AnnotationForBioPortal"){ |element|    
 
-    puts "Parsing an annotation"
+    #puts "Parsing an annotation"
 
         annotation = Annotation.new
         annotation.local_id = element.elements["elementLocalID"].get_text.value

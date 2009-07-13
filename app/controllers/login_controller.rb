@@ -22,7 +22,7 @@ class LoginController < ApplicationController
           session[:user] = logged_in_user
           flash[:notice] = "Welcome "+logged_in_user.username.to_s+"."
           redirect = session[:redirect]
-          puts "redirect is #{redirect}"
+          #puts "redirect is #{redirect}"
           redirect_to redirect
         else
           @errors << "Invalid user name/password combination"

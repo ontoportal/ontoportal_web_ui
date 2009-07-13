@@ -8,29 +8,52 @@ class DataAccess
   NO_CACHE = false
     
     
-    def self.getNode(ontology,node_id)
- #     puts "Calling DataAccess.getNode(#{ontology},#{node_id})"
-      if CACHE.get("#{param(ontology)}::#{node_id.gsub(" ","%20")}").nil? || NO_CACHE
-        node = SERVICE.getNode(ontology,node_id)  
+    def self.getNode(ontology,node_id,view = false) 
+      view_string=''
+      if view
+        view_string = 'view_'
+      end
+      
+      if CACHE.get("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}").nil? || NO_CACHE
+        node = SERVICE.getNode(ontology,node_id,view)  
         unless  node.kind_of?(Hash) && node[:error]
-        CACHE.set("#{param(ontology)}::#{node_id.gsub(" ","%20")}",node)
+        CACHE.set("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}",node)
        end
         return node
       else
-        return CACHE.get("#{param(ontology)}::#{node_id.gsub(" ","%20")}")
+        return CACHE.get("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}")
       end
     end
+    
+    def self.getView(view_id)
+      if CACHE.get("view::#{param(view_id)}").nil? || NO_CACHE
+        view = SERVICE.getView(view_id)
+        unless view.kind_of?(Hash) && view[:error]
+          CACHE.set("view::#{param(view_id)}",view)
+        end
+        return view
+      else
+        return CACHE.get("view::#{param(view_id)}")
+      end            
+    end
+    
+    
 
-    def self.getTopLevelNodes(ontology)
-  #    puts "Calling DataAccess.getTopLevelNodes(#{ontology})"
-      if CACHE.get("#{param(ontology)}::_top").nil? || NO_CACHE
-        topNodes = SERVICE.getTopLevelNodes(ontology)
+    def self.getTopLevelNodes(ontology,view=false)
+
+      view_string=''
+      if view
+        view_string = 'view_'
+      end
+      
+      if CACHE.get("#{view_string}#{param(ontology)}::_top").nil? || NO_CACHE
+        topNodes = SERVICE.getTopLevelNodes(ontology,view)
         unless topNodes.kind_of?(Hash) && topNodes[:error] 
-          CACHE.set("#{param(ontology)}::_top",topNodes)
+          CACHE.set("#{view_string}#{param(ontology)}::_top",topNodes)
         end
         return topNodes
       else
-        return CACHE.get("#{param(ontology)}::_top")
+        return CACHE.get("#{view_string}#{param(ontology)}::_top")
       end
     end
     
@@ -182,7 +205,7 @@ class DataAccess
      def self.getUser(user_id)
        if CACHE.get("user::#{user_id}").nil? || NO_CACHE
             results = SERVICE.getUser(user_id)
-            puts results.inspect
+            #puts results.inspect
             unless results.kind_of?(Hash) && results[:error]
               CACHE.set("user::#{user_id}",results)
             end        

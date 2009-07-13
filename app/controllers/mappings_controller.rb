@@ -13,7 +13,7 @@ class MappingsController < ApplicationController
     mapped_ontologies=[]
     mapped_ontologies_ids.each_hash(with_table=false) {|x| mapped_ontologies<<x['count']}
     @ontologies=[]
-    puts "Ontologies are #{mapped_ontologies.inspect}"
+
     for ontology in ontology_list
       if mapped_ontologies.include?(ontology.ontologyId)
         @ontologies << ontology
@@ -65,7 +65,7 @@ class MappingsController < ApplicationController
     @map_sources = []
     @users = DataAccess.getUsers.sort{|x,y| x.username.downcase <=> y.username.downcase}
     for map in mapping_objects
-      puts map.source_id
+
       @map_sources << map.map_source.gsub(/<a.*?a>/mi, "")  unless map.map_source.nil?
       @map_sources.uniq!
       
@@ -75,7 +75,7 @@ class MappingsController < ApplicationController
         @mappings[map.source_id]
         found = false
         for mapping in @mappings[map.source_id]
-          puts map.destination_id
+
           if mapping[:destination_id].eql?(map.destination_id)
             found = true
             mapping[:users]<<map.user.username

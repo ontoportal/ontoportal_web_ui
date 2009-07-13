@@ -93,9 +93,10 @@ $(document).ready(function(){
 <div class="tabs" style="margin-top:5px;margin-bottom:10px;border-top:1px solid #CFCFCF;">
 	<ul >
 		<li id="meta" class="selected tab"><a href="#" onclick="meta_tab_clicked('#metadata',this)">Metadata</a></li>
+		<li id="view" class="tab"><a href="#" onclick="meta_tab_clicked('#views',this)">Views</a></li>
 		<li id="proj" class="tab"><a href="#" onclick="meta_tab_clicked('#projects',this)">Projects (<%=@projects.size%>)</a></li>
     	<li id="rev" class="tab"><a href="#" onclick="meta_tab_clicked('#reviews',this)">Reviews (<%=@reviews.size%>)</a></li>
-		<li id="widget" class="tab"><a href="#" onclick="meta_tab_clicked('#widgets',this)">Ontology Widgets</a></li>
+		<li id="widget" class="tab"><a href="#" onclick="meta_tab_clicked('#widgets',this)">Ontology Widgets</a></li>		
 	</ul>  
 </div>
 
@@ -485,7 +486,47 @@ Example 3 (get the preferred name for a concept)<br/><input type="text" name="c"
 <div style="clear:both;"></div>
 </div>
 <%end%>
+<div id="views" style="display:none;" class="tab_content">
+	<div style="float:left;width:1000px;" >
+<%for view in @ontology.views%>
+<table class="form" width="100%">
+	<tr>
+			<th>View Name:</th><td class="top"><%=view.displayLabel%></td> <th>Created By:</th><td class="top"><%=view.contactName%></td>
+	</tr>
+	<tr>
+		<th >Description:</th><td colspan=3><%=view.description%></td>
+	</tr>
 
+</table>
+<h3 style="border-bottom:1px solid #EFEFEF;margin-left:20px;">Versions</h3>
+
+	<table class="zebra" cellpadding="0" cellspacing="0" width="100%" style="margin-left:40px;">
+		<thead>
+		<tr>
+			<th>Version</th>
+			<th>Base Version</th>
+			<th>Created</th>
+			<th>Ontology File</th>
+			<th>Visualize</th>
+		</tr>
+		</thead>
+		
+		<tr >
+			<td><%=view.versionNumber%></td>
+			<td><%=@ontology.versionNumber%></td>
+			<td><%=view.dateCreated%></td>			
+			<td><a href="#" target="_blank">Download View</a></td>
+			<td><%if view.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => view,:view=>true)%><%elsif version.statusId.to_i.eql?(1)%>Parsing View<%else%><%end%></td>
+
+		</tr>
+
+	</table>
+
+<br/>
+<%end%>
+
+</div>
+</div>
 
 	
 

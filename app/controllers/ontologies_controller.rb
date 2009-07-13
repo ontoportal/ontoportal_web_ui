@@ -110,7 +110,7 @@ class OntologiesController < ApplicationController
     
       @errors = validate(params[:ontology],true)
       if @errors.length < 1
-        puts("I should be updating")
+        #puts("I should be updating")
         @ontology = DataAccess.updateOntology(params[:ontology],params[:id])      
      
         if @ontology.kind_of?(Hash) && @ontology[:error]        
@@ -128,7 +128,7 @@ class OntologiesController < ApplicationController
         render :action=> 'edit'
       end
       
-      puts "I fell through"
+      #puts "I fell through"
   end
   
   
@@ -144,16 +144,20 @@ class OntologiesController < ApplicationController
   # GET /visualize/:ontology
   def visualize
     
+    view = false
+    if params[:view]
+      view = true
+    end
     
     #Set the ontology we are viewing
-    @ontology = DataAccess.getOntology(params[:ontology])
-    
-          
-      
-      
+    if view
+      @ontology = DataAccess.getView(params[:ontology])   
+    else
+      @ontology = DataAccess.getOntology(params[:ontology])   
+    end
       #get the top level nodes for the root
       @root = TreeNode.new()
-      nodes = @ontology.topLevelNodes
+      nodes = @ontology.topLevelNodes(view)
       nodes.sort!{|x,y| x.name.downcase<=>y.name.downcase}
       for node in nodes
         if node.name.downcase.include?("obsolete") || node.name.downcase.include?("deprecated")
@@ -164,7 +168,7 @@ class OntologiesController < ApplicationController
       
       @root.set_children(nodes)
       #get the initial concept to display
-      @concept = DataAccess.getNode(@ontology.id,@root.children.first.id)
+      @concept = DataAccess.getNode(@ontology.id,@root.children.first.id,view)
    
       
         #gets the initial mappings
@@ -204,7 +208,7 @@ class OntologiesController < ApplicationController
       @ontology = DataAccess.getLatestOntology(params[:id])
     end
     @categories = DataAccess.getCategories()
-    puts @categories.inspect
+    #puts @categories.inspect
   end
   
   def create
@@ -215,7 +219,7 @@ class OntologiesController < ApplicationController
     if (session[:user].admin? && (params[:ontology][:userId].nil? || params[:ontology][:userId].empty?)) || !session[:user].admin?
       params[:ontology][:userId]= session[:user].id
     end
-    puts "File Size: #{params[:ontology][:filePath].size}"
+    #puts "File Size: #{params[:ontology][:filePath].size}"
       @errors = validate(params[:ontology])
     if @errors.length < 1
     @ontology = DataAccess.createOntology(params[:ontology])
@@ -229,7 +233,7 @@ class OntologiesController < ApplicationController
         render :action=>'new'  
       else
     
-      puts "Ontology Error: #{@ontology.inspect}"
+      #puts "Ontology Error: #{@ontology.inspect}"
         #adds ontology to syndication
          event = EventItem.new
          event.event_type="Ontology"
@@ -264,9 +268,9 @@ class OntologiesController < ApplicationController
 
   def exhibit
       time = Time.now
-       puts "Starting Retrieval"
+       #puts "Starting Retrieval"
        @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
-       puts "Finished in #{Time.now- time}"
+       #puts "Finished in #{Time.now- time}"
 
        string =""
        string <<"{

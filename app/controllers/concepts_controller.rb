@@ -8,16 +8,16 @@ class ConceptsController < ApplicationController
   # GET /concepts/1.xml
   def show
     time = Time.now
-    puts "Starting Retrieval"
+    #puts "Starting Retrieval"
     @concept =  DataAccess.getNode(params[:ontology],params[:id])
-    puts "Finished in #{Time.now- time}"
+    #puts "Finished in #{Time.now- time}"
       #@concept_id = params[:id] # Removed to see if even used
     
       @ontology = DataAccess.getOntology(params[:ontology])
     if request.xhr?    
-      puts "its an ajax call"
+      #puts "its an ajax call"
       show_ajax_request # process an ajax call
-      puts "Children #{@children.inspect}"
+      #puts "Children #{@children.inspect}"
     else
       show_uri_request # process a full call
       render :file=> '/ontologies/visualize',:use_full_path =>true, :layout=>'ontology' # done this way to share a view
@@ -26,7 +26,7 @@ class ConceptsController < ApplicationController
   
   def virtual
     time = Time.now
-    puts "Starting Retrieval"
+    #puts "Starting Retrieval"
     @ontology = DataAccess.getLatestOntology(params[:ontology])
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     @concept =  DataAccess.getNode(@ontology.id,params[:id])
@@ -59,9 +59,9 @@ class ConceptsController < ApplicationController
 
   def exhibit
       time = Time.now
-       puts "Starting Retrieval"
+       #puts "Starting Retrieval"
        @concept =  DataAccess.getNode(params[:ontology],params[:id])
-       puts "Finished in #{Time.now- time}"
+       #puts "Finished in #{Time.now- time}"
 
        string =""
        string <<"{
@@ -133,7 +133,7 @@ class ConceptsController < ApplicationController
         when 'load' # Load pulls in all the details of a node
           time = Time.now
           gather_details
-    #      puts "Finished Details in #{Time.now - time}"
+    #      #puts "Finished Details in #{Time.now - time}"
           render :partial => 'load'
         when 'children' # Children is called only for drawing the tree
           @children =[]
@@ -148,7 +148,7 @@ class ConceptsController < ApplicationController
   def show_uri_request # gathers the full set of data for a node
     gather_details
     build_tree
-    puts "Full data------"
+    #puts "Full data------"
   end
   
   def gather_details  #gathers the information for a node
