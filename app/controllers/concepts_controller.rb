@@ -188,7 +188,6 @@ class ConceptsController < ApplicationController
     rootNode = @concept.path_to_root
     @root = TreeNode.new()
     @root.set_children(rootNode.children)
-    
   end
  
   

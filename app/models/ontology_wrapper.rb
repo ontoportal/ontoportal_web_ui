@@ -103,7 +103,7 @@ class OntologyWrapper
   end
   
   def map_count
-    count = Mapping.find(:all,:conditions=>{:source_ont=>self.ontologyId}).size
+    count = Mapping.count('id',:conditions=>{:source_ont=>self.ontologyId}).size
   end
   
   

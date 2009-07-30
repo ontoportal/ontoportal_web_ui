@@ -117,7 +117,9 @@ class SearchController < ApplicationController
     end        
     
     if params[:response].eql?("json")
-      response = "#{params[:callback]}({data:'#{response}'})"
+      response = response.gsub("\"","'")
+      response = "#{params[:callback]}({data:\"#{response}\"})"
+
     end
     
     #default widget

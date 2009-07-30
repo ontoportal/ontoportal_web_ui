@@ -29,6 +29,7 @@ class OntrezService
     resources = []
     
     #oba_url = "http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr/byconcept/@/#/AE/false/true/1/10"
+    puts ONTREZ_URL+RESOURCES
     doc = REXML::Document.new(open(ONTREZ_URL+RESOURCES))    
     doc.elements.each("*/obs\.obr\.populate\.Resource"){|resource|
       new_resource = Resource.new

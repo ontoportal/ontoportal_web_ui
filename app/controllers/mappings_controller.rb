@@ -22,17 +22,52 @@ class MappingsController < ApplicationController
 
   end
   
+  def service
+    ontology = DataAccess.getOntology(params[:ontology])
+    
+    if params[:id]
+      concept = DataAccess.getNode(ontology.id,params[:id])    
+      from =[]
+      to = []
+      from_res = ActiveRecord::Base.connection().execute("SELECT * from mappings  where source_ont =#{ontology.ontologyId} AND source_id = '#{concept.id}'")
+      from_res.each_hash(with_table=false) {|x| from<<x}
+
+      to_res = ActiveRecord::Base.connection().execute("SELECT * from mappings  where destination_ont =#{ontology.ontologyId} AND destination_id = '#{concept.id}'")
+      to_res.each_hash(with_table=false) {|x| to<<x}
+
+    else
+      from=[]
+      to=[]
+      from_res = ActiveRecord::Base.connection().execute("SELECT * from mappings  where source_ont =#{ontology.ontologyId} ")
+      to_res = ActiveRecord::Base.connection().execute("SELECT * from mappings  where destination_ont =#{ontology.ontologyId}")
+      from_res.each_hash(with_table=false) {|x| from<<x}
+      to_res.each_hash(with_table=false) {|x| to<<x}
+
+    end
+  
+    puts from.inspect
+    puts to.inspect
+    mappings = {:mapping_from=>from,:mapping_to=>to}
+    
+    render :xml=> mappings
+  end
+  
+  def ontology_service
+    
+  end
+  
+  
   def count
     ontology = DataAccess.getOntology(params[:ontology])
     
     @ontology_id=ontology.ontologyId
     
     @source_counts =[]
-    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,destination_ont,destination_ont_name,source_ont_name from mappings  where source_ont =#{ontology.ontologyId}  group by destination_ont")
+    names = ActiveRecord::Base.connection().execute("SELECT count(id) as count,destination_ont,destination_ont_name,source_ont_name from mappings  where source_ont =#{ontology.ontologyId}  group by destination_ont")
      names.each_hash(with_table=false) {|x| @source_counts<<x}
     
     @dest_counts = []
-    names = ActiveRecord::Base.connection().execute("SELECT count(*) as count,source_ont,destination_ont_name,source_ont_name from mappings  where destination_ont = #{ontology.ontologyId} group by source_ont")
+    names = ActiveRecord::Base.connection().execute("SELECT count(id) as count,source_ont,destination_ont_name,source_ont_name from mappings  where destination_ont = #{ontology.ontologyId} group by source_ont")
     names.each_hash(with_table=false) {|x| @dest_counts<<x} 
     
     render :partial =>'count'
@@ -263,8 +298,8 @@ private
           rdf_text << "<mappings:One_to_one_mapping rdf:ID=\"#{count}\">
              <mappings:mapping_metadata rdf:resource=\"##{count+1}\"/>
              <mappings:relation rdf:datatype=\"&xsd;string\">#{mapping.relationship_type}</mappings:relation>
-             <mappings:source rdf:resource='http://alpha.bioontology.org/#{to_param(mapping.source_ont)}/#{mapping.source_id}'/>
-             <mappings:target rdf:resource='http://alpha.bioontology.org/#{to_param(mapping.destination_ont)}/#{mapping.destination_id}'/>
+             <mappings:source rdf:resource='http://bioportal.bioontology.org/#{to_param(mapping.source_ont)}/#{mapping.source_id}'/>
+             <mappings:target rdf:resource='http://bioportal.bioontology.org/#{to_param(mapping.destination_ont)}/#{mapping.destination_id}'/>
          </mappings:One_to_one_mapping>
          <mappings:Mapping_Metadata rdf:ID=\"#{count+1}\">
              <mappings:author rdf:datatype=\"&xsd;string\">#{mapping.user.username}</mappings:author>

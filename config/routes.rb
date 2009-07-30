@@ -43,6 +43,8 @@ ActionController::Routing::Routes.draw do |map|
   map.mapping_count '/mappings/count/:ontology',:controller=>'mappings',:action=>'count'
   map.obrpage '/respage/',:controller=>'resources',:action=>'page'
 
+  map.mapping '/mappings/service/:ontology/:id',:controller=>'mappings',:action=>'service'
+
   map.obr_details '/res_details/:id',:controller=>'resources',:action=>'details'
   map.obr '/resources/:ontology/:id',:controller=>'resources',:action=>'show'
   

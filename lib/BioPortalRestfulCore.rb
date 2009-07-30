@@ -55,10 +55,17 @@ class BioPortalRestfulCore
 #    4525
  
       
-      def self.getView(view_id)
+      def self.getView(view_id,log_only=false)
         view = nil
 #        begin
-          doc = REXML::Document.new(open(BASE_URL + VIEW_PATH.gsub("%VIEW%",view_id)))
+          
+          if(log_only)
+            open(BASE_URL + VIEW_PATH.gsub("%VIEW%",view_id)+"?logonly=true&applicationid=#{APPLICATION_ID}")
+            return
+          end
+          
+
+          doc = REXML::Document.new(open(BASE_URL + VIEW_PATH.gsub("%VIEW%",view_id)+"?applicationid=#{APPLICATION_ID}"))
           
             doc.elements.each("*/data/ontologyViewBean"){ |element|  
               view = parseOntology(element)
@@ -71,9 +78,17 @@ class BioPortalRestfulCore
       
       
       
-      def self.getCategories()
+      def self.getCategories(log_only=false)
          categories=nil
-           doc = REXML::Document.new(open(BASE_URL+CATEGORIES_PATH))
+         
+          if(log_only)
+            open(BASE_URL+CATEGORIES_PATH+"?logonly=true&applicationid=#{APPLICATION_ID}")
+            return
+          end
+
+         
+         
+           doc = REXML::Document.new(open(BASE_URL+CATEGORIES_PATH+"?applicationid=#{APPLICATION_ID}"))
 
            categories = errorCheck(doc)
            unless categories.nil?
@@ -92,16 +107,25 @@ class BioPortalRestfulCore
         
       end
 
-       def self.getNode(ontology,node_id,view = false)
+       def self.getNode(ontology,node_id,view = false,log_only=false)
          node = nil
          
  #        puts "Requesting : #{BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",node_id)}"
           begin
             
             if view
-              doc = REXML::Document.new(open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))))
+              if log_only
+                  open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))+"&logonly=true&applicationid=#{APPLICATION_ID}")
+                return
+              end
+              doc = REXML::Document.new(open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))+"&applicationid=#{APPLICATION_ID}"))
             else
-              doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))))
+              if log_only
+                  open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))+"&logonly=true&applicationid=#{APPLICATION_ID}")
+                return
+              end
+
+              doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))+"&applicationid=#{APPLICATION_ID}"))
             end
           rescue Exception=>e
           end
@@ -127,13 +151,22 @@ class BioPortalRestfulCore
        end
       
 
-      def self.getTopLevelNodes(ontology,view = false)
+      def self.getTopLevelNodes(ontology,view = false,log_only=false)
         node = nil
           if view
-            doc = REXML::Document.new(open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%","root")))
+            if log_only
+                open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%","root")+"&logonly=true&applicationid=#{APPLICATION_ID}")
+              return
+            end
             
+            doc = REXML::Document.new(open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%","root")+"&applicationid=#{APPLICATION_ID}"))            
           else
-            doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","root")))
+            if log_only
+                open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","root")+"&logonly=true&applicationid=#{APPLICATION_ID}")
+              return
+            end
+
+            doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","root")+"&applicationid=#{APPLICATION_ID}"))
           end
          time = Time.now
          node = errorCheck(doc)         
@@ -148,9 +181,15 @@ class BioPortalRestfulCore
         return node.children
       end
 
-      def self.getOntologyList
+      def self.getOntologyList(log_only=false)
         ontologies=nil
-         doc = REXML::Document.new(open(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")))
+        
+        if log_only
+           open(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?logonly=true&applicationid=#{APPLICATION_ID}")
+          return
+        end
+        
+         doc = REXML::Document.new(open(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?applicationid=#{APPLICATION_ID}"))
          
          ontologies = errorCheck(doc)
          
@@ -168,9 +207,14 @@ class BioPortalRestfulCore
         return ontologies
       end
       
-      def self.getOntologyVersions(ontology)
+      def self.getOntologyVersions(ontology,log_only=false)
 
-         doc = REXML::Document.new(open(BASE_URL+VERSIONS_PATH.gsub("%ONT%",ontology.to_s)))
+        if log_only
+          open(BASE_URL+VERSIONS_PATH.gsub("%ONT%",ontology.to_s)+"?logonly=true&applicationid=#{APPLICATION_ID}")
+          return
+        end
+
+         doc = REXML::Document.new(open(BASE_URL+VERSIONS_PATH.gsub("%ONT%",ontology.to_s)+"?applicationid=#{APPLICATION_ID}"))
         
          ontologies = errorCheck(doc)
 
@@ -190,14 +234,20 @@ class BioPortalRestfulCore
       
       
       
-      def self.getOntology(ontology)
+      def self.getOntology(ontology,log_only=false)
         ont = nil
-        begin
-          doc = REXML::Document.new(open(BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology.to_s)))
-        rescue Exception=>e
-          doc =  REXML::Document.new(e.io.read)
-
-        end
+       # begin
+          
+          if log_only
+            puts BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology.to_s)+"?logonly=true&applicationid=#{APPLICATION_ID}"
+            open(BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology.to_s)+"?logonly=true&applicationid=#{APPLICATION_ID}")
+            return
+          end
+          
+          doc = REXML::Document.new(open(BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology.to_s)+"?applicationid=#{APPLICATION_ID}"))
+        #rescue Exception=>e
+        #  doc =  REXML::Document.new(e.io.read)
+        #end
             ont = errorCheck(doc)
 
              unless ont.nil?
@@ -239,9 +289,13 @@ class BioPortalRestfulCore
           return ont
       
       end
-      def self.getLatestOntology(ontology)
+      def self.getLatestOntology(ontology,log_only=false)
          ont = nil
 
+          if log_only
+            open(BASE_URL + VIRTUAL_URI_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","")+"?logonly=true")
+            return
+          end
             doc = REXML::Document.new(open(BASE_URL + VIRTUAL_URI_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","")))
             
               ont = errorCheck(doc)
@@ -263,8 +317,14 @@ class BioPortalRestfulCore
         
       end
       
-      def self.getPathToRoot(ontology,source,light=nil)
+      def self.getPathToRoot(ontology,source,light=nil,log_only=false)
            root = nil
+           
+           if log_only
+              open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"?light=false&logonly=true")
+             return
+           end
+           
            doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"?light=false"))
            
              root = errorCheck(doc)
@@ -282,7 +342,7 @@ class BioPortalRestfulCore
         
       end
       
-       def self.getNodeNameExact(ontologies,search,page)
+       def self.getNodeNameExact(ontologies,search,page,log_only=false)
          
          if ontologies.to_s.eql?("0")
            ontologies=""
@@ -319,7 +379,7 @@ class BioPortalRestfulCore
 
         
        end   
-       def self.getNodeNameContains(ontologies,search,page)
+       def self.getNodeNameContains(ontologies,search,page,log_only=false)
          
          if ontologies.to_s.eql?("0")
            ontologies=""
@@ -356,7 +416,7 @@ class BioPortalRestfulCore
  
         end
         
-        def self.getUsers
+        def self.getUsers(log_only=false)
 
           doc = REXML::Document.new(open(BASE_URL+USERS_PATH))
           
@@ -375,7 +435,7 @@ class BioPortalRestfulCore
           
         end
         
-        def self.getUser(user_id)
+        def self.getUser(user_id,log_only=false)
           user=nil
           doc = REXML::Document.new(open(BASE_URL+USER_PATH.gsub("%USR%",user_id.to_s)))
           
@@ -421,7 +481,7 @@ class BioPortalRestfulCore
         return user
         end
         
-        def self.createUser(params)
+        def self.createUser(params,log_only=false)
           user = nil
             begin
             doc = REXML::Document.new(postToRestlet(BASE_URL+USERS_PATH.gsub("%USR%","")+"?applicationid=#{APPLICATION_ID}",params))
@@ -448,7 +508,7 @@ class BioPortalRestfulCore
         
         
         
-        def self.updateUser(params,id)
+        def self.updateUser(params,id,log_only=false)
           user = nil
           begin
           doc = REXML::Document.new(putToRestlet(BASE_URL+USER_PATH.gsub("%USR%",id.to_s)+"?applicationid=#{APPLICATION_ID}",params))
@@ -473,7 +533,7 @@ class BioPortalRestfulCore
         end  
         
         
-        def self.createOntology(params)
+        def self.createOntology(params,log_only=false)
             ontology = nil
               begin
               doc = REXML::Document.new(postMultiPart(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?applicationid=#{APPLICATION_ID}",params))
@@ -497,7 +557,7 @@ class BioPortalRestfulCore
             return ontology
           end
         
-        def self.updateOntology(params,version_id)
+        def self.updateOntology(params,version_id,log_only=false)
                   ontology = nil
                     begin
                     doc = REXML::Document.new(putToRestlet(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%",version_id)+"?applicationid=#{APPLICATION_ID}",params))
@@ -528,7 +588,7 @@ class BioPortalRestfulCore
               
    
                 
-        def self.getAttributeValueContains(ontologies,search,page)
+        def self.getAttributeValueContains(ontologies,search,page,log_only=false)
           if ontologies.to_s.eql?("0")
             ontologies=""
           else
@@ -564,7 +624,7 @@ class BioPortalRestfulCore
                
        end
        
-        def self.getAttributeValueExact(ontologies,search,page)
+        def self.getAttributeValueExact(ontologies,search,page,log_only=false)
           
           if ontologies.to_s.eql?("0")
             ontologies=""
@@ -601,7 +661,7 @@ class BioPortalRestfulCore
          
         end
         
-        def self.getDiffs(ontology)
+        def self.getDiffs(ontology,log_only=false)
  #           puts BASE_URL+DIFFS_PATH.gsub("%ONT%",ontology)
           begin
 
@@ -629,7 +689,7 @@ class BioPortalRestfulCore
           return pairs
         end
        
-        def self.diffDownload(ver1,ver2)          
+        def self.diffDownload(ver1,ver2,log_only=false)          
           return BASE_URL+"/diffs/download/#{ver1}/#{ver2}"
         end
     
@@ -913,6 +973,7 @@ private
                end
  #           puts "#####################"
         }
+            node.children.sort!{|x,y| x.name.downcase<=>y.name.downcase}
         return node
   end
 

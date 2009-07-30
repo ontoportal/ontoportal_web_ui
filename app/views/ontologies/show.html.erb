@@ -80,7 +80,7 @@ $(document).ready(function(){
 </div>
 <%end%>
 
-<h1><%=@ontology.displayLabel%> &nbsp;&nbsp;&nbsp;&nbsp;<a href="/syndication/rss?ontologies=<%=@ontology.ontologyId%>" style="text-decoration:none;font-size:14px;"><img src="/images/feed-icon.png" height=16 width=16 border=0 > Subscribe</a></h1> 
+<h1><%=@ontology.displayLabel%> &nbsp;&nbsp;&nbsp;&nbsp;<a href="/syndication/rss?ontologies=<%=@ontology.ontologyId%>" style="text-decoration:none;font-size:14px;"><img src="/images/feed-icon.png" height=16 width=16 border=0 > Subscribe to updates</a></h1> 
 <%if !session[:user].nil? && (session[:user].id.to_i.eql?(@ontology.userId.to_i) || session[:user].admin?)%>
 <table class="form">
 	<tr>
@@ -93,7 +93,7 @@ $(document).ready(function(){
 <div class="tabs" style="margin-top:5px;margin-bottom:10px;border-top:1px solid #CFCFCF;">
 	<ul >
 		<li id="meta" class="selected tab"><a href="#" onclick="meta_tab_clicked('#metadata',this)">Metadata</a></li>
-		<li id="view" class="tab"><a href="#" onclick="meta_tab_clicked('#views',this)">Views</a></li>
+	<!--	<li id="view" class="tab"><a href="#" onclick="meta_tab_clicked('#views',this)">Views</a></li> -->
 		<li id="proj" class="tab"><a href="#" onclick="meta_tab_clicked('#projects',this)">Projects (<%=@projects.size%>)</a></li>
     	<li id="rev" class="tab"><a href="#" onclick="meta_tab_clicked('#reviews',this)">Reviews (<%=@reviews.size%>)</a></li>
 		<li id="widget" class="tab"><a href="#" onclick="meta_tab_clicked('#widgets',this)">Ontology Widgets</a></li>		
@@ -106,22 +106,32 @@ $(document).ready(function(){
 <br/>
 <table class="form" width="100%">
 	<tr>
-			<th>Ontology Name:</th><td class="top"><%=@ontology.displayLabel%></td> <th>Contact(s):</th><td class="top"><%=@ontology.contactName%></td>
+			<th>Ontology Name:</th><td class="top"><%=@ontology.displayLabel%></td>
 	</tr>
 	<tr>
-			<th>Ontology Id:</th><td><%=@ontology.ontologyId%></td> <th>Home Page:</th><td><%=auto_link("#{@ontology.homepage}", :all, :target => "_blank")%></td>
+			<th>Ontology Id:</th><td><%=@ontology.ontologyId%></td> 
+			
 	</tr>
 	<tr>
-			<th>Format:</th><td><%if @ontology.format.eql?("OBO")%><%=@ontology.format+"F"%><%else%><%=@ontology.format.split("-")[0]%><%end%></td><th> Documentation Page:</th><td><%=auto_link("#{@ontology.documentation}", :all, :target => "_blank")%></td>
+			<th>Format:</th><td><%if @ontology.format.eql?("OBO")%><%=@ontology.format+"F"%><%else%><%=@ontology.format.split("-")[0]%><%end%></td>
 	</tr>
 	<tr>
-			<th>Categories:</th><td><%for cat in @ontology.categories%><%=@categories[cat.to_s][:name]%><br/> <%end%></td> <th>Publications Page:</th><td><%=auto_link("#{@ontology.publication}", :all, :target => "_blank")%></td>
+			<th>Categories:</th><td><%for cat in @ontology.categories%><%=@categories[cat.to_s][:name]%><br/> <%end%></td> 
 	</tr>
 	<tr>
-			<th>Contact Email:</th><td><%=@ontology.contactEmail%></td><td>&nbsp;</td><td>&nbsp;</td>
+			<th>Contact:</th><td><%=@ontology.contactName%>, <%=@ontology.contactEmail%></td>
 	</tr>
 	<tr>
-		<th >Description:</th><td colspan=3><%=@ontology.description%></td>
+		<th>Home Page:</th><td><a href="<%=@ontology.homepage%>" target="_blank"><%=@ontology.homepage%></td>
+	</tr>
+	<tr>
+		<th>Publications Page:</th><td><a href="<%=@ontology.publication%>" target="_blank"><%=@ontology.publication%></a></td>
+	</tr>
+	<tr>
+		<th> Documentation Page:</th><td><a href="<%=@ontology.documentation%>" target="_blank"><%=@ontology.documentation%></a></td>
+	</tr>
+	<tr>
+		<th >Description:</th><td><%=@ontology.description%></td>
 	</tr>
 </table>
 
@@ -175,7 +185,7 @@ $(document).ready(function(){
 		<%end%>
 		<ul id="mappings" style="border-top:1px solid #C1DAD7;border-bottom:1px solid #C1DAD7;width:300px;padding:10px">
 		<%for mapping in @mappings%>
-			<li value="<%=mapping[1]%>"><a href="/visualize/<%=@ontology.id%>/<%=mapping[0]%>#t_tab4:"><%=mapping[0]%></a></li>
+			<li value="<%=mapping[1]%>"><a href="/visualize/<%=@ontology.id%>/<%=mapping[0]%>#t_tab4:"><%=mapping[2]%></a></li>
 		<%end%>
 		</ul>
 	</div>

@@ -49,11 +49,11 @@ class OntologiesController < ApplicationController
         @notes = ActiveRecord::Base.connection.select_rows(note_tag_query);
       end
 
-      mapping_tag_query = "select source_id,count(source_id) as con_count from mappings where source_ont = #{@ontology.ontologyId} group by source_id order by source_id"            
+      mapping_tag_query = "select source_id,count(source_id) as con_count,source_name from mappings where source_ont = #{@ontology.ontologyId} group by source_id order by source_id"            
       @mappings = ActiveRecord::Base.connection.select_rows(mapping_tag_query);
       
       if @mappings.size > 100
-        mapping_tag_query = "select source_id,count(source_id) as con_count from mappings where source_ont = #{@ontology.ontologyId} group by source_id order by con_count limit 100"
+        mapping_tag_query = "select source_id,count(source_id) as con_count,source_name from mappings where source_ont = #{@ontology.ontologyId} group by source_id order by con_count limit 100"
         @mappings = ActiveRecord::Base.connection.select_rows(mapping_tag_query);        
       end
 

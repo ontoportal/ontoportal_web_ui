@@ -77,7 +77,7 @@ var requiredRevision = 124;
 				"name", "OBRSearchByConcept",
 				"allowScriptAccess","always",
 				"type", "application/x-shockwave-flash",
-				"flashVars", "server=http://ncbo-core-stage1.stanford.edu/bioportal/&redirecturl=http://stage.bioontology.org/&concept=<%=@concept%>&ontology=<%=@ontology%>&search=<%=@search%>",
+				"flashVars", "server=<%=$REST_URL%>/&redirecturl=http://<%=request.env["HTTP_HOST"]%>&concept=<%=@concept%>&ontology=<%=@ontology%>&search=<%=@search%>",
 				"pluginspage", "http://www.adobe.com/go/getflashplayer"
 		);
 	  } else {  // flash is too old or we can't detect the plugin
@@ -103,7 +103,7 @@ var requiredRevision = 124;
 					quality="high"
 					allowScriptAccess="always"
 					type="application/x-shockwave-flash"
-					flashVars="server=http://ncbo-core-stage1.stanford.edu/bioportal/&redirecturl=http://stage.bioontology.org/&concept=<%=@concept%>&ontology=<%=@ontology%>&search=<%=@search%>"
+					flashVars="server=<%=$REST_URL%>/&redirecturl=http://<%=request.env["HTTP_HOST"]%>&concept=<%=@concept%>&ontology=<%=@ontology%>&search=<%=@search%>"
 					pluginspage="http://www.adobe.com/go/getflashplayer">
 				</embed>
 		</object>
