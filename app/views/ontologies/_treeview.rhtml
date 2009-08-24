@@ -241,6 +241,10 @@ jQuery(document).ready(function(){
 
 function nodeClicked(node_id,node_label) {
 
+	if(node_id == 0){
+		alert("Sorry, we cannot display all the classes at this level in the hierarchy because there are too many of them. Please select another class or use the BioPortal Search to find a specific concept in this ontology");
+		return;
+	}
 	// sets the label
 	document.getElementById("name_label").firstChild.nodeValue=node_label;
 	//sets the link next to the label

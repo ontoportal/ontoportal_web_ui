@@ -83,4 +83,50 @@ class MarginNotesController < ApplicationController
     
   end
   
+  def ont_service
+    ontology = DataAccess.getLatestOntology(params[:ontology])
+    
+    if params[:id]
+      concept = DataAccess.getNode(ontology.id,params[:id])    
+      notes =[]
+      note_res = ActiveRecord::Base.connection().execute("SELECT * from margin_notes  where ontology_id =#{ontology.ontologyId} AND concept_id = '#{concept.id}'")
+      note_res.each_hash(with_table=false) {|x| 
+        x['note_type']= MarginNote::NOTE_TYPES[x['note_type'].to_i]
+        notes<<x}
+    else
+      notes=[]
+      note_res = ActiveRecord::Base.connection().execute("SELECT * from margin_notes  where ontology_id =#{ontology.ontologyId} AND mapping_id is null")
+      note_res.each_hash(with_table=false) {|x| 
+        x['note_type']= MarginNote::NOTE_TYPES[x['note_type'].to_i]
+        notes<<x}
+
+    end
+    
+    render :xml=> notes
+  end
+  
+  def ver_service
+    ontology = DataAccess.getOntology(params[:ontology])
+    
+    if params[:id]
+      concept = DataAccess.getNode(ontology.id,params[:id])    
+      notes =[]
+      note_res = ActiveRecord::Base.connection().execute("SELECT * from margin_notes  where ontology_version_id =#{ontology.id} AND concept_id = '#{concept.id}'")
+      note_res.each_hash(with_table=false) {|x| 
+        x['note_type']= MarginNote::NOTE_TYPES[x['note_type'].to_i]
+        notes<<x}
+    else
+      notes=[]
+      note_res = ActiveRecord::Base.connection().execute("SELECT * from margin_notes  where ontology_version_id =#{ontology.id} AND mapping_id is null")
+      note_res.each_hash(with_table=false) {|x| 
+        x['note_type']= MarginNote::NOTE_TYPES[x['note_type'].to_i]
+        notes<<x}
+
+    end
+    
+    render :xml=> notes
+  end
+  
+  
+  
 end

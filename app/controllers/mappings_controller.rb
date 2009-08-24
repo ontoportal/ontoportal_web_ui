@@ -23,7 +23,7 @@ class MappingsController < ApplicationController
   end
   
   def service
-    ontology = DataAccess.getOntology(params[:ontology])
+    ontology = DataAccess.getLatestOntology(params[:ontology])
     
     if params[:id]
       concept = DataAccess.getNode(ontology.id,params[:id])    
@@ -98,10 +98,23 @@ class MappingsController < ApplicationController
 #    @mapping_pages = Mapping.paginate(:page => params[:page], :per_page => 100 ,:conditions=>{:source_ont=>params[:id],:destination_ont=>params[:target]},:order=>'count()',:include=>:user)
     @mappings = {}
     @map_sources = []
-    @users = DataAccess.getUsers.sort{|x,y| x.username.downcase <=> y.username.downcase}
+    @service_users = DataAccess.getUsers.sort{|x,y| x.username.downcase <=> y.username.downcase}
+    @users = []
+    user_count = ActiveRecord::Base.connection().execute("SELECT DISTINCT user_id FROM mappings WHERE source_ont = '#{params[:id]}' AND destination_ont = '#{params[:target]}'")
+    user_count.each_hash(with_table=false) {|x| 
+
+      for user in @service_users
+        if x['user_id'].to_i==user.id.to_i
+          @users << user
+        end
+      end
+    } 
+    
+    
     for map in mapping_objects
 
-      @map_sources << map.map_source.gsub(/<a.*?a>/mi, "")  unless map.map_source.nil?
+        
+      @map_sources << map.map_source.gsub(/(<[^>]*>)/mi, "")  unless map.map_source.nil?
       @map_sources.uniq!
       
       if @mappings[map.source_id].nil?

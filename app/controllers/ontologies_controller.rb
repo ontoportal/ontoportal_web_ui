@@ -211,6 +211,19 @@ class OntologiesController < ApplicationController
     #puts @categories.inspect
   end
   
+  
+  def new_view
+    if(params[:id].nil? || params[:id].to_i < 1)
+      @ontology = DataAccess.getOntology(params[:version_id])
+    else      
+      @ontology = DataAccess.getView(params[:id])
+    end
+    @categories = DataAccess.getCategories()
+    
+    
+  end
+  
+  
   def create
     params[:ontology][:isCurrent]=1
     params[:ontology][:isReviewed]=1

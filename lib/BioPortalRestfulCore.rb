@@ -17,8 +17,10 @@ class BioPortalRestfulCore
     PATH_PATH = "/path/%ONT%/%CONC%/root"
     VERSIONS_PATH="/ontologies/versions/%ONT%"
     
-    VIEW_PATH = "/ontologies/view/%VIEW%"
-    VIEW_CONCEPT_PATH = "/concepts/view/%VIEW%/?conceptid=%CONC%"
+    VIEW_PATH = "/ontologies/%VIEW%"
+#    VIEW_CONCEPT_PATH = "/concepts/view/%VIEW%/?conceptid=%CONC%"
+    VIEW_CONCEPT_PATH = "/concepts/%VIEW%/?conceptid=%CONC%"
+    VIEW_VERSIONS_PATH = "/views/versions/%ONT%"
 #    http://ncbo-core-dev1.stanford.edu/bioportal/rest/search/cell?includeproperties=1&ontologyids=1070,%201032&pagesize=50&pagenum=2&isexactmatch=0
     SEARCH_PATH="/search/%query%?%ONT%"
     PROPERTY_SEARCH_PATH="/search/properties/%query%?ontologies=%ONT%"
@@ -64,10 +66,9 @@ class BioPortalRestfulCore
             return
           end
           
-
           doc = REXML::Document.new(open(BASE_URL + VIEW_PATH.gsub("%VIEW%",view_id)+"?applicationid=#{APPLICATION_ID}"))
           
-            doc.elements.each("*/data/ontologyViewBean"){ |element|  
+            doc.elements.each("*/data/ontologyBean"){ |element|  
               view = parseOntology(element)
             }  
 #        rescue Exception =>e
@@ -75,6 +76,30 @@ class BioPortalRestfulCore
 #        end
         return view
       end
+      
+      def self.getViews(ontology_id,log_only=false)
+        views = []
+#        begin
+          
+          if(log_only)
+            open(BASE_URL + VIEW_VERSIONS_PATH.gsub("%ONT%",ontology_id)+"?logonly=true&applicationid=#{APPLICATION_ID}")
+            return nil
+          end
+          doc = REXML::Document.new(open(BASE_URL + VIEW_VERSIONS_PATH.gsub("%ONT%",ontology_id)+"?applicationid=#{APPLICATION_ID}"))
+            doc.elements.each("*/data/list/list"){ |element|
+              virtual_view = []
+
+              element.elements.each{ |version|      
+                virtual_view << parseOntology(version)
+              }
+              views << virtual_view
+            }  
+#        rescue Exception =>e
+          
+#        end
+  
+        return views
+      end      
       
       
       
@@ -118,14 +143,14 @@ class BioPortalRestfulCore
                   open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))+"&logonly=true&applicationid=#{APPLICATION_ID}")
                 return
               end
-              doc = REXML::Document.new(open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))+"&applicationid=#{APPLICATION_ID}"))
+              doc = REXML::Document.new(open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))+"&applicationid=#{APPLICATION_ID}&maxnumchildren=100"))
             else
               if log_only
                   open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))+"&logonly=true&applicationid=#{APPLICATION_ID}")
                 return
               end
 
-              doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))+"&applicationid=#{APPLICATION_ID}"))
+              doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",URI.escape(node_id))+"&applicationid=#{APPLICATION_ID}&maxnumchildren=100"))
             end
           rescue Exception=>e
           end
@@ -159,14 +184,14 @@ class BioPortalRestfulCore
               return
             end
             
-            doc = REXML::Document.new(open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%","root")+"&applicationid=#{APPLICATION_ID}"))            
+            doc = REXML::Document.new(open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%","root")+"&applicationid=#{APPLICATION_ID}&maxnumchildren=100"))            
           else
             if log_only
                 open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","root")+"&logonly=true&applicationid=#{APPLICATION_ID}")
               return
             end
 
-            doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","root")+"&applicationid=#{APPLICATION_ID}"))
+            doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","root")+"&applicationid=#{APPLICATION_ID}&maxnumchildren=100"))
           end
          time = Time.now
          node = errorCheck(doc)         
@@ -239,11 +264,10 @@ class BioPortalRestfulCore
        # begin
           
           if log_only
-            puts BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology.to_s)+"?logonly=true&applicationid=#{APPLICATION_ID}"
+            #puts BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology.to_s)+"?logonly=true&applicationid=#{APPLICATION_ID}"
             open(BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology.to_s)+"?logonly=true&applicationid=#{APPLICATION_ID}")
             return
           end
-          
           doc = REXML::Document.new(open(BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology.to_s)+"?applicationid=#{APPLICATION_ID}"))
         #rescue Exception=>e
         #  doc =  REXML::Document.new(e.io.read)
@@ -325,7 +349,7 @@ class BioPortalRestfulCore
              return
            end
            
-           doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"?light=false"))
+           doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"?light=false&maxnumchildren=100"))
            
              root = errorCheck(doc)
 
@@ -535,8 +559,14 @@ class BioPortalRestfulCore
         
         def self.createOntology(params,log_only=false)
             ontology = nil
+            
+          #  puts BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?applicationid=#{APPLICATION_ID}"
               begin
-              doc = REXML::Document.new(postMultiPart(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?applicationid=#{APPLICATION_ID}",params))
+                puts params.inspect
+                
+              response = postMultiPart(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?applicationid=#{APPLICATION_ID}",params)
+              puts "Output: "+response.to_s
+              doc = REXML::Document.new(response)
 
               rescue Exception=>e
                 doc =  REXML::Document.new(e.io.read)
@@ -552,7 +582,7 @@ class BioPortalRestfulCore
                ontology = parseOntology(element)
               }
  #              puts "createOntology Parse Time: #{Time.now-time}"   
-
+            
 
             return ontology
           end
@@ -854,7 +884,7 @@ private
 
     ontology = OntologyWrapper.new
     ontology.id = ontologybeanXML.elements["id"].get_text.value.strip
-    ontology.displayLabel= ontologybeanXML.elements["displayLabel"].get_text.value .strip
+    ontology.displayLabel= ontologybeanXML.elements["displayLabel"].get_text.value.strip rescue "No Label"
     ontology.ontologyId = ontologybeanXML.elements["ontologyId"].get_text.value.strip
     ontology.userId = ontologybeanXML.elements["userId"].get_text.value.strip rescue ""
     ontology.parentId = ontologybeanXML.elements["parentId"].get_text.value.strip rescue ""
@@ -887,10 +917,27 @@ private
       ontology.categories<< element.get_text.value.strip
     }
     
+    
+    #view stuff
+    
+    
+    begin
+      ontology.isView = ontologybeanXML.elements["isView"].get_text.value.strip
+      ontology.viewOntologyId = ontologybeanXML.elements['viewOnOntologyVersionId'].elements['int'].get_text.value
+      ontology.viewDefinition = ontologybeanXML.elements["viewDefinition"].get_text.value.strip
+      ontology.viewGenerationEngine = ontologybeanXML.elements["viewGenerationEngine"].get_text.value.strip
+      ontology.viewDefinitionLanguage = ontologybeanXML.elements["viewDefinitionLanguage"].get_text.value.strip
+    rescue
+    end
+    
     ontology.view_ids = []
+    ontology.virtual_view_ids=[]
     begin
     ontologybeanXML.elements["hasViews"].elements.each{|element|
       ontology.view_ids<< element.get_text.value.strip
+    }
+    ontologybeanXML.elements['virtualViewIds'].elements.each{|element|
+      ontology.virtual_view_ids<< element.get_text.value.strip
     }
     rescue
     end

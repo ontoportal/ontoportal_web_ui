@@ -19,7 +19,7 @@ class SyndicationController < ApplicationController
         case event.event_type
           when "Ontology"
             ontology = DataAccess.getOntology(event.event_type_id)
-            feed_items << {:title=>"Ontology added",:description=>"Ontology  #{ontology.displayLabel} version #{ontology.versionNumber} was added to the repository",:date=>event.created_at,:link=>"http://bioportal.bioontology.org/visualize/#{ontology.id}"}
+            feed_items << {:title=>"Ontology added",:description=>"Ontology  #{ontology.displayLabel} version #{ontology.versionNumber} was added to the repository",:date=>event.created_at,:link=>"http://bioportal.bioontology.org/ontologies/#{ontology.id}"}
           when "Note"
             note = MarginNote.find(event.event_type_id)
             feed_items << {:title=>"Note added to #{note.concept.name} in #{note.ontology.displayLabel}",:description=>note.comment,:date=>event.created_at,:link=>"http://bioportal.bioontology.org/visualize/#{note.ontology.id}/#{note.concept_id}"}

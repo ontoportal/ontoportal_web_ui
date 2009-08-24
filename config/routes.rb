@@ -45,6 +45,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.mapping '/mappings/service/:ontology/:id',:controller=>'mappings',:action=>'service'
 
+  map.notes_ont 'notes/ont/:ontology/:id',:controller=>'margin_notes',:action=>'ont_service'
+  map.notes_ver 'notes/ver/:ontology/:id',:controller=>'margin_notes',:action=>'ver_service'
+
   map.obr_details '/res_details/:id',:controller=>'resources',:action=>'details'
   map.obr '/resources/:ontology/:id',:controller=>'resources',:action=>'show'
   

@@ -38,7 +38,13 @@ class OntologyWrapper
   attr_accessor :versions
   
   attr_accessor :view_ids
+  attr_accessor :virtual_view_ids
   attr_accessor :view_beans
+  attr_accessor :isView
+  attr_accessor :viewOntologyId
+  attr_accessor :viewDefinition
+  attr_accessor :viewGenerationEngine
+  attr_accessor :viewDefinitionLanguage
   
   FILTERS={
   "All"=>0,
@@ -61,13 +67,7 @@ class OntologyWrapper
     
     
   def views
-    if self.view_beans.nil?
-      self.view_beans = []
-      for id in view_ids
-        self.view_beans << DataAccess.getView(id)
-      end      
-    end
-    return self.view_beans
+    return DataAccess.getViews(self.ontologyId)
   end
   
   def from_params(params)
@@ -98,12 +98,19 @@ class OntologyWrapper
     self.categories = params[:categories]
     self.abbreviation = params[:abbreviation]
     self.synonymSlot = params[:synonymSlot]
-    self.preferredNameSlot = params[:preferredNameSlot]
+    self.preferredNameSlot = params[:preferredNameSlot]    
+    
+    # view items
+    self.isView = params[:isView]
+    self.viewOntologyId = params[:viewOntologyId]
+    self.viewDefinition = params[:viewDefinition]
+    self.viewDefinitionLanguage = params[:viewDefinitionLanguage]
+    self.viewGenerationEngine = params[:viewGenerationEngine]
     
   end
   
   def map_count
-    count = Mapping.count('id',:conditions=>{:source_ont=>self.ontologyId}).size
+    count = Mapping.count('id',:conditions=>{:source_ont=>self.ontologyId})
   end
   
   

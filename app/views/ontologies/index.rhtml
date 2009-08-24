@@ -232,7 +232,7 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 	</tr>
 	
 	</table>
-		<div><a href="/syndication/rss"><img src="/images/feed-icon.png" border="0">Subscribe to all ontologies</a></div>
+		<div><a href="/syndication/rss"><img src="/images/feed-icon.png" border="0">Subscribe to all updates</a></div>
 <table id="ontologies" class="zebra" cellpadding="0" cellspacing="0">
 		<thead>
   <tr>
@@ -270,7 +270,7 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 	<td  style="width:50px;"><%=ontology.versionNumber%></td>
 	<td><%=ontology.contactName%></td>
 	<td><%=ontology.dateCreated%></td>
-	<td><%if !ontology_groups[ontology.ontologyId.to_i].nil?%><%=ontology_groups[ontology.ontologyId.to_i].join("")%><%end%></td>
+	<td ><%if !ontology_groups[ontology.ontologyId.to_i].nil?%><div style="white-space:nowrap;"><%=ontology_groups[ontology.ontologyId.to_i].join("<br/>")%></div><%end%></td>
 	<td style="display:none;"><%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
 		<br>
 		<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>

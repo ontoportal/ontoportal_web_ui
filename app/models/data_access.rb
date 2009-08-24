@@ -38,6 +38,19 @@ class DataAccess
         return CACHE.get("view::#{param(view_id)}")
       end            
     end
+
+    def self.getViews(ont_id)
+      if CACHE.get("views::#{param(ont_id)}").nil? || NO_CACHE
+        views = SERVICE.getViews(ont_id)
+        unless views.kind_of?(Hash) && views[:error]
+          CACHE.set("views::#{param(ont_id)}",views)
+        end
+        return views
+      else
+        SERVICE.getViews(ont_id,true)
+        return CACHE.get("views::#{param(ont_id)}")
+      end            
+    end
     
     
 
