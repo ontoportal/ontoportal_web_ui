@@ -214,7 +214,10 @@ class OntologiesController < ApplicationController
   
   def new_view
     if(params[:id].nil? || params[:id].to_i < 1)
+      @new = true
       @ontology = DataAccess.getOntology(params[:version_id])
+      @ontology_version_id = params[:version_id]
+      @ontology.userId = session[:user].id
     else      
       @ontology = DataAccess.getView(params[:id])
     end
@@ -233,7 +236,7 @@ class OntologiesController < ApplicationController
       params[:ontology][:userId]= session[:user].id
     end
     #puts "File Size: #{params[:ontology][:filePath].size}"
-      @errors = validate(params[:ontology])
+    @errors = validate(params[:ontology])
     if @errors.length < 1
     @ontology = DataAccess.createOntology(params[:ontology])
       if @ontology.kind_of?(Hash) && @ontology[:error]        
@@ -243,7 +246,11 @@ class OntologiesController < ApplicationController
           else
             @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
           end
-        render :action=>'new'  
+        if(params[:ontology][:isView].to_i==1)
+          render :action=>'new_view'
+        else
+          render :action=>'new'  
+        end
       else
     
       #puts "Ontology Error: #{@ontology.inspect}"
@@ -256,7 +263,15 @@ class OntologiesController < ApplicationController
          flash[:notice]="Thank you for submitting your ontology to BioPortal.
           We will now put your ontology in the queue to be processed.
            Please keep in mind that it may take up to several hours before BioPortal users will be able to explore and search your ontology"
-        redirect_to ontology_path(@ontology)
+           
+        if(@ontology.isView=='true')
+          #cleaning out the cache
+          parent_ontology=DataAccess.getOntology(@ontology.viewOnOntologyVersionId)
+          CACHE.delete("views::#{parent_ontology.ontologyId}")
+          redirect_to '/ontologies/'+@ontology.viewOnOntologyVersionId
+        else
+          redirect_to ontology_path(@ontology)
+        end
       end
     
   
@@ -273,8 +288,11 @@ class OntologiesController < ApplicationController
         
       end
       
-    render :action=>'new'
-    end
+        if(params[:ontology][:isView].to_i==1)
+          render :action=>'new_view'
+        else
+          render :action=>'new'  
+        end    end
     
   end
   

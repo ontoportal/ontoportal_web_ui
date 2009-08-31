@@ -41,10 +41,11 @@ class OntologyWrapper
   attr_accessor :virtual_view_ids
   attr_accessor :view_beans
   attr_accessor :isView
-  attr_accessor :viewOntologyId
   attr_accessor :viewDefinition
   attr_accessor :viewGenerationEngine
   attr_accessor :viewDefinitionLanguage
+  attr_accessor :viewOnOntologyVersionId
+  
   
   FILTERS={
   "All"=>0,
@@ -102,7 +103,7 @@ class OntologyWrapper
     
     # view items
     self.isView = params[:isView]
-    self.viewOntologyId = params[:viewOntologyId]
+    self.viewOnOntologyVersionId = params[:viewOnOntologyVersionId]
     self.viewDefinition = params[:viewDefinition]
     self.viewDefinitionLanguage = params[:viewDefinitionLanguage]
     self.viewGenerationEngine = params[:viewGenerationEngine]

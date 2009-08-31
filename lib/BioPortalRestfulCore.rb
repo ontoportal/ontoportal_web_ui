@@ -24,7 +24,7 @@ class BioPortalRestfulCore
 #    http://ncbo-core-dev1.stanford.edu/bioportal/rest/search/cell?includeproperties=1&ontologyids=1070,%201032&pagesize=50&pagenum=2&isexactmatch=0
     SEARCH_PATH="/search/%query%?%ONT%"
     PROPERTY_SEARCH_PATH="/search/properties/%query%?ontologies=%ONT%"
-    VIRTUAL_URI_PATH="/virtual/%ONT%/%CONC%"
+    VIRTUAL_URI_PATH="/virtual/ontology/%ONT%/%CONC%"
     META_SEARCH_PATH="/search/meta/%query%"
     USERS_PATH="/users"
     USER_PATH = "/users/%USR%"
@@ -565,7 +565,6 @@ class BioPortalRestfulCore
                 puts params.inspect
                 
               response = postMultiPart(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?applicationid=#{APPLICATION_ID}",params)
-              puts "Output: "+response.to_s
               doc = REXML::Document.new(response)
 
               rescue Exception=>e
@@ -923,7 +922,7 @@ private
     
     begin
       ontology.isView = ontologybeanXML.elements["isView"].get_text.value.strip
-      ontology.viewOntologyId = ontologybeanXML.elements['viewOnOntologyVersionId'].elements['int'].get_text.value
+      ontology.viewOnOntologyVersionId = ontologybeanXML.elements['viewOnOntologyVersionId'].elements['int'].get_text.value
       ontology.viewDefinition = ontologybeanXML.elements["viewDefinition"].get_text.value.strip
       ontology.viewGenerationEngine = ontologybeanXML.elements["viewGenerationEngine"].get_text.value.strip
       ontology.viewDefinitionLanguage = ontologybeanXML.elements["viewDefinitionLanguage"].get_text.value.strip

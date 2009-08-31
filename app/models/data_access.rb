@@ -264,6 +264,8 @@ class DataAccess
           CACHE.delete("#{params[:ontologyId]}::_details")
         end
         
+
+        
       return ontology
     end
     

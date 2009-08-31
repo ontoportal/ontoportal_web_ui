@@ -21,7 +21,10 @@ class LoginController < ApplicationController
         if logged_in_user
           session[:user] = logged_in_user
           flash[:notice] = "Welcome "+logged_in_user.username.to_s+"."
-          redirect = session[:redirect]
+          redirect = "/"
+          if(session[:redirect])
+            redirect = session[:redirect]
+          end
           #puts "redirect is #{redirect}"
           redirect_to redirect
         else

@@ -42,10 +42,18 @@ Errors On Form
 <%end%>
 
 </div>
-<%=hidden_field :ontology, :ontologyId%>
+<%if @new%>
+	<%=hidden_field :ontology, :ontologyId, :value=>""%>
+	<%=hidden_field :ontology, :viewOnOntologyVersionId, :value=>@ontology_version_id%>
+<% else%>
+	<%=hidden_field :ontology, :ontologyId%>
+	<%=hidden_field :ontology, :viewOnOntologyVersionId%>
+<%end%>
+
 <%=hidden_field :ontology, :userId%>
-<%=hidden_field :ontology, :isView%>
+<%=hidden_field :ontology, :isView, :value=>1%>
 <%=hidden_field :ontology, :isRemote, :value=>0%>
+
 <style>
 th{
 	width:30%;
@@ -69,8 +77,7 @@ textarea{
 		<th>View Abbreviation: <span class="asterik"> *</span></th><td><%= text_field :ontology, :abbreviation%></td>
 	</tr>
 	
-	
-	<%if @ontology.ontologyId.nil?%>
+
 	<tr>
 		<th>View Format: <span class="asterik"> *</span></th><td><select name="ontology[format]" style="width:200px" >			
 
@@ -84,16 +91,11 @@ textarea{
 			<option value="RRF">RRF</option>
 			</select>
 			</td>
-	</tr>	
-	<%else%>
-	<tr>
-		<th>View Format:</th><td> <%=@ontology.format%>
-			<%=hidden_field :ontology, :format%></td>
 	</tr>
-	<%end%>
+
 	
 	<tr>
-		<th>View Version: <span class="asterik"> *</span></th><td><%=text_field :ontology, :versionNumber%></td>
+		<th>View Version: <span class="asterik"> *</span></th><td><%=text_field :ontology, :versionNumber,:value=>''%></td>
 	</tr>	
 	<tr>
 		<th>Date Released: <span class="asterik"> *</span></th><td><%= text_field :ontology, :dateReleased,:id=>"datepicker"%></td>
