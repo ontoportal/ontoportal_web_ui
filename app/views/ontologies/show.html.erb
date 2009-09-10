@@ -93,7 +93,7 @@ $(document).ready(function(){
 <div class="tabs" style="margin-top:5px;margin-bottom:10px;border-top:1px solid #CFCFCF;">
 	<ul >
 		<li id="meta" class="selected tab"><a href="#" onclick="meta_tab_clicked('#metadata',this)">Metadata</a></li>
-		<li id="view" class="tab"><a href="#" onclick="meta_tab_clicked('#views',this)">Views</a></li>
+		<li id="view" class="tab"><a href="#" onclick="meta_tab_clicked('#views',this)">Views (<%=@ontology.views.size%>)</a></li>
 		<li id="proj" class="tab"><a href="#" onclick="meta_tab_clicked('#projects',this)">Projects (<%=@projects.size%>)</a></li>
     	<li id="rev" class="tab"><a href="#" onclick="meta_tab_clicked('#reviews',this)">Reviews (<%=@reviews.size%>)</a></li>
 		<li id="widget" class="tab"><a href="#" onclick="meta_tab_clicked('#widgets',this)">Ontology Widgets</a></li>		
@@ -504,9 +504,9 @@ Example 3 (get the preferred name for a concept)<br/><input type="text" name="c"
 	<div style="float:left;width:1000px;" >
 
 		<%if session[:user].nil? %>
-<h3><a href="/login">Create New View</a></h2>		
+<h3><a href="/login">Create New View</a></h3>		
 		<%else%>
-<h3><a href="/ontologies/new_view/new?version_id=<%=@ontology.id%>">Create New View</a></h2>		
+<h3><a href="/ontologies/new_view/new?version_id=<%=@ontology.id%>">Create New View</a></h3>		
 		<%end%>
 <%if @ontology.views.empty? || @ontology.views.first.size < 1%>
 <h1> No views available.</h1>
@@ -522,7 +522,7 @@ end%>
 			<th>View Name:</th><td class="top"><%=virtual[0].displayLabel%></td> <th>Created By:</th><td class="top"><%=virtual[0].contactName%></td>
 	</tr>
 	<tr>
-		<th>Virtual View Id:</th><td><%=virtual[0].ontologyId%></td>
+		<th>View Id:</th><td><%=virtual[0].ontologyId%></td>
 		<th>View Generation Engine:</th><td><%=virtual[0].viewGenerationEngine%></td>
 	</tr>
 	<tr>
@@ -553,9 +553,9 @@ for view in virtual%>
 		<tr >
 			<td><%=view.versionNumber%></td>
 			<td><%=@ontology.versionNumber%></td>
-			<td><%=view.dateCreated%></td>			
+			<td><%=view.dateReleased%></td>			
 			<td><a href="<%=DataAccess.download(view.id)%>" target="_blank">Download View</a></td>
-			<td><%if view.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => view,:view=>true)%><%elsif version.statusId.to_i.eql?(1)%>Parsing View<%else%><%end%></td>
+			<td><%if view.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => view,:view=>true)%><%else%>Parsing View<%end%></td>
 
 		</tr>
 

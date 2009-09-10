@@ -17,7 +17,7 @@ class DataAccess
       if CACHE.get("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}").nil? || NO_CACHE
         node = SERVICE.getNode(ontology,node_id,view)  
         unless  node.kind_of?(Hash) && node[:error]
-        CACHE.set("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}",node)
+        CACHE.set("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}",node,CACHE_EXPIRE_TIME)
        end
         return node
       else
@@ -30,7 +30,7 @@ class DataAccess
       if CACHE.get("view::#{param(view_id)}").nil? || NO_CACHE
         view = SERVICE.getView(view_id)
         unless view.kind_of?(Hash) && view[:error]
-          CACHE.set("view::#{param(view_id)}",view)
+          CACHE.set("view::#{param(view_id)}",view,CACHE_EXPIRE_TIME)
         end
         return view
       else
@@ -43,7 +43,7 @@ class DataAccess
       if CACHE.get("views::#{param(ont_id)}").nil? || NO_CACHE
         views = SERVICE.getViews(ont_id)
         unless views.kind_of?(Hash) && views[:error]
-          CACHE.set("views::#{param(ont_id)}",views)
+          CACHE.set("views::#{param(ont_id)}",views,CACHE_EXPIRE_TIME)
         end
         return views
       else
@@ -64,7 +64,7 @@ class DataAccess
       if CACHE.get("#{view_string}#{param(ontology)}::_top").nil? || NO_CACHE
         topNodes = SERVICE.getTopLevelNodes(ontology,view)
         unless topNodes.kind_of?(Hash) && topNodes[:error] 
-          CACHE.set("#{view_string}#{param(ontology)}::_top",topNodes)
+          CACHE.set("#{view_string}#{param(ontology)}::_top",topNodes,CACHE_EXPIRE_TIME)
         end
         return topNodes
       else

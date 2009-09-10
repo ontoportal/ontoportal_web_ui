@@ -565,6 +565,8 @@ class BioPortalRestfulCore
                 puts params.inspect
                 
               response = postMultiPart(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?applicationid=#{APPLICATION_ID}",params)
+              
+              puts response
               doc = REXML::Document.new(response)
 
               rescue Exception=>e
@@ -920,14 +922,12 @@ private
     #view stuff
     
     
-    begin
-      ontology.isView = ontologybeanXML.elements["isView"].get_text.value.strip
-      ontology.viewOnOntologyVersionId = ontologybeanXML.elements['viewOnOntologyVersionId'].elements['int'].get_text.value
-      ontology.viewDefinition = ontologybeanXML.elements["viewDefinition"].get_text.value.strip
-      ontology.viewGenerationEngine = ontologybeanXML.elements["viewGenerationEngine"].get_text.value.strip
-      ontology.viewDefinitionLanguage = ontologybeanXML.elements["viewDefinitionLanguage"].get_text.value.strip
-    rescue
-    end
+    
+      ontology.isView = ontologybeanXML.elements["isView"].get_text.value.strip rescue "" 
+      ontology.viewOnOntologyVersionId = ontologybeanXML.elements['viewOnOntologyVersionId'].elements['int'].get_text.value rescue "" 
+      ontology.viewDefinition = ontologybeanXML.elements["viewDefinition"].get_text.value.strip rescue "" 
+      ontology.viewGenerationEngine = ontologybeanXML.elements["viewGenerationEngine"].get_text.value.strip rescue "" 
+      ontology.viewDefinitionLanguage = ontologybeanXML.elements["viewDefinitionLanguage"].get_text.value.strip rescue "" 
     
     ontology.view_ids = []
     ontology.virtual_view_ids=[]

@@ -215,7 +215,8 @@ class OntologiesController < ApplicationController
   def new_view
     if(params[:id].nil? || params[:id].to_i < 1)
       @new = true
-      @ontology = DataAccess.getOntology(params[:version_id])
+#      @ontology = DataAccess.getOntology(params[:version_id])
+      @ontology = OntologyWrapper.new
       @ontology_version_id = params[:version_id]
       @ontology.userId = session[:user].id
     else      
