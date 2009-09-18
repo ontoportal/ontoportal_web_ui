@@ -14,7 +14,7 @@ class BioPortalRestfulCore
     CATEGORIES_PATH = "/categories/"
 
     CONCEPT_PATH ="/concepts/%ONT%/?conceptid=%CONC%"
-    PATH_PATH = "/path/%ONT%/%CONC%/root"
+    PATH_PATH = "/path/%ONT%/?source=%CONC%&target=root"
     VERSIONS_PATH="/ontologies/versions/%ONT%"
     
     VIEW_PATH = "/ontologies/%VIEW%"
@@ -345,11 +345,11 @@ class BioPortalRestfulCore
            root = nil
            
            if log_only
-              open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"?light=false&logonly=true")
+              open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",URI.escape(source))+"&light=false&logonly=true")
              return
            end
            
-           doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",source)+"?light=false&maxnumchildren=100"))
+           doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",URI.escape(source))+"&light=false&maxnumchildren=100"))
            
              root = errorCheck(doc)
 

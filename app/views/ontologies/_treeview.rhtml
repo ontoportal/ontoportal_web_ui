@@ -248,7 +248,7 @@ function nodeClicked(node_id,node_label) {
 	// sets the label
 	document.getElementById("name_label").firstChild.nodeValue=node_label;
 	//sets the link next to the label
-	document.getElementById("link_label").firstChild.nextSibling.href="/visualize/"+currentOntology+"/"+encodeURIComponent(node_id);
+	document.getElementById("link_label").firstChild.nextSibling.href="/visconcepts/"+currentOntology+"/?id="+encodeURIComponent(node_id);
 
 	setConcept(node_id) 
 	

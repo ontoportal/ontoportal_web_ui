@@ -50,9 +50,9 @@ $(document).ready(function(){
 
 <div id="bd_hd">
 	<%if @ontology.isView=='true'%>
-	<h1>View Of <%=link_to @ontology.displayLabel, ontology_url(:id => @ontology.viewOnOntologyVersionId)%>
+	<h1><%=link_to @ontology.displayLabel, ontology_url(:id => @ontology.viewOnOntologyVersionId)%>
 		<br/>
-		(Ontology View) 
+		(View for <%=@ontology.getOntologyFromView().displayLabel%>) 
 		</h1>
 		
 		</h1>

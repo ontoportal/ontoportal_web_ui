@@ -149,7 +149,7 @@ $(document).ready(function(){
 		</thead>
 		
 		<%
-		@versions.sort!{|x,y| y.internalVersion<=>x.internalVersion}
+		@versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
 
 		for version in @versions%>
 		
