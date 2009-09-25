@@ -1,6 +1,6 @@
 <table class="form" width="70%">
 	<tr>
-		<th>First Name:</th><td><%=text_field :user, :firstname%></td>
+		<th>First Name:</th><td class="top"><%=text_field :user, :firstname%></td>
 	</tr>
 	<tr>
 		<th>Last Name:</th><td><%=text_field :user, :lastname%></td>
@@ -22,5 +22,17 @@
 	</tr>
 	<tr>
 		<th>Re-enter Password:*</th><td><%=password_field :user, :password_confirmation%></td>
+	</tr>
+	<style lang="text/css">
+		.recaptchatable #recaptcha_image {
+			border: 1px solid #C1DAD7 !important;
+		}
+		.recaptchatable {
+			border: 1px solid white !important;
+		}
+		
+	</style>
+	<tr>
+		<th>Please enter the following text:*</th><td><%= recaptcha_tags :display => { "theme" => "clean" } %></td>
 	</tr>
 </table>
