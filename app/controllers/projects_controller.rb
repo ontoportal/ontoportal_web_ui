@@ -43,11 +43,15 @@ class ProjectsController < ApplicationController
   # GET /projects/new
   # GET /projects/new.xml
   def new
-    @project = Project.new
-    @ontologies = DataAccess.getOntologyList()
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @project }
+    if session[:user].nil?
+      redirect_to :controller => 'login', :action => 'index'
+    else
+      @project = Project.new
+      @ontologies = DataAccess.getOntologyList()
+      respond_to do |format|
+        format.html # new.html.erb
+        format.xml  { render :xml => @project }
+      end
     end
   end
 
