@@ -23,7 +23,7 @@ function jumpToValue(li){
 		if( !!li.extra ){
 			
 			var sValue = li.extra[0];
-			document.location="/visconcepts/<%=@ontology.id%>/?id="+encodeURIComponent(sValue);
+			document.location="/visualize/<%=@ontology.id%>/"+sValue;
 			jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Concept...</h1>' }); 
 			return
 		}
@@ -50,9 +50,9 @@ $(document).ready(function(){
 
 <div id="bd_hd">
 	<%if @ontology.isView=='true'%>
-	<h1><%=link_to @ontology.displayLabel, ontology_url(:id => @ontology.viewOnOntologyVersionId)%>
+	<h1>View Of <%=link_to @ontology.displayLabel, ontology_url(:id => @ontology.viewOnOntologyVersionId)%>
 		<br/>
-		(View for <%=@ontology.getOntologyFromView().displayLabel%>) 
+		(Ontology View) 
 		</h1>
 		
 		</h1>
@@ -100,8 +100,8 @@ $(document).ready(function(){
 			<ul>
 					<li class="selected tab first" id="t_tab2_top"><a href="#t_tab2:">Details</a></li>
 					<li class="tab" id="t_tab1_top"><a  href="#t_tab1:">Visualization</a></li>
-		        	<li class="tab" id="t_tab3_top"><a  href="#t_tab3:">Notes <span id="note_count">(<%=@concept.note_count%>)</span></a></li>
-					<li class="tab" id="t_tab4_top"><a  href="#t_tab4:">Mappings <span id="map_count">(<%=@concept.mapping_count%>)</span></a></li>				
+		        	<li class="tab" id="t_tab3_top"><a  href="#t_tab3:">Notes</a></li>
+					<li class="tab" id="t_tab4_top"><a  href="#t_tab4:">Mappings</a></li>				
 					<%if @ontology.ontologyId.to_s.eql?("1104")%>	
 					<li class="tab" id="t_tab5_top"><a  href="#t_tab5:" >Resources <span style="color:blue;font-size:9px;">alpha</span></a></li>			
 					<%else%>							

@@ -149,7 +149,7 @@ $(document).ready(function(){
 		</thead>
 		
 		<%
-		@versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
+		@versions.sort!{|x,y| y.internalVersion<=>x.internalVersion}
 
 		for version in @versions%>
 		
@@ -161,7 +161,7 @@ $(document).ready(function(){
 			<td >
 				<% for diff in @diffs%>
 					<%if diff[1].to_i.eql?(version.id.to_i)%>
-						Download Diff with previous version <br/>( <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=txt">Txt</a> | <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=rdf">RDF</a> )
+						Download Diff with previous version <br/>( <a href="http://ncbo-core-stage1.stanford.edu/bioportal/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=txt">Txt</a> | <a href="http://ncbo-core-stage1.stanford.edu/bioportal/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=rdf">RDF</a> )
 					<%end%>
 				<%end%>
 				&nbsp;
