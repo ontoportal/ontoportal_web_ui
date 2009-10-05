@@ -40,8 +40,8 @@ production:
   adapter: mysql
   socket: /var/lib/mysql/mysql.sock
   database: NCBO_Production
-  username: ncboadmin
-  password: ncbo123
+  username: bioportalui
+  password: bioportalui
   host: localhost
 
 #Production
