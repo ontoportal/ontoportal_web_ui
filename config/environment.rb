@@ -62,11 +62,11 @@ end
 
     #$REST_URL="http://localhost:8080/bioportal"
     #$REST_URL="http://ncbo-core-load1.stanford.edu/bioportal"
-    $REST_URL="http://ncbo-core-dev1.stanford.edu/bioportal"
-    #$REST_URL="http://rest.bioontology.org/bioportal"
+    $REST_URL="http://ncbo-core-dev1.stanford.edu:8080/bioportal"
+    #$REST_URL="http://stagerest.bioontology.org/bioportal"
     #$REST_URL="http://ncbo-core-stage1.stanford.edu:8080/bioportal"
 
-ExceptionNotifier.exception_recipients = %w(ngriff@stanford.edu) 
+ExceptionNotifier.exception_recipients = %w(palexander@stanford.edu) 
 
 ActionMailer::Base.smtp_settings = {
   :address  => "smtp.stanford.edu",
@@ -74,3 +74,13 @@ ActionMailer::Base.smtp_settings = {
   :domain  => "ncbo-ror-prod1.stanford.edu",
     } 
 CalendarDateSelect.format = :american
+
+# reCAPTCHA
+# In order to use reCAPTCHA on the user account creation page:
+#    1. Obtain a key from reCAPTCHA: http://recaptcha.net
+#    2. Include the corresponding keys below (between the single quotes)
+#    3. Set the USE_RECAPTCHA option to 'true'
+ENV['USE_RECAPTCHA'] = 'false' 
+ENV['RECAPTCHA_PUBLIC_KEY']  = ''
+ENV['RECAPTCHA_PRIVATE_KEY'] = ''
+

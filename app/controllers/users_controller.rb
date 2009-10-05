@@ -134,8 +134,11 @@ private
     if !params[:password].eql?(params[:password_confirmation])
       errors << "Your Password and Password Confirmation Do Not Match"
     end
-    if !verify_recaptcha
-      errors << "Please fill in the proper text from the supplied image"
+    # verify_recaptcha is a method provided by the recaptcha plugin, returns true or false.
+    if ENV['USE_RECAPTCHA'] == 'true'
+      if !verify_recaptcha
+        errors << "Please fill in the proper text from the supplied image"
+      end
     end
     
     return errors

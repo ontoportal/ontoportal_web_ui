@@ -23,16 +23,19 @@
 	<tr>
 		<th>Re-enter Password:*</th><td><%=password_field :user, :password_confirmation%></td>
 	</tr>
-	<style lang="text/css">
-		.recaptchatable #recaptcha_image {
-			border: 1px solid #C1DAD7 !important;
-		}
-		.recaptchatable {
-			border: 1px solid white !important;
-		}
-		
-	</style>
-	<tr>
-		<th>Please enter the following text:*</th><td><%= recaptcha_tags :display => { "theme" => "clean" } %></td>
-	</tr>
+	<% if ENV['USE_RECAPTCHA'] == 'true' %>
+		<style lang="text/css">
+			.recaptchatable #recaptcha_image {
+				border: 1px solid #C1DAD7 !important;
+			}
+			.recaptchatable {
+				border: 1px solid white !important;
+			}
+			
+		</style>
+		<tr>
+			<%# recaptcha_tags is a method provided by the recaptcha plugin which displays a recaptcha %>
+			<th>Please enter the following text:*</th><td><%= recaptcha_tags :display => { "theme" => "clean" } %></td>
+		</tr>
+	<% end %>
 </table>
