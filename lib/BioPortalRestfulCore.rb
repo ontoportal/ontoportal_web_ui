@@ -14,7 +14,7 @@ class BioPortalRestfulCore
     CATEGORIES_PATH = "/categories/"
 
     CONCEPT_PATH ="/concepts/%ONT%/?conceptid=%CONC%"
-    PATH_PATH = "/path/%ONT%/?source=%CONC%&target=root"
+    PATH_PATH = "/path/%ONT%/%CONC%/root"
     VERSIONS_PATH="/ontologies/versions/%ONT%"
     
     VIEW_PATH = "/ontologies/%VIEW%"
