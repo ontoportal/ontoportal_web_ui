@@ -63,13 +63,20 @@ end
 # REST core service address
 $REST_URL="http://core.domain.com:8080/bioportal"
 
+# REST core service port number
+$REST_PORT="8080"
+
+# Email address to mail when exceptions are raised
 ExceptionNotifier.exception_recipients = %w(recipient@domain.com) 
 
+# SMTP settings
 ActionMailer::Base.smtp_settings = {
   :address  => "", # smtp server address, ex: smtp.domain.com
   :port  => 25, # smtp server port
   :domain  => "", # fqdn of rails server, ex: rails.domain.com
-    } 
+} 
+
+# Settings for date formatting
 CalendarDateSelect.format = :american
 
 # reCAPTCHA

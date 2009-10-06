@@ -748,7 +748,7 @@ private
 #    puts "==========="
 #    puts query
 #    puts "=========== "
-    response = Net::HTTP.new(uri.host,"80").start.
+    response = Net::HTTP.new(uri.host,$REST_PORT).start.
       post2(uri.path,
             query,
             "Content-type" => "multipart/form-data; boundary=" + boundary)
