@@ -228,6 +228,12 @@ in the "Find an ontology" box in the middle column), search biomedical resources
 			   end
 			%>
 			<%ontology = @ontology_hash[ont[0]]%>
+			<% if ontology.nil?
+				next
+			   end
+			%>
+
+			
 			<tr>
 				<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to ontology.displayLabel, visualize_url(:ontology => ontology)%><%else ontology.statusId.to_i.eql?(1)%><%=link_to ontology.displayLabel, ontology_path(:id=>ontology.id)%><%end%></td>
 				<td><%=ontology.versionNumber%></td>

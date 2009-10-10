@@ -29,12 +29,13 @@ class TreeNode
     self.child_size = node_object.child_size
     self.ontology_name = node_object.ontology_name  
     self.ontology_id= node_object.version_id 
-    if node_object.note_count >0
-      self.note_icon = true
-    end
-    if node_object.mapping_count >0
-      self.map_icon = true
-    end
+    #these are removed for performance
+  #  if node_object.note_count >0
+  #    self.note_icon = true
+  #  end
+  #  if node_object.mapping_count >0
+  #    self.map_icon = true
+  #  end
     unless node_object.children.empty?
       self.set_children(node_object.children)
     end

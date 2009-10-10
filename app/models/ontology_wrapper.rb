@@ -114,6 +114,10 @@ class OntologyWrapper
     count = Mapping.count('id',:conditions=>{:source_ont=>self.ontologyId})
   end
   
+  def getOntologyFromView
+    return DataAccess.getOntology(self.viewOnOntologyVersionId)
+  end
+  
   
   def preload_ontology
      self.reviews = load_reviews

@@ -248,7 +248,7 @@ function nodeClicked(node_id,node_label) {
 	// sets the label
 	document.getElementById("name_label").firstChild.nodeValue=node_label;
 	//sets the link next to the label
-	document.getElementById("link_label").firstChild.nextSibling.href="/visualize/"+currentOntology+"/"+encodeURIComponent(node_id);
+	document.getElementById("link_label").firstChild.nextSibling.href="/visconcepts/"+currentOntology+"/?id="+encodeURIComponent(node_id);
 
 	setConcept(node_id) 
 	
@@ -261,7 +261,8 @@ function nodeClicked(node_id,node_label) {
 		jQuery('#t_tab2').html(tabData[1]);
 		jQuery('#t_tab3').html(tabData[2]);
 		jQuery('#t_tab4').html(tabData[3]);
-
+		jQuery('#note_count').html('('+tabData[5]+')')
+		jQuery('#map_count').html('('+tabData[6]+')')
 
 						<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>		
 						document.getElementById('t_tab5').innerHTML=tabData[4]				
@@ -281,8 +282,8 @@ function nodeClicked(node_id,node_label) {
 		jQuery('#t_tab2').html(tabData[1]);
 		jQuery('#t_tab3').html(tabData[2]);
 		jQuery('#t_tab4').html(tabData[3]);
-
-
+		jQuery('#note_count').html('('+tabData[5]+')')
+		jQuery('#map_count').html('('+tabData[6]+')')
 
 							<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>		
 						document.getElementById('t_tab5').innerHTML=tabData[4]				
