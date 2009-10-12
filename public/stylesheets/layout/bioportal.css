@@ -163,11 +163,12 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 .resources tbody th { font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7;  text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background: #fff; }
 .resources th.alt { border-left: 1px solid #C1DAD7; border-top: 0; background: #f5fafa; font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #797268; }
 .resources th.nobg { border-top: 0; border-left: 0; border-right: 1px solid #C1DAD7; background: none; }
-.resources td { border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; padding: 6px 6px 6px 12px; color: #000; }
+.resources td { border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; padding: 20px 20px 20px 20px; color: #000; }
 .resources td.alt { background: #f5fafa; color: #000; }
 .resources tr { border-left: 1px solid #C1DAD7; color: #000; }
 .resources tr.alt { border-left: 1px solid #C1DAD7; background: #f5fafa; color: #000; }
- tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; text-align: left; padding: 6px 6px 6px 12px; background: #e2ebf0; }
+.resources td.top { border-top: 1px solid #C1DAD7; }
+tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; text-align: left; padding: 6px 6px 6px 12px; background: #e2ebf0; }
 
 /* Ratings */
 .star_ratings{

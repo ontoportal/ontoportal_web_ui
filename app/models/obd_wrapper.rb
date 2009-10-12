@@ -4,12 +4,12 @@ class OBDWrapper
 
    NO_CACHE = true
    
-  def self.gatherResources(ontology,concept)
+  def self.gatherResources(ontology,concept,latest,version_id)
     if CACHE.get("#{ontology}::#{concept.id}_resource").nil? || NO_CACHE 
       resources=[]
       cache=true
       begin
-        resources = OntrezService.gatherResources(ontology,concept.id)
+        resources = OntrezService.gatherResources(ontology,concept.id,latest,version_id)
       rescue Exception => e
         cache=false
         
@@ -38,8 +38,8 @@ class OBDWrapper
     end
   end
   
-  def self.gatherResourcesDetails(ontology_version_id,concept_id,resource,element)  
-      details = OntrezService.gatherResourcesDetails(ontology_version_id,concept_id,resource,element)
+  def self.gatherResourcesDetails(ontology_id,latest,version_id,concept_id,resource,element)  
+      details = OntrezService.gatherResourcesDetails(ontology_id,latest,version_id,concept_id,resource,element)
       return details
   end
   
@@ -73,11 +73,11 @@ class OBDWrapper
     end    
   end
   
-  def self.pageResources(ontology_version_id,concept_id,resource_name,page_start,page_end)
+  def self.pageResources(ontology_id,latest,version_id,concept_id,resource_name,resource_main_context,page_start,page_end)
     resource = Resource.new
 
     begin        
-      resource = OntrezService.pageResources(ontology_version_id,concept_id,resource_name,page_start,page_end)
+      resource = OntrezService.pageResources(ontology_id,latest,version_id,concept_id,resource_name,resource_main_context,page_start,page_end)
         rescue Exception => e
       
             Notifier.deliver_error(e)

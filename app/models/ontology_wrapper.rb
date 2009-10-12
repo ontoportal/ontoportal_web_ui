@@ -153,4 +153,9 @@ class OntologyWrapper
   def topLevelNodes(view=false)
        DataAccess.getTopLevelNodes(self.id,view)     
   end
+
+  def is_latest?
+    latest = DataAccess.getLatestOntology(self.ontologyId)
+    return latest.id.eql? self.id
+  end
 end
