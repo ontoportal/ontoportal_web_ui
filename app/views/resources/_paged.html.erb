@@ -1,8 +1,12 @@
- <table class="annotations" cellpadding=0 cellspacing=0 width="100%">    
+<script type="text/javascript" charset="utf-8">
+	// We need to fire the thickbox init since we're bringing in new content to the page
+	tb_init('a.thickbox, area.thickbox, input.thickbox');
+</script>
+<table class="annotations" cellpadding=0 cellspacing=0 width="100%">
      <% for annotation in @resource.annotations%>
 	 <%color = cycle("","alt") %>
        <tr class="<%=color%>" >
-          <td colspan="2" style="padding:3px;"<% if annotation == @resource.annotations.first %> class="top"<% end %>><%=params[:resource_main_context]%>: <a class="thickbox" href="/res_details/<%=params[:concept]%>?ontology=<%=params[:ontology]>&latest=<%=params[:latest]%>&version_id=<%=params[:version_id]%>&resource=<%=params[:resource]%>&element=<%=annotation.local_id%>&height=500&width=600"><%=annotation.description || "No description available"%></a></td>
+          <td colspan="2" style="padding:3px;"<% if annotation == @resource.annotations.first %> class="top"<% end %>><%=params[:resource_main_context]%>: <a class="thickbox" href="/res_details/<%=params[:concept]%>?ontology=<%=params[:ontology]%>&latest=<%=params[:latest]%>&version_id=<%=params[:version_id]%>&resource=<%=params[:resource]%>&element=<%=annotation.local_id%>&height=500&width=600"><%=annotation.description || "No description available"%></a></td>
        </tr>	   
 	   <tr  class="<%=color%>" >
 	   		<td style="border-top:0px;padding:3px;">Element ID: <%=annotation.local_id%></td><td  style="border-top:0px;padding:3px;"> Score: <%=annotation.score%></td>

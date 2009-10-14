@@ -29,9 +29,12 @@ class OBDWrapper
         Notifier.deliver_error(e)
         #puts e.backtrace.join("\n")      
       end
+      RAILS_DEFAULT_LOGGER.error "OBD cache set"
+      startGet = Time.now
       if cache
         CACHE.set("#{ontology}::#{concept.id}_resource",resources)
       end
+      RAILS_DEFAULT_LOGGER.error Time.now - startGet
         return resources
     else
       return CACHE.get("#{ontology}::#{concept.id}_resource")

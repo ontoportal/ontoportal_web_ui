@@ -17,7 +17,6 @@ class ResourcesController < ApplicationController
     latest = convert_boolean_param(params[:latest])
     
     @details = OBDWrapper.gatherResourcesDetails(params[:ontology],latest,params[:version_id],params[:id],params[:resource],params[:element])
-    RAILS_DEFAULT_LOGGER.error @details.inspect
 
     render :partial=>'details'
   end
@@ -42,10 +41,6 @@ class ResourcesController < ApplicationController
       @resource = OBDWrapper.pageResources(params[:ontology],latest,params[:version_id],params[:concept],params[:resource],params[:resource_main_context],params[:start],params[:end])
     #end
     
-    RAILS_DEFAULT_LOGGER.error "#################################"
-    RAILS_DEFAULT_LOGGER.error @resource.inspect 
-    RAILS_DEFAULT_LOGGER.error "#################################"
-
     render :partial=> 'paged'
   end  
 
