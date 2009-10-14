@@ -163,8 +163,16 @@ class DataAccess
     
     def self.getLatestOntology(ontology)
   #    puts "Calling DataAccess.getLatestOntology(#{ontology})"                  
-      details = SERVICE.getLatestOntology(ontology)
-      return details
+      if CACHE.get("#{ontology}::_latest").nil? || NO_CACHE
+        details = SERVICE.getLatestOntology(ontology)
+        unless details.kind_of?(Hash) && details[:error]
+          CACHE.set("#{ontology}::_latest",details,CACHE_EXPIRE_TIME)
+        end        
+        return details
+      else
+        SERVICE.getOntology(ontology,true)
+        return CACHE.get("#{ontology}::_latest")
+      end
     end
     
     def self.getNodeNameExact(ontologies,search,page)
