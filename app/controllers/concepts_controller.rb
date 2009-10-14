@@ -7,13 +7,10 @@ class ConceptsController < ApplicationController
   # GET /concepts/1
   # GET /concepts/1.xml
   def show
-    time = Time.now
-    #puts "Starting Retrieval"
     @concept =  DataAccess.getNode(params[:ontology],params[:id])
-    #puts "Finished in #{Time.now- time}"
-      #@concept_id = params[:id] # Removed to see if even used
+    #@concept_id = params[:id] # Removed to see if even used
     
-      @ontology = DataAccess.getOntology(params[:ontology])
+    @ontology = DataAccess.getOntology(params[:ontology])
     if request.xhr?    
       #puts "its an ajax call"
       show_ajax_request # process an ajax call
@@ -137,10 +134,13 @@ class ConceptsController < ApplicationController
           render :partial => 'load'
         when 'children' # Children is called only for drawing the tree
           @children =[]
+          start_tree = Time.now
           for child in @concept.children
             @children << TreeNode.new(child)
             @children.sort!{|x,y| x.name.downcase<=>y.name.downcase}
           end
+          RAILS_DEFAULT_LOGGER.error "Tree Build Time"
+          RAILS_DEFAULT_LOGGER.error Time.now - start_tree
           render :partial => 'childNodes'
       end    
   end

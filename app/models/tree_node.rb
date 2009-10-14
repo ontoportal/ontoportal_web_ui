@@ -14,14 +14,12 @@ class TreeNode
     "#{URI.escape(self.id,":/?#!")}"
   end
   
-  
-  
   def initialize(object=nil)
-      unless object.nil?
-        self.id = object.id.gsub(" ","%20")
-        self.fullId = object.fullId
-        initialize_node(object)
-      end
+    unless object.nil?
+      self.id = object.id.gsub(" ","%20")
+      self.fullId = object.fullId
+      initialize_node(object)
+    end
   end
 
   def initialize_node(node_object)
@@ -58,15 +56,16 @@ class TreeNode
     end
   end
     
-   def expanded
-     if !children.nil? && children.length>0
-      return true
-     else
-      return false      
-     end
-   end
-   def to_s
-     "Node_Name: #{self.name}  Node_ID: #{self.id}"
-   end
+  def expanded
+    if !children.nil? && children.length>0
+     return true
+    else
+     return false      
+    end
+  end
+   
+  def to_s
+    "Node_Name: #{self.name}  Node_ID: #{self.id}"
+  end
   
 end
