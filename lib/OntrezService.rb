@@ -34,17 +34,15 @@ class OntrezService
     resource_url = latest ? RESOURCE_BY_CONCEPT : VERSIONED_RESOURCE_BY_CONCEPT
     ont = latest ? ontology_id : version_id
     
-     if latest == true
-        RAILS_DEFAULT_LOGGER.error "#######    LATEST    #########"
-        RAILS_DEFAULT_LOGGER.error resource_url.inspect
-    else
-        RAILS_DEFAULT_LOGGER.error "#######   NOT LATEST    #########"
-        RAILS_DEFAULT_LOGGER.error resource_url.inspect
-     end
-
-    
     # this call gets all of the resources and their associated information
+    RAILS_DEFAULT_LOGGER.error "Retrieve resources"
+    RAILS_DEFAULT_LOGGER.error ONTREZ_URL + RESOURCES
+    startGet = Time.now
     doc = REXML::Document.new(open(ONTREZ_URL + RESOURCES))    
+    RAILS_DEFAULT_LOGGER.error Time.now - startGet
+
+    RAILS_DEFAULT_LOGGER.error "Parse resources"
+    RAILS_DEFAULT_LOGGER.error ONTREZ_URL + RESOURCES
     doc.elements.each("*/obs\.obr\.populate\.Resource"){|resource|
       new_resource = Resource.new
       new_resource.name = resource.elements["resourceName"].get_text.value
@@ -55,15 +53,18 @@ class OntrezService
       new_resource.main_context = resource.elements["mainContext"].get_text.value
       resources << new_resource
     }
+    RAILS_DEFAULT_LOGGER.error Time.now - startGet
 
-    RAILS_DEFAULT_LOGGER.error "####################################"
-    RAILS_DEFAULT_LOGGER.error ONTREZ_URL+resource_url.gsub("@",ont.to_s).gsub("#",concept_id)
-    RAILS_DEFAULT_LOGGER.error "####################################"
+    RAILS_DEFAULT_LOGGER.error "Retrieve annotations"
+    RAILS_DEFAULT_LOGGER.error ONTREZ_URL+resource_url.gsub("@",ont.to_s.strip).gsub("#",concept_id.strip)
     startGet = Time.now
     # this call gets the annotation numbers and the first 10 annotations for each resource
-    doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("@",ont.to_s).gsub("#",concept_id)))
+    doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("#",concept_id.strip)))
+    RAILS_DEFAULT_LOGGER.error Time.now - startGet
     
     # parse out the annotation numbers and annotations
+    RAILS_DEFAULT_LOGGER.error "Parse annotations"
+    startGet = Time.now
     for resource in resources
       # number of annotations
       xpath = "*/obs.common.beans.ObrResultBean[resourceID='" + resource.shortname + "']/statistics/obs.common.beans.StatisticsBean/nbAnnotation"
@@ -74,6 +75,7 @@ class OntrezService
       annotations_doc = doc.elements[xpath]
       parseAnnotations(annotations_doc,resource)
     end
+    RAILS_DEFAULT_LOGGER.error Time.now - startGet
 
 
     #puts "Resources: \n #{resources.inspect}"
@@ -90,11 +92,10 @@ class OntrezService
     resource_url = latest ? DETAILS : VERSIONED_DETAILS
     ont = latest ? ontology_id : version_id
 
-    RAILS_DEFAULT_LOGGER.error "####################################"
+    RAILS_DEFAULT_LOGGER.error "Details retrieve"
     RAILS_DEFAULT_LOGGER.error ONTREZ_URL + resource_url.gsub("@",ont.to_s).gsub("#",concept_id).gsub("%",resource)+element.strip
-    RAILS_DEFAULT_LOGGER.error "####################################"
      
-    doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("@",ont.to_s).gsub("#",concept_id).gsub("%",resource)+element.strip))
+    doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("#",concept_id.strip).gsub("%",resource.strip)+element.strip))
     RAILS_DEFAULT_LOGGER.error doc.inspect
 
     #puts "Beginning Parsing"
@@ -113,10 +114,9 @@ class OntrezService
     resource_url = latest ? PAGING_RESOURCE_BY_CONCEPT : VERSIONED_PAGING_RESOURCE_BY_CONCEPT
     ont = latest ? ontology_id : version_id
     
-    RAILS_DEFAULT_LOGGER.error "####################################"
-    RAILS_DEFAULT_LOGGER.error ONTREZ_URL + resource_url.gsub("@",ont).gsub("#",concept_id).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name)
-    RAILS_DEFAULT_LOGGER.error "####################################"
-    doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("@",ont).gsub("#",concept_id).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name)))
+    RAILS_DEFAULT_LOGGER.error "Page retrieve"
+    RAILS_DEFAULT_LOGGER.error ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("#",concept_id.strip).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name.strip)
+    doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("#",concept_id.strip).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name.strip)))
 
     # new resource object with info from params
     new_resource = Resource.new
