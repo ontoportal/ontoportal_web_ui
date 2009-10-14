@@ -88,3 +88,5 @@ ENV['USE_RECAPTCHA'] = 'false'
 ENV['RECAPTCHA_PUBLIC_KEY']  = ''
 ENV['RECAPTCHA_PRIVATE_KEY'] = ''
 
+# Increment the following 'version' to prevent caching when Flex apps are updated
+$FLEX_VERSION="1.0.8"
