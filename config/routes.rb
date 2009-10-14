@@ -34,8 +34,8 @@ ActionController::Routing::Routes.draw do |map|
   
   map.connect '/feedback',:controller=>'home',:action=>'feedback'
   map.connect '/send_feedback',:controller=>'home',:action=>'send_feedback'
-  map.connect '/annotate',:controller=>'home',:action=>'annotate'
-  map.connect '/all_resources',:controller =>'home',:action=>'all_resources'
+  map.connect '/annotator',:controller=>'home',:action=>'annotate'
+  map.connect '/resources',:controller =>'home',:action=>'all_resources'
   map.connect '/exhibit/:ontology/:id',:controller=>'concepts',:action=>'exhibit'
   map.upload_mappings '/upload/mapping',:controller=>'mappings',:action=>'upload'
   map.process_mappings '/process/mapping',:controller=>'mappings',:action=>'process_mappings'
@@ -64,6 +64,10 @@ ActionController::Routing::Routes.draw do |map|
   #map.ontology '/ontology/:ontology', :controller => 'ontologies', :action => 'show',:requirements => { :ontology => %r([^/?]+) }
   map.remove_tab '/tab/remove/:ontology',:controller=>'history',:action=>'remove'
   map.update_tab '/tab/update/:ontology/:concept',:controller=>'history',:action=>'update'
+
+  # Redirects from old URL locations
+  map.connect '/annotate', :controller=>'redirect', :url=>'/annotator'
+  map.connect '/all_resources',:controller =>'redirect', :url=>'/resources'
 
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id.:format'
