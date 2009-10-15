@@ -10,7 +10,7 @@ class OntrezService
   #   $E$ = Page End
   
   
-  ONTREZ_URL = "http://stagerest.bioontology.org/resource_index"
+  ONTREZ_URL = $OBR_REST_URL
   
   RESOURCE_BY_CONCEPT = "/byconcept/virtual/@/#/false/true/0/10"
   VERSIONED_RESOURCE_BY_CONCEPT = "/byconcept/@/#/false/true/0/10"
