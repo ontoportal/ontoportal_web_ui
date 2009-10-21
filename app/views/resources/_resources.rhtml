@@ -39,7 +39,7 @@ its subclasses based on the textual descriptions of those records.
          cleaned_local_id = resource.shortname.eql?("BSM") ? annotation.local_id.gsub(/\+/,"&resource=").strip : annotation.local_id
          # Check for NextBio, use proper resource_element_url
          cleaned_resource_element_url = resource.name.eql?("NextBio") ? annotation.url : resource.resource_element_url
-         cleaned_local_id = resource.name.eql?("NextBio") ? "" : resource.resource_element_url
+         cleaned_local_id = resource.name.eql?("NextBio") ? "" : annotation.local_id
 	  %>
 	  <%color = cycle("","alt") %>
       <tr class="<%=color%>" >
