@@ -241,7 +241,7 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 			
 			<option value="<%=key%>" <%if !params[:filter].nil? && key.include?(params[:filter])%>selected="selected"<%end%>><%=filter_groups[key]%> (<%=key%>)</option>
 			<%end%>
-	</select> <a href="/ontologies" id="filterlink">Link To This Filter</a></td>
+	</select> <a href="/ontologies<%if !params[:filter].nil?%>/?filter=<%=params[:filter]%><%end%>" id="filterlink">Link To This Filter</a></td>
 	</tr>
 	
 	<tr>
