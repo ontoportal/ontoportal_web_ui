@@ -157,8 +157,9 @@ class OntrezService
     within the context of other research."
     resource.logo ="http://www.nextbio.com/b/s/images2/common/nbLogoSmBeta.png"
     resource.count = doc.elements["NBResultSummary"].elements["count"].get_text.value.to_i
-    # Placeholder for main_context because NextBio doesn't include this information
+    # Placeholders for main_context because NextBio doesn't include this information
     resource.main_context = "Title"
+    
       doc.elements.each("*/details"){ |detail| 
           detail.elements.each { |element| 
             resource.context_numbers[element.name]=element.get_text.value          
