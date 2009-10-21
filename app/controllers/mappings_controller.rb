@@ -61,6 +61,7 @@ class MappingsController < ApplicationController
     ontology = DataAccess.getOntology(params[:ontology])
     
     @ontology_id=ontology.ontologyId
+    @ontology_label=ontology.displayLabel
     
     @source_counts =[]
     names = ActiveRecord::Base.connection().execute("SELECT count(id) as count,destination_ont,destination_ont_name,source_ont_name from mappings  where source_ont =#{ontology.ontologyId}  group by destination_ont")
@@ -90,10 +91,10 @@ class MappingsController < ApplicationController
     @mapping_pages = Mapping.paginate_by_sql("Select source_id, count(*) as count from mappings where source_ont = '#{params[:id]}' and destination_ont = '#{params[:target]}' #{expanded_query} group by source_id order by count desc",:page => params[:page], :per_page => 100,:include=>'users')
   
     if params[:rdf].nil?
-    mapping_objects = Mapping.find(:all,:conditions=>["source_ont = '#{params[:id]}' AND destination_ont = '#{params[:target]}' AND source_id IN (?) #{expanded_query}",@mapping_pages.collect{|item| item[:source_id]}.flatten])
-  else
-    mapping_objects =  Mapping.find(:all,:conditions=>["source_ont = '#{params[:id]}' AND destination_ont = '#{params[:target]}'  #{expanded_query}"])
-  end
+      mapping_objects = Mapping.find(:all,:conditions=>["source_ont = '#{params[:id]}' AND destination_ont = '#{params[:target]}' AND source_id IN (?) #{expanded_query}",@mapping_pages.collect{|item| item[:source_id]}.flatten])
+    else
+      mapping_objects =  Mapping.find(:all,:conditions=>["source_ont = '#{params[:id]}' AND destination_ont = '#{params[:target]}'  #{expanded_query}"])
+    end
   
 #    @mapping_pages = Mapping.paginate(:page => params[:page], :per_page => 100 ,:conditions=>{:source_ont=>params[:id],:destination_ont=>params[:target]},:order=>'count()',:include=>:user)
     @mappings = {}
@@ -101,7 +102,7 @@ class MappingsController < ApplicationController
     @service_users = DataAccess.getUsers.sort{|x,y| x.username.downcase <=> y.username.downcase}
     @users = []
     user_count = ActiveRecord::Base.connection().execute("SELECT DISTINCT user_id FROM mappings WHERE source_ont = '#{params[:id]}' AND destination_ont = '#{params[:target]}'")
-    user_count.each_hash(with_table=false) {|x| 
+    user_count.each_hash(with_table=false) { |x| 
 
       for user in @service_users
         if x['user_id'].to_i==user.id.to_i
@@ -112,7 +113,6 @@ class MappingsController < ApplicationController
     
     
     for map in mapping_objects
-
         
       @map_sources << map.map_source.gsub(/(<[^>]*>)/mi, "")  unless map.map_source.nil?
       @map_sources.uniq!
@@ -136,6 +136,7 @@ class MappingsController < ApplicationController
         end
       end
     end
+    
     @mappings = @mappings.sort {|a,b| b[1].length<=>a[1].length}   #=> [["c", 10], ["a", 20], ["b", 30]]
 
     if params[:rdf].nil? || !params[:rdf].eql?("rdf")

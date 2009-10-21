@@ -1,8 +1,14 @@
+<script type="text/javascript" charset="utf-8">
+    // We need to fire the thickbox init since we're bringing in new content to the page
+    tb_init('a.thickbox, area.thickbox, input.thickbox');
+</script>
 <%if @source_counts.empty? && @dest_counts.empty?%>
 <h1>No Mappings Found</h1>
 <%else%>
 
-<table class="zebra" cellpadding="0" cellspacing="0" width="90%">
+<table width="70%">
+<td valign="top" width="50%">
+<table class="zebra" cellpadding="0" cellspacing="0" width="90%" style="margin: 20px;">
 	<%unless @source_counts.empty?%>
 	<thead>
 	<tr>
@@ -12,11 +18,16 @@
 	</thead>
 	<%for mapping in @source_counts%>
 	<tr>
-		<td><a href="#" onclick="jQuery.blockUI({ message: '<h1><img src=\'/images/tree/spinner.gif\' /> Loading Mappings...</h1>' }); jQuery('#mappings').load('/mappings/show/<%=@ontology_id%>?target=<%=mapping['destination_ont']%>',function(){jQuery.unblockUI();});return false;"><%= mapping['destination_ont_name']%></a></td><td class="last"><%=mapping['count']%></td>
+		<td><a class="thickbox" title="Mappings for <%= @ontology_label %> to <%= mapping['destination_ont_name']%>" href="/mappings/show/<%=@ontology_id%>?target=<%=mapping['destination_ont']%>&height=600&width=800"><%= mapping['destination_ont_name']%></a></td>
+		<td class="last"><%=mapping['count']%></td>
 	</tr>
 	<%end%>	
 	<%end%>
 	<%unless @dest_counts.empty?%>
+</table>
+</td>
+<td valign="top" width="50%">
+<table class="zebra" cellpadding="0" cellspacing="0" width="90%" style="margin: 20px;">
 	<thead>
 	<tr>
 		<th>Ontology Mapped From</th>
@@ -25,9 +36,11 @@
 	</thead>
 	<%for mapping in @dest_counts%>
 	<tr>
-		<td><a href="#" onclick="jQuery.blockUI({ message: '<h1><img src=\'/images/tree/spinner.gif\' /> Loading Mappings...</h1>' }); jQuery('#mappings').load('/mappings/show/<%=mapping['source_ont']%>?target=<%=@ontology_id%>',function(){jQuery.unblockUI();})"><%= mapping['source_ont_name']%></a></td><td class="last"><%=mapping['count']%></td>
+		<td><a class="thickbox" title="Mappings for <%= @ontology_label %> to <%= mapping['source_ont_name']%>" href="/mappings/show/<%=mapping['source_ont']%>?target=<%=@ontology_id%>&height=600&width=800"><%= mapping['source_ont_name']%></a></td>
+		<td class="last"><%=mapping['count']%></td>
 	</tr>
 	<%end%>
 	<%end%>
 </table>
+</td>
 <%end%>
