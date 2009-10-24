@@ -27,10 +27,8 @@
 		//Auto loads the correct tab
 	    loc = new String(document.location)
 	    if(loc.search("#")>=0){
-			console.log("running tab loader");
 	        jQuery("#metadata").hide();
 	        id = "#" + loc.split("#")[1]
-			console.log(id);
 	        jQuery(id).show();
 	        jQuery(".tab").removeClass("selected");
 	        jQuery(id+"_top").addClass("selected")
