@@ -7,8 +7,12 @@ class ConceptsController < ApplicationController
   # GET /concepts/1
   # GET /concepts/1.xml
   def show
-    @concept =  DataAccess.getNode(params[:ontology],params[:id])
-    #@concept_id = params[:id] # Removed to see if even used
+    # If we're looking for children, just use the light version of the call
+    if params[:callback].eql?("children")
+      @concept = DataAccess.getLightNode(params[:ontology],params[:id])
+    else
+      @concept = DataAccess.getNode(params[:ontology],params[:id])
+    end
     
     @ontology = DataAccess.getOntology(params[:ontology])
     if request.xhr?    
