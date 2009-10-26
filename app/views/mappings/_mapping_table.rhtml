@@ -31,7 +31,7 @@
 			end %></td>
 		<td><%=map.map_source%></td>
 		<td><%=map.user.username rescue ""%></td>
-		<td><%=map.created_at.strftime("%m/%d/%y")%></td> 
+		<td><%=map.created_at.strftime("%m/%d/%y") rescue "--" %></td> 
 		<td><a href="/margin_notes/show?mapping_id=<%=map.id%>&height=500&width=600" title="Notes for Mapping: <%=map.destination_ont_name%>" class="thickbox">View Notes</a>  </td>
 	</tr>
 	
