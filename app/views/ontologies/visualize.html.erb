@@ -105,7 +105,7 @@ $(document).ready(function(){
 					<%if @ontology.ontologyId.to_s.eql?("1104")%>	
 					<li class="tab" id="t_tab5_top"><a  href="#t_tab5:" >Resource Index</span></a></li>			
 					<%else%>							
-					<li class="tab" id="t_tab5_top" onclick="callTab(5,'/resources/@ontology@/@concept@');"><a  href="#t_tab5:" alt="callTab(5,'/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
+					<li class="tab" id="t_tab5_top" onclick="callTab(5,'/resources/@ontology@/@concept@');"><a href="#t_tab5:" alt="callTab(5,'/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
 					<%end%>
 		
 			</ul>
@@ -143,9 +143,15 @@ jQuery(document).ready(function(){
 		tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0))
 		tab_li.addClass("selected");
 		a = jQuery("a[href='"+id+":']")
+		// Run code found in the alt attribute (this was being used to load the 
+		// resource index tab, I'm not sure it needs to be left in but we can
+		// address when we handle tab history down the road).
 		eval(a.attr("alt"));
-
-		
+		// If we're on the resource index tab, load that specially
+        loc = new String(document.location)
+        if (loc.search("#t_tab") >= 0 && loc.split("#")[1].replace(":", "") == "t_tab5") {
+            callTab(5, '/resources/@ontology@/@concept@');
+        }
 	}
 	
 	// the tab system
