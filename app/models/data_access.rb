@@ -20,7 +20,6 @@ class DataAccess
       end
       return node
     else
-      SERVICE.getNode(ontology,node_id,view,true)  
       return CACHE.get("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}")
     end
   end
@@ -38,7 +37,6 @@ class DataAccess
       end
       return node
     else
-      SERVICE.getLightNode(ontology,node_id,view,true)  
       return CACHE.get("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}_light")
     end
   end
@@ -51,7 +49,6 @@ class DataAccess
       end
       return view
     else
-      SERVICE.getView(view_id,true)
       return CACHE.get("view::#{param(view_id)}")
     end            
   end
@@ -64,7 +61,6 @@ class DataAccess
       end
       return views
     else
-      SERVICE.getViews(ont_id,true)
       return CACHE.get("views::#{param(ont_id)}")
     end            
   end
@@ -83,7 +79,6 @@ class DataAccess
       end
       return topNodes
     else
-      SERVICE.getTopLevelNodes(ontology,view,true)        
       return CACHE.get("#{view_string}#{param(ontology)}::_top")
     end
   end
@@ -154,7 +149,6 @@ class DataAccess
       end
       return details
     else
-      SERVICE.getOntologyVersions(ontology,true)
       return CACHE.get("#{ontology}::_versions")
     end
   end
@@ -169,7 +163,6 @@ class DataAccess
       end        
       return details
     else
-      SERVICE.getOntology(ontology,true)
       return CACHE.get("#{ontology}::_details")
     end
   end
@@ -183,7 +176,6 @@ class DataAccess
       end        
       return details
     else
-      SERVICE.getOntology(ontology,true)
       return CACHE.get("#{ontology}::_latest")
     end
   end
