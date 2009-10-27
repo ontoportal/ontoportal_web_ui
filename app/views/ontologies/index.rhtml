@@ -26,7 +26,7 @@ function filterBySelection(selectbox){
 
 
 function filterByGroup(selectbox){
-//	alert(selectbox.value);
+    //console.log(selectbox.value);
 	if(selectbox.value == 0){
 		dtable.fnFilter( "",8 );
 	}else{
@@ -169,7 +169,7 @@ ontology_groups = {
 	1115=>["OBO Foundry"],
 	1051=>["OBO Foundry"],
 	1057=>["caBIG"],
-	1101=>["WHO-FIC"],
+	1101=>["WHO-FIC","UMLS"],
 	1041=>["PSI"],
 	1341=>["UMLS"],
 	1342=>["UMLS","caBIG"],
@@ -184,8 +184,7 @@ ontology_groups = {
 	1353=>["UMLS","caBIG"],
 	1354=>["UMLS"],
 	1053=>["UMLS"],
-	1132=>["UMLS"],
-	1101=>["UMLS"]
+	1132=>["UMLS"]
 }
 
 %>
