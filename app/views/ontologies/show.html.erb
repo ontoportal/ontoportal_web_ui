@@ -106,15 +106,15 @@ $(document).ready(function(){
 
 <div class="tabs" style="margin-top:5px;margin-bottom:10px;border-top:1px solid #CFCFCF;">
 	<ul >
-		<li id="#metadata" class="selected tab"><a href="#metadata" onclick="meta_tab_clicked('#metadata',this)">Metadata</a></li>
-		<li id="#views" class="tab"><a href="#views" onclick="meta_tab_clicked('#views',this)">Views (<%=@ontology.views.size%>)</a></li>
-		<li id="#projects" class="tab"><a href="#projects" onclick="meta_tab_clicked('#projects',this)">Projects (<%=@projects.size%>)</a></li>
-    	<li id="#reviews" class="tab"><a href="#reviews" onclick="meta_tab_clicked('#reviews',this)">Reviews (<%=@reviews.size%>)</a></li>
-		<li id="#widgets" class="tab"><a href="#widgets" onclick="meta_tab_clicked('#widgets',this)">Ontology Widgets</a></li>		
+		<li id="#metadata" class="selected tab"><a href="#metadata" onclick="meta_tab_clicked('#metadata_content',this)">Metadata</a></li>
+		<li id="#views" class="tab"><a href="#views" onclick="meta_tab_clicked('#views_content',this)">Views (<%=@ontology.views.size%>)</a></li>
+		<li id="#projects" class="tab"><a href="#projects" onclick="meta_tab_clicked('#projects_content',this)">Projects (<%=@projects.size%>)</a></li>
+    	<li id="#reviews" class="tab"><a href="#reviews" onclick="meta_tab_clicked('#reviews_content',this)">Reviews (<%=@reviews.size%>)</a></li>
+		<li id="#widgets" class="tab"><a href="#widgets" onclick="meta_tab_clicked('#widgets_content',this)">Ontology Widgets</a></li>		
 	</ul>  
 </div>
 
-<div id="metadata" class="tab_content" >
+<div id="metadata_content" class="tab_content" >
 <div style="width:100%;min-width:900px">
 <div style="float:left;width:60%;overflow:hidden;min-width:550px">
 <br/>
@@ -212,7 +212,7 @@ $(document).ready(function(){
 </div>
 </div>
 
-<div id="projects" style="display:none;" class="tab_content">
+<div id="projects_content" style="display:none;" class="tab_content">
 
 	<br>
 	<table class="zebra" style="border:0px;float:left;"width="60%" cellpadding="0" cellspacing="0">
@@ -241,7 +241,7 @@ $(document).ready(function(){
 	</table>
 </div>
 
-<div id="reviews" style="display:none;" class="tab_content">
+<div id="reviews_content" style="display:none;" class="tab_content">
 <%if session[:user].nil? %>
 	<br>
 		<a href="/login?redirect=/ontologies/<%=@ontology.id%>">Review This Ontology</a>
@@ -292,7 +292,7 @@ $(document).ready(function(){
 </div>
 
 <%if !@ontology.isRemote.to_i.eql?(1)%>
-<div id="widgets" style="display:none;" class="tab_content">
+<div id="widgets_content" style="display:none;" class="tab_content">
 
 <div style="float:left;">
 <h1>Adding a NCBO Widgets for <%=@ontology.displayLabel%> To Your Site</h1>
@@ -514,7 +514,7 @@ Example 3 (get the preferred name for a concept)<br/><input type="text" name="c"
 <div style="clear:both;"></div>
 </div>
 <%end%>
-<div id="views" style="display:none;" class="tab_content">
+<div id="views_content" style="display:none;" class="tab_content">
 	<div style="float:left;width:1000px;" >
 
 		<%if session[:user].nil? %>
