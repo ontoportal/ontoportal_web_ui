@@ -1,3 +1,5 @@
+<%require 'cgi'%>
+
 <p style="padding:10px;margin:10px; border:1px solid #EFEFEF;" >
    This tab shows records in public data sources that we have automatically annotated with the terms associated with the class <%=@concept.name%> or 
 its subclasses based on the textual descriptions of those records.
@@ -31,32 +33,34 @@ its subclasses based on the textual descriptions of those records.
   	<%end%>
 
     <%for annotation in resource.annotations%>
-	  <% # Custom handling ("cleaning") of information is done here, hopefully to be minimized by improvements to OBR api
-         # Check for OMIM resources and remove extra non-integer characters
-         cleaned_local_id = resource.shortname.eql?("OMIM") ? annotation.local_id.gsub(/\D/,"") : annotation.local_id
-         # Check for Biositemap and change resource element URL (info from OBR is wrong) and local id (stored differently)
-         resource.resource_element_url = resource.shortname.eql?("BSM") ? "http://biositemaps.bioontology.org/editor/BiositemapBrowser.html?file=" : resource.resource_element_url
-         cleaned_local_id = resource.shortname.eql?("BSM") ? annotation.local_id.gsub(/\+/,"&resource=").strip : annotation.local_id
-         # Check for NextBio, use proper resource_element_url
-         cleaned_resource_element_url = resource.name.eql?("NextBio") ? annotation.url : resource.resource_element_url
-         cleaned_local_id = resource.name.eql?("NextBio") ? "" : annotation.local_id
+	  <% # Check for NextBio, use proper resource_element_link
+         if resource.name.eql?("NextBio")
+            resource_element_link = annotation.url
+         else # Generate a link to the Resource Element Service
+            resource_element_link = "http://rest.bioontology.org/resource_index/element/" + resource.shortname + "?element=" + CGI.escape(annotation.local_id)
+         end         
 	  %>
 	  <%color = cycle("","alt") %>
       <tr class="<%=color%>" >
         <td style="padding:3px;"><a class="thickbox" href="/res_details/<%=@concept.id%>?ontology=<%=@ontology.ontologyId%>&latest=<%=@ontology.is_latest?%>&version_id=<%=@ontology.id%>&resource=<%=resource.shortname%>&element=<%=annotation.local_id%>&height=500&width=600"><%=annotation.description || "No description available"%></a></td>
-		<td style="padding:3px;"><a target="_blank" href="<%=cleaned_resource_element_url + cleaned_local_id%>"><%=annotation.local_id%></a></td>
+		<td style="padding:3px;"><a target="_blank" href="<%=resource_element_link%>"><%=annotation.local_id%></a></td>
       </tr>
     <%end%>
      
-	<%if resource.count > 0 && !resource.name.eql?("NextBio")%>
-	  <% if resource.count > 10%>
+	<%if resource.count > 0%>
+	  <%if resource.count > 10 && !resource.name.eql?("NextBio")%>
 	    <tr>
 		  <td colspan="2" align="right"> <a href="#" onclick="jQuery('#innerannot<%=index%>').load('/respage/?ontology=<%=@ontology.ontologyId%>&latest=<%=@ontology.is_latest?%>&version_id=<%=@ontology.id%>&concept=<%=@concept.id%>&resource=<%=resource.shortname%>&resource_element_url=<%=resource.resource_element_url%>&resource_main_context=<%=resource.main_context%>&start=10&end=20&index=<%=index%>&total=<%=resource.count%>');return false;">Next Page &gt;&gt;</a></td>
 		</tr>
+	  <%elsif resource.count > 10 && resource.name.eql?("NextBio")%>
+        <tr>
+          <td colspan="2" align="right"> <a href="http://www.nextbio.com/b/search/disc/<%=@concept.id.gsub(" ","+")%>">Full NextBio Results</a></td>
+        </tr>
 	  <%end%>
         </table>
 		</div>
         </td></tr>
+    
     <%end%>
 	  
     <%index = index +1%>

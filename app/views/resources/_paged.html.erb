@@ -1,3 +1,5 @@
+<% require 'cgi' %>
+
 <script type="text/javascript" charset="utf-8">
 	// We need to fire the thickbox init since we're bringing in new content to the page
 	tb_init('a.thickbox, area.thickbox, input.thickbox');
@@ -9,16 +11,13 @@
   </tr>
         
      <% for annotation in @resource.annotations%>
-     <% # Check for OMIM resources and remove extra non-integer characters
-        cleaned_local_id = params[:resource].eql?("OMIM") ? annotation.local_id.gsub(/\D/,"") : annotation.local_id 
-        # Check for Biositemap and change resource element URL (info from OBR is wrong) and local id (stored differently)
-        params[:resource_element_url] = params[:resource].eql?("BSM") ? "http://biositemaps.bioontology.org/editor/BiositemapBrowser.html?file=" : params[:resource_element_url]
-        cleaned_local_id = params[:resource].eql?("BSM") ? annotation.local_id.gsub(/\+/,"&resource=").strip : annotation.local_id
+     <% # Generate a link to the Resource Element Service
+        resource_element_link = "http://rest.bioontology.org/resource_index/element/" + params[:resource] + "?element=" + CGI.escape(annotation.local_id)
      %>
 	 <%color = cycle("","alt") %>
        <tr class="<%=color%>" >
           <td style="padding:3px;"><a class="thickbox" href="/res_details/<%=params[:concept]%>?ontology=<%=params[:ontology]%>&latest=<%=params[:latest]%>&version_id=<%=params[:version_id]%>&resource=<%=params[:resource]%>&element=<%=annotation.local_id%>&height=500&width=600"><%=annotation.description || "No description available"%></a></td>
-   	      <td style="padding:3px;"><a target="_blank" href="<%=params[:resource_element_url] + cleaned_local_id%>"><%=annotation.local_id%></a></td>
+   	      <td style="padding:3px;"><a target="_blank" href="<%=resource_element_link%>"><%=annotation.local_id%></a></td>
 	   </tr>
       
 	  <%end%>
