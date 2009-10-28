@@ -1037,7 +1037,7 @@ private
      node.child_size = childcount.first.content.to_i unless childcount.first.nil?
      # get isBrowsable info
      is_browsable = classbeanXML.first.find(classbeanXML.path + "/isBrowsable")
-     node.is_browsable = is_browsable.first.content.to_i != 0
+     node.is_browsable = is_browsable.first.content.to_i != 0 unless is_browsable.first.nil?
      
      node.version_id = ontology
      node.children = []
