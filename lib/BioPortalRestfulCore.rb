@@ -1034,8 +1034,10 @@ private
      node.name = label.first.content unless label.first.nil?
      # get childcount info
      childcount = classbeanXML.first.find(classbeanXML.path + "/relations/entry[string='ChildCount']/int")
-     node.child_size = childcount.first.content.to_i unless childcount.first.nil? 
-
+     node.child_size = childcount.first.content.to_i unless childcount.first.nil?
+     # get isBrowsable info
+     is_browsable = classbeanXML.first.find(classbeanXML.path + "/isBrowsable")
+     node.is_browsable = is_browsable.first.content.to_i != 0
      
      node.version_id = ontology
      node.children = []

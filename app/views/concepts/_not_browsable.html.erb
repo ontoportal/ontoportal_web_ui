@@ -1,0 +1,20 @@
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		var url = "/#TB_inline?height=400&width=600&inlineId=hiddenModalContent&modal=true"
+        tb_show("", url);
+	});
+</script>
+<div style="min-height: 600px">
+<div id="hiddenModalContent" style="display:none;">
+    <h1 style="font-size: 200%; font-weight: bold; padding-bottom: .8em;">Not Browsable</h1>
+	<p><span style="font-size: large; line-height: 1.2em;">
+	    Sorry, the concept/term you've selected cannot be browsed using BioPortal.
+	    This is likely because the term is a property.<br><br>
+		From here you can:<br>
+		<span style="line-height: 1.5em;">
+			<a href="#" onclick="window.history.back(); return false;">Go back to search</a><br>
+			<%=link_to "View the ontology containing the concept/term", visualize_url(:ontology => @ontology.id)%>
+		</span>
+	</span></p>
+</div>
+</div>

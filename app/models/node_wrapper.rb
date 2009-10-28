@@ -12,6 +12,7 @@ class NodeWrapper
   attr_accessor :child_size
   attr_accessor :children
   attr_accessor :parent_association
+  attr_accessor :is_browsable
 
    
    def to_param

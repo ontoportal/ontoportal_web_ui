@@ -15,6 +15,14 @@ class ConceptsController < ApplicationController
     end
     
     @ontology = DataAccess.getOntology(params[:ontology])
+
+    # This handles special cases where a passed concept id is for a concept
+    # that isn't browsable, usually a property for an ontology.
+    if !@concept.is_browsable
+      render :partial => "not_browsable", :layout => "ontology"
+      return
+    end
+    
     if request.xhr?    
       #puts "its an ajax call"
       show_ajax_request # process an ajax call
