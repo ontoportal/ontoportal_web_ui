@@ -126,23 +126,36 @@ class HomeController < ApplicationController
     @search=params[:search]
   end
   
-  def send_feedback    
-    if params[:name].nil? || params[:name].empty?
-      flash[:notice]= "Please include your name"
-      render :action=>'feedback'
+  def feedback
+    # We're using a hidden form field to trigger for error checking
+    # If sim_submit is nil, we know the form hasn't been submitted and we should
+    # bypass form processing.
+    if params[:sim_submit].nil?
       return
     end
-    if params[:email].nil? || params[:email].empty?
-      flash[:notice]= "Please include your email"
-      render :action=>'feedback'
-      return
+    
+    @errors = []
+      
+    if params[:name].nil? || params[:name].empty?
+      @errors << "Please include your name"
+    end
+    if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
+      @errors << "Please include your email"
     end
     if params[:comment].nil? || params[:comment].empty?          
-      flash[:notice]= "Please include your comment"
-      render :action=>'feedback'
-      return
+      @errors << "Please include your comment"
+    end
+    # verify_recaptcha is a method provided by the recaptcha plugin, returns true or false.
+    if ENV['USE_RECAPTCHA'] == 'true'
+      if !verify_recaptcha
+        @errors << "Please fill in the proper text from the supplied image"
+      end
     end
 
+    unless @errors.empty?
+      return
+    end
+    
     Notifier.deliver_feedback(params[:name],params[:email],params[:comment])   
     flash[:notice]="Feedback has been sent"
     redirect_to_home

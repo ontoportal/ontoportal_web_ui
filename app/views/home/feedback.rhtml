@@ -1,36 +1,72 @@
 <div style="margin:20px;">
-<%form_tag('/send_feedback') do%>
+<%form_tag('/feedback') do%>
+<%=
+    # Simulate form_for by providing a hidden field to check for submission
+    hidden_field_tag 'sim_submit', 'true'
+%>
 
-
-<br>
 <p style="font-size:14px">
 Support is available for Questions, Error reports, Feature requests, Ontology
-submissions, etc. Please include the following:
+submissions, etc.
 </p>
-<ul>   
- <li style="font-size:14px"> Your email, so we can respond.</li>
- <li style="font-size:14px"> If you are describing an error, details of how the error occurred,including:
-       <ul>
-   		   <li style="font-size:14px"> URL of the page resulting in the error</li>
-           <li style="font-size:14px"> Exact steps to replicate the error</li>
-           <li style="font-size:14px"> Full error message, if any</li>
-		</ul>
-  </li>
-</ul>
+<p>
+Please include the following:
+<div class="feedback">
+    <ul>   
+	  <li>Your email, so we can respond.</li>
+	  <li>If you are describing an error, details of how the error occurred, including:
+	       <ul>
+	   		   <li>URL of the page resulting in the error</li>
+	           <li>Exact steps to replicate the error</li>
+	           <li>Full error message, if any</li>
+			</ul>
+	  </li>
+	</ul>
+</div>
+</p>
 <p>You can use the form below or email us at <a href="mailto:support@bioontology.org">support@bioontology.org</a></p>
-<table>
+
+<%unless @errors.nil?%>
+<div style="color:red;margin-bottom:1em;">
+Errors On Form
+<ul>
+
+    <%for error in @errors%>
+    <li><%=error%></li>
+    <%end%>
+
+</ul>
+</div>
+<%end%>
+
+<table class="form">
 	<tr>
-		<td align="right">Name:*</td><td align="left"><input type="text" name="name" style="width:180px"></td>
+		<th class="top">Name:*</th>
+		<td class="top"><input type="text" name="name" style="width:180px" value="<%=params[:name]%>"></td>
 	</tr>
 	<tr>
-		<td align="right">Email Address:*</td><td align="left"><input type="text" name="email" style="width:180px"></td>
+		<th>Email Address:*</th>
+		<td><input type="text" name="email" style="width:180px" value="<%=params[:email]%>"></td>
 	</tr>
 	<tr>
-		<td align= "right" >Comment:*</td><td>&nbsp;</td>
+		<th>Comment:*</th>
+		<td><textarea name="comment" cols='60' rows=8><%=params[:comment]%></textarea></td>
 	</tr>
-	<tr>
-		<td colspan="2"><textarea name="comment" cols='60' rows=8></textarea></td>
-	</tr>
+    <% if ENV['USE_RECAPTCHA'] == 'true' %>
+        <style lang="text/css">
+            .recaptchatable #recaptcha_image {
+                border: 1px solid #C1DAD7 !important;
+            }
+            .recaptchatable {
+                border: 1px solid white !important;
+            }
+            
+        </style>
+        <tr>
+            <%# recaptcha_tags is a method provided by the recaptcha plugin which displays a recaptcha %>
+            <th>Please enter the following text:*</th><td><%= recaptcha_tags :display => { "theme" => "clean" } %></td>
+        </tr>
+    <% end %>
 	<tr>
 		<td colspan="2" align="right"><input type="submit" value="Send Feedback"></td>
 	</tr>

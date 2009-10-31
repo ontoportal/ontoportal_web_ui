@@ -125,6 +125,16 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 .basic tbody td { padding: 2px 20px 2px 0; }
 .basic tbody tr:hover td, .basic tbody tr:hover th { background: #f5fafa; border-bottom: 1px solid #ccc; }
 
+.annotations { background:#fff; }
+.annotations caption { padding: 0 0 5px 0; width: 100%; font: italic 95% "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; text-align: right; }
+.annotations thead th, .basic tbody th { font-weight:bold; padding: 5px 20px 5px 0; }
+.annotations tbody td { padding: 5px 10px 5px 0; }
+.annotations .superhead { padding: 2px 20px 2px 0; font-size: x-large; font-weight: normal; color: #039; padding: 20px 0; line-height: 1em; }
+.annotations .annot_info { color: gray; }
+.annotations .annot_text { font-size: small; padding: 0 0 20px 0;}
+.annotations .annot_text_head { font-weight: bold; padding: 10px 0 0;}
+
+
 .zebra caption { padding: 0 0 5px 0; width: 100%; font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; text-align: right; }
 .zebra th { white-space:nowrap; font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background-color: #e2ebf0; }
 .zebra tbody th { font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; color: #234979; border-left: 1px solid #C1DAD7; border-right: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; border-top: 1px solid #C1DAD7; letter-spacing: 2px; text-transform: uppercase; text-align: left; padding: 6px 6px 6px 12px; background-color: #fff; }
@@ -229,4 +239,15 @@ tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Ar
     background-image:url("/images/layout/desc.png");
     background-repeat:no-repeat;
     background-position:100%;
+}
+
+.feedback {
+	margin-top: -1em;
+	margin-bottom: 1em;
+}
+
+.feedback ul li {
+    list-style-position: inside;
+    list-style-type: square;
+    margin-left: 1em;
 }
