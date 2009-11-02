@@ -48,7 +48,7 @@ function jumpToValueResource(li){
 	var search = confirm("Press OK to Search for resources using the term, or Cancel to select a term")
 		if(search){
 			query = jQuery("#find_resource").val()
-			document.location="/all_resources?search="+query;
+			document.location="/resources?search="+query;
 			return
 		}
 	}
@@ -57,8 +57,7 @@ function jumpToValueResource(li){
 		if( !!li.extra ){
 			var concept_id = li.extra[0]
 			var ont_id = li.extra[2];
-			
-			document.location="/all_resources?concept="+concept_id+"&ontology="+ont_id;
+			document.location="/resources?concept="+concept_id+"&ontology="+ont_id;
 			return
 		}
 
@@ -200,7 +199,7 @@ in the "Find an ontology" box in the middle column), search biomedical resources
 					<td nowrap><input type="text" id="find_resource" size="30" class="greyed" style="width:240px;" size="30" id="find_ontology"  onclick="greybox(this)" value="Enter a term, e.g., Melanoma" > <input class="home_button" type="button" value="Search" onclick="resourcebox.findValue()"></td>
 				</tr>
 				<tr>
-					<td style="padding-left:15px"><a href="/all_resources">Advanced Resource Search</a></td>
+					<td style="padding-left:15px"><a href="/resources">Advanced Resource Search</a></td>
 				</tr>
 
 			</table>
@@ -255,7 +254,7 @@ in the "Find an ontology" box in the middle column), search biomedical resources
 				</tr>
 				<tr>
 					<td>Concepts</td>
-					<td>723,806</td>
+					<td>1,438,792</td>
 				</tr>
 				<tr>
 					<td>Resources Indexed</td>
