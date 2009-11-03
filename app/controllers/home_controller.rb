@@ -116,10 +116,6 @@ class HomeController < ApplicationController
     
   end
 
-  def feedback
-    
-  end
-  
   def all_resources
     @concept=params[:concept]
     @ontology=params[:ontology]
