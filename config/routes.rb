@@ -33,7 +33,6 @@ ActionController::Routing::Routes.draw do |map|
   # instead of a file named 'wsdl'
   
   map.connect '/feedback',:controller=>'home',:action=>'feedback'
-  map.connect '/send_feedback',:controller=>'home',:action=>'send_feedback'
   map.connect '/annotator',:controller=>'home',:action=>'annotate'
   map.connect '/resources',:controller =>'home',:action=>'all_resources'
   map.connect '/exhibit/:ontology/:id',:controller=>'concepts',:action=>'exhibit'
