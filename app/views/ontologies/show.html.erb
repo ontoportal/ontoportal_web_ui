@@ -27,9 +27,11 @@
 		//Auto loads the correct tab
 	    loc = new String(document.location)
 	    if(loc.search("#")>=0){
-	        jQuery("#metadata").hide();
+	        jQuery("#metadata_content").hide();
 	        id = "#" + loc.split("#")[1]
-	        jQuery(id).show();
+			// The actual content to hide/show is in id_content
+			id_content = id + "_content";
+	        jQuery(id_content).show();
 	        jQuery(".tab").removeClass("selected");
 	        jQuery(id+"_top").addClass("selected")
 	        tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0))
