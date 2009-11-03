@@ -280,27 +280,37 @@ class BioPortalRestfulCore
         
       end
       
-      def self.getPathToRoot(ontology,source,light=nil)
-           root = nil
-           
-           RAILS_DEFAULT_LOGGER.debug "Retrieve path to root"
-           RAILS_DEFAULT_LOGGER.debug BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=100"
-           doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=100"))
-           
-             root = errorCheck(doc)
 
-                unless root.nil?
-                  return root
-                end
-           
-           time = Time.now
-            doc.elements.each("*/data/classBean"){ |element|  
-            root = parseConcept(element,ontology)
-           }
-           RAILS_DEFAULT_LOGGER.debug "getPathToRoot Parse Time: #{Time.now-time}"
-           return root
-        
-      end
+  ##
+  # Get a path from a given concept to the root of the ontology.
+  ##
+  def self.getPathToRoot(ontology,source,light=nil)
+    root = nil
+    
+    RAILS_DEFAULT_LOGGER.debug "getPathToRoot Retrieve"
+    RAILS_DEFAULT_LOGGER.debug BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=5000"
+    time = Time.now
+    rest = open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=5000")
+    RAILS_DEFAULT_LOGGER.debug "getPathToRoot Retrieve Time: #{Time.now-time}"
+    
+    parser = XML::Parser.io(rest)
+    doc = parser.parse
+    
+    root = errorCheckLibXML(doc)
+
+    unless root.nil?
+      return root
+    end
+     
+    time = Time.now
+    # We need to process the subclasses returned in order to fully build the tree
+    process_subclasses = true
+    doc.find("/*/data/classBean").each{ |element|  
+      root = parseConceptLibXML(element,ontology,process_subclasses)
+    }
+    RAILS_DEFAULT_LOGGER.debug "getPathToRoot Parse Time: #{Time.now-time}"
+    return root
+  end
       
        def self.getNodeNameExact(ontologies,search,page)
          
@@ -1015,7 +1025,7 @@ private
         return node
   end
 
-  def self.parseConceptLibXML(classbeanXML,ontology)
+  def self.parseConceptLibXML(classbeanXML,ontology,process_subclasses = false)
     # check if we're at the root node
     root = classbeanXML.path == "/success/data/classBean" ? true : false
 
@@ -1044,16 +1054,18 @@ private
     node.children = []
     node.properties = {}
     
-    if root == true
+    if root || process_subclasses
       # look for child nodes and process if found
       search = classbeanXML.path + "/relations/entry[string='SubClass']/list/classBean"
       results = classbeanXML.first.find(search)
       unless results.empty?
         results.each do |child|
-          node.children << parseConceptLibXML(child,ontology)
+          node.children << parseConceptLibXML(child,ontology,process_subclasses)
         end
       end
-       
+    end
+      
+    if root       
       # find all other properties
       search = classbeanXML.path + "/relations/entry"
       classbeanXML.first.find(search).each do |entry|

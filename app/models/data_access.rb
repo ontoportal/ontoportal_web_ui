@@ -328,8 +328,16 @@ class DataAccess
 #      end
 #    end
     
-  def self.getPathToRoot(ontology,source)      
-    return SERVICE.getPathToRoot(ontology,source)
+  def self.getPathToRoot(ontology,source)
+    if CACHE.get("#{param(ontology)}::#{source.gsub(" ","%20")}_path_to_root").nil? || NO_CACHE
+      path = SERVICE.getPathToRoot(ontology,source)
+      unless  path.kind_of?(Hash) && path[:error]
+        CACHE.set("#{param(ontology)}::#{source.gsub(" ","%20")}_path_to_root",path,CACHE_EXPIRE_TIME)
+      end
+      return path
+    else
+      return CACHE.get("#{param(ontology)}::#{source.gsub(" ","%20")}_path_to_root")
+    end
   end
   
   def self.param(string)

@@ -143,7 +143,7 @@ class OntologiesController < ApplicationController
 
   # GET /visualize/:ontology
   def visualize
-    
+
     view = false
     if params[:view]
       view = true
@@ -155,7 +155,9 @@ class OntologiesController < ApplicationController
     else
       @ontology = DataAccess.getOntology(params[:ontology])   
     end
-      #get the top level nodes for the root
+
+    unless params[:id]
+      # get the top level nodes for the root
       @root = TreeNode.new()
       nodes = @ontology.topLevelNodes(view)
       nodes.sort!{|x,y| x.name.downcase<=>y.name.downcase}
@@ -165,34 +167,38 @@ class OntologiesController < ApplicationController
           nodes.push(node)
         end
       end
-      
-      @root.set_children(nodes)
-      #get the initial concept to display
-      @concept = DataAccess.getNode(@ontology.id,@root.children.first.id,view)
-   
-      
-        #gets the initial mappings
-        @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.ontologyId, :source_id => @concept.id})
-        #@mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
-        #builds the margin note tab
-         @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_id, :concept_id => @concept.id,:parent_id =>nil})
-         #needed to prepopulate the margin note
-         @margin_note = MarginNote.new
-         @margin_note.concept_id = @concept.id
-         @margin_note.ontology_version_id = @concept.version_id
-         @margin_note.ontology_id=@concept.ontology_id
         
-       # for demo only
-       @software=[]
-     if @ontology.ontologyId.to_s.eql?("1104")
-        @software = NcbcSoftware.find(:all,:conditions=>{:ontology_label=>@concept.id})        
-      end
-      #------------------
-           
+      @root.set_children(nodes)
   
-   
+      # get the initial concept to display
+      @concept = DataAccess.getNode(@ontology.id,@root.children.first.id,view)
+    else
+      # if the id is coming from a param, use that to get concept
+      @concept = DataAccess.getNode(@ontology.id,params[:id],view)
+      rootNode = @concept.path_to_root
+      @root = TreeNode.new()
+      @root.set_children(rootNode.children)
+    end
+      
+    #gets the initial mappings
+    @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.ontologyId, :source_id => @concept.id})
+    #@mappings_from = Mapping.find(:all, :conditions=>{:destination_ont => @concept.ontology_name, :destination_id => @concept.id},:include=>:user)
+    #builds the margin note tab
+    @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_id, :concept_id => @concept.id,:parent_id =>nil})
+    #needed to prepopulate the margin note
+    @margin_note = MarginNote.new
+    @margin_note.concept_id = @concept.id
+    @margin_note.ontology_version_id = @concept.version_id
+    @margin_note.ontology_id=@concept.ontology_id
+        
+    # for demo only
+    @software=[]
+    if @ontology.ontologyId.to_s.eql?("1104")
+       @software = NcbcSoftware.find(:all,:conditions=>{:ontology_label=>@concept.id})        
+    end
+           
     unless @concept.id.to_s.empty?
-    update_tab(@ontology,@concept.id) #update the tab with the current concept
+      update_tab(@ontology,@concept.id) #update the tab with the current concept
     end
   
     respond_to do |format|

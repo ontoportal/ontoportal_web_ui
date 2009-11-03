@@ -86,7 +86,7 @@ class NodeWrapper
    end
    
    def path_to_root
-     DataAccess.getPathToRoot(self.version_id,self.id)    
+     return DataAccess.getPathToRoot(self.version_id,self.id)    
    end
    
    def to_s
