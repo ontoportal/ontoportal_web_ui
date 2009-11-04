@@ -13,33 +13,10 @@ class ResourcesController < ApplicationController
 
 
   def details
-    # Rails passes params as strings not booleans, so we convert latest to a true boolean here.
+    # rails passes params as strings not booleans, so we convert latest to a true boolean here
     latest = convert_boolean_param(params[:latest])
     
     @details = OBDWrapper.gatherResourcesDetails(params[:ontology],latest,params[:version_id],params[:id],params[:resource],params[:element])
-
-    unless @details["obs.common.beans.MgrepContextBean"].nil?
-      @details["obs.common.beans.MgrepContextBean"].each do |key, mgrep_hash|
-        # The following method for inserting opening and closing tags to highlight
-        # annotation items will only work if the offsets are provided in ascending
-        # order. To get this to work with multiple classes we'll want to change the
-        # array that holds the offsets into a hash, using the offsets as a key
-        # and the class as the value.
-        total_added_chars = 0
-        open_b = "<b>"
-        close_b = "</b>"
-        mgrep_hash[:offsets].each_with_index do |offset, index|
-          # On even, insert the open tag. On odd, insert the close tag.
-          if index % 2 < 1
-            mgrep_hash[:contextString].insert(offset + total_added_chars, open_b)
-            total_added_chars += open_b.length
-          else
-            mgrep_hash[:contextString].insert(offset + total_added_chars, close_b)
-            total_added_chars += close_b.length
-          end
-        end
-      end
-    end
 
     render :partial=>'details'
   end

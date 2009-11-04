@@ -2,27 +2,9 @@
 <script src="/javascripts/jquery.resizer.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" href="/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <script src="/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js" type="text/javascript" charset="utf-8"></script>
-<!-- Tabs, Tooltip, Scrollable, Overlay, Expose. No jQuery. --> 
-<script src="/javascripts/jquery.tools.min.js"></script>
+<link rel="stylesheet" href="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<script src="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.min.js" type="text/javascript" charset="utf-8"></script>
 
-<style>
-	/* simple css-based tooltip */ 
-    div.tooltip { 
-	    background-color:#000; 
-	    border:1px solid #fff; 
-	    padding:10px 15px; 
-	    width:200px; 
-	    display:none; 
-	    color:#fff; 
-	    text-align:left; 
-	    font-size:12px;
-		z-index: 999;
-	 
-	    /* outline radius for mozilla/firefox only */ 
-	    -moz-box-shadow:0 0 10px #000; 
-	    -webkit-box-shadow:0 0 10px #000; 
-    }
-</style>
 
 <script type="text/javascript">
 var searchbox;
@@ -64,18 +46,11 @@ $(document).ready(function(){
 	    // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
         jQuery("#qsearch").children().filter(":input").each(
             function(){
+		        jQuery(this).tooltip();
 				jQuery(this).attr("readonly", true);
-			}
+				jQuery(this).attr("title", "Jump To works only for the newest version of an ontology");
+            }
         );
-		
-		// Set up a hovertip on the qsearch input element
-		jQuery("#qsearch").attr("style", "color: grey;");
-        jQuery("#qsearch :input").attr("title", "\"Jump To\" works only with most recent version of this ontology");
-		jQuery("#qsearch :input").tooltip({
-			position: "bottom",
-    	    tip: '.tooltip',
-			opacity: 0.7
-		});
           
     <%end%>
 });
@@ -84,7 +59,7 @@ $(document).ready(function(){
 
 </script>
 
-<div class="tooltip"></div> 
+
 
 <div id="bd_hd">
 	<%if @ontology.isView=='true'%>

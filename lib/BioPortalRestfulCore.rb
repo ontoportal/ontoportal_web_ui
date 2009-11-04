@@ -146,8 +146,6 @@ class BioPortalRestfulCore
       
       def self.getTopLevelNodes(ontology,view = false)
         node = nil
-        RAILS_DEFAULT_LOGGER.debug "Retrieve top level nodes"
-        RAILS_DEFAULT_LOGGER.debug BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","root")+"&applicationid=#{APPLICATION_ID}&maxnumchildren=100"
           if view
             doc = REXML::Document.new(open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%","root")+"&applicationid=#{APPLICATION_ID}&maxnumchildren=100"))            
           else
@@ -713,8 +711,6 @@ private
     
     RAILS_DEFAULT_LOGGER.debug "Concept storage time"
     RAILS_DEFAULT_LOGGER.debug (endGet - startGet)
-
-    RAILS_DEFAULT_LOGGER.debug node.inspect
   
     return node
   end

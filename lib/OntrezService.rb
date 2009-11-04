@@ -1,10 +1,9 @@
 require "rexml/document"
 require 'open-uri'
-require 'cgi'
 
 class OntrezService
   
-  #   \# = CONCEPT_ID
+  #   \# = CONCEPT_ID  
   #    @ = Ontology Name
   #  *R* = Resource Name
   #   $S$= pageStart
@@ -18,8 +17,8 @@ class OntrezService
   PAGING_RESOURCE_BY_CONCEPT = "/byconcept/virtual/@/#/%/false/false/$S$/10"
   VERSIONED_PAGING_RESOURCE_BY_CONCEPT = "/byconcept/@/#/%/false/false/$S$/10"
   RESOURCES = "/resources"
-  DETAILS = "/details/true/virtual/concept/@/#/resource/%/element/"
-  VERSIONED_DETAILS = "/details/true/concept/@/#/resource/%/element/"
+  DETAILS = "/details/virtual/concept/@/#/resource/%/element/"
+  VERSIONED_DETAILS = "/details/concept/@/#/resource/%/element/"
   
   CLASS_STRING = "/result/ontology/@/classID/#/from/0/number/15/metadata"
   CUI_STRING = "/result/cui/#/from/0/number/15/metadata"
@@ -36,13 +35,13 @@ class OntrezService
     ont = latest ? ontology_id : version_id
     
     # this call gets all of the resources and their associated information
-    RAILS_DEFAULT_LOGGER.debug "Retrieve resources"
-    RAILS_DEFAULT_LOGGER.debug ONTREZ_URL + RESOURCES
+    RAILS_DEFAULT_LOGGER.error "Retrieve resources"
+    RAILS_DEFAULT_LOGGER.error ONTREZ_URL + RESOURCES
     startGet = Time.now
     doc = REXML::Document.new(open(ONTREZ_URL + RESOURCES))    
-    RAILS_DEFAULT_LOGGER.debug Time.now - startGet
+    RAILS_DEFAULT_LOGGER.error Time.now - startGet
 
-    RAILS_DEFAULT_LOGGER.debug "Parse resources"
+    RAILS_DEFAULT_LOGGER.error "Parse resources"
     doc.elements.each("*/obs\.obr\.populate\.Resource"){|resource|
       new_resource = Resource.new
       new_resource.name = resource.elements["resourceName"].get_text.value
@@ -54,21 +53,23 @@ class OntrezService
       new_resource.main_context = resource.elements["mainContext"].get_text.value
       resources << new_resource
     }
-    RAILS_DEFAULT_LOGGER.debug Time.now - startGet
+    RAILS_DEFAULT_LOGGER.error Time.now - startGet
 
-    RAILS_DEFAULT_LOGGER.debug "Retrieve annotations"
-    RAILS_DEFAULT_LOGGER.debug ONTREZ_URL+resource_url.gsub("@",ont).gsub("#",CGI.escape(concept_id))
+    RAILS_DEFAULT_LOGGER.error "Retrieve annotations"
+    RAILS_DEFAULT_LOGGER.error ONTREZ_URL+resource_url.gsub("@",ont).gsub("#",concept_id)
     startGet = Time.now
     # this call gets the annotation numbers and the first 10 annotations for each resource
     begin
-      doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("@",ont).gsub("#",CGI.escape(concept_id))))
+      doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("@",ont).gsub("#",concept_id)))
     rescue Exception => e
-      RAILS_DEFAULT_LOGGER.debug e.inspect
+      RAILS_DEFAULT_LOGGER.error e.inspect
     end
-    RAILS_DEFAULT_LOGGER.debug Time.now - startGet
+    
+    RAILS_DEFAULT_LOGGER.error Time.now - startGet
+    RAILS_DEFAULT_LOGGER.error doc.inspect
     
     # parse out the annotation numbers and annotations
-    RAILS_DEFAULT_LOGGER.debug "Parse annotations"
+    RAILS_DEFAULT_LOGGER.error "Parse annotations"
     startGet = Time.now
     for resource in resources
       # number of annotations
@@ -80,7 +81,7 @@ class OntrezService
       annotations_doc = doc.elements[xpath]
       parseAnnotations(annotations_doc,resource)
     end
-    RAILS_DEFAULT_LOGGER.debug Time.now - startGet
+    RAILS_DEFAULT_LOGGER.error Time.now - startGet
 
 
     #puts "Resources: \n #{resources.inspect}"
@@ -97,21 +98,15 @@ class OntrezService
     resource_url = latest ? DETAILS : VERSIONED_DETAILS
     ont = latest ? ontology_id : version_id
 
-    rest_url = ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("#",CGI.escape(concept_id).strip).gsub("%",resource.strip)+element.strip
-    
-    RAILS_DEFAULT_LOGGER.debug "Details retrieve"
-    RAILS_DEFAULT_LOGGER.debug rest_url
-    
-    begin
-      doc = REXML::Document.new(open(rest_url))
-    rescue Exception=>e
-      RAILS_DEFAULT_LOGGER.debug  "Exception retrieving/parsing detailed annotations xml"
-      RAILS_DEFAULT_LOGGER.debug e.inspect
-    end
+    RAILS_DEFAULT_LOGGER.error "Details retrieve"
+    RAILS_DEFAULT_LOGGER.error ONTREZ_URL + resource_url.gsub("@",ont.to_s).gsub("#",concept_id).gsub("%",resource)+element.strip
+     
+    doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("#",concept_id.strip).gsub("%",resource.strip)+element.strip))
+    RAILS_DEFAULT_LOGGER.error doc.inspect
 
     #puts "Beginning Parsing"
     #puts doc.inspect
-    resources = parseOBSDetails(doc,rest_url)
+    resources = parseOBSDetails(doc)
 
 
     #puts "Resources: \n #{resources.inspect}"
@@ -125,14 +120,15 @@ class OntrezService
     resource_url = latest ? PAGING_RESOURCE_BY_CONCEPT : VERSIONED_PAGING_RESOURCE_BY_CONCEPT
     ont = latest ? ontology_id : version_id
     
-    RAILS_DEFAULT_LOGGER.debug "Page retrieve"
-    RAILS_DEFAULT_LOGGER.debug ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("#",CGI.escape(concept_id).strip).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name.strip)
-    doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("#",CGI.escape(concept_id).strip).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name.strip)))
+    RAILS_DEFAULT_LOGGER.error "Page retrieve"
+    RAILS_DEFAULT_LOGGER.error ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("#",concept_id.strip).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name.strip)
+    doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("#",concept_id.strip).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name.strip)))
 
     # new resource object with info from params
     new_resource = Resource.new
     new_resource.shortname = resource_name
     new_resource.main_context = resource_main_context
+    RAILS_DEFAULT_LOGGER.error new_resource.inspect
 
     # use xpath to isolate annotations and send those as a parameter
     xpath = "obs.common.beans.ObrResultBean/annotations"
@@ -230,6 +226,7 @@ private
     resource.annotations = []
 
     doc.elements.each("*/annotations/obs.common.beans.ObrAnnotationBeanDetailled"){ |statistic|
+      RAILS_DEFAULT_LOGGER.error statistic.to_s
       annotation = Annotation.new
       annotation.score = statistic.elements["score"].get_text.value
       annotation.local_id= statistic.elements["localElementID"].get_text.value
@@ -238,45 +235,34 @@ private
 
   end
  
-  def self.parseOBSDetails(doc,rest_url)
-    details = {}
-    details[:rest_url] = rest_url
+  def self.parseOBSDetails(doc)
+    details =[]
 
-    doc.elements.each("*/obs\.common\.beans\.ObrAnnotationBeanDetailled"){ |annotation|
-      context = annotation.elements["context"]
-      annot_class = context.attributes["class"]
-      context_name = context.elements["contextName"].get_text.value
-
-      # Build detail representation
-      details[annot_class] = Hash.new unless !details[annot_class].nil?
-      details[annot_class][context_name] = Hash.new unless !details[annot_class][context_name].nil?
-      details[annot_class][context_name][:contextName] = context_name
-      details[annot_class][context_name][:isDirect] = context.elements["isDirect"].get_text.value
-
-      case annot_class
-      when "obs.common.beans.MgrepContextBean"
-        # String that contains the annotation term
-        details[annot_class][context_name][:termID] = context.elements["termID"].get_text.value
-        details[annot_class][context_name][:termName] = context.elements["termName"].get_text.value
-        # Store the from/to characters in an array
-        details[annot_class][context_name][:offsets] = [] unless !details[annot_class][context_name][:offsets].nil?
-        details[annot_class][context_name][:offsets] << context.elements["from"].get_text.value.to_i - 1 # we subtract one because the api gives the count at the actual start, not before
-        details[annot_class][context_name][:offsets] << context.elements["to"].get_text.value.to_i
-      when "obs.common.beans.IsaContextBean"
-        details[annot_class][context_name][:childConceptID]= context.elements["childConceptID"].get_text.value
-        details[annot_class][context_name][:level]= context.elements["level"].get_text.value
-      when "obs.common.beans.MappingContextBean"
-        details[annot_class][context_name][:mappedConceptID] = context.elements["mappedConceptID"].get_text.value
-        details[annot_class][context_name][:mappingType] = context.elements["mappingType"].get_text.value
-      end
+    doc.elements.each("*/obs\.common\.beans\.ObrAnnotationBean"){ |annotation|
+      detail = {}
+        context = annotation.elements["context"]
+        detail[:class]=context.attributes["class"]
+        case detail[:class]                            
+        when "obs.common.beans.MgrepContextBean"
+          detail[:contextName] = context.elements["contextName"].get_text.value
+          detail[:isDirect] = context.elements["isDirect"].get_text.value
+          detail[:termID] = context.elements["termID"].get_text.value
+          detail[:termName] = context.elements["termName"].get_text.value
+          detail[:from] = context.elements["from"].get_text.value
+          detail[:to] = context.elements["to"].get_text.value          
+        when "obs.common.beans.IsaContextBean"
+          detail[:contextName] = context.elements["contextName"].get_text.value
+          detail[:isDirect] = context.elements["isDirect"].get_text.value
+          detail[:childConceptID]= context.elements["childConceptID"].get_text.value
+          detail[:level]= context.elements["level"].get_text.value
+        when "obs.common.beans.MappingContextBean"
+          detail[:contextName] = context.elements["contextName"].get_text.value
+          detail[:isDirect] = context.elements["isDirect"].get_text.value
+          detail[:mappedConceptID] = context.elements["mappedConceptID"].get_text.value
+          detail[:mappingType] = context.elements["mappingType"].get_text.value
+        end
+          details << detail
     }
-    
-    # Get the string for mgrep annotations
-    unless details["obs.common.beans.MgrepContextBean"].nil?
-      details["obs.common.beans.MgrepContextBean"].each { |key, value|
-        details["obs.common.beans.MgrepContextBean"][key][:contextString] = doc.elements["//contexts/entry[string='" + key + "']/string[2]"].get_text.value
-      }
-    end
 
     return details
   end

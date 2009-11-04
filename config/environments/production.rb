@@ -29,5 +29,3 @@ memcache_options = {
 
 CACHE = MemCache.new memcache_options
 CACHE.servers = 'localhost:11211'
-
-config.log_level = :debug

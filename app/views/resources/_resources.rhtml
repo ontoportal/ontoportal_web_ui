@@ -42,7 +42,7 @@ its subclasses based on the textual descriptions of those records.
 	  %>
 	  <%color = cycle("","alt") %>
       <tr class="<%=color%>" >
-        <td style="padding:3px;"><a class="thickbox" href="/res_details/<%=@concept.id%>?ontology=<%=@ontology.ontologyId%>&latest=<%=@ontology.is_latest?%>&version_id=<%=@ontology.id%>&resource=<%=resource.shortname%>&element=<%=annotation.local_id%>&height=600&width=800"><%=annotation.description || "No description available"%></a></td>
+        <td style="padding:3px;"><a class="thickbox" href="/res_details/<%=@concept.id%>?ontology=<%=@ontology.ontologyId%>&latest=<%=@ontology.is_latest?%>&version_id=<%=@ontology.id%>&resource=<%=resource.shortname%>&element=<%=annotation.local_id%>&height=500&width=600"><%=annotation.description || "No description available"%></a></td>
 		<td style="padding:3px;"><a target="_blank" href="<%=resource_element_link%>"><%=annotation.local_id%></a></td>
       </tr>
     <%end%>

@@ -1,98 +1,73 @@
 
-<table class="annotations" cellpadding=0 cellspacing=0 width="100%">
+<table class="minimal" cellpadding=0 cellspacing=0 width="100%">
 <% if @details.first.nil? %>
 No data available for this version of the ontology.
 <%else%>
 
-<%  # Set triggers for each class type
-    mgrep_first = true
-    isa_first = true
-    mapping_first = true
-%>
-
-    <%
-    unless @details["obs.common.beans.MgrepContextBean"].nil?
-	   @details["obs.common.beans.MgrepContextBean"].each do |key, detail|
-    %>
-		<%if mgrep_first%>
-		    <thead>
-		        <tr>
-		            <th class="superhead">Concept recognition on given text: <strong><%=detail[:termName]%></strong></th>
-		        </tr>
-		    </thead>
-			<%mgrep_first = false%>
-		<%end%>
+<%	case @details.first[:class]
+	when "obs.common.beans.MgrepContextBean"%>
+	<thead>
 		<tr>
-			<td class="annot_text_head"><%=detail[:contextName]%></td>
+		<th>Class</th>
+		<th>Is direct</th>
+		<th>Term ID</th>
+		<th>Term Name</th>
+		<th>From</th>
+		<th>To</th>
 		</tr>
-		<tr>
-            <td class="annot_text">
-		      <div class="annot_info">Is direct: <%=detail[:isDirect]%> / Full results: <%=link_to "xml", @details[:rest_url]%></div>
-			  <%=detail[:contextString]%>
-			</td>
-		</tr>
-    <%
-        end # hash each
-    end # error checking
-    %>
+	</thead>
+	<%when "obs.common.beans.IsaContextBean"%>
+	<thead>
+	<tr>
+		<th>Class</th>
+		<th>Is Direct</th>
+		<th>Child Concept</th>
+		<th>Level</th>
+	</tr>
+	</thead>
+	<%when "obs.common.beans.MappingContextBean"%>
+	<thead>
+	<tr>
+		<th>Class</th>
+		<th>Is Direct</th>
+		<th>Mapped Concept</th>
+		<th>Mapping Type</th>
+	</tr>
+	</thead>
+	<%end%>
 
-    <%
-	unless @details["obs.common.beans.IsaContextBean"].nil?
-        @details["obs.common.beans.IsaContextBean"].each do |key, detail|
-    %>
-		<%if isa_first%>
-		    <thead>
-			    <tr>
-			        <th colspan=4 class="superhead">is_a transitive closures</th>
-			    </tr>
-			    <tr>
-			        <th>Class</th>
-			        <th>Is Direct</th>
-			        <th>Child Concept</th>
-			        <th>Level</th>
-			    </tr>
-		    </thead>
-		<%isa_first = false%>
-		<%end%>
+
+	<%for detail in @details%>
+	
+	
+		<%case detail[:class]
+		when "obs.common.beans.MgrepContextBean"%>
+		<tr>
+			<td><%=detail[:contextName]%></td>
+			<td><%=detail[:isDirect]%></td>
+			<td><%=detail[:termID]%></td>
+			<td><%=detail[:termName]%></td>
+			<td><%=detail[:from]%></td>
+			<td><%=detail[:to]%></td>
+	
+		</tr>
+		<%when "obs.common.beans.IsaContextBean"%>
 		<tr>
 			<td><%=detail[:contextName]%></td>
 			<td><%=detail[:isDirect]%></td>
 			<td><%=detail[:childConceptID]%></td>
 			<td><%=detail[:level]%></td>
 		</tr>
-	<%
-        end # hash each
-    end # error checking
-    %>
-
-    <%
-    unless @details["obs.common.beans.MappingContextBean"].nil?
-        @details["obs.common.beans.MappingContextBean"].each do |key, detail|
-    %>
-		<%if mapping_first%>
-		    <thead>
-			    <tr>
-			        <th colspan=4 class="superhead">Mappings</th>
-			    </tr>
-			    <tr>
-			        <th>Class</th>
-			        <th>Is Direct</th>
-			        <th>Mapped Concept</th>
-			        <th>Mapping Type</th>
-			    </tr>
-		    </thead>
-		<%mapping_first = false%>
-		<%end%>
+		<%when "obs.common.beans.MappingContextBean"%>
 		<tr>
 			<td><%=detail[:contextName]%></td>
 			<td><%=detail[:isDirect]%></td>
 			<td><%=detail[:mappedConceptID]%></td>
 			<td><%=detail[:mappingType]%></td>
 		</tr>
-    <%
-        end # hash each
-    end # error checking
-    %>
+	
+		<%end%>
+	<%end%>
 	
 </table>
 <%end #end of if/else for nill result %>
