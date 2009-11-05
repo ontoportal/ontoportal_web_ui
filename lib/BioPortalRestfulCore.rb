@@ -146,6 +146,8 @@ class BioPortalRestfulCore
       
       def self.getTopLevelNodes(ontology,view = false)
         node = nil
+        RAILS_DEFAULT_LOGGER.debug "Retrieve top level nodes"
+        RAILS_DEFAULT_LOGGER.debug BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%","root")+"&applicationid=#{APPLICATION_ID}&maxnumchildren=100"
           if view
             doc = REXML::Document.new(open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology.to_s).gsub("%CONC%","root")+"&applicationid=#{APPLICATION_ID}&maxnumchildren=100"))            
           else
@@ -288,9 +290,9 @@ class BioPortalRestfulCore
     root = nil
     
     RAILS_DEFAULT_LOGGER.debug "getPathToRoot Retrieve"
-    RAILS_DEFAULT_LOGGER.debug BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=5000"
+    RAILS_DEFAULT_LOGGER.debug BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=500"
     time = Time.now
-    rest = open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=5000")
+    rest = open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=500")
     RAILS_DEFAULT_LOGGER.debug "getPathToRoot Retrieve Time: #{Time.now-time}"
     
     parser = XML::Parser.io(rest)
