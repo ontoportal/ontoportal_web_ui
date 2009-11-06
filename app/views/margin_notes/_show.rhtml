@@ -28,7 +28,7 @@ javascripts = "resetNoteForm(#{uniq});"
 <div id="buttons" style="clear:both;">
 <%if session[:user].nil? %>
 	<br>
-		<a href="/login?redirect=/visconcepts/<%=@ontology.to_param%>/?id=<%=@concept.id%>#t_tab3:">New Note</a>
+		<a href="/login?redirect=/visualize/<%=@ontology.to_param%>/?id=<%=@concept.id%>#t_tab3:">New Note</a>
 <%else%>
 <br>
 <%if @modal%>

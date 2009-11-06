@@ -1,6 +1,6 @@
 <br>
 <%if session[:user].nil?%>
-	<a href="/login?redirect=/visconcepts/<%=@ontology.to_param%>/?id=<%=@concept.id%>#t_tab4:">"New Point-to-Point Mapping"</a>
+	<a href="/login?redirect=/visualize/<%=@ontology.to_param%>/?id=<%=@concept.id%>#t_tab4:">"New Point-to-Point Mapping"</a>
 <%else%>
 	<a href="/mappings/new?ontology=<%=@ontology.id%>&source_id=<%=@concept.id%>&source_name=<%=@concept.name%>&height=500&width=600" title="New Mapping  For <%=remove_owl_notation(@concept.name)%>" class="thickbox">New Point-to-Point Mapping</a>  
 <%end%>

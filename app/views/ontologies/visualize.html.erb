@@ -43,7 +43,7 @@ function jumpToValue(li){
 		if( !!li.extra ){
 			
 			var sValue = li.extra[0];
-			document.location="/visconcepts/<%=@ontology.id%>/?id="+encodeURIComponent(sValue);
+			document.location="/ajax_concepts/<%=@ontology.id%>/?id="+encodeURIComponent(sValue);
 			jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Concept...</h1>' }); 
 			return
 		}

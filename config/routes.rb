@@ -55,7 +55,7 @@ ActionController::Routing::Routes.draw do |map|
   map.lost_pass '/lost_pass',:controller=>'login',:action=>'lost_password'
   map.visualize '/visualize/:ontology', :controller=>'ontologies', :action =>'visualize',:requirements => { :ontology => %r([^/?]+) }
   map.uri '/visualize/:ontology/:id', :controller => 'concepts', :action => 'show',:requirements => { :id => %r([^/?]+)}
-  map.connect '/visconcepts/:ontology/', :controller => 'concepts', :action => 'show',:requirements => { :id => %r([^/?]+)}
+  map.connect '/ajax_concepts/:ontology/', :controller => 'concepts', :action => 'show',:requirements => { :id => %r([^/?]+)}
 
   map.virtual_ont '/virtual/:ontology', :controller => 'ontologies', :action => 'virtual',:requirements => { :ontology => %r([^/?]+) ,:id => %r([^/?]+)}
   map.virtual '/virtual/:ontology/:id', :controller => 'concepts', :action => 'virtual',:requirements => { :ontology => %r([^/?]+) ,:id => %r([^/?]+)}
@@ -66,7 +66,8 @@ ActionController::Routing::Routes.draw do |map|
 
   # Redirects from old URL locations
   map.connect '/annotate', :controller=>'redirect', :url=>'/annotator'
-  map.connect '/all_resources',:controller =>'redirect', :url=>'/resources'
+  map.connect '/all_resources', :controller =>'redirect', :url=>'/resources'
+  map.connect '/visconcepts/:ontology/', :controller =>'redirect', :url=>'/resources/:ontology/'
 
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id.:format'
