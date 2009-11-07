@@ -43,6 +43,9 @@ class BioPortalRestfulCore
     CHILDCOUNT="ChildCount"
     APPLICATION_ID = "4ea81d74-8960-4525-810b-fa1baab576ff"
     
+    # Track paths that have already been processed when building a path to root tree 
+    @seen_paths = {}
+    
  
 #    OBO
 #    2861
@@ -306,11 +309,14 @@ class BioPortalRestfulCore
      
     time = Time.now
     # We need to process the subclasses returned in order to fully build the tree
-    process_subclasses = true
     doc.find("/*/data/classBean").each{ |element|  
-      root = parseConceptLibXML(element,ontology,process_subclasses)
+      root = buildPathToRootTree(element,ontology)
     }
     RAILS_DEFAULT_LOGGER.debug "getPathToRoot Parse Time: #{Time.now-time}"
+    
+    # Reset seen_paths hashmap
+    @seen_paths = {}
+    
     return root
   end
       
@@ -681,23 +687,19 @@ private
     node = nil
     
     begin
-      RAILS_DEFAULT_LOGGER.debug "Concept retreive time"
+      RAILS_DEFAULT_LOGGER.debug "Concept retreive url"
       RAILS_DEFAULT_LOGGER.debug concept_uri
-      startGet = Time.now
+      startTime = Time.now
       rest = open(concept_uri)
-      endGet = Time.now
-      RAILS_DEFAULT_LOGGER.debug (endGet - startGet)
+      RAILS_DEFAULT_LOGGER.debug "Concept retreive (#{Time.now - startTime})"
     rescue Exception=>e
       RAILS_DEFAULT_LOGGER.debug e.inspect
     end
      
-    startGet = Time.now
+    startTime = Time.now
     parser = XML::Parser.io(rest)
     doc = parser.parse
-    endGet = Time.now
-    
-    RAILS_DEFAULT_LOGGER.debug "Concept parse time"
-    RAILS_DEFAULT_LOGGER.debug (endGet - startGet)
+    RAILS_DEFAULT_LOGGER.debug "Concept parse (#{Time.now - startTime})"
 
     node = errorCheckLibXML(doc)
     
@@ -705,14 +707,11 @@ private
       return node
     end
     
-    startGet = Time.now
+    startTime = Time.now
     doc.find("/*/data/classBean").each{ |element|  
       node = parseConceptLibXML(element,ontology)
     }
-    endGet = Time.now
-    
-    RAILS_DEFAULT_LOGGER.debug "Concept storage time"
-    RAILS_DEFAULT_LOGGER.debug (endGet - startGet)
+    RAILS_DEFAULT_LOGGER.debug "Concept storage (#{Time.now - startTime})"
   
     return node
   end
@@ -1027,46 +1026,24 @@ private
         return node
   end
 
-  def self.parseConceptLibXML(classbeanXML,ontology,process_subclasses = false)
+  def self.parseConceptLibXML(classbeanXML,ontology)
     # check if we're at the root node
     root = classbeanXML.path == "/success/data/classBean" ? true : false
 
-    # build a node object
-    node = NodeWrapper.new
-    # set default child size
-    node.child_size=0
-    # get node.id
-    id = classbeanXML.first.find(classbeanXML.path + "/id")
-    node.id = id.first.content unless id.first.nil?
-    # get fullId
-    fullId = classbeanXML.first.find(classbeanXML.path + "/fullId")
-    node.fullId = fullId.first.content unless fullId.first.nil?
-    # get label
-    label = classbeanXML.first.find(classbeanXML.path + "/label")
-    node.name = label.first.content unless label.first.nil?
-    # get childcount info
-    childcount = classbeanXML.first.find(classbeanXML.path + "/relations/entry[string='ChildCount']/int")
-    node.child_size = childcount.first.content.to_i unless childcount.first.nil?
-    # get isBrowsable info
-    is_browsable = classbeanXML.first.find(classbeanXML.path + "/isBrowsable")
-    browseable_check = is_browsable.first.nil? ? 1 : is_browsable.first.content.to_i
-    node.is_browsable = browseable_check != 0
+    # Get basic info and initialize the node.
+    node = getConceptBasicInfo(classbeanXML,ontology)
      
-    node.version_id = ontology
-    node.children = []
-    node.properties = {}
-    
-    if root || process_subclasses
+    if root
       # look for child nodes and process if found
       search = classbeanXML.path + "/relations/entry[string='SubClass']/list/classBean"
       results = classbeanXML.first.find(search)
       unless results.empty?
         results.each do |child|
-          node.children << parseConceptLibXML(child,ontology,process_subclasses)
+          node.children << parseConceptLibXML(child,ontology)
         end
       end
     end
-      
+          
     if root       
       # find all other properties
       search = classbeanXML.path + "/relations/entry"
@@ -1096,6 +1073,58 @@ private
     end # stop root node processing
      
     node.children.sort!{|x,y| x.name.downcase<=>y.name.downcase}
+    return node
+  end
+  
+  def self.buildPathToRootTree(classbeanXML,ontology)
+
+    node = getConceptBasicInfo(classbeanXML,ontology)
+    
+    # look for child nodes and process if found
+    search = classbeanXML.path + "/relations/entry[string='SubClass']/list/classBean"
+    results = classbeanXML.first.find(search)
+    unless results.empty?
+      results.each do |child|
+        # If we're about to process a path we've seen, don't continue.
+        if @seen_paths[child.path]
+          next
+        end
+        @seen_paths[child.path] = 1
+        node.children << buildPathToRootTree(child,ontology)
+        node.children.sort! { |a,b| a.name.downcase <=> b.name.downcase }
+      end
+    end
+    
+    return node
+  end
+  
+  def self.getConceptBasicInfo(classbeanXML,ontology)
+
+    # build a node object
+    node = NodeWrapper.new
+    # set default child size
+    node.child_size=0
+    # get node.id
+    id = classbeanXML.first.find(classbeanXML.path + "/id")
+    node.id = id.first.content unless id.first.nil?
+    # get fullId
+    fullId = classbeanXML.first.find(classbeanXML.path + "/fullId")
+    node.fullId = fullId.first.content unless fullId.first.nil?
+    # get label
+    label = classbeanXML.first.find(classbeanXML.path + "/label")
+    node.name = label.first.content unless label.first.nil?
+    # get childcount info
+    childcount = classbeanXML.first.find(classbeanXML.path + "/relations/entry[string='ChildCount']/int")
+    node.child_size = childcount.first.content.to_i unless childcount.first.nil?
+    # get isBrowsable info
+    is_browsable = classbeanXML.first.find(classbeanXML.path + "/isBrowsable")
+    browseable_check = is_browsable.first.nil? ? 1 : is_browsable.first.content.to_i
+    node.is_browsable = browseable_check != 0
+     
+    node.version_id = ontology
+    node.children = []
+    node.properties = {}
+      
     return node
   end
   
