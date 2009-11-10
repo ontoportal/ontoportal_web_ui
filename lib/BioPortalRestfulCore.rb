@@ -291,32 +291,23 @@ class BioPortalRestfulCore
   ##
   def self.getPathToRoot(ontology,source,light=nil)
     root = nil
-    
-    RAILS_DEFAULT_LOGGER.debug "getPathToRoot Retrieve"
-    RAILS_DEFAULT_LOGGER.debug BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=500"
-    time = Time.now
-    rest = open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=500")
-    RAILS_DEFAULT_LOGGER.debug "getPathToRoot Retrieve Time: #{Time.now-time}"
-    
-    parser = XML::Parser.io(rest)
-    doc = parser.parse
-    
-    root = errorCheckLibXML(doc)
+     
+    RAILS_DEFAULT_LOGGER.debug "Retrieve path to root"
+    RAILS_DEFAULT_LOGGER.debug BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=100"
+    doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=100"))
+     
+    root = errorCheck(doc)
 
     unless root.nil?
       return root
     end
      
     time = Time.now
-    # We need to process the subclasses returned in order to fully build the tree
-    doc.find("/*/data/classBean").each{ |element|  
-      root = buildPathToRootTree(element,ontology)
+    doc.elements.each("*/data/classBean"){ |element|  
+      root = parseConcept(element,ontology)
     }
     RAILS_DEFAULT_LOGGER.debug "getPathToRoot Parse Time: #{Time.now-time}"
-    
-    # Reset seen_paths hashmap
-    @seen_paths = {}
-    
+
     return root
   end
       
