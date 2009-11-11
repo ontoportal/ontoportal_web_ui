@@ -143,6 +143,14 @@ class OntologiesController < ApplicationController
 
   # GET /visualize/:ontology
   def visualize
+    # Hack to make ontologyid and conceptid work in addition to id and ontology params
+    params[:id] = params[:id].nil? ? params[:conceptid] : params[:id]
+    params[:ontology] = params[:ontology].nil? ? params[:ontologyid] : params[:ontology]
+    
+    # Error checking
+    if params[:id].nil? || params[:ontology].nil?
+      return "Please provide concept and ontology ids"
+    end
 
     view = false
     if params[:view]

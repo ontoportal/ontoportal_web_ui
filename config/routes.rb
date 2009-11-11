@@ -55,7 +55,8 @@ ActionController::Routing::Routes.draw do |map|
   map.lost_pass '/lost_pass',:controller=>'login',:action=>'lost_password'
   map.visualize '/visualize/:ontology', :controller=>'ontologies', :action =>'visualize',:requirements => { :ontology => %r([^/?]+) }
   map.uri '/visualize/:ontology/:id', :controller => 'concepts', :action => 'show',:requirements => { :id => %r([^/?]+) }
-  map.visualize_concept '/visualize', :controller=>'ontologies', :action =>'visualize',:requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+) }
+  map.visualize_concept '/visualize', :controller=>'ontologies', :action =>'visualize',:requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+),
+                                                                                                          :ontologyid => %r([^/?]+), :conceptid => %r([^/?]+) }
   map.connect '/ajax_concepts/:ontology/', :controller => 'concepts', :action => 'show',:requirements => { :id => %r([^/?]+) }
 
   map.virtual_ont '/virtual/:ontology', :controller => 'ontologies', :action => 'virtual',:requirements => { :ontology => %r([^/?]+) ,:id => %r([^/?]+) }
