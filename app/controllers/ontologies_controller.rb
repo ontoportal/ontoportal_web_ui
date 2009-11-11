@@ -148,8 +148,8 @@ class OntologiesController < ApplicationController
     params[:ontology] = params[:ontology].nil? ? params[:ontologyid] : params[:ontology]
     
     # Error checking
-    if params[:id].nil? || params[:ontology].nil?
-      return "Please provide concept and ontology ids"
+    if params[:ontology].nil? || params[:id] && params[:ontology].nil?
+      return "Please provide an ontology id or concept id with an ontology id."
     end
 
     view = false
