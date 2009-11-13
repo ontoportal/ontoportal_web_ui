@@ -836,24 +836,30 @@ private
     category[:parentId]=categorybeanXML.elements["parentId"].get_text.value.strip rescue ""    
     return category
   end
+  
+  ##
+  # Parse user data from the returned XML.
+  ##
   def self.parseUser(userbeanXML)
     user = UserWrapper.new
     
-    user.id=userbeanXML.elements["id"].get_text.value.strip
-    user.username=userbeanXML.elements["username"].get_text.value.strip
-    user.email=userbeanXML.elements["email"].get_text.value.strip
-    user.firstname=userbeanXML.elements["firstname"].get_text.value.strip rescue ""
-    user.lastname=userbeanXML.elements["lastname"].get_text.value.strip rescue ""
-    user.phone=userbeanXML.elements["id"].get_text.value.strip rescue ""
+    user.id = userbeanXML.elements["id"].get_text.value.strip
+    user.username = userbeanXML.elements["username"].get_text.value.strip
+    user.email = userbeanXML.elements["email"].get_text.value.strip
+    user.firstname = userbeanXML.elements["firstname"].get_text.value.strip rescue ""
+    user.lastname = userbeanXML.elements["lastname"].get_text.value.strip rescue ""
+    user.phone = userbeanXML.elements["phone"].get_text.value.strip rescue ""
     
-    roles = []   
+    roles = []  
     begin
     userbeanXML.elements["roles"].elements.each("string"){ |role|
-     roles << role.get_text.value.strip
+      roles << role.get_text.value.strip
     } 
-    rescue
+    rescue Exception=>e
+      RAILS_DEFAULT_LOGGER.debug e.inspect
     end
-    user.roles=roles
+    
+    user.roles = roles
     
     return user
   end
