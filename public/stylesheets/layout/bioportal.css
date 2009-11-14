@@ -56,7 +56,7 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 #hd { background: url('/images/layout/header_bg.png') repeat-x; width:100%;*width:60.06em;min-width:1200px; height:43px; margin:auto; text-align:left;white-space:nowrap; }
 #hd ul { padding:0 5px; }
 #hd ul li { display:inline; float:left; }
-#hd ul.alignright { padding:10px 0 0; }
+#hd ul.alignright { padding: 0.5em 0.5em 0.5em 0; }
 #hd ul.alignright li { display:inline; float:left; padding-left:15px; }
 #hd ul li a { color:#fff; }
 
@@ -70,12 +70,14 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 .tabs li.selected { background:#234979; border-top:1px solid #8ca0b9; height:23px; }
 .tabs li.selected a { color:#fff; padding-top:4px; }
 
-  #bd { background: #fff; *width: 60.06em; min-width: 800px; text-align: left; float: left; padding: 1em;}
+  #bd { background: #fff; width: 100%; *width: 60.06em; min-width: 800px; text-align: left; float: left; }
 	#bd #bd_hd { width:100%; float:left; white-space:nowrap;overflow:hidden;margin:15px 25px 15px 25px; }
 	#bd #bd_hd h1 { font-size:120%; float:left; width:auto; display:inline; margin-right:10px; }
 	#bd #bd_hd h3 { font-size:100%; float:left; display:inline; margin-right:10px;margin-top:2px;}
 	#bd h2 { font-size:120%; font-weight:bold; margin-bottom:10px; }
 	#bd hr { border:0; height:1px; color:#e9eaeb; background:#e9eaeb; margin:10px 0; }
+	
+	#ontologies_bd_container { width: 100%; padding: 1em; }
 	
 /*	#bd ul { margin-bottom:15px; }
 	#bd ul li { list-style-image: url('/images/layout/bullet_arrow.png'); margin-left:20px; }
