@@ -266,10 +266,6 @@ function nodeClicked(node_id,node_label) {
 			callTab(5, '/resources/@ontology@/@concept@');
 		}
 		
-						<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>		
-	       					document.getElementById('t_tab5').innerHTML=tabData[4]				
-						<%end%>
-
 		update_tab('<%=@ontology.to_param%>',node_id);
 		tb_init('a.thickbox, area.thickbox, input.thickbox');
 		
@@ -292,10 +288,6 @@ function nodeClicked(node_id,node_label) {
             if (loc.search("#t_tab") >= 0 && loc.split("#")[1].replace(":","") == "t_tab5") {
 				callTab(5, '/resources/@ontology@/@concept@');
 			}
-
-					<%if @ontology.displayLabel.eql?("Biomedical Resource Ontology")%>		
-						document.getElementById('t_tab5').innerHTML=tabData[4]				
-					<%end%>
 
 			setCache(node_id,tabData);
 			jQuery.unblockUI();	

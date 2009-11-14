@@ -40,9 +40,8 @@ class OntrezService
     RAILS_DEFAULT_LOGGER.debug ONTREZ_URL + RESOURCES
     startGet = Time.now
     doc = REXML::Document.new(open(ONTREZ_URL + RESOURCES))    
-    RAILS_DEFAULT_LOGGER.debug Time.now - startGet
+    RAILS_DEFAULT_LOGGER.debug "Resources retrieved (#{Time.now - startGet})"
 
-    RAILS_DEFAULT_LOGGER.debug "Parse resources"
     doc.elements.each("*/obs\.obr\.populate\.Resource"){|resource|
       new_resource = Resource.new
       new_resource.name = resource.elements["resourceName"].get_text.value
@@ -54,7 +53,7 @@ class OntrezService
       new_resource.main_context = resource.elements["mainContext"].get_text.value
       resources << new_resource
     }
-    RAILS_DEFAULT_LOGGER.debug Time.now - startGet
+    RAILS_DEFAULT_LOGGER.debug "Resources parsed (#{Time.now - startGet})"
 
     RAILS_DEFAULT_LOGGER.debug "Retrieve annotations for #{concept_id}"
     RAILS_DEFAULT_LOGGER.debug ONTREZ_URL+resource_url.gsub("@",ont).gsub("#",CGI.escape(concept_id))
@@ -65,10 +64,9 @@ class OntrezService
     rescue Exception => e
       RAILS_DEFAULT_LOGGER.debug e.inspect
     end
-    RAILS_DEFAULT_LOGGER.debug Time.now - startGet
+    RAILS_DEFAULT_LOGGER.debug "Annotations retrieved #{Time.now - startGet}"
     
     # parse out the annotation numbers and annotations
-    RAILS_DEFAULT_LOGGER.debug "Parse annotations"
     startGet = Time.now
     for resource in resources
       # number of annotations
@@ -82,7 +80,7 @@ class OntrezService
       parseAnnotations(annotations_doc,resource)
       RAILS_DEFAULT_LOGGER.debug "Annotation doc: \n #{annotations_doc.inspect}"
     end
-    RAILS_DEFAULT_LOGGER.debug Time.now - startGet
+    RAILS_DEFAULT_LOGGER.debug "Annotations parsed (#{Time.now - startGet})"
 
 
     RAILS_DEFAULT_LOGGER.debug "Resources: \n #{resources.inspect}"

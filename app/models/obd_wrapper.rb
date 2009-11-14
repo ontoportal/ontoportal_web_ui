@@ -32,6 +32,7 @@ class OBDWrapper
       if cache
         CACHE.set("#{ontology}::#{concept.id}_resource",resources)
       end
+        resources.sort!{|x,y| x.name.downcase<=>y.name.downcase}    
         return resources
     else
       return CACHE.get("#{ontology}::#{concept.id}_resource")

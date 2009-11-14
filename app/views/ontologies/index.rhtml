@@ -292,7 +292,7 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 		<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>
 	<td style="display:none;"> <%=ontology.categories.join(" ")%></td>
 	<td style="display:none;"><%if !ontology_groups[ontology.ontologyId.to_i].nil?%><%=ontology_groups[ontology.ontologyId.to_i].join(" , ")%><%end%></td>
-	<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => ontology)%><%elsif ontology.statusId.to_i.eql?(1)%>Parsing Ontology<%else%>&nbsp;<%end%></td>
+	<td><%=ontology.get_visualize_link%></td>
   </tr>
 <% end %>
 </tbody>

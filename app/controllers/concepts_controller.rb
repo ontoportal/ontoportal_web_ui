@@ -180,15 +180,6 @@ class ConceptsController < ApplicationController
       @margin_note.ontology_id=@concept.ontology_id
    # end   
       
-   
-    
-     # for demo only
-     @software=[]
-     if @ontology.ontologyId.to_s.eql?("1104")
-        @software = NcbcSoftware.find(:all,:conditions=>{:ontology_label=>@concept.id})        
-      end
-    
-    
     #wait(sids) #waits for threads to finish
     
     update_tab(@ontology,@concept.id) #updates the 'history' tab with the current node

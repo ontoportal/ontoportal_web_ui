@@ -173,7 +173,9 @@ $(document).ready(function(){
 			<td><%=version.versionNumber%></td>
 			<td><%=version.dateReleased%></td>			
 			<td><% if version.isRemote.to_i.eql?(1)%><a href="<%=@ontology.homepage%>"><%else%><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download Ontology</a><%end%></td>
-			<td><%if version.statusId.to_i.eql?(3)%><%=link_to "Explore", visualize_url(:ontology => version)%><%elsif version.statusId.to_i.eql?(1)%>Parsing Ontology<%else%><%end%></td>
+			<td>
+			  <%= version.get_visualize_link %>
+			</td>
 			<td >
 				<% for diff in @diffs%>
 					<%if diff[1].to_i.eql?(version.id.to_i)%>

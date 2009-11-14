@@ -199,12 +199,6 @@ class OntologiesController < ApplicationController
     @margin_note.ontology_version_id = @concept.version_id
     @margin_note.ontology_id=@concept.ontology_id
         
-    # for demo only
-    @software=[]
-    if @ontology.ontologyId.to_s.eql?("1104")
-       @software = NcbcSoftware.find(:all,:conditions=>{:ontology_label=>@concept.id})        
-    end
-           
     unless @concept.id.to_s.empty?
       update_tab(@ontology,@concept.id) #update the tab with the current concept
     end
