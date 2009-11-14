@@ -56,7 +56,7 @@ class OntrezService
     }
     RAILS_DEFAULT_LOGGER.debug Time.now - startGet
 
-    RAILS_DEFAULT_LOGGER.debug "Retrieve annotations"
+    RAILS_DEFAULT_LOGGER.debug "Retrieve annotations for #{concept_id}"
     RAILS_DEFAULT_LOGGER.debug ONTREZ_URL+resource_url.gsub("@",ont).gsub("#",CGI.escape(concept_id))
     startGet = Time.now
     # this call gets the annotation numbers and the first 10 annotations for each resource
@@ -74,17 +74,18 @@ class OntrezService
       # number of annotations
       xpath = "*/obs.common.beans.ObrResultBean[resourceID='" + resource.shortname + "']/statistics/obs.common.beans.StatisticsBean/nbAnnotation"
       resource.count = doc.elements[xpath].get_text.value.to_i
+      RAILS_DEFAULT_LOGGER.debug "Resource count: \n #{resource.count} for #{resource.shortname}"
       
       # annotations
       xpath = "*/obs.common.beans.ObrResultBean[resourceID='" + resource.shortname + "']/annotations"
       annotations_doc = doc.elements[xpath]
       parseAnnotations(annotations_doc,resource)
+      RAILS_DEFAULT_LOGGER.debug "Annotation doc: \n #{annotations_doc.inspect}"
     end
     RAILS_DEFAULT_LOGGER.debug Time.now - startGet
 
 
-    #puts "Resources: \n #{resources.inspect}"
-    #puts "Finished Parsing"
+    RAILS_DEFAULT_LOGGER.debug "Resources: \n #{resources.inspect}"
     return resources
 
   end
@@ -97,9 +98,9 @@ class OntrezService
     resource_url = latest ? DETAILS : VERSIONED_DETAILS
     ont = latest ? ontology_id : version_id
 
-    rest_url = ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("#",CGI.escape(concept_id).strip).gsub("%",resource.strip)+element.strip
+    rest_url = ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("%",resource.strip).gsub("#",CGI.escape(concept_id))+element.strip
     
-    RAILS_DEFAULT_LOGGER.debug "Details retrieve"
+    RAILS_DEFAULT_LOGGER.debug "Details retrieve for #{concept_id}"
     RAILS_DEFAULT_LOGGER.debug rest_url
     
     begin
@@ -211,13 +212,24 @@ private
 
     xpath = "obs.common.beans.ObrAnnotationBeanDetailled"
 
-    doc.elements.each(xpath){ |statistic|
-      annotation = Annotation.new
-      annotation.score = statistic.elements["score"].get_text.value
-      annotation.local_id = statistic.elements["localElementID"].get_text.value
-      xpath = "element/elementStructure/contexts/entry[string='" + resource.main_context + "']/string[2]"
-      annotation.description = statistic.elements[xpath].get_text.value
-      resource.annotations << annotation
+    doc.elements.each(xpath){ |annotationXML|
+      begin
+        annotation = Annotation.new
+        annotation.score = annotationXML.elements["score"].get_text.value
+        annotation.local_id = annotationXML.elements["localElementID"].get_text.value.strip
+        # We try to find the description with a non-reference xpath first.
+        xpath = "element/elementStructure/contexts/entry[string='" + resource.main_context + "']/string[2]"
+        # If that didn't work, revert to finding the description using provided relative xpath from the reference attr.
+        if annotationXML.elements[xpath].nil?
+          xpath_alt = "../obs.common.beans.ObrAnnotationBeanDetailled/element/elementStructure/contexts/entry[string='" + resource.main_context + "']/string[2]"
+          annotation.description = annotationXML.elements[xpath_alt].get_text.value
+        else
+          annotation.description = annotationXML.elements[xpath].get_text.value
+        end
+        resource.annotations << annotation
+      rescue Exception=>e
+        RAILS_DEFAULT_LOGGER.debug e.inspect
+      end
     }
   end
  
@@ -278,11 +290,9 @@ private
         next
       end
       annotations.each do |context_name, annot_hash|
-        RAILS_DEFAULT_LOGGER.debug "#{context_name} #{annot_hash.inspect}"
         details[annot_type][context_name][:contextString] = doc.elements["//contexts/entry[string='" + context_name + "']/string[2]"].get_text.value
       end
     end
-    RAILS_DEFAULT_LOGGER.debug details.inspect
 
     return details
   end
