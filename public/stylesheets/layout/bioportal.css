@@ -70,7 +70,7 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 .tabs li.selected { background:#234979; border-top:1px solid #8ca0b9; height:23px; }
 .tabs li.selected a { color:#fff; padding-top:4px; }
 
-#bd { background: #fff; width:100%;*width:60.06em;min-width:800px;  text-align:left; float:left; }
+  #bd { background: #fff; *width: 60.06em; min-width: 800px; text-align: left; float: left; padding: 1em;}
 	#bd #bd_hd { width:100%; float:left; white-space:nowrap;overflow:hidden;margin:15px 25px 15px 25px; }
 	#bd #bd_hd h1 { font-size:120%; float:left; width:auto; display:inline; margin-right:10px; }
 	#bd #bd_hd h3 { font-size:100%; float:left; display:inline; margin-right:10px;margin-top:2px;}
@@ -247,7 +247,26 @@ tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Ar
 }
 
 .feedback ul li {
-    list-style-position: inside;
-    list-style-type: square;
-    margin-left: 1em;
+  list-style-position: inside;
+  list-style-type: square;
+  margin-left: 1em;
+}
+
+#all_updates_rss {
+  text-align: right;
+  margin-bottom: -0.8em;
+  width: 90%;
+  display: none;
+}
+
+#all_updates_rss a {
+  text-decoration: none;
+}
+
+#all_updates_rss a:hover {
+  text-decoration: underline;
+}
+
+#all_updates_rss img {
+  vertical-align: text-top;
 }

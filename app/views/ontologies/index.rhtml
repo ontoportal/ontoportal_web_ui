@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="./stylesheets/jquery.cursorMessage.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <link rel="stylesheet" href="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <script src="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.min.js" type="text/javascript" charset="utf-8"></script>
-
+<link rel="alternate" title="<%=@title%> RSS" href="/syndication/rss" type="application/rss+xml" />
 
 
 
@@ -50,7 +50,16 @@ jQuery(document).ready(function() {
 	dtable = jQuery('#ontologies').dataTable(
 		{
 		bLengthChange:false,
-		bAutoWidth:false,		
+		bAutoWidth:false,
+    aoColumns: [
+                { sWidth: '200px' },
+                { sWidth: '50px' },
+                { sWidth: '50px' },
+                { sWidth: '200px' },
+                { sWidth: '50px' },
+                { sWidth: '50px' },
+                { sWidth: '50px' }
+            ],
 		iDisplayLength:800,
 		asStripClasses:["","alt"],
 		bFilter:false,
@@ -81,13 +90,19 @@ jQuery(document).ready(function() {
 						    top: 10, 
 						    left: 5 
 						});					
+
+          	// Set the table width back to 90% after it gets jacked by jQuery DataTable
+          	jQuery("#ontologies").css("width","90%");
+          	// Show the RSS link
+          	jQuery("#all_updates_rss").css("display","block");
+
 						return nRow;
 					}
 
 	});
 	
 	<%if params[:filter]%>
-	setTimeout('filterByParam("<%=params[:filter]%>")',2000);
+	  setTimeout('filterByParam("<%=params[:filter]%>")',2000);
 	<%end%>
 	
 });
@@ -195,7 +210,7 @@ ontology_groups = {
     <b>Access all ontologies that are available in BioPortal:</b> You can filter this list by category to display ontologies relevant for a certain domain 
 (try selecting "Anatomy or Experimental Conditions" in the "Filter by category" menu below). You can also filter ontologies that belong to a certain 
 group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Foundry</a>, or ontologies from the <a href = "https://cabig.nci.nih.gov/">Cancer 
-	Biomedical Informatics Grid (caBIG)</a>. <a href = "feed://bioportal.bioontology.org/syndication/rss">Subscribe to the BioPortal RSS feed</a> to receive 
+	Biomedical Informatics Grid (caBIG)</a>. <a href = "feed://syndication/rss">Subscribe to the BioPortal RSS feed</a> to receive 
 	alerts for submissions of new ontologies, new versions of ontologies, new notes, and new projects. You can subscribe to feeds for a specific ontology at 
 	the individual ontology page. Add a new biomedical ontology to BioPortal using the Submit New Ontology link (you need to  
 	<a href= "http://bioportal.bioontology.org/login">sign in</a>  to see this link).
@@ -205,7 +220,7 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 
 
 
-<div style="width:100%">
+<div style="width: 100%;">
 	<br/>
 
 	<table class="form">
@@ -248,13 +263,15 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 	</tr>
 	
 	</table>
-		<div><a href="/syndication/rss"><img src="/images/feed-icon.png" border="0">Subscribe to all updates</a></div>
+		<div id="all_updates_rss">
+		  <img src="/images/feed-icon.png" border="0" height="12px" width="12px"> <a href="/syndication/rss">Subscribe to all updates</a>
+		</div>
 <table id="ontologies" class="zebra" cellpadding="0" cellspacing="0">
 		<thead>
   <tr>
-	<th  style="width:200px;">Ontology Name</th>
-	<th style="width:50px;">Format</th>
-	<th  style="width:50px;">Version</th>
+	<th>Ontology Name</th>
+	<th>Format</th>
+	<th>Version</th>
 	<th>Author</th>
 	<th>Uploaded On</th>
 	<th>Group</th>
