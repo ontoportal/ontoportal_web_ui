@@ -80,16 +80,16 @@ function formatItemResource(row) {
 names = names | abrv%>
 
 function selectFindOntology(){
-$('#find_ontology').focus();
+jQuery('#find_ontology').focus();
 }
 
 var ontologies_array=[<%=names.join(",")%>]
-$(document).ready(function(){
-	 $("#find_ontology").autocompleteArray(ontologies_array, { minChars:1,matchSubset:1,maxItemsToShow:20,onFindValue:jumpToValue,formatItem:formatItem,onItemSelect:selectFindOntology });
-	searchbox =  $("#find_ontology")[0].autocompleter;
+jQuery(document).ready(function(){
+	 jQuery("#find_ontology").autocompleteArray(ontologies_array, { minChars:1,matchSubset:1,maxItemsToShow:20,onFindValue:jumpToValue,formatItem:formatItem,onItemSelect:selectFindOntology });
+	searchbox =  jQuery("#find_ontology")[0].autocompleter;
 	
-	 $("#find_resource").autocomplete("/search/json_search/0", { lineSeparator:"~!~",cacheLength:1,matchSubset:0, minChars:3,maxItemsToShow:10,onFindValue:jumpToValueResource,formatItem:formatItemResource });
-	resourcebox =  $("#find_resource")[0].autocompleter;
+	 jQuery("#find_resource").autocomplete("/search/json_search/0", { lineSeparator:"~!~",cacheLength:1,matchSubset:0, minChars:3,maxItemsToShow:10,onFindValue:jumpToValueResource,formatItem:formatItemResource });
+	resourcebox =  jQuery("#find_resource")[0].autocompleter;
 	
 	
 	jQuery('ul.sf-menu').superfish({
@@ -102,9 +102,9 @@ $(document).ready(function(){
 
 function greybox(box){
 	
-	if($(box).hasClass("greyed")){
-		$(box).removeClass('greyed');
-		$(box).val("");
+	if(jQuery(box).hasClass("greyed")){
+		jQuery(box).removeClass('greyed');
+		jQuery(box).val("");
 	}
 }
 
@@ -139,7 +139,7 @@ in the "Find an ontology" box in the middle column), search biomedical resources
 				<legend>Search all ontologies</legend>
 				<table>
 					<tr>				
-						<td nowrap><input type="text" name="search[keyword]" style="width:190px;" size='30' class="greyed"  onclick="greybox(this)" value="Enter search term, e.,g. melanoma"/><%=submit_tag 'Search',:class=>'home_button'%></td>
+						<td nowrap><input type="text" name="search[keyword]" style="width:190px;" size='30' class="greyed"  onclick="greybox(this)" value="Enter term, e.,g. melanoma"/><%=submit_tag 'Search',:class=>'home_button'%></td>
 					</tr>
 					<tr>
 						<td style="padding-left:15px"><a href="/search">Advanced Search</a></td>
