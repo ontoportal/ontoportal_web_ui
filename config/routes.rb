@@ -35,6 +35,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/feedback',:controller=>'home',:action=>'feedback'
   map.connect '/annotator',:controller=>'home',:action=>'annotate'
   map.connect '/resources',:controller =>'home',:action=>'all_resources'
+  map.connect '/recommender',:controller =>'home',:action=>'recommender'
   map.connect '/exhibit/:ontology/:id',:controller=>'concepts',:action=>'exhibit'
   map.upload_mappings '/upload/mapping',:controller=>'mappings',:action=>'upload'
   map.process_mappings '/process/mapping',:controller=>'mappings',:action=>'process_mappings'

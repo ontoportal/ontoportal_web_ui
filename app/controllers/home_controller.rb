@@ -111,6 +111,9 @@ class HomeController < ApplicationController
     
   end
 
+  def recommender
+    
+  end
 
   def annotate
     
