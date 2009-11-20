@@ -1046,7 +1046,8 @@ private
       search = classbeanXML.path + "/relations/entry"
       classbeanXML.first.find(search).each do |entry|
         # check to see if the entry is a relationship (signified by [R]), if it is move on
-        if classbeanXML.first.find(entry.path + "/string").first.content[0,3] == "[R]"
+        if classbeanXML.first.find(entry.path + "/string").first.content[0,3].eql?("[R]") ||
+                classbeanXML.first.find(entry.path + "/string").first.content[0,10].eql?("SuperClass")
           next
         end
         # check to see if this entry has a list of classBeans
