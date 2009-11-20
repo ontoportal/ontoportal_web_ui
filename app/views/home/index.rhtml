@@ -211,37 +211,36 @@ in the "Find an ontology" box in the middle column), search biomedical resources
 <tr>
 	<td valign='top'>
 		<fieldset>
-			<legend>Most Active Ontologies</legend>
+			<legend>Most Viewed Ontologies (October, 2009)</legend>
 		<table class="minimal" width="100%">
 			<thead>
 			<tr>
 				<th>Ontology</th>
-				<th>Version</th>
-				<th>Notes</th>
-				<th>Mappings</th>
+				<th>Views</th>
 			</tr>
 			</thead>
-			<%for ont in @active_totals%>
-			<% if ont[0].nil?
-				next
-			   end
-			%>
-			<%ontology = @ontology_hash[ont[0]]%>
-			<% if ontology.nil?
-				next
-			   end
-			%>
-
-			
-			<tr>
-				<td><%if ontology.statusId.to_i.eql?(3)%><%=link_to ontology.displayLabel, visualize_url(:ontology => ontology)%><%else ontology.statusId.to_i.eql?(1)%><%=link_to ontology.displayLabel, ontology_path(:id=>ontology.id)%><%end%></td>
-				<td><%=ontology.versionNumber%></td>
-				<td><%=ont[1]%></td>
-				<td><%=ont[2]%></td>
-			</tr>
+            <tr>
+                <td><%= link_to "NCI Thesaurus", "/virtual/1032" %></td>
+                <td>873</td>
+            </tr>
+            <tr>
+                <td><%= link_to "Biomedical Resource Ontology", "/virtual/1104" %></td>
+                <td>542</td>
+            </tr>
+            <tr>
+                <td><%= link_to "SNOMED Clinical Terms", "/virtual/1353" %></td>
+                <td>350</td>
+            </tr>
+            <tr>
+                <td><%= link_to "NIFSTD", "/virtual/1084" %></td>
+                <td>263</td>
+            </tr>
+            <tr>
+                <td><%= link_to "Medical Subject Headings", "/virtual/1351" %></td>
+                <td>185</td>
+            </tr>
 				
 			
-			<%end%>
 		</table>
 		</fieldset>
 			<fieldset>
