@@ -59,18 +59,19 @@ Errors On Form
 	
 	<%if @ontology.ontologyId.nil?%>
 	<tr>
-		<th>Ontology Format: <span class="asterik"> *</span></th><td><select name="ontology[format]" style="width:200px" >			
-
-            <option value="LEXGRID_XML">LEXGRID_XML</option>
-            <option value="OBO">OBO</option>
-			<option value="OWL">OWL</option>
-			<option value="OWL-DL">-&nbsp;&nbsp;OWL-DL</option>
-			<option value="OWL-FULL">-&nbsp;&nbsp;OWL-FULL</option>
-			<option value="OWL-LITE">-&nbsp;&nbsp;OWL-LITE</option>
-			<option value="PROTEGE">PROTEGE</option>
-			<option value="RRF">RRF</option>
+		<th>Ontology Format: <span class="asterik"> *</span></th>
+		<td>
+		  <select name="ontology[format]" style="width:200px" >			
+        <option value="LEXGRID-XML">LEXGRID-XML</option>
+        <option value="OBO">OBO</option>
+  			<option value="OWL">OWL</option>
+  			<option value="OWL-DL">-&nbsp;&nbsp;OWL-DL</option>
+  			<option value="OWL-FULL">-&nbsp;&nbsp;OWL-FULL</option>
+  			<option value="OWL-LITE">-&nbsp;&nbsp;OWL-LITE</option>
+  			<option value="PROTEGE">PROTEGE</option>
+  			<option value="RRF">RRF</option>
 			</select>
-			</td>
+		</td>
 	</tr>	
 	<%else%>
 	<tr>
