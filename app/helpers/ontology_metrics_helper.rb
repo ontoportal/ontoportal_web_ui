@@ -1,7 +1,7 @@
 module OntologyMetricsHelper
   
   def class_list_info(ontology, metric, message, title)
-    if ontology.metrics.send("#{metric}").nil?
+    if ontology.metrics.send("#{metric}").nil? || ontology.metrics.send("#{metric}").empty?
       return
     end
     
