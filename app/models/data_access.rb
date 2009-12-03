@@ -164,6 +164,18 @@ class DataAccess
     end
   end
     
+  def self.getOntologyMetrics(ontology)
+    if CACHE.get("#{ontology}::_metrics").nil? || NO_CACHE
+      metrics = SERVICE.getOntologyMetrics(ontology)
+      unless metrics.kind_of?(Hash) && metrics[:error]
+        CACHE.set("#{ontology}::_metrics",metrics,CACHE_EXPIRE_TIME)
+      end        
+      return metrics
+    else
+      return CACHE.get("#{ontology}::_metrics")
+    end
+  end
+    
   def self.getLatestOntology(ontology)
     # puts "Calling DataAccess.getLatestOntology(#{ontology})"
     if CACHE.get("#{ontology}::_latest").nil? || NO_CACHE

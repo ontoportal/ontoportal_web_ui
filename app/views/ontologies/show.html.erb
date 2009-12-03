@@ -18,25 +18,25 @@
 	
 	jQuery(document).ready(function()  {
 		<%if @notes.size>0%>
-		jQuery("#notes").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14})
+			jQuery("#notes").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14});
 		<%end%>
 		<%if @mappings.size >0%>
-		jQuery("#mappings").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14})
+			jQuery("#mappings").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14});
 		<%end%>
 
 		//Auto loads the correct tab
-	    loc = new String(document.location)
-	    if(loc.search("#")>=0){
+	    loc = new String(document.location);
+	    if(loc.search("#")>=0) {
 	        jQuery("#metadata_content").hide();
-	        id = "#" + loc.split("#")[1]
+	        id = "#" + loc.split("#")[1];
 			// The actual content to hide/show is in id_content
 			id_content = id + "_content";
 	        jQuery(id_content).show();
 	        jQuery(".tab").removeClass("selected");
-	        jQuery(id+"_top").addClass("selected")
-	        tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0))
+	        jQuery(id+"_top").addClass("selected");
+	        tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0));
 	        tab_li.addClass("selected");
-	        a = jQuery("a[href='"+id+":']")
+	        a = jQuery("a[href='"+id+":']");
 	        eval(a.attr("alt"));
 	    }
 
@@ -111,7 +111,8 @@ $(document).ready(function(){
 		<li id="#metadata" class="selected tab"><a href="#metadata" onclick="meta_tab_clicked('#metadata_content',this)">Metadata</a></li>
 		<li id="#views" class="tab"><a href="#views" onclick="meta_tab_clicked('#views_content',this)">Views (<%=@ontology.views.size%>)</a></li>
 		<li id="#projects" class="tab"><a href="#projects" onclick="meta_tab_clicked('#projects_content',this)">Projects (<%=@projects.size%>)</a></li>
-    	<li id="#reviews" class="tab"><a href="#reviews" onclick="meta_tab_clicked('#reviews_content',this)">Reviews (<%=@reviews.size%>)</a></li>
+  	<li id="#reviews" class="tab"><a href="#reviews" onclick="meta_tab_clicked('#reviews_content',this)">Reviews (<%=@reviews.size%>)</a></li>
+  	<li id="#metrics" class="tab"><a href="#metrics" onclick="meta_tab_clicked('#metrics_content',this)">Metrics</a></li>
 		<li id="#widgets" class="tab"><a href="#widgets" onclick="meta_tab_clicked('#widgets_content',this)">Ontology Widgets</a></li>		
 	</ul>  
 </div>
@@ -298,7 +299,7 @@ $(document).ready(function(){
 <%if !@ontology.isRemote.to_i.eql?(1)%>
 <div id="widgets_content" style="display:none;" class="tab_content">
 
-<div style="float:left;">
+<div>
 <h1>Adding a NCBO Widgets for <%=@ontology.displayLabel%> To Your Site</h1>
 <h2>Step1 Select a widget:</h2><hr/>
 
@@ -518,6 +519,76 @@ Example 3 (get the preferred name for a concept)<br/><input type="text" name="c"
 <div style="clear:both;"></div>
 </div>
 <%end%>
+
+<div id="metrics_content" style="display:none; margin: 1em 0;" class="tab_content">
+	<div style="clear:both;"></div>
+	<p style="border: 1px solid rgb(239, 239, 239); margin: 10px; padding: 10px;">
+		In general, BioPortal will calculate the metrics when an ontology is uploaded and then store the calculations as part of the Ontology Metadata.
+		There are two groups of metrics: 1) <i>Statistical metrics</i> and 2) <i>Quality-control</i> and <i>quality-assurance metrics</i>. 
+		Each ontology may have all, some, or no values filled in for its metrics. Some metrics are meaningful only for ontologies in a specific representation language
+		(e.g., number of axioms matters only for OWL ontologies; there are no individuals to count in the ontologies in OBO format).
+		<%= link_to "See metrics descriptions", "http://www.bioontology.org/wiki/index.php/Ontology_Metrics" %>
+	</p>
+	<table class="form">
+		<!-- not calculated currently
+		<tr>
+			<th>Number of axioms:</th><td class="top"><%=@ontology.metrics.numberOfAxioms%></td>
+		</tr>
+		-->
+		<tr>
+			<th>Number of classes:</th><td class="top"><%=@ontology.metrics.numberOfClasses%></td>
+		</tr>
+		<tr>
+			<th>Number of individuals:</th><td><%=@ontology.metrics.numberOfIndividuals%></td>
+		</tr>
+		<tr>
+			<th>Number of properties:</th><td><%=@ontology.metrics.numberOfProperties%></td>
+		</tr>
+		<tr>
+			<th>Maximum depth:</th><td><%=@ontology.metrics.maximumDepth%></td>
+		</tr>
+		<tr>
+			<th>Maximum number of siblings:</th><td><%=@ontology.metrics.maximumNumberOfSiblings%></td>
+		</tr>
+		<tr>
+			<th>Average number of siblings:</th><td><%=@ontology.metrics.averageNumberOfSiblings%></td>
+		</tr>
+		<tr>
+			<th style="vertical-align: top;">Classes with a single subclass:</th>
+			<td>
+				<%= class_list_info(@ontology, "classesWithOneSubclass", "have only one subclass", "Classes with a single subclass") %>
+			</td>
+		</tr>
+		<tr>
+			<th style="vertical-align: top;">Classes with more than X subclasses:</th>
+			<td>
+				<%= class_list_info(@ontology, "classesWithMoreThanXSubclasses", "have more than X number of subclasses", "Classes with more than X subclasses") %>
+			</td>
+		</tr>
+		<tr>
+			<th style="vertical-align: top;">Classes with no author:</th>
+			<td>
+				<%= class_list_info(@ontology, "classesWithNoAuthor", "are missing an author property", "Classes with no author") %>
+			</td>
+		</tr>
+		<tr>
+			<th style="vertical-align: top;">Classes with no documentation:</th>
+			<td>
+				<%= class_list_info(@ontology, "classesWithNoDocumentation", "are missing a documentation property", "Classes with no documentation") %>
+			</td>
+		</tr>
+		<!-- not calculated currently
+		<tr>
+			<th style="vertical-align: top;">Classes with more than one property value:</th>
+			<td>
+				<%= class_list_info(@ontology, "classesWithMoreThanOnePropertyValue", "have more than one property value", "Classes with more than one property value") %>
+			</td>
+		</tr>
+		-->
+	</table>
+</div>
+
+
 <div id="views_content" style="display:none;" class="tab_content">
 	<div style="float:left;width:1000px;" >
 

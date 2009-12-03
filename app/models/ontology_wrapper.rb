@@ -153,7 +153,11 @@ class OntologyWrapper
   def topLevelNodes(view=false)
        DataAccess.getTopLevelNodes(self.id,view)     
   end
-
+  
+  def metrics
+    return DataAccess.getOntologyMetrics(self.id)
+  end
+  
   ##
   # Queries for the latest version of this ontology and returns a comparison.
   ##

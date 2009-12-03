@@ -1,3 +1,5 @@
+require "date"
+require "net/http"
 require 'xml'
 require "rexml/document"
 require 'open-uri'
@@ -18,6 +20,8 @@ class BioPortalRestfulCore
     CONCEPT_PATH ="/concepts/%ONT%/?conceptid=%CONC%"
     PATH_PATH = "/path/%ONT%/?source=%CONC%&target=root"
     VERSIONS_PATH="/ontologies/versions/%ONT%"
+    
+    METRICS_PATH = "/ontologies/metrics/%ONT%"
     
     VIEW_PATH = "/ontologies/%VIEW%"
 #    VIEW_CONCEPT_PATH = "/concepts/view/%VIEW%/?conceptid=%CONC%"
@@ -238,6 +242,29 @@ class BioPortalRestfulCore
         return ont
       end
       
+      ##
+      # Used to retrieve data from back-end REST service, then parse from the resulting metrics bean.
+      # Returns an OntologyMetricsWrapper object.
+      ## 
+      def self.getOntologyMetrics(ontology)
+        ont = nil
+          
+          doc = REXML::Document.new(open(BASE_URL + METRICS_PATH.gsub("%ONT%",ontology.to_s)+"?applicationid=#{APPLICATION_ID}"))
+
+            ont = errorCheck(doc)
+
+             unless ont.nil?
+               return ont
+             end
+          
+         time = Time.now
+            doc.elements.each("*/data/ontologyMetricsBean"){ |element|
+            ont = parseOntologyMetrics(element)
+         }                    
+
+        return ont
+      end
+
       def self.parseOntology(ontology)
           ont = nil
  #         puts "Ontology: #{ontology}"
@@ -927,6 +954,71 @@ private
     return ontology
     
   end
+  
+  ##
+  # Parses data from the ontology metrics bean XML, returns an OntologyMetricsWrapper object.
+  ##
+  def self.parseOntologyMetrics(ontologybeanXML)
+
+    ontologyMetrics = OntologyMetricsWrapper.new
+    ontologyMetrics.id = ontologybeanXML.elements["id"].get_text.value.strip rescue ""
+    ontologyMetrics.ontologyId = ontologybeanXML.elements["ontologyId"].get_text.value.strip rescue ""
+    ontologyMetrics.numberOfAxioms = ontologybeanXML.elements["numberOfAxioms"].get_text.value.strip.to_i rescue ""
+    ontologyMetrics.numberOfClasses = ontologybeanXML.elements["numberOfClasses"].get_text.value.strip.to_i rescue ""
+    ontologyMetrics.numberOfIndividuals = ontologybeanXML.elements["numberOfIndividuals"].get_text.value.strip.to_i rescue ""
+    ontologyMetrics.numberOfProperties = ontologybeanXML.elements["numberOfProperties"].get_text.value.strip.to_i rescue ""
+    ontologyMetrics.maximumDepth = ontologybeanXML.elements["maximumDepth"].get_text.value.strip.to_i rescue ""
+    ontologyMetrics.maximumNumberOfSiblings = ontologybeanXML.elements["maximumNumberOfSiblings"].get_text.value.strip.to_i rescue ""
+    ontologyMetrics.averageNumberOfSiblings = ontologybeanXML.elements["averageNumberOfSiblings"].get_text.value.strip.to_i rescue ""
+    
+    begin
+    # The following items are lists with more than one value, iterate over them to fill an array
+    ontologyMetrics.classesWithOneSubclass = []
+    ontologybeanXML.elements["classesWithOneSubclass"].elements.each { |element|
+      ontologyMetrics.classesWithOneSubclass << element.get_text.value.strip
+    }
+    ontologyMetrics.classesWithOneSubclassLimitPassed = ontologyMetrics.classesWithOneSubclass.length > OntologyMetricsWrapper::CLASS_LIST_LIMIT
+    ontologyMetrics.classesWithOneSubclassPercentage = ontologyMetrics.classesWithOneSubclass.length.to_f / ontologyMetrics.numberOfClasses
+    
+    ontologyMetrics.classesWithMoreThanXSubclasses = {}
+    ontologybeanXML.elements["classesWithMoreThanXSubclasses"].elements.each { |element|
+      class_name = element.elements['string[1]'].get_text.value
+      class_count = element.elements['string[2]'].get_text.value.to_i
+      ontologyMetrics.classesWithMoreThanXSubclasses[class_name] = class_count
+    }
+    ontologyMetrics.classesWithMoreThanXSubclassesLimitPassed = ontologyMetrics.classesWithMoreThanXSubclasses.length > OntologyMetricsWrapper::CLASS_LIST_LIMIT
+    ontologyMetrics.classesWithMoreThanXSubclassesPercentage = ontologyMetrics.classesWithMoreThanXSubclasses.length.to_f / ontologyMetrics.numberOfClasses
+    
+    ontologyMetrics.classesWithNoDocumentation = []
+    ontologybeanXML.elements["classesWithNoDocumentation"].elements.each { |element|
+      ontologyMetrics.classesWithNoDocumentation << element.get_text.value.strip
+      ontologyMetrics.classesWithNoDocumentationMissing = element.get_text.value.strip.eql?("alldocmissing")
+    }
+    ontologyMetrics.classesWithNoDocumentationLimitPassed = ontologyMetrics.classesWithNoDocumentation.length > OntologyMetricsWrapper::CLASS_LIST_LIMIT
+    ontologyMetrics.classesWithNoDocumentationPercentage = ontologyMetrics.classesWithNoDocumentation.length.to_f / ontologyMetrics.numberOfClasses
+    
+    ontologyMetrics.classesWithNoAuthor = []
+    ontologybeanXML.elements["classesWithNoAuthor"].elements.each { |element|
+      ontologyMetrics.classesWithNoAuthor << element.get_text.value.strip
+      ontologyMetrics.classesWithNoAuthorMissing = element.get_text.value.strip.eql?("alldocmissing")
+    }
+    ontologyMetrics.classesWithNoAuthorLimitPassed = ontologyMetrics.classesWithNoAuthor.length > OntologyMetricsWrapper::CLASS_LIST_LIMIT
+    ontologyMetrics.classesWithNoAuthorPercentage = ontologyMetrics.classesWithNoAuthor.length.to_f / ontologyMetrics.numberOfClasses
+    
+    ontologyMetrics.classesWithMoreThanOnePropertyValue = []
+    ontologybeanXML.elements["classesWithMoreThanOnePropertyValue"].elements.each { |element|
+      ontologyMetrics.classesWithMoreThanOnePropertyValue << element.get_text.value.strip
+    }
+    ontologyMetrics.classesWithMoreThanOnePropertyValueLimitPassed = ontologyMetrics.classesWithMoreThanOnePropertyValue.length > OntologyMetricsWrapper::CLASS_LIST_LIMIT
+    ontologyMetrics.classesWithMoreThanOnePropertyValuePercentage = ontologyMetrics.classesWithMoreThanOnePropertyValue.length.to_f / ontologyMetrics.numberOfClasses
+
+    # Stop exception checking
+    rescue Exception=>e
+      RAILS_DEFAULT_LOGGER.debug e.inspect
+    end
+  
+    return ontologyMetrics
+  end
 
   def self.errorCheck(doc)
     response=nil
@@ -978,6 +1070,7 @@ private
 #           puts "##########Element###########"
 #            puts entry.to_s
 
+    startGet = Time.now
              case entry.elements["string"].get_text.value.strip
                when SUBCLASS
                 if entry.elements["list"].attributes["reference"]
@@ -1017,9 +1110,24 @@ private
                     
                   end
                end
+    endGet = Time.now
+    if ((endGet - startGet) * 1000.0) > 1000
+      RAILS_DEFAULT_LOGGER.error node.name
+      RAILS_DEFAULT_LOGGER.error "Parse concept case/switch time (start/end):"
+      RAILS_DEFAULT_LOGGER.error startGet
+      RAILS_DEFAULT_LOGGER.error endGet
+    end
+
  #           puts "#####################"
         }
+    startGet = Time.now
             node.children.sort!{|x,y| x.name.downcase<=>y.name.downcase}
+    endGet = Time.now
+    if ((endGet - startGet) * 1000.0) > 1000
+      RAILS_DEFAULT_LOGGER.error "Parse concept sort time (start/end):"
+      RAILS_DEFAULT_LOGGER.error startGet
+      RAILS_DEFAULT_LOGGER.error endGet
+    end
         return node
   end
 
