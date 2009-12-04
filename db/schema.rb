@@ -11,6 +11,14 @@
 
 ActiveRecord::Schema.define(:version => 8) do
 
+  create_table "event_items", :force => true do |t|
+    t.string   "event_type",    :limit => 50
+    t.integer  "event_type_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "ontology_id"
+  end
+
   create_table "mappings", :force => true do |t|
     t.integer  "user_id"
     t.integer  "source_ont",             :limit => 255
@@ -96,6 +104,12 @@ ActiveRecord::Schema.define(:version => 8) do
     t.integer  "ontology_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "widget_logs", :force => true do |t|
+    t.integer "count",   :limit => 50, :default => 0, :null => false
+    t.string  "widget",  :limit => 50
+    t.string  "referer"
   end
 
 end
