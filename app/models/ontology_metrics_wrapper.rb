@@ -8,11 +8,13 @@ class OntologyMetricsWrapper
   attr_accessor :maximumDepth
   attr_accessor :maximumNumberOfSiblings
   attr_accessor :averageNumberOfSiblings
-  cattr_accessor :classesWithOneSubclass
-  cattr_accessor :classesWithMoreThanXSubclasses
-  cattr_accessor :classesWithNoDocumentation
-  cattr_accessor :classesWithNoAuthor
-  cattr_accessor :classesWithMoreThanOnePropertyValue
+  
+  # These metrics contains list, must be Array or Hash
+  attr_accessor :classesWithOneSubclass
+  attr_accessor :classesWithMoreThanXSubclasses
+  attr_accessor :classesWithNoDocumentation
+  attr_accessor :classesWithNoAuthor
+  attr_accessor :classesWithMoreThanOnePropertyValue
   
   # Used to calculate percentage of classes in certain metrics
   CLASS_LIST_LIMIT = 200
@@ -22,13 +24,6 @@ class OntologyMetricsWrapper
   attr_accessor :classesWithNoDocumentationLimitPassed
   attr_accessor :classesWithNoAuthorLimitPassed
   attr_accessor :classesWithMoreThanOnePropertyValueLimitPassed
-  
-  # Percentage of classes matching metric
-  attr_accessor :classesWithOneSubclassPercentage
-  attr_accessor :classesWithMoreThanXSubclassesPercentage
-  attr_accessor :classesWithNoDocumentationPercentage
-  attr_accessor :classesWithNoAuthorPercentage
-  attr_accessor :classesWithMoreThanOnePropertyValuePercentage
   
   # Are all of the following properties triggered for every class?
   attr_accessor :classesWithOneSubclassAll
@@ -42,11 +37,11 @@ class OntologyMetricsWrapper
       "classesWithNoDocumentation", "classesWithNoAuthor", "classesWithMoreThanOnePropertyValue"]
   
   # Strings for use in the metrics view
-  ONE_SUBCLASS_STRING = "No definition property specified or not values for the definition property."
-  MORE_THAN_X_SUBLCASSES_STRING = "No definition property specified or not values for the definition property."
-  DOCUMENTATION_MISSING_STRING = "No definition property specified or not values for the definition property."
-  AUTHOR_MISSING_STRING = "No author property specified or not values for the author property."
-  MORE_THAN_ONE_PROPERTY_STRING = "No definition property specified or not values for the definition property."
+  ONE_SUBCLASS_STRING = "No definition property specified or no values for the definition property"
+  MORE_THAN_X_SUBLCASSES_STRING = "No definition property specified or no values for the definition property"
+  DOCUMENTATION_MISSING_STRING = "No definition property specified or no values for the definition property"
+  AUTHOR_MISSING_STRING = "No author property specified or no values for the author property"
+  MORE_THAN_ONE_PROPERTY_STRING = "No definition property specified or no values for the definition property"
   
   # Initialize values
   def initialize
@@ -76,6 +71,14 @@ class OntologyMetricsWrapper
 
   def classesWithMoreThanOnePropertyValue_all
     return MORE_THAN_ONE_PROPERTY_STRING
+  end
+  
+  def percentage(metric)
+    if self.send(:"#{metric}LimitPassed") == false
+      return self.send(:"#{metric}").length.to_f / self.numberOfClasses
+    else
+      return self.send(:"#{metric}LimitPassed").to_f / self.numberOfClasses
+    end
   end
 
 end
