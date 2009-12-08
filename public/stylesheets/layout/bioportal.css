@@ -118,7 +118,7 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 .minimal { font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif; font-size: 12px; background: #fff; text-align: left; border-collapse:separate; }
 .minimal caption { padding: 0 0 5px 0; width: 100%; font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; text-align: right; }
 .minimal thead th { font-size: 14px; font-weight: normal; color: #039; padding: 10px 8px; border-bottom: 2px solid #6678b1; }
-.minimal tbody td { border-bottom: 1px solid #ccc; color: #669; padding: 6px 8px; }
+.minimal tbody td { border-bottom: 1px solid #ccc; color: #669; padding: .6em .8em; }
 .minimal tbody tr:hover td { color: #234979; background: #f5fafa; border-bottom: 1px solid #ccc; }
 
 .basic { background:#fff; }
@@ -280,4 +280,18 @@ tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Ar
 .metrics h2 {
 	margin-top: 1em;
 	margin-bottom: 0.5em;
+}
+
+.concept_details p {
+	/*margin-top: .5em;*/
+	margin-bottom: .5em;
+}
+
+.concept_details .label {
+	/*padding-top: 1em;*/
+	vertical-align: top;
+}
+
+.concept_details tbody td {
+	padding: 0.6em 0.8em 0 !important;
 }
