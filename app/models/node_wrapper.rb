@@ -1,7 +1,9 @@
 require 'uri'
 class NodeWrapper
  
- 
+  attr_accessor :synonyms
+  attr_accessor :definitions
+  attr_accessor :type
  
   attr_accessor :id
   attr_accessor :fullId
