@@ -183,6 +183,15 @@ class OntologiesController < ApplicationController
     else
       # if the id is coming from a param, use that to get concept
       @concept = DataAccess.getNode(@ontology.id,params[:id],view)
+
+      # This handles special cases where a passed concept id is for a concept
+      # that isn't browsable, usually a property for an ontology.
+      if !@concept.is_browsable
+        render :partial => "shared/not_browsable", :layout => "ontology"
+        return
+      end
+
+      # Create the tree
       rootNode = @concept.path_to_root
       @root = TreeNode.new()
       @root.set_children(rootNode.children)
