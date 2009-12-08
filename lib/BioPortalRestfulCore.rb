@@ -972,45 +972,57 @@ private
     ontologyMetrics.averageNumberOfSiblings = ontologybeanXML.elements["averageNumberOfSiblings"].get_text.value.strip.to_i rescue ""
     
     begin
-    # The following items are lists with more than one value, iterate over them to fill an array
-    ontologyMetrics.classesWithOneSubclass = []
     ontologybeanXML.elements["classesWithOneSubclass"].elements.each { |element|
       ontologyMetrics.classesWithOneSubclass << element.get_text.value.strip
+      unless defined? first
+        ontologyMetrics.classesWithOneSubclassAll = element.get_text.value.strip.eql?("alltriggered")
+        ontologyMetrics.classesWithOneSubclassLimitPassed = element.get_text.value.strip.include?("limitpassed") ? 
+            element.get_text.value.strip.split(":")[1].to_i : false
+        first = false
+      end
     }
-    ontologyMetrics.classesWithOneSubclassLimitPassed = ontologyMetrics.classesWithOneSubclass.length > OntologyMetricsWrapper::CLASS_LIST_LIMIT
-    ontologyMetrics.classesWithOneSubclassPercentage = ontologyMetrics.classesWithOneSubclass.length.to_f / ontologyMetrics.numberOfClasses
-    
-    ontologyMetrics.classesWithMoreThanXSubclasses = {}
+
     ontologybeanXML.elements["classesWithMoreThanXSubclasses"].elements.each { |element|
       class_name = element.elements['string[1]'].get_text.value
       class_count = element.elements['string[2]'].get_text.value.to_i
       ontologyMetrics.classesWithMoreThanXSubclasses[class_name] = class_count
-    }
-    ontologyMetrics.classesWithMoreThanXSubclassesLimitPassed = ontologyMetrics.classesWithMoreThanXSubclasses.length > OntologyMetricsWrapper::CLASS_LIST_LIMIT
-    ontologyMetrics.classesWithMoreThanXSubclassesPercentage = ontologyMetrics.classesWithMoreThanXSubclasses.length.to_f / ontologyMetrics.numberOfClasses
+      unless defined? first
+        ontologyMetrics.classesWithMoreThanXSubclassesAll = element.get_text.value.strip.eql?("alltriggered")
+        ontologyMetrics.classesWithMoreThanXSubclassesLimitPassed = element.get_text.value.strip.include?("limitpassed") ? 
+            element.get_text.value.strip.split(":")[1].to_i : false
+        first = false
+      end
+   }
     
-    ontologyMetrics.classesWithNoDocumentation = []
     ontologybeanXML.elements["classesWithNoDocumentation"].elements.each { |element|
       ontologyMetrics.classesWithNoDocumentation << element.get_text.value.strip
-      ontologyMetrics.classesWithNoDocumentationMissing = element.get_text.value.strip.eql?("alldocmissing")
+      unless defined? first
+        ontologyMetrics.classesWithNoDocumentationAll = element.get_text.value.strip.eql?("alltriggered")
+        ontologyMetrics.classesWithNoDocumentationLimitPassed = element.get_text.value.strip.include?("limitpassed") ? 
+            element.get_text.value.strip.split(":")[1].to_i : false
+        first = false
+      end
     }
-    ontologyMetrics.classesWithNoDocumentationLimitPassed = ontologyMetrics.classesWithNoDocumentation.length > OntologyMetricsWrapper::CLASS_LIST_LIMIT
-    ontologyMetrics.classesWithNoDocumentationPercentage = ontologyMetrics.classesWithNoDocumentation.length.to_f / ontologyMetrics.numberOfClasses
     
-    ontologyMetrics.classesWithNoAuthor = []
     ontologybeanXML.elements["classesWithNoAuthor"].elements.each { |element|
       ontologyMetrics.classesWithNoAuthor << element.get_text.value.strip
-      ontologyMetrics.classesWithNoAuthorMissing = element.get_text.value.strip.eql?("alldocmissing")
+      unless defined? first
+        ontologyMetrics.classesWithNoAuthorAll = element.get_text.value.strip.eql?("alltriggered")
+        ontologyMetrics.classesWithNoAuthorLimitPassed = element.get_text.value.strip.include?("limitpassed") ? 
+            element.get_text.value.strip.split(":")[1].to_i : false
+        first = false
+      end
     }
-    ontologyMetrics.classesWithNoAuthorLimitPassed = ontologyMetrics.classesWithNoAuthor.length > OntologyMetricsWrapper::CLASS_LIST_LIMIT
-    ontologyMetrics.classesWithNoAuthorPercentage = ontologyMetrics.classesWithNoAuthor.length.to_f / ontologyMetrics.numberOfClasses
     
-    ontologyMetrics.classesWithMoreThanOnePropertyValue = []
     ontologybeanXML.elements["classesWithMoreThanOnePropertyValue"].elements.each { |element|
       ontologyMetrics.classesWithMoreThanOnePropertyValue << element.get_text.value.strip
+      unless defined? first
+        ontologyMetrics.classesWithMoreThanOnePropertyValueAll = element.get_text.value.strip.eql?("alltriggered")
+        ontologyMetrics.classesWithMoreThanOnePropertyValueLimitPassed = element.get_text.value.strip.include?("limitpassed") ? 
+            element.get_text.value.strip.split(":")[1].to_i : false
+        first = false
+      end
     }
-    ontologyMetrics.classesWithMoreThanOnePropertyValueLimitPassed = ontologyMetrics.classesWithMoreThanOnePropertyValue.length > OntologyMetricsWrapper::CLASS_LIST_LIMIT
-    ontologyMetrics.classesWithMoreThanOnePropertyValuePercentage = ontologyMetrics.classesWithMoreThanOnePropertyValue.length.to_f / ontologyMetrics.numberOfClasses
 
     # Stop exception checking
     rescue Exception=>e
@@ -1219,13 +1231,30 @@ private
     # get label
     label = classbeanXML.first.find(classbeanXML.path + "/label")
     node.name = label.first.content unless label.first.nil?
+    # get type
+    type = classbeanXML.first.find(classbeanXML.path + "/type")
+    node.type = type.first.content unless type.first.nil?
+    RAILS_DEFAULT_LOGGER.debug "TYPE:  #{node.type}"
     # get childcount info
     childcount = classbeanXML.first.find(classbeanXML.path + "/relations/entry[string='ChildCount']/int")
     node.child_size = childcount.first.content.to_i unless childcount.first.nil?
     # get isBrowsable info
-    is_browsable = classbeanXML.first.find(classbeanXML.path + "/isBrowsable")
-    browseable_check = is_browsable.first.nil? ? 1 : is_browsable.first.content.to_i
-    node.is_browsable = browseable_check != 0
+    node.is_browsable = node.type.downcase.eql?("class")
+    # get synonyms
+    synonyms = classbeanXML.first.find(classbeanXML.path + "/synonyms/string")
+    node.synonyms = []
+    synonyms.each do |synonym|
+      RAILS_DEFAULT_LOGGER.debug "SYNONYMS: #{synonym.content}"
+      node.synonyms << synonym.content
+    end
+    # get definitions
+    definitions = classbeanXML.first.find(classbeanXML.path + "/definitions/string")
+    node.definitions = []
+    definitions.each do |definition|
+      RAILS_DEFAULT_LOGGER.debug "DEFINITION: #{definition.content}"
+      node.definitions << definition.content
+    end
+    
      
     node.version_id = ontology
     node.children = []
