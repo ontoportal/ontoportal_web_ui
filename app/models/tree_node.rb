@@ -11,7 +11,8 @@ class TreeNode
   attr_accessor :properties
 
   def to_param
-    "#{URI.escape(self.id,":/?#!")}"
+    param = URI.escape(self.id,":/?#!")
+    return "#{param}"
   end
   
   def initialize(object=nil)
@@ -50,7 +51,6 @@ class TreeNode
     self.children =[]
     unless node_list.nil?
       for node in node_list
-        puts node.inspect
         self.children << TreeNode.new(node)
       end
     end
