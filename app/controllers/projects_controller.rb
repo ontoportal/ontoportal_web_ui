@@ -14,6 +14,8 @@ class ProjectsController < ApplicationController
       @projects = Project.find(:all)
     end
     
+    @projects.sort! { |a,b| a.name.downcase <=> b.name.downcase }
+    
     respond_to do |format|
       
       format.html {
@@ -48,6 +50,7 @@ class ProjectsController < ApplicationController
     else
       @project = Project.new
       @ontologies = DataAccess.getOntologyList()
+      @ontologies.sort! { |a,b| a.displayLabel.downcase <=> b.displayLabel.downcase }
       respond_to do |format|
         format.html # new.html.erb
         format.xml  { render :xml => @project }
