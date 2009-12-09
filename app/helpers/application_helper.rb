@@ -142,10 +142,10 @@ module ApplicationHelper
       for child in node.children
       icons = ""
       if(child.note_icon)
-        icons << "<img src='/images/notes_icon.png'style='vertical-align:bottom;'height='15px' title='Concept Has Margin Notes'>"
+        icons << "<img src='/images/notes_icon.png'style='vertical-align:bottom;'height='15px' title='Term Has Margin Notes'>"
       end
       if(child.map_icon)
-        icons << "<img src='/images/map_icon.png' style='vertical-align:bottom;' height='15px' title='Concept Has Mappings'>"
+        icons << "<img src='/images/map_icon.png' style='vertical-align:bottom;' height='15px' title='Term Has Mappings'>"
       end
 
       active_style =""
