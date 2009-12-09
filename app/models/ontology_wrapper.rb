@@ -31,6 +31,8 @@ class OntologyWrapper
   
   attr_accessor :synonymSlot
   attr_accessor :preferredNameSlot
+  attr_accessor :documentationSlot
+  attr_accessor :authorSlot
   
   
   attr_accessor :reviews
