@@ -1,123 +1,232 @@
-<script src="/javascripts/ui.core.js" type="text/javascript" charset="utf-8"></script>
-<script src="/javascripts/ui.datepicker.js" type="text/javascript" charset="utf-8"></script>
+<script src="/javascripts/ui.core.js" type="text/javascript" charset="utf-8">
+</script>
+<script src="/javascripts/ui.datepicker.js" type="text/javascript" charset="utf-8">
+</script>
 <link rel="stylesheet" href="/stylesheets/layout/ui.core.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <link rel="stylesheet" href="/stylesheets/layout/ui.datepicker.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <link rel="stylesheet" href="/stylesheets/layout/ui.theme.css" type="text/css" media="screen" title="no title" charset="utf-8">
-
 <script type="text/javascript">
-$(function() {
-		$("#datepicker").datepicker({showOn: 'button', buttonImage: '/images/calendar.gif', buttonImageOnly: true});
-	});
-
+    $(function(){
+        $("#datepicker").datepicker({
+            showOn: 'button',
+            buttonImage: '/images/calendar.gif',
+            buttonImageOnly: true
+        });
+    });
 </script>
-<div  style="margin:10px;">
-
-<%@title = "Editing #{@ontology.displayLabel}"%>
-<%unless @errors.nil?%>
-<div style="color:red;">
-Errors On Form
-<ul>
-
-<%for error in @errors%>
-<li><%=error%></li>
-<%end%>
-
-
-</ul>
-</div>
-<%end%>
-
-
-<% form_for(:ontology, :url => ontology_path(@ontology.id), :html => { :method => :put }) do |f| %>
-
-<h1> Edit Metadata</h1>
-
-<%=hidden_field :ontology, :ontologyId%>
-<%=hidden_field :ontology, :userId%>
-<%=hidden_field :ontology, :isManual%>
-<br/>
-<table  class="form" width="70%">
-	<tr>
-		<th class="top">Ontology Name: </th><td  class="top"><%=text_field :ontology, :displayLabel%></td>
-	</tr>
-	<tr>
-		<th>Ontology Description:</th><td><%= text_area :ontology, :description,:rows=>6%></td>
-	</tr>
-	<tr>
-		<th>Ontology Abbreviation:</th><td><%= text_field :ontology, :abbreviation%></td>
-	</tr>
-	
-	<tr>
-		<th>Ontology Format: </th><td><%=text_field :ontology, :format%></td>
-	</tr>	
-	<tr>
-		<th>Ontology Version: </th><td><%=text_field :ontology, :versionNumber%></td>
-	</tr>	
-	<tr>
-		<th>Date Released: </th><td><%= text_field :ontology, :dateReleased,:id=>"datepicker"%></td>
-	</tr>	
-	
-	 <%=hidden_field  :ontology,:isRemote%>
-	<%if @ontology.isRemote%>
-	<tr>
-		<th>Location URL</th><td><%=text_field :ontology,:urn%></td>
-	</tr>
-	<%else%>
-		<%=hidden_field  :ontology,:urn%>
-	<%end%>
-	
-	<%if @ontology.format.include?("OWL")%>
-		<tr>
-			<th>Prefered Name Slot (Owl Only)</th><td><%=text_field :ontology,:preferredNameSlot%></td>
-		</tr>
-		
-		<tr >
-			<th>Synonym Slot (Owl Only)</th><td><%=text_field :ontology,:synonymSlot%></td>
-		</tr>
-		<tr>
-			<th>Definition Property (Owl Only) (e.g. SKOS:definition)</th><td><%=text_field :ontology,:documentationSlot%></td>
-		</tr>
-		<tr>
-			<th>Author Property (Owl Only) (e.g. PLACEHOLDER:author)</th><td><%=text_field :ontology,:authorSlot%></td>
-		</tr>
-	<%end%>
-	
-	
-	<tr>
-		<th>Categories:</th><td><select name="ontology[categoryId][]" multiple="multiple" size="6">
-				<%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
-				<%for cat in cats%>
-
-				<option value="<%=cat[:id]%>" <%if !@ontology.categories.nil? && @ontology.categories.include?(cat[:id])%>selected <%end%>><%=cat[:name]%></option>
-				<%end%>
-			</select></td>
-	</tr>
-	<tr>
-		<th>Contact Name</th><td><%=text_field :ontology, :contactName%></td>
-	</tr>
-	<tr>
-		<th>Contact Email</th><td><%= text_field :ontology, :contactEmail%></td>
-	</tr>
-	<tr>
-		<th>Home Page</th><td><%= text_field :ontology, :homepage%></td>
-	</tr>
-	<tr>
-		<th>Documentation Page</th><td><%= text_field :ontology, :documentation%></td>
-	</tr>
-	<tr>
-		<th>Publications page</th><td><%= text_field :ontology, :publication%></td>
-	</tr>
-	<tr>
-		<td colspan=2 align="right"><%=submit_tag "Update"%></td>
-	</tr>
-
-</table>
-
-
-
-
-
-
-
-<%end%>
+<script type="text/javascript">
+    // Used to provide default text in fields
+    jQuery(document).ready(function(){
+        jQuery(".defaultText").each(function(){
+            if ($(this).val() == this.title) {
+                jQuery(this).addClass("defaultTextActive");
+                jQuery(this).val(jQuery(this)[0].title);
+            }
+            else {
+                jQuery(this).removeClass("defaultTextActive");
+            }
+        });
+        
+        jQuery(".defaultText").focus(function(srcc){
+            if ($(this).val() == $(this)[0].title) {
+                $(this).removeClass("defaultTextActive");
+                $(this).val("");
+            }
+        });
+        
+        jQuery(".defaultText").blur(function(){
+            if ($(this).val() == "") {
+                $(this).addClass("defaultTextActive");
+                $(this).val($(this)[0].title);
+            }
+        });
+        
+        jQuery(".defaultText").blur();
+    });
+    
+    jQuery("form").submit(function(){
+        jQuery(".defaultText").each(function(){
+            if ($(this).val() == this.title) {
+                $(this).val("");
+            }
+        });
+    });
+</script>
+<div style="margin:10px;">
+    <%@title = "Editing #{@ontology.displayLabel}" %>
+    <%unless @errors.nil? %>
+    <div style="color:red;">
+        Errors On Form
+        <ul>
+            <%for error in @errors %>
+            <li>
+                <%=error %>
+            </li>
+            <%end %>
+        </ul>
+    </div>
+    <%end %>
+    <% form_for(:ontology, :url => ontology_path(@ontology.id), :html => { :method => :put }) do |f| %>
+    <h1>Edit Metadata</h1>
+    <%=hidden_field :ontology, :ontologyId %>
+    <%=hidden_field :ontology, :userId %>
+    <%=hidden_field :ontology, :isManual %>
+    <br/>
+    <table class="form" width="70%">
+        <tr>
+            <th class="top">
+                Ontology Name: 
+            </th>
+            <td class="top">
+                <%=text_field :ontology, :displayLabel %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Ontology Description:
+            </th>
+            <td>
+                <%= text_area :ontology, :description,:rows=>6 %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Ontology Abbreviation:
+            </th>
+            <td>
+                <%= text_field :ontology, :abbreviation %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Ontology Format: 
+            </th>
+            <td>
+                <%=@ontology.format %>
+                <%=hidden_field :ontology, :format %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Ontology Version: 
+            </th>
+            <td>
+                <%=text_field :ontology, :versionNumber %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Date Released: 
+            </th>
+            <td>
+                <%= text_field :ontology, :dateReleased,:id=>"datepicker" %>
+            </td>
+        </tr>
+        <%=hidden_field  :ontology,:isRemote %>
+        <%if @ontology.isRemote %>
+        <tr>
+            <th>
+                Location URL
+            </th>
+            <td>
+                <%=text_field :ontology,:urn %>
+            </td>
+        </tr>
+        <%else %>
+        <%=hidden_field  :ontology,:urn %>
+        <%end %>
+        <%if @ontology.format.include?("OWL") %>
+        <tr>
+            <th>
+                Prefered Name Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2000/01/rdf-schema#label">rdfs:label</a>)
+            </th>
+            <td>
+                <%=text_field :ontology,:preferredNameSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Synonym Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2004/02/skos/core#altLabel">skos:altLabel</a>)
+            </th>
+            <td>
+                <%=text_field :ontology,:synonymSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Definition Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2004/02/skos/core#definition">skos:definition</a>)
+            </th>
+            <td>
+                <%=text_field :ontology,:documentationSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Author Property (Owl Only) (default: <a target="_blank" href="http://purl.org/dc/elements/1.1/creator">dc:creator</a>)
+            </th>
+            <td>
+                <%=text_field :ontology,:authorSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
+            </td>
+        </tr>
+        <%end %>
+        <tr>
+            <th>
+                Categories:
+            </th>
+            <td>
+                <select name="ontology[categoryId][]" multiple="multiple" size="6">
+                    <%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]} %>
+                    <%for cat in cats %>
+                    <option value="<%=cat[:id]%>"<%if !@ontology.categories.nil? && @ontology.categories.include?(cat[:id]) %>selected<%end %>><%=cat[:name] %></option>
+                    <%end %>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Contact Name
+            </th>
+            <td>
+                <%=text_field :ontology, :contactName %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Contact Email
+            </th>
+            <td>
+                <%= text_field :ontology, :contactEmail %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Home Page
+            </th>
+            <td>
+                <%= text_field :ontology, :homepage %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Documentation Page
+            </th>
+            <td>
+                <%= text_field :ontology, :documentation %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Publications page
+            </th>
+            <td>
+                <%= text_field :ontology, :publication %>
+            </td>
+        </tr>
+        <tr>
+            <td colspan=2 align="right">
+                <%=submit_tag "Update" %>
+            </td>
+        </tr>
+    </table>
+    <%end %>
 </div>
