@@ -5,11 +5,13 @@ class Mapping < ActiveRecord::Base
 
 
   def source_node
-    DataAccess.getNode(self.source_version_id,self.source_id)
+    view = DataAccess.getOntology(self.source_version_id).isView
+    return DataAccess.getNode(self.source_version_id,self.source_id,view)
   end
   
   def dest_node
-    DataAccess.getNode(self.destination_version_id,self.destination_id) rescue nil
+    view = DataAccess.getOntology(self.destination_version_id).isView
+    return DataAccess.getNode(self.destination_version_id,self.destination_id,view) rescue nil
   end
 
   def after_create

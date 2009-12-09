@@ -45,8 +45,8 @@ class MappingsController < ApplicationController
 
     end
   
-    puts from.inspect
-    puts to.inspect
+    #puts from.inspect
+    #puts to.inspect
     mappings = {:mapping_from=>from,:mapping_to=>to}
     
     render :xml=> mappings
