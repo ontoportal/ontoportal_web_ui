@@ -36,47 +36,55 @@ Errors On Form
 <%=hidden_field :ontology, :userId%>
 <%=hidden_field :ontology, :isManual%>
 <br/>
-<table  class="form" width="90%">
+<table  class="form" width="70%">
 	<tr>
-		<td  class="top">Ontology Name: </td><td  class="top"><%=text_field :ontology, :displayLabel%></td>
+		<th class="top">Ontology Name: </th><td  class="top"><%=text_field :ontology, :displayLabel%></td>
 	</tr>
 	<tr>
-		<td>Ontology Description:</td><td><%= text_area :ontology, :description,:rows=>6%></td>
+		<th>Ontology Description:</th><td><%= text_area :ontology, :description,:rows=>6%></td>
 	</tr>
 	<tr>
-		<td>Ontology Abbreviation:</td><td><%= text_field :ontology, :abbreviation%></td>
+		<th>Ontology Abbreviation:</th><td><%= text_field :ontology, :abbreviation%></td>
 	</tr>
 	
 	<tr>
-		<td>Ontology Format: </td><td><%=text_field :ontology, :format%></td>
+		<th>Ontology Format: </th><td><%=text_field :ontology, :format%></td>
 	</tr>	
 	<tr>
-		<td>Ontology Version: </td><td><%=text_field :ontology, :versionNumber%></td>
+		<th>Ontology Version: </th><td><%=text_field :ontology, :versionNumber%></td>
 	</tr>	
 	<tr>
-		<td>Date Released: </td><td><%= text_field :ontology, :dateReleased,:id=>"datepicker"%></td>
+		<th>Date Released: </th><td><%= text_field :ontology, :dateReleased,:id=>"datepicker"%></td>
 	</tr>	
 	
 	 <%=hidden_field  :ontology,:isRemote%>
 	<%if @ontology.isRemote%>
 	<tr>
-		<td>Location URL</td><td><%=text_field :ontology,:urn%></td>
+		<th>Location URL</th><td><%=text_field :ontology,:urn%></td>
 	</tr>
 	<%else%>
 		<%=hidden_field  :ontology,:urn%>
 	<%end%>
 	
+	<%if @ontology.format.include?("OWL")%>
+		<tr>
+			<th>Prefered Name Slot (Owl Only)</th><td><%=text_field :ontology,:preferredNameSlot%></td>
+		</tr>
+		
+		<tr >
+			<th>Synonym Slot (Owl Only)</th><td><%=text_field :ontology,:synonymSlot%></td>
+		</tr>
+		<tr>
+			<th>Definition Property (Owl Only) (e.g. SKOS:definition)</th><td><%=text_field :ontology,:documentationSlot%></td>
+		</tr>
+		<tr>
+			<th>Author Property (Owl Only) (e.g. PLACEHOLDER:author)</th><td><%=text_field :ontology,:authorSlot%></td>
+		</tr>
+	<%end%>
+	
+	
 	<tr>
-		<td>Prefered Name Slot (Owl Only)</td><td><%=text_field :ontology,:preferredNameSlot%></td>
-	</tr>
-	
-	<tr >
-		<td>Synonym Slot (Owl Only)</td><td><%=text_field :ontology,:synonymSlot%></td>
-	</tr>
-	
-	
-	<tr>
-		<td>Categories:</td><td><select name="ontology[categoryId][]" multiple="multiple" size="6">
+		<th>Categories:</th><td><select name="ontology[categoryId][]" multiple="multiple" size="6">
 				<%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
 				<%for cat in cats%>
 
@@ -85,28 +93,26 @@ Errors On Form
 			</select></td>
 	</tr>
 	<tr>
-		<td>Contact Name</td><td><%=text_field :ontology, :contactName%></td>
+		<th>Contact Name</th><td><%=text_field :ontology, :contactName%></td>
 	</tr>
 	<tr>
-		<td>Contact Email</td><td><%= text_field :ontology, :contactEmail%></td>
+		<th>Contact Email</th><td><%= text_field :ontology, :contactEmail%></td>
 	</tr>
 	<tr>
-		<td>Home Page</td><td><%= text_field :ontology, :homepage%></td>
+		<th>Home Page</th><td><%= text_field :ontology, :homepage%></td>
 	</tr>
 	<tr>
-		<td>Documentation Page</td><td><%= text_field :ontology, :documentation%></td>
+		<th>Documentation Page</th><td><%= text_field :ontology, :documentation%></td>
 	</tr>
 	<tr>
-		<td>Publications page</td><td><%= text_field :ontology, :publication%></td>
+		<th>Publications page</th><td><%= text_field :ontology, :publication%></td>
+	</tr>
+	<tr>
+		<td colspan=2 align="right"><%=submit_tag "Update"%></td>
 	</tr>
 
-	
-	
-	
-	
 </table>
 
-<%=submit_tag "Update"%>
 
 
 

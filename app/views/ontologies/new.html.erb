@@ -6,12 +6,43 @@
 <link rel="stylesheet" href="/stylesheets/layout/ui.theme.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
 <script type="text/javascript">
-$(function() {
-		$("#datepicker").datepicker({showOn: 'button', buttonImage: '/images/calendar.gif', buttonImageOnly: true});
-	});
-
+jQuery(function() {
+	jQuery("#datepicker").datepicker({showOn: 'button', buttonImage: '/images/calendar.gif', buttonImageOnly: true});
+});
 </script>
 
+<script type="text/javascript">
+$(document).ready(function(){
+	jQuery("#ontologyFormatSelect").change(ontologyFormatChange);
+});
+
+function ontologyFormatChange() {
+    var selected = jQuery("#ontologyFormatSelect option:selected");    
+
+    if (selected.text().indexOf("OWL") >= 0) {
+		jQuery("#owl_options").optionsIn("fast");
+	} else {
+		jQuery("#owl_options").optionsOut("fast");
+	}
+
+    if (selected.text().indexOf("OWL") >= 0) {
+		jQuery("#owl_options").optionsIn("fast");
+	} else {
+		jQuery("#owl_options").optionsOut("fast");
+	}
+
+}
+
+jQuery.fn.optionsIn = function(speed, easing, callback) {
+	jQuery("#format_spacing").css("margin", "1em 0");
+	this.fadeIn(speed);
+};
+
+jQuery.fn.optionsOut = function(speed, easing, callback) {
+	this.css("display", "none");
+	jQuery("#format_spacing").css("margin", "0");
+};
+</script>
 
 <div  style="margin:10px;">
 
@@ -45,7 +76,7 @@ Errors On Form
 <%=hidden_field :ontology, :ontologyId%>
 <%=hidden_field :ontology, :userId%>
 
-<table class="form" width="90%">
+<table class="form" id="new_ontology" width="90%">
 	<tr>
 		<th>Ontology Name: <span class="asterik"> *</span></th><td class="top"><%=text_field :ontology, :displayLabel%></td>
 	</tr>
@@ -56,21 +87,37 @@ Errors On Form
 		<th>Ontology Abbreviation: <span class="asterik"> *</span></th><td><%= text_field :ontology, :abbreviation%></td>
 	</tr>
 	
-	
 	<%if @ontology.ontologyId.nil?%>
 	<tr>
 		<th>Ontology Format: <span class="asterik"> *</span></th>
 		<td>
-		  <select name="ontology[format]" style="width:200px" >			
-        <option value="LEXGRID-XML">LEXGRID-XML</option>
-        <option value="OBO">OBO</option>
-  			<option value="OWL">OWL</option>
-  			<option value="OWL-DL">-&nbsp;&nbsp;OWL-DL</option>
-  			<option value="OWL-FULL">-&nbsp;&nbsp;OWL-FULL</option>
-  			<option value="OWL-LITE">-&nbsp;&nbsp;OWL-LITE</option>
-  			<option value="PROTEGE">PROTEGE</option>
-  			<option value="RRF">RRF</option>
+		  	<select name="ontology[format]" id="ontologyFormatSelect" style="width:200px" >			
+		        <option value="LEXGRID-XML">LEXGRID-XML</option>
+		        <option value="OBO">OBO</option>
+	  			<option value="OWL">OWL</option>
+	  			<option value="OWL-DL">-&nbsp;&nbsp;OWL-DL</option>
+	  			<option value="OWL-FULL">-&nbsp;&nbsp;OWL-FULL</option>
+	  			<option value="OWL-LITE">-&nbsp;&nbsp;OWL-LITE</option>
+	  			<option value="PROTEGE">PROTEGE</option>
+	  			<option value="RRF">RRF</option>
 			</select>
+			<div id="format_spacing"></div>
+			<table id="format_specific_options">
+				<tbody id="owl_options">
+					<tr>
+						<th>Prefered Name Property (Owl Only) (e.g. rdfs:label)</th><td><%=text_field :ontology,:preferredNameSlot%></td>
+					</tr>
+					<tr>
+						<th>Synonym Property (Owl Only) (e.g. SKOS:altLabel)</th><td><%=text_field :ontology,:synonymSlot%></td>
+					</tr>
+					<tr>
+						<th>Definition Property (Owl Only) (e.g. SKOS:definition)</th><td><%=text_field :ontology,:documentationSlot%></td>
+					</tr>
+					<tr>
+						<th>Author Property (Owl Only) (e.g. PLACEHOLDER:author)</th><td><%=text_field :ontology,:authorSlot%></td>
+					</tr>
+				</tbody>
+			</table>
 		</td>
 	</tr>	
 	<%else%>
@@ -102,15 +149,6 @@ Errors On Form
 	<tr class="hidden_field" id="upload" <%if @ontology.isRemote.to_i.eql?(1) %>style="display:none;"<%end%>>
 		<th>File: <span class="asterik"> *</span></th><td><%=file_field :ontology,:filePath%></td>
 	</tr>
-	
-	<tr >
-		<th>Prefered Name Property (Owl Only) (e.g. rdfs:label)</th><td><%=text_field :ontology,:preferredNameSlot%></td>
-	</tr>
-	
-	<tr >
-		<th>Synonym Property (Owl Only) (e.g. SKOS:altLabel)</th><td><%=text_field :ontology,:synonymSlot%></td>
-	</tr>
-	
 	<tr>
 		<th>Categories:<br/>(use Ctrl or Cmd to select more than one)</th><td><select name="ontology[categoryId][]" multiple="multiple" size="6">
 			<%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
