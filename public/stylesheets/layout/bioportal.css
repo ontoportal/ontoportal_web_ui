@@ -303,3 +303,13 @@ tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Ar
 #format_specific_options #owl_options {
 	display: none;
 }
+
+.defaultText {
+	color: inherit;
+	width: 10.2em;
+}
+
+.defaultTextActive {
+	color: #a1a1a1;
+	font-style: italic;
+}
