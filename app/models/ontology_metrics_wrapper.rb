@@ -37,11 +37,11 @@ class OntologyMetricsWrapper
       "classesWithNoDocumentation", "classesWithNoAuthor", "classesWithMoreThanOnePropertyValue"]
   
   # Strings for use in the metrics view
-  ONE_SUBCLASS_STRING = "No definition property specified or no values for the definition property"
-  MORE_THAN_X_SUBLCASSES_STRING = "No definition property specified or no values for the definition property"
+  ONE_SUBCLASS_STRING = "All classes have only one subclass"
+  MORE_THAN_X_SUBLCASSES_STRING = "All classes have a large number of subclasses"
   DOCUMENTATION_MISSING_STRING = "No definition property specified or no values for the definition property"
   AUTHOR_MISSING_STRING = "No author property specified or no values for the author property"
-  MORE_THAN_ONE_PROPERTY_STRING = "No definition property specified or no values for the definition property"
+  MORE_THAN_ONE_PROPERTY_STRING = ""
   
   # Initialize values
   def initialize
@@ -78,6 +78,14 @@ class OntologyMetricsWrapper
       return self.send(:"#{metric}").length.to_f / self.numberOfClasses
     else
       return self.send(:"#{metric}LimitPassed").to_f / self.numberOfClasses
+    end
+  end
+  
+  def empty?
+    if self.numberOfClasses.nil? || self.numberOfClasses.to_s.empty? 
+      return true
+    else
+      return false
     end
   end
 
