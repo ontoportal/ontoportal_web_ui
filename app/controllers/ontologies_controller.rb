@@ -38,6 +38,7 @@ class OntologiesController < ApplicationController
     @ontology = DataAccess.getOntology(params[:id])
     @categories = DataAccess.getCategories()
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
+    @metrics = DataAccess.getOntologyMetrics(@ontology.id)
     
     @diffs = DataAccess.getDiffs(@ontology.ontologyId)
     

@@ -528,62 +528,62 @@ Example 3 (get the preferred name for a concept)<br/><input type="text" name="c"
 		for the most recent version are reflected.
 		<%= link_to "See metrics descriptions", "http://www.bioontology.org/wiki/index.php/Ontology_Metrics" %>
 	</p>
-	<% if @ontology.metrics.empty? %>
+	<% if @metrics.empty? %>
 		<h2 style="padding-left: 1em;">We have not yet calculated metrics for this ontology.</h2>
 	<% else %>
 		<table class="form">
 			<!-- not calculated currently
 			<tr>
-				<th>Number of axioms:</th><td class="top"><%=@ontology.metrics.numberOfAxioms%></td>
+				<th>Number of axioms:</th><td class="top"><%=@metrics.numberOfAxioms%></td>
 			</tr>
 			-->
 			<tr>
-				<th>Number of classes:</th><td class="top"><%=@ontology.metrics.numberOfClasses%></td>
+				<th>Number of classes:</th><td class="top"><%=@metrics.numberOfClasses%></td>
 			</tr>
 			<tr>
-				<th>Number of individuals:</th><td><%=@ontology.metrics.numberOfIndividuals%></td>
+				<th>Number of individuals:</th><td><%=@metrics.numberOfIndividuals%></td>
 			</tr>
 			<tr>
-				<th>Number of properties:</th><td><%=@ontology.metrics.numberOfProperties%></td>
+				<th>Number of properties:</th><td><%=@metrics.numberOfProperties%></td>
 			</tr>
 			<tr>
-				<th>Maximum depth of the class hierarchy:</th><td><%=@ontology.metrics.maximumDepth%></td>
+				<th>Maximum depth of the class hierarchy:</th><td><%=@metrics.maximumDepth%></td>
 			</tr>
 			<tr>
-				<th>Maximum number of siblings in the class hierarchy:</th><td><%=@ontology.metrics.maximumNumberOfSiblings%></td>
+				<th>Maximum number of siblings in the class hierarchy:</th><td><%=@metrics.maximumNumberOfSiblings%></td>
 			</tr>
 			<tr>
-				<th>Average number of siblings in the class hierarchy:</th><td><%=@ontology.metrics.averageNumberOfSiblings%></td>
+				<th>Average number of siblings in the class hierarchy:</th><td><%=@metrics.averageNumberOfSiblings%></td>
 			</tr>
 			<tr>
 				<th style="vertical-align: top;">Classes with a single subclass:</th>
 				<td>
-					<%= class_list_info(@ontology, "classesWithOneSubclass", "have only one subclass", "Classes with a single subclass") %>
+					<%= class_list_info(@metrics, "classesWithOneSubclass", "have only one subclass", "Classes with a single subclass") %>
 				</td>
 			</tr>
 			<tr>
 				<th style="vertical-align: top;">Classes with large number of subclasses:</th>
 				<td>
-					<%= class_list_info(@ontology, "classesWithMoreThanXSubclasses", "have large number of subclasses", "Classes with large number of subclasses") %>
+					<%= class_list_info(@metrics, "classesWithMoreThanXSubclasses", "have large number of subclasses", "Classes with large number of subclasses") %>
 				</td>
 			</tr>
 			<tr>
 				<th style="vertical-align: top;">Classes with no author:</th>
 				<td>
-					<%= class_list_info(@ontology, "classesWithNoAuthor", "have no author property specified or no values for the author property", "Classes with no author") %>
+					<%= class_list_info(@metrics, "classesWithNoAuthor", "have no author property specified or no values for the author property", "Classes with no author") %>
 				</td>
 			</tr>
 			<tr>
 				<th style="vertical-align: top;">Classes with no definition:</th>
 				<td>
-					<%= class_list_info(@ontology, "classesWithNoDocumentation", "have no definition property specified or no values for the definition property", "Classes with no documentation") %>
+					<%= class_list_info(@metrics, "classesWithNoDocumentation", "have no definition property specified or no values for the definition property", "Classes with no documentation") %>
 				</td>
 			</tr>
 			<!-- not calculated currently
 			<tr>
 				<th style="vertical-align: top;">Classes with more than one property value:</th>
 				<td>
-					<%= class_list_info(@ontology, "classesWithMoreThanOnePropertyValue", "have more than one property value", "Classes with more than one property value") %>
+					<%= class_list_info(@metrics, "classesWithMoreThanOnePropertyValue", "have more than one property value", "Classes with more than one property value") %>
 				</td>
 			</tr>
 			-->
