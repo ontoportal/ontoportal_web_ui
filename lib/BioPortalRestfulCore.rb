@@ -1234,7 +1234,6 @@ private
     # get type
     type = classbeanXML.first.find(classbeanXML.path + "/type")
     node.type = type.first.content unless type.first.nil?
-    RAILS_DEFAULT_LOGGER.debug "TYPE:  #{node.type}"
     # get childcount info
     childcount = classbeanXML.first.find(classbeanXML.path + "/relations/entry[string='ChildCount']/int")
     node.child_size = childcount.first.content.to_i unless childcount.first.nil?
@@ -1244,14 +1243,12 @@ private
     synonyms = classbeanXML.first.find(classbeanXML.path + "/synonyms/string")
     node.synonyms = []
     synonyms.each do |synonym|
-      RAILS_DEFAULT_LOGGER.debug "SYNONYMS: #{synonym.content}"
       node.synonyms << synonym.content
     end
     # get definitions
     definitions = classbeanXML.first.find(classbeanXML.path + "/definitions/string")
     node.definitions = []
     definitions.each do |definition|
-      RAILS_DEFAULT_LOGGER.debug "DEFINITION: #{definition.content}"
       node.definitions << definition.content
     end
     
