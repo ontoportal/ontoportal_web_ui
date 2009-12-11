@@ -1122,12 +1122,9 @@ private
                     
                   end
                end
-    endGet = Time.now
     if ((endGet - startGet) * 1000.0) > 1000
       RAILS_DEFAULT_LOGGER.error node.name
-      RAILS_DEFAULT_LOGGER.error "Parse concept case/switch time (start/end):"
-      RAILS_DEFAULT_LOGGER.error startGet
-      RAILS_DEFAULT_LOGGER.error endGet
+      RAILS_DEFAULT_LOGGER.error "Parsing #{node.name} case/switch (#{startGet - Time.now}):"
     end
 
  #           puts "#####################"
