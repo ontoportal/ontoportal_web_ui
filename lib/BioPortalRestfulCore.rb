@@ -1122,21 +1122,10 @@ private
                     
                   end
                end
-    if ((endGet - startGet) * 1000.0) > 1000
-      RAILS_DEFAULT_LOGGER.error node.name
-      RAILS_DEFAULT_LOGGER.error "Parsing #{node.name} case/switch (#{startGet - Time.now}):"
-    end
-
- #           puts "#####################"
         }
-    startGet = Time.now
-            node.children.sort!{|x,y| x.name.downcase<=>y.name.downcase}
-    endGet = Time.now
-    if ((endGet - startGet) * 1000.0) > 1000
-      RAILS_DEFAULT_LOGGER.error "Parse concept sort time (start/end):"
-      RAILS_DEFAULT_LOGGER.error startGet
-      RAILS_DEFAULT_LOGGER.error endGet
-    end
+        
+        node.children.sort!{|x,y| x.name.downcase<=>y.name.downcase}
+        
         return node
   end
 
