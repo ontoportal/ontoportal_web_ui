@@ -14,6 +14,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :ontologies
   
   map.resources :login
+  
+  map.resources :admin
 
   # The priority is based upon order of creation: first created -> highest priority.
   
