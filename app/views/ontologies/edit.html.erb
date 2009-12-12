@@ -135,7 +135,7 @@
         <%else %>
         <%=hidden_field  :ontology,:urn %>
         <%end %>
-        <%if @ontology.format.include?("OWL") %>
+        <%if @ontology.format.include?("OWL") || @ontology.format.include?("PROTEGE") %>
         <tr>
             <th>
                 Prefered Name Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2000/01/rdf-schema#label">rdfs:label</a>)

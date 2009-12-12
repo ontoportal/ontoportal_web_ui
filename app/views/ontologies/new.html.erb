@@ -59,22 +59,22 @@
         jQuery("#ontology_format").change(ontologyFormatChange);
         
         // Check to see if owl is selected, show options if so
-        if (jQuery("#ontology_format").val().indexOf("OWL") >= 0) {
+        if (jQuery("#ontology_format").val().indexOf("OWL") >= 0 || jQuery("#ontology_format").val().indexOf("PROTEGE") >= 0) {
             jQuery("#owl_options").optionsIn("fast");
         }
     });
     
     function ontologyFormatChange(){
         var selected = jQuery("#ontology_format option:selected");
-        
-        if (selected.text().indexOf("OWL") >= 0) {
+
+        if (selected.val().indexOf("OWL") >= 0 || selected.val().indexOf("PROTEGE") >= 0) {
             jQuery("#owl_options").optionsIn("fast");
         }
         else {
             jQuery("#owl_options").optionsOut("fast");
         }
         
-        if (selected.text().indexOf("OWL") >= 0) {
+        if (selected.val().indexOf("OWL") >= 0 || selected.val().indexOf("PROTEGE") >= 0) {
             jQuery("#owl_options").optionsIn("fast");
         }
         else {
