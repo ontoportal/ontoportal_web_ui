@@ -49,7 +49,7 @@ function jumpToValue(li){
 	if( li == null ){
 	// Im doing a search	
 	
-	var search = confirm("Concept could not be found..\n Press OK to go to the Search page or Cancel to continue browsing")
+	var search = confirm("Term could not be found..\n Press OK to go to the Search page or Cancel to continue browsing")
 		if(search){
 			jQuery("#search_keyword").val(jQuery("#search_box").val())
 			jQuery("#search_form").submit()
@@ -63,7 +63,7 @@ function jumpToValue(li){
 			var sValue = li.extra[0];
 			
 			document.location="/visualize/<%=@ontology.id%>/"+sValue;
-			jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Concept...</h1>' }); 
+			jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>' }); 
 			return
 		}
 
@@ -379,8 +379,8 @@ font-size:15px;
 
 				
 			Example 1 (start typing the term name to get its full URI)<br/><input type="text" name="a" class="bp_form_complete-<%=@ontology.ontologyId%>-uri" size="100"/><br/>
-			Example 2 (get the ID for a concept)<br/><input type="text" name="b" class="bp_form_complete-<%=@ontology.ontologyId%>-shortid" size="100"/><br/>
-			Example 3 (get the preferred name for a concept)<br/><input type="text" name="c" class="bp_form_complete-<%=@ontology.ontologyId%>-name" size="100"/><br/>
+			Example 2 (get the ID for a term)<br/><input type="text" name="b" class="bp_form_complete-<%=@ontology.ontologyId%>-shortid" size="100"/><br/>
+			Example 3 (get the preferred name for a term)<br/><input type="text" name="c" class="bp_form_complete-<%=@ontology.ontologyId%>-name" size="100"/><br/>
 			
 			<div id="form" style="display:none;">
 
@@ -392,9 +392,9 @@ font-size:15px;
 	<ul>
 	<li>&nbsp;&nbsp;- For example, <code>bp_form_complete-1032-uri</code> will use NCI Thesaurus (ontology id is 1032) and will put the term URI in the field after the user selects the term from the pull-down list.</li>
 	<li>&nbsp;&nbsp;- You can use the following values:
-		<ul><li>&nbsp;&nbsp;&nbsp;- <code>uri</code>: put the complete URI of the concept (e.g., <a rel="nofollow" title="http://bioportal.bioontology.org/visualize/39478/Common_Neoplasm" class="external free" href="http://bioportal.bioontology.org/visualize/39478/Common_Neoplasm">http://bioportal.bioontology.org/visualize/39478/Common_Neoplasm</a>);</li>
-			<li>&nbsp;&nbsp;&nbsp;- <code>shortid</code>: put the short id of the concept, as used in BioPortal (e.g., "Common_Neoplasm");</li>
-			<li>&nbsp;&nbsp;&nbsp;- <code>name</code>: put the preferred name of the concept (e.g., "Common Neoplasm");</li>
+		<ul><li>&nbsp;&nbsp;&nbsp;- <code>uri</code>: put the complete URI of the term (e.g., <a rel="nofollow" title="http://bioportal.bioontology.org/visualize/39478/Common_Neoplasm" class="external free" href="http://bioportal.bioontology.org/visualize/39478/Common_Neoplasm">http://bioportal.bioontology.org/visualize/39478/Common_Neoplasm</a>);</li>
+			<li>&nbsp;&nbsp;&nbsp;- <code>shortid</code>: put the short id of the term, as used in BioPortal (e.g., "Common_Neoplasm");</li>
+			<li>&nbsp;&nbsp;&nbsp;- <code>name</code>: put the preferred name of the term (e.g., "Common Neoplasm");</li>
 		</ul>
 	</li>
 	</ul>
@@ -405,9 +405,9 @@ font-size:15px;
 			<textarea rows=4 cols=70>
 Example 1 (start typing the term name to get its full URI)<br/><input type="text" name="a" class="bp_form_complete-<%=@ontology.ontologyId%>-uri" size="100"/>
 
-Example 2 (get the ID for a concept)<br/><input type="text" name="b" class="bp_form_complete-<%=@ontology.ontologyId%>-shortid" size="100"/>
+Example 2 (get the ID for a term)<br/><input type="text" name="b" class="bp_form_complete-<%=@ontology.ontologyId%>-shortid" size="100"/>
 
-Example 3 (get the preferred name for a concept)<br/><input type="text" name="c" class="bp_form_complete-<%=@ontology.ontologyId%>-name" size="100"/>
+Example 3 (get the preferred name for a term)<br/><input type="text" name="c" class="bp_form_complete-<%=@ontology.ontologyId%>-name" size="100"/>
 		
 			</textarea>
 </p>	

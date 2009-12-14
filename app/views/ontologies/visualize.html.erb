@@ -31,7 +31,7 @@ function jumpToValue(li){
 	if( li == null ){
 	// Im doing a search	
 	
-	var search = confirm("Concept could not be found..\n Press OK to go to the Search page or Cancel to continue browsing")
+	var search = confirm("Term could not be found..\n Press OK to go to the Search page or Cancel to continue browsing")
 		if(search){
 			jQuery("#search_keyword").val(jQuery("#search_box").val())
 			jQuery("#search_form").submit()
@@ -44,7 +44,7 @@ function jumpToValue(li){
 			
 			var sValue = li.extra[0];
 			document.location="/visualize/<%=@ontology.id%>/?conceptid="+encodeURIComponent(sValue);
-			jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Concept...</h1>' }); 
+			jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>' }); 
 			return
 		}
 
@@ -263,7 +263,7 @@ function selectNodeByID(id) {
 		if (app.selectNodeByID) {
 			app.selectNodeByID(id);
 		} else {
-			alert("Could not select the concept with ID '" + id + "'.");
+			alert("Could not select the term with ID '" + id + "'.");
 		}
 	} else {
 		alert("Could not get Flash object, JavaScript/Flex communication failed.");
@@ -282,7 +282,7 @@ function searchByID(id, option) {
 		if (app.searchByID) {
 			app.searchByID(id);
 		} else {
-			alert("Could not search for the concept with ID '" + id + "'.");
+			alert("Could not search for the term with ID '" + id + "'.");
 		}
 	} else {
 		alert("Could not get Flash object, JavaScript/Flex communication failed.");
@@ -302,7 +302,7 @@ function searchByName(searchText, option) {
 		if (app.searchByName) {
 			app.searchByName(searchText);
 		} else {
-			alert("Could not search for the concept with nane '" + id + "'.");
+			alert("Could not search for the term with nane '" + id + "'.");
 		}
 	} else {
 		alert("Could not get Flash object, JavaScript/Flex communication failed.");
@@ -362,8 +362,8 @@ function tryClick(id)
 	</style>
 <ul class="icon_legend">
 	<h3>Icon Legend</h3>
-	<li><img src="/images/notes_icon.png"> : Concept has Marginal Notes</li>
-	<li><img src="/images/map_icon.png"> : Concept has Mappings</li>
+	<li><img src="/images/notes_icon.png"> : Term has Marginal Notes</li>
+	<li><img src="/images/map_icon.png"> : Term has Mappings</li>
 	<li><img src="/images/is_a.gif"> : Relationship is "IS_A"</li>
 	<li><img src="/images/part_of.gif"> : Relationship is "PART_OF"</li>
 	

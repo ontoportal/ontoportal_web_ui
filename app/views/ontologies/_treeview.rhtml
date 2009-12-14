@@ -242,7 +242,7 @@ jQuery(document).ready(function(){
 function nodeClicked(node_id,node_label) {
 
 	if(node_id == 0){
-		alert("Sorry, we cannot display all the classes at this level in the hierarchy because there are too many of them. Please select another class or use the BioPortal Search to find a specific concept in this ontology");
+		alert("Sorry, we cannot display all the classes at this level in the hierarchy because there are too many of them. Please select another class or use the BioPortal Search to find a specific term in this ontology");
 		return;
 	}
 	// sets the label
@@ -271,7 +271,7 @@ function nodeClicked(node_id,node_label) {
 		
 
 	}else{
-		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Concept...</h1>' });
+		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>' });
 		jQuery.get('/ajax_concepts/<%=@ontology.to_param%>/?id='+encodeURIComponent(node_id)+'&callback=load' ,
 		  function(data){
 		    tabData = data.split("|||")
