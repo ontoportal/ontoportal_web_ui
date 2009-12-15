@@ -248,10 +248,10 @@ tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Ar
 	margin-bottom: 1em;
 }
 
-.feedback ul li {
-  list-style-position: inside;
+.feedback ul li, .enable-lists ul li {
+  list-style-position: outside;
   list-style-type: square;
-  margin-left: 1em;
+  margin-left: 1.5em;
 }
 
 #all_updates_rss {

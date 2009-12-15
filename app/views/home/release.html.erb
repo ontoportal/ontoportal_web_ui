@@ -1,55 +1,61 @@
 <div style="margin:20px;">
-<span style="font-size:15px;font-weight:bold;color:green;"><%=flash[:notice]%></span>
-
-
-<div style="float:left;width:60%;">
-<h1>Welcome</h1>
-<p>Welcome to the National Center for Biomedical Ontology’s BioPortal. BioPortal is a Web-based application for accessing and sharing biomedical ontologies.</p>
-
-
-<h2> New features in BioPortal 2.1 (released May 4th, 2009):</h2>
-<ul>
-<li>- <b>Annotator:</b> a service that identifies mentions of biomedical ontology concepts in text that users submit. You can use the annotator service to tag automatically any item of interest with terms from UMLS and BioPortal ontologies. Annotator is accessible via the <a href="http://bioportal.bioontology.org/annotate">BioPortal user interface</a> and as <a href="http://bioontology.org/wiki/index.php/Annotator_Web_service">a REST service </a></li>
-<li>- <b>Advanced user interface for searching ontologies:</b> <a href="http://bioportal.bioontology.org/search">a search user interface</a> that enables users to select which ontologies or categories of ontologies to search, specify search parameters, and filter and navigate easily through the search results</li>
-<li>- <b>Ontology-based projects:</b> You can now describe your  <a href = "http://bioportal.bioontology.org/projects">ontology-based projects</a>, indicate which BioPortal ontologies you use, and provide reviews of those ontologies in the context of your project </li>
-<li>- <b>Version management for OWL ontologies:</b> you can download a diff between successive versions of an OWL ontology in tab-delmited format or as a set of RDF instances of the Protege Change and Annotations ontology. See, for example, <a href = "http://bioportal.bioontology.org/ontologies/39521">the details for the Biomedical Resource Ontology </a>, to see a listing of diffs for its versions.</li>
-<li>- <b>Within-ontology search:</b> you can use the search box at the top of each ontology tree to type in preferred name or a synonym and jump directly to one of the terms that matches your search term (look for the "Jump to" box when you are exploring an ontology)</li>
-<li>- <b>Support for different hierarchy relations in OBO ontologies:</b> just like in OBO-Edit, you will now see different icons when you browse the tree for an OBO ontologies, indicating the specific relationship between a child and a parent node (such as is-a pr part-of)</li>
-<li>- Numerous improvements in <b>user interaction</b>:</li>
-	<ul>
-	<li>&nbsp;&nbsp;- The new home page enables direct access to key BioPortal functionality, such as searching ontologies for terms, finding a specific ontology of interest, or searching the NCBO Resource index to find resources mentioning a particular term of interest.</li>
-	<li>&nbsp;&nbsp;- New look and feel for BioPortal user interface</li>
-	<li>&nbsp;&nbsp;- Additional details on the ontology metadata page</li>
-	<li>&nbsp;&nbsp;- It is now easier to add and view reviews for a particular ontology</li>
-	<li>&nbsp;&nbsp;- Many other user interface improvements and fixes	</li>
-	</ul>
-<li>- Prototypes of upcoming features for accessing the <b>NCBO Resource index</b>: </li>
-	<ul>
-	<li>&nbsp;&nbsp;- access to biomedical resources annotated with a specific ontology term when you are viewing the term in BioPortal (in the "Resources" tab)</li>
-	<li>&nbsp;&nbsp;- search through all resource annotations available in the NCBO Resource index</li>
-	<li>&nbsp;&nbsp;- the resources that NCBO currently indexes or provides access to include Conserved Domain Database, ArrayExpress, PharmGKB, UniProt KB, ARRS GoldMiner, Online Mendelian Inheritance in Man (OMIM), Reactome, Gene Expression Omnibus and NextBio (to check dynamically the list of resource that we currently have in the index, you can call <a href="http://ncbolabs-dev2.stanford.edu:8080/OBS_v1/obr/resources">the corresponding RESt service</a>).</li>
-	</ul>
-</ul>
-
-
-
-<h1>Getting Started</h1>
-<p>BioPortal allows users to browse, upload, download, search, comment on, and create mappings for ontologies.<a href="http://www.bioontology.org/videos/demos/BioPortal_2.0_Demo.html">Watch the demo here.</a></p>
-<h1>Browse The Library</h1>
-<p>Users can browse and explore individual ontologies by navigating either a tree structure or an animated graphical view. Users can also view mappings and ontology metadata, and download ontologies. </p>
-
-<p>Additionally, users who are signed in may also submit a new ontology to the library. All submissions to the library are reviewed.</p>
-<h1>Web services</h1>
-<p>Documentation and examples of the <a href="http://www.bioontology.org/wiki/index.php/NCBO_REST_services">BioPortal 2.0 web services.</a></p>
-
-
-
-<h1>Announce List</h1>
-<p>To receive notices of new BioPortal releases or site outages, please subscribe
-to the <a href="https://mailman.stanford.edu/mailman/listinfo/bioportal-announce">bioportal-annouce list</a>.
-
-
-
-</div>
-<div style="clear:both;"></div>
+    <span style="font-size:15px;font-weight:bold;color:green;"><%=flash[:notice] %></span>
+    <div style="float:left;width:60%;">
+        <h1>Welcome</h1>
+        <p>
+            Welcome to the National Center for Biomedical Ontology’s BioPortal. BioPortal is a Web-based application for accessing and sharing biomedical ontologies.
+        </p>
+        <h2>New features in BioPortal 2.2.2 (released December 14th, 2009):</h2>
+        <div class="enable-lists">
+            <ul>
+                <li>
+                    Metrics are now displayed on the Ontology Summary page when available
+                </li>
+                <li>
+                    Added fields for supplying Author and Definition Slot names on the ontology metadata form
+                </li>
+                <li>
+                    Schema dump for rake db:migrate has been updated
+                </li>
+                <li>
+                    Synonyms and Definitions are now shown when provided by the concept service
+                </li>
+                <li>
+                    Additional space has been added between items in lists that are displayed in the details tab. This makes concepts with properties that include several paragraphs of text more readable.
+                </li>
+                <li>
+                    Improvements were made to the functionality that handles non-browsable concepts, including handling of the new concept bean 'type' property and inclusion in the path-to-root processing, and moving the Rails template for non-browsable concepts to a shared partial.
+                </li>
+                <li>
+                    Fixed bug where LEXGRID-XML formats were not adding properly in the ontology add/edit form
+                </li>
+                <li>
+                    New Memcache admin utilities that allow flushing and resetting Memcache connection without the need to restart the front end server
+                </li>
+            </ul>
+            <br/>
+        </div>
+        <h1>Getting Started</h1>
+        <p>
+            BioPortal allows users to browse, upload, download, search, comment on, and create mappings for ontologies. <a href="http://www.bioontology.org/videos/demos/BioPortal_2.0_Demo.html">Watch the demo here.</a>
+        </p>
+        <h1>Browse The Library</h1>
+        <p>
+            Users can browse and explore individual ontologies by navigating either a tree structure or an animated graphical view. Users can also view mappings and ontology metadata, and download ontologies. 
+        </p>
+        <p>
+            Additionally, users who are signed in may also submit a new ontology to the library. All submissions to the library are reviewed.
+        </p>
+        <h1>Web services</h1>
+        <p>
+            Documentation and examples of the <a href="http://www.bioontology.org/wiki/index.php/NCBO_REST_services">BioPortal 2.0 web services.</a>
+        </p>
+        <h1>Announce List</h1>
+        <p>
+            To receive notices of new BioPortal releases or site outages, please subscribe 
+            to the <a href="https://mailman.stanford.edu/mailman/listinfo/bioportal-announce">bioportal-annouce list</a>.
+        </p>
+    </div>
+    <div style="clear:both;">
+    </div>
 </div>
