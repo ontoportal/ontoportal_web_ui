@@ -1,0 +1,162 @@
+<div id="metadata_content" class="tab_content">
+    <div style="width:100%;min-width:900px">
+        <div style="float:left;width:60%;overflow:hidden;min-width:550px">
+            <br/>
+            <table class="form" width="100%">
+                <tr>
+                    <th>
+                        Ontology Name:
+                    </th>
+                    <td class="top">
+                        <%=@ontology.displayLabel %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Ontology Id:
+                    </th>
+                    <td>
+                        <%=@ontology.ontologyId %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Format:
+                    </th>
+                    <td>
+                        <%if @ontology.format.eql?("OBO") %><%=@ontology.format+"F" %><%else %><%=@ontology.format.split("-")[0] %><%end %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Categories:
+                    </th>
+                    <td>
+                        <%for cat in @ontology.categories %><%=@categories[cat.to_s][:name] %>
+                        <br/>
+                        <%end %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Contact:
+                    </th>
+                    <td>
+                        <%=@ontology.contactName %>, <%=@ontology.contactEmail %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Home Page:
+                    </th>
+                    <td>
+                        <a href="<%=@ontology.homepage%>" target="_blank"><%=@ontology.homepage %></a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Publications Page:
+                    </th>
+                    <td>
+                        <a href="<%=@ontology.publication%>" target="_blank"><%=@ontology.publication %></a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Documentation Page:
+                    </th>
+                    <td>
+                        <a href="<%=@ontology.documentation%>" target="_blank"><%=@ontology.documentation %></a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Description:
+                    </th>
+                    <td>
+                        <%=@ontology.description %>
+                    </td>
+                </tr>
+            </table>
+            <br/>
+            <br/>
+            <table class="zebra" cellpadding="0" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>
+                            Version Number
+                        </th>
+                        <th>
+                            Release Date
+                        </th>
+                        <th>
+                            Ontology File
+                        </th>
+                        <th>
+                            Visualize
+                        </th>
+                        <th>
+                            Download Diff File
+                        </th>
+                    </tr>
+                </thead>
+                <%
+                @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
+                for version in @versions %>
+                <tr<%=cycle("","class='alt'") %>>
+                    <td>
+                        <%=version.versionNumber %>
+                    </td>
+                    <td>
+                        <%=version.dateReleased %>
+                    </td>
+                    <td>
+                        <% if version.isRemote.to_i.eql?(1) %><a href="<%=@ontology.homepage%>">
+                        <%else %><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download Ontology</a>
+                        <%end %>
+                    </td>
+                    <td>
+                        <%= version.get_visualize_link %>
+                    </td>
+                    <td>
+                        <% for diff in @diffs %>
+                        <%if diff[1].to_i.eql?(version.id.to_i) %>
+                        Download Diff with previous version 
+                        <br/>
+                        ( <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=txt">Txt</a>
+                        | <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=rdf">RDF</a>
+                        )<%end %>
+                        <%end %>
+                        &nbsp;
+                    </td>
+                </tr>
+                <%end %>
+            </table>
+        </div>
+        <div style="float:left;width:300px;padding-left:10px;" id="tag_clouds">
+            <h2>Notes</h2>
+            <%if @notes.size <1 %>
+            No Notes Created yet<%end %>
+            <ul id="notes" style="border-top:1px solid #C1DAD7;border-bottom:1px solid #C1DAD7;width:300px;padding:10px">
+                <%for note in @notes %>
+                <li value="<%=note[1]%>">
+                    <a href="/visualize/<%=@ontology.id%>/<%=note[0]%>#t_tab3:"><%=note[0] %></a>
+                </li>
+                <%end %>
+            </ul>
+            <br/>
+            <h2>Mappings</h2>
+            <%if @mappings.size <1 %>
+            No Mappings Created yet<%end %>
+            <ul id="mappings" style="border-top:1px solid #C1DAD7;border-bottom:1px solid #C1DAD7;width:300px;padding:10px">
+                <%for mapping in @mappings %>
+                <li value="<%=mapping[1]%>">
+                    <a href="/visualize/<%=@ontology.id%>/<%=mapping[0]%>#t_tab4:"><%=mapping[2] %></a>
+                </li>
+                <%end %>
+            </ul>
+        </div>
+        <div style="clear:both;">
+        </div>
+    </div>
+</div>

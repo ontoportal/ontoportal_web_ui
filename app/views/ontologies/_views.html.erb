@@ -1,0 +1,116 @@
+<div id="views_content" style="display:none;" class="tab_content">
+    <div style="float:left;width:1000px;">
+        <%if session[:user].nil? %>
+        <h3><a href="/login">Create New View</a></h3>
+        <%else %>
+        <h3><a href="/ontologies/new_view/new?version_id=<%=@ontology.id%>">Create New View</a></h3>
+        <%end %>
+        <%if @ontology.views.empty? || @ontology.views.first.size < 1 %>
+        <h1>No views available.</h1>
+        <%else %>
+        <%for virtual in @ontology.views %>
+        <%if virtual[0].nil?
+        next
+        end %>
+        <table class="form" width="100%">
+            <tr>
+                <th>
+                    View Name:
+                </th>
+                <td class="top">
+                    <%=virtual[0].displayLabel %>
+                </td>
+                <th>
+                    Created By:
+                </th>
+                <td class="top">
+                    <%=virtual[0].contactName %>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    View Id:
+                </th>
+                <td>
+                    <%=virtual[0].ontologyId %>
+                </td>
+                <th>
+                    View Generation Engine:
+                </th>
+                <td>
+                    <%=virtual[0].viewGenerationEngine %>
+                </td>
+            </tr>
+            <tr>
+            <th>
+                View Definition:
+            </th>
+            <td>
+                <%=virtual[0].viewDefinition %>
+            </td>
+            <th>
+                View Definition Language:
+            </th>
+            <td>
+                <%=virtual[0].viewDefinitionLanguage %>
+            </td>
+            <tr>
+                <th>
+                    Description:
+                </th>
+                <td colspan=3>
+                    <%=virtual[0].description %>
+                </td>
+            </tr>
+        </table>
+        <h3 style="border-bottom:1px solid #EFEFEF;margin-left:20px;">Versions</h3>
+        <table class="zebra" cellpadding="0" cellspacing="0" width="100%" style="margin-left:40px;">
+            <thead>
+                <tr>
+                    <th>
+                        Version
+                    </th>
+                    <th>
+                        Base Version
+                    </th>
+                    <th>
+                        Created
+                    </th>
+                    <th>
+                        Ontology File
+                    </th>
+                    <th>
+                        Visualize
+                    </th>
+                </tr>
+            </thead>
+            <%
+            virtual.sort!{|x,y| y.internalVersion<=>x.internalVersion}
+            for view in virtual %>
+            <tr>
+                <td>
+                    <%=view.versionNumber %>
+                </td>
+                <td>
+                    <%=@ontology.versionNumber %>
+                </td>
+                <td>
+                    <%=view.dateReleased %>
+                </td>
+                <td>
+                    <a href="<%=DataAccess.download(view.id)%>" target="_blank">Download View</a>
+                </td>
+                <td>
+                    <%if view.statusId.to_i.eql?(3) %><%=link_to "Explore", visualize_url(:ontology => view,:view=>true) %><%else %>Parsing View<%end %>
+                </td>
+            </tr>
+            <%end %>
+        </table>
+        <%if !session[:user].nil? && (session[:user].id.to_i.eql?(view.userId.to_i) || session[:user].admin?) %>
+        <h3 style="margin-left:40px;"><a href="/ontologies/new_view/<%=view.id%>?version_id=<%=@ontology.id%>">Submit New View Version</a></h3>
+        <%end %>
+        <br/>
+        <%end %>
+        <%end %>
+    </div>
+</div>
