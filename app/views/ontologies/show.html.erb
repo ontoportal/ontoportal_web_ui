@@ -528,7 +528,7 @@ Example 3 (get the preferred name for a term)<br/><input type="text" name="c" cl
 		for the most recent version are reflected.
 		<%= link_to "See metrics descriptions", "http://www.bioontology.org/wiki/index.php/Ontology_Metrics" %>
 	</p>
-	<% if @metrics.empty? %>
+	<% if @metrics.nil? || @metrics.empty? %>
 		<h2 style="padding-left: 1em;">We have not yet calculated metrics for this ontology.</h2>
 	<% else %>
 		<table class="form">
