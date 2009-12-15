@@ -1,3 +1,5 @@
+require 'cgi'
+
 # The redirect controller allows for routes-based redirects
 # as we move old content to new URL locations.
 
@@ -12,7 +14,7 @@ class RedirectController < ApplicationController
         if !param.eql?("url") && !param.eql?("action") && !param.eql?("controller")
           seperator = first_param ? "?" : "&"
           first_param = false
-          params_string += seperator + param + "=" + value
+          params_string += seperator + param + "=" + CGI.escape(value)
         end
       end
       # Redirect with params intact
