@@ -219,7 +219,8 @@ class BioPortalRestfulCore
       def self.getOntology(ontology)
         ont = nil
        # begin
-          
+          RAILS_DEFAULT_LOGGER.debug "Retrieving ontology"
+          RAILS_DEFAULT_LOGGER.debug BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology.to_s)+"?applicationid=#{APPLICATION_ID}"
           doc = REXML::Document.new(open(BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology.to_s)+"?applicationid=#{APPLICATION_ID}"))
         #rescue Exception=>e
         #  doc =  REXML::Document.new(e.io.read)
@@ -249,8 +250,14 @@ class BioPortalRestfulCore
       def self.getOntologyMetrics(ontology)
         ont = nil
           
-          doc = REXML::Document.new(open(BASE_URL + METRICS_PATH.gsub("%ONT%",ontology.to_s)+"?applicationid=#{APPLICATION_ID}"))
-
+          RAILS_DEFAULT_LOGGER.debug "Retrieving ontology metrics"
+          RAILS_DEFAULT_LOGGER.debug BASE_URL + METRICS_PATH.gsub("%ONT%",ontology.to_s)+"?applicationid=#{APPLICATION_ID}"
+          begin
+            doc = REXML::Document.new(open(BASE_URL + METRICS_PATH.gsub("%ONT%",ontology.to_s)+"?applicationid=#{APPLICATION_ID}"))
+          rescue Exception=>e
+            RAILS_DEFAULT_LOGGER.debug "getOntologyMetrics error: #{e.message}"
+          end
+          
             ont = errorCheck(doc)
 
              unless ont.nil?
