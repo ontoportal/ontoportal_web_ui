@@ -997,9 +997,9 @@ private
       class_count = element.elements['string[2]'].get_text.value.to_i
       ontologyMetrics.classesWithMoreThanXSubclasses[class_name] = class_count
       unless defined? first
-        ontologyMetrics.classesWithMoreThanXSubclassesAll = element.get_text.value.strip.eql?("alltriggered")
-        ontologyMetrics.classesWithMoreThanXSubclassesLimitPassed = element.get_text.value.strip.include?("limitpassed") ? 
-            element.get_text.value.strip.split(":")[1].to_i : false
+        ontologyMetrics.classesWithMoreThanXSubclassesAll = element.elements['string[1]'].get_text.value.strip.eql?("alltriggered")
+        ontologyMetrics.classesWithMoreThanXSubclassesLimitPassed = element.elements['string[1]'].get_text.value.strip.include?("limitpassed") ? 
+            element.elements['string[2]'].get_text.value.strip.to_i : false
         first = false
       end
    }
