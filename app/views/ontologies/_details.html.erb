@@ -39,6 +39,16 @@
                 </tr>
                 <tr>
                     <th>
+                        Groups:
+                    </th>
+                    <td>
+                        <%for group_id in @ontology.groups %><%=@groups.group_list[group_id][:name] %>
+                        <br/>
+                        <%end %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
                         Contact:
                     </th>
                     <td>

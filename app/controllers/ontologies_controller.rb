@@ -43,6 +43,7 @@ class OntologiesController < ApplicationController
   def show
     # Grab Metadata
     @ontology = DataAccess.getOntology(params[:id])
+    @groups = DataAccess.getGroups()
     @categories = DataAccess.getCategories()
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     @metrics = DataAccess.getOntologyMetrics(@ontology.id)
