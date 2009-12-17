@@ -116,7 +116,19 @@ class DataAccess
     end
   end
 
-
+  def self.getGroups
+    if CACHE.get("groups").nil? || NO_CACHE
+      groups = SERVICE.getGroups
+      
+      unless groups.kind_of?(Hash)  && groups[:error]         
+        CACHE.set("groups",groups,CACHE_EXPIRE_TIME)
+      end
+      
+      return groups
+    else
+      return CACHE.get("groups")
+    end
+  end
     
   def self.getActiveOntologies
     # puts "Calling DataAccess.getActiveOntologies()"

@@ -28,6 +28,7 @@ class OntologyWrapper
   attr_accessor :description
   attr_accessor :abbreviation
   attr_accessor :categories
+  attr_accessor :groups
   
   attr_accessor :synonymSlot
   attr_accessor :preferredNameSlot

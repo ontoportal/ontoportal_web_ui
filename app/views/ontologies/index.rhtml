@@ -1,7 +1,5 @@
 <%@title = "Ontology Listing"%>
 <script type="text/javascript" src="/javascripts/jquery.dataTables.min.js"></script>
-<script src="/javascripts/jquery.cursorMessage.js" type="text/javascript" charset="utf-8"></script>
-<link rel="stylesheet" href="./stylesheets/jquery.cursorMessage.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <link rel="stylesheet" href="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <script src="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.min.js" type="text/javascript" charset="utf-8"></script>
 <link rel="alternate" title="<%=@title%> RSS" href="/syndication/rss" type="application/rss+xml" />
@@ -111,100 +109,6 @@ jQuery(document).ready(function() {
 
 </script>
 
-<%
-filter_groups = {
-	"OBO Foundry"=>"OBO Foundry",
-	"caBIG"=>"Cancer Biomedical Informatics Grid",
-	"UMLS" =>"Unified Medical Language System",
-#	"NCIBI"=>"National Center for Integrative Biomedical Informatics",
-#	"CTSA"=>"Clinical and Translational Science Awards",
-	"WHO-FIC"=>"The WHO Family of International Classifications",
-	"PSI"=>"Proteomics Standards Initiative"
-#	"MSI"=>"Metabolomics Standards Initiative"	
-}
-
-# "id"=>["groups"]
-ontology_groups = {
-	1090=>["OBO Foundry"],
-	1070=>["OBO Foundry","UMLS","caBIG"],
-	1049=>["OBO Foundry"],
-	1048=>["OBO Foundry"],
-	1067=>["OBO Foundry"],
-	1006=>["OBO Foundry"],
-	1102=>["OBO Foundry"],
-	1037=>["OBO Foundry"],
-	1007=>["OBO Foundry"],
-	1063=>["OBO Foundry"],
-	1008=>["OBO Foundry"],
-	1016=>["OBO Foundry"],
-	1015=>["OBO Foundry"],
-	1069=>["OBO Foundry"],
-	1012=>["OBO Foundry"],
-	1064=>["OBO Foundry"],
-	1071=>["OBO Foundry"],
-	1019=>["OBO Foundry"],
-	1021=>["OBO Foundry"],
-	1022=>["OBO Foundry"],
-	1009=>["OBO Foundry"],
-	1092=>["OBO Foundry"],
-	1025=>["OBO Foundry"],
-	1105=>["OBO Foundry","PSI"],
-	1027=>["OBO Foundry"],
-	1131=>["MGED","caBIG"],
-	1103=>["OBO Foundry"],
-	1030=>["OBO Foundry"],
-	1077=>["OBO Foundry"],
-	1000=>["OBO Foundry"],
-	1010=>["OBO Foundry"],
-	1031=>["OBO Foundry"],
-	1083=>["caBIG"],
-	1032=>["caBIG","UMLS"],
-	1033=>["OBO Foundry"],
-	1042=>["OBO Foundry"],
-	1123=>["OBO Foundry"],
-	1094=>["OBO Foundry"],
-	1107=>["OBO Foundry"],
-	1038=>["OBO Foundry"],
-	1108=>["OBO Foundry"],
-	1041=>["OBO Foundry"],
-	1062=>["OBO Foundry"],
-	1040=>["OBO Foundry","PSI"],
-	1044=>["PSI"],
-	1109=>["OBO Foundry"],
-	1078=>["OBO Foundry"],
-	1091=>["OBO Foundry"],
-	1093=>["OBO Foundry"],
-	1145=>["OBO Foundry"],
-	1046=>["OBO Foundry"],
-	1110=>["OBO Foundry"],
-	1081=>["OBO Foundry"],
-	1065=>["OBO Foundry"],
-	1112=>["OBO Foundry"],
-	1095=>["OBO Foundry"],
-	1115=>["OBO Foundry"],
-	1051=>["OBO Foundry"],
-	1057=>["caBIG"],
-	1101=>["WHO-FIC","UMLS"],
-	1041=>["PSI"],
-	1341=>["UMLS"],
-	1342=>["UMLS","caBIG"],
-	1343=>["UMLS","caBIG"],
-	1344=>["UMLS"],
-	1350=>["UMLS","caBIG"],
-	1351=>["UMLS","caBIG"],
-	1347=>["UMLS"],
-	1352=>["UMLS","caBIG"],
-	1348=>["UMLS"],
-	1349=>["UMLS"],
-	1353=>["UMLS","caBIG"],
-	1354=>["UMLS"],
-	1053=>["UMLS"],
-	1132=>["UMLS"]
-}
-
-%>
-
-
 
 <p style="padding:10px;margin:10px; border:1px solid #EFEFEF;" >
     <b>Access all ontologies that are available in BioPortal:</b> You can filter this list by category to display ontologies relevant for a certain domain 
@@ -251,9 +155,9 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 		<th>Filter by Group</td><td><select onclick ="filterByGroup(this)"  name="cat">
 		<option value="0" <%if params[:filter].nil?%>selected="selected"<%end%> >All Groups</option>
 			
-			<%for key in filter_groups.keys%>
-			
-			<option value="<%=key%>" <%if !params[:filter].nil? && key.include?(params[:filter])%>selected="selected"<%end%>><%=filter_groups[key]%> (<%=key%>)</option>
+			<% @groups.group_list.each do |group_id, group| %>
+			<% puts "test" %>
+				<option value="<%=group[:acronym]%>" <%if !params[:filter].nil? && group[:acronym].include?(params[:filter])%>selected="selected"<%end%>><%=group[:name]%> (<%=group[:acronym]%>)</option>
 			<%end%>
 	</select> <a href="/ontologies<%if !params[:filter].nil?%>/?filter=<%=params[:filter]%><%end%>" id="filterlink">Link To This Filter</a></td>
 	</tr>
@@ -285,7 +189,13 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 <tbody>
 <% for ontology in @ontologies %>
 
-	<%label = ontology.displayLabel
+	<%
+	# Group names
+	ontology_groups = []
+	ontology.groups.each do |group_id|
+	  ontology_groups << @groups.group_list[group_id][:acronym]
+	end
+	label = ontology.displayLabel
 	unless ontology.abbreviation.empty?
 		label << " <br/>(#{ontology.abbreviation})"
 	end
@@ -303,12 +213,12 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 	<td  style="width:50px;"><%=ontology.versionNumber%></td>
 	<td><%=ontology.contactName%></td>
 	<td><%=ontology.dateCreated%></td>
-	<td ><%if !ontology_groups[ontology.ontologyId.to_i].nil?%><div style="white-space:nowrap;"><%=ontology_groups[ontology.ontologyId.to_i].join("<br/>")%></div><%end%></td>
+	<td ><%if !ontology_groups.empty?%><div style="white-space:nowrap;"><%=ontology_groups.join("<br/>")%></div><%end%></td>
 	<td style="display:none;"><%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
 		<br>
 		<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>
 	<td style="display:none;"> <%=ontology.categories.join(" ")%></td>
-	<td style="display:none;"><%if !ontology_groups[ontology.ontologyId.to_i].nil?%><%=ontology_groups[ontology.ontologyId.to_i].join(" , ")%><%end%></td>
+	<td style="display:none;"><%if !ontology_groups.empty?%><%=ontology_groups.join(" , ")%><%end%></td>
 	<td><%=ontology.get_visualize_link%></td>
   </tr>
 <% end %>

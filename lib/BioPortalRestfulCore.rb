@@ -16,6 +16,7 @@ class BioPortalRestfulCore
     
     ONTOLOGIES_PATH = "/ontologies/%ONT%"
     CATEGORIES_PATH = "/categories/"
+    GROUPS_PATH = "/groups"
 
     CONCEPT_PATH ="/concepts/%ONT%/?conceptid=%CONC%"
     PATH_PATH = "/path/%ONT%/?source=%CONC%&target=root"
@@ -50,21 +51,7 @@ class BioPortalRestfulCore
     # Track paths that have already been processed when building a path to root tree 
     @seen_paths = {}
     
- 
-#    OBO
-#    2861
-#    20845
-#    3231
-#    2991
-#    2996
 
-#    OWL
-#    3905
-#    13386
-#    6723
-#    3205
-#    4525
- 
       
       def self.getView(view_id)
         view = nil
@@ -123,6 +110,32 @@ class BioPortalRestfulCore
           return categories
         
         
+      end
+
+      def self.getGroups
+        groups = nil
+        
+        RAILS_DEFAULT_LOGGER.debug "Retrieve groups"
+        RAILS_DEFAULT_LOGGER.debug BASE_URL + GROUPS_PATH + "?applicationid=#{APPLICATION_ID}"
+        doc = REXML::Document.new(open(BASE_URL + GROUPS_PATH + "?applicationid=#{APPLICATION_ID}"))
+
+        groups = errorCheck(doc)
+        unless groups.nil?
+          return groups
+        end
+
+        groups = Groups.new
+        groups.group_list = {}
+        time = Time.now
+        doc.elements.each("*/data/list/groupBean"){ |element| 
+          unless element.nil?
+            group = parseGroup(element)
+            groups.group_list[group[:id]] = group
+          end
+        }
+        puts "getGroups Parse Time: #{Time.now - time}"
+        
+        return groups
       end
 
     ##
@@ -872,6 +885,15 @@ private
     return category
   end
   
+  def self.parseGroup(groupbeanXML)
+    group = {}
+    group[:id] = groupbeanXML.elements["id"].get_text.value.strip.to_i rescue ""
+    group[:name] = groupbeanXML.elements["name"].get_text.value.strip rescue ""
+    group[:acronym] = groupbeanXML.elements["acronym"].get_text.value.strip rescue ""
+    
+    return group
+  end
+
   ##
   # Parse user data from the returned XML.
   ##
@@ -930,12 +952,16 @@ private
     ontology.synonymSlot=ontologybeanXML.elements["synonymSlot"].get_text.value.strip rescue ""
     ontology.description=ontologybeanXML.elements["description"].get_text.value.strip rescue ""
     ontology.abbreviation=ontologybeanXML.elements["abbreviation"].get_text.value.strip rescue ""    
-    ontology.categories = []
 
-    ontologybeanXML.elements["categoryIds"].elements.each{|element|
+    ontology.categories = []
+    ontologybeanXML.elements["categoryIds"].elements.each do |element|
       ontology.categories<< element.get_text.value.strip
-    }
+    end
     
+    ontology.groups = []
+    ontologybeanXML.elements["groupIds"].elements.each do |element|
+      ontology.groups << element.get_text.value.strip.to_i
+    end
     
     #view stuff
     

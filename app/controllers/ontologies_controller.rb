@@ -1,8 +1,9 @@
-# This require is here to prevent problems when trying to get the metrics model
+# This require is here to prevent problems when trying to get models
 # from the cache. Sometimes, even in the production env, Rails wouldn't have
 # the model cached and an exception would be thrown saying that the
 # model was unknown/undefined.
 require_dependency 'ontology_metrics_wrapper'
+require_dependency 'groups'
 
 class OntologiesController < ApplicationController
   
@@ -18,6 +19,7 @@ class OntologiesController < ApplicationController
   def index
     @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
     @categories = DataAccess.getCategories()
+    @groups = DataAccess.getGroups()
     @last_notes= MarginNote.find(:all,:order=>'created_at desc',:limit=>5)    
     @last_mappings = Mapping.find(:all,:order=>'created_at desc',:limit=>5)
     

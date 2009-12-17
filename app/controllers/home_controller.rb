@@ -1,9 +1,16 @@
+# This require is here to prevent problems when trying to get models
+# from the cache. Sometimes, even in the production env, Rails wouldn't have
+# the model cached and an exception would be thrown saying that the
+# model was unknown/undefined.
+require_dependency 'groups'
+
 class HomeController < ApplicationController
   
   layout 'ontology'
   
   def index  
     @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
+    @groups = DataAccess.getGroups()
     
     active_onts_by_notes_query = "select ontology_id,count(ontology_id) as note_count from margin_notes as note  group by ontology_id order by note_count desc"
      @active_totals = ActiveRecord::Base.connection.select_rows(active_onts_by_notes_query);

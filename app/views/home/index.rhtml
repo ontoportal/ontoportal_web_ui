@@ -166,18 +166,11 @@ in the "Find an ontology" box in the middle column), search biomedical resources
 												<li>
 													<a href="/ontologies">All</a>
 												</li>
-												<li>
-													<a href="/ontologies?filter=OBO%20Foundry">OBO Foundry</a>
-												</li>
-												<li >
-													<a href="/ontologies?filter=caBIG">Cancer Biomedical Informatics Grid</a>
-												</li>
-												<li>
-													<a href="/ontologies?filter=WHO-FIC">The WHO Family of International Classifications</a>
-												</li>
-												<li>
-													<a href="/ontologies?filter=PSI">Proteomics Standards Initiative</a>
-												</li>
+												<% @groups.group_list.each do |group_id, group| %>
+													<li>
+														<a href="/ontologies?filter=<%=CGI.escape(group[:acronym])%>"><%=group[:name]%></a>
+													</li>
+												<% end %>
 											</ul>
 
 										</li>
