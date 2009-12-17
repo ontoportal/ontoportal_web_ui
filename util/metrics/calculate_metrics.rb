@@ -28,7 +28,7 @@ class CalculateMetrics
     
     RestClient.log = 'stdout'
     
-    resource = RestClient::Resource.new BASE_URL + METRICS_PATH, :timeout => 2700
+    resource = RestClient::Resource.new BASE_URL + METRICS_PATH, :timeout => 34560
     
     ont_list = getOntologyList()
     
@@ -69,6 +69,11 @@ class CalculateMetrics
       
       begin
         response = resource.post :ontologyversionids => ontology.id, :applicationid => APPLICATION_ID
+      rescue RestClient::RequestTimeout=>to
+       	puts to.message
+        status.execute("insert into ont_status values (?, ?, ?, ?, ?)",
+       	  ontology.id, STATUS_ERROR, ontology.displayLabel, "<ontologyid>#{ontology.id}</ontologyid>\n#{to.message}", ontology.format)
+       	next
       rescue Exception=>e
         load_count -= 1
         puts "Error:\n#{e.response.body}"
