@@ -33,9 +33,6 @@ class AdminController < ApplicationController
       render :partial => 'status'
     end
     
-    puts @cache.inspect
-    
-    
   end
   
 end
