@@ -72,7 +72,7 @@ class CalculateMetrics
       rescue RestClient::RequestTimeout=>to
        	puts to.message
         status.execute("insert into ont_status values (?, ?, ?, ?, ?)",
-       	  ontology.id, STATUS_ERROR, ontology.displayLabel, "<ontologyid>#{ontology.id}</ontologyid>\n#{to.message}", ontology.format)
+       	  ontology.id, STATUS_ERROR, ontology.displayLabel, "<ontologyid>#{ontology.id}</ontologyid>\n#<error>{to.message}</error>", ontology.format)
        	next
       rescue Exception=>e
         load_count -= 1
@@ -83,7 +83,7 @@ class CalculateMetrics
       end
       
       status.execute("insert into ont_status values (?, ?, ?, ?, ?)",
-        ontology.id, STATUS_SUCCESS, ontology.displayLabel, "<ontologyid>#{ontology.id}</ontologyid>\n<success>Sccuessfully calculated metrics</success>", ontology.format)
+        ontology.id, STATUS_SUCCESS, ontology.displayLabel, "<ontologyid>#{ontology.id}</ontologyid>\n<success>Successfully calculated metrics</success>", ontology.format)
     end
     
   end
