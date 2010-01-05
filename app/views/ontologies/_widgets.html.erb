@@ -211,8 +211,8 @@
                     </td>
                     <td>
                         <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="FlexoViz" width="300px" height="300px" codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-                            <param name="movie" value="http://keg.cs.uvic.ca/ncbo/flexviz/FlexoViz.swf?v=<%=$FLEX_VERSION%>" /><param name="quality" value="high" /><param name="bgcolor" value="#ffffff" /><param name="allowScriptAccess" value="always" />
-                            <embed src="http://keg.cs.uvic.ca/ncbo/flexviz/FlexoViz.swf?v=<%=$FLEX_VERSION%>" bgcolor="#ffffff" width="100%" height="100%" name="FlexoViz" align="middle" play="true" loop="false" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" flashVars="widget=true&ontology=<%=@ontology.id%>&server=http://rest.bioontology.org/bioportal/" pluginspage="http://www.adobe.com/go/getflashplayer">
+                            <param name="movie" value="<%=$FLEX_URL%>/flexviz/FlexoViz.swf?v=<%=$FLEX_VERSION%>" /><param name="quality" value="high" /><param name="bgcolor" value="#ffffff" /><param name="allowScriptAccess" value="always" />
+                            <embed src="<%=$FLEX_URL%>/flexviz/FlexoViz.swf?v=<%=$FLEX_VERSION%>" bgcolor="#ffffff" width="100%" height="100%" name="FlexoViz" align="middle" play="true" loop="false" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" flashVars="widget=true&ontology=<%=@ontology.id%>&server=http://rest.bioontology.org/bioportal/" pluginspage="http://www.adobe.com/go/getflashplayer">
                             </embed>
                         </object>
                         <div id ="visual" style="display:none">
@@ -222,8 +222,8 @@
                             <br/>
                             <textarea rows=4 cols=70>
                                 <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="FlexoViz" width="100%" height="100%" codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-                                    <param name="movie" value="http://keg.cs.uvic.ca/ncbo/flexviz/FlexoViz.swf?v=<%=$FLEX_VERSION%>" /><param name="quality" value="high" /><param name="bgcolor" value="#ffffff" /><param name="allowScriptAccess" value="always" />
-                                    <embed src="http://keg.cs.uvic.ca/ncbo/flexviz/FlexoViz.swf?v=<%=$FLEX_VERSION%>" bgcolor="#ffffff" width="100%" height="100%" name="FlexoViz" align="middle" play="true" loop="false" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" flashVars="widget=true&ontology=<%=@ontology.id%>&server=http://rest.bioontology.org/bioportal/" pluginspage="http://www.adobe.com/go/getflashplayer">
+                                    <param name="movie" value="<%=$FLEX_URL%>/flexviz/FlexoViz.swf?v=<%=$FLEX_VERSION%>" /><param name="quality" value="high" /><param name="bgcolor" value="#ffffff" /><param name="allowScriptAccess" value="always" />
+                                    <embed src="<%=$FLEX_URL%>/flexviz/FlexoViz.swf?v=<%=$FLEX_VERSION%>" bgcolor="#ffffff" width="100%" height="100%" name="FlexoViz" align="middle" play="true" loop="false" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" flashVars="widget=true&ontology=<%=@ontology.id%>&server=http://rest.bioontology.org/bioportal/" pluginspage="http://www.adobe.com/go/getflashplayer">
                                     </embed>
                                 </object>
                             </textarea>

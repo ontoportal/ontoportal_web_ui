@@ -56,9 +56,9 @@ function formatItem(row) {
 }
 
 
-$(document).ready(function(){
-	$("#search_box").autocomplete("/search/json_search/<%=@ontology.ontologyId%>", { lineSeparator:"~!~",matchSubset:0,minChars:3,maxItemsToShow:20,onFindValue:jumpToValue,formatItem:formatItem });
-	searchbox =  $("#search_box")[0].autocompleter;
+jQuery(document).ready(function(){
+	jQuery("#search_box").autocomplete("/search/json_search/<%=@ontology.ontologyId%>", { lineSeparator:"~!~",matchSubset:0,minChars:3,maxItemsToShow:20,onFindValue:jumpToValue,formatItem:formatItem });
+	searchbox = jQuery("#search_box")[0].autocompleter;
 
     <%if !@ontology.is_latest? %>
 	    // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
@@ -158,12 +158,10 @@ $(document).ready(function(){
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function(){
-	
-	
-//Auto loads the correct tab
- loc = new String(document.location)
-	if(loc.search("#t_tab")>=0){
+jQuery(document).ready(function() {
+	// Auto loads the correct tab
+	var loc = new String(document.location);
+	if (loc.search("#t_tab")>=0) {
 		jQuery(".tab_container").hide();
 		id = "#"+ loc.split("#")[1].replace(":","")
 		jQuery(id).show();
@@ -183,40 +181,30 @@ jQuery(document).ready(function(){
         }
 	}
 	
-	// the tab system
+	// The tab system
 	jQuery(".tab").click(function(){
-		
 		jQuery(".tab_container").hide();
 		target = jQuery(this).children("a:first").attr("href").replace(":","") 
 		jQuery(target).show();
 		jQuery(".tab").removeClass("selected");
 		jQuery(this).addClass("selected");
-
-//		return false;
 	});
 	
-	
 	//Resizer, due to css issues we're gonna rig it up to be set params
-//	$('#grab-point').resize({target:'#sidebar',y:false,x:450,min_width:300});
-
-	$('#grab-point').click(function(){
+	jQuery('#grab-point').click(function(){
+		var sidebar = jQuery("#sidebar");
+		var container = jQuery("#container");
 		
-		sidebar= $("#sidebar")
-		container = $("#container")
-		
-		if(sidebar.css("width")=="450px"){
+		if (sidebar.css("width") == "450px") {
 			sidebar.css("width","300px")
 			container.css("padding-left","301px")
-			$(this).css("background","url('/images/layout/bar-ext.gif') repeat-y")
-		}else{
+			jQuery(this).css("background","url('/images/layout/bar-ext.gif') repeat-y")
+		} else {
 			sidebar.css("width","450px")
 			container.css("padding-left","451px")
-			$(this).css("background","url('/images/layout/bar-con.gif') repeat-y")
+			jQuery(this).css("background","url('/images/layout/bar-con.gif') repeat-y")
 		}
-		
-	})
-	
-	
+	});
 });
 
 function callTab(tab_num,url){

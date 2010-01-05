@@ -1,8 +1,8 @@
 
 <!--  BEGIN Browser History required section -->
-<script src="http://keg.cs.uvic.ca/ncbo/searchui/history/history.js" language="javascript"></script>
-<link href="http://keg.cs.uvic.ca/ncbo/searchui/history/history.css" rel="stylesheet" type="text/css" />
-<script src="http://keg.cs.uvic.ca/ncbo/searchui/AC_OETags.js" language="javascript"></script>
+<script src="<%=$FLEX_URL%>/searchui/history/history.js" language="javascript"></script>
+<link href="<%=$FLEX_URL%>/searchui/history/history.css" rel="stylesheet" type="text/css" />
+<script src="<%=$FLEX_URL%>/searchui/AC_OETags.js" language="javascript"></script>
 <!--  END Browser History required section -->
 
 <script language="JavaScript" type="text/javascript">
@@ -45,7 +45,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
     var MMdoctitle = document.title;
 
 	AC_FL_RunContent(
-		"src", "http://keg.cs.uvic.ca/ncbo/searchui/playerProductInstall",
+		"src", "<%=$FLEX_URL%>/searchui/playerProductInstall",
 		"FlashVars", "MMredirectURL="+MMredirectURL+'&MMplayerType='+MMPlayerType+'&MMdoctitle='+MMdoctitle+"",
 		"width", "100%",
 		"height", "100%",
@@ -62,7 +62,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 	// if we've detected an acceptable version
 	// embed the Flash Content SWF when all tests are passed
 	AC_FL_RunContent(
-			"src", "http://keg.cs.uvic.ca/ncbo/searchui/Search?v=<%=$FLEX_VERSION%>",
+			"src", "<%=$FLEX_URL%>/searchui/Search?v=<%=$FLEX_VERSION%>",
 			"width", "100%",
 			"height", "100%",
 			"align", "middle",
@@ -87,11 +87,11 @@ if ( hasProductInstall && !hasRequestedVersion ) {
   	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 			id="Search" width="100%" height="100%"
 			codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-			<param name="movie" value="http://keg.cs.uvic.ca/ncbo/searchui/Search?v=<%=$FLEX_VERSION%>" />
+			<param name="movie" value="<%=$FLEX_URL%>/searchui/Search?v=<%=$FLEX_VERSION%>" />
 			<param name="quality" value="high" />
 			<param name="bgcolor" value="#ffffff" />
 			<param name="allowScriptAccess" value="always" />
-			<embed src="http://keg.cs.uvic.ca/ncbo/searchui/Search?v=<%=$FLEX_VERSION%>" quality="high" bgcolor="#ffffff"
+			<embed src="<%=$FLEX_URL%>/searchui/Search?v=<%=$FLEX_VERSION%>" quality="high" bgcolor="#ffffff"
 				width="100%" height="100%" name="Search" align="middle"
 				play="true"
 				loop="false"
