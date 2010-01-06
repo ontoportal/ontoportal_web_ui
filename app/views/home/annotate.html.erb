@@ -62,7 +62,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 		"name", "OBRUI",
 		"allowScriptAccess","sameDomain",
 		"type", "application/x-shockwave-flash",
-		"flashVars", "server=<%=$REST_URL%>/&redirecturl=http://<%=request.env["HTTP_HOST"]%>",
+		"flashVars", "server=<%=$REST_DOMAIN%>/&redirecturl=http://<%=request.env["HTTP_HOST"]%>",
 		"pluginspage", "http://www.adobe.com/go/getflashplayer"
 	);
 } else if (hasRequestedVersion) {
@@ -79,7 +79,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			"name", "OBRUI",
 			"allowScriptAccess","always",
 			"type", "application/x-shockwave-flash",
-			"flashVars", "server=<%=$REST_URL%>/&redirecturl=http://<%=request.env["HTTP_HOST"]%>",
+			"flashVars", "server=<%=$REST_DOMAIN%>/&redirecturl=http://<%=request.env["HTTP_HOST"]%>",
 			"pluginspage", "http://www.adobe.com/go/getflashplayer"
 	);
   } else {  // flash is too old or we can't detect the plugin

@@ -6,7 +6,7 @@
 		<param name="quality" value="high" />
 		<param name="bgcolor" value="#ffffff" />
 		<param name="allowScriptAccess" value="always" />
-		<param name=FlashVars value="ontology=<%=@ontology.id%>&nodeid=<%=@concept.id%>&server=<%=$REST_URL%>" />
+		<param name=FlashVars value="ontology=<%=@ontology.id%>&nodeid=<%=@concept.id%>&server=<%=$REST_DOMAIN%>" />
 		<embed src="<%=$FLEX_URL%>/flexviz/BasicFlexoViz.swf?v=<%=$FLEX_VERSION%>" bgcolor="#ffffff"
 			width="100%" height="450" name="BasicFlexoViz" align="middle"
 			play="true"
@@ -14,7 +14,7 @@
 			quality="high"
 			allowScriptAccess="always"
 			type="application/x-shockwave-flash"
-			flashVars="ontology=<%=@ontology.id%>&nodeid=<%=@concept.id%>&server=<%=$REST_URL%>"
+			flashVars="ontology=<%=@ontology.id%>&nodeid=<%=@concept.id%>&server=<%=$REST_DOMAIN%>"
 			pluginspage="http://www.adobe.com/go/getflashplayer">
 		</embed>
 </object>

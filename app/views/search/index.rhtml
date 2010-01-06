@@ -72,7 +72,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			"name", "Search",
 			"allowScriptAccess","always",
 			"type", "application/x-shockwave-flash",
-			"flashVars", "redirecturl=http://<%=request.env["HTTP_HOST"]%>/&server=<%=$REST_URL%>/&ontology=&search=",
+			"flashVars", "redirecturl=http://<%=request.env["HTTP_HOST"]%>/&server=<%=$REST_DOMAIN%>/&ontology=&search=",
 			"pluginspage", "http://www.adobe.com/go/getflashplayer"
 	);
   } else {  // flash is too old or we can't detect the plugin
@@ -97,7 +97,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 				loop="false"
 				allowScriptAccess="always"
 				type="application/x-shockwave-flash"
-				flashVars="redirecturl=http://<%=request.env['HTTP_HOST']%>/&server=<%=$REST_URL%>/&ontology=&search="
+				flashVars="redirecturl=http://<%=request.env['HTTP_HOST']%>/&server=<%=$REST_DOMAIN%>/&ontology=&search="
 				pluginspage="http://www.adobe.com/go/getflashplayer">
 			</embed>
 	</object>
