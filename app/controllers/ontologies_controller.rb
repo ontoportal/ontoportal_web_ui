@@ -156,6 +156,10 @@ class OntologiesController < ApplicationController
       return "Please provide an ontology id or concept id with an ontology id."
     end
     
+    if !params[:id].nil? && params[:id].empty?
+      params[:id] = nil
+    end
+    
     view = false
     if params[:view]
       view = true
@@ -184,9 +188,21 @@ class OntologiesController < ApplicationController
       
       # get the initial concept to display
       @concept = DataAccess.getNode(@ontology.id,@root.children.first.id,view)
+      
+      # Some ontologies have "too many children" at their root. These will not process and are handled here.
+      # TODO: This should use a proper error-handling technique with custom exceptions
+      if @concept.nil?
+        @error = "The requested term could not be found."
+        return
+      end
     else
       # if the id is coming from a param, use that to get concept
       @concept = DataAccess.getNode(@ontology.id,params[:id],view)
+      # TODO: This should use a proper error-handling technique with custom exceptions
+      if @concept.nil?
+        @error = "The requested term could not be found."
+        return
+      end
       
       # This handles special cases where a passed concept id is for a concept
       # that isn't browsable, usually a property for an ontology.
@@ -202,7 +218,7 @@ class OntologiesController < ApplicationController
     end
     
     # gets the initial mappings
-    @mappings =Mapping.find(:all, :conditions=>{:source_ont => @ontology.ontologyId, :source_id => @concept.id})
+    @mappings = Mapping.find(:all, :conditions=>{:source_ont => @ontology.ontologyId, :source_id => @concept.id})
     # builds the margin note tab
     @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_id, :concept_id => @concept.id,:parent_id =>nil})
     # needed to prepopulate the margin note

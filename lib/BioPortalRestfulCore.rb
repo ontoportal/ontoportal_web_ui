@@ -734,11 +734,19 @@ private
     rescue Exception=>e
       RAILS_DEFAULT_LOGGER.debug e.inspect
     end
-     
-    startTime = Time.now
-    parser = XML::Parser.io(rest)
-    doc = parser.parse
-    RAILS_DEFAULT_LOGGER.debug "Concept parse (#{Time.now - startTime})"
+    
+    begin
+      startTime = Time.now
+      parser = XML::Parser.io(rest)
+      doc = parser.parse
+      RAILS_DEFAULT_LOGGER.debug "Concept parse (#{Time.now - startTime})"
+    rescue Exception=>e
+      RAILS_DEFAULT_LOGGER.debug "getConcept error: #{e.message}"
+    end
+
+    if doc.nil?
+      return doc
+    end
 
     node = errorCheckLibXML(doc)
     
