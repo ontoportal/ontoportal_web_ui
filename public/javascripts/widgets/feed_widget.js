@@ -32,7 +32,7 @@ document.write("<div id='bp_feed_container'><ul id='bp_feed'></ul></div>");
 document.write("<a href='http://bioportal.bioontology.org'><img src='http://bioportal.bioontology.org/images/layout/logo_mini.png' border=0/></a>");
 $(document).ready(function(){
     
-    $.getJSON("http://bioportal.bioontology.org/syndication/rss?ontologies="+BP_ontology_id+"&limit=5&callback=?",function(data){
+    $.getJSON("/syndication/rss?ontologies="+BP_ontology_id+"&limit=5&callback=?",function(data){
         
         if (data.length<1){
             jQuery("#bp_feed").append("No new changes to the ontology");

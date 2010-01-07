@@ -66,7 +66,7 @@ class SyndicationController < ApplicationController
         json_response <<"{"
         json_response <<"title:'#{item[:title].split(" in ")[0]}',"
         json_response <<"link: '#{item[:link]}',"
-        json_response <<"description:'#{item[:description]}',"
+        json_response <<"description:'#{item[:description].gsub(/\n/, "\\n")}',"
         json_response <<"date:'#{item[:date].strftime("%m/%d/%y")}'"
         json_response <<"}"
         unless item.eql?(feed_items.last)
