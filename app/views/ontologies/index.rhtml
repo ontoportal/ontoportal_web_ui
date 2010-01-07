@@ -116,8 +116,7 @@ jQuery(document).ready(function() {
 group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Foundry</a>, or ontologies from the <a href = "https://cabig.nci.nih.gov/">Cancer 
 	Biomedical Informatics Grid (caBIG)</a>. <a href = "feed://syndication/rss">Subscribe to the BioPortal RSS feed</a> to receive 
 	alerts for submissions of new ontologies, new versions of ontologies, new notes, and new projects. You can subscribe to feeds for a specific ontology at 
-	the individual ontology page. Add a new biomedical ontology to BioPortal using the Submit New Ontology link (you need to  
-	<a href= "http://bioportal.bioontology.org/login">sign in</a>  to see this link).
+	the individual ontology page. Add a new biomedical ontology to BioPortal using the Submit New Ontology link.
 </p>
 
 
@@ -131,7 +130,7 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 		
 		<tr><th>Submit Ontology</th><td class="top">
 		<%if session[:user].nil? %>
-			<a href="/login">Submit New Ontology</a>
+			<a href="/login?redirect=/ontologies/new">Submit New Ontology</a>
 		<%else%>
 			<%=link_to "Submit New Ontology",new_ontology_path%>
 		<%end%></td>

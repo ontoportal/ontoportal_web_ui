@@ -4,7 +4,7 @@ class AdminController < ApplicationController
   
   def index
     unless !session[:user].nil? && session[:user].admin?
-      redirect_to :controller => 'login', :action => 'index'
+      redirect_to :controller => 'login', :action => 'index', :redirect => '/admin'
     end
 
     @cache = CACHE
