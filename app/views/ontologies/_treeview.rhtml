@@ -250,17 +250,16 @@ function nodeClicked(node_id,node_label) {
 	//sets the link next to the label
 	document.getElementById("link_label").firstChild.nextSibling.href="/visualize/"+currentOntology+"/?id="+encodeURIComponent(node_id);
 
-	setConcept(node_id) 
+	setConcept(node_id)
 	
 	if(getCache(node_id)!=null){
-		console.log("cached");
 		tabData = getCache(node_id)
 		jQuery('#visualization_content').html(tabData[0]);
 		jQuery('#details_content').html(tabData[1]);
 		jQuery('#notes_content').html(tabData[2]);
 		jQuery('#mappings_content').html(tabData[3]);
-		jQuery('#note_count_content').html('('+tabData[5]+')');
-		jQuery('#map_count_content').html('('+tabData[6]+')');
+		jQuery('#note_count').html('('+tabData[5]+')');
+		jQuery('#mapping_count').html('('+tabData[6]+')');
         // Load the resource index tab in background
         loc = new String(document.location)
         if (loc.search("#resource_index") >= 0 && loc.split("#") == "resource_index") {
@@ -272,7 +271,6 @@ function nodeClicked(node_id,node_label) {
 		
 
 	}else{
-		console.log("not cached");
 		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>' });
 		jQuery.get('/ajax_concepts/<%=@ontology.to_param%>/?id='+encodeURIComponent(node_id)+'&callback=load' ,
 		  function(data){
@@ -282,8 +280,8 @@ function nodeClicked(node_id,node_label) {
 			jQuery('#details_content').html(tabData[1]);
 			jQuery('#notes_content').html(tabData[2]);
 			jQuery('#mappings_content').html(tabData[3]);
-			jQuery('#note_count_content').html('('+tabData[5]+')');
-			jQuery('#map_count_content').html('('+tabData[6]+')');
+			jQuery('#note_count').html('('+tabData[5]+')');
+			jQuery('#mapping_count').html('('+tabData[6]+')');
 			
 			// Load the resource index tab in background
 			loc = new String(document.location)
