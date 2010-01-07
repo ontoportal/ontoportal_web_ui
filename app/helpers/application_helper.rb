@@ -92,7 +92,7 @@ module ApplicationHelper
               <div>
                #{notetext}"
                if session[:user].nil?
-                 output << "<div id=\"insert\"><a href=\"\/login?redirect=/visualize/#{@ontology.to_param}/?id=#{@concept.id}#t_tab3:\">Reply</a></div>"
+                 output << "<div id=\"insert\"><a href=\"\/login?redirect=/visualize/#{@ontology.to_param}/?id=#{@concept.id}#notes\">Reply</a></div>"
                else
                  if @modal
                     output << "<div id=\"insert\"><a href=\"#\"  onclick =\"document.getElementById('m_noteParent').value='#{note.id}';document.getElementById('m_note_subject#{key}').value='RE:#{note.subject}';jQuery('#modal_form').html(jQuery('#modal_comment').html());return false;\">Reply</a></div>"                

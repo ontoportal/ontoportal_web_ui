@@ -13,7 +13,7 @@ javascripts = "resetNoteForm(#{uniq});"
 <%if @modal%>
 <div id="modal_notes">
 <%else%>
-<div id ="notes">
+<div id ="margin_notes">
 <%end%>
 
 	<%if @margin_notes.size<1%>	
@@ -28,7 +28,7 @@ javascripts = "resetNoteForm(#{uniq});"
 <div id="buttons" style="clear:both;">
 <%if session[:user].nil? %>
 	<br>
-		<a href="/login?redirect=/visualize/<%=@ontology.to_param%>/?id=<%=@concept.id%>#t_tab3:">New Note</a>
+		<a href="/login?redirect=/visualize/<%=@ontology.to_param%>/?id=<%=@concept.id%>#notes">New Note</a>
 <%else%>
 <br>
 <%if @modal%>

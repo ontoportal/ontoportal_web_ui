@@ -138,19 +138,19 @@
 			
 			<div class="tabs">
 				<ul>
-						<li class="selected tab first" id="t_tab2_top"><a href="#t_tab2:">Details</a></li>
-						<li class="tab" id="t_tab1_top"><a  href="#t_tab1:">Visualization</a></li>
-			        	<li class="tab" id="t_tab3_top"><a  href="#t_tab3:">Notes <span id="note_count">(<%=@concept.note_count%>)</span></a></li>
-						<li class="tab" id="t_tab4_top"><a  href="#t_tab4:">Mappings <span id="map_count">(<%=@concept.mapping_count%>)</span></a></li>				
-						<li class="tab" id="t_tab5_top" onclick="callTab(5,'/resources/@ontology@/@concept@');"><a href="#t_tab5:" alt="callTab(5,'/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
+						<li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
+						<li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
+			        	<li class="tab" id="notes_top"><a href="#notes">Notes <span id="note_count">(<%=@concept.note_count%>)</span></a></li>
+						<li class="tab" id="mappings_top"><a href="#mappings">Mappings <span id="map_count">(<%=@concept.mapping_count%>)</span></a></li>				
+						<li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@/@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
 				</ul>
 			</div>
 			<div id="contents">
-	      	<div style="display:block;" class="tab_container" id="t_tab2"><%=render :partial =>'/concepts/details'%></div>
-					<div class="tab_container" id="t_tab1"><%=render :partial =>'/concepts/images'%></div>
-					<div class="tab_container" id="t_tab3"><%=render :partial =>'/margin_notes/show'%></div>
-					<div class="tab_container" id="t_tab4"><%=render :partial =>'/mappings/concept_mappings'%></div>
-					<div class="tab_container" id="t_tab5"></div>
+      			<div style="display:block;" class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
+				<div class="tab_container" id="visualization_content"><%=render :partial =>'/concepts/images'%></div>
+				<div class="tab_container" id="notes_content"><%=render :partial =>'/margin_notes/show'%></div>
+				<div class="tab_container" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
+				<div class="tab_container" id="resource_index_content"></div>
 			</div>
 		</div>
 		
@@ -161,36 +161,39 @@
 	jQuery(document).ready(function() {
 		// Auto loads the correct tab
 		var loc = new String(document.location);
-		if (loc.search("#t_tab")>=0) {
+		if (loc.search("#") >= 0) {
 			jQuery(".tab_container").hide();
-			id = "#"+ loc.split("#")[1].replace(":","")
-			jQuery(id).show();
+			id = "#" + loc.split("#")[1].replace(":","")
+			// The actual content to hide/show is in id_content
+			id_content = id + "_content";
+			jQuery(id_content).show();
 			jQuery(".tab").removeClass("selected");
-			jQuery(id+"_top").addClass("selected")
-			tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0))
+			jQuery(id+"_top").addClass("selected");
+			tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0));
 			tab_li.addClass("selected");
-			a = jQuery("a[href='"+id+":']")
+			a = jQuery("a[href='"+id+":']");
 			// Run code found in the alt attribute (this was being used to load the 
 			// resource index tab, I'm not sure it needs to be left in but we can
 			// address when we handle tab history down the road).
 			eval(a.attr("alt"));
 			// If we're on the resource index tab, load that specially
-	        loc = new String(document.location)
-	        if (loc.search("#t_tab") >= 0 && loc.split("#")[1].replace(":", "") == "t_tab5") {
-	            callTab(5, '/resources/@ontology@/@concept@');
+	        loc = new String(document.location);
+	        if (loc.search("#resource_index") >= 0 && loc.split("#")[1] == "resource_index") {
+	            callTab("resource_index", '/resources/@ontology@/@concept@');
 	        }
 		}
 		
 		// The tab system
 		jQuery(".tab").click(function(){
 			jQuery(".tab_container").hide();
-			target = jQuery(this).children("a:first").attr("href").replace(":","") 
+			// Get the target content area
+			target = jQuery(this).children("a:first").attr("href") + "_content"
 			jQuery(target).show();
 			jQuery(".tab").removeClass("selected");
 			jQuery(this).addClass("selected");
 		});
 		
-		//Resizer, due to css issues we're gonna rig it up to be set params
+		// Resizer, due to css issues we're gonna rig it up to be set params
 		jQuery('#grab-point').click(function(){
 			var sidebar = jQuery("#sidebar");
 			var container = jQuery("#container");
@@ -207,24 +210,24 @@
 		});
 	});
 	
-	function callTab(tab_num,url){
-			if(getCache(getConcept() + tab_num) != null) {
-		        document.getElementById("t_tab"+tab_num).innerHTML=getCache(getConcept() + tab_num);
+	function callTab(tab_name,url){
+			if(getCache(getConcept() + tab_name) != null) {
+		        document.getElementById(tab_name + "_content").innerHTML=getCache(getConcept() + tab_name);
 		    }else{
-				jQuery("#t_tab"+tab_num).html('<h1><img src="/images/tree/spinner.gif" /> Loading Resources...</h1>');
+				jQuery("#"+tab_name).html('<h1><img src="/images/tree/spinner.gif" /> Loading Resources...</h1>');
 	    		jQuery.get(url.replace("@ontology@",getOntology()).replace("@concept@",getConcept()),function(data){
 					// This was setting the cache improperly, not sure what it's actually supposed to do
 					//if (getCache(getConcept())!=null){
 				    //	getCache(getConcept())[6]=data;
 			    	//}
-					jQuery("#t_tab"+tab_num).html(data);
-					setCache(getConcept() + tab_num,data);
+					jQuery("#" + tab_name + "_content").html(data);
+					setCache(getConcept() + tab_name,data);
 					jQuery.unblockUI();	
 					tb_init('a.thickbox, area.thickbox, input.thickbox');
 				});
 			}
+			console.log(tab_name + "_content",this);
 	}
-	
 	
 	
 	

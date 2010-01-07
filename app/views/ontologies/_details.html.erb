@@ -150,7 +150,7 @@
             <ul id="notes" style="border-top:1px solid #C1DAD7;border-bottom:1px solid #C1DAD7;width:300px;padding:10px">
                 <%for note in @notes %>
                 <li value="<%=note[1]%>">
-                    <a href="/visualize/<%=@ontology.id%>/<%=note[0]%>#t_tab3:"><%=note[0] %></a>
+                    <a href="/visualize/<%=@ontology.id%>/<%=note[0]%>#notes"><%=note[0] %></a>
                 </li>
                 <%end %>
             </ul>
@@ -161,7 +161,7 @@
             <ul id="mappings" style="border-top: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; width: 300px; padding: 10px">
                 <%for mapping in @mappings %>
                 <li value="<%=mapping[1]%>">
-                    <a href="/visualize/<%=@ontology.id%>/<%=mapping[0]%>#t_tab4:"><%=mapping[2] %></a>
+                    <a href="/visualize/<%=@ontology.id%>/<%=mapping[0]%>#mappings"><%=mapping[2] %></a>
                 </li>
                 <%end %>
             </ul>
