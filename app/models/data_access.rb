@@ -90,6 +90,17 @@ class DataAccess
     return found_user              
   end
   
+  def self.getUserByUsername(username)
+    found_user = nil
+    users = self.getUsers
+    for user in users
+      if user.username.eql?(username)
+        found_user = user
+      end
+    end
+    return found_user              
+  end
+  
   def self.getUser(user_id)
     params = { :user_id => user_id }
     return self.cache_pull("user::#{user_id}", "getUser", params)

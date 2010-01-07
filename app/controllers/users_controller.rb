@@ -95,32 +95,31 @@ private
   
   def validate(params)
     errors=[]
-    if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
-      errors << "Please Enter an Email Address"
-    end
-    
     if !params[:phone].nil? && params[:phone].length >0 
       if  !params[:phone].match(/^(1\s*[-\/\.]?)?(\((\d{3})\)|(\d{3}))\s*[-\/\.]?\s*(\d{3})\s*[-\/\.]?\s*(\d{4})\s*(([xX]|[eE][xX][tT])\.?\s*(\d+))*$/i)
         errors << "Please enter a valid phone number"
       end
     end
-    if params[:email_confirmation].nil? || params[:email_confirmation].length <1 
-      errors << "Please Confirm Your Email Address"
+    if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
+      errors << "Please enter an email address"
     end
     if !params[:email].eql?(params[:email_confirmation])
-      errors << "Your Email and Email Confirmation Do Not Match"
+      errors << "Your Email and Email Confirmation do not match"
     end
-    if params[:username].nil? || params[:username].length <1
-      errors << "Please Enter a User Name"
+    if !params[:username].nil? || !params[:username].length < 1
+      existing_user = DataAccess.getUserByUsername(params[:username])
+      if existing_user
+        errors << "Username exists, please choose a new one"
+      end
     end
-    if params[:password].nil? || params[:password].length <1
-      errors << "Please Enter a Password"
+    if params[:username].nil? || params[:username].length < 1
+      errors << "Please enter a username"
     end
-    if params[:password_confirmation].nil? || params[:password_confirmation].length <1
-      errors << "Please Confirm Your Password"
+    if params[:password].nil? || params[:password].length < 1
+      errors << "Please enter a password"
     end
     if !params[:password].eql?(params[:password_confirmation])
-      errors << "Your Password and Password Confirmation Do Not Match"
+      errors << "Your Password and Password Confirmation do not match"
     end
     # verify_recaptcha is a method provided by the recaptcha plugin, returns true or false.
     if ENV['USE_RECAPTCHA'] == 'true'
