@@ -156,7 +156,6 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 		<option value="0" <%if params[:filter].nil?%>selected="selected"<%end%> >All Groups</option>
 			
 			<% @groups.group_list.each do |group_id, group| %>
-			<% puts "test" %>
 				<option value="<%=group[:acronym]%>" <%if !params[:filter].nil? && group[:acronym].include?(params[:filter])%>selected="selected"<%end%>><%=group[:name]%> (<%=group[:acronym]%>)</option>
 			<%end%>
 	</select> <a href="/ontologies<%if !params[:filter].nil?%>/?filter=<%=params[:filter]%><%end%>" id="filterlink">Link To This Filter</a></td>

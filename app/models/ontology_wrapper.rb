@@ -173,7 +173,6 @@ class OntologyWrapper
   # Provides a link or string based on the status of an ontology.
   ##
   def get_visualize_link
-    RAILS_DEFAULT_LOGGER.debug self.statusId.to_i
     case self.statusId.to_i
     when 1 # Ontology is parsing
     when 2

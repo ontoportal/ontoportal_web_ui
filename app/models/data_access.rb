@@ -2,245 +2,81 @@ require 'BioPortalRestfulCore'
 require "digest/sha1"
 
 class DataAccess
-  SERVICE = BioPortalRestfulCore #sets what backend we are using
+  # Sets what backend we are using
+  SERVICE = BioPortalRestfulCore
   
-  CACHE_EXPIRE_TIME=60*60*1
+  # Last multiplicand is number of hours 
+  CACHE_EXPIRE_TIME = 60*60*4
+  SHORT_CACHE_EXPIRE_TIME = 60*60*1
+  LONG_CACHE_EXPIRE_TIME = 60*60*24
   NO_CACHE = false
-    
-  def self.getNode(ontology,node_id,view = false) 
-    view_string=''
-    if view
-      view_string = 'view_'
-    end
-    
-    if CACHE.get("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}").nil? || NO_CACHE
-      node = SERVICE.getNode(ontology,node_id,view)
-      unless  node.kind_of?(Hash) && node[:error]
-        CACHE.set("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}",node,CACHE_EXPIRE_TIME)
-      end
-      return node
-    else
-      return CACHE.get("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}")
-    end
+  
+  def self.getNode(ontology_id, node_id, view = false) 
+    view_string = view ? "view_" : ""
+    params = { :ontology_id => ontology_id, :node_id => node_id, :view => view}
+    return self.cache_pull("#{view_string}#{param(ontology_id)}::#{node_id.gsub(" ","%20")}", "getNode", params)
   end
 
-  def self.getLightNode(ontology,node_id,view = false) 
-    view_string=''
-    if view
-      view_string = 'view_'
-    end
-    
-    if CACHE.get("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}_light").nil? || NO_CACHE
-      node = SERVICE.getLightNode(ontology,node_id,view)
-      unless  node.kind_of?(Hash) && node[:error]
-        CACHE.set("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}_light",node,CACHE_EXPIRE_TIME)
-      end
-      return node
-    else
-      return CACHE.get("#{view_string}#{param(ontology)}::#{node_id.gsub(" ","%20")}_light")
-    end
+  def self.getLightNode(ontology_id, node_id, view = false) 
+    view_string = view ? "view_" : ""
+    params = { :ontology_id => ontology_id, :node_id => node_id, :view => view}
+    return self.cache_pull("#{view_string}#{param(ontology_id)}::#{node_id.gsub(" ","%20")}_light", "getLightNode", params)
   end
-    
+  
   def self.getView(view_id)
-    if CACHE.get("view::#{param(view_id)}").nil? || NO_CACHE
-      view = SERVICE.getView(view_id)
-      unless view.kind_of?(Hash) && view[:error]
-        CACHE.set("view::#{param(view_id)}",view,CACHE_EXPIRE_TIME)
-      end
-      return view
-    else
-      return CACHE.get("view::#{param(view_id)}")
-    end            
+    params = { :view_id => view_id }
+    return self.cache_pull("view::#{param(view_id)}", "getView", params)
   end
-
-  def self.getViews(ont_id)
-    if CACHE.get("views::#{param(ont_id)}").nil? || NO_CACHE
-      views = SERVICE.getViews(ont_id)
-      unless views.kind_of?(Hash) && views[:error]
-        CACHE.set("views::#{param(ont_id)}",views,CACHE_EXPIRE_TIME)
-      end
-      return views
-    else
-      return CACHE.get("views::#{param(ont_id)}")
-    end            
+  
+  def self.getViews(ontology_id)
+    params = { :ontology_id => ontology_id }
+    return self.cache_pull("views::#{param(ontology_id)}", "getViews", params)
   end
-    
-  def self.getTopLevelNodes(ontology,view=false)
-
-    view_string=''
-    if view
-      view_string = 'view_'
-    end
-    
-    if CACHE.get("#{view_string}#{param(ontology)}::_top").nil? || NO_CACHE
-      topNodes = SERVICE.getTopLevelNodes(ontology,view)
-      unless topNodes.kind_of?(Hash) && topNodes[:error] 
-        CACHE.set("#{view_string}#{param(ontology)}::_top",topNodes,CACHE_EXPIRE_TIME)
-      end
-      return topNodes
-    else
-      return CACHE.get("#{view_string}#{param(ontology)}::_top")
-    end
+  
+  def self.getTopLevelNodes(ontology_id, view = false)
+    view_string = view ? "view_" : ""
+    params = { :ontology_id => ontology_id, :view => view }
+    return self.cache_pull("#{view_string}#{param(ontology_id)}::_top", "getTopLevelNodes", params)
   end
-    
+  
   def self.getOntologyList
-#    puts "Calling DataAccess.getOntologyList()"
-    if CACHE.get("ont_list").nil? || NO_CACHE
-      list = SERVICE.getOntologyList
-      
-      unless list.kind_of?(Hash)  && list[:error] 
-        for item in list
-          item.preload_ontology            
-        end
-        CACHE.set("ont_list",list,CACHE_EXPIRE_TIME)
-      end
-      
-      return list
-    else
-      return CACHE.get("ont_list")
-    end
+    return self.cache_pull("ont_list", "getOntologyList", nil)
   end
-
+  
   def self.getCategories
-    # puts "Calling DataAccess.getCategories()"
-    if CACHE.get("categories").nil? || NO_CACHE
-      list = SERVICE.getCategories
-      
-      unless list.kind_of?(Hash)  && list[:error]         
-        CACHE.set("categories",list,CACHE_EXPIRE_TIME)
-      end
-      
-      return list
-    else
-      return CACHE.get("categories")
-    end
+    return self.cache_pull("categories", "getCategories", nil)
   end
-
+  
   def self.getGroups
-    if CACHE.get("groups").nil? || NO_CACHE
-      groups = SERVICE.getGroups
-      
-      unless groups.kind_of?(Hash)  && groups[:error]         
-        CACHE.set("groups",groups,CACHE_EXPIRE_TIME)
-      end
-      
-      return groups
-    else
-      return CACHE.get("groups")
-    end
+    return self.cache_pull("groups", "getGroups", nil)
   end
-    
+  
   def self.getActiveOntologies
-    # puts "Calling DataAccess.getActiveOntologies()"
-    if CACHE.get("act_ont_list").nil? || NO_CACHE
-      list = SERVICE.getOntologyList
-      unless list.kind_of?(Hash) && list[:error]
-        activeOntologies = []
-        for item in list
-          if item.statusId.to_i.eql?(3)
-            activeOntologies << item
-          end
-        end
-        CACHE.set("act_ont_list",activeOntologies,CACHE_EXPIRE_TIME)
-        list = activeOntologies
-      end
-      return list
-    else
-      return CACHE.get("act_ont_list")
-    end
+    return self.cache_pull("act_ont_list", "getActiveOntologyList", nil)
   end
-
-  def self.getOntologyVersions(ontology)
-    if CACHE.get("#{ontology}::_versions").nil? || NO_CACHE
-     details = SERVICE.getOntologyVersions(ontology)
-      unless details.kind_of?(Hash) && details[:error]
-        CACHE.set("#{ontology}::_versions",details,CACHE_EXPIRE_TIME)
-      end
-      return details
-    else
-      return CACHE.get("#{ontology}::_versions")
-    end
+  
+  def self.getOntologyVersions(ontology_virtual_id)
+    params = { :ontology_virtual_id => ontology_virtual_id }
+    return self.cache_pull("#{ontology_virtual_id}::_versions", "getOntologyVersions", params)
   end
-
-
-  def self.getOntology(ontology)
-    # puts "Calling DataAccess.getOntology(#{ontology})"
-    if CACHE.get("#{ontology}::_details").nil? || NO_CACHE
-      details = SERVICE.getOntology(ontology)
-      unless details.kind_of?(Hash) && details[:error]
-        CACHE.set("#{ontology}::_details",details,CACHE_EXPIRE_TIME)
-      end        
-      return details
-    else
-      return CACHE.get("#{ontology}::_details")
-    end
+  
+  def self.getOntology(ontology_id)
+    params = { :ontology_id => ontology_id }
+    return self.cache_pull("#{ontology_id}::_details", "getOntology", params)
   end
-    
-  def self.getOntologyMetrics(ontology)
-    if CACHE.get("#{ontology}::_metrics").nil? || NO_CACHE
-      metrics = SERVICE.getOntologyMetrics(ontology)
-      unless metrics.kind_of?(Hash) && metrics[:error]
-        CACHE.set("#{ontology}::_metrics",metrics,CACHE_EXPIRE_TIME)
-      end        
-      return metrics
-    else
-      return CACHE.get("#{ontology}::_metrics")
-    end
+  
+  def self.getOntologyMetrics(ontology_id)
+    params = { :ontology_id => ontology_id }
+    return self.cache_pull("#{ontology_id}::_metrics", "getOntologyMetrics", params)
   end
-    
-  def self.getLatestOntology(ontology)
-    # puts "Calling DataAccess.getLatestOntology(#{ontology})"
-    if CACHE.get("#{ontology}::_latest").nil? || NO_CACHE
-      details = SERVICE.getLatestOntology(ontology)
-      unless details.kind_of?(Hash) && details[:error]
-        CACHE.set("#{ontology}::_latest",details,CACHE_EXPIRE_TIME)
-      end        
-      return details
-    else
-      return CACHE.get("#{ontology}::_latest")
-    end
+  
+  def self.getLatestOntology(ontology_virtual_id)
+    params = { :ontology_virtual_id => ontology_virtual_id }
+    return self.cache_pull("#{ontology_virtual_id}::_latest", "getLatestOntology", params)
   end
-
-  def self.getNodeNameExact(ontologies,search,page)
-    # prevents long keys
-    # cache_key = Digest::SHA1.hexdigest("#{param(ontologies.join("|"))}::_searchsound::#{param(search)}");
-
-    # if CACHE.get(cache_key).nil? || NO_CACHE
-        results,pages = SERVICE.getNodeNameExact(ontologies,search,page)
-        # unless results.kind_of?(Hash) && results[:error]
-          # CACHE.set(cache_key,results)
-        # end
-        return results,pages
-    # else
-      # return CACHE.get(cache_key)
-    # end
-  end
-
-  def self.getNodeNameContains(ontologies,search,page) 
-    # prevents long keys
-    # cache_key = Digest::SHA1.hexdigest("#{param(ontologies.join("|"))}::_search::#{param(search)}")
-         
-    # if CACHE.get(cache_key).nil? || NO_CACHE
-      results,pages = SERVICE.getNodeNameContains(ontologies,search,page)
-    # unless results.kind_of?(Hash) && results[:error]
-      # CACHE.set(cache_key,results)
-    # end
-    return results,pages
-    # else
-      # return CACHE.get(cache_key)
-    # end
-  end
-
+  
   def self.getUsers
-    if CACHE.get("user_list").nil? || NO_CACHE
-      results = SERVICE.getUsers  
-      unless results.kind_of?(Hash) && results[:error]
-        CACHE.set("user_list",results)
-      end        
-      return results
-    else
-      return CACHE.get("user_list")
-    end
+    return self.cache_pull("user_list", "getUsers", nil, LONG_CACHE_EXPIRE_TIME)
   end
   
   def self.getUserByEmail(email)
@@ -248,44 +84,35 @@ class DataAccess
     users = self.getUsers
     for user in users
       if user.email.eql?(email)
-         found_user = user
+        found_user = user
       end
     end
     return found_user              
   end
-    
-    
+  
   def self.getUser(user_id)
-    if CACHE.get("user::#{user_id}").nil? || NO_CACHE
-       results = SERVICE.getUser(user_id)
-       #puts results.inspect
-       unless results.kind_of?(Hash) && results[:error]
-         CACHE.set("user::#{user_id}",results)
-       end        
-       return results
-    else
-      return CACHE.get("user::#{user_id}")
-    end
+    params = { :user_id => user_id }
+    return self.cache_pull("user::#{user_id}", "getUser", params)
   end
-
-  def self.authenticateUser(username,password)    
-    user = SERVICE.authenticateUser(username,password)
+  
+  def self.authenticateUser(username, password)    
+    user = SERVICE.authenticateUser(username, password)
     return user
   end
-    
+  
   def self.createUser(params)    
     user = SERVICE.createUser(params)
     CACHE.delete("user_list")
     return user
   end
-    
-   def self.updateUser(params,id)
-    user = SERVICE.updateUser(params,id)
+  
+  def self.updateUser(params, user_id)
+    user = SERVICE.updateUser(params, user_id)
     CACHE.delete("user_list")
-    CACHE.delete("user::#{id}")
+    CACHE.delete("user::#{user_id}")
     return user
   end
-    
+  
   def self.createOntology(params)
     ontology = SERVICE.createOntology(params)
     CACHE.delete("act_ont_list")
@@ -296,81 +123,53 @@ class DataAccess
     end
     return ontology
   end
-    
-  def self.updateOntology(params,version_id)
-    # puts "UPDATING ONTOLOGY #{params.inspect}"
-    ontology = SERVICE.updateOntology(params,version_id)
-    CACHE.delete("#{version_id}::_details")
+  
+  def self.updateOntology(params, ontology_id)
+    ontology = SERVICE.updateOntology(params, ontology_id)
+    CACHE.delete("#{ontology_id}::_details")
     CACHE.delete("ont_list")
     unless(params[:ontologyId].nil?)
       CACHE.delete("#{params[:ontologyId]}::_versions")
     end
     return ontology
   end
-    
-  def self.download(id)
-    return SERVICE.download(id)
-  end
-    
-  def self.getAttributeValueContains(ontologies,search,page)
-    # if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}").nil? || NO_CACHE
-      results,pages = SERVICE.getAttributeValueContains(ontologies,search,page)
-      # CACHE.set("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}",results)
-      return results,pages
-    # else
-      # return CACHE.get("#{param(ontologies.join("|"))}::_searchAttrCont::#{param(search)}")
-    # end
-  end
-    
-  def self.getAttributeValueExact(ontologies,search,page)
-    # if CACHE.get("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}").nil? || NO_CACHE
-      results,pages = SERVICE.getAttributeValueExact(ontologies,search,page)
-      # CACHE.set("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}",results)
-      return results,pages
-    # else
-      # return CACHE.get("#{param(ontologies.join("|"))}::_searchAttrSound::#{param(search)}")
-    # end
-  end
-
-#    def self.getNetworkNeighborhoodImage(ontology,node_id,associations=nil)
-#      if CACHE.get("#{param(ontology)}::#{node_id}_nnImage::#{associations}").nil?
-#        image = SERVICE.getNetworkNeighborhoodImage(ontology,node_id,associations) 
-#        CACHE.set("#{param(ontology)}::#{node_id}_nnImage::#{associations}",image)
-#        return image
-#      else
-#        return CACHE.get("#{param(ontology)}::#{node_id}_nnImage::#{associations}")
-#      end
-#    end
-    
-#    def self.getPathToRootImage(ontology,node_id,associations=nil)
-#      if CACHE.get("#{param(ontology)}::#{node_id}_ptrImage::#{associations}").nil?
-#        image = SERVICE.getPathToRootImage(ontology,node_id,associations) 
-#        CACHE.set("#{param(ontology)}::#{node_id}_ptrImage::#{associations}",image)
-#        return image
-#      else
-#        return CACHE.get("#{param(ontology)}::#{node_id}_ptrImage::#{associations}")
-#      end
-#    end
-    
-  def self.getPathToRoot(ontology,source)
-    if CACHE.get("#{param(ontology)}::#{source.gsub(" ","%20")}_path_to_root").nil? || NO_CACHE
-      path = SERVICE.getPathToRoot(ontology,source)
-      unless  path.kind_of?(Hash) && path[:error]
-        CACHE.set("#{param(ontology)}::#{source.gsub(" ","%20")}_path_to_root",path,CACHE_EXPIRE_TIME)
-      end
-      return path
-    else
-      return CACHE.get("#{param(ontology)}::#{source.gsub(" ","%20")}_path_to_root")
-    end
+  
+  def self.download(ontology_id)
+    return SERVICE.download(ontology_id)
   end
   
+  def self.getPathToRoot(ontology_id, source)
+    params = { :ontology_id => ontology_id, :source => source }
+    return self.cache_pull("#{param(ontology_id)}::#{source.gsub(" ","%20")}_path_to_root", "getPathToRoot", params)
+  end
+  
+  def self.getDiffs(ontology_id)
+    pairs = SERVICE.getDiffs(ontology_id)
+    return pairs
+  end
+  
+private
+
   def self.param(string)
     return string.to_s.gsub(" ","_")
   end
    
-  def self.getDiffs(ontology)
-    pairs = SERVICE.getDiffs(ontology)
-    return pairs
+  def self.cache_pull(token, service_call, params, expires = CACHE_EXPIRE_TIME)
+    if NO_CACHE || CACHE.get(token).nil?
+      if params
+        retrieved_object = SERVICE.send(:"#{service_call}", params)
+      else
+        retrieved_object = SERVICE.send(:"#{service_call}")
+      end
+      
+      unless retrieved_object.kind_of?(Hash) && retrieved_object[:error]
+        CACHE.set(token, retrieved_object, expires)
+      end
+      
+      return retrieved_object
+    else
+      return CACHE.get(token)
+    end
   end
   
 end
