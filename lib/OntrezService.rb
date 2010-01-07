@@ -53,6 +53,7 @@ class OntrezService
       new_resource.main_context = resource.elements["mainContext"].get_text.value
       resources << new_resource
     }
+    
     RAILS_DEFAULT_LOGGER.debug "Resources parsed (#{Time.now - startGet})"
 
     RAILS_DEFAULT_LOGGER.debug "Retrieve annotations for #{concept_id}"
@@ -82,10 +83,9 @@ class OntrezService
     end
     RAILS_DEFAULT_LOGGER.debug "Annotations parsed (#{Time.now - startGet})"
 
+    resources.sort! { |x,y| x.name.downcase <=> y.name.downcase }
 
-    RAILS_DEFAULT_LOGGER.debug "Resources: \n #{resources.inspect}"
     return resources
-
   end
 
 
