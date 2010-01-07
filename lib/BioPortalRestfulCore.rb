@@ -234,7 +234,7 @@ class BioPortalRestfulCore
       return ontologies
     end
     
-    ontologies=[]
+    ontologies = []
     
     doc.elements.each("*/data/list/ontologyBean"){ |element|  
       ontologies << parseOntology(element)

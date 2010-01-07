@@ -1,6 +1,6 @@
 <div id="metadata_content" class="tab_content">
     <div style="width:100%;min-width:900px">
-        <div style="float:left;width:60%;overflow:hidden;min-width:550px">
+        <div style="float: left; width: 60%; overflow: hidden; min-width: 550px">
             <br/>
             <table class="form" width="100%">
                 <tr>
@@ -112,40 +112,40 @@
                 </thead>
                 <%
                 @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
-                for version in @versions %>
-                <tr<%=cycle("","class='alt'") %>>
-                    <td>
-                        <%=version.versionNumber %>
-                    </td>
-                    <td>
-                        <%=version.dateReleased %>
-                    </td>
-                    <td>
-                        <% if version.isRemote.to_i.eql?(1) %><a href="<%=@ontology.homepage%>">
-                        <%else %><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download Ontology</a>
-                        <%end %>
-                    </td>
-                    <td>
-                        <%= version.get_visualize_link %>
-                    </td>
-                    <td>
-                        <% for diff in @diffs %>
-                        <%if diff[1].to_i.eql?(version.id.to_i) %>
-                        Download Diff with previous version 
-                        <br/>
-                        ( <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=txt">Txt</a>
-                        | <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=rdf">RDF</a>
-                        )<%end %>
-                        <%end %>
-                        &nbsp;
-                    </td>
-                </tr>
-                <%end %>
+                @versions.each_with_index do |version, index| %>
+	                <tr <%=cycle("", "class='alt'") %>>
+	                    <td>
+	                        <%=version.versionNumber %>
+	                    </td>
+	                    <td>
+	                        <%=version.dateReleased %>
+	                    </td>
+	                    <td>
+	                        <% if version.isRemote.to_i.eql?(1) %><a href="<%=@ontology.homepage%>">
+	                        <%else %><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download Ontology</a>
+	                        <%end %>
+	                    </td>
+	                    <td>
+	                        <%= version.get_visualize_link %>
+	                    </td>
+	                    <td>
+	                        <% for diff in @diffs %>
+		                        <%if diff[1].to_i.eql?(version.id.to_i) && diff[0].to_i.eql?(@versions[index + 1].id.to_i) %>
+			                        Download Diff with previous version 
+			                        <br/>
+			                        ( <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=txt">Txt</a>
+			                        | <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=rdf">RDF</a>)
+		                        <%end %>
+	                        <%end %>
+	                        &nbsp;
+	                    </td>
+	                </tr>
+                <%end%>
             </table>
         </div>
-        <div style="float:left;width:300px;padding-left:10px;" id="tag_clouds">
+        <div style="float: left; width: 300px; padding-left: 10px;" id="tag_clouds">
             <h2>Notes</h2>
-            <%if @notes.size <1 %>
+            <%if @notes.size < 1 %>
             No Notes Created yet<%end %>
             <ul id="notes" style="border-top:1px solid #C1DAD7;border-bottom:1px solid #C1DAD7;width:300px;padding:10px">
                 <%for note in @notes %>
@@ -156,9 +156,9 @@
             </ul>
             <br/>
             <h2>Mappings</h2>
-            <%if @mappings.size <1 %>
+            <%if @mappings.size < 1 %>
             No Mappings Created yet<%end %>
-            <ul id="mappings" style="border-top:1px solid #C1DAD7;border-bottom:1px solid #C1DAD7;width:300px;padding:10px">
+            <ul id="mappings" style="border-top: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; width: 300px; padding: 10px">
                 <%for mapping in @mappings %>
                 <li value="<%=mapping[1]%>">
                     <a href="/visualize/<%=@ontology.id%>/<%=mapping[0]%>#t_tab4:"><%=mapping[2] %></a>
