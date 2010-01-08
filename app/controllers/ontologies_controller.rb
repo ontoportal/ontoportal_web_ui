@@ -48,6 +48,12 @@ class OntologiesController < ApplicationController
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     @metrics = DataAccess.getOntologyMetrics(@ontology.id)
     
+    # Check to see if the metrics are from the most recent ontology version
+    if !@metrics.id.eql?(@ontology.id)
+      @old_metrics = @metrics
+      @old_ontology = DataAccess.getOntology(@old_metrics.id)
+    end
+    
     @diffs = DataAccess.getDiffs(@ontology.ontologyId)
     
     note_tag_query = "select concept_id,count(concept_id) as con_count from margin_notes where ontology_id = #{@ontology.ontologyId} group by concept_id order by concept_id"

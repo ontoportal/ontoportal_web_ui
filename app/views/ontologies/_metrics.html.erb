@@ -9,8 +9,8 @@
 	<% if @metrics.nil? || @metrics.empty? %>
 		<h2 style="padding-left: 1em;">We have not yet calculated metrics for this ontology.</h2>
 	<% else %>
-		<% if !@metrics.id.eql?(@ontology.id) %>
-			<h3>Metrics are not available for the most recent version of this ontology. The metrics displayed below are for this <a href="/visualize/<%=@metrics.id%>">prior version</a>.</h3>
+		<% if @old_metrics %>
+			<h3>Metrics are not available for the most recent version of this ontology. The metrics displayed below are for the <a href="/visualize/<%=@old_metrics.id%>"><%=@old_ontology.displayLabel + " " + @old_ontology.versionNumber.to_s%></a> version.</h3>
 		<% end %>
 		<table class="form">
 			<!-- not calculated currently
