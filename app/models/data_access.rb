@@ -67,7 +67,29 @@ class DataAccess
   
   def self.getOntologyMetrics(ontology_id)
     params = { :ontology_id => ontology_id }
-    return self.cache_pull("#{ontology_id}::_metrics", "getOntologyMetrics", params)
+    
+    metrics = self.cache_pull("#{ontology_id}::_metrics", "getOntologyMetrics", params)
+    
+    # Check to see if there were valid metrics returned, else get older version 
+    if metrics.nil? || metrics.numberOfClasses.to_i <= 0
+      versions = self.getOntologyVersions(self.getOntology(ontology_id).ontologyId)
+      versions.sort! { |x, y| x.id <=> y.id }
+      versions.reverse!
+      versions.each_with_index do |version, index|
+        if version.id.eql?(ontology_id)
+          next
+        end
+        params = { :ontology_id => version.id }
+        metrics_old = self.cache_pull("#{version.id}::_metrics", "getOntologyMetrics", params)
+        if !metrics_old.nil? && metrics_old.numberOfClasses.to_i > 0
+          return metrics_old
+        elsif index >= 20 # 21 most recent versions are checked (3 weeks)
+          return nil
+        end
+      end
+    end
+    
+    return metrics
   end
   
   def self.getLatestOntology(ontology_virtual_id)

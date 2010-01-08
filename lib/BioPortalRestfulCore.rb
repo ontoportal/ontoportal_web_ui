@@ -269,13 +269,14 @@ class BioPortalRestfulCore
   # Used to retrieve data from back-end REST service, then parse from the resulting metrics bean.
   # Returns an OntologyMetricsWrapper object.
   ## 
-  def self.getOntologyMetrics(ontology)
+  def self.getOntologyMetrics(params)
+    ontology_id = params[:ontology_id]
     ont = nil
     
     RAILS_DEFAULT_LOGGER.debug "Retrieving ontology metrics"
-    RAILS_DEFAULT_LOGGER.debug BASE_URL + METRICS_PATH.gsub("%ONT%",ontology.to_s)+"?applicationid=#{APPLICATION_ID}"
+    RAILS_DEFAULT_LOGGER.debug BASE_URL + METRICS_PATH.gsub("%ONT%",ontology_id.to_s)+"?applicationid=#{APPLICATION_ID}"
     begin
-      doc = REXML::Document.new(open(BASE_URL + METRICS_PATH.gsub("%ONT%",ontology.to_s)+"?applicationid=#{APPLICATION_ID}"))
+      doc = REXML::Document.new(open(BASE_URL + METRICS_PATH.gsub("%ONT%",ontology_id.to_s)+"?applicationid=#{APPLICATION_ID}"))
     rescue Exception=>e
       RAILS_DEFAULT_LOGGER.debug "getOntologyMetrics error: #{e.message}"
       return ont
