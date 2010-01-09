@@ -49,7 +49,7 @@ class OntologiesController < ApplicationController
     @metrics = DataAccess.getOntologyMetrics(@ontology.id)
     
     # Check to see if the metrics are from the most recent ontology version
-    if !@metrics.id.eql?(@ontology.id)
+    if !@metrics.nil? && !@metrics.id.eql?(@ontology.id)
       @old_metrics = @metrics
       @old_ontology = DataAccess.getOntology(@old_metrics.id)
     end
