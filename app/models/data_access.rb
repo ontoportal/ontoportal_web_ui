@@ -101,6 +101,11 @@ class DataAccess
     return self.cache_pull("user_list", "getUsers", nil, LONG_CACHE_EXPIRE_TIME)
   end
   
+  def self.getNodeNameContains(ontologies,search,page) 
+    results,pages = SERVICE.getNodeNameContains(ontologies,search,page)
+    return results,pages
+  end
+
   def self.getUserByEmail(email)
     found_user = nil
     users = self.getUsers

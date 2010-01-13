@@ -21,6 +21,7 @@ class BioPortalRestfulCore
   
   CONCEPT_PATH ="/concepts/%ONT%/?conceptid=%CONC%"
   PATH_PATH = "/path/%ONT%/?source=%CONC%&target=root"
+  SEARCH_PATH="/search/%query%?%ONT%"
   
   VIEW_PATH = "/ontologies/%VIEW%"
   #VIEW_CONCEPT_PATH = "/concepts/view/%VIEW%/?conceptid=%CONC%"
@@ -341,7 +342,41 @@ class BioPortalRestfulCore
     
     return root
   end
-  
+
+      def self.getNodeNameContains(ontologies,search,page)
+        if ontologies.to_s.eql?("0")
+          ontologies=""
+        else
+          ontologies = "ontologyids=#{ontologies.join(",")}&"
+        end
+        
+        RAILS_DEFAULT_LOGGER.debug "####################################################"
+        RAILS_DEFAULT_LOGGER.debug BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15"
+        begin
+          doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15"))
+        rescue Exception=>e
+          doc =  REXML::Document.new(e.io.read)
+        end   
+
+        results = errorCheck(doc)
+        
+        unless results.nil?
+          return results
+        end 
+
+        results = []
+        doc.elements.each("*/data/page/contents"){ |element|  
+          results = parseSearchResults(element)
+        }
+
+        pages = 1
+        doc.elements.each("*/data/page"){|element|
+          pages = element.elements["numPages"].get_text.value
+        }
+        
+        return results,pages
+      end
+
   def self.getUsers()
     
     doc = REXML::Document.new(open(BASE_URL+USERS_PATH))
@@ -629,7 +664,29 @@ private
     res = Net::HTTP.post_form(URI.parse(url),paramsHash)
     return res.body
   end
-  
+
+  def self.parseSearchResults(searchContents)
+    
+    searchResults =[]
+    searchResultList = searchContents.elements["searchResultList"]
+    
+    searchResultList.elements.each("searchBean"){|searchBean|
+      search_item = {}
+      search_item[:ontologyDisplayLabel]=searchBean.elements["ontologyDisplayLabel"].get_text.value.strip
+      search_item[:ontologyVersionId]=searchBean.elements["ontologyVersionId"].get_text.value.strip
+      search_item[:ontologyId]=searchBean.elements["ontologyId"].get_text.value.strip
+      search_item[:ontologyDisplayLabel]=searchBean.elements["ontologyDisplayLabel"].get_text.value.strip
+      search_item[:recordType]=searchBean.elements["recordType"].get_text.value.strip
+      search_item[:conceptId]=searchBean.elements["conceptId"].get_text.value.strip
+      search_item[:conceptIdShort]=searchBean.elements["conceptIdShort"].get_text.value.strip
+      search_item[:preferredName]=searchBean.elements["preferredName"].get_text.value.strip
+      search_item[:contents]=searchBean.elements["contents"].get_text.value.strip
+      searchResults<< search_item
+    }
+    
+    return searchResults
+  end
+
   def self.parseCategory(categorybeanXML)
     category ={}
     category[:name]=categorybeanXML.elements["name"].get_text.value.strip rescue ""
