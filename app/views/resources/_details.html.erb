@@ -8,6 +8,7 @@ No data available for this version of the ontology.
     mgrep_first = true
     isa_first = true
     mapping_first = true
+	reported_first = true
 %>
 
     <%
@@ -23,7 +24,33 @@ No data available for this version of the ontology.
 			<%mgrep_first = false%>
 		<%end%>
 		<tr>
-			<td class="annot_text_head"><%=detail[:contextName]%></td>
+			<td class="annot_text_head"><%=detail[:contextNameDisplay]%></td>
+		</tr>
+		<tr>
+            <td class="annot_text">
+		      <div class="annot_info">Is direct: <%=detail[:isDirect]%> / Full results: <%=link_to "xml", @details[:rest_url]%></div>
+			  <%=detail[:contextString]%>
+			</td>
+		</tr>
+    <%
+        end # hash each
+    end # error checking
+    %>
+
+    <%
+    unless @details["obs.common.beans.ReportedContextBean"].nil?
+	   @details["obs.common.beans.ReportedContextBean"].each do |key, detail|
+    %>
+		<%if reported_first%>
+		    <thead>
+		        <tr>
+		            <th class="superhead">Reported annotations</th>
+		        </tr>
+		    </thead>
+			<%reported_first = false%>
+		<%end%>
+		<tr>
+			<td class="annot_text_head"><%=detail[:contextNameDisplay]%></td>
 		</tr>
 		<tr>
             <td class="annot_text">
@@ -49,7 +76,7 @@ No data available for this version of the ontology.
 		<%isa_first = false%>
 		<%end%>
         <tr>
-            <td class="annot_text_head"><%=detail[:contextName]%></td>
+            <td class="annot_text_head"><%=detail[:contextNameDisplay]%></td>
         </tr>
         <tr>
             <td class="annot_text">
@@ -76,7 +103,7 @@ No data available for this version of the ontology.
 		<%end%>
 		<tr>
         <tr>
-            <td class="annot_text_head"><%=detail[:contextName]%></td>
+            <td class="annot_text_head"><%=detail[:contextNameDisplay]%></td>
         </tr>
         <tr>
             <td class="annot_text">

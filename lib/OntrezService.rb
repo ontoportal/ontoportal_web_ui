@@ -4,28 +4,29 @@ require 'cgi'
 
 class OntrezService
   
-  #   \# = CONCEPT_ID
-  #    @ = Ontology Name
-  #  *R* = Resource Name
-  #   $S$= pageStart
-  #   $E$ = Page End
-  
+  # Tokens
+  # %CONC% = Concept Id
+  # %ELEMENT% = Element Id
+  # %ONT% = Ontology Name
+  # %RESOURCE% = Resource Name
+  # %S_PAGE% = Page Start
+  # %E_PAGE% = Page End
   
   ONTREZ_URL = $OBR_REST_URL
   
-  RESOURCE_BY_CONCEPT = "/byconcept/virtual/@/#/false/true/0/10"
-  VERSIONED_RESOURCE_BY_CONCEPT = "/byconcept/@/#/false/true/0/10"
-  PAGING_RESOURCE_BY_CONCEPT = "/byconcept/virtual/@/#/%/false/false/$S$/10"
-  VERSIONED_PAGING_RESOURCE_BY_CONCEPT = "/byconcept/@/#/%/false/false/$S$/10"
+  RESOURCE_BY_CONCEPT = "/byconcept/virtual/%ONT%/false/true/0/10?conceptID=%CONC%"
+  VERSIONED_RESOURCE_BY_CONCEPT = "/byconcept/%ONT%/false/true/0/10?conceptID=%CONC%"
+  PAGING_RESOURCE_BY_CONCEPT = "/byconcept/virtual/%ONT%/%RESOURCE%/false/false/%S_PAGE%/10?conceptID=%CONC%"
+  VERSIONED_PAGING_RESOURCE_BY_CONCEPT = "/byconcept/%ONT%/%RESOURCE%/false/false/%S_PAGE%/10?conceptID=%CONC%"
   RESOURCES = "/resources"
-  DETAILS = "/details/true/virtual/concept/@/#/resource/%/element/"
-  VERSIONED_DETAILS = "/details/true/concept/@/#/resource/%/element/"
+  DETAILS = "/details/true/virtual/concept/%ONT%/resource/%RESOURCE%/?conceptID=%CONC%&elementID=%ELEMENT%"
+  VERSIONED_DETAILS = "/details/true/concept/%ONT%/resource/%RESOURCE%/?conceptID=%CONC%&elementID=%ELEMENT%"
   
-  CLASS_STRING = "/result/ontology/@/classID/#/from/0/number/15/metadata"
-  CUI_STRING = "/result/cui/#/from/0/number/15/metadata"
-  NEXTBIO_URL = "http://www.nextbio.com/b/api/searchcount.api?q=#&details=true&apikey=2346462a645f102ba7f2001d096b4f04&type=study"
-  PAGING_CLASS_STRING = "/result/ontology/@/classID/#/from/$S$/number/$E$/resource/*R*/metadata"
-  PAGING_CUI_STRING = "/result/cui/#/from/$S$/number/$E$/resource/*R*/metadata"
+  CLASS_STRING = "/result/ontology/%ONT%/classID/from/0/number/15/metadata?conceptID=%CONC%"
+  CUI_STRING = "/result/cui/from/0/number/15/metadata?conceptID=%CONC%"
+  NEXTBIO_URL = "http://www.nextbio.com/b/api/searchcount.api?q=%CONC%&details=true&apikey=2346462a645f102ba7f2001d096b4f04&type=study"
+  PAGING_CLASS_STRING = "/result/ontology/%ONT%/classID/from/%S_PAGE%/number/%E_PAGE%/resource/%RESOURCE%/metadata?conceptID=%CONC%"
+  PAGING_CUI_STRING = "/result/cui/from/%S_PAGE%/number/%E_PAGE%/resource/%RESOURCE%/metadata?conceptID=%CONC%"
   
 
   def self.gatherResources(ontology_id,concept_id,latest,version_id)
@@ -53,15 +54,14 @@ class OntrezService
       new_resource.main_context = resource.elements["mainContext"].get_text.value
       resources << new_resource
     }
-    
     RAILS_DEFAULT_LOGGER.debug "Resources parsed (#{Time.now - startGet})"
 
     RAILS_DEFAULT_LOGGER.debug "Retrieve annotations for #{concept_id}"
-    RAILS_DEFAULT_LOGGER.debug ONTREZ_URL+resource_url.gsub("@",ont).gsub("#",CGI.escape(concept_id))
+    RAILS_DEFAULT_LOGGER.debug ONTREZ_URL+resource_url.gsub("%ONT%",ont).gsub("%CONC%",CGI.escape(concept_id))
     startGet = Time.now
     # this call gets the annotation numbers and the first 10 annotations for each resource
     begin
-      doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("@",ont).gsub("#",CGI.escape(concept_id))))
+      doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("%ONT%",ont).gsub("%CONC%",CGI.escape(concept_id))))
     rescue Exception => e
       RAILS_DEFAULT_LOGGER.debug e.inspect
     end
@@ -96,7 +96,7 @@ class OntrezService
     resource_url = latest ? DETAILS : VERSIONED_DETAILS
     ont = latest ? ontology_id : version_id
 
-    rest_url = ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("%",resource.strip).gsub("#",CGI.escape(concept_id))+element.strip
+    rest_url = ONTREZ_URL + resource_url.gsub("%ONT%",ont.to_s.strip).gsub("%RESOURCE%",resource.strip).gsub("%CONC%",CGI.escape(concept_id)).gsub("%ELEMENT%",CGI.escape(element.strip))
     
     RAILS_DEFAULT_LOGGER.debug "Details retrieve for #{concept_id}"
     RAILS_DEFAULT_LOGGER.debug rest_url
@@ -108,13 +108,10 @@ class OntrezService
       RAILS_DEFAULT_LOGGER.debug e.inspect
     end
 
-    #puts "Beginning Parsing"
-    #puts doc.inspect
+    time = Time.now
     resources = parseOBSDetails(doc,rest_url)
+    RAILS_DEFAULT_LOGGER.debug "Details parsing done (#{Time.now - time})"
 
-
-    #puts "Resources: \n #{resources.inspect}"
-    #puts "Finished Parsing"
     return resources
   end
 
@@ -125,8 +122,8 @@ class OntrezService
     ont = latest ? ontology_id : version_id
     
     RAILS_DEFAULT_LOGGER.debug "Page retrieve"
-    RAILS_DEFAULT_LOGGER.debug ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("#",CGI.escape(concept_id).strip).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name.strip)
-    doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("@",ont.to_s.strip).gsub("#",CGI.escape(concept_id).strip).gsub("$S$",page_start).gsub("$E$",page_end).gsub("%",resource_name.strip)))
+    RAILS_DEFAULT_LOGGER.debug ONTREZ_URL + resource_url.gsub("%ONT%",ont.to_s.strip).gsub("%CONC%",CGI.escape(concept_id).strip).gsub("%S_PAGE%",page_start).gsub("%E_PAGE%",page_end).gsub("%RESOURCE%",resource_name.strip)
+    doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("%ONT%",ont.to_s.strip).gsub("%CONC%",CGI.escape(concept_id).strip).gsub("%S_PAGE%",page_start).gsub("%E_PAGE%",page_end).gsub("%RESOURCE%",resource_name.strip)))
 
     # new resource object with info from params
     new_resource = Resource.new
@@ -146,7 +143,7 @@ class OntrezService
   end
 
   def self.parseNextBio(text)
-    doc = REXML::Document.new(open(NEXTBIO_URL.gsub("#",text.gsub(" ","%20").gsub("_","%20"))))
+    doc = REXML::Document.new(open(NEXTBIO_URL.gsub("%CONC%",text.gsub(" ","%20").gsub("_","%20"))))
     resource = Resource.new   
     resource.context_numbers = {}
     resource.annotations = []
@@ -191,7 +188,7 @@ class OntrezService
   def self.gatherResourcesByCui(cui)
     resources = []
 
-    doc = REXML::Document.new(open(ONTREZ_URL+CUI_STRING.gsub("#",cui)))
+    doc = REXML::Document.new(open(ONTREZ_URL+CUI_STRING.gsub("%CONC%",cui)))
 
     resources = parseResources(doc)
 
@@ -261,7 +258,12 @@ private
       details[annot_class] = Hash.new unless !details[annot_class].nil?
       details[annot_class][context_name] = Hash.new unless !details[annot_class][context_name].nil?
       details[annot_class][context_name][:contextName] = context_name
+      details[annot_class][context_name][:contextNameDisplay] = context_name[context_name.index("_") + 1, context_name.length].gsub("_", " ").titleize
       details[annot_class][context_name][:isDirect] = context.elements["isDirect"].get_text.value
+      
+      # Get the annotation string for this context
+      contexts = annotation.elements["element/elementStructure/contexts"]
+      details[annot_class][context_name][:contextString] = contexts.elements["entry[string='" + context_name + "']/string[2]"].get_text.value
 
       case annot_class
       when "obs.common.beans.MgrepContextBean"
@@ -278,19 +280,9 @@ private
       when "obs.common.beans.MappingContextBean"
         details[annot_class][context_name][:mappedConceptID] = context.elements["mappedConceptID"].get_text.value
         details[annot_class][context_name][:mappingType] = context.elements["mappingType"].get_text.value
+      when "obs.common.beans.ReportedContextBean"
       end
     }
-    
-    # Get the string for mgrep annotations
-    details.each do |annot_type, annotations|
-      # We store the rest_url at the base of the hash, but we don't need to process
-      if annot_type.to_s.eql?("rest_url")
-        next
-      end
-      annotations.each do |context_name, annot_hash|
-        details[annot_type][context_name][:contextString] = doc.elements["//contexts/entry[string='" + context_name + "']/string[2]"].get_text.value
-      end
-    end
 
     return details
   end
