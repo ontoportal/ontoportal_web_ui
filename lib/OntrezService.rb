@@ -96,7 +96,7 @@ class OntrezService
     resource_url = latest ? DETAILS : VERSIONED_DETAILS
     ont = latest ? ontology_id : version_id
 
-    rest_url = ONTREZ_URL + resource_url.gsub("%ONT%",ont.to_s.strip).gsub("%RESOURCE%",resource.strip).gsub("%CONC%",CGI.escape(concept_id)).gsub("%ELEMENT%",CGI.escape(element.strip))
+    rest_url = ONTREZ_URL + resource_url.gsub("%ONT%",ont.to_s.strip).gsub("%RESOURCE%",resource.strip).gsub("%CONC%",CGI.escape(concept_id)).gsub("%ELEMENT%",CGI.escape(element))
     
     RAILS_DEFAULT_LOGGER.debug "Details retrieve for #{concept_id}"
     RAILS_DEFAULT_LOGGER.debug rest_url
@@ -211,7 +211,7 @@ private
       begin
         annotation = Annotation.new
         annotation.score = annotationXML.elements["score"].get_text.value
-        annotation.local_id = annotationXML.elements["localElementID"].get_text.value.strip
+        annotation.local_id = CGI.escape(annotationXML.elements["localElementID"].get_text.value).strip
         # We try to find the description with a non-reference xpath first.
         xpath = "element/elementStructure/contexts/entry[string='" + resource.main_context + "']/string[2]"
         # If that didn't work, revert to finding the description using provided relative xpath from the reference attr.
@@ -262,7 +262,14 @@ private
       details[annot_class][context_name][:isDirect] = context.elements["isDirect"].get_text.value
       
       # Get the annotation string for this context
-      contexts = annotation.elements["element/elementStructure/contexts"]
+      # Check if references are used
+      resource_element = annotation.elements["element"]
+      reference = resource_element.attributes["reference"] rescue nil
+      if reference
+        contexts = annotation.elements["../obs.common.beans.ObrAnnotationBeanDetailled/element/elementStructure/contexts"]
+      else
+        contexts = annotation.elements["element/elementStructure/contexts"]
+      end
       details[annot_class][context_name][:contextString] = contexts.elements["entry[string='" + context_name + "']/string[2]"].get_text.value
 
       case annot_class

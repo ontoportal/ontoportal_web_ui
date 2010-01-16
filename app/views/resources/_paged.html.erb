@@ -12,12 +12,12 @@
         
      <% for annotation in @resource.annotations%>
      <% # Generate a link to the Resource Element Service
-        resource_element_link = "http://rest.bioontology.org/resource_index/element/" + params[:resource] + "?element=" + CGI.escape(annotation.local_id)
+        resource_element_link = $OBR_REST_URL + "/element/" + params[:resource] + "?element=" + CGI.escape(annotation.local_id)
      %>
 	 <%color = cycle("","alt") %>
        <tr class="<%=color%>" >
           <td style="padding:3px;"><a class="thickbox" href="/res_details/<%=params[:concept]%>?ontology=<%=params[:ontology]%>&latest=<%=params[:latest]%>&version_id=<%=params[:version_id]%>&resource=<%=params[:resource]%>&element=<%=annotation.local_id%>&height=600&width=800"><%=annotation.description || "No description available"%></a></td>
-   	      <td style="padding:3px;"><a target="_blank" href="<%=resource_element_link%>"><%=annotation.local_id%></a></td>
+   	      <td style="padding:3px;"><a target="_blank" href="<%=resource_element_link%>"><%=CGI.unescape(annotation.local_id)%></a></td>
 	   </tr>
       
 	  <%end%>
