@@ -173,6 +173,11 @@ class OntologyWrapper
   # Provides a link or string based on the status of an ontology.
   ##
   def get_visualize_link
+    # one-off to fix OBO relationship types
+    if self.ontologyId = 1042
+      return ""
+    end
+    
     case self.statusId.to_i
     when 1 # Ontology is parsing
     when 2
