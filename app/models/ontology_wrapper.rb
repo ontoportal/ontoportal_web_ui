@@ -174,7 +174,7 @@ class OntologyWrapper
   ##
   def get_visualize_link
     # one-off to fix OBO relationship types
-    if self.ontologyId = 1042
+    if self.ontologyId.eql?("1042")
       return ""
     end
     
