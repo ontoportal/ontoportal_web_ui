@@ -72,6 +72,9 @@ $REST_PORT="8080"
 # Release version text (appears in footer of all pages, except 404 and 500 errors)
 $RELEASE_VERSION = ""
 
+# Google Analytics ID (optional)
+$ANALYTICS_ID = ""
+
 # Email address to mail when exceptions are raised
 ExceptionNotifier.exception_recipients = %w(recipient@domain.com) 
 
