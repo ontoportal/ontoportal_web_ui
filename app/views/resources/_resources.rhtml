@@ -37,7 +37,7 @@ its subclasses based on the textual descriptions of those records.
          if resource.name.eql?("NextBio")
             resource_element_link = annotation.url
          else # Generate a link to the Resource Element Service
-            resource_element_link = $OBR_REST_URL + "/element/" + resource.shortname + "?element=" + CGI.escape(annotation.local_id)
+            resource_element_link = $OBR_REST_URL + "/element/" + resource.shortname + "?element=" + annotation.local_id
          end         
 	  %>
 	  <%color = cycle("","alt") %>
