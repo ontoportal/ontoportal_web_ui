@@ -8,67 +8,61 @@ class DataAccess
   # Last multiplicand is number of hours 
   CACHE_EXPIRE_TIME = 60*60*4
   SHORT_CACHE_EXPIRE_TIME = 60*60*1
+  MEDIUM_CACHE_EXPIRE_TIME = 60*60*12
   LONG_CACHE_EXPIRE_TIME = 60*60*24
+  EXTENDED_CACHE_EXPIRE_TIME = 60*60*336 # two weeks
+
   NO_CACHE = false
   
   def self.getNode(ontology_id, node_id, view = false) 
     view_string = view ? "view_" : ""
-    params = { :ontology_id => ontology_id, :node_id => node_id, :view => view}
-    return self.cache_pull("#{view_string}#{param(ontology_id)}::#{node_id.gsub(" ","%20")}", "getNode", params)
+    return self.cache_pull("#{view_string}#{param(ontology_id)}::#{node_id.gsub(" ","%20")}", "getNode", { :ontology_id => ontology_id, :concept_id => node_id })
   end
 
-  def self.getLightNode(ontology_id, node_id, view = false) 
+  def self.getLightNode(ontology_id, node_id, view = false)
     view_string = view ? "view_" : ""
-    params = { :ontology_id => ontology_id, :node_id => node_id, :view => view}
-    return self.cache_pull("#{view_string}#{param(ontology_id)}::#{node_id.gsub(" ","%20")}_light", "getLightNode", params)
+    return self.cache_pull("#{view_string}#{param(ontology_id)}::#{node_id.gsub(" ","%20")}_light", "getLightNode", { :ontology_id => ontology_id, :concept_id => node_id })
   end
   
   def self.getView(view_id)
-    params = { :view_id => view_id }
-    return self.cache_pull("view::#{param(view_id)}", "getView", params)
+    return self.cache_pull("view::#{param(view_id)}", "getView", { :view_id => view_id })
   end
   
   def self.getViews(ontology_id)
-    params = { :ontology_id => ontology_id }
-    return self.cache_pull("views::#{param(ontology_id)}", "getViews", params)
+    return self.cache_pull("views::#{param(ontology_id)}", "getViews", { :ontology_id => ontology_id })
   end
   
   def self.getTopLevelNodes(ontology_id, view = false)
     view_string = view ? "view_" : ""
-    params = { :ontology_id => ontology_id, :view => view }
-    return self.cache_pull("#{view_string}#{param(ontology_id)}::_top", "getTopLevelNodes", params)
+    return self.cache_pull("#{view_string}#{param(ontology_id)}::_top", "getTopLevelNodes", { :ontology_id => ontology_id, :view => view })
   end
   
   def self.getOntologyList
-    return self.cache_pull("ont_list", "getOntologyList", nil)
+    return self.cache_pull("ont_list", "getOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
   end
   
   def self.getCategories
-    return self.cache_pull("categories", "getCategories", nil)
+    return self.cache_pull("categories", "getCategories", nil, EXTENDED_CACHE_EXPIRE_TIME)
   end
   
   def self.getGroups
-    return self.cache_pull("groups", "getGroups", nil)
+    return self.cache_pull("groups", "getGroups", nil, EXTENDED_CACHE_EXPIRE_TIME)
   end
   
   def self.getActiveOntologies
-    return self.cache_pull("act_ont_list", "getActiveOntologyList", nil)
+    return self.cache_pull("act_ont_list", "getActiveOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
   end
   
   def self.getOntologyVersions(ontology_virtual_id)
-    params = { :ontology_virtual_id => ontology_virtual_id }
-    return self.cache_pull("#{ontology_virtual_id}::_versions", "getOntologyVersions", params)
+    return self.cache_pull("#{ontology_virtual_id}::_versions", "getOntologyVersions", { :ontology_virtual_id => ontology_virtual_id })
   end
   
   def self.getOntology(ontology_id)
-    params = { :ontology_id => ontology_id }
-    return self.cache_pull("#{ontology_id}::_details", "getOntology", params)
+    return self.cache_pull("#{ontology_id}::_details", "getOntology", { :ontology_id => ontology_id })
   end
   
   def self.getOntologyMetrics(ontology_id)
-    params = { :ontology_id => ontology_id }
-    
-    metrics = self.cache_pull("#{ontology_id}::_metrics", "getOntologyMetrics", params)
+    metrics = self.cache_pull("#{ontology_id}::_metrics", "getOntologyMetrics", { :ontology_id => ontology_id })
     
     # Check to see if there were valid metrics returned, else get older version 
     if metrics.nil? || metrics.numberOfClasses.to_i <= 0
@@ -79,8 +73,7 @@ class DataAccess
         if version.id.eql?(ontology_id)
           next
         end
-        params = { :ontology_id => version.id }
-        metrics_old = self.cache_pull("#{version.id}::_metrics", "getOntologyMetrics", params)
+        metrics_old = self.cache_pull("#{version.id}::_metrics", "getOntologyMetrics", { :ontology_id => version.id })
         if !metrics_old.nil? && metrics_old.numberOfClasses.to_i > 0
           return metrics_old
         elsif index >= 20 # 21 most recent versions are checked (3 weeks)
@@ -93,8 +86,7 @@ class DataAccess
   end
   
   def self.getLatestOntology(ontology_virtual_id)
-    params = { :ontology_virtual_id => ontology_virtual_id }
-    return self.cache_pull("#{ontology_virtual_id}::_latest", "getLatestOntology", params)
+    return self.cache_pull("#{ontology_virtual_id}::_latest", "getLatestOntology", { :ontology_virtual_id => ontology_virtual_id })
   end
   
   def self.getUsers
@@ -129,8 +121,7 @@ class DataAccess
   end
   
   def self.getUser(user_id)
-    params = { :user_id => user_id }
-    return self.cache_pull("user::#{user_id}", "getUser", params)
+    return self.cache_pull("user::#{user_id}", "getUser", { :user_id => user_id })
   end
   
   def self.authenticateUser(username, password)    
@@ -177,8 +168,7 @@ class DataAccess
   end
   
   def self.getPathToRoot(ontology_id, source)
-    params = { :ontology_id => ontology_id, :source => source }
-    return self.cache_pull("#{param(ontology_id)}::#{source.gsub(" ","%20")}_path_to_root", "getPathToRoot", params)
+    return self.cache_pull("#{param(ontology_id)}::#{source.gsub(" ","%20")}_path_to_root", "getPathToRoot", { :ontology_id => ontology_id, :concept_id => source })
   end
   
   def self.getDiffs(ontology_id)
@@ -192,7 +182,9 @@ private
     return string.to_s.gsub(" ","_")
   end
    
-  def self.cache_pull(token, service_call, params, expires = CACHE_EXPIRE_TIME)
+  def self.cache_pull(token, service_call, params = nil, expires = CACHE_EXPIRE_TIME)
+    RAILS_DEFAULT_LOGGER.debug "[#{Time.now}] Calling: #{service_call} #{params.inspect}"
+    
     if NO_CACHE || CACHE.get(token).nil?
       if params
         retrieved_object = SERVICE.send(:"#{service_call}", params)

@@ -5,40 +5,12 @@ require "rexml/document"
 require 'open-uri'
 require 'uri'
 require 'cgi'
+require 'BioPortalResources'
 
 class BioPortalRestfulCore
   
   # Resources
   BASE_URL = $REST_URL
-  
-  ONTOLOGIES_PATH = "/ontologies/%ONT%"
-  ACTIVE_ONT_PATH = "/ontologies/active/"
-  VERSIONS_PATH = "/ontologies/versions/%ONT%"
-  METRICS_PATH = "/ontologies/metrics/%ONT%"
- 
-  CATEGORIES_PATH = "/categories/"
-  GROUPS_PATH = "/groups"
-  
-  CONCEPT_PATH ="/concepts/%ONT%/?conceptid=%CONC%"
-  PATH_PATH = "/path/%ONT%/?source=%CONC%&target=root"
-  SEARCH_PATH="/search/%query%?%ONT%"
-  
-  VIEW_PATH = "/ontologies/%VIEW%"
-  #VIEW_CONCEPT_PATH = "/concepts/view/%VIEW%/?conceptid=%CONC%"
-  VIEW_CONCEPT_PATH = "/concepts/%VIEW%/?conceptid=%CONC%"
-  VIEW_VERSIONS_PATH = "/views/versions/%ONT%"
-
-  VIRTUAL_URI_PATH = "/virtual/ontology/%ONT%/%CONC%"
-
-  USERS_PATH = "/users"
-  USER_PATH = "/users/%USR%"
-  AUTH_PATH = "/auth"
-
-  PARSE_ONTOLOGY = "/ontologies/parse/%ONT%"
-  PARSE_BATCH = "/ontologies/parsebatch/%START%/%END%"
-  
-  DIFFS_PATH = "/diffs/%ONT%"
-  DOWNLOAD_DIFF = "/diffs/download/%VER1%/%VER2%"
   
   # Constants
   SUPERCLASS = "SuperClass"
@@ -50,12 +22,12 @@ class BioPortalRestfulCore
   @seen_paths = {}
   
   def self.getView(params)
-    view_id = params[:view_id]
+    uri_gen = BioPortalResources::View.new(params)
+    uri = uri_gen.generate_uri
 
+    doc = REXML::Document.new(open(uri))
+    
     view = nil
-    
-    doc = REXML::Document.new(open(BASE_URL + VIEW_PATH.gsub("%VIEW%",view_id)+"?applicationid=#{APPLICATION_ID}"))
-    
     doc.elements.each("*/data/ontologyBean"){ |element|  
       view = parseOntology(element)
     }  
@@ -64,12 +36,12 @@ class BioPortalRestfulCore
   end
   
   def self.getViews(params)
-    ontology_id = params[:ontology_id]
-    
-    views = []
-    
-    doc = REXML::Document.new(open(BASE_URL + VIEW_VERSIONS_PATH.gsub("%ONT%",ontology_id)+"?applicationid=#{APPLICATION_ID}"))
+    uri_gen = BioPortalResources::ViewVersions.new(params)
+    uri = uri_gen.generate_uri
 
+    doc = REXML::Document.new(open(uri))
+
+    views = []
     doc.elements.each("*/data/list/list"){ |element|
       virtual_view = []
       element.elements.each{ |version|      
@@ -82,11 +54,13 @@ class BioPortalRestfulCore
   end      
   
   def self.getCategories()
-    categories=nil
-    
-    doc = REXML::Document.new(open(BASE_URL+CATEGORIES_PATH+"?applicationid=#{APPLICATION_ID}"))
+    uri_gen = BioPortalResources::Categories.new
+    uri = uri_gen.generate_uri
+
+    doc = REXML::Document.new(open(uri))
     
     categories = errorCheck(doc)
+
     unless categories.nil?
       return categories
     end
@@ -96,15 +70,17 @@ class BioPortalRestfulCore
       category = parseCategory(element)
       categories[category[:id].to_s]=category 
     }
+
     return categories
   end
   
   def self.getGroups
-    groups = nil
-    
+    uri_gen = BioPortalResources::Groups.new
+    uri = uri_gen.generate_uri
+
     RAILS_DEFAULT_LOGGER.debug "Retrieve groups"
-    RAILS_DEFAULT_LOGGER.debug BASE_URL + GROUPS_PATH + "?applicationid=#{APPLICATION_ID}"
-    doc = REXML::Document.new(open(BASE_URL + GROUPS_PATH + "?applicationid=#{APPLICATION_ID}"))
+    RAILS_DEFAULT_LOGGER.debug uri
+    doc = REXML::Document.new(open(uri))
     
     groups = errorCheck(doc)
     unless groups.nil?
@@ -129,49 +105,31 @@ class BioPortalRestfulCore
   # Gets a concept node.
   ##
   def self.getNode(params)
-    ontology_id = params[:ontology_id]
-    node_id = params[:node_id]
-    view = params[:view]
-
-    if view
-      concept_uri = BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology_id.to_s).gsub("%CONC%",CGI.escape(node_id))+"&applicationid=#{APPLICATION_ID}&maxnumchildren=500"
-    else
-      concept_uri = BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology_id.to_s).gsub("%CONC%",CGI.escape(node_id))+"&applicationid=#{APPLICATION_ID}&maxnumchildren=500"
-    end
+    uri_gen = BioPortalResources::Concept.new(params, 500)
+    uri = uri_gen.generate_uri
     
-    return getConcept(ontology_id, concept_uri)
+    return getConcept(params[:ontology_id], uri)
   end
   
   ##
   # Gets a light version of a concept node. Used for tree browsing.
   ##
   def self.getLightNode(params)
-    ontology_id = params[:ontology_id]
-    node_id = params[:node_id]
-    view = params[:view]
-
-    if view
-      concept_uri = BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology_id.to_s).gsub("%CONC%",CGI.escape(node_id))+"&applicationid=#{APPLICATION_ID}&maxnumchildren=500&light=true"
-    else
-      concept_uri = BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology_id.to_s).gsub("%CONC%",CGI.escape(node_id))+"&applicationid=#{APPLICATION_ID}&maxnumchildren=500&light=true"
-    end
+    uri_gen = BioPortalResources::Concept.new(params, 500, true)
+    uri = uri_gen.generate_uri
     
-    return getConcept(ontology_id, concept_uri)
+    return getConcept(params[:ontology_id], uri)
   end
   
   def self.getTopLevelNodes(params)
-    ontology_id = params[:ontology_id]
-    view = params[:view] ? true : false
-    
-    node = nil
+    params[:concept_id] = "root"
+   
+    uri_gen = BioPortalResources::Concept.new(params, 200)
+    uri = uri_gen.generate_uri
     
     RAILS_DEFAULT_LOGGER.debug "Retrieve top level nodes"
-    RAILS_DEFAULT_LOGGER.debug BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology_id.to_s).gsub("%CONC%","root")+"&applicationid=#{APPLICATION_ID}&maxnumchildren=200"
-    if view
-      doc = REXML::Document.new(open(BASE_URL+VIEW_CONCEPT_PATH.gsub("%VIEW%",ontology_id.to_s).gsub("%CONC%","root")+"&applicationid=#{APPLICATION_ID}&maxnumchildren=200"))            
-    else
-      doc = REXML::Document.new(open(BASE_URL+CONCEPT_PATH.gsub("%ONT%",ontology_id.to_s).gsub("%CONC%","root")+"&applicationid=#{APPLICATION_ID}&maxnumchildren=200"))
-    end
+    RAILS_DEFAULT_LOGGER.debug uri
+    doc = REXML::Document.new(open(uri))            
 
     node = errorCheck(doc)         
 
@@ -180,16 +138,17 @@ class BioPortalRestfulCore
     end
     
     doc.elements.each("*/data/classBean"){ |element|  
-      node = parseConcept(element, ontology_id)
+      node = parseConcept(element, params[:ontology_id])
     }
     
     return node.children
   end
   
   def self.getOntologyList()
-    ontologies=nil
+    uri_gen = BioPortalResources::Ontologies.new
+    uri = uri_gen.generate_uri
     
-    doc = REXML::Document.new(open(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?applicationid=#{APPLICATION_ID}"))
+    doc = REXML::Document.new(open(uri))
     
     ontologies = errorCheck(doc)
     
@@ -206,9 +165,10 @@ class BioPortalRestfulCore
   end
   
   def self.getActiveOntologyList()
-    ontologies=nil
-    
-    doc = REXML::Document.new(open(BASE_URL + ACTIVE_ONT_PATH + "?applicationid=#{APPLICATION_ID}"))
+    uri_gen = BioPortalResources::ActiveOntologies.new
+    uri = uri_gen.generate_uri
+
+    doc = REXML::Document.new(open(uri))
     
     ontologies = errorCheck(doc)
     
@@ -225,9 +185,10 @@ class BioPortalRestfulCore
   end
   
   def self.getOntologyVersions(params)
-    ontology_virtual_id = params[:ontology_virtual_id]
-    
-    doc = REXML::Document.new(open(BASE_URL+VERSIONS_PATH.gsub("%ONT%",ontology_virtual_id.to_s)+"?applicationid=#{APPLICATION_ID}"))
+    uri_gen = BioPortalResources::OntologyVersions.new(params)
+    uri = uri_gen.generate_uri
+
+    doc = REXML::Document.new(open(uri))
     
     ontologies = errorCheck(doc)
     
@@ -245,13 +206,12 @@ class BioPortalRestfulCore
   end
   
   def self.getOntology(params)
-    ontology_id = params[:ontology_id]
-    
-    ont = nil
+    uri_gen = BioPortalResources::Ontology.new(params)
+    uri = uri_gen.generate_uri
 
     RAILS_DEFAULT_LOGGER.debug "Retrieving ontology"
-    RAILS_DEFAULT_LOGGER.debug BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology_id.to_s)+"?applicationid=#{APPLICATION_ID}"
-    doc = REXML::Document.new(open(BASE_URL + ONTOLOGIES_PATH.gsub("%ONT%",ontology_id.to_s)+"?applicationid=#{APPLICATION_ID}"))
+    RAILS_DEFAULT_LOGGER.debug uri
+    doc = REXML::Document.new(open(uri))
 
     ont = errorCheck(doc)
     
@@ -261,7 +221,7 @@ class BioPortalRestfulCore
     
     doc.elements.each("*/data/ontologyBean"){ |element|  
       ont = parseOntology(element)
-    }                    
+    }
 
     return ont
   end
@@ -271,13 +231,13 @@ class BioPortalRestfulCore
   # Returns an OntologyMetricsWrapper object.
   ## 
   def self.getOntologyMetrics(params)
-    ontology_id = params[:ontology_id]
-    ont = nil
+    uri_gen = BioPortalResources::OntologyMetrics.new(params)
+    uri = uri_gen.generate_uri
     
     RAILS_DEFAULT_LOGGER.debug "Retrieving ontology metrics"
-    RAILS_DEFAULT_LOGGER.debug BASE_URL + METRICS_PATH.gsub("%ONT%",ontology_id.to_s)+"?applicationid=#{APPLICATION_ID}"
+    RAILS_DEFAULT_LOGGER.debug uri
     begin
-      doc = REXML::Document.new(open(BASE_URL + METRICS_PATH.gsub("%ONT%",ontology_id.to_s)+"?applicationid=#{APPLICATION_ID}"))
+      doc = REXML::Document.new(open(uri))
     rescue Exception=>e
       RAILS_DEFAULT_LOGGER.debug "getOntologyMetrics error: #{e.message}"
       return ont
@@ -297,10 +257,10 @@ class BioPortalRestfulCore
   end
   
   def self.getLatestOntology(params)
-    ontology_virtual_id = params[:ontology_virtual_id]
-    ont = nil
+    uri_gen = BioPortalResources::LatestOntology.new(params)
+    uri = uri_gen.generate_uri
     
-    doc = REXML::Document.new(open(BASE_URL + VIRTUAL_URI_PATH.gsub("%ONT%",ontology_virtual_id.to_s).gsub("%CONC%","")))
+    doc = REXML::Document.new(open(uri))
     
     ont = errorCheck(doc)
     
@@ -319,14 +279,12 @@ class BioPortalRestfulCore
   # Get a path from a given concept to the root of the ontology.
   ##
   def self.getPathToRoot(params)
-    ontology_id = params[:ontology_id]
-    source = params[:source]
-
-    root = nil
+    uri_gen = BioPortalResources::PathToRoot.new(params)
+    uri = uri_gen.generate_uri
     
     RAILS_DEFAULT_LOGGER.debug "Retrieve path to root"
-    RAILS_DEFAULT_LOGGER.debug BASE_URL+PATH_PATH.gsub("%ONT%",ontology_id.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=100"
-    doc = REXML::Document.new(open(BASE_URL+PATH_PATH.gsub("%ONT%",ontology_id.to_s).gsub("%CONC%",CGI.escape(source))+"&light=false&maxnumchildren=100"))
+    RAILS_DEFAULT_LOGGER.debug uri
+    doc = REXML::Document.new(open(uri))
     
     root = errorCheck(doc)
     
@@ -336,7 +294,7 @@ class BioPortalRestfulCore
     
     time = Time.now
     doc.elements.each("*/data/classBean"){ |element|  
-      root = parseConcept(element, ontology_id)
+      root = parseConcept(element, params[:ontology_id])
     }
     RAILS_DEFAULT_LOGGER.debug "getPathToRoot Parse Time: #{Time.now-time}"
     
@@ -378,8 +336,10 @@ class BioPortalRestfulCore
       end
 
   def self.getUsers()
+    uri_gen = BioPortalResources::Users.new
+    uri = uri_gen.generate_uri
     
-    doc = REXML::Document.new(open(BASE_URL+USERS_PATH))
+    doc = REXML::Document.new(open(uri))
     
     results = errorCheck(doc)
     
@@ -396,10 +356,10 @@ class BioPortalRestfulCore
   end
   
   def self.getUser(params)
-    user_id = params[:user_id]
+    uri_gen = BioPortalResources::User.new(params)
+    uri = uri_gen.generate_uri
     
-    user = nil
-    doc = REXML::Document.new(open(BASE_URL+USER_PATH.gsub("%USR%",user_id.to_s)))
+    doc = REXML::Document.new(open(uri))
     
     user = errorCheck(doc)
     
@@ -415,14 +375,15 @@ class BioPortalRestfulCore
   end
   
   def self.authenticateUser(username,password)
-    user=nil
-
+    uri_gen = BioPortalResources::Auth.new(:username => username, :password => password)
+    uri = uri_gen.generate_uri
+    
     begin
-      doc = REXML::Document.new(open(BASE_URL+AUTH_PATH+"?username=#{username}&password=#{password}&applicationid=#{APPLICATION_ID}"))
+      doc = REXML::Document.new(open(uri))
     rescue Exception=>e
-      doc =  REXML::Document.new(e.io.read)
-      
+      doc = REXML::Document.new(e.io.read)
     end
+
     user = errorCheck(doc)
     
     unless user.nil?
@@ -438,13 +399,15 @@ class BioPortalRestfulCore
   end
   
   def self.createUser(params)
-    user = nil
-
+    uri_gen = BioPortalResources::CreateUser.new
+    uri = uri_gen.generate_uri
+    
     begin
-      doc = REXML::Document.new(postToRestlet(BASE_URL+USERS_PATH.gsub("%USR%","")+"?applicationid=#{APPLICATION_ID}",params))
+      doc = REXML::Document.new(postToRestlet(uri, params))
     rescue Exception=>e
       doc =  REXML::Document.new(e.io.read)
     end
+
     user = errorCheck(doc)
     
     unless user.nil?
@@ -459,9 +422,11 @@ class BioPortalRestfulCore
   end
   
   def self.updateUser(params,id)
-    user = nil
+    uri_gen = BioPortalResources::UpdateUser.new
+    uri = uri_gen.generate_uri
+    
     begin
-      doc = REXML::Document.new(putToRestlet(BASE_URL+USER_PATH.gsub("%USR%",id.to_s)+"?applicationid=#{APPLICATION_ID}",params))
+      doc = REXML::Document.new(putToRestlet(uri, params))
     rescue Exception=>e
       doc =  REXML::Document.new(e.io.read)
     end
@@ -480,10 +445,11 @@ class BioPortalRestfulCore
   end  
   
   def self.createOntology(params)
-    ontology = nil
+    uri_gen = BioPortalResources::CreateOntology.new
+    uri = uri_gen.generate_uri
     
     begin
-      response = postMultiPart(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%","")+"?applicationid=#{APPLICATION_ID}",params)
+      response = postMultiPart(uri, params)
       doc = REXML::Document.new(response)
     rescue Exception=>e
       doc =  REXML::Document.new(e.io.read)
@@ -503,11 +469,13 @@ class BioPortalRestfulCore
   end
   
   def self.updateOntology(params,version_id)
-    ontology = nil
+    uri_gen = BioPortalResources::UpdateOntology.new
+    uri = uri_gen.generate_uri
+    
     begin
-      doc = REXML::Document.new(putToRestlet(BASE_URL+ONTOLOGIES_PATH.gsub("%ONT%",version_id)+"?applicationid=#{APPLICATION_ID}",params))
+      doc = REXML::Document.new(putToRestlet(uri, params))
     rescue Exception=>e
-      doc =  REXML::Document.new(e.io.read)
+      doc = REXML::Document.new(e.io.read)
       
     end
     
@@ -525,15 +493,19 @@ class BioPortalRestfulCore
     
   end
   
-  def self.download(ontology_id)          
-    return BASE_URL + "/ontologies/download/#{ontology_id}"
+  def self.download(ontology_id)
+    uri_gen = BioPortalResources::DownloadOntology.new(:ontology_id => ontology_id)
+    return uri_gen.generate_uri
   end
   
-  def self.getDiffs(ontology)
+  def self.getDiffs(ontology_id)
+    uri_gen = BioPortalResources::Diffs.new(:ontology_id => ontology_id)
+    uri = uri_gen.generate_uri
+    
     begin
-      doc = REXML::Document.new(open(BASE_URL+DIFFS_PATH.gsub("%ONT%",ontology)))
+      doc = REXML::Document.new(open(uri))
     rescue Exception=>e
-      doc =  REXML::Document.new(e.io.read)
+      doc = REXML::Document.new(e.io.read)
     end   
     
     results = errorCheck(doc)
@@ -543,7 +515,7 @@ class BioPortalRestfulCore
     end          
     
     pairs = []
-    doc.elements.each("*/data/list") {|pair|
+    doc.elements.each("*/data/list") { |pair|
       pair.elements.each{|list|
         pair = []
         list.elements.each{|item|
@@ -556,14 +528,13 @@ class BioPortalRestfulCore
   end
   
   def self.diffDownload(ver1,ver2)          
-    return BASE_URL+"/diffs/download/#{ver1}/#{ver2}"
+    uri_gen = BioPortalResources::DownloadDiffs.new( :ontology_version1 => ver1, :ontology_version2 => ver2 )
+    return uri_gen.generate_uri
   end
   
 private
   
-  def self.getConcept(ontology,concept_uri)
-    node = nil
-    
+  def self.getConcept(ontology, concept_uri)    
     begin
       RAILS_DEFAULT_LOGGER.debug "Concept retreive url"
       RAILS_DEFAULT_LOGGER.debug concept_uri
@@ -602,7 +573,7 @@ private
     return node
   end
   
-  def self.postMultiPart(url,paramsHash)
+  def self.postMultiPart(url, paramsHash)
     params=[]
     for param in paramsHash.keys
       if param.eql?("filePath")
@@ -625,7 +596,7 @@ private
     return response.body
   end
   
-  def self.text_to_multipart(key,value)
+  def self.text_to_multipart(key, value)
     if value.class.to_s.downcase.eql?("array")
       return "Content-Disposition: form-data; name=\"#{CGI::escape(key)}\"\r\n" + 
             "\r\n" + 
@@ -637,14 +608,14 @@ private
     end
   end
   
-  def self.file_to_multipart(key,filename,mime_type,content)
+  def self.file_to_multipart(key, filename, mime_type,content)
     return "Content-Disposition: form-data; name=\"#{CGI::escape(key)}\"; filename=\"#{filename}\"\r\n" +
             "Content-Transfer-Encoding: base64\r\n" +
             "Content-Type: text/plain\r\n" + 
             "\r\n" + content.read() + "\r\n"
   end
   
-  def self.postToRestlet(url,paramsHash)
+  def self.postToRestlet(url, paramsHash)
     for param in paramsHash.keys
       if paramsHash[param].class.to_s.downcase.eql?("array")
         paramsHash[param] = paramsHash[param].join(",")
@@ -654,7 +625,7 @@ private
     return res.body
   end
   
-  def self.putToRestlet(url,paramsHash)
+  def self.putToRestlet(url, paramsHash)
     paramsHash["method"]="PUT"
     for param in paramsHash.keys
       if paramsHash[param].class.to_s.downcase.eql?("array")
@@ -873,14 +844,14 @@ private
   end
   
   def self.errorCheck(doc)
-    response=nil
-    errorHolder={}
+    response = nil
+    errorHolder = {}
     begin
       doc.elements.each("org.ncbo.stanford.bean.response.ErrorStatusBean"){ |element|  
         errorHolder[:error] = true
         errorHolder[:shortMessage] = element.elements["shortMessage"].get_text.value.strip
         errorHolder[:longMessage] = element.elements["longMessage"].get_text.value.strip
-        response=errorHolder
+        response = errorHolder
       }
     rescue
     end
@@ -889,14 +860,14 @@ private
   end
   
   def self.errorCheckLibXML(doc)
-    response=nil
+    response = nil
     errorHolder={}
     begin
       doc.elements.each("org.ncbo.stanford.bean.response.ErrorStatusBean"){ |element|  
         errorHolder[:error] = true
         errorHolder[:shortMessage] = element.elements["shortMessage"].get_text.value.strip
         errorHolder[:longMessage] =element.elements["longMessage"].get_text.value.strip
-        response=errorHolder
+        response = errorHolder
       }
     rescue
     end
@@ -904,8 +875,7 @@ private
     return response
   end
   
-  def self.parseConcept(classbeanXML,ontology)
-    
+  def self.parseConcept(classbeanXML, ontology)
     node = NodeWrapper.new
     node.child_size=0
     node.id = classbeanXML.elements["id"].get_text.value
@@ -959,7 +929,7 @@ private
         return node
   end
 
-  def self.parseConceptLibXML(classbeanXML,ontology)
+  def self.parseConceptLibXML(classbeanXML, ontology)
     # check if we're at the root node
     root = classbeanXML.path == "/success/data/classBean" ? true : false
 
@@ -1011,9 +981,9 @@ private
     return node
   end
   
-  def self.buildPathToRootTree(classbeanXML,ontology)
+  def self.buildPathToRootTree(classbeanXML, ontology)
 
-    node = getConceptBasicInfo(classbeanXML,ontology)
+    node = getConceptBasicInfo(classbeanXML, ontology)
     
     # look for child nodes and process if found
     search = classbeanXML.path + "/relations/entry[string='SubClass']/list/classBean"
@@ -1033,7 +1003,7 @@ private
     return node
   end
   
-  def self.getConceptBasicInfo(classbeanXML,ontology)
+  def self.getConceptBasicInfo(classbeanXML, ontology)
     # build a node object
     node = NodeWrapper.new
     # set default child size

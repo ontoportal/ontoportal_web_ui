@@ -36,12 +36,14 @@ module ApplicationHelper
   end
   
   
-  def remove_owl_notation(string)    
-    strings = string.split(":")
-    if strings.size<2
-      return string.titleize
-    else  
-      return strings[1].titleize
+  def remove_owl_notation(string)
+    unless string.nil?
+      strings = string.split(":")
+      if strings.size<2
+        return string.titleize
+      else  
+        return strings[1].titleize
+      end
     end
   end
   
