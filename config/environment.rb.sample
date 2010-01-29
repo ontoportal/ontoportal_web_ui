@@ -60,6 +60,9 @@ Rails::Initializer.run do |config|
     config.active_record.allow_concurrency=true
 end
 
+# Application ID: unique string representing the UI's id for use with the BioPortal Core
+$APPLICATION_ID = "" 
+
 # REST core service address
 $REST_URL="http://domain.com:8080/bioportal"
 
@@ -96,6 +99,10 @@ CalendarDateSelect.format = :american
 ENV['USE_RECAPTCHA'] = 'false'
 ENV['RECAPTCHA_PUBLIC_KEY']  = ''
 ENV['RECAPTCHA_PRIVATE_KEY'] = ''
+
+# Custom BioPortal logging
+require 'log'
+$REMOTE_LOGGING = "false"
 
 ##
 # Flex Options

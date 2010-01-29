@@ -96,6 +96,9 @@ class SearchController < ApplicationController
     
     @results,@pages = DataAccess.getNodeNameContains([params[:id]],params[:q],1)
 
+    @ontology = DataAccess.getLatestOntology(params[:id])
+    LOG.add :info, 'jump_to_search', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :search_term => params[:q], :result_count => @results.length
+
     response = ""
     for result in @results
       record_type = result[:recordType].titleize.gsub("Record Type","").split(" ")

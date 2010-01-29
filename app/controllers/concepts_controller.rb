@@ -7,11 +7,16 @@ class ConceptsController < ApplicationController
   # GET /concepts/1
   # GET /concepts/1.xml
   def show
+    @ontology = DataAccess.getOntology(params[:ontology])
+
     # If we're looking for children, just use the light version of the call
     if params[:callback].eql?("children")
       @concept = DataAccess.getLightNode(params[:ontology],params[:id])
     else
       @concept = DataAccess.getNode(params[:ontology],params[:id])
+      
+      # We only want to log concept loading, not showing a list of child concepts
+      LOG.add :info, 'visualize_concept', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id
     end
 
     # TODO: This should use a proper error-handling technique with custom exceptions
@@ -20,8 +25,6 @@ class ConceptsController < ApplicationController
       render :file=> '/ontologies/visualize',:use_full_path =>true, :layout=>'ontology' # done this way to share a view
       return
     end
-
-    @ontology = DataAccess.getOntology(params[:ontology])
 
     # This handles special cases where a passed concept id is for a concept
     # that isn't browsable, usually a property for an ontology.
@@ -47,7 +50,7 @@ class ConceptsController < ApplicationController
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     @concept =  DataAccess.getNode(@ontology.id,params[:id])
 
-      @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
+    LOG.add :info, 'show_virtual_concept', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id
 
     if @ontology.isRemote.to_i.eql?(1)
       redirect_to "/ontologies/#{@ontology.id}"

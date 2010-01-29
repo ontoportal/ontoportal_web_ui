@@ -23,6 +23,8 @@ class OntologiesController < ApplicationController
     @last_notes= MarginNote.find(:all,:order=>'created_at desc',:limit=>5)    
     @last_mappings = Mapping.find(:all,:order=>'created_at desc',:limit=>5)
     
+    LOG.add :info, 'show__all_ontologies', request
+    
     @notes={} # Gets list of notes for the ontologies
     #    for ont in @ontologies
     #gets last note.. not the best way to do this
@@ -47,6 +49,8 @@ class OntologiesController < ApplicationController
     @categories = DataAccess.getCategories()
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     @metrics = DataAccess.getOntologyMetrics(@ontology.id)
+    
+    LOG.add :info, 'show_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
     
     # Check to see if the metrics are from the most recent ontology version
     if !@metrics.nil? && !@metrics.id.eql?(@ontology.id)
@@ -87,6 +91,8 @@ class OntologiesController < ApplicationController
     
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId).sort{|x,y| x.id <=> y.id}
     
+    LOG.add :info, 'show_virtual_ontology', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
+    
     if @ontology.isRemote.to_i.eql?(1)
       redirect_to "/ontologies/#{@ontology.id}"
       return
@@ -109,7 +115,7 @@ class OntologiesController < ApplicationController
   
   def download_latest
     @ontology = DataAccess.getLatestOntology(params[:id])
-    redirect_to "http://rest.bioontology.org/bioportal/ontologies/download/#{@ontology.id}"
+    redirect_to $REST_URL + "/ontologies/download/#{@ontology.id}"
   end
   
   def update
@@ -195,6 +201,8 @@ class OntologiesController < ApplicationController
       # get the initial concept to display
       @concept = DataAccess.getNode(@ontology.id,@root.children.first.id,view)
       
+      LOG.add :info, 'visualize_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id
+
       # Some ontologies have "too many children" at their root. These will not process and are handled here.
       # TODO: This should use a proper error-handling technique with custom exceptions
       if @concept.nil?
@@ -204,6 +212,14 @@ class OntologiesController < ApplicationController
     else
       # if the id is coming from a param, use that to get concept
       @concept = DataAccess.getNode(@ontology.id,params[:id],view)
+
+      # Did we come from the Jump To widget, if so change logging
+      if params[:jump_to_nav]
+        LOG.add :info, 'jump_to_nav', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id
+      else
+        LOG.add :info, 'visualize_concept', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id
+      end
+      
       # TODO: This should use a proper error-handling technique with custom exceptions
       if @concept.nil?
         @error = "The requested term could not be found."
