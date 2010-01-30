@@ -4,7 +4,7 @@ class LOG
   
   # Log using local or remote methods
   def self.add(level, message, request = nil, remote_params = nil)
-    if remote_params
+    if request
       if $REMOTE_LOGGING.eql?("true")
         remote_log = RestClient::Resource.new $REST_URL + "/log", :timeout => 30
         remote(level, message, request, remote_log, remote_params)
