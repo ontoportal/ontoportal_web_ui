@@ -4,9 +4,11 @@ module OntologiesHelper
   def get_visualize_link(ontology)
     # Don't display a link for ontologies that aren't browsable
     # (these are temporarily defined in environment.rb)
-    $NOT_EXPLORABLE.each do |virtual_id|
-      if ontology.ontologyId.eql?(virtual_id.to_s)
-        return ""
+    unless $NOT_EXPLORABLE.nil?
+      $NOT_EXPLORABLE.each do |virtual_id|
+        if ontology.ontologyId.eql?(virtual_id.to_s)
+          return ""
+        end
       end
     end
     
@@ -27,9 +29,11 @@ module OntologiesHelper
   def get_download_link(ontology)
     # Don't display a link for ontologies that aren't downloadable
     # (these are temporarily defined in environment.rb)
-    $NOT_DOWNLOADABLE.each do |virtual_id|
-      if ontology.ontologyId.eql?(virtual_id.to_s)
-        return ""
+    unless $NOT_DOWNLOADABLE.nil?
+      $NOT_DOWNLOADABLE.each do |virtual_id|
+        if ontology.ontologyId.eql?(virtual_id.to_s)
+          return ""
+        end
       end
     end
     
