@@ -161,34 +161,10 @@ class OntologyWrapper
     return DataAccess.getOntologyMetrics(self.id)
   end
   
-  ##
   # Queries for the latest version of this ontology and returns a comparison.
-  ##
   def is_latest?
     latest = DataAccess.getLatestOntology(self.ontologyId)
     return latest.id.eql? self.id
-  end
-
-  ##
-  # Provides a link or string based on the status of an ontology.
-  ##
-  def get_visualize_link
-    # one-off to fix OBO relationship types
-    if self.ontologyId.eql?("1042")
-      return ""
-    end
-    
-    case self.statusId.to_i
-    when 1 # Ontology is parsing
-    when 2
-      return "Parsing Ontology"
-    when 3 # Ontology is ready to be explored
-      return "<a href=\"/visualize/#{self.id}\">Explore</a>"
-    when 4 # Error in parsing
-      return "Parsing Error"
-    when 6 # Ontology is deprecated
-      return "Archived, not available to explore"
-    end
   end
 
 end

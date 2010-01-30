@@ -121,12 +121,10 @@
 	                        <%=version.dateReleased %>
 	                    </td>
 	                    <td>
-	                        <% if version.isRemote.to_i.eql?(1) %><a href="<%=@ontology.homepage%>">
-	                        <%else %><a href="<%=DataAccess.download(version.id)%>" target="_blank">Download Ontology</a>
-	                        <%end %>
+	                        <%= get_download_link(version) %>
 	                    </td>
 	                    <td>
-	                        <%= version.get_visualize_link %>
+	                        <%= get_visualize_link(version) %>
 	                    </td>
 	                    <td>
 	                        <% for diff in @diffs %>

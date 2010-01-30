@@ -219,7 +219,7 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 		<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>
 	<td style="display:none;"> <%=ontology.categories.join(" ")%></td>
 	<td style="display:none;"><%if !ontology_groups.empty?%><%=ontology_groups.join(" , ")%><%end%></td>
-	<td><%=ontology.get_visualize_link%></td>
+	<td><%=get_visualize_link(ontology)%></td>
   </tr>
 <% end %>
 </tbody>
