@@ -3,6 +3,14 @@ require 'rest_client'
 class LOG
   
   # Log using local or remote methods
+  #    Local: provide the log level as a symbol (:debug, :info, :error, etc)
+  #    Remote: provide the request and a parameter hash
+  #       Common Parameters:
+  #         :ontology_id
+  #         :ontology_name
+  #         :virtual_id
+  #         :concept_id
+  #         :concept_name
   def self.add(level, message, request = nil, remote_params = nil)
     if request
       if $REMOTE_LOGGING.eql?("true")
