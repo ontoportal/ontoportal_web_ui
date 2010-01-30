@@ -23,7 +23,7 @@ class OntologiesController < ApplicationController
     @last_notes= MarginNote.find(:all,:order=>'created_at desc',:limit=>5)    
     @last_mappings = Mapping.find(:all,:order=>'created_at desc',:limit=>5)
     
-    LOG.add :info, 'show__all_ontologies', request
+    LOG.add :info, 'show_all_ontologies', request
     
     @notes={} # Gets list of notes for the ontologies
     #    for ont in @ontologies
