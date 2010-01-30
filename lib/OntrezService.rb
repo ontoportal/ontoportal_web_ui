@@ -37,11 +37,11 @@ class OntrezService
     ont = latest ? ontology_id : version_id
     
     # this call gets all of the resources and their associated information
-    RAILS_DEFAULT_LOGGER.debug "Retrieve resources"
-    RAILS_DEFAULT_LOGGER.debug ONTREZ_URL + RESOURCES
+    LOG.add :debug, "Retrieve resources"
+    LOG.add :debug, ONTREZ_URL + RESOURCES
     startGet = Time.now
     doc = REXML::Document.new(open(ONTREZ_URL + RESOURCES))    
-    RAILS_DEFAULT_LOGGER.debug "Resources retrieved (#{Time.now - startGet})"
+    LOG.add :debug, "Resources retrieved (#{Time.now - startGet})"
 
     doc.elements.each("*/obs\.obr\.populate\.Resource"){|resource|
       new_resource = Resource.new
@@ -54,18 +54,18 @@ class OntrezService
       new_resource.main_context = resource.elements["mainContext"].get_text.value
       resources << new_resource
     }
-    RAILS_DEFAULT_LOGGER.debug "Resources parsed (#{Time.now - startGet})"
+    LOG.add :debug, "Resources parsed (#{Time.now - startGet})"
 
-    RAILS_DEFAULT_LOGGER.debug "Retrieve annotations for #{concept_id}"
-    RAILS_DEFAULT_LOGGER.debug ONTREZ_URL+resource_url.gsub("%ONT%",ont).gsub("%CONC%",CGI.escape(concept_id))
+    LOG.add :debug, "Retrieve annotations for #{concept_id}"
+    LOG.add :debug, ONTREZ_URL+resource_url.gsub("%ONT%",ont).gsub("%CONC%",CGI.escape(concept_id))
     startGet = Time.now
     # this call gets the annotation numbers and the first 10 annotations for each resource
     begin
       doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("%ONT%",ont).gsub("%CONC%",CGI.escape(concept_id))))
     rescue Exception => e
-      RAILS_DEFAULT_LOGGER.debug e.inspect
+      LOG.add :debug, e.inspect
     end
-    RAILS_DEFAULT_LOGGER.debug "Annotations retrieved #{Time.now - startGet}"
+    LOG.add :debug, "Annotations retrieved #{Time.now - startGet}"
     
     # parse out the annotation numbers and annotations
     startGet = Time.now
@@ -78,7 +78,7 @@ class OntrezService
       annotations_doc = doc.elements[xpath]
       parseAnnotations(annotations_doc,resource)
     end
-    RAILS_DEFAULT_LOGGER.debug "Annotations parsed (#{Time.now - startGet})"
+    LOG.add :debug, "Annotations parsed (#{Time.now - startGet})"
 
     resources.sort! { |x,y| x.name.downcase <=> y.name.downcase }
 
@@ -95,19 +95,19 @@ class OntrezService
 
     rest_url = ONTREZ_URL + resource_url.gsub("%ONT%",ont.to_s.strip).gsub("%RESOURCE%",resource.strip).gsub("%CONC%",CGI.escape(concept_id)).gsub("%ELEMENT%",CGI.escape(element))
     
-    RAILS_DEFAULT_LOGGER.debug "Details retrieve for #{concept_id}"
-    RAILS_DEFAULT_LOGGER.debug rest_url
+    LOG.add :debug, "Details retrieve for #{concept_id}"
+    LOG.add :debug, rest_url
     
     begin
       doc = REXML::Document.new(open(rest_url))
     rescue Exception=>e
-      RAILS_DEFAULT_LOGGER.debug  "Exception retrieving/parsing detailed annotations xml"
-      RAILS_DEFAULT_LOGGER.debug e.inspect
+      LOG.add :debug,  "Exception retrieving/parsing detailed annotations xml"
+      LOG.add :debug, e.inspect
     end
 
     time = Time.now
     resources = parseOBSDetails(doc,rest_url)
-    RAILS_DEFAULT_LOGGER.debug "Details parsing done (#{Time.now - time})"
+    LOG.add :debug, "Details parsing done (#{Time.now - time})"
 
     return resources
   end
@@ -118,8 +118,8 @@ class OntrezService
     resource_url = latest ? PAGING_RESOURCE_BY_CONCEPT : VERSIONED_PAGING_RESOURCE_BY_CONCEPT
     ont = latest ? ontology_id : version_id
     
-    RAILS_DEFAULT_LOGGER.debug "Page retrieve"
-    RAILS_DEFAULT_LOGGER.debug ONTREZ_URL + resource_url.gsub("%ONT%",ont.to_s.strip).gsub("%CONC%",CGI.escape(concept_id).strip).gsub("%S_PAGE%",page_start).gsub("%E_PAGE%",page_end).gsub("%RESOURCE%",resource_name.strip)
+    LOG.add :debug, "Page retrieve"
+    LOG.add :debug, ONTREZ_URL + resource_url.gsub("%ONT%",ont.to_s.strip).gsub("%CONC%",CGI.escape(concept_id).strip).gsub("%S_PAGE%",page_start).gsub("%E_PAGE%",page_end).gsub("%RESOURCE%",resource_name.strip)
     doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("%ONT%",ont.to_s.strip).gsub("%CONC%",CGI.escape(concept_id).strip).gsub("%S_PAGE%",page_start).gsub("%E_PAGE%",page_end).gsub("%RESOURCE%",resource_name.strip)))
 
     # new resource object with info from params
@@ -220,7 +220,7 @@ private
         end
         resource.annotations << annotation
       rescue Exception=>e
-        RAILS_DEFAULT_LOGGER.debug e.inspect
+        LOG.add :debug, e.inspect
       end
     }
   end

@@ -78,8 +78,8 @@ class BioPortalRestfulCore
     uri_gen = BioPortalResources::Groups.new
     uri = uri_gen.generate_uri
 
-    RAILS_DEFAULT_LOGGER.debug "Retrieve groups"
-    RAILS_DEFAULT_LOGGER.debug uri
+    LOG.add :debug, "Retrieve groups"
+    LOG.add :debug, uri
     doc = REXML::Document.new(open(uri))
     
     groups = errorCheck(doc)
@@ -127,8 +127,8 @@ class BioPortalRestfulCore
     uri_gen = BioPortalResources::Concept.new(params, 200)
     uri = uri_gen.generate_uri
     
-    RAILS_DEFAULT_LOGGER.debug "Retrieve top level nodes"
-    RAILS_DEFAULT_LOGGER.debug uri
+    LOG.add :debug, "Retrieve top level nodes"
+    LOG.add :debug, uri
     doc = REXML::Document.new(open(uri))            
 
     node = errorCheck(doc)         
@@ -209,8 +209,8 @@ class BioPortalRestfulCore
     uri_gen = BioPortalResources::Ontology.new(params)
     uri = uri_gen.generate_uri
 
-    RAILS_DEFAULT_LOGGER.debug "Retrieving ontology"
-    RAILS_DEFAULT_LOGGER.debug uri
+    LOG.add :debug, "Retrieving ontology"
+    LOG.add :debug, uri
     doc = REXML::Document.new(open(uri))
 
     ont = errorCheck(doc)
@@ -234,12 +234,12 @@ class BioPortalRestfulCore
     uri_gen = BioPortalResources::OntologyMetrics.new(params)
     uri = uri_gen.generate_uri
     
-    RAILS_DEFAULT_LOGGER.debug "Retrieving ontology metrics"
-    RAILS_DEFAULT_LOGGER.debug uri
+    LOG.add :debug, "Retrieving ontology metrics"
+    LOG.add :debug, uri
     begin
       doc = REXML::Document.new(open(uri))
     rescue Exception=>e
-      RAILS_DEFAULT_LOGGER.debug "getOntologyMetrics error: #{e.message}"
+      LOG.add :debug, "getOntologyMetrics error: #{e.message}"
       return ont
     end
     
@@ -282,8 +282,8 @@ class BioPortalRestfulCore
     uri_gen = BioPortalResources::PathToRoot.new(params)
     uri = uri_gen.generate_uri
     
-    RAILS_DEFAULT_LOGGER.debug "Retrieve path to root"
-    RAILS_DEFAULT_LOGGER.debug uri
+    LOG.add :debug, "Retrieve path to root"
+    LOG.add :debug, uri
     doc = REXML::Document.new(open(uri))
     
     root = errorCheck(doc)
@@ -296,7 +296,7 @@ class BioPortalRestfulCore
     doc.elements.each("*/data/classBean"){ |element|  
       root = parseConcept(element, params[:ontology_id])
     }
-    RAILS_DEFAULT_LOGGER.debug "getPathToRoot Parse Time: #{Time.now-time}"
+    LOG.add :debug, "getPathToRoot Parse Time: #{Time.now-time}"
     
     return root
   end
@@ -308,8 +308,8 @@ class BioPortalRestfulCore
           ontologies = "ontologyids=#{ontologies.join(",")}&"
         end
         
-        RAILS_DEFAULT_LOGGER.debug "####################################################"
-        RAILS_DEFAULT_LOGGER.debug BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15"
+        LOG.add :debug, "####################################################"
+        LOG.add :debug, BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15"
         begin
           doc = REXML::Document.new(open(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",search.gsub(" ","%20"))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15"))
         rescue Exception=>e
@@ -536,22 +536,22 @@ private
   
   def self.getConcept(ontology, concept_uri)    
     begin
-      RAILS_DEFAULT_LOGGER.debug "Concept retreive url"
-      RAILS_DEFAULT_LOGGER.debug concept_uri
+      LOG.add :debug, "Concept retreive url"
+      LOG.add :debug, concept_uri
       startTime = Time.now
       rest = open(concept_uri)
-      RAILS_DEFAULT_LOGGER.debug "Concept retreive (#{Time.now - startTime})"
+      LOG.add :debug, "Concept retreive (#{Time.now - startTime})"
     rescue Exception=>e
-      RAILS_DEFAULT_LOGGER.debug "getConcept retreive error: #{e.message}"
+      LOG.add :debug, "getConcept retreive error: #{e.message}"
     end
     
     begin
       startTime = Time.now
       parser = XML::Parser.io(rest)
       doc = parser.parse
-      RAILS_DEFAULT_LOGGER.debug "Concept parse (#{Time.now - startTime})"
+      LOG.add :debug, "Concept parse (#{Time.now - startTime})"
     rescue Exception=>e
-      RAILS_DEFAULT_LOGGER.debug "getConcept parse error: #{e.message}"
+      LOG.add :debug, "getConcept parse error: #{e.message}"
     end
     
     if doc.nil?
@@ -568,7 +568,7 @@ private
     doc.find("/*/data/classBean").each{ |element|  
       node = parseConceptLibXML(element,ontology)
     }
-    RAILS_DEFAULT_LOGGER.debug "Concept storage (#{Time.now - startTime})"
+    LOG.add :debug, "Concept storage (#{Time.now - startTime})"
     
     return node
   end
@@ -694,7 +694,7 @@ private
         roles << role.get_text.value.strip
       } 
     rescue Exception=>e
-      RAILS_DEFAULT_LOGGER.debug e.inspect
+      LOG.add :debug, e.inspect
     end
     
     user.roles = roles
@@ -837,7 +837,7 @@ private
       
       # Stop exception checking
     rescue Exception=>e
-      RAILS_DEFAULT_LOGGER.debug e.inspect
+      LOG.add :debug, e.inspect
     end
     
     return ontologyMetrics

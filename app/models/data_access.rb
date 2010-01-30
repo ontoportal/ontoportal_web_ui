@@ -183,8 +183,6 @@ private
   end
    
   def self.cache_pull(token, service_call, params = nil, expires = CACHE_EXPIRE_TIME)
-    RAILS_DEFAULT_LOGGER.debug "[#{Time.now}] Calling: #{service_call} #{params.inspect}"
-    
     if NO_CACHE || CACHE.get(token).nil?
       if params
         retrieved_object = SERVICE.send(:"#{service_call}", params)
