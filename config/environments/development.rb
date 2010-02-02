@@ -12,7 +12,6 @@ config.whiny_nils = true
 config.action_controller.consider_all_requests_local = true
 config.action_view.debug_rjs                         = true
 config.action_controller.perform_caching             = false
-config.action_view.cache_template_extensions         = false
 
 # Don't care if the mailer can't send
 config.action_mailer.raise_delivery_errors = false
@@ -27,5 +26,18 @@ memcache_options = {
   :urlencode => false
 }
 
+require 'memcache'
 CACHE = MemCache.new memcache_options
 CACHE.servers = 'localhost:11211'
+
+ActionController::Base.session_options[:cache] = CACHE
+# end memcache setup
+
+if defined?(PhusionPassenger)
+  PhusionPassenger.on_event(:starting_worker_process) do |forked|
+    if forked # We're in smart spawning mode, se we need to reset connections to stuff when forked
+      CACHE.reset # reset memcache connection
+    else # We're in conservative spawning mode. We don't need to do anything.
+    end
+  end
+end
