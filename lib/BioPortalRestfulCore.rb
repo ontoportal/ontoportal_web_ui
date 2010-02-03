@@ -729,10 +729,11 @@ private
     ontology.documentation = ontologybeanXML.elements["documentation"].get_text.value.strip rescue ""
     ontology.publication = ontologybeanXML.elements["publication"].get_text.value.strip rescue ""
     ontology.dateCreated = Date.parse(ontologybeanXML.elements["dateCreated"].get_text.value).strftime('%m/%d/%Y') rescue ""
-    ontology.preferredNameSlot=ontologybeanXML.elements["preferredNameSlot"].get_text.value.strip rescue ""
-    ontology.synonymSlot=ontologybeanXML.elements["synonymSlot"].get_text.value.strip rescue ""
-    ontology.description=ontologybeanXML.elements["description"].get_text.value.strip rescue ""
-    ontology.abbreviation=ontologybeanXML.elements["abbreviation"].get_text.value.strip rescue ""    
+    ontology.preferredNameSlot = ontologybeanXML.elements["preferredNameSlot"].get_text.value.strip rescue ""
+    ontology.synonymSlot = ontologybeanXML.elements["synonymSlot"].get_text.value.strip rescue ""
+    ontology.description = ontologybeanXML.elements["description"].get_text.value.strip rescue ""
+    ontology.abbreviation = ontologybeanXML.elements["abbreviation"].get_text.value.strip rescue ""    
+    ontology.targetTerminologies = ontologybeanXML.elements["targetTerminologies"].get_text.value.strip rescue ""    
     
     ontology.categories = []
     ontologybeanXML.elements["categoryIds"].elements.each do |element|
