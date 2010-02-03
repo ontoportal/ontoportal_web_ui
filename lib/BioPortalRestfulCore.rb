@@ -576,7 +576,7 @@ private
   def self.postMultiPart(url, paramsHash)
     params=[]
     for param in paramsHash.keys
-      if param.eql?("filePath")
+      if paramsHash["isRemote"].eql?("0") && param.eql?("filePath")
         params << file_to_multipart('filePath',paramsHash["filePath"].original_filename,paramsHash["filePath"].content_type,paramsHash["filePath"])
       else
         params << text_to_multipart(param,paramsHash[param])
