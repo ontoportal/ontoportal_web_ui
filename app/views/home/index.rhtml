@@ -8,8 +8,6 @@
 <script src="/javascripts/JqueryPlugins/superfish/hoverIntent.js" type="text/javascript" charset="utf-8"></script>
 <script src="/javascripts/JqueryPlugins/superfish/superfish.js" type="text/javascript" charset="utf-8"></script>
 
-
-
 <script type="text/javascript">
 var searchbox;
 var resourcebox;
@@ -114,12 +112,27 @@ function greybox(box){
 	}
 }
 
+
 </script>
 <style>
 .greyed{
 	color:#CFCFCF;
 }
 </style>
+
+<% unless $FRONT_NOTICE.nil? || $FRONT_NOTICE.empty? || cookies[:front_page_notice_closed].eql?("true") %>
+	<script type="text/javascript">
+		function close_message(){
+			var exdate = new Date();
+			exdate.setDate(exdate.getDate() + 7);
+			document.cookie="front_page_notice_closed=true; expires="+exdate.toGMTString();
+			jQuery("#notice_message").hide();
+		}
+	</script>
+	<p style="padding: 10px; margin: 10px; border:1px solid #EFEFEF; background-color: #F9F9F9;" id="notice_message">
+		<%=$FRONT_NOTICE%>&nbsp;&nbsp;<a href="#" onclick="close_message(); return false;" style="font-size: small; color: darkGray;">[close]</a>
+	</p>
+<% end %>
 
 <h2 style="margin:10px;"> Welcome to the NCBO Bioportal</h2>
 <p style="padding:10px;margin:10px; border:1px solid #EFEFEF;" >
