@@ -161,8 +161,7 @@ class ConceptsController < ApplicationController
             @children << TreeNode.new(child)
             @children.sort!{|x,y| x.name.downcase<=>y.name.downcase}
           end
-          RAILS_DEFAULT_LOGGER.error "Tree Build Time"
-          RAILS_DEFAULT_LOGGER.error Time.now - start_tree
+          LOG.add :debug,  "Tree build (#{Time.now - start_tree})"
           render :partial => 'childNodes'
       end    
   end
