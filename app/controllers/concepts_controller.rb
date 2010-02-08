@@ -14,9 +14,6 @@ class ConceptsController < ApplicationController
       @concept = DataAccess.getLightNode(params[:ontology],params[:id])
     else
       @concept = DataAccess.getNode(params[:ontology],params[:id])
-      
-      # We only want to log concept loading, not showing a list of child concepts
-      LOG.add :info, 'visualize_concept', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id if @concept && @ontology
     end
 
     # TODO: This should use a proper error-handling technique with custom exceptions
@@ -33,11 +30,12 @@ class ConceptsController < ApplicationController
       return
     end
     
-    if request.xhr?    
-      #puts "its an ajax call"
+    if request.xhr?
       show_ajax_request # process an ajax call
-      #puts "Children #{@children.inspect}"
     else
+      # We only want to log concept loading, not showing a list of child concepts
+      LOG.add :info, 'visualize_concept_direct', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id if @concept && @ontology
+
       show_uri_request # process a full call
       render :file=> '/ontologies/visualize',:use_full_path =>true, :layout=>'ontology' # done this way to share a view
     end
@@ -152,7 +150,11 @@ class ConceptsController < ApplicationController
         when 'load' # Load pulls in all the details of a node
           time = Time.now
           gather_details
-    #      #puts "Finished Details in #{Time.now - time}"
+          LOG.add :debug, "Processed concept details (#{Time.now - time})"
+          
+          # We only want to log concept loading, not showing a list of child concepts
+          LOG.add :info, 'visualize_concept', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id if @concept && @ontology
+
           render :partial => 'load'
         when 'children' # Children is called only for drawing the tree
           @children =[]
