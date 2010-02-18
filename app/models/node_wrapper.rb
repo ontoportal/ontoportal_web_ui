@@ -7,7 +7,7 @@ class NodeWrapper
  
   attr_accessor :id
   attr_accessor :fullId
-  attr_accessor :name  
+  attr_accessor :label  
   attr_accessor :isActive
   attr_accessor :properties
   attr_accessor :version_id
@@ -16,6 +16,51 @@ class NodeWrapper
   attr_accessor :parent_association
   attr_accessor :is_browsable
 
+  def initialize(hash = nil, params = nil)
+    if hash.nil?
+      return
+    end
+    
+    self.version_id = params[:ontology_id]
+    
+    hash.each do |key,value|
+      if key.eql?("relations")
+        self.child_size = value['ChildCount'].to_i if value['ChildCount'] 
+        
+        self.children = []
+        if value['SubClass']
+          value['SubClass'].each do |value|
+            self.children << NodeWrapper.new(value, params) 
+          end
+        end
+        self.children.sort! { |a,b| a.name.downcase <=> b.name.downcase } unless self.children.empty?
+      else
+        begin
+          self.send("#{key}=", value)
+        rescue Exception
+          LOG.add :debug, "Missing '#{key}' attribute in NodeWrapper"
+        end
+      end
+    end
+    
+    self.child_size = 0 if self.child_size.nil?
+  end
+   
+   def store(key, value)
+     begin
+       send("#{key}=", value)
+     rescue Exception
+       LOG.add :debug, "Missing '#{key}' attribute in NodeWrapper"
+     end
+   end
+   
+   def name
+     @label
+   end
+   
+   def name=(value)
+     @label = value
+   end
    
    def to_param
      "#{URI.escape(self.id,":/?#!")}"
@@ -50,26 +95,7 @@ class NodeWrapper
      end
 
    end
-   
-   def initialize(object=nil)
-     if object.nil?
-       return
-     end
-   self.name = object.name
-   self.id = object.id.gsub(" ","%20")
-   self.fullId= object.fullId
-   self.isActive = object.isActive
-   self.properties = {}
-   self.child_size = object.children.to_i
-   
-   unless object.propertyValuePair.nil?
-      for property in object.propertyValuePair
-       properties[property.key]= property.value.gsub("[","").gsub("]","") 
-      end       
-   end
-    
-   end
-   
+      
    def networkNeighborhood(relationships = nil)         
      DataAccess.getNetworkNeighborhoodImage(self.ontology_name,self.id,relationships)
    end

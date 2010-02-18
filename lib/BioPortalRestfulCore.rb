@@ -287,7 +287,8 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve path to root"
     LOG.add :debug, uri
-    doc = REXML::Document.new(open(uri))
+    #doc = REXML::Document.new(open(uri))
+    doc = open(uri)
     
     root = errorCheck(doc)
     
@@ -296,9 +297,10 @@ class BioPortalRestfulCore
     end
     
     time = Time.now
-    doc.elements.each("*/data/classBean"){ |element|  
-      root = parseConcept(element, params[:ontology_id])
-    }
+    root = generic_parse(:xml => doc, :type => "NodeWrapper", :ontology_id => params[:ontology_id])
+    #doc.elements.each("*/data/classBean"){ |element|  
+    #  root = parseConcept(element, params[:ontology_id])
+    #}
     LOG.add :debug, "getPathToRoot Parse Time: #{Time.now-time}"
     
     return root
@@ -1028,7 +1030,7 @@ private
     childcount = classbeanXML.first.find(classbeanXML.path + "/relations/entry[string='ChildCount']/int")
     node.child_size = childcount.first.content.to_i unless childcount.first.nil?
     # get isBrowsable info
-    node.is_browsable = node.type.downcase.eql?("class")
+    node.is_browsable = node.type.downcase.eql?("class") rescue ""
     # get synonyms
     synonyms = classbeanXML.first.find(classbeanXML.path + "/synonyms/string")
     node.synonyms = []
@@ -1049,5 +1051,113 @@ private
       
     return node
   end
+  
+  ###################### Generic Parser #########################
+  ## The following methods are part of a generic parser, which
+  ## promises a simpler, faster parsing implementation. For now
+  ## these methods are contained here, but future plans would
+  ## bring the parser into the models, making it so that data
+  ## is defined and dealt with in one location.
+  ##
+  ## Right now a hash is produced that matches the provided REST XML.
+  ## When calling generic_parse you can provide the model type
+  ## (NodeWrapper, OntologyWrapper, etc) and then overwrite the
+  ## model's intialize method to convert the hash into a proper object.
+  ## For an example, see the NodeWrapper model and getPathToRoot method.
+  ##
+  ## Parameters
+  ## :type => object type
+  ## :xml => IO object containing XML data
+  ## Additional parameters can be added and will be passed to the model initializer
+  ##
+  ## Usage
+  ## generic_parse(:xml => xml, :type => "OntologyWrapper", :ontology_id => ontology_id
+  ####
+  def self.generic_parse(params)
+    type = params[:type] rescue nil
+    xml = params[:xml]
+    
+    parser = XML::Parser.io(xml, :options => LibXML::XML::Parser::Options::NOBLANKS)
+    doc = parser.parse
+    root = doc.find_first("/success/data")
+    parsed = self.parse(root)
+    # We end up with an extra hash at the root, this should get rid of that
+    attributes = {}
+    parsed.each do |k,v|
+      if v.is_a?(Hash)
+        attributes = {}
+        v.each{ |k,v| attributes[k] = v }
+      elsif v.is_a?(Array)
+        attributes = v
+      end
+    end
+
+    if type
+      return Kernel.const_get(type).new(attributes, params)
+    else
+      return attributes
+    end
+  end
+  
+  def self.parse(node)
+    a = {}
+    
+    node.each_element do |child|
+      case child.name
+        when "entry"
+          a[child.first.content] = process_entry(child)
+        when "list"
+          a[node.name] = process_list(child)
+        when "int"
+          return child.content.to_i
+        when "string"
+          return child.content
+      else
+        if !child.first.nil? && child.first.element?
+          a[child.name] = parse(child)
+        else
+          a[child.name] = child.content
+        end
+      end
+    end
+    a
+  end
+  
+  # Entries are generally key/value pairs, sometimes the value is a list
+  def self.process_entry(entry)
+    children = []
+    entry.each_element{|c| children << c}
+
+    entry_key = children[0].content
+    entry_values = children[1]
+    entry_hash = {}
+    
+    # Check to see if entry contains data as a list or single
+    if entry_values.name.eql?("list") && !entry_values.empty?
+      values = process_list(entry_values)
+      entry_hash[entry_key] = values
+    else
+      entry_hash[entry_key] = entry_values.content
+    end
+  end
+  
+  # Processes a list of items, returns an array of values
+  def self.process_list(list)
+    return if list.children.empty?
+    list_type = list.first.name
+    values = []
+    
+    if list_type.eql?("int")
+      list.each{ |entry| values << entry.content.to_i }
+    elsif list_type.eql?("string")
+      list.each{ |entry| values << entry.content.to_s }
+    elsif !list.first.nil? && list.first.element?
+      list.each{ |entry| values << parse(entry) }
+    else
+      list.each{ |entry| values << entry.content }
+    end
+    values
+  end
+
   
 end
