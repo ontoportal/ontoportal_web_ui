@@ -34,13 +34,16 @@ CACHE.servers = 'localhost:11211'
 ActionController::Base.session_options[:cache] = CACHE
 # end memcache setup
 
-if defined?(PhusionPassenger)
-  PhusionPassenger.on_event(:starting_worker_process) do |forked|
-    if forked # We're in smart spawning mode, se we need to reset connections to stuff when forked
-      CACHE.reset # reset memcache connection
-    else # We're in conservative spawning mode. We don't need to do anything.
-    end
-  end
+begin
+   PhusionPassenger.on_event(:starting_worker_process) do |forked|
+     if forked
+       # We're in smart spawning mode, so...
+       # Close duplicated memcached connections - they will open themselves
+       CACHE.reset
+     end
+   end
+# In case you're not running under Passenger (i.e. devmode with mongrel)
+rescue NameError => error
 end
 
 # Include the BioPortal-specific configuration options
