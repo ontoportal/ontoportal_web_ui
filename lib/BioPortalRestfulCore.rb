@@ -127,12 +127,13 @@ class BioPortalRestfulCore
   def self.getTopLevelNodes(params)
     params[:concept_id] = "root"
    
-    uri_gen = BioPortalResources::Concept.new(params, 200)
+    uri_gen = BioPortalResources::Concept.new(params, 1000)
     uri = uri_gen.generate_uri
     
     LOG.add :debug, "Retrieve top level nodes"
     LOG.add :debug, uri
-    doc = REXML::Document.new(open(uri))            
+    doc = open(uri)
+    #doc = REXML::Document.new(open(uri))            
 
     node = errorCheck(doc)         
 
@@ -140,9 +141,8 @@ class BioPortalRestfulCore
       return node
     end
     
-    doc.elements.each("*/data/classBean"){ |element|  
-      node = parseConcept(element, params[:ontology_id])
-    }
+    timer = Benchmark.ms { node = generic_parse(:xml => doc, :type => "NodeWrapper", :ontology_id => params[:ontology_id]) }
+    LOG.add :debug, "Top level nodes parsed (#{timer})"
     
     return node.children
   end
@@ -287,7 +287,6 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve path to root"
     LOG.add :debug, uri
-    #doc = REXML::Document.new(open(uri))
     doc = open(uri)
     
     root = errorCheck(doc)
@@ -296,12 +295,8 @@ class BioPortalRestfulCore
       return root
     end
     
-    time = Time.now
-    root = generic_parse(:xml => doc, :type => "NodeWrapper", :ontology_id => params[:ontology_id])
-    #doc.elements.each("*/data/classBean"){ |element|  
-    #  root = parseConcept(element, params[:ontology_id])
-    #}
-    LOG.add :debug, "getPathToRoot Parse Time: #{Time.now-time}"
+    timer = Benchmark.ms { root = generic_parse(:xml => doc, :type => "NodeWrapper", :ontology_id => params[:ontology_id]) }
+    LOG.add :debug, "getPathToRoot Parse Time: #{timer}"
     
     return root
   end
