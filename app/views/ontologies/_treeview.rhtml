@@ -251,7 +251,7 @@ function nodeClicked(node_id,node_label) {
 	document.getElementById("link_label").firstChild.nextSibling.href="/visualize/"+currentOntology+"/?id="+encodeURIComponent(node_id);
 
 	setConcept(node_id)
-	
+
 	if(getCache(node_id)!=null){
 		tabData = getCache(node_id)
 		jQuery('#visualization_content').html(tabData[0]);
