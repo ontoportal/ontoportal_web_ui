@@ -17,15 +17,20 @@ $RELEASE_VERSION = ""
 # Google Analytics ID (optional)
 $ANALYTICS_ID = ""
 
-# Email address to mail when exceptions are raised
-ExceptionNotifier.exception_recipients = %w(recipient@domain.com) 
-
-# SMTP settings
+# Email settings
 ActionMailer::Base.smtp_settings = {
   :address  => "", # smtp server address, ex: smtp.domain.com
   :port  => 25, # smtp server port
   :domain  => "", # fqdn of rails server, ex: rails.domain.com
 } 
+
+# Email address to mail when exceptions are raised
+ExceptionNotifier.exception_recipients = %w(recipient@domain.com)
+
+# Email addresses used for sending notifications (errors, feedback, support)
+$SUPPORT_EMAIL = "recipient@domain.com"
+$ADMIN_EMAIL = "recipient@domain.com"
+$ERROR_EMAIL = "recipient@domain.com"
 
 # Settings for date formatting
 CalendarDateSelect.format = :american
