@@ -53,7 +53,6 @@ try{
     	}
 
 		if (jQuery("#jump_to_concept_id") != null && jQuery("#jump_to_ontology_id") != null) {
-			alert(jQuery("#jump_to_concept_id").val() + "\n\n" + jQuery("#jump_to_ontology_id").val());
 			var sValue = jQuery("#jump_to_concept_id").val();
 			var ontology_id = jQuery("#jump_to_ontology_id").val();
 			if (BP_ontology_id == "") {
@@ -85,7 +84,7 @@ try{
     	jQuery("#bioportal_loading").hide();
     	jQuery("#bioportal_search").css('display', 'block');
     	
-        jQuery("#BP_search_box").autocomplete("http://localhost:3001/search/json_search/"+BP_ontology_id, {
+        jQuery("#BP_search_box").autocomplete("http://bioportal.bioontology.org/search/json_search/"+BP_ontology_id, {
     		lineSeparator: "~!~",
     		matchSubset: 0,
     		minChars: 3,
