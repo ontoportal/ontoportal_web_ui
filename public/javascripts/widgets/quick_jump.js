@@ -25,62 +25,88 @@ try{
 }
     
     // install any CSS we need
+    document.write("<link rel=\"stylesheet\" href=\"http://bioportal.bioontology.org/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css\" type=\"text/css\" media=\"screen\" title=\"no title\" charset=\"utf-8\">")
 
-        document.write("<link rel=\"stylesheet\" href=\"http://bioportal.bioontology.org/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css\" type=\"text/css\" media=\"screen\" title=\"no title\" charset=\"utf-8\">")
+    // Grab the specific scripts we need and fires it start event
+    jQuery.getScript("http://bioportal.bioontology.org/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js",function(){
+    	setTimeout('setup_functions()',2000);
+    });
+        
 
 // Begin code specific to plugin
 
     var searchbox;
+    
+    if (BP_ontology_id == undefined) {
+    	var BP_ontology_id = ""
+    }
+    
+    document.write("<div id='bioportal_loading'>Loading BioPortal Jump To...</div>");
 
-    function jumpToValue(li){
-    //    alert(li.extra)
-        
-    	if( li == null ){
-    	// Im doing a search	
-
-    	var search = confirm("Concept could not be found..\n Press OK to go to the Bioportal Search page or Cancel to try again")
-    		if(search){
-    		    document.location="http://bioportal.bioontology.org/search"
+    function jumpToValue(li) {
+    	if (jQuery("#jump_to_concept_id") == null && jQuery("#jump_to_ontology_id") == null) {
+    		var search = confirm("Term could not be found or is not browsable in BioPortal.\n\nPress OK to go to the Bioportal Search page or Cancel to try again")
+    		if (search) {
+    		    document.location="http://bioportal.bioontology.org/search/";
     			return
     		}
     	}
 
-    		if( !!li.extra ){
-
-    			var sValue = li.extra[0];
-              //  alert("http://stage.bioontology.org/virtual/"+BP_ontology_id+"/"+sValue)
-    			document.location="http://bioportal.bioontology.org/virtual/"+BP_ontology_id+"/"+sValue;
-    	//		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Concept...</h1>' }); 
-    			return
-    		}
-
-
+		if (jQuery("#jump_to_concept_id") != null && jQuery("#jump_to_ontology_id") != null) {
+			alert(jQuery("#jump_to_concept_id").val() + "\n\n" + jQuery("#jump_to_ontology_id").val());
+			var sValue = jQuery("#jump_to_concept_id").val();
+			var ontology_id = jQuery("#jump_to_ontology_id").val();
+			if (BP_ontology_id == "") {
+				document.location = "http://bioportal.bioontology.org/visualize/"+ontology_id+"/"+sValue;
+			} else {
+				document.location = "http://bioportal.bioontology.org/virtual/"+BP_ontology_id+"/"+sValue;
+			}
+			return
+		}
     }
 
     function formatItem(row) {
-     	return row[0] + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
+    	if (row[7] == undefined) {
+    		result = row[0] + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
+    	} else {
+    		result = row[0] + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span><br>Ontology: " + row[7];
+    	}
+     	return result;
     }
 
+    document.write("<div id='bioportal_search' style='display: none;'>");
+    document.write("Jump To: <input type=\"textbox\" id=\"BP_search_box\" size=\"30\"> <input type=\"button\" value=\"Go\" onclick=\"jump_clicked();\">");
+    document.write("&nbsp;<a href='http://bioportal.bioontology.org'><img src='http://bioportal.bioontology.org/images/layout/logo_mini.png'  style='vertical-align: middle;' border=0/></a>");
+    document.write("<input type='hidden' id='jump_to_concept_id'>");
+    document.write("<input type='hidden' id='jump_to_ontology_id'>");
+    document.write("</div>");
 
-
-        document.write("Jump To:<input type=\"textbox\" id=\"BP_search_box\" size=\"30\"> <input type=\"button\" value=\"Go\" onclick=\"jump_clicked();\">")
-document.write("<a href='http://bioportal.bioontology.org'><img src='http://bioportal.bioontology.org/images/layout/logo_mini.png' border=0/></a>");
-
-        
-        // Grab the specific scripts we need and fires it start event
-        jQuery.getScript("http://bioportal.bioontology.org/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js",function(){
-
-        setTimeout('setup_functions()',2000);
+    function setup_functions(){
+    	jQuery("#bioportal_loading").hide();
+    	jQuery("#bioportal_search").css('display', 'block');
+    	
+        jQuery("#BP_search_box").autocomplete("http://localhost:3001/search/json_search/"+BP_ontology_id, {
+    		lineSeparator: "~!~",
+    		matchSubset: 0,
+    		minChars: 3,
+    		maxItemsToShow: 20,
+    		onFindValue: jumpToValue,
+			onItemSelect: jumpToSelect,
+    		formatItem: formatItem
         });
         
-    function setup_functions(){
-        jQuery("#BP_search_box").autocomplete("http://bioportal.bioontology.org/search/json_search/"+BP_ontology_id, { lineSeparator:"~!~",matchSubset:0,minChars:3,maxItemsToShow:20,onFindValue:jumpToValue,formatItem:formatItem });
-        searchbox =  jQuery("#BP_search_box")[0].autocompleter;	    	    	    
-	  //  alert(searchbox)
+        searchbox =  jQuery("#BP_search_box")[0].autocompleter;
     }
+    
+	// Sets a hidden form value that records the concept id when a concept is chosen in the jump to
+	// This is a workaround because the default autocomplete search method cannot distinguish between two
+	// concepts that have the same preferred name but different ids.
+	function jumpToSelect(li){
+		jQuery("#jump_to_concept_id").val(li.extra[0]);
+		jQuery("#jump_to_ontology_id").val(li.extra[2]);
+	}
+	
     function jump_clicked(){
-     //   alert("clicked");
-//alert(searchbox)
         searchbox.findValue();
     }
 

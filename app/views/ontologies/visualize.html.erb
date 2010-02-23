@@ -33,7 +33,7 @@
 	function jumpToValue(li){
 		if( li == null ){
 			// User performs a search	
-			var search = confirm("Term could not be found..\n Press OK to go to the Search page or Cancel to continue browsing");
+			var search = confirm("Term could not be found.\n\nPress OK to go to the Search page or Cancel to continue browsing");
 			
 			if(search){
 				jQuery("#search_keyword").val(jQuery("#search_box").val())

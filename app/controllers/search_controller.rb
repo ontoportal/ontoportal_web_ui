@@ -97,22 +97,26 @@ class SearchController < ApplicationController
   end
   
   def json_search
-    if params[:q].nil? || params[:id].nil?
-      render :text => "No search term or ontology id provided"
+    if params[:q].nil?
+      render :text => "No search term provided"
       return
     end
     
     @results,@pages = DataAccess.getNodeNameContains([params[:id]],params[:q],1)
 
-    @ontology = DataAccess.getLatestOntology(params[:id])
-    LOG.add :info, 'jump_to_search', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :search_term => params[:q], :result_count => @results.length
-
+    if params[:id]
+      @ontology = DataAccess.getLatestOntology(params[:id])
+      LOG.add :info, 'jump_to_search', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :search_term => params[:q], :result_count => @results.length
+    else
+      LOG.add :info, 'jump_to_search', request, :search_term => params[:q], :result_count => @results.length
+    end
+    
     response = ""
     for result in @results
       record_type = result[:recordType].titleize.gsub("Record Type","").split(" ")
       record_type_value = ""
       for type in record_type
-        record_type_value<< type[0]
+        record_type_value << type[0]
       end      
       
       target_value = result[:preferredName]
@@ -124,7 +128,11 @@ class SearchController < ApplicationController
         target_value = result[:preferredName]
       end      
       
-      response << "#{target_value}|#{result[:conceptIdShort]}|#{result[:recordType].titleize.gsub("Record Type","").downcase}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}~!~"
+      if params[:id]
+        response << "#{target_value}|#{result[:conceptIdShort]}|#{result[:recordType].titleize.gsub("Record Type","").downcase.strip}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}~!~"
+      else
+        response << "#{target_value}|#{result[:conceptIdShort]}|#{result[:recordType].titleize.gsub("Record Type","").downcase.strip}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}|#{result[:ontologyDisplayLabel]}~!~"
+      end
     end        
     
     if params[:response].eql?("json")
