@@ -50,7 +50,7 @@ function setup_functions() {
 		var ontology_id = values[1];
 		var target_property = values[2];
 		if (ontology_id == "all") { ontology_id = ""; }
-		jQuery(this).autocomplete("http://localhost:3001/search/json_search/"+ontology_id, {
+		jQuery(this).autocomplete("http://bioportal.bioontology.org/search/json_search/"+ontology_id, {
 				extraParams: { target_property: target_property, input: this },
 				lineSeparator: "~!~",
 				matchSubset: 0,
