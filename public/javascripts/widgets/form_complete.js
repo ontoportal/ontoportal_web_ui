@@ -25,7 +25,7 @@ try{
 
 // Plugin-specific code
 
-// install any CSS we need
+// Install any CSS we need
 document.write("<link rel=\"stylesheet\" href=\"http://bioportal.bioontology.org/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css\" type=\"text/css\" media=\"screen\" title=\"no title\" charset=\"utf-8\">")
 
 // Grab the specific scripts we need and fires it start event
@@ -57,6 +57,7 @@ function setup_functions() {
 				minChars: 3,
 				maxItemsToShow: 20,
 				onItemSelect: bpFormSelect,
+				footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="http://bioportal.bioontology.org">BioPortal</a></div>',
 				formatItem: formatItem
 		});
 		

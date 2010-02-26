@@ -57,18 +57,25 @@ function jumpToValue(li) {
 	}
 }
 
-function formatItem(row) {
+function formatItem(row, position, count) {
 	// row[7] is the ontology_id, only included when searching multiple ontologies
 	if (row[7] == undefined) {
 		var result = row[0] + " <span style='font-size:7pt;color:blue;'>(" + row[2] + ")</span>";
 	} else {
 		var result = row[0] + " <span style='font-size:7pt;color:blue;'>(" + row[2] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + row[7] + "</span>";
 	}
+	
+	// Insert BioPortal branding in result list
+	/*if (position + 1 == count) {
+		console.log(jQuery(".ac_results > ul"));
+		jQuery("div.ac_results").append('<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: 10px 5px 3px;">Results provided by <a href="http://bioportal.bioontology.org">BioPortal</a></div>');
+		result += '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: 10px 5px 3px;">Results provided by <a href="http://bioportal.bioontology.org">BioPortal</a></div>';
+	}*/
+	
  	return result;
 }
 
-document.write("Jump To: <input type=\"textbox\" id=\"BP_search_box\" size=\"30\"> <input type=\"button\" value=\"Go\" onclick=\"jump_clicked();\">");
-document.write("&nbsp;<a href='http://bioportal.bioontology.org'><img src='http://bioportal.bioontology.org/images/layout/logo_mini.png'  style='vertical-align: middle;' border=0/></a>");
+document.write("Jump To: <input type=\"textbox\" id=\"BP_search_box\" size=\"30\"> <input type=\"button\" value=\"Go to BioPortal\" onclick=\"jump_clicked();\">");
 document.write("<input type='hidden' id='jump_to_concept_id'>");
 document.write("<input type='hidden' id='jump_to_ontology_id'>");
 
@@ -81,6 +88,7 @@ function setup_functions() {
 		onFindValue: jumpToValue,
 		onItemSelect: jumpToSelect,
 		width: 450,
+		footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="http://bioportal.bioontology.org">BioPortal</a></div>',
 		formatItem: formatItem
     });
     
