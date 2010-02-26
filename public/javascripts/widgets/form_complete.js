@@ -57,7 +57,7 @@ function setup_functions() {
 				minChars: 3,
 				maxItemsToShow: 20,
 				onItemSelect: bpFormSelect,
-				footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="http://bioportal.bioontology.org">BioPortal</a></div>',
+				footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="http://bioportal.bioontology.org">NCBO BioPortal</a></div>',
 				formatItem: formatItem
 		});
 		

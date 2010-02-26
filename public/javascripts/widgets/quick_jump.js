@@ -88,7 +88,7 @@ function setup_functions() {
 		onFindValue: jumpToValue,
 		onItemSelect: jumpToSelect,
 		width: 450,
-		footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="http://bioportal.bioontology.org">BioPortal</a></div>',
+		footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="http://bioportal.bioontology.org">NCBO BioPortal</a></div>',
 		formatItem: formatItem
     });
     
