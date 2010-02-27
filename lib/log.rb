@@ -39,7 +39,8 @@ class LOG
     params[:requesturl] = request.request_uri
     
     begin
-      log.post(params)
+      ms = Benchmark.ms { log.post(params) }
+      LOG.add :debug, "Logging action remotely (#{ms}ms)"
     rescue Exception=>e
       LOG.add :debug, "Remote logging failed: #{e.message}"
     end
