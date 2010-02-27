@@ -65,13 +65,6 @@ function formatItem(row, position, count) {
 		var result = row[0] + " <span style='font-size:7pt;color:blue;'>(" + row[2] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + row[7] + "</span>";
 	}
 	
-	// Insert BioPortal branding in result list
-	/*if (position + 1 == count) {
-		console.log(jQuery(".ac_results > ul"));
-		jQuery("div.ac_results").append('<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: 10px 5px 3px;">Results provided by <a href="http://bioportal.bioontology.org">BioPortal</a></div>');
-		result += '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: 10px 5px 3px;">Results provided by <a href="http://bioportal.bioontology.org">BioPortal</a></div>';
-	}*/
-	
  	return result;
 }
 
