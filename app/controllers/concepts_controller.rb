@@ -147,7 +147,7 @@ class ConceptsController < ApplicationController
             LOG.add :debug, "Processed concept details (#{Time.now - time})"
             
             # We only want to log concept loading, not showing a list of child concepts
-            LOG.add :info, 'visualize_concept', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id if @concept && @ontology
+            LOG.add :info, 'visualize_concept_browse', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id if @concept && @ontology
   
             render :partial => 'load'
           when 'children' # Children is called only for drawing the tree

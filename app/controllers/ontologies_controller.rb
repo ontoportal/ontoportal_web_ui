@@ -223,7 +223,7 @@ class OntologiesController < ApplicationController
       if params[:jump_to_nav]
         LOG.add :info, 'jump_to_nav', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id
       else
-        LOG.add :info, 'visualize_concept', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id
+        LOG.add :info, 'visualize_concept_direct', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id
       end
       
       # This handles special cases where a passed concept id is for a concept
