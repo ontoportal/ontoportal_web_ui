@@ -166,6 +166,13 @@ class DataAccess
     return self.getLatestOntology(params[:ontologyId])
   end
   
+  def self.updateView(params, ontology_id)
+    SERVICE.updateOntology(params, ontology_id)
+    CACHE.delete("view::#{ontology_id}")
+    CACHE.delete("views::#{self.getOntology(params[:viewOnOntologyVersionId]).ontologyId}")
+    return self.getLatestOntology(params[:ontologyId])
+  end
+  
   def self.download(ontology_id)
     return SERVICE.download(ontology_id)
   end

@@ -39,6 +39,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/resources',:controller =>'home',:action=>'all_resources'
   map.connect '/recommender',:controller =>'home',:action=>'recommender'
   map.connect '/exhibit/:ontology/:id',:controller=>'concepts',:action=>'exhibit'
+  map.connect '/ontologies/view/edit/:id', :controller => 'ontologies', :action => 'edit_view', :requirements => { :id => %r([^/?]+) }
+  map.connect '/ontologies/view/new/:id', :controller => 'ontologies', :action => 'new_view'
   map.upload_mappings '/upload/mapping',:controller=>'mappings',:action=>'upload'
   map.process_mappings '/process/mapping',:controller=>'mappings',:action=>'process_mappings'
   map.connect ':controller/service.wsdl', :action => 'wsdl'

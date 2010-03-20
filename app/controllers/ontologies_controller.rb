@@ -125,17 +125,25 @@ class OntologiesController < ApplicationController
       return
     end
     
-    
     @errors = validate(params[:ontology],true)
     
     if @errors.length < 1
-      @ontology = DataAccess.updateOntology(params[:ontology],params[:id])      
+      test = params[:ontology][:isView]
+      if params[:ontology][:isView] && params[:ontology][:isView].to_i == 1
+        @ontology = DataAccess.updateView(params[:ontology],params[:id])
+      else
+        @ontology = DataAccess.updateOntology(params[:ontology],params[:id])
+      end
       
       if @ontology.kind_of?(Hash) && @ontology[:error]        
         flash[:notice]=@ontology[:longMessage]
         redirect_to ontology_path(:id=>params[:id])
       else
-        redirect_to ontology_path(@ontology)
+        if @ontology.isView.eql?("true")
+          redirect_to ontology_path(@ontology.viewOnOntologyVersionId) 
+        else
+          redirect_to ontology_path(@ontology)
+        end
       end
     else
       @ontology = OntologyWrapper.new
@@ -150,11 +158,19 @@ class OntologiesController < ApplicationController
   
   
   def edit
-    @ontology = DataAccess.getOntology(params[:id])
+    @ontology = DataAccess.getOntology(params[:id])   
     
-    authorize_owner(@ontology.userId.to_i)  
+    authorize_owner(@ontology.userId.to_i)
+    
     @categories = DataAccess.getCategories()
+  end
+
+  def edit_view
+    @ontology = DataAccess.getView(params[:id])   
     
+    authorize_owner(@ontology.userId.to_i)
+    
+    @categories = DataAccess.getCategories()
   end
   
   # GET /visualize/:ontology
@@ -279,9 +295,8 @@ class OntologiesController < ApplicationController
     else      
       @ontology = DataAccess.getView(params[:id])
     end
+
     @categories = DataAccess.getCategories()
-    
-    
   end
   
   

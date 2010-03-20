@@ -44,4 +44,8 @@ module OntologiesHelper
     end
   end
   
+  def get_view_ontology_version(view_on_ontology_id)
+    return DataAccess.getOntology(view_on_ontology_id).versionNumber
+  end
+  
 end
