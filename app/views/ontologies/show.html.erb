@@ -41,52 +41,8 @@
             	    }
             
             	});
-            	
-            	
-            	var searchbox;
-            
-            function jumpToValue(li){
-            	if( li == null ){
-            	// Im doing a search	
-            	
-            	var search = confirm("Term could not be found..\n Press OK to go to the Search page or Cancel to continue browsing")
-            		if(search){
-            			jQuery("#search_keyword").val(jQuery("#search_box").val())
-            			jQuery("#search_form").submit()
-            			return
-            		}
-            	}
-            
-            		// if coming from an AJAX call, let's use the CityId as the value
-            		if( !!li.extra ){
-            			
-            			var sValue = li.extra[0];
-            			
-            			document.location="/visualize/<%=@ontology.id%>/"+sValue;
-            			jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>' }); 
-            			return
-            		}
-            
-            	
-            }
-            
-            function formatItem(row) {
-             	return row[0] + " <span style='font-size:9px;color:blue;' >(" + row[2] + ")</span>";
-            }
-            
-            <%if !@ontology.isRemote.to_i.eql?(1)%>
-            
-            $(document).ready(function(){
-            	 $("#search_box").autocomplete("/search/json_search/<%=@ontology.ontologyId%>", { lineSeparator:"~!~",matchSubset:0,minChars:3,maxItemsToShow:20,onFindValue:jumpToValue,formatItem:formatItem });
-            	searchbox =  $("#search_box")[0].autocompleter;
-            	
-            });
-            <%end%>
-            
-            
-            	
-            
 </script>
+
 <div style="padding:5px;">
     <%if flash[:notice] %>
     <div style="padding:5px;border:1px solid gray;font-size:14px; background-color:#ffffcc;">

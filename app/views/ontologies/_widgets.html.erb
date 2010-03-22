@@ -1,4 +1,5 @@
 <%if !@ontology.isRemote.to_i.eql?(1) %>
+
 <div id="widgets_content" style="display:none;" class="tab_content">
     <div>
         <h1>Adding NCBO Widgets for <%=@ontology.displayLabel %> to Your Site</h1>
@@ -26,7 +27,6 @@
                     padding: 3px 10px 3px 10px;
                     text-decoration: none;
                 }
-                
             </style>
             <table width="80%" id="widget_table">
                 <tr>
@@ -44,7 +44,7 @@
                         <a href="#TB_inline?height=400&width=600&inlineId=jump" class="thickbox getcode">Get Code</a>
                     </td>
                     <td>
-                        Jump To: <input type="textbox" id="search_box" size="30"/><input type="button" value="Go" onclick="searchbox.findValue()"/>
+						<%= javascript_include_tag "/javascripts/widgets/quick_jump.js" %>
                         <div id="jump" style="display:none;">
                         <h2>Step 2: Follow the Instructions</h2>
                         <hr/>
@@ -100,20 +100,16 @@
                         <a href="#TB_inline?height=400&width=600&inlineId=form" class="thickbox getcode">Get Code</a>
                     </td>
                     <td>
-                        <script src="/javascripts/widgets/form_complete.js" type="text/javascript" charset="utf-8">
-                        </script>
-                        Example 1 (start typing the term name to get its full URI)
-                        <br/>
-                        <input type="text" name="a" class="bp_form_complete-<%=@ontology.ontologyId%>-uri" size="100"/>
-                        <br/>
-                        Example 2 (get the ID for a term)
-                        <br/>
-                        <input type="text" name="b" class="bp_form_complete-<%=@ontology.ontologyId%>-shortid" size="100"/>
-                        <br/>
-                        Example 3 (get the preferred name for a term)
-                        <br/>
-                        <input type="text" name="c" class="bp_form_complete-<%=@ontology.ontologyId%>-name" size="100"/>
-                        <br/>
+						<%= javascript_include_tag "/javascripts/widgets/form_complete.js" %>
+						Example 1 (start typing the term name to get its full URI)
+						<br/> 
+						<input type="text" name="a" class="bp_form_complete-all-uri" size="100"/><br/> 
+						Example 2 (get the ID for a term)
+						<br/> 
+						<input type="text" name="b" class="bp_form_complete-1032,1089-shortid" size="100"/><br/> 
+						Example 3 (get the preferred name for a term)
+						<br/> 
+						<input type="text" name="c" class="bp_form_complete-1032-name" size="100"/> 
                         <div id="form" style="display:none;">
 							<div class="enable-lists" >
                             <h2>Step 2: Follow the Instructions</h2>
