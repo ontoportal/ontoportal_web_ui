@@ -50,8 +50,12 @@ class BioPortalRestfulCore
       element.elements.each{ |version|      
         virtual_view << parseOntology(version)
       }
+        virtual_view.sort! { |a,b| a.internalVersion <=> b.internalVersion }
+        virtual_view.reverse!
         views << virtual_view
-    }  
+    }
+    
+    views.sort! {|a,b| a[0].displayLabel <=> b[0].displayLabel }
 
     return views
   end      
