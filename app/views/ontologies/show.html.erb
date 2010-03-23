@@ -44,13 +44,6 @@
 </script>
 
 <div style="padding:5px;">
-    <%if flash[:notice] %>
-    <div style="padding:5px;border:1px solid gray;font-size:14px; background-color:#ffffcc;">
-        <p>
-            <%=flash[:notice] %>
-        </p>
-    </div>
-    <%end %>
     <h1><%=@ontology.displayLabel %>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/syndication/rss?ontologies=<%=@ontology.ontologyId%>" style="text-decoration:none;font-size:14px;"><img src="/images/feed-icon.png" height=16 width=16 border=0> Subscribe to updates</a></h1><%if !session[:user].nil? && (session[:user].id.to_i.eql?(@ontology.userId.to_i) || session[:user].admin?) %>
     <table class="form">
         <tr>
