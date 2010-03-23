@@ -181,7 +181,8 @@ class OntologiesController < ApplicationController
     
     # Error checking
     if params[:ontology].nil? || params[:id] && params[:ontology].nil?
-      return "Please provide an ontology id or concept id with an ontology id."
+      @error = "Please provide an ontology id or concept id with an ontology id."
+      return
     end
     
     if !params[:id].nil? && params[:id].empty?
@@ -198,6 +199,15 @@ class OntologiesController < ApplicationController
       @ontology = DataAccess.getView(params[:ontology])   
     else
       @ontology = DataAccess.getOntology(params[:ontology])   
+    end
+    
+    if @ontology.statusId.to_i.eql?(6)
+      @latest_ontology = DataAccess.getLatestOntology(@ontology.ontologyId)
+      params[:ontology] = @latest_ontology.id
+      flash[:notice] = "The version of <b>#{@ontology.displayLabel}</b> you were attempting to view (#{@ontology.versionNumber}) has been archived and is no longer available for exploring. You have been redirected to the most recent version (#{@latest_ontology.versionNumber})."
+      concept_id = params[:id] ? "?conceptid=#{params[:id]}" : ""
+      redirect_to "/visualize/#{@latest_ontology.id}#{concept_id}", :status => :moved_permanently
+      return
     end
     
     unless params[:id]
