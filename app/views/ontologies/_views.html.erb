@@ -3,10 +3,22 @@
 	jQuery(document).ready(function(){
 		jQuery(".click_view_collapse").click(function(){
 			var collapse = "#" + jQuery(this).parent().attr("id") + "_collapsible";
-			var icon = "#" + jQuery(this).parent().attr("id") + "_icon"
+			var icon = "#" + jQuery(this).parent().attr("id") + "_icon";
 			jQuery(icon).toggleClass("ui-icon-triangle-1-e");
 			jQuery(icon).toggleClass("ui-icon-triangle-1-s");
 			jQuery(collapse).toggle();
+		});
+		
+		jQuery("#expand_views").click(function(){
+			jQuery(".view_collapsible").show();
+			jQuery(".click_view_collapse_icon").removeClass("ui-icon-triangle-1-e");
+			jQuery(".click_view_collapse_icon").addClass("ui-icon-triangle-1-s");
+		});
+		
+		jQuery("#collapse_views").click(function(){
+			jQuery(".view_collapsible").hide();
+			jQuery(".click_view_collapse_icon").removeClass("ui-icon-triangle-1-s");
+			jQuery(".click_view_collapse_icon").addClass("ui-icon-triangle-1-e");
 		});
 	});
 </script>
@@ -22,7 +34,8 @@
         <%if @ontology.views.empty? || @ontology.views.first.size < 1 %>
 	        <h1>No views available.</h1>
         <%else %>
-	        <% @ontology.views.each_with_index do |virtual, index| %>
+			<h4 style="margin-top: 1.5em;"><a href="javascript:void(0);" id="expand_views">Expand All</a>  |  <a href="javascript:void(0);" id="collapse_views">Collapse All</a></h4>		
+			<% @ontology.views.each_with_index do |virtual, index| %>
 		        <%if virtual[0].nil?
 			        next
 		        end %>
@@ -36,9 +49,14 @@
 					.view_collapsible {
 						margin: 0 1em;
 					}
-				</style>				
+					
+					.click_view_collapse:hover {
+						text-decoration: underline;
+					}
+				</style>
+
 				<div id="view_<%=index%>" class="view_title" style="margin: 1em 0 .5em; cursor: pointer;" >
-					<span id="view_<%=index%>_icon" class="ui-icon ui-icon-triangle-1-e click_view_collapse" style="float: left;"></span>
+					<span id="view_<%=index%>_icon" class="ui-icon ui-icon-triangle-1-e click_view_collapse click_view_collapse_icon" style="float: left;"></span>
 					<span class="click_view_collapse" style="font-size: 120%; font-weight: bold;"><%= virtual[0].displayLabel %></span>
 					<span style="font-size: 90%;">
 				        <%if !session[:user].nil? && (session[:user].id.to_i.eql?(virtual[0].userId.to_i) || session[:user].admin?) %>
@@ -50,7 +68,6 @@
 				<div id="view_<%=index%>_collapsible" class="view_collapsible" style="margin: 0 1em .5em; display: none;">
 					<div id="view_head" style="margin: 0 0 .5em;" class="enable-lists">
 						<ul>
-							<li><span class="lead">Created By:</span> <%=virtual[0].contactName %><br></li>
 							<li><span class="lead">Description:</span> <%=virtual[0].description %><br></li>
 							<% unless virtual[0].viewDefinition.empty? %><li><span class="lead">Definition:</span> <%=virtual[0].viewDefinition %><br></li><%end%>
 							<li><span class="lead">Ontology ID:</span> <%=virtual[0].ontologyId %></li>	
@@ -71,7 +88,10 @@
 			                    <th>
 			                        Created
 			                    </th>
-			                    <th>
+								<th>
+									Created By
+								</th>
+								<th>
 			                        Ontology File
 			                    </th>
 			                    <th>
@@ -92,6 +112,8 @@
 			                <td>
 			                    <%=view.dateReleased %>
 			                </td>
+							<td>
+								<%= view.contactName %>
 			                <td>
 			                    <a href="<%=DataAccess.download(view.id)%>" target="_blank">Download View</a>
 			                </td>
