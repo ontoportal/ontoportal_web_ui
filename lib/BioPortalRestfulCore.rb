@@ -962,8 +962,7 @@ private
       search = classbeanXML.path + "/relations/entry"
       classbeanXML.first.find(search).each do |entry|
         # check to see if the entry is a relationship (signified by [R]), if it is move on
-        if classbeanXML.first.find(entry.path + "/string").first.content[0,3].eql?("[R]") ||
-                classbeanXML.first.find(entry.path + "/string").first.content[0,10].eql?("SuperClass")
+        if classbeanXML.first.find(entry.path + "/string").first.content[0,10].eql?("SuperClass")
           next
         end
         
@@ -1034,7 +1033,8 @@ private
     childcount = classbeanXML.first.find(classbeanXML.path + "/relations/entry[string='ChildCount']/int")
     node.child_size = childcount.first.content.to_i unless childcount.first.nil?
     # get isBrowsable info
-    node.is_browsable = node.type.downcase.eql?("class") rescue ""
+    # Replaced in the short term with a method in the model
+    #node.is_browsable = node.type.downcase.eql?("class") rescue ""
     # get synonyms
     synonyms = classbeanXML.first.find(classbeanXML.path + "/synonyms/string")
     node.synonyms = []

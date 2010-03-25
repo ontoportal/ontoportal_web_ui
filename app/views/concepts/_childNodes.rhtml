@@ -42,8 +42,6 @@ icons = ""
 relation = ""
 if @ontology.format.downcase.include?("obo")
 	for key in @concept.properties.keys
-		puts "#{key} : #{@concept.properties[key]}"
-		puts "lookin for #{child.name}"
 		concepts = @concept.properties[key].split("|").map{|x| x.strip}
 		if concepts.include?(child.name.strip)
 			if key.include?("is_a")

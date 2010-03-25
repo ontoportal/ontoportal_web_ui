@@ -1,8 +1,7 @@
- # Methods added to this helper will be available to all templates in the application.
+# Methods added to this helper will be available to all templates in the application.
 
 require 'uri'
 module ApplicationHelper
-  
   
   def isOwner?(id)
     unless session[:user].nil?
@@ -27,14 +26,12 @@ module ApplicationHelper
   
   def clean_id(string)
     new_string = string.gsub(":","").gsub("-","_").gsub(".","_")
-
     return new_string
   end
   
   def to_param(string)
      "#{encode_param(string.gsub(" ","_"))}"
   end
-  
   
   def remove_owl_notation(string)
     unless string.nil?
@@ -47,36 +44,32 @@ module ApplicationHelper
     end
   end
   
-  
   def draw_note_tree(notes,key)
     output = ""
     draw_note_tree_leaves(notes,0,output,key)
     return output
   end
- 
-  
   
   def draw_note_tree_leaves(notes,level,output,key)
-
-  for note in notes
-    name="Anonymous"
-    unless note.user.nil?
-      name=note.user.username
-    end
-  headertext=""
-  notetext=""
-  if note.note_type.eql?(5)
-    headertext<< "<div class=\"header\" onclick=\"toggleHide('note_body#{note.id}','');compare('#{note.id}')\">"
-    notetext << " <input type=\"hidden\" id=\"note_value#{note.id}\" value=\"#{note.comment}\"> 
+    for note in notes
+      name="Anonymous"
+      unless note.user.nil?
+        name=note.user.username
+      end
+      headertext=""
+      notetext=""
+      if note.note_type.eql?(5)
+        headertext<< "<div class=\"header\" onclick=\"toggleHide('note_body#{note.id}','');compare('#{note.id}')\">"
+        notetext << " <input type=\"hidden\" id=\"note_value#{note.id}\" value=\"#{note.comment}\"> 
                   <span class=\"message\" id=\"note_text#{note.id}\">#{note.comment}</span>"
-  else
-    headertext<< "<div onclick=\"toggleHide('note_body#{note.id}','')\">"
-    
-    notetext<< "<span class=\"message\" id=\"note_text#{note.id}\">#{simple_format(note.comment)}</span>"
-  end
-  
-  
-    output << "
+      else
+        headertext<< "<div onclick=\"toggleHide('note_body#{note.id}','')\">"
+        
+        notetext<< "<span class=\"message\" id=\"note_text#{note.id}\">#{simple_format(note.comment)}</span>"
+      end
+      
+      
+      output << "
         <div style=\"clear:both;margin-left:#{level*20}px;\">
         <div  style=\"float:left;width:100%\">  
           #{headertext}
@@ -93,33 +86,27 @@ module ApplicationHelper
             <div>
               <div>
                #{notetext}"
-               if session[:user].nil?
-                 output << "<div id=\"insert\"><a href=\"\/login?redirect=/visualize/#{@ontology.to_param}/?id=#{@concept.id}#notes\">Reply</a></div>"
-               else
-                 if @modal
-                    output << "<div id=\"insert\"><a href=\"#\"  onclick =\"document.getElementById('m_noteParent').value='#{note.id}';document.getElementById('m_note_subject#{key}').value='RE:#{note.subject}';jQuery('#modal_form').html(jQuery('#modal_comment').html());return false;\">Reply</a></div>"                
-                  else
-                    output << "<div id=\"insert\"><a href=\"#TB_inline?height=400&width=600&inlineId=commentForm\" class=\"thickbox\" onclick =\"document.getElementById('noteParent').value='#{note.id}';document.getElementById('note_subject#{key}').value='RE:#{note.subject}';\">Reply</a></div>"
-                  end
-               end
-   output << "</div>
+      if session[:user].nil?
+        output << "<div id=\"insert\"><a href=\"\/login?redirect=/visualize/#{@ontology.to_param}/?id=#{@concept.id}#notes\">Reply</a></div>"
+      else
+        if @modal
+          output << "<div id=\"insert\"><a href=\"#\"  onclick =\"document.getElementById('m_noteParent').value='#{note.id}';document.getElementById('m_note_subject#{key}').value='RE:#{note.subject}';jQuery('#modal_form').html(jQuery('#modal_comment').html());return false;\">Reply</a></div>"                
+        else
+          output << "<div id=\"insert\"><a href=\"#TB_inline?height=400&width=600&inlineId=commentForm\" class=\"thickbox\" onclick =\"document.getElementById('noteParent').value='#{note.id}';document.getElementById('note_subject#{key}').value='RE:#{note.subject}';\">Reply</a></div>"
+        end
+      end
+      output << "</div>
             </div>
           </div>
 
           </div>
         </div>
         </div>"
-        if(!note.children.nil? && note.children.size>0)
-          draw_note_tree_leaves(note.children,level+1,output,key)
-        end
+      if(!note.children.nil? && note.children.size>0)
+        draw_note_tree_leaves(note.children,level+1,output,key)
+      end
     end
-    
-    
   end
-  
-  
-  
-  
   
   def draw_tree(root, id=nil,type="Menu")
     string =""  
@@ -127,12 +114,11 @@ module ApplicationHelper
       id = root.children.first.id
     end
     
-      build_tree(root,nil,string,id)
-    
+    build_tree(root,nil,string,id)
     
     return string
   end
-
+  
   def build_tree(node,parent,string,id)
     if parent.nil?
       draw_root = ''
@@ -140,48 +126,48 @@ module ApplicationHelper
       draw_root = ""
     end
     
-    unless node.children.nil? || node.children.length <1
+    unless node.children.nil? || node.children.length < 1
       for child in node.children
-      icons = ""
-      if(child.note_icon)
-        icons << "<img src='/images/notes_icon.png'style='vertical-align:bottom;'height='15px' title='Term Has Margin Notes'>"
-      end
-      if(child.map_icon)
-        icons << "<img src='/images/map_icon.png' style='vertical-align:bottom;' height='15px' title='Term Has Mappings'>"
-      end
-
-      active_style =""
-			if child.id.eql?(id)
-			 active_style="class='active'"
-			end    
-			open = ""
-      if child.expanded
-        open = "class='open'"
-      end
-     
-     
-      relation = ""
-      unless node.properties.nil?
-  	    for key in node.properties.keys
-  		    concepts = node.properties[key].split(",").map{|x| x.strip}
-  		    if concepts.include?(child.name)
-  			    if key.include?("is_a")
-  				    relation << " <img src='/images/is_a.gif' style='vertical-align:middle;'>"
-  			    elsif key.include?("part")
-  				    relation << " <img src='/images/part_of.gif' style='vertical-align:middle;'>"
-  			    end
-  		    end
-  	    end
-      end
-
+        icons = ""
+        if child.note_icon
+          icons << "<img src='/images/notes_icon.png'style='vertical-align:bottom;'height='15px' title='Term Has Margin Notes'>"
+        end
+        if child.map_icon
+          icons << "<img src='/images/map_icon.png' style='vertical-align:bottom;' height='15px' title='Term Has Mappings'>"
+        end
         
-      
-        string <<"<li #{open} #{draw_root}  id=\"#{child.id}\"><span #{active_style}> #{relation} #{child.name} #{icons}</span>"
-    		   		
-    				if child.child_size>0 && !child.expanded
-    				  string << "<ul class=\"ajax\">
+        active_style =""
+        if child.id.eql?(id)
+          active_style="class='active'"
+        end    
+        open = ""
+        if child.expanded
+          open = "class='open'"
+        end
+        
+        
+        relation = ""
+        unless node.properties.nil? || node.properties.empty?
+          for key in node.properties.keys
+            concepts = node.properties[key].split(",").map{|x| x.strip}
+            if concepts.include?(child.name)
+              if key.include?("is_a")
+                relation << " <img src='/images/is_a.gif' style='vertical-align:middle;'>"
+              elsif key.include?("part")
+                relation << " <img src='/images/part_of.gif' style='vertical-align:middle;'>"
+              end
+            end
+          end
+        end
+        
+        
+        
+        string << "<li #{open} #{draw_root}  id=\"#{child.id}\"><span #{active_style}> #{relation} #{child.name} #{icons}</span>"
+        
+        if child.child_size > 0 && !child.expanded
+          string << "<ul class=\"ajax\">
   							            <li id='#{child.id}'>{url:/ajax_concepts/#{child.ontology_id}/?id=#{URI.escape(child.id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}&callback=children}</li>
-  						            </ul>"
+          </ul>"
   				  elsif child.expanded
     				  string << "<ul>"
     		      build_tree(child,"child",string,id)
@@ -192,9 +178,6 @@ module ApplicationHelper
     				
       
       end
-      
     end
-        
   end
-  
 end
