@@ -39,15 +39,17 @@ class NodeWrapper
           else
             list_values = []
             
-            relation_value.each do |list_item|
-              if list_item.kind_of? Hash
-                list_values << list_item['label'] rescue ""
-              else
-                list_values << list_item
+            unless relation_value.nil?
+              relation_value.each do |list_item|
+                if list_item.kind_of? Hash
+                  list_values << list_item['label'] rescue ""
+                else
+                  list_values << list_item
+                end
               end
             end
             
-            self.properties[relation_name] = relation_value.join(" | ")
+            self.properties[relation_name] = list_values.join(" | ")
           end
         end
       else
