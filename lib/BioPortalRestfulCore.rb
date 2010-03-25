@@ -115,7 +115,20 @@ class BioPortalRestfulCore
     uri_gen = BioPortalResources::Concept.new(params, 500)
     uri = uri_gen.generate_uri
     
-    return getConcept(params[:ontology_id], uri)
+    LOG.add :debug, "Retrieve node"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+
+    node = errorCheck(doc)         
+
+    unless node.nil?
+      return node
+    end
+    
+    timer = Benchmark.ms { node = generic_parse(:xml => doc, :type => "NodeWrapper", :ontology_id => params[:ontology_id]) }
+    LOG.add :debug, "Node parsed (#{timer})"
+    
+    return node
   end
   
   ##
@@ -125,7 +138,20 @@ class BioPortalRestfulCore
     uri_gen = BioPortalResources::Concept.new(params, 500, true)
     uri = uri_gen.generate_uri
     
-    return getConcept(params[:ontology_id], uri)
+    LOG.add :debug, "Retrieve light node"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+
+    node = errorCheck(doc)         
+
+    unless node.nil?
+      return node
+    end
+    
+    timer = Benchmark.ms { node = generic_parse(:xml => doc, :type => "NodeWrapper", :ontology_id => params[:ontology_id]) }
+    LOG.add :debug, "Light node parsed (#{timer})"
+    
+    return node
   end
   
   def self.getTopLevelNodes(params)
