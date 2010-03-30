@@ -67,7 +67,7 @@ function formComplete_setup_functions() {
 				maxItemsToShow: 20,
 				onItemSelect: bpFormSelect,
 				footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="http://bioportal.bioontology.org">NCBO BioPortal</a></div>',
-				formComplete_formatItem: formComplete_formatItem
+				formatItem: formComplete_formatItem
 		});
 		
 		html = "<input type='hidden' id='" + jQuery(this).attr('name') + "_bioportal_concept_id'>";

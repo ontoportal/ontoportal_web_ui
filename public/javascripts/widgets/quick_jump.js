@@ -91,7 +91,7 @@ function jumpTo_setup_functions() {
 		onItemSelect: jumpTo_jumpToSelect,
 		width: 450,
 		footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="http://bioportal.bioontology.org">NCBO BioPortal</a></div>',
-		jumpTo_formatItem: jumpTo_formatItem
+		formatItem: jumpTo_formatItem
     });
     
     jumpTo_searchbox = jQuery("#BP_search_box")[0].autocompleter;

@@ -105,13 +105,13 @@
 						<%= javascript_include_tag "/javascripts/widgets/form_complete.js" %>
 						Example 1 (start typing the term name to get its full URI)
 						<br/> 
-						<input type="text" name="a" class="bp_form_complete-all-uri" size="100"/><br/> 
+						<input type="text" name="a" class="bp_form_complete-<%=@ontology.ontologyId%>-uri" size="100"/><br/> 
 						Example 2 (get the ID for a term)
 						<br/> 
-						<input type="text" name="b" class="bp_form_complete-1032,1089-shortid" size="100"/><br/> 
+						<input type="text" name="b" class="bp_form_complete-<%=@ontology.ontologyId%>-shortid" size="100"/><br/> 
 						Example 3 (get the preferred name for a term)
 						<br/> 
-						<input type="text" name="c" class="bp_form_complete-1032-name" size="100"/> 
+						<input type="text" name="c" class="bp_form_complete-<%=@ontology.ontologyId%>-name" size="100"/> 
                         <div id="form" style="display:none;">
 							<div class="enable-lists" >
                             <h2>Step 2: Follow the Instructions</h2>
