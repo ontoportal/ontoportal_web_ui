@@ -2,19 +2,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <title><%if @title.nil?%>NCBO BioPortal<%else%><%="NCBO BioPortal: #{@title}"%><%end%></title>
-  <!-- Dependency source files --> 
-  <%=stylesheet_link_tag 'layout/bioportal'%>
-	<script type="text/javascript" src="/javascripts/jquery.js"></script>
-
-<script src="/javascripts/JqueryPlugins/jquery.blockUI.2.16.js" type="text/javascript" charset="utf-8"></script>
-
+	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+	<title><%if @title.nil?%>NCBO BioPortal<%else%><%="NCBO BioPortal: #{@title}"%><%end%></title>
+	<!-- Dependency source files --> 
+	<%=stylesheet_link_tag 'layout/bioportal'%>
+	<%=stylesheet_link_tag 'layout/thickbox'%>
 	
-	<script src="/javascripts/jquery.thickbox.compressed.js" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="/stylesheets/layout/thickbox.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
-	
-  <%=javascript_include_tag "bioportal"%>  
+	<%=javascript_include_tag "jquery.js"%>  
+	<%=javascript_include_tag "JqueryPlugins/jquery.blockUI.js"%>  
+	<%=javascript_include_tag "jquery.thickbox.compressed.js"%>  
+	<%=javascript_include_tag "bioportal"%>  
 
 </head>
 <body>
