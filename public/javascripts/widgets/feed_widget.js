@@ -32,11 +32,11 @@ jQuery(document).ready(function(){
     jQuery("#bp_feed_container").html('<ul id="bp_feed" style="margin-bottom: .5em;"></ul><a href="http://bioportal.bioontology.org"><img src="http://bioportal.bioontology.org/images/layout/logo_mini.png" border=0/></a>');
 	
     jQuery.getJSON("/syndication/rss?ontologies="+BP_ontology_id+"&limit=5&callback=?",function(data){
-        if (data.length<1){
+        if (data.length < 1) {
             jQuery("#bp_feed").append("No new changes to the ontology");
         }
         
-        for(item in data){
+        for (var item in data) {
             jQuery("#bp_feed").append("<li><a href='"+data[item].link+"'>"+data[item].title+"</a> "+data[item].date+"<br/>"+data[item].description+"<br/></li>")
         }
         
