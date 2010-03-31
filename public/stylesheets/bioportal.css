@@ -931,3 +931,11 @@ padding:0px;
 	background-color:#f5fafa;
 	padding:5px;
 }
+
+/* Used for tag clouds on ontology summary page */
+.bp_tagCloud { text-align: center; padding: 5px; font-size: 70%; }
+.bp_tagList { margin: 0; padding: 0; }
+.bp_tagList li { list-style-type: none; float: left; margin: 0 10px;  }
+.bp_tagList li a { text-decoration: none; }
+.bp_tagList li a:hover { text-decoration: underline; }
+

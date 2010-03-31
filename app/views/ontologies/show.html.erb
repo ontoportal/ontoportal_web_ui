@@ -1,46 +1,34 @@
 <%@title = "#{@ontology.displayLabel}" %>
-<script src="/javascripts/jquery.rating.pack.js" type="text/javascript" charset="utf-8">
-</script>
+
+<script src="/javascripts/jquery.rating.pack.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" href="/stylesheets/layout/jquery.rating.css" type="text/css" media="screen" title="no title" charset="utf-8">
-<script src="/javascripts/JqueryPlugins/tagcloud/jquery.tagcloud.min.js" type="text/javascript" charset="utf-8">
-</script>
-<script src="/javascripts/JqueryPlugins/tagcloud/jquery.tinysort.min.js" type="text/javascript" charset="utf-8">
-</script>
+<script src="/javascripts/bp_tagcloud.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
-            	function meta_tab_clicked(content,tab){
-            		jQuery(".tab_content").hide();
-            		jQuery(content).show();
-            		jQuery(".tab").removeClass("selected");
-            		jQuery(tab).parent().addClass("selected");
-            		return false;
-            		
-            	}
-            	
-            	jQuery(document).ready(function()  {
-            		<%if @notes.size>0%>
-            			jQuery("#notes").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14});
-            		<%end%>
-            		<%if @mappings.size >0%>
-            			jQuery("#mappings").tagcloud({type:"list",sizemin:10,colormin:"#3C46FF",colormax:"#3C46FF",sizemax:14});
-            		<%end%>
-            
-            		//Auto loads the correct tab
-            	    loc = new String(document.location);
-            	    if(loc.search("#")>=0) {
-            	        jQuery("#metadata_content").hide();
-            	        id = "#" + loc.split("#")[1];
-            			// The actual content to hide/show is in id_content
-            			id_content = id + "_content";
-            	        jQuery(id_content).show();
-            	        jQuery(".tab").removeClass("selected");
-            	        jQuery(id+"_top").addClass("selected");
-            	        tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0));
-            	        tab_li.addClass("selected");
-            	        var a = jQuery("a[href='"+id+":']");
-            	        eval(a.attr("alt"));
-            	    }
-            
-            	});
+	function meta_tab_clicked(content,tab){
+		jQuery(".tab_content").hide();
+		jQuery(content).show();
+		jQuery(".tab").removeClass("selected");
+		jQuery(tab).parent().addClass("selected");
+		return false;
+	}
+	
+	jQuery(document).ready(function()  {
+		//Auto loads the correct tab
+	    loc = new String(document.location);
+	    if(loc.search("#")>=0) {
+	        jQuery("#metadata_content").hide();
+	        id = "#" + loc.split("#")[1];
+			// The actual content to hide/show is in id_content
+			id_content = id + "_content";
+	        jQuery(id_content).show();
+	        jQuery(".tab").removeClass("selected");
+	        jQuery(id+"_top").addClass("selected");
+	        tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0));
+	        tab_li.addClass("selected");
+	        var a = jQuery("a[href='"+id+":']");
+	        eval(a.attr("alt"));
+	    }
+	});
 </script>
 
 <div style="padding:5px;">

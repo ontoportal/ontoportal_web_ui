@@ -141,29 +141,51 @@
                 <%end%>
             </table>
         </div>
+		
+		<style type="text/css">
+			.bp_tagCloud { text-align: center; padding: 5px; font-size: 70%; }
+			.bp_tagList { margin: 0; padding: 0; }
+			.bp_tagList li { list-style-type: none; float: left; margin: 0 10px;  }
+			.bp_tagList li a { text-decoration: none; }
+			.bp_tagList li a:hover { text-decoration: underline; }
+		</style>
+		<script type="text/javascript">
+			jQuery(document).ready(function(){
+        		<%if @notes.size > 0%>
+					createTagCloud(jQuery("#notes"));
+        		<%end%>
+        		<%if @mappings.size > 0%>
+					createTagCloud(jQuery("#mappings"));
+        		<%end%>
+			});
+		</script>
         <div style="float: left; width: 300px; padding-left: 10px;" id="tag_clouds">
             <h2>Notes</h2>
             <%if @notes.size < 1 %>
             No Notes Created yet<%end %>
-            <ul id="notes" style="border-top:1px solid #C1DAD7;border-bottom:1px solid #C1DAD7;width:300px;padding:10px">
-                <%for note in @notes %>
-                <li value="<%=note[1]%>">
-                    <a href="/visualize/<%=@ontology.id%>/<%=note[0]%>#notes"><%=note[0] %></a>
-                </li>
-                <%end %>
-            </ul>
+			<div class="bp_tagCloud">
+	            <ul class="bp_tagList" id="notes" style="width: 350px; padding: 10px">
+	                <%for note in @notes %>
+	                <li value="<%=note[1]%>">
+	                    <a href="/visualize/<%=@ontology.id%>?conceptid=<%=note[0]%>#notes"><%=note[0] %></a>
+	                </li>
+	                <%end %>
+	            </ul>
+			</div>
             <br/>
             <h2>Mappings</h2>
             <%if @mappings.size < 1 %>
             No Mappings Created yet<%end %>
-            <ul id="mappings" style="border-top: 1px solid #C1DAD7; border-bottom: 1px solid #C1DAD7; width: 300px; padding: 10px">
-                <%for mapping in @mappings %>
-                <li value="<%=mapping[1]%>">
-                    <a href="/visualize/<%=@ontology.id%>/<%=mapping[0]%>#mappings"><%=mapping[2] %></a>
-                </li>
-                <%end %>
-            </ul>
-        </div>
+			<div class="bp_tagCloud">
+	            <ul class="bp_tagList" id="mappings" style="width: 350px; padding: 10px">
+	                <%for mapping in @mappings %>
+	                <li value="<%=mapping[1]%>">
+	                    <a href="/visualize/<%=@ontology.id%>?conceptid=<%=mapping[0]%>#mappings"><%=mapping[2] %></a>
+	                </li>
+	                <%end %>
+	            </ul>
+ 			</div>
+       </div>
         <div style="clear:both;">
         </div>
     </div>
