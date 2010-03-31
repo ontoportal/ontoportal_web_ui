@@ -14,6 +14,7 @@ module OntologiesHelper
     
     case ontology.statusId.to_i
     when 1 # Ontology is parsing
+      return "Waiting to Parse"
     when 2
       return "Parsing Ontology"
     when 3 # Ontology is ready to be explored
