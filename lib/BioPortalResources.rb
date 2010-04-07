@@ -172,7 +172,7 @@ class BioPortalResources
     class Auth < BioPortalResources
       def initialize(params)
         super(params)
-        @uri << "/auth?username=#{params[:username]}&password=#{params[:password]}"
+        @uri << "/auth?username=#{CGI.escape(params[:username])}&password=#{params[:password]}"
       end
     end
     

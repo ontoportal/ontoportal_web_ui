@@ -477,6 +477,8 @@ class BioPortalRestfulCore
     uri_gen = BioPortalResources::CreateOntology.new
     uri = uri_gen.generate_uri
     
+    LOG.add :debug, "Creating ontology using #{uri}"
+    
     begin
       response = postMultiPart(uri, params)
       doc = REXML::Document.new(response)
