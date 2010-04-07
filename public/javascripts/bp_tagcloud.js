@@ -18,6 +18,8 @@ function createTagCloud(list) {
 	
 	// Set font sizes
 	jQuery(list).children().each(function(){
-		jQuery(this).css("fontSize", parseInt(jQuery(this).attr("value")) / mapping_average * 150 + "%");
+		var percentage = parseInt(jQuery(this).attr("value")) / mapping_average * 150;
+		(percentage > 500) ? percentage = 500 : percentage = percentage;
+		jQuery(this).css("fontSize", percentage + "%");
 	});
 }
