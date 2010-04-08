@@ -70,7 +70,7 @@
 
 	<%for key in top_set%>
 	
-		<%if key.eql?("type")|| key.eql?("rdf:type") || key.include?("[R]")	
+		<%if include_relation?(key) 
 			next
 		end%>
 		<%unless @concept.properties[key].empty?%>
@@ -86,7 +86,7 @@
 	
 
 	<%for key in leftover%>
-		<%if key.eql?("type")|| key.eql?("rdf:type")|| key.include?("[R]")	
+		<%if include_relation?(key) 
 			next
 		end%>
 		<%unless @concept.properties[key].empty?%>
@@ -100,7 +100,7 @@
 	<%end%>
 
 	<%for key in bottom_set%>
-		<%if key.eql?("type")|| key.eql?("rdf:type")|| key.include?("[R]")	
+		<%if include_relation?(key) 
 			next
 		end%>
 		<%unless @concept.properties[key].empty?%>
