@@ -20,7 +20,7 @@ function createTagCloud(list) {
 	jQuery(list).children().each(function(){
 		var percentage = parseInt(jQuery(this).attr("value")) / mapping_average * 150;
 		(percentage > 500) ? percentage = 500 : percentage = percentage;
-		(percentage < 100) ? percentage = 100 : percentage = percentage;
+		(percentage < 125) ? percentage = 125 : percentage = percentage;
 		jQuery(this).css("fontSize", percentage + "%");
 	});
 }
