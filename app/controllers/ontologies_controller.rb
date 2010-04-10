@@ -425,12 +425,14 @@ class OntologiesController < ApplicationController
     end
     if params[:dateReleased].nil? || params[:dateReleased].length <1
       errors << "Please Enter the Date Released"
+    elsif params[:dateReleased].match(/[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/).nil?
+      errors << "Please Enter a Date Formatted as MM/DD/YYYY"
     end
     unless isupdate
       if params[:isRemote].to_i.eql?(0) && (params[:filePath].nil? || params[:filePath].length <1)
         errors << "Please Choose a File"
       end
-      if params[:isRemote].to_i.eql?(0) && params[:filePath].size.to_i > 20000000 && !session[:user].admin?
+      if params[:isRemote].to_i.eql?(0) && !params[:filePath].nil? && params[:filePath].size.to_i > 20000000 && !session[:user].admin?
         errors << "File is too large"
       end
       if params[:isRemote].to_i.eql?(1) && (params[:urn].nil? || params[:urn].length <1)
