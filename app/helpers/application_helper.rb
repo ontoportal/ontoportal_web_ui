@@ -153,7 +153,7 @@ module ApplicationHelper
             if concepts.include?(child.name)
               if key.include?("is_a")
                 relation << " <img src='/images/is_a.gif' style='vertical-align:middle;'>"
-              elsif key.include?("part")
+              elsif key.include?("part_of")
                 relation << " <img src='/images/part_of.gif' style='vertical-align:middle;'>"
               end
             end
