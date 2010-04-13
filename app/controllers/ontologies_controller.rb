@@ -416,6 +416,9 @@ class OntologiesController < ApplicationController
   private 
   
   def validate(params, isupdate=false)
+    # strip all spaces from email
+    params[:contactEmail] = params[:contactEmail].gsub(" ", "") 
+    
     errors=[]
     if params[:displayLabel].nil? || params[:displayLabel].length <1
       errors << "Please Enter an Ontology Name"
