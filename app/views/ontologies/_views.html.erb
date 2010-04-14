@@ -113,7 +113,8 @@
 			                    <%=view.dateReleased %>
 			                </td>
 							<td>
-								<%= view.contactName %>
+								<% contact_name = view.contactName.nil? || view.contactName.empty? ? "" : view.contactName + ", " %>
+								<%= contact_name + view.contactEmail %>
 							</td>
 			                <td>
 			                    <a href="<%=DataAccess.download(view.id)%>" target="_blank">Download View</a>
