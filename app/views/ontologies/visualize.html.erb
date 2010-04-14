@@ -114,7 +114,7 @@
 		<%end%>
 		<h3>Version <%=@ontology.versionNumber%></h3>
 	
-		<h1 id="name_label" style="margin-left:100px;border:1px #AFAFAF dashed;background-color:#f5fafa;padding-left:15px;padding-right:15px;" > <%=@concept.name%><span id="link_label" > |<%=link_to " Link Here",uri_url(:ontology=>@ontology.to_param,:id=>@concept.to_param)%> | <a href="/syndication/rss?ontologies=<%=@ontology.ontologyId%>" style="text-decoration:none;font-size:14px;"><img src="/images/feed-icon.png" height=16 width=16 border=0 > Subscribe</a></span></h1>
+		<h1 id="name_label" style="margin-left:100px;border:1px #AFAFAF dashed;background-color:#f5fafa;padding-left:15px;padding-right:15px;" > <%=@concept.name%><span id="link_label" > |<%=link_to " Link Here",uri_url(:ontology => @ontology.to_param, :conceptid => @concept.to_param)%> | <a href="/syndication/rss?ontologies=<%=@ontology.ontologyId%>" style="text-decoration:none;font-size:14px;"><img src="/images/feed-icon.png" height=16 width=16 border=0 > Subscribe</a></span></h1>
 		<br style="clear:all;" />
 		
 	</div>
