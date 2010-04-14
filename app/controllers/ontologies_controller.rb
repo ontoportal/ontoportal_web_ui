@@ -93,24 +93,19 @@ class OntologiesController < ApplicationController
     
     LOG.add :info, 'show_virtual_ontology', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
     
-    if @ontology.isRemote.to_i.eql?(1)
-      redirect_to "/ontologies/#{@ontology.id}"
-      return
-    end
-    
     if @ontology.statusId.to_i.eql?(3)
-      redirect_to "/visualize/#{@ontology.id}"
+      redirect_to "/ontologies/#{@ontology.id}"
       return
     else
       for version in @versions
         if version.statusId.to_i.eql?(3)
-          redirect_to "/visualize/#{version.id}"
+          redirect_to "/ontologies/#{version.id}"
           return
         end
       end
-      redirect_to "/ontologies/#{@ontology.id}"
-      return
     end
+    redirect_to "/ontologies/#{@ontology.id}"
+    return
   end
   
   def download_latest

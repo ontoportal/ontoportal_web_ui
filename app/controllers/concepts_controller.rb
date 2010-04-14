@@ -57,9 +57,19 @@ class ConceptsController < ApplicationController
   end
   
   def virtual
+    # Hack to make ontologyid and conceptid work in addition to id and ontology params
+    params[:id] = params[:id].nil? ? params[:conceptid] : params[:id]
+    params[:ontology] = params[:ontology].nil? ? params[:ontologyid] : params[:ontology]
+
+    if !params[:id].nil? && params[:id].empty?
+      params[:id] = nil
+    end
+
     @ontology = DataAccess.getLatestOntology(params[:ontology])
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
-    @concept =  DataAccess.getNode(@ontology.id,params[:id])
+    unless params[:id].nil? || params[:id].empty?
+      @concept = DataAccess.getNode(@ontology.id,params[:id])
+    end
     
     if @ontology.isRemote.to_i.eql?(1)
       redirect_to "/ontologies/#{@ontology.id}"
