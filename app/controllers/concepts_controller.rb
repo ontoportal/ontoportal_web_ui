@@ -7,6 +7,9 @@ class ConceptsController < ApplicationController
   # GET /concepts/1
   # GET /concepts/1.xml
   def show
+    # Handle multiple methods of passing concept ids
+    params[:id] = params[:id] ? params[:id] : params[:conceptid]
+    
     @ontology = DataAccess.getOntology(params[:ontology])
 
     if @ontology.statusId.to_i.eql?(6)

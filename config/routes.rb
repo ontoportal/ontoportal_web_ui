@@ -19,10 +19,6 @@ ActionController::Routing::Routes.draw do |map|
   
   map.resources :admin
   
-  # Aliases visualize => concepts
-  map.resources :visualize, :controller => 'concepts'
-
-  
   # The priority is based upon order of creation: first created -> highest priority.
   
   # You can have the root of your site routed by hooking up '' 
@@ -67,10 +63,10 @@ ActionController::Routing::Routes.draw do |map|
   map.lost_pass '/lost_pass', :controller => 'login', :action => 'lost_password'
   
   # Visualize
-  map.uri '/visualize/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :id => %r([^/?]+), :conceptid => %r([^/?]+) }
-  map.uri '/visualize/virtual/:ontology/:id', :controller => 'concepts', :action => 'virtual', :requirements => { :id => %r([^/?]+) }
+  map.virtual_visualize '/visualize/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :id => %r([^/?]+), :conceptid => %r([^/?]+) }
+  map.virtual_uri '/visualize/virtual/:ontology/:id', :controller => 'concepts', :action => 'virtual', :requirements => { :id => %r([^/?]+) }
   map.visualize '/visualize/:ontology', :controller => 'ontologies', :action =>'visualize', :requirements => { :ontology => %r([^/?]+) }
-  map.uri '/visualize/:ontology/:id', :controller => 'concepts', :action => 'show', :requirements => { :id => %r([^/?]+) }
+  map.uri '/visualize/:ontology/:conceptid', :controller => 'concepts', :action => 'show', :requirements => { :ontology => %r([^/?]+), :conceptid => %r([^/?]+) }
   map.visualize_concept '/visualize', :controller => 'ontologies', :action => 'visualize', :requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+),
                                                                                                               :ontologyid => %r([^/?]+), :conceptid => %r([^/?]+) }
   # Virtual
