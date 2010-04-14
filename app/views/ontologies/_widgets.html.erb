@@ -39,7 +39,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <h3>Type a term in <%=@ontology.displayLabel %> ontology and jump to it in BioPortal</h3>
+                        <h3>Type a term in <%=@ontology.displayLabel %> and jump to it in BioPortal</h3>
                         <br/>
                         <a href="#TB_inline?height=400&width=600&inlineId=jump" class="thickbox getcode">Get Code</a>
                     </td>
@@ -80,14 +80,14 @@
 	                            </li>
 	                        </ul>
 						</div>
-                        <textarea rows=8 cols=70>
-                        	<div id="bp_quick_jump"></div>
-                            <script type="text/javascript">
-                                var BP_ontology_id = "<%=@ontology.ontologyId%>";
-                            </script>
-                            <script src="quick_jump.js" type="text/javascript" charset="utf-8">
-                            </script>
-                        </textarea>
+<textarea rows=8 cols=70>
+<div id="bp_quick_jump"></div>
+<script type="text/javascript">
+    var BP_ontology_id = "<%=@ontology.ontologyId%>";
+</script>
+<script src="quick_jump.js" type="text/javascript" charset="utf-8">
+</script>
+</textarea>
                         </ul>
                         <p>
                             For more help visit <a href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
@@ -97,7 +97,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <h3>Fill in a field in your form with a term from <%=@ontology.displayLabel %> ontology</h3>
+                        <h3>Fill in a field in your form with a term from <%=@ontology.displayLabel %></h3>
                         <br/>
                         <a href="#TB_inline?height=400&width=600&inlineId=form" class="thickbox getcode">Get Code</a>
                     </td>
@@ -181,15 +181,15 @@
                             <p>
                                 <b>Examples:</b>
                                 <br/>
-                                <textarea rows=8 cols=70>
-                                    Example 1 (start typing the term name to get its full URI)
-                                    <br/>
-                                    <input type="text" name="a" class="bp_form_complete-<%=@ontology.ontologyId%>-uri" size="100"/> Example 2 (get the ID for a term)
-                                    <br/>
-                                    <input type="text" name="b" class="bp_form_complete-<%=@ontology.ontologyId%>-shortid" size="100"/> Example 3 (get the preferred name for a term)
-                                    <br/>
-                                    <input type="text" name="c" class="bp_form_complete-<%=@ontology.ontologyId%>-name" size="100"/>
-                                </textarea>
+<textarea rows=8 cols=70>
+Example 1 (start typing the term name to get its full URI)
+<br/>
+<input type="text" name="a" class="bp_form_complete-<%=@ontology.ontologyId%>-uri" size="100"/> Example 2 (get the ID for a term)
+<br/>
+<input type="text" name="b" class="bp_form_complete-<%=@ontology.ontologyId%>-shortid" size="100"/> Example 3 (get the preferred name for a term)
+<br/>
+<input type="text" name="c" class="bp_form_complete-<%=@ontology.ontologyId%>-name" size="100"/>
+</textarea>
                             </p>
                             <p>
                                 For more help visit <a href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
@@ -199,7 +199,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <h3>Get RSS feed for changes in <%=@ontology.displayLabel %> ontology</h3>
+                        <h3>Get RSS feed for changes in <%=@ontology.displayLabel %></h3>
                         <br/>
                         <a href="#TB_inline?height=400&width=600&inlineId=feed" class="thickbox getcode">Get Code</a>
                     </td>
@@ -214,14 +214,14 @@
                             <hr/><b>Copy the code below and paste it to your HTML page</b>
                             <br/>
                             <br/>
-                            <textarea rows=8 cols=70>
-                            	<div id="bp_feed_container"></div>
-                                <script type="text/javascript">
-                                    var BP_ontology_id = "<%=@ontology.ontologyId%>"
-                                </script>
-                                <script src="http://bioportal.bioontology.org/javascripts/widgets/feed_widget.js" type="text/javascript" charset="utf-8">
-                                </script>
-                            </textarea>
+<textarea rows=8 cols=70>
+<div id="bp_feed_container"></div>
+<script type="text/javascript">
+    var BP_ontology_id = "<%=@ontology.ontologyId%>"
+</script>
+<script src="http://bioportal.bioontology.org/javascripts/widgets/feed_widget.js" type="text/javascript" charset="utf-8">
+</script>
+</textarea>
                             <br/>
                             <h2>Referencing an ontology in your widgets</h2>
                             <br/>
@@ -233,14 +233,14 @@
                 </tr>
                 <tr>
                     <td>
-                        <h3>Visualize <%=@ontology.displayLabel %> ontology</h3>
+                        <h3>Visualize <%=@ontology.displayLabel %></h3>
                         <br/>
                         <a href="#TB_inline?height=400&width=600&inlineId=visual" class="thickbox getcode">Get Code</a>
                     </td>
                     <td>
                         <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="FlexoViz" width="750px" height="500px" codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-                            <param name="movie" value="<%=$FLEX_URL%>/flexviz/FlexoViz.swf?v=<%=$FLEX_VERSION%>" /><param name="quality" value="high" /><param name="bgcolor" value="#ffffff" /><param name="allowScriptAccess" value="always" /><param name="wmode" value="opaque" />
-                            <embed src="<%=$FLEX_URL%>/flexviz/FlexoViz.swf?v=<%=$FLEX_VERSION%>" bgcolor="#ffffff" width="100%" height="100%" name="FlexoViz" align="middle" play="true" loop="false" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" flashVars="widget=true&ontology=<%=@ontology.id%>&server=http://rest.bioontology.org/bioportal/" pluginspage="http://www.adobe.com/go/getflashplayer">
+                            <param name="movie" value="<%=$FLEX_URL%>/flexviz/BasicFlexoViz.swf?v=<%=$FLEX_VERSION%>" /><param name="quality" value="high" /><param name="bgcolor" value="#ffffff" /><param name="allowScriptAccess" value="always" /><param name="wmode" value="opaque" />
+                            <embed src="<%=$FLEX_URL%>/flexviz/BasicFlexoViz.swf?v=<%=$FLEX_VERSION%>" bgcolor="#ffffff" width="100%" height="100%" name="FlexoViz" align="middle" play="true" loop="false" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" flashVars="widget=true&ontology=<%=@ontology.id%>&server=http://rest.bioontology.org/bioportal/" pluginspage="http://www.adobe.com/go/getflashplayer">
                             </embed>
                         </object>
                         <div id ="visual" style="display:none">
@@ -248,13 +248,13 @@
                             <hr/><b>Copy the code below and paste it to your HTML page</b>
                             <br/>
                             <br/>
-                            <textarea rows=4 cols=70>
-                                <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="FlexoViz" width="100%" height="100%" codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-                                    <param name="movie" value="<%=$FLEX_URL%>/flexviz/FlexoViz.swf?v=<%=$FLEX_VERSION%>" /><param name="quality" value="high" /><param name="bgcolor" value="#ffffff" /><param name="allowScriptAccess" value="always" />
-                                    <embed src="<%=$FLEX_URL%>/flexviz/FlexoViz.swf?v=<%=$FLEX_VERSION%>" bgcolor="#ffffff" width="100%" height="100%" name="FlexoViz" align="middle" play="true" loop="false" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" flashVars="widget=true&ontology=<%=@ontology.id%>&server=http://rest.bioontology.org/bioportal/" pluginspage="http://www.adobe.com/go/getflashplayer">
-                                    </embed>
-                                </object>
-                            </textarea>
+<textarea rows=4 cols=70>
+<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="FlexoViz" width="100%" height="100%" codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+    <param name="movie" value="<%=$FLEX_URL%>/flexviz/BasicFlexoViz.swf?v=<%=$FLEX_VERSION%>" /><param name="quality" value="high" /><param name="bgcolor" value="#ffffff" /><param name="allowScriptAccess" value="always" />
+    <embed src="<%=$FLEX_URL%>/flexviz/BasicFlexoViz.swf?v=<%=$FLEX_VERSION%>" bgcolor="#ffffff" width="100%" height="100%" name="FlexoViz" align="middle" play="true" loop="false" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" flashVars="widget=true&ontology=<%=@ontology.id%>&server=http://rest.bioontology.org/bioportal/" pluginspage="http://www.adobe.com/go/getflashplayer">
+    </embed>
+</object>
+</textarea>
                             <br/>
                             <p>
                                 If you want the visualization to be focused on a particular term in the ontology, you can add the term id to the parameters above. For example, to have the widget focus on Melanoma in NCI Thesaurus, replace the following line in the snippet above:
@@ -271,6 +271,118 @@
                         </div>
                     </td>
                 </tr>
+				<tr>
+					<td>
+                        <h3>Display tree widget for <%=@ontology.displayLabel %></h3>
+                        <br/>
+                        <a href="#TB_inline?height=400&width=600&inlineId=ontologyTree" class="thickbox getcode">Get Code</a>
+					</td>
+					<td>
+						<script src="http://keg.cs.uvic.ca/ncbo/ontologytree/AC_OETags.js" language="javascript"></script>
+						<script type="text/javascript">
+							<!--
+							// -----------------------------------------------------------------------------
+							// Globals
+							// Major version of Flash required
+							var requiredMajorVersion = 9;
+							// Minor version of Flash required
+							var requiredMinorVersion = 0;
+							// Minor version of Flash required
+							var requiredRevision = 124;
+							// -----------------------------------------------------------------------------
+							// -->
+							
+							// Version check for the Flash Player that has the ability to start Player Product Install (6.0r65)
+							var hasProductInstall = DetectFlashVer(6, 0, 65);
+							
+							// Version check based upon the values defined in globals
+							var hasRequestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
+							
+							if (hasProductInstall && !hasRequestedVersion) {
+							    // DO NOT MODIFY THE FOLLOWING FOUR LINES
+							    // Location visited after installation is complete if installation is required
+							    var MMPlayerType = (isIE == true) ? "ActiveX": "PlugIn";
+							    var MMredirectURL = window.location;
+							    document.title = document.title.slice(0, 47) + " - Flash Player Installation";
+							    var MMdoctitle = document.title;
+							
+							    AC_FL_RunContent(
+							    "src", "playerProductInstall",
+							    "FlashVars", "MMredirectURL=" + MMredirectURL + '&MMplayerType=' + MMPlayerType + '&MMdoctitle=' + MMdoctitle + '&ontology=<%=@ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true',
+							    "width", "300",
+							    "height", "100%",
+							    "align", "middle",
+							    "id", "OntologyTree",
+							    "quality", "high",
+							    "bgcolor", "#ffffff",
+							    "name", "OntologyTree",
+							    "allowScriptAccess", "always",
+							    "type", "application/x-shockwave-flash",
+							    "pluginspage", "http://www.adobe.com/go/getflashplayer"
+							    );
+							} else if (hasRequestedVersion) {
+							    // if we've detected an acceptable version
+							    // embed the Flash Content SWF when all tests are passed
+							    AC_FL_RunContent(
+							    "src", "http://keg.cs.uvic.ca/ncbo/ontologytree/OntologyTree.swf",
+							    "width", "300",
+							    "height", "100%",
+							    "align", "middle",
+							    "id", "OntologyTree",
+							    "quality", "high",
+							    "bgcolor", "#ffffff",
+							    "name", "OntologyTree",
+							    "allowScriptAccess", "always",
+							    "flashVars", '&ontology=<%=@ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true',
+							    "type", "application/x-shockwave-flash",
+							    "pluginspage", "http://www.adobe.com/go/getflashplayer"
+							    );
+							} else {
+							    // flash is too old or we can't detect the plugin
+							    var alternateContent = 'Alternate HTML content should be placed here. '
+							    + 'This content requires the Adobe Flash Player. '
+							    + '<a href=http://www.adobe.com/go/getflash/>Get Flash</a>';
+							    document.write(alternateContent);
+							    // insert non-flash content
+							}
+						</script>
+                        <div id ="ontologyTree" style="display:none">
+                        	<h2>Step 2: Follow the Instructions</h2>
+                            <hr/><b>Copy the code below and paste it to your HTML page</b>
+                            <br/>
+                            <br/>
+<textarea rows=8 cols=70>
+<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+	id="OntologyTree" width="300" height="100%"
+	codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+	<param name="movie" value="http://keg.cs.uvic.ca/ncbo/ontologytree/OntologyTree.swf" />
+	<param name="quality" value="high" />
+	<param name="bgcolor" value="#ffffff" />
+	<param name="allowScriptAccess" value="always" />
+	<param name="flashVars" value="ontology=<%=@ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true" />
+	<embed src="http://keg.cs.uvic.ca/ncbo/ontologytree/OntologyTree.swf" quality="high" bgcolor="#ffffff"
+		width="300" height="100%" name="OntologyTree" align="middle"
+		play="true"
+		loop="false"
+		allowScriptAccess="always"
+		type="application/x-shockwave-flash"
+		flashVars="ontology=<%=@ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true"
+		pluginspage="http://www.adobe.com/go/getflashplayer">
+	</embed>
+</object>
+</textarea>
+                            <br/>
+                            <p>
+                                You can also leave the ontology parameter blank to get a list of all ontologies:
+                                <br/>
+                                <b>flashVars="ontology=&alerterrors=false&canchangeontology=true"</b>
+                            </p>
+                            <p>
+                                For more help visit <a href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
+                            </p>
+                        </div>
+					</td>
+				</tr>
             </table>
         </div>
     </div>
