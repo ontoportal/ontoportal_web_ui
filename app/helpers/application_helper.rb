@@ -87,7 +87,7 @@ module ApplicationHelper
               <div>
                #{notetext}"
       if session[:user].nil?
-        output << "<div id=\"insert\"><a href=\"\/login?redirect=/visualize/#{@ontology.to_param}/?id=#{@concept.id}#notes\">Reply</a></div>"
+        output << "<div id=\"insert\"><a href=\"\/login?redirect=/visualize/#{@ontology.to_param}/?conceptid=#{@concept.id}#notes\">Reply</a></div>"
       else
         if @modal
           output << "<div id=\"insert\"><a href=\"#\"  onclick =\"document.getElementById('m_noteParent').value='#{note.id}';document.getElementById('m_note_subject#{key}').value='RE:#{note.subject}';jQuery('#modal_form').html(jQuery('#modal_comment').html());return false;\">Reply</a></div>"                
@@ -166,7 +166,7 @@ module ApplicationHelper
         
         if child.child_size > 0 && !child.expanded
           string << "<ul class=\"ajax\">
-  							            <li id='#{child.id}'>{url:/ajax_concepts/#{child.ontology_id}/?id=#{URI.escape(child.id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}&callback=children}</li>
+  							            <li id='#{child.id}'>{url:/ajax_concepts/#{child.ontology_id}/?conceptid=#{URI.escape(child.id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}&callback=children}</li>
           </ul>"
   				  elsif child.expanded
     				  string << "<ul>"

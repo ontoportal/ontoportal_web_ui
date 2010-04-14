@@ -57,7 +57,7 @@ end
 	output << "<li id='#{child.id}'><span>#{relation} #{child.name} #{icons}</span>"
 		if child.child_size>0 && !child.expanded
 	  		output << "<ul class=\"ajax\">
-			            <li id='#{child.id}'>{url:/ajax_concepts/#{child.ontology_id}/?id=#{encode_param(child.id)}&callback=children}</li>
+			            <li id='#{child.id}'>{url:/ajax_concepts/#{child.ontology_id}/?conceptid=#{encode_param(child.id)}&callback=children}</li>
 		            </ul>"
 		
   		end
