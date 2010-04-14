@@ -18,17 +18,10 @@
 	<%end%>
 	
 	<%for map in @mappings%>
-	<% dest_node = map.dest_node
-
-	%>
-	
-	
 	<tr class="human">
-		<td><%= if dest_node.nil? 
-			"#{map.destination_name} (#{map.destination_ont_name})"
-			else
-			link_to "#{map.destination_name} (#{map.destination_ont_name})" , uri_url(:ontology=>map.destination_version_id,:id =>map.destination_id)
-			end %></td>
+		<td>
+			<%= link_to "#{map.destination_name} (#{map.destination_ont_name})", :controller => 'visualize', :action => 'virtual', :id => map.destination_ont.to_s, :conceptid => map.destination_id.to_s %>
+		</td>
 		<td><%=map.map_source%></td>
 		<td><%=map.user.username rescue ""%></td>
 		<td><%=map.created_at.strftime("%m/%d/%y") rescue "--" %></td> 

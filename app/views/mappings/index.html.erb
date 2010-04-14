@@ -10,7 +10,7 @@ mappings between ontologies that you are interested in. You will also see the ma
 <%=
             options ={}
 			for ontology in @ontologies
-			options.merge!(ontology.displayLabel+ " (#{ontology.map_count})" => ontology.id)
+			  options.merge!(ontology.displayLabel+ " (#{ontology.map_count})" => ontology.id)
 			end 
 			options = options.sort                     
             select('search','ontologies',options,{:prompt=>'Select ontology...'},{:onchange=>"jQuery('#mappingCount').load('/mappings/count/'+this.value);jQuery('#mappings').html('');"})
