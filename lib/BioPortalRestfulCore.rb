@@ -1141,14 +1141,7 @@ private
   def self.parse(node)
     a = {}
     
-    test = node
-    
-    
     node.each_element do |child|
-      if child.content.eql?("NCBITaxon:28771")
-        test = "test"
-        test
-      end
       case child.name
         when "entry"
           a[child.first.content] = process_entry(child)
@@ -1158,6 +1151,10 @@ private
           return child.content.to_i
         when "string"
           return child.content
+        when "synonyms"
+          synonyms = []
+          child.each_element { |synonym| synonyms << synonym.content }
+          a[child.name] = synonyms
       else
         if !child.first.nil? && child.first.element?
           a[child.name] = parse(child)
