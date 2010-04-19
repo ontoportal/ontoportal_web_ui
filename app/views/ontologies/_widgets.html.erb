@@ -90,7 +90,7 @@
 </textarea>
                         </ul>
                         <p>
-                            For more help visit <a href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
+                            For more help visit <a target="_blank" href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
                         </p>
                     </div>
                     </td>
@@ -192,7 +192,7 @@ Example 1 (start typing the term name to get its full URI)
 </textarea>
                             </p>
                             <p>
-                                For more help visit <a href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
+                                For more help visit <a target="_blank" href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
                             </p>
                         </div>
                     </td>
@@ -226,7 +226,7 @@ Example 1 (start typing the term name to get its full URI)
                             <h2>Referencing an ontology in your widgets</h2>
                             <br/>
                             <p>
-                                For more help visit <a href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
+                                For more help visit <a target="_blank" href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
                             </p>
                         </div>
                     </td>
@@ -238,9 +238,9 @@ Example 1 (start typing the term name to get its full URI)
                         <a href="#TB_inline?height=400&width=600&inlineId=visual" class="thickbox getcode">Get Code</a>
                     </td>
                     <td>
-                        <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="FlexoViz" width="750px" height="500px" codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+                        <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="FlexoViz" width="500px" height="500px" codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
                             <param name="movie" value="<%=$FLEX_URL%>/flexviz/BasicFlexoViz.swf?v=<%=$FLEX_VERSION%>" /><param name="quality" value="high" /><param name="bgcolor" value="#ffffff" /><param name="allowScriptAccess" value="always" /><param name="wmode" value="opaque" />
-                            <embed src="<%=$FLEX_URL%>/flexviz/BasicFlexoViz.swf?v=<%=$FLEX_VERSION%>" bgcolor="#ffffff" width="100%" height="100%" name="FlexoViz" align="middle" play="true" loop="false" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" flashVars="widget=true&ontology=<%=@ontology.id%>&server=http://rest.bioontology.org/bioportal/" pluginspage="http://www.adobe.com/go/getflashplayer">
+                            <embed src="<%=$FLEX_URL%>/flexviz/BasicFlexoViz.swf?v=<%=$FLEX_VERSION%>" bgcolor="#ffffff" width="500px" height="500px" name="FlexoViz" align="middle" play="true" loop="false" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" flashVars="widget=true&ontology=<%=@ontology.id%>&server=<%= $REST_URL %>" pluginspage="http://www.adobe.com/go/getflashplayer">
                             </embed>
                         </object>
                         <div id ="visual" style="display:none">
@@ -251,7 +251,7 @@ Example 1 (start typing the term name to get its full URI)
 <textarea rows=4 cols=70>
 <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="FlexoViz" width="100%" height="100%" codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
     <param name="movie" value="<%=$FLEX_URL%>/flexviz/BasicFlexoViz.swf?v=<%=$FLEX_VERSION%>" /><param name="quality" value="high" /><param name="bgcolor" value="#ffffff" /><param name="allowScriptAccess" value="always" />
-    <embed src="<%=$FLEX_URL%>/flexviz/BasicFlexoViz.swf?v=<%=$FLEX_VERSION%>" bgcolor="#ffffff" width="100%" height="100%" name="FlexoViz" align="middle" play="true" loop="false" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" flashVars="widget=true&ontology=<%=@ontology.id%>&server=http://rest.bioontology.org/bioportal/" pluginspage="http://www.adobe.com/go/getflashplayer">
+    <embed src="<%=$FLEX_URL%>/flexviz/BasicFlexoViz.swf?v=<%=$FLEX_VERSION%>" bgcolor="#ffffff" width="100%" height="100%" name="FlexoViz" align="middle" play="true" loop="false" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" flashVars="widget=true&ontology=<%=@ontology.id%>&server=<%= $REST_URL %>" pluginspage="http://www.adobe.com/go/getflashplayer">
     </embed>
 </object>
 </textarea>
@@ -259,14 +259,14 @@ Example 1 (start typing the term name to get its full URI)
                             <p>
                                 If you want the visualization to be focused on a particular term in the ontology, you can add the term id to the parameters above. For example, to have the widget focus on Melanoma in NCI Thesaurus, replace the following line in the snippet above:
                                 <br/>
-                                <b>flashVars="widget=true&ontology=39478&server=http://rest.bioontology.org/bioportal/"</b>
+                                <b>flashVars="widget=true&ontology=39478&server=<%= $REST_URL %>"</b>
                                 <br/>
                                 with
                                 <br/>
-                                <b>flashVars="widget=true&ontology=39478&nodeid=Melanoma&server=http://rest.bioontology.org/bioportal/"</b>
+                                <b>flashVars="widget=true&ontology=39478&nodeid=Melanoma&server=<%= $REST_URL %>"</b>
                             </p>
                             <p>
-                                For more help visit <a href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
+                                For more help visit <a target="_blank" http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
                             </p>
                         </div>
                     </td>
@@ -378,7 +378,7 @@ Example 1 (start typing the term name to get its full URI)
                                 <b>flashVars="ontology=&alerterrors=false&canchangeontology=true"</b>
                             </p>
                             <p>
-                                For more help visit <a href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
+                                For more help visit <a target="_blank" href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
                             </p>
                         </div>
 					</td>
