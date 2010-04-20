@@ -167,7 +167,7 @@
 	            <ul class="bp_tagList" id="notes" style="width: 350px; padding: 10px">
 	                <%for note in @notes %>
 	                <li value="<%=note[1]%>">
-	                    <a href="/visualize/<%=@ontology.id%>?conceptid=<%=note[0]%>#notes"><%=note[0] %></a>
+	                    <a href="/visualize/virtual/<%=@ontology.ontologyId%>?conceptid=<%=note[0]%>#notes"><%=note[0] %></a>
 	                </li>
 	                <%end %>
 	            </ul>
@@ -180,7 +180,7 @@
 	            <ul class="bp_tagList" id="mappings" style="width: 350px; padding: 10px">
 	                <%for mapping in @mappings %>
 	                <li value="<%=mapping[1]%>">
-	                    <a href="/visualize/<%=@ontology.id%>?conceptid=<%=mapping[0]%>#mappings"><%=mapping[2] %></a>
+	                    <a href="/visualize/virtual/<%=@ontology.ontologyId%>?conceptid=<%=mapping[0]%>#mappings"><%=mapping[2] %></a>
 	                </li>
 	                <%end %>
 	            </ul>
