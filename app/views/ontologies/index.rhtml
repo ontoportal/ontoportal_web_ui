@@ -151,7 +151,7 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 	</select></td>
 	</tr>
 	<tr>
-		<th>Filter by Group</td><td><select onclick ="filterByGroup(this)"  name="cat">
+		<th>Filter by Group</td><td><select onchange="filterByGroup(this)"  name="cat">
 		<option value="0" <%if params[:filter].nil?%>selected="selected"<%end%> >All Groups</option>
 			
 			<% @groups.group_list.each do |group_id, group| %>
