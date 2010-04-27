@@ -1,10 +1,3 @@
-# This require is here to prevent problems when trying to get models
-# from the cache. Sometimes, even in the production env, Rails wouldn't have
-# the model cached and an exception would be thrown saying that the
-# model was unknown/undefined.
-require_dependency 'ontology_metrics_wrapper'
-require_dependency 'groups'
-
 class OntologiesController < ApplicationController
   
   #caches_page :index

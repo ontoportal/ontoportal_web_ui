@@ -18,15 +18,18 @@ class ApplicationController < ActionController::Base
   # Needed for memcache to understand the models in storage
   before_filter  :preload_models
 
-  def preload_models() 
+  def preload_models()
+    Note
     NodeWrapper
     Annotation
     Mapping
     MarginNote
     OntologyWrapper
+    OntologyMetricsWrapper
     Resource
     TreeNode
     UserWrapper
+    Groups
   end
   
   # Custom 404 handling
