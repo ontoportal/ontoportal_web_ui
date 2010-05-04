@@ -43,9 +43,9 @@
 						jQuery("#notice_message").hide();
 					}
 				</script>
-				<p style="padding: 13px 10px 10px; margin: 10px; border:1px solid #EFEFEF; background-color: #F9F9F9;" id="notice_message">
+				<div style="padding: 13px 10px 10px; margin: 10px; border:1px solid #EFEFEF; background-color: #F9F9F9;" id="notice_message">
 					<%=$SITE_NOTICE[message_name.to_sym]%>&nbsp;&nbsp;<a href="#" onclick="close_message(); return false;" style="font-size: small; color: darkGray;">[close]</a>
-				</p>
+				</div>
 			<% end %>
 		<% end %>
 	
