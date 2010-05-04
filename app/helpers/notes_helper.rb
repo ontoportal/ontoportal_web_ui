@@ -56,13 +56,15 @@ module NotesHelper
       when "Class"
         return "<a href='/visualize/#{ontology_id}/?conceptid=#{CGI.escape(id)}'>#{DataAccess.getNode(ontology_id, id).label}</a>"
       when "Note"
-        return "<a href='/notes/virtual/#{@ontology.ontologyId}?noteid=#{id}'>#{DataAccess.getNote(ontology_id, id)[0].subject}</a>" 
+        ontology = DataAccess.getOntology(ontology_id)
+        return "<a href='/notes/virtual/#{ontology.ontologyId}?noteid=#{id}'>#{DataAccess.getNote(ontology.ontologyId, id).subject}</a>" 
       when "Individual"
       when "Property"
       when "Ontology"
-        return "<a href='/ontologies/virtual/#{@ontology.ontologyId}'>#{DataAccess.getLatestOntology(ontology_id).displayLabel}</a>" 
+        ontology = DataAccess.ontology(ontology_id)
+        return "<a href='/ontologies/virtual/#{ontology.ontologyId}'>#{ontology.displayLabel}</a>" 
       end
-    rescue Exception
+    rescue Exception => e
       return "Unknown or Deprecated #{type}"
     end
   end
