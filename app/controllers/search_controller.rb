@@ -32,7 +32,7 @@ class SearchController < ApplicationController
     if @ontologies.eql?("0") || @ontologies.first.eql?("0")
       @ontologies = ""
     end
-    render :action=>'results'
+    render :action => 'results'
   end
   
   def search # full search

@@ -34,7 +34,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/exhibit/:ontology/:id', :controller => 'concepts', :action=>'exhibit'
   map.connect '/ontologies/view/edit/:id', :controller => 'ontologies', :action => 'edit_view', :requirements => { :id => %r([^/?]+) }
   map.connect '/ontologies/view/new/:id', :controller => 'ontologies', :action => 'new_view'
-  map.connect '/ontologies/virtual/:ontology', :controller => 'ontologies', :action => 'virtual'
+  map.ontology_virtual '/ontologies/virtual/:ontology', :controller => 'ontologies', :action => 'virtual'
   
   # Mappings
   map.upload_mappings '/upload/mapping', :controller => 'mappings', :action=>'upload'
@@ -45,9 +45,16 @@ ActionController::Routing::Routes.draw do |map|
   # Services
   map.connect ':controller/service.wsdl', :action => 'wsdl'
   
-  # Notes
+  # Old Notes
   map.notes_ont 'notes/ont/:ontology/:id', :controller => 'margin_notes', :action => 'ont_service'
   map.notes_ver 'notes/ver/:ontology/:id', :controller => 'margin_notes', :action => 'ver_service'
+  
+  # New Notes
+  map.notes_ontology 'ontologies/notes/virtual/:ontology', :controller => 'notes', :action => 'show_for_ontology'
+  #map.note 'notes/:ontology', :controller => 'notes', :action => 'show'
+  map.note_virtual 'notes/virtual/:ontology', :controller => 'notes', :action => 'virtual_show'
+  map.note_ajax_single 'notes/ajax/single/:ontology', :controller => 'notes', :action => 'show_single'
+  map.note_ajax_single_list 'notes/ajax/single_list/:ontology', :controller => 'notes', :action => 'show_single_list'
 
   # Resource Index
   map.obr_details '/res_details/:id', :controller => 'resources', :action => 'details'

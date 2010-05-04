@@ -1,0 +1,213 @@
+<style type="text/css">
+	#note_container {
+		padding: 2em;
+	}
+	#note_title {
+		font-size: 16pt;
+	}
+	#note_status {
+		padding: 0 0 1em;
+	}
+	#status, #note_author {
+		font-weight: bold;
+		color: #646464;
+	}
+	#note_navigation {
+		float: right;
+	}
+	
+	/* Reply box */
+	.spacer {
+		padding: .8em 0 0 0;
+		margin-left: .8em;
+		border-left: dotted thin lightGrey;
+	}
+	.create_reply {
+		padding: 0.5em 0.5em 1em 0.8em;
+	}
+	.reply_compose {
+		padding: 1em;
+		display: none;
+	}
+	
+	/* Responses */
+	.collapsible {
+		border-left: dotted thin lightGrey;
+		margin-left: .8em;
+	}
+	.note_corner {
+		border-bottom: dotted thin lightGrey;
+		bottom: .8em;
+		float: left;
+		margin-bottom: -3em;
+		position: relative;
+		right: 1.5em;
+		width: 1.5em;
+	}
+	.response_container {
+		border-left: thin dotted lightGrey;
+		margin-left: .8em;
+		padding-left: 1.5em;
+	}
+	.response {
+		/*padding: .8em 0 0 0;*/
+	}
+	.response_children .response {
+	}
+	.response_head {
+		border-top: dotted thin lightGrey;
+		border-right: dotted thin lightGrey;
+		border-left: dotted thin lightGrey;
+		box-shadow: -1px 2px 5px grey;
+		-moz-box-shadow: -1px 2px 5px grey;
+		-webkit-box-shadow: -1px 2px 5px grey;
+		background: #eeeeee;
+		padding: .2em .5em .4em;
+		font-size: 9pt;
+		color: #646464;
+	}
+	.response_count {
+		float: right;
+		font-style: italic;
+	}
+	.response .collapsed {
+		border-bottom: dotted thin lightGrey;
+	}
+	.response_collapse {
+		cursor: pointer;
+	}
+	.response_head a {
+		color: #646464;
+	}
+	.response_head a:hover {
+		color: #000000;
+		background: #a9a9a9;
+	}
+	.response_title {
+		font-weight: bold;
+		font-size: 12pt;
+	}
+	.response_author {
+	}
+	.response_date {
+	}
+	.response_body {
+		padding: 1em 1em 0;
+		font-size: 10pt;
+	}
+	.create_reply_container {
+		padding: .5em .3em;
+	}
+	
+	.divider {
+		border-top: solid medium lightGrey;
+		width: 100%;
+		margin-top: 1em;
+	}
+	
+	.section_head {
+		font-size: 160%;
+		margin-bottom: 1em;
+	}
+</style>
+
+<script type="text/javascript">
+// Cache object to hold the html for the form
+var cache;
+
+jQuery(document).ready(function(){
+    jQuery(".create_reply").click(function(){
+		var replyDiv = "#" + jQuery(this).parents(".response").attr('id') + "_reply";
+		jQuery(".reply_form_container").each(function() {
+			jQuery(this).html("");
+			jQuery(this).parent().hide();
+		});
+		jQuery("#reply_" + jQuery(this).attr("note_id")).html(cache.reply_form);
+		
+		jQuery(replyDiv).show();
+    });
+	
+	jQuery(".cancel_reply").click(function(){
+		jQuery(this).parent().hide();
+	});
+	
+	jQuery(".response_collapse").click(function(){
+		var collapse = "#" + jQuery(this).parent().parent().attr('id') + "_collapse";
+		jQuery(collapse).toggle();
+		jQuery(this).parent().toggleClass("collapsed");
+	});
+
+	jQuery(".edit_reply").click(function(){
+		var collapse = "#" + jQuery(this).parent().parent().attr('id') + "_collapse";
+		jQuery(collapse).toggle();
+	});
+	
+	// Hide all
+	jQuery("#hide_all_responses").click(function(){
+		jQuery(".collapsible").hide();
+	});
+	
+	// Show all
+	jQuery("#show_all_responses").click(function(){
+		jQuery(".collapsible").show();
+	});
+});
+
+function noteReply(link) {
+}
+</script>
+
+<% if @notes.nil? %>
+
+	No notes to display.
+
+<% else %>
+
+<div id="note_head">
+	<% if @note_list %>
+	<div id="note_navigation">
+		<a href="#">< Prev</a> | <a href="#">All</a> | <a href="#">Next ></a>
+	</div>
+	<% end %>
+	
+	<div id="note_title">
+		<%= @notes.subject %>
+	</div>
+	
+	<div id="note_status">
+		<!-- Status: <span id="status"><% "TODO: Status" %></span><br/> -->
+		<%= @notes.type %> submitted by <span id="note_author"><%= get_username(@notes.author) %></span> <%= time_ago_in_words(Time.at(convert_java_time(@notes.created.to_i))) %> ago
+		on <%= get_applies_to_link @notes.createdInOntologyVersion, @notes.appliesTo['type'], @notes.appliesTo['id'] %>
+	</div>
+</div>
+
+<div id="note_body">
+	<%= @notes.body %>
+</div>
+	
+<div class="divider">&nbsp;</div>
+
+<% unless @notes.associated.nil? || @notes.associated.empty? %>
+	<div style="margin-bottom: 1em;"><span class="section_head"><%= @notes_thread_title %></span> &nbsp;&nbsp;<span style="font-size: 80%;"> <a id="hide_all_responses" href="javascript:void(0)">hide all</a> | <a id="show_all_responses" href="javascript:void(0)">show all</a></span></h2></div> 
+	<%= generate_notes_thread(@notes.associated) %>
+	<div class="divider">&nbsp;</div>
+<% end %>
+
+<div id="top_level_reply">
+	<% applies_to = @notes.id %>
+	<% applies_to_type = "Note" %>
+	<%= render :partial => 'add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type, :action => 'thread_root' } %>
+</div>
+
+<div style="display: none;">
+	<div id="hidden_form">
+		<%= render :partial => 'add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type, :exclude_js => true, :action => 'thread' } %>
+	</div>
+	<script type="text/javascript">
+		// Tricky. We're going to use the div hidden_form to get the html for a form we use later. 
+		cache.reply_form = jQuery("#hidden_form").html();
+		jQuery("#hidden_form").html("");
+	</script>
+</div>
+
+<% end %>

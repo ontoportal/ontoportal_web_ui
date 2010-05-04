@@ -330,7 +330,114 @@ class BioPortalRestfulCore
     
     return root
   end
+  
+  def self.getNote(params)
+    if params[:virtual] == true
+      params[:ontology_virtual_id] = params[:ontology_id]
+      uri_gen = BioPortalResources::NoteVirtual.new(params)
+    else
+      uri_gen = BioPortalResources::Note.new(params)
+    end
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve note"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+    
+    note = errorCheck(doc)
+    
+    unless note.nil?
+      return note
+    end
+    
+    timer = Benchmark.ms { note = generic_parse(:xml => doc, :type => "Note") }
+    LOG.add :debug, "note Parse Time: #{timer}"
+    
+    if note.kind_of?(Array) && note.size == 1
+      note = note[0]
+    end
+    
+    return note
+  end
+  
+  def self.getNotesForConcept(params)
+    if params[:virtual] == true
+      params[:ontology_virtual_id] = params[:ontology_id]
+      uri_gen = BioPortalResources::NotesForConceptVirtual.new(params)
+    else
+      uri_gen = BioPortalResources::NotesForConcept.new(params)
+    end
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve notes for concept"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+    
+    note = errorCheck(doc)
+    
+    unless note.nil?
+      return note
+    end
+    
+    timer = Benchmark.ms { note = generic_parse(:xml => doc, :type => "Note") }
+    LOG.add :debug, "note Parse Time: #{timer}"
+    
+    return note
+  end
+  
+  def self.getNotesForIndividual(params)
+    
+  end
+  
+  def self.getNotesForOntology(params)
+    uri_gen = BioPortalResources::NotesForOntologyVirtual.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve notes for ontology"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+    
+    notes = errorCheck(doc)
+    
+    unless notes.nil?
+      return notes
+    end
+    
+    timer = Benchmark.ms { notes = generic_parse(:xml => doc, :type => "Note") }
+    LOG.add :debug, "notesForOntology Parse Time: #{timer}"
+    
+    return notes
+  end
 
+  def self.createNote(params)
+    # Convert param names to match Core
+    params[:ontologyid] = params[:ontology_virtual_id]
+    params[:content] = params[:body]
+    params.each { |k,v| params[k.to_s.downcase.to_sym] = v }
+
+    uri_gen = BioPortalResources::CreateNote.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Create note"
+    LOG.add :debug, uri
+    doc = postToRestlet(uri, params)
+    
+    note = errorCheck(doc)
+    
+    unless note.nil?
+      return doc
+    end
+    
+    timer = Benchmark.ms { note = generic_parse(:xml => doc, :type => "Note") }
+    LOG.add :debug, "createNote Parse Time: #{timer}"
+    
+    if note.kind_of?(Array) && note.size == 1
+      note = note[0]
+    end
+    
+    return note
+  end
+  
   def self.getNodeNameContains(ontologies,search,page)
     if ontologies.to_s.eql?("0")
       ontologies=""
@@ -343,7 +450,7 @@ class BioPortalRestfulCore
      doc = REXML::Document.new(get_xml(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15"))
     rescue Exception=>e
       doc =  REXML::Document.new(e.io.read)
-    end   
+    end
 
     results = errorCheck(doc)
     
@@ -1112,7 +1219,12 @@ private
     type = params[:type] rescue nil
     xml = params[:xml]
     
-    parser = XML::Parser.io(xml, :options => LibXML::XML::Parser::Options::NOBLANKS)
+    if xml.kind_of?(String)
+      parser = XML::Parser.string(xml, :options => LibXML::XML::Parser::Options::NOBLANKS)
+    else
+      parser = XML::Parser.io(xml, :options => LibXML::XML::Parser::Options::NOBLANKS)
+    end
+    
     doc = parser.parse
     root = doc.find_first("/success/data")
     parsed = self.parse(root)
@@ -1126,9 +1238,17 @@ private
         attributes = v
       end
     end
-
+    
     if type
-      return Kernel.const_get(type).new(attributes, params)
+      if attributes.is_a?(Array)
+        list = []
+        attributes.each do |hash|
+          list << Kernel.const_get(type).new(hash, params)
+        end
+        return list
+      else
+        return Kernel.const_get(type).new(attributes, params)
+      end
     else
       return attributes
     end
@@ -1151,6 +1271,8 @@ private
           synonyms = []
           child.each_element { |synonym| synonyms << synonym.content }
           a[child.name] = synonyms
+        when "associated"
+          a[child.name] = process_list(child)
       else
         if !child.first.nil? && child.first.element?
           a[child.name] = parse(child)

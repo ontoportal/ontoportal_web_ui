@@ -5,7 +5,8 @@ class BioPortalResources
 
     @@tokens = { "%ONT%" => :ontology_id, "%ONT_VIRTUAL%" => :ontology_virtual_id, "%CONC%" => :concept_id,
                  "%VIEW%" => :view_id, "%USR%" => :user_id, "%START%" => :ontology_id_start,
-                 "%END%" => :ontology_id_end, "%VER1%" => :ontology_version1, "%VER2%" => :ontology_version2 }
+                 "%END%" => :ontology_id_end, "%VER1%" => :ontology_version1, "%VER2%" => :ontology_version2,
+                 "%NOTE%" => :note_id, "%IND%" => :individual_id }
                  
     def initialize(params = nil)
       if params
@@ -138,6 +139,67 @@ class BioPortalResources
       def initialize(params)
         super(params)
         @uri << "/virtual/ontology/%ONT_VIRTUAL%"
+      end
+    end
+    
+    class Note < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/notes/%ONT%/?noteid=%NOTE%"
+        @uri << "&threaded=true" if params[:threaded]
+      end
+    end
+    
+    class NoteVirtual < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/virtual/notes/%ONT_VIRTUAL%/?noteid=%NOTE%"
+        @uri << "&threaded=true" if params[:threaded]
+      end
+    end
+    
+    class NotesForConcept < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/notes/%ONT_VIRTUAL%/?conceptid=%CONC%"
+        @uri << "&threaded=true" if params[:threaded]
+      end
+    end
+
+    class NotesForConceptVirtual < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/virtual/notes/%ONT_VIRTUAL%/?conceptid=%CONC%"
+        @uri << "&threaded=true" if params[:threaded]
+      end
+    end
+
+    class NotesForIndividual < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/virtual/notes/%ONT_VIRTUAL%/?indivudal=%IND%"
+        @uri << "&threaded=true" if params[:threaded]
+      end
+    end
+
+    class NotesForOntology < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/notes/%ONT%"
+      end
+    end
+
+    class NotesForOntologyVirtual < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/virtual/notes/%ONT_VIRTUAL%"
+      end
+    end
+
+    class CreateNote < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/virtual/notes/%ONT_VIRTUAL%"
       end
     end
     

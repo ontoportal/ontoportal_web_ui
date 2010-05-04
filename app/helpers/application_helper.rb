@@ -33,6 +33,18 @@ module ApplicationHelper
      "#{encode_param(string.gsub(" ","_"))}"
   end
   
+  # Notes-related helpers
+  
+  def convert_java_time(time_in_millis)
+    time_in_millis / 1000
+  end
+
+  def get_username(user_id)
+    user = DataAccess.getUser(user_id) rescue nil
+    username = user.nil? ? user_id : user.username
+    username
+  end
+  
   def remove_owl_notation(string)
     unless string.nil?
       strings = string.split(":")
