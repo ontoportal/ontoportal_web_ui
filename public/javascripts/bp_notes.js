@@ -18,6 +18,7 @@ jQuery(document).ready(function(){
 	jQuery(".create_note_submit").live('click', function() {
 		var note_type = jQuery(this).attr("note_type");
 		var prefix = jQuery(this).data("prefix") == null ? "" : jQuery(this).data("prefix");
+		var action = jQuery(this).data("action");
 		
 		switch (note_type) {
 		case "create_comment":
@@ -51,6 +52,8 @@ jQuery(document).ready(function(){
 								if (no_notes_check != null) {
 									oTable.fnDeleteRow(oTable.fnGetPosition(document.getElementById("no_notes")));
 								}
+								
+								
 		
 								oTable.fnAddData([
 			  	                    json.subject + "",
@@ -163,9 +166,91 @@ function ProposalForNewEntity(prefix) {
 }
 
 function ProposalForChangeHierarchy(prefix) {
+	var BP_REST_URL = jQuery("#BP_REST_URL").val();
+	var ONT = jQuery("#ONT").val();
 	
+	this.form_fields = {
+			appliesTo: jQuery("#" + prefix + "create_change_hierarchy_appliesTo"),
+			appliesToType: jQuery("#" + prefix + "create_change_hierarchy_appliesToType"),
+			type: jQuery("#" + prefix + "create_change_hierarchy_noteType"),
+			author: jQuery("#" + prefix + "create_change_hierarchy_author"),
+			subject: jQuery("#" + prefix + "create_change_hierarchy_subject"),
+			body: jQuery("#" + prefix + "create_change_hierarchy_body"),
+			reasonForChange: jQuery("#" + prefix + "create_change_hierarchy_reasonForChange"),
+			contactInfo: jQuery("#" + prefix + "create_change_hierarchy_contactInfo"),
+			oldRelationshipTarget: jQuery("#" + prefix + "oldRelationshipTarget"),
+			relationshipTarget: jQuery("#" + prefix + "relationshipTarget"),
+			relationshipType: jQuery("#" + prefix + "relationshipType")
+	}
+
+	// Hack so we can use a generic method to validate
+	this.member_variables = {
+		ontology_virtual_id: ONT,
+		appliesTo: jQuery("#" + prefix + "create_change_hierarchy_appliesTo").val(),
+		appliesToType: jQuery("#" + prefix + "create_change_hierarchy_appliesToType").val(),
+		type: jQuery("#" + prefix + "create_change_hierarchy_noteType").val(),
+		author: jQuery("#" + prefix + "create_change_hierarchy_author").val(),
+		subject: jQuery("#" + prefix + "create_change_hierarchy_subject").val(),
+		body: jQuery("#" + prefix + "create_change_hierarchy_body").val(),
+		reasonForChange: jQuery("#" + prefix + "create_change_hierarchy_reasonForChange").val(),
+		contactInfo: jQuery("#" + prefix + "create_change_hierarchy_contactInfo").val(),
+		oldRelationshipTarget: jQuery("#" + prefix + "oldRelationshipTarget").val(),
+		relationshipTarget: jQuery("#" + prefix + "relationshipTarget").val(),
+		relationshipType: jQuery("#" + prefix + "relationshipType").val()
+	}
+	
+	this.validate = function() {
+		
+	}
+	
+	this.reset = function() {
+		for (field in this.form_fields) {
+			this.form_fields[field].val("");
+		}
+	}
 }
 
 function ProposalForPropertyValueChange(prefix) {
+	var BP_REST_URL = jQuery("#BP_REST_URL").val();
+	var ONT = jQuery("#ONT").val();
 	
+	this.form_fields = {
+			appliesTo: jQuery("#" + prefix + "create_change_prop_value_appliesTo"),
+			appliesToType: jQuery("#" + prefix + "create_change_prop_value_appliesToType"),
+			type: jQuery("#" + prefix + "create_change_prop_value_noteType"),
+			author: jQuery("#" + prefix + "create_change_prop_value_author"),
+			subject: jQuery("#" + prefix + "create_change_prop_value_subject"),
+			body: jQuery("#" + prefix + "create_change_prop_value_body"),
+			reasonForChange: jQuery("#" + prefix + "create_change_prop_value_reasonForChange"),
+			contactInfo: jQuery("#" + prefix + "create_change_prop_value_contactInfo"),
+			propertyId: jQuery("#" + prefix + "propertyId"),
+			propertyNewValue: jQuery("#" + prefix + "propertyNewValue"),
+			propertyOldValue: jQuery("#" + prefix + "propertyOldValue")
+	}
+
+	// Hack so we can use a generic method to validate
+	this.member_variables = {
+		ontology_virtual_id: ONT,
+		appliesTo: jQuery("#" + prefix + "create_change_prop_value_appliesTo").val(),
+		appliesToType: jQuery("#" + prefix + "create_change_prop_value_appliesToType").val(),
+		type: jQuery("#" + prefix + "create_change_prop_value_noteType").val(),
+		author: jQuery("#" + prefix + "create_change_prop_value_author").val(),
+		subject: jQuery("#" + prefix + "create_change_prop_value_subject").val(),
+		body: jQuery("#" + prefix + "create_change_prop_value_body").val(),
+		reasonForChange: jQuery("#" + prefix + "create_change_prop_value_reasonForChange").val(),
+		contactInfo: jQuery("#" + prefix + "create_change_prop_value_contactInfo").val(),
+		propertyId: jQuery("#" + prefix + "propertyId").val(),
+		propertyNewValue: jQuery("#" + prefix + "propertyNewValue").val(),
+		propertyOldValue: jQuery("#" + prefix + "propertyOldValue").val()
+	}
+	
+	this.validate = function() {
+		
+	}
+	
+	this.reset = function() {
+		for (field in this.form_fields) {
+			this.form_fields[field].val("");
+		}
+	}
 }

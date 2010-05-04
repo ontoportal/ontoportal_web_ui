@@ -147,7 +147,7 @@
 			<div id="<%=prefix%>create_change_hierarchy_float" class="note_options_float">
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_appliesTo" value="<%= applies_to rescue "" %>" class="create_change_hierarchy_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_change_hierarchy_inputs">
-				<input type="hidden" id="<%=prefix%>create_change_hierarchy_noteType" value="ProposalForNewEntity" class="create_change_hierarchy_inputs">
+				<input type="hidden" id="<%=prefix%>create_change_hierarchy_noteType" value="ProposalForChangeHierarchy" class="create_change_hierarchy_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_author" value="<%= session[:user].id %>" class="create_change_hierarchy_inputs">
 				
 				Reason for change<br/>
@@ -157,14 +157,14 @@
 				Old relationship target (start typing to autocomplete)<br/>
 				<input type="text" name="oldRelationshipTarget" id="oldRelationshipTarget" class="bp_form_complete-<%= @ontology.ontologyId %>-uri create_note_inputs create_change_hierarchy_inputs"><br/>
 				New relationship target (start typing to autocomplete)<br/>
-				<input type="text" name="newRelationshipTarget" id="newRelationshipTarget" class="bp_form_complete-<%= @ontology.ontologyId %>-uri create_note_inputs create_change_hierarchy_inputs"><br/>
+				<input type="text" name="relationshipTarget" id="relationshipTarget" class="bp_form_complete-<%= @ontology.ontologyId %>-uri create_note_inputs create_change_hierarchy_inputs"><br/>
 				New relationship type<br/>
 				<select id="relationshipType">
 					<option selected></option>
 					<%= options_for_select([["isa", "isa"], ["partof", "partof"]]) %>
 				</select>
 			</div>
-			<h2>Change Hierarchy</h2>
+			<h2>New Relationship / Change Hierarchy</h2>
 			Subject<br/>
 			<input id='<%=prefix%>create_change_hierarchy_subject' class="create_note_inputs create_change_hierarchy_inputs"><br/>
 			Body<br/>
@@ -176,7 +176,7 @@
 			<div id="<%=prefix%>create_change_prop_value_float" class="note_options_float">
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_appliesTo" value="<%= applies_to rescue "" %>" class="create_change_prop_value_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_change_prop_value_inputs">
-				<input type="hidden" id="<%=prefix%>create_change_prop_value_noteType" value="ProposalForNewEntity" class="create_change_prop_value_inputs">
+				<input type="hidden" id="<%=prefix%>create_change_prop_value_noteType" value="ProposalForPropertyValueChange" class="create_change_prop_value_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_author" value="<%= session[:user].id %>" class="create_change_prop_value_inputs">
 				
 				Reason for change<br/>
