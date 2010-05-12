@@ -12,6 +12,11 @@ class ConceptsController < ApplicationController
     # Handle multiple methods of passing concept ids
     params[:id] = params[:id] ? params[:id] : params[:conceptid]
     
+    if params[:id].nil? || params[:id].empty?
+      render :text => "Error: You must provide a valid concept id"
+      return
+    end
+    
     @ontology = DataAccess.getOntology(params[:ontology])
 
     if @ontology.statusId.to_i.eql?(6)
