@@ -58,9 +58,18 @@ function formComplete_formatItem(row) {
 
 function formComplete_setup_functions() {
 	jQuery("input[class*='bp_form_complete']").each(function(){
-		var values = this.className.split("-");
-		var ontology_id = values[1];
-		var target_property = values[2];
+		var classes = this.className.split(" ");
+		var values;
+		var ontology_id;
+		var target_property;
+		jQuery(classes).each(function() {
+			if (this.indexOf("bp_form_complete") === 0) {
+				values = this.split("-");
+				ontology_id = values[1];
+				target_property = values[2];
+			}
+		});
+		
 		if (ontology_id == "all") { ontology_id = ""; }
 		jQuery(this).autocomplete(searchServer + "/search/json_search/"+ontology_id, {
 				extraParams: { target_property: target_property, input: this },
