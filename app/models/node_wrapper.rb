@@ -120,7 +120,7 @@ class NodeWrapper
     
   def note_count
     if CACHE.get("#{self.version_id}::#{self.fullId}_NoteCount").nil?
-        count = DataAccess.getNotesForConcept(DataAccess.getOntology(self.version_id).ontologyId, self.fullId, false, true).size
+        count = DataAccess.getNotesForConcept(DataAccess.getOntology(self.version_id).ontologyId, self.fullId, false, true).size rescue "0"
         CACHE.set("#{self.version_id}::#{self.fullId}_NoteCount", count)
       return count
     else
