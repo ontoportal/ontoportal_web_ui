@@ -69,7 +69,10 @@ class NotesController < ApplicationController
       return
     end
     
-    #@note = Note.find(params[:id])
+    if request.xhr?
+      render :partial => 'thread'
+      return
+    end
 
     respond_to do |format|
       format.html { render :template => 'notes/show' }
@@ -103,11 +106,10 @@ class NotesController < ApplicationController
     @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
     
     @note_row = { :subject => "<a href='#{@note_link}#{@note.id}'>#{@note.subject}</a>",
-       :body => @note.body,
        :author => Class.new.extend(ApplicationHelper).get_username(@note.author),
        :type => @note.type,
        :appliesTo => Class.new.extend(NotesHelper).get_applies_to_link(@note.createdInOntologyVersion, @note.appliesTo['type'], @note.appliesTo['id']) + " (#{@note.appliesTo['type']})",
-       :created => @note.created
+       :created => time_formatted_from_java(@note.created)
     }
 
     render :json => @note_row

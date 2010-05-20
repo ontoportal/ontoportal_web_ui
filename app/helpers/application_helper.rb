@@ -33,10 +33,18 @@ module ApplicationHelper
      "#{encode_param(string.gsub(" ","_"))}"
   end
   
-  # Notes-related helpers
+  # Notes-related helpers that could be useful elsewhere
   
   def convert_java_time(time_in_millis)
-    time_in_millis / 1000
+    time_in_millis.to_i / 1000
+  end
+  
+  def time_from_java(java_time)
+    Time.at(convert_java_time(java_time.to_i))
+  end
+  
+  def time_formatted_from_java(java_time)
+    time_from_java(java_time).strftime("%m/%d/%Y")
   end
 
   def get_username(user_id)

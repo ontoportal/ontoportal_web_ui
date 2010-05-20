@@ -25,7 +25,10 @@ try{
 
 // Wdiget-specific code
 
-//Set the search server to the UI installation of BioPortal that you want to search
+// Set a variable to check to see if this script is loaded
+var BP_FORM_COMPLETE_LOADED = true;
+
+// Set the search server to the UI installation of BioPortal that you want to search
 var searchServer = "http://bioportal.bioontology.org";
 
 jQuery(document).ready(function(){

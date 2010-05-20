@@ -94,15 +94,15 @@ class DataAccess
     return self.cache_pull("#{note_id}#{threaded_token}", "getNote", { :ontology_id => ontology_id, :note_id => note_id, :threaded => threaded, :virtual => virtual }, EXTENDED_CACHE_EXPIRE_TIME)
   end
   
-  def self.getNotesForConcept(ontology_id, concept_id, threaded, virtual = false)
+  def self.getNotesForConcept(ontology_id, concept_id, threaded = false, virtual = false)
     return self.cache_pull("#{concept_id}::notes", "getNotesForConcept", { :ontology_id => ontology_id, :concept_id => concept_id, :threaded => threaded, :virtual => virtual })
   end
   
-  def self.getNotesForIndividual(individual_id, threaded)
+  def self.getNotesForIndividual(ontology_virtual_id, individual_id, threaded = false)
     return self.cache_pull("#{individual_id}::notes", "getNotesForIndividual", { :ontology_virtual_id => ontology_virtual_id, :individual_id => individual_id, :threaded => threaded })
   end
   
-  def self.getNotesForOntology(ontology_virtual_id, threaded, virtual = false)
+  def self.getNotesForOntology(ontology_virtual_id, threaded = false, virtual = false)
     return self.cache_pull("#{ontology_virtual_id}::notes", "getNotesForOntology", { :ontology_virtual_id => ontology_virtual_id, :threaded => threaded, :virtual => virtual })
   end
   
@@ -122,13 +122,20 @@ class DataAccess
     
     # If this note is in a thread, traverse to top and delete from cache
     if params[:appliesToType].eql?("Note")
-      note_id = params[:appliesTo]
-      while self.getNote(params[:ontology_virtual_id], note_id, false, true).appliesTo['type'].eql?("Note")
-        note_id = self.getNote(params[:ontology_virtual_id], note_id, false, true).appliesTo['id']
+      note_temp = self.getNote(params[:ontology_virtual_id], params[:appliesTo], false, true)
+      while note_temp.appliesTo['type'].eql?("Note")
+        old_note_id = note_temp.id
+        parent_note_id = self.getNote(params[:ontology_virtual_id], note_temp.id, false, true).appliesTo['id']
+        CACHE.delete("#{old_note_id}")
+        CACHE.delete("#{old_note_id}::threaded")
+        note_temp = self.getNote(params[:ontology_virtual_id], parent_note_id, false, true)
       end
-      CACHE.delete("#{note_id}::threaded")
-      CACHE.delete("#{note_id}")
+      CACHE.delete("#{note_temp.id}::threaded")
+      CACHE.delete("#{note_temp.id}")
     end
+    
+    # If this note applies to a class/concept/term then delete the count for that concept
+    CACHE.delete("#{getLatestOntology(params[:ontology_virtual_id]).id}::#{params[:appliesTo]}_NoteCount") if params[:appliesToType].eql?("Class")
     
     note
   end

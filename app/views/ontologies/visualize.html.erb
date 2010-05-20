@@ -149,13 +149,12 @@
 		</div>
 		
 		<div id="container">
-			
 			<div class="tabs">
 				<ul>
 						<li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
 						<li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
-			        	<li class="tab" id="notes_top"><a href="#notes">Notes <span id="note_count">(<%=@concept.mapping_count%>)</span></a></li>
-						<li class="tab" id="mappings_top"><a href="#mappings">Mappings <span id="mapping_count">(<%=@concept.mapping_count%>)</span></a></li>				
+			        	<li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+						<li class="tab" id="mappings_top"><a href="#mappings">Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>				
 						<li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@/@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
 				</ul>
 			</div>

@@ -258,8 +258,8 @@ function nodeClicked(node_id,node_label) {
 		jQuery('#details_content').html(tabData[1]);
 		jQuery('#notes_content').html(tabData[2]);
 		jQuery('#mappings_content').html(tabData[3]);
-		jQuery('#note_count').html('('+tabData[5]+')');
-		jQuery('#mapping_count').html('('+tabData[6]+')');
+		jQuery('#note_count').html(tabData[5]);
+		jQuery('#mapping_count').html(tabData[6]);
         // Load the resource index tab in background
         loc = new String(document.location)
         if (loc.search("#resource_index") >= 0 && loc.split("#") == "resource_index") {
@@ -280,8 +280,8 @@ function nodeClicked(node_id,node_label) {
 			jQuery('#details_content').html(tabData[1]);
 			jQuery('#notes_content').html(tabData[2]);
 			jQuery('#mappings_content').html(tabData[3]);
-			jQuery('#note_count').html('('+tabData[5]+')');
-			jQuery('#mapping_count').html('('+tabData[6]+')');
+			jQuery('#note_count').html(tabData[5]);
+			jQuery('#mapping_count').html(tabData[6]);
 			
 			// Load the resource index tab in background
 			loc = new String(document.location)

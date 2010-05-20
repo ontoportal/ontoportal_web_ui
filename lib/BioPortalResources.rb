@@ -185,14 +185,14 @@ class BioPortalResources
     class NotesForOntology < BioPortalResources
       def initialize(params)
         super(params)
-        @uri << "/notes/%ONT%"
+        @uri << "/notes/%ONT%/?toplevelonly=true"
       end
     end
 
     class NotesForOntologyVirtual < BioPortalResources
       def initialize(params)
         super(params)
-        @uri << "/virtual/notes/%ONT_VIRTUAL%"
+        @uri << "/virtual/notes/%ONT_VIRTUAL%?toplevelonly=true"
       end
     end
 

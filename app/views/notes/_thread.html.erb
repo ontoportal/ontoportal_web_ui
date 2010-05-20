@@ -16,6 +16,37 @@
 		float: right;
 	}
 	
+	/* Extra information (proposals) */
+	.proposal_info {
+		border-bottom: 1px solid darkGray;
+		border-left: 1px solid darkGray;
+		border-right: 1px solid darkGray;
+		margin: 0 1em;
+		padding: .7em 1em 0.5em;
+	}
+	
+	.proposal {
+		width: 90%;
+	}
+	
+	.proposal th, .proposal td {
+		padding: .25em;
+		vertical-align: top;
+	}
+	
+	.proposal th {
+		color: darkGray;
+		font-weight: bold;
+		text-align: right;
+		width: 15%;
+	}
+	
+	.proposal_root {
+		background-color: #F2F8FF;
+		margin: -0.7em 0 0.5em;
+		padding: 0.5em;
+	}
+	
 	/* Reply box */
 	.spacer {
 		padding: .8em 0 0 0;
@@ -26,6 +57,7 @@
 		padding: 0.5em 0.5em 1em 0.8em;
 	}
 	.reply_compose {
+		width: 770px;
 		padding: 1em;
 		display: none;
 	}
@@ -62,9 +94,10 @@
 		-moz-box-shadow: -1px 2px 5px grey;
 		-webkit-box-shadow: -1px 2px 5px grey;
 		background: #eeeeee;
-		padding: .2em .5em .4em;
+		padding: .4em .5em;
 		font-size: 9pt;
 		color: #646464;
+		cursor: pointer;
 	}
 	.response_count {
 		float: right;
@@ -74,7 +107,6 @@
 		border-bottom: dotted thin lightGrey;
 	}
 	.response_collapse {
-		cursor: pointer;
 	}
 	.response_head a {
 		color: #646464;
@@ -95,8 +127,20 @@
 		padding: 1em 1em 0;
 		font-size: 10pt;
 	}
+	#responses_head {
+		margin-bottom: 1em;
+	}
 	.create_reply_container {
 		padding: .5em .3em;
+	}
+	.reply_form_container {
+		background-color: #F5FAFA;
+		padding: 10px;
+		width: 770px;		
+	}
+	.cancel_reply {
+		float: right;
+		padding-top: 10px;
 	}
 	
 	.divider {
@@ -109,6 +153,10 @@
 		font-size: 160%;
 		margin-bottom: 1em;
 	}
+	
+	#top_level_reply {
+		margin-top: 1em;
+	}
 </style>
 
 <script type="text/javascript">
@@ -116,28 +164,40 @@
 var cache;
 
 jQuery(document).ready(function(){
-    jQuery(".create_reply").click(function(){
+    jQuery(".create_reply").live('click', function() {
 		var replyDiv = "#" + jQuery(this).parents(".response").attr('id') + "_reply";
+		
+		// Hide all reply containers, show all reply links
 		jQuery(".reply_form_container").each(function() {
 			jQuery(this).html("");
 			jQuery(this).parent().hide();
+			jQuery(".create_reply_container").show();
 		});
-		jQuery("#reply_" + jQuery(this).attr("note_id")).html(cache.reply_form);
 		
+		// Place HTML from the cache object into the proper spot in the thread
+		jQuery(this).parent().hide();
+		jQuery("#reply_" + jQuery(this).attr("note_id")).html(cache.reply_form);
 		jQuery(replyDiv).show();
+		
+		// Reset values for our position in the thread
+		jQuery("#thread_create_comment_appliesTo").val(jQuery(this).attr("note_id"));
+		jQuery("#thread_create_new_term_appliesTo").val(jQuery(this).attr("note_id"));
+		jQuery("#thread_create_change_hierarchy_appliesTo").val(jQuery(this).attr("note_id"));
+		jQuery("#thread_create_change_prop_value_appliesTo").val(jQuery(this).attr("note_id"));
     });
 	
-	jQuery(".cancel_reply").click(function(){
+	jQuery(".cancel_reply").live('click', function() {
+		jQuery("#" + jQuery(this).attr("note_id") + "_reply_link").show();
 		jQuery(this).parent().hide();
 	});
 	
-	jQuery(".response_collapse").click(function(){
-		var collapse = "#" + jQuery(this).parent().parent().attr('id') + "_collapse";
-		jQuery(collapse).toggle();
-		jQuery(this).parent().toggleClass("collapsed");
+	jQuery(".response_head").live('click', function() {
+		var collapse = "#" + jQuery(this).parent().attr('id') + "_collapse";
+		jQuery(collapse).slideToggle();
+		jQuery(this).toggleClass("collapsed");
 	});
 
-	jQuery(".edit_reply").click(function(){
+	jQuery(".edit_reply").live('click', function() {
 		var collapse = "#" + jQuery(this).parent().parent().attr('id') + "_collapse";
 		jQuery(collapse).toggle();
 	});
@@ -165,9 +225,9 @@ function noteReply(link) {
 
 <div id="note_head">
 	<% if @note_list %>
-	<div id="note_navigation">
-		<a href="#">< Prev</a> | <a href="#">All</a> | <a href="#">Next ></a>
-	</div>
+		<div id="note_navigation">
+			<a href="#">< Prev</a> | <a href="#">All</a> | <a href="#">Next ></a>
+		</div>
 	<% end %>
 	
 	<div id="note_title">
@@ -176,9 +236,15 @@ function noteReply(link) {
 	
 	<div id="note_status">
 		<!-- Status: <span id="status"><% "TODO: Status" %></span><br/> -->
-		<%= @notes.type %> submitted by <span id="note_author"><%= get_username(@notes.author) %></span> <%= time_ago_in_words(Time.at(convert_java_time(@notes.created.to_i))) %> ago
+		<%= get_note_type_text(@notes.type) %> submitted by <span id="note_author"><%= get_username(@notes.author) %></span> <%= time_ago_in_words(Time.at(convert_java_time(@notes.created.to_i))) %> ago
 		on <%= get_applies_to_link @notes.createdInOntologyVersion, @notes.appliesTo['type'], @notes.appliesTo['id'] %>
 	</div>
+</div>
+
+<% proposal_info = proposal_html(@notes) %>
+
+<div class="proposal_root" <%= "style='display: none;'" if proposal_info.nil? or proposal_info.empty? %>>
+	<%= proposal_info %>
 </div>
 
 <div id="note_body">
@@ -188,9 +254,18 @@ function noteReply(link) {
 <div class="divider">&nbsp;</div>
 
 <% unless @notes.associated.nil? || @notes.associated.empty? %>
-	<div style="margin-bottom: 1em;"><span class="section_head"><%= @notes_thread_title %></span> &nbsp;&nbsp;<span style="font-size: 80%;"> <a id="hide_all_responses" href="javascript:void(0)">hide all</a> | <a id="show_all_responses" href="javascript:void(0)">show all</a></span></h2></div> 
-	<%= generate_notes_thread(@notes.associated) %>
-	<div class="divider">&nbsp;</div>
+	<div id="responses_container">
+		<div id="responses_head">
+			<span class="section_head"><%= @notes_thread_title %></span> &nbsp;&nbsp;<span style="font-size: 80%;"> <a id="hide_all_responses" href="javascript:void(0)">hide all</a> | <a id="show_all_responses" href="javascript:void(0)">show all</a></span>
+		</div>
+		<%= generate_notes_thread(@notes.associated) %>
+	</div> 
+<% else %>
+	<div id="responses_container" style="display: none;">
+		<div id="responses_head">
+			<span class="section_head"><%= @notes_thread_title %></span> &nbsp;&nbsp;<span style="font-size: 80%;"> <a id="hide_all_responses" href="javascript:void(0)">hide all</a> | <a id="show_all_responses" href="javascript:void(0)">show all</a></span>
+		</div>
+	</div> 
 <% end %>
 
 <div id="top_level_reply">

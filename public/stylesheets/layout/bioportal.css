@@ -235,12 +235,16 @@ tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Ar
 .sorting_asc{
     background-image:url( "/images/layout/asc.png");
     background-repeat:no-repeat;
-    background-position:100%;
+    background-position:98%;
 }
 .sorting_desc{
     background-image:url("/images/layout/desc.png");
     background-repeat:no-repeat;
-    background-position:100%;
+    background-position:98%;
+}
+
+.sorting, .sorting_asc, .sorting_desc {
+	cursor: pointer;
 }
 
 .feedback {
@@ -313,3 +317,4 @@ tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Ar
 	color: #a1a1a1;
 	font-style: italic;
 }
+

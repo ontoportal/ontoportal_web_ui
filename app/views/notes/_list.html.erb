@@ -1,10 +1,12 @@
-<%= javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.min.js" %>
-
+<% unless request.xhr? %>
+	<%= javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.min.js" %>
+<% end %>
 <%
 	# Check to see if we have notes, if not then try to get them
 	if @notes.nil? && @concept && @ontology
 	  @notes = DataAccess.getNotesForConcept(@ontology.ontologyId, @concept.fullId, false, true) rescue nil
 	  @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
+	  @context = "concept"
 	end
 %>
 
@@ -13,16 +15,18 @@
 // Global variable to DataTable
 var oTable;	
 
+var target = <%= (@context && @context.eql?("concept")) ? "{ 'bVisible': false }" : "null" %>
+
+
 jQuery(document).ready(function() {
-	oTable = jQuery('#notes').dataTable({
+	oTable = jQuery('#notes_list').dataTable({
 		"iDisplayLength": 50,
 		"sPaginationType": "full_numbers",
 		"aoColumns": [
             null, // Subject
-            { "bVisible": false }, // Body
             null, // Author
             null, // Type
-            null, // Target
+            target, // Target
             null // Created
         ]
 	});
@@ -34,37 +38,36 @@ jQuery(document).ready(function() {
 		width: 80%;
 		padding: 1em;
 	}
-	#notes {
-		margin: 4em 0 0;
+	#notes_list {
 		clear: both;
 	}
-	#notes_length {
+	#notes_list_length {
 		float: left;
 		padding: 1em 0;
 	}
-	#notes_filter {
+	#notes_list_filter {
 		float: right;
 		padding: 1em 0;
 	}
-	#notes_filter input {
+	#notes_list_filter input {
 		width: 300px;
 	}
-	#notes_info {
+	#notes_list_info {
 		text-align: center;
 		padding: .5em;
 	}
-	#notes_paginate {
+	#notes_list_paginate {
 		text-align: center;
 	}
-	#notes_paginate .paginate_button {
+	#notes_list_paginate .paginate_button {
 		text-decoration: underline;
 		cursor: pointer;
 		padding: 0 .5em;
 	}
-	#notes_paginate .paginate_button:hover {
+	#notes_list_paginate .paginate_button:hover {
 		text-decoration: none;
 	}
-	#notes_previous, #notes_previous, #notes_next, #notes_last {
+	#notes_list_previous, #notes_list_previous, #notes_list_next, #notes_list_last {
 		padding: 0 .5em;
 	}
 	.paginate_active {
@@ -79,14 +82,11 @@ jQuery(document).ready(function() {
 		<h1>Notes for <%=link_to @notes_for, @notes_for_link %></h1>
 	<% end %>
 
-	<table id="notes" class="zebra" width="100%">
+	<table id="notes_list" class="zebra" width="100%">
 		<thead>
 			<tr>
 				<th>
 					Subject
-				</th>
-				<th>
-					Body
 				</th>
 				<th>
 					Author
@@ -110,7 +110,6 @@ jQuery(document).ready(function() {
 					<td></td>
 					<td></td>
 					<td></td>
-					<td></td>
 				</tr>
 			<% else %>
 				<% @notes.each do |note| %>
@@ -119,19 +118,16 @@ jQuery(document).ready(function() {
 							<%= link_to note.subject, "#{@note_link}#{note.id}" %>
 						</td>
 						<td>
-							<%= note.body %>
-						</td>
-						<td>
 							<%= get_username(note.author) %>
 						</td>
 						<td>
-							<%= note.type %>
+							<%= get_note_type_text(note.type) %>
 						</td>
 						<td>
 							<%= get_applies_to_link note.createdInOntologyVersion, note.appliesTo['type'], note.appliesTo['id'] %> (<%= note.appliesTo['type'] %>)
 						</td>
 						<td>
-							<%= note.created %>
+							<%= time_formatted_from_java(note.created) %>
 						</td>
 					</tr>
 				<% end %>

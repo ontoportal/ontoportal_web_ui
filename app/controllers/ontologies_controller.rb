@@ -42,6 +42,8 @@ class OntologiesController < ApplicationController
     @categories = DataAccess.getCategories()
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     @metrics = DataAccess.getOntologyMetrics(@ontology.id)
+    @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, false, true)
+    @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
     
     LOG.add :info, 'show_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
     
@@ -52,15 +54,15 @@ class OntologiesController < ApplicationController
     end
     
     @diffs = DataAccess.getDiffs(@ontology.ontologyId)
-    
+
     note_tag_query = "select concept_id,count(concept_id) as con_count from margin_notes where ontology_id = #{@ontology.ontologyId} group by concept_id order by concept_id"
-    @notes = ActiveRecord::Base.connection.select_rows(note_tag_query);
+    @notes_cloud = ActiveRecord::Base.connection.select_rows(note_tag_query);
     
-    if @notes.size > 100
+    if @notes_cloud.size > 100
       note_tag_query = "select concept_id,count(concept_id) as con_count from margin_notes where ontology_id = #{@ontology.ontologyId} group by concept_id order by con_count limit 100 "
-      @notes = ActiveRecord::Base.connection.select_rows(note_tag_query);
+      @notes_cloud = ActiveRecord::Base.connection.select_rows(note_tag_query);
     end
-    
+
     mapping_tag_query = "select source_id,count(source_id) as con_count,source_name from mappings where source_ont = #{@ontology.ontologyId} group by source_id order by source_id"            
     @mappings = ActiveRecord::Base.connection.select_rows(mapping_tag_query);
     

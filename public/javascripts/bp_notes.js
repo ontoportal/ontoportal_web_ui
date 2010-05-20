@@ -2,7 +2,7 @@
  * @author palexander
  */
 
-var NOTES_URL = "/notes/";
+var BP_NOTES_LOADED = true;
 
 jQuery(document).ready(function(){
 	jQuery(window).bind('hashchange', function() {
@@ -19,22 +19,28 @@ jQuery(document).ready(function(){
 		var note_type = jQuery(this).attr("note_type");
 		var prefix = jQuery(this).data("prefix") == null ? "" : jQuery(this).data("prefix");
 		var action = jQuery(this).data("action");
+		var ONT = jQuery(this).data("ont_id");
+		var NOTES_URL = "/notes/";
+
+		// Disable button, activate spinner and text
+		var button = this;
+		button_loading(button, prefix);
 		
 		switch (note_type) {
 		case "create_comment":
-			var note = new Comment(prefix);
+			var note = new Comment(prefix, ONT);
 			note.validate();
 			break;
 		case "create_new_term":
-			var note = new ProposalForNewEntity(prefix);
+			var note = new ProposalForCreateEntity(prefix, ONT);
 			note.validate();
 			break;
 		case "create_change_hierarchy":
-			var note = new ProposalForChangeHierarchy(prefix);
+			var note = new ProposalForChangeHierarchy(prefix, ONT);
 			note.validate();
 			break;
 		case "create_change_prop_value":
-			var note = new ProposalForPropertyValueChange(prefix);
+			var note = new ProposalForChangePropertyValue(prefix, ONT);
 			note.validate();
 		}
 		
@@ -44,52 +50,70 @@ jQuery(document).ready(function(){
 				data: note.member_variables,
 				dataType: "json",
 				success: function(data) {
-					// Get JSON response for new row and add if successful
-					jQuery.get("/notes/ajax/single_list/" + data.ontologyId + "?noteid=" + data.id,
-							function(json) {
-								// Check for "No notes" message and delete
-								var no_notes_check = document.getElementById("no_notes");
-								if (no_notes_check != null) {
-									oTable.fnDeleteRow(oTable.fnGetPosition(document.getElementById("no_notes")));
+					button_reset(button);
+					
+					// What do we do with the returned data?
+					if (action == "thread_root") {
+						jQuery.get("/notes/ajax/single/" + data.ontologyId + "?noteid=" + data.id,
+								function(html) {
+									// Show the response container
+									jQuery("#responses_container").show();
+									jQuery("#responses_container").append(html);
 								}
-								
-								
-		
-								oTable.fnAddData([
-			  	                    json.subject + "",
-			  	                    json.body + "",
-			  	                    json.author + "",
-			  	                    json.type + "",
-			  	                	json.appliesTo + "",
-			  	                	json.created + ""
-			                    ]);
-								
-								note.reset();
-								
-								// update note_count
-								
-								//   window.scrollTo(0,$("#"+id).offset().top);
-							}
-					);
+						);
+					} else if (action == "thread") {
+						jQuery.get("/notes/ajax/single/" + data.ontologyId + "?noteid=" + data.id,
+								function(html) {
+									jQuery("#" + data.appliesTo.id + "_children").append(html);
+									
+									// Hide all reply containers, show all reply links
+									jQuery(".reply_form_container").each(function() {
+										jQuery(this).html("");
+										jQuery(this).parent().hide();
+										jQuery(".create_reply_container").show();
+									});
+								}
+						);
+					} else {
+						// Get JSON response for new row and add if successful
+						jQuery.get("/notes/ajax/single_list/" + data.ontologyId + "?noteid=" + data.id,
+								function(json) {
+									// Check for "No notes" message and delete
+									var no_notes_check = document.getElementById("no_notes");
+									if (no_notes_check != null) {
+										oTable.fnDeleteRow(oTable.fnGetPosition(document.getElementById("no_notes")));
+									}
+									
+									// We add the (+ "") statement to "cast" to a string
+									oTable.fnAddData([
+						                    json.subject + "",
+						                    json.author + "",
+						                    json.type + "",
+						                	json.appliesTo + "",
+						                	json.created + ""
+					                ]);
+								}
+						);
+					}
+					
+					note.reset();
+					
+					// update note_count
+					
+					//   window.scrollTo(0,$("#"+id).offset().top);
 					
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown) {
-					
+					button_reset(button);
+					jQuery("#" + jQuery(button).attr("id") + "_submit_container").append(' <span class="error_message">Problem submitting, please try again</span>');
 				}
 		});
 	});
 	
 });
 
-function Comment(prefix) {
-	var BP_REST_URL = jQuery("#BP_REST_URL").val();
-	var ONT = jQuery("#ONT").val();
-	
+function Comment(prefix, ONT) {
 	this.form_fields = {
-		appliesTo: jQuery("#" + prefix + "create_comment_appliesTo"),
-		appliesToType: jQuery("#" + prefix + "create_comment_appliesToType"),
-		type: jQuery("#" + prefix + "create_comment_noteType"),
-		author: jQuery("#" + prefix + "create_comment_author"),
 		subject: jQuery("#" + prefix + "create_comment_subject"),
 		body: jQuery("#" + prefix + "create_comment_body")
 	}
@@ -116,15 +140,8 @@ function Comment(prefix) {
 	}
 }
 
-function ProposalForNewEntity(prefix) {
-	var BP_REST_URL = jQuery("#BP_REST_URL").val();
-	var ONT = jQuery("#ONT").val();
-	
+function ProposalForCreateEntity(prefix, ONT) {
 	this.form_fields = {
-			appliesTo: jQuery("#" + prefix + "create_new_term_appliesTo"),
-			appliesToType: jQuery("#" + prefix + "create_new_term_appliesToType"),
-			type: jQuery("#" + prefix + "create_new_term_noteType"),
-			author: jQuery("#" + prefix + "create_new_term_author"),
 			subject: jQuery("#" + prefix + "create_new_term_subject"),
 			body: jQuery("#" + prefix + "create_new_term_body"),
 			reasonForChange: jQuery("#" + prefix + "create_new_term_reasonForChange"),
@@ -147,11 +164,11 @@ function ProposalForNewEntity(prefix) {
 		body: jQuery("#" + prefix + "create_new_term_body").val(),
 		reasonForChange: jQuery("#" + prefix + "create_new_term_reasonForChange").val(),
 		contactInfo: jQuery("#" + prefix + "create_new_term_contactInfo").val(),
-		newTermDefinition: jQuery("#" + prefix + "termDefinition").val(),
-		newTermId: jQuery("#" + prefix + "termId").val(),
-		newTermParent: jQuery("#" + prefix + "termParent").val(),
-		newTermPreferredName: jQuery("#" + prefix + "termPreferredName").val(),
-		newTermSynonyms: jQuery("#" + prefix + "termSynonyms").val()
+		termDefinition: jQuery("#" + prefix + "termDefinition").val(),
+		termId: jQuery("#" + prefix + "termId").val(),
+		termParent: jQuery("#" + prefix + "termParent").val(),
+		termPreferredName: jQuery("#" + prefix + "termPreferredName").val(),
+		termSynonyms: jQuery("#" + prefix + "termSynonyms").val()
 	}
 	
 	this.validate = function() {
@@ -165,15 +182,8 @@ function ProposalForNewEntity(prefix) {
 	}
 }
 
-function ProposalForChangeHierarchy(prefix) {
-	var BP_REST_URL = jQuery("#BP_REST_URL").val();
-	var ONT = jQuery("#ONT").val();
-	
+function ProposalForChangeHierarchy(prefix, ONT) {
 	this.form_fields = {
-			appliesTo: jQuery("#" + prefix + "create_change_hierarchy_appliesTo"),
-			appliesToType: jQuery("#" + prefix + "create_change_hierarchy_appliesToType"),
-			type: jQuery("#" + prefix + "create_change_hierarchy_noteType"),
-			author: jQuery("#" + prefix + "create_change_hierarchy_author"),
 			subject: jQuery("#" + prefix + "create_change_hierarchy_subject"),
 			body: jQuery("#" + prefix + "create_change_hierarchy_body"),
 			reasonForChange: jQuery("#" + prefix + "create_change_hierarchy_reasonForChange"),
@@ -210,22 +220,15 @@ function ProposalForChangeHierarchy(prefix) {
 	}
 }
 
-function ProposalForPropertyValueChange(prefix) {
-	var BP_REST_URL = jQuery("#BP_REST_URL").val();
-	var ONT = jQuery("#ONT").val();
-	
+function ProposalForChangePropertyValue(prefix, ONT) {
 	this.form_fields = {
-			appliesTo: jQuery("#" + prefix + "create_change_prop_value_appliesTo"),
-			appliesToType: jQuery("#" + prefix + "create_change_prop_value_appliesToType"),
-			type: jQuery("#" + prefix + "create_change_prop_value_noteType"),
-			author: jQuery("#" + prefix + "create_change_prop_value_author"),
 			subject: jQuery("#" + prefix + "create_change_prop_value_subject"),
 			body: jQuery("#" + prefix + "create_change_prop_value_body"),
 			reasonForChange: jQuery("#" + prefix + "create_change_prop_value_reasonForChange"),
 			contactInfo: jQuery("#" + prefix + "create_change_prop_value_contactInfo"),
 			propertyId: jQuery("#" + prefix + "propertyId"),
-			propertyNewValue: jQuery("#" + prefix + "propertyNewValue"),
-			propertyOldValue: jQuery("#" + prefix + "propertyOldValue")
+			newPropertyValue: jQuery("#" + prefix + "newPropertyValue"),
+			oldPropertyValue: jQuery("#" + prefix + "oldPropertyValue")
 	}
 
 	// Hack so we can use a generic method to validate
@@ -240,8 +243,8 @@ function ProposalForPropertyValueChange(prefix) {
 		reasonForChange: jQuery("#" + prefix + "create_change_prop_value_reasonForChange").val(),
 		contactInfo: jQuery("#" + prefix + "create_change_prop_value_contactInfo").val(),
 		propertyId: jQuery("#" + prefix + "propertyId").val(),
-		propertyNewValue: jQuery("#" + prefix + "propertyNewValue").val(),
-		propertyOldValue: jQuery("#" + prefix + "propertyOldValue").val()
+		newPropertyValue: jQuery("#" + prefix + "newPropertyValue").val(),
+		oldPropertyValue: jQuery("#" + prefix + "oldPropertyValue").val()
 	}
 	
 	this.validate = function() {
@@ -253,4 +256,17 @@ function ProposalForPropertyValueChange(prefix) {
 			this.form_fields[field].val("");
 		}
 	}
+}
+
+function button_loading(button, prefix) {
+	jQuery(".error_message").remove();
+	jQuery(button).css("background", "grey").css("color", "darkGrey").css("border", "1px solid darkGrey");
+	jQuery(button).attr("disabled", "true");
+	jQuery("#" + jQuery(button).attr("id") + "_submit_container").append(' <span class="ajax_message"><img src="/images/spinners/spinner_E2EBF0.gif" style="vertical-align: middle;"> loading...</span>');
+}
+
+function button_reset(button) {
+	jQuery(button).css("background", "").css("color", "").css("border", "");
+	jQuery(button).removeAttr("disabled");
+	jQuery(".ajax_message").remove();
 }

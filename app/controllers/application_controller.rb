@@ -132,7 +132,8 @@ class ApplicationController < ActionController::Base
     session[:ontologies]=array
   end
   
-  def remove_tab(ontology_id) # Removes a 'history' tab
+  # Removes a 'history' tab
+  def remove_tab(ontology_id) 
     array = session[:ontologies]    
     array.delete(find_tab(ontology_id))        
     session[:ontologies]=array   
@@ -148,4 +149,18 @@ class ApplicationController < ActionController::Base
     return nil
   end
   
+  # Notes-related helpers that could be useful elsewhere
+  
+  def convert_java_time(time_in_millis)
+    time_in_millis.to_i / 1000
+  end
+  
+  def time_from_java(java_time)
+    Time.at(convert_java_time(java_time.to_i))
+  end
+  
+  def time_formatted_from_java(java_time)
+    time_from_java(java_time).strftime("%m/%d/%Y")
+  end
+
 end

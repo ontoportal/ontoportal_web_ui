@@ -58,6 +58,9 @@
             <li id="#reviews" class="tab">
                 <a href="#reviews" onclick="meta_tab_clicked('#reviews_content',this)">Reviews (<%=@reviews.size %>)</a>
             </li>
+            <li id="#notes" class="tab">
+                <a href="#notes" onclick="meta_tab_clicked('#notes_content',this)">Notes</a>
+            </li>
             <li id="#metrics" class="tab">
                 <a href="#metrics" onclick="meta_tab_clicked('#metrics_content',this)">Metrics</a>
             </li>
@@ -72,4 +75,5 @@
     <%= render :partial => 'widgets' %>
     <%= render :partial => 'metrics' %>
     <%= render :partial => 'views' %>
+    <%= render :partial => 'notes' %>
 </div>

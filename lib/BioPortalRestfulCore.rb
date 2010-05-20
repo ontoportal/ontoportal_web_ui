@@ -119,7 +119,11 @@ class BioPortalRestfulCore
     LOG.add :debug, uri
     doc = get_xml(uri)
 
-    node = errorCheck(doc)         
+    node = errorCheck(doc)
+
+    if !node.nil? && node[:error] && node[:shortMessage].eql?("missing_xml")
+      raise Error404
+    end
 
     unless node.nil?
       return node
@@ -373,16 +377,18 @@ class BioPortalRestfulCore
     LOG.add :debug, uri
     doc = get_xml(uri)
     
-    note = errorCheck(doc)
+    notes = errorCheck(doc)
     
-    unless note.nil?
-      return note
+    unless notes.nil?
+      return notes
     end
     
-    timer = Benchmark.ms { note = generic_parse(:xml => doc, :type => "Note") }
+    timer = Benchmark.ms { notes = generic_parse(:xml => doc, :type => "Note") }
     LOG.add :debug, "note Parse Time: #{timer}"
     
-    return note
+    notes.sort! { |x,y| x.created <=> y.created }
+    
+    return notes
   end
   
   def self.getNotesForIndividual(params)
@@ -405,6 +411,8 @@ class BioPortalRestfulCore
     
     timer = Benchmark.ms { notes = generic_parse(:xml => doc, :type => "Note") }
     LOG.add :debug, "notesForOntology Parse Time: #{timer}"
+    
+    notes.sort! { |x,y| x.created <=> y.created }
     
     return notes
   end
@@ -681,6 +689,7 @@ private
         raise Error404
       end
       LOG.add :debug, "Problem retrieving xml: #{e.message}"
+      return nil
     end
   end
   
@@ -994,6 +1003,13 @@ private
   def self.errorCheck(doc)
     response = nil
     errorHolder = {}
+
+    if doc.nil?
+      errorHolder[:error] = true
+      errorHolder[:shortMessage] = "missing_xml"
+      return errorHolder
+    end
+    
     begin
       doc.elements.each("org.ncbo.stanford.bean.response.ErrorStatusBean"){ |element|  
         errorHolder[:error] = true
