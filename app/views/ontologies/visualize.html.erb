@@ -1,12 +1,12 @@
 <% unless @error %>	
 
 	<%@title = "#{@ontology.displayLabel} - #{@concept.name}"%>
-	<script src="/javascripts/jquery.resizer.js" type="text/javascript" charset="utf-8"></script>
 	<link rel="stylesheet" href="/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css" type="text/css" media="screen" title="no title" charset="utf-8">
 	<script src="/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js" type="text/javascript" charset="utf-8"></script>
 	<!-- Tabs, Tooltip, Scrollable, Overlay, Expose. No jQuery. --> 
 	<script src="/javascripts/jquery.tools.min.js"></script>
-	
+	<script src="/javascripts/JqueryPlugins/splitter/splitter.js" type="text/javascript" charset="utf-8"></script>
+
 	<style>
 		/* simple css-based tooltip */ 
 	    div.tooltip { 
@@ -23,7 +23,15 @@
 		    /* outline radius for mozilla/firefox only */ 
 		    -moz-box-shadow:0 0 10px #000; 
 		    -webkit-box-shadow:0 0 10px #000; 
+			
 	    }
+
+		/* used for vertical split bar */
+		.vsplitbar {
+			width: 5px;
+			background: #DADDE0 url(/javascripts/JqueryPlugins/splitter/img/vgrabber.gif) no-repeat scroll center center;
+		}
+
 	</style>
 	
 	<script type="text/javascript">
@@ -143,7 +151,6 @@
 				<%=render :partial => '/ontologies/treeview'%>
 			</div>
 			
-			<div id="grab-point" >&nbsp;</div>
 			<div style="clear:both;"></div>
 			<br/>
 		</div>
@@ -169,7 +176,7 @@
 		
 	
 	</div>
-	
+
 	<script type="text/javascript">
 	jQuery(document).ready(function() {
 		// Auto loads the correct tab
@@ -204,6 +211,15 @@
 			jQuery(target).show();
 			jQuery(".tab").removeClass("selected");
 			jQuery(this).addClass("selected");
+		});
+		
+		var testNum = 0;
+		jQuery(function() {
+ 			var conWidth = jQuery('container').width();
+			var maxWidth = jQuery(window).width() / 2;
+			jQuery("#bd_content").splitter({
+				sizeLeft: 300
+			});
 		});
 		
 		// Resizer, due to css issues we're gonna rig it up to be set params
