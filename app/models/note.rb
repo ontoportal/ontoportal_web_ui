@@ -44,7 +44,7 @@ class Note
     end
   end
   
-  def valid?
+  def empty?
     self.id.nil?
   end
   
