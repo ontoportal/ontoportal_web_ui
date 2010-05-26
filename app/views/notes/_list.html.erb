@@ -186,7 +186,7 @@ function insert_note(link, note_id) {
 			</tr>
 		</thead>
 		<tbody id="notes_list_body">
-			<% if @notes.nil? %>
+			<% if @notes.nil? || @notes.empty? %>
 				<tr id="no_notes">
 					<td>No notes to display</td>
 					<td></td>
