@@ -104,10 +104,20 @@ class NodeWrapper
         CACHE.set("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_MappingCount",count)
       return count
     else
-      return CACHE.get("#{self.ontology_id}::#{self.fullId.gsub(" ","%20")}_MappingCount")
+      return CACHE.get("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_MappingCount")
     end
   end
 
+  def note_count
+    if CACHE.get("#{DataAccess.getOntology(self.version_id).ontologyId}::#{self.fullId}_NoteCount").nil?
+        count = DataAccess.getNotesForConcept(DataAccess.getOntology(self.version_id).ontologyId, self.fullId, false, true).size rescue "0"
+        CACHE.set("#{DataAccess.getOntology(self.version_id).ontologyId}::#{self.fullId}_NoteCount", count)
+      return count
+    else
+      return CACHE.get("#{DataAccess.getOntology(self.version_id).ontologyId}::#{self.fullId}_NoteCount")
+    end
+  end
+    
   def note_count_old
     if CACHE.get("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_NoteCount").nil?
         count = MarginNote.count(:conditions=>{:ontology_id => self.ontology_id, :concept_id =>self.id})
@@ -115,16 +125,6 @@ class NodeWrapper
       return count
     else
       return CACHE.get("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_NoteCount")
-    end
-  end
-    
-  def note_count
-    if CACHE.get("#{self.version_id}::#{self.fullId}_NoteCount").nil?
-        count = DataAccess.getNotesForConcept(DataAccess.getOntology(self.version_id).ontologyId, self.fullId, false, true).size rescue "0"
-        CACHE.set("#{self.version_id}::#{self.fullId}_NoteCount", count)
-      return count
-    else
-      return CACHE.get("#{self.version_id}::#{self.fullId}_NoteCount")
     end
   end
     

@@ -26,7 +26,7 @@ module NotesHelper
           <div class="response_head #{collapsed}">
             <span class="response_collapse"><span class="response_title">#{note.subject}</span> by <span class="response_author">#{get_username(note.author)}</span> <span class="response_date">#{time_ago_in_words(Time.at(convert_java_time(note.created.to_i)))} ago</span></span>
           </div>
-          <div id="note_#{note.id}_collapse" class="collapsible" style="display: #{display};">
+          <div id="note_#{note.id}_collapse" class="collapsible #{params[:root_id] unless params[:root_id].nil?}" style="display: #{display};">
             <div class="proposal_info" #{ " style='display: none;'" if proposal_info.nil? or proposal_info.empty? }>
               <h3>#{get_note_type_text(note.type)}</h3>
               #{proposal_info}
@@ -144,15 +144,15 @@ module NotesHelper
     begin
       case type
       when "Class"
-        return "<a href='/visualize/#{ontology_id}/?conceptid=#{CGI.escape(id)}'>#{DataAccess.getNode(ontology_id, id).label}</a>"
+        return "<a href='/visualize/#{ontology_id}/?conceptid=#{CGI.escape(id)}#notes'>#{DataAccess.getNode(ontology_id, id).label}</a>"
       when "Note"
         ontology = DataAccess.getOntology(ontology_id)
         return "<a href='/notes/virtual/#{ontology.ontologyId}?noteid=#{id}'>#{DataAccess.getNote(ontology.ontologyId, id, false, true).subject}</a>" 
       when "Individual"
       when "Property"
       when "Ontology"
-        ontology = DataAccess.ontology(ontology_id)
-        return "<a href='/ontologies/virtual/#{ontology.ontologyId}'>#{ontology.displayLabel}</a>" 
+        ontology = DataAccess.getOntology(ontology_id)
+        return "<a href='/ontologies/virtual/#{ontology.ontologyId}#notes'>#{ontology.displayLabel}</a>" 
       end
     rescue Exception => e
       return "Unknown or Deprecated #{type}"

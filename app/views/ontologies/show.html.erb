@@ -59,7 +59,7 @@
                 <a href="#reviews" onclick="meta_tab_clicked('#reviews_content',this)">Reviews (<%=@reviews.size %>)</a>
             </li>
             <li id="#notes" class="tab">
-                <a href="#notes" onclick="meta_tab_clicked('#notes_content',this)">Notes</a>
+                <a href="#notes" onclick="meta_tab_clicked('#notes_content',this)">Notes (<span id="note_count"><%=@notes.size%></span>)</a>
             </li>
             <li id="#metrics" class="tab">
                 <a href="#metrics" onclick="meta_tab_clicked('#metrics_content',this)">Metrics</a>

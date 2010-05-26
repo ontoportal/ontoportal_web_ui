@@ -133,10 +133,10 @@ class DataAccess
       CACHE.delete("#{note_temp.id}::threaded")
       CACHE.delete("#{note_temp.id}")
     end
-    
+
     # If this note applies to a class/concept/term then delete the count for that concept
-    CACHE.delete("#{getLatestOntology(params[:ontology_virtual_id]).id}::#{params[:appliesTo]}_NoteCount") if params[:appliesToType].eql?("Class")
-    
+    CACHE.delete("#{params[:ontology_virtual_id]}::#{params[:appliesTo]}_NoteCount") if params[:appliesToType].eql?("Class")
+
     note
   end
   

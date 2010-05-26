@@ -245,10 +245,6 @@
 		    }else{
 				jQuery("#" + tab_name + "_content").html('<h1><img src="/images/tree/spinner.gif" /> Loading Resources...</h1>');
 	    		jQuery.get(url.replace("@ontology@",getOntology()).replace("@concept@",getConcept()),function(data){
-					// This was setting the cache improperly, not sure what it's actually supposed to do
-					//if (getCache(getConcept())!=null){
-				    //	getCache(getConcept())[6]=data;
-			    	//}
 					jQuery("#" + tab_name + "_content").html(data);
 					setCache(getConcept() + tab_name,data);
 					jQuery.unblockUI();	

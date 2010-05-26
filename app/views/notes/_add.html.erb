@@ -2,6 +2,8 @@
 	Please <%= link_to "login", "/login" %> to submit notes
 <% else %>
 
+<% add_text = add_text.nil? ? "Add Note" : "Add Reply" %>
+
 <% unless defined?(exclude_js) %>
 	<script type="text/javascript">
 		if (typeof BP_NOTES_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes.js");
@@ -37,6 +39,9 @@
 		background: #234979;
 		color: white;
 	}
+	.submit_container {
+		float: left;
+	}
 	.note_buttons {
 		background: #E2EBF0;
 		color: #234979;
@@ -65,7 +70,7 @@
 		margin-bottom: .5em;
 	}
 	textarea.create_note_inputs {
-		height: 200px;
+		height: 225px;
 	}
 	.note_options_float {
 		float: right;
@@ -78,6 +83,34 @@
 		color: red;
 		font-weight: bold;
 	}
+	.error_input {
+		color: red;
+		font-style: italic;
+	}
+	.required {
+		color: red;
+	}
+	.add_note_legend {
+		float: right;
+		color: red;
+		margin-top: 1.3em;
+	}
+	
+	.add_reply_button {
+		cursor: pointer;
+		color: #234979;
+        background: white;
+        border: 1px solid #C1DAD7;
+        margin: 5px 5px 5px 0;
+        padding: 5px 7px;
+        text-align: center;
+		width: 125px;
+		text-decoration: none;
+	}
+	.add_reply_button:hover {
+		background: #234979;
+		color: white;
+	}
 </style>
 
 <script type="text/javascript">
@@ -88,7 +121,7 @@
 		jQuery(".<%=prefix%>note_submit_data").data("ont_id", "<%= @ontology.ontologyId %>");
 
 		// Wire up the tabs in the 'Add Note' form box
-		jQuery('.<%=prefix%>note_action').click(function(){
+		jQuery('.<%=prefix%>note_action').live("click", function(){
 			var prefix = "<%=prefix%>";
 			var spanId = jQuery(this).attr("id");
 			var noteTypeId = jQuery(this).attr("note_type");
@@ -97,11 +130,27 @@
 			jQuery('.' + prefix + 'note_action').removeClass("create_note_selected");
 			jQuery(this).addClass("create_note_selected");
 		});
+		
+		// Wire up the "Add Reply" link
+		var prefix = <%= (prefix.nil? || prefix.empty?) ? "null" : prefix %>;
+		if (prefix == null) {
+			jQuery(".create_note_container").hide();
+			jQuery('.<%=prefix%>add_reply').addClass("add_reply_button");
+			jQuery('.<%=prefix%>add_reply').live("click", function(){
+				if (jQuery("#<%=prefix%>create_note_container").is(':visible')) {
+					jQuery(this).text("<%=add_text%>");
+					jQuery("#<%=prefix%>create_note_container").hide();
+				} else {
+					jQuery(this).text("Hide <%=add_text%>");
+					jQuery("#<%=prefix%>create_note_container").show();
+				}
+			});
+		}
 	});
 </script>
 
 
-<h1>Add Note</h1>
+<h2 class="<%=prefix%>add_reply"><%=add_text%></h2>
 <div id="<%=prefix%>create_note_container" class="create_note_container">
 	<div id="<%=prefix%>create_note_buttons" class="create_note_buttons">
 		<span id="<%=prefix%>create_note_comment_button" note_type="<%=prefix%>create_note_comment" class="<%=prefix%>note_action note_buttons create_note_selected">Comment</span>
@@ -113,117 +162,142 @@
 	<div id="<%=prefix%>create_note_options" class="create_note_options">
 		
 		<div id="<%=prefix%>create_note_comment" class="<%=prefix%>note_options_action note_options" style="display: block;">
+	
 			<input type="hidden" id="<%=prefix%>create_comment_appliesTo" value="<%= applies_to rescue "" %>" class="create_comment_inputs">
 			<input type="hidden" id="<%=prefix%>create_comment_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_comment_inputs">
 			<input type="hidden" id="<%=prefix%>create_comment_noteType" value="Comment" class="create_comment_inputs">
 			<input type="hidden" id="<%=prefix%>create_comment_author" value="<%= session[:user].id %>" class="create_comment_inputs">
 				
 			<h2>Comment</h2>
-			Subject<br/>
-			<input id='<%=prefix%>create_comment_subject' class="create_note_inputs create_comment_inputs"><br/>
-			Body<br/>
-			<textarea id='<%=prefix%>create_comment_body' class="create_note_inputs create_comment_inputs"></textarea><br>
+			Subject <span class="required">*</span> <span id="<%=prefix%>create_comment_subject_error" class="error_input"></span><br/>
+			<input tabindex="100" id='<%=prefix%>create_comment_subject' class="create_note_inputs create_comment_inputs"><br/>
+			Body <span class="required">*</span> <span id="<%=prefix%>create_comment_body_error" class="error_input"></span><br/>
+			<textarea tabindex="101" id='<%=prefix%>create_comment_body' class="create_note_inputs create_comment_inputs"></textarea><br>
 			
-			<div id="<%=prefix%>create_comment_submit_container">
-				<button id="<%=prefix%>create_comment" note_type="create_comment" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
+			<div id="<%=prefix%>create_comment_submit_container" class="submit_container">
+				<button tabindex="102" id="<%=prefix%>create_comment" note_type="create_comment" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
 			</div>
+
+			<div class="add_note_legend">* required</div>
+			<div style="clear: both;"></div>
 		</div>
 		
 		<div id="<%=prefix%>create_note_new_term" class="<%=prefix%>note_options_action note_options">
+	
 			<div id="<%=prefix%>create_note_new_term_float" class="note_options_float">
 				<input type="hidden" id="<%=prefix%>create_new_term_appliesTo" value="<%= applies_to rescue "" %>" class="create_new_term_inputs">
 				<input type="hidden" id="<%=prefix%>create_new_term_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_new_term_inputs">
 				<input type="hidden" id="<%=prefix%>create_new_term_noteType" value="ProposalForCreateEntity" class="create_new_term_inputs">
 				<input type="hidden" id="<%=prefix%>create_new_term_author" value="<%= session[:user].id %>" class="create_new_term_inputs">
 				
-				Reason for change<br/>
-				<input type="text" id="<%=prefix%>create_new_term_reasonForChange" class="create_note_inputs create_new_term_inputs"><br/>
-				Contact information (publically visible)<br/>
-				<input type="text" id="<%=prefix%>create_new_term_contactInfo" class="create_note_inputs create_new_term_inputs"><br/>
-				Definition<br/>
-				<input type="text" id="<%=prefix%>termDefinition" class="create_note_inputs create_new_term_inputs"><br/>
-				Proposed id<br/>
-				<input type="text" id="<%=prefix%>termId" class="create_note_inputs create_new_term_inputs"><br/>
-				Parent<br/>
-				<input type="text" name="<%=prefix%>termParent" id="<%=prefix%>termParent" value="<%= @concept.fullId rescue "" %>" class="create_note_inputs create_new_term_inputs bp_form_complete-<%= @ontology.ontologyId %>-uri"><br/>
-				Preferred name<br/>
-				<input type="text" id="<%=prefix%>termPreferredName" class="create_note_inputs create_new_term_inputs"><br/>
+				Preferred name <span class="required">*</span> <span id="<%=prefix%>termPreferredName_error" class="error_input"></span><br/>
+				<input tabindex="201" type="text" id="<%=prefix%>termPreferredName" class="create_note_inputs create_new_term_inputs"><br/>
 				Synonyms (comma-separated list)<br/>
-				<input type="text" id="<%=prefix%>termSynonyms" class="create_note_inputs create_new_term_inputs"><br/>
+				<input tabindex="202" type="text" id="<%=prefix%>termSynonyms" class="create_note_inputs create_new_term_inputs"><br/>
+				Definition <span class="required">*</span> <span id="<%=prefix%>termDefinition_error" class="error_input"></span><br/>
+				<input tabindex="203" type="text" id="<%=prefix%>termDefinition" class="create_note_inputs create_new_term_inputs"><br/>
+				Proposed id<br/>
+				<input tabindex="204" type="text" id="<%=prefix%>termId" class="create_note_inputs create_new_term_inputs"><br/>
+				Parent (start typing to autocomplete) <span class="required">*</span> <span id="<%=prefix%>termParent_error" class="error_input"></span><br/>
+				<input tabindex="205" type="text" name="<%=prefix%>termParent" id="<%=prefix%>termParent" value="<%= @concept.fullId rescue "" %>" class="create_note_inputs create_new_term_inputs bp_form_complete-<%= @ontology.ontologyId %>-uri"><br/>
+				Contact information (publically visible)<br/>
+				<input tabindex="206" type="text" id="<%=prefix%>create_new_term_contactInfo" class="create_note_inputs create_new_term_inputs"><br/>
+				<div class="add_note_legend">* required</div>
 			</div>
 			<h2>New Term</h2>
+			
+			Reason for change <span class="required">*</span> <span id="<%=prefix%>create_new_term_reasonForChange_error" class="error_input"></span><br/>
+			<textarea tabindex="200" id="<%=prefix%>create_new_term_reasonForChange" class="create_note_inputs create_new_term_inputs"></textarea><br/>
+			<!--
 			Subject<br/>
 			<input id='<%=prefix%>create_new_term_subject' class="create_note_inputs create_new_term_inputs"><br/>
 			Body<br/>
 			<textarea id='<%=prefix%>create_new_term_body' class="create_note_inputs create_new_term_inputs"></textarea><br>
+			-->
 
-			<div id="<%=prefix%>create_new_term_submit_container">
-				<button id="<%=prefix%>create_new_term" note_type="create_new_term" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
+			<div id="<%=prefix%>create_new_term_submit_container" class="submit_container">
+				<button tabindex="207" id="<%=prefix%>create_new_term" note_type="create_new_term" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
 			</div>
+
+			<div style="clear: both;"></div>
 		</div>
 		
 		<div id="<%=prefix%>create_note_change_hierarchy" class="<%=prefix%>note_options_action note_options">
+	
 			<div id="<%=prefix%>create_change_hierarchy_float" class="note_options_float">
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_appliesTo" value="<%= applies_to rescue "" %>" class="create_change_hierarchy_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_change_hierarchy_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_noteType" value="ProposalForChangeHierarchy" class="create_change_hierarchy_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_author" value="<%= session[:user].id %>" class="create_change_hierarchy_inputs">
 				
-				Reason for change<br/>
-				<input type="text" id="<%=prefix%>create_change_hierarchy_reasonForChange" class="create_note_inputs create_change_hierarchy_inputs"><br/>
-				Contact information (publically visible)<br/>
-				<input type="text" id="<%=prefix%>create_change_hierarchy_contactInfo" class="create_note_inputs create_change_hierarchy_inputs"><br/>
+				New relationship target (start typing to autocomplete) <span class="required">*</span> <span id="<%=prefix%>relationshipTarget_error" class="error_input"></span><br/>
+				<input tabindex="301" type="text" name="<%=prefix%>relationshipTarget" id="<%=prefix%>relationshipTarget" class="bp_form_complete-<%= @ontology.ontologyId %>-uri create_note_inputs create_change_hierarchy_inputs"><br/>
 				Old relationship target (start typing to autocomplete)<br/>
-				<input type="text" name="<%=prefix%>oldRelationshipTarget" id="<%=prefix%>oldRelationshipTarget" class="bp_form_complete-<%= @ontology.ontologyId %>-uri create_note_inputs create_change_hierarchy_inputs"><br/>
-				New relationship target (start typing to autocomplete)<br/>
-				<input type="text" name="<%=prefix%>relationshipTarget" id="<%=prefix%>relationshipTarget" class="bp_form_complete-<%= @ontology.ontologyId %>-uri create_note_inputs create_change_hierarchy_inputs"><br/>
-				New relationship type<br/>
-				<select id="<%=prefix%>relationshipType">
+				<input tabindex="302" type="text" name="<%=prefix%>oldRelationshipTarget" id="<%=prefix%>oldRelationshipTarget" value="<%= @concept.fullId rescue "" %>" class="bp_form_complete-<%= @ontology.ontologyId %>-uri create_note_inputs create_change_hierarchy_inputs"><br/>
+				New relationship type <span class="required">*</span> <span id="<%=prefix%>relationshipType_error" class="error_input"></span><br/>
+				<select tabindex="303" id="<%=prefix%>relationshipType" style="margin-bottom: .5em;">
 					<option selected></option>
 					<%= options_for_select([["is_a", "is_a"], ["part_of", "part_of"], ["integral_part_of", "integral_part_of"],
 						["proper_part_of", "proper_part_of"], ["located_in", "located_in"], ["contained_in", "contained_in"],
 						["adjacent_to", "adjacent_to"], ["transformation_of", "transformation_of"], ["derives_from", "preceded_by"],
 						["has_participant", "has_participant"], ["has_agent", "has_agent"], ["instance_of", "instance_of"]]) %>
-				</select>
+				</select><br/>
+				Contact information (publically visible)<br/>
+				<input tabindex="304" type="text" id="<%=prefix%>create_change_hierarchy_contactInfo" class="create_note_inputs create_change_hierarchy_inputs"><br/>
+				<div class="add_note_legend">* required</div>
 			</div>
 			<h2>New Relationship / Change Hierarchy</h2>
+
+			Reason for change <span class="required">*</span> <span id="<%=prefix%>create_change_hierarchy_reasonForChange_error" class="error_input"></span><br/>
+			<textarea tabindex="300" id="<%=prefix%>create_change_hierarchy_reasonForChange" class="create_note_inputs create_change_hierarchy_inputs"></textarea><br/>
+			<!--
 			Subject<br/>
 			<input id='<%=prefix%>create_change_hierarchy_subject' class="create_note_inputs create_change_hierarchy_inputs"><br/>
 			Body<br/>
 			<textarea id='<%=prefix%>create_change_hierarchy_body' class="create_note_inputs create_change_hierarchy_inputs"></textarea><br>
+			-->
 
-			<div id="<%=prefix%>create_change_hierarchy_submit_container">
-				<button id="<%=prefix%>create_change_hierarchy" note_type="create_change_hierarchy" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
+			<div id="<%=prefix%>create_change_hierarchy_submit_container" class="submit_container">
+				<button tabindex="305" id="<%=prefix%>create_change_hierarchy" note_type="create_change_hierarchy" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
 			</div>
+
+			<div style="clear: both;"></div>
 		</div>
 		
 		<div id="<%=prefix%>create_note_change_prop_value" class="<%=prefix%>note_options_action note_options">
+	
 			<div id="<%=prefix%>create_change_prop_value_float" class="note_options_float">
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_appliesTo" value="<%= applies_to rescue "" %>" class="create_change_prop_value_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_change_prop_value_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_noteType" value="ProposalForChangePropertyValue" class="create_change_prop_value_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_author" value="<%= session[:user].id %>" class="create_change_prop_value_inputs">
 				
-				Reason for change<br/>
-				<input type="text" id="<%=prefix%>create_change_prop_value_reasonForChange" class="create_note_inputs create_change_prop_value_inputs"><br/>
-				Contact information (publically visible)<br/>
-				<input type="text" id="<%=prefix%>create_change_prop_value_contactInfo" class="create_note_inputs create_change_prop_value_inputs"><br/>
-				Property id<br/>
-				<input type="text" id="<%=prefix%>propertyId" class="create_note_inputs create_change_prop_value_inputs"><br/>
-				New property value<br/>
-				<input type="text" id="<%=prefix%>newPropertyValue" class="create_note_inputs create_change_prop_value_inputs"><br/>
+				New property value <span class="required">*</span> <span id="<%=prefix%>newPropertyValue_error" class="error_input"></span><br/>
+				<input tabindex="401" type="text" id="<%=prefix%>newPropertyValue" class="create_note_inputs create_change_prop_value_inputs"><br/>
+				Property id <span class="required">*</span> <span id="<%=prefix%>propertyId_error" class="error_input"></span><br/>
+				<input tabindex="402" type="text" id="<%=prefix%>propertyId" class="create_note_inputs create_change_prop_value_inputs"><br/>
 				Old property value<br/>
-				<input type="text" id="<%=prefix%>oldPropertyValue" class="create_note_inputs create_change_prop_value_inputs"><br/>
+				<input tabindex="403" type="text" id="<%=prefix%>oldPropertyValue" class="create_note_inputs create_change_prop_value_inputs"><br/>
+				Contact information (publically visible)<br/>
+				<input tabindex="404" type="text" id="<%=prefix%>create_change_prop_value_contactInfo" class="create_note_inputs create_change_prop_value_inputs"><br/>
+				<div class="add_note_legend">* required</div>
 			</div>
 			<h2>Change Property Value</h2>
+			
+			Reason for change <span class="required">*</span> <span id="<%=prefix%>create_change_prop_value_reasonForChange_error" class="error_input"></span><br/>
+			<textarea tabindex="400" id="<%=prefix%>create_change_prop_value_reasonForChange" class="create_note_inputs create_change_prop_value_inputs"></textarea><br/>
+			<!--
 			Subject<br/>
 			<input id='<%=prefix%>create_change_prop_value_subject' class="create_note_inputs create_change_prop_value_inputs"><br/>
 			Body<br/>
 			<textarea id='<%=prefix%>create_change_prop_value_body' class="create_note_inputs create_change_prop_value_inputs"></textarea><br>
+			-->
 			
-			<div id="<%=prefix%>create_change_prop_value_submit_container">
-				<button id="<%=prefix%>create_change_prop_value" note_type="create_change_prop_value" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
+			<div id="<%=prefix%>create_change_prop_value_submit_container" class="submit_container">
+				<button tabindex="405" id="<%=prefix%>create_change_prop_value" note_type="create_change_prop_value" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
 			</div>
+
+			<div style="clear: both;"></div>
 		</div>
 	</div>
 </div>

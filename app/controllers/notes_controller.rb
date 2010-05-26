@@ -105,11 +105,12 @@ class NotesController < ApplicationController
     
     @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
     
-    @note_row = { :subject => "<a href='#{@note_link}#{@note.id}'>#{@note.subject}</a>",
-       :author => Class.new.extend(ApplicationHelper).get_username(@note.author),
-       :type => @note.type,
-       :appliesTo => Class.new.extend(NotesHelper).get_applies_to_link(@note.createdInOntologyVersion, @note.appliesTo['type'], @note.appliesTo['id']) + " (#{@note.appliesTo['type']})",
-       :created => time_formatted_from_java(@note.created)
+    @note_row = { :subject_link => "<a id='row_#{@note.id}' class='notes_list_link' href='#{@note_link}#{@note.id}'>#{@note.subject}</a>",
+        :subject => @note.subject,
+        :author => Class.new.extend(ApplicationHelper).get_username(@note.author),
+        :type => Class.new.extend(NotesHelper).get_note_type_text(@note.type),
+        :appliesTo => Class.new.extend(NotesHelper).get_applies_to_link(@note.createdInOntologyVersion, @note.appliesTo['type'], @note.appliesTo['id']) + " (#{@note.appliesTo['type']})",
+        :created => time_formatted_from_java(@note.created)
     }
 
     render :json => @note_row

@@ -8,6 +8,8 @@
 	  @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
 	  @context = "concept"
 	end
+
+	note_colspan = (@context && @context.eql?("concept")) ? "4" : "5"
 %>
 
 <script type="text/javascript">
@@ -15,22 +17,83 @@
 // Global variable to DataTable
 var oTable;	
 
-var target = <%= (@context && @context.eql?("concept")) ? "{ 'bVisible': false }" : "null" %>
+var target = <%= (@context && @context.eql?("concept")) ? "{ 'bVisible': false }" : "null" %>;
 
 
 jQuery(document).ready(function() {
+	<% if @concept %>
+		jQuery.data(document.body, "node_id", "<%=@concept.id%>");
+	<% end %>
+	
 	oTable = jQuery('#notes_list').dataTable({
 		"iDisplayLength": 50,
 		"sPaginationType": "full_numbers",
+		"aaSorting": [[5,'desc']],
 		"aoColumns": [
-            null, // Subject
+            { "iDataSort": 1 }, // Subject link
+			{ "bVisible": false }, // Subject for sort
             null, // Author
             null, // Type
             target, // Target
             null // Created
-        ]
+        ],
+		"fnDrawCallback": function(){
+			jQuery(".highlighted_row").removeClass("highlighted_row");
+		}
 	});
-} );
+	
+	jQuery(".notes_list_link").live('click', function(event){
+		event.preventDefault();
+		var link = this;
+		var row_id = jQuery(this).attr("id");
+		var note_id = jQuery(this).attr("id").substring(4);
+		
+		if (jQuery(this).parent().hasClass("highlighted_row")) {
+			jQuery(this).parent().parent().removeClass("highlighted_row");
+			jQuery(this).parent().parent().children().removeClass("highlighted_row");
+			jQuery("#row_expanded_" + note_id).remove();
+		} else {
+			jQuery(this).parent().parent().addClass("highlighted_row");
+			jQuery(this).parent().parent().children().addClass("highlighted_row");
+			jQuery(this).parent().parent().after("<tr id='row_expanded_" + note_id + "' class='highlighted_border'><td colspan='<%=note_colspan%>' class='highlighted_border' id='row_thread_" + note_id + "'><span class='ajax_message'><img src='/images/spinners/spinner_000000_16px.gif' style='vertical-align: text-bottom;'> loading...</span></td></tr>");
+			
+			// Check cache for result, make call if it isn't found
+			if (jQuery.data(document.body, row_id) == null) {
+				jQuery.ajax({
+					type: "GET",
+					url: "/notes/virtual/<%= @ontology.ontologyId %>/?noteid=" + note_id,
+					success: function(html){
+						jQuery.data(document.body, row_id, html);
+						insert_note(link, note_id);
+					},
+					error: function(){
+						jQuery("#row_thread_" + note_id).html("Error retreiving note, please try again");
+					}
+				});
+			} else {
+				insert_note(link, note_id);
+			}
+		}
+	});
+});
+
+function insert_note(link, note_id) {
+	var html = jQuery.data(document.body, jQuery(link).attr("id").toString());
+	jQuery("#row_thread_" + note_id).html(html);
+	
+	// Wire up button for root thread. We're using parent / child selectors to get around the lack of IDs in the add form
+	jQuery("#row_thread_" + note_id + " .thread_root_add_reply").addClass("add_reply_button");
+	jQuery("#row_thread_" + note_id + " #thread_root_create_note_container").hide();
+	jQuery("#row_thread_" + note_id + " .thread_root_add_reply").live("click", function(){
+		if (jQuery("#row_thread_" + note_id + " #thread_root_create_note_container").is(':visible')) {
+			jQuery("#row_thread_" + note_id + " .add_reply_button").text("Add Reply");
+			jQuery("#row_thread_" + note_id + " #thread_root_create_note_container").hide();
+		} else {
+			jQuery("#row_thread_" + note_id + " .add_reply_button").text("Hide Add Reply");
+			jQuery("#row_thread_" + note_id + " #thread_root_create_note_container").show();
+		}
+	});
+}
 </script>
 
 <style type="text/css">
@@ -73,6 +136,23 @@ jQuery(document).ready(function() {
 	.paginate_active {
 		font-weight: bold;
 	}
+	.highlighted_row {
+		background-color: #234979;
+		border-top: medium solid #234979 !important;
+		border-right: medium solid #234979 !important;
+		border-left: medium solid #234979 !important;
+		border-bottom: none !important;
+		font-weight: bold;
+		color: white !important;
+	}
+	.highlighted_row a {
+		color: white !important;
+	}
+	.highlighted_border {
+		border-right: medium solid #234979 !important;
+		border-bottom: medium solid #234979 !important;
+		border-left: medium solid #234979 !important;
+	}
 	
 </style>
 
@@ -85,6 +165,9 @@ jQuery(document).ready(function() {
 	<table id="notes_list" class="zebra" width="100%">
 		<thead>
 			<tr>
+				<th>
+					Subject
+				</th>
 				<th>
 					Subject
 				</th>
@@ -110,12 +193,16 @@ jQuery(document).ready(function() {
 					<td></td>
 					<td></td>
 					<td></td>
+					<td></td>
 				</tr>
 			<% else %>
 				<% @notes.each do |note| %>
 					<tr>
 						<td>
-							<%= link_to note.subject, "#{@note_link}#{note.id}" %>
+							<%= link_to note.subject, "#{@note_link}#{note.id}", :id => "row_#{note.id}", :class => "notes_list_link" %>
+						</td>
+						<td>
+							<%= note.subject %>
 						</td>
 						<td>
 							<%= get_username(note.author) %>
