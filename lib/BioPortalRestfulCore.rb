@@ -412,7 +412,13 @@ class BioPortalRestfulCore
     timer = Benchmark.ms { notes = generic_parse(:xml => doc, :type => "Note") }
     LOG.add :debug, "notesForOntology Parse Time: #{timer}"
     
-    notes.sort! { |x,y| x.created <=> y.created }
+    notes.each { |note| puts "#{note.id}: #{note.created}" rescue "#{note.id}: CREATED MISSING" }
+    
+    begin
+      notes.sort! { |x,y| x.created <=> y.created }
+    rescue
+      LOG.add :debug, "Error sorting notes"
+    end
     
     return notes
   end
