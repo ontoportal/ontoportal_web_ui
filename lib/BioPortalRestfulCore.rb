@@ -1004,12 +1004,6 @@ private
     response = nil
     errorHolder = {}
 
-    if doc.nil?
-      errorHolder[:error] = true
-      errorHolder[:shortMessage] = "missing_xml"
-      return errorHolder
-    end
-    
     begin
       doc.elements.each("org.ncbo.stanford.bean.response.ErrorStatusBean"){ |element|  
         errorHolder[:error] = true
