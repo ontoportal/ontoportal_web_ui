@@ -136,6 +136,9 @@ class DataAccess
 
     # If this note applies to a class/concept/term then delete the count for that concept
     CACHE.delete("#{params[:ontology_virtual_id]}::#{params[:appliesTo]}_NoteCount") if params[:appliesToType].eql?("Class")
+    
+    # Remove cached notes for this ontology
+    CACHE.delete("#{params[:ontology_virtual_id]}::notes")
 
     note
   end
