@@ -412,7 +412,11 @@ class OntologiesController < ApplicationController
     end
     
     note_count_map.each do |concept_id, count|
-      note_count << [ DataAccess.getNode(ontology.id, concept_id, ontology.isView).label, count ]
+      begin
+        note_count << [ DataAccess.getNode(ontology.id, concept_id, ontology.isView).label, count ]
+      rescue
+        LOG.add :debug, "Failed to retrieve a concept for a note (likely it was from an earlier version of the ontology)"
+      end
     end
     
     note_count
