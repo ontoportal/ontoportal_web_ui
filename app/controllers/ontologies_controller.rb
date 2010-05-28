@@ -55,13 +55,7 @@ class OntologiesController < ApplicationController
     
     @diffs = DataAccess.getDiffs(@ontology.ontologyId)
 
-    note_tag_query = "select concept_id,count(concept_id) as con_count from margin_notes where ontology_id = #{@ontology.ontologyId} group by concept_id order by concept_id"
-    @notes_cloud = ActiveRecord::Base.connection.select_rows(note_tag_query);
-    
-    if @notes_cloud.size > 100
-      note_tag_query = "select concept_id,count(concept_id) as con_count from margin_notes where ontology_id = #{@ontology.ontologyId} group by concept_id order by con_count limit 100 "
-      @notes_cloud = ActiveRecord::Base.connection.select_rows(note_tag_query);
-    end
+    @notes_cloud = calculate_note_counts(@notes)
 
     mapping_tag_query = "select source_id,count(source_id) as con_count,source_name from mappings where source_ont = #{@ontology.ontologyId} group by source_id order by source_id"            
     @mappings = ActiveRecord::Base.connection.select_rows(mapping_tag_query);
@@ -403,7 +397,26 @@ class OntologiesController < ApplicationController
     
   end
   
-  private 
+  private
+  
+  def calculate_note_counts(notes)
+    note_count_map = {}
+    note_count = []
+    ontology_id = notes[0].ontologyId
+    ontology = DataAccess.getLatestOntology(ontology_id)
+    
+    notes.each do |note|
+      if note.appliesTo['type'].eql?("Class")
+        note_count_map[note.appliesTo['id']] = note_count_map[note.appliesTo['id']].nil? ? 1 : note_count_map[note.appliesTo['id']] += 1
+      end
+    end
+    
+    note_count_map.each do |concept_id, count|
+      note_count << [ DataAccess.getNode(ontology.id, concept_id, ontology.isView).label, count ]
+    end
+    
+    note_count
+  end
   
   def validate(params, isupdate=false)
     # strip all spaces from email
