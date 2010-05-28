@@ -76,7 +76,8 @@ class CalculateMetrics
        	next
       rescue Exception=>e
         load_count -= 1
-        puts "Error:\n#{e.response.body}"
+        puts "Error with #{ontology.id}:"
+        puts "#{e.response.body}" if defined? e.response.body
         status.execute("insert into ont_status values (?, ?, ?, ?, ?)",
           ontology.id, STATUS_ERROR, ontology.displayLabel, "<ontologyid>#{ontology.id}</ontologyid>\n#{e.response.body}", ontology.format)
         next

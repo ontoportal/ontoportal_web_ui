@@ -117,37 +117,21 @@
 </style>
 
 <script type="text/javascript">
-	jQuery(document).ready(function() {
-		// Set data for retrieval
-		jQuery(".<%=prefix%>note_submit_data").data("prefix", "<%=prefix%>");
-		jQuery(".<%=prefix%>note_submit_data").data("action", "<%=action_type%>");
-		jQuery(".<%=prefix%>note_submit_data").data("ont_id", "<%= @ontology.ontologyId %>");
-
-		// Wire up the tabs in the 'Add Note' form box
-		jQuery('.<%=prefix%>note_action').live("click", function(){
-			var prefix = "<%=prefix%>";
-			var spanId = jQuery(this).attr("id");
-			var noteTypeId = jQuery(this).attr("note_type");
-			jQuery('.' + prefix + 'note_options_action').hide();
-			jQuery('#' + noteTypeId).show();
-			jQuery('.' + prefix + 'note_action').removeClass("create_note_selected");
-			jQuery(this).addClass("create_note_selected");
-		});
-		
-		// Wire up the "Add Reply" link
-		var prefix = "<%=prefix%>";
+	// Set data for retrieval
+	jQuery(".<%=prefix%>note_submit_data").data("prefix", "<%=prefix%>");
+	jQuery(".<%=prefix%>note_submit_data").data("action", "<%=action_type%>");
+	jQuery(".<%=prefix%>note_submit_data").data("ont_id", "<%= @ontology.ontologyId %>");
+	jQuery.data(document.body, "prefix", "<%=prefix%>");
+	jQuery.data(document.body, "action", "<%=action_type%>");
+	jQuery.data(document.body, "ont_id", "<%= @ontology.ontologyId %>");
+	jQuery.data(document.body, "add_text", "<%= add_text %>");
+	
+	// Wire up the add/hide note form buttons
+	jQuery(document).ready(function(){
+		var prefix = jQuery.data(document.body, "prefix");
 		if (prefix.indexOf("thread") < 0) {
 			jQuery(".create_note_container").hide();
-			jQuery('.<%=prefix%>add_reply').addClass("add_reply_button");
-			jQuery('.<%=prefix%>add_reply').live("click", function(){
-				if (jQuery("#<%=prefix%>create_note_container").is(':visible')) {
-					jQuery(this).text("<%=add_text%>");
-					jQuery("#<%=prefix%>create_note_container").hide();
-				} else {
-					jQuery(this).text("Hide <%=add_text%>");
-					jQuery("#<%=prefix%>create_note_container").show();
-				}
-			});
+			jQuery('.' + prefix + 'add_reply').addClass("add_reply_button");
 		}
 	});
 </script>

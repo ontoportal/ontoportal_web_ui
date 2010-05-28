@@ -1,5 +1,5 @@
 # This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of ActiveRecord to incrementally modify your database, and
+# please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
 # Note that this schema.rb definition is the authoritative source for your database schema. If you need
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 8) do
+ActiveRecord::Schema.define(:version => 20100219205647) do
 
   create_table "event_items", :force => true do |t|
     t.string   "event_type",    :limit => 50
@@ -19,25 +19,38 @@ ActiveRecord::Schema.define(:version => 8) do
     t.integer  "ontology_id"
   end
 
+  create_table "groups", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "mappings", :force => true do |t|
     t.integer  "user_id"
-    t.integer  "source_ont",             :limit => 255
-    t.integer  "destination_ont",        :limit => 255
-    t.integer  "source_version_id"
-    t.integer  "destination_version_id"
     t.string   "source_id"
     t.string   "destination_id"
     t.string   "map_type"
+    t.string   "source_ont"
+    t.string   "destination_ont"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "map_source"
+    t.text     "comment"
     t.string   "relationship_type"
     t.string   "source_name"
     t.string   "destination_name"
     t.string   "source_ont_name"
     t.string   "destination_ont_name"
-    t.text     "comment"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer  "source_version_id"
+    t.integer  "destination_version_id"
   end
+
+  add_index "mappings", ["destination_id"], :name => "destination_id"
+  add_index "mappings", ["destination_ont"], :name => "X_destination_ont"
+  add_index "mappings", ["destination_version_id"], :name => "X_destination_version_id"
+  add_index "mappings", ["map_type"], :name => "X_map_type"
+  add_index "mappings", ["source_id"], :name => "X_source_id"
+  add_index "mappings", ["source_ont"], :name => "X_source_ont"
+  add_index "mappings", ["source_version_id"], :name => "X_source_version_id"
 
   create_table "margin_notes", :force => true do |t|
     t.integer  "parent_id"
@@ -49,6 +62,20 @@ ActiveRecord::Schema.define(:version => 8) do
     t.string   "concept_id"
     t.string   "subject"
     t.text     "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "notes", :force => true do |t|
+    t.string   "subject"
+    t.text     "body"
+    t.string   "author"
+    t.boolean  "archived"
+    t.string   "hasStatus"
+    t.integer  "ontology_id"
+    t.string   "concept_id"
+    t.integer  "annotates"
+    t.text     "annotated_by"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -107,7 +134,7 @@ ActiveRecord::Schema.define(:version => 8) do
   end
 
   create_table "widget_logs", :force => true do |t|
-    t.integer "count",   :limit => 50, :default => 0, :null => false
+    t.integer "count",                 :default => 0, :null => false
     t.string  "widget",  :limit => 50
     t.string  "referer"
   end

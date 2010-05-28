@@ -15,6 +15,28 @@ jQuery(document).ready(function(){
 		**/
 	});
 	
+	// Wire up the tabs in the 'Add Note' form box
+	jQuery(jQuery.data(document.body, "prefix")).live("click", function(){
+		var prefix = jQuery.data(document.body, "prefix");
+		var spanId = jQuery(this).attr("id");
+		var noteTypeId = jQuery(this).attr("note_type");
+		jQuery('.' + prefix + 'note_options_action').hide();
+		jQuery('#' + noteTypeId).show();
+		jQuery('.' + prefix + 'note_action').removeClass("create_note_selected");
+		jQuery(this).addClass("create_note_selected");
+	});
+	
+	// Wire up the "Add Reply" link
+	jQuery('.add_reply_button').live("click", function(){
+		if (jQuery(this).parent().children(".create_note_container").is(':visible')) {
+			jQuery(this).text(jQuery.data(document.body, "add_text"));
+			jQuery(this).parent().children(".create_note_container").hide();
+		} else {
+			jQuery(this).text("Hide " + jQuery.data(document.body, "add_text"));
+			jQuery(this).parent().children(".create_note_container").show();
+		}
+	});
+	
 	jQuery(".create_note_submit").live('click', function(event) {
 		event.preventDefault();
 		
@@ -45,6 +67,8 @@ jQuery(document).ready(function(){
 			var note = new ProposalForChangePropertyValue(prefix, ONT);
 			note.validate();
 		}
+		
+		console.log(note.failedValidation == true);
 		
 		if (note.failedValidation == true) {
 			button_reset(button);
