@@ -47,3 +47,29 @@ function insert_note(link, note_id) {
 	var html = jQuery.data(document.body, jQuery(link).attr("id").toString());
 	jQuery("#row_thread_" + note_id).html(html);
 }
+
+// This will wire up a table with the dataTables config.
+// Needs to stay inline because IE won't recognize it in an external file.
+function wireTableWithData(oTableNew, aData) {
+	// Wire up table if it hasn't been done yet
+	oTable = oTableNew.dataTable({
+		"aaData": aData,
+		"iDisplayLength": 50,
+		"sPaginationType": "full_numbers",
+		"aaSorting": [[5, 'desc']],
+		"aoColumns": [
+			 { "iDataSort": 1 }, // Subject link
+			 { "bVisible": false }, // Subject for sort
+			 null, // Author
+			 null, // Type
+			 { "bVisible": false }, // Subject for sort
+			 null // Created
+		],
+		"fnDrawCallback": function(){
+			jQuery(".highlighted_row").removeClass("highlighted_row");
+		},
+		"fnInitComplete": function(){
+		}
+	});
+}
+

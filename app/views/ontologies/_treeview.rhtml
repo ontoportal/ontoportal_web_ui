@@ -260,13 +260,14 @@ function nodeClicked(node_id,node_label) {
 
 	if(getCache(node_id)!=null){
 		tabData = getCache(node_id)
-		oTable = tabData["notes_table"];
 		jQuery('#visualization_content').html(tabData[0]);
 		jQuery('#details_content').html(tabData[1]);
 		jQuery('#notes_content').html(tabData[2]);
 		jQuery('#mappings_content').html(tabData[3]);
 		jQuery('#note_count').html(tabData[5]);
 		jQuery('#mapping_count').html(tabData[6]);
+		// Insert notes table
+		insertNotesTable(tabData["notes_table_data"]);
         // Load the resource index tab in background
         loc = new String(document.location)
         if (loc.search("#resource_index") >= 0 && loc.split("#") == "resource_index") {
@@ -305,23 +306,34 @@ function nodeClicked(node_id,node_label) {
 }
 
 function setCacheCurrent() {
-	// Make all the columns in the notes table visible
-	if (oTable != null) {
-		oTable.fnSetColumnVis(1, true);
-		oTable.fnSetColumnVis(4, true);
-		//jQuery(".notes_list_table").parent().parent().children(".add_reply_button").before(jQuery(".notes_list_table"));
-		//jQuery("#notes_list_container div[class^=dataTables_]").remove();
-	}
-	
 	var currentData = [];
+
+	// Store notes table data
+	if (oTable != null) {
+		currentData["notes_table_data"] = oTable.fnGetData();
+	}
+
+	// Reset the table
+	resetNotesTable();
+
 	currentData[0] = jQuery('#visualization_content').html();
 	currentData[1] = jQuery('#details_content').html();
 	currentData[2] = jQuery('#notes_content').html();
 	currentData[3] = jQuery('#mappings_content').html();
 	currentData[5] = jQuery('#note_count').html();
 	currentData[6] = jQuery('#mapping_count').html();
-	currentData["notes_table"] = oTable;
 	setCache(getConcept(), currentData);
+	
+}
+
+function resetNotesTable() {
+	jQuery(".notes_table_container div[class^=dataTables_]").remove();
+}
+
+function insertNotesTable(aData) {
+	jQuery(".notes_table_container").append(jQuery("#notes_list_table_clone").clone());
+	jQuery(".notes_table_container #notes_list_table_clone").attr("id", "notes_list_table");
+	wireTableWithData(jQuery("#notes_list_table"), aData);
 }
 
 </script>

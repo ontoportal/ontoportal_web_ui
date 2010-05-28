@@ -13,55 +13,53 @@
 
 <script type="text/javascript">
 	
-// Global cached data
-var oTable = null;	
-
-var target = <%= (@context && @context.eql?("concept")) ? "{ 'bVisible': false }" : "null" %>;
-
-<% if @concept %>
-	jQuery.data(document.body, "node_id", "<%=@concept.id%>");
-<% end %>
-
-// Colspan data cached
-jQuery.data(document.body, "note_colspan", "<%= note_colspan %>");
-
-// Ontology id
-jQuery.data(document.body, "ontology_id", "<%= @ontology.ontologyId %>");
-
 // Load external JS files
 if (typeof BP_NOTES_LIST_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_list.js");
 
-jQuery(document).ready(function(){
+// Global data
+var oTable = null;	
+var target = <%= (@context && @context.eql?("concept")) ? "{ 'bVisible': false }" : "null" %>;
+
+// Data needed in the external JS file stored in the body 'cache'
+<% if @concept %>
+	jQuery.data(document.body, "node_id", "<%=@concept.id%>");
+<% end %>
+jQuery.data(document.body, "note_colspan", "<%=note_colspan%>");
+jQuery.data(document.body, "ontology_id", "<%=@ontology.ontologyId%>");
+jQuery.data(document.body, "semi_uuid", "<%=@semi_uuid%>");
+
+function wireTable(oTableNew) {
 	// Wire up table if it hasn't been done yet
-	if (oTable == null) {
-		oTable = jQuery('#<%=@semi_uuid%>_notes_list').dataTable({
-			"iDisplayLength": 50,
-			"sPaginationType": "full_numbers",
-			"aaSorting": [[5, 'desc']],
-			"aoColumns": [
-				{ "iDataSort": 1 }, // Subject link
-				{ "bVisible": false }, // Subject for sort
-				 null, // Author
-				 null, // Type
-				 target, // Target
-				 null // Created
-			],
-			"fnDrawCallback": function(){
-				jQuery(".highlighted_row").removeClass("highlighted_row");
-			},
-			"fnInitComplete": function(){
-			}
-		});
-	}
+	oTable = oTableNew.dataTable({
+		"iDisplayLength": 50,
+		"sPaginationType": "full_numbers",
+		"aaSorting": [[5, 'desc']],
+		"aoColumns": [
+			 { "iDataSort": 1 }, // Subject link
+			 { "bVisible": false }, // Subject for sort
+			 null, // Author
+			 null, // Type
+			 target, // Target
+			 null // Created
+		],
+		"fnDrawCallback": function(){
+			jQuery(".highlighted_row").removeClass("highlighted_row");
+		},
+		"fnInitComplete": function(){
+		}
+	});
+}
+
+jQuery(document).ready(function(){
+	var tempTable = jQuery("#" + jQuery.data(document.body, "semi_uuid") + "_notes_list");
+	wireTable(tempTable);
 });
-
-
 
 </script>
 
 <style type="text/css">
-	#notes_list_container {
-		width: 80%;
+	.notes_list_container {
+		width: 90%;
 		padding: 1em;
 	}
 	
@@ -69,33 +67,33 @@ jQuery(document).ready(function(){
 	.notes_list_table {
 		clear: both;
 	}
-	#notes_list_container .dataTables_length {
+	.notes_list_container .dataTables_length {
 		float: left;
 		padding: 1em 0;
 	}
-	#notes_list_container .dataTables_filter {
+	.notes_list_container .dataTables_filter {
 		float: right;
 		padding: 1em 0;
 	}
-	#notes_list_container .dataTables_filter input {
+	.notes_list_container .dataTables_filter input {
 		width: 300px;
 	}
-	#notes_list_container .dataTables_info {
+	.notes_list_container .dataTables_info {
 		text-align: center;
 		padding: .5em;
 	}
-	#notes_list_container .dataTables_paginate {
+	.notes_list_container .dataTables_paginate {
 		text-align: center;
 	}
-	#notes_list_container .dataTables_paginate .paginate_button {
+	.notes_list_container .dataTables_paginate .paginate_button {
 		text-decoration: underline;
 		cursor: pointer;
 		padding: 0 .5em;
 	}
-	#notes_list_container .dataTables_paginate .paginate_button:hover {
+	.notes_list_container .dataTables_paginate .paginate_button:hover {
 		text-decoration: none;
 	}
-	#notes_list_container .first, #notes_list_container .previous, #notes_list_container .next, #notes_list_container .last {
+	.notes_list_container .first, .notes_list_container .previous, .notes_list_container .next, .notes_list_container .last {
 		padding: 0 .5em;
 	}
 	.paginate_active {
@@ -122,13 +120,82 @@ jQuery(document).ready(function(){
 	
 </style>
 
-<div id="notes_list_container">
+<div class="notes_list_container">
 
 	<% unless @notes_for.nil? %>
 		<h1>Notes for <%=link_to @notes_for, @notes_for_link %></h1>
 	<% end %>
+	
+	<div class="notes_table_container">
+		<table id="<%=@semi_uuid%>_notes_list" class="zebra notes_list_table" width="100%">
+			<thead>
+				<tr>
+					<th>
+						Subject
+					</th>
+					<th>
+						Subject Sort
+					</th>
+					<th>
+						Author
+					</th>
+					<th>
+						Type
+					</th>
+					<th>
+						Target
+					</th>
+					<th>
+						Created
+					</th>
+				</tr>
+			</thead>
+			<tbody id="<%=@semi_uuid%>_notes_list_body">
+				<% if @notes.nil? || @notes.empty? %>
+					<tr id="no_notes">
+						<td>No notes to display</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				<% else %>
+					<% @notes.each do |note| %>
+						<tr>
+							<td>
+								<%= link_to note.subject, "#{@note_link}#{note.id}", :id => "row_#{note.id}", :class => "notes_list_link" %>
+							</td>
+							<td>
+								<%= note.subject %>
+							</td>
+							<td>
+								<%= get_username(note.author) %>
+							</td>
+							<td>
+								<%= get_note_type_text(note.type) %>
+							</td>
+							<td>
+								<%= get_applies_to_link note.createdInOntologyVersion, note.appliesTo['type'], note.appliesTo['id'] %> (<%= note.appliesTo['type'] %>)
+							</td>
+							<td>
+								<%= time_formatted_from_java(note.created) %>
+							</td>
+						</tr>
+					<% end %>
+				<% end %>
+			</tbody>
+		</table>
+	</div>
+		
+	<% applies_to = @concept ? @concept.fullId_proper : @ontology.ontologyId %>
+	<% applies_to_type = @concept ? "Class" : "Ontology" %>
+	<%= render :partial => 'notes/add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type } %>
 
-	<table id="<%=@semi_uuid%>_notes_list" class="zebra notes_list_table" width="100%">
+</div>
+
+<div style="display: none;">
+	<table id="notes_list_table_clone" class="zebra notes_list_table notes_list_table_clone" width="100%">
 		<thead>
 			<tr>
 				<th>
@@ -151,46 +218,8 @@ jQuery(document).ready(function(){
 				</th>
 			</tr>
 		</thead>
-		<tbody id="notes_list_body">
-			<% if @notes.nil? || @notes.empty? %>
-				<tr id="no_notes">
-					<td>No notes to display</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-			<% else %>
-				<% @notes.each do |note| %>
-					<tr>
-						<td>
-							<%= link_to note.subject, "#{@note_link}#{note.id}", :id => "row_#{note.id}", :class => "notes_list_link" %>
-						</td>
-						<td>
-							<%= note.subject %>
-						</td>
-						<td>
-							<%= get_username(note.author) %>
-						</td>
-						<td>
-							<%= get_note_type_text(note.type) %>
-						</td>
-						<td>
-							<%= get_applies_to_link note.createdInOntologyVersion, note.appliesTo['type'], note.appliesTo['id'] %> (<%= note.appliesTo['type'] %>)
-						</td>
-						<td>
-							<%= time_formatted_from_java(note.created) %>
-						</td>
-					</tr>
-				<% end %>
-			<% end %>
+		<tbody id="<%=@semi_uuid%>_notes_list_body">
 		</tbody>
 	</table>
-	
-	<% applies_to = @concept ? @concept.fullId_proper : @ontology.ontologyId %>
-	<% applies_to_type = @concept ? "Class" : "Ontology" %>
-	<%= render :partial => 'notes/add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type } %>
-
 </div>
 
