@@ -15,7 +15,7 @@
 
 <% action_type = defined?(action) ? action : "" %>
 <% prefix = defined?(action) ? @semi_uuid + "_" + action + "_" : @semi_uuid + "_" %>
-<% prefix = action + "_" if defined?(action) && defined?(force_prefix) %>
+<% prefix = action + "_" if defined?(action) && defined?(dummy_add) %>
 
 <style type="text/css">
 	/* Create new note */
@@ -117,22 +117,37 @@
 </style>
 
 <script type="text/javascript">
-	// Set data for retrieval
-	jQuery(".<%=prefix%>note_submit_data").data("prefix", "<%=prefix%>");
-	jQuery(".<%=prefix%>note_submit_data").data("action", "<%=action_type%>");
-	jQuery(".<%=prefix%>note_submit_data").data("ont_id", "<%= @ontology.ontologyId %>");
+<%unless defined?(dummy_add)%>
 	jQuery.data(document.body, "prefix", "<%=prefix%>");
 	jQuery.data(document.body, "action", "<%=action_type%>");
 	jQuery.data(document.body, "ont_id", "<%= @ontology.ontologyId %>");
 	jQuery.data(document.body, "add_text", "<%= add_text %>");
 	
-	// Wire up the add/hide note form buttons
 	jQuery(document).ready(function(){
+		// Set data for retrieval
+		jQuery(".<%=prefix%>note_submit_data").data("prefix", "<%=prefix%>");
+		jQuery(".<%=prefix%>note_submit_data").data("action", "<%=action_type%>");
+		jQuery(".<%=prefix%>note_submit_data").data("ont_id", "<%= @ontology.ontologyId %>");
+		
+		// Wire up the add/hide note form buttons
 		var prefix = jQuery.data(document.body, "prefix");
 		if (prefix.indexOf("thread") < 0) {
-			jQuery(".create_note_container").hide();
+			jQuery("#" + prefix + "create_note_container").hide();
 			jQuery('.' + prefix + 'add_reply').addClass("add_reply_button");
 		}
+	});
+<%end%>
+
+	// Wire up the tabs in the 'Add Note' form box
+	jQuery(".<%=prefix%>note_action").live("click", function(){
+		console.log("tab clicked");
+		var prefix = "<%=prefix%>";
+		var spanId = jQuery(this).attr("id");
+		var noteTypeId = jQuery(this).attr("note_type");
+		jQuery('.' + prefix + 'note_options_action').hide();
+		jQuery('#' + noteTypeId).show();
+		jQuery('.' + prefix + 'note_action').removeClass("create_note_selected");
+		jQuery(this).addClass("create_note_selected");
 	});
 </script>
 

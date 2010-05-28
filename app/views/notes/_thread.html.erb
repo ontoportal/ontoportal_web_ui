@@ -223,7 +223,7 @@
 	
 	<div style="display: none;">
 		<div id="<%= @notes.id %>_hidden_form">
-			<%= render :partial => 'add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type, :exclude_js => true, :action => 'thread', :force_prefix => true, :add_text => "Add Reply" } %>
+			<%= render :partial => 'add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type, :exclude_js => true, :action => 'thread', :dummy_add => true, :add_text => "Add Reply" } %>
 		</div>
 		<script type="text/javascript">
 			// Tricky. We're going to use the div hidden_form to get the html for a form we use later. 

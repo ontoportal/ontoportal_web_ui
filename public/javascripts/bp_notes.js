@@ -15,17 +15,6 @@ jQuery(document).ready(function(){
 		**/
 	});
 	
-	// Wire up the tabs in the 'Add Note' form box
-	jQuery(jQuery.data(document.body, "prefix")).live("click", function(){
-		var prefix = jQuery.data(document.body, "prefix");
-		var spanId = jQuery(this).attr("id");
-		var noteTypeId = jQuery(this).attr("note_type");
-		jQuery('.' + prefix + 'note_options_action').hide();
-		jQuery('#' + noteTypeId).show();
-		jQuery('.' + prefix + 'note_action').removeClass("create_note_selected");
-		jQuery(this).addClass("create_note_selected");
-	});
-	
 	// Wire up the "Add Reply" link
 	jQuery('.add_reply_button').live("click", function(){
 		if (jQuery(this).parent().children(".create_note_container").is(':visible')) {
@@ -67,8 +56,6 @@ jQuery(document).ready(function(){
 			var note = new ProposalForChangePropertyValue(prefix, ONT);
 			note.validate();
 		}
-		
-		console.log(note.failedValidation == true);
 		
 		if (note.failedValidation == true) {
 			button_reset(button);
@@ -186,14 +173,7 @@ function Comment(prefix, ONT) {
 	}
 	
 	this.validate = function() {
-		for (field in this.form_fields) {
-			if (jQuery.inArray(field, this.required) >= 0 && this.form_fields[field].element.val() === "") {
-				this.failedValidation = true;
-				jQuery("#" + this.form_fields[field].errorLocation).html("<br/>" + this.form_fields[field].errorMessage);
-			} else {
-				jQuery("#" + this.form_fields[field].errorLocation).html("");
-			}
-		}
+		validateForm(this);
 	}
 	
 	this.reset = function() {
@@ -250,14 +230,7 @@ function ProposalForCreateEntity(prefix, ONT) {
 	}
 	
 	this.validate = function() {
-		for (field in this.form_fields) {
-			if (jQuery.inArray(field, this.required) >= 0 && this.form_fields[field].element.val() === "") {
-				this.failedValidation = true;
-				jQuery("#" + this.form_fields[field].errorLocation).html("<br/>" + this.form_fields[field].errorMessage);
-			} else {
-				jQuery("#" + this.form_fields[field].errorLocation).html("");
-			}
-		}
+		validateForm(this);
 	}
 	
 	this.reset = function() {
@@ -308,14 +281,7 @@ function ProposalForChangeHierarchy(prefix, ONT) {
 	}
 	
 	this.validate = function() {
-		for (field in this.form_fields) {
-			if (jQuery.inArray(field, this.required) >= 0 && this.form_fields[field].element.val() === "") {
-				this.failedValidation = true;
-				jQuery("#" + this.form_fields[field].errorLocation).html("<br/>" + this.form_fields[field].errorMessage);
-			} else {
-				jQuery("#" + this.form_fields[field].errorLocation).html("");
-			}
-		}
+		validateForm(this);
 	}
 	
 	this.reset = function() {
@@ -341,7 +307,7 @@ function ProposalForChangePropertyValue(prefix, ONT) {
 			errorMessage: "Please enter the new property value",
 			errorLocation: jQuery("#" + prefix + "newPropertyValue").attr("id") + "_error"
 		},
-		oldPropertyValue: jQuery("#" + prefix + "oldPropertyValue")
+		oldPropertyValue: { element: jQuery("#" + prefix + "oldPropertyValue") }
 	}
 
 	this.required = [ "reasonForChange", "newPropertyValue", "propertyId" ];
@@ -366,14 +332,7 @@ function ProposalForChangePropertyValue(prefix, ONT) {
 	}
 	
 	this.validate = function() {
-		for (field in this.form_fields) {
-			if (jQuery.inArray(field, this.required) >= 0 && this.form_fields[field].element.val() === "") {
-				this.failedValidation = true;
-				jQuery("#" + this.form_fields[field].errorLocation).html("<br/>" + this.form_fields[field].errorMessage);
-			} else {
-				jQuery("#" + this.form_fields[field].errorLocation).html("");
-			}
-		}
+		validateForm(this);
 	}
 	
 	this.reset = function() {
@@ -409,5 +368,18 @@ function getNoteTypeText(note_type) {
 		return "Change Property Value Proposal";
 	default:
 		return "";
+	}
+}
+
+function validateForm(oForm) {
+	for (field in oForm.form_fields) {
+		var fieldValue = oForm.form_fields[field].element.val();
+		oForm.form_fields[field].element.val(jQuery.trim(fieldValue));
+		if (jQuery.inArray(field, oForm.required) >= 0 && oForm.form_fields[field].element.val() === "") {
+			oForm.failedValidation = true;
+			jQuery("#" + oForm.form_fields[field].errorLocation).html("<br/>" + oForm.form_fields[field].errorMessage);
+		} else {
+			jQuery("#" + oForm.form_fields[field].errorLocation).html("");
+		}
 	}
 }
