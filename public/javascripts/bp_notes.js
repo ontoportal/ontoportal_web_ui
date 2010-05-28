@@ -345,13 +345,13 @@ function ProposalForChangePropertyValue(prefix, ONT) {
 
 function button_loading(button, prefix) {
 	jQuery(".error_message").remove();
-	jQuery(button).css("background", "grey").css("color", "darkGrey").css("border", "1px solid darkGrey");
+	jQuery(button).addClass("add_reply_button_busy");
 	jQuery(button).attr("disabled", "true");
 	jQuery("#" + jQuery(button).attr("id") + "_submit_container").append(' <span class="ajax_message"><img src="/images/spinners/spinner_E2EBF0.gif" style="vertical-align: middle;"> loading...</span>');
 }
 
 function button_reset(button) {
-	jQuery(button).css("background", "").css("color", "").css("border", "");
+	jQuery(button).removeClass("add_reply_button_busy");
 	jQuery(button).removeAttr("disabled");
 	jQuery(".ajax_message").remove();
 }
