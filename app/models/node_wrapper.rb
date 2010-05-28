@@ -87,7 +87,7 @@ class NodeWrapper
   end
   
   def to_param
-     URI.escape(self.id,":/?#!").to_s
+    URI.escape(self.id,":/?#!").to_s
   end
   
   def ontology_name
@@ -120,14 +120,14 @@ class NodeWrapper
     
   def note_count_old
     if CACHE.get("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_NoteCount").nil?
-        count = MarginNote.count(:conditions=>{:ontology_id => self.ontology_id, :concept_id =>self.id})
-        CACHE.set("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_NoteCount",count)
+      count = MarginNote.count(:conditions=>{:ontology_id => self.ontology_id, :concept_id =>self.id})
+      CACHE.set("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_NoteCount",count)
       return count
     else
       return CACHE.get("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_NoteCount")
     end
   end
-    
+  
   def networkNeighborhood(relationships = nil)         
     DataAccess.getNetworkNeighborhoodImage(self.ontology_name,self.id,relationships)
   end
@@ -151,4 +151,14 @@ class NodeWrapper
   def to_s
    "Node_Name: #{self.name}  Node_ID: #{self.id}"
   end
+  
+  def fullId_proper
+    ontology_format = DataAccess.getOntology(self.version_id).format
+    if ontology_format.eql?("OBO") || ontology_format.eql?("RRF") || ontology_format.eql?("LEXGRID-XML") || ontology_format.eql?("META") 
+      return self.id
+    else
+      return self.fullId
+    end
+  end
+  
 end

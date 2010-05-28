@@ -1,99 +1,63 @@
-<% unless request.xhr? %>
-	<%= javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.min.js" %>
-<% end %>
+
 <%
 	# Check to see if we have notes, if not then try to get them
 	if @notes.nil? && @concept && @ontology
-	  @notes = DataAccess.getNotesForConcept(@ontology.ontologyId, @concept.fullId, false, true) rescue nil
+	  @notes = DataAccess.getNotesForConcept(@ontology.ontologyId, @concept.fullId_proper, false, true) rescue nil
 	  @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
 	  @context = "concept"
 	end
 
+    @semi_uuid = (1000 * Time.now.to_f).to_i
 	note_colspan = (@context && @context.eql?("concept")) ? "4" : "5"
 %>
 
 <script type="text/javascript">
 	
-// Global variable to DataTable
-var oTable;	
+// Global cached data
+var oTable = null;	
 
 var target = <%= (@context && @context.eql?("concept")) ? "{ 'bVisible': false }" : "null" %>;
 
+<% if @concept %>
+	jQuery.data(document.body, "node_id", "<%=@concept.id%>");
+<% end %>
 
-jQuery(document).ready(function() {
-	<% if @concept %>
-		jQuery.data(document.body, "node_id", "<%=@concept.id%>");
-	<% end %>
-	
-	oTable = jQuery('#notes_list').dataTable({
-		"iDisplayLength": 50,
-		"sPaginationType": "full_numbers",
-		"aaSorting": [[5,'desc']],
-		"aoColumns": [
-            { "iDataSort": 1 }, // Subject link
-			{ "bVisible": false }, // Subject for sort
-            null, // Author
-            null, // Type
-            target, // Target
-            null // Created
-        ],
-		"fnDrawCallback": function(){
-			jQuery(".highlighted_row").removeClass("highlighted_row");
-		}
-	});
-	
-	jQuery(".notes_list_link").live('click', function(event){
-		event.preventDefault();
-		var link = this;
-		var row_id = jQuery(this).attr("id");
-		var note_id = jQuery(this).attr("id").substring(4);
-		
-		if (jQuery(this).parent().hasClass("highlighted_row")) {
-			jQuery(this).parent().parent().removeClass("highlighted_row");
-			jQuery(this).parent().parent().children().removeClass("highlighted_row");
-			jQuery("#row_expanded_" + note_id).remove();
-		} else {
-			jQuery(this).parent().parent().addClass("highlighted_row");
-			jQuery(this).parent().parent().children().addClass("highlighted_row");
-			jQuery(this).parent().parent().after("<tr id='row_expanded_" + note_id + "' class='highlighted_border'><td colspan='<%=note_colspan%>' class='highlighted_border' id='row_thread_" + note_id + "'><span class='ajax_message'><img src='/images/spinners/spinner_000000_16px.gif' style='vertical-align: text-bottom;'> loading...</span></td></tr>");
-			
-			// Check cache for result, make call if it isn't found
-			if (jQuery.data(document.body, row_id) == null) {
-				jQuery.ajax({
-					type: "GET",
-					url: "/notes/virtual/<%= @ontology.ontologyId %>/?noteid=" + note_id,
-					success: function(html){
-						jQuery.data(document.body, row_id, html);
-						insert_note(link, note_id);
-					},
-					error: function(){
-						jQuery("#row_thread_" + note_id).html("Error retreiving note, please try again");
-					}
-				});
-			} else {
-				insert_note(link, note_id);
+// Colspan data cached
+jQuery.data(document.body, "note_colspan", "<%= note_colspan %>");
+
+// Ontology id
+jQuery.data(document.body, "ontology_id", "<%= @ontology.ontologyId %>");
+
+// Load external JS files
+if (typeof BP_NOTES_LIST_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_list.js");
+
+jQuery(document).ready(function(){
+	// Wire up table if it hasn't been done yet
+	if (oTable == null) {
+		oTable = jQuery('#<%=@semi_uuid%>_notes_list').dataTable({
+			"iDisplayLength": 50,
+			"sPaginationType": "full_numbers",
+			"aaSorting": [[5, 'desc']],
+			"aoColumns": [
+				{ "iDataSort": 1 }, // Subject link
+				{ "bVisible": false }, // Subject for sort
+				 null, // Author
+				 null, // Type
+				 target, // Target
+				 null // Created
+			],
+			"fnDrawCallback": function(){
+				jQuery(".highlighted_row").removeClass("highlighted_row");
+			},
+			"fnInitComplete": function(){
+				alert('DataTables has finished it\'s initialisation.');
 			}
-		}
-	});
+		});
+	}
 });
 
-function insert_note(link, note_id) {
-	var html = jQuery.data(document.body, jQuery(link).attr("id").toString());
-	jQuery("#row_thread_" + note_id).html(html);
-	
-	// Wire up button for root thread. We're using parent / child selectors to get around the lack of IDs in the add form
-	jQuery("#row_thread_" + note_id + " .thread_root_add_reply").addClass("add_reply_button");
-	jQuery("#row_thread_" + note_id + " #thread_root_create_note_container").hide();
-	jQuery("#row_thread_" + note_id + " .thread_root_add_reply").live("click", function(){
-		if (jQuery("#row_thread_" + note_id + " #thread_root_create_note_container").is(':visible')) {
-			jQuery("#row_thread_" + note_id + " .add_reply_button").text("Add Reply");
-			jQuery("#row_thread_" + note_id + " #thread_root_create_note_container").hide();
-		} else {
-			jQuery("#row_thread_" + note_id + " .add_reply_button").text("Hide Add Reply");
-			jQuery("#row_thread_" + note_id + " #thread_root_create_note_container").show();
-		}
-	});
-}
+
+
 </script>
 
 <style type="text/css">
@@ -101,41 +65,44 @@ function insert_note(link, note_id) {
 		width: 80%;
 		padding: 1em;
 	}
-	#notes_list {
+	
+	/* Datatables */
+	.notes_list_table {
 		clear: both;
 	}
-	#notes_list_length {
+	#notes_list_container .dataTables_length {
 		float: left;
 		padding: 1em 0;
 	}
-	#notes_list_filter {
+	#notes_list_container .dataTables_filter {
 		float: right;
 		padding: 1em 0;
 	}
-	#notes_list_filter input {
+	#notes_list_container .dataTables_filter input {
 		width: 300px;
 	}
-	#notes_list_info {
+	#notes_list_container .dataTables_info {
 		text-align: center;
 		padding: .5em;
 	}
-	#notes_list_paginate {
+	#notes_list_container .dataTables_paginate {
 		text-align: center;
 	}
-	#notes_list_paginate .paginate_button {
+	#notes_list_container .dataTables_paginate .paginate_button {
 		text-decoration: underline;
 		cursor: pointer;
 		padding: 0 .5em;
 	}
-	#notes_list_paginate .paginate_button:hover {
+	#notes_list_container .dataTables_paginate .paginate_button:hover {
 		text-decoration: none;
 	}
-	#notes_list_previous, #notes_list_previous, #notes_list_next, #notes_list_last {
+	#notes_list_container .first, #notes_list_container .previous, #notes_list_container .next, #notes_list_container .last {
 		padding: 0 .5em;
 	}
 	.paginate_active {
 		font-weight: bold;
 	}
+	
 	.highlighted_row {
 		background-color: #234979;
 		border-top: medium solid #234979 !important;
@@ -162,14 +129,14 @@ function insert_note(link, note_id) {
 		<h1>Notes for <%=link_to @notes_for, @notes_for_link %></h1>
 	<% end %>
 
-	<table id="notes_list" class="zebra" width="100%">
+	<table id="<%=@semi_uuid%>_notes_list" class="zebra notes_list_table" width="100%">
 		<thead>
 			<tr>
 				<th>
 					Subject
 				</th>
 				<th>
-					Subject
+					Subject Sort
 				</th>
 				<th>
 					Author
@@ -222,7 +189,7 @@ function insert_note(link, note_id) {
 		</tbody>
 	</table>
 	
-	<% applies_to = @concept ? @concept.fullId : @ontology.ontologyId %>
+	<% applies_to = @concept ? @concept.fullId_proper : @ontology.ontologyId %>
 	<% applies_to_type = @concept ? "Class" : "Ontology" %>
 	<%= render :partial => 'notes/add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type } %>
 

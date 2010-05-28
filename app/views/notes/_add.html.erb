@@ -2,6 +2,8 @@
 	Please <%= link_to "login", "/login" %> to submit notes
 <% else %>
 
+<% @semi_uuid = (1000 * Time.now.to_f).to_i.to_s %>
+
 <% add_text = add_text.nil? ? "Add Note" : "Add Reply" %>
 
 <% unless defined?(exclude_js) %>
@@ -12,7 +14,8 @@
 <% end %>
 
 <% action_type = defined?(action) ? action : "" %>
-<% prefix = defined?(action) ? action + "_" : "" %>
+<% prefix = defined?(action) ? @semi_uuid + "_" + action + "_" : @semi_uuid + "_" %>
+<% prefix = action + "_" if defined?(action) && defined?(force_prefix) %>
 
 <style type="text/css">
 	/* Create new note */
@@ -32,7 +35,7 @@
         margin: 5px 5px 5px 0;
         padding: 5px 7px;
         text-align: center;
-        width: 50px;
+        width: 75px;
 		text-decoration: none;
 	}
 	.create_note_submit:hover {
@@ -132,8 +135,8 @@
 		});
 		
 		// Wire up the "Add Reply" link
-		var prefix = <%= (prefix.nil? || prefix.empty?) ? "null" : prefix %>;
-		if (prefix == null) {
+		var prefix = "<%=prefix%>";
+		if (prefix.indexOf("thread") < 0) {
 			jQuery(".create_note_container").hide();
 			jQuery('.<%=prefix%>add_reply').addClass("add_reply_button");
 			jQuery('.<%=prefix%>add_reply').live("click", function(){
@@ -199,7 +202,7 @@
 				Proposed id<br/>
 				<input tabindex="204" type="text" id="<%=prefix%>termId" class="create_note_inputs create_new_term_inputs"><br/>
 				Parent (start typing to autocomplete) <span class="required">*</span> <span id="<%=prefix%>termParent_error" class="error_input"></span><br/>
-				<input tabindex="205" type="text" name="<%=prefix%>termParent" id="<%=prefix%>termParent" value="<%= @concept.fullId rescue "" %>" class="create_note_inputs create_new_term_inputs bp_form_complete-<%= @ontology.ontologyId %>-uri"><br/>
+				<input tabindex="205" type="text" name="<%=prefix%>termParent" id="<%=prefix%>termParent" value="<%= @concept.fullId_proper rescue "" %>" class="create_note_inputs create_new_term_inputs bp_form_complete-<%= @ontology.ontologyId %>-uri"><br/>
 				Contact information (publically visible)<br/>
 				<input tabindex="206" type="text" id="<%=prefix%>create_new_term_contactInfo" class="create_note_inputs create_new_term_inputs"><br/>
 				<div class="add_note_legend">* required</div>
@@ -233,7 +236,7 @@
 				New relationship target (start typing to autocomplete) <span class="required">*</span> <span id="<%=prefix%>relationshipTarget_error" class="error_input"></span><br/>
 				<input tabindex="301" type="text" name="<%=prefix%>relationshipTarget" id="<%=prefix%>relationshipTarget" class="bp_form_complete-<%= @ontology.ontologyId %>-uri create_note_inputs create_change_hierarchy_inputs"><br/>
 				Old relationship target (start typing to autocomplete)<br/>
-				<input tabindex="302" type="text" name="<%=prefix%>oldRelationshipTarget" id="<%=prefix%>oldRelationshipTarget" value="<%= @concept.fullId rescue "" %>" class="bp_form_complete-<%= @ontology.ontologyId %>-uri create_note_inputs create_change_hierarchy_inputs"><br/>
+				<input tabindex="302" type="text" name="<%=prefix%>oldRelationshipTarget" id="<%=prefix%>oldRelationshipTarget" value="<%= @concept.fullId_proper rescue "" %>" class="bp_form_complete-<%= @ontology.ontologyId %>-uri create_note_inputs create_change_hierarchy_inputs"><br/>
 				New relationship type <span class="required">*</span> <span id="<%=prefix%>relationshipType_error" class="error_input"></span><br/>
 				<select tabindex="303" id="<%=prefix%>relationshipType" style="margin-bottom: .5em;">
 					<option selected></option>

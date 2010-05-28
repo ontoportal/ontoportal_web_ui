@@ -162,61 +162,11 @@
 </style>
 
 <script type="text/javascript">
-// Cache object to hold the html for the form
-var cache;
+	// Load external JS files
+	if (typeof BP_NOTES_THREAD_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_thread.js");
 
-jQuery(document).ready(function(){
-	// Get the cached form for use and prep after clicking 'reply' in a thread
-    jQuery(".create_reply").live('click', function() {
-		var note_id = jQuery(this).parents(".response").attr('id').substring(5);
-		var replyDiv = "#" + jQuery(this).parents(".response").attr('id') + "_reply";
-		
-		// Hide all reply containers, show all reply links
-		jQuery(".reply_form_container").each(function() {
-			jQuery(this).html("");
-			jQuery(this).parent().hide();
-			jQuery(".create_reply_container").show();
-		});
-		
-		// Place HTML from the cache object into the proper spot in the thread
-		jQuery(this).parent().hide();
-		jQuery("#reply_" + jQuery(this).attr("note_id")).html(cache.reply_form);
-		jQuery(replyDiv).show();
-		
-		// Reset values for our position in the thread
-		jQuery("#thread_create_comment_appliesTo").val(note_id);
-		jQuery("#thread_create_new_term_appliesTo").val(note_id);
-		jQuery("#thread_create_change_hierarchy_appliesTo").val(note_id);
-		jQuery("#thread_create_change_prop_value_appliesTo").val(note_id);
-		jQuery(".thread_note_submit_data").data("prefix", "thread_");
-		jQuery(".thread_note_submit_data").data("action", "thread");
-		jQuery(".thread_note_submit_data").data("ont_id", "<%= @notes.ontologyId %>");
-    });
-	
-	jQuery(".cancel_reply").live('click', function() {
-		jQuery("#" + jQuery(this).attr("note_id") + "_reply_link").show();
-		jQuery(this).parent().hide();
-	});
-	
-	jQuery(".response_head").live('click', function() {
-		var collapse = "#" + jQuery(this).parent().attr('id') + "_collapse";
-		jQuery(collapse).slideToggle();
-		jQuery(this).toggleClass("collapsed");
-	});
-
-	// Hide all
-	jQuery(".hide_all_responses").live('click', function(){
-		var note_id = jQuery(this).parents(".data_div").attr("id");
-		jQuery(".collapsible." + note_id).hide();
-	});
-	
-	// Show all
-	jQuery(".show_all_responses").live('click', function(){
-		var note_id = jQuery(this).parents(".data_div").attr("id");
-		jQuery(".collapsible." + note_id).show();
-	});
-});
-
+	// Ontology id
+	jQuery.data(document.body, "ontology_id", "<%= @ontology.ontologyId %>");
 </script>
 
 <% if @notes.nil? %>
@@ -258,7 +208,7 @@ jQuery(document).ready(function(){
 			<%= generate_notes_thread(@notes.associated, :root_id => @notes.id) %>
 		</div> 
 	<% else %>
-		<div id="responses_container" style="display: none;">
+		<div id="<%= @notes.id %>_responses_container" class="responses_container" style="display: none;">
 			<div id="responses_head">
 				<span class="section_head"><%= @notes_thread_title %></span> &nbsp;&nbsp;<span style="font-size: 80%;"> <a id="<%= @notes.id %>_hide_all_responses" class="hide_all_responses" href="javascript:void(0)">hide all</a> | <a id="<%= @notes.id %>_show_all_responses" class="show_all_responses" href="javascript:void(0)">show all</a></span>
 			</div>
@@ -268,12 +218,12 @@ jQuery(document).ready(function(){
 	<div id="top_level_reply">
 		<% applies_to = @notes.id %>
 		<% applies_to_type = "Note" %>
-		<%= render :partial => 'add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type, :action => 'thread_root', :add_text => "Add Reply" } %>
+		<%= render :partial => 'add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type, :action => 'root', :add_text => "Add Reply" } %>
 	</div>
 	
 	<div style="display: none;">
 		<div id="<%= @notes.id %>_hidden_form">
-			<%= render :partial => 'add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type, :exclude_js => true, :action => 'thread', :add_text => "Add Reply" } %>
+			<%= render :partial => 'add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type, :exclude_js => true, :action => 'thread', :force_prefix => true, :add_text => "Add Reply" } %>
 		</div>
 		<script type="text/javascript">
 			// Tricky. We're going to use the div hidden_form to get the html for a form we use later. 

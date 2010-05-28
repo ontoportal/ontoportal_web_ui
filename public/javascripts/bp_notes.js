@@ -15,13 +15,15 @@ jQuery(document).ready(function(){
 		**/
 	});
 	
-	jQuery(".create_note_submit").live('click', function() {
+	jQuery(".create_note_submit").live('click', function(event) {
+		event.preventDefault();
+		
 		var note_type = jQuery(this).attr("note_type");
 		var prefix = jQuery(this).data("prefix") == null ? "" : jQuery(this).data("prefix");
 		var action = jQuery(this).data("action");
 		var ONT = jQuery(this).data("ont_id");
 		var NOTES_URL = "/notes/";
-
+		
 		// Disable button, activate spinner and text
 		var button = this;
 		button_loading(button, prefix);
@@ -58,12 +60,12 @@ jQuery(document).ready(function(){
 						button_reset(button);
 						
 						// What do we do with the returned data?
-						if (action == "thread_root") {
+						if (action == "root") {
 							jQuery.get("/notes/ajax/single/" + data.ontologyId + "?noteid=" + data.id,
 									function(html) {
 										// Show the response container
-										jQuery("#responses_container").show();
-										jQuery("#responses_container").append(html);
+										jQuery("#" + data.appliesTo.id + "_responses_container").show();
+										jQuery("#" + data.appliesTo.id + "_responses_container").append(html);
 									}
 							);
 						} else if (action == "thread") {
@@ -113,7 +115,9 @@ jQuery(document).ready(function(){
 						var new_note_count = parseInt(jQuery("#note_count").text()) + 1;
 						jQuery("#note_count").text(new_note_count);
 						// Update the count for this concept in the cache (silently fails if we're not at a concept)
-						getCache(jQuery.data(document.body, "node_id"))[5] = new_note_count;
+						if (getCache(jQuery.data(document.body, "node_id")) != null) {
+							getCache(jQuery.data(document.body, "node_id"))[5] = new_note_count;
+						}
 						
 						// Move window to new note location (TODO: Possible future implementation)
 						//   window.scrollTo(0,$("#"+id).offset().top);
@@ -124,6 +128,8 @@ jQuery(document).ready(function(){
 					}
 			});
 		}
+		
+		return false;
 	});
 	
 });

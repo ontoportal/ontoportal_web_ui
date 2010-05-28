@@ -75,7 +75,7 @@
 			bar.css(opts.origin, newPos).css(opts.fixed, "100%");
 			A.css(opts.origin, 0).css(opts.split, newPos).css(opts.fixed, "100%");
 			B.css(opts.split, splitter._DA-bar._DA-newPos).css(opts.fixed, "100%");
-			/* Use this code to set a fixed height
+			/* Use this code to avoid fixed height (the commented out is original)
 			bar.css(opts.origin, newPos).css(opts.fixed, splitter._DF);
 			A.css(opts.origin, 0).css(opts.split, newPos).css(opts.fixed,  splitter._DF);
 			B.css(opts.split, splitter._DA-bar._DA-newPos).css(opts.fixed,  splitter._DF); */

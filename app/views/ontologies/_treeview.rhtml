@@ -235,12 +235,18 @@ jQuery(document).ready(function(){
 	setOntology("<%=@ontology.id%>");
 	jQuery("#sd_content").scrollTo(jQuery('span.active'));
 	
-	
+	// Set the cache for the first concept we retrieved
+	setCacheCurrent();	
 });
 
 
 function nodeClicked(node_id,node_label) {
-
+	// Get current html and store data in cache (to account for changes since the cache was retrieved)
+	setCacheCurrent();
+	
+	// Reset oTable for next node
+	oTable = null;
+	
 	if(node_id == 0){
 		alert("Sorry, we cannot display all the classes at this level in the hierarchy because there are too many of them. Please select another class or use the BioPortal Search to find a specific term in this ontology");
 		return;
@@ -254,6 +260,7 @@ function nodeClicked(node_id,node_label) {
 
 	if(getCache(node_id)!=null){
 		tabData = getCache(node_id)
+		oTable = tabData["notes_table"];
 		jQuery('#visualization_content').html(tabData[0]);
 		jQuery('#details_content').html(tabData[1]);
 		jQuery('#notes_content').html(tabData[2]);
@@ -295,15 +302,27 @@ function nodeClicked(node_id,node_label) {
 
 		  });
 	}	
-	
-
 }
 
+function setCacheCurrent() {
+	// Make all the columns in the notes table visible
+	if (oTable != null) {
+		oTable.fnSetColumnVis(1, true);
+		oTable.fnSetColumnVis(4, true);
+		//jQuery(".notes_list_table").parent().parent().children(".add_reply_button").before(jQuery(".notes_list_table"));
+		//jQuery("#notes_list_container div[class^=dataTables_]").remove();
+	}
 	
-	
-
-
-
+	var currentData = [];
+	currentData[0] = jQuery('#visualization_content').html();
+	currentData[1] = jQuery('#details_content').html();
+	currentData[2] = jQuery('#notes_content').html();
+	currentData[3] = jQuery('#mappings_content').html();
+	currentData[5] = jQuery('#note_count').html();
+	currentData[6] = jQuery('#mapping_count').html();
+	currentData["notes_table"] = oTable;
+	setCache(getConcept(), currentData);
+}
 
 </script>
 
