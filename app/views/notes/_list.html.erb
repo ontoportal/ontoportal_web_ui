@@ -28,6 +28,8 @@ jQuery.data(document.body, "note_colspan", "<%=note_colspan%>");
 jQuery.data(document.body, "ontology_id", "<%=@ontology.ontologyId%>");
 jQuery.data(document.body, "semi_uuid", "<%=@semi_uuid%>");
 
+// This will wire up a table with the dataTables config.
+// Needs to stay inline because IE won't recognize it in an external file.
 function wireTable(oTableNew) {
 	// Wire up table if it hasn't been done yet
 	oTable = oTableNew.dataTable({

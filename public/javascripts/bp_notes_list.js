@@ -49,7 +49,6 @@ function insert_note(link, note_id) {
 }
 
 // This will wire up a table with the dataTables config.
-// Needs to stay inline because IE won't recognize it in an external file.
 function wireTableWithData(oTableNew, aData) {
 	// Wire up table if it hasn't been done yet
 	oTable = oTableNew.dataTable({
