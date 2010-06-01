@@ -209,7 +209,7 @@
 		</div> 
 	<% else %>
 		<div id="<%= @notes.id %>_responses_container" class="responses_container" style="display: none;">
-			<div id="responses_head">
+			<div id="<%= @notes.id %>_responses_head" class="responses_head">
 				<span class="section_head"><%= @notes_thread_title %></span> &nbsp;&nbsp;<span style="font-size: 80%;"> <a id="<%= @notes.id %>_hide_all_responses" class="hide_all_responses" href="javascript:void(0)">hide all</a> | <a id="<%= @notes.id %>_show_all_responses" class="show_all_responses" href="javascript:void(0)">show all</a></span>
 			</div>
 		</div> 

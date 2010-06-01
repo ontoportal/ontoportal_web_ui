@@ -145,7 +145,6 @@
 
 	// Wire up the tabs in the 'Add Note' form box
 	jQuery(".<%=prefix%>note_action").live("click", function(){
-		console.log("tab clicked");
 		var prefix = "<%=prefix%>";
 		var spanId = jQuery(this).attr("id");
 		var noteTypeId = jQuery(this).attr("note_type");
