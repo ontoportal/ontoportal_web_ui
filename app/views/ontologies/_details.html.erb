@@ -167,7 +167,7 @@
 	            <ul class="bp_tagList" id="notes" style="width: 350px; padding: 10px">
 	                <%for note in @notes_cloud %>
 	                <li value="<%=note[1]%>">
-	                    <a href="/visualize/virtual/<%=@ontology.ontologyId%>?conceptid=<%=note[0]%>#notes"><%=note[0] %></a>
+	                    <a href="/visualize/virtual/<%=@ontology.ontologyId%>?conceptid=<%=note[2]%>#notes"><%=note[0]%></a>
 	                </li>
 	                <%end %>
 	            </ul>

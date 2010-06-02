@@ -1,4 +1,6 @@
 class OntologiesController < ApplicationController
+
+  require 'cgi'
   
   #caches_page :index
   
@@ -413,7 +415,8 @@ class OntologiesController < ApplicationController
     
     note_count_map.each do |concept_id, count|
       begin
-        note_count << [ DataAccess.getNode(ontology.id, concept_id, ontology.isView).label, count ]
+        concept = DataAccess.getNode(ontology.id, concept_id, ontology.isView)
+        note_count << [ concept.label, count, CGI.escape(concept.fullId_proper) ]
       rescue
         LOG.add :debug, "Failed to retrieve a concept for a note (likely it was from an earlier version of the ontology)"
       end
