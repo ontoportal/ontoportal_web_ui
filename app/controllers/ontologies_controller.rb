@@ -404,24 +404,27 @@ class OntologiesController < ApplicationController
   def calculate_note_counts(notes)
     note_count_map = {}
     note_count = []
-    ontology_id = notes[0].ontologyId
-    ontology = DataAccess.getLatestOntology(ontology_id)
+
+    unless notes.nil? || notes.empty?
+      ontology_id = notes[0].ontologyId
+      ontology = DataAccess.getLatestOntology(ontology_id)
     
-    notes.each do |note|
-      if note.appliesTo['type'].eql?("Class")
-        note_count_map[note.appliesTo['id']] = note_count_map[note.appliesTo['id']].nil? ? 1 : note_count_map[note.appliesTo['id']] += 1
+      notes.each do |note|
+        if note.appliesTo['type'].eql?("Class")
+          note_count_map[note.appliesTo['id']] = note_count_map[note.appliesTo['id']].nil? ? 1 : note_count_map[note.appliesTo['id']] += 1
+        end
+      end
+    
+      note_count_map.each do |concept_id, count|
+        begin
+          concept = DataAccess.getNode(ontology.id, concept_id, ontology.isView)
+          note_count << [ concept.label, count, CGI.escape(concept.fullId_proper) ]
+        rescue
+          LOG.add :debug, "Failed to retrieve a concept for a note (likely it was from an earlier version of the ontology)"
+        end
       end
     end
-    
-    note_count_map.each do |concept_id, count|
-      begin
-        concept = DataAccess.getNode(ontology.id, concept_id, ontology.isView)
-        note_count << [ concept.label, count, CGI.escape(concept.fullId_proper) ]
-      rescue
-        LOG.add :debug, "Failed to retrieve a concept for a note (likely it was from an earlier version of the ontology)"
-      end
-    end
-    
+
     note_count
   end
   
