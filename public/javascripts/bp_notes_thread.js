@@ -45,7 +45,7 @@ jQuery(document).ready(function(){
 	
 	jQuery(".response_head").live('click', function() {
 		var collapse = "#" + jQuery(this).parent().attr('id') + "_collapse";
-		jQuery(collapse).slideToggle();
+		jQuery(collapse).toggle();
 		jQuery(this).toggleClass("collapsed");
 	});
 

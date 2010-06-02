@@ -53,6 +53,10 @@
 	.spacer {
 		padding: .8em 0 0 0;
 		margin-left: .8em;
+	}
+	.response_spacer {
+		padding: .8em 0 0 0;
+		margin-left: .8em;
 		border-left: dotted thin lightGrey;
 	}
 	.create_reply {
@@ -75,11 +79,10 @@
 		float: left;
 		margin-bottom: -3em;
 		position: relative;
-		right: 1.5em;
-		width: 1.5em;
+		right: 2.3em;
+		width: 2.3em;
 	}
 	.response_container {
-		border-left: thin dotted lightGrey;
 		margin-left: .8em;
 		padding-left: 1.5em;
 	}
@@ -137,12 +140,13 @@
 	}
 	.reply_form_container {
 		background-color: #F5FAFA;
-		padding: 10px;
-		width: 770px;		
+		padding: 10px 0 10px 10px;
+		width: 770px;
+		margin-right: 1em;
 	}
 	.cancel_reply {
 		float: right;
-		padding-top: 10px;
+		margin: 0.5em -.3em 0 0;
 	}
 	
 	.divider {
@@ -162,11 +166,11 @@
 </style>
 
 <script type="text/javascript">
-	// Load external JS files
-	if (typeof BP_NOTES_THREAD_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_thread.js");
-
 	// Ontology id
 	jQuery.data(document.body, "ontology_id", "<%= @ontology.ontologyId %>");
+
+	// Load external JS files
+	if (typeof BP_NOTES_THREAD_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_thread.js");
 </script>
 
 <% if @notes.nil? %>

@@ -87,7 +87,7 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 	#bd #bd_content { display:block; float:left; padding-left:25px; }
 	#bd #bd_content.explore { width:95%; border-top:1px solid #e9eaeb; padding-left:0; padding-bottom:5px; }
 
-	#sidebar { float:left; width:25%; margin:0 0 20px 0;  font-size:90%;position:relative;min-height:450px; height:600px;}
+	#sidebar { float:left; width:25%; margin:0 0 20px 0; font-size:90%; position:relative; min-height:450px; height:600px; min-width:250px; }
 	#sidebar #sd_hd { background:#dadde0; height:24px; border-bottom:1px solid #bcc6d0;  display:block; float:left; width:100%;}
 	#sidebar #sd_hd h2 { padding:5px 0 0 25px; font-weight:normal; }
 	#sidebar #sd_content { display:block; 
@@ -103,7 +103,7 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 	#sidebar #sd_ft { float:left; width:300px; color:#7f7f7f; }
 	#sidebar #sd_ft p { padding:5px 0 0 25px; }
 
-	#bd #bd_content #container { position:relative; background:url("/images/layout/subnav_bg.png") repeat-x; width: 75%; float: left; }
+	#bd #bd_content #container { position:relative; background:url("/images/layout/subnav_bg.png") repeat-x; width: 75%; min-width: 400px; float: left; }
 	#bd #bd_content #container .tabs { height:24px; float:left; }
 	#bd #bd_content #container .tabs ul { margin:0; float:left; }
 	#bd #bd_content #container .tabs li { margin:0; }

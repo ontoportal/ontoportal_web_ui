@@ -38,18 +38,19 @@ module NotesHelper
               <a class="create_reply" note_id="#{note.id}" href="javascript:void(0)">reply</a>
             </div>
             <div class="reply_compose" id="note_#{note.id}_reply">
-              <a href="javascript:void(0)" note_id="#{note.id}" class="cancel_reply"><b>close</b></a>
+              <a href="javascript:void(0)" note_id="#{note.id}" class="cancel_reply ui-icon ui-icon-closethick"></a>
               <div id="reply_#{note.id}" class="reply_form_container"></div>
             </div>
+            <div class="spacer"></div>
+            <div class="response_children" id="#{note.id}_children">
           </div>
-          <div class="spacer"></div>
-          <div class="response_children" id="#{note.id}_children">
     html
     
     html2 = note.associated.empty? ? "" : generate_notes_thread(note.associated, params) 
     
     html3 = <<-html
           </div>
+          <div class="response_spacer"></div>
         </div>
       </div>
     html
