@@ -9,7 +9,12 @@
 <% unless defined?(exclude_js) %>
 	<script type="text/javascript">
 		if (typeof BP_NOTES_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes.js");
-		if (typeof BP_FORM_COMPLETE_LOADED == 'undefined') jQuery.getScript("/javascripts/widgets/form_complete.js");
+		if (typeof BP_FORM_COMPLETE_LOADED == 'undefined') {
+			jQuery.getScript("/javascripts/widgets/form_complete.js");
+		} else {
+			// Re-run the setup to wire autocomplete fields
+			formComplete_setup_functions();
+		}
 	</script>
 <% end %>
 

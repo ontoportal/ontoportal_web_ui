@@ -196,7 +196,6 @@
 		else if ( opts.resizeToWidth && !$.browser.msie ) {
 			// Add a resize event binding on the body for when a scrollbar appears
 			$(document.body).watch("width", function(){
-				console.log("body resize");
 				splitter.trigger("resize"); 
 			});
 		}

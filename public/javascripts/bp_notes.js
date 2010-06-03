@@ -5,16 +5,6 @@
 var BP_NOTES_LOADED = true;
 
 jQuery(document).ready(function(){
-	jQuery(window).bind('hashchange', function() {
-		var hash = window.location.hash || '#details';
-		/**
-		tabContainers.hide();
-		tabContainers.filter(hash).show();
-		jQuery('div.tabs ul.tabNavigation a').removeClass('selected');
-		jQuery('a[hash=' + hash + ']').addClass('selected');
-		**/
-	});
-	
 	// Wire up the "Add Reply" link
 	jQuery('.add_reply_button').live("click", function(){
 		if (jQuery(this).parent().children(".create_note_container").is(':visible')) {
