@@ -1,9 +1,16 @@
 <script src="/javascripts/jquery.rating.pack.js" type="text/javascript" charset="utf-8"></script>
 <link rel="stylesheet" href="/stylesheets/layout/jquery.rating.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
+<script type="text/javascript">
+  submitReview = function() {
+    tb_remove();
+    jQuery('input.star').rating();
+    jQuery("#reviews_content").children("div:first").before(jQuery("#review_data_temp").html());
+    jQuery("#review_data_temp").html("");
+  }
+</script>
 
-
-<% form_for(:review,:url=>reviews_path,:html=>{:onsubmit=>"ajaxForm(this,'##{@review.ontology_id}_review',function(){tb_remove();jQuery('input.star').rating();} );return false;"}) do  %>
+<% form_for(:review,:url=>reviews_path,:html=>{:onsubmit=>"ajaxForm(this, '#review_data_temp', submitReview); return false;"}) do  %>
 
 
 <%=hidden_field :review,:ontology_id%>

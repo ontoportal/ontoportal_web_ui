@@ -412,12 +412,12 @@ function ajaxForm(form, target, callback) {
   jQuery.post(form.action, inputs.join('&'), function(data) { 
     jQuery(target).html(data);
 
-    if(callback)
+    if (callback) {
       callback();
-  
-      tb_init('a.thickbox, area.thickbox, input.thickbox');
     }
-  );
+
+    tb_init('a.thickbox, area.thickbox, input.thickbox');
+  });
          
   // by default - we'll always return false so it doesn't redirect the user.
   return false;
