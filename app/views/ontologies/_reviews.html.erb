@@ -14,7 +14,7 @@
         <thead>
             <tr>
                 <th>
-                    Review By <%=review.user.username %><%unless review.project.nil? %> From Project <%=link_to review.project.name,project_path(review.project) %><%end %><%if isOwner?(review.user_id) %><%=link_to "Edit Review",edit_review_path(review) %><%end %>
+                    Review By <%=review.user.username %><%unless review.project.nil? %> From Project <%=link_to review.project.name,project_path(review.project) %><%end %><%if isOwner?(review.user_id) %>&nbsp;&nbsp;<%=link_to "Edit Review",edit_review_path(review) %><%end %>
                 </th>
             </tr>
         </thead>
@@ -27,7 +27,6 @@
                           <%if rating.value.eql?(0)%>
                             <span style="float:left;">Not Rated</span>
                           <%else%>
-                          <%= "Rating value: #{rating.value}, Type: #{rating.rating_type_id}, id: #{rating.id}<br/>" %>
                             <input name="star_<%=rating.id%>" type="radio" class="star" value="1" <% if rating.value.to_i.eql?(1)%> checked="checked" <%end%>disabled="disabled" /> 
                             <input name="star_<%=rating.id%>" type="radio" class="star" value="2" <% if rating.value.to_i.eql?(2)%> checked="checked" <%end%>disabled="disabled" /> 
                             <input name="star_<%=rating.id%>" type="radio" class="star" value="3" <% if rating.value.to_i.eql?(3)%> checked="checked" <%end%>disabled="disabled" /> 
