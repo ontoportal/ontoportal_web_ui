@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="/stylesheets/layout/jquery.rating.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<script src="/javascripts/jquery.rating.pack.js" type="text/javascript" charset="utf-8"></script>
+
 <div id="reviews_content" style="display:none;" class="tab_content">
     <%if session[:user].nil? %>
 	    <br>
@@ -17,21 +20,28 @@
         </thead>
         <tr>
             <td>
-                <div class="star_ratings">
-                    <%for rating in review.ratings %>
+              <div class="star_ratings">
+                <ul>
+                  <%for rating in review.ratings%>       
                     <li>
-                        <%if rating.value.eql?(0) %>
-	                        <span style="float:left;">Not Rated</span>
-                        <%else %>
-                        	<input name="star_<%=rating.id%>" type="radio" class="star" value="1"<% if rating.value.to_i.eql?(1) %> checked="checked"<%end %>disabled="disabled" /> <input name="star_<%=rating.id%>" type="radio" class="star" value="2"<% if rating.value.to_i.eql?(2) %> checked="checked"<%end %>disabled="disabled" /> <input name="star_<%=rating.id%>" type="radio" class="star" value="3"<% if rating.value.to_i.eql?(3) %> checked="checked"<%end %>disabled="disabled" /> <input name="star_<%=rating.id%>" type="radio" class="star" value="4"<% if rating.value.to_i.eql?(4) %> checked="checked"<%end %>disabled="disabled" /> <input name="star_<%=rating.id%>" type="radio" class="star" value="5"<% if rating.value.to_i.eql?(5) %> checked="checked"<%end %>disabled="disabled" />
-						<%end %>
-                        <b>&nbsp;<%=rating.rating_type.name %></b>
-                    </li>
-                    <%end %>
-                </div>
-                <p>
-                    <%=review.review %>
-                </p>
+                          <%if rating.value.eql?(0)%>
+                            <span style="float:left;">Not Rated</span>
+                          <%else%>
+                          <%= "Rating value: #{rating.value}, Type: #{rating.rating_type_id}, id: #{rating.id}<br/>" %>
+                            <input name="star_<%=rating.id%>" type="radio" class="star" value="1" <% if rating.value.to_i.eql?(1)%> checked="checked" <%end%>disabled="disabled" /> 
+                            <input name="star_<%=rating.id%>" type="radio" class="star" value="2" <% if rating.value.to_i.eql?(2)%> checked="checked" <%end%>disabled="disabled" /> 
+                            <input name="star_<%=rating.id%>" type="radio" class="star" value="3" <% if rating.value.to_i.eql?(3)%> checked="checked" <%end%>disabled="disabled" /> 
+                            <input name="star_<%=rating.id%>" type="radio" class="star" value="4" <% if rating.value.to_i.eql?(4)%> checked="checked" <%end%>disabled="disabled" /> 
+                            <input name="star_<%=rating.id%>" type="radio" class="star" value="5" <% if rating.value.to_i.eql?(5)%> checked="checked" <%end%>disabled="disabled" />
+                          <%end%>
+                        <b>&nbsp;<%=rating.rating_type.name%></b>
+                      </li>
+                  <%end%>
+                </ul>
+              </div>
+              <p>
+                  <%=review.review %>
+              </p>
             </td>
         </tr>
         <tr>

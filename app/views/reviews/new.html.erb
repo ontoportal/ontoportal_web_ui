@@ -3,7 +3,7 @@
 
 
 
-<% form_for(:review,:url=>reviews_path,:html=>{:onsubmit=>"ajaxForm(this,'##{@review.ontology_id}_review',function(){tb_remove();$('input.star').rating();} );return false;"}) do  %>
+<% form_for(:review,:url=>reviews_path,:html=>{:onsubmit=>"ajaxForm(this,'##{@review.ontology_id}_review',function(){tb_remove();jQuery('input.star').rating();} );return false;"}) do  %>
 
 
 <%=hidden_field :review,:ontology_id%>

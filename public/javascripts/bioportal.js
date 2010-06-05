@@ -388,41 +388,39 @@ function updateContent(){
 
 //------------------------------------- JQuery Rewrite Functions ---------------------------------
 
- function ajaxForm(form,target,callback){
-      // let's start the jQuery while I wait.
-     // step 1: onload - capture the submit event on the form.
-    
-         // now we're going to capture *all* the fields in the
-         // form and submit it via ajax.
-         
-         // :input is a macro that grabs all input types, select boxes
-         // textarea, etc.  Then I'm using the context of the form from 
-         // the initial '#contactForm' to narrow down our selector
-         var inputs = [];
+function ajaxForm(form, target, callback) {
+  // let's start the jQuery while I wait.
+  // step 1: onload - capture the submit event on the form.
+  
+  // now we're going to capture *all* the fields in the
+  // form and submit it via ajax.
+   
+  // :input is a macro that grabs all input types, select boxes
+  // textarea, etc.  Then I'm using the context of the form from 
+  // the initial '#contactForm' to narrow down our selector
+  var inputs = [];
 
-         $(form).find(':input').each(function() {
-           if (this.type=="checkbox" && this.checked){
-            inputs.push(this.name + '=' + escape(this.value));
-           }else if (this.type!="checkbox"){
-            inputs.push(this.name + '=' + escape(this.value));
-           }
-         })
-         // now if I join our inputs using '&' we'll have a query string
-         jQuery.post(form.action, inputs.join('&'), function(data) { 
-//             alert(data)
-			jQuery(target).html(data);
-			if(callback)
-			    callback();
-			
-			    tb_init('a.thickbox, area.thickbox, input.thickbox');
-            
-           }
-           
-         ); // checkout http://jquery.com/api for more syntax and options on this method.
+  jQuery(form).find(':input').each(function() {
+    if (this.type == "checkbox" || this.type == "radio" && this.checked) {
+      inputs.push(this.name + '=' + escape(this.value));
+    } else if (this.type != "checkbox" && this.type != "radio") {
+      inputs.push(this.name + '=' + escape(this.value));
+    }
+  });
+ 
+  // now if I join our inputs using '&' we'll have a query string
+  jQuery.post(form.action, inputs.join('&'), function(data) { 
+    jQuery(target).html(data);
+
+    if(callback)
+      callback();
+  
+      tb_init('a.thickbox, area.thickbox, input.thickbox');
+    }
+  );
          
-         // re-test...
-         // by default - we'll always return false so it doesn't redirect the user.
-         return false;
+  // by default - we'll always return false so it doesn't redirect the user.
+  return false;
 }
 
 function update_tab(ontology,concept){

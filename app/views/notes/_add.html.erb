@@ -13,7 +13,10 @@
 			jQuery.getScript("/javascripts/widgets/form_complete.js");
 		} else {
 			// Re-run the setup to wire autocomplete fields
-			formComplete_setup_functions();
+			if (typeof jQuery.autocomplete === 'function') {
+			  // If the function doesn't exist then this init should happen in the normal form_complete.js init
+			  formComplete_setup_functions();
+			}
 		}
 	</script>
 <% end %>
