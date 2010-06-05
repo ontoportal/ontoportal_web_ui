@@ -5,7 +5,11 @@
   submitReview = function() {
     tb_remove();
     jQuery('input.star').rating();
-    jQuery("#reviews_content").children("div:first").before(jQuery("#review_data_temp").html());
+    if (jQuery("#reviews_container").children("div:first").length) {
+      jQuery("#reviews_container").children("div:first").before(jQuery("#review_data_temp").html());
+    } else {
+      jQuery("#reviews_container").html(jQuery("#review_data_temp").html());
+    }
     jQuery("#review_data_temp").html("");
   }
 </script>
