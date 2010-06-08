@@ -6,7 +6,7 @@ class HomeController < ApplicationController
     @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
     @groups = DataAccess.getGroups()
     
-    active_onts_by_notes_query = "select ontology_id,count(ontology_id) as note_count from margin_notes as note  group by ontology_id order by note_count desc"
+    active_onts_by_notes_query = "select ontology_id,count(ontology_id) as note_count from notes_indices as note  group by ontology_id order by note_count desc"
      @active_totals = ActiveRecord::Base.connection.select_rows(active_onts_by_notes_query);
 
      active_onts_by_maps_query = "select source_ont,count(source_ont) as map_count from mappings group by source_ont order by map_count desc"
@@ -48,9 +48,8 @@ class HomeController < ApplicationController
     @active_totals = @active_totals[0,5]
 
     @categories = DataAccess.getCategories()
-    @last_notes= MarginNote.find(:all,:order=>'created_at desc',:limit=>5)    
-    @last_mappings = Mapping.find(:all,:order=>'created_at desc',:limit=>5)
-    
+    @last_notes = NotesIndex.find(:all, :order => 'created desc', :limit => 5)    
+    @last_mappings = Mapping.find(:all, :order => 'created_at desc', :limit => 5)
     
     #build hash for quick grabbing
     @ontology_hash = {}

@@ -160,6 +160,26 @@ module NotesHelper
     end
   end
   
+  def get_applies_to_url(ontology_id, type, id)
+    # We don't use helper methods (like link_to or url_for) here because this can get called from the controller
+    begin
+      case type
+      when "Class"
+        return "/visualize/#{ontology_id}/?conceptid=#{CGI.escape(id)}#notes"
+      when "Note"
+        ontology = DataAccess.getOntology(ontology_id)
+        return "/notes/virtual/#{ontology.ontologyId}?noteid=#{id}" 
+      when "Individual"
+      when "Property"
+      when "Ontology"
+        ontology = DataAccess.getOntology(ontology_id)
+        return "/ontologies/virtual/#{ontology.ontologyId}#notes" 
+      end
+    rescue Exception => e
+      return ""
+    end
+  end
+  
   def get_note_type_text(note_type)
     case note_type
     when "Comment"
