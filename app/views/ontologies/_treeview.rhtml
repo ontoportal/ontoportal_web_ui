@@ -145,9 +145,10 @@
 .simpleTree .active
 {
 	cursor: default;
-	background-color:#e2ebf0;
-	padding:0px 2px;
-	border: 1px dashed #ddd;
+	background-color: #234979;
+	padding: 2px 2px 0;
+	border: 1px solid #234979;
+	color: white;
 }
 #drag_container
 {
@@ -211,24 +212,14 @@ jQuery(document).ready(function(){
 	simpleTreeCollection = jQuery('.simpleTree').simpleTree({
 		autoclose: false, drag:false,
 		afterClick:function(node){
-//			alert("text-"+$('span:first',node).text());
 			nodeClicked(jQuery(node).attr("id"),jQuery('span:first',node).text())
 		},
 		afterDblClick:function(node){
-			//alert("text-"+$('span:first',node).text());
 		},
 		afterAjax:function()
 		{
-			
-			//alert('Loaded');
 		},
 		animate:true
-		//,docToFolderConvert:true
-		
-		
-	// Set values
-	
-		
 	});
 	
 	setConcept("<%=@concept.id%>");
@@ -236,7 +227,22 @@ jQuery(document).ready(function(){
 	jQuery("#sd_content").scrollTo(jQuery('span.active'));
 	
 	// Set the cache for the first concept we retrieved
-	setCacheCurrent();	
+	setCacheCurrent();
+	
+	jQuery("#sd_expand").addClass("expand-down");
+	jQuery("#sd_expand").click(function(){
+	  if (jQuery(this).hasClass("expand-down")) {
+	    jQuery(this).removeClass("expand-down");
+	    jQuery("#sd_content").removeClass("sd_max_height");
+	    jQuery(this).addClass("expand-up");
+      jQuery(window).scrollTo(jQuery('span.active'));
+	  } else {
+      jQuery(this).removeClass("expand-up");
+      jQuery(this).addClass("expand-down")
+      jQuery("#sd_content").addClass("sd_max_height");
+      jQuery("#sd_content").scrollTo(jQuery('span.active'));
+	  }
+	});	
 });
 
 

@@ -85,18 +85,41 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
 */
 	
 	#bd #bd_content { display:block; float:left; padding-left:25px; }
-	#bd #bd_content.explore { width:95%; border-top:1px solid #e9eaeb; padding-left:0; padding-bottom:5px; }
+	#bd #bd_content.explore { width:95%; border-top:1px solid #e9eaeb; padding-left:0; }
 
-	#sidebar { float:left; width:25%; margin:0 0 20px 0; font-size:90%; position:relative; min-height:450px; height:600px; min-width:250px; }
+	#sidebar { float:left; width:25%; font-size:90%; position:relative; min-height:450px; height:600px; min-width:250px; }
 	#sidebar #sd_hd { background:#dadde0; height:24px; border-bottom:1px solid #bcc6d0;  display:block; float:left; width:100%;}
 	#sidebar #sd_hd h2 { padding:5px 0 0 25px; font-weight:normal; }
-	#sidebar #sd_content { display:block; 
-	    /*padding:0 0 25px 25px;*/
-        overflow:auto;
-	     float:left;
-	     width:100%;
-	     height:100%;
-	     min-height:350px; }
+	#sidebar #sd_content { 
+    display:block; 
+    overflow:auto;
+    float:left;
+    width:100%;
+    height:100%;
+    min-height:350px;
+    margin-bottom:8px;
+  }
+  #sidebar .sd_max_height {
+    max-height:600px; 
+  }
+  #sidebar .expand-down {
+    width: 100%;
+    height: 8px;
+    background: url("/images/expand-down.gif") repeat-x;
+    cursor: pointer;
+    float: left;
+    position: absolute;
+    bottom: 0;
+  }
+  #sidebar .expand-up {
+    width: 100%;
+    height: 8px;
+    background: url("/images/expand-up.gif") repeat-x;
+    cursor: pointer;
+    float: left;
+    position: absolute;
+    bottom: 0;
+  }
 	     
 	#grab-point{background:url('/images/layout/bar-ext.gif') repeat-y;width:5px;height:100%;min-height:350px;position:absolute;top:24px;right:0;border-right:1px solid #ccc;border-left:1px solid #ccc;}
 	     

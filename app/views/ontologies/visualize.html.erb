@@ -133,6 +133,7 @@
 						<h2><%=link_to "View Ontology Summary", ontology_url(:id => @ontology.id)%></h2>
 					<%end%>
 			</div>
+			
 			<div id="qsearch" >
 				Jump To:
 					<input type="textbox" id="search_box" size="30"/>
@@ -140,10 +141,15 @@
 					<input type="hidden" id="jump_to_concept_id">
 				
 				&nbsp;<a class="thickbox" href ="#TB_inline?height=300&width=300&inlineId=legend"> Legend <img src="/stylesheets/layout/images/help.png" width="16" height="16" alt="Help"></a>
-			</div>		
-			<div id="sd_content">
+			</div>
+			
+			<div id="sd_content" class="sd_max_height">
 				<%=render :partial => '/ontologies/treeview'%>
 			</div>
+			
+      <div id="sd_expand">
+        &nbsp;
+      </div>
 			
 			<div style="clear:both;"></div>
 		</div>
