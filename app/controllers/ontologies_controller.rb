@@ -126,7 +126,7 @@ class OntologiesController < ApplicationController
         redirect_to ontology_path(:id=>params[:id])
       else
         if @ontology.isView.eql?("true")
-          redirect_to ontology_path(@ontology.viewOnOntologyVersionId) 
+          redirect_to ontology_path(@ontology.viewOnOntologyVersionId) + "#views"
         else
           redirect_to ontology_path(@ontology)
         end
@@ -339,7 +339,7 @@ class OntologiesController < ApplicationController
           #cleaning out the cache
           parent_ontology=DataAccess.getOntology(@ontology.viewOnOntologyVersionId)
           CACHE.delete("views::#{parent_ontology.ontologyId}")
-          redirect_to '/ontologies/'+@ontology.viewOnOntologyVersionId
+          redirect_to '/ontologies/'+@ontology.viewOnOntologyVersionId+'#views'
         else
           redirect_to ontology_path(@ontology)
         end
