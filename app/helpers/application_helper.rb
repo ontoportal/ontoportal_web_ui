@@ -53,6 +53,8 @@ module ApplicationHelper
     username
   end
   
+  # end Notes-related helpers
+  
   def remove_owl_notation(string)
     unless string.nil?
       strings = string.split(":")

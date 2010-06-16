@@ -52,16 +52,15 @@ class OntologyWrapper
   attr_accessor :viewOnOntologyVersionId
   
   
-  FILTERS={
-  "All"=>0,
-  "OBO Foundry"=>1,
-  "UMLS"=>2,
-  "WHO" =>3,
-  "HL7"=>4
-  
+  FILTERS = {
+    "All"=>0,
+    "OBO Foundry"=>1,
+    "UMLS"=>2,
+    "WHO" =>3,
+    "HL7"=>4
   }
   
-  STATUS={
+  STATUS = {
     "Waiting For Parsing"=>1,
     "Parsing"=>2,
     "Ready"=>3,
@@ -69,8 +68,7 @@ class OntologyWrapper
     "Not Applicable"=>5
   }
   
-  FORMAT=["OBO","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE","LEXGRID-XML","RRF"]
-    
+  FORMAT = ["OBO","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE","LEXGRID-XML","RRF"]
     
   def views
     return DataAccess.getViews(self.ontologyId)
@@ -130,25 +128,23 @@ class OntologyWrapper
   end
   
   def load_reviews
-
-      if CACHE.get("#{self.ontologyId}::ReviewCount").nil?
-          count = Review.count(:conditions=>{:ontology_id=>self.ontologyId})
-          CACHE.set("#{self.ontologyId}::ReviewCount",count)
-          return count
-       else
-          return CACHE.get("#{self.ontologyId}::ReviewCount")
-       end
+    if CACHE.get("#{self.ontologyId}::ReviewCount").nil?
+      count = Review.count(:conditions=>{:ontology_id=>self.ontologyId})
+      CACHE.set("#{self.ontologyId}::ReviewCount",count)
+      return count
+    else
+      return CACHE.get("#{self.ontologyId}::ReviewCount")
+    end
   end
   
   def load_projects
-
     if CACHE.get("#{self.ontologyId}::ProjectCount").nil?
-        count = Project.count(:conditions=>"uses.ontology_id = '#{self.ontologyId}'",:include=>:uses)
-        CACHE.set("#{self.ontologyId}::ProjectCount",count)
-        return count
-     else
-        return CACHE.get("#{self.ontologyId}::ProjectCount")
-     end
+      count = Project.count(:conditions=>"uses.ontology_id = '#{self.ontologyId}'",:include=>:uses)
+      CACHE.set("#{self.ontologyId}::ProjectCount",count)
+      return count
+    else
+      return CACHE.get("#{self.ontologyId}::ProjectCount")
+    end
   end
  
   def to_param    
@@ -156,7 +152,7 @@ class OntologyWrapper
   end
   
   def topLevelNodes(view=false)
-       DataAccess.getTopLevelNodes(self.id,view)     
+     DataAccess.getTopLevelNodes(self.id,view)     
   end
   
   def metrics
@@ -167,6 +163,11 @@ class OntologyWrapper
   def is_latest?
     latest = DataAccess.getLatestOntology(self.ontologyId)
     return latest.id.eql? self.id
+  end
+  
+  # Generates a PURL address for this ontology
+  def purl
+    return "http://purl.bioontology.org/ontology/#{self.abbreviation}"
   end
 
 end
