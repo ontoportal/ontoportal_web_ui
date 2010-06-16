@@ -71,7 +71,8 @@
 		
 		// Formats the Jump To search results
 		function formatItem(row) {
-		  var regex = new RegExp( '(' + jQuery("#search_box").val() + ')', 'gi' );
+		  var keywords = jQuery("#search_box").val().split(' ').join('|');
+		  var regex = new RegExp( '(' + keywords + ')', 'gi' );
 		 	return row[0].replace(regex, "<b><span style='color:#234979;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
 		}
 		
