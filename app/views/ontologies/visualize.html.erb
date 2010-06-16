@@ -57,7 +57,7 @@
 			if( !!li.extra ){
 				var sValue = jQuery("#jump_to_concept_id").val();
 				document.location="/visualize/<%=@ontology.id%>/?conceptid="+encodeURIComponent(sValue)+"&jump_to_nav=true";
-				jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>' }); 
+				jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false }); 
 				return;
 			}
 		}
