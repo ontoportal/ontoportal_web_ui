@@ -141,7 +141,7 @@ group such as ontologies from the <a href = "http://www.obofoundry.org/">OBO Fou
 		
 		
 	<tr>	
-	<th>Filter by Category</td><td class="top"><select onclick ="filterBySelection(this)"  name="cat">
+	<th>Filter by Category</td><td class="top"><select onchange="filterBySelection(this)"  name="cat">
 		<option value="0" selected="selected">All Categories</option>
 			<%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
 			<%for cat in cats%>
