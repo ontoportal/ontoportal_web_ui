@@ -17,39 +17,38 @@
 <script type="text/javascript">
     // Used to provide default text in fields
     jQuery(document).ready(function(){
-        jQuery(".defaultText").each(function(){
-            if ($(this).val() == this.title) {
-                jQuery(this).addClass("defaultTextActive");
-                jQuery(this).val(jQuery(this)[0].title);
-            }
-            else {
-                jQuery(this).removeClass("defaultTextActive");
-            }
-        });
-        
-        jQuery(".defaultText").focus(function(srcc){
-            if ($(this).val() == $(this)[0].title) {
-                $(this).removeClass("defaultTextActive");
-                $(this).val("");
-            }
-        });
-        
-        jQuery(".defaultText").blur(function(){
-            if ($(this).val() == "") {
-                $(this).addClass("defaultTextActive");
-                $(this).val($(this)[0].title);
-            }
-        });
-        
-        jQuery(".defaultText").blur();
+      jQuery(".defaultText").each(function(){
+        if ($(this).val() == this.title) {
+          jQuery(this).addClass("defaultTextActive");
+          jQuery(this).val(jQuery(this)[0].title);
+        } else {
+          jQuery(this).removeClass("defaultTextActive");
+        }
+      });
+      
+      jQuery(".defaultText").focus(function(srcc){
+        if ($(this).val() == $(this)[0].title) {
+          $(this).removeClass("defaultTextActive");
+          $(this).val("");
+        }
+      });
+      
+      jQuery(".defaultText").blur(function(){
+        if ($(this).val() == "") {
+          $(this).addClass("defaultTextActive");
+          $(this).val($(this)[0].title);
+        }
+      });
+      
+      jQuery(".defaultText").blur();
     });
     
     jQuery("form").submit(function(){
-        jQuery(".defaultText").each(function(){
-            if ($(this).val() == this.title) {
-                $(this).val("");
-            }
-        });
+      jQuery(".defaultText").each(function(){
+          if ($(this).val() == this.title) {
+              $(this).val("");
+          }
+      });
     });
 </script>
 <div style="margin:10px;">
@@ -144,7 +143,7 @@
 	                Prefered Name Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2000/01/rdf-schema#label">rdfs:label</a>)
 	            </th>
 	            <td>
-	                <%=text_field :ontology,:preferredNameSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
+	                <%=text_field :ontology, :preferredNameSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
 	            </td>
 	        </tr>
 	        <tr>
@@ -152,7 +151,7 @@
 	                Synonym Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2004/02/skos/core#altLabel">skos:altLabel</a>)
 	            </th>
 	            <td>
-	                <%=text_field :ontology,:synonymSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
+	                <%=text_field :ontology, :synonymSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
 	            </td>
 	        </tr>
 	        <tr>
@@ -160,7 +159,7 @@
 	                Definition Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2004/02/skos/core#definition">skos:definition</a>)
 	            </th>
 	            <td>
-	                <%=text_field :ontology,:documentationSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
+	                <%=text_field :ontology, :documentationSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
 	            </td>
 	        </tr>
 	        <tr>
@@ -168,7 +167,7 @@
 	                Author Property (Owl Only) (default: <a target="_blank" href="http://purl.org/dc/elements/1.1/creator">dc:creator</a>)
 	            </th>
 	            <td>
-	                <%=text_field :ontology,:authorSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
+	                <%=text_field :ontology, :authorSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
 	            </td>
 	        </tr>
         <%end %>
