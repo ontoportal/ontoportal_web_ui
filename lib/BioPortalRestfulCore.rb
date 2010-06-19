@@ -161,7 +161,7 @@ class BioPortalRestfulCore
   def self.getTopLevelNodes(params)
     params[:concept_id] = "root"
    
-    uri_gen = BioPortalResources::Concept.new(params, 200)
+    uri_gen = BioPortalResources::Concept.new(params, 2100)
     uri = uri_gen.generate_uri
     
     LOG.add :debug, "Retrieve top level nodes"
