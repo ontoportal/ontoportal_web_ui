@@ -104,21 +104,25 @@ h1 a:hover, h2 a:hover { text-decoration:underline; }
   }
   #sidebar .expand-down {
     width: 100%;
-    height: 8px;
-    background: url("/images/expand-down.gif") repeat-x;
-    cursor: pointer;
+    height: 5px;
+    /** height: 8px; **/
+    /** background: url("/images/expand-down.gif") repeat-x; **/
+    /** cursor: pointer; **/
     float: left;
     position: absolute;
     bottom: 0;
+    background: #DADDE0;
   }
   #sidebar .expand-up {
     width: 100%;
-    height: 8px;
-    background: url("/images/expand-up.gif") repeat-x;
-    cursor: pointer;
+    height: 5px;
+    /** height: 8px; **/
+    /** background: url("/images/expand-up.gif") repeat-x; **/
+    /** cursor: pointer; **/
     float: left;
     position: absolute;
     bottom: 0;
+    background: #DADDE0;
   }
 	     
 	#grab-point{background:url('/images/layout/bar-ext.gif') repeat-y;width:5px;height:100%;min-height:350px;position:absolute;top:24px;right:0;border-right:1px solid #ccc;border-left:1px solid #ccc;}
