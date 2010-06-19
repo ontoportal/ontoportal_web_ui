@@ -110,9 +110,9 @@
     <div style="width:500px">
         <span class="asterik" style="float:right;">* fields are required</span>
         <%if @ontology.ontologyId.nil? %>
-        <h1>Submit New View</h1>
+          <h1>Submit New View</h1>
         <%else %>
-        <h1> Submit New View</h1>
+          <h1>Submit New View Version</h1>
         <%end %>
     </div>
     <%if @new %>
@@ -215,16 +215,16 @@
                             </td>
                         </tr>
                     </tbody>
-					<tbody id="rrf_options" class="format_options">
-				        <tr>
-				            <th>
-				                Target Terminologies (RRF Only)
-				            </th>
-				            <td>
-				                <%=text_field :ontology, :targetTerminologies, :title => 'Target Terminologies' %>
-				            </td>
-				        </tr>
-					</tbody>
+          					<tbody id="rrf_options" class="format_options">
+          				        <tr>
+          				            <th>
+          				                Target Terminologies (RRF Only)
+          				            </th>
+          				            <td>
+          				                <%=text_field :ontology, :targetTerminologies, :title => 'Target Terminologies' %>
+          				            </td>
+          				        </tr>
+          					</tbody>
                 </table>
             </td>
         </tr>
