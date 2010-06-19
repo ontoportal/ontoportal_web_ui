@@ -117,7 +117,7 @@ class BioPortalResources
     class PathToRoot < BioPortalResources
       def initialize(params)
         super(params)
-        @uri << "/path/%ONT%/?source=%CONC%&target=root&maxnumchildren=1000"
+        @uri << "/path/%ONT%/?source=%CONC%&target=root&maxnumchildren=2100"
       end
     end
     
