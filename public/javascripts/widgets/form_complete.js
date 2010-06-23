@@ -50,11 +50,15 @@ jQuery(document).ready(function(){
 });
 
 function formComplete_formatItem(row) {
+  var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
+  var keywords = jQuery(this.extraParams.input).val().replace(specials, "\\$&").split(' ').join('|');
+  var regex = new RegExp( '(' + keywords + ')', 'gi' );
+
 	// row[7] is the ontology_id, only included when searching multiple ontologies
 	if (row[7] == undefined) {
-		var result = row[5] + " <span style='font-size:7pt;color:blue;'>(" + row[2] + ")</span>";
+		var result = row[5].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:7pt;color:blue;'>(" + row[2] + ")</span>";
 	} else {
-		var result = row[5] + " <span style='font-size:7pt;color:blue;'>(" + row[2] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + row[7] + "</span>";
+		var result = row[5].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:7pt;color:blue;'>(" + row[2] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + row[7] + "</span>";
 	}
  	return result;
 }

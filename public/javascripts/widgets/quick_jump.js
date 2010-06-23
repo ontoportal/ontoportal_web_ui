@@ -74,8 +74,8 @@ function jumpTo_jumpToValue(li) {
 }
 
 function jumpTo_formatItem(row, position, count) {
-  var keywords = jQuery("#BP_search_box").val().split(' ').join('|');
-  var regex = new RegExp( '(' + keywords + ')', 'gi' );
+  var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
+  var keywords = jQuery(this.extraParams.input).val().replace(specials, "\\$&").split(' ').join('|');
 
   // row[7] is the ontology_id, only included when searching multiple ontologies
 	if (row[7] == undefined) {
