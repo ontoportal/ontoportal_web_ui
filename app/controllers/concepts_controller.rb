@@ -59,7 +59,7 @@ class ConceptsController < ApplicationController
       show_ajax_request # process an ajax call
     else
       # We only want to log concept loading, not showing a list of child concepts
-      LOG.add :info, 'visualize_concept_direct', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id if @concept && @ontology
+      LOG.add :info, 'visualize_concept_direct', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id if @concept && @ontology
 
       show_uri_request # process a full call
       render :file=> '/ontologies/visualize',:use_full_path =>true, :layout=>'ontology' # done this way to share a view
@@ -87,7 +87,7 @@ class ConceptsController < ApplicationController
     end
     
     if @ontology.statusId.to_i.eql?(3) && @concept
-      LOG.add :info, 'show_virtual_concept', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id
+      LOG.add :info, 'show_virtual_concept', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
       redirect_to "/visualize/#{@ontology.id}/?conceptid=#{CGI.escape(@concept.id)}"
       return
     elsif @ontology.statusId.to_i.eql?(3)
@@ -97,7 +97,7 @@ class ConceptsController < ApplicationController
     else
       for version in @versions
         if version.statusId.to_i.eql?(3) && @concept
-          LOG.add :info, 'show_virtual_concept', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id
+          LOG.add :info, 'show_virtual_concept', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
           redirect_to "/visualize/#{version.id}/?conceptid=#{CGI.escape(@concept.id)}"
           return
         elsif version.statusId.to_i.eql?(3)
@@ -122,7 +122,7 @@ class ConceptsController < ApplicationController
     string << "{
            \"items\" : [\n
        	{ \n
-       \"title\": \"#{@concept.name}\" , \n
+       \"title\": \"#{@concept.label}\" , \n
        \"label\": \"#{@concept.id}\" \n"
     for property in @concept.properties.keys
       if @concept.properties[property].empty?
@@ -144,7 +144,7 @@ class ConceptsController < ApplicationController
     
     for child in @concept.children
       string << "{
-         \"title\" : \"#{child.name}\" , \n
+         \"title\" : \"#{child.label}\" , \n
          \"label\": \"#{child.id}\"  \n"
       for property in child.properties.keys
         if child.properties[property].empty?
@@ -182,7 +182,7 @@ class ConceptsController < ApplicationController
             LOG.add :debug, "Processed concept details (#{Time.now - time})"
             
             # We only want to log concept loading, not showing a list of child concepts
-            LOG.add :info, 'visualize_concept_browse', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id if @concept && @ontology
+            LOG.add :info, 'visualize_concept_browse', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id if @concept && @ontology
   
             render :partial => 'load'
           when 'children' # Children is called only for drawing the tree
@@ -190,7 +190,7 @@ class ConceptsController < ApplicationController
             start_tree = Time.now
             for child in @concept.children
               @children << TreeNode.new(child)
-              @children.sort!{|x,y| x.name.downcase<=>y.name.downcase}
+              @children.sort!{|x,y| x.label.downcase<=>y.label.downcase} unless @children.empty?
             end
             LOG.add :debug,  "Get children (#{Time.now - start_tree})"
             render :partial => 'childNodes'

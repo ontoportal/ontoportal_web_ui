@@ -172,7 +172,7 @@ module ApplicationHelper
         unless node.properties.nil? || node.properties.empty?
           for key in node.properties.keys
             concepts = node.properties[key].split(",").map{|x| x.strip}
-            if concepts.include?(child.name)
+            if concepts.include?(child.label)
               if key.include?("is_a")
                 relation << " <img src='/images/is_a.gif' style='vertical-align:middle;'>"
               elsif key.include?("part_of")
@@ -184,7 +184,7 @@ module ApplicationHelper
         
         
         
-        string << "<li #{open} #{draw_root}  id=\"#{child.id}\"><span #{active_style}> #{relation} #{child.name} #{icons}</span>"
+        string << "<li #{open} #{draw_root}  id=\"#{child.id}\"><span #{active_style}> #{relation} #{child.label} #{icons}</span>"
         
         if child.child_size > 0 && !child.expanded
           string << "<ul class=\"ajax\">

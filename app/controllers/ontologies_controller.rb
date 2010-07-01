@@ -200,9 +200,9 @@ class OntologiesController < ApplicationController
       # get the top level nodes for the root
       @root = TreeNode.new()
       nodes = @ontology.topLevelNodes(view)
-      nodes.sort!{|x,y| x.name.downcase<=>y.name.downcase}
+      nodes.sort!{|x,y| x.label.downcase<=>y.label.downcase}
       for node in nodes
-        if node.name.downcase.include?("obsolete") || node.name.downcase.include?("deprecated")
+        if node.label.downcase.include?("obsolete") || node.label.downcase.include?("deprecated")
           nodes.delete(node)
           nodes.push(node)
         end
@@ -220,7 +220,7 @@ class OntologiesController < ApplicationController
         return
       end
 
-      LOG.add :info, 'visualize_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id
+      LOG.add :info, 'visualize_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
     else
       # if the id is coming from a param, use that to get concept
       @concept = DataAccess.getNode(@ontology.id,params[:id],view)
@@ -233,9 +233,9 @@ class OntologiesController < ApplicationController
       
       # Did we come from the Jump To widget, if so change logging
       if params[:jump_to_nav]
-        LOG.add :info, 'jump_to_nav', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id
+        LOG.add :info, 'jump_to_nav', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
       else
-        LOG.add :info, 'visualize_concept_direct', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.name, :concept_id => @concept.id
+        LOG.add :info, 'visualize_concept_direct', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
       end
       
       # This handles special cases where a passed concept id is for a concept

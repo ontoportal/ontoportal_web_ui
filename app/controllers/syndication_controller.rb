@@ -22,7 +22,7 @@ class SyndicationController < ApplicationController
             feed_items << {:title=>"Ontology added",:description=>"Ontology  #{ontology.displayLabel} version #{ontology.versionNumber} was added to the repository",:date=>event.created_at,:link=>"http://bioportal.bioontology.org/ontologies/#{ontology.id}"}
           when "Note"
             note = MarginNote.find(event.event_type_id)
-            feed_items << {:title=>"Note added to #{note.concept.name} in #{note.ontology.displayLabel}",:description=>note.comment,:date=>event.created_at,:link=>"http://bioportal.bioontology.org/visualize/#{note.ontology.id}/#{note.concept_id}"}
+            feed_items << {:title=>"Note added to #{note.concept.label} in #{note.ontology.displayLabel}",:description=>note.comment,:date=>event.created_at,:link=>"http://bioportal.bioontology.org/visualize/#{note.ontology.id}/#{note.concept_id}"}
           when "Mapping"
             mapping = Mapping.find(event.event_type_id)
             feed_items << {:title=>"Mapping added in #{mapping.ontology.displayLabel}",:description=>"Mapping from #{mapping.source_name} to #{mapping.destination_name}",:date=>event.created_at,:link=>"http://bioportal.bioontology.org/visualize/#{mapping.source_version_id}/#{mapping.source_id}"}

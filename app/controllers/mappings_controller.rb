@@ -186,9 +186,9 @@ class MappingsController < ApplicationController
     
 
     @mapping.user_id = session[:user].id
-    @mapping.source_name=DataAccess.getNode(@mapping.source_version_id,@mapping.source_id).name
+    @mapping.source_name=DataAccess.getNode(@mapping.source_version_id,@mapping.source_id).label
     @mapping.source_ont_name = DataAccess.getOntology(@mapping.source_version_id).displayLabel
-    @mapping.destination_name=DataAccess.getNode(@mapping.destination_version_id,@mapping.destination_id).name
+    @mapping.destination_name=DataAccess.getNode(@mapping.destination_version_id,@mapping.destination_id).label
     @mapping.destination_ont_name = destination_ontology.displayLabel
     @mapping.destination_ont = destination_ontology.ontologyId
     @mapping.save

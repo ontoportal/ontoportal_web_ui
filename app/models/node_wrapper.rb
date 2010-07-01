@@ -38,7 +38,7 @@ class NodeWrapper
               relation_value.each do |list_value|
                 self.children << NodeWrapper.new(list_value, params) unless list_value.empty?
               end
-              self.children.sort! { |a,b| a.name.downcase <=> b.name.downcase } unless self.children.empty?
+              self.children.sort! { |a,b| a.label.downcase <=> b.label.downcase } unless self.children.empty?
             end
           else
             list_values = []
@@ -151,7 +151,7 @@ class NodeWrapper
   end
   
   def to_s
-   "Node_Name: #{self.name}  Node_ID: #{self.id}"
+   "Node_Name: #{self.label}  Node_ID: #{self.id}"
   end
   
   def fullId_proper

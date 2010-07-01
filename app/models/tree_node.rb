@@ -1,5 +1,5 @@
 class TreeNode
-  attr_accessor :name
+  attr_accessor :label
   attr_accessor :id
   attr_accessor :fullId
   attr_accessor :ontology_id
@@ -24,7 +24,7 @@ class TreeNode
   end
 
   def initialize_node(node_object)
-    self.name= node_object.name
+    self.label= node_object.label
     self.child_size = node_object.child_size
     self.ontology_name = node_object.ontology_name  
     self.ontology_id= node_object.version_id 
@@ -63,9 +63,13 @@ class TreeNode
      return false      
     end
   end
-   
+  
+  def name
+    @label
+  end
+  
   def to_s
     "Node_Name: #{self.name}  Node_ID: #{self.id}"
   end
-  
+
 end
