@@ -21,14 +21,16 @@
                         <%=@ontology.ontologyId %>
                     </td>
                 </tr>
-                <tr>
-                    <th>
-                        BioPortal PURL:
-                    </th>
-                    <td>
-                        <%=auto_link(@ontology.purl, :all, :target => "_blank")%>
-                    </td>
-                </tr>
+                <% if !$PURL_ENABLED.nil? && $PURL_ENABLED %>
+                  <tr>
+                      <th>
+                          <%=$SITE%> PURL:
+                      </th>
+                      <td>
+                          <%=auto_link(@ontology.purl, :all, :target => "_blank")%>
+                      </td>
+                  </tr>
+                <% end %>
                 <tr>
                     <th>
                         Format:

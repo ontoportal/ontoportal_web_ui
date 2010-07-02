@@ -13,7 +13,7 @@ class LOG
   #         :concept_name
   def self.add(level, message, request = nil, remote_params = nil)
     if request
-      if $REMOTE_LOGGING.eql?("true")
+      if !$REMOTE_LOGGING.nil? && $REMOTE_LOGGING
         remote(level, message, request, remote_params)
       end
     else

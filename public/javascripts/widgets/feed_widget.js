@@ -28,8 +28,21 @@ try{
 
 // Widget-specific code
 
+// Set the defaults if they haven't been set yet
+if (typeof BP_SEARCH_SERVER == 'undefined') {
+  var BP_SEARCH_SERVER = "http://bioportal.bioontology.org";
+}
+if (typeof BP_SITE == 'undefined') {
+  var BP_SITE = "BioPortal";
+}
+if (typeof BP_ORG == 'undefined') {
+  var BP_ORG = "NCBO";
+}
+var BP_ORG_SITE = (BP_ORG == "") ? BP_SITE : BP_ORG + " " + BP_SITE;
+
+
 jQuery(document).ready(function(){
-    jQuery("#bp_feed_container").html('<ul id="bp_feed" style="margin-bottom: .5em;"></ul><a href="http://bioportal.bioontology.org"><img src="http://bioportal.bioontology.org/images/layout/logo_mini.png" border=0/></a>');
+    jQuery("#bp_feed_container").html('<ul id="bp_feed" style="margin-bottom: .5em;"></ul><a href="' + BP_SEARCH_SERVER + '"><img src="' + BP_SEARCH_SERVER + '/images/layout/logo_mini.png" border=0/></a>');
 	
     jQuery.getJSON("/syndication/rss?ontologies="+BP_ontology_id+"&limit=5&callback=?",function(data){
         if (data.length < 1) {

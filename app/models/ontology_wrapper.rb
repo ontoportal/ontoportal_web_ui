@@ -167,7 +167,7 @@ class OntologyWrapper
   
   # Generates a PURL address for this ontology
   def purl
-    return "http://purl.bioontology.org/ontology/#{self.abbreviation}"
+    return "#{$PURL_PREFIX}/#{self.abbreviation}"
   end
 
 end

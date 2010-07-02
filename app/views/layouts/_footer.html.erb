@@ -1,15 +1,11 @@
 <div style="clear:both;border-bottom:1px solid black;"></div>
 
-<div style="padding:5px;text-align:center;margin:10px"> The National Center for Biomedical Ontology is one of the <a title="National Centers for Biomedical Computing" href="http://www.ncbcs.org/">National Centers for Biomedical Computing</a> supported by the <a title="NIH Roadmap" href="http://nihroadmap.nih.gov/">NIH Roadmap</a>.<br/>
-    Copyright © 2005–2009, The Board of Trustees of Leland Stanford Junior University. All rights reserved.<br/>
-<a title="NCBO" href="http://www.bioontology.org">NCBO Website</a>&nbsp; <a title="Release Notes" href="/home/release">Release Notes</a> &nbsp;
-
-    <a title="Terms of Use" href="http://www.bioontology.org/terms.html">Terms of Use</a>  <a title="Privacy Policy" href="http://www.bioontology.org/privacy.html">Privacy Policy</a>
-
-<br/>
-<br/>
-<br/>
-<%= $RELEASE_VERSION %>
+<div style="padding:5px;text-align:center;margin:10px">
+  <%=t('home.footer')%>
+  <br/>
+  <br/>
+  <br/>
+  <%= $RELEASE_VERSION %>
 </div>
 
 <% unless $ANALYTICS_ID.nil? || $ANALYTICS_ID.empty? %>

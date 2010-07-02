@@ -145,140 +145,75 @@
             </td>
         </tr>
         
-        <%if @ontology.ontologyId.nil? %>
-          <tr>
-              <th>
-                  Ontology Format: <span class="asterik">*</span>
-              </th>
-              <td>
-                  <select name="ontology[format]" id="ontology_format" style="width:200px">
-                      <option value="LEXGRID-XML">LEXGRID-XML</option>
-                      <option value="OBO">OBO</option>
-                      <option value="OWL" SELECTED>OWL</option>
-                      <option value="OWL-DL">-&nbsp;&nbsp;OWL-DL</option>
-                      <option value="OWL-FULL">-&nbsp;&nbsp;OWL-FULL</option>
-                      <option value="OWL-LITE">-&nbsp;&nbsp;OWL-LITE</option>
-                      <option value="PROTEGE">PROTEGE</option>
-                      <option value="RRF">RRF</option>
-                  </select>
-                  <div id="format_spacing">
-                  </div>
-                  <table id="format_specific_options">
-                      <tbody id="owl_options" class="format_options">
-                          <tr>
-                              <th>
-                                  Prefered Name Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2000/01/rdf-schema#label">rdfs:label</a>)
-                              </th>
-                              <td>
-                                  <%=text_field :ontology, :preferredNameSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
-                              </td>
-                          </tr>
-                          <tr>
-                              <th>
-                                  Synonym Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2004/02/skos/core#altLabel">skos:altLabel</a>)
-                              </th>
-                              <td>
-                                  <%=text_field :ontology, :synonymSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
-                              </td>
-                          </tr>
-                          <tr>
-                              <th>
-                                  Definition Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2004/02/skos/core#definition">skos:definition</a>)
-                              </th>
-                              <td>
-                                  <%=text_field :ontology, :documentationSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
-                              </td>
-                          </tr>
-                          <tr>
-                              <th>
-                                  Author Property (Owl Only) (default: <a target="_blank" href="http://purl.org/dc/elements/1.1/creator">dc:creator</a>)
-                              </th>
-                              <td>
-                                  <%=text_field :ontology, :authorSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
-                              </td>
-                          </tr>
-                      </tbody>
-            					<tbody id="rrf_options" class="format_options">
-            				        <tr>
-            				            <th>
-            				                Target Terminologies (RRF Only)
-            				            </th>
-            				            <td>
-            				                <%=text_field :ontology, :targetTerminologies, :title => 'Target Terminologies' %>
-            				            </td>
-            				        </tr>
-            					</tbody>
-                  </table>
-              </td>
-          </tr>
-          
-        <%else %>
-        
-          <tr>
-              <th>
-                  Ontology Format:
-              </th>
-              <td>
-                  <%= @ontology.format %>
-                  <%= hidden_field :ontology, :format %>
-                  
-                  <div id="format_spacing">
-                  </div>
-                  
-                  <table id="format_specific_options">
-                    <%if @ontology.format.include?("OWL") || @ontology.format.include?("PROTEGE") %>
-                        <tbody>
-                            <tr>
-                                <th>
-                                    Prefered Name Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2000/01/rdf-schema#label">rdfs:label</a>)
-                                </th>
-                                <td>
-                                    <%=text_field :ontology,:preferredNameSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    Synonym Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2004/02/skos/core#altLabel">skos:altLabel</a>)
-                                </th>
-                                <td>
-                                    <%=text_field :ontology,:synonymSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    Definition Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2004/02/skos/core#definition">skos:definition</a>)
-                                </th>
-                                <td>
-                                    <%=text_field :ontology,:documentationSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    Author Property (Owl Only) (default: <a target="_blank" href="http://purl.org/dc/elements/1.1/creator">dc:creator</a>)
-                                </th>
-                                <td>
-                                    <%=text_field :ontology,:authorSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
-                                </td>
-                            </tr>
-                        </tbody>
-                    <%end%>
-                        
-                    <% if @ontology.format.include?("RRF") %>
-                      <tbody id="rrf_options">
-                            <tr>
-                                <th>
-                                    Target Terminologies (RRF Only)
-                                </th>
-                                <td>
-                                    <%=text_field :ontology, :targetTerminologies, :title => 'Target Terminologies' %>
-                                </td>
-                            </tr>
-                      </tbody>
-                    <%end%>
-                  </table>
-              </td>
-          </tr>
-        <%end %>
+        <tr>
+            <th>
+                Ontology Format: <span class="asterik">*</span>
+            </th>
+            <td>
+                <% ont_formats = [ "LEXGRID-XML", "OBO", "OWL", "OWL-DL", "OWL-FULL", "OWL-LITE", "PROTEGE", "RRF" ] %>
+                <% selected = @ontology.ontologyId.nil? ? "OWL" : @ontology.format %>
+                <%= select("ontology", "format", ont_formats, { :include_blank => true, :selected => selected, :style => "width: 200px;" }) %>
+                <select name="ontology[format]" id="ontology_format" style="width:200px">
+                    <option value="LEXGRID-XML">LEXGRID-XML</option>
+                    <option value="OBO">OBO</option>
+                    <option value="OWL" SELECTED>OWL</option>
+                    <option value="OWL-DL">-&nbsp;&nbsp;OWL-DL</option>
+                    <option value="OWL-FULL">-&nbsp;&nbsp;OWL-FULL</option>
+                    <option value="OWL-LITE">-&nbsp;&nbsp;OWL-LITE</option>
+                    <option value="PROTEGE">PROTEGE</option>
+                    <option value="RRF">RRF</option>
+                </select>
+                <div id="format_spacing">
+                </div>
+                <table id="format_specific_options">
+                    <tbody id="owl_options" class="format_options">
+                        <tr>
+                            <th>
+                                Prefered Name Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2000/01/rdf-schema#label">rdfs:label</a>)
+                            </th>
+                            <td>
+                                <%=text_field :ontology, :preferredNameSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Synonym Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2004/02/skos/core#altLabel">skos:altLabel</a>)
+                            </th>
+                            <td>
+                                <%=text_field :ontology, :synonymSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Definition Property (Owl Only) (default: <a target="_blank" href="http://www.w3.org/2004/02/skos/core#definition">skos:definition</a>)
+                            </th>
+                            <td>
+                                <%=text_field :ontology, :documentationSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Author Property (Owl Only) (default: <a target="_blank" href="http://purl.org/dc/elements/1.1/creator">dc:creator</a>)
+                            </th>
+                            <td>
+                                <%=text_field :ontology, :authorSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
+                            </td>
+                        </tr>
+                    </tbody>
+          					<tbody id="rrf_options" class="format_options">
+          				        <tr>
+          				            <th>
+          				                Target Terminologies (RRF Only)
+          				            </th>
+          				            <td>
+          				                <%=text_field :ontology, :targetTerminologies, :title => 'Target Terminologies' %>
+          				            </td>
+          				        </tr>
+          					</tbody>
+                </table>
+            </td>
+        </tr>
+
         <tr>
             <th>
                 Ontology Version: <span class="asterik">*</span>
@@ -303,7 +238,7 @@
                 <%=radio_button :ontology,:isRemote,0,:onclick=>"$('.hidden_field').hide();$('#upload').show();" %>Upload 
                 <br/>
                 <span style="font-size:11px;">(choose this option if you want users to be able to explore and search
-                    your ontology in BioPortal)</span>
+                    your ontology in <%=$SITE%>)</span>
                 <br/>
                 <hr/><%=radio_button :ontology,:isRemote,1,:onclick=>"$('.hidden_field').hide();$('#remote').show();" %>Remote 
                 <br/>

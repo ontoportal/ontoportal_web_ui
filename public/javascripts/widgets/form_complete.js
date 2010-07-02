@@ -28,23 +28,33 @@ try{
 // Set a variable to check to see if this script is loaded
 var BP_FORM_COMPLETE_LOADED = true;
 
-// Set the search server to the UI installation of BioPortal that you want to search
-var searchServer = "http://bioportal.bioontology.org";
+// Set the defaults if they haven't been set yet
+if (typeof BP_SEARCH_SERVER == 'undefined') {
+  var BP_SEARCH_SERVER = "http://bioportal.bioontology.org";
+}
+if (typeof BP_SITE == 'undefined') {
+  var BP_SITE = "BioPortal";
+}
+if (typeof BP_ORG == 'undefined') {
+  var BP_ORG = "NCBO";
+}
+var BP_ORG_SITE = (BP_ORG == "") ? BP_SITE : BP_ORG + " " + BP_SITE;
+
 
 jQuery(document).ready(function(){
 	// Install any CSS we need (check to make sure it hasn't been loaded)
-	if (jQuery('link[href="http://bioportal.bioontology.org/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"]')) {
-		jQuery("head").append("<link>");
-		css = jQuery("head").children(":last");
-		css.attr({
-		  rel:  "stylesheet",
-		  type: "text/css",
-		  href: "http://bioportal.bioontology.org/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"
-		});
+  if (jQuery('link[href$="' + BP_SEARCH_SERVER + '/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"]')) {
+    jQuery("head").append("<link>");
+    css = jQuery("head").children(":last");
+    css.attr({
+      rel:  "stylesheet",
+      type: "text/css",
+      href: BP_SEARCH_SERVER + "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"
+    });
 	}
 
 	// Grab the specific scripts we need and fires the start event
-	jQuery.getScript("http://bioportal.bioontology.org/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js", function(){
+  jQuery.getScript(BP_SEARCH_SERVER + "/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js",function(){
 		formComplete_setup_functions();
 	});
 });
@@ -79,14 +89,14 @@ function formComplete_setup_functions() {
 		
 		if (ontology_id == "all") { ontology_id = ""; }
 		
-		jQuery(this).autocomplete(searchServer + "/search/json_search/"+ontology_id, {
+		jQuery(this).autocomplete(BP_SEARCH_SERVER + "/search/json_search/"+ontology_id, {
 				extraParams: { target_property: target_property, input: this },
 				lineSeparator: "~!~",
 				matchSubset: 0,
 				minChars: 3,
 				maxItemsToShow: 20,
 				onItemSelect: bpFormSelect,
-				footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="http://bioportal.bioontology.org">NCBO BioPortal</a></div>',
+        footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="' + BP_SEARCH_SERVER + '">' + BP_ORG_SITE + '</a></div>',
 				formatItem: formComplete_formatItem
 		});
 		

@@ -162,17 +162,21 @@
 				<ul>
 						<li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
 						<li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
-			        	<li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+	        	<li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
 						<li class="tab" id="mappings_top"><a href="#mappings">Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>				
-						<li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@/@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
+            <%if !$OBS_ENABLED.nil? && $OBS_ENABLED %>
+						  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@/@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
+						<%end%>
 				</ul>
 			</div>
 			<div id="contents">
-      			<div style="display:block;" class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
+  			<div style="display:block;" class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
 				<div class="tab_container" id="visualization_content"><%=render :partial =>'/concepts/images'%></div>
 				<div class="tab_container" id="notes_content"><%=render :partial =>'/notes/list'%></div>
 				<div class="tab_container" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
-				<div class="tab_container" id="resource_index_content"></div>
+        <%if !$OBS_ENABLED.nil? && $OBS_ENABLED %>
+				  <div class="tab_container" id="resource_index_content"></div>
+			  <%end%>
 			</div>
 		</div>
 	</div>

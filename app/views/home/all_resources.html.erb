@@ -1,18 +1,13 @@
 <%@title = "Resource Index"%>
 
 <p style="padding:10px;margin:10px; border:1px solid #EFEFEF;" >
-NCBO is building a system for automated ontology-based annotation and indexing of biomedical data. We process the textual metadata of diverse elements of biomedical resources 
-such as gene expression data sets, descriptions of radiology images, clinical-trial reports, and PubMed abstracts to 
-annotate and index them with terms from appropriate ontologies. Use the interface below to search the resulting index of annotations and to identify 
-biomedical data resources annotated with particular ontology terms. Try searching for "Melanoma" and use NCI Thesaurus as your ontology.
+  <%=t('home.resources.intro')%>
 </p>
-
 
 <!--  BEGIN Browser History required section -->
 <link rel="stylesheet" type="text/css" href="<%=$FLEX_URL%>/obs/history/history.css" />
 <!--  END Browser History required section -->
 
-<title>NCBO Open Biomedical Resources</title>
 <script src="<%=$FLEX_URL%>/obs/AC_OETags.js" language="javascript"></script>
 
 <!--  BEGIN Browser History required section -->

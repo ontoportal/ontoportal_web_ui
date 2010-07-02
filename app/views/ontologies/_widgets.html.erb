@@ -2,7 +2,7 @@
 
 <div id="widgets_content" style="display:none;" class="tab_content">
     <div>
-        <h1>Adding NCBO Widgets for <%=@ontology.displayLabel %> to Your Site</h1>
+        <h1>Adding <%=$ORG%> Widgets for <%=@ontology.displayLabel %> to Your Site</h1>
         <h2>Step 1: Select a widget</h2>
         <hr/>
         <div style="margin: auto;">
@@ -39,20 +39,26 @@
                 </tr>
                 <tr>
                     <td>
-                        <h3>Type a term in <%=@ontology.displayLabel %> and jump to it in BioPortal</h3>
+                        <h3>Type a term in <%=@ontology.displayLabel %> and jump to it in <%=$SITE%></h3>
                         <br/>
                         <a href="#TB_inline?height=400&width=600&inlineId=jump" class="thickbox getcode">Get Code</a>
                     </td>
                     <td>
                     	<div id="bp_quick_jump"></div>
-						<%= javascript_include_tag "/javascripts/widgets/quick_jump.js" %>
+                    	  <script type="text/javascript">
+                    	    // Set defaults for this installation
+                    	    var BP_SEARCH_SERVER = "<%=$UI_URL%>";
+                    	    var BP_SITE = "<%=$SITE%>";
+                    	    var BP_ORG = "<%=$ORG%>";
+                    	  </script>
+						            <%= javascript_include_tag "/javascripts/widgets/quick_jump.js" %>
                         <div id="jump" style="display:none;">
                         <h2>Step 2: Follow the Instructions</h2>
                         <hr/>
 						<div class="enable-lists">
 	                        <ul>
 	                            <li>
-	                                Download the <a rel="nofollow" title="http://bioportal.bioontology.org/javascripts/widgets/quick_jump.js" class="external free" href="http://bioportal.bioontology.org/javascripts/widgets/quick_jump.js"><b>quick_jump.js file</b></a>
+	                                Download the <a rel="nofollow" title="<%=$UI_URL%>/javascripts/widgets/quick_jump.js" class="external free" href="<%=$UI_URL%>/javascripts/widgets/quick_jump.js"><b>quick_jump.js file</b></a>
 	                                and put it on your server
 	                            </li>
 	                            <li>
@@ -65,7 +71,7 @@
                                             	You can enter a comma-separated list of ontology ids:<br>var BP_ontology_id = "1032,1089";
 											</li>
 											<li>
-												You cans set the variable to 'all' to search all ontologies in BioPortal:<br>var BP_ontology_id = "all";
+												You cans set the variable to 'all' to search all ontologies in <%=$SITE%>:<br>var BP_ontology_id = "all";
 											</li>
 										</ul>
 									</li>
@@ -118,7 +124,7 @@
                             <hr/>
                             <ul>
                                 <li>
-                                    Download the <a rel="nofollow" title="http://bioportal.bioontology.org/javascripts/widgets/form_complete.js" class="external free" href="http://bioportal.bioontology.org/javascripts/widgets/form_complete.js"><b>form_complete.js file</b></a>
+                                    Download the <a rel="nofollow" title="<%=$UI_URL%>/javascripts/widgets/form_complete.js" class="external free" href="<%=$UI_URL%>/javascripts/widgets/form_complete.js"><b>form_complete.js file</b></a>
                                     and put it on your server
                                 </li>
                                 <li>
@@ -138,7 +144,7 @@
                                             will use NCI Thesaurus (ontology id is 1032) and will put the term URI in the field after the user selects the term from the pull-down list.
 											<ul>
 												<li><b>Note:</b> In addition to single ontology ids, you can use a list:<br><code>bp_form_complete-1032,1089-uri</code></li>
-												<li><b>OR</b> use 'all' to search across all BioPortal ontologies:<br><code>bp_form_complete-all-uri</code></li>
+												<li><b>OR</b> use 'all' to search across all <%=$SITE%> ontologies:<br><code>bp_form_complete-all-uri</code></li>
 											</ul>
                                         </li>
                                         <li>
@@ -147,12 +153,12 @@
                                                 <li>
                                                     <code>
                                                         uri
-                                                    </code>put the complete URI of the term (e.g., <a rel="nofollow" title="http://bioportal.bioontology.org/visualize/39478/Common_Neoplasm" class="external free" href="http://bioportal.bioontology.org/visualize/39478/Common_Neoplasm">http://bioportal.bioontology.org/visualize/39478/Common_Neoplasm</a>);
+                                                    </code>put the complete URI of the term (e.g., <a rel="nofollow" title="<%=$UI_URL%>/visualize/39478/Common_Neoplasm" class="external free" href="<%=$UI_URL%>/visualize/39478/Common_Neoplasm"><%=$UI_URL%>/visualize/39478/Common_Neoplasm</a>);
                                                 </li>
                                                 <li>
                                                     <code>
                                                         shortid
-                                                    </code>put the short id of the term, as used in BioPortal (e.g., "Common_Neoplasm");
+                                                    </code>put the short id of the term, as used in <%=$SITE%> (e.g., "Common_Neoplasm");
                                                 </li>
                                                 <li>
                                                     <code>
@@ -219,7 +225,7 @@ Example 1 (start typing the term name to get its full URI)
 <script type="text/javascript">
     var BP_ontology_id = "<%=@ontology.ontologyId%>"
 </script>
-<script src="http://bioportal.bioontology.org/javascripts/widgets/feed_widget.js" type="text/javascript" charset="utf-8">
+<script src="<%=$UI_URL%>/javascripts/widgets/feed_widget.js" type="text/javascript" charset="utf-8">
 </script>
 </textarea>
                             <br/>

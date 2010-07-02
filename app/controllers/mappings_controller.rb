@@ -312,8 +312,8 @@ private
           rdf_text << "<mappings:One_to_one_mapping rdf:ID=\"#{count}\">
              <mappings:mapping_metadata rdf:resource=\"##{count+1}\"/>
              <mappings:relation rdf:datatype=\"&xsd;string\">#{mapping.relationship_type}</mappings:relation>
-             <mappings:source rdf:resource='http://bioportal.bioontology.org/#{to_param(mapping.source_ont)}/#{mapping.source_id}'/>
-             <mappings:target rdf:resource='http://bioportal.bioontology.org/#{to_param(mapping.destination_ont)}/#{mapping.destination_id}'/>
+             <mappings:source rdf:resource='#{$UI_URL}/#{to_param(mapping.source_ont)}/#{mapping.source_id}'/>
+             <mappings:target rdf:resource='#{$UI_URL}/#{to_param(mapping.destination_ont)}/#{mapping.destination_id}'/>
          </mappings:One_to_one_mapping>
          <mappings:Mapping_Metadata rdf:ID=\"#{count+1}\">
              <mappings:author rdf:datatype=\"&xsd;string\">#{mapping.user.username}</mappings:author>

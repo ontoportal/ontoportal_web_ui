@@ -26,7 +26,7 @@ module OntologiesHelper
     end
   end
   
-  # Provides a link for an ontology based on where it's hosted (BioPortal or remote)
+  # Provides a link for an ontology based on where it's hosted (Local or remote)
   def get_download_link(ontology)
     # Don't display a link for ontologies that aren't downloadable
     # (these are temporarily defined in environment.rb)

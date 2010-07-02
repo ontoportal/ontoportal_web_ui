@@ -5,21 +5,16 @@
     <div style="float:left;width:60%;">
         <h1>Welcome</h1>
         <p>
-            Welcome to the National Center for Biomedical Ontology’s BioPortal. BioPortal is a Web-based application for accessing and sharing biomedical ontologies.
+          <%=t('about.welcome')%>
         </p>
         
         <h1>Getting Started</h1>
         <p>
-            BioPortal allows users to browse, upload, download, search, comment on, and create mappings for ontologies.
+          <%=t('about.getting_started')%>
         </p>
         
         <h1>Browse The Library</h1>
-        <p>
-            Users can browse and explore individual ontologies by navigating either a tree structure or an animated graphical view. Users can also view mappings and ontology metadata, and download ontologies. 
-        </p>
-        <p>
-            Additionally, users who are signed in may also submit a new ontology to the library. All submissions to the library are reviewed.
-        </p>
+        <%=t('about.browse')%>
         
         <h1>Web services</h1>
         <p>
@@ -28,8 +23,7 @@
         
         <h1>Announce List</h1>
         <p>
-            To receive notices of new BioPortal releases or site outages, please subscribe 
-            to the <a href="https://mailman.stanford.edu/mailman/listinfo/bioportal-announce">bioportal-announce list</a>.
+          <%=t('about.announce_list')%>
         </p>
         
         <h1>Feature and Bug Trackers</h1>
@@ -43,149 +37,9 @@
     		<p>
     		  Noy, N.F., Shah, N.H., Whetzel, P.L., Dai, B., Dorf, M., Griffith, N., Jonquet, C., Rubin, D.L., Storey, M.A., Chute, C.G., Musen, M.A. <b>BioPortal: ontologies and integrated data resources at the click of a mouse.</b> Nucleic Acids Res. 2009 Jul 1;37(Web Server issue):W170-3. PMID: 19483092. doi:10.1093/nar/gkp440
         </p>
-    		
-        <h1>Release Notes: BioPortal 2.5 (June 7, 2010)</h1>
-        <div class="enable-lists">
-      		<br>
-          <h2>
-            BioPortal Core (Tag 1026)
-          </h2>
-          <h3>
-            New Features
-          </h3>
-          <ul type="disc">
-            <li>Services for handling notes. The notes service is based on Protege 4 and OWL API and wraps around an API created by Csongor Nyulas for interacting with ChAO (Changes and Annotations Ontology). The following features were implemented:
-              <ul type="circle">
-                <li>Creating notes attached to:
-                  <ul type="square">
-                    <li>Classes
-                    </li>
-                    <li>Individuals
-                    </li>
-                    <li>Notes
-                    </li>
-                  </ul>
-                </li>
-                <li>Retrieving notes attached to:
-                  <ul type="square">
-                    <li>Ontologies (using virtual id)
-                    </li>
-                    <li>Classes
-                    </li>
-                    <li>Individuals
-                    </li>
-                    <li>Notes
-                    </li>
-                  </ul>
-                </li>
-                <li>Note types:
-                  <ul type="square">
-                    <li>Comment
-                    </li>
-                    <li>Proposal
-                      <ul type="square">
-                        <li>New term
-                        </li>
-                        <li>Relationship change
-                        </li>
-                        <li>Property value change
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-                <li>The two primary URLs for working with notes:
-                  <ul type="square">
-                    <li>/notes/{ontology_version_id}
-                    </li>
-                    <li>/virtual/notes/{ontology_virtual_id}
-                    </li>
-                  </ul>
-                </li>
-                <li>Documentation is being updated here:
-                  <ul type="square">
-                    <li>
-                      <a href="http://www.bioontology.org/wiki/index.php/Ontology_Notes">http://www.bioontology.org/wiki/index.php/Ontology_Notes</a>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li>Exposed the create diffs functionality via the rest interface. Added it to the service layer as well.
-            </li>
-            <li>Modified code to start populating the fullId field for OBO and UMLS ontologies.
-            </li>
-            <li>Updated Protégé 3.4.4 libraries
-            </li>
-          </ul>
-          <br/>
-          <h3>
-            Bug Fixes
-          </h3>
-          <ul type="disc">
-            <li>Updated the UMLS loader to render French and Spanish characters correctly. Tracker item: &nbsp;[#1986] Incorrect display of characters in Spanish and French. <a href="https://bmir-gforge.stanford.edu/gf/project/bioportal_core/tracker/?action=TrackerItemEdit&amp;tracker_item_id=1986">https://bmir-gforge.stanford.edu/gf/project/bioportal_core/tracker/?action=TrackerItemEdit&amp;tracker_item_id=1986</a>
-            </li>
-            <li>Updated the OBO loader to properly deal with OBO_REL:part_of relations.
-            </li>
-            <li>[#1998] Anonymous classes not being filtered when jumping into the middle of the tree : <a href="https://bmir-gforge.stanford.edu/gf/project/bioportal_core/tracker/?action=TrackerItemEdit&amp;tracker_item_id=1998">https://bmir-gforge.stanford.edu/gf/project/bioportal_core/tracker/?action=TrackerItemEdit&amp;tracker_item_id=1998</a>
-            </li>
-          </ul>
-          <br/></br/>
-          <h2>
-            BioPortal UI (Tag 1039)
-          </h2>
-          <h3>
-            New Features
-          </h3>
-          <ul>
-            <li>Structured Notes are now available via the UI, utilizing the new BioPortal Core Notes RESTful service.
-              <ul>
-                <li>Notes can be viewed/added at the term level on the ontology visualize screen:<br>
-                  http://bioportal.bioontology.org/visualize/42483/?conceptid=http%3A%2F%2Fbioontology.org%2Fontologies%2FBiomedicalResourceOntology.owl%23Network_Model#notes
-                </li>
-                <li>There is a new Notes tab on the ontology summary page:<br>
-                  http://bioportal.bioontology.org/ontologies/42483#notes
-                </li>
-                <li>One of four note types can be created:
-                  <ul>
-                    <li>Comment
-                    </li>
-                    <li>Propose New Term
-                    </li>
-                    <li>Propose Relationship Change
-                    </li>
-                    <li>Propose Property Value Change
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li>On the ontology visualize page, the bar that separates the tree from the tabs can now be resized by clicking and dragging. In addition, the bar extends to the bottom and the tree will expand without vertical scrollbars as far as needed.
-            </li>
-          </ul>
-          <br/>
-          <h3>
-            Bug Fixes
-          </h3>
-          <ul>
-            <li>Reviews can now be properly added/edited.
-            </li>
-            <li>Fix to form_complete widget that was preventing proper URIs from showing when multiple class names were present on the form input element.
-            </li>
-          </ul>
-          <br/></br/>
-          <h2>
-            BioPortal Admin (Tag 1006)
-          </h2>
-          <h3>
-            New Features
-          </h3>
-          <ul>
-            <li>Implemented the diff creation functionality
-            </li>
-          </ul>
-            </div>
-         </div>
-          <div style="clear:both;">
+
+        <%=t('about.release_notes')%>
+        
+        <div style="clear:both;">
     </div>
 </div>

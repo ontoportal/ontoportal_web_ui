@@ -5,7 +5,7 @@
 	<!-- Google Webmaster Tools verifications -->
 	<meta name="google-site-verification" content="IBxfKu6VbYH9atd5OLu2zXVD2ZRWi9SgMKTi8nvw3ks" />
 	
-	<title><%if @title.nil?%>NCBO BioPortal<%else%><%="NCBO BioPortal: #{@title}"%><%end%></title>
+	<title><%if @title.nil?%><%=$ORG_SITE%><%else%><%="#{$ORG_SITE}: #{@title}"%><%end%></title>
 	<!-- Dependency source files --> 
 	<%=stylesheet_link_tag 'layout/bioportal'%>
 	<%=stylesheet_link_tag 'layout/thickbox'%>

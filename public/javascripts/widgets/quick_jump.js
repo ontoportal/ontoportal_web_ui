@@ -25,27 +25,37 @@ try {
 
 // Widget-specific code
     
-//Set the search server to the UI installation of BioPortal that you want to search
-var searchServer = "http://bioportal.bioontology.org";
+// Set the defaults if they haven't been set yet
+if (typeof BP_SEARCH_SERVER == 'undefined') {
+  var BP_SEARCH_SERVER = "http://bioportal.bioontology.org";
+}
+if (typeof BP_SITE == 'undefined') {
+  var BP_SITE = "BioPortal";
+}
+if (typeof BP_ORG == 'undefined') {
+  var BP_ORG = "NCBO";
+}
+var BP_ORG_SITE = (BP_ORG == "") ? BP_SITE : BP_ORG + " " + BP_SITE;
+
 
 jQuery(document).ready(function(){
 	// Install any CSS we need (check to make sure it hasn't been loaded)
-	if (jQuery('link[href$="http://bioportal.bioontology.org/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"]')) {
+	if (jQuery('link[href$="' + BP_SEARCH_SERVER + '/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"]')) {
 		jQuery("head").append("<link>");
 		css = jQuery("head").children(":last");
 		css.attr({
 		  rel:  "stylesheet",
 		  type: "text/css",
-		  href: "http://bioportal.bioontology.org/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"
+		  href: BP_SEARCH_SERVER + "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"
 		});
 	}
 
-	jQuery("#bp_quick_jump").append("Jump To: <input type=\"textbox\" id=\"BP_search_box\" size=\"30\"> <input type=\"button\" value=\"Go to BioPortal\" onclick=\"jumpTo_jump_clicked();\">");
+	jQuery("#bp_quick_jump").append("Jump To: <input type=\"textbox\" id=\"BP_search_box\" size=\"30\"> <input type=\"button\" value=\"Go to " + BP_SITE + "\" onclick=\"jumpTo_jump_clicked();\">");
 	jQuery("#bp_quick_jump").append("<input type='hidden' id='jump_to_concept_id'>");
 	jQuery("#bp_quick_jump").append("<input type='hidden' id='jump_to_ontology_id'>");
 	
 	// Grab the specific scripts we need and fires it start event
-	jQuery.getScript("http://bioportal.bioontology.org/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js",function(){
+	jQuery.getScript(BP_SEARCH_SERVER + "/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js",function(){
 		jumpTo_setup_functions();
 	});
 });
@@ -58,9 +68,9 @@ if (BP_ontology_id == undefined || BP_ontology_id == "all") {
 
 function jumpTo_jumpToValue(li) {
 	if (jQuery("#jump_to_concept_id") == null && jQuery("#jump_to_ontology_id") == null) {
-		var search = confirm("Term could not be found or is not browsable in BioPortal.\n\nPress OK to go to the Bioportal Search page or Cancel to try again");
+		var search = confirm("Term could not be found or is not browsable in " + BP_SITE + ".\n\nPress OK to go to the " + BP_SITE + " Search page or Cancel to try again");
 		if (search) {
-		    document.location = searchServer + "/search/";
+		    document.location = BP_SEARCH_SERVER + "/search/";
 			return;
 		}
 	}
@@ -68,7 +78,7 @@ function jumpTo_jumpToValue(li) {
 	if (jQuery("#jump_to_concept_id") != null && jQuery("#jump_to_ontology_id") != null) {
 		var sValue = jQuery("#jump_to_concept_id").val();
 		var ontology_id = jQuery("#jump_to_ontology_id").val();
-		document.location = searchServer + "/visualize/" + ontology_id + "/?conceptid=" + encodeURIComponent(sValue);
+		document.location = BP_SEARCH_SERVER + "/visualize/" + ontology_id + "/?conceptid=" + encodeURIComponent(sValue);
 		return;
 	}
 }
@@ -89,7 +99,7 @@ function jumpTo_formatItem(row, position, count) {
 }
 
 function jumpTo_setup_functions() {
-    jQuery("#BP_search_box").autocomplete(searchServer + "/search/json_search/"+BP_ontology_id, {
+    jQuery("#BP_search_box").autocomplete(BP_SEARCH_SERVER + "/search/json_search/"+BP_ontology_id, {
 		lineSeparator: "~!~",
 		matchSubset: 0,
 		minChars: 3,
@@ -97,7 +107,7 @@ function jumpTo_setup_functions() {
 		onFindValue: jumpTo_jumpToValue,
 		onItemSelect: jumpTo_jumpToSelect,
 		width: 450,
-		footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="http://bioportal.bioontology.org">NCBO BioPortal</a></div>',
+		footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="' + BP_SEARCH_SERVER + '">' + BP_ORG_SITE + '</a></div>',
 		formatItem: jumpTo_formatItem
     });
     
@@ -115,7 +125,3 @@ function jumpTo_jumpToSelect(li) {
 function jumpTo_jump_clicked() {
     jumpTo_searchbox.findValue();
 }
-
-
-
-

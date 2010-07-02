@@ -331,9 +331,9 @@ class OntologiesController < ApplicationController
         event.event_type_id=@ontology.id
         event.ontology_id=@ontology.ontologyId
         event.save
-        flash[:notice]="Thank you for submitting your ontology to BioPortal.
+        flash[:notice] = "Thank you for submitting your ontology to #{$SITE}.
           We will now put your ontology in the queue to be processed.
-           Please keep in mind that it may take up to several hours before BioPortal users will be able to explore and search your ontology"
+          Please keep in mind that it may take up to several hours before #{$SITE} users will be able to explore and search your ontology."
         
         if(@ontology.isView=='true')
           #cleaning out the cache
