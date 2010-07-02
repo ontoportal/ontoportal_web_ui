@@ -8,6 +8,11 @@
 
 <% unless defined?(exclude_js) %>
 	<script type="text/javascript">
+    // Set defaults for this installation
+    var BP_SEARCH_SERVER = "<%=$UI_URL%>";
+    var BP_SITE = "<%=$SITE%>";
+    var BP_ORG = "<%=$ORG%>";
+	  
 		if (typeof BP_NOTES_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes.js");
 		if (typeof BP_FORM_COMPLETE_LOADED == 'undefined') {
 			jQuery.getScript("/javascripts/widgets/form_complete.js");
