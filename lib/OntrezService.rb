@@ -14,19 +14,19 @@ class OntrezService
   
   ONTREZ_URL = $OBR_REST_URL
   
-  RESOURCE_BY_CONCEPT = "/byconcept/virtual/%ONT%/false/true/0/10?conceptID=%CONC%"
-  VERSIONED_RESOURCE_BY_CONCEPT = "/byconcept/%ONT%/false/true/0/10?conceptID=%CONC%"
-  PAGING_RESOURCE_BY_CONCEPT = "/byconcept/virtual/%ONT%/%RESOURCE%/false/false/%S_PAGE%/10?conceptID=%CONC%"
-  VERSIONED_PAGING_RESOURCE_BY_CONCEPT = "/byconcept/%ONT%/%RESOURCE%/false/false/%S_PAGE%/10?conceptID=%CONC%"
+  RESOURCE_BY_CONCEPT = "/byconcept/virtual/%ONT%/false/true/0/10?conceptid=%CONC%"
+  VERSIONED_RESOURCE_BY_CONCEPT = "/byconcept/%ONT%/false/true/0/10?conceptid=%CONC%"
+  PAGING_RESOURCE_BY_CONCEPT = "/byconcept/virtual/%ONT%/%RESOURCE%/false/false/%S_PAGE%/10?conceptid=%CONC%"
+  VERSIONED_PAGING_RESOURCE_BY_CONCEPT = "/byconcept/%ONT%/%RESOURCE%/false/false/%S_PAGE%/10?conceptid=%CONC%"
   RESOURCES = "/resources"
-  DETAILS = "/details/true/virtual/concept/%ONT%/resource/%RESOURCE%/?conceptID=%CONC%&elementID=%ELEMENT%"
-  VERSIONED_DETAILS = "/details/true/concept/%ONT%/resource/%RESOURCE%/?conceptID=%CONC%&elementID=%ELEMENT%"
+  DETAILS = "/details/true/virtual/concept/%ONT%/resource/%RESOURCE%/?conceptid=%CONC%&elementid=%ELEMENT%"
+  VERSIONED_DETAILS = "/details/true/concept/%ONT%/resource/%RESOURCE%/?conceptid=%CONC%&elementid=%ELEMENT%"
   
-  CLASS_STRING = "/result/ontology/%ONT%/classID/from/0/number/15/metadata?conceptID=%CONC%"
-  CUI_STRING = "/result/cui/from/0/number/15/metadata?conceptID=%CONC%"
+  CLASS_STRING = "/result/ontology/%ONT%/classID/from/0/number/15/metadata?conceptid=%CONC%"
+  CUI_STRING = "/result/cui/from/0/number/15/metadata?conceptid=%CONC%"
   NEXTBIO_URL = "http://www.nextbio.com/b/api/searchcount.api?q=%CONC%&details=true&apikey=2346462a645f102ba7f2001d096b4f04&type=study"
-  PAGING_CLASS_STRING = "/result/ontology/%ONT%/classID/from/%S_PAGE%/number/%E_PAGE%/resource/%RESOURCE%/metadata?conceptID=%CONC%"
-  PAGING_CUI_STRING = "/result/cui/from/%S_PAGE%/number/%E_PAGE%/resource/%RESOURCE%/metadata?conceptID=%CONC%"
+  PAGING_CLASS_STRING = "/result/ontology/%ONT%/classID/from/%S_PAGE%/number/%E_PAGE%/resource/%RESOURCE%/metadata?conceptid=%CONC%"
+  PAGING_CUI_STRING = "/result/cui/from/%S_PAGE%/number/%E_PAGE%/resource/%RESOURCE%/metadata?conceptid=%CONC%"
   
 
   def self.gatherResources(ontology_id,concept_id,latest,version_id)
@@ -40,7 +40,7 @@ class OntrezService
     LOG.add :debug, "Retrieve resources"
     LOG.add :debug, ONTREZ_URL + RESOURCES
     startGet = Time.now
-    doc = REXML::Document.new(open(ONTREZ_URL + RESOURCES))    
+    doc = REXML::Document.new(open(ONTREZ_URL + RESOURCES))
     LOG.add :debug, "Resources retrieved (#{Time.now - startGet})"
 
     doc.elements.each("*/obs\.obr\.populate\.Resource"){|resource|
