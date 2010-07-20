@@ -89,23 +89,32 @@
 			});
 			searchbox = jQuery("#search_box")[0].autocompleter;
 		
-		    <%if !@ontology.is_latest? %>
-			    // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
-		        jQuery("#qsearch").children().filter(":input").each(
-		            function(){
-						jQuery(this).attr("readonly", true);
-					}
-		        );
-				
-				// Set up a hovertip on the qsearch input element
-				jQuery("#qsearch").attr("style", "color: grey;");
-		        jQuery("#qsearch :input").attr("title", "\"Jump To\" works only with most recent version of this ontology");
-				jQuery("#qsearch :input").tooltip({
-					position: "bottom",
-		    	    tip: '.tooltip',
-					opacity: 0.7
-				});
-		    <%end%>
+      <% if @ontology.isView == 'true' %>
+        // Set up a hovertip on the qsearch input element
+        jQuery("#resource_index_top").attr("style", "color: grey;");
+        jQuery("#resource_index_top").attr("title", "Resource Index isn't available for Views");
+        jQuery("#resource_index_top").tooltip({
+            position: "bottom center",
+            tip: '.tooltip',
+            opacity: 0.7
+        });
+      <%end%>
+		
+	    <% if !@ontology.is_latest? %>
+        // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
+        jQuery("#qsearch").children().filter(":input").each(function(){
+          jQuery(this).attr("readonly", true);
+        });
+        
+        // Set up a hovertip on the qsearch input element
+        jQuery("#qsearch").attr("style", "color: grey;");
+        jQuery("#qsearch :input").attr("title", "\"Jump To\" works only with most recent version of this ontology");
+        jQuery("#qsearch :input").tooltip({
+            position: "bottom",
+            tip: '.tooltip',
+            opacity: 0.7
+        });
+	    <%end%>
 		});
 	</script>
 	
@@ -131,7 +140,7 @@
 		<div id="sidebar">
 			<div id="sd_hd">
 					<%if @ontology.isView=='true'%>
-						<h2><%=link_to "View Ontology Summary", ontology_url(:id => @ontology.viewOnOntologyVersionId)%></h2>
+						<h2><%=link_to "View Ontology Summary", ontology_url(:id => @ontology.viewOnOntologyVersionId) + "#views"%></h2>
 					<%else%>
 						<h2><%=link_to "View Ontology Summary", ontology_url(:id => @ontology.id)%></h2>
 					<%end%>
@@ -165,9 +174,14 @@
 	        	<li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
 						<li class="tab" id="mappings_top"><a href="#mappings">Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>				
             <%if !$OBS_ENABLED.nil? && $OBS_ENABLED %>
-						  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@/@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
+              <%if !@ontology.isView=='true'%>
+                <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@/@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
+						  <% end %>
 						<%end%>
 				</ul>
+        <%if @ontology.isView=='true'%>
+          <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Resource Index</a></li>
+        <% end %>
 			</div>
 			<div id="contents">
   			<div style="display:block;" class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
