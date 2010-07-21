@@ -122,17 +122,17 @@
 	
 	<div id="bd_hd">
 		<%if @ontology.isView=='true'%>
-			<h1><%=link_to @ontology.displayLabel, ontology_url(:id => @ontology.viewOnOntologyVersionId)%>
-				<br/>
-				(View for <%=@ontology.getOntologyFromView().displayLabel%>) 
-			</h1>
+			<h1><%=link_to @ontology.displayLabel, ontology_url(:id => @ontology.viewOnOntologyVersionId)%></h1>
+      <h3>Version <%=@ontology.versionNumber%></h3>
+      <br/><br/>
+      <h3 style="">View for <%=@ontology.getOntologyFromView().displayLabel%> [ <%=link_to "See more Views", ontology_url(:id => @ontology.viewOnOntologyVersionId) + "#views"%> ]</h3>
 		<%else%>
 			<h1><%=link_to @ontology.displayLabel, ontology_url(:id => @ontology.id)%></h1>
+      <h3>Version <%=@ontology.versionNumber%></h3>
 		<%end%>
 		
-		<h3>Version <%=@ontology.versionNumber%></h3>
 	
-		<h1 id="name_label" style="margin-left:100px;border:1px #AFAFAF dashed;background-color:#f5fafa;padding-left:15px;padding-right:15px;" > <%=@concept.name%><span id="link_label" > |<%=link_to " Link Here", "/visualize/#{@ontology.to_param}/?conceptid=#{@concept.to_param}" %> | <a href="/syndication/rss?ontologies=<%=@ontology.ontologyId%>" style="text-decoration:none;font-size:14px;"><img src="/images/feed-icon.png" height=16 width=16 border=0 > Subscribe</a></span></h1>
+		<h1 id="name_label" style="margin-left:100px;border:1px #AFAFAF dashed;background-color:#f5fafa;padding-left:15px;padding-right:15px;" > <%=@concept.name%><span id="link_label" > |<%=link_to " Link Here", "/visualize/#{@ontology.to_param}/?conceptid=#{@concept.to_param}" %> | <a href="/syndication/rss?ontologies=<%=@ontology.ontologyId%>" style="text-decoration:none;font-size:14px;"><img src="/images/feed-icon.png" height=12 width=12 border=0 style="vertical-align:text-top;"> Subscribe</a></span></h1>
 		<br style="clear:all;" />
 	</div>
 	
@@ -140,7 +140,7 @@
 		<div id="sidebar">
 			<div id="sd_hd">
 					<%if @ontology.isView=='true'%>
-						<h2><%=link_to "View Ontology Summary", ontology_url(:id => @ontology.viewOnOntologyVersionId) + "#views"%></h2>
+						<h2><%=link_to "View Ontology Summary", ontology_url(:id => @ontology.viewOnOntologyVersionId)%></h2>
 					<%else%>
 						<h2><%=link_to "View Ontology Summary", ontology_url(:id => @ontology.id)%></h2>
 					<%end%>
