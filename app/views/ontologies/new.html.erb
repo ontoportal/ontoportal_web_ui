@@ -153,16 +153,6 @@
                 <% ont_formats = [ "LEXGRID-XML", "OBO", "OWL", "OWL-DL", "OWL-FULL", "OWL-LITE", "PROTEGE", "RRF" ] %>
                 <% selected = @ontology.ontologyId.nil? ? "OWL" : @ontology.format %>
                 <%= select("ontology", "format", ont_formats, { :include_blank => true, :selected => selected, :style => "width: 200px;" }) %>
-                <select name="ontology[format]" id="ontology_format" style="width:200px">
-                    <option value="LEXGRID-XML">LEXGRID-XML</option>
-                    <option value="OBO">OBO</option>
-                    <option value="OWL" SELECTED>OWL</option>
-                    <option value="OWL-DL">-&nbsp;&nbsp;OWL-DL</option>
-                    <option value="OWL-FULL">-&nbsp;&nbsp;OWL-FULL</option>
-                    <option value="OWL-LITE">-&nbsp;&nbsp;OWL-LITE</option>
-                    <option value="PROTEGE">PROTEGE</option>
-                    <option value="RRF">RRF</option>
-                </select>
                 <div id="format_spacing">
                 </div>
                 <table id="format_specific_options">
