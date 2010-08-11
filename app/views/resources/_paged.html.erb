@@ -16,8 +16,12 @@
      %>
 	 <%color = cycle("","alt") %>
        <tr class="<%=color%>" >
-          <td style="padding:3px;"><a class="thickbox" href="/res_details/<%=params[:concept]%>?ontology=<%=params[:ontology]%>&latest=<%=params[:latest]%>&version_id=<%=params[:version_id]%>&resource=<%=params[:resource]%>&element=<%=annotation.local_id%>&height=600&width=800"><%=annotation.description || "No description available"%></a></td>
-   	      <td style="padding:3px;"><a target="_blank" href="<%=resource_element_link%>"><%=CGI.unescape(annotation.local_id)%></a></td>
+          <td style="padding:3px;">
+            <a class="thickbox" href="<%= generate_details_link(params[:version_id], params[:resource], annotation.local_id, params[:concept]) %>&TB_iframe=true&height=600&width=800"><%=annotation.description || "No description available"%></a>
+          </td>
+   	      <td style="padding:3px;">
+   	        <a target="_blank" href="<%=resource_element_link%>"><%=CGI.unescape(annotation.local_id)%></a>
+ 	        </td>
 	   </tr>
       
 	  <%end%>

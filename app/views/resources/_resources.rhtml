@@ -42,7 +42,7 @@
               	  <%color = cycle("","alt") %>
                   <tr class="<%=color%>" >
                     <td style="padding:3px;">
-                      <a class="thickbox" href="/res_details/<%=@concept.id%>?ontology=<%=@ontology.ontologyId%>&latest=<%=@ontology.is_latest?%>&version_id=<%=@ontology.id%>&resource=<%=resource.shortname%>&element=<%=annotation.local_id%>&height=600&width=800"><%=annotation.description || "No description available"%></a>
+                      <a class="thickbox" href="<%= generate_details_link(@ontology.id, resource.shortname, annotation.local_id, @concept.id) %>&TB_iframe=true&height=600&width=800"><%=annotation.description || "No description available"%></a>
                     </td>
               		  <td style="padding:3px;">
               		    <a target="_blank" href="<%=resource_element_link%>"><%=CGI.unescape(annotation.local_id)%></a>
