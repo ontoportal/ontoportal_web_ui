@@ -17,7 +17,7 @@
 		<%else%>
 		  <li><a href="/projects" title="Projects"  ><img name="img11" src="/images/layout/nav_projects.png" /></a></li>		
 		<%end%>
-		<%if !$OBS_ENABLED.nil? && $OBS_ENABLED %>
+		<%unless !$ANNOTATOR_DISABLED.nil? && $ANNOTATOR_DISABLED %>
   		<%if controller.action_name.eql?('annotate')%>		
   		  <li><a href="/annotator" title="Annotator" ><img name="img12" src="/images/layout/nav_annotate_active.png" /></a></li>
   		<%else%>
@@ -29,7 +29,7 @@
 		<%else%>
 		  <li><a href="/mappings" title="All Mappings" ><img name="img13" src="/images/layout/nav_search_allmappings.png" /></a></li>		
 		<%end%>
-    <%if !$OBS_ENABLED.nil? && $OBS_ENABLED %>
+    <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
   		<%if controller.action_name.eql?('all_resources')%>		
   		  <li><a href="/resources" title="Resource Index" ><img name="img13" src="/images/layout/nav_resources_active.png" /></a></li>
   		<%else%>
