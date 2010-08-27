@@ -15,8 +15,11 @@ $PURL_ENABLED = false
 # The PURL URL generation algorithm can be altered in app/models/ontology_wrapper.rb 
 $PURL_PREFIX = "http://purl.bioontology.org/ontology"
 
-# If your BioPortal installation includes OBS (Annotator, Resource Index), enable this option
-$OBS_ENABLED = false
+# If your BioPortal installation includes Annotator set this to false
+$ANNOTATOR_DISABLED = true
+
+# If your BioPortal installation includes Resource Index set this to false
+$RESOURCE_INDEX_DISABLED = true
 
 # Unique string representing the UI's id for use with the BioPortal Core
 $APPLICATION_ID = "" 
