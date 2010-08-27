@@ -197,7 +197,7 @@ private
     # To work around this, return is the annotation source xml is nil
     return if doc.nil?
 
-    xpath = "obrAnnotationBeanDetailled"
+    xpath = "obrAnnotationBeanDetailed"
 
     doc.elements.each(xpath){ |annotationXML|
       begin
@@ -208,7 +208,7 @@ private
         xpath = "element/elementStructure/contexts/entry[string='" + resource.main_context + "']/string[2]"
         # If that didn't work, revert to finding the description using provided relative xpath from the reference attr.
         if annotationXML.elements[xpath].nil?
-          xpath_alt = "../obrAnnotationBeanDetailled/element/elementStructure/contexts/entry[string='" + resource.main_context + "']/string[2]"
+          xpath_alt = "../obrAnnotationBeanDetailed/element/elementStructure/contexts/entry[string='" + resource.main_context + "']/string[2]"
           annotation.description = annotationXML.elements[xpath_alt].get_text.value
         else
           annotation.description = annotationXML.elements[xpath].get_text.value
@@ -228,7 +228,7 @@ private
     resource.context_numbers = {}
     resource.annotations = []
 
-    doc.elements.each("*/annotations/obrAnnotationBeanDetailled"){ |statistic|
+    doc.elements.each("*/annotations/obrAnnotationBeanDetailed"){ |statistic|
       annotation = Annotation.new
       annotation.score = statistic.elements["score"].get_text.value
       annotation.local_id= statistic.elements["localElementID"].get_text.value
@@ -241,7 +241,7 @@ private
     details = {}
     details[:rest_url] = rest_url
 
-    doc.elements.each("*/obrAnnotationBeanDetailled"){ |annotation|
+    doc.elements.each("*/obrAnnotationBeanDetailed"){ |annotation|
       context = annotation.elements["context"]
       annot_class = context.attributes["class"]
       context_name = context.elements["contextName"].get_text.value
@@ -258,7 +258,7 @@ private
       resource_element = annotation.elements["element"]
       reference = resource_element.attributes["reference"] rescue nil
       if reference
-        contexts = annotation.elements["../obrAnnotationBeanDetailled/element/elementStructure/contexts"]
+        contexts = annotation.elements["../obrAnnotationBeanDetailed/element/elementStructure/contexts"]
       else
         contexts = annotation.elements["element/elementStructure/contexts"]
       end
