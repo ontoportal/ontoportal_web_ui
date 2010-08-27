@@ -43,7 +43,7 @@ class OntrezService
     doc = REXML::Document.new(open(ONTREZ_URL + RESOURCES))
     LOG.add :debug, "Resources retrieved (#{Time.now - startGet})"
 
-    doc.elements.each("*/obs\.obr\.populate\.Resource"){|resource|
+    doc.elements.each("/success/data/set/resource"){|resource|
       new_resource = Resource.new
       new_resource.name = resource.elements["resourceName"].get_text.value
       new_resource.shortname = resource.elements["resourceID"].get_text.value
@@ -71,11 +71,11 @@ class OntrezService
     startGet = Time.now
     for resource in resources
       # number of annotations
-      xpath = "*/obs.common.beans.ObrResultBean[resourceID='" + resource.shortname + "']/statistics/obs.common.beans.StatisticsBean/nbAnnotation"
+      xpath = "/success/data/list/obrResultBean[resourceID='" + resource.shortname + "']/statistics/statisticsBean/nbAnnotation"
       resource.count = doc.elements[xpath].get_text.value.to_i
 
       # annotations
-      xpath = "*/obs.common.beans.ObrResultBean[resourceID='" + resource.shortname + "']/annotations"
+      xpath = "/success/data/list/obrResultBean[resourceID='" + resource.shortname + "']/annotations"
       annotations_doc = doc.elements[xpath]
       parseAnnotations(annotations_doc,resource)
     end
@@ -129,7 +129,7 @@ class OntrezService
     new_resource.main_context = resource_main_context
 
     # use xpath to isolate annotations and send those as a parameter
-    xpath = "obs.common.beans.ObrResultBean/annotations"
+    xpath = "/success/data/obrResultBean/annotations"
     annotations_doc = doc.elements[xpath]
     parseAnnotations(annotations_doc,new_resource)
     
@@ -183,16 +183,6 @@ class OntrezService
     return resource  
   end
   
-  def self.gatherResourcesByCui(cui)
-    resources = []
-
-    doc = REXML::Document.new(open(ONTREZ_URL+CUI_STRING.gsub("%CONC%",cui)))
-
-    resources = parseResources(doc)
-
-    return resources 
-  end
-    
 private 
 
   ##
@@ -207,7 +197,7 @@ private
     # To work around this, return is the annotation source xml is nil
     return if doc.nil?
 
-    xpath = "obs.common.beans.ObrAnnotationBeanDetailled"
+    xpath = "obrAnnotationBeanDetailled"
 
     doc.elements.each(xpath){ |annotationXML|
       begin
@@ -218,7 +208,7 @@ private
         xpath = "element/elementStructure/contexts/entry[string='" + resource.main_context + "']/string[2]"
         # If that didn't work, revert to finding the description using provided relative xpath from the reference attr.
         if annotationXML.elements[xpath].nil?
-          xpath_alt = "../obs.common.beans.ObrAnnotationBeanDetailled/element/elementStructure/contexts/entry[string='" + resource.main_context + "']/string[2]"
+          xpath_alt = "../obrAnnotationBeanDetailled/element/elementStructure/contexts/entry[string='" + resource.main_context + "']/string[2]"
           annotation.description = annotationXML.elements[xpath_alt].get_text.value
         else
           annotation.description = annotationXML.elements[xpath].get_text.value
@@ -232,13 +222,13 @@ private
  
   def self.parseOBS(doc,resource)
     # get annotation count
-    resource.count = doc.elements["//statistics/obs.common.beans.StatisticsBean/nbAnnotation"].get_text.value.to_i      
+    resource.count = doc.elements["//statistics/statisticsBean/nbAnnotation"].get_text.value.to_i      
     
     # get annotations
     resource.context_numbers = {}
     resource.annotations = []
 
-    doc.elements.each("*/annotations/obs.common.beans.ObrAnnotationBeanDetailled"){ |statistic|
+    doc.elements.each("*/annotations/obrAnnotationBeanDetailled"){ |statistic|
       annotation = Annotation.new
       annotation.score = statistic.elements["score"].get_text.value
       annotation.local_id= statistic.elements["localElementID"].get_text.value
@@ -251,7 +241,7 @@ private
     details = {}
     details[:rest_url] = rest_url
 
-    doc.elements.each("*/obs\.common\.beans\.ObrAnnotationBeanDetailled"){ |annotation|
+    doc.elements.each("*/obrAnnotationBeanDetailled"){ |annotation|
       context = annotation.elements["context"]
       annot_class = context.attributes["class"]
       context_name = context.elements["contextName"].get_text.value
@@ -268,14 +258,14 @@ private
       resource_element = annotation.elements["element"]
       reference = resource_element.attributes["reference"] rescue nil
       if reference
-        contexts = annotation.elements["../obs.common.beans.ObrAnnotationBeanDetailled/element/elementStructure/contexts"]
+        contexts = annotation.elements["../obrAnnotationBeanDetailled/element/elementStructure/contexts"]
       else
         contexts = annotation.elements["element/elementStructure/contexts"]
       end
       details[annot_class][context_name][:contextString] = contexts.elements["entry[string='" + context_name + "']/string[2]"].get_text.value
 
       case annot_class
-      when "obs.common.beans.MgrepContextBean"
+      when "mgrepContextBean"
         # String that contains the annotation term
         details[annot_class][context_name][:termID] = context.elements["termID"].get_text.value
         details[annot_class][context_name][:termName] = context.elements["termName"].get_text.value
@@ -283,58 +273,17 @@ private
         details[annot_class][context_name][:offsets] = [] unless !details[annot_class][context_name][:offsets].nil?
         details[annot_class][context_name][:offsets] << context.elements["from"].get_text.value.to_i - 1 # we subtract one because the api gives the count at the actual start, not before
         details[annot_class][context_name][:offsets] << context.elements["to"].get_text.value.to_i
-      when "obs.common.beans.IsaContextBean"
+      when "isaContextBean"
         details[annot_class][context_name][:childConceptID]= context.elements["childConceptID"].get_text.value
         details[annot_class][context_name][:level]= context.elements["level"].get_text.value
-      when "obs.common.beans.MappingContextBean"
+      when "mappingContextBean"
         details[annot_class][context_name][:mappedConceptID] = context.elements["mappedConceptID"].get_text.value
         details[annot_class][context_name][:mappingType] = context.elements["mappingType"].get_text.value
-      when "obs.common.beans.ReportedContextBean"
+      when "reportedContextBean"
       end
     }
 
     return details
   end
- 
- 
-  def self.parseResources(doc)
-    resources =[]
-    doc.elements.each("*/resultLines/ontrez\.user\.OntrezResultLine"){ |element|    
-   
-    resource = Resource.new   
-    resource.name = element.elements["lineName"].get_text.value
-    resource.shortname = element.elements["lineShortName"].get_text.value   
-    resource.url = element.elements["lineURL"].get_text.value
-    resource.description = element.elements["lineDescription"].get_text.value
-    resource.logo = element.elements["lineLogo"].get_text.value
-    resource.count = element.elements["lineNumber"].get_text.value.to_i
-    resource.context_numbers = {}
-    resource.annotations = [] 
-   
-    element.elements["lineContextNumbers"].elements.each("entry") { |entry|
-        resource.context_numbers[entry.elements["string"].get_text.value]=entry.elements["int"].get_text.value    
-    }
- 
-    element.elements["lineDetailsWithMetadata"].elements["lineAnnotationsForBP"].elements.each("ontrez\.annotation\.AnnotationForBioPortal") {|annot|
-      annotation = Annotation.new
-      annotation.local_id = annot.elements["elementLocalID"].get_text.value
-      annotation.term_id = annot.elements["termID"].get_text.value
-      annotation.item_key = annot.elements["itemKey"].get_text.value
-      annotation.url = annot.elements["url"].get_text.value
-      annotation.description = annot.elements["metaDataText"].get_text.value
-     
-      resource.annotations << annotation
-    }
- 
- 
-    resources << resource
-   
-   
-    }
-    return resources
- 
- 
- 
-  end 
  
 end
