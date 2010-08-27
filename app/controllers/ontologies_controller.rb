@@ -324,16 +324,31 @@ class OntologiesController < ApplicationController
         end
       else
         
-        #puts "Ontology Error: #{@ontology.inspect}"
-        #adds ontology to syndication
-        event = EventItem.new
-        event.event_type="Ontology"
-        event.event_type_id=@ontology.id
-        event.ontology_id=@ontology.ontologyId
-        event.save
-        flash[:notice] = "Thank you for submitting your ontology to #{$SITE}.
-          We will now put your ontology in the queue to be processed.
-          Please keep in mind that it may take up to several hours before #{$SITE} users will be able to explore and search your ontology."
+        # Adds ontology to syndication
+        # Don't break here if we encounter problems, the RSS feed isn't critical
+        begin
+          event = EventItem.new
+          event.event_type="Ontology"
+          event.event_type_id=@ontology.id
+          event.ontology_id=@ontology.ontologyId
+          event.save
+        rescue
+        end
+        
+        # Display message to user
+        if @ontology.isRemote.eql?("1")
+          flash[:notice] = "Thank you for submitting your ontology to #{$SITE}.
+            Users can now see your ontology in our ontology list but they cannot explore or search it.
+            To enable exploring and searching, please upload a full version of your ontology."
+        elsif @ontology.isView.eql?("true")
+          flash[:notice] = "Thank you for submitting your ontology view to #{$SITE}.
+            We will now put your ontology in the queue to be processed.
+            Please keep in mind that it may take up to several hours before #{$SITE} users will be able to explore and search your ontology."
+        else
+          flash[:notice] = "Thank you for submitting your ontology to #{$SITE}.
+            We will now put your ontology in the queue to be processed.
+            Please keep in mind that it may take up to several hours before #{$SITE} users will be able to explore and search your ontology."
+        end
         
         if(@ontology.isView=='true')
           #cleaning out the cache
