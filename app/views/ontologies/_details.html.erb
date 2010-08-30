@@ -21,7 +21,7 @@
                         <%=@ontology.ontologyId %>
                     </td>
                 </tr>
-                <% if !$PURL_ENABLED.nil? && $PURL_ENABLED %>
+                <% if !$PURL_ENABLED.nil? && $PURL_ENABLED && @ontology.isRemote.eql?("0") %>
                   <tr>
                       <th>
                           <%=$SITE%> PURL:
