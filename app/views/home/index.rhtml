@@ -48,10 +48,10 @@ function jumpToValueResource(li){
 	}
 
 	if( !!li.extra ){
-		var concept_id = li.extra[0];
-		var ontology_version_id = li.extra[2];
-		var ontology_id = li.extra[7];
-		document.location="/resources?conceptid="+concept_id+"&ontologyid="+ontology_id+"&ontologyversionid="+ontology_version_id;
+		var concept_id = jQuery('body').data("resource_results").extra[0];
+		var ontology_version_id = jQuery('body').data("resource_results").extra[2];
+		var ontology_id = jQuery('body').data("resource_results").extra[7];
+		document.location="/resources?conceptid="+encodeURIComponent(concept_id)+"&ontologyid="+ontology_id+"&ontologyversionid="+ontology_version_id;
 		return;
 	}
 }
@@ -69,6 +69,12 @@ function formatItemResource(row) {
   }
   
   return result;
+}
+
+// We use this in conjunction with autocomplete because autocomplete
+// fails when there are multiple results with the same term name
+function jumpToSelectResource(li) {
+  jQuery('body').data("resource_results", li);
 }
 
 <%
@@ -106,6 +112,7 @@ jQuery(document).ready(function(){
 		matchSubset: 0,
 		minChars: 3,
 		maxItemsToShow: 10,
+    onItemSelect: jumpToSelectResource,
 		onFindValue: jumpToValueResource,
 		formatItem: formatItemResource
 	});
