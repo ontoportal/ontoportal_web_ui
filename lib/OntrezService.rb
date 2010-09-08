@@ -48,7 +48,7 @@ class OntrezService
       new_resource.name = resource.elements["resourceName"].get_text.value
       new_resource.shortname = resource.elements["resourceID"].get_text.value
       new_resource.url = resource.elements["resourceURL"].get_text.value
-      new_resource.resource_element_url = resource.elements["resourceElementURL"].get_text.value
+      new_resource.resource_element_url = resource.elements["resourceElementURL"].get_text.value rescue ""
       new_resource.description = resource.elements["resourceDescription"].get_text.value
       new_resource.logo = resource.elements["resourceLogo"].get_text.value
       new_resource.main_context = resource.elements["mainContext"].get_text.value
