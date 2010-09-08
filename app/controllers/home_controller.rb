@@ -122,9 +122,10 @@ class HomeController < ApplicationController
   end
 
   def all_resources
-    @concept=params[:concept]
-    @ontology=params[:ontology]
-    @search=params[:search]
+    @conceptid = params[:conceptid]
+    @ontologyid = params[:ontologyid]
+    @ontologyversionid = params[:ontologyversionid]
+    @search = params[:search]
   end
   
   def feedback

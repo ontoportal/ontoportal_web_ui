@@ -131,7 +131,7 @@ class SearchController < ApplicationController
       if params[:id] && params[:id].split(",").length == 1
         response << "#{target_value}|#{result[:conceptIdShort]}|#{result[:recordType].titleize.gsub("Record Type","").downcase.strip}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}~!~"
       else
-        response << "#{target_value}|#{result[:conceptIdShort]}|#{result[:recordType].titleize.gsub("Record Type","").downcase.strip}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}|#{result[:ontologyDisplayLabel]}~!~"
+        response << "#{target_value}|#{result[:conceptIdShort]}|#{result[:recordType].titleize.gsub("Record Type","").downcase.strip}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}|#{result[:ontologyDisplayLabel]}|#{result[:ontologyId]}~!~"
       end
     end        
     

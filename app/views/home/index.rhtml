@@ -41,22 +41,34 @@ function jumpToValueResource(li){
 		
 		var search = confirm("Press OK to Search for resources using the term, or Cancel to select a term")
 		if(search){
-			query = jQuery("#find_resource").val()
+			query = jQuery("#find_resource").val();
 			document.location="/resources?search="+query;
 			return;
 		}
 	}
 
 	if( !!li.extra ){
-		var concept_id = li.extra[0]
-		var ont_id = li.extra[2];
-		document.location="/resources?concept="+concept_id+"&ontology="+ont_id;
+		var concept_id = li.extra[0];
+		var ontology_version_id = li.extra[2];
+		var ontology_id = li.extra[7];
+		document.location="/resources?conceptid="+concept_id+"&ontologyid="+ontology_id+"&ontologyversionid="+ontology_version_id;
 		return;
 	}
 }
 
 function formatItemResource(row) {
- 	return row[0] + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
+  var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
+  var keywords = jQuery("#find_resource").val().replace(specials, "\\$&").split(' ').join('|');
+  var regex = new RegExp( '(' + keywords + ')', 'gi' );
+
+  // row[7] is the ontology_id, only included when searching multiple ontologies
+  if (row[7] == undefined) {
+    var result = row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
+  } else {
+    var result = row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + row[7] + "</span>";
+  }
+  
+  return result;
 }
 
 <%
@@ -88,7 +100,7 @@ jQuery(document).ready(function(){
 	});
 	searchbox =  jQuery("#find_ontology")[0].autocompleter;
 	
-	jQuery("#find_resource").autocomplete("/search/json_search/0", {
+	jQuery("#find_resource").autocomplete("/search/json_search/", {
 		lineSeparator:"~!~",
 		cacheLength: 1,
 		matchSubset: 0,
