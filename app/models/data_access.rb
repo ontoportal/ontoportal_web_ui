@@ -14,7 +14,7 @@ class DataAccess
 
   NO_CACHE = false
   
-  def self.getNode(ontology_id, node_id, view = false) 
+  def self.getNode(ontology_id, node_id, view = false)
     view_string = view ? "view_" : ""
     return self.cache_pull("#{view_string}#{param(ontology_id)}::#{node_id.to_s.gsub(" ","%20")}", "getNode", { :ontology_id => ontology_id, :concept_id => node_id })
   end
@@ -140,17 +140,21 @@ class DataAccess
     # Remove cached notes for this ontology
     CACHE.delete("#{params[:ontology_virtual_id]}::notes")
     
-    # Add note to index table
-    notes_index = NotesIndex.new
-    notes_index.populate(note)
-    notes_index.save
-    
-    # Adds note to syndication
-    event = EventItem.new
-    event.event_type = "Note"
-    event.event_type_id = note.id
-    event.ontology_id = params[:ontology_virtual_id]
-    event.save
+    # We rescue all so the user doesn't get an error if the add fails
+    begin
+      # Add note to index table
+      notes_index = NotesIndex.new
+      notes_index.populate(note)
+      notes_index.save
+      
+      # Adds note to syndication
+      event = EventItem.new
+      event.event_type = "Note"
+      event.event_type_id = note.id
+      event.ontology_id = params[:ontology_virtual_id]
+      event.save
+    rescue Exception => e
+    end
 
     note
   end

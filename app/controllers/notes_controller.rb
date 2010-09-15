@@ -125,10 +125,6 @@ class NotesController < ApplicationController
     render :partial => 'list', :layout => 'ontology'
   end
   
-  def show_for_concept
-    
-  end
-  
   # GET /notes/new
   # GET /notes/new.xml
   def new

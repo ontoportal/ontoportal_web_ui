@@ -21,8 +21,13 @@ class SyndicationController < ApplicationController
             ontology = DataAccess.getOntology(event.event_type_id)
             feed_items << {:title=>"Ontology added",:description=>"Ontology  #{ontology.displayLabel} version #{ontology.versionNumber} was added to the repository",:date=>event.created_at,:link=>"#{$UI_URL}/ontologies/#{ontology.id}"}
           when "Note"
-            note = MarginNote.find(event.event_type_id)
-            feed_items << {:title=>"Note added to #{note.concept.label} in #{note.ontology.displayLabel}",:description=>note.comment,:date=>event.created_at,:link=>"#{$UI_URL}/visualize/#{note.ontology.id}/#{note.concept_id}"}
+            note = DataAccess.getNote(event.ontology_id, event.event_type_id, false, true)
+            note_type = Class.new.extend(NotesHelper).get_note_type_text(note.type)
+            note_url = Class.new.extend(NotesHelper).get_applies_to_url(note.createdInOntologyVersion, note.appliesTo['type'], note.appliesTo['id'])
+            note_text = note.type.eql?("Comment") ? "Comment: #{note.body}" : "Reason for request: #{note.values[note.type]['reasonForChange']}"
+            applies_to = note.appliesTo['type'].eql?("Ontology") ? "(#{note.ontology.displayLabel})" : "#{note.appliesTo['id']} in #{note.ontology.displayLabel}"
+            
+            feed_items << { :title => "#{note_type} added to #{note.appliesTo['type']} #{applies_to}", :description => note_text, :date => event.created_at, :link => "#{$UI_URL}#{note_url}" }
           when "Mapping"
             mapping = Mapping.find(event.event_type_id)
             feed_items << {:title=>"Mapping added in #{mapping.ontology.displayLabel}",:description=>"Mapping from #{mapping.source_name} to #{mapping.destination_name}",:date=>event.created_at,:link=>"#{$UI_URL}/visualize/#{mapping.source_version_id}/#{mapping.source_id}"}

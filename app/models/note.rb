@@ -48,4 +48,8 @@ class Note
     self.id.nil?
   end
   
+  def ontology
+    DataAccess.getOntology(self.createdInOntologyVersion)
+  end
+  
 end
