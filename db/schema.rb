@@ -9,11 +9,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100219205647) do
+ActiveRecord::Schema.define(:version => 20100915004236) do
 
   create_table "event_items", :force => true do |t|
     t.string   "event_type",    :limit => 50
-    t.integer  "event_type_id"
+    t.string   "event_type_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "ontology_id"
@@ -149,8 +149,8 @@ ActiveRecord::Schema.define(:version => 20100219205647) do
   end
 
   create_table "widget_logs", :force => true do |t|
-    t.integer "count",                  :default => 0, :null => false
-    t.string  "widget",                 :limit => 50
+    t.integer "count",                 :default => 0, :null => false
+    t.string  "widget",  :limit => 50
     t.string  "referer"
   end
 
