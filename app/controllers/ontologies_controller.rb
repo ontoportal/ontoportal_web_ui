@@ -350,8 +350,8 @@ class OntologiesController < ApplicationController
             Please keep in mind that it may take up to several hours before #{$SITE} users will be able to explore and search your ontology."
         end
         
-        if(@ontology.isView=='true')
-          #cleaning out the cache
+        if @ontology.isView=='true'
+          # Cleaning out the cache
           parent_ontology=DataAccess.getOntology(@ontology.viewOnOntologyVersionId)
           CACHE.delete("views::#{parent_ontology.ontologyId}")
           redirect_to '/ontologies/'+@ontology.viewOnOntologyVersionId+'#views'
