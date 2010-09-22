@@ -312,12 +312,14 @@ class OntologiesController < ApplicationController
       @ontology = DataAccess.createOntology(params[:ontology])
       if @ontology.kind_of?(Hash) && @ontology[:error]        
         flash[:notice]=@ontology[:longMessage]
+        
         if(params[:ontology][:ontologyId].empty?)
           @ontology = OntologyWrapper.new
         else
           @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
         end
-        if(params[:ontology][:isView].to_i==1)
+        
+        if params[:ontology][:isView].to_i==1
           render :action=>'new_view'
         else
           render :action=>'new'  
