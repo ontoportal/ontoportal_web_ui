@@ -18,8 +18,8 @@ class ResourcesController < ApplicationController
     
     @details = OBDWrapper.gatherResourcesDetails(params[:ontology],latest,params[:version_id],params[:id],params[:resource],params[:element])
 
-    unless @details["obs.common.beans.MgrepContextBean"].nil?
-      @details["obs.common.beans.MgrepContextBean"].each do |key, mgrep_hash|
+    unless @details["obs.common.beans.mgrepContext"].nil?
+      @details["obs.common.beans.mgrepContext"].each do |key, mgrep_hash|
         # The following method for inserting opening and closing tags to highlight
         # annotation items will only work if the offsets are provided in ascending
         # order. To get this to work with multiple classes we'll want to change the

@@ -33,6 +33,9 @@ $REST_DOMAIN = "domain.com"
 # OBR REST service address
 $OBR_REST_URL="http://domain.com/resource_index"
 
+# Resource Index UI Location
+$RESOURCE_INDEX_UI_URL = "http://ncbodev-riui1.stanford.edu/stage"
+
 # REST core service port number
 $REST_PORT="8080"
 
