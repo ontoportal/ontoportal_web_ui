@@ -30,7 +30,7 @@ $REST_URL = "http://domain.com:8080/bioportal"
 # REST domain: this is the domain that hosts your services (Core, OBS, OBR, etc)
 $REST_DOMAIN = "domain.com"
 
-# OBR REST service address
+# Resource Index REST service address
 $RESOURCE_INDEX_REST_URL = "http://domain.com/resource_index"
 
 # Resource Index UI Location
