@@ -12,7 +12,7 @@ class OntrezService
   # %S_PAGE% = Page Start
   # %E_PAGE% = Page End
   
-  ONTREZ_URL = $OBR_REST_URL
+  ONTREZ_URL = $RESOURCE_INDEX_REST_URL
   
   RESOURCE_BY_CONCEPT = "/byconcept/virtual/%ONT%/false/true/0/10?conceptid=%CONC%"
   VERSIONED_RESOURCE_BY_CONCEPT = "/byconcept/%ONT%/false/true/0/10?conceptid=%CONC%"
