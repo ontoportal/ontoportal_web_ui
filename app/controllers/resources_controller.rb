@@ -1,6 +1,8 @@
 class ResourcesController < ApplicationController
 
   def show
+    params[:id] = params[:conceptid].nil? ? params[:id] : params[:conceptid]
+
     @concept =  DataAccess.getNode(params[:ontology],params[:id])
     @ontology = DataAccess.getOntology(params[:ontology])
     latest = @ontology.is_latest? ? true : false
@@ -15,6 +17,8 @@ class ResourcesController < ApplicationController
   def details
     # Rails passes params as strings not booleans, so we convert latest to a true boolean here.
     latest = convert_boolean_param(params[:latest])
+    
+    params[:id] = params[:conceptid].nil? ? params[:id] : params[:conceptid]
     
     @details = OBDWrapper.gatherResourcesDetails(params[:ontology],latest,params[:version_id],params[:id],params[:resource],params[:element])
 
