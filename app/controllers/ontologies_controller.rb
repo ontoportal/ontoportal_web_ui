@@ -431,6 +431,13 @@ class OntologiesController < ApplicationController
           note_count_map[note.appliesTo['id']] = note_count_map[note.appliesTo['id']].nil? ? 1 : note_count_map[note.appliesTo['id']] += 1
         end
       end
+      
+      if note_count_map.size > 35
+        note_count_map = note_count_map.sort {|a,b| b[1] <=> a[1]}
+        
+        # Remove all elements above index 35
+        note_count_map.slice!(35, (note_count_map.size - 35))
+      end
     
       note_count_map.each do |concept_id, count|
         begin
@@ -441,6 +448,8 @@ class OntologiesController < ApplicationController
         end
       end
     end
+    
+    note_count.sort! {|a,b| a[0] <=> b[0]}
 
     note_count
   end
