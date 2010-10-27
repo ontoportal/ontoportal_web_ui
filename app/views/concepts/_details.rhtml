@@ -12,22 +12,22 @@
 		<td><p><%=@concept.id%></p></td>
 	</tr>
 	<%unless @concept.fullId.nil? || @concept.fullId.eql?("")%>
-	<tr>
-		<td nowrap class="label" >Full Id:</td>
-		<td><p><%=auto_link(@concept.fullId, :all, :target => "_blank")%></p></td>
-	</tr>
+  	<tr>
+  		<td nowrap class="label" >Full Id:</td>
+  		<td><p><a href="<%=@concept.fullId%>" target="_blank"><%=@concept.fullId%></a></p></td>
+  	</tr>
 	<%end%>
 	<%unless @concept.synonyms.nil? || @concept.synonyms.empty?%>
-	<tr>
-		<td nowrap class="label" >Synonyms:</td>
-		<td><% for synonym in @concept.synonyms %><p><%= synonym %></p><% end %></td>
-	</tr>
+  	<tr>
+  		<td nowrap class="label" >Synonyms:</td>
+  		<td><% for synonym in @concept.synonyms %><p><%= synonym %></p><% end %></td>
+  	</tr>
 	<%end%>
 	<%unless @concept.definitions.nil? || @concept.definitions.empty?%>
-	<tr>
-		<td nowrap class="label" >Definitions:</td>
-		<td><% for definition in @concept.definitions %><p><%= definition %></p><% end %></td>
-	</tr>
+  	<tr>
+  		<td nowrap class="label" >Definitions:</td>
+  		<td><% for definition in @concept.definitions %><p><%= definition %></p><% end %></td>
+  	</tr>
 	<%end%>
 	
 	
@@ -45,9 +45,6 @@
 	bottom_set=[]
 	leftover=[]
 	for key in keys
-		#if key.include?("[R]")			
-		#	next
-		#end
 		top=false
 		bottom=false
 		top_keys.each{|top_key| 
@@ -75,13 +72,12 @@
 			next
 		end%>
 		<%unless @concept.properties[key].empty?%>
-	
-		<tr>
-			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
-			<td >
-				<%=auto_link("<p>#{@concept.properties[key].split("|").join("<\/p><p>")}</p>", :all, :target => "_blank")%>
-			</td>
-		</tr>
+  		<tr>
+  			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
+  			<td>
+  				<%=auto_link("<p>#{@concept.properties[key].split("|").join("<\/p><p>")}</p>", :all, :target => "_blank")%>
+  			</td>
+  		</tr>
 		<%end%>
 	
 	
@@ -93,11 +89,12 @@
 			next
 		end%>
 		<%unless @concept.properties[key].empty?%>
-
-		<tr>
-			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
-			<td ><%=auto_link("<p>#{@concept.properties[key].split("|").join("<\/p><p>")}</p>", :all, :target => "_blank")%></td>
-		</tr>
+  		<tr>
+  			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
+  			<td>
+  			  <%=auto_link("<p>#{@concept.properties[key].split("|").join("<\/p><p>")}</p>", :all, :target => "_blank")%>
+			  </td>
+  		</tr>
 		<%end%>
 
 	<%end%>
@@ -107,11 +104,12 @@
 			next
 		end%>
 		<%unless @concept.properties[key].empty?%>
-
-		<tr>
-			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
-			<td ><%=auto_link("<p>#{@concept.properties[key].split("|").join("<\/p><p>")}</p>", :all, :target => "_blank")%></td>
-		</tr>
+  		<tr>
+  			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
+  			<td>
+  			  <%=auto_link("<p>#{@concept.properties[key].split("|").join("<\/p><p>")}</p>", :all, :target => "_blank")%>
+			  </td>
+  		</tr>
 		<%end%>
 
 	<%end%>
