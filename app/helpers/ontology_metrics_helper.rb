@@ -1,7 +1,7 @@
 module OntologyMetricsHelper
   
   def class_list_info(metrics, metric, message, title)
-    if metrics.send("#{metric}").nil? || metrics.send("#{metric}").empty?
+    if metrics.send("#{metric}").nil?
       return
     end
     
@@ -15,13 +15,13 @@ module OntologyMetricsHelper
     # Below we will use the 'send' method to call setters/getters based on the metric name we're looking for
     if metrics.send(:"#{metric}LimitPassed") != false
       percentage = "%0.2f" % (metrics.send(:"percentage", metric) * 100)
-      class_list_length = metrics.send(:"#{metric}LimitPassed")
+      class_list_length = metrics.send(:"#{metric}LimitPassed").length rescue 0 # Count empty arrays as zero
       markup << "#{class_list_length} / #{metrics.numberOfClasses} (#{percentage}%) of classes #{message}"
       # Return here to avoid creating the 'details' link 
       return markup
     else
       percentage = "%0.2f" % (metrics.send(:"percentage", metric) * 100)
-      class_list_length = metrics.send(:"#{metric}").length
+      class_list_length = metrics.send(:"#{metric}").length rescue 0 # Count empty arrays as zero
       markup << "#{class_list_length} / #{metrics.numberOfClasses} (#{percentage}%) of classes #{message}"
     end
     
