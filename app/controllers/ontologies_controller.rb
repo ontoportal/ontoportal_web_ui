@@ -63,8 +63,9 @@ class OntologiesController < ApplicationController
     @mappings = ActiveRecord::Base.connection.select_rows(mapping_tag_query);
     
     if @mappings.size > 35
-      mapping_tag_query = "select source_id,count(source_id) as con_count,source_name from mappings where source_ont = #{@ontology.ontologyId} group by source_id order by con_count limit 35"
-      @mappings = ActiveRecord::Base.connection.select_rows(mapping_tag_query);        
+      mapping_tag_query = "select source_id,count(source_id) as con_count,source_name from mappings where source_ont = #{@ontology.ontologyId} group by source_id order by con_count desc limit 35"
+      @mappings = ActiveRecord::Base.connection.select_rows(mapping_tag_query);
+      @mappings.sort! { |a,b| a[2] <=> b[2] }
     end
 
     #Grab Reviews Tab
