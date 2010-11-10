@@ -1,4 +1,10 @@
 jQuery.autocomplete = function(input, options) {
+  // Generally we use jQuery as the keyword but some people
+  // will use another framework which takes control of the $.
+  // To avoid re-writing this script we'll use a local var
+  // and redeclare the $ for jQuery.
+  var $ = jQuery.noConflict();
+  
 	// Create a link to self
 	var me = this;
 
