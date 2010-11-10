@@ -38,7 +38,7 @@ module OntologiesHelper
       end
     end
     
-    if ontology.isRemote.to_i.eql?(1)
+    if ontology.metadata_only?
       return "<a href=\"#{ontology.homepage}\" target=\"_blank\">Ontology Homepage</a>"
     else
       return "<a href=\"#{DataAccess.download(ontology.id)}\" target=\"_blank\">Download Ontology</a>"

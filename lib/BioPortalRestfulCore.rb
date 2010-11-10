@@ -903,7 +903,9 @@ private
     ontology.synonymSlot = ontologybeanXML.elements["synonymSlot"].get_text.value.strip rescue ""
     ontology.description = ontologybeanXML.elements["description"].get_text.value.strip rescue ""
     ontology.abbreviation = ontologybeanXML.elements["abbreviation"].get_text.value.strip rescue ""    
-    ontology.targetTerminologies = ontologybeanXML.elements["targetTerminologies"].get_text.value.strip rescue ""    
+    ontology.targetTerminologies = ontologybeanXML.elements["targetTerminologies"].get_text.value.strip rescue ""
+    ontology.isMetadataOnly = ontologybeanXML.elements["isMetadataOnly"].get_text.value.strip.to_i rescue ""
+    ontology.downloadLocation = ontologybeanXML.elements["downloadLocation"].get_text.value.strip rescue ""
     
     ontology.categories = []
     ontologybeanXML.elements["categoryIds"].elements.each do |element|

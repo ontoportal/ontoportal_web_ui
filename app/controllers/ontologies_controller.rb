@@ -339,7 +339,7 @@ class OntologiesController < ApplicationController
         end
         
         # Display message to user
-        if @ontology.isRemote.eql?("1")
+        if @ontology.metadata_only?
           flash[:notice] = "Thank you for submitting your ontology to #{$SITE}.
             Users can now see your ontology in our ontology list but they cannot explore or search it.
             To enable exploring and searching, please upload a full version of your ontology."
@@ -463,25 +463,42 @@ class OntologiesController < ApplicationController
     if params[:displayLabel].nil? || params[:displayLabel].length <1
       errors << "Please Enter an Ontology Name"
     end
+    
     if params[:versionNumber].nil? || params[:versionNumber].length <1
       errors << "Please Enter an Ontology Version"
     end
+    
     if params[:dateReleased].nil? || params[:dateReleased].length <1
       errors << "Please Enter the Date Released"
     elsif params[:dateReleased].match(/[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/).nil?
       errors << "Please Enter a Date Formatted as MM/DD/YYYY"
     end
+    
     unless isupdate
-      if params[:isRemote].to_i.eql?(0) && (params[:filePath].nil? || params[:filePath].length <1)
+      if params[:isRemote].to_i.eql?(0) && (params[:filePath].nil? || params[:filePath].length < 1)
         errors << "Please Choose a File"
       end
+      
       if params[:isRemote].to_i.eql?(0) && !params[:filePath].nil? && params[:filePath].size.to_i > 20000000 && !session[:user].admin?
         errors << "File is too large"
       end
-      if params[:isRemote].to_i.eql?(1) && (params[:urn].nil? || params[:urn].length <1)
+      
+      if params[:isRemote].to_i.eql?(1) && (params[:downloadLocation].nil? || params[:downloadLocation].length < 1)
         errors << "Please Enter a URL"
       end
+      
+      if params[:isRemote].to_i.eql?(1) && (!params[:downloadLocation].nil? || params[:downloadLocation].length > 1)
+        begin
+          downloadLocation = URI.parse(params[:downloadLocation])
+          if downloadLocation.scheme.nil? || downloadLocation.host.nil?
+            errors << "Please enter a valid URL"
+          end 
+        rescue URI::InvalidURIError
+          errors << "Please enter a valid URL"
+        end
+      end
     end
+    
     if params[:contactEmail].nil? || params[:contactEmail].length <1 || !params[:contactEmail].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
       errors << "Please Enter the Contact Email"
     end
@@ -492,6 +509,11 @@ class OntologiesController < ApplicationController
       if value.eql?(default_text)
         params[name] = ""
       end
+    end
+    
+    # Check for metadata only and set parameter
+    if params[:isRemote].to_i.eql?(3)
+      params[:isMetadataOnly] = 1
     end
     
     return errors

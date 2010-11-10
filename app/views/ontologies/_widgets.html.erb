@@ -1,5 +1,9 @@
-<%if !@ontology.isRemote.to_i.eql?(1) %>
+<% if @ontology.metadata_only? %>
+<div id="widgets_content" style="display:none;" class="tab_content">
+  <p>Widgets are only available for ontologies stored in <%=$SITE%>.</p>
+</div>
 
+<% else %>
 <div id="widgets_content" style="display:none;" class="tab_content">
     <div>
         <h1>Adding <%=$ORG%> Widgets for <%=@ontology.displayLabel %> to Your Site</h1>
@@ -400,4 +404,4 @@ Example 1 (start typing the term name to get its full URI)
     <div style="clear:both;">
     </div>
 </div>
-<%end %>
+<% end %>

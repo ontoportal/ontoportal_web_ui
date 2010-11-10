@@ -21,7 +21,7 @@
                         <%=@ontology.ontologyId %>
                     </td>
                 </tr>
-                <% if !$PURL_ENABLED.nil? && $PURL_ENABLED && @ontology.isRemote.eql?("0") %>
+                <% if !$PURL_ENABLED.nil? && $PURL_ENABLED && !@ontology.metadata_only? %>
                   <tr>
                       <th>
                           <%=$SITE%> PURL:
@@ -106,20 +106,22 @@
                 <thead>
                     <tr>
                         <th>
-                            Version Number
+                            Version
                         </th>
                         <th>
                             Release Date
                         </th>
                         <th>
-                            Ontology File
+                            Ontology File 
                         </th>
-                        <th>
-                            Visualize
-                        </th>
-                        <th>
-                            Download Diff File
-                        </th>
+                        <% if !@ontology.metadata_only? %>
+                          <th>
+                              Visualize
+                          </th>
+                          <th>
+                              Download Diff File
+                          </th>
+                        <% end %>
                     </tr>
                 </thead>
                 <%
@@ -135,20 +137,22 @@
 	                    <td>
 	                        <%= get_download_link(version) %>
 	                    </td>
-	                    <td>
-	                        <%= get_visualize_link(version) %>
-	                    </td>
-	                    <td>
-	                        <% for diff in @diffs %>
-		                        <%if diff[1].to_i.eql?(version.id.to_i) && diff[0].to_i.eql?(@versions[index + 1].id.to_i) %>
-			                        Download Diff with previous version 
-			                        <br/>
-			                        ( <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=txt">Txt</a>
-			                        | <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=rdf">RDF</a>)
-		                        <%end %>
-	                        <%end %>
-	                        &nbsp;
-	                    </td>
+                      <% if !@ontology.metadata_only? %>
+  	                    <td>
+  	                        <%= get_visualize_link(version) %>
+  	                    </td>
+  	                    <td>
+  	                        <% for diff in @diffs %>
+  		                        <%if diff[1].to_i.eql?(version.id.to_i) && diff[0].to_i.eql?(@versions[index + 1].id.to_i) %>
+  			                        Download Diff with previous version 
+  			                        <br/>
+  			                        ( <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=txt">Txt</a>
+  			                        | <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=rdf">RDF</a>)
+  		                        <%end %>
+  	                        <%end %>
+  	                        &nbsp;
+  	                    </td>
+                      <% end %>
 	                </tr>
                 <%end%>
             </table>

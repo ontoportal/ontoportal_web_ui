@@ -24,6 +24,8 @@ class OntologyWrapper
   attr_accessor :documentation
   attr_accessor :publication
   attr_accessor :dateCreated
+  attr_accessor :downloadLocation
+  attr_accessor :isMetadataOnly
   
   attr_accessor :description
   attr_accessor :abbreviation
@@ -168,6 +170,11 @@ class OntologyWrapper
   # Generates a PURL address for this ontology
   def purl
     return "#{$PURL_PREFIX}/#{self.abbreviation}"
+  end
+  
+  # Check to see if ontology is stored remotely (IE metadata only)
+  def metadata_only?
+    return self.isMetadataOnly.eql?(1)
   end
 
 end

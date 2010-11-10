@@ -81,7 +81,7 @@ class ConceptsController < ApplicationController
       @concept = DataAccess.getNode(@ontology.id,params[:id])
     end
     
-    if @ontology.isRemote.to_i.eql?(1)
+    if @ontology.metadata_only?
       redirect_to "/ontologies/#{@ontology.id}"
       return
     end
