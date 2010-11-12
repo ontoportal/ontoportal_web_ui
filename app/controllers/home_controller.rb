@@ -129,10 +129,14 @@ class HomeController < ApplicationController
   end
   
   def feedback
+    # Show the header/footer or not
+    feedback_layout = params[:pop].eql?("true") ? "minimal" : "ontology"
+    
     # We're using a hidden form field to trigger for error checking
     # If sim_submit is nil, we know the form hasn't been submitted and we should
     # bypass form processing.
     if params[:sim_submit].nil?
+      render :layout => feedback_layout
       return
     end
     
@@ -155,14 +159,20 @@ class HomeController < ApplicationController
     end
 
     unless @errors.empty?
+      render :layout => feedback_layout
       return
     end
     
     Notifier.deliver_feedback(params[:name],params[:email],params[:comment])   
-    flash[:notice]="Feedback has been sent"
-    redirect_to_home
+
+    if params[:pop].eql?("true")
+      render :action => "feedback_complete", :layout => "minimal"
+    else
+      flash[:notice]="Feedback has been sent"
+      redirect_to_home
+    end
   end
-
-
-
+  
+  def feedback_complete
+  end
 end

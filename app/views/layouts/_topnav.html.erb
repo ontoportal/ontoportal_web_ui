@@ -47,7 +47,14 @@
 
 		<%end%> 
 		 	<li><a href="/home/release">Help/About</a></li>
-			<li><a target="_blank" href="/feedback" style="font-weight:bold;font-size:14px;">Send Feedback</a> </li>
+		 	
+		 	<script type="text/javascript">
+		 	  function popup(url) {
+  		 	  newwindow = window.open(url,'name','height=700,width=800,resizable=yes,scrollbars=yes,toolbar=no,status=no');
+  		 	  if (window.focus) {newwindow.focus()};
+		 	  }
+		 	</script>
+			<li><a onclick="popup('/feedback?pop=true'); return false;" href="/feedback" style="font-weight:bold;font-size:14px;">Send Feedback</a> </li>
 			
 	</ul>
 </div>

@@ -1,5 +1,10 @@
 <%@title = "Feedback"%>
 
+<% if params[:pop].eql?("true") %>
+  <% pop = true %>
+  <div style="background: url(/images/layout/header_bg.png) repeat-x;; width: 100%;"><center><img src="/images/layout/nav_logo.png"></center></div>
+<% end %>
+
 <div style="margin:20px;">
 <%form_tag('/feedback') do%>
 <%=
@@ -42,6 +47,7 @@ Errors On Form
 <%end%>
 
 <table class="form">
+	<input type="hidden" name="pop" id="pop" value="<%=pop%>">
 	<tr>
 		<th class="top">Name:*</th>
 		<td class="top"><input type="text" name="name" style="width:180px" value="<%=params[:name]%>"></td>
