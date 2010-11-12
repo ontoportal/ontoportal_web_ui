@@ -41,6 +41,22 @@
       });
       
       jQuery(".defaultText").blur();
+      
+      // Properly display the information for 'File Location' based on radio button
+      if (jQuery("#ontology_isRemote_0").is(":checked")) {
+        jQuery('.hidden_field').hide();
+        jQuery("#upload").show();
+      }
+
+      if (jQuery("#ontology_isRemote_1").is(":checked")) {
+        jQuery('.hidden_field').hide();
+        jQuery("#remote").show();
+      }
+
+      // Select default 'File Location' radio button
+      if (!jQuery("#ontology_isRemote_0").is(":checked") && !jQuery("#ontology_isRemote_1").is(":checked") && !jQuery("#ontology_isRemote_2").is(":checked")) {
+        jQuery("#ontology_isRemote_0").attr("checked", "checked")
+      }
     });
     
     jQuery("form").submit(function(){
@@ -115,7 +131,7 @@
         </tr>
         <tr>
             <th>
-                Date Released: 
+                Ontology Release Date:  <span class="asterik">*</span>
             </th>
             <td>
                 <%= text_field :ontology, :dateReleased,:id=>"datepicker" %>
@@ -124,21 +140,21 @@
 
         <tr>
             <th>
-                File Location <span class="asterik">* </span>
+                Ontology Location <span class="asterik">* </span>
             </th>
             <td>
-                <%=radio_button :ontology, :isRemote, 0, :onclick=>"$('.hidden_field').hide();$('#upload').show();" %> Upload 
+                <%=radio_button :ontology, :isRemote, 0, :onclick=>"$('.hidden_field').hide();$('#upload').show();" %> Upload Local File
                 <br/>
                 <span style="font-size:11px;">(choose a file on your local file system to upload)</span>
-                <div class="hidden_field" id="upload"<%if !@ontology.isRemote.to_i.eql?(0) %>style="display:none;"<%end%>>
+                <div class="hidden_field" id="upload"<%if @ontology.isRemote.to_i.eql?(1) || @ontology.isRemote.to_i.eql?(3) %>style="display:none;"<%end%>>
                   <%=file_field :ontology, :filePath %>
                 </div>
                 
-                <hr/><%=radio_button :ontology, :isRemote, 1, :onclick=>"$('.hidden_field').hide();$('#remote').show();" %> Remote 
+                <hr/><%=radio_button :ontology, :isRemote, 1, :onclick=>"$('.hidden_field').hide();$('#remote').show();" %> Load from URL 
                 <br/>
-                <span style="font-size:11px;">(specify the link where the latest version of the ontology resides; note that we will check this location regularly for new versions)</span>
-                <div class="hidden_field" id="remote"<%if !@ontology.isRemote.to_i.eql?(1) %>style="display:none;"<%end%>>
-                  File URL: <%=text_field :ontology, :downloadLocation, :size => 100, :value => @ontology.downloadLocation %>
+                <span style="font-size:11px;">(new versions loaded daily)</span>
+                <div class="hidden_field" id="remote"<%if !@ontology.isRemote.to_i.eql?(0) || !@ontology.isRemote.to_i.eql?(3) %>style="display:none;"<%end%>>
+                  URL: <%=text_field :ontology, :downloadLocation, :size => 100 %>
                 </div>
                 
                 <hr/><%=radio_button :ontology, :isRemote, 3, :onclick=>"$('.hidden_field').hide();" %> Metadata Only 
