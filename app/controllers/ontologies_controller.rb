@@ -298,10 +298,17 @@ class OntologiesController < ApplicationController
   
   
   def create
-    params[:ontology][:isCurrent]=1
-    params[:ontology][:isReviewed]=1
-    params[:ontology][:isFoundry]=0
-    params[:ontology][:isManual]=1
+    params[:ontology][:isCurrent] = 1
+    params[:ontology][:isReviewed] = 1
+    params[:ontology][:isFoundry] = 0
+    
+    # If ontology is going to be pulled, it should not be manual
+    if params[:ontology][:isRemote].to_i.eql?(1) && (!params[:ontology][:downloadLocation].nil? || params[:ontology][:downloadLocation].length > 1)
+      params[:ontology][:isManual] = 0
+    else
+      params[:ontology][:isManual] = 1
+    end
+      
 
     if (session[:user].admin? && (params[:ontology][:userId].nil? || params[:ontology][:userId].empty?)) || !session[:user].admin?
       params[:ontology][:userId]= session[:user].id
