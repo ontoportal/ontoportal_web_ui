@@ -95,15 +95,15 @@ class DataAccess
   end
   
   def self.getNotesForConcept(ontology_id, concept_id, threaded = false, virtual = false)
-    return self.cache_pull("#{concept_id}::notes", "getNotesForConcept", { :ontology_id => ontology_id, :concept_id => concept_id, :threaded => threaded, :virtual => virtual })
+    return self.cache_pull("#{concept_id}::notes", "getNotesForConcept", { :ontology_id => ontology_id, :concept_id => concept_id, :threaded => threaded, :virtual => virtual }, 60*15)
   end
   
   def self.getNotesForIndividual(ontology_virtual_id, individual_id, threaded = false)
-    return self.cache_pull("#{individual_id}::notes", "getNotesForIndividual", { :ontology_virtual_id => ontology_virtual_id, :individual_id => individual_id, :threaded => threaded })
+    return self.cache_pull("#{individual_id}::notes", "getNotesForIndividual", { :ontology_virtual_id => ontology_virtual_id, :individual_id => individual_id, :threaded => threaded }, 60*15)
   end
   
   def self.getNotesForOntology(ontology_virtual_id, threaded = false, virtual = false)
-    return self.cache_pull("#{ontology_virtual_id}::notes", "getNotesForOntology", { :ontology_virtual_id => ontology_virtual_id, :threaded => threaded, :virtual => virtual })
+    return self.cache_pull("#{ontology_virtual_id}::notes", "getNotesForOntology", { :ontology_virtual_id => ontology_virtual_id, :threaded => threaded, :virtual => virtual }, 60*15)
   end
   
   def self.updateNote(ontology_id, params, virtual = false)
@@ -159,6 +159,70 @@ class DataAccess
     note
   end
   
+  def self.createMapping(source, source_ontology_id, target, target_ontology_id, user_id, comment, unidirectional)
+    mapping = SERVICE.createMapping({ :source => source, :sourceontology => source_ontology_id, :target => target, :targetontology => target_ontology_id, :submittedby => user_id, :comment => comment, :unidirectional => unidirectional })
+    
+    CACHE.delete("ontoliges::map_count")
+    CACHE.delete("ontoliges::users::map_count")
+    CACHE.delete("between_ontoliges::map_count::#{source_ontology_id}")
+    CACHE.delete("between_ontoliges::map_count::#{target_ontology_id}")
+    CACHE.delete("#{source_ontology_id}::#{source}::map_count")
+    CACHE.delete("#{target_ontology_id}::#{target}::map_count")
+    CACHE.delete("#{source_ontology_id}::map_count")
+    CACHE.delete("#{target_ontology_id}::map_count")
+    CACHE.delete("recent::mappings")
+    CACHE.delete("#{source_ontology_id}::#{source}::map_page::page1::size100::params")
+    CACHE.delete("#{target_ontology_id}::#{target}::map_page::page1::size100::params")
+    CACHE.delete("#{source_ontology_id}::concepts::map_count")
+    CACHE.delete("#{target_ontology_id}::concepts::map_count")
+    
+    return mapping
+  end
+  
+  def self.getMapping(mapping_id)
+    self.cache_pull("#{mapping_id}::mapping", "getMapping", { :mapping_id => mapping_id }, LONG_CACHE_EXPIRE_TIME)
+  end
+  
+  def self.getConceptMappings(ontology_virtual_id, concept_id, page_number = 1, page_size = 100, params = {})
+    self.cache_pull("#{ontology_virtual_id}::#{concept_id}::map_page::page#{page_number}::size#{page_size}::params#{params.to_s}", "getConceptMappings", { :ontology_virtual_id => ontology_virtual_id, :concept_id => concept_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
+  end
+  
+  def self.getOntologyMappings(ontology_virtual_id, page_number = 1, page_size = 100, params = {})
+    self.cache_pull("#{ontology_virtual_id}::map_page::page#{page_number}::size#{page_size}::params#{params.to_s}", "getOntologyMappings", { :ontology_virtual_id => ontology_virtual_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
+  end
+  
+  def self.getBetweenOntologiesMappings(source_ontology_virtual_id, target_ontology_virtual_id, page_number = 1, page_size = 100, params = {})
+    self.cache_pull("#{source_ontology_virtual_id}::#{target_ontology_virtual_id}::map_page::page#{page_number}::size#{page_size}::params#{params.to_s}", "getBetweenOntologiesMappings", { :source_ontology_virtual_id => source_ontology_virtual_id, :target_ontology_virtual_id => target_ontology_virtual_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
+  end
+  
+  def self.getMappingCountOntology(ontology_virtual_id)
+    self.cache_pull("#{ontology_virtual_id}::map_count", "getMappingCountOntology", { :ontology_virtual_id => ontology_virtual_id }, LONG_CACHE_EXPIRE_TIME)
+  end
+  
+  def self.getMappingCountConcept(ontology_virtual_id, concept_id)
+    self.cache_pull("#{ontology_virtual_id}::#{concept_id}::map_count", "getMappingCountConcept", { :ontology_virtual_id => ontology_virtual_id, :concept_id => concept_id }, LONG_CACHE_EXPIRE_TIME)
+  end
+
+  def self.getMappingCountBetweenOntologies(ontology_virtual_id)
+    self.cache_pull("between_ontoliges::map_count::#{ontology_virtual_id}", "getMappingCountBetweenOntologies", { :ontology_virtual_id => ontology_virtual_id }, LONG_CACHE_EXPIRE_TIME)
+  end
+  
+  def self.getMappingCountOntologies
+    self.cache_pull("ontoliges::map_count", "getMappingCountOntologies", nil, LONG_CACHE_EXPIRE_TIME)
+  end
+
+  def self.getMappingCountOntologyConcepts(ontology_virtual_id, limit = 35)
+    self.cache_pull("#{ontology_virtual_id}::concepts::map_count", "getMappingCountOntologyConcepts", { :ontology_virtual_id => ontology_virtual_id, :limit => limit }, LONG_CACHE_EXPIRE_TIME)
+  end
+
+  def self.getMappingCountOntologyUsers(ontology_virtual_id)
+    self.cache_pull("ontoliges::users::map_count", "getMappingCountOntologyUsers", { :ontology_virtual_id => ontology_virtual_id }, LONG_CACHE_EXPIRE_TIME)
+  end
+
+  def self.getRecentMappings
+    self.cache_pull("recent::mappings", "getRecentMappings", nil, 60*15)
+  end
+
   def self.getNodeNameContains(ontologies,search,page) 
     results,pages = SERVICE.getNodeNameContains(ontologies,search,page)
     return results,pages

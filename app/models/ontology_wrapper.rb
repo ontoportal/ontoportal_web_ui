@@ -116,7 +116,7 @@ class OntologyWrapper
   end
   
   def map_count
-    count = Mapping.count('id',:conditions=>{:source_ont=>self.ontologyId})
+    count = DataAccess.getMappingCountOntology(self.ontologyId) rescue 0
   end
   
   def getOntologyFromView

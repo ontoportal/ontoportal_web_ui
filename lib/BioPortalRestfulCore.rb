@@ -24,6 +24,216 @@ class BioPortalRestfulCore
   # Track paths that have already been processed when building a path to root tree 
   @seen_paths = {}
   
+  
+  def self.createMapping(params)
+    # Default values
+    params[:relation] = "http://www.w3.org/2004/02/skos/core#exactMatch"
+    params[:type] = "Manual"
+    params[:mappingsource] = "application"
+    params[:mappingsourcename] = "BioPortal UI"
+    params[:mappingsourcecontactinfo] = "support@bioontology.org"
+    params[:mappingsourcesite] = "http://bioportal.bioontology.org"
+    
+    uri_gen = BioPortalResources::CreateMapping.new
+    uri = uri_gen.generate_uri
+    
+    #uri = "http://localhost:8080/bioportal/virtual/mappings/concepts"
+    
+    begin
+      mapping = postToRestlet(uri, params)
+    rescue Exception => e
+      if !e.io.status.nil? && e.io.status[0].to_i == 404
+        raise Error404
+      end
+      LOG.add :debug, "Problem retrieving xml: #{e.message}"
+      return nil
+    end
+
+    mapping = generic_parse(:xml => mapping, :type => "Mapping")
+    
+    return mapping
+  end
+  
+  def self.getMapping(params)
+    uri_gen = BioPortalResources::Mapping.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve mapping"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+
+    mappings = []
+    timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "Mapping") }
+    LOG.add :debug, "Mapping parsed (#{timer})"
+    
+    return mappings
+  end
+  
+  def self.getConceptMappings(params)
+    params[:page_num] = (params[:page_num].nil?) ? 1 : params[:page_num]
+    params[:page_size] = (params[:page_size].nil?) ? 10 : params[:page_size]
+    
+    uri_gen = BioPortalResources::ConceptMapping.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve mappings for concept"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+
+    mappings = []
+    timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "MappingPage") }
+    LOG.add :debug, "Mapping parsed (#{timer})"
+    
+    return mappings
+  end
+  
+  def self.getOntologyMappings(params)
+    params[:page_num] = (params[:page_num].nil?) ? 1 : params[:page_num]
+    params[:page_size] = (params[:page_size].nil?) ? 10 : params[:page_size]
+    
+    uri_gen = BioPortalResources::OntologyMapping.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve mappings for ontology"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+
+    mappings = []
+    timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "MappingPage") }
+    LOG.add :debug, "Mappings for ontology parsed (#{timer})"
+    
+    return mappings
+  end
+  
+  def self.getBetweenOntologiesMappings(params)
+    params[:page_num] = (params[:page_num].nil?) ? 1 : params[:page_num]
+    params[:page_size] = (params[:page_size].nil?) ? 10 : params[:page_size]
+    
+    uri_gen = BioPortalResources::BetweenOntologiesMapping.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve mappings between ontologies"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+
+    mappings = []
+    timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "MappingPage") }
+    LOG.add :debug, "Mappings between ontologies parsed (#{timer})"
+    
+    return mappings
+  end
+
+  def self.getRecentMappings
+    uri_gen = BioPortalResources::RecentMappings.new
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve mappings counts between ontologies"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+
+    mappings = []
+    timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "Mapping") }
+    LOG.add :debug, "Between ontologies mapping counts parsed (#{timer})"
+    
+    return mappings
+  end
+  
+  def self.getMappingCountBetweenOntologies(params)
+    uri_gen = BioPortalResources::BetweenOntologiesMappingCount.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve mappings counts between ontologies"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+
+    mappings = []
+    timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
+    LOG.add :debug, "Between ontologies mapping counts parsed (#{timer})"
+    
+    return mappings
+  end
+  
+  def self.getMappingCountOntologyUsers(params)
+    uri_gen = BioPortalResources::OntologyUserMappingCount.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve user mapping counts for an ontology"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+
+    mappings = []
+    timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
+    LOG.add :debug, "User mapping counts parsed (#{timer})"
+    
+    return mappings
+  end
+  
+  def self.getMappingCountOntologyConcepts(params)
+    uri_gen = BioPortalResources::OntologyConceptMappingCount.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve concepts mapping counts for an ontology"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+
+    mappings = []
+    timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
+    LOG.add :debug, "Concept mapping counts parsed (#{timer})"
+    
+    return mappings
+  end
+  
+  def self.getMappingCountOntologies
+    uri_gen = BioPortalResources::OntologiesMappingCount.new
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve mappings counts for all ontologies"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+
+    mappings = []
+    timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
+    LOG.add :debug, "Ontologies mapping counts parsed (#{timer})"
+    
+    return mappings
+  end
+  
+  def self.getMappingCountOntology(params)
+    params[:page_num] = 1
+    params[:page_size] = 1
+    
+    uri_gen = BioPortalResources::OntologyMapping.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve mapping count for ontology"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+
+    mappings = 0
+    timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "MappingPage") }
+    LOG.add :debug, "Mapping parsed (#{timer})"
+    
+    return (mappings.nil? || mappings.empty?) ? 0 : mappings.total_mappings
+  end
+  
+  def self.getMappingCountConcept(params)
+    params[:page_num] = 1
+    params[:page_size] = 1
+    
+    uri_gen = BioPortalResources::ConceptMapping.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve mapping count for concept"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+
+    mappings = 0
+    timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "MappingPage") }
+    LOG.add :debug, "Mapping parsed (#{timer})"
+    
+    return (mappings.nil? || mappings.empty?) ? 0 : mappings.total_mappings
+  end
+  
   def self.getView(params)
     uri_gen = BioPortalResources::View.new(params)
     uri = uri_gen.generate_uri
@@ -58,7 +268,7 @@ class BioPortalRestfulCore
     views.sort! {|a,b| a[0].displayLabel <=> b[0].displayLabel }
 
     return views
-  end      
+  end
   
   def self.getCategories()
     uri_gen = BioPortalResources::Categories.new
@@ -1240,6 +1450,8 @@ private
   def self.generic_parse(params)
     type = params[:type] rescue nil
     xml = params[:xml]
+    path = params[:path]
+    return_type = params[:return_type]
     
     if xml.kind_of?(String)
       parser = XML::Parser.string(xml, :options => LibXML::XML::Parser::Options::NOBLANKS)
@@ -1248,8 +1460,15 @@ private
     end
     
     doc = parser.parse
-    root = doc.find_first("/success/data")
+    
+    if path.nil?
+      root = doc.find_first("/success/data")
+    else
+      root = path
+    end
+    
     parsed = self.parse(root)
+    
     # We end up with an extra hash at the root, this should get rid of that
     attributes = {}
     parsed.each do |k,v|
@@ -1279,6 +1498,8 @@ private
   def self.parse(node)
     a = {}
     
+    attr_suffix = 1
+    
     node.each_element do |child|
       case child.name
         when "entry"
@@ -1297,9 +1518,25 @@ private
           a[child.name] = process_list(child)
       else
         if !child.first.nil? && child.first.element?
-          a[child.name] = parse(child)
+          # Make sure that duplicate key names are handled properly
+          if a.has_key?(child.name)
+            name = child.name + attr_suffix.to_s
+            attr_suffix += 1
+          else
+            name = child.name
+          end
+          
+          a[name] = parse(child)
         else
-          a[child.name] = child.content
+          # Make sure that duplicate key names are handled properly
+          if a.has_key?(child.name)
+            name = child.name + attr_suffix.to_s
+            attr_suffix += 1
+          else
+            name = child.name
+          end
+          
+          a[name] = child.content
         end
       end
     end

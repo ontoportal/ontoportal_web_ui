@@ -92,6 +92,10 @@ class NodeWrapper
     URI.escape(self.id,":/?#!").to_s
   end
   
+  def ontology
+    return DataAccess.getOntology(self.version_id)
+  end
+  
   def ontology_name
     return DataAccess.getOntology(self.version_id).displayLabel
   end
@@ -102,7 +106,7 @@ class NodeWrapper
   
   def mapping_count
     if CACHE.get("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_MappingCount").nil?
-        count = Mapping.count(:conditions=>{:source_ont => self.ontology_id, :source_id => self.id})
+        count = DataAccess.getMappingCountConcept(self.ontology.ontologyId, self.fullId)
         CACHE.set("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_MappingCount",count)
       return count
     else

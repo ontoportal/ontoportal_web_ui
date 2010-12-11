@@ -26,6 +26,7 @@ class ApplicationController < ActionController::Base
     NodeWrapper
     Annotation
     Mapping
+    MappingPage
     MarginNote
     OntologyWrapper
     OntologyMetricsWrapper

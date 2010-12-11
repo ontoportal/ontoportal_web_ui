@@ -29,7 +29,7 @@ class SyndicationController < ApplicationController
             
             feed_items << { :title => "#{note_type} added to #{note.appliesTo['type']} #{applies_to}", :description => note_text, :date => event.created_at, :link => "#{$UI_URL}#{note_url}" }
           when "Mapping"
-            mapping = Mapping.find(event.event_type_id)
+            mapping = DataAccess.getMapping(event.event_type_id)
             feed_items << {:title=>"Mapping added in #{mapping.ontology.displayLabel}",:description=>"Mapping from #{mapping.source_name} to #{mapping.destination_name}",:date=>event.created_at,:link=>"#{$UI_URL}/visualize/#{mapping.source_version_id}/#{mapping.source_id}"}
         end
       rescue

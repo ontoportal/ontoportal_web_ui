@@ -12,7 +12,7 @@
 		<div style="margin: 10px; clear: both;">Comment<br/><%=text_area(:mapping, :comment, :size => "30x10")%></div>
 	</div>
   	<div style="clear:both;white-space:nowrap">
-    <%= submit_tag "Create", :class=>'blueButton'%> &nbsp;&nbsp; <input type="checkbox" name="bidirectional" checked='checked'>Bi-Directional?
+    <%= submit_tag "Create", :class=>'blueButton'%> &nbsp;&nbsp; <input type="checkbox" name="bidirectional" checked='checked' value="1" id="bidirectional" > <label for="bidirectional">Bi-Directional?</label>
   	</div>
 <%else%>
   <h1>No Results Found</h1>

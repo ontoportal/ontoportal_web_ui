@@ -210,7 +210,7 @@ class ConceptsController < ApplicationController
       
     #  sids << spawn(:method => :thread) do  #threaded implementation to improve performance
         #builds the mapping tab
-        @mappings = Mapping.find(:all, :conditions=>{:source_ont => @concept.ontology_id, :source_id => @concept.id})    
+        @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.id)    
         
         #builds the margin note tab
         @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_id, :concept_id => @concept.id,:parent_id =>nil})

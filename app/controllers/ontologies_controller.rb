@@ -15,20 +15,7 @@ class OntologiesController < ApplicationController
     @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
     @categories = DataAccess.getCategories()
     @groups = DataAccess.getGroups()
-    @last_notes= MarginNote.find(:all,:order=>'created_at desc',:limit=>5)    
-    @last_mappings = Mapping.find(:all,:order=>'created_at desc',:limit=>5)
     
-    LOG.add :info, 'show_all_ontologies', request
-    
-    @notes={} # Gets list of notes for the ontologies
-    #    for ont in @ontologies
-    #gets last note.. not the best way to do this
-    #      note = MarginNote.find(:first,:conditions=>{:ontology_id => ont.id},:order=>'margin_notes.id desc')
-    #      unless note.nil?
-    #        @notes[ont.id]=note
-    #      end
-    
-    #    end
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @ontologies.to_xml }
@@ -59,14 +46,16 @@ class OntologiesController < ApplicationController
 
     @notes_cloud = calculate_note_counts(@notes)
 
-    mapping_tag_query = "select source_id,count(source_id) as con_count,source_name from mappings where source_ont = #{@ontology.ontologyId} group by source_id order by source_id"            
-    @mappings = ActiveRecord::Base.connection.select_rows(mapping_tag_query);
-    
-    if @mappings.size > 35
-      mapping_tag_query = "select source_id,count(source_id) as con_count,source_name from mappings where source_ont = #{@ontology.ontologyId} group by source_id order by con_count desc limit 35"
-      @mappings = ActiveRecord::Base.connection.select_rows(mapping_tag_query);
-      @mappings.sort! { |a,b| a[2] <=> b[2] }
+    mappings = DataAccess.getMappingCountOntologyConcepts(@ontology.ontologyId)
+    @mappings = []
+    mappings.each do |mapping|
+      begin
+        @mappings << [ mapping['fullId'], mapping['count'], DataAccess.getNode(@ontology.id, mapping['fullId']).label ]
+      rescue Exception => e
+        @mappings << [ mapping['fullId'], mapping['count'], mapping['fullId'] ]
+      end
     end
+    @mappings.sort! { |a,b| a[2] <=> b[2] }
 
     #Grab Reviews Tab
     @reviews = Review.find(:all,:conditions=>{:ontology_id=>@ontology.ontologyId},:include=>:ratings)
@@ -253,7 +242,7 @@ class OntologiesController < ApplicationController
     end
     
     # gets the initial mappings
-    @mappings = Mapping.find(:all, :conditions=>{:source_ont => @ontology.ontologyId, :source_id => @concept.id})
+    @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.fullId)
     # builds the margin note tab
     @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_id, :concept_id => @concept.id,:parent_id =>nil})
     # needed to prepopulate the margin note

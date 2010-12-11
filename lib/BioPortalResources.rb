@@ -6,7 +6,9 @@ class BioPortalResources
     @@tokens = { "%ONT%" => :ontology_id, "%ONT_VIRTUAL%" => :ontology_virtual_id, "%CONC%" => :concept_id,
                  "%VIEW%" => :view_id, "%USR%" => :user_id, "%START%" => :ontology_id_start,
                  "%END%" => :ontology_id_end, "%VER1%" => :ontology_version1, "%VER2%" => :ontology_version2,
-                 "%NOTE%" => :note_id, "%IND%" => :individual_id }
+                 "%NOTE%" => :note_id, "%IND%" => :individual_id, "%PAGE_SIZE%" => :page_size,
+                 "%PAGE_NUM%" => :page_number, "%SOURCE_ONT_VIRTUAL%" => :source_ontology_virtual_id,
+                 "%TARGET_ONT_VIRTUAL%" => :target_ontology_virtual_id }
                  
     def initialize(params = nil)
       if params
@@ -265,4 +267,103 @@ class BioPortalResources
         @uri << "/diffs/download/%VER1%/%VER2%"
       end
     end
+    
+    class ConceptMapping < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/virtual/mappings/concepts/%ONT_VIRTUAL%?conceptid=%CONC%&issource=true&pagesize=%PAGE_SIZE%&pagenum=%PAGE_NUM%"
+
+        # Check for parameters and add if they exist
+        @uri << "&submittedby=#{params[:user_id]}" unless params[:user_id].nil?
+        @uri << "&type=#{params[:type]}" unless params[:type].nil?
+        @uri << "&startdate=#{params[:start_date]}" unless params[:start_date].nil?
+        @uri << "&enddate=#{params[:end_date]}" unless params[:end_date].nil?
+        @uri << "&relationships=#{params[:relationships]}" unless params[:relationships].nil?
+        @uri << "&sources=#{params[:sources]}" unless params[:sources].nil?
+      end
+    end
+    
+    class OntologyMapping < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/virtual/mappings/ontologies/%ONT_VIRTUAL%?issource=true&pagesize=%PAGE_SIZE%&pagenum=%PAGE_NUM%"
+        
+        # Check for parameters and add if they exist
+        @uri << "&submittedby=#{params[:user_id]}" unless params[:user_id].nil?
+        @uri << "&type=#{params[:type]}" unless params[:type].nil?
+        @uri << "&startdate=#{params[:start_date]}" unless params[:start_date].nil?
+        @uri << "&enddate=#{params[:end_date]}" unless params[:end_date].nil?
+        @uri << "&relationships=#{params[:relationships]}" unless params[:relationships].nil?
+        @uri << "&sources=#{params[:sources]}" unless params[:sources].nil?
+      end
+    end
+    
+    class BetweenOntologiesMapping < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/virtual/mappings/ontologies?sourceontology=%SOURCE_ONT_VIRTUAL%&targetontology=%TARGET_ONT_VIRTUAL%&pagesize=%PAGE_SIZE%&pagenum=%PAGE_NUM%"
+        
+        # Check for parameters and add if they exist
+        @uri << "&unidirectional=#{params[:unidirectional]}" unless params[:unidirectional].nil?
+        @uri << "&submittedby=#{params[:user_id]}" unless params[:user_id].nil?
+        @uri << "&type=#{params[:type]}" unless params[:type].nil?
+        @uri << "&startdate=#{params[:start_date]}" unless params[:start_date].nil?
+        @uri << "&enddate=#{params[:end_date]}" unless params[:end_date].nil?
+        @uri << "&relationships=#{params[:relationships]}" unless params[:relationships].nil?
+        @uri << "&sources=#{params[:sources]}" unless params[:sources].nil?
+      end
+    end
+    
+    class OntologiesMappingCount < BioPortalResources
+      def initialize
+        super
+        @uri << "/mappings/stats/ontologies"
+      end
+    end
+    
+    class BetweenOntologiesMappingCount < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/virtual/mappings/stats/ontologies/%ONT_VIRTUAL%"
+      end
+    end
+    
+    class OntologyConceptMappingCount < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/virtual/mappings/stats/ontologies/concepts/%ONT_VIRTUAL%"
+        
+        # Optional parameters
+        @uri << "?limit=#{params[:limit]}" unless params[:limit].nil?
+      end
+    end
+    
+    class OntologyUserMappingCount < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/virtual/mappings/stats/ontologies/users/%ONT_VIRTUAL%"
+      end
+    end
+
+    class Mapping < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/mappings?mappingid=#{CGI.escape(params[:mapping_id])}"
+      end
+    end
+
+    class RecentMappings < BioPortalResources
+      def initialize
+        super
+        @uri << "/mappings/stats/recent?limit=5"
+      end
+    end
+    
+    class CreateMapping < BioPortalResources
+      def initialize
+        super
+        @uri << "/virtual/mappings/concepts"
+      end
+    end
+    
 end

@@ -49,7 +49,7 @@ class HomeController < ApplicationController
 
     @categories = DataAccess.getCategories()
     @last_notes = NotesIndex.find(:all, :order => 'created desc', :limit => 5)    
-    @last_mappings = Mapping.find(:all, :order => 'created_at desc', :limit => 5)
+    @last_mappings = DataAccess.getRecentMappings
     
     #build hash for quick grabbing
     @ontology_hash = {}

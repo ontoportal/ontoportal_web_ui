@@ -5,16 +5,9 @@
 
 
 <p style="font-size:15px;font-weight:bold;padding:10px;border:1px solid #cfcfcf;">Display Mapping Count for 
-<%=
-            options ={}
-			for ontology in @ontologies
-			  options.merge!(ontology.displayLabel+ " (#{ontology.map_count})" => ontology.id)
-			end 
-			options = options.sort                     
-            select('search','ontologies',options,{:prompt=>'Select ontology...'},{:onchange=>"jQuery('#mappingCount').load('/mappings/count/'+this.value);jQuery('#mappings').html('');"})
-            %>
-            <span style="font-size: x-small;">(Only Ontologies with Mappings are displayed)</span>
-
+  <%= select('search', 'ontologies', @options, {:prompt=>'Select ontology...'},{:onchange=>"jQuery('#mappingCount').load('/mappings/count/'+this.value);jQuery('#mappings').html('');"}) %>
+  <span style="font-size: x-small;">(Only Ontologies with Mappings are displayed)</span>
+</p>
 
 <div id="mappingCount" style="text-align:center;overflow:hidden;padding:10px;">
 	

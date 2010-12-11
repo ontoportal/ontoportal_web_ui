@@ -5,6 +5,7 @@
 	<a href="/mappings/new?ontology=<%=@ontology.id%>&source_id=<%=@concept.id%>&source_name=<%=@concept.name%>&height=500&width=600" title="New Mapping  For <%=remove_owl_notation(@concept.name)%>" class="thickbox">New Point-to-Point Mapping</a>  
 <%end%>
 <br/><br/>
+
 <div id="mapping_details">
-<%= render :partial => '/mappings/mapping_table'%>
+  <%= render :partial => '/mappings/mapping_table'%>
 </div>
