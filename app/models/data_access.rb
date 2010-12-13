@@ -166,13 +166,13 @@ class DataAccess
     CACHE.delete("ontoliges::users::map_count")
     CACHE.delete("between_ontoliges::map_count::#{source_ontology_id}")
     CACHE.delete("between_ontoliges::map_count::#{target_ontology_id}")
-    CACHE.delete("#{source_ontology_id}::#{source}::map_count")
-    CACHE.delete("#{target_ontology_id}::#{target}::map_count")
+    CACHE.delete("#{source_ontology_id}::#{CGI.escape(source)}::map_count")
+    CACHE.delete("#{target_ontology_id}::#{CGI.escape(target)}::map_count")
     CACHE.delete("#{source_ontology_id}::map_count")
     CACHE.delete("#{target_ontology_id}::map_count")
     CACHE.delete("recent::mappings")
-    CACHE.delete("#{source_ontology_id}::#{source}::map_page::page1::size100::params")
-    CACHE.delete("#{target_ontology_id}::#{target}::map_page::page1::size100::params")
+    CACHE.delete("#{source_ontology_id}::#{CGI.escape(source)}::map_page::page1::size100::params")
+    CACHE.delete("#{target_ontology_id}::#{CGI.escape(target)}::map_page::page1::size100::params")
     CACHE.delete("#{source_ontology_id}::concepts::map_count")
     CACHE.delete("#{target_ontology_id}::concepts::map_count")
     
@@ -184,7 +184,7 @@ class DataAccess
   end
   
   def self.getConceptMappings(ontology_virtual_id, concept_id, page_number = 1, page_size = 100, params = {})
-    self.cache_pull("#{ontology_virtual_id}::#{concept_id}::map_page::page#{page_number}::size#{page_size}::params#{params.to_s}", "getConceptMappings", { :ontology_virtual_id => ontology_virtual_id, :concept_id => concept_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
+    self.cache_pull("#{ontology_virtual_id}::#{CGI.escape(concept_id)}::map_page::page#{page_number}::size#{page_size}::params#{params.to_s}", "getConceptMappings", { :ontology_virtual_id => ontology_virtual_id, :concept_id => concept_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
   end
   
   def self.getOntologyMappings(ontology_virtual_id, page_number = 1, page_size = 100, params = {})
@@ -200,7 +200,7 @@ class DataAccess
   end
   
   def self.getMappingCountConcept(ontology_virtual_id, concept_id)
-    self.cache_pull("#{ontology_virtual_id}::#{concept_id}::map_count", "getMappingCountConcept", { :ontology_virtual_id => ontology_virtual_id, :concept_id => concept_id }, LONG_CACHE_EXPIRE_TIME)
+    self.cache_pull("#{ontology_virtual_id}::#{CGI.escape(concept_id)}::map_count", "getMappingCountConcept", { :ontology_virtual_id => ontology_virtual_id, :concept_id => concept_id }, LONG_CACHE_EXPIRE_TIME)
   end
 
   def self.getMappingCountBetweenOntologies(ontology_virtual_id)
