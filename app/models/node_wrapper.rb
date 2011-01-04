@@ -32,21 +32,29 @@ class NodeWrapper
         value.each do |relation_name,relation_value|
           case relation_name
             when "ChildCount"
-            self.child_size = relation_value.to_i
+              self.child_size = relation_value.to_i
             when "SubClass"
-            unless relation_value.nil?
-              relation_value.each do |list_value|
-                self.children << NodeWrapper.new(list_value, params) unless list_value.empty?
+              unless relation_value.nil?
+                relation_value.each do |list_value|
+                  self.children << NodeWrapper.new(list_value, params) unless list_value.empty?
+                end
+                self.children.sort! { |a,b| a.label.downcase <=> b.label.downcase } unless self.children.empty?
               end
-              self.children.sort! { |a,b| a.label.downcase <=> b.label.downcase } unless self.children.empty?
-            end
           else
             list_values = []
             
             unless relation_value.nil?
               relation_value.each do |list_item|
                 if list_item.kind_of? Hash
-                  list_values << list_item['label'] rescue ""
+                  # In order to link to terms, we look for ids and labels
+                  # which identify hashes that represent terms. This is done
+                  # because we don't have a way to identify classBean elements
+                  # at this point.
+                  if !list_item['label'].nil? && !list_item['id'].nil?
+                    list_values << "<a href='/visualize/%ONT%/?conceptid=#{CGI.escape(list_item['id'])}'>#{list_item['label']}</a>"
+                  else
+                    list_values << list_item['label'] rescue ""
+                  end
                 else
                   list_values << list_item
                 end

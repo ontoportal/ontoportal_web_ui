@@ -19,7 +19,7 @@
 	<%end%>
 	<%unless @concept.synonyms.nil? || @concept.synonyms.empty?%>
   	<tr>
-  		<td nowrap class="label" >Synonyms:</td>
+  		<td nowrap class="label">Synonyms:</td>
   		<td><% for synonym in @concept.synonyms %><p><%= synonym %></p><% end %></td>
   	</tr>
 	<%end%>
@@ -92,7 +92,7 @@
   		<tr>
   			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
   			<td>
-  			  <%=auto_link("<p>#{@concept.properties[key].split("|").join("<\/p><p>")}</p>", :all, :target => "_blank")%>
+  			  <%=auto_link("<p>#{@concept.properties[key].split("|").join("<\/p><p>").gsub("%ONT%", @concept.ontology.id)}</p>", :all, :target => "_blank")%>
 			  </td>
   		</tr>
 		<%end%>
@@ -107,7 +107,7 @@
   		<tr>
   			<td nowrap class="label"> <%="#{remove_owl_notation(key)}:"%> </td>
   			<td>
-  			  <%=auto_link("<p>#{@concept.properties[key].split("|").join("<\/p><p>")}</p>", :all, :target => "_blank")%>
+  			  <%=auto_link("<p>#{@concept.properties[key].split("|").join("<\/p><p>").gsub("%ONT%", @concept.ontology.id)}</p>", :all, :target => "_blank")%>
 			  </td>
   		</tr>
 		<%end%>
