@@ -50,7 +50,7 @@ class NodeWrapper
                   # which identify hashes that represent terms. This is done
                   # because we don't have a way to identify classBean elements
                   # at this point.
-                  if !list_item['label'].nil? && !list_item['id'].nil?
+                  if !list_item['label'].nil? && !list_item['id'].nil? && !list_item['id'].start_with?("@")
                     list_values << "<a href='/visualize/%ONT%/?conceptid=#{CGI.escape(list_item['id'])}'>#{list_item['label']}</a>"
                   else
                     list_values << list_item['label'] rescue ""
