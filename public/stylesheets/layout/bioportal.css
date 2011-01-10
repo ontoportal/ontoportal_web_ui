@@ -320,7 +320,8 @@ tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Ar
 .concept_details .label {
 	/*padding-top: 1em;*/
 	vertical-align: top;
-	min-width: 10%;
+	width: 100px;
+	max-width: 100px;
 }
 
 .concept_details tbody td {
