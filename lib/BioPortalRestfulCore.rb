@@ -1116,6 +1116,7 @@ private
     ontology.targetTerminologies = ontologybeanXML.elements["targetTerminologies"].get_text.value.strip rescue ""
     ontology.isMetadataOnly = ontologybeanXML.elements["isMetadataOnly"].get_text.value.strip.to_i rescue ""
     ontology.downloadLocation = ontologybeanXML.elements["downloadLocation"].get_text.value.strip rescue ""
+    ontology.versionStatus = ontologybeanXML.elements["versionStatus"].get_text.value.strip rescue ""
     
     ontology.categories = []
     ontologybeanXML.elements["categoryIds"].elements.each do |element|

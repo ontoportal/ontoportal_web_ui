@@ -7,6 +7,7 @@ class OntologyWrapper
   attr_accessor :parentId
   attr_accessor :format
   attr_accessor :versionNumber
+  attr_accessor :versionStatus
   attr_accessor :internalVersion
   attr_accessor :versionStatus
   attr_accessor :isCurrent
@@ -105,6 +106,7 @@ class OntologyWrapper
     self.abbreviation = params[:abbreviation]
     self.synonymSlot = params[:synonymSlot]
     self.preferredNameSlot = params[:preferredNameSlot]    
+    self.versionStatus = params[:versionStatus]
     
     # view items
     self.isView = params[:isView]

@@ -230,6 +230,15 @@
         </tr>
         <tr>
             <th>
+                Status:
+            </th>
+            <td>
+                <% status_options = ["Pre-Production", "Alpha", "Beta", "Production"] %>
+                <%= select :ontology, :versionStatus, status_options, { :include_blank => true } %>
+            </td>
+        </tr>
+        <tr>
+            <th>
                 Ontology Release Date: <span class="asterik">*</span>
             </th>
             <td>
