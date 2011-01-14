@@ -263,18 +263,22 @@ function greybox(box){
 			<legend>Latest Mappings</legend>
 			<table class="minimal" style="width:300px">
 			<tbody>
-				<%for map in @last_mappings%>
-				<tr>
-					<td>	<%= if map.dest_node.nil? 
-							"#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})"
-							else
-								link_to "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})" , "/visualize/#{map.source_version_id}/#{map.source_id}#mappings"
-							end %>
-						<br>
-							<span style="color:#AAAAAA"><%=map.map_source%><%=map.created_at.strftime("%m/%d/%y")%> <%=map.user.username%></span>
-					</td>
-				</tr>
-				<%end%>
+			  <% if @last_mappings.nil? || @last_mappings.empty? %>
+			    No recent mappings have been submitted
+		    <% else %>
+  				<%for map in @last_mappings%>
+    				<tr>
+    					<td>	<%= if map.dest_node.nil? 
+    							"#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})"
+    							else
+    								link_to "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})" , "/visualize/#{map.source_version_id}/#{map.source_id}#mappings"
+    							end %>
+    						<br>
+    							<span style="color:#AAAAAA"><%=map.map_source%><%=map.created_at.strftime("%m/%d/%y")%> <%=map.user.username%></span>
+    					</td>
+    				</tr>
+  				<%end%>
+				<% end %>
 				</tbody>
 			</table>
 	</td>
