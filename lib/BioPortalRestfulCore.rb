@@ -42,10 +42,10 @@ class BioPortalRestfulCore
     begin
       mapping = postToRestlet(uri, params)
     rescue Exception => e
+      LOG.add :debug, "Problem retrieving xml: #{e.message}"
       if !e.io.status.nil? && e.io.status[0].to_i == 404
         raise Error404
       end
-      LOG.add :debug, "Problem retrieving xml: #{e.message}"
       return nil
     end
 
@@ -134,6 +134,8 @@ class BioPortalRestfulCore
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "Mapping") }
     LOG.add :debug, "Between ontologies mapping counts parsed (#{timer})"
+    
+    mappings = (mappings.kind_of? Array) ? mappings : Array.new 
     
     return mappings
   end
@@ -903,10 +905,10 @@ private
     begin
       open(uri, "User-Agent" => "BioPortal-UI")
     rescue Exception => e
+      LOG.add :debug, "Problem retrieving xml for #{uri}: #{e.message}"
       if !e.io.status.nil? && e.io.status[0].to_i == 404
         raise Error404
       end
-      LOG.add :debug, "Problem retrieving xml: #{e.message}"
       return nil
     end
   end
