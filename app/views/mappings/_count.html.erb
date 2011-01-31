@@ -2,45 +2,24 @@
     // We need to fire the thickbox init since we're bringing in new content to the page
     tb_init('a.thickbox, area.thickbox, input.thickbox');
 </script>
-<%if @source_counts.empty? && @dest_counts.empty?%>
-<h1>No Mappings Found</h1>
-<%else%>
 
-<table width="70%" id="mapping_count_table">
-<td valign="top" width="50%">
-<table class="zebra" cellpadding="0" cellspacing="0" width="90%" style="margin: 20px;">
-	<%unless @source_counts.empty?%>
-	<thead>
-	<tr>
-		<th>Ontology Mapped To</th>
-		<th class="last">Mapping Count</th>
-	</tr>
-	</thead>
-	<%for mapping in @source_counts%>
-	<tr>
-		<td><a class="thickbox" title="Mappings for <%= @ontology_label %> to <%= mapping['destination_ont_name']%>" href="/mappings/show/<%=@ontology_id%>?target=<%=mapping['destination_ont']%>&height=600&width=800"><%= mapping['destination_ont_name']%></a></td>
-		<td class="last"><%=mapping['count']%></td>
-	</tr>
-	<%end%>	
-	<%end%>
-	<%unless @dest_counts.empty?%>
+<table width="50%" id="mapping_count_table">
+  <td valign="top">
+    <table class="zebra" cellpadding="0" cellspacing="0" width="90%" style="margin: 20px;">
+    	<thead>
+      	<tr>
+      	  <th>Ontology</th>
+      		<th>Mappings To</th>
+          <th class="last">Mappings From</th>
+      	</tr>
+    	</thead>
+    	<%for ontology in @ontologies_mapping_count%>
+      	<tr>
+      		<td><a class="thickbox" title="Mappings for <%= @ontology_label %> to <%= ontology['ontology'].displayLabel%>" href="/mappings/show/<%=@ontology_id%>?target=<%=ontology['ontologyId']%>&height=600&width=800"><%= ontology['ontology'].displayLabel%></a></td>
+          <td><%=ontology['targetMappings']%></td>
+      		<td class="last"><%=ontology['sourceMappings']%></td>
+      	</tr>
+    	<%end%>	
+    </table>
+  </td>
 </table>
-</td>
-<td valign="top" width="50%">
-<table class="zebra" cellpadding="0" cellspacing="0" width="90%" style="margin: 20px;">
-	<thead>
-	<tr>
-		<th>Ontology Mapped From</th>
-		<th class="last">Mapping Count</th>
-	</tr>
-	</thead>
-	<%for mapping in @dest_counts%>
-	<tr>
-		<td><a class="thickbox" title="Mappings for <%= @ontology_label %> to <%= mapping['source_ont_name']%>" href="/mappings/show/<%=mapping['source_ont']%>?target=<%=@ontology_id%>&height=600&width=800"><%= mapping['source_ont_name']%></a></td>
-		<td class="last"><%=mapping['count']%></td>
-	</tr>
-	<%end%>
-	<%end%>
-</table>
-</td>
-<%end%>

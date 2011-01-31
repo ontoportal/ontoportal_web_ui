@@ -67,31 +67,21 @@ class MappingsController < ApplicationController
   def count
     ontology_list = DataAccess.getOntologyList()
     @ontology = DataAccess.getOntology(params[:ontology])
-    ontologies_mapping_count = DataAccess.getMappingCountBetweenOntologies(@ontology.ontologyId)
+    @ontologies_mapping_count = DataAccess.getMappingCountBetweenOntologies(@ontology.ontologyId)
 
     ontologies_hash = {}
     ontology_list.each do |ontology|
       ontologies_hash[ontology.ontologyId] = ontology
     end
+    
+    @ontologies_mapping_count.each do |ontology|
+      ontology['ontology'] = ontologies_hash[ontology['ontologyId']]
+    end
 
     @ontology_id = @ontology.ontologyId
     @ontology_label = @ontology.displayLabel
 
-    @source_counts = []
-    ontologies_mapping_count.each do |ontology|
-      if ontology['sourceMappings'].to_i > 0
-        @source_counts << { 'count' => ontology['sourceMappings'], 'destination_ont' => ontology['ontologyId'], 'destination_ont_name' => ontologies_hash[ontology['ontologyId']].displayLabel, 'source_ont_name' => @ontology_label }
-      end
-    end
-
-    @dest_counts = []
-    ontologies_mapping_count.each do |ontology|
-      if ontology['targetMappings'].to_i > 0
-        @dest_counts << { 'count' => ontology['targetMappings'], 'source_ont' => ontology['ontologyId'], 'destination_ont_name' => @ontology_label, 'source_ont_name' => ontologies_hash[ontology['ontologyId']].displayLabel }
-      end
-    end
-
-    render :partial =>'count'
+    render :partial => 'count'
   end
   
   def show
