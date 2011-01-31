@@ -130,6 +130,13 @@ class BioPortalResources
       end
     end
     
+    class Views < BioPortalResources
+      def initialize
+        super
+        @uri << "/views"
+      end
+    end
+    
     class ViewVersions < BioPortalResources
       def initialize(params)
         super(params)

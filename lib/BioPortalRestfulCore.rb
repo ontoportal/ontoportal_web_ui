@@ -132,7 +132,11 @@ class BioPortalRestfulCore
     doc = get_xml(uri)
 
     mappings = []
-    timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "Mapping") }
+    timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
+    
+    mappings = convert_to_one_to_one_mapping(mappings)
+    mappings = (mappings.length > 5) ? mappings.shift(5) : mappings
+    
     LOG.add :debug, "Between ontologies mapping counts parsed (#{timer})"
     
     mappings = (mappings.kind_of? Array) ? mappings : Array.new 
@@ -248,6 +252,26 @@ class BioPortalRestfulCore
     }  
 
     return view
+  end
+  
+  def self.getViewList()
+    uri_gen = BioPortalResources::Views.new
+    uri = uri_gen.generate_uri
+    
+    doc = REXML::Document.new(get_xml(uri))
+    
+    ontologies = errorCheck(doc)
+    
+    unless ontologies.nil?
+      return ontologies
+    end
+    
+    ontologies = []
+    doc.elements.each("*/data/list/ontologyBean"){ |element| 
+      ontologies << parseOntology(element)
+    }
+
+    return ontologies
   end
   
   def self.getViews(params)
@@ -723,7 +747,14 @@ class BioPortalRestfulCore
     uri_gen = BioPortalResources::User.new(params)
     uri = uri_gen.generate_uri
     
-    doc = REXML::Document.new(get_xml(uri))
+    begin
+      doc = REXML::Document.new(get_xml(uri))
+    rescue Error404 => e
+      user = UserWrapper.new
+      user.id = 1
+      user.username = "Unknown"
+      return user
+    end
     
     user = errorCheck(doc)
     
@@ -899,6 +930,32 @@ class BioPortalRestfulCore
   end
   
 private
+  
+  # Converts a mapping from many-to-many to multiple one-to-one mappings
+  def self.convert_to_one_to_one_mapping(mappings)
+    one_to_one_mappings = []
+    
+    mappings.each do |mapping|
+    if mapping['target'].size > 1 || mapping['source'].size > 1
+        sources = mapping['source'].values
+        targets = mapping['target'].values
+        
+        sources.each do |source|
+          targets.each do |target|
+            mapping['source'] = source
+            mapping['target'] = target
+            one_to_one_mappings << Mapping.new(mapping)
+          end
+        end
+      else 
+        mapping['source'] = mapping['source']['fullId']
+        mapping['target'] = mapping['target']['fullId']
+        one_to_one_mappings << Mapping.new(mapping)
+      end
+    end
+    
+    one_to_one_mappings
+  end
   
   # Gets XML from the rest service. Used to include a user-agent in one location.
   def self.get_xml(uri)

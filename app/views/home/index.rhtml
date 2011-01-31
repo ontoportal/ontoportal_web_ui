@@ -247,7 +247,7 @@ function greybox(box){
   					<td>
   					  <% begin %>
     						<span style="color:#AAAAAA"><%=link_to "#{note.subject} (#{DataAccess.getLatestOntology(note.ontology_id).displayLabel})", Class.new.extend(NotesHelper).get_applies_to_url(DataAccess.getLatestOntology(note.ontology_id).id, note.applies_to_type, note.applies_to) %> <%="#{time_ago_in_words(Time.at(convert_java_time(note.created.to_i)))} ago"%> by <%=get_username(note.author)%></span>
-      					<% if note.body %><p><%= truncate(strip_tags(note.body),100)%>&nbsp;</p><% end %>
+      					<% if note.body %><p><%= truncate(strip_tags(note.body), :length => 100)%>&nbsp;</p><% end %>
   						<% rescue %>
   						<% end %>
   					</td>
@@ -271,7 +271,7 @@ function greybox(box){
     					<td>	<%= if map.dest_node.nil? 
     							"#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})"
     							else
-    								link_to "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})" , "/visualize/#{map.source_version_id}/#{map.source_id}#mappings"
+    								link_to "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})" , "/visualize/#{map.source_version_id}?conceptid=#{CGI.escape(map.source_id)}#mappings"
     							end %>
     						<br>
     							<span style="color:#AAAAAA"><%=map.map_source%><%=map.created_at.strftime("%m/%d/%y")%> <%=map.user.username%></span>

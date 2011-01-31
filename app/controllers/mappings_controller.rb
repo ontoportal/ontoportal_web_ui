@@ -9,16 +9,21 @@ class MappingsController < ApplicationController
   
   def index
     ontology_list = DataAccess.getOntologyList()
+    views_list = DataAccess.getViewList()
     ontologies_mapping_count = DataAccess.getMappingCountOntologies
 
     ontologies_hash = {}
     ontology_list.each do |ontology|
       ontologies_hash[ontology.ontologyId] = ontology
     end
+    
+    views_list.each do |view|
+      ontologies_hash[view.ontologyId] = view
+    end
 
     @options = {}
     ontologies_mapping_count.each do |ontology|
-      @options[ontologies_hash[ontology['ontologyId']].displayLabel + " (#{ontology['totalMappings']})"] = ontologies_hash[ontology['ontologyId']].id
+      @options[ontologies_hash[ontology['ontologyId']].displayLabel + " (#{ontology['totalMappings']})"] = ontologies_hash[ontology['ontologyId']].id unless ontologies_hash[ontology['ontologyId']].nil?
     end
     
     @options = @options.sort

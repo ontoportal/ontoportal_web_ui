@@ -27,7 +27,11 @@ class DataAccess
   def self.getView(view_id)
     return self.cache_pull("view::#{param(view_id)}", "getView", { :view_id => view_id })
   end
-  
+
+  def self.getViewList
+    return self.cache_pull("view_list", "getViewList", nil, MEDIUM_CACHE_EXPIRE_TIME)
+  end
+
   def self.getViews(ontology_id)
     return self.cache_pull("views::#{param(ontology_id)}", "getViews", { :ontology_id => ontology_id })
   end

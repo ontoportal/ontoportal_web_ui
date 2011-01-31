@@ -54,7 +54,7 @@ class Mapping
   end
   
   def ontology
-    DataAccess.getOntology(self.source_ontology_version)
+    DataAccess.getLatestOntology(self.sourceOntologyId)
   end
   
   ##

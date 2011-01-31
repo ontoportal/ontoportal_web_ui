@@ -104,7 +104,6 @@ class OntologiesController < ApplicationController
     @errors = validate(params[:ontology],true)
     
     if @errors.length < 1
-      test = params[:ontology][:isView]
       if params[:ontology][:isView] && params[:ontology][:isView].to_i == 1
         @ontology = DataAccess.updateView(params[:ontology],params[:id])
       else

@@ -3,14 +3,29 @@
     <%=t('mappings.intro')%>
 </p>
 
+<%= javascript_include_tag "/themes/cupertino/js/jquery-ui-1.8.1.custom.min.js" %>
 
-<p style="font-size:15px;font-weight:bold;padding:10px;border:1px solid #cfcfcf;">Display Mapping Count for 
-  <%= select('search', 'ontologies', @options, {:prompt=>'Select ontology...'},{:onchange=>"jQuery('#mappingCount').load('/mappings/count/'+this.value);jQuery('#mappings').html('');"}) %>
+<script type="text/javascript">
+  function loadMappings(value) {
+    jQuery('#mapping_load').show();
+    jQuery('#mappingCount').load('/mappings/count/'+value, function() {
+      jQuery('#mapping_load').hide();
+      jQuery("#mapping_count_table").effect("highlight", { color: "#F5F5F5" }, 500);
+    });
+    jQuery('#mappings').html('');
+  }
+</script>
+
+<p style="font-size:15px;font-weight:bold;padding:10px;margin-bottom:0;border:1px solid #cfcfcf;">Display Mappings for 
+  <%= select('search', 'ontologies', @options, {:prompt=>'Select ontology...'},{:onchange=>"loadMappings(this.value);"}) %>
   <span style="font-size: x-small;">(Only Ontologies with Mappings are displayed)</span>
 </p>
 
-<div id="mappingCount" style="text-align:center;overflow:hidden;padding:10px;">
-	
-	
+<div id="mapping_load" style="padding: 1em 1em 0; margin-bottom: -1em; display: none;">
+  <img src="/images/tree/spinner.gif" style="vertical-align: text-bottom;" /> Loading mappings...
 </div>
 
+<div id="mappingCount" style="text-align:center;overflow:hidden;padding:10px;">
+  
+  
+</div>
