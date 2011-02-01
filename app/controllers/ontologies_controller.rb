@@ -48,14 +48,16 @@ class OntologiesController < ApplicationController
 
     mappings = DataAccess.getMappingCountOntologyConcepts(@ontology.ontologyId)
     @mappings = []
-    mappings.each do |mapping|
-      begin
-        @mappings << [ mapping['fullId'], mapping['count'], DataAccess.getNode(@ontology.id, mapping['fullId']).label ]
-      rescue Exception => e
-        @mappings << [ mapping['fullId'], mapping['count'], mapping['fullId'] ]
+    if !mappings.nil? || !mappings.empty?
+      mappings.each do |mapping|
+        begin
+          @mappings << [ mapping['fullId'], mapping['count'], DataAccess.getNode(@ontology.id, mapping['fullId']).label ]
+        rescue Exception => e
+          @mappings << [ mapping['fullId'], mapping['count'], mapping['fullId'] ]
+        end
       end
+      @mappings.sort! { |a,b| a[2] <=> b[2] }
     end
-    @mappings.sort! { |a,b| a[2] <=> b[2] }
 
     #Grab Reviews Tab
     @reviews = Review.find(:all,:conditions=>{:ontology_id=>@ontology.ontologyId},:include=>:ratings)

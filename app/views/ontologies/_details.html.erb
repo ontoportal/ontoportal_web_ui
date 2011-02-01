@@ -150,15 +150,7 @@
   	                        <%= get_visualize_link(version) %>
   	                    </td>
   	                    <td>
-  	                        <% for diff in @diffs %>
-  		                        <%if diff[1].to_i.eql?(version.id.to_i) && diff[0].to_i.eql?(@versions[index + 1].id.to_i) %>
-  			                        Download Diff with previous version 
-  			                        <br/>
-  			                        ( <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=txt">Txt</a>
-  			                        | <a href="<%=$REST_URL%>/diffs/download/<%=diff[0]%>/<%=diff[1]%>?format=rdf">RDF</a>)
-  		                        <%end %>
-  	                        <%end %>
-  	                        &nbsp;
+  	                        <%= get_diffs_link(@diffs, @versions, version, index) %>
   	                    </td>
                       <% end %>
 	                </tr>

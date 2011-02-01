@@ -60,7 +60,12 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve mapping"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+
+    doc = get_xml(uri) rescue nil
+
+    if doc.nil?
+      return Array.new
+    end
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "Mapping") }
@@ -78,7 +83,8 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve mappings for concept"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+    
+    doc = get_xml(uri) rescue nil
     
     if doc.nil?
       return MappingPage.new
@@ -100,7 +106,12 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve mappings for ontology"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+
+    doc = get_xml(uri) rescue nil
+
+    if doc.nil?
+      return Array.new
+    end
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "MappingPage") }
@@ -118,7 +129,12 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve mappings between ontologies"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+
+    doc = get_xml(uri) rescue nil
+
+    if doc.nil?
+      return Array.new
+    end
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "MappingPage") }
@@ -133,7 +149,12 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve mappings counts between ontologies"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+
+    doc = get_xml(uri) rescue nil
+
+    if doc.nil?
+      return Array.new
+    end
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
@@ -154,7 +175,12 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve mappings counts between ontologies"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+
+    doc = get_xml(uri) rescue nil
+
+    if doc.nil?
+      return Array.new
+    end
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
@@ -169,7 +195,12 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve user mapping counts for an ontology"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+
+    doc = get_xml(uri) rescue nil
+
+    if doc.nil?
+      return Array.new
+    end
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
@@ -184,7 +215,12 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve concepts mapping counts for an ontology"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+
+    doc = get_xml(uri) rescue nil
+    
+    if doc.nil?
+      return Array.new
+    end
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
@@ -199,7 +235,12 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve mappings counts for all ontologies"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+
+    doc = get_xml(uri) rescue nil
+
+    if doc.nil?
+      return Array.new
+    end
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
@@ -217,7 +258,8 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve mapping count for ontology"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+    
+    doc = get_xml(uri) rescue nil
     
     if doc.nil?
       return 0
@@ -239,7 +281,8 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve mapping count for concept"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+    
+    doc = get_xml(uri) rescue nil
     
     if doc.nil?
       return 0

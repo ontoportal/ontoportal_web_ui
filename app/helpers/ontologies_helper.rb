@@ -1,5 +1,4 @@
 module OntologiesHelper
- 
   # Provides a link or string based on the status of an ontology.
   def get_visualize_link(ontology)
     # Don't display a link for ontologies that aren't browsable
@@ -11,7 +10,7 @@ module OntologiesHelper
         end
       end
     end
-    
+
     case ontology.statusId.to_i
     when 1 # Ontology is parsing
       return "Waiting to Parse"
@@ -25,7 +24,7 @@ module OntologiesHelper
       return "Archived, not available to explore"
     end
   end
-  
+
   # Provides a link for an ontology based on where it's hosted (Local or remote)
   def get_download_link(ontology)
     # Don't display a link for ontologies that aren't downloadable
@@ -37,16 +36,27 @@ module OntologiesHelper
         end
       end
     end
-    
+
     if ontology.metadata_only?
       return "<a href=\"#{ontology.homepage}\" target=\"_blank\">Ontology Homepage</a>"
     else
       return "<a href=\"#{DataAccess.download(ontology.id)}\" target=\"_blank\">Download Ontology</a>"
     end
   end
-  
+
   def get_view_ontology_version(view_on_ontology_id)
     return DataAccess.getOntology(view_on_ontology_id).versionNumber
   end
-  
+
+  # Generates a properly-formatted link for diffs
+  def get_diffs_link(diffs, versions, current_version, index)
+    for diff in diffs
+      if diff[1].to_i.eql?(current_version.id.to_i) && diff[0].to_i.eql?(versions[index + 1].id.to_i)
+        return "Diff with version #{DataAccess.getOntology(diff[0]).versionNumber} (<a href='#{$REST_URL}/diffs/download/#{diff[0]}/#{diff[1]}?format=txt'>TXT</a> | <a href='#{$REST_URL}/diffs/download/#{diff[0]}/#{diff[1]}?format=rdf'>RDF</a>)"
+      end
+    end
+    
+    return ""
+  end
+
 end
