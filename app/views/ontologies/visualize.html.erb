@@ -81,7 +81,7 @@
 			jQuery("#search_box").autocomplete("/search/json_search/<%=@ontology.ontologyId%>", {
 				lineSeparator: "~!~",
 				matchSubset: 0,
-				minChars: 3,
+				minChars: 1,
 				maxItemsToShow: 20,
 				onFindValue: jumpToValue,
 				onItemSelect: jumpToSelect,

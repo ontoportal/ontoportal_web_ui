@@ -81,6 +81,8 @@ class MappingsController < ApplicationController
     @ontology_id = @ontology.ontologyId
     @ontology_label = @ontology.displayLabel
 
+    @ontologies_mapping_count.sort! {|a,b| a['ontology'].displayLabel.downcase <=> b['ontology'].displayLabel.downcase }
+
     render :partial => 'count'
   end
   
