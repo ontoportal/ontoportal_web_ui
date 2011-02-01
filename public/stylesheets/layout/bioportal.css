@@ -326,11 +326,12 @@ tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Ar
 
 .concept_details tbody td {
 	padding: 0.6em 0.8em 0 !important;
-  white-space: pre-wrap; /* css-3 */
-  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-  white-space: -pre-wrap; /* Opera 4-6 */
-  white-space: -o-pre-wrap; /* Opera 7 */
-  word-wrap: break-word; /* Internet Explorer 5.5+ */}
+  white-space: normal; /* css-3 */
+  white-space: -moz-normal; /* Mozilla, since 1999 */
+  white-space: -normal; /* Opera 4-6 */
+  white-space: -o-normal; /* Opera 7 */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
 
 #format_specific_options td {
 	border-top: 1px solid #C1DAD7;
