@@ -66,12 +66,17 @@ class MappingsController < ApplicationController
   
   def count
     ontology_list = DataAccess.getOntologyList()
+    view_list = DataAccess.getViewList()
     @ontology = DataAccess.getOntology(params[:ontology])
     @ontologies_mapping_count = DataAccess.getMappingCountBetweenOntologies(@ontology.ontologyId)
 
     ontologies_hash = {}
     ontology_list.each do |ontology|
       ontologies_hash[ontology.ontologyId] = ontology
+    end
+    
+    view_list.each do |view|
+      ontologies_hash[view.ontologyId] = view
     end
     
     @ontologies_mapping_count.each do |ontology|
