@@ -114,35 +114,13 @@ class NodeWrapper
   end
   
   def mapping_count
-    if CACHE.get("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_MappingCount").nil?
-        count = DataAccess.getMappingCountConcept(self.ontology.ontologyId, self.fullId)
-        CACHE.set("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_MappingCount",count)
-      return count
-    else
-      return CACHE.get("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_MappingCount")
-    end
+    DataAccess.getMappingCountConcept(self.ontology.ontologyId, self.fullId)
   end
 
   def note_count
-    if CACHE.get("#{DataAccess.getOntology(self.version_id).ontologyId}::#{CGI.escape(self.fullId_proper)}_NoteCount").nil?
-        count = DataAccess.getNotesForConcept(DataAccess.getOntology(self.version_id).ontologyId, CGI.escape(self.fullId_proper), false, true).size rescue "0"
-        CACHE.set("#{DataAccess.getOntology(self.version_id).ontologyId}::#{CGI.escape(self.fullId_proper)}_NoteCount", count)
-      return count
-    else
-      return CACHE.get("#{DataAccess.getOntology(self.version_id).ontologyId}::#{CGI.escape(self.fullId_proper)}_NoteCount")
-    end
+    DataAccess.getNotesForConcept(DataAccess.getOntology(self.version_id).ontologyId, CGI.escape(self.fullId_proper), false, true).size rescue "0"
   end
     
-  def note_count_old
-    if CACHE.get("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_NoteCount").nil?
-      count = MarginNote.count(:conditions=>{:ontology_id => self.ontology_id, :concept_id =>self.id})
-      CACHE.set("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_NoteCount",count)
-      return count
-    else
-      return CACHE.get("#{self.ontology_id}::#{self.id.gsub(" ","%20")}_NoteCount")
-    end
-  end
-  
   def networkNeighborhood(relationships = nil)         
     DataAccess.getNetworkNeighborhoodImage(self.ontology_name,self.id,relationships)
   end
