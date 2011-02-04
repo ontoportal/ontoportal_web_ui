@@ -133,7 +133,6 @@
                     </tr>
                 </thead>
                 <%
-                @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
                 @versions.each_with_index do |version, index| %>
 	                <tr <%=cycle("", "class='alt'") %>>
 	                    <td>

@@ -184,7 +184,7 @@ class OntologyWrapper
   end
   
   def versions_array
-    DataAccess.getOntologyVersions(self.ontologyId)
+    DataAccess.getOntologyVersions(self.ontologyId).sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
   end
 
 end

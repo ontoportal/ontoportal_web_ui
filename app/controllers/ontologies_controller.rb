@@ -30,6 +30,7 @@ class OntologiesController < ApplicationController
     @groups = DataAccess.getGroups()
     @categories = DataAccess.getCategories()
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
+    @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
     @metrics = DataAccess.getOntologyMetrics(@ontology.id)
     @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, false, true)
     @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="

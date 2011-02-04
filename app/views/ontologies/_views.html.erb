@@ -33,7 +33,9 @@
         <%if @ontology.views.empty? || @ontology.views.first.size < 1 %>
 	        <h1>No views available.</h1>
         <%else %>
-			<h4 style="margin-top: 1.5em;"><a href="javascript:void(0);" id="expand_views">Expand All</a>  |  <a href="javascript:void(0);" id="collapse_views">Collapse All</a></h4>		
+        
+			<h4 style="margin-top: 1.5em;"><a href="javascript:void(0);" id="expand_views">Expand All</a>  |  <a href="javascript:void(0);" id="collapse_views">Collapse All</a></h4>	
+				
 			<% @ontology.views.each_with_index do |virtual, index| %>
 		        <%if virtual[0].nil?
 			        next
@@ -103,7 +105,7 @@
 			            </thead>
 			            <%
 			            virtual.sort!{|x,y| y.internalVersion<=>x.internalVersion}
-			            for view in virtual %>
+			            virtual.each_with_index do |view, view_index|  %>
 			            <tr>
 			                <td>
 			                    <%= view.versionNumber %>
@@ -122,17 +124,17 @@
 			                    <a href="<%=DataAccess.download(view.id)%>" target="_blank">Download View</a>
 			                </td>
 			                <td>
-			                    <%= get_diffs_link(view.diffs, view.versions_array, view, index) %>
+			                    <%= get_diffs_link(view.diffs, view.versions_array, view, view_index) %>
 			                </td>
 			                <td>
 			                    <%if view.statusId.to_i.eql?(3) %><%=link_to "Explore", visualize_url(:ontology => view,:view=>true) %><%else %>Parsing View<%end %>
 			                </td>
 			            </tr>
 			            <%end %>
-				        <%if !session[:user].nil? && (session[:user].id.to_i.eql?(view.userId.to_i) || session[:user].admin?) %>
+				        <%if !session[:user].nil? && (session[:user].id.to_i.eql?(virtual[0].userId.to_i) || session[:user].admin?) %>
 							<tr>
 								<td colspan=7>
-							        <h3 style="margin-bottom: 0;"><a href="/ontologies/view/new/<%=view.id%>?version_id=<%=@ontology.id%>">Submit New View Version</a></h3>
+							        <h3 style="margin-bottom: 0;"><a href="/ontologies/view/new/<%=virtual[0].id%>?version_id=<%=@ontology.id%>">Submit New View Version</a></h3>
 								</td>
 							</tr>
 				        <%end %>
