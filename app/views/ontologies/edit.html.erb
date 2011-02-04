@@ -134,7 +134,7 @@
                 Status:
             </th>
             <td>
-                <% status_options = ["Pre-Production", "Alpha", "Beta", "Production"] %>
+                <% status_options = ["alpha", "beta", "production", "retired"] %>
                 <%= select :ontology, :versionStatus, status_options, { :include_blank => true } %>
             </td>
         </tr>
