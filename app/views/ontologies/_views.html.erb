@@ -87,11 +87,14 @@
 			                    <th>
 			                        Created
 			                    </th>
-								<th>
-									Created By
-								</th>
-								<th>
+          								<th>
+          									  Created By
+          								</th>
+          								<th>
 			                        Ontology File
+			                    </th>
+			                    <th>
+			                        Diff File
 			                    </th>
 			                    <th>
 			                        Visualize
@@ -103,20 +106,23 @@
 			            for view in virtual %>
 			            <tr>
 			                <td>
-			                    <%=view.versionNumber %>
+			                    <%= view.versionNumber %>
 			                </td>
 			                <td>
 			                    <%= get_view_ontology_version(view.viewOnOntologyVersionId) %>
 			                </td>
 			                <td>
-			                    <%=view.dateReleased %>
+			                    <%= view.dateReleased %>
 			                </td>
-							<td>
-								<% contact_name = view.contactName.nil? || view.contactName.empty? ? "" : view.contactName + ", " %>
-								<%= contact_name + view.contactEmail %>
-							</td>
+        							<td>
+        								<% contact_name = view.contactName.nil? || view.contactName.empty? ? "" : view.contactName + ", " %>
+        								<%= contact_name + view.contactEmail %>
+        							</td>
 			                <td>
 			                    <a href="<%=DataAccess.download(view.id)%>" target="_blank">Download View</a>
+			                </td>
+			                <td>
+			                    <%= get_diffs_link(view.diffs, view.versions_array, view, index) %>
 			                </td>
 			                <td>
 			                    <%if view.statusId.to_i.eql?(3) %><%=link_to "Explore", visualize_url(:ontology => view,:view=>true) %><%else %>Parsing View<%end %>
@@ -125,7 +131,7 @@
 			            <%end %>
 				        <%if !session[:user].nil? && (session[:user].id.to_i.eql?(view.userId.to_i) || session[:user].admin?) %>
 							<tr>
-								<td colspan=6>
+								<td colspan=7>
 							        <h3 style="margin-bottom: 0;"><a href="/ontologies/view/new/<%=view.id%>?version_id=<%=@ontology.id%>">Submit New View Version</a></h3>
 								</td>
 							</tr>

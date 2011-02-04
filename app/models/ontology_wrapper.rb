@@ -178,5 +178,13 @@ class OntologyWrapper
   def metadata_only?
     return self.isMetadataOnly.eql?(1)
   end
+  
+  def diffs
+    DataAccess.getDiffs(self.ontologyId)
+  end
+  
+  def versions_array
+    DataAccess.getOntologyVersions(self.ontologyId)
+  end
 
 end
