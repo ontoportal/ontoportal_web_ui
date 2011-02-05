@@ -211,6 +211,13 @@ class BioPortalResources
         @uri << "/virtual/notes/%ONT_VIRTUAL%"
       end
     end
+
+    class ArchiveNote < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/virtual/notes/%ONT_VIRTUAL%"
+      end
+    end
     
     class Users < BioPortalResources
       def initialize

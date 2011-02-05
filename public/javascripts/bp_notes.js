@@ -94,10 +94,11 @@ jQuery(document).ready(function(){
 										
 										// We add the (+ "") statement to "cast" to a string
 										oTable.fnAddData([
-							                    json.subject_link + "",
-							                    json.subject + "",
-							                    json.author + "",
-							                    json.type + "",
+						                    json.subject_link + "",
+						                    json.subject + "",
+						                    "false", // archived should be false since we just created the note
+						                    json.author + "",
+						                    json.type + "",
 							                	json.appliesTo + "",
 							                	json.created + ""
 						                ]);

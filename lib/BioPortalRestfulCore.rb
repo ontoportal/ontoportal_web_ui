@@ -745,6 +745,23 @@ class BioPortalRestfulCore
     return note
   end
   
+  def self.archiveNote(params)
+    uri_gen = BioPortalResources::ArchiveNote.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Archive note"
+    LOG.add :debug, uri
+    doc = putToRestlet(uri, params)
+    
+    note = errorCheck(doc)
+    
+    unless note.nil?
+      return doc
+    end
+    
+    return getNote({ :ontology_id => params[:ontology_virtual_id], :note_id => params[:noteid], :threaded => false, :virtual => true })
+  end
+  
   def self.getNodeNameContains(ontologies,search,page)
     if ontologies.to_s.eql?("0")
       ontologies=""

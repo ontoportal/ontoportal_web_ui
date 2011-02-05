@@ -1,176 +1,9 @@
-<style type="text/css">
-	.note_title {
-		font-size: 16pt;
-	}
-	.note_status {
-		padding: 0 0 1em;
-	}
-	.status, .note_author {
-		font-weight: bold;
-		color: #646464;
-	}
-	.note_body {
-		font-size: 12pt;
-	}
-	
-	/* Extra information (proposals) */
-	.proposal_info {
-		border-bottom: 1px solid darkGray;
-		border-left: 1px solid darkGray;
-		border-right: 1px solid darkGray;
-		margin: 0 1em;
-		padding: .7em 1em 0.5em;
-	}
-	
-	.proposal {
-		width: 90%;
-	}
-	
-	.proposal th, .proposal td, .proposal tr {
-		border: none !important;
-		background-color: inherit !important;
-	}
-
-	.proposal th, .proposal td, .proposal tr {
-		padding: .25em;
-		vertical-align: top;
-	}
-	
-	.proposal th {
-		color: darkGray !important;
-		font-weight: bold;
-		text-align: right !important;
-		width: 15%;
-	}
-	
-	.proposal_root {
-		background-color: #F2F8FF;
-		margin: -0.7em 0 0.5em;
-		padding: 0.5em;
-	}
-	
-	/* Reply box */
-	.spacer {
-		padding: .8em 0 0 0;
-		margin-left: .8em;
-	}
-	.response_spacer {
-		padding: .8em 0 0 0;
-		margin-left: .8em;
-		border-left: dotted thin lightGrey;
-	}
-	.create_reply {
-		padding: 0.5em 0.5em 1em 0.8em;
-	}
-	.reply_compose {
-		width: 770px;
-		padding: 1em;
-		display: none;
-	}
-	
-	/* Responses */
-	.collapsible {
-		border-left: dotted thin lightGrey;
-		margin-left: .8em;
-	}
-	.note_corner {
-		border-bottom: dotted thin lightGrey;
-		bottom: .8em;
-		float: left;
-		margin-bottom: -3em;
-		position: relative;
-		right: 2.3em;
-		width: 2.3em;
-	}
-	.response_container {
-		margin-left: .8em;
-		padding-left: 1.5em;
-	}
-	.response {
-		/*padding: .8em 0 0 0;*/
-	}
-	.response_children .response {
-	}
-	.response_head {
-		border-top: dotted thin lightGrey;
-		border-right: dotted thin lightGrey;
-		border-left: dotted thin lightGrey;
-		box-shadow: -1px 2px 5px grey;
-		-moz-box-shadow: -1px 2px 5px grey;
-		-webkit-box-shadow: -1px 2px 5px grey;
-		background: #eeeeee;
-		padding: .4em .5em;
-		font-size: 9pt;
-		color: #646464;
-		cursor: pointer;
-	}
-	.response_count {
-		float: right;
-		font-style: italic;
-	}
-	.response .collapsed {
-		border-bottom: dotted thin lightGrey;
-	}
-	.response_collapse {
-	}
-	.response_head a {
-		color: #646464;
-	}
-	.response_head a:hover {
-		color: #000000;
-		background: #a9a9a9;
-	}
-	.response_title {
-		font-weight: bold;
-		font-size: 12pt;
-	}
-	.response_author {
-	}
-	.response_date {
-	}
-	.response_body {
-		padding: 1em 1em 0;
-		font-size: 10pt;
-	}
-	.responses_head {
-		margin-bottom: 1em;
-	}
-	.create_reply_container {
-		padding: .5em .3em;
-	}
-	.reply_form_container {
-		background-color: #F5FAFA;
-		padding: 10px 0 10px 10px;
-		width: 770px;
-		margin-right: 1em;
-	}
-	.cancel_reply {
-		float: right;
-		margin: 0.5em -.3em 0 0;
-	}
-	
-	.divider {
-		border-top: solid medium lightGrey;
-		width: 100%;
-		margin-top: 1em;
-	}
-	
-	.section_head {
-		font-size: 160%;
-		margin-bottom: 1em;
-	}
-	
-	#top_level_reply {
-		margin-top: 1em;
-	}
-</style>
-
 <script type="text/javascript">
 	// Ontology id
 	jQuery.data(document.body, "ontology_id", "<%= @ontology.ontologyId %>");
 
 	// Load external JS files
-	if (typeof BP_NOTES_THREAD_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_thread.js");
+	if (typeof BP_NOTES_THREAD_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_thread.js?update");
 </script>
 
 <% if @notes.nil? %>
@@ -181,8 +14,20 @@
 
 <div id="<%= @notes.id %>" class="data_div">
 	<div id="<%= @notes.id %>_head" class="note_head">
+    <% if !session[:user].nil? && (session[:user].id.to_i.eql?(@ontology.userId.to_i) || session[:user].admin?) %>
+      <div style="float: right; text-align: right;">
+        <form id="<%= @notes.id %>_archive_note_form">
+          <input type="hidden" value="<%= @notes.id %>" name="note_id">
+          <input type="hidden" value="<%= @notes.archived %>" name="archived">
+          <input type="hidden" value="<%= @ontology.ontologyId %>" name="ontology_id">
+          <input type="button" class="archive_note" id="<%= @notes.id %>_archive" name="<%= @notes.id %>_archive" value="<%if @notes.archived.eql?("true")%>Unarchive<%else%>Archive<%end%> Note"><span id="<%= @notes.id %>_archive_spinner" style="display: none;">
+          <img src="/images/tree/spinner.gif" style="vertical-align: text-bottom;" /> <span id="<%=@notes.id%>_spinner_text"><%if @notes.archived.eql?("true")%>Unarchiving<%else%>Archiving<%end%>...</span></span>
+        </form>
+      </div>
+    <% end %>
+    
 		<div id="<%= @notes.id %>_title" class="note_title">
-			<%= @notes.subject %>
+			<%= @notes.subject %> &nbsp;&nbsp;&nbsp;&nbsp;<span id="<%= @notes.id %>_title_archived" style="color: grey; font-size: 12pt;"><%if @notes.archived.eql?("true")%>archived<%end%></span>
 		</div>
 		
 		<div id="<%= @notes.id %>_status" class="note_status">

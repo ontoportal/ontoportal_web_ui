@@ -41,6 +41,8 @@ class Note
       rescue Exception
         LOG.add :debug, "Missing '#{key}' attribute in NodeWrapper"
       end
+      
+      self.archived = "false" if self.archived.nil?
     end
   end
   

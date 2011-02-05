@@ -163,6 +163,36 @@ class DataAccess
     note
   end
   
+  def self.archiveNote(params)
+    note = SERVICE.archiveNote(params)
+    CACHE.set("#{note.id}", note, CACHE_EXPIRE_TIME)
+    CACHE.set("#{note.id}::threaded", note)
+    CACHE.delete("#{params[:appliesTo]}::notes") if params[:appliesToType].eql?("Class")
+    CACHE.delete("#{params[:ontology_virtual_id]}::notes")
+    
+    # If this note is in a thread, traverse to top and delete from cache
+    if params[:appliesToType].eql?("Note")
+      note_temp = self.getNote(params[:ontology_virtual_id], params[:appliesTo], false, true)
+      while note_temp.appliesTo['type'].eql?("Note")
+        old_note_id = note_temp.id
+        parent_note_id = self.getNote(params[:ontology_virtual_id], note_temp.id, false, true).appliesTo['id']
+        CACHE.delete("#{old_note_id}")
+        CACHE.delete("#{old_note_id}::threaded")
+        note_temp = self.getNote(params[:ontology_virtual_id], parent_note_id, false, true)
+      end
+      CACHE.delete("#{note_temp.id}::threaded")
+      CACHE.delete("#{note_temp.id}")
+    end
+
+    # If this note applies to a class/concept/term then delete the count for that concept
+    CACHE.delete("#{params[:ontology_virtual_id]}::#{params[:appliesTo]}_NoteCount") if params[:appliesToType].eql?("Class")
+    
+    # Remove cached notes for this ontology
+    CACHE.delete("#{params[:ontology_virtual_id]}::notes")
+    
+    note
+  end
+  
   def self.createMapping(source, source_ontology_id, target, target_ontology_id, user_id, comment, unidirectional)
     mapping = SERVICE.createMapping({ :source => source, :sourceontology => source_ontology_id, :target => target, :targetontology => target_ontology_id, :submittedby => user_id, :comment => comment, :unidirectional => unidirectional })
     

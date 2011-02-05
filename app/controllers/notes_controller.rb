@@ -189,6 +189,23 @@ class NotesController < ApplicationController
     end
   end
   
+  # POST /notes
+  # POST /notes.xml
+  def archive
+    ontology_owner = DataAccess.getLatestOntology(params[:ontology_virtual_id]).userId.to_i
+    
+    unless !ontology_owner.nil? && !session[:user].nil? && (session[:user].id.to_i.eql?(ontology_owner) || session[:user].admin?)
+      render :json => nil.to_json, :status => 500
+      return
+    end
+    
+    @archive = DataAccess.archiveNote(params)
+    
+    unless @archive.nil?
+      render :json => @archive.to_json
+    end
+  end
+
   def validate(params)
     
   end
