@@ -187,7 +187,7 @@ class MappingsController < ApplicationController
     source = DataAccess.getNode(params[:mapping]['source_version_id'], params[:mapping]['source_id'])
     target = DataAccess.getNode(params[:mapping]['destination_version_id'], params[:mapping]['destination_id'])
     comment = params[:mapping]['comment']
-    unidirectional = (params[:bidirectional].to_i == 0)
+    unidirectional = params[:mapping]['directionality'].eql?("unidirectional")
     
     @mapping = DataAccess.createMapping(source.fullId, source.ontology.ontologyId, target.fullId, target.ontology.ontologyId, session[:user].id, comment, unidirectional)
     

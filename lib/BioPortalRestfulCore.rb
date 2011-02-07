@@ -974,7 +974,7 @@ class BioPortalRestfulCore
     begin
       doc = REXML::Document.new(get_xml(uri))
     rescue Exception=>e
-      doc = REXML::Document.new(e.io.read)
+      doc = REXML::Document.new(e.io.read) rescue nil
     end   
     
     results = errorCheck(doc)
