@@ -151,10 +151,6 @@ function hideOrUnhideArchivedNotes() {
 						<tr id="<%=note.id%>_tr">
 							<td>
 								<%= link_to note.subject, "#{@note_link}#{note.id}", :id => "row_#{note.id}", :class => "notes_list_link" %>
-								<% 
-								arch_test = note.archived.eql?("true") ? "true - it's archived" : "false - it's unarchived" 
-								puts note.subject + " " + note.archived + " " + arch_test
-								%>
 								&nbsp;&nbsp;&nbsp;<span id="<%=note.id%>_row_archived" style="font-size: x-small; color: grey;"><%if note.archived.eql?("true")%>archived<%end%></span>
 							</td>
 							<td>
