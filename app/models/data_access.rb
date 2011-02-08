@@ -326,10 +326,10 @@ class DataAccess
     SERVICE.updateOntology(params, ontology_id)
     CACHE.delete("#{ontology_id}::_details")
     CACHE.delete("ont_list")
-    CACHE.delete("#{params[:ontologyId]}::_latest")
     unless(params[:ontologyId].nil?)
+ 	  CACHE.delete("#{params[:ontologyId]}::_latest")
       CACHE.delete("#{params[:ontologyId]}::_versions")
-      CACHE.delete("#{self.getLatestOntology(params[:ontologyId]).id}::_details")
+      CACHE.delete("#{params[:ontologyId]}::_details")
       CACHE.delete("ont_list")
     end
     return self.getOntology(ontology_id)
