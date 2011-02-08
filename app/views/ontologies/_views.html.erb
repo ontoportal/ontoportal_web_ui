@@ -127,7 +127,7 @@
 			                    <%= get_diffs_link(view.diffs, view.versions_array, view, view_index) %>
 			                </td>
 			                <td>
-			                    <%if view.statusId.to_i.eql?(3) %><%=link_to "Explore", visualize_url(:ontology => view,:view=>true) %><%else %>Parsing View<%end %>
+			                    <%if view.statusId.to_i.eql?(3) %><%=link_to "Explore", visualize_url(:ontology => view,:view=>true) %><%elsif view.statusId.to_i.eql?(4)%>Parsing Error<%else %>Parsing View<%end %>
 			                </td>
 			            </tr>
 			            <%end %>

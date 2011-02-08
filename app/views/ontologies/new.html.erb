@@ -233,6 +233,7 @@
                 Status:
             </th>
             <td>
+                <% selected_status = @ontology.ontologyId.nil? ? "" : @ontology.versionStatus %>
                 <% status_options = ["alpha", "beta", "production", "retired"] %>
                 <%= select :ontology, :versionStatus, status_options, { :include_blank => true } %>
             </td>
