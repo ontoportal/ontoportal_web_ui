@@ -339,7 +339,7 @@ private
          "
          
          for mapping in mappings
-          rdf_text << "<mappings:One_To_One_Mapping rdf:ID=\"#{mapping.id}\">
+          rdf_text << "<mappings:One_To_One_Mapping rdf:about=\"#{mapping.id}\">
              <mappings:source rdf:resource='#{mapping.source}'/>
              <mappings:target rdf:resource='#{mapping.target}'/>
              <mappings:relation rdf:resource='#{mapping.relation}' />
