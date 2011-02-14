@@ -148,7 +148,6 @@ jQuery(document).ready(function() {
 	<tr>
 		<th>Filter by Group</td><td><select onchange="filterByGroup(this)"  name="cat">
 		<option value="0" <%if params[:filter].nil?%>selected="selected"<%end%> >All Groups</option>
-			
 			<% @groups.group_list.each do |group_id, group| %>
 				<option value="<%=group[:acronym]%>" <%if !params[:filter].nil? && group[:acronym].include?(params[:filter])%>selected="selected"<%end%>><%=group[:name]%> (<%=group[:acronym]%>)</option>
 			<%end%>

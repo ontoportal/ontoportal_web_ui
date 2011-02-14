@@ -12,7 +12,7 @@ class OntologiesController < ApplicationController
   # GET /ontologies
   # GET /ontologies.xml
   def index
-    @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
+    @ontologies = DataAccess.getOntologyList()
     @categories = DataAccess.getCategories()
     @groups = DataAccess.getGroups()
     
@@ -464,6 +464,17 @@ class OntologiesController < ApplicationController
     
     if params[:versionNumber].nil? || params[:versionNumber].length <1
       errors << "Please Enter an Ontology Version"
+    end
+    
+    if params[:abbreviation].nil? || params[:abbreviation].empty?
+      errors << "Please Enter an Ontology Abbrevation"
+    elsif params[:abbreviation].include?(" ") || /[\^{}\[\]:;\$=\*`#\|@'\<>\(\)\+,\\\/]/.match(params[:abbreviation])
+      errors << "Abbreviations cannot contain spaces or the following characters: <span style='font-family: monospace;'>^{}[]:;$=*`#|@'<>()\+,\\/</span>"
+    elsif CACHE.get("ontology_acronyms").include?(params[:abbreviation].downcase)
+      # We matched an existing acronym, but is it already ours from a previous version?
+      unless isupdate && DataAccess.getLatestOntology(params[:ontologyId]).abbreviation.downcase.eql?(params[:abbreviation].downcase)
+        errors << "That Abbreviation is already in use. Please choose another."
+      end
     end
     
     if params[:dateReleased].nil? || params[:dateReleased].length <1

@@ -42,7 +42,17 @@ class DataAccess
   end
   
   def self.getOntologyList
-    return self.cache_pull("ont_list", "getOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
+    ontologies = self.cache_pull("ont_list", "getOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
+    
+    # Create an array of ontology accronyms to avoid duplicate entries
+    ontology_acronyms = []
+    ontologies.each do |ontology|
+      ontology_acronyms << ontology.abbreviation.downcase
+    end
+    
+    CACHE.set("ontology_acronyms", ontology_acronyms, MEDIUM_CACHE_EXPIRE_TIME)
+    
+    return ontologies
   end
   
   def self.getCategories
