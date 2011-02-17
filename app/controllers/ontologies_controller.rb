@@ -462,10 +462,6 @@ class OntologiesController < ApplicationController
       errors << "Please Enter an Ontology Name"
     end
     
-    if params[:versionNumber].nil? || params[:versionNumber].length <1
-      errors << "Please Enter an Ontology Version"
-    end
-    
     if params[:abbreviation].nil? || params[:abbreviation].empty?
       errors << "Please Enter an Ontology Abbrevation"
     elsif params[:abbreviation].include?(" ") || /[\^{}\[\]:;\$=\*`#\|@'\<>\(\)\+,\\\/]/.match(params[:abbreviation])
