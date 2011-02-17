@@ -233,7 +233,30 @@ function greybox(box){
 <tr>
 	<td valign='top'>
 	  <%=t('most_viewed')%>
-    <%=t('stats')%>
+	  
+    <% if t('stats').nil? || t('stats').empty? %>
+      <fieldset>
+        <legend>Statistics</legend>
+        <table class="minimal" width="100%">
+          <tbody>
+            <tr>
+              <td>Ontologies</td>
+              <td><%=DataAccess.getOntologyList.size%></td>
+            </tr>
+            <tr>
+              <td>Terms</td>
+              <td><%=number_with_delimiter(DataAccess.getTotalTermCount.to_i, :delimiter => ",") %></td>
+            </tr>
+            <tr>
+              <td>Resources Indexed</td>
+              <td><%=number_with_delimiter(CACHE.get("ri::resources").size, :delimiter => ",") rescue 24%></td>
+            </tr>
+          </tbody>
+        </table>
+      </fieldset>
+    <% else %>
+      <%=t('stats')%>
+    <% end %> 
 	</td>
 	
 	<td valign="top">

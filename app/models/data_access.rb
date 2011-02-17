@@ -1,5 +1,6 @@
 require 'BioPortalRestfulCore'
 require "digest/sha1"
+include Spawn
 
 class DataAccess
   # Sets what backend we are using
@@ -45,14 +46,50 @@ class DataAccess
     ontologies = self.cache_pull("ont_list", "getOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
     
     # Create an array of ontology accronyms to avoid duplicate entries
-    ontology_acronyms = []
-    ontologies.each do |ontology|
-      ontology_acronyms << ontology.abbreviation.downcase
+    # Get a total of all terms for ontologies
+    if CACHE.get("ontology_acronyms").nil?
+      ontology_acronyms = []
+      ontologies.each do |ontology|
+        ontology_acronyms << ontology.abbreviation.downcase
+      end
+      CACHE.set("ontology_acronyms", ontology_acronyms, MEDIUM_CACHE_EXPIRE_TIME)
     end
     
-    CACHE.set("ontology_acronyms", ontology_acronyms, MEDIUM_CACHE_EXPIRE_TIME)
-    
     return ontologies
+  end
+  
+  def self.getTotalTermCount
+    ontologies = self.getOntologyList
+    
+    terms = CACHE.get("terms_all_ontologies")
+    running = CACHE.get("running_term_calc")
+    
+    if (CACHE.get("terms_all_ontologies").nil? || CACHE.get("terms_all_ontologies").to_i <= 0) && (CACHE.get("running_term_calc").nil? || !CACHE.get("running_term_calc").eql?("true"))
+      CACHE.set("running_term_calc", "true", 60*15)
+      
+      # Set a default term count, based on a value from Feb 2011
+      CACHE.set("terms_all_ontologies", 4849100)
+      
+      # Spawn a process to calculate total term size
+      spawn(:argv => "spawn_ontology_terms") do
+        total_terms = 0
+        ontologies.each do |ontology|
+          total_terms += self.getOntologyMetrics(ontology.id).numberOfClasses.to_i rescue 0
+        end
+
+        # Since we spawn a new process we need to make sure to reset the cache
+        CACHE.reset
+
+        CACHE.set("terms_all_ontologies", total_terms, MEDIUM_CACHE_EXPIRE_TIME)
+        CACHE.set("running_term_calc", "false")
+        
+        # Since we spawn a new process we need to make sure to reset the cache
+        CACHE.reset
+      end
+    end
+
+    CACHE.reset
+    return CACHE.get("terms_all_ontologies")
   end
   
   def self.getCategories

@@ -44,3 +44,12 @@ end
 
 # Include the BioPortal-specific configuration options
 require 'config/bioportal_config.rb'
+
+# Spawn pre-caching
+# require "Spawn"
+# config.to_prepare do
+#   Spawn::spawn do
+#     sleep 30
+#     puts "after initialize!"
+#   end
+# end

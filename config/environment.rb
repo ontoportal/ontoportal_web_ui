@@ -56,6 +56,6 @@ Rails::Initializer.run do |config|
 
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
+  config.active_record.allow_concurrency=true
   
-    config.active_record.allow_concurrency=true
 end
