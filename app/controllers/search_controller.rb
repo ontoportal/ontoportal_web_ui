@@ -103,6 +103,8 @@ class SearchController < ApplicationController
       return
     end
     
+    separator = (params[:separator].nil?) ? "~!~" : params[:separator]
+    
     @results,@pages = DataAccess.getNodeNameContains([params[:id]],params[:q],1)
 
     if params[:id]
@@ -129,9 +131,9 @@ class SearchController < ApplicationController
       end      
       
       if params[:id] && params[:id].split(",").length == 1
-        response << "#{target_value}|#{result[:conceptIdShort]}|#{record_type}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}~!~"
+        response << "#{target_value}|#{result[:conceptIdShort]}|#{record_type}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}#{separator}"
       else
-        response << "#{target_value}|#{result[:conceptIdShort]}|#{record_type}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}|#{result[:ontologyDisplayLabel]}|#{result[:ontologyId]}~!~"
+        response << "#{target_value}|#{result[:conceptIdShort]}|#{record_type}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}|#{result[:ontologyDisplayLabel]}|#{result[:ontologyId]}#{separator}"
       end
     end        
     
