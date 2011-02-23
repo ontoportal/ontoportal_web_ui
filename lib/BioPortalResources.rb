@@ -107,19 +107,15 @@ class BioPortalResources
       def initialize(params, max_children = nil, light = nil)
         super(params)
         @uri << "/concepts/%ONT%/?conceptid=%CONC%"
-        if max_children
-          @uri << "&maxnumchildren=" + max_children.to_s
-        end
-        if light
-          @uri << ""
-        end
+        @uri << "&maxnumchildren=" + max_children.to_s if max_children
+        @uri << "&light=1" if light
       end
     end
 
     class PathToRoot < BioPortalResources
       def initialize(params)
         super(params)
-        @uri << "/path/%ONT%/?source=%CONC%&target=root&maxnumchildren=2500"
+        @uri << "/path/%ONT%/?source=%CONC%&target=root"
       end
     end
     
