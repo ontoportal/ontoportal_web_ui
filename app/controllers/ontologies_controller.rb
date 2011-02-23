@@ -466,7 +466,7 @@ class OntologiesController < ApplicationController
       errors << "Abbreviations cannot contain spaces or the following characters: <span style='font-family: monospace;'>^{}[]:;$=*`#|@'<>()\+,\\/</span>"
     elsif CACHE.get("ontology_acronyms").include?(params[:abbreviation].downcase)
       # We matched an existing acronym, but is it already ours from a previous version?
-      unless isupdate && DataAccess.getLatestOntology(params[:ontologyId]).abbreviation.downcase.eql?(params[:abbreviation].downcase)
+      unless DataAccess.getLatestOntology(params[:ontologyId]).abbreviation.downcase.eql?(params[:abbreviation].downcase)
         errors << "That Abbreviation is already in use. Please choose another."
       end
     end
