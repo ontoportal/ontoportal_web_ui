@@ -58,5 +58,14 @@ module OntologiesHelper
     
     return ""
   end
+  
+  # Generates an array for use with version drop-down lists
+  def get_versions_array_for_select(ontology_version_id)
+    ontology = DataAccess.getOntology(ontology_version_id)
+    ont_versions = DataAccess.getOntologyVersions(ontology.ontologyId).sort! {|ont_a,ont_b| ont_b.internalVersion.to_i <=> ont_a.internalVersion.to_i}
+    ont_versions_array = []
+    ont_versions.each {|ont| ont_versions_array << [ ont.versionNumber, ont.id ] }
+    return ont_versions_array
+  end
 
 end

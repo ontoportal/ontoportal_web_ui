@@ -367,12 +367,10 @@ class OntologiesController < ApplicationController
         @ontology = OntologyWrapper.new
         @ontology.from_params(params[:ontology])
         @categories = DataAccess.getCategories()
-        
       else
         @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
         @ontology.from_params(params[:ontology])
         @categories = DataAccess.getCategories()
-        
       end
       
       if(params[:ontology][:isView].to_i==1)
