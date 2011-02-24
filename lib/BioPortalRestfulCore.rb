@@ -69,7 +69,7 @@ class BioPortalRestfulCore
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "Mapping") }
-    LOG.add :debug, "Mapping parsed (#{timer})"
+    LOG.add :debug, "Mapping parsed (#{timer}ms)"
     
     return mappings
   end
@@ -92,7 +92,7 @@ class BioPortalRestfulCore
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "MappingPage") }
-    LOG.add :debug, "Mapping parsed (#{timer})"
+    LOG.add :debug, "Mapping parsed (#{timer}ms)"
     
     return mappings
   end
@@ -115,7 +115,7 @@ class BioPortalRestfulCore
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "MappingPage") }
-    LOG.add :debug, "Mappings for ontology parsed (#{timer})"
+    LOG.add :debug, "Mappings for ontology parsed (#{timer}ms)"
     
     return mappings
   end
@@ -138,7 +138,7 @@ class BioPortalRestfulCore
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "MappingPage") }
-    LOG.add :debug, "Mappings between ontologies parsed (#{timer})"
+    LOG.add :debug, "Mappings between ontologies parsed (#{timer}ms)"
     
     return mappings
   end
@@ -162,7 +162,7 @@ class BioPortalRestfulCore
     mappings = convert_to_one_to_one_mapping(mappings)
     mappings = (mappings.length > 5) ? mappings.shift(5) : mappings
     
-    LOG.add :debug, "Between ontologies mapping counts parsed (#{timer})"
+    LOG.add :debug, "Between ontologies mapping counts parsed (#{timer}ms)"
     
     mappings = (mappings.kind_of? Array) ? mappings : Array.new 
     
@@ -184,7 +184,7 @@ class BioPortalRestfulCore
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
-    LOG.add :debug, "Between ontologies mapping counts parsed (#{timer})"
+    LOG.add :debug, "Between ontologies mapping counts parsed (#{timer}ms)"
     
     return mappings
   end
@@ -204,7 +204,7 @@ class BioPortalRestfulCore
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
-    LOG.add :debug, "User mapping counts parsed (#{timer})"
+    LOG.add :debug, "User mapping counts parsed (#{timer}ms)"
     
     return mappings
   end
@@ -224,7 +224,7 @@ class BioPortalRestfulCore
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
-    LOG.add :debug, "Concept mapping counts parsed (#{timer})"
+    LOG.add :debug, "Concept mapping counts parsed (#{timer}ms)"
     
     return mappings
   end
@@ -244,7 +244,7 @@ class BioPortalRestfulCore
 
     mappings = []
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc) }
-    LOG.add :debug, "Ontologies mapping counts parsed (#{timer})"
+    LOG.add :debug, "Ontologies mapping counts parsed (#{timer}ms)"
     
     return mappings
   end
@@ -267,7 +267,7 @@ class BioPortalRestfulCore
 
     mappings = 0
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "MappingPage") }
-    LOG.add :debug, "Mapping parsed (#{timer})"
+    LOG.add :debug, "Mapping parsed (#{timer}ms)"
     
     return (mappings.nil? || mappings.empty?) ? 0 : mappings.total_mappings
   end
@@ -290,7 +290,7 @@ class BioPortalRestfulCore
 
     mappings = 0
     timer = Benchmark.ms { mappings = generic_parse(:xml => doc, :type => "MappingPage") }
-    LOG.add :debug, "Mapping parsed (#{timer})"
+    LOG.add :debug, "Mapping parsed (#{timer}ms)"
     
     return (mappings.nil? || mappings.empty?) ? 0 : mappings.total_mappings
   end
@@ -403,7 +403,7 @@ class BioPortalRestfulCore
   # Gets a concept node.
   ##
   def self.getNode(params)
-    uri_gen = BioPortalResources::Concept.new(params, 2500)
+    uri_gen = BioPortalResources::Concept.new(params)
     uri = uri_gen.generate_uri
     
     LOG.add :debug, "Retrieve node"
@@ -421,7 +421,7 @@ class BioPortalRestfulCore
     end
     
     timer = Benchmark.ms { node = generic_parse(:xml => doc, :type => "NodeWrapper", :ontology_id => params[:ontology_id]) }
-    LOG.add :debug, "Node parsed (#{timer})"
+    LOG.add :debug, "Node parsed (#{timer}ms)"
     
     return node
   end
@@ -430,7 +430,7 @@ class BioPortalRestfulCore
   # Gets a light version of a concept node. Used for tree browsing.
   ##
   def self.getLightNode(params)
-    uri_gen = BioPortalResources::Concept.new(params, 2500, true)
+    uri_gen = BioPortalResources::Concept.new(params, nil, true)
     uri = uri_gen.generate_uri
     
     LOG.add :debug, "Retrieve light node"
@@ -444,7 +444,7 @@ class BioPortalRestfulCore
     end
     
     timer = Benchmark.ms { node = generic_parse(:xml => doc, :type => "NodeWrapper", :ontology_id => params[:ontology_id]) }
-    LOG.add :debug, "Light node parsed (#{timer})"
+    LOG.add :debug, "Light node parsed (#{timer}ms)"
     
     return node
   end
@@ -452,7 +452,7 @@ class BioPortalRestfulCore
   def self.getTopLevelNodes(params)
     params[:concept_id] = "root"
    
-    uri_gen = BioPortalResources::Concept.new(params, 2500)
+    uri_gen = BioPortalResources::Concept.new(params)
     uri = uri_gen.generate_uri
     
     LOG.add :debug, "Retrieve top level nodes"
@@ -467,7 +467,7 @@ class BioPortalRestfulCore
     end
     
     timer = Benchmark.ms { node = generic_parse(:xml => doc, :type => "NodeWrapper", :ontology_id => params[:ontology_id]) }
-    LOG.add :debug, "Top level nodes parsed (#{timer})"
+    LOG.add :debug, "Top level nodes parsed (#{timer}ms)"
     
     return node.children
   end
@@ -621,7 +621,7 @@ class BioPortalRestfulCore
     end
     
     timer = Benchmark.ms { root = generic_parse(:xml => doc, :type => "NodeWrapper", :ontology_id => params[:ontology_id]) }
-    LOG.add :debug, "getPathToRoot Parse Time: #{timer}"
+    LOG.add :debug, "getPathToRoot Parse Time: #{timer}ms"
     
     return root
   end
@@ -646,7 +646,7 @@ class BioPortalRestfulCore
     end
     
     timer = Benchmark.ms { note = generic_parse(:xml => doc, :type => "Note") }
-    LOG.add :debug, "note Parse Time: #{timer}"
+    LOG.add :debug, "note Parse Time: #{timer}ms"
     
     if note.kind_of?(Array) && note.size == 1
       note = note[0]
@@ -675,7 +675,7 @@ class BioPortalRestfulCore
     end
     
     timer = Benchmark.ms { notes = generic_parse(:xml => doc, :type => "Note") }
-    LOG.add :debug, "note Parse Time: #{timer}"
+    LOG.add :debug, "note Parse Time: #{timer}ms"
     
     notes.sort! { |x,y| x.created <=> y.created }
     
@@ -702,7 +702,7 @@ class BioPortalRestfulCore
 
     begin
       timer = Benchmark.ms { notes = generic_parse(:xml => doc, :type => "Note") }
-      LOG.add :debug, "notesForOntology Parse Time: #{timer}"
+      LOG.add :debug, "notesForOntology Parse Time: #{timer}ms"
     rescue
       LOG.add :debug, "Error parsing notes"
     end
@@ -736,7 +736,7 @@ class BioPortalRestfulCore
     end
     
     timer = Benchmark.ms { note = generic_parse(:xml => doc, :type => "Note") }
-    LOG.add :debug, "createNote Parse Time: #{timer}"
+    LOG.add :debug, "createNote Parse Time: #{timer}ms"
     
     if note.kind_of?(Array) && note.size == 1
       note = note[0]
@@ -762,16 +762,13 @@ class BioPortalRestfulCore
     return getNote({ :ontology_id => params[:ontology_virtual_id], :note_id => params[:noteid], :threaded => false, :virtual => true })
   end
   
-  def self.getNodeNameContains(ontologies,search,page)
-    if ontologies.to_s.eql?("0")
-      ontologies=""
-    else
-      ontologies = "&ontologyids=#{ontologies.join(",")}&"
-        end
+  def self.getNodeNameContains(ontologies, search, page, params = {})
+    ontologies = ontologies.to_s.eql?("0") ? "" : "&ontologyids=#{ontologies.join(",")}&"
+    search_branch = params[:subtreerootconceptid].nil? ? "" : "&subtreerootconceptid=#{params[:subtreerootconceptid]}"
  
-        LOG.add :debug, BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15"
+    LOG.add :debug, BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}"
     begin
-     doc = REXML::Document.new(get_xml(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15"))
+     doc = REXML::Document.new(get_xml(BASE_URL + SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%", CGI.escape(search)) + "isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}"))
     rescue Exception=>e
       doc =  REXML::Document.new(e.io.read)
     end

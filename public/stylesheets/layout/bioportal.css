@@ -284,9 +284,13 @@ tr.mainresource td{  cursor:pointer; font: bold 11px "Trebuchet MS", Verdana, Ar
   margin-left: 1.5em;
 }
 
+#ontologies_filter.dataTables_filter {
+	display: none;
+}
+
 #all_updates_rss {
   text-align: right;
-  margin-bottom: -0.8em;
+  margin-bottom: .5em;
   width: 90%;
   display: none;
 }

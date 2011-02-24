@@ -1,5 +1,6 @@
 require 'BioPortalRestfulCore'
 require "digest/sha1"
+include Spawn
 
 class DataAccess
   # Sets what backend we are using
@@ -42,7 +43,53 @@ class DataAccess
   end
   
   def self.getOntologyList
-    return self.cache_pull("ont_list", "getOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
+    ontologies = self.cache_pull("ont_list", "getOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
+    
+    # Create an array of ontology accronyms to avoid duplicate entries
+    # Get a total of all terms for ontologies
+    if CACHE.get("ontology_acronyms").nil?
+      ontology_acronyms = []
+      ontologies.each do |ontology|
+        ontology_acronyms << ontology.abbreviation.downcase
+      end
+      CACHE.set("ontology_acronyms", ontology_acronyms, MEDIUM_CACHE_EXPIRE_TIME)
+    end
+    
+    return ontologies
+  end
+  
+  def self.getTotalTermCount
+    ontologies = self.getOntologyList
+    
+    terms = CACHE.get("terms_all_ontologies")
+    running = CACHE.get("running_term_calc")
+    
+    if (CACHE.get("terms_all_ontologies").nil? || CACHE.get("terms_all_ontologies").to_i <= 0) && (CACHE.get("running_term_calc").nil? || !CACHE.get("running_term_calc").eql?("true"))
+      CACHE.set("running_term_calc", "true", 60*15)
+      
+      # Set a default term count, based on a value from Feb 2011
+      CACHE.set("terms_all_ontologies", 4849100)
+      
+      # Spawn a process to calculate total term size
+      spawn(:argv => "spawn_ontology_terms") do
+        total_terms = 0
+        ontologies.each do |ontology|
+          total_terms += self.getOntologyMetrics(ontology.id).numberOfClasses.to_i rescue 0
+        end
+
+        # Since we spawn a new process we need to make sure to reset the cache
+        CACHE.reset
+
+        CACHE.set("terms_all_ontologies", total_terms, MEDIUM_CACHE_EXPIRE_TIME)
+        CACHE.set("running_term_calc", "false")
+        
+        # Since we spawn a new process we need to make sure to reset the cache
+        CACHE.reset
+      end
+    end
+
+    CACHE.reset
+    return CACHE.get("terms_all_ontologies")
   end
   
   def self.getCategories
@@ -226,7 +273,12 @@ class DataAccess
   end
   
   def self.getBetweenOntologiesMappings(source_ontology_virtual_id, target_ontology_virtual_id, page_number = 1, page_size = 100, params = {})
-    self.cache_pull("#{source_ontology_virtual_id}::#{target_ontology_virtual_id}::map_page::page#{page_number}::size#{page_size}::params#{params.to_s}", "getBetweenOntologiesMappings", { :source_ontology_virtual_id => source_ontology_virtual_id, :target_ontology_virtual_id => target_ontology_virtual_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
+  	# We avoid caching this result when it might be too big (> 5000 results)
+  	if page_size > 5000
+  	  SERVICE.getBetweenOntologiesMappings({ :source_ontology_virtual_id => source_ontology_virtual_id, :target_ontology_virtual_id => target_ontology_virtual_id, :page_number => page_number, :page_size => page_size }.merge(params))
+  	else
+      self.cache_pull("#{source_ontology_virtual_id}::#{target_ontology_virtual_id}::map_page::page#{page_number}::size#{page_size}::params#{params.to_s}", "getBetweenOntologiesMappings", { :source_ontology_virtual_id => source_ontology_virtual_id, :target_ontology_virtual_id => target_ontology_virtual_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
+	end
   end
   
   def self.getMappingCountOntology(ontology_virtual_id)
@@ -257,8 +309,8 @@ class DataAccess
     self.cache_pull("recent::mappings", "getRecentMappings", nil, 60*15)
   end
 
-  def self.getNodeNameContains(ontologies,search,page) 
-    results,pages = SERVICE.getNodeNameContains(ontologies,search,page)
+  def self.getNodeNameContains(ontologies, search, page, params = {}) 
+    results,pages = SERVICE.getNodeNameContains(ontologies, search, page, params)
     return results,pages
   end
 

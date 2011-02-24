@@ -70,8 +70,8 @@
 <div style="margin:10px;">
     <%@title = "Editing #{@ontology.displayLabel}" %>
     <%unless @errors.nil? %>
-    <div style="color:red;">
-        Errors On Form
+    <div style="color:red;" class="enable-lists">
+        <strong>Errors On Form</strong>
         <ul>
             <%for error in @errors %>
             <li>
@@ -90,7 +90,7 @@
     <table class="form" width="90%">
         <tr>
             <th class="top">
-                Ontology Name: 
+                Ontology Name: <span class="asterik">*</span>
             </th>
             <td class="top">
                 <%=text_field :ontology, :displayLabel %>
@@ -98,7 +98,7 @@
         </tr>
         <tr>
             <th>
-                Ontology Description:
+                Ontology Description: <span class="asterik">*</span>
             </th>
             <td>
                 <%= text_area :ontology, :description,:rows=>6 %>
@@ -106,7 +106,7 @@
         </tr>
         <tr>
             <th>
-                Ontology Abbreviation:
+                Ontology Abbreviation: <span class="asterik">*</span>
             </th>
             <td>
                 <%= text_field :ontology, :abbreviation %>
@@ -114,7 +114,7 @@
         </tr>
         <tr>
             <th>
-                Ontology Format: 
+                Ontology Format: <span class="asterik">*</span>
             </th>
             <td>
                 <%=@ontology.format %>
@@ -140,7 +140,7 @@
         </tr>
         <tr>
             <th>
-                Ontology Release Date:  <span class="asterik">*</span>
+                Ontology Release Date: <span class="asterik">*</span>
             </th>
             <td>
                 <%= text_field :ontology, :dateReleased,:id=>"datepicker" %>

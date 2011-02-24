@@ -38,6 +38,7 @@ if (typeof BP_SITE == 'undefined') {
 if (typeof BP_ORG == 'undefined') {
   var BP_ORG = "NCBO";
 }
+
 var BP_ORG_SITE = (BP_ORG == "") ? BP_SITE : BP_ORG + " " + BP_SITE;
 
 
@@ -79,6 +80,9 @@ function formComplete_setup_functions() {
 		var values;
 		var ontology_id;
 		var target_property;
+		
+		var search_branch = jQuery(this).attr("data-bp_search_branch");
+		
 		jQuery(classes).each(function() {
 			if (this.indexOf("bp_form_complete") === 0) {
 				values = this.split("-");
@@ -90,7 +94,7 @@ function formComplete_setup_functions() {
 		if (ontology_id == "all") { ontology_id = ""; }
 		
 		jQuery(this).autocomplete(BP_SEARCH_SERVER + "/search/json_search/"+ontology_id, {
-				extraParams: { target_property: target_property, input: this },
+				extraParams: { target_property: target_property, input: this, subtreerootconceptid: encodeURIComponent(search_branch) },
 				lineSeparator: "~!~",
 				matchSubset: 0,
 				minChars: 3,

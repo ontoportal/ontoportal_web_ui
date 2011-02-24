@@ -12,7 +12,7 @@ class OntologiesController < ApplicationController
   # GET /ontologies
   # GET /ontologies.xml
   def index
-    @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
+    @ontologies = DataAccess.getOntologyList()
     @categories = DataAccess.getCategories()
     @groups = DataAccess.getGroups()
     
@@ -67,6 +67,52 @@ class OntologiesController < ApplicationController
     @projects = Project.find(:all,:conditions=>"uses.ontology_id = '#{@ontology.ontologyId}'",:include=>:uses)
 
     render :action=>'show'
+    
+  end
+  
+  def ontologies_new
+    # Grab Metadata
+    @ontology = DataAccess.getOntology(params[:id])
+    @groups = DataAccess.getGroups()
+    @categories = DataAccess.getCategories()
+    @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
+    @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
+    @metrics = DataAccess.getOntologyMetrics(@ontology.id)
+    @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, false, true)
+    @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
+    
+    LOG.add :info, 'show_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
+    
+    # Check to see if the metrics are from the most recent ontology version
+    if !@metrics.nil? && !@metrics.id.eql?(@ontology.id)
+      @old_metrics = @metrics
+      @old_ontology = DataAccess.getOntology(@old_metrics.id)
+    end
+    
+    @diffs = DataAccess.getDiffs(@ontology.ontologyId)
+
+    @notes_cloud = calculate_note_counts(@notes)
+
+    mappings = DataAccess.getMappingCountOntologyConcepts(@ontology.ontologyId)
+    @mappings = []
+    if !mappings.nil? || !mappings.empty?
+      mappings.each do |mapping|
+        begin
+          @mappings << [ mapping['fullId'], mapping['count'], DataAccess.getNode(@ontology.id, mapping['fullId']).label ]
+        rescue Exception => e
+          @mappings << [ mapping['fullId'], mapping['count'], mapping['fullId'] ]
+        end
+      end
+      @mappings.sort! { |a,b| a[2] <=> b[2] }
+    end
+
+    #Grab Reviews Tab
+    @reviews = Review.find(:all,:conditions=>{:ontology_id=>@ontology.ontologyId},:include=>:ratings)
+    
+    #Grab projects tab
+    @projects = Project.find(:all,:conditions=>"uses.ontology_id = '#{@ontology.ontologyId}'",:include=>:uses)
+
+    render :action=>'ontology_new'
     
   end
   
@@ -200,7 +246,7 @@ class OntologiesController < ApplicationController
         end
       end
       
-      @root.set_children(nodes)
+      @root.set_children(nodes, @root)
       
       # get the initial concept to display
       @concept = DataAccess.getNode(@ontology.id,@root.children.first.id,view)
@@ -240,7 +286,7 @@ class OntologiesController < ApplicationController
       # Create the tree
       rootNode = @concept.path_to_root
       @root = TreeNode.new()
-      @root.set_children(rootNode.children)
+      @root.set_children(rootNode.children, rootNode)
     end
     
     # gets the initial mappings
@@ -367,12 +413,10 @@ class OntologiesController < ApplicationController
         @ontology = OntologyWrapper.new
         @ontology.from_params(params[:ontology])
         @categories = DataAccess.getCategories()
-        
       else
         @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
         @ontology.from_params(params[:ontology])
         @categories = DataAccess.getCategories()
-        
       end
       
       if(params[:ontology][:isView].to_i==1)
@@ -462,8 +506,15 @@ class OntologiesController < ApplicationController
       errors << "Please Enter an Ontology Name"
     end
     
-    if params[:versionNumber].nil? || params[:versionNumber].length <1
-      errors << "Please Enter an Ontology Version"
+    if params[:abbreviation].nil? || params[:abbreviation].empty?
+      errors << "Please Enter an Ontology Abbrevation"
+    elsif params[:abbreviation].include?(" ") || /[\^{}\[\]:;\$=\*`#\|@'\<>\(\)\+,\\\/]/.match(params[:abbreviation])
+      errors << "Abbreviations cannot contain spaces or the following characters: <span style='font-family: monospace;'>^{}[]:;$=*`#|@'<>()\+,\\/</span>"
+    elsif CACHE.get("ontology_acronyms").include?(params[:abbreviation].downcase)
+      # We matched an existing acronym, butd is it already ours from a previous version?
+      unless DataAccess.getLatestOntology(params[:ontologyId]).abbreviation.downcase.eql?(params[:abbreviation].downcase)
+        errors << "That Abbreviation is already in use. Please choose another."
+      end
     end
     
     if params[:dateReleased].nil? || params[:dateReleased].length <1

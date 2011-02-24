@@ -112,8 +112,8 @@
     <%form_tag("/ontologies", {:multipart => true, :id => 'new_ontology'}) do %>
     
     <%unless @errors.nil? %>
-      <div style="color:red;">
-          Errors On Form
+      <div style="color:red;" class="enable-lists">
+          <strong>Errors On Form</strong>
           <ul>
               <%for error in @errors %>
               <li>
@@ -222,7 +222,7 @@
 
         <tr>
             <th>
-                Ontology Version: <span class="asterik">*</span>
+                Ontology Version:
             </th>
             <td>
                 <%=text_field :ontology, :versionNumber %>

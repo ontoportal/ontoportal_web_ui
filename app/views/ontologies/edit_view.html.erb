@@ -202,10 +202,19 @@
 
         <tr>
             <th>
-                View Version: <span class="asterik">*</span>
+                View Version:
             </th>
             <td>
                 <%=text_field :ontology, :versionNumber %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Ontology Base Version: <span class="asterik">*</span>
+            </th>
+            <td>
+                <% ont_id = (@new == true) ? @ontology_version_id : @ontology.viewOnOntologyVersionId %>
+                <%= select :ontology, :viewOnOntologyVersionId, get_versions_array_for_select(ont_id), { :selected => get_versions_array_for_select(ont_id) } %>
             </td>
         </tr>
         <tr>

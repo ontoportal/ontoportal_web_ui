@@ -116,12 +116,11 @@
         <%end %>
     </div>
     <%if @new %>
-    <%=hidden_field :ontology, :ontologyId, :value=>"" %>
-    <%=hidden_field :ontology, :viewOnOntologyVersionId, :value=>@ontology_version_id %>
+      <%=hidden_field :ontology, :ontologyId, :value=>"" %>
     <% else %>
-    <%=hidden_field :ontology, :ontologyId %>
-    <%=hidden_field :ontology, :viewOnOntologyVersionId %>
+      <%=hidden_field :ontology, :ontologyId %>
     <%end %>
+    
     <%=hidden_field :ontology, :userId %>
     <%=hidden_field :ontology, :isView, :value => 1 %>
     <%=hidden_field :ontology, :isRemote, :value => 0 %>
@@ -231,10 +230,19 @@
         </tr>
         <tr>
             <th>
-                View Version: <span class="asterik">*</span>
+                View Version:
             </th>
             <td>
                 <%=text_field :ontology, :versionNumber,:value=>'' %>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Ontology Base Version: <span class="asterik">*</span>
+            </th>
+            <td>
+                <% ont_id = (@new == true) ? @ontology_version_id : @ontology.viewOnOntologyVersionId %>
+                <%= select :ontology, :viewOnOntologyVersionId, get_versions_array_for_select(ont_id), { :selected => get_versions_array_for_select(ont_id)[0][0] } %>
             </td>
         </tr>
         <tr>

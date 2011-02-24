@@ -1,14 +1,16 @@
 <link rel="stylesheet" href="/stylesheets/layout/jquery.rating.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <script src="/javascripts/jquery.rating.pack.js" type="text/javascript" charset="utf-8"></script>
 
-<div id="reviews_content" style="display:none;" class="tab_content">
-  <%if session[:user].nil? %>
-    <br>
-    <h2><a href="/login?redirect=/ontologies/<%=@ontology.id%>">Review This Ontology</a></h2>
-  <%else %>
-    <h2><a href="/reviews/new?ontology=<%=@ontology.ontologyId%>&height=500&width=600" title="Review For <%=@ontology.displayLabel%>" class="thickbox">Review This Ontology</a></h2>
-  <%end %>
-  <br>
+<div id="reviews_content" style="padding-top: 2em;">
+  <h2 style="margin-botton: .5em;">
+    <span style="font-size: x-large; margin-right: 1.5em;">Reviews</span>
+    <%if session[:user].nil? %>
+      <a href="/login?redirect=/ontologies/<%=@ontology.id%>">Add your review</a>
+    <%else %>
+      <a href="/reviews/new?ontology=<%=@ontology.ontologyId%>&height=500&width=600" title="Review For <%=@ontology.displayLabel%>" class="thickbox">Add your review</a>
+    <%end %>
+  </h2>
+  
   <div id="reviews_container">
    <% for review in @reviews %>
       <div id="review_table_container_<%=review.id%>">

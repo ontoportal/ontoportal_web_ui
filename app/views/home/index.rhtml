@@ -9,21 +9,21 @@
 <script src="/javascripts/JqueryPlugins/superfish/superfish.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-var searchbox;
-var resourcebox;
-
-function jumpToValue(li){
-	if( li == null ){
-		//didnt pick an ont
+function jumpToValueOntology() {
+  var ontology = jQuery("#find_ontology")[0].value;
+  var ontology_id = jQuery("#find_ontology_id").val();
+  
+	if (ontology_id == null || ontology_id == "") {
+		// didnt pick an ont
 		alert("The ontology does not exist. You must pick an ontology from the list.")
 	
 		return false;
 	}
 
-	if( !!li.extra ){
+	if (!!ontology_id) {
 		var sValue = jQuery("#find_ontology_id").val();
 		if (sValue == null || sValue == "") {
-			sValue = li.extra;
+			sValue = data;
 		}
 		document.location="/virtual/"+sValue;
 		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Ontology...</h1>' }); 
@@ -31,41 +31,49 @@ function jumpToValue(li){
 	}
 }
 
-function formatItem(row) {
- 	return row[0];
+function formatResultOntologySearch(value, data) {
+  jQuery("#find_ontology_id").val("");
+  var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
+  var keywords = jQuery("#find_ontology").val().replace(specials, "\\$&").split(' ').join('|');
+  var regex = new RegExp( '(' + keywords + ')', 'gi' );
+  return value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>");
 }
 
-function jumpToValueResource(li){
-	if( li == null ){
+function jumpToValueResource(){
+  var term = jQuery("#find_resource")[0].value;
+  var data = jQuery('body').data("resource_results");
+  
+	if (data == null) {
 		// Im doing a search	
 		
 		var search = confirm("Press OK to Search for resources using the term, or Cancel to select a term")
-		if(search){
+		if (search) {
 			query = jQuery("#find_resource").val();
 			document.location="/resources?search="+query;
 			return;
 		}
 	}
 
-	if( !!li.extra ){
-		var concept_id = jQuery('body').data("resource_results").extra[0];
-		var ontology_version_id = jQuery('body').data("resource_results").extra[2];
-		var ontology_id = jQuery('body').data("resource_results").extra[7];
+	if (!!data) {
+		var concept_id = data[0];
+		var ontology_version_id = data[2];
+		var ontology_id = data[7];
 		document.location="/resources?conceptid="+encodeURIComponent(concept_id)+"&ontologyid="+ontology_id+"&ontologyversionid="+ontology_version_id;
 		return;
 	}
 }
 
-function formatItemResource(row) {
+function formatItemResource(value, data) {
+  jQuery('body').data("resource_results", null);
   var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
   var keywords = jQuery("#find_resource").val().replace(specials, "\\$&").split(' ').join('|');
   var regex = new RegExp( '(' + keywords + ')', 'gi' );
 
-  // row[7] is the ontology_id, only included when searching multiple ontologies
-  if (row[7] == undefined) {
-    var result = row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
+  // data[7] is the ontology_id, only included when searching multiple ontologies
+  if (data[6] == undefined) {
+    var result = value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + data[1] + ")</span>";
   } else {
-    var result = row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + row[7] + "</span>";
+    var result = value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + data[1] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + data[6] + "</span>";
   }
   
   return result;
@@ -73,56 +81,51 @@ function formatItemResource(row) {
 
 // We use this in conjunction with autocomplete because autocomplete
 // fails when there are multiple results with the same term name
-function jumpToSelectResource(li) {
-  jQuery('body').data("resource_results", li);
+function selectResource(value, data) {
+  jQuery('body').data("resource_results", value.data);
 }
 
 <%
-  names = @ontologies.map{|ont| "[\"#{ont.displayLabel}\",\"#{ont.ontologyId}\"]"}
-  abrv = @ontologies.map{|ont|
-    "[\"#{ont.abbreviation} - #{ont.displayLabel}\",\"#{ont.ontologyId}\"]"
-  }
-  names = names | abrv
+  names = @ontologies.map{|ont| (ont.abbreviation.nil? || ont.abbreviation.empty?) ? "[\"#{ont.displayLabel}\",\"#{ont.ontologyId}\"]" : "[\"#{ont.displayLabel} (#{ont.abbreviation})\",\"#{ont.ontologyId}\"]"}
 %>
 
 // Sets a hidden form value that records the virtual id when a concept is chosen in the jump to
 // This is a workaround because the default autocomplete search method cannot distinguish between two
 // ontologies that have the same preferred name but different ids.
-function selectFindOntology(li){
-	jQuery("#find_ontology_id").val(li.extra[0]);
+function selectFindOntology(value, data){
+	jQuery("#find_ontology_id").val(value.data[0]);
 	jQuery("#find_ontology").focus();
 }
 
 var ontologies_array=[<%=names.join(",")%>]
-jQuery(document).ready(function(){
-	jQuery("#find_ontology").autocompleteArray(ontologies_array, {
+
+jQuery(document).ready(function() {
+	jQuery("#find_ontology").autocomplete({
+		data: ontologies_array,
 		minChars: 1,
 		matchSubset: 1,
 		maxItemsToShow: 20,
-		onFindValue: jumpToValue,
-		formatItem: formatItem,
 		delay: 1,
+		showResult: formatResultOntologySearch,
 		onItemSelect: selectFindOntology
 	});
-	searchbox =  jQuery("#find_ontology")[0].autocompleter;
 	
-	jQuery("#find_resource").autocomplete("/search/json_search/", {
-		lineSeparator:"~!~",
-		cacheLength: 1,
+	jQuery("#find_resource").autocomplete({
+    url: "/search/json_search/",
+    extraParams: { separator: "\n" },
+    cacheLength: 1,
+		maxCacheLength: 1,
 		matchSubset: 0,
 		minChars: 3,
-		maxItemsToShow: 10,
-    onItemSelect: jumpToSelectResource,
-		onFindValue: jumpToValueResource,
-		formatItem: formatItemResource
+		maxItemsToShow: 20,
+		showResult: formatItemResource,
+    onItemSelect: selectResource
 	});
-	resourcebox =  jQuery("#find_resource")[0].autocompleter;
-	
-	
+
 	jQuery('ul.sf-menu').superfish({
-			animation: {height:'show'},   // slide-down effect without fade-in 
-            delay:     1200               // 1.2 second delay on mouseout);
-		});
+  	animation: {height:'show'},   // slide-down effect without fade-in 
+    delay:     1200               // 1.2 second delay on mouseout);
+	});
 	
 });
 
@@ -189,7 +192,7 @@ function greybox(box){
 				<table>
 					<tr>				
 						<td nowrap>
-							<input class="home_input greyed" type="text" name="ontology" style="width:240px;" size="30" id="find_ontology"  onclick="greybox(this)" value="Enter ontology name, e.g. NCI Thesaurus"> <input type="button" value="Explore" class="home_button" onclick="searchbox.findValue()">
+							<input class="home_input greyed" type="text" name="ontology" style="width:240px;" size="30" id="find_ontology"  onclick="greybox(this)" value="Enter ontology name, e.g. NCI Thesaurus"> <input type="button" value="Explore" class="home_button" onclick="jumpToValueOntology()">
 							<input type="hidden" id="find_ontology_id">
 						</td>
 					</tr>
@@ -220,7 +223,7 @@ function greybox(box){
   			<legend>Search resources</legend>
   			<table>
   				<tr>				
-  					<td nowrap><input type="text" id="find_resource" size="30" class="greyed" style="width:240px;" size="30" id="find_ontology"  onclick="greybox(this)" value="Enter a term, e.g. Melanoma" > <input class="home_button" type="button" value="Search" onclick="resourcebox.findValue()"></td>
+  					<td nowrap><input type="text" id="find_resource" size="30" class="greyed" style="width:240px;" size="30" onclick="greybox(this)" value="Enter a term, e.g. Melanoma" > <input class="home_button" type="button" value="Search" onclick="jumpToValueResource()"></td>
   				</tr>
   				<tr>
   					<td style="padding-left:15px"><a href="/resources">Advanced Resource Search</a></td>
@@ -233,7 +236,30 @@ function greybox(box){
 <tr>
 	<td valign='top'>
 	  <%=t('most_viewed')%>
-    <%=t('stats')%>
+	  
+    <% if t('stats').nil? || t('stats').empty? %>
+      <fieldset>
+        <legend>Statistics</legend>
+        <table class="minimal" width="100%">
+          <tbody>
+            <tr>
+              <td>Ontologies</td>
+              <td><%=DataAccess.getOntologyList.size%></td>
+            </tr>
+            <tr>
+              <td>Terms</td>
+              <td><%=number_with_delimiter(DataAccess.getTotalTermCount.to_i, :delimiter => ",") %></td>
+            </tr>
+            <tr>
+              <td>Resources Indexed</td>
+              <td><%=number_with_delimiter(CACHE.get("ri::resources").size, :delimiter => ",") rescue 24%></td>
+            </tr>
+          </tbody>
+        </table>
+      </fieldset>
+    <% else %>
+      <%=t('stats')%>
+    <% end %> 
 	</td>
 	
 	<td valign="top">

@@ -35,6 +35,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/ontologies/view/edit/:id', :controller => 'ontologies', :action => 'edit_view', :requirements => { :id => %r([^/?]+) }
   map.connect '/ontologies/view/new/:id', :controller => 'ontologies', :action => 'new_view'
   map.ontology_virtual '/ontologies/virtual/:ontology', :controller => 'ontologies', :action => 'virtual'
+  map.ontologies_new '/ontologies_new/:id', :controller => 'ontologies', :action => 'ontologies_new'
   
   # Mappings
   map.upload_mappings '/upload/mapping', :controller => 'mappings', :action=>'upload'

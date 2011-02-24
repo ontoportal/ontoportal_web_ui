@@ -1,6 +1,5 @@
 <div id="hd">
 	<ul>	
-
 		<li><a href="/" title="Home"><img src="/images/layout/nav_logo.png" /></a></li>
 		<%if controller.controller_name.eql?('ontologies') || controller.controller_name.eql?('concepts')%>
 	   	<li><a href="/ontologies" title="Browse" ><img name="img10" src="/images/layout/nav_browse_active.png" /></a></li>		
@@ -31,12 +30,13 @@
 		<%end%>
     <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
   		<%if controller.action_name.eql?('all_resources')%>		
-  		  <li><a href="/resources" title="Resource Index" ><img name="img13" src="/images/layout/nav_resources_active.png" /></a></li>
+  		  <li><a href="/resources" title="Resource Index" ><img name="img14" src="/images/layout/nav_resources_active.png" /></a></li>
   		<%else%>
-  		  <li><a href="/resources" title="Resource Index" ><img name="img13" src="/images/layout/nav_resources.png" /></a></li>
+  		  <li><a href="/resources" title="Resource Index" ><img name="img14" src="/images/layout/nav_resources.png" /></a></li>
   		<%end%>
     <%end%>
 	</ul>
+	
 	<ul class="alignright">
 		<%if session[:user].nil?%>
 			<li><%=link_to "Sign In" ,:controller =>'login',:redirect=>request.request_uri%></li>
@@ -55,10 +55,9 @@
 		 	  }
 		 	</script>
 			<li><a onclick="popup('/feedback?pop=true'); return false;" href="/feedback" style="font-weight:bold;font-size:14px;">Send Feedback</a> </li>
-			
 	</ul>
 </div>
-<div class="tabs">
+<!--<div class="tabs">
 	<ul>
 		<%unless session[:ontologies].nil?%>
 			<%for tab in session[:ontologies]%>
@@ -70,4 +69,4 @@
 			<%end%>
 		<%end%>
 	</ul>
-</div>
+</div>-->

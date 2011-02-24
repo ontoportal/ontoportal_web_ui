@@ -7,7 +7,8 @@ module OntologyMetricsHelper
     
     # Check to see if all properties are missing
     if metrics.send(:"#{metric}All") == true
-      return metrics.send(:"#{metric}_all")
+      message = metrics.send(:"#{metric}_all")
+      return "#{metrics.numberOfClasses} <span id='#{metric}_help' style='display: none;'>#{message}</span>"
     end
     
     markup = ""
@@ -16,16 +17,15 @@ module OntologyMetricsHelper
     if metrics.send(:"#{metric}LimitPassed") != false
       percentage = "%0.2f" % (metrics.send(:"percentage", metric) * 100)
       class_list_length = metrics.send(:"#{metric}LimitPassed").length rescue 0 # Count empty arrays as zero
-      markup << "#{class_list_length} / #{metrics.numberOfClasses} (#{percentage}%) of classes #{message}"
+      markup << "#{class_list_length} (#{percentage}%)"
       # Return here to avoid creating the 'details' link 
       return markup
     else
       percentage = "%0.2f" % (metrics.send(:"percentage", metric) * 100)
       class_list_length = metrics.send(:"#{metric}").length rescue 0 # Count empty arrays as zero
-      markup << "#{class_list_length} / #{metrics.numberOfClasses} (#{percentage}%) of classes #{message}"
+      markup << "<a class='thickbox' href='#TB_inline?height=600&width=800&inlineId=%metric%'>#{class_list_length}</a> (#{percentage}%)".gsub("%title%", title).gsub("%metric%", metric)
     end
     
-    markup << ' (<a class="thickbox" href="#TB_inline?height=600&width=800&inlineId=%metric%">details</a>)'.gsub("%title%", title).gsub("%metric%", metric)
     markup << '<div id="%metric%" style="display: none;"><div class="metrics">'.gsub("%metric%", metric)
     
     # Message indicating why there are no details

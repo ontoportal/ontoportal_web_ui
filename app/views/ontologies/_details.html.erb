@@ -1,207 +1,102 @@
 <% require 'cgi' %>
 
-<div id="metadata_content" class="tab_content">
-    <div style="width:100%;min-width:900px">
-        <div style="float: left; width: 60%; overflow: hidden; min-width: 550px">
-            <br/>
-            <table class="form" width="100%">
-                <tr>
-                    <th>
-                        Ontology Name:
-                    </th>
-                    <td class="top">
-                        <%=@ontology.displayLabel %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Ontology Id:
-                    </th>
-                    <td>
-                        <%=@ontology.ontologyId %>
-                    </td>
-                </tr>
-                <% if !$PURL_ENABLED.nil? && $PURL_ENABLED && !@ontology.metadata_only? %>
-                  <tr>
-                      <th>
-                          <%=$SITE%> PURL:
-                      </th>
-                      <td>
-                          <%=auto_link(@ontology.purl, :all, :target => "_blank")%>
-                      </td>
-                  </tr>
-                <% end %>
-                <tr>
-                    <th>
-                        Status:
-                    </th>
-                    <td>
-                        <%= @ontology.versionStatus.capitalize %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Format:
-                    </th>
-                    <td>
-                        <%if @ontology.format.eql?("OBO") %><%=@ontology.format+"F" %><%else %><%=@ontology.format.split("-")[0] %><%end %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Categories:
-                    </th>
-                    <td>
-                        <%for cat in @ontology.categories %><%=@categories[cat.to_s][:name] %>
-                        <br/>
-                        <%end %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Groups:
-                    </th>
-                    <td>
-                        <%for group_id in @ontology.groups %><%=@groups.group_list[group_id][:name] %>
-                        <br/>
-                        <%end %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Contact:
-                    </th>
-                    <td>
-                        <%=@ontology.contactName %>, <%=@ontology.contactEmail %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Home Page:
-                    </th>
-                    <td>
-                        <a href="<%=@ontology.homepage%>" target="_blank"><%=@ontology.homepage %></a>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Publications Page:
-                    </th>
-                    <td>
-                        <a href="<%=@ontology.publication%>" target="_blank"><%=@ontology.publication %></a>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Documentation Page:
-                    </th>
-                    <td>
-                        <a href="<%=@ontology.documentation%>" target="_blank"><%=@ontology.documentation %></a>
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Description:
-                    </th>
-                    <td>
-                        <%=@ontology.description %>
-                    </td>
-                </tr>
-            </table>
-            <br/>
-            <br/>
-            <table class="zebra" cellpadding="0" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th>
-                            Version
-                        </th>
-                        <th>
-                            Release Date
-                        </th>
-                        <th>
-                            Ontology File 
-                        </th>
-                        <% if !@ontology.metadata_only? %>
-                          <th>
-                              Visualize
-                          </th>
-                          <th>
-                              Download Diff File
-                          </th>
-                        <% end %>
-                    </tr>
-                </thead>
-                <%
-                @versions.each_with_index do |version, index| %>
-	                <tr <%=cycle("", "class='alt'") %>>
-	                    <td>
-	                        <%=version.versionNumber %>
-	                    </td>
-	                    <td>
-	                        <%=version.dateReleased %>
-	                    </td>
-	                    <td>
-	                        <%= get_download_link(version) %>
-	                    </td>
-                      <% if !@ontology.metadata_only? %>
-  	                    <td>
-  	                        <%= get_visualize_link(version) %>
-  	                    </td>
-  	                    <td>
-  	                        <%= get_diffs_link(@diffs, @versions, version, index) %>
-  	                    </td>
-                      <% end %>
-	                </tr>
-                <%end%>
-            </table>
-        </div>
-		
-		<style type="text/css">
-			.bp_tagCloud { text-align: center; padding: 5px; font-size: 70%; }
-			.bp_tagList { margin: 0; padding: 0; }
-			.bp_tagList li { list-style-type: none; float: left; margin: 0 10px;  }
-			.bp_tagList li a { text-decoration: none; }
-			.bp_tagList li a:hover { text-decoration: underline; }
-		</style>
-		<script type="text/javascript">
-			jQuery(document).ready(function(){
-        		<%if @notes_cloud.size > 0%>
-					createTagCloud(jQuery("#notes"));
-        		<%end%>
-        		<%if @mappings.size > 0%>
-					createTagCloud(jQuery("#mappings"));
-        		<%end%>
-			});
-		</script>
-        <div style="float: left; width: 300px; padding-left: 10px;" id="tag_clouds">
-            <h2 style="margin: 1em 0 0;">Notes</h2>
-            <%if @notes_cloud.size < 1 %>
-            No Notes Created yet<%end %>
-			<div class="bp_tagCloud">
-	            <ul class="bp_tagList" id="notes" style="width: 350px; padding: 10px">
-	                <%for note in @notes_cloud %>
-  	                <li value="<%=note[1]%>">
-  	                    <a href="/visualize/virtual/<%=@ontology.ontologyId%>?conceptid=<%= CGI.escape(note[2]) %>#notes"><%=note[0]%></a>
-  	                </li>
-	                <%end %>
-	            </ul>
-			</div>
-            <br style="clear: both;"/>
-            <h2 style="margin: 1em 0 0;">Mappings</h2>
-            <%if @mappings.size < 1 %>
-            No Mappings Created yet<%end %>
-			<div class="bp_tagCloud">
-	            <ul class="bp_tagList" id="mappings" style="width: 350px; padding: 10px">
-	                <%for mapping in @mappings %>
-  	                <li value="<%=mapping[1]%>">
-  	                    <a href="/visualize/virtual/<%=@ontology.ontologyId%>?conceptid=<%= CGI.escape(mapping[0]) %>#mappings"><%=mapping[2] %></a>
-  	                </li>
-	                <%end %>
-	            </ul>
- 			</div>
-       </div>
-        <div style="clear:both;">
-        </div>
-    </div>
+<div id="metadata_content">
+  <div style="float: left; width: 60%; overflow: hidden; min-width: 550px">
+      <table class="form" width="100%">
+          <tr>
+              <th>
+                  Ontology Id:
+              </th>
+              <td class="top">
+                  <%= @ontology.ontologyId %>
+              </td>
+          </tr>
+          <% if !$PURL_ENABLED.nil? && $PURL_ENABLED && !@ontology.metadata_only? %>
+            <tr>
+                <th>
+                    <%= $SITE%> PURL:
+                </th>
+                <td>
+                    <%= auto_link(@ontology.purl, :all, :target => "_blank")%>
+                </td>
+            </tr>
+          <% end %>
+          <tr>
+              <th>
+                  Status:
+              </th>
+              <td>
+                  <%= @ontology.versionStatus.capitalize %>
+              </td>
+          </tr>
+          <tr>
+              <th>
+                  Format:
+              </th>
+              <td>
+                  <%if @ontology.format.eql?("OBO") %><%= @ontology.format+"F" %><%else %><%= @ontology.format.split("-")[0] %><%end %>
+              </td>
+          </tr>
+          <tr>
+              <th>
+                  Categories:
+              </th>
+              <td>
+                  <%for cat in @ontology.categories %><%= @categories[cat.to_s][:name] %>
+                  <br/>
+                  <%end %>
+              </td>
+          </tr>
+          <tr>
+              <th>
+                  Groups:
+              </th>
+              <td>
+                  <%for group_id in @ontology.groups %><%= @groups.group_list[group_id][:name] %>
+                  <br/>
+                  <%end %>
+              </td>
+          </tr>
+          <tr>
+              <th>
+                  Contact:
+              </th>
+              <td>
+                  <%= @ontology.contactName %>, <%= @ontology.contactEmail %>
+              </td>
+          </tr>
+          <tr>
+              <th>
+                  Home Page:
+              </th>
+              <td>
+                  <a href="<%= @ontology.homepage%>" target="_blank"><%= @ontology.homepage %></a>
+              </td>
+          </tr>
+          <tr>
+              <th>
+                  Publications Page:
+              </th>
+              <td>
+                  <a href="<%= @ontology.publication%>" target="_blank"><%= @ontology.publication %></a>
+              </td>
+          </tr>
+          <tr>
+              <th>
+                  Documentation Page:
+              </th>
+              <td>
+                  <a href="<%= @ontology.documentation%>" target="_blank"><%= @ontology.documentation %></a>
+              </td>
+          </tr>
+          <tr>
+              <th>
+                  Description:
+              </th>
+              <td>
+                  <%= @ontology.description %>
+              </td>
+          </tr>
+      </table>
+  </div>
 </div>

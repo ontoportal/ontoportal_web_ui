@@ -24,7 +24,8 @@ memcache_options = {
   :debug => false,
   :namespace => 'BioPortal',
   :readonly => false,
-  :urlencode => true
+  :urlencode => true,
+  :check_size => false
 }
 
 require 'memcache' 

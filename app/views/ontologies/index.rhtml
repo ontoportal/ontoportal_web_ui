@@ -1,5 +1,5 @@
 <%@title = "Ontology Listing"%>
-<script type="text/javascript" src="/javascripts/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.js"></script>
 <link rel="stylesheet" href="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <script src="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.min.js" type="text/javascript" charset="utf-8"></script>
 <link rel="alternate" title="<%=@title%> RSS" href="/syndication/rss" type="application/rss+xml" />
@@ -7,45 +7,62 @@
 
 
 <script type="text/javascript">
-var dtable;
+var ontologies_table;
 function drawMessage(text){
 		jQuery.cursorMessage(text,{"hideTimeout":3000});
 }
 
 function filterBySelection(selectbox){
-//	alert(selectbox.value);
-	if(selectbox.value == 0){
-		dtable.fnFilter( "",7 );
-	}else{
-		dtable.fnFilter( selectbox.value,7 );
+  console.log(selectbox.value);
+	if (selectbox.value == 0){
+		ontologies_table.fnFilter( "",7 );
+	} else {
+		ontologies_table.fnFilter( selectbox.value,7 );
 	}
 	
 }
 
 
 function filterByGroup(selectbox){
-    //console.log(selectbox.value);
+  console.log(selectbox.value);
 	if(selectbox.value == 0){
-		dtable.fnFilter( "",8 );
-	}else{
-		dtable.fnFilter( selectbox.value,8 );
+		ontologies_table.fnFilter("", 8);
+	} else {
+		ontologies_table.fnFilter(selectbox.value, 8, true, false);
 	}
 	
 	jQuery("#filterlink").attr("href","/ontologies/?filter="+selectbox.value)
 }
-function filterByParam(param){
 
-		dtable.fnFilter(param,8 );	
+// Custom filter for group columns
+jQuery.fn.dataTableExt.afnFiltering.push(
+  function(oSettings, aData, iDataIndex) {
+    var groups = aData[8];
+    var filter = document.getElementById("select_groups").value;
+    var re = new RegExp("," + filter + ",", "gm");
+    
+    if (filter == "" || filter == 0) {
+      return true;
+    } else if (re.test(groups)) {
+      return true;
+    }
+    
+    return false;
+  }
+);
+
+function filterByParam(param){
+	ontologies_table.fnFilter(param, 8);	
 }
 
 
 function customFilterBox(value){
-	dtable.fnFilter( value);
+	ontologies_table.fnFilter(value);
 }
 
 
 jQuery(document).ready(function() {
-	dtable = jQuery('#ontologies').dataTable(
+	ontologies_table = jQuery('#ontologies').dataTable(
 		{
 		bLengthChange:false,
 		bAutoWidth:false,
@@ -60,7 +77,6 @@ jQuery(document).ready(function() {
             ],
 		iDisplayLength:800,
 		asStripClasses:["","alt"],
-		bFilter:false,
 		"oLanguage":{"sSearch":"Filter Ontologies"},
 		"aoData": [
 			{ "sType": "html" },
@@ -70,12 +86,12 @@ jQuery(document).ready(function() {
 			null,
 			null,
 			{"bSearchable":false,"bVisible":false},
-			{"bSearchable":false,"bVisible":false},
+			{"bSearchable":false,"bVisible":false,"sType":"groups"},
 			{"bSearchable":false,"bVisible":false},
 			{"bSearchable":false}],
 			"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
 						/* Append the grade to the default row class name */
-						children = jQuery(nRow).children()
+						var children = jQuery(nRow).children();
 						jQuery(children[0]).tooltip({ 
 							bodyHandler: function() {return aData[6]},
 						    track: true, 
@@ -137,7 +153,7 @@ jQuery(document).ready(function() {
 		
 	<tr>	
 	<th>Filter by Category</td><td class="top"><select onchange="filterBySelection(this)"  name="cat">
-		<option value="0" selected="selected">All Categories</option>
+		<option value="0" selectedontologies_tablell Categories</option>
 			<%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
 			<%for cat in cats%>
 			
@@ -146,9 +162,8 @@ jQuery(document).ready(function() {
 	</select></td>
 	</tr>
 	<tr>
-		<th>Filter by Group</td><td><select onchange="filterByGroup(this)"  name="cat">
+		<th>Filter by Group</td><td><select onchange="filterByGroup(this)"  name="groups" id="select_groups">
 		<option value="0" <%if params[:filter].nil?%>selected="selected"<%end%> >All Groups</option>
-			
 			<% @groups.group_list.each do |group_id, group| %>
 				<option value="<%=group[:acronym]%>" <%if !params[:filter].nil? && group[:acronym].include?(params[:filter])%>selected="selected"<%end%>><%=group[:name]%> (<%=group[:acronym]%>)</option>
 			<%end%>
@@ -213,13 +228,11 @@ jQuery(document).ready(function() {
 		<br>
 		<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>
 	<td style="display:none;"> <%=ontology.categories.join(" ")%></td>
-	<td style="display:none;"><%if !ontology_groups.empty?%><%=ontology_groups.join(" , ")%><%end%></td>
+	<td style="display:none;"><%if !ontology_groups.empty?%>,<%=ontology_groups.join(",")%>,<%end%></td>
 	<td><%=get_visualize_link(ontology)%></td>
   </tr>
 <% end %>
 </tbody>
-<tfoot>
-</tfoot>
 </table>
 </div>
 
