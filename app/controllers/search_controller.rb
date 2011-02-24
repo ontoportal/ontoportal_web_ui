@@ -105,7 +105,7 @@ class SearchController < ApplicationController
     
     separator = (params[:separator].nil?) ? "~!~" : params[:separator]
     
-    @results,@pages = DataAccess.getNodeNameContains([params[:id]],params[:q],1)
+    @results,@pages = DataAccess.getNodeNameContains([params[:id]],params[:q], 1, params)
 
     if params[:id]
       LOG.add :info, 'jump_to_search', request, :virtual_id => params[:id], :search_term => params[:q], :result_count => @results.length

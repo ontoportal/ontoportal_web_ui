@@ -309,8 +309,8 @@ class DataAccess
     self.cache_pull("recent::mappings", "getRecentMappings", nil, 60*15)
   end
 
-  def self.getNodeNameContains(ontologies,search,page) 
-    results,pages = SERVICE.getNodeNameContains(ontologies,search,page)
+  def self.getNodeNameContains(ontologies, search, page, params = {}) 
+    results,pages = SERVICE.getNodeNameContains(ontologies, search, page, params)
     return results,pages
   end
 

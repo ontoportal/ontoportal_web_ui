@@ -37,7 +37,18 @@ if (typeof BP_ORG == 'undefined') {
 }
 var BP_ORG_SITE = (BP_ORG == "") ? BP_SITE : BP_ORG + " " + BP_SITE;
 
+var jumpTo_searchbox;
 
+if (BP_ontology_id == undefined || BP_ontology_id == "all") {
+  var BP_ontology_id = ""
+}
+
+if (BP_search_branch == undefined) {
+  var BP_search_branch = ""
+}
+
+
+// Process after document is fully loaded 
 jQuery(document).ready(function(){
 	// Install any CSS we need (check to make sure it hasn't been loaded)
 	if (jQuery('link[href$="' + BP_SEARCH_SERVER + '/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"]')) {
@@ -59,12 +70,6 @@ jQuery(document).ready(function(){
 		jumpTo_setup_functions();
 	});
 });
-
-var jumpTo_searchbox;
-
-if (BP_ontology_id == undefined || BP_ontology_id == "all") {
-	var BP_ontology_id = ""
-}
 
 function jumpTo_jumpToValue(li) {
 	if (jQuery("#jump_to_concept_id") == null && jQuery("#jump_to_ontology_id") == null) {
@@ -88,30 +93,33 @@ function jumpTo_formatItem(row, position, count) {
   var keywords = jQuery("#BP_search_box").val().replace(specials, "\\$&").split(' ').join('|');
   var regex = new RegExp( '(' + keywords + ')', 'gi' );
 
-  // row[7] is the ontology_id, only included when searching multiple ontologies
+	// row[7] is the ontology_id, only included when searching multiple ontologies
 	if (row[7] == undefined) {
 		var result = row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
 	} else {
 		var result = row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + row[7] + "</span>";
 	}
 	
- 	return result;
+	return result;
 }
 
 function jumpTo_setup_functions() {
-    jQuery("#BP_search_box").autocomplete(BP_SEARCH_SERVER + "/search/json_search/"+BP_ontology_id, {
-		lineSeparator: "~!~",
-		matchSubset: 0,
-		minChars: 3,
-		maxItemsToShow: 20,
-		onFindValue: jumpTo_jumpToValue,
-		onItemSelect: jumpTo_jumpToSelect,
-		width: 450,
-		footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="' + BP_SEARCH_SERVER + '">' + BP_ORG_SITE + '</a></div>',
-		formatItem: jumpTo_formatItem
-    });
-    
-    jumpTo_searchbox = jQuery("#BP_search_box")[0].autocompleter;
+  var extra_params = { subtreerootconceptid: encodeURIComponent(BP_search_branch) };
+  
+  jQuery("#BP_search_box").autocomplete(BP_SEARCH_SERVER + "/search/json_search/" + BP_ontology_id, {
+  	extraParams: extra_params,
+  	lineSeparator: "~!~",
+  	matchSubset: 0,
+  	minChars: 3,
+  	maxItemsToShow: 20,
+  	onFindValue: jumpTo_jumpToValue,
+  	onItemSelect: jumpTo_jumpToSelect,
+  	width: 450,
+  	footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="' + BP_SEARCH_SERVER + '">' + BP_ORG_SITE + '</a></div>',
+  	formatItem: jumpTo_formatItem
+  });
+  
+  jumpTo_searchbox = jQuery("#BP_search_box")[0].autocompleter;
 }
 
 // Sets a hidden form value that records the concept id when a concept is chosen in the jump to

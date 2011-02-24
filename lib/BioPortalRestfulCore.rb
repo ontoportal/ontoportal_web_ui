@@ -762,16 +762,13 @@ class BioPortalRestfulCore
     return getNote({ :ontology_id => params[:ontology_virtual_id], :note_id => params[:noteid], :threaded => false, :virtual => true })
   end
   
-  def self.getNodeNameContains(ontologies,search,page)
-    if ontologies.to_s.eql?("0")
-      ontologies=""
-    else
-      ontologies = "&ontologyids=#{ontologies.join(",")}&"
-        end
+  def self.getNodeNameContains(ontologies, search, page, params = {})
+    ontologies = ontologies.to_s.eql?("0") ? "" : "&ontologyids=#{ontologies.join(",")}&"
+    search_branch = params[:subtreerootconceptid].nil? ? "" : "&subtreerootconceptid=#{params[:subtreerootconceptid]}"
  
-        LOG.add :debug, BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15"
+    LOG.add :debug, BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}"
     begin
-     doc = REXML::Document.new(get_xml(BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15"))
+     doc = REXML::Document.new(get_xml(BASE_URL + SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%", CGI.escape(search)) + "isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}"))
     rescue Exception=>e
       doc =  REXML::Document.new(e.io.read)
     end
