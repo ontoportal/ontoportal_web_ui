@@ -152,14 +152,16 @@ jQuery(document).ready(function() {
 		
 		
 	<tr>	
-	<th>Filter by Category</td><td class="top"><select onchange="filterBySelection(this)"  name="cat">
-		<option value="0" selectedontologies_tablell Categories</option>
-			<%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
-			<%for cat in cats%>
-			
-			<option value="<%=cat[:id]%>" ><%=cat[:name]%></option>
-			<%end%>
-	</select></td>
+	<th>Filter by Category</td>
+	  <td class="top">
+  	  <select onchange="filterBySelection(this)"  name="cat">
+        <option value="0" selected="selected">All Categories</option>
+    		<%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
+    		<%for cat in cats%>
+      		<option value="<%=cat[:id]%>" ><%=cat[:name]%></option>
+    		<%end%>
+    	</select>
+	  </td>
 	</tr>
 	<tr>
 		<th>Filter by Group</td><td><select onchange="filterByGroup(this)"  name="groups" id="select_groups">
