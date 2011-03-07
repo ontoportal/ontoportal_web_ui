@@ -177,13 +177,13 @@ module ApplicationHelper
         
         if child.child_size > 0 && !child.expanded
           string << "<ul class='ajax'><li id='#{child.id}'>{url:/ajax_concepts/#{child.ontology_id}/?conceptid=#{CGI.escape(child.id)}&callback=children}</li></ul>"
-	    elsif child.expanded
-    	  string << "<ul>"
-    	  build_tree(child,"child",string,id)
-    	  string << "</ul>"
+	      elsif child.expanded
+      	  string << "<ul>"
+      	  build_tree(child,"child",string,id)
+      	  string << "</ul>"
         end
     		    
-    	string <<"</li>"
+    	  string <<"</li>"
       end
     end
   end
