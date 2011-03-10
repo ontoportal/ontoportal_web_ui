@@ -1,10 +1,10 @@
 <% if @ontology.metadata_only? %>
-<div id="widgets_content" style="display:none;" class="tab_content">
+<div id="widgets_content" style="padding: 1em;">
   <p>Widgets are only available for ontologies stored in <%=$SITE%>.</p>
 </div>
 
 <% else %>
-<div id="widgets_content" style="display:none;" class="tab_content">
+<div id="widgets_content" style="padding: 1em;">
     <div>
         <h1>Adding <%=$ORG%> Widgets for <%=@ontology.displayLabel %> to Your Site</h1>
         <h2>Step 1: Select a widget</h2>

@@ -222,7 +222,7 @@
 };
 })(jQuery);
  
-//A 'watch' function that monitors CSS attributes for changes
+// A 'watch' function that monitors CSS attributes for changes
 (function($){
  	$.fn.watch = function(prop, func, interval, id) {
  	    /// <summary>

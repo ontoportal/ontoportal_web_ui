@@ -1,0 +1,50 @@
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+    jQuery(".click_versions_collapse").click(function(){
+      var collapse = "#" + jQuery(this).parent().attr("id") + "_collapsible";
+      var icon = "#" + jQuery(this).parent().attr("id") + "_icon";
+      jQuery(icon).toggleClass("ui-icon-triangle-1-e");
+      jQuery(icon).toggleClass("ui-icon-triangle-1-s");
+      jQuery(collapse).toggle();
+    });
+  });
+</script>
+
+<div id="versions_content" class="click_versions_collapse" style="padding-top: 1em;">
+  <h2 style="font-size: x-large;">Versions</h2>
+  <table class="zebra" cellpadding="0" cellspacing="0" width="60%">
+    <thead>
+        <tr>
+            <th>
+                Version
+            </th>
+            <th>
+                Release Date
+            </th>
+            <th>
+                Downloads
+            </th>
+        </tr>
+    </thead>
+    <% @versions.each_with_index do |version, index| %>
+      <tr <%= cycle("", "class='alt'") %>>
+        <td>
+            <% if @ontology.metadata_only? %>
+              <%= version.versionNumber %>
+            <%else%>
+              <a href="<%= get_visualize_link(version, { :path_only => true }) %>"><%= version.versionNumber %></a>
+            <%end%>
+        </td>
+        <td>
+            <%= version.dateReleased %>
+        </td>
+        <td>
+            <% download_link = get_download_link(version) %>
+            <% diff_link = get_diffs_link(@diffs, @versions, version, index) %>
+            <% separator = (download_link.nil? || download_link.empty?) ? "" : " / "%>
+            <%= download_link %> <%= separator + diff_link unless diff_link.nil? || diff_link.empty? %>
+        </td>
+      </tr>
+    <%end%>
+  </table>
+</div>

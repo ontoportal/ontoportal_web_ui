@@ -1,0 +1,117 @@
+<%=render :partial =>'layouts/header'%>          
+<%@title = "#{@ontology.displayLabel}" %>
+
+<% content_section = (params[:p]) ? params[:p] : "tree_view" %>
+
+<script type="text/javascript">
+  // Set the background color for this page only
+  jQuery("html").css("background", "#234979");
+  jQuery(document.body).css("background", "#234979");
+  jQuery("#bd").css("background", "#234979");
+  
+  jQuery.rloader([
+    {type:'js',src:'/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.min.js'}
+  ]);
+  
+  var ontology_id = <%=@ontology.id%>;
+  var ontology_name = "<%=@ontology.displayLabel%>";
+  var org_site = "<%=$ORG_SITE%>";
+  <%if !params[:conceptid].nil? && !params[:conceptid].empty?%>var concept_id = "<%=params[:conceptid]%>";<%end%>
+  var content_section = "<%=content_section%>";
+  var concept_param = "<%="conceptid=#{params[:conceptid]}" unless params[:conceptid].nil? || params[:conceptid].empty?%>";
+</script>
+
+<%=javascript_include_tag "bp_ontology_viewer.js"%>  
+
+<div style="padding: 1em 2em 0; background: #234979;">
+  <span style="float: right;"><a href="/syndication/rss?ontologies=<%=@ontology.ontologyId%>"><img src="/images/feed-icon.png" height=14 width=14 border=0 style="vertical-align: text-bottom;"></a></span>
+  <span>
+    <span style="color: white; font-size: xx-large;"><%=@ontology.displayLabel %></span>
+    <span id="nav_ontology" style="vertical-align: super; padding-left: 4em;">
+      <a tabindex="0" href="#navigate" class="fg-button fg-button-icon-right ui-widget ui-state-default" id="ont_nav"><span class="ui-icon ui-icon-triangle-1-s"></span><span id="nav_text">Tree View</span></a>
+      <div id="navigate_options" class="hidden">
+        <ul>
+          <li class="nav_links tree_view_link" id="tree_view_link"><a href="/ontologies/<%=@ontology.id%>?p=tree_view" data-bp_ont_page="tree_view">Tree View</a></li>
+          <li class="nav_links metadata_link" id="metadata_link"><a href="/ontologies/<%=@ontology.id%>?p=metadata" data-bp_ont_page="metadata">Metadata</a></li>
+          <li class="nav_links notes_link" id="notes_link"><a href="/ontologies/<%=@ontology.id%>?p=notes" data-bp_ont_page="notes">Notes</a></li>
+          <li class="nav_links mappings_link" id="mappings_link"><a href="/ontologies/<%=@ontology.id%>?p=mappings" data-bp_ont_page="mappings">Mappings</a></li>
+          <li class="nav_links widgets_link" id="widgets_link"><a href="/ontologies/<%=@ontology.id%>?p=widgets" data-bp_ont_page="widgets">Widgets</a></li>
+        </ul>
+      </div>
+    </span>
+    
+    <%if !session[:user].nil? && (session[:user].id.to_i.eql?(@ontology.userId.to_i) || session[:user].admin?) %>
+      <span id="admin_ontology" style="vertical-align: super; padding-left: 1em;">
+        <a tabindex="0" href="#administer" class="fg-button fg-button-icon-right ui-widget ui-state-default" id="ont_admin"><span class="ui-icon ui-icon-triangle-1-s"></span>Administer</a>
+        <div id="adminster_options" class="hidden" style="text-align: left;">
+          <ul>
+            <li><%=link_to "Submit New Version",new_ontology_path(:id=>@ontology.ontologyId) %></li>
+            <li><%=link_to "Edit Ontology Information",edit_ontology_path(:id=>@ontology.id) %></li>
+          </ul>
+        </div>
+      </span>
+    <%end %>
+  </span>
+
+  <div style="clear: both; margin-bottom: 1em;"></div>
+
+  <div style="background: white;" id="ontology_content">
+    <div id="ont_tree_view_content" class="ontology_viewer_content hidden">
+      <%if content_section.eql?("tree_view")%>
+        <script type="text/javascript">
+          jQuery("#ont_tree_view_content").removeClass("hidden");
+        </script>
+        <%=yield%>
+      <%else%>
+        <%=loading_spinner(true)%>
+      <%end%>
+    </div>
+    
+    <div id="ont_metadata_content" class="ontology_viewer_content hidden">
+      <%if content_section.eql?("metadata")%>
+        <script type="text/javascript">
+          jQuery("#ont_metadata_content").removeClass("hidden");
+        </script>
+        <%=yield%>
+      <%else%>
+        <%=loading_spinner(true)%>
+      <%end%>
+    </div>
+
+    <div id="ont_mappings_content" class="ontology_viewer_content hidden">
+      <%if content_section.eql?("mappings")%>
+        <script type="text/javascript">
+          jQuery("#ont_mappings_content").removeClass("hidden");
+        </script>
+        <%=yield%>
+      <%else%>
+        <%=loading_spinner(true)%>
+      <%end%>
+    </div>
+
+    <div id="ont_notes_content" class="ontology_viewer_content hidden">
+      <%if content_section.eql?("notes")%>
+        <script type="text/javascript">
+          jQuery("#ont_notes_content").removeClass("hidden");
+        </script>
+        <%=yield%>
+      <%else%>
+        <%=loading_spinner(true)%>
+      <%end%>
+    </div>
+    
+    <div id="ont_widgets_content" class="ontology_viewer_content hidden">
+      <%if content_section.eql?("widgets")%>
+        <script type="text/javascript">
+          jQuery("#ont_widgets_content").removeClass("hidden");
+        </script>
+        <%=yield%>
+      <%else%>
+        <%=loading_spinner(true)%>
+      <%end%>
+    </div>
+
+  </div>
+</div>
+
+<%=render :partial =>'layouts/footer'%>          

@@ -1,5 +1,5 @@
-	// function to replace 'object_id' html with the response from the URL.  Basic Ajax concept
-	
+// BioPortal jQuery Namespace
+jQuery.bioportal = {};
 
 // Cache Implementation
 var cache = new Object();

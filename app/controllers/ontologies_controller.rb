@@ -25,95 +25,18 @@ class OntologiesController < ApplicationController
   # GET /ontologies/1
   # GET /ontologies/1.xml
   def show
-    # Grab Metadata
-    @ontology = DataAccess.getOntology(params[:id])
-    @groups = DataAccess.getGroups()
-    @categories = DataAccess.getCategories()
-    @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
-    @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
-    @metrics = DataAccess.getOntologyMetrics(@ontology.id)
-    @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, false, true)
-    @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
-    
-    LOG.add :info, 'show_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
-    
-    # Check to see if the metrics are from the most recent ontology version
-    if !@metrics.nil? && !@metrics.id.eql?(@ontology.id)
-      @old_metrics = @metrics
-      @old_ontology = DataAccess.getOntology(@old_metrics.id)
-    end
-    
-    @diffs = DataAccess.getDiffs(@ontology.ontologyId)
-
-    @notes_cloud = calculate_note_counts(@notes)
-
-    mappings = DataAccess.getMappingCountOntologyConcepts(@ontology.ontologyId)
-    @mappings = []
-    if !mappings.nil? || !mappings.empty?
-      mappings.each do |mapping|
-        begin
-          @mappings << [ mapping['fullId'], mapping['count'], DataAccess.getNode(@ontology.id, mapping['fullId']).label ]
-        rescue Exception => e
-          @mappings << [ mapping['fullId'], mapping['count'], mapping['fullId'] ]
-        end
+    # This action is now a router using the 'p' parameter as the page to show
+    begin
+      if !params[:p].nil? && !params[:p].empty?
+        self.send(:"#{params[:p]}")
+        return
+      else
+        self.send(:tree_view)
+        return
       end
-      @mappings.sort! { |a,b| a[2] <=> b[2] }
+    rescue NoMethodError => e
+      self.send(:tree_view)
     end
-
-    #Grab Reviews Tab
-    @reviews = Review.find(:all,:conditions=>{:ontology_id=>@ontology.ontologyId},:include=>:ratings)
-    
-    #Grab projects tab
-    @projects = Project.find(:all,:conditions=>"uses.ontology_id = '#{@ontology.ontologyId}'",:include=>:uses)
-
-    render :action=>'show'
-    
-  end
-  
-  def ontologies_new
-    # Grab Metadata
-    @ontology = DataAccess.getOntology(params[:id])
-    @groups = DataAccess.getGroups()
-    @categories = DataAccess.getCategories()
-    @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
-    @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
-    @metrics = DataAccess.getOntologyMetrics(@ontology.id)
-    @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, false, true)
-    @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
-    
-    LOG.add :info, 'show_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
-    
-    # Check to see if the metrics are from the most recent ontology version
-    if !@metrics.nil? && !@metrics.id.eql?(@ontology.id)
-      @old_metrics = @metrics
-      @old_ontology = DataAccess.getOntology(@old_metrics.id)
-    end
-    
-    @diffs = DataAccess.getDiffs(@ontology.ontologyId)
-
-    @notes_cloud = calculate_note_counts(@notes)
-
-    mappings = DataAccess.getMappingCountOntologyConcepts(@ontology.ontologyId)
-    @mappings = []
-    if !mappings.nil? || !mappings.empty?
-      mappings.each do |mapping|
-        begin
-          @mappings << [ mapping['fullId'], mapping['count'], DataAccess.getNode(@ontology.id, mapping['fullId']).label ]
-        rescue Exception => e
-          @mappings << [ mapping['fullId'], mapping['count'], mapping['fullId'] ]
-        end
-      end
-      @mappings.sort! { |a,b| a[2] <=> b[2] }
-    end
-
-    #Grab Reviews Tab
-    @reviews = Review.find(:all,:conditions=>{:ontology_id=>@ontology.ontologyId},:include=>:ratings)
-    
-    #Grab projects tab
-    @projects = Project.find(:all,:conditions=>"uses.ontology_id = '#{@ontology.ontologyId}'",:include=>:uses)
-
-    render :action=>'ontology_new'
-    
   end
   
   def virtual
@@ -196,11 +119,10 @@ class OntologiesController < ApplicationController
     
     @categories = DataAccess.getCategories()
   end
-  
-  # GET /visualize/:ontology
+
   def visualize
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
-    params[:id] = params[:id].nil? ? params[:conceptid] : params[:id]
+    params[:conceptid] = params[:id].nil? ? params[:conceptid] : params[:id]
     params[:ontology] = params[:ontology].nil? ? params[:ontologyid] : params[:ontology]
     
     # Error checking
@@ -209,9 +131,22 @@ class OntologiesController < ApplicationController
       return
     end
     
-    if !params[:id].nil? && params[:id].empty?
-      params[:id] = nil
+    params_array = []
+    params.each do |key,value|
+      stop_words = [ "ontology", "controller", "action" ]
+      next if stop_words.include?(key.to_s) || value.nil? || value.empty?
+      params_array << "#{key}=#{value}"
     end
+    params_string = (params_array.empty?) ? "" : "?#{params_array.join('&')}"
+    
+    redirect_to "/ontologies/#{params[:ontology]}#{params_string}", :status => :moved_permanently
+  end
+  
+  # GET /visualize/:ontology
+  def tree_view
+    # Hack to make ontologyid and conceptid work in addition to id and ontology params
+    params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]
+    params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]
     
     view = false
     if params[:view]
@@ -229,12 +164,12 @@ class OntologiesController < ApplicationController
       @latest_ontology = DataAccess.getLatestOntology(@ontology.ontologyId)
       params[:ontology] = @latest_ontology.id
       flash[:notice] = "The version of <b>#{@ontology.displayLabel}</b> you were attempting to view (#{@ontology.versionNumber}) has been archived and is no longer available for exploring. You have been redirected to the most recent version (#{@latest_ontology.versionNumber})."
-      concept_id = params[:id] ? "?conceptid=#{params[:id]}" : ""
+      concept_id = params[:conceptid] ? "?conceptid=#{params[:conceptid]}" : ""
       redirect_to "/visualize/#{@latest_ontology.id}#{concept_id}", :status => :moved_permanently
       return
     end
     
-    unless params[:id]
+    unless params[:conceptid]
       # get the top level nodes for the root
       @root = TreeNode.new()
       nodes = @ontology.topLevelNodes(view)
@@ -261,7 +196,7 @@ class OntologiesController < ApplicationController
       LOG.add :info, 'visualize_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
     else
       # if the id is coming from a param, use that to get concept
-      @concept = DataAccess.getNode(@ontology.id,params[:id],view)
+      @concept = DataAccess.getNode(@ontology.id,params[:conceptid],view)
 
       # TODO: This should use a proper error-handling technique with custom exceptions
       if @concept.nil?
@@ -291,6 +226,7 @@ class OntologiesController < ApplicationController
     
     # gets the initial mappings
     @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.fullId)
+    
     # builds the margin note tab
     @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_id, :concept_id => @concept.id,:parent_id =>nil})
     # needed to prepopulate the margin note
@@ -304,9 +240,10 @@ class OntologiesController < ApplicationController
       update_tab(@ontology,@concept.id)
     end
     
-    respond_to do |format|
-      format.html # show.rhtml
-      format.xml  { render :xml => @ontology.to_xml }
+    if request.xhr?
+      return render 'visualize', :layout => false
+    else
+      return render 'visualize', :layout => "ontology_viewer"
     end
   end
   
@@ -455,10 +392,101 @@ class OntologiesController < ApplicationController
     response.headers['Content-Type'] = "text/html" 
     
     string<< "]}"
-    render :text=> string
+    render :text => string
     
   end
   
+  
+  
+  
+  ###############################################
+  ## These are stub methods that let us invoke partials directly
+  ###############################################
+  def metadata
+    # Grab Metadata
+    @ontology = DataAccess.getOntology(params[:id])
+    @groups = DataAccess.getGroups()
+    @categories = DataAccess.getCategories()
+    @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
+    @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
+    @metrics = DataAccess.getOntologyMetrics(@ontology.id)
+    @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, false, true)
+    @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
+    
+    LOG.add :info, 'show_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
+    
+    # Check to see if the metrics are from the most recent ontology version
+    if !@metrics.nil? && !@metrics.id.eql?(@ontology.id)
+      @old_metrics = @metrics
+      @old_ontology = DataAccess.getOntology(@old_metrics.id)
+    end
+    
+    @diffs = DataAccess.getDiffs(@ontology.ontologyId)
+
+    #Grab Reviews Tab
+    @reviews = Review.find(:all,:conditions=>{:ontology_id=>@ontology.ontologyId},:include=>:ratings)
+    
+    #Grab projects tab
+    @projects = Project.find(:all,:conditions=>"uses.ontology_id = '#{@ontology.ontologyId}'",:include=>:uses)
+
+    if request.xhr?
+      render :partial => 'metadata', :layout => false
+    else
+      render :partial => 'metadata', :layout => "ontology_viewer"
+    end
+  end
+  
+  def mappings
+    ontology_list = DataAccess.getOntologyList()
+    view_list = DataAccess.getViewList()
+    @ontology = DataAccess.getOntology(params[:id])
+    @ontologies_mapping_count = DataAccess.getMappingCountBetweenOntologies(@ontology.ontologyId)
+
+    ontologies_hash = {}
+    ontology_list.each do |ontology|
+      ontologies_hash[ontology.ontologyId] = ontology
+    end
+    
+    view_list.each do |view|
+      ontologies_hash[view.ontologyId] = view
+    end
+    
+    @ontologies_mapping_count.each do |ontology|
+      ontology['ontology'] = ontologies_hash[ontology['ontologyId']]
+    end
+
+    @ontology_id = @ontology.ontologyId
+    @ontology_label = @ontology.displayLabel
+
+    @ontologies_mapping_count.sort! {|a,b| a['ontology'].displayLabel.downcase <=> b['ontology'].displayLabel.downcase }
+
+    if request.xhr?
+      render :partial => 'mappings', :layout => false
+    else
+      render :partial => 'mappings', :layout => "ontology_viewer"
+    end
+  end
+  
+  def notes
+    @ontology = DataAccess.getOntology(params[:id])
+    @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, false, true)
+    @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
+    if request.xhr?
+      render :partial => 'notes', :layout => false
+    else
+      render :partial => 'notes', :layout => "ontology_viewer"
+    end
+  end
+  
+  def widgets
+    @ontology = DataAccess.getOntology(params[:id])
+    if request.xhr?
+      render :partial => 'widgets', :layout => false
+    else
+      render :partial => 'widgets', :layout => "ontology_viewer"
+    end
+  end
+ 
   private
   
   def calculate_note_counts(notes)

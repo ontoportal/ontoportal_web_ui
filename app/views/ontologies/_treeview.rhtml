@@ -1,213 +1,15 @@
 
-<style>
-
-#bd ul.simpleTree li{
-	margin-left:0px;
-}
-
-#bd ul.simpleTree{
-	margin-left:0px;
-	margin-bottom:0px;
-}
-
-.simpleTree
-{
-	
-	margin:0;
-	padding:0;
-	/*
-	overflow:auto;
-	width: 250px;
-	height:350px;
-	overflow:auto;
-	border: 1px solid #444444;
-	*/
-}
-.simpleTree li
-{
-	list-style: none;
-	margin:0;
-	padding:0 0 0 22px;
-	line-height: 14px;
-}
-.simpleTree li span
-{
-	display:inline;
-	clear: left;
-	white-space: nowrap;
-}
-.simpleTree ul
-{
-	margin:0; 
-
-	padding:0;
-}
-
-.simpleTree .root ul{
-		margin:0; 
-}
-
-.simpleTree .root
-{
-	margin-left:-16px;
-	/*background: url(/images/tree/root.gif) no-repeat 16px 0 #ffffff;*/
-}
-.simpleTree .line
-{
-	margin:0 0 0 -16px;
-	padding:0;
-	line-height: 3px;
-	height:3px;
-	font-size:3px;
-	background: url(/images/tree/line_bg.gif) 0 0 no-repeat transparent;
-}
-.simpleTree .line-last
-{
-	margin:0 0 0 -16px;
-	padding:0;
-	line-height: 3px;
-	height:3px;
-	font-size:3px;
-	background: url(/images/tree/spacer.gif) 0 0 no-repeat transparent;
-}
-.simpleTree .line-over
-{
-	margin:0 0 0 -16px;
-	padding:0;
-	line-height: 3px;
-	height:3px;
-	font-size:3px;
-	background: url(/images/tree/line_bg_over.gif) 0 0 no-repeat transparent;
-}
-.simpleTree .line-over-last
-{
-	margin:0 0 0 -16px;
-	padding:0;
-	line-height: 3px;
-	height:3px;
-	font-size:3px;
-	background: url(/images/tree/line_bg_over_last.gif) 0 0 no-repeat transparent;
-}
-.simpleTree .folder-open
-{
-	margin-left:-16px;
-	background: url(/images/tree/collapsable.gif) 0 -2px no-repeat #fff;
-}
-.simpleTree .folder-open-last
-{
-	margin-left:-16px;
-	background: url(/images/tree/collapsable-last.gif) 0 -2px no-repeat #fff;
-}
-.simpleTree .folder-close
-{
-	margin-left:-16px;
-	background: url(/images/tree/expandable.gif) 0 -2px no-repeat #fff;
-}
-.simpleTree .folder-close-last
-{
-	margin-left:-16px;
-	background: url(/images/tree/expandable-last.gif) 0 -2px no-repeat #fff;
-}
-.simpleTree .doc
-{
-	margin-left:-16px;
-	background: url(/images/tree/leaf.gif) 0 -1px no-repeat #fff;
-}
-.simpleTree .doc-last
-{
-	margin-left:-16px;
-	background: url(/images/tree/leaf-last.gif) 0 -1px no-repeat #fff;
-}
-.simpleTree .ajax
-{
-	background: url(/images/tree/spinner.gif) no-repeat 0 0 #ffffff;
-	height: 16px;
-	display:none;
-}
-.simpleTree .ajax li
-{
-	display:none;
-	margin:0; 
-	padding:0;
-}
-.simpleTree .trigger
-{
-	display:inline;
-	margin-left:-32px;
-	width: 28px;
-	height: 11px;
-	cursor:pointer;
-}
-.simpleTree .text
-{
-	cursor: default;
-}
-.simpleTree .active
-{
-	cursor: default;
-	background-color: #E2EBF0;
-	padding: 2px 2px 0;
-	border: 1px solid #E2EBF0;
-	font-weight: bold;
-}
-#drag_container
-{
-	background:#ffffff;
-	color:#000;
-	font: normal 11px arial, tahoma, helvetica, sans-serif;
-	border: 1px dashed #767676;
-}
-#drag_container ul
-{
-	list-style: none;
-	padding:0;
-	margin:0;
-}
-
-#drag_container li
-{
-	list-style: none;
-	background-color:#ffffff;
-	line-height:18px;
-	white-space: nowrap;
-	padding:1px 1px 0px 16px;
-	margin:0;
-}
-#drag_container li span
-{
-	padding:0;
-}
-
-#drag_container li.doc, #drag_container li.doc-last
-{
-	background: url(/images/tree/leaf.gif) no-repeat -17px 0 #ffffff;
-}
-#drag_container .folder-close, #drag_container .folder-close-last
-{
-	background: url(/images/tree/expandable.gif) no-repeat -17px 0 #ffffff;
-}
-
-#drag_container .folder-open, #drag_container .folder-open-last
-{
-	background: url(/images/tree/collapsable.gif) no-repeat -17px 0 #ffffff;
-}
-.contextMenu
-{
-	display:none;
-}
-</style>
-
-<script src="/javascripts/jquery.scrollTo-1.4.0-min.js" type="text/javascript" charset="utf-8"></script>
-
-<script type="text/javascript" src="/javascripts/jquery.simple.tree.js"></script>
+<script type="text/javascript">
+  jQuery.rloader([
+    {type:'js',src:'/javascripts/jquery.scrollTo-1.4.0-min.js'},
+    {type:'js',src:'/javascripts/jquery.simple.tree.js'}
+  ]);
+</script>
+  
 <script type="text/javascript">
 
-
-
-
-
-
 var simpleTreeCollection;
+
 jQuery(document).ready(function(){
 	simpleTreeCollection = jQuery('.simpleTree').simpleTree({
 		autoclose: false, drag:false,
@@ -250,17 +52,13 @@ function nodeClicked(node_id,node_label) {
 	// Get current html and store data in cache (to account for changes since the cache was retrieved)
 	setCacheCurrent();
 	
-	// Reset oTable for next node
-	oTable = null;
+	// Reset notesTable for next node
+	notesTable = null;
 	
 	if(node_id == 0){
 		alert("Sorry, we cannot display all the classes at this level in the hierarchy because there are too many of them. Please select another class or use the <%=$SITE%> Search to find a specific term in this ontology");
 		return;
 	}
-	// sets the label
-	document.getElementById("name_label").firstChild.nodeValue=node_label;
-	//sets the link next to the label
-	document.getElementById("link_label").firstChild.nextSibling.href="/visualize/"+currentOntology+"/?conceptid="+encodeURIComponent(node_id);
 
 	setConcept(node_id)
 
@@ -315,8 +113,8 @@ function setCacheCurrent() {
 	var currentData = [];
 
 	// Store notes table data
-	if (oTable != null) {
-		currentData["notes_table_data"] = oTable.fnGetData();
+	if (typeof notesTable !== 'undefined' && notesTable !== null) {
+		currentData["notes_table_data"] = notesTable.fnGetData();
 	}
 
 	// Reset the table
@@ -329,7 +127,6 @@ function setCacheCurrent() {
 	currentData[5] = jQuery('#note_count').html();
 	currentData[6] = jQuery('#mapping_count').html();
 	setCache(getConcept(), currentData);
-	
 }
 
 function resetNotesTable() {

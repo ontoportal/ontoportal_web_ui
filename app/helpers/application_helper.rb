@@ -187,4 +187,12 @@ module ApplicationHelper
       end
     end
   end
+  
+  def loading_spinner(padding = false)
+    if padding
+      '<div style="padding: 1em;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"> loading...</div>'
+    else
+      '<img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"> loading...'
+    end
+  end
 end
