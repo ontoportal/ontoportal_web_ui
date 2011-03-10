@@ -349,6 +349,12 @@ h1 a:hover, h2 a:hover {
 	padding:10px;
 	width:90%;
 }
+
+#footer_wrapper a {
+	color: #F5FAFA;
+}
+
+
 /* Tables */
 
 .minimal {
@@ -1291,3 +1297,4 @@ button.fg-button-menu, button.fg-button {
 
 .fg-button.ui-state-loading .ui-icon {
 }
+
