@@ -10,7 +10,6 @@
     var queryStringParams = null;
     var params = {};
     var state = History.getState();
-    History.log('statechange:', state.data, state.title, state.url);
     
     if (typeof state.data.p !== 'undefined') {
       showOntologyContent(state.data.p);
