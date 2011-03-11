@@ -13,7 +13,6 @@ function drawMessage(text){
 }
 
 function filterBySelection(selectbox){
-  console.log(selectbox.value);
 	if (selectbox.value == 0){
 		ontologies_table.fnFilter( "",7 );
 	} else {
@@ -24,7 +23,6 @@ function filterBySelection(selectbox){
 
 
 function filterByGroup(selectbox){
-  console.log(selectbox.value);
 	if(selectbox.value == 0){
 		ontologies_table.fnFilter("", 8);
 	} else {

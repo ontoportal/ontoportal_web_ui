@@ -5,7 +5,7 @@
   <!-- Google Webmaster Tools verifications -->
   <meta name="google-site-verification" content="IBxfKu6VbYH9atd5OLu2zXVD2ZRWi9SgMKTi8nvw3ks" />
   
-  <title><%if @title.nil?%><%=$ORG_SITE%><%else%><%="#{$ORG_SITE}: #{@title}"%><%end%></title>
+  <title><%if @title.nil?%><%=$ORG_SITE%><%else%><%="#{@title} | #{$ORG_SITE}"%><%end%></title>
   
   <!-- CSS --> 
   <%=stylesheet_link_tag 'layout/bioportal'%>
@@ -21,22 +21,6 @@
   <%=javascript_include_tag "JqueryPlugins/fg-menu/fg.menu.js" %>
   <%=javascript_include_tag "bioportal"%>
   
-  <!-- Javascript History HTML5 API -->
-  <script type="text/javascript">
-    if ( typeof JSON === 'undefined' ) {
-      var
-        url = '/javascripts/history/json2.js',
-        scriptEl = document.createElement('script');
-      scriptEl.type = 'text/javascript';
-      scriptEl.src = url;
-      document.body.appendChild(scriptEl);
-    }
-  </script>
-  <%= javascript_include_tag "history/history.adapter.jquery.js"%>  
-  <%= javascript_include_tag "history/history.js"%>
-  <%= javascript_include_tag "history/history.html4.js"%>
-
-
 </head>
 <body>
   <%=render :partial =>'layouts/topnav'%>                 

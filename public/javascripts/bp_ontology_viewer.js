@@ -35,13 +35,13 @@
       
       if (typeof params["p"] !== 'undefined' && content_section != params["p"]) {
         showOntologyContent(params["p"]);
-        document.title = org_site + ": " + jQuery.bioportal.ont_pages[params["p"]].page_name;
+        document.title = jQuery.bioportal.ont_pages[params["p"]].page_name + " | " + org_site;
         
         // We need to get everything using AJAX
         content_section = null;
       } else {
         showOntologyContent(content_section);
-        document.title = org_site + ": " + jQuery.bioportal.ont_pages[content_section].page_name;
+        document.title = jQuery.bioportal.ont_pages[content_section].page_name + " | " + org_site;
       }
     }
   });
@@ -57,11 +57,14 @@ function showOntologyContent(content_section) {
 // Instead, fire some history events
 var nav_ont = function(link) {
   var page = jQuery(link).attr("data-bp_ont_page");
-  History.pushState({p:page}, org_site + ": " + jQuery.bioportal.ont_pages[page].page_name, "?p=" + page);
+  History.pushState({p:page}, jQuery.bioportal.ont_pages[page].page_name + " | " + org_site, "?p=" + page);
 }
 
 
 jQuery(document).ready(function() {
+  // Set appropriate title
+  document.title = jQuery.bioportal.ont_pages[content_section].page_name + " | " + org_site;
+  
   // Wire up navigation buttons
   jQuery('#ont_nav').menu({ 
     content: jQuery('#ont_nav').next().html(),
@@ -77,8 +80,8 @@ jQuery(document).ready(function() {
     jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
   }
     
-  if (content_section !== "metadata") {
-    jQuery.bioportal.ont_pages["metadata"].retrieve_and_publish();
+  if (content_section !== "summary") {
+    jQuery.bioportal.ont_pages["summary"].retrieve_and_publish();
   }
 
   if (content_section !== "mappings") {
@@ -153,8 +156,8 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
 // Setup AJAX page objects
 jQuery.bioportal.ont_pages = [];
 
-jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view" + concept_param, "Problem retrieving tree view", ontology_name, "Tree View");
-jQuery.bioportal.ont_pages["metadata"] = new jQuery.bioportal.OntologyPage("metadata", "/ontologies/" + ontology_id + "?p=metadata", "Problem retrieving metadata", ontology_name + " - Metadata", "Metadata");
+jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view" + concept_param, "Problem retrieving tree view", ontology_name + " - Tree View", "Tree View");
+jQuery.bioportal.ont_pages["summary"] = new jQuery.bioportal.OntologyPage("summary", "/ontologies/" + ontology_id + "?p=summary", "Problem retrieving summary", ontology_name + " - Summary", "Summary");
 jQuery.bioportal.ont_pages["mappings"] = new jQuery.bioportal.OntologyPage("mappings", "/ontologies/" + ontology_id + "?p=mappings", "Problem retrieving mappings", ontology_name + " - Mappings", "Mappings");
 jQuery.bioportal.ont_pages["notes"] = new jQuery.bioportal.OntologyPage("notes", "/ontologies/" + ontology_id + "?p=notes", "Problem retrieving notes", ontology_name + " - Notes", "Notes");
 jQuery.bioportal.ont_pages["widgets"] = new jQuery.bioportal.OntologyPage("widgets", "/ontologies/" + ontology_id + "?p=widgets", "Problem retrieving widgets", ontology_name + " - Widgets", "Widgets");

@@ -31,11 +31,11 @@ class OntologiesController < ApplicationController
         self.send(:"#{params[:p]}")
         return
       else
-        self.send(:tree_view)
+        self.send(:summary)
         return
       end
     rescue NoMethodError => e
-      self.send(:tree_view)
+      self.send(:summary)
     end
   end
   
@@ -402,9 +402,10 @@ class OntologiesController < ApplicationController
   ###############################################
   ## These are stub methods that let us invoke partials directly
   ###############################################
-  def metadata
+  def summary
     # Grab Metadata
-    @ontology = DataAccess.getOntology(params[:id])
+    @ontology_version = DataAccess.getOntology(params[:id])
+    @ontology = DataAccess.getLatestOntology(@ontology_version.ontologyId)
     @groups = DataAccess.getGroups()
     @categories = DataAccess.getCategories()
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
