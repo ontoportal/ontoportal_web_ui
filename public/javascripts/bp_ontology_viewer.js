@@ -76,7 +76,7 @@ jQuery(document).ready(function() {
   });
   
   // Retrieve AJAX content if not already displayed
-  if (content_section !== "tree_view") {
+  if (content_section !== "tree_view" && tree_view_disabled != true) {
     jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
   }
     
@@ -92,7 +92,7 @@ jQuery(document).ready(function() {
     jQuery.bioportal.ont_pages["notes"].retrieve_and_publish();
   }
   
-  if (content_section !== "widgets") {
+  if (content_section !== "widgets" && tree_view_disabled != true) {
     jQuery.bioportal.ont_pages["widgets"].retrieve_and_publish();
   }
   

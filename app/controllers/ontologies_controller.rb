@@ -27,6 +27,33 @@ class OntologiesController < ApplicationController
   def show
     # This action is now a router using the 'p' parameter as the page to show
     begin
+      case params[:p]
+      when "tree_view"
+        self.tree_view
+        return
+      when "mappings"
+        self.mappings
+        return
+      when "notes"
+        self.notes
+        return
+      when "widgets"
+        self.widgets
+        return
+      when "summary"
+        self.summary
+        return
+      else
+        self.summary
+        return
+      end
+    rescue Exception => e
+      page = (params[:p].nil?) ? "page" : params[:p]
+      render :text => "Error loading #{page.gsub("_", " ")}"
+      return
+    end
+      
+    begin
       if !params[:p].nil? && !params[:p].empty?
         self.send(:"#{params[:p]}")
         return
@@ -452,10 +479,16 @@ class OntologiesController < ApplicationController
       ontologies_hash[view.ontologyId] = view
     end
     
-    @ontologies_mapping_count.each do |ontology|
+    # Add ontologies to the mapping count array, delete if no ontology exists
+    @ontologies_mapping_count.delete_if do |ontology|
       ontology['ontology'] = ontologies_hash[ontology['ontologyId']]
+      if ontology['ontology'].nil?
+        true
+      else
+        false
+      end
     end
-
+    
     @ontology_id = @ontology.ontologyId
     @ontology_label = @ontology.displayLabel
 

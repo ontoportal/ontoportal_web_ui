@@ -29,10 +29,10 @@
     <% @versions.each_with_index do |version, index| %>
       <tr <%= cycle("", "class='alt'") %>>
         <td>
-            <% if @ontology.metadata_only? %>
+            <% if @ontology.metadata_only? || @ontology.tree_view_disabled? %>
               <%= version.versionNumber %>
             <%else%>
-              <a href="<%= get_visualize_link(version, { :path_only => true }) %>"><%= version.versionNumber %></a>
+              <a href="/ontologies/<%=version.id%>?p=tree_view"><%= version.versionNumber %></a>
             <%end%>
         </td>
         <td>
