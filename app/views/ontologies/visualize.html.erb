@@ -67,18 +67,18 @@
 			  <% if request.xhr? %>
           jQuery.ajax({
             dataType: "html",
-            url: "/visualize/<%=@ontology.id%>?conceptid=" + encodeURIComponent(sValue) + "&jump_to_nav=true",
+            url: "/ontologies/<%=@ontology.id%>?p=tree_view&conceptid=" + encodeURIComponent(sValue) + "&jump_to_nav=true",
             success: function(data){
-              jQuery("#bd_content").parent().html(data);
+              jQuery("#ont_tree_view_content").html(data);
               
               jQuery.unblockUI();
               
               if (jQuery.bioportal !== undefined) {
-                jQuery.bioportal.ont_tree = data;
+                jQuery.bioportal.ont_pages["tree_view"].html = data;
               }
             },
             error: function(){
-              jQuery("#bd_content").parent().html("Problem retrieving tree view");
+              jQuery("#ont_tree_view_content").html("Problem retrieving tree view");
             }
           });
 			  <%else%>
