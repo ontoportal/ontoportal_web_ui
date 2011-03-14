@@ -30,7 +30,6 @@
   var content_section = "<%=content_section%>";
   var concept_param = "<%="conceptid=#{params[:conceptid]}" unless params[:conceptid].nil? || params[:conceptid].empty?%>";
   var tree_view_disabled = <%=@ontology.tree_view_disabled?%>;
-
 </script>
 
 <%=javascript_include_tag "history/history.adapter.jquery.js"%>  

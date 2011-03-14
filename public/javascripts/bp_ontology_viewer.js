@@ -63,7 +63,9 @@ var nav_ont = function(link) {
 
 jQuery(document).ready(function() {
   // Set appropriate title
-  document.title = jQuery.bioportal.ont_pages[content_section].page_name + " | " + org_site;
+  var title = (content_section == null) ? ontology_name + " | " + org_site
+    : jQuery.bioportal.ont_pages[content_section].page_name + " | " + org_site;
+  document.title = title;
   
   // Wire up navigation buttons
   jQuery('#ont_nav').menu({ 
