@@ -52,18 +52,6 @@ class OntologiesController < ApplicationController
       render :text => "Error loading #{page.gsub("_", " ")}"
       return
     end
-      
-    begin
-      if !params[:p].nil? && !params[:p].empty?
-        self.send(:"#{params[:p]}")
-        return
-      else
-        self.send(:summary)
-        return
-      end
-    rescue NoMethodError => e
-      self.send(:summary)
-    end
   end
   
   def virtual

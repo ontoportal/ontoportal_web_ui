@@ -195,55 +195,58 @@
 	</div>
 
 	<script type="text/javascript">
-		jQuery(document).ready(function() {
-			// Auto loads the correct tab
-			var loc = new String(document.location);
-			// if (loc.search("#") >= 0) {
-			// 	jQuery(".tab_container").hide();
-			// 	id = "#" + loc.split("#")[1].replace(":","")
-			// 	// The actual content to hide/show is in id_content
-			// 	id_content = id + "_content";
-			// 	jQuery(id_content).show();
-			// 	jQuery(".tab").removeClass("selected");
-			// 	jQuery(id+"_top").addClass("selected");
-			// 	tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0));
-			// 	tab_li.addClass("selected");
-			// 	var a = jQuery("a[href='"+id+":']");
-			// 	// Run code found in the alt attribute (this was being used to load the 
-			// 	// resource index tab, I'm not sure it needs to be left in but we can
-			// 	// address when we handle tab history down the road).
-			// 	eval(a.attr("alt"));
-			// 	// If we're on the resource index tab, load that specially
-			// 		        loc = new String(document.location);
-			// 		        if (loc.search("#resource_index") >= 0 && loc.split("#")[1] == "resource_index") {
-			// 		            callTab("resource_index", '/resources/@ontology@/?conceptid=@concept@');
-			// 		        }
-			// }
-			
-			// The tab system
-			jQuery(".tab").click(function(){
-				jQuery(".tab_container").hide();
-				// Get the target content area
-				target = jQuery(this).children("a:first").attr("href") + "_content"
-				jQuery(target).show();
-				jQuery(".tab").removeClass("selected");
-				jQuery(this).addClass("selected");
-			});
-			
-			// Override the side of the bd_content div to avoid problems with
+    tree_view_init = function(){
+      // Auto loads the correct tab
+      var loc = new String(document.location);
+      // if (loc.search("#") >= 0) {
+      //  jQuery(".tab_container").hide();
+      //  id = "#" + loc.split("#")[1].replace(":","")
+      //  // The actual content to hide/show is in id_content
+      //  id_content = id + "_content";
+      //  jQuery(id_content).show();
+      //  jQuery(".tab").removeClass("selected");
+      //  jQuery(id+"_top").addClass("selected");
+      //  tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0));
+      //  tab_li.addClass("selected");
+      //  var a = jQuery("a[href='"+id+":']");
+      //  // Run code found in the alt attribute (this was being used to load the 
+      //  // resource index tab, I'm not sure it needs to be left in but we can
+      //  // address when we handle tab history down the road).
+      //  eval(a.attr("alt"));
+      //  // If we're on the resource index tab, load that specially
+      //            loc = new String(document.location);
+      //            if (loc.search("#resource_index") >= 0 && loc.split("#")[1] == "resource_index") {
+      //                callTab("resource_index", '/resources/@ontology@/?conceptid=@concept@');
+      //            }
+      // }
+      
+      // The tab system
+      jQuery(".tab").click(function(){
+        jQuery(".tab_container").hide();
+        // Get the target content area
+        target = jQuery(this).children("a:first").attr("href") + "_content"
+        jQuery(target).show();
+        jQuery(".tab").removeClass("selected");
+        jQuery(this).addClass("selected");
+      });
+      
+      // Override the side of the bd_content div to avoid problems with
       // the window resizing, which can sometimes cause the right-hand content div to drop down
       var bd_content_width = jQuery("#ontology_content").width();
       jQuery("#bd_content").width(bd_content_width);
-			
-			// Split bar
-			jQuery(function() {
-				jQuery("#bd_content").splitter({
-					sizeLeft: 300,
-					resizeToWidth: true
-				});
-			});
-			
-		});
+      
+      // Split bar
+      jQuery(function() {
+        jQuery("#bd_content").splitter({
+          sizeLeft: 300,
+          resizeToWidth: true
+        });
+      });
+    }
+    
+    jQuery(document).ready(function() {
+      tree_view_init();
+    });
 		
 		function callTab(tab_name, url) {
 				if (getCache(getConcept() + tab_name) != null) {

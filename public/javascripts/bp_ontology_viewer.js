@@ -106,7 +106,7 @@ jQuery(document).ready(function() {
 
 // Parent class to ontology pages
 // We're using a monkeypatched function to setup prototypging, see bioportal.js
-jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_name, nav_text){
+jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_name, nav_text, init){
   this.id = id;
   this.location_path = location_path;
   this.error_string = error_string;
