@@ -17,6 +17,12 @@ class ConceptsController < ApplicationController
       return
     end
     
+    if params[:callback].eql?('children') && params[:child_size].to_i > $MAX_CHILDREN
+      retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{params[:ontology]}/?conceptid=#{CGI.escape(params[:id])}&callback=children&override=true'>Get all nodes</a>"      
+      render :text => "There are #{params[:child_size]} child nodes for this term. Retrieving all of these could take several minutes. #{retry_link}."
+      return
+    end
+    
     @ontology = DataAccess.getOntology(params[:ontology])
 
     if @ontology.statusId.to_i.eql?(6)
@@ -174,28 +180,28 @@ class ConceptsController < ApplicationController
   # PRIVATE -----------------------------------------
   private
     
-    def show_ajax_request
-       case params[:callback]
-          when 'load' # Load pulls in all the details of a node
-            time = Time.now
-            gather_details
-            LOG.add :debug, "Processed concept details (#{Time.now - time})"
-            
-            # We only want to log concept loading, not showing a list of child concepts
-            LOG.add :info, 'visualize_concept_browse', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id if @concept && @ontology
-  
-            render :partial => 'load'
-          when 'children' # Children is called only for drawing the tree
-            @children =[]
-            start_tree = Time.now
-            for child in @concept.children
-              @children << TreeNode.new(child, @concept)
-              @children.sort!{|x,y| x.label.downcase<=>y.label.downcase} unless @children.empty?
-            end
-            LOG.add :debug,  "Get children (#{Time.now - start_tree})"
-            render :partial => 'childNodes'
-        end    
+  def show_ajax_request
+    case params[:callback]
+    when 'load' # Load pulls in all the details of a node
+      time = Time.now
+      gather_details
+      LOG.add :debug, "Processed concept details (#{Time.now - time})"
+
+      # We only want to log concept loading, not showing a list of child concepts
+      LOG.add :info, 'visualize_concept_browse', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id if @concept && @ontology
+
+      render :partial => 'load'
+    when 'children' # Children is called only for drawing the tree
+      @children =[]
+      start_tree = Time.now
+      for child in @concept.children
+        @children << TreeNode.new(child, @concept)
+        @children.sort!{|x,y| x.label.downcase<=>y.label.downcase} unless @children.empty?
+      end
+      LOG.add :debug,  "Get children (#{Time.now - start_tree})"
+      render :partial => 'childNodes'
     end
+  end
     
     # gathers the full set of data for a node
     def show_uri_request
@@ -205,26 +211,8 @@ class ConceptsController < ApplicationController
     
     # gathers the information for a node
     def gather_details
-      
-   #    sids = [] #stores the thread IDs
-      
-    #  sids << spawn(:method => :thread) do  #threaded implementation to improve performance
-        #builds the mapping tab
-        @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.id)    
-        
-        #builds the margin note tab
-        @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_id, :concept_id => @concept.id,:parent_id =>nil})
-        #needed to prepopulate the margin note
-        @margin_note = MarginNote.new
-        @margin_note.concept_id = @concept.id
-        @margin_note.ontology_version_id = @concept.version_id
-        @margin_note.ontology_id=@concept.ontology_id
-     # end   
-        
-      #wait(sids) #waits for threads to finish
-      
-      update_tab(@ontology,@concept.id) #updates the 'history' tab with the current node
-      
+      @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.id)    
+      update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
     end
     
     def build_tree

@@ -176,7 +176,7 @@ module ApplicationHelper
         string << "<li #{open} #{draw_root}  id=\"#{child.id}\"><span #{active_style}> #{relation} #{child.label} #{icons}</span>"
         
         if child.child_size > 0 && !child.expanded
-          string << "<ul class='ajax'><li id='#{child.id}'>{url:/ajax_concepts/#{child.ontology_id}/?conceptid=#{CGI.escape(child.id)}&callback=children}</li></ul>"
+          string << "<ul class='ajax'><li id='#{child.id}'>{url:/ajax_concepts/#{child.ontology_id}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.child_size}}</li></ul>"
 	      elsif child.expanded
       	  string << "<ul>"
       	  build_tree(child,"child",string,id)

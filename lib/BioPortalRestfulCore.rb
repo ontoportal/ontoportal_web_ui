@@ -408,7 +408,7 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve node"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+    doc = get_xml(uri, 360)
 
     node = errorCheck(doc)
 
@@ -435,7 +435,7 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve light node"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+    doc = get_xml(uri, 360)
 
     node = errorCheck(doc)         
 
@@ -452,7 +452,7 @@ class BioPortalRestfulCore
   def self.getTopLevelNodes(params)
     params[:concept_id] = "root"
    
-    uri_gen = BioPortalResources::Concept.new(params)
+    uri_gen = BioPortalResources::Concept.new(params, nil, false)
     uri = uri_gen.generate_uri
     
     LOG.add :debug, "Retrieve top level nodes"
@@ -1027,9 +1027,11 @@ private
   end
   
   # Gets XML from the rest service. Used to include a user-agent in one location.
-  def self.get_xml(uri)
+  def self.get_xml(uri, timeout = 60)
     begin
-      open(uri, "User-Agent" => "BioPortal-UI")
+      Timeout::timeout(timeout) {
+        open(uri, "User-Agent" => "BioPortal-UI")
+      }
     rescue Exception => e
       LOG.add :debug, "Problem retrieving xml for #{uri}: #{e.message}"
       if !e.io.status.nil? && e.io.status[0].to_i == 404
@@ -1094,7 +1096,7 @@ private
     params.collect {|p| '--' + boundary + "\r\n" + p}.join('') + "--" + boundary + "--\r\n"
     uri = URI.parse(url)
     response = Net::HTTP.new(uri.host,$REST_PORT).start.
-    post2(uri.path,
+      post2(uri.path,
           query,
             "Content-type" => "multipart/form-data; boundary=" + boundary)
     

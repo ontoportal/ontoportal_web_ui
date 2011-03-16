@@ -20,6 +20,12 @@ class UsersController < ApplicationController
   # GET /users/1.xml
   def show
     @user = DataAccess.getUser(params[:id])
+    
+    # Get all ontologies that match this user
+    @user_ontologies = []
+    DataAccess.getOntologyList.each do |ont|
+      @user_ontologies << ont if ont.userId.to_i == params[:id]
+    end
   end
   
   # GET /users/new
@@ -36,6 +42,12 @@ class UsersController < ApplicationController
       @user.validate_password = true
     end
     
+    # Get all ontologies that match this user
+    @user_ontologies = []
+    DataAccess.getOntologyList.each do |ont|
+      @user_ontologies << ont if DataAccess.getOntology(ont.id).userId.to_i == params[:id].to_i
+    end
+
     render :action =>'edit'
   end
   

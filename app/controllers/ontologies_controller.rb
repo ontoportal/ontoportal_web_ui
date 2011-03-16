@@ -202,8 +202,8 @@ class OntologiesController < ApplicationController
       
       @root.set_children(nodes, @root)
       
-      # get the initial concept to display
-      @concept = DataAccess.getNode(@ontology.id,@root.children.first.id,view)
+      # get the initial concepts to display
+      @concept = DataAccess.getNode(@ontology.id, @root.children.first.id, view)
       
       # Some ontologies have "too many children" at their root. These will not process and are handled here.
       # TODO: This should use a proper error-handling technique with custom exceptions
@@ -466,7 +466,7 @@ class OntologiesController < ApplicationController
       errors << "Abbreviations cannot contain spaces or the following characters: <span style='font-family: monospace;'>^{}[]:;$=*`#|@'<>()\+,\\/</span>"
     elsif CACHE.get("ontology_acronyms").include?(params[:abbreviation].downcase)
       # We matched an existing acronym, but is it already ours from a previous version?
-      unless DataAccess.getLatestOntology(params[:ontologyId]).abbreviation.downcase.eql?(params[:abbreviation].downcase)
+      unless !DataAccess.getLatestOntology(params[:ontologyId]).nil? && DataAccess.getLatestOntology(params[:ontologyId]).abbreviation.downcase.eql?(params[:abbreviation].downcase)
         errors << "That Abbreviation is already in use. Please choose another."
       end
     end

@@ -366,10 +366,13 @@ class DataAccess
     ontology = SERVICE.createOntology(params)
     CACHE.delete("act_ont_list")
     CACHE.delete("ont_list")
+    CACHE.delete("ontology_acronyms")
     unless(params[:ontologyId].nil?)
+      CACHE.delete("#{params[:ontologyId]}::_latest")
       CACHE.delete("#{params[:ontologyId]}::_versions")
       CACHE.delete("#{params[:ontologyId]}::_details")
       CACHE.delete("ont_list")
+      CACHE.delete("ontology_acronyms")
     end
     return ontology
   end
@@ -378,11 +381,13 @@ class DataAccess
     SERVICE.updateOntology(params, ontology_id)
     CACHE.delete("#{ontology_id}::_details")
     CACHE.delete("ont_list")
+    CACHE.delete("ontology_acronyms")
     unless(params[:ontologyId].nil?)
- 	  CACHE.delete("#{params[:ontologyId]}::_latest")
+   	  CACHE.delete("#{params[:ontologyId]}::_latest")
       CACHE.delete("#{params[:ontologyId]}::_versions")
       CACHE.delete("#{params[:ontologyId]}::_details")
       CACHE.delete("ont_list")
+      CACHE.delete("ontology_acronyms")
     end
     return self.getOntology(ontology_id)
   end
@@ -422,7 +427,12 @@ private
       end
       
       unless retrieved_object.kind_of?(Hash) && retrieved_object[:error]
-        CACHE.set(token, retrieved_object, expires)
+        # Don't cache nodes with more than the default number of max children
+        if retrieved_object.class == NodeWrapper && retrieved_object.child_size.to_i > 10000
+          return retrieved_object
+        else
+          CACHE.set(token, retrieved_object, expires)
+        end
       end
       
       return retrieved_object

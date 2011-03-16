@@ -106,6 +106,9 @@ class BioPortalResources
     class Concept < BioPortalResources
       def initialize(params, max_children = nil, light = nil)
         super(params)
+        
+        max_children = (max_children.nil? || max_children > $MAX_CHILDREN) ? $MAX_CHILDREN : max_children
+        
         @uri << "/concepts/%ONT%/?conceptid=%CONC%"
         @uri << "&maxnumchildren=" + max_children.to_s if max_children
         @uri << "&light=1" if light

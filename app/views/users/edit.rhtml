@@ -1,43 +1,55 @@
-<% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
+<div style="padding: 1em;">
+  <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
+    <p style="color:red;"><%=flash[:notice]%></p>
+    <table class="form">
+    	<% if @user.validate_password.nil?%>
+    	<tr>
+    		<th>First Name:</td><td class="top"><%=text_field :user, :firstname%></td>
+    	</tr>
+    	<tr>
+    		<th>Last Name:</td><td><%=text_field :user, :lastname%></td>
+    	</tr>
+    	<tr>
+    		<th>Email Address:</td><td><%=text_field :user, :email%></td>
+    	</tr>	
+    	<tr>
+    		<th>Phone Number:</td><td><%=text_field :user, :phone%></td>
+    	</tr>
+    	<%=hidden_field :user, :username%>
+    	<%else%>
+    	<%=hidden_field :user, :username%>
+    	<%=hidden_field :user, :firstname%>
+    	<%=hidden_field :user, :lastname%>
+    	<%=hidden_field :user, :email%>
+    	<%=hidden_field :user, :phone%>
+    	<tr>
+    		<th>Password:</td><td class="top"><%=password_field :user, :password%></td>
+    	</tr>
+    	<tr>
+    		<th>Re-enter Password:</td><td><%=password_field :user, :password_confirmation%></td>
+    	</tr>
+    	<%end%>
+    
+        <tr>
+            <td align="right" colspan="2">
+              <%unless params[:password].eql?("true")%>
+                <%=link_to "Change Password", edit_user_path(:id=>session[:user].id,:password=>'true')%>&nbsp;&nbsp;&nbsp;&nbsp;
+              <%end%>
+              <%= submit_tag "Update" ,:class=>"greenbtn"%>
+            </td>
+        </tr>
+     </table>
+    
+    <br>
+  <% end %>
+  
+  <% if !@user_ontologies.empty? %>
+    <h2>Submitted Ontologies<h2>
+    <ul>
+      <% @user_ontologies.each do |ont| %>
+        <li><a href="/ontologies/<%=ont.id%>"><%=ont.displayLabel%></a></li>
+      <% end %>
+    </ul>
+  <% end %>
 
-<p style="color:red;"><%=flash[:notice]%></p>
-<table class="form">
-	<% if @user.validate_password.nil?%>
-	<tr>
-		<th>First Name:</td><td class="top"><%=text_field :user, :firstname%></td>
-	</tr>
-	<tr>
-		<th>Last Name:</td><td><%=text_field :user, :lastname%></td>
-	</tr>
-	<tr>
-		<th>Email Address:</td><td><%=text_field :user, :email%></td>
-	</tr>	
-	<tr>
-		<th>Phone Number:</td><td><%=text_field :user, :phone%></td>
-	</tr>
-	<%=hidden_field :user, :username%>
-	<%else%>
-	<%=hidden_field :user, :username%>
-	<%=hidden_field :user, :firstname%>
-	<%=hidden_field :user, :lastname%>
-	<%=hidden_field :user, :email%>
-	<%=hidden_field :user, :phone%>
-	<tr>
-		<th>Password:</td><td class="top"><%=password_field :user, :password%></td>
-	</tr>
-	<tr>
-		<th>Re-enter Password:</td><td><%=password_field :user, :password_confirmation%></td>
-	</tr>
-	<%end%>
-
-    <tr>
-        <td align="right" colspan="2"><%= submit_tag "Update" ,:class=>"greenbtn"%></td>
-    </tr>
- </table>
-
-<br>
-<%unless params[:password].eql?("true")%>
-  <%=link_to "Change Password",edit_user_path(:id=>session[:user].id,:password=>'true')%>
-<%end%>
-
-<% end %>
+</div>

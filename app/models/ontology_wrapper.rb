@@ -1,4 +1,4 @@
-class OntologyWrapper 
+class OntologyWrapper
 
   attr_accessor :displayLabel
   attr_accessor :id

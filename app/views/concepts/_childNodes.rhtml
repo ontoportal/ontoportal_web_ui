@@ -30,7 +30,6 @@
 <%
 output =""
 
-	
 for child in @children
 	icons = ""
  	if(child.note_icon)
@@ -44,7 +43,7 @@ for child in @children
 		
 	output << "<li id='#{child.id}'><span>#{relation} #{child.name} #{icons}</span>"
 		if child.child_size > 0 && !child.expanded
-	  		output << "<ul class=\"ajax\"><li id='#{child.id}'>{url:/ajax_concepts/#{child.ontology_id}/?conceptid=#{encode_param(child.id)}&callback=children}</li></ul>"
+	  		output << "<ul class=\"ajax\"><li id='#{child.id}'>{url:/ajax_concepts/#{child.ontology_id}/?conceptid=#{encode_param(child.id)}&callback=children}&child_size=#{child.child_size}</li></ul>"
   		end
 	output <<"</li>"
 
