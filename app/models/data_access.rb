@@ -15,14 +15,14 @@ class DataAccess
 
   NO_CACHE = false
   
-  def self.getNode(ontology_id, node_id, view = false)
+  def self.getNode(ontology_id, node_id, max_children = 7500, view = false)
     view_string = view ? "view_" : ""
-    return self.cache_pull("#{view_string}#{param(ontology_id)}::#{node_id.to_s.gsub(" ","%20")}", "getNode", { :ontology_id => ontology_id, :concept_id => node_id })
+    return self.cache_pull("#{view_string}#{param(ontology_id)}::#{node_id.to_s.gsub(" ","%20")}::max_children=#{max_children}", "getNode", { :ontology_id => ontology_id, :concept_id => node_id, :max_children => max_children })
   end
 
-  def self.getLightNode(ontology_id, node_id, view = false)
+  def self.getLightNode(ontology_id, node_id, max_children = 7500, view = false)
     view_string = view ? "view_" : ""
-    return self.cache_pull("#{view_string}#{param(ontology_id)}::#{node_id.to_s.gsub(" ","%20")}_light", "getLightNode", { :ontology_id => ontology_id, :concept_id => node_id })
+    return self.cache_pull("#{view_string}#{param(ontology_id)}::#{node_id.to_s.gsub(" ","%20")}::max_children=#{max_children}_light", "getLightNode", { :ontology_id => ontology_id, :concept_id => node_id, :max_children => max_children })
   end
   
   def self.getView(view_id)

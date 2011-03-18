@@ -245,13 +245,6 @@ class OntologiesController < ApplicationController
     
     # gets the initial mappings
     @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.fullId)
-    # builds the margin note tab
-    @margin_notes = MarginNote.find(:all,:conditions=>{:ontology_id => @concept.ontology_id, :concept_id => @concept.id,:parent_id =>nil})
-    # needed to prepopulate the margin note
-    @margin_note = MarginNote.new
-    @margin_note.concept_id = @concept.id
-    @margin_note.ontology_version_id = @concept.version_id
-    @margin_note.ontology_id=@concept.ontology_id
     
     unless @concept.id.to_s.empty?
       # Update the tab with the current concept

@@ -11,15 +11,16 @@ class ConceptsController < ApplicationController
   def show
     # Handle multiple methods of passing concept ids
     params[:id] = params[:id] ? params[:id] : params[:conceptid]
+    too_many_children_override = params[:too_many_children_override].eql?("true")
     
     if params[:id].nil? || params[:id].empty?
       render :text => "Error: You must provide a valid concept id"
       return
     end
     
-    if params[:callback].eql?('children') && params[:child_size].to_i > $MAX_CHILDREN
-      retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{params[:ontology]}/?conceptid=#{CGI.escape(params[:id])}&callback=children&override=true'>Get all nodes</a>"      
-      render :text => "There are #{params[:child_size]} child nodes for this term. Retrieving all of these could take several minutes. #{retry_link}."
+    if params[:callback].eql?('children') && params[:child_size].to_i > $MAX_CHILDREN && !too_many_children_override
+      retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{params[:ontology]}/?conceptid=#{CGI.escape(params[:id])}&callback=children&too_many_children_override=true'>Get all terms</a>"      
+      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} terms at this level. Retrieving these may take several minutes. #{retry_link}</div>"
       return
     end
     
@@ -36,9 +37,13 @@ class ConceptsController < ApplicationController
     
     # If we're looking for children, just use the light version of the call
     if params[:callback].eql?("children")
-      @concept = DataAccess.getLightNode(params[:ontology],params[:id])
+      if too_many_children_override
+        @concept = DataAccess.getLightNode(params[:ontology], params[:id], nil)
+      else
+        @concept = DataAccess.getLightNode(params[:ontology], params[:id])
+      end
     else
-      @concept = DataAccess.getNode(params[:ontology],params[:id])
+      @concept = DataAccess.getNode(params[:ontology], params[:id])
     end
 
     # TODO: This should use a proper error-handling technique with custom exceptions
@@ -49,7 +54,7 @@ class ConceptsController < ApplicationController
         render :text => @error
         return
       else
-        render :file=> '/ontologies/visualize',:use_full_path =>true, :layout=>'ontology' # done this way to share a view
+        render :file=> '/ontologies/visualize',:use_full_path => true, :layout => 'ontology' # done this way to share a view
         return
       end
     end

@@ -403,7 +403,7 @@ class BioPortalRestfulCore
   # Gets a concept node.
   ##
   def self.getNode(params)
-    uri_gen = BioPortalResources::Concept.new(params)
+    uri_gen = BioPortalResources::Concept.new(params, params[:max_children])
     uri = uri_gen.generate_uri
     
     LOG.add :debug, "Retrieve node"
@@ -430,7 +430,7 @@ class BioPortalRestfulCore
   # Gets a light version of a concept node. Used for tree browsing.
   ##
   def self.getLightNode(params)
-    uri_gen = BioPortalResources::Concept.new(params, nil, true)
+    uri_gen = BioPortalResources::Concept.new(params, params[:max_children], true)
     uri = uri_gen.generate_uri
     
     LOG.add :debug, "Retrieve light node"
@@ -452,7 +452,7 @@ class BioPortalRestfulCore
   def self.getTopLevelNodes(params)
     params[:concept_id] = "root"
    
-    uri_gen = BioPortalResources::Concept.new(params, nil, false)
+    uri_gen = BioPortalResources::Concept.new(params, params[:max_children])
     uri = uri_gen.generate_uri
     
     LOG.add :debug, "Retrieve top level nodes"
@@ -1029,9 +1029,7 @@ private
   # Gets XML from the rest service. Used to include a user-agent in one location.
   def self.get_xml(uri, timeout = 60)
     begin
-      Timeout::timeout(timeout) {
-        open(uri, "User-Agent" => "BioPortal-UI")
-      }
+      open(uri, "User-Agent" => "BioPortal-UI")
     rescue Exception => e
       LOG.add :debug, "Problem retrieving xml for #{uri}: #{e.message}"
       if !e.io.status.nil? && e.io.status[0].to_i == 404

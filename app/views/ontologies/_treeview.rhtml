@@ -200,12 +200,10 @@
 <script src="/javascripts/jquery.scrollTo-1.4.0-min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript" src="/javascripts/jquery.simple.tree.js"></script>
+
+
+
 <script type="text/javascript">
-
-
-
-
-
 
 var simpleTreeCollection;
 jQuery(document).ready(function(){
@@ -242,6 +240,25 @@ jQuery(document).ready(function(){
       jQuery("#sd_content").addClass("sd_max_height");
       jQuery("#sd_content").scrollTo(jQuery('span.active'));
 	  }
+	});
+	
+	// Setup the "Get all terms" link for times when the children is greater than our max
+	jQuery(".too_many_children_override").live('click', function(event) {
+	  event.preventDefault();
+	  var result = jQuery(this).closest("ul");
+	  result.html("<img src='/images/tree/spinner.gif'>");
+	  jQuery.ajax({
+	    url: jQuery(this).attr('href'),
+	    context: result,
+	    success: function(data){
+	      this.html(data);
+	      // This sets up the returned content with SimpleTree functionality
+	      simpleTreeCollection.get(0).setTreeNodes(this);
+	    },
+	    error: function(){
+	      this.html("<div style='background: #eeeeee; padding: 5px; width: 80%;'>Problem getting children. <a href='" + jQuery(this).attr('href') + "' class='too_many_children_override'>Try again</a></div>");
+	    }
+	  });
 	});	
 });
 
