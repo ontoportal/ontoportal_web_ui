@@ -100,7 +100,7 @@
         });
       <%end%>
 		
-	    <% if !@ontology.is_latest? %>
+	    <% if !@ontology.is_in_search_index? %>
         // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
         jQuery("#qsearch").children().filter(":input").each(function(){
           jQuery(this).attr("readonly", true);
@@ -108,7 +108,7 @@
         
         // Set up a hovertip on the qsearch input element
         jQuery("#qsearch").attr("style", "color: grey;");
-        jQuery("#qsearch :input").attr("title", "\"Jump To\" works only with most recent version of this ontology");
+        jQuery("#qsearch :input").attr("title", "\"Jump To\" only works with the indexed version of this ontology");
         jQuery("#qsearch :input").tooltip({
             position: "bottom",
             tip: '.tooltip',

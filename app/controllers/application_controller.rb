@@ -34,6 +34,7 @@ class ApplicationController < ActionController::Base
     TreeNode
     UserWrapper
     Groups
+    SearchResults
   end
   
   # Custom 404 handling

@@ -763,7 +763,7 @@ class BioPortalRestfulCore
   end
   
   def self.getNodeNameContains(ontologies, search, page, params = {})
-    ontologies = ontologies.to_s.eql?("0") ? "" : "&ontologyids=#{ontologies.join(",")}&"
+    ontologies = ontologies.nil? || ontologies.empty? ? "" : "&ontologyids=#{ontologies.join(",")}&"
     search_branch = params[:subtreerootconceptid].nil? ? "" : "&subtreerootconceptid=#{params[:subtreerootconceptid]}"
  
     LOG.add :debug, BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}"
@@ -790,6 +790,36 @@ class BioPortalRestfulCore
     }
     
     return results,pages
+  end
+
+  def self.searchQuery(params)
+    ontologies = params[:ontologies]
+    search = params[:query]
+    page = params[:page]
+    subtreerootconceptid = params[:subtreerootconceptid]
+    
+    ontologies = ontologies.nil? || ontologies.empty? ? "" : "&ontologyids=#{ontologies.join(",")}&"
+    search_branch = subtreerootconceptid.nil? ? "" : "&subtreerootconceptid=#{subtreerootconceptid}"
+ 
+    LOG.add :debug, BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}"
+    begin
+     doc = REXML::Document.new(get_xml(BASE_URL + SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%", CGI.escape(search)) + "isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}"))
+    rescue Exception=>e
+      doc =  REXML::Document.new(e.io.read)
+    end
+
+    results = errorCheck(doc)
+    
+    unless results.nil?
+      return results
+    end 
+
+    results = []
+    doc.elements.each("*/data/page/contents"){ |element|  
+      results = parseSearchResults(element)
+    }
+
+    return results
   end
 
   def self.getUsers()
@@ -1144,22 +1174,37 @@ private
 
   def self.parseSearchResults(searchContents)
     
-    searchResults =[]
+    searchResults = SearchResults.new
     searchResultList = searchContents.elements["searchResultList"]
     
-    searchResultList.elements.each("searchBean"){|searchBean|
-      search_item = {}
-      search_item[:ontologyDisplayLabel]=searchBean.elements["ontologyDisplayLabel"].get_text.value.strip
-      search_item[:ontologyVersionId]=searchBean.elements["ontologyVersionId"].get_text.value.strip
-      search_item[:ontologyId]=searchBean.elements["ontologyId"].get_text.value.strip
-      search_item[:ontologyDisplayLabel]=searchBean.elements["ontologyDisplayLabel"].get_text.value.strip
-      search_item[:recordType]=searchBean.elements["recordType"].get_text.value.strip
-      search_item[:conceptId]=searchBean.elements["conceptId"].get_text.value.strip
-      search_item[:conceptIdShort]=searchBean.elements["conceptIdShort"].get_text.value.strip
-      search_item[:preferredName]=searchBean.elements["preferredName"].get_text.value.strip
-      search_item[:contents]=searchBean.elements["contents"].get_text.value.strip
-      searchResults<< search_item
-    }
+    unless searchResultList.nil?
+      searchResultList.elements.each("searchBean"){|searchBean|
+        search_item = {}
+        search_item[:ontologyDisplayLabel]=searchBean.elements["ontologyDisplayLabel"].get_text.value.strip
+        search_item[:ontologyVersionId]=searchBean.elements["ontologyVersionId"].get_text.value.strip
+        search_item[:ontologyId]=searchBean.elements["ontologyId"].get_text.value.strip
+        search_item[:ontologyDisplayLabel]=searchBean.elements["ontologyDisplayLabel"].get_text.value.strip
+        search_item[:recordType]=searchBean.elements["recordType"].get_text.value.strip
+        search_item[:conceptId]=searchBean.elements["conceptId"].get_text.value.strip
+        search_item[:conceptIdShort]=searchBean.elements["conceptIdShort"].get_text.value.strip
+        search_item[:preferredName]=searchBean.elements["preferredName"].get_text.value.strip
+        search_item[:contents]=searchBean.elements["contents"].get_text.value.strip
+        searchResults<< search_item
+      }
+    end
+    
+    ontologyHitCounts = searchContents.elements["ontologyHitList"]
+    
+    unless ontologyHitCounts.nil?
+      ontologyHitCounts.elements.each("ontologyHitBean") { |ontHits|
+        hits = {}
+        hits[:ontologyVersionId] = ontHits.elements["ontologyVersionId"].get_text.value.strip.to_i
+        hits[:ontologyId] = ontHits.elements["ontologyId"].get_text.value.strip.to_i
+        hits[:ontologyDisplayLabel] = ontHits.elements["ontologyDisplayLabel"].get_text.value.strip rescue ""
+        hits[:numHits] = ontHits.elements["numHits"].get_text.value.strip.to_i
+        searchResults.ontology_hit_counts[hits[:ontologyId]] = hits
+      }
+    end
     
     return searchResults
   end

@@ -186,5 +186,14 @@ class OntologyWrapper
   def versions_array
     DataAccess.getOntologyVersions(self.ontologyId).sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
   end
+  
+  def is_in_search_index?
+    begin
+      result = DataAccess.searchQuery([self.ontologyId], "testingversionforontology")
+      return result.ontology_hit_counts[self.ontologyId.to_i][:ontologyVersionId] == self.id.to_i
+    rescue
+      false
+    end
+  end
 
 end
