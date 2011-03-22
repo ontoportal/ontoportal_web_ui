@@ -71,7 +71,11 @@ class OntologyWrapper
     "Not Applicable"=>5
   }
   
-  FORMAT = ["OBO","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE","LEXGRID-XML","RRF"]
+  FORMAT = ["OBO","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE","LEXGRID-XML","RRF","LOINC","RXNORM","UMLS-RELA"]
+  
+  LEXGRID_FORMAT = ["OBO","LEXGRID-XML","RRF","LOINC","RXNORM","UMLS-RELA"]
+  
+  PROTEGE_FORMAT = ["OWL","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE"]
     
   def views
     return DataAccess.getViews(self.ontologyId)
@@ -194,6 +198,20 @@ class OntologyWrapper
     rescue
       false
     end
+  end
+  
+  def lexgrid?
+    LEXGRID_FORMAT.include?(self.format.upcase)
+  end
+  
+  def protege?
+    PROTEGE_FORMAT.include?(self.format.upcase)
+  end
+  
+  def format_handler
+    return :lexgrid if self.lexgrid?
+    return :protege if self.protege?
+    return :unknown
   end
 
 end

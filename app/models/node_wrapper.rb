@@ -156,8 +156,8 @@ class NodeWrapper
   end
   
   def fullId_proper
-    ontology_format = DataAccess.getOntology(self.version_id).format
-    if ontology_format.eql?("OBO") || ontology_format.eql?("RRF") || ontology_format.eql?("LEXGRID-XML") || ontology_format.eql?("META") 
+    ontology = DataAccess.getOntology(self.version_id)
+    if ontology.lexgrid?
       return self.id
     else
       return self.fullId
