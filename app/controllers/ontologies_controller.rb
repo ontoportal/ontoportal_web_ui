@@ -49,7 +49,7 @@ class OntologiesController < ApplicationController
       end
     rescue Exception => e
       page = (params[:p].nil?) ? "page" : params[:p]
-      render :text => "Error loading #{page.gsub("_", " ")}"
+      render :text => "Error loading #{page.gsub("_", " ")}", :layout => "ontology_viewer"
       return
     end
   end

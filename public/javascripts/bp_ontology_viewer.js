@@ -12,6 +12,10 @@
     var state = History.getState();
     
     if (typeof state.data.p !== 'undefined') {
+      if (state.data.p == "tree_view") {
+        displayTree(state.data);
+      }
+      
       showOntologyContent(state.data.p);
     } else if (typeof state.url !== 'undefined') {
       
@@ -47,6 +51,28 @@
   });
 })(window);
 
+// Handles display of the tree depending on parameters
+function displayTree(data) {
+  jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
+  var new_concept_id = data.conceptid;
+  var new_concept_param = (typeof new_concept_id === 'undefined') ? "" : "&conceptid=" + new_concept_id;
+  var cache_key;
+  
+  if (typeof new_concept_id !== 'undefined') {
+    // Retrieve new concept and display tree
+    jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view" + new_concept_param, "Problem retrieving tree view", ontology_name + " - Tree View", "Tree View");
+    jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
+  } else {
+    // Retrieve new concept and display tree
+    jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view", "Problem retrieving tree view", ontology_name + " - Tree View", "Tree View");
+    jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
+  }
+  
+  concept_id = new_concept_id;
+  
+  tree_view_init();
+}
+
 function showOntologyContent(content_section) {
   jQuery(".ontology_viewer_content").addClass("hidden");
   jQuery("#ont_" + content_section + "_content").removeClass("hidden");
@@ -80,6 +106,12 @@ jQuery(document).ready(function() {
   // Retrieve AJAX content if not already displayed
   if (content_section !== "tree_view" && tree_view_disabled != true) {
     jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
+    
+    if (typeof concept_id !== 'undefined') {
+      jQuery.cache.tree_view[concept_id] = jQuery.bioportal.ont_pages["tree_view"].html; 
+    } else {
+      jQuery.cache.tree_view["root"] = jQuery.bioportal.ont_pages["tree_view"].html;
+    }
   }
     
   if (content_section !== "summary") {
@@ -138,19 +170,23 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
       success: function(data){
         this.html = data;
         jQuery("#ont_" + this.id + "_content").html(this.html);
+        jQuery.unblockUI(); 
       },
       error: function(){
         this.errored = true;
-        jQuery("#ont_" + this.id + "_content").html(this.error_string);
+        jQuery("#ont_" + this.id + "_content").html("<div style='padding: 1em;'>" + this.error_string + "</div>");
+        jQuery.unblockUI(); 
       }
     });
   };
 
   this.publish = function(){
     if (this.errored === false) {
-        jQuery("#ont_" + this.id + "_content").html(this.html);
+      jQuery("#ont_" + this.id + "_content").html(this.html);
+      jQuery.unblockUI(); 
     } else {
-      jQuery("#ont_" + this.id + "_content").html(this.error_string);
+      jQuery("#ont_" + this.id + "_content").html("<div style='padding: 1em;'>" + this.error_string + "</div>");
+      jQuery.unblockUI(); 
     }
   };
 }

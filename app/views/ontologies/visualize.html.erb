@@ -62,29 +62,8 @@
 			// Appropriate value selected
 			if( !!li.extra ){
         var sValue = jQuery("#jump_to_concept_id").val();
-        jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false }); 
 			  
-			  <% if request.xhr? %>
-          jQuery.ajax({
-            dataType: "html",
-            url: "/ontologies/<%=@ontology.id%>?p=tree_view&conceptid=" + encodeURIComponent(sValue) + "&jump_to_nav=true",
-            success: function(data){
-              jQuery("#ont_tree_view_content").html(data);
-              
-              jQuery.unblockUI();
-              
-              if (jQuery.bioportal !== undefined) {
-                jQuery.bioportal.ont_pages["tree_view"].html = data;
-              }
-            },
-            error: function(){
-              jQuery("#ont_tree_view_content").html("Problem retrieving tree view");
-            }
-          });
-			  <%else%>
-  				document.location = "/visualize/<%=@ontology.id%>/?conceptid=" + encodeURIComponent(sValue) + "&jump_to_nav=true";
-				<%end%>
-				
+        History.pushState({p:"tree_view", conceptid:sValue}, jQuery.bioportal.ont_pages["tree_view"].page_name + " | " + org_site, "?p=tree_view&conceptid=" + sValue);
         
         return;
 			}
@@ -371,25 +350,6 @@
 		<%=hidden_field :search, :keyword, :value=>"",:id=>"search_keyword"%>
 	<%end%>
 	
-	<div id="legend" style="display:none;">
-		<style>
-		.icon_legend li{
-			border:1px solid #efefef;
-			margin:10px;
-			padding:10px;
-		}
-		</style>
-		<ul class="icon_legend">
-			<h3>Icon Legend</h3>
-			<!-- Removed until we have a solution to quickly retrieve this info
-			<li><img src="/images/notes_icon.png"> : Term has Marginal Notes</li>
-			<li><img src="/images/map_icon.png"> : Term has Mappings</li>
-			-->
-			<li><img src="/images/is_a.gif"> : Relationship is "IS_A"</li>
-			<li><img src="/images/part_of.gif"> : Relationship is "PART_OF"</li>
-		</ul>
-	</div>
-
   <div style="clear: both;"></div>
 
 <% else # found an error %>
