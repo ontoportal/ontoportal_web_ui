@@ -7,13 +7,22 @@
 <link rel="stylesheet" href="/stylesheets/layout/ui.datepicker.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <link rel="stylesheet" href="/stylesheets/layout/ui.theme.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <script type="text/javascript">
-    jQuery(function(){
-        jQuery("#datepicker").datepicker({
-            showOn: 'button',
-            buttonImage: '/images/calendar.gif',
-            buttonImageOnly: true
-        });
-    });
+  jQuery(function(){
+      jQuery("#datepicker").datepicker({
+          showOn: 'button',
+          buttonImage: '/images/calendar.gif',
+          buttonImageOnly: true
+      });
+  });
+
+  // Show/hide location inputs
+  function location_toggle(input_div) {
+    jQuery('.hidden_field').hide();
+    jQuery('.hidden_field input').attr("disabled", true);
+    jQuery('#' + input_div + " input").removeAttr("disabled");
+    jQuery('#' + input_div).show();
+  }
+            
 </script>
 <script type="text/javascript">
     // Used to provide default text in fields
@@ -46,13 +55,11 @@
         
         // Properly display the information for 'File Location' based on radio button
         if (jQuery("#ontology_isRemote_0").is(":checked")) {
-          jQuery('.hidden_field').hide();
-          jQuery("#upload").show();
+          location_toggle("upload");
         }
 
         if (jQuery("#ontology_isRemote_1").is(":checked")) {
-          jQuery('.hidden_field').hide();
-          jQuery("#remote").show();
+          location_toggle("remote");
         }
 
         // Select default 'File Location' radio button
@@ -250,24 +257,24 @@
             <th>
                 Ontology Location <span class="asterik">* </span>
             </th>
-            <td>
-                <%=radio_button :ontology, :isRemote, 0, :onclick=>"$('.hidden_field').hide();$('#upload').show();" %> Upload Local File
-                <br/>
-                <span style="font-size:11px;">(choose a file on your local file system to upload)</span>
-                <div class="hidden_field" id="upload"<%if @ontology.isRemote.to_i.eql?(1) || @ontology.isRemote.to_i.eql?(3) %>style="display:none;"<%end%>>
-                  <%=file_field :ontology, :filePath %>
-                </div>
-                
-                <hr/><%=radio_button :ontology, :isRemote, 1, :onclick=>"$('.hidden_field').hide();$('#remote').show();" %> Load from URL 
-                <br/>
-                <span style="font-size:11px;">(new versions loaded daily)</span>
-                <div class="hidden_field" id="remote"<%if !@ontology.isRemote.to_i.eql?(0) || !@ontology.isRemote.to_i.eql?(3) %>style="display:none;"<%end%>>
-                  URL: <%=text_field :ontology, :downloadLocation, :size => 100 %>
-                </div>
-                
-                <hr/><%=radio_button :ontology, :isRemote, 3, :onclick=>"$('.hidden_field').hide();" %> Metadata Only 
-                <br/>
-                <span style="font-size:11px;">(choose this option if you want users to search and view only the <em>metadata</em> for your ontology, but not its classes and properties) </span>
+            <td id="location_options">
+              <%=radio_button :ontology, :isRemote, 0, :onclick=>"location_toggle('upload');" %> Upload Local File
+              <br/>
+              <span style="font-size:11px;">(choose a file on your local file system to upload)</span>
+              <div class="hidden_field" id="upload"<%if @ontology.isRemote.to_i.eql?(1) || @ontology.isRemote.to_i.eql?(3) %>style="display:none;"<%end%>>
+                <%=file_field :ontology, :filePath %>
+              </div>
+              
+              <hr/><%=radio_button :ontology, :isRemote, 1, :onclick=>"location_toggle('remote');" %> Load from URL 
+              <br/>
+              <span style="font-size:11px;">(new versions loaded daily)</span>
+              <div class="hidden_field" id="remote"<%if !@ontology.isRemote.to_i.eql?(0) || !@ontology.isRemote.to_i.eql?(3) %>style="display:none;"<%end%>>
+                URL: <%=text_field :ontology, :downloadLocation, :size => 100 %>
+              </div>
+              
+              <hr/><%=radio_button :ontology, :isRemote, 3, :onclick=>"$('.hidden_field').hide();" %> Metadata Only 
+              <br/>
+              <span style="font-size:11px;">(choose this option if you want users to search and view only the <em>metadata</em> for your ontology, but not its classes and properties) </span>
             </td>
         </tr>
         <tr>
