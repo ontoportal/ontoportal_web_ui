@@ -196,7 +196,7 @@
 		else if ( opts.resizeToWidth && !$.browser.msie ) {
       // We're going to watch both the window and body for resize events
       $(window).bind("resize", function(){
-        $("#bd_content").width(jQuery(document.body).width());
+        $("#bd_content").width(jQuery(jQuery("#ontology_content")).width());
         splitter.trigger("resize"); 
       });
 			// Add a resize event binding on the body for when a scrollbar appears
@@ -222,7 +222,7 @@
 };
 })(jQuery);
  
-//A 'watch' function that monitors CSS attributes for changes
+// A 'watch' function that monitors CSS attributes for changes
 (function($){
  	$.fn.watch = function(prop, func, interval, id) {
  	    /// <summary>

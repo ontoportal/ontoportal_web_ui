@@ -1,13 +1,17 @@
 <% unless @error %>	
 
 	<%@title = "#{@ontology.displayLabel} - #{@concept.name}"%>
-	<link rel="stylesheet" href="/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css" type="text/css" media="screen" title="no title" charset="utf-8">
-	<script src="/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js" type="text/javascript" charset="utf-8"></script>
-	<script src="/javascripts/jquery.tools.min.js"type="text/javascript"></script>
-	<script src="/javascripts/JqueryPlugins/splitter/splitter.js" type="text/javascript" charset="utf-8"></script>
-	<script src="/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
 	
-
+	<script type="text/javascript">
+	  jQuery.rloader([
+	    {type:'css',src:'/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css'},
+	    {type:'js',src:'/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js'},
+	    {type:'js',src:'/javascripts/jquery.tools.min.js'},
+      {type:'js',src:'/javascripts/JqueryPlugins/splitter/splitter.js'},
+      {type:'js',src:'/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.min.js'}
+    ]);
+	</script>
+	
 	<style>
 		/* simple css-based tooltip */ 
 	    div.tooltip { 
@@ -42,6 +46,8 @@
 		
 		// Called when the "Go" button on the Jump To form is clicked
 		function jumpToValue(li){
+      jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false }); 
+			
 			if( li == null ){
 				// User performs a search	
 				var search = confirm("Term could not be found.\n\nPress OK to go to the Search page or Cancel to continue browsing");
@@ -55,10 +61,11 @@
 	
 			// Appropriate value selected
 			if( !!li.extra ){
-				var sValue = jQuery("#jump_to_concept_id").val();
-				document.location="/visualize/<%=@ontology.id%>/?conceptid="+encodeURIComponent(sValue)+"&jump_to_nav=true";
-				jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false }); 
-				return;
+        var sValue = jQuery("#jump_to_concept_id").val();
+			  
+        History.pushState({p:"tree_view", conceptid:sValue}, jQuery.bioportal.ont_pages["tree_view"].page_name + " | " + org_site, "?p=tree_view&conceptid=" + sValue);
+        
+        return;
 			}
 		}
 		
@@ -78,17 +85,17 @@
 		}
 		
 		jQuery(document).ready(function(){
-			jQuery("#search_box").autocomplete("/search/json_search/<%=@ontology.ontologyId%>", {
-				lineSeparator: "~!~",
-				matchSubset: 0,
-				minChars: 1,
-				maxItemsToShow: 20,
-				onFindValue: jumpToValue,
-				onItemSelect: jumpToSelect,
-				formatItem: formatItem
-			});
-			searchbox = jQuery("#search_box")[0].autocompleter;
-		
+      jQuery("#search_box").autocomplete("/search/json_search/<%=@ontology.ontologyId%>", {
+        lineSeparator: "~!~",
+        matchSubset: 0,
+        minChars: 1,
+        maxItemsToShow: 20,
+        onFindValue: jumpToValue,
+        onItemSelect: jumpToSelect,
+        formatItem: formatItem
+      });
+      searchbox = jQuery("#search_box")[0].autocompleter;
+    
       <% if @ontology.isView == 'true' %>
         // Set up a hovertip on the qsearch input element
         jQuery("#resource_index_top").attr("style", "color: grey;");
@@ -100,7 +107,7 @@
         });
       <%end%>
 		
-	    <% if !@ontology.is_in_search_index? %>
+	  <% if !@ontology.is_in_search_index? %>
         // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
         jQuery("#qsearch").children().filter(":input").each(function(){
           jQuery(this).attr("readonly", true);
@@ -114,54 +121,25 @@
             tip: '.tooltip',
             opacity: 0.7
         });
-	    <%end%>
+      <%end%>
 		});
+		
 	</script>
 	
 	<div class="tooltip"></div> 
 	
-	<div id="bd_hd">
-		<%if @ontology.isView=='true'%>
-			<h1><%=link_to @ontology.displayLabel, ontology_url(:id => @ontology.viewOnOntologyVersionId)%></h1>
-      <h3>Version <%=@ontology.versionNumber%></h3>
-      <br/><br/>
-      <h3 style="">View for <%=@ontology.getOntologyFromView().displayLabel%> [ <%=link_to "See more Views", ontology_url(:id => @ontology.viewOnOntologyVersionId) + "#views"%> ]</h3>
-		<%else%>
-			<h1><%=link_to @ontology.displayLabel, ontology_url(:id => @ontology.id)%></h1>
-      <h3>Version <%=@ontology.versionNumber%></h3>
-		<%end%>
-		
-	
-		<h1 id="name_label" style="margin-left:100px;border:1px #AFAFAF dashed;background-color:#f5fafa;padding-left:15px;padding-right:15px;" > <%=@concept.name%><span id="link_label" > |<%=link_to " Link Here", "/visualize/#{@ontology.to_param}/?conceptid=#{@concept.to_param}" %> | <a href="/syndication/rss?ontologies=<%=@ontology.ontologyId%>" style="text-decoration:none;font-size:14px;"><img src="/images/feed-icon.png" height=12 width=12 border=0 style="vertical-align:text-top;"> Subscribe</a></span></h1>
-		<br style="clear:all;" />
-	</div>
-	
 	<div id="bd_content" class="explore">
 		<div id="sidebar">
-			<div id="sd_hd">
-					<%if @ontology.isView=='true'%>
-						<h2><%=link_to "View Ontology Summary", ontology_url(:id => @ontology.viewOnOntologyVersionId)%></h2>
-					<%else%>
-						<h2><%=link_to "View Ontology Summary", ontology_url(:id => @ontology.id)%></h2>
-					<%end%>
-			</div>
-			
 			<div id="qsearch" >
 				Jump To:
 					<input type="textbox" id="search_box" size="30"/>
 					<input type="button" value="Go" onclick="searchbox.findValue()"/>
 					<input type="hidden" id="jump_to_concept_id">
-				
-				&nbsp;<a class="thickbox" href ="#TB_inline?height=300&width=300&inlineId=legend"> Legend <img src="/stylesheets/layout/images/help.png" width="16" height="16" alt="Help"></a>
 			</div>
 			
 			<div id="sd_content" class="sd_max_height">
 				<%=render :partial => '/ontologies/treeview'%>
 			</div>
-			
-      <div id="sd_expand">
-        &nbsp;
-      </div>
 			
 			<div style="clear:both;"></div>
 		</div>
@@ -196,55 +174,58 @@
 	</div>
 
 	<script type="text/javascript">
-		jQuery(document).ready(function() {
-			// Auto loads the correct tab
-			var loc = new String(document.location);
-			if (loc.search("#") >= 0) {
-				jQuery(".tab_container").hide();
-				id = "#" + loc.split("#")[1].replace(":","")
-				// The actual content to hide/show is in id_content
-				id_content = id + "_content";
-				jQuery(id_content).show();
-				jQuery(".tab").removeClass("selected");
-				jQuery(id+"_top").addClass("selected");
-				tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0));
-				tab_li.addClass("selected");
-				var a = jQuery("a[href='"+id+":']");
-				// Run code found in the alt attribute (this was being used to load the 
-				// resource index tab, I'm not sure it needs to be left in but we can
-				// address when we handle tab history down the road).
-				eval(a.attr("alt"));
-				// If we're on the resource index tab, load that specially
-		        loc = new String(document.location);
-		        if (loc.search("#resource_index") >= 0 && loc.split("#")[1] == "resource_index") {
-		            callTab("resource_index", '/resources/@ontology@/?conceptid=@concept@');
-		        }
-			}
-			
-			// The tab system
-			jQuery(".tab").click(function(){
-				jQuery(".tab_container").hide();
-				// Get the target content area
-				target = jQuery(this).children("a:first").attr("href") + "_content"
-				jQuery(target).show();
-				jQuery(".tab").removeClass("selected");
-				jQuery(this).addClass("selected");
-			});
-			
-			// Override the side of the bd_content div to avoid problems with
+    tree_view_init = function(){
+      // Auto loads the correct tab
+      var loc = new String(document.location);
+      // if (loc.search("#") >= 0) {
+      //  jQuery(".tab_container").hide();
+      //  id = "#" + loc.split("#")[1].replace(":","")
+      //  // The actual content to hide/show is in id_content
+      //  id_content = id + "_content";
+      //  jQuery(id_content).show();
+      //  jQuery(".tab").removeClass("selected");
+      //  jQuery(id+"_top").addClass("selected");
+      //  tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0));
+      //  tab_li.addClass("selected");
+      //  var a = jQuery("a[href='"+id+":']");
+      //  // Run code found in the alt attribute (this was being used to load the 
+      //  // resource index tab, I'm not sure it needs to be left in but we can
+      //  // address when we handle tab history down the road).
+      //  eval(a.attr("alt"));
+      //  // If we're on the resource index tab, load that specially
+      //            loc = new String(document.location);
+      //            if (loc.search("#resource_index") >= 0 && loc.split("#")[1] == "resource_index") {
+      //                callTab("resource_index", '/resources/@ontology@/?conceptid=@concept@');
+      //            }
+      // }
+      
+      // The tab system
+      jQuery(".tab").click(function(){
+        jQuery(".tab_container").hide();
+        // Get the target content area
+        target = jQuery(this).children("a:first").attr("href") + "_content"
+        jQuery(target).show();
+        jQuery(".tab").removeClass("selected");
+        jQuery(this).addClass("selected");
+      });
+      
+      // Override the side of the bd_content div to avoid problems with
       // the window resizing, which can sometimes cause the right-hand content div to drop down
-      var bd_content_width = jQuery(window).width();
+      var bd_content_width = jQuery("#ontology_content").width();
       jQuery("#bd_content").width(bd_content_width);
-			
-			// Split bar
-			jQuery(function() {
-				jQuery("#bd_content").splitter({
-					sizeLeft: 300,
-					resizeToWidth: true
-				});
-			});
-			
-		});
+      
+      // Split bar
+      jQuery(function() {
+        jQuery("#bd_content").splitter({
+          sizeLeft: 300,
+          resizeToWidth: true
+        });
+      });
+    }
+    
+    jQuery(document).ready(function() {
+      tree_view_init();
+    });
 		
 		function callTab(tab_name, url) {
 				if (getCache(getConcept() + tab_name) != null) {
@@ -369,24 +350,7 @@
 		<%=hidden_field :search, :keyword, :value=>"",:id=>"search_keyword"%>
 	<%end%>
 	
-	<div id="legend" style="display:none;">
-		<style>
-		.icon_legend li{
-			border:1px solid #efefef;
-			margin:10px;
-			padding:10px;
-		}
-		</style>
-		<ul class="icon_legend">
-			<h3>Icon Legend</h3>
-			<!-- Removed until we have a solution to quickly retrieve this info
-			<li><img src="/images/notes_icon.png"> : Term has Marginal Notes</li>
-			<li><img src="/images/map_icon.png"> : Term has Mappings</li>
-			-->
-			<li><img src="/images/is_a.gif"> : Relationship is "IS_A"</li>
-			<li><img src="/images/part_of.gif"> : Relationship is "PART_OF"</li>
-		</ul>
-	</div>
+  <div style="clear: both;"></div>
 
 <% else # found an error %>
 	<%= "<div id=\"error\"><h2>#{@error}</h2></div>" %>

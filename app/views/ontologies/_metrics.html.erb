@@ -1,8 +1,9 @@
-<div id="metrics_content" style="display:none; margin: 1em 0;" class="tab_content">
+<div id="metrics_content" style="margin-left: 1em;">
 	<div style="clear:both;"></div>
-	<p style="border: 1px solid rgb(239, 239, 239); margin: 10px; padding: 10px;">
+  <h2 style="font-size: x-large;">Metrics</h2>
+	<!--<p style="border: 1px solid rgb(239, 239, 239); margin: 10px; padding: 10px;">
 		<%=t('ontologies.metrics.intro')%>
-	</p>
+	</p>-->
 	<% if @metrics.nil? || @metrics.empty? %>
 		<h2 style="padding-left: 1em;">We have not yet calculated metrics for this ontology.</h2>
 	<% else %>
@@ -25,13 +26,13 @@
 				<th>Number of properties:</th><td><%=@metrics.numberOfProperties%></td>
 			</tr>
 			<tr>
-				<th>Maximum depth of the class hierarchy:</th><td><%=@metrics.maximumDepth%></td>
+				<th>Maximum depth:</th><td><%=@metrics.maximumDepth%></td>
 			</tr>
 			<tr>
-				<th>Maximum number of siblings in the class hierarchy:</th><td><%=@metrics.maximumNumberOfSiblings%></td>
+				<th>Maximum number of siblings:</th><td><%=@metrics.maximumNumberOfSiblings%></td>
 			</tr>
 			<tr>
-				<th>Average number of siblings in the class hierarchy:</th><td><%=@metrics.averageNumberOfSiblings%></td>
+				<th>Average number of siblings:</th><td><%=@metrics.averageNumberOfSiblings%></td>
 			</tr>
 			<tr>
 				<th style="vertical-align: top;">Classes with a single subclass:</th>

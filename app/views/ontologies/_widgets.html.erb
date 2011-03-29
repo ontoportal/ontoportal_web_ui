@@ -1,10 +1,10 @@
 <% if @ontology.metadata_only? %>
-<div id="widgets_content" style="display:none;" class="tab_content">
+<div id="widgets_content" style="padding: 1em;">
   <p>Widgets are only available for ontologies stored in <%=$SITE%>.</p>
 </div>
 
 <% else %>
-<div id="widgets_content" style="display:none;" class="tab_content">
+<div id="widgets_content" style="padding: 1em;">
     <div>
         <h1>Adding <%=$ORG%> Widgets for <%=@ontology.displayLabel %> to Your Site</h1>
         <h2>Step 1: Select a widget</h2>
@@ -293,74 +293,24 @@ Example 1 (start typing the term name to get its full URI)
                         <a href="#TB_inline?height=400&width=600&inlineId=ontologyTree" class="thickbox getcode">Get Code</a>
 					</td>
 					<td>
-						<script src="http://keg.cs.uvic.ca/ncbo/ontologytree/AC_OETags.js" language="javascript"></script>
-						<script type="text/javascript">
-							<!--
-							// -----------------------------------------------------------------------------
-							// Globals
-							// Major version of Flash required
-							var requiredMajorVersion = 9;
-							// Minor version of Flash required
-							var requiredMinorVersion = 0;
-							// Minor version of Flash required
-							var requiredRevision = 124;
-							// -----------------------------------------------------------------------------
-							// -->
-							
-							// Version check for the Flash Player that has the ability to start Player Product Install (6.0r65)
-							var hasProductInstall = DetectFlashVer(6, 0, 65);
-							
-							// Version check based upon the values defined in globals
-							var hasRequestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
-							
-							if (hasProductInstall && !hasRequestedVersion) {
-							    // DO NOT MODIFY THE FOLLOWING FOUR LINES
-							    // Location visited after installation is complete if installation is required
-							    var MMPlayerType = (isIE == true) ? "ActiveX": "PlugIn";
-							    var MMredirectURL = window.location;
-							    document.title = document.title.slice(0, 47) + " - Flash Player Installation";
-							    var MMdoctitle = document.title;
-							
-							    AC_FL_RunContent(
-							    "src", "playerProductInstall",
-							    "FlashVars", "MMredirectURL=" + MMredirectURL + '&MMplayerType=' + MMPlayerType + '&MMdoctitle=' + MMdoctitle + '&ontology=<%=@ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true',
-							    "width", "300px",
-							    "height", "400px",
-							    "align", "middle",
-							    "id", "OntologyTree",
-							    "quality", "high",
-							    "bgcolor", "#ffffff",
-							    "name", "OntologyTree",
-							    "allowScriptAccess", "always",
-							    "type", "application/x-shockwave-flash",
-							    "pluginspage", "http://www.adobe.com/go/getflashplayer"
-							    );
-							} else if (hasRequestedVersion) {
-							    // if we've detected an acceptable version
-							    // embed the Flash Content SWF when all tests are passed
-							    AC_FL_RunContent(
-							    "src", "http://keg.cs.uvic.ca/ncbo/ontologytree/OntologyTree.swf",
-							    "width", "300px",
-							    "height", "400px",
-							    "align", "middle",
-							    "id", "OntologyTree",
-							    "quality", "high",
-							    "bgcolor", "#ffffff",
-							    "name", "OntologyTree",
-							    "allowScriptAccess", "always",
-							    "flashVars", '&ontology=<%=@ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true',
-							    "type", "application/x-shockwave-flash",
-							    "pluginspage", "http://www.adobe.com/go/getflashplayer"
-							    );
-							} else {
-							    // flash is too old or we can't detect the plugin
-							    var alternateContent = 'Alternate HTML content should be placed here. '
-							    + 'This content requires the Adobe Flash Player. '
-							    + '<a href=http://www.adobe.com/go/getflash/>Get Flash</a>';
-							    document.write(alternateContent);
-							    // insert non-flash content
-							}
-						</script>
+                        <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+                          id="OntologyTree" width="300" height="100%"
+                          codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+                          <param name="movie" value="http://keg.cs.uvic.ca/ncbo/ontologytree/OntologyTree.swf" />
+                          <param name="quality" value="high" />
+                          <param name="bgcolor" value="#ffffff" />
+                          <param name="allowScriptAccess" value="always" />
+                          <param name="flashVars" value="ontology=<%=@ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true" />
+                          <embed src="http://keg.cs.uvic.ca/ncbo/ontologytree/OntologyTree.swf" quality="high" bgcolor="#ffffff"
+                            width="300" height="100%" name="OntologyTree" align="middle"
+                            play="true"
+                            loop="false"
+                            allowScriptAccess="always"
+                            type="application/x-shockwave-flash"
+                            flashVars="ontology=<%=@ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true"
+                            pluginspage="http://www.adobe.com/go/getflashplayer">
+                          </embed>
+                        </object>
                         <div id ="ontologyTree" style="display:none">
                         	<h2>Step 2: Follow the Instructions</h2>
                             <hr/><b>Copy the code below and paste it to your HTML page</b>

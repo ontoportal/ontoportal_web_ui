@@ -181,7 +181,6 @@ module ApplicationHelper
           string << "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{number_of_terms} terms at this level. Retrieving these may take several minutes. #{retry_link}</div>"
         else
           string << "<li #{open} #{draw_root}  id=\"#{child.id}\"><span #{active_style}> #{relation} #{child.label} #{icons}</span>"
-          
           if child.child_size > 0 && !child.expanded
             string << "<ul class='ajax'><li id='#{child.id}'>{url:/ajax_concepts/#{child.ontology_id}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.child_size}}</li></ul>"
           elsif child.expanded
@@ -189,10 +188,18 @@ module ApplicationHelper
             build_tree(child,"child",string,id)
             string << "</ul>"
           end
+          string << "</li>"
         end
     		    
-    	  string <<"</li>"
       end
+    end
+  end
+  
+  def loading_spinner(padding = false)
+    if padding
+      '<div style="padding: 1em;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"> loading...</div>'
+    else
+      '<img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"> loading...'
     end
   end
 end

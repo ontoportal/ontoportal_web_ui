@@ -49,9 +49,9 @@ function insert_note(link, note_id) {
 }
 
 // This will wire up a table with the dataTables config.
-function wireTableWithData(oTableNew, aData) {
+function wireTableWithData(notesTableNew, aData) {
 	// Wire up table if it hasn't been done yet
-	oTable = oTableNew.dataTable({
+	notesTable = notesTableNew.dataTable({
 		"aaData": aData,
 		"iDisplayLength": 50,
 		"sPaginationType": "full_numbers",

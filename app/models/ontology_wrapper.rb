@@ -183,6 +183,11 @@ class OntologyWrapper
     return self.isMetadataOnly.eql?(1)
   end
   
+  # Check criteria for browsable ontologies
+  def tree_view_disabled?
+    self.metadata_only? || (!$NOT_EXPLORABLE.nil? && $NOT_EXPLORABLE.include?(self.ontologyId.to_i))
+  end
+  
   def diffs
     DataAccess.getDiffs(self.ontologyId)
   end

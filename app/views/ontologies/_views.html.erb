@@ -23,18 +23,24 @@
 </script>
 
 
-<div id="views_content" style="display:none;" class="tab_content">
-    <div style="float:left;width:1000px;">
-        <%if session[:user].nil? %>
-	        <h3><a href="/login?redirect=<%=URI.escape("/ontologies/view/new?version_id=#{@ontology.id}")%>">Create New View</a></h3>
-        <%else %>
-	        <h3><a href="/ontologies/view/new?version_id=<%=@ontology.id%>">Create New View</a></h3>
-        <%end %>
-        <%if @ontology.views.empty? || @ontology.views.first.size < 1 %>
-	        <h1>No views available.</h1>
-        <%else %>
+<div style="clear: both;"></div>
+<div id="views_content">
+  <h2 style="margin: 2em 0 0">
+    <span style="font-size: x-large; margin-right: 1.5em;">Views</span>
+      <%if session[:user].nil? %>
+        <a href="/login?redirect=<%=URI.escape("/ontologies/view/new?version_id=#{@ontology.id}")%>">Create New View</a>
+      <%else %>
+        <a href="/ontologies/view/new?version_id=<%=@ontology.id%>">Create New View</a>
+      <%end %>
+    </span>
+  </h2>
         
-			<h4 style="margin-top: 1.5em;"><a href="javascript:void(0);" id="expand_views">Expand All</a>  |  <a href="javascript:void(0);" id="collapse_views">Collapse All</a></h4>	
+    <div style="float:left;">
+      <%if @ontology.views.empty? || @ontology.views.first.size < 1 %>
+        <h1>No views available.</h1>
+      <%else %>
+        
+			<h4 style="margin-top: .5em;"><a href="javascript:void(0);" id="expand_views">Expand All</a>  |  <a href="javascript:void(0);" id="collapse_views">Collapse All</a></h4>	
 				
 			<% @ontology.views.each_with_index do |virtual, index| %>
 		        <%if virtual[0].nil?
@@ -124,7 +130,7 @@
 			                    <a href="<%=DataAccess.download(view.id)%>" target="_blank">Download View</a>
 			                </td>
 			                <td>
-			                    <%= get_diffs_link(view.diffs, view.versions_array, view, view_index) %>
+			                    <%= get_diffs_link(view.diffs, view.versions_array, view, view_index) rescue ""%>
 			                </td>
 			                <td>
 			                    <%= get_visualize_link(view) %>

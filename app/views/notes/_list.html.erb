@@ -11,8 +11,12 @@
 	note_colspan = (@context && @context.eql?("concept")) ? "4" : "5"
 %>
 
-<link rel="stylesheet" type="text/css" href="/javascripts/JqueryPlugins/superfish/superfish.css" media="screen">
-<script src="/javascripts/JqueryPlugins/superfish/superfish.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+  jQuery.rloader([
+    {type:'css',src:'/javascripts/JqueryPlugins/superfish/superfish.css'},
+    {type:'js',src:'/javascripts/JqueryPlugins/superfish/superfish.js'}
+  ]);
+</script>
 
 <script type="text/javascript">
 	
@@ -20,7 +24,7 @@
 if (typeof BP_NOTES_LIST_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_list.js");
 
 // Global data
-var oTable = null;	
+var notesTable = null;	
 var target = <%= (@context && @context.eql?("concept")) ? "{ 'bVisible': false }" : "null" %>;
 
 // Data needed in the external JS file stored in the body 'cache'
@@ -33,9 +37,9 @@ jQuery.data(document.body, "semi_uuid", "<%=@semi_uuid%>");
 
 // This will wire up a table with the dataTables config.
 // Needs to stay inline because IE won't recognize it in an external file.
-function wireTable(oTableNew) {
+function wireTable(notesTableNew) {
 	// Wire up table if it hasn't been done yet
-	oTable = oTableNew.dataTable({
+	notesTable = notesTableNew.dataTable({
 		"iDisplayLength": 50,
 		"sPaginationType": "full_numbers",
 		"aaSorting": [[5, 'desc']],
@@ -56,9 +60,9 @@ function wireTable(oTableNew) {
 	});
 	
 	// Important! Table is somehow getting set to zero width. Reset here.$
-	jQuery(oTable).css("width", "100%");
+	jQuery(notesTable).css("width", "100%");
 	
-  oTable.fnFilter('false', 2);
+  notesTable.fnFilter('false', 2);
 }
 
 jQuery(document).ready(function(){
@@ -79,10 +83,10 @@ jQuery(document).ready(function(){
 function hideOrUnhideArchivedNotes() {
     if (jQuery("#hide_archived:checked").val() !== undefined) {
       // Checked
-      oTable.fnFilter('false', 2);
+      notesTable.fnFilter('false', 2);
     } else {
       // Unchecked
-      oTable.fnFilter('', 2, true, false);
+      notesTable.fnFilter('', 2, true, false);
     }
 }
 
@@ -194,6 +198,9 @@ function hideOrUnhideArchivedNotes() {
 				<th>
 					Subject Sort
 				</th>
+        <th>
+          Archive Sort
+        </th>
 				<th>
 					Author
 				</th>

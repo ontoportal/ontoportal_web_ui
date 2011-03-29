@@ -1,6 +1,6 @@
 module OntologiesHelper
   # Provides a link or string based on the status of an ontology.
-  def get_visualize_link(ontology)
+  def get_visualize_link(ontology, params = {})
     # Don't display a link for ontologies that aren't browsable
     # (these are temporarily defined in environment.rb)
     unless $NOT_EXPLORABLE.nil?
@@ -17,7 +17,8 @@ module OntologiesHelper
     when 2
       return "Parsing Ontology"
     when 3 # Ontology is ready to be explored
-      return "<a href=\"/visualize/#{ontology.id}\">Explore</a>"
+      return "<a href=\"/visualize/#{ontology.id}\">Explore</a>" if params[:path_only].nil?
+      return "/visualize/#{ontology.id}"
     when 4 # Error in parsing
       return "Parsing Error"
     when 6 # Ontology is deprecated
@@ -40,7 +41,7 @@ module OntologiesHelper
     if ontology.metadata_only?
       return "<a href=\"#{ontology.homepage}\" target=\"_blank\">Ontology Homepage</a>"
     else
-      return "<a href=\"#{DataAccess.download(ontology.id)}\" target=\"_blank\">Download Ontology</a>"
+      return "<a href=\"#{DataAccess.download(ontology.id)}\" target=\"_blank\">Ontology</a>"
     end
   end
 
@@ -52,7 +53,7 @@ module OntologiesHelper
   def get_diffs_link(diffs, versions, current_version, index)
     for diff in diffs
       if diff[1].to_i.eql?(current_version.id.to_i) && diff[0].to_i.eql?(versions[index + 1].id.to_i)
-        return "Diff with version #{DataAccess.getOntology(diff[0]).versionNumber} (<a href='#{$REST_URL}/diffs/download/#{diff[0]}/#{diff[1]}?format=txt'>TXT</a> | <a href='#{$REST_URL}/diffs/download/#{diff[0]}/#{diff[1]}?format=rdf'>RDF</a>)"
+        return "<a href='#{$REST_URL}/diffs/download/#{diff[0]}/#{diff[1]}?format=txt'>Diff</a>"
       end
     end
     
