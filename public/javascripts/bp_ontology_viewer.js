@@ -54,23 +54,40 @@
 // Handles display of the tree depending on parameters
 function displayTree(data) {
   var new_concept_id = data.conceptid;
-  var new_concept_param = (typeof new_concept_id === 'undefined') ? "" : "&conceptid=" + new_concept_id;
-  var cache_key;
   
-  if (typeof new_concept_id !== 'undefined') {
-    // Retrieve new concept and display tree
-    jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view" + new_concept_param, "Problem retrieving tree view", ontology_name + " - Tree View", "Tree View");
-    jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
+  // Check to see if we're actually loading a new concept or just displaying the one we already loaded previously
+  if (typeof new_concept_id === 'undefined' || new_concept_id == concept_id) {
+    if (concept_id !== "") {
+        History.pushState({p:"tree_view", conceptid:concept_id}, jQuery.bioportal.ont_pages["tree_view"].page_name + " | " + org_site, "?p=tree_view" + "&conceptid=" + concept_id);
+    } else {
+      if (typeof tree_view_init !== 'undefined') {
+        tree_view_init();
+      }
+    }
+    
+    jQuery.unblockUI();
+    
+    return;
   } else {
-    // Retrieve new concept and display tree
-    jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view", "Problem retrieving tree view", ontology_name + " - Tree View", "Tree View");
-    jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
-  }
-  
-  concept_id = new_concept_id;
-  
-  if (typeof tree_view_init !== 'undefined') {
-    tree_view_init();
+    jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false }); 
+    var new_concept_param = (typeof new_concept_id === 'undefined') ? "" : "&conceptid=" + new_concept_id;
+    var cache_key;
+    
+    if (typeof new_concept_id !== 'undefined') {
+      // Retrieve new concept and display tree
+      jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view" + new_concept_param, "Problem retrieving tree view", ontology_name + " - Tree View", "Tree View");
+      jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
+    } else {
+      // Retrieve new concept and display tree
+      jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view", "Problem retrieving tree view", ontology_name + " - Tree View", "Tree View");
+      jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
+    }
+    
+    concept_id = new_concept_id;
+    
+    if (typeof tree_view_init !== 'undefined') {
+      tree_view_init();
+    }
   }
 }
 
@@ -170,11 +187,13 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
       context: this,
       success: function(data){
         this.html = data;
+        jQuery("#ont_" + this.id + "_content").html("");
         jQuery("#ont_" + this.id + "_content").html(this.html);
         jQuery.unblockUI(); 
       },
       error: function(){
         this.errored = true;
+        jQuery("#ont_" + this.id + "_content").html("");
         jQuery("#ont_" + this.id + "_content").html("<div style='padding: 1em;'>" + this.error_string + "</div>");
         jQuery.unblockUI(); 
       }

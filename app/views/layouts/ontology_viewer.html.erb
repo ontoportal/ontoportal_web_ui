@@ -26,7 +26,7 @@
   var ontology_id = <%=@ontology.id%>;
   var ontology_name = "<%=@ontology.displayLabel%>";
   var org_site = "<%=$ORG_SITE%>";
-  <%if !params[:conceptid].nil? && !params[:conceptid].empty?%>var concept_id = "<%=params[:conceptid]%>";<%end%>
+  var concept_id = "<%=params[:conceptid]%>";
   var content_section = "<%=content_section%>";
   var concept_param = "<%="conceptid=#{params[:conceptid]}" unless params[:conceptid].nil? || params[:conceptid].empty?%>";
   var tree_view_disabled = <%=@ontology.tree_view_disabled?%>;

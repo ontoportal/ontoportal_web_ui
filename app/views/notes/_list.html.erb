@@ -40,6 +40,7 @@ jQuery.data(document.body, "semi_uuid", "<%=@semi_uuid%>");
 function wireTable(notesTableNew) {
 	// Wire up table if it hasn't been done yet
 	notesTable = notesTableNew.dataTable({
+	  "bRetrieve": true,
 		"iDisplayLength": 50,
 		"sPaginationType": "full_numbers",
 		"aaSorting": [[5, 'desc']],

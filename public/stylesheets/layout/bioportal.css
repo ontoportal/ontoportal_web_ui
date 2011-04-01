@@ -844,8 +844,110 @@ tr.mainresource td {
  *  NOTES
  * 
  * 
- **/
- 
+**/
+
+/* Create new note */
+.create_note_container {
+	padding: .5em;
+	width: 750px;
+}
+.create_note_buttons {
+	padding: .5em;
+	margin-bottom: -1px;
+}
+.create_note_submit {
+	cursor: pointer;
+	color: #234979;
+	background: white;
+	border: 1px solid #C1DAD7;
+	margin: 5px 5px 5px 0;
+	padding: 5px 7px;
+	text-align: center;
+	width: 75px;
+	text-decoration: none;
+}
+.create_note_submit:hover {
+	background: #234979;
+	color: white;
+}
+.submit_container {
+	float: left;
+}
+.note_buttons {
+	background: #E2EBF0;
+	color: #234979;
+	border-top: 1px solid #C1DAD7;
+	border-left: 1px solid #C1DAD7;
+	border-right: 1px solid #C1DAD7;
+	padding: .5em;
+}
+.note_buttons:hover {
+	background: none;
+	cursor: pointer;
+}
+.create_note_options {
+	background: #E2EBF0;
+	padding: .5em;
+	border: 1px solid #C1DAD7;
+}
+.create_note_selected {
+	background: white;
+}
+.note_options {
+	display: none;
+}
+.create_note_inputs {
+	width: 350px;
+	margin-bottom: .5em;
+}
+textarea.create_note_inputs {
+	height: 225px;
+}
+.note_options_float {
+	float: right;
+	padding: 0 1em 0
+	.5em;
+}
+.new_note {
+	background: #F5FAFA;
+}
+.error_message {
+	color: red;
+	font-weight: bold;
+}
+.error_input {
+	color: red;
+	font-style: italic;
+}
+.required {
+	color: red;
+}
+.add_note_legend {
+	float: right;
+	color: red;
+	margin-top: 1.3em;
+}
+.add_reply_button {
+	cursor: pointer;
+	color: #234979;
+	background: white;
+	border: 1px solid #C1DAD7;
+	margin: 5px 5px 5px 0;
+	padding: 5px 7px;
+	text-align: center;
+	width: 125px;
+	text-decoration: none;
+}
+.add_reply_button:hover {
+	background: #234979;
+	color: white;
+}
+.add_reply_button_busy {
+	background-color: gray;
+	color: darkGray;
+	border: 1px solid darkGray;
+}
+
 .note_title {
   font-size: 16pt;
 }

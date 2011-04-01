@@ -15,15 +15,13 @@ module OntologyMetricsHelper
     
     # Below we will use the 'send' method to call setters/getters based on the metric name we're looking for
     if metrics.send(:"#{metric}LimitPassed") != false
-      percentage = "%0.2f" % (metrics.send(:"percentage", metric) * 100)
       class_list_length = metrics.send(:"#{metric}LimitPassed").length rescue 0 # Count empty arrays as zero
-      markup << "#{class_list_length} (#{percentage}%)"
+      markup << "#{class_list_length}"
       # Return here to avoid creating the 'details' link 
       return markup
     else
-      percentage = "%0.2f" % (metrics.send(:"percentage", metric) * 100)
       class_list_length = metrics.send(:"#{metric}").length rescue 0 # Count empty arrays as zero
-      markup << "<a class='thickbox' href='#TB_inline?height=600&width=800&inlineId=%metric%'>#{class_list_length}</a> (#{percentage}%)".gsub("%title%", title).gsub("%metric%", metric)
+      markup << "<a class='thickbox' href='#TB_inline?height=600&width=800&inlineId=%metric%'>#{class_list_length}</a>".gsub("%title%", title).gsub("%metric%", metric)
     end
     
     markup << '<div id="%metric%" style="display: none;"><div class="metrics">'.gsub("%metric%", metric)

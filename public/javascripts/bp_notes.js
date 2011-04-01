@@ -89,11 +89,12 @@ jQuery(document).ready(function(){
 										// Check for "No notes" message and delete
 										var no_notes_check = document.getElementById("no_notes");
 										if (no_notes_check != null) {
-											oTable.fnDeleteRow(oTable.fnGetPosition(document.getElementById("no_notes")));
+										  notesTable.fnDeleteRow(notesTable.fnGetPosition(document.getElementById("no_notes")));
+											ontNotesTable.fnDeleteRow(ontNotesTable.fnGetPosition(document.getElementById("no_notes")));
 										}
 										
 										// We add the (+ "") statement to "cast" to a string
-										oTable.fnAddData([
+										notesTable.fnAddData([
 						                    json.subject_link + "",
 						                    json.subject + "",
 						                    "false", // archived should be false since we just created the note
@@ -103,8 +104,20 @@ jQuery(document).ready(function(){
 							                	json.created + ""
 						                ]);
 										
+                    // We add the (+ "") statement to "cast" to a string
+                    ontNotesTable.fnAddData([
+                                json.subject_link + "",
+                                json.subject + "",
+                                "false", // archived should be false since we just created the note
+                                json.author + "",
+                                json.type + "",
+                                json.appliesTo + "",
+                                json.created + ""
+                            ]);
+
 										// Redraw table, including sort and filter options
-										oTable.fnFilter("");
+										notesTable.fnFilter("");
+                    ontNotesTable.fnFilter("");
 										jQuery("#notes_list_filter input").val("");
 									}
 							);
