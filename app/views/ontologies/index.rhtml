@@ -215,7 +215,7 @@ jQuery(document).ready(function() {
         	<%end%>
       	</td>
       	<td style="width:50px;"><%=ontology.abbreviation%></td>
-      	<td style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+" Format"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
+      	<td style="width:50px;"><%=ontology.format.split("-")[0]%></td>
       	<td style="width:50px;"><%=ontology.versionNumber%></td>
       	<td><%=ontology.contactName%></td>
       	<td><%=ontology.dateCreated%></td>
