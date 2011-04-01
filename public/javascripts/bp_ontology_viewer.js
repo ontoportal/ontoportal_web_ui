@@ -59,10 +59,6 @@ function displayTree(data) {
   if (typeof new_concept_id === 'undefined' || new_concept_id == concept_id) {
     if (concept_id !== "") {
         History.pushState({p:"tree_view", conceptid:concept_id}, jQuery.bioportal.ont_pages["tree_view"].page_name + " | " + org_site, "?p=tree_view" + "&conceptid=" + concept_id);
-    } else {
-      if (typeof tree_view_init !== 'undefined') {
-        tree_view_init();
-      }
     }
     
     jQuery.unblockUI();
@@ -84,10 +80,6 @@ function displayTree(data) {
     }
     
     concept_id = new_concept_id;
-    
-    if (typeof tree_view_init !== 'undefined') {
-      tree_view_init();
-    }
   }
 }
 
