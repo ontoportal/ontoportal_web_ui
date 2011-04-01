@@ -26,7 +26,7 @@ function jumpToValueOntology() {
 			sValue = data;
 		}
 		document.location="/virtual/"+sValue;
-		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Ontology...</h1>' }); 
+		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Ontology...</h1>' });
 		return;
 	}
 }
@@ -83,6 +83,7 @@ function formatItemResource(value, data) {
 // fails when there are multiple results with the same term name
 function selectResource(value, data) {
   jQuery('body').data("resource_results", value.data);
+  jumpToValueResource();
 }
 
 <%
@@ -95,12 +96,14 @@ function selectResource(value, data) {
 function selectFindOntology(value, data){
 	jQuery("#find_ontology_id").val(value.data[0]);
 	jQuery("#find_ontology").focus();
+	jumpToValueOntology();
 }
 
 var ontologies_array=[<%=names.join(",")%>]
 
 jQuery(document).ready(function() {
 	jQuery("#find_ontology").autocomplete({
+    selectFirst: true,
 		data: ontologies_array,
 		minChars: 1,
 		matchSubset: 1,
@@ -111,6 +114,7 @@ jQuery(document).ready(function() {
 	});
 	
 	jQuery("#find_resource").autocomplete({
+    selectFirst: true,
     url: "/search/json_search/",
     extraParams: { separator: "\n" },
     cacheLength: 1,
