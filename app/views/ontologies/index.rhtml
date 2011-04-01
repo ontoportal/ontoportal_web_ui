@@ -65,11 +65,11 @@ jQuery(document).ready(function() {
 		bLengthChange:false,
 		bAutoWidth:false,
     aoColumns: [
-                { sWidth: '200px' },
+                { sWidth: '250px' },
+                { sWidth: '30px' },
                 { sWidth: '50px' },
                 { sWidth: '50px' },
                 { sWidth: '200px' },
-                { sWidth: '50px' },
                 { sWidth: '50px' },
                 { sWidth: '50px' }
             ],
@@ -77,21 +77,22 @@ jQuery(document).ready(function() {
 		asStripClasses:["","alt"],
 		"oLanguage":{"sSearch":"Filter Ontologies"},
 		"aoData": [
-			{ "sType": "html" },
-			null,
-			null,
-			null,
-			null,
-			null,
-			{"bSearchable":false,"bVisible":false},
-			{"bSearchable":false,"bVisible":false,"sType":"groups"},
-			{"bSearchable":false,"bVisible":false},
-			{"bSearchable":false}],
+  			{ "sType": "html" },
+  			null,
+        null,
+  			null,
+  			null,
+  			null,
+  			null,
+  			{"bSearchable":false,"bVisible":false},
+  			{"bSearchable":false,"bVisible":false,"sType":"groups"},
+  			{"bSearchable":false,"bVisible":false}
+			],
 			"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
 						/* Append the grade to the default row class name */
 						var children = jQuery(nRow).children();
 						jQuery(children[0]).tooltip({ 
-							bodyHandler: function() {return aData[6]},
+							bodyHandler: function() {return aData[7]},
 						    track: true, 
 						    delay: 0, 
 						    showURL: false, 
@@ -180,59 +181,53 @@ jQuery(document).ready(function() {
 		</div>
 <table id="ontologies" class="zebra" cellpadding="0" cellspacing="0">
 		<thead>
-  <tr>
-	<th>Ontology Name</th>
-	<th>Format</th>
-	<th>Version</th>
-	<th>Author</th>
-	<th>Uploaded On</th>
-	<th>Group</th>
-
-	<th style="display:none;">Description</th>
-	<th style="display:none;">categories</th>
-	<th style="display:none;">groups</th>
-	<th>Status</th>
-  </tr>
-  </thead>
-<tbody>
-<% for ontology in @ontologies %>
-
-	<%
-	# Group names
-	ontology_groups = []
-	ontology.groups.each do |group_id|
-	  ontology_groups << @groups.group_list[group_id][:acronym]
-	end
-
-	# Label
-	label = ontology.displayLabel
-	unless ontology.abbreviation.empty?
-		label << " <br/>(#{ontology.abbreviation})"
-	end
-	%>
-  <tr>
-	<td style="width:200px;"><%=link_to label, ontology_path(:id=>ontology.id)%>
-	<%if false%>
-		<ul style="padding-left:20px;">
-			<li style="margin-bottom:4px;"><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology.ontologyId)%></li>
-			<li><%= link_to "See All #{ontology.reviews} Reviews",reviews_path(:ontology=>ontology.ontologyId)%></li>
-		</ul>
-	<%end%>
-		</td>
-	<td  style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+" Format"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
-	<td  style="width:50px;"><%=ontology.versionNumber%></td>
-	<td><%=ontology.contactName%></td>
-	<td><%=ontology.dateCreated%></td>
-	<td ><%if !ontology_groups.empty?%><div style="white-space:nowrap;"><%=ontology_groups.join("<br/>")%></div><%end%></td>
-	<td style="display:none;"><%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
-		<br>
-		<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>
-	<td style="display:none;"> <%=ontology.categories.join(" ")%></td>
-	<td style="display:none;"><%if !ontology_groups.empty?%>,<%=ontology_groups.join(",")%>,<%end%></td>
-	<td><%=get_visualize_link(ontology)%></td>
-  </tr>
-<% end %>
-</tbody>
+      <tr>
+      	<th>Ontology Name</th>
+        <th>Acronym</th>
+      	<th>Format</th>
+      	<th>Version</th>
+      	<th>Author</th>
+      	<th>Uploaded On</th>
+      	<th>Group</th>
+      	<th style="display:none;">Description</th>
+      	<th style="display:none;">categories</th>
+      	<th style="display:none;">groups</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% for ontology in @ontologies %>
+    
+    	<%
+    	# Group names
+    	ontology_groups = []
+    	ontology.groups.each do |group_id|
+    	  ontology_groups << @groups.group_list[group_id][:acronym]
+    	end
+    	%>
+      <tr>
+      	<td style="width:250px;">
+      	  <%=link_to ontology.displayLabel, ontology_path(:id=>ontology.id)%> <span style="font-size: xx-small; color: lightGray; padding-left: 1em;"><%=get_status_text(ontology)%></span>
+        	<%if false%>
+        		<ul style="padding-left:20px;">
+        			<li style="margin-bottom:4px;"><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology.ontologyId)%></li>
+        			<li><%= link_to "See All #{ontology.reviews} Reviews",reviews_path(:ontology=>ontology.ontologyId)%></li>
+        		</ul>
+        	<%end%>
+      	</td>
+      	<td style="width:50px;"><%=ontology.abbreviation%></td>
+      	<td style="width:50px;"><%if ontology.format.eql?("OBO")%><%=ontology.format+" Format"%><%else%><%=ontology.format.split("-")[0]%><%end%></td>
+      	<td style="width:50px;"><%=ontology.versionNumber%></td>
+      	<td><%=ontology.contactName%></td>
+      	<td><%=ontology.dateCreated%></td>
+      	<td ><%if !ontology_groups.empty?%><div style="white-space:nowrap;"><%=ontology_groups.join("<br/>")%></div><%end%></td>
+      	<td style="display:none;"><%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
+      		<br>
+      		<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>
+      	<td style="display:none;"> <%=ontology.categories.join(" ")%></td>
+      	<td style="display:none;"><%if !ontology_groups.empty?%>,<%=ontology_groups.join(",")%>,<%end%></td>
+      </tr>
+    <% end %>
+    </tbody>
 </table>
 </div>
 
