@@ -152,9 +152,9 @@ class OntologiesController < ApplicationController
       next if stop_words.include?(key.to_s) || value.nil? || value.empty?
       params_array << "#{key}=#{value}"
     end
-    params_string = (params_array.empty?) ? "" : "?#{params_array.join('&')}"
+    params_string = (params_array.empty?) ? "" : "&#{params_array.join('&')}"
     
-    redirect_to "/ontologies/#{params[:ontology]}#{params_string}", :status => :moved_permanently
+    redirect_to "/ontologies/#{params[:ontology]}?p=tree_view#{params_string}", :status => :moved_permanently
   end
   
   # GET /visualize/:ontology
