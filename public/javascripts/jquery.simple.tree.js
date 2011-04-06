@@ -105,10 +105,9 @@ $.fn.simpleTree = function(opt){
 		{
 			if($.inArray(parentId,ajaxCache) == -1){
 				ajaxCache[ajaxCache.length]=parentId;
-				var url = $.trim($('>li', node).text());
-				if(url && url.indexOf('url:'))
+				var url = $.trim($('a', node).attr("href"));
+				if(url)
 				{
-					url=$.trim(url.replace(/.*\{url:(.*)\}/i ,'$1'));
 					$.ajax({
 						type: "GET",
 						url: url,
@@ -135,7 +134,7 @@ $.fn.simpleTree = function(opt){
 		};
 		TREE.setTreeNodes = function(obj, useParent){
 			obj = useParent? obj.parent():obj;
-			$('li>span', obj).addClass('text')
+			$('li>a', obj).addClass('text')
 			.bind('selectstart', function() {
 				return false;
 			}).click(function(){
@@ -219,7 +218,7 @@ $.fn.simpleTree = function(opt){
 			TREE.setEventLine($('.line, .line-last', obj));
 		};
 		TREE.setTrigger = function(node){
-			$('>span',node).before('<img class="trigger" src="/images/tree/spacer.gif" border=0>');
+			$('>a',node).before('<img class="trigger" src="/images/tree/spacer.gif" border=0>');
 			var trigger = $('>.trigger', node);
 			trigger.click(function(event){
 				TREE.nodeToggle(node);
@@ -243,7 +242,7 @@ $.fn.simpleTree = function(opt){
 				$('#drag_container').css({position:'absolute', "left" : (event.pageX + 5), "top": (event.pageY + 15) });
 				if(LI.is(':visible'))LI.hide();
 				var temp_move = false;
-				if(event.target.tagName.toLowerCase()=='span' && $.inArray(event.target.className, Array('text','active','trigger'))!= -1)
+				if(event.target.tagName.toLowerCase()=='a' && $.inArray(event.target.className, Array('text','active','trigger'))!= -1)
 				{
 					var parent = event.target.parentNode;
 					var offs = $(parent).offset({scroll:false});
@@ -417,9 +416,9 @@ $.fn.simpleTree = function(opt){
 			}
 		};
 
-		TREE.addNode = function(id, text, callback)
+		TREE.addNode = function(id, text, link, callback)
 		{
-			var temp_node = $('<li><ul><li id="'+id+'"><span>'+text+'</span></li></ul></li>');
+			var temp_node = $('<li><ul><li id="'+id+'"><a href="'+link+'">'+text+'</a></li></ul></li>');
 			TREE.setTreeNodes(temp_node);
 			dragNode_destination = TREE.getSelected();
 			dragNode_source = $('.doc-last',temp_node);

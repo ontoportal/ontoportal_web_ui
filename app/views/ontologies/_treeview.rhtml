@@ -10,7 +10,9 @@ jQuery(document).ready(function(){
 	simpleTreeCollection = jQuery('.simpleTree').simpleTree({
 		autoclose: false, drag:false,
 		afterClick:function(node){
-			nodeClicked(jQuery(node).attr("id"),jQuery('span:first',node).text())
+      History.pushState({p:"tree_view", conceptid:jQuery(node).attr("id")}, jQuery.bioportal.ont_pages["tree_view"].page_name + " | " + org_site, "?p=tree_view&conceptid=" + jQuery(node).attr("id"));
+
+			//nodeClicked(jQuery(node).attr("id"),jQuery('span:first',node).text())
 		},
 		afterDblClick:function(node){
 		},
@@ -63,7 +65,7 @@ jQuery(document).ready(function(){
 });
 
 
-function nodeClicked(node_id,node_label) {
+function nodeClicked(node_id) {
 	// Get current html and store data in cache (to account for changes since the cache was retrieved)
 	setCacheCurrent();
 	
@@ -78,28 +80,37 @@ function nodeClicked(node_id,node_label) {
 	setConcept(node_id)
 
 	if(getCache(node_id)!=null){
-		tabData = getCache(node_id)
+		var tabData = getCache(node_id);
+		var loc;
+		
+		// Make the clicked node active
+		jQuery("a.active").removeClass("active");
+		jQuery(document.getElementById(node_id)).children("a").addClass("active");
+		
 		jQuery('#visualization_content').html(tabData[0]);
 		jQuery('#details_content').html(tabData[1]);
 		jQuery('#notes_content').html(tabData[2]);
 		jQuery('#mappings_content').html(tabData[3]);
 		jQuery('#note_count').html(tabData[5]);
 		jQuery('#mapping_count').html(tabData[6]);
+		
 		// Insert notes table
 		insertNotesTable(tabData["notes_table_data"]);
-        // Load the resource index tab in background
-        loc = new String(document.location)
-        if (loc.search("#resource_index") >= 0 && loc.split("#") == "resource_index") {
-			callTab("resource_index", '/resources/@ontology@/?conceptid=@concept@');
-		}
 		
-		update_tab('<%=@ontology.to_param%>',node_id);
-		tb_init('a.thickbox, area.thickbox, input.thickbox');
+    // Load the resource index tab in background
+    loc = new String(document.location)
+    if (loc.search("#resource_index") >= 0 && loc.split("#") == "resource_index") {
+		 callTab("resource_index", '/resources/@ontology@/?conceptid=@concept@');
+	  }
+    jQuery.unblockUI(); 
+   	tb_init('a.thickbox, area.thickbox, input.thickbox');
 	}else{
 		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
-		jQuery.get('/ajax_concepts/<%=@ontology.to_param%>/?conceptid='+encodeURIComponent(node_id)+'&callback=load',
+		jQuery.get('/ajax_concepts/<%=@ontology.to_param%>/?conceptid='+node_id+'&callback=load',
 		  function(data){
-		    tabData = data.split("|||")
+		    var tabData = data.split("|||");
+		    var loc;
+		    
   			// the tabs
   			jQuery('#visualization_content').html(tabData[0]);
   			jQuery('#details_content').html(tabData[1]);
@@ -110,7 +121,7 @@ function nodeClicked(node_id,node_label) {
   			
   			// Load the resource index tab in background
   			loc = new String(document.location)
-              if (loc.search("#resource_index") >= 0 && loc.split("#")[1] == "resource_index") {
+        if (loc.search("#resource_index") >= 0 && loc.split("#")[1] == "resource_index") {
   				callTab('resource_index', '/resources/@ontology@/?conceptid=@concept@');
   			}
   

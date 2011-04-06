@@ -8,7 +8,7 @@
 	    {type:'js',src:'/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js'},
 	    {type:'js',src:'/javascripts/jquery.tools.min.js'},
       {type:'js',src:'/javascripts/JqueryPlugins/splitter/splitter.js'},
-      {type:'js',src:'/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.min.js'}
+      {type:'js',src:'/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.js'}
     ]);
 	</script>
 	
@@ -63,7 +63,7 @@
 			if( !!li.extra ){
         var sValue = jQuery("#jump_to_concept_id").val();
 			  
-        History.pushState({p:"tree_view", conceptid:sValue}, jQuery.bioportal.ont_pages["tree_view"].page_name + " | " + org_site, "?p=tree_view&conceptid=" + sValue);
+        History.pushState({p:"tree_view", conceptid:sValue, suid:"jump_to"}, jQuery.bioportal.ont_pages["tree_view"].page_name + " | " + org_site, "?p=tree_view&conceptid=" + sValue);
         
         return;
 			}

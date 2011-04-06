@@ -16,9 +16,6 @@
     {type:'css',src:'/javascripts/JqueryPlugins/superfish/superfish.css'},
     {type:'js',src:'/javascripts/JqueryPlugins/superfish/superfish.js'}
   ]);
-</script>
-
-<script type="text/javascript">
 	
 // Load external JS files
 if (typeof BP_NOTES_LIST_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_list.js");
@@ -40,7 +37,6 @@ jQuery.data(document.body, "semi_uuid", "<%=@semi_uuid%>");
 function wireTable(notesTableNew) {
 	// Wire up table if it hasn't been done yet
 	notesTable = notesTableNew.dataTable({
-	  "bRetrieve": true,
 		"iDisplayLength": 50,
 		"sPaginationType": "full_numbers",
 		"aaSorting": [[5, 'desc']],
@@ -62,8 +58,8 @@ function wireTable(notesTableNew) {
 	
 	// Important! Table is somehow getting set to zero width. Reset here.$
 	jQuery(notesTable).css("width", "100%");
-	
-  notesTable.fnFilter('false', 2);
+
+  //notesTable.fnFilter('false', 2);
 }
 
 jQuery(document).ready(function(){

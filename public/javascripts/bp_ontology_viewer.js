@@ -56,9 +56,9 @@ function displayTree(data) {
   var new_concept_id = data.conceptid;
   
   // Check to see if we're actually loading a new concept or just displaying the one we already loaded previously
-  if (typeof new_concept_id === 'undefined' || new_concept_id == concept_id) {
+  if (typeof new_concept_id === 'undefined' && new_concept_id == concept_id) {
     if (concept_id !== "") {
-        History.pushState({p:"tree_view", conceptid:concept_id}, jQuery.bioportal.ont_pages["tree_view"].page_name + " | " + org_site, "?p=tree_view" + "&conceptid=" + concept_id);
+        History.replaceState({p:"tree_view", conceptid:concept_id}, jQuery.bioportal.ont_pages["tree_view"].page_name + " | " + org_site, "?p=tree_view" + "&conceptid=" + concept_id);
     }
     
     jQuery.unblockUI();
@@ -67,18 +67,30 @@ function displayTree(data) {
   } else {
     jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false }); 
     var new_concept_param = (typeof new_concept_id === 'undefined') ? "" : "&conceptid=" + new_concept_id;
-    var cache_key;
     
     if (typeof new_concept_id !== 'undefined') {
       // Retrieve new concept and display tree
       jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view" + new_concept_param, "Problem retrieving tree view", ontology_name + " - Tree View", "Tree View");
-      jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
+      
+      if (typeof data.suid !== 'undefined' && data.suid === "jump_to") {
+        // Are we jumping into the ontology? If so, get the whole tree
+        jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
+      } else {
+        if (document.getElementById(new_concept_id) !== null) {
+          // We have a visible node that's been clicked, get the details for that node
+          nodeClicked(new_concept_id);
+        } else {
+          // Get a new copy of the three because our concept isn't visible
+          // This could be due to using the forward/back button
+          jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
+        }
+      }
     } else {
       // Retrieve new concept and display tree
       jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view", "Problem retrieving tree view", ontology_name + " - Tree View", "Tree View");
       jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
     }
-    
+
     concept_id = new_concept_id;
   }
 }

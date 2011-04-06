@@ -1302,6 +1302,13 @@ textarea.create_note_inputs {
 	border: 1px solid #E2EBF0;
 	font-weight: bold;
 }
+.simpleTree a, .simpleTree a:hover {
+	text-decoration: none;
+	color: black;
+}
+.simpleTree a:hover {
+	cursor: pointer;
+}
 #drag_container {
 	background:#ffffff;
 	color:#000;
