@@ -1,8 +1,27 @@
 <% content_section = (params[:p]) ? params[:p] : "summary" %>
 <%@title = "#{@ontology.displayLabel}" %>
 
-<%=render :partial =>'layouts/header'%>          
+<%=render :partial =>'layouts/header'%>    
 
+
+<!--[if gte IE 8]>
+<style>
+  .fg-button .ui-icon {
+    margin-top: -14px;
+  }
+</style>
+<![endif]-->
+     
+<!--[if IE 7]>
+<style>
+  #nav_ontology {
+    position: absolute;
+    padding-top: .5em;
+    vertical-align: top !important;
+  }
+</style>
+<![endif]-->
+     
 <script type="text/javascript">
   // Set the background color for this page only
   jQuery("html").css("background", "#234979");
