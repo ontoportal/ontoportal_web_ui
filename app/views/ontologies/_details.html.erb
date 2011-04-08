@@ -35,7 +35,7 @@
                   Format:
               </th>
               <td>
-                  <%if @ontology.format.eql?("OBO") %><%= @ontology.format+"F" %><%else %><%= @ontology.format.split("-")[0] %><%end %>
+                  <%= @ontology.format.split("-")[0] %>
               </td>
           </tr>
           <tr>
