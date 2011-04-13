@@ -129,7 +129,7 @@ class DataAccess
         notes_counts = {}
         ontologies.each do |ontology|
           notes = self.getNotesForOntology(ontology.ontologyId) rescue Array.new
-          puts "Note count for #{ontology.displayLabel}: #{notes.length}"
+          LOG.add :debug, "Note count for #{ontology.displayLabel}: #{notes.length}"
           notes_counts[ontology.ontologyId.to_i] = notes.length
         end
 
