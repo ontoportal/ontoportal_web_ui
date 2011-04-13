@@ -59,28 +59,47 @@ class DataAccess
   end
   
   def self.getTotalTermCount
+    ontology_term_counts = self.getTermsCountOntologies
+    
+    if ontology_term_counts.nil? || ontology_term_counts.length == 0
+      # Return a default term count, based on a value from Feb 2011
+      return 4849100
+    end
+    
+    total_terms = 0
+    ontology_term_counts.each do |ontology, terms|
+      total_terms += terms.to_i rescue 0
+    end
+    
+    total_terms
+  end
+  
+  def self.getTermsCountOntologies
     ontologies = self.getOntologyList
     
     terms = CACHE.get("terms_all_ontologies")
     running = CACHE.get("running_term_calc")
     
-    if (CACHE.get("terms_all_ontologies").nil? || CACHE.get("terms_all_ontologies").to_i <= 0) && (CACHE.get("running_term_calc").nil? || !CACHE.get("running_term_calc").eql?("true"))
+    if (terms.nil? || terms.length == 0) && (running.nil? || !running.eql?("true"))
       CACHE.set("running_term_calc", "true", 60*15)
       
-      # Set a default term count, based on a value from Feb 2011
-      CACHE.set("terms_all_ontologies", 4849100)
+      # Set a default hash either empty or based on an old calculation
+      default_terms = CACHE.get("terms_all_ontologies_old").nil? ? Hash.new : CACHE.get("terms_all_ontologies_old")
+      CACHE.set("terms_all_ontologies", default_terms)
+      terms = default_terms
       
       # Spawn a process to calculate total term size
       spawn(:argv => "spawn_ontology_terms") do
-        total_terms = 0
+        ontology_terms = {}
         ontologies.each do |ontology|
-          total_terms += self.getOntologyMetrics(ontology.id).numberOfClasses.to_i rescue 0
+          ontology_terms[ontology.ontologyId.to_i] = self.getOntologyMetrics(ontology.id).numberOfClasses.to_i rescue 0
         end
 
         # Since we spawn a new process we need to make sure to reset the cache
         CACHE.reset
 
-        CACHE.set("terms_all_ontologies", total_terms, MEDIUM_CACHE_EXPIRE_TIME)
+        CACHE.set("terms_all_ontologies", ontology_terms, LONG_CACHE_EXPIRE_TIME)
+        CACHE.set("terms_all_ontologies_old", ontology_terms, EXTENDED_CACHE_EXPIRE_TIME)
         CACHE.set("running_term_calc", "false")
         
         # Since we spawn a new process we need to make sure to reset the cache
@@ -88,8 +107,46 @@ class DataAccess
       end
     end
 
-    CACHE.reset
-    return CACHE.get("terms_all_ontologies")
+    return Hash.new if terms.nil?
+    return terms
+  end
+  
+  def self.getNotesCounts
+    ontologies = self.getOntologyList
+    
+    notes_counts = CACHE.get("notes_all_ontologies")
+    running = CACHE.get("running_notes_count_calc")
+    
+    if (notes_counts.nil? || notes_counts.length == 0) && (running.nil? || !running.eql?("true"))
+      CACHE.set("running_notes_count_calc", "true", 60*15)
+      
+      default_notes_counts =  CACHE.get("notes_all_ontologies_old").nil? ? Hash.new : CACHE.get("notes_all_ontologies_old")
+      CACHE.set("notes_all_ontologies", default_notes_counts)
+      notes_counts = default_notes_counts
+      
+      # Spawn a process to calculate total term size
+      spawn(:argv => "spawn_notes_counts") do
+        notes_counts = {}
+        ontologies.each do |ontology|
+          notes = self.getNotesForOntology(ontology.ontologyId) rescue Array.new
+          puts "Note count for #{ontology.displayLabel}: #{notes.length}"
+          notes_counts[ontology.ontologyId.to_i] = notes.length
+        end
+
+        # Since we spawn a new process we need to make sure to reset the cache
+        CACHE.reset
+
+        CACHE.set("notes_all_ontologies", notes_counts, LONG_CACHE_EXPIRE_TIME)
+        CACHE.set("notes_all_ontologies_old", ontology_terms, EXTENDED_CACHE_EXPIRE_TIME)
+        CACHE.set("running_notes_count_calc", "false")
+        
+        # Since we spawn a new process we need to make sure to reset the cache
+        CACHE.reset
+      end
+    end
+    
+    return Hash.new if notes_counts.nil?
+    return notes_counts
   end
   
   def self.getCategories
@@ -154,8 +211,8 @@ class DataAccess
     return self.cache_pull("#{individual_id}::notes", "getNotesForIndividual", { :ontology_virtual_id => ontology_virtual_id, :individual_id => individual_id, :threaded => threaded }, 60*15)
   end
   
-  def self.getNotesForOntology(ontology_virtual_id, threaded = false, virtual = false)
-    return self.cache_pull("#{ontology_virtual_id}::notes", "getNotesForOntology", { :ontology_virtual_id => ontology_virtual_id, :threaded => threaded, :virtual => virtual }, 60*15)
+  def self.getNotesForOntology(ontology_virtual_id, threaded = false)
+    return self.cache_pull("#{ontology_virtual_id}::notes", "getNotesForOntology", { :ontology_virtual_id => ontology_virtual_id, :threaded => threaded }, 60*15)
   end
   
   def self.updateNote(ontology_id, params, virtual = false)
@@ -298,6 +355,20 @@ class DataAccess
     self.cache_pull("ontoliges::map_count", "getMappingCountOntologies", nil, LONG_CACHE_EXPIRE_TIME)
   end
 
+  def self.getMappingCountOntologiesHash
+    if CACHE.get("mapping_count_ontologies_hash").nil?
+      mappings_counts = self.getMappingCountOntologies rescue Array.new
+      mappings_counts_hash = {}
+      mappings_counts.each do |map_count|
+        mappings_counts_hash[map_count['ontologyId'].to_i] = map_count['totalMappings'].to_i
+      end
+      CACHE.set("mapping_count_ontologies_hash", mappings_counts_hash, MEDIUM_CACHE_EXPIRE_TIME)
+    else
+      mappings_counts_hash = CACHE.get("mapping_count_ontologies_hash")
+    end
+    mappings_counts_hash
+  end
+
   def self.getMappingCountOntologyConcepts(ontology_virtual_id, limit = 35)
     self.cache_pull("#{ontology_virtual_id}::concepts::map_count", "getMappingCountOntologyConcepts", { :ontology_virtual_id => ontology_virtual_id, :limit => limit }, LONG_CACHE_EXPIRE_TIME)
   end
@@ -309,7 +380,7 @@ class DataAccess
   def self.getRecentMappings
     self.cache_pull("recent::mappings", "getRecentMappings", nil, 60*15)
   end
-
+  
   def self.getNodeNameContains(ontologies, search, page, params = {}) 
     results,pages = SERVICE.getNodeNameContains(ontologies, search, page, params)
     return results,pages

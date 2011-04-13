@@ -8,7 +8,7 @@ class UserWrapper
     attr_accessor :lastname
     attr_accessor :roles
     attr_accessor :phone
-    attr_accessor :session_id
+    attr_accessor :apikey
     
     attr_accessor :password_confirmation  
     attr_accessor :password
@@ -41,7 +41,6 @@ class UserWrapper
       self.lastname = params[:lastname]
       self.roles = params[:roles]
       self.phone = params[:phone]
-      self.session_id = params[:session_id]
       self.email_confirmation = params[:email_confirmation]
       
     end
@@ -55,7 +54,6 @@ class UserWrapper
       params[:lastname] =  self.lastname 
       params[:roles] = self.roles
       params[:phone] = self.phone
-      params[:session_id] = self.session_id  
       params[:password]= self.password
       return params
     end

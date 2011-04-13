@@ -95,5 +95,55 @@ module OntologiesHelper
     ont_versions.each {|ont| ont_versions_array << [ ont.versionNumber, ont.id ] }
     return ont_versions_array
   end
+  
+  def get_ont_icons(ontology)
+    mappings_count = DataAccess.getMappingCountOntologiesHash
+    mappings_count = mappings_count[ontology.ontologyId].to_i
+    notes_count = DataAccess.getNotesCounts
+    notes_count = notes_count[ontology.ontologyId].to_i
+    
+    formatting_options = { :thousand => "K", :million => "M", :billion => "B" }
+    
+    mappings_count_formatted = (mappings_count.nil? || mappings_count == 0) ? "" : number_to_human(mappings_count, :precision => 0, :units => formatting_options).gsub(" ", "")
+    notes_count_formatted = (notes_count.nil? || notes_count == 0) ? "" : number_to_human(notes_count, :units => formatting_options).gsub(" ", "")
+    
+    links = ""
+    links << "<a class='ont_icons' href=''>T</a>"
+    links << "<a class='ont_icons' href=''>M<span class='ont_counts'>#{mappings_count_formatted}</span></a>"
+    links << "<a class='ont_icons' href=''>N<span class='ont_counts'>#{notes_count_formatted}</span></a>"
+  end
+  
+  def terms_link(ontology)
+    count = DataAccess.getTermsCountOntologies[ontology.ontologyId.to_i]
+    loc = "tree_view"
+    
+    if count.nil? || count <= 0
+      return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>Terms</a>"
+    else
+      return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
+    end
+  end
+  
+  def mappings_link(ontology)
+    count = DataAccess.getMappingCountOntologiesHash[ontology.ontologyId.to_i]
+    loc = "mappings"
+    
+    if count.nil? || count <= 0
+      return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>Mappings</a>"
+    else
+      return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
+    end
+  end
+
+  def notes_link(ontology)
+    count = DataAccess.getNotesCounts[ontology.ontologyId.to_i]
+    loc = "notes"
+    
+    if count.nil? || count <= 0
+      return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>Notes</a>"
+    else
+      return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
+    end
+  end
 
 end

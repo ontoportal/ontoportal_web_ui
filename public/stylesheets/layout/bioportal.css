@@ -460,7 +460,7 @@ h1 a:hover, h2 a:hover {
 	letter-spacing: 2px;
 	text-transform: uppercase;
 	text-align: left;
-	padding: 6px 6px 6px 12px;
+	padding: 6px 20px 6px 12px;
 	background-color: #e2ebf0;
 }
 .zebra tbody th {
@@ -1445,4 +1445,37 @@ button.fg-button-menu, button.fg-button {
 
 .top_right_menu_last {
 	border: none !important;
+}
+
+/************************************
+ * Browse Page Icons
+ ************************************/
+
+.ont_icons {
+	width: 22px;
+	height: 22px;
+	background-color: #ccc;
+/*	border: gray 1px solid;*/
+	color: gray;
+	display: block;
+	float: right;
+	padding: .5px;
+	font-size: 11px;
+	line-height: 11px;
+	text-align: left;
+	margin: 1px 1px;
+	text-decoration: none;
+	font-family: Lucida Console,Monaco,monospace;
+}
+
+.ont_icons .disabled {
+	background-color: gray;
+}
+
+.ont_counts {
+	display: block;
+	padding: 1px;
+	font-size: 9px;
+	text-align: right;
+	color: black;
 }

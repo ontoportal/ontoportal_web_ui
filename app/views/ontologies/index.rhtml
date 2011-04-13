@@ -1,5 +1,6 @@
 <%@title = "Ontology Listing"%>
 <script type="text/javascript" src="/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/javascripts/JqueryPlugins/datatables/plugins/datatables.formatted.number.js"></script>
 <link rel="stylesheet" href="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <script src="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.min.js" type="text/javascript" charset="utf-8"></script>
 <link rel="alternate" title="<%=@title%> RSS" href="/syndication/rss" type="application/rss+xml" />
@@ -67,6 +68,9 @@ jQuery(document).ready(function() {
     aoColumns: [
                 { sWidth: '250px' },
                 { sWidth: '30px' },
+                { sWidth: '30px' },
+                { sWidth: '30px' },
+                { sWidth: '30px' },
                 { sWidth: '50px' },
                 { sWidth: '50px' },
                 { sWidth: '200px' },
@@ -77,21 +81,24 @@ jQuery(document).ready(function() {
 		asStripClasses:["","alt"],
 		"oLanguage":{"sSearch":"Filter Ontologies"},
 		"aoData": [
-  			{ "sType": "html" },
-  			null,
-        null,
-  			null,
-  			null,
-  			null,
-  			null,
-  			{"bSearchable":false,"bVisible":false},
-  			{"bSearchable":false,"bVisible":false,"sType":"groups"},
-  			{"bSearchable":false,"bVisible":false}
+  			{ "sType": "html" }, // Ontology Name
+  			null, // Acronym
+  			{ "sType": "html-formatted-num" }, // Terms
+  			{ "sType": "html-formatted-num" }, // Notes
+  			{ "sType": "html-formatted-num" }, // Mappings
+        { "bVisible":false }, // Format
+  			{ "bVisible":false }, // Version
+  			null, // Author
+  			null, // Uploaded
+  			null, // Group
+  			{"bSearchable":false,"bVisible":false}, // Description
+  			{"bSearchable":false,"bVisible":false,"sType":"groups"}, // Categories
+  			{"bSearchable":false,"bVisible":false} // Groups
 			],
 			"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
 						/* Append the grade to the default row class name */
 						var children = jQuery(nRow).children();
-						jQuery(children[0]).tooltip({ 
+						jQuery(children[0]).children("div.ont_link").tooltip({ 
 							bodyHandler: function() {return aData[7]},
 						    track: true, 
 						    delay: 0, 
@@ -184,6 +191,9 @@ jQuery(document).ready(function() {
       <tr>
       	<th>Ontology Name</th>
         <th>Acronym</th>
+        <th>Terms</th>
+        <th>Notes</th>
+        <th>Mappings</th>
       	<th>Format</th>
       	<th>Version</th>
       	<th>Author</th>
@@ -196,7 +206,6 @@ jQuery(document).ready(function() {
     </thead>
     <tbody>
     <% for ontology in @ontologies %>
-    
     	<%
     	# Group names
     	ontology_groups = []
@@ -206,15 +215,13 @@ jQuery(document).ready(function() {
     	%>
       <tr>
       	<td style="width:250px;">
-      	  <%=link_to ontology.displayLabel, ontology_path(:id=>ontology.id)%> <span style="font-size: xx-small; color: lightGray; padding-left: 1em;"><%=get_status_text(ontology)%></span>
-        	<%if false%>
-        		<ul style="padding-left:20px;">
-        			<li style="margin-bottom:4px;"><%= link_to "#{ontology.projects} Related Projects",projects_path(:ontology=>ontology.ontologyId)%></li>
-        			<li><%= link_to "See All #{ontology.reviews} Reviews",reviews_path(:ontology=>ontology.ontologyId)%></li>
-        		</ul>
-        	<%end%>
+        	  <span style="padding-right: .5em;"><%=link_to ontology.displayLabel, ontology_path(:id=>ontology.ontologyId)%></span>
+        	  <span style="font-size: xx-small; color: gray;"><%=get_status_text(ontology)%></span>
       	</td>
       	<td style="width:50px;"><%=ontology.abbreviation%></td>
+        <td style="width:30px;text-align:right;"><%=terms_link(ontology)%></td>
+        <td style="width:30px;text-align:right;"><%=notes_link(ontology)%></td>
+        <td style="width:30px;text-align:right;"><%=mappings_link(ontology)%></td>
       	<td style="width:50px;"><%=ontology.format.split("-")[0]%></td>
       	<td style="width:50px;"><%=ontology.versionNumber%></td>
       	<td><%=ontology.contactName%></td>

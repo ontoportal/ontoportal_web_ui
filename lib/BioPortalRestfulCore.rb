@@ -884,9 +884,8 @@ class BioPortalRestfulCore
       return user
     end
     
-    doc.elements.each("*/data/userBean"){ |element|  
-      user = parseUser(element)
-      user.session_id = doc.elements["success"].elements["sessionId"].get_text.value
+    doc.elements.each("*/data/session/attributes/entry/securityContext"){ |element|  
+      user = parseAuthenticatedUser(element)
     }
     
     return user
@@ -1058,6 +1057,9 @@ private
   
   # Gets XML from the rest service. Used to include a user-agent in one location.
   def self.get_xml(uri, timeout = 60)
+    apikey = uri.include?("?") ? "&apikey=" + $APPLICATION_ID : "?apikey=" + $APPLICATION_ID
+    uri << apikey
+    
     begin
       open(uri, "User-Agent" => "BioPortal-UI")
     rescue Exception => e
@@ -1226,9 +1228,6 @@ private
     return group
   end
   
-  ##
-  # Parse user data from the returned XML.
-  ##
   def self.parseUser(userbeanXML)
     user = UserWrapper.new
     
@@ -1249,6 +1248,15 @@ private
     end
     
     user.roles = roles
+    
+    return user
+  end
+  
+  def self.parseAuthenticatedUser(user_security_xml)
+    userbeanXML = user_security_xml.elements["userBean"]
+    user = self.parseUser(userbeanXML)
+    
+    user.apikey = user_security_xml.elements["apiKey"].get_text.value.strip rescue ""
     
     return user
   end
