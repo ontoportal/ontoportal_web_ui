@@ -113,8 +113,7 @@ module OntologiesHelper
     links << "<a class='ont_icons' href=''>N<span class='ont_counts'>#{notes_count_formatted}</span></a>"
   end
   
-  def terms_link(ontology)
-    count = DataAccess.getTermsCountOntologies[ontology.ontologyId.to_i]
+  def terms_link(ontology, count)
     loc = "tree_view"
     
     if count.nil? || count <= 0
@@ -124,8 +123,7 @@ module OntologiesHelper
     end
   end
   
-  def mappings_link(ontology)
-    count = DataAccess.getMappingCountOntologiesHash[ontology.ontologyId.to_i]
+  def mappings_link(ontology, count)
     loc = "mappings"
     
     if count.nil? || count <= 0
@@ -135,8 +133,7 @@ module OntologiesHelper
     end
   end
 
-  def notes_link(ontology)
-    count = DataAccess.getNotesCounts[ontology.ontologyId.to_i]
+  def notes_link(ontology, count)
     loc = "notes"
     
     if count.nil? || count <= 0

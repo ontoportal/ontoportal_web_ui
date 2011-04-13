@@ -141,100 +141,118 @@ jQuery(document).ready(function() {
 
 
 <div id="ontologies_bd_container">
-	<br/>
-
-	<table class="form">
-		
-		<tr><th>Submit Ontology</th><td class="top">
-		<%if session[:user].nil? %>
-			<a href="/login?redirect=/ontologies/new">Submit New Ontology</a>
-		<%else%>
-			<%=link_to "Submit New Ontology",new_ontology_path%>
-		<%end%></td>
-		</tr>
-		<tr>
-			<td colspan="2">&nbsp;</td>
-		</tr>
-		
-		
-	<tr>	
-	<th>Filter by Category</td>
-	  <td class="top">
-  	  <select onchange="filterBySelection(this)"  name="cat">
-        <option value="0" selected="selected">All Categories</option>
-    		<%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
-    		<%for cat in cats%>
-      		<option value="<%=cat[:id]%>" ><%=cat[:name]%></option>
-    		<%end%>
-    	</select>
-	  </td>
-	</tr>
-	<tr>
-		<th>Filter by Group</td><td><select onchange="filterByGroup(this)"  name="groups" id="select_groups">
-		<option value="0" <%if params[:filter].nil?%>selected="selected"<%end%> >All Groups</option>
-			<% @groups.group_list.each do |group_id, group| %>
-				<option value="<%=group[:acronym]%>" <%if !params[:filter].nil? && group[:acronym].include?(params[:filter])%>selected="selected"<%end%>><%=group[:name]%> (<%=group[:acronym]%>)</option>
-			<%end%>
-	</select> <a href="/ontologies<%if !params[:filter].nil?%>/?filter=<%=params[:filter]%><%end%>" id="filterlink">Link To This Filter</a></td>
-	</tr>
-	
-	<tr>
-		<th>Filter by Text</td><td><input type="text" name="filt" onkeyup="customFilterBox(this.value)"></td>
-	</tr>
-	
-	</table>
-		<div id="all_updates_rss">
-		  <img src="/images/feed-icon.png" border="0" height="16px" width="16px"> <a href="/syndication/rss">Subscribe to all updates</a>
-		</div>
-<table id="ontologies" class="zebra" cellpadding="0" cellspacing="0">
-		<thead>
+  <div id="ontologies_padding_container">
+    <br/>
+    <table class="form">
       <tr>
-      	<th>Ontology Name</th>
-        <th>Acronym</th>
-        <th>Terms</th>
-        <th>Notes</th>
-        <th>Mappings</th>
-      	<th>Format</th>
-      	<th>Version</th>
-      	<th>Author</th>
-      	<th>Uploaded On</th>
-      	<th>Group</th>
-      	<th style="display:none;">Description</th>
-      	<th style="display:none;">categories</th>
-      	<th style="display:none;">groups</th>
+        <th>Submit Ontology</th>
+        <td class="top">
+          <%if session[:user].nil? %>
+            <a href="/login?redirect=/ontologies/new">Submit New Ontology</a>
+          <%else%>
+            <%= link_to "Submit New Ontology",new_ontology_path%>
+          <%end%>
+        </td>
       </tr>
-    </thead>
-    <tbody>
-    <% for ontology in @ontologies %>
-    	<%
-    	# Group names
-    	ontology_groups = []
-    	ontology.groups.each do |group_id|
-    	  ontology_groups << @groups.group_list[group_id][:acronym]
-    	end
-    	%>
       <tr>
-      	<td style="width:250px;">
-        	  <span style="padding-right: .5em;"><%=link_to ontology.displayLabel, ontology_path(:id=>ontology.ontologyId)%></span>
-        	  <span style="font-size: xx-small; color: gray;"><%=get_status_text(ontology)%></span>
-      	</td>
-      	<td style="width:50px;"><%=ontology.abbreviation%></td>
-        <td style="width:30px;text-align:right;"><%=terms_link(ontology)%></td>
-        <td style="width:30px;text-align:right;"><%=notes_link(ontology)%></td>
-        <td style="width:30px;text-align:right;"><%=mappings_link(ontology)%></td>
-      	<td style="width:50px;"><%=ontology.format.split("-")[0]%></td>
-      	<td style="width:50px;"><%=ontology.versionNumber%></td>
-      	<td><%=ontology.contactName%></td>
-      	<td><%=ontology.dateCreated%></td>
-      	<td ><%if !ontology_groups.empty?%><div style="white-space:nowrap;"><%=ontology_groups.join("<br/>")%></div><%end%></td>
-      	<td style="display:none;"><%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
-      		<br>
-      		<%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%></td>
-      	<td style="display:none;"> <%=ontology.categories.join(" ")%></td>
-      	<td style="display:none;"><%if !ontology_groups.empty?%>,<%=ontology_groups.join(",")%>,<%end%></td>
+        <td colspan="2">&nbsp;</td>
       </tr>
-    <% end %>
-    </tbody>
-</table>
+      <tr>
+        <th>
+        Filter by Category</td>
+        <td class="top">
+          <select onchange="filterBySelection(this)"  name="cat">
+            <option value="0" selected="selected">All Categories</option>
+            <% cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]}%>
+            <%for cat in cats%>
+            <option value="<%= cat[:id]%>" ><%= cat[:name]%></option>
+            <%end%>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th>
+        Filter by Group</td>
+        <td>
+          <select onchange="filterByGroup(this)"  name="groups" id="select_groups">
+            <option value="0" <%if params[:filter].nil?%>selected="selected"<%end%> >All Groups</option>
+            <% @groups.group_list.each do |group_id, group| %>
+              <option value="<%= group[:acronym]%>" <%if !params[:filter].nil? && group[:acronym].include?(params[:filter])%>selected="selected"<%end%>><%= group[:name]%> (<%= group[:acronym]%>)</option>
+            <%end%>
+          </select>
+          <a href="/ontologies<%if !params[:filter].nil?%>/?filter=<%= params[:filter]%><%end%>" id="filterlink">Link To This Filter</a>
+        </td>
+      </tr>
+      <tr>
+        <th>
+        Filter by Text</td>
+        <td>
+        <input type="text" name="filt" onkeyup="customFilterBox(this.value)">
+        </td>
+      </tr>
+    </table>
+    <div id="all_updates_rss">
+      <img src="/images/feed-icon.png" border="0" height="16px" width="16px">
+      <a href="/syndication/rss">Subscribe to all updates</a>
+    </div>
+    <table id="ontologies" class="zebra" cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Ontology Name</th>
+          <th>Acronym</th>
+          <th>Terms</th>
+          <th>Notes</th>
+          <th>Mappings</th>
+          <th>Format</th>
+          <th>Version</th>
+          <th>Author</th>
+          <th>Uploaded On</th>
+          <th>Group</th>
+          <th style="display:none;">Description</th>
+          <th style="display:none;">categories</th>
+          <th style="display:none;">groups</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for ontology in @ontologies %>
+        <%
+          # Group names
+          ontology_groups = []
+          ontology.groups.each do |group_id|
+            ontology_groups << @groups.group_list[group_id][:acronym]
+          end
+        %>
+        <tr>
+          <td style="width:250px;">
+            <span style="padding-right: .5em;"><%= link_to ontology.displayLabel, ontology_path(:id=>ontology.ontologyId)%></span>
+            <span style="font-size: xx-small; color: gray;"><%= get_status_text(ontology)%></span>
+          </td>
+          <td style="width:50px;"><%= ontology.abbreviation%></td>
+          <td style="width:30px;text-align:right;"><%= terms_link(ontology, @term_counts[ontology.ontologyId.to_i])%></td>
+          <td style="width:30px;text-align:right;"><%= notes_link(ontology, @note_counts[ontology.ontologyId.to_i])%></td>
+          <td style="width:30px;text-align:right;"><%= mappings_link(ontology, @mapping_counts[ontology.ontologyId.to_i])%></td>
+          <td style="width:50px;"><%= ontology.format.split("-")[0]%></td>
+          <td style="width:50px;"><%= ontology.versionNumber%></td>
+          <td><%= ontology.contactName%></td>
+          <td><%= ontology.dateCreated%></td>
+          <td >
+            <%if !ontology_groups.empty?%>
+              <div style="white-space:nowrap;">
+                <%= ontology_groups.join("<br/>")%>
+              </div>
+            <%end%>
+          </td>
+          <td style="display:none;">
+            <%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
+            <br>
+            <%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%>
+          </td>
+          <td style="display:none;"> <%=ontology.categories.join(" ")%></td>
+          <td style="display:none;"><%if !ontology_groups.empty?%>,<%=ontology_groups.join(",")%>,<%end%></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>
 

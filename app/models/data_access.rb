@@ -189,7 +189,7 @@ class DataAccess
         metrics_old = self.cache_pull("#{version.id}::_metrics", "getOntologyMetrics", { :ontology_id => version.id })
         if !metrics_old.nil? && metrics_old.numberOfClasses.to_i > 0
           return metrics_old
-        elsif index >= 20 # 21 most recent versions are checked (3 weeks)
+        elsif index >= 4 # 21 most recent versions are checked (3 weeks)
           return nil
         end
       end

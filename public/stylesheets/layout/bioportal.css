@@ -254,9 +254,10 @@ h1 a:hover, h2 a:hover {
 }
 #ontologies_bd_container {
 	width: 100%;
-	padding: 1em;
 }
-	
+#ontologies_padding_container {
+	padding: 1em;
+}	
 
 #bd #bd_content {
 	display:block;

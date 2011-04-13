@@ -15,6 +15,9 @@ class OntologiesController < ApplicationController
     @ontologies = DataAccess.getOntologyList()
     @categories = DataAccess.getCategories()
     @groups = DataAccess.getGroups()
+    @term_counts = DataAccess.getTermsCountOntologies
+    @mapping_counts = DataAccess.getMappingCountOntologiesHash
+    @note_counts = DataAccess.getNotesCounts
     
     respond_to do |format|
       format.html # index.rhtml
