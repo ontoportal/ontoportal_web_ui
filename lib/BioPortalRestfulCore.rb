@@ -713,6 +713,7 @@ class BioPortalRestfulCore
       LOG.add :debug, "Error sorting notes"
     end
     
+    return Array.new if !notes.kind_of?(Array)
     return notes
   end
 

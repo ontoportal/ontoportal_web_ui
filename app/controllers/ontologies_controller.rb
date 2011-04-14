@@ -422,7 +422,7 @@ class OntologiesController < ApplicationController
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
     @metrics = DataAccess.getOntologyMetrics(@ontology.id)
-    @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, false, true)
+    @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, false)
     @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
     
     LOG.add :info, 'show_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
@@ -487,7 +487,7 @@ class OntologiesController < ApplicationController
   
   def notes
     @ontology = DataAccess.getOntology(params[:id])
-    @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, false, true)
+    @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, false)
     @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
     if request.xhr?
       render :partial => 'notes', :layout => false

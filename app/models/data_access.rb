@@ -128,7 +128,11 @@ class DataAccess
       spawn(:argv => "spawn_notes_counts") do
         notes_counts = {}
         ontologies.each do |ontology|
-          notes = self.getNotesForOntology(ontology.ontologyId) rescue Array.new
+          if ontology.ontologyId.to_i == 1104
+            test = true
+          end
+          notes = self.getNotesForOntology(ontology.ontologyId)
+          notes = [notes] if notes.kind_of?(Note)
           LOG.add :debug, "Note count for #{ontology.displayLabel}: #{notes.length}"
           notes_counts[ontology.ontologyId.to_i] = notes.length
         end
@@ -137,7 +141,7 @@ class DataAccess
         CACHE.reset
 
         CACHE.set("notes_all_ontologies", notes_counts, LONG_CACHE_EXPIRE_TIME)
-        CACHE.set("notes_all_ontologies_old", ontology_terms, EXTENDED_CACHE_EXPIRE_TIME)
+        CACHE.set("notes_all_ontologies_old", notes_counts, EXTENDED_CACHE_EXPIRE_TIME)
         CACHE.set("running_notes_count_calc", "false")
         
         # Since we spawn a new process we need to make sure to reset the cache

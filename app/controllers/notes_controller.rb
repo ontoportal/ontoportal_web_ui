@@ -63,7 +63,7 @@ class NotesController < ApplicationController
       render :partial => 'list', :layout => 'ontology'
       return
     else
-      @notes = DataAccess.getNotesForOntology(ontology_virtual_id, true, true)
+      @notes = DataAccess.getNotesForOntology(ontology_virtual_id, true)
       @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
       render :partial => 'list', :layout => 'ontology'
       return
