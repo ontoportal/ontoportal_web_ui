@@ -45,7 +45,11 @@ class UsersController < ApplicationController
     # Get all ontologies that match this user
     @user_ontologies = []
     DataAccess.getOntologyList.each do |ont|
-      @user_ontologies << ont if DataAccess.getOntology(ont.id).userId.to_i == params[:id].to_i
+      begin
+        @user_ontologies << ont if DataAccess.getOntology(ont.id).userId.to_i == params[:id].to_i
+      rescue Exception => e
+        next
+      end
     end
 
     render :action =>'edit'
