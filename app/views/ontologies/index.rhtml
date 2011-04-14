@@ -73,8 +73,8 @@ jQuery(document).ready(function() {
                 { sWidth: '30px' },
                 { sWidth: '50px' },
                 { sWidth: '50px' },
-                { sWidth: '200px' },
-                { sWidth: '50px' },
+                { sWidth: '225px' },
+                { sWidth: '30px' },
                 { sWidth: '50px' }
             ],
 		iDisplayLength:800,
@@ -223,7 +223,7 @@ jQuery(document).ready(function() {
           end
         %>
         <tr>
-          <td style="width:250px;">
+          <td style="width:300px;">
             <span style="padding-right: .5em;"><%= link_to ontology.displayLabel, ontology_path(:id=>ontology.ontologyId)%></span>
             <span style="font-size: xx-small; color: gray;"><%= get_status_text(ontology)%></span>
           </td>
@@ -233,9 +233,9 @@ jQuery(document).ready(function() {
           <td style="width:30px;text-align:right;"><%= mappings_link(ontology, @mapping_counts[ontology.ontologyId.to_i])%></td>
           <td style="width:50px;"><%= ontology.format.split("-")[0]%></td>
           <td style="width:50px;"><%= ontology.versionNumber%></td>
-          <td><%= ontology.contactName%></td>
-          <td><%= ontology.dateCreated%></td>
-          <td >
+          <td style="width:225px;"><%= ontology.contactName%></td>
+          <td style="width:30px;"><%= ontology.dateCreated%></td>
+          <td style="width:50px;">
             <%if !ontology_groups.empty?%>
               <div style="white-space:nowrap;">
                 <%= ontology_groups.join("<br/>")%>
