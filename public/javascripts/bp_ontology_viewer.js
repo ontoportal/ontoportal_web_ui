@@ -56,7 +56,7 @@ function displayTree(data) {
   var new_concept_id = data.conceptid;
   
   // Check to see if we're actually loading a new concept or just displaying the one we already loaded previously
-  if (typeof new_concept_id === 'undefined' && new_concept_id == concept_id) {
+  if (typeof new_concept_id === 'undefined' || new_concept_id == concept_id) {
     if (concept_id !== "") {
         History.replaceState({p:"tree_view", conceptid:concept_id}, jQuery.bioportal.ont_pages["tree_view"].page_name + " | " + org_site, "?p=tree_view" + "&conceptid=" + concept_id);
     }
@@ -65,17 +65,18 @@ function displayTree(data) {
     
     return;
   } else {
-    jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false }); 
     var new_concept_param = (typeof new_concept_id === 'undefined') ? "" : "&conceptid=" + new_concept_id;
     
     if (typeof new_concept_id !== 'undefined') {
       // Retrieve new concept and display tree
-      jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view" + new_concept_param, "Problem retrieving tree view", ontology_name + " - Tree View", "Tree View");
+      jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view" + new_concept_param, "Problem retrieving terms", ontology_name + " - Terms", "Terms");
       
       if (typeof data.suid !== 'undefined' && data.suid === "jump_to") {
+        jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false }); 
         // Are we jumping into the ontology? If so, get the whole tree
         jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
       } else {
+        jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false }); 
         if (document.getElementById(new_concept_id) !== null) {
           // We have a visible node that's been clicked, get the details for that node
           nodeClicked(new_concept_id);
@@ -87,11 +88,13 @@ function displayTree(data) {
       }
     } else {
       // Retrieve new concept and display tree
-      jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view", "Problem retrieving tree view", ontology_name + " - Tree View", "Tree View");
+      jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view", "Problem retrieving terms", ontology_name + " - Terms", "Terms");
       jQuery.bioportal.ont_pages["tree_view"].retrieve_and_publish();
     }
 
-    concept_id = new_concept_id;
+    if (typeof new_concept_id !== 'undefined') {
+      concept_id = new_concept_id;
+    }
   }
 }
 
@@ -218,7 +221,7 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
 // Setup AJAX page objects
 jQuery.bioportal.ont_pages = [];
 
-jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view" + concept_param, "Problem retrieving tree view", ontology_name + " - Tree View", "Tree View");
+jQuery.bioportal.ont_pages["tree_view"] = new jQuery.bioportal.OntologyPage("tree_view", "/ontologies/" + ontology_id + "?p=tree_view" + concept_param, "Problem retrieving terms", ontology_name + " - Terms", "Terms");
 jQuery.bioportal.ont_pages["summary"] = new jQuery.bioportal.OntologyPage("summary", "/ontologies/" + ontology_id + "?p=summary", "Problem retrieving summary", ontology_name + " - Summary", "Summary");
 jQuery.bioportal.ont_pages["mappings"] = new jQuery.bioportal.OntologyPage("mappings", "/ontologies/" + ontology_id + "?p=mappings", "Problem retrieving mappings", ontology_name + " - Mappings", "Mappings");
 jQuery.bioportal.ont_pages["notes"] = new jQuery.bioportal.OntologyPage("notes", "/ontologies/" + ontology_id + "?p=notes", "Problem retrieving notes", ontology_name + " - Notes", "Notes");
