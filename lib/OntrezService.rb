@@ -28,13 +28,10 @@ class OntrezService
   PAGING_CLASS_STRING = "/result/ontology/%ONT%/classID/from/%S_PAGE%/number/%E_PAGE%/resource/%RESOURCE%/metadata?conceptid=%CONC%"
   PAGING_CUI_STRING = "/result/cui/from/%S_PAGE%/number/%E_PAGE%/resource/%RESOURCE%/metadata?conceptid=%CONC%"
   
-
-  def self.gatherResources(ontology_id,concept_id,latest,version_id)
+  STATS = "/statistics/all"
+  
+  def self.getResourcesInfo
     resources = []
-    
-    # if this isn't the most recent version of the ontology, use the versioned URL instead of the virtual
-    resource_url = latest ? RESOURCE_BY_CONCEPT : VERSIONED_RESOURCE_BY_CONCEPT
-    ont = latest ? ontology_id : version_id
     
     # this call gets all of the resources and their associated information
     LOG.add :debug, "Retrieve resources"
@@ -61,7 +58,15 @@ class OntrezService
     else
       resources = CACHE.get("ri::resources")
     end
+  end
 
+  def self.gatherResources(ontology_id,concept_id,latest,version_id)
+    resources = self.getResourcesInfo
+    
+    # if this isn't the most recent version of the ontology, use the versioned URL instead of the virtual
+    resource_url = latest ? RESOURCE_BY_CONCEPT : VERSIONED_RESOURCE_BY_CONCEPT
+    ont = latest ? ontology_id : version_id
+    
     LOG.add :debug, "Retrieve annotations for #{concept_id}"
     LOG.add :debug, ONTREZ_URL+resource_url.gsub("%ONT%",ont).gsub("%CONC%",CGI.escape(concept_id))
     startGet = Time.now
@@ -92,7 +97,6 @@ class OntrezService
     return resources
   end
 
-
   def self.gatherResourcesDetails(ontology_id,latest,version_id,concept_id,resource,element)
     resources = []
 
@@ -119,6 +123,13 @@ class OntrezService
     return resources
   end
 
+  def self.getResourceStats
+    rest_url = ONTREZ_URL + STATS
+    
+    doc = REXML::Document.new(open(rest_url))
+    
+    return parseStats(doc.elements["/success/data/statistics"])
+  end
 
   def self.pageResources(ontology_id,latest,version_id,concept_id,resource_name,resource_main_context,page_start,page_end)
     # if this isn't the most recent version of the ontology, use the versioned URL instead of the virtual
@@ -145,7 +156,7 @@ class OntrezService
   def self.pageResourcesByCui(cui,resource_name,page_start,page_end)
   
   end
-
+  
   def self.parseNextBio(text)
     doc = REXML::Document.new(open(NEXTBIO_URL.gsub("%CONC%",text.gsub(" ","%20").gsub("_","%20"))))
     resource = Resource.new   
@@ -290,6 +301,16 @@ private
     }
 
     return details
+  end
+  
+  def self.parseStats(stats)
+    stats_hash = {}
+    stats_hash[:total_annotations] = stats.elements["aggregatedAnnotations"].get_text.value.strip.to_i
+    stats_hash[:mgrepAnnotations] = stats.elements["mgrepAnnotations"].get_text.value.strip.to_i
+    stats_hash[:reportedAnnotations] = stats.elements["reportedAnnotations"].get_text.value.strip.to_i
+    stats_hash[:isaAnnotations] = stats.elements["isaAnnotations"].get_text.value.strip.to_i
+    stats_hash[:mappingAnnotations] = stats.elements["mappingAnnotations"].get_text.value.strip.to_i
+    stats_hash
   end
  
 end

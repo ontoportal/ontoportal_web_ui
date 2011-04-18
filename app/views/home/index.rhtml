@@ -256,7 +256,11 @@ function greybox(box){
             </tr>
             <tr>
               <td>Resources Indexed</td>
-              <td><%=number_with_delimiter(CACHE.get("ri::resources").size, :delimiter => ",") rescue 24%></td>
+              <td><%=number_with_delimiter(OBDWrapper.getResourcesInfo.length, :delimiter => ",") rescue 24%></td>
+            </tr>
+            <tr>
+              <td>Number of Indexed Records</td>
+              <td><%=number_with_delimiter(OBDWrapper.getResourceStats[:total_annotations], ",")%></td>
             </tr>
           </tbody>
         </table>

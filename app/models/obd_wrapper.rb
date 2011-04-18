@@ -3,6 +3,10 @@ require 'OntrezService'
 class OBDWrapper
 
   NO_CACHE = false
+
+  def self.getResourcesInfo
+    return OntrezService.getResourcesInfo
+  end
   
   def self.gatherResources(ontology,concept,latest,version_id)
     if CACHE.get("#{ontology}::#{concept.id}_resource").nil? || NO_CACHE
@@ -53,6 +57,17 @@ class OBDWrapper
       Notifier.deliver_error(e)
       return resource
     end
+  end
+  
+  def self.getResourceStats
+    if CACHE.get("resource_index_stats").nil?
+      stats = OntrezService.getResourceStats
+      
+      CACHE.set("resource_index_stats", stats, 60*60*336)
+    else
+      stats = CACHE.get("resource_index_stats")
+    end
+    stats
   end
 
 end
