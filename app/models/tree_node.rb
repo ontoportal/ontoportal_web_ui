@@ -53,7 +53,7 @@ class TreeNode
     if !parent_node.nil? && self.ontology.format.eql?("OBO") 
 	  if !parent_node.original_properties.nil? && !parent_node.original_properties.empty?
 	    for key in parent_node.original_properties.keys
-	      relations = parent_node.original_properties[key].split(" | ").map{|x| x.strip}
+	      relations = parent_node.original_properties[key].split(" ||%|| ").map{|x| x.strip}
 	      if relations.include?(self.label)
 	        if key.include?("is_a")
 	          self.relation_icon = " <img src='/images/is_a.gif' style='vertical-align: middle;'>"

@@ -71,8 +71,8 @@ class NodeWrapper
               end
             end
             
-            self.properties[relation_name] = list_values.join(" | ")
-            self.original_properties[relation_name] = list_values_orig.join(" | ")
+            self.properties[relation_name] = list_values.join(" ||%|| ")
+            self.original_properties[relation_name] = list_values_orig.join(" ||%|| ")
           end
         end
       else

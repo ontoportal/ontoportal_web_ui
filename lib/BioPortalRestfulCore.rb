@@ -1481,7 +1481,7 @@ private
                    else 
                     element.get_text.value unless element.get_text.value.empty? 
                     
-                   end}.join(" | ") #rescue ""
+                   end}.join(" ||%|| ") #rescue ""
                   rescue Exception =>e
                   end
                end
@@ -1535,7 +1535,7 @@ private
           end
         end
         
-        node.properties[classbeanXML.first.find(entry.path + "/string").first.content] = list_content.join(" | ")
+        node.properties[classbeanXML.first.find(entry.path + "/string").first.content] = list_content.join(" ||%|| ")
       end # stop processing relation entries
     end # stop root node processing
      
