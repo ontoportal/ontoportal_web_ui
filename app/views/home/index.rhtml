@@ -209,7 +209,7 @@ function greybox(box){
 												<li>
 													<a href="/ontologies">All</a>
 												</li>
-												<% @groups.group_list.each do |group_id, group| %>
+												<% @groups.to_a.each do |group| %>
 													<li>
 														<a href="/ontologies?filter=<%=CGI.escape(group[:acronym])%>"><%=group[:name]%></a>
 													</li>

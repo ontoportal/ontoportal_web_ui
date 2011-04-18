@@ -176,7 +176,7 @@ jQuery(document).ready(function() {
         <td>
           <select onchange="filterByGroup(this)"  name="groups" id="select_groups">
             <option value="0" <%if params[:filter].nil?%>selected="selected"<%end%> >All Groups</option>
-            <% @groups.group_list.each do |group_id, group| %>
+            <% @groups.to_a.each do |group| %>
               <option value="<%= group[:acronym]%>" <%if !params[:filter].nil? && group[:acronym].include?(params[:filter])%>selected="selected"<%end%>><%= group[:name]%> (<%= group[:acronym]%>)</option>
             <%end%>
           </select>
@@ -221,6 +221,7 @@ jQuery(document).ready(function() {
           ontology.groups.each do |group_id|
             ontology_groups << @groups.group_list[group_id][:acronym]
           end
+          ontology_groups.sort! {|a,b| a <=> b}
         %>
         <tr>
           <td style="width:300px;">

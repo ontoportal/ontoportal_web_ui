@@ -1480,3 +1480,21 @@ button.fg-button-menu, button.fg-button {
 	text-align: right;
 	color: black;
 }
+
+/************************************
+ * Ontology Creation / Editing
+ ************************************/
+
+.default_owl {
+	color: gray;
+	font-size: x-small;
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+.default_owl a {
+	color: gray;
+	font-size: x-small;
+	text-transform: none;
+	letter-spacing: 0;
+}
