@@ -222,4 +222,20 @@ class OntologyWrapper
     return :unknown
   end
 
+  def synonym_label
+    DataAccess.getLightNode(self.id, self.synonymSlot).label rescue ""
+  end  
+
+  def preferred_name_label
+    DataAccess.getLightNode(self.id, self.preferredNameSlot).label rescue ""
+  end  
+
+  def definition_label
+    DataAccess.getLightNode(self.id, self.documentationSlot).label rescue ""
+  end  
+
+  def author_label
+    DataAccess.getLightNode(self.id, self.authorSlot).label rescue ""
+  end
+
 end

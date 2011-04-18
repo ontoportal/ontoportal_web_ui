@@ -820,6 +820,14 @@ tr.mainresource td {
   word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
+.concept_details .slot_labels {
+	color: gray;
+	display: block;
+	font-size: xx-small;
+	font-style: italic;
+	padding-bottom: 3px;
+}
+
 #format_specific_options td {
 	border-top: 1px solid #C1DAD7;
 }
