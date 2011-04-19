@@ -809,8 +809,8 @@ tr.mainresource td {
 .concept_details .label {
 	/*padding-top: 1em;*/
 	vertical-align: top;
-	width: 100px;
-	max-width: 100px;
+	width: 180px;
+	max-width: 200px;
 }
 
 .concept_details tbody td {
@@ -822,10 +822,8 @@ tr.mainresource td {
 
 .concept_details .slot_labels {
 	color: gray;
-	display: block;
 	font-size: xx-small;
 	font-style: italic;
-	padding-bottom: 3px;
 }
 
 #format_specific_options td {

@@ -3,9 +3,8 @@
 <table class="minimal concept_details" cellpadding="0" cellspacing="0" width="100%">
 	<tr>
 		<td nowrap class="label">
-		  Preferred Name:
-		  <br/>
-		  <span class="slot_labels"><%=@concept.ontology.preferred_name_label%></span>
+		  Preferred Name: 
+		  <span class="slot_labels">(<%=@concept.ontology.preferred_name_label%>)</span>
 	  </td>
 		<td><p><%=@concept.name%></p></td>
 	</tr>
@@ -22,9 +21,8 @@
 	<%unless @concept.synonyms.nil? || @concept.synonyms.empty?%>
   	<tr>
   		<td nowrap class="label">
-  		  Synonyms:
-        <br/>
-        <span class="slot_labels"><%=@concept.ontology.synonym_label%></span>
+  		  Synonyms: 
+        <span class="slot_labels">(<%=@concept.ontology.synonym_label%>)</span>
 		  </td>
   		<td><% for synonym in @concept.synonyms %><p><%= synonym %></p><% end %></td>
   	</tr>
@@ -33,8 +31,7 @@
   	<tr>
   		<td nowrap class="label">
   		  Definitions:
-        <br/>
-        <span class="slot_labels"><%=@concept.ontology.definition_label%></span>
+        <span class="slot_labels">(<%=@concept.ontology.definition_label%>)</span>
 		  </td>
   		<td><% for definition in @concept.definitions %><p><%= definition %></p><% end %></td>
   	</tr>
