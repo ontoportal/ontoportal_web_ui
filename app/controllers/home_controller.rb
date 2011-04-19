@@ -173,6 +173,22 @@ class HomeController < ApplicationController
     end
   end
   
+  def account
+    if session[:user].nil?
+      redirect_to :controller => 'login', :action => 'index', :redirect => "/account"
+      return
+    end
+    
+    @user = session[:user]
+    @survey = Survey.find_by_user_id(@user.id)
+    if @survey.nil?
+      redirect_to :controller => 'users', :action => 'edit', :id => @user.id
+      return
+    end
+    
+    render :partial => "users/details", :layout => "ontology"
+  end
+  
   def feedback_complete
   end
 end

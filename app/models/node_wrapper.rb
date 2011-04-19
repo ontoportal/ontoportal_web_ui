@@ -56,7 +56,6 @@ class NodeWrapper
                   # which identify hashes that represent terms. This is done
                   # because we don't have a way to identify classBean elements
                   # at this point.
-                  test = !list_item['type'].nil? && !list_item['type'].eql?("individual")
                   if !list_item['label'].nil? && !list_item['id'].nil? && !list_item['id'].start_with?("@") && (!list_item['type'].nil? && !list_item['type'].eql?("individual"))
                   	list_values_orig << list_item['label']
                     list_values << "<a href='/visualize/%ONT%/?conceptid=#{CGI.escape(list_item['id'])}'>#{list_item['label']}</a>"

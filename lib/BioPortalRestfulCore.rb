@@ -1165,6 +1165,7 @@ private
   
   def self.putToRestlet(url, paramsHash)
     paramsHash["applicationid"] = $APPLICATION_ID
+    paramsHash["apikey"] = $APPLICATION_ID
     paramsHash["method"]="PUT"
     for param in paramsHash.keys
       if paramsHash[param].class.to_s.downcase.eql?("array")

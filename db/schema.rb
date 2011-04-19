@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100915004236) do
+ActiveRecord::Schema.define(:version => 20110418232902) do
 
   create_table "event_items", :force => true do |t|
     t.string   "event_type",    :limit => 50
@@ -127,6 +127,25 @@ ActiveRecord::Schema.define(:version => 20100915004236) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "project_id"
+  end
+
+  create_table "surveys", :force => true do |t|
+    t.integer "user_id"
+    t.integer "survey_completed"
+    t.string  "organization"
+    t.string  "project_name"
+    t.text    "project_description"
+    t.boolean "read_access_ui"
+    t.boolean "create_notes_ui"
+    t.boolean "create_mappings_ui"
+    t.boolean "annotate_ui"
+    t.boolean "resource_index_ui"
+    t.boolean "read_access_rest"
+    t.boolean "notes_rest"
+    t.boolean "mappings_rest"
+    t.boolean "annotate_rest"
+    t.boolean "resource_index_rest"
+    t.string  "ontologies_of_interest"
   end
 
   create_table "users", :force => true do |t|

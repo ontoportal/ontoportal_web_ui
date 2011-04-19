@@ -1,24 +1,21 @@
 <%@title = "Register"%>
 
-<h1>New user</h1>
-
-<% form_for(:user, :url => users_path) do |f| %>
-<%unless @errors.nil?%>
-<div style="color: red; padding: 1em;" class="enable-lists">
-Errors creating your user:
-<ul>
-
-	<%for error in @errors%>
-	<li><%=error%></li>
-	<%end%>
-
-</ul>
+<div style="padding: 1em;">
+  <h1>New user</h1>
+  
+  <% form_for(:user, :url => users_path) do |f| %>
+    <%unless @errors.nil?%>
+      <div style="color: red; padding: 1em;" class="enable-lists">
+      Errors creating your user:
+      <ul>
+      	<%for error in @errors%>
+      	 <li><%=error%></li>
+      	<%end%>
+      </ul>
+      </div>
+    <%end%>
+  
+    <%=render :partial => 'form', :locals => {:f => f}%>
+    
+  <% end %>
 </div>
-<%end%>
-
-<%=render :partial =>'form'%>
-  <p>
-    <%= submit_tag "Create" %>
-  </p>
-<% end %>
-

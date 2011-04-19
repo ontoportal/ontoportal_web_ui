@@ -128,9 +128,6 @@ class DataAccess
       spawn(:argv => "spawn_notes_counts") do
         notes_counts = {}
         ontologies.each do |ontology|
-          if ontology.ontologyId.to_i == 1104
-            test = true
-          end
           notes = self.getNotesForOntology(ontology.ontologyId)
           notes = [notes] if notes.kind_of?(Note)
           LOG.add :debug, "Note count for #{ontology.displayLabel}: #{notes.length}"

@@ -19,12 +19,20 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
+    if session[:user].nil? || !session[:user].id.eql?(params[:id])
+      redirect_to :controller => 'login', :action => 'index', :redirect => "/users/#{params[:id]}"
+    end
+
     @user = DataAccess.getUser(params[:id])
     
     # Get all ontologies that match this user
     @user_ontologies = []
     DataAccess.getOntologyList.each do |ont|
-      @user_ontologies << ont if ont.userId.to_i == params[:id]
+      begin
+        @user_ontologies << ont if DataAccess.getOntology(ont.id).userId.to_i == params[:id].to_i
+      rescue Exception => e
+        next
+      end
     end
   end
   
@@ -35,7 +43,12 @@ class UsersController < ApplicationController
   
   # GET /users/1;edit
   def edit
+    if session[:user].nil? || !session[:user].id.eql?(params[:id])
+      redirect_to :controller => 'login', :action => 'index', :redirect => "/users/#{params[:id]}"
+    end
+
     @user = DataAccess.getUser(params[:id])
+    @survey = Survey.find_by_user_id(params[:id])
     
     #  @user = User.find(params[:id])
     if(params[:password].eql?("true"))
@@ -68,7 +81,8 @@ class UsersController < ApplicationController
           @user = UserWrapper.new(params[:user])
           format.html { render :action => "new" }
         else
-          
+          params[:user][:survey][:user_id] = @user.id
+          @survey = Survey.create(params[:user][:survey])
           flash[:notice] = 'User was successfully created.'
           session[:user]=@user
           format.html { redirect_to_browse }
@@ -84,11 +98,25 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.xml
   def update
-    @user = DataAccess.updateUser(params[:user],params[:id])
-    if @user.kind_of?(Hash) && @user[:error]        
-      flash[:notice]= @user[:longMessage]
+    @errors = validate_update(params[:user])
+    
+    @survey = Survey.find_by_user_id(params[:id])
+    if @survey.nil?
+      @survey = Survey.create(params[:user][:survey])
+    else
+      Survey.update(@survey.id, params[:user][:survey])
+    end
+
+    if @errors.length > 0  
       redirect_to edit_user_path(params[:id])
     else
+      @user = DataAccess.updateUser(params[:user],params[:id])
+      if @user.kind_of?(Hash) && @user[:error]  
+        flash[:notice] = @user.nil? ? "Error, try again" : @user[:longMessage]
+        redirect_to edit_user_path(params[:id])
+        return
+      end
+
       flash[:notice] = 'User was successfully updated.'          
       redirect_to user_path(@user.id)
     end
@@ -145,6 +173,14 @@ private
     end
     
     return errors
+  end
+
+  def validate_update(params)
+    errors=[]
+    if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
+      errors << "Please enter an email address"
+    end
     
+    return errors
   end
 end

@@ -1,5 +1,4 @@
 class UserWrapper
-  
 
     attr_accessor :id
     attr_accessor :username
@@ -14,7 +13,7 @@ class UserWrapper
     attr_accessor :password
     attr_accessor :email_confirmation    
     attr_accessor :validate_password
-
+    
     ROLES = {
       "ROLE_DEVELOPER"=>1,
       "ROLE_LIBRARIAN"=>2,
