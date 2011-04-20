@@ -67,9 +67,11 @@
       	<tr>
       		<th>Email Address</td><td><%=text_field :user, :email%></td>
       	</tr>	
+        <!--
       	<tr>
       		<th>Phone Number</td><td><%=text_field :user, :phone%></td>
       	</tr>
+      	-->
     	  <%=hidden_field :user, :username%>
     	  <% if @survey.nil? %>
       	  <% f.fields_for :survey do |survey| %>
@@ -100,37 +102,37 @@
                       <strong>Web Interface</strong>
                       <br/>
                       <%= survey.check_box :read_access_ui%>
-                      <%= survey.label :read_access_ui, "Browse Ontologies, Notes, Mappings, and Reviews"%>
+                      <%= survey.label :read_access_ui, "Browse ontologies, notes, mappings, and reviews"%>
                       <br/>
                       <%= survey.check_box :create_notes_ui%>
-                      <%= survey.label :create_notes_ui, "Create Notes"%>
+                      <%= survey.label :create_notes_ui, "Create notes"%>
                       <br/>
                       <%= survey.check_box :create_mappings_ui%>
-                      <%= survey.label :create_mappings_ui, "Create Mappings" %>
+                      <%= survey.label :create_mappings_ui, "Create mappings" %>
                       <br/>
                       <%= survey.check_box :annotate_ui%>
-                      <%= survey.label :annotate_ui, "Annotate Text" %>
+                      <%= survey.label :annotate_ui, "Annotate text with ontology terms" %>
                       <br/>
                       <%= survey.check_box :resource_index_ui%>
-                      <%= survey.label :resource_index_ui, "Search Resources for Terms using Resource Index" %>
+                      <%= survey.label :resource_index_ui, "Search resources with ontology terms" %>
                     </td>
                     <td style="border: none; padding-left: 2em;">
                       <strong>API (REST) Access</strong>
                       <br/>
                       <%= survey.check_box :read_access_rest%>
-                      <%= survey.label :read_access_rest, "Read Access to Ontologies, Notes, Mappings, and Reviews"%>
+                      <%= survey.label :read_access_rest, "List and retrieve information about ontologies, notes, mappings, and reviews"%>
                       <br/>
                       <%= survey.check_box :notes_rest%>
-                      <%= survey.label :notes_rest, "Create/Edit/Delete Notes"%>
+                      <%= survey.label :notes_rest, "Create, edit, and delete notes"%>
                       <br/>
                       <%= survey.check_box :mappings_rest%>
-                      <%= survey.label :mappings_rest, "Create/Edit/Delete Mappings"%>
+                      <%= survey.label :mappings_rest, "Create, edit, and delete mappings"%>
                       <br/>
                       <%= survey.check_box :annotate_rest%>
-                      <%= survey.label :annotate_rest, "Annotate Text"%>
+                      <%= survey.label :annotate_rest, "Annotate text with ontology terms"%>
                       <br/>
                       <%= survey.check_box :resource_index_rest%>
-                      <%= survey.label :resource_index_rest, "Search Resources for Terms using Resource Index"%>
+                      <%= survey.label :resource_index_rest, "Search resources with ontology terms"%>
                     </td>
                   </tr>
                 </table>
