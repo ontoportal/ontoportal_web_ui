@@ -73,6 +73,10 @@ class UsersController < ApplicationController
   def create
     @errors = validate(params[:user])
     
+    # Remove survey information from user object
+    survey_params = params[:user][:survey]
+    params[:user].delete(:survey)
+    
     respond_to do |format|
       if @errors.size <1
         @user = DataAccess.createUser(params[:user])
@@ -81,7 +85,10 @@ class UsersController < ApplicationController
           @user = UserWrapper.new(params[:user])
           format.html { render :action => "new" }
         else
-          params[:user][:survey][:user_id] = @user.id
+          survey_params[:user_id] = @user.id
+          survey_params[:ontologies_of_interest] = get_ontology_list(params[:user][:survey][:ont_list])
+          survey_params.delete(:ont_list)
+          
           @survey = Survey.create(params[:user][:survey])
           flash[:notice] = 'User was successfully created.'
           session[:user]=@user
@@ -100,21 +107,29 @@ class UsersController < ApplicationController
   def update
     @errors = validate_update(params[:user])
     
-    @survey = Survey.find_by_user_id(params[:id])
-    if @survey.nil?
-      @survey = Survey.create(params[:user][:survey])
-    else
-      Survey.update(@survey.id, params[:user][:survey])
-    end
-
+    # Remove survey information from user object
+    survey_params = params[:user][:survey]
+    params[:user].delete(:survey)
+    
     if @errors.length > 0  
       redirect_to edit_user_path(params[:id])
     else
       @user = DataAccess.updateUser(params[:user],params[:id])
-      if @user.kind_of?(Hash) && @user[:error]  
+      if @user.nil? || @user.kind_of?(Hash) && @user[:error]  
         flash[:notice] = @user.nil? ? "Error, try again" : @user[:longMessage]
         redirect_to edit_user_path(params[:id])
         return
+      end
+
+      @survey = Survey.find_by_user_id(params[:id])
+      if @survey.nil?
+        survey_params[:ontologies_of_interest] = get_ontology_list(params[:user][:survey][:ont_list])
+        survey_params.delete(:ont_list)
+        @survey = Survey.create(params[:user][:survey])
+      else
+        survey_params[:ontologies_of_interest] = get_ontology_list(params[:user][:survey][:ont_list])
+        survey_params.delete(:ont_list)
+        Survey.update(@survey.id, params[:user][:survey])
       end
 
       flash[:notice] = 'User was successfully updated.'          
@@ -135,7 +150,15 @@ class UsersController < ApplicationController
   end
   
   
-private 
+private
+
+  def get_ontology_list(ont_hash)
+    ontologies = []
+    ont_hash.each do |ont, checked|
+      ontologies << ont if checked.to_i == 1
+    end
+    ontologies.join(";")
+  end
   
   def validate(params)
     errors=[]

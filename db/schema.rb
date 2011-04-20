@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(:version => 20110418232902) do
     t.integer "survey_completed"
     t.string  "organization"
     t.string  "project_name"
+    t.string  "project_url"
     t.text    "project_description"
     t.boolean "read_access_ui"
     t.boolean "create_notes_ui"

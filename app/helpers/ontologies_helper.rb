@@ -116,8 +116,8 @@ module OntologiesHelper
   def terms_link(ontology, count)
     loc = "tree_view"
     
-    if count.nil?
-      return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>0</a>"
+    if count.nil? || count == 0
+      return "0"
     else
       return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
     end
@@ -126,8 +126,8 @@ module OntologiesHelper
   def mappings_link(ontology, count)
     loc = "mappings"
     
-    if count.nil?
-      return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>0</a>"
+    if count.nil? || count == 0
+      return "0"
     else
       return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
     end
@@ -136,8 +136,8 @@ module OntologiesHelper
   def notes_link(ontology, count)
     loc = "notes"
     
-    if count.nil?
-      return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>0</a>"
+    if count.nil? || count == 0
+      return "0"
     else
       return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
     end

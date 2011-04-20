@@ -5,6 +5,7 @@ class AddSurvey < ActiveRecord::Migration
       t.column "survey_completed", :integer
       t.column "organization", :string
       t.column "project_name", :string
+      t.column "project_url", :string
       t.column "project_description", :text
       t.column "read_access_ui", :boolean
       t.column "create_notes_ui", :boolean

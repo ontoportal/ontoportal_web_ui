@@ -158,6 +158,9 @@ h1 a:hover, h2 a:hover {
 }
 #hd ul.alignright {
 	padding: 0.3em 0 0.5em 0;
+	position: absolute;
+	right: .3em;
+	top: .25em;
 }
 #hd ul.alignright li {
 	display:inline;

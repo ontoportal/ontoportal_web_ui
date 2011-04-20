@@ -1154,6 +1154,8 @@ private
   end
   
   def self.postToRestlet(url, paramsHash)
+    paramsHash["applicationid"] = $APPLICATION_ID
+    paramsHash["apikey"] = $APPLICATION_ID
     for param in paramsHash.keys
       if paramsHash[param].class.to_s.downcase.eql?("array")
         paramsHash[param] = paramsHash[param].join(",")
@@ -1166,14 +1168,17 @@ private
   def self.putToRestlet(url, paramsHash)
     paramsHash["applicationid"] = $APPLICATION_ID
     paramsHash["apikey"] = $APPLICATION_ID
-    paramsHash["method"]="PUT"
     for param in paramsHash.keys
       if paramsHash[param].class.to_s.downcase.eql?("array")
         paramsHash[param] = paramsHash[param].join(",")
       end
     end
-    res = Net::HTTP.post_form(URI.parse(url),paramsHash)
-    return res.body
+    uri = URI.parse(url)
+    http = Net::HTTP.new(uri.host, $REST_PORT)
+    request = Net::HTTP::Put.new(url)
+    request.set_form_data(paramsHash)
+    response = http.request(request)
+    return response.body
   end
 
   def self.parseSearchResults(searchContents)

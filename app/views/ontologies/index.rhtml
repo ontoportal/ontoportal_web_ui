@@ -205,9 +205,9 @@ jQuery(document).ready(function() {
           <th>Mappings</th>
           <th>Format</th>
           <th>Version</th>
-          <th>Author</th>
           <th>Uploaded On</th>
           <th>Group</th>
+          <th>Author</th>
           <th style="display:none;">Description</th>
           <th style="display:none;">categories</th>
           <th style="display:none;">groups</th>
@@ -226,7 +226,7 @@ jQuery(document).ready(function() {
         <tr>
           <td style="width:300px;">
             <span style="padding-right: .5em;"><%= link_to ontology.displayLabel, ontology_path(:id=>ontology.ontologyId)%></span>
-            <span style="font-size: xx-small; color: gray;"><%= get_status_text(ontology)%></span>
+            <%if !session[:user].nil? && session[:user].admin?%><span style="font-size: xx-small; color: gray;"><%= get_status_text(ontology)%></span><%end%>
           </td>
           <td style="width:50px;"><%= ontology.abbreviation%></td>
           <td style="width:30px;text-align:right;"><%= terms_link(ontology, @term_counts[ontology.ontologyId.to_i])%></td>
@@ -234,7 +234,6 @@ jQuery(document).ready(function() {
           <td style="width:30px;text-align:right;"><%= mappings_link(ontology, @mapping_counts[ontology.ontologyId.to_i])%></td>
           <td style="width:50px;"><%= ontology.format.split("-")[0]%></td>
           <td style="width:50px;"><%= ontology.versionNumber%></td>
-          <td style="width:225px;"><%= ontology.contactName%></td>
           <td style="width:30px;"><%= ontology.dateCreated%></td>
           <td style="width:50px;">
             <%if !ontology_groups.empty?%>
@@ -243,6 +242,7 @@ jQuery(document).ready(function() {
               </div>
             <%end%>
           </td>
+          <td style="width:225px;"><%= ontology.contactName%></td>
           <td style="display:none;">
             <%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
             <br>
