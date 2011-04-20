@@ -71,8 +71,10 @@ jQuery(document).ready(function() {
                 { sWidth: '30px' },
                 { sWidth: '30px' },
                 { sWidth: '30px' },
+                { sWidth: '30px' },
+                { sWidth: '30px' },
                 { sWidth: '50px' },
-                { sWidth: '50px' },
+                { sWidth: '75px' },
                 { sWidth: '225px' },
                 { sWidth: '30px' },
                 { sWidth: '50px' }
@@ -86,11 +88,13 @@ jQuery(document).ready(function() {
   			{ "sType": "html-formatted-num" }, // Terms
   			{ "sType": "html-formatted-num" }, // Notes
   			{ "sType": "html-formatted-num" }, // Mappings
+        { "sType": "html-formatted-num" }, // Reviews
+        { "sType": "html-formatted-num" }, // Projects
         { "bVisible":false }, // Format
   			{ "bVisible":false }, // Version
   			null, // Author
   			null, // Uploaded
-  			null, // Group
+  			null, // Categories
   			{"bSearchable":false,"bVisible":false}, // Description
   			{"bSearchable":false,"bVisible":false,"sType":"groups"}, // Categories
   			{"bSearchable":false,"bVisible":false} // Groups
@@ -112,7 +116,7 @@ jQuery(document).ready(function() {
 						});					
 
           	// Set the table width back to 90% after it gets jacked by jQuery DataTable
-          	jQuery("#ontologies").css("width","90%");
+          	jQuery("#ontologies").css("width","100%");
           	// Show the RSS link
           	jQuery("#all_updates_rss").css("display","block");
 
@@ -199,14 +203,16 @@ jQuery(document).ready(function() {
       <thead>
         <tr>
           <th>Ontology Name</th>
-          <th>Acronym</th>
+          <th>Visibility</th>
           <th>Terms</th>
           <th>Notes</th>
           <th>Mappings</th>
+          <th>Reviews</th>
+          <th>Projects</th>
           <th>Format</th>
           <th>Version</th>
-          <th>Uploaded On</th>
-          <th>Group</th>
+          <th>Uploaded</th>
+          <th>Categories</th>
           <th>Author</th>
           <th style="display:none;">Description</th>
           <th style="display:none;">categories</th>
@@ -225,21 +231,28 @@ jQuery(document).ready(function() {
         %>
         <tr>
           <td style="width:300px;">
-            <span style="padding-right: .5em;"><%= link_to ontology.displayLabel, ontology_path(:id=>ontology.ontologyId)%></span>
-            <%if !session[:user].nil? && session[:user].admin?%><span style="font-size: xx-small; color: gray;"><%= get_status_text(ontology)%></span><%end%>
+            <%abbreviation = ontology.abbreviation.nil? || ontology.abbreviation.to_s.length == 0 ? "" : " (#{ontology.abbreviation})"%>
+            <span style="padding-right: .5em;"><%= link_to ontology.displayLabel, ontology_path(:id=>ontology.ontologyId)%><%=abbreviation%></span>
+            <%if ontology.owner_or_admin?(session[:user])%><span style="font-size: xx-small; color: gray;"><%= get_status_text(ontology)%></span><%end%>
           </td>
-          <td style="width:50px;"><%= ontology.abbreviation%></td>
+          <td style="width:50px;"><%= visibility_link(ontology) %></td>
           <td style="width:30px;text-align:right;"><%= terms_link(ontology, @term_counts[ontology.ontologyId.to_i])%></td>
           <td style="width:30px;text-align:right;"><%= notes_link(ontology, @note_counts[ontology.ontologyId.to_i])%></td>
           <td style="width:30px;text-align:right;"><%= mappings_link(ontology, @mapping_counts[ontology.ontologyId.to_i])%></td>
+          <% review_count = Review.count(:conditions => "ontology_id = #{ontology.ontologyId}")%>
+          <td style="width:30px;text-align:right;"><%= review_count == 0 ? "0" : "<a href='/ontologies/#{ontology.ontologyId}'>#{review_count}</a>" %></td>
+          <% project_count = Use.count(:conditions => "ontology_id = #{ontology.ontologyId}")%>
+          <td style="width:30px;text-align:right;"><%= project_count == 0 ? "0" : "<a href='/ontologies/#{ontology.ontologyId}'>#{project_count}</a>" %></td>
           <td style="width:50px;"><%= ontology.format.split("-")[0]%></td>
           <td style="width:50px;"><%= ontology.versionNumber%></td>
           <td style="width:30px;"><%= ontology.dateCreated%></td>
-          <td style="width:50px;">
-            <%if !ontology_groups.empty?%>
-              <div style="white-space:nowrap;">
-                <%= ontology_groups.join("<br/>")%>
-              </div>
+          <td style="width:75px;">
+            <%unless ontology.categories.empty?%>
+              <%ontology.categories.each_with_index do |cat, index|%>
+                <%hidden_class = index >= 2 ? "hidden_cat" : ""%>
+                <span class=""><%=@categories[cat.to_s][:name]%>
+                <%unless cat.eql?(ontology.categories.last)%><br/><%end%></span>
+              <%end%>
             <%end%>
           </td>
           <td style="width:225px;"><%= ontology.contactName%></td>

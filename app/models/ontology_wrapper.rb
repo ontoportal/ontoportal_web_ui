@@ -178,6 +178,10 @@ class OntologyWrapper
     return "#{$PURL_PREFIX}/#{self.abbreviation}"
   end
   
+  def owner_or_admin?(user)
+    return !user.nil? && (user.admin? || user.id.to_i == self.userId.to_i)
+  end
+  
   # Check to see if ontology is stored remotely (IE metadata only)
   def metadata_only?
     return self.isMetadataOnly.eql?(1)

@@ -1456,7 +1456,7 @@ button.fg-button-menu, button.fg-button {
 }
 
 /************************************
- * Browse Page Icons
+ * Browse Page
  ************************************/
 
 .ont_icons {
@@ -1486,6 +1486,10 @@ button.fg-button-menu, button.fg-button {
 	font-size: 9px;
 	text-align: right;
 	color: black;
+}
+
+.hidden_cat {
+	display: none;
 }
 
 /************************************

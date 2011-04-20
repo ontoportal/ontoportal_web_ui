@@ -25,6 +25,15 @@ module OntologiesHelper
       return "archived"
     end
   end
+  
+  # Link for private/public/licensed ontologies
+  def visibility_link(ontology)
+    if ontology.tree_view_disabled?
+      return "<a href='/ontologies/#{ontology.ontologyId}'>Summary</a>"
+    else
+      return "<a href='/ontologies/#{ontology.ontologyId}?p=tree_view'>Public</a>"
+    end
+  end
 
   # Provides a link or string based on the status of an ontology.
   def get_visualize_link(ontology, params = {})
