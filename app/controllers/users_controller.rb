@@ -85,11 +85,14 @@ class UsersController < ApplicationController
           @user = UserWrapper.new(params[:user])
           format.html { render :action => "new" }
         else
-          survey_params[:user_id] = @user.id
-          survey_params[:ontologies_of_interest] = get_ontology_list(params[:user][:survey][:ont_list])
-          survey_params.delete(:ont_list)
+          unless survey_params.nil?
+            survey_params[:user_id] = @user.id
+            survey_params[:ontologies_of_interest] = get_ontology_list(survey_params[:ont_list])
+            survey_params.delete(:ont_list)
+            
+            @survey = Survey.create(params[:user][:survey])
+          end
           
-          @survey = Survey.create(params[:user][:survey])
           flash[:notice] = 'User was successfully created.'
           session[:user]=@user
           format.html { redirect_to_browse }
@@ -121,15 +124,17 @@ class UsersController < ApplicationController
         return
       end
 
-      @survey = Survey.find_by_user_id(params[:id])
-      if @survey.nil?
-        survey_params[:ontologies_of_interest] = get_ontology_list(params[:user][:survey][:ont_list])
-        survey_params.delete(:ont_list)
-        @survey = Survey.create(params[:user][:survey])
-      else
-        survey_params[:ontologies_of_interest] = get_ontology_list(params[:user][:survey][:ont_list])
-        survey_params.delete(:ont_list)
-        Survey.update(@survey.id, params[:user][:survey])
+      unless survey_params.nil?
+        @survey = Survey.find_by_user_id(params[:id])
+        if @survey.nil?
+          survey_params[:ontologies_of_interest] = get_ontology_list(survey_params[:ont_list])
+          survey_params.delete(:ont_list)
+          @survey = Survey.create(survey_params)
+        else
+          survey_params[:ontologies_of_interest] = get_ontology_list(survey_params[:ont_list])
+          survey_params.delete(:ont_list)
+          Survey.update(@survey.id, survey_params)
+        end
       end
 
       flash[:notice] = 'User was successfully updated.'          
