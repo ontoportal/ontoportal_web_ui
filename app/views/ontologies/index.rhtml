@@ -15,9 +15,9 @@ function drawMessage(text){
 
 function filterBySelection(selectbox){
 	if (selectbox.value == 0){
-		ontologies_table.fnFilter( "",7 );
+		ontologies_table.fnFilter("", 11);
 	} else {
-		ontologies_table.fnFilter( selectbox.value,7 );
+		ontologies_table.fnFilter(selectbox.value, 11);
 	}
 	
 }
@@ -25,9 +25,9 @@ function filterBySelection(selectbox){
 
 function filterByGroup(selectbox){
 	if(selectbox.value == 0){
-		ontologies_table.fnFilter("", 8);
+		ontologies_table.fnFilter("", 12);
 	} else {
-		ontologies_table.fnFilter(selectbox.value, 8, true, false);
+		ontologies_table.fnFilter(selectbox.value, 12, true, false);
 	}
 	
 	jQuery("#filterlink").attr("href","/ontologies/?filter="+selectbox.value)
@@ -36,7 +36,7 @@ function filterByGroup(selectbox){
 // Custom filter for group columns
 jQuery.fn.dataTableExt.afnFiltering.push(
   function(oSettings, aData, iDataIndex) {
-    var groups = aData[8];
+    var groups = aData[12];
     var filter = document.getElementById("select_groups").value;
     var re = new RegExp("," + filter + ",", "gm");
     
@@ -61,40 +61,23 @@ function customFilterBox(value){
 
 
 jQuery(document).ready(function() {
-	ontologies_table = jQuery('#ontologies').dataTable(
-		{
+	ontologies_table = jQuery('#ontologies').dataTable({
 		bLengthChange:false,
 		bAutoWidth:false,
-    aoColumns: [
-                { sWidth: '250px' },
-                { sWidth: '30px' },
-                { sWidth: '30px' },
-                { sWidth: '30px' },
-                { sWidth: '30px' },
-                { sWidth: '30px' },
-                { sWidth: '30px' },
-                { sWidth: '50px' },
-                { sWidth: '75px' },
-                { sWidth: '225px' },
-                { sWidth: '30px' },
-                { sWidth: '50px' }
-            ],
 		iDisplayLength:800,
 		asStripClasses:["","alt"],
 		"oLanguage":{"sSearch":"Filter Ontologies"},
 		"aoData": [
   			{ "sType": "html" }, // Ontology Name
-  			null, // Acronym
+  			{ "sType": "html" }, // Visibility
   			{ "sType": "html-formatted-num" }, // Terms
   			{ "sType": "html-formatted-num" }, // Notes
-  			{ "sType": "html-formatted-num" }, // Mappings
         { "sType": "html-formatted-num" }, // Reviews
         { "sType": "html-formatted-num" }, // Projects
         { "bVisible":false }, // Format
   			{ "bVisible":false }, // Version
-  			null, // Author
   			null, // Uploaded
-  			null, // Categories
+  			null, // Author
   			{"bSearchable":false,"bVisible":false}, // Description
   			{"bSearchable":false,"bVisible":false,"sType":"groups"}, // Categories
   			{"bSearchable":false,"bVisible":false} // Groups
@@ -113,7 +96,7 @@ jQuery(document).ready(function() {
 						    extraClass: "pretty fancy", 
 						    top: 10, 
 						    left: 5 
-						});					
+						});
 
           	// Set the table width back to 90% after it gets jacked by jQuery DataTable
           	jQuery("#ontologies").css("width","100%");
@@ -206,13 +189,11 @@ jQuery(document).ready(function() {
           <th>Visibility</th>
           <th>Terms</th>
           <th>Notes</th>
-          <th>Mappings</th>
           <th>Reviews</th>
           <th>Projects</th>
           <th>Format</th>
           <th>Version</th>
           <th>Uploaded</th>
-          <th>Categories</th>
           <th>Author</th>
           <th style="display:none;">Description</th>
           <th style="display:none;">categories</th>
@@ -238,7 +219,6 @@ jQuery(document).ready(function() {
           <td style="width:50px;"><%= visibility_link(ontology) %></td>
           <td style="width:30px;text-align:right;"><%= terms_link(ontology, @term_counts[ontology.ontologyId.to_i])%></td>
           <td style="width:30px;text-align:right;"><%= notes_link(ontology, @note_counts[ontology.ontologyId.to_i])%></td>
-          <td style="width:30px;text-align:right;"><%= mappings_link(ontology, @mapping_counts[ontology.ontologyId.to_i])%></td>
           <% review_count = Review.count(:conditions => "ontology_id = #{ontology.ontologyId}")%>
           <td style="width:30px;text-align:right;"><%= review_count == 0 ? "0" : "<a href='/ontologies/#{ontology.ontologyId}'>#{review_count}</a>" %></td>
           <% project_count = Use.count(:conditions => "ontology_id = #{ontology.ontologyId}")%>
@@ -246,15 +226,6 @@ jQuery(document).ready(function() {
           <td style="width:50px;"><%= ontology.format.split("-")[0]%></td>
           <td style="width:50px;"><%= ontology.versionNumber%></td>
           <td style="width:30px;"><%= ontology.dateCreated%></td>
-          <td style="width:75px;">
-            <%unless ontology.categories.empty?%>
-              <%ontology.categories.each_with_index do |cat, index|%>
-                <%hidden_class = index >= 2 ? "hidden_cat" : ""%>
-                <span class=""><%=@categories[cat.to_s][:name]%>
-                <%unless cat.eql?(ontology.categories.last)%><br/><%end%></span>
-              <%end%>
-            <%end%>
-          </td>
           <td style="width:225px;"><%= ontology.contactName%></td>
           <td style="display:none;">
             <%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
