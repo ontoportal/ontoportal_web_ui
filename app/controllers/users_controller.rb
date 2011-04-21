@@ -114,7 +114,7 @@ class UsersController < ApplicationController
     survey_params = params[:user][:survey]
     params[:user].delete(:survey)
     
-    if @errors.length > 0  
+    if @errors.length > 0
       redirect_to edit_user_path(params[:id])
     else
       @user = DataAccess.updateUser(params[:user],params[:id])

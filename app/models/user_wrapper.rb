@@ -41,7 +41,7 @@ class UserWrapper
       self.roles = params[:roles]
       self.phone = params[:phone]
       self.email_confirmation = params[:email_confirmation]
-      
+      self.apikey = params[:apikey]
     end
     
     def to_h
@@ -54,6 +54,7 @@ class UserWrapper
       params[:roles] = self.roles
       params[:phone] = self.phone
       params[:password]= self.password
+      params[:apikey] = self.apikey
       return params
     end
 
