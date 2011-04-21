@@ -1,45 +1,53 @@
-<div id="projects_content" style="display:none;" class="tab_content">
-    <br>
-    <table class="zebra" style="border:0px;float:left;"width="60%" cellpadding="0" cellspacing="0">
-        <%for project in @projects %>
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+    jQuery(".untruncate").click(function(event){
+      event.preventDefault();
+      console.log(jQuery(this).parent().parent().children(".untruncated_text"));
+      var text = jQuery(this).parent().parent().children(".untruncated_text").html();
+      jQuery(this).parent().parent().children(".original_text").html(text);
+    });
+  });
+</script>
+
+
+<div id="projects_content">
+  <h2 style="margin: 2em 0 0">
+    <span style="font-size: x-large; margin-right: 1.5em;">Projects Using This Ontology</span>
+    <%if session[:user].nil? %>
+      <a href="/login?redirect=<%=URI.escape("/ontologies/projects/new")%>">Create new project</a>
+    <%else %>
+      <a href="/ontologies/projects/new">Create new project</a>
+    <%end %>
+  </h2>
+
+  <table class="zebra" style="border:0px;float:left;"width="60%" cellpadding="0" cellspacing="0">
+    <thead>
+      <th>Project</th>
+      <th>Description</th>
+      <th>People</th>
+      <th>Institution</th>
+    </thead>
+    <tbody>
+      <%for project in @projects %>
         <tr>
-            <td colspan="2" class="pheader">
-                <%=link_to project.name, project,:style=>"text-decoration:none;" %><%if isOwner?(project.id) %><%=link_to "Edit Project",edit_project_path(project) %><%= link_to 'Delete Project', project, :confirm => 'Are you sure?', :method => :delete %><%end %>
+            <td>
+                <%=link_to project.name, project.homepage %>
+                <br style="margin-bottom: 5px;"/>
+                <%if isOwner?(project.id) %><span style="font-size: x-small;">(<%=link_to "edit",edit_project_path(project) %> | 
+                <%= link_to 'delete', project, :confirm => 'Are you sure?', :method => :delete %>)</span><%end %>
             </td>
-        </tr>
-        <tr style="background-color:#EFEFEF">
-            <td colspan="2" style="padding:10px;border-bottom:1px solid #9F9F9F">
-                <%=project.description %>
+            <td style="width: 200px;">
+                <div class="original_text"><%=truncate(project.description, :length => 100, :separator => " ", :omission => "<a class='untruncate' href=''>...</a>") %></div>
+                <div class="untruncated_text" style="display: none;"><%=project.description%></div>
             </td>
-        </tr>
-        <tr>
-            <th style="width:100px;text-align:left;padding:5px;">
-                People:
-            </th>
-            <td align="left"style="padding-top:5px;width:100%;">
-                <%=project.people %>
+            <td>
+                <div class="original_text"><%=truncate(project.people, :length => 50, :separator => " ", :omission => "<a class='untruncate' href=''>...</a>") %></div>
+                <div class="untruncated_text" style="display: none;"><%=project.people%></div>
             </td>
-        </tr>
-        <tr>
-            <th style="width:100px;text-align:left;padding:5px;">
-                Institution:
-            </th>
-            <td align="left"style="padding-top:5px;width:100%;">
+            <td>
                 <%=project.institution %>
             </td>
-        </tr>
-        <tr>
-            <th style="width:100px;text-align:left;padding:5px;">
-                Homepage:
-            </th>
-            <td align="left"style="padding-top:5px;width:100%;">
-                <%=link_to project.homepage, project.homepage %>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" style="width:100%;margin-bottom:15px;">
-                <hr/>
-            </td>
-        </tr><%end %>
-    </table>
+      <%end %>
+    </tbody>
+  </table>
 </div>

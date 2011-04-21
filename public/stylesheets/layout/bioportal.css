@@ -1416,6 +1416,10 @@ button.fg-button-menu, button.fg-button {
 .fg-button.ui-state-loading .ui-icon {
 }
 
+.hidden_ont {
+	display: none;
+}
+
 
 /************************************
  * Top-right Nav Menu

@@ -7,12 +7,24 @@
       jQuery(icon).toggleClass("ui-icon-triangle-1-s");
       jQuery(collapse).toggle();
     });
+    
+    jQuery("#version_toggle").click(function(event){
+      event.preventDefault();
+      jQuery("#ontology_versions tr.hidden_select").toggleClass("hidden_ont");
+    });
+    
+    jQuery("#version_toggle").toggle(function() {
+      jQuery(this).text("less...");
+    }, function() {
+      jQuery(this).text("more...");
+    });
+
   });
 </script>
 
 <div id="versions_content" class="click_versions_collapse" style="padding-top: 1em;">
   <h2 style="font-size: x-large;">Versions</h2>
-  <table class="zebra" cellpadding="0" cellspacing="0" width="60%">
+  <table id="ontology_versions" class="zebra" cellpadding="0" cellspacing="0" width="60%">
     <thead>
         <tr>
             <th>
@@ -27,12 +39,14 @@
         </tr>
     </thead>
     <% @versions.each_with_index do |version, index| %>
-      <tr <%= cycle("", "class='alt'") %>>
+      <% hidden_row_class = index >= 5 ? "hidden_ont hidden_select" : "" %>
+      <tr <%= cycle("class='#{hidden_row_class}'", "class='alt #{hidden_row_class}'") %> class="<%=hidden_row_class%>">
         <td>
+            <% version_text = version.versionNumber.nil? || version.versionNumber.length == 0 ? "unknown" : version.versionNumber %>
             <% if @ontology.metadata_only? || @ontology.tree_view_disabled? %>
-              <%= version.versionNumber %>
+              <%= version_text %>
             <%else%>
-              <a href="/ontologies/<%=version.id%>?p=tree_view"><%= version.versionNumber %></a>
+              <a href="/ontologies/<%=version.id%>?p=tree_view"><%= version_text %></a>
             <%end%>
         </td>
         <td>
@@ -46,5 +60,11 @@
         </td>
       </tr>
     <%end%>
+    
+    <% if @versions.length >= 5 %>
+      <tr>
+        <td colspan="3" style="text-align: right;"><a href="" id="version_toggle">more...</a></td>
+      </tr>
+    <% end %>
   </table>
 </div>
