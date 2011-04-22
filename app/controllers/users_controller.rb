@@ -73,11 +73,11 @@ class UsersController < ApplicationController
   def create
     @errors = validate(params[:user])
     
-    # Remove survey information from user object
-    survey_params = params[:user][:survey]
-    params[:user].delete(:survey)
-    
     respond_to do |format|
+      # Remove survey information from user object
+      survey_params = params[:user][:survey]
+      params[:user].delete(:survey)
+    
       if @errors.size <1
         @user = DataAccess.createUser(params[:user])
         if @user.kind_of?(Hash) && @user[:error]        
@@ -89,7 +89,7 @@ class UsersController < ApplicationController
             survey_params[:user_id] = @user.id
             survey_params[:ontologies_of_interest] = get_ontology_list(survey_params[:ont_list])
             survey_params.delete(:ont_list)
-            
+            test = survey_params
             @survey = Survey.create(params[:user][:survey])
           end
           
