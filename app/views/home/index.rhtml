@@ -260,7 +260,7 @@ function greybox(box){
             </tr>
             <tr>
               <td>Number of Indexed Records</td>
-              <td><%=number_with_delimiter(OBDWrapper.getResourceStats[:total_annotations], ",")%></td>
+              <td><%=number_with_delimiter(OBDWrapper.getResourceStats[:total_annotations], ",") rescue "2,580,887,604"%></td>
             </tr>
           </tbody>
         </table>

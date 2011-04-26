@@ -68,7 +68,7 @@ module NotesHelper
           <tr>
             <th>Preferred Name</th>
             <td>#{note.values[note.type]['preferredName']}</td>
-            <th>Proposed id</th>
+            <th>Provisional id</th>
             <td>#{note.values[note.type]['id']}</td>
             <th>Parent</th>
             <td>#{note.values[note.type]['parent']}</td>

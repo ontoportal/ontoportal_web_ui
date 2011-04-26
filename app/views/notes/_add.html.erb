@@ -110,8 +110,10 @@
 				<input tabindex="202" type="text" id="<%=prefix%>termSynonyms" class="create_note_inputs create_new_term_inputs"><br/>
 				Definition <span class="required">*</span> <span id="<%=prefix%>termDefinition_error" class="error_input"></span><br/>
 				<input tabindex="203" type="text" id="<%=prefix%>termDefinition" class="create_note_inputs create_new_term_inputs"><br/>
-				Proposed id<br/>
+				<!--
+        Proposed id<br/>
 				<input tabindex="204" type="text" id="<%=prefix%>termId" class="create_note_inputs create_new_term_inputs"><br/>
+        -->
 				Parent (start typing to autocomplete) <span class="required">*</span> <span id="<%=prefix%>termParent_error" class="error_input"></span><br/>
 				<input tabindex="205" type="text" name="<%=prefix%>termParent" id="<%=prefix%>termParent" value="<%= @concept.fullId_proper rescue "" %>" class="create_note_inputs create_new_term_inputs bp_form_complete-<%= @ontology.ontologyId %>-uri"><br/>
 				Contact information (publically visible)<br/>
