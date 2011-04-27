@@ -43,10 +43,10 @@
       <tr <%= cycle("class='#{hidden_row_class}'", "class='alt #{hidden_row_class}'") %> class="<%=hidden_row_class%>">
         <td>
             <% version_text = version.versionNumber.nil? || version.versionNumber.length == 0 ? "unknown" : version.versionNumber %>
-            <% if @ontology.metadata_only? || @ontology.tree_view_disabled? %>
+            <% if @ontology.metadata_only? || @ontology.terms_disabled? %>
               <%= version_text %>
             <%else%>
-              <a href="/ontologies/<%=version.id%>?p=tree_view"><%= version_text %></a>
+              <a href="/ontologies/<%=version.id%>?p=terms"><%= version_text %></a>
             <%end%>
         </td>
         <td>

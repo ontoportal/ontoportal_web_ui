@@ -48,7 +48,7 @@
   var concept_id = "<%=params[:conceptid]%>";
   var content_section = "<%=content_section%>";
   var concept_param = "<%="conceptid=#{params[:conceptid]}" unless params[:conceptid].nil? || params[:conceptid].empty?%>";
-  var tree_view_disabled = <%=@ontology.tree_view_disabled?%>;
+  var terms_disabled = <%=@ontology.terms_disabled?%>;
 </script>
 
 <%=javascript_include_tag "history/amplify.store.js"%>  
@@ -69,10 +69,10 @@
       <div id="navigate_options" class="hidden">
         <ul>
           <li class="nav_links summary_link" id="summary_link"><a href="/ontologies/<%=@ontology.id%>?p=summary" data-bp_ont_page="summary">Summary</a></li>
-          <%unless @ontology.tree_view_disabled?%><li class="nav_links tree_view_link" id="tree_view_link"><a href="/ontologies/<%=@ontology.id%>?p=tree_view" data-bp_ont_page="tree_view">Terms</a></li><%end%>
+          <%unless @ontology.terms_disabled?%><li class="nav_links terms_link" id="terms_link"><a href="/ontologies/<%=@ontology.id%>?p=terms" data-bp_ont_page="terms">Terms</a></li><%end%>
           <li class="nav_links notes_link" id="notes_link"><a href="/ontologies/<%=@ontology.id%>?p=notes" data-bp_ont_page="notes">Notes</a></li>
           <li class="nav_links mappings_link" id="mappings_link"><a href="/ontologies/<%=@ontology.id%>?p=mappings" data-bp_ont_page="mappings">Mappings</a></li>
-          <%unless @ontology.tree_view_disabled?%><li class="nav_links widgets_link" id="widgets_link"><a href="/ontologies/<%=@ontology.id%>?p=widgets" data-bp_ont_page="widgets">Widgets</a></li><%end%>
+          <%unless @ontology.terms_disabled?%><li class="nav_links widgets_link" id="widgets_link"><a href="/ontologies/<%=@ontology.id%>?p=widgets" data-bp_ont_page="widgets">Widgets</a></li><%end%>
         </ul>
       </div>
     </span>
@@ -93,10 +93,10 @@
   <div style="clear: both; margin-bottom: 1em;"></div>
 
   <div style="background: white;" id="ontology_content">
-    <div id="ont_tree_view_content" class="ontology_viewer_content hidden">
-      <%if content_section.eql?("tree_view")%>
+    <div id="ont_terms_content" class="ontology_viewer_content hidden">
+      <%if content_section.eql?("terms")%>
         <script type="text/javascript">
-          jQuery("#ont_tree_view_content").removeClass("hidden");
+          jQuery("#ont_terms_content").removeClass("hidden");
         </script>
         <%=yield%>
       <%else%>

@@ -180,7 +180,7 @@ module ApplicationHelper
           retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{child.ontology_id}/?conceptid=#{CGI.escape(id)}&callback=children&too_many_children_override=true'>Get all terms</a>"      
           string << "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{number_of_terms} terms at this level. Retrieving these may take several minutes. #{retry_link}</div>"
         else
-          string << "<li #{open} #{draw_root}  id=\"#{CGI.escape(child.id)}\"><a href='/ontologies/#{child.ontology_id}/?p=tree_view&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.label} #{icons}</a>"
+          string << "<li #{open} #{draw_root}  id=\"#{CGI.escape(child.id)}\"><a href='/ontologies/#{child.ontology_id}/?p=terms&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.label} #{icons}</a>"
           if child.child_size > 0 && !child.expanded
             string << "<ul class='ajax'><li id='#{CGI.escape(child.id)}'><a href='/ajax_concepts/#{child.ontology_id}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.child_size}'>child.label</a></li></ul>"
           elsif child.expanded

@@ -188,7 +188,7 @@ class OntologyWrapper
   end
   
   # Check criteria for browsable ontologies
-  def tree_view_disabled?
+  def terms_disabled?
     metadata_only = self.metadata_only?
     self.metadata_only? || (!$NOT_EXPLORABLE.nil? && $NOT_EXPLORABLE.include?(self.ontologyId.to_i))
   end

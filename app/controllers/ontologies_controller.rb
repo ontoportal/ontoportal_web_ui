@@ -31,8 +31,8 @@ class OntologiesController < ApplicationController
     # This action is now a router using the 'p' parameter as the page to show
     # begin
       case params[:p]
-      when "tree_view"
-        self.tree_view
+      when "terms"
+        self.terms
         return
       when "mappings"
         self.mappings
@@ -157,11 +157,11 @@ class OntologiesController < ApplicationController
     end
     params_string = (params_array.empty?) ? "" : "&#{params_array.join('&')}"
     
-    redirect_to "/ontologies/#{params[:ontology]}?p=tree_view#{params_string}", :status => :moved_permanently
+    redirect_to "/ontologies/#{params[:ontology]}?p=terms#{params_string}", :status => :moved_permanently
   end
   
   # GET /visualize/:ontology
-  def tree_view
+  def terms
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]
     params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]

@@ -63,7 +63,7 @@
 			if( !!li.extra ){
         var sValue = jQuery("#jump_to_concept_id").val();
 			  
-        History.pushState({p:"tree_view", conceptid:sValue, suid:"jump_to"}, jQuery.bioportal.ont_pages["tree_view"].page_name + " | " + org_site, "?p=tree_view&conceptid=" + sValue);
+        History.pushState({p:"terms", conceptid:sValue, suid:"jump_to"}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, "?p=terms&conceptid=" + sValue);
         
         return;
 			}
@@ -176,7 +176,7 @@
 	</div>
 
 	<script type="text/javascript">
-    tree_view_init = function(){
+    terms_init = function(){
       // Auto loads the correct tab
       var loc = new String(document.location);
       // if (loc.search("#") >= 0) {
@@ -226,7 +226,7 @@
     }
     
     jQuery(document).ready(function() {
-      tree_view_init();
+      terms_init();
     });
 		
 		function callTab(tab_name, url) {

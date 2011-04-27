@@ -28,10 +28,10 @@ module OntologiesHelper
   
   # Link for private/public/licensed ontologies
   def visibility_link(ontology)
-    if ontology.tree_view_disabled?
+    if ontology.terms_disabled?
       return "<a href='/ontologies/#{ontology.ontologyId}'>Summary Only</a>"
     else
-      return "<a href='/ontologies/#{ontology.ontologyId}?p=tree_view'>Public</a>"
+      return "<a href='/ontologies/#{ontology.ontologyId}?p=terms'>Public</a>"
     end
   end
 
@@ -123,7 +123,7 @@ module OntologiesHelper
   end
   
   def terms_link(ontology, count)
-    loc = "tree_view"
+    loc = "terms"
     
     if count.nil? || count == 0
       return "0"
