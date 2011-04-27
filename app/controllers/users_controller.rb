@@ -115,12 +115,13 @@ class UsersController < ApplicationController
     params[:user].delete(:survey)
     
     if @errors.length > 0
+      flash[:notice] = @user.nil? ? "Error, try again" : @user[:longMessage]
       redirect_to edit_user_path(params[:id])
     else
       @user = DataAccess.updateUser(params[:user],params[:id])
       if @user.nil? || @user.kind_of?(Hash) && @user[:error]  
         flash[:notice] = @user.nil? ? "Error, try again" : @user[:longMessage]
-        redirect_to edit_user_path(params[:id])
+        redirect_to params.merge!(:action => "edit", :errors => @errors)
         return
       end
 

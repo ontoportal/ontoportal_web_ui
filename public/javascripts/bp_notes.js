@@ -146,6 +146,17 @@ jQuery(document).ready(function(){
 		
 		return false;
 	});
+
+  // Wire up the tabs in the 'Add Note' form box
+  jQuery(".note_action").live("click", function(){
+    var spanId = jQuery(this).attr("id");
+    var noteTypeId = jQuery(this).attr("note_type");
+    var buttons_div = jQuery(this).parent(".create_note_buttons");
+    jQuery(buttons_div).parent().children('.create_note_options').children('.note_options').hide();
+    jQuery('#' + noteTypeId).show();
+    jQuery(buttons_div).children('.note_action').removeClass("create_note_selected");
+    jQuery(this).addClass("create_note_selected");
+  });
 	
 });
 

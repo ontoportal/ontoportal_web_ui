@@ -51,26 +51,15 @@
 		}
 	});
 <%end%>
-
-	// Wire up the tabs in the 'Add Note' form box
-	jQuery(".<%=prefix%>note_action").live("click", function(){
-		var prefix = "<%=prefix%>";
-		var spanId = jQuery(this).attr("id");
-		var noteTypeId = jQuery(this).attr("note_type");
-		jQuery('.' + prefix + 'note_options_action').hide();
-		jQuery('#' + noteTypeId).show();
-		jQuery('.' + prefix + 'note_action').removeClass("create_note_selected");
-		jQuery(this).addClass("create_note_selected");
-	});
 </script>
 
 <h2 class="<%=prefix%>add_reply"><%=add_text%></h2>
 <div id="<%=prefix%>create_note_container" class="create_note_container">
 	<div id="<%=prefix%>create_note_buttons" class="create_note_buttons">
-		<span id="<%=prefix%>create_note_comment_button" note_type="<%=prefix%>create_note_comment" class="<%=prefix%>note_action note_buttons create_note_selected">Comment</span>
-		<span id="<%=prefix%>create_note_new_term_button" note_type="<%=prefix%>create_note_new_term" class="<%=prefix%>note_action note_buttons">Propose New Term</span>
-		<span id="<%=prefix%>create_note_change_hierarchy_button" note_type="<%=prefix%>create_note_change_hierarchy" class="<%=prefix%>note_action note_buttons">Propose Relationship Change</span>
-		<span id="<%=prefix%>create_note_change_prop_value_button" note_type="<%=prefix%>create_note_change_prop_value" class="<%=prefix%>note_action note_buttons">Propose Property Value Change</span>
+		<span id="<%=prefix%>create_note_comment_button" note_type="<%=prefix%>create_note_comment" class="note_action note_buttons create_note_selected">Comment</span>
+		<span id="<%=prefix%>create_note_new_term_button" note_type="<%=prefix%>create_note_new_term" class="note_action note_buttons">Propose New Term</span>
+		<span id="<%=prefix%>create_note_change_hierarchy_button" note_type="<%=prefix%>create_note_change_hierarchy" class="note_action note_buttons">Propose Relationship Change</span>
+		<span id="<%=prefix%>create_note_change_prop_value_button" note_type="<%=prefix%>create_note_change_prop_value" class="note_action note_buttons">Propose Property Value Change</span>
 	</div>
 	
 	<div id="<%=prefix%>create_note_options" class="create_note_options">
