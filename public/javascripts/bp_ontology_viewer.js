@@ -119,11 +119,11 @@ jQuery(document).ready(function() {
   document.title = title;
   
   // Wire up navigation buttons
-  jQuery('#ont_nav').menu({ 
+  jQuery('#ont_nav').fgmenu({ 
     content: jQuery('#ont_nav').next().html(),
     afterItemChosen: nav_ont
   });
-  jQuery('#ont_admin').menu({ 
+  jQuery('#ont_admin').fgmenu({ 
     content: jQuery('#ont_admin').next().html(),
     afterItemChosen: menu_nav
   });

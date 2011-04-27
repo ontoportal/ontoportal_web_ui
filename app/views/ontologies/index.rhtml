@@ -129,21 +129,23 @@ jQuery(document).ready(function() {
 
 <div id="ontologies_bd_container">
   <div id="ontologies_padding_container">
+    <div id="submit_new_ontology" style="float: right; padding-top: 1.2em; width: 53%;">
+      <script>
+        jQuery(function() {
+          jQuery("#submit_new_ontology a").button();
+        });
+      </script>
+
+      <%if session[:user].nil? %>
+        <a href="/login?redirect=/ontologies/new">Submit New Ontology</a>
+      <%else%>
+        <%= link_to "Submit New Ontology",new_ontology_path%>
+      <%end%>
+    </div>
+
     <br/>
-    <table class="form">
-      <tr>
-        <th>Submit Ontology</th>
-        <td class="top">
-          <%if session[:user].nil? %>
-            <a href="/login?redirect=/ontologies/new">Submit New Ontology</a>
-          <%else%>
-            <%= link_to "Submit New Ontology",new_ontology_path%>
-          <%end%>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2">&nbsp;</td>
-      </tr>
+
+    <table class="form" style="width: 45%">
       <tr>
         <th>
         Filter by Category</td>
@@ -167,7 +169,7 @@ jQuery(document).ready(function() {
               <option value="<%= group[:acronym]%>" <%if !params[:filter].nil? && group[:acronym].include?(params[:filter])%>selected="selected"<%end%>><%= group[:name]%> (<%= group[:acronym]%>)</option>
             <%end%>
           </select>
-          <a href="/ontologies<%if !params[:filter].nil?%>/?filter=<%= params[:filter]%><%end%>" id="filterlink">Link To This Filter</a>
+          <a title="Link to filtered ontology list" href="/ontologies<%if !params[:filter].nil?%>/?filter=<%= params[:filter]%><%end%>" id="filterlink"><span style="display: inline-block; vertical-align: middle;" class="ui-icon ui-icon-link"></span></a>
         </td>
       </tr>
       <tr>

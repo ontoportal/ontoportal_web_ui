@@ -44,11 +44,11 @@
 
   jQuery(document).ready(function() {
     // Wire up navigation buttons
-    jQuery('#recently_viewed').menu({ 
+    jQuery('#recently_viewed').fgmenu({ 
       content: $('#recently_viewed').next().html(),
       afterItemChosen: menu_nav
     });
-    jQuery('#user_menu').menu({ 
+    jQuery('#user_menu').fgmenu({ 
       content: $('#user_menu').next().html(),
       afterItemChosen: menu_nav
     });

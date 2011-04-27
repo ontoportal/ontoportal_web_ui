@@ -259,7 +259,7 @@ h1 a:hover, h2 a:hover {
 	width: 100%;
 }
 #ontologies_padding_container {
-	padding: 1em;
+	padding: 0 1em 1em;
 }	
 
 #bd #bd_content {
