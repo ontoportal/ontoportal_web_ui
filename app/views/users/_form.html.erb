@@ -139,7 +139,9 @@
         <div style="height: 200px; width: 450px; overflow: auto; border: thin solid gray; padding: 5px; margin-top: 5px;">
           <% survey.fields_for :ont_list do |ont_list|%>
             <%  ontology_list = "<ul id='ont_list'>"
-                DataAccess.getOntologyList.each_with_index do |ont, index|
+                  ontologies = DataAccess.getOntologyList
+                  ontologies.sort! { |a,b| a.displayLabel.downcase <=> b.displayLabel.downcase }
+                  ontologies.each_with_index do |ont, index|
                   ontology_list << "<li style='padding-top: 3px;'>" + ont_list.check_box(ont.ontologyId, :value => ont.ontologyId) + " "
                   abbreviation = ont.abbreviation.nil? || ont.abbreviation.to_s.length == 0 ? "" : "(#{ont.abbreviation})"
                   ontology_list << ont_list.label(ont.ontologyId, "<a href='/ontologies/#{ont.ontologyId}'>#{ont.displayLabel} #{abbreviation}</a>") + "</li>"

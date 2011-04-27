@@ -178,6 +178,17 @@ class OntologiesController < ApplicationController
       @ontology = DataAccess.getOntology(params[:ontology])   
     end
     
+    # Get most recent active version of ontology if there was a parsing error
+    if @ontology.statusId.to_i.eql?(4)
+      DataAccess.getActiveOntologies.each do |ont|
+        if ont.ontologyId.eql?(@ontology.ontologyId)
+          @ontology = DataAccess.getOntology(ont.id)
+          break
+        end
+      end
+    end
+
+    # Redirect to move recent unarchived version is this version is archived    
     if @ontology.statusId.to_i.eql?(6)
       @latest_ontology = DataAccess.getLatestOntology(@ontology.ontologyId)
       params[:ontology] = @latest_ontology.id
