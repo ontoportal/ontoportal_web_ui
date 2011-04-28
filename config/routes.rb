@@ -65,6 +65,7 @@ ActionController::Routing::Routes.draw do |map|
   # Ajax
   map.ajax '/ajax/', :controller => 'ajax_proxy', :action => 'get'
   map.connect '/ajax_concepts/:ontology/', :controller => 'concepts', :action => 'show', :requirements => { :id => %r([^/?]+) }
+  map.connect '/ajax/term_details/:ontology', :controller => 'concepts', :action => 'details'
 
   # User
   map.logout '/logout', :controller => 'login',:action => 'destroy'

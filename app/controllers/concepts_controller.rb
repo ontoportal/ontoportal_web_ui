@@ -122,7 +122,18 @@ class ConceptsController < ApplicationController
     end
   end
   
-
+  # Renders a details pane for a given ontology/term
+  def details
+    @ontology = DataAccess.getOntology(params[:ontology])
+    @concept = DataAccess.getNode(@ontology.id, params[:conceptid], params[:childrenlimit])
+    
+    if params[:styled].eql?("true")
+      render :partial => "details", :layout => "partial"
+    else
+      render :partial => "details"
+    end
+  end
+  
   def exhibit
     time = Time.now
     #puts "Starting Retrieval"
