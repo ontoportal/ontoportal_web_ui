@@ -1,71 +1,133 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<title>NCBO BioPortal: Error</title>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <!-- Dependency source files --> 
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 
-  <link href="/stylesheets/layout/bioportal.css" media="screen" rel="stylesheet" type="text/css" />
+    <!-- Google Webmaster Tools verifications -->
+    <meta name="google-site-verification" content="IBxfKu6VbYH9atd5OLu2zXVD2ZRWi9SgMKTi8nvw3ks" />
 
-</head>
-<body>
-<div class="yui-navset">
-<div id="hd">
-	<ul>	
-		<li><a href="/" title="Home"><img src="/images/layout/nav_logo.png" /></a></li>
-		<li><a href="/ontologies" title="Browse" ><img name="img10" src="/images/layout/nav_browse.png" /></a></li>
-		<li><a href="/search" title="Search"  ><img name="img11" src="/images/layout/nav_search.png" /></a></li>
-		<li><a href="/projects" title="Projects"  ><img name="img11" src="/images/layout/nav_projects.png" /></a></li>		
-		<li><a href="/annotate" title="Annotate" ><img name="img12" src="/images/layout/nav_annotate.png" /></a></li>
-		<li><a href="/mappings" title="All Mappings" ><img name="img13" src="/images/layout/nav_search_allmappings.png" /></a></li>
-		<li><a href="/all_resources" title="All Resources" ><img name="img13" src="/images/layout/nav_resources.png" /></a></li>
-	</ul>
-	<ul class="alignright">
-			<li><a href="/login">Sign In</a></li>
-			<li><a href="/users/new">Register</a></li>
+    <title>Error | NCBO BioPortal</title>
+    <!-- CSS -->
+    <link href="/stylesheets/layout/bioportal.css?1303944398" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/layout/thickbox.css?1233283828" media="screen" rel="stylesheet" type="text/css" />
 
-		 	<li><a href="/home/release">Help/About</a></li>
-			<li><a href="/feedback" style="font-weight:bold;font-size:14px;">Send Feedback</a> </li>
-			
-	</ul>
-</div>
-<div class="tabs">
-	<ul>
-	</ul>
-</div>
-      		<div id="bd">
-	<br/>	<br/>	<br/>	<br/>	<br/>
-<center>		<h1>We're sorry but something has gone wrong. We have been notified of this error.</h1></center>
-	<br/>	<br/>	<br/>	<br/>
-			</div>
+    <link rel="stylesheet" type="text/css" href="/themes/cupertino/css/cupertino/jquery-ui-1.8.1.custom.css">
+    <link rel="stylesheet" type="text/css" href="/javascripts/JqueryPlugins/fg-menu/fg.menu.css">
 
+    <!-- Javascript -->
+    <script src="/javascripts/jquery.js?1301423855" type="text/javascript"></script>
+    <script src="/javascripts/JqueryPlugins/rloader/jquery.rloader.js?1301423855" type="text/javascript"></script>
+    <script src="/javascripts/JqueryPlugins/jquery.blockUI.js?1270000932" type="text/javascript"></script>
+    <script src="/javascripts/jquery.thickbox.compressed.js?1233283828" type="text/javascript"></script>
+    <script src="/javascripts/JqueryPlugins/fg-menu/fg.menu.js?1303944398" type="text/javascript"></script>
+    <script src="/javascripts/jquery-ui.js?1303944398" type="text/javascript"></script>
+    <script src="/javascripts/bioportal.js?1301423855" type="text/javascript"></script>
+  </head>
+  <body>
+    <div id="hd">
+      <ul>
+        <li>
+          <a href="/" title="Home">
+          <img src="/images/layout/nav_logo.png" />
+          </a>
+        </li>
+        <li>
+          <a href="/ontologies" title="Browse" >
+          <img name="img10" src="/images/layout/nav_browse.png" />
+          </a>
+        </li>
+        <li>
+          <a href="/search" title="Search"  >
+          <img name="img11" src="/images/layout/nav_search_active.png" />
+          </a>
+        </li>
+        <li>
+          <a href="/projects" title="Projects"  >
+          <img name="img11" src="/images/layout/nav_projects.png" />
+          </a>
+        </li>
+        <li>
+          <a href="/annotator" title="Annotator" >
+          <img name="img12" src="/images/layout/nav_annotate.png" />
+          </a>
+        </li>
+        <li>
+          <a href="/mappings" title="All Mappings" >
+          <img name="img13" src="/images/layout/nav_search_allmappings.png" />
+          </a>
+        </li>
+        <li>
+          <a href="/resources" title="Resource Index" >
+          <img name="img14" src="/images/layout/nav_resources.png" />
+          </a>
+        </li>
+      </ul>
+      <script type="text/javascript">
+        var menu_nav = function(link) {
+          document.location = link.href;
+        }
+        jQuery(document).ready( function() {
+          // Wire up navigation buttons
+          jQuery('#recently_viewed').fgmenu({
+            content: $('#recently_viewed').next().html(),
+            afterItemChosen: menu_nav
+          });
+          jQuery('#user_menu').fgmenu({
+            content: $('#user_menu').next().html(),
+            afterItemChosen: menu_nav
+          });
+        });
+      </script>
+      <ul class="alignright" id="top_right_menu">
+        <a href="/login?redirect=%2Fsearch" class="fg-button-menu ui-widget ui-state-default">Sign In</a>
+        <!--<a href="/users/new" class="fg-button-menu ui-widget ui-state-default">Register</a>-->
 
+        <a tabindex="0" href="/home/release" class="fg-button-menu ui-widget ui-state-default">Help</a>
+        <script type="text/javascript">
+          function popup(url) {
+            newwindow = window.open(url,'name','height=700,width=800,resizable=yes,scrollbars=yes,toolbar=no,status=no');
+            if (window.focus) {
+              newwindow.focus()
+            };
+          }
+        </script>
+        <a tabindex="0" onclick="popup('/feedback?pop=true'); return false;" href="/feedback" class="fg-button-menu ui-widget ui-state-default top_right_menu_last" style="">Feedback</a>
+      </ul>
+    </div>
+    <div style="clear: both;">
+    </div>
+    <div id="bd">
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <center>
+        <h1>We're sorry but something has gone wrong. We have been notified of this error.</h1>
+      </center>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+    </div>
+    </div>
 
+    <div style="padding:2em;text-align:center;background:#234979;color:white;clear:both;" id="footer_wrapper">
+      The National Center for Biomedical Ontology is one of the
+      <a title="National Centers for Biomedical Computing" href="http://www.ncbcs.org/">National Centers for Biomedical Computing</a> supported by the
+      <a title="NIH Roadmap" href="http://nihroadmap.nih.gov/">NIH Roadmap</a>.
+      <br/>
 
+      Copyright © 2005–2010, The Board of Trustees of Leland Stanford Junior University. All rights reserved.
+      <br/>
+      <a title="NCBO" href="http://www.bioontology.org">NCBO Website</a>&nbsp;
+      <a title="Release Notes" href="/home/release">Help / About</a> &nbsp;
+      <a title="Terms of Use" href="http://www.bioontology.org/terms.html">Terms of Use</a>
+      <a title="Privacy Policy" href="http://www.bioontology.org/privacy.html">Privacy Policy</a>
+      <br/>
+      <br/>
 
-<div style="clear:both;border-bottom:1px solid black;"></div>
-
-<div style="padding:5px;text-align:center;margin:10px"> The National Center for Biomedical Ontology is one of the <a title="National Centers for Biomedical Computing" href="http://www.ncbcs.org/">National Centers for Biomedical Computing</a> supported by the <a title="NIH Roadmap" href="http://nihroadmap.nih.gov/">NIH Roadmap</a>.<br/>
-    Copyright © 2005–2009, The Board of Trustees of Leland Stanford Junior University. All rights reserved.<br/>
-<a title="NCBO" href="http://www.bioontology.org">NCBO Website</a>&nbsp; <a title="Release Notes" href="/home/release">Release Notes</a> &nbsp;
-
-    <a title="Terms of Use" href="http://www.bioontology.org/terms.html">Terms of Use</a>  <a title="Privacy Policy" href="http://www.bioontology.org/privacy.html">Privacy Policy</a>
-
-<br/>
-<br/>
-<br/>
-</div>
-
-
-	<script type="text/javascript">
-	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-	</script>
-	<script type="text/javascript">
-	try {
-	var pageTracker = _gat._getTracker("UA-1072446-4");
-	pageTracker._trackPageview();
-	} catch(err) {}</script>	
-</body>
+      <br/>
+    </div>
+  </body>
 </html>
