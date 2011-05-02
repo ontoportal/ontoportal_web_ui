@@ -86,24 +86,36 @@ jQuery(document).ready(function(){
 							// Get JSON response for new row and add if successful
 							jQuery.get("/notes/ajax/single_list/" + data.ontologyId + "?noteid=" + data.id,
 									function(json) {
-										// Check for "No notes" message and delete
-										var no_notes_check = document.getElementById("no_notes");
-										if (no_notes_check != null) {
-										  notesTable.fnDeleteRow(notesTable.fnGetPosition(document.getElementById("no_notes")));
-											ontNotesTable.fnDeleteRow(ontNotesTable.fnGetPosition(document.getElementById("no_notes")));
-										}
+										var state = History.getState();
+
+                    // Handling for tree view
+										if (typeof state.data.p !== 'undefined' && state.data.p == 'terms') {
+                      // Check for "No notes" message and delete
+                      var no_notes_check = document.getElementById("no_notes");
+                      if (no_notes_check != null) {
+                        notesTable.fnDeleteRow(notesTable.fnGetPosition(document.getElementById("no_notes")));
+                      }
+                      
+  										// We add the (+ "") statement to "cast" to a string
+  										notesTable.fnAddData([
+  						                    json.subject_link + "",
+  						                    json.subject + "",
+  						                    "false", // archived should be false since we just created the note
+  						                    json.author + "",
+  						                    json.type + "",
+  							                	json.appliesTo + "",
+  							                	json.created + ""
+  						                ]);
+
+                      notesTable.fnFilter("");
+			              }
 										
-										// We add the (+ "") statement to "cast" to a string
-										notesTable.fnAddData([
-						                    json.subject_link + "",
-						                    json.subject + "",
-						                    "false", // archived should be false since we just created the note
-						                    json.author + "",
-						                    json.type + "",
-							                	json.appliesTo + "",
-							                	json.created + ""
-						                ]);
-										
+                    // Check for "No notes" message and delete
+                    var ont_no_notes_check = document.getElementById("ont_no_notes");
+                    if (ont_no_notes_check != null) {
+                      ontNotesTable.fnDeleteRow(ontNotesTable.fnGetPosition(document.getElementById("ont_no_notes")));
+                    }
+                    
                     // We add the (+ "") statement to "cast" to a string
                     ontNotesTable.fnAddData([
                                 json.subject_link + "",
@@ -116,7 +128,6 @@ jQuery(document).ready(function(){
                             ]);
 
 										// Redraw table, including sort and filter options
-										notesTable.fnFilter("");
                     ontNotesTable.fnFilter("");
 										jQuery("#notes_list_filter input").val("");
 									}
