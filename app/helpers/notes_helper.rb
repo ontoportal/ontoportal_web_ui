@@ -159,7 +159,7 @@ module NotesHelper
       when "Property"
       when "Ontology"
         ontology = DataAccess.getOntology(ontology_id)
-        return "<a href='/ontologies/virtual/#{ontology.ontologyId}#notes'>#{ontology.displayLabel}</a>" 
+        return "<a href='/ontologies/#{ontology.ontologyId}/?p=notes'>#{ontology.displayLabel}</a>" 
       end
     rescue Exception => e
       return "Unknown or Deprecated #{type}"
@@ -179,7 +179,7 @@ module NotesHelper
       when "Property"
       when "Ontology"
         ontology = DataAccess.getOntology(ontology_id)
-        return "/ontologies/virtual/#{ontology.ontologyId}#notes" 
+        return "/ontologies/#{ontology.ontologyId}/?p=notes" 
       end
     rescue Exception => e
       return ""
