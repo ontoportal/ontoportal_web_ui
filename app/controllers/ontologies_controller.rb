@@ -487,7 +487,7 @@ class OntologiesController < ApplicationController
     @ontology_id = @ontology.ontologyId
     @ontology_label = @ontology.displayLabel
 
-    @ontologies_mapping_count.sort! {|a,b| a['ontology'].displayLabel.downcase <=> b['ontology'].displayLabel.downcase }
+    @ontologies_mapping_count.sort! {|a,b| a['ontology'].displayLabel.downcase <=> b['ontology'].displayLabel.downcase } unless @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
 
     if request.xhr?
       render :partial => 'mappings', :layout => false
