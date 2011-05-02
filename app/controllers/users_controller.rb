@@ -89,8 +89,7 @@ class UsersController < ApplicationController
             survey_params[:user_id] = @user.id
             survey_params[:ontologies_of_interest] = get_ontology_list(survey_params[:ont_list])
             survey_params.delete(:ont_list)
-            test = survey_params
-            @survey = Survey.create(params[:user][:survey])
+            @survey = Survey.create(survey_params)
           end
           
           flash[:notice] = 'User was successfully created.'
