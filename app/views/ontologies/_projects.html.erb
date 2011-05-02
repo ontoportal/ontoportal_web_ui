@@ -2,7 +2,6 @@
   jQuery(document).ready(function(){
     jQuery(".untruncate").click(function(event){
       event.preventDefault();
-      console.log(jQuery(this).parent().parent().children(".untruncated_text"));
       var text = jQuery(this).parent().parent().children(".untruncated_text").html();
       jQuery(this).parent().parent().children(".original_text").html(text);
     });
