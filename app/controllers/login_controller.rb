@@ -31,7 +31,7 @@ class LoginController < ApplicationController
         render :action => 'index'
       end
     else
-      render :action =>'index'
+      render :action => 'index'
     end
   end
   

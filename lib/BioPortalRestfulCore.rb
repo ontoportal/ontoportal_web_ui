@@ -909,8 +909,8 @@ class BioPortalRestfulCore
       return user
     end
     
-    doc.elements.each("*/data/userBean"){ |element|  
-      user = parseUser(element)
+    doc.elements.each("*/data/session/attributes/entry/securityContext"){ |element|  
+      user = parseAuthenticatedUser(element)
     }
     
     return user
@@ -932,8 +932,8 @@ class BioPortalRestfulCore
       return user
     end
     
-    doc.elements.each("*/data/userBean"){ |element|  
-      user = parseUser(element)
+    doc.elements.each("*/data/session/attributes/entry/securityContext"){ |element|  
+      user = parseAuthenticatedUser(element)
     }
 
     return user
@@ -1063,7 +1063,8 @@ private
     uri << apikey
     
     begin
-      open(uri, "User-Agent" => "BioPortal-UI")
+      test = open(uri, "User-Agent" => "BioPortal-UI")
+      test
     rescue Exception => e
       LOG.add :debug, "Problem retrieving xml for #{uri}: #{e.message}"
       if !e.io.status.nil? && e.io.status[0].to_i == 404
