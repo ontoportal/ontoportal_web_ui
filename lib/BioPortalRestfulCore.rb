@@ -1163,23 +1163,24 @@ private
         paramsHash[param] = paramsHash[param].join(",")
       end
     end
-    res = Net::HTTP.post_form(URI.parse(url),paramsHash)
+    res = Net::HTTP.post_form(URI.parse(url), paramsHash)
     return res.body
   end
   
   def self.putToRestlet(url, paramsHash)
-    paramsHash["applicationid"] = $APPLICATION_ID
     paramsHash["apikey"] = $APPLICATION_ID
+    paramsHash["method"] = "PUT"
+    
+    # Comma-separate lists
     for param in paramsHash.keys
       if paramsHash[param].class.to_s.downcase.eql?("array")
         paramsHash[param] = paramsHash[param].join(",")
       end
     end
+    
     uri = URI.parse(url)
     http = Net::HTTP.new(uri.host, $REST_PORT)
-    request = Net::HTTP::Put.new(url)
-    request.set_form_data(paramsHash)
-    response = http.request(request)
+    response = Net::HTTP.post_form(uri, paramsHash)
     return response.body
   end
 
