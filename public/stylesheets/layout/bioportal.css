@@ -8,7 +8,6 @@ html {
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, input, textarea, p, blockquote, th, td {
 	margin:0;
 	padding:0;
-	min-width: 1200px;
 }
 table {
 	border-collapse:collapse;
@@ -66,10 +65,9 @@ legend {
 }
 body {
 	font:13px/1.231 arial,helvetica,clean,sans-serif;
-	*
 	font-size:small;
-	*
 	font:x-small;
+	min-width: 1200px;
 }
 table {
 	font-size:inherit;
