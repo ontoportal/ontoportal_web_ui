@@ -145,7 +145,7 @@ jQuery(document).ready(function() {
 
     <br/>
 
-    <table class="form">
+    <table class="form" style="min-width: 580px;">
       <tr>
         <th>
         Filter by Category</td>
@@ -169,7 +169,7 @@ jQuery(document).ready(function() {
               <option value="<%= group[:acronym]%>" <%if !params[:filter].nil? && group[:acronym].include?(params[:filter])%>selected="selected"<%end%>><%= group[:name]%> (<%= group[:acronym]%>)</option>
             <%end%>
           </select>
-          <a title="Link to filtered ontology list" href="/ontologies<%if !params[:filter].nil?%>/?filter=<%= params[:filter]%><%end%>" id="filterlink"><span style="display: inline-block; vertical-align: middle;" class="ui-icon ui-icon-link"></span></a>
+          <a title="Link to filtered ontology list" href="/ontologies<%if !params[:filter].nil?%>/?filter=<%= params[:filter]%><%end%>" id="filterlink"><span style="display: inline-block; float: right; margin-top: 1px;" class="ui-icon ui-icon-link"></span></a>
         </td>
       </tr>
       <tr>
