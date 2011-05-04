@@ -548,7 +548,11 @@ class BioPortalRestfulCore
     end
     
     doc.elements.each("*/data/ontologyBean"){ |element|  
-      ont = parseOntology(element)
+      begin
+        ont = parseOntology(element)
+      rescue Exception => e
+        puts "Problem parsing ontology"
+      end
     }
 
     return ont
@@ -1063,8 +1067,7 @@ private
     uri << apikey
     
     begin
-      test = open(uri, "User-Agent" => "BioPortal-UI")
-      test
+      open(uri, "User-Agent" => "BioPortal-UI")
     rescue Exception => e
       LOG.add :debug, "Problem retrieving xml for #{uri}: #{e.message}"
       if !e.io.status.nil? && e.io.status[0].to_i == 404

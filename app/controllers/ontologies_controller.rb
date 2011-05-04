@@ -305,9 +305,8 @@ class OntologiesController < ApplicationController
       params[:ontology][:isManual] = 1
     end
       
-
     if (session[:user].admin? && (params[:ontology][:userId].nil? || params[:ontology][:userId].empty?)) || !session[:user].admin?
-      params[:ontology][:userId]= session[:user].id
+      params[:ontology][:userId] = session[:user].id
     end
 
     @errors = validate(params[:ontology])
@@ -567,9 +566,9 @@ class OntologiesController < ApplicationController
       errors << "Please Enter an Ontology Abbrevation"
     elsif params[:abbreviation].include?(" ") || /[\^{}\[\]:;\$=\*`#\|@'\<>\(\)\+,\\\/]/.match(params[:abbreviation])
       errors << "Abbreviations cannot contain spaces or the following characters: <span style='font-family: monospace;'>^{}[]:;$=*`#|@'<>()\+,\\/</span>"
-    elsif CACHE.get("ontology_acronyms").include?(params[:abbreviation].downcase)
+    elsif DataAccess.getOntologyAcronyms.include?(params[:abbreviation].downcase)
       # We matched an existing acronym, but is it already ours from a previous version?
-      unless !DataAccess.getLatestOntology(params[:ontologyId]).nil? && DataAccess.getLatestOntology(params[:ontologyId]).abbreviation.downcase.eql?(params[:abbreviation].downcase)
+      unless isupdate && !DataAccess.getLatestOntology(params[:ontologyId]).nil? && DataAccess.getLatestOntology(params[:ontologyId]).abbreviation.downcase.eql?(params[:abbreviation].downcase)
         errors << "That Abbreviation is already in use. Please choose another."
       end
     end

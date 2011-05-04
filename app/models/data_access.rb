@@ -43,19 +43,20 @@ class DataAccess
   end
   
   def self.getOntologyList
-    ontologies = self.cache_pull("ont_list", "getOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
+    return self.cache_pull("ont_list", "getOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
+  end
+  
+  def self.getOntologyAcronyms
+    CACHE.set("ontology_acronyms", Array.new)
+
+    ontologies = self.getOntologyList
     
-    # Create an array of ontology accronyms to avoid duplicate entries
-    # Get a total of all terms for ontologies
-    if CACHE.get("ontology_acronyms").nil?
-      ontology_acronyms = []
-      ontologies.each do |ontology|
-        ontology_acronyms << ontology.abbreviation.downcase
-      end
-      CACHE.set("ontology_acronyms", ontology_acronyms, MEDIUM_CACHE_EXPIRE_TIME)
+    ontology_acronyms = []
+    ontologies.each do |ontology|
+      ontology_acronyms << ontology.abbreviation.downcase
     end
     
-    return ontologies
+    CACHE.set("ontology_acronyms", ontology_acronyms, MEDIUM_CACHE_EXPIRE_TIME)
   end
   
   def self.getTotalTermCount
