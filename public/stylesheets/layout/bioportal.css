@@ -1303,8 +1303,6 @@ textarea.create_note_inputs {
 .simpleTree .active {
 	cursor: default;
 	background-color: #E2EBF0;
-	padding: 2px 2px 0;
-	border: 1px solid #E2EBF0;
 	font-weight: bold;
 }
 .simpleTree a, .simpleTree a:hover {
