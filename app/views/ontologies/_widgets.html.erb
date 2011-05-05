@@ -50,18 +50,17 @@
                     </td>
                     <td>
                     	<div id="bp_quick_jump"></div>
-                    	  <script type="text/javascript">
-                          jQuery(document).ready(function(){
-                            // Set defaults for this installation
-                            var BP_SEARCH_SERVER = "<%=$UI_URL%>";
-                            var BP_SITE = "<%=$SITE%>";
-                            var BP_ORG = "<%=$ORG%>";
-                          });
-                    	  </script>
-						            <%= javascript_include_tag "/javascripts/widgets/quick_jump.js" %>
-                        <div id="jump" style="display:none;">
-                        <h2>Step 2: Follow the Instructions</h2>
-                        <hr/>
+                  	  <script type="text/javascript">
+                          // Set defaults for this installation
+                          var BP_SEARCH_SERVER = "<%=$UI_URL%>";
+                          var BP_SITE = "<%=$SITE%>";
+                          var BP_ORG = "<%=$ORG%>";
+                          var BP_ontology_id = "<%=@ontology.ontologyId%>";
+                  	  </script>
+					            <%= javascript_include_tag "/javascripts/widgets/quick_jump.js" %>
+                      <div id="jump" style="display:none;">
+                      <h2>Step 2: Follow the Instructions</h2>
+                      <hr/>
 						<div class="enable-lists">
 	                        <ul>
 	                            <li>
@@ -356,4 +355,10 @@ Example 1 (start typing the term name to get its full URI)
     <div style="clear:both;">
     </div>
 </div>
+
+<script type="text/javascript" charset="utf-8">
+    // We need to fire the thickbox init since we're bringing in new content to the page
+    tb_init('a.thickbox, area.thickbox, input.thickbox');
+</script>
+
 <% end %>
