@@ -153,7 +153,7 @@ class OntologiesController < ApplicationController
     params.each do |key,value|
       stop_words = [ "ontology", "controller", "action" ]
       next if stop_words.include?(key.to_s) || value.nil? || value.empty?
-      params_array << "#{key}=#{value}"
+      params_array << "#{key}=#{CGI.escape(value)}"
     end
     params_string = (params_array.empty?) ? "" : "&#{params_array.join('&')}"
     
