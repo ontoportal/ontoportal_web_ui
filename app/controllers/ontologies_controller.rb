@@ -213,7 +213,7 @@ class OntologiesController < ApplicationController
       @root.set_children(nodes, @root)
       
       # get the initial concepts to display
-      @concept = DataAccess.getNode(@ontology.id, @root.children.first.id, view)
+      @concept = DataAccess.getNode(@ontology.id, @root.children.first.id, nil, view)
       
       # Some ontologies have "too many children" at their root. These will not process and are handled here.
       # TODO: This should use a proper error-handling technique with custom exceptions
