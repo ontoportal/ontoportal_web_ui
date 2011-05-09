@@ -179,7 +179,8 @@ class OntologiesController < ApplicationController
     end
     
     # Get most recent active version of ontology if there was a parsing error
-    if @ontology.statusId.to_i.eql?(4)
+    skip_status = [1, 2, 4]
+    if OntologyWrapper.virtual_id?(params[:ontology]) && skip_status.include?(@ontology.statusId.to_i) 
       DataAccess.getActiveOntologies.each do |ont|
         if ont.ontologyId.eql?(@ontology.ontologyId)
           @ontology = DataAccess.getOntology(ont.id)

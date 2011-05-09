@@ -203,7 +203,18 @@ module ApplicationHelper
     end
   end
   
-  # RAILS 3 HELPERS
+  def virtual_id?(ontology_id)
+    return ontology_id.to_i < 2900
+  end
+  
+  def version_id?(ontology_id)
+    return ontology_id.to_i > 2900
+  end
+  
+  
+  
+  
+  # BACKPORTED RAILS 3 HELPERS
   
   DECIMAL_UNITS = {0 => :unit, 1 => :ten, 2 => :hundred, 3 => :thousand, 6 => :million, 9 => :billion, 12 => :trillion, 15 => :quadrillion,
     -1 => :deci, -2 => :centi, -3 => :mili, -6 => :micro, -9 => :nano, -12 => :pico, -15 => :femto}.freeze
@@ -262,6 +273,5 @@ module ApplicationHelper
     formatted_number = number_with_precision(number, options)
     decimal_format.gsub(/%n/, formatted_number).gsub(/%u/, unit).strip
   end
-  
   
 end

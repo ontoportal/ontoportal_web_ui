@@ -170,7 +170,7 @@ class DataAccess
   end
   
   def self.getOntology(ontology_id)
-    return self.getLatestOntology(ontology_id) if ontology_id.to_i < 2900
+    return self.getLatestOntology(ontology_id) if OntologyWrapper.virtual_id?(ontology_id)
     return self.cache_pull("#{ontology_id}::_details", "getOntology", { :ontology_id => ontology_id })
   end
   

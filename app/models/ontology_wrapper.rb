@@ -239,5 +239,15 @@ class OntologyWrapper
   def author_label
     DataAccess.getLightNode(self.id, self.authorSlot).label rescue ""
   end
+  
+  
+  # Ontology Helper Methods
+  def self.virtual_id?(ontology_id)
+    return ontology_id.to_i < 2900
+  end
+  
+  def self.version_id?(ontology_id)
+    return ontology_id.to_i > 2900
+  end
 
 end
