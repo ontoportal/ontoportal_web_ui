@@ -226,8 +226,10 @@
     		var pos = findPos(input);
     		// either use the specified width, or autocalculate based on form element
     		var iWidth = (options.width > 0) ? options.width : $input.width();
+        // add any footer information
+        if (typeof options.header !== 'undefined') $results.prepend(options.header);
     		// add any footer information
-    		if (options.footer != undefined) $results.append(options.footer);
+    		if (typeof options.footer !== 'undefined') $results.append(options.footer);
     		// reposition
     		$results.css({
     			width: parseInt(iWidth) + "px",

@@ -771,10 +771,11 @@ class BioPortalRestfulCore
     ontologies = ontologies.nil? || ontologies.empty? ? "" : "&ontologyids=#{ontologies.join(",")}"
     search_branch = params[:subtreerootconceptid].nil? ? "" : "&subtreerootconceptid=#{params[:subtreerootconceptid]}"
     object_types = params[:objecttypes].nil? ? "" : "&objecttypes=#{params[:objecttypes]}"
+    include_definitions = params[:includedefinitions].nil? || !params[:includedefinitions].eql?("true") ? "" : "&includedefinitions=true"
  
-    LOG.add :debug, BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}#{object_types}"
+    LOG.add :debug, BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}#{object_types}#{include_definitions}"
     begin
-      doc = REXML::Document.new(get_xml(BASE_URL + SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%", CGI.escape(search)) + "&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}#{object_types}"))
+      doc = REXML::Document.new(get_xml(BASE_URL + SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%", CGI.escape(search)) + "&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}#{object_types}#{include_definitions}"))
     rescue Exception=>e
       doc =  REXML::Document.new(e.io.read)
     end
@@ -1204,6 +1205,7 @@ private
         search_item[:conceptIdShort]=searchBean.elements["conceptIdShort"].get_text.value.strip
         search_item[:preferredName]=searchBean.elements["preferredName"].get_text.value.strip
         search_item[:contents]=searchBean.elements["contents"].get_text.value.strip
+        search_item[:definition]=searchBean.elements["definition"].get_text.value.strip rescue ""
         searchResults<< search_item
       }
     end

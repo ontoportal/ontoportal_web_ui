@@ -42,6 +42,7 @@ if (typeof BP_ORG === 'undefined') {
 var BP_ORG_SITE = (BP_ORG == "") ? BP_SITE : BP_ORG + " " + BP_SITE;
 
 
+
 jQuery(document).ready(function(){
 	// Install any CSS we need (check to make sure it hasn't been loaded)
   if (jQuery('link[href$="' + BP_SEARCH_SERVER + '/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"]')) {
@@ -61,17 +62,53 @@ jQuery(document).ready(function(){
 });
 
 function formComplete_formatItem(row) {
+  var input = this.extraParams.input;
   var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
-  var keywords = jQuery(this.extraParams.input).val().replace(specials, "\\$&").split(' ').join('|');
+  var keywords = jQuery(input).val().replace(specials, "\\$&").split(' ').join('|');
   var regex = new RegExp( '(' + keywords + ')', 'gi' );
+  var result = "";
+  var ontology_id;
+  
+  // Get ontology id and other parameters
+  var classes = jQuery(input).attr('class').split(" ");
+  jQuery(classes).each(function() {
+    if (this.indexOf("bp_form_complete") === 0) {
+      var values = this.split("-");
+      ontology_id = values[1];
+    }
+  });
+  var BP_include_definitions = jQuery(input).attr("data-bp_include_definitions");
 
-	// row[7] is the ontology_id, only included when searching multiple ontologies
-	if (row[7] == undefined) {
-		var result = row[5].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:7pt;color:blue;'>(" + row[2] + ")</span>";
-	} else {
-		var result = row[5].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:7pt;color:blue;'>(" + row[2] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + row[7] + "</span>";
-	}
- 	return result;
+  // Results
+  var result_type = row[2];
+  var result_term = row[0];
+  
+  // row[7] is the ontology_id, only included when searching multiple ontologies
+  if (ontology_id !== "all") {
+    var result_def = row[7];
+
+    if (BP_include_definitions === "true") {
+      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 65) + "</div>"
+    }
+
+    result += "<div class='result_term'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>";
+
+    result += "<div class='result_type' style='overflow: hidden;'>" + result_type + "</div>";
+  } else {
+    // Results
+    var result_ont = row[7];
+    var result_def = row[9];
+
+    result += "<div class='result_term'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>"
+    
+    if (BP_include_definitions === "true") {
+      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 65) + "</div>"
+    }
+  
+    result += "<div class='result_ontology'>" + " <div class='result_type'>" + result_type + "</div><div style='overflow: hidden;'>" + truncateText(result_ont, 35) + "</div></div>";
+  }
+  
+  return result;
 }
 
 function formComplete_setup_functions() {
@@ -86,6 +123,11 @@ function formComplete_setup_functions() {
 		  search_branch = "";
 		}
 		
+    var BP_include_definitions = jQuery(this).attr("data-bp_include_definitions");
+    if (typeof BP_include_definitions === "undefined") {
+      BP_include_definitions = "";
+    }
+    
 		jQuery(classes).each(function() {
 			if (this.indexOf("bp_form_complete") === 0) {
 				values = this.split("-");
@@ -96,12 +138,27 @@ function formComplete_setup_functions() {
 		
 		if (ontology_id == "all") { ontology_id = ""; }
 		
+	  var extra_params = { input: this, target_property: target_property, subtreerootconceptid: encodeURIComponent(BP_search_branch), includedefinitions: BP_include_definitions };
+
+    var result_width = 450;
+    
+    // Add extra space for definition
+    if (BP_include_definitions) {
+      result_width += 275;
+    }
+    
+    // Add space for ontology name
+    if (ontology_id === "") {
+      result_width += 200;
+    }
+  
 		jQuery(this).autocomplete(BP_SEARCH_SERVER + "/search/json_search/"+ontology_id, {
-				extraParams: { target_property: target_property, input: this, subtreerootconceptid: encodeURIComponent(search_branch) },
+				extraParams: extra_params,
 				lineSeparator: "~!~",
 				matchSubset: 0,
 				minChars: 3,
 				maxItemsToShow: 20,
+				width: result_width,
 				onItemSelect: bpFormSelect,
         footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="' + BP_SEARCH_SERVER + '">' + BP_ORG_SITE + '</a></div>',
 				formatItem: formComplete_formatItem

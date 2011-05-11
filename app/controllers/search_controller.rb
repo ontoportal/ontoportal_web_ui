@@ -1,3 +1,5 @@
+require 'uri'
+
 class SearchController < ApplicationController
   
   skip_before_filter :verify_authenticity_token
@@ -38,63 +40,45 @@ class SearchController < ApplicationController
   def search # full search
     
     ontologies = params[:search][:ontologies]
+    
     if ontologies.nil? || ontologies.empty?
       render :text=>"<h1 style='color:red'>Please select an ontology</h1>"
       return
     end
     
     if params[:search][:keyword].empty?
-        render :text=>"<h1 style='color:red'>Please Enter a Search Term</h1>"
-        return
-      end
+      render :text=>"<h1 style='color:red'>Please Enter a Search Term</h1>"
+      return
+    end
       
-      
-    
     @keyword = params[:search][:keyword]
 
     if params[:search][:attributes].nil? || params[:search][:attributes].eql?("0") || params[:search][:attributes].eql?("")
       if params[:search][:search_type].eql?("contains")
         @results,@pages = DataAccess.getNodeNameContains(params[:search][:ontologies],params[:search][:keyword],params[:page]||1)
-
       elsif params[:search][:search_type].eql?("exact")
         @results,@pages = DataAccess.getNodeNameExact(params[:search][:ontologies],params[:search][:keyword],params[:page]||1)
-
-
       end 
     end
   
     if params[:search][:attributes].eql?("1")
       if params[:search][:search_type].eql?("contains")
         @results,@pages =  DataAccess.getAttributeValueContains(params[:search][:ontologies],params[:search][:keyword],params[:page]||1)
-
-        
       elsif params[:search][:search_type].eql?("exact")
         @results,@pages = DataAccess.getAttributeValueExact(params[:search][:ontologies],params[:search][:keyword],params[:page]||1)
-
-        
       end 
-      
-      
-  
     end
 
-#    session[:search]={}
-#    session[:search][:results]=@results
-#    session[:search][:ontologies]=@ontologies
-#    session[:search][:keyword]=@keyword
-    
     if params[:page].nil?
       params[:page]=1
     end
     
     if request.xhr?
-      render :partial =>'results'
+      render :partial => 'results'
     else
       @ontologies = DataAccess.getActiveOntologies() 
-      render :action=>'results'
+      render :action => 'results'
     end
-    
-    
   end
   
   def json_search
@@ -112,6 +96,13 @@ class SearchController < ApplicationController
     else
       LOG.add :info, 'jump_to_search', request, :search_term => params[:q], :result_count => @results.length
     end
+    
+    # if params[:includedefinitions].eql?("true")
+      # @results.each do |result|
+        # definition = DataAccess.getLightNode(result[:ontologyVersionId], result[:conceptId], 0).definitions rescue nil
+        # result[:definition] = definition.nil? ? "" : URI.escape(definition)
+      # end
+    # end
     
     response = ""
     for result in @results
@@ -131,9 +122,9 @@ class SearchController < ApplicationController
       end      
       
       if params[:id] && params[:id].split(",").length == 1
-        response << "#{target_value}|#{result[:conceptIdShort]}|#{record_type}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}#{separator}"
+        response << "#{target_value}|#{result[:conceptIdShort]}|#{record_type}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}|#{CGI.escape(result[:definition])}#{separator}"
       else
-        response << "#{target_value}|#{result[:conceptIdShort]}|#{record_type}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}|#{result[:ontologyDisplayLabel]}|#{result[:ontologyId]}#{separator}"
+        response << "#{target_value}|#{result[:conceptIdShort]}|#{record_type}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}|#{result[:ontologyDisplayLabel]}|#{result[:ontologyId]}|#{CGI.escape(result[:definition])}#{separator}"
       end
     end        
     
@@ -160,9 +151,7 @@ class SearchController < ApplicationController
       widget_log.save
     end
     
-    
-    render :text=>response
-    
+    render :text => response
   end
   
   private
