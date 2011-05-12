@@ -33,4 +33,13 @@ class Notifier < ActionMailer::Base
     subject "Feedback"
     body :name => name, :email => email, :comment => comment
   end
+  
+  def register_for_announce_list(email)
+    unless $ANNOUNCE_LIST.nil? || $ANNOUNCE_LIST.empty?
+      recipients "#{$ANNOUNCE_LIST}"
+      from "#{$ADMIN_EMAIL}"
+      subject "subscribe address=#{email}"
+    end
+  end
+  
 end

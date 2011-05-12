@@ -176,6 +176,16 @@
       		<th>Re-enter Password:</td><td><%=password_field :user, :password_confirmation%></td>
       	</tr>
     	<%end%>
+  
+      <%if !$ANNOUNCE_LIST.nil? && !$ANNOUNCE_LIST.empty? && @survey.nil?%>
+        <tr>
+          <td colspan="2" style="text-align: right;">
+            <div style="float: right; margin-left: 10px; position: relative; top: 5px;"><input type="checkbox" value="1" name="user[register_mail_list]" id="user_register_mail_list"></div>
+            <div style="overflow: hidden; line-height: 12px;"><label for="user_register_mail_list">Register for the <%=$SITE%> announcements list<br/><span style="font-size: x-small;">(approximately two emails per month -- confirmation via email required)</span></label></div>
+          </td>
+        </tr>
+      <%end%>
+  
         <tr>
             <td align="right" colspan="2">
               <%unless params[:password].eql?("true")%>

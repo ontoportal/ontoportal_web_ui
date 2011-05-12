@@ -92,6 +92,11 @@ class UsersController < ApplicationController
             @survey = Survey.create(survey_params)
           end
           
+          # Attempt to register user to list
+          if params[:user][:register_mail_list]
+            Notifier.deliver_register_for_announce_list(@user.email) rescue nil
+          end
+
           flash[:notice] = 'User was successfully created.'
           session[:user]=@user
           format.html { redirect_to_browse }
@@ -122,6 +127,11 @@ class UsersController < ApplicationController
         flash[:notice] = @user.nil? ? "Error, try again" : @user[:longMessage]
         redirect_to params.merge!(:action => "edit", :errors => @errors)
         return
+      end
+      
+      # Attempt to register user to list
+      if params[:user][:register_mail_list]
+        Notifier.deliver_register_for_announce_list(@user.email) rescue nil
       end
 
       unless survey_params.nil?
