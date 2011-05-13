@@ -68,6 +68,7 @@ function formComplete_formatItem(row) {
   var regex = new RegExp( '(' + keywords + ')', 'gi' );
   var result = "";
   var ontology_id;
+  var term_name_width = "350px";
   
   // Get ontology id and other parameters
   var classes = jQuery(input).attr('class').split(" ");
@@ -79,6 +80,13 @@ function formComplete_formatItem(row) {
   });
   var BP_include_definitions = jQuery(input).attr("data-bp_include_definitions");
 
+  // Set wider term name column
+  if (BP_include_definitions === "true") {
+    term_name_width = "150px";
+  } else if (ontology_id == "all") {
+    term_name_width = "320px";
+  }
+
   // Results
   var result_type = row[2];
   var result_term = row[0];
@@ -88,24 +96,24 @@ function formComplete_formatItem(row) {
     var result_def = row[7];
 
     if (BP_include_definitions === "true") {
-      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 65) + "</div>"
+      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 75) + "</div>"
     }
 
-    result += "<div class='result_term'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>";
+    result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>";
 
     result += "<div class='result_type' style='overflow: hidden;'>" + result_type + "</div>";
   } else {
     // Results
     var result_ont = row[7];
     var result_def = row[9];
-
-    result += "<div class='result_term'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>"
+    
+    result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>"
     
     if (BP_include_definitions === "true") {
-      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 65) + "</div>"
+      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 75) + "</div>"
     }
   
-    result += "<div class='result_ontology'>" + " <div class='result_type'>" + result_type + "</div><div style='overflow: hidden;'>" + truncateText(result_ont, 35) + "</div></div>";
+    result += "<div>" + " <div class='result_type'>" + result_type + "</div><div class='result_ontology' style='overflow: hidden;'>" + truncateText(result_ont, 35) + "</div></div>";
   }
   
   return result;

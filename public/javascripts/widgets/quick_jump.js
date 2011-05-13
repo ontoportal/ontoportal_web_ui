@@ -106,15 +106,22 @@ function jumpTo_formatItem(row, position, count) {
   var result_type = row[2];
   var result_term = row[0];
   
+  // Set wider term name column
+  if (BP_include_definitions === "true") {
+    term_name_width = "150px";
+  } else if (BP_ontology_id == "all") {
+    term_name_width = "320px";
+  }
+
 	// row[7] is the ontology_id, only included when searching multiple ontologies
 	if (BP_ontology_id !== "") {
     var result_def = row[7];
 
     if (BP_include_definitions) {
-      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 65) + "</div>"
+      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 75) + "</div>"
     }
 
-		result += "<div class='result_term'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>";
+		result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>";
 
     result += "<div class='result_type' style='overflow: hidden;'>" + result_type + "</div>";
 	} else {
@@ -122,13 +129,13 @@ function jumpTo_formatItem(row, position, count) {
     var result_ont = row[7];
     var result_def = row[9];
 
-		result += "<div class='result_term'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>"
+		result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>"
     
     if (BP_include_definitions) {
-      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 65) + "</div>"
+      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 75) + "</div>"
     }
   
-    result += "<div class='result_ontology'>" + " <div class='result_type'>" + result_type + "</div><div style='overflow: hidden;'>" + truncateText(result_ont, 35) + "</div></div>";
+    result += "<div>" + " <div class='result_type'>" + result_type + "</div><div class='result_ontology' style='overflow: hidden;'>" + truncateText(result_ont, 35) + "</div></div>";
 	}
 	
 	return result;
