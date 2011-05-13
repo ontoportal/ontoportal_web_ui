@@ -2,14 +2,17 @@
 (function(window,undefined) {
   // Establish Variables
   var History = window.History;
-  // History.debug.enable === true;
+  History.debug.enable === true;
   
   // Bind to State Change
   History.Adapter.bind(window, 'statechange', function() {
+    debugger;
     var hashParams = null;
     var queryStringParams = null;
     var params = {};
     var state = History.getState();
+    
+    History.log('statechange:', state.data, state.title, state.url);
     
     if (typeof state.data.p !== 'undefined') {
       if (state.data.p == "terms") {
@@ -221,8 +224,8 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
 // Setup AJAX page objects
 jQuery.bioportal.ont_pages = [];
 
-jQuery.bioportal.ont_pages["terms"] = new jQuery.bioportal.OntologyPage("terms", "/ontologies/" + ontology_id + "?p=terms" + concept_param, "Problem retrieving terms", ontology_name + " - Terms", "Terms");
-jQuery.bioportal.ont_pages["summary"] = new jQuery.bioportal.OntologyPage("summary", "/ontologies/" + ontology_id + "?p=summary", "Problem retrieving summary", ontology_name + " - Summary", "Summary");
-jQuery.bioportal.ont_pages["mappings"] = new jQuery.bioportal.OntologyPage("mappings", "/ontologies/" + ontology_id + "?p=mappings", "Problem retrieving mappings", ontology_name + " - Mappings", "Mappings");
-jQuery.bioportal.ont_pages["notes"] = new jQuery.bioportal.OntologyPage("notes", "/ontologies/" + ontology_id + "?p=notes", "Problem retrieving notes", ontology_name + " - Notes", "Notes");
-jQuery.bioportal.ont_pages["widgets"] = new jQuery.bioportal.OntologyPage("widgets", "/ontologies/" + ontology_id + "?p=widgets", "Problem retrieving widgets", ontology_name + " - Widgets", "Widgets");
+jQuery.bioportal.ont_pages["terms"] = new jQuery.bioportal.OntologyPage("terms", "/ontologies/" + ontology_id + "?p=terms&ajax=true" + concept_param, "Problem retrieving terms", ontology_name + " - Terms", "Terms");
+jQuery.bioportal.ont_pages["summary"] = new jQuery.bioportal.OntologyPage("summary", "/ontologies/" + ontology_id + "?p=summary&ajax=true", "Problem retrieving summary", ontology_name + " - Summary", "Summary");
+jQuery.bioportal.ont_pages["mappings"] = new jQuery.bioportal.OntologyPage("mappings", "/ontologies/" + ontology_id + "?p=mappings&ajax=true", "Problem retrieving mappings", ontology_name + " - Mappings", "Mappings");
+jQuery.bioportal.ont_pages["notes"] = new jQuery.bioportal.OntologyPage("notes", "/ontologies/" + ontology_id + "?p=notes&ajax=true", "Problem retrieving notes", ontology_name + " - Notes", "Notes");
+jQuery.bioportal.ont_pages["widgets"] = new jQuery.bioportal.OntologyPage("widgets", "/ontologies/" + ontology_id + "?p=widgets&ajax=true", "Problem retrieving widgets", ontology_name + " - Widgets", "Widgets");
