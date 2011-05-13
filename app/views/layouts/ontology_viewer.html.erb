@@ -49,9 +49,6 @@
   var content_section = "<%=content_section%>";
   var concept_param = "<%="conceptid=#{params[:conceptid]}" unless params[:conceptid].nil? || params[:conceptid].empty?%>";
   var terms_disabled = <%=@ontology.terms_disabled?%>;
-
-  console.log(content_section);
-
 </script>
 
 <%=javascript_include_tag "history/amplify.store.js"%>  

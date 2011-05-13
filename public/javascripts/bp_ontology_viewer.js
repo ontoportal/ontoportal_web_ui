@@ -2,17 +2,16 @@
 (function(window,undefined) {
   // Establish Variables
   var History = window.History;
-  History.debug.enable === true;
+  // History.debug.enable === true;
   
   // Bind to State Change
   History.Adapter.bind(window, 'statechange', function() {
-    debugger;
     var hashParams = null;
     var queryStringParams = null;
     var params = {};
     var state = History.getState();
     
-    History.log('statechange:', state.data, state.title, state.url);
+    // History.log('statechange:', state.data, state.title, state.url);
     
     if (typeof state.data.p !== 'undefined') {
       if (state.data.p == "terms") {
