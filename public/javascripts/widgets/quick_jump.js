@@ -101,16 +101,17 @@ function jumpTo_formatItem(row, position, count) {
   var keywords = jQuery("#BP_search_box").val().replace(specials, "\\$&").split(' ').join('|');
   var regex = new RegExp( '(' + keywords + ')', 'gi' );
   var result = "";
+  var term_name_width = "350px";
 
   // Results
   var result_type = row[2];
   var result_term = row[0];
   
   // Set wider term name column
-  if (BP_include_definitions === "true") {
+  if (BP_include_definitions) {
     term_name_width = "150px";
-  } else if (BP_ontology_id == "all") {
-    term_name_width = "320px";
+  } else if (BP_ontology_id == "") {
+    term_name_width = "300px";
   }
 
 	// row[7] is the ontology_id, only included when searching multiple ontologies
@@ -123,7 +124,7 @@ function jumpTo_formatItem(row, position, count) {
 
 		result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>";
 
-    result += "<div class='result_type' style='overflow: hidden;'>" + result_type + "</div>";
+    result += "<div class='result_type' style='overflow: hidden; float: none;'>" + result_type + "</div>";
 	} else {
     // Results
     var result_ont = row[7];
@@ -135,7 +136,7 @@ function jumpTo_formatItem(row, position, count) {
       result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 75) + "</div>"
     }
   
-    result += "<div>" + " <div class='result_type'>" + result_type + "</div><div class='result_ontology' style='overflow: hidden;'>" + truncateText(result_ont, 35) + "</div></div>";
+    result += "<div>" + " <div class='result_type'>" + result_type + "</div><div class='result_ontology' style='overflow: hidden;'>" + truncateText(result_ont, 30) + "</div></div>";
 	}
 	
 	return result;
@@ -144,16 +145,18 @@ function jumpTo_formatItem(row, position, count) {
 function jumpTo_setup_functions() {
   var extra_params = { subtreerootconceptid: encodeURIComponent(BP_search_branch), includedefinitions: BP_include_definitions };
   
-  var result_width = 250;
+  var result_width = 350;
   
   // Add extra space for definition
   if (BP_include_definitions) {
-    result_width += 475;
+    result_width += 300;
   }
   
   // Add space for ontology name
   if (BP_ontology_id === "") {
-    result_width += 200;
+    result_width += 250;
+  } else {
+    result_width += 100;
   }
   
   jQuery("#BP_search_box").autocomplete(BP_SEARCH_SERVER + "/search/json_search/" + BP_ontology_id, {
