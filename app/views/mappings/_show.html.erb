@@ -11,7 +11,7 @@
 	    	<tr><th colspan=2>Filter By</th></tr>
 	    </thead>
 		<tr>
-			<th>User:</th><td class="top" align="left"><select name="user"style="min-width:200px;">
+			<th>Account:</th><td class="top" align="left"><select name="user"style="min-width:200px;">
 				<option value="">Any</option>
 				<%=options_from_collection_for_select(@users, "id", "username",params[:user].to_i)%>	
 			</select></td>

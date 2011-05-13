@@ -27,7 +27,7 @@ class LoginController < ApplicationController
 
         redirect_to redirect
       else
-        @errors << "Invalid user name/password combination"
+        @errors << "Invalid account name/password combination"
         render :action => 'index'
       end
     else
@@ -50,7 +50,7 @@ class LoginController < ApplicationController
   def send_pass
     user = DataAccess.getUserByEmail(params[:user][:email])
     if user.nil?
-      flash[:notice]="No user was created with that email address"
+      flash[:notice]="No account was created with that email address"
       redirect_to :action=>'lost_password'
     else       
       new_password = newpass(8)
@@ -58,7 +58,7 @@ class LoginController < ApplicationController
       DataAccess.updateUser(user.to_h,user.id)
       
       Notifier.deliver_lost_password(user,new_password)
-      flash[:notice]="Your Password has been sent to your email address."
+      flash[:notice]="Your password has been sent to your email address."
       redirect_to_home
     end
   end
@@ -69,10 +69,10 @@ class LoginController < ApplicationController
     errors=[]
     
     if params[:username].nil? || params[:username].length <1
-      errors << "Please Enter a User Name"
+      errors << "Please enter an account name"
     end
     if params[:password].nil? || params[:password].length <1
-      errors << "Please Enter a Password"
+      errors << "Please enter a password"
     end
     
     return errors

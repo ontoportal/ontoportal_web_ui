@@ -43,7 +43,7 @@
   <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
     <%unless @errors.nil?%>
       <div style="color: red; padding: 1em;" class="enable-lists">
-      Errors creating your user:
+      Errors creating your account:
       <ul>
         <%for error in @errors%>
          <li><%=error%></li>

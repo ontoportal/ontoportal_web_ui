@@ -20,7 +20,7 @@ class UsersController < ApplicationController
   # GET /users/1.xml
   def show
     if session[:user].nil? || !session[:user].id.eql?(params[:id])
-      redirect_to :controller => 'login', :action => 'index', :redirect => "/users/#{params[:id]}"
+      redirect_to :controller => 'login', :action => 'index', :redirect => "/accounts/#{params[:id]}"
     end
 
     @user = DataAccess.getUser(params[:id])
@@ -44,7 +44,7 @@ class UsersController < ApplicationController
   # GET /users/1;edit
   def edit
     if session[:user].nil? || !session[:user].id.eql?(params[:id])
-      redirect_to :controller => 'login', :action => 'index', :redirect => "/users/#{params[:id]}"
+      redirect_to :controller => 'login', :action => 'index', :redirect => "/accounts/#{params[:id]}"
     end
 
     @user = DataAccess.getUser(params[:id])
