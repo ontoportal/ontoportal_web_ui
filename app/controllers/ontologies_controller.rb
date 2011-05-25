@@ -314,8 +314,9 @@ class OntologiesController < ApplicationController
 
     if @errors.length < 1
       @ontology = DataAccess.createOntology(params[:ontology])
-      if @ontology.kind_of?(Hash) && @ontology[:error]        
-        flash[:notice]=@ontology[:longMessage]
+      if @ontology.kind_of?(Hash) && @ontology[:error] || @ontology.nil?       
+        notice = @ontology.nil? || @ontology[:longMessage].nil? ? "Error submitting ontology, please try again" : @ontology[:longMessage]
+        flash[:notice] = notice
         
         if(params[:ontology][:ontologyId].empty?)
           @ontology = OntologyWrapper.new
