@@ -954,7 +954,7 @@ class BioPortalRestfulCore
       response = postMultiPart(uri, params)
       doc = REXML::Document.new(response)
     rescue Exception=>e
-      doc =  REXML::Document.new(e.io.read)
+      doc = REXML::Document.new(e.io.read)
     end
 
     ontology = errorCheck(doc)
@@ -1424,7 +1424,7 @@ private
     errorHolder = {}
 
     begin
-      doc.elements.each("org.ncbo.stanford.bean.response.ErrorStatusBean"){ |element|  
+      doc.elements.each("errorStatus"){ |element|  
         errorHolder[:error] = true
         errorHolder[:shortMessage] = element.elements["shortMessage"].get_text.value.strip
         errorHolder[:longMessage] = element.elements["longMessage"].get_text.value.strip
@@ -1440,7 +1440,7 @@ private
     response = nil
     errorHolder={}
     begin
-      doc.elements.each("org.ncbo.stanford.bean.response.ErrorStatusBean"){ |element|  
+      doc.elements.each("errorStatus"){ |element|  
         errorHolder[:error] = true
         errorHolder[:shortMessage] = element.elements["shortMessage"].get_text.value.strip
         errorHolder[:longMessage] =element.elements["longMessage"].get_text.value.strip
