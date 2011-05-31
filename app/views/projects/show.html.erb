@@ -7,24 +7,34 @@
     <%=link_to "Edit Project",edit_project_path(@project)%>
   <%end%>
   <br>
+
+  <h1 style="font-size: xx-large; padding-bottom: .5em;"><%=@project.name%></h1>
+
+  <p style="margin-bottom: 5px;">
+    <strong>Description: </strong>
+    <%=@project.description%>
+  </p>
   
-  <table class="form" cellpadding="0" cellspacing="0" width="70%">
-  	<tr>
-  		<th>Project Name:</th><td class="top"><%=@project.name%></td>
-  		<th>Description:</th><td class="top"><%=@project.description%></td>
-  	</tr>
-  	<tr>
-  		<th>Institution:</th><td><%=@project.institution%></td>
-  		<th>People:</th><td><%=@project.people%></td>
-  	</tr>
-  	<tr>
-  		<th>Home Page:</th><td colspan=3><%=link_to @project.homepage, @project.homepage%></td>
-  		
-  	</tr>
-  </table>
+  <p style="margin-bottom: 5px;">
+    <strong>Institution: </strong>
+    <%=@project.institution%>
+  </p>
   
+  <p style="margin-bottom: 5px;">
+    <strong>People: </strong>
+    <%=@project.people%>
+  </p>
   
-  <h2 style="padding-top: 2em;">Ontologies Used</h2>
+  <p>
+    <strong>Home Page: </strong>
+    <%=link_to @project.homepage, @project.homepage%>
+  </p>
+  
+
+  <h2 style="padding-top: 1em;">Ontologies Used</h2>
+    <%if @project.uses.length == 0%>
+      No ontologies are currently associated with this project
+    <%end%>
   
   	<table class="zebra" cellpadding="0" cellspacing="0" width="70%">
       <%for uses in @project.uses%>
