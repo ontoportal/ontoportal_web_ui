@@ -3,7 +3,7 @@ class Use < ActiveRecord::Base
   
   
   def ontology
-    DataAccess.getLatestOntology(self.ontology_id)
+    DataAccess.getLatestOntology(self.ontology_id) rescue nil
   end
 
 
