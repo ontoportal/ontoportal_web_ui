@@ -42,12 +42,7 @@
       <% hidden_row_class = index >= 5 ? "hidden_ont hidden_select" : "" %>
       <tr <%= cycle("class='#{hidden_row_class}'", "class='alt #{hidden_row_class}'") %> class="<%=hidden_row_class%>">
         <td>
-            <% version_text = version.versionNumber.nil? || version.versionNumber.length == 0 ? "unknown" : version.versionNumber %>
-            <% if @ontology.metadata_only? || @ontology.terms_disabled? %>
-              <%= version_text %>
-            <%else%>
-              <a href="/ontologies/<%=version.id%>?p=terms"><%= version_text %></a>
-            <%end%>
+            <%=status_link(version)%>
         </td>
         <td>
             <%= version.dateReleased %>

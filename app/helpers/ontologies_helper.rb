@@ -61,6 +61,30 @@ module OntologiesHelper
       return "Archived, not available to explore"
     end
   end
+  
+  # Creates a link based on the status of an ontology
+  def status_link(ontology)
+    version_text = ontology.versionNumber.nil? || ontology.versionNumber.length == 0 ? "unknown" : ontology.versionNumber
+
+    case ontology.statusId.to_i
+    when 1 # Ontology is parsing
+      status_text = "waiting to parse"
+    when 2
+      status_text = "parsing"
+    when 3 # Ontology is ready to be explored
+      status_text = ""
+    when 4 # Error in parsing
+      status_text = "<span style='color: red;'>parsing error</span>"
+    when 6 # Ontology is deprecated
+      status_text = "archived"
+    end
+    
+    if ontology.valid_tree_view?
+      return "<a href='/ontologies/#{ontology.id}'>#{version_text}</a> <span style='font-size: x-small; color: gray; padding-left: 10px;'>#{status_text}</span>"
+    else
+      return version_text + " <span style='font-size: x-small; color: gray; padding-left: 10px;'>" + status_text + "</span>"
+    end
+  end
 
   # Provides a link for an ontology based on where it's hosted (Local or remote)
   def get_download_link(ontology)

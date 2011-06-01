@@ -182,6 +182,10 @@ class OntologyWrapper
     return !user.nil? && (user.admin? || user.id.to_i == self.userId.to_i)
   end
   
+  def archived?
+    return self.statusId.to_i == 6
+  end
+  
   # Check to see if ontology is stored remotely (IE metadata only)
   def metadata_only?
     return self.isMetadataOnly.eql?(1)
@@ -189,8 +193,11 @@ class OntologyWrapper
   
   # Check criteria for browsable ontologies
   def terms_disabled?
-    metadata_only = self.metadata_only?
-    self.metadata_only? || (!$NOT_EXPLORABLE.nil? && $NOT_EXPLORABLE.include?(self.ontologyId.to_i))
+    return self.metadata_only? || (!$NOT_EXPLORABLE.nil? && $NOT_EXPLORABLE.include?(self.ontologyId.to_i))
+  end
+  
+  def valid_tree_view?
+    return self.statusId.to_i == 3 && !self.terms_disabled?
   end
   
   def diffs
