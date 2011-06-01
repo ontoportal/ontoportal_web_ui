@@ -77,6 +77,8 @@ module OntologiesHelper
       status_text = "<span style='color: red;'>parsing error</span>"
     when 6 # Ontology is deprecated
       status_text = "archived"
+    else
+      status_text = ""
     end
     
     if ontology.valid_tree_view?
