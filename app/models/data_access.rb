@@ -401,11 +401,11 @@ class DataAccess
   end
   
   def self.getUserByEmail(email)
-    found_user = nil
+    found_user = []
     users = self.getUsers
     for user in users
       if user.email.eql?(email)
-        found_user = user
+        found_user << user
       end
     end
     return found_user              

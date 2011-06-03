@@ -7,7 +7,7 @@ class Notifier < ActionMailer::Base
     # Email header info MUST be added here
     recipients user.email
     from "#{$SUPPORT_EMAIL}"
-    subject "Password Reset"
+    subject "[#{$ORG_SITE}] Password Reset"
   
     # Email body substitutions go here
     body :user => user, :password => password

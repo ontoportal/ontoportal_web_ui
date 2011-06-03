@@ -48,9 +48,14 @@ class LoginController < ApplicationController
   
   # Sends a new password to the user
   def send_pass
-    user = DataAccess.getUserByEmail(params[:user][:email])
+    user = DataAccess.getUserByUsername(params[:user][:account_name])
+    
+    if !user.nil? && !user.email.downcase.eql?(params[:user][:email].downcase)
+      user = nil
+    end
+    
     if user.nil?
-      flash[:notice]="No account was created with that email address"
+      flash[:notice]="No account exists with that email address and account name combination"
       redirect_to :action=>'lost_password'
     else       
       new_password = newpass(8)
@@ -58,7 +63,7 @@ class LoginController < ApplicationController
       DataAccess.updateUser(user.to_h,user.id)
       
       Notifier.deliver_lost_password(user,new_password)
-      flash[:notice]="Your password has been sent to your email address."
+      flash[:notice]="Your password has been sent to your email address"
       redirect_to_home
     end
   end
