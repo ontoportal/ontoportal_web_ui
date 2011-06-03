@@ -75,8 +75,46 @@ function displayTree(data) {
       
       if (typeof data.suid !== 'undefined' && data.suid === "jump_to") {
         jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false }); 
-        // Are we jumping into the ontology? If so, get the whole tree
-        jQuery.bioportal.ont_pages["terms"].retrieve_and_publish();
+        
+        if (data.flat === true) {
+          // We have a flat ontology, so we'll replace existing information in the UI and add the new term to the list
+          
+          // Remove fake root node if it exists
+          if (jQuery("li#bp_fake_root").length) {
+            jQuery("li#bp_fake_root").remove();
+            jQuery("#non_fake_tabs").show();
+            jQuery("#fake_tabs").hide();
+          }
+          
+          // If the concept is already visible and in cache, then just switch to it
+          if (getCache(data.conceptid) == null) {
+            var list = jQuery("div#sd_content ul.simpleTree li.root ul");
+            jQuery(list).append('<li id="'+data.conceptid+'"><a href="/ontologies/'+ontology_id+'/?p=terms&conceptid='+data.conceptid+'">'+data.label+'</a></li>');
+            
+            // Configure tree
+            jQuery(list).children(".line").remove();
+            jQuery(list).children(".line-last").remove();
+            simpleTreeCollection.get(0).setTreeNodes(list);
+            
+            // Simulate node click
+            nodeClicked(data.conceptid);
+            
+            // Make "clicked" node active
+            jQuery("a.active").removeClass("active");
+            jQuery(document.getElementById(data.conceptid)).children("a").addClass("active");
+            
+            // Clear the search box
+            jQuery("#search_box").val("");
+          } else {
+            nodeClicked(data.conceptid);
+            
+            // Clear the search box
+            jQuery("#search_box").val("");
+          }
+        } else {
+          // Are we jumping into the ontology? If so, get the whole tree
+          jQuery.bioportal.ont_pages["terms"].retrieve_and_publish();
+        }
       } else {
         jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false }); 
         if (document.getElementById(new_concept_id) !== null) {
@@ -131,7 +169,7 @@ jQuery(document).ready(function() {
   });
   
   // Retrieve AJAX content if not already displayed
-  if (content_section !== "terms" && terms_disabled != true) {
+  if (content_section !== "terms" && metadata_only != true) {
     jQuery.bioportal.ont_pages["terms"].retrieve_and_publish();
     
     // if (typeof concept_id !== 'undefined') {
@@ -153,7 +191,7 @@ jQuery(document).ready(function() {
     jQuery.bioportal.ont_pages["notes"].retrieve_and_publish();
   }
   
-  if (content_section !== "widgets" && terms_disabled != true) {
+  if (content_section !== "widgets" && metadata_only != true) {
     jQuery.bioportal.ont_pages["widgets"].retrieve_and_publish();
   }
   

@@ -12,7 +12,7 @@
                   <%= @ontology.ontologyId %>
               </td>
           </tr>
-          <% if !$PURL_ENABLED.nil? && $PURL_ENABLED && !@ontology.terms_disabled? %>
+          <% if !$PURL_ENABLED.nil? && $PURL_ENABLED && !@ontology.metadata_only? %>
             <tr>
                 <th>
                     <%= $SITE%> PURL:

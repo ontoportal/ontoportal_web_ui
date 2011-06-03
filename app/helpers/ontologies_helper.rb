@@ -28,7 +28,7 @@ module OntologiesHelper
   
   # Link for private/public/licensed ontologies
   def visibility_link(ontology)
-    if ontology.terms_disabled?
+    if ontology.metadata_only?
       return "<a href='/ontologies/#{ontology.ontologyId}'>Summary Only</a>"
     else
       return "<a href='/ontologies/#{ontology.ontologyId}?p=terms'>Public</a>"
@@ -82,7 +82,7 @@ module OntologiesHelper
     end
     
     if ontology.valid_tree_view?
-      return "<a href='/ontologies/#{ontology.id}'>#{version_text}</a> <span style='font-size: x-small; color: gray; padding-left: 10px;'>#{status_text}</span>"
+      return "<a href='/ontologies/#{ontology.id}?p=terms'>#{version_text}</a> <span style='font-size: x-small; color: gray; padding-left: 10px;'>#{status_text}</span>"
     else
       return version_text + " <span style='font-size: x-small; color: gray; padding-left: 10px;'>" + status_text + "</span>"
     end
@@ -149,7 +149,7 @@ module OntologiesHelper
   end
   
   def terms_link(ontology, count)
-    loc = ontology.terms_disabled? ? "summary" : "terms"
+    loc = ontology.metadata_only? ? "summary" : "terms"
     
     if count.nil? || count == 0
       return "0"

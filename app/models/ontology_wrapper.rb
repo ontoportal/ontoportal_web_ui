@@ -196,8 +196,13 @@ class OntologyWrapper
     return self.metadata_only? || (!$NOT_EXPLORABLE.nil? && $NOT_EXPLORABLE.include?(self.ontologyId.to_i))
   end
   
+  # Is this ontology just a huge bag of terms?
+  def flat?
+    return !$NOT_EXPLORABLE.nil? && $NOT_EXPLORABLE.include?(self.ontologyId.to_i)
+  end
+  
   def valid_tree_view?
-    return self.statusId.to_i == 3 && !self.terms_disabled?
+    return self.statusId.to_i == 3 && !self.metadata_only?
   end
   
   def diffs

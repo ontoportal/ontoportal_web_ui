@@ -62,9 +62,13 @@
 			// Appropriate value selected
 			if( !!li.extra ){
         var sValue = jQuery("#jump_to_concept_id").val();
-			  
-        History.pushState({p:"terms", conceptid:sValue, suid:"jump_to"}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, "?p=terms&conceptid=" + sValue);
-        
+
+        <% if @ontology.flat? %>			  
+          History.pushState({p:"terms", conceptid:sValue, suid:"jump_to", flat:true, label:li.extra[4]}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, "?p=terms&conceptid=" + sValue);
+        <% else %>
+          History.pushState({p:"terms", conceptid:sValue, suid:"jump_to"}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, "?p=terms&conceptid=" + sValue);
+        <% end %>        
+
         return;
 			}
 		}
@@ -88,6 +92,7 @@
 		jQuery(document).ready(function(){
       jQuery("#search_box").autocomplete("/search/json_search/<%=@ontology.ontologyId%>", {
         extraParams: { objecttypes: "class" },
+        width: "400px",
         selectFirst: true,
         lineSeparator: "~!~",
         matchSubset: 0,
@@ -146,34 +151,72 @@
 			<div style="clear:both;"></div>
 		</div>
 		
-		<div id="container">
-			<div class="tabs">
-				<ul>
-						<li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
-						<li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
-	        	<li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
-						<li class="tab" id="mappings_top"><a href="#mappings">Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>				
-            <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
-              <%if !@ontology.isView.eql?('true')%>
-                <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
-						  <% end %>
-						<%end%>
-				</ul>
-        <%if @ontology.isView=='true'%>
-          <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Resource Index</a></li>
-        <% end %>
-			</div>
-			<div id="contents">
-  			<div style="display:block;" class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
-				<div class="tab_container" id="visualization_content"><%=render :partial =>'/concepts/images'%></div>
-				<div class="tab_container" id="notes_content"><%=render :partial =>'/notes/list'%></div>
-				<div class="tab_container" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
-        <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
-				  <div class="tab_container" id="resource_index_content"></div>
-			  <%end%>
-			</div>
-		</div>
-	</div>
+    <% if @concept.id.eql?("bp_fake_root")%>
+      <!-- When we have an ontology with a flat hierarchy, we initially disable the tabs because we don't have a term to display -->
+      <div id="container">
+        <div class="tabs" id="fake_tabs">
+          <ul>
+              <li class="selected first" id="details_top" onclick="return false;"><a href="#details" onclick="return false;" style="color: gray;">Details</a></li>
+              <li id="visualization_top" onclick="return false;"><a href="#visualization" onclick="return false;" style="color: gray;">Visualization</a></li>
+              <li id="notes_top" onclick="return false;"><a href="#notes" onclick="return false;" style="color: gray;">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+              <li id="mappings_top" onclick="return false;"><a href="#mappings" onclick="return false;" style="color: gray;">Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>       
+              <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Resource Index</a></li>
+          </ul>
+        </div>
+        <div class="tabs" id="non_fake_tabs" style="display: none;">
+          <ul>
+              <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
+              <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
+              <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+              <li class="tab" id="mappings_top"><a href="#mappings">Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>       
+              <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
+                <%if !@ontology.isView.eql?('true')%>
+                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
+                <% end %>
+              <%end%>
+          </ul>
+          <%if @ontology.isView=='true'%>
+            <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Resource Index</a></li>
+          <% end %>
+        </div>
+        <div id="contents">
+          <div style="display:block;" class="tab_container" id="details_content">Please search for a term using the Jump To field above to see details</div>
+          <div class="tab_container" id="visualization_content"></div>
+          <div class="tab_container" id="notes_content"></div>
+          <div class="tab_container" id="mappings_content"></div>
+          <div class="tab_container" id="resource_index_content"></div>
+        </div>
+      </div>
+    <% else %>
+      <div id="container">
+        <div class="tabs">
+          <ul>
+              <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
+              <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
+              <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+              <li class="tab" id="mappings_top"><a href="#mappings">Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>       
+              <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
+                <%if !@ontology.isView.eql?('true')%>
+                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
+                <% end %>
+              <%end%>
+          </ul>
+          <%if @ontology.isView=='true'%>
+            <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Resource Index</a></li>
+          <% end %>
+        </div>
+        <div id="contents">
+          <div style="display:block;" class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
+          <div class="tab_container" id="visualization_content"><%=render :partial =>'/concepts/images'%></div>
+          <div class="tab_container" id="notes_content"><%=render :partial =>'/notes/list'%></div>
+          <div class="tab_container" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
+          <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
+            <div class="tab_container" id="resource_index_content"></div>
+          <%end%>
+        </div>
+      </div>
+    <% end %>
+  </div>
 
 	<script type="text/javascript">
     terms_init = function(){

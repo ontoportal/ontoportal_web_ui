@@ -48,7 +48,7 @@
   var concept_id = "<%=params[:conceptid]%>";
   var content_section = "<%=content_section%>";
   var concept_param = "<%="conceptid=#{params[:conceptid]}" unless params[:conceptid].nil? || params[:conceptid].empty?%>";
-  var terms_disabled = <%=@ontology.terms_disabled?%>;
+  var metadata_only = <%=@ontology.metadata_only?%>;
 </script>
 
 <%=javascript_include_tag "history/amplify.store.js"%>  
@@ -69,10 +69,10 @@
       <div id="navigate_options" class="hidden">
         <ul>
           <li class="nav_links summary_link" id="summary_link"><a href="/ontologies/<%=@ontology.id%>?p=summary" data-bp_ont_page="summary">Summary</a></li>
-          <%unless @ontology.terms_disabled?%><li class="nav_links terms_link" id="terms_link"><a href="/ontologies/<%=@ontology.id%>?p=terms" data-bp_ont_page="terms">Terms</a></li><%end%>
+          <%unless @ontology.metadata_only?%><li class="nav_links terms_link" id="terms_link"><a href="/ontologies/<%=@ontology.id%>?p=terms" data-bp_ont_page="terms">Terms</a></li><%end%>
           <li class="nav_links notes_link" id="notes_link"><a href="/ontologies/<%=@ontology.id%>?p=notes" data-bp_ont_page="notes">Notes</a></li>
           <li class="nav_links mappings_link" id="mappings_link"><a href="/ontologies/<%=@ontology.id%>?p=mappings" data-bp_ont_page="mappings">Mappings</a></li>
-          <%unless @ontology.terms_disabled?%><li class="nav_links widgets_link" id="widgets_link"><a href="/ontologies/<%=@ontology.id%>?p=widgets" data-bp_ont_page="widgets">Widgets</a></li><%end%>
+          <%unless @ontology.metadata_only?%><li class="nav_links widgets_link" id="widgets_link"><a href="/ontologies/<%=@ontology.id%>?p=widgets" data-bp_ont_page="widgets">Widgets</a></li><%end%>
         </ul>
       </div>
     </span>

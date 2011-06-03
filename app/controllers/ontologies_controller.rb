@@ -199,7 +199,7 @@ class OntologiesController < ApplicationController
       return
     end
     
-    unless params[:conceptid]
+    if !@ontology.flat? && !params[:conceptid]
       # get the top level nodes for the root
       @root = TreeNode.new()
       nodes = @ontology.topLevelNodes(view)
@@ -224,6 +224,26 @@ class OntologiesController < ApplicationController
       end
 
       LOG.add :info, 'visualize_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
+    elsif @ontology.flat? && !params[:conceptid]
+      # Don't display any terms in the tree
+      @concept = NodeWrapper.new
+      @concept.label = "Please search for a term using the Jump To field above"
+      @concept.id = "bp_fake_root"
+      @concept.fullId = "bp_fake_root"
+      @concept.child_size = 0
+      @concept.properties = {}
+      @concept.version_id = @ontology.id
+      @concept.children = []
+      
+      @tree_concept = TreeNode.new(@concept)
+      
+      @root = TreeNode.new
+      @root.children = [@tree_concept]
+    elsif @ontology.flat? && params[:conceptid]
+      # Display only the requested term in the tree
+      @concept = DataAccess.getNode(@ontology.id, params[:conceptid], nil, view)
+      @root = TreeNode.new
+      @root.children = [TreeNode.new(@concept)]
     else
       # if the id is coming from a param, use that to get concept
       @concept = DataAccess.getNode(@ontology.id,params[:conceptid],view)
@@ -264,7 +284,7 @@ class OntologiesController < ApplicationController
     end
     
     if request.xhr?
-      return render 'visualize', :layout => false
+      return render 'visualize_flat', :layout => false
     else
       return render 'visualize', :layout => "ontology_viewer"
     end
