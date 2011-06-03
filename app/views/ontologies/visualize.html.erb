@@ -31,6 +31,10 @@
 			
 	    }
 
+    #bp_fake_root {
+      display: none;
+    }
+
 		/* used for vertical split bar */
 		.vsplitbar {
 			width: 5px;
@@ -143,6 +147,12 @@
 					<input type="textbox" id="search_box" size="30"/>
 					<input type="hidden" id="jump_to_concept_id">
 			</div>
+
+      <% if @ontology.flat? %>
+        <div id="flat_help" style="padding: 5px; background-color: #DADDE0; color: black;">
+          This ontology cannot be displayed as a tree. You can use the "Jump To" field to search for and display multiple terms.
+        </div>
+      <% end %>
 			
 			<div id="sd_content" class="sd_max_height">
 				<%=render :partial => '/ontologies/treeview'%>
