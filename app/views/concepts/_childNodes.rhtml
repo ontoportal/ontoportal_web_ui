@@ -33,9 +33,9 @@ output =""
 for child in @children
 	relation = child.relation_icon
 		
-	output << "<li id='#{CGI.escape(child.id)}'><a href='/ontologies/#{child.ontology_id}/?p=terms&conceptid=#{CGI.escape(child.id)}'> #{relation} #{child.label} #{icons}</a>"
+	output << "<li id='#{short_uuid}'><a href='/ontologies/#{child.ontology_id}/?p=terms&conceptid=#{CGI.escape(child.id)}'> #{relation} #{child.label} #{icons}</a>"
 	if child.child_size > 0 && !child.expanded
-		output << "<ul class='ajax'><li id='#{CGI.escape(child.id)}'><a href='/ajax_concepts/#{child.ontology_id}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.child_size}'>#{child.label}</a></li></ul>"
+		output << "<ul class='ajax'><li id='#{short_uuid}'><a href='/ajax_concepts/#{child.ontology_id}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.child_size}'>#{child.label}</a></li></ul>"
 	end
 	output << "</li>"
 end
