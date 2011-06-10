@@ -284,7 +284,7 @@ class OntologiesController < ApplicationController
     end
     
     if request.xhr?
-      return render 'visualize_flat', :layout => false
+      return render 'visualize', :layout => false
     else
       return render 'visualize', :layout => "ontology_viewer"
     end
