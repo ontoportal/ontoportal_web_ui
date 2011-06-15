@@ -1,8 +1,7 @@
 <script type="text/javascript">
 
   jQuery.rloader([
-    {type:'js',src:'/javascripts/jquery.scrollTo-1.4.0-min.js'},
-    {type:'js',src:'/javascripts/jquery.simple.tree.js'}
+    {type:'js',src:'/javascripts/jquery.scrollTo-1.4.0-min.js'}
   ]);
 
 var simpleTreeCollection;
@@ -10,7 +9,7 @@ jQuery(document).ready(function(){
 	simpleTreeCollection = jQuery('.simpleTree').simpleTree({
 		autoclose: false, drag:false,
 		afterClick:function(node){
-      History.pushState({p:"terms", conceptid:jQuery(node).attr("id")}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, "?p=terms&conceptid=" + jQuery(node).attr("id"));
+      History.pushState({p:"terms", conceptid:jQuery(node).children("a").attr("id")}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, jQuery(node).children("a").attr("href"));
 
 			//nodeClicked(jQuery(node).attr("id"),jQuery('span:first',node).text())
 		},
