@@ -60,11 +60,16 @@ class LoginController < ApplicationController
     else       
       new_password = newpass(8)
       user.password = new_password
-      DataAccess.updateUser(user.to_h,user.id)
+      updated_user = DataAccess.updateUser(user.to_h, user.id)
       
-      Notifier.deliver_lost_password(user,new_password)
-      flash[:notice]="Your password has been sent to your email address"
-      redirect_to_home
+      if updated_user.kind_of?(UserWrapper)
+        Notifier.deliver_lost_password(user,new_password)
+        flash[:notice]="Your password has been sent to your email address"
+        redirect_to_home
+      else
+        flash[:notice]="Error retrieving user information, please try again"
+        redirect_to :action=>'lost_password'
+      end
     end
   end
   

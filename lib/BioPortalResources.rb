@@ -28,7 +28,7 @@ class BioPortalResources
       end
       
       param_start = @uri.include?("?") ? "&" : "?"
-      @uri << param_start + "applicationid=#{APPLICATION_ID}"
+      @uri << param_start + "apikey=#{APPLICATION_ID}"
       
       return @uri
     end
