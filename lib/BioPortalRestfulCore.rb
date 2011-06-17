@@ -1118,6 +1118,8 @@ private
   end
   
   def self.postMultiPart(url, paramsHash)
+    paramsHash["applicationid"] = $APPLICATION_ID
+    paramsHash["apikey"] = $APPLICATION_ID
     params=[]
     for param in paramsHash.keys
       if paramsHash["isRemote"].eql?("0") && param.eql?("filePath")
