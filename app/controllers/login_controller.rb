@@ -67,7 +67,7 @@ class LoginController < ApplicationController
         flash[:notice]="Your password has been sent to your email address"
         redirect_to_home
       else
-        flash[:notice]="Error retrieving user information, please try again"
+        flash[:notice]="Error retrieving account information, please try again"
         redirect_to :action=>'lost_password'
       end
     end
