@@ -126,9 +126,9 @@ function formComplete_setup_functions() {
 		var ontology_id;
 		var target_property;
 		
-		var search_branch = jQuery(this).attr("data-bp_search_branch");
-		if (typeof search_branch === "undefined") {
-		  search_branch = "";
+		var BP_search_branch = jQuery(this).attr("data-bp_search_branch");
+		if (typeof BP_search_branch === "undefined") {
+		  BP_search_branch = "";
 		}
 		
     var BP_include_definitions = jQuery(this).attr("data-bp_include_definitions");
