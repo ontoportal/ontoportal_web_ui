@@ -59,6 +59,8 @@ class DataAccess
     end
     
     CACHE.set("ontology_acronyms", ontology_acronyms, MEDIUM_CACHE_EXPIRE_TIME)
+    
+    ontology_acronyms
   end
   
   def self.getTotalTermCount
