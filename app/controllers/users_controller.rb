@@ -97,7 +97,7 @@ class UsersController < ApplicationController
             Notifier.deliver_register_for_announce_list(@user.email) rescue nil
           end
 
-          flash[:notice] = 'User was successfully created.'
+          flash[:notice] = 'Account was successfully created.'
           session[:user]=@user
           format.html { redirect_to_browse }
           format.xml  { head :created, :location => user_url(@user) }
@@ -147,7 +147,7 @@ class UsersController < ApplicationController
         end
       end
 
-      flash[:notice] = 'User was successfully updated.'          
+      flash[:notice] = 'Account was successfully updated.'          
       redirect_to user_path(@user.id)
     end
   end
@@ -191,11 +191,11 @@ private
     if !params[:username].nil? || !params[:username].length < 1
       existing_user = DataAccess.getUserByUsername(params[:username])
       if existing_user
-        errors << "Username exists, please choose a new one"
+        errors << "Account name exists, please choose a new one"
       end
     end
     if params[:username].nil? || params[:username].length < 1
-      errors << "Please enter a username"
+      errors << "Please enter an account name"
     end
     if params[:password].nil? || params[:password].length < 1
       errors << "Please enter a password"
