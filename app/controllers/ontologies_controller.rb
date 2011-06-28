@@ -577,7 +577,9 @@ class OntologiesController < ApplicationController
   
   def validate(params, isupdate=false)
     # strip all spaces from email
-    params[:contactEmail] = params[:contactEmail].gsub(" ", "") 
+    params[:contactEmail] = params[:contactEmail].gsub(" ", "")
+    
+    acronyms = DataAccess.getOntologyAcronyms
     
     errors=[]
     if params[:displayLabel].nil? || params[:displayLabel].length <1

@@ -670,7 +670,12 @@ class BioPortalRestfulCore
     
     LOG.add :debug, "Retrieve notes for concept"
     LOG.add :debug, uri
-    doc = get_xml(uri)
+    
+    begin
+      doc = get_xml(uri)
+    rescue Exception => e
+      puts e.message
+    end
     
     notes = errorCheck(doc)
     
@@ -1162,8 +1167,8 @@ private
   end
   
   def self.postToRestlet(url, paramsHash)
-    paramsHash["applicationid"] = $APPLICATION_ID
-    paramsHash["apikey"] = $APPLICATION_ID
+    paramsHash[:applicationid] = $APPLICATION_ID
+    paramsHash[:apikey] = $APPLICATION_ID
     for param in paramsHash.keys
       if paramsHash[param].class.to_s.downcase.eql?("array")
         paramsHash[param] = paramsHash[param].join(",")
@@ -1174,8 +1179,8 @@ private
   end
   
   def self.putToRestlet(url, paramsHash)
-    paramsHash["apikey"] = $APPLICATION_ID
-    paramsHash["method"] = "PUT"
+    paramsHash[:apikey] = $APPLICATION_ID
+    paramsHash[:method] = "PUT"
     
     # Comma-separate lists
     for param in paramsHash.keys
