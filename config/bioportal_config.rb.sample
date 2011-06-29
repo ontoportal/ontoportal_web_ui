@@ -90,10 +90,18 @@ $REMOTE_LOGGING = false
 # Increment the following 'version' to prevent caching when Flex apps are updated
 $FLEX_VERSION = "1.0.8"
 
-# URL to pull flex apps from
+# URL to pull Flex apps from
 # Default uses Flex apps hosted at University of Victoria, you should only change this
 # if you are hosting the apps yourself.
-$FLEX_URL = "http://keg.cs.uvic.ca/ncbo"
+$FLEX_URL = "/flex"
+
+# Flex App API keys
+$ANNOTATOR_FLEX_APIKEY = ""
+$SEARCH_FLEX_APIKEY = ""
+$RECOMMENDER_FLEX_APIKEY = ""
+$FLEXOVIZ_APIKEY = ""
+
+
 
 # Full string for site, EX: "NCBO BioPortal" (auto-generated, don't modify)
 $ORG_SITE = ($ORG.nil? || $ORG.empty?) ? $SITE : "#{$ORG} #{$SITE}"

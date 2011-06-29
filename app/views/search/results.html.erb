@@ -1,7 +1,7 @@
 
 <!--  BEGIN Browser History required section -->
-<script src="<%=$FLEX_URL%>/searchui/history/history.js" language="javascript"></script>
-<script src="<%=$FLEX_URL%>/searchui/AC_OETags.js" language="javascript"></script>
+<script src="<%=$FLEX_URL%>/history/history.js" language="javascript"></script>
+<script src="<%=$FLEX_URL%>/AC_OETags.js" language="javascript"></script>
 <!--  END Browser History required section -->
 
 <script language="JavaScript" type="text/javascript">
@@ -44,7 +44,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
     var MMdoctitle = document.title;
 
 	AC_FL_RunContent(
-		"src", "<%=$FLEX_URL%>/searchui/playerProductInstall",
+		"src", "<%=$FLEX_URL%>/playerProductInstall",
 		"FlashVars", "MMredirectURL="+MMredirectURL+'&MMplayerType='+MMPlayerType+'&MMdoctitle='+MMdoctitle+"",
 		"width", "100%",
 		"height", "100%",
@@ -71,7 +71,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			"name", "Search",
 			"allowScriptAccess","always",
 			"type", "application/x-shockwave-flash",
-			"flashVars", "redirecturl=http://<%=request.env["HTTP_HOST"]%>/&server=<%=$REST_DOMAIN%>/&ontology=<%=@ontology%>&search=<%=@query%>",
+			"flashVars", "redirecturl=http://<%=request.env["HTTP_HOST"]%>/&server=<%=$REST_DOMAIN%>/&ontology=<%=@ontology%>&search=<%=@query%>&apikey=<%=$SEARCH_FLEX_APIKEY%>",
 			"pluginspage", "http://www.adobe.com/go/getflashplayer"
 	);
   } else {  // flash is too old or we can't detect the plugin
@@ -96,7 +96,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 				loop="false"
 				allowScriptAccess="always"
 				type="application/x-shockwave-flash"
-				flashVars="redirecturl=redirecturl=http://<%=request.env["HTTP_HOST"]%>/&server=<%=$REST_DOMAIN%>/&ontology=<%=@ontology%>&search=<%=@query%>"
+				flashVars="redirecturl=redirecturl=http://<%=request.env["HTTP_HOST"]%>/&server=<%=$REST_DOMAIN%>/&ontology=<%=@ontology%>&search=<%=@query%>&apikey=<%=$SEARCH_FLEX_APIKEY%>"
 				pluginspage="http://www.adobe.com/go/getflashplayer">
 			</embed>
 	</object>
