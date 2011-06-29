@@ -101,7 +101,5 @@ $SEARCH_FLEX_APIKEY = ""
 $RECOMMENDER_FLEX_APIKEY = ""
 $FLEXOVIZ_APIKEY = ""
 
-
-
 # Full string for site, EX: "NCBO BioPortal" (auto-generated, don't modify)
 $ORG_SITE = ($ORG.nil? || $ORG.empty?) ? $SITE : "#{$ORG} #{$SITE}"
