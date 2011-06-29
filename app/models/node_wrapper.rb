@@ -127,7 +127,7 @@ class NodeWrapper
   end
 
   def note_count
-    DataAccess.getNotesForConcept(DataAccess.getOntology(self.version_id).ontologyId, CGI.escape(self.fullId_proper), false, true).size rescue "0"
+    DataAccess.getNotesForConcept(DataAccess.getOntology(self.version_id).ontologyId, self.fullId_proper, false, true).size rescue "0"
   end
     
   def networkNeighborhood(relationships = nil)         
