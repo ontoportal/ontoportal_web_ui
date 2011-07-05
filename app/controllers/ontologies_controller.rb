@@ -319,7 +319,7 @@ class OntologiesController < ApplicationController
     params[:ontology][:isReviewed] = 1
     params[:ontology][:isFoundry] = 0
     
-    update = !params[:ontology][:ontologyId].nil? || !params[:ontology][:ontologyId].empty?
+    update = !params[:ontology][:ontologyId].nil? && !params[:ontology][:ontologyId].empty?
     
     # If ontology is going to be pulled, it should not be manual
     if params[:ontology][:isRemote].to_i.eql?(1) && (!params[:ontology][:downloadLocation].nil? || params[:ontology][:downloadLocation].length > 1)
