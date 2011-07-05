@@ -319,6 +319,8 @@ class OntologiesController < ApplicationController
     params[:ontology][:isReviewed] = 1
     params[:ontology][:isFoundry] = 0
     
+    update = !params[:ontology][:ontologyId].nil? || !params[:ontology][:ontologyId].empty?
+    
     # If ontology is going to be pulled, it should not be manual
     if params[:ontology][:isRemote].to_i.eql?(1) && (!params[:ontology][:downloadLocation].nil? || params[:ontology][:downloadLocation].length > 1)
       params[:ontology][:isManual] = 0
@@ -330,7 +332,7 @@ class OntologiesController < ApplicationController
       params[:ontology][:userId] = session[:user].id
     end
 
-    @errors = validate(params[:ontology])
+    @errors = validate(params[:ontology], update)
 
     if @errors.length < 1
       @ontology = DataAccess.createOntology(params[:ontology])
@@ -575,7 +577,7 @@ class OntologiesController < ApplicationController
     note_count
   end
   
-  def validate(params, isupdate=false)
+  def validate(params, update=false)
     # strip all spaces from email
     params[:contactEmail] = params[:contactEmail].gsub(" ", "")
     
@@ -592,8 +594,8 @@ class OntologiesController < ApplicationController
       errors << "Abbreviations cannot contain spaces or the following characters: <span style='font-family: monospace;'>^{}[]:;$=*`#|@'<>()\+,\\/</span>"
     elsif DataAccess.getOntologyAcronyms.include?(params[:abbreviation].downcase)
       # We matched an existing acronym, but is it already ours from a previous version?
-      unless isupdate && !DataAccess.getLatestOntology(params[:ontologyId]).nil? && DataAccess.getLatestOntology(params[:ontologyId]).abbreviation.downcase.eql?(params[:abbreviation].downcase)
-        errors << "That Abbreviation is already in use. Please choose another."
+      unless update && !DataAccess.getLatestOntology(params[:ontologyId]).nil? && DataAccess.getLatestOntology(params[:ontologyId]).abbreviation.downcase.eql?(params[:abbreviation].downcase)
+        errors << "That abbreviation is already in use. Please choose another."
       end
     end
     
@@ -603,7 +605,7 @@ class OntologiesController < ApplicationController
       errors << "Please Enter a Date Formatted as MM/DD/YYYY"
     end
     
-    unless isupdate
+    unless update
       if params[:isRemote].to_i.eql?(0) && (params[:filePath].nil? || params[:filePath].length < 1)
         errors << "Please Choose a File"
       end
