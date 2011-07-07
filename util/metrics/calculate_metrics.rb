@@ -12,7 +12,7 @@ class CalculateMetrics
   ONTOLOGIES_PATH = "/ontologies/active/"
   METRICS_PATH = "/ontologies/metrics/"
   PARSE_ONTOLOGY = "/ontologies/parse/%ONT%"
-  APPLICATION_ID = "4ea81d74-8960-4525-810b-fa1baab576ff"
+  APPLICATION_ID = ""
   
   STATUS_SUCCESS = 10
   STATUS_ERROR = 20

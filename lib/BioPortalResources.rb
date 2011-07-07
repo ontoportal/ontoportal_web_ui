@@ -1,7 +1,7 @@
 class BioPortalResources
     attr_accessor :base_url, :uri, :path, :params
     
-    APPLICATION_ID = "4ea81d74-8960-4525-810b-fa1baab576ff"
+    APPLICATION_ID = $APPLICATION_ID
 
     @@tokens = { "%ONT%" => :ontology_id, "%ONT_VIRTUAL%" => :ontology_virtual_id, "%CONC%" => :concept_id,
                  "%VIEW%" => :view_id, "%USR%" => :user_id, "%START%" => :ontology_id_start,

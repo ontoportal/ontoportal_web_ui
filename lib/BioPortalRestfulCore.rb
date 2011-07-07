@@ -19,7 +19,7 @@ class BioPortalRestfulCore
   SUPERCLASS = "SuperClass"
   SUBCLASS = "SubClass"
   CHILDCOUNT = "ChildCount"
-  APPLICATION_ID = "4ea81d74-8960-4525-810b-fa1baab576ff"
+  APPLICATION_ID = $APPLICATION_ID
   
   # Track paths that have already been processed when building a path to root tree 
   @seen_paths = {}
