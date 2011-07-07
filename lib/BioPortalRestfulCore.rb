@@ -19,7 +19,7 @@ class BioPortalRestfulCore
   SUPERCLASS = "SuperClass"
   SUBCLASS = "SubClass"
   CHILDCOUNT = "ChildCount"
-  APPLICATION_ID = $APPLICATION_ID
+  API_KEY = $API_KEY
   
   # Track paths that have already been processed when building a path to root tree 
   @seen_paths = {}
@@ -1069,7 +1069,7 @@ private
   
   # Gets XML from the rest service. Used to include a user-agent in one location.
   def self.get_xml(uri, timeout = 60)
-    apikey = uri.include?("?") ? "&apikey=" + $APPLICATION_ID : "?apikey=" + $APPLICATION_ID
+    apikey = uri.include?("?") ? "&apikey=" + $API_KEY : "?apikey=" + $API_KEY
     uri << apikey
     
     begin
@@ -1123,8 +1123,7 @@ private
   end
   
   def self.postMultiPart(url, paramsHash)
-    paramsHash["applicationid"] = $APPLICATION_ID
-    paramsHash["apikey"] = $APPLICATION_ID
+    paramsHash["apikey"] = $API_KEY
     params=[]
     for param in paramsHash.keys
       if paramsHash["isRemote"].eql?("0") && param.eql?("filePath")
@@ -1167,8 +1166,7 @@ private
   end
   
   def self.postToRestlet(url, paramsHash)
-    paramsHash[:applicationid] = $APPLICATION_ID
-    paramsHash[:apikey] = $APPLICATION_ID
+    paramsHash[:apikey] = $API_KEY
     for param in paramsHash.keys
       if paramsHash[param].class.to_s.downcase.eql?("array")
         paramsHash[param] = paramsHash[param].join(",")
@@ -1179,7 +1177,7 @@ private
   end
   
   def self.putToRestlet(url, paramsHash)
-    paramsHash[:apikey] = $APPLICATION_ID
+    paramsHash[:apikey] = $API_KEY
     paramsHash[:method] = "PUT"
     
     # Comma-separate lists

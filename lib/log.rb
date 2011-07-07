@@ -35,7 +35,7 @@ class LOG
     params[:ipaddress] = request.remote_ip
     params[:sessionid] = request.session_options[:id]
     params[:eventtype] = event
-    params[:applicationid] = $APPLICATION_ID
+    params[:apikey] = $API_KEY
     params[:requesturl] = request.request_uri
     
     begin

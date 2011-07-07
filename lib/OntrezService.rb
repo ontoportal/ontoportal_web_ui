@@ -13,7 +13,7 @@ class OntrezService
   # %E_PAGE% = Page End
   
   ONTREZ_URL = $RESOURCE_INDEX_REST_URL
-  APIKEY_PARAM = "&apikey=#{$APPLICATION_ID}"
+  APIKEY_PARAM = "&apikey=#{$API_KEY}"
   
   RESOURCE_BY_CONCEPT = "/byconcept/virtual/%ONT%/false/true/0/10?conceptid=%CONC%#{APIKEY_PARAM}"
   VERSIONED_RESOURCE_BY_CONCEPT = "/byconcept/%ONT%/false/true/0/10?conceptid=%CONC%#{APIKEY_PARAM}"

@@ -1,7 +1,7 @@
 class BioPortalResources
     attr_accessor :base_url, :uri, :path, :params
     
-    APPLICATION_ID = $APPLICATION_ID
+    API_KEY = $API_KEY
 
     @@tokens = { "%ONT%" => :ontology_id, "%ONT_VIRTUAL%" => :ontology_virtual_id, "%CONC%" => :concept_id,
                  "%VIEW%" => :view_id, "%USR%" => :user_id, "%START%" => :ontology_id_start,
@@ -28,7 +28,7 @@ class BioPortalResources
       end
       
       param_start = @uri.include?("?") ? "&" : "?"
-      @uri << param_start + "apikey=#{APPLICATION_ID}"
+      @uri << param_start + "apikey=#{API_KEY}"
       
       return @uri
     end

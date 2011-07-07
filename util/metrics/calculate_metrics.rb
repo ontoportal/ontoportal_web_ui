@@ -12,7 +12,7 @@ class CalculateMetrics
   ONTOLOGIES_PATH = "/ontologies/active/"
   METRICS_PATH = "/ontologies/metrics/"
   PARSE_ONTOLOGY = "/ontologies/parse/%ONT%"
-  APPLICATION_ID = ""
+  API_KEY = ""
   
   STATUS_SUCCESS = 10
   STATUS_ERROR = 20
@@ -68,7 +68,7 @@ class CalculateMetrics
       load_count += 1
       
       begin
-        response = resource.post :ontologyversionids => ontology.id, :applicationid => APPLICATION_ID
+        response = resource.post :ontologyversionids => ontology.id, :apikey => API_KEY
       rescue RestClient::RequestTimeout=>to
        	puts to.message
         status.execute("insert into ont_status values (?, ?, ?, ?, ?)",
@@ -124,7 +124,7 @@ class CalculateMetrics
   def self.getOntologyList()
     ontologies=nil
     
-    doc = REXML::Document.new(open(BASE_URL + ONTOLOGIES_PATH + "?applicationid=#{APPLICATION_ID}"))
+    doc = REXML::Document.new(open(BASE_URL + ONTOLOGIES_PATH + "?apikey=#{API_KEY}"))
     
     ontologies = errorCheck(doc)
     

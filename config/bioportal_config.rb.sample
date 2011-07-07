@@ -22,7 +22,7 @@ $ANNOTATOR_DISABLED = true
 $RESOURCE_INDEX_DISABLED = true
 
 # Unique string representing the UI's id for use with the BioPortal Core
-$APPLICATION_ID = "" 
+$API_KEY = "" 
 
 # REST core service address
 $REST_URL = "http://domain.com:8080/bioportal"
