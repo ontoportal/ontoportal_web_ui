@@ -1,6 +1,7 @@
 require 'uri'
 require 'open-uri'
 require 'net/http'
+require 'net/https'
 
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
@@ -64,7 +65,9 @@ class ApplicationController < ActionController::Base
   def remote_file_exists?(url)
     begin
       url = URI.parse(url)
-      Net::HTTP.start(url.host, url.port) do |http|
+      session = Net::HTTP.new(url.host, url.port)
+      session.use_ssl = true if url.port == 443
+      session.start do |http|
         response_valid = http.head(url.request_uri).code.to_i < 400
         return response_valid
       end
