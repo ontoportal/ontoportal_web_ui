@@ -39,6 +39,9 @@ $MAX_CHILDREN = 7500
 # Resource Index UI Location
 $RESOURCE_INDEX_UI_URL = "http://ncbodev-riui1.stanford.edu/stage"
 
+# Max size allowed for uploaded files
+$MAX_UPLOAD_SIZE = 1073741824
+
 # REST core service port number
 $REST_PORT = "8080"
 

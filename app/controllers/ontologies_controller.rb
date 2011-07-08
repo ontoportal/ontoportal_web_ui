@@ -610,7 +610,7 @@ class OntologiesController < ApplicationController
         errors << "Please Choose a File"
       end
       
-      if params[:isRemote].to_i.eql?(0) && !params[:filePath].nil? && params[:filePath].size.to_i > 20000000 && !session[:user].admin?
+      if params[:isRemote].to_i.eql?(0) && !params[:filePath].nil? && params[:filePath].size.to_i > $MAX_UPLOAD_SIZE && !session[:user].admin?
         errors << "File is too large"
       end
       
