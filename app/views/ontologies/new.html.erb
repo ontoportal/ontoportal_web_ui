@@ -284,7 +284,7 @@
             </th>
             <td>
                 <select name="ontology[categoryId][]" multiple="multiple" size="6">
-                    <%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]} %>
+                    <%cats = @categories.values.sort{|a,b| a[:name] <=> b[:name]} rescue Array.new %>
                     <%for cat in cats %>
                     <option value="<%=cat[:id]%>"<%if !@ontology.categories.nil? && @ontology.categories.include?(cat[:id]) %>selected<%end %>><%=cat[:name] %></option>
                     <%end %>
