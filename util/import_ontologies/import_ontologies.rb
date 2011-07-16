@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 
 # API key that is valid on both to/from BioPortal instances
-$API_KEY = "24e0e77e-54e0-11e0-9d7b-005056aa3316"
+$API_KEY_FROM = ""
+$API_KEY_TO = ""
 
 # The BioPortal instance to take ontologies from
-$FROM = "http://ncbostage-coremaster1:8080/bioportal"
-$FROM_PORT = "8080"
+$FROM = "http://rest.bioontology.org/bioportal"
+$FROM_PORT = "80"
 
 # The BioPortal instance to import ontologies to
 $TO = "http://localhost:8080/bioportal"
