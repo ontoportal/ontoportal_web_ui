@@ -92,11 +92,13 @@ class ImportOntologies
   def self.setup_from
     $REST_URL = $FROM
     $REST_PORT = $FROM_PORT
+    $API_KEY = $API_KEY_FROM
   end
   
   def self.setup_to
     $REST_URL = $TO
     $REST_PORT = $TO_PORT
+    $API_KEY = $API_KEY_TO
   end
 
   import_ontologies
