@@ -16,7 +16,7 @@ $TO_PORT = "8080"
 $ONTOLOGY_OWNER = "1"
 
 # Ontology ids to include in the import (leaving commented will import all ontologies)
-$INCLUDE_ONTOLOGIES = [ 1506 ]
+#$INCLUDE_ONTOLOGIES = [ 1506 ]
 
 require 'rubygems'
 require 'rexml/document'
