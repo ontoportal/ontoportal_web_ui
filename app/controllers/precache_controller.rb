@@ -3,7 +3,7 @@ require 'ontology_wrapper'
 
 class PrecacheController < ApplicationController
 
-  $UI_PORT = "3000"
+  $UI_PORT = "80"
 
   def self.precache_all
     get_url("http://localhost:#{$UI_PORT}")
