@@ -70,10 +70,10 @@ jQuery(document).ready(function() {
 		"aoData": [
   			{ "sType": "html" }, // Ontology Name
   			{ "sType": "html" }, // Visibility
-  			{ "sType": "html-formatted-num" }, // Terms
-  			{ "sType": "html-formatted-num" }, // Notes
-        { "sType": "html-formatted-num" }, // Reviews
-        { "sType": "html-formatted-num" }, // Projects
+  			{ "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Terms
+  			{ "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Notes
+        { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Reviews
+        { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Projects
         { "bVisible":false }, // Format
   			{ "bVisible":false }, // Version
   			null, // Uploaded
