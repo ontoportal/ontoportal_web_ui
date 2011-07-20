@@ -42,10 +42,14 @@ class PrecacheController < ApplicationController
     http = Net::HTTP.new(uri.host, uri.port)
     http.read_timeout = 360
   
-    res = http.start { |http|
-      path = uri.path.empty? ? "/" : uri.path
-      http.get(path)
-    }
+    begin
+      res = http.start { |http|
+        path = uri.path.empty? ? "/" : uri.path
+        http.get(path)
+      }
+    rescue Exception => e
+      p "Failed to get url: #{e.message}"
+    end
     
     res.body
   end
