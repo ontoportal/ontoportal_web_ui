@@ -1457,6 +1457,14 @@ button.fg-button-menu, button.fg-button {
 /************************************
  * Browse Page
  ************************************/
+ #ont_sum_link:link, #ont_sum_link:visited {
+   color: white;
+   text-decoration: none;
+ }
+
+ #ont_sum_link:hover {
+   color: lightGray;
+ }
 
 .ont_icons {
 	width: 22px;

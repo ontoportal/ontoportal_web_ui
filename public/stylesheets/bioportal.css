@@ -937,5 +937,5 @@ padding:0px;
 .bp_tagList { margin: 0; padding: 0; }
 .bp_tagList li { list-style-type: none; float: left; margin: 0 10px;  }
 .bp_tagList li a { text-decoration: none; }
-.bp_tagList li a:hover { text-decoration: underline; }
+.bp_tagList list:hover { text-decoration: underline; }
 

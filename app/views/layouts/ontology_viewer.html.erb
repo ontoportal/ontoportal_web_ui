@@ -64,7 +64,7 @@
 <div style="padding: 1em 2em 0; background: #234979;">
   <span style="float: right;"><a href="/syndication/rss?ontologies=<%=@ontology.ontologyId%>"><img src="/images/feed-icon.png" height=14 width=14 border=0 style="vertical-align: text-bottom;"></a></span>
   <div>
-    <span style="color: white; font-size: xx-large;"><%=@ontology.displayLabel %></span>
+    <span style="color: white; font-size: xx-large;"><a href='/ontologies/<%=@ontology.ontologyId%>' id='ont_sum_link'><%=@ontology.displayLabel %></a></span>
     <span id="nav_ontology" style="padding-left: 4em; position: relative; top: -5px;">
       <a tabindex="0" href="#navigate" class="fg-button fg-button-icon-right ui-widget ui-state-default" id="ont_nav"><span class="ui-icon ui-icon-triangle-1-s"></span><span id="nav_text">Summary</span></a>
       <div id="navigate_options" class="hidden">
