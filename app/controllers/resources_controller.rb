@@ -5,7 +5,7 @@ class ResourcesController < ApplicationController
 
     @concept =  DataAccess.getNode(params[:ontology],params[:id])
     @ontology = DataAccess.getOntology(params[:ontology])
-    latest = @ontology.is_latest? ? true : false
+    latest = @ontology.latest? ? true : false
   
     @resources = []
     @resources = OBDWrapper.gatherResources(@ontology.ontologyId,@concept,latest,@ontology.id)

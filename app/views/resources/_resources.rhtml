@@ -54,7 +54,7 @@
               	  <%if resource.count > 10 && !resource.name.eql?("NextBio")%>
               	    <tr>
               		    <td colspan="2" align="right">
-                        <a href="#" onclick="jQuery('#innerannot<%=index%>').load('/respage/?ontology=<%=@ontology.ontologyId%>&latest=<%=@ontology.is_latest?%>&version_id=<%=@ontology.id%>&concept=<%=@concept.id%>&resource=<%=resource.shortname%>&resource_element_url=<%=resource.resource_element_url%>&resource_main_context=<%=resource.main_context%>&start=10&end=20&index=<%=index%>&total=<%=resource.count%>');return false;">Next Page &gt;&gt;</a>
+                        <a href="#" onclick="jQuery('#innerannot<%=index%>').load('/respage/?ontology=<%=@ontology.ontologyId%>&latest=<%=@ontology.latest?%>&version_id=<%=@ontology.id%>&concept=<%=@concept.id%>&resource=<%=resource.shortname%>&resource_element_url=<%=resource.resource_element_url%>&resource_main_context=<%=resource.main_context%>&start=10&end=20&index=<%=index%>&total=<%=resource.count%>');return false;">Next Page &gt;&gt;</a>
                       </td>
               		  </tr>
               	  <%elsif resource.count > 10 && resource.name.eql?("NextBio")%>

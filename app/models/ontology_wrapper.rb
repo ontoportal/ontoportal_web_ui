@@ -168,7 +168,7 @@ class OntologyWrapper
   end
   
   # Queries for the latest version of this ontology and returns a comparison.
-  def is_latest?
+  def latest?
     latest = DataAccess.getLatestOntology(self.ontologyId)
     return latest.id.eql? self.id
   end

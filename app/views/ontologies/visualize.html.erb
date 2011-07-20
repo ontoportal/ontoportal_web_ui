@@ -120,18 +120,26 @@
       <%end%>
 		
 	  <% if !@ontology.is_in_search_index? %>
-        // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
-        jQuery("#qsearch").children().filter(":input").each(function(){
-          jQuery(this).attr("readonly", true);
-        });
+				<%if !@ontology.latest?%>        
+	        // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
+	        jQuery("#qsearch").children().filter(":input").each(function(){
+	          jQuery(this).attr("readonly", true);
+	        });
+ 	        jQuery("#qsearch").attr("style", "color: grey;");
+        <%end%>
+        
+        <%if @ontology.latest?%>
+        	<% message = "This ontology is currently being indexed. There may be some invalid results in the Jump To until this process is complete." %>
+        <%else%>
+        	<% message = "\"Jump To\" only works with the most recently indexed version of this ontology" %>
+        <%end%>
         
         // Set up a hovertip on the qsearch input element
-        jQuery("#qsearch").attr("style", "color: grey;");
-        jQuery("#qsearch :input").attr("title", "\"Jump To\" only works with the indexed version of this ontology");
+        jQuery("#qsearch :input").attr("title", '<%=message%>');
         jQuery("#qsearch :input").tooltip({
-            position: "bottom",
+            position: "middle",
             tip: '.tooltip',
-            opacity: 0.7
+            opacity: 0.9
         });
       <%end%>
 		});
