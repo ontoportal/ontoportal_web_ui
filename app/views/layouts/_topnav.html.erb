@@ -1,98 +1,100 @@
-<div id="hd">
-  <ul>  
-    <li><a href="/" title="Home"><img src="/images/layout/nav_logo.png" /></a></li>
-    <%if controller.controller_name.eql?('ontologies') || controller.controller_name.eql?('concepts')%>
-      <li><a href="/ontologies" title="Browse" ><img name="img10" src="/images/layout/nav_browse_active.png" /></a></li>    
-    <%else%>
-      <li><a href="/ontologies" title="Browse" ><img name="img10" src="/images/layout/nav_browse.png" /></a></li>
-    <%end%>
-    <%if controller.controller_name.eql?('search')%>
-      <li><a href="/search" title="Search"  ><img name="img11" src="/images/layout/nav_search_active.png" /></a></li>
-    <%else%>
-      <li><a href="/search" title="Search"  ><img name="img11" src="/images/layout/nav_search.png" /></a></li>
-    <%end%>
-    <%if controller.controller_name.eql?('projects')%>    
-      <li><a href="/projects" title="Projects"  ><img name="img11" src="/images/layout/nav_projects_active.png" /></a></li>   
-    <%else%>
-      <li><a href="/projects" title="Projects"  ><img name="img11" src="/images/layout/nav_projects.png" /></a></li>    
-    <%end%>
-    <%unless !$ANNOTATOR_DISABLED.nil? && $ANNOTATOR_DISABLED %>
-      <%if controller.action_name.eql?('annotate')%>    
-        <li><a href="/annotator" title="Annotator" ><img name="img12" src="/images/layout/nav_annotate_active.png" /></a></li>
-      <%else%>
-        <li><a href="/annotator" title="Annotator" ><img name="img12" src="/images/layout/nav_annotate.png" /></a></li>   
-      <%end%>
-    <%end%>
-    <%if controller.controller_name.eql?('mappings')%>    
-      <li><a href="/mappings" title="All Mappings" ><img name="img13" src="/images/layout/nav_search_allmappings_active.png" /></a></li>
-    <%else%>
-      <li><a href="/mappings" title="All Mappings" ><img name="img13" src="/images/layout/nav_search_allmappings.png" /></a></li>   
-    <%end%>
-    <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
-      <%if controller.action_name.eql?('all_resources')%>   
-        <li><a href="/resources" title="Resource Index" ><img name="img14" src="/images/layout/nav_resources_active.png" /></a></li>
-      <%else%>
-        <li><a href="/resources" title="Resource Index" ><img name="img14" src="/images/layout/nav_resources.png" /></a></li>
-      <%end%>
-    <%end%>
-  </ul>
-  
-<script type="text/javascript">
-  var menu_nav = function(link) {
-    document.location = link.href;
-  }
-
-  jQuery(document).ready(function() {
-    // Wire up navigation buttons
-    jQuery('#recently_viewed').fgmenu({ 
-      content: $('#recently_viewed').next().html(),
-      width: 250,
-      afterItemChosen: menu_nav
-    });
-    jQuery('#user_menu').fgmenu({ 
-      content: $('#user_menu').next().html(),
-      afterItemChosen: menu_nav
-    });
-  });
-</script>
-
-  <ul class="alignright" id="top_right_menu">
-    <%unless session[:ontologies].nil?%>
-      <a tabindex="0" href="#recent_ontologies" class="fg-button-menu fg-button-icon-right ui-widget ui-state-default" id="recently_viewed"><span class="ui-icon ui-icon-triangle-1-s"></span>Recently Viewed</a>
-      <div id="recent_ontologies" class="hidden">
-        <ul>
-          <%for tab in session[:ontologies]%>
-            <%if !@ontology.nil? && @ontology.id.eql?(tab.ontology_id)%>
-              <li id="tab<%=to_param(tab.ontology_id)%>" class="selected"><a href="/visualize/<%=tab.ontology_id%>/?conceptid=<%=encode_param(tab.concept)%>"><em><%=tab.ontology_name%></em></a></li>        
-            <%else%>
-              <li id="tab<%=to_param(tab.ontology_id)%>" ><a href="/visualize/<%=tab.ontology_id%>/?conceptid=<%=encode_param(tab.concept)%>" ><em><%=tab.ontology_name%></em></a></li>
-            <%end%>
-          <%end%>
-        </ul>
-      </div>
-    <%end%>
-
-    <%if session[:user].nil?%>
-      <%=link_to "Sign In", { :controller =>'login', :redirect => request.request_uri }, :class => "fg-button-menu ui-widget ui-state-default" %>
-      <!--<%=link_to "Register", new_user_path(:redirect=>@ontology), :class => "fg-button-menu ui-widget ui-state-default" %>-->
-    <%else%>
-      <a tabindex="0" href="<%= edit_user_path(session[:user])%>" class="fg-button-menu fg-button-icon-right ui-widget ui-state-default" id="user_menu"><span class="ui-icon ui-icon-triangle-1-s"></span><%= session[:user].username %></a>
-      <div id="navigate_options" class="hidden">
-        <ul>
-          <li><%=link_to "Account", "/account"%></li>
-          <li><%=link_to "Projects", projects_path(:user=>session[:user].id)%></li>
-          <li><%=link_to "Log Out", logout_url%></li>
-        </ul>
-      </div>
-    <%end%> 
-      <a tabindex="0" href="/home/release" class="fg-button-menu ui-widget ui-state-default">Help</a>
-      
-      <script type="text/javascript">
-        function popup(url) {
-          newwindow = window.open(url,'name','height=700,width=800,resizable=yes,scrollbars=yes,toolbar=no,status=no');
-          if (window.focus) {newwindow.focus()};
-        }
-      </script>
-      <a tabindex="0" onclick="popup('/feedback?pop=true'); return false;" href="/feedback" class="fg-button-menu ui-widget ui-state-default top_right_menu_last" style="">Feedback</a>
-  </ul>
+<div id="hd_wrapper" style="overflow: hidden;">
+	<div id="hd">
+	  <ul>  
+	    <li><a href="/" title="Home"><img src="/images/layout/nav_logo.png" /></a></li>
+	    <%if controller.controller_name.eql?('ontologies') || controller.controller_name.eql?('concepts')%>
+	      <li><a href="/ontologies" title="Browse" ><img name="img10" src="/images/layout/nav_browse_active.png" /></a></li>    
+	    <%else%>
+	      <li><a href="/ontologies" title="Browse" ><img name="img10" src="/images/layout/nav_browse.png" /></a></li>
+	    <%end%>
+	    <%if controller.controller_name.eql?('search')%>
+	      <li><a href="/search" title="Search"  ><img name="img11" src="/images/layout/nav_search_active.png" /></a></li>
+	    <%else%>
+	      <li><a href="/search" title="Search"  ><img name="img11" src="/images/layout/nav_search.png" /></a></li>
+	    <%end%>
+	    <%if controller.controller_name.eql?('projects')%>    
+	      <li><a href="/projects" title="Projects"  ><img name="img11" src="/images/layout/nav_projects_active.png" /></a></li>   
+	    <%else%>
+	      <li><a href="/projects" title="Projects"  ><img name="img11" src="/images/layout/nav_projects.png" /></a></li>    
+	    <%end%>
+	    <%unless !$ANNOTATOR_DISABLED.nil? && $ANNOTATOR_DISABLED %>
+	      <%if controller.action_name.eql?('annotate')%>    
+	        <li><a href="/annotator" title="Annotator" ><img name="img12" src="/images/layout/nav_annotate_active.png" /></a></li>
+	      <%else%>
+	        <li><a href="/annotator" title="Annotator" ><img name="img12" src="/images/layout/nav_annotate.png" /></a></li>   
+	      <%end%>
+	    <%end%>
+	    <%if controller.controller_name.eql?('mappings')%>    
+	      <li><a href="/mappings" title="All Mappings" ><img name="img13" src="/images/layout/nav_search_allmappings_active.png" /></a></li>
+	    <%else%>
+	      <li><a href="/mappings" title="All Mappings" ><img name="img13" src="/images/layout/nav_search_allmappings.png" /></a></li>   
+	    <%end%>
+	    <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
+	      <%if controller.action_name.eql?('all_resources')%>   
+	        <li><a href="/resources" title="Resource Index" ><img name="img14" src="/images/layout/nav_resources_active.png" /></a></li>
+	      <%else%>
+	        <li><a href="/resources" title="Resource Index" ><img name="img14" src="/images/layout/nav_resources.png" /></a></li>
+	      <%end%>
+	    <%end%>
+	  </ul>
+	  
+	<script type="text/javascript">
+	  var menu_nav = function(link) {
+	    document.location = link.href;
+	  }
+	
+	  jQuery(document).ready(function() {
+	    // Wire up navigation buttons
+	    jQuery('#recently_viewed').fgmenu({ 
+	      content: $('#recently_viewed').next().html(),
+	      width: 250,
+	      afterItemChosen: menu_nav
+	    });
+	    jQuery('#user_menu').fgmenu({ 
+	      content: $('#user_menu').next().html(),
+	      afterItemChosen: menu_nav
+	    });
+	  });
+	</script>
+	
+	  <ul class="alignright" id="top_right_menu">
+	    <%unless session[:ontologies].nil?%>
+	      <a tabindex="0" href="#recent_ontologies" class="fg-button-menu fg-button-icon-right ui-widget ui-state-default" id="recently_viewed"><span class="ui-icon ui-icon-triangle-1-s"></span>Recently Viewed</a>
+	      <div id="recent_ontologies" class="hidden">
+	        <ul>
+	          <%for tab in session[:ontologies]%>
+	            <%if !@ontology.nil? && @ontology.id.eql?(tab.ontology_id)%>
+	              <li id="tab<%=to_param(tab.ontology_id)%>" class="selected"><a href="/visualize/<%=tab.ontology_id%>/?conceptid=<%=encode_param(tab.concept)%>"><em><%=tab.ontology_name%></em></a></li>        
+	            <%else%>
+	              <li id="tab<%=to_param(tab.ontology_id)%>" ><a href="/visualize/<%=tab.ontology_id%>/?conceptid=<%=encode_param(tab.concept)%>" ><em><%=tab.ontology_name%></em></a></li>
+	            <%end%>
+	          <%end%>
+	        </ul>
+	      </div>
+	    <%end%>
+	
+	    <%if session[:user].nil?%>
+	      <%=link_to "Sign In", { :controller =>'login', :redirect => request.request_uri }, :class => "fg-button-menu ui-widget ui-state-default" %>
+	      <!--<%=link_to "Register", new_user_path(:redirect=>@ontology), :class => "fg-button-menu ui-widget ui-state-default" %>-->
+	    <%else%>
+	      <a tabindex="0" href="<%= edit_user_path(session[:user])%>" class="fg-button-menu fg-button-icon-right ui-widget ui-state-default" id="user_menu"><span class="ui-icon ui-icon-triangle-1-s"></span><%= session[:user].username %></a>
+	      <div id="navigate_options" class="hidden">
+	        <ul>
+	          <li><%=link_to "Account", "/account"%></li>
+	          <li><%=link_to "Projects", projects_path(:user=>session[:user].id)%></li>
+	          <li><%=link_to "Log Out", logout_url%></li>
+	        </ul>
+	      </div>
+	    <%end%> 
+	      <a tabindex="0" href="/home/release" class="fg-button-menu ui-widget ui-state-default">Help</a>
+	      
+	      <script type="text/javascript">
+	        function popup(url) {
+	          newwindow = window.open(url,'name','height=700,width=800,resizable=yes,scrollbars=yes,toolbar=no,status=no');
+	          if (window.focus) {newwindow.focus()};
+	        }
+	      </script>
+	      <a tabindex="0" onclick="popup('/feedback?pop=true'); return false;" href="/feedback" class="fg-button-menu ui-widget ui-state-default top_right_menu_last" style="">Feedback</a>
+	  </ul>
+	</div>
 </div>
