@@ -38,7 +38,7 @@ class ConceptsController < ApplicationController
     # If we're looking for children, just use the light version of the call
     if params[:callback].eql?("children")
       if too_many_children_override
-        @concept = DataAccess.getNode(params[:ontology], params[:id], nil)
+        @concept = DataAccess.getNode(params[:ontology], params[:id], 99999999999)
       else
         @concept = DataAccess.getNode(params[:ontology], params[:id])
       end
