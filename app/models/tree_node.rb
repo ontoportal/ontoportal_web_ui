@@ -96,6 +96,10 @@ class TreeNode
     @label
   end
   
+  def label_html
+    self.properties['Concept_Status'].nil? ? self.label : "<strike>#{self.label}</strike>"
+  end
+  
   def to_s
     "Tree_Node_Name: #{self.name}  Node_ID: #{self.id}"
   end

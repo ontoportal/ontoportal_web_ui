@@ -151,7 +151,7 @@ module NotesHelper
     begin
       case type
       when "Class"
-        return "<a href='/visualize/#{ontology_id}/?conceptid=#{CGI.escape(id)}#notes'>#{DataAccess.getNode(ontology_id, id).label}</a>"
+        return "<a href='/visualize/#{ontology_id}/?conceptid=#{CGI.escape(id)}#notes'>#{DataAccess.getNode(ontology_id, id).label_html}</a>"
       when "Note"
         ontology = DataAccess.getOntology(ontology_id)
         return "<a href='/notes/virtual/#{ontology.ontologyId}?noteid=#{id}'>#{DataAccess.getNote(ontology.ontologyId, id, false, true).subject}</a>" 

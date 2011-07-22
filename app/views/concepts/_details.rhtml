@@ -6,7 +6,7 @@
 		  Preferred Name
 		  <span class="slot_labels"><%unless @concept.ontology.preferred_name_label.nil? || @concept.ontology.preferred_name_label.to_s.length == 0%>(<%=@concept.ontology.preferred_name_label%>)<%end%></span>
 	  </td>
-		<td><p><%=@concept.name%></p></td>
+		<td><p><%=@concept.label_html%></p></td>
 	</tr>
   <%unless @concept.synonyms.nil? || @concept.synonyms.empty?%>
     <tr>

@@ -106,6 +106,10 @@ class NodeWrapper
     @label = value
   end
   
+  def label_html
+    self.properties['Concept_Status'].nil? ? self.label : "<strike>#{self.label}</strike>"
+  end
+  
   def to_param
     URI.escape(self.id,":/?#!").to_s
   end

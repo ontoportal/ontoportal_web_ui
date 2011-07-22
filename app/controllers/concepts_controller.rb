@@ -144,7 +144,7 @@ class ConceptsController < ApplicationController
     string << "{
            \"items\" : [\n
        	{ \n
-       \"title\": \"#{@concept.label}\" , \n
+       \"title\": \"#{@concept.label_html}\" , \n
        \"label\": \"#{@concept.id}\" \n"
     for property in @concept.properties.keys
       if @concept.properties[property].empty?
@@ -166,7 +166,7 @@ class ConceptsController < ApplicationController
     
     for child in @concept.children
       string << "{
-         \"title\" : \"#{child.label}\" , \n
+         \"title\" : \"#{child.label_html}\" , \n
          \"label\": \"#{child.id}\"  \n"
       for property in child.properties.keys
         if child.properties[property].empty?

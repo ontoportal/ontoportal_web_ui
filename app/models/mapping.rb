@@ -95,11 +95,11 @@ class Mapping
   alias :map_source= :mapping_source_name=
   
   def source_name
-    DataAccess.getLightNode(self.source_ontology_version, self.source).label rescue ""
+    DataAccess.getLightNode(self.source_ontology_version, self.source).label_html rescue ""
   end
 
   def destination_name
-    DataAccess.getLightNode(self.target_ontology_version, self.target).label rescue ""
+    DataAccess.getLightNode(self.target_ontology_version, self.target).label_html rescue ""
   end
   
   def source_ont_name
