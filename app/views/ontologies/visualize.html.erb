@@ -129,7 +129,7 @@
         <%end%>
         
         <%if @ontology.latest?%>
-        	<% message = "This ontology is currently being indexed. There may be some invalid results in the Jump To until this process is complete." %>
+        	<% message = "This ontology has recently been updated and new terms may not yet be available through \"Jump To\"" %>
         <%else%>
         	<% message = "\"Jump To\" only works with the most recently indexed version of this ontology" %>
         <%end%>
