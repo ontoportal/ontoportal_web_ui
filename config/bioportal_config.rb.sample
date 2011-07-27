@@ -34,7 +34,10 @@ $REST_DOMAIN = "domain.com"
 $RESOURCE_INDEX_REST_URL = "http://domain.com/resource_index"
 
 # Max number of children to return when rendering a tree view
-$MAX_CHILDREN = 7500
+$MAX_CHILDREN = 2500
+
+# Max number of children that it's possible to display (more than this is either too slow or not helpful to users)
+$MAX_POSSIBLE_DISPLAY = 10000
 
 # Resource Index UI Location
 $RESOURCE_INDEX_UI_URL = "http://ncbodev-riui1.stanford.edu/stage"
