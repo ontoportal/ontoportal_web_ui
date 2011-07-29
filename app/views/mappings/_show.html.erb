@@ -4,36 +4,35 @@
 		<input type="button" value="Export Current Results To RDF" class="blueButton" onclick="window.location='/mappings/show/<%=@ontology.ontologyId%>?target=<%=@target_ontology.ontologyId%>&user=<%=params[:user]%>&map_source=<%=params[:map_source]%>&rdf=rdf'">
 		<% if @mapping_pages.total_mappings > 10000 %><span style="font-size: x-small; color: grey;"><strong>Note:</strong> This export option will only return the first 10000 mappings of the <%=@mapping_pages.total_mappings%> in the result set. To retrieve all the mappings, please see the <a href="http://www.bioontology.org/wiki/index.php/BioPortal_Mappings_Service">Mappings REST Service</a>.</span><%end%>
 	</div>
-	<% form_for :mapping, nil, :url => "/mappings/show/#{@ontology}", :html => { :id=>'filter',:onsubmit => 'ajaxForm(this,"#mappings",null);return false;' } do |f| %>
-	<input type="hidden" name="target" value="<%=@destination_ont%>">
-	<table class="form" style="margin: 5px;">
+	<% form_for :mapping, nil, :url => "/mappings/show/#{@ontology.ontologyId}", :html => { :id=>'filter',:onsubmit => 'ajaxForm(this,"#mappings",null);return false;' } do |f| %>
+		<input type="hidden" name="target" value="<%=@target_ontology.ontologyId%>">
+		<table class="form" style="margin: 5px;">
 	    <thead>
 	    	<tr><th colspan=2>Filter By</th></tr>
 	    </thead>
-		<tr>
-			<th>Account:</th><td class="top" align="left"><select name="user"style="min-width:200px;">
-				<option value="">Any</option>
-				<%=options_from_collection_for_select(@users, "id", "username",params[:user].to_i)%>	
-			</select></td>
-		</tr>
-		<tr>
-			<th>Source:</th>
-			<td  align="left">
-				<select name="map_source" style="min-width:200px;">
-					<option value="" >Any</option>
-					<%=options_for_select(@map_sources,params[:map_source])%>	
-				</select>
-			</td>
-		</tr>
-	
-		<tr>	
-		<td   colspan="2" align="right"><%= submit_tag "Filter", :class=>'blueButton'%> </td>
-	</tr>
-	
-	
-	
+			<tr>
+				<th>Account:</th>
+				<td class="top" align="left">
+					<select name="user" style="min-width:200px;" id="mappings_user">
+						<option value="">Any</option>
+						<%=options_from_collection_for_select(@users, "id", "username",params[:user].to_i)%>	
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>Source:</th>
+				<td  align="left">
+					<select name="map_source" style="min-width:200px;" id="mappings_source">
+						<option value="">Any</option>
+						<%=options_for_select(@map_sources,params[:map_source])%>	
+					</select>
+				</td>
+			</tr>
+			<tr>	
+				<td colspan="2" align="right"><%= submit_tag "Filter", :class=>'blueButton'%></td>
+			</tr>
+		</table>
 	<% end %>
-	</table>
 	
     <div id="mapping_results">
 		<%= will_paginate @page_results,:update=>'mappings',:params=>{:target=>params[:target],:user=>params[:user],:map_source=>params[:map_source]} %>
