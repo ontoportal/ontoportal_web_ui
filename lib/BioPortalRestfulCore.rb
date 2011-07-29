@@ -476,7 +476,7 @@ class BioPortalRestfulCore
     uri_gen = BioPortalResources::Ontologies.new
     uri = uri_gen.generate_uri
     
-    doc = REXML::Document.new(get_xml(uri))
+    doc = get_xml(uri)
     
     ontologies = errorCheck(doc)
     
@@ -484,10 +484,12 @@ class BioPortalRestfulCore
       return ontologies
     end
     
-    ontologies = []
-    doc.elements.each("*/data/list/ontologyBean"){ |element| 
-      ontologies << parseOntology(element)
-    }
+    timer = Benchmark.ms { ontologies = generic_parse(:xml => doc, :type => "OntologyWrapper") }
+
+    # ontologies = []
+    # doc.elements.each("*/data/list/ontologyBean"){ |element| 
+      # ontologies << parseOntology(element)
+    # }
 
     return ontologies
   end
@@ -496,7 +498,7 @@ class BioPortalRestfulCore
     uri_gen = BioPortalResources::ActiveOntologies.new
     uri = uri_gen.generate_uri
 
-    doc = REXML::Document.new(get_xml(uri))
+    doc = get_xml(uri)
     
     ontologies = errorCheck(doc)
     
@@ -504,10 +506,12 @@ class BioPortalRestfulCore
       return ontologies
     end
     
-    ontologies = []
-    doc.elements.each("*/data/list/ontologyBean"){ |element| 
-      ontologies << parseOntology(element)
-    }
+    timer = Benchmark.ms { ontologies = generic_parse(:xml => doc, :type => "OntologyWrapper") }
+
+    # ontologies = []
+    # doc.elements.each("*/data/list/ontologyBean"){ |element| 
+      # ontologies << parseOntology(element)
+    # }
 
     return ontologies
   end
@@ -516,7 +520,7 @@ class BioPortalRestfulCore
     uri_gen = BioPortalResources::OntologyVersions.new(params)
     uri = uri_gen.generate_uri
 
-    doc = REXML::Document.new(get_xml(uri))
+    doc = get_xml(uri)
     
     ontologies = errorCheck(doc)
     
@@ -524,11 +528,12 @@ class BioPortalRestfulCore
       return ontologies
     end
     
-    ontologies = []
-    
-    doc.elements.each("*/data/list/ontologyBean"){ |element|  
-      ontologies << parseOntology(element)
-    }
+    timer = Benchmark.ms { ontologies = generic_parse(:xml => doc, :type => "OntologyWrapper") }
+
+    # ontologies = []
+    # doc.elements.each("*/data/list/ontologyBean"){ |element|  
+      # ontologies << parseOntology(element)
+    # }
 
     return ontologies
   end
@@ -539,7 +544,7 @@ class BioPortalRestfulCore
 
     LOG.add :debug, "Retrieving ontology"
     LOG.add :debug, uri
-    doc = REXML::Document.new(get_xml(uri))
+    doc = get_xml(uri)
 
     ont = errorCheck(doc)
     
@@ -547,13 +552,15 @@ class BioPortalRestfulCore
       return ont
     end
     
-    doc.elements.each("*/data/ontologyBean"){ |element|  
-      begin
-        ont = parseOntology(element)
-      rescue Exception => e
-        puts "Problem parsing ontology"
-      end
-    }
+    timer = Benchmark.ms { ont = generic_parse(:xml => doc, :type => "OntologyWrapper") }
+    
+    # doc.elements.each("*/data/ontologyBean"){ |element|  
+      # begin
+        # ont = parseOntology(element)
+      # rescue Exception => e
+        # puts "Problem parsing ontology"
+      # end
+    # }
 
     return ont
   end
@@ -1716,10 +1723,10 @@ private
           return child.content.to_i
         when "string"
           return child.content
-        when "synonyms"
-          synonyms = []
-          child.each_element { |synonym| synonyms << synonym.content }
-          a[child.name] = synonyms
+        when "synonyms", "categoryIds", "groupIds", "hasViews", "virtualViewIds"
+          elements = []
+          child.each_element { |element| elements << element.content }
+          a[child.name] = elements
         when "associated"
           a[child.name] = process_list(child)
       else

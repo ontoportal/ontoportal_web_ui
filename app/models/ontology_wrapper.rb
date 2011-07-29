@@ -77,6 +77,59 @@ class OntologyWrapper
   
   PROTEGE_FORMAT = ["OWL","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE"]
     
+  def initialize(hash = nil, params = nil)
+    if hash.nil?
+      return
+    end
+    
+    self.displayLabel             = hash['displayLabel']
+    self.id                       = hash['id']
+    self.ontologyId               = hash['ontologyId']
+    self.userId                   = hash['userId']
+    self.parentId                 = hash['parentId']
+    self.format                   = hash['format']
+    self.versionNumber            = hash['versionNumber']
+    self.versionStatus            = hash['versionStatus']
+    self.internalVersion          = hash['internalVersionNumber']
+    self.versionStatus            = hash['versionStatus']
+    self.isCurrent                = hash['isCurrent']
+    self.isRemote                 = hash['isRemote']
+    self.isReviewed               = hash['isReviewed']
+    self.statusId                 = hash['statusId']
+    self.dateReleased             = hash['dateReleased']
+    self.contactName              = hash['contactName']
+    self.contactEmail             = hash['contactEmail']
+    self.isFoundry                = hash['isFoundry']
+    self.isManual                 = hash['isManual']
+    self.filePath                 = hash['filePath']
+    self.urn                      = hash['urn']
+    self.homepage                 = hash['homepage']
+    self.documentation            = hash['documentation']
+    self.publication              = hash['publication']
+    self.dateCreated              = hash['dateCreated']
+    self.downloadLocation         = hash['downloadLocation']
+    self.isMetadataOnly           = hash['isMetadataOnly']
+    self.description              = hash['description']
+    self.abbreviation             = hash['abbreviation']
+    self.categories               = hash['categoryIds']
+    self.groups                   = hash['groupIds']
+    self.synonymSlot              = hash['synonymSlot']
+    self.preferredNameSlot        = hash['preferredNameSlot']
+    self.documentationSlot        = hash['documentationSlot']
+    self.authorSlot               = hash['authorSlot']
+    self.targetTerminologies      = hash['targetTerminologies']
+    self.reviews                  = hash['reviews']
+    self.projects                 = hash['projects']
+    self.versions                 = hash['versions']
+    self.view_ids                 = hash['hasViews']
+    self.virtual_view_ids         = hash['virtualViewIds']
+    self.isView                   = hash['isView']
+    self.viewDefinition           = hash['viewDefinition']
+    self.viewGenerationEngine     = hash['viewGenerationEngine']
+    self.viewDefinitionLanguage   = hash['viewDefinitionLanguage']
+    self.viewOnOntologyVersionId  = hash['viewOnOntologyVersionId']
+  end    
+
   def views
     return DataAccess.getViews(self.ontologyId)
   end
