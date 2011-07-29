@@ -458,7 +458,6 @@ class BioPortalRestfulCore
     LOG.add :debug, "Retrieve top level nodes"
     LOG.add :debug, uri
     doc = get_xml(uri)
-    #doc = REXML::Document.new(get_xml(uri))            
 
     node = errorCheck(doc)         
 
@@ -486,11 +485,6 @@ class BioPortalRestfulCore
     
     timer = Benchmark.ms { ontologies = generic_parse(:xml => doc, :type => "OntologyWrapper") }
 
-    # ontologies = []
-    # doc.elements.each("*/data/list/ontologyBean"){ |element| 
-      # ontologies << parseOntology(element)
-    # }
-
     return ontologies
   end
   
@@ -507,11 +501,6 @@ class BioPortalRestfulCore
     end
     
     timer = Benchmark.ms { ontologies = generic_parse(:xml => doc, :type => "OntologyWrapper") }
-
-    # ontologies = []
-    # doc.elements.each("*/data/list/ontologyBean"){ |element| 
-      # ontologies << parseOntology(element)
-    # }
 
     return ontologies
   end
