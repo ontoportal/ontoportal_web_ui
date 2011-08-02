@@ -38,7 +38,7 @@ class PrecacheController < ApplicationController
     end
   end
   
-  def self.precache_ontology_notes(delete_cache = false)
+  def self.precache_ontology_mappings(delete_cache = false)
     ontologies = DataAccess.getOntologyList
     ontologies.each do |ont|
       if delete_cache
@@ -49,7 +49,7 @@ class PrecacheController < ApplicationController
     end
   end
   
-  def self.precache_ontology_mappings(delete_cache = false)
+  def self.precache_ontology_notes(delete_cache = false)
     ontologies = DataAccess.getOntologyList
     ontologies.each do |ont|
       if delete_cache
