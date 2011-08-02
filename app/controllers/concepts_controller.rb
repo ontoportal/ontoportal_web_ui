@@ -23,7 +23,7 @@ class ConceptsController < ApplicationController
       render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} terms at this level. Retrieving these may take several minutes. #{retry_link}</div>"
       return
     elsif params[:callback].eql?('children') && params[:child_size].to_i > $MAX_POSSIBLE_DISPLAY && !too_many_children_override
-      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} terms at this level, which is more than we can usefully display. Please use the \"Jump To\" to search for specific terms.</div>"
+      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} terms at this level. Please use the "Jump To" to search for specific terms.</div>"
       return
     end
     
