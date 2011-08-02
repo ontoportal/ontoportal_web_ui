@@ -309,8 +309,8 @@ class DataAccess
     
     CACHE.delete("ontoliges::map_count")
     CACHE.delete("ontoliges::users::map_count")
-    CACHE.delete("between_ontoliges::map_count::#{source_ontology_id}")
-    CACHE.delete("between_ontoliges::map_count::#{target_ontology_id}")
+    CACHE.delete("between_ontologies::map_count::#{source_ontology_id}")
+    CACHE.delete("between_ontologies::map_count::#{target_ontology_id}")
     CACHE.delete("#{source_ontology_id}::#{CGI.escape(source)}::map_count")
     CACHE.delete("#{target_ontology_id}::#{CGI.escape(target)}::map_count")
     CACHE.delete("#{source_ontology_id}::map_count")
@@ -357,7 +357,7 @@ class DataAccess
   end
 
   def self.getMappingCountBetweenOntologies(ontology_virtual_id)
-    self.cache_pull("between_ontoliges::map_count::#{ontology_virtual_id}", "getMappingCountBetweenOntologies", { :ontology_virtual_id => ontology_virtual_id }, LONG_CACHE_EXPIRE_TIME)
+    self.cache_pull("between_ontologies::map_count::#{ontology_virtual_id}", "getMappingCountBetweenOntologies", { :ontology_virtual_id => ontology_virtual_id }, LONG_CACHE_EXPIRE_TIME)
   end
   
   def self.getMappingCountOntologies
