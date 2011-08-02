@@ -96,7 +96,7 @@ class OntologyWrapper
     self.isRemote                 = hash['isRemote']
     self.isReviewed               = hash['isReviewed']
     self.statusId                 = hash['statusId']
-    self.dateReleased             = hash['dateReleased']
+    self.dateReleased             = Date.parse(hash['dateReleased']).strftime('%m/%d/%Y') unless hash['dateReleased'].nil?
     self.contactName              = hash['contactName']
     self.contactEmail             = hash['contactEmail']
     self.isFoundry                = hash['isFoundry']
@@ -106,7 +106,7 @@ class OntologyWrapper
     self.homepage                 = hash['homepage']
     self.documentation            = hash['documentation']
     self.publication              = hash['publication']
-    self.dateCreated              = hash['dateCreated']
+    self.dateCreated              = Date.parse(hash['dateCreated']).strftime('%m/%d/%Y') unless hash['dateCreated'].nil?
     self.downloadLocation         = hash['downloadLocation']
     self.isMetadataOnly           = hash['isMetadataOnly']
     self.description              = hash['description']

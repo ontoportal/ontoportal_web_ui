@@ -55,7 +55,7 @@ class DataAccess
     
     ontology_acronyms = []
     ontologies.each do |ontology|
-      ontology_acronyms << ontology.abbreviation.downcase
+      ontology_acronyms << ontology.abbreviation.downcase unless ontology.abbreviation.nil?
     end
     
     CACHE.set("ontology_acronyms", ontology_acronyms, MEDIUM_CACHE_EXPIRE_TIME)

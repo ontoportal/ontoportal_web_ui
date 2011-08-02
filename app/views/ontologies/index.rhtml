@@ -208,7 +208,7 @@ jQuery(document).ready(function() {
           # Group names
           ontology_groups = []
           ontology.groups.each do |group_id|
-            ontology_groups << @groups.group_list[group_id][:acronym]
+            ontology_groups << @groups.group_list[group_id.to_i][:acronym]
           end
           ontology_groups.sort! {|a,b| a <=> b}
         %>
@@ -230,9 +230,9 @@ jQuery(document).ready(function() {
           <td style="width:30px;"><%= ontology.dateCreated%></td>
           <td style="width:225px;"><%= ontology.contactName%></td>
           <td style="display:none;">
-            <%unless ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
+            <%unless !ontology.description.nil? && ontology.description.empty?%> Description: <%=ontology.description%> <%end%>
             <br>
-            <%unless ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%>
+            <%unless ontology.categories.nil? && ontology.categories.empty?%>Categories : <%for cat in ontology.categories%><%=@categories[cat.to_s][:name]%> <%unless cat.eql?(ontology.categories.last)%> , <%end%><%end%><%end%>
           </td>
           <td style="display:none;"> <%=ontology.categories.join(" ")%></td>
           <td style="display:none;"><%if !ontology_groups.empty?%>,<%=ontology_groups.join(",")%>,<%end%></td>
