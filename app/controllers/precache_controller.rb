@@ -4,33 +4,58 @@ require 'ontology_wrapper'
 class PrecacheController < ApplicationController
 
   $UI_PORT = "80"
+  # $UI_PORT = "3000"
 
-  def self.precache_all
+
+  def self.precache_all(delete_cache = false)
+    if delete_cache
+      p "Deleting general cache info"
+      CACHE.delete("act_ont_list")
+      CACHE.delete("ont_list")
+      CACHE.delete("ontology_acronyms")
+      CACHE.delete("terms_all_ontologies")
+    end
+
     get_url("http://localhost:#{$UI_PORT}")
     get_url("http://localhost:#{$UI_PORT}/ontologies")
     get_url("http://localhost:#{$UI_PORT}/mappings")
-    precache_ontology_summary
-    precache_ontology_notes
-    precache_ontology_mappings
+    precache_ontology_summary(delete_cache)
+    precache_ontology_notes(delete_cache)
+    precache_ontology_mappings(delete_cache)
   end
   
-  def self.precache_ontology_summary
+  def self.precache_ontology_summary(delete_cache = false)
     ontologies = DataAccess.getOntologyList
     ontologies.each do |ont|
+      if delete_cache
+        p "Deleting cache for #{ont.displayLabel}"
+        CACHE.delete("#{ont.ontologyId}::_latest")
+        CACHE.delete("#{ont.ontologyId}::_versions")
+        CACHE.delete("#{ont.ontologyId}::_details")
+      end
+
       get_url("http://localhost:#{$UI_PORT}/ontologies/#{ont.ontologyId}")
     end
   end
   
-  def self.precache_ontology_notes
+  def self.precache_ontology_notes(delete_cache = false)
     ontologies = DataAccess.getOntologyList
     ontologies.each do |ont|
+      if delete_cache
+        CACHE.delete("between_ontologies::map_count::#{ont.ontologyId}")
+      end
+
       get_url("http://localhost:#{$UI_PORT}/ontologies/#{ont.ontologyId}?p=mappings")
     end
   end
   
-  def self.precache_ontology_mappings
+  def self.precache_ontology_mappings(delete_cache = false)
     ontologies = DataAccess.getOntologyList
     ontologies.each do |ont|
+      if delete_cache
+        # remove relevant cache data
+      end
+
       get_url("http://localhost:#{$UI_PORT}/ontologies/#{ont.ontologyId}?p=notes")
     end
   end
@@ -43,12 +68,14 @@ class PrecacheController < ApplicationController
     http.read_timeout = 360
   
     begin
-      res = http.start { |http|
+      timer = Time.now
+      res = http.start { |con|
         path = uri.path.empty? ? "/" : uri.path
-        http.get(path)
+        con.get(path)
       }
+      p "Retrieved in #{(Time.now - timer).to_f.round(2)}s"
     rescue Exception => e
-      p "Failed to get url: #{e.message}"
+      p "Failed to get #{url}: #{e.message}"
     end
     
     res.body
