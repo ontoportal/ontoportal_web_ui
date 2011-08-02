@@ -1,10 +1,16 @@
+<script type="text/javascript">
+	var activate_spinner = function(){
+		jQuery("#filter_spinner").show();
+	};
+</script>
+
 <!-- Container div to hold mapping filter results -->
 <div id="mappings" style="text-align:center;overflow:hidden;">
 	<div style="float: right; margin: 5px; line-height: 12px; width: 200px; text-align: left;">
 		<input type="button" value="Export Current Results To RDF" class="blueButton" onclick="window.location='/mappings/show/<%=@ontology.ontologyId%>?target=<%=@target_ontology.ontologyId%>&user=<%=params[:user]%>&map_source=<%=params[:map_source]%>&rdf=rdf'">
 		<% if @mapping_pages.total_mappings > 10000 %><span style="font-size: x-small; color: grey;"><strong>Note:</strong> This export option will only return the first 10000 mappings of the <%=@mapping_pages.total_mappings%> in the result set. To retrieve all the mappings, please see the <a href="http://www.bioontology.org/wiki/index.php/BioPortal_Mappings_Service">Mappings REST Service</a>.</span><%end%>
 	</div>
-	<% form_for :mapping, nil, :url => "/mappings/show/#{@ontology.ontologyId}", :html => { :id=>'filter',:onsubmit => 'ajaxForm(this,"#mappings",null);return false;' } do |f| %>
+	<% form_for :mapping, nil, :url => "/mappings/show/#{@ontology.ontologyId}", :html => { :id=>'filter',:onsubmit => 'activate_spinner();ajaxForm(this,"#mappings",null);return false;' } do |f| %>
 		<input type="hidden" name="target" value="<%=@target_ontology.ontologyId%>">
 		<table class="form" style="margin: 5px;">
 	    <thead>
@@ -29,7 +35,7 @@
 				</td>
 			</tr>
 			<tr>	
-				<td colspan="2" align="right"><%= submit_tag "Filter", :class=>'blueButton'%></td>
+				<td colspan="2" align="right"><%= submit_tag "Filter", :class=>'blueButton'%><span id="filter_spinner" style="display: none; padding-left: 10px;"><%=loading_spinner%></span></td>
 			</tr>
 		</table>
 	<% end %>
