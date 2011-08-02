@@ -21,7 +21,7 @@
 				<td class="top" align="left">
 					<select name="user" style="min-width:200px;" id="mappings_user">
 						<option value="">Any</option>
-						<%=options_from_collection_for_select(@users, "id", "username",params[:user].to_i)%>	
+						<%=options_from_collection_for_select(@users, "id", "username", params[:user])%>
 					</select>
 				</td>
 			</tr>
