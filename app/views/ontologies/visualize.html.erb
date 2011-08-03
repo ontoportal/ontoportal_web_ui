@@ -137,7 +137,8 @@
         // Set up a hovertip on the qsearch input element
         jQuery("#qsearch :input").attr("title", '<%=message%>');
         jQuery("#qsearch :input").tooltip({
-            position: "middle",
+            position: "top center",
+            offset: [-5, 0],
             tip: '.tooltip',
             opacity: 0.9
         });
