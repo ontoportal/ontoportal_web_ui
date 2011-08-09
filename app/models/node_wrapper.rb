@@ -10,7 +10,8 @@ class NodeWrapper
   attr_accessor :id
   attr_accessor :fullId
   attr_accessor :label  
-  attr_accessor :isActive
+  attr_accessor :isObsolete
+  attr_accessor :isObsoleteBool
   attr_accessor :properties
   attr_accessor :version_id
   attr_accessor :child_size
@@ -83,7 +84,9 @@ class NodeWrapper
       end
     end
     
+    # Cleanup
     self.child_size = 0 if self.child_size.nil?
+    self.isObsoleteBool = !self.isObsolete.nil? && self.isObsolete.eql?("1")
   end
   
   def is_browsable
@@ -107,11 +110,16 @@ class NodeWrapper
   end
   
   def label_html
-    self.properties['Concept_Status'].nil? ? self.label : "<strike>#{self.label}</strike>"
-  end
+    # self.obsolete? ? "<span style='color: lightgrey; cursor: help;' title='Term is obsolete'>#{self.label}</span>" : self.label
+    self.label.slice(0, 1).to_s.downcase.match(/[n-z]/) ? "<span style='color: grey; cursor: help; ' title='Term is obsolete'>#{self.label}</span>" : self.label
+ end
   
   def to_param
     URI.escape(self.id,":/?#!").to_s
+  end
+  
+  def obsolete?
+    self.isObsoleteBool
   end
   
   def ontology

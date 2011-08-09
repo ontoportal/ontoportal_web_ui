@@ -2,6 +2,7 @@ class TreeNode
   attr_accessor :label
   attr_accessor :id
   attr_accessor :fullId
+  attr_accessor :isObsoleteBool
   attr_accessor :ontology_id
   attr_accessor :children 
   attr_accessor :ontology_name
@@ -22,6 +23,7 @@ class TreeNode
 
   def initialize_node(node_object, parent_node = nil)
     self.label = node_object.label
+    self.isObsoleteBool = node_object.isObsoleteBool
     self.child_size = node_object.child_size
     self.ontology_name = node_object.ontology_name  
     self.ontology_id = node_object.version_id 
@@ -92,12 +94,17 @@ class TreeNode
     end
   end
   
+  def obsolete?
+    self.isObsoleteBool
+  end
+  
   def name
     @label
   end
   
   def label_html
-    self.properties['Concept_Status'].nil? ? self.label : "<strike>#{self.label}</strike>"
+    # self.obsolete? ? "<span style='color: lightgrey; cursor: help;' title='Term is obsolete'>#{self.label}</span>" : self.label
+    self.label.slice(0, 1).to_s.downcase.match(/[n-z]/) ? "<span style='color: grey; cursor: help;' title='Term is obsolete'>#{self.label}</span>" : self.label
   end
   
   def to_s
