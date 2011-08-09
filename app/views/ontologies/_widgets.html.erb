@@ -299,12 +299,12 @@ Example 1 (start typing the term name to get its full URI)
                         <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
                           id="OntologyTree" width="300" height="100%"
                           codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-                          <param name="movie" value="http://keg.cs.uvic.ca/ncbo/ontologytree/OntologyTree.swf" />
+                          <param name="movie" value="<%= $FLEX_URL%>/OntologyTree.swf" />
                           <param name="quality" value="high" />
                           <param name="bgcolor" value="#ffffff" />
                           <param name="allowScriptAccess" value="always" />
                           <param name="flashVars" value="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true" />
-                          <embed src="http://keg.cs.uvic.ca/ncbo/ontologytree/OntologyTree.swf" quality="high" bgcolor="#ffffff"
+                          <embed src="<%= $FLEX_URL%>/OntologyTree.swf" quality="high" bgcolor="#ffffff"
                             width="300" height="100%" name="OntologyTree" align="middle"
                             play="true"
                             loop="false"
@@ -323,12 +323,12 @@ Example 1 (start typing the term name to get its full URI)
 <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 	id="OntologyTree" width="300" height="100%"
 	codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-	<param name="movie" value="http://keg.cs.uvic.ca/ncbo/ontologytree/OntologyTree.swf" />
+	<param name="movie" value="<%= $FLEX_URL%>/OntologyTree.swf" />
 	<param name="quality" value="high" />
 	<param name="bgcolor" value="#ffffff" />
 	<param name="allowScriptAccess" value="always" />
 	<param name="flashVars" value="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true" />
-	<embed src="http://keg.cs.uvic.ca/ncbo/ontologytree/OntologyTree.swf" quality="high" bgcolor="#ffffff"
+	<embed src="<%= $FLEX_URL%>/OntologyTree.swf" quality="high" bgcolor="#ffffff"
 		width="300" height="100%" name="OntologyTree" align="middle"
 		play="true"
 		loop="false"
