@@ -97,7 +97,13 @@ class DataAccess
       spawn(:argv => "spawn_ontology_terms") do
         ontology_terms = {}
         ontologies.each do |ontology|
-          ontology_terms[ontology.ontologyId.to_i] = self.getOntologyMetrics(ontology.id).numberOfClasses.to_i rescue 0
+          begin
+            ontology_terms[ontology.ontologyId.to_i] = self.getOntologyMetrics(ontology.id).numberOfClasses.to_i
+          rescue Exception => e
+            LOG.add :info, "Problem getting metrics during term counting"
+            LOG.add :info, e.inspect
+            LOG.add :info, e.backtrace
+          end
         end
 
         # Since we spawn a new process we need to make sure to reset the cache
@@ -302,6 +308,32 @@ class DataAccess
     CACHE.delete("#{params[:ontology_virtual_id]}::notes")
     
     note
+  end
+  
+  def self.getUserSubscriptions(user_id)
+    subs = self.cache_pull("subscription::#{user_id}", "getUserSubscriptions", { :user_id => user_id }, LONG_CACHE_EXPIRE_TIME)
+  end
+  
+  def self.createUserSubscriptions(user_id, ontology_ids, notification_type)
+    subscriptions = SERVICE.createUserSubscriptions(:user_id => user_id, :ontology_ids => ontology_ids, :notification_type => notification_type)
+    
+    if subscriptions.nil?
+      return nil
+    else
+      CACHE.delete("subscription::#{user_id}")
+      return self.getUserSubscriptions(user_id)
+    end
+  end
+  
+  def self.deleteUserSubscriptions(user_id, ontology_ids, notification_type)
+    subscriptions = SERVICE.deleteUserSubscriptions(:user_id => user_id, :ontology_ids => ontology_ids, :notification_type => notification_type)
+    
+    if subscriptions.nil?
+      return nil
+    else
+      CACHE.delete("subscription::#{user_id}")
+      return self.getUserSubscriptions(user_id)
+    end
   end
   
   def self.createMapping(source, source_ontology_id, target, target_ontology_id, user_id, comment, unidirectional)

@@ -50,6 +50,8 @@ class ApplicationController < ActionController::Base
     true
   end
   
+  NOTIFICATION_TYPES = { :notes => "CREATE_NOTE_NOTIFICATION" }
+  
   def to_param(name) # Paramaterizes URLs without encoding
     unless name.nil?
       name.to_s.gsub(' ',"_")

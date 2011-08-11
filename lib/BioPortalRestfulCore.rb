@@ -829,6 +829,69 @@ class BioPortalRestfulCore
 
     return results
   end
+  
+  def self.getUserSubscriptions(params)
+    uri_gen = BioPortalResources::Subscriptions.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve subscriptions for user"
+    LOG.add :debug, uri
+    doc = get_xml(uri)
+    
+    subscriptions = errorCheck(doc)
+    
+    unless subscriptions.nil?
+      return subscriptions
+    end
+
+    timer = Benchmark.ms { subscriptions = generic_parse(:xml => doc) }
+    
+    return subscriptions
+  end
+
+  def self.createUserSubscriptions(params)
+    params[:ontologyid] = params[:ontology_ids]
+    params[:notificationtype] = params[:notification_type]
+    
+    uri_gen = BioPortalResources::Subscriptions.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Create subscriptions for user"
+    LOG.add :debug, uri
+    doc = postToRestlet(uri, params)
+    
+    subscriptions = errorCheck(doc)
+    
+    unless subscriptions.nil?
+      return subscriptions
+    end
+
+    timer = Benchmark.ms { subscriptions = generic_parse(:xml => doc) }
+    
+    return subscriptions
+  end
+  
+  def self.deleteUserSubscriptions(params)
+    params[:ontologyid] = params[:ontology_ids]
+    params[:notificationtype] = params[:notification_type]
+    
+    uri_gen = BioPortalResources::Subscriptions.new(params)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Delete subscriptions for user"
+    LOG.add :debug, uri
+    doc = deleteToRestlet(uri, params)
+    
+    subscriptions = errorCheck(doc)
+    
+    unless subscriptions.nil?
+      return subscriptions
+    end
+
+    timer = Benchmark.ms { subscriptions = generic_parse(:xml => doc) }
+    
+    return subscriptions
+  end
 
   def self.getUsers()
     uri_gen = BioPortalResources::Users.new
@@ -1175,6 +1238,23 @@ private
   def self.putToRestlet(url, paramsHash)
     paramsHash[:apikey] = API_KEY 
     paramsHash[:method] = "PUT"
+    
+    # Comma-separate lists
+    for param in paramsHash.keys
+      if paramsHash[param].class.to_s.downcase.eql?("array")
+        paramsHash[param] = paramsHash[param].join(",")
+      end
+    end
+    
+    uri = URI.parse(url)
+    http = Net::HTTP.new(uri.host, $REST_PORT)
+    response = Net::HTTP.post_form(uri, paramsHash)
+    return response.body
+  end
+
+  def self.deleteToRestlet(url, paramsHash)
+    paramsHash[:apikey] = API_KEY 
+    paramsHash[:method] = "DELETE"
     
     # Comma-separate lists
     for param in paramsHash.keys

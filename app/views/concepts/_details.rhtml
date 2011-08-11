@@ -36,6 +36,15 @@
   		<td><p><a href="<%=@concept.fullId%>" target="_blank"><%=@concept.fullId%></a></p></td>
   	</tr>
 	<%end%>
+  <%if @concept.obsolete?%>
+    <tr>
+      <td nowrap class="label">
+        Obsolete 
+        <span class="slot_labels"></span>
+      </td>
+      <td>true</td>
+    </tr>
+  <%end%>
 	
 	
 	<%

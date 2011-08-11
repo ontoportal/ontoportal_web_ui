@@ -75,6 +75,9 @@ jQuery(document).ready(function(){
   jQuery("#hide_archived").click(function(){
     hideOrUnhideArchivedNotes();
   });
+  
+  // Notes subscriptions button
+  jQuery("a.subscribe_to_notes").button();
 });
 
 function hideOrUnhideArchivedNotes() {
@@ -91,12 +94,16 @@ function hideOrUnhideArchivedNotes() {
 
 
 <div class="notes_list_container">
+	
+	<div class="subscribe_to_notes" style="float: right;">
+		<%= subscribe_button(@ontology.ontologyId) %> 
+	</div>
 
 	<% unless @notes_for.nil? %>
 		<h1>Notes for <%=link_to @notes_for, @notes_for_link %></h1>
 	<% end %>
 	
-	<div class="notes_table_container">
+	<div class="notes_table_container" style="clear: both;">
     <div style="margin: auto 35% -2.5em; padding-top: 3em; text-align: center; width: 100px;">
       <ul id="filter_menu" class="sf-menu sf-vertical" style="float: none !important;">
         <li style="float: none !important;">

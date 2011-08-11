@@ -21,6 +21,8 @@ ActionController::Routing::Routes.draw do |map|
   
   map.resources :admin
   
+  map.resources :subscriptions
+  
   # The priority is based upon order of creation: first created -> highest priority.
   
   # You can have the root of your site routed by hooking up '' 
@@ -30,7 +32,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/feedback', :controller => 'home', :action => 'feedback'
   map.connect '/annotator', :controller => 'home', :action => 'annotate'
   map.connect '/resources', :controller => 'home', :action => 'all_resources'
-  map.connect '/recommender', :controller => 'home', :action => 'recommender'
+  map.connect '/recommender', :controller => 'recommender', :action => 'index'
   map.connect '/account', :controller => 'home', :action => 'account'
 
   # Ontologies

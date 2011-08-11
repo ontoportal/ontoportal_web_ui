@@ -378,4 +378,11 @@ class BioPortalResources
       end
     end
     
+    class Subscriptions < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/subscriptions/users/%USR%"
+      end
+    end
+    
 end

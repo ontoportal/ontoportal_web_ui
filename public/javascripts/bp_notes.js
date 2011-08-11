@@ -168,7 +168,41 @@ jQuery(document).ready(function(){
     jQuery(buttons_div).children('.note_action').removeClass("create_note_selected");
     jQuery(this).addClass("create_note_selected");
   });
-	
+  
+  // Wire up subscriptions button styling
+  jQuery("a.subscribe_to_notes").button();
+  
+  // Wire up subscriptions button activity
+  jQuery("a.subscribe_to_notes").live("click", function(){
+    var ontologyId = jQuery(this).attr("data-bp_ontology_id");
+    var isSubbed = jQuery(this).attr("data-bp_is_subbed");
+    var userId = jQuery(this).attr("data-bp_user_id");
+    
+    jQuery(".notes_sub_error").html("");
+    jQuery(".notes_subscribe_spinner").show();
+    
+    jQuery.ajax({
+          type: "POST",
+          url: "/subscriptions?user_id="+userId+"&ontology_id="+ontologyId+"&subbed="+isSubbed,
+          dataType: "json",
+          success: function(data) {
+            jQuery(".notes_subscribe_spinner").hide();
+            
+            // Change subbed value on a element
+            var subbedVal = (isSubbed == "true") ? "false" : "true";
+            jQuery("a.subscribe_to_notes").attr("data-bp_is_subbed", subbedVal);
+            
+            // Change button text
+            var txt = jQuery("a.subscribe_to_notes span.ui-button-text").html();
+            var newButtonText = txt.match("Unsubscribe") ? txt.replace("Unsubscribe", "Subscribe") : txt.replace("Subscribe", "Unsubscribe")
+            jQuery("a.subscribe_to_notes span.ui-button-text").html(newButtonText);
+          },
+          error: function(data) {
+            jQuery(".notes_subscribe_spinner").hide();
+            jQuery(".notes_sub_error").html("Problem subscribing to emails, please try again");
+          }
+    });
+  });
 });
 
 function Comment(prefix, ONT) {
