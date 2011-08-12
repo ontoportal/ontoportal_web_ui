@@ -110,8 +110,7 @@ class NodeWrapper
   end
   
   def label_html
-    # self.obsolete? ? "<span style='color: lightgrey; cursor: help;' title='Term is obsolete'>#{self.label}</span>" : self.label
-    self.label.slice(0, 1).to_s.downcase.match(/[n-z]/) ? "<span style='color: grey; cursor: help; ' title='Term is obsolete'>#{self.label}</span>" : self.label
+    self.obsolete? ? "<span class='obsolete_term' title='This term is obsolete'>#{self.label}</span>" : self.label
  end
   
   def to_param

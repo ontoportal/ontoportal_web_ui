@@ -1508,6 +1508,12 @@ button.fg-button-menu, button.fg-button {
   text-decoration: underline !important;
 }
 
+.obsolete_term {
+  color: gray;
+  font-style: oblique;
+  cursor: help;
+}
+
 
 /************************************
  * Ontology Creation / Editing
@@ -1526,3 +1532,27 @@ button.fg-button-menu, button.fg-button {
 	text-transform: none;
 	letter-spacing: 0;
 }
+
+#ontology_useracl_chzn {
+  width: 100% !important;
+}
+
+#ontology_useracl_chzn ul {
+  border: none;
+  background: none;
+  box-shadow: none;
+  margin-left: -5px;
+}
+
+#ontology_useracl_chzn .chzn-drop {
+  display: none !important;
+}
+
+#ontology_useracl_chzn .chzn-choices li.search-field {
+  display: none !important;
+}
+
+#ontology_useracl_chzn ul.chzn-choices li.search-choice {
+  padding: 5px 19px 3px 6px !important;
+}
+

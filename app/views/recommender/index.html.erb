@@ -1,0 +1,57 @@
+<%@title = "Ontology Recommender"%>
+
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery("#recommender_button").click(getRecommendations);
+	});
+	
+	function getRecommendations() {
+		jQuery(".recommender_error").html("");
+		jQuery(".recommender_spinner").show();
+		
+		jQuery.ajax({
+          type: "POST",
+          url: "/recommender?text="+jQuery("#recommendation_text").val(),
+          dataType: "json",
+          success: function(data) {
+            jQuery(".recommender_spinner").hide();
+            
+            var links = [];
+            links.push('<h2>Ontology Recommendations</h2>');
+            
+            jQuery(data).each(function(){
+            	var rec = this;
+            	console.log(rec);
+            	links.push("<div style='padding: 3px;'><a href='/ontologies/"+rec.virtualOntologyId+"'>"+rec.name+"</a></div>");
+            });
+							console.log(links.join("<br/>"));
+            
+            jQuery("#recommendations").html(links.join(""));
+            jQuery("#recommendations_container").show();
+          },
+          error: function(data) {
+            jQuery(".recommender_spinner").hide();
+            jQuery(".recommender_error").html(" Problem getting recommendations, please try again");
+          }
+    });
+	}
+</script>
+
+<div style="padding: 1em;">
+	<h1>Ontology Recommender</h1>
+	
+	<p>Enter text below. The Ontology Recommender will analyze this text and provide a ranked list of ontologies that are relevant.</p>
+
+	<div style="float: left; padding-bottom: 1em;">
+		<%=text_area :recommendation, :text, :cols => 55, :rows => 20, :style => "box-shadow: 0 0 3px gray; padding: 5px;"%>
+		<br/>
+		<input type="button" id="recommender_button" value="Get Recommendations" style="margin-top: 10px;">
+		<span class="recommender_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
+		<span style='color: red;' class='recommender_error'></span>
+	</div>
+	
+	<div id="recommendations_container" style="display: none;">
+		<div id="recommendations" style="border: thin solid gray; display: inline-block; margin: 0 1em; padding: 1em; box-shadow: 0 0 3px gray;"></div>
+	</div>
+
+</div>

@@ -1,0 +1,203 @@
+<%= javascript_include_tag "JqueryPlugins/chosen/chosen.jquery.js"%>
+<link rel="stylesheet" type="text/css" href="/javascripts/JqueryPlugins/chosen/chosen.css">
+
+<style type="text/css">
+  .ont_select_adv {
+    border-radius: 0;
+  }
+
+  .ont_select_adv > .ui-widget-header {
+    background: none;
+    border-radius: 0;
+    border: none;
+  }
+
+  div.chzn-container ul.chzn-choices {
+    max-height: 110px;
+    overflow: auto;
+  }
+</style>
+
+<script type="text/javascript">
+var abbreviationMap = { <%= @onts_for_js.join(", ") %> };
+var winHeight = jQuery(window).height();
+var ontSelectListPos = { top: 0, left: 0, width: 0 };
+var allSelected = false;
+
+jQuery(document).ready(function(){
+  jQuery("#ontology_ontologyId").chosen();
+
+  ontSelectListPos.top = jQuery("#ontology_ontologyId_chzn").offset().top;
+  ontSelectListPos.left = jQuery("#ontology_ontologyId_chzn").offset().left;
+  ontSelectListPos.width = jQuery("#ontology_ontologyId_chzn").width();
+
+  // Watch for changes in the entry of the select list
+  jQuery("#ontology_ontologyId").change(function(e) {
+    ontLabelToAbbr();
+    syncFromList();
+  });
+
+  // Reset labels on page load and make sure checkbox is in sync
+  ontLabelToAbbr();
+  syncFromList()
+
+  // Unbind the click handler from the ontology list
+  jQuery("#ontology_ontologyId_chzn").unbind("click");
+  jQuery("#ontology_ontologyId_chzn").unbind("click");
+
+  // Setup dialog box for advanced ontology select
+  jQuery("#ont_select_adv").dialog({
+    autoOpen: false,
+    dialogClass: "ont_select_adv",
+    title: "Multiple Ontology Select",
+    width: 500,
+    height: winHeight - ontSelectListPos.top - 100,
+    position: [ ontSelectListPos.width + 20, ontSelectListPos.top ]
+  });
+
+  // Wire up the link to open dialog box
+  jQuery("#ont_select_adv_href").click(function() {
+    jQuery("#ont_select_adv").dialog("open");
+    return false;
+  });
+
+  // Wire up watcher for checkboxes for sync
+  jQuery(".ont_select_boxes_tr input:checkbox").click(function(){
+    syncFromCheckboxes();
+    if (allSelected = true) {
+      allSelected = false;
+      jQuery("#ont_select_all").attr("checked", false);
+    } else {
+      // Compare total checkboxes to checked to see if they're all checked
+      if (jQuery(".ont_select_boxes_tr input:checkbox").length == jQuery(".ont_select_boxes_tr input:checked").length) {
+        allSelected = true;
+        jQuery("#ont_select_all").attr("checked", true);
+      }
+    }
+  });
+
+  // Toggle all selected
+  jQuery("#ont_select_all").click(function(){
+    if (jQuery(this).attr("checked")) {
+      allSelected = true;
+
+      jQuery(".ont_select_boxes_tr input:checkbox").attr("checked", true);
+
+      syncFromCheckboxes();
+      refreshOntList();
+    } else {
+      allSelected = false;
+
+      jQuery(".ont_select_boxes_tr input:checkbox").attr("checked", false);
+
+      syncFromCheckboxes();
+      refreshOntList();
+    }
+  });
+});
+
+
+
+
+// Synchronize checkboxes to select list
+function syncFromCheckboxes() {
+  var checkedIds = [];
+  jQuery(".ont_select_boxes_tr input:checked").each(function(){
+    checkedIds.push(jQuery(this).val());
+  });
+  jQuery("#ontology_ontologyId").val(checkedIds);
+  refreshOntList();
+}
+
+// Synchronise select list to checkboxes
+function syncFromList() {
+  jQuery(".ont_select_boxes_tr input:checked").each(function(){
+    jQuery(this).attr("checked", false);
+  });
+
+  jQuery("#ontology_ontologyId option:selected").each(function(){
+    var id = jQuery(this).val();
+    jQuery("#ont_select_adv_check" + id).attr("checked", true);
+  });
+}
+
+// Check the selected list of ontologies against the map and replace
+function ontLabelToAbbr() {
+  jQuery("#ontology_ontologyId_chzn > .chzn-choices > li > span").each(function(){
+    jQuery(this).html(abbreviationMap[jQuery(this).html()]);
+  });
+}
+
+function refreshOntList() {
+  jQuery("#ontology_ontologyId").trigger("liszt:updated");
+  jQuery("#ontology_ontologyId").trigger("change");
+}
+</script>
+
+<script type="text/javascript">
+(function (jQuery) {
+  // custom css expression for a case-insensitive contains()
+  jQuery.expr[':'].Contains = function(a,i,m){
+      return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
+  };
+
+
+  function listFilter(header, list) { // header is any element, list is an unordered list
+    // create and add the filter form to the header
+    var form = jQuery("<form>").attr({"class":"filterform","action":"#"}),
+        input = jQuery("<input>").attr({"class":"filterinput","type":"text"});
+    jQuery(form).append(input).appendTo(header);
+
+    jQuery(input)
+      .change( function () {
+        var filter = jQuery(this).val();
+        if(filter) {
+          // this finds all links in a list that contain the input,
+          // and hide the ones not containing the input while showing the ones that do
+          jQuery(list).find("a:not(:Contains(" + filter + "))").closest("li").hide();
+          jQuery(list).find("a:Contains(" + filter + ")").closest("li").show();
+        } else {
+          jQuery(list).find("li").show();
+        }
+        return false;
+      })
+    .keyup( function () {
+        // fire the above change event after every letter
+        jQuery(this).change();
+    });
+  }
+
+
+  //ondomready
+  jQuery(function () {
+    listFilter(jQuery("#select_ontologies"), jQuery("#ont_list"));
+  });
+}(jQuery));
+</script>
+
+
+
+<div style="padding: 5em 1em;">
+  <%= select :ontology, "ontologyId", options_for_select(@onts_for_select), { }, :multiple => 'true', "data-placeholder".to_sym => "Use All Ontologies" %>
+  
+  <div style="float: right; font-size: smaller;"><a id="ont_select_adv_href" href="javascript:void(0)">advanced select</a></div>
+
+  <div id="ont_select_adv" style="display: none; text-align: left;">
+    <table id="ont_list">
+      <!--
+      <tr>
+        <td style="padding-bottom: 5px;"><%= check_box_tag "ont_select_all" %></td>
+        <td style="padding: 0 0 5px 5px;"><%= label_tag "ont_select_all", "All" %></td>
+      </tr>
+      -->
+      
+      <% @onts_for_select.each do |ont| %>
+        <tr class="ont_select_boxes_tr">
+          <td valign="top"><%= check_box_tag "ont_select_adv_check", ont[1], false, :id => "ont_select_adv_check#{ont[1]}" %></td>
+          <td style="padding-left: 5px;"><%= label_tag "ont_select_adv_check#{ont[1]}", ont[0] %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
+

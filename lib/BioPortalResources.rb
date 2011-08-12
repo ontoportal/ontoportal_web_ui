@@ -385,4 +385,14 @@ class BioPortalResources
       end
     end
     
+    class Recommendation < BioPortalResources
+      def initialize
+        super
+        
+        base_url = @uri.gsub("bioportal", "")
+        
+        @uri = base_url + "obs/recommender"
+      end
+    end
+    
 end

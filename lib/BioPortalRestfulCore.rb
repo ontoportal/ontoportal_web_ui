@@ -1039,9 +1039,9 @@ class BioPortalRestfulCore
     uri = uri_gen.generate_uri
     
     begin
-      doc = REXML::Document.new(putToRestlet(uri, params))
+      doc = putToRestlet(uri, params)
     rescue Exception=>e
-      doc = REXML::Document.new(e.io.read)
+      doc = e.io.read
       
     end
     
@@ -1051,9 +1051,11 @@ class BioPortalRestfulCore
       return ontology
     end
     
-    doc.elements.each("*/data/ontologyBean"){ |element|  
-      ontology = parseOntology(element)
-    }
+    ontology = generic_parse(:xml => doc, :type => "OntologyWrapper")
+    
+    # doc.elements.each("*/data/ontologyBean"){ |element|  
+      # ontology = parseOntology(element)
+    # }
     
     return ontology          
     
@@ -1096,6 +1098,27 @@ class BioPortalRestfulCore
   def self.diffDownload(ver1,ver2)          
     uri_gen = BioPortalResources::DownloadDiffs.new( :ontology_version1 => ver1, :ontology_version2 => ver2 )
     return uri_gen.generate_uri
+  end
+  
+  def self.createRecommendation(params)
+    params[:format] = "asXML"
+    
+    uri_gen = BioPortalResources::Recommendation.new
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve recommendation"
+    LOG.add :debug, uri
+    doc = postToRestlet(uri, params)
+    
+    recommendation = errorCheck(doc)
+    
+    unless recommendation.nil?
+      return recommendation
+    end
+
+    timer = Benchmark.ms { recommendation = generic_parse(:xml => doc) }
+    
+    return recommendation
   end
   
 private
@@ -1796,7 +1819,7 @@ private
           elements = []
           child.each_element { |element| elements << element.content }
           a[child.name] = elements
-        when "associated"
+        when "associated", "userAcl"
           a[child.name] = process_list(child)
       else
         if !child.first.nil? && child.first.element?

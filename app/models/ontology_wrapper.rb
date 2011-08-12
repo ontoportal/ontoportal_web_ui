@@ -27,6 +27,11 @@ class OntologyWrapper
   attr_accessor :dateCreated
   attr_accessor :downloadLocation
   attr_accessor :isMetadataOnly
+  attr_accessor :viewingRestrictions
+  
+  attr_accessor :useracl
+  # This data structure holds information about the users in the ACL, mainly whether or not they own the ontology
+  attr_accessor :useracl_full
   
   attr_accessor :description
   attr_accessor :abbreviation
@@ -128,6 +133,15 @@ class OntologyWrapper
     self.viewGenerationEngine     = hash['viewGenerationEngine']
     self.viewDefinitionLanguage   = hash['viewDefinitionLanguage']
     self.viewOnOntologyVersionId  = hash['viewOnOntologyVersionId']
+    self.viewingRestrictions      = hash['viewingRestrictions']
+    self.useracl_full             = hash['userAcl']
+    
+    self.useracl                  = []
+    if !self.useracl_full.nil?
+      self.useracl_full.each do |user|
+        self.useracl << user["userId"]
+      end
+    end
   end    
 
   def views
@@ -164,6 +178,7 @@ class OntologyWrapper
     self.synonymSlot = params[:synonymSlot]
     self.preferredNameSlot = params[:preferredNameSlot]    
     self.versionStatus = params[:versionStatus]
+    self.useracl = params[:useracl]
     
     # view items
     self.isView = params[:isView]
@@ -182,6 +197,15 @@ class OntologyWrapper
     return DataAccess.getOntology(self.viewOnOntologyVersionId)
   end
   
+  def useracl_select
+    select_opts = []
+    return select_opts if self.useracl.nil?
+    
+    self.useracl.each do |user|
+      select_opts << [DataAccess.getUser(user).username, user]
+    end
+    select_opts
+  end
   
   def preload_ontology
      self.reviews = load_reviews
@@ -252,6 +276,10 @@ class OntologyWrapper
   # Is this ontology just a huge bag of terms?
   def flat?
     return !$NOT_EXPLORABLE.nil? && $NOT_EXPLORABLE.include?(self.ontologyId.to_i)
+  end
+  
+  def private?
+    !self.useracl_full.nil?
   end
   
   def valid_tree_view?

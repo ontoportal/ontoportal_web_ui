@@ -165,6 +165,24 @@ class UsersController < ApplicationController
   end
   
   
+  def validate_username
+    username = params[:username]
+    
+    userObj = DataAccess.getUserByUsername(username)
+    
+    if !userObj.nil?
+      user = {}
+      user[:username] = userObj.username
+      user[:id] = userObj.id
+      user[:email] = userObj.email
+    else
+      user = nil
+    end
+    
+    render :json => { :userValid => !user.nil?, :user => user }
+  end
+  
+  
 private
 
   def get_ontology_list(ont_hash)

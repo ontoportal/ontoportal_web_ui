@@ -310,6 +310,10 @@ class DataAccess
     note
   end
   
+  def self.createRecommendation(text)
+    subs = self.cache_pull("recommendation::#{CGI.escape(text)}", "createRecommendation", { :text => text }, EXTENDED_CACHE_EXPIRE_TIME)
+  end
+  
   def self.getUserSubscriptions(user_id)
     subs = self.cache_pull("subscription::#{user_id}", "getUserSubscriptions", { :user_id => user_id }, LONG_CACHE_EXPIRE_TIME)
   end
