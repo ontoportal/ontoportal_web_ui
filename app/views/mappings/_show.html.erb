@@ -25,6 +25,7 @@
 					</select>
 				</td>
 			</tr>
+			<!--
 			<tr>
 				<th>Source:</th>
 				<td  align="left">
@@ -34,6 +35,7 @@
 					</select>
 				</td>
 			</tr>
+			-->
 			<tr>	
 				<td colspan="2" align="right"><%= submit_tag "Filter", :class=>'blueButton'%><span id="filter_spinner" style="display: none; padding-left: 10px;"><%=loading_spinner%></span></td>
 			</tr>
@@ -50,22 +52,26 @@
 				<th>Maps To</th>
 			</tr>
 			</thead>
-			<%for mapping in @mappings%>
-				<%begin%>
-				<tr >
-					<td class="map_source" align="right"> <%=link_to "#{mapping[1][0][:source_ont_name]} : #{mapping[1][0][:source_name]} -->",  ontologies_path + "/#{to_param(params[:id])}?p=terms&conceptid=#{encode_param(mapping[0])}" %></td>
-					<td align="left">
-						<%for map in mapping[1]%>
-						<div class="map_target" style="border:1px solid #C1DAD7;background-color:#e2ebf0;color:#234979;padding:5px;margin-bottom:4px;">				
-							<%=link_to "#{map[:destination_ont_name]} : #{map[:destination_name]} (#{map[:count]})", ontologies_path + "/#{map[:destination_ont]}?p=terms&conceptid=#{encode_param(map[:destination_id])}" %>
-							<span class="mapped_by">Mapped By <%for user in map[:users]%> <%=user%> <%unless user.eql?map[:users].last%>,<%end%>  <%end%></span>
-						</div>
-			
-						<%end%>
-			
-					</td>
-				</tr>
-				<%rescue Exception=>e%>
+			<%if @mappings.nil? or @mappings.empty?%>
+				<tr><td colspan="2">No mappings found</td></tr>
+			<%else%>
+				<%for mapping in @mappings%>
+					<%begin%>
+					<tr >
+						<td class="map_source" align="right"> <%=link_to "#{mapping[1][0][:source_ont_name]} : #{mapping[1][0][:source_name]} -->",  ontologies_path + "/#{to_param(params[:id])}?p=terms&conceptid=#{encode_param(mapping[0])}" %></td>
+						<td align="left">
+							<%for map in mapping[1]%>
+							<div class="map_target" style="border:1px solid #C1DAD7;background-color:#e2ebf0;color:#234979;padding:5px;margin-bottom:4px;">				
+								<%=link_to "#{map[:destination_ont_name]} : #{map[:destination_name]} (#{map[:count]})", ontologies_path + "/#{map[:destination_ont]}?p=terms&conceptid=#{encode_param(map[:destination_id])}" %>
+								<span class="mapped_by">Mapped By <%for user in map[:users]%> <%=user%> <%unless user.eql?map[:users].last%>,<%end%>  <%end%></span>
+							</div>
+				
+							<%end%>
+				
+						</td>
+					</tr>
+					<%rescue Exception=>e%>
+					<%end%>
 				<%end%>
 			<%end%>
 		

@@ -104,14 +104,10 @@ class MappingsController < ApplicationController
 	    @users = []
 	    user_count = DataAccess.getMappingCountOntologyUsers(@ontology.ontologyId)
 	    
-	    user_count.each do |x|
-	      for user in @service_users
-	        if x['userId'].to_i == user.id.to_i
-	          @users << user
-	        end
-	      end
-	    end
-	    
+      user_count.each do |user|
+        @users << DataAccess.getUser(user['userId'])
+      end
+
 	    for map in @mapping_pages
 	      @map_sources << map.map_source.gsub(/(<[^>]*>)/mi, "") unless map.map_source.nil? || map.map_source.empty?
 	      @map_sources.uniq!
@@ -138,6 +134,12 @@ class MappingsController < ApplicationController
 	    end
 	    
 	    @mappings = @mappings.sort {|a,b| b[1].length<=>a[1].length}
+	    
+	    if @mapping_pages.nil? || @mapping_pages.empty?
+	      @mapping_pages.page_size = 1
+	      @mapping_pages.total_mappings = 0
+	      @mapping_pages.page_number = 1
+	    end
 	
 	    # This converts the mappings into an object that can be used with the pagination plugin
 	    @page_results = WillPaginate::Collection.create(@mapping_pages.page_number, @mapping_pages.page_size, @mapping_pages.total_mappings) do |pager|
