@@ -30,6 +30,7 @@
             jQuery("#recommendations_container").show();
           },
           error: function(data) {
+            jQuery("#recommendations_container").hide();
             jQuery(".recommender_spinner").hide();
             jQuery(".recommender_error").html(" Problem getting recommendations, please try again");
           }
