@@ -519,11 +519,6 @@ class BioPortalRestfulCore
     
     timer = Benchmark.ms { ontologies = generic_parse(:xml => doc, :type => "OntologyWrapper") }
 
-    # ontologies = []
-    # doc.elements.each("*/data/list/ontologyBean"){ |element|  
-      # ontologies << parseOntology(element)
-    # }
-
     return ontologies
   end
   
@@ -543,15 +538,24 @@ class BioPortalRestfulCore
     
     timer = Benchmark.ms { ont = generic_parse(:xml => doc, :type => "OntologyWrapper") }
     
-    # doc.elements.each("*/data/ontologyBean"){ |element|  
-      # begin
-        # ont = parseOntology(element)
-      # rescue Exception => e
-        # puts "Problem parsing ontology"
-      # end
-    # }
-
     return ont
+  end
+  
+  def self.getLatestOntology(params)
+    uri_gen = BioPortalResources::LatestOntology.new(params)
+    uri = uri_gen.generate_uri
+    
+    doc = get_xml(uri)
+    
+    ont = errorCheck(doc)
+    
+    unless ont.nil?
+      return ont
+    end
+    
+    ont = generic_parse(:xml => doc, :type => "OntologyWrapper")
+
+    return ont 
   end
   
   ##
@@ -582,25 +586,6 @@ class BioPortalRestfulCore
     }                    
     
     return ont
-  end
-  
-  def self.getLatestOntology(params)
-    uri_gen = BioPortalResources::LatestOntology.new(params)
-    uri = uri_gen.generate_uri
-    
-    doc = REXML::Document.new(get_xml(uri))
-    
-    ont = errorCheck(doc)
-    
-    unless ont.nil?
-      return ont
-    end
-    
-    doc.elements.each("*/data/ontologyBean"){ |element|  
-      ont = parseOntology(element)
-    }                    
-
-    return ont 
   end
   
   ##
@@ -1016,9 +1001,8 @@ class BioPortalRestfulCore
     
     begin
       response = postMultiPart(uri, params)
-      doc = REXML::Document.new(response)
     rescue Exception=>e
-      doc = REXML::Document.new(e.io.read)
+      doc = e.io.read
     end
 
     ontology = errorCheck(doc)
@@ -1027,9 +1011,7 @@ class BioPortalRestfulCore
       return ontology
     end
     
-    doc.elements.each("*/data/ontologyBean"){ |element|  
-      ontology = parseOntology(element)
-    }
+    ontology = generic_parse(:xml => doc, :type => "OntologyWrapper")
     
     return ontology
   end
@@ -1052,10 +1034,6 @@ class BioPortalRestfulCore
     end
     
     ontology = generic_parse(:xml => doc, :type => "OntologyWrapper")
-    
-    # doc.elements.each("*/data/ontologyBean"){ |element|  
-      # ontology = parseOntology(element)
-    # }
     
     return ontology          
     

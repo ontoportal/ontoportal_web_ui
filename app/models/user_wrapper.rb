@@ -32,6 +32,14 @@ class UserWrapper
       end
     end
     
+    def has_access?(ontology)
+      ontology.useracl.each do |user|
+        return true if user.to_i == self.id.to_i
+      end
+      
+      return false
+    end
+    
     def initialize(params={})
       self.id = params[:id]
       self.username = params[:username]

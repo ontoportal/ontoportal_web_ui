@@ -16,6 +16,7 @@ class BioPortalResources
       end
       @uri_base_url = $REST_URL.clone
       @uri = @uri_base_url.clone
+      @user_apikey = Thread.current[:session][:user].nil? ? "" : Thread.current[:session][:user].apikey
     end
     
     def generate_uri
@@ -28,7 +29,7 @@ class BioPortalResources
       end
       
       param_start = @uri.include?("?") ? "&" : "?"
-      @uri << param_start + "apikey=#{API_KEY}"
+      @uri << param_start + "apikey=#{API_KEY}&userapikey=#{@user_apikey}"
       
       return @uri
     end

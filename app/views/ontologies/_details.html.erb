@@ -27,7 +27,7 @@
                   Status:
               </th>
               <td>
-                  <%= @ontology.versionStatus.capitalize %>
+                  <%= @ontology.versionStatus.capitalize unless @ontology.versionStatus.nil? %>
               </td>
           </tr>
           <tr>

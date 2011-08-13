@@ -1,3 +1,7 @@
+<%@title = "Editing #{@ontology.displayLabel}" %>
+
+<%=javascript_include_tag "bp_user_acl.js"%>
+
 <script type="text/javascript">
   jQuery(function(){
       $("#datepicker").datepicker({
@@ -16,6 +20,7 @@
   }
             
 </script>
+
 <script type="text/javascript">
     // Used to provide default text in fields
     jQuery(document).ready(function(){
@@ -57,6 +62,18 @@
       if (!jQuery("#ontology_isRemote_0").is(":checked") && !jQuery("#ontology_isRemote_1").is(":checked") && !jQuery("#ontology_isRemote_2").is(":checked")) {
         jQuery("#ontology_isRemote_0").attr("checked", "checked")
       }
+      
+      // Wire up options for restriction how an ontology is viewed
+      jQuery("#ontology_viewingRestrictions").change(function(){
+      	var select = jQuery(this);
+      	if (select.val() == "private") {
+      		jQuery("#ontology_useracl").removeAttr("disabled");
+      		jQuery("#viewingRestrictionsPrivate").show();
+      	} else if (select.val() == "") {
+      		jQuery("#viewingRestrictionsPrivate").hide();
+	    		jQuery("#ontology_useracl").attr("disabled", "disabled");
+      	}
+      });
     });
     
     jQuery("form").submit(function(){
@@ -67,6 +84,8 @@
       });
     });
 </script>
+
+
 <div style="margin:10px;">
     <%@title = "Editing #{@ontology.displayLabel}" %>
     <%unless @errors.nil? %>
@@ -90,7 +109,7 @@
     <table class="form" width="90%">
         <tr>
             <th class="top">
-                Ontology Name: <span class="asterik">*</span>
+                Ontology Name <span class="asterik">*</span>
             </th>
             <td class="top">
                 <%=text_field :ontology, :displayLabel %>
@@ -98,7 +117,7 @@
         </tr>
         <tr>
             <th>
-                Ontology Description: <span class="asterik">*</span>
+                Ontology Description <span class="asterik">*</span>
             </th>
             <td>
                 <%= text_area :ontology, :description,:rows=>6 %>
@@ -106,7 +125,7 @@
         </tr>
         <tr>
             <th>
-                Ontology Abbreviation: <span class="asterik">*</span>
+                Ontology Abbreviation <span class="asterik">*</span>
             </th>
             <td>
                 <%= text_field :ontology, :abbreviation %>
@@ -114,7 +133,7 @@
         </tr>
         <tr>
             <th>
-                Ontology Format: <span class="asterik">*</span>
+                Ontology Format <span class="asterik">*</span>
             </th>
             <td>
                 <%=@ontology.format %>
@@ -123,7 +142,7 @@
         </tr>
         <tr>
             <th>
-                Ontology Version: 
+                Ontology Version 
             </th>
             <td>
                 <%=text_field :ontology, :versionNumber %>
@@ -131,7 +150,7 @@
         </tr>
         <tr>
             <th>
-                Status:
+                Status
             </th>
             <td>
                 <% status_options = ["alpha", "beta", "production", "retired"] %>
@@ -140,7 +159,7 @@
         </tr>
         <tr>
             <th>
-                Ontology Release Date: <span class="asterik">*</span>
+                Ontology Release Date <span class="asterik">*</span>
             </th>
             <td>
                 <%= text_field :ontology, :dateReleased,:id=>"datepicker" %>
@@ -236,7 +255,27 @@
 		<% end %>
         <tr>
             <th>
-                Categories:
+                Ontology Viewing Restrictions
+            </th>
+            <td>
+            		<%view_restiction_options = [["Private", "private"]]%>
+            		<%selected = @ontology.private? ? "private" : ""%>
+            		<%display_private = @ontology.private? ? "" : "display: none;"%>
+                <%=select :ontology, :viewingRestrictions, view_restiction_options, { :include_blank => "", :selected => selected }%>
+                
+                <div id="viewingRestrictionsPrivate" style="padding: .5em; border: thin solid #C1DAD7; margin: .5em; <%=display_private%>">
+                	<h3>Add or remove accounts that are allowed to view terms in this ontology</h3> 
+                	<%=text_field :useracl, :user_acl_add, :title => "enter account name", :class => "defaultText"%>
+                	&nbsp;<input type="button" id="user_acl_add_button" value="Add Account">
+                	<span class="user_acl_add_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
+                	<span style='color: red;' class='user_acl_add_error'></span>
+                	<%=select :ontology, :useracl, @ontology.useracl_select, {}, :multiple => "true", :disabled => "true"%>
+              	</div>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Categories
             </th>
             <td>
                 <select name="ontology[categoryId][]" multiple="multiple" size="6">
@@ -257,7 +296,7 @@
         </tr>
         <tr>
             <th>
-                Contact Email
+                Contact Email <span class="asterik">*</span>
             </th>
             <td>
                 <%= text_field :ontology, :contactEmail %>

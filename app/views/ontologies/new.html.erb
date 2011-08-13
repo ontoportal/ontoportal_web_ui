@@ -1,5 +1,7 @@
 <%@title = "Submit new ontology" %>
 
+<%=javascript_include_tag "bp_user_acl.js"%>
+
 <script type="text/javascript">
   jQuery(function(){
       jQuery("#datepicker").datepicker({
@@ -21,45 +23,63 @@
 <script type="text/javascript">
     // Used to provide default text in fields
     jQuery(document).ready(function(){
-        jQuery(".defaultText").each(function(){
-            if ($(this).val() == this.title) {
-                jQuery(this).addClass("defaultTextActive");
-                jQuery(this).val(jQuery(this)[0].title);
-            }
-            else {
-                jQuery(this).removeClass("defaultTextActive");
-            }
-        });
-        
-        jQuery(".defaultText").focus(function(srcc){
-            if ($(this).val() == $(this)[0].title) {
-                $(this).removeClass("defaultTextActive");
-                $(this).val("");
-            }
-        });
-        
-        jQuery(".defaultText").blur(function(){
-            if ($(this).val() == "") {
-                $(this).addClass("defaultTextActive");
-                $(this).val($(this)[0].title);
-            }
-        });
-        
-        jQuery(".defaultText").blur();
-        
-        // Properly display the information for 'File Location' based on radio button
-        if (jQuery("#ontology_isRemote_0").is(":checked")) {
-          location_toggle("upload");
-        }
+      jQuery(".defaultText").each(function(){
+          if ($(this).val() == this.title) {
+              jQuery(this).addClass("defaultTextActive");
+              jQuery(this).val(jQuery(this)[0].title);
+          }
+          else {
+              jQuery(this).removeClass("defaultTextActive");
+          }
+      });
+      
+      jQuery(".defaultText").focus(function(srcc){
+          if ($(this).val() == $(this)[0].title) {
+              $(this).removeClass("defaultTextActive");
+              $(this).val("");
+          }
+      });
+      
+      jQuery(".defaultText").blur(function(){
+          if ($(this).val() == "") {
+              $(this).addClass("defaultTextActive");
+              $(this).val($(this)[0].title);
+          }
+      });
+      
+      jQuery(".defaultText").blur();
+      
+      // Properly display the information for 'File Location' based on radio button
+      if (jQuery("#ontology_isRemote_0").is(":checked")) {
+        location_toggle("upload");
+      }
 
-        if (jQuery("#ontology_isRemote_1").is(":checked")) {
-          location_toggle("remote");
-        }
+      if (jQuery("#ontology_isRemote_1").is(":checked")) {
+        location_toggle("remote");
+      }
 
-        // Select default 'File Location' radio button
-        if (!jQuery("#ontology_isRemote_0").is(":checked") && !jQuery("#ontology_isRemote_1").is(":checked") && !jQuery("#ontology_isRemote_2").is(":checked")) {
-          jQuery("#ontology_isRemote_0").attr("checked", "checked")
-        }
+      // Select default 'File Location' radio button
+      if (!jQuery("#ontology_isRemote_0").is(":checked") && !jQuery("#ontology_isRemote_1").is(":checked") && !jQuery("#ontology_isRemote_2").is(":checked")) {
+        jQuery("#ontology_isRemote_0").attr("checked", "checked")
+      }
+
+      // Wire up options for restriction how an ontology is viewed
+      jQuery("#ontology_viewingRestrictions").change(function(){
+      	var select = jQuery(this);
+      	if (select.val() == "private") {
+      		jQuery("#ontology_useracl").removeAttr("disabled");
+      		jQuery("#viewingRestrictionsPrivate").show();
+      	} else if (select.val() == "") {
+      		jQuery("#viewingRestrictionsPrivate").hide();
+	    		jQuery("#ontology_useracl").attr("disabled", "disabled");
+      	}
+      });
+      
+      // Make sure you can see the account select if the select list has private selected
+      if (jQuery("#ontology_viewingRestrictions").val() == "private") {
+    		jQuery("#ontology_useracl").removeAttr("disabled");
+    		jQuery("#viewingRestrictionsPrivate").show();
+  		}
     });
     
     jQuery("form").submit(function(){
@@ -274,6 +294,26 @@
               <hr/><%=radio_button :ontology, :isRemote, 3, :onclick=>"$('.hidden_field').hide();" %> Metadata Only 
               <br/>
               <span style="font-size:11px;">(choose this option if you want users to search and view only the <em>metadata</em> for your ontology, but not its classes and properties) </span>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                Ontology Viewing Restrictions
+            </th>
+            <td>
+            		<%view_restiction_options = [["Private", "private"]]%>
+            		<%selected = @ontology.private? ? "private" : ""%>
+            		<%display_private = @ontology.private? ? "" : "display: none;"%>
+                <%=select :ontology, :viewingRestrictions, view_restiction_options, { :include_blank => "", :selected => selected }%>
+                
+                <div id="viewingRestrictionsPrivate" style="padding: .5em; border: thin solid #C1DAD7; margin: .5em; <%=display_private%>">
+                	<h3>Add or remove accounts that are allowed to view terms in this ontology</h3> 
+                	<%=text_field :useracl, :user_acl_add, :title => "enter account name", :class => "defaultText", :style => "margin-bottom: .5em"%>
+                	&nbsp;<input type="button" id="user_acl_add_button" value="Add Account">
+                	<span class="user_acl_add_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
+                	<span style='color: red;' class='user_acl_add_error'></span>
+                	<%=select :ontology, :useracl, @ontology.useracl_select, {}, :multiple => "true", :disabled => "true"%>
+              	</div>
             </td>
         </tr>
         <tr>

@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery # :secret => 'ba3e1ab68d3ab8bd1a1e109dfad93d30'
   
   # Needed for memcache to understand the models in storage
-  before_filter  :preload_models
+  before_filter  :preload_models, :set_global_session
 
   def preload_models()
     Note
@@ -36,6 +36,10 @@ class ApplicationController < ActionController::Base
     UserWrapper
     Groups
     SearchResults
+  end
+  
+  def set_global_session
+    Thread.current[:session] = session
   end
   
   # Custom 404 handling

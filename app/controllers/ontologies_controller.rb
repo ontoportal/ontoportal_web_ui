@@ -123,7 +123,7 @@ class OntologiesController < ApplicationController
   
   
   def edit
-    @ontology = DataAccess.getOntology(params[:id])   
+    @ontology = DataAccess.getOntology(params[:id])
     
     authorize_owner(@ontology.userId.to_i)
     
@@ -176,6 +176,16 @@ class OntologiesController < ApplicationController
       @ontology = DataAccess.getView(params[:ontology])   
     else
       @ontology = DataAccess.getOntology(params[:ontology])   
+    end
+    
+    test = @ontology.private?
+    test1 = (session[:user].nil? || !session[:user].has_access?(@ontology))
+    if @ontology.private? && (session[:user].nil? || !session[:user].has_access?(@ontology))
+      if request.xhr?
+        return render :partial => 'private_ontology', :layout => false
+      else
+        return render :partial => 'private_ontology', :layout => "ontology_viewer"
+      end
     end
     
     # Get most recent active version of ontology if there was a parsing error
@@ -293,6 +303,7 @@ class OntologiesController < ApplicationController
   def new
     if(params[:id].nil?)
       @ontology = OntologyWrapper.new
+      @ontology.userId = session[:user].id
     else
       @ontology = DataAccess.getLatestOntology(params[:id])
     end

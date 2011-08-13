@@ -30,6 +30,8 @@ module OntologiesHelper
   def visibility_link(ontology)
     if ontology.metadata_only?
       return "<a href='/ontologies/#{ontology.ontologyId}'>Summary Only</a>"
+    elsif ontology.private?
+      return "<a href='/ontologies/#{ontology.ontologyId}?p=terms'>Private</a>"
     else
       return "<a href='/ontologies/#{ontology.ontologyId}?p=terms'>Public</a>"
     end

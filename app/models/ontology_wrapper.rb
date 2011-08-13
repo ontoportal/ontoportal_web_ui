@@ -142,7 +142,7 @@ class OntologyWrapper
         self.useracl << user["userId"]
       end
     end
-  end    
+  end
 
   def views
     return DataAccess.getViews(self.ontologyId)
@@ -197,13 +197,19 @@ class OntologyWrapper
     return DataAccess.getOntology(self.viewOnOntologyVersionId)
   end
   
+  # For use with select lists, always includes the admin by default
   def useracl_select
     select_opts = []
-    return select_opts if self.useracl.nil?
+    return select_opts if self.userId.nil? and (self.useracl.nil? or self.useracl.empty?)
     
-    self.useracl.each do |user|
-      select_opts << [DataAccess.getUser(user).username, user]
+    if self.useracl.nil? || self.useracl.empty?
+      select_opts << [DataAccess.getUser(self.userId).username, self.userId]
+    else
+      self.useracl.each do |user|
+        select_opts << [DataAccess.getUser(user).username, user]
+      end
     end
+
     select_opts
   end
   
@@ -279,6 +285,7 @@ class OntologyWrapper
   end
   
   def private?
+    test = !self.useracl_full.nil?
     !self.useracl_full.nil?
   end
   
