@@ -33,6 +33,8 @@ class UserWrapper
     end
     
     def has_access?(ontology)
+      return true if ontology.useracl.nil? || ontology.useracl.empty?
+      
       ontology.useracl.each do |user|
         return true if user.to_i == self.id.to_i
       end
