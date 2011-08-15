@@ -178,8 +178,6 @@ class OntologiesController < ApplicationController
       @ontology = DataAccess.getOntology(params[:ontology])   
     end
     
-    test = @ontology.private?
-    test1 = (session[:user].nil? || !session[:user].has_access?(@ontology))
     if @ontology.private? && (session[:user].nil? || !session[:user].has_access?(@ontology))
       if request.xhr?
         return render :partial => 'private_ontology', :layout => false

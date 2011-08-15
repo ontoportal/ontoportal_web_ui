@@ -9,22 +9,23 @@
 		jQuery(".recommender_error").html("");
 		jQuery(".recommender_spinner").show();
 		
+		var group = jQuery("#ontology_filter_group").val();
+		var category = jQuery("#ontology_filter_category").val();
+		
 		jQuery.ajax({
           type: "POST",
-          url: "/recommender?text="+jQuery("#recommendation_text").val(),
+          url: "/recommender?text="+jQuery("#recommendation_text").val()+"&group="+group+"&category="+category,
           dataType: "json",
           success: function(data) {
             jQuery(".recommender_spinner").hide();
             
             var links = [];
-            links.push('<h2>Ontology Recommendations</h2>');
+            links.push('<tr><td valign=bottom style="font-size: large; padding-bottom: 7px;"><b>Ontology Recommendations</b></td><td valign=bottom style="padding: 0 0 9px 1em; text-align: right;">Terms<br/>Matched</td></tr>');
             
             jQuery(data).each(function(){
             	var rec = this;
-            	console.log(rec);
-            	links.push("<div style='padding: 3px;'><a href='/ontologies/"+rec.virtualOntologyId+"'>"+rec.name+"</a></div>");
+            	links.push("<tr><td style='padding: 3px;'><a href='/ontologies/"+rec.virtualOntologyId+"'>"+rec.name+"</a></td><td style='text-align: right;'>"+rec.nbAnnotation+"</td></tr>");
             });
-							console.log(links.join("<br/>"));
             
             jQuery("#recommendations").html(links.join(""));
             jQuery("#recommendations_container").show();
@@ -44,15 +45,22 @@
 	<p>Enter text below. The Ontology Recommender will analyze this text and provide a ranked list of ontologies that are relevant.</p>
 
 	<div style="float: left; padding-bottom: 1em;">
-		<%=text_area :recommendation, :text, :cols => 55, :rows => 20, :style => "box-shadow: 0 0 3px gray; padding: 5px;"%>
-		<br/>
+		<%=text_area :recommendation, :text, :cols => 55, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px;"%>
+
+		<br style="margin-bottom: 10px;"/>
+
+		<b>Filter by group</b><br/>
+		<%=select :ontology_filter, :group, @groups_for_select, { :include_blank => "None"}%><br/ style="margin-bottom: 10px;">
+		<b>Filter by category</b><br/>
+		<%=select :ontology_filter, :category, @categories_for_select, { :include_blank => "None"}%><br/>
+		
 		<input type="button" id="recommender_button" value="Get Recommendations" style="margin-top: 10px;">
 		<span class="recommender_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
 		<span style='color: red;' class='recommender_error'></span>
 	</div>
 	
 	<div id="recommendations_container" style="display: none;">
-		<div id="recommendations" style="border: thin solid gray; display: inline-block; margin: 0 1em; padding: 1em; box-shadow: 0 0 3px gray;"></div>
+		<table id="recommendations" style="border: thin solid gray; display: inline-block; margin: 0 1em; padding: 1em; box-shadow: 0 0 3px gray;"></table>
 	</div>
 
 </div>
