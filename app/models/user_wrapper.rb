@@ -34,6 +34,7 @@ class UserWrapper
     
     def has_access?(ontology)
       return true if ontology.useracl.nil? || ontology.useracl.empty?
+      return true if self.admin?
       
       ontology.useracl.each do |user|
         return true if user.to_i == self.id.to_i
