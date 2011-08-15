@@ -53,8 +53,9 @@
                   Groups:
               </th>
               <td>
-                  <%for group_id in @ontology.groups %><%= @groups.group_list[group_id][:name] %>
-                  <br/>
+                  <%for group_id in @ontology.groups %>
+	                  <%= @groups.group_list[group_id.to_i][:name] rescue "" %>
+	                  <br/>
                   <%end %>
               </td>
           </tr>
