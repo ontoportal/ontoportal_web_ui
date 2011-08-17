@@ -25,6 +25,7 @@ class ApplicationController < ActionController::Base
   def preload_models()
     Note
     NodeWrapper
+    NodeLabel
     Annotation
     Mapping
     MappingPage

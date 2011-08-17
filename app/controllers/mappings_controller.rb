@@ -97,7 +97,7 @@ class MappingsController < ApplicationController
     
     
     if params[:rdf].nil? || !params[:rdf].eql?("rdf")
-	    @mapping_pages = DataAccess.getBetweenOntologiesMappings(@ontology.ontologyId, @target_ontology.ontologyId, params[:page], 100, :user_id => params[:user], :sources => params[:map_source], :unidirectional => "true")
+	    @mapping_pages = DataAccess.getBetweenOntologiesMappings(@ontology.ontologyId, @target_ontology.ontologyId, params[:page], 10, :user_id => params[:user], :sources => params[:map_source], :unidirectional => "true")
 	    @mappings = {}
 	    @map_sources = []
 	    @service_users = DataAccess.getUsers.sort{|x,y| x.username.downcase <=> y.username.downcase}
@@ -105,9 +105,11 @@ class MappingsController < ApplicationController
 	    user_count = DataAccess.getMappingCountOntologyUsers(@ontology.ontologyId)
 	    
       user_count.each do |user|
-        @users << DataAccess.getUser(user['userId'])
+        # We test to see if a user should appear in the list by trying to get mappings between ontologies with page & limit at 1, should be a quick query
+        user_test = DataAccess.getOntologyMappings(@ontology.ontologyId, 1, 1, :user_id => user['userId'], :sources => params[:map_source], :unidirectional => "true")
+        @users << DataAccess.getUser(user['userId']) unless user_test.nil? || user_test.length == 0
       end
-
+      
 	    for map in @mapping_pages
 	      @map_sources << map.map_source.gsub(/(<[^>]*>)/mi, "") unless map.map_source.nil? || map.map_source.empty?
 	      @map_sources.uniq!

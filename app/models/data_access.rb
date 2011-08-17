@@ -27,6 +27,10 @@ class DataAccess
     return self.cache_pull("#{view_string}#{param(ontology_id)}::#{node_id.to_s.gsub(" ","%20")}::max_children=#{max_children}_light", "getLightNode", { :ontology_id => ontology_id, :concept_id => node_id, :max_children => max_children })
   end
   
+  def self.getNodeLabel(ontology_id, node_id)
+    return self.cache_pull("label::#{param(ontology_id)}::#{param(node_id.to_s)}", "getNodeLabel", { :ontology_id => ontology_id, :concept_id => node_id })
+  end
+  
   def self.getView(view_id)
     return self.cache_pull("view::#{param(view_id)}", "getView", { :view_id => view_id })
   end

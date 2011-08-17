@@ -449,6 +449,37 @@ class BioPortalRestfulCore
     return node
   end
   
+  # Super-fast method to get just the label for a node
+  def self.getNodeLabel(params)
+    uri_gen = BioPortalResources::Concept.new(params, 0, true)
+    uri = uri_gen.generate_uri
+    
+    LOG.add :debug, "Retrieve node label"
+    LOG.add :debug, uri
+    doc = get_xml(uri, 360)
+
+    node = errorCheck(doc)         
+
+    unless node.nil?
+      return node
+    end
+    
+    if doc.kind_of?(String)
+      parser = XML::Parser.string(doc, :options => LibXML::XML::Parser::Options::NOBLANKS)
+    else
+      parser = XML::Parser.io(doc, :options => LibXML::XML::Parser::Options::NOBLANKS)
+    end
+    
+    doc = parser.parse
+    
+    node = NodeLabel.new
+    
+    node.label = doc.find("/success/data/classBean/label").first.content
+    node.obsolete = doc.find("/success/data/classBean/isObsolete").first.content rescue ""
+    
+    return node
+  end
+  
   def self.getTopLevelNodes(params)
     params[:concept_id] = "root"
    
