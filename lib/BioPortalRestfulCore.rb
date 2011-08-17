@@ -1000,7 +1000,7 @@ class BioPortalRestfulCore
     LOG.add :debug, "Creating ontology using #{uri}"
     
     begin
-      response = postMultiPart(uri, params)
+      doc = postMultiPart(uri, params)
     rescue Exception=>e
       doc = e.io.read
     end
