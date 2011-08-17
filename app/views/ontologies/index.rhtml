@@ -148,7 +148,7 @@ jQuery(document).ready(function() {
     <table class="form" style="min-width: 580px;">
       <tr>
         <th>
-        Filter by Category</td>
+        Filter by Category</th>
         <td class="top">
           <select onchange="filterBySelection(this)"  name="cat">
             <option value="0" selected="selected">All Categories</option>
@@ -161,7 +161,9 @@ jQuery(document).ready(function() {
       </tr>
       <tr>
         <th>
-        Filter by Group</td>
+        	<%=help_icon("http://www.bioontology.org/wiki/index.php/BioPortal_FAQ#Ontology_Groups", "Help documentation about Groups", -2)%>
+        	Filter by Group
+        </th>
         <td>
           <select onchange="filterByGroup(this)"  name="groups" id="select_groups">
             <option value="0" <%if params[:filter].nil?%>selected="selected"<%end%> >All Groups</option>

@@ -231,6 +231,20 @@ module ApplicationHelper
     rand(36**8).to_s(36)
   end
   
+  def help_icon(link, title = "", top_padding = 0)
+    return <<-BLOCK
+      <ul>
+        <li style="position: relative; top: #{top_padding}px; float: right; list-style: none outside none;" title="#{title}" class="ui-state-default ui-corner-all ui-state-hover">
+          <a style='font-size: x-small;' target="_blank" href='#{link}'>
+            <span class="ui-icon ui-icon-help"></span>
+          </a>
+        </li>
+      </ul>
+    BLOCK
+  end
+  
+  
+  
   
   
   # BACKPORTED RAILS 3 HELPERS
