@@ -56,6 +56,15 @@ jQuery(window).ready(function(){
 
 	// Hide the advanced select when focusing in the chosen select box
   jQuery("#ontology_ontologyId_chzn").bind("focus", hideAdvancedSelect);
+  
+  // Hide the advanced select when clicking anywhere except in advanced select
+  jQuery('html').click(function() {
+  	hideAdvancedSelect();
+	});
+
+	jQuery('#ont_select_adv').click(function(event){
+		event.stopPropagation();
+	});
 
   // Wire up the link to open dialog box
   jQuery("#ont_select_adv_href").click(function() {
