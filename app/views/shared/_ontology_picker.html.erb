@@ -1,6 +1,3 @@
-<%= javascript_include_tag "JqueryPlugins/chosen/chosen.jquery.js"%>
-<link rel="stylesheet" type="text/css" href="/javascripts/JqueryPlugins/chosen/chosen.css">
-
 <style type="text/css">
   .ont_select_adv {
     border-radius: 0;
@@ -16,6 +13,18 @@
     max-height: 110px;
     overflow: auto;
   }
+  
+  div.chzn-container li.search-field input {
+  	font-style: oblique;
+  }
+  	
+  div.chzn-drop {
+  	display: none;
+  }
+  
+  .no_right_border {
+  	border-right: none !important;
+  }
 </style>
 
 <script type="text/javascript">
@@ -24,7 +33,7 @@ var winHeight = jQuery(window).height();
 var ontSelectListPos = { top: 0, left: 0, width: 0 };
 var allSelected = false;
 
-jQuery(document).ready(function(){
+jQuery(window).ready(function(){
   jQuery("#ontology_ontologyId").chosen();
 
   ontSelectListPos.top = jQuery("#ontology_ontologyId_chzn").offset().top;
@@ -42,23 +51,37 @@ jQuery(document).ready(function(){
   syncFromList()
 
   // Unbind the click handler from the ontology list
-  jQuery("#ontology_ontologyId_chzn").unbind("click");
-  jQuery("#ontology_ontologyId_chzn").unbind("click");
+  jQuery("#ontology_ontologyId_chzn").bind("focus", hideChosenResults);
+  jQuery("#ontology_ontologyId_chzn").bind("keydown", showChosenResults);
 
-  // Setup dialog box for advanced ontology select
-  jQuery("#ont_select_adv").dialog({
-    autoOpen: false,
-    dialogClass: "ont_select_adv",
-    title: "Multiple Ontology Select",
-    width: 500,
-    height: winHeight - ontSelectListPos.top - 100,
-    position: [ ontSelectListPos.width + 20, ontSelectListPos.top ]
-  });
+	// Hide the advanced select when focusing in the chosen select box
+  jQuery("#ontology_ontologyId_chzn").bind("focus", hideAdvancedSelect);
 
   // Wire up the link to open dialog box
   jQuery("#ont_select_adv_href").click(function() {
-    jQuery("#ont_select_adv").dialog("open");
+  	var ont_select = jQuery("#ont_select_adv");
+  	var chzn_select = jQuery("#ontology_ontologyId_chzn");
+  	
+  	ont_select.css("top", jQuery(window).scrollTop() + 50 + "px");
+  	ont_select.css("left", chzn_select.offset().left + chzn_select.width() - 1);
+  	ont_select.css("width", jQuery(window).width() - (chzn_select.offset().left + chzn_select.width()) - 100 + "px");
+  	ont_select.css("height", jQuery(window).height() - 100);
+  	
+  	chzn_select.css("z-index", "4000");
+  	chzn_select.children("ul.chzn-choices").addClass("no_right_border");
+  	chzn_select.children("ul.chzn-choices").css("background", "white");
+  	
+  	jQuery("#ontology_ontologyId_container").css("box-shadow", "0 0 10px gray");
+
+		jQuery("#ont_list_container").height(ont_select.height() - 60);
+  	
+    jQuery("#ont_select_adv").show();
     return false;
+  });
+  
+  // Wire up close advanced select "X"
+  jQuery("#close_adv_select").click(function(){
+  	hideAdvancedSelect();
   });
 
   // Wire up watcher for checkboxes for sync
@@ -97,7 +120,25 @@ jQuery(document).ready(function(){
 });
 
 
+var hideAdvancedSelect = function(){
+	if (jQuery("#ont_select_adv").is(":visible")) {
+		jQuery("#ont_select_adv").hide();
+  	jQuery("#ontology_ontologyId_chzn").children("ul.chzn-choices").removeClass("no_right_border").css("background", "");
+  	jQuery("#ontology_ontologyId_container").css("box-shadow", "");
+	}
+}
 
+var showChosenResults = function(){
+	if (!jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").is(":visible")) {
+		jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").show();
+	}
+}
+
+var hideChosenResults = function(){
+	if (jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").is(":visible")) {
+		jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").hide();
+	}
+}
 
 // Synchronize checkboxes to select list
 function syncFromCheckboxes() {
@@ -177,27 +218,37 @@ function refreshOntList() {
 
 
 
-<div style="padding: 5em 1em;">
-  <%= select :ontology, "ontologyId", options_for_select(@onts_for_select), { }, :multiple => 'true', "data-placeholder".to_sym => "Use All Ontologies" %>
+<div style="margin-bottom: 1em; width: 432px;">
+	<h2 style="margin-bottom: 3px;">Select Ontologies</h2>
+	
+	<div id="ontology_ontologyId_container">
+  	<%= select :ontology, "ontologyId", options_for_select(@onts_for_select), { }, :multiple => 'true', "data-placeholder".to_sym => "Type to select ontologies or leave blank to use all" %>
+  </div>
   
-  <div style="float: right; font-size: smaller;"><a id="ont_select_adv_href" href="javascript:void(0)">advanced select</a></div>
+  <div style="float: right; font-size: smaller;"><a id="ont_select_adv_href" href="javascript:void(0)">select from list</a></div>
 
-  <div id="ont_select_adv" style="display: none; text-align: left;">
-    <table id="ont_list">
-      <!--
-      <tr>
-        <td style="padding-bottom: 5px;"><%= check_box_tag "ont_select_all" %></td>
-        <td style="padding: 0 0 5px 5px;"><%= label_tag "ont_select_all", "All" %></td>
-      </tr>
-      -->
-      
-      <% @onts_for_select.each do |ont| %>
-        <tr class="ont_select_boxes_tr">
-          <td valign="top"><%= check_box_tag "ont_select_adv_check", ont[1], false, :id => "ont_select_adv_check#{ont[1]}" %></td>
-          <td style="padding-left: 5px;"><%= label_tag "ont_select_adv_check#{ont[1]}", ont[0] %></td>
-        </tr>
-      <% end %>
-    </table>
+  <div id="ont_select_adv" style="display: none; text-align: left; border: thin solid gray; position: absolute; background: white; overflow: hidden; max-width: 550px; box-shadow: 0 0 10px gray;">
+  	<div id="ont_select_adv_inner" style="padding: 15px; background: white; z-index: 5000;">
+	  	<h2>Multiple Ontologies Select <a href="javascript:void(0);" id="close_adv_select" class="ui-dialog-titlebar-close ui-corner-all" role="button" unselectable="on" style="-moz-user-select: none; float: right;"><span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">close</span></a></h2>
+	    
+	    <div id="ont_list_container" style="overflow: auto; position: relative;">
+		    <table id="ont_list">
+		      <!--
+		      <tr>
+		        <td style="padding-bottom: 5px;"><%= check_box_tag "ont_select_all" %></td>
+		        <td style="padding: 0 0 5px 5px;"><%= label_tag "ont_select_all", "All" %></td>
+		      </tr>
+		      -->
+		      
+		      <% @onts_for_select.each do |ont| %>
+		        <tr class="ont_select_boxes_tr">
+		          <td valign="top"><%= check_box_tag "ont_select_adv_check", ont[1], false, :id => "ont_select_adv_check#{ont[1]}" %></td>
+		          <td style="padding-left: 5px;"><%= label_tag "ont_select_adv_check#{ont[1]}", ont[0] %></td>
+		        </tr>
+		      <% end %>
+		    </table>
+	    </div>
+    </div>
   </div>
 </div>
 

@@ -9,12 +9,13 @@
 		jQuery(".recommender_error").html("");
 		jQuery(".recommender_spinner").show();
 		
-		var group = jQuery("#ontology_filter_group").val();
-		var category = jQuery("#ontology_filter_category").val();
+		var ont_select = jQuery("#ontology_ontologyId");
+		
+		var ontology_ids = (ont_select.val() == null) ? "" : ont_select.val().join(",")
 		
 		jQuery.ajax({
           type: "POST",
-          url: "/recommender?text="+jQuery("#recommendation_text").val()+"&group="+group+"&category="+category,
+          url: "/recommender?text="+jQuery("#recommendation_text").val()+"&ontology_ids="+ontology_ids,
           dataType: "json",
           success: function(data) {
             jQuery(".recommender_spinner").hide();
@@ -22,10 +23,14 @@
             var links = [];
             links.push('<tr><td valign=bottom style="font-size: large; padding-bottom: 7px;"><b>Ontology Recommendations</b></td><td valign=bottom style="padding: 0 0 9px 1em; text-align: right;">Terms<br/>Matched</td></tr>');
             
-            jQuery(data).each(function(){
-            	var rec = this;
-            	links.push("<tr><td style='padding: 3px;'><a href='/ontologies/"+rec.virtualOntologyId+"'>"+rec.name+"</a></td><td style='text-align: right;'>"+rec.nbAnnotation+"</td></tr>");
-            });
+            if (jQuery.isEmptyObject(data)) {
+            	links.push("<tr><td>No recommendations found</td></tr>");
+            } else {
+	            jQuery(data).each(function(){
+	            	var rec = this;
+	            	links.push("<tr><td style='padding: 3px;'><a href='/ontologies/"+rec.virtualOntologyId+"'>"+rec.name+"</a></td><td style='text-align: right;'>"+rec.nbAnnotation+"</td></tr>");
+	            });
+            }
             
             jQuery("#recommendations").html(links.join(""));
             jQuery("#recommendations_container").show();
@@ -45,15 +50,12 @@
 	<p>Enter text below. The Ontology Recommender will analyze this text and provide a ranked list of ontologies that are relevant.</p>
 
 	<div style="float: left; padding-bottom: 1em;">
-		<%=text_area :recommendation, :text, :cols => 55, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px;"%>
+		<%=text_area :recommendation, :text, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px; width: 420px;"%>
 
 		<br style="margin-bottom: 10px;"/>
-
-		<b>Filter by group</b><br/>
-		<%=select :ontology_filter, :group, @groups_for_select, { :include_blank => "None"}%><br/ style="margin-bottom: 10px;">
-		<b>Filter by category</b><br/>
-		<%=select :ontology_filter, :category, @categories_for_select, { :include_blank => "None"}%><br/>
 		
+		<%=render :partial => "shared/ontology_picker"%>
+
 		<input type="button" id="recommender_button" value="Get Recommendations" style="margin-top: 10px;">
 		<span class="recommender_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
 		<span style='color: red;' class='recommender_error'></span>
