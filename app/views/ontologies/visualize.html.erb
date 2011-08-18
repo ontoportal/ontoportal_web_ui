@@ -178,8 +178,10 @@
               <li class="selected first" id="details_top" onclick="return false;"><a href="#details" onclick="return false;" style="color: gray;">Details</a></li>
               <li id="visualization_top" onclick="return false;"><a href="#visualization" onclick="return false;" style="color: gray;">Visualization</a></li>
               <li id="notes_top" onclick="return false;"><a href="#notes" onclick="return false;" style="color: gray;">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
-              <li id="mappings_top" onclick="return false;"><a href="#mappings" onclick="return false;" style="color: gray;">Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>       
-              <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Resource Index</a></li>
+              <li id="mappings_top" onclick="return false;"><a href="#mappings" onclick="return false;" style="color: gray;">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>       
+              <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
+              	<li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Term Resources</a></li>
+            	<%end%>
           </ul>
         </div>
         <div class="tabs" id="non_fake_tabs" style="display: none;">
@@ -187,10 +189,10 @@
               <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
               <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
               <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
-              <li class="tab" id="mappings_top"><a href="#mappings">Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>       
+              <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>       
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
                 <%if !@ontology.isView.eql?('true')%>
-                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
+                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Term Resources</a></li>
                 <% end %>
               <%end%>
           </ul>
@@ -206,17 +208,21 @@
           <div class="tab_container" id="resource_index_content"></div>
         </div>
       </div>
+      
+      
     <% else %>
+    
+    
       <div id="container">
         <div class="tabs">
           <ul>
               <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
               <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
               <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
-              <li class="tab" id="mappings_top"><a href="#mappings">Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>       
+              <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>       
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
                 <%if !@ontology.isView.eql?('true')%>
-                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Resource Index</a></li>
+                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Term Resources</a></li>
                 <% end %>
               <%end%>
           </ul>

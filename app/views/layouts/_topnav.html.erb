@@ -1,39 +1,44 @@
 <div id="hd_wrapper" style="overflow: hidden;">
 	<div id="hd">
 	  <ul>  
-	    <li><a href="/" title="Home"><img src="/images/layout/nav_logo.png" /></a></li>
+	    <li style="padding-right: 30px;"><a href="/" title="Home"><img src="/images/layout/nav_logo.png" /></a></li>
 	    <%if controller.controller_name.eql?('ontologies') || controller.controller_name.eql?('concepts')%>
-	      <li><a href="/ontologies" title="Browse" ><img name="img10" src="/images/layout/nav_browse_active.png" /></a></li>    
+	      <li id="bp_nav_browse_active"><a href="/ontologies" title="Browse" class="bp_nav_link"></a></li>    
 	    <%else%>
-	      <li><a href="/ontologies" title="Browse" ><img name="img10" src="/images/layout/nav_browse.png" /></a></li>
+	      <li id="bp_nav_browse"><a href="/ontologies" title="Browse" class="bp_nav_link"></a></li>
 	    <%end%>
 	    <%if controller.controller_name.eql?('search')%>
-	      <li><a href="/search" title="Search"  ><img name="img11" src="/images/layout/nav_search_active.png" /></a></li>
+	      <li id="bp_nav_search_active"><a href="/search" title="Search" class="bp_nav_link"></a></li>
 	    <%else%>
-	      <li><a href="/search" title="Search"  ><img name="img11" src="/images/layout/nav_search.png" /></a></li>
+	      <li id="bp_nav_search"><a href="/search" title="Search" class="bp_nav_link"></a></li>
 	    <%end%>
 	    <%if controller.controller_name.eql?('projects')%>    
-	      <li><a href="/projects" title="Projects"  ><img name="img11" src="/images/layout/nav_projects_active.png" /></a></li>   
+	      <li id="bp_nav_projects_active"><a href="/projects" title="Projects" class="bp_nav_link"></a></li>   
 	    <%else%>
-	      <li><a href="/projects" title="Projects"  ><img name="img11" src="/images/layout/nav_projects.png" /></a></li>    
+	      <li id="bp_nav_projects"><a href="/projects" title="Projects" class="bp_nav_link"></a></li>    
+	    <%end%>
+	    <%if controller.controller_name.eql?('mappings')%>    
+	      <li id="bp_nav_mappings_active"><a href="/mappings" title="All Mappings" class="bp_nav_link"></a></li>
+	    <%else%>
+	      <li id="bp_nav_mappings"><a href="/mappings" title="All Mappings" class="bp_nav_link"></a></li>   
+	    <%end%>
+	    <%if controller.controller_name.eql?('recommender')%>    
+	      <li id="bp_nav_recommender_active"><a href="/recommender" title="Ontology Recommender" class="bp_nav_link"></a></li>
+	    <%else%>
+	      <li id="bp_nav_recommender"><a href="/recommender" title="Ontology Recommender" class="bp_nav_link"></a></li>   
 	    <%end%>
 	    <%unless !$ANNOTATOR_DISABLED.nil? && $ANNOTATOR_DISABLED %>
 	      <%if controller.action_name.eql?('annotate')%>    
-	        <li><a href="/annotator" title="Annotator" ><img name="img12" src="/images/layout/nav_annotate_active.png" /></a></li>
+	        <li id="bp_nav_annotator_active"><a href="/annotator" title="Annotator" class="bp_nav_link"></a></li>
 	      <%else%>
-	        <li><a href="/annotator" title="Annotator" ><img name="img12" src="/images/layout/nav_annotate.png" /></a></li>   
+	        <li id="bp_nav_annotator"><a href="/annotator" title="Annotator" class="bp_nav_link"></a></li>   
 	      <%end%>
-	    <%end%>
-	    <%if controller.controller_name.eql?('mappings')%>    
-	      <li><a href="/mappings" title="All Mappings" ><img name="img13" src="/images/layout/nav_search_allmappings_active.png" /></a></li>
-	    <%else%>
-	      <li><a href="/mappings" title="All Mappings" ><img name="img13" src="/images/layout/nav_search_allmappings.png" /></a></li>   
 	    <%end%>
 	    <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
 	      <%if controller.action_name.eql?('all_resources')%>   
-	        <li><a href="/resources" title="Resource Index" ><img name="img14" src="/images/layout/nav_resources_active.png" /></a></li>
+	        <li id="bp_nav_resource_index_active"><a href="/resources" title="Resource Index" class="bp_nav_link"></a></li>
 	      <%else%>
-	        <li><a href="/resources" title="Resource Index" ><img name="img14" src="/images/layout/nav_resources.png" /></a></li>
+	        <li id="bp_nav_resource_index"><a href="/resources" title="Resource Index" class="bp_nav_link"></a></li>
 	      <%end%>
 	    <%end%>
 	  </ul>
