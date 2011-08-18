@@ -9,6 +9,14 @@
     border: none;
   }
 
+	div.chzn-container {
+		width: 432px !important;
+	}
+
+	div.chzn-container-active ul.chzn-choices li.search-field input {
+		font-style: normal !important;
+	}
+
   div.chzn-container ul.chzn-choices {
     max-height: 110px;
     overflow: auto;
@@ -24,6 +32,11 @@
   
   .no_right_border {
   	border-right: none !important;
+  }
+  
+  .help_text {
+  	color: gray;
+  	font-style: oblique;
   }
 </style>
 
@@ -76,13 +89,17 @@ jQuery(window).ready(function(){
   	ont_select.css("width", jQuery(window).width() - (chzn_select.offset().left + chzn_select.width()) - 100 + "px");
   	ont_select.css("height", jQuery(window).height() - 100);
   	
+  	// Configure the chosen select list box to remove background, move z-index above the advanced select
   	chzn_select.css("z-index", "4000");
   	chzn_select.children("ul.chzn-choices").addClass("no_right_border");
   	chzn_select.children("ul.chzn-choices").css("background", "white");
+  	// Chosen select list congig changes for IE
+  	chzn_select.children("ul.chzn-choices").css("filter", "none");
+  	jQuery("#ontology_ontologyId_chzn input").css("filter", "none")
   	
   	jQuery("#ontology_ontologyId_container").css("box-shadow", "0 0 10px gray");
 
-		jQuery("#ont_list_container").height(ont_select.height() - 60);
+		jQuery("#ont_list_container").height(ont_select.height() - 80);
   	
     jQuery("#ont_select_adv").show();
     return false;
@@ -125,6 +142,23 @@ jQuery(window).ready(function(){
       syncFromCheckboxes();
       refreshOntList();
     }
+  });
+  
+  // Helper text for advanced search filter
+  jQuery("#advanced_filter_input").val(jQuery("#advanced_filter_input").attr("title"));
+  jQuery("#advanced_filter_input").focus(function(){
+  	var input = jQuery(this);
+  	if (input.attr("title") == input.val()) {
+  		input.val("");
+  		input.removeClass("help_text");
+  	} 
+  });
+  jQuery("#advanced_filter_input").blur(function(){
+  	var input = jQuery(this);
+  	if (input.val() == "") {
+  		input.val(input.attr("title"));
+  		input.addClass("help_text");
+  	}
   });
 });
 
@@ -174,7 +208,9 @@ function syncFromList() {
 // Check the selected list of ontologies against the map and replace
 function ontLabelToAbbr() {
   jQuery("#ontology_ontologyId_chzn > .chzn-choices > li > span").each(function(){
-    jQuery(this).html(abbreviationMap[jQuery(this).html()]);
+  	if (jQuery(this).children("span.chzn-abbr").length == 0) {
+	    jQuery(this).html("<span class='chzn-abbr' title='"+jQuery(this).html()+"'>"+abbreviationMap[jQuery(this).html()]+"</span>");
+  	}
   });
 }
 
@@ -182,9 +218,8 @@ function refreshOntList() {
   jQuery("#ontology_ontologyId").trigger("liszt:updated");
   jQuery("#ontology_ontologyId").trigger("change");
 }
-</script>
 
-<script type="text/javascript">
+// Filters ontology list
 (function (jQuery) {
   // custom css expression for a case-insensitive contains()
   jQuery.expr[':'].Contains = function(a,i,m){
@@ -192,22 +227,18 @@ function refreshOntList() {
   };
 
 
-  function listFilter(header, list) { // header is any element, list is an unordered list
-    // create and add the filter form to the header
-    var form = jQuery("<form>").attr({"class":"filterform","action":"#"}),
-        input = jQuery("<input>").attr({"class":"filterinput","type":"text"});
-    jQuery(form).append(input).appendTo(header);
-
+  function listFilter(input, list) { // header is any element, list is an unordered list
+		console.log(input)
     jQuery(input)
       .change( function () {
         var filter = jQuery(this).val();
         if(filter) {
           // this finds all links in a list that contain the input,
           // and hide the ones not containing the input while showing the ones that do
-          jQuery(list).find("a:not(:Contains(" + filter + "))").closest("li").hide();
-          jQuery(list).find("a:Contains(" + filter + ")").closest("li").show();
+          jQuery(list).find("td:not(:Contains(" + filter + "))").closest("tr").hide();
+          jQuery(list).find("td:Contains(" + filter + ")").closest("tr").show();
         } else {
-          jQuery(list).find("li").show();
+          jQuery(list).find("tr").show();
         }
         return false;
       })
@@ -220,7 +251,7 @@ function refreshOntList() {
 
   //ondomready
   jQuery(function () {
-    listFilter(jQuery("#select_ontologies"), jQuery("#ont_list"));
+    listFilter(jQuery("#advanced_filter_input"), jQuery("#ont_list"));
   });
 }(jQuery));
 </script>
@@ -231,7 +262,7 @@ function refreshOntList() {
 	<h2 style="margin-bottom: 3px;">Select Ontologies</h2>
 	
 	<div id="ontology_ontologyId_container">
-  	<%= select :ontology, "ontologyId", options_for_select(@onts_for_select), { }, :multiple => 'true', "data-placeholder".to_sym => "Type to select ontologies or leave blank to use all" %>
+  	<%= select :ontology, "ontologyId", options_for_select(@onts_for_select), { }, :multiple => 'true', "data-placeholder".to_sym => "Type here to select ontologies or leave blank to use all" %>
   </div>
   
   <div style="float: right; font-size: smaller;"><a id="ont_select_adv_href" href="javascript:void(0)">select from list</a></div>
@@ -239,6 +270,8 @@ function refreshOntList() {
   <div id="ont_select_adv" style="display: none; text-align: left; border: thin solid gray; position: absolute; background: white; overflow: hidden; max-width: 550px; box-shadow: 0 0 10px gray;">
   	<div id="ont_select_adv_inner" style="padding: 15px; background: white; z-index: 5000;">
 	  	<h2>Multiple Ontologies Select <a href="javascript:void(0);" id="close_adv_select" class="ui-dialog-titlebar-close ui-corner-all" role="button" unselectable="on" style="-moz-user-select: none; float: right;"><span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">close</span></a></h2>
+	    
+	    <input type="text" id="advanced_filter_input" class="help_text" style="width: 300px; margin-bottom: 10px;" title="Search ontology names">
 	    
 	    <div id="ont_list_container" style="overflow: auto; position: relative;">
 		    <table id="ont_list">
