@@ -1580,9 +1580,6 @@ button.fg-button-menu, button.fg-button {
 	width: 78px;
 }
 
-#bp_nav_annotator_active, #bp_nav_annotator,
-#bp_nav_annotator_active, .bp_nav_link,
-#bp_nav_annotator .bp_nav_link,
 #bp_nav_mappings_active, #bp_nav_mappings,
 #bp_nav_mappings_active, .bp_nav_link,
 #bp_nav_mappings .bp_nav_link
@@ -1591,6 +1588,13 @@ button.fg-button-menu, button.fg-button {
 #bp_nav_resource_index .bp_nav_link {
 	width: 88px;
 }
+
+#bp_nav_annotator_active, #bp_nav_annotator,
+#bp_nav_annotator_active, .bp_nav_link,
+#bp_nav_annotator .bp_nav_link {
+	width: 95px;
+}
+
 
 #bp_nav_recommender, #bp_nav_recommender_active,
 #bp_nav_recommender .bp_nav_link, 
@@ -1623,11 +1627,11 @@ button.fg-button-menu, button.fg-button {
 }
 
 #bp_nav_annotator_active, #bp_nav_annotator:hover {
-	background: url("/images/layout/bp_nav_sprite.png") -18px -258px;
+	background: url("/images/layout/bp_nav_sprite.png") -15px -258px;
 }
 
 #bp_nav_annotator {
-	background: url("/images/layout/bp_nav_sprite.png") -18px -301px;
+	background: url("/images/layout/bp_nav_sprite.png") -15px -301px;
 }
 
 #bp_nav_mappings_active, #bp_nav_mappings:hover {

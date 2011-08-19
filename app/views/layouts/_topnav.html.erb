@@ -7,26 +7,25 @@
 	    <%else%>
 	      <li id="bp_nav_browse"><a href="/ontologies" title="Browse" class="bp_nav_link"></a></li>
 	    <%end%>
+	    
 	    <%if controller.controller_name.eql?('search')%>
 	      <li id="bp_nav_search_active"><a href="/search" title="Search" class="bp_nav_link"></a></li>
 	    <%else%>
 	      <li id="bp_nav_search"><a href="/search" title="Search" class="bp_nav_link"></a></li>
 	    <%end%>
-	    <%if controller.controller_name.eql?('projects')%>    
-	      <li id="bp_nav_projects_active"><a href="/projects" title="Projects" class="bp_nav_link"></a></li>   
-	    <%else%>
-	      <li id="bp_nav_projects"><a href="/projects" title="Projects" class="bp_nav_link"></a></li>    
-	    <%end%>
+	    
 	    <%if controller.controller_name.eql?('mappings')%>    
 	      <li id="bp_nav_mappings_active"><a href="/mappings" title="All Mappings" class="bp_nav_link"></a></li>
 	    <%else%>
 	      <li id="bp_nav_mappings"><a href="/mappings" title="All Mappings" class="bp_nav_link"></a></li>   
 	    <%end%>
+	    
 	    <%if controller.controller_name.eql?('recommender')%>    
 	      <li id="bp_nav_recommender_active"><a href="/recommender" title="Ontology Recommender" class="bp_nav_link"></a></li>
 	    <%else%>
 	      <li id="bp_nav_recommender"><a href="/recommender" title="Ontology Recommender" class="bp_nav_link"></a></li>   
 	    <%end%>
+	    
 	    <%unless !$ANNOTATOR_DISABLED.nil? && $ANNOTATOR_DISABLED %>
 	      <%if controller.action_name.eql?('annotate')%>    
 	        <li id="bp_nav_annotator_active"><a href="/annotator" title="Annotator" class="bp_nav_link"></a></li>
@@ -34,12 +33,19 @@
 	        <li id="bp_nav_annotator"><a href="/annotator" title="Annotator" class="bp_nav_link"></a></li>   
 	      <%end%>
 	    <%end%>
+	    
 	    <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
 	      <%if controller.action_name.eql?('all_resources')%>   
 	        <li id="bp_nav_resource_index_active"><a href="/resources" title="Resource Index" class="bp_nav_link"></a></li>
 	      <%else%>
 	        <li id="bp_nav_resource_index"><a href="/resources" title="Resource Index" class="bp_nav_link"></a></li>
 	      <%end%>
+	    <%end%>
+	    
+	    <%if controller.controller_name.eql?('projects')%>    
+	      <li id="bp_nav_projects_active"><a href="/projects" title="Projects" class="bp_nav_link"></a></li>   
+	    <%else%>
+	      <li id="bp_nav_projects"><a href="/projects" title="Projects" class="bp_nav_link"></a></li>    
 	    <%end%>
 	  </ul>
 	  
