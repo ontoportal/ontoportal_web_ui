@@ -106,7 +106,7 @@ class MappingsController < ApplicationController
 	    
       user_count.each do |user|
         # We test to see if a user should appear in the list by trying to get mappings between ontologies with page & limit at 1, should be a quick query
-        user_test = DataAccess.getOntologyMappings(@ontology.ontologyId, 1, 1, :user_id => user['userId'], :sources => params[:map_source], :unidirectional => "true")
+        user_test = DataAccess.getBetweenOntologiesMappings(@ontology.ontologyId, @target_ontology.ontologyId, 1, 1, :user_id => user['userId'], :sources => params[:map_source])
         @users << DataAccess.getUser(user['userId']) unless user_test.nil? || user_test.length == 0
       end
       
