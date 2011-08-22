@@ -1,44 +1,4 @@
-<style type="text/css">
-  .ont_select_adv {
-    border-radius: 0;
-  }
-
-  .ont_select_adv > .ui-widget-header {
-    background: none;
-    border-radius: 0;
-    border: none;
-  }
-
-	div.chzn-container {
-		width: 432px !important;
-	}
-
-	div.chzn-container-active ul.chzn-choices li.search-field input {
-		font-style: normal !important;
-	}
-
-  div.chzn-container ul.chzn-choices {
-    max-height: 110px;
-    overflow: auto;
-  }
-  
-  div.chzn-container li.search-field input {
-  	font-style: oblique;
-  }
-  	
-  div.chzn-drop {
-  	display: none;
-  }
-  
-  .no_right_border {
-  	border-right: none !important;
-  }
-  
-  .help_text {
-  	color: gray;
-  	font-style: oblique;
-  }
-</style>
+<%init_recommender%>
 
 <script type="text/javascript">
 var abbreviationMap = { <%= @onts_for_js.join(", ") %> };
@@ -257,8 +217,8 @@ function refreshOntList() {
 
 
 
-<div style="margin-bottom: 1em; width: 432px;">
-	<h2 style="margin-bottom: 3px;">Select Ontologies</h2>
+<div id="ontology_picker_container" style="margin-bottom: 1em; width: 432px;">
+	<h2 id="ontology_picker_head" style="margin-bottom: 3px;">Select Ontologies</h2>
 	
 	<div id="ontology_ontologyId_container">
   	<%= select :ontology, "ontologyId", options_for_select(@onts_for_select), { }, :multiple => 'true', "data-placeholder".to_sym => "Type here to select ontologies or leave blank to use all" %>
@@ -268,7 +228,7 @@ function refreshOntList() {
 
   <div id="ont_select_adv" style="display: none; text-align: left; border: thin solid gray; position: absolute; background: white; overflow: hidden; max-width: 550px; box-shadow: 0 0 10px gray;">
   	<div id="ont_select_adv_inner" style="padding: 15px; background: white; z-index: 5000;">
-	  	<h2>Multiple Ontologies Select <a href="javascript:void(0);" id="close_adv_select" class="ui-dialog-titlebar-close ui-corner-all" role="button" unselectable="on" style="-moz-user-select: none; float: right;"><span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">close</span></a></h2>
+	  	<h2>Select Multiple Ontologies <a href="javascript:void(0);" id="close_adv_select" class="ui-dialog-titlebar-close ui-corner-all" role="button" unselectable="on" style="-moz-user-select: none; float: right;"><span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">close</span></a></h2>
 	    
 	    <input type="text" id="advanced_filter_input" class="help_text" style="width: 300px; margin-bottom: 10px;" title="Search ontology names">
 	    
