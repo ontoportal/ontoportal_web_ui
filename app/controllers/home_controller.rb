@@ -110,6 +110,10 @@ class HomeController < ApplicationController
   end
 
   def release
+    redirect_to :controller => 'home', :action => 'help'
+  end
+
+  def help
     
   end
 

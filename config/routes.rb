@@ -35,6 +35,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/annotator', :controller => 'home', :action => 'annotate'
   map.connect '/resources', :controller => 'home', :action => 'all_resources'
   map.connect '/account', :controller => 'home', :action => 'account'
+  map.connect '/help', :controller => 'home', :action => 'help'
 
   # Ontologies
   map.connect '/exhibit/:ontology/:id', :controller => 'concepts', :action=>'exhibit'
