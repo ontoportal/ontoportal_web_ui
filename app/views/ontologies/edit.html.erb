@@ -261,15 +261,18 @@
             		<%view_restiction_options = [["Private", "private"]]%>
             		<%selected = @ontology.private? ? "private" : ""%>
             		<%display_private = @ontology.private? ? "" : "display: none;"%>
+                
                 <%=select :ontology, :viewingRestrictions, view_restiction_options, { :include_blank => "", :selected => selected }%>
                 
                 <div id="viewingRestrictionsPrivate" style="padding: .5em; border: thin solid #C1DAD7; margin: .5em; <%=display_private%>">
-                	<h3>Add or remove accounts that are allowed to view terms in this ontology</h3> 
+                	<h3>Add or remove accounts that are allowed to view terms in this ontology using the account name</h3> 
                 	<%=text_field :useracl, :user_acl_add, :title => "enter account name", :class => "defaultText"%>
                 	&nbsp;<input type="button" id="user_acl_add_button" value="Add Account">
                 	<span class="user_acl_add_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
                 	<span style='color: red;' class='user_acl_add_error'></span>
-                	<%=select :ontology, :useracl, @ontology.useracl_select, {}, :multiple => "true", :disabled => "true"%>
+
+									<% disabled = @ontology.private? ? {} : {:disabled => "true"} %>
+                	<%=select :ontology, :useracl, @ontology.useracl_select, {  }, { :multiple => true }.merge(disabled)%>
               	</div>
             </td>
         </tr>
