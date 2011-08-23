@@ -24,78 +24,70 @@
     <script src="/javascripts/bioportal.js?1301423855" type="text/javascript"></script>
   </head>
   <body>
-    <div id="hd">
-      <ul>
-        <li>
-          <a href="/" title="Home">
-          <img src="/images/layout/nav_logo.png" />
-          </a>
-        </li>
-        <li>
-          <a href="/ontologies" title="Browse" >
-          <img name="img10" src="/images/layout/nav_browse.png" />
-          </a>
-        </li>
-        <li>
-          <a href="/search" title="Search"  >
-          <img name="img11" src="/images/layout/nav_search_active.png" />
-          </a>
-        </li>
-        <li>
-          <a href="/projects" title="Projects"  >
-          <img name="img11" src="/images/layout/nav_projects.png" />
-          </a>
-        </li>
-        <li>
-          <a href="/annotator" title="Annotator" >
-          <img name="img12" src="/images/layout/nav_annotate.png" />
-          </a>
-        </li>
-        <li>
-          <a href="/mappings" title="All Mappings" >
-          <img name="img13" src="/images/layout/nav_search_allmappings.png" />
-          </a>
-        </li>
-        <li>
-          <a href="/resources" title="Resource Index" >
-          <img name="img14" src="/images/layout/nav_resources.png" />
-          </a>
-        </li>
-      </ul>
-      <script type="text/javascript">
-        var menu_nav = function(link) {
-          document.location = link.href;
-        }
-        jQuery(document).ready( function() {
-          // Wire up navigation buttons
-          jQuery('#recently_viewed').fgmenu({
-            content: $('#recently_viewed').next().html(),
-            afterItemChosen: menu_nav
-          });
-          jQuery('#user_menu').fgmenu({
-            content: $('#user_menu').next().html(),
-            afterItemChosen: menu_nav
-          });
-        });
-      </script>
-      <ul class="alignright" id="top_right_menu">
-        <a href="/login?redirect=%2Fsearch" class="fg-button-menu ui-widget ui-state-default">Sign In</a>
-        <!--<a href="/users/new" class="fg-button-menu ui-widget ui-state-default">Register</a>-->
-
-        <a tabindex="0" href="/home/release" class="fg-button-menu ui-widget ui-state-default">Help</a>
-        <script type="text/javascript">
-          function popup(url) {
-            newwindow = window.open(url,'name','height=700,width=800,resizable=yes,scrollbars=yes,toolbar=no,status=no');
-            if (window.focus) {
-              newwindow.focus()
-            };
-          }
-        </script>
-        <a tabindex="0" onclick="popup('/feedback?pop=true'); return false;" href="/feedback" class="fg-button-menu ui-widget ui-state-default top_right_menu_last" style="">Feedback</a>
-      </ul>
-    </div>
-    <div style="clear: both;">
-    </div>
+    <div style="overflow: hidden;" id="hd_wrapper">
+          <div id="hd">
+            <ul>
+              <li style="padding-right: 30px;">
+                <a title="Home" href="/"><img src="/images/layout/nav_logo.png"></a>
+              </li>
+              <li id="bp_nav_browse">
+                <a class="bp_nav_link" title="Browse" href="/ontologies"></a>
+              </li>
+              <li id="bp_nav_search">
+                <a class="bp_nav_link" title="Search" href="/search"></a>
+              </li>
+              <li id="bp_nav_mappings">
+                <a class="bp_nav_link" title="All Mappings" href="/mappings"></a>
+              </li>
+              <li id="bp_nav_recommender">
+                <a class="bp_nav_link" title="Ontology Recommender" href="/recommender"></a>
+              </li>
+              <li id="bp_nav_annotator">
+                <a class="bp_nav_link" title="Annotator" href="/annotator"></a>
+              </li>
+              <li id="bp_nav_resource_index">
+                <a class="bp_nav_link" title="Resource Index" href="/resources"></a>
+              </li>
+              <li id="bp_nav_projects">
+                <a class="bp_nav_link" title="Projects" href="/projects"></a>
+              </li>
+            </ul>
+            <script type="text/javascript">
+              var menu_nav = function(link) {
+                document.location = link.href;
+              }
+    
+              jQuery(document).ready(function() {
+                // Wire up navigation buttons
+                jQuery('#recently_viewed').fgmenu({
+                  content : $('#recently_viewed').next().html(),
+                  width : 250,
+                  afterItemChosen : menu_nav
+                });
+                jQuery('#user_menu').fgmenu({
+                  content : $('#user_menu').next().html(),
+                  afterItemChosen : menu_nav
+                });
+              });
+    
+            </script>
+            <ul id="top_right_menu" class="alignright">
+              <a class="fg-button-menu ui-widget ui-state-default" href="/login?redirect=%2F">Sign In</a>
+              <!--<a href="/accounts/new" class="fg-button-menu ui-widget ui-state-default">Register</a>-->
+              <a class="fg-button-menu ui-widget ui-state-default" href="/help" tabindex="0">Help</a>
+              <script type="text/javascript">
+                function popup(url) {
+                  newwindow = window.open(url, 'name', 'height=700,width=800,resizable=yes,scrollbars=yes,toolbar=no,status=no');
+                  if(window.focus) {
+                    newwindow.focus()
+                  };
+                }
+              </script>
+              <a style="" class="fg-button-menu ui-widget ui-state-default top_right_menu_last" href="/feedback" onclick="popup('/feedback?pop=true'); return false;" tabindex="0">Feedback</a>
+            </ul>
+          </div>
+        </div>
+    <div style="clear: both;"></div>
     <div id="bd">
       <br/>
       <br/>
