@@ -436,7 +436,9 @@ class DataAccess
   end
 
   def self.searchQuery(ontologies, query, page = 1, params = {})
-    SERVICE.searchQuery({ :ontologies => ontologies, :query => query, :page => page}.merge(params) )
+    params_sym = {}
+    params.each {|k,v| params_sym[k.to_sym] = v}
+    SERVICE.searchQuery({ :ontologies => ontologies, :query => query, :page => page}.merge(params_sym) )
     # Technically we should probably cache this but the search service has been unreliable so it's disabled for now so we always get current data
     #return self.cache_pull("search::#{ontologies.join(",")}::page=#{page}::params=#{params.to_s}", "searchQuery", { :ontologies => ontologies, :query => query, :page => page}.merge(params), LONG_CACHE_EXPIRE_TIME)
   end

@@ -8,7 +8,7 @@ class BioPortalResources
                  "%END%" => :ontology_id_end, "%VER1%" => :ontology_version1, "%VER2%" => :ontology_version2,
                  "%NOTE%" => :note_id, "%IND%" => :individual_id, "%PAGE_SIZE%" => :page_size,
                  "%PAGE_NUM%" => :page_number, "%SOURCE_ONT_VIRTUAL%" => :source_ontology_virtual_id,
-                 "%TARGET_ONT_VIRTUAL%" => :target_ontology_virtual_id }
+                 "%TARGET_ONT_VIRTUAL%" => :target_ontology_virtual_id, "%ONTS%" => :ontology_ids }
                  
     def initialize(params = nil)
       if params
@@ -393,6 +393,38 @@ class BioPortalResources
         base_url = @uri.gsub("bioportal", "")
         
         @uri = base_url + "obs/recommender"
+      end
+    end
+    
+    class Search < BioPortalResources
+      def initialize(params)
+        super(params)
+        
+        # default values
+        params[:page_size] ||= 50
+        params[:exact_match] ||= 0
+        params[:include_props] ||= 0
+        params[:page] ||= 1
+    
+        # get values from params
+        ontologies = params[:ontologies]
+        search = params[:query]
+        page = params[:page]
+        subtreerootconceptid = params[:subtreerootconceptid]
+        result_limit = params[:result_limit]
+        page_size = params[:page_size]
+        include_props = params[:include_props]
+        query = CGI.escape(params[:query])
+        exact_match = params[:exact_match]
+        
+        if ontologies.kind_of?(Array)
+          ontologies = ontologies.nil? || ontologies.empty? ? "" : ontologies.join(",")
+        end
+        
+        search_branch = subtreerootconceptid.nil? ? "" : "&subtreerootconceptid=#{subtreerootconceptid}"
+ 
+        
+        @uri << "/search/?query=#{query}&ontologyids=#{ontologies}&isexactmatch=#{exact_match}&pagesize=#{page_size}&pagenum=#{page}&includeproperties=#{include_props}#{search_branch}" 
       end
     end
     

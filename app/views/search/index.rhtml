@@ -1,181 +1,102 @@
 <%@title = "Search"%>
 
-<!--  BEGIN Browser History required section -->
-<script src="<%=$FLEX_URL%>/history/history.js" language="javascript"></script>
-<link href="<%=$FLEX_URL%>/history/history.css" rel="stylesheet" type="text/css" />
-<script src="<%=$FLEX_URL%>/AC_OETags.js" language="javascript"></script>
-<!--  END Browser History required section -->
-
-<script language="JavaScript" type="text/javascript">
-<!--
-// -----------------------------------------------------------------------------
-// Globals
-// Major version of Flash required
-var requiredMajorVersion = 9;
-// Minor version of Flash required
-var requiredMinorVersion = 0;
-// Minor version of Flash required
-var requiredRevision = 124;
-// -----------------------------------------------------------------------------
-// -->
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery("#search_button").button();
+	});
 </script>
 
-<div style="height:800px;text-align:center;">
-<script language="JavaScript" type="text/javascript">
-<!--
-
-function focusApp() {
-	var app = document.getElementById("Search");
-	if (app) {
-		app.focus();
+<style type="text/css">
+	form.button-to {
+		float: left;
 	}
-}
-
-// Version check for the Flash Player that has the ability to start Player Product Install (6.0r65)
-var hasProductInstall = DetectFlashVer(6, 0, 65);
-
-// Version check based upon the values defined in globals
-var hasRequestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
-
-if ( hasProductInstall && !hasRequestedVersion ) {
-	// DO NOT MODIFY THE FOLLOWING FOUR LINES
-	// Location visited after installation is complete if installation is required
-	var MMPlayerType = (isIE == true) ? "ActiveX" : "PlugIn";
-	var MMredirectURL = window.location;
-    document.title = document.title.slice(0, 47) + " - Flash Player Installation";
-    var MMdoctitle = document.title;
-
-	AC_FL_RunContent(
-		"src", "<%=$FLEX_URL%>/playerProductInstall",
-		"FlashVars", "MMredirectURL="+MMredirectURL+'&MMplayerType='+MMPlayerType+'&MMdoctitle='+MMdoctitle+"",
-		"width", "100%",
-		"height", "100%",
-		"align", "middle",
-		"id", "Search",
-		"quality", "high",
-		"bgcolor", "#ffffff",
-		"name", "Search",
-		"allowScriptAccess","always",
-		"type", "application/x-shockwave-flash",
-		"pluginspage", "http://www.adobe.com/go/getflashplayer"
-	);
-} else if (hasRequestedVersion) {
-	// if we've detected an acceptable version
-	// embed the Flash Content SWF when all tests are passed
-	AC_FL_RunContent(
-			"src", "<%=$FLEX_URL%>/Search?v=<%=$FLEX_VERSION%>",
-			"width", "100%",
-			"height", "100%",
-			"align", "middle",
-			"id", "Search",
-			"quality", "high",
-			"bgcolor", "#ffffff",
-			"name", "Search",
-			"allowScriptAccess","always",
-			"type", "application/x-shockwave-flash",
-			"flashVars", "redirecturl=http://<%=request.env["HTTP_HOST"]%>/&server=<%=$REST_DOMAIN%>/&ontology=&search=<%=@search_query%>&apikey=<%=$SEARCH_FLEX_APIKEY%><%=$FLEX_LOG%>",
-			"pluginspage", "http://www.adobe.com/go/getflashplayer"
-	);
-  } else {  // flash is too old or we can't detect the plugin
-    var alternateContent = 'Alternate HTML content should be placed here. '
-  	+ 'This content requires the Adobe Flash Player. '
-   	+ '<a href=http://www.adobe.com/go/getflash/>Get Flash</a>';
-    document.write(alternateContent);  // insert non-flash content
-  }
-// -->
-</script>
-<noscript>
-  	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
-			id="Search" width="100%" height="100%"
-			codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-			<param name="movie" value="<%=$FLEX_URL%>/Search?v=<%=$FLEX_VERSION%>" />
-			<param name="quality" value="high" />
-			<param name="bgcolor" value="#ffffff" />
-			<param name="allowScriptAccess" value="always" />
-			<embed src="<%=$FLEX_URL%>/Search?v=<%=$FLEX_VERSION%>" quality="high" bgcolor="#ffffff"
-				width="100%" height="100%" name="Search" align="middle"
-				play="true"
-				loop="false"
-				allowScriptAccess="always"
-				type="application/x-shockwave-flash"
-				flashVars="redirecturl=http://<%=request.env['HTTP_HOST']%>/&server=<%=$REST_DOMAIN%>/&ontology=&search=<%=@search_query%>&apikey=<%=$SEARCH_FLEX_APIKEY%><%=$FLEX_LOG%>"
-				pluginspage="http://www.adobe.com/go/getflashplayer">
-			</embed>
-	</object>
-</noscript>
-
-</div>
-
-
-<%if false%>
+	
+	#ontology_picker_head {
+		font-size: 10pt !important;
+	}
+	
+	.not_visible {
+		position: fixed !important;
+		left: -9999px !important;
+	}
+</style>
 
 <script type="text/javascript">
-
-	function searchFunctions(form,target){
-		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Searching Ontologies...</h1>' }); 
-		ajaxForm(form,target,function(){
-			jQuery.unblockUI();	
+	jQuery(document).ready(function(){
+		// Show/hide on refresh
+		if (jQuery("#search_select_ontologies").is(":checked")) {
+			jQuery("#ontology_picker_options").removeClass("not_visible");
+		}
+		
+		jQuery("#search_select_ontologies").click(function(){
+			if (jQuery(this).is(":checked")) {
+				jQuery("#ontology_picker_options").removeClass("not_visible");
+			} else {
+				jQuery("#ontology_picker_options").addClass("not_visible");
+				jQuery("#ontology_ontologyId").val("");
+			  jQuery("#ontology_ontologyId").trigger("liszt:updated");
+			}
 		});
 		
-	}
-	function postData(params){
-		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Searching Ontologies...</h1>' }); 
-			jQuery.post("/search/search",params ,
-			  function(data){
-			    jQuery("#results").html(data)
-				jQuery.unblockUI();	
-			  });
-
-
-		}
-
-</script>
-<% form_for(:search, :url => {:controller =>'search',:action=>'search'},:html=>{:onsubmit=>"searchFunctions(this,'#results');return false;"}) do |f| %>
-
-<div class="box" id="searchBox" style="border:1px solid #C1DAD7;margin:15px;">
-	<div class="header">Search Ontologies</div>
-
-	<fieldset style="float:left;margin:10px;">
-		<legend>Select Ontologies</legend>
-	<%=
-                options = {}
-				for ontology in @ontologies
-				options.merge!(ontology.displayLabel => ontology.ontologyId)
-				end 
-				options = options.sort     
-				options.insert(0,["All","0"])                
-                select('search','ontologies',options,{:selected=> "0"},{:multiple=>true,:size=>8,:style=>'float:left;'})
-                %>
-	</fieldset>	
-	
-	<fieldset style="margin:10px;width:400px;">
-		<legend>Search Query</legend>
-		<table class="form">
-			<tr>
-				<th nowrap>Search Text:</th>
-				<td class="top"><%=text_field "search","keyword",:size=>30%></td>
-			</tr>
-			<tr>
-				<td nowrap>&nbsp;</td>
-				<td><%=check_box "search","attributes",:value=>1%> Include search in attributes</td>
-			</tr>
-			<tr>
-				<th nowrap>Search Type:</th>
-				<td><%=radio_button "search","search_type","contains",{:checked=>"checked"}%>Contains <%=radio_button "search","search_type","exact"%>Exact Match</td>
-			</tr>
-
-			<tr>
-				<td colspan="2" align="right"><%=submit_tag 'Search'%></td>
-			</tr>
-		</table>
 		
-	</fieldset>
+		jQuery("#search_button").click(function(event){
+			event.preventDefault();
+			
+			var ont_val = jQuery("#ontology_ontologyId").val();
+			
+			var onts = (ont_val == null) ? "" : ont_val.join(",");
+			var query = jQuery("#search_keywords").val();
+			var exactMatch = jQuery("#search_exact_match").is(":checked");
+			var includeProps = jQuery("#search_include_props").is(":checked");
+			
+			jQuery.getJSON("/search/json?page_size=99999&ontology_ids="+onts+"&query="+query+"&exact_match="+exactMatch+"&include_props="+includeProps,
+				function(data){
+					var results = [];
+				
+          if (jQuery.isEmptyObject(data)) {
+          	results.push("<tr><td>No search results found</td></tr>");
+          } else {
+            jQuery(data.results).each(function(){
+            	var res = this;
+            	var row = "<tr><td><a href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+res.preferredName+"</a></td><td><a href='/ontologies/"+res.ontologyId+"'>"+res.ontologyDisplayLabel+"</a></td><td>"+res.recordTypeFormatted+"</td></tr>";
+            	results.push(row);
+            });
+          }
+          
+          jQuery("#result_stats").html(data.total_results + " total results");
+          jQuery("#search_results_body").html(results.join());
+				}
+			);
+		});
+	});
+</script>
 
-<div style="clear:both;"></div>
+<div style="padding: 1em;">
+	<div id="search_input" style="margin-bottom: 1em;">
+		<h2 style="margin-bottom: 3px;">Search <%=$SITE%></h2>
+		<%=text_field :search, :keywords, :style => "width: 426px; height: 20px; float: left; margin-right: 1em;"%>
+		<%=button_to "Search #{$SITE}", {}, :style => "font-size: .75em !important;", :id => "search_button"%>
 
+		<div id="search_options" style="padding-top: .6em; clear: both;">
+			<%=check_box :search, :exact_match%> <%=label :search, :exact_match, "Exact match only"%>&nbsp;&nbsp;&nbsp;
+			<%=check_box :search, :include_props%> <%=label :search, :include_props, "Also search attributes/properties"%>&nbsp;&nbsp;&nbsp;
+			
+			<%=check_box :search, :select_ontologies%> <%=label :search, :select_ontologies, "Select ontologies to search"%>
+			<div id="ontology_picker_options" style="margin-top: 1em; position: relative; left: 2px;" class="not_visible">
+				<%= render :partial => "shared/ontology_picker"%>
+			</div>
+		</div>
+		
+		<div id="result_stats"></div>
+		
+		<table id="search_results">
+			<thead>
+				<th>Term Name</th>
+				<th>Ontology</th>
+				<th>Found In</th>
+			</thead>
+			<tbody id="search_results_body">
+			</tbody>
+		</table>
+	</div>
 </div>
-<%end%>
-<div id="results" style="margin:15px">
-	
-</div>
-<%end%>

@@ -37,7 +37,7 @@ class BioPortalRestfulCore
     uri_gen = BioPortalResources::CreateMapping.new
     uri = uri_gen.generate_uri
     
-    #uri = "http://localhost:8080/bioportal/virtual/mappings/concepts"
+    # uri = "http://localhost:8080/bioportal/virtual/mappings/concepts"
     
     begin
       mapping = postToRestlet(uri, params)
@@ -817,19 +817,14 @@ class BioPortalRestfulCore
   end
 
   def self.searchQuery(params)
-    ontologies = params[:ontologies]
-    search = params[:query]
-    page = params[:page]
-    subtreerootconceptid = params[:subtreerootconceptid]
+    uri_gen = BioPortalResources::Search.new(params)
+    uri = uri_gen.generate_uri
     
-    ontologies = ontologies.nil? || ontologies.empty? ? "" : "&ontologyids=#{ontologies.join(",")}"
-    search_branch = subtreerootconceptid.nil? ? "" : "&subtreerootconceptid=#{subtreerootconceptid}"
- 
-    LOG.add :debug, BASE_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}"
+    LOG.add :debug, uri
     begin
-     doc = REXML::Document.new(get_xml(BASE_URL + SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%", CGI.escape(search)) + "&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}"))
+      doc = get_xml(uri)
     rescue Exception=>e
-      doc =  REXML::Document.new(e.io.read)
+      doc = e.io.read
     end
 
     results = errorCheck(doc)
@@ -839,9 +834,12 @@ class BioPortalRestfulCore
     end 
 
     results = []
-    doc.elements.each("*/data/page/contents"){ |element|  
-      results = parseSearchResults(element)
-    }
+    timer = Benchmark.ms { results = generic_parse(:xml => doc, :type => "SearchResults") }
+    LOG.add :debug, "SearchResults Parse Time: #{timer}ms"
+    
+    # doc.elements.each("*/data/page/contents"){ |element|  
+      # results = parseSearchResults(element)
+    # }
 
     return results
   end

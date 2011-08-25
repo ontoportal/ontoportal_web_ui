@@ -81,6 +81,18 @@ class SearchController < ApplicationController
     end
   end
   
+  def json
+    start = Time.new
+    results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
+    p "############################################### get results time: #{Time.new - start}s"
+    
+    results.results.each do |result|
+      result['recordTypeFormatted'] = format_record_type(result['recordType'])
+    end
+    
+    render :text => results.hash_for_serialization.to_json
+  end
+  
   def json_search
     if params[:q].nil?
       render :text => "No search term provided"
@@ -96,13 +108,6 @@ class SearchController < ApplicationController
     else
       LOG.add :info, 'jump_to_search', request, :search_term => params[:q], :result_count => @results.length
     end
-    
-    # if params[:includedefinitions].eql?("true")
-      # @results.each do |result|
-        # definition = DataAccess.getLightNode(result[:ontologyVersionId], result[:conceptId], 0).definitions rescue nil
-        # result[:definition] = definition.nil? ? "" : URI.escape(definition)
-      # end
-    # end
     
     response = ""
     for result in @results
