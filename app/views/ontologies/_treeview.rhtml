@@ -84,7 +84,7 @@ function nodeClicked(node_id) {
 		
 		// Make the clicked node active
 		jQuery("a.active").removeClass("active");
-		jQuery(document.getElementById(node_id)).children("a").addClass("active");
+		jQuery(document.getElementById(node_id)).addClass("active");
 		
 		jQuery('#visualization_content').html(tabData[0]);
 		jQuery('#details_content').html(tabData[1]);
