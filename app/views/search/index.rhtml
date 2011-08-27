@@ -1,8 +1,24 @@
 <%@title = "Search"%>
 
+<%=javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.js"%>
+<%=javascript_include_tag "JqueryPlugins/facebox/facebox.js"%>
+
+<%=stylesheet_link_tag "/javascripts/JqueryPlugins/facebox/facebox.css"%>
+
 <script type="text/javascript">
+var resultsTable;
+
 	jQuery(document).ready(function(){
 		jQuery("#search_button").button();
+		
+		resultsTable = jQuery("#search_results").dataTable({
+			bPaginate: false,
+			bFilter: false,
+			aaSorting: [],
+			oLanguage: {
+				sZeroRecords: "No search results found"
+			}
+		});
 	});
 </script>
 
@@ -19,6 +35,27 @@
 		position: fixed !important;
 		left: -9999px !important;
 	}
+	
+	#search_results_container #search_results_info {
+		display: none !important;
+	}
+	
+	#search_spinner {
+		display: inline-block;
+		padding-top: 4px;
+	}
+	
+	span.additional {
+		font-size: x-small;
+		display: block;
+		float: right;
+		padding-right: .3em;
+		margin-left: 1em;
+	}
+	
+	#search_options #ontology_ontologyId {
+		display: none;
+	}
 </style>
 
 <script type="text/javascript">
@@ -28,7 +65,7 @@
 			jQuery("#ontology_picker_options").removeClass("not_visible");
 		}
 		
-		jQuery("#search_select_ontologies").click(function(){
+		jQuery("#search_select_ontologies").change(function(){
 			if (jQuery(this).is(":checked")) {
 				jQuery("#ontology_picker_options").removeClass("not_visible");
 			} else {
@@ -42,6 +79,8 @@
 		jQuery("#search_button").click(function(event){
 			event.preventDefault();
 			
+			jQuery("#search_spinner").show();
+			
 			var ont_val = jQuery("#ontology_ontologyId").val();
 			
 			var onts = (ont_val == null) ? "" : ont_val.join(",");
@@ -49,54 +88,215 @@
 			var exactMatch = jQuery("#search_exact_match").is(":checked");
 			var includeProps = jQuery("#search_include_props").is(":checked");
 			
-			jQuery.getJSON("/search/json?page_size=99999&ontology_ids="+onts+"&query="+query+"&exact_match="+exactMatch+"&include_props="+includeProps,
-				function(data){
+			jQuery.ajax({
+				url: "/search/json?page_size=99999&ontology_ids="+onts+"&query="+query+"&exact_match="+exactMatch+"&include_props="+includeProps,
+				dataType: "json",
+				async: false,
+				success: function(data){
 					var results = [];
-				
-          if (jQuery.isEmptyObject(data)) {
-          	results.push("<tr><td>No search results found</td></tr>");
-          } else {
+
+          if (!jQuery.isEmptyObject(data)) {
             jQuery(data.results).each(function(){
             	var res = this;
-            	var row = "<tr><td><a href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+res.preferredName+"</a></td><td><a href='/ontologies/"+res.ontologyId+"'>"+res.ontologyDisplayLabel+"</a></td><td>"+res.recordTypeFormatted+"</td></tr>";
-            	results.push(row);
+							var additionalSpan = "<span style='display: none;' class='additional'><a href='/ajax/term_details/"+res.ontologyId+"?styled=false&conceptid="+encodeURIComponent(res.conceptId)+"' class='term_details light_pop'>details</a> | <a href='' class='term_visualize light_pop'>visualize</a></span>";
+            	
+            	var row = [
+								"<div class='term_link' style='width: 100paramson: relative;'>"+additionalSpan+"<a href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+res.preferredName+"</a></div>",
+								res.recordTypeFormatted,
+								"<a href='/ontologies/"+res.ontologyId+"'>"+res.ontologyDisplayLabel+"</a>"
+							];
+		        	
+		        	results.push(row);
             });
           }
           
-          jQuery("#result_stats").html(data.total_results + " total results");
-          jQuery("#search_results_body").html(results.join());
+	        resultsTable.fnClearTable();
+					resultsTable.fnSortNeutral();
+	        resultsTable.fnAddData(results);
+
+					jQuery("a.light_pop").facebox();
+
+          jQuery("#result_stats").html(data.total_results + " results");
+					jQuery("table#search_results div.term_link").hover(termHoverIn, termHoverOut);
+          jQuery("table#search_results").show();
 				}
-			);
+			});
+			
+			jQuery("#search_spinner").hide();
 		});
+		
+		// Search on enter
+		jQuery("#search_keywords").bind("keyup", function(event){
+			if (event.which == 13) {
+				jQuery("#search_button").click();
+			}
+		});
+		
+		// Details/visualze link to show details pane and visualize flexviz
+		jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
+		jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
+		
+		// Check for existing parameters/queries and update UI accordingly
+		var params = jQuery.QueryString;
+		console.log(params)
+		console.log("q" in params)
+		console.log(("q" in params || "query" in params))
+		if ("q" in params || "query" in params) {
+			var query = ("q" in params) ? params["q"] : params["query"];
+			jQuery("#search_keywords").val(query);
+			
+			if (params["exactmatch"] == "true") {
+				jQuery("#search_exact_match").click();
+			}
+			
+			if (params["searchproperties"] == "true") {
+				jQuery("#search_include_props").click();
+			}
+			
+			if ("ontologyids" in params) {
+				var ontologyIds = params["ontologyids"].split(",");
+				jQuery("#search_select_ontologies").attr("checked", false)
+				jQuery("#ontology_ontologyId").val(ontologyIds);
+			  jQuery("#ontology_ontologyId").trigger("liszt:updated");
+			  jQuery("#search_select_ontologies").click().change();
+			}
+			
+			jQuery("#search_button").click();
+		} else if (jQuery("#search_keywords").val() != "") {
+			jQuery("#search_button").click();
+		}
+		
 	});
+	
+	// Datatables reset sort extension
+	jQuery.fn.dataTableExt.oApi.fnSortNeutral = function ( oSettings ) {
+		/* Remove any current sorting */
+		oSettings.aaSorting = [];
+		
+		/* Sort display arrays so we get them in numerical order */
+		oSettings.aiDisplay.sort( function (x,y) {
+			return x-y;
+		} );
+		oSettings.aiDisplayMaster.sort( function (x,y) {
+			return x-y;
+		} );
+		
+		/* Redraw */
+		oSettings.oApi._fnReDraw( oSettings );
+	}
+	
+	var termHoverIn = function(){
+		var additional = jQuery(this).children("span.additional");
+		additional.show();
+		additional.css("margin-top", jQuery(this).innerHeight() / 2 - additional.innerHeight() / 2 + "px");
+	}
+	
+	var termHoverOut = function(){
+		jQuery(this).children("span.additional").hide();
+	}
 </script>
 
 <div style="padding: 1em;">
 	<div id="search_input" style="margin-bottom: 1em;">
 		<h2 style="margin-bottom: 3px;">Search <%=$SITE%></h2>
 		<%=text_field :search, :keywords, :style => "width: 426px; height: 20px; float: left; margin-right: 1em;"%>
-		<%=button_to "Search #{$SITE}", {}, :style => "font-size: .75em !important;", :id => "search_button"%>
-
+		<%=button_to "Search", {}, :style => "font-size: .75em !important;", :id => "search_button"%>
+		&nbsp;<span id="search_spinner" style="display: none;"><img style="vertical-align: inherit;" src="/images/spinners/spinner_000000_16px.gif"></span>
+		
 		<div id="search_options" style="padding-top: .6em; clear: both;">
 			<%=check_box :search, :exact_match%> <%=label :search, :exact_match, "Exact match only"%>&nbsp;&nbsp;&nbsp;
-			<%=check_box :search, :include_props%> <%=label :search, :include_props, "Also search attributes/properties"%>&nbsp;&nbsp;&nbsp;
+			<%=check_box :search, :include_props%> <%=label :search, :include_props, "Also search properties"%>&nbsp;&nbsp;&nbsp;
 			
 			<%=check_box :search, :select_ontologies%> <%=label :search, :select_ontologies, "Select ontologies to search"%>
 			<div id="ontology_picker_options" style="margin-top: 1em; position: relative; left: 2px;" class="not_visible">
 				<%= render :partial => "shared/ontology_picker"%>
 			</div>
 		</div>
+	</div>
+	
+	<div id="search_results_container" style="width: 95%; margin-top: .5em;">
+		<div id="result_stats" style="text-align: right;"></div>
 		
-		<div id="result_stats"></div>
-		
-		<table id="search_results">
+		<table id="search_results" style="display: none; width: 100%; table-layout: fixed;" class="zebra">
 			<thead>
-				<th>Term Name</th>
+				<th style="width: 60%;">Term Name</th>
+				<th style="max-width: 30px;">Matched</th>
 				<th>Ontology</th>
-				<th>Found In</th>
 			</thead>
 			<tbody id="search_results_body">
 			</tbody>
 		</table>
 	</div>
+</div>
+
+
+<div id="flexviz">
+	<script src="<%=$FLEX_URL%>/AC_OETags.js" language="javascript"></script>
+	<script type="text/javascript">
+		<!--
+		// -----------------------------------------------------------------------------
+		// Globals
+		// Major version of Flash required
+		var requiredMajorVersion = 9;
+		// Minor version of Flash required
+		var requiredMinorVersion = 0;
+		// Minor version of Flash required
+		var requiredRevision = 124;
+		// -----------------------------------------------------------------------------
+		// -->
+		
+		// Version check for the Flash Player that has the ability to start Player Product Install (6.0r65)
+		var hasProductInstall = DetectFlashVer(6, 0, 65);
+		
+		// Version check based upon the values defined in globals
+		var hasRequestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
+		
+		if (hasProductInstall && !hasRequestedVersion) {
+		    // DO NOT MODIFY THE FOLLOWING FOUR LINES
+		    // Location visited after installation is complete if installation is required
+		    var MMPlayerType = (isIE == true) ? "ActiveX": "PlugIn";
+		    var MMredirectURL = window.location;
+		    document.title = document.title.slice(0, 47) + " - Flash Player Installation";
+		    var MMdoctitle = document.title;
+		
+		    AC_FL_RunContent(
+		    "src", "playerProductInstall",
+		    "FlashVars", "MMredirectURL=" + MMredirectURL + '&MMplayerType=' + MMPlayerType + '&MMdoctitle=' + MMdoctitle + "",
+		    "width", "300",
+		    "height", "100%",
+		    "align", "middle",
+		    "id", "OntologyTree",
+		    "quality", "high",
+		    "bgcolor", "#ffffff",
+		    "name", "OntologyTree",
+		    "allowScriptAccess", "always",
+		    "type", "application/x-shockwave-flash",
+		    "pluginspage", "http://www.adobe.com/go/getflashplayer"
+		    );
+		} else if (hasRequestedVersion) {
+		    // if we've detected an acceptable version
+		    // embed the Flash Content SWF when all tests are passed
+		    AC_FL_RunContent(
+		    "src", "<%=$FLEX_URL%>/flexviz/FlexoViz.swf",
+		    "width", "500",
+		    "height", "100%",
+		    "align", "middle",
+		    "id", "FlexViz",
+		    "quality", "high",
+		    "bgcolor", "#ffffff",
+		    "name", "FlexViz",
+		    "allowScriptAccess", "always",
+		    "flashVars", "widget=true&virtual=true&alerterrors=false&canchangeontology=true&server=<%=$REST_URL%>",
+		    "type", "application/x-shockwave-flash",
+		    "pluginspage", "http://www.adobe.com/go/getflashplayer"
+		    );
+		} else {
+		    // flash is too old or we can't detect the plugin
+		    var alternateContent = 'Alternate HTML content should be placed here. '
+		    + 'This content requires the Adobe Flash Player. '
+		    + '<a href=http://www.adobe.com/go/getflash/>Get Flash</a>';
+		    document.write(alternateContent);
+		    // insert non-flash content
+		}
+	</script>
 </div>

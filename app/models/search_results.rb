@@ -14,7 +14,7 @@ class SearchResults < Array
     results = hash['contents']['searchResultList']
     
     self.results = results.nil? || results.length == 0 ? Array.new : results.values
-    self.ontology_hit_counts = hash['contents']['ontologyHitList'].values
+    self.ontology_hit_counts = hash['contents']['ontologyHitList'].values unless hash['contents']['ontologyHitList'].nil? || hash['contents']['ontologyHitList'].length == 0
     self.page_size = hash['pageSize']
     self.total_results = hash['numResultsTotal']
     self.page_number = hash['pageNum']

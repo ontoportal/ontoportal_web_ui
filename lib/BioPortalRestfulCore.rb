@@ -1782,7 +1782,7 @@ private
     parsed = self.parse(root)
     
     # We end up with an extra hash at the root, this should get rid of that
-    attributes = {}
+    attributes = ActiveSupport::OrderedHash.new
     parsed.each do |k,v|
       if v.is_a?(Hash)
         attributes = {}
@@ -1808,7 +1808,7 @@ private
   end
   
   def self.parse(node)
-    a = {}
+    a = ActiveSupport::OrderedHash.new
     
     attr_suffix = 1
     
@@ -1862,7 +1862,7 @@ private
 
     entry_key = children[0].content
     entry_values = children[1]
-    entry_hash = {}
+    entry_hash = ActiveSupport::OrderedHash.new
     
     # Check to see if entry contains data as a list or single
     if entry_values.name.eql?("list") && !entry_values.empty?
