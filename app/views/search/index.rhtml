@@ -138,9 +138,6 @@ var resultsTable;
 		
 		// Check for existing parameters/queries and update UI accordingly
 		var params = jQuery.QueryString;
-		console.log(params)
-		console.log("q" in params)
-		console.log(("q" in params || "query" in params))
 		if ("q" in params || "query" in params) {
 			var query = ("q" in params) ? params["q"] : params["query"];
 			jQuery("#search_keywords").val(query);
