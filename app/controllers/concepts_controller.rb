@@ -136,7 +136,11 @@ class ConceptsController < ApplicationController
       render :partial => "details"
     end
   end
-  
+
+  def flexviz
+    render :partial => "flexviz", :layout => "partial"
+  end
+
   def exhibit
     time = Time.now
     #puts "Starting Retrieval"

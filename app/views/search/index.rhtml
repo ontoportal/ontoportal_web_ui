@@ -13,11 +13,17 @@ var resultsTable;
 		
 		resultsTable = jQuery("#search_results").dataTable({
 			bPaginate: false,
-			bFilter: false,
+      bFilter: false,
+      bAutoWidth: false,
 			aaSorting: [],
 			oLanguage: {
 				sZeroRecords: "No search results found"
-			}
+      },
+      "aoColumn": [ 
+            { "sWidth": "50%" },
+            { "sWidth": "20%" },
+            { "sWidth": "30%" }
+      ]
 		});
 	});
 </script>
@@ -98,28 +104,28 @@ var resultsTable;
           if (!jQuery.isEmptyObject(data)) {
             jQuery(data.results).each(function(){
             	var res = this;
-							var additionalSpan = "<span style='display: none;' class='additional'><a href='/ajax/term_details/"+res.ontologyId+"?styled=false&conceptid="+encodeURIComponent(res.conceptId)+"' class='term_details light_pop'>details</a> | <a href='' class='term_visualize light_pop'>visualize</a></span>";
-            	
+							var additionalSpan = "<span style='display: none;' class='additional'><a href='/ajax/term_details/"+res.ontologyId+"?styled=false&conceptid="+encodeURIComponent(res.conceptId)+"' class='term_details light_pop'>details</a> | <a href='javascript:void(0);' data-bp_ontologyid='"+res.ontologyId+"' data-bp_conceptid='"+encodeURIComponent(res.conceptId)+"' class='term_visualize'>visualize</a></span>";
+
             	var row = [
-								"<div class='term_link' style='width: 100paramson: relative;'>"+additionalSpan+"<a href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+res.preferredName+"</a></div>",
+								"<div class='term_link'>"+additionalSpan+"<a href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+res.preferredName+"</a></div>",
 								res.recordTypeFormatted,
 								"<a href='/ontologies/"+res.ontologyId+"'>"+res.ontologyDisplayLabel+"</a>"
 							];
-		        	
+
 		        	results.push(row);
             });
           }
-          
+
 	        resultsTable.fnClearTable();
 					resultsTable.fnSortNeutral();
-	        resultsTable.fnAddData(results);
+          resultsTable.fnAddData(results);
 
 					jQuery("a.light_pop").facebox();
 
           jQuery("#result_stats").html(data.total_results + " results");
 					jQuery("table#search_results div.term_link").hover(termHoverIn, termHoverOut);
           jQuery("table#search_results").show();
-				}
+        }
 			});
 			
 			jQuery("#search_spinner").hide();
@@ -162,7 +168,15 @@ var resultsTable;
 		} else if (jQuery("#search_keywords").val() != "") {
 			jQuery("#search_button").click();
 		}
-		
+
+    // Use pop-up with flex via an iframe for "visualize" link
+    jQuery("a.term_visualize").click(function(){
+      var ontologyid = jQuery(this).attr("data-bp_ontologyid");
+      var conceptid = jQuery(this).attr("data-bp_conceptid");
+
+      jQuery("#flexviz").html('<iframe src="/flexviz/'+ontologyid+'?conceptid='+conceptid+'" frameborder=0 height="500px" width="500px" scrolling="no"></iframe>');
+      jQuery.facebox({ div: '#flexviz' });
+    });
 	});
 	
 	// Datatables reset sort extension
@@ -214,11 +228,11 @@ var resultsTable;
 	<div id="search_results_container" style="width: 95%; margin-top: .5em;">
 		<div id="result_stats" style="text-align: right;"></div>
 		
-		<table id="search_results" style="display: none; width: 100%; table-layout: fixed;" class="zebra">
+		<table id="search_results" style="display: none; table-layout: fixed;" class="zebra">
 			<thead>
 				<th style="width: 60%;">Term Name</th>
-				<th style="max-width: 30px;">Matched</th>
-				<th>Ontology</th>
+				<th style="width: 10%;">Matched</th>
+				<th style="width: 30%;">Ontology</th>
 			</thead>
 			<tbody id="search_results_body">
 			</tbody>
@@ -227,3 +241,5 @@ var resultsTable;
 </div>
 
 
+<div id="flexviz" style="display: none;">
+</div>

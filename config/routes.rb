@@ -84,6 +84,8 @@ ActionController::Routing::Routes.draw do |map|
   map.uri '/visualize/:ontology/:conceptid', :controller => 'ontologies', :action => 'visualize', :requirements => { :ontology => %r([^/?]+), :conceptid => %r([^/?]+) }
   map.visualize_concept '/visualize', :controller => 'ontologies', :action => 'visualize', :requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+),
                                                                                                               :ontologyid => %r([^/?]+), :conceptid => %r([^/?]+) }
+  map.flexviz '/flexviz/:ontologyid', :controller => 'concepts', :action => 'flexviz', :requirements => { :ontologyid => %r([^/?]+) }
+
   # Virtual
   map.virtual_ont '/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+) }
   map.virtual '/virtual/:ontology/:id', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+) }
