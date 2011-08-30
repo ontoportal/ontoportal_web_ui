@@ -179,14 +179,12 @@ function greybox(box){
 <table width="100%">
 	<tr>
 		<td valign="top" width="33%">
-			<% form_for(:search, :url => {:controller =>'search',:action=>'fetch_results'}) do |f| %>
-			<%=hidden_field :search, :ontologies, :value=>"0"%>
-			<%=hidden_field :search, :search_type, :value=>"contains"%>
+      <% form_for(:search, :url => {:controller =>'search', :action=>'index'}, :html => { :method => :get }) do |f| %>
 			<fieldset>
 				<legend>Search all ontologies</legend>
 				<table>
 					<tr>				
-						<td nowrap><input type="text" name="search[keyword]" style="width:190px;" size='30' class="greyed"  onclick="greybox(this)" value="Enter term, e.g. Melanoma"/><%=submit_tag 'Search',:class=>'home_button'%></td>
+						<td nowrap><input type="text" name="query" style="width:190px;" size='30' class="greyed"  onclick="greybox(this)" value="Enter term, e.g. Melanoma"/><%=submit_tag 'Search',:class=>'home_button'%></td>
 					</tr>
 					<tr>
 						<td style="padding-left:15px"><a href="/search">Advanced Search</a></td>
