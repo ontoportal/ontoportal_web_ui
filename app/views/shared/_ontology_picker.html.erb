@@ -1,5 +1,7 @@
 <%init_recommender%>
 
+<% sel_text ||= "Select Ontologies"%>
+
 <script type="text/javascript">
 var abbreviationMap = { <%= @onts_for_js.join(", ") %> };
 var winHeight = jQuery(window).height();
@@ -218,7 +220,7 @@ function refreshOntList() {
 
 
 <div id="ontology_picker_container" style="margin-bottom: 1em; width: 432px;">
-	<h2 id="ontology_picker_head" style="margin-bottom: 3px;">Select Ontologies</h2>
+  <h2 id="ontology_picker_head" style="margin-bottom: 3px;"><%=sel_text%></h2>
 	
 	<div id="ontology_ontologyId_container">
   	<%= select :ontology, "ontologyId", options_for_select(@onts_for_select), { }, :multiple => 'true', "data-placeholder".to_sym => "Type here to select ontologies or leave blank to use all" %>

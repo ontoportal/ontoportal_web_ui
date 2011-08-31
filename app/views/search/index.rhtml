@@ -61,7 +61,13 @@ var resultsTable;
 	
 	#search_options #ontology_ontologyId {
 		display: none;
-	}
+  }
+
+  .term_details_pop {
+    overflow: auto;
+    width: 750px !important;
+    display: block !important;
+  }
 </style>
 
 <script type="text/javascript">
@@ -104,7 +110,7 @@ var resultsTable;
           if (!jQuery.isEmptyObject(data)) {
             jQuery(data.results).each(function(){
             	var res = this;
-							var additionalSpan = "<span style='display: none;' class='additional'><a href='/ajax/term_details/"+res.ontologyId+"?styled=false&conceptid="+encodeURIComponent(res.conceptId)+"' class='term_details light_pop'>details</a> | <a href='javascript:void(0);' data-bp_ontologyid='"+res.ontologyId+"' data-bp_conceptid='"+encodeURIComponent(res.conceptId)+"' class='term_visualize'>visualize</a></span>";
+							var additionalSpan = "<span class='additional'><a href='/ajax/term_details/"+res.ontologyId+"?styled=false&conceptid="+encodeURIComponent(res.conceptId)+"' class='term_details' rel='facebox[.term_details_pop]'>details</a> | <a href='javascript:void(0);' data-bp_ontologyid='"+res.ontologyId+"' data-bp_conceptid='"+encodeURIComponent(res.conceptId)+"' class='term_visualize'>visualize</a></span>";
 
             	var row = [
 								"<div class='term_link'>"+additionalSpan+"<a href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+res.preferredName+"</a></div>",
@@ -120,10 +126,13 @@ var resultsTable;
 					resultsTable.fnSortNeutral();
           resultsTable.fnAddData(results);
 
-					jQuery("a.light_pop").facebox();
+					jQuery("a[rel*=facebox]").facebox();
 
-          jQuery("#result_stats").html(data.total_results + " results");
-					jQuery("table#search_results div.term_link").hover(termHoverIn, termHoverOut);
+          // Align search results div
+          var result_count = jQuery("#result_stats");
+          result_count.html(data.total_results + " results");
+
+          // jQuery("table#search_results div.term_link").hover(termHoverIn, termHoverOut);
           jQuery("table#search_results").show();
         }
 			});
@@ -140,7 +149,21 @@ var resultsTable;
 		
 		// Details/visualze link to show details pane and visualize flexviz
 		jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
-		jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
+    jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
+
+    // Position of popup for details
+    jQuery(document).bind('reveal.facebox', function(){
+      jQuery("div.term_details_pop").css("max-height", jQuery(window).height() - jQuery("div.term_details_pop").offset().top * 2 + "px");
+    });
+
+    // Use pop-up with flex via an iframe for "visualize" link
+    jQuery("a.term_visualize").live("click", (function(){
+      var ontologyid = jQuery(this).attr("data-bp_ontologyid");
+      var conceptid = jQuery(this).attr("data-bp_conceptid");
+
+      jQuery("#flexviz").html('<iframe src="/flexviz/'+ontologyid+'?conceptid='+conceptid+'" frameborder=0 height="500px" width="500px" scrolling="no"></iframe>');
+      jQuery.facebox({ div: '#flexviz' });
+    }));
 		
 		// Check for existing parameters/queries and update UI accordingly
 		var params = jQuery.QueryString;
@@ -168,15 +191,6 @@ var resultsTable;
 		} else if (jQuery("#search_keywords").val() != "") {
 			jQuery("#search_button").click();
 		}
-
-    // Use pop-up with flex via an iframe for "visualize" link
-    jQuery("a.term_visualize").click(function(){
-      var ontologyid = jQuery(this).attr("data-bp_ontologyid");
-      var conceptid = jQuery(this).attr("data-bp_conceptid");
-
-      jQuery("#flexviz").html('<iframe src="/flexviz/'+ontologyid+'?conceptid='+conceptid+'" frameborder=0 height="500px" width="500px" scrolling="no"></iframe>');
-      jQuery.facebox({ div: '#flexviz' });
-    });
 	});
 	
 	// Datatables reset sort extension
@@ -209,30 +223,32 @@ var resultsTable;
 
 <div style="padding: 1em;">
 	<div id="search_input" style="margin-bottom: 1em;">
-		<h2 style="margin-bottom: 3px;">Search <%=$SITE%></h2>
+    <h1>Term Search</h1>
+    <p>Enter keywords below to search for term matches in <%=$SITE%> ontologies.</p>
 		<%=text_field :search, :keywords, :style => "width: 426px; height: 20px; float: left; margin-right: 1em;"%>
-		<%=button_to "Search", {}, :style => "font-size: .75em !important;", :id => "search_button"%>
-		&nbsp;<span id="search_spinner" style="display: none;"><img style="vertical-align: inherit;" src="/images/spinners/spinner_000000_16px.gif"></span>
 		
 		<div id="search_options" style="padding-top: .6em; clear: both;">
-			<%=check_box :search, :exact_match%> <%=label :search, :exact_match, "Exact match only"%>&nbsp;&nbsp;&nbsp;
-			<%=check_box :search, :include_props%> <%=label :search, :include_props, "Also search properties"%>&nbsp;&nbsp;&nbsp;
+      <!--<%=check_box :search, :exact_match%> <%=label :search, :exact_match, "Exact match only"%>&nbsp;&nbsp;&nbsp;-->
+			<%=check_box :search, :include_props%> <%=label :search, :include_props, "Also search property values"%>&nbsp;&nbsp;&nbsp;
 			
-			<%=check_box :search, :select_ontologies%> <%=label :search, :select_ontologies, "Select ontologies to search"%>
-			<div id="ontology_picker_options" style="margin-top: 1em; position: relative; left: 2px;" class="not_visible">
-				<%= render :partial => "shared/ontology_picker"%>
+      <!--<%=check_box :search, :select_ontologies%> <%=label :search, :select_ontologies, "Select ontologies to search"%>-->
+			<div id="ontology_picker_options" style="margin-top: 1em; position: relative; left: 2px;">
+        <%= render :partial => "shared/ontology_picker", :locals => { :sel_text => "Select ontologies to search" }%>
 			</div>
-		</div>
+    </div>
+
+		<span id="search_spinner" style="display: none;">&nbsp;<img style="vertical-align: inherit;" src="/images/spinners/spinner_000000_16px.gif"></span>
+    <%=button_to "Search", {}, :style => "font-size: .75em !important; margin-bottom: 1em;", :id => "search_button"%>
 	</div>
 	
-	<div id="search_results_container" style="width: 95%; margin-top: .5em;">
-		<div id="result_stats" style="text-align: right;"></div>
+	<div id="search_results_container" style="margin-top: .5em; clear: both;">
 		
-		<table id="search_results" style="display: none; table-layout: fixed;" class="zebra">
+    <div id="result_stats" style="text-align: right; width: 950px;"></div>
+    <table id="search_results" style="display: none; width: 950px;" class="zebra">
 			<thead>
-				<th style="width: 60%;">Term Name</th>
-				<th style="width: 10%;">Matched</th>
-				<th style="width: 30%;">Ontology</th>
+				<th>Term Name</th>
+				<th>Matched In</th>
+				<th>Ontology</th>
 			</thead>
 			<tbody id="search_results_body">
 			</tbody>
