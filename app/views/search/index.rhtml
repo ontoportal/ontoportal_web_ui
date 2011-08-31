@@ -101,7 +101,7 @@ var resultsTable;
 			var includeProps = jQuery("#search_include_props").is(":checked");
 			
 			jQuery.ajax({
-				url: "/search/json?page_size=99999&ontology_ids="+onts+"&query="+query+"&exact_match="+exactMatch+"&include_props="+includeProps,
+				url: "/search/json?page_size=99999&ontology_ids="+onts+"&query="+query+"&exact_match="+exactMatch+"&include_props=1",
 				dataType: "json",
 				async: false,
 				success: function(data){
@@ -229,7 +229,7 @@ var resultsTable;
 		
 		<div id="search_options" style="padding-top: .6em; clear: both;">
       <!--<%=check_box :search, :exact_match%> <%=label :search, :exact_match, "Exact match only"%>&nbsp;&nbsp;&nbsp;-->
-			<%=check_box :search, :include_props%> <%=label :search, :include_props, "Also search property values"%>&nbsp;&nbsp;&nbsp;
+      <!--<%=check_box :search, :include_props%> <%=label :search, :include_props, "Also search property values"%>&nbsp;&nbsp;&nbsp;-->
 			
       <!--<%=check_box :search, :select_ontologies%> <%=label :search, :select_ontologies, "Select ontologies to search"%>-->
 			<div id="ontology_picker_options" style="margin-top: 1em; position: relative; left: 2px;">
