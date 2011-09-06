@@ -2,7 +2,7 @@
 (function(window,undefined) {
   // Establish Variables
   var History = window.History;
-  // History.debug.enable === true;
+  // History.debug.enable = true;
   
   // Bind to State Change
   History.Adapter.bind(window, 'statechange', function() {
@@ -10,8 +10,6 @@
     var queryStringParams = null;
     var params = {};
     var state = History.getState();
-    
-    // History.log('statechange:', state.data, state.title, state.url);
     
     if (typeof state.data.p !== 'undefined') {
       if (state.data.p == "terms") {
@@ -55,6 +53,11 @@
 // Handles display of the tree depending on parameters
 function displayTree(data) {
   var new_concept_id = data.conceptid;
+
+  // Escape special chars so jQuery selector doesn't break, see:
+  // http://docs.jquery.com/Frequently_Asked_Questions#How_do_I_select_an_element_by_an_ID_that_has_characters_used_in_CSS_notation.3F
+  var el_new_concept_link = document.getElementById(new_concept_id);
+  var new_concept_link = jQuery(el_new_concept_link);
   
   // Check to see if we're actually loading a new concept or just displaying the one we already loaded previously
   if (typeof new_concept_id === 'undefined' || new_concept_id == concept_id) {
@@ -70,7 +73,7 @@ function displayTree(data) {
     
     if (typeof new_concept_id !== 'undefined') {
       // Get label for new title
-      var concept_label = " - " + jQuery("#" + new_concept_id).html().trim();
+      var concept_label = " - " + new_concept_link.html().trim();
             
       // Retrieve new concept and display tree
       jQuery.bioportal.ont_pages["terms"] = new jQuery.bioportal.OntologyPage("terms", "/ontologies/" + ontology_id + "?p=terms" + new_concept_param, "Problem retrieving terms", ontology_name + concept_label + " - Terms", "Terms");
@@ -103,7 +106,7 @@ function displayTree(data) {
             
             // Make "clicked" node active
             jQuery("a.active").removeClass("active");
-            jQuery("#" + new_concept_id).addClass("active");
+            new_concept_link.addClass("active");
             
             // Clear the search box
             jQuery("#search_box").val("");
