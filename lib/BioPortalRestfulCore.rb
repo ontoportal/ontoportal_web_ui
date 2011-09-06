@@ -602,8 +602,9 @@ class BioPortalRestfulCore
     begin
       doc = REXML::Document.new(get_xml(uri))
     rescue Exception=>e
-      LOG.add :debug, "getOntologyMetrics error: #{e.message}"
-      return ont
+      LOG.add :info, "getOntologyMetrics error: #{e.message}"
+      LOG.add :info, uri
+      return OntologyMetricsWrapper.new
     end
     
     ont = errorCheck(doc)
