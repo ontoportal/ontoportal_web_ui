@@ -1,9 +1,9 @@
 <%@title = "Search"%>
 
+<%=stylesheet_link_tag "/javascripts/JqueryPlugins/facebox/facebox.css"%>
+
 <%=javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.js"%>
 <%=javascript_include_tag "JqueryPlugins/facebox/facebox.js"%>
-
-<%=stylesheet_link_tag "/javascripts/JqueryPlugins/facebox/facebox.css"%>
 
 <script type="text/javascript">
 var resultsTable;
@@ -13,18 +13,25 @@ var resultsTable;
 		
 		resultsTable = jQuery("#search_results").dataTable({
 			bPaginate: false,
-      bFilter: false,
       bAutoWidth: false,
 			aaSorting: [],
 			oLanguage: {
 				sZeroRecords: "No search results found"
       },
-      "aoColumn": [ 
-            { "sWidth": "50%" },
+      "aoColumn": [
+            { "sWidth": "30%" },
             { "sWidth": "20%" },
-            { "sWidth": "30%" }
+            { "sWidth": "50%" }
       ]
-		});
+    });
+
+    jQuery("#search_keywords").autocomplete({
+      source: "/search/json_search_aggregated",
+      minLength: 3,
+      delay: 100,
+      appendTo: "#search_input"
+    });
+    
 	});
 </script>
 
@@ -44,7 +51,11 @@ var resultsTable;
 	
 	#search_results_container #search_results_info {
 		display: none !important;
-	}
+  }
+
+  #search_results_filter {
+    display: none;
+  }
 	
 	#search_spinner {
 		display: inline-block;
@@ -56,9 +67,19 @@ var resultsTable;
 		display: block;
 		float: right;
 		padding-right: .3em;
-		margin-left: 1em;
+    margin-left: 1em;
+    color: gray;
 	}
-	
+
+  span.additional a {
+    color: gray;
+    text-decoration: none;
+  }
+
+  span.additional a:hover {
+    text-decoration: underline;
+  }
+
 	#search_options #ontology_ontologyId {
 		display: none;
   }
@@ -68,10 +89,64 @@ var resultsTable;
     width: 750px !important;
     display: block !important;
   }
+
+  .popup_container {
+    padding-left: 5px;
+    letter-spacing: 0;
+    font-size: x-small;
+    text-transform: lowercase;
+    position: absolute;
+  }
+
+  .bp_popup_link_active {
+    background-color: white;
+    z-index: 4000;
+    border-bottom: none !important;
+    border: solid thin gray;
+    padding: .5em;
+    position: relative;
+  }
+
+  .bp_popup_shadow {
+    box-shadow: 0 0 10px gray;
+  }
+
+  .bp_popup_list {
+    background-color: white;
+    border: thin solid gray;
+    padding: .5em;
+    position: absolute;
+    right: -150px;
+    top: 17px;
+    width: 300px;
+    max-height: 250px;
+    overflow: auto;
+    text-transform: none;
+    box-shadow: 0 0 10px gray;
+    cursor: auto;
+    z-index: 4001;
+  }
+
+  .matched_in .popup_container #matched_filter_list {
+    width: 120px;
+    right: -52px;
+  }
+
+  .ui-autocomplete {
+    border-radius: 0 !important;
+    background: white;
+    font-size: inherit;
+    text-align: left;
+    max-width: 432px;
+  }
+
 </style>
 
 <script type="text/javascript">
-	jQuery(document).ready(function(){
+  jQuery(document).ready(function(){
+    // Put cursor in search box by default
+    jQuery("#search_keywords").focus();
+
 		// Show/hide on refresh
 		if (jQuery("#search_select_ontologies").is(":checked")) {
 			jQuery("#ontology_picker_options").removeClass("not_visible");
@@ -86,8 +161,7 @@ var resultsTable;
 			  jQuery("#ontology_ontologyId").trigger("liszt:updated");
 			}
 		});
-		
-		
+
 		jQuery("#search_button").click(function(event){
 			event.preventDefault();
 			
@@ -105,26 +179,53 @@ var resultsTable;
 				dataType: "json",
 				async: false,
 				success: function(data){
-					var results = [];
+          var results = [];
+          var ontologies = {};
+          var ontology_links = [];
+          var ontologies_for_sort = [];
+          var ontologies_sorted = [];
+
+          // Option to filter all ontologies
+          
+          ontologies_for_sort.push({label: "<a href='javascript:void(0);' class='ont_filter' data-bp_filter_label=''>All Ontologies (" + data.total_results + ")</a>", count: data.total_results});
 
           if (!jQuery.isEmptyObject(data)) {
             jQuery(data.results).each(function(){
             	var res = this;
 							var additionalSpan = "<span class='additional'><a href='/ajax/term_details/"+res.ontologyId+"?styled=false&conceptid="+encodeURIComponent(res.conceptId)+"' class='term_details' rel='facebox[.term_details_pop]'>details</a> | <a href='javascript:void(0);' data-bp_ontologyid='"+res.ontologyId+"' data-bp_conceptid='"+encodeURIComponent(res.conceptId)+"' class='term_visualize'>visualize</a></span>";
 
+              var elipses = (res.preferredName.length > 25) ? "..." : ""
+
             	var row = [
-								"<div class='term_link'>"+additionalSpan+"<a href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+res.preferredName+"</a></div>",
+								"<div class='term_link'>"+additionalSpan+"<a title='"+res.preferredName+"' href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+res.preferredName.substring(0, 25)+elipses+"</a></div>",
 								res.recordTypeFormatted,
 								"<a href='/ontologies/"+res.ontologyId+"'>"+res.ontologyDisplayLabel+"</a>"
-							];
+              ];
+
+              ontologies[res.ontologyDisplayLabel] = (res.ontologyDisplayLabel in ontologies) ? ontologies[res.ontologyDisplayLabel] + 1 : 1;
 
 		        	results.push(row);
             });
           }
 
-	        resultsTable.fnClearTable();
+          jQuery.each(ontologies, function(k, v){
+              ontologies_for_sort.push({label: "<a href='javascript:void(0);' class='ont_filter' data-bp_filter_label='" + k + "'>" + k + " (" + v + ")</a>", count: v});
+          });
+
+          ontologies_for_sort.sort(function(a, b){return a.count < b.count});
+
+          jQuery.each(ontologies_for_sort, function(){
+            ontologies_sorted.push(this.label);
+          });
+
+          jQuery("#ontology_filter_list").html(ontologies_sorted.join("<br/>"));
+
+          resultsTable.fnClearTable();
 					resultsTable.fnSortNeutral();
           resultsTable.fnAddData(results);
+
+          // Re-bind click event for ont filter to avoid weird "live" propagation issues
+          filter_ontologies.init();
 
 					jQuery("a[rel*=facebox]").facebox();
 
@@ -143,7 +244,9 @@ var resultsTable;
 		// Search on enter
 		jQuery("#search_keywords").bind("keyup", function(event){
 			if (event.which == 13) {
-				jQuery("#search_button").click();
+        jQuery(".ui-autocomplete").hide();
+        jQuery("#search_button").click();
+        jQuery(".ui-autocomplete").hide();
 			}
 		});
 		
@@ -153,7 +256,9 @@ var resultsTable;
 
     // Position of popup for details
     jQuery(document).bind('reveal.facebox', function(){
-      jQuery("div.term_details_pop").css("max-height", jQuery(window).height() - jQuery("div.term_details_pop").offset().top * 2 + "px");
+      if (jQuery("div.term_details_pop").is(":visible")) {
+        jQuery("div.term_details_pop").css("max-height", jQuery(window).height() - jQuery("div.term_details_pop").offset().top * 2 + "px");
+      }
     });
 
     // Use pop-up with flex via an iframe for "visualize" link
@@ -164,7 +269,7 @@ var resultsTable;
       jQuery("#flexviz").html('<iframe src="/flexviz/'+ontologyid+'?conceptid='+conceptid+'" frameborder=0 height="500px" width="500px" scrolling="no"></iframe>');
       jQuery.facebox({ div: '#flexviz' });
     }));
-		
+
 		// Check for existing parameters/queries and update UI accordingly
 		var params = jQuery.QueryString;
 		if ("q" in params || "query" in params) {
@@ -190,7 +295,11 @@ var resultsTable;
 			jQuery("#search_button").click();
 		} else if (jQuery("#search_keywords").val() != "") {
 			jQuery("#search_button").click();
-		}
+    }
+
+    // Wire up pop-ups
+    filter_ontologies.init();
+    filter_matched.init();
 	});
 	
 	// Datatables reset sort extension
@@ -218,7 +327,86 @@ var resultsTable;
 	
 	var termHoverOut = function(){
 		jQuery(this).children("span.additional").hide();
-	}
+  }
+
+
+
+
+var filter_ontologies = {
+  init: function() {
+    jQuery("#filter_ontologies").bind("click", function(e){bp_popup_init(e)});
+    jQuery(".ont_filter").bind("click", function(e){filter_ontologies.filterOntology(e)});
+    this.cleanup();
+  },
+
+  cleanup: function() {
+    jQuery("html").click(bp_popup_cleanup);
+    jQuery(document).keyup(function(e) {
+      if (e.keyCode == 27) { bp_popup_cleanup(); } // esc
+    });
+  },
+
+  filterOntology: function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var ontToFilter = jQuery(e.currentTarget);
+    var filterText = ontToFilter.attr("data-bp_filter_label");
+
+    resultsTable.fnFilter(filterText, 2, false, false);
+
+    jQuery("#result_stats").html(jQuery(resultsTable).find("tr").length - 1 + " results");
+    bp_popup_cleanup();
+  }
+}
+
+var filter_matched = {
+  init: function() {
+    jQuery("#filter_matched").bind("click", function(e){bp_popup_init(e)});
+    jQuery(".match_filter").bind("click", function(e){filter_matched.filterMatched(e)});
+    this.cleanup();
+  },
+
+  cleanup: function() {
+    jQuery("html").click(bp_popup_cleanup);
+    jQuery(document).keyup(function(e) {
+      if (e.keyCode == 27) { bp_popup_cleanup(); } // esc
+    });
+  },
+
+  filterMatched: function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var matchToFilter = jQuery(e.currentTarget);
+    var filterText = matchToFilter.attr("data-bp_filter_match");
+
+    resultsTable.fnFilter(filterText, 1);
+
+    jQuery("#result_stats").html(jQuery(resultsTable).find("tr").length - 1 + " results");
+    bp_popup_cleanup();
+  }
+}
+
+
+var bp_popup_init = function(e) {
+  bp_popup_cleanup();
+  e.preventDefault();
+  e.stopPropagation()
+
+  var popup = jQuery(e.currentTarget).parents(".popup_container");
+
+  popup.children(".bp_popup_link_container").addClass("bp_popup_shadow");
+  popup.find("a.bp_popup_link").css("z-index", "5000").addClass("bp_popup_link_active");
+  popup.children(".bp_popup_list").show();
+}
+
+var bp_popup_cleanup = function() {
+  jQuery(".bp_popup_link_container").removeClass("bp_popup_shadow");
+  jQuery(".bp_popup_link").css("z-index", "").removeClass("bp_popup_link_active");
+  jQuery(".bp_popup_list").hide();
+}
+
 </script>
 
 <div style="padding: 1em;">
@@ -243,12 +431,25 @@ var resultsTable;
 	
 	<div id="search_results_container" style="margin-top: .5em; clear: both;">
 		
-    <div id="result_stats" style="text-align: right; width: 950px;"></div>
-    <table id="search_results" style="display: none; width: 950px;" class="zebra">
+    <div id="result_stats" style="text-align: right; width: 850px;"></div>
+    <table id="search_results" style="display: none; width: 850px;" class="zebra">
 			<thead>
-				<th>Term Name</th>
-				<th>Matched In</th>
-				<th>Ontology</th>
+				<th style="width: 300px;">Term Name</th>
+        <th style="width: 175px;" class="matched_in">Matched In 
+          <span class="popup_container">
+            <span class="bp_popup_link_container">
+              <a href="javascript:void(0);" id="filter_matched" class="bp_popup_link">filter</a>
+            </span>
+            <div id="matched_filter_list" class="bp_popup_list" style="display: none;">
+              <a href="javascript:void(0);" class="match_filter" data-bp_filter_match="">All Match Locations</a><br/>
+              <a href="javascript:void(0);" class="match_filter" data-bp_filter_match="Preferred Name">Preferred Name</a><br/>
+              <a href="javascript:void(0);" class="match_filter" data-bp_filter_match="Synonym">Synonym</a><br/>
+              <a href="javascript:void(0);" class="match_filter" data-bp_filter_match="Term ID">Term ID</a><br/>
+              <a href="javascript:void(0);" class="match_filter" data-bp_filter_match="Property">Property</a><br/>
+            </div>
+          </span>
+        </th>
+        <th style="width: 325px;">Ontology <span class="popup_container"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_ontologies" class="bp_popup_link">filter</a></span><div id="ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span></th>
 			</thead>
 			<tbody id="search_results_body">
 			</tbody>

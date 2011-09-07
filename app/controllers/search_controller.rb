@@ -82,9 +82,7 @@ class SearchController < ApplicationController
   end
   
   def json
-    start = Time.new
     results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
-    p "############################################### get results time: #{Time.new - start}s"
     
     results.results.each do |result|
       result['recordTypeFormatted'] = format_record_type(result['recordType'])
@@ -158,7 +156,19 @@ class SearchController < ApplicationController
     
     render :text => response
   end
-  
+
+  def json_search_aggregated
+    results = DataAccess.searchQuery("", params[:term], 1)
+    
+    unique_results = ActiveSupport::OrderedHash.new
+    results.results.each do |result|
+      search_term = result['preferredName'].downcase
+      unique_results[search_term] = unique_results[search_term].nil? ? 1 : unique_results[search_term] + 1
+    end
+    
+    render :text => unique_results.keys.to_json
+  end
+
   private
   
   def format_record_type(record_type)

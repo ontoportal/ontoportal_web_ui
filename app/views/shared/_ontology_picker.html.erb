@@ -36,6 +36,9 @@ jQuery(window).ready(function(){
   jQuery('html').click(function() {
   	hideAdvancedSelect();
 	});
+  jQuery(document).keyup(function(e) {
+    if (e.keyCode == 27) { hideAdvancedSelect(); } // esc
+  });
 
 	jQuery('#ont_select_adv').click(function(event){
 		event.stopPropagation();
@@ -46,7 +49,7 @@ jQuery(window).ready(function(){
   	var ont_select = jQuery("#ont_select_adv");
   	var chzn_select = jQuery("#ontology_ontologyId_chzn");
   	
-  	ont_select.css("top", jQuery(window).scrollTop() + 50 + "px");
+  	ont_select.css("top", "50px");
   	ont_select.css("left", chzn_select.offset().left + chzn_select.width() - 1);
   	ont_select.css("width", jQuery(window).width() - (chzn_select.offset().left + chzn_select.width()) - 100 + "px");
   	ont_select.css("height", jQuery(window).height() - 100);
@@ -105,7 +108,22 @@ jQuery(window).ready(function(){
       refreshOntList();
     }
   });
-  
+
+  // Select ontologies that are visible in the filter list
+  jQuery("#ont_select_all_filtered").click(function(){
+    if (jQuery(this).attr("checked")) {
+      jQuery(".ont_select_boxes_tr input:checkbox:visible").attr("checked", true);
+
+      syncFromCheckboxes();
+      refreshOntList();
+    } else {
+      jQuery(".ont_select_boxes_tr input:checkbox:visible").attr("checked", false);
+
+      syncFromCheckboxes();
+      refreshOntList();
+    }
+  });
+
   // Helper text for advanced search filter
   jQuery("#advanced_filter_input").val(jQuery("#advanced_filter_input").attr("title"));
   jQuery("#advanced_filter_input").focus(function(){
@@ -198,6 +216,7 @@ function refreshOntList() {
           // and hide the ones not containing the input while showing the ones that do
           jQuery(list).find("td:not(:Contains(" + filter + "))").closest("tr").hide();
           jQuery(list).find("td:Contains(" + filter + ")").closest("tr").show();
+          jQuery("#select_all_filtered_row").show();
         } else {
           jQuery(list).find("tr").show();
         }
@@ -228,7 +247,7 @@ function refreshOntList() {
   
   <div style="float: right; font-size: smaller;"><a id="ont_select_adv_href" href="javascript:void(0)">select from list</a></div>
 
-  <div id="ont_select_adv" style="display: none; text-align: left; border: thin solid gray; position: fixed; background: white; overflow: hidden; max-width: 550px; box-shadow: 0 0 10px gray;">
+  <div id="ont_select_adv" style="z-index: 100; display: none; text-align: left; border: thin solid gray; position: fixed; background: white; overflow: hidden; max-width: 550px; box-shadow: 0 0 10px gray;">
   	<div id="ont_select_adv_inner" style="padding: 15px; background: white; z-index: 5000;">
 	  	<h2>Select Multiple Ontologies <a href="javascript:void(0);" id="close_adv_select" class="ui-dialog-titlebar-close ui-corner-all" role="button" unselectable="on" style="-moz-user-select: none; float: right;"><span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">close</span></a></h2>
 	    
@@ -242,8 +261,13 @@ function refreshOntList() {
 		        <td style="padding: 0 0 5px 5px;"><%= label_tag "ont_select_all", "All" %></td>
 		      </tr>
 		      -->
-		      
-		      <% @onts_for_select.each do |ont| %>
+
+		      <tr id="select_all_filtered_row" style="display: none;">
+		        <td style="padding-bottom: 5px;"><%= check_box_tag "ont_select_all_filtered" %></td>
+		        <td style="padding: 0 0 5px 5px;"><%= label_tag "ont_select_all_filtered", "Select all filtered" %></td>
+		      </tr>
+
+          <% @onts_for_select.each do |ont| %>
 		        <tr class="ont_select_boxes_tr">
 		          <td valign="top"><%= check_box_tag "ont_select_adv_check", ont[1], false, :id => "ont_select_adv_check#{ont[1]}" %></td>
 		          <td style="padding-left: 5px;"><%= label_tag "ont_select_adv_check#{ont[1]}", ont[0] %></td>
