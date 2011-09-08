@@ -243,8 +243,14 @@ module ApplicationHelper
     BLOCK
   end
   
-  def init_recommender
+  def init_ontology_picker
     ontologies = DataAccess.getOntologyList
+    groups = DataAccess.getGroups.to_a
+    categories = DataAccess.getCategories
+
+    groups_map = {}
+    categories_map = {}
+    onts_in_group_or_category_map = {}
 
     @onts_for_select = []
     @onts_for_js = [];
@@ -252,8 +258,46 @@ module ApplicationHelper
       abbreviation = ont.abbreviation.nil? ? "" : "(" + ont.abbreviation + ")"
       @onts_for_select << [ont.displayLabel.strip + " " + abbreviation, ont.ontologyId.to_i]
       @onts_for_js << "\"#{ont.displayLabel.strip} #{abbreviation}\": \"#{abbreviation.gsub("(", "").gsub(")", "")}\""
+
+      ont.groups.each do |group_id|
+        onts_in_group_or_category_map[ont.ontologyId] = 1
+        groups_map[group_id.to_i] = Array.new if groups_map[group_id.to_i].nil?
+        groups_map[group_id.to_i] << ont.ontologyId
+      end
+
+      ont.categories.each do |cat_id|
+        onts_in_group_or_category_map[ont.ontologyId] = 1
+        categories_map[cat_id.to_i] = Array.new if categories_map[cat_id.to_i].nil?
+        categories_map[cat_id.to_i] << ont.ontologyId
+      end
     end
     @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+
+    @onts_in_group_or_category_for_js = onts_in_group_or_category_map.keys
+
+    @groups_for_select = []
+    groups.each do |group|
+      acronym = group[:acronym].nil? ? "" : " (#{group[:acronym]})"
+      @groups_for_select << [ group[:name] + acronym, group[:id].to_i ]
+    end
+    @groups_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+
+    @groups_for_js = []
+    groups_map.each do |group_id, groups|
+      @groups_for_js << "#{group_id}: [ #{groups.join(", ")} ]"
+    end
+
+    @categories_for_select = []
+    @categories_for_js = []
+    categories.each do |cat_id, cat|
+      @categories_for_select << [ cat[:name], cat[:id] ]
+    end
+    @categories_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+
+    @categories_for_js = []
+    categories_map.each do |cat_id, cat|
+      @categories_for_js << "#{cat_id}: [ #{cat.join(", ")} ]"
+    end
   end
   
   

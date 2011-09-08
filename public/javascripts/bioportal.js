@@ -472,3 +472,59 @@ function selectTab(id,tab){
     })(window.location.search.substr(1).split('&'))
 })(jQuery);
 
+
+/**************************************************************
+ * Standardized BP popups
+ **************************************************************/
+
+// Methods for working with standardized BP popups
+var bp_popup_init = function(e) {
+  bp_popup_cleanup();
+  e.preventDefault();
+  e.stopPropagation()
+
+  var popup = jQuery(e.currentTarget).parents(".popup_container");
+
+  popup.children(".bp_popup_link_container").addClass("bp_popup_shadow");
+  popup.find("a.bp_popup_link").css("z-index", "5000").addClass("bp_popup_link_active");
+  popup.children(".bp_popup_list").show();
+}
+
+var bp_popup_cleanup = function() {
+  jQuery(".bp_popup_link_container").removeClass("bp_popup_shadow");
+  jQuery(".bp_popup_link").css("z-index", "").removeClass("bp_popup_link_active");
+  jQuery(".bp_popup_list").hide();
+}
+
+// Sample object for working with pop-ups
+/**
+var filter_matched = {
+  init: function() {
+    jQuery("#filter_matched").bind("click", function(e){bp_popup_init(e)});
+    jQuery(".match_filter").bind("click", function(e){filter_matched.filterMatched(e)});
+    this.cleanup();
+  },
+
+  cleanup: function() {
+    jQuery("html").click(bp_popup_cleanup);
+    jQuery(document).keyup(function(e) {
+      if (e.keyCode == 27) { bp_popup_cleanup(); } // esc
+    });
+  },
+
+  filterMatched: function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var matchToFilter = jQuery(e.currentTarget);
+    var filterText = matchToFilter.attr("data-bp_filter_match");
+
+    resultsTable.fnFilter(filterText, 1);
+
+    jQuery("#result_stats").html(jQuery(resultsTable).find("tr").length - 1 + " results");
+    bp_popup_cleanup();
+  }
+}
+**/
+
+

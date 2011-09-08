@@ -36,102 +36,6 @@ var resultsTable;
 </script>
 
 <style type="text/css">
-	form.button-to {
-		float: left;
-	}
-	
-	#ontology_picker_head {
-		font-size: 10pt !important;
-	}
-	
-	.not_visible {
-		position: fixed !important;
-		left: -9999px !important;
-	}
-	
-	#search_results_container #search_results_info {
-		display: none !important;
-  }
-
-  #search_results_filter {
-    display: none;
-  }
-	
-	#search_spinner {
-		display: inline-block;
-		padding-top: 4px;
-	}
-	
-	span.additional {
-		font-size: x-small;
-		display: block;
-		float: right;
-		padding-right: .3em;
-    margin-left: 1em;
-    color: gray;
-	}
-
-  span.additional a {
-    color: gray;
-    text-decoration: none;
-  }
-
-  span.additional a:hover {
-    text-decoration: underline;
-  }
-
-	#search_options #ontology_ontologyId {
-		display: none;
-  }
-
-  .term_details_pop {
-    overflow: auto;
-    width: 750px !important;
-    display: block !important;
-  }
-
-  .popup_container {
-    padding-left: 5px;
-    letter-spacing: 0;
-    font-size: x-small;
-    text-transform: lowercase;
-    position: absolute;
-  }
-
-  .bp_popup_link_active {
-    background-color: white;
-    z-index: 4000;
-    border-bottom: none !important;
-    border: solid thin gray;
-    padding: .5em;
-    position: relative;
-  }
-
-  .bp_popup_shadow {
-    box-shadow: 0 0 10px gray;
-  }
-
-  .bp_popup_list {
-    background-color: white;
-    border: thin solid gray;
-    padding: .5em;
-    position: absolute;
-    right: -150px;
-    top: 17px;
-    width: 300px;
-    max-height: 250px;
-    overflow: auto;
-    text-transform: none;
-    box-shadow: 0 0 10px gray;
-    cursor: auto;
-    z-index: 4001;
-  }
-
-  .matched_in .popup_container #matched_filter_list {
-    width: 120px;
-    right: -52px;
-  }
-
   .ui-autocomplete {
     border-radius: 0 !important;
     background: white;
@@ -139,7 +43,6 @@ var resultsTable;
     text-align: left;
     max-width: 432px;
   }
-
 </style>
 
 <script type="text/javascript">
@@ -185,10 +88,6 @@ var resultsTable;
           var ontologies_for_sort = [];
           var ontologies_sorted = [];
 
-          // Option to filter all ontologies
-          
-          ontologies_for_sort.push({label: "<a href='javascript:void(0);' class='ont_filter' data-bp_filter_label=''>All Ontologies (" + data.total_results + ")</a>", count: data.total_results});
-
           if (!jQuery.isEmptyObject(data)) {
             jQuery(data.results).each(function(){
             	var res = this;
@@ -202,6 +101,7 @@ var resultsTable;
 								"<a href='/ontologies/"+res.ontologyId+"'>"+res.ontologyDisplayLabel+"</a>"
               ];
 
+              // Keep track of how many results are associated with each ontology
               ontologies[res.ontologyDisplayLabel] = (res.ontologyDisplayLabel in ontologies) ? ontologies[res.ontologyDisplayLabel] + 1 : 1;
 
 		        	results.push(row);
@@ -209,13 +109,15 @@ var resultsTable;
           }
 
           jQuery.each(ontologies, function(k, v){
-              ontologies_for_sort.push({label: "<a href='javascript:void(0);' class='ont_filter' data-bp_filter_label='" + k + "'>" + k + " (" + v + ")</a>", count: v});
+              ontologies_for_sort.push({label: k + " (" + v + ")", count: v, value: k, value_encoded: encodeURIComponent(k)});
           });
 
           ontologies_for_sort.sort(function(a, b){return a.count < b.count});
 
           jQuery.each(ontologies_for_sort, function(){
-            ontologies_sorted.push(this.label);
+            var checkbox = jQuery("<input/>").attr("class", "filter_ontology_checkboxes").attr("type", "checkbox").attr("value", this.value).attr("id", this.value_encoded);
+            var label = jQuery("<label/>").attr("for", this.value_encoded).html(" " + this.label);
+            ontologies_sorted.push(jQuery("<span/>").append(checkbox).append(label).html());
           });
 
           jQuery("#ontology_filter_list").html(ontologies_sorted.join("<br/>"));
@@ -335,7 +237,8 @@ var resultsTable;
 var filter_ontologies = {
   init: function() {
     jQuery("#filter_ontologies").bind("click", function(e){bp_popup_init(e)});
-    jQuery(".ont_filter").bind("click", function(e){filter_ontologies.filterOntology(e)});
+    jQuery(".filter_ontology_checkboxes").bind("click", function(e){filter_ontologies.filterOntology(e)});
+    jQuery("#ontology_filter_list").click(function(e){e.stopPropagation()});
     this.cleanup();
   },
 
@@ -347,23 +250,28 @@ var filter_ontologies = {
   },
 
   filterOntology: function(e) {
-    e.preventDefault();
     e.stopPropagation();
 
-    var ontToFilter = jQuery(e.currentTarget);
-    var filterText = ontToFilter.attr("data-bp_filter_label");
+    var search_regex = [];
+    jQuery(".filter_ontology_checkboxes:checked").each(function(){
+      search_regex.push(jQuery(this).val());
+    });
 
-    resultsTable.fnFilter(filterText, 2, false, false);
+    if (search_regex.length == 0) {
+      resultsTable.fnFilter("", 2);
+    } else {
+      resultsTable.fnFilter(search_regex.join("|"), 2, true, false);
+    }
 
     jQuery("#result_stats").html(jQuery(resultsTable).find("tr").length - 1 + " results");
-    bp_popup_cleanup();
   }
 }
 
 var filter_matched = {
   init: function() {
     jQuery("#filter_matched").bind("click", function(e){bp_popup_init(e)});
-    jQuery(".match_filter").bind("click", function(e){filter_matched.filterMatched(e)});
+    jQuery(".filter_matched_checkboxes").bind("click", function(e){filter_matched.filterMatched(e)});
+    jQuery("#matched_filter_list").click(function(e){e.stopPropagation()});
     this.cleanup();
   },
 
@@ -375,36 +283,21 @@ var filter_matched = {
   },
 
   filterMatched: function(e) {
-    e.preventDefault();
     e.stopPropagation();
 
-    var matchToFilter = jQuery(e.currentTarget);
-    var filterText = matchToFilter.attr("data-bp_filter_match");
+    var search_regex = [];
+    jQuery(".filter_matched_checkboxes:checked").each(function(){
+      search_regex.push(jQuery(this).val());
+    });
 
-    resultsTable.fnFilter(filterText, 1);
+    if (search_regex.length == 0) {
+      resultsTable.fnFilter("", 1);
+    } else {
+      resultsTable.fnFilter(search_regex.join("|"), 1, true, false);
+    }
 
     jQuery("#result_stats").html(jQuery(resultsTable).find("tr").length - 1 + " results");
-    bp_popup_cleanup();
   }
-}
-
-
-var bp_popup_init = function(e) {
-  bp_popup_cleanup();
-  e.preventDefault();
-  e.stopPropagation()
-
-  var popup = jQuery(e.currentTarget).parents(".popup_container");
-
-  popup.children(".bp_popup_link_container").addClass("bp_popup_shadow");
-  popup.find("a.bp_popup_link").css("z-index", "5000").addClass("bp_popup_link_active");
-  popup.children(".bp_popup_list").show();
-}
-
-var bp_popup_cleanup = function() {
-  jQuery(".bp_popup_link_container").removeClass("bp_popup_shadow");
-  jQuery(".bp_popup_link").css("z-index", "").removeClass("bp_popup_link_active");
-  jQuery(".bp_popup_list").hide();
 }
 
 </script>
@@ -441,11 +334,22 @@ var bp_popup_cleanup = function() {
               <a href="javascript:void(0);" id="filter_matched" class="bp_popup_link">filter</a>
             </span>
             <div id="matched_filter_list" class="bp_popup_list" style="display: none;">
-              <a href="javascript:void(0);" class="match_filter" data-bp_filter_match="">All Match Locations</a><br/>
-              <a href="javascript:void(0);" class="match_filter" data-bp_filter_match="Preferred Name">Preferred Name</a><br/>
-              <a href="javascript:void(0);" class="match_filter" data-bp_filter_match="Synonym">Synonym</a><br/>
-              <a href="javascript:void(0);" class="match_filter" data-bp_filter_match="Term ID">Term ID</a><br/>
-              <a href="javascript:void(0);" class="match_filter" data-bp_filter_match="Property">Property</a><br/>
+              <div>
+                <%= check_box_tag "matched_preferred_name", "Preferred Name", false, :class => "filter_matched_checkboxes" %>
+                <%= label_tag "matched_preferred_name", "Preferred Name" %>
+              </div>
+              <div>
+                <%= check_box_tag "matched_synonym", "Synonym", false, :class => "filter_matched_checkboxes" %>
+                <%= label_tag "matched_synonym", "Synonym" %>
+              </div>
+              <div>
+                <%= check_box_tag "matched_id", "Term ID", false, :class => "filter_matched_checkboxes" %>
+                <%= label_tag "matched_id", "Term ID" %>
+              </div>
+              <div>
+                <%= check_box_tag "matched_prop", "Property", false, :class => "filter_matched_checkboxes" %>
+                <%= label_tag "matched_prop", "Property" %>
+              </div>
             </div>
           </span>
         </th>
