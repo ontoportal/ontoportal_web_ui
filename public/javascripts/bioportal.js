@@ -528,3 +528,27 @@ var filter_matched = {
 **/
 
 
+
+jQuery(window).ready(function(){
+  // Helper text for advanced search filter
+  jQuery("input[type=text].help_text, textarea.help_text").each(function(){
+    jQuery(this).val(jQuery(this).attr("title"));
+  });
+  
+  jQuery("input[type=text].help_text, textarea.help_text").focus(function(){
+  	var input = jQuery(this);
+  	if (input.attr("title") == input.val()) {
+  		input.val("");
+  		input.removeClass("help_text");
+  	} 
+  });
+
+  jQuery("input[type=text].help_text, textarea.help_text").blur(function(){
+  	var input = jQuery(this);
+  	if (input.val() == "") {
+  		input.val(input.attr("title"));
+  		input.addClass("help_text");
+  	}
+  });
+});
+

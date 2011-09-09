@@ -1,3 +1,5 @@
+<% require 'ostruct' %>
+
 <%@title = "Ontology Recommender"%>
 
 <script type="text/javascript">
@@ -19,7 +21,12 @@
           dataType: "json",
           success: function(data) {
             jQuery(".recommender_spinner").hide();
-            
+
+            // Really dumb, basic word counter. Counts spaces.
+            if (jQuery("#recommendation_text").val().match(/ /g) == null || jQuery("#recommendation_text").val().match(/ /g).length < 50) {
+              jQuery("#not_enough_text_error").html("Please use more than 50 words for accurate results");
+            }
+
             var links = [];
             links.push('<tr><td valign=bottom style="font-size: large; padding-bottom: 7px;"><b>Ontology Recommendations</b></td><td valign=bottom style="padding: 0 0 9px 1em; text-align: right;">Terms<br/>Matched</td></tr>');
             
@@ -49,8 +56,9 @@
 	
 	<p>Enter text below. The Ontology Recommender will analyze this text and provide a ranked list of ontologies that are relevant.</p>
 
-	<div style="float: left; padding-bottom: 1em;">
-		<%=text_area :recommendation, :text, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px; width: 420px;"%>
+  <div style="float: left; padding-bottom: 1em;">
+    <% textarea_title = "Please paste at least a paragraph (50 words or more) of text to use in calculating ontology recommendations" %>
+    <%=text_area :recommendation, :text, :title => textarea_title, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px; width: 600px;", :class => "help_text" %>
 
 		<br style="margin-bottom: 10px;"/>
 		
@@ -62,7 +70,8 @@
 	</div>
 	
 	<div id="recommendations_container" style="display: none; padding: 1em; margin: 0 1em 2em; border: thin solid gray; float: left; box-shadow: 0 0 3px gray;">
-		<table id="recommendations" style="display: inline-block;"></table>
+    <div id="not_enough_text_error" style="color: red; margin-bottom: 7px;"></div>
+    <table id="recommendations" style="display: inline-block;"></table>
 	</div>
 
 </div>
