@@ -45,18 +45,18 @@ class TreeNode
     end
     
     if !parent_node.nil? && self.ontology.format.eql?("OBO") 
-	  if !parent_node.original_properties.nil? && !parent_node.original_properties.empty?
-	    for key in parent_node.original_properties.keys
-	      relations = parent_node.original_properties[key].split(" ||%|| ").map{|x| x.strip}
-	      if relations.include?(self.label)
-	        if key.include?("is_a")
-	          self.relation_icon = " <img src='/images/is_a.gif' style='vertical-align: middle;'>"
-	        elsif key.include?("part_of")
-	          self.relation_icon = " <img src='/images/part_of.gif' style='vertical-align: middle;'>"
-	        end
-	      end
-	    end
-	  end
+      if !parent_node.original_properties.nil? && !parent_node.original_properties.empty?
+        for key in parent_node.original_properties.keys
+          relations = parent_node.original_properties[key].split(" ||%|| ").map{|x| x.strip}
+          if relations.include?(self.label)
+            if key.include?("is_a")
+              self.relation_icon = " <img src='/images/is_a.gif' title='is_a relationship' style='vertical-align: middle;'>"
+            elsif key.include?("part_of")
+              self.relation_icon = " <img src='/images/part_of.gif' title='part_of relationship' style='vertical-align: middle;'>"
+            end
+          end
+        end
+      end
     end
   end
 
