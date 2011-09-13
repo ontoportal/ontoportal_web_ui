@@ -37,7 +37,7 @@ Rails::Initializer.run do |config|
   # Make sure the secret is at least 30 characters and all random, 
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
-    :session_key => '_BioPortalGui_session',
+    :key => '_BioPortalGui_session',
     :secret      => 'b5dbc6e61dfc71473c1ce7b3989f17f8a5500d24178acfd38f883af2b2c161b2e1430fbdc5f7f1d6fd578d10348a769a45b171b0070600336de15e753bede4ad'
   }
 
