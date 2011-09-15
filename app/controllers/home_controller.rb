@@ -99,10 +99,9 @@ class HomeController < ApplicationController
 
     # calculate number of total RI records that have been processed
     resources = OntrezService.getResourcesInfo
-    p resources.inspect
     @ri_record_count = 0
     resources.each do |resource|
-      @ri_record_count += resource.record_count.to_i
+      @ri_record_count += resource.record_count.to_i rescue 0
     end
 
     if !params[:ver].nil?
