@@ -231,6 +231,30 @@
                                 <%=text_field :ontology, :authorSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
                             </td>
                         </tr>
+                        <tr style="border-left: none;">
+                            <td colspan=2 style="border-left: none; border-right: none; padding: 1.5em 0 .5em;">
+                                <b>Determining Obsolete Terms</b>
+                                <br/>You can use the following two methods to identify obsolete terms in your ontology:
+                                <br/>1. Designate a root ID for an obsolete branch.
+                                <br/>2. Identify a property id that indicates obsolete status. The value must be set to "true".
+                            </td>
+                        </tr>
+                          <tr>
+                              <th>
+                                  1. Root of obsolete branch (root is not obsolete)
+                              </th>
+                              <td>
+                                <%=text_field :ontology, :obsoleteParent, :class => "defaultText" %>
+                              </td>
+                          </tr>
+                          <tr>
+                              <th>
+                                  2. Property to check for obsolete status
+                              </th>
+                              <td>
+                                <%=text_field :ontology, :obsoleteProperty, :class => "defaultText" %>
+                              </td>
+                            </tr>
                     </tbody>
           					<tbody id="rrf_options" class="format_options">
           				        <tr>

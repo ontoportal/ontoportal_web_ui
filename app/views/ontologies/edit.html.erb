@@ -64,7 +64,7 @@
       }
       
       // Wire up options for restriction how an ontology is viewed
-      jQuery("#ontology_viewingRestrictions").change(function(){
+      jQuery("#ontology_viewingRestriction").change(function(){
       	var select = jQuery(this);
       	if (select.val() == "private") {
       		jQuery("#ontology_useracl").removeAttr("disabled");
@@ -241,6 +241,22 @@
                   <%=text_field :ontology, :authorSlot, :class => 'defaultText defaultTextActive', :title => 'use default' %>
               </td>
           </tr>
+          <tr>
+              <th>
+                  Root of obsolete term branch (root is not obsolete)
+              </th>
+              <td>
+                <%=text_field :ontology, :obsoleteParent, :class => "defaultText" %>
+              </td>
+          </tr>
+          <tr>
+              <th>
+                  Property to check for obsolete status
+              </th>
+              <td>
+                <%=text_field :ontology, :obsoleteProperty, :class => "defaultText" %>
+              </td>
+          </tr>
         <%end %>
 		
 		<% if @ontology.format.include?("RRF") %>
@@ -262,7 +278,7 @@
             		<%selected = @ontology.private? ? "private" : ""%>
             		<%display_private = @ontology.private? ? "" : "display: none;"%>
                 
-                <%=select :ontology, :viewingRestrictions, view_restiction_options, { :include_blank => "", :selected => selected }%>
+                <%=select :ontology, :viewingRestriction, view_restiction_options, { :include_blank => "", :selected => selected }%>
                 
                 <div id="viewingRestrictionsPrivate" style="padding: .5em; border: thin solid #C1DAD7; margin: .5em; <%=display_private%>">
                 	<h3>Add or remove accounts that are allowed to view terms in this ontology using the account name</h3> 

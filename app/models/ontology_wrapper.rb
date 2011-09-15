@@ -27,7 +27,7 @@ class OntologyWrapper
   attr_accessor :dateCreated
   attr_accessor :downloadLocation
   attr_accessor :isMetadataOnly
-  attr_accessor :viewingRestrictions
+  attr_accessor :viewingRestriction
   
   attr_accessor :useracl
   # This data structure holds information about the users in the ACL, mainly whether or not they own the ontology
@@ -58,6 +58,11 @@ class OntologyWrapper
   attr_accessor :viewGenerationEngine
   attr_accessor :viewDefinitionLanguage
   attr_accessor :viewOnOntologyVersionId
+
+  attr_accessor :licenseInformation
+
+  attr_accessor :obsoleteParent
+  attr_accessor :obsoleteProperty
   
   
   FILTERS = {
@@ -133,8 +138,11 @@ class OntologyWrapper
     self.viewGenerationEngine     = hash['viewGenerationEngine']
     self.viewDefinitionLanguage   = hash['viewDefinitionLanguage']
     self.viewOnOntologyVersionId  = hash['viewOnOntologyVersionId']
-    self.viewingRestrictions      = hash['viewingRestrictions']
+    self.viewingRestriction       = hash['viewingRestriction']
     self.useracl_full             = hash['userAcl']
+    self.licenseInformation       = hash['licenseInformation']
+    self.obsoleteParent           = hash['obsoleteParent']
+    self.obsoleteProperty         = hash['obsoleteProperty']
     
     self.useracl                  = []
     if !self.useracl_full.nil?
@@ -179,7 +187,11 @@ class OntologyWrapper
     self.preferredNameSlot = params[:preferredNameSlot]    
     self.versionStatus = params[:versionStatus]
     self.useracl = params[:useracl]
-    
+
+    self.licenseInformation = params[:licenseInformation]
+    self.obsoleteParent = params[:obsoleteParent]
+    self.obsoleteProperty = params[:obsoleteProperty]
+
     # view items
     self.isView = params[:isView]
     self.viewOnOntologyVersionId = params[:viewOnOntologyVersionId]
