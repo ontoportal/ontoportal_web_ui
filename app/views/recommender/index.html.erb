@@ -23,6 +23,7 @@
             jQuery(".recommender_spinner").hide();
 
             // Really dumb, basic word counter. Counts spaces.
+            jQuery("#not_enough_text_error").html("");
             if (jQuery("#recommendation_text").val().match(/ /g) == null || jQuery("#recommendation_text").val().match(/ /g).length < 50) {
               jQuery("#not_enough_text_error").html("Please use more than 50 words for accurate results");
             }
