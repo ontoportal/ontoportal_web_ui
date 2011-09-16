@@ -388,6 +388,12 @@ h1 a:hover, h2 a:hover {
 	background: #f5fafa;
 	border-bottom: 1px solid #ccc;
 }
+
+table.align-right td:nth-child(2),
+table.align-right th:nth-child(2) {
+  text-align: right;
+}
+
 .basic {
 	background:#fff;
 }
@@ -1809,4 +1815,9 @@ span.additional a:hover {
   width: 120px;
 }
 
-
+/************************************
+ * Social Networking Badges
+ ************************************/
+.twitter-follow-button {
+  width: 230px !important;
+}
