@@ -11,14 +11,30 @@
       });
   });
 
-  // Show/hide location inputs
-  function location_toggle(input_div) {
-    jQuery('.hidden_field').hide();
-    jQuery('.hidden_field input').attr("disabled", true);
-    jQuery('#' + input_div + " input").removeAttr("disabled");
-    jQuery('#' + input_div).show();
-  }
-            
+// Show/hide location inputs
+function location_toggle(input_div) {
+  jQuery('.hidden_field').hide();
+  jQuery('.hidden_field input').attr("disabled", true);
+  jQuery('#' + input_div + " input").removeAttr("disabled");
+  jQuery('#' + input_div).show();
+}
+
+function hideAllRestrictions() {
+  jQuery(".viewing_restriction_disabled").attr("disabled", true);
+  jQuery("div.viewing_restriction_types").hide();
+}
+
+function showRestrictionPrivate() {
+  jQuery("#ontology_useracl").removeAttr("disabled");
+  jQuery("#viewingRestrictionsPrivate").show();
+}
+
+function showRestrictionLicensed() {
+  jQuery("#ontology_licenseInformation").removeAttr("disabled");
+  jQuery("#viewingRestrictionsLicensed").show();
+}
+
+
 </script>
 
 <script type="text/javascript">
@@ -62,18 +78,28 @@
       if (!jQuery("#ontology_isRemote_0").is(":checked") && !jQuery("#ontology_isRemote_1").is(":checked") && !jQuery("#ontology_isRemote_2").is(":checked")) {
         jQuery("#ontology_isRemote_0").attr("checked", "checked")
       }
-      
+
       // Wire up options for restriction how an ontology is viewed
       jQuery("#ontology_viewingRestriction").change(function(){
       	var select = jQuery(this);
       	if (select.val() == "private") {
-      		jQuery("#ontology_useracl").removeAttr("disabled");
-      		jQuery("#viewingRestrictionsPrivate").show();
+          hideAllRestrictions()
+          showRestrictionPrivate();
+        } else if (select.val() == "licensed") {
+          hideAllRestrictions();
+          showRestrictionLicensed();
       	} else if (select.val() == "") {
-      		jQuery("#viewingRestrictionsPrivate").hide();
-	    		jQuery("#ontology_useracl").attr("disabled", "disabled");
+          hideAllRestrictions();
       	}
       });
+      
+      // Make sure you can see the account select if the select list has private selected
+      if (jQuery("#ontology_viewingRestriction").val() == "private") {
+        showRestrictionPrivate();
+      } else if (jQuery("#ontology_viewingRestriction").val() == "licensed") {
+        showRestrictionLicensed();
+      }
+
     });
     
     jQuery("form").submit(function(){
@@ -274,12 +300,15 @@
                 Ontology Viewing Restrictions
             </th>
             <td>
-            		<%view_restiction_options = [["Private", "private"]]%>
+            		<%view_restiction_options = [["Private", "private"], ["Licensed", "licensed"]]%>
             		<%selected = @ontology.private? ? "private" : ""%>
+                <%selected = @ontology.licensed? ? "licensed" : selected%>
             		<%display_private = @ontology.private? ? "" : "display: none;"%>
-                
+                <%display_licensed = @ontology.licensed? ? "" : "display: none;"%>
+                <%p "**************************************************************************************** #{selected}"%>
+
                 <%=select :ontology, :viewingRestriction, view_restiction_options, { :include_blank => "", :selected => selected }%>
-                
+
                 <div id="viewingRestrictionsPrivate" style="padding: .5em; border: thin solid #C1DAD7; margin: .5em; <%=display_private%>">
                 	<h3>Add or remove accounts that are allowed to view terms in this ontology using the account name</h3> 
                 	<%=text_field :useracl, :user_acl_add, :title => "enter account name", :class => "defaultText"%>
@@ -289,6 +318,14 @@
 
 									<% disabled = @ontology.private? ? {} : {:disabled => "true"} %>
                 	<%=select :ontology, :useracl, @ontology.useracl_select, {  }, { :multiple => true }.merge(disabled)%>
+              	</div>
+
+                <div id="viewingRestrictionsLicensed" class="viewing_restriction_types" style="padding: .5em; border: thin solid #C1DAD7; margin: .5em; <%=display_licensed%>">
+                  <h3>This text will instruct <%=$SITE%> users in how to comply with your licensing conditions. The text you enter will appear above an input field, allowing users to enter their license or any other information you require. Sample text is included below.</h3> 
+
+                  <% disabled = @ontology.licensed? ? {} : {:disabled => "true"} %>
+                  <% @ontology.licenseInformation = @ontology.licenseInformation.nil? || @ontology.licenseInformation.empty? ? "Please enter your license number in the text box below to access this ontology" : @ontology.licenseInformation%>
+                  <%=text_area :ontology, :licenseInformation, { :rows => 5, :class => "viewing_restriction_disabled", :style => "width: 90%;" }.merge(disabled)%>
               	</div>
             </td>
         </tr>

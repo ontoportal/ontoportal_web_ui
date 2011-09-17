@@ -295,12 +295,19 @@ class OntologyWrapper
   def flat?
     return !$NOT_EXPLORABLE.nil? && $NOT_EXPLORABLE.include?(self.ontologyId.to_i)
   end
-  
-  def private?
-    test = !self.useracl_full.nil?
-    !self.useracl_full.nil?
+
+  def viewing_restricted?
+    !self.viewingRestriction.nil? && !self.viewingRestriction.empty?
   end
-  
+
+  def private?
+    !self.viewingRestriction.nil? && self.viewingRestriction.downcase.eql?("private")
+  end
+
+  def licensed?
+    !self.viewingRestriction.nil? && self.viewingRestriction.downcase.eql?("licensed")
+  end
+
   def valid_tree_view?
     return self.statusId.to_i == 3 && !self.metadata_only?
   end

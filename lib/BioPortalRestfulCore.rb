@@ -1036,13 +1036,13 @@ class BioPortalRestfulCore
     end
 
     ontology = errorCheck(doc)
-    
+
     unless ontology.nil?
       return ontology
     end
-    
+
     ontology = generic_parse(:xml => doc, :type => "OntologyWrapper")
-    
+
     return ontology
   end
   
