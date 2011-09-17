@@ -305,11 +305,10 @@ function showRestrictionLicensed() {
                 <%selected = @ontology.licensed? ? "licensed" : selected%>
             		<%display_private = @ontology.private? ? "" : "display: none;"%>
                 <%display_licensed = @ontology.licensed? ? "" : "display: none;"%>
-                <%p "**************************************************************************************** #{selected}"%>
 
                 <%=select :ontology, :viewingRestriction, view_restiction_options, { :include_blank => "", :selected => selected }%>
 
-                <div id="viewingRestrictionsPrivate" style="padding: .5em; border: thin solid #C1DAD7; margin: .5em; <%=display_private%>">
+                <div id="viewingRestrictionsPrivate" class="viewing_restriction_types" style="padding: .5em; border: thin solid #C1DAD7; .5em .5em .5em 0; <%=display_private%>">
                 	<h3>Add or remove accounts that are allowed to view terms in this ontology using the account name</h3> 
                 	<%=text_field :useracl, :user_acl_add, :title => "enter account name", :class => "defaultText"%>
                 	&nbsp;<input type="button" id="user_acl_add_button" value="Add Account">
@@ -320,8 +319,8 @@ function showRestrictionLicensed() {
                 	<%=select :ontology, :useracl, @ontology.useracl_select, {  }, { :multiple => true }.merge(disabled)%>
               	</div>
 
-                <div id="viewingRestrictionsLicensed" class="viewing_restriction_types" style="padding: .5em; border: thin solid #C1DAD7; margin: .5em; <%=display_licensed%>">
-                  <h3>This text will instruct <%=$SITE%> users in how to comply with your licensing conditions. The text you enter will appear above an input field, allowing users to enter their license or any other information you require. Sample text is included below.</h3> 
+                <div id="viewingRestrictionsLicensed" class="viewing_restriction_types" style="padding: .5em; border: thin solid #C1DAD7; margin: .5em .5em .5em 0; <%=display_licensed%>">
+                  <h3>This text will tell <%=$SITE%> users how to comply with your licensing conditions. The text you enter will appear above an input field, allowing users to enter their license or any other information you require. Sample text is included below.</h3> 
 
                   <% disabled = @ontology.licensed? ? {} : {:disabled => "true"} %>
                   <% @ontology.licenseInformation = @ontology.licenseInformation.nil? || @ontology.licenseInformation.empty? ? "Please enter your license number in the text box below to access this ontology" : @ontology.licenseInformation%>
