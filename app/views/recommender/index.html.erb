@@ -8,38 +8,46 @@
 	});
 	
 	function getRecommendations() {
+    jQuery("#not_enough_text_error").html("");
 		jQuery(".recommender_error").html("");
 		jQuery(".recommender_spinner").show();
-		
+
+    var params = {};
+
 		var ont_select = jQuery("#ontology_ontologyId");
 		
-		var ontology_ids = (ont_select.val() == null) ? "" : ont_select.val().join(",")
+    var ontology_ids = (ont_select.val() == null) ? "" : ont_select.val().join(",");
+
+    params["ontology_ids"] = ontology_ids;
+    params["text"] = jQuery("#recommendation_text").val();
 		
 		jQuery.ajax({
           type: "POST",
-          url: "/recommender?text="+jQuery("#recommendation_text").val()+"&ontology_ids="+ontology_ids,
+          url: "/recommender",
+          data: params,
           dataType: "json",
           success: function(data) {
             jQuery(".recommender_spinner").hide();
 
             // Really dumb, basic word counter. Counts spaces.
-            jQuery("#not_enough_text_error").html("");
             if (jQuery("#recommendation_text").val().match(/ /g) == null || jQuery("#recommendation_text").val().match(/ /g).length < 50) {
               jQuery("#not_enough_text_error").html("Please use more than 50 words for accurate results");
             }
 
             var links = [];
-            links.push('<tr><td valign=bottom style="font-size: large; padding-bottom: 7px;"><b>Ontology Recommendations</b></td><td valign=bottom style="padding: 0 0 9px 1em; text-align: right;">Terms<br/>Matched</td></tr>');
-            
+            links.push('<tr><td style="vertical-align: bottom; padding: 0 10px 7px 0;">Rank</td><td valign=bottom style="vertical-align: bottom; padding: 0 7px 7px 3px;">Ontology</td><td style="vertical-align: bottom; padding: 0 0 7px 1em; text-align: right;">Terms<br/>Matched</td></tr>');
+
+            var resultCount = 1;
             if (jQuery.isEmptyObject(data)) {
             	links.push("<tr><td>No recommendations found</td></tr>");
             } else {
 	            jQuery(data).each(function(){
 	            	var rec = this;
-	            	links.push("<tr><td style='padding: 3px;'><a href='/ontologies/"+rec.virtualOntologyId+"'>"+rec.name+"</a></td><td style='text-align: right;'>"+rec.nbAnnotation+"</td></tr>");
+                links.push("<tr><td style='text-align: right; padding-right: 10px;'>"+resultCount+"</td><td style='padding: 3px;'><a href='/ontologies/"+rec.virtualOntologyId+"'>"+rec.name+"</a></td><td style='text-align: right;'>"+rec.nbAnnotation+"</td></tr>");
+                resultCount++;
 	            });
             }
-            
+
             jQuery("#recommendations").html(links.join(""));
             jQuery("#recommendations_container").show();
           },
@@ -71,6 +79,7 @@
 	</div>
 	
 	<div id="recommendations_container" style="display: none; padding: 1em; margin: 0 1em 2em; border: thin solid gray; float: left; box-shadow: 0 0 3px gray;">
+    <h2 style="margin-bottom: 0;">Ontology Recommendations</h2>
     <div id="not_enough_text_error" style="color: red; margin-bottom: 7px;"></div>
     <table id="recommendations" style="display: inline-block;"></table>
 	</div>
