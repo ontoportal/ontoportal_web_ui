@@ -422,8 +422,8 @@ class DataAccess
     self.cache_pull("#{ontology_virtual_id}::concepts::map_count", "getMappingCountOntologyConcepts", { :ontology_virtual_id => ontology_virtual_id, :limit => limit }, LONG_CACHE_EXPIRE_TIME)
   end
 
-  def self.getMappingCountOntologyUsers(ontology_virtual_id)
-    self.cache_pull("ontoliges::users::map_count", "getMappingCountOntologyUsers", { :ontology_virtual_id => ontology_virtual_id }, LONG_CACHE_EXPIRE_TIME)
+  def self.getMappingCountOntologyUsers(ontology_virtual_id, target_ontology_virtual_id = "")
+    self.cache_pull("ontologies::users::map_count::ont_#{ontology_virtual_id}::target_#{target_ontology_virtual_id}", "getMappingCountOntologyUsers", { :ontology_virtual_id => ontology_virtual_id, :target_ontology_virtual_id => target_ontology_virtual_id }, LONG_CACHE_EXPIRE_TIME)
   end
 
   def self.getRecentMappings
@@ -565,8 +565,8 @@ private
       else
         retrieved_object = SERVICE.send(:"#{service_call}")
       end
-      
-      unless retrieved_object.kind_of?(Hash) && retrieved_object[:error]
+
+      unless retrieved_object.kind_of?(Hash) && retrieved_object[:error] || retrieved_object.nil? || retrieved_object.to_s.length == 0
         # Don't cache nodes with more than the default number of max children
         if retrieved_object.class == NodeWrapper && retrieved_object.child_size.to_i > 10000
           return retrieved_object
@@ -574,11 +574,11 @@ private
           CACHE.set(token, retrieved_object, expires)
         end
       end
-      
+
       return retrieved_object
     else
       return CACHE.get(token)
     end
   end
-  
+
 end

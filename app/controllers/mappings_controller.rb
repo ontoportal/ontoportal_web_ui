@@ -94,31 +94,29 @@ class MappingsController < ApplicationController
   def show
     @ontology = DataAccess.getLatestOntology(params[:id])
     @target_ontology = DataAccess.getLatestOntology(params[:target])
-    
-    
+
     if params[:rdf].nil? || !params[:rdf].eql?("rdf")
 	    @mapping_pages = DataAccess.getBetweenOntologiesMappings(@ontology.ontologyId, @target_ontology.ontologyId, params[:page], 10, :user_id => params[:user], :sources => params[:map_source], :unidirectional => "true")
 	    @mappings = {}
 	    @map_sources = []
 	    @service_users = DataAccess.getUsers.sort{|x,y| x.username.downcase <=> y.username.downcase}
 	    @users = []
-	    user_count = DataAccess.getMappingCountOntologyUsers(@ontology.ontologyId)
-	    
+	    user_count = DataAccess.getMappingCountOntologyUsers(@ontology.ontologyId, @target_ontology.ontologyId)
+
       user_count.each do |user|
-        # We test to see if a user should appear in the list by trying to get mappings between ontologies with page & limit at 1, should be a quick query
-        user_test = DataAccess.getBetweenOntologiesMappings(@ontology.ontologyId, @target_ontology.ontologyId, 1, 1, :user_id => user['userId'], :sources => params[:map_source])
-        @users << DataAccess.getUser(user['userId']) unless user_test.nil? || user_test.length == 0
+        @users << DataAccess.getUser(user['userId'])
       end
-      
+      @users.sort! {|a,b| a.username.downcase <=> b.username.downcase}
+
 	    for map in @mapping_pages
 	      @map_sources << map.map_source.gsub(/(<[^>]*>)/mi, "") unless map.map_source.nil? || map.map_source.empty?
 	      @map_sources.uniq!
-	      
+
 	      if @mappings[map.source_id].nil?
 	        @mappings[map.source_id] = [{:source_ont_name=>map.source_ont_name,:destination_ont_name=>map.destination_ont_name,:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.username],:count=>1}]
 	      else
 	        @mappings[map.source_id]
-	        
+
 	        found = false
 	        for mapping in @mappings[map.source_id]
 	          if mapping[:destination_id].eql?(map.destination_id)
@@ -128,15 +126,15 @@ class MappingsController < ApplicationController
 	            mapping[:count] += 1
 	          end  
 	        end
-	        
+
 	        unless found
 	         @mappings[map.source_id] << {:source_ont_name=>map.source_ont_name,:destination_ont_name=>map.destination_ont_name,:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.username],:count=>1}
 	        end
 	      end
 	    end
-	    
+
 	    @mappings = @mappings.sort {|a,b| b[1].length<=>a[1].length}
-	    
+
 	    if @mapping_pages.nil? || @mapping_pages.empty?
 	      @mapping_pages.page_size = 1
 	      @mapping_pages.total_mappings = 0

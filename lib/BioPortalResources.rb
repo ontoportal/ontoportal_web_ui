@@ -357,7 +357,7 @@ class BioPortalResources
     class OntologyUserMappingCount < BioPortalResources
       def initialize(params)
         super(params)
-        @uri << "/virtual/mappings/stats/ontologies/users/%ONT_VIRTUAL%"
+        @uri << "/virtual/mappings/stats/ontologies/users/%ONT_VIRTUAL%?targetontology=%TARGET_ONT_VIRTUAL%"
       end
     end
 
