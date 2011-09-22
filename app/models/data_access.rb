@@ -520,6 +520,17 @@ class DataAccess
     end
     return self.getOntology(ontology_id)
   end
+
+  def self.removeLatestOntologyFromCache(virtual_ontology_id)
+    ontology = self.getLatestOntology(virtual_ontology_id)
+    ontology_id = ontology.id
+
+    CACHE.delete("#{ontology_id}::_details")
+    CACHE.delete("#{virtual_ontology_id}::_latest")
+    CACHE.delete("#{virtual_ontology_id}::_versions")
+    CACHE.delete("#{virtual_ontology_id}::_details")
+    CACHE.delete("ont_list")
+  end
   
   def self.updateView(params, ontology_id)
     SERVICE.updateOntology(params, ontology_id)

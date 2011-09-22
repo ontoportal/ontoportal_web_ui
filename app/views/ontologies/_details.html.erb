@@ -30,6 +30,16 @@
                   <%= @ontology.versionStatus.capitalize unless @ontology.versionStatus.nil? %>
               </td>
           </tr>
+          <% if @ontology.viewing_restricted? %>
+          <tr>
+              <th>
+                  Viewing Restriction:
+              </th>
+              <td>
+                  <%= @ontology.viewingRestriction.capitalize %>
+              </td>
+          </tr>
+          <% end %>
           <tr>
               <th>
                   Format:

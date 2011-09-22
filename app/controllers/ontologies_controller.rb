@@ -165,19 +165,19 @@ class OntologiesController < ApplicationController
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]
     params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]
-    
+
     view = false
     if params[:view]
       view = true
     end
-    
+
     # Set the ontology we are viewing
     if view
       @ontology = DataAccess.getView(params[:ontology])   
     else
       @ontology = DataAccess.getOntology(params[:ontology])   
     end
-    
+
     if @ontology.private? && (session[:user].nil? || !session[:user].has_access?(@ontology))
       if request.xhr?
         return render :partial => 'private_ontology', :layout => false
@@ -185,7 +185,16 @@ class OntologiesController < ApplicationController
         return render :partial => 'private_ontology', :layout => "ontology_viewer"
       end
     end
-    
+
+    if @ontology.licensed? && (session[:user].nil? || !session[:user].has_access?(@ontology))
+      @user = UserWrapper.new
+      if request.xhr?
+        return render :partial => 'licensed_ontology', :layout => false
+      else
+        return render :partial => 'licensed_ontology', :layout => "ontology_viewer"
+      end
+    end
+
     # Get most recent active version of ontology if there was a parsing error
     skip_status = [1, 2, 4]
     if OntologyWrapper.virtual_id?(params[:ontology]) && skip_status.include?(@ontology.statusId.to_i) 

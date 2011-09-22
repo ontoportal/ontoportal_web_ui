@@ -8,41 +8,40 @@ class UserWrapper
     attr_accessor :roles
     attr_accessor :phone
     attr_accessor :apikey
-    
-    attr_accessor :password_confirmation  
+
+    attr_accessor :password_confirmation
     attr_accessor :password
-    attr_accessor :email_confirmation    
+    attr_accessor :email_confirmation
     attr_accessor :validate_password
-    
+
+    attr_accessor :ontologylicensetext
+    attr_accessor :ontologylicense
+
     ROLES = {
       "ROLE_DEVELOPER"=>1,
       "ROLE_LIBRARIAN"=>2,
       "ROLE_ADMINISTRATOR"=>3
     }
-    
+
     def to_param
       return self.id.to_s
     end
-    
+
     def admin?
-      if self.roles.include?("ROLE_ADMINISTRATOR")
-        return true
-      else
-        return false
-      end
+      self.roles.include?("ROLE_ADMINISTRATOR")
     end
-    
+
     def has_access?(ontology)
-      return true if ontology.useracl.nil? || ontology.useracl.empty?
+      return true if !ontology.viewing_restricted?
       return true if self.admin?
-      
+
       ontology.useracl.each do |user|
         return true if user.to_i == self.id.to_i
       end
-      
+
       return false
     end
-    
+
     def initialize(params={})
       self.id = params[:id]
       self.username = params[:username]
@@ -54,7 +53,7 @@ class UserWrapper
       self.email_confirmation = params[:email_confirmation]
       self.apikey = params[:apikey]
     end
-    
+
     def to_h
       params={}
       params[:id]= self.id
@@ -66,8 +65,10 @@ class UserWrapper
       params[:phone] = self.phone
       params[:password]= self.password
       params[:apikey] = self.apikey
+      params[:ontologylicensetext] = self.ontologylicensetext
+      params[:ontologylicense] = self.ontologylicense
       return params
     end
 
-    
+
 end

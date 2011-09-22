@@ -32,6 +32,8 @@ module OntologiesHelper
       return "<a href='/ontologies/#{ontology.ontologyId}'>Summary Only</a>"
     elsif ontology.private?
       return "<a href='/ontologies/#{ontology.ontologyId}?p=terms'>Private</a>"
+    elsif ontology.licensed?
+      return "<a href='/ontologies/#{ontology.ontologyId}?p=terms'>Licensed</a>"
     else
       return "<a href='/ontologies/#{ontology.ontologyId}?p=terms'>Public</a>"
     end

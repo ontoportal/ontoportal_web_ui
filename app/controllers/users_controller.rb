@@ -147,7 +147,7 @@ class UsersController < ApplicationController
         end
       end
 
-      flash[:notice] = 'Account was successfully updated.'          
+      flash[:notice] = 'Account was successfully updated.'
       redirect_to user_path(@user.id)
     end
   end
@@ -181,8 +181,26 @@ class UsersController < ApplicationController
     
     render :json => { :userValid => !user.nil?, :user => user }
   end
-  
-  
+
+  def submit_license
+    user = session[:user]
+    user.ontologylicensetext = params[:ontologylicensetext]
+    user.ontologylicense = params[:ontologylicense]
+    ontology_id = params[:ontologylicense]
+
+    redirect_location = params[:redirect_location].nil? || params[:redirect_location].empty? ? :back : params[:redirect_location]
+
+    begin
+      updated_user = DataAccess.updateUser(user.to_h, user.id)
+    rescue Exception => e
+      redirect_to :back, :flash => { :error => "There was a problem submitting your license, please try again" }
+      return
+    end
+
+    DataAccess.removeLatestOntologyFromCache(ontology_id)
+
+    redirect_to redirect_location
+  end
 private
 
   def get_ontology_list(ont_hash)
@@ -195,7 +213,7 @@ private
   
   def validate(params)
     errors=[]
-    if !params[:phone].nil? && params[:phone].length >0 
+    if !params[:phone].nil? && params[:phone].length > 0
       if  !params[:phone].match(/^(1\s*[-\/\.]?)?(\((\d{3})\)|(\d{3}))\s*[-\/\.]?\s*(\d{3})\s*[-\/\.]?\s*(\d{4})\s*(([xX]|[eE][xX][tT])\.?\s*(\d+))*$/i)
         errors << "Please enter a valid phone number"
       end

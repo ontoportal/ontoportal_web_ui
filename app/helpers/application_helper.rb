@@ -209,11 +209,12 @@ module ApplicationHelper
     end
   end
   
-  def loading_spinner(padding = false)
+  def loading_spinner(padding = false, include_text = true)
+    loading_text = include_text ? " loading..." : ""
     if padding
-      '<div style="padding: 1em;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"> loading...</div>'
+      '<div style="padding: 1em;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;">' + loading_text + '</div>'
     else
-      '<img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"> loading...'
+      '<img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;">' + loading_text
     end
   end
   
