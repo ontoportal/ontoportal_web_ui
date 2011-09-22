@@ -88,7 +88,7 @@ function showRestrictionLicensed() {
         } else if (select.val() == "licensed") {
           hideAllRestrictions();
           showRestrictionLicensed();
-      	} else if (select.val() == "") {
+      	} else if (select.val() == "public") {
           hideAllRestrictions();
       	}
       });
@@ -300,13 +300,13 @@ function showRestrictionLicensed() {
                 Ontology Viewing Restrictions
             </th>
             <td>
-            		<%view_restiction_options = [["Private", "private"], ["Licensed", "licensed"]]%>
+            		<%view_restiction_options = [["Public", "public"], ["Private", "private"], ["Licensed", "licensed"]]%>
             		<%selected = @ontology.private? ? "private" : ""%>
                 <%selected = @ontology.licensed? ? "licensed" : selected%>
             		<%display_private = @ontology.private? ? "" : "display: none;"%>
                 <%display_licensed = @ontology.licensed? ? "" : "display: none;"%>
 
-                <%=select :ontology, :viewingRestriction, view_restiction_options, { :include_blank => "", :selected => selected }%>
+                <%=select :ontology, :viewingRestriction, view_restiction_options, { :selected => selected }%>
 
                 <div id="viewingRestrictionsPrivate" class="viewing_restriction_types" style="padding: .5em; border: thin solid #C1DAD7; .5em .5em .5em 0; <%=display_private%>">
                 	<h3>Add or remove accounts that are allowed to view terms in this ontology using the account name</h3> 
