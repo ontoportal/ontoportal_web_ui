@@ -238,9 +238,7 @@ var select_categories = {
 }
 
 function syncGroupsAndCategories() {
-  jQuery.each(ontsInGroupsOrCategories, function(index, ont_id){
-    jQuery("#ont_select_adv_check" + ont_id).attr("checked", false);
-  });
+  jQuery("#select_all_filtered_row input").attr("checked", false);
 
   var groups = jQuery("#ont_select_adv tr.group_select_boxes_tr input:checked");
   var categories = jQuery("#ont_select_adv tr.category_select_boxes_tr input:checked");
@@ -323,6 +321,7 @@ function clearGroupsAndCategories() {
         }
 
         clearGroupsAndCategories();
+        jQuery("#select_all_filtered_row input").attr("checked", false);
 
         return false;
       })
