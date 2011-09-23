@@ -111,8 +111,12 @@ class NodeWrapper
   
   def label_html
     self.obsolete? ? "<span class='obsolete_term' title='This term is obsolete'>#{self.label}</span>" : self.label
- end
-  
+  end
+
+  def self.label_to_html(label, obsolete)
+    obsolete ? "<span class='obsolete_term' title='This term is obsolete'>#{label}</span>" : label
+  end
+
   def to_param
     URI.escape(self.id,":/?#!").to_s
   end

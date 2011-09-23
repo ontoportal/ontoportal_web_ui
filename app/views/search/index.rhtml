@@ -25,14 +25,7 @@ var resultsTable;
       ]
     });
 
-    jQuery("#search_keywords").autocomplete({
-      source: "/search/json_search_aggregated",
-      minLength: 3,
-      delay: 500,
-      appendTo: "#search_input"
-    });
-    
-	});
+  });
 </script>
 
 <style type="text/css">
@@ -95,8 +88,13 @@ var resultsTable;
 
               var elipses = (res.preferredName.length > 25) ? "..." : ""
 
+              // We have to look for a span here, indicating that the term is obsolete.
+              // If not, add the term to a new span to match obsolete structure so we can process them the same.
+              var label_html = jQuery(res.label_html).is("span") ? jQuery(decodeURIComponent(res.label_html)) : jQuery("<span/>").append(res.label_html);
+              label_html = jQuery("<span/>").append(label_html.html(label_html.html().substring(0, 25)+elipses));
+
             	var row = [
-								"<div class='term_link'>"+additionalSpan+"<a title='"+res.preferredName+"' href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+res.preferredName.substring(0, 25)+elipses+"</a></div>",
+								"<div class='term_link'>"+additionalSpan+"<a title='"+res.preferredName+"' href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+jQuery(label_html).html()+"</a></div>",
 								res.recordTypeFormatted,
 								"<a href='/ontologies/"+res.ontologyId+"'>"+res.ontologyDisplayLabel+"</a>"
               ];

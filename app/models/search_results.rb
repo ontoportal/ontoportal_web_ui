@@ -12,7 +12,13 @@ class SearchResults < Array
     return if hash.nil?
     
     results = hash['contents']['searchResultList']
-    
+    unless results.nil? || results.length == 0
+      results.values.each do |result|
+        obsolete = result["isObsolete"].eql?("1")
+        result["label_html"] = NodeWrapper.label_to_html(result["preferredName"], obsolete)
+      end
+    end
+
     self.results = results.nil? || results.length == 0 ? Array.new : results.values
     self.ontology_hit_counts = hash['contents']['ontologyHitList'].values unless hash['contents']['ontologyHitList'].nil? || hash['contents']['ontologyHitList'].length == 0
     self.page_size = hash['pageSize']
