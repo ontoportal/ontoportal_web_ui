@@ -303,7 +303,7 @@ var filter_matched = {
 <div style="padding: 1em;">
 	<div id="search_input" style="margin-bottom: 1em;">
     <h1>Term Search</h1>
-    <p>Enter keywords below to search for term matches in <%=$SITE%> ontologies.</p>
+    <p>Enter a partial or full term name to find matches in <%=$SITE%> ontologies.</p>
 		<%=text_field :search, :keywords, :style => "width: 426px; height: 20px; float: left; margin-right: 1em;"%>
 		
 		<div id="search_options" style="padding-top: .6em; clear: both;">
@@ -325,9 +325,9 @@ var filter_matched = {
     <div id="result_stats" style="text-align: right; width: 850px;"></div>
     <table id="search_results" style="display: none; width: 850px;" class="zebra">
 			<thead>
-				<th style="width: 300px;">Term Name</th>
-        <th style="width: 175px;" class="matched_in">Matched In 
-          <span class="popup_container">
+				<th style="width: 325px;">Term Name</th>
+        <th style="width: 150px;" class="matched_in">Matched In 
+          <span class="popup_container" style="padding-left: 1.7em;">
             <span class="bp_popup_link_container">
               <a href="javascript:void(0);" id="filter_matched" class="bp_popup_link">filter</a>
             </span>
@@ -351,7 +351,7 @@ var filter_matched = {
             </div>
           </span>
         </th>
-        <th style="width: 325px;">Ontology <span class="popup_container"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_ontologies" class="bp_popup_link">filter</a></span><div id="ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span></th>
+        <th style="width: 325px;">Ontology <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_ontologies" class="bp_popup_link">filter</a></span><div id="ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span></th>
 			</thead>
 			<tbody id="search_results_body">
 			</tbody>
