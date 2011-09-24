@@ -79,19 +79,20 @@ var resultsTable;
           var ontologies = {};
           var ontology_links = [];
           var ontologies_for_sort = [];
-          var ontologies_sorted = [];
+          var ontologies_sorted = []
+          var max_word_length = 35;
 
           if (!jQuery.isEmptyObject(data)) {
             jQuery(data.results).each(function(){
             	var res = this;
 							var additionalSpan = "<span class='additional'><a href='/ajax/term_details/"+res.ontologyId+"?styled=false&conceptid="+encodeURIComponent(res.conceptId)+"' class='term_details' rel='facebox[.term_details_pop]'>details</a> | <a href='javascript:void(0);' data-bp_ontologyid='"+res.ontologyId+"' data-bp_conceptid='"+encodeURIComponent(res.conceptId)+"' class='term_visualize'>visualize</a></span>";
 
-              var elipses = (res.preferredName.length > 25) ? "..." : ""
+              var elipses = (res.preferredName.length > max_word_length) ? "..." : ""
 
               // We have to look for a span here, indicating that the term is obsolete.
               // If not, add the term to a new span to match obsolete structure so we can process them the same.
-              var label_html = jQuery(res.label_html).is("span") ? jQuery(decodeURIComponent(res.label_html)) : jQuery("<span/>").append(res.label_html);
-              label_html = jQuery("<span/>").append(label_html.html(label_html.html().substring(0, 25)+elipses));
+              var label_html = (res.isObsolete == "1") ? jQuery(decodeURIComponent(res.label_html)) : jQuery("<span/>").append(res.label_html);
+              label_html = jQuery("<span/>").append(label_html.html(label_html.html().substring(0, max_word_length)+elipses));
 
             	var row = [
 								"<div class='term_link'>"+additionalSpan+"<a title='"+res.preferredName+"' href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+jQuery(label_html).html()+"</a></div>",
