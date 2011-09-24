@@ -215,7 +215,17 @@ class OntologiesController < ApplicationController
       redirect_to "/visualize/#{@latest_ontology.id}#{concept_id}", :status => :moved_permanently
       return
     end
-    
+
+    # Check to see if user is requesting RDF+XML, return the file from REST service if so
+    if request.content_type.to_s.eql?("application/rdf+xml")
+      user_api_key = session[:user].nil? ? "" : session[:user].apikey
+      concept_id = params[:conceptid] ? params[:conceptid] : "root"
+      rdf = open($REST_URL + "/virtual/rdf/#{@ontology.ontologyId}?conceptid=#{CGI.escape(concept_id)}&apikey=#{$API_KEY}&userapikey=#{user_api_key}")
+      render :text => rdf.string, :content_type => "appllication/rdf+xml"
+      return
+    end
+
+
     if !@ontology.flat? && !params[:conceptid]
       # get the top level nodes for the root
       @root = TreeNode.new()
@@ -227,9 +237,9 @@ class OntologiesController < ApplicationController
           nodes.push(node)
         end
       end
-      
+
       @root.set_children(nodes, @root)
-      
+
       # get the initial concepts to display
       @concept = DataAccess.getNode(@ontology.id, @root.children.first.id, nil, view)
       
@@ -466,9 +476,18 @@ class OntologiesController < ApplicationController
   ## These are stub methods that let us invoke partials directly
   ###############################################
   def summary
-    # Grab Metadata
     @ontology_version = DataAccess.getOntology(params[:id])
     @ontology = DataAccess.getLatestOntology(@ontology_version.ontologyId)
+
+    # Check to see if user is requesting RDF+XML, return the file from REST service if so
+    if request.content_type.to_s.eql?("application/rdf+xml")
+      user_api_key = session[:user].nil? ? "" : session[:user].apikey
+      rdf_file = RemoteFile.new($REST_URL + "/virtual/ontology/rdf/download/#{@ontology.ontologyId}?apikey=#{$API_KEY}&userapikey=#{user_api_key}")
+      send_file rdf_file.path, :type => "appllication/rdf+xml"
+      return
+    end
+
+    # Grab Metadata
     @groups = DataAccess.getGroups()
     @categories = DataAccess.getCategories()
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
