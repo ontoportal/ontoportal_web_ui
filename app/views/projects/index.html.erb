@@ -1,7 +1,8 @@
 <%@title = "Project Listing"%>
 
-<p style="padding:1em;max-width:1200px;" >
-  <% intro_text = "This page shows selected projects which make use of BioPortal technology. To add your project to this list press the \"Create New Project\" button. You must be logged in to BioPortal to create a new project."%> 
+<h1 class="tab_header">Projects</h1>
+<p class="tab_description">
+<% intro_text = "Browse a selection of projects that use #{$SITE} resources"%> 
   <%=t('projects.intro').nil? || t('projects.intro').empty? ? "#{intro_text}  #{help_icon("/help#Projects_Tab")}" : t('projects.intro')%>
 </p>
 

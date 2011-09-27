@@ -1683,24 +1683,24 @@ button.fg-button-menu, button.fg-button {
   border: none;
 }
 
-div.chzn-container {
+#ontology_picker_container div.chzn-container {
   width: 432px !important;
 }
 
-div.chzn-container-active ul.chzn-choices li.search-field input {
+#ontology_picker_container div.chzn-container-active ul.chzn-choices li.search-field input {
   font-style: normal !important;
 }
 
-div.chzn-container ul.chzn-choices {
+#ontology_picker_container div.chzn-container ul.chzn-choices {
   max-height: 110px;
   overflow: auto !important;
 }
 
-div.chzn-container li.search-field input {
+#ontology_picker_container div.chzn-container li.search-field input {
   font-style: oblique;
 }
   
-div.chzn-drop {
+#ontology_picker_container div.chzn-drop {
   display: none;
 }
 
@@ -1826,6 +1826,9 @@ span.additional a:hover {
   width: 230px !important;
 }
 
+/************************************
+ * Help text at top of tabs
+ ************************************/
 a.help_link {
   border-radius: 6px 6px 6px 6px;
   background: url("images/ui-bg_glass_100_e4f1fb_1x400.png") repeat-x scroll 50% 50% #E4F1FB;
@@ -1838,4 +1841,14 @@ a.help_link {
   display: inline-block;
   vertical-align: middle;
   margin-left: .5em;
+}
+
+h1.tab_header {
+  padding: 10px 0 0 13px;
+  margin-bottom: 0;
+}
+
+p.tab_description {
+  padding: 0 13px 0;
+  margin-bottom: 10px;
 }

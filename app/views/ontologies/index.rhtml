@@ -118,9 +118,9 @@ jQuery(document).ready(function() {
 
 </script>
 
-
-<p style="padding:1em;max-width:1200px;" >
-  <% intro_text = "Here you can browse our library of Biomedical ontologies and can also submit your own ontology. The system displays some summary information about each ontology. More detailed summary information is available on the ontology summary page for each ontology. You can reach this page by clicking on the ontology name link."%> 
+<h1 class="tab_header">Browse</h1>
+<p class="tab_description">
+  <% intro_text = "Browse the library of ontologies"%> 
   <%=t('ontologies.intro').nil? || t('ontologies.intro').empty? ? "#{intro_text}  #{help_icon("/help#Browse_Tab")}" : t('ontologies.intro')%>
 </p>
 
@@ -162,8 +162,8 @@ jQuery(document).ready(function() {
       </tr>
       <tr>
         <th>
-        	<%=help_icon("http://www.bioontology.org/wiki/index.php/BioPortal_FAQ#Ontology_Groups", "Help documentation about Groups", -2)%>
         	Filter by Group
+        	<%=help_icon("http://www.bioontology.org/wiki/index.php/BioPortal_FAQ#Ontology_Groups", "Help documentation about Groups", -2)%>
         </th>
         <td>
           <select onchange="filterByGroup(this)"  name="groups" id="select_groups">

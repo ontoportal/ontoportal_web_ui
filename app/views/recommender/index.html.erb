@@ -35,7 +35,7 @@
             }
 
             var links = [];
-            links.push('<tr><td style="vertical-align: bottom; padding: 0 10px 7px 0;">Rank</td><td valign=bottom style="vertical-align: bottom; padding: 0 7px 7px 3px;">Ontology</td><td style="vertical-align: bottom; padding: 0 0 7px 1em; text-align: right;">Terms<br/>Matched</td></tr>');
+            links.push('<thead><tr><th style="padding-right: 6px; text-align: right;">Rank</th><th>Ontology</th><th style="padding-right: 6px">Terms Matched</th></tr></thead>');
 
             var resultCount = 1;
             if (jQuery.isEmptyObject(data)) {
@@ -43,7 +43,7 @@
             } else {
               jQuery(data).each(function(){
                 var rec = this;
-                links.push("<tr><td style='text-align: right; padding-right: 10px;'>"+resultCount+"</td><td style='padding: 3px;'><a href='/ontologies/"+rec.virtualOntologyId+"'>"+rec.name+"</a></td><td style='text-align: right;'>"+rec.nbAnnotation+"</td></tr>");
+                links.push("<tr><td style='text-align: right; padding-right: 10px;'>"+resultCount+"</td><td style='padding: 6px 12px 6px 12px;'><a href='/ontologies/"+rec.virtualOntologyId+"'>"+rec.name+"</a></td><td style='text-align: right;'>"+rec.nbAnnotation+"</td></tr>");
                 resultCount++;
               });
             }
@@ -64,11 +64,11 @@
   <h1>Ontology Recommender</h1>
   
   <p style="max-width:850px;">
-    The Ontology Recommender accepts a body of text and returns a ranked set of ontologies that most closely match the text. The ranking takes into account both how many terms from the text are in the ontology, and both the size of the ontology and its granularity with respect to the matched terms.
+    Receive recommendations on which ontologies are most relevant for a corpus 
     <%=help_icon("/help#Recommender_Tab")%>
   </p>
 
-  <div style="float: left; padding-bottom: 1em;">
+  <div style="padding-bottom: 1em;">
     <% textarea_title = "Please paste at least a paragraph (50 words or more) of text to use in calculating ontology recommendations" %>
     <%=text_area :recommendation, :text, :title => textarea_title, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px; width: 600px;", :class => "help_text" %>
 
@@ -80,11 +80,12 @@
     <span class="recommender_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
     <span style='color: red;' class='recommender_error'></span>
   </div>
-  
-  <div id="recommendations_container" style="display: none; padding: 1em; margin: 0 1em 2em; border: thin solid gray; float: left; box-shadow: 0 0 3px gray;">
-    <h2 style="margin-bottom: 0;">Ontology Recommendations</h2>
-    <div id="not_enough_text_error" style="color: red; margin-bottom: 7px;"></div>
-    <table id="recommendations" style="display: inline-block;"></table>
-  </div>
-
 </div>
+
+<div id="recommendations_container" style="display: none; padding: 0 13px; margin: 0 0 2em;">
+  <h2 style="margin-bottom: 0;">Ontology Recommendations</h2>
+  <div id="not_enough_text_error" style="color: red; margin-bottom: 7px;"></div>
+  <table id="recommendations" style="display: inline-block;" class="zebra"></table>
+</div>
+
+

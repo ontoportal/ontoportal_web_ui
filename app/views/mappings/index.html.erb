@@ -1,7 +1,8 @@
 <%@title = "Mappings"%>
 
-<p style="padding:1em;max-width:1100px" >
-  <% intro_text = "Mappings are associations between two or more terms in different ontologies. This association typically, but not always, represents a degree of similarity between the terms. The author of the mapping defines the semantics of a particular mapping. It is also usual for a mapping to be bi-directional, but again, this is not required. The mapping author defines directionality."%> 
+<h1 class="tab_header">Mappings</h1>
+<p class="tab_description">
+  <% intro_text = "Browse mappings between terms in different ontologies"%> 
   <%=t('mappings.intro').nil? || t('mappings.intro').empty? ? "#{intro_text}  #{help_icon("/help#Mappings_Tab")}" : t('mappings.intro')%>
 </p>
 
@@ -16,11 +17,15 @@
     });
     jQuery('#mappings').html('');
   }
+
+  jQuery(document).ready(function(){
+      jQuery("#search_ontologies").chosen();
+  });
 </script>
 
-<p style="font-size:15px;font-weight:bold;padding:10px;margin-bottom:0;border:1px solid #cfcfcf;">Display Mappings for 
-  <%= select('search', 'ontologies', @options, {:prompt=>'Select ontology...'},{:onchange=>"loadMappings(this.value);"}) %>
-  <span style="font-size: x-small;">(Only Ontologies with Mappings are displayed)</span>
+<p style="font-size:15px;font-weight:bold;padding:10px;margin-bottom:0;">
+  <%# <span style="font-size: x-small;">(Only Ontologies with Mappings are displayed)</span><br/><br/>%>
+  <%= select('search', 'ontologies', @options, {:include_blank => ""},{:onchange=>"loadMappings(this.value);", "data-placeholder".to_sym => "Select an Ontology"}) %>
 </p>
 
 <div id="mapping_load" style="padding: 1em 1em 0; margin-bottom: -1em; display: none;">
