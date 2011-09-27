@@ -90,11 +90,14 @@
       <td>
         <table>
           <tr style="border: none;">
-            <td style="border: none;">
+            <td style="border: none; vertical-align: top;">
               <strong>Web Interface</strong>
               <br/>
               <%= survey.check_box :read_access_ui%>
               <%= survey.label :read_access_ui, "Browse ontologies, notes, mappings, and reviews"%>
+              <br/>
+              <%= survey.check_box :widgets_ui%>
+              <%= survey.label :widgets_ui, "Use ontology widgets"%>
               <br/>
               <%= survey.check_box :create_notes_ui%>
               <%= survey.label :create_notes_ui, "Create notes"%>
@@ -108,7 +111,7 @@
               <%= survey.check_box :resource_index_ui%>
               <%= survey.label :resource_index_ui, "Search resources with ontology terms" %>
             </td>
-            <td style="border: none; padding-left: 2em;">
+            <td style="border: none; padding-left: 2em; vertical-align: top;">
               <strong>API (REST) Access</strong>
               <br/>
               <%= survey.check_box :read_access_rest%>
