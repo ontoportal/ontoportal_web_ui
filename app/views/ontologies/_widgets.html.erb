@@ -11,23 +11,23 @@
         <hr/>
         <div style="margin: auto;">
             <style>#widget_table td {
-					border: 1px solid #EFEFEF;
-					padding: 10px;
-				}
-				#widget_table th {
-					font-size: 15px;
-					font-weight: bold;
-					background-color: #f5fafa;
-					padding: 5px;
-				}
-				.getcode {
-					font-weight: bold;
-					font-size: 15px;
-					background-color: #f5fafa;
-					border: 1px solid #AAAAAA;
-					padding: 3px 10px 3px 10px;
-					text-decoration: none;
-				}
+          border: 1px solid #EFEFEF;
+          padding: 10px;
+        }
+        #widget_table th {
+          font-size: 15px;
+          font-weight: bold;
+          background-color: #f5fafa;
+          padding: 5px;
+        }
+        .getcode {
+          font-weight: bold;
+          font-size: 15px;
+          background-color: #f5fafa;
+          border: 1px solid #AAAAAA;
+          padding: 3px 10px 3px 10px;
+          text-decoration: none;
+        }
 </style>
             <table width="80%" id="widget_table">
                 <tr>
@@ -46,52 +46,52 @@
                         <a href="#TB_inline?height=400&width=600&inlineId=jump" class="thickbox getcode">Get Code</a>
                     </td>
                     <td>
-                    	<div id="bp_quick_jump"></div>
-                  	  <script type="text/javascript">
+                      <div id="bp_quick_jump"></div>
+                      <script type="text/javascript">
                           // Set defaults for this installation
                           var BP_SEARCH_SERVER = "<%= $UI_URL%>";
                           var BP_SITE = "<%= $SITE%>";
                           var BP_ORG = "<%= $ORG%>";
                           var BP_ontology_id = "<%= @ontology.ontologyId%>";</script>
-					            <%= javascript_include_tag "/javascripts/widgets/quick_jump.js" %>
+                      <%= javascript_include_tag "/javascripts/widgets/quick_jump.js" %>
                       <div id="jump" style="display:none;">
                       <h2>Step 2: Follow the Instructions</h2>
                       <hr/>
-						<div class="enable-lists">
-	                        <ul>
-	                            <li>
-	                                Download the <a rel="nofollow" title="<%= $UI_URL%>/javascripts/widgets/quick_jump.js" class="external free" href="<%= $UI_URL%>/javascripts/widgets/quick_jump.js"><b>quick_jump.js file</b></a>
-	                                and put it on your server
-	                            </li>
-	                            <li>
-	                                Copy the code below and paste it to your HTML page
+            <div class="enable-lists">
+                          <ul>
+                              <li>
+                                  Download the <a rel="nofollow" title="<%= $UI_URL%>/javascripts/widgets/quick_jump.js" class="external free" href="<%= $UI_URL%>/javascripts/widgets/quick_jump.js"><b>quick_jump.js file</b></a>
+                                  and put it on your server
+                              </li>
+                              <li>
+                                  Copy the code below and paste it to your HTML page
                                     <li>
                                         <b>Note:</b>
                                         If you would like to use Quick Jump across multiple ontologies:
                                         <ul>
-                                        	<li>
-                                            	You can enter a comma-separated list of ontology ids:<br>var BP_ontology_id = "1032,1089";
-											</li>
-											<li>
-												You cans set the variable to 'all' to search all ontologies in <%= $SITE%>:<br>var BP_ontology_id = "all";
-											</li>
-										</ul>
-									</li>
-	                            </li>
+                                          <li>
+                                              You can enter a comma-separated list of ontology ids:<br>var BP_ontology_id = "1032,1089";
+                      </li>
+                      <li>
+                        You cans set the variable to 'all' to search all ontologies in <%= $SITE%>:<br>var BP_ontology_id = "all";
+                      </li>
+                    </ul>
+                  </li>
+                              </li>
                     <li>
                       To include definitions in the Jump To drop-down, add the following variable in Javascript:<br/>
                       <pre>var BP_include_definitions = true;</pre>
                     </li>
-	                            <li>
-	                                In the code that you just pasted, make sure to change the path to the quick_jump.js file to point to the location where you put the file (relative to your HTML file)
-	                                <ul>
-	                                    <li>
-	                                        For example, if you put the quick_jump.js file in the same directory as your HTML file, this is the code you would use:
-	                                    </li>
-	                                </ul>
-	                            </li>
-	                        </ul>
-						</div>
+                              <li>
+                                  In the code that you just pasted, make sure to change the path to the quick_jump.js file to point to the location where you put the file (relative to your HTML file)
+                                  <ul>
+                                      <li>
+                                          For example, if you put the quick_jump.js file in the same directory as your HTML file, this is the code you would use:
+                                      </li>
+                                  </ul>
+                              </li>
+                          </ul>
+            </div>
 <textarea rows=8 cols=70>
 <div id="bp_quick_jump"></div>
 <script type="text/javascript">
@@ -113,18 +113,18 @@
                         <a href="#TB_inline?height=400&width=600&inlineId=form" class="thickbox getcode">Get Code</a>
                     </td>
                     <td>
-						<%= javascript_include_tag "/javascripts/widgets/form_complete.js" %>
-						Example 1 (start typing the term name to get its full URI)
-						<br/> 
-						<input type="text" name="a" class="bp_form_complete-<%= @ontology.ontologyId%>-uri" size="100"/><br/> 
-						Example 2 (get the ID for a term)
-						<br/> 
-						<input type="text" name="b" class="bp_form_complete-<%= @ontology.ontologyId%>-shortid" size="100"/><br/> 
-						Example 3 (get the preferred name for a term)
-						<br/> 
-						<input type="text" name="c" class="bp_form_complete-<%= @ontology.ontologyId%>-name" size="100"/> 
+            <%= javascript_include_tag "/javascripts/widgets/form_complete.js" %>
+            Example 1 (start typing the term name to get its full URI)
+            <br/> 
+            <input type="text" name="a" class="bp_form_complete-<%= @ontology.ontologyId%>-uri" size="100"/><br/> 
+            Example 2 (get the ID for a term)
+            <br/> 
+            <input type="text" name="b" class="bp_form_complete-<%= @ontology.ontologyId%>-shortid" size="100"/><br/> 
+            Example 3 (get the preferred name for a term)
+            <br/> 
+            <input type="text" name="c" class="bp_form_complete-<%= @ontology.ontologyId%>-name" size="100"/> 
                         <div id="form" style="display:none;">
-							<div class="enable-lists" >
+              <div class="enable-lists" >
                             <h2>Step 2: Follow the Instructions</h2>
                             <hr/>
                             <ul>
@@ -147,10 +147,11 @@
                                                 bp_form_complete-1032-uri
                                             </code>
                                             will use NCI Thesaurus (ontology id is 1032) and will put the term URI in the field after the user selects the term from the pull-down list.
-											<ul>
-												<li><b>Note:</b> In addition to single ontology ids, you can use a list:<br><code>bp_form_complete-1032,1089-uri</code></li>
-												<li><b>OR</b> use 'all' to search across all <%= $SITE%> ontologies:<br><code>bp_form_complete-all-uri</code></li>
-											</ul>
+                      <ul>
+                        <li><b>Note:</b> In addition to single ontology ids, you can use a list:<br><code>bp_form_complete-1032,1089-uri</code></li>
+                        <li><b>OR</b> use 'all' to search across all <%= $SITE%> ontologies:<br><code>bp_form_complete-all-uri</code></li>
+                        <li>The autocomplete widget accesses ontology content from the latest version of the ontology.</li>
+                      </ul>
                                         </li>
                                     </ul>
                                         <li>
@@ -192,7 +193,7 @@
                     </li>
                                 </li>
                             </ul>
-							</div>
+              </div>
                             <p>
                                 <b>Examples:</b>
                                 <br/>
@@ -220,10 +221,10 @@ Example 1 (start typing the term name to get its full URI)
                         <a href="#TB_inline?height=400&width=600&inlineId=feed" class="thickbox getcode">Get Code</a>
                     </td>
                     <td>
-						<div id="bp_feed_container"></div>
+            <div id="bp_feed_container"></div>
                         <script type="text/javascript">
                             var BP_ontology_id = "<%= @ontology.ontologyId%>"</script>
-						<%= javascript_include_tag "/javascripts/widgets/feed_widget.js" %>
+            <%= javascript_include_tag "/javascripts/widgets/feed_widget.js" %>
                         <div id="feed" style="display:none;">
                             <h2>Step 2: Follow the Instructions</h2>
                             <hr/><b>Copy the code below and paste it to your HTML page</b>
@@ -261,7 +262,7 @@ Example 1 (start typing the term name to get its full URI)
                             </embed>
                         </object>
                         <div id ="visual" style="display:none">
-                        	<h2>Step 2: Follow the Instructions</h2>
+                          <h2>Step 2: Follow the Instructions</h2>
                             <hr/><b>Copy the code below and paste it to your HTML page</b>
                             <br/>
                             <br/>
@@ -288,14 +289,14 @@ Example 1 (start typing the term name to get its full URI)
                         </div>
                     </td>
                 </tr>
-				<tr>
-					<td>
+        <tr>
+          <td>
                         <h2>Tree Hierarchy</h2>
                         <h4>Display tree widget for <%= @ontology.displayLabel %></h4>
                         <br/>
                         <a href="#TB_inline?height=400&width=600&inlineId=ontologyTree" class="thickbox getcode">Get Code</a>
-					</td>
-					<td>
+          </td>
+          <td>
                         <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
                           id="OntologyTree" width="300" height="100%"
                           codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
@@ -315,28 +316,28 @@ Example 1 (start typing the term name to get its full URI)
                           </embed>
                         </object>
                         <div id ="ontologyTree" style="display:none">
-                        	<h2>Step 2: Follow the Instructions</h2>
+                          <h2>Step 2: Follow the Instructions</h2>
                             <hr/><b>Copy the code below and paste it to your HTML page</b>
                             <br/>
                             <br/>
 <textarea rows=8 cols=70>
 <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
-	id="OntologyTree" width="300" height="100%"
-	codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-	<param name="movie" value="<%= $FLEX_URL%>/OntologyTree.swf" />
-	<param name="quality" value="high" />
-	<param name="bgcolor" value="#ffffff" />
-	<param name="allowScriptAccess" value="always" />
-	<param name="flashVars" value="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true" />
-	<embed src="<%= $FLEX_URL%>/OntologyTree.swf" quality="high" bgcolor="#ffffff"
-		width="300" height="100%" name="OntologyTree" align="middle"
-		play="true"
-		loop="false"
-		allowScriptAccess="always"
-		type="application/x-shockwave-flash"
-		flashVars="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true"
-		pluginspage="http://www.adobe.com/go/getflashplayer">
-	</embed>
+  id="OntologyTree" width="300" height="100%"
+  codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+  <param name="movie" value="<%= $FLEX_URL%>/OntologyTree.swf" />
+  <param name="quality" value="high" />
+  <param name="bgcolor" value="#ffffff" />
+  <param name="allowScriptAccess" value="always" />
+  <param name="flashVars" value="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true" />
+  <embed src="<%= $FLEX_URL%>/OntologyTree.swf" quality="high" bgcolor="#ffffff"
+    width="300" height="100%" name="OntologyTree" align="middle"
+    play="true"
+    loop="false"
+    allowScriptAccess="always"
+    type="application/x-shockwave-flash"
+    flashVars="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true"
+    pluginspage="http://www.adobe.com/go/getflashplayer">
+  </embed>
 </object>
 </textarea>
                             <br/>
@@ -349,8 +350,8 @@ Example 1 (start typing the term name to get its full URI)
                                 For more help visit <a target="_blank" href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
                             </p>
                         </div>
-					</td>
-				</tr>
+          </td>
+        </tr>
             </table>
         </div>
     </div>
