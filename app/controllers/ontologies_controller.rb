@@ -629,6 +629,10 @@ class OntologiesController < ApplicationController
       errors << "Please Enter an Ontology Abbrevation"
     elsif params[:abbreviation].include?(" ") || /[\^{}\[\]:;\$=\*`#\|@'\<>\(\)\+,\\\/]/.match(params[:abbreviation])
       errors << "Abbreviations cannot contain spaces or the following characters: <span style='font-family: monospace;'>^{}[]:;$=*`#|@'<>()\+,\\/</span>"
+    elsif params[:abbreviation].length > 16
+      errors << "Abbreviations must be 16 characters or less"
+    elsif /^[0-9]/.match(params[:abbreviation])
+      errors << "Abbreviations must start with a letter"
     elsif DataAccess.getOntologyAcronyms.include?(params[:abbreviation].downcase)
       # We matched an existing acronym, but is it already ours from a previous version?
       unless update && !DataAccess.getLatestOntology(params[:ontologyId]).nil? && DataAccess.getLatestOntology(params[:ontologyId]).abbreviation.downcase.eql?(params[:abbreviation].downcase)
