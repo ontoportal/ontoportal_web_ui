@@ -232,15 +232,11 @@ module ApplicationHelper
     rand(36**8).to_s(36)
   end
   
-  def help_icon(link, title = "", top_padding = 0)
+  def help_icon(link, title = "Help", top_padding = -2)
     return <<-BLOCK
-      <ul>
-        <li style="position: relative; top: #{top_padding}px; float: right; list-style: none outside none;" title="#{title}" class="ui-state-default ui-corner-all ui-state-hover">
-          <a style='font-size: x-small;' target="_blank" href='#{link}'>
-            <span class="ui-icon ui-icon-help"></span>
+          <a title="#{title}" style='font-size: x-small; margin-top: #{top_padding}px;' target="_blank" href='#{link}' class='pop_window help_link'>
+            <span class="pop_window ui-icon ui-icon-help"></span>
           </a>
-        </li>
-      </ul>
     BLOCK
   end
   

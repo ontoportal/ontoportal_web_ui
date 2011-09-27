@@ -1,7 +1,8 @@
 <%@title = "Resource Index"%>
 
-<p style="padding:10px;margin:10px; border:1px solid #EFEFEF;" >
-  <%=t('home.resources.intro')%>
+<p style="padding:1em;" >
+  <% intro_text = "The resource index is a pre-calculated set of annotations of selected biomedical resources. We have annotated these resources with all terms in all BioPortal ontologies. To retrieve records for an ontology term, enter the term in the box and press the 'Search' button."%> 
+  <%=t('home.resources.intro').nil? || t('home.resources.intro').empty? ? "#{intro_text}  #{help_icon("/help#Resource_Index_Tab")}" : t('home.resources.intro')%>
 </p>
 
 <div style="height:800px;text-align:center;">

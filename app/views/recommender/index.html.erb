@@ -3,25 +3,25 @@
 <%@title = "Ontology Recommender"%>
 
 <script type="text/javascript">
-	jQuery(document).ready(function(){
-		jQuery("#recommender_button").click(getRecommendations);
-	});
-	
-	function getRecommendations() {
+  jQuery(document).ready(function(){
+    jQuery("#recommender_button").click(getRecommendations);
+  });
+  
+  function getRecommendations() {
     jQuery("#not_enough_text_error").html("");
-		jQuery(".recommender_error").html("");
-		jQuery(".recommender_spinner").show();
+    jQuery(".recommender_error").html("");
+    jQuery(".recommender_spinner").show();
 
     var params = {};
 
-		var ont_select = jQuery("#ontology_ontologyId");
-		
+    var ont_select = jQuery("#ontology_ontologyId");
+    
     var ontology_ids = (ont_select.val() == null) ? "" : ont_select.val().join(",");
 
     params["ontology_ids"] = ontology_ids;
     params["text"] = jQuery("#recommendation_text").val();
-		
-		jQuery.ajax({
+    
+    jQuery.ajax({
           type: "POST",
           url: "/recommender",
           data: params,
@@ -39,13 +39,13 @@
 
             var resultCount = 1;
             if (jQuery.isEmptyObject(data)) {
-            	links.push("<tr><td>No recommendations found</td></tr>");
+              links.push("<tr><td>No recommendations found</td></tr>");
             } else {
-	            jQuery(data).each(function(){
-	            	var rec = this;
+              jQuery(data).each(function(){
+                var rec = this;
                 links.push("<tr><td style='text-align: right; padding-right: 10px;'>"+resultCount+"</td><td style='padding: 3px;'><a href='/ontologies/"+rec.virtualOntologyId+"'>"+rec.name+"</a></td><td style='text-align: right;'>"+rec.nbAnnotation+"</td></tr>");
                 resultCount++;
-	            });
+              });
             }
 
             jQuery("#recommendations").html(links.join(""));
@@ -57,31 +57,34 @@
             jQuery(".recommender_error").html(" Problem getting recommendations, please try again");
           }
     });
-	}
+  }
 </script>
 
 <div style="padding: 1em;">
-	<h1>Ontology Recommender</h1>
-	
-	<p>Enter text below. The Ontology Recommender will analyze this text and provide a ranked list of ontologies that are relevant.</p>
+  <h1>Ontology Recommender</h1>
+  
+  <p style="max-width:850px;">
+    The Ontology Recommender accepts a body of text and returns a ranked set of ontologies that most closely match the text. The ranking takes into account both how many terms from the text are in the ontology, and both the size of the ontology and its granularity with respect to the matched terms.
+    <%=help_icon("/help#Recommender_Tab")%>
+  </p>
 
   <div style="float: left; padding-bottom: 1em;">
     <% textarea_title = "Please paste at least a paragraph (50 words or more) of text to use in calculating ontology recommendations" %>
     <%=text_area :recommendation, :text, :title => textarea_title, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px; width: 600px;", :class => "help_text" %>
 
-		<br style="margin-bottom: 10px;"/>
-		
-		<%=render :partial => "shared/ontology_picker"%>
+    <br style="margin-bottom: 10px;"/>
+    
+    <%=render :partial => "shared/ontology_picker"%>
 
-		<input type="button" id="recommender_button" value="Get Recommendations" style="margin-top: 10px;">
-		<span class="recommender_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
-		<span style='color: red;' class='recommender_error'></span>
-	</div>
-	
-	<div id="recommendations_container" style="display: none; padding: 1em; margin: 0 1em 2em; border: thin solid gray; float: left; box-shadow: 0 0 3px gray;">
+    <input type="button" id="recommender_button" value="Get Recommendations" style="margin-top: 10px;">
+    <span class="recommender_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
+    <span style='color: red;' class='recommender_error'></span>
+  </div>
+  
+  <div id="recommendations_container" style="display: none; padding: 1em; margin: 0 1em 2em; border: thin solid gray; float: left; box-shadow: 0 0 3px gray;">
     <h2 style="margin-bottom: 0;">Ontology Recommendations</h2>
     <div id="not_enough_text_error" style="color: red; margin-bottom: 7px;"></div>
     <table id="recommendations" style="display: inline-block;"></table>
-	</div>
+  </div>
 
 </div>

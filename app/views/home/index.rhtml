@@ -13,22 +13,22 @@ function jumpToValueOntology() {
   var ontology = jQuery("#find_ontology")[0].value;
   var ontology_id = jQuery("#find_ontology_id").val();
   
-	if (ontology_id == null || ontology_id == "") {
-		// didnt pick an ont
-		alert("The ontology does not exist. You must pick an ontology from the list.")
-	
-		return false;
-	}
+  if (ontology_id == null || ontology_id == "") {
+    // didnt pick an ont
+    alert("The ontology does not exist. You must pick an ontology from the list.")
+  
+    return false;
+  }
 
-	if (!!ontology_id) {
-		var sValue = jQuery("#find_ontology_id").val();
-		if (sValue == null || sValue == "") {
-			sValue = data;
-		}
-		document.location="/ontologies/"+sValue;
-		jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Ontology...</h1>' });
-		return;
-	}
+  if (!!ontology_id) {
+    var sValue = jQuery("#find_ontology_id").val();
+    if (sValue == null || sValue == "") {
+      sValue = data;
+    }
+    document.location="/ontologies/"+sValue;
+    jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Ontology...</h1>' });
+    return;
+  }
 }
 
 function formatResultOntologySearch(value, data) {
@@ -43,24 +43,24 @@ function jumpToValueResource(){
   var term = jQuery("#find_resource")[0].value;
   var data = jQuery('body').data("resource_results");
   
-	if (data == null) {
-		// Im doing a search	
-		
-		var search = confirm("Press OK to Search for resources using the term, or Cancel to select a term")
-		if (search) {
-			query = jQuery("#find_resource").val();
-			document.location="/resources?search="+query;
-			return;
-		}
-	}
+  if (data == null) {
+    // Im doing a search  
+    
+    var search = confirm("Press OK to Search for resources using the term, or Cancel to select a term")
+    if (search) {
+      query = jQuery("#find_resource").val();
+      document.location="/resources?search="+query;
+      return;
+    }
+  }
 
-	if (!!data) {
-		var concept_id = data[0];
-		var ontology_version_id = data[2];
-		var ontology_id = data[7];
-		document.location="/resources?conceptid="+encodeURIComponent(concept_id)+"&ontologyid="+ontology_id+"&ontologyversionid="+ontology_version_id;
-		return;
-	}
+  if (!!data) {
+    var concept_id = data[0];
+    var ontology_version_id = data[2];
+    var ontology_id = data[7];
+    document.location="/resources?conceptid="+encodeURIComponent(concept_id)+"&ontologyid="+ontology_id+"&ontologyversionid="+ontology_version_id;
+    return;
+  }
 }
 
 function formatItemResource(value, data) {
@@ -94,158 +94,157 @@ function selectResource(value, data) {
 // This is a workaround because the default autocomplete search method cannot distinguish between two
 // ontologies that have the same preferred name but different ids.
 function selectFindOntology(value, data){
-	jQuery("#find_ontology_id").val(value.data[0]);
-	jQuery("#find_ontology").focus();
-	jumpToValueOntology();
+  jQuery("#find_ontology_id").val(value.data[0]);
+  jQuery("#find_ontology").focus();
+  jumpToValueOntology();
 }
 
 var ontologies_array=[<%=names.join(",")%>]
 
 jQuery(document).ready(function() {
-	jQuery("#find_ontology").autocomplete({
+  jQuery("#find_ontology").autocomplete({
     selectFirst: true,
-		data: ontologies_array,
-		minChars: 1,
-		matchSubset: 1,
-		maxItemsToShow: 20,
-		delay: 1,
-		showResult: formatResultOntologySearch,
-		onItemSelect: selectFindOntology
-	});
-	
-	jQuery("#find_resource").autocomplete({
+    data: ontologies_array,
+    minChars: 1,
+    matchSubset: 1,
+    maxItemsToShow: 20,
+    delay: 1,
+    showResult: formatResultOntologySearch,
+    onItemSelect: selectFindOntology
+  });
+  
+  jQuery("#find_resource").autocomplete({
     selectFirst: true,
     url: "/search/json_search/",
     extraParams: { separator: "\n" },
     cacheLength: 1,
-		maxCacheLength: 1,
-		matchSubset: 0,
-		minChars: 3,
-		maxItemsToShow: 20,
-		showResult: formatItemResource,
+    maxCacheLength: 1,
+    matchSubset: 0,
+    minChars: 3,
+    maxItemsToShow: 20,
+    showResult: formatItemResource,
     onItemSelect: selectResource
-	});
+  });
 
-	jQuery('ul.sf-menu').superfish({
-  	animation: {height:'show'},   // slide-down effect without fade-in 
+  jQuery('ul.sf-menu').superfish({
+    animation: {height:'show'},   // slide-down effect without fade-in 
     delay:     1200               // 1.2 second delay on mouseout);
-	});
-	
+  });
+  
 });
 
 
 function greybox(box){
-	
-	if(jQuery(box).hasClass("greyed")){
-		jQuery(box).removeClass('greyed');
-		jQuery(box).val("");
-	}
+  
+  if(jQuery(box).hasClass("greyed")){
+    jQuery(box).removeClass('greyed');
+    jQuery(box).val("");
+  }
 }
 
 
 </script>
 <style>
 .greyed{
-	color:#CFCFCF;
+  color:#CFCFCF;
 }
 </style>
 
 
 <div id="social_networking" style="position: absolute; right: 7px; padding-top: 4px;">
-	<div style="float:right;"><%=t('home.facebook_button')%></div>
-	<div style="float:right;"><%=t('home.twitter_button')%></div>
+  <div style="float:right;"><%=t('home.facebook_button')%></div>
+  <div style="float:right;"><%=t('home.twitter_button')%></div>
 </div>
 
 
 <% unless $FRONT_NOTICE.nil? || $FRONT_NOTICE.empty? || cookies[:front_page_notice_closed].eql?("true") %>
-	<script type="text/javascript">
-		function close_message(){
-			var exdate = new Date();
-			exdate.setDate(exdate.getDate() + 7);
-			document.cookie="front_page_notice_closed=true; expires="+exdate.toGMTString();
-			jQuery("#notice_message").hide();
-		}
-	</script>
-	<p style="padding: 10px; margin: 10px; border:1px solid #EFEFEF; background-color: #F9F9F9;" id="notice_message">
-		<%=$FRONT_NOTICE%>&nbsp;&nbsp;<a href="#" onclick="close_message(); return false;" style="font-size: small; color: darkGray;">[close]</a>
-	</p>
+  <script type="text/javascript">
+    function close_message(){
+      var exdate = new Date();
+      exdate.setDate(exdate.getDate() + 7);
+      document.cookie="front_page_notice_closed=true; expires="+exdate.toGMTString();
+      jQuery("#notice_message").hide();
+    }
+  </script>
+  <p style="padding: 10px; margin: 10px; border:1px solid #EFEFEF; background-color: #F9F9F9;" id="notice_message">
+    <%=$FRONT_NOTICE%>&nbsp;&nbsp;<a href="#" onclick="close_message(); return false;" style="font-size: small; color: darkGray;">[close]</a>
+  </p>
 <% end %>
 
-<h2 style="margin:10px;"> Welcome to <%=$ORG_SITE%></h2>
-<p style="padding:10px;margin:10px; border:1px solid #EFEFEF;" >
-  <%=t('home.intro')%>
-</p>
+<div style="padding:10px;margin:10px;" >
+  <%=t('home.intro').nil? || t('home.intro').empty? ? "<b>Welcome to BioPortal!</b> To learn how to use the application, here or elsewhere, click on the this icon: #{help_icon("/help#Home_Page")}" : t('home.intro')%>
+</div>
 
 <table width="100%">
-	<tr>
-		<td valign="top" width="33%">
+  <tr>
+    <td valign="top" width="33%">
       <% form_for(:search, :url => {:controller =>'search', :action=>'index'}, :html => { :method => :get }) do |f| %>
-			<fieldset>
-				<legend>Search all ontologies</legend>
-				<table>
-					<tr>				
-						<td nowrap><input type="text" name="query" style="width:190px;" size='30' class="greyed"  onclick="greybox(this)" value="Enter term, e.g. Melanoma"/><%=submit_tag 'Search',:class=>'home_button'%></td>
-					</tr>
-					<tr>
-						<td style="padding-left:15px"><a href="/search">Advanced Search</a></td>
-					</tr>
+      <fieldset>
+        <legend>Search all ontologies</legend>
+        <table>
+          <tr>        
+            <td nowrap><input type="text" name="query" style="width:190px;" size='30' class="greyed"  onclick="greybox(this)" value="Enter term, e.g. Melanoma"/><%=submit_tag 'Search',:class=>'home_button'%></td>
+          </tr>
+          <tr>
+            <td style="padding-left:15px"><a href="/search">Advanced Search</a></td>
+          </tr>
 
-				</table>
-		
-			</fieldset>
-			<%end%>
-		</td>
-		<td valign="top" width="33%">
-			<fieldset>
-				<legend>Find an ontology</legend>
-				<table>
-					<tr>				
-						<td nowrap>
-							<input class="home_input greyed" type="text" name="ontology" style="width:240px;" size="30" id="find_ontology"  onclick="greybox(this)" value="Enter ontology name, e.g. NCI Thesaurus"> <input type="button" value="Explore" class="home_button" onclick="jumpToValueOntology()">
-							<input type="hidden" id="find_ontology_id">
-						</td>
-					</tr>
-					<tr>
-						<td style="padding-left:15px;height:10px;">
-							<ul class="sf-menu sf-vertical">
-										<li>
-											<a href="#" style="white-space:nowrap;background:#fff;border:1px solid #fff;text-decoration:underline;padding:0px;">Browse Ontologies ></a>
-											<ul>
-												<li>
-													<a href="/ontologies">All</a>
-												</li>
-												<% @groups.to_a.each do |group| %>
-													<li>
-														<a href="/ontologies?filter=<%=CGI.escape(group[:acronym])%>"><%=group[:name]%></a>
-													</li>
-												<% end %>
-											</ul>
-										</li>
-								</ul>
-						</td>
-					</tr>
-				</table>
-			</fieldset>
-		</td>
-		<td valign="top" width="33%">
-			<fieldset>
-  			<legend>Search resources</legend>
-  			<table>
-  				<tr>				
-  					<td nowrap><input type="text" id="find_resource" size="30" class="greyed" style="width:240px;" size="30" onclick="greybox(this)" value="Enter a term, e.g. Melanoma" > <input class="home_button" type="button" value="Search" onclick="jumpToValueResource()"></td>
-  				</tr>
-  				<tr>
-  					<td style="padding-left:15px"><a href="/resources">Advanced Resource Search</a></td>
-  				</tr>
-  			</table>
-			</fieldset>
-		</td>
+        </table>
+    
+      </fieldset>
+      <%end%>
+    </td>
+    <td valign="top" width="33%">
+      <fieldset>
+        <legend>Find an ontology</legend>
+        <table>
+          <tr>        
+            <td nowrap>
+              <input class="home_input greyed" type="text" name="ontology" style="width:240px;" size="30" id="find_ontology"  onclick="greybox(this)" value="Enter ontology name, e.g. NCI Thesaurus"> <input type="button" value="Explore" class="home_button" onclick="jumpToValueOntology()">
+              <input type="hidden" id="find_ontology_id">
+            </td>
+          </tr>
+          <tr>
+            <td style="padding-left:15px;height:10px;">
+              <ul class="sf-menu sf-vertical">
+                    <li>
+                      <a href="#" style="white-space:nowrap;background:#fff;border:1px solid #fff;text-decoration:underline;padding:0px;">Browse Ontologies ></a>
+                      <ul>
+                        <li>
+                          <a href="/ontologies">All</a>
+                        </li>
+                        <% @groups.to_a.each do |group| %>
+                          <li>
+                            <a href="/ontologies?filter=<%=CGI.escape(group[:acronym])%>"><%=group[:name]%></a>
+                          </li>
+                        <% end %>
+                      </ul>
+                    </li>
+                </ul>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+    </td>
+    <td valign="top" width="33%">
+      <fieldset>
+        <legend>Search resources</legend>
+        <table>
+          <tr>        
+            <td nowrap><input type="text" id="find_resource" size="30" class="greyed" style="width:240px;" size="30" onclick="greybox(this)" value="Enter a term, e.g. Melanoma" > <input class="home_button" type="button" value="Search" onclick="jumpToValueResource()"></td>
+          </tr>
+          <tr>
+            <td style="padding-left:15px"><a href="/resources">Advanced Resource Search</a></td>
+          </tr>
+        </table>
+      </fieldset>
+    </td>
 </tr>
 
 <tr>
-	<td valign='top'>
-	  <%=t('most_viewed')%>
-	  
+  <td valign='top'>
+    <%=t('most_viewed')%>
+    
     <% if t('stats').nil? || t('stats').empty? %>
       <fieldset>
         <legend>Statistics</legend>
@@ -273,54 +272,54 @@ function greybox(box){
     <% else %>
       <%=t('stats')%>
     <% end %> 
-	</td>
-	
-	<td valign="top">
-		<fieldset>
-			<legend>Latest Notes</legend>
-			<table class="minimal" style="width:300px">
-			
-				<tbody>
-				<%for note in @last_notes%>
-					<tr>
-  					<td>
-  					  <% begin %>
-    						<span style="color:#AAAAAA"><%=link_to "#{note.subject} (#{DataAccess.getLatestOntology(note.ontology_id).displayLabel})", Class.new.extend(NotesHelper).get_applies_to_url(DataAccess.getLatestOntology(note.ontology_id).id, note.applies_to_type, note.applies_to) %> <%="#{time_ago_in_words(Time.at(convert_java_time(note.created.to_i)))} ago"%> by <%=get_username(note.author)%></span>
-      					<% if note.body %><p><%= truncate(strip_tags(note.body), :length => 100)%>&nbsp;</p><% end %>
-  						<% rescue %>
-  						<% end %>
-  					</td>
-					</tr>
-				<%end%>
-				</tbody>
-		
-			</table>
-		</fieldset>
-	</td>
-	<td valign="top">
-		<fieldset>
-			<legend>Latest Mappings</legend>
-			<table class="minimal" style="width:300px">
-			<tbody>
-			  <% if @last_mappings.nil? || @last_mappings.empty? %>
-			    No recent mappings have been submitted
-		    <% else %>
-  				<%for map in @last_mappings%>
-    				<tr>
-    					<td>	<%= if map.dest_node.nil? 
-    							"#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})"
-    							else
-    								link_to "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})" , "/visualize/#{map.source_version_id}?conceptid=#{CGI.escape(map.source_id)}#mappings"
-    							end %>
-    						<br>
-    							<span style="color:#AAAAAA"><%=map.map_source%> <%=map.created_at.strftime("%m/%d/%y")%> <%=map.user.username%></span>
-    					</td>
-    				</tr>
-  				<%end%>
-				<% end %>
-				</tbody>
-			</table>
-	</td>
+  </td>
+  
+  <td valign="top">
+    <fieldset>
+      <legend>Latest Notes</legend>
+      <table class="minimal" style="width:300px">
+      
+        <tbody>
+        <%for note in @last_notes%>
+          <tr>
+            <td>
+              <% begin %>
+                <span style="color:#AAAAAA"><%=link_to "#{note.subject} (#{DataAccess.getLatestOntology(note.ontology_id).displayLabel})", Class.new.extend(NotesHelper).get_applies_to_url(DataAccess.getLatestOntology(note.ontology_id).id, note.applies_to_type, note.applies_to) %> <%="#{time_ago_in_words(Time.at(convert_java_time(note.created.to_i)))} ago"%> by <%=get_username(note.author)%></span>
+                <% if note.body %><p><%= truncate(strip_tags(note.body), :length => 100)%>&nbsp;</p><% end %>
+              <% rescue %>
+              <% end %>
+            </td>
+          </tr>
+        <%end%>
+        </tbody>
+    
+      </table>
+    </fieldset>
+  </td>
+  <td valign="top">
+    <fieldset>
+      <legend>Latest Mappings</legend>
+      <table class="minimal" style="width:300px">
+      <tbody>
+        <% if @last_mappings.nil? || @last_mappings.empty? %>
+          No recent mappings have been submitted
+        <% else %>
+          <%for map in @last_mappings%>
+            <tr>
+              <td>  <%= if map.dest_node.nil? 
+                  "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})"
+                  else
+                    link_to "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})" , "/visualize/#{map.source_version_id}?conceptid=#{CGI.escape(map.source_id)}#mappings"
+                  end %>
+                <br>
+                  <span style="color:#AAAAAA"><%=map.map_source%> <%=map.created_at.strftime("%m/%d/%y")%> <%=map.user.username%></span>
+              </td>
+            </tr>
+          <%end%>
+        <% end %>
+        </tbody>
+      </table>
+  </td>
 </tr>
 
 </table>

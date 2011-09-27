@@ -1,7 +1,8 @@
 <%@title = "Mappings"%>
 
-<p style="padding:10px;margin:10px; border:1px solid #EFEFEF;" >
-    <%=t('mappings.intro')%>
+<p style="padding:1em;max-width:1100px" >
+  <% intro_text = "Mappings are associations between two or more terms in different ontologies. This association typically, but not always, represents a degree of similarity between the terms. The author of the mapping defines the semantics of a particular mapping. It is also usual for a mapping to be bi-directional, but again, this is not required. The mapping author defines directionality."%> 
+  <%=t('mappings.intro').nil? || t('mappings.intro').empty? ? "#{intro_text}  #{help_icon("/help#Mappings_Tab")}" : t('mappings.intro')%>
 </p>
 
 <%= javascript_include_tag "/themes/cupertino/js/jquery-ui-1.8.1.custom.min.js" %>

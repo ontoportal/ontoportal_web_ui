@@ -5,8 +5,8 @@
   query_string += params[:semantictype].nil? ? "" : "&semanticTypes=" + params[:semantictype]
 %>
 
-<p style="padding:10px;margin:10px; border:1px solid #EFEFEF;" >
-  <%= t('home.annotate.intro') %>
+<p style="padding:10px;margin:10px;" >
+  <%=t('home.annotate.intro').nil? || t('home.annotate.intro').empty? ? "To annotate text directly with ontological terms, simply enter text in the box and press the submit button. The system matches words in the text to terms in ontologies by doing an exact string comparison (a “direct” match) between the text and ontology term names, synonyms, and ids.  #{help_icon("/help#Annotator_Tab")}" : t('home.annotate.intro')%>
 </p>
 <!--  BEGIN Browser History required section -->
 <link rel="stylesheet" type="text/css" href="<%=$FLEX_URL%>/history/history.css" />
