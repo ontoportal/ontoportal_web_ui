@@ -1,84 +1,84 @@
 <div id="metrics_content" style="margin-left: 1em;">
-	<div style="clear:both;"></div>
+  <div style="clear:both;"></div>
   <div style="width: 400px;">
     <h2>
-    	<%=help_icon("http://www.bioontology.org/wiki/index.php/Ontology_Metrics", "View individual metrics definitions", 7)%>
       <span style="font-size: x-large;">Metrics</span>
+      <%=help_icon("http://www.bioontology.org/wiki/index.php/Ontology_Metrics", "View individual metrics definitions", -7)%>
     </h2>
   </div>
-	<!--<p style="border: 1px solid rgb(239, 239, 239); margin: 10px; padding: 10px;">
-		<%=t('ontologies.metrics.intro')%>
-	</p>-->
-	<% if @metrics.nil? || @metrics.empty? %>
-		<h2 style="padding-left: 1em;">We have not yet calculated metrics for this ontology.</h2>
-	<% else %>
-		<% if @old_metrics %>
-			<h3>Metrics are not available for the most recent version of this ontology. The metrics displayed below are for the <a href="/visualize/<%=@old_metrics.id%>"><%=@old_ontology.displayLabel + " " + @old_ontology.versionNumber.to_s%></a> version.</h3>
-		<% end %>
-		<style type="text/css">
-		  .metrics_table td {
-		    text-align: right;
-		  }
-		</style>
-		<table class="form metrics_table" style="width: 400px;">
-			<!-- not calculated currently
-			<tr>
-				<th>Number of axioms:</th><td class="top"><%=@metrics.numberOfAxioms%></td>
-			</tr>
-			-->
-			<tr>
-				<th>Number of classes:</th><td class="top"><%=@metrics.numberOfClasses%></td>
-			</tr>
-			<tr>
-				<th>Number of individuals:</th><td><%=@metrics.numberOfIndividuals%></td>
-			</tr>
-			<tr>
-				<th>Number of properties:</th><td><%=@metrics.numberOfProperties%></td>
-			</tr>
-			<tr>
-				<th>Maximum depth:</th><td><%=@metrics.maximumDepth%></td>
-			</tr>
-			<tr>
-				<th>Maximum number of siblings:</th><td><%=@metrics.maximumNumberOfSiblings%></td>
-			</tr>
-			<tr>
-				<th>Average number of siblings:</th><td><%=@metrics.averageNumberOfSiblings%></td>
-			</tr>
-			<tr>
-				<th style="vertical-align: top;">Classes with a single subclass:</th>
-				<td>
-					<%= class_list_info(@metrics, "classesWithOneSubclass", "have only one subclass", "Classes with a single subclass") %>
-				</td>
-			</tr>
-			<tr>
-				<th style="vertical-align: top;">Classes with more than 25 subclasses:</th>
-				<td>
-					<%= class_list_info(@metrics, "classesWithMoreThanXSubclasses", "have more than 25 subclasses", "Classes with more than 25 subclasses") %>
-				</td>
-			</tr>
-			<!--
-			<tr>
-				<th style="vertical-align: top;">Classes with no author:</th>
-				<td>
-					<%= class_list_info(@metrics, "classesWithNoAuthor", "have no author property specified or no values for the author property", "Classes with no author") %>
-				</td>
-			</tr>
-			-->
-			<tr>
-				<th style="vertical-align: top;">Classes with no definition:</th>
-				<td>
-					<%= class_list_info(@metrics, "classesWithNoDocumentation", "have no definition property specified or no values for the definition property", "Classes with no documentation") %>
-				</td>
-			</tr>
-			<!-- not calculated currently
-			<tr>
-				<th style="vertical-align: top;">Classes with more than one property value:</th>
-				<td>
-					<%= class_list_info(@metrics, "classesWithMoreThanOnePropertyValue", "have more than one property value", "Classes with more than one property value") %>
-				</td>
-			</tr>
-			-->
-		</table>
-	<% end %>
+  <!--<p style="border: 1px solid rgb(239, 239, 239); margin: 10px; padding: 10px;">
+    <%=t('ontologies.metrics.intro')%>
+  </p>-->
+  <% if @metrics.nil? || @metrics.empty? %>
+    <h2 style="padding-left: 1em;">We have not yet calculated metrics for this ontology.</h2>
+  <% else %>
+    <% if @old_metrics %>
+      <h3>Metrics are not available for the most recent version of this ontology. The metrics displayed below are for the <a href="/visualize/<%=@old_metrics.id%>"><%=@old_ontology.displayLabel + " " + @old_ontology.versionNumber.to_s%></a> version.</h3>
+    <% end %>
+    <style type="text/css">
+      .metrics_table td {
+        text-align: right;
+      }
+    </style>
+    <table class="form metrics_table" style="width: 400px;">
+      <!-- not calculated currently
+      <tr>
+        <th>Number of axioms:</th><td class="top"><%=@metrics.numberOfAxioms%></td>
+      </tr>
+      -->
+      <tr>
+        <th>Number of classes:</th><td class="top"><%=@metrics.numberOfClasses%></td>
+      </tr>
+      <tr>
+        <th>Number of individuals:</th><td><%=@metrics.numberOfIndividuals%></td>
+      </tr>
+      <tr>
+        <th>Number of properties:</th><td><%=@metrics.numberOfProperties%></td>
+      </tr>
+      <tr>
+        <th>Maximum depth:</th><td><%=@metrics.maximumDepth%></td>
+      </tr>
+      <tr>
+        <th>Maximum number of siblings:</th><td><%=@metrics.maximumNumberOfSiblings%></td>
+      </tr>
+      <tr>
+        <th>Average number of siblings:</th><td><%=@metrics.averageNumberOfSiblings%></td>
+      </tr>
+      <tr>
+        <th style="vertical-align: top;">Classes with a single subclass:</th>
+        <td>
+          <%= class_list_info(@metrics, "classesWithOneSubclass", "have only one subclass", "Classes with a single subclass") %>
+        </td>
+      </tr>
+      <tr>
+        <th style="vertical-align: top;">Classes with more than 25 subclasses:</th>
+        <td>
+          <%= class_list_info(@metrics, "classesWithMoreThanXSubclasses", "have more than 25 subclasses", "Classes with more than 25 subclasses") %>
+        </td>
+      </tr>
+      <!--
+      <tr>
+        <th style="vertical-align: top;">Classes with no author:</th>
+        <td>
+          <%= class_list_info(@metrics, "classesWithNoAuthor", "have no author property specified or no values for the author property", "Classes with no author") %>
+        </td>
+      </tr>
+      -->
+      <tr>
+        <th style="vertical-align: top;">Classes with no definition:</th>
+        <td>
+          <%= class_list_info(@metrics, "classesWithNoDocumentation", "have no definition property specified or no values for the definition property", "Classes with no documentation") %>
+        </td>
+      </tr>
+      <!-- not calculated currently
+      <tr>
+        <th style="vertical-align: top;">Classes with more than one property value:</th>
+        <td>
+          <%= class_list_info(@metrics, "classesWithMoreThanOnePropertyValue", "have more than one property value", "Classes with more than one property value") %>
+        </td>
+      </tr>
+      -->
+    </table>
+  <% end %>
 </div>
 
