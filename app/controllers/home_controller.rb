@@ -114,7 +114,9 @@ class HomeController < ApplicationController
   end
 
   def help
-    
+    # Show the header/footer or not
+    layout = params[:pop].eql?("true") ? "popup" : "ontology"
+    render :layout => layout
   end
 
   def recommender
@@ -134,7 +136,7 @@ class HomeController < ApplicationController
   
   def feedback
     # Show the header/footer or not
-    feedback_layout = params[:pop].eql?("true") ? "minimal" : "ontology"
+    feedback_layout = params[:pop].eql?("true") ? "popup" : "ontology"
     
     # We're using a hidden form field to trigger for error checking
     # If sim_submit is nil, we know the form hasn't been submitted and we should
@@ -170,7 +172,7 @@ class HomeController < ApplicationController
     Notifier.deliver_feedback(params[:name],params[:email],params[:comment])   
 
     if params[:pop].eql?("true")
-      render :action => "feedback_complete", :layout => "minimal"
+      render :action => "feedback_complete", :layout => "popup"
     else
       flash[:notice]="Feedback has been sent"
       redirect_to_home
