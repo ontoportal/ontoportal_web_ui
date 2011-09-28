@@ -362,7 +362,7 @@ function showRestrictionLicensed() {
               	</div>
 
                 <div id="viewingRestrictionsLicensed" class="viewing_restriction_types" style="padding: .5em; border: thin solid #C1DAD7; margin: .5em .5em .5em 0; <%=display_licensed%>">
-                  <h3>This text will tell <%=$SITE%> users how to comply with your licensing conditions. The text you enter will appear above an input field, allowing users to enter their license or any other information you require. Sample text is included below.</h3> 
+                  <b>License Text</b><br/>The text below explains what licensing information you want to collect before allowing access. We will display this text and record the user's response when the user attempts to access your ontology.
 
                   <% disabled = @ontology.licensed? ? {} : {:disabled => "true"} %>
                   <% @ontology.licenseInformation = @ontology.licenseInformation.nil? || @ontology.licenseInformation.empty? ? "Please enter your license number in the text box below to access this ontology" : @ontology.licenseInformation%>
