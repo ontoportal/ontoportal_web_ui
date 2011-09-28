@@ -2,6 +2,7 @@ require 'uri'
 require 'open-uri'
 require 'net/http'
 require 'net/https'
+require 'net/ftp'
 
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
@@ -72,15 +73,47 @@ class ApplicationController < ActionController::Base
   def remote_file_exists?(url)
     begin
       url = URI.parse(url)
-      session = Net::HTTP.new(url.host, url.port)
-      session.use_ssl = true if url.port == 443
-      session.start do |http|
-        response_valid = http.head(url.request_uri).code.to_i < 400
-        return response_valid
+
+      if url.kind_of?(URI::FTP)
+        check = check_ftp_file(url)
+      else
+        check = check_http_file(url)
       end
+
     rescue Exception => e
       return false
     end
+
+    check
+  end
+
+  def check_http_file(url)
+    session = Net::HTTP.new(url.host, url.port)
+    session.use_ssl = true if url.port == 443
+    session.start do |http|
+      response_valid = http.head(url.request_uri).code.to_i < 400
+      return response_valid
+    end
+  end
+
+  def check_ftp_file(uri)
+    ftp = Net::FTP.new(uri.host, uri.user, uri.password)
+    ftp.login
+    begin
+      debugger
+      file_exists = ftp.size(uri.path) > 0
+    rescue Exception => e
+      # Check using another method
+      debugger
+      path = uri.path.split("/")
+      filename = path.pop
+      path = path.join("/")
+      ftp.chdir(path)
+      files = ftp.dir
+      # Dumb check, just see if the filename is somewhere in the list
+      files.each { |file| return true if file.include?(filename) }
+    end
+    file_exists
   end
 
   def redirect_to_browse # Redirect to the browse Ontologies page
