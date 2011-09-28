@@ -190,6 +190,16 @@ class UsersController < ApplicationController
 
     redirect_location = params[:redirect_location].nil? || params[:redirect_location].empty? ? :back : params[:redirect_location]
 
+    if user.ontologylicense.length > 512
+      redirect_to :back, :flash => { :error => "License information cannot be longer than 512 characters" }
+      return
+    end
+
+    if user.ontologylicense.length < 2
+      redirect_to :back, :flash => { :error => "License information must contain at least two characters" }
+      return
+    end
+
     begin
       updated_user = DataAccess.updateUser(user.to_h, user.id)
     rescue Exception => e
