@@ -260,11 +260,19 @@ function greybox(box){
             </tr>
             <tr>
               <td>Resources Indexed</td>
-              <td><%=number_with_delimiter(OBDWrapper.getResourcesInfo.length, :delimiter => ",") rescue 24%></td>
+              <td><%=number_with_delimiter(@number_of_resources, :delimiter => ",") rescue 24%></td>
             </tr>
             <tr>
-              <td>Number of Indexed Records</td>
+              <td>Indexed Records</td>
               <td><%=number_with_delimiter(@ri_record_count, ",") rescue "3,865,480"%></td>
+            </tr>
+            <tr>
+              <td>Direct Annotations</td>
+              <td><%=number_with_delimiter(@direct_annotations, ",") rescue "1,011,241,184"%></td>
+            </tr>
+            <tr>
+              <td>Direct Plus Expanded Annotations</td>
+              <td><%=number_with_delimiter(@direct_expanded_annotations, ",") rescue "10,416,891,634"%></td>
             </tr>
           </tbody>
         </table>
