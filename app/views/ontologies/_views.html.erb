@@ -1,25 +1,25 @@
 <script type="text/javascript">
-	jQuery(document).ready(function(){
-		jQuery(".click_view_collapse").click(function(){
-			var collapse = "#" + jQuery(this).parent().attr("id") + "_collapsible";
-			var icon = "#" + jQuery(this).parent().attr("id") + "_icon";
-			jQuery(icon).toggleClass("ui-icon-triangle-1-e");
-			jQuery(icon).toggleClass("ui-icon-triangle-1-s");
-			jQuery(collapse).toggle();
-		});
-		
-		jQuery("#expand_views").click(function(){
-			jQuery(".view_collapsible").show();
-			jQuery(".click_view_collapse_icon").removeClass("ui-icon-triangle-1-e");
-			jQuery(".click_view_collapse_icon").addClass("ui-icon-triangle-1-s");
-		});
-		
-		jQuery("#collapse_views").click(function(){
-			jQuery(".view_collapsible").hide();
-			jQuery(".click_view_collapse_icon").removeClass("ui-icon-triangle-1-s");
-			jQuery(".click_view_collapse_icon").addClass("ui-icon-triangle-1-e");
-		});
-	});
+  jQuery(document).ready(function(){
+    jQuery(".click_view_collapse").click(function(){
+      var collapse = "#" + jQuery(this).parent().attr("id") + "_collapsible";
+      var icon = "#" + jQuery(this).parent().attr("id") + "_icon";
+      jQuery(icon).toggleClass("ui-icon-triangle-1-e");
+      jQuery(icon).toggleClass("ui-icon-triangle-1-s");
+      jQuery(collapse).toggle();
+    });
+    
+    jQuery("#expand_views").click(function(){
+      jQuery(".view_collapsible").show();
+      jQuery(".click_view_collapse_icon").removeClass("ui-icon-triangle-1-e");
+      jQuery(".click_view_collapse_icon").addClass("ui-icon-triangle-1-s");
+    });
+    
+    jQuery("#collapse_views").click(function(){
+      jQuery(".view_collapsible").hide();
+      jQuery(".click_view_collapse_icon").removeClass("ui-icon-triangle-1-s");
+      jQuery(".click_view_collapse_icon").addClass("ui-icon-triangle-1-e");
+    });
+  });
 </script>
 
 
@@ -39,113 +39,113 @@
         <h1>No views available.</h1>
       <%else %>
         
-			<h4 style="margin-top: .5em;"><a href="javascript:void(0);" id="expand_views">Expand All</a>  |  <a href="javascript:void(0);" id="collapse_views">Collapse All</a></h4>	
-				
-			<% @ontology.views.each_with_index do |virtual, index| %>
-		        <%if virtual[0].nil?
-			        next
-		        end %>
-				
-				<style type="text/css">
-					#view_head .lead {
-						color: #708090;
-						font-weight: bold;
-					}
-					
-					.view_collapsible {
-						margin: 0 1em;
-					}
-					
-					.click_view_collapse:hover {
-						text-decoration: underline;
-					}
-				</style>
+      <h4 style="margin-top: .5em;"><a href="javascript:void(0);" id="expand_views">Expand All</a>  |  <a href="javascript:void(0);" id="collapse_views">Collapse All</a></h4>  
+        
+      <% @ontology.views.each_with_index do |virtual, index| %>
+            <%if virtual[0].nil?
+              next
+            end %>
+        
+        <style type="text/css">
+          #view_head .lead {
+            color: #708090;
+            font-weight: bold;
+          }
+          
+          .view_collapsible {
+            margin: 0 1em;
+          }
+          
+          .click_view_collapse:hover {
+            text-decoration: underline;
+          }
+        </style>
 
-				<div id="view_<%=index%>" class="view_title" style="margin: 1em 0 .5em; cursor: pointer;" >
-					<span id="view_<%=index%>_icon" class="ui-icon ui-icon-triangle-1-e click_view_collapse click_view_collapse_icon" style="float: left;"></span>
-					<span class="click_view_collapse" style="font-size: 120%; font-weight: bold;"><%= virtual[0].displayLabel %></span>
-					<span style="font-size: 90%;">
-				        <%if !session[:user].nil? && (session[:user].id.to_i.eql?(virtual[0].userId.to_i) || session[:user].admin?) %>
-							 <span style="padding-left: 1em; vertical-align: text-bottom;">(<%= link_to "Edit Metadata", "/ontologies/view/edit/#{virtual[0].id}" %>)</span>
-						<%end%>
-					</span>
-				</div>
-				
-				<div id="view_<%=index%>_collapsible" class="view_collapsible" style="margin: 0 1em .5em; display: none;">
-					<div id="view_head" style="margin: 0 0 .5em;" class="enable-lists">
-						<ul>
-							<li><span class="lead">Description:</span> <%=virtual[0].description %><br></li>
-							<% unless virtual[0].viewDefinition.empty? %><li><span class="lead">Definition:</span> <%=virtual[0].viewDefinition %><br></li><%end%>
-							<li><span class="lead">Ontology ID:</span> <%=virtual[0].ontologyId %></li>	
-							<% unless virtual[0].viewGenerationEngine.empty? %><li><span class="lead">Generation Engine:</span> <%=virtual[0].viewGenerationEngine %></li><%end%>
-							<% unless virtual[0].viewDefinitionLanguage.empty? %><li><span class="lead">Definition Language:</span> <%=virtual[0].viewDefinitionLanguage %></li><%end%>
-						</ul>
-					</div>
-					
-			        <table class="zebra" cellpadding="0" cellspacing="0" width="100%">
-			            <thead>
-			                <tr>
-			                    <th>
-			                        Version
-			                    </th>
-			                    <th>
-			                        Base Version
-			                    </th>
-			                    <th>
-			                        Created
-			                    </th>
-          								<th>
-          									  Created By
-          								</th>
-          								<th>
-			                        Ontology File
-			                    </th>
-			                    <th>
-			                        Diff File
-			                    </th>
-			                    <th>
-			                        Visualize
-			                    </th>
-			                </tr>
-			            </thead>
-			            <%
-			            virtual.sort!{|x,y| y.internalVersion<=>x.internalVersion}
-			            virtual.each_with_index do |view, view_index|  %>
-			            <tr>
-			                <td>
-			                    <%= view.versionNumber %>
-			                </td>
-			                <td>
-			                    <%= get_view_ontology_version(view.viewOnOntologyVersionId) %>
-			                </td>
-			                <td>
-			                    <%= view.dateReleased %>
-			                </td>
-        							<td>
-        								<% contact_name = view.contactName.nil? || view.contactName.empty? ? "" : view.contactName + ", " %>
-        								<%= contact_name + view.contactEmail %>
-        							</td>
-			                <td>
-			                    <a href="<%=DataAccess.download(view.id)%>" target="_blank">Download View</a>
-			                </td>
-			                <td>
-			                    <%= get_diffs_link(view.diffs, view.versions_array, view, view_index) rescue ""%>
-			                </td>
-			                <td>
-			                    <%= get_visualize_link(view) %>
-			                </td>
-			            </tr>
-			            <%end %>
-				        <%if !session[:user].nil? && (session[:user].id.to_i.eql?(virtual[0].userId.to_i) || session[:user].admin?) %>
-							<tr>
-								<td colspan=7>
-							        <h3 style="margin-bottom: 0;"><a href="/ontologies/view/new/<%=virtual[0].id%>?version_id=<%=@ontology.id%>">Submit New View Version</a></h3>
-								</td>
-							</tr>
-				        <%end %>
-			        </table>
-	   </div> <!-- collapsible div -->
-	 	       <%end %>
-	        <%end %>
+        <div id="view_<%=index%>" class="view_title" style="margin: 1em 0 .5em; cursor: pointer;" >
+          <span id="view_<%=index%>_icon" class="ui-icon ui-icon-triangle-1-e click_view_collapse click_view_collapse_icon" style="float: left;"></span>
+          <span class="click_view_collapse" style="font-size: 120%; font-weight: bold;"><%= virtual[0].displayLabel %></span>
+          <span style="font-size: 90%;">
+                <%if !session[:user].nil? && (session[:user].id.to_i.eql?(virtual[0].userId.to_i) || session[:user].admin?) %>
+               <span style="padding-left: 1em; vertical-align: text-bottom;">(<%= link_to "Edit Metadata", "/ontologies/view/edit/#{virtual[0].id}" %>)</span>
+            <%end%>
+          </span>
+        </div>
+        
+        <div id="view_<%=index%>_collapsible" class="view_collapsible" style="margin: 0 1em .5em; display: none;">
+          <div id="view_head" style="margin: 0 0 .5em;" class="enable-lists">
+            <ul>
+              <li><span class="lead">Description:</span> <%=virtual[0].description %><br></li>
+              <% unless virtual[0].viewDefinition.empty? %><li><span class="lead">Definition:</span> <%=virtual[0].viewDefinition %><br></li><%end%>
+              <li><span class="lead">Ontology ID:</span> <%=virtual[0].ontologyId %></li> 
+              <% unless virtual[0].viewGenerationEngine.empty? %><li><span class="lead">Generation Engine:</span> <%=virtual[0].viewGenerationEngine %></li><%end%>
+              <% unless virtual[0].viewDefinitionLanguage.empty? %><li><span class="lead">Definition Language:</span> <%=virtual[0].viewDefinitionLanguage %></li><%end%>
+            </ul>
+          </div>
+          
+              <table class="zebra" cellpadding="0" cellspacing="0" width="100%">
+                  <thead>
+                      <tr>
+                          <th>
+                              Version
+                          </th>
+                          <th>
+                              Base Version
+                          </th>
+                          <th>
+                              Created
+                          </th>
+                          <th>
+                              Created By
+                          </th>
+                          <th>
+                              Ontology File
+                          </th>
+                          <th>
+                              Diff File
+                          </th>
+                          <th>
+                              Visibility
+                          </th>
+                      </tr>
+                  </thead>
+                  <%
+                  virtual.sort!{|x,y| y.internalVersion<=>x.internalVersion}
+                  virtual.each_with_index do |view, view_index|  %>
+                  <tr>
+                      <td>
+                          <%= view.versionNumber %>
+                      </td>
+                      <td>
+                          <%= get_view_ontology_version(view.viewOnOntologyVersionId) %>
+                      </td>
+                      <td>
+                          <%= view.dateReleased %>
+                      </td>
+                      <td>
+                        <% contact_name = view.contactName.nil? || view.contactName.empty? ? "" : view.contactName + ", " %>
+                        <%= contact_name + view.contactEmail %>
+                      </td>
+                      <td>
+                          <a href="<%=DataAccess.download(view.id)%>" target="_blank">Download View</a>
+                      </td>
+                      <td>
+                          <%= get_diffs_link(view.diffs, view.versions_array, view, view_index) rescue ""%>
+                      </td>
+                      <td>
+                          <%= visibility_link(view) %>
+                      </td>
+                  </tr>
+                  <%end %>
+                <%if !session[:user].nil? && (session[:user].id.to_i.eql?(virtual[0].userId.to_i) || session[:user].admin?) %>
+              <tr>
+                <td colspan=7>
+                      <h3 style="margin-bottom: 0;"><a href="/ontologies/view/new/<%=virtual[0].id%>?version_id=<%=@ontology.id%>">Submit New View Version</a></h3>
+                </td>
+              </tr>
+                <%end %>
+              </table>
+     </div> <!-- collapsible div -->
+           <%end %>
+          <%end %>
     </div>
 </div>

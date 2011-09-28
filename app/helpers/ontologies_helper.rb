@@ -41,16 +41,6 @@ module OntologiesHelper
 
   # Provides a link or string based on the status of an ontology.
   def get_visualize_link(ontology, params = {})
-    # Don't display a link for ontologies that aren't browsable
-    # (these are temporarily defined in environment.rb)
-    unless $NOT_EXPLORABLE.nil?
-      $NOT_EXPLORABLE.each do |virtual_id|
-        if ontology.ontologyId.eql?(virtual_id.to_s)
-          return ""
-        end
-      end
-    end
-
     case ontology.statusId.to_i
     when 1 # Ontology is parsing
       return "Waiting to Parse"
