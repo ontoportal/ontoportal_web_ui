@@ -482,7 +482,13 @@ class OntologiesController < ApplicationController
     # Check to see if user is requesting RDF+XML, return the file from REST service if so
     if request.content_type.to_s.eql?("application/rdf+xml")
       user_api_key = session[:user].nil? ? "" : session[:user].apikey
-      rdf_file = RemoteFile.new($REST_URL + "/virtual/ontology/rdf/download/#{@ontology.ontologyId}?apikey=#{$API_KEY}&userapikey=#{user_api_key}")
+      begin
+        rdf_file = RemoteFile.new($REST_URL + "/virtual/ontology/rdf/download/#{@ontology.ontologyId}?apikey=#{$API_KEY}&userapikey=#{user_api_key}")
+      rescue Exception => e
+        if !e.io.status.nil? && e.io.status[0].to_i == 404
+          raise Error404
+        end
+      end
       send_file rdf_file.path, :type => "appllication/rdf+xml"
       return
     end
