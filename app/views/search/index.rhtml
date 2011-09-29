@@ -123,6 +123,7 @@ var resultsTable;
 
           resultsTable.fnClearTable();
           resultsTable.fnSortNeutral();
+          removeFilters();
           resultsTable.fnAddData(results);
 
           // Re-bind click event for ont filter to avoid weird "live" propagation issues
@@ -219,19 +220,24 @@ var resultsTable;
     /* Redraw */
     oSettings.oApi._fnReDraw( oSettings );
   }
-  
-  var termHoverIn = function(){
-    var additional = jQuery(this).children("span.additional");
-    additional.show();
-    additional.css("margin-top", jQuery(this).innerHeight() / 2 - additional.innerHeight() / 2 + "px");
-  }
-  
-  var termHoverOut = function(){
-    jQuery(this).children("span.additional").hide();
-  }
+
+var termHoverIn = function(){
+  var additional = jQuery(this).children("span.additional");
+  additional.show();
+  additional.css("margin-top", jQuery(this).innerHeight() / 2 - additional.innerHeight() / 2 + "px");
+}
+
+var termHoverOut = function(){
+  jQuery(this).children("span.additional").hide();
+}
 
 
-
+var removeFilters = function() {
+  jQuery(".filter_ontology_checkboxes").attr("checked", false);
+  jQuery(".filter_matched_checkboxes").attr("checked", false);
+  resultsTable.fnFilter("", 1);
+  resultsTable.fnFilter("", 2);
+}
 
 var filter_ontologies = {
   init: function() {
