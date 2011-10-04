@@ -9,19 +9,23 @@
   </div>
   
   <% unless $ANALYTICS_ID.nil? || $ANALYTICS_ID.empty? %>
-  	<script type="text/javascript">
-  	    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-  	    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-  	</script>
-  	<script type="text/javascript">
-  	    try {
-  	        var pageTracker = _gat._getTracker("<%=$ANALYTICS_ID%>");
-  	        pageTracker._trackPageview();
-  	    } 
-  	    catch (err) {
-  	    }
-  	</script>
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        try {
+            var pageTracker = _gat._getTracker("<%=$ANALYTICS_ID%>");
+            pageTracker._trackPageview();
+        } 
+        catch (err) {
+        }
+    </script>
   <%end%>
 
+  <!-- If you're on IE6, go away -->
+  <!--[if IE 6]>
+  <script type="text/javascript" src="http://shapeshed.github.com/ie6-notice/ie6notice-1.0.0.min.js"></script>
+  <![endif]--> 
 </body>
 </html>

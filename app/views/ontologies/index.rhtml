@@ -10,27 +10,27 @@
 <script type="text/javascript">
 var ontologies_table;
 function drawMessage(text){
-		jQuery.cursorMessage(text,{"hideTimeout":3000});
+    jQuery.cursorMessage(text,{"hideTimeout":3000});
 }
 
 function filterBySelection(selectbox){
-	if (selectbox.value == 0){
-		ontologies_table.fnFilter("", 11);
-	} else {
-		ontologies_table.fnFilter(selectbox.value, 11);
-	}
-	
+  if (selectbox.value == 0){
+    ontologies_table.fnFilter("", 11);
+  } else {
+    ontologies_table.fnFilter(selectbox.value, 11);
+  }
+  
 }
 
 
 function filterByGroup(selectbox){
-	if(selectbox.value == 0){
-		ontologies_table.fnFilter("", 12);
-	} else {
-		ontologies_table.fnFilter(selectbox.value, 12, true, false);
-	}
-	
-	jQuery("#filterlink").attr("href","/ontologies/?filter="+selectbox.value)
+  if(selectbox.value == 0){
+    ontologies_table.fnFilter("", 12);
+  } else {
+    ontologies_table.fnFilter(selectbox.value, 12, true, false);
+  }
+  
+  jQuery("#filterlink").attr("href","/ontologies/?filter="+selectbox.value)
 }
 
 // Custom filter for group columns
@@ -51,67 +51,67 @@ jQuery.fn.dataTableExt.afnFiltering.push(
 );
 
 function filterByParam(param){
-	ontologies_table.fnFilter(param, 12);	
+  ontologies_table.fnFilter(param, 12); 
 }
 
 
 function customFilterBox(value){
-	ontologies_table.fnFilter(value);
+  ontologies_table.fnFilter(value);
 }
 
 
 jQuery(document).ready(function() {
-	ontologies_table = jQuery('#ontologies').dataTable({
-		bLengthChange:false,
-		bAutoWidth:false,
-		iDisplayLength:800,
-		asStripClasses:["","alt"],
-		"oLanguage":{"sSearch":"Filter Ontologies"},
-		"aoData": [
-  			{ "sType": "html" }, // Ontology Name
-  			{ "sType": "html" }, // Visibility
-  			{ "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Terms
-  			{ "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Notes
+  ontologies_table = jQuery('#ontologies').dataTable({
+    bLengthChange:false,
+    bAutoWidth:false,
+    iDisplayLength:800,
+    asStripClasses:["","alt"],
+    "oLanguage":{"sSearch":"Filter Ontologies"},
+    "aoData": [
+        { "sType": "html" }, // Ontology Name
+        { "sType": "html" }, // Visibility
+        { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Terms
+        { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Notes
         { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Reviews
         { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Projects
         { "bVisible":false }, // Format
-  			{ "bVisible":false }, // Version
-  			null, // Uploaded
-  			null, // Author
-  			{"bSearchable":false,"bVisible":false}, // Description
-  			{"bSearchable":false,"bVisible":false,"sType":"groups"}, // Categories
-  			{"bSearchable":false,"bVisible":false} // Groups
-			],
-			"fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-						/* Append the grade to the default row class name */
-						var children = jQuery(nRow).children();
-						jQuery(children[0]).children("div.ont_link").tooltip({ 
-							bodyHandler: function() {return aData[7]},
-						    track: true, 
-						    delay: 0, 
-						    showURL: false, 
-						    opacity: 1, 
-						    fixPNG: true, 
-						    showBody: " - ", 
-						    extraClass: "pretty fancy", 
-						    top: 10, 
-						    left: 5 
-						});
+        { "bVisible":false }, // Version
+        null, // Uploaded
+        null, // Author
+        {"bSearchable":false,"bVisible":false}, // Description
+        {"bSearchable":false,"bVisible":false,"sType":"groups"}, // Categories
+        {"bSearchable":false,"bVisible":false} // Groups
+      ],
+      "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+            /* Append the grade to the default row class name */
+            var children = jQuery(nRow).children();
+            jQuery(children[0]).children("div.ont_link").tooltip({ 
+              bodyHandler: function() {return aData[7]},
+                track: true, 
+                delay: 0, 
+                showURL: false, 
+                opacity: 1, 
+                fixPNG: true, 
+                showBody: " - ", 
+                extraClass: "pretty fancy", 
+                top: 10, 
+                left: 5 
+            });
 
-          	// Set the table width back to 90% after it gets jacked by jQuery DataTable
-          	jQuery("#ontologies").css("width","100%");
-          	// Show the RSS link
-          	jQuery("#all_updates_rss").css("display","block");
+            // Set the table width back to 90% after it gets jacked by jQuery DataTable
+            jQuery("#ontologies").css("width","100%");
+            // Show the RSS link
+            jQuery("#all_updates_rss").css("display","block");
 
-						return nRow;
-					}
+            return nRow;
+          }
 
-	});
-	
-	<%if params[:filter]%>
-	  setTimeout('filterByParam("<%=params[:filter]%>")',2000);
-	<%end%>
-	
+  });
+  
+  <%if params[:filter]%>
+    setTimeout('filterByParam("<%=params[:filter]%>")',2000);
+  <%end%>
+  
 });
 
 
@@ -130,7 +130,7 @@ jQuery(document).ready(function() {
 
 <div id="ontologies_bd_container">
   <div id="ontologies_padding_container">
-    <div id="submit_new_ontology" style="float: right; margin: 1.2em; width: 48%;">
+    <div id="submit_new_ontology" style="margin: 1.2em; position: abosolute; left: 620px;">
       <script>
         jQuery(function() {
           jQuery("#submit_new_ontology a").button();
@@ -146,7 +146,7 @@ jQuery(document).ready(function() {
 
     <br/>
 
-    <table class="form" style="min-width: 580px;">
+    <table class="form" style="width: 600px;">
       <tr>
         <th>
         Filter by Category</th>
@@ -162,8 +162,8 @@ jQuery(document).ready(function() {
       </tr>
       <tr>
         <th>
-        	Filter by Group
-        	<%=help_icon("http://www.bioontology.org/wiki/index.php/BioPortal_FAQ#Ontology_Groups", "Help documentation about Groups", -2)%>
+          Filter by Group
+          <%=help_icon("http://www.bioontology.org/wiki/index.php/BioPortal_FAQ#Ontology_Groups", "Help documentation about Groups", -2)%>
         </th>
         <td>
           <select onchange="filterByGroup(this)"  name="groups" id="select_groups">
