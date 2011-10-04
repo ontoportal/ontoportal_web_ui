@@ -1,6 +1,9 @@
-Name : <%=@name%>
+<% require 'cgi' %>
+Name: <%=@name%>
 
-Email : <%=@email%>
+Email: <%=@email%>
+
+Location: <%=CGI.unescape(@location)%>
 
 Comment:
 <%=@comment%>

@@ -46,18 +46,27 @@ Errors On Form
 <%end%>
 
 <table class="form">
-	<input type="hidden" name="pop" id="pop" value="<%=pop%>">
+  <input type="hidden" name="pop" id="pop" value="<%=pop%>">
+  <%= hidden_field_tag "location", params[:location] %>
+
+  <% if session[:user].nil? %>
+    <tr>
+      <th class="top">Name:*</th>
+      <td class="top"><input type="text" name="name" style="width:180px" value="<%=params[:name]%>"></td>
+    </tr>
+    <tr>
+      <th>Email Address:*</th>
+      <td><input type="text" name="email" style="width:180px" value="<%=params[:email]%>"></td>
+    </tr>
+  <% else %>
+    Hello <b><%=session[:user].username%></b>, please send us your comment below (we'll email you a copy):
+    <%= hidden_field_tag "name", session[:user].username %>
+    <%= hidden_field_tag "email", session[:user].email %>
+  <% end %>
+
 	<tr>
-		<th class="top">Name:*</th>
-		<td class="top"><input type="text" name="name" style="width:180px" value="<%=params[:name]%>"></td>
-	</tr>
-	<tr>
-		<th>Email Address:*</th>
-		<td><input type="text" name="email" style="width:180px" value="<%=params[:email]%>"></td>
-	</tr>
-	<tr>
-		<th>Comment:*</th>
-		<td><textarea name="comment" cols='60' rows=8><%=params[:comment]%></textarea></td>
+		<th class="top">Comment:*</th>
+		<td class="top"><textarea name="comment" cols='60' rows=8><%=params[:comment]%></textarea></td>
 	</tr>
     <% if ENV['USE_RECAPTCHA'] == 'true' %>
         <style lang="text/css">

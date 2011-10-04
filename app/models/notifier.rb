@@ -27,11 +27,11 @@ class Notifier < ActionMailer::Base
     body :node => node.inspect
   end
   
-  def feedback(name,email,comment)
+  def feedback(name,email,comment,location = "")
     recipients "#{$SUPPORT_EMAIL},#{email}"
     from "#{$SUPPORT_EMAIL}"
-    subject "Feedback"
-    body :name => name, :email => email, :comment => comment
+    subject "[#{$SITE}] Feedback from #{name}"
+    body :name => name, :email => email, :comment => comment, :location => location
   end
   
   def register_for_announce_list(email)

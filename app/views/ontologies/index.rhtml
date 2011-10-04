@@ -130,7 +130,7 @@ jQuery(document).ready(function() {
 
 <div id="ontologies_bd_container">
   <div id="ontologies_padding_container">
-    <div id="submit_new_ontology" style="margin: 1.2em; position: abosolute; left: 620px;">
+    <div id="submit_new_ontology" style="margin: 1.2em 0 0; position: absolute; left: 660px;">
       <script>
         jQuery(function() {
           jQuery("#submit_new_ontology a").button();
@@ -146,7 +146,7 @@ jQuery(document).ready(function() {
 
     <br/>
 
-    <table class="form" style="width: 600px;">
+    <table class="form" style="width: 630px;">
       <tr>
         <th>
         Filter by Category</th>
@@ -172,7 +172,7 @@ jQuery(document).ready(function() {
               <option value="<%= group[:acronym]%>" <%if !params[:filter].nil? && group[:acronym].include?(params[:filter])%>selected="selected"<%end%>><%= group[:name]%> (<%= group[:acronym]%>)</option>
             <%end%>
           </select>
-          <a title="Link to filtered ontology list" href="/ontologies<%if !params[:filter].nil?%>/?filter=<%= params[:filter]%><%end%>" id="filterlink"><span style="display: inline-block; float: right; margin-top: 1px;" class="ui-icon ui-icon-link"></span></a>
+          <a title="Link to filtered ontology list" href="/ontologies<%if !params[:filter].nil?%>/?filter=<%= params[:filter]%><%end%>" id="filterlink"><span style="display: inline-block; vertical-align: text-bottom;" class="ui-icon ui-icon-link"></span></a>
         </td>
       </tr>
       <tr>
