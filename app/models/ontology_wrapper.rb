@@ -88,9 +88,8 @@ class OntologyWrapper
   PROTEGE_FORMAT = ["OWL","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE"]
     
   def initialize(hash = nil, params = nil)
-    if hash.nil?
-      return
-    end
+    return if hash.nil?
+    hash = hash["ontologyBean"] if hash["ontologyBean"]
     
     self.displayLabel             = hash['displayLabel']
     self.id                       = hash['id']

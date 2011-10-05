@@ -48,14 +48,15 @@ class DataAccess
     return self.cache_pull("#{view_string}#{param(ontology_id)}::_top", "getTopLevelNodes", { :ontology_id => ontology_id, :view => view })
   end
   
-  def self.getOntologyList
-    return self.cache_pull("ont_list", "getOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
+  def self.getOntologyList(filter_private = true)
+    ont_list = self.cache_pull("ont_list", "getOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
+    filter_private_ontologies(ont_list) if filter_private
   end
   
   def self.getOntologyAcronyms
     CACHE.set("ontology_acronyms", Array.new)
 
-    ontologies = self.getOntologyList
+    ontologies = self.getOntologyList(false)
     
     ontology_acronyms = []
     ontologies.each do |ontology|
@@ -84,7 +85,7 @@ class DataAccess
   end
   
   def self.getTermsCountOntologies
-    ontologies = self.getOntologyList
+    ontologies = self.getOntologyList(false)
     
     terms = CACHE.get("terms_all_ontologies")
     running = CACHE.get("running_term_calc")
@@ -127,7 +128,7 @@ class DataAccess
   end
   
   def self.getNotesCounts
-    ontologies = self.getOntologyList
+    ontologies = self.getOntologyList(false)
     
     notes_counts = CACHE.get("notes_all_ontologies")
     running = CACHE.get("running_notes_count_calc")
@@ -553,6 +554,25 @@ class DataAccess
   end
   
 private
+
+  def self.filter_private_ontologies(ont_list)
+    return ont_list if Thread.current[:session] && Thread.current[:session][:user] && Thread.current[:session][:user].admin?
+
+    ont_list.delete_if {|ont| ont.private?}
+
+    if Thread.current[:session] && Thread.current[:session][:user]
+      user = Thread.current[:session][:user]
+      user.acl.each do |ont_id|
+        begin
+          ont_list << self.getOntology(ont_id)
+        rescue Exception => e
+          LOG.add :debug, "Problem getting #{ont_id} for user"
+        end
+      end
+    end
+
+    ont_list
+  end
 
   def self.param(string)
     return string.to_s.gsub(" ","_")
