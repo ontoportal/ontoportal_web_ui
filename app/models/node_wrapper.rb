@@ -2,14 +2,14 @@ require 'uri'
 require 'cgi'
 
 class NodeWrapper
-  
+
   attr_accessor :synonyms
   attr_accessor :definitions
   attr_accessor :type
-  
+
   attr_accessor :id
   attr_accessor :fullId
-  attr_accessor :label  
+  attr_accessor :label
   attr_accessor :isObsolete
   attr_accessor :isObsoleteBool
   attr_accessor :properties
@@ -17,22 +17,22 @@ class NodeWrapper
   attr_accessor :child_size
   attr_accessor :children
   attr_accessor :parent_association
-  
+
   # This is used to hold original concept names because we turn them into links
   # Original names can be used for comparison if needed (like in the IS_A, PART_OF icon generation)
   attr_accessor :original_properties
-  
+
   def initialize(hash = nil, params = nil)
-    if hash.nil?
-      return
-    end
-    
+    return if hash.nil?
+
+    hash = hash["classBean"] if hash["classBean"]
+
     # Default values
     self.version_id = params[:ontology_id]
     self.properties = {}
     self.children = []
     self.original_properties = {}
-    
+
     hash.each do |key,value|
       if key.eql?("relations")
         value.each do |relation_name,relation_value|
@@ -49,7 +49,7 @@ class NodeWrapper
           else
             list_values = []
             list_values_orig = []
-            
+
             unless relation_value.nil?
               relation_value.each do |list_item|
                 if list_item.kind_of? Hash
@@ -70,7 +70,7 @@ class NodeWrapper
                 end
               end
             end
-            
+
             self.properties[relation_name] = list_values.join(" ||%|| ")
             self.original_properties[relation_name] = list_values_orig.join(" ||%|| ")
           end
@@ -83,16 +83,16 @@ class NodeWrapper
         end
       end
     end
-    
+
     # Cleanup
     self.child_size = 0 if self.child_size.nil?
     self.isObsoleteBool = !self.isObsolete.nil? && self.isObsolete.eql?("1")
   end
-  
+
   def is_browsable
     self.type.downcase.eql?("class") rescue ""
   end
-  
+
   def store(key, value)
     begin
       send("#{key}=", value)
@@ -100,15 +100,15 @@ class NodeWrapper
       LOG.add :debug, "Missing '#{key}' attribute in NodeWrapper"
     end
   end
-  
+
   def name
     @label
   end
-  
+
   def name=(value)
     @label = value
   end
-  
+
   def label_html
     self.obsolete? ? "<span class='obsolete_term' title='This term is obsolete'>#{self.label}</span>" : self.label
   end
@@ -120,23 +120,23 @@ class NodeWrapper
   def to_param
     URI.escape(self.id,":/?#!").to_s
   end
-  
+
   def obsolete?
     self.isObsoleteBool
   end
-  
+
   def ontology
     return DataAccess.getOntology(self.version_id)
   end
-  
+
   def ontology_name
     return DataAccess.getOntology(self.version_id).displayLabel
   end
-  
+
   def ontology_id
     return DataAccess.getOntology(self.version_id).ontologyId
   end
-  
+
   def mapping_count
     DataAccess.getMappingCountConcept(self.ontology.ontologyId, self.fullId)
   end
@@ -144,31 +144,31 @@ class NodeWrapper
   def note_count
     DataAccess.getNotesForConcept(DataAccess.getOntology(self.version_id).ontologyId, self.fullId_proper, false, true).size rescue "0"
   end
-    
-  def networkNeighborhood(relationships = nil)         
+
+  def networkNeighborhood(relationships = nil)
     DataAccess.getNetworkNeighborhoodImage(self.ontology_name,self.id,relationships)
   end
-  
-  def pathToRootImage(relationships = nil) 
+
+  def pathToRootImage(relationships = nil)
     DataAccess.getPathToRootImage(self.ontology_name,self.id,relationships)
   end
-  
-  # def children(relationship=["is_a"])       
+
+  # def children(relationship=["is_a"])
   #   DataAccess.getChildNodes(self.ontology_name,self.id,relationship)
   # end
-  
+
   def parent(relationship=["is_a"])
     DataAccess.getParentNodes(self.ontology_name,self.id,relationship)
   end
-  
+
   def path_to_root
-    return DataAccess.getPathToRoot(self.version_id,self.id)    
+    return DataAccess.getPathToRoot(self.version_id,self.id)
   end
-  
+
   def to_s
    "Node_Name: #{self.label}  Node_ID: #{self.id}"
   end
-  
+
   def fullId_proper
     ontology = DataAccess.getOntology(self.version_id)
     if ontology.lexgrid?
@@ -177,5 +177,5 @@ class NodeWrapper
       return self.fullId
     end
   end
-  
+
 end

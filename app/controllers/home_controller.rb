@@ -3,8 +3,8 @@ class HomeController < ApplicationController
 
 
   layout 'ontology'
-  
-  def index  
+
+  def index
     @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
     @groups = DataAccess.getGroups()
 
@@ -49,7 +49,7 @@ class HomeController < ApplicationController
     @active_totals = @active_totals[0,5]
 
     @categories = DataAccess.getCategories()
-    @last_notes = NotesIndex.find(:all, :order => 'created desc', :limit => 5)    
+    @last_notes = NotesIndex.find(:all, :order => 'created desc', :limit => 5)
     @last_mappings = DataAccess.getRecentMappings
 
     #build hash for quick grabbing
@@ -98,7 +98,7 @@ class HomeController < ApplicationController
     @sorted_categories = @category_tree.values.sort{|a,b| a[:name] <=> b[:name]}
 
     # calculate number of total RI records that have been processed
-    resources = OntrezService.getResourcesInfo
+    resources = OBDWrapper.getResourcesInfo
     @ri_record_count = 0
     resources.each do |resource|
       @ri_record_count += resource.record_count.to_i rescue 0
@@ -128,11 +128,11 @@ class HomeController < ApplicationController
   end
 
   def recommender
-    
+
   end
 
   def annotate
-    
+
   end
 
   def all_resources
@@ -141,11 +141,11 @@ class HomeController < ApplicationController
     @ontologyversionid = params[:ontologyversionid]
     @search = params[:search]
   end
-  
+
   def feedback
     # Show the header/footer or not
     feedback_layout = params[:pop].eql?("true") ? "popup" : "ontology"
-    
+
     # We're using a hidden form field to trigger for error checking
     # If sim_submit is nil, we know the form hasn't been submitted and we should
     # bypass form processing.
@@ -153,16 +153,16 @@ class HomeController < ApplicationController
       render :layout => feedback_layout
       return
     end
-    
+
     @errors = []
-      
+
     if params[:name].nil? || params[:name].empty?
       @errors << "Please include your name"
     end
     if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
       @errors << "Please include your email"
     end
-    if params[:comment].nil? || params[:comment].empty?          
+    if params[:comment].nil? || params[:comment].empty?
       @errors << "Please include your comment"
     end
     # verify_recaptcha is a method provided by the recaptcha plugin, returns true or false.
@@ -176,8 +176,8 @@ class HomeController < ApplicationController
       render :layout => feedback_layout
       return
     end
-    
-    Notifier.deliver_feedback(params[:name],params[:email],params[:comment],params[:location])   
+
+    Notifier.deliver_feedback(params[:name],params[:email],params[:comment],params[:location])
 
     if params[:pop].eql?("true")
       render :action => "feedback_complete", :layout => "popup"
@@ -186,23 +186,23 @@ class HomeController < ApplicationController
       redirect_to_home
     end
   end
-  
+
   def account
     if session[:user].nil?
       redirect_to :controller => 'login', :action => 'index', :redirect => "/account"
       return
     end
-    
+
     @user = session[:user]
     @survey = Survey.find_by_user_id(@user.id)
     if @survey.nil?
       redirect_to :controller => 'users', :action => 'edit', :id => @user.id
       return
     end
-    
+
     render :partial => "users/details", :layout => "ontology"
   end
-  
+
   def feedback_complete
   end
 end

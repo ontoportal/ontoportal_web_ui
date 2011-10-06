@@ -1,14 +1,14 @@
 class OntologiesController < ApplicationController
 
   require 'cgi'
-  
+
   #caches_page :index
-  
-  helper :concepts  
+
+  helper :concepts
   layout 'ontology'
-  
+
   before_filter :authorize, :only=>[:edit,:update,:create,:new]
-  
+
   # GET /ontologies
   # GET /ontologies.xml
   def index
@@ -18,13 +18,13 @@ class OntologiesController < ApplicationController
     @term_counts = DataAccess.getTermsCountOntologies
     @mapping_counts = DataAccess.getMappingCountOntologiesHash
     @note_counts = DataAccess.getNotesCounts
-    
+
     respond_to do |format|
       format.html # index.rhtml
       format.xml  { render :xml => @ontologies.to_xml }
     end
   end
-  
+
   # GET /ontologies/1
   # GET /ontologies/1.xml
   def show
@@ -56,14 +56,14 @@ class OntologiesController < ApplicationController
     #   return
     # end
   end
-  
+
   def virtual
     @ontology = DataAccess.getLatestOntology(params[:ontology])
-    
+
     @versions = DataAccess.getOntologyVersions(@ontology.ontologyId).sort{|x,y| x.id <=> y.id}
-    
+
     LOG.add :info, 'show_virtual_ontology', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
-    
+
     if @ontology.statusId.to_i.eql?(3)
       redirect_to "/ontologies/#{@ontology.id}"
       return
@@ -78,29 +78,29 @@ class OntologiesController < ApplicationController
     redirect_to "/ontologies/#{@ontology.id}"
     return
   end
-  
+
   def download_latest
     @ontology = DataAccess.getLatestOntology(params[:id])
     redirect_to $REST_URL + "/ontologies/download/#{@ontology.id}?apikey=#{$API_KEY}"
   end
-  
+
   def update
     params[:ontology][:isReviewed]=1
     params[:ontology][:isFoundry]=0
     unless !authorize_owner(params[:ontology][:userId].to_i)
       return
     end
-    
+
     @errors = validate(params[:ontology],true)
-    
+
     if @errors.length < 1
       if params[:ontology][:isView] && params[:ontology][:isView].to_i == 1
         @ontology = DataAccess.updateView(params[:ontology],params[:id])
       else
         @ontology = DataAccess.updateOntology(params[:ontology],params[:id])
       end
-      
-      if @ontology.kind_of?(Hash) && @ontology[:error]        
+
+      if @ontology.kind_of?(Hash) && @ontology[:error]
         flash[:notice]=@ontology[:longMessage]
         redirect_to ontology_path(:id=>params[:id])
       else
@@ -115,26 +115,26 @@ class OntologiesController < ApplicationController
       @ontology.from_params(params[:ontology])
       @ontology.id = params[:id]
       @categories = DataAccess.getCategories()
-      
+
       render :action=> 'edit'
     end
-    
+
   end
-  
-  
+
+
   def edit
     @ontology = DataAccess.getOntology(params[:id])
-    
+
     authorize_owner(@ontology.userId.to_i)
-    
+
     @categories = DataAccess.getCategories()
   end
 
   def edit_view
-    @ontology = DataAccess.getView(params[:id])   
-    
+    @ontology = DataAccess.getView(params[:id])
+
     authorize_owner(@ontology.userId.to_i)
-    
+
     @categories = DataAccess.getCategories()
   end
 
@@ -142,13 +142,13 @@ class OntologiesController < ApplicationController
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:conceptid] = params[:id].nil? ? params[:conceptid] : params[:id]
     params[:ontology] = params[:ontology].nil? ? params[:ontologyid] : params[:ontology]
-    
+
     # Error checking
     if params[:ontology].nil? || params[:id] && params[:ontology].nil?
       @error = "Please provide an ontology id or concept id with an ontology id."
       return
     end
-    
+
     params_array = []
     params.each do |key,value|
       stop_words = [ "ontology", "controller", "action" ]
@@ -156,10 +156,10 @@ class OntologiesController < ApplicationController
       params_array << "#{key}=#{CGI.escape(value)}"
     end
     params_string = (params_array.empty?) ? "" : "&#{params_array.join('&')}"
-    
+
     redirect_to "/ontologies/#{params[:ontology]}?p=terms#{params_string}", :status => :moved_permanently
   end
-  
+
   # GET /visualize/:ontology
   def terms
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
@@ -173,9 +173,9 @@ class OntologiesController < ApplicationController
 
     # Set the ontology we are viewing
     if view
-      @ontology = DataAccess.getView(params[:ontology])   
+      @ontology = DataAccess.getView(params[:ontology])
     else
-      @ontology = DataAccess.getOntology(params[:ontology])   
+      @ontology = DataAccess.getOntology(params[:ontology])
     end
 
     if @ontology.private? && (session[:user].nil? || !session[:user].has_access?(@ontology))
@@ -197,7 +197,7 @@ class OntologiesController < ApplicationController
 
     # Get most recent active version of ontology if there was a parsing error
     skip_status = [1, 2, 4]
-    if OntologyWrapper.virtual_id?(params[:ontology]) && skip_status.include?(@ontology.statusId.to_i) 
+    if OntologyWrapper.virtual_id?(params[:ontology]) && skip_status.include?(@ontology.statusId.to_i)
       DataAccess.getActiveOntologies.each do |ont|
         if ont.ontologyId.eql?(@ontology.ontologyId)
           @ontology = DataAccess.getOntology(ont.id)
@@ -206,7 +206,7 @@ class OntologiesController < ApplicationController
       end
     end
 
-    # Redirect to move recent unarchived version is this version is archived    
+    # Redirect to move recent unarchived version is this version is archived
     if @ontology.statusId.to_i.eql?(6)
       @latest_ontology = DataAccess.getLatestOntology(@ontology.ontologyId)
       params[:ontology] = @latest_ontology.id
@@ -242,7 +242,7 @@ class OntologiesController < ApplicationController
 
       # get the initial concepts to display
       @concept = DataAccess.getNode(@ontology.id, @root.children.first.id, nil, view)
-      
+
       # Some ontologies have "too many children" at their root. These will not process and are handled here.
       # TODO: This should use a proper error-handling technique with custom exceptions
       if @concept.nil?
@@ -261,9 +261,9 @@ class OntologiesController < ApplicationController
       @concept.properties = {}
       @concept.version_id = @ontology.id
       @concept.children = []
-      
+
       @tree_concept = TreeNode.new(@concept)
-      
+
       @root = TreeNode.new
       @root.children = [@tree_concept]
     elsif @ontology.flat? && params[:conceptid]
@@ -280,43 +280,43 @@ class OntologiesController < ApplicationController
         @error = "The requested term could not be found."
         return
       end
-      
+
       # Did we come from the Jump To widget, if so change logging
       if params[:jump_to_nav]
         LOG.add :info, 'jump_to_nav', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
       else
         LOG.add :info, 'visualize_concept_direct', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
       end
-      
+
       # This handles special cases where a passed concept id is for a concept
       # that isn't browsable, usually a property for an ontology.
       if !@concept.is_browsable
         render :partial => "shared/not_browsable", :layout => "ontology"
         return
       end
-      
+
       # Create the tree
       rootNode = @concept.path_to_root
       @root = TreeNode.new()
       @root.set_children(rootNode.children, rootNode)
     end
-    
+
     # gets the initial mappings
     @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.fullId)
-    
-    
+
+
     unless @concept.id.to_s.empty?
       # Update the tab with the current concept
       update_tab(@ontology,@concept.id)
     end
-    
+
     if request.xhr?
       return render 'visualize', :layout => false
     else
       return render 'visualize', :layout => "ontology_viewer"
     end
   end
-  
+
   def new
     if(params[:id].nil?)
       @ontology = OntologyWrapper.new
@@ -326,36 +326,36 @@ class OntologiesController < ApplicationController
     end
     @categories = DataAccess.getCategories()
   end
-  
-  
+
+
   def new_view
     if(params[:id].nil? || params[:id].to_i < 1)
       @new = true
       @ontology = OntologyWrapper.new
       @ontology_version_id = params[:version_id]
       @ontology.userId = session[:user].id
-    else      
+    else
       @ontology = DataAccess.getView(params[:id])
     end
 
     @categories = DataAccess.getCategories()
   end
-  
-  
+
+
   def create
     params[:ontology][:isCurrent] = 1
     params[:ontology][:isReviewed] = 1
     params[:ontology][:isFoundry] = 0
-    
+
     update = !params[:ontology][:ontologyId].nil? && !params[:ontology][:ontologyId].empty?
-    
+
     # If ontology is going to be pulled, it should not be manual
     if params[:ontology][:isRemote].to_i.eql?(1) && (!params[:ontology][:downloadLocation].nil? || params[:ontology][:downloadLocation].length > 1)
       params[:ontology][:isManual] = 0
     else
       params[:ontology][:isManual] = 1
     end
-      
+
     if (session[:user].admin? && (params[:ontology][:userId].nil? || params[:ontology][:userId].empty?)) || !session[:user].admin?
       params[:ontology][:userId] = session[:user].id
     end
@@ -364,23 +364,23 @@ class OntologiesController < ApplicationController
 
     if @errors.length < 1
       @ontology = DataAccess.createOntology(params[:ontology])
-      if @ontology.kind_of?(Hash) && @ontology[:error] || @ontology.nil?       
+      if @ontology.kind_of?(Hash) && @ontology[:error] || @ontology.nil?
         notice = @ontology.nil? || @ontology[:longMessage].nil? ? "Error submitting ontology, please try again" : @ontology[:longMessage]
         flash[:notice] = notice
-        
+
         if(params[:ontology][:ontologyId].empty?)
           @ontology = OntologyWrapper.new
         else
           @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
         end
-        
+
         if params[:ontology][:isView].to_i==1
           render :action=>'new_view'
         else
-          render :action=>'new'  
+          render :action=>'new'
         end
       else
-        
+
         # Adds ontology to syndication
         # Don't break here if we encounter problems, the RSS feed isn't critical
         begin
@@ -391,7 +391,7 @@ class OntologiesController < ApplicationController
           event.save
         rescue
         end
-        
+
         # Display message to user
         if @ontology.metadata_only?
           flash[:notice] = "Thank you for submitting your ontology to #{$SITE}.
@@ -406,7 +406,7 @@ class OntologiesController < ApplicationController
             We will now put your ontology in the queue to be processed.
             Please keep in mind that it may take up to several hours before #{$SITE} users will be able to explore and search your ontology."
         end
-        
+
         if @ontology.isView=='true'
           # Cleaning out the cache
           parent_ontology=DataAccess.getOntology(@ontology.viewOnOntologyVersionId)
@@ -416,8 +416,8 @@ class OntologiesController < ApplicationController
           redirect_to ontology_path(@ontology)
         end
       end
-      
-      
+
+
     else
       if(params[:ontology][:ontologyId].empty?)
         @ontology = OntologyWrapper.new
@@ -428,24 +428,24 @@ class OntologiesController < ApplicationController
         @ontology.from_params(params[:ontology])
         @categories = DataAccess.getCategories()
       end
-      
+
       if(params[:ontology][:isView].to_i==1)
         render :action=>'new_view'
       else
-        render :action=>'new'  
+        render :action=>'new'
       end
     end
-    
+
   end
-  
-  
+
+
   def exhibit
     @ontologies = DataAccess.getOntologyList()
-    
+
     string = ""
     string << "{
-           \"items\" : [\n"    
-    
+           \"items\" : [\n"
+
     for ont in @ontologies
       string << "{
          \"title\" : \"#{ont.displayLabel}\" , \n
@@ -454,24 +454,24 @@ class OntologiesController < ApplicationController
          \"version\": \"#{ont.versionNumber}\",\n
          \"status\":\"#{ont.versionStatus}\",\n
          \"format\":\"#{ont.format}\"\n"
-      
+
       if ont.eql?(@ontologies.last)
         string << "}"
       else
         string << "} , "
       end
     end
-    
-    response.headers['Content-Type'] = "text/html" 
-    
+
+    response.headers['Content-Type'] = "text/html"
+
     string<< "]}"
     render :text => string
-    
+
   end
-  
-  
-  
-  
+
+
+
+
   ###############################################
   ## These are stub methods that let us invoke partials directly
   ###############################################
@@ -501,20 +501,20 @@ class OntologiesController < ApplicationController
     @metrics = DataAccess.getOntologyMetrics(@ontology.id)
     @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, false)
     @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
-    
+
     LOG.add :info, 'show_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
-    
+
     # Check to see if the metrics are from the most recent ontology version
     if !@metrics.nil? && !@metrics.id.eql?(@ontology.id)
       @old_metrics = @metrics
       @old_ontology = DataAccess.getOntology(@old_metrics.id)
     end
-    
+
     @diffs = DataAccess.getDiffs(@ontology.ontologyId)
 
     #Grab Reviews Tab
     @reviews = Review.find(:all,:conditions=>{:ontology_id=>@ontology.ontologyId},:include=>:ratings)
-    
+
     #Grab projects tab
     @projects = Project.find(:all,:conditions=>"uses.ontology_id = '#{@ontology.ontologyId}'",:include=>:uses)
 
@@ -524,7 +524,7 @@ class OntologiesController < ApplicationController
       render :partial => 'metadata', :layout => "ontology_viewer"
     end
   end
-  
+
   def mappings
     ontology_list = DataAccess.getOntologyList()
     view_list = DataAccess.getViewList()
@@ -535,11 +535,11 @@ class OntologiesController < ApplicationController
     ontology_list.each do |ontology|
       ontologies_hash[ontology.ontologyId] = ontology
     end
-    
+
     view_list.each do |view|
       ontologies_hash[view.ontologyId] = view
     end
-    
+
     # Add ontologies to the mapping count array, delete if no ontology exists
     @ontologies_mapping_count.delete_if do |ontology|
       ontology['ontology'] = ontologies_hash[ontology['ontologyId']]
@@ -549,7 +549,7 @@ class OntologiesController < ApplicationController
         false
       end
     end
-    
+
     @ontology_id = @ontology.ontologyId
     @ontology_label = @ontology.displayLabel
 
@@ -561,7 +561,7 @@ class OntologiesController < ApplicationController
       render :partial => 'mappings', :layout => "ontology_viewer"
     end
   end
-  
+
   def notes
     @ontology = DataAccess.getOntology(params[:id])
     @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, false)
@@ -572,7 +572,7 @@ class OntologiesController < ApplicationController
       render :partial => 'notes', :layout => "ontology_viewer"
     end
   end
-  
+
   def widgets
     @ontology = DataAccess.getOntology(params[:id])
     if request.xhr?
@@ -581,9 +581,9 @@ class OntologiesController < ApplicationController
       render :partial => 'widgets', :layout => "ontology_viewer"
     end
   end
- 
+
   private
-  
+
   def calculate_note_counts(notes)
     note_count_map = {}
     note_count = []
@@ -591,20 +591,20 @@ class OntologiesController < ApplicationController
     unless notes.nil? || notes.empty?
       ontology_id = notes[0].ontologyId
       ontology = DataAccess.getLatestOntology(ontology_id)
-    
+
       notes.each do |note|
         if note.appliesTo['type'].eql?("Class")
           note_count_map[note.appliesTo['id']] = note_count_map[note.appliesTo['id']].nil? ? 1 : note_count_map[note.appliesTo['id']] += 1
         end
       end
-      
+
       if note_count_map.size > 35
         note_count_map = note_count_map.sort {|a,b| b[1] <=> a[1]}
-        
+
         # Remove all elements above index 35
         note_count_map.slice!(35, (note_count_map.size - 35))
       end
-    
+
       note_count_map.each do |concept_id, count|
         begin
           concept = DataAccess.getNode(ontology.id, concept_id, ontology.isView)
@@ -614,23 +614,23 @@ class OntologiesController < ApplicationController
         end
       end
     end
-    
+
     note_count.sort! {|a,b| a[0] <=> b[0]}
 
     note_count
   end
-  
+
   def validate(params, update=false)
     # strip all spaces from email
     params[:contactEmail] = params[:contactEmail].gsub(" ", "")
-    
+
     acronyms = DataAccess.getOntologyAcronyms
-    
+
     errors=[]
     if params[:displayLabel].nil? || params[:displayLabel].length <1
       errors << "Please Enter an Ontology Name"
     end
-    
+
     if params[:abbreviation].nil? || params[:abbreviation].empty?
       errors << "Please Enter an Ontology Abbrevation"
     elsif params[:abbreviation].include?(" ") || /[\^{}\[\]:;\$=\*`#\|@'\<>\(\)\+,\\\/]/.match(params[:abbreviation])
@@ -647,46 +647,46 @@ class OntologiesController < ApplicationController
         errors << "That abbreviation is already in use. Please choose another."
       end
     end
-    
+
     if params[:dateReleased].nil? || params[:dateReleased].length <1
       errors << "Please Enter the Date Released"
     elsif params[:dateReleased].match(/[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/).nil?
       errors << "Please Enter a Date Formatted as MM/DD/YYYY"
     end
-    
+
     unless update
       if params[:isRemote].to_i.eql?(0) && (params[:filePath].nil? || params[:filePath].length < 1)
         errors << "Please Choose a File"
       end
-      
+
       if params[:isRemote].to_i.eql?(0) && !params[:filePath].nil? && params[:filePath].size.to_i > $MAX_UPLOAD_SIZE && !session[:user].admin?
         errors << "File is too large"
       end
-      
+
       if params[:isRemote].to_i.eql?(1) && (params[:downloadLocation].nil? || params[:downloadLocation].length < 1)
         errors << "Please Enter a URL"
       end
-      
+
       if params[:isRemote].to_i.eql?(1) && (!params[:downloadLocation].nil? || params[:downloadLocation].length > 1)
         begin
           downloadLocation = URI.parse(params[:downloadLocation])
           if downloadLocation.scheme.nil? || downloadLocation.host.nil?
             errors << "Please enter a valid URL"
-          end 
+          end
         rescue URI::InvalidURIError
           errors << "Please enter a valid URL"
         end
-        
+
         if !remote_file_exists?(params[:downloadLocation])
           errors << "The URL you provided for us to load an ontology from doesn't reference a valid file"
         end
       end
     end
-    
+
     if params[:contactEmail].nil? || params[:contactEmail].length <1 || !params[:contactEmail].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
       errors << "Please Enter the Contact Email"
     end
-    
+
     # options that use default text, remove them from the hash
     default_text = "use default"
     params.each do |name,value|
@@ -694,13 +694,13 @@ class OntologiesController < ApplicationController
         params[name] = ""
       end
     end
-    
+
     # Check for metadata only and set parameter
     if params[:isRemote].to_i.eql?(3)
       params[:isMetadataOnly] = 1
     end
-    
+
     return errors
   end
-  
+
 end

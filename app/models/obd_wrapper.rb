@@ -5,15 +5,22 @@ class OBDWrapper
   NO_CACHE = false
 
   def self.getResourcesInfo
-    return OntrezService.getResourcesInfo
+    if CACHE.get("resource_index_info").nil?
+      info = OntrezService.getResourcesInfo
+
+      CACHE.set("resource_index_info", info, 60*60*24*14)
+    else
+      info = CACHE.get("resource_index_info")
+    end
+    info
   end
-  
+
   def self.gatherResources(ontology,concept,latest,version_id)
     if CACHE.get("#{ontology}::#{concept.id}_resource").nil? || NO_CACHE
       resources = []
-      
+
       cache = true
-      
+
       begin
         resources = OntrezService.gatherResources(ontology,concept.id,latest,version_id)
       rescue Exception => e
@@ -31,12 +38,12 @@ class OBDWrapper
         cache = false
         Notifier.deliver_error(e)
       end
-     
+
       if cache
         CACHE.set("#{ontology}::#{concept.id}_resource",resources)
       end
       resources.sort!{|x,y| x.name.downcase<=>y.name.downcase}
-      
+
       return resources
     else
       return CACHE.get("#{ontology}::#{concept.id}_resource")
@@ -58,11 +65,11 @@ class OBDWrapper
       return resource
     end
   end
-  
+
   def self.getResourceStats
     if CACHE.get("resource_index_stats").nil?
       stats = OntrezService.getResourceStats
-      
+
       CACHE.set("resource_index_stats", stats, 60*60*336)
     else
       stats = CACHE.get("resource_index_stats")

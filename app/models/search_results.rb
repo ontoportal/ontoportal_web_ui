@@ -6,11 +6,14 @@ class SearchResults < Array
   attr_accessor :total_results
   attr_accessor :total_pages
   attr_accessor :results
-  
+
   def initialize(hash = nil, params = nil)
     self.ontology_hit_counts = {}
+
     return if hash.nil?
-    
+
+    hash = hash["page"] if hash["page"]
+
     results = hash['contents']['searchResultList']
     unless results.nil? || results.length == 0
       results.values.each do |result|
@@ -32,7 +35,7 @@ class SearchResults < Array
       self.ontology_hit_counts[hit[1]['ontologyId'].to_i] = hit[1]
     end
   end
-  
+
   def hash_for_serialization
     return {
       :ontology_hit_counts => self.ontology_hit_counts, :page_size => self.page_size,
@@ -41,5 +44,5 @@ class SearchResults < Array
       :results => self.results
     }
   end
-  
+
 end
