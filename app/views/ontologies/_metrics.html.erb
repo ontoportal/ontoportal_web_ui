@@ -47,34 +47,34 @@
       <tr>
         <th style="vertical-align: top;">Classes with a single subclass:</th>
         <td>
-          <%= class_list_info(@metrics, "classesWithOneSubclass", "have only one subclass", "Classes with a single subclass") %>
+          <%= format_metric_list(@metrics, @metrics.classesWithOneSubclass, "Classes with a single subclass") %>
         </td>
       </tr>
       <tr>
         <th style="vertical-align: top;">Classes with more than 25 subclasses:</th>
         <td>
-          <%= class_list_info(@metrics, "classesWithMoreThanXSubclasses", "have more than 25 subclasses", "Classes with more than 25 subclasses") %>
+          <%= format_metric_list(@metrics, @metrics.classesWithMoreThanXSubclasses, "Classes with more than 25 subclasses") %>
         </td>
       </tr>
       <!--
       <tr>
         <th style="vertical-align: top;">Classes with no author:</th>
         <td>
-          <%= class_list_info(@metrics, "classesWithNoAuthor", "have no author property specified or no values for the author property", "Classes with no author") %>
+          <%= format_metric_list(@metrics, @metrics.classesWithNoAuthor, "Classes with no author") %>
         </td>
       </tr>
       -->
       <tr>
         <th style="vertical-align: top;">Classes with no definition:</th>
         <td>
-          <%= class_list_info(@metrics, "classesWithNoDocumentation", "have no definition property specified or no values for the definition property", "Classes with no documentation") %>
+          <%= format_metric_list(@metrics, @metrics.classesWithNoDocumentation, "Classes with no definition") %>
         </td>
       </tr>
       <!-- not calculated currently
       <tr>
         <th style="vertical-align: top;">Classes with more than one property value:</th>
         <td>
-          <%= class_list_info(@metrics, "classesWithMoreThanOnePropertyValue", "have more than one property value", "Classes with more than one property value") %>
+          <%= format_metric_list(@metrics, @metrics.classesWithMoreThanOnePropertyValue, "Classes with more than one property value") %>
         </td>
       </tr>
       -->

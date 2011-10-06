@@ -17,9 +17,7 @@ class Note
 
 
   def initialize(hash = nil, params = nil)
-    if hash.nil? || !hash['id']
-      return nil
-    end
+    return if hash.nil? || !hash['id']
 
     self.associated = []
 
@@ -30,7 +28,7 @@ class Note
         self.associated = associated
         next
       end
-      
+
       if key.eql?("appliesToList")
         self.appliesTo = value['appliesTo']
         next
@@ -41,17 +39,17 @@ class Note
       rescue Exception
         LOG.add :debug, "Missing '#{key}' attribute in NodeWrapper"
       end
-      
+
       self.archived = "false" if self.archived.nil?
     end
   end
-  
+
   def empty?
     self.id.nil?
   end
-  
+
   def ontology
     DataAccess.getOntology(self.createdInOntologyVersion)
   end
-  
+
 end

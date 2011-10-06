@@ -599,25 +599,39 @@ class BioPortalRestfulCore
 
     LOG.add :debug, "Retrieving ontology metrics"
     LOG.add :debug, uri
-    begin
-      doc = REXML::Document.new(get_xml(uri))
-    rescue Exception=>e
-      LOG.add :info, "getOntologyMetrics error: #{e.message}"
-      LOG.add :info, uri
-      return OntologyMetricsWrapper.new
+    doc = get_xml(uri)
+
+    metrics = errorCheck(doc)
+
+    unless metrics.nil?
+      return metrics
     end
 
-    ont = errorCheck(doc)
+    timer = Benchmark.ms { metrics = generic_parse(:xml => doc, :type => "OntologyMetricsWrapper") }
+    LOG.add :debug, "Parsed ontology metrics (#{timer}ms)"
 
-    unless ont.nil?
-      return ont
+    metrics
+  end
+
+  def self.getAllOntologyMetrics
+    uri_gen = BioPortalResources::AllMetrics.new
+    uri = uri_gen.generate_uri
+
+    LOG.add :debug, "Retrieving all ontology metrics"
+    LOG.add :debug, uri
+
+    doc = get_xml(uri)
+
+    metrics = errorCheck(doc)
+
+    unless metrics.nil?
+      return metrics
     end
 
-    doc.elements.each("*/data/ontologyMetricsBean"){ |element|
-      ont = parseOntologyMetrics(element)
-    }
+    timer = Benchmark.ms { metrics = generic_parse(:xml => doc, :type => "OntologyMetricsWrapper") }
+    LOG.add :debug, "Parsed all ontology metrics (#{timer}ms)"
 
-    return ont
+    metrics
   end
 
   ##
@@ -1674,7 +1688,8 @@ private
           elements = []
           child.each_element { |element| elements << element.content }
           a[child.name] = elements
-        when "associated", "userAcl", "roles"
+        when "associated", "userAcl", "roles", "classesWithNoDocumentation", "classesWithMoreThanXSubclasses",
+          "classesWithOneSubclass","classesWithNoAuthor"
           a[child.name] = process_list(child)
       else
         if !child.first.nil? && child.first.element?

@@ -10,7 +10,7 @@ jQuery(document).ready(function(){
     var link = this;
     var row_id = jQuery(this).attr("id");
     var note_id = jQuery(this).attr("id").substring(4);
-    
+
     if (jQuery(this).parent().hasClass("highlighted_row")) {
       jQuery(this).parent().parent().removeClass("highlighted_row");
       jQuery(this).parent().parent().children().removeClass("highlighted_row");
@@ -21,8 +21,8 @@ jQuery(document).ready(function(){
     } else {
       jQuery(this).parent().parent().addClass("highlighted_row");
       jQuery(this).parent().parent().children().addClass("highlighted_row");
-      jQuery(this).parent().parent().after("<tr id='row_expanded_" + note_id + "' class='highlighted_border'><td colspan='" + jQuery.data(document.body, "note_colspan") + "' class='highlighted_border' id='row_thread_" + note_id + "'><span class='ajax_message'><img src='/images/spinners/spinner_000000_16px.gif' style='vertical-align: text-bottom;'> loading...</span></td></tr>");
-      
+      jQuery(this).parent().parent().after("<tr id='row_expanded_" + note_id + "' class='highlighted_border'><td colspan='" + jQuery.data(document.body, "ont_note_colspan") + "' class='highlighted_border' id='row_thread_" + note_id + "'><span class='ajax_message'><img src='/images/spinners/spinner_000000_16px.gif' style='vertical-align: text-bottom;'> loading...</span></td></tr>");
+
       // Check cache for result, make call if it isn't found
       if (jQuery.data(document.body, row_id) == null) {
         jQuery.ajax({

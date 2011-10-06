@@ -1,55 +1,30 @@
 module OntologyMetricsHelper
-  
-  def class_list_info(metrics, metric, message, title)
-    if metrics.send("#{metric}").nil?
-      return
-    end
-    
-    # Check to see if all properties are missing
-    if metrics.send(:"#{metric}All") == true
-      message = metrics.send(:"#{metric}_all")
-      return "#{metrics.numberOfClasses} <span id='#{metric}_help' style='display: none;'>#{message}</span>"
-    end
-    
+
+  def format_metric_list(metrics, metric, title)
+    return 0 if metric.nil?
+
     markup = ""
-    
-    # Below we will use the 'send' method to call setters/getters based on the metric name we're looking for
-    if !metrics.send(:"#{metric}LimitPassed").nil? && metrics.send(:"#{metric}LimitPassed") != false && metrics.send(:"#{metric}LimitPassed") > 0
-      class_list_length = metrics.send(:"#{metric}LimitPassed")
-      markup << "#{class_list_length}"
-      # Return here to avoid creating the 'details' link 
-      return markup
-    else
-      class_list_length = metrics.send(:"#{metric}").length rescue 0 # Count empty arrays as zero
-      if class_list_length == 0
-        markup << "0"
-      else
-        markup << "<a class='thickbox' href='#TB_inline?height=600&width=800&inlineId=%metric%'>#{class_list_length}</a>".gsub("%title%", title).gsub("%metric%", metric)
-      end
-    end
-    
-    markup << '<div id="%metric%" style="display: none;"><div class="metrics">'.gsub("%metric%", metric)
-    
-    # Message indicating why there are no details
-    if metrics.send(:"#{metric}LimitPassed") == true
-      markup << ""
-    else
+
+    # IF all of the classes triggered the metric, return the class count
+    if metric.include?("alltriggered")
+      markup = "#{metrics.numberOfClasses}"
+    elsif metric.kind_of?(Array) && metric.length == 1 && metric[0].include?("limitpassed")
+      # Split at the magic marker and return the count
+      markup = metric[0].split(":")[1]
+    elsif metric.kind_of?(Array) && metric.length == 0
+      # If we have an empty array return 0
+      markup = "0"
+    elsif metric.kind_of?(Array)
+      markup << "<a class='thickbox' href='#TB_inline?height=600&width=800&inlineId=#{metric.object_id}'>#{metric.length}</a>"
+      markup << "<div id='#{metric.object_id}' style='display: none;'><div class='metrics'>"
       markup << "<h2>#{title}</h2><p>"
-      metrics.send(:"#{metric}").each do | class_name, count | 
-        # TODO: Eventually we should link to the concept
-        #markup << "<a href=\"/visualize/#{ontology.id}/?conceptid=#{class_name}\">#{class_name}<\/a>"
-        markup << class_name
-        if count
-          markup << " (#{count} subclasses)"
-        end
-        markup << "<br />"
-      end 
-      markup << "</p></div>"
+      markup << metric.join("<br/>")
+      markup << "</p></div></div>"
+    else
+      markup = metric.to_s
     end
-      
-    markup << "</div>"
-    
-    return markup    
+
+    markup
   end
-  
+
 end

@@ -31,6 +31,8 @@ require 'memcache'
 CACHE = MemCache.new memcache_options
 CACHE.servers = 'localhost:11211'
 
+FALLBACK_CACHE = {}
+
 ActionController::Base.session_options[:cache] = CACHE
 # end memcache setup
 
