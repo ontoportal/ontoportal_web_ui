@@ -16,34 +16,6 @@ class OntologyMetricsWrapper
   attr_accessor :classesWithNoAuthor
   attr_accessor :classesWithMoreThanOnePropertyValue
 
-  # Used to calculate percentage of classes in certain metrics
-  CLASS_LIST_LIMIT = 200
-  # Booleans for whether or not the limit above is passed
-  attr_accessor :classesWithMoreThanXSubclassesLimitPassed
-  attr_accessor :classesWithOneSubclassLimitPassed
-  attr_accessor :classesWithNoDocumentationLimitPassed
-  attr_accessor :classesWithNoAuthorLimitPassed
-  attr_accessor :classesWithMoreThanOnePropertyValueLimitPassed
-
-  # Are all of the following properties triggered for every class?
-  attr_accessor :classesWithOneSubclassAll
-  attr_accessor :classesWithMoreThanXSubclassesAll
-  attr_accessor :classesWithNoDocumentationAll
-  attr_accessor :classesWithNoAuthorAll
-  attr_accessor :classesWithMoreThanOnePropertyValueAll
-
-  # List of all metrics with lists
-  METRICS_WITH_LISTS = ["classesWithOneSubclass", "classesWithMoreThanXSubclasses",
-      "classesWithNoDocumentation", "classesWithNoAuthor", "classesWithMoreThanOnePropertyValue"]
-
-  # Strings for use in the metrics view
-  ONE_SUBCLASS_STRING = "All classes have only one subclass"
-  MORE_THAN_X_SUBLCASSES_STRING = "All classes have a large number of subclasses"
-  DOCUMENTATION_MISSING_STRING = "No definition property specified or no values for the definition property"
-  AUTHOR_MISSING_STRING = "No author property specified or no values for the author property"
-  MORE_THAN_ONE_PROPERTY_STRING = ""
-
-  # Initialize values
   def initialize(hash = nil, params = nil)
     self.classesWithOneSubclass = Array.new
     self.classesWithMoreThanXSubclasses = Hash.new
@@ -68,41 +40,8 @@ class OntologyMetricsWrapper
     self.numberOfClasses = hash["numberOfClasses"]
   end
 
-  # Methods that return appropriate string when all classes are triggered for a given metric
-  def classesWithOneSubclass_all
-    return ONE_SUBCLASS_STRING
-  end
-
-  def classesWithMoreThanXSubclasses_all
-    return MORE_THAN_X_SUBLCASSES_STRING
-  end
-
-  def classesWithNoDocumentation_all
-    return DOCUMENTATION_MISSING_STRING
-  end
-
-  def classesWithNoAuthor_all
-    return AUTHOR_MISSING_STRING
-  end
-
-  def classesWithMoreThanOnePropertyValue_all
-    return MORE_THAN_ONE_PROPERTY_STRING
-  end
-
-  def percentage(metric)
-    if self.send(:"#{metric}LimitPassed") == false
-      return self.send(:"#{metric}").length.to_f / self.numberOfClasses
-    else
-      return self.send(:"#{metric}LimitPassed").to_f / self.numberOfClasses
-    end
-  end
-
   def empty?
-    if self.numberOfClasses.nil? || self.numberOfClasses.to_s.empty?
-      return true
-    else
-      return false
-    end
+    self.numberOfClasses.nil? || self.numberOfClasses.to_s.empty?
   end
 
 end

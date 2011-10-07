@@ -1688,8 +1688,7 @@ private
           elements = []
           child.each_element { |element| elements << element.content }
           a[child.name] = elements
-        when "associated", "userAcl", "roles", "classesWithNoDocumentation", "classesWithMoreThanXSubclasses",
-          "classesWithOneSubclass","classesWithNoAuthor"
+        when "associated", "userAcl", "roles", "classesWithNoDocumentation", "classesWithOneSubclass","classesWithNoAuthor"
           a[child.name] = process_list(child)
       else
         if !child.first.nil? && child.first.element?

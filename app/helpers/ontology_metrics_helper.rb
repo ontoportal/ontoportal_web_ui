@@ -11,6 +11,9 @@ module OntologyMetricsHelper
     elsif metric.kind_of?(Array) && metric.length == 1 && metric[0].include?("limitpassed")
       # Split at the magic marker and return the count
       markup = metric[0].split(":")[1]
+    elsif metric.kind_of?(Hash) && metric.length == 1 && metric.keys[0].include?("limitpassed")
+      # Return the count, which is an int value to the key 'limitpassed:'
+      markup = metric["limitpassed:"]
     elsif metric.kind_of?(Array) && metric.length == 0
       # If we have an empty array return 0
       markup = "0"
