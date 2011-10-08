@@ -1052,7 +1052,6 @@ class BioPortalRestfulCore
       doc = putToRestlet(uri, params)
     rescue Exception=>e
       doc = e.io.read
-
     end
 
     ontology = errorCheck(doc)
@@ -1178,20 +1177,22 @@ private
       if paramsHash["isRemote"].eql?("0") && param.eql?("filePath")
         params << file_to_multipart('filePath',paramsHash["filePath"].original_filename,paramsHash["filePath"].content_type,paramsHash["filePath"])
       else
-        params << text_to_multipart(param,paramsHash[param])
+        params << text_to_multipart(param, paramsHash[param])
       end
-
     end
 
     boundary = '349832898984244898448024464570528145'
-    query =
-    params.collect {|p| '--' + boundary + "\r\n" + p}.join('') + "--" + boundary + "--\r\n"
-    uri = URI.parse(url)
-    response = Net::HTTP.new(uri.host,$REST_PORT).start.
-      post2(uri.path,
-          query,
-            "Content-type" => "multipart/form-data; boundary=" + boundary)
+    query = params.collect {|p| '--' + boundary + "\r\n" + p}.join('') + "--" + boundary + "--\r\n"
 
+    uri = URI.parse(url)
+    uri.port = $REST_PORT
+
+    response = nil
+    Net::HTTP.start(uri.host, uri.port) do |http|
+      headers = {"Content-Type" => "multipart/form-data; boundary=" + boundary, "Accept-Charset" => "UTF-8"}
+      response = http.send_request('POST', uri.request_uri, query, headers)
+    end
+  
     return response.body
   end
 
@@ -1234,11 +1235,22 @@ private
       if paramsHash[param].class.to_s.downcase.eql?("array")
         paramsHash[param] = paramsHash[param].join(",")
       end
+      paramsHash[param] = CGI.escape(paramsHash[param].to_s)
     end
 
+    params = []
+    paramsHash.each {|k,v| params << "#{k}=#{v}"}
+
     uri = URI.parse(url)
-    http = Net::HTTP.new(uri.host, $REST_PORT)
-    response = Net::HTTP.post_form(uri, paramsHash)
+    uri.port = $REST_PORT
+
+    response = nil
+    Net::HTTP.start(uri.host, uri.port) do |http|
+      headers = {'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8'}
+      put_data = params.join("&")
+      response = http.send_request('POST', uri.request_uri, put_data, headers)
+    end
+
     return response.body
   end
 
