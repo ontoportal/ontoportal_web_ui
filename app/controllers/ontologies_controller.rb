@@ -226,7 +226,7 @@ class OntologiesController < ApplicationController
     end
 
 
-    if !@ontology.flat? && !params[:conceptid]
+    if !@ontology.flat? && (!params[:conceptid] || params[:conceptid].empty?)
       # get the top level nodes for the root
       @root = TreeNode.new()
       nodes = @ontology.topLevelNodes(view)
@@ -251,7 +251,7 @@ class OntologiesController < ApplicationController
       end
 
       LOG.add :info, 'visualize_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
-    elsif @ontology.flat? && !params[:conceptid]
+    elsif @ontology.flat? && (!params[:conceptid] || params[:conceptid].empty?)
       # Don't display any terms in the tree
       @concept = NodeWrapper.new
       @concept.label = "Please search for a term using the Jump To field above"

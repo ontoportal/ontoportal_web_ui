@@ -1192,7 +1192,7 @@ private
       headers = {"Content-Type" => "multipart/form-data; boundary=" + boundary, "Accept-Charset" => "UTF-8"}
       response = http.send_request('POST', uri.request_uri, query, headers)
     end
-  
+
     return response.body
   end
 
