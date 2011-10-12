@@ -44,7 +44,11 @@ class NodeWrapper
                 relation_value.each do |list_value|
                   self.children << NodeWrapper.new(list_value, params) unless list_value.empty?
                 end
-                self.children.sort! { |a,b| a.label.downcase <=> b.label.downcase } unless self.children.empty?
+                begin
+                  self.children.sort! { |a,b| a.label.downcase <=> b.label.downcase } unless self.children.empty?
+                rescue Exception => e
+                  p e.message
+                end
               end
           else
             list_values = []
@@ -58,14 +62,14 @@ class NodeWrapper
                   # because we don't have a way to identify classBean elements
                   # at this point.
                   if !list_item['label'].nil? && !list_item['id'].nil? && !list_item['id'].start_with?("@") && (!list_item['type'].nil? && !list_item['type'].eql?("individual"))
-                  	list_values_orig << list_item['label']
+                    list_values_orig << list_item['label']
                     list_values << "<a href='/visualize/%ONT%/?conceptid=#{CGI.escape(list_item['id'])}'>#{list_item['label']}</a>"
                   else
-                  	list_values_orig << list_item['label']
+                    list_values_orig << list_item['label']
                     list_values << list_item['label'] rescue ""
                   end
                 else
-              	  list_values_orig << list_item
+                  list_values_orig << list_item
                   list_values << list_item
                 end
               end
