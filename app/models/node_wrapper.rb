@@ -47,7 +47,7 @@ class NodeWrapper
                 begin
                   self.children.sort! { |a,b| a.label.downcase <=> b.label.downcase } unless self.children.empty?
                 rescue Exception => e
-                  p e.message
+                  LOG.add :debug, "Failed to sort children of node: #{e.message}"
                 end
               end
           else
