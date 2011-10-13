@@ -359,13 +359,7 @@ class DataAccess
   def self.getBetweenOntologiesMappings(source_ontology_virtual_id, target_ontology_virtual_id, page_number = 1, page_size = 100, params = {})
     page_number ||= 1
     page_size ||= 100
-
-    # We avoid caching this result when it might be too big (> 5000 results)
-    if page_size > 5000
-      SERVICE.getBetweenOntologiesMappings({ :source_ontology_virtual_id => source_ontology_virtual_id, :target_ontology_virtual_id => target_ontology_virtual_id, :page_number => page_number, :page_size => page_size }.merge(params))
-    else
-      self.cache_pull("#{source_ontology_virtual_id}::#{target_ontology_virtual_id}::map_page::page#{page_number}::size#{page_size}::params#{params.to_s}", "getBetweenOntologiesMappings", { :source_ontology_virtual_id => source_ontology_virtual_id, :target_ontology_virtual_id => target_ontology_virtual_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
-    end
+    self.cache_pull("#{source_ontology_virtual_id}::#{target_ontology_virtual_id}::map_page::page#{page_number}::size#{page_size}::params#{params.to_s}", "getBetweenOntologiesMappings", { :source_ontology_virtual_id => source_ontology_virtual_id, :target_ontology_virtual_id => target_ontology_virtual_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
   end
 
   def self.getMappingCountOntology(ontology_virtual_id)

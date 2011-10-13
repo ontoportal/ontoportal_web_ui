@@ -334,6 +334,7 @@ class BioPortalResources
         @uri << "&enddate=#{params[:end_date]}" unless params[:end_date].nil?
         @uri << "&relationships=#{params[:relationships]}" unless params[:relationships].nil?
         @uri << "&sources=#{params[:sources]}" unless params[:sources].nil?
+        @uri << "&ranked=#{params[:ranked]}" unless params[:ranked].nil?
       end
     end
 

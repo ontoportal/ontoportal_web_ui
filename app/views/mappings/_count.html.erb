@@ -5,25 +5,25 @@
 
 <table width="50%" id="mapping_count_table">
   <td valign="top">
-    <table class="zebra" cellpadding="0" cellspacing="0" width="90%" style="margin: 20px;">
-    	<thead>
-	      	<tr>
-	  	    	<th>Ontology</th>
-				<th>Mappings To</th>
-	      		<th class="last">Mappings From</th>
-	      	</tr>
-    	</thead>
-    	<%if @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0%>
-    		<td colspan="3">There are no mappings to or from this ontology</td>
-		<%else%>
-	    	<%for ontology in @ontologies_mapping_count%>
-		      	<tr>
-		      		<td><a class="thickbox" title="Mappings for <%= @ontology_label %> to <%= ontology['ontology'].displayLabel%>" href="/mappings/show/<%=@ontology_id%>?target=<%=ontology['ontologyId']%>&height=600&width=800"><%= ontology['ontology'].displayLabel%></a></td>
-		        	<td><%=ontology['sourceMappings']%></td>
-		      		<td class="last"><%=ontology['targetMappings']%></td>
-		      	</tr>
-	    	<%end%>	
-    	<%end%>
+    <table class="zebra" cellpadding="0" cellspacing="0" width="90%" style="margin: 20px 0;">
+      <thead>
+          <tr>
+            <th>Ontology</th>
+            <th style="text-align: right;">Mappings To</th>
+            <th style="text-align: right;" class="last">Mappings From</th>
+          </tr>
+      </thead>
+      <%if @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0%>
+        <td colspan="3">There are no mappings to or from this ontology</td>
+    <%else%>
+        <%for ontology in @ontologies_mapping_count%>
+            <tr>
+              <td style="text-align: left;"><a class="thickbox" title="Mappings for <%= @ontology_label %> to <%= ontology['ontology'].displayLabel%>" href="/mappings/show/<%=@ontology_id%>?target=<%=ontology['ontologyId']%>&height=600&width=800"><%= ontology['ontology'].displayLabel%></a></td>
+              <td style="text-align: right;"><%=ontology['sourceMappings']%></td>
+              <td style="text-align: right;" class="last"><%=ontology['targetMappings']%></td>
+            </tr>
+        <%end%>
+      <%end%>
     </table>
   </td>
 </table>
