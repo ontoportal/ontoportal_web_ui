@@ -1,6 +1,6 @@
 class Mapping
-  
-  attr_accessor :id  
+
+  attr_accessor :id
   attr_accessor :source
   attr_accessor :target
   attr_accessor :relation
@@ -18,10 +18,10 @@ class Mapping
   attr_accessor :mapping_source_site
   attr_accessor :mapping_source_algorithm
   attr_accessor :dependency
-  
+
   def initialize(hash = nil, params = nil)
     return if hash.nil? || hash.empty?
-    
+
     self.id = hash['id']
     self.source = hash['source']
     self.target = hash['target']
@@ -46,7 +46,7 @@ class Mapping
   def source_node
     return DataAccess.getNode(self.source_ontology_version, self.source)
   end
-  
+
   def dest_node
     return DataAccess.getNode(self.target_ontology_version, self.target) rescue nil
   end
@@ -54,46 +54,46 @@ class Mapping
   def user
     return DataAccess.getUser(self.submitted_by)
   end
-  
+
   def ontology
     DataAccess.getLatestOntology(self.sourceOntologyId)
   end
-  
+
   ##
   # Aliases for old properties, hopefully we won't have to update views
   # because the aliases should provide the same information.
   ##
-  
+
   alias :user_id :submitted_by
   alias :user_id= :submitted_by=
-  
+
   alias :source_id :source
   alias :source_id= :source=
-  
+
   alias :destination_id :target
   alias :destination_id= :target=
-  
+
   alias :map_type :mapping_type
   alias :map_type= :mapping_type=
-  
+
   alias :source_ont :source_ontology
   alias :source_ont= :source_ontology=
-  
+
   alias :destination_ont :target_ontology
   alias :destination_ont= :target_ontology=
-  
+
   alias :created_at :date
   alias :created_at= :date=
-  
+
   alias :updated_at :date
   alias :created_at= :date=
-  
+
   alias :relationship_type :relation
   alias :relationship_type= :relation=
-  
+
   alias :map_source :mapping_source_name
   alias :map_source= :mapping_source_name=
-  
+
   def source_ontology_obj
     DataAccess.getLatestOntology(self.source_ontology)
   end
@@ -109,7 +109,7 @@ class Mapping
   def destination_name
     DataAccess.getNodeLabel(self.target_ontology_obj.id, self.target).label_html rescue "missing term"
   end
-  
+
   def source_ont_name
     self.source_ontology_obj.displayLabel rescue ""
   end
@@ -117,10 +117,10 @@ class Mapping
   def destination_ont_name
     self.target_ontology_obj.displayLabel rescue ""
   end
-  
+
   alias :source_version_id :source_ontology_version
   alias :source_version_id= :source_ontology_version=
-  
+
   alias :destination_version_id :target_ontology_version
   alias :destination_version_id= :target_ontology_version=
 
