@@ -1,5 +1,5 @@
 class SubscriptionsController < ApplicationController
-  
+
   def create
     user_id = params[:user_id]
     ontology_id = params[:ontology_id]
@@ -12,10 +12,10 @@ class SubscriptionsController < ApplicationController
     else
       raise Exception
     end
-    
+
     updated_sub = true
-    
-    render :json => { :updated_sub => updated_sub, :user_subscriptions => subs } 
+
+    render :json => { :updated_sub => updated_sub, :user_subscriptions => subs }
   end
-  
+
 end

@@ -344,6 +344,10 @@ class DataAccess
     return mapping
   end
 
+  def self.deleteMapping(mapping_id)
+    SERVICE.deleteMapping({:mappingid => mapping_id})
+  end
+
   def self.getMapping(mapping_id)
     self.cache_pull("#{mapping_id}::mapping", "getMapping", { :mapping_id => mapping_id }, LONG_CACHE_EXPIRE_TIME)
   end

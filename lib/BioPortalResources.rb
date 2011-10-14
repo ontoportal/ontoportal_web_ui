@@ -390,6 +390,13 @@ class BioPortalResources
       end
     end
 
+    class DeleteMapping < BioPortalResources
+      def initialize
+        super
+        @uri << "/virtual/mappings/concepts"
+      end
+    end
+
     class Subscriptions < BioPortalResources
       def initialize(params)
         super(params)

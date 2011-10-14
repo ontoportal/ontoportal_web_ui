@@ -1,9 +1,6 @@
 require 'MappingLoader'
 class MappingsController < ApplicationController
 
-
-  # GET /mappings/new
-
   layout 'ontology'
   before_filter :authorize, :only=>[:create,:new]
 
@@ -28,41 +25,6 @@ class MappingsController < ApplicationController
 
     @options = @options.sort
   end
-
-  def service
-    ontology = DataAccess.getLatestOntology(params[:ontology])
-
-    if params[:id]
-      concept = DataAccess.getNode(ontology.id,params[:id])
-      from =[]
-      to = []
-      from_res = ActiveRecord::Base.connection().execute("SELECT * from mappings  where source_ont =#{ontology.ontologyId} AND source_id = '#{concept.id}'")
-      from_res.each_hash(with_table=false) {|x| from<<x}
-
-      to_res = ActiveRecord::Base.connection().execute("SELECT * from mappings  where destination_ont =#{ontology.ontologyId} AND destination_id = '#{concept.id}'")
-      to_res.each_hash(with_table=false) {|x| to<<x}
-
-    else
-      from=[]
-      to=[]
-      from_res = ActiveRecord::Base.connection().execute("SELECT * from mappings  where source_ont =#{ontology.ontologyId} ")
-      to_res = ActiveRecord::Base.connection().execute("SELECT * from mappings  where destination_ont =#{ontology.ontologyId}")
-      from_res.each_hash(with_table=false) {|x| from<<x}
-      to_res.each_hash(with_table=false) {|x| to<<x}
-
-    end
-
-    #puts from.inspect
-    #puts to.inspect
-    mappings = {:mapping_from=>from,:mapping_to=>to}
-
-    render :xml=> mappings
-  end
-
-  def ontology_service
-
-  end
-
 
   def count
     ontology_list = DataAccess.getOntologyList()
@@ -149,7 +111,7 @@ class MappingsController < ApplicationController
     end
 
     if params[:rdf].nil? || !params[:rdf].eql?("rdf")
-      render :partial=>'show'
+      render :partial => 'show'
     else
       send_data to_RDF(@mapping_pages), :type => 'text/html', :disposition => 'attachment; filename=mappings.rdf'
     end
@@ -162,10 +124,7 @@ class MappingsController < ApplicationController
 
 
   def process_mappings
-
-
-
-      MappingLoader.processMappings(params)
+     MappingLoader.processMappings(params)
 
      flash[:notice] = 'Mappings are processed'
      @ontologies = @ontologies = DataAccess.getOntologyList()
@@ -210,6 +169,10 @@ class MappingsController < ApplicationController
     end
 
     render :partial => 'mapping_table'
+  end
+
+  def destroy
+    DataAccess.deleteMapping(params[:id])
   end
 
 private

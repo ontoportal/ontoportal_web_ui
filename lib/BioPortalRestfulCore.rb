@@ -54,6 +54,25 @@ class BioPortalRestfulCore
     return mapping
   end
 
+  def self.deleteMapping(params)
+    uri_gen = BioPortalResources::DeleteMapping.new
+    uri = uri_gen.generate_uri
+
+    LOG.add :debug, "Delete mapping"
+    LOG.add :debug, uri
+    doc = deleteToRestlet(uri, params)
+
+    mapping = errorCheck(doc)
+
+    unless mapping.nil?
+      return mapping
+    end
+
+    timer = Benchmark.ms { mapping = generic_parse(:xml => doc) }
+
+    return mapping
+  end
+
   def self.getMapping(params)
     uri_gen = BioPortalResources::Mapping.new(params)
     uri = uri_gen.generate_uri

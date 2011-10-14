@@ -1,13 +1,16 @@
 <table class="zebra" width="100%">
   <thead>
-  <tr>
-    <th>Mapping To</th>
-    <th>Source</th>
-    <th>Relationship Type</th>
-    <th>Mapped By</th>
-    <th>Mapped On</th>
-    <th>Notes</th>
-  </tr>
+    <tr>
+      <%if @delete_mapping_permission %>
+        <th>Delete</th>
+      <% end %>
+      <th>Mapping To</th>
+      <th>Source</th>
+      <th>Relationship Type</th>
+      <th>Mapped By</th>
+      <th>Mapped On</th>
+      <th>Notes</th>
+    </tr>
   </thead>
 
   <%if @mappings.length < 1%>
@@ -18,6 +21,9 @@
 
   <%for map in @mappings%>
     <tr class="human">
+      <%if session[:user] == map.user_id || session[:user].admin?%>
+        <td><%=check_box_tag :delete_mapping, map.id%></td>
+      <%end%>
       <td>
         <%= link_to "#{map.destination_name} (#{map.destination_ont_name})", :controller => 'visualize', :action => 'virtual', :id => map.destination_ont.to_s, :conceptid => map.destination_id.to_s %>
       </td>
@@ -28,7 +34,13 @@
       <td><a href="/margin_notes/show?mapping_id=<%=map.id%>&height=500&width=600" title="Notes for Mapping: <%=map.destination_ont_name%>" class="thickbox">View Notes</a>  </td>
     </tr>
   <%end%>
+
 </table>
 
+<%if @delete_mapping_permission%>
+  <div style="margin-top: 15px;">
+    <%=button_to_function "Delete Selected", "if (confirm('Really delete mappings? This cannot be undone.')) deleteMappings()"%>
+  </div>
+<%end%>
 
 
