@@ -10,7 +10,7 @@ module HomeHelper
     if help_text.nil?
       help_page = Hpricot(open($WIKI_HELP_PAGE))
       help_text = (help_page/"//*[@id='bodyContent']").inner_html
-      CACHE.set("help_text", help_text, 60*60*24)
+      CACHE.set("help_text", help_text, 60*60)
     end
 
     return help_text
