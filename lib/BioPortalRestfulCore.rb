@@ -62,13 +62,7 @@ class BioPortalRestfulCore
     LOG.add :debug, uri
     doc = deleteToRestlet(uri, params)
 
-    mapping = errorCheck(doc)
-
-    unless mapping.nil?
-      return mapping
-    end
-
-    timer = Benchmark.ms { mapping = generic_parse(:xml => doc) }
+    mapping = errorCheckLibXML(doc) unless doc.nil?
 
     return mapping
   end
@@ -1539,19 +1533,7 @@ private
   end
 
   def self.errorCheckLibXML(doc)
-    response = nil
-    errorHolder={}
-    begin
-      doc.elements.each("errorStatus"){ |element|
-        errorHolder[:error] = true
-        errorHolder[:shortMessage] = element.elements["shortMessage"].get_text.value.strip
-        errorHolder[:longMessage] =element.elements["longMessage"].get_text.value.strip
-        response = errorHolder
-      }
-    rescue
-    end
-
-    return response
+    self.generic_parse(:xml => doc, :path => "/errorStatus")
   end
 
   def self.buildPathToRootTree(classbeanXML, ontology)
@@ -1657,6 +1639,9 @@ private
     else
       root = doc.find_first(path)
     end
+
+    # Check to see if we have any data, if not return an empty hash
+    return Hash.new if root.nil? || root.first.nil? || !root.first.element?
 
     parsed = self.parse(root)
 

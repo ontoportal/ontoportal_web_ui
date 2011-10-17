@@ -338,6 +338,8 @@ class DataAccess
     CACHE.delete("recent::mappings")
     CACHE.delete("#{source_ontology_id}::#{CGI.escape(source)}::map_page::page1::size100::params")
     CACHE.delete("#{target_ontology_id}::#{CGI.escape(target)}::map_page::page1::size100::params")
+    CACHE.delete("#{source_ontology_id}::#{CGI.escape(source)}::map_count")
+    CACHE.delete("#{target_ontology_id}::#{CGI.escape(target)}::map_count")
     CACHE.delete("#{source_ontology_id}::concepts::map_count")
     CACHE.delete("#{target_ontology_id}::concepts::map_count")
 

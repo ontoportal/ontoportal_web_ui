@@ -1,8 +1,15 @@
 <br>
+
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+    jQuery("a.link_button").button();
+  });
+</script>
+
 <%if session[:user].nil?%>
-	<a href="/login?redirect=/visualize/<%=@ontology.to_param%>/?conceptid=<%=@concept.id%>#mappings">Create new mapping</a>
+  <%=button_to "Create New Mapping", "/login?redirect=/ontologies/#{@ontology.to_param}/?p=terms&t=mappings&conceptid=#{@concept.id}", :method => :get%>
 <%else%>
-	<a href="/mappings/new?ontology=<%=@ontology.id%>&source_id=<%=@concept.id%>&source_name=<%=@concept.label_html%>&height=500&width=600" title="New Mapping  For <%=remove_owl_notation(@concept.label_html)%>" class="thickbox">Create new mapping</a>  
+  <a href="/mappings/new?ontology=<%=@ontology.id%>&source_id=<%=@concept.id%>&source_name=<%=@concept.label_html%>&height=500&width=600" title="New Mapping For <%=remove_owl_notation(@concept.label_html)%>" class="thickbox link_button" id="create_new_mapping_href">Create New Mapping</a>
 <%end%>
 <br/><br/>
 

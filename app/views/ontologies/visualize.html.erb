@@ -1,99 +1,99 @@
-<% unless @error %>	
+<% unless @error %>
 
-	<%@title = "#{@ontology.displayLabel} - #{@concept.name}"%>
-	
-	<script type="text/javascript">
-	  jQuery.rloader([
-	    {type:'css',src:'/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css'},
-	    {type:'js',src:'/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js'},
-	    {type:'js',src:'/javascripts/jquery.tools.min.js'},
+  <%@title = "#{@ontology.displayLabel} - #{@concept.name}"%>
+
+  <script type="text/javascript">
+    jQuery.rloader([
+      {type:'css',src:'/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css'},
+      {type:'js',src:'/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js'},
+      {type:'js',src:'/javascripts/jquery.tools.min.js'},
       {type:'js',src:'/javascripts/JqueryPlugins/splitter/splitter.js'},
       {type:'js',src:'/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.js'}
     ]);
-	</script>
-	
-	<style>
-		/* simple css-based tooltip */ 
-	    div.tooltip { 
-		    background-color:#000; 
-		    border:1px solid #fff; 
-		    padding:10px 15px; 
-		    width:200px; 
-		    display:none; 
-		    color:#fff; 
-		    text-align:left; 
-		    font-size:12px;
-			  z-index: 999;
-		 
-		    /* outline radius for mozilla/firefox only */ 
-		    -moz-box-shadow:0 0 10px #000;
-		    -webkit-box-shadow:0 0 10px #000;
-			
-	    }
+  </script>
+
+  <style>
+    /* simple css-based tooltip */
+      div.tooltip {
+        background-color:#000;
+        border:1px solid #fff;
+        padding:10px 15px;
+        width:200px;
+        display:none;
+        color:#fff;
+        text-align:left;
+        font-size:12px;
+        z-index: 999;
+
+        /* outline radius for mozilla/firefox only */
+        -moz-box-shadow:0 0 10px #000;
+        -webkit-box-shadow:0 0 10px #000;
+
+      }
 
     #bp_fake_root {
       display: none;
     }
 
-		/* used for vertical split bar */
-		.vsplitbar {
-			width: 5px;
-			background: #DADDE0 url(/javascripts/JqueryPlugins/splitter/img/vgrabber.gif) no-repeat scroll center center;
-		}
-		.vsplitbar:hover {
-			cursor: ew-resize !important;
-		}
-	</style>
-	
-	<script type="text/javascript">
-		var searchbox;
-		
-		// Called when the "Go" button on the Jump To form is clicked
-		function jumpToValue(li){
-      jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false }); 
-			
-			if( li == null ){
-				// User performs a search	
-				var search = confirm("Term could not be found.\n\nPress OK to go to the Search page or Cancel to continue browsing");
-				
-				if(search){
-					jQuery("#search_keyword").val(jQuery("#search_box").val());
-					jQuery("#search_form").submit();
-					return
-				}
-			}
-	
-			// Appropriate value selected
-			if( !!li.extra ){
+    /* used for vertical split bar */
+    .vsplitbar {
+      width: 5px;
+      background: #DADDE0 url(/javascripts/JqueryPlugins/splitter/img/vgrabber.gif) no-repeat scroll center center;
+    }
+    .vsplitbar:hover {
+      cursor: ew-resize !important;
+    }
+  </style>
+
+  <script type="text/javascript">
+    var searchbox;
+
+    // Called when the "Go" button on the Jump To form is clicked
+    function jumpToValue(li){
+      jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
+
+      if( li == null ){
+        // User performs a search
+        var search = confirm("Term could not be found.\n\nPress OK to go to the Search page or Cancel to continue browsing");
+
+        if(search){
+          jQuery("#search_keyword").val(jQuery("#search_box").val());
+          jQuery("#search_form").submit();
+          return
+        }
+      }
+
+      // Appropriate value selected
+      if( !!li.extra ){
         var sValue = jQuery("#jump_to_concept_id").val();
 
-        <% if @ontology.flat? %>			  
+        <% if @ontology.flat? %>
           History.pushState({p:"terms", conceptid:sValue, suid:"jump_to", flat:true, label:li.extra[4]}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, "?p=terms&conceptid=" + sValue);
         <% else %>
           History.pushState({p:"terms", conceptid:sValue, suid:"jump_to"}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, "?p=terms&conceptid=" + sValue);
-        <% end %>        
+        <% end %>
 
         return;
-			}
-		}
-		
-		// Sets a hidden form value that records the concept id when a concept is chosen in the jump to
-		// This is a workaround because the default autocomplete search method cannot distinguish between two
-		// concepts that have the same preferred name but different ids.
-		function jumpToSelect(li){
-			jQuery("#jump_to_concept_id").val(li.extra[0]);
-			jumpToValue(li);
-		}
-		
-		// Formats the Jump To search results
-		function formatItem(row) {
+      }
+    }
+
+    // Sets a hidden form value that records the concept id when a concept is chosen in the jump to
+    // This is a workaround because the default autocomplete search method cannot distinguish between two
+    // concepts that have the same preferred name but different ids.
+    function jumpToSelect(li){
+      jQuery("#jump_to_concept_id").val(li.extra[0]);
+      jumpToValue(li);
+    }
+
+    // Formats the Jump To search results
+    function formatItem(row) {
       var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
       var keywords = jQuery("#search_box").val().replace(specials, "\\$&").split(' ').join('|');
-		  var regex = new RegExp( '(' + keywords + ')', 'gi' );
-		 	return row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
-		}
-		
-		jQuery(document).ready(function(){
+      var regex = new RegExp( '(' + keywords + ')', 'gi' );
+      return row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
+    }
+
+    jQuery(document).ready(function(){
       jQuery("#search_box").autocomplete("/search/json_search/<%=@ontology.ontologyId%>", {
         extraParams: { objecttypes: "class" },
         width: "400px",
@@ -107,7 +107,7 @@
         formatItem: formatItem
       });
       searchbox = jQuery("#search_box")[0].autocompleter;
-    
+
       <% if @ontology.isView == 'true' %>
         // Set up a hovertip on the qsearch input element
         jQuery("#resource_index_top").attr("style", "color: grey;");
@@ -118,22 +118,22 @@
             opacity: 0.7
         });
       <%end%>
-		
-	  <% if !@ontology.is_in_search_index? %>
-				<%if !@ontology.latest?%>        
-	        // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
-	        jQuery("#qsearch").children().filter(":input").each(function(){
-	          jQuery(this).attr("readonly", true);
-	        });
- 	        jQuery("#qsearch").attr("style", "color: grey;");
+
+    <% if !@ontology.is_in_search_index? %>
+        <%if !@ontology.latest?%>
+          // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
+          jQuery("#qsearch").children().filter(":input").each(function(){
+            jQuery(this).attr("readonly", true);
+          });
+          jQuery("#qsearch").attr("style", "color: grey;");
         <%end%>
-        
+
         <%if @ontology.latest?%>
-        	<% message = "This ontology has recently been updated and new terms may not yet be available through \"Jump To\"" %>
+          <% message = "This ontology has recently been updated and new terms may not yet be available through \"Jump To\"" %>
         <%else%>
-        	<% message = "\"Jump To\" only works with the most recently indexed version of this ontology" %>
+          <% message = "\"Jump To\" only works with the most recently indexed version of this ontology" %>
         <%end%>
-        
+
         // Set up a hovertip on the qsearch input element
         jQuery("#qsearch :input").attr("title", '<%=message%>');
         jQuery("#qsearch :input").tooltip({
@@ -143,33 +143,55 @@
             opacity: 0.9
         });
       <%end%>
-		});
-		
-	</script>
-	
-	<div class="tooltip"></div> 
-	
-	<div id="bd_content" class="explore">
-		<div id="sidebar">
-			<div id="qsearch" >
-				Jump To:
-					<input type="textbox" id="search_box" size="30"/>
-					<input type="hidden" id="jump_to_concept_id">
-			</div>
+    });
+
+    // Tab auto-select based on parameter "t"
+    jQuery(document).ready(function(){
+      var url, urlFragment, paramsList, params = {}, splitParam, content;
+      url = document.URL;
+
+      if (url.indexOf("?") > 0) {
+        urlFragment = url.split("?");
+        paramsList = urlFragment[1].split("&");
+
+        for (param in paramsList) {
+          splitParam = paramsList[param].split("=");
+
+          if (splitParam.length > 1)
+            params[splitParam[0]] = splitParam[1].split("#")[0];
+        }
+
+        if (params !== "undefined" && "t" in params) {
+          showTermsTab(params["t"]);
+        }
+      }
+    });
+
+  </script>
+
+  <div class="tooltip"></div>
+
+  <div id="bd_content" class="explore">
+    <div id="sidebar">
+      <div id="qsearch" >
+        Jump To:
+          <input type="textbox" id="search_box" size="30"/>
+          <input type="hidden" id="jump_to_concept_id">
+      </div>
 
       <% if @ontology.flat? %>
         <div id="flat_help" style="padding: 5px; background-color: #DADDE0; color: black;">
           This ontology cannot be displayed as a tree. You can use the "Jump To" field to search for and display multiple terms.
         </div>
       <% end %>
-			
-			<div id="sd_content" class="sd_max_height">
-				<%=render :partial => '/ontologies/treeview'%>
-			</div>
-			
-			<div style="clear:both;"></div>
-		</div>
-		
+
+      <div id="sd_content" class="sd_max_height">
+        <%=render :partial => '/ontologies/treeview'%>
+      </div>
+
+      <div style="clear:both;"></div>
+    </div>
+
     <% if @concept.id.eql?("bp_fake_root")%>
       <!-- When we have an ontology with a flat hierarchy, we initially disable the tabs because we don't have a term to display -->
       <div id="container">
@@ -178,10 +200,10 @@
               <li class="selected first" id="details_top" onclick="return false;"><a href="#details" onclick="return false;" style="color: gray;">Details</a></li>
               <li id="visualization_top" onclick="return false;"><a href="#visualization" onclick="return false;" style="color: gray;">Visualization</a></li>
               <li id="notes_top" onclick="return false;"><a href="#notes" onclick="return false;" style="color: gray;">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
-              <li id="mappings_top" onclick="return false;"><a href="#mappings" onclick="return false;" style="color: gray;">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>       
+              <li id="mappings_top" onclick="return false;"><a href="#mappings" onclick="return false;" style="color: gray;">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
-              	<li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Term Resources</a></li>
-            	<%end%>
+                <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Term Resources</a></li>
+              <%end%>
           </ul>
         </div>
         <div class="tabs" id="non_fake_tabs" style="display: none;">
@@ -189,7 +211,7 @@
               <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
               <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
               <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
-              <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>       
+              <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
                 <%if !@ontology.isView.eql?('true')%>
                   <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Term Resources</a></li>
@@ -208,18 +230,18 @@
           <div class="tab_container" id="resource_index_content"></div>
         </div>
       </div>
-      
-      
+
+
     <% else %>
-    
-    
+
+
       <div id="container">
         <div class="tabs">
           <ul>
               <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
               <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
               <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
-              <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>       
+              <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
                 <%if !@ontology.isView.eql?('true')%>
                   <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Term Resources</a></li>
@@ -243,47 +265,16 @@
     <% end %>
   </div>
 
-	<script type="text/javascript">
+  <script type="text/javascript">
     terms_init = function(){
       // Auto loads the correct tab
       var loc = new String(document.location);
-      // if (loc.search("#") >= 0) {
-      //  jQuery(".tab_container").hide();
-      //  id = "#" + loc.split("#")[1].replace(":","")
-      //  // The actual content to hide/show is in id_content
-      //  id_content = id + "_content";
-      //  jQuery(id_content).show();
-      //  jQuery(".tab").removeClass("selected");
-      //  jQuery(id+"_top").addClass("selected");
-      //  tab_li = jQuery(jQuery("a[href='"+id+"']").parents().get(0));
-      //  tab_li.addClass("selected");
-      //  var a = jQuery("a[href='"+id+":']");
-      //  // Run code found in the alt attribute (this was being used to load the 
-      //  // resource index tab, I'm not sure it needs to be left in but we can
-      //  // address when we handle tab history down the road).
-      //  eval(a.attr("alt"));
-      //  // If we're on the resource index tab, load that specially
-      //            loc = new String(document.location);
-      //            if (loc.search("#resource_index") >= 0 && loc.split("#")[1] == "resource_index") {
-      //                callTab("resource_index", '/resources/@ontology@/?conceptid=@concept@');
-      //            }
-      // }
-      
-      // The tab system
-      jQuery(".tab").click(function(){
-        jQuery(".tab_container").hide();
-        // Get the target content area
-        target = jQuery(this).children("a:first").attr("href") + "_content"
-        jQuery(target).show();
-        jQuery(".tab").removeClass("selected");
-        jQuery(this).addClass("selected");
-      });
-      
+
       // Override the side of the bd_content div to avoid problems with
       // the window resizing, which can sometimes cause the right-hand content div to drop down
       var bd_content_width = jQuery("#ontology_content").width();
       jQuery("#bd_content").width(bd_content_width);
-      
+
       // Split bar
       jQuery(function() {
         jQuery("#bd_content").splitter({
@@ -292,136 +283,154 @@
         });
       });
     }
-    
+
+    // The tab system
+    jQuery(".tab").click(function(){
+        var tabId = jQuery(this).children("a:first").attr("href").replace("#", "");
+        showTermsTab(tabId);
+    });
+
     jQuery(document).ready(function() {
       terms_init();
     });
-		
-		function callTab(tab_name, url) {
-				if (getCache(getConcept() + tab_name) != null) {
-			        document.getElementById(tab_name + "_content").innerHTML=getCache(getConcept() + tab_name);
-			  } else {
-				  jQuery("#" + tab_name + "_content").html('<h1><img src="/images/tree/spinner.gif" /> Loading Resources...</h1>');
-	    		jQuery.get(url.replace("@ontology@",getOntology()).replace("@concept@",encodeURIComponent(getConcept())),function(data){
-  					jQuery("#" + tab_name + "_content").html(data);
-  					setCache(getConcept() + tab_name,data);
-  					jQuery.unblockUI();	
-  					tb_init('a.thickbox, area.thickbox, input.thickbox');
-					});
-				}
-		}
-		
-		
-		
-		// actions for interacting with the graph
-		
-		// gets the flash application
-		function getApp() {
-			// first try the basic flexviz
-			var app = document.getElementById("BasicFlexoViz");
-			if (app == null) {
-				// try the full version
-				app = document.getElementById("FlexoViz");
-			}
-			return app;
-		}
-		
-		/** 
-		 * Selects on the node with the given id
-		 * @param id the id of the node to focus on
-		 */
-		function selectNodeByID(id) {
-			var app = getApp();
-			if (app) {
-				if (app.selectNodeByID) {
-					app.selectNodeByID(id);
-				} else {
-					alert("Could not select the term with ID '" + id + "'.");
-				}
-			} else {
-				alert("Could not get Flash object, JavaScript/Flex communication failed.");
-			}
-		}
-		
-		/** 
-		 * Focusses on the node with the given id
-		 * @param id the id of the node to focus on
-		 * @param option the graph view setting (optional), one of "Neighborhood", "Hierarchy To Root", "Parents", or "Children"
-		 *		defaults to "Neighborhood"
-		 */
-		function searchByID(id, option) {
-			var app = getApp();
-			if (app) {
-				if (app.searchByID) {
-					app.searchByID(id);
-				} else {
-					alert("Could not search for the term with ID '" + id + "'.");
-				}
-			} else {
-				alert("Could not get Flash object, JavaScript/Flex communication failed.");
-			}
-		}
-		
-		/** 
-		 * Performs a search on the given text and shows
-		 * the appropriate graph - either the neighborhood, or the hierarchy to root
-		 * @param searchText the text to search for
-		 * @param option the graph view setting (optional), one of "Neighborhood", "Hierarchy To Root", "Parents", or "Children"
-		 *		defaults to "Neighborhood"
-		 */
-		function searchByName(searchText, option) {
-			var app = getApp();
-			if (app) {
-				if (app.searchByName) {
-					app.searchByName(searchText);
-				} else {
-					alert("Could not search for the term with nane '" + id + "'.");
-				}
-			} else {
-				alert("Could not get Flash object, JavaScript/Flex communication failed.");
-			}
-		}
-		
-		/**
-		 * The basic version of FlexViz calls this function when a node is double clicked.
-		 */
-		
-		function flexVizNodeClicked(id,currentNode) {
-			if (jQuery("#"+id).size()==0){
-				
-				jQuery("#"+currentNode+" .trigger").trigger('click');
-			
-				setTimeout('tryClick("'+id+'")',1000);
-			}else{	
-			jQuery("#"+id+" span").trigger('click');
-			}
-		}
-		
-		function tryClick(id)
-		{
-		
-			if(jQuery("#"+id+" span").size()>0)
-				jQuery("#"+id+" span").trigger('click');
-			else
-				setTimeout('tryClick("'+id+'")',1000)
-		}
-		
-	</script>
-	
-	<style>
-		.tab_container {
-			display: none;
-		}
-	</style>
-	
-	<% form_for(:search, :url => {:controller =>'search',:action=>'fetch_results'},:html=>{:id=>'search_form'}) do |f| %>
-		<input type="hidden" name="search[ontologies][]" value="<%=@ontology.ontologyId%>">
-		<%=hidden_field :search, :search_type, :value=>"contains"%>
-		<%=hidden_field :search, :keyword, :value=>"",:id=>"search_keyword"%>
-	<%end%>
-	
+
+    function showTermsTab(tabId) {
+        // Get the target content area
+      var target = document.getElementById(tabId + "_content");
+
+      if (target != null) {
+        jQuery(".tab_container").hide();
+        jQuery(target).show();
+        jQuery(".tab").removeClass("selected");
+        jQuery("#" + tabId + "_top").addClass("selected");
+      }
+    }
+
+    function callTab(tab_name, url) {
+        if (getCache(getConcept() + tab_name) != null) {
+              document.getElementById(tab_name + "_content").innerHTML=getCache(getConcept() + tab_name);
+        } else {
+          jQuery("#" + tab_name + "_content").html('<h1><img src="/images/tree/spinner.gif" /> Loading Resources...</h1>');
+          jQuery.get(url.replace("@ontology@",getOntology()).replace("@concept@",encodeURIComponent(getConcept())),function(data){
+            jQuery("#" + tab_name + "_content").html(data);
+            setCache(getConcept() + tab_name,data);
+            jQuery.unblockUI();
+            tb_init('a.thickbox, area.thickbox, input.thickbox');
+          });
+        }
+    }
+
+
+
+    // actions for interacting with the graph
+
+    // gets the flash application
+    function getApp() {
+      // first try the basic flexviz
+      var app = document.getElementById("BasicFlexoViz");
+      if (app == null) {
+        // try the full version
+        app = document.getElementById("FlexoViz");
+      }
+      return app;
+    }
+
+    /**
+     * Selects on the node with the given id
+     * @param id the id of the node to focus on
+     */
+    function selectNodeByID(id) {
+      var app = getApp();
+      if (app) {
+        if (app.selectNodeByID) {
+          app.selectNodeByID(id);
+        } else {
+          alert("Could not select the term with ID '" + id + "'.");
+        }
+      } else {
+        alert("Could not get Flash object, JavaScript/Flex communication failed.");
+      }
+    }
+
+    /**
+     * Focusses on the node with the given id
+     * @param id the id of the node to focus on
+     * @param option the graph view setting (optional), one of "Neighborhood", "Hierarchy To Root", "Parents", or "Children"
+     *    defaults to "Neighborhood"
+     */
+    function searchByID(id, option) {
+      var app = getApp();
+      if (app) {
+        if (app.searchByID) {
+          app.searchByID(id);
+        } else {
+          alert("Could not search for the term with ID '" + id + "'.");
+        }
+      } else {
+        alert("Could not get Flash object, JavaScript/Flex communication failed.");
+      }
+    }
+
+    /**
+     * Performs a search on the given text and shows
+     * the appropriate graph - either the neighborhood, or the hierarchy to root
+     * @param searchText the text to search for
+     * @param option the graph view setting (optional), one of "Neighborhood", "Hierarchy To Root", "Parents", or "Children"
+     *    defaults to "Neighborhood"
+     */
+    function searchByName(searchText, option) {
+      var app = getApp();
+      if (app) {
+        if (app.searchByName) {
+          app.searchByName(searchText);
+        } else {
+          alert("Could not search for the term with nane '" + id + "'.");
+        }
+      } else {
+        alert("Could not get Flash object, JavaScript/Flex communication failed.");
+      }
+    }
+
+    /**
+     * The basic version of FlexViz calls this function when a node is double clicked.
+     */
+
+    function flexVizNodeClicked(id,currentNode) {
+      if (jQuery("#"+id).size()==0){
+
+        jQuery("#"+currentNode+" .trigger").trigger('click');
+
+        setTimeout('tryClick("'+id+'")',1000);
+      }else{
+      jQuery("#"+id+" span").trigger('click');
+      }
+    }
+
+    function tryClick(id)
+    {
+
+      if(jQuery("#"+id+" span").size()>0)
+        jQuery("#"+id+" span").trigger('click');
+      else
+        setTimeout('tryClick("'+id+'")',1000)
+    }
+
+  </script>
+
+  <style>
+    .tab_container {
+      display: none;
+    }
+  </style>
+
+  <% form_for(:search, :url => {:controller =>'search',:action=>'fetch_results'},:html=>{:id=>'search_form'}) do |f| %>
+    <input type="hidden" name="search[ontologies][]" value="<%=@ontology.ontologyId%>">
+    <%=hidden_field :search, :search_type, :value=>"contains"%>
+    <%=hidden_field :search, :keyword, :value=>"",:id=>"search_keyword"%>
+  <%end%>
+
   <div style="clear: both;"></div>
 
 <% else # found an error %>
-	<%= "<div id=\"error\"><h2>#{@error}</h2></div>" %>
+  <%= "<div id=\"error\"><h2>#{@error}</h2></div>" %>
 <% end %>

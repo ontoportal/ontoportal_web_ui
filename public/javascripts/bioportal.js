@@ -15,7 +15,7 @@ var currentConcept;
     function setConcept(concept){
         currentConcept = concept;
     }
-    
+
     function getOntology(){
         return currentOntology;
     }
@@ -38,49 +38,49 @@ var currentConcept;
       return null;
     }
   }
-// Cache Setter 
+// Cache Setter
   function setCache(nodeID,content){
     cache[nodeID]=content
   }
-  
-// Starts the prefetching   
+
+// Starts the prefetching
   function queData(nodes,ontology){
     currentOntology = ontology
     // Disables Cache
     return false;
-    
+
     que = nodes.concat(que)
     // set how many threads you want fetching data
     queIndex = 0
     thread++
     preFetchData(que[queIndex],ontology,thread);
-    //preFetchData(que[1],ontology)     
-    
+    //preFetchData(que[1],ontology)
+
   }
 
-// The prefetching function 
+// The prefetching function
   function preFetchData(node_id,ontology,threadNumber) {
-    
-      
+
+
       var responseSuccess = function(o)
       {
         var respTxt = o.responseText;
         tabData = respTxt.split("|||")
         setCache(node_id,tabData)
         queIndex++
-        
+
         // makes sure the que isnt complete and makes sure that this thread shouldnt die
-        
-        if(queIndex < que.length && thread == threadNumber){        
+
+        if(queIndex < que.length && thread == threadNumber){
         preFetchData(que[queIndex],ontology,threadNumber)
         }else if(queIndex >= que.length){
           que = new Array();
         }
-      
-      } 
-      
+
+      }
+
       var responseFailure = function(o){
-      
+
       }
 
       var callback =
@@ -88,28 +88,28 @@ var currentConcept;
         success:responseSuccess,
         failure:responseFailure
       };
-      
-    
+
+
     // see's if item is already in cache, if not it makes the ajax call
-    if(getCache(node_id)==null){    
-      YAHOO.util.Connect.asyncRequest('GET','/'+ontology+'/'+node_id+"?callback=load",callback);    
+    if(getCache(node_id)==null){
+      YAHOO.util.Connect.asyncRequest('GET','/'+ontology+'/'+node_id+"?callback=load",callback);
     }else{
       queIndex++
-      if(queIndex < que.length && thread == threadNumber){        
+      if(queIndex < que.length && thread == threadNumber){
         preFetchData(que[queIndex],ontology,threadNumber)
         }else if(queIndex >= que.length){
           que = new Array();
         }
-    } 
-    
     }
-  
-  
+
+    }
+
+
 
 
 //-------------------------------
-  
-  
+
+
 function toggleHide(id,name_to_hide){
   toggle = true;
   element = document.getElementById(id);
@@ -123,7 +123,7 @@ function toggleHide(id,name_to_hide){
       elements[x].style.display="none";
     }
   }
-  
+
   if(toggle){
     if (element.style.display=="none"){
       element.style.display="";
@@ -131,7 +131,7 @@ function toggleHide(id,name_to_hide){
   }else{
       element.style.display="none";
     }
-  
+
 }
 
 
@@ -139,7 +139,7 @@ function toggleHide(id,name_to_hide){
 function newProposal(string){
   document.getElementById('subject').value="Proposal For Change";
   document.getElementById('comment').value=string;
-  
+
   selectBox = document.getElementById('margin_note_note_type');
   for(var x =0; x<selectBox.options.length;x++){
     option = selectBox.options[x]
@@ -153,96 +153,96 @@ function newProposal(string){
 }
 
   function newNote(){
-    toggleHide("commentForm","forms") 
+    toggleHide("commentForm","forms")
   }
 
-  
 
-  
+
+
   function compare(note_id){
     oldValue = document.getElementById("oldValue").innerHTML;
     element = document.getElementById("note_value"+note_id)
     target = document.getElementById("note_text"+note_id)
     var d = dmp.diff_main(oldValue, element.value);
       dmp.diff_cleanupSemantic(d);
-      target.innerHTML=dmp.diff_prettyHtml(d) 
+      target.innerHTML=dmp.diff_prettyHtml(d)
   }
-  
+
   function hide(id){
     document.getElementById(id).style.display="none";
   }
   function unhide(id){
     document.getElementById(id).style.display="";
   }
-  
-  
- 
+
+
+
 function buildWait(){
    YAHOO.namespace("wait.container");
   // Initialize the temporary Panel to display while waiting for external content to load
-  YAHOO.wait.container.wait = new YAHOO.widget.Panel("wait",  
-        { width:"240px", 
-          fixedcenter:true, 
-          close:false, 
-          draggable:false, 
+  YAHOO.wait.container.wait = new YAHOO.widget.Panel("wait",
+        { width:"240px",
+          fixedcenter:true,
+          close:false,
+          draggable:false,
           zindex:4,
           modal:true,
           visible:false
-        } 
+        }
       );
 
   YAHOO.wait.container.wait.setHeader("Loading, please wait...");
   YAHOO.wait.container.wait.setBody('<img src="http://us.i1.yimg.com/us.yimg.com/i/us/per/gr/gp/rel_interstitial_loading.gif" />');
   YAHOO.wait.container.wait.render(document.body);
-  
-  
-  
+
+
+
 }
 
 function buildTabWait(){
    YAHOO.namespace("tabwait.container");
   // Initialize the temporary Panel to display while waiting for external content to load
-  YAHOO.tabwait.container.wait = new YAHOO.widget.Panel("tabwait",  
-        { width:"240px", 
-          fixedcenter:true, 
-          close:false, 
-          draggable:false, 
+  YAHOO.tabwait.container.wait = new YAHOO.widget.Panel("tabwait",
+        { width:"240px",
+          fixedcenter:true,
+          close:false,
+          draggable:false,
           zindex:4,
           modal:true,
           visible:false
-        } 
+        }
       );
 
   YAHOO.tabwait.container.wait.setHeader("Building Tree, please wait...");
   YAHOO.tabwait.container.wait.setBody('<img src="http://us.i1.yimg.com/us.yimg.com/i/us/per/gr/gp/rel_interstitial_loading.gif" />');
   YAHOO.tabwait.container.wait.render(document.body);
-  
-  
-  
+
+
+
 }
 
-  
- 
+
+
 function buildSearchWait(){
    YAHOO.namespace("wait.container");
   // Initialize the temporary Panel to display while waiting for external content to load
-  YAHOO.wait.container.wait = new YAHOO.widget.Panel("wait",  
-        { width:"240px", 
-          fixedcenter:true, 
-          close:false, 
-          draggable:false, 
+  YAHOO.wait.container.wait = new YAHOO.widget.Panel("wait",
+        { width:"240px",
+          fixedcenter:true,
+          close:false,
+          draggable:false,
           zindex:4,
           modal:true,
           visible:false
-        } 
+        }
       );
 
   YAHOO.wait.container.wait.setHeader("Searching, please wait...");
   YAHOO.wait.container.wait.setBody('<img src="http://us.i1.yimg.com/us.yimg.com/i/us/per/gr/gp/rel_interstitial_loading.gif" />');
   YAHOO.wait.container.wait.render(document.body);
-  
-  
-  
+
+
+
 }
 
 
@@ -251,7 +251,7 @@ function buildSearchWait(){
 function toggleSelected(node){
 
   var index=1;
-  
+
   // can get in endless loop if you jump to a node that is free floating.
   nullCount = 0;
   while (nullCount < 20){
@@ -265,18 +265,18 @@ function toggleSelected(node){
     }
   index++;
   }
-  node.labelStyle="ygtvlabel-selected"; 
-  
+  node.labelStyle="ygtvlabel-selected";
+
 }
 var tabs=null;
   function buildTabs(){
       tabs = new YAHOO.widget.TabView('tabframe');
-    
+
     //YAHOO.namespace("feed");
-    //YAHOO.feed.feed = new YAHOO.widget.Panel("feedPanel", { context:["feed","tr","br"], width:"320px", visible:false,draggable:false,constraintoviewport:true  } ); 
+    //YAHOO.feed.feed = new YAHOO.widget.Panel("feedPanel", { context:["feed","tr","br"], width:"320px", visible:false,draggable:false,constraintoviewport:true  } );
     //YAHOO.feed.feed.render();
-    //YAHOO.util.Event.addListener("feed", "click", YAHOO.feed.feed.show, YAHOO.feed.feed, true); 
-    
+    //YAHOO.util.Event.addListener("feed", "click", YAHOO.feed.feed.show, YAHOO.feed.feed, true);
+
     var split = new Ext.SplitBar("dragSpot", "leftbar",
                      Ext.SplitBar.HORIZONTAL, Ext.SplitBar.LEFT);
       split.setAdapter(new Ext.SplitBar.AbsoluteLayoutAdapter("container"));
@@ -285,15 +285,15 @@ var tabs=null;
       split.animate = true;
       split.on('moved', splitterMoved);
   }
-  
+
   function splitterMoved(splitbar,newSize){
     var rightSide = Ext.get('centerContent');
     var tabFrame = Ext.get('tabframe');
     var leftSide = Ext.get('leftbar');
-    
+
   }
-  
-  function resetNoteForm(uniq){   
+
+  function resetNoteForm(uniq){
     document.getElementById("note_subject"+uniq).value=""
     document.getElementById("note_comment"+uniq).value=""
     document.getElementById('noteParent'+uniq).value="";
@@ -305,12 +305,12 @@ var myEditor;
 
 
 function buildEditor(uniq){
-  
 
-  
+
+
   var Dom = YAHOO.util.Dom,
         Event = YAHOO.util.Event;
-  
+
   myEditor = new YAHOO.widget.SimpleEditor('note_comment'+uniq, {
     height: '300px',
     width: '522px',
@@ -328,7 +328,7 @@ function saveNote(){
 function destroyEditor(){
     myEditor.clearEditorDoc();
     myEditor.destroy();
-    
+
 }
 
 
@@ -353,18 +353,18 @@ function updateOntologyList(ontology){
         list.removeChild(document.getElementById("hid_"+ontology.nextSibling.nodeValue))
         ontology.parentNode.innerHTML = ontology.parentNode.innerHTML.replace("checked","")
     }
-    
-    
+
+
 }
 
 function hover_on_BG(cell){
-    if(!cell.firstChild.checked){        
+    if(!cell.firstChild.checked){
         cell.style.background="#DFDFDF";
     }
 }
 
 function hover_off_BG(cell){
-    if(!cell.firstChild.checked){        
+    if(!cell.firstChild.checked){
         cell.style.background="white";
     }
 }
@@ -372,17 +372,17 @@ function hover_off_BG(cell){
 var dialog;
 
 function toggleBG(cell,bgcolor){
-  
-    if(cell.firstChild.checked){      
+
+    if(cell.firstChild.checked){
         cell.style.backgroundColor=bgcolor;
     }else{
         cell.style.backgroundColor=bgcolor;
     }
-    
-    
+
+
 }
 
-function updateContent(){    
+function updateContent(){
     document.getElementById('ontologies').innerHTML = Dialog.dialog.getContent().innerHTML
 }
 
@@ -391,12 +391,12 @@ function updateContent(){
 function ajaxForm(form, target, callback) {
   // let's start the jQuery while I wait.
   // step 1: onload - capture the submit event on the form.
-  
+
   // now we're going to capture *all* the fields in the
   // form and submit it via ajax.
-   
+
   // :input is a macro that grabs all input types, select boxes
-  // textarea, etc.  Then I'm using the context of the form from 
+  // textarea, etc.  Then I'm using the context of the form from
   // the initial '#contactForm' to narrow down our selector
   var inputs = [];
 
@@ -407,9 +407,9 @@ function ajaxForm(form, target, callback) {
       inputs.push(this.name + '=' + escape(this.value));
     }
   });
- 
+
   // now if I join our inputs using '&' we'll have a query string
-  jQuery.post(form.action, inputs.join('&'), function(data) { 
+  jQuery.post(form.action, inputs.join('&'), function(data) {
     jQuery(target).html(data);
 
     if (callback) {
@@ -418,17 +418,17 @@ function ajaxForm(form, target, callback) {
 
     tb_init('a.thickbox, area.thickbox, input.thickbox');
   });
-         
+
   // by default - we'll always return false so it doesn't redirect the user.
   return false;
 }
 
 function update_tab(ontology,concept){
-  
+
 
           jQuery.get("/tab/update/"+ontology+"/"+concept)
-  
-  
+
+
 }
 
 
@@ -438,11 +438,11 @@ function remove_tab(link,ontology,redirect){
             if(redirect){
               window.location="/ontologies"
             }else{
-              jQuery("#tab"+ontology).remove()              
+              jQuery("#tab"+ontology).remove()
 
             }
-                
-      })          
+
+      })
 
 }
 
@@ -451,9 +451,9 @@ function selectTab(id,tab){
     for(var x=0; x<nav.childNodes.length; x++){
         nav.childNodes[x].className="";
     }
-   
+
     document.getElementById(tab).className="selected";
-    
+
 }
 
 
@@ -550,13 +550,13 @@ jQuery(window).ready(function(){
   jQuery("input[type=text].help_text, textarea.help_text").each(function(){
     jQuery(this).val(jQuery(this).attr("title"));
   });
-  
+
   jQuery("input[type=text].help_text, textarea.help_text").focus(function(){
     var input = jQuery(this);
     if (input.attr("title") == input.val()) {
       input.val("");
       input.removeClass("help_text");
-    } 
+    }
   });
 
   jQuery("input[type=text].help_text, textarea.help_text").blur(function(){

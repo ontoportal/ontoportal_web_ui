@@ -1852,3 +1852,9 @@ p.tab_description {
   padding: 0 13px 0;
   margin-bottom: 10px;
 }
+
+
+
+a.link_button {
+  font-size: .9em;
+}
