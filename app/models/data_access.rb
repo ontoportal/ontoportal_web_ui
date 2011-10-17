@@ -295,7 +295,10 @@ class DataAccess
   end
 
   def self.createRecommendation(text, ontology_ids, params = {})
-    subs = self.cache_pull("recommendation::#{text.hash}::ontologies::#{ontology_ids}#{'params:' + params.to_s if !params.empty?}", "createRecommendation", { :text => text, :ontologyids => ontology_ids }.merge(params), EXTENDED_CACHE_EXPIRE_TIME)
+    SERVICE.createRecommendation({ :text => text, :ontologyids => ontology_ids }.merge(params))
+
+    # No caching for now
+    # self.cache_pull("recommendation::#{text.hash}::ontologies::#{ontology_ids}#{'params:' + params.to_s if !params.empty?}", "createRecommendation", { :text => text, :ontologyids => ontology_ids }.merge(params), EXTENDED_CACHE_EXPIRE_TIME)
   end
 
   def self.getUserSubscriptions(user_id)
