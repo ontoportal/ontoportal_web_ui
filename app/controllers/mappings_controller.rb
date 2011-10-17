@@ -1,4 +1,4 @@
-require 'MappingLoader'
+require 'cgi'
 class MappingsController < ApplicationController
 
   layout 'ontology'
@@ -29,7 +29,7 @@ class MappingsController < ApplicationController
   def count
     ontology_list = DataAccess.getOntologyList()
     view_list = DataAccess.getViewList()
-    @ontology = DataAccess.getOntology(params[:ontology])
+    @ontology = DataAccess.getOntology(params[:id])
     @ontologies_mapping_count = DataAccess.getMappingCountBetweenOntologies(@ontology.ontologyId)
 
     ontologies_hash = {}
@@ -172,7 +172,30 @@ class MappingsController < ApplicationController
   end
 
   def destroy
-    DataAccess.deleteMapping(params[:id])
+    mapping_ids = params[:mappingids].split(",")
+    concept_id = params[:conceptid].empty? ? "root" : params[:conceptid]
+
+    ontology = DataAccess.getOntology(params[:ontologyid])
+    concept = DataAccess.getNode(ontology.id, concept_id)
+    concept = concept_id.eql?("root") ? concept.children[0] : concept
+
+    errors = []
+    successes = []
+    mapping_ids.each do |map_id|
+      begin
+        result = DataAccess.deleteMapping(map_id)
+        raise Exception if !result.nil? && result["errorCode"]
+      rescue Exception => e
+        errors << map_id
+        next
+      end
+      successes << map_id
+    end
+
+    CACHE.delete("#{ontology.ontologyId}::#{CGI.escape(concept.fullId)}::map_page::page1::size100::params")
+    CACHE.delete("#{ontology.ontologyId}::#{CGI.escape(concept.fullId)}::map_count")
+
+    render :json => { :success => successes, :error => errors }
   end
 
 private
