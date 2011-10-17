@@ -16,18 +16,18 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :concepts
 
   map.resources :ontologies
-  
+
   map.resources :login
-  
+
   map.resources :admin
-  
+
   map.resources :subscriptions
-  
+
   map.resources :recommender
-  
+
   # The priority is based upon order of creation: first created -> highest priority.
-  
-  # You can have the root of your site routed by hooking up '' 
+
+  # You can have the root of your site routed by hooking up ''
   map.connect '', :controller => "home"
 
   # Top-level pages
@@ -42,20 +42,14 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/ontologies/view/edit/:id', :controller => 'ontologies', :action => 'edit_view', :requirements => { :id => %r([^/?]+) }
   map.connect '/ontologies/view/new/:id', :controller => 'ontologies', :action => 'new_view'
   map.ontology_virtual '/ontologies/virtual/:ontology', :controller => 'ontologies', :action => 'virtual'
-  
-  # Mappings
-  map.upload_mappings '/upload/mapping', :controller => 'mappings', :action=>'upload'
-  map.process_mappings '/process/mapping', :controller => 'mappings', :action=>'process_mappings'
-  map.mapping_count '/mappings/count/:ontology', :controller => 'mappings', :action => 'count'
-  map.mapping '/mappings/service/:ontology/:id', :controller => 'mappings', :action => 'service'
-  
+
   # Services
   map.connect ':controller/service.wsdl', :action => 'wsdl'
-  
+
   # Old Notes
   map.notes_ont 'notes/ont/:ontology/:id', :controller => 'margin_notes', :action => 'ont_service'
   map.notes_ver 'notes/ver/:ontology/:id', :controller => 'margin_notes', :action => 'ver_service'
-  
+
   # New Notes
   map.notes_ontology 'ontologies/notes/virtual/:ontology', :controller => 'notes', :action => 'show_for_ontology'
   #map.note 'notes/:ontology', :controller => 'notes', :action => 'show'
@@ -76,7 +70,7 @@ ActionController::Routing::Routes.draw do |map|
   # User
   map.logout '/logout', :controller => 'login',:action => 'destroy'
   map.lost_pass '/lost_pass', :controller => 'login', :action => 'lost_password'
-  
+
   # Visualize
   map.virtual_visualize '/visualize/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :id => %r([^/?]+), :conceptid => %r([^/?]+) }
   map.virtual_uri '/visualize/virtual/:ontology/:id', :controller => 'concepts', :action => 'virtual', :requirements => { :id => %r([^/?]+) }
@@ -89,7 +83,7 @@ ActionController::Routing::Routes.draw do |map|
   # Virtual
   map.virtual_ont '/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+) }
   map.virtual '/virtual/:ontology/:id', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+) }
-  
+
   # History
   map.remove_tab '/tab/remove/:ontology',:controller => 'history', :action => 'remove'
   map.update_tab '/tab/update/:ontology/:concept', :controller => 'history', :action=>'update'
