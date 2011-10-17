@@ -45,6 +45,8 @@ class MappingsController < ApplicationController
       ontology['ontology'] = ontologies_hash[ontology['ontologyId']]
     end
 
+    @ontologies_mapping_count.delete_if {|ont| ont['ontology'].nil?}
+
     @ontology_id = @ontology.ontologyId
     @ontology_label = @ontology.displayLabel
 
