@@ -9,7 +9,7 @@ module MappingsHelper
   def get_short_id(uri)
     split = uri.split("#")
     name = split.length > 1 ? RELATIONSHIP_URIS[split[0]] + split[1] : uri
-    "<a href='#{uri}'>#{name}</a>"
+    "<a href='#{uri}' target='_blank'>#{name}</a>"
   end
 
 end
