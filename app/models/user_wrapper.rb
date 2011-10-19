@@ -47,13 +47,13 @@ class UserWrapper
     def initialize(hash = nil, params = nil)
       return if hash.nil?
 
-      hash = hash["userBean"] if hash.key?("userBean")
-
       # We can get user information in two contexts, this handles the XML returned when authenticating
       if hash.key?("userBean") && hash.key?("apiKey")
         self.apikey = hash["apiKey"]
         hash = hash["userBean"]
       end
+
+      hash = hash["userBean"] if hash.key?("userBean")
 
       self.id = hash["id"]
       self.username = hash["username"]

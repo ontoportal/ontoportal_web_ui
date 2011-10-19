@@ -310,7 +310,7 @@ class OntologiesController < ApplicationController
       @delete_mapping_permission = true if session[:user].admin?
       @mappings.each do |mapping|
         break if @delete_mapping_permission
-        @delete_mapping_permission = true if session[:user].id == mapping.user_id
+        @delete_mapping_permission = true if session[:user].id.to_i == mapping.user_id
       end
     end
 

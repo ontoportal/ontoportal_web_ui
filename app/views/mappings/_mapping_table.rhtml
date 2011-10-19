@@ -25,7 +25,7 @@
     <tr class="human" id=<%=map.id.gsub(/.*\//, "")%>>
       <%if @delete_mapping_permission%>
         <td>
-          <%if session[:user] == map.user_id || session[:user].admin?%>
+          <%if session[:user].id.to_i == map.user_id || session[:user].admin?%>
             <%=check_box_tag :delete_mapping, map.id%></td>
           <%end%>
         </td>

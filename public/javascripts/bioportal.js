@@ -568,3 +568,11 @@ jQuery(window).ready(function(){
   });
 });
 
+
+
+// Initialize all link buttons using jQuery UI button widget
+jQuery(document).ready(function(){
+  jQuery("a.link_button").button();
+});
+
+

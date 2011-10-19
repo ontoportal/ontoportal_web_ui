@@ -2,7 +2,7 @@ require 'cgi'
 class MappingsController < ApplicationController
 
   layout 'ontology'
-  before_filter :authorize, :only=>[:create,:new]
+  before_filter :authorize, :only=>[:create,:new,:destroy]
 
   def index
     ontology_list = DataAccess.getOntologyList()
