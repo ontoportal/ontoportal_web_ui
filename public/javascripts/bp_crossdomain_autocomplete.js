@@ -3,7 +3,7 @@
 // To avoid re-writing this script we'll use a wrapper.
 (function($) {
   $(function() {
-    jQuery.autocomplete = function(input, options) {
+    jQuery.bp_autocomplete = function(input, options) {
       // Create a link to self
       var me = this;
 
@@ -14,14 +14,19 @@
       if (options.inputClass) $input.addClass(options.inputClass);
 
       // Create results
-      var results = document.createElement("div");
-      // Create jQuery object for results
-      var $results = $(results);
-      $results.hide().addClass(options.resultsClass).css("position", "absolute");
-      if( options.width > 0 ) $results.css("width", options.width);
+      if (document.getElementById(options.resultsClass) == null) {
+        var results = document.createElement("div");
+        // Create jQuery object for results
+        var $results = $(results);
+        $results.hide().addClass(options.resultsClass).css("position", "absolute").attr("id", options.resultsClass);
+        if( options.width > 0 ) $results.css("width", options.width);
 
-      // Add to body element
-      $("body").append(results);
+        // Add to body element
+        $("body").append(results);
+      } else {
+        var results = document.getElementById(options.resultsClass);
+        var $results = $(results);
+      }
 
       input.autocompleter = me;
 
@@ -187,7 +192,7 @@
         $input.val(v);
         hideResultsNow();
         if (options.onItemSelect) setTimeout(function() { options.onItemSelect(li) }, 1);
-        setTimeout(function() { $(document).trigger("autocomplete_selected"); }, 2);
+        setTimeout(function() { $input.trigger("autocomplete_selected"); }, 2);
       };
 
       // selects a portion of the input string
@@ -478,7 +483,7 @@
       }
     }
 
-    jQuery.fn.autocomplete = function(url, options, data) {
+    jQuery.fn.bp_autocomplete = function(url, options, data) {
       // Make sure options exists
       options = options || {};
       // Set url as option
@@ -507,15 +512,15 @@
       options.width = parseInt(options.width, 10) || 0;
       this.each(function() {
         var input = this;
-        new jQuery.autocomplete(input, options);
+        new jQuery.bp_autocomplete(input, options);
       });
 
       // Don't break the chain
       return this;
     }
 
-    jQuery.fn.autocompleteArray = function(data, options) {
-      return this.autocomplete(null, options, data);
+    jQuery.fn.bp_autocompleteArray = function(data, options) {
+      return this.bp_autocomplete(null, options, data);
     }
 
     jQuery.fn.indexOf = function(e){

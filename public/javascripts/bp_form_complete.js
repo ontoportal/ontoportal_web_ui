@@ -26,45 +26,45 @@ try{
 // Widget-specific code
 
 // Set a variable to check to see if this script is loaded
-var BP_FORM_COMPLETE_LOADED = true;
+var BP_INTERNAL_FORM_COMPLETE_LOADED = true;
 
 // Set the defaults if they haven't been set yet
-if (typeof BP_SEARCH_SERVER === 'undefined') {
-  var BP_SEARCH_SERVER = "http://bioportal.bioontology.org";
+if (typeof BP_INTERNAL_SEARCH_SERVER === 'undefined') {
+  var BP_INTERNAL_SEARCH_SERVER = "http://bioportal.bioontology.org";
 }
-if (typeof BP_SITE === 'undefined') {
-  var BP_SITE = "BioPortal";
+if (typeof BP_INTERNAL_SITE === 'undefined') {
+  var BP_INTERNAL_SITE = "BioPortal";
 }
-if (typeof BP_ORG === 'undefined') {
-  var BP_ORG = "NCBO";
+if (typeof BP_INTERNAL_ORG === 'undefined') {
+  var BP_INTERNAL_ORG = "NCBO";
 }
-if (typeof BP_ONTOLOGIES === 'undefined') {
-  var BP_ONTOLOGIES = "";
+if (typeof BP_INTERNAL_ONTOLOGIES === 'undefined') {
+  var BP_INTERNAL_ONTOLOGIES = "";
 }
 
-var BP_ORG_SITE = (BP_ORG == "") ? BP_SITE : BP_ORG + " " + BP_SITE;
+var BP_INTERNAL_ORG_SITE = (BP_INTERNAL_ORG == "") ? BP_INTERNAL_SITE : BP_INTERNAL_ORG + " " + BP_INTERNAL_SITE;
 
 
 
 jQuery(document).ready(function(){
   // Install any CSS we need (check to make sure it hasn't been loaded)
-  if (jQuery('link[href$="' + BP_SEARCH_SERVER + '/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"]')) {
+  if (jQuery('link[href$="' + BP_INTERNAL_SEARCH_SERVER + '/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"]')) {
     jQuery("head").append("<link>");
     css = jQuery("head").children(":last");
     css.attr({
       rel:  "stylesheet",
       type: "text/css",
-      href: BP_SEARCH_SERVER + "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"
+      href: BP_INTERNAL_SEARCH_SERVER + "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css"
     });
   }
 
   // Grab the specific scripts we need and fires the start event
-  jQuery.getScript(BP_SEARCH_SERVER + "/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js",function(){
-    formComplete_setup_functions();
+  jQuery.getScript(BP_INTERNAL_SEARCH_SERVER + "/javascripts/bp_crossdomain_autocomplete.js",function(){
+    bp_internal_formComplete_setup_functions();
   });
 });
 
-function formComplete_formatItem(row) {
+function bp_internal_formComplete_formatItem(row) {
   var input = this.extraParams.input;
   var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
   var keywords = jQuery(input).val().replace(specials, "\\$&").split(' ').join('|');
@@ -76,7 +76,7 @@ function formComplete_formatItem(row) {
   // Get ontology id and other parameters
   var classes = jQuery(input).attr('class').split(" ");
   jQuery(classes).each(function() {
-    if (this.indexOf("bp_form_complete") === 0) {
+    if (this.indexOf("bp_internal_form_complete") === 0) {
       var values = this.split("-");
       ontology_id = values[1];
     }
@@ -122,8 +122,8 @@ function formComplete_formatItem(row) {
   return result;
 }
 
-function formComplete_setup_functions() {
-  jQuery("input[class*='bp_form_complete']").each(function(){
+function bp_internal_formComplete_setup_functions() {
+  jQuery("input[class*='bp_internal_form_complete']").each(function(){
     var classes = this.className.split(" ");
     var values;
     var ontology_id;
@@ -140,7 +140,7 @@ function formComplete_setup_functions() {
     }
 
     jQuery(classes).each(function() {
-      if (this.indexOf("bp_form_complete") === 0) {
+      if (this.indexOf("bp_internal_form_complete") === 0) {
         values = this.split("-");
         ontology_id = values[1];
         target_property = values[2];
@@ -149,7 +149,7 @@ function formComplete_setup_functions() {
 
     if (ontology_id == "all") { ontology_id = ""; }
 
-    var extra_params = { input: this, target_property: target_property, subtreerootconceptid: encodeURIComponent(BP_search_branch), includedefinitions: BP_include_definitions, id: BP_ONTOLOGIES };
+    var extra_params = { input: this, target_property: target_property, subtreerootconceptid: encodeURIComponent(BP_search_branch), includedefinitions: BP_include_definitions, id: BP_INTERNAL_ONTOLOGIES };
 
     var result_width = 450;
 
@@ -163,7 +163,7 @@ function formComplete_setup_functions() {
       result_width += 200;
     }
 
-    jQuery(this).autocomplete(BP_SEARCH_SERVER + "/search/json_search/"+ontology_id, {
+    jQuery(this).bp_autocomplete(BP_INTERNAL_SEARCH_SERVER + "/search/json_search/"+ontology_id, {
         extraParams: extra_params,
         lineSeparator: "~!~",
         matchSubset: 0,
@@ -173,8 +173,8 @@ function formComplete_setup_functions() {
         maxItemsToShow: 20,
         width: result_width,
         onItemSelect: bpFormSelect,
-        footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="' + BP_SEARCH_SERVER + '">' + BP_ORG_SITE + '</a></div>',
-        formatItem: formComplete_formatItem
+        footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="' + BP_INTERNAL_SEARCH_SERVER + '">' + BP_INTERNAL_ORG_SITE + '</a></div>',
+        formatItem: bp_internal_formComplete_formatItem
     });
 
     var html = "";

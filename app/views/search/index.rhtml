@@ -10,7 +10,7 @@ var resultsTable;
 
   jQuery(document).ready(function(){
     jQuery("#search_button").button();
-    
+
     resultsTable = jQuery("#search_results").dataTable({
       bPaginate: false,
       bAutoWidth: false,
@@ -28,16 +28,6 @@ var resultsTable;
   });
 </script>
 
-<style type="text/css">
-  .ui-autocomplete {
-    border-radius: 0 !important;
-    background: white;
-    font-size: inherit;
-    text-align: left;
-    max-width: 432px;
-  }
-</style>
-
 <script type="text/javascript">
   jQuery(document).ready(function(){
     // Put cursor in search box by default
@@ -47,7 +37,7 @@ var resultsTable;
     if (jQuery("#search_select_ontologies").is(":checked")) {
       jQuery("#ontology_picker_options").removeClass("not_visible");
     }
-    
+
     jQuery("#search_select_ontologies").change(function(){
       if (jQuery(this).is(":checked")) {
         jQuery("#ontology_picker_options").removeClass("not_visible");
@@ -60,16 +50,16 @@ var resultsTable;
 
     jQuery("#search_button").click(function(event){
       event.preventDefault();
-      
+
       jQuery("#search_spinner").show();
-      
+
       var ont_val = jQuery("#ontology_ontologyId").val();
-      
+
       var onts = (ont_val == null) ? "" : ont_val.join(",");
       var query = jQuery("#search_keywords").val();
       var exactMatch = jQuery("#search_exact_match").is(":checked");
       var includeProps = jQuery("#search_include_props").is(":checked");
-      
+
       jQuery.ajax({
         url: "/search/json?page_size=99999&ontology_ids="+onts+"&query="+query+"&exact_match="+exactMatch+"&include_props=1",
         dataType: "json",
@@ -139,10 +129,10 @@ var resultsTable;
           jQuery("table#search_results").show();
         }
       });
-      
+
       jQuery("#search_spinner").hide();
     });
-    
+
     // Search on enter
     jQuery("#search_keywords").bind("keyup", function(event){
       if (event.which == 13) {
@@ -151,7 +141,7 @@ var resultsTable;
         jQuery(".ui-autocomplete").hide();
       }
     });
-    
+
     // Details/visualze link to show details pane and visualize flexviz
     jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
     jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
@@ -177,15 +167,15 @@ var resultsTable;
     if ("q" in params || "query" in params) {
       var query = ("q" in params) ? params["q"] : params["query"];
       jQuery("#search_keywords").val(query);
-      
+
       if (params["exactmatch"] == "true") {
         jQuery("#search_exact_match").click();
       }
-      
+
       if (params["searchproperties"] == "true") {
         jQuery("#search_include_props").click();
       }
-      
+
       if ("ontologyids" in params) {
         var ontologyIds = params["ontologyids"].split(",");
         jQuery("#search_select_ontologies").attr("checked", false)
@@ -193,7 +183,7 @@ var resultsTable;
         jQuery("#ontology_ontologyId").trigger("liszt:updated");
         jQuery("#search_select_ontologies").click().change();
       }
-      
+
       jQuery("#search_button").click();
     } else if (jQuery("#search_keywords").val() != "") {
       jQuery("#search_button").click();
@@ -203,12 +193,12 @@ var resultsTable;
     filter_ontologies.init();
     filter_matched.init();
   });
-  
+
   // Datatables reset sort extension
   jQuery.fn.dataTableExt.oApi.fnSortNeutral = function ( oSettings ) {
     /* Remove any current sorting */
     oSettings.aaSorting = [];
-    
+
     /* Sort display arrays so we get them in numerical order */
     oSettings.aiDisplay.sort( function (x,y) {
       return x-y;
@@ -216,7 +206,7 @@ var resultsTable;
     oSettings.aiDisplayMaster.sort( function (x,y) {
       return x-y;
     } );
-    
+
     /* Redraw */
     oSettings.oApi._fnReDraw( oSettings );
   }
@@ -312,11 +302,11 @@ var filter_matched = {
     <h1>Term Search</h1>
     <p>Search for a term across multiple ontologies  <%=help_icon("/help#Search_Tab")%></p>
     <%=text_field :search, :keywords, :style => "width: 426px; height: 20px; float: left; margin-right: 1em;"%>
-    
+
     <div id="search_options" style="padding-top: .6em; clear: both;">
       <!--<%=check_box :search, :exact_match%> <%=label :search, :exact_match, "Exact match only"%>&nbsp;&nbsp;&nbsp;-->
       <!--<%=check_box :search, :include_props%> <%=label :search, :include_props, "Also search property values"%>&nbsp;&nbsp;&nbsp;-->
-      
+
       <!--<%=check_box :search, :select_ontologies%> <%=label :search, :select_ontologies, "Select ontologies to search"%>-->
       <div id="ontology_picker_options" style="margin-top: 1em; position: relative; left: 2px;">
         <%= render :partial => "shared/ontology_picker", :locals => { :sel_text => "Select ontologies to search" }%>
@@ -326,14 +316,14 @@ var filter_matched = {
     <span id="search_spinner" style="display: none;">&nbsp;<img style="vertical-align: inherit;" src="/images/spinners/spinner_000000_16px.gif"></span>
     <%=button_to "Search", {}, :style => "font-size: .75em !important; margin-bottom: 1em;", :id => "search_button"%>
   </div>
-  
+
   <div id="search_results_container" style="margin-top: .5em; clear: both;">
-    
+
     <div id="result_stats" style="text-align: right; width: 850px;"></div>
     <table id="search_results" style="display: none; width: 850px;" class="zebra">
       <thead>
         <th style="width: 325px;">Term Name</th>
-        <th style="width: 150px;" class="matched_in">Matched In 
+        <th style="width: 150px;" class="matched_in">Matched In
           <span class="popup_container" style="padding-left: 1.7em;">
             <span class="bp_popup_link_container">
               <a href="javascript:void(0);" id="filter_matched" class="bp_popup_link">filter</a>

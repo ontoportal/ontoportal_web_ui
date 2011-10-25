@@ -119,6 +119,18 @@ class MappingsController < ApplicationController
     end
   end
 
+  def get_concept_table
+    @ontology = DataAccess.getOntology(params[:ontologyid])
+    @concept = DataAccess.getNode(@ontology.id, params[:conceptid])
+
+    @mappings = DataAccess.getConceptMappings(@ontology.ontologyId, @concept.id)
+
+    # check to see if user should get the option to delete
+    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
+
+    render :partial => "mapping_table"
+  end
+
   def upload
     @ontologies = @ontologies = DataAccess.getOntologyList()
     @users = User.find(:all)
@@ -135,42 +147,44 @@ class MappingsController < ApplicationController
   end
 
   def new
-    ontology = DataAccess.getOntology(params[:ontology])
-    @mapping = Mapping.new
-    @mapping.source_id = params[:source_id]
-    @mapping.source_ont = ontology.ontologyId
-    @mapping.source_version_id=ontology.id
-    @ontologies = DataAccess.getActiveOntologies() #populates dropdown
-    @name = params[:source_name] #used for display
+    @ontology_from = DataAccess.getOntology(params[:ontology_from]) rescue OntologyWrapper.new
+    @ontology_to = DataAccess.getOntology(params[:ontology_to]) rescue OntologyWrapper.new
+    @concept_from = DataAccess.getNode(@ontology_from.id, params[:conceptid_from]) rescue NodeWrapper.new
+    @concept_to = DataAccess.getNode(@ontology_to.id, params[:conceptid_to]) rescue NodeWrapper.new
 
-    render :layout=>false
+    if request.xhr? || params[:no_layout].eql?("true")
+      render :layout => "minimal"
+    else
+      render :layout => "ontology"
+    end
   end
 
   # POST /mappings
   # POST /mappings.xml
   def create
-    source = DataAccess.getNode(params[:mapping]['source_version_id'], params[:mapping]['source_id'])
-    target = DataAccess.getNode(params[:mapping]['destination_version_id'], params[:mapping]['destination_id'])
-    comment = params[:mapping]['comment']
-    unidirectional = params[:mapping]['directionality'].eql?("unidirectional")
+    source_ontology = DataAccess.getOntology(params[:map_from_bioportal_ontology_id])
+    target_ontology = DataAccess.getOntology(params[:map_to_bioportal_ontology_id])
+    source = DataAccess.getNode(source_ontology.id, params[:map_from_bioportal_full_id])
+    target = DataAccess.getNode(target_ontology.id, params[:map_to_bioportal_full_id])
+    comment = params[:mapping_comment]
+    unidirectional = params[:mapping_directionality].eql?("unidirectional")
 
     @mapping = DataAccess.createMapping(source.fullId, source.ontology.ontologyId, target.fullId, target.ontology.ontologyId, session[:user].id, comment, unidirectional)
 
-    #repopulates table
-    @ontology = DataAccess.getOntology(source.ontology.id)
-    @mappings = DataAccess.getConceptMappings(source.ontology.ontologyId, source.fullId)
-
-
     # Adds mapping to syndication
-    @mapping.each do |mapping|
-      event = EventItem.new
-      event.event_type= "Mapping"
-      event.event_type_id = mapping.id
-      event.ontology_id = mapping.source_ont
-      event.save
+    begin
+      @mapping.each do |mapping|
+        event = EventItem.new
+        event.event_type= "Mapping"
+        event.event_type_id = mapping.id
+        event.ontology_id = mapping.source_ont
+        event.save
+      end
+    rescue Exception => e
+      LOG.add :debug, "Problem adding mapping to RSS feed"
     end
 
-    render :partial => 'mapping_table'
+    render :json => @mapping
   end
 
   def destroy

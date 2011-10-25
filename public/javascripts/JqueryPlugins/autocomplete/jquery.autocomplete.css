@@ -9,7 +9,7 @@
 	background-color: white;
 	overflow: hidden;
 	text-align:left;
-	z-index: 999;
+	z-index: 99999;
 }
 
 .acResults ul {
@@ -48,7 +48,7 @@
 	background-color: white;
 	overflow: hidden;
 	text-align:left;
-	z-index: 999;
+	z-index: 99999;
 }
 
 .ac_results ul {

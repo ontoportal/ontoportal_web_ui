@@ -22,6 +22,8 @@ class Mapping
   def initialize(hash = nil, params = nil)
     return if hash.nil? || hash.empty?
 
+    hash = hash["mapping"] if hash.key?("mapping")
+
     self.id = hash['id']
     self.source = hash['source']
     self.target = hash['target']

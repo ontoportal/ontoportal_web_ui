@@ -1,10 +1,8 @@
-<%=javascript_include_tag "bp_mappings.js"%>
-
-<table class="zebra" width="100%">
+<table class="zebra" width="100%" id="concept_mappings_table">
   <thead>
     <tr>
       <%if @delete_mapping_permission %>
-        <th>Delete</th>
+        <th></th>
       <% end %>
       <th>Mapping To</th>
       <th>Source</th>
@@ -17,14 +15,14 @@
 
   <%if @mappings.length < 1%>
     <tr>
-      <td colspan="5">There are currently no mappings for this term.</td>
+      <td colspan="<%=@delete_mapping_permission ? "7" : "6"%>">There are currently no mappings for this term.</td>
     </tr>
   <%end%>
 
   <%for map in @mappings%>
-    <tr class="human" id=<%=map.id.gsub(/.*\//, "")%>>
+    <tr class="human" id="<%=map.id.gsub(/.*\//, "")%>">
       <%if @delete_mapping_permission%>
-        <td>
+        <td style="padding: 6px 12px;">
           <%if session[:user].id.to_i == map.user_id || session[:user].admin?%>
             <%=check_box_tag :delete_mapping, map.id%></td>
           <%end%>
@@ -42,13 +40,4 @@
   <%end%>
 
 </table>
-
-<%if @delete_mapping_permission%>
-  <div style="margin-top: 15px;">
-    <%=link_to"Delete Selected", "javascript:void(0);", :onclick => "if (confirm('Really delete mappings? This cannot be undone.')) deleteMappings()", :id => "delete_mappings", :class => "link_button"%>
-    <span id="delete_mappings_spinner" style="display: none;"><%=loading_spinner(false, true)%></span>
-    <span id="delete_mappings_error"></span>
-  </div>
-<%end%>
-
 

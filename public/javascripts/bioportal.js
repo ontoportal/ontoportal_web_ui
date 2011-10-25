@@ -548,31 +548,36 @@ var filter_matched = {
 jQuery(window).ready(function(){
   // Helper text for advanced search filter
   jQuery("input[type=text].help_text, textarea.help_text").each(function(){
-    jQuery(this).val(jQuery(this).attr("title"));
+    if (jQuery(this).val() == "") {
+      jQuery(this).val(jQuery(this).attr("title"));
+      jQuery(this).addClass("help_text_font");
+    } else {
+      jQuery(this).removeClass("help_text_font");
+    }
   });
 
-  jQuery("input[type=text].help_text, textarea.help_text").focus(function(){
+  jQuery("input[type=text].help_text, textarea.help_text").live("focus", (function(){
     var input = jQuery(this);
     if (input.attr("title") == input.val()) {
       input.val("");
-      input.removeClass("help_text");
+      input.removeClass("help_text_font");
     }
-  });
+  }));
 
-  jQuery("input[type=text].help_text, textarea.help_text").blur(function(){
+  jQuery("input[type=text].help_text, textarea.help_text").live("blur", (function(){
     var input = jQuery(this);
     if (input.val() == "") {
       input.val(input.attr("title"));
-      input.addClass("help_text");
+      input.addClass("help_text_font");
     }
-  });
+  }));
 });
 
 
 
 // Initialize all link buttons using jQuery UI button widget
 jQuery(document).ready(function(){
-  jQuery("a.link_button").button();
+  jQuery("a.link_button, input.link_button").button();
 });
 
 

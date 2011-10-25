@@ -1,0 +1,96 @@
+<% init_new_form(ontology_from ||= nil, ontology_to ||= nil, concept_from ||= nil, concept_to ||= nil) if !controller.controller_name.eql?("mappings") && !controller.action_name.eql?("new") %>
+
+<% ontology_from_id = @ontology_from.ontologyId.nil? ? "all" : @ontology_from.ontologyId %>
+<% ontology_to_id = @ontology_to.ontologyId.nil? ? "all" : @ontology_to.ontologyId %>
+
+<script type="text/javascript">
+  var BP_INTERNAL_SEARCH_SERVER = "<%=$UI_URL%>";
+</script>
+
+<style type="text/css">
+  div.ontology_picker_single_container div.chzn-container {
+    width: 415px !important;
+  }
+
+  div.ontology_picker_single_container div.chzn-drop {
+    width: 413px !important;
+  }
+
+  div.ontology_picker_single_container div.chzn-search input {
+    width: 378px !important;
+  }
+
+  #facebox .content {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+</style>
+
+<%=stylesheet_link_tag "/javascripts/JqueryPlugins/facebox/facebox.css"%>
+
+<%=javascript_include_tag "bp_form_complete.js"%>
+<%=javascript_include_tag "JqueryPlugins/facebox/facebox.js"%>
+<%=javascript_include_tag "bp_create_mappings.js"%>
+
+<div id="create_mapping_container" style="height: 365px; width: 950px;">
+  <div id="mapping_from" style="float: left; width: 50%; height: 100%;">
+    <div style="float: right; border-right: thin solid lightGray; margin: 0 10px 0 20px; height: 360px; clear: none;"></div>
+    <div id="mapping_from_content" style="padding: 1em;">
+      <h2>Map From</h2>
+      <%=render :partial => "shared/ontology_picker_single", :locals => {:picker_id => "map_from_picker", :selected => @ontology_from.ontologyId}%>
+      <%=text_field_tag :map_from, @concept_from.label, :class => "bp_internal_form_complete-#{ontology_from_id}-name help_text search_autocomplete", :title => "Start typing to select a term", :style => "width: 415px; margin-top: 5px;"%>
+      <%=hidden_field_tag :map_from_bioportal_full_id, @concept_from.fullId%>
+      <%=hidden_field_tag :map_from_bioportal_ontology_id, @ontology_from.ontologyId%>
+
+      <div id="map_from_concept_details" style="display: none; margin-top: 2em;">
+        <h2 style="margin-bottom: 5px;">Term Details</h2>
+        <div id="map_from_concept_details_table" style="height: 200px; overflow: auto; border: thin solid lightgray">
+          <img style="padding: 5px;" src="/images/spinners/spinner_000000_16px.gif">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mapping_to" style="width: 50%; float: right;">
+    <div id="mapping_to_content" style="padding: 1em;">
+      <h2>Map To</h2>
+      <%=render :partial => "shared/ontology_picker_single", :locals => {:picker_id => "map_to_picker", :selected => @ontology_to.ontologyId}%>
+      <%=text_field_tag :map_to, @concept_to.label, :class => "bp_internal_form_complete-#{ontology_to_id}-name help_text search_autocomplete", :title => "Start typing to select a term", :style => "width: 415px; margin-top: 5px;"%>
+      <%=hidden_field_tag :map_to_bioportal_full_id, @concept_to.fullId%>
+      <%=hidden_field_tag :map_to_bioportal_ontology_id, @ontology_to.ontologyId%>
+
+      <div id="map_to_concept_details" style="display: none; margin-top: 2em;">
+        <h2 style="margin-bottom: 5px;">Term Details</h2>
+        <div id="map_to_concept_details_table" style="height: 200px; overflow: auto; border: thin solid lightgray">
+          <img style="padding: 5px;" src="/images/spinners/spinner_000000_16px.gif">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin: 13px; clear: both;">
+    <%=text_area(:mapping, :comment, :class => "", :placeholder => "Comment", :style => "padding: 3px; height: 3.2em; width: 100%;")%><br/>
+
+    <%=submit_tag "Create Mapping", :class => "link_button", :style => "margin-top: 10px;", :id => "create_mapping_button"%>
+    <span id="create_mapping_spinner" style="display: none;"><%=loading_spinner%></span>
+
+    <span class="popup_container" style="padding-left: 1.7em; margin-top: 15px;">
+      <span class="bp_popup_link_container">
+        <a href="javascript:void(0);" id="create_mapping_advanced" class="bp_popup_link">advanced options</a>
+      </span>
+      <div id="create_mapping_advanced_options" class="bp_popup_list" style="display: none;">
+        <%=select("mapping", "directionality", { "Bidirectional" => "bidirectional", "Unidirectional" => "unidirectional" }, {}, :style => "")%>
+      </div>
+    </span>
+
+    <div id="create_mapping_error" style="color: red; margin: 7px 0;"></div>
+
+    <div id="create_mapping_success_messages" style="float: right; clear: both; margin: -35px 0 15px;"></div>
+  </div>
+
+
+</div>
+
+
+
+

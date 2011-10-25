@@ -609,7 +609,7 @@
 		}
 		if (this.dom.$elem.val() !== this.lastSelectedValue_) {
 			if (this.options.mustMatch) {
-				this.dom.$elem.val('');
+        this.dom.$elem.val(this.dom.$elem.attr("title"));
 			}
 			this.callHook('onNoMatch');
 		}

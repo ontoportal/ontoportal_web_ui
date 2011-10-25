@@ -124,9 +124,10 @@
     reveal: function(data, klass) {
       $(document).trigger('beforeReveal.facebox')
       if (klass) $('#facebox .content').addClass(klass)
+      $('#facebox').css('left', $(window).width() / 2 - ($(data).width() / 2))
       $('#facebox .content').append(data)
       $('#facebox .loading').remove()
-      $('#facebox .body').children().fadeIn('normal')
+      $('#facebox .body').children().fadeIn('fast')
       $('#facebox').css('left', $(window).width() / 2 - ($('#facebox .popup').width() / 2))
       $(document).trigger('reveal.facebox').trigger('afterReveal.facebox')
     },
@@ -154,7 +155,11 @@
       var klass = this.rel.match(/facebox\[?\.(\w+)\]?/)
       if (klass) klass = klass[1]
 
-      fillFaceboxFromHref(this.href, klass)
+      var method = jQuery(this).attr("data-method")
+      var width = jQuery(this).attr("data-width")
+      var height = jQuery(this).attr("data-height")
+
+      fillFaceboxFromHref(this.href, klass, method, height, width)
       return false
     }
 
@@ -236,19 +241,26 @@
   //     div: #id
   //   image: blah.extension
   //    ajax: anything else
-  function fillFaceboxFromHref(href, klass) {
+  function fillFaceboxFromHref(href, klass, method, height, width) {
     // div
     if (href.match(/#/)) {
       var url    = window.location.href.split('#')[0]
       var target = href.replace(url,'')
       if (target == '#') return
-      $.facebox.reveal($(target).html(), klass)
+      $.facebox.reveal($(target), klass)
 
     // image
     } else if (href.match($.facebox.settings.imageTypesRegexp)) {
       fillFaceboxFromImage(href, klass)
-    // ajax
+    } else if (method == "iframe") {
+      // iframe
+      $.facebox.reveal($(jQuery("<iframe/>").attr("src", href)))
+    } else if (method.indexOf("element") >= 0) {
+      // alternate div usage that keeps href in place
+      var elemId = method.split("#")[1]
+      $.facebox.reveal($("#" + elemId), klass)
     } else {
+      // ajax
       fillFaceboxFromAjax(href, klass)
     }
   }
@@ -301,6 +313,7 @@
   $(document).bind('close.facebox', function() {
     $(document).unbind('keydown.facebox')
     $('#facebox').fadeOut(function() {
+      $(document.body).append(jQuery("<div\>").hide().append($('#facebox .content').children()))
       $('#facebox .content').removeClass().addClass('content')
       $('#facebox .loading').remove()
       $(document).trigger('afterClose.facebox')

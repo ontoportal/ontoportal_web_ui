@@ -209,6 +209,19 @@ class ApplicationController < ActionController::Base
     return nil
   end
 
+  def check_delete_mapping_permission(mappings)
+    delete_mapping_permission = false
+    if session[:user]
+      delete_mapping_permission = true if session[:user].admin?
+      mappings.each do |mapping|
+        break if delete_mapping_permission
+        delete_mapping_permission = true if session[:user].id.to_i == mapping.user_id
+      end
+    end
+
+    delete_mapping_permission
+  end
+
   # Notes-related helpers that could be useful elsewhere
 
   def convert_java_time(time_in_millis)

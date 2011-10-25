@@ -32,7 +32,7 @@ jQuery(window).ready(function(){
   jQuery("#ontology_ontologyId_chzn").bind("focus", hideChosenResults);
   jQuery("#ontology_ontologyId_chzn").bind("keydown", showChosenResults);
 
-	// Hide the advanced select when focusing in the chosen select box
+  // Hide the advanced select when focusing in the chosen select box
   jQuery("#ontology_ontologyId_chzn").bind("focus", hideAdvancedSelect);
 
   // Hide the advanced select when clicking anywhere except in advanced select
@@ -52,25 +52,25 @@ jQuery(window).ready(function(){
 
   // Wire up the link to open dialog box
   jQuery("#ont_select_adv_href").click(function() {
-  	var ont_select = jQuery("#ont_select_adv");
-  	var chzn_select = jQuery("#ontology_ontologyId_chzn");
+    var ont_select = jQuery("#ont_select_adv");
+    var chzn_select = jQuery("#ontology_ontologyId_chzn");
 
-  	ont_select.css("top", "50px");
-  	ont_select.css("left", chzn_select.offset().left + chzn_select.width() - 1);
-  	ont_select.css("width", jQuery(window).width() - (chzn_select.offset().left + chzn_select.width()) - 100 + "px");
-  	ont_select.css("height", jQuery(window).height() - 100);
+    ont_select.css("top", "50px");
+    ont_select.css("left", chzn_select.offset().left + chzn_select.width() - 1);
+    ont_select.css("width", jQuery(window).width() - (chzn_select.offset().left + chzn_select.width()) - 100 + "px");
+    ont_select.css("height", jQuery(window).height() - 100);
 
-  	// Configure the chosen select list box to remove background, move z-index above the advanced select
-  	chzn_select.css("z-index", "4000");
-  	chzn_select.children("ul.chzn-choices").addClass("no_right_border");
-  	chzn_select.children("ul.chzn-choices").css("background", "white");
-  	// Chosen select list congig changes for IE
-  	chzn_select.children("ul.chzn-choices").css("filter", "none");
-  	jQuery("#ontology_ontologyId_chzn input").css("filter", "none");
+    // Configure the chosen select list box to remove background, move z-index above the advanced select
+    chzn_select.css("z-index", "4000");
+    chzn_select.children("ul.chzn-choices").addClass("no_right_border");
+    chzn_select.children("ul.chzn-choices").css("background", "white");
+    // Chosen select list congig changes for IE
+    chzn_select.children("ul.chzn-choices").css("filter", "none");
+    jQuery("#ontology_ontologyId_chzn input").css("filter", "none");
 
-  	jQuery("#ontology_ontologyId_container").css("box-shadow", "0 0 10px gray");
+    jQuery("#ontology_ontologyId_container").css("box-shadow", "0 0 10px gray");
 
-		jQuery("#ont_list_container").height(ont_select.height() - 80);
+    jQuery("#ont_list_container").height(ont_select.height() - 80);
 
     jQuery("#ont_select_adv").show();
     return false;
@@ -78,7 +78,7 @@ jQuery(window).ready(function(){
 
   // Wire up close advanced select "X"
   jQuery("#close_adv_select").click(function(){
-  	hideAdvancedSelect();
+    hideAdvancedSelect();
   });
 
   // Wire up watcher for checkboxes for sync
@@ -140,24 +140,24 @@ jQuery(window).ready(function(){
 
 
 var hideAdvancedSelect = function(){
-	if (jQuery("#ont_select_adv").is(":visible")) {
-		jQuery("#ont_select_adv").hide();
-  	jQuery("#ontology_ontologyId_chzn").children("ul.chzn-choices").removeClass("no_right_border").css("background", "");
+  if (jQuery("#ont_select_adv").is(":visible")) {
+    jQuery("#ont_select_adv").hide();
+    jQuery("#ontology_ontologyId_chzn").children("ul.chzn-choices").removeClass("no_right_border").css("background", "");
     jQuery("#ontology_ontologyId_container").css("box-shadow", "");
-  	jQuery("#ontology_ontologyId_chzn").css("z-index", "auto")
-	}
+    jQuery("#ontology_ontologyId_chzn").css("z-index", "auto")
+  }
 }
 
 var showChosenResults = function(){
-	if (!jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").is(":visible")) {
-		jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").show();
-	}
+  if (!jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").is(":visible")) {
+    jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").show();
+  }
 }
 
 var hideChosenResults = function(){
-	if (jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").is(":visible")) {
-		jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").hide();
-	}
+  if (jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").is(":visible")) {
+    jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").hide();
+  }
 }
 
 // Synchronize checkboxes to select list
@@ -185,9 +185,9 @@ function syncFromList() {
 // Check the selected list of ontologies against the map and replace
 function ontLabelToAbbr() {
   jQuery("#ontology_ontologyId_chzn > .chzn-choices > li > span").each(function(){
-  	if (jQuery(this).children("span.chzn-abbr").length == 0) {
-	    jQuery(this).html("<span class='chzn-abbr' title='"+jQuery(this).html()+"'>"+abbreviationMap[jQuery(this).html()]+"</span>");
-  	}
+    if (jQuery(this).children("span.chzn-abbr").length == 0) {
+      jQuery(this).html("<span class='chzn-abbr' title='"+jQuery(this).html()+"'>"+abbreviationMap[jQuery(this).html()]+"</span>");
+    }
   });
 }
 
@@ -343,16 +343,16 @@ function clearGroupsAndCategories() {
 
 <div id="ontology_picker_container" style="margin-bottom: 1em; width: 432px;">
   <h2 id="ontology_picker_head" style="margin-bottom: 3px;"><%=sel_text%></h2>
-	
-	<div id="ontology_ontologyId_container">
-  	<%= select :ontology, "ontologyId", options_for_select(@onts_for_select), { }, :multiple => 'true', "data-placeholder".to_sym => "Type here to select ontologies or leave blank to use all" %>
+
+  <div id="ontology_ontologyId_container">
+    <%= select :ontology, "ontologyId", options_for_select(@onts_for_select), { }, :multiple => 'true', "data-placeholder".to_sym => "Type here to select ontologies or leave blank to use all" %>
   </div>
-  
+
   <div style="float: right; font-size: smaller;"><a id="ont_select_adv_href" href="javascript:void(0)">select from list</a></div>
 
   <div id="ont_select_adv" style="overflow: visible; z-index: 100; display: none; text-align: left; border: thin solid gray; position: fixed; background: white; max-width: 550px; box-shadow: 0 0 10px gray;">
-  	<div id="ont_select_adv_inner" style="padding: 15px; background: white; z-index: 5000;">
-	  	<h2>Select Multiple Ontologies <a href="javascript:void(0);" id="close_adv_select" class="ui-dialog-titlebar-close ui-corner-all" role="button" unselectable="on" style="-moz-user-select: none; float: right;"><span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">close</span></a></h2>
+    <div id="ont_select_adv_inner" style="padding: 15px; background: white; z-index: 5000;">
+      <h2>Select Multiple Ontologies <a href="javascript:void(0);" id="close_adv_select" class="ui-dialog-titlebar-close ui-corner-all" role="button" unselectable="on" style="-moz-user-select: none; float: right;"><span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">close</span></a></h2>
 
       <input type="text" id="advanced_filter_input" class="help_text" style="width: 300px; margin-bottom: 10px;" title="Search all ontology names">
 
@@ -392,26 +392,26 @@ function clearGroupsAndCategories() {
         <div id="groups_categories_names_container" style="display: none; font-weight: bold; font-style: oblique; color: gray; padding: 0 1em 1em 0;">Filtered Groups and Categories: <span id="groups_and_category_names" style="font-weight: normal; font-style: none;"></div>
 
         <table id="ont_list">
-		      <!--
-		      <tr>
-		        <td style="padding-bottom: 5px;"><%= check_box_tag "ont_select_all" %></td>
-		        <td style="padding: 0 0 5px 5px;"><%= label_tag "ont_select_all", "All" %></td>
-		      </tr>
-		      -->
+          <!--
+          <tr>
+            <td style="padding-bottom: 5px;"><%= check_box_tag "ont_select_all" %></td>
+            <td style="padding: 0 0 5px 5px;"><%= label_tag "ont_select_all", "All" %></td>
+          </tr>
+          -->
 
-		      <tr id="select_all_filtered_row" style="display: none;">
-		        <td style="padding-bottom: 15px;"><%= check_box_tag "ont_select_all_filtered" %></td>
+          <tr id="select_all_filtered_row" style="display: none;">
+            <td style="padding-bottom: 15px;"><%= check_box_tag "ont_select_all_filtered" %></td>
             <td style="padding: 0 0 15px 5px;"><%= label_tag "ont_select_all_filtered", "Select all filtered ontologies", :style => "color: #234979; font-weight: bold;" %>&nbsp;&nbsp;(<a href="javascript:void(0);" id="show_all_filtered_ontologies">show all</a>)</td>
-		      </tr>
+          </tr>
 
           <% @onts_for_select.each do |ont| %>
-		        <tr class="ont_select_boxes_tr">
-		          <td valign="top"><%= check_box_tag "ont_select_adv_check", ont[1], false, :id => "ont_select_adv_check#{ont[1]}" %></td>
-		          <td style="padding-left: 5px;"><%= label_tag "ont_select_adv_check#{ont[1]}", ont[0] %></td>
-		        </tr>
-		      <% end %>
-		    </table>
-	    </div>
+            <tr class="ont_select_boxes_tr">
+              <td valign="top"><%= check_box_tag "ont_select_adv_check", ont[1], false, :id => "ont_select_adv_check#{ont[1]}" %></td>
+              <td style="padding-left: 5px;"><%= label_tag "ont_select_adv_check#{ont[1]}", ont[0] %></td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
     </div>
   </div>
 </div>

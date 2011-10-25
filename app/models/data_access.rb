@@ -18,7 +18,8 @@ class DataAccess
   def self.getNode(ontology_id, node_id, max_children = $MAX_CHILDREN, view = false)
     max_children = max_children.nil? ? $MAX_CHILDREN : max_children
     view_string = view ? "view_" : ""
-    return self.cache_pull("#{view_string}#{param(ontology_id)}::#{node_id.to_s.gsub(" ","%20")}::max_children=#{max_children}", "getNode", { :ontology_id => ontology_id, :concept_id => node_id, :max_children => max_children })
+    ontology = self.getOntology(ontology_id)
+    return self.cache_pull("#{view_string}#{param(ontology.id)}::#{node_id.to_s.gsub(" ","%20")}::max_children=#{max_children}", "getNode", { :ontology_id => ontology_id, :concept_id => node_id, :max_children => max_children })
   end
 
   def self.getLightNode(ontology_id, node_id, max_children = $MAX_CHILDREN, view = false)
@@ -299,7 +300,7 @@ class DataAccess
 
     # No caching for now
     # self.cache_pull("recommendation::#{text.hash}::ontologies::#{ontology_ids}#{'params:' + params.to_s if !params.empty?}", "createRecommendation", { :text => text, :ontologyids => ontology_ids }.merge(params), EXTENDED_CACHE_EXPIRE_TIME)
-  end
+ end
 
   def self.getUserSubscriptions(user_id)
     subs = self.cache_pull("subscription::#{user_id}", "getUserSubscriptions", { :user_id => user_id }, LONG_CACHE_EXPIRE_TIME)
@@ -330,17 +331,20 @@ class DataAccess
   def self.createMapping(source, source_ontology_id, target, target_ontology_id, user_id, comment, unidirectional)
     mapping = SERVICE.createMapping({ :source => source, :sourceontology => source_ontology_id, :target => target, :targetontology => target_ontology_id, :submittedby => user_id, :comment => comment, :unidirectional => unidirectional })
 
-    CACHE.delete("ontoliges::map_count")
-    CACHE.delete("ontoliges::users::map_count")
-    CACHE.delete("between_ontologies::map_count::#{source_ontology_id}")
-    CACHE.delete("between_ontologies::map_count::#{target_ontology_id}")
+    source_concept = self.getNode(source_ontology_id, source)
+    target_concept = self.getNode(target_ontology_id, target)
+
+    CACHE.delete("ontologies::map_count")
+    CACHE.delete("ontologies::users::map_count")
+    CACHE.delete("between_::map_count::#{source_ontology_id}")
+    CACHE.delete("between_::map_count::#{target_ontology_id}")
     CACHE.delete("#{source_ontology_id}::#{CGI.escape(source)}::map_count")
     CACHE.delete("#{target_ontology_id}::#{CGI.escape(target)}::map_count")
     CACHE.delete("#{source_ontology_id}::map_count")
     CACHE.delete("#{target_ontology_id}::map_count")
     CACHE.delete("recent::mappings")
-    CACHE.delete("#{source_ontology_id}::#{CGI.escape(source)}::map_page::page1::size100::params")
-    CACHE.delete("#{target_ontology_id}::#{CGI.escape(target)}::map_page::page1::size100::params")
+    CACHE.delete("#{source_ontology_id}::#{CGI.escape(source_concept.id)}::map_page::page1::size100::params")
+    CACHE.delete("#{target_ontology_id}::#{CGI.escape(target_concept.id)}::map_page::page1::size100::params")
     CACHE.delete("#{source_ontology_id}::#{CGI.escape(source)}::map_count")
     CACHE.delete("#{target_ontology_id}::#{CGI.escape(target)}::map_count")
     CACHE.delete("#{source_ontology_id}::concepts::map_count")
@@ -384,7 +388,7 @@ class DataAccess
   end
 
   def self.getMappingCountOntologies
-    self.cache_pull("ontoliges::map_count", "getMappingCountOntologies", nil, LONG_CACHE_EXPIRE_TIME)
+    self.cache_pull("ontologies::map_count", "getMappingCountOntologies", nil, LONG_CACHE_EXPIRE_TIME)
   end
 
   def self.getMappingCountOntologiesHash

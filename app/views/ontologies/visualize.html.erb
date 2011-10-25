@@ -8,7 +8,8 @@
       {type:'js',src:'/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js'},
       {type:'js',src:'/javascripts/jquery.tools.min.js'},
       {type:'js',src:'/javascripts/JqueryPlugins/splitter/splitter.js'},
-      {type:'js',src:'/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.js'}
+      {type:'js',src:'/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.js'},
+      {type:'js',src:'/javascripts/bp_mappings.js'}
     ]);
   </script>
 
@@ -303,6 +304,7 @@
         jQuery(target).show();
         jQuery(".tab").removeClass("selected");
         jQuery("#" + tabId + "_top").addClass("selected");
+        jQuery(document).trigger("terms_tab_visible");
       }
     }
 
@@ -434,3 +436,12 @@
 <% else # found an error %>
   <%= "<div id=\"error\"><h2>#{@error}</h2></div>" %>
 <% end %>
+
+
+<!-- Create mapping UI -->
+<div id="create_mapping" style="left: -99999px; position: absolute;">
+  <%= render :partial => '/mappings/new_form', :locals => { :ontology_from => @ontology.id, :concept_from => @concept.fullId } %>
+</div>
+
+
+

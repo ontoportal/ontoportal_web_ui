@@ -3,7 +3,7 @@ require 'cgi'
 class ConceptsController < ApplicationController
   # GET /concepts
   # GET /concepts.xml
-   
+
   layout 'ontology'
 
   # GET /concepts/1
@@ -12,21 +12,21 @@ class ConceptsController < ApplicationController
     # Handle multiple methods of passing concept ids
     params[:id] = params[:id] ? params[:id] : params[:conceptid]
     too_many_children_override = params[:too_many_children_override].eql?("true")
-    
+
     if params[:id].nil? || params[:id].empty?
       render :text => "Error: You must provide a valid concept id"
       return
     end
-    
+
     if params[:callback].eql?('children') && params[:child_size].to_i > $MAX_CHILDREN && params[:child_size].to_i < $MAX_POSSIBLE_DISPLAY && !too_many_children_override
-      retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{params[:ontology]}/?conceptid=#{CGI.escape(params[:id])}&callback=children&too_many_children_override=true'>Get all terms</a>"      
+      retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{params[:ontology]}/?conceptid=#{CGI.escape(params[:id])}&callback=children&too_many_children_override=true'>Get all terms</a>"
       render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} terms at this level. Retrieving these may take several minutes. #{retry_link}</div>"
       return
     elsif params[:callback].eql?('children') && params[:child_size].to_i > $MAX_POSSIBLE_DISPLAY && !too_many_children_override
       render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} terms at this level. Please use the \"Jump To\" to search for specific terms.</div>"
       return
     end
-    
+
     @ontology = DataAccess.getOntology(params[:ontology])
 
     if @ontology.statusId.to_i.eql?(6)
@@ -37,7 +37,7 @@ class ConceptsController < ApplicationController
       redirect_to "/visualize/#{@latest_ontology.id}#{concept_id}", :status => :moved_permanently
       return
     end
-    
+
     # If we're looking for children, just use the light version of the call
     if params[:callback].eql?("children")
       if too_many_children_override
@@ -68,7 +68,7 @@ class ConceptsController < ApplicationController
       render :partial => "shared/not_browsable", :layout => "ontology"
       return
     end
-    
+
     if request.xhr?
       show_ajax_request # process an ajax call
     else
@@ -79,7 +79,7 @@ class ConceptsController < ApplicationController
       render :file=> '/ontologies/visualize',:use_full_path =>true, :layout=>'ontology' # done this way to share a view
     end
   end
-  
+
   def virtual
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:id] = params[:id].nil? ? params[:conceptid] : params[:id]
@@ -94,12 +94,12 @@ class ConceptsController < ApplicationController
     unless params[:id].nil? || params[:id].empty?
       @concept = DataAccess.getNode(@ontology.id,params[:id])
     end
-    
+
     if @ontology.metadata_only?
       redirect_to "/ontologies/#{@ontology.id}"
       return
     end
-    
+
     if @ontology.statusId.to_i.eql?(3) && @concept
       LOG.add :info, 'show_virtual_concept', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
       redirect_to "/visualize/#{@ontology.id}/?conceptid=#{CGI.escape(@concept.id)}"
@@ -124,12 +124,12 @@ class ConceptsController < ApplicationController
       return
     end
   end
-  
+
   # Renders a details pane for a given ontology/term
   def details
     @ontology = DataAccess.getOntology(params[:ontology])
     @concept = DataAccess.getNode(@ontology.id, params[:conceptid], params[:childrenlimit])
-    
+
     if params[:styled].eql?("true")
       render :partial => "details", :layout => "partial"
     else
@@ -146,7 +146,7 @@ class ConceptsController < ApplicationController
     #puts "Starting Retrieval"
     @concept =  DataAccess.getNode(params[:ontology],params[:id])
     #puts "Finished in #{Time.now- time}"
-    
+
     string =""
     string << "{
            \"items\" : [\n
@@ -157,20 +157,20 @@ class ConceptsController < ApplicationController
       if @concept.properties[property].empty?
         next
       end
-      
+
       string << " , "
-      
+
       string << "\"#{property.gsub(":","")}\" : \"#{@concept.properties[property]}\"\n"
-      
+
     end
-    
+
     if @concept.children.length > 0
       string << "} , \n"
     else
       string << "}"
     end
-    
-    
+
+
     for child in @concept.children
       string << "{
          \"title\" : \"#{child.label_html}\" , \n
@@ -179,9 +179,9 @@ class ConceptsController < ApplicationController
         if child.properties[property].empty?
           next
         end
-        
-        string << " , "        
-        
+
+        string << " , "
+
         string << "\"#{property.gsub(":","")}\" : \"#{child.properties[property]}\"\n"
       end
       if child.eql?(@concept.children.last)
@@ -190,19 +190,19 @@ class ConceptsController < ApplicationController
         string << "} , "
       end
     end
-    
-    response.headers['Content-Type'] = "text/html" 
-    
+
+    response.headers['Content-Type'] = "text/html"
+
     string<< "]}"
-    
+
     render :text=> string
   end
 
 
-  
+
   # PRIVATE -----------------------------------------
   private
-    
+
   def show_ajax_request
     case params[:callback]
     when 'load' # Load pulls in all the details of a node
@@ -225,25 +225,27 @@ class ConceptsController < ApplicationController
       render :partial => 'childNodes'
     end
   end
-    
+
     # gathers the full set of data for a node
     def show_uri_request
       gather_details
       build_tree
     end
-    
+
     # gathers the information for a node
     def gather_details
-      @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.id)    
+      @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.id)
+      # check to see if user should get the option to delete
+      @delete_mapping_permission = check_delete_mapping_permission(@mappings)
       update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
     end
-    
+
     def build_tree
-      # find path to root    
+      # find path to root
       rootNode = @concept.path_to_root
       @root = TreeNode.new()
       @root.set_children(rootNode.children, rootNode)
     end
- 
-  
+
+
 end

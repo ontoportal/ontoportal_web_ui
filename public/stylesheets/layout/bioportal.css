@@ -1708,11 +1708,10 @@ button.fg-button-menu, button.fg-button {
   border-right: none !important;
 }
 
-.help_text {
+.help_text_font {
   color: gray;
   font-style: oblique;
 }
-
 
 /************************************
  * Search
@@ -1855,6 +1854,28 @@ p.tab_description {
 
 
 
-a.link_button {
-  font-size: .9em;
+input.link_button, a.link_button {
+  font-size: 8pt;
+  padding: 0.25em 0.5em !important;
 }
+
+input.link_button span.ui-button-text,
+a.link_button span.ui-button-text {
+  font-size: 8pt;
+  padding: 0;
+}
+
+input.link_button > span.ui-button-text,
+a.link_button > span.ui-button-text {
+  padding: 0.25em 0.5em !important;
+}
+
+.success_message {
+  background-color: #FFFFD6;
+  border: thin solid yellow;
+  margin: 5px 0 10px;
+  padding: 5px 30px;
+  text-align: center;
+  color: #525252;
+}
+

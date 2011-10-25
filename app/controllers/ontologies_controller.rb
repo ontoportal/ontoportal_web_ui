@@ -305,14 +305,7 @@ class OntologiesController < ApplicationController
     @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.fullId)
 
     # check to see if user should get the option to delete
-    @delete_mapping_permission = false
-    if session[:user]
-      @delete_mapping_permission = true if session[:user].admin?
-      @mappings.each do |mapping|
-        break if @delete_mapping_permission
-        @delete_mapping_permission = true if session[:user].id.to_i == mapping.user_id
-      end
-    end
+    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
     unless @concept.id.to_s.empty?
       # Update the tab with the current concept
