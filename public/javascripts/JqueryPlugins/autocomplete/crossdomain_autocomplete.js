@@ -269,7 +269,7 @@
           if( data.length == 0 )
             results.appendChild("<div style='padding: 5px; font-size: normal; font-style: oblique;'>No results found</div>")
 
-          if ($.browser.msie) {
+          if ($.browser.msie && $.browser.version < 9) {
             // we put a styled iframe behind the calendar so HTML SELECT elements don't show through
             $results.append(document.createElement('iframe'));
           }
