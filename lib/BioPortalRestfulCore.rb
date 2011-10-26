@@ -515,7 +515,7 @@ class BioPortalRestfulCore
     return node.children
   end
 
-  def self.getOntologyList()
+  def self.getOntologyList
     uri_gen = BioPortalResources::Ontologies.new
     uri = uri_gen.generate_uri
 
@@ -528,6 +528,8 @@ class BioPortalRestfulCore
     end
 
     timer = Benchmark.ms { ontologies = generic_parse(:xml => doc, :type => "OntologyWrapper") }
+
+    ontologies = Array.new if ontologies.nil? || !ontologies.kind_of?(Array)
 
     return ontologies
   end
