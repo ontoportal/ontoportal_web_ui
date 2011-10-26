@@ -534,7 +534,7 @@ class BioPortalRestfulCore
     return ontologies
   end
 
-  def self.getActiveOntologyList()
+  def self.getActiveOntologyList
     uri_gen = BioPortalResources::ActiveOntologies.new
     uri = uri_gen.generate_uri
 
@@ -547,6 +547,8 @@ class BioPortalRestfulCore
     end
 
     timer = Benchmark.ms { ontologies = generic_parse(:xml => doc, :type => "OntologyWrapper") }
+
+    ontologies = Array.new if ontologies.nil? || !ontologies.kind_of?(Array)
 
     return ontologies
   end
