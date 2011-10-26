@@ -7,13 +7,13 @@
       jQuery(icon).toggleClass("ui-icon-triangle-1-s");
       jQuery(collapse).toggle();
     });
-    
+
     jQuery("#expand_views").click(function(){
       jQuery(".view_collapsible").show();
       jQuery(".click_view_collapse_icon").removeClass("ui-icon-triangle-1-e");
       jQuery(".click_view_collapse_icon").addClass("ui-icon-triangle-1-s");
     });
-    
+
     jQuery("#collapse_views").click(function(){
       jQuery(".view_collapsible").hide();
       jQuery(".click_view_collapse_icon").removeClass("ui-icon-triangle-1-s");
@@ -33,29 +33,29 @@
       <a href="/ontologies/view/new?version_id=<%=@ontology.id%>">Create new view</a>
     <%end %>
   </h2>
-        
+
     <div style="float:left;">
       <%if @ontology.views.empty? || @ontology.views.first.size < 1 %>
         <h1>No views available.</h1>
       <%else %>
-        
-      <h4 style="margin-top: .5em;"><a href="javascript:void(0);" id="expand_views">Expand All</a>  |  <a href="javascript:void(0);" id="collapse_views">Collapse All</a></h4>  
-        
+
+      <h4 style="margin-top: .5em;"><a href="javascript:void(0);" id="expand_views">Expand All</a>  |  <a href="javascript:void(0);" id="collapse_views">Collapse All</a></h4>
+
       <% @ontology.views.each_with_index do |virtual, index| %>
             <%if virtual[0].nil?
               next
             end %>
-        
+
         <style type="text/css">
           #view_head .lead {
             color: #708090;
             font-weight: bold;
           }
-          
+
           .view_collapsible {
             margin: 0 1em;
           }
-          
+
           .click_view_collapse:hover {
             text-decoration: underline;
           }
@@ -65,23 +65,23 @@
           <span id="view_<%=index%>_icon" class="ui-icon ui-icon-triangle-1-e click_view_collapse click_view_collapse_icon" style="float: left;"></span>
           <span class="click_view_collapse" style="font-size: 120%; font-weight: bold;"><%= virtual[0].displayLabel %></span>
           <span style="font-size: 90%;">
-                <%if !session[:user].nil? && (session[:user].id.to_i.eql?(virtual[0].userId.to_i) || session[:user].admin?) %>
+                <%if virtual[0].admin?(session[:user]) %>
                <span style="padding-left: 1em; vertical-align: text-bottom;">(<%= link_to "Edit Metadata", "/ontologies/view/edit/#{virtual[0].id}" %>)</span>
             <%end%>
           </span>
         </div>
-        
+
         <div id="view_<%=index%>_collapsible" class="view_collapsible" style="margin: 0 1em .5em; display: none;">
           <div id="view_head" style="margin: 0 0 .5em;" class="enable-lists">
             <ul>
               <li><span class="lead">Description:</span> <%=virtual[0].description %><br></li>
               <% unless virtual[0].viewDefinition.empty? %><li><span class="lead">Definition:</span> <%=virtual[0].viewDefinition %><br></li><%end%>
-              <li><span class="lead">Ontology ID:</span> <%=virtual[0].ontologyId %></li> 
+              <li><span class="lead">Ontology ID:</span> <%=virtual[0].ontologyId %></li>
               <% unless virtual[0].viewGenerationEngine.empty? %><li><span class="lead">Generation Engine:</span> <%=virtual[0].viewGenerationEngine %></li><%end%>
               <% unless virtual[0].viewDefinitionLanguage.empty? %><li><span class="lead">Definition Language:</span> <%=virtual[0].viewDefinitionLanguage %></li><%end%>
             </ul>
           </div>
-          
+
               <table class="zebra" cellpadding="0" cellspacing="0" width="100%">
                   <thead>
                       <tr>
@@ -136,7 +136,7 @@
                       </td>
                   </tr>
                   <%end %>
-                <%if !session[:user].nil? && (session[:user].id.to_i.eql?(virtual[0].userId.to_i) || session[:user].admin?) %>
+                <%if virtual[0].admin?(session[:user]) %>
               <tr>
                 <td colspan=7>
                       <h3 style="margin-bottom: 0;"><a href="/ontologies/view/new/<%=virtual[0].id%>?version_id=<%=@ontology.id%>">Submit New View Version</a></h3>

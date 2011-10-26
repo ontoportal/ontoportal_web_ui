@@ -4,7 +4,7 @@
 
 <%@title = "#{@ontology.displayLabel}#{concept_title}" %>
 
-<%=render :partial =>'layouts/header'%>    
+<%=render :partial =>'layouts/header'%>
 
 
 <!--[if gte IE 8]>
@@ -14,7 +14,7 @@
   }
 </style>
 <![endif]-->
-     
+
 <!--[if IE 7]>
 <style>
   #nav_ontology {
@@ -24,7 +24,7 @@
   }
 </style>
 <![endif]-->
-     
+
 <script type="text/javascript">
   // Set the background color for this page only
   jQuery("html").css("background", "#234979");
@@ -40,11 +40,11 @@
     scriptEl.src = url;
     document.body.appendChild(scriptEl);
   }
-  
+
   jQuery.rloader([
     {type:'js',src:'/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.min.js'}
   ]);
-  
+
   var ontology_id = <%=@ontology.ontologyId%>;
   var ontology_name = "<%=@ontology.displayLabel%>";
   var org_site = "<%=$ORG_SITE%>";
@@ -53,12 +53,12 @@
   var concept_param = "<%="conceptid=#{params[:conceptid]}" unless params[:conceptid].nil? || params[:conceptid].empty?%>";
   var concept_name = "<%=@concept.label unless @concept.nil?%>";
   var metadata_only = <%=@ontology.metadata_only?%>;
-  
+
   var concept_name_title = (concept_name == "") ? "" : " - " + concept_name;
 </script>
 
-<%=javascript_include_tag "history/amplify.store.js"%>  
-<%=javascript_include_tag "history/history.adapter.jquery.js"%>  
+<%=javascript_include_tag "history/amplify.store.js"%>
+<%=javascript_include_tag "history/history.adapter.jquery.js"%>
 <%=javascript_include_tag "history/history.js"%>
 <%=javascript_include_tag "history/history.html4.js"%>
 <%=javascript_include_tag "bp_ontology_viewer.js"%>
@@ -83,8 +83,8 @@
         </ul>
       </div>
     </span>
-    
-    <%if !session[:user].nil? && (session[:user].id.to_i.eql?(@ontology.userId.to_i) || session[:user].admin?) %>
+
+    <%if @ontology.admin?(session[:user]) %>
       <span id="admin_ontology" style="vertical-align: super; padding-left: 1em;">
         <a tabindex="0" href="#administer" class="fg-button fg-button-icon-right ui-widget ui-state-default" id="ont_admin"><span class="ui-icon ui-icon-triangle-1-s"></span>Administer</a>
         <div id="adminster_options" class="hidden" style="text-align: left;">
@@ -110,7 +110,7 @@
         <%=loading_spinner(true)%>
       <%end%>
     </div>
-    
+
     <div id="ont_summary_content" class="ontology_viewer_content hidden">
       <%if content_section.eql?("summary")%>
         <script type="text/javascript">
@@ -143,7 +143,7 @@
         <%=loading_spinner(true)%>
       <%end%>
     </div>
-    
+
     <div id="ont_widgets_content" class="ontology_viewer_content hidden">
       <%if content_section.eql?("widgets")%>
         <script type="text/javascript">
@@ -158,4 +158,4 @@
   </div>
 </div>
 
-<%=render :partial =>'layouts/footer'%>          
+<%=render :partial =>'layouts/footer'%>

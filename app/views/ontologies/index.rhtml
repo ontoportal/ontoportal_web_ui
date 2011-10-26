@@ -221,7 +221,7 @@ jQuery(document).ready(function() {
           <td style="width:300px;">
             <%abbreviation = ontology.abbreviation.nil? || ontology.abbreviation.to_s.length == 0 ? "" : " (#{ontology.abbreviation})"%>
             <span style="padding-right: .5em;"><%= link_to ontology.displayLabel, ontology_path(:id=>ontology.ontologyId)%><%=abbreviation%></span>
-            <%if ontology.owner_or_admin?(session[:user])%><span style="font-size: xx-small; color: gray;"><%= get_status_text(ontology)%></span><%end%>
+            <%if ontology.admin?(session[:user])%><span style="font-size: xx-small; color: gray;"><%= get_status_text(ontology)%></span><%end%>
           </td>
           <td style="width:50px;"><%= visibility_link(ontology) %></td>
           <td style="width:30px;text-align:right;"><%= terms_link(ontology, @term_counts[ontology.ontologyId.to_i])%></td>

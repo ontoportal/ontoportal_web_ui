@@ -28,16 +28,16 @@ class OntologyWrapper
   attr_accessor :downloadLocation
   attr_accessor :isMetadataOnly
   attr_accessor :viewingRestriction
-  
+
   attr_accessor :useracl
   # This data structure holds information about the users in the ACL, mainly whether or not they own the ontology
   attr_accessor :useracl_full
-  
+
   attr_accessor :description
   attr_accessor :abbreviation
   attr_accessor :categories
   attr_accessor :groups
-  
+
   attr_accessor :synonymSlot
   attr_accessor :preferredNameSlot
   attr_accessor :documentationSlot
@@ -45,11 +45,11 @@ class OntologyWrapper
 
   # RRF-specific metadata
   attr_accessor :targetTerminologies
-  
+
   attr_accessor :reviews
   attr_accessor :projects
   attr_accessor :versions
-  
+
   attr_accessor :view_ids
   attr_accessor :virtual_view_ids
   attr_accessor :view_beans
@@ -63,8 +63,8 @@ class OntologyWrapper
 
   attr_accessor :obsoleteParent
   attr_accessor :obsoleteProperty
-  
-  
+
+
   FILTERS = {
     "All"=>0,
     "OBO Foundry"=>1,
@@ -72,7 +72,7 @@ class OntologyWrapper
     "WHO" =>3,
     "HL7"=>4
   }
-  
+
   STATUS = {
     "Waiting For Parsing"=>1,
     "Parsing"=>2,
@@ -80,21 +80,21 @@ class OntologyWrapper
     "Error"=>4,
     "Not Applicable"=>5
   }
-  
+
   FORMAT = ["OBO","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE","LEXGRID-XML","RRF","LOINC","RXNORM","UMLS-RELA"]
-  
+
   LEXGRID_FORMAT = ["OBO","LEXGRID-XML","RRF","LOINC","RXNORM","UMLS-RELA"]
-  
+
   PROTEGE_FORMAT = ["OWL","OWL-DL","OWL-FULL","OWL-LITE","PROTEGE"]
-    
+
   def initialize(hash = nil, params = nil)
     return if hash.nil?
     hash = hash["ontologyBean"] if hash["ontologyBean"]
-    
+
     self.displayLabel             = hash['displayLabel']
     self.id                       = hash['id']
     self.ontologyId               = hash['ontologyId']
-    self.userId                   = hash['userId']
+    self.userId                   = hash['userIds']
     self.parentId                 = hash['parentId']
     self.format                   = hash['format']
     self.versionNumber            = hash['versionNumber']
@@ -142,7 +142,7 @@ class OntologyWrapper
     self.licenseInformation       = hash['licenseInformation']
     self.obsoleteParent           = hash['obsoleteParent']
     self.obsoleteProperty         = hash['obsoleteProperty']
-    
+
     self.useracl                  = []
     if !self.useracl_full.nil?
       self.useracl_full.each do |user|
@@ -154,36 +154,36 @@ class OntologyWrapper
   def views
     return DataAccess.getViews(self.ontologyId)
   end
-  
+
   def from_params(params)
-    self.displayLabel = params[:displayLabel]   
-    self.id= params[:id]   
-    self.ontologyId= params[:ontologyId]   
-    self.userId= params[:userId]   
-    self.parentId= params[:parentId]   
-    self.format= params[:format]   
-    self.versionNumber= params[:versionNumber]   
-    self.internalVersion= params[:internalVersion]   
-    self.versionStatus= params[:versionStatus]   
-    self.isCurrent= params[:isCurrent]   
-    self.isRemote= params[:isRemote]   
-    self.isReviewed= params[:isReviewed]   
-    self.statusId= params[:statusId]   
-    self.dateReleased= params[:dateReleased]   
-    self.contactName= params[:contactName]   
-    self.contactEmail= params[:contactEmail]   
-    self.isFoundry= params[:isFoundry]   
-    self.filePath= params[:filePath]   
-    self.urn= params[:urn]   
-    self.homepage= params[:homepage]   
-    self.documentation= params[:documentation]   
-    self.publication= params[:publication]  
+    self.displayLabel = params[:displayLabel]
+    self.id= params[:id]
+    self.ontologyId= params[:ontologyId]
+    self.userId= params[:userId]
+    self.parentId= params[:parentId]
+    self.format= params[:format]
+    self.versionNumber= params[:versionNumber]
+    self.internalVersion= params[:internalVersion]
+    self.versionStatus= params[:versionStatus]
+    self.isCurrent= params[:isCurrent]
+    self.isRemote= params[:isRemote]
+    self.isReviewed= params[:isReviewed]
+    self.statusId= params[:statusId]
+    self.dateReleased= params[:dateReleased]
+    self.contactName= params[:contactName]
+    self.contactEmail= params[:contactEmail]
+    self.isFoundry= params[:isFoundry]
+    self.filePath= params[:filePath]
+    self.urn= params[:urn]
+    self.homepage= params[:homepage]
+    self.documentation= params[:documentation]
+    self.publication= params[:publication]
     self.isManual = params[:isManual]
     self.description= params[:description]
     self.categories = params[:categories]
     self.abbreviation = params[:abbreviation]
     self.synonymSlot = params[:synonymSlot]
-    self.preferredNameSlot = params[:preferredNameSlot]    
+    self.preferredNameSlot = params[:preferredNameSlot]
     self.versionStatus = params[:versionStatus]
     self.useracl = params[:useracl]
 
@@ -197,22 +197,22 @@ class OntologyWrapper
     self.viewDefinition = params[:viewDefinition]
     self.viewDefinitionLanguage = params[:viewDefinitionLanguage]
     self.viewGenerationEngine = params[:viewGenerationEngine]
-    
+
   end
-  
+
   def map_count
     count = DataAccess.getMappingCountOntology(self.ontologyId) rescue 0
   end
-  
+
   def getOntologyFromView
     return DataAccess.getOntology(self.viewOnOntologyVersionId)
   end
-  
+
   # For use with select lists, always includes the admin by default
   def useracl_select
     select_opts = []
     return select_opts if self.userId.nil? and (self.useracl.nil? or self.useracl.empty?)
-    
+
     if self.useracl.nil? || self.useracl.empty?
       select_opts << [DataAccess.getUser(self.userId).username, self.userId]
     else
@@ -223,12 +223,12 @@ class OntologyWrapper
 
     select_opts
   end
-  
+
   def preload_ontology
      self.reviews = load_reviews
      self.projects = load_projects
   end
-  
+
   def load_reviews
     if CACHE.get("#{self.ontologyId}::ReviewCount").nil?
       count = Review.count(:conditions=>{:ontology_id=>self.ontologyId})
@@ -238,7 +238,7 @@ class OntologyWrapper
       return CACHE.get("#{self.ontologyId}::ReviewCount")
     end
   end
-  
+
   def load_projects
     if CACHE.get("#{self.ontologyId}::ProjectCount").nil?
       count = Project.count(:conditions=>"uses.ontology_id = '#{self.ontologyId}'",:include=>:uses)
@@ -248,48 +248,48 @@ class OntologyWrapper
       return CACHE.get("#{self.ontologyId}::ProjectCount")
     end
   end
- 
-  def to_param    
+
+  def to_param
      "#{self.id}"
   end
-  
+
   def topLevelNodes(view=false)
-     DataAccess.getTopLevelNodes(self.id,view)     
+     DataAccess.getTopLevelNodes(self.id,view)
   end
-  
+
   def metrics
     return DataAccess.getOntologyMetrics(self.id)
   end
-  
+
   # Queries for the latest version of this ontology and returns a comparison.
   def latest?
     latest = DataAccess.getLatestOntology(self.ontologyId)
     return latest.id.eql? self.id
   end
-  
+
   # Generates a PURL address for this ontology
   def purl
     return "#{$PURL_PREFIX}/#{self.abbreviation}"
   end
-  
-  def owner_or_admin?(user)
-    return !user.nil? && (user.admin? || user.id.to_i == self.userId.to_i)
+
+  def admin?(user)
+    return !user.nil? && (user.admin? || self.userId.include?(user.id.to_i))
   end
-  
+
   def archived?
     return self.statusId.to_i == 6
   end
-  
+
   # Check to see if ontology is stored remotely (IE metadata only)
   def metadata_only?
     return self.isMetadataOnly.eql?(1)
   end
-  
+
   # Check criteria for browsable ontologies
   def terms_disabled?
     return self.metadata_only? || (!$NOT_EXPLORABLE.nil? && $NOT_EXPLORABLE.include?(self.ontologyId.to_i))
   end
-  
+
   # Is this ontology just a huge bag of terms?
   def flat?
     return !$NOT_EXPLORABLE.nil? && $NOT_EXPLORABLE.include?(self.ontologyId.to_i)
@@ -310,15 +310,15 @@ class OntologyWrapper
   def valid_tree_view?
     return self.statusId.to_i == 3 && !self.metadata_only?
   end
-  
+
   def diffs
     DataAccess.getDiffs(self.ontologyId)
   end
-  
+
   def versions_array
     DataAccess.getOntologyVersions(self.ontologyId).sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
   end
-  
+
   def is_in_search_index?
     begin
       result = DataAccess.searchQuery([self.ontologyId], "testingversionforontology")
@@ -327,15 +327,15 @@ class OntologyWrapper
       false
     end
   end
-  
+
   def lexgrid?
     LEXGRID_FORMAT.include?(self.format.upcase)
   end
-  
+
   def protege?
     PROTEGE_FORMAT.include?(self.format.upcase)
   end
-  
+
   def format_handler
     return :lexgrid if self.lexgrid?
     return :protege if self.protege?
@@ -344,26 +344,26 @@ class OntologyWrapper
 
   def synonym_label
     DataAccess.getLightNode(self.id, self.synonymSlot).label rescue ""
-  end  
+  end
 
   def preferred_name_label
     DataAccess.getLightNode(self.id, self.preferredNameSlot).label rescue ""
-  end  
+  end
 
   def definition_label
     DataAccess.getLightNode(self.id, self.documentationSlot).label rescue ""
-  end  
+  end
 
   def author_label
     DataAccess.getLightNode(self.id, self.authorSlot).label rescue ""
   end
-  
-  
+
+
   # Ontology Helper Methods
   def self.virtual_id?(ontology_id)
     return ontology_id.to_i < 2900
   end
-  
+
   def self.version_id?(ontology_id)
     return ontology_id.to_i > 2900
   end

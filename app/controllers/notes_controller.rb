@@ -1,21 +1,21 @@
 require 'ostruct'
 
 class NotesController < ApplicationController
-  
+
   layout 'ontology'
 
-  
+
   # GET /notes
   # GET /notes.xml
   def index
     #@notes = Note.all
-    
+
     @notes = []
-    
+
     rand(20).times {
       @notes_count = 0
       @notes << create_note(1)
-    }    
+    }
 
     respond_to do |format|
       format.html { render :template => 'notes/show' }
@@ -28,9 +28,9 @@ class NotesController < ApplicationController
   def show
     note_id = params[:noteid]
     ontology_id = params[:id]
-    
+
     @note = DataAccess.getNote(ontology_id, note_id, true)
-    
+
     #@note = Note.find(params[:id])
 
     respond_to do |format|
@@ -38,18 +38,18 @@ class NotesController < ApplicationController
       format.xml  { render :xml => @note }
     end
   end
-  
+
   # GET /notes/virtual/1
   # GET /notes/virtual/1.xml
   def virtual_show
     note_id = params[:noteid]
     concept_id = params[:conceptid]
     ontology_virtual_id = params[:ontology]
-    
+
     @ontology = DataAccess.getLatestOntology(ontology_virtual_id)
-    
+
     @notes_thread_title = "Responses"
-    
+
     if note_id
       notes = DataAccess.getNote(ontology_virtual_id, note_id, true, true)
       if notes.kind_of?(Array)
@@ -68,7 +68,7 @@ class NotesController < ApplicationController
       render :partial => 'list', :layout => 'ontology'
       return
     end
-    
+
     if request.xhr?
       render :partial => 'thread'
       return
@@ -83,28 +83,28 @@ class NotesController < ApplicationController
   def show_single
     note_id = params[:noteid]
     ontology_virtual_id = params[:ontology]
-    
+
     @ontology = DataAccess.getLatestOntology(ontology_virtual_id)
-    
+
     if note_id
       @note = DataAccess.getNote(ontology_virtual_id, note_id, true, true)
     end
-    
+
     render :partial => 'single'
   end
-  
+
   def show_single_list
     note_id = params[:noteid]
     ontology_virtual_id = params[:ontology]
-    
+
     @ontology = DataAccess.getLatestOntology(ontology_virtual_id)
-    
+
     if note_id
       @note = DataAccess.getNote(ontology_virtual_id, note_id, true, true)
     end
-    
+
     @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
-    
+
     @note_row = { :subject_link => "<a id='row_#{@note.id}' class='notes_list_link' href='#{@note_link}#{@note.id}'>#{@note.subject}</a>",
         :subject => @note.subject,
         :author => Class.new.extend(ApplicationHelper).get_username(@note.author),
@@ -115,7 +115,7 @@ class NotesController < ApplicationController
 
     render :json => @note_row
   end
-  
+
   def show_for_ontology
     @notes = DataAccess.getNotesForOntology(params[:ontology])
     @ontology = DataAccess.getLatestOntology(params[:ontology])
@@ -124,7 +124,7 @@ class NotesController < ApplicationController
     @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
     render :partial => 'list', :layout => 'ontology'
   end
-  
+
   # GET /notes/new
   # GET /notes/new.xml
   def new
@@ -145,14 +145,14 @@ class NotesController < ApplicationController
   # POST /notes.xml
   def create
     @errors = validate(params)
-    
+
     if @errors
       render :text => "Error submitting notes"
       return
     end
-    
+
     @note = DataAccess.createNote(params)
-    
+
     unless @note.nil?
       render :json => @note.to_json
     end
@@ -162,7 +162,7 @@ class NotesController < ApplicationController
   # PUT /notes/1.xml
   def update
     @note = Note.find(params[:id])
-    
+
     @note.annotated_by = @note.annotated_by.split(%r{,\s*})
 
     respond_to do |format|
@@ -188,26 +188,26 @@ class NotesController < ApplicationController
       format.xml  { head :ok }
     end
   end
-  
+
   # POST /notes
   # POST /notes.xml
   def archive
-    ontology_owner = DataAccess.getLatestOntology(params[:ontology_virtual_id]).userId.to_i
-    
-    unless !ontology_owner.nil? && !session[:user].nil? && (session[:user].id.to_i.eql?(ontology_owner) || session[:user].admin?)
+    ontology = DataAccess.getLatestOntology(params[:ontology_virtual_id])
+
+    unless ontology.admin?(session[:user])
       render :json => nil.to_json, :status => 500
       return
     end
-    
+
     @archive = DataAccess.archiveNote(params)
-    
+
     unless @archive.nil?
       render :json => @archive.to_json
     end
   end
 
   def validate(params)
-    
+
   end
-  
+
 end

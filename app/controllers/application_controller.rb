@@ -132,50 +132,40 @@ class ApplicationController < ActionController::Base
     end
   end
 
-
-  def authorize  # Verifies if user is logged in
+  # Verifies if user is logged in
+  def authorize
     unless session[:user]
       redirect_to_home
     end
   end
 
-  def isAdmin # Verifies if user is an admin
-    if session[:user].nil? || !session[:user].admin
-      return false
-    else
-      return true
-    end
-
-  end
-
-  def authorize_owner(id=nil) # Verifies that a user owns an object
-    #puts id
+  # Verifies that a user owns an object
+  def authorize_owner(id=nil)
     if id.nil?
-      #puts params[:id]
       id = params[:id].to_i
     end
-    #puts "new id #{id}"
+
     if session[:user].nil?
       redirect_to_home
     else
-      #puts "#{session[:user].id.to_i} vs #{id} "
-      if !session[:user].id.to_i.eql?(id) && !session[:user].admin?
-        redirect_to_home
+      if id.kind_of?(Array)
+        redirect_to_home if !session[:user].admin? && !id.include?(session[:user].id.to_i)
+      else
+        redirect_to_home if !session[:user].admin? && !session[:user].id.to_i.eql?(id)
       end
     end
-
   end
 
-
-  def newpass( len ) # generates a new random password
+  # generates a new random password
+  def newpass( len )
     chars = ("a".."z").to_a + ("A".."Z").to_a + ("1".."9").to_a
     newpass = ""
     1.upto(len) { |i| newpass << chars[rand(chars.size-1)] }
     return newpass
   end
 
-  def update_tab(ontology, concept)  #updates the 'history' tab with the current selected concept
-
+  # updates the 'history' tab with the current selected concept
+  def update_tab(ontology, concept)
     array = session[:ontologies] || []
     found = false
     for item in array
@@ -199,7 +189,8 @@ class ApplicationController < ActionController::Base
     session[:ontologies]=array
   end
 
-  def find_tab(ontology_id) # Returns a specific 'history' tab
+  # Returns a specific 'history' tab
+  def find_tab(ontology_id)
     array = session[:ontologies]
     for item in array
       if item.ontology_id.eql?(ontology_id)
