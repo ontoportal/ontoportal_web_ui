@@ -12,11 +12,11 @@
 function jumpToValueOntology() {
   var ontology = jQuery("#find_ontology")[0].value;
   var ontology_id = jQuery("#find_ontology_id").val();
-  
+
   if (ontology_id == null || ontology_id == "") {
     // didnt pick an ont
     alert("The ontology does not exist. You must pick an ontology from the list.")
-  
+
     return false;
   }
 
@@ -42,10 +42,10 @@ function formatResultOntologySearch(value, data) {
 function jumpToValueResource(){
   var term = jQuery("#find_resource")[0].value;
   var data = jQuery('body').data("resource_results");
-  
+
   if (data == null) {
-    // Im doing a search  
-    
+    // Im doing a search
+
     var search = confirm("Press OK to Search for resources using the term, or Cancel to select a term")
     if (search) {
       query = jQuery("#find_resource").val();
@@ -75,7 +75,7 @@ function formatItemResource(value, data) {
   } else {
     var result = value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + data[1] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + data[6] + "</span>";
   }
-  
+
   return result;
 }
 
@@ -112,7 +112,7 @@ jQuery(document).ready(function() {
     showResult: formatResultOntologySearch,
     onItemSelect: selectFindOntology
   });
-  
+
   jQuery("#find_resource").autocomplete({
     selectFirst: true,
     url: "/search/json_search/",
@@ -127,15 +127,15 @@ jQuery(document).ready(function() {
   });
 
   jQuery('ul.sf-menu').superfish({
-    animation: {height:'show'},   // slide-down effect without fade-in 
+    animation: {height:'show'},   // slide-down effect without fade-in
     delay:     1200               // 1.2 second delay on mouseout);
   });
-  
+
 });
 
 
 function greybox(box){
-  
+
   if(jQuery(box).hasClass("greyed")){
     jQuery(box).removeClass('greyed');
     jQuery(box).val("");
@@ -172,7 +172,7 @@ function greybox(box){
 <% end %>
 
 <div style="padding:10px;margin:10px;" >
-  <%=t('home.intro').nil? || t('home.intro').empty? ? "<b>Welcome to BioPortal!</b> To learn how to use the application, here or elsewhere, click on this icon: #{help_icon("/help#Home_Page")}" : t('home.intro')%>
+  <%=t('home.intro').nil? || t('home.intro').empty? ? "<b>Welcome to BioPortal!</b> For help using #{$SITE}, click on this icon: #{help_icon("/help#Home_Page")}" : t('home.intro')%>
 </div>
 
 <table width="100%">
@@ -182,7 +182,7 @@ function greybox(box){
       <fieldset>
         <legend>Search all ontologies</legend>
         <table>
-          <tr>        
+          <tr>
             <td nowrap><input type="text" name="query" style="width:190px;" size='30' class="greyed"  onclick="greybox(this)" value="Enter term, e.g. Melanoma"/><%=submit_tag 'Search',:class=>'home_button'%></td>
           </tr>
           <tr>
@@ -190,7 +190,7 @@ function greybox(box){
           </tr>
 
         </table>
-    
+
       </fieldset>
       <%end%>
     </td>
@@ -198,7 +198,7 @@ function greybox(box){
       <fieldset>
         <legend>Find an ontology</legend>
         <table>
-          <tr>        
+          <tr>
             <td nowrap>
               <input class="home_input greyed" type="text" name="ontology" style="width:240px;" size="30" id="find_ontology"  onclick="greybox(this)" value="Enter ontology name, e.g. NCI Thesaurus"> <input type="button" value="Explore" class="home_button" onclick="jumpToValueOntology()">
               <input type="hidden" id="find_ontology_id">
@@ -230,7 +230,7 @@ function greybox(box){
       <fieldset>
         <legend>Search resources</legend>
         <table>
-          <tr>        
+          <tr>
             <td nowrap><input type="text" id="find_resource" size="30" class="greyed" style="width:240px;" size="30" onclick="greybox(this)" value="Enter a term, e.g. Melanoma" > <input class="home_button" type="button" value="Search" onclick="jumpToValueResource()"></td>
           </tr>
           <tr>
@@ -244,7 +244,7 @@ function greybox(box){
 <tr>
   <td valign='top'>
     <%=t('most_viewed')%>
-    
+
     <% if t('stats').nil? || t('stats').empty? %>
       <fieldset>
         <legend>Statistics</legend>
@@ -279,14 +279,14 @@ function greybox(box){
       </fieldset>
     <% else %>
       <%=t('stats')%>
-    <% end %> 
+    <% end %>
   </td>
-  
+
   <td valign="top">
     <fieldset>
       <legend>Latest Notes</legend>
       <table class="minimal" style="width:300px">
-      
+
         <tbody>
         <%for note in @last_notes%>
           <tr>
@@ -300,7 +300,7 @@ function greybox(box){
           </tr>
         <%end%>
         </tbody>
-    
+
       </table>
     </fieldset>
   </td>
@@ -314,7 +314,7 @@ function greybox(box){
         <% else %>
           <%for map in @last_mappings%>
             <tr>
-              <td>  <%= if map.dest_node.nil? 
+              <td>  <%= if map.dest_node.nil?
                   "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})"
                   else
                     link_to "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})" , "/visualize/#{map.source_version_id}?conceptid=#{CGI.escape(map.source_id)}#mappings"
