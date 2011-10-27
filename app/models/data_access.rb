@@ -331,30 +331,28 @@ class DataAccess
   def self.createMapping(source, source_ontology_id, target, target_ontology_id, user_id, comment, unidirectional)
     mapping = SERVICE.createMapping({ :source => source, :sourceontology => source_ontology_id, :target => target, :targetontology => target_ontology_id, :submittedby => user_id, :comment => comment, :unidirectional => unidirectional })
 
-    source_concept = self.getNode(source_ontology_id, source)
-    target_concept = self.getNode(target_ontology_id, target)
+    source_ontology = self.getOntology(source_ontology_id)
+    target_ontology = self.getOntology(target_ontology_id)
 
-    CACHE.delete("ontologies::map_count")
-    CACHE.delete("ontologies::users::map_count")
-    CACHE.delete("between_::map_count::#{source_ontology_id}")
-    CACHE.delete("between_::map_count::#{target_ontology_id}")
-    CACHE.delete("#{source_ontology_id}::#{CGI.escape(source)}::map_count")
-    CACHE.delete("#{target_ontology_id}::#{CGI.escape(target)}::map_count")
-    CACHE.delete("#{source_ontology_id}::map_count")
-    CACHE.delete("#{target_ontology_id}::map_count")
-    CACHE.delete("recent::mappings")
-    CACHE.delete("#{source_ontology_id}::#{CGI.escape(source_concept.id)}::map_page::page1::size100::params")
-    CACHE.delete("#{target_ontology_id}::#{CGI.escape(target_concept.id)}::map_page::page1::size100::params")
-    CACHE.delete("#{source_ontology_id}::#{CGI.escape(source)}::map_count")
-    CACHE.delete("#{target_ontology_id}::#{CGI.escape(target)}::map_count")
-    CACHE.delete("#{source_ontology_id}::concepts::map_count")
-    CACHE.delete("#{target_ontology_id}::concepts::map_count")
+    source_concept = self.getNode(source_ontology.id, source)
+    target_concept = self.getNode(target_ontology.id, target)
+
+    delete_mapping_cache({ :source_ontology_id => source_ontology.ontologyId,
+                           :target_ontology_id => target_ontology.ontologyId,
+                           :source => source_concept.id,
+                           :target => target_concept.id })
 
     return mapping
   end
 
   def self.deleteMapping(mapping_id)
+    mapping = self.getMapping(mapping_id)
     SERVICE.deleteMapping({:mappingid => mapping_id})
+
+    delete_mapping_cache({ :source_ontology_id => mapping.source_ontology,
+                           :target_ontology_id => mapping.target_ontology,
+                           :source => mapping.source["fullId"],
+                           :target => mapping.target["fullId"] })
   end
 
   def self.getMapping(mapping_id)
@@ -540,6 +538,41 @@ class DataAccess
   end
 
 private
+
+  def self.delete_mapping_cache(params = {})
+    CACHE.delete("ontologies::map_count")
+    CACHE.delete("ontologies::users::map_count")
+    CACHE.delete("recent::mappings")
+
+    source_ontology_id = params[:source_ontology_id]
+    source = params[:source]
+    target_ontology_id = params[:target_ontology_id]
+    target = params[:target]
+
+    if params.key?(:source_ontology_id)
+      CACHE.delete("between_ontologies::map_count::#{source_ontology_id}")
+      CACHE.delete("#{source_ontology_id}::map_count")
+      CACHE.delete("#{source_ontology_id}::concepts::map_count")
+    end
+
+    if params.key?(:source_ontology_id && :source)
+      CACHE.delete("#{source_ontology_id}::#{CGI.escape(source)}::map_count")
+      CACHE.delete("#{source_ontology_id}::#{CGI.escape(source)}::map_page::page1::size100::params")
+      CACHE.delete("#{source_ontology_id}::#{CGI.escape(source)}::map_count")
+    end
+
+    if params.key?(:target_ontology_id)
+      CACHE.delete("between_ontologies::map_count::#{target_ontology_id}")
+      CACHE.delete("#{target_ontology_id}::map_count")
+      CACHE.delete("#{target_ontology_id}::concepts::map_count")
+    end
+
+    if params.key?(:target_ontology_id && :target)
+      CACHE.delete("#{target_ontology_id}::#{CGI.escape(target)}::map_count")
+      CACHE.delete("#{target_ontology_id}::#{CGI.escape(target)}::map_page::page1::size100::params")
+      CACHE.delete("#{target_ontology_id}::#{CGI.escape(target)}::map_count")
+    end
+  end
 
   def self.filter_private_ontologies(ont_list)
     return ont_list if Thread.current[:session] && Thread.current[:session][:user] && Thread.current[:session][:user].admin?

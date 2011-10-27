@@ -26,7 +26,7 @@ class BioPortalResources
       if @params
         @@tokens.each do |token, symbol|
           if @uri.include?(token)
-            @uri.gsub!(token, CGI.escape(@params[symbol].to_s))
+            @uri.gsub!(token, safe_escape(@params[symbol].to_s))
           end
         end
       end
@@ -441,9 +441,19 @@ class BioPortalResources
 
         search_branch = subtreerootconceptid.nil? ? "" : "&subtreerootconceptid=#{subtreerootconceptid}"
 
-
         @uri << "/search/?query=#{query}&ontologyids=#{ontologies}&isexactmatch=#{exact_match}&pagesize=#{page_size}&pagenum=#{page}&includeproperties=#{include_props}#{search_branch}"
       end
     end
 
+    private
+
+    def safe_escape(string)
+      old = string.clone
+      new = CGI.unescape(string)
+      if new == old
+        return CGI.escape(new)
+      else
+        safe_escape(new)
+      end
+    end
 end

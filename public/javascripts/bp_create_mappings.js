@@ -116,14 +116,14 @@ var bp_createMapping = {
         type: "POST",
         data: params,
         success: bp_createMapping.success,
-        failure: bp_createMapping.failure
+        error: bp_createMapping.error
     });
   },
 
   success: function(data) {
     jQuery("#create_mapping_spinner").hide();
     jQuery("#create_mapping_success_messages").prepend(jQuery("<div/>").addClass("success_message").html(
-        "Mapping from " + jQuery("#map_from").val() + " to " + jQuery("#map_to").val() + " was created"
+        "Mapping from <b>" + jQuery("#map_from").val() + "</b> to <b>" + jQuery("#map_to").val() + "</b> was created"
     ));
 
     // If we have a concept mapping table, update it with new mappings
@@ -132,9 +132,11 @@ var bp_createMapping = {
         jQuery("#mapping_count").html(jQuery("#mapping_details tbody tr:visible").size());
       });
     }
+
+    jQuery.bioportal.ont_pages["mappings"].retrieve_and_publish();
   },
 
-  failure: function() {
+  error: function() {
     jQuery("#create_mapping_spinner").hide();
     jQuery("#create_mapping_error").html("There was a problem creating the mapping, please try again");
   },

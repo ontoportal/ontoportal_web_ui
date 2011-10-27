@@ -99,6 +99,7 @@ class MappingsController < ApplicationController
       @mappings = @mappings.sort {|a,b| b[1].length<=>a[1].length}
 
       if @mapping_pages.nil? || @mapping_pages.empty?
+        @mapping_pages = MappingPage.new
         @mapping_pages.page_size = 1
         @mapping_pages.total_mappings = 0
         @mapping_pages.page_number = 1
