@@ -301,6 +301,9 @@ class OntologiesController < ApplicationController
       @root.set_children(rootNode.children, rootNode)
     end
 
+    # set the current PURL for this term
+    @current_purl = @concept.id.start_with?("http://") ? "#{$PURL_PREFIX}/#{@ontology.abbreviation}?conceptid=#{CGI.escape(@concept.id)}" : "#{$PURL_PREFIX}/#{@ontology.abbreviation}/#{CGI.escape(@concept.id)}" if $PURL_ENABLED
+
     # gets the initial mappings
     @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.fullId)
 

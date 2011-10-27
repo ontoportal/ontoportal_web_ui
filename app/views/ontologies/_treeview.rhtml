@@ -74,7 +74,13 @@ function nodeClicked(node_id) {
     return;
   }
 
-  setConcept(node_id)
+  setConcept(node_id);
+
+  // Deal with permalink
+  jQuery("#purl_link_container").hide();
+  var concept_uri = (node_id.indexOf("http://") == 0 || node_id.indexOf(encodeURIComponent("http://")) == 0 );
+  var purl_anchor = concept_uri ? "?conceptid="+node_id : "/"+node_id;
+  jQuery("#purl_input").val(purl_prefix + purl_anchor);
 
   if(getCache(node_id)!=null){
     var tabData = getCache(node_id);

@@ -168,6 +168,22 @@
       }
     });
 
+    // Javascript for the permalink box
+    jQuery(document).ready(function(){
+      jQuery("#close_permalink").live("click", function(){
+        jQuery("#purl_link_container").hide();
+      });
+
+      jQuery("#term_permalink").live("click", function(e){
+        e.preventDefault();
+        jQuery("#purl_link_container").show();
+      });
+
+      jQuery("#purl_input").live("focus", function(){
+        this.select();
+      });
+    });
+
   </script>
 
   <div class="tooltip"></div>
@@ -246,21 +262,34 @@
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
                 <%if !@ontology.isView.eql?('true')%>
                   <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Term Resources</a></li>
+                <% else %>
+                  <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Resource Index</a></li>
                 <% end %>
               <%end%>
           </ul>
-          <%if @ontology.isView=='true'%>
-            <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Resource Index</a></li>
+
+          <% if $PURL_ENABLED %>
+            <span style="float: right;"><a title="Get a permanent link to this term" id="term_permalink" style="padding: 0;" href="<%=@current_purl%>"><img src="/stylesheets/layout/images/link_icon.png" style="height: 20px; padding: 2px;"></a></span>
           <% end %>
         </div>
+
         <div id="contents">
           <div style="display:block;" class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
           <div class="tab_container" id="visualization_content"><%=render :partial =>'/concepts/images'%></div>
           <div class="tab_container" id="notes_content"><%=render :partial =>'/notes/list'%></div>
           <div class="tab_container" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
+
           <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
             <div class="tab_container" id="resource_index_content"></div>
           <%end%>
+
+          <% if $PURL_ENABLED %>
+            <div id="purl_link_container" class="term_permalink" style="display: none;">
+              <h2>Permanent link to this term</h2>
+              <a href="javascript:void(0);" id="close_permalink" class="ui-dialog-titlebar-close ui-corner-all" role="button" unselectable="on" style="-moz-user-select: none; position: absolute; right: 5px; top: 5px;"><span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">close</span></a>
+              <input id="purl_input" type="textfield" style="width: 380px;" value="<%=@current_purl%>">
+            </div>
+          <% end %>
         </div>
       </div>
     <% end %>

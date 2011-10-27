@@ -1,7 +1,7 @@
 <%if session[:user].nil?%>
-  <%=link_to "Create New Mapping", "/login?redirect=/ontologies/#{@ontology.to_param}/?p=terms&t=mappings&conceptid=#{@concept.id}", :method => :get, :class => "link_button" %>
+  <%=link_to "Create New Mapping", "/login?redirect=/ontologies/#{@ontology.to_param}/?p=terms&t=mappings&conceptid=#{escape(@concept.id)}", :method => :get, :class => "link_button" %>
 <%else%>
-  <a href="/mappings/new/ontology_from=<%=@ontology.id%>&conceptid_from=<%=@concept.id%>" data-method="element#create_mapping_container" title="New Mapping For <%=remove_owl_notation(@concept.label_html)%>" class="link_button" id="create_new_mapping_href" rel="facebox">Create New Mapping</a>
+  <a href="/mappings/new/ontology_from=<%=@ontology.id%>&conceptid_from=<%=escape(@concept.id)%>" data-method="element#create_mapping_container" title="New Mapping For <%=remove_owl_notation(@concept.label_html)%>" class="link_button" id="create_new_mapping_href" rel="facebox">Create New Mapping</a>
 
   &nbsp;&nbsp;&nbsp;
 

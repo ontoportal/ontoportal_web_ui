@@ -22,6 +22,10 @@ module ApplicationHelper
     return URI.escape(string, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
   end
 
+  def escape(string)
+    CGI.escape(string)
+  end
+
   def clean(string)
     string = string.gsub("\"",'\'')
     return string.gsub("\n",'')
