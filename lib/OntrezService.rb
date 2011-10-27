@@ -3,7 +3,7 @@ require 'open-uri'
 require 'cgi'
 
 class OntrezService
-  
+
   # Tokens
   # %CONC% = Concept Id
   # %ELEMENT% = Element Id
@@ -11,10 +11,10 @@ class OntrezService
   # %RESOURCE% = Resource Name
   # %S_PAGE% = Page Start
   # %E_PAGE% = Page End
-  
+
   ONTREZ_URL = $RESOURCE_INDEX_REST_URL
   APIKEY_PARAM = "&apikey=#{$API_KEY}"
-  
+
   RESOURCE_BY_CONCEPT = "/byconcept/virtual/%ONT%/false/true/0/10?conceptid=%CONC%#{APIKEY_PARAM}"
   VERSIONED_RESOURCE_BY_CONCEPT = "/byconcept/%ONT%/false/true/0/10?conceptid=%CONC%#{APIKEY_PARAM}"
   PAGING_RESOURCE_BY_CONCEPT = "/byconcept/virtual/%ONT%/%RESOURCE%/false/false/%S_PAGE%/10?conceptid=%CONC%#{APIKEY_PARAM}"
@@ -22,25 +22,25 @@ class OntrezService
   RESOURCES = "/resources#{APIKEY_PARAM.sub("&", "?")}"
   DETAILS = "/details/true/virtual/concept/%ONT%/resource/%RESOURCE%/?conceptid=%CONC%&elementid=%ELEMENT%#{APIKEY_PARAM}"
   VERSIONED_DETAILS = "/details/true/concept/%ONT%/resource/%RESOURCE%/?conceptid=%CONC%&elementid=%ELEMENT%#{APIKEY_PARAM}"
-  
+
   CLASS_STRING = "/result/ontology/%ONT%/classID/from/0/number/15/metadata?conceptid=%CONC%#{APIKEY_PARAM}"
   CUI_STRING = "/result/cui/from/0/number/15/metadata?conceptid=%CONC%#{APIKEY_PARAM}"
   NEXTBIO_URL = "http://www.nextbio.com/b/api/searchcount.api?q=%CONC%&details=true&type=study"
   PAGING_CLASS_STRING = "/result/ontology/%ONT%/classID/from/%S_PAGE%/number/%E_PAGE%/resource/%RESOURCE%/metadata?conceptid=%CONC%#{APIKEY_PARAM}"
   PAGING_CUI_STRING = "/result/cui/from/%S_PAGE%/number/%E_PAGE%/resource/%RESOURCE%/metadata?conceptid=%CONC%#{APIKEY_PARAM}"
-  
+
   STATS = "/statistics/all#{APIKEY_PARAM.sub("&", "?")}"
-  
+
   def self.getResourcesInfo
     resources = []
-    
+
     # this call gets all of the resources and their associated information
     LOG.add :debug, "Retrieve resources"
     LOG.add :debug, ONTREZ_URL + RESOURCES
     startGet = Time.now
     doc = REXML::Document.new(open(ONTREZ_URL + RESOURCES))
     LOG.add :debug, "Resources retrieved (#{Time.now - startGet})"
-    
+
     if CACHE.get("ri::resources").nil?
       doc.elements.each("/success/data/set/resource"){|resource|
         new_resource = Resource.new
@@ -55,7 +55,7 @@ class OntrezService
         resources << new_resource
       }
       LOG.add :debug, "Resources parsed (#{Time.now - startGet})"
-      
+
       CACHE.set("ri::resources", resources, 60*60*336)
     else
       resources = CACHE.get("ri::resources")
@@ -64,11 +64,11 @@ class OntrezService
 
   def self.gatherResources(ontology_id,concept_id,latest,version_id)
     resources = self.getResourcesInfo
-    
+
     # if this isn't the most recent version of the ontology, use the versioned URL instead of the virtual
     resource_url = latest ? RESOURCE_BY_CONCEPT : VERSIONED_RESOURCE_BY_CONCEPT
     ont = latest ? ontology_id : version_id
-    
+
     LOG.add :debug, "Retrieve annotations for #{concept_id}"
     LOG.add :debug, ONTREZ_URL+resource_url.gsub("%ONT%",ont).gsub("%CONC%",CGI.escape(concept_id))
     startGet = Time.now
@@ -79,7 +79,7 @@ class OntrezService
       LOG.add :debug, e.inspect
     end
     LOG.add :debug, "Annotations retrieved #{Time.now - startGet}"
-    
+
     # parse out the annotation numbers and annotations
     startGet = Time.now
     for resource in resources
@@ -107,10 +107,10 @@ class OntrezService
     ont = latest ? ontology_id : version_id
 
     rest_url = ONTREZ_URL + resource_url.gsub("%ONT%",ont.to_s.strip).gsub("%RESOURCE%",resource.strip).gsub("%CONC%",CGI.escape(concept_id)).gsub("%ELEMENT%",CGI.escape(element))
-    
+
     LOG.add :debug, "Details retrieve for #{concept_id}"
     LOG.add :debug, rest_url
-    
+
     begin
       doc = REXML::Document.new(open(rest_url))
     rescue Exception=>e
@@ -127,9 +127,9 @@ class OntrezService
 
   def self.getResourceStats
     rest_url = ONTREZ_URL + STATS
-    
+
     doc = REXML::Document.new(open(rest_url))
-    
+
     return parseStats(doc.elements["/success/data/statistics"])
   end
 
@@ -137,7 +137,7 @@ class OntrezService
     # if this isn't the most recent version of the ontology, use the versioned URL instead of the virtual
     resource_url = latest ? PAGING_RESOURCE_BY_CONCEPT : VERSIONED_PAGING_RESOURCE_BY_CONCEPT
     ont = latest ? ontology_id : version_id
-    
+
     LOG.add :debug, "Page retrieve"
     LOG.add :debug, ONTREZ_URL + resource_url.gsub("%ONT%",ont.to_s.strip).gsub("%CONC%",CGI.escape(concept_id).strip).gsub("%S_PAGE%",page_start).gsub("%E_PAGE%",page_end).gsub("%RESOURCE%",resource_name.strip)
     doc = REXML::Document.new(open(ONTREZ_URL + resource_url.gsub("%ONT%",ont.to_s.strip).gsub("%CONC%",CGI.escape(concept_id).strip).gsub("%S_PAGE%",page_start).gsub("%E_PAGE%",page_end).gsub("%RESOURCE%",resource_name.strip)))
@@ -151,17 +151,17 @@ class OntrezService
     xpath = "/success/data/result/annotations"
     annotations_doc = doc.elements[xpath]
     parseAnnotations(annotations_doc,new_resource)
-    
+
     return new_resource
   end
 
   def self.pageResourcesByCui(cui,resource_name,page_start,page_end)
-  
+
   end
-  
+
   def self.parseNextBio(text)
-    doc = REXML::Document.new(open(NEXTBIO_URL.gsub("%CONC%",text.gsub(" ","%20").gsub("_","%20"))))
-    resource = Resource.new   
+    doc = REXML::Document.new(open(NEXTBIO_URL.gsub("%CONC%", CGI.escape(text))))
+    resource = Resource.new
     resource.context_numbers = {}
     resource.annotations = []
     resource.name ="NextBio"
@@ -176,10 +176,10 @@ class OntrezService
     resource.count = doc.elements["NBResultSummary"].elements["count"].get_text.value.to_i
     # Placeholders for main_context because NextBio doesn't include this information
     resource.main_context = "Title"
-    
-      doc.elements.each("*/details"){ |detail| 
-          detail.elements.each { |element| 
-            resource.context_numbers[element.name]=element.get_text.value          
+
+      doc.elements.each("*/details"){ |detail|
+          detail.elements.each { |element|
+            resource.context_numbers[element.name]=element.get_text.value
           }
         }
       doc.elements.each("*/results"){ |results|
@@ -189,20 +189,20 @@ class OntrezService
             annotation.term_id = result.elements["name"].get_text.value unless result.elements["name"].nil?
             annotation.item_key = result.elements["name"].get_text.value unless result.elements["name"].nil?
             annotation.url = result.elements["url"].get_text.value unless result.elements["url"].nil?
-           
+
               annotation.description =  result.elements["name"].get_text.value
-                             
+
               #annotation.description = result.elements["title"].get_text.value
-            
-            
-            resource.annotations << annotation            
+
+
+            resource.annotations << annotation
             }
-        
-        }  
-    return resource  
+
+        }
+    return resource
   end
-  
-private 
+
+private
 
   ##
   # Parses annotation information from OBR REST XML.
@@ -211,7 +211,7 @@ private
   def self.parseAnnotations(doc,resource)
     resource.context_numbers = {}
     resource.annotations = []
-    
+
     # Sometimes the OBR service doesn't return an annotation tag when there are no annotations
     # To work around this, return is the annotation source xml is nil
     return if doc.nil?
@@ -238,11 +238,11 @@ private
       end
     }
   end
- 
+
   def self.parseOBS(doc,resource)
     # get annotation count
-    resource.count = doc.elements["//statistics/statisticsBean/nbAnnotation"].get_text.value.to_i      
-    
+    resource.count = doc.elements["//statistics/statisticsBean/nbAnnotation"].get_text.value.to_i
+
     # get annotations
     resource.context_numbers = {}
     resource.annotations = []
@@ -255,7 +255,7 @@ private
     }
 
   end
- 
+
   def self.parseOBSDetails(doc,rest_url)
     details = {}
     details[:rest_url] = rest_url
@@ -271,7 +271,7 @@ private
       details[annot_class][context_name][:contextName] = context_name
       details[annot_class][context_name][:contextNameDisplay] = context_name[context_name.index("_") + 1, context_name.length].gsub("_", " ").titleize
       details[annot_class][context_name][:isDirect] = context.elements["isDirect"].get_text.value
-      
+
       # Get the annotation string for this context
       # Check if references are used
       resource_element = annotation.elements["element"]
@@ -304,7 +304,7 @@ private
 
     return details
   end
-  
+
   def self.parseStats(stats)
     stats_hash = {}
     stats_hash[:total_annotations] = stats.elements["aggregatedAnnotations"].get_text.value.strip.to_i
@@ -314,5 +314,5 @@ private
     stats_hash[:mappingAnnotations] = stats.elements["mappingAnnotations"].get_text.value.strip.to_i
     stats_hash
   end
- 
+
 end
