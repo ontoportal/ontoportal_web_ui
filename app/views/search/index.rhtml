@@ -158,7 +158,7 @@ var resultsTable;
       var ontologyid = jQuery(this).attr("data-bp_ontologyid");
       var conceptid = jQuery(this).attr("data-bp_conceptid");
 
-      jQuery("#flexviz").html('<iframe src="/flexviz/'+ontologyid+'?conceptid='+conceptid+'" frameborder=0 height="500px" width="500px" scrolling="no"></iframe>');
+      jQuery("#flexviz").html('<iframe src="/flexviz/'+ontologyid+'?conceptid='+conceptid+'" frameborder=0 height="500px" width="500px" scrolling="no"></iframe>').show();
       jQuery.facebox({ div: '#flexviz' });
     }));
 

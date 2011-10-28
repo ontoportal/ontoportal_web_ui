@@ -242,6 +242,9 @@
   //   image: blah.extension
   //    ajax: anything else
   function fillFaceboxFromHref(href, klass, method, height, width) {
+    if (typeof method === "undefined")
+      method = null;
+
     // div
     if (href.match(/#/)) {
       var url    = window.location.href.split('#')[0]
@@ -255,7 +258,7 @@
     } else if (method == "iframe") {
       // iframe
       $.facebox.reveal($(jQuery("<iframe/>").attr("src", href)))
-    } else if (method.indexOf("element") >= 0) {
+    } else if (method != null && method.indexOf("element") >= 0) {
       // alternate div usage that keeps href in place
       var elemId = method.split("#")[1]
       $.facebox.reveal($("#" + elemId), klass)
