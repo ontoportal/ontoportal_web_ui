@@ -133,6 +133,10 @@ var bp_createMapping = {
       });
     }
 
+    // Clear the map to side
+    jQuery("#map_to").val(jQuery("#map_to").attr("title")).addClass("help_text_font");
+    jQuery("#map_to_concept_details").hide();
+
     jQuery.bioportal.ont_pages["mappings"].retrieve_and_publish();
   },
 
