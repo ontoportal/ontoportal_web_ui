@@ -349,10 +349,17 @@ class DataAccess
     mapping = self.getMapping(mapping_id)
     SERVICE.deleteMapping({:mappingid => mapping_id})
 
-    delete_mapping_cache({ :source_ontology_id => mapping.source_ontology,
-                           :target_ontology_id => mapping.target_ontology,
-                           :source => mapping.source["fullId"],
-                           :target => mapping.target["fullId"] })
+    source_ontology = self.getOntology(mapping.source_ontology)
+    target_ontology = self.getOntology(mapping.target_ontology)
+
+    source_concept = self.getNode(source_ontology.id, mapping.source["fullId"])
+    target_concept = self.getNode(target_ontology.id, mapping.target["fullId"])
+
+    delete_mapping_cache({ :source_ontology_id => source_ontology.ontologyId,
+                           :target_ontology_id => target_ontology.ontologyId,
+                           :source => source_concept.id,
+                           :target => target_concept.id })
+
   end
 
   def self.getMapping(mapping_id)
