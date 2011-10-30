@@ -588,7 +588,6 @@ private
 
     if Thread.current[:session] && Thread.current[:session][:user]
       user = Thread.current[:session][:user]
-      debugger
       unless user.acl.nil?
         user.acl.each do |ont_id|
           begin
