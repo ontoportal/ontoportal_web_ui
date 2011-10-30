@@ -588,11 +588,14 @@ private
 
     if Thread.current[:session] && Thread.current[:session][:user]
       user = Thread.current[:session][:user]
-      user.acl.each do |ont_id|
-        begin
-          ont_list << self.getOntology(ont_id)
-        rescue Exception => e
-          LOG.add :debug, "Problem getting #{ont_id} for user"
+      debugger
+      unless user.acl.nil?
+        user.acl.each do |ont_id|
+          begin
+            ont_list << self.getOntology(ont_id)
+          rescue Exception => e
+            LOG.add :debug, "Problem getting #{ont_id} for user"
+          end
         end
       end
     end
