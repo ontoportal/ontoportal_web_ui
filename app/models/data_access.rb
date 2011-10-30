@@ -339,8 +339,8 @@ class DataAccess
 
     delete_mapping_cache({ :source_ontology_id => source_ontology.ontologyId,
                            :target_ontology_id => target_ontology.ontologyId,
-                           :source => source_concept.id,
-                           :target => target_concept.id })
+                           :source => source_concept.fullId,
+                           :target => target_concept.fullId })
 
     return mapping
   end
@@ -357,8 +357,8 @@ class DataAccess
 
     delete_mapping_cache({ :source_ontology_id => source_ontology.ontologyId,
                            :target_ontology_id => target_ontology.ontologyId,
-                           :source => source_concept.id,
-                           :target => target_concept.id })
+                           :source => source_concept.fullId,
+                           :target => target_concept.fullId })
 
   end
 
