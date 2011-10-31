@@ -125,7 +125,7 @@ class OntologiesController < ApplicationController
   def edit
     @ontology = DataAccess.getOntology(params[:id])
 
-    authorize_owner(@ontology.userId.to_i)
+    authorize_owner(@ontology.userId)
 
     @categories = DataAccess.getCategories()
   end
@@ -133,7 +133,7 @@ class OntologiesController < ApplicationController
   def edit_view
     @ontology = DataAccess.getView(params[:id])
 
-    authorize_owner(@ontology.userId.to_i)
+    authorize_owner(@ontology.userId)
 
     @categories = DataAccess.getCategories()
   end

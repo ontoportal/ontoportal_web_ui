@@ -59,7 +59,7 @@ class UsersController < ApplicationController
     @user_ontologies = []
     DataAccess.getOntologyList.each do |ont|
       begin
-        @user_ontologies << ont if DataAccess.getOntology(ont.id).userId.to_i == params[:id].to_i
+        @user_ontologies << ont if ont.admin?(self)
       rescue Exception => e
         next
       end
