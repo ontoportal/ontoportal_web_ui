@@ -163,7 +163,10 @@ function bp_internal_formComplete_setup_functions() {
       result_width += 200;
     }
 
-    jQuery(this).bp_autocomplete(BP_INTERNAL_SEARCH_SERVER + "/search/json_search/"+ontology_id, {
+    // Add ontology id to params
+    extra_params["id"] = ontology_id;
+
+    jQuery(this).bp_autocomplete(BP_INTERNAL_SEARCH_SERVER + "/search/json_search/", {
         extraParams: extra_params,
         lineSeparator: "~!~",
         matchSubset: 0,
@@ -171,6 +174,7 @@ function bp_internal_formComplete_setup_functions() {
         sortRestuls: false,
         minChars: 3,
         maxItemsToShow: 20,
+        cacheLength: 0,
         width: result_width,
         onItemSelect: bpFormSelect,
         footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="' + BP_INTERNAL_SEARCH_SERVER + '">' + BP_INTERNAL_ORG_SITE + '</a></div>',

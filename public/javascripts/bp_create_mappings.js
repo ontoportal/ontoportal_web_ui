@@ -5,7 +5,7 @@ jQuery(document).ready(function() {
     input[0].autocompleter.getExtraParams()["id"] = jQuery("#" + input.attr("id") + "_picker").val();
   });
 
-  jQuery(".ontology_picker_single").change(function(){
+  jQuery(".ontology_picker_single").live("change", function(){
     var current_side = jQuery(this).attr("id").replace("_picker", "");
     jQuery("#" + current_side)[0].autocompleter.flushCache();
     jQuery("#" + current_side)[0].autocompleter.getOptions().width = 450;
