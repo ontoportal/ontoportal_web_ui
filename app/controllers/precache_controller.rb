@@ -23,7 +23,18 @@ class PrecacheController < ApplicationController
     precache_ontology_notes(delete_cache)
     precache_ontology_mappings(delete_cache)
   end
-  
+
+  def self.precache_ontology_terms(delete_cache = false)
+    ontologies = DataAccess.getOntologyList
+    ontologies.each do |ont|
+      if delete_cache
+        # remove relevant cache data
+      end
+
+      get_url("http://localhost:#{$UI_PORT}/ontologies/#{ont.ontologyId}?p=terms")
+    end
+  end
+
   def self.precache_ontology_summary(delete_cache = false)
     ontologies = DataAccess.getOntologyList
     ontologies.each do |ont|
@@ -37,7 +48,7 @@ class PrecacheController < ApplicationController
       get_url("http://localhost:#{$UI_PORT}/ontologies/#{ont.ontologyId}")
     end
   end
-  
+
   def self.precache_ontology_mappings(delete_cache = false)
     ontologies = DataAccess.getOntologyList
     ontologies.each do |ont|
@@ -48,7 +59,7 @@ class PrecacheController < ApplicationController
       get_url("http://localhost:#{$UI_PORT}/ontologies/#{ont.ontologyId}?p=mappings")
     end
   end
-  
+
   def self.precache_ontology_notes(delete_cache = false)
     ontologies = DataAccess.getOntologyList
     ontologies.each do |ont|
@@ -59,14 +70,14 @@ class PrecacheController < ApplicationController
       get_url("http://localhost:#{$UI_PORT}/ontologies/#{ont.ontologyId}?p=notes")
     end
   end
-  
+
   def self.get_url(url)
     p url
     uri = URI.parse(url)
 
     http = Net::HTTP.new(uri.host, uri.port)
     http.read_timeout = 360
-  
+
     begin
       timer = Time.now
       res = http.start { |con|
@@ -77,7 +88,7 @@ class PrecacheController < ApplicationController
     rescue Exception => e
       p "Failed to get #{url}: #{e.message}"
     end
-    
+
     res.body
   end
 
