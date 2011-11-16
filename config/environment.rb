@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.10' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.14' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -59,8 +59,7 @@ Rails::Initializer.run do |config|
 
   # Gem configuration
   config.gem "hpricot", :version => "~> 0.8.4"
-  config.gem "jquery-rails", :version => "~> 1.0.12"
-  config.gem "libxml-ruby", :version => "~> 1.1.4"
+  config.gem "libxml-ruby", :version => "~> 2.2.0"
   config.gem "recaptcha", :version => "~> 0.3.1"
   config.gem "rest-client", :version => "~> 1.6.1"
   config.gem "mysql", :version => "~> 2.8.1"

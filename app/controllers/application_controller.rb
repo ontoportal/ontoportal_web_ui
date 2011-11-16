@@ -42,6 +42,7 @@ class ApplicationController < ActionController::Base
 
   def set_global_session
     Thread.current[:session] = session
+    Thread.current[:request] = request
   end
 
   # Custom 404 handling
