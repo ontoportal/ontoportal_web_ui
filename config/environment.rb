@@ -59,7 +59,7 @@ Rails::Initializer.run do |config|
 
   # Gem configuration
   config.gem "hpricot", :version => "~> 0.8.4"
-  config.gem "libxml-ruby", :version => "~> 2.2.0"
+  config.gem "libxml-ruby", :lib => "libxml", :version => "~> 2.2.0"
   config.gem "recaptcha", :version => "~> 0.3.1"
   config.gem "rest-client", :version => "~> 1.6.1"
   config.gem "mysql", :version => "~> 2.8.1"
