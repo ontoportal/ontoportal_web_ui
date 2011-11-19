@@ -22,6 +22,7 @@ class PrecacheController < ApplicationController
     precache_ontology_summary(delete_cache)
     precache_ontology_notes(delete_cache)
     precache_ontology_mappings(delete_cache)
+    precache_ontology_terms(delete_cache)
   end
 
   def self.precache_ontology_terms(delete_cache = false)
