@@ -1,0 +1,94 @@
+<%@title = "NCBO Annotator"%>
+
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+    jQuery("#annotator_button").click(getannotations);
+  });
+
+  function getannotations() {
+    jQuery("#not_enough_text_error").html("");
+    jQuery(".annotator_error").html("");
+    jQuery(".annotator_spinner").show();
+
+    var params = {};
+
+    var ont_select = jQuery("#ontology_ontologyId");
+
+    var ontology_ids = (ont_select.val() == null) ? "" : ont_select.val().join(",");
+
+    params["ontology_ids"] = ontology_ids;
+    params["text"] = jQuery("#annotation_text").val();
+    params["hierarchy"] = jQuery("[name='hierarchy']:checked").val() == "none" ? "" : jQuery("[name='hierarchy']:checked").val();
+    params["normalization"] = jQuery("[name='normalization']:checked").val() == "none" ? "" : jQuery("[name='normalization']:checked").val();
+
+    jQuery.ajax({
+          type: "POST",
+          url: "/annotator",
+          data: params,
+          dataType: "json",
+          success: function(data) {
+            jQuery(".annotator_spinner").hide();
+
+            // Really dumb, basic word counter. Counts spaces.
+            if (jQuery("#annotation_text").val().match(/ /g) == null || jQuery("#annotation_text").val().match(/ /g).length < 50) {
+              jQuery("#not_enough_text_error").html("Please use more than 50 words for accurate results");
+            }
+
+            var links = [];
+            links.push('<thead><tr><th style="padding-right: 6px;">Term</th><th>Context</th><th style="padding-right: 6px">Ontology</th></tr></thead>');
+
+            var resultCount = 1;
+            if (jQuery.isEmptyObject(data)) {
+              links.push("<tr><td>No annotations found</td></tr>");
+            } else {
+              jQuery(data.annotations).each(function(){
+                var annotation = this;
+                links.push("<tr><td style='padding: 6px 12px 6px 12px;'><a href='/ontologies/"+annotation.concept.localOntologyId+"?p=terms&conceptid="+encodeURIComponent(annotation.concept.fullId)+"'>"+annotation.concept.preferredName+"</a></td><td style='padding-right: 10px;'>"+annotation.context.highlight+"</td><td><a href='/ontologies/"+annotation.concept.localOntologyId+"'>"+data.ontologies[annotation.concept.localOntologyId].name+"</a></td></tr>");
+                resultCount++;
+              });
+            }
+
+            jQuery("#annotations").html(links.join(""));
+            jQuery("#annotations_container").show();
+          },
+          error: function(data) {
+            jQuery("#annotations_container").hide();
+            jQuery(".annotator_spinner").hide();
+            jQuery(".annotator_error").html(" Problem getting annotations, please try again");
+          }
+    });
+  }
+</script>
+
+<div style="padding: 1em;">
+  <h1>Annotator</h1>
+  <p>
+    <%=t('home.annotate.intro').nil? || t('home.annotate.intro').empty? ? "Annotate text with terms from ontologies #{help_icon("/help#Annotator_Tab")}" : t('home.annotate.intro')%>
+  </p>
+
+  <div style="padding-bottom: 1em;">
+    <% textarea_title = "Please paste at least a paragraph (50 words or more) of text to use as an annotation source" %>
+    <%=text_area :annotation, :text, :title => textarea_title, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px; width: 600px;", :class => "help_text" %>
+
+    <br style="margin-bottom: 10px;"/>
+
+    <%=render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => @annotator_ontologies }%>
+
+    <!-- Options used for testing on stage UI
+    <h2>Hierarchy</h2><%=radio_button_tag :hierarchy, "0"%> <%=label_tag :hierarchy_0, "0"%>&nbsp;&nbsp;&nbsp;<%=radio_button_tag :hierarchy, 5, true%> <%=label_tag :hierarchy_5, "5"%><br/><br/>
+    <h2>Normalization</h2><%=radio_button_tag :normalization, "0", true%> <%=label_tag :normalization_0, "None"%>&nbsp;&nbsp;&nbsp;<%=radio_button_tag :normalization, "1", true%> <%=label_tag :normalization_1, "Size of ontology"%>&nbsp;&nbsp;&nbsp;<%=radio_button_tag :normalization, "2"%> <%=label_tag :normalization_2, "log10(size of ontology)"%><br/>
+    -->
+
+    <input type="button" id="annotator_button" value="Get annotations" style="margin-top: 10px;" class="link_button">
+    <span class="annotator_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
+    <span style='color: red;' class='annotator_error'></span>
+  </div>
+</div>
+
+<div id="annotations_container" style="display: none; padding: 0 13px; margin: 0 0 2em;">
+  <h2 style="margin-bottom: 0;">Annotations</h2>
+  <div id="not_enough_text_error" style="color: red; margin-bottom: 7px;"></div>
+  <table id="annotations" style="display: inline-block;" class="zebra"></table>
+</div>
+
+

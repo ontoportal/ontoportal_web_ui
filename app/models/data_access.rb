@@ -55,6 +55,23 @@ class DataAccess
     ont_list
   end
 
+  def self.getOntologyListHash(filter_private = true)
+    ont_list = self.getOntologyList(filter_private)
+    ont_hash = {}
+    ont_list.each {|ont| ont_hash[ont.ontologyId.to_i] = ont}
+    ont_hash
+  end
+
+  # Return a filtered list, using an array to determine if ontologies should be included
+  # Arguments:
+  #   virtual_ontology_ids: Array or Set of virtual ids
+  def self.getFilteredOntologyList(virtual_ontology_ids)
+    id_set = virtual_ontology_ids.to_set
+    ont_hash = self.getOntologyListHash(false)
+    ont_hash.reject! {|k,v| !id_set.include?(k)}
+    ont_hash.values
+  end
+
   def self.getOntologyAcronyms
     CACHE.set("ontology_acronyms", Array.new)
 

@@ -11,7 +11,7 @@
   <%unless @concept.synonyms.nil? || @concept.synonyms.empty?%>
     <tr>
       <td nowrap class="label">
-        Synonyms 
+        Synonyms
         <span class="slot_labels"><%unless @concept.ontology.synonym_label.nil? || @concept.ontology.synonym_label.to_s.length == 0%>(<%=@concept.ontology.synonym_label%>)<%end%></span>
       </td>
       <td><% for synonym in @concept.synonyms %><p><%= synonym %></p><% end %></td>
@@ -39,17 +39,17 @@
   <%if @concept.obsolete?%>
     <tr>
       <td nowrap class="label">
-        Obsolete 
+        Obsolete
         <span class="slot_labels"></span>
       </td>
       <td><p>true</p></td>
     </tr>
   <%end%>
-  
-  
+
+
   <%
   keys = @concept.properties.keys
-  
+
   top_keys=[
     "description",
     "comment"]
@@ -60,32 +60,33 @@
   top_set=[]
   bottom_set=[]
   leftover=[]
+
   for key in keys
     top=false
     bottom=false
-    top_keys.each{|top_key| 
+    top_keys.each{|top_key|
       if key.downcase.include?(top_key)
         top_set << key
         top=true
       end}
-    bottom_keys.each{|bottom_key| 
+    bottom_keys.each{|bottom_key|
       if key.downcase.include?(bottom_key)
         bottom_set << key
         bottom=true
       end}
-      
+
     if !top && !bottom
-      leftover << key 
+      leftover << key
     end
   end
-  
+
   leftover.sort! {|x,y| x.downcase <=> y.downcase }
-  
-  
+
+
   %>
 
   <%for key in top_set%>
-  
+
     <%if exclude_relation?(key)
       next
     end%>
@@ -97,10 +98,10 @@
         </td>
       </tr>
     <%end%>
-  
-  
+
+
   <%end%>
-  
+
 
   <%for key in leftover%>
     <%if exclude_relation?(key, @ontology)
@@ -118,7 +119,7 @@
   <%end%>
 
   <%for key in bottom_set%>
-    <%if exclude_relation?(key) 
+    <%if exclude_relation?(key)
       next
     end%>
     <%unless @concept.properties[key].empty?%>
