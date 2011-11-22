@@ -33,14 +33,12 @@ class AnnotatorController < ApplicationController
 private
 
   def highlight_and_get_context(text, position, words_to_keep = 4)
-    words_to_keep = words_to_keep - 1
-
     before = text[0, position[0] - 1].split
     highlight = text[position[0] - 1..position[1] - 1]
     after = text[position[1], text.length].split
 
-    before_words = before.empty? ? "" : before[before.length - words_to_keep..before.length].join(' ')
-    after_words = after.empty? ? "" : after[0, words_to_keep].join(' ')
+    before_words = before.length <= words_to_keep ? before.join(" ") : before[before.length - words_to_keep..before.length].join(" ")
+    after_words = after.length <= words_to_keep ? after.join(" ") : after[0, words_to_keep].join(" ")
 
     space_before = before_words[/^[\.\-=\?,'"]/].nil? ? " " : ""
     space_after = after_words[/^[\.\-=\?,'"]/].nil? ? " " : ""
