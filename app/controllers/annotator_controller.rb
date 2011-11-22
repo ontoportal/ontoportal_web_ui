@@ -39,8 +39,8 @@ private
     highlight = text[position[0] - 1..position[1] - 1]
     after = text[position[1], text.length].split
 
-    before_words = before[before.length - words_to_keep..before.length].join(' ')
-    after_words = after[0, words_to_keep].join(' ')
+    before_words = before.empty? ? "" : before[before.length - words_to_keep..before.length].join(' ')
+    after_words = after.empty? ? "" : after[0, words_to_keep].join(' ')
 
     space_before = before_words[/^[\.\-=\?,'"]/].nil? ? " " : ""
     space_after = after_words[/^[\.\-=\?,'"]/].nil? ? " " : ""
