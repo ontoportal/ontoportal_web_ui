@@ -284,7 +284,7 @@ class OntologyWrapper
 
   # Check to see if ontology is stored remotely (IE metadata only)
   def metadata_only?
-    return self.isMetadataOnly.eql?(1)
+    return self.isMetadataOnly.to_i == 1
   end
 
   # Check criteria for browsable ontologies
