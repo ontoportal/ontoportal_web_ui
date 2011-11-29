@@ -1,14 +1,66 @@
-<%@title = "NCBO Annotator"%>
+<%@title = "Annotator"%>
+
+<%=javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.js"%>
+
+<style type="text/css">
+  div#semanticTypes_chzn.chzn-container input.default {
+    font-style: oblique !important;
+  }
+
+  div#semanticTypes_chzn.chzn-container-active input.default {
+    font-style: normal !important;
+  }
+
+  div#annotations_filter, div#annotations_info {
+    display: none;
+  }
+</style>
 
 <script type="text/javascript">
+  var annotationsTable;
+
   jQuery(document).ready(function(){
-    jQuery("#annotator_button").click(getannotations);
+      jQuery("#annotator_button").click(getannotations);
+
+      jQuery("#semanticTypes").chosen();
+
+      // Slider for hierarchy
+      jQuery("#slider-range-min").slider({
+        range: "min",
+        value: 0,
+        min: 0,
+        max: 5,
+        slide: function(event, ui) {
+          jQuery("#levelMax").val(ui.value);
+        }
+      });
+      jQuery("#levelMax").val(jQuery("#slider-range-min").slider("value"));
+
+      // Init annotation table
+      annotationsTable = jQuery("#annotations").dataTable({
+        bPaginate: false,
+        bAutoWidth: false,
+        aaSorting: [],
+        oLanguage: {
+          sZeroRecords: "No annotations found"
+        },
+        "aoColumns": [
+              { "sWidth": "5%" },
+              { "sWidth": "30%" },
+              { "sWidth": "35%" },
+              { "sWidth": "30%" }
+        ]
+      });
+
+      filter_ontologies.init();
+      filter_terms.init();
   });
 
   function getannotations() {
     jQuery("#not_enough_text_error").html("");
     jQuery(".annotator_error").html("");
     jQuery(".annotator_spinner").show();
+    jQuery("#annotations_container").hide();
 
     var params = {};
 
@@ -18,8 +70,18 @@
 
     params["ontology_ids"] = ontology_ids;
     params["text"] = jQuery("#annotation_text").val();
-    params["hierarchy"] = jQuery("[name='hierarchy']:checked").val() == "none" ? "" : jQuery("[name='hierarchy']:checked").val();
-    params["normalization"] = jQuery("[name='normalization']:checked").val() == "none" ? "" : jQuery("[name='normalization']:checked").val();
+
+    if (typeof jQuery("#wholeWordOnly:checked").val() !== "undefined")
+      params["wholeWordOnly"] = jQuery("#wholeWordOnly:checked").val();
+
+    if (jQuery("#semanticTypes").val() != null)
+      params["semanticTypes"] = jQuery("#semanticTypes").val();
+
+    params["levelMax"] = jQuery("#levelMax").val();
+
+    var mappings = [];
+    jQuery("[name='mappings']:checked").each(function(){ mappings.push(jQuery(this).val()) })
+    params["mappingTypes"] = mappings;
 
     jQuery.ajax({
           type: "POST",
@@ -27,28 +89,60 @@
           data: params,
           dataType: "json",
           success: function(data) {
+            var results = [];
+            var resultCount = 1;
+            var ontologies = {};
+            var terms = {};
+
             jQuery(".annotator_spinner").hide();
+            jQuery("#annotations_container").show();
 
             // Really dumb, basic word counter. Counts spaces.
             if (jQuery("#annotation_text").val().match(/ /g) == null || jQuery("#annotation_text").val().match(/ /g).length < 50) {
               jQuery("#not_enough_text_error").html("Please use more than 50 words for accurate results");
             }
 
-            var links = [];
-            links.push('<thead><tr><th style="padding-right: 6px;">Term</th><th>Context</th><th style="padding-right: 6px">Ontology</th></tr></thead>');
-
-            var resultCount = 1;
-            if (jQuery.isEmptyObject(data)) {
-              links.push("<tr><td>No annotations found</td></tr>");
+            if (jQuery.isEmptyObject(data.annotations)) {
+              results.push("<tr><td>No annotations found</td></tr>");
             } else {
               jQuery(data.annotations).each(function(){
                 var annotation = this;
-                links.push("<tr><td style='padding: 6px 12px 6px 12px;'><a href='/ontologies/"+annotation.concept.localOntologyId+"?p=terms&conceptid="+encodeURIComponent(annotation.concept.fullId)+"'>"+annotation.concept.preferredName+"</a></td><td style='padding-right: 10px;'>"+annotation.context.highlight+"</td><td><a href='/ontologies/"+annotation.concept.localOntologyId+"'>"+data.ontologies[annotation.concept.localOntologyId].name+"</a></td></tr>");
+                var ontology_name = data.ontologies[annotation.concept.localOntologyId].name;
+                var concept_name = annotation.concept.preferredName;
+                var row = [
+                  resultCount,
+                  "<a href='/ontologies/"+annotation.concept.localOntologyId+"?p=terms&conceptid="+encodeURIComponent(annotation.concept.fullId)+"'>"+annotation.concept.preferredName+"</a>",
+                  annotation.context.highlight,
+                  "<a href='/ontologies/"+annotation.concept.localOntologyId+"'>"+ontology_name+"</a>"
+                ]
+                results.push(row);
                 resultCount++;
+
+                // Keep track of how many results are associated with each ontology
+                ontologies[ontology_name] = (ontology_name in ontologies) ? ontologies[ontology_name] + 1 : 1;
+
+                // Keep track of how many results are associated with each term
+                terms[concept_name.toLowerCase()] = (concept_name.toLowerCase() in terms) ? terms[concept_name.toLowerCase()] + 1 : 1;
+
               });
             }
 
-            jQuery("#annotations").html(links.join(""));
+            // Add checkboxes to filter
+            createFilterCheckboxes(ontologies, "filter_ontology_checkboxes", "ontology_filter_list");
+            createFilterCheckboxes(terms, "filter_terms_checkboxes", "terms_filter_list");
+
+            // Reset table
+            annotationsTable.fnClearTable();
+            annotationsTable.fnSortNeutral();
+            <%# removeFilters();%>
+
+            // Need to re-init because we're not using "live" because of propogation issues
+            filter_ontologies.init();
+            filter_terms.init();
+
+            // Add data
+            annotationsTable.fnAddData(results);
+
             jQuery("#annotations_container").show();
           },
           error: function(data) {
@@ -58,6 +152,108 @@
           }
     });
   }
+
+  function createFilterCheckboxes(filter_items, checkbox_class, checkbox_location) {
+    var for_sort = [];
+    var sorted = []
+
+    // Sort ontologies by number of results
+    jQuery.each(filter_items, function(k, v){
+        for_sort.push({label: k + " (" + v + ")", count: v, value: k, value_encoded: encodeURIComponent(k)});
+    });
+    for_sort.sort(function(a, b){return a.count < b.count});
+
+    // Create checkboxes for ontology filter
+    jQuery.each(for_sort, function(){
+      var checkbox = jQuery("<input/>").attr("class", checkbox_class).attr("type", "checkbox").attr("value", this.value).attr("id", this.value_encoded);
+      var label = jQuery("<label/>").attr("for", this.value_encoded).html(" " + this.label);
+      sorted.push(jQuery("<span/>").append(checkbox).append(label).html());
+    });
+    jQuery("#" + checkbox_location).html(sorted.join("<br/>"));
+  }
+
+  var filter_ontologies = {
+    init: function() {
+      jQuery("#filter_ontologies").bind("click", function(e){bp_popup_init(e)});
+      // Need to use bind to avoid "live" propogation issues
+      jQuery(".filter_ontology_checkboxes").bind("click", function(e){filter_ontologies.filterOntology(e)});
+      jQuery("#ontology_filter_list").click(function(e){e.stopPropagation()});
+      this.cleanup();
+    },
+
+    cleanup: function() {
+      jQuery("html").click(bp_popup_cleanup);
+      jQuery(document).keyup(function(e) {
+        if (e.keyCode == 27) { bp_popup_cleanup(); } // esc
+      });
+    },
+
+    filterOntology: function(e) {
+      e.stopPropagation();
+
+      var search_regex = [];
+      jQuery(".filter_ontology_checkboxes:checked").each(function(){
+        search_regex.push(jQuery(this).val());
+      });
+
+      if (search_regex.length == 0) {
+        annotationsTable.fnFilter("", 3);
+      } else {
+        annotationsTable.fnFilter(search_regex.join("|"), 3, true, false);
+      }
+    }
+  }
+
+  var filter_terms = {
+    init: function() {
+      jQuery("#filter_terms").bind("click", function(e){bp_popup_init(e)});
+      // Need to use bind to avoid "live" propogation issues
+      jQuery(".filter_terms_checkboxes").bind("click", function(e){filter_terms.filterTerms(e)});
+      jQuery("#terms_filter_list").click(function(e){e.stopPropagation()});
+      this.cleanup();
+    },
+
+    cleanup: function() {
+      jQuery("html").click(bp_popup_cleanup);
+      jQuery(document).keyup(function(e) {
+        if (e.keyCode == 27) { bp_popup_cleanup(); } // esc
+      });
+    },
+
+    filterTerms: function(e) {
+      e.stopPropagation();
+
+      var search_regex = [];
+      jQuery(".filter_terms_checkboxes:checked").each(function(){
+        // Escape characters used in regex
+        search_regex.push(jQuery(this).val().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"));
+      });
+
+      if (search_regex.length == 0) {
+        annotationsTable.fnFilter("", 1);
+      } else {
+        annotationsTable.fnFilter("^" + search_regex.join("(?!.)|^") + "(?!.)", 1, true, false);
+      }
+    }
+  }
+
+  // Datatables reset sort extension
+  jQuery.fn.dataTableExt.oApi.fnSortNeutral = function ( oSettings ) {
+    /* Remove any current sorting */
+    oSettings.aaSorting = [];
+
+    /* Sort display arrays so we get them in numerical order */
+    oSettings.aiDisplay.sort( function (x,y) {
+      return x-y;
+    } );
+    oSettings.aiDisplayMaster.sort( function (x,y) {
+      return x-y;
+    } );
+
+    /* Redraw */
+    oSettings.oApi._fnReDraw( oSettings );
+  }
+
 </script>
 
 <div style="padding: 1em;">
@@ -74,10 +270,20 @@
 
     <%=render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => @annotator_ontologies }%>
 
-    <!-- Options used for testing on stage UI
-    <h2>Hierarchy</h2><%=radio_button_tag :hierarchy, "0"%> <%=label_tag :hierarchy_0, "0"%>&nbsp;&nbsp;&nbsp;<%=radio_button_tag :hierarchy, 5, true%> <%=label_tag :hierarchy_5, "5"%><br/><br/>
-    <h2>Normalization</h2><%=radio_button_tag :normalization, "0", true%> <%=label_tag :normalization_0, "None"%>&nbsp;&nbsp;&nbsp;<%=radio_button_tag :normalization, "1", true%> <%=label_tag :normalization_1, "Size of ontology"%>&nbsp;&nbsp;&nbsp;<%=radio_button_tag :normalization, "2"%> <%=label_tag :normalization_2, "log10(size of ontology)"%><br/>
-    -->
+    <b>Select Semantic Types</b><br/>
+    <%= select_tag :semanticTypes, options_for_select(@semantic_types_for_select), :multiple => 'true', "data-placeholder".to_sym => "Type here to select semantic types", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text" %><br/>
+
+    <b>Mappings:</b>&nbsp;&nbsp;
+    <%=check_box_tag :mappings, :automatic, :id => "mappings_automatic"%> <%=label_tag :mappings_automatic, "Automatic"%>&nbsp;&nbsp;
+    <%=check_box_tag :mappings, :manual, :id => "mappings_manual"%> <%=label_tag :mappings_manual, "Manual"%><br/>
+
+    <br/>
+
+    <b>Maximum Level:</b>&nbsp;&nbsp;
+    <%=text_field_tag :levelMax, 0, :style => "border: 0;"%>
+    <div id="slider-range-min" style="max-width: 150px; margin: 3px 0 15px 7px"></div>
+
+    <%=check_box_tag :wholeWordOnly, :true%> <b><%=label_tag :wholeWordOnly, "Whole Words Only"%></b><br/>
 
     <input type="button" id="annotator_button" value="Get annotations" style="margin-top: 10px;" class="link_button">
     <span class="annotator_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
@@ -88,7 +294,22 @@
 <div id="annotations_container" style="display: none; padding: 0 13px; margin: 0 0 2em;">
   <h2 style="margin-bottom: 0;">Annotations</h2>
   <div id="not_enough_text_error" style="color: red; margin-bottom: 7px;"></div>
-  <table id="annotations" style="display: inline-block;" class="zebra"></table>
+  <table id="annotations" style="display: inline-block; min-width: 700px;" class="zebra">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th style="padding-right: 6px;">
+          Term
+          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_terms" class="bp_popup_link">filter</a></span><div id="terms_filter_list" class="bp_popup_list" style="display: none;"></div></span>
+        </th>
+        <th>Context</th>
+        <th style="padding-right: 6px">
+          Ontology
+          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_ontologies" class="bp_popup_link">filter</a></span><div id="ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span>
+        </th>
+      </tr>
+    </thead>
+  </table>
 </div>
 
 

@@ -1,25 +1,55 @@
 class AnnotatorController < ApplicationController
   layout 'ontology'
 
+  ANNOTATOR = NCBO::Annotator.new(:apikey => $API_KEY, :annotator_location => "http://#{$REST_DOMAIN}/obs")
+
   def index
-    ontologies = NCBO::Annotator.ontologies(:apikey => $API_KEY)
+    ontologies = ANNOTATOR.ontologies
     ontology_ids = []
     ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
+
+    semantic_types = ANNOTATOR.semantic_types
+    @semantic_types_for_select = []
+    semantic_types.each do |semantic_type|
+      @semantic_types_for_select << [semantic_type[:description], semantic_type[:semanticType]]
+    end
+    @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
+
     @annotator_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
   end
 
   def create
     text = params[:text]
-    ontology_ids = params[:ontology_ids]
 
-    annotations = NCBO::Annotator.annotate(text, :apikey => $API_KEY, :ontologiesToKeepInResult => ontology_ids, :withDefaultStopWords => true)
+    options = { :ontologiesToKeepInResult => params[:ontology_ids],
+                :withDefaultStopWords => true,
+                :levelMax => params[:levelMax],
+                :semanticTypes => params[:semanticTypes],
+                :mappingTypes => params[:mappings],
+                :wholeWordOnly => params[:wholeWordOnly]
+    }
+
+    start = Time.now
+    annotations = ANNOTATOR.annotate(text, options)
+    LOG.add :debug, "Getting annotations: #{Time.now - start}s"
 
     annotations_hash = {}
+    highlight_cache = {}
+    start = Time.now
     annotations.annotations.each do |annotation|
-      annotation[:context][:highlight] = highlight_and_get_context(text, [annotation[:context][:from], annotation[:context][:to]]) unless annotations_hash.key?(annotation[:concept][:localConceptId])
-      annotations_hash[annotation[:concept][:localConceptId]] = annotation unless annotations_hash.key?(annotation[:concept][:localConceptId])
+      unless annotations_hash.key?(annotation[:concept][:localConceptId])
+        if highlight_cache.key?([annotation[:context][:from], annotation[:context][:to]])
+          annotation[:context][:highlight] = highlight_cache[[annotation[:context][:from], annotation[:context][:to]]]
+        else
+          annotation[:context][:highlight] = highlight_and_get_context(text, [annotation[:context][:from], annotation[:context][:to]])
+          highlight_cache[[annotation[:context][:from], annotation[:context][:to]]] = annotation[:context][:highlight]
+        end
+
+        annotations_hash[annotation[:concept][:localConceptId]] = annotation unless annotations_hash.key?(annotation[:concept][:localConceptId])
+      end
     end
     annotations.annotations = annotations_hash.values.sort {|a,b| b[:score] <=> a[:score]}
+    LOG.add :debug, "Processing annotations: #{Time.now - start}s"
 
     ontologies_hash = {}
     annotations.ontologies.each do |ont|
