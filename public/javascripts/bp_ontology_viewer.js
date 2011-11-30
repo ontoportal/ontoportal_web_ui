@@ -74,7 +74,7 @@ function displayTree(data) {
 
     if (typeof new_concept_id !== 'undefined') {
       // Get label for new title
-      concept_label = (new_concept_link.html() == null) ? "" : " - " + new_concept_link.html().trim();
+      concept_label = (new_concept_link.html() == null) ? "" : " - " + new_concept_link.html().trim().replace(/<(?:.|\n)*?>/gm, '');
 
       // Retrieve new concept and display tree
       jQuery.bioportal.ont_pages["terms"] = new jQuery.bioportal.OntologyPage("terms", "/ontologies/" + ontology_id + "?p=terms" + new_concept_param, "Problem retrieving terms", ontology_name + concept_label + " - Terms", "Terms");
@@ -134,12 +134,12 @@ function displayTree(data) {
         }
       }
 
-      concept_label = (getConceptLinkEl(new_concept_id).html() == null) ? "" : " - " + getConceptLinkEl(new_concept_id).html().trim();
+      concept_label = (getConceptLinkEl(new_concept_id).html() == null) ? "" : " - " + getConceptLinkEl(new_concept_id).html().trim().replace(/<(?:.|\n)*?>/gm, '');
       jQuery.bioportal.ont_pages["terms"].page_name =  ontology_name + concept_label + " - Terms"
       document.title = jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site;
     } else {
       // Retrieve new concept and display tree
-      concept_label = (getConceptLinkEl(new_concept_id).html() == null) ? "" : " - " + getConceptLinkEl(new_concept_id).html().trim();
+      concept_label = (getConceptLinkEl(new_concept_id).html() == null) ? "" : " - " + getConceptLinkEl(new_concept_id).html().trim().replace(/<(?:.|\n)*?>/gm, '');
       jQuery.bioportal.ont_pages["terms"] = new jQuery.bioportal.OntologyPage("terms", "/ontologies/" + ontology_id + "?p=terms", "Problem retrieving terms", ontology_name + concept_label + " - Terms", "Terms");
       jQuery.bioportal.ont_pages["terms"].retrieve_and_publish();
     }
