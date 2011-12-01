@@ -18,9 +18,9 @@ jQuery(document).ready(function(){
             { "sWidth": "5%" },
             { "sWidth": "20%" },
             { "sWidth": "20%" },
-            { "sWidth": "10%" },
+            { "sWidth": "7%" },
             { "sWidth": "5%", "bVisible": false },
-            { "sWidth": "30%" }
+            { "sWidth": "33%" }
       ]
     });
 
@@ -132,8 +132,8 @@ function getannotations() {
           var total_count = data.statistics.mgrep + data.statistics.mapping + data.statistics.closure;
           jQuery("#result_counts").html("total results " + " <span class='result_count'>" + total_count + "</span>&nbsp;&nbsp;&nbsp;&nbsp;(");
           jQuery("#result_counts").append(context_map["mgrep"] + " <span class='result_count'>" + data.statistics.mgrep + "</span>");
-          jQuery("#result_counts").append("&nbsp;&nbsp;/&nbsp;&nbsp;" + context_map["mapping"] + " <span class='result_count'>" + data.statistics.mapping + "</span>");
           jQuery("#result_counts").append("&nbsp;&nbsp;/&nbsp;&nbsp;" + context_map["closure"] + " <span class='result_count'>" + data.statistics.closure + "</span>");
+          jQuery("#result_counts").append("&nbsp;&nbsp;/&nbsp;&nbsp;" + context_map["mapping"] + " <span class='result_count'>" + data.statistics.mapping + "</span>");
           jQuery("#result_counts").append(")");
 
           // Add checkboxes to filters
