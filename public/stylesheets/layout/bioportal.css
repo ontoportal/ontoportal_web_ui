@@ -1892,3 +1892,23 @@ a.link_button > span.ui-button-text {
   width: 400px;
 }
 
+/************************************
+ * Annotator
+ ************************************/
+
+div#semanticTypes_chzn.chzn-container input.default {
+  font-style: oblique !important;
+}
+
+div#semanticTypes_chzn.chzn-container-active input.default {
+  font-style: normal !important;
+}
+
+div#annotations_filter, div#annotations_info {
+  display: none;
+}
+
+.result_count {
+  font-weight: bold;
+}
+
