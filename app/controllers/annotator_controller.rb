@@ -25,13 +25,15 @@ class AnnotatorController < ApplicationController
                 :withDefaultStopWords => true,
                 :levelMax => params[:levelMax],
                 :semanticTypes => params[:semanticTypes],
-                :mappingTypes => params[:mappings],
+                :mappingTypes => params[:mappingTypes],
                 :wholeWordOnly => params[:wholeWordOnly]
     }
 
     start = Time.now
     annotations = ANNOTATOR.annotate(text, options)
     LOG.add :debug, "Getting annotations: #{Time.now - start}s"
+
+    annotations.statistics[:parameters] = { :textToAnnotate => text, :apikey => $API_KEY }.merge(options)
 
     annotations_hash = {}
     highlight_cache = {}

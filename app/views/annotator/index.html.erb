@@ -14,27 +14,20 @@
   div#annotations_filter, div#annotations_info {
     display: none;
   }
+
+  .result_count {
+    font-weight: bold;
+  }
 </style>
 
 <script type="text/javascript">
   var annotationsTable;
+  var bp_last_params;
 
   jQuery(document).ready(function(){
       jQuery("#annotator_button").click(getannotations);
 
       jQuery("#semanticTypes").chosen();
-
-      // Slider for hierarchy
-      jQuery("#slider-range-min").slider({
-        range: "min",
-        value: 0,
-        min: 0,
-        max: 5,
-        slide: function(event, ui) {
-          jQuery("#levelMax").val(ui.value);
-        }
-      });
-      jQuery("#levelMax").val(jQuery("#slider-range-min").slider("value"));
 
       // Init annotation table
       annotationsTable = jQuery("#annotations").dataTable({
@@ -46,9 +39,11 @@
         },
         "aoColumns": [
               { "sWidth": "5%" },
-              { "sWidth": "30%" },
-              { "sWidth": "35%" },
-              { "sWidth": "30%" }
+              { "sWidth": "20%" },
+              { "sWidth": "20%" },
+              { "sWidth": "5%" },
+              { "sWidth": "5%", "bVisible": false },
+              { "sWidth": "35%" }
         ]
       });
 
@@ -57,10 +52,25 @@
   });
 
   function getannotations() {
-    jQuery("#not_enough_text_error").html("");
-    jQuery(".annotator_error").html("");
+    jQuery("#results_error").html("");
+    jQuery("#annotator_error").html("");
+
+    // Validation
+
+    if (jQuery("#annotation_text").val() == jQuery("#annotation_text").attr("title")) {
+      jQuery("#annotator_error").html(" Please enter text to annotate");
+      return;
+    }
+
+    // Really dumb, basic word counter. Counts spaces.
+    if (jQuery("#annotation_text").val().match(/ /g) != null && jQuery("#annotation_text").val().match(/ /g).length > 500) {
+      jQuery("#annotator_error").html("Please use less than 500 words");
+      return;
+    }
+
     jQuery(".annotator_spinner").show();
     jQuery("#annotations_container").hide();
+
 
     var params = {};
 
@@ -74,8 +84,13 @@
     if (typeof jQuery("#wholeWordOnly:checked").val() !== "undefined")
       params["wholeWordOnly"] = jQuery("#wholeWordOnly:checked").val();
 
-    if (jQuery("#semanticTypes").val() != null)
+    if (jQuery("#semanticTypes").val() != null) {
       params["semanticTypes"] = jQuery("#semanticTypes").val();
+      annotationsTable.fnSetColumnVis(4, true);
+      jQuery("#results_error").html("Only results from UMLS ontologies are displayed");
+    } else {
+      annotationsTable.fnSetColumnVis(4, false);
+    }
 
     params["levelMax"] = jQuery("#levelMax").val();
 
@@ -93,27 +108,32 @@
             var resultCount = 1;
             var ontologies = {};
             var terms = {};
+            var context_map = { "mgrep": "direct", "mapping": "mapping", "closure": "parent" };
+            bp_last_params = data.statistics.parameters;
 
             jQuery(".annotator_spinner").hide();
             jQuery("#annotations_container").show();
 
-            // Really dumb, basic word counter. Counts spaces.
-            if (jQuery("#annotation_text").val().match(/ /g) == null || jQuery("#annotation_text").val().match(/ /g).length < 50) {
-              jQuery("#not_enough_text_error").html("Please use more than 50 words for accurate results");
-            }
-
-            if (jQuery.isEmptyObject(data.annotations)) {
-              results.push("<tr><td>No annotations found</td></tr>");
-            } else {
+            if (!jQuery.isEmptyObject(data.annotations)) {
               jQuery(data.annotations).each(function(){
                 var annotation = this;
                 var ontology_name = data.ontologies[annotation.concept.localOntologyId].name;
                 var concept_name = annotation.concept.preferredName;
+
+                // Gather sem types for display
+                var semantic_types = [];
+                jQuery.each(annotation.concept.semantic_types, function(){
+                  semantic_types.push(this.description);
+                });
+
+                // Create an array representing the row in the table
                 var row = [
                   resultCount,
                   "<a href='/ontologies/"+annotation.concept.localOntologyId+"?p=terms&conceptid="+encodeURIComponent(annotation.concept.fullId)+"'>"+annotation.concept.preferredName+"</a>",
-                  annotation.context.highlight,
-                  "<a href='/ontologies/"+annotation.concept.localOntologyId+"'>"+ontology_name+"</a>"
+                  "<a href='/ontologies/"+annotation.concept.localOntologyId+"'>"+ontology_name+"</a>",
+                  context_map[annotation.context.contextName.toLowerCase()],
+                  semantic_types.join("<br/>"),
+                  annotation.context.highlight
                 ]
                 results.push(row);
                 resultCount++;
@@ -127,14 +147,30 @@
               });
             }
 
+            // Add result counts
+            var total_count = data.statistics.mgrep + data.statistics.mapping + data.statistics.closure;
+            jQuery("#result_counts").html("total results " + " <span class='result_count'>" + total_count + "</span>&nbsp;&nbsp;&nbsp;&nbsp;(");
+            jQuery("#result_counts").append(context_map["mgrep"] + " <span class='result_count'>" + data.statistics.mgrep + "</span>");
+            jQuery("#result_counts").append("&nbsp;&nbsp;/&nbsp;&nbsp;" + context_map["mapping"] + " <span class='result_count'>" + data.statistics.mapping + "</span>");
+            jQuery("#result_counts").append("&nbsp;&nbsp;/&nbsp;&nbsp;" + context_map["closure"] + " <span class='result_count'>" + data.statistics.closure + "</span>");
+            jQuery("#result_counts").append(")");
+
             // Add checkboxes to filter
             createFilterCheckboxes(ontologies, "filter_ontology_checkboxes", "ontology_filter_list");
             createFilterCheckboxes(terms, "filter_terms_checkboxes", "terms_filter_list");
+
+            // Add links for downloading results
+            annotatorPostForm("tabDelimited");
+            annotatorPostForm("text");
+            annotatorPostForm("xml");
 
             // Reset table
             annotationsTable.fnClearTable();
             annotationsTable.fnSortNeutral();
             <%# removeFilters();%>
+
+            // Generate parameters for list at bottom of page
+            generateParameters();
 
             // Need to re-init because we're not using "live" because of propogation issues
             filter_ontologies.init();
@@ -148,7 +184,7 @@
           error: function(data) {
             jQuery("#annotations_container").hide();
             jQuery(".annotator_spinner").hide();
-            jQuery(".annotator_error").html(" Problem getting annotations, please try again");
+            jQuery("#annotator_error").html(" Problem getting annotations, please try again");
           }
     });
   }
@@ -197,9 +233,9 @@
       });
 
       if (search_regex.length == 0) {
-        annotationsTable.fnFilter("", 3);
+        annotationsTable.fnFilter("", 2);
       } else {
-        annotationsTable.fnFilter(search_regex.join("|"), 3, true, false);
+        annotationsTable.fnFilter(search_regex.join("|"), 2, true, false);
       }
     }
   }
@@ -254,6 +290,40 @@
     oSettings.oApi._fnReDraw( oSettings );
   }
 
+  // Creates an HTML form with a button that will POST to the annotator
+  function annotatorPostForm(format) {
+    var format_map = { "xml": "XML", "text": "Text", "tabDelimited": "CSV" };
+    var params = bp_last_params;
+    params["format"] = format;
+
+    var form_fields = [];
+    jQuery.each(params, function(k, v){
+      if (v != null) {
+        form_fields.push("<input type='hidden' name='" + k + "' value='" + v + "'>");
+      }
+    });
+
+    var form = jQuery("<form action='http://<%=$REST_DOMAIN%>/obs/annotator' method='post' target='_blank'/>")
+      .append(form_fields.join(""))
+      .append("<input type='submit' value='" + format_map[format] + "'>");
+
+    jQuery("#download_links_" + format.toLowerCase()).html(form);
+  }
+
+  function generateParameters() {
+    var params = [];
+    var new_params = jQuery.extend(true, {}, bp_last_params);
+    delete new_params["apikey"]
+    delete new_params["format"]
+    jQuery.each(new_params, function(k, v){
+      if (v != null && v !== "") {
+        params.push(k + "=" + v);
+      }
+    });
+    jQuery("#annotator_parameters").html(params.join("&"));
+  }
+
+
 </script>
 
 <div style="padding: 1em;">
@@ -263,38 +333,40 @@
   </p>
 
   <div style="padding-bottom: 1em;">
-    <% textarea_title = "Please paste at least a paragraph (50 words or more) of text to use as an annotation source" %>
+    <% textarea_title = "Please paste text here to use as an annotation source" %>
     <%=text_area :annotation, :text, :title => textarea_title, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px; width: 600px;", :class => "help_text" %>
 
     <br style="margin-bottom: 10px;"/>
 
     <%=render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => @annotator_ontologies }%>
 
-    <b>Select Semantic Types</b><br/>
-    <%= select_tag :semanticTypes, options_for_select(@semantic_types_for_select), :multiple => 'true', "data-placeholder".to_sym => "Type here to select semantic types", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text" %><br/>
+    <b>Select UMLS Semantic Types</b><br/>
+    <%= select_tag :semanticTypes, options_for_select(@semantic_types_for_select), :multiple => 'true', "data-placeholder".to_sym => "Type here to select UMLS semantic types", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text" %><br/>
 
-    <b>Mappings:</b>&nbsp;&nbsp;
-    <%=check_box_tag :mappings, :automatic, :id => "mappings_automatic"%> <%=label_tag :mappings_automatic, "Automatic"%>&nbsp;&nbsp;
-    <%=check_box_tag :mappings, :manual, :id => "mappings_manual"%> <%=label_tag :mappings_manual, "Manual"%><br/>
+    <b>Include Mappings:</b>&nbsp;&nbsp;
+    <%=check_box_tag :mappings, :automatic, false, :id => "mappings_automatic"%> <%=label_tag :mappings_automatic, "Automatic"%>&nbsp;&nbsp;
+    <%=check_box_tag :mappings, :manual, false, :id => "mappings_manual"%> <%=label_tag :mappings_manual, "Manual"%><br/>
 
     <br/>
 
-    <b>Maximum Level:</b>&nbsp;&nbsp;
-    <%=text_field_tag :levelMax, 0, :style => "border: 0;"%>
-    <div id="slider-range-min" style="max-width: 150px; margin: 3px 0 15px 7px"></div>
+    <p>
+      <b>Include Parents Up To Level:</b>&nbsp;&nbsp;
+      <%=select_tag :levelMax, "<option value='0'>None</option><option selected='selected' value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option><option value='9'>9</option><option value='10'>10</option><option value='999'>All</option>", :style => "width: 50px;"%>
+    </p>
 
-    <%=check_box_tag :wholeWordOnly, :true%> <b><%=label_tag :wholeWordOnly, "Whole Words Only"%></b><br/>
+    <%=check_box_tag :wholeWordOnly, :true%> <b><%=label_tag :wholeWordOnly, "Match Whole Words Only"%></b><br/>
 
     <input type="button" id="annotator_button" value="Get annotations" style="margin-top: 10px;" class="link_button">
     <span class="annotator_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
-    <span style='color: red;' class='annotator_error'></span>
+    <span style='color: red;' id="annotator_error" class='annotator_error'></span>
   </div>
 </div>
 
 <div id="annotations_container" style="display: none; padding: 0 13px; margin: 0 0 2em;">
+  <div style="float: right; font-style: oblique; color: gray;" id="result_counts"></div>
   <h2 style="margin-bottom: 0;">Annotations</h2>
-  <div id="not_enough_text_error" style="color: red; margin-bottom: 7px;"></div>
-  <table id="annotations" style="display: inline-block; min-width: 700px;" class="zebra">
+  <div id="results_error" style="color: red; margin-bottom: 7px;"></div>
+  <table id="annotations" style="display: inline-block; min-width: 700px; width: 100%;" class="zebra">
     <thead>
       <tr>
         <th>Rank</th>
@@ -302,14 +374,28 @@
           Term
           <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_terms" class="bp_popup_link">filter</a></span><div id="terms_filter_list" class="bp_popup_list" style="display: none;"></div></span>
         </th>
-        <th>Context</th>
         <th style="padding-right: 6px">
           Ontology
           <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_ontologies" class="bp_popup_link">filter</a></span><div id="ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span>
         </th>
+        <th>Match Type</th>
+        <th>UMLS Sem Type</th>
+        <th>Context</th>
       </tr>
     </thead>
   </table>
+
+  <div id="download_links" style="margin-top: 1.5em;">
+    <table border=0 style="border: 0; margin-bottom: .5em;">
+      <tr>
+        <td style="padding: 0 3px 0 0;"><b>Download Results </b></td>
+        <td id="download_links_text" style="padding: 3px;"></td>
+        <td id="download_links_tabdelimited" style="padding: 3px;"></td>
+        <td id="download_links_xml" style="padding: 3px;"></td>
+      </tr>
+    </table>
+    <span style="font-size: 8pt;">Parameters for use in POST:&nbsp;&nbsp;&nbsp;<span id="annotator_parameters" style="color: gray; font-weight: bold;"></span></span>
+  </div>
 </div>
 
 

@@ -115,14 +115,14 @@
                     <td>
             <%= javascript_include_tag "/javascripts/widgets/form_complete.js" %>
             Example 1 (start typing the term name to get its full URI)
-            <br/> 
-            <input type="text" name="a" class="bp_form_complete-<%= @ontology.ontologyId%>-uri" size="100"/><br/> 
+            <br/>
+            <input type="text" name="a" class="bp_form_complete-<%= @ontology.ontologyId%>-uri" size="100"/><br/>
             Example 2 (get the ID for a term)
-            <br/> 
-            <input type="text" name="b" class="bp_form_complete-<%= @ontology.ontologyId%>-shortid" size="100"/><br/> 
+            <br/>
+            <input type="text" name="b" class="bp_form_complete-<%= @ontology.ontologyId%>-shortid" size="100"/><br/>
             Example 3 (get the preferred name for a term)
-            <br/> 
-            <input type="text" name="c" class="bp_form_complete-<%= @ontology.ontologyId%>-name" size="100"/> 
+            <br/>
+            <input type="text" name="c" class="bp_form_complete-<%= @ontology.ontologyId%>-name" size="100"/>
                         <div id="form" style="display:none;">
               <div class="enable-lists" >
                             <h2>Step 2: Follow the Instructions</h2>
@@ -136,13 +136,13 @@
                                     In the header for the page where you want the form field, include the <b>form_complete.js</b> file
                                 </li>
                                 <li>
-                                    On your form, for the fields where you want to use the term-selection widget, specify the field's class in the following format: 
+                                    On your form, for the fields where you want to use the term-selection widget, specify the field's class in the following format:
                                     <code>
                                         bp_form_complete-{ontology_id_list}-{value}
                                     </code>
                                     <ul>
                                         <li>
-                                            For example, 
+                                            For example,
                                             <code>
                                                 bp_form_complete-1032-uri
                                             </code>
@@ -304,14 +304,14 @@ Example 1 (start typing the term name to get its full URI)
                           <param name="quality" value="high" />
                           <param name="bgcolor" value="#ffffff" />
                           <param name="allowScriptAccess" value="always" />
-                          <param name="flashVars" value="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true" />
+                          <param name="flashVars" value="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true&server=<%= $REST_URL %>" />
                           <embed src="<%= $FLEX_URL%>/OntologyTree.swf" quality="high" bgcolor="#ffffff"
                             width="300" height="100%" name="OntologyTree" align="middle"
                             play="true"
                             loop="false"
                             allowScriptAccess="always"
                             type="application/x-shockwave-flash"
-                            flashVars="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true"
+                            flashVars="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true&server=<%= $REST_URL %>"
                             pluginspage="http://www.adobe.com/go/getflashplayer">
                           </embed>
                         </object>
@@ -328,14 +328,14 @@ Example 1 (start typing the term name to get its full URI)
   <param name="quality" value="high" />
   <param name="bgcolor" value="#ffffff" />
   <param name="allowScriptAccess" value="always" />
-  <param name="flashVars" value="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true" />
-  <embed src="<%= $FLEX_URL%>/OntologyTree.swf" quality="high" bgcolor="#ffffff"
+  <param name="flashVars" value="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true&server=<%= $REST_URL %>" />
+  <embed src="<%=$UI_URL%><%= $FLEX_URL%>/OntologyTree.swf" quality="high" bgcolor="#ffffff"
     width="300" height="100%" name="OntologyTree" align="middle"
     play="true"
     loop="false"
     allowScriptAccess="always"
     type="application/x-shockwave-flash"
-    flashVars="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true"
+    flashVars="ontology=<%= @ontology.ontologyId%>&alerterrors=false&canchangeontology=false&virtual=true&server=<%= $REST_URL %>"
     pluginspage="http://www.adobe.com/go/getflashplayer">
   </embed>
 </object>
@@ -344,7 +344,7 @@ Example 1 (start typing the term name to get its full URI)
                             <p>
                                 You can also leave the ontology parameter blank to get a list of all ontologies:
                                 <br/>
-                                <b>flashVars="ontology=&alerterrors=false&canchangeontology=true"</b>
+                                <b>flashVars="ontology=&alerterrors=false&canchangeontology=true&server=<%= $REST_URL %>"</b>
                             </p>
                             <p>
                                 For more help visit <a target="_blank" href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
