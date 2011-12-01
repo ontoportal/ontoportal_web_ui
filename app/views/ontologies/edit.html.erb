@@ -48,23 +48,23 @@ function showRestrictionLicensed() {
           jQuery(this).removeClass("defaultTextActive");
         }
       });
-      
+
       jQuery(".defaultText").focus(function(srcc){
         if ($(this).val() == $(this)[0].title) {
           $(this).removeClass("defaultTextActive");
           $(this).val("");
         }
       });
-      
+
       jQuery(".defaultText").blur(function(){
         if ($(this).val() == "") {
           $(this).addClass("defaultTextActive");
           $(this).val($(this)[0].title);
         }
       });
-      
+
       jQuery(".defaultText").blur();
-      
+
       // Properly display the information for 'File Location' based on radio button
       if (jQuery("#ontology_isRemote_0").is(":checked")) {
         location_toggle("upload");
@@ -81,18 +81,18 @@ function showRestrictionLicensed() {
 
       // Wire up options for restriction how an ontology is viewed
       jQuery("#ontology_viewingRestriction").change(function(){
-      	var select = jQuery(this);
-      	if (select.val() == "private") {
+        var select = jQuery(this);
+        if (select.val() == "private") {
           hideAllRestrictions()
           showRestrictionPrivate();
         } else if (select.val() == "licensed") {
           hideAllRestrictions();
           showRestrictionLicensed();
-      	} else if (select.val() == "public") {
+        } else if (select.val() == "public") {
           hideAllRestrictions();
-      	}
+        }
       });
-      
+
       // Make sure you can see the account select if the select list has private selected
       if (jQuery("#ontology_viewingRestriction").val() == "private") {
         showRestrictionPrivate();
@@ -101,7 +101,7 @@ function showRestrictionLicensed() {
       }
 
     });
-    
+
     jQuery("form").submit(function(){
       jQuery(".defaultText").each(function(){
           if ($(this).val() == this.title) {
@@ -127,7 +127,7 @@ function showRestrictionLicensed() {
     </div>
     <%end %>
     <% form_for(:ontology, :url => ontology_path(@ontology.id), :html => { :method => :put }) do |f| %>
-    <h1>Edit Metadata</h1>
+    <h1>Edit Metadata for <%=@ontology.displayLabel%> (version <%=@ontology.versionNumber%>)</h1>
     <%=hidden_field :ontology, :ontologyId %>
     <%=hidden_field :ontology, :userId %>
     <%=hidden_field :ontology, :isManual %>
@@ -168,7 +168,7 @@ function showRestrictionLicensed() {
         </tr>
         <tr>
             <th>
-                Ontology Version 
+                Ontology Version
             </th>
             <td>
                 <%=text_field :ontology, :versionNumber %>
@@ -206,31 +206,31 @@ function showRestrictionLicensed() {
                   jQuery('#' + input_div).show();
                 }
               </script>
-            
-            
+
+
               <%=radio_button :ontology, :isRemote, 0, :onclick=>"location_toggle('upload');" %> Upload Local File
               <br/>
               <span style="font-size:11px;">(choose a file on your local file system to upload)</span>
               <div class="hidden_field" id="upload"<%if @ontology.isRemote.to_i.eql?(1) || @ontology.isRemote.to_i.eql?(3) %>style="display:none;"<%end%>>
                 <%=file_field :ontology, :filePath %>
               </div>
-              
-              <hr/><%=radio_button :ontology, :isRemote, 1, :onclick=>"location_toggle('remote');" %> Load from URL 
+
+              <hr/><%=radio_button :ontology, :isRemote, 1, :onclick=>"location_toggle('remote');" %> Load from URL
               <br/>
               <span style="font-size:11px;">(new versions loaded daily)</span>
               <div class="hidden_field" id="remote"<%if !@ontology.isRemote.to_i.eql?(0) || !@ontology.isRemote.to_i.eql?(3) %>style="display:none;"<%end%>>
                 URL: <%=text_field :ontology, :downloadLocation, :size => 100 %>
               </div>
-              
-              <hr/><%=radio_button :ontology, :isRemote, 3, :onclick=>"$('.hidden_field').hide();" %> Metadata Only 
+
+              <hr/><%=radio_button :ontology, :isRemote, 3, :onclick=>"$('.hidden_field').hide();" %> Metadata Only
               <br/>
               <span style="font-size:11px;">(choose this option if you want users to search and view only the <em>metadata</em> for your ontology, but not its classes and properties) </span>
             </td>
         </tr>
-        
-		<!-- Ontology format-specific fields -->
-		
-		<%if @ontology.format.include?("OWL") || @ontology.format.include?("PROTEGE") %>
+
+    <!-- Ontology format-specific fields -->
+
+    <%if @ontology.format.include?("OWL") || @ontology.format.include?("PROTEGE") %>
           <tr>
               <th>
                   Prefered Name Property
@@ -284,40 +284,40 @@ function showRestrictionLicensed() {
               </td>
           </tr>
         <%end %>
-		
-		<% if @ontology.format.include?("RRF") %>
-	        <tr>
-	            <th>
-	                Target Terminologies (RRF Only)
-	            </th>
-	            <td>
-	                <%=text_field :ontology,:targetTerminologies, :title => 'Target Terminologies' %>
-	            </td>
-	        </tr>
-		<% end %>
+
+    <% if @ontology.format.include?("RRF") %>
+          <tr>
+              <th>
+                  Target Terminologies (RRF Only)
+              </th>
+              <td>
+                  <%=text_field :ontology,:targetTerminologies, :title => 'Target Terminologies' %>
+              </td>
+          </tr>
+    <% end %>
         <tr>
             <th>
                 Ontology Viewing Restrictions
             </th>
             <td>
-            		<%view_restiction_options = [["Public", "public"], ["Private", "private"], ["Licensed", "licensed"]]%>
-            		<%selected = @ontology.private? ? "private" : ""%>
+                <%view_restiction_options = [["Public", "public"], ["Private", "private"], ["Licensed", "licensed"]]%>
+                <%selected = @ontology.private? ? "private" : ""%>
                 <%selected = @ontology.licensed? ? "licensed" : selected%>
-            		<%display_private = @ontology.private? ? "" : "display: none;"%>
+                <%display_private = @ontology.private? ? "" : "display: none;"%>
                 <%display_licensed = @ontology.licensed? ? "" : "display: none;"%>
 
                 <%=select :ontology, :viewingRestriction, view_restiction_options, { :selected => selected }%>
 
                 <div id="viewingRestrictionsPrivate" class="viewing_restriction_types" style="padding: .5em; border: thin solid #C1DAD7; .5em .5em .5em 0; <%=display_private%>">
-                	<h3>Add or remove accounts that are allowed to view terms in this ontology using the account name</h3> 
-                	<%=text_field :useracl, :user_acl_add, :title => "enter account name", :class => "defaultText"%>
-                	&nbsp;<input type="button" id="user_acl_add_button" value="Add Account">
-                	<span class="user_acl_add_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
-                	<span style='color: red;' class='user_acl_add_error'></span>
+                  <h3>Add or remove accounts that are allowed to view terms in this ontology using the account name</h3>
+                  <%=text_field :useracl, :user_acl_add, :title => "enter account name", :class => "defaultText"%>
+                  &nbsp;<input type="button" id="user_acl_add_button" value="Add Account">
+                  <span class="user_acl_add_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
+                  <span style='color: red;' class='user_acl_add_error'></span>
 
-									<% disabled = @ontology.private? ? {} : {:disabled => "true"} %>
-                	<%=select :ontology, :useracl, @ontology.useracl_select, {  }, { :multiple => true }.merge(disabled)%>
-              	</div>
+                  <% disabled = @ontology.private? ? {} : {:disabled => "true"} %>
+                  <%=select :ontology, :useracl, @ontology.useracl_select, {  }, { :multiple => true }.merge(disabled)%>
+                </div>
 
                 <div id="viewingRestrictionsLicensed" class="viewing_restriction_types" style="padding: .5em; border: thin solid #C1DAD7; margin: .5em .5em .5em 0; <%=display_licensed%>">
                   <b>License Text</b><br/>The text below explains what licensing information you want to collect before allowing access. We will display this text and record the user's response when the user attempts to access your ontology.
@@ -325,7 +325,7 @@ function showRestrictionLicensed() {
                   <% disabled = @ontology.licensed? ? {} : {:disabled => "true"} %>
                   <% @ontology.licenseInformation = @ontology.licenseInformation.nil? || @ontology.licenseInformation.empty? ? "Please enter your license number in the text box below to access this ontology" : @ontology.licenseInformation%>
                   <%=text_area :ontology, :licenseInformation, { :rows => 5, :class => "viewing_restriction_disabled", :style => "width: 90%;" }.merge(disabled)%>
-              	</div>
+                </div>
             </td>
         </tr>
         <tr>

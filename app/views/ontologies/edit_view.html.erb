@@ -8,7 +8,7 @@
             buttonImageOnly: true
         });
     });
-    
+
 </script>
 <script type="text/javascript">
     // Used to provide default text in fields
@@ -22,24 +22,24 @@
                 jQuery(this).removeClass("defaultTextActive");
             }
         });
-        
+
         jQuery(".defaultText").focus(function(srcc){
             if ($(this).val() == $(this)[0].title) {
                 $(this).removeClass("defaultTextActive");
                 $(this).val("");
             }
         });
-        
+
         jQuery(".defaultText").blur(function(){
             if ($(this).val() == "") {
                 $(this).addClass("defaultTextActive");
                 $(this).val($(this)[0].title);
             }
         });
-        
+
         jQuery(".defaultText").blur();
     });
-    
+
     jQuery("form").submit(function(){
         jQuery(".defaultText").each(function(){
             if ($(this).val() == this.title) {
@@ -52,36 +52,36 @@
     // Handles showing/hiding options for a particular ontology format
     jQuery(document).ready(function(){
         jQuery("#ontology_format").change(ontologyFormatChange);
-        
+
         // Check to see if owl is selected, show options if so
         ontologyFormatChange();
     });
-    
+
     function ontologyFormatChange(format){
         var selected = jQuery("#ontology_format option:selected");
 
-		switch(selected.val()){
-			case 'OWL':
-			case 'OWL-DL':
-			case 'OWL-FULL':
-			case 'OWL-LITE':
-				jQuery(".format_options").optionsOut("fast");				
-				jQuery("#owl_options").optionsIn("fast");
-				break;
-			case 'RRF':
-				jQuery(".format_options").optionsOut("fast");				
-				jQuery("#rrf_options").optionsIn("fast");
-				break;
-			default:
-				jQuery(".format_options").optionsOut("fast");				
-		}
+    switch(selected.val()){
+      case 'OWL':
+      case 'OWL-DL':
+      case 'OWL-FULL':
+      case 'OWL-LITE':
+        jQuery(".format_options").optionsOut("fast");
+        jQuery("#owl_options").optionsIn("fast");
+        break;
+      case 'RRF':
+        jQuery(".format_options").optionsOut("fast");
+        jQuery("#rrf_options").optionsIn("fast");
+        break;
+      default:
+        jQuery(".format_options").optionsOut("fast");
     }
-    
+    }
+
     jQuery.fn.optionsIn = function(speed, easing, callback){
         jQuery("#format_spacing").css("margin", "1em 0");
         this.fadeIn(speed);
     };
-    
+
     jQuery.fn.optionsOut = function(speed, easing, callback){
         this.css("display", "none");
         jQuery("#format_spacing").css("margin", "0");
@@ -103,11 +103,7 @@
     <%end %>
     <div style="width:500px">
         <span class="asterik" style="float:right;">* fields are required</span>
-        <%if @ontology.ontologyId.nil? %>
-        <h1>Edit View Metadata</h1>
-        <%else %>
-        <h1>Edit View Metadata</h1>
-        <%end %>
+        <h1>Edit View Metadata for <%=@ontology.displayLabel%> (version <%=@ontology.versionNumber%>)</h1>
     </div>
     <%=hidden_field :ontology, :ontologyId %>
     <%=hidden_field :ontology, :viewOnOntologyVersionId %>
@@ -118,7 +114,7 @@
         th {
             width: 30%;
         }
-        
+
         textarea {
             width: 400px;
         }
@@ -148,7 +144,7 @@
                 <%= text_field :ontology, :abbreviation %>
             </td>
         </tr>
-		<%if @ontology.format.include?("OWL") || @ontology.format.include?("PROTEGE") %>
+    <%if @ontology.format.include?("OWL") || @ontology.format.include?("PROTEGE") %>
       <tr>
           <th>
               Prefered Name Property
@@ -186,17 +182,17 @@
           </td>
       </tr>
     <%end %>
-		
-		<% if @ontology.format.include?("RRF") %>
-	        <tr>
-	            <th>
-	                Target Terminologies (RRF Only)
-	            </th>
-	            <td>
-	                <%=text_field :ontology,:targetTerminologies, :title => 'Target Terminologies' %>
-	            </td>
-	        </tr>
-		<% end %>
+
+    <% if @ontology.format.include?("RRF") %>
+          <tr>
+              <th>
+                  Target Terminologies (RRF Only)
+              </th>
+              <td>
+                  <%=text_field :ontology,:targetTerminologies, :title => 'Target Terminologies' %>
+              </td>
+          </tr>
+    <% end %>
 
         <tr>
             <th>

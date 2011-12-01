@@ -95,7 +95,7 @@
         <div id="adminster_options" class="hidden" style="text-align: left;">
           <ul>
             <li><%=link_to "Submit New Version",new_ontology_path(:id=>@ontology.ontologyId) %></li>
-            <li><%=link_to "Edit Ontology Information",edit_ontology_path(:id=>@ontology.id) %></li>
+            <li><%=link_to "Edit Ontology Information (version #{@ontology.versionNumber})",edit_ontology_path(:id=>@ontology.id) %></li>
           </ul>
         </div>
       </span>
