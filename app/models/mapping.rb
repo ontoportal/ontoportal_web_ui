@@ -105,11 +105,11 @@ class Mapping
   end
 
   def source_name
-    DataAccess.getNodeLabel(self.source_ontology_obj.id, self.source).label_html rescue "missing term"
+    DataAccess.getNodeLabel(self.source_ontology_obj.id, self.source).label_html rescue nil
   end
 
   def destination_name
-    DataAccess.getNodeLabel(self.target_ontology_obj.id, self.target).label_html rescue "missing term"
+    DataAccess.getNodeLabel(self.target_ontology_obj.id, self.target).label_html rescue nil
   end
 
   def source_ont_name

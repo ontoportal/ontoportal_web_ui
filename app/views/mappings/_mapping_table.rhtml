@@ -20,6 +20,7 @@
   <%end%>
 
   <%for map in @mappings%>
+    <% next if map.destination_name.nil? %>
     <tr class="human" id="<%=map.id.gsub(/.*\//, "")%>">
       <%if @delete_mapping_permission%>
         <td style="padding: 6px 12px;">
