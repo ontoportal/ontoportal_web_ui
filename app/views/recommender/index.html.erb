@@ -1,10 +1,21 @@
 <% require 'ostruct' %>
 
+<%=stylesheet_link_tag "/javascripts/JqueryPlugins/facebox/facebox.css"%>
+<%=javascript_include_tag "JqueryPlugins/facebox/facebox.js"%>
+
 <%@title = "Ontology Recommender"%>
+<style type="text/css">
+  .found_concepts {
+    display: none;
+  }
+</style>
 
 <script type="text/javascript">
   jQuery(document).ready(function(){
     jQuery("#recommender_button").click(getRecommendations);
+
+    jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
+    jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
   });
 
   function getRecommendations() {
@@ -45,12 +56,25 @@
             } else {
               jQuery(data).each(function(){
                 var rec = this;
-                links.push("<tr><td style='text-align: right; padding-right: 10px;'>"+resultCount+"</td><td style='padding: 6px 12px 6px 12px;'><a href='/ontologies/"+rec.virtualOntologyId+"'>"+rec.name+"</a></td><td style='text-align: right;'>"+rec.nbAnnotation+" of "+rec.ontologySize+"</td></tr>");
+
+                var found_concepts = [];
+                jQuery.each(rec.annotatingConcepts, function(){
+                  found_concepts.push("<a href='/ontologies/"+rec.virtualOntologyId+"?p=terms&conceptid="+encodeURIComponent(this.fullId)+"'>"+this.preferredName+"</a>");
+                });
+
+                var found_concepts_html = "<div id='found_concepts_"+resultCount+"' class='found_concepts'><h2 style='margin-top: -2em;'>Matched Terms</h2>" + found_concepts.join("<br/>") + "</div>";
+
+                links.push("<tr><td style='text-align: right; padding-right: 10px;'>"+resultCount+"</td><td style='padding: 6px 12px 6px 12px;'><a href='/ontologies/"+rec.virtualOntologyId+"'>"+rec.name+"</a></td><td style='text-align: right;'><a href='#found_concepts_"+resultCount+"' rel='facebox'>"+rec.nbAnnotatingConcept+" of "+rec.ontologySize+"</a>"+found_concepts_html+"</td></tr>");
+
                 resultCount++;
               });
             }
 
             jQuery("#recommendations").html(links.join(""));
+
+            // Wire concept modal dialog
+            jQuery("a[rel*=facebox]").facebox();
+
             jQuery("#recommendations_container").show();
           },
           error: function(data) {

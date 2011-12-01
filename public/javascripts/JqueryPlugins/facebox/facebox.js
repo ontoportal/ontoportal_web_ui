@@ -251,6 +251,7 @@
       var target = href.replace(url,'')
       if (target == '#') return
       $.facebox.reveal($(target), klass)
+      $(target).show()
 
     // image
     } else if (href.match($.facebox.settings.imageTypesRegexp)) {
