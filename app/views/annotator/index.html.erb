@@ -3,24 +3,6 @@
 <%=javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.js"%>
 <%=javascript_include_tag "bp_annotator.js"%>
 
-<style type="text/css">
-  div#semanticTypes_chzn.chzn-container input.default {
-    font-style: oblique !important;
-  }
-
-  div#semanticTypes_chzn.chzn-container-active input.default {
-    font-style: normal !important;
-  }
-
-  div#annotations_filter, div#annotations_info {
-    display: none;
-  }
-
-  .result_count {
-    font-weight: bold;
-  }
-</style>
-
 <div style="padding: 1em;">
   <h1>Annotator</h1>
   <p>
@@ -28,7 +10,7 @@
   </p>
 
   <div style="padding-bottom: 1em;">
-    <% textarea_title = "Please paste text here to use as an annotation source" %>
+    <% textarea_title = "Enter or paste text to be annotated" %>
     <%=text_area :annotation, :text, :title => textarea_title, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px; width: 600px;", :class => "help_text" %>
 
     <br style="margin-bottom: 10px;"/>
@@ -45,8 +27,8 @@
     <br/>
 
     <p>
-      <b>Include Parents Up To Level:</b>&nbsp;&nbsp;
-      <%=select_tag :levelMax, "<option value='0'>None</option><option selected='selected' value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option><option value='9'>9</option><option value='10'>10</option><option value='999'>All</option>", :style => "width: 50px;"%>
+      <b>Include Ancestors Up To Level:</b>&nbsp;&nbsp;
+      <%=select_tag :levelMax, "<option value='0'>None</option><option selected='selected' value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option><option value='9'>9</option><option value='10'>10</option><option value='999'>All</option>", :style => "width: 70px;"%>
     </p>
 
     <%=check_box_tag :wholeWordOnly, :true%> <b><%=label_tag :wholeWordOnly, "Match Whole Words Only"%></b><br/>
@@ -64,7 +46,7 @@
   <table id="annotations" style="display: inline-block; min-width: 700px; width: 100%;" class="zebra">
     <thead>
       <tr>
-        <th>Rank</th>
+        <th></th>
         <th style="padding-right: 6px;">
           Term
           <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_terms" class="bp_popup_link">filter</a></span><div id="terms_filter_list" class="bp_popup_list" style="display: none;"></div></span>
@@ -73,7 +55,10 @@
           Ontology
           <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_ontologies" class="bp_popup_link">filter</a></span><div id="ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span>
         </th>
-        <th>Match Type</th>
+        <th style="padding-right: 6px">
+          Matches
+          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_match_type" class="bp_popup_link">filter</a></span><div id="match_type_filter_list" class="bp_popup_list" style="display: none;"></div></span>
+        </th>
         <th>UMLS Sem Type</th>
         <th>Context</th>
       </tr>

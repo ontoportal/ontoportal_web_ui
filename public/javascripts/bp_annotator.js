@@ -18,14 +18,15 @@ jQuery(document).ready(function(){
             { "sWidth": "5%" },
             { "sWidth": "20%" },
             { "sWidth": "20%" },
-            { "sWidth": "5%" },
+            { "sWidth": "10%" },
             { "sWidth": "5%", "bVisible": false },
-            { "sWidth": "35%" }
+            { "sWidth": "30%" }
       ]
     });
 
     filter_ontologies.init();
     filter_terms.init();
+    filter_match_type.init();
 });
 
 function getannotations() {
@@ -85,7 +86,8 @@ function getannotations() {
           var resultCount = 1;
           var ontologies = {};
           var terms = {};
-          var context_map = { "mgrep": "direct", "mapping": "mapping", "closure": "parent" };
+          var match_types = {};
+          var context_map = { "mgrep": "direct", "mapping": "mapping", "closure": "ancestor" };
           bp_last_params = data.statistics.parameters;
 
           jQuery(".annotator_spinner").hide();
@@ -121,6 +123,8 @@ function getannotations() {
               // Keep track of how many results are associated with each term
               terms[concept_name.toLowerCase()] = (concept_name.toLowerCase() in terms) ? terms[concept_name.toLowerCase()] + 1 : 1;
 
+              // Keep track of match types
+              match_types[context_map[annotation.context.contextName.toLowerCase()]] = (context_map[annotation.context.contextName.toLowerCase()] in match_types) ? match_types[context_map[annotation.context.contextName.toLowerCase()]] + 1 : 1;
             });
           }
 
@@ -132,9 +136,10 @@ function getannotations() {
           jQuery("#result_counts").append("&nbsp;&nbsp;/&nbsp;&nbsp;" + context_map["closure"] + " <span class='result_count'>" + data.statistics.closure + "</span>");
           jQuery("#result_counts").append(")");
 
-          // Add checkboxes to filter
+          // Add checkboxes to filters
           createFilterCheckboxes(ontologies, "filter_ontology_checkboxes", "ontology_filter_list");
           createFilterCheckboxes(terms, "filter_terms_checkboxes", "terms_filter_list");
+          createFilterCheckboxes(match_types, "filter_match_type_checkboxes", "match_type_filter_list");
 
           // Add links for downloading results
           annotatorPostForm("tabDelimited");
@@ -152,6 +157,7 @@ function getannotations() {
           // Need to re-init because we're not using "live" because of propogation issues
           filter_ontologies.init();
           filter_terms.init();
+          filter_match_type.init();
 
           // Add data
           annotationsTable.fnAddData(results);
@@ -250,11 +256,46 @@ var filter_terms = {
   }
 }
 
+var filter_match_type = {
+  init: function() {
+    jQuery("#filter_match_type").bind("click", function(e){bp_popup_init(e)});
+    // Need to use bind to avoid "live" propogation issues
+    jQuery(".filter_match_type_checkboxes").bind("click", function(e){filter_match_type.filterMatchType(e)});
+    jQuery("#match_type_filter_list").click(function(e){e.stopPropagation()});
+    this.cleanup();
+  },
+
+  cleanup: function() {
+    jQuery("html").click(bp_popup_cleanup);
+    jQuery(document).keyup(function(e) {
+      if (e.keyCode == 27) { bp_popup_cleanup(); } // esc
+    });
+  },
+
+  filterMatchType: function(e) {
+    e.stopPropagation();
+
+    var search_regex = [];
+    jQuery(".filter_match_type_checkboxes:checked").each(function(){
+      // Escape characters used in regex
+      search_regex.push(jQuery(this).val().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"));
+    });
+
+    if (search_regex.length == 0) {
+      annotationsTable.fnFilter("", 3);
+    } else {
+      annotationsTable.fnFilter("^" + search_regex.join("(?!.)|^") + "(?!.)", 3, true, false);
+    }
+  }
+}
+
 var removeFilters = function() {
   jQuery(".filter_ontology_checkboxes").attr("checked", false);
   jQuery(".filter_terms_checkboxes").attr("checked", false);
+  jQuery(".filter_match_type_checkboxes").attr("checked", false);
   annotationsTable.fnFilter("", 1);
   annotationsTable.fnFilter("", 2);
+  annotationsTable.fnFilter("", 3);
 }
 
 // Datatables reset sort extension
