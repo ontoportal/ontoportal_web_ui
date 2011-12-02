@@ -1,6 +1,8 @@
 var annotationsTable;
 var bp_last_params;
 
+var BP_COLUMNS = { terms: 0, ontologies: 1, types: 2, sem_types: 3 }
+
 jQuery(document).ready(function(){
     jQuery("#annotator_button").click(getannotations);
 
@@ -15,12 +17,11 @@ jQuery(document).ready(function(){
         sZeroRecords: "No annotations found"
       },
       "aoColumns": [
-            { "sWidth": "5%" },
             { "sWidth": "20%" },
-            { "sWidth": "20%" },
+            { "sWidth": "23%" },
             { "sWidth": "7%" },
             { "sWidth": "5%", "bVisible": false },
-            { "sWidth": "33%" }
+            { "sWidth": "35%" }
       ]
     });
 
@@ -42,7 +43,7 @@ function getannotations() {
 
   // Really dumb, basic word counter. Counts spaces.
   if (jQuery("#annotation_text").val().match(/ /g) != null && jQuery("#annotation_text").val().match(/ /g).length > 500) {
-    jQuery("#annotator_error").html("Please use less than 500 words");
+    jQuery("#annotator_error").html("Please use less than 500 words. If you need to annotate larger pieces of text you can use the <a href='http://www.bioontology.org/wiki/index.php/Annotator_User_Guide' target='_blank'>Annotator Web Service</a>");
     return;
   }
 
@@ -64,10 +65,10 @@ function getannotations() {
 
   if (jQuery("#semanticTypes").val() != null) {
     params["semanticTypes"] = jQuery("#semanticTypes").val();
-    annotationsTable.fnSetColumnVis(4, true);
+    annotationsTable.fnSetColumnVis(BP_COLUMNS.sem_types, true);
     jQuery("#results_error").html("Only results from UMLS ontologies are displayed because you selected a UMLS semantic type");
   } else {
-    annotationsTable.fnSetColumnVis(4, false);
+    annotationsTable.fnSetColumnVis(BP_COLUMNS.sem_types, false);
   }
 
   params["levelMax"] = jQuery("#levelMax").val();
@@ -107,7 +108,6 @@ function getannotations() {
 
               // Create an array representing the row in the table
               var row = [
-                resultCount,
                 "<a href='/ontologies/"+annotation.concept.localOntologyId+"?p=terms&conceptid="+encodeURIComponent(annotation.concept.fullId)+"'>"+annotation.concept.preferredName+"</a>",
                 "<a href='/ontologies/"+annotation.concept.localOntologyId+"'>"+ontology_name+"</a>",
                 context_map[annotation.context.contextName.toLowerCase()],
@@ -158,7 +158,6 @@ function getannotations() {
           filter_ontologies.init();
           filter_terms.init();
           filter_match_type.init();
-
           // Add data
           annotationsTable.fnAddData(results);
 
@@ -216,9 +215,9 @@ var filter_ontologies = {
     });
 
     if (search_regex.length == 0) {
-      annotationsTable.fnFilter("", 2);
+      annotationsTable.fnFilter("", BP_COLUMNS.ontologies);
     } else {
-      annotationsTable.fnFilter(search_regex.join("|"), 2, true, false);
+      annotationsTable.fnFilter(search_regex.join("|"), BP_COLUMNS.ontologies, true, false);
     }
   }
 }
@@ -249,9 +248,9 @@ var filter_terms = {
     });
 
     if (search_regex.length == 0) {
-      annotationsTable.fnFilter("", 1);
+      annotationsTable.fnFilter("", BP_COLUMNS.terms);
     } else {
-      annotationsTable.fnFilter("^" + search_regex.join("(?!.)|^") + "(?!.)", 1, true, false);
+      annotationsTable.fnFilter("^" + search_regex.join("(?!.)|^") + "(?!.)", BP_COLUMNS.terms, true, false);
     }
   }
 }
@@ -282,9 +281,9 @@ var filter_match_type = {
     });
 
     if (search_regex.length == 0) {
-      annotationsTable.fnFilter("", 3);
+      annotationsTable.fnFilter("", BP_COLUMNS.types);
     } else {
-      annotationsTable.fnFilter("^" + search_regex.join("(?!.)|^") + "(?!.)", 3, true, false);
+      annotationsTable.fnFilter("^" + search_regex.join("(?!.)|^") + "(?!.)", BP_COLUMNS.types, true, false);
     }
   }
 }
@@ -293,9 +292,9 @@ var removeFilters = function() {
   jQuery(".filter_ontology_checkboxes").attr("checked", false);
   jQuery(".filter_terms_checkboxes").attr("checked", false);
   jQuery(".filter_match_type_checkboxes").attr("checked", false);
-  annotationsTable.fnFilter("", 1);
-  annotationsTable.fnFilter("", 2);
-  annotationsTable.fnFilter("", 3);
+  annotationsTable.fnFilter("", BP_COLUMNS.terms);
+  annotationsTable.fnFilter("", BP_COLUMNS.ontologies);
+  annotationsTable.fnFilter("", BP_COLUMNS.types);
 }
 
 // Datatables reset sort extension

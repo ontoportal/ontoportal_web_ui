@@ -33,10 +33,12 @@ class AnnotatorController < ApplicationController
     annotations = ANNOTATOR.annotate(text, options)
     LOG.add :debug, "Getting annotations: #{Time.now - start}s"
 
-    annotations.statistics[:parameters] = { :textToAnnotate => text, :apikey => $API_KEY }.merge(options)
-
     annotations_hash = {}
     highlight_cache = {}
+    # We do counts because the annotator returns duplicate results,
+    # which we remove, and removing them breaks the counts from the
+    # Annotator
+    statistics = { "mgrep" => 0, "closure" => 0, "mapping" => 0 }
     start = Time.now
     annotations.annotations.each do |annotation|
       unless annotations_hash.key?(annotation[:concept][:localConceptId])
@@ -47,10 +49,14 @@ class AnnotatorController < ApplicationController
           highlight_cache[[annotation[:context][:from], annotation[:context][:to]]] = annotation[:context][:highlight]
         end
 
-        annotations_hash[annotation[:concept][:localConceptId]] = annotation unless annotations_hash.key?(annotation[:concept][:localConceptId])
+        context_name = annotation[:context][:contextName].downcase
+        statistics[context_name] = statistics.key?(context_name) ? statistics[context_name] + 1 : 1
+        annotations_hash[annotation[:concept][:localConceptId]] = annotation
       end
     end
     annotations.annotations = annotations_hash.values.sort {|a,b| b[:score] <=> a[:score]}
+    annotations.statistics = statistics
+    annotations.statistics[:parameters] = { :textToAnnotate => text, :apikey => $API_KEY }.merge(options)
     LOG.add :debug, "Processing annotations: #{Time.now - start}s"
 
     ontologies_hash = {}
