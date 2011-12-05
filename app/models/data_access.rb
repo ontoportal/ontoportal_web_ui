@@ -636,13 +636,13 @@ private
   def self.filter_user_ontologies_pre(method, args)
     return unless USER_ONTOLOGY_FILTER_PRE.key?(method.to_sym)
     # return unless Thread.current[:session] && Thread.current[:session][:user_ontologies] && USER_ONTOLOGY_FILTER_PRE.key?(method.to_sym)
-    Thread.current[:session][:user_ontologies] = { :virtual_ids => Set.new([1032, 1009]) }
+    # Thread.current[:session][:user_ontologies] = { :virtual_ids => Set.new([1032, 1009]) }
     USER_ONTOLOGY_FILTER_PRE[method.to_sym].call(args, Thread.current[:session][:user_ontologies])
   end
 
   def self.filter_user_ontologies_post(method, object)
     return unless USER_ONTOLOGY_FILTER_POST.key?(method.to_sym)
-    Thread.current[:session][:user_ontologies] = { :virtual_ids => Set.new([1032, 1009]) }
+    # Thread.current[:session][:user_ontologies] = { :virtual_ids => Set.new([1032, 1009]) }
     USER_ONTOLOGY_FILTER_POST[method.to_sym].call(object, Thread.current[:session][:user_ontologies])
   end
 
