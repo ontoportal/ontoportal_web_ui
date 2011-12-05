@@ -1,3 +1,22 @@
+// The count returned may not match the actual number of mappings
+// To get around this, we re-calculate based on the mapping table size
+jQuery(document).ready(function(){
+  calculateMappingCount();
+});
+
+jQuery(document).bind("tree_changed", calculateMappingCount);
+
+function calculateMappingCount() {
+  var rows = jQuery("#concept_mappings_table td");
+  var mappings_count;
+  if (rows.length == 1 && rows[0].getAttribute("colspan") > 1) {
+    mappings_count = 0;
+  } else {
+    mappings_count = rows.length;
+  }
+  jQuery("#mapping_count").html(mappings_count);
+}
+
 function deleteMappings() {
   var mappingsToDelete = [], params;
 

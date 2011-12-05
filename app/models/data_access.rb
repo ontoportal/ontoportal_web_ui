@@ -313,7 +313,7 @@ class DataAccess
   end
 
   def self.createRecommendation(text, ontology_ids, params = {})
-    SERVICE.createRecommendation({ :text => text, :ontologyids => ontology_ids }.merge(params))
+    self.service_proxy("createRecommendation", { :text => text, :ontologyids => ontology_ids }.merge(params))
 
     # No caching for now
     # self.cache_pull("recommendation::#{text.hash}::ontologies::#{ontology_ids}#{'params:' + params.to_s if !params.empty?}", "createRecommendation", { :text => text, :ontologyids => ontology_ids }.merge(params), EXTENDED_CACHE_EXPIRE_TIME)
@@ -440,14 +440,14 @@ class DataAccess
   end
 
   def self.getNodeNameContains(ontologies, search, page, params = {})
-    results,pages = SERVICE.getNodeNameContains(ontologies, search, page, params)
+    results,pages = self.service_proxy("getNodeNameContains", ontologies, search, page, params)
     return results,pages
   end
 
   def self.searchQuery(ontologies, query, page = 1, params = {})
     params_sym = {}
     params.each {|k,v| params_sym[k.to_sym] = v}
-    SERVICE.searchQuery({ :ontologies => ontologies, :query => query, :page => page}.merge(params_sym) )
+    self.service_proxy("searchQuery", { :ontologies => ontologies, :query => query, :page => page}.merge(params_sym))
     # Technically we should probably cache this but the search service has been unreliable so it's disabled for now so we always get current data
     #return self.cache_pull("search::#{ontologies.join(",")}::page=#{page}::params=#{params.to_s}", "searchQuery", { :ontologies => ontologies, :query => query, :page => page}.merge(params), LONG_CACHE_EXPIRE_TIME)
   end
@@ -619,11 +619,48 @@ private
     ont_list
   end
 
+  USER_ONTOLOGY_FILTER_PRE = {
+    :searchQuery => lambda { |args, user_ontologies| args[0][:ontologies] = user_ontologies[:virtual_ids] if args[0][:ontologies].nil? || args[0][:ontologies].empty? },
+    :getNodeNameContains => lambda { |args, user_ontologies| args[0] = user_ontologies[:virtual_ids] if args[0].nil? || args[0].compact.empty? },
+    :createRecommendation => lambda { |args, user_ontologies| args[0][:ontology_ids] = user_ontologies[:virtual_ids].join(",") if args[0][:ontology_ids].nil? || args[0][:ontology_ids].empty? }
+  }
+
+  USER_ONTOLOGY_FILTER_POST = {
+    :getConceptMappings => lambda { |mappings, user_ontologies| mappings.reject! {|a| !user_ontologies[:virtual_ids].include?(a.target_ontology) } unless mappings.nil? || mappings.empty? },
+    :getMappingCountOntologies => lambda { |mappings, user_ontologies| mappings.reject! {|a| !user_ontologies[:virtual_ids].include?(a["ontologyId"].to_i) } unless mappings.nil? || mappings.empty? },
+    :getMappingCountBetweenOntologies => lambda { |mappings, user_ontologies| mappings.reject! {|a| !user_ontologies[:virtual_ids].include?(a["ontologyId"].to_i) } unless mappings.nil? || mappings.empty? },
+    :getRecentMappings => lambda { |mappings, user_ontologies| mappings.reject! {|a| !user_ontologies[:virtual_ids].include?(a.target_ontology) } unless mappings.nil? || mappings.empty? },
+    :getOntologyList => lambda { |ontologies, user_ontologies| ontologies.reject! {|a| !user_ontologies[:virtual_ids].include?(a.ontologyId.to_i) } }
+  }
+
+  def self.filter_user_ontologies_pre(method, args)
+    return unless USER_ONTOLOGY_FILTER_PRE.key?(method.to_sym)
+    # return unless Thread.current[:session] && Thread.current[:session][:user_ontologies] && USER_ONTOLOGY_FILTER_PRE.key?(method.to_sym)
+    Thread.current[:session][:user_ontologies] = { :virtual_ids => Set.new([1032, 1009]) }
+    USER_ONTOLOGY_FILTER_PRE[method.to_sym].call(args, Thread.current[:session][:user_ontologies])
+  end
+
+  def self.filter_user_ontologies_post(method, object)
+    return unless USER_ONTOLOGY_FILTER_POST.key?(method.to_sym)
+    Thread.current[:session][:user_ontologies] = { :virtual_ids => Set.new([1032, 1009]) }
+    USER_ONTOLOGY_FILTER_POST[method.to_sym].call(object, Thread.current[:session][:user_ontologies])
+  end
+
+  def self.service_proxy(method, *args)
+    self.filter_user_ontologies_pre(method, args)
+    return_obj = args.empty? ? SERVICE.send(method) : SERVICE.send(method, *args)
+    self.filter_user_ontologies_post(method, return_obj)
+    return_obj
+  end
+
   def self.param(string)
     return string.to_s.gsub(" ","_")
   end
 
   def self.cache_pull(token, service_call, params = nil, expires = CACHE_EXPIRE_TIME)
+    # Invoke user ontology filtering
+    self.filter_user_ontologies_pre(service_call, params)
+
     retrieved_object = CACHE.get(token)
     if retrieved_object == :check_fallback_cache
       LOG.add :debug, "Retrieving from fallback cache for #{service_call}"
@@ -649,6 +686,9 @@ private
         end
       end
     end
+
+    # Invoke user ontology filtering
+    self.filter_user_ontologies_post(service_call, retrieved_object)
 
     retrieved_object
   end

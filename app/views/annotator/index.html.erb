@@ -10,6 +10,10 @@
   </p>
 
   <div style="padding-bottom: 1em;">
+    <div style="width: 610px;">
+      <a href="javascript:void(0);" id="insert_text_link" style="font-size: 8pt; text-decoration: none; float: right;">insert sample text</a>
+    </div>
+
     <% textarea_title = "Enter or paste text to be annotated" %>
     <%=text_area :annotation, :text, :title => textarea_title, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px; width: 600px;", :class => "help_text" %>
 
@@ -54,7 +58,7 @@
           Ontology
           <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_ontologies" class="bp_popup_link">filter</a></span><div id="ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span>
         </th>
-        <th style="padding-right: 6px">
+        <th style="padding-right: 6px; min-width: 85px;">
           Type
           <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_match_type" class="bp_popup_link">filter</a></span><div id="match_type_filter_list" class="bp_popup_list" style="display: none;"></div></span>
         </th>

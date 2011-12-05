@@ -8,6 +8,8 @@ jQuery(document).ready(function(){
 
     jQuery("#semanticTypes").chosen();
 
+    jQuery("#insert_text_link").click(insertSampleText);
+
     // Init annotation table
     annotationsTable = jQuery("#annotations").dataTable({
       bPaginate: false,
@@ -29,6 +31,13 @@ jQuery(document).ready(function(){
     filter_terms.init();
     filter_match_type.init();
 });
+
+function insertSampleText() {
+  var text = "Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.";
+  jQuery("#annotation_text").focus();
+  jQuery("#annotation_text").val(text);
+}
+
 
 function getannotations() {
   jQuery("#results_error").html("");
