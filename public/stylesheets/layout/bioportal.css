@@ -1713,6 +1713,10 @@ button.fg-button-menu, button.fg-button {
   font-style: oblique;
 }
 
+div#ontology_ontologyId_chzn ul.chzn-choices li.search-field input.default {
+  width: 400px !important;
+}
+
 /************************************
  * Search
  ************************************/

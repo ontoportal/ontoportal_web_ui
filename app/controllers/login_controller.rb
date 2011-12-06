@@ -18,6 +18,9 @@ class LoginController < ApplicationController
       logged_in_user = DataAccess.authenticateUser(params[:user][:username],params[:user][:password])
       if logged_in_user
         session[:user] = logged_in_user
+
+        session[:user_ontologies] = user_ontologies(logged_in_user)
+
         flash[:notice] = "Welcome " + logged_in_user.username.to_s+"."
         redirect = "/"
 
@@ -74,6 +77,11 @@ class LoginController < ApplicationController
   end
 
   private
+
+  def user_ontologies(user)
+    # { :virtual_ids => Set.new([1032, 1009, 1104]), :ontologies => nil }
+    { :virtual_ids => Set.new([]), :ontologies => nil }
+  end
 
   def validate(params)
     errors=[]

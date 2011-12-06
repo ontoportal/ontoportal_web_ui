@@ -1,12 +1,15 @@
+  <%= csrf_meta_tag %>
+
   <%=stylesheet_link_tag 'layout/bioportal'%>
   <%=stylesheet_link_tag 'layout/thickbox'%>
   <link rel="stylesheet" type="text/css" href="/themes/cupertino/css/cupertino/jquery-ui-1.8.1.custom.css">
-  
-  <%=javascript_include_tag "jquery.js"%>  
-  <%=javascript_include_tag "JqueryPlugins/jquery.blockUI.js"%>  
-  <%=javascript_include_tag "jquery.thickbox.compressed.js"%> 
+
+  <%=javascript_include_tag "jquery.js"%>
+  <%=javascript_include_tag "jrails.js"%>
+  <%=javascript_include_tag "JqueryPlugins/jquery.blockUI.js"%>
+  <%=javascript_include_tag "jquery.thickbox.compressed.js"%>
   <%=javascript_include_tag "JqueryPlugins/fg-menu/fg.menu.js" %>
   <%=javascript_include_tag "jquery-ui.js" %>
-  <%=javascript_include_tag "bioportal"%>  
+  <%=javascript_include_tag "bioportal"%>
 
-  <%=yield%>  
+  <%=yield%>

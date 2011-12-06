@@ -319,6 +319,15 @@ module ApplicationHelper
 
   # BACKPORTED RAILS 3 HELPERS
 
+  def csrf_meta_tag
+    if protect_against_forgery?
+      out = %(<meta name="csrf-param" content="%s"/>\n)
+      out << %(<meta name="csrf-token" content="%s"/>)
+      out % [ Rack::Utils.escape_html(request_forgery_protection_token),
+              Rack::Utils.escape_html(form_authenticity_token) ]
+    end
+  end
+
   DECIMAL_UNITS = {0 => :unit, 1 => :ten, 2 => :hundred, 3 => :thousand, 6 => :million, 9 => :billion, 12 => :trillion, 15 => :quadrillion,
     -1 => :deci, -2 => :centi, -3 => :mili, -6 => :micro, -9 => :nano, -12 => :pico, -15 => :femto}.freeze
 

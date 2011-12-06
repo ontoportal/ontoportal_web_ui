@@ -29,6 +29,9 @@ class AnnotatorController < ApplicationController
                 :wholeWordOnly => params[:wholeWordOnly]
     }
 
+    # Add "My BioPortal" ontologies to the keep filter
+    OntologyFilter.pre(:annotator, options)
+
     start = Time.now
     annotations = ANNOTATOR.annotate(text, options)
     LOG.add :debug, "Getting annotations: #{Time.now - start}s"
