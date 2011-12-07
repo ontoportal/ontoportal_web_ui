@@ -6,6 +6,7 @@
       <% end %>
       <th>Mapping To</th>
       <th>Source</th>
+      <th>Comment</th>
       <th>Relationship Type</th>
       <th>Mapped By</th>
       <th>Mapped On</th>
@@ -33,6 +34,7 @@
         <%= link_to "#{map.destination_name} (#{map.destination_ont_name})", :controller => 'visualize', :action => 'virtual', :id => map.destination_ont.to_s, :conceptid => map.destination_id.to_s %>
       </td>
       <td><%=map.map_source%></td>
+      <td><%=map.comment%></td>
       <td><%=get_short_id(map.relationship_type)%></td>
       <td><%=map.user.username rescue ""%></td>
       <td><%=map.created_at.strftime("%m/%d/%y") rescue "--" %></td>
