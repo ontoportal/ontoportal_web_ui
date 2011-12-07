@@ -41,6 +41,7 @@ class LoginController < ApplicationController
   # logs out a user
   def destroy
     session[:user] = nil
+    session[:user_ontologies] = nil
     flash[:notice] = "Logged out"
     redirect_to request.referer
   end
@@ -79,8 +80,7 @@ class LoginController < ApplicationController
   private
 
   def user_ontologies(user)
-    # { :virtual_ids => Set.new([1032, 1009, 1104]), :ontologies => nil }
-    { :virtual_ids => Set.new([]), :ontologies => nil }
+    { :virtual_ids => Set.new([1032, 1055, 1132, 1062, 1425, 1351, 1353]), :ontologies => nil }
   end
 
   def validate(params)
