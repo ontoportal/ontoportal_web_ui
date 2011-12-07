@@ -213,8 +213,8 @@ function createFilterCheckboxes(filter_items, checkbox_class, checkbox_location)
 
   // Create checkboxes for ontology filter
   jQuery.each(for_sort, function(){
-    var checkbox = jQuery("<input/>").attr("class", checkbox_class).attr("type", "checkbox").attr("value", this.value).attr("id", this.value_encoded);
-    var label = jQuery("<label/>").attr("for", this.value_encoded).html(" " + this.label);
+    var checkbox = jQuery("<input/>").attr("class", checkbox_class).attr("type", "checkbox").attr("value", this.value).attr("id", checkbox_class + this.value_encoded);
+    var label = jQuery("<label/>").attr("for", checkbox_class + this.value_encoded).html(" " + this.label);
     sorted.push(jQuery("<span/>").append(checkbox).append(label).html());
   });
   jQuery("#" + checkbox_location).html(sorted.join("<br/>"));
