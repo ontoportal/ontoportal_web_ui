@@ -1,7 +1,7 @@
 var annotationsTable;
 var bp_last_params;
 
-var BP_COLUMNS = { terms: 0, ontologies: 1, types: 2, sem_types: 3 }
+var BP_COLUMNS = { terms: 0, ontologies: 1, types: 2, sem_types: 3, matched_terms: 5, matched_ontologies: 6 }
 
 jQuery(document).ready(function(){
     jQuery("#annotator_button").click(getannotations);
@@ -19,17 +19,21 @@ jQuery(document).ready(function(){
         sZeroRecords: "No annotations found"
       },
       "aoColumns": [
-            { "sWidth": "20%" },
-            { "sWidth": "23%" },
-            { "sWidth": "7%" },
+            { "sWidth": "15%" },
+            { "sWidth": "15%" },
+            { "sWidth": "5%" },
             { "sWidth": "5%", "bVisible": false },
-            { "sWidth": "35%" }
+            { "sWidth": "30%" },
+            { "sWidth": "15%" },
+            { "sWidth": "15%" }
       ]
     });
 
     filter_ontologies.init();
     filter_terms.init();
     filter_match_type.init();
+    filter_matched_ontologies.init();
+    filter_matched_terms.init();
 });
 
 function insertSampleText() {
@@ -97,6 +101,8 @@ function getannotations() {
           var ontologies = {};
           var terms = {};
           var match_types = {};
+          var matched_ontologies = {};
+          var matched_terms = {};
           var context_map = { "mgrep": "direct", "mapping": "mapping", "closure": "ancestor" };
           bp_last_params = data.statistics.parameters;
 
@@ -108,6 +114,8 @@ function getannotations() {
               var annotation = this;
               var ontology_name = data.ontologies[annotation.concept.localOntologyId].name;
               var concept_name = annotation.concept.preferredName;
+              var matched_concept = annotation.context.contextName == "MGREP" ? annotation.concept : annotation.context.concept;
+              var matched_ontology_name = data.ontologies[matched_concept.localOntologyId].name;
 
               // Gather sem types for display
               var semantic_types = [];
@@ -121,7 +129,9 @@ function getannotations() {
                 "<a href='/ontologies/"+annotation.concept.localOntologyId+"'>"+ontology_name+"</a>",
                 context_map[annotation.context.contextName.toLowerCase()],
                 semantic_types.join("<br/>"),
-                annotation.context.highlight
+                annotation.context.highlight,
+                "<a href='/ontologies/"+matched_concept.localOntologyId+"?p=terms&conceptid="+encodeURIComponent(matched_concept.fullId)+"'>"+matched_concept.preferredName+"</a>",
+                "<a href='/ontologies/"+matched_concept.localOntologyId+"'>"+matched_ontology_name+"</a>"
               ]
               results.push(row);
               resultCount++;
@@ -134,6 +144,12 @@ function getannotations() {
 
               // Keep track of match types
               match_types[context_map[annotation.context.contextName.toLowerCase()]] = (context_map[annotation.context.contextName.toLowerCase()] in match_types) ? match_types[context_map[annotation.context.contextName.toLowerCase()]] + 1 : 1;
+
+              // Keep track of matched terms
+              matched_terms[matched_concept.preferredName.toLowerCase()] = (matched_concept.preferredName.toLowerCase() in matched_terms) ? matched_terms[matched_concept.preferredName.toLowerCase()] + 1 : 1;
+
+              // Keep track of matched ontologies
+              matched_ontologies[matched_ontology_name] = (matched_ontology_name in matched_ontologies) ? matched_ontologies[matched_ontology_name] + 1 : 1;
             });
           }
 
@@ -149,6 +165,8 @@ function getannotations() {
           createFilterCheckboxes(ontologies, "filter_ontology_checkboxes", "ontology_filter_list");
           createFilterCheckboxes(terms, "filter_terms_checkboxes", "terms_filter_list");
           createFilterCheckboxes(match_types, "filter_match_type_checkboxes", "match_type_filter_list");
+          createFilterCheckboxes(matched_ontologies, "filter_matched_ontology_checkboxes", "matched_ontology_filter_list");
+          createFilterCheckboxes(matched_terms, "filter_matched_terms_checkboxes", "matched_terms_filter_list");
 
           // Add links for downloading results
           annotatorPostForm("tabDelimited");
@@ -167,6 +185,9 @@ function getannotations() {
           filter_ontologies.init();
           filter_terms.init();
           filter_match_type.init();
+          filter_matched_ontologies.init();
+          filter_matched_terms.init();
+
           // Add data
           annotationsTable.fnAddData(results);
 
@@ -264,6 +285,71 @@ var filter_terms = {
   }
 }
 
+var filter_matched_ontologies = {
+  init: function() {
+    jQuery("#filter_matched_ontologies").bind("click", function(e){bp_popup_init(e)});
+    // Need to use bind to avoid "live" propogation issues
+    jQuery(".filter_matched_ontology_checkboxes").bind("click", function(e){filter_matched_ontologies.filter(e)});
+    jQuery("#ontology_matched_filter_list").click(function(e){e.stopPropagation()});
+    this.cleanup();
+  },
+
+  cleanup: function() {
+    jQuery("html").click(bp_popup_cleanup);
+    jQuery(document).keyup(function(e) {
+      if (e.keyCode == 27) { bp_popup_cleanup(); } // esc
+    });
+  },
+
+  filter: function(e) {
+    e.stopPropagation();
+
+    var search_regex = [];
+    jQuery(".filter_matched_ontology_checkboxes:checked").each(function(){
+      search_regex.push(jQuery(this).val());
+    });
+
+    if (search_regex.length == 0) {
+      annotationsTable.fnFilter("", BP_COLUMNS.matched_ontologies);
+    } else {
+      annotationsTable.fnFilter(search_regex.join("|"), BP_COLUMNS.matched_ontologies, true, false);
+    }
+  }
+}
+
+var filter_matched_terms = {
+  init: function() {
+    jQuery("#filter_matched_terms").bind("click", function(e){bp_popup_init(e)});
+    // Need to use bind to avoid "live" propogation issues
+    jQuery(".filter_matched_terms_checkboxes").bind("click", function(e){filter_matched_terms.filter(e)});
+    jQuery("#matched_terms_filter_list").click(function(e){e.stopPropagation()});
+    this.cleanup();
+  },
+
+  cleanup: function() {
+    jQuery("html").click(bp_popup_cleanup);
+    jQuery(document).keyup(function(e) {
+      if (e.keyCode == 27) { bp_popup_cleanup(); } // esc
+    });
+  },
+
+  filter: function(e) {
+    e.stopPropagation();
+
+    var search_regex = [];
+    jQuery(".filter_matched_terms_checkboxes:checked").each(function(){
+      // Escape characters used in regex
+      search_regex.push(jQuery(this).val().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"));
+    });
+
+    if (search_regex.length == 0) {
+      annotationsTable.fnFilter("", BP_COLUMNS.matched_terms);
+    } else {
+      annotationsTable.fnFilter("^" + search_regex.join("(?!.)|^") + "(?!.)", BP_COLUMNS.matched_terms, true, false);
+    }
+  }
+}
+
 var filter_match_type = {
   init: function() {
     jQuery("#filter_match_type").bind("click", function(e){bp_popup_init(e)});
@@ -336,7 +422,7 @@ function annotatorPostForm(format) {
     }
   });
 
-  var form = jQuery("<form action='http://<%=$REST_DOMAIN%>/obs/annotator' method='post' target='_blank'/>")
+  var form = jQuery("<form action='http://"+jQuery("#annotations_container").data("bp_rest_server")+"/annotator/annotator' method='post' target='_blank'/>")
     .append(form_fields.join(""))
     .append("<input type='submit' value='" + format_map[format] + "'>");
 

@@ -11,7 +11,7 @@
 
   <div style="padding-bottom: 1em;">
     <div style="width: 610px;">
-      <a href="javascript:void(0);" id="insert_text_link" style="font-size: 8pt; text-decoration: none; float: right;">insert sample text</a>
+      <a href="javascript:void(0);" id="insert_text_link" style="font-size: 8pt; text-decoration: none; float: right; margin-bottom: 3px;">insert sample text</a>
     </div>
 
     <% textarea_title = "Enter or paste text to be annotated" %>
@@ -43,7 +43,7 @@
   </div>
 </div>
 
-<div id="annotations_container" style="display: none; padding: 0 13px; margin: 0 0 2em;">
+<div id="annotations_container" style="display: none; padding: 0 13px; margin: 0 0 2em;" data-bp_rest_server="<%=$REST_DOMAIN%>">
   <div style="float: right; font-style: oblique; color: gray;" id="result_counts"></div>
   <h2 style="margin-bottom: 0;">Annotations</h2>
   <div id="results_error" style="color: red; margin-bottom: 7px;"></div>
@@ -64,6 +64,14 @@
         </th>
         <th>UMLS Sem Type</th>
         <th>Context</th>
+        <th style="padding-right: 6px;">
+          Matched Term
+          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_matched_terms" class="bp_popup_link">filter</a></span><div id="matched_terms_filter_list" class="bp_popup_list" style="display: none;"></div></span>
+        </th>
+        <th style="padding-right: 6px; min-width: 200px;">
+          Matched Ontology
+          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_matched_ontologies" class="bp_popup_link">filter</a></span><div id="matched_ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span>
+        </th>
       </tr>
     </thead>
   </table>
@@ -71,15 +79,17 @@
   <div id="download_links" style="margin-top: 1.5em;">
     <table border=0 style="border: 0; margin-bottom: .5em;">
       <tr>
-        <td style="padding: 0 3px 0 0;"><b>Download Results </b></td>
+        <td style="padding: 0 3px 0 0;"><b>Format Results As </b></td>
         <td id="download_links_text" style="padding: 3px;"></td>
         <td id="download_links_tabdelimited" style="padding: 3px;"></td>
         <td id="download_links_xml" style="padding: 3px;"></td>
       </tr>
     </table>
-    <span style="font-size: 8pt;">To replicate these results on the <a href="http://www.bioontology.org/wiki/index.php/Annotator_User_Guide" target="_blank">Annotator Web Service</a>, use the following parameters in the POST:
+    <span style="font-size: 8pt;">To reproduce these results use the following parameters:
       <br/>
       <span id="annotator_parameters" style="color: gray; font-weight: bold;"></span>
+      <br/>
+      Additional options are documented at <a href="http://www.bioontology.org/wiki/index.php/Annotator_User_Guide" target="_blank">Annotator Web Service</a>
     </span>
   </div>
 </div>

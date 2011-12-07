@@ -11,7 +11,7 @@ class AnnotatorController < ApplicationController
     semantic_types = ANNOTATOR.semantic_types
     @semantic_types_for_select = []
     semantic_types.each do |semantic_type|
-      @semantic_types_for_select << [semantic_type[:description], semantic_type[:semanticType]]
+      @semantic_types_for_select << [ "#{semantic_type[:description]} (#{semantic_type[:semanticType]})", semantic_type[:semanticType]]
     end
     @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
 

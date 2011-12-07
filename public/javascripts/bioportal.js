@@ -506,10 +506,18 @@ var bp_popup_init = function(e) {
   e.stopPropagation()
 
   var popup = jQuery(e.currentTarget).parents(".popup_container");
+  var popup_list = popup.children(".bp_popup_list");
 
   popup.children(".bp_popup_link_container").addClass("bp_popup_shadow");
   popup.find("a.bp_popup_link").css("z-index", "5000").addClass("bp_popup_link_active");
+
   popup.children(".bp_popup_list").show();
+
+  // Check for dropping off edge of screen
+  if (popup_list.width() + popup_list.offset().left > jQuery(window).width()) {
+    popup_list.css("left", "-250px");
+  }
+
 }
 
 var bp_popup_cleanup = function() {
