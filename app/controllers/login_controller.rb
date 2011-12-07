@@ -80,7 +80,7 @@ class LoginController < ApplicationController
   private
 
   def user_ontologies(user)
-    { :virtual_ids => Set.new([1032, 1055, 1132, 1062, 1425, 1351, 1353]), :ontologies => nil }
+    { :virtual_ids => Set.new([1032, 1084, 1132, 1062, 1425, 1351, 1353]), :ontologies => nil }
   end
 
   def validate(params)
