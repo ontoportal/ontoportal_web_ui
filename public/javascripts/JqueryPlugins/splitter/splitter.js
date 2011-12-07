@@ -81,7 +81,7 @@
       B.css(opts.split, splitter._DA-bar._DA-newPos).css(opts.fixed,  splitter._DF); */
       // IE fires resize for us; all others pay cash
       if ( !$.browser.msie )
-        panes.trigger("resize");
+        panes.trigger("splitter-resize");
     }
     function dimSum(jq, dims) {
       // Opera returns -1 for missing min/max width, turn into 0
@@ -190,23 +190,23 @@
         var top = splitter.offset().top;
         var wh = $(window).height();
         //splitter.css("height", Math.max(wh-top-splitter._hadjust, splitter._hmin)+"px");
-        if ( !$.browser.msie ) splitter.trigger("resize");
-      }).trigger("resize");
+        if ( !$.browser.msie ) splitter.trigger("splitter-resize");
+      }).trigger("splitter-resize");
     }
     else if ( opts.resizeToWidth && !$.browser.msie ) {
       // We're going to watch both the window and body for resize events
       $(window).bind("resize", function(){
         $("#bd_content").width(jQuery(jQuery("#ontology_content")).width());
-        splitter.trigger("resize");
+        splitter.trigger("splitter-resize");
       });
       // Add a resize event binding on the body for when a scrollbar appears
       $(document.body).watch("width", function(){
-        splitter.trigger("resize");
+        splitter.trigger("splitter-resize");
       });
     }
 
     // Resize event handler; triggered immediately to set initial position
-    splitter.bind("resize", function(e, size){
+    splitter.bind("splitter-resize", function(e, size){
       // Custom events bubble in jQuery 1.3; don't Yo Dawg
       if ( e.target != this ) return;
       // Determine new width/height of splitter container
@@ -217,7 +217,7 @@
       // Re-divvy the adjustable dimension; maintain size of the preferred pane
       resplit(!isNaN(size)? size : (!(opts.sizeRight||opts.sizeBottom)? A[0][opts.pxSplit] :
         splitter._DA-B[0][opts.pxSplit]-bar._DA));
-    }).trigger("resize" , [initPos]);
+    }).trigger("splitter-resize" , [initPos]);
   });
 };
 })(jQuery);

@@ -7,7 +7,7 @@ jQuery(document).ready(function(){
 jQuery(document).bind("tree_changed", calculateMappingCount);
 
 function calculateMappingCount() {
-  var rows = jQuery("#concept_mappings_table td");
+  var rows = jQuery("#concept_mappings_table tbody tr");
   var mappings_count;
   if (rows.length == 1 && rows[0].getAttribute("colspan") > 1) {
     mappings_count = 0;
