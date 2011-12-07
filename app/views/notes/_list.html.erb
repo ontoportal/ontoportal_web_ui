@@ -1,14 +1,14 @@
 
 <%
-	# Check to see if we have notes, if not then try to get them
-	if @notes.nil? && @concept && @ontology
-	  @notes = DataAccess.getNotesForConcept(@ontology.ontologyId, @concept.fullId_proper, false, true) rescue nil
-	  @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
-	  @context = "concept"
-	end
+  # Check to see if we have notes, if not then try to get them
+  if @notes.nil? && @concept && @ontology
+    @notes = DataAccess.getNotesForConcept(@ontology.ontologyId, @concept.fullId_proper, false, true) rescue nil
+    @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
+    @context = "concept"
+  end
 
     @semi_uuid = (1000 * Time.now.to_f).to_i
-	note_colspan = (@context && @context.eql?("concept")) ? "4" : "5"
+  note_colspan = (@context && @context.eql?("concept")) ? "4" : "5"
 %>
 
 <script type="text/javascript">
@@ -16,17 +16,17 @@
     {type:'css',src:'/javascripts/JqueryPlugins/superfish/superfish.css'},
     {type:'js',src:'/javascripts/JqueryPlugins/superfish/superfish.js'}
   ]);
-	
+
 // Load external JS files
 if (typeof BP_NOTES_LIST_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_list.js");
 
 // Global data
-var notesTable = null;	
+var notesTable = null;
 var target = <%= (@context && @context.eql?("concept")) ? "{ 'bVisible': false }" : "null" %>;
 
 // Data needed in the external JS file stored in the body 'cache'
 <% if @concept %>
-	jQuery.data(document.body, "node_id", "<%=@concept.id%>");
+  jQuery.data(document.body, "node_id", "<%=@concept.id%>");
 <% end %>
 jQuery.data(document.body, "note_colspan", "<%=note_colspan%>");
 jQuery.data(document.body, "ontology_id", "<%=@ontology.ontologyId%>");
@@ -35,47 +35,47 @@ jQuery.data(document.body, "semi_uuid", "<%=@semi_uuid%>");
 // This will wire up a table with the dataTables config.
 // Needs to stay inline because IE won't recognize it in an external file.
 function wireTable(notesTableNew) {
-	// Wire up table if it hasn't been done yet
-	notesTable = notesTableNew.dataTable({
-		"iDisplayLength": 50,
-		"sPaginationType": "full_numbers",
-		"aaSorting": [[5, 'desc']],
-		"aoColumns": [
-			 { "iDataSort": 1 }, // Subject link
-			 { "bVisible": false }, // Subject for sort
-       		 { "bVisible": false }, // Archived for filter
-			 null, // Author
-			 null, // Type
-			 target, // Target
-			 null // Created
-		],
-		"fnDrawCallback": function(){
-			jQuery(".highlighted_row").removeClass("highlighted_row");
-		},
-		"fnInitComplete": function(){
-		}
-	});
-	
-	// Important! Table is somehow getting set to zero width. Reset here.$
-	jQuery(notesTable).css("width", "100%");
+  // Wire up table if it hasn't been done yet
+  notesTable = notesTableNew.dataTable({
+    "iDisplayLength": 50,
+    "sPaginationType": "full_numbers",
+    "aaSorting": [[5, 'desc']],
+    "aoColumns": [
+       { "iDataSort": 1 }, // Subject link
+       { "bVisible": false }, // Subject for sort
+       { "bVisible": false }, // Archived for filter
+       null, // Author
+       null, // Type
+       target, // Target
+       null // Created
+    ],
+    "fnDrawCallback": function(){
+      jQuery(".highlighted_row").removeClass("highlighted_row");
+    },
+    "fnInitComplete": function(){
+    }
+  });
+
+  // Important! Table is somehow getting set to zero width. Reset here.$
+  jQuery(notesTable).css("width", "100%");
 
   //notesTable.fnFilter('false', 2);
 }
 
 jQuery(document).ready(function(){
-	var tempTable = jQuery("#" + jQuery.data(document.body, "semi_uuid") + "_notes_list");
-	wireTable(tempTable);
-	
+  var tempTable = jQuery("#" + jQuery.data(document.body, "semi_uuid") + "_notes_list");
+  wireTable(tempTable);
+
   jQuery('#filter_menu').superfish({
     delay: 1200,              // 1.2 second delay on mouseout);
     dropShadows: false,
     speed: 'fast'
   });
-  
+
   jQuery("#hide_archived").click(function(){
     hideOrUnhideArchivedNotes();
   });
-  
+
   // Notes subscriptions button
   jQuery("a.subscribe_to_notes").button();
 });
@@ -94,16 +94,16 @@ function hideOrUnhideArchivedNotes() {
 
 
 <div class="notes_list_container">
-	
-	<div class="subscribe_to_notes" style="float: right;">
-		<%= subscribe_button(@ontology.ontologyId) %> 
-	</div>
 
-	<% unless @notes_for.nil? %>
-		<h1>Notes for <%=link_to @notes_for, @notes_for_link %></h1>
-	<% end %>
-	
-	<div class="notes_table_container" style="clear: both;">
+  <div class="subscribe_to_notes" style="float: right;">
+    <%= subscribe_button(@ontology.ontologyId) %>
+  </div>
+
+  <% unless @notes_for.nil? %>
+    <h1>Notes for <%=link_to @notes_for, @notes_for_link %></h1>
+  <% end %>
+
+  <div class="notes_table_container" style="clear: both;">
     <div style="margin: auto 35% -2.5em; padding-top: 3em; text-align: center; width: 100px;">
       <ul id="filter_menu" class="sf-menu sf-vertical" style="float: none !important;">
         <li style="float: none !important;">
@@ -117,110 +117,110 @@ function hideOrUnhideArchivedNotes() {
       </ul>
     </div>
 
-		<table id="<%=@semi_uuid%>_notes_list" class="zebra notes_list_table" width="100%" style="width: 100%;">
-			<thead>
-				<tr>
-					<th>
-						Subject
-					</th>
-					<th>
-						Subject Sort
-					</th>
-					<th>
-					  Archive Sort
-					</th>
-					<th>
-						Author
-					</th>
-					<th>
-						Type
-					</th>
-					<th>
-						Target
-					</th>
-					<th>
-						Created
-					</th>
-				</tr>
-			</thead>
-			<tbody id="<%=@semi_uuid%>_notes_list_body">
-				<% if @notes.nil? || @notes.empty? %>
-					<tr id="no_notes">
-						<td>No notes to display</td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-				<% else %>
-					<% @notes.each do |note| %>
-						<tr id="<%=note.id%>_tr">
-							<td>
-								<%= link_to note.subject, "#{@note_link}#{note.id}", :id => "row_#{note.id}", :class => "notes_list_link" %>
-								&nbsp;&nbsp;&nbsp;<span id="<%=note.id%>_row_archived" style="font-size: x-small; color: grey;"><%if note.archived.eql?("true")%>archived<%end%></span>
-							</td>
-							<td>
-								<%= note.subject %>
-							</td>
-							<td>
-							  <%= note.archived %>
-						  </td>
-							<td>
-								<%= get_username(note.author) %>
-							</td>
-							<td>
-								<%= get_note_type_text(note.type) %>
-							</td>
-							<td>
-								<%= get_applies_to_link note.createdInOntologyVersion, note.appliesTo['type'], note.appliesTo['id'] %> (<%= note.appliesTo['type'] %>)
-							</td>
-							<td>
-								<%= time_formatted_from_java(note.created) %>
-							</td>
-						</tr>
-					<% end %>
-				<% end %>
-			</tbody>
-		</table>
-	</div>
-		
-	<% applies_to = @concept ? @concept.fullId_proper : @ontology.ontologyId %>
-	<% applies_to_type = @concept ? "Class" : "Ontology" %>
-	<%= render :partial => 'notes/add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type } %>
+    <table id="<%=@semi_uuid%>_notes_list" class="zebra notes_list_table" width="100%" style="width: 100%;">
+      <thead>
+        <tr>
+          <th>
+            Subject
+          </th>
+          <th>
+            Subject Sort
+          </th>
+          <th>
+            Archive Sort
+          </th>
+          <th>
+            Author
+          </th>
+          <th>
+            Type
+          </th>
+          <th>
+            Target
+          </th>
+          <th>
+            Created
+          </th>
+        </tr>
+      </thead>
+      <tbody id="<%=@semi_uuid%>_notes_list_body">
+        <% if @notes.nil? || @notes.empty? %>
+          <tr id="no_notes">
+            <td>No notes to display</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        <% else %>
+          <% @notes.each do |note| %>
+            <tr id="<%=note.id%>_tr">
+              <td>
+                <%= link_to note.subject, "#{@note_link}#{note.id}", :id => "row_#{note.id}", :class => "notes_list_link" %>
+                &nbsp;&nbsp;&nbsp;<span id="<%=note.id%>_row_archived" style="font-size: x-small; color: grey;"><%if note.archived.eql?("true")%>archived<%end%></span>
+              </td>
+              <td>
+                <%= note.subject %>
+              </td>
+              <td>
+                <%= note.archived %>
+              </td>
+              <td>
+                <%= get_username(note.author) %>
+              </td>
+              <td>
+                <%= get_note_type_text(note.type) %>
+              </td>
+              <td>
+                <%= get_applies_to_link note.createdInOntologyVersion, note.appliesTo['type'], note.appliesTo['id'] %> (<%= note.appliesTo['type'] %>)
+              </td>
+              <td>
+                <%= time_formatted_from_java(note.created) %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <% applies_to = @concept ? @concept.fullId_proper : @ontology.ontologyId %>
+  <% applies_to_type = @concept ? "Class" : "Ontology" %>
+  <%= render :partial => 'notes/add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type } %>
 
 </div>
 
 <div style="display: none;">
-	<table id="notes_list_table_clone" class="zebra notes_list_table notes_list_table_clone" width="100%">
-		<thead>
-			<tr>
-				<th>
-					Subject
-				</th>
-				<th>
-					Subject Sort
-				</th>
+  <table id="notes_list_table_clone" class="zebra notes_list_table notes_list_table_clone" width="100%">
+    <thead>
+      <tr>
+        <th>
+          Subject
+        </th>
+        <th>
+          Subject Sort
+        </th>
         <th>
           Archive Sort
         </th>
-				<th>
-					Author
-				</th>
-				<th>
-					Type
-				</th>
-				<th>
-					Target
-				</th>
-				<th>
-					Created
-				</th>
-			</tr>
-		</thead>
-		<tbody id="<%=@semi_uuid%>_notes_list_body">
-		</tbody>
-	</table>
+        <th>
+          Author
+        </th>
+        <th>
+          Type
+        </th>
+        <th>
+          Target
+        </th>
+        <th>
+          Created
+        </th>
+      </tr>
+    </thead>
+    <tbody id="<%=@semi_uuid%>_notes_list_body">
+    </tbody>
+  </table>
 </div>
 

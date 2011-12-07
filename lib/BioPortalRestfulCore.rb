@@ -1105,15 +1105,19 @@ class BioPortalRestfulCore
     end
 
     pairs = []
-    doc.elements.each("*/data/list") { |pair|
-      pair.elements.each{|list|
-        pair = []
-        list.elements.each{|item|
-          pair << item.get_text.value
+    begin
+      doc.elements.each("*/data/list") { |pair|
+        pair.elements.each{|list|
+          pair = []
+          list.elements.each{|item|
+            pair << item.get_text.value
+          }
+          pairs << pair
         }
-        pairs << pair
       }
-    }
+    rescue Exception => e
+      LOG.add :debug, "Parsing diffs failed: #{e.message}"
+    end
     return pairs
   end
 

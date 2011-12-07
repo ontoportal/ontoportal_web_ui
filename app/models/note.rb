@@ -17,7 +17,9 @@ class Note
 
 
   def initialize(hash = nil, params = nil)
-    return if hash.nil? || !hash['id']
+    return if hash.nil? || (!hash['id'] && !hash["noteBean"]["id"])
+
+    hash = hash["noteBean"] if hash["noteBean"]
 
     self.associated = []
 

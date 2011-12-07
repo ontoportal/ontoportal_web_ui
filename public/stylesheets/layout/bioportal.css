@@ -1146,7 +1146,7 @@ textarea.create_note_inputs {
   padding: 1em 0;
 }
 .notes_list_container .dataTables_filter input {
-  width: 300px;
+  width: 200px;
 }
 .notes_list_container .dataTables_info {
   text-align: center;

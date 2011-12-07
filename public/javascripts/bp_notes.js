@@ -89,7 +89,7 @@ jQuery(document).ready(function(){
                     var state = History.getState();
 
                     // Handling for tree view
-                    if (typeof state.data.p !== 'undefined' && state.data.p == 'terms') {
+                    if (state.cleanUrl.match("p=terms")!= null) {
                       // Check for "No notes" message and delete
                       var no_notes_check = document.getElementById("no_notes");
                       if (no_notes_check != null) {
