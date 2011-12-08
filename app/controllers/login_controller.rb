@@ -80,7 +80,9 @@ class LoginController < ApplicationController
   private
 
   def user_ontologies(user)
-    { :virtual_ids => Set.new([1032, 1084, 1132, 1062, 1425, 1351, 1353]), :ontologies => nil }
+    custom_ontologies = CustomOntologies.find(:first, :conditions => ["user_id = ?", user.id])
+    custom_ontologies_array = custom_ontologies.nil? ? [] : custom_ontologies.ontologies
+    { :virtual_ids => Set.new(custom_ontologies_array), :ontologies => nil }
   end
 
   def validate(params)

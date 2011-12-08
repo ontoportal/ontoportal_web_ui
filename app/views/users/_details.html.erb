@@ -9,9 +9,11 @@
     <tr>
       <th>Email Address:</td><td><%=@user.email%></td>
     </tr>
+    <!--
     <tr>
       <th>Phone Number:</td><td><%=@user.phone%></td>
     </tr>
+    -->
     <tr>
       <th>Account Name:</td><td><%=@user.username%></td>
     </tr>
@@ -26,15 +28,15 @@
       </td>
     </tr>
   </table>
-  
+
   <br/>
   <span style="font-size: large; font-weight: bold;">API Key<span style="font-weight: normal; padding-left: 1em; font-size: x-small; color: gray;">Your API Key can be used to access the NCBO API (REST) Services</span></span>
   <p style="padding: .5em 0 0 1em;">
     <%=session[:user].apikey%>
   </p>
-  
+
   <br/>
-  <% unless @user_ontologies.nil? || @user_ontologies.length == 0 %>
+  <% unless @user_submitted_ontologies.nil? || @user_submitted_ontologies.length == 0 %>
     <h2>Submitted Ontologies<h2>
     <ul style="padding-left: 1em;">
       <% @user_ontologies.each do |ont| %>
@@ -43,4 +45,36 @@
     </ul>
   <% end %>
 
+  <script type="text/javascript">
+    jQuery(document).ready(function(){
+      jQuery("#edit_custom_ontologies").click(editCustomOntologies);
+    });
+
+    function editCustomOntologies() {
+      jQuery("#custom_ontologies_picker").css("left", "").css("position", "");
+      jQuery("#custom_ontologies").hide();
+    }
+  </script>
+
+
+  <h2 style="font-size: large;">Custom Ontology Set <span style="font-weight: normal; font-size: 9pt; padding-left: 15px;"><a href="javascript:void(0);" id="edit_custom_ontologies">add/edit ontologies</a></span></h2>
+  <div id="custom_ontologies" class="enable-lists">
+    <p style="padding-left: 7px; font-size: 9pt; color: gray; margin: -3px 0 7px;"><b>Note: </b>When you add ontologies here, it will cause <%=$SITE%> to show only those ontologies you select</p>
+    <% if @user_ontologies %>
+      <ul>
+        <% @user_ontologies[:virtual_ids].each do |ont| %>
+          <li><%=DataAccess.getLatestOntology(ont).displayLabel%></li>
+        <% end %>
+    </ul>
+    <% else %>
+      No custom ontologies in your set
+    <% end %>
+  </div>
+
+  <div id="custom_ontologies_picker" style="left: -9999px; position: absolute;">
+    <%form_tag "/accounts/#{@user.id}/custom_ontologies" do -%>
+      <%=render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => DataAccess.getOntologyList(true, true), :selected_ontologies => @user_ontologies[:virtual_ids].to_a, :sel_text => "Select Custom Ontologies" }%>
+      <%=submit_tag "Save Custom Ontologies", :class => "link_button"%>
+    <% end -%>
+  </div>
 </div>

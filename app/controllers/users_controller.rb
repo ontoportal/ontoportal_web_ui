@@ -25,11 +25,13 @@ class UsersController < ApplicationController
 
     @user = DataAccess.getUser(params[:id])
 
+    @user_ontologies = session[:user_ontologies]
+
     # Get all ontologies that match this user
-    @user_ontologies = []
+    @user_submitted_ontologies = []
     DataAccess.getOntologyList.each do |ont|
       begin
-        @user_ontologies << ont if DataAccess.getOntology(ont.id).admin?(params[:id].to_i)
+        @user_submitted_ontologies << ont if DataAccess.getOntology(ont.id).admin?(params[:id].to_i)
       rescue Exception => e
         next
       end
@@ -211,6 +213,18 @@ class UsersController < ApplicationController
 
     redirect_to redirect_location
   end
+
+  def custom_ontologies
+    custom_ontologies = CustomOntologies.find_or_create_by_user_id(session[:user].id)
+    custom_ontologies.ontologies = params["ontology"]["ontologyId"].collect {|a| a.to_i}
+    custom_ontologies.save
+
+    session[:user_ontologies][:virtual_ids] = custom_ontologies.ontologies
+
+    flash[:notice] = 'Custom Ontologies were saved'
+    redirect_to user_path(session[:user].id)
+  end
+
 private
 
   def get_ontology_list(ont_hash)

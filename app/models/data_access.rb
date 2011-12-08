@@ -50,8 +50,8 @@ class DataAccess
     return self.cache_pull("#{view_string}#{param(ontology_id)}::_top", "getTopLevelNodes", { :ontology_id => ontology_id, :view => view })
   end
 
-  def self.getOntologyList(filter_private = true)
-    ont_list = self.cache_pull("ont_list", "getOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
+  def self.getOntologyList(filter_private = true, skip_filter = false)
+    ont_list = self.cache_pull("ont_list", "getOntologyList", { :skip_filter => skip_filter }, MEDIUM_CACHE_EXPIRE_TIME)
     filter_private_ontologies(ont_list) if filter_private
     ont_list
   end
@@ -631,7 +631,7 @@ private
 
   def self.cache_pull(token, service_call, params = nil, expires = CACHE_EXPIRE_TIME)
     # Invoke user ontology filtering
-    OntologyFilter.pre(service_call, params)
+    OntologyFilter.pre(service_call, params) unless !params.nil? && params[:skip_filter]
 
     retrieved_object = CACHE.get(token)
     if retrieved_object == :check_fallback_cache
@@ -660,7 +660,7 @@ private
     end
 
     # Invoke user ontology filtering
-    OntologyFilter.post(service_call, retrieved_object)
+    OntologyFilter.post(service_call, retrieved_object) unless !params.nil? && params[:skip_filter]
 
     retrieved_object
   end

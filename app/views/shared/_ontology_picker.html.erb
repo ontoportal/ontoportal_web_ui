@@ -1,5 +1,6 @@
 <%custom_ontologies ||= nil%>
-<%init_ontology_picker(custom_ontologies)%>
+<%selected_ontologies ||= []%>
+<%init_ontology_picker(custom_ontologies, selected_ontologies)%>
 
 <% sel_text ||= "Select Ontologies"%>
 
@@ -346,7 +347,7 @@ function clearGroupsAndCategories() {
   <h2 id="ontology_picker_head" style="margin-bottom: 3px;"><%=sel_text%></h2>
 
   <div id="ontology_ontologyId_container">
-    <%= select :ontology, "ontologyId", options_for_select(@onts_for_select), { }, :multiple => 'true', "data-placeholder".to_sym => "Type here to select ontologies or leave blank to use all" %>
+    <%= select :ontology, "ontologyId", options_for_select(@onts_for_select, selected_ontologies), { }, :multiple => 'true', "data-placeholder".to_sym => "Type here to select ontologies or leave blank to use all" %>
   </div>
 
   <div style="float: right; font-size: smaller;"><a id="ont_select_adv_href" href="javascript:void(0)">select from list</a></div>

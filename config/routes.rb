@@ -72,6 +72,7 @@ ActionController::Routing::Routes.draw do |map|
   # User
   map.logout '/logout', :controller => 'login',:action => 'destroy'
   map.lost_pass '/lost_pass', :controller => 'login', :action => 'lost_password'
+  map.custom_ontologies '/accounts/:id/custom_ontologies', :controller => 'users', :action => 'custom_ontologies'
 
   # Visualize
   map.virtual_visualize '/visualize/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :id => %r([^/?]+), :conceptid => %r([^/?]+) }

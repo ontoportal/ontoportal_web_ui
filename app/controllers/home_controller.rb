@@ -193,6 +193,7 @@ class HomeController < ApplicationController
       return
     end
 
+    @user_ontologies = session[:user_ontologies]
     @user = session[:user]
     @survey = Survey.find_by_user_id(@user.id)
     if @survey.nil?

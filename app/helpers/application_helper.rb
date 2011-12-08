@@ -244,7 +244,7 @@ module ApplicationHelper
     BLOCK
   end
 
-  def init_ontology_picker(ontologies = nil)
+  def init_ontology_picker(ontologies = nil, selected_ontologies = [])
     ontologies = DataAccess.getOntologyList if ontologies.nil?
     groups = DataAccess.getGroups.to_a
     categories = DataAccess.getCategories
