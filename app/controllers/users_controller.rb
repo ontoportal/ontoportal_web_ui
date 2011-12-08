@@ -26,6 +26,7 @@ class UsersController < ApplicationController
     @user = DataAccess.getUser(params[:id])
 
     @user_ontologies = session[:user_ontologies]
+    @user_ontologies ||= {}
 
     # Get all ontologies that match this user
     @user_submitted_ontologies = []
@@ -219,6 +220,7 @@ class UsersController < ApplicationController
     custom_ontologies.ontologies = params["ontology"]["ontologyId"].collect {|a| a.to_i}
     custom_ontologies.save
 
+    session[:user_ontologies] = {} if session[:user_ontologies].nil?
     session[:user_ontologies][:virtual_ids] = custom_ontologies.ontologies
 
     flash[:notice] = 'Custom Ontologies were saved'

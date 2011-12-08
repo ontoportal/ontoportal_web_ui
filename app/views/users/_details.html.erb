@@ -60,7 +60,7 @@
   <h2 style="font-size: large;">Custom Ontology Set <span style="font-weight: normal; font-size: 9pt; padding-left: 15px;"><a href="javascript:void(0);" id="edit_custom_ontologies">add/edit ontologies</a></span></h2>
   <div id="custom_ontologies" class="enable-lists">
     <p style="padding-left: 7px; font-size: 9pt; color: gray; margin: -3px 0 7px;"><b>Note: </b>When you add ontologies here, it will cause <%=$SITE%> to show only those ontologies you select</p>
-    <% if @user_ontologies %>
+    <% if @user_ontologies && !@user_ontologies.empty?%>
       <ul>
         <% @user_ontologies[:virtual_ids].each do |ont| %>
           <li><%=DataAccess.getLatestOntology(ont).displayLabel%></li>
