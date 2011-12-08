@@ -57,17 +57,17 @@
   </script>
 
 
-  <h2 style="font-size: large;">Custom Ontology Set <span style="font-weight: normal; font-size: 9pt; padding-left: 15px;"><a href="javascript:void(0);" id="edit_custom_ontologies">add/edit ontologies</a></span></h2>
+  <h2 style="font-size: large;">Custom Ontology Set <span style="color: red; font-size: 9pt; vertical-align: top;">New</span><span style="font-weight: normal; font-size: 9pt; padding-left: 15px;"><a href="javascript:void(0);" id="edit_custom_ontologies">select ontologies</a></span></h2>
   <div id="custom_ontologies" class="enable-lists">
-    <p style="padding-left: 7px; font-size: 9pt; color: gray; margin: -3px 0 7px;"><b>Note: </b>When you add ontologies here, it will cause <%=$SITE%> to show only those ontologies you select</p>
+    <p style="padding-left: 7px; font-size: 9pt; color: gray; margin: -3px 0 7px;"><b>Customize your <%=$SITE%> display:</b> Pick the ontologies that you want to see and <%=$SITE%> will hide all other ontologies. Note that this feature works only when you are logged in.</p>
     <% if @user_ontologies && !@user_ontologies.empty?%>
       <ul>
         <% @user_ontologies[:virtual_ids].each do |ont| %>
-          <li><%=DataAccess.getLatestOntology(ont).displayLabel%></li>
+          <li><%=DataAccess.getLatestOntology(ont).displayLabel%> (<%=DataAccess.getLatestOntology(ont).abbreviation%>)</li>
         <% end %>
     </ul>
     <% else %>
-      No custom ontologies in your set
+      <p style="padding-left: 7px;">You haven't picked any ontologies yet</p>
     <% end %>
   </div>
 

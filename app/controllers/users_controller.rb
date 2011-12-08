@@ -216,12 +216,20 @@ class UsersController < ApplicationController
   end
 
   def custom_ontologies
-    custom_ontologies = CustomOntologies.find_or_create_by_user_id(session[:user].id)
-    custom_ontologies.ontologies = params["ontology"]["ontologyId"].collect {|a| a.to_i}
-    custom_ontologies.save
+    ontologies = params["ontology"] ? params["ontology"]["ontologyId"].collect {|a| a.to_i} : nil
 
-    session[:user_ontologies] = {} if session[:user_ontologies].nil?
-    session[:user_ontologies][:virtual_ids] = custom_ontologies.ontologies
+    custom_ontologies = CustomOntologies.find_or_create_by_user_id(session[:user].id)
+
+    if ontologies.nil?
+      custom_ontologies.destroy
+      session[:user_ontologies] = nil
+    else
+      custom_ontologies.ontologies = ontologies
+      custom_ontologies.save
+
+      session[:user_ontologies] = {} if session[:user_ontologies].nil?
+      session[:user_ontologies][:virtual_ids] = custom_ontologies.ontologies
+    end
 
     flash[:notice] = 'Custom Ontologies were saved'
     redirect_to user_path(session[:user].id)

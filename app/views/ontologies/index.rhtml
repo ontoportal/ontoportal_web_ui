@@ -130,7 +130,12 @@ jQuery(document).ready(function() {
 
 <div id="ontologies_bd_container">
   <div id="ontologies_padding_container">
-    <div id="submit_new_ontology" style="margin: 1.2em 0 0; position: absolute; left: 660px;">
+    <div id="custom_ontology_ad" style="color: red; margin: 20px 0 3px;">
+      <% account_link = session[:user] ? "/account" : "/login?redirect=/account" %>
+      <b>New:</b> Customize the ontologies displayed in <%=$SITE%> using your <a href="<%=account_link%>">account</a>
+    </div>
+
+    <div id="submit_new_ontology" style="margin: 0; position: absolute; left: 660px;">
       <script>
         jQuery(function() {
           jQuery("#submit_new_ontology a").button();
@@ -143,8 +148,6 @@ jQuery(document).ready(function() {
         <%= link_to "Submit New Ontology",new_ontology_path%>
       <%end%>
     </div>
-
-    <br/>
 
     <table class="form" style="width: 630px;">
       <tr>

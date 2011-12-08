@@ -188,6 +188,7 @@ class HomeController < ApplicationController
   end
 
   def account
+    @title = "Account Information"
     if session[:user].nil?
       redirect_to :controller => 'login', :action => 'index', :redirect => "/account"
       return
