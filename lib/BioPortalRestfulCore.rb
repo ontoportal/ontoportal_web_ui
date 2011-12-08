@@ -515,7 +515,7 @@ class BioPortalRestfulCore
     return node.children
   end
 
-  def self.getOntologyList
+  def self.getOntologyList(params = {})
     uri_gen = BioPortalResources::Ontologies.new
     uri = uri_gen.generate_uri
 
@@ -534,7 +534,7 @@ class BioPortalRestfulCore
     return ontologies
   end
 
-  def self.getActiveOntologyList
+  def self.getActiveOntologyList(params = {})
     uri_gen = BioPortalResources::ActiveOntologies.new
     uri = uri_gen.generate_uri
 
