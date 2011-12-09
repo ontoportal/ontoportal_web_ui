@@ -130,9 +130,9 @@ jQuery(document).ready(function() {
 
 <div id="ontologies_bd_container">
   <div id="ontologies_padding_container">
-    <div id="custom_ontology_ad" style="color: red; margin: 20px 0 3px;">
+    <div id="custom_ontology_ad" style="margin: 20px 0 3px;">
       <% account_link = session[:user] ? "/account" : "/login?redirect=/account" %>
-      <b>New:</b> Customize the ontologies displayed in <%=$SITE%> using your <a href="<%=account_link%>">account</a>
+      <span style="color: red;"><b>New:</b></span> <a href="<%=account_link%>">Configure</a> which ontologies you see in <%=$SITE%>
     </div>
 
     <div id="submit_new_ontology" style="margin: 0; position: absolute; left: 660px;">
@@ -152,7 +152,8 @@ jQuery(document).ready(function() {
     <table class="form" style="width: 630px;">
       <tr>
         <th>
-        Filter by Category</th>
+          Filter by Category
+        </th>
         <td class="top">
           <select onchange="filterBySelection(this)"  name="cat">
             <option value="0" selected="selected">All Categories</option>

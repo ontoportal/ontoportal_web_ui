@@ -2,7 +2,7 @@
 
 <h1 class="tab_header">Mappings</h1>
 <p class="tab_description">
-  <% intro_text = "Browse mappings between terms in different ontologies"%> 
+  <% intro_text = "Browse mappings between terms in different ontologies"%>
   <%=t('mappings.intro').nil? || t('mappings.intro').empty? ? "#{intro_text}  #{help_icon("/help#Mappings_Tab")}" : t('mappings.intro')%>
 </p>
 
@@ -24,7 +24,6 @@
 </script>
 
 <p style="font-size:15px;font-weight:bold;padding:10px;margin-bottom:0;">
-  <%# <span style="font-size: x-small;">(Only Ontologies with Mappings are displayed)</span><br/><br/>%>
   <%= select('search', 'ontologies', @options, {:include_blank => ""},{:onchange=>"loadMappings(this.value);", "data-placeholder".to_sym => "Select an Ontology"}) %>
 </p>
 
@@ -33,6 +32,6 @@
 </div>
 
 <div id="mappingCount" style="text-align:center;overflow:hidden;padding:10px;">
-  
-  
+
+
 </div>
