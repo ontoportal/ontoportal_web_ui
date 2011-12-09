@@ -86,13 +86,10 @@
   %>
 
   <%for key in top_set%>
-
-    <%if exclude_relation?(key)
-      next
-    end%>
+    <%next if exclude_relation?(key)%>
     <%unless @concept.properties[key].empty?%>
       <tr>
-        <td nowrap class="label"> <%="#{remove_owl_notation(key)}"%> </td>
+        <td nowrap class="label"> <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span> </td>
         <td>
           <%=auto_link("<p>#{@concept.properties[key].split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")%>
         </td>
@@ -104,12 +101,10 @@
 
 
   <%for key in leftover%>
-    <%if exclude_relation?(key, @ontology)
-      next
-    end%>
+    <%next if exclude_relation?(key, @ontology)%>
     <%unless @concept.properties[key].empty?%>
       <tr>
-        <td nowrap class="label"> <%="#{remove_owl_notation(key)}"%> </td>
+        <td nowrap class="label"> <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span> </td>
         <td>
           <%=auto_link("<p>#{@concept.properties[key].split("||%||").join("<\/p><p>").gsub("%ONT%", @concept.ontology.id)}</p>", :all, :target => "_blank")%>
         </td>
@@ -119,12 +114,10 @@
   <%end%>
 
   <%for key in bottom_set%>
-    <%if exclude_relation?(key)
-      next
-    end%>
+    <%next if exclude_relation?(key)%>
     <%unless @concept.properties[key].empty?%>
       <tr>
-        <td nowrap class="label"> <%="#{remove_owl_notation(key)}"%> </td>
+        <td nowrap class="label"> <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span> </td>
         <td>
           <%=auto_link("<p>#{@concept.properties[key].split("||%||").join("<\/p><p>").gsub("%ONT%", @concept.ontology.id)}</p>", :all, :target => "_blank")%>
         </td>

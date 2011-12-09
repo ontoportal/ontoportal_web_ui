@@ -58,6 +58,13 @@ class BioPortalResources
       end
     end
 
+    class OntologyProperties < BioPortalResources
+      def initialize(params)
+        super(params)
+        @uri << "/ontologies/properties/%ONT%"
+      end
+    end
+
     class DownloadOntology < BioPortalResources
       def initialize(params)
         super(params)

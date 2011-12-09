@@ -185,6 +185,19 @@ class DataAccess
     return self.cache_pull("#{ontology_virtual_id}::_latest", "getLatestOntology", { :ontology_virtual_id => ontology_virtual_id })
   end
 
+  def self.getOntologyProperties(ontology_id)
+    return self.cache_pull("#{self.getOntology(ontology_id).id}::_properties", "getOntologyProperties", { :ontology_id => self.getOntology(ontology_id).id })
+  end
+
+  def self.getOntologyPropertiesHash(ontology_id, key = "fullId")
+    properties = self.getOntologyProperties(ontology_id)
+    properties_hash = {}
+    properties.each do |prop|
+      properties_hash[prop.send(key)] = prop
+    end
+    properties_hash
+  end
+
   def self.getAllOntologyMetrics()
     return self.cache_pull("all_metrics", "getAllOntologyMetrics", nil, EXTENDED_CACHE_EXPIRE_TIME)
   end

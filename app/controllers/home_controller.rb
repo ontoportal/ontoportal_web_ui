@@ -45,11 +45,14 @@ class HomeController < ApplicationController
       end
     end
 
+    user_ontologies = session[:user_ontologies] ? session[:user_ontologies][:virtual_ids].to_a : []
+    conditions = user_ontologies.empty? ? [] : ["ontology_id in (?)", user_ontologies]
+
     @active_totals = @active_totals.sort{|x,y| y[3].to_i<=>x[3].to_i}
     @active_totals = @active_totals[0,5]
 
     @categories = DataAccess.getCategories()
-    @last_notes = NotesIndex.find(:all, :order => 'created desc', :limit => 5)
+    @last_notes = NotesIndex.find(:all, :order => 'created desc', :limit => 5, :conditions => conditions)
     @last_mappings = DataAccess.getRecentMappings
 
     #build hash for quick grabbing

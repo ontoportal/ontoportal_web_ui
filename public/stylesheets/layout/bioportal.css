@@ -842,6 +842,10 @@ tr.mainresource td {
   display: none;
 }
 
+span.concept_property {
+  cursor: help;
+}
+
 .defaultText {
   color: inherit;
   width: 25em;

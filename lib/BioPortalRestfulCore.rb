@@ -606,6 +606,23 @@ class BioPortalRestfulCore
     return ont
   end
 
+  def self.getOntologyProperties(params)
+    uri_gen = BioPortalResources::OntologyProperties.new(params)
+    uri = uri_gen.generate_uri
+
+    doc = get_xml(uri)
+
+    ont = errorCheck(doc)
+
+    unless ont.nil?
+      return ont
+    end
+
+    ont = generic_parse(:xml => doc, :type => "NodeWrapper")
+
+    return ont
+  end
+
   ##
   # Used to retrieve data from back-end REST service, then parse from the resulting metrics bean.
   # Returns an OntologyMetricsWrapper object.
