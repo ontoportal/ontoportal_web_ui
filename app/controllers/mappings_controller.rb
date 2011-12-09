@@ -20,6 +20,7 @@ class MappingsController < ApplicationController
 
     @options = {}
     ontologies_mapping_count.each do |ontology|
+      next if ontology["totalMappings"].nil?
       @options[ontologies_hash[ontology['ontologyId']].displayLabel + " (#{ontology['totalMappings']})"] = ontologies_hash[ontology['ontologyId']].id unless ontologies_hash[ontology['ontologyId']].nil?
     end
 

@@ -408,7 +408,30 @@ class DataAccess
   end
 
   def self.getMappingCountOntologies
-    self.cache_pull("ontologies::map_count", "getMappingCountOntologies", nil, LONG_CACHE_EXPIRE_TIME)
+    if Thread.current[:session] && Thread.current[:session][:user_ontologies]
+      ontology_ids = Thread.current[:session][:user_ontologies][:virtual_ids]
+      mapping_counts = []
+      mapping_data_keys = [ "targetMappings", "sourceMappings", "totalMappings" ]
+      ontology_ids.each do |id|
+        between_counts = self.getMappingCountBetweenOntologies(id)
+        ontology_count = {}
+        between_counts.each do |count|
+          mapping_data_keys.each do |key|
+            if ontology_count[key].nil?
+              ontology_count[key] = count[key].to_i
+            else
+              ontology_count[key] = ontology_count[key].to_i + count[key].to_i
+            end
+          end
+        end
+        ontology_count.each {|k,v| ontology_count[k] = v.to_s}
+        ontology_count["ontologyId"] = id.to_s
+        mapping_counts << ontology_count
+      end
+      mapping_counts.compact
+    else
+      self.cache_pull("ontologies::map_count", "getMappingCountOntologies", nil, LONG_CACHE_EXPIRE_TIME)
+    end
   end
 
   def self.getMappingCountOntologiesHash
