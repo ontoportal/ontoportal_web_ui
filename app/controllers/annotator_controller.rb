@@ -21,12 +21,12 @@ class AnnotatorController < ApplicationController
   def create
     text = params[:text]
 
-    options = { :ontologiesToKeepInResult => params[:ontology_ids],
+    options = { :ontologiesToKeepInResult => params[:ontology_ids] ||= [],
                 :withDefaultStopWords => true,
-                :levelMax => params[:levelMax],
-                :semanticTypes => params[:semanticTypes],
-                :mappingTypes => params[:mappingTypes],
-                :wholeWordOnly => params[:wholeWordOnly]
+                :levelMax => params[:levelMax] ||= 1,
+                :semanticTypes => params[:semanticTypes] ||= [],
+                :mappingTypes => params[:mappingTypes] ||= [],
+                :wholeWordOnly => params[:wholeWordOnly] ||= false
     }
 
     # Add "My BioPortal" ontologies to the keep filter
@@ -36,30 +36,19 @@ class AnnotatorController < ApplicationController
     annotations = ANNOTATOR.annotate(text, options)
     LOG.add :debug, "Getting annotations: #{Time.now - start}s"
 
-    annotations_hash = {}
     highlight_cache = {}
-    # We do counts because the annotator returns duplicate results,
-    # which we remove, and removing them breaks the counts from the
-    # Annotator
-    statistics = { "mgrep" => 0, "closure" => 0, "mapping" => 0 }
+
     start = Time.now
     annotations.annotations.each do |annotation|
-      unless annotations_hash.key?(annotation[:concept][:localConceptId])
-        if highlight_cache.key?([annotation[:context][:from], annotation[:context][:to]])
-          annotation[:context][:highlight] = highlight_cache[[annotation[:context][:from], annotation[:context][:to]]]
-        else
-          annotation[:context][:highlight] = highlight_and_get_context(text, [annotation[:context][:from], annotation[:context][:to]])
-          highlight_cache[[annotation[:context][:from], annotation[:context][:to]]] = annotation[:context][:highlight]
-        end
-
-        context_name = annotation[:context][:contextName].downcase
-        statistics[context_name] = statistics.key?(context_name) ? statistics[context_name] + 1 : 1
-        annotations_hash[annotation[:concept][:localConceptId]] = annotation
+      if highlight_cache.key?([annotation[:context][:from], annotation[:context][:to]])
+        annotation[:context][:highlight] = highlight_cache[[annotation[:context][:from], annotation[:context][:to]]]
+      else
+        annotation[:context][:highlight] = highlight_and_get_context(text, [annotation[:context][:from], annotation[:context][:to]])
+        highlight_cache[[annotation[:context][:from], annotation[:context][:to]]] = annotation[:context][:highlight]
       end
     end
-    annotations.annotations = annotations_hash.values.sort {|a,b| b[:score] <=> a[:score]}
-    annotations.statistics = statistics
     annotations.statistics[:parameters] = { :textToAnnotate => text, :apikey => $API_KEY }.merge(options)
+    # annotations.annotations.sort! {|a,b| b[:score] <=> a[:score]}
     LOG.add :debug, "Processing annotations: #{Time.now - start}s"
 
     ontologies_hash = {}
@@ -74,16 +63,23 @@ class AnnotatorController < ApplicationController
 private
 
   def highlight_and_get_context(text, position, words_to_keep = 4)
-    before = text[0, position[0] - 1].split
-    highlight = text[position[0] - 1..position[1] - 1]
-    after = text[position[1], text.length].split
+    # Use scan to split the text on spaces while keeping the spaces
+    before = text[0, position[0] - 1].scan(/[ ]?\w+[-\?'"\+\.,]+|[ ]?\w+/)
+    after = text[position[1], text.length].scan(/[ ]?\w+[-\?'"\+\.,]+|[ ]?\w+/)
 
-    before_words = before.length <= words_to_keep ? before.join(" ") : before[before.length - words_to_keep..before.length].join(" ")
-    after_words = after.length <= words_to_keep ? after.join(" ") : after[0, words_to_keep].join(" ")
+    # The process above will not keep a space right before the highlighted word, so let's keep it here if needed
+    # 32 is the character code for space
+    kept_space = text[position[0] - 2] == 32 ? " " : ""
 
-    space_before = before_words[/^[\.\-=\?,'"]/].nil? ? " " : ""
-    space_after = after_words[/^[\.\-=\?,'"]/].nil? ? " " : ""
+    # Process the highlighted text
+    highlight = ["<b>", "", "</b>"]
+    highlight[1] = text[position[0] - 1..position[1] - 1]
 
-    "#{before_words}#{space_before}<b>#{highlight}</b>#{space_after}#{after_words}"
+    # Chop out words we don't need, adjusting for beginngin and end of text block
+    before_words = before.length <= words_to_keep ? before.join : before[before.length - words_to_keep..before.length].join
+    after_words = after.length <= words_to_keep ? after.join : after[0, words_to_keep].join
+
+    # Put it all together
+    [before_words, kept_space, highlight.join, after_words].join
   end
 end

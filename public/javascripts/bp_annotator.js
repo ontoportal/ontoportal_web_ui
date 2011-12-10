@@ -1,7 +1,9 @@
 var annotationsTable;
 var bp_last_params;
 
-var BP_COLUMNS = { terms: 0, ontologies: 1, types: 2, sem_types: 3, matched_terms: 5, matched_ontologies: 6 }
+var BP_COLUMNS = { terms: 0, ontologies: 1, types: 2, sem_types: 3, matched_terms: 5, matched_ontologies: 6 };
+
+var CONCEPT_MAP = { "mapping": "mappedConcept", "mgrep": "concept", "closure": "concept" };
 
 jQuery(document).ready(function(){
     jQuery("#annotator_button").click(getannotations);
@@ -114,7 +116,8 @@ function getannotations() {
               var annotation = this;
               var ontology_name = data.ontologies[annotation.concept.localOntologyId].name;
               var concept_name = annotation.concept.preferredName;
-              var matched_concept = annotation.context.contextName == "MGREP" ? annotation.concept : annotation.context.concept;
+              var context_name = annotation.context.contextName;
+              var matched_concept = context_name == "MGREP" ? annotation.concept : annotation.context[CONCEPT_MAP[context_name.toLowerCase()]];
               var matched_ontology_name = data.ontologies[matched_concept.localOntologyId].name;
 
               // Gather sem types for display
@@ -135,7 +138,6 @@ function getannotations() {
               ]
               results.push(row);
               resultCount++;
-
               // Keep track of how many results are associated with each ontology
               ontologies[ontology_name] = (ontology_name in ontologies) ? ontologies[ontology_name] + 1 : 1;
 
