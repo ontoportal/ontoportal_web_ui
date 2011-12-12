@@ -81,7 +81,7 @@ function getannotations() {
   if (jQuery("#semanticTypes").val() != null) {
     params["semanticTypes"] = jQuery("#semanticTypes").val();
     annotationsTable.fnSetColumnVis(BP_COLUMNS.sem_types, true);
-    jQuery("#results_error").html("Only results from UMLS ontologies are displayed because you selected a UMLS semantic type");
+    jQuery("#results_error").html("Only results from ontologies with semantic types available are displayed");
   } else {
     annotationsTable.fnSetColumnVis(BP_COLUMNS.sem_types, false);
   }

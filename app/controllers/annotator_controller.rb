@@ -26,7 +26,7 @@ class AnnotatorController < ApplicationController
                 :levelMax => params[:levelMax] ||= 1,
                 :semanticTypes => params[:semanticTypes] ||= [],
                 :mappingTypes => params[:mappingTypes] ||= [],
-                :wholeWordOnly => params[:wholeWordOnly] ||= false
+                :wholeWordOnly => params[:wholeWordOnly] ||= true
     }
 
     # Add "My BioPortal" ontologies to the keep filter
@@ -72,7 +72,7 @@ private
     kept_space = text[position[0] - 2] == 32 ? " " : ""
 
     # Process the highlighted text
-    highlight = ["<b>", "", "</b>"]
+    highlight = ["<span style='color: #006600; padding: 2px 0; font-weight: bold;'>", "", "</span>"]
     highlight[1] = text[position[0] - 1..position[1] - 1]
 
     # Chop out words we don't need, adjusting for beginngin and end of text block
