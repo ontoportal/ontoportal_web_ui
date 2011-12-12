@@ -57,7 +57,7 @@
   </script>
 
 
-  <h2 style="font-size: large;">Custom Ontology Set <span style="color: red; font-size: 9pt; vertical-align: top;">New</span><span style="font-weight: normal; font-size: 9pt; padding-left: 15px;"><a href="javascript:void(0);" id="edit_custom_ontologies">select ontologies</a></span></h2>
+  <h2 style="font-size: large;" id="custom_ontology_set">Custom Ontology Set <span style="color: red; font-size: 9pt; vertical-align: top;">New</span><span style="font-weight: normal; font-size: 9pt; padding-left: 15px;"><a href="javascript:void(0);" id="edit_custom_ontologies">select ontologies</a></span></h2>
   <div id="custom_ontologies" class="enable-lists">
     <p style="padding-left: 7px; font-size: 9pt; color: gray; margin: -3px 0 7px;"><b>Customize your <%=$SITE%> display:</b> Pick the ontologies that you want to see and <%=$SITE%> will hide all other ontologies. Note that this feature works only when you are logged in.</p>
     <% if @user_ontologies && !@user_ontologies.empty?%>

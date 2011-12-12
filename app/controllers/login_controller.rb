@@ -21,7 +21,9 @@ class LoginController < ApplicationController
 
         session[:user_ontologies] = user_ontologies(logged_in_user)
 
-        flash[:notice] = "Welcome " + logged_in_user.username.to_s+"."
+        custom_ontologies_text = session[:user_ontologies] ? "The display is now based on your <a href='/account#custom_ontology_set'>Custom Ontology Set</a>." : ""
+
+        flash[:notice] = "Welcome <b>" + logged_in_user.username.to_s+"</b>. " + custom_ontologies_text
         redirect = "/"
 
         if session[:redirect]
