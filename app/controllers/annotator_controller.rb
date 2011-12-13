@@ -29,8 +29,13 @@ class AnnotatorController < ApplicationController
                 :wholeWordOnly => params[:wholeWordOnly] ||= true
     }
 
-    # Add "My BioPortal" ontologies to the keep filter
+    # Add "My BioPortal" ontologies to the ontologies to keep in result parameter
     OntologyFilter.pre(:annotator, options)
+
+    # Make sure that custom ontologies exist in the annotator ontology set
+    annotator_ontologies = Set.new([])
+    ANNOTATOR.ontologies.each {|ont| annotator_ontologies << ont[:virtualOntologyId]}
+    options[:ontologiesToKeepInResult].reject! {|a| !annotator_ontologies.include?(a)}
 
     start = Time.now
     annotations = ANNOTATOR.annotate(text, options)
@@ -64,8 +69,8 @@ private
 
   def highlight_and_get_context(text, position, words_to_keep = 4)
     # Use scan to split the text on spaces while keeping the spaces
-    before = text[0, position[0] - 1].scan(/[ ]?\w+[-\?'"\+\.,]+|[ ]?\w+/)
-    after = text[position[1], text.length].scan(/[ ]?\w+[-\?'"\+\.,]+|[ ]?\w+/)
+    before = text[0, position[0] - 1].scan(/[ ]?[-\?'"\+\.,]+\w+|\w+[-\?'"\+\.,]+|[ ]?\w+/)
+    after = text[position[1], text.length].scan(/[ ]?[-\?'"\+\.,]+\w+|\w+[-\?'"\+\.,]+|[ ]?\w+/)
 
     # The process above will not keep a space right before the highlighted word, so let's keep it here if needed
     # 32 is the character code for space

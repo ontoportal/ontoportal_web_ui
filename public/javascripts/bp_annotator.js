@@ -389,9 +389,13 @@ var removeFilters = function() {
   jQuery(".filter_ontology_checkboxes").attr("checked", false);
   jQuery(".filter_terms_checkboxes").attr("checked", false);
   jQuery(".filter_match_type_checkboxes").attr("checked", false);
+  jQuery(".filter_matched_terms_checkboxes").attr("checked", false);
+  jQuery(".filter_matched_ontologies_checkboxes").attr("checked", false);
   annotationsTable.fnFilter("", BP_COLUMNS.terms);
   annotationsTable.fnFilter("", BP_COLUMNS.ontologies);
   annotationsTable.fnFilter("", BP_COLUMNS.types);
+  annotationsTable.fnFilter("", BP_COLUMNS.matched_terms);
+  annotationsTable.fnFilter("", BP_COLUMNS.matched_ontologies);
 }
 
 // Datatables reset sort extension
