@@ -33,9 +33,12 @@ class AnnotatorController < ApplicationController
     OntologyFilter.pre(:annotator, options)
 
     # Make sure that custom ontologies exist in the annotator ontology set
-    annotator_ontologies = Set.new([])
-    ANNOTATOR.ontologies.each {|ont| annotator_ontologies << ont[:virtualOntologyId]}
-    options[:ontologiesToKeepInResult].reject! {|a| !annotator_ontologies.include?(a)}
+    if session[:user_ontologies]
+      annotator_ontologies = Set.new([])
+      ANNOTATOR.ontologies.each {|ont| annotator_ontologies << ont[:virtualOntologyId]}
+      options[:ontologiesToKeepInResult].split(",") if options[:ontologiesToKeepInResult].kind_of?(String)
+      options[:ontologiesToKeepInResult].reject! {|a| !annotator_ontologies.include?(a)}
+    end
 
     start = Time.now
     annotations = ANNOTATOR.annotate(text, options)
