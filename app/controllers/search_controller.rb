@@ -28,8 +28,6 @@ class SearchController < ApplicationController
     results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
 
     results.results.each do |result|
-      results.results.delete(result) if filter_result?(result)
-
       result['recordTypeFormatted'] = format_record_type(result['recordType'])
     end
 
@@ -111,6 +109,7 @@ class SearchController < ApplicationController
 
   private
 
+  # Filter an array of results based on whether or not the result ontology is private
   def filter_private_results(results)
     return results if session[:user] && session[:user].admin?
 
@@ -126,6 +125,7 @@ class SearchController < ApplicationController
     results
   end
 
+  # Check if this result should be filtered based on whether or not the result ontology is private
   def filter_result?(result)
     return false if session[:user] && session[:user].admin?
 
@@ -151,6 +151,8 @@ class SearchController < ApplicationController
         return "Synonym"
       when "dproperty"
         return "Property"
+      else
+        return ""
     end
   end
 
