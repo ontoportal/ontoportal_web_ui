@@ -31,6 +31,8 @@ class SearchController < ApplicationController
       result['recordTypeFormatted'] = format_record_type(result['recordType'])
     end
 
+    # TODO: It would be nice to include a delete command in the iteration above so we don't
+    # iterate over the results twice, but it wasn't working and no time to troubleshoot
     filter_private_results(results)
 
     render :text => results.hash_for_serialization.to_json
