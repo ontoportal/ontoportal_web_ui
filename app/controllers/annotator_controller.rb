@@ -19,7 +19,7 @@ class AnnotatorController < ApplicationController
   end
 
   def create
-    text = params[:text]
+    text = params[:text].strip
 
     options = { :ontologiesToKeepInResult => params[:ontology_ids] ||= [],
                 :withDefaultStopWords => true,
@@ -71,23 +71,20 @@ class AnnotatorController < ApplicationController
 private
 
   def highlight_and_get_context(text, position, words_to_keep = 4)
+    # Process the highlighted text
+    highlight = ["<span style='color: #006600; padding: 2px 0; font-weight: bold;'>", "", "</span>"]
+    highlight[1] = text.utf8_slice(position[0] - 1, position[1] - position[0] + 1)
+
     # Use scan to split the text on spaces while keeping the spaces
-    before = text[0, position[0] - 1].scan(/[ ]?[-\?'"\+\.,]+\w+|\w+[-\?'"\+\.,]+|[ ]?\w+/)
-    after = text[position[1], text.length].scan(/[ ]?[-\?'"\+\.,]+\w+|\w+[-\?'"\+\.,]+|[ ]?\w+/)
+    scan_filter = Regexp.new(/[ ]+?[-\?'"\+\.,]+\w+|[ ]+?[-\?'"\+\.,]+\w+[-\?'"\+\.,]|\w+[-\?'"\+\.,]+|[ ]+?\w+/)
+    before = text.utf8_slice(0, position[0] - 1).match(/(\s+\S+|\S+\s+){0,4}$/).to_s
+    after = text.utf8_slice(position[1], ActiveSupport::Multibyte::Chars.new(text).length - position[1]).match(/^(\S+\s+\S+|\s+\S+|\S+\s+){0,4}/).to_s
 
     # The process above will not keep a space right before the highlighted word, so let's keep it here if needed
     # 32 is the character code for space
-    kept_space = text[position[0] - 2] == 32 ? " " : ""
-
-    # Process the highlighted text
-    highlight = ["<span style='color: #006600; padding: 2px 0; font-weight: bold;'>", "", "</span>"]
-    highlight[1] = text[position[0] - 1..position[1] - 1]
-
-    # Chop out words we don't need, adjusting for beginngin and end of text block
-    before_words = before.length <= words_to_keep ? before.join : before[before.length - words_to_keep..before.length].join
-    after_words = after.length <= words_to_keep ? after.join : after[0, words_to_keep].join
+    kept_space = text.utf8_slice(position[0] - 2) == " " ? " " : ""
 
     # Put it all together
-    [before_words, kept_space, highlight.join, after_words].join
+    [before, kept_space, highlight.join, after].join
   end
 end
