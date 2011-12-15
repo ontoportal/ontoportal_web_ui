@@ -252,9 +252,9 @@
         }
         if (options.mustMatch) {
           var v = $input.val();
-          if (v != input.lastSelected) {
-            $input.addClass("help_text_font").val($input.attr("title"));
-          }
+          // if (v != input.lastSelected) {
+          //   $input.addClass("help_text_font").val($input.attr("title"));
+          // }
         }
       };
 
