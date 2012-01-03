@@ -116,7 +116,8 @@ class SearchController < ApplicationController
     return results if session[:user] && session[:user].admin?
 
     results.results.delete_if { |result|
-      private = DataAccess.getOntology(result["ontologyId"]).private?
+      # Rescuing 'true' here has the same effect of not showing the result, which is appropriate if we get an error getting ontology metadata
+      private = DataAccess.getOntology(result["ontologyId"]).private? rescue true
       if !private
         false
       else
@@ -134,7 +135,8 @@ class SearchController < ApplicationController
     ontology_id = result["ontologyId"].to_i if result["ontologyId"]
     ontology_id ||= result[:ontologyId]
 
-    private = DataAccess.getOntology(ontology_id).private?
+    # Rescuing 'true' here has the same effect of not showing the result, which is appropriate if we get an error getting ontology metadata
+    private = DataAccess.getOntology(ontology_id).private? rescue true
 
     if !private
       return false
