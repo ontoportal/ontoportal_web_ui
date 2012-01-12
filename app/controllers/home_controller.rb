@@ -191,8 +191,7 @@ class HomeController < ApplicationController
   end
 
   def robots
-    main_host = $UI_URL.gsub("http://", "").gsub("/", "").gsub(/:.*$/, "")
-    if request.host != main_host
+    if @subdomain_filter[:active]
       robots = <<-EOF
         User-agent: *\n
         Disallow: /

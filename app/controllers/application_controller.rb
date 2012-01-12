@@ -48,21 +48,24 @@ class ApplicationController < ActionController::Base
   def domain_ontology_set
     host = request.host
     host_parts = host.split(".")
+    subdomain = host_parts[0]
 
     groups = DataAccess.getGroupsWithOntologies
     groups_hash = {}
     groups.group_list.each do |group_id, group|
-      groups_hash[group[:acronym].downcase.gsub(" ", "-")] = group[:ontologies]
+      groups_hash[group[:acronym].downcase.gsub(" ", "-")] = { :name => group[:name], :ontologies => group[:ontologies] }
     end
     $ONTOLOGIES_BY_SUBDOMAIN.merge!(groups_hash)
 
-    @subdomain_filter_active = false
+    @subdomain_filter = { :active => false, :name => "", :acronym => "" }
 
     # Set custom ontologies if we're on a subdomain that has them
     # Else, make sure user ontologies are set appropriately
-    if $ONTOLOGIES_BY_SUBDOMAIN.include?(host_parts[0])
-      session[:user_ontologies] = { :virtual_ids => Set.new($ONTOLOGIES_BY_SUBDOMAIN[host_parts[0]]), :ontologies => nil, :subdomain_filter => true }
-      @subdomain_filter_active = true
+    if $ONTOLOGIES_BY_SUBDOMAIN.include?(subdomain)
+      session[:user_ontologies] = { :virtual_ids => Set.new($ONTOLOGIES_BY_SUBDOMAIN[subdomain][:ontologies]), :ontologies => nil }
+      @subdomain_filter[:active] = true
+      @subdomain_filter[:name] = $ONTOLOGIES_BY_SUBDOMAIN[subdomain][:name]
+      @subdomain_filter[:acronym] = subdomain
     elsif session[:user]
       session[:user_ontologies] = user_ontologies(session[:user])
     else

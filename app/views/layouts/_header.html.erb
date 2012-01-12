@@ -45,11 +45,11 @@
     </div>
   <%end %>
 
-  <%if !@subdomain_filter_active.nil? && @subdomain_filter_active == true %>
+  <%if !@subdomain_filter[:active].nil? && @subdomain_filter[:active] == true %>
     <div style="margin: 13px; padding: 5px; border: 1px solid gray; font-size:14px; background-color: #ffffcc;">
       <p style="text-align: left; margin-bottom: 0;">
-      <% query_string = request.query_string.empty? ? "" : "?#{request.query_string}" %>
-        The ontologies displayed are based on a custom site, <b><%=request.host%></b>. To see all ontologies you can <a href="<%="#{$UI_URL}#{request.path}#{query_string}"%>">visit the main site</a>.
+        <% query_string = request.query_string.empty? ? "" : "?#{request.query_string}" %>
+        On this site, <b><%=request.host%></b>, <%=$SITE%> displays only <b><%=@subdomain_filter[:name]%></b> ontologies. To see all of the ontologies in <%=$SITE%> <a href="<%="#{$UI_URL}#{request.path}#{query_string}"%>">visit the main site</a>.
       </p>
     </div>
   <%end%>

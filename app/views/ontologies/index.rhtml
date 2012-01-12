@@ -130,7 +130,7 @@ jQuery(document).ready(function() {
 
 <div id="ontologies_bd_container">
   <div id="ontologies_padding_container">
-    <%unless @subdomain_filter_active%>
+    <%unless @subdomain_filter[:active]%>
       <div id="custom_ontology_ad" style="margin: 20px 0 3px;">
         <% account_link = session[:user] ? "/account" : "/login?redirect=/account" %>
         <span style="color: red;"><b>New:</b></span> <a href="<%=account_link%>">Configure</a> which ontologies you see in <%=$SITE%>
