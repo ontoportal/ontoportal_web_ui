@@ -81,15 +81,6 @@ class LoginController < ApplicationController
 
   private
 
-  def user_ontologies(user)
-    custom_ontologies = CustomOntologies.find(:first, :conditions => ["user_id = ?", user.id])
-    if custom_ontologies.nil? || custom_ontologies.ontologies.empty?
-      return nil
-    else
-      return { :virtual_ids => Set.new(custom_ontologies.ontologies), :ontologies => nil }
-    end
-  end
-
   def validate(params)
     errors=[]
 

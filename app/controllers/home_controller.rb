@@ -190,6 +190,19 @@ class HomeController < ApplicationController
     end
   end
 
+  def robots
+    main_host = $UI_URL.gsub("http://", "").gsub("/", "").gsub(/:.*$/, "")
+    if request.host != main_host
+      robots = <<-EOF
+        User-agent: *\n
+        Disallow: /
+      EOF
+      render :text => robots, :content_type => 'text/plain'
+    else
+      render :text => "", :content_type => 'text/plain'
+    end
+  end
+
   def account
     @title = "Account Information"
     if session[:user].nil?

@@ -59,22 +59,26 @@
 
   <h2 style="font-size: large;" id="custom_ontology_set">Custom Ontology Set <span style="color: red; font-size: 9pt; vertical-align: top;">New</span><span style="font-weight: normal; font-size: 9pt; padding-left: 15px;"><a href="javascript:void(0);" id="edit_custom_ontologies">select ontologies</a></span></h2>
   <div id="custom_ontologies" class="enable-lists">
-    <p style="padding-left: 7px; font-size: 9pt; color: gray; margin: -3px 0 7px;"><b>Customize your <%=$SITE%> display:</b> Pick the ontologies that you want to see and <%=$SITE%> will hide all other ontologies. Note that this feature works only when you are logged in.</p>
-    <% if @user_ontologies && !@user_ontologies.empty?%>
-      <ul>
-        <% @user_ontologies[:virtual_ids].each do |ont| %>
-          <li><%=DataAccess.getLatestOntology(ont).displayLabel%> (<%=DataAccess.getLatestOntology(ont).abbreviation%>)</li>
-        <% end %>
-    </ul>
-    <% else %>
-      <p style="padding-left: 7px;">You haven't picked any ontologies yet</p>
-    <% end %>
-  </div>
+    <%if @subdomain_filter_active%>
+      <p style="padding-left: 7px; font-size: 10pt; margin: -3px 0 7px;">Site filtering is enabled for <b><%=request.host%></b>. Please visit the main site to modify your Custom Ontology Set.</p>
+    <%else%>
+      <p style="padding-left: 7px; font-size: 9pt; color: gray; margin: -3px 0 7px;"><b>Customize your <%=$SITE%> display:</b> Pick the ontologies that you want to see and <%=$SITE%> will hide all other ontologies. Note that this feature works only when you are logged in.</p>
+      <% if @user_ontologies && !@user_ontologies.empty?%>
+        <ul>
+          <% @user_ontologies[:virtual_ids].each do |ont| %>
+            <li><%=DataAccess.getLatestOntology(ont).displayLabel%> (<%=DataAccess.getLatestOntology(ont).abbreviation%>)</li>
+          <% end %>
+      </ul>
+      <% else %>
+        <p style="padding-left: 7px;">You haven't picked any ontologies yet</p>
+      <% end %>
 
-  <div id="custom_ontologies_picker" style="left: -9999px; position: absolute;">
-    <%form_tag "/accounts/#{@user.id}/custom_ontologies" do -%>
-      <%=render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => DataAccess.getOntologyList(true, true), :selected_ontologies => @user_ontologies[:virtual_ids].to_a, :sel_text => "Select Custom Ontologies" }%>
-      <%=submit_tag "Save Custom Ontologies", :class => "link_button"%>
-    <% end -%>
+      <div id="custom_ontologies_picker" style="left: -9999px; position: absolute;">
+        <%form_tag "/accounts/#{@user.id}/custom_ontologies" do -%>
+          <%=render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => DataAccess.getOntologyList(true, true), :selected_ontologies => @user_ontologies[:virtual_ids].to_a, :sel_text => "Select Custom Ontologies" }%>
+          <%=submit_tag "Save Custom Ontologies", :class => "link_button"%>
+        <% end -%>
+      </div>
+    <%end%>
   </div>
 </div>

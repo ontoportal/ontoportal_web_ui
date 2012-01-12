@@ -168,6 +168,18 @@ class DataAccess
     return self.cache_pull("groups", "getGroups", nil, EXTENDED_CACHE_EXPIRE_TIME)
   end
 
+  def self.getGroupsWithOntologies
+    groups = self.getGroups
+    ontologies = self.getOntologyList(false, true)
+    ontologies.each do |ont|
+      ont.groups.each do |group|
+        groups.group_list[group.to_i][:ontologies] ||= Array.new
+        groups.group_list[group.to_i][:ontologies] << ont.ontologyId.to_i
+      end
+    end
+    groups
+  end
+
   def self.getActiveOntologies
     return self.cache_pull("act_ont_list", "getActiveOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
   end

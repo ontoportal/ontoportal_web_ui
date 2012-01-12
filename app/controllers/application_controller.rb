@@ -20,9 +20,9 @@ class ApplicationController < ActionController::Base
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery # :secret => 'ba3e1ab68d3ab8bd1a1e109dfad93d30'
 
-  # Needed for memcache to understand the models in storage
-  before_filter  :preload_models, :set_global_thread_values
+  before_filter  :preload_models, :set_global_thread_values, :domain_ontology_set
 
+  # Needed for memcache to understand the models in storage
   def preload_models()
     Note
     NodeWrapper
@@ -43,6 +43,40 @@ class ApplicationController < ActionController::Base
   def set_global_thread_values
     Thread.current[:session] = session
     Thread.current[:request] = request
+  end
+
+  def domain_ontology_set
+    host = request.host
+    host_parts = host.split(".")
+
+    groups = DataAccess.getGroupsWithOntologies
+    groups_hash = {}
+    groups.group_list.each do |group_id, group|
+      groups_hash[group[:acronym].downcase.gsub(" ", "-")] = group[:ontologies]
+    end
+    $ONTOLOGIES_BY_SUBDOMAIN.merge!(groups_hash)
+
+    @subdomain_filter_active = false
+
+    # Set custom ontologies if we're on a subdomain that has them
+    # Else, make sure user ontologies are set appropriately
+    if $ONTOLOGIES_BY_SUBDOMAIN.include?(host_parts[0])
+      session[:user_ontologies] = { :virtual_ids => Set.new($ONTOLOGIES_BY_SUBDOMAIN[host_parts[0]]), :ontologies => nil, :subdomain_filter => true }
+      @subdomain_filter_active = true
+    elsif session[:user]
+      session[:user_ontologies] = user_ontologies(session[:user])
+    else
+      session[:user_ontologies] = nil
+    end
+  end
+
+  def user_ontologies(user)
+    custom_ontologies = CustomOntologies.find(:first, :conditions => ["user_id = ?", user.id])
+    if custom_ontologies.nil? || custom_ontologies.ontologies.empty?
+      return nil
+    else
+      return { :virtual_ids => Set.new(custom_ontologies.ontologies), :ontologies => nil }
+    end
   end
 
   # Custom 404 handling
