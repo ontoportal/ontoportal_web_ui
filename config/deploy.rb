@@ -28,3 +28,9 @@ role :db,  "ncbo-ror-stage1.stanford.edu", :primary => true
 #role :app, "ncbo-ror-prod1.stanford.edu"
 #role :web, "ncbo-ror-prod1.stanford.edu"
 #role :db,  "ncbo-ror-prod1.stanford.edu", :primary => true
+
+Dir[File.join(File.dirname(__FILE__), '..', 'vendor', 'gems', 'airbrake-*')].each do |vendored_notifier|
+  $: << File.join(vendored_notifier, 'lib')
+end
+
+require 'airbrake/capistrano'

@@ -31,6 +31,8 @@
   <%= javascript_include_tag "JqueryPlugins/chosen/chosen.jquery.js"%>
   <%=javascript_include_tag "bioportal"%>
 
+  <!-- Airbrake Javascript exception notices -->
+  <%= airbrake_javascript_notifier %>
 </head>
 <body>
   <%=render :partial =>'layouts/topnav'%>

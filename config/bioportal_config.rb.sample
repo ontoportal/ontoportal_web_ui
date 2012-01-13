@@ -63,6 +63,9 @@ $WIKI_HELP_PAGE = ""
 # Google Analytics ID (optional)
 $ANALYTICS_ID = ""
 
+# If you plan on using Airbrake to track exceptions then provide your API Key here
+$AIRBRAKE_API_KEY = ""
+
 # Email settings
 ActionMailer::Base.smtp_settings = {
   :address  => "", # smtp server address, ex: smtp.domain.com
