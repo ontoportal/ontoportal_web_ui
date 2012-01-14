@@ -27,6 +27,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :annotator
 
+  map.resources :virtual_appliance
+
   # The priority is based upon order of creation: first created -> highest priority.
 
   # You can have the root of your site routed by hooking up ''

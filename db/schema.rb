@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file,
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
 # please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111208015340) do
+ActiveRecord::Schema.define(:version => 20120114000857) do
 
   create_table "custom_ontologies", :force => true do |t|
     t.integer  "user_id"
@@ -189,6 +189,12 @@ ActiveRecord::Schema.define(:version => 20111208015340) do
   create_table "uses", :force => true do |t|
     t.integer  "project_id"
     t.integer  "ontology_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "virtual_appliance_users", :force => true do |t|
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

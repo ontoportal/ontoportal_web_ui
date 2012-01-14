@@ -1,0 +1,40 @@
+<%@title = "NCBO Virtual Appliance Download"%>
+
+<div style="padding: 13px; max-width: 800px;" class="enable-lists">
+  <h1>NCBO Virtual Appliance Download</h1>
+  <%if @virtual_appliance_access == false%>
+    <p>Please contact support@bioontology.org for access to the virtual appliance</p>
+  <%else%>
+    <p>
+      The NCBO Virtual Appliance image contains a pre-installed, pre-configured version of commonly-used open source NCBO software running on a Linux operating system. The image was created using VMWare and is available for download by contacting support@bioontology.org.
+    </p>
+    <p>
+      The following software is included on the image:
+    </p>
+    <ul>
+      <li>BioPortal Ontology Services (BioPortal Core)</li>
+      <li>BioPortal Web User Interface (including ontology visualization, Flex widgets, Annotator and Resource Index UIs)</li>
+      <li>BioPortal Admin (a UI for administering BioPortal Ontology Services)</li>
+      <li>Annotator</li>
+      <li>Resource Index</li>
+    </ul>
+    <p>
+      Please see our <a href="http://www.bioontology.org/wiki/index.php/Category:NCBO_Virtual_Appliance">documentation</a> for more information on working with the Appliance.
+    </p>
+
+    <h2>Download Versions</h2>
+    VMWare: <a href="http://www.bioontology.org/ncbo-appliance/ncbo-appliance-0.4.zip">http://www.bioontology.org/ncbo-appliance/ncbo-appliance-0.4.zip</a><br/>
+    Xen: <a href="http://www.bioontology.org/ncbo-appliance/ncbo-appliance-0.4.zip">http://www.bioontology.org/ncbo-appliance/ncbo-appliance-0.4.zip</a><br/>
+  <%end%>
+
+  <div style="margin: 2em 0 0; padding: 1em 1em; border: solid thin gray; background-color: lightGray;">
+    <%if @user.admin?%>
+      <h1 style="margin-bottom: 15px;">Admin: Add Users</h1>
+      <% form_for :appliance_user do |f| %>
+        <%= f.label :user_id, "User id" %>:
+        <%= f.text_field :user_id %>&nbsp;&nbsp;
+        <%= f.submit "Add User" %>
+      <%end%>
+    <%end%>
+  </div>
+</div>
