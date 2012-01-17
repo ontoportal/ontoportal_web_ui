@@ -18,7 +18,7 @@
               <thead>
                   <tr>
                       <th>
-                          Review By <%=review.user.username %><%unless review.project.nil? %> From Project <%=link_to review.project.name,project_path(review.project) %><%end %><%if isOwner?(review.user_id) %>&nbsp;&nbsp;<%=link_to "Edit Review", edit_review_path(review) + "?height=500&width=600", :class => "thickbox" %><%end %>
+                          Review By <%=review.user.username %><%unless review.project.nil? %> from Project <%=link_to review.project.name,project_path(review.project) %><%end %> on <%=review.created_at.strftime('%m/%d/%Y')%> <%if isOwner?(review.user_id) %>&nbsp;&nbsp;<%=link_to "Edit Review", edit_review_path(review) + "?height=500&width=600", :class => "thickbox" %><%end %>
                       </th>
                   </tr>
               </thead>

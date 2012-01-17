@@ -7,12 +7,12 @@
       jQuery(icon).toggleClass("ui-icon-triangle-1-s");
       jQuery(collapse).toggle();
     });
-    
+
     jQuery("#version_toggle").click(function(event){
       event.preventDefault();
       jQuery("#ontology_versions tr.hidden_select").toggleClass("hidden_ont");
     });
-    
+
     jQuery("#version_toggle").toggle(function() {
       jQuery(this).text("less...");
     }, function() {
@@ -34,6 +34,9 @@
                 Release Date
             </th>
             <th>
+                Upload Date
+            </th>
+            <th>
                 Downloads
             </th>
         </tr>
@@ -48,6 +51,9 @@
             <%= version.dateReleased %>
         </td>
         <td>
+            <%= version.dateCreated %>
+        </td>
+        <td>
             <% download_link = get_download_link(version) %>
             <% diff_link = get_diffs_link(@diffs, @versions, version, index) %>
             <% separator = (download_link.nil? || download_link.empty?) ? "" : " / "%>
@@ -55,7 +61,7 @@
         </td>
       </tr>
     <%end%>
-    
+
     <% if @versions.length >= 5 %>
       <tr>
         <td colspan="3" style="text-align: right;"><a href="" id="version_toggle">more...</a></td>
