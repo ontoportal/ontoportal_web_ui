@@ -517,6 +517,7 @@ class OntologiesController < ApplicationController
 
     #Grab Reviews Tab
     @reviews = Review.find(:all,:conditions=>{:ontology_id=>@ontology.ontologyId},:include=>:ratings)
+    @reviews.sort! {|a,b| b.created_at <=> a.created_at}
 
     #Grab projects tab
     @projects = Project.find(:all,:conditions=>"uses.ontology_id = '#{@ontology.ontologyId}'",:include=>:uses)
