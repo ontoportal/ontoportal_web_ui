@@ -64,6 +64,7 @@
   <div id="custom_ontologies" class="enable-lists">
     <%if @subdomain_filter[:active]%>
       <p style="padding-left: 7px; font-size: 10pt; margin: -3px 0 7px;">Please visit the main site to modify your Custom Ontology Set.</p>
+  </div>
     <%else%>
       <p style="padding-left: 7px; font-size: 9pt; color: gray; margin: -3px 0 7px;"><b>Customize your <%=$SITE%> display:</b> Pick the ontologies that you want to see and <%=$SITE%> will hide all other ontologies. Note that this feature works only when you are logged in.</p>
       <% if @user_ontologies && !@user_ontologies.empty?%>
@@ -75,6 +76,7 @@
       <% else %>
         <p style="padding-left: 7px;">You haven't picked any ontologies yet</p>
       <% end %>
+  </div>
 
       <div id="custom_ontologies_picker" style="left: -9999px; position: absolute;">
         <%form_tag "/accounts/#{@user.id}/custom_ontologies" do -%>
@@ -83,5 +85,4 @@
         <% end -%>
       </div>
     <%end%>
-  </div>
 </div>

@@ -173,8 +173,10 @@ class DataAccess
     ontologies = self.getOntologyList(false, true)
     ontologies.each do |ont|
       ont.groups.each do |group|
-        groups.group_list[group.to_i][:ontologies] ||= Array.new
-        groups.group_list[group.to_i][:ontologies] << ont.ontologyId.to_i
+        if groups.group_list[group.to_i]
+          groups.group_list[group.to_i][:ontologies] ||= Array.new
+          groups.group_list[group.to_i][:ontologies] << ont.ontologyId.to_i
+        end
       end
     end
     groups
