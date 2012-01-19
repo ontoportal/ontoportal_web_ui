@@ -24,7 +24,11 @@
 </script>
 
 <p style="font-size:15px;font-weight:bold;padding:10px;margin-bottom:0;">
-  <%= select('search', 'ontologies', @options, {:include_blank => ""},{:onchange=>"loadMappings(this.value);", "data-placeholder".to_sym => "Select an Ontology"}) %>
+  <%if @options.empty?%>
+    No mappings available
+  <%else%>
+    <%= select('search', 'ontologies', @options, {:include_blank => ""},{:onchange=>"loadMappings(this.value);", "data-placeholder".to_sym => "Select an Ontology"}) %>
+  <%end%>
 </p>
 
 <div id="mapping_load" style="padding: 1em 1em 0; margin-bottom: -1em; display: none;">
