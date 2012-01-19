@@ -652,7 +652,7 @@ class OntologiesController < ApplicationController
       end
     end
 
-    if params[:dateReleased].nil? || params[:dateReleased].length <1
+    if params[:dateReleased].nil? || params[:dateReleased].length < 1
       errors << "Please Enter the Date Released"
     elsif params[:dateReleased].match(/[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/).nil?
       errors << "Please Enter a Date Formatted as MM/DD/YYYY"
@@ -685,6 +685,10 @@ class OntologiesController < ApplicationController
           errors << "The URL you provided for us to load an ontology from doesn't reference a valid file"
         end
       end
+    end
+
+    if params[:contactName].nil? || params[:contactName].length < 1
+      errors << "Please Enter the Contact Name"
     end
 
     if params[:contactEmail].nil? || params[:contactEmail].length <1 || !params[:contactEmail].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
