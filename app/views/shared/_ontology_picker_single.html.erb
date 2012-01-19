@@ -1,4 +1,7 @@
-<%init_ontology_picker_single%>
+<%custom_ontologies ||= nil%>
+<%selected_ontologies ||= []%>
+<%init_ontology_picker(custom_ontologies, selected_ontologies)%>
+
 <%picker_id ||= "ontology_picker_single"%>
 <%selected ||= nil%>
 
