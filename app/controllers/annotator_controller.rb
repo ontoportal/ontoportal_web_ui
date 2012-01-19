@@ -32,11 +32,11 @@ class AnnotatorController < ApplicationController
     # Add "My BioPortal" ontologies to the ontologies to keep in result parameter
     OntologyFilter.pre(:annotator, options)
 
-    # Make sure that custom ontologies exist in the annotator ontology set
+   # Make sure that custom ontologies exist in the annotator ontology set
     if session[:user_ontologies]
       annotator_ontologies = Set.new([])
       ANNOTATOR.ontologies.each {|ont| annotator_ontologies << ont[:virtualOntologyId]}
-      options[:ontologiesToKeepInResult].split(",") if options[:ontologiesToKeepInResult].kind_of?(String)
+      options[:ontologiesToKeepInResult] = options[:ontologiesToKeepInResult].split(",") if options[:ontologiesToKeepInResult].kind_of?(String)
       options[:ontologiesToKeepInResult].reject! {|a| !annotator_ontologies.include?(a)}
     end
 
