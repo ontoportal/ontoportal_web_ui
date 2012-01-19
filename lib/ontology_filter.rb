@@ -5,7 +5,7 @@ class OntologyFilter
 
   USER_ONTOLOGY_FILTER_PRE = {
     :searchQuery => lambda { |args, user_ontologies| args[0][:ontologies] = user_ontologies[:virtual_ids].to_a if args[0][:ontologies].nil? || args[0][:ontologies].empty? },
-    :getNodeNameContains => lambda { |args, user_ontologies| args[0] = user_ontologies[:virtual_ids].to_a if args[0].nil? || args[0].compact.empty? },
+    :getNodeNameContains => lambda { |args, user_ontologies| args[0] = user_ontologies[:virtual_ids].to_a if args[0].nil? || args[0].join("").empty? },
     :createRecommendation => lambda { |args, user_ontologies| args[0][:ontologyids] = user_ontologies[:virtual_ids].to_a.join(",") if args[0][:ontologyids].nil? || args[0][:ontologyids].empty? },
     :annotator => lambda { |args, user_ontologies| args[:ontologiesToKeepInResult] = user_ontologies[:virtual_ids].to_a if args[:ontologiesToKeepInResult].nil? || args[:ontologiesToKeepInResult].empty? }
   }
@@ -19,16 +19,12 @@ class OntologyFilter
   }
 
   def self.pre(method, args)
-    # return unless USER_ONTOLOGY_FILTER_PRE.key?(method.to_sym)
     return unless Thread.current[:session] && Thread.current[:session][:user_ontologies] && USER_ONTOLOGY_FILTER_PRE.key?(method.to_sym)
-    # Thread.current[:session][:user_ontologies] = { :virtual_ids => Set.new([1032, 1009]) }
     USER_ONTOLOGY_FILTER_PRE[method.to_sym].call(args, Thread.current[:session][:user_ontologies])
   end
 
   def self.post(method, object)
-    # return unless USER_ONTOLOGY_FILTER_POST.key?(method.to_sym)
     return unless Thread.current[:session] && Thread.current[:session][:user_ontologies] && USER_ONTOLOGY_FILTER_POST.key?(method.to_sym)
-    # Thread.current[:session][:user_ontologies] = { :virtual_ids => Set.new([1032, 1009]) }
     USER_ONTOLOGY_FILTER_POST[method.to_sym].call(object, Thread.current[:session][:user_ontologies])
   end
 
