@@ -375,6 +375,7 @@ class OntologiesController < ApplicationController
 
         if(params[:ontology][:ontologyId].empty?)
           @ontology = OntologyWrapper.new
+          @ontology.from_params(params)
         else
           @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
         end

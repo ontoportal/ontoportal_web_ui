@@ -31,7 +31,7 @@
     <div style="margin: 2em 0 0; padding: 1em 1em; border: solid thin gray; background-color: lightGray;">
       <h1 style="margin-bottom: 15px;">Admin: Add Users</h1>
       <% form_for :appliance_user do |f| %>
-        <%= f.label :user_id, "User id" %>:
+        <%= f.label :user_id, "Account Name" %>:&nbsp;&nbsp;
         <%= f.text_field :user_id %>&nbsp;&nbsp;
         <%= f.submit "Add User" %>
       <%end%>

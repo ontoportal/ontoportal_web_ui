@@ -19,10 +19,13 @@ class VirtualApplianceController < ApplicationController
   end
 
   def create
-    @new_user = VirtualApplianceUser.find_all_by_user_id(params[:appliance_user][:user_id])
-    @new_user = VirtualApplianceUser.new
-    @new_user.user_id = params[:appliance_user][:user_id]
-    @new_user.save
+    user = DataAccess.getUserByUsername(params[:appliance_user][:user_id])
+    @new_user = VirtualApplianceUser.find_all_by_user_id(user.id)
+    if @new_user.nil? || @new_user.empty?
+      @new_user = VirtualApplianceUser.new
+      @new_user.user_id = user.id
+      @new_user.save
+    end
     redirect_to :action => 'index'
   end
 
