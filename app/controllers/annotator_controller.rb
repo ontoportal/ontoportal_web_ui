@@ -37,7 +37,7 @@ class AnnotatorController < ApplicationController
       annotator_ontologies = Set.new([])
       ANNOTATOR.ontologies.each {|ont| annotator_ontologies << ont[:virtualOntologyId]}
       options[:ontologiesToKeepInResult] = options[:ontologiesToKeepInResult].split(",") if options[:ontologiesToKeepInResult].kind_of?(String)
-      options[:ontologiesToKeepInResult].reject! {|a| !annotator_ontologies.include?(a)}
+      options[:ontologiesToKeepInResult].reject! {|a| !annotator_ontologies.include?(a.to_i)}
     end
 
     start = Time.now
