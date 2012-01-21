@@ -16,16 +16,30 @@ class VirtualApplianceController < ApplicationController
     if !@virtual_appliance_user.nil? && !@virtual_appliance_user.empty? || @user.admin?
       @virtual_appliance_access = true
     end
+
+    users_with_access = VirtualApplianceUser.find(:all)
+    @users_with_access = []
+    users_with_access.each do |user|
+      @users_with_access << DataAccess.getUser(user.user_id)
+    end
   end
 
   def create
     user = DataAccess.getUserByUsername(params[:appliance_user][:user_id])
+
+    if user.nil?
+      flash[:admin_error] = "Problem adding account <b>#{params[:appliance_user][:user_id]}</b>, account does not exist"
+      redirect_to :action => 'index'
+      return
+    end
+
     @new_user = VirtualApplianceUser.find_all_by_user_id(user.id)
     if @new_user.nil? || @new_user.empty?
       @new_user = VirtualApplianceUser.new
       @new_user.user_id = user.id
       @new_user.save
     end
+
     redirect_to :action => 'index'
   end
 
