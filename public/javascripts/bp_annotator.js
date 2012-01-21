@@ -203,6 +203,19 @@ function getannotations() {
   });
 }
 
+var displayFilteredColumnNames = function() {
+  var column_names = [];
+  jQuery(".bp_popup_list input:checked").closest("th").each(function(){
+    column_names.push(jQuery(this).attr("title"));
+  });
+  jQuery("#filter_names").html(column_names.join(", "))
+  if (column_names.length > 0) {
+    jQuery("#filter_list").show();
+  } else {
+    jQuery("#filter_list").hide();
+  }
+}
+
 function createFilterCheckboxes(filter_items, checkbox_class, checkbox_location) {
   var for_sort = [];
   var sorted = []
@@ -246,6 +259,8 @@ var filter_ontologies = {
       search_regex.push(jQuery(this).val());
     });
 
+    displayFilteredColumnNames();
+
     if (search_regex.length == 0) {
       annotationsTable.fnFilter("", BP_COLUMNS.ontologies);
     } else {
@@ -279,6 +294,8 @@ var filter_terms = {
       search_regex.push(jQuery(this).val().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"));
     });
 
+    displayFilteredColumnNames();
+
     if (search_regex.length == 0) {
       annotationsTable.fnFilter("", BP_COLUMNS.terms);
     } else {
@@ -310,6 +327,8 @@ var filter_matched_ontologies = {
     jQuery(".filter_matched_ontology_checkboxes:checked").each(function(){
       search_regex.push(jQuery(this).val());
     });
+
+    displayFilteredColumnNames();
 
     if (search_regex.length == 0) {
       annotationsTable.fnFilter("", BP_COLUMNS.matched_ontologies);
@@ -344,6 +363,8 @@ var filter_matched_terms = {
       search_regex.push(jQuery(this).val().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"));
     });
 
+    displayFilteredColumnNames();
+
     if (search_regex.length == 0) {
       annotationsTable.fnFilter("", BP_COLUMNS.matched_terms);
     } else {
@@ -377,6 +398,8 @@ var filter_match_type = {
       search_regex.push(jQuery(this).val().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"));
     });
 
+    displayFilteredColumnNames();
+
     if (search_regex.length == 0) {
       annotationsTable.fnFilter("", BP_COLUMNS.types);
     } else {
@@ -396,6 +419,7 @@ var removeFilters = function() {
   annotationsTable.fnFilter("", BP_COLUMNS.types);
   annotationsTable.fnFilter("", BP_COLUMNS.matched_terms);
   annotationsTable.fnFilter("", BP_COLUMNS.matched_ontologies);
+  jQuery("#filter_list").hide();
 }
 
 // Datatables reset sort extension

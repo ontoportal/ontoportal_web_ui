@@ -136,9 +136,7 @@ var resultsTable;
     // Search on enter
     jQuery("#search_keywords").bind("keyup", function(event){
       if (event.which == 13) {
-        jQuery(".ui-autocomplete").hide();
         jQuery("#search_button").click();
-        jQuery(".ui-autocomplete").hide();
       }
     });
 
@@ -227,6 +225,20 @@ var removeFilters = function() {
   jQuery(".filter_matched_checkboxes").attr("checked", false);
   resultsTable.fnFilter("", 1);
   resultsTable.fnFilter("", 2);
+  jQuery("#search_filter_list").hide();
+}
+
+var displayFilteredColumnNames = function() {
+  var column_names = [];
+  jQuery(".bp_popup_list input:checked").closest("th").each(function(){
+    column_names.push(jQuery(this).attr("title"));
+  });
+  jQuery("#search_filter_names").html(column_names.join(", "))
+  if (column_names.length > 0) {
+    jQuery("#search_filter_list").show();
+  } else {
+    jQuery("#search_filter_list").hide();
+  }
 }
 
 var filter_ontologies = {
@@ -257,6 +269,8 @@ var filter_ontologies = {
     } else {
       resultsTable.fnFilter(search_regex.join("|"), 2, true, false);
     }
+
+    displayFilteredColumnNames();
 
     jQuery("#result_stats").html(jQuery(resultsTable).find("tr").length - 1 + " results");
   }
@@ -291,6 +305,8 @@ var filter_matched = {
       resultsTable.fnFilter(search_regex.join("|"), 1, true, false);
     }
 
+    displayFilteredColumnNames();
+
     jQuery("#result_stats").html(jQuery(resultsTable).find("tr").length - 1 + " results");
   }
 }
@@ -320,10 +336,16 @@ var filter_matched = {
   <div id="search_results_container" style="margin-top: .5em; clear: both;">
 
     <div id="result_stats" style="text-align: right; width: 850px;"></div>
+
+    <div id="search_filter_list" style="font-size: 10pt; color: gray; display: none; clear: both; margin: -15px 0 5px">
+      <span id="search_filter_title">Results are filtered by:</span>&nbsp;
+      <span id="search_filter_names"></span>
+    </div>
+
     <table id="search_results" style="display: none; width: 850px;" class="zebra">
       <thead>
         <th style="width: 325px;">Term Name</th>
-        <th style="width: 150px;" class="matched_in">Matched In
+        <th style="width: 150px;" class="matched_in" title="Matched In">Matched In
           <span class="popup_container" style="padding-left: 1.7em;">
             <span class="bp_popup_link_container">
               <a href="javascript:void(0);" id="filter_matched" class="bp_popup_link">filter</a>
@@ -348,7 +370,7 @@ var filter_matched = {
             </div>
           </span>
         </th>
-        <th style="width: 325px;">
+        <th style="width: 325px;" title="Ontology">
           Ontology <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_ontologies" class="bp_popup_link">filter</a></span><div id="ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span>
         </th>
       </thead>

@@ -35,10 +35,6 @@
       <%=select_tag :levelMax, "<option selected='selected' value='0'>None</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option><option value='9'>9</option><option value='10'>10</option><option value='999'>All</option>", :style => "width: 70px;"%>
     </p>
 
-    <!--
-    <%=check_box_tag :wholeWordOnly, :true, :checked => true%> <b><%=label_tag :wholeWordOnly, "Match Whole Words Only"%></b><br/>
-    -->
-
     <input type="button" id="annotator_button" value="Get Annotations" style="margin-top: 15px;" class="link_button">
     <span class="annotator_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
     <span style='color: red;' id="annotator_error" class='annotator_error'></span>
@@ -47,30 +43,39 @@
 
 <div id="annotations_container" style="display: none; padding: 0 13px; margin: 0 0 2em;" data-bp_rest_server="<%=$REST_DOMAIN%>">
   <div style="float: right; font-style: oblique; color: gray;" id="result_counts"></div>
-  <h2 style="margin-bottom: 0;">Annotations</h2>
+
+  <h2 style="margin-bottom: 0;">
+    Annotations
+    <div id="filter_list" style="font-size: 9pt; color: gray; display: none; clear: both; margin: -15px 0 5px">
+      <span id="filter_title">Results are filtered by:</span>&nbsp;
+      <span id="filter_names"></span>
+    </div>
+  </h2>
+
   <div id="results_error" style="color: red; margin-bottom: 7px;"></div>
+
   <table id="annotations" style="display: inline-block; min-width: 700px; width: 100%;" class="zebra">
     <thead>
       <tr>
-        <th style="padding-right: 6px;">
+        <th style="padding-right: 6px;" title="Term">
           Term
           <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_terms" class="bp_popup_link">filter</a></span><div id="terms_filter_list" class="bp_popup_list" style="display: none;"></div></span>
         </th>
-        <th style="padding-right: 6px">
+        <th style="padding-right: 6px" title="Ontology">
           Ontology
           <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_ontologies" class="bp_popup_link">filter</a></span><div id="ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span>
         </th>
-        <th style="padding-right: 6px; min-width: 85px;">
+        <th style="padding-right: 6px; min-width: 85px;" title="Type">
           Type
           <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_match_type" class="bp_popup_link">filter</a></span><div id="match_type_filter_list" class="bp_popup_list" style="display: none;"></div></span>
         </th>
         <th>UMLS Sem Type</th>
         <th>Context</th>
-        <th style="padding-right: 6px;">
+        <th style="padding-right: 6px;" title="Matched Term">
           Matched Term
           <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_matched_terms" class="bp_popup_link">filter</a></span><div id="matched_terms_filter_list" class="bp_popup_list" style="display: none;"></div></span>
         </th>
-        <th style="padding-right: 6px; min-width: 200px;">
+        <th style="padding-right: 6px; min-width: 200px;" title="Matched Ontology">
           Matched Ontology
           <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_matched_ontologies" class="bp_popup_link">filter</a></span><div id="matched_ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span>
         </th>

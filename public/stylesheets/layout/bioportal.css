@@ -1748,7 +1748,7 @@ form.button-to {
 
 #search_spinner {
   display: inline-block;
-  padding-top: 4px;
+  padding: 8px 4px;
 }
 
 span.additional {
