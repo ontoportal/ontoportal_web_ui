@@ -1,14 +1,15 @@
 class AnnotatorController < ApplicationController
   layout 'ontology'
 
-  ANNOTATOR = NCBO::Annotator.new(:apikey => $API_KEY, :annotator_location => "http://#{$REST_DOMAIN}/obs")
+  ANNOTATOR_OPTIONS = {:apikey => $API_KEY, :annotator_location => "http://#{$REST_DOMAIN}/obs"}
 
   def index
-    ontologies = ANNOTATOR.ontologies
+    annotator = set_apikey(NCBO::Annotator.new(ANNOTATOR_OPTIONS))
+    ontologies = annotator.ontologies
     ontology_ids = []
     ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
 
-    semantic_types = ANNOTATOR.semantic_types
+    semantic_types = annotator.semantic_types
     @semantic_types_for_select = []
     semantic_types.each do |semantic_type|
       @semantic_types_for_select << [ "#{semantic_type[:description]} (#{semantic_type[:semanticType]})", semantic_type[:semanticType]]
@@ -19,29 +20,30 @@ class AnnotatorController < ApplicationController
   end
 
   def create
+    annotator = set_apikey(NCBO::Annotator.new(ANNOTATOR_OPTIONS))
     text = params[:text].strip
-
     options = { :ontologiesToKeepInResult => params[:ontology_ids] ||= [],
                 :withDefaultStopWords => true,
                 :levelMax => params[:levelMax] ||= 1,
                 :semanticTypes => params[:semanticTypes] ||= [],
                 :mappingTypes => params[:mappingTypes] ||= [],
-                :wholeWordOnly => params[:wholeWordOnly] ||= true
+                :wholeWordOnly => params[:wholeWordOnly] ||= true,
+                :isVirtualOntologyId => true
     }
 
     # Add "My BioPortal" ontologies to the ontologies to keep in result parameter
     OntologyFilter.pre(:annotator, options)
 
-   # Make sure that custom ontologies exist in the annotator ontology set
+    # Make sure that custom ontologies exist in the annotator ontology set
     if session[:user_ontologies]
       annotator_ontologies = Set.new([])
-      ANNOTATOR.ontologies.each {|ont| annotator_ontologies << ont[:virtualOntologyId]}
+      annotator.ontologies.each {|ont| annotator_ontologies << ont[:virtualOntologyId]}
       options[:ontologiesToKeepInResult] = options[:ontologiesToKeepInResult].split(",") if options[:ontologiesToKeepInResult].kind_of?(String)
       options[:ontologiesToKeepInResult].reject! {|a| !annotator_ontologies.include?(a.to_i)}
     end
 
     start = Time.now
-    annotations = ANNOTATOR.annotate(text, options)
+    annotations = annotator.annotate(text, options)
     LOG.add :debug, "Getting annotations: #{Time.now - start}s"
 
     highlight_cache = {}
@@ -56,7 +58,6 @@ class AnnotatorController < ApplicationController
       end
     end
     annotations.statistics[:parameters] = { :textToAnnotate => text, :apikey => $API_KEY }.merge(options)
-    # annotations.annotations.sort! {|a,b| b[:score] <=> a[:score]}
     LOG.add :debug, "Processing annotations: #{Time.now - start}s"
 
     ontologies_hash = {}
@@ -86,5 +87,14 @@ private
 
     # Put it all together
     [before, kept_space, highlight.join, after].join
+  end
+
+  def set_apikey(annotator)
+    if session[:user]
+      annotator.options[:apikey] = session[:user].apikey
+    else
+      annotator.options[:apikey] = $API_KEY
+    end
+    annotator
   end
 end
