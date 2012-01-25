@@ -14,7 +14,9 @@ class PostNotFound < Error404; end
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
-  # include ExceptionNotifiable
+  if !$EMAIL_EXCEPTIONS.nil? && $EMAIL_EXCEPTIONS == true
+    include ExceptionNotifiable
+  end
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store

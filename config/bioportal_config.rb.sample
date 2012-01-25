@@ -66,6 +66,9 @@ $ANALYTICS_ID = ""
 # If you plan on using Airbrake to track exceptions then provide your API Key here
 $AIRBRAKE_API_KEY = ""
 
+# If you don't use Airbrake you can have exceptions emailed to the $ERROR_EMAIL address by setting this to 'true'
+$EMAIL_EXCEPTIONS = true
+
 # Email settings
 ActionMailer::Base.smtp_settings = {
   :address  => "", # smtp server address, ex: smtp.domain.com
@@ -76,9 +79,6 @@ ActionMailer::Base.smtp_settings = {
 # Announcements mailman mailing list REQUEST address, EX: list-request@lists.example.org
 # NOTE: You must use the REQUEST address for the mailing list. ONLY WORKS WITH MAILMAN LISTS.
 $ANNOUNCE_LIST = "bioportal-test-request@lists.stanford.edu"
-
-# Email address to mail when exceptions are raised
-ExceptionNotifier.exception_recipients = %w(recipient@domain.com)
 
 # Email addresses used for sending notifications (errors, feedback, support)
 $SUPPORT_EMAIL = "recipient@domain.com"
@@ -126,3 +126,8 @@ $FLEXOVIZ_APIKEY = ""
 
 # Full string for site, EX: "NCBO BioPortal"
 $ORG_SITE = ($ORG.nil? || $ORG.empty?) ? $SITE : "#{$ORG} #{$SITE}"
+
+# Email address to mail when exceptions are raised
+ExceptionNotifier.exception_recipients = [$ERROR_EMAIL]
+
+
