@@ -63,7 +63,7 @@
   </h2>
   <div id="custom_ontologies" class="enable-lists">
     <%if @subdomain_filter[:active]%>
-      <p style="padding-left: 7px; font-size: 10pt; margin: -3px 0 7px;">Please visit the main site to modify your Custom Ontology Set.</p>
+      <p style="padding-left: 7px; font-size: 10pt; margin: -3px 0 7px;">Please <a href="<%="#{$UI_URL}/account"%>">visit the main site</a> to modify your Custom Ontology Set.</p>
   </div>
     <%else%>
       <p style="padding-left: 7px; font-size: 9pt; color: gray; margin: -3px 0 7px;"><b>Customize your <%=$SITE%> display:</b> Pick the ontologies that you want to see and <%=$SITE%> will hide all other ontologies. Note that this feature works only when you are logged in.</p>
