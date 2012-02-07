@@ -1407,7 +1407,6 @@ private
     ontology.id = ontologybeanXML.elements["id"].get_text.value.strip
     ontology.displayLabel= ontologybeanXML.elements["displayLabel"].get_text.value.strip rescue "No Label"
     ontology.ontologyId = ontologybeanXML.elements["ontologyId"].get_text.value.strip
-    ontology.userId = ontologybeanXML.elements["userId"].get_text.value.strip rescue ""
     ontology.parentId = ontologybeanXML.elements["parentId"].get_text.value.strip rescue ""
     ontology.format = ontologybeanXML.elements["format"].get_text.value.strip rescue  ""
     ontology.versionNumber = ontologybeanXML.elements["versionNumber"].get_text.value.strip rescue ""
@@ -1438,6 +1437,13 @@ private
     ontology.isMetadataOnly = ontologybeanXML.elements["isMetadataOnly"].get_text.value.strip.to_i rescue ""
     ontology.downloadLocation = ontologybeanXML.elements["downloadLocation"].get_text.value.strip rescue ""
     ontology.versionStatus = ontologybeanXML.elements["versionStatus"].get_text.value.strip rescue ""
+
+    ontology.userId = []
+    unless ontologybeanXML.elements["userIds"].nil?
+      ontologybeanXML.elements["userIds"].elements.each do |element|
+        ontology.userId << element.get_text.value.strip rescue ""
+      end
+    end
 
     ontology.categories = []
     ontologybeanXML.elements["categoryIds"].elements.each do |element|

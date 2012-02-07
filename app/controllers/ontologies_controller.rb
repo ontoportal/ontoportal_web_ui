@@ -417,7 +417,7 @@ class OntologiesController < ApplicationController
           # Cleaning out the cache
           parent_ontology=DataAccess.getOntology(@ontology.viewOnOntologyVersionId)
           CACHE.delete("views::#{parent_ontology.ontologyId}")
-          redirect_to '/ontologies/'+@ontology.viewOnOntologyVersionId+'#views'
+          redirect_to "/ontologies/#{@ontology.ontologyId}"
         else
           redirect_to ontology_path(@ontology)
         end

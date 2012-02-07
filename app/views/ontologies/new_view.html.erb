@@ -1,4 +1,6 @@
 <%@title = "Submit new ontology" %>
+<% ont_id = (@new == true) ? @ontology_version_id : @ontology.viewOnOntologyVersionId %>
+<% parent_ontology = DataAccess.getOntology(@ontology_version_id) %>
 
 <script type="text/javascript">
     $(function(){
@@ -110,7 +112,7 @@
         <%end %>
     </div>
     <%if @new %>
-      <%=hidden_field :ontology, :ontologyId, :value=>"" %>
+      <%=hidden_field :ontology, :ontologyId, :value => parent_ontology.ontologyId %>
     <% else %>
       <%=hidden_field :ontology, :ontologyId %>
     <%end %>
@@ -239,7 +241,6 @@
                 Ontology Base Version: <span class="asterik">*</span>
             </th>
             <td>
-                <% ont_id = (@new == true) ? @ontology_version_id : @ontology.viewOnOntologyVersionId %>
                 <%= select :ontology, :viewOnOntologyVersionId, get_versions_array_for_select(ont_id), { :selected => get_versions_array_for_select(ont_id)[0][0] } %>
             </td>
         </tr>

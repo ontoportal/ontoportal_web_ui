@@ -65,7 +65,7 @@
           <span id="view_<%=index%>_icon" class="ui-icon ui-icon-triangle-1-e click_view_collapse click_view_collapse_icon" style="float: left;"></span>
           <span class="click_view_collapse" style="font-size: 120%; font-weight: bold;"><%= virtual[0].displayLabel %></span>
           <span style="font-size: 90%;">
-                <%if virtual[0].admin?(session[:user]) %>
+            <%if virtual[0].admin?(session[:user]) %>
                <span style="padding-left: 1em; vertical-align: text-bottom;">(<%= link_to "Edit Metadata", "/ontologies/view/edit/#{virtual[0].id}" %>)</span>
             <%end%>
           </span>
@@ -116,7 +116,7 @@
                           <%= view.versionNumber %>
                       </td>
                       <td>
-                          <%= get_view_ontology_version(view.viewOnOntologyVersionId) %>
+                        <%= get_view_ontology_version(view.viewOnOntologyVersionId) rescue "unknown"%>
                       </td>
                       <td>
                           <%= view.dateReleased %>
