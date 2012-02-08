@@ -21,7 +21,7 @@ class AnnotatorController < ApplicationController
 
   def create
     annotator = set_apikey(NCBO::Annotator.new(ANNOTATOR_OPTIONS))
-    text = params[:text].strip
+    text = params[:text].strip.gsub("\r\n", " ").gsub("\n", " ")
     options = { :ontologiesToKeepInResult => params[:ontology_ids] ||= [],
                 :withDefaultStopWords => true,
                 :levelMax => params[:levelMax] ||= 1,
