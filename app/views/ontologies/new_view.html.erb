@@ -1,6 +1,6 @@
 <%@title = "Submit new ontology" %>
 <% ont_id = (@new == true) ? @ontology_version_id : @ontology.viewOnOntologyVersionId %>
-<% parent_ontology = DataAccess.getOntology(@ontology_version_id) %>
+<% parent_ontology = DataAccess.getOntology(ont_id) %>
 
 <script type="text/javascript">
     $(function(){
