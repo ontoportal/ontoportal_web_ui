@@ -109,7 +109,7 @@
         <h1><%=page_title%></h1>
     </div>
     <%if @new %>
-      <%=hidden_field :ontology, :ontologyId, :value => parent_ontology.ontologyId %>
+      <%=hidden_field :ontology, :ontologyId, :value => "" %>
     <% else %>
       <%=hidden_field :ontology, :ontologyId %>
     <%end %>
