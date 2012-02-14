@@ -58,7 +58,7 @@
 	</tr>
 	<tr>
   -->
-		<th>Account Name:*</th><td><%=text_field :user, :username%></td>		
+		<th>Account Name:*</th><td><%=text_field :user, :username%></td>
 	</tr>
 	<tr>
 		<th>Password:*</th><td><%=password_field :user, :password%></td>
@@ -165,23 +165,23 @@
 			.recaptchatable {
 				border: 1px solid white !important;
 			}
-			
+
 		</style>
 		<tr>
 			<%# recaptcha_tags is a method provided by the recaptcha plugin which displays a recaptcha %>
 			<th>Please enter the following text:*</th><td><%= recaptcha_tags :display => { "theme" => "clean" } %></td>
 		</tr>
 	<% end %>
-  
+
   <%unless $ANNOUNCE_LIST.nil? || $ANNOUNCE_LIST.empty? %>
     <tr>
       <td colspan="2" style="text-align: right;">
-        <div style="float: right; margin-left: 10px; position: relative; top: 5px;"><input type="checkbox" value="1" name="user[register_mail_list]" id="user_register_mail_list"></div>
+        <div style="float: right; margin-left: 10px; position: relative; top: 5px;"><input type="checkbox" checked="checked" value="1" name="user[register_mail_list]" id="user_register_mail_list"></div>
         <div style="overflow: hidden; line-height: 12px;"><label for="user_register_mail_list">Register for the <%=$SITE%> announcements email list<br/><span style="font-size: x-small;">(approximately two emails per month -- confirmation via email required)</span></label></div>
       </td>
     </tr>
   <%end%>
-  
+
 	<tr>
 	  <td colspan="2" style="text-align: right;"><%= submit_tag "Create" %></td>
 	</tr>
