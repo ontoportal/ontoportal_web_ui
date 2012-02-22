@@ -76,25 +76,23 @@ class MappingsController < ApplicationController
         @map_sources << map.map_source.gsub(/(<[^>]*>)/mi, "") unless map.map_source.nil? || map.map_source.empty?
         @map_sources.uniq!
 
-        unless map.source_name.nil? || map.destination_name.nil?
-          if @mappings[map.source_id].nil?
-            @mappings[map.source_id] = [{:source_ont_name=>map.source_ont_name,:destination_ont_name=>map.destination_ont_name,:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.username],:count=>1}]
-          else
-            @mappings[map.source_id]
+        if @mappings[map.source_id].nil?
+          @mappings[map.source_id] = [{:source_ont_name=>map.source_ont_name,:destination_ont_name=>map.destination_ont_name,:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.username],:count=>1,:source_missing=>map.source_missing?,:target_missing=>map.target_missing?}]
+        else
+          @mappings[map.source_id]
 
-            found = false
-            for mapping in @mappings[map.source_id]
-              if mapping[:destination_id].eql?(map.destination_id)
-                found = true
-                mapping[:users] << map.user.username
-                mapping[:users].uniq!
-                mapping[:count] += 1
-              end
+          found = false
+          for mapping in @mappings[map.source_id]
+            if mapping[:destination_id].eql?(map.destination_id)
+              found = true
+              mapping[:users] << map.user.username
+              mapping[:users].uniq!
+              mapping[:count] += 1
             end
+          end
 
-            unless found
-             @mappings[map.source_id] << {:source_ont_name=>map.source_ont_name,:destination_ont_name=>map.destination_ont_name,:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.username],:count=>1}
-            end
+          unless found
+           @mappings[map.source_id] << {:source_ont_name=>map.source_ont_name,:destination_ont_name=>map.destination_ont_name,:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.username],:count=>1,:source_missing=>map.source_missing?,:target_missing=>map.target_missing?}
           end
         end
       end

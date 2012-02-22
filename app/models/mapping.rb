@@ -105,11 +105,31 @@ class Mapping
   end
 
   def source_name
-    DataAccess.getNodeLabel(self.source_ontology_obj.id, self.source).label_html rescue nil
+    DataAccess.getNodeLabel(self.source_ontology_obj.id, self.source).label_html rescue self.source
+  end
+
+  def source_missing?
+    missing = false
+    begin
+      missing = self.source_node == nil
+    rescue Exception => e
+      missing = true
+    end
+    missing
+  end
+
+  def target_missing?
+    missing = false
+    begin
+      missing = self.dest_node == nil
+    rescue Exception => e
+      missing = true
+    end
+    missing
   end
 
   def destination_name
-    DataAccess.getNodeLabel(self.target_ontology_obj.id, self.target).label_html rescue nil
+    DataAccess.getNodeLabel(self.target_ontology_obj.id, self.target).label_html rescue self.target
   end
 
   def source_ont_name
