@@ -1206,7 +1206,7 @@ private
     end
 
     begin
-      timeout(1) { open(uri, "User-Agent" => "BioPortal-UI") }
+      open(uri, "User-Agent" => "BioPortal-UI")
     rescue OpenURI::HTTPError => e
       LOG.add :debug, "Problem retrieving xml for #{uri}: #{e.message}"
       if !e.io.status.nil? && e.io.status[0].to_i == 404
