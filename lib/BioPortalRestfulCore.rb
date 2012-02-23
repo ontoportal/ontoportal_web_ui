@@ -667,6 +667,8 @@ class BioPortalRestfulCore
     timer = Benchmark.ms { metrics = generic_parse(:xml => doc, :type => "OntologyMetricsWrapper") }
     LOG.add :debug, "Parsed all ontology metrics (#{timer}ms)"
 
+    metrics = metrics.kind_of?(Array) ? metrics : nil
+
     metrics
   end
 
