@@ -46,11 +46,19 @@ class Mapping
   end
 
   def source_node
-    return DataAccess.getNode(self.source_ontology_version, self.source)
+    return DataAccess.getNode(self.source_ontology_version, self.source) rescue nil
+  end
+
+  def source_node_latest
+    return DataAccess.getNode(self.source_ontology_obj.id, self.source) rescue nil
   end
 
   def dest_node
     return DataAccess.getNode(self.target_ontology_version, self.target) rescue nil
+  end
+
+  def dest_node_latest
+    return DataAccess.getNode(self.target_ontology_obj.id, self.target) rescue nil
   end
 
   def user
@@ -111,7 +119,7 @@ class Mapping
   def source_missing?
     missing = false
     begin
-      missing = self.source_node == nil
+      missing = self.source_node_latest == nil
     rescue Exception => e
       missing = true
     end
@@ -121,7 +129,7 @@ class Mapping
   def target_missing?
     missing = false
     begin
-      missing = self.dest_node == nil
+      missing = self.dest_node_latest == nil
     rescue Exception => e
       missing = true
     end

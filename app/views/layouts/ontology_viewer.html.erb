@@ -96,7 +96,13 @@
         <a tabindex="0" href="#administer" class="fg-button fg-button-icon-right ui-widget ui-state-default" id="ont_admin"><span class="ui-icon ui-icon-triangle-1-s"></span>Administer</a>
         <div id="adminster_options" class="hidden" style="text-align: left;">
           <ul>
-            <li><%=link_to "Submit New Version",new_ontology_path(:id=>@ontology.ontologyId) %></li>
+            <li>
+              <%if @ontology.isView.eql?("true")%>
+                <a href="/ontologies/view/new/<%=@ontology.id%>?version_id=<%=@ontology.viewOnOntologyVersionId%>">Submit New View Version</a>
+              <%else%>
+                <%=link_to "Submit New Version",new_ontology_path(:id=>@ontology.ontologyId) %>
+              <%end%>
+            </li>
             <li><%=link_to "Edit Ontology Information (version #{@ontology.versionNumber})",edit_ontology_path(:id=>@ontology.id) %></li>
           </ul>
         </div>
