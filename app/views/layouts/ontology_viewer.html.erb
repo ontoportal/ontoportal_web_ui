@@ -103,7 +103,13 @@
                 <%=link_to "Submit New Version",new_ontology_path(:id=>@ontology.ontologyId) %>
               <%end%>
             </li>
-            <li><%=link_to "Edit Ontology Information (version #{@ontology.versionNumber})",edit_ontology_path(:id=>@ontology.id) %></li>
+            <li>
+              <%if @ontology.isView.eql?("true")%>
+                <a href="/ontologies/view/edit/<%=@ontology.id%>">Edit View Information (version <%=@ontology.versionNumber%>)</a>
+              <%else%>
+                <%=link_to "Edit Ontology Information (version #{@ontology.versionNumber})",edit_ontology_path(:id=>@ontology.id) %>
+              <%end%>
+            </li>
           </ul>
         </div>
       </span>
