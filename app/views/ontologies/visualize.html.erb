@@ -463,15 +463,14 @@
 
   <div style="clear: both;"></div>
 
+  <!-- Create mapping UI -->
+  <div id="create_mapping" style="left: -99999px; position: absolute;">
+    <%= render :partial => '/mappings/new_form', :locals => { :ontology_from => @ontology.id, :concept_from => @concept.fullId } %>
+  </div>
+
 <% else # found an error %>
   <%= "<div id=\"error\"><h2>#{@error}</h2></div>" %>
 <% end %>
-
-
-<!-- Create mapping UI -->
-<div id="create_mapping" style="left: -99999px; position: absolute;">
-  <%= render :partial => '/mappings/new_form', :locals => { :ontology_from => @ontology.id, :concept_from => @concept.fullId } %>
-</div>
 
 
 

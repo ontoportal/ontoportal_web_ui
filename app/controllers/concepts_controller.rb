@@ -49,17 +49,8 @@ class ConceptsController < ApplicationController
       @concept = DataAccess.getNode(params[:ontology], params[:id])
     end
 
-    # TODO: This should use a proper error-handling technique with custom exceptions
     if @concept.nil?
-      @error = "The requested term could not be found."
-
-      if request.xhr?
-        render :text => @error
-        return
-      else
-        render :file=> '/ontologies/visualize',:use_full_path => true, :layout => 'ontology' # done this way to share a view
-        return
-      end
+      raise Error404
     end
 
     # This handles special cases where a passed concept id is for a concept
