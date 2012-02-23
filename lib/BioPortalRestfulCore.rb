@@ -24,6 +24,8 @@ class BioPortalRestfulCore
   # Track paths that have already been processed when building a path to root tree
   @seen_paths = {}
 
+  # MySQL connection for debugging timeout errors
+  @mysql_config = Rails.configuration.database_configuration[Rails.configuration.environment]
 
   def self.createMapping(params)
     # Default values
@@ -1204,12 +1206,33 @@ private
     end
 
     begin
-      open(uri, "User-Agent" => "BioPortal-UI")
-    rescue Exception => e
+      timeout(1) { open(uri, "User-Agent" => "BioPortal-UI") }
+    rescue OpenURI::HTTPError => e
       LOG.add :debug, "Problem retrieving xml for #{uri}: #{e.message}"
       if !e.io.status.nil? && e.io.status[0].to_i == 404
         raise Error404
       end
+    rescue Timeout::Error => e
+      url_parts = uri.split("?")
+      # parse out the parameters in the query string
+      params = CGI::parse(url_parts[1]) if url_parts[1]
+      # remove trailing slash if it exists
+      url_parts[0].slice!(url_parts[0].length - 1) if url_parts[0][url_parts[0].length - 1] == 47
+      # check for ontology id
+      ont_id_location = url_parts[0].index(/\/[0-9]+$/)
+      ont_id = ont_id_location.nil? ? params["ontologyids"] : url_parts[0].slice!(ont_id_location, url_parts[0].length).delete("/")
+      # parse the remaining URL
+      parsed_url = URI.parse(url_parts[0])
+      # make sure concept id isn't nil
+      concept_id = !params.nil? && params["conceptid"] ? params["conceptid"] : ""
+      # log the error
+      mysql_conn = Mysql.new(@mysql_config["host"], @mysql_config["username"], @mysql_config["password"], @mysql_config["database"])
+      mysql_conn.query("INSERT INTO timeouts
+                       (path, ontology_id, concept_id, params, created)
+                       VALUES('#{parsed_url.path}', #{ont_id}, '#{concept_id}', '#{url_parts[1]}', CURRENT_TIMESTAMP)")
+      mysql_conn.close
+      raise Timeout::Error
+    rescue Exception => e
       return nil
     end
   end
