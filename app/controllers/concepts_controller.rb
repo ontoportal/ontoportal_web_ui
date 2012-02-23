@@ -244,7 +244,7 @@ class ConceptsController < ApplicationController
       # find path to root
       rootNode = @concept.path_to_root
       @root = TreeNode.new()
-      @root.set_children(rootNode.children, rootNode)
+      @root.set_children(rootNode.children, rootNode) unless rootNode.nil?
     end
 
 
