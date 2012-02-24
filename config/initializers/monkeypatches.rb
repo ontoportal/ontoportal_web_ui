@@ -12,7 +12,7 @@ class String
 end
 
 # Add the current hostname to the config for using wildcard subomains for custom ontology lists
-if $ENABLE_SLICES == true
+if !$ENABLE_SLICES.nil? && $ENABLE_SLICES == true
   module ActionControllerExtensions
     def self.included(base)
       base::Dispatcher.send :include, DispatcherExtensions
