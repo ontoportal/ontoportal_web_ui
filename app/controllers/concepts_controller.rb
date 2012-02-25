@@ -118,6 +118,7 @@ class ConceptsController < ApplicationController
 
   # Renders a details pane for a given ontology/term
   def details
+    raise Error404 if params[:conceptid].nil? || params[:conceptid].empty?
     @ontology = DataAccess.getOntology(params[:ontology])
     @concept = DataAccess.getNode(@ontology.id, params[:conceptid], params[:childrenlimit])
 
