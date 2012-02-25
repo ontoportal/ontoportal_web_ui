@@ -29,32 +29,26 @@ class OntologiesController < ApplicationController
   # GET /ontologies/1.xml
   def show
     # This action is now a router using the 'p' parameter as the page to show
-    # begin
-      case params[:p]
-      when "terms"
-        self.terms
-        return
-      when "mappings"
-        self.mappings
-        return
-      when "notes"
-        self.notes
-        return
-      when "widgets"
-        self.widgets
-        return
-      when "summary"
-        self.summary
-        return
-      else
-        self.summary
-        return
-      end
-    # rescue Exception => e
-    #   page = (params[:p].nil?) ? "page" : params[:p]
-    #   render :text => "Error loading #{page.gsub("_", " ")}", :layout => "ontology_viewer"
-    #   return
-    # end
+    case params[:p]
+    when "terms"
+      self.terms
+      return
+    when "mappings"
+      self.mappings
+      return
+    when "notes"
+      self.notes
+      return
+    when "widgets"
+      self.widgets
+      return
+    when "summary"
+      self.summary
+      return
+    else
+      self.summary
+      return
+    end
   end
 
   def virtual
@@ -483,6 +477,7 @@ class OntologiesController < ApplicationController
   ###############################################
   def summary
     @ontology_version = DataAccess.getOntology(params[:id])
+    raise Error404 if @ontology_version.nil?
     @ontology = DataAccess.getLatestOntology(@ontology_version.ontologyId)
 
     # Check to see if user is requesting RDF+XML, return the file from REST service if so
