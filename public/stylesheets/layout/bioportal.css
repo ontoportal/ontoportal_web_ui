@@ -347,8 +347,9 @@ h1 a:hover, h2 a:hover {
 }
 #bd #bd_content #container #contents {
   float:left;
-  padding:10px;
-  width:90%;
+  /* padding:10px; */
+  width:100%;
+  overflow: auto;
 }
 
 #footer_wrapper a {

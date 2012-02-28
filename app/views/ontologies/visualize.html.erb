@@ -276,7 +276,7 @@
 
         <div id="contents">
           <div style="display:block;" class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
-          <div class="tab_container" id="visualization_content"><%=render :partial =>'/concepts/images'%></div>
+          <div class="tab_container" id="visualization_content"><%=render :partial =>'/concepts/biomixer'%></div>
           <div class="tab_container" id="notes_content"><%=render :partial =>'/notes/list'%></div>
           <div class="tab_container" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
 
@@ -350,101 +350,6 @@
             tb_init('a.thickbox, area.thickbox, input.thickbox');
           });
         }
-    }
-
-
-
-    // actions for interacting with the graph
-
-    // gets the flash application
-    function getApp() {
-      // first try the basic flexviz
-      var app = document.getElementById("BasicFlexoViz");
-      if (app == null) {
-        // try the full version
-        app = document.getElementById("FlexoViz");
-      }
-      return app;
-    }
-
-    /**
-     * Selects on the node with the given id
-     * @param id the id of the node to focus on
-     */
-    function selectNodeByID(id) {
-      var app = getApp();
-      if (app) {
-        if (app.selectNodeByID) {
-          app.selectNodeByID(id);
-        } else {
-          alert("Could not select the term with ID '" + id + "'.");
-        }
-      } else {
-        alert("Could not get Flash object, JavaScript/Flex communication failed.");
-      }
-    }
-
-    /**
-     * Focusses on the node with the given id
-     * @param id the id of the node to focus on
-     * @param option the graph view setting (optional), one of "Neighborhood", "Hierarchy To Root", "Parents", or "Children"
-     *    defaults to "Neighborhood"
-     */
-    function searchByID(id, option) {
-      var app = getApp();
-      if (app) {
-        if (app.searchByID) {
-          app.searchByID(id);
-        } else {
-          alert("Could not search for the term with ID '" + id + "'.");
-        }
-      } else {
-        alert("Could not get Flash object, JavaScript/Flex communication failed.");
-      }
-    }
-
-    /**
-     * Performs a search on the given text and shows
-     * the appropriate graph - either the neighborhood, or the hierarchy to root
-     * @param searchText the text to search for
-     * @param option the graph view setting (optional), one of "Neighborhood", "Hierarchy To Root", "Parents", or "Children"
-     *    defaults to "Neighborhood"
-     */
-    function searchByName(searchText, option) {
-      var app = getApp();
-      if (app) {
-        if (app.searchByName) {
-          app.searchByName(searchText);
-        } else {
-          alert("Could not search for the term with nane '" + id + "'.");
-        }
-      } else {
-        alert("Could not get Flash object, JavaScript/Flex communication failed.");
-      }
-    }
-
-    /**
-     * The basic version of FlexViz calls this function when a node is double clicked.
-     */
-
-    function flexVizNodeClicked(id,currentNode) {
-      if (jQuery("#"+id).size()==0){
-
-        jQuery("#"+currentNode+" .trigger").trigger('click');
-
-        setTimeout('tryClick("'+id+'")',1000);
-      }else{
-      jQuery("#"+id+" span").trigger('click');
-      }
-    }
-
-    function tryClick(id)
-    {
-
-      if(jQuery("#"+id+" span").size()>0)
-        jQuery("#"+id+" span").trigger('click');
-      else
-        setTimeout('tryClick("'+id+'")',1000)
     }
 
   </script>

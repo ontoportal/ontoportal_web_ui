@@ -1,131 +1,132 @@
 <% require 'cgi' %>
 
-<table class="minimal concept_details" cellpadding="0" cellspacing="0" width="100%">
-  <tr>
-    <td nowrap class="label">
-      Preferred Name
-      <span class="slot_labels"><%unless @concept.ontology.preferred_name_label.nil? || @concept.ontology.preferred_name_label.to_s.length == 0%>(<%=@concept.ontology.preferred_name_label%>)<%end%></span>
-    </td>
-    <td><p><%=@concept.label_html%></p></td>
-  </tr>
-  <%unless @concept.synonyms.nil? || @concept.synonyms.empty?%>
+<div style="padding: 1%; width: 98%;">
+  <table class="minimal concept_details" cellpadding="0" cellspacing="0" width="100%">
     <tr>
       <td nowrap class="label">
-        Synonyms
-        <span class="slot_labels"><%unless @concept.ontology.synonym_label.nil? || @concept.ontology.synonym_label.to_s.length == 0%>(<%=@concept.ontology.synonym_label%>)<%end%></span>
+        Preferred Name
+        <span class="slot_labels"><%unless @concept.ontology.preferred_name_label.nil? || @concept.ontology.preferred_name_label.to_s.length == 0%>(<%=@concept.ontology.preferred_name_label%>)<%end%></span>
       </td>
-      <td><% for synonym in @concept.synonyms %><p><%= synonym %></p><% end %></td>
+      <td><p><%=@concept.label_html%></p></td>
     </tr>
-  <%end%>
-  <%unless @concept.definitions.nil? || @concept.definitions.empty?%>
+    <%unless @concept.synonyms.nil? || @concept.synonyms.empty?%>
+      <tr>
+        <td nowrap class="label">
+          Synonyms
+          <span class="slot_labels"><%unless @concept.ontology.synonym_label.nil? || @concept.ontology.synonym_label.to_s.length == 0%>(<%=@concept.ontology.synonym_label%>)<%end%></span>
+        </td>
+        <td><% for synonym in @concept.synonyms %><p><%= synonym %></p><% end %></td>
+      </tr>
+    <%end%>
+    <%unless @concept.definitions.nil? || @concept.definitions.empty?%>
+      <tr>
+        <td nowrap class="label">
+          Definitions
+          <span class="slot_labels"><%unless @concept.ontology.definition_label.nil? || @concept.ontology.definition_label.to_s.length == 0%>(<%=@concept.ontology.definition_label%>)<%end%></span>
+        </td>
+        <td><% for definition in @concept.definitions %><p><%= definition %></p><% end %></td>
+      </tr>
+    <%end%>
     <tr>
-      <td nowrap class="label">
-        Definitions
-        <span class="slot_labels"><%unless @concept.ontology.definition_label.nil? || @concept.ontology.definition_label.to_s.length == 0%>(<%=@concept.ontology.definition_label%>)<%end%></span>
-      </td>
-      <td><% for definition in @concept.definitions %><p><%= definition %></p><% end %></td>
+      <td nowrap class="label" >ID</td>
+      <td><p><%=@concept.id%></p></td>
     </tr>
-  <%end%>
-  <tr>
-    <td nowrap class="label" >ID</td>
-    <td><p><%=@concept.id%></p></td>
-  </tr>
-  <%unless @concept.fullId.nil? || @concept.fullId.eql?("")%>
-    <tr>
-      <td nowrap class="label" >Full Id</td>
-      <td><p><a href="<%=@concept.fullId%>" target="_blank"><%=@concept.fullId%></a></p></td>
-    </tr>
-  <%end%>
-  <%if @concept.obsolete?%>
-    <tr>
-      <td nowrap class="label">
-        Obsolete
-        <span class="slot_labels"></span>
-      </td>
-      <td><p>true</p></td>
-    </tr>
-  <%end%>
+    <%unless @concept.fullId.nil? || @concept.fullId.eql?("")%>
+      <tr>
+        <td nowrap class="label" >Full Id</td>
+        <td><p><a href="<%=@concept.fullId%>" target="_blank"><%=@concept.fullId%></a></p></td>
+      </tr>
+    <%end%>
+    <%if @concept.obsolete?%>
+      <tr>
+        <td nowrap class="label">
+          Obsolete
+          <span class="slot_labels"></span>
+        </td>
+        <td><p>true</p></td>
+      </tr>
+    <%end%>
 
 
-  <%
-  keys = @concept.properties.keys
+    <%
+    keys = @concept.properties.keys
 
-  top_keys=[
-    "description",
-    "comment"]
-  bottom_keys=[
-    "disjoint",
-    "subclass",
-    "is_a"]
-  top_set=[]
-  bottom_set=[]
-  leftover=[]
+    top_keys=[
+      "description",
+      "comment"]
+    bottom_keys=[
+      "disjoint",
+      "subclass",
+      "is_a"]
+    top_set=[]
+    bottom_set=[]
+    leftover=[]
 
-  for key in keys
-    top=false
-    bottom=false
-    top_keys.each{|top_key|
-      if key.downcase.include?(top_key)
-        top_set << key
-        top=true
-      end}
-    bottom_keys.each{|bottom_key|
-      if key.downcase.include?(bottom_key)
-        bottom_set << key
-        bottom=true
-      end}
+    for key in keys
+      top=false
+      bottom=false
+      top_keys.each{|top_key|
+        if key.downcase.include?(top_key)
+          top_set << key
+          top=true
+        end}
+      bottom_keys.each{|bottom_key|
+        if key.downcase.include?(bottom_key)
+          bottom_set << key
+          bottom=true
+        end}
 
-    if !top && !bottom
-      leftover << key
+      if !top && !bottom
+        leftover << key
+      end
     end
-  end
 
-  leftover.sort! {|x,y| x.downcase <=> y.downcase }
+    leftover.sort! {|x,y| x.downcase <=> y.downcase }
 
 
-  %>
+    %>
 
-  <%for key in top_set%>
-    <%next if exclude_relation?(key)%>
-    <%unless @concept.properties[key].empty?%>
-      <tr>
-        <td nowrap class="label"> <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span> </td>
-        <td>
-          <%=auto_link("<p>#{@concept.properties[key].split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")%>
-        </td>
-      </tr>
+    <%for key in top_set%>
+      <%next if exclude_relation?(key)%>
+      <%unless @concept.properties[key].empty?%>
+        <tr>
+          <td nowrap class="label"> <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span> </td>
+          <td>
+            <%=auto_link("<p>#{@concept.properties[key].split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")%>
+          </td>
+        </tr>
+      <%end%>
+
+
     <%end%>
 
 
-  <%end%>
+    <%for key in leftover%>
+      <%next if exclude_relation?(key, @ontology)%>
+      <%unless @concept.properties[key].empty?%>
+        <tr>
+          <td nowrap class="label"> <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span> </td>
+          <td>
+            <%=auto_link("<p>#{@concept.properties[key].split("||%||").join("<\/p><p>").gsub("%ONT%", @concept.ontology.id)}</p>", :all, :target => "_blank")%>
+          </td>
+        </tr>
+      <%end%>
 
-
-  <%for key in leftover%>
-    <%next if exclude_relation?(key, @ontology)%>
-    <%unless @concept.properties[key].empty?%>
-      <tr>
-        <td nowrap class="label"> <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span> </td>
-        <td>
-          <%=auto_link("<p>#{@concept.properties[key].split("||%||").join("<\/p><p>").gsub("%ONT%", @concept.ontology.id)}</p>", :all, :target => "_blank")%>
-        </td>
-      </tr>
     <%end%>
 
-  <%end%>
+    <%for key in bottom_set%>
+      <%next if exclude_relation?(key)%>
+      <%unless @concept.properties[key].empty?%>
+        <tr>
+          <td nowrap class="label"> <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span> </td>
+          <td>
+            <%=auto_link("<p>#{@concept.properties[key].split("||%||").join("<\/p><p>").gsub("%ONT%", @concept.ontology.id)}</p>", :all, :target => "_blank")%>
+          </td>
+        </tr>
+      <%end%>
 
-  <%for key in bottom_set%>
-    <%next if exclude_relation?(key)%>
-    <%unless @concept.properties[key].empty?%>
-      <tr>
-        <td nowrap class="label"> <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span> </td>
-        <td>
-          <%=auto_link("<p>#{@concept.properties[key].split("||%||").join("<\/p><p>").gsub("%ONT%", @concept.ontology.id)}</p>", :all, :target => "_blank")%>
-        </td>
-      </tr>
     <%end%>
-
-  <%end%>
-</table>
-
+  </table>
+</div>
 
 
