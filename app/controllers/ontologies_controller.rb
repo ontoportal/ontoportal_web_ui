@@ -223,7 +223,7 @@ class OntologiesController < ApplicationController
     if !@ontology.flat? && (!params[:conceptid] || params[:conceptid].empty?)
       # get the top level nodes for the root
       @root = TreeNode.new()
-      nodes = @ontology.topLevelNodes(view)
+      nodes = @ontology.top_level_nodes(view)
       nodes.sort!{|x,y| x.label.downcase<=>y.label.downcase}
       for node in nodes
         if node.label.downcase.include?("obsolete") || node.label.downcase.include?("deprecated")

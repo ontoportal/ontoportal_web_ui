@@ -121,7 +121,7 @@
         });
       <%end%>
 
-    <% if !@ontology.is_in_search_index? %>
+    <% if !@ontology.in_search_index? %>
         <%if !@ontology.latest?%>
           // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
           jQuery("#qsearch").children().filter(":input").each(function(){
