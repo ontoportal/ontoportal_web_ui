@@ -222,14 +222,6 @@ module ApplicationHelper
     end
   end
 
-  def virtual_id?(ontology_id)
-    return ontology_id.to_i < 2900
-  end
-
-  def version_id?(ontology_id)
-    return ontology_id.to_i > 2900
-  end
-
   # This gives a very hacky short code to use to uniquely represent a class
   # based on its parent in a tree. Used for unique ids in HTML for the tree view
   def short_uuid
