@@ -1,6 +1,6 @@
 <%require 'cgi'%>
 
 <div style="padding-left: .5%; width: 99.5%;">
-<iframe src="http://bio-mixer.appspot.com/?mode=embed&embed_mode=concept_neighbourhood&virtual_ontology_id=<%=@ontology.ontologyId%>&full_concept_id=<%=CGI.escape(@concept.fullId)%>"
+<iframe src="http://bioportal-integration.bio-mixer.appspot.com/?mode=embed&embed_mode=paths_to_root&virtual_ontology_id=<%=@ontology.ontologyId%>&full_concept_id=<%=CGI.escape(@concept.fullId)%>"
   height="100%" width="100%" frameborder="0"></iframe>
 </div>
