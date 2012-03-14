@@ -204,25 +204,29 @@ function greybox(box){
               <input type="hidden" id="find_ontology_id">
             </td>
           </tr>
-          <tr>
-            <td style="padding-left:15px;height:10px;">
-              <ul class="sf-menu sf-vertical">
-                    <li>
-                      <a href="#" style="white-space:nowrap;background:#fff;border:1px solid #fff;text-decoration:underline;padding:0px;">Browse Ontologies ></a>
-                      <ul>
-                        <li>
-                          <a href="/ontologies">All</a>
-                        </li>
-                        <% @groups.to_a.each do |group| %>
+          <% if at_slice?%>
+            <tr><td>&nbsp;</td></tr>
+          <%else%>
+            <tr>
+              <td style="padding-left:15px;height:10px;">
+                <ul class="sf-menu sf-vertical">
+                      <li>
+                        <a href="#" style="white-space:nowrap;background:#fff;border:1px solid #fff;text-decoration:underline;padding:0px;">Browse Ontologies ></a>
+                        <ul>
                           <li>
-                            <a href="/ontologies?filter=<%=CGI.escape(group[:acronym])%>"><%=group[:name]%></a>
+                            <a href="/ontologies">All</a>
                           </li>
-                        <% end %>
-                      </ul>
-                    </li>
-                </ul>
-            </td>
-          </tr>
+                          <% @groups.to_a.each do |group| %>
+                            <li>
+                              <a href="/ontologies?filter=<%=CGI.escape(group[:acronym])%>"><%=group[:name]%></a>
+                            </li>
+                          <% end %>
+                        </ul>
+                      </li>
+                  </ul>
+              </td>
+            </tr>
+          <%end%>
         </table>
       </fieldset>
     </td>
@@ -243,7 +247,12 @@ function greybox(box){
 
 <tr>
   <td valign='top'>
-    <%=t('most_viewed')%>
+    <fieldset>
+      <%=t('most_viewed')%>
+      <%if at_slice?%>
+        <div style="font-size: x-small; color: gray; padding-top: 12px; text-align: right;">* Data is for all ontologies in <%=$SITE%> in addition to the <b><%=@subdomain_filter[:name]%></b> Slice</div>
+      <%end%>
+    </fieldset>
 
     <% if t('stats').nil? || t('stats').empty? %>
       <fieldset>
@@ -276,9 +285,15 @@ function greybox(box){
             </tr>
           </tbody>
         </table>
+
+        <%if at_slice?%>
+          <div style="font-size: x-small; color: gray; padding-top: 12px; text-align: right;">* Data is for all ontologies in <%=$SITE%>, <%=$ORG%> Annotator and Resource Index in addition to the <b><%=@subdomain_filter[:name]%></b> Slice</div>
+        <%end%>
       </fieldset>
     <% else %>
-      <%=t('stats')%>
+      <fieldset>
+        <%=t('stats')%>
+      </fieldset>
     <% end %>
   </td>
 
@@ -286,7 +301,6 @@ function greybox(box){
     <fieldset>
       <legend>Latest Notes</legend>
       <table class="minimal" style="width:300px">
-
         <tbody>
         <%for note in @last_notes%>
           <tr>
@@ -304,6 +318,7 @@ function greybox(box){
       </table>
     </fieldset>
   </td>
+
   <td valign="top">
     <fieldset>
       <legend>Latest Mappings</legend>

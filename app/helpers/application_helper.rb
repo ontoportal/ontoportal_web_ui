@@ -305,7 +305,9 @@ module ApplicationHelper
     @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
   end
 
-
+  def at_slice?
+     !@subdomain_filter.nil? && !@subdomain_filter[:active].nil? && @subdomain_filter[:active] == true
+  end
 
 
 

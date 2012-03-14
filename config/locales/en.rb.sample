@@ -74,8 +74,7 @@
     },
  
     :most_viewed => 
-      '<fieldset>
-      <legend>Most Viewed Ontologies (Month, YYYY)</legend>
+      '<legend>Most Viewed Ontologies (Month, YYYY)</legend>
       <table class="minimal" width="100%">
         <thead>
         <tr>
@@ -105,28 +104,25 @@
                   <td></td>
               </tr>
         </tbody>
-      </table>
-      </fieldset>',
+      </table>',
       
     :stats => 
-      '<fieldset>
-        <legend>Statistics</legend>
-        <table class="minimal" width="100%">
-          <tbody>
-            <tr>
-              <td>Ontologies</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Terms</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Resources Indexed</td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
-      </fieldset>'
+      '<legend>Statistics</legend>
+       <table class="minimal" width="100%">
+         <tbody>
+           <tr>
+             <td>Ontologies</td>
+             <td></td>
+           </tr>
+           <tr>
+             <td>Terms</td>
+             <td></td>
+           </tr>
+           <tr>
+             <td>Resources Indexed</td>
+             <td></td>
+           </tr>
+         </tbody>
+       </table>'
   }
 }
