@@ -1,22 +1,22 @@
 #!/usr/bin/env ruby
 
 # API key that is valid on both to/from BioPortal instances
-$API_KEY_FROM = "24e0e77e-54e0-11e0-9d7b-005056aa3316"
-$API_KEY_TO = "11111111-9dd1-11e0-a996-115056bd0024"
+$API_KEY_FROM = ""
+$API_KEY_TO = ""
 
 # The BioPortal instance to take ontologies from
 $FROM = "http://rest.bioontology.org/bioportal"
 $FROM_PORT = "80"
 
 # The BioPortal instance to import ontologies to
-$TO = "http://171.65.32.32:8080/bioportal"
+$TO = "http://localhost:8080/bioportal"
 $TO_PORT = "8080"
 
 # User id for the user who should own each imported ontology, defaults to the first user (admin)
 $ONTOLOGY_OWNER = "1"
 
 # Ontology ids to include in the import (leaving commented will import all ontologies)
-$INCLUDE_ONTOLOGIES = [ 1104 ]
+# $INCLUDE_ONTOLOGIES = [ 1104 ]
 
 require 'rubygems'
 require 'rexml/document'
