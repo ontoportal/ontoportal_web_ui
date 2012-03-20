@@ -248,15 +248,13 @@ function greybox(box){
 <tr>
   <td valign='top'>
     <fieldset>
+      <legend>Most Viewed Ontologies <%="in full #{$SITE} " if at_slice?%>(August, 2011)</legend>
       <%=t('most_viewed')%>
-      <%if at_slice?%>
-        <div style="font-size: x-small; color: gray; padding-top: 12px; text-align: right;">* Data is for all ontologies in <%=$SITE%> in addition to the <b><%=@subdomain_filter[:name]%></b> Slice</div>
-      <%end%>
     </fieldset>
 
     <% if t('stats').nil? || t('stats').empty? %>
       <fieldset>
-        <legend>Statistics</legend>
+        <legend>Statistics <%="in full #{$SITE}" if at_slice?%></legend>
         <table class="minimal align-right" width="100%">
           <tbody>
             <tr>
@@ -285,10 +283,6 @@ function greybox(box){
             </tr>
           </tbody>
         </table>
-
-        <%if at_slice?%>
-          <div style="font-size: x-small; color: gray; padding-top: 12px; text-align: right;">* Data is for all ontologies in <%=$SITE%>, <%=$ORG%> Annotator and Resource Index in addition to the <b><%=@subdomain_filter[:name]%></b> Slice</div>
-        <%end%>
       </fieldset>
     <% else %>
       <fieldset>
