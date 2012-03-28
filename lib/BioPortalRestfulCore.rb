@@ -1231,7 +1231,7 @@ private
       mysql_conn = Mysql.new(@mysql_config["host"], @mysql_config["username"], @mysql_config["password"], @mysql_config["database"])
       mysql_conn.query("INSERT INTO timeouts
                        (path, ontology_id, concept_id, params, created)
-                       VALUES('#{parsed_url.path}', #{ont_id}, '#{concept_id}', '#{url_parts[1]}', CURRENT_TIMESTAMP)")
+                       VALUES('#{parsed_url.path}', #{ont_id.nil? ? "null" : ont_id}, '#{concept_id}', '#{url_parts[1]}', CURRENT_TIMESTAMP)")
       mysql_conn.close
       raise Timeout::Error
     rescue Exception => e
