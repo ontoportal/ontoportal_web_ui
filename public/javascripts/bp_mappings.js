@@ -20,6 +20,7 @@ function calculateMappingCount() {
 function deleteMappings() {
   var mappingsToDelete = [], params;
 
+  jQuery("#delete_mappings_error").html("");
   jQuery("#delete_mappings_spinner").show();
 
   jQuery("input[name='delete_mapping']:checked").each(function(){
@@ -50,6 +51,7 @@ function deleteMappings() {
         }
 
         for (map_id in data.error) {
+          jQuery("#delete_mappings_error").html("There was a problem deleting, please try again");
           rowId = data.error[map_id].replace(/.*\//, "");
           jQuery("#" + rowId).css("border", "red solid");
         }

@@ -9,7 +9,7 @@
     <%if @delete_mapping_permission%>
       <%=link_to"Delete Selected Mappings", "javascript:void(0);", :onclick => "if (confirm('Really delete mappings? This cannot be undone.')) deleteMappings()", :id => "delete_mappings", :class => "link_button"%>
       <span id="delete_mappings_spinner" style="display: none;"><%=loading_spinner(false, true)%></span>
-      <span id="delete_mappings_error"></span>
+      <span id="delete_mappings_error" style="color: red; padding-left: 5px;"></span>
     <%end%>
   <%end%>
 
