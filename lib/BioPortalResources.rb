@@ -441,6 +441,7 @@ class BioPortalResources
         include_props = params[:include_props]
         query = CGI.escape(params[:query])
         exact_match = params[:exact_match]
+        object_types = params[:objecttypes]
 
         if ontologies.kind_of?(Array)
           ontologies = ontologies.nil? || ontologies.empty? ? "" : ontologies.join(",")
@@ -448,7 +449,7 @@ class BioPortalResources
 
         search_branch = subtreerootconceptid.nil? ? "" : "&subtreerootconceptid=#{subtreerootconceptid}"
 
-        @uri << "/search/?query=#{query}&ontologyids=#{ontologies}&isexactmatch=#{exact_match}&pagesize=#{page_size}&pagenum=#{page}&includeproperties=#{include_props}#{search_branch}"
+        @uri << "/search/?query=#{query}&ontologyids=#{ontologies}&isexactmatch=#{exact_match}&pagesize=#{page_size}&pagenum=#{page}&includeproperties=#{include_props}#{search_branch}&objecttypes=#{object_types}"
       end
     end
 

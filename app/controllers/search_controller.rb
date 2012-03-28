@@ -25,6 +25,7 @@ class SearchController < ApplicationController
   end
 
   def json
+    params[:objecttypes] = "class,property"
     results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
 
     results.results.each do |result|
