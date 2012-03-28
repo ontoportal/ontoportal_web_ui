@@ -123,7 +123,13 @@ var resultsTable;
 
           // Align search results div
           var result_count = jQuery("#result_stats");
-          result_count.html(data.total_results + " results");
+
+          if (data.current_page_results < 100) {
+            result_count.html(data.current_page_results + " results");  
+          } else {
+            result_count.html("Top " + data.current_page_results + " of " + data.total_hits + " results");
+          }
+          
 
           // jQuery("table#search_results div.term_link").hover(termHoverIn, termHoverOut);
           jQuery("table#search_results").show();

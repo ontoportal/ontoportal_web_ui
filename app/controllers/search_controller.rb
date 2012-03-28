@@ -26,6 +26,8 @@ class SearchController < ApplicationController
 
   def json
     params[:objecttypes] = "class,property"
+    params[:page_size] = 150
+
     results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
 
     results.results.each do |result|
@@ -35,6 +37,9 @@ class SearchController < ApplicationController
     # TODO: It would be nice to include a delete command in the iteration above so we don't
     # iterate over the results twice, but it wasn't working and no time to troubleshoot
     filter_private_results(results)
+
+    results.results.slice!(100, results.results.length)
+    results.current_page_results = results.results.length
 
     render :text => results.hash_for_serialization.to_json
   end

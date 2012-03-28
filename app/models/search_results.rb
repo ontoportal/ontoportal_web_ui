@@ -6,6 +6,7 @@ class SearchResults < Array
   attr_accessor :total_results
   attr_accessor :total_pages
   attr_accessor :results
+  attr_accessor :total_hits
 
   def initialize(hash = nil, params = nil)
     self.ontology_hit_counts = {}
@@ -24,11 +25,12 @@ class SearchResults < Array
 
     self.results = results.nil? || results.length == 0 ? Array.new : results.values
     self.ontology_hit_counts = Hash.new unless hash['contents']['ontologyHitList'].nil? || hash['contents']['ontologyHitList'].length == 0
-    self.page_size = hash['pageSize']
+    self.page_size = hash['pageSize'].to_i
     self.total_results = hash['numResultsTotal']
-    self.page_number = hash['pageNum']
-    self.current_page_results = hash['numResultsPage']
-    self.total_pages = hash['numPages']
+    self.page_number = hash['pageNum'].to_i
+    self.current_page_results = hash['numResultsPage'].to_i
+    self.total_pages = hash['numPages'].to_i
+    self.total_hits = hash['contents']['numHitsTotal'].to_i
 
     # Populate hit list
     hash['contents']['ontologyHitList'].each do |hit|
@@ -41,7 +43,7 @@ class SearchResults < Array
       :ontology_hit_counts => self.ontology_hit_counts, :page_size => self.page_size,
       :page_number => self.page_number, :current_page_results => self.current_page_results,
       :total_results => self.total_results, :total_pages => self.total_pages,
-      :results => self.results
+      :total_hits => self.total_hits, :results => self.results
     }
   end
 
