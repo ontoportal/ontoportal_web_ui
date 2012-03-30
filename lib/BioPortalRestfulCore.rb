@@ -1233,7 +1233,6 @@ private
                        (path, ontology_id, concept_id, params, created)
                        VALUES('#{parsed_url.path}', #{ont_id.nil? ? "null" : ont_id}, '#{concept_id}', '#{url_parts[1]}', CURRENT_TIMESTAMP)")
       mysql_conn.close
-      raise Timeout::Error
     rescue Exception => e
       return nil
     end
