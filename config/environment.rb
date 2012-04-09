@@ -67,5 +67,6 @@ Rails::Initializer.run do |config|
   config.gem "memcache-client", :version => "~> 1.8.5"
   config.gem "i18n", :version => "~> 0.5.0"
   config.gem "airbrake"
+  config.gem "ncbo_resource_index"
 end
 
