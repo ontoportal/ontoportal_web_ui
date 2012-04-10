@@ -73,9 +73,10 @@
       :release_notes => ''
     },
  
+    :most_viewed_date => 'March, 2012',
+    
     :most_viewed => 
-      '<legend>Most Viewed Ontologies (Month, YYYY)</legend>
-      <table class="minimal" width="100%">
+      '<table class="minimal" width="100%">
         <thead>
         <tr>
           <th>Ontology</th>
