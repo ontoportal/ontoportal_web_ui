@@ -26,7 +26,7 @@ class AjaxProxyController < ApplicationController
 	  	return
   	end
 
-  	path = params[:path].include?("?") ? CGI.unescape(params[:path]) + "&apikey=#{params[:apikey]}" : CGI.unescape(params[:path]) + "?apikey=#{params[:apikey]}"
+  	path = params[:path].include?("?") ? CGI.unescape(params[:path]) + "&apikey=#{params[:apikey]}&userapikey=#{params[:userapikey]}" : CGI.unescape(params[:path]) + "?apikey=#{params[:apikey]}&userapikey=#{params[:userapikey]}"
 
   	url = URI.parse($REST_URL + path)
   	url.port = $REST_PORT
