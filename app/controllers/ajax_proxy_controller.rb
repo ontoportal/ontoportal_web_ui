@@ -26,14 +26,12 @@ class AjaxProxyController < ApplicationController
 	  	return
   	end
 
-  	path = params[:path].include?("?") ? CGI.unescape(params[:path]) + "&apikey=#{params[:apikey]}&userapikey=#{params[:userapikey]}" : CGI.unescape(params[:path]) + "?apikey=#{params[:apikey]}&userapikey=#{params[:userapikey]}"
-
-  	url = URI.parse($REST_URL + path)
+  	url = URI.parse($REST_URL + params[:path])
   	url.port = $REST_PORT
   	full_path = (url.query.blank?) ? url.path : "#{url.path}?#{url.query}"
+    full_path = full_path.include?("?") ? full_path + "&apikey=#{params[:apikey]}&userapikey=#{params[:userapikey]}" : full_path + "?apikey=#{params[:apikey]}&userapikey=#{params[:userapikey]}"
   	http = Net::HTTP.new(url.host, url.port)
   	headers = { "Accept" => "application/json" }
-  	puts full_path
   	res = http.get(full_path, headers)
   	response = res.code.to_i == 404 ? '{ "error": "page not found" }' : res.body
     render_json response, {:status => res.code}
