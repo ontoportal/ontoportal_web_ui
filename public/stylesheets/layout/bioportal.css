@@ -1921,3 +1921,10 @@ div#annotations_filter, div#annotations_info {
   font-weight: bold;
 }
 
+/************************************
+ * Footnotes
+ ************************************/
+div#footnotes_debug {
+  background-color: white;
+  padding: 1em 0;
+}
