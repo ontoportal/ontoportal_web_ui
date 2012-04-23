@@ -57,15 +57,5 @@ Rails::Initializer.run do |config|
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
 
-  # Gem configuration
-  config.gem "hpricot", :version => "~> 0.8.4"
-  config.gem "libxml-ruby", :lib => "libxml", :version => "~> 2.2.0"
-  config.gem "recaptcha", :version => "~> 0.3.1"
-  config.gem "rest-client", :version => "~> 1.6.1"
-  config.gem "mysql", :version => "~> 2.8.1"
-  config.gem "ncbo_annotator", :version => ">= 1.0.13"
-  config.gem "memcache-client", :lib => "memcache", :version => "~> 1.8.5"
-  config.gem "i18n", :version => "~> 0.5.0"
-  config.gem "airbrake"
 end
 
