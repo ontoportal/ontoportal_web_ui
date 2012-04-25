@@ -170,8 +170,9 @@ class MappingsController < ApplicationController
     target = DataAccess.getNode(target_ontology.id, params[:map_to_bioportal_full_id])
     comment = params[:mapping_comment]
     unidirectional = params[:mapping_directionality].eql?("unidirectional")
+    relation = params[:mapping_relation]
 
-    @mapping = DataAccess.createMapping(source.fullId, source.ontology.ontologyId, target.fullId, target.ontology.ontologyId, session[:user].id, comment, unidirectional)
+    @mapping = DataAccess.createMapping(source.fullId, source.ontology.ontologyId, target.fullId, target.ontology.ontologyId, session[:user].id, comment, unidirectional, relation)
 
     # Adds mapping to syndication
     begin

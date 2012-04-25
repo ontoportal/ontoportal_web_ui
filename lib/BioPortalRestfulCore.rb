@@ -29,7 +29,6 @@ class BioPortalRestfulCore
 
   def self.createMapping(params)
     # Default values
-    params[:relation] = "http://www.w3.org/2004/02/skos/core#exactMatch"
     params[:type] = "Manual"
     params[:mappingsource] = "application"
     params[:mappingsourcename] = "BioPortal UI"

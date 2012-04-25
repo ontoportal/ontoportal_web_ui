@@ -81,6 +81,7 @@
           </span>
           <div id="create_mapping_advanced_options" class="bp_popup_list" style="display: none;">
             <%=select("mapping", "directionality", { "Bidirectional" => "bidirectional", "Unidirectional" => "unidirectional" }, {}, :style => "")%>
+            <%=select("mapping", "relation", { "SKOS Exact Match" => "http://www.w3.org/2004/02/skos/core#exactMatch", "SKOS Close Match" => "http://www.w3.org/2004/02/skos/core#closeMatch" }, {}, :style => "")%>
           </div>
         </span>
     </div>

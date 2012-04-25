@@ -374,8 +374,8 @@ class DataAccess
     end
   end
 
-  def self.createMapping(source, source_ontology_id, target, target_ontology_id, user_id, comment, unidirectional)
-    mapping = SERVICE.createMapping({ :source => source, :sourceontology => source_ontology_id, :target => target, :targetontology => target_ontology_id, :submittedby => user_id, :comment => comment, :unidirectional => unidirectional })
+  def self.createMapping(source, source_ontology_id, target, target_ontology_id, user_id, comment, unidirectional, relation = "http://www.w3.org/2004/02/skos/core#exactMatch")
+    mapping = SERVICE.createMapping({ :source => source, :sourceontology => source_ontology_id, :target => target, :targetontology => target_ontology_id, :submittedby => user_id, :comment => comment, :unidirectional => unidirectional, :relation => relation })
 
     source_ontology = self.getOntology(source_ontology_id)
     target_ontology = self.getOntology(target_ontology_id)
