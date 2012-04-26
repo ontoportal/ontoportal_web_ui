@@ -68,7 +68,7 @@
     </div>
   </div>
 
-  <div style="margin: 13px; clear: both;">
+  <div id="mapping_options" style="margin: 13px; clear: both;">
     <%=text_area(:mapping, :comment, :class => "", :placeholder => "Comment", :style => "padding: 3px; height: 3.2em; width: 100%;")%><br/>
 
     <div style="height: 50px;">
@@ -80,13 +80,21 @@
             <a href="javascript:void(0);" id="create_mapping_advanced" class="bp_popup_link">advanced options</a>
           </span>
           <div id="create_mapping_advanced_options" class="bp_popup_list" style="display: none;">
-            <!-- http://www.w3.org/TR/skos-reference/#mapping -->
-            <%=select("mapping", "relation", [["Identical (skos:exactMatch)", "http://www.w3.org/2004/02/skos/core#exactMatch"], ["Similar   (skos:closeMatch)", "http://www.w3.org/2004/02/skos/core#closeMatch"], ["Related   (skos:relatedMatch)", "http://www.w3.org/2004/02/skos/core#relatedMatch"], ["Broader   (skos:broadMatch)", "http://www.w3.org/2004/02/skos/core#broadMatch"], ["Narrower  (skos:narrowMatch)", "http://www.w3.org/2004/02/skos/core#narrowMatch"]] , {:selected => "http://www.w3.org/2004/02/skos/core#exactMatch"}, { :style => ""} )%>
-            <br/>
-            <input id="mapping_bidirectional" type="checkbox" value="1" name="mapping[bidirectional]" checked="checked"> Add Inverse Mapping
+              <!-- http://www.w3.org/TR/skos-reference/#mapping -->
+              <select id="mapping_relation" style="" name="mapping[relation]">
+                  <option selected="selected" value="http://www.w3.org/2004/02/skos/core#exactMatch">Identical (skos:exactMatch)</option>
+                  <option value="http://www.w3.org/2004/02/skos/core#closeMatch">Similar (skos:closeMatch)</option>
+                  <option value="http://www.w3.org/2004/02/skos/core#relatedMatch">Related (skos:relatedMatch)</option>
+                  <option value="http://www.w3.org/2004/02/skos/core#broadMatch">Broader (skos:broadMatch)</option>
+                  <option value="http://www.w3.org/2004/02/skos/core#narrowMatch">Narrower (skos:narrowMatch)</option>
+              </select>
+              <label id="mapping_inverse" style="margin-left: 2em; vertical-align: middle;" >
+                  <input id="mapping_bidirectional" checked="checked" name="mapping[bidirectional]" value="1" type="checkbox" style="vertical-align: middle;" />
+                  Add Inverse Mapping 
+              </label>
           </div>
-        </span>
-    </div>
+      </span>
+  </div>
 
     <div id="create_mapping_error" style="color: red; margin: 7px 0;"></div>
 
