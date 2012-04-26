@@ -169,7 +169,7 @@ class MappingsController < ApplicationController
     source = DataAccess.getNode(source_ontology.id, params[:map_from_bioportal_full_id])
     target = DataAccess.getNode(target_ontology.id, params[:map_to_bioportal_full_id])
     comment = params[:mapping_comment]
-    unidirectional = params[:mapping_directionality].eql?("unidirectional")
+    unidirectional = params[:mapping_bidirectional].eql?("false")
     relation = params[:mapping_relation]
 
     @mapping = DataAccess.createMapping(source.fullId, source.ontology.ontologyId, target.fullId, target.ontology.ontologyId, session[:user].id, comment, unidirectional, relation)

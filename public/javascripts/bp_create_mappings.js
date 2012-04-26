@@ -100,8 +100,8 @@ var bp_createMapping = {
     var concept_from_id = jQuery("#map_from_bioportal_full_id");
     var concept_to_id = jQuery("#map_to_bioportal_full_id");
     var mapping_comment = jQuery("#mapping_comment");
-    var mapping_directionality = jQuery("#mapping_directionality");
     var mapping_relation = jQuery("#mapping_relation");
+    var mapping_bidirectional = jQuery("#mapping_bidirectional").is(":checked");
 
     var params = {
       map_from_bioportal_ontology_id: ontology_from.val(),
@@ -109,8 +109,8 @@ var bp_createMapping = {
       map_from_bioportal_full_id: concept_from_id.val(),
       map_to_bioportal_full_id: concept_to_id.val(),
       mapping_comment: mapping_comment.val(),
-      mapping_directionality: mapping_directionality.val(),
       mapping_relation: mapping_relation.val(),
+      mapping_bidirectional: mapping_bidirectional,
     }
 
     jQuery.ajax({

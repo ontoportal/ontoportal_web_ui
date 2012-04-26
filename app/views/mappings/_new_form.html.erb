@@ -80,8 +80,10 @@
             <a href="javascript:void(0);" id="create_mapping_advanced" class="bp_popup_link">advanced options</a>
           </span>
           <div id="create_mapping_advanced_options" class="bp_popup_list" style="display: none;">
-            <%=select("mapping", "directionality", { "Bidirectional" => "bidirectional", "Unidirectional" => "unidirectional" }, {}, :style => "")%>
-            <%=select("mapping", "relation", { "SKOS Exact Match" => "http://www.w3.org/2004/02/skos/core#exactMatch", "SKOS Close Match" => "http://www.w3.org/2004/02/skos/core#closeMatch" }, {}, :style => "")%>
+            <!-- http://www.w3.org/TR/skos-reference/#mapping -->
+            <%=select("mapping", "relation", [["Identical (skos:exactMatch)", "http://www.w3.org/2004/02/skos/core#exactMatch"], ["Similar   (skos:closeMatch)", "http://www.w3.org/2004/02/skos/core#closeMatch"], ["Related   (skos:relatedMatch)", "http://www.w3.org/2004/02/skos/core#relatedMatch"], ["Broader   (skos:broadMatch)", "http://www.w3.org/2004/02/skos/core#broadMatch"], ["Narrower  (skos:narrowMatch)", "http://www.w3.org/2004/02/skos/core#narrowMatch"]] , {:selected => "http://www.w3.org/2004/02/skos/core#exactMatch"}, { :style => ""} )%>
+            <br/>
+            <input id="mapping_bidirectional" type="checkbox" value="1" name="mapping[bidirectional]" checked="checked"> Add Inverse Mapping
           </div>
         </span>
     </div>

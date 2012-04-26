@@ -30,7 +30,7 @@ class BioPortalRestfulCore
   def self.createMapping(params)
     # Default values
     params[:type] = "Manual"
-    params[:mappingsource] = "application"
+    params[:mappingsource] = "Application"
     params[:mappingsourcename] = "BioPortal UI"
     params[:mappingsourcecontactinfo] = "support@bioontology.org"
     params[:mappingsourcesite] = "http://bioportal.bioontology.org"
