@@ -69,9 +69,9 @@
   </div>
 
   <div id="mapping_options" style="margin: 13px; clear: both;">
-    <%=text_area(:mapping, :comment, :class => "", :placeholder => "Comment", :style => "padding: 3px; height: 3.2em; width: 100%;")%><br/>
-
-    <div style="height: 50px;">
+      <%=text_area(:mapping, :comment, :class => "", :placeholder => "Comment", :style => "padding: 3px; height: 3.2em; width: 100%;")%>
+      <br/>
+    <div style="height: 50px; width: 100%;">
       <%=submit_tag "Create Mapping", :class => "link_button", :style => "margin-top: 10px;", :id => "create_mapping_button"%>
       <span id="create_mapping_spinner" style="display: none;"><%=loading_spinner%></span>
 
@@ -79,7 +79,7 @@
           <span class="bp_popup_link_container">
             <a href="javascript:void(0);" id="create_mapping_advanced" class="bp_popup_link">advanced options</a>
           </span>
-          <div id="create_mapping_advanced_options" class="bp_popup_list" style="display: none;">
+          <div id="create_mapping_advanced_options" class="bp_popup_list" style="display: none; width: 400px;">
               <!-- http://www.w3.org/TR/skos-reference/#mapping -->
               <select id="mapping_relation" style="" name="mapping[relation]">
                   <option selected="selected" value="http://www.w3.org/2004/02/skos/core#exactMatch">Identical (skos:exactMatch)</option>
@@ -90,7 +90,7 @@
               </select>
               <label id="mapping_inverse" style="margin-left: 2em; vertical-align: middle;" >
                   <input id="mapping_bidirectional" checked="checked" name="mapping[bidirectional]" value="1" type="checkbox" style="vertical-align: middle;" />
-                  Add Inverse Mapping 
+                  Add Inverse Mapping <%=help_icon("/help#Mappings_Tab", "Help", 0)%>
               </label>
           </div>
       </span>
