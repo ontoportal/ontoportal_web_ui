@@ -24,7 +24,7 @@ jQuery(document).ready(function(){
 			jQuery(this).parent().parent().after("<tr id='row_expanded_" + note_id + "' class='highlighted_border'><td colspan='" + jQuery.data(document.body, "note_colspan") + "' class='highlighted_border' id='row_thread_" + note_id + "'><span class='ajax_message'><img src='/images/spinners/spinner_000000_16px.gif' style='vertical-align: text-bottom;'> loading...</span></td></tr>");
 			
 			// Check cache for result, make call if it isn't found
-			if (jQuery.data(document.body, row_id) == null) {
+			if (jQuery.data(document.body, row_id) === null) {
 				jQuery.ajax({
 					type: "GET",
 					url: "/notes/virtual/" + jQuery.data(document.body, "ontology_id") + "/?noteid=" + note_id,
@@ -57,13 +57,13 @@ function wireTableWithData(notesTableNew, aData) {
 		"sPaginationType": "full_numbers",
 		"aaSorting": [[5, 'desc']],
 		"aoColumns": [
-			 { "iDataSort": 1 }, // Subject link
-			 { "bVisible": false }, // Subject for sort
-			 { "bVisible": false }, // Archive for filter
-			 null, // Author
-			 null, // Type
-			 { "bVisible": false }, // Subject for sort
-			 null // Created
+			{ "iDataSort": 1 }, // Subject link
+			{ "bVisible": false }, // Subject for sort
+			{ "bVisible": false }, // Archive for filter
+			null, // Author
+			null, // Type
+			{ "bVisible": false }, // Subject for sort
+			null // Created
 		],
 		"fnDrawCallback": function(){
 			jQuery(".highlighted_row").removeClass("highlighted_row");

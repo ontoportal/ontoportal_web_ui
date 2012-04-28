@@ -18,81 +18,6 @@
   ]);
 </script>
 
-<script type="text/javascript">
-  
-// Load external JS files
-if (typeof BP_NOTES_ONT_LIST_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_ont_list.js");
-
-// Global data
-var ontNotesTable = null;  
-var ont_target = <%= (@context && @context.eql?("concept")) ? "{ 'bVisible': false }" : "null" %>;
-
-// Data needed in the external JS file stored in the body 'cache'
-jQuery.data(document.body, "ont_note_colspan", "<%=ont_note_colspan%>");
-jQuery.data(document.body, "ontology_id", "<%=@ontology.ontologyId%>");
-jQuery.data(document.body, "ont_semi_uuid", "<%=@ont_semi_uuid%>");
-
-// This will wire up a table with the dataTables config.
-// Needs to stay inline because IE won't recognize it in an external file.
-function wireOntTable(ontNotesTableNew) {
-  // Wire up table if it hasn't been done yet
-  ontNotesTable = ontNotesTableNew.dataTable({
-    "iDisplayLength": 50,
-    "sPaginationType": "full_numbers",
-    "aaSorting": [[5, 'desc']],
-    "aoColumns": [
-       { "iDataSort": 1 }, // Subject link
-       { "bVisible": false }, // Subject for sort
-           { "bVisible": false }, // Archived for filter
-       null, // Author
-       null, // Type
-       ont_target, // Target
-       null // Created
-    ],
-    "fnDrawCallback": function(){
-      jQuery(".highlighted_row").removeClass("highlighted_row");
-    },
-    "fnInitComplete": function(){
-    }
-  });
-  
-  // Important! Table is somehow getting set to zero width. Reset here.
-  jQuery(ontNotesTable).css("width", "100%");
-  
-  ontNotesTable.fnFilter('false', 2);
-}
-
-function hideOrUnhideArchivedOntNotes() {
-    if (jQuery("#hide_archived_ont:checked").val() !== undefined) {
-      // Checked
-      ontNotesTable.fnFilter('false', 2);
-    } else {
-      // Unchecked
-      ontNotesTable.fnFilter('', 2, true, false);
-    }
-}
-
-jQuery(document).ready(function(){
-  var tempTable = jQuery("#" + jQuery.data(document.body, "ont_semi_uuid") + "_notes_list");
-  wireOntTable(tempTable);
-  
-  jQuery('#filter_menu').superfish({
-    delay: 1200,              // 1.2 second delay on mouseout);
-    dropShadows: false,
-    speed: 'fast'
-  });
-  
-  jQuery("#hide_archived_ont").click(function(){
-    hideOrUnhideArchivedOntNotes();
-  });
-  
-  // Notes subscriptions button
-  jQuery("a.subscribe_to_notes").button();
-});
-
-</script>
-
-
 <div class="notes_list_container">
 
 	<div class="subscribe_to_notes" style="float: right;">
@@ -191,3 +116,79 @@ jQuery(document).ready(function(){
   <%= render :partial => 'notes/add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type } %>
 
 </div>
+
+<!-- Handle JS at the bottom of the page -->
+<script type="text/javascript">
+  
+// Load external JS files
+if (typeof BP_NOTES_ONT_LIST_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_ont_list.js");
+
+// Global data
+var ontNotesTable = null;  
+var ont_target = <%= (@context && @context.eql?("concept")) ? "{ 'bVisible': false }" : "null" %>;
+
+// Data needed in the external JS file stored in the body 'cache'
+jQuery.data(document.body, "ont_note_colspan", "<%=ont_note_colspan%>");
+jQuery.data(document.body, "ontology_id", "<%=@ontology.ontologyId%>");
+jQuery.data(document.body, "ont_semi_uuid", "<%=@ont_semi_uuid%>");
+
+// This will wire up a table with the dataTables config.
+// Needs to stay inline because IE won't recognize it in an external file.
+function wireOntTable(ontNotesTableNew) {
+  // Wire up table if it hasn't been done yet
+  ontNotesTable = ontNotesTableNew.dataTable({
+    "iDisplayLength": 50,
+    "sPaginationType": "full_numbers",
+    "aaSorting": [[5, 'desc']],
+    "aoColumns": [
+       { "iDataSort": 1 }, // Subject link
+       { "bVisible": false }, // Subject for sort
+           { "bVisible": false }, // Archived for filter
+       null, // Author
+       null, // Type
+       ont_target, // Target
+       null // Created
+    ],
+    "fnDrawCallback": function(){
+      jQuery(".highlighted_row").removeClass("highlighted_row");
+    },
+    "fnInitComplete": function(){
+    }
+  });
+  
+  // Important! Table is somehow getting set to zero width. Reset here.
+  jQuery(ontNotesTable).css("width", "100%");
+  
+  ontNotesTable.fnFilter('false', 2);
+}
+
+function hideOrUnhideArchivedOntNotes() {
+    if (jQuery("#hide_archived_ont:checked").val() !== undefined) {
+      // Checked
+      ontNotesTable.fnFilter('false', 2);
+    } else {
+      // Unchecked
+      ontNotesTable.fnFilter('', 2, true, false);
+    }
+}
+
+jQuery(document).ready(function(){
+  var tempTable = jQuery("#" + jQuery.data(document.body, "ont_semi_uuid") + "_notes_list");
+  wireOntTable(tempTable);
+  
+  jQuery('#filter_menu').superfish({
+    delay: 1200,              // 1.2 second delay on mouseout);
+    dropShadows: false,
+    speed: 'fast'
+  });
+  
+  jQuery("#hide_archived_ont").click(function(){
+    hideOrUnhideArchivedOntNotes();
+  });
+  
+  // Notes subscriptions button
+  jQuery("a.subscribe_to_notes").button();
+});
+
+</script>
+

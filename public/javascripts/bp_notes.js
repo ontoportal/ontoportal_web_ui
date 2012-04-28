@@ -4,6 +4,11 @@
 
 var BP_NOTES_LOADED = true;
 
+// Make sure that notes table is 100% width when switching tabs
+jQuery(document).bind("terms_tab_visible", function(){
+  notesTable.css("width", "100%");
+});
+
 jQuery(document).ready(function(){
   // Wire up the "Add Reply" link
   jQuery('.add_reply_button').live("click", function(){
@@ -19,8 +24,9 @@ jQuery(document).ready(function(){
   jQuery(".create_note_submit").live('click', function(event) {
     event.preventDefault();
 
+    var note;
     var note_type = jQuery(this).attr("note_type");
-    var prefix = jQuery(this).data("prefix") == null ? "" : jQuery(this).data("prefix");
+    var prefix = jQuery(this).data("prefix") === null ? "" : jQuery(this).data("prefix");
     var action = jQuery(this).data("action");
     var ONT = jQuery(this).data("ont_id");
     var NOTES_URL = "/notes/";
@@ -31,23 +37,23 @@ jQuery(document).ready(function(){
 
     switch (note_type) {
     case "create_comment":
-      var note = new Comment(prefix, ONT);
+      note = new Comment(prefix, ONT);
       note.validate();
       break;
     case "create_new_term":
-      var note = new ProposalForCreateEntity(prefix, ONT);
+      note = new ProposalForCreateEntity(prefix, ONT);
       note.validate();
       break;
     case "create_change_hierarchy":
-      var note = new ProposalForChangeHierarchy(prefix, ONT);
+      note = new ProposalForChangeHierarchy(prefix, ONT);
       note.validate();
       break;
     case "create_change_prop_value":
-      var note = new ProposalForChangePropertyValue(prefix, ONT);
+      note = new ProposalForChangePropertyValue(prefix, ONT);
       note.validate();
     }
 
-    if (note.failedValidation == true) {
+    if (note.failedValidation === true) {
       button_reset(button);
       jQuery("#" + jQuery(button).attr("id") + "_submit_container").append(' <span class="error_message">Invalid entries, please fix and try again</span>');
     } else {
@@ -89,10 +95,10 @@ jQuery(document).ready(function(){
                     var state = History.getState();
 
                     // Handling for tree view
-                    if (state.cleanUrl.match("p=terms")!= null) {
+                    if (state.cleanUrl.match("p=terms") !== null) {
                       // Check for "No notes" message and delete
                       var no_notes_check = document.getElementById("no_notes");
-                      if (no_notes_check != null) {
+                      if (no_notes_check !== null) {
                         notesTable.fnDeleteRow(notesTable.fnGetPosition(document.getElementById("no_notes")));
                       }
 
@@ -112,7 +118,7 @@ jQuery(document).ready(function(){
 
                     // Check for "No notes" message and delete
                     var ont_no_notes_check = document.getElementById("ont_no_notes");
-                    if (ont_no_notes_check != null) {
+                    if (ont_no_notes_check !== null) {
                       ontNotesTable.fnDeleteRow(ontNotesTable.fnGetPosition(document.getElementById("ont_no_notes")));
                     }
 
@@ -141,7 +147,7 @@ jQuery(document).ready(function(){
             var new_note_count = parseInt(jQuery("#note_count").text()) + 1;
             jQuery("#note_count").text(new_note_count);
             // Update the count for this concept in the cache (silently fails if we're not at a concept)
-            if (getCache(jQuery.data(document.body, "node_id")) != null) {
+            if (getCache(jQuery.data(document.body, "node_id")) !== null) {
               getCache(jQuery.data(document.body, "node_id"))[5] = new_note_count;
             }
 
@@ -194,7 +200,7 @@ jQuery(document).ready(function(){
 
             // Change button text
             var txt = jQuery("a.subscribe_to_notes span.ui-button-text").html();
-            var newButtonText = txt.match("Unsubscribe") ? txt.replace("Unsubscribe", "Subscribe") : txt.replace("Subscribe", "Unsubscribe")
+            var newButtonText = txt.match("Unsubscribe") ? txt.replace("Unsubscribe", "Subscribe") : txt.replace("Subscribe", "Unsubscribe");
             jQuery("a.subscribe_to_notes span.ui-button-text").html(newButtonText);
           },
           error: function(data) {
@@ -215,7 +221,7 @@ function Comment(prefix, ONT) {
       errorMessage: "Please enter a message in the body",
       errorLocation: jQuery("#" + prefix + "create_comment_body").attr("id") + "_error"
     }
-  }
+  };
 
   this.required = [ "subject", "body" ];
 
@@ -230,11 +236,11 @@ function Comment(prefix, ONT) {
     author: jQuery("#" + prefix + "create_comment_author").val(),
     subject: jQuery("#" + prefix + "create_comment_subject").val(),
     body: jQuery("#" + prefix + "create_comment_body").val()
-  }
+  };
 
   this.validate = function() {
     validateForm(this);
-  }
+  };
 
   this.reset = function() {
     for (field in this.form_fields) {
@@ -265,7 +271,7 @@ function ProposalForCreateEntity(prefix, ONT) {
       errorLocation: jQuery("#" + prefix + "termPreferredName").attr("id") + "_error"
     },
     termSynonyms: { element: jQuery("#" + prefix + "termSynonyms") }
-  }
+  };
 
   this.required = [ "reasonForChange", "termDefinition", "termParent", "termPreferredName" ];
 
@@ -287,11 +293,11 @@ function ProposalForCreateEntity(prefix, ONT) {
     termParent: jQuery("#" + prefix + "termParent").val(),
     termPreferredName: jQuery("#" + prefix + "termPreferredName").val(),
     termSynonyms: jQuery("#" + prefix + "termSynonyms").val()
-  }
+  };
 
   this.validate = function() {
     validateForm(this);
-  }
+  };
 
   this.reset = function() {
     for (field in this.form_fields) {
@@ -317,7 +323,7 @@ function ProposalForChangeHierarchy(prefix, ONT) {
       errorMessage: "Please enter the relationship type",
       errorLocation: jQuery("#" + prefix + "relationshipType").attr("id") + "_error"
     }
-  }
+  };
 
   this.required = [ "reasonForChange", "relationshipTarget", "relationshipType" ];
 
@@ -330,19 +336,18 @@ function ProposalForChangeHierarchy(prefix, ONT) {
     appliesToType: jQuery("#" + prefix + "create_change_hierarchy_appliesToType").val(),
     type: jQuery("#" + prefix + "create_change_hierarchy_noteType").val(),
     author: jQuery("#" + prefix + "create_change_hierarchy_author").val(),
-    subject: getNoteTypeText(jQuery("#" + prefix + "create_change_hierarchy_noteType").val()) + ": "
-      + jQuery("#" + prefix + "relationshipType").val(), // Special text plus preferred name
+    subject: getNoteTypeText(jQuery("#" + prefix + "create_change_hierarchy_noteType").val()) + ": " + jQuery("#" + prefix + "relationshipType").val(), // Special text plus preferred name
     body: jQuery("#" + prefix + "create_change_hierarchy_body").val(),
     reasonForChange: jQuery("#" + prefix + "create_change_hierarchy_reasonForChange").val(),
     contactInfo: jQuery("#" + prefix + "create_change_hierarchy_contactInfo").val(),
     oldRelationshipTarget: jQuery("#" + prefix + "oldRelationshipTarget").val(),
     relationshipTarget: jQuery("#" + prefix + "relationshipTarget").val(),
     relationshipType: jQuery("#" + prefix + "relationshipType").val()
-  }
+  };
 
   this.validate = function() {
     validateForm(this);
-  }
+  };
 
   this.reset = function() {
     for (field in this.form_fields) {
@@ -368,7 +373,7 @@ function ProposalForChangePropertyValue(prefix, ONT) {
       errorLocation: jQuery("#" + prefix + "newPropertyValue").attr("id") + "_error"
     },
     oldPropertyValue: { element: jQuery("#" + prefix + "oldPropertyValue") }
-  }
+  };
 
   this.required = [ "reasonForChange", "newPropertyValue", "propertyId" ];
 
@@ -381,19 +386,18 @@ function ProposalForChangePropertyValue(prefix, ONT) {
     appliesToType: jQuery("#" + prefix + "create_change_prop_value_appliesToType").val(),
     type: jQuery("#" + prefix + "create_change_prop_value_noteType").val(),
     author: jQuery("#" + prefix + "create_change_prop_value_author").val(),
-    subject: getNoteTypeText(jQuery("#" + prefix + "create_change_prop_value_noteType").val()) + ": "
-      + jQuery("#" + prefix + "propertyId").val(), // Special text plus preferred name
+    subject: getNoteTypeText(jQuery("#" + prefix + "create_change_prop_value_noteType").val()) + ": " + jQuery("#" + prefix + "propertyId").val(), // Special text plus preferred name
     body: jQuery("#" + prefix + "create_change_prop_value_body").val(),
     reasonForChange: jQuery("#" + prefix + "create_change_prop_value_reasonForChange").val(),
     contactInfo: jQuery("#" + prefix + "create_change_prop_value_contactInfo").val(),
     propertyId: jQuery("#" + prefix + "propertyId").val(),
     newPropertyValue: jQuery("#" + prefix + "newPropertyValue").val(),
     oldPropertyValue: jQuery("#" + prefix + "oldPropertyValue").val()
-  }
+  };
 
   this.validate = function() {
     validateForm(this);
-  }
+  };
 
   this.reset = function() {
     for (field in this.form_fields) {

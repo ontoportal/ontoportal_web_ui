@@ -46,6 +46,134 @@
     }
   </style>
 
+  <div class="tooltip"></div>
+
+  <div id="bd_content" class="explore">
+    <div id="sidebar">
+      <div id="qsearch" >
+        Jump To:
+          <input type="textbox" id="search_box" size="30"/>
+          <input type="hidden" id="jump_to_concept_id">
+      </div>
+
+      <% if @ontology.flat? %>
+        <div id="flat_help" style="padding: 5px; background-color: #DADDE0; color: black;">
+          This ontology cannot be displayed as a tree. You can use the "Jump To" field to search for and display multiple terms.
+        </div>
+      <% end %>
+
+      <div id="sd_content" class="sd_max_height">
+        <%=render :partial => '/ontologies/treeview'%>
+      </div>
+
+      <div style="clear:both;"></div>
+    </div>
+
+    <% if @concept.id.eql?("bp_fake_root")%>
+      <!-- When we have an ontology with a flat hierarchy, we initially disable the tabs because we don't have a term to display -->
+      <div id="container">
+        <div class="tabs" id="fake_tabs">
+          <ul>
+              <li class="selected first" id="details_top" onclick="return false;"><a href="#details" onclick="return false;" style="color: gray;">Details</a></li>
+              <li id="visualization_top" onclick="return false;"><a href="#visualization" onclick="return false;" style="color: gray;">Visualization</a></li>
+              <li id="notes_top" onclick="return false;"><a href="#notes" onclick="return false;" style="color: gray;">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+              <li id="mappings_top" onclick="return false;"><a href="#mappings" onclick="return false;" style="color: gray;">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
+              <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
+                <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Term Resources</a></li>
+              <%end%>
+          </ul>
+        </div>
+        <div class="tabs" id="non_fake_tabs" style="display: none;">
+          <ul>
+              <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
+              <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
+              <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+              <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
+              <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
+                <%if !@ontology.isView.eql?('true')%>
+                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Term Resources</a></li>
+                <% end %>
+              <%end%>
+          </ul>
+          <%if @ontology.isView=='true'%>
+            <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Resource Index</a></li>
+          <% end %>
+        </div>
+        <div id="contents">
+          <div style="left: auto; position: static;" class="tab_container" id="details_content">Please search for a term using the Jump To field above to see details</div>
+          <div class="tab_container" id="visualization_content"></div>
+          <div class="tab_container" id="notes_content"></div>
+          <div class="tab_container" id="mappings_content"></div>
+          <div class="tab_container" id="resource_index_content"></div>
+        </div>
+      </div>
+
+
+    <% else %>
+
+
+      <div id="container">
+        <div class="tabs">
+          <ul>
+              <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
+              <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
+              <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+              <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
+              <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
+                <%if !@ontology.isView.eql?('true')%>
+                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Term Resources</a></li>
+                <% else %>
+                  <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Resource Index</a></li>
+                <% end %>
+              <%end%>
+          </ul>
+
+          <% if $PURL_ENABLED %>
+            <span style="float: right;"><a title="Get a permanent link to this term" id="term_permalink" style="padding: 0;" href="<%=@current_purl%>"><img src="/stylesheets/layout/images/link_icon.png" style="height: 14px; padding: 5px;"></a></span>
+          <% end %>
+        </div>
+
+        <div id="contents">
+          <div style="left: auto; position: static;" class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
+          <div class="tab_container" id="visualization_content"><%=render :partial =>'/concepts/biomixer'%></div>
+          <div class="tab_container" id="notes_content"><%=render :partial =>'/notes/list'%></div>
+          <div class="tab_container" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
+
+          <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
+            <div class="tab_container" id="resource_index_content"></div>
+          <%end%>
+
+          <% if $PURL_ENABLED %>
+            <div id="purl_link_container" class="term_permalink" style="display: none;">
+              <h2>Permanent link to this term</h2>
+              <a href="javascript:void(0);" id="close_permalink" class="ui-dialog-titlebar-close ui-corner-all" role="button" unselectable="on" style="-moz-user-select: none; position: absolute; right: 5px; top: 5px;"><span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">close</span></a>
+              <input id="purl_input" type="textfield" style="width: 380px;" value="<%=@current_purl%>">
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <% form_for(:search, :url => {:controller =>'search',:action=>'fetch_results'},:html=>{:id=>'search_form'}) do |f| %>
+    <input type="hidden" name="search[ontologies][]" value="<%=@ontology.ontologyId%>">
+    <%=hidden_field :search, :search_type, :value=>"contains"%>
+    <%=hidden_field :search, :keyword, :value=>"",:id=>"search_keyword"%>
+  <%end%>
+
+  <div style="clear: both;"></div>
+
+  <!-- Create mapping UI -->
+  <div id="create_mapping" style="left: -99999px; position: absolute;">
+    <%= render :partial => '/mappings/new_form', :locals => { :ontology_from => @ontology.id, :concept_from => @concept.fullId } %>
+  </div>
+
+<% else # found an error %>
+  <%= "<div id=\"error\"><h2>#{@error}</h2></div>" %>
+<% end %>
+
+
+
   <script type="text/javascript">
     var searchbox;
 
@@ -94,6 +222,61 @@
       var regex = new RegExp( '(' + keywords + ')', 'gi' );
       return row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
     }
+
+    terms_init = function(){
+      // Auto loads the correct tab
+      var loc = new String(document.location);
+
+      // Override the side of the bd_content div to avoid problems with
+      // the window resizing, which can sometimes cause the right-hand content div to drop down
+      var bd_content_width = jQuery("#ontology_content").width();
+      jQuery("#bd_content").width(bd_content_width);
+
+      // Split bar
+      jQuery(function() {
+        jQuery("#bd_content").splitter({
+          sizeLeft: 300,
+          resizeToWidth: true
+        });
+      });
+    }
+
+    // The tab system
+    jQuery(".tab").click(function(){
+        var tabId = jQuery(this).children("a:first").attr("href").replace("#", "");
+        showTermsTab(tabId);
+    });
+
+    function showTermsTab(tabId) {
+      // Get the target content area
+      var target = document.getElementById(tabId + "_content");
+
+      if (target != null) {
+        jQuery(".tab_container").css("left", "-9999px").css("position", "absolute");
+        jQuery(target).css("left", "auto").css("position", "static");
+        jQuery(".tab").removeClass("selected");
+        jQuery("#" + tabId + "_top").addClass("selected");
+        jQuery(document).trigger("terms_tab_visible");
+      }
+    }
+
+    function callTab(tab_name, url) {
+        if (getCache(getConcept() + tab_name) != null) {
+              document.getElementById(tab_name + "_content").innerHTML=getCache(getConcept() + tab_name);
+        } else {
+          jQuery("#" + tab_name + "_content").html('<h1><img src="/images/tree/spinner.gif" /> Loading Resources...</h1>');
+          jQuery.get(url.replace("@ontology@",getOntology()).replace("@concept@",encodeURIComponent(getConcept())),function(data){
+            jQuery("#" + tab_name + "_content").html(data);
+            setCache(getConcept() + tab_name,data);
+            jQuery.unblockUI();
+            tb_init('a.thickbox, area.thickbox, input.thickbox');
+          });
+        }
+    }
+
+    jQuery(document).ready(function() {
+      terms_init();
+    });
 
     jQuery(document).ready(function(){
       jQuery("#search_box").bioportal_autocomplete("/search/json_search/<%=@ontology.ontologyId%>", {
@@ -186,196 +369,4 @@
     });
 
   </script>
-
-  <div class="tooltip"></div>
-
-  <div id="bd_content" class="explore">
-    <div id="sidebar">
-      <div id="qsearch" >
-        Jump To:
-          <input type="textbox" id="search_box" size="30"/>
-          <input type="hidden" id="jump_to_concept_id">
-      </div>
-
-      <% if @ontology.flat? %>
-        <div id="flat_help" style="padding: 5px; background-color: #DADDE0; color: black;">
-          This ontology cannot be displayed as a tree. You can use the "Jump To" field to search for and display multiple terms.
-        </div>
-      <% end %>
-
-      <div id="sd_content" class="sd_max_height">
-        <%=render :partial => '/ontologies/treeview'%>
-      </div>
-
-      <div style="clear:both;"></div>
-    </div>
-
-    <% if @concept.id.eql?("bp_fake_root")%>
-      <!-- When we have an ontology with a flat hierarchy, we initially disable the tabs because we don't have a term to display -->
-      <div id="container">
-        <div class="tabs" id="fake_tabs">
-          <ul>
-              <li class="selected first" id="details_top" onclick="return false;"><a href="#details" onclick="return false;" style="color: gray;">Details</a></li>
-              <li id="visualization_top" onclick="return false;"><a href="#visualization" onclick="return false;" style="color: gray;">Visualization</a></li>
-              <li id="notes_top" onclick="return false;"><a href="#notes" onclick="return false;" style="color: gray;">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
-              <li id="mappings_top" onclick="return false;"><a href="#mappings" onclick="return false;" style="color: gray;">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
-              <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
-                <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Term Resources</a></li>
-              <%end%>
-          </ul>
-        </div>
-        <div class="tabs" id="non_fake_tabs" style="display: none;">
-          <ul>
-              <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
-              <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
-              <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
-              <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
-              <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
-                <%if !@ontology.isView.eql?('true')%>
-                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Term Resources</a></li>
-                <% end %>
-              <%end%>
-          </ul>
-          <%if @ontology.isView=='true'%>
-            <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Resource Index</a></li>
-          <% end %>
-        </div>
-        <div id="contents">
-          <div style="display:block;" class="tab_container" id="details_content">Please search for a term using the Jump To field above to see details</div>
-          <div class="tab_container" id="visualization_content"></div>
-          <div class="tab_container" id="notes_content"></div>
-          <div class="tab_container" id="mappings_content"></div>
-          <div class="tab_container" id="resource_index_content"></div>
-        </div>
-      </div>
-
-
-    <% else %>
-
-
-      <div id="container">
-        <div class="tabs">
-          <ul>
-              <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
-              <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
-              <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
-              <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
-              <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
-                <%if !@ontology.isView.eql?('true')%>
-                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Term Resources</a></li>
-                <% else %>
-                  <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Resource Index</a></li>
-                <% end %>
-              <%end%>
-          </ul>
-
-          <% if $PURL_ENABLED %>
-            <span style="float: right;"><a title="Get a permanent link to this term" id="term_permalink" style="padding: 0;" href="<%=@current_purl%>"><img src="/stylesheets/layout/images/link_icon.png" style="height: 14px; padding: 5px;"></a></span>
-          <% end %>
-        </div>
-
-        <div id="contents">
-          <div style="display:block;" class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
-          <div class="tab_container" id="visualization_content"><%=render :partial =>'/concepts/biomixer'%></div>
-          <div class="tab_container" id="notes_content"><%=render :partial =>'/notes/list'%></div>
-          <div class="tab_container" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
-
-          <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
-            <div class="tab_container" id="resource_index_content"></div>
-          <%end%>
-
-          <% if $PURL_ENABLED %>
-            <div id="purl_link_container" class="term_permalink" style="display: none;">
-              <h2>Permanent link to this term</h2>
-              <a href="javascript:void(0);" id="close_permalink" class="ui-dialog-titlebar-close ui-corner-all" role="button" unselectable="on" style="-moz-user-select: none; position: absolute; right: 5px; top: 5px;"><span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">close</span></a>
-              <input id="purl_input" type="textfield" style="width: 380px;" value="<%=@current_purl%>">
-            </div>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-
-  <script type="text/javascript">
-    terms_init = function(){
-      // Auto loads the correct tab
-      var loc = new String(document.location);
-
-      // Override the side of the bd_content div to avoid problems with
-      // the window resizing, which can sometimes cause the right-hand content div to drop down
-      var bd_content_width = jQuery("#ontology_content").width();
-      jQuery("#bd_content").width(bd_content_width);
-
-      // Split bar
-      jQuery(function() {
-        jQuery("#bd_content").splitter({
-          sizeLeft: 300,
-          resizeToWidth: true
-        });
-      });
-    }
-
-    // The tab system
-    jQuery(".tab").click(function(){
-        var tabId = jQuery(this).children("a:first").attr("href").replace("#", "");
-        showTermsTab(tabId);
-    });
-
-    jQuery(document).ready(function() {
-      terms_init();
-    });
-
-    function showTermsTab(tabId) {
-        // Get the target content area
-      var target = document.getElementById(tabId + "_content");
-
-      if (target != null) {
-        jQuery(".tab_container").hide();
-        jQuery(target).show();
-        jQuery(".tab").removeClass("selected");
-        jQuery("#" + tabId + "_top").addClass("selected");
-        jQuery(document).trigger("terms_tab_visible");
-      }
-    }
-
-    function callTab(tab_name, url) {
-        if (getCache(getConcept() + tab_name) != null) {
-              document.getElementById(tab_name + "_content").innerHTML=getCache(getConcept() + tab_name);
-        } else {
-          jQuery("#" + tab_name + "_content").html('<h1><img src="/images/tree/spinner.gif" /> Loading Resources...</h1>');
-          jQuery.get(url.replace("@ontology@",getOntology()).replace("@concept@",encodeURIComponent(getConcept())),function(data){
-            jQuery("#" + tab_name + "_content").html(data);
-            setCache(getConcept() + tab_name,data);
-            jQuery.unblockUI();
-            tb_init('a.thickbox, area.thickbox, input.thickbox');
-          });
-        }
-    }
-
-  </script>
-
-  <style>
-    .tab_container {
-      display: none;
-    }
-  </style>
-
-  <% form_for(:search, :url => {:controller =>'search',:action=>'fetch_results'},:html=>{:id=>'search_form'}) do |f| %>
-    <input type="hidden" name="search[ontologies][]" value="<%=@ontology.ontologyId%>">
-    <%=hidden_field :search, :search_type, :value=>"contains"%>
-    <%=hidden_field :search, :keyword, :value=>"",:id=>"search_keyword"%>
-  <%end%>
-
-  <div style="clear: both;"></div>
-
-  <!-- Create mapping UI -->
-  <div id="create_mapping" style="left: -99999px; position: absolute;">
-    <%= render :partial => '/mappings/new_form', :locals => { :ontology_from => @ontology.id, :concept_from => @concept.fullId } %>
-  </div>
-
-<% else # found an error %>
-  <%= "<div id=\"error\"><h2>#{@error}</h2></div>" %>
-<% end %>
-
-
 

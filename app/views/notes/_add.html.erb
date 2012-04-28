@@ -2,7 +2,7 @@
 	Please <%= link_to "login", "/login" %> to submit notes
 <% else %>
 
-<% @semi_uuid = (1000 * Time.now.to_f).to_i.to_s %>
+<% @add_semi_uuid = (1000 * Time.now.to_f).to_i.to_s %>
 
 <% add_text = add_text.nil? ? "Add Note" : "Add Reply" %>
 
@@ -27,7 +27,7 @@
 <% end %>
 
 <% action_type = defined?(action) ? action : "" %>
-<% prefix = defined?(action) ? @semi_uuid + "_" + action + "_" : @semi_uuid + "_" %>
+<% prefix = defined?(action) ? @add_semi_uuid + "_" + action + "_" : @add_semi_uuid + "_" %>
 <% prefix = action + "_" if defined?(action) && defined?(dummy_add) %>
 
 <script type="text/javascript">
