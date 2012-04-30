@@ -11,40 +11,203 @@
       {type:'js',src:'/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.js'},
       {type:'js',src:'/javascripts/bp_mappings.js'}
     ]);
-  </script>
 
-  <style>
-    /* simple css-based tooltip */
-      div.tooltip {
-        background-color:#000;
-        border:1px solid #fff;
-        padding:10px 15px;
-        width:200px;
-        display:none;
-        color:#fff;
-        text-align:left;
-        font-size:12px;
-        z-index: 999;
+    var searchbox;
 
-        /* outline radius for mozilla/firefox only */
-        -moz-box-shadow:0 0 10px #000;
-        -webkit-box-shadow:0 0 10px #000;
+    // Called when the "Go" button on the Jump To form is clicked
+    function jumpToValue(li){
+      jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
 
+      if( li == null ){
+        // User performs a search
+        var search = confirm("Term could not be found.\n\nPress OK to go to the Search page or Cancel to continue browsing");
+
+        if(search){
+          jQuery("#search_keyword").val(jQuery("#search_box").val());
+          jQuery("#search_form").submit();
+          return
+        }
       }
 
-    #bp_fake_root {
-      display: none;
+      // Appropriate value selected
+      if( !!li.extra ){
+        var sValue = jQuery("#jump_to_concept_id").val();
+
+        <% if @ontology.flat? %>
+          History.pushState({p:"terms", conceptid:sValue, suid:"jump_to", flat:true, label:li.extra[4]}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, "?p=terms&conceptid=" + sValue);
+        <% else %>
+          document.location="/visualize/<%=@ontology.id%>/?conceptid="+encodeURIComponent(sValue)+"&jump_to_nav=true";
+          jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
+        <% end %>
+
+        return;
+      }
     }
 
-    /* used for vertical split bar */
-    .vsplitbar {
-      width: 5px;
-      background: #DADDE0 url(/javascripts/JqueryPlugins/splitter/img/vgrabber.gif) no-repeat scroll center center;
+    // Sets a hidden form value that records the concept id when a concept is chosen in the jump to
+    // This is a workaround because the default autocomplete search method cannot distinguish between two
+    // concepts that have the same preferred name but different ids.
+    function jumpToSelect(li){
+      jQuery("#jump_to_concept_id").val(li.extra[0]);
+      jumpToValue(li);
     }
-    .vsplitbar:hover {
-      cursor: ew-resize !important;
+
+    // Formats the Jump To search results
+    function formatItem(row) {
+      var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
+      var keywords = jQuery("#search_box").val().replace(specials, "\\$&").split(' ').join('|');
+      var regex = new RegExp( '(' + keywords + ')', 'gi' );
+      return row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
     }
-  </style>
+
+    terms_init = function(){
+      // Auto loads the correct tab
+      var loc = new String(document.location);
+
+      // Override the side of the bd_content div to avoid problems with
+      // the window resizing, which can sometimes cause the right-hand content div to drop down
+      var bd_content_width = jQuery("#ontology_content").width();
+      jQuery("#bd_content").width(bd_content_width);
+
+      // Split bar
+      jQuery("#bd_content").splitter({
+        sizeLeft: 300,
+        resizeToWidth: true
+      });
+    }
+
+    // The tab system
+    jQuery(".tab").click(function(){
+        var tabId = jQuery(this).children("a:first").attr("href").replace("#", "");
+        showTermsTab(tabId);
+    });
+
+    function showTermsTab(tabId) {
+      // Get the target content area
+      var target = document.getElementById(tabId + "_content");
+
+      if (target != null) {
+        jQuery(".tab_container").css("left", "-9999px").css("position", "absolute");
+        jQuery(target).css("left", "auto").css("position", "static");
+        jQuery(".tab").removeClass("selected");
+        jQuery("#" + tabId + "_top").addClass("selected");
+        jQuery(document).trigger("terms_tab_visible");
+      }
+    }
+
+    function callTab(tab_name, url) {
+        if (getCache(getConcept() + tab_name) != null) {
+              document.getElementById(tab_name + "_content").innerHTML=getCache(getConcept() + tab_name);
+        } else {
+          jQuery("#" + tab_name + "_content").html('<h1><img src="/images/tree/spinner.gif" /> Loading Resources...</h1>');
+          jQuery.get(url.replace("@ontology@",getOntology()).replace("@concept@",encodeURIComponent(getConcept())),function(data){
+            jQuery("#" + tab_name + "_content").html(data);
+            setCache(getConcept() + tab_name,data);
+            jQuery.unblockUI();
+            tb_init('a.thickbox, area.thickbox, input.thickbox');
+          });
+        }
+    }
+
+    search_box_init = function(){
+      jQuery("#search_box").bioportal_autocomplete("/search/json_search/<%=@ontology.ontologyId%>", {
+        extraParams: { objecttypes: "class" },
+        width: "400px",
+        selectFirst: true,
+        lineSeparator: "~!~",
+        matchSubset: 0,
+        minChars: 1,
+        maxItemsToShow: 20,
+        onFindValue: jumpToValue,
+        onItemSelect: jumpToSelect,
+        formatItem: formatItem
+      });
+      searchbox = jQuery("#search_box")[0].autocompleter;
+    }
+
+    jQuery(document).ready(function() {
+      terms_init();
+      search_box_init();
+    });
+
+    jQuery(document).ready(function(){
+      <% if @ontology.isView == 'true' %>
+        // Set up a hovertip on the qsearch input element
+        jQuery("#resource_index_top").attr("style", "color: grey;");
+        jQuery("#resource_index_top").attr("title", "Resource Index isn't available for Views");
+        jQuery("#resource_index_top").tooltip({
+            position: "bottom center",
+            tip: '.tooltip',
+            opacity: 0.7
+        });
+      <%end%>
+
+      <% if !@ontology.in_search_index? %>
+        <%if !@ontology.latest?%>
+          // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
+          jQuery("#qsearch").children().filter(":input").each(function(){
+            jQuery(this).attr("readonly", true);
+          });
+          jQuery("#qsearch").attr("style", "color: grey;");
+        <%end%>
+
+        <%if @ontology.latest?%>
+          <% message = "This ontology has recently been updated and new terms may not yet be available through \"Jump To\"" %>
+        <%else%>
+          <% message = "\"Jump To\" only works with the most recently indexed version of this ontology" %>
+        <%end%>
+
+        // Set up a hovertip on the qsearch input element
+        jQuery("#qsearch :input").attr("title", '<%=message%>');
+        jQuery("#qsearch :input").tooltip({
+            position: "top center",
+            offset: [-5, 0],
+            tip: '.tooltip',
+            opacity: 0.9
+        });
+      <%end%>
+    });
+
+    // Tab auto-select based on parameter "t"
+    jQuery(document).ready(function(){
+      var url, urlFragment, paramsList, params = {}, splitParam, content;
+      url = document.URL;
+
+      if (url.indexOf("?") > 0) {
+        urlFragment = url.split("?");
+        paramsList = urlFragment[1].split("&");
+
+        for (param in paramsList) {
+          splitParam = paramsList[param].split("=");
+
+          if (splitParam.length > 1)
+            params[splitParam[0]] = splitParam[1].split("#")[0];
+        }
+
+        if (params !== "undefined" && "t" in params) {
+          showTermsTab(params["t"]);
+        }
+      }
+    });
+
+    // Javascript for the permalink box
+    jQuery(document).ready(function(){
+      jQuery("#close_permalink").live("click", function(){
+        jQuery("#purl_link_container").hide();
+      });
+
+      jQuery("#term_permalink").live("click", function(e){
+        e.preventDefault();
+        jQuery("#purl_link_container").show();
+      });
+
+      jQuery("#purl_input").live("focus", function(){
+        this.select();
+      });
+    });
+
+  </script>
+
 
   <div class="tooltip"></div>
 
@@ -173,200 +336,4 @@
 <% end %>
 
 
-
-  <script type="text/javascript">
-    var searchbox;
-
-    // Called when the "Go" button on the Jump To form is clicked
-    function jumpToValue(li){
-      jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
-
-      if( li == null ){
-        // User performs a search
-        var search = confirm("Term could not be found.\n\nPress OK to go to the Search page or Cancel to continue browsing");
-
-        if(search){
-          jQuery("#search_keyword").val(jQuery("#search_box").val());
-          jQuery("#search_form").submit();
-          return
-        }
-      }
-
-      // Appropriate value selected
-      if( !!li.extra ){
-        var sValue = jQuery("#jump_to_concept_id").val();
-
-        <% if @ontology.flat? %>
-          History.pushState({p:"terms", conceptid:sValue, suid:"jump_to", flat:true, label:li.extra[4]}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, "?p=terms&conceptid=" + sValue);
-        <% else %>
-          document.location="/visualize/<%=@ontology.id%>/?conceptid="+encodeURIComponent(sValue)+"&jump_to_nav=true";
-          jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
-        <% end %>
-
-        return;
-      }
-    }
-
-    // Sets a hidden form value that records the concept id when a concept is chosen in the jump to
-    // This is a workaround because the default autocomplete search method cannot distinguish between two
-    // concepts that have the same preferred name but different ids.
-    function jumpToSelect(li){
-      jQuery("#jump_to_concept_id").val(li.extra[0]);
-      jumpToValue(li);
-    }
-
-    // Formats the Jump To search results
-    function formatItem(row) {
-      var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
-      var keywords = jQuery("#search_box").val().replace(specials, "\\$&").split(' ').join('|');
-      var regex = new RegExp( '(' + keywords + ')', 'gi' );
-      return row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
-    }
-
-    terms_init = function(){
-      // Auto loads the correct tab
-      var loc = new String(document.location);
-
-      // Override the side of the bd_content div to avoid problems with
-      // the window resizing, which can sometimes cause the right-hand content div to drop down
-      var bd_content_width = jQuery("#ontology_content").width();
-      jQuery("#bd_content").width(bd_content_width);
-
-      // Split bar
-      jQuery(function() {
-        jQuery("#bd_content").splitter({
-          sizeLeft: 300,
-          resizeToWidth: true
-        });
-      });
-    }
-
-    // The tab system
-    jQuery(".tab").click(function(){
-        var tabId = jQuery(this).children("a:first").attr("href").replace("#", "");
-        showTermsTab(tabId);
-    });
-
-    function showTermsTab(tabId) {
-      // Get the target content area
-      var target = document.getElementById(tabId + "_content");
-
-      if (target != null) {
-        jQuery(".tab_container").css("left", "-9999px").css("position", "absolute");
-        jQuery(target).css("left", "auto").css("position", "static");
-        jQuery(".tab").removeClass("selected");
-        jQuery("#" + tabId + "_top").addClass("selected");
-        jQuery(document).trigger("terms_tab_visible");
-      }
-    }
-
-    function callTab(tab_name, url) {
-        if (getCache(getConcept() + tab_name) != null) {
-              document.getElementById(tab_name + "_content").innerHTML=getCache(getConcept() + tab_name);
-        } else {
-          jQuery("#" + tab_name + "_content").html('<h1><img src="/images/tree/spinner.gif" /> Loading Resources...</h1>');
-          jQuery.get(url.replace("@ontology@",getOntology()).replace("@concept@",encodeURIComponent(getConcept())),function(data){
-            jQuery("#" + tab_name + "_content").html(data);
-            setCache(getConcept() + tab_name,data);
-            jQuery.unblockUI();
-            tb_init('a.thickbox, area.thickbox, input.thickbox');
-          });
-        }
-    }
-
-    jQuery(document).ready(function() {
-      terms_init();
-    });
-
-    jQuery(document).ready(function(){
-      jQuery("#search_box").bioportal_autocomplete("/search/json_search/<%=@ontology.ontologyId%>", {
-        extraParams: { objecttypes: "class" },
-        width: "400px",
-        selectFirst: true,
-        lineSeparator: "~!~",
-        matchSubset: 0,
-        minChars: 1,
-        maxItemsToShow: 20,
-        onFindValue: jumpToValue,
-        onItemSelect: jumpToSelect,
-        formatItem: formatItem
-      });
-      searchbox = jQuery("#search_box")[0].autocompleter;
-
-      <% if @ontology.isView == 'true' %>
-        // Set up a hovertip on the qsearch input element
-        jQuery("#resource_index_top").attr("style", "color: grey;");
-        jQuery("#resource_index_top").attr("title", "Resource Index isn't available for Views");
-        jQuery("#resource_index_top").tooltip({
-            position: "bottom center",
-            tip: '.tooltip',
-            opacity: 0.7
-        });
-      <%end%>
-
-    <% if !@ontology.in_search_index? %>
-        <%if !@ontology.latest?%>
-          // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
-          jQuery("#qsearch").children().filter(":input").each(function(){
-            jQuery(this).attr("readonly", true);
-          });
-          jQuery("#qsearch").attr("style", "color: grey;");
-        <%end%>
-
-        <%if @ontology.latest?%>
-          <% message = "This ontology has recently been updated and new terms may not yet be available through \"Jump To\"" %>
-        <%else%>
-          <% message = "\"Jump To\" only works with the most recently indexed version of this ontology" %>
-        <%end%>
-
-        // Set up a hovertip on the qsearch input element
-        jQuery("#qsearch :input").attr("title", '<%=message%>');
-        jQuery("#qsearch :input").tooltip({
-            position: "top center",
-            offset: [-5, 0],
-            tip: '.tooltip',
-            opacity: 0.9
-        });
-      <%end%>
-    });
-
-    // Tab auto-select based on parameter "t"
-    jQuery(document).ready(function(){
-      var url, urlFragment, paramsList, params = {}, splitParam, content;
-      url = document.URL;
-
-      if (url.indexOf("?") > 0) {
-        urlFragment = url.split("?");
-        paramsList = urlFragment[1].split("&");
-
-        for (param in paramsList) {
-          splitParam = paramsList[param].split("=");
-
-          if (splitParam.length > 1)
-            params[splitParam[0]] = splitParam[1].split("#")[0];
-        }
-
-        if (params !== "undefined" && "t" in params) {
-          showTermsTab(params["t"]);
-        }
-      }
-    });
-
-    // Javascript for the permalink box
-    jQuery(document).ready(function(){
-      jQuery("#close_permalink").live("click", function(){
-        jQuery("#purl_link_container").hide();
-      });
-
-      jQuery("#term_permalink").live("click", function(e){
-        e.preventDefault();
-        jQuery("#purl_link_container").show();
-      });
-
-      jQuery("#purl_input").live("focus", function(){
-        this.select();
-      });
-    });
-
-  </script>
 

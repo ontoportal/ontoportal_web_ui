@@ -261,7 +261,7 @@ h1 a:hover, h2 a:hover {
 }
 #ontologies_padding_container {
   padding: 0 1em 1em;
-} 
+}
 
 #bd #bd_content {
   display:block;
@@ -694,9 +694,9 @@ tr.mainresource td {
 
 /* Ratings */
 .star_ratings{
-    color: #234979; 
+    color: #234979;
     border: 1px solid #C1DAD7;
-    background: #e2ebf0; 
+    background: #e2ebf0;
     width:300px;
     float:left;
     margin-right:10px;
@@ -726,7 +726,7 @@ tr.mainresource td {
 #qsearch{
     padding:3px;
     border-bottom:1px solid #C1DAD7;
-    border-left:1px solid #C1DAD7;    
+    border-left:1px solid #C1DAD7;
 }
 
 .home_button{
@@ -737,7 +737,7 @@ tr.mainresource td {
     color:white;
 }
 .home_input {
-    
+
 }
 
 .asterik{
@@ -842,7 +842,7 @@ tr.mainresource td {
 #format_specific_options td {
   border-top: 1px solid #C1DAD7;
 }
-  
+
 #format_specific_options #owl_options {
   display: none;
 }
@@ -862,12 +862,12 @@ span.concept_property {
 }
 
 
-/** 
+/**
  *
  *
  *  NOTES
- * 
- * 
+ *
+ *
 **/
 
 /* Create new note */
@@ -1366,6 +1366,38 @@ textarea.create_note_inputs {
   display:none;
 }
 
+/* simple css-based tooltip */
+div.tooltip {
+  background-color:#000;
+  border:1px solid #fff;
+  padding:10px 15px;
+  width:200px;
+  display:none;
+  color:#fff;
+  text-align:left;
+  font-size:12px;
+  z-index: 999;
+
+  /* outline radius for mozilla/firefox only */
+  -moz-box-shadow:0 0 10px #000;
+  -webkit-box-shadow:0 0 10px #000;
+
+}
+
+#bp_fake_root {
+  display: none;
+}
+
+/* used for vertical split bar */
+.vsplitbar {
+  width: 5px;
+  background: #DADDE0 url(/javascripts/JqueryPlugins/splitter/img/vgrabber.gif) no-repeat scroll center center;
+}
+
+.vsplitbar:hover {
+  cursor: ew-resize !important;
+}
+
 
 /************************************
  * Ontology Viewing
@@ -1613,7 +1645,7 @@ button.fg-button-menu, button.fg-button {
 
 
 #bp_nav_recommender, #bp_nav_recommender_active,
-#bp_nav_recommender .bp_nav_link, 
+#bp_nav_recommender .bp_nav_link,
 #bp_nav_recommender_active .bp_nav_link,
 #bp_nav_resource_index_active, #bp_nav_resource_index
 #bp_nav_resource_index_active .bp_nav_link,
@@ -1708,7 +1740,7 @@ button.fg-button-menu, button.fg-button {
 #ontology_picker_container div.chzn-container li.search-field input {
   font-style: oblique;
 }
-  
+
 #ontology_picker_container div.chzn-drop {
   display: none;
 }

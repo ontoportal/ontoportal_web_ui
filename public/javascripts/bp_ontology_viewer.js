@@ -210,7 +210,7 @@ jQuery(document).ready(function() {
     jQuery.bioportal.ont_pages["notes"].retrieve_and_publish();
   }
 
-  if (content_section !== "widgets" && metadata_only != true) {
+  if (content_section !== "widgets" && metadata_only !== true) {
     jQuery.bioportal.ont_pages["widgets"].retrieve_and_publish();
   }
 

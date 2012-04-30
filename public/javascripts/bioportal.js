@@ -595,3 +595,16 @@ jQuery(document).ready(function(){
 });
 
 
+// Enable this to see errors in jQuery(document).ready() code
+// var oldReady = jQuery.ready;
+// jQuery.ready = function(){
+//   try{
+//     return oldReady.apply(this, arguments);
+//   }catch(e){
+//     console.log("ERROR *************************************")
+//     console.log(e)
+//   }
+// };
+
+
+
