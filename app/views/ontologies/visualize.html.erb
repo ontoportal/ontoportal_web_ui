@@ -77,7 +77,7 @@
     }
 
     // The tab system
-    jQuery(".tab").click(function(){
+    jQuery(".tab").live("click", function(){
         var tabId = jQuery(this).children("a:first").attr("href").replace("#", "");
         showTermsTab(tabId);
     });
