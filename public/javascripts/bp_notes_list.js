@@ -10,7 +10,7 @@ jQuery(document).ready(function(){
 		var link = this;
 		var row_id = jQuery(this).attr("id");
 		var note_id = jQuery(this).attr("id").substring(4);
-		
+
 		if (jQuery(this).parent().hasClass("highlighted_row")) {
 			jQuery(this).parent().parent().removeClass("highlighted_row");
 			jQuery(this).parent().parent().children().removeClass("highlighted_row");
@@ -22,9 +22,9 @@ jQuery(document).ready(function(){
 			jQuery(this).parent().parent().addClass("highlighted_row");
 			jQuery(this).parent().parent().children().addClass("highlighted_row");
 			jQuery(this).parent().parent().after("<tr id='row_expanded_" + note_id + "' class='highlighted_border'><td colspan='" + jQuery.data(document.body, "note_colspan") + "' class='highlighted_border' id='row_thread_" + note_id + "'><span class='ajax_message'><img src='/images/spinners/spinner_000000_16px.gif' style='vertical-align: text-bottom;'> loading...</span></td></tr>");
-			
+
 			// Check cache for result, make call if it isn't found
-			if (jQuery.data(document.body, row_id) === null) {
+			if (jQuery.data(document.body, row_id) === undefined || jQuery.data(document.body, row_id) === null) {
 				jQuery.ajax({
 					type: "GET",
 					url: "/notes/virtual/" + jQuery.data(document.body, "ontology_id") + "/?noteid=" + note_id,
@@ -72,4 +72,68 @@ function wireTableWithData(notesTableNew, aData) {
 		}
 	});
 }
+
+// This will wire up a table with the dataTables config.
+// Needs to stay inline because IE won't recognize it in an external file.
+function wireTable(notesTableNew) {
+  // Wire up table if it hasn't been done yet
+  notesTable = notesTableNew.dataTable({
+  	"bDestroy": true,
+    "iDisplayLength": 50,
+    "sPaginationType": "full_numbers",
+    "aaSorting": [[5, 'desc']],
+    "aoColumns": [
+       { "iDataSort": 1 }, // Subject link
+       { "bVisible": false }, // Subject for sort
+       { "bVisible": false }, // Archived for filter
+       null, // Author
+       null, // Type
+       target, // Target
+       null // Created
+    ],
+    "fnDrawCallback": function(){
+      jQuery(".highlighted_row").removeClass("highlighted_row");
+    },
+    "fnInitComplete": function(){
+    }
+  });
+
+  // Important! Table is somehow getting set to zero width. Reset here.$
+  jQuery(notesTable).css("width", "100%");
+
+  //notesTable.fnFilter('false', 2);
+}
+
+function hideOrUnhideArchivedNotes() {
+    if (jQuery("#hide_archived:checked").val() !== undefined) {
+      // Checked
+      notesTable.fnFilter('false', 2);
+    } else {
+      // Unchecked
+      notesTable.fnFilter('', 2, true, false);
+    }
+}
+
+var init_notes = function(){
+  var tempTable = jQuery("#" + jQuery.data(document.body, "semi_uuid") + "_notes_list");
+  wireTable(tempTable);
+
+  jQuery('#filter_menu').superfish({
+    delay: 1200,              // 1.2 second delay on mouseout);
+    dropShadows: false,
+    speed: 'fast'
+  });
+
+  jQuery("#hide_archived").click(function(){
+    hideOrUnhideArchivedNotes();
+  });
+
+  // Notes subscriptions button
+  jQuery("a.subscribe_to_notes").button();
+}
+
+// Make sure to initialize the notes UI when the tree changes
+jQuery(document).bind("tree_changed", init_notes);
+jQuery(document).bind("tree_changed", wireNotesAddButton);
+
 

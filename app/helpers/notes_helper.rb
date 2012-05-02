@@ -1,7 +1,7 @@
 require 'cgi'
 
 module NotesHelper
-  
+
   def generate_notes_thread(thread, params = {})
     html = ""
     thread.each { |note| html << process_thread(note, params) }
@@ -16,9 +16,9 @@ module NotesHelper
       collapsed = ""
       display = "block"
     end
-    
+
     proposal_info = proposal_html(note)
-    
+
     html1 = <<-html
       <div class="response_container">
         <div class="response" id="note_#{note.id}">
@@ -45,19 +45,19 @@ module NotesHelper
             <div class="response_children" id="#{note.id}_children">
           </div>
     html
-    
-    html2 = note.associated.empty? ? "" : generate_notes_thread(note.associated, params) 
-    
+
+    html2 = note.associated.empty? ? "" : generate_notes_thread(note.associated, params)
+
     html3 = <<-html
           </div>
           <div class="response_spacer"></div>
         </div>
       </div>
     html
-    
+
     html1 + html2 + html3
   end
-  
+
   def proposal_html(note)
     case note.type
     when "Comment"
@@ -142,10 +142,10 @@ module NotesHelper
         </table>
       html
     end
-    
+
     html
   end
-  
+
   def get_applies_to_link(ontology_id, type, id)
     # We don't use helper methods (like link_to or url_for) here because this can get called from the controller
     begin
@@ -154,18 +154,18 @@ module NotesHelper
         return "<a href='/visualize/#{ontology_id}/?conceptid=#{CGI.escape(id)}#notes'>#{DataAccess.getNode(ontology_id, id).label_html}</a>"
       when "Note"
         ontology = DataAccess.getOntology(ontology_id)
-        return "<a href='/notes/virtual/#{ontology.ontologyId}?noteid=#{id}'>#{DataAccess.getNote(ontology.ontologyId, id, false, true).subject}</a>" 
+        return "<a href='/notes/virtual/#{ontology.ontologyId}?noteid=#{id}'>#{DataAccess.getNote(ontology.ontologyId, id, false, true).subject}</a>"
       when "Individual"
       when "Property"
       when "Ontology"
         ontology = DataAccess.getOntology(ontology_id)
-        return "<a href='/ontologies/#{ontology.ontologyId}/?p=notes'>#{ontology.displayLabel}</a>" 
+        return "<a href='/ontologies/#{ontology.ontologyId}/?p=notes'>#{ontology.displayLabel}</a>"
       end
     rescue Exception => e
       return "Unknown or Deprecated #{type}"
     end
   end
-  
+
   def get_applies_to_url(ontology_id, type, id)
     # We don't use helper methods (like link_to or url_for) here because this can get called from the controller
     begin
@@ -174,18 +174,18 @@ module NotesHelper
         return "/visualize/#{ontology_id}/?conceptid=#{CGI.escape(id)}#notes"
       when "Note"
         ontology = DataAccess.getOntology(ontology_id)
-        return "/notes/virtual/#{ontology.ontologyId}?noteid=#{id}" 
+        return "/notes/virtual/#{ontology.ontologyId}?noteid=#{id}"
       when "Individual"
       when "Property"
       when "Ontology"
         ontology = DataAccess.getOntology(ontology_id)
-        return "/ontologies/#{ontology.ontologyId}/?p=notes" 
+        return "/ontologies/#{ontology.ontologyId}/?p=notes"
       end
     rescue Exception => e
       return ""
     end
   end
-  
+
   def get_note_type_text(note_type)
     case note_type
     when "Comment"
@@ -198,13 +198,13 @@ module NotesHelper
       return "Change Property Value Proposal"
     end
   end
-  
+
   def subscribe_button(ontology_id)
     user = session[:user]
     return "<a href='/login?redirect=#{request.request_uri}' style='font-size: .9em;' class='subscribe_to_notes'>Subscribe to notes emails</a>" if user.nil?
-    
+
     subs = DataAccess.getUserSubscriptions(user.id)
-    
+
     if !subs.nil?
       sub_text = subbed_to_ont?(ontology_id, subs) ? "Unsubscribe" : "Subscribe"
       params = "data-bp_ontology_id='#{ontology_id}' data-bp_is_subbed='#{subbed_to_ont?(ontology_id, subs)}' data-bp_user_id='#{user.id}'"
@@ -215,12 +215,12 @@ module NotesHelper
       return ""
     end
   end
-  
+
   def subbed_to_ont?(ontology_id, subscriptions)
     subscriptions.each do |sub|
       return true if sub["ontologyId"].to_i == ontology_id.to_i
     end
     return false
   end
-  
+
 end

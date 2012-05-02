@@ -2,9 +2,9 @@
 	Please <%= link_to "login", "/login" %> to submit notes
 <% else %>
 
-<% @add_semi_uuid = (1000 * Time.now.to_f).to_i.to_s %>
+<% @semi_uuid = (1000 * Time.now.to_f).to_i.to_s unless defined?(@semi_uuid) %>
 
-<% add_text = add_text.nil? ? "Add Note" : "Add Reply" %>
+<% add_text = "Add Note" %>
 
 <% unless defined?(exclude_js) %>
 	<script type="text/javascript">
@@ -12,9 +12,9 @@
     var BP_SEARCH_SERVER = "<%=$UI_URL%>";
     var BP_SITE = "<%=$SITE%>";
     var BP_ORG = "<%=$ORG%>";
-	  
+
 		if (typeof BP_NOTES_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes.js");
-		if (typeof BP_FORM_COMPLETE_LOADED == 'undefined') {
+		if (typeof BP_INTERNAL_FORM_COMPLETE_LOADED == 'undefined') {
 			jQuery.getScript("/javascripts/bp_form_complete.js");
 		} else {
 			// Re-run the setup to wire autocomplete fields
@@ -27,7 +27,7 @@
 <% end %>
 
 <% action_type = defined?(action) ? action : "" %>
-<% prefix = defined?(action) ? @add_semi_uuid + "_" + action + "_" : @add_semi_uuid + "_" %>
+<% prefix = defined?(action) ? @semi_uuid.to_s + "_" + action + "_" : @semi_uuid.to_s + "_" %>
 <% prefix = action + "_" if defined?(action) && defined?(dummy_add) %>
 
 <script type="text/javascript">
@@ -36,18 +36,19 @@
 	jQuery.data(document.body, "action", "<%=action_type%>");
 	jQuery.data(document.body, "ont_id", "<%= @ontology.ontologyId %>");
 	jQuery.data(document.body, "add_text", "<%= add_text %>");
-	
+
 	jQuery(document).ready(function(){
 		// Set data for retrieval
 		jQuery(".<%=prefix%>note_submit_data").data("prefix", "<%=prefix%>");
 		jQuery(".<%=prefix%>note_submit_data").data("action", "<%=action_type%>");
 		jQuery(".<%=prefix%>note_submit_data").data("ont_id", "<%= @ontology.ontologyId %>");
-		
+
 		// Wire up the add/hide note form buttons
 		var prefix = jQuery.data(document.body, "prefix");
 		if (prefix.indexOf("thread") < 0) {
 			jQuery("#" + prefix + "create_note_container").hide();
 			jQuery('.' + prefix + 'add_reply').addClass("add_reply_button");
+			wireNotesAddButton({"prefix": prefix});
 		}
 	});
 <%end%>
@@ -61,22 +62,22 @@
 		<span id="<%=prefix%>create_note_change_hierarchy_button" note_type="<%=prefix%>create_note_change_hierarchy" class="note_action note_buttons">Propose Relationship Change</span>
 		<span id="<%=prefix%>create_note_change_prop_value_button" note_type="<%=prefix%>create_note_change_prop_value" class="note_action note_buttons">Propose Property Value Change</span>
 	</div>
-	
+
 	<div id="<%=prefix%>create_note_options" class="create_note_options">
-		
+
 		<div id="<%=prefix%>create_note_comment" class="<%=prefix%>note_options_action note_options" style="display: block;">
-	
+
 			<input type="hidden" id="<%=prefix%>create_comment_appliesTo" value="<%= applies_to rescue "" %>" class="create_comment_inputs">
 			<input type="hidden" id="<%=prefix%>create_comment_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_comment_inputs">
 			<input type="hidden" id="<%=prefix%>create_comment_noteType" value="Comment" class="create_comment_inputs">
 			<input type="hidden" id="<%=prefix%>create_comment_author" value="<%= session[:user].id %>" class="create_comment_inputs">
-				
+
 			<h2>Comment</h2>
 			Subject <span class="required">*</span> <span id="<%=prefix%>create_comment_subject_error" class="error_input"></span><br/>
 			<input tabindex="100" id='<%=prefix%>create_comment_subject' class="create_note_inputs create_comment_inputs"><br/>
 			Body <span class="required">*</span> <span id="<%=prefix%>create_comment_body_error" class="error_input"></span><br/>
 			<textarea tabindex="101" id='<%=prefix%>create_comment_body' class="create_note_inputs create_comment_inputs"></textarea><br>
-			
+
 			<div id="<%=prefix%>create_comment_submit_container" class="submit_container">
 				<button tabindex="102" id="<%=prefix%>create_comment" note_type="create_comment" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
 			</div>
@@ -84,15 +85,15 @@
 			<div class="add_note_legend">* required</div>
 			<div style="clear: both;"></div>
 		</div>
-		
+
 		<div id="<%=prefix%>create_note_new_term" class="<%=prefix%>note_options_action note_options">
-	
+
 			<div id="<%=prefix%>create_note_new_term_float" class="note_options_float">
 				<input type="hidden" id="<%=prefix%>create_new_term_appliesTo" value="<%= applies_to rescue "" %>" class="create_new_term_inputs">
 				<input type="hidden" id="<%=prefix%>create_new_term_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_new_term_inputs">
 				<input type="hidden" id="<%=prefix%>create_new_term_noteType" value="ProposalForCreateEntity" class="create_new_term_inputs">
 				<input type="hidden" id="<%=prefix%>create_new_term_author" value="<%= session[:user].id %>" class="create_new_term_inputs">
-				
+
 				Preferred name <span class="required">*</span> <span id="<%=prefix%>termPreferredName_error" class="error_input"></span><br/>
 				<input tabindex="201" type="text" id="<%=prefix%>termPreferredName" class="create_note_inputs create_new_term_inputs"><br/>
 				Synonyms (comma-separated list)<br/>
@@ -110,7 +111,7 @@
 				<div class="add_note_legend">* required</div>
 			</div>
 			<h2>New Term</h2>
-			
+
 			Reason for change <span class="required">*</span> <span id="<%=prefix%>create_new_term_reasonForChange_error" class="error_input"></span><br/>
 			<textarea tabindex="200" id="<%=prefix%>create_new_term_reasonForChange" class="create_note_inputs create_new_term_inputs"></textarea><br/>
 			<!--
@@ -126,15 +127,15 @@
 
 			<div style="clear: both;"></div>
 		</div>
-		
+
 		<div id="<%=prefix%>create_note_change_hierarchy" class="<%=prefix%>note_options_action note_options">
-	
+
 			<div id="<%=prefix%>create_change_hierarchy_float" class="note_options_float">
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_appliesTo" value="<%= applies_to rescue "" %>" class="create_change_hierarchy_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_change_hierarchy_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_noteType" value="ProposalForChangeHierarchy" class="create_change_hierarchy_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_author" value="<%= session[:user].id %>" class="create_change_hierarchy_inputs">
-				
+
 				New relationship target (start typing to autocomplete) <span class="required">*</span> <span id="<%=prefix%>relationshipTarget_error" class="error_input"></span><br/>
 				<input tabindex="301" type="text" name="<%=prefix%>relationshipTarget" id="<%=prefix%>relationshipTarget" class="bp_form_complete-<%= @ontology.ontologyId %>-uri create_note_inputs create_change_hierarchy_inputs"><br/>
 				Old relationship target (start typing to autocomplete)<br/>
@@ -168,15 +169,15 @@
 
 			<div style="clear: both;"></div>
 		</div>
-		
+
 		<div id="<%=prefix%>create_note_change_prop_value" class="<%=prefix%>note_options_action note_options">
-	
+
 			<div id="<%=prefix%>create_change_prop_value_float" class="note_options_float">
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_appliesTo" value="<%= applies_to rescue "" %>" class="create_change_prop_value_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_change_prop_value_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_noteType" value="ProposalForChangePropertyValue" class="create_change_prop_value_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_author" value="<%= session[:user].id %>" class="create_change_prop_value_inputs">
-				
+
 				New property value <span class="required">*</span> <span id="<%=prefix%>newPropertyValue_error" class="error_input"></span><br/>
 				<input tabindex="401" type="text" id="<%=prefix%>newPropertyValue" class="create_note_inputs create_change_prop_value_inputs"><br/>
 				Property id <span class="required">*</span> <span id="<%=prefix%>propertyId_error" class="error_input"></span><br/>
@@ -188,7 +189,7 @@
 				<div class="add_note_legend">* required</div>
 			</div>
 			<h2>Change Property Value</h2>
-			
+
 			Reason for change <span class="required">*</span> <span id="<%=prefix%>create_change_prop_value_reasonForChange_error" class="error_input"></span><br/>
 			<textarea tabindex="400" id="<%=prefix%>create_change_prop_value_reasonForChange" class="create_note_inputs create_change_prop_value_inputs"></textarea><br/>
 			<!--
@@ -197,7 +198,7 @@
 			Body<br/>
 			<textarea id='<%=prefix%>create_change_prop_value_body' class="create_note_inputs create_change_prop_value_inputs"></textarea><br>
 			-->
-			
+
 			<div id="<%=prefix%>create_change_prop_value_submit_container" class="submit_container">
 				<button tabindex="405" id="<%=prefix%>create_change_prop_value" note_type="create_change_prop_value" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
 			</div>

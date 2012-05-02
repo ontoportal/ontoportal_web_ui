@@ -167,62 +167,8 @@ jQuery.data(document.body, "note_colspan", "<%=note_colspan%>");
 jQuery.data(document.body, "ontology_id", "<%=@ontology.ontologyId%>");
 jQuery.data(document.body, "semi_uuid", "<%=@semi_uuid%>");
 
-// This will wire up a table with the dataTables config.
-// Needs to stay inline because IE won't recognize it in an external file.
-function wireTable(notesTableNew) {
-  // Wire up table if it hasn't been done yet
-  notesTable = notesTableNew.dataTable({
-    "iDisplayLength": 50,
-    "sPaginationType": "full_numbers",
-    "aaSorting": [[5, 'desc']],
-    "aoColumns": [
-       { "iDataSort": 1 }, // Subject link
-       { "bVisible": false }, // Subject for sort
-       { "bVisible": false }, // Archived for filter
-       null, // Author
-       null, // Type
-       target, // Target
-       null // Created
-    ],
-    "fnDrawCallback": function(){
-      jQuery(".highlighted_row").removeClass("highlighted_row");
-    },
-    "fnInitComplete": function(){
-    }
-  });
-
-  // Important! Table is somehow getting set to zero width. Reset here.$
-  jQuery(notesTable).css("width", "100%");
-
-  //notesTable.fnFilter('false', 2);
-}
-
-function hideOrUnhideArchivedNotes() {
-    if (jQuery("#hide_archived:checked").val() !== undefined) {
-      // Checked
-      notesTable.fnFilter('false', 2);
-    } else {
-      // Unchecked
-      notesTable.fnFilter('', 2, true, false);
-    }
-}
-
 jQuery(document).ready(function(){
-  var tempTable = jQuery("#" + jQuery.data(document.body, "semi_uuid") + "_notes_list");
-  wireTable(tempTable);
-
-  jQuery('#filter_menu').superfish({
-    delay: 1200,              // 1.2 second delay on mouseout);
-    dropShadows: false,
-    speed: 'fast'
-  });
-
-  jQuery("#hide_archived").click(function(){
-    hideOrUnhideArchivedNotes();
-  });
-
-  // Notes subscriptions button
-  jQuery("a.subscribe_to_notes").button();
+  init_notes();
 });
 
 </script>

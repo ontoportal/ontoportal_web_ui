@@ -21,13 +21,13 @@
 <div class="notes_list_container">
 
 	<div class="subscribe_to_notes" style="float: right;">
-		<%= subscribe_button(@ontology.ontologyId) %> 
+		<%= subscribe_button(@ontology.ontologyId) %>
 	</div>
 
   <% unless @notes_for.nil? %>
     <h1>Notes for <%=link_to @notes_for, @notes_for_link %></h1>
   <% end %>
-  
+
   <div class="ont_notes_table_container" style="clear: both;">
     <div style="margin: auto 35% -2.5em; padding-top: 3em; text-align: center; width: 100px;">
       <ul id="filter_menu" class="sf-menu sf-vertical" style="float: none !important;">
@@ -110,21 +110,21 @@
       </tbody>
     </table>
   </div>
-    
+
   <% applies_to = @ontology.ontologyId %>
   <% applies_to_type = "Ontology" %>
-  <%= render :partial => 'notes/add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type } %>
+  <%= render :partial => 'notes/add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type, :action => "ont_list_" } %>
 
 </div>
 
 <!-- Handle JS at the bottom of the page -->
 <script type="text/javascript">
-  
+
 // Load external JS files
 if (typeof BP_NOTES_ONT_LIST_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_ont_list.js");
 
 // Global data
-var ontNotesTable = null;  
+var ontNotesTable = null;
 var ont_target = <%= (@context && @context.eql?("concept")) ? "{ 'bVisible': false }" : "null" %>;
 
 // Data needed in the external JS file stored in the body 'cache'
@@ -155,10 +155,10 @@ function wireOntTable(ontNotesTableNew) {
     "fnInitComplete": function(){
     }
   });
-  
+
   // Important! Table is somehow getting set to zero width. Reset here.
   jQuery(ontNotesTable).css("width", "100%");
-  
+
   ontNotesTable.fnFilter('false', 2);
 }
 
@@ -175,17 +175,17 @@ function hideOrUnhideArchivedOntNotes() {
 jQuery(document).ready(function(){
   var tempTable = jQuery("#" + jQuery.data(document.body, "ont_semi_uuid") + "_notes_list");
   wireOntTable(tempTable);
-  
+
   jQuery('#filter_menu').superfish({
     delay: 1200,              // 1.2 second delay on mouseout);
     dropShadows: false,
     speed: 'fast'
   });
-  
+
   jQuery("#hide_archived_ont").click(function(){
     hideOrUnhideArchivedOntNotes();
   });
-  
+
   // Notes subscriptions button
   jQuery("a.subscribe_to_notes").button();
 });

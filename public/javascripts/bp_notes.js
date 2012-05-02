@@ -10,204 +10,21 @@ jQuery(document).bind("terms_tab_visible", function(){
 });
 
 jQuery(document).ready(function(){
-  // Wire up the "Add Reply" link
-  jQuery('.add_reply_button').live("click", function(){
-    if (jQuery(this).parent().children(".create_note_container").is(':visible')) {
-      jQuery(this).text(jQuery.data(document.body, "add_text"));
-      jQuery(this).parent().children(".create_note_container").hide();
-    } else {
-      jQuery(this).text("Hide " + jQuery.data(document.body, "add_text"));
-      jQuery(this).parent().children(".create_note_container").show();
-    }
-  });
+  // Init notes
+  wireNotesAddButton();
+  wireNotesAddClicks();
 
-  jQuery(".create_note_submit").live('click', function(event) {
-    event.preventDefault();
-
-    var note;
-    var note_type = jQuery(this).attr("note_type");
-    var prefix = jQuery(this).data("prefix") === null ? "" : jQuery(this).data("prefix");
-    var action = jQuery(this).data("action");
-    var ONT = jQuery(this).data("ont_id");
-    var NOTES_URL = "/notes/";
-
-    // Disable button, activate spinner and text
-    var button = this;
-    button_loading(button, prefix);
-
-    switch (note_type) {
-    case "create_comment":
-      note = new Comment(prefix, ONT);
-      note.validate();
-      break;
-    case "create_new_term":
-      note = new ProposalForCreateEntity(prefix, ONT);
-      note.validate();
-      break;
-    case "create_change_hierarchy":
-      note = new ProposalForChangeHierarchy(prefix, ONT);
-      note.validate();
-      break;
-    case "create_change_prop_value":
-      note = new ProposalForChangePropertyValue(prefix, ONT);
-      note.validate();
-    }
-
-    if (note.failedValidation === true) {
-      button_reset(button);
-      jQuery("#" + jQuery(button).attr("id") + "_submit_container").append(' <span class="error_message">Invalid entries, please fix and try again</span>');
-    } else {
-
-      jQuery.ajax({
-          type: "POST",
-          url: NOTES_URL,
-          data: note.member_variables,
-          dataType: "json",
-          success: function(data) {
-            button_reset(button);
-
-            // What do we do with the returned data?
-            if (action == "root") {
-              jQuery.get("/notes/ajax/single/" + data.ontologyId + "?noteid=" + data.id,
-                  function(html) {
-                    // Show the response container
-                    jQuery("#" + data.appliesTo.id + "_responses_container").show();
-                    jQuery("#" + data.appliesTo.id + "_responses_container").append(html);
-                  }
-              );
-            } else if (action == "thread") {
-              jQuery.get("/notes/ajax/single/" + data.ontologyId + "?noteid=" + data.id,
-                  function(html) {
-                    jQuery("#" + data.appliesTo.id + "_children").append(html);
-
-                    // Hide all reply containers, show all reply links
-                    jQuery(".reply_form_container").each(function() {
-                      jQuery(this).html("");
-                      jQuery(this).parent().hide();
-                      jQuery(".create_reply_container").show();
-                    });
-                  }
-              );
-            } else {
-              // Get JSON response for new row and add if successful
-              jQuery.get("/notes/ajax/single_list/" + data.ontologyId + "?noteid=" + data.id,
-                  function(json) {
-                    var state = History.getState();
-
-                    // Handling for tree view
-                    if (state.cleanUrl.match("p=terms") !== null) {
-                      // Check for "No notes" message and delete
-                      var no_notes_check = document.getElementById("no_notes");
-                      if (no_notes_check !== null) {
-                        notesTable.fnDeleteRow(notesTable.fnGetPosition(document.getElementById("no_notes")));
-                      }
-
-                      // We add the (+ "") statement to "cast" to a string
-                      notesTable.fnAddData([
-                                  json.subject_link + "",
-                                  json.subject + "",
-                                  "false", // archived should be false since we just created the note
-                                  json.author + "",
-                                  json.type + "",
-                                  json.appliesTo + "",
-                                  json.created + ""
-                              ]);
-
-                      notesTable.fnFilter("");
-                    }
-
-                    // Check for "No notes" message and delete
-                    var ont_no_notes_check = document.getElementById("ont_no_notes");
-                    if (ont_no_notes_check !== null) {
-                      ontNotesTable.fnDeleteRow(ontNotesTable.fnGetPosition(document.getElementById("ont_no_notes")));
-                    }
-
-                    // We add the (+ "") statement to "cast" to a string
-                    ontNotesTable.fnAddData([
-                                json.subject_link + "",
-                                json.subject + "",
-                                "false", // archived should be false since we just created the note
-                                json.author + "",
-                                json.type + "",
-                                json.appliesTo + "",
-                                json.created + ""
-                            ]);
-
-                    // Redraw table, including sort and filter options
-                    ontNotesTable.fnFilter("");
-                    jQuery("#notes_list_filter input").val("");
-                  }
-              );
-            }
-
-            // Reset form fields
-            note.reset();
-
-            // Update note_count
-            var new_note_count = parseInt(jQuery("#note_count").text()) + 1;
-            jQuery("#note_count").text(new_note_count);
-            // Update the count for this concept in the cache (silently fails if we're not at a concept)
-            if (getCache(jQuery.data(document.body, "node_id")) !== null) {
-              getCache(jQuery.data(document.body, "node_id"))[5] = new_note_count;
-            }
-
-            // Move window to new note location (TODO: Possible future implementation)
-            //   window.scrollTo(0,$("#"+id).offset().top);
-          },
-          error: function(XMLHttpRequest, textStatus, errorThrown) {
-            button_reset(button);
-            jQuery("#" + jQuery(button).attr("id") + "_submit_container").append(' <span class="error_message">Problem submitting, please try again</span>');
-          }
-      });
-    }
-
-    return false;
-  });
-
-  // Wire up the tabs in the 'Add Note' form box
-  jQuery(".note_action").live("click", function(){
-    var spanId = jQuery(this).attr("id");
-    var noteTypeId = jQuery(this).attr("note_type");
-    var buttons_div = jQuery(this).parent(".create_note_buttons");
-    jQuery(buttons_div).parent().children('.create_note_options').children('.note_options').hide();
-    jQuery('#' + noteTypeId).show();
-    jQuery(buttons_div).children('.note_action').removeClass("create_note_selected");
-    jQuery(this).addClass("create_note_selected");
+  // Wire up subscriptions button activity
+  jQuery("a.subscribe_to_notes").live("click", function(){
+    subscribeToNotes(this);
   });
 
   // Wire up subscriptions button styling
   jQuery("a.subscribe_to_notes").button();
 
-  // Wire up subscriptions button activity
-  jQuery("a.subscribe_to_notes").live("click", function(){
-    var ontologyId = jQuery(this).attr("data-bp_ontology_id");
-    var isSubbed = jQuery(this).attr("data-bp_is_subbed");
-    var userId = jQuery(this).attr("data-bp_user_id");
-
-    jQuery(".notes_sub_error").html("");
-    jQuery(".notes_subscribe_spinner").show();
-
-    jQuery.ajax({
-          type: "POST",
-          url: "/subscriptions?user_id="+userId+"&ontology_id="+ontologyId+"&subbed="+isSubbed,
-          dataType: "json",
-          success: function(data) {
-            jQuery(".notes_subscribe_spinner").hide();
-
-            // Change subbed value on a element
-            var subbedVal = (isSubbed == "true") ? "false" : "true";
-            jQuery("a.subscribe_to_notes").attr("data-bp_is_subbed", subbedVal);
-
-            // Change button text
-            var txt = jQuery("a.subscribe_to_notes span.ui-button-text").html();
-            var newButtonText = txt.match("Unsubscribe") ? txt.replace("Unsubscribe", "Subscribe") : txt.replace("Subscribe", "Unsubscribe");
-            jQuery("a.subscribe_to_notes span.ui-button-text").html(newButtonText);
-          },
-          error: function(data) {
-            jQuery(".notes_subscribe_spinner").hide();
-            jQuery(".notes_sub_error").html("Problem subscribing to emails, please try again");
-          }
-    });
+  // Wire up submit note functionality
+  jQuery(".create_note_submit").live('click', function(event) {
+    submitNote(event, this);
   });
 });
 
@@ -407,6 +224,215 @@ function ProposalForChangePropertyValue(prefix, ONT) {
   }
 }
 
+function wireNotesAddButton(options) {
+  // Wire up the add/hide note form buttons
+  if (options === undefined || options["prefix"] === undefined) {
+    prefix = jQuery.data(document.body, "semi_uuid") + "_";
+  }
+
+  jQuery("#" + prefix + "create_note_container").hide();
+  jQuery('.' + prefix + 'add_reply').addClass("add_reply_button");
+}
+
+function wireNotesAddClicks() {
+  // Wire up the "Add Reply" link
+  jQuery('.add_reply_button').live("click", function(){
+    if (jQuery(this).parent().children(".create_note_container").is(':visible')) {
+      jQuery(this).text(jQuery.data(document.body, "add_text"));
+      jQuery(this).parent().children(".create_note_container").hide();
+    } else {
+      jQuery(this).text("Hide " + jQuery.data(document.body, "add_text"));
+      jQuery(this).parent().children(".create_note_container").show();
+    }
+  });
+
+  // Wire up the tabs in the 'Add Note' form box
+  jQuery(".note_action").live("click", function(){
+    var spanId = jQuery(this).attr("id");
+    var noteTypeId = jQuery(this).attr("note_type");
+    var buttons_div = jQuery(this).parent(".create_note_buttons");
+    jQuery(buttons_div).parent().children('.create_note_options').children('.note_options').hide();
+    jQuery('#' + noteTypeId).show();
+    jQuery(buttons_div).children('.note_action').removeClass("create_note_selected");
+    jQuery(this).addClass("create_note_selected");
+  });
+
+}
+
+function submitNote(event, target) {
+  event.preventDefault();
+
+  var note;
+  var note_type = jQuery(target).attr("note_type");
+  var prefix = jQuery(target).data("prefix") === null ? "" : jQuery(target).data("prefix");
+  var action = jQuery(target).data("action");
+  var ONT = jQuery(target).data("ont_id");
+  var NOTES_URL = "/notes/";
+
+  // Disable button, activate spinner and text
+  var button = target;
+  button_loading(button, prefix);
+
+  switch (note_type) {
+  case "create_comment":
+    note = new Comment(prefix, ONT);
+    note.validate();
+    break;
+  case "create_new_term":
+    note = new ProposalForCreateEntity(prefix, ONT);
+    note.validate();
+    break;
+  case "create_change_hierarchy":
+    note = new ProposalForChangeHierarchy(prefix, ONT);
+    note.validate();
+    break;
+  case "create_change_prop_value":
+    note = new ProposalForChangePropertyValue(prefix, ONT);
+    note.validate();
+  }
+
+  if (note.failedValidation === true) {
+    button_reset(button);
+    jQuery("#" + jQuery(button).attr("id") + "_submit_container").append(' <span class="error_message">Invalid entries, please fix and try again</span>');
+  } else {
+
+    jQuery.ajax({
+        type: "POST",
+        url: NOTES_URL,
+        data: note.member_variables,
+        dataType: "json",
+        success: function(data) {
+          button_reset(button);
+
+          // What do we do with the returned data?
+          if (action == "root") {
+            jQuery.get("/notes/ajax/single/" + data.ontologyId + "?noteid=" + data.id,
+                function(html) {
+                  // Show the response container
+                  jQuery("#" + data.appliesTo.id + "_responses_container").show();
+                  jQuery("#" + data.appliesTo.id + "_responses_container").append(html);
+                }
+            );
+          } else if (action == "thread") {
+            jQuery.get("/notes/ajax/single/" + data.ontologyId + "?noteid=" + data.id,
+                function(html) {
+                  jQuery("#" + data.appliesTo.id + "_children").append(html);
+
+                  // Hide all reply containers, show all reply links
+                  jQuery(".reply_form_container").each(function() {
+                    jQuery(this).html("");
+                    jQuery(this).parent().hide();
+                    jQuery(".create_reply_container").show();
+                  });
+                }
+            );
+          } else {
+            // Get JSON response for new row and add if successful
+            jQuery.get("/notes/ajax/single_list/" + data.ontologyId + "?noteid=" + data.id,
+                function(json) {
+                  var state = History.getState();
+
+                  // Handling for tree view
+                  if (state.cleanUrl.match("p=terms") !== null) {
+                    // Check for "No notes" message and delete
+                    var no_notes_check = document.getElementById("no_notes");
+                    if (no_notes_check !== null) {
+                      notesTable.fnDeleteRow(notesTable.fnGetPosition(document.getElementById("no_notes")));
+                    }
+
+                    // We add the (+ "") statement to "cast" to a string
+                    notesTable.fnAddData([
+                                json.subject_link + "",
+                                json.subject + "",
+                                "false", // archived should be false since we just created the note
+                                json.author + "",
+                                json.type + "",
+                                json.appliesTo + "",
+                                json.created + ""
+                            ]);
+
+                    notesTable.fnFilter("");
+                  }
+
+                  // Check for "No notes" message and delete
+                  var ont_no_notes_check = document.getElementById("ont_no_notes");
+                  if (ont_no_notes_check !== null) {
+                    ontNotesTable.fnDeleteRow(ontNotesTable.fnGetPosition(document.getElementById("ont_no_notes")));
+                  }
+
+                  // We add the (+ "") statement to "cast" to a string
+                  ontNotesTable.fnAddData([
+                              json.subject_link + "",
+                              json.subject + "",
+                              "false", // archived should be false since we just created the note
+                              json.author + "",
+                              json.type + "",
+                              json.appliesTo + "",
+                              json.created + ""
+                          ]);
+
+                  // Redraw table, including sort and filter options
+                  ontNotesTable.fnFilter("");
+                  jQuery("#notes_list_filter input").val("");
+                }
+            );
+          }
+
+          // Reset form fields
+          note.reset();
+
+          // Update note_count
+          var new_note_count = parseInt(jQuery("#note_count").text()) + 1;
+          jQuery("#note_count").text(new_note_count);
+          // Update the count for this concept in the cache (silently fails if we're not at a concept)
+          if (getCache(jQuery.data(document.body, "node_id")) !== null) {
+            getCache(jQuery.data(document.body, "node_id"))[5] = new_note_count;
+          }
+
+          // Move window to new note location (TODO: Possible future implementation)
+          //   window.scrollTo(0,$("#"+id).offset().top);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          button_reset(button);
+          jQuery("#" + jQuery(button).attr("id") + "_submit_container").append(' <span class="error_message">Problem submitting, please try again</span>');
+        }
+    });
+  }
+
+  return false;
+}
+
+function subscribeToNotes(button) {
+  var ontologyId = jQuery(button).attr("data-bp_ontology_id");
+  var isSubbed = jQuery(button).attr("data-bp_is_subbed");
+  var userId = jQuery(button).attr("data-bp_user_id");
+
+  jQuery(".notes_sub_error").html("");
+  jQuery(".notes_subscribe_spinner").show();
+
+  jQuery.ajax({
+        type: "POST",
+        url: "/subscriptions?user_id="+userId+"&ontology_id="+ontologyId+"&subbed="+isSubbed,
+        dataType: "json",
+        success: function(data) {
+          jQuery(".notes_subscribe_spinner").hide();
+
+          // Change subbed value on a element
+          var subbedVal = (isSubbed == "true") ? "false" : "true";
+          jQuery("a.subscribe_to_notes").attr("data-bp_is_subbed", subbedVal);
+
+          // Change button text
+          var txt = jQuery("a.subscribe_to_notes span.ui-button-text").html();
+          var newButtonText = txt.match("Unsubscribe") ? txt.replace("Unsubscribe", "Subscribe") : txt.replace("Subscribe", "Unsubscribe");
+          jQuery("a.subscribe_to_notes span.ui-button-text").html(newButtonText);
+        },
+        error: function(data) {
+          jQuery(".notes_subscribe_spinner").hide();
+          jQuery(".notes_sub_error").html("Problem subscribing to emails, please try again");
+        }
+  });
+}
+
 function button_loading(button, prefix) {
   jQuery(".error_message").remove();
   jQuery(button).addClass("add_reply_button_busy");
@@ -447,3 +473,5 @@ function validateForm(oForm) {
     }
   }
 }
+
+
