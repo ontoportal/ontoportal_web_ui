@@ -1864,6 +1864,13 @@ span.additional a:hover {
 }
 
 /************************************
+ * Help Links
+ ************************************/
+.pop_window {
+  font-size: x-small;
+}
+
+/************************************
  * Social Networking Badges
  ************************************/
 .twitter-follow-button {

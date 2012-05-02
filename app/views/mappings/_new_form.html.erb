@@ -29,7 +29,6 @@
 <%=stylesheet_link_tag "/javascripts/JqueryPlugins/facebox/facebox.css"%>
 
 <%=javascript_include_tag "bp_form_complete.js"%>
-<%=javascript_include_tag "JqueryPlugins/facebox/facebox.js"%>
 <%=javascript_include_tag "bp_create_mappings.js"%>
 
 <div id="create_mapping_container" style="height: 365px; width: 950px;">
@@ -90,7 +89,7 @@
               </select>
               <label id="mapping_inverse" style="margin-left: 2em; vertical-align: middle;" >
                   <input id="mapping_bidirectional" checked="checked" name="mapping[bidirectional]" value="1" type="checkbox" style="vertical-align: middle;" />
-                  Add Inverse Mapping <%=help_icon("/help#Mappings_Tab", "Help", 0)%>
+                  Add Inverse Mapping <%=help_icon("/help#Mappings_Tab", {:onclick => "javascript:bpPopWindow(event);", :style => "margin-top: 0px"})%>
               </label>
           </div>
       </span>

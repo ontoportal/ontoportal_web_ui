@@ -169,7 +169,7 @@ jQuery(document).ready(function() {
       <tr>
         <th>
           Filter by Group
-          <%=help_icon("http://www.bioontology.org/wiki/index.php/BioPortal_FAQ#Ontology_Groups", "Help documentation about Groups", -2)%>
+          <%=help_icon("http://www.bioontology.org/wiki/index.php/BioPortal_FAQ#Ontology_Groups", { :title => "Help documentation about Groups", :style => "margin-top: -2px;" })%>
         </th>
         <td>
           <select onchange="filterByGroup(this)"  name="groups" id="select_groups">

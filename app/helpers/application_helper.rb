@@ -228,9 +228,12 @@ module ApplicationHelper
     rand(36**8).to_s(36)
   end
 
-  def help_icon(link, title = "Help", top_padding = -2)
+  def help_icon(link, html_attribs = {})
+    html_attribs["title"] ||= "Help"
+    attribs = []
+    html_attribs.each {|k,v| attribs << "#{k.to_s}='#{v}'"}
     return <<-BLOCK
-          <a title="#{title}" style='font-size: x-small; margin-top: #{top_padding}px;' target="_blank" href='#{link}' class='pop_window help_link'>
+          <a target="_blank" href='#{link}' class='pop_window help_link' #{attribs.join(" ")}>
             <span class="pop_window ui-icon ui-icon-help"></span>
           </a>
     BLOCK

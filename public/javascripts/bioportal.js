@@ -479,19 +479,19 @@ function selectTab(id,tab){
 })(jQuery);
 
 
-jQuery(document).ready(function(){
-  jQuery("a.pop_window").live("click", function(e){
-    e.preventDefault();
-    var url = jQuery(this).attr("href");
-    var pop = (url.match(/\?/) != null) ? "&pop=true" : "?pop=true";
 
-    // Make sure to insert the query string before the hash
-    url = (url.match(/#/) != null) ? [url.slice(0, url.indexOf("#")), pop, url.slice(url.indexOf("#"))].join('') : url + pop;
+function bpPopWindow(e) {
+  e.preventDefault();
+  var url = jQuery(e.currentTarget).attr("href");
+  var pop = (url.match(/\?/) != null) ? "&pop=true" : "?pop=true";
 
-    newwindow = window.open(url,'bp_popup_window','height=700,width=800,resizable=yes,scrollbars=yes,toolbar=no,status=no');
-    if (window.focus) {newwindow.focus()};
-  });
-});
+  // Make sure to insert the query string before the hash
+  url = (url.match(/#/) != null) ? [url.slice(0, url.indexOf("#")), pop, url.slice(url.indexOf("#"))].join('') : url + pop;
+
+  newwindow = window.open(url,'bp_popup_window','height=700,width=800,resizable=yes,scrollbars=yes,toolbar=no,status=no');
+  if (window.focus) {newwindow.focus()};
+}
+jQuery("a.pop_window").live("click", { link: this }, bpPopWindow);
 
 
 
