@@ -25,18 +25,51 @@ class SearchController < ApplicationController
   end
 
   def json
-    params[:objecttypes] = "class,property"
-    params[:page_size] = 150
+    params[:objecttypes] = "class"
+    params[:page_size] = 500
+    params[:include_props] = 0
+
+    # Temporary hack to figure out which results are exact matches
+    exact_results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params.merge({:exact_match => true}))
+    exact_count = exact_results.results.length
+    LOG.add :debug, "*********************************************************************************    #{exact_count}"
 
     results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
-
-    results.results.each do |result|
-      result['recordTypeFormatted'] = format_record_type(result['recordType'])
-    end
 
     # TODO: It would be nice to include a delete command in the iteration above so we don't
     # iterate over the results twice, but it wasn't working and no time to troubleshoot
     filter_private_results(results)
+
+    # Compact results so we only have one per ontology
+    compact_results_exact = {}
+    compact_results = {}
+    results.results.each_with_index do |result, index|
+      result['recordTypeFormatted'] = format_record_type(result['recordType'])
+
+      # Hack to add exact match info
+      exact_match = index < exact_count
+
+      if exact_match
+        if compact_results_exact[result["ontologyId"].to_i].nil?
+          compact_results_exact[result["ontologyId"].to_i] = result
+        else
+          compact_results_exact[result["ontologyId"].to_i]["additional_results"] = result
+        end
+      else
+        if !compact_results_exact[result["ontologyId"].to_i].nil?
+          compact_results_exact[result["ontologyId"].to_i]["additional_results"] = result
+        else
+          compact_results[result["ontologyId"].to_i] = result
+        end
+      end
+    end
+
+    # Rank result sets by ontology weight
+    exact_results = OntologyRanker.rank(compact_results_exact.values, {:position => "ontologyId"})
+    non_exact_results = OntologyRanker.rank(compact_results.values, {:position => "ontologyId"})
+
+    # Merge result sets and replace original results
+    results.results = exact_results.concat non_exact_results
 
     results.results.slice!(100, results.results.length)
     results.current_page_results = results.results.length
