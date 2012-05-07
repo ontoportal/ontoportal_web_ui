@@ -24,7 +24,7 @@ class AnnotatorController < ApplicationController
     text = params[:text].strip.gsub("\r\n", " ").gsub("\n", " ")
     options = { :ontologiesToKeepInResult => params[:ontology_ids] ||= [],
                 :withDefaultStopWords => true,
-                :levelMax => params[:levelMax] ||= 1,
+                :levelMax => params[:levelMax] ||= 0,
                 :semanticTypes => params[:semanticTypes] ||= [],
                 :mappingTypes => params[:mappingTypes] ||= [],
                 :wholeWordOnly => params[:wholeWordOnly] ||= true,
@@ -49,6 +49,7 @@ class AnnotatorController < ApplicationController
     highlight_cache = {}
 
     start = Time.now
+    context_ontologies = []
     annotations.annotations.each do |annotation|
       if highlight_cache.key?([annotation[:context][:from], annotation[:context][:to]])
         annotation[:context][:highlight] = highlight_cache[[annotation[:context][:from], annotation[:context][:to]]]
@@ -56,14 +57,29 @@ class AnnotatorController < ApplicationController
         annotation[:context][:highlight] = highlight_and_get_context(text, [annotation[:context][:from], annotation[:context][:to]])
         highlight_cache[[annotation[:context][:from], annotation[:context][:to]]] = annotation[:context][:highlight]
       end
+
+      # Add ontology information, this isn't added for ontologies that are returned for mappings in cases where the ontology list is filtered
+      context_concept = annotation[:context][:concept] ||= annotation[:context][:mappedConcept] ||= annotation[:concept]
+      context_ontologies << DataAccess.getOntology(context_concept[:localOntologyId])
     end
     annotations.statistics[:parameters] = { :textToAnnotate => text, :apikey => $API_KEY }.merge(options)
     LOG.add :debug, "Processing annotations: #{Time.now - start}s"
 
+    # Combine all ontologies (context and normal) into a hash
     ontologies_hash = {}
     annotations.ontologies.each do |ont|
       ontologies_hash[ont[:localOntologyId]] = ont
     end
+    context_ontologies.each do |ont|
+      if ontologies_hash[ont.id].nil?
+        ontologies_hash[ont.id] = {
+          :name => ont.displayLabel,
+          :localOntologyId   => ont.id,
+          :virtualOntologyId => ont.ontologyId
+        }
+      end
+    end
+
     annotations.ontologies = ontologies_hash
 
     render :json => annotations

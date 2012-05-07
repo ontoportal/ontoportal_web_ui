@@ -135,7 +135,7 @@ function getannotations() {
                 annotation.context.highlight,
                 "<a href='/ontologies/"+matched_concept.localOntologyId+"?p=terms&conceptid="+encodeURIComponent(matched_concept.fullId)+"'>"+matched_concept.preferredName+"</a>",
                 "<a href='/ontologies/"+matched_concept.localOntologyId+"'>"+matched_ontology_name+"</a>"
-              ]
+              ];
               results.push(row);
               resultCount++;
               // Keep track of how many results are associated with each ontology
