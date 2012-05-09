@@ -26,13 +26,15 @@ class SearchController < ApplicationController
 
   def json
     params[:objecttypes] = "class"
-    params[:page_size] = 500
+    params[:page_size] = 150
     params[:include_props] = 0
+    params[:includedefinitions] = "true"
+    params[:query] = params[:query].strip
+    filter_ontologies = params[:ontology_ids].nil? || params[:ontology_ids].eql?("") ? nil : params[:ontology_ids]
 
     # Temporary hack to figure out which results are exact matches
-    exact_results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params.merge({:exact_match => true}))
+    exact_results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params.merge({:exact_match => true, :includedefinitions => "false"}))
     exact_count = exact_results.results.length
-    LOG.add :debug, "*********************************************************************************    #{exact_count}"
 
     results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
 
@@ -46,32 +48,42 @@ class SearchController < ApplicationController
     results.results.each_with_index do |result, index|
       result['recordTypeFormatted'] = format_record_type(result['recordType'])
 
-      # Hack to add exact match info
-      exact_match = index < exact_count
+      if filter_ontologies.nil?
+        # Hack to add exact match info
+        exact_match = index < exact_count
 
-      if exact_match
-        if compact_results_exact[result["ontologyId"].to_i].nil?
-          compact_results_exact[result["ontologyId"].to_i] = result
+        if exact_match
+          if compact_results_exact[result["ontologyId"].to_i].nil?
+            compact_results_exact[result["ontologyId"].to_i] = result
+          else
+            if compact_results_exact[result["ontologyId"].to_i]["additional_results"].nil?
+              compact_results_exact[result["ontologyId"].to_i]["additional_results"] = []
+            end
+            compact_results_exact[result["ontologyId"].to_i]["additional_results"] << result
+          end
         else
-          compact_results_exact[result["ontologyId"].to_i]["additional_results"] = result
-        end
-      else
-        if !compact_results_exact[result["ontologyId"].to_i].nil?
-          compact_results_exact[result["ontologyId"].to_i]["additional_results"] = result
-        else
-          compact_results[result["ontologyId"].to_i] = result
+          if !compact_results_exact[result["ontologyId"].to_i].nil?
+            if compact_results_exact[result["ontologyId"].to_i]["additional_results"].nil?
+              compact_results_exact[result["ontologyId"].to_i]["additional_results"] = []
+            end
+            compact_results_exact[result["ontologyId"].to_i]["additional_results"] << result
+          else
+            compact_results[result["ontologyId"].to_i] = result
+          end
         end
       end
     end
 
-    # Rank result sets by ontology weight
-    exact_results = OntologyRanker.rank(compact_results_exact.values, {:position => "ontologyId"})
-    non_exact_results = OntologyRanker.rank(compact_results.values, {:position => "ontologyId"})
+    if filter_ontologies.nil?
+      # Rank result sets by ontology weight
+      exact_results = OntologyRanker.rank(compact_results_exact.values, {:position => "ontologyId"})
+      non_exact_results = OntologyRanker.rank(compact_results.values, {:position => "ontologyId"})
 
-    # Merge result sets and replace original results
-    results.results = exact_results.concat non_exact_results
+      # Merge result sets and replace original results
+      results.results = exact_results.concat non_exact_results
+    end
 
-    results.results.slice!(100, results.results.length)
+    # results.results.slice!(100, results.results.length)
     results.current_page_results = results.results.length
 
     render :text => results.hash_for_serialization.to_json

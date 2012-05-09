@@ -65,7 +65,9 @@ require 'config/bioportal_config.rb'
 # end
 
 # Always run remote debugger in development mode.
-require 'ruby-debug'
-Debugger.start_remote
-Debugger.settings[:autoeval] = true
-puts "=> Debugger enabled"
+# require 'ruby-debug'
+# Debugger.start_remote
+# Debugger.settings[:autoeval] = true
+# Debugger.settings[:autolist] = true
+# Debugger.settings[:autoreload] = true
+# puts "=> Debugger enabled"

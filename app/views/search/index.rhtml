@@ -6,6 +6,65 @@
 <%=javascript_include_tag "JqueryPlugins/facebox/facebox.js"%>
 <%=javascript_include_tag "bp_search.js"%>
 
+<style>
+table#search_results td {
+  vertical-align: top;
+  padding: 12px 8px 12px 12px;
+}
+
+div.term_link a {
+  font-size: 15px;
+}
+
+span.term_def {
+  /*color: #234979;*/
+  color: grey;
+  display: block;
+  margin: 3px 0 2px;
+  font-size: 12px;
+  /*height: 14px;*/
+  /*overflow: auto;*/
+}
+
+div.additional_results {
+  padding-top: 3px;
+}
+
+.additional_results div.term_link {
+  padding: 4px 0 4px 4px;
+  margin-left: 15px;
+}
+
+.additional_results div.term_link:hover {
+  background-color: #F5FAFA;
+}
+
+div.additional_results div.term_link a {
+  font-size: 13px;
+}
+
+div.additional_results_link {
+  margin-top: 5px;
+}
+
+.additional_results_link a {
+  padding: 0 0 0 10px;
+  /*color: gray;*/
+  /*font-style: oblique;*/
+  /*text-decoration: none;*/
+  font-size: 12px !important;
+}
+
+.additional_results_link a:hover {
+  /*text-decoration: underline;*/
+}
+
+span.additional a {
+  font-size: 13px !important;
+}
+
+
+</style>
 
 <div style="padding: 1em;">
   <div id="search_input" style="margin-bottom: 1em;">
@@ -31,41 +90,16 @@
 
     <div id="result_stats" style="text-align: right; width: 975px;"></div>
 
-    <div id="search_filter_list" style="font-size: 10pt; color: gray; display: none; clear: both; margin: -15px 0 5px">
-      <span id="search_filter_title">Results are filtered by:</span>&nbsp;
-      <span id="search_filter_names"></span>
-    </div>
-
     <table id="search_results" style="display: none; width: 975px;" class="zebra">
       <thead>
-        <th style="width: 450px;">Term Name</th>
-        <th style="width: 150px;" class="matched_in" title="Matched In">Matched In
-          <span class="popup_container" style="padding-left: 1.7em;">
-            <span class="bp_popup_link_container">
-              <a href="javascript:void(0);" id="filter_matched" class="bp_popup_link">filter</a>
-            </span>
-            <div id="matched_filter_list" class="bp_popup_list" style="display: none;">
-              <div>
-                <%= check_box_tag "matched_preferred_name", "Preferred Name", false, :class => "filter_matched_checkboxes" %>
-                <%= label_tag "matched_preferred_name", "Preferred Name" %>
-              </div>
-              <div>
-                <%= check_box_tag "matched_synonym", "Synonym", false, :class => "filter_matched_checkboxes" %>
-                <%= label_tag "matched_synonym", "Synonym" %>
-              </div>
-              <div>
-                <%= check_box_tag "matched_id", "Term ID", false, :class => "filter_matched_checkboxes" %>
-                <%= label_tag "matched_id", "Term ID" %>
-              </div>
-              <div>
-                <%= check_box_tag "matched_prop", "Property", false, :class => "filter_matched_checkboxes" %>
-                <%= label_tag "matched_prop", "Property" %>
-              </div>
-            </div>
-          </span>
+        <th style="width: 450px;">
+          Term Name
+        </th>
+        <th>
+          Definition
         </th>
         <th style="width: 325px;" title="Ontology">
-          Ontology <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_ontologies" class="bp_popup_link">filter</a></span><div id="ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span>
+          Ontology
         </th>
       </thead>
 
