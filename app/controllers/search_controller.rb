@@ -28,7 +28,7 @@ class SearchController < ApplicationController
     params[:objecttypes] = "class"
     params[:page_size] = 150
     params[:include_props] = 0
-    params[:includedefinitions] = "true"
+    params[:includedefinitions] = "false"
     params[:query] = params[:query].strip
     filter_ontologies = params[:ontology_ids].nil? || params[:ontology_ids].eql?("") ? nil : params[:ontology_ids]
 
@@ -42,6 +42,7 @@ class SearchController < ApplicationController
     # iterate over the results twice, but it wasn't working and no time to troubleshoot
     filter_private_results(results)
 
+    compact_start_time = Time.now
     # Compact results so we only have one per ontology
     compact_results_exact = {}
     compact_results = {}
@@ -73,7 +74,9 @@ class SearchController < ApplicationController
         end
       end
     end
+    LOG.add :debug, "Compact search results: #{(Time.now - compact_start_time) * 1000}ms"
 
+    rank_start_time = Time.now
     if filter_ontologies.nil?
       # Rank result sets by ontology weight
       exact_results = OntologyRanker.rank(compact_results_exact.values, {:position => "ontologyId"})
@@ -82,6 +85,7 @@ class SearchController < ApplicationController
       # Merge result sets and replace original results
       results.results = exact_results.concat non_exact_results
     end
+    LOG.add :debug, "Rank search results: #{(Time.now - rank_start_time) * 1000}ms"
 
     # results.results.slice!(100, results.results.length)
     results.current_page_results = results.results.length
