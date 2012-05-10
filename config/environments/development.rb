@@ -54,20 +54,3 @@ OpenURI::Buffer.const_set 'StringMax', 104857600
 
 # Include the BioPortal-specific configuration options
 require 'config/bioportal_config.rb'
-
-# Spawn pre-caching
-# require "Spawn"
-# config.to_prepare do
-#   Spawn::spawn do
-#     sleep 30
-#     puts "after initialize!"
-#   end
-# end
-
-# Always run remote debugger in development mode.
-require 'ruby-debug'
-Debugger.start_remote
-Debugger.settings[:autoeval] = true
-Debugger.settings[:autolist] = true
-Debugger.settings[:reload_source_on_change] = true
-puts "=> Debugger enabled"
