@@ -79,7 +79,7 @@ jQuery(document).ready(function(){
               "<div class='search_result'>",
               termHTML(res, label_html),
               definitionHTML(res),
-              resultLinksHTML(res) + additional_results_link,
+              "<div class='search_result_links'>"+resultLinksHTML(res) + additional_results_link+"</div>",
               additional_results,
               "</div>"
             ];
