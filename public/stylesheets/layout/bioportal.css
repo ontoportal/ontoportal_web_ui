@@ -1788,19 +1788,6 @@ form.button-to {
   padding: 8px 4px;
 }
 
-span.additional {
-  /*font-size: x-small;*/
-  /*display: block;*/
-  /*float: right;*/
-  /*padding-right: .3em;*/
-  /*margin-left: 1em;*/
-  /*color: gray;*/
-}
-
-.search_result_links {
-  
-}
-
 #search_options #ontology_ontologyId {
   display: none;
 }
