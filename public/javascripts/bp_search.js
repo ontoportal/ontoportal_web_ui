@@ -1,21 +1,5 @@
-var resultsTable;
-
 jQuery(document).ready(function(){
   jQuery("#search_button").button();
-
-  resultsTable = jQuery("#search_results").dataTable({
-    bPaginate: false,
-    bAutoWidth: false,
-    aaSorting: [],
-    oLanguage: {
-      sZeroRecords: "No search results found"
-    },
-    "aoColumns": [
-          { "sWidth": "450px" },
-          { "sWidth": "325px" },
-          { "sWidth": "325px" }
-    ]
-  });
 
   // Put cursor in search box by default
   jQuery("#search_keywords").focus();
@@ -64,6 +48,7 @@ jQuery(document).ready(function(){
         if (!jQuery.isEmptyObject(data)) {
           jQuery(data.results).each(function(){
             var additional_results = "";
+            var additional_results_link = "";
             var res = this;
 
             var label_html = normalizeObsoleteTerms(res);
@@ -71,28 +56,39 @@ jQuery(document).ready(function(){
             // Additional terms for this ontology
             if (res.additional_results !== undefined) {
               more_res = res.additional_results;
-              var result_text = more_res.length > 1 ? "results" : "result";
-              additional_results = jQuery("<span/>").append(jQuery("<div/>").addClass("additional_results_link").html("<a href='#additional_results' class='additional_results_link' data-bp_additional_results_for='"+more_res[0].ontologyId+"'>" + more_res.length + " more "+result_text+"</a>"));
+              additional_results_link = jQuery("<span/>")
+                                          .append(jQuery("<span/>")
+                                          .addClass("additional_results_link search_result_link")
+                                          .html(" - <a href='#additional_results' class='additional_results_link' data-bp_additional_results_for='"+more_res[0].ontologyId+"'>" + more_res.length + " more from this ontology</a>")).html();
+
               var additional_rows = [];
               jQuery(more_res).each(function(){
-                additional_rows.push(termHTML(this, normalizeObsoleteTerms(this), ""));
+                additional_rows.push(termHTML(this, normalizeObsoleteTerms(this)));
               });
-              additional_results = jQuery(additional_results).append(jQuery("<div/>").attr("id", "additional_results_"+more_res[0].ontologyId).addClass("additional_results").addClass("not_visible").html(additional_rows.join(""))).html();
+
+              additional_results = jQuery("<div/>")
+                                          .append(jQuery("<div/>")
+                                          .attr("id", "additional_results_"+more_res[0].ontologyId)
+                                          .addClass("additional_results")
+                                          .addClass("not_visible")
+                                          .html(additional_rows.join("")))
+                                        .html();
             }
 
             var row = [
-              termHTML(res, label_html, additional_results),
-              res.definition === undefined ? "" : res.definition.split(".")[0].split(";")[0],
-              "<a href='/ontologies/"+res.ontologyId+"'>"+res.ontologyDisplayLabel+"</a>"
+              "<div class='search_result'>",
+              termHTML(res, label_html),
+              definitionHTML(res),
+              resultLinksHTML(res) + additional_results_link,
+              additional_results,
+              "</div>"
             ];
 
-            results.push(row);
+            results.push(row.join(""));
           });
         }
 
-        resultsTable.fnClearTable();
-        resultsTable.fnSortNeutral();
-        resultsTable.fnAddData(results);
+        jQuery("#search_results").html(results.join(""));
 
         jQuery("a[rel*=facebox]").facebox();
 
@@ -100,11 +96,11 @@ jQuery(document).ready(function(){
         var result_count = jQuery("#result_stats");
         result_count.html(data.total_results + " results in " + data.current_page_results + " ontologies");
 
-        // jQuery("table#search_results div.term_link").hover(termHoverIn, termHoverOut);
-        jQuery("table#search_results").show();
+        jQuery("#search_results").show();
       }
     });
 
+    getAllDefinitions();
     jQuery("#search_spinner").hide();
   });
 
@@ -162,129 +158,7 @@ jQuery(document).ready(function(){
     jQuery("#search_button").click();
   }
 
-  // Wire up pop-ups
-  filter_ontologies.init();
-  filter_matched.init();
 });
-
-// Datatables reset sort extension
-jQuery.fn.dataTableExt.oApi.fnSortNeutral = function ( oSettings ) {
-  /* Remove any current sorting */
-  oSettings.aaSorting = [];
-
-  /* Sort display arrays so we get them in numerical order */
-  oSettings.aiDisplay.sort( function (x,y) {
-    return x-y;
-  } );
-  oSettings.aiDisplayMaster.sort( function (x,y) {
-    return x-y;
-  } );
-
-  /* Redraw */
-  oSettings.oApi._fnReDraw( oSettings );
-}
-
-var termHoverIn = function(){
-  var additional = jQuery(this).children("span.additional");
-  additional.show();
-  additional.css("margin-top", jQuery(this).innerHeight() / 2 - additional.innerHeight() / 2 + "px");
-}
-
-var termHoverOut = function(){
-  jQuery(this).children("span.additional").hide();
-}
-
-
-var removeFilters = function() {
-  jQuery(".filter_ontology_checkboxes").attr("checked", false);
-  jQuery(".filter_matched_checkboxes").attr("checked", false);
-  resultsTable.fnFilter("", 1);
-  resultsTable.fnFilter("", 2);
-  jQuery("#search_filter_list").hide();
-}
-
-var displayFilteredColumnNames = function() {
-  var column_names = [];
-  jQuery(".bp_popup_list input:checked").closest("th").each(function(){
-    column_names.push(jQuery(this).attr("title"));
-  });
-  jQuery("#search_filter_names").html(column_names.join(", "))
-  if (column_names.length > 0) {
-    jQuery("#search_filter_list").show();
-  } else {
-    jQuery("#search_filter_list").hide();
-  }
-}
-
-var filter_ontologies = {
-  init: function() {
-    jQuery("#filter_ontologies").bind("click", function(e){bp_popup_init(e)});
-    jQuery(".filter_ontology_checkboxes").bind("click", function(e){filter_ontologies.filterOntology(e)});
-    jQuery("#ontology_filter_list").click(function(e){e.stopPropagation()});
-    this.cleanup();
-  },
-
-  cleanup: function() {
-    jQuery("html").click(bp_popup_cleanup);
-    jQuery(document).keyup(function(e) {
-      if (e.keyCode == 27) { bp_popup_cleanup(); } // esc
-    });
-  },
-
-  filterOntology: function(e) {
-    e.stopPropagation();
-
-    var search_regex = [];
-    jQuery(".filter_ontology_checkboxes:checked").each(function(){
-      search_regex.push(jQuery(this).val());
-    });
-
-    if (search_regex.length == 0) {
-      resultsTable.fnFilter("", 2);
-    } else {
-      resultsTable.fnFilter(search_regex.join("|"), 2, true, false);
-    }
-
-    displayFilteredColumnNames();
-
-    jQuery("#result_stats").html(jQuery(resultsTable).find("tr").length - 1 + " results");
-  }
-}
-
-var filter_matched = {
-  init: function() {
-    jQuery("#filter_matched").bind("click", function(e){bp_popup_init(e)});
-    jQuery(".filter_matched_checkboxes").bind("click", function(e){filter_matched.filterMatched(e)});
-    jQuery("#matched_filter_list").click(function(e){e.stopPropagation()});
-    this.cleanup();
-  },
-
-  cleanup: function() {
-    jQuery("html").click(bp_popup_cleanup);
-    jQuery(document).keyup(function(e) {
-      if (e.keyCode == 27) { bp_popup_cleanup(); } // esc
-    });
-  },
-
-  filterMatched: function(e) {
-    e.stopPropagation();
-
-    var search_regex = [];
-    jQuery(".filter_matched_checkboxes:checked").each(function(){
-      search_regex.push(jQuery(this).val());
-    });
-
-    if (search_regex.length == 0) {
-      resultsTable.fnFilter("", 1);
-    } else {
-      resultsTable.fnFilter(search_regex.join("|"), 1, true, false);
-    }
-
-    displayFilteredColumnNames();
-
-    jQuery("#result_stats").html(jQuery(resultsTable).find("tr").length - 1 + " results");
-  }
-}
 
 function normalizeObsoleteTerms(res) {
   // We have to look for a span here, indicating that the term is obsolete.
@@ -296,9 +170,28 @@ function normalizeObsoleteTerms(res) {
   return label_html;
 }
 
-function termHTML(res, label_html, additional_results, definition) {
-  definition = definition === undefined ? "" : "<span class='term_def'><b>Definition:</b> "+definition.split(".")[0].split(";")[0]+"</span>";
-  var additionalSpan = "<span class='additional'><a href='/ajax/term_details/"+res.ontologyId+"?styled=false&conceptid="+encodeURIComponent(res.conceptId)+"' class='term_details' rel='facebox[.term_details_pop]'>details</a> | <a href='javascript:void(0);' data-bp_ontologyid='"+res.ontologyId+"' data-bp_conceptid='"+encodeURIComponent(res.conceptId)+"' class='term_visualize'>visualize</a></span>";
-  return "<div class='term_link'>"+additionalSpan+"<a title='"+res.preferredName+"' href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+jQuery(label_html).html()+"</a>"+definition+additional_results+"</div>";
+function getAllDefinitions() {
+  jQuery("#search_results .ajax_def").each(function(){
+    var def = jQuery(this);
+    var term = jQuery.getJSON("/ajax/json_term?conceptid="+def.attr("data-bp_conceptid")+"&ontologyid="+def.attr("data-bp_ontologyid"),
+      function(data){
+        if (data.definitions !== undefined) {
+          def.html(data.definitions);
+        } else {
+          def.parent().html("");
+        }
+      });
+  });
 }
 
+function termHTML(res, label_html) {
+  return "<div class='term_link'><a title='"+res.preferredName+"' href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+jQuery(label_html).html()+" - "+res.ontologyDisplayLabel+"</a></div>";
+}
+
+function resultLinksHTML(res) {
+  return "<span class='additional'><a href='/ajax/term_details/"+res.ontologyId+"?styled=false&conceptid="+encodeURIComponent(res.conceptId)+"' class='term_details search_result_link' rel='facebox[.term_details_pop]'>details</a> - <a href='javascript:void(0);' data-bp_ontologyid='"+res.ontologyId+"' data-bp_conceptid='"+encodeURIComponent(res.conceptId)+"' class='term_visualize search_result_link'>visualize</a></span>";
+}
+
+function definitionHTML(res) {
+  return "<div style='color: gray;'><b>Definition: </b><span class='ajax_def' data-bp_conceptid='"+encodeURIComponent(res.conceptId)+"' data-bp_ontologyid='"+res.ontologyId+"'><em>loading...</em></span></div>";
+}

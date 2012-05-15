@@ -71,6 +71,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/ajax_concepts/:ontology/', :controller => 'concepts', :action => 'show', :requirements => { :id => %r([^/?]+) }
   map.connect '/ajax/term_details/:ontology', :controller => 'concepts', :action => 'details'
   map.connect "/ajax/mappings/get_concept_table", :controller => "mappings", :action => "get_concept_table"
+  map.connect "/ajax/json_term", :controller => "ajax_proxy", :action => "json_term"
   map.connect "/ajax/jsonp", :controller => "ajax_proxy", :action => "jsonp"
 
   # User

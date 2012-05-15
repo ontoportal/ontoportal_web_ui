@@ -35,6 +35,12 @@ class AjaxProxyController < ApplicationController
   	response = res.code.to_i == 404 ? '{ "error": "page not found" }' : res.body
     render_json response, {:status => res.code}
   end
+
+  def json_term
+    max_children = params[:max_children] ||= 0
+    no_relations = params[:no_relations] ||= true
+    render_json DataAccess.getLightNode(DataAccess.getOntology(params[:ontologyid]).id, params[:conceptid], max_children, no_relations).to_json
+  end
   
   private
 

@@ -12,6 +12,10 @@ table#search_results td {
   padding: 12px 8px 12px 12px;
 }
 
+div.search_result {
+  margin-bottom: 1.5em;
+}
+
 div.term_link a {
   font-size: 15px;
 }
@@ -47,11 +51,8 @@ div.additional_results_link {
   margin-top: 5px;
 }
 
-.additional_results_link a {
+.search_results_link a {
   padding: 0 0 0 10px;
-  /*color: gray;*/
-  /*font-style: oblique;*/
-  /*text-decoration: none;*/
   font-size: 12px !important;
 }
 
@@ -90,21 +91,7 @@ span.additional a {
 
     <div id="result_stats" style="text-align: right; width: 975px;"></div>
 
-    <table id="search_results" style="display: none; width: 975px;" class="zebra">
-      <thead>
-        <th style="width: 450px;">
-          Term Name
-        </th>
-        <th>
-          Definition
-        </th>
-        <th style="width: 325px;" title="Ontology">
-          Ontology
-        </th>
-      </thead>
-
-      <tbody id="search_results_body"></tbody>
-    </table>
+    <div id="search_results" style="display: none; width: 975px;"></div>
   </div>
 </div>
 

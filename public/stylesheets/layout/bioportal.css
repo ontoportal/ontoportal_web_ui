@@ -1789,21 +1789,16 @@ form.button-to {
 }
 
 span.additional {
-  font-size: x-small;
-  display: block;
-  float: right;
-  padding-right: .3em;
-  margin-left: 1em;
-  color: gray;
+  /*font-size: x-small;*/
+  /*display: block;*/
+  /*float: right;*/
+  /*padding-right: .3em;*/
+  /*margin-left: 1em;*/
+  /*color: gray;*/
 }
 
-span.additional a {
-  color: gray;
-  text-decoration: none;
-}
-
-span.additional a:hover {
-  text-decoration: underline;
+.search_result_links {
+  
 }
 
 #search_options #ontology_ontologyId {

@@ -417,7 +417,7 @@ class BioPortalRestfulCore
   # Gets a concept node.
   ##
   def self.getNode(params)
-    uri_gen = BioPortalResources::Concept.new(params, params[:max_children])
+    uri_gen = BioPortalResources::Concept.new(params, params[:max_children], params[:no_relations])
     uri = uri_gen.generate_uri
 
     LOG.add :debug, "Retrieve node"
@@ -444,7 +444,7 @@ class BioPortalRestfulCore
   # Gets a light version of a concept node. Used for tree browsing.
   ##
   def self.getLightNode(params)
-    uri_gen = BioPortalResources::Concept.new(params, params[:max_children], true)
+    uri_gen = BioPortalResources::Concept.new(params, params[:max_children], true, params[:no_relations])
     uri = uri_gen.generate_uri
 
     LOG.add :debug, "Retrieve light node"

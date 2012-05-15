@@ -122,12 +122,13 @@ class BioPortalResources
     end
 
     class Concept < BioPortalResources
-      def initialize(params, max_children = nil, light = nil)
+      def initialize(params, max_children = nil, light = nil, no_relations = nil)
         super(params)
 
         @uri << "/concepts/%ONT%/?conceptid=%CONC%"
         @uri << "&maxnumchildren=" + max_children.to_s unless $MAX_CHILDREN.nil? || $MAX_CHILDREN.to_s.empty?
         @uri << "&light=1" if light
+        @uri << "&norelations=true" if no_relations
       end
     end
 
