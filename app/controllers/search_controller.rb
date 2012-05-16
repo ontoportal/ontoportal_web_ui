@@ -26,7 +26,7 @@ class SearchController < ApplicationController
 
   def json
     params[:objecttypes] = "class"
-    params[:page_size] = 150
+    params[:page_size] = 250
     params[:include_props] = 0
     params[:includedefinitions] = "false"
     params[:query] = params[:query].strip
@@ -37,6 +37,9 @@ class SearchController < ApplicationController
     exact_count = exact_results.results.length
 
     results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
+
+    # Store the total results before aggregation
+    results.disaggregated_current_page_results = results.current_page_results
 
     # TODO: It would be nice to include a delete command in the iteration above so we don't
     # iterate over the results twice, but it wasn't working and no time to troubleshoot
@@ -87,7 +90,6 @@ class SearchController < ApplicationController
     end
     LOG.add :debug, "Rank search results: #{(Time.now - rank_start_time) * 1000}ms"
 
-    # results.results.slice!(100, results.results.length)
     results.current_page_results = results.results.length
 
     render :text => results.hash_for_serialization.to_json

@@ -3,6 +3,7 @@ class SearchResults < Array
   attr_accessor :page_size
   attr_accessor :page_number
   attr_accessor :current_page_results
+  attr_accessor :disaggregated_current_page_results
   attr_accessor :total_results
   attr_accessor :total_pages
   attr_accessor :results
@@ -42,6 +43,7 @@ class SearchResults < Array
     return {
       :ontology_hit_counts => self.ontology_hit_counts, :page_size => self.page_size,
       :page_number => self.page_number, :current_page_results => self.current_page_results,
+      :disaggregated_current_page_results => self.disaggregated_current_page_results,
       :total_results => self.total_results, :total_pages => self.total_pages,
       :total_hits => self.total_hits, :results => self.results
     }
