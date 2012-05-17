@@ -26,6 +26,7 @@ jQuery(document).ready(function(){
     jQuery(this).toggleClass("not_underlined");
   });
 
+  // Perform search
   jQuery("#search_button").click(function(event){
     event.preventDefault();
 
@@ -69,7 +70,7 @@ jQuery(document).ready(function(){
                   "<div class='search_result_additional'>",
                   termHTML(this, normalizeObsoleteTerms(this), false),
                   definitionHTML(this, "additional_def_container"),
-                  "<div class='search_result_links'>"+resultLinksHTML(res)+"</div>",
+                  "<div class='search_result_links'>"+resultLinksHTML(this)+"</div>",
                   "</div>"
                 ].join(""));
               });
@@ -83,9 +84,12 @@ jQuery(document).ready(function(){
                                         .html();
             }
 
+            // Don't include ontology name if searching a single ontology
+            var display_ont_name = (jQuery("#ontology_ontologyId").val() === null || jQuery("#ontology_ontologyId").val().length > 1)
+
             var row = [
               "<div class='search_result'>",
-              termHTML(res, label_html, true),
+              termHTML(res, label_html, display_ont_name),
               definitionHTML(res),
               "<div class='search_result_links'>"+resultLinksHTML(res) + additional_results_link+"</div>",
               additional_results,
@@ -96,13 +100,19 @@ jQuery(document).ready(function(){
           });
         }
 
-        jQuery("#search_results").html(results.join(""));
+        // Display error message if no results found
+        var result_count = jQuery("#result_stats");
+        if (data.current_page_results == 0) {
+          result_count.html("");
+          jQuery("#search_results").html("<h2 style='padding-top: 1em;'>No results found</h2>");
+        } else {
+          var results_by_ont = jQuery("#ontology_ontologyId").val() === null ? " in " + data.current_page_results + " ontologies" : "";
+          result_count.html("Top " + data.disaggregated_current_page_results + " results" + results_by_ont);
+          jQuery("#search_results").html(results.join(""));
+        }
 
         jQuery("a[rel*=facebox]").facebox();
 
-        // Align search results div
-        var result_count = jQuery("#result_stats");
-        result_count.html(data.disaggregated_current_page_results + " results in " + data.current_page_results + " ontologies");
 
         jQuery("#search_results").show();
       }
@@ -184,7 +194,7 @@ function getAllDefinitions() {
     var def = jQuery(this);
     jQuery.getJSON("/ajax/json_term?conceptid="+def.attr("data-bp_conceptid")+"&ontologyid="+def.attr("data-bp_ontologyid"),
       function(data){
-        if (data.definitions !== undefined && data.definitions !== null) {
+        if (data !== null && data.definitions !== undefined && data.definitions !== null) {
           def.html(data.definitions);
         } else {
           def.parent().html("");
@@ -198,7 +208,7 @@ function getAllDefinitions() {
     var def = jQuery(this);
     jQuery.getJSON("/ajax/json_term?conceptid="+def.attr("data-bp_conceptid")+"&ontologyid="+def.attr("data-bp_ontologyid"),
       function(data){
-        if (data.definitions !== undefined && data.definitions !== null) {
+        if (data !== null && data.definitions !== undefined && data.definitions !== null) {
           def.html(data.definitions);
         } else {
           def.parent().html("");
@@ -219,5 +229,5 @@ function resultLinksHTML(res) {
 
 function definitionHTML(res, defClass) {
   defClass = defClass === undefined ? "def_container" : defClass;
-  return "<div style='color: gray;' class='"+defClass+"'><span class='ajax_def' data-bp_conceptid='"+encodeURIComponent(res.conceptId)+"' data-bp_ontologyid='"+res.ontologyId+"'><em>loading...</em></span></div>";
+  return "<div class='"+defClass+"'><span class='ajax_def' data-bp_conceptid='"+encodeURIComponent(res.conceptId)+"' data-bp_ontologyid='"+res.ontologyId+"'><em>loading...</em></span></div>";
 }
