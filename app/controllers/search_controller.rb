@@ -45,52 +45,11 @@ class SearchController < ApplicationController
     # iterate over the results twice, but it wasn't working and no time to troubleshoot
     filter_private_results(results)
 
-    compact_start_time = Time.now
-    # Compact results so we only have one per ontology
-    compact_results_exact = {}
-    compact_results = {}
-    results.results.each_with_index do |result, index|
-      result['recordTypeFormatted'] = format_record_type(result['recordType'])
-
-      if filter_ontologies.nil?
-        # Hack to add exact match info
-        exact_match = index < exact_count
-
-        if exact_match
-          if compact_results_exact[result["ontologyId"].to_i].nil?
-            compact_results_exact[result["ontologyId"].to_i] = result
-          else
-            if compact_results_exact[result["ontologyId"].to_i]["additional_results"].nil?
-              compact_results_exact[result["ontologyId"].to_i]["additional_results"] = []
-            end
-            compact_results_exact[result["ontologyId"].to_i]["additional_results"] << result
-          end
-        else
-          if !compact_results_exact[result["ontologyId"].to_i].nil?
-            if compact_results_exact[result["ontologyId"].to_i]["additional_results"].nil?
-              compact_results_exact[result["ontologyId"].to_i]["additional_results"] = []
-            end
-            compact_results_exact[result["ontologyId"].to_i]["additional_results"] << result
-          else
-            compact_results[result["ontologyId"].to_i] = result
-          end
-        end
-      end
-    end
-    LOG.add :debug, "Compact search results: #{(Time.now - compact_start_time) * 1000}ms"
-
-    rank_start_time = Time.now
     if filter_ontologies.nil?
-      # Rank result sets by ontology weight
-      exact_results = OntologyRanker.rank(compact_results_exact.values, {:position => "ontologyId"})
-      non_exact_results = OntologyRanker.rank(compact_results.values, {:position => "ontologyId"})
-
-      # Merge result sets and replace original results
-      results.results = exact_results.concat non_exact_results
+      results.results = results.rank_results(exact_count)
     end
-    LOG.add :debug, "Rank search results: #{(Time.now - rank_start_time) * 1000}ms"
 
-    results.current_page_results = results.results.length
+    results.current_page_results = results.results.length + results.obsolete_results.length
 
     render :text => results.hash_for_serialization.to_json
   end
