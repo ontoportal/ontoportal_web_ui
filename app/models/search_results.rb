@@ -17,7 +17,7 @@ class SearchResults < Array
   attr_accessor :ranked
 
   PREFERRED = "apreferredname"
-  SYNONYM = "bsynonym"
+  SYNONYM = "csynonym"
 
   def initialize(hash = nil, params = nil)
     self.ontology_hit_counts = {}
@@ -77,6 +77,7 @@ class SearchResults < Array
     self.exact_results_by_ontology.each do |ont_id, ont_results|
       preferred << ont_results[:preferred]
       synonym << ont_results[:synonym]
+      debugger if ont_id == 1353
 
       # Deal with obsolete crap
       # Add results to an obsolete bucket if there are no other results for this ontology
@@ -154,7 +155,7 @@ class SearchResults < Array
           # which should rank lower than a preferred name so we put it in another bucket
           # Add an array to store more results
           result['additional_results'] = []
-          ranked[:synonym] << result
+          ranked[:synonym] = result
         end
       else
         # Put matches into an existing ontology bucket if it exists
