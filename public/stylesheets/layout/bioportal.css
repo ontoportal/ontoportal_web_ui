@@ -1318,11 +1318,13 @@ textarea.create_note_inputs {
 }
 .simpleTree .text {
   cursor: default;
+  padding: 0 2px;
 }
 .simpleTree .active {
   cursor: default;
-  background-color: #E2EBF0;
+  background-color: #A7D4ED;
   font-weight: bold;
+  padding: 2px;
 }
 .simpleTree a, .simpleTree a:hover {
   text-decoration: none;
