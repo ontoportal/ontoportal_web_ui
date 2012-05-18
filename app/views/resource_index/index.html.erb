@@ -1,0 +1,144 @@
+<%@title = "Resources Search"%>
+
+<%=javascript_include_tag 'JqueryPlugins/ajax-chosen/ajax-chosen.js'%>
+
+<style>
+.chzn-container ul li input {
+  font-style: oblique;
+}
+
+.chzn-container-active ul li input {
+  font-style: normal !important;
+}
+
+.search_dropdown_ont {
+  padding-left: 3px;
+  color: gray;
+}
+
+.highlighted .search_dropdown_ont {
+  color: white;
+}
+
+#resource_index_terms_chzn ul.chzn-results li.no-results:after {
+  background: url("/images/spinners/spinner_000000_16px.gif") no-repeat scroll 5px -1.5px transparent;
+  color: #F4F4F4;
+  content: "spacer";
+}
+</style>
+
+<script type="text/javascript">
+
+<%ont_acronyms = []%>
+<%@onts_and_views.each {|ont| ont_acronyms << "#{ont.ontologyId}: '#{ont.abbreviation.nil? ? ont.displayLabel : ont.abbreviation}'"}%>
+<%ri_ontology_ids = []%>
+<%@ri_ontologies.each {|ont| ri_ontology_ids << ont.ontologyId}%>
+var ont_acronyms = { <%=ont_acronyms.join(", ")%> };
+var ri_ontology_ids = [ <%=ri_ontology_ids.join(", ")%> ];
+
+jQuery(document).ready(function () {
+	jQuery("#resource_index_terms").ajaxChosen({
+		method: 'GET',
+		url: '/search/json?ontology_ids='+ri_ontology_ids.join(","),
+		dataType: 'json',
+		jsonTermKey: 'query'
+	}, function (data) {
+		var terms = {};
+		
+		jQuery.each(data.results, function (index, result) {
+			terms[result.ontologyId + "/" + result.conceptIdShort] = "&nbsp;<span title='" + result.ontologyDisplayLabel + "'>" + result.preferredName + "<span class='search_dropdown_ont'>(" + ont_acronyms[result.ontologyId] + ")</span></span>";
+		});
+		
+		return terms;
+	});
+});
+</script>
+
+
+<div style="padding: 1em;">
+  <h1>Search Resource Index</h1>
+  <p>
+	  <% intro_text = "Search biomedical resources for a term"%>
+	  <%=t('home.resources.intro').nil? || t('home.resources.intro').empty? ? "#{intro_text}  #{help_icon("/help#Resource_Index_Tab")}" : t('home.resources.intro')%>
+  </p>
+
+  <div style="padding-bottom: 1em;">
+    <div style="width: 610px;">
+      <a href="javascript:void(0);" id="insert_text_link" style="font-size: 8pt; text-decoration: none; float: right; margin-bottom: 3px;">insert sample text</a>
+    </div>
+
+    <% textarea_title = "Search for terms to search with" %>
+    <%=select_tag :resource_index_terms, "", :multiple => 'true', "data-placeholder".to_sym => textarea_title, :title => textarea_title, :class => "help_text", :style => "width: 432px;" %>
+
+    <br style="margin-bottom: 10px;"/>
+
+    <%=render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => @ri_ontologies }%>
+
+    <input type="button" id="annotator_button" value="Get Annotations" style="margin-top: 15px;" class="link_button">
+    <span class="annotator_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
+    <span style='color: red;' id="annotator_error" class='annotator_error'></span>
+  </div>
+</div>
+
+<div id="annotations_container" style="display: none; padding: 0 13px; margin: 0 0 2em;" data-bp_rest_server="<%=$REST_DOMAIN%>">
+  <div style="float: right; font-style: oblique; color: gray;" id="result_counts"></div>
+
+  <h2 style="margin-bottom: 0;">
+    Annotations
+    <div id="filter_list" style="font-size: 9pt; color: gray; display: none; clear: both; margin: -15px 0 5px">
+      <span id="filter_title">Results are filtered by:</span>&nbsp;
+      <span id="filter_names"></span>
+    </div>
+  </h2>
+
+  <div id="results_error" style="color: red; margin-bottom: 7px;"></div>
+
+  <table id="annotations" style="display: inline-block; min-width: 700px; width: 100%;" class="zebra">
+    <thead>
+      <tr>
+        <th style="padding-right: 6px;" title="Term">
+          Term
+          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_terms" class="bp_popup_link">filter</a></span><div id="terms_filter_list" class="bp_popup_list" style="display: none;"></div></span>
+        </th>
+        <th style="padding-right: 6px" title="Ontology">
+          Ontology
+          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_ontologies" class="bp_popup_link">filter</a></span><div id="ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span>
+        </th>
+        <th style="padding-right: 6px; min-width: 85px;" title="Type">
+          Type
+          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_match_type" class="bp_popup_link">filter</a></span><div id="match_type_filter_list" class="bp_popup_list" style="display: none;"></div></span>
+        </th>
+        <th>UMLS Sem Type</th>
+        <th>Context</th>
+        <th style="padding-right: 6px;" title="Matched Term">
+          Matched Term
+          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_matched_terms" class="bp_popup_link">filter</a></span><div id="matched_terms_filter_list" class="bp_popup_list" style="display: none;"></div></span>
+        </th>
+        <th style="padding-right: 6px; min-width: 200px;" title="Matched Ontology">
+          Matched Ontology
+          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_matched_ontologies" class="bp_popup_link">filter</a></span><div id="matched_ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span>
+        </th>
+      </tr>
+    </thead>
+  </table>
+
+  <div id="download_links" style="margin-top: 1.5em;">
+    <table border=0 style="border: 0; margin-bottom: .5em;">
+      <tr>
+        <td style="padding: 0 3px 0 0;"><b>Format Results As </b></td>
+        <td id="download_links_text" style="padding: 3px;"></td>
+        <td id="download_links_tabdelimited" style="padding: 3px;"></td>
+        <td id="download_links_xml" style="padding: 3px;"></td>
+      </tr>
+    </table>
+
+    <span style="font-size: 8pt;">To reproduce these results use the following parameters:
+      <br/>
+      <span id="annotator_parameters" style="color: gray; font-weight: bold;"></span>
+      <br/>
+      Additional parameters are documented at <a href="http://www.bioontology.org/wiki/index.php/Annotator_User_Guide" target="_blank">Annotator Web Service</a>
+    </span>
+  </div>
+</div>
+
+
