@@ -77,7 +77,6 @@ class SearchResults < Array
     self.exact_results_by_ontology.each do |ont_id, ont_results|
       preferred << ont_results[:preferred]
       synonym << ont_results[:synonym]
-      debugger if ont_id == 1353
 
       # Deal with obsolete crap
       # Add results to an obsolete bucket if there are no other results for this ontology
