@@ -34,6 +34,7 @@ class SearchController < ApplicationController
 
     # Temporary hack to figure out which results are exact matches
     exact_results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params.merge({:exact_match => true, :includedefinitions => "false"}))
+    filter_private_results(exact_results)
     exact_count = exact_results.results.length
 
     results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
