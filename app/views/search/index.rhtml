@@ -57,6 +57,23 @@ div.additional_results_link {
   text-decoration: none;
 }
 
+#result_stats {
+  padding-bottom: 15px;
+  width: 675px;
+  color: gray;
+  text-align: right;
+}
+
+#search_results {
+  display: none;
+  width: 675px;
+}
+
+#search_results_container {
+  margin-top: .5em;
+  clear: both;
+}
+
 </style>
 
 <div style="padding: 1em;">
@@ -79,11 +96,11 @@ div.additional_results_link {
     <%=button_to "Search", {}, :style => "font-size: 10pt !important; margin-bottom: 1em;", :id => "search_button"%>
   </div>
 
-  <div id="search_results_container" style="margin-top: .5em; clear: both;">
+  <div id="search_results_container">
 
-    <div id="result_stats" style="padding-bottom: 15px; width: 675px;"></div>
+    <div id="result_stats"></div>
 
-    <div id="search_results" style="display: none; width: 675px;"></div>
+    <div id="search_results"></div>
   </div>
 </div>
 
