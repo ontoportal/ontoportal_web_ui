@@ -40,6 +40,7 @@ jQuery(document).ready(function(){
     event.preventDefault();
 
     jQuery("#search_spinner").show();
+    jQuery("#search_messages").html("");
 
     var ont_val = jQuery("#ontology_ontologyId").val();
 
@@ -102,11 +103,15 @@ jQuery(document).ready(function(){
 
         jQuery("a[rel*=facebox]").facebox();
         jQuery("#search_results").show();
+        jQuery("#search_spinner").hide();
+      },
+      error: function(){
+        jQuery("#search_spinner").hide();
+        jQuery("#search_messages").html("<span style='color: red'>Problem searching, please try again");
       }
     });
 
     getAllDefinitions();
-    jQuery("#search_spinner").hide();
   });
 
   // Search on enter
