@@ -25,6 +25,12 @@ div#search_categories_chzn .chzn-drop {
 .search_options {
   padding-left: 20px;
 }
+#advanced_options_container {
+  font-size: 85%;
+  clear: both;
+  text-align: right;
+  width: 432px;
+}
 </style>
 
 <div style="padding: 1em;">
@@ -36,7 +42,9 @@ div#search_categories_chzn .chzn-drop {
     <span id="search_spinner" style="display: none; padding: 4px;">&nbsp;<img style="vertical-align: inherit;" src="/images/spinners/spinner_000000_16px.gif"></span>
     <%=button_to "Search", {}, :style => "font-size: 10pt !important; margin: -1.5px 0 0;", :id => "search_button"%>
 
-    <div style="font-size: 85%; clear: both; text-align: right; width: 432px;"><a id="advanced_options" href="javascript:void(0);">advanced options</a></div>
+    <div id="advanced_options_container">
+      <a id="advanced_options" href="javascript:void(0);"><span id="hide_advanced_options" class="not_visible">hide </span>advanced options</a>
+    </div>
 
     <div id="search_options" class="not_visible" style="padding-top: .6em; clear: both; margin-bottom: 40px;">
       <h2 style="margin-bottom: 3px; font-size: 12pt; !important;">Include in your search...</h2>
