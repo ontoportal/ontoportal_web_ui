@@ -32,6 +32,7 @@ jQuery(document).ready(function(){
   // Show advanced options
   jQuery("#advanced_options").click(function(event){
     jQuery("#search_options").toggleClass("not_visible");
+    jQuery("#hide_advanced_options").toggleClass("not_visible");
   });
 
   // Perform search
