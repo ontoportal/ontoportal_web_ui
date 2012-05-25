@@ -6,30 +6,62 @@
 <%=javascript_include_tag "JqueryPlugins/facebox/facebox.js"%>
 <%=javascript_include_tag "bp_search.js"%>
 
+<style>
+div#search_categories_chzn {
+  width: 432px !important;
+}
+div#search_categories_chzn .chzn-choices input {
+  font-style: oblique;
+}
+div#search_categories_chzn.chzn-container-active input {
+  font-style: normal !important;
+}
+div#search_categories_chzn .chzn-drop {
+  width: 432px !important;
+}
+#search_messages {
+  font-style: oblique;
+  color: gray;
+  padding-bottom: 7px;
+}
+</style>
+
 <div style="padding: 1em;">
   <div id="search_input" style="margin-bottom: 1em;">
     <h1>Term Search</h1>
     <p>Search for a term across multiple ontologies  <%=help_icon("/help#Search_Tab")%></p>
     <%=text_field :search, :keywords, :style => "width: 426px; height: 20px; float: left; margin-right: 1em;"%>
 
-    <div id="search_options" style="padding-top: .6em; clear: both;">
-      <!--<%=check_box :search, :exact_match%> <%=label :search, :exact_match, "Exact match only"%>&nbsp;&nbsp;&nbsp;-->
-      <!--<%=check_box :search, :include_props%> <%=label :search, :include_props, "Also search property values"%>&nbsp;&nbsp;&nbsp;-->
+    <span id="search_spinner" style="display: none; padding: 4px;">&nbsp;<img style="vertical-align: inherit;" src="/images/spinners/spinner_000000_16px.gif"></span>
+    <%=button_to "Search", {}, :style => "font-size: 10pt !important; margin: -1.5px 0 0;", :id => "search_button"%>
 
-      <!--<%=check_box :search, :select_ontologies%> <%=label :search, :select_ontologies, "Select ontologies to search"%>-->
+    <div style="font-size: 85%; clear: both; text-align: right; width: 432px;"><a id="advanced_options" href="javascript:void(0);">advanced options</a></div>
+
+    <div id="search_options" class="not_visible" style="padding-top: .6em; clear: both; margin-bottom: 40px;">
+      <h2 style="margin-bottom: 3px; font-size: 10pt; !important;">Include the following in your search</h2>
+      <%=check_box :search, :include_props%> <%=label :search, :include_props, "Property values"%>&nbsp;&nbsp;&nbsp;
+      <br/>
+      <%=check_box :search, :include_views%> <%=label :search, :include_views, "Ontology views"%>&nbsp;&nbsp;&nbsp;
+      <br/>
+      <%=check_box :search, :include_obsolete%> <%=label :search, :include_obsolete, "Obsolete terms"%>&nbsp;&nbsp;&nbsp;
+      <br/>
+      <%=check_box :search, :only_definitions%> <%=label :search, :only_definitions, "Only terms with definitions"%>&nbsp;&nbsp;&nbsp;
+      <br/>
+      <%=check_box :search, :exact_match%> <%=label :search, :exact_match, "Only exact matches"%>&nbsp;&nbsp;&nbsp;
+      <br/>
+      <br/>
+      <h2 style="font-size: 10pt; !important; margin-bottom: 3px;">Select ontology categories to search</h2>
+      <%= select :search, :categories, options_for_select(categories_for_select), { }, :style => "width: 432px", :multiple => 'true', "data-placeholder".to_sym => "Type here to select categories or leave blank to use all" %>
+
       <div id="ontology_picker_options" style="margin-top: 1em; position: relative; left: 2px;">
         <%= render :partial => "shared/ontology_picker", :locals => { :sel_text => "Select ontologies to search" }%>
       </div>
     </div>
-
-    <span id="search_spinner" style="display: none;">&nbsp;<img style="vertical-align: inherit;" src="/images/spinners/spinner_000000_16px.gif"></span>
-    <%=button_to "Search", {}, :style => "font-size: 10pt !important; margin-bottom: 1em;", :id => "search_button"%>
   </div>
 
   <div id="search_results_container">
-
     <div id="result_stats"></div>
-
+    <div id="search_messages"></div>
     <div id="search_results"></div>
   </div>
 </div>

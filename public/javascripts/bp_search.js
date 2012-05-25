@@ -1,12 +1,15 @@
 jQuery(document).ready(function(){
+  // Wire advanced search categories
+  jQuery("#search_categories").chosen();
+
   jQuery("#search_button").button();
 
   // Put cursor in search box by default
   jQuery("#search_keywords").focus();
 
   // Show/hide on refresh
-  if (jQuery("#search_select_ontologies").is(":checked")) {
-    jQuery("#ontology_picker_options").removeClass("not_visible");
+  if (advancedOptionsSelected) {
+    jQuery("#search_options").removeClass("not_visible");
   }
 
   jQuery("#search_select_ontologies").change(function(){
@@ -26,6 +29,11 @@ jQuery(document).ready(function(){
     jQuery(this).toggleClass("not_underlined");
   });
 
+  // Show advanced options
+  jQuery("#advanced_options").click(function(event){
+    jQuery("#search_options").toggleClass("not_visible");
+  });
+
   // Perform search
   jQuery("#search_button").click(function(event){
     event.preventDefault();
@@ -36,11 +44,27 @@ jQuery(document).ready(function(){
 
     var onts = (ont_val === null) ? "" : ont_val.join(",");
     var query = jQuery("#search_keywords").val();
-    var exactMatch = jQuery("#search_exact_match").is(":checked");
+
+    // Advanced options
     var includeProps = jQuery("#search_include_props").is(":checked");
+    var includeViews = jQuery("#search_include_views").is(":checked");
+    var includeObsolete = jQuery("#search_include_obsolete").is(":checked");
+    var includeOnlyDefinitions = jQuery("#search_only_definitions").is(":checked");
+    var exactMatch = jQuery("#search_exact_match").is(":checked");
+    var categories = jQuery("#search_categories").val();
 
     jQuery.ajax({
-      url: "/search/json?page_size=99999&ontology_ids="+onts+"&query="+query+"&exact_match="+exactMatch+"&include_props=1",
+      url: "/search/json",
+      data: {
+        query: query,
+        ontology_ids: onts,
+        exact_match: exactMatch,
+        include_props: includeProps,
+        include_views: includeViews,
+        include_obsolete: includeObsolete,
+        only_definitions: includeOnlyDefinitions,
+        categories: categories
+      },
       dataType: "json",
       async: false,
       success: function(data){
@@ -69,7 +93,7 @@ jQuery(document).ready(function(){
           jQuery("#search_results").html("<h2 style='padding-top: 1em;'>No results found</h2>");
         } else {
           var results_by_ont = jQuery("#ontology_ontologyId").val() === null ? " in " + data.current_page_results + " ontologies" : "";
-          result_count.html("Top " + data.disaggregated_current_page_results + " results" + results_by_ont);
+          result_count.html("Top <span id='result_count_total'>" + data.disaggregated_current_page_results + "</span> results" + results_by_ont);
           jQuery("#search_results").html(results.join(""));
         }
 
@@ -216,33 +240,111 @@ function normalizeObsoleteTerms(res) {
 }
 
 function getAllDefinitions() {
+  var keepOnlyDefinitions = jQuery("#search_only_definitions").is(":checked");
+
+  // Notice for filtering search results without definitions
+  if (keepOnlyDefinitions) {
+    jQuery("#search_messages").html("removing terms without definitions...");
+  }
+
   // Get the top level stuff first
+  var count = 0;
+  var totalSearchResults = currentResultsCount();
   jQuery("#search_results .def_container .ajax_def").each(function(){
     var def = jQuery(this);
-    jQuery.getJSON("/ajax/json_term?conceptid="+def.attr("data-bp_conceptid")+"&ontologyid="+def.attr("data-bp_ontologyid"),
-      function(data){
-        if (data !== null && typeof data.definitions !== "undefined" && data.definitions !== null) {
-          def.html(data.definitions);
-        } else {
-          def.parent().html("");
-        }
+    getDefinition(def, keepOnlyDefinitions, count, totalSearchResults);
+
+    count += 1;
+    if (count == totalSearchResults) {
+      if (keepOnlyDefinitions) {
+        jQuery("#search_messages").html("");
       }
-    );
+    }
   });
 
   // Now get the additional that are hidden
   jQuery("#search_results .additional_def_container .ajax_def").each(function(){
     var def = jQuery(this);
-    jQuery.getJSON("/ajax/json_term?conceptid="+def.attr("data-bp_conceptid")+"&ontologyid="+def.attr("data-bp_ontologyid"),
-      function(data){
-        if (data !== null && typeof data.definitions !== "undefined" && data.definitions !== null) {
-          def.html(data.definitions);
-        } else {
-          def.parent().html("");
+    count += 1;
+    getDefinition(def, keepOnlyDefinitions, count, totalSearchResults);
+  });
+}
+
+function getDefinition(def, keepOnlyDefinitions, count, totalSearchResults) {
+  jQuery.ajax({
+    url: "/ajax/json_term?conceptid="+def.attr("data-bp_conceptid")+"&ontologyid="+def.attr("data-bp_ontologyid"),
+    dataType: 'json',
+    success: function(data){
+      showDefinition(data, def, keepOnlyDefinitions);
+      if (count == totalSearchResults) {
+        if (keepOnlyDefinitions) {
+          jQuery("#search_messages").html("");
         }
       }
-    );
+    },
+    error: function(){
+      // Failed to retreive definition
+      if (keepOnlyDefinitions) {
+        // Remove entire term
+        def.parent().parent().html("");
+      } else {
+        // Remove loading text
+        def.parent().html("");
+      }
+
+      if (count == totalSearchResults) {
+        if (keepOnlyDefinitions) {
+          jQuery("#search_messages").html("");
+        }
+      }
+    }
   });
+}
+
+function showDefinition(data, def, keepOnlyDefinitions) {
+  var defLimit = 235;
+
+  if (typeof keepOnlyDefinitions === "undefined" || keepOnlyDefinitions == null) {
+    keepOnlyDefinitions = false;
+  }
+
+  if (data !== null && typeof data.definitions !== "undefined" && data.definitions !== null && data.definitions.length != 0) {
+    if (data.definitions.length > defLimit) {
+      var defs = data.definitions.slice(0, defLimit).split(" ");
+      // Remove the last word in case we got one partway through
+      defs.pop();
+      def.html(defs.join(" ")+" ...");
+    } else {
+      def.html(data.definitions)
+    }
+  } else {
+    if (keepOnlyDefinitions) {
+      // Remove entire term
+      def.parent().parent().remove();
+    } else {
+      // Remove loading text
+      def.parent().html("");
+    }
+  }
+
+  // Update count
+  jQuery("#result_count_total").html(currentResultsCount());
+}
+
+function advancedOptionsSelected() {
+  var selected = false;
+  var selected = jQuery("#search_include_props").is(":checked");
+  var selected = jQuery("#search_include_views").is(":checked");
+  var selected = jQuery("#search_include_obsolete").is(":checked");
+  var selected = jQuery("#search_only_definitions").is(":checked");
+  var selected = jQuery("#search_exact_match").is(":checked");
+  var selected = jQuery("#search_categories").val() !== null && jQuery("#search_categories").val().length > 0;
+  var selected = jQuery("#ontology_ontologyId").val() !== null && jQuery("#ontology_ontologyId").val().length > 0;
+  return selected;
+}
+
+function currentResultsCount() {
+  return jQuery(".search_result").length + jQuery(".search_result_additional").length;
 }
 
 function termHTML(res, label_html, displayOntologyName) {

@@ -283,12 +283,7 @@ module ApplicationHelper
       @groups_for_js << "#{group_id}: [ #{groups.join(", ")} ]"
     end
 
-    @categories_for_select = []
-    @categories_for_js = []
-    categories.each do |cat_id, cat|
-      @categories_for_select << [ cat[:name], cat[:id] ]
-    end
-    @categories_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+    @categories_for_select = categories_for_select
 
     @categories_for_js = []
     categories_map.each do |cat_id, cat|
@@ -312,6 +307,15 @@ module ApplicationHelper
      !@subdomain_filter.nil? && !@subdomain_filter[:active].nil? && @subdomain_filter[:active] == true
   end
 
+  def categories_for_select
+    categories = DataAccess.getCategories
+    categories_for_select = []
+    categories.each do |cat_id, cat|
+      categories_for_select << [ cat[:name], cat[:id] ]
+    end
+    categories_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+    categories_for_select
+  end
 
 
   # BACKPORTED RAILS 3 HELPERS

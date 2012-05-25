@@ -358,7 +358,7 @@ function clearAllSelections() {
   <h2 id="ontology_picker_head" style="margin-bottom: 3px;"><%=sel_text%></h2>
 
   <div id="ontology_ontologyId_container">
-    <%= select :ontology, "ontologyId", options_for_select(@onts_for_select, selected_ontologies), { }, :multiple => 'true', "data-placeholder".to_sym => "Type here to select ontologies or leave blank to use all" %>
+    <%= select :ontology, "ontologyId", options_for_select(@onts_for_select, selected_ontologies), { }, :multiple => 'true', "data-placeholder".to_sym => "Type here to select ontologies or leave blank to use all", :style => "width: 432px;" %>
   </div>
 
   <div style="float: right; font-size: smaller;">

@@ -305,6 +305,10 @@ class OntologyWrapper
     !self.viewingRestriction.nil? && self.viewingRestriction.downcase.eql?("licensed")
   end
 
+  def view?
+    self.isView.eql?("true") || self.isView.to_i == 1
+  end
+
   def valid_tree_view?
     self.statusId.to_i == 3 && !self.metadata_only?
   end

@@ -25,30 +25,56 @@ class SearchController < ApplicationController
   end
 
   def json
+    # Safety checks
     params[:objecttypes] = "class"
     params[:page_size] = 250
-    params[:include_props] = 0
     params[:includedefinitions] = "false"
     params[:query] = params[:query].strip
+    params[:ontology_ids] ||= []
+    params[:ontology_ids] = [params[:ontology_ids]] if params[:ontology_ids].kind_of?(String)
+
+    # Add ontologies in the selected categories to the filter
+    category_onts = DataAccess.getCategoriesWithOntologies
+    params[:categories].each do |category|
+      params[:ontology_ids].concat category_onts[category][:ontologies]
+    end
+
+    # Are we filtering at all by ontology?
     filter_ontologies = params[:ontology_ids].nil? || params[:ontology_ids].eql?("") ? nil : params[:ontology_ids]
 
     # Temporary hack to figure out which results are exact matches
-    exact_results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params.merge({:exact_match => true, :includedefinitions => "false"}))
+    exact_results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params.merge({:exact_match => true}))
     filter_private_results(exact_results)
     exact_count = exact_results.results.length
 
-    results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
+    if params[:exact_match].eql?("true")
+      results = exact_results
+    else
+      results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
+    end
 
-    # Store the total results before aggregation
+    # Remove results due to advanced search options
+    advanced_options_results = []
+    results.results.each do |result|
+        # debugger if result['ontologyId'].to_i == 1416
+      if params[:include_obsolete].eql?("false")
+        next if result['obsolete']
+      end
+      if params[:include_views].eql?("false")
+        next if DataAccess.getOntology(result['ontologyId']).view?
+      end
+      advanced_options_results << result
+    end
+    results.results = advanced_options_results
+
+    # Store the total results counts before aggregation
     results.disaggregated_current_page_results = results.current_page_results
 
     # TODO: It would be nice to include a delete command in the iteration above so we don't
     # iterate over the results twice, but it wasn't working and no time to troubleshoot
     filter_private_results(results)
 
-    if filter_ontologies.nil?
-      results.results = results.rank_results(exact_count)
-    end
+    results.results = results.rank_results(exact_count)
 
     results.current_page_results = results.results.length + results.obsolete_results.length
 
