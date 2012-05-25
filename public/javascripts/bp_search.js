@@ -8,7 +8,7 @@ jQuery(document).ready(function(){
   jQuery("#search_keywords").focus();
 
   // Show/hide on refresh
-  if (advancedOptionsSelected) {
+  if (advancedOptionsSelected()) {
     jQuery("#search_options").removeClass("not_visible");
   }
 
