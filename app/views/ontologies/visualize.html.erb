@@ -87,8 +87,8 @@
       var target = document.getElementById(tabId + "_content");
 
       if (target != null) {
-        jQuery(".tab_container").css("left", "-9999px").css("position", "absolute");
-        jQuery(target).css("left", "auto").css("position", "static");
+        jQuery(".tab_container").addClass("not_visible");
+        jQuery(target).removeClass("not_visible");
         jQuery(".tab").removeClass("selected");
         jQuery("#" + tabId + "_top").addClass("selected");
         jQuery(document).trigger("terms_tab_visible");
@@ -263,11 +263,11 @@
           <% end %>
         </div>
         <div id="contents">
-          <div style="left: auto; position: static;" class="tab_container" id="details_content">Please search for a term using the Jump To field above to see details</div>
-          <div class="tab_container" id="visualization_content"></div>
-          <div class="tab_container" id="notes_content"></div>
-          <div class="tab_container" id="mappings_content"></div>
-          <div class="tab_container" id="resource_index_content"></div>
+          <div class="tab_container" id="details_content">Please search for a term using the Jump To field above to see details</div>
+          <div class="tab_container not_visible" id="visualization_content"></div>
+          <div class="tab_container not_visible" id="notes_content"></div>
+          <div class="tab_container not_visible" id="mappings_content"></div>
+          <div class="tab_container not_visible" id="resource_index_content"></div>
         </div>
       </div>
 
@@ -297,13 +297,13 @@
         </div>
 
         <div id="contents">
-          <div style="left: auto; position: static;" class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
-          <div class="tab_container" id="visualization_content"><%=render :partial =>'/concepts/biomixer'%></div>
-          <div class="tab_container" id="notes_content"><%=render :partial =>'/notes/list'%></div>
-          <div class="tab_container" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
+          <div class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
+          <div class="tab_container not_visible" id="visualization_content"><%=render :partial =>'/concepts/biomixer'%></div>
+          <div class="tab_container not_visible" id="notes_content"><%=render :partial =>'/notes/list'%></div>
+          <div class="tab_container not_visible" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
 
           <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
-            <div class="tab_container" id="resource_index_content"></div>
+            <div class="tab_container not_visible" id="resource_index_content"></div>
           <%end%>
 
           <% if $PURL_ENABLED %>
