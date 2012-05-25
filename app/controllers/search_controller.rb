@@ -59,13 +59,22 @@ class SearchController < ApplicationController
     # Remove results due to advanced search options
     advanced_options_results = []
     results.results.each do |result|
-        # debugger if result['ontologyId'].to_i == 1416
+      # The following statements filter results using defaults. They can be overridden with "advanced options"
+      # Discard if ontology is not production
+      if params[:include_non_production].eql?("false")
+        next unless DataAccess.getOntology(result['ontologyId']).production?
+      end
+
+      # Discard if the result is an obsolete term
       if params[:include_obsolete].eql?("false")
         next if result['obsolete']
       end
+
+      # Discard if the ontology is a view
       if params[:include_views].eql?("false")
         next if DataAccess.getOntology(result['ontologyId']).view?
       end
+
       advanced_options_results << result
     end
     results.results = advanced_options_results

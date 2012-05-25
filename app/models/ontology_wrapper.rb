@@ -7,7 +7,6 @@ class OntologyWrapper
   attr_accessor :parentId
   attr_accessor :format
   attr_accessor :versionNumber
-  attr_accessor :versionStatus
   attr_accessor :internalVersion
   attr_accessor :versionStatus
   attr_accessor :isCurrent
@@ -263,6 +262,10 @@ class OntologyWrapper
   def latest?
     latest = DataAccess.getLatestOntology(self.ontologyId)
     latest.id.eql? self.id
+  end
+
+  def production?
+    self.versionStatus.nil? || self.versionStatus.downcase.eql?("production") || self.versionStatus.downcase.eql?("")
   end
 
   # Generates a PURL address for this ontology

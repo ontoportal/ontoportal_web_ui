@@ -50,6 +50,7 @@ jQuery(document).ready(function(){
     var includeProps = jQuery("#search_include_props").is(":checked");
     var includeViews = jQuery("#search_include_views").is(":checked");
     var includeObsolete = jQuery("#search_include_obsolete").is(":checked");
+    var includeNonProduction = jQuery("#search_include_non_production").is(":checked");
     var includeOnlyDefinitions = jQuery("#search_only_definitions").is(":checked");
     var exactMatch = jQuery("#search_exact_match").is(":checked");
     var categories = jQuery("#search_categories").val() || "";
@@ -58,13 +59,14 @@ jQuery(document).ready(function(){
       url: "/search/json",
       data: {
         query: query,
-        ontology_ids: onts,
-        exact_match: exactMatch,
         include_props: includeProps,
         include_views: includeViews,
         include_obsolete: includeObsolete,
+        include_non_production: includeNonProduction,
         only_definitions: includeOnlyDefinitions,
-        categories: categories
+        exact_match: exactMatch,
+        categories: categories,
+        ontology_ids: onts
       },
       dataType: "json",
       async: false,
@@ -335,6 +337,7 @@ function advancedOptionsSelected() {
   var check = [
     function(){return jQuery("#search_include_props").is(":checked");},
     function(){return jQuery("#search_include_views").is(":checked");},
+    function(){return jQuery("#search_include_non_production").is(":checked");},
     function(){return jQuery("#search_include_obsolete").is(":checked");},
     function(){return jQuery("#search_only_definitions").is(":checked");},
     function(){return jQuery("#search_exact_match").is(":checked");},
