@@ -85,6 +85,9 @@ body {
 #ft {
   clear:both;
 }
+.clearing {
+  clear: both;
+}
 /* end YUI font grid reset */
 
 body {
@@ -1756,9 +1759,6 @@ button.fg-button-menu, button.fg-button {
   font-style: oblique;
 }
 
-div#ontology_ontologyId_chzn ul.chzn-choices li.search-field input.default {
-  width: 400px !important;
-}
 
 /************************************
  * Search
@@ -1774,7 +1774,7 @@ form.button-to {
 
 .not_visible {
   position: fixed !important;
-  left: -9999px !important;
+  left: -99999999px !important;
 }
 
 #search_results_container #search_results_info {
