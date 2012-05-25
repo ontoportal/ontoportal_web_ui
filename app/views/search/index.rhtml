@@ -2,9 +2,7 @@
 
 <%=stylesheet_link_tag "/javascripts/JqueryPlugins/facebox/facebox.css"%>
 
-<%=javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.js"%>
 <%=javascript_include_tag "JqueryPlugins/facebox/facebox.js"%>
-<%=javascript_include_tag "bp_search.js"%>
 
 <style>
 div#search_categories_chzn {
@@ -24,6 +22,9 @@ div#search_categories_chzn .chzn-drop {
   color: gray;
   padding-bottom: 7px;
 }
+.search_options {
+  padding-left: 20px;
+}
 </style>
 
 <div style="padding: 1em;">
@@ -38,24 +39,30 @@ div#search_categories_chzn .chzn-drop {
     <div style="font-size: 85%; clear: both; text-align: right; width: 432px;"><a id="advanced_options" href="javascript:void(0);">advanced options</a></div>
 
     <div id="search_options" class="not_visible" style="padding-top: .6em; clear: both; margin-bottom: 40px;">
-      <h2 style="margin-bottom: 3px; font-size: 10pt; !important;">Include the following in your search</h2>
-      <%=check_box :search, :include_props%> <%=label :search, :include_props, "Property values"%>&nbsp;&nbsp;&nbsp;
-      <br/>
-      <%=check_box :search, :include_views%> <%=label :search, :include_views, "Ontology views"%>&nbsp;&nbsp;&nbsp;
-      <br/>
-      <%=check_box :search, :include_obsolete%> <%=label :search, :include_obsolete, "Obsolete terms"%>&nbsp;&nbsp;&nbsp;
-      <br/>
-      <%=check_box :search, :only_definitions%> <%=label :search, :only_definitions, "Only terms with definitions"%>&nbsp;&nbsp;&nbsp;
-      <br/>
-      <%=check_box :search, :exact_match%> <%=label :search, :exact_match, "Only exact matches"%>&nbsp;&nbsp;&nbsp;
-      <br/>
-      <br/>
-      <h2 style="font-size: 10pt; !important; margin-bottom: 3px;">Select ontology categories to search</h2>
-      <%= select :search, :categories, options_for_select(categories_for_select), { }, :style => "width: 432px", :multiple => 'true', "data-placeholder".to_sym => "Type here to select categories or leave blank to use all" %>
-
-      <div id="ontology_picker_options" style="margin-top: 1em; position: relative; left: 2px;">
-        <%= render :partial => "shared/ontology_picker", :locals => { :sel_text => "Select ontologies to search" }%>
+      <h2 style="margin-bottom: 3px; font-size: 12pt; !important;">Include in your search...</h2>
+      <div id="include_options" class="search_options">
+        <%=check_box :search, :include_views%> <%=label :search, :include_views, "Ontology views"%>
+        <br/>
+        <%=check_box :search, :include_obsolete%> <%=label :search, :include_obsolete, "Obsolete terms"%>
+        <br/>
+        <%=check_box :search, :include_props%> <%=label :search, :include_props, "Property values"%>
       </div>
+
+      <h2 style="margin: 10px 0 3px; font-size: 12pt; !important;">Narrow your search to...</h2>
+      <div id="remove_options" class="search_options">
+        <%=check_box :search, :only_definitions%> <%=label :search, :only_definitions, "Terms with definitions"%>
+        <br/>
+        <%=check_box :search, :exact_match%> <%=label :search, :exact_match, "Exact matches"%>
+        <br/><br/>
+
+        <h2 style="font-size: 10pt; !important; margin-bottom: 3px;">Categories</h2>
+        <%= select :search, :categories, options_for_select(categories_for_select), { }, :style => "width: 432px", :multiple => 'true', "data-placeholder".to_sym => "Type here to select categories or leave blank to use all" %>
+
+        <div id="ontology_picker_options" style="margin-top: 1em; position: relative; left: 2px;">
+          <%= render :partial => "shared/ontology_picker", :locals => { :sel_text => "Ontologies" }%>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -66,6 +73,8 @@ div#search_categories_chzn .chzn-drop {
   </div>
 </div>
 
-
 <div id="flexviz" style="display: none;">
 </div>
+
+<!-- Javascript at end to improve response time to user -->
+<%=javascript_include_tag "bp_search.js"%>

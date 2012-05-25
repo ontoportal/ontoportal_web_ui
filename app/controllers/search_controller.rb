@@ -35,8 +35,11 @@ class SearchController < ApplicationController
 
     # Add ontologies in the selected categories to the filter
     category_onts = DataAccess.getCategoriesWithOntologies
-    params[:categories].each do |category|
-      params[:ontology_ids].concat category_onts[category][:ontologies]
+    unless params[:categories].nil? || params[:categories].length == 0
+      debugger
+      params[:categories].each do |category|
+        params[:ontology_ids].concat category_onts[category][:ontologies]
+      end
     end
 
     # Are we filtering at all by ontology?
