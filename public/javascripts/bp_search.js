@@ -332,15 +332,24 @@ function showDefinition(data, def, keepOnlyDefinitions) {
 }
 
 function advancedOptionsSelected() {
-  var selected = false;
-  var selected = jQuery("#search_include_props").is(":checked");
-  var selected = jQuery("#search_include_views").is(":checked");
-  var selected = jQuery("#search_include_obsolete").is(":checked");
-  var selected = jQuery("#search_only_definitions").is(":checked");
-  var selected = jQuery("#search_exact_match").is(":checked");
-  var selected = jQuery("#search_categories").val() !== null && jQuery("#search_categories").val().length > 0;
-  var selected = jQuery("#ontology_ontologyId").val() !== null && jQuery("#ontology_ontologyId").val().length > 0;
-  return selected;
+  var check = [
+    function(){return jQuery("#search_include_props").is(":checked");},
+    function(){return jQuery("#search_include_views").is(":checked");},
+    function(){return jQuery("#search_include_obsolete").is(":checked");},
+    function(){return jQuery("#search_only_definitions").is(":checked");},
+    function(){return jQuery("#search_exact_match").is(":checked");},
+    function(){return jQuery("#search_categories").val() !== null && jQuery("#search_categories").val().length > 0;},
+    function(){return jQuery("#ontology_ontologyId").val() !== null && jQuery("#ontology_ontologyId").val().length > 0;},
+  ];
+
+  var length = check.length;
+  for (var i = 0; i < length; i++) {
+    var selected = check[i]();
+    if (selected)
+      return true;
+  }
+
+  return false;
 }
 
 function currentResultsCount() {
