@@ -47,6 +47,7 @@ class SearchController < ApplicationController
 
     # Temporary hack to figure out which results are exact matches
     exact_results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params.merge({:exact_match => true}))
+    exact_results.results = filter_advanced_options(exact_results.results, params)
     filter_private_results(exact_results)
     exact_count = exact_results.results.length
 
@@ -56,28 +57,8 @@ class SearchController < ApplicationController
       results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
     end
 
-    # Remove results due to advanced search options
-    advanced_options_results = []
-    results.results.each do |result|
-      # The following statements filter results using defaults. They can be overridden with "advanced options"
-      # Discard if ontology is not production
-      if params[:include_non_production].eql?("false")
-        next unless DataAccess.getOntology(result['ontologyId']).production?
-      end
-
-      # Discard if the result is an obsolete term
-      if params[:include_obsolete].eql?("false")
-        next if result['obsolete']
-      end
-
-      # Discard if the ontology is a view
-      if params[:include_views].eql?("false")
-        next if DataAccess.getOntology(result['ontologyId']).view?
-      end
-
-      advanced_options_results << result
-    end
-    results.results = advanced_options_results
+    # Filter out ontologies using user-provided parameters
+    results.results = filter_advanced_options(results.results, params)
 
     # Store the total results counts before aggregation
     results.disaggregated_current_page_results = results.current_page_results
@@ -165,6 +146,35 @@ class SearchController < ApplicationController
   end
 
   private
+
+  # Filters out ontologies from the advanced options that were selected
+  # @params [Array] a list of results to filter
+  # @params [Hash] hash of parameters from user, can just provide from global params
+  # @return [Array] filtered list of results
+  def filter_advanced_options(results, params)
+    # Remove results due to advanced search options
+    advanced_options_results = []
+    results.each do |result|
+      # The following statements filter results using defaults. They can be overridden with "advanced options"
+      # Discard if ontology is not production
+      if params[:include_non_production].eql?("false")
+        next unless DataAccess.getOntology(result['ontologyId']).production?
+      end
+
+      # Discard if the result is an obsolete term
+      if params[:include_obsolete].eql?("false")
+        next if result['obsolete']
+      end
+
+      # Discard if the ontology is a view
+      if params[:include_views].eql?("false")
+        next if DataAccess.getOntology(result['ontologyId']).view?
+      end
+
+      advanced_options_results << result
+    end
+    advanced_options_results
+  end
 
   # Filter an array of results based on whether or not the result ontology is private
   def filter_private_results(results)
