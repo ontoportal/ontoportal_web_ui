@@ -339,6 +339,10 @@ function showDefinition(data, def, keepOnlyDefinitions) {
 }
 
 function advancedOptionsSelected() {
+  if (document.URL.indexOf("opt=advanced") >= 0) {
+    return true;
+  }
+
   var check = [
     function(){return jQuery("#search_include_props").is(":checked");},
     function(){return jQuery("#search_include_views").is(":checked");},
