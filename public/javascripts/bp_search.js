@@ -1,7 +1,6 @@
 jQuery(document).ready(function(){
   // Wire advanced search categories
   jQuery("#search_categories").chosen();
-
   jQuery("#search_button").button();
 
   // Put cursor in search box by default
@@ -33,6 +32,21 @@ jQuery(document).ready(function(){
   jQuery("#advanced_options").click(function(event){
     jQuery("#search_options").toggleClass("not_visible");
     jQuery("#hide_advanced_options").toggleClass("not_visible");
+  });
+
+  // Events to run whenever search results are updated (mainly counts)
+  jQuery(document).live("search_results_updated", function(){
+    // Update count
+    jQuery("#result_count_total").html(currentResultsCount());
+    jQuery("#ontologies_count_total").html(currentOntologiesCount());
+
+    // Tooltip for ontology counts
+    updatePopupCounts();
+    jQuery("#ont_tooltip").tooltip({
+      position: "bottom right",
+      opacity: "90%",
+      offset: [-18, 5]
+    });
   });
 
   // Perform search
@@ -96,7 +110,7 @@ jQuery(document).ready(function(){
           result_count.html("");
           jQuery("#search_results").html("<h2 style='padding-top: 1em;'>No results found</h2>");
         } else {
-          var results_by_ont = jQuery("#ontology_ontologyId").val() === null ? " in <span id='ontologies_count_total'>" + data.current_page_results + "</span> ontologies" : "";
+          var results_by_ont = jQuery("#ontology_ontologyId").val() === null ? " in <a id='ont_tooltip' href='javascript:void(0);'><span id='ontologies_count_total'>" + data.current_page_results + "</span> ontologies</a><div id='ontology_counts' class='ontology_counts_tooltip'/>" : "";
           result_count.html("Top <span id='result_count_total'>" + data.disaggregated_current_page_results + "</span> results" + results_by_ont);
           jQuery("#search_results").html(results.join(""));
         }
@@ -224,7 +238,7 @@ function processSearchResult(res) {
   var display_ont_name = (jQuery("#ontology_ontologyId").val() === null || jQuery("#ontology_ontologyId").val().length > 1)
 
   var row = [
-    "<div class='search_result'>",
+    "<div class='search_result' data-bp_ont_name='"+res.ontologyDisplayLabel+"'>",
     termHTML(res, label_html, display_ont_name),
     definitionHTML(res),
     "<div class='search_result_links'>"+resultLinksHTML(res) + additional_results_link+"</div>",
@@ -233,6 +247,32 @@ function processSearchResult(res) {
   ];
 
   return row;
+}
+
+function updatePopupCounts() {
+  var ontologies = [];
+  jQuery("#search_results div.search_result").each(function(){
+    var result = jQuery(this);
+    // Add one to the additional results to get total count (1 is for the primary result)
+    var resultsCount = result.children("div.additional_results").children("div.search_result_additional").length + 1;
+    ontologies.push(result.attr("data-bp_ont_name")+" <span style='float: right;'>"+resultsCount+"</span><br/>")
+  });
+
+  // Sort using case insensitive sorting
+  ontologies.sort(function(x, y){
+    var a = String(x).toUpperCase();
+    var b = String(y).toUpperCase();
+    if (a > b)
+       return 1
+    if (a < b)
+       return -1
+    return 0;
+  });
+
+  // Insert header at beginning
+  ontologies.splice(0, 0, "<b>Ontology<span style='float: right;'>Results</span></b><br/>");
+
+  jQuery("#ontology_counts").html(ontologies.join(""));
 }
 
 function normalizeObsoleteTerms(res) {
@@ -308,7 +348,7 @@ function getDefinition(def, keepOnlyDefinitions, count, totalSearchResults) {
 }
 
 function showDefinition(data, def, keepOnlyDefinitions) {
-  var defLimit = 235;
+  var defLimit = 210;
 
   if (typeof keepOnlyDefinitions === "undefined" || keepOnlyDefinitions == null) {
     keepOnlyDefinitions = false;
@@ -333,9 +373,7 @@ function showDefinition(data, def, keepOnlyDefinitions) {
     }
   }
 
-  // Update count
-  jQuery("#result_count_total").html(currentResultsCount());
-  jQuery("#ontologies_count_total").html(currentOntologiesCount());
+  jQuery(document).trigger("search_results_updated");
 }
 
 function advancedOptionsSelected() {

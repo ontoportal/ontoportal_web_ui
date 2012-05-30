@@ -3,6 +3,8 @@
 <%=stylesheet_link_tag "/javascripts/JqueryPlugins/facebox/facebox.css"%>
 
 <%=javascript_include_tag "JqueryPlugins/facebox/facebox.js"%>
+<%=javascript_include_tag "http://cdn.jquerytools.org/1.2.7/all/jquery.tools.min.js"%>
+
 
 <style>
 div#search_categories_chzn {
@@ -30,6 +32,23 @@ div#search_categories_chzn .chzn-drop {
   clear: both;
   text-align: right;
   width: 432px;
+}
+#result_stats a {
+  color: gray;
+}
+#ontology_counts {
+  width: 400px;
+  display: none;
+}
+.ontology_counts_tooltip {
+  background-color: #EEEEEE;
+  border: 1px solid black;
+  color: black;
+  font-size: 12px;
+  padding: 10px 15px;
+  text-align: left;
+  z-index: 999;
+  box-shadow: 3px 3px 7px gray;
 }
 </style>
 
