@@ -255,7 +255,7 @@ function updatePopupCounts() {
     var result = jQuery(this);
     // Add one to the additional results to get total count (1 is for the primary result)
     var resultsCount = result.children("div.additional_results").children("div.search_result_additional").length + 1;
-    ontologies.push(result.attr("data-bp_ont_name")+" <span style='float: right;'>"+resultsCount+"</span><br/>")
+    ontologies.push(result.attr("data-bp_ont_name")+" <span class='popup_counts'>"+resultsCount+"</span><br/>")
   });
 
   // Sort using case insensitive sorting
@@ -270,7 +270,7 @@ function updatePopupCounts() {
   });
 
   // Insert header at beginning
-  ontologies.splice(0, 0, "<b>Ontology<span style='float: right;'>Results</span></b><br/>");
+  // ontologies.splice(0, 0, "<b>Ontology<span class='popup_counts'>Results</span></b><br/>");
 
   jQuery("#ontology_counts").html(ontologies.join(""));
 }
