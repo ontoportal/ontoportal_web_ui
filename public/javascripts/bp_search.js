@@ -355,6 +355,9 @@ function showDefinition(data, def, keepOnlyDefinitions) {
   }
 
   if (data !== null && typeof data.definitions !== "undefined" && data.definitions !== null && data.definitions.length != 0) {
+    // Strip out xml elements and/or html
+    data.definitions = jQuery("<div/>").html(data.definitions).text();
+
     if (data.definitions.length > defLimit) {
       var defs = data.definitions.slice(0, defLimit).split(" ");
       // Remove the last word in case we got one partway through
