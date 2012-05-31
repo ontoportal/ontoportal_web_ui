@@ -219,6 +219,13 @@ class MappingsController < ApplicationController
 
 private
 
+  # TODO: mappings in triple store now use different properties (May 2012):
+  # mappings:source_ontology  => ontology URI
+  # mappings:target_ontology  => ontology URI
+  # May need to update the properties and replace these lines below:
+  #<mappings:source_ontology_id rdf:datatype=\"xsd:int\">#{mapping.source_ontology}</mappings:source_ontology_id>
+  #<mappings:target_ontology_id rdf:datatype=\"xsd:int\">#{mapping.target_ontology}</mappings:target_ontology_id>
+
   def to_RDF(mappings)
     rdf_text = "<?xml version='1.0' encoding='UTF-8'?>
 
@@ -343,7 +350,7 @@ private
          </rdf:Property>
 
          "
-
+    
          for mapping in mappings
           rdf_text << "<mappings:One_To_One_Mapping rdf:about=\"#{mapping.id}\">
              <mappings:source rdf:resource='#{mapping.source}'/>
