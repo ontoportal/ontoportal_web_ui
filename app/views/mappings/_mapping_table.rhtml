@@ -7,19 +7,19 @@
       <th>Mapping To</th>
       <th>Source</th>
       <th>Comment</th>
-      <th>Relationship Type</th>
-      <th>Mapped By</th>
-      <th>Mapped On</th>
+      <th>Relationship</th>
+      <th>Added By</th>
+      <th>Added On</th>
       <th>Notes</th>
     </tr>
   </thead>
 
   <%if @mappings.length < 1%>
     <tr>
-      <td colspan="<%=@delete_mapping_permission ? "7" : "6"%>">There are currently no mappings for this term.</td>
+      <td colspan="<%=@delete_mapping_permission ? "8" : "7"%>">There are currently no mappings for this term.</td>
     </tr>
   <%end%>
-
+  
   <%for map in @mappings%>
     <% next if map.destination_name.nil? %>
     <tr class="human" id="<%=map.id.gsub(/.*\//, "")%>">
@@ -37,8 +37,20 @@
           <%= link_to "#{map.destination_name} (#{map.destination_ont_name})", :controller => 'visualize', :action => 'virtual', :id => map.destination_ont.to_s, :conceptid => map.destination_id.to_s %>
         <%end%>
       </td>
-      <td><%=map.map_source%></td>
-      <td><%=map.comment%></td>
+      <td>
+      	<%=map.map_source%>
+      </td>
+      <td>
+		<%if ! map.comment.nil? %>
+			<%commentLength = 15%>
+			<%if map.comment.length < commentLength%>
+				<%=h(map.comment)%>
+			<%else%>
+				<%shortComment = truncate(map.comment, :length => commentLength) %>
+				<span title="<%=h(map.comment)%>" style="cursor: help;"><%=h(shortComment)%></span>
+			<%end%>
+		<%end%>
+      </td>
       <td><%=get_short_id(map.relationship_type)%></td>
       <td><%=map.user.username rescue ""%></td>
       <td><%=map.created_at.strftime("%m/%d/%y") rescue "--" %></td>
@@ -47,5 +59,4 @@
   <%end%>
 
 </table>
-
 
