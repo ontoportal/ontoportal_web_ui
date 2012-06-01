@@ -9,6 +9,6 @@
     -@resources_for_info.each do |resource|
       %tr
         %td{:style => "width: 20%;"}
-          %a.resource_link{:href => resource[:resourceURL], :target => "_blank", :id => "resource_link_#{resource[:resourceId]}"} #{@resources_hash[resource[:resourceId].downcase.to_sym][:resourceName]}
+          %a{:href => resource[:resourceURL], :target => "_blank", :id => "resource_link_#{resource[:resourceId]}"} #{@resources_hash[resource[:resourceId].downcase.to_sym][:resourceName]}
         %td{:style => "text-align: right;"}= number_with_delimiter(resource[:totalElements], ",")
-        %td= resource[:resourceDescription]
+        %td= truncate_with_more(resource[:resourceDescription], :length => 130)

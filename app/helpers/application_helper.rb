@@ -312,7 +312,7 @@ module ApplicationHelper
   end
 
   def at_slice?
-     !@subdomain_filter.nil? && !@subdomain_filter[:active].nil? && @subdomain_filter[:active] == true
+    !@subdomain_filter.nil? && !@subdomain_filter[:active].nil? && @subdomain_filter[:active] == true
   end
 
   def categories_for_select
@@ -323,6 +323,16 @@ module ApplicationHelper
     end
     categories_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
     categories_for_select
+  end
+
+  def truncate_with_more(text, options = {})
+    length ||= options[:length] ||= 30
+    trailing_text ||= options[:trailing_text] ||= " ... "
+    link_more ||= options[:link_more] ||= "[more]"
+    link_less ||= options[:link_less] ||= "[less]"
+    more_text = " <a href='javascript:void(0);' style='font-size: smaller;' class='truncated_more'>#{link_more}</a></span><span class='truncated_less'>#{text} <a href='javascript:void(0);' style='font-size: smaller;' class='truncated_less'>#{link_less}</a></span>"
+    more = text.length > length ? more_text : "</span>"
+    output = "<span class='more_less_container'><span class='truncated_more'>#{truncate(text, :length => length, :omission => trailing_text)}" + more + "</span>"
   end
 
 

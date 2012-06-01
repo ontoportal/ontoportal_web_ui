@@ -2022,3 +2022,10 @@ div#footnotes_debug {
   background-color: white;
   padding: 1em 0;
 }
+
+/************************************
+ * Truncate more/less
+ ************************************/
+.truncated_less {
+  display: none;
+}
