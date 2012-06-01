@@ -14,8 +14,8 @@ jQuery(document).ready(function(){
       queryLimit: 10,
       delay: 500,
       chosenOptions: {},
-      searchingText: "Searching for term...",
-      noresultsText: "No results.",
+      searchingText: "Searching for term ",
+      noresultsText: "BP test",
       initialQuery: false
     }, function (options, response, event) {
       jQuery.getJSON("/search/json", {query: options.term, ontology_ids: currentOntologyIds().join(",")}, function (data) {

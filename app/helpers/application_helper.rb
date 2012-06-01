@@ -330,7 +330,7 @@ module ApplicationHelper
     trailing_text ||= options[:trailing_text] ||= " ... "
     link_more ||= options[:link_more] ||= "[more]"
     link_less ||= options[:link_less] ||= "[less]"
-    more_text = " <a href='javascript:void(0);' style='font-size: smaller;' class='truncated_more'>#{link_more}</a></span><span class='truncated_less'>#{text} <a href='javascript:void(0);' style='font-size: smaller;' class='truncated_less'>#{link_less}</a></span>"
+    more_text = " <a href='javascript:void(0);' class='truncated_more'>#{link_more}</a></span><span class='truncated_less'>#{text} <a href='javascript:void(0);' class='truncated_less'>#{link_less}</a></span>"
     more = text.length > length ? more_text : "</span>"
     output = "<span class='more_less_container'><span class='truncated_more'>#{truncate(text, :length => length, :omission => trailing_text)}" + more + "</span>"
   end

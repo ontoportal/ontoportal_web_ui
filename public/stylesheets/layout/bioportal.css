@@ -2029,3 +2029,8 @@ div#footnotes_debug {
 .truncated_less {
   display: none;
 }
+
+a.truncated_less, a.truncated_more {
+  font-size: smaller;
+  color: gray;
+}
