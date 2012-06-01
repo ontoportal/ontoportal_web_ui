@@ -303,6 +303,14 @@ module ApplicationHelper
     @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
   end
 
+  def render_advanced_picker(custom_ontologies = nil, selected_ontologies = [], align_to_dom_id = "ontology_ontologyId_chzn")
+    selected_ontologies ||= []
+    init_ontology_picker(custom_ontologies, selected_ontologies)
+    render :partial => "shared/ontology_picker_advanced", :locals => {
+      :custom_ontologies => custom_ontologies, :selected_ontologies => selected_ontologies, :align_to_dom_id => align_to_dom_id
+    }
+  end
+
   def at_slice?
      !@subdomain_filter.nil? && !@subdomain_filter[:active].nil? && @subdomain_filter[:active] == true
   end

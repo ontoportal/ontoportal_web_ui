@@ -29,8 +29,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :virtual_appliance
 
-  map.resources :resource_index
-
   # The priority is based upon order of creation: first created -> highest priority.
 
   # You can have the root of your site routed by hooking up ''
@@ -97,6 +95,10 @@ ActionController::Routing::Routes.draw do |map|
   # History
   map.remove_tab '/tab/remove/:ontology',:controller => 'history', :action => 'remove'
   map.update_tab '/tab/update/:ontology/:concept', :controller => 'history', :action=>'update'
+
+  # Resource Index
+  map.connect '/resource_index/:action', :controller => "resource_index", :action => /element_annotations|results_paginate/
+  map.resources :resource_index
 
   # Redirects from old URL locations
   map.connect '/annotate', :controller => 'redirect', :url=>'/annotator'

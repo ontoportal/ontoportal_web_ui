@@ -25,25 +25,6 @@ var hideChosenResults = function(){
   }
 }
 
-// Synchronize checkboxes to select list
-function syncFromCheckboxes() {
-  var checkedIds = [];
-  jQuery(".ont_select_boxes_tr input:checked").each(function(){
-    checkedIds.push(jQuery(this).val());
-  });
-  jQuery("#ontology_ontologyId").val(checkedIds);
-  refreshOntList();
-}
-
-// Check the selected list of ontologies against the map and replace
-function ontLabelToAbbr() {
-  jQuery("#ontology_ontologyId_chzn > .chzn-choices > li > span").each(function(){
-    if (jQuery(this).children("span.chzn-abbr").length == 0) {
-      jQuery(this).html("<span class='chzn-abbr' title='"+jQuery(this).html()+"'>"+abbreviationMap[jQuery(this).html()]+"</span>");
-    }
-  });
-}
-
 </script>
 
 
@@ -60,6 +41,6 @@ function ontLabelToAbbr() {
     <a id="ont_select_adv_href" href="javascript:void(0)">select from list</a>
   </div>
 
-  <%= render :partial => "shared/ontology_picker_advanced" %>
+  <%=render_advanced_picker(custom_ontologies, selected_ontologies)%>
 </div>
 

@@ -8,9 +8,11 @@ gem "recaptcha", "~> 0.3.1"
 gem "rest-client", "~> 1.6.1"
 gem "mysql", "~> 2.8.1"
 gem "ncbo_annotator", ">= 1.0.13"
+gem "ncbo_resource_index"
 gem "memcache-client", "~> 1.8.5"
 gem "i18n", "~> 0.5.0"
 gem "airbrake"
+gem "haml"
 
 group :development do
   gem "ruby-debug"

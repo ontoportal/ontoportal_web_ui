@@ -1,0 +1,16 @@
+- require 'cgi'
+
+%div#resource_info
+  -@elements.resources.each do |resource|
+    -@resource_results = resource
+    %div.resource_container
+      %div.resource_header{:id => "resource_header_#{resource.resourceId}"}
+        %h2
+          %a.resource_link{:href => "#resource_link_#{resource.resourceId}", :data => { :resource_id => resource.resourceId }, :id => "resource_link_#{resource.resourceId}"} #{@resources_hash[resource.resourceId.downcase.to_sym][:resourceName]}
+          %span.record_count #{number_with_delimiter(resource.totalResults, ",")}
+      %div.resource_info.resource_details.not_visible{:id => "resource_info_#{resource.resourceId}"}
+        %img{:src => @resources_hash[resource.resourceId.downcase.to_sym][:resourceLogo], :class => "resource_image"}
+        =render :partial => "resource_results"
+        %div.clearing
+
+%div.clearing

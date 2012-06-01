@@ -1,3 +1,4 @@
+
 <script type="text/javascript">
 var abbreviationMap = { <%= @onts_for_js.join(", ") %> };
 var groupsMap = { <%= @groups_for_js.join(", ") %> };
@@ -6,11 +7,12 @@ var ontsInGroupsOrCategories = [ <%= @onts_in_group_or_category_for_js.join(", "
 var winHeight = jQuery(window).height();
 var ontSelectListPos = { top: 0, left: 0, width: 0 };
 var allSelected = false;
+var alignToDOMId = "<%=align_to_dom_id%>";
 
 jQuery(document).ready(function(){
-  ontSelectListPos.top = jQuery("#ontology_ontologyId_chzn").offset().top;
-  ontSelectListPos.left = jQuery("#ontology_ontologyId_chzn").offset().left;
-  ontSelectListPos.width = jQuery("#ontology_ontologyId_chzn").width();
+  ontSelectListPos.top = jQuery("#"+alignToDOMId).offset().top;
+  ontSelectListPos.left = jQuery("#"+alignToDOMId).offset().left;
+  ontSelectListPos.width = jQuery("#"+alignToDOMId).width();
 
   // Watch for changes in the entry of the select list
   jQuery("#ontology_ontologyId").change(function(e) {
@@ -23,7 +25,7 @@ jQuery(document).ready(function(){
   syncFromList();
 
   // Hide the advanced select when focusing in the chosen select box
-  jQuery("#ontology_ontologyId_chzn").bind("focus", hideAdvancedSelect);
+  jQuery("#"+alignToDOMId).bind("focus", hideAdvancedSelect);
 
   // Hide the advanced select when clicking anywhere except in advanced select
   jQuery('html').click(function() {
@@ -47,7 +49,7 @@ jQuery(document).ready(function(){
   // Wire up the link to open dialog box
   jQuery("#ont_select_adv_href").click(function() {
     var ont_select = jQuery("#ont_select_adv");
-    var chzn_select = jQuery("#ontology_ontologyId_chzn");
+    var chzn_select = jQuery("#"+alignToDOMId);
 
     ont_select.css("top", "50px");
     ont_select.css("left", chzn_select.offset().left + chzn_select.width() - 1);
@@ -67,8 +69,10 @@ jQuery(document).ready(function(){
     jQuery("#ont_list_container").height(ont_select.height() - 80);
 
     jQuery("#ont_select_adv").show();
+
     return false;
   });
+
   // Wire up close advanced select "X"
   jQuery("#close_adv_select").click(function(){
     hideAdvancedSelect();
@@ -135,9 +139,9 @@ jQuery(document).ready(function(){
 var hideAdvancedSelect = function(){
   if (jQuery("#ont_select_adv").is(":visible")) {
     jQuery("#ont_select_adv").hide();
-    jQuery("#ontology_ontologyId_chzn").children("ul.chzn-choices").removeClass("no_right_border").css("background", "");
+    jQuery("#"+alignToDOMId).children("ul.chzn-choices").removeClass("no_right_border").css("background", "");
     jQuery("#ontology_ontologyId_container").css("box-shadow", "");
-    jQuery("#ontology_ontologyId_chzn").css("z-index", "auto")
+    jQuery("#"+alignToDOMId).css("z-index", "auto")
   }
 }
 
@@ -199,6 +203,16 @@ var select_categories = {
   }
 }
 
+// Synchronize checkboxes to select list
+function syncFromCheckboxes() {
+  var checkedIds = [];
+  jQuery(".ont_select_boxes_tr input:checked").each(function(){
+    checkedIds.push(jQuery(this).val());
+  });
+  jQuery("#ontology_ontologyId").val(checkedIds);
+  refreshOntList();
+}
+
 function syncGroupsAndCategories() {
   jQuery("#select_all_filtered_row input").attr("checked", false);
 
@@ -237,6 +251,15 @@ function syncGroupsAndCategories() {
   // Put group/category names on the screen
   jQuery("#groups_and_category_names").html(group_category_names.join(", "));
   jQuery("#groups_categories_names_container").show();
+}
+
+// Check the selected list of ontologies against the map and replace
+function ontLabelToAbbr() {
+  jQuery("#ontology_ontologyId_chzn > .chzn-choices > li > span").each(function(){
+    if (jQuery(this).children("span.chzn-abbr").length == 0) {
+      jQuery(this).html("<span class='chzn-abbr' title='"+jQuery(this).html()+"'>"+abbreviationMap[jQuery(this).html()]+"</span>");
+    }
+  });
 }
 
 function refreshOntList() {

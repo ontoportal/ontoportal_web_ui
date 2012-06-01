@@ -1,6 +1,17 @@
 <%@title = "Resources Search"%>
 
+<script type="text/javascript">
+<%ont_acronyms = []%>
+<%@onts_and_views.each {|ont| ont_acronyms << "#{ont.ontologyId}: '#{ont.abbreviation.nil? ? ont.displayLabel : ont.abbreviation}'"}%>
+<%ri_ontology_ids = []%>
+<%@ri_ontologies.each {|ont| ri_ontology_ids << ont.ontologyId}%>
+var ont_acronyms = { <%=ont_acronyms.join(", ")%> };
+var ri_ontology_ids = [ <%=ri_ontology_ids.join(", ")%> ];
+</script>
+
+<%=javascript_include_tag 'knockout/knockout.js'%>
 <%=javascript_include_tag 'JqueryPlugins/ajax-chosen/ajax-chosen.js'%>
+<script src="/javascripts/bp_resource_index.js?1338489986" type="text/javascript" charset="ISO-8859-1"></script>
 
 <style>
 .chzn-container ul li input {
@@ -25,34 +36,90 @@
   color: #F4F4F4;
   content: "spacer";
 }
+
+ul.chzn-results {
+  max-height: 450px !important;
+}
+#resource_links {
+  /*float: left;*/
+  /*height: 100%;*/
+  margin: 20px 0;
+}
+.resource_image {
+  float: right;
+  margin: 0 0 10px 10px;
+  text-align: right;
+  width: 250px;
+}
+.record_count {
+  font-size: small;
+  color: #17932A;
+  padding-left: 15px;
+  vertical-align: middle;
+}
+.resource_details {
+  /*margin-left: 260px;*/
+  padding: 20px;
+  border: thick solid #17932A;
+  margin: 0 10px 25px;
+}
+.clearing {
+  clear: both;
+}
+span.mgrepContext,
+span.mgrepContext span.mappingContext,
+span.mappingContext span.mgrepContext,
+span.mgrepContext, span.isaContext,
+span.isaContext span.mgrepContext {
+  background-color: yellow !important;
+  font-weight: bold;
+}
+span.mappingContext {
+  background-color: lightBlue;
+  font-weight: bold;
+}
+span.isaContext {
+  background-color: lightRed;
+  font-weight: bold;
+}
+.element_result, .element_result a {
+  font-size: 105%;
+  margin-bottom: 15px;
+}
+.element_info {
+  padding-left: 3px;
+}
+.element_info a {
+  font-size: 90%;
+}
+.element_results {
+  padding: 0 10px;
+}
+.element_text {
+  padding: 7px 3px 0;
+}
+.element_text h2, h3, h4 {
+  font-size: 110%;
+  font-weight: bold;
+}
+div#resource_results div.element_results h4 {
+  font-weight: bold;
+}
+div#resource_results div.resource_results h2 {
+  font-size: 180%;
+}
+.highlighting {
+  color: gray;
+  font-style: oblique;
+  padding-left: 10px;
+}
+#search_button {
+  float: right;
+  margin-left: 445px;
+  position: absolute;
+}
+
 </style>
-
-<script type="text/javascript">
-
-<%ont_acronyms = []%>
-<%@onts_and_views.each {|ont| ont_acronyms << "#{ont.ontologyId}: '#{ont.abbreviation.nil? ? ont.displayLabel : ont.abbreviation}'"}%>
-<%ri_ontology_ids = []%>
-<%@ri_ontologies.each {|ont| ri_ontology_ids << ont.ontologyId}%>
-var ont_acronyms = { <%=ont_acronyms.join(", ")%> };
-var ri_ontology_ids = [ <%=ri_ontology_ids.join(", ")%> ];
-
-jQuery(document).ready(function () {
-	jQuery("#resource_index_terms").ajaxChosen({
-		method: 'GET',
-		url: '/search/json?ontology_ids='+ri_ontology_ids.join(","),
-		dataType: 'json',
-		jsonTermKey: 'query'
-	}, function (data) {
-		var terms = {};
-		
-		jQuery.each(data.results, function (index, result) {
-			terms[result.ontologyId + "/" + result.conceptIdShort] = "&nbsp;<span title='" + result.ontologyDisplayLabel + "'>" + result.preferredName + "<span class='search_dropdown_ont'>(" + ont_acronyms[result.ontologyId] + ")</span></span>";
-		});
-		
-		return terms;
-	});
-});
-</script>
 
 
 <div style="padding: 1em;">
@@ -63,28 +130,38 @@ jQuery(document).ready(function () {
   </p>
 
   <div style="padding-bottom: 1em;">
+<!--
     <div style="width: 610px;">
       <a href="javascript:void(0);" id="insert_text_link" style="font-size: 8pt; text-decoration: none; float: right; margin-bottom: 3px;">insert sample text</a>
     </div>
+ -->
+    <div style="width: 432px;">
+      <div id="search_button">
+        <input type="button" id="resource_index_button" value="Search Resource Index" class="link_button">
+        <span id="resource_index_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
+      </div>
 
-    <% textarea_title = "Search for terms to search with" %>
-    <%=select_tag :resource_index_terms, "", :multiple => 'true', "data-placeholder".to_sym => textarea_title, :title => textarea_title, :class => "help_text", :style => "width: 432px;" %>
+      <% textarea_title = "Start typing to find terms to search the index with" %>
+      <%=select_tag :resource_index_terms, "", :multiple => 'true', "data-placeholder".to_sym => textarea_title, :title => textarea_title, :class => "help_text", :style => "width: 432px;" %>
 
-    <br style="margin-bottom: 10px;"/>
+      <div style="float: right; font-size: smaller;">
+        <a id="ont_select_adv_href" href="javascript:void(0)">select ontologies to search</a>
+      </div>
+    </div>
 
-    <%=render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => @ri_ontologies }%>
+    <!-- hidden form input to use for tracking ontologies selected for filtering -->
+    <div style="position: absolute; left: -9999999999999px;"><%= render :partial => "shared/ontology_picker", :locals => { :sel_text => "Ontologies", :custom_ontologies => @ri_ontologies }%></div>
+    <%=render_advanced_picker(nil, @ri_ontologies, "resource_index_terms_chzn")%>
 
-    <input type="button" id="annotator_button" value="Get Annotations" style="margin-top: 15px;" class="link_button">
-    <span class="annotator_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
-    <span style='color: red;' id="annotator_error" class='annotator_error'></span>
+    <span style='color: red;' id="resource_index_error" class='resource_index_error'></span>
   </div>
 </div>
 
-<div id="annotations_container" style="display: none; padding: 0 13px; margin: 0 0 2em;" data-bp_rest_server="<%=$REST_DOMAIN%>">
+<div id="results_container" style="padding: 0 13px; margin: 0 0 2em; height: 100%;" data-bp_rest_server="<%=$REST_DOMAIN%>">
   <div style="float: right; font-style: oblique; color: gray;" id="result_counts"></div>
 
   <h2 style="margin-bottom: 0;">
-    Annotations
+    <!-- Resource Index Search Results -->
     <div id="filter_list" style="font-size: 9pt; color: gray; display: none; clear: both; margin: -15px 0 5px">
       <span id="filter_title">Results are filtered by:</span>&nbsp;
       <span id="filter_names"></span>
@@ -93,34 +170,9 @@ jQuery(document).ready(function () {
 
   <div id="results_error" style="color: red; margin-bottom: 7px;"></div>
 
-  <table id="annotations" style="display: inline-block; min-width: 700px; width: 100%;" class="zebra">
-    <thead>
-      <tr>
-        <th style="padding-right: 6px;" title="Term">
-          Term
-          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_terms" class="bp_popup_link">filter</a></span><div id="terms_filter_list" class="bp_popup_list" style="display: none;"></div></span>
-        </th>
-        <th style="padding-right: 6px" title="Ontology">
-          Ontology
-          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_ontologies" class="bp_popup_link">filter</a></span><div id="ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span>
-        </th>
-        <th style="padding-right: 6px; min-width: 85px;" title="Type">
-          Type
-          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_match_type" class="bp_popup_link">filter</a></span><div id="match_type_filter_list" class="bp_popup_list" style="display: none;"></div></span>
-        </th>
-        <th>UMLS Sem Type</th>
-        <th>Context</th>
-        <th style="padding-right: 6px;" title="Matched Term">
-          Matched Term
-          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_matched_terms" class="bp_popup_link">filter</a></span><div id="matched_terms_filter_list" class="bp_popup_list" style="display: none;"></div></span>
-        </th>
-        <th style="padding-right: 6px; min-width: 200px;" title="Matched Ontology">
-          Matched Ontology
-          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_matched_ontologies" class="bp_popup_link">filter</a></span><div id="matched_ontology_filter_list" class="bp_popup_list" style="display: none;"></div></span>
-        </th>
-      </tr>
-    </thead>
-  </table>
+  <div id="results">
+    <%= render :partial => "resources"%>
+  </div>
 
   <div id="download_links" style="margin-top: 1.5em;">
     <table border=0 style="border: 0; margin-bottom: .5em;">
@@ -134,9 +186,9 @@ jQuery(document).ready(function () {
 
     <span style="font-size: 8pt;">To reproduce these results use the following parameters:
       <br/>
-      <span id="annotator_parameters" style="color: gray; font-weight: bold;"></span>
+      <span id="resource_index_parameters" style="color: gray; font-weight: bold;"></span>
       <br/>
-      Additional parameters are documented at <a href="http://www.bioontology.org/wiki/index.php/Annotator_User_Guide" target="_blank">Annotator Web Service</a>
+      Additional parameters are documented at <a href="http://www.bioontology.org/wiki/index.php/resource_index_User_Guide" target="_blank">Annotator Web Service</a>
     </span>
   </div>
 </div>
