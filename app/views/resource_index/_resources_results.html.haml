@@ -9,7 +9,7 @@
       %div.resource_header{:id => "resource_header_#{resource.resourceId}"}
         %h2
           %a.resource_link{:href => "#resource_link_#{resource.resourceId}", :data => { :resource_id => resource.resourceId }, :id => "resource_link_#{resource.resourceId}"} #{@resources_hash[resource.resourceId.downcase.to_sym][:resourceName]}
-          %span.record_count #{number_with_delimiter(resource.totalResults, ",")} matched records
+          %span.record_count #{number_with_delimiter(resource.totalResults, :delimiter => ",")} matched records
       %div.resource_info.resource_details.not_visible{:id => "resource_info_#{resource.resourceId}"}
         %div.ri_legend
           %div direct:
@@ -25,3 +25,6 @@
         %div.clearing
 
 %div.clearing
+
+:javascript
+  var bp_last_params = #{@bp_last_params.to_json}

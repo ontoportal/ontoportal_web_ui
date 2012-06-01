@@ -41,9 +41,9 @@ class ResourceIndexController < ApplicationController
     @elements.resources.sort! {|a,b| @resources_hash[a.resourceId.downcase.to_sym][:resourceName].downcase <=> @resources_hash[b.resourceId.downcase.to_sym][:resourceName].downcase}
     @elements.resources.delete_if {|r| r.totalResults == 0}
     @concept_ids = params[:conceptids]
+    @bp_last_params = params
 
     render :partial => "resources_results"
-    # render :json => ranked_elements
   end
 
   def results_paginate

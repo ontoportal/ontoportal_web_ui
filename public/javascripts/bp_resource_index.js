@@ -1,5 +1,3 @@
-var testVar = currentOntologyIds().join(",");
-
 jQuery(document).ready(function(){
 
   // Hide/Show resources
@@ -34,6 +32,7 @@ jQuery(document).ready(function(){
   jQuery("#resource_index_button").click(function(){
     jQuery("#results_error").html("");
     jQuery("#resource_index_spinner").show();
+    jQuery("#results.contains_search_results").hide();
     var params = {
       "ontologyids": currentOntologyIds(),
       "conceptids": currentConceptIds()
@@ -46,6 +45,8 @@ jQuery(document).ready(function(){
       dataType: 'html',
       success: function(data) {
         jQuery("#results").html(data);
+        jQuery("#results").addClass("contains_search_results");
+        jQuery("#results.contains_search_results").show();
         jQuery("#results_container").show();
         jQuery("#resource_index_spinner").hide();
       },
@@ -189,3 +190,17 @@ function currentOntologyIds() {
 function currentConceptIds() {
   return jQuery("#resource_index_terms").val();
 }
+
+function generateParameters() {
+  var params = [];
+  var new_params = jQuery.extend(true, {}, bp_last_params);
+  delete new_params["apikey"]
+  delete new_params["format"]
+  jQuery.each(new_params, function(k, v){
+    if (v != null && v !== "") {
+      params.push(k + "=" + v);
+    }
+  });
+  jQuery("#resource_index_parameters").html(params.join("&"));
+}
+

@@ -97,6 +97,7 @@ ul.chzn-results {
 }
 .element_results {
   padding: 0 10px;
+  margin-bottom: 2em;
 }
 .element_results .pagination {
   font-size: 115%;
@@ -197,24 +198,24 @@ div#resource_results div.resource_results h2 {
 
   <div id="results">
     <%= render :partial => "resources"%>
-  </div>
 
-  <div id="download_links" style="margin-top: 1.5em;">
-    <table border=0 style="border: 0; margin-bottom: .5em;">
-      <tr>
-        <td style="padding: 0 3px 0 0;"><b>Format Results As </b></td>
-        <td id="download_links_text" style="padding: 3px;"></td>
-        <td id="download_links_tabdelimited" style="padding: 3px;"></td>
-        <td id="download_links_xml" style="padding: 3px;"></td>
-      </tr>
-    </table>
-
-    <span style="font-size: 8pt;">To reproduce these results use the following parameters:
-      <br/>
-      <span id="resource_index_parameters" style="color: gray; font-weight: bold;"></span>
-      <br/>
-      Additional parameters are documented at <a href="http://www.bioontology.org/wiki/index.php/resource_index_User_Guide" target="_blank">Annotator Web Service</a>
-    </span>
+    <div id="download_links" style="margin-top: 1.5em;">
+  <!--     <table border=0 style="border: 0; margin-bottom: .5em;">
+        <tr>
+          <td style="padding: 0 3px 0 0;"><b>Format Results As </b></td>
+          <td id="download_links_text" style="padding: 3px;"></td>
+          <td id="download_links_tabdelimited" style="padding: 3px;"></td>
+          <td id="download_links_xml" style="padding: 3px;"></td>
+        </tr>
+      </table>
+      <span style="font-size: 8pt;">To reproduce these results use the following parameters:
+        <br/>
+        <span id="resource_index_parameters" style="color: gray; font-weight: bold;"></span>
+        <br/>
+        Additional parameters are documented at the <a href="http://www.bioontology.org/wiki/index.php/Resource_Index_REST_Web_Service_User_Guide" target="_blank">Resource Index Web Service User Guide</a>
+      </span>
+   -->
+    </div>
   </div>
 </div>
 
