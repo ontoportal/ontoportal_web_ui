@@ -8,7 +8,7 @@ var CONCEPT_MAP = { "mapping": "mappedConcept", "mgrep": "concept", "closure": "
 jQuery(document).ready(function(){
     jQuery("#annotator_button").click(getannotations);
 
-    jQuery("#semanticTypes").chosen();
+    jQuery("#semanticTypes").chosen({search_contains: true});
 
     jQuery("#insert_text_link").click(insertSampleText);
 

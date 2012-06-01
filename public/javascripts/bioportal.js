@@ -597,7 +597,6 @@ jQuery(document).ready(function(){
 // Truncate more/less show and hide
 jQuery(document).ready(function(){
   jQuery("a.truncated_more").live("click", function(){
-    console.log("click")
     var link = jQuery(this);
     link.parents("span.more_less_container").find(".truncated_more").hide();
     link.parents("span.more_less_container").find(".truncated_less").show();

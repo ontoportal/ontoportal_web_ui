@@ -8,6 +8,10 @@ jQuery(document).ready(function(){
     switchResources(this);
   });
 
+  jQuery("#resource_index_terms_chzn").live("keyup", function(){
+
+  });
+
   // Make chosen work via ajax
   jQuery("#resource_index_terms").ajaxChosen({
       minLength: 3,
@@ -15,7 +19,7 @@ jQuery(document).ready(function(){
       delay: 500,
       chosenOptions: {},
       searchingText: "Searching for term ",
-      noresultsText: "BP test",
+      noresultsText: "Term not found",
       initialQuery: false
     }, function (options, response, event) {
       jQuery.getJSON("/search/json", {query: options.term, ontology_ids: currentOntologyIds().join(",")}, function (data) {

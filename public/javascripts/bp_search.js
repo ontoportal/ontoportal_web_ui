@@ -1,7 +1,7 @@
 jQuery(document).ready(function(){
   // Wire advanced search categories
-  jQuery("#search_categories").chosen();
-  jQuery("#search_button").button();
+  jQuery("#search_categories").chosen({search_contains: true});
+  jQuery("#search_button").button({search_contains: true});
 
   // Put cursor in search box by default
   jQuery("#search_keywords").focus();

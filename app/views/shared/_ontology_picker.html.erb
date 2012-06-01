@@ -6,7 +6,7 @@
 
 <script type="text/javascript">
 jQuery(window).ready(function(){
-  jQuery("#ontology_ontologyId").chosen();
+  jQuery("#ontology_ontologyId").chosen({search_contains: true});
 
   // Unbind the click handler from the ontology list
   jQuery("#ontology_ontologyId_chzn").bind("focus", hideChosenResults);
