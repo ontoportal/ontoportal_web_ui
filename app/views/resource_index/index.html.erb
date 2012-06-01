@@ -46,7 +46,7 @@ ul.chzn-results {
 }
 .resource_image {
   float: right;
-  margin: 0 0 10px 10px;
+  margin: -15px 0 10px 10px;
   text-align: right;
   width: 250px;
 }
@@ -65,20 +65,20 @@ ul.chzn-results {
 .clearing {
   clear: both;
 }
-span.mgrepContext,
-span.mgrepContext span.mappingContext,
-span.mappingContext span.mgrepContext,
-span.mgrepContext, span.isaContext,
-span.isaContext span.mgrepContext {
-  background-color: yellow !important;
+.mgrepContext,
+.mgrepContext .mappingContext,
+.mappingContext .mgrepContext,
+.mgrepContext .isaContext,
+.isaContext .mgrepContext {
+  background-color: #B0C4DE !important;
   font-weight: bold;
 }
-span.mappingContext {
-  background-color: lightBlue;
+.mappingContext {
+  background-color: #7ABA7A;
   font-weight: bold;
 }
-span.isaContext {
-  background-color: lightRed;
+.isaContext {
+  background-color: #F2BFC5;
   font-weight: bold;
 }
 .element_result, .element_result a {
@@ -93,6 +93,10 @@ span.isaContext {
 }
 .element_results {
   padding: 0 10px;
+}
+.element_results .pagination {
+  font-size: 115%;
+  font-weight: bold;
 }
 .element_text {
   padding: 7px 3px 0;
@@ -116,6 +120,24 @@ div#resource_results div.resource_results h2 {
   float: right;
   margin-left: 445px;
   position: absolute;
+}
+.ri_legend {
+  border: 1px solid #ccc;
+  padding: 5px 5px 5px 17px;
+  margin: -10px auto 10px;
+  width: 250px;
+  height: 17px;
+}
+.ri_legend div {
+  float: left;
+}
+.highlight_box {
+  float: left;
+  margin-left: 5px;
+  margin-right: 15px;
+  border: 1px solid #000;
+  width: 15px;
+  height: 15px;
 }
 
 </style>

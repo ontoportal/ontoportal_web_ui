@@ -1,11 +1,14 @@
--@resources_for_info.each do |resource|
-  %div.resource_container
-    %div.resource_header{:id => "resource_header_#{resource[:resourceId]}"}
-      %h2
-        %a.resource_link{:href => "javascript:void(0)", :data => { :resource_id => resource[:resourceId] }, :id => "resource_link_#{resource[:resourceId]}"} #{@resources_hash[resource[:resourceId].downcase.to_sym][:resourceName]}
-        %span.record_count #{number_with_delimiter(resource[:totalElements], ",")}
-    %div.resource_info.resource_details.not_visible{:id => "resource_info_#{resource[:resourceId]}"}
-      %img{:src => resource[:resourceLogo], :class => "resource_image"}
-      %p= resource[:resourceDescription]
-      %p.clearing
-        %a.resource_info_link{:href => resource[:resourceURL], :target => "_blank"} #{@resources_hash[resource[:resourceId].downcase.to_sym][:resourceName]} site
+%h2{:style => "font-size: 150%;"} Available Resources
+%table.zebra
+  %thead
+    %tr
+      %th Resource
+      %th{:style => "text-align: right;"} Total Records
+      %th Description
+  %tbody
+    -@resources_for_info.each do |resource|
+      %tr
+        %td{:style => "width: 20%;"}
+          %a.resource_link{:href => resource[:resourceURL], :target => "_blank", :id => "resource_link_#{resource[:resourceId]}"} #{@resources_hash[resource[:resourceId].downcase.to_sym][:resourceName]}
+        %td{:style => "text-align: right;"}= number_with_delimiter(resource[:totalElements], ",")
+        %td= resource[:resourceDescription]

@@ -54,7 +54,7 @@ jQuery(document).ready(function(){
     ont_select.css("top", "50px");
     ont_select.css("left", chzn_select.offset().left + chzn_select.width() - 1);
     ont_select.css("width", jQuery(window).width() - (chzn_select.offset().left + chzn_select.width()) - 100 + "px");
-    ont_select.css("height", jQuery(window).height() - 100);
+    ont_select.css("height", jQuery(window).height() - 80);
 
     // Configure the chosen select list box to remove background, move z-index above the advanced select
     chzn_select.css("z-index", "4000");
@@ -330,7 +330,7 @@ function clearAllSelections() {
 </script>
 
 <div id="ont_select_adv" style="overflow: visible; z-index: 100; display: none; text-align: left; border: thin solid gray; position: fixed; background: white; max-width: 550px; box-shadow: 0 0 10px gray;">
-  <div id="ont_select_adv_inner" style="padding: 15px; background: white; z-index: 5000;">
+  <div id="ont_select_adv_inner" style="padding: 15px 10px 3px; background: white; z-index: 5000;">
     <h2>Select Multiple Ontologies <a href="javascript:void(0);" id="close_adv_select" class="ui-dialog-titlebar-close ui-corner-all" role="button" unselectable="on" style="-moz-user-select: none; float: right;"><span class="ui-icon ui-icon-closethick" unselectable="on" style="-moz-user-select: none;">close</span></a></h2>
 
     <input type="text" id="advanced_filter_input" class="help_text" style="width: 300px; margin-bottom: 10px;" title="Search all ontology names">

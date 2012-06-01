@@ -1,9 +1,10 @@
 %div.element_results{:id => "#{@resource_results.resourceId}_results"}
   -@resource_results.each do |element|
-    %div.element_result{:data => {:element_id => element[:localElementId]}}
-      %div{:id => "#{element[:localElementId]}_link"}
-        %a{:href => "javascript:void(0);", :class => "show_element_details", :data => {:element_id => CGI.escape(element[:localElementId]), :resource_id => @resource_results.resourceId}}= element[:text][@resources_hash[@resource_results.resourceId.downcase.to_sym][:mainContext]]
-      %div.not_visible.element_results{:id => element[:localElementId]+"_text", :data => {:highlighted => false}}
+    -element_id = CGI.escape(element[:localElementId].gsub(/[^0-9A-Za-z]/, ""))
+    %div.element_result{:data => {:element_id => element_id}}
+      %div{:id => "_link"}
+        %a{:href => "javascript:void(0);", :class => "show_element_details", :data => {:clean_element_id => element_id, :element_id => CGI.escape(element[:localElementId]), :resource_id => @resource_results.resourceId}}= element[:text][@resources_hash[@resource_results.resourceId.downcase.to_sym][:mainContext]]
+      %div.not_visible.element_results{:id => element_id+"_text", :data => {:highlighted => false}}
         %div.element_text
           -element[:weights].each do |weight|
             %h4= weight[:name].split("_")[1].capitalize

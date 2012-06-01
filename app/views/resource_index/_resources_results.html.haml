@@ -1,5 +1,7 @@
 - require 'cgi'
 
+%h2{:style => "font-size: 150%;"} Search Results
+
 %div#resource_info
   -@elements.resources.each do |resource|
     -@resource_results = resource
@@ -7,9 +9,18 @@
       %div.resource_header{:id => "resource_header_#{resource.resourceId}"}
         %h2
           %a.resource_link{:href => "#resource_link_#{resource.resourceId}", :data => { :resource_id => resource.resourceId }, :id => "resource_link_#{resource.resourceId}"} #{@resources_hash[resource.resourceId.downcase.to_sym][:resourceName]}
-          %span.record_count #{number_with_delimiter(resource.totalResults, ",")}
+          %span.record_count #{number_with_delimiter(resource.totalResults, ",")} matched records
       %div.resource_info.resource_details.not_visible{:id => "resource_info_#{resource.resourceId}"}
-        %img{:src => @resources_hash[resource.resourceId.downcase.to_sym][:resourceLogo], :class => "resource_image"}
+        %div.ri_legend
+          %div direct:
+          %div.mgrepContext.highlight_box &nbsp;
+          %div mapping:
+          %div.mappingContext.highlight_box &nbsp;
+          %div ancestor:
+          %div.isaContext.highlight_box &nbsp;
+          %div.clearing
+        %div.resource_image
+          %img{:src => @resources_hash[resource.resourceId.downcase.to_sym][:resourceLogo], :class => "resource_image"}
         =render :partial => "resource_results"
         %div.clearing
 

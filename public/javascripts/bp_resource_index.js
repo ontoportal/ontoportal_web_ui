@@ -3,7 +3,8 @@ var testVar = currentOntologyIds().join(",");
 jQuery(document).ready(function(){
 
   // Hide/Show resources
-  jQuery(".resource_link").live("click", function(){
+  jQuery(".resource_link").live("click", function(event){
+    event.preventDefault();
     switchResources(this);
   });
 
@@ -27,6 +28,7 @@ jQuery(document).ready(function(){
   });
 
   jQuery("#resource_index_button").click(function(){
+    jQuery("#results_error").html("");
     jQuery("#resource_index_spinner").show();
     var params = {
       "ontologyids": currentOntologyIds(),
@@ -45,7 +47,7 @@ jQuery(document).ready(function(){
       },
       error: function() {
         jQuery("#resource_index_spinner").hide();
-        jQuery("#results_error").html("Problem retrieving search results, please try again")
+        jQuery("#results_error").html("Problem retrieving search results, please try again");
       }
     })
   })
@@ -54,21 +56,23 @@ jQuery(document).ready(function(){
     e.preventDefault();
 
     var el = jQuery(this);
-    var el_text = jQuery("#"+el.attr("data-element_id")+"_text");
+    var cleanElementId = el.attr("data-clean_element_id");
+    var el_text = jQuery("#"+cleanElementId+"_text");
     el_text.toggleClass("not_visible");
     if (el_text.attr("highlighted") !== "true") {
-      var element = new Element(el.attr("data-element_id"), currentConceptIds(), el.attr("data-resource_id"));
-      jQuery("#"+element.id+"_link").append("<span class='highlighting'>highlighting...</span>");
+      var element = new Element(el.attr("data-element_id"), cleanElementId, currentConceptIds(), el.attr("data-resource_id"));
+      jQuery("#"+element.cleanId+"_link").append("<span class='highlighting'>highlighting...</span>");
       element.getAnnotationPositions();
       el_text.attr("highlighted", "true");
     }
   });
 });
 
-function Element(id, conceptIds, resource) {
+function Element(id, cleanId, conceptIds, resource) {
   this.positions;
   this.id = id;
-  this.jdomId = "#"+id+"_text";
+  this.cleanId = cleanId;
+  this.jdomId = "#"+cleanId+"_text";
   this.conceptIds = conceptIds;
   this.resource = resource;
 
@@ -102,7 +106,7 @@ function Element(id, conceptIds, resource) {
         }
       }
     );
-    jQuery("#"+this.id+"_link").children(".highlighting").remove();
+    jQuery("#"+this.cleanId+"_link").children(".highlighting").remove();
   }
 
 }
@@ -119,6 +123,7 @@ function switchResources(res) {
     jQuery("#resource_info_"+resId).removeClass("not_visible");
     jQuery("#resource_info .resource_link").removeClass("active_resource");
     res.addClass("active_resource");
+    jQuery(window).scrollTop(document.getElementById("resource_header_"+resId).offsetTop);
   }
 }
 
