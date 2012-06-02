@@ -1,7 +1,9 @@
 - require 'cgi'
 
-%h2{:style => "font-size: 150%;"} Search Results
+%h2{:style => "font-size: 150%; margin-bottom: 1.3em;"} Search Results
 
+%div.ri_header
+  %span.record_count_header Matched Records
 %div#resource_info
   -@elements.resources.each do |resource|
     -@resource_results = resource
@@ -9,7 +11,7 @@
       %div.resource_header{:id => "resource_header_#{resource.resourceId}"}
         %h2
           %a.resource_link{:href => "#resource_link_#{resource.resourceId}", :data => { :resource_id => resource.resourceId }, :id => "resource_link_#{resource.resourceId}"} #{@resources_hash[resource.resourceId.downcase.to_sym][:resourceName]}
-          %span.record_count #{number_with_delimiter(resource.totalResults, :delimiter => ",")} matched records
+          %span.record_count #{number_with_delimiter(resource.totalResults, :delimiter => ",")}
       %div.resource_info.resource_details.not_visible{:id => "resource_info_#{resource.resourceId}"}
         %div.ri_legend
           %div direct:

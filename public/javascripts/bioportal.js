@@ -608,6 +608,21 @@ jQuery(document).ready(function(){
   })
 })
 
+// Invoke a loading animation where dots are added to some load text
+// Call this like: var loadAni = loadingAnimation("#loading");
+// Where: <span id="loading">loading</span>
+// To kill the animation, call clearInterval(loadAni);
+function loadingAnimation(loadId) {
+  var originalText = jQuery(loadId).text(), i = 0;
+  return setInterval(function() {
+    jQuery(loadId).append(".");
+    i++;
+    if(i == 4) {
+        $(loadId).html(originalText);
+        i = 0;
+    }
+  }, 500);
+}
 
 // Enable this to see errors in jQuery(document).ready() code
 // var oldReady = jQuery.ready;

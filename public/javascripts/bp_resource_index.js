@@ -6,9 +6,10 @@ jQuery(document).ready(function(){
     switchResources(this);
   });
 
-  jQuery("#resource_index_terms_chzn").live("keyup", function(){
-
-  });
+  // Spinner for pagination
+  jQuery(".pagination a").live("click", function(){
+    jQuery(this).parents("div.pagination").append('&nbsp;&nbsp; <span style="font-size: small; font-weight: normal;">loading</span> <img style="vertical-align: text-bottom;" src="/images/spinners/spinner_000000_16px.gif">');
+  })
 
   // Make chosen work via ajax
   jQuery("#resource_index_terms").ajaxChosen({
@@ -66,8 +67,10 @@ jQuery(document).ready(function(){
     el_text.toggleClass("not_visible");
     if (el_text.attr("highlighted") !== "true") {
       var element = new Element(el.attr("data-element_id"), cleanElementId, currentConceptIds(), el.attr("data-resource_id"));
-      jQuery("#"+element.cleanId+"_link").append("<span class='highlighting'>highlighting...</span>");
-      element.getAnnotationPositions();
+      jQuery("#"+element.cleanId+"_link").append("<span id='"+element.cleanId+"_ani'class='highlighting'>highlighting</span>");
+      var loadAni = loadingAnimation("#"+element.cleanId+"_ani");
+      element.loadAni = loadAni;
+      element.highlightAnnotationPositions();
       el_text.attr("highlighted", "true");
     }
   });
@@ -80,9 +83,9 @@ function Element(id, cleanId, conceptIds, resource) {
   this.jdomId = "#"+cleanId+"_text";
   this.conceptIds = conceptIds;
   this.resource = resource;
+  this.loadAni = null;
 
-
-  this.getAnnotationPositions = function() {
+  this.highlightAnnotationPositions = function() {
     var element = this;
     jQuery.ajax({
       url: "/resource_index/element_annotations",
@@ -112,6 +115,9 @@ function Element(id, cleanId, conceptIds, resource) {
       }
     );
     jQuery("#"+this.cleanId+"_link").children(".highlighting").remove();
+    if (this.loadAni !== null) {
+      clearInterval(this.loadAni);
+    }
   }
 
 }
@@ -128,7 +134,8 @@ function switchResources(res) {
     jQuery("#resource_info_"+resId).removeClass("not_visible");
     jQuery("#resource_info .resource_link").removeClass("active_resource");
     res.addClass("active_resource");
-    jQuery(window).scrollTop(document.getElementById("resource_header_"+resId).offsetTop);
+    // Scroll to the newly revealed results
+    jQuery(window).scrollTop(document.getElementById("resource_header_"+resId).offsetTop - 15);
   }
 }
 
