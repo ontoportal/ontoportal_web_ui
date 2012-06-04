@@ -1324,6 +1324,7 @@ textarea.create_note_inputs {
 .simpleTree .active {
   cursor: default;
   background-color: #17932A;
+  color: white;
   font-weight: bold;
   padding: 2px;
 }
