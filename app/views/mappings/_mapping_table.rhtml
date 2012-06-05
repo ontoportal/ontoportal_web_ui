@@ -38,18 +38,18 @@
         <%end%>
       </td>
       <td>
-      	<a href="<%=map.mapping_source_site%>"><%=map.map_source%></a>
+        <a href="<%=map.mapping_source_site%>" target="_blank"><%=map.map_source%></a>
       </td>
       <td>
-		<%if ! map.comment.nil? %>
-			<%commentLength = 15%>
-			<%if map.comment.length < commentLength%>
-				<%=h(map.comment)%>
-			<%else%>
-				<%shortComment = truncate(map.comment, :length => commentLength) %>
-				<span title="<%=h(map.comment)%>" style="cursor: help;"><%=h(shortComment)%></span>
-			<%end%>
-		<%end%>
+        <%if ! map.comment.nil? %>
+            <%commentLength = 15%>
+            <%if map.comment.length < commentLength%>
+                <%=h(map.comment)%>
+            <%else%>
+                <%shortComment = truncate(map.comment, :length => commentLength) %>
+                <span title="<%=h(map.comment)%>" style="cursor: help;"><%=h(shortComment)%></span>
+            <%end%>
+        <%end%>
       </td>
       <td><%=get_short_id(map.relationship_type)%></td>
       <td><%=map.user.username rescue ""%></td>
