@@ -211,7 +211,7 @@ class OntologiesController < ApplicationController
     end
 
     # Check to see if user is requesting RDF+XML, return the file from REST service if so
-    if request.content_type.to_s.eql?("application/rdf+xml")
+    if request.accept.to_s.eql?("application/rdf+xml")
       user_api_key = session[:user].nil? ? "" : session[:user].apikey
       concept_id = params[:conceptid] ? params[:conceptid] : "root"
       rdf = open($REST_URL + "/virtual/rdf/#{@ontology.ontologyId}?conceptid=#{CGI.escape(concept_id)}&apikey=#{$API_KEY}&userapikey=#{user_api_key}")
@@ -477,7 +477,7 @@ class OntologiesController < ApplicationController
     @ontology = DataAccess.getLatestOntology(@ontology_version.ontologyId)
 
     # Check to see if user is requesting RDF+XML, return the file from REST service if so
-    if request.content_type.to_s.eql?("application/rdf+xml")
+    if request.accept.to_s.eql?("application/rdf+xml")
       user_api_key = session[:user].nil? ? "" : session[:user].apikey
       begin
         rdf_file = RemoteFile.new($REST_URL + "/virtual/ontology/rdf/download/#{@ontology.ontologyId}?apikey=#{$API_KEY}&userapikey=#{user_api_key}")
