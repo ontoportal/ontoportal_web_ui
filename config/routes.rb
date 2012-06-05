@@ -36,7 +36,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # Top-level pages
   map.connect '/feedback', :controller => 'home', :action => 'feedback'
-  map.connect '/resources', :controller => 'home', :action => 'all_resources'
+  map.connect '/resources', :controller => 'resource_index', :action => 'index'
   map.connect '/account', :controller => 'home', :action => 'account'
   map.connect '/help', :controller => 'home', :action => 'help'
   map.connect '/robots.txt', :controller => 'home', :action => 'robots'
