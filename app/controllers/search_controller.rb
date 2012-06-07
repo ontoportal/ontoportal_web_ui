@@ -26,7 +26,7 @@ class SearchController < ApplicationController
 
   def json
     # Safety checks
-    params[:objecttypes] = "class"
+    params[:objecttypes] = params[:include_props] ? "class,property" : "class"
     params[:page_size] = 250
     params[:includedefinitions] = "false"
     params[:query] = params[:query].strip
@@ -158,7 +158,8 @@ class SearchController < ApplicationController
       # The following statements filter results using defaults. They can be overridden with "advanced options"
       # Discard if ontology is not production
       if params[:include_non_production].eql?("false")
-        next unless DataAccess.getOntology(result['ontologyId']).production?
+        ont = DataAccess.getOntology(result['ontologyId'])
+        next unless ont.production? || (!params[:ontology_ids].nil? && params[:ontology_ids].include?(ont.ontologyId.to_s))
       end
 
       # Discard if the result is an obsolete term

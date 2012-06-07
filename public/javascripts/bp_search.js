@@ -98,7 +98,6 @@ jQuery(document).ready(function(){
 
         // Obsolete terms should appear at the end with a heading
         if (data.obsolete_results.length > 0) {
-          results.push("<h2 style='font-size: 150%;'>Obsolete Terms</h2>");
           jQuery(data.obsolete_results).each(function(){
             results.push(processSearchResult(this).join(""));
           });
@@ -193,26 +192,29 @@ function processSearchResult(res) {
   if (typeof res.additional_results !== "undefined" && res.additional_results.length > 0 ||
       typeof res.additional_results_obsolete !== "undefined" && res.additional_results_obsolete.length > 0) {
     var more_res = res.additional_results;
-    var additional_results_obsolete_count = typeof res.additional_results_obsolete !== "undefined" ? res.additional_results_obsolete.length : 0
-    additional_results_link = jQuery("<span/>")
-                                .append(jQuery("<span/>")
-                                .addClass("additional_results_link search_result_link")
-                                .html(" - <a href='#additional_results' class='additional_results_link' data-bp_additional_results_for='"+more_res[0].ontologyId+"'>" + (more_res.length + additional_results_obsolete_count) + " more from this ontology<span class='not_visible hide_link'>[hide]</span></a>")).html();
-
+    var additional_results_obsolete_count = typeof res.additional_results_obsolete !== "undefined" ? res.additional_results_obsolete.length : 0;
     var additional_rows = [];
-    jQuery(more_res).each(function(){
-      additional_rows.push([
-        "<div class='search_result_additional'>",
-        termHTML(this, normalizeObsoleteTerms(this), false),
-        definitionHTML(this, "additional_def_container"),
-        "<div class='search_result_links'>"+resultLinksHTML(this)+"</div>",
-        "</div>"
-      ].join(""));
-    });
+    var ontologyId = typeof more_res === "undefined" ? res.additional_results_obsolete[0].ontologyId : more_res[0].ontologyId;
+
+    if (typeof res.additional_results !== "undefined" && res.additional_results.length > 0) {
+      additional_results_link = jQuery("<span/>")
+                                  .append(jQuery("<span/>")
+                                  .addClass("additional_results_link search_result_link")
+                                  .html(" - <a href='#additional_results' class='additional_results_link' data-bp_additional_results_for='"+more_res[0].ontologyId+"'>" + (more_res.length + additional_results_obsolete_count) + " more from this ontology<span class='not_visible hide_link'>[hide]</span></a>")).html();
+
+      jQuery(more_res).each(function(){
+        additional_rows.push([
+          "<div class='search_result_additional'>",
+          termHTML(this, normalizeObsoleteTerms(this), false),
+          definitionHTML(this, "additional_def_container"),
+          "<div class='search_result_links'>"+resultLinksHTML(this)+"</div>",
+          "</div>"
+        ].join(""));
+      });
+    }
 
     // Obsolete terms should appear at the end with a heading
     if (typeof res.additional_results_obsolete !== "undefined" && res.additional_results_obsolete.length > 0) {
-      additional_rows.push("<h2 style='font-size: 120%; padding-left: 20px;'>Obsolete Terms</h2>");
       jQuery(res.additional_results_obsolete).each(function(){
         additional_rows.push([
           "<div class='search_result_additional'>",
@@ -226,7 +228,7 @@ function processSearchResult(res) {
 
     additional_results = jQuery("<div/>")
                                 .append(jQuery("<div/>")
-                                .attr("id", "additional_results_"+more_res[0].ontologyId)
+                                .attr("id", "additional_results_"+ontologyId)
                                 .addClass("additional_results")
                                 .addClass("not_visible")
                                 .html(additional_rows.join("")))
@@ -234,12 +236,9 @@ function processSearchResult(res) {
 
   }
 
-  // Don't include ontology name if searching a single ontology
-  var display_ont_name = (jQuery("#ontology_ontologyId").val() === null || jQuery("#ontology_ontologyId").val().length > 1)
-
   var row = [
     "<div class='search_result' data-bp_ont_name='"+res.ontologyDisplayLabel+"'>",
-    termHTML(res, label_html, display_ont_name),
+    termHTML(res, label_html, true),
     definitionHTML(res),
     "<div class='search_result_links'>"+resultLinksHTML(res) + additional_results_link+"</div>",
     additional_results,
