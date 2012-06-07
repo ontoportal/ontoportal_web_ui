@@ -37,14 +37,15 @@ Rails::Initializer.run do |config|
   # Make sure the secret is at least 30 characters and all random,
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
-    :key => '_BioPortalGui_session',
-    :secret      => 'b5dbc6e61dfc71473c1ce7b3989f17f8a5500d24178acfd38f883af2b2c161b2e1430fbdc5f7f1d6fd578d10348a769a45b171b0070600336de15e753bede4ad'
+    :key => '_bp_session',
+    :secret      => 'f8a5500d24178acfd38f883af2b2c16'
   }
 
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
   # (create the session table with 'rake db:sessions:create')
   # config.action_controller.session_store = :active_record_store
+  config.action_controller.session_store = :mem_cache_store
 
   # Use SQL instead of Active Record's schema dumper when creating the test database.
   # This is necessary if your schema can't be completely dumped by the schema dumper,
