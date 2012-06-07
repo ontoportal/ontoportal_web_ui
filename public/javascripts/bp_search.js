@@ -120,6 +120,7 @@ jQuery(document).ready(function(){
       },
       error: function(){
         jQuery("#search_spinner").hide();
+        jQuery("#search_results").hide();
         jQuery("#search_messages").html("<span style='color: red'>Problem searching, please try again");
       }
     });
@@ -191,18 +192,20 @@ function processSearchResult(res) {
   // Additional terms for this ontology
   if (typeof res.additional_results !== "undefined" && res.additional_results.length > 0 ||
       typeof res.additional_results_obsolete !== "undefined" && res.additional_results_obsolete.length > 0) {
-    var more_res = res.additional_results;
+    var additional_results = res.additional_results;
     var additional_results_obsolete_count = typeof res.additional_results_obsolete !== "undefined" ? res.additional_results_obsolete.length : 0;
+    var additional_results_count = typeof res.additional_results !== "undefined" ? res.additional_results.length : 0;
     var additional_rows = [];
-    var ontologyId = typeof more_res === "undefined" ? res.additional_results_obsolete[0].ontologyId : more_res[0].ontologyId;
+    var ontologyId = typeof additional_results === "undefined" || additional_results.length == 0 ? res.additional_results_obsolete[0].ontologyId : additional_results[0].ontologyId;
+
+    additional_results_link = jQuery("<span/>")
+      .append(jQuery("<span/>")
+      .addClass("additional_results_link search_result_link")
+      .html(" - <a href='#additional_results' class='additional_results_link' data-bp_additional_results_for='"+ontologyId+"'>" + (additional_results_count + additional_results_obsolete_count) + " more from this ontology<span class='not_visible hide_link'>[hide]</span></a>")).html();
 
     if (typeof res.additional_results !== "undefined" && res.additional_results.length > 0) {
-      additional_results_link = jQuery("<span/>")
-                                  .append(jQuery("<span/>")
-                                  .addClass("additional_results_link search_result_link")
-                                  .html(" - <a href='#additional_results' class='additional_results_link' data-bp_additional_results_for='"+more_res[0].ontologyId+"'>" + (more_res.length + additional_results_obsolete_count) + " more from this ontology<span class='not_visible hide_link'>[hide]</span></a>")).html();
 
-      jQuery(more_res).each(function(){
+      jQuery(additional_results).each(function(){
         additional_rows.push([
           "<div class='search_result_additional'>",
           termHTML(this, normalizeObsoleteTerms(this), false),
@@ -253,7 +256,7 @@ function updatePopupCounts() {
   jQuery("#search_results div.search_result").each(function(){
     var result = jQuery(this);
     // Add one to the additional results to get total count (1 is for the primary result)
-    var resultsCount = result.children("div.additional_results").children("div.search_result_additional").length + 1;
+    var resultsCount = result.children("div.additional_results").find("div.search_result_additional").length + 1;
     ontologies.push(result.attr("data-bp_ont_name")+" <span class='popup_counts'>"+resultsCount+"</span><br/>")
   });
 
