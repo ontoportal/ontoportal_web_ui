@@ -948,9 +948,8 @@ textarea.create_note_inputs {
   color: red;
 }
 .add_note_legend {
-  float: right;
   color: red;
-  margin-top: 1.3em;
+  margin: -5px 0 5px;
 }
 .add_reply_button {
   cursor: pointer;
@@ -1323,8 +1322,7 @@ textarea.create_note_inputs {
 }
 .simpleTree .active {
   cursor: default;
-  background-color: #17932A;
-  color: white;
+  background-color: #B9D5E4;
   font-weight: bold;
   padding: 2px;
 }
@@ -2034,4 +2032,15 @@ div#footnotes_debug {
 a.truncated_less, a.truncated_more {
   font-size: smaller;
   color: gray;
+}
+
+/************************************
+ * Recaptcha
+ ************************************/
+.recaptchatable #recaptcha_image {
+  border: 1px solid #C1DAD7 !important;
+}
+.recaptchatable {
+  border: 1px solid white !important;
+  background-color: white;
 }
