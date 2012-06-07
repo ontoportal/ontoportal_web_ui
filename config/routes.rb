@@ -36,7 +36,8 @@ ActionController::Routing::Routes.draw do |map|
 
   # Top-level pages
   map.connect '/feedback', :controller => 'home', :action => 'feedback'
-  map.connect '/resources', :controller => 'resource_index', :action => 'index'
+  # map.connect '/resources', :controller => 'resource_index', :action => 'index'
+  map.connect '/resources', :controller => 'home', :action => 'all_resources'
   map.connect '/account', :controller => 'home', :action => 'account'
   map.connect '/help', :controller => 'home', :action => 'help'
   map.connect '/robots.txt', :controller => 'home', :action => 'robots'
@@ -73,6 +74,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect "/ajax/mappings/get_concept_table", :controller => "mappings", :action => "get_concept_table"
   map.connect "/ajax/json_term", :controller => "ajax_proxy", :action => "json_term"
   map.connect "/ajax/jsonp", :controller => "ajax_proxy", :action => "jsonp"
+  map.connect "/ajax/recaptcha", :controller => "ajax_proxy", :action => "recaptcha"
 
   # User
   map.logout '/logout', :controller => 'login',:action => 'destroy'
