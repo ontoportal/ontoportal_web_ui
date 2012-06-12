@@ -72,13 +72,13 @@ div#search_categories_chzn .chzn-drop {
     <div id="search_options" class="not_visible" style="padding-top: .6em; clear: both; margin-bottom: 40px;">
       <h2 style="margin-bottom: 3px; font-size: 12pt; !important;">Include in your search...</h2>
       <div id="include_options" class="search_options">
-        <%=check_box :search, :include_views%> <%=label :search, :include_views, "Ontology views"%>
+        <%=check_box :search, :include_props%> <%=label :search, :include_props, "Property values"%>
         <br/>
         <%=check_box :search, :include_obsolete%> <%=label :search, :include_obsolete, "Obsolete terms"%>
         <br/>
         <%=check_box :search, :include_non_production%> <%=label :search, :include_non_production, "Non-production ontologies"%>
         <br/>
-        <%=check_box :search, :include_props%> <%=label :search, :include_props, "Property values"%>
+        <%=check_box :search, :include_views%> <%=label :search, :include_views, "Ontology views"%>
       </div>
 
       <h2 style="margin: 10px 0 3px; font-size: 12pt; !important;">Narrow your search to...</h2>
