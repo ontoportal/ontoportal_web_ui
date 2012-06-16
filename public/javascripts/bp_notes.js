@@ -6,7 +6,7 @@ var BP_NOTES_LOADED = true;
 
 // Make sure that notes table is 100% width when switching tabs
 jQuery(document).bind("terms_tab_visible", function(){
-  notesTable.css("width", "100%");
+  jQuery("table.notes_list_table").css("width", "100%");
 });
 
 jQuery(document).ready(function(){
@@ -254,6 +254,7 @@ function wireNotesAddClicks() {
     jQuery(buttons_div).parent().children('.create_note_options').children('.note_options').hide();
     jQuery('#' + noteTypeId).show();
     jQuery(buttons_div).children('.note_action').removeClass("create_note_selected");
+    buttons_div.parent().find("#"+prefix+"note_submit").attr("note_type", jQuery(this).data("bp_note_type"));
     jQuery(this).addClass("create_note_selected");
   });
 
@@ -262,16 +263,28 @@ function wireNotesAddClicks() {
 function submitNote(event, target) {
   event.preventDefault();
 
+  var button = target;
   var note;
   var note_type = jQuery(target).attr("note_type");
   var prefix = jQuery(target).data("prefix") === null ? "" : jQuery(target).data("prefix");
   var action = jQuery(target).data("action");
   var ONT = jQuery(target).data("ont_id");
   var NOTES_URL = "/notes/";
+  var noteParams;
+  var recaptcha_challenge_field = jQuery("#"+prefix+"submit_container").find("[name='recaptcha_challenge_field']").val();
+  var recaptcha_response_field = jQuery("#"+prefix+"submit_container").find("[name='recaptcha_response_field']").val();
+
+  // Should this note be anonymous?
+  var anonymous = jQuery(target).parent().find(".anonymous_note").val();
+  if (typeof anonymous === "undefined") {
+    anonymous = jQuery(target).parent().find(".anonymous_note_logged_in:checked").val();
+  }
 
   // Disable button, activate spinner and text
-  var button = target;
   button_loading(button, prefix);
+
+  // Clear existing error messages
+  jQuery(".error_input").html("");
 
   switch (note_type) {
   case "create_comment":
@@ -293,8 +306,12 @@ function submitNote(event, target) {
 
   if (note.failedValidation === true) {
     button_reset(button);
-    jQuery("#" + jQuery(button).attr("id") + "_submit_container").append(' <span class="error_message">Invalid entries, please fix and try again</span>');
+    jQuery("#" + prefix + "_submit_container").find("span.error_message").html(' Invalid entries, please fix and try again');
   } else {
+    noteParams = note.member_variables;
+    noteParams["anonymous"] = anonymous;
+    noteParams["recaptcha_challenge_field"] = recaptcha_challenge_field;
+    noteParams["recaptcha_response_field"] = recaptcha_response_field;
 
     jQuery.ajax({
         type: "POST",
@@ -360,6 +377,12 @@ function submitNote(event, target) {
                     ontNotesTable.fnDeleteRow(ontNotesTable.fnGetPosition(document.getElementById("ont_no_notes")));
                   }
 
+                  try {
+                    Recaptcha.reload();
+                  } catch (err) {
+                    // ignore if not present
+                  }
+
                   // We add the (+ "") statement to "cast" to a string
                   ontNotesTable.fnAddData([
                               json.subject_link + "",
@@ -392,9 +415,17 @@ function submitNote(event, target) {
           // Move window to new note location (TODO: Possible future implementation)
           //   window.scrollTo(0,$("#"+id).offset().top);
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        error: function(response, textStatus, errorThrown) {
           button_reset(button);
-          jQuery("#" + jQuery(button).attr("id") + "_submit_container").append(' <span class="error_message">Problem submitting, please try again</span>');
+          var data = jQuery.parseJSON(response.responseText);
+          var message = ' Problem submitting, please try again';
+          if (typeof data !== "undefined") {
+            if (data.valid_recaptcha == false) {
+              message = ' Text entered in CAPTHCA did not match the image, please try again';
+              Recaptcha.reload();
+            }
+          }
+          jQuery("#" + prefix + "submit_container").find("span.error_message").html(message);
         }
     });
   }
@@ -434,7 +465,7 @@ function subscribeToNotes(button) {
 }
 
 function button_loading(button, prefix) {
-  jQuery(".error_message").remove();
+  jQuery(".error_message").html("");
   jQuery(button).addClass("add_reply_button_busy");
   jQuery(button).attr("disabled", "true");
   jQuery("#" + jQuery(button).attr("id") + "_submit_container").append(' <span class="ajax_message"><img src="/images/spinners/spinner_E2EBF0.gif" style="vertical-align: middle;"> loading...</span>');

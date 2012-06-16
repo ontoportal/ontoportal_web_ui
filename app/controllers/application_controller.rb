@@ -87,6 +87,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def anonymous_user
+    user = DataAccess.getUser($ANONYMOUS_USER)
+    user ||= User.new({"id" => 0})
+  end
+
   # Custom 404 handling
   rescue_from Error404, :with => :render_404
 
@@ -270,5 +275,11 @@ class ApplicationController < ActionController::Base
   def time_formatted_from_java(java_time)
     time_from_java(java_time).strftime("%m/%d/%Y")
   end
+
+  def using_captcha?
+    !ENV['USE_RECAPTCHA'].nil? && ENV['USE_RECAPTCHA'] == 'true'
+  end
+
+
 
 end

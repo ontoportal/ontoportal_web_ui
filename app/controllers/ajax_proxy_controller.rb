@@ -4,14 +4,14 @@ require 'uri'
 require 'cgi'
 
 class AjaxProxyController < ApplicationController
-  
-  
+
+
   def get
-    
+
     page = open(params[:url])
     content =  page.read
     render :text => content
-    
+
   end
 
   def jsonp
@@ -41,22 +41,26 @@ class AjaxProxyController < ApplicationController
     no_relations = params[:no_relations] ||= true
     render_json DataAccess.getLightNode(DataAccess.getOntology(params[:ontologyid]).id, params[:conceptid], max_children, no_relations).to_json
   end
-  
+
+  def recaptcha
+    render :partial => "recaptcha"
+  end
+
   private
 
-  def render_json(json, options={})  
-    callback, variable = params[:callback], params[:variable]  
-  	response = begin  
-  	  if callback && variable  
-  	    "var #{variable} = #{json};\n#{callback}(#{variable});"  
-  	  elsif variable  
-  	    "var #{variable} = #{json};"  
-  	  elsif callback  
-  	    "#{callback}(#{json});"  
-  	  else  
-  	    json  
-  	  end  
-  	end  
+  def render_json(json, options={})
+    callback, variable = params[:callback], params[:variable]
+  	response = begin
+  	  if callback && variable
+  	    "var #{variable} = #{json};\n#{callback}(#{variable});"
+  	  elsif variable
+  	    "var #{variable} = #{json};"
+  	  elsif callback
+  	    "#{callback}(#{json});"
+  	  else
+  	    json
+  	  end
+  	end
     render({:content_type => :js, :text => response}.merge(options))
   end
 

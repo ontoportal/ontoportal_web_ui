@@ -18,6 +18,10 @@ module ApplicationHelper
     end
   end
 
+  def using_captcha?
+    !ENV['USE_RECAPTCHA'].nil? && ENV['USE_RECAPTCHA'] == 'true'
+  end
+
   def encode_param(string)
     return URI.escape(string, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
   end
@@ -237,6 +241,11 @@ module ApplicationHelper
             <span class="pop_window ui-icon ui-icon-help"></span>
           </a>
     BLOCK
+  end
+
+  def anonymous_user
+    user = DataAccess.getUser($ANONYMOUS_USER)
+    user ||= User.new({"id" => 0})
   end
 
   def init_ontology_picker(ontologies = nil, selected_ontologies = [])

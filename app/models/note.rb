@@ -15,6 +15,7 @@ class Note
   attr_accessor :associated
   attr_accessor :values
 
+  attr_accessor :errors
 
   def initialize(hash = nil, params = nil)
     return if hash.nil? || (!hash['id'] && !hash["noteBean"]["id"])

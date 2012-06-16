@@ -146,8 +146,8 @@ class NotesController < ApplicationController
   def create
     @errors = validate(params)
 
-    if @errors
-      render :text => "Error submitting notes"
+    unless @errors.empty?
+      render :json => @errors, :status => 500
       return
     end
 
@@ -207,7 +207,18 @@ class NotesController < ApplicationController
   end
 
   def validate(params)
+    errors = {}
 
+    if using_captcha? && params[:anonymous].eql?("1")
+      if session[:user]
+        params["author"] = anonymous_user.id
+      else
+        valid_recaptcha = verify_recaptcha
+        errors[:valid_recaptcha] = false unless valid_recaptcha
+      end
+    end
+
+    errors
   end
 
 end

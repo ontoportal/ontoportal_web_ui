@@ -12,7 +12,7 @@ $UI_URL = "http://bioportal.bioontology.org"
 $PURL_ENABLED = false
 
 # The PURL URL is generated using this prefix + the abbreviation for an ontology.
-# The PURL URL generation algorithm can be altered in app/models/ontology_wrapper.rb 
+# The PURL URL generation algorithm can be altered in app/models/ontology_wrapper.rb
 $PURL_PREFIX = "http://purl.bioontology.org/ontology"
 
 # If your BioPortal installation includes Annotator set this to false
@@ -22,7 +22,7 @@ $ANNOTATOR_DISABLED = true
 $RESOURCE_INDEX_DISABLED = true
 
 # Unique string representing the UI's id for use with the BioPortal Core
-$API_KEY = "" 
+$API_KEY = ""
 
 # REST core service address
 $REST_URL = "http://domain.com:8080/bioportal"
@@ -64,6 +64,9 @@ $WIKI_HELP_PAGE = ""
 # Google Analytics ID (optional)
 $ANALYTICS_ID = ""
 
+# A user id for user 'anonymous' for use when a user is required for an action on the REST service but you don't want to require a user to login
+$ANONYMOUS_USER = 0
+
 # If you plan on using Airbrake to track exceptions then provide your API Key here
 $AIRBRAKE_API_KEY = ""
 
@@ -75,7 +78,7 @@ ActionMailer::Base.smtp_settings = {
   :address  => "", # smtp server address, ex: smtp.domain.com
   :port  => 25, # smtp server port
   :domain  => "", # fqdn of rails server, ex: rails.domain.com
-} 
+}
 
 # Announcements mailman mailing list REQUEST address, EX: list-request@lists.example.org
 # NOTE: You must use the REQUEST address for the mailing list. ONLY WORKS WITH MAILMAN LISTS.

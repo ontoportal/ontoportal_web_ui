@@ -1,6 +1,5 @@
-<% unless session[:user] %>
-	Please <%= link_to "login", "/login" %> to submit notes
-<% else %>
+<%current_user = session[:user].nil? ? anonymous_user : session[:user]%>
+<%current_user_id = current_user.id.to_i%>
 
 <% @semi_uuid = (1000 * Time.now.to_f).to_i.to_s unless defined?(@semi_uuid) %>
 
@@ -57,10 +56,10 @@
 <h2 class="<%=prefix%>add_reply"><%=add_text%></h2>
 <div id="<%=prefix%>create_note_container" class="create_note_container">
 	<div id="<%=prefix%>create_note_buttons" class="create_note_buttons">
-		<span id="<%=prefix%>create_note_comment_button" note_type="<%=prefix%>create_note_comment" class="note_action note_buttons create_note_selected">Comment</span>
-		<span id="<%=prefix%>create_note_new_term_button" note_type="<%=prefix%>create_note_new_term" class="note_action note_buttons">Propose New Term</span>
-		<span id="<%=prefix%>create_note_change_hierarchy_button" note_type="<%=prefix%>create_note_change_hierarchy" class="note_action note_buttons">Propose Relationship Change</span>
-		<span id="<%=prefix%>create_note_change_prop_value_button" note_type="<%=prefix%>create_note_change_prop_value" class="note_action note_buttons">Propose Property Value Change</span>
+		<span id="<%=prefix%>create_note_comment_button" data-bp_note_type="create_comment" note_type="<%=prefix%>create_note_comment" class="note_action note_buttons create_note_selected">Comment</span>
+		<span id="<%=prefix%>create_note_new_term_button" data-bp_note_type="create_new_term" note_type="<%=prefix%>create_note_new_term" class="note_action note_buttons">Propose New Term</span>
+		<span id="<%=prefix%>create_note_change_hierarchy_button" data-bp_note_type="create_change_hierarchy" note_type="<%=prefix%>create_note_change_hierarchy" class="note_action note_buttons">Propose Relationship Change</span>
+		<span id="<%=prefix%>create_note_change_prop_value_button" data-bp_note_type="create_change_prop_value" note_type="<%=prefix%>create_note_change_prop_value" class="note_action note_buttons">Propose Property Value Change</span>
 	</div>
 
 	<div id="<%=prefix%>create_note_options" class="create_note_options">
@@ -70,19 +69,15 @@
 			<input type="hidden" id="<%=prefix%>create_comment_appliesTo" value="<%= applies_to rescue "" %>" class="create_comment_inputs">
 			<input type="hidden" id="<%=prefix%>create_comment_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_comment_inputs">
 			<input type="hidden" id="<%=prefix%>create_comment_noteType" value="Comment" class="create_comment_inputs">
-			<input type="hidden" id="<%=prefix%>create_comment_author" value="<%= session[:user].id %>" class="create_comment_inputs">
+			<input type="hidden" id="<%=prefix%>create_comment_author" value="<%= current_user_id %>" class="create_comment_inputs">
 
 			<h2>Comment</h2>
+			<div class="add_note_legend">* required</div>
 			Subject <span class="required">*</span> <span id="<%=prefix%>create_comment_subject_error" class="error_input"></span><br/>
 			<input tabindex="100" id='<%=prefix%>create_comment_subject' class="create_note_inputs create_comment_inputs"><br/>
 			Body <span class="required">*</span> <span id="<%=prefix%>create_comment_body_error" class="error_input"></span><br/>
 			<textarea tabindex="101" id='<%=prefix%>create_comment_body' class="create_note_inputs create_comment_inputs"></textarea><br>
 
-			<div id="<%=prefix%>create_comment_submit_container" class="submit_container">
-				<button tabindex="102" id="<%=prefix%>create_comment" note_type="create_comment" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
-			</div>
-
-			<div class="add_note_legend">* required</div>
 			<div style="clear: both;"></div>
 		</div>
 
@@ -92,7 +87,7 @@
 				<input type="hidden" id="<%=prefix%>create_new_term_appliesTo" value="<%= applies_to rescue "" %>" class="create_new_term_inputs">
 				<input type="hidden" id="<%=prefix%>create_new_term_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_new_term_inputs">
 				<input type="hidden" id="<%=prefix%>create_new_term_noteType" value="ProposalForCreateEntity" class="create_new_term_inputs">
-				<input type="hidden" id="<%=prefix%>create_new_term_author" value="<%= session[:user].id %>" class="create_new_term_inputs">
+				<input type="hidden" id="<%=prefix%>create_new_term_author" value="<%= current_user_id %>" class="create_new_term_inputs">
 
 				Preferred name <span class="required">*</span> <span id="<%=prefix%>termPreferredName_error" class="error_input"></span><br/>
 				<input tabindex="201" type="text" id="<%=prefix%>termPreferredName" class="create_note_inputs create_new_term_inputs"><br/>
@@ -100,30 +95,16 @@
 				<input tabindex="202" type="text" id="<%=prefix%>termSynonyms" class="create_note_inputs create_new_term_inputs"><br/>
 				Definition <span class="required">*</span> <span id="<%=prefix%>termDefinition_error" class="error_input"></span><br/>
 				<input tabindex="203" type="text" id="<%=prefix%>termDefinition" class="create_note_inputs create_new_term_inputs"><br/>
-				<!--
-        Proposed id<br/>
-				<input tabindex="204" type="text" id="<%=prefix%>termId" class="create_note_inputs create_new_term_inputs"><br/>
-        -->
 				Parent (start typing to autocomplete) <span class="required">*</span> <span id="<%=prefix%>termParent_error" class="error_input"></span><br/>
 				<input tabindex="205" type="text" name="<%=prefix%>termParent" id="<%=prefix%>termParent" value="<%= @concept.fullId_proper rescue "" %>" class="create_note_inputs create_new_term_inputs bp_form_complete-<%= @ontology.ontologyId %>-uri"><br/>
 				Contact information (publically visible)<br/>
 				<input tabindex="206" type="text" id="<%=prefix%>create_new_term_contactInfo" class="create_note_inputs create_new_term_inputs"><br/>
-				<div class="add_note_legend">* required</div>
 			</div>
 			<h2>New Term</h2>
+			<div class="add_note_legend">* required</div>
 
 			Reason for change <span class="required">*</span> <span id="<%=prefix%>create_new_term_reasonForChange_error" class="error_input"></span><br/>
 			<textarea tabindex="200" id="<%=prefix%>create_new_term_reasonForChange" class="create_note_inputs create_new_term_inputs"></textarea><br/>
-			<!--
-			Subject<br/>
-			<input id='<%=prefix%>create_new_term_subject' class="create_note_inputs create_new_term_inputs"><br/>
-			Body<br/>
-			<textarea id='<%=prefix%>create_new_term_body' class="create_note_inputs create_new_term_inputs"></textarea><br>
-			-->
-
-			<div id="<%=prefix%>create_new_term_submit_container" class="submit_container">
-				<button tabindex="207" id="<%=prefix%>create_new_term" note_type="create_new_term" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
-			</div>
 
 			<div style="clear: both;"></div>
 		</div>
@@ -134,7 +115,7 @@
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_appliesTo" value="<%= applies_to rescue "" %>" class="create_change_hierarchy_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_change_hierarchy_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_hierarchy_noteType" value="ProposalForChangeHierarchy" class="create_change_hierarchy_inputs">
-				<input type="hidden" id="<%=prefix%>create_change_hierarchy_author" value="<%= session[:user].id %>" class="create_change_hierarchy_inputs">
+				<input type="hidden" id="<%=prefix%>create_change_hierarchy_author" value="<%= current_user_id %>" class="create_change_hierarchy_inputs">
 
 				New relationship target (start typing to autocomplete) <span class="required">*</span> <span id="<%=prefix%>relationshipTarget_error" class="error_input"></span><br/>
 				<input tabindex="301" type="text" name="<%=prefix%>relationshipTarget" id="<%=prefix%>relationshipTarget" class="bp_form_complete-<%= @ontology.ontologyId %>-uri create_note_inputs create_change_hierarchy_inputs"><br/>
@@ -150,9 +131,9 @@
 				</select><br/>
 				Contact information (publically visible)<br/>
 				<input tabindex="304" type="text" id="<%=prefix%>create_change_hierarchy_contactInfo" class="create_note_inputs create_change_hierarchy_inputs"><br/>
-				<div class="add_note_legend">* required</div>
 			</div>
 			<h2>New Relationship / Change Hierarchy</h2>
+			<div class="add_note_legend">* required</div>
 
 			Reason for change <span class="required">*</span> <span id="<%=prefix%>create_change_hierarchy_reasonForChange_error" class="error_input"></span><br/>
 			<textarea tabindex="300" id="<%=prefix%>create_change_hierarchy_reasonForChange" class="create_note_inputs create_change_hierarchy_inputs"></textarea><br/>
@@ -163,10 +144,6 @@
 			<textarea id='<%=prefix%>create_change_hierarchy_body' class="create_note_inputs create_change_hierarchy_inputs"></textarea><br>
 			-->
 
-			<div id="<%=prefix%>create_change_hierarchy_submit_container" class="submit_container">
-				<button tabindex="305" id="<%=prefix%>create_change_hierarchy" note_type="create_change_hierarchy" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
-			</div>
-
 			<div style="clear: both;"></div>
 		</div>
 
@@ -176,7 +153,7 @@
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_appliesTo" value="<%= applies_to rescue "" %>" class="create_change_prop_value_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_appliesToType" value="<%= applies_to_type rescue "" %>" class="create_change_prop_value_inputs">
 				<input type="hidden" id="<%=prefix%>create_change_prop_value_noteType" value="ProposalForChangePropertyValue" class="create_change_prop_value_inputs">
-				<input type="hidden" id="<%=prefix%>create_change_prop_value_author" value="<%= session[:user].id %>" class="create_change_prop_value_inputs">
+				<input type="hidden" id="<%=prefix%>create_change_prop_value_author" value="<%= current_user_id %>" class="create_change_prop_value_inputs">
 
 				New property value <span class="required">*</span> <span id="<%=prefix%>newPropertyValue_error" class="error_input"></span><br/>
 				<input tabindex="401" type="text" id="<%=prefix%>newPropertyValue" class="create_note_inputs create_change_prop_value_inputs"><br/>
@@ -186,9 +163,9 @@
 				<input tabindex="403" type="text" id="<%=prefix%>oldPropertyValue" class="create_note_inputs create_change_prop_value_inputs"><br/>
 				Contact information (publically visible)<br/>
 				<input tabindex="404" type="text" id="<%=prefix%>create_change_prop_value_contactInfo" class="create_note_inputs create_change_prop_value_inputs"><br/>
-				<div class="add_note_legend">* required</div>
 			</div>
 			<h2>Change Property Value</h2>
+			<div class="add_note_legend">* required</div>
 
 			Reason for change <span class="required">*</span> <span id="<%=prefix%>create_change_prop_value_reasonForChange_error" class="error_input"></span><br/>
 			<textarea tabindex="400" id="<%=prefix%>create_change_prop_value_reasonForChange" class="create_note_inputs create_change_prop_value_inputs"></textarea><br/>
@@ -199,13 +176,26 @@
 			<textarea id='<%=prefix%>create_change_prop_value_body' class="create_note_inputs create_change_prop_value_inputs"></textarea><br>
 			-->
 
-			<div id="<%=prefix%>create_change_prop_value_submit_container" class="submit_container">
-				<button tabindex="405" id="<%=prefix%>create_change_prop_value" note_type="create_change_prop_value" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
-			</div>
-
 			<div style="clear: both;"></div>
 		</div>
+		<div id="<%=prefix%>submit_container" class="submit_container">
+			<% unless session[:user] %>
+				<%if current_user_id == 0 || !using_captcha?%>
+					Please <%= link_to "login", "/login" %> to submit notes
+				<%else%>
+					<div class="recaptcha_container">
+						<%= recaptcha_tags :display => { "theme" => "clean" } %>
+					</div>
+					<div>Please <%= link_to "login", "/login" %> to submit notes with your user (to submit anonymously, fill in the CAPTCHA)</div>
+					<input class="anonymous_note" type="hidden" name="anonymous" value="1"/>
+				<%end%>
+			<% else %>
+				<%=check_box_tag "#{prefix}anonymous_note", "1", false, :class => "anonymous_note_logged_in"%> <label for="<%="#{prefix}anonymous_note"%>">Submit note anonymously</label><br/>
+			<% end %>
+			<button tabindex="405" id="<%=prefix%>note_submit" note_type="create_comment" class="create_note_submit <%=prefix%>note_submit_data">submit</button>
+			<span class="error_message"></span>
+		</div>
+		<div style="clear: both;"></div>
 	</div>
 </div>
 
-<% end %> <!-- end check for logged in user -->

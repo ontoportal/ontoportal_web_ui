@@ -109,5 +109,9 @@ class UserWrapper
       return params
     end
 
+    def anonymous?
+      self.id.to_i == $ANONYMOUS_USER
+    end
+
 
 end
