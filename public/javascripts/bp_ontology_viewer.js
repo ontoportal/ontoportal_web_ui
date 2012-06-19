@@ -11,6 +11,8 @@
     var params = {};
     var state = History.getState();
 
+    jQuery(document).trigger("ont_view_change");
+
     if (typeof state.data.p !== 'undefined') {
       if (state.data.p == "terms") {
         displayTree(state.data);

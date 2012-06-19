@@ -35,6 +35,7 @@
 	jQuery.data(document.body, "action", "<%=action_type%>");
 	jQuery.data(document.body, "ont_id", "<%= @ontology.ontologyId %>");
 	jQuery.data(document.body, "add_text", "<%= add_text %>");
+	jQuery.data(document.body, "recaptcha_key", "<%=ENV['RECAPTCHA_PUBLIC_KEY']%>");
 
 	jQuery(document).ready(function(){
 		// Set data for retrieval
@@ -53,7 +54,7 @@
 <%end%>
 </script>
 
-<h2 class="<%=prefix%>add_reply"><%=add_text%></h2>
+<h2 data-bp_prefix="<%=prefix%>" class="<%=prefix%>add_reply add_reply_button"><%=add_text%></h2>
 <div id="<%=prefix%>create_note_container" class="create_note_container">
 	<div id="<%=prefix%>create_note_buttons" class="create_note_buttons">
 		<span id="<%=prefix%>create_note_comment_button" data-bp_note_type="create_comment" note_type="<%=prefix%>create_note_comment" class="note_action note_buttons create_note_selected">Comment</span>
@@ -183,9 +184,7 @@
 				<%if current_user_id == 0 || !using_captcha?%>
 					Please <%= link_to "login", "/login" %> to submit notes
 				<%else%>
-					<div class="recaptcha_container">
-						<%= recaptcha_tags :display => { "theme" => "clean" } %>
-					</div>
+					<div id="<%=prefix%>recaptcha_container" class="recaptcha_container"></div>
 					<div>Please <%= link_to "login", "/login" %> to submit notes with your user (to submit anonymously, fill in the CAPTCHA)</div>
 					<input class="anonymous_note" type="hidden" name="anonymous" value="1"/>
 				<%end%>

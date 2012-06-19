@@ -26,6 +26,13 @@ jQuery(document).ready(function(){
   jQuery(".create_note_submit").live('click', function(event) {
     submitNote(event, this);
   });
+
+  // Hide the notes create form whenever we change ont views
+  jQuery(document).live("ont_view_change", function(){
+    jQuery("h2.add_reply_button").each(function(){
+      hideNoteForm(this);
+    });
+  });
 });
 
 function Comment(prefix, ONT) {
@@ -238,11 +245,9 @@ function wireNotesAddClicks() {
   // Wire up the "Add Reply" link
   jQuery('.add_reply_button').live("click", function(){
     if (jQuery(this).parent().children(".create_note_container").is(':visible')) {
-      jQuery(this).text(jQuery.data(document.body, "add_text"));
-      jQuery(this).parent().children(".create_note_container").hide();
+      hideNoteForm(this);
     } else {
-      jQuery(this).text("Hide " + jQuery.data(document.body, "add_text"));
-      jQuery(this).parent().children(".create_note_container").show();
+      showNoteForm(this);
     }
   });
 
@@ -258,6 +263,18 @@ function wireNotesAddClicks() {
     jQuery(this).addClass("create_note_selected");
   });
 
+}
+
+function hideNoteForm(button) {
+  jQuery(button).text(jQuery.data(document.body, "add_text"));
+  jQuery(button).parent().children(".create_note_container").hide();
+}
+
+function showNoteForm(button) {
+  var prefix = jQuery(button).data("bp_prefix");
+  newCaptcha(jQuery(document.body).data("recaptcha_key"), prefix+"recaptcha_container");
+  jQuery(button).text("Hide");
+  jQuery(button).parent().children(".create_note_container").show();
 }
 
 function submitNote(event, target) {
@@ -468,13 +485,17 @@ function button_loading(button, prefix) {
   jQuery(".error_message").html("");
   jQuery(button).addClass("add_reply_button_busy");
   jQuery(button).attr("disabled", "true");
-  jQuery("#" + jQuery(button).attr("id") + "_submit_container").append(' <span class="ajax_message"><img src="/images/spinners/spinner_E2EBF0.gif" style="vertical-align: middle;"> loading...</span>');
+  jQuery("#" + jQuery(button).data("prefix") + "submit_container").append(' <span class="ajax_message"><img src="/images/spinners/spinner_E2EBF0.gif" style="vertical-align: middle;"> loading...</span>');
 }
 
 function button_reset(button) {
   jQuery(button).removeClass("add_reply_button_busy");
   jQuery(button).removeAttr("disabled");
   jQuery(".ajax_message").remove();
+}
+
+function newCaptcha(recaptchaKey, location) {
+  Recaptcha.create(recaptchaKey, location, { theme: "clean" });
 }
 
 function getNoteTypeText(note_type) {
