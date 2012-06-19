@@ -102,7 +102,7 @@
       if (data.tabType == "visualization") {
         jQuery("#biomixer_iframe").attr("src", jQuery("#biomixer_iframe").data("src"));
       }
-    })
+    });
 
     function callTab(tab_name, url) {
         if (getCache(getConcept() + tab_name) != null) {
