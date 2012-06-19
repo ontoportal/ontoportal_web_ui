@@ -46,6 +46,10 @@ class AjaxProxyController < ApplicationController
     render :partial => "recaptcha"
   end
 
+  def loading_spinner
+    render :partial => "loading_spinner"
+  end
+
   private
 
   def render_json(json, options={})
