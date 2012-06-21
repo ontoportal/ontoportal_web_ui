@@ -53,8 +53,12 @@ div#search_categories_chzn .chzn-drop {
   z-index: 999;
   box-shadow: 3px 3px 7px gray;
 }
+.definition {
+  cursor: help;
+  border-bottom: thin dotted green;
+}
 #search_options label {
-  line-height: 20px;
+  line-height: 1.5em;
 }
 </style>
 
@@ -75,9 +79,9 @@ div#search_categories_chzn .chzn-drop {
     <div id="search_options" class="not_visible" style="padding-top: .6em; clear: both; margin-bottom: 40px;">
       <h2 style="margin-bottom: 3px; font-size: 12pt; !important;">Include in your search...</h2>
       <div id="include_options" class="search_options">
-        <%=check_box :search, :include_props%> <%=label :search, :include_props, "Property values #{help_icon("/help#glossary_property")}"%>
+        <%=check_box :search, :include_props%> <%=label :search, :include_props, "<span class='definition' title='Named association between two entities. Examples are &quot;definition&quot; (a relation between a term and some text) and &quot;part-of&quot; (a relation between two terms).'>Property</span> values</span>"%>
         <br/>
-        <%=check_box :search, :include_obsolete%> <%=label :search, :include_obsolete, "Obsolete terms #{help_icon("/help#glossary_obsolete_terms")}"%>
+        <%=check_box :search, :include_obsolete%> <%=label :search, :include_obsolete, "<span class='definition' title='A term that the authors of the ontology have flagged as being obsolete and which they recommend that people not use. These terms are often left in ontologies (rather than removing them entirely) so that existing systems that depend on them will continue to function.'>Obsolete terms</span>"%>
         <br/>
         <%=check_box :search, :include_non_production%> <%=label :search, :include_non_production, "Non-production ontologies"%>
         <br/>
