@@ -103,7 +103,7 @@ class ApplicationController < ActionController::Base
     true
   end
 
-  NOTIFICATION_TYPES = { :notes => "CREATE_NOTE_NOTIFICATION" }
+  NOTIFICATION_TYPES = { :notes => "CREATE_NOTE_NOTIFICATION", :all => "ALL_NOTIFICATION" }
 
   def to_param(name) # Paramaterizes URLs without encoding
     unless name.nil?

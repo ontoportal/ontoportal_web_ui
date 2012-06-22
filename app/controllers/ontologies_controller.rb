@@ -387,6 +387,13 @@ class OntologiesController < ApplicationController
         rescue
         end
 
+        if params["ontology"]["subscribe_notifications"].eql?("1")
+          # begin
+         DataAccess.createUserSubscriptions(@ontology.userId, @ontology.ontologyId, NOTIFICATION_TYPES[:all])
+          # rescue
+          # end
+        end
+
         if @ontology.isView=='true'
           # Cleaning out the cache
           parent_ontology=DataAccess.getOntology(@ontology.viewOnOntologyVersionId)

@@ -428,6 +428,11 @@ function showRestrictionLicensed() {
         </tr>
         <tr>
             <td colspan="2" align="right">
+                <%=label :ontology, :subscribe_notifications, "Subscribe to email notifications for new notes"%> <%=check_box :ontology, :subscribe_notifications%>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="right">
                 <%=submit_tag "Submit" %>
             </td>
         </tr>

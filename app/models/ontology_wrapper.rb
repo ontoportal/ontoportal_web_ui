@@ -63,6 +63,7 @@ class OntologyWrapper
   attr_accessor :obsoleteParent
   attr_accessor :obsoleteProperty
 
+  attr_accessor :subscribe_notifications
 
   FILTERS = {
     "All"=>0,
