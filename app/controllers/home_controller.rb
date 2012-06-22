@@ -8,7 +8,7 @@ class HomeController < ApplicationController
     @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
     @groups = DataAccess.getGroups()
 
-    active_onts_by_notes_query = "select ontology_id,count(ontology_id) as note_count from notes_indices as note  group by ontology_id order by note_count desc"
+    active_onts_by_notes_query = "select ontology_id,count(ontology_id) as note_count from notes_indices as note group by ontology_id order by note_count desc"
     @active_totals = ActiveRecord::Base.connection.select_rows(active_onts_by_notes_query);
 
     active_onts_by_maps_query = "select source_ont,count(source_ont) as map_count from mappings group by source_ont order by map_count desc"
@@ -45,8 +45,25 @@ class HomeController < ApplicationController
       end
     end
 
+    # Show only notes from custom ontology set
     user_ontologies = session[:user_ontologies] ? session[:user_ontologies][:virtual_ids].to_a : []
     conditions = user_ontologies.empty? ? [] : ["ontology_id in (?)", user_ontologies]
+
+    # Hide notes from private ontologies
+    restricted_ontologies = DataAccess.getRestrictedOntologyList
+    restricted_for_query = []
+    restricted_ontologies.each do |ont|
+      restricted_for_query << ont.ontologyId.to_i unless session[:user] && session[:user].has_access?(ont)
+    end
+    unless restricted_for_query.empty?
+      restricted_condition = "ontology_id not in (?)"
+      if conditions.empty?
+        conditions = [restricted_condition, restricted_for_query]
+      else
+        conditions[0] << " AND " + restricted_condition
+        conditions.push(restricted_for_query)
+      end
+    end
 
     @active_totals = @active_totals.sort{|x,y| y[3].to_i<=>x[3].to_i}
     @active_totals = @active_totals[0,5]
@@ -200,7 +217,7 @@ class HomeController < ApplicationController
     else
       robots = <<-EOF.gsub(/^\s+/, "")
         User-Agent: *
-        Disallow: 
+        Disallow:
       EOF
       render :text => robots, :content_type => 'text/plain'
     end
