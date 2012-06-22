@@ -70,6 +70,11 @@ class DataAccess
     ont_list
   end
 
+  def self.getRestrictedOntologyList
+    ontologies = self.getOntologyList(false)
+    ontologies.delete_if {|ont| !ont.viewing_restricted?}
+  end
+
   def self.getOntologyListHash(filter_private = true)
     ont_list = self.getOntologyList(filter_private)
     ont_hash = {}
