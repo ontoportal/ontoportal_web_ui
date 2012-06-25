@@ -18,6 +18,7 @@ var orgSite = <%=$ORG_SITE.to_json%>
 <%=javascript_include_tag 'JqueryPlugins/ajax-chosen/ajax-chosen.js'%>
 <%=javascript_include_tag 'history/jquery.history.js'%>
 <%=javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.js"%>
+<%=javascript_include_tag "JqueryPlugins/datatables/plugins/datatables.formatted.number.js"%>
 <script src="/javascripts/bp_resource_index.js?1338489986" type="text/javascript" charset="ISO-8859-1"></script>
 
 <style>
@@ -60,24 +61,11 @@ ul.chzn-results {
   margin: 0 0 10px 10px;
   width: 200px;
 }
-.record_count {
-  font-size: small;
-  color: #234979;
-  padding-left: 15px;
-  vertical-align: middle;
+#result_counts {
+  right: 593px;
   position: absolute;
-  left: 300px;
-  text-align: right;
-  width: 100px;
-}
-.record_count_header {
-  font-weight: bold;
-  left: 300px;
-  margin-top: -1.3em;
-  padding-left: 15px;
-  position: absolute;
-  text-align: right;
-  width: 100px;
+  margin-top: 7px;
+  font-size: 9pt;
 }
 .resource_details {
   margin: 15px 10px;

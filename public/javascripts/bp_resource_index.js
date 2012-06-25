@@ -203,6 +203,7 @@ jQuery(document).ready(function(){
   jQuery("#show_hide_no_results").live("click", function(){
     jQuery("#resource_table .zero_results").toggleClass("not_visible").effect("highlight", { color: "yellow" }, 500);
     jQuery("#show_hide_no_results .show_hide_text").toggleClass("not_visible");
+    updateCounts();
   });
 
   jQuery(".show_element_details").live("click", function(e){
@@ -241,19 +242,37 @@ function getSearchResults(success) {
       jQuery("#results.contains_search_results").show();
       jQuery("#results_container").show();
       jQuery("#resource_index_spinner").hide();
+
       if (success && typeof success === "function") {
         success();
       }
-      // jQuery("#resource_table table").dataTable({
-      //   "bPaginate": false,
-      //   "bFilter": false
-      // });
+
+      jQuery("#resource_table table").dataTable({
+        "bPaginate": false,
+        "bFilter": false,
+        "aoData": [
+          { "sType": "html" },
+          { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] },
+          { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }
+        ]
+      });
+
+      // Update result counts for resources with matches
+      updateCounts();
     },
     error: function() {
       jQuery("#resource_index_spinner").hide();
       jQuery("#results_error").html("Problem retrieving search results, please try again");
     }
   })
+}
+
+function updateCounts() {
+  var hiddenRows, totalRows, visibleRows;
+  hiddenRows = jQuery("#resource_table table tbody tr.not_visible").length;
+  totalRows = jQuery("#resource_table table tbody tr").length;
+  visibleRows = totalRows - hiddenRows;
+  jQuery("#result_counts").html("matches in "+visibleRows+" of "+totalRows+" resources")
 }
 
 jQuery("a.results_link").live("click", function(event){
@@ -277,6 +296,7 @@ function showResourceResults(resource, resourceName) {
   jQuery("#resource_title").html(resourceName);
   jQuery(".resource_title").removeClass("not_visible");
   jQuery("#resource_title").removeClass("not_visible");
+  updateCounts();
 }
 
 function showAllResources() {
@@ -284,6 +304,7 @@ function showAllResources() {
   jQuery(".resource_title").addClass("not_visible");
   jQuery("#resource_title").addClass("not_visible");
   jQuery("#resource_table").removeClass("not_visible");
+  updateCounts();
 }
 
 function Element(id, cleanId, conceptIds, resource) {
