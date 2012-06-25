@@ -1,32 +1,47 @@
 - require 'cgi'
 
-%h2{:style => "font-size: 150%; margin-bottom: 1.3em;"} Search Results
+:css
+  .count {
+    text-align: right !important;
+  }
 
-%div.ri_header
-  %span.record_count_header Matched Records
-%div#resource_info
+%div#resource_table{:style => "margin-top: 1em;"}
+  %h2{:style => "font-size: 150%; margin-bottom: 3px;"}
+    Search Results
+    %a.h2_link{:href => "javascript:void(0);", :id => "show_hide_no_results"} <span class="show_hide_text">show</span><span class="show_hide_text not_visible">hide</span> resources with no matches
+
+  %table.zebra
+    %thead
+      %tr
+        %th Resource
+        %th.count Matched Records
+        %th.count Total Records
+    %tbody
+      -@elements.resources.each do |resource|
+        -resource_name = @resources_hash[resource.resourceId.downcase.to_sym][:resourceName]
+        %tr{:class => resource.totalResults.to_i == 0 && "zero_results not_visible"}
+          %td
+            %a{:href => @resources_hash[resource.resourceId.downcase.to_sym][:resourceURL], :target => "_blank", :id => "resource_link_#{resource.resourceId}"} #{resource_name}
+            %span{:class => "ui-icon ui-icon-extlink", :style => "display: inline-block; vertical-align: text-bottom;"}
+          %td.count
+            -if resource.totalResults > 0
+              %a.results_link{:href => "javascript:void(0);", :data => {:resource_id => resource.resourceId, :resource_name => resource_name}} #{number_with_delimiter(resource.totalResults, :delimiter => ",")}
+            -else
+              #{number_with_delimiter(resource.totalResults, :delimiter => ",")}
+          %td.count #{number_with_delimiter(@resources_hash[resource.resourceId.downcase.to_sym][:totalElements], :delimiter => ",")}
+
+%h2.resource_title.not_visible
+  %span#resource_title
+  %span
+    %a.h2_link{:href => "javascript:void(0);", :id => "show_all_resources"} show all resources
+
+%div#resource_results
   -@elements.resources.each do |resource|
     -@resource_results = resource
-    %div.resource_container
-      %div.resource_header{:id => "resource_header_#{resource.resourceId}"}
-        %h2
-          %a.resource_link{:href => "#resource_link_#{resource.resourceId}", :data => { :resource_id => resource.resourceId }, :id => "resource_link_#{resource.resourceId}"} #{@resources_hash[resource.resourceId.downcase.to_sym][:resourceName]}
-          %span.record_count #{number_with_delimiter(resource.totalResults, :delimiter => ",")}
-      %div.resource_info.resource_details.not_visible{:id => "resource_info_#{resource.resourceId}"}
-        %div.ri_legend
-          %div direct:
-          %div.mgrepContext.highlight_box &nbsp;
-          %div mapping:
-          %div.mappingContext.highlight_box &nbsp;
-          %div ancestor:
-          %div.isaContext.highlight_box &nbsp;
-          %div.clearing
-        %div.resource_image
-          %img{:src => @resources_hash[resource.resourceId.downcase.to_sym][:resourceLogo], :class => "resource_image"}
-        =render :partial => "resource_results"
-        %div.clearing
+    %div.resource_info.resource_details.not_visible{:id => "resource_info_#{resource.resourceId}"}
+      %div.resource_image
+        %img{:src => @resources_hash[resource.resourceId.downcase.to_sym][:resourceLogo], :class => "resource_image"}
+      =render :partial => "resource_results"
+      %div.clearing
 
 %div.clearing
-
-:javascript
-  var bp_last_params = #{@bp_last_params.to_json}

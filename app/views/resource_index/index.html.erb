@@ -3,14 +3,21 @@
 <script type="text/javascript">
 <%ont_acronyms = []%>
 <%@onts_and_views.each {|ont| ont_acronyms << "#{ont.ontologyId}: '#{ont.abbreviation.nil? ? ont.displayLabel : ont.abbreviation}'"}%>
+<%ont_names = {}%>
+<%@onts_and_views.each {|ont| ont_names[ont.ontologyId] = ont.displayLabel}%>
 <%ri_ontology_ids = []%>
 <%@ri_ontologies.each {|ont| ri_ontology_ids << ont.ontologyId}%>
 var ont_acronyms = { <%=ont_acronyms.join(", ")%> };
+var ont_names = <%=ont_names.to_json%>;
 var ri_ontology_ids = [ <%=ri_ontology_ids.join(", ")%> ];
+var resources = <%=@resources_hash.to_json%>;
+var orgSite = <%=$ORG_SITE.to_json%>
 </script>
 
 <%=javascript_include_tag 'JqueryPlugins/chosen/chosen.jquery.js'%>
 <%=javascript_include_tag 'JqueryPlugins/ajax-chosen/ajax-chosen.js'%>
+<%=javascript_include_tag 'history/jquery.history.js'%>
+<%=javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.js"%>
 <script src="/javascripts/bp_resource_index.js?1338489986" type="text/javascript" charset="ISO-8859-1"></script>
 
 <style>
@@ -50,9 +57,8 @@ ul.chzn-results {
 }
 .resource_image {
   float: right;
-  margin: -15px 0 10px 10px;
-  text-align: right;
-  width: 250px;
+  margin: 0 0 10px 10px;
+  width: 200px;
 }
 .record_count {
   font-size: small;
@@ -74,10 +80,14 @@ ul.chzn-results {
   width: 100px;
 }
 .resource_details {
-  /*margin-left: 260px;*/
-  padding: 20px;
-  border: thick solid #17932A;
-  margin: 0 10px 25px;
+  margin: 15px 10px;
+}
+#resource_title {
+  font-size: 16pt;
+}
+.h2_link {
+  font-size: 9pt;
+  padding-left: 1em;
 }
 .clearing {
   clear: both;
@@ -88,18 +98,15 @@ ul.chzn-results {
 .mgrepContext .isaContext,
 .isaContext .mgrepContext {
   background-color: #B0C4DE !important;
-  font-weight: bold;
 }
 .mappingContext {
   background-color: #7ABA7A;
-  font-weight: bold;
 }
 .isaContext {
   background-color: #F2BFC5;
-  font-weight: bold;
 }
 .element_result, .element_result a {
-  font-size: 105%;
+  font-size: 110%;
   margin-bottom: 15px;
 }
 .element_info {
@@ -130,10 +137,11 @@ div#resource_results div.resource_results h2 {
   font-size: 180%;
 }
 .highlighting {
-  color: gray;
   font-style: oblique;
   padding-left: 10px;
-  font-weight: bold;
+  margin-left: 460px;
+  margin-top: -35px;
+  position: absolute;
 }
 #search_button {
   float: right;
@@ -143,8 +151,8 @@ div#resource_results div.resource_results h2 {
 .ri_legend {
   border: 1px solid #ccc;
   padding: 5px 5px 5px 25px;
-  margin: -10px auto 10px;
-  width: 270px;
+  margin: 10px 0;
+  width: 425px;
   height: 17px;
 }
 .ri_legend div {
@@ -198,39 +206,13 @@ div#resource_results div.resource_results h2 {
 </div>
 
 <div id="results_container" style="padding: 0 13px; margin: 0 0 2em; height: 100%;" data-bp_rest_server="<%=$REST_DOMAIN%>">
-  <div style="float: right; font-style: oblique; color: gray;" id="result_counts"></div>
-
-  <h2 style="margin-bottom: 0;">
-    <!-- Resource Index Search Results -->
-    <div id="filter_list" style="font-size: 9pt; color: gray; display: none; clear: both; margin: -15px 0 5px">
-      <span id="filter_title">Results are filtered by:</span>&nbsp;
-      <span id="filter_names"></span>
-    </div>
-  </h2>
-
   <div id="results_error" style="color: red; margin-bottom: 7px;"></div>
-
-  <div id="results">
-    <%= render :partial => "resources"%>
-
-    <div id="download_links" style="margin-top: 1.5em;">
-  <!--     <table border=0 style="border: 0; margin-bottom: .5em;">
-        <tr>
-          <td style="padding: 0 3px 0 0;"><b>Format Results As </b></td>
-          <td id="download_links_text" style="padding: 3px;"></td>
-          <td id="download_links_tabdelimited" style="padding: 3px;"></td>
-          <td id="download_links_xml" style="padding: 3px;"></td>
-        </tr>
-      </table>
-      <span style="font-size: 8pt;">To reproduce these results use the following parameters:
-        <br/>
-        <span id="resource_index_parameters" style="color: gray; font-weight: bold;"></span>
-        <br/>
-        Additional parameters are documented at the <a href="http://www.bioontology.org/wiki/index.php/Resource_Index_REST_Web_Service_User_Guide" target="_blank">Resource Index Web Service User Guide</a>
-      </span>
-   -->
-    </div>
-  </div>
+  <div id="results"></div>
 </div>
 
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+    pageInit();
+  });
+</script>
 

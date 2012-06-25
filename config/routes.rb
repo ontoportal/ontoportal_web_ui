@@ -36,8 +36,8 @@ ActionController::Routing::Routes.draw do |map|
 
   # Top-level pages
   map.connect '/feedback', :controller => 'home', :action => 'feedback'
-  # map.connect '/resources', :controller => 'resource_index', :action => 'index'
-  map.connect '/resources', :controller => 'home', :action => 'all_resources'
+  map.connect '/resources', :controller => 'resource_index', :action => 'index'
+  # map.connect '/resources', :controller => 'home', :action => 'all_resources'
   map.connect '/account', :controller => 'home', :action => 'account'
   map.connect '/help', :controller => 'home', :action => 'help'
   map.connect '/robots.txt', :controller => 'home', :action => 'robots'
@@ -67,6 +67,8 @@ ActionController::Routing::Routes.draw do |map|
   map.obr_details '/res_details/:id', :controller => 'resources', :action => 'details'
   map.obr '/resources/:ontology/:id', :controller => 'resources', :action => 'show'
   map.obrpage '/respage/', :controller => 'resources', :action => 'page'
+  map.connect '/resource_index/resources', :controller => 'resource_index', :action => 'index'
+  map.connect '/resource_index/resources/:resource_id', :controller => 'resource_index', :action => 'index'
 
   # Ajax
   map.ajax '/ajax/', :controller => 'ajax_proxy', :action => 'get'

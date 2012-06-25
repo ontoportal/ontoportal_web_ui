@@ -5,12 +5,22 @@
       %div{:id => "#{element_id}_link"}
         %a{:href => "javascript:void(0);", :class => "show_element_details", :data => {:clean_element_id => element_id, :element_id => CGI.escape(element[:localElementId]), :resource_id => @resource_results.resourceId}}= element[:text][@resources_hash[@resource_results.resourceId.downcase.to_sym][:mainContext]]
       %div.not_visible.element_results{:id => element_id+"_text", :data => {:highlighted => false}}
+        %div.ri_legend_container
+          %div.ri_legend
+            %div annotation types:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            %div direct:
+            %div.mgrepContext.highlight_box &nbsp;
+            %div mapping:
+            %div.mappingContext.highlight_box &nbsp;
+            %div descendent:
+            %div.isaContext.highlight_box &nbsp;
+            %div.clearing
         %div.element_text
           -element[:weights].each do |weight|
             %h4= weight[:name].split("_")[1].capitalize
             %p{:data => {:context_name => weight[:name]}}= h(element[:text][weight[:name]])
-        %span{:class => "element_info"}
-          %a{:href => "#{@resources_hash[@resource_results.resourceId.downcase.to_sym][:resourceElementURL]}#{element[:localElementId]}", :target => "_blank"} view source record
+          %span{:class => "element_info"}
+            %a{:href => "#{@resources_hash[@resource_results.resourceId.downcase.to_sym][:resourceElementURL]}#{element[:localElementId]}", :target => "_blank"} view source record
   = will_paginate @resource_results, :update => "#{@resource_results.resourceId}_results",
     :params => { :offset => @resource_results.offset,
       :limit => @resource_results.limit,
