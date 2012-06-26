@@ -101,12 +101,6 @@ function nodeClicked(node_id) {
     // Insert notes table
     insertNotesTable(tabData["notes_table_data"]);
 
-    // Load the resource index tab in background
-    loc = new String(document.location)
-    if (loc.search("#resource_index") >= 0 && loc.split("#") == "resource_index") {
-     callTab("resource_index", '/resource_index/resources_table?conceptids=<%=@ontology.ontologyId%>/<%=CGI.escape(@concept.id)%>');
-    }
-
     wrapupTabChange(selectedTab);
   } else {
     jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
@@ -123,10 +117,9 @@ function nodeClicked(node_id) {
         jQuery('#note_count').html(tabData[5]);
         jQuery('#mapping_count').html(tabData[6]);
 
-        // Load the resource index tab in background
-        loc = new String(document.location)
-        if (loc.search("#resource_index") >= 0 && loc.split("#")[1] == "resource_index") {
-          callTab('resource_index', '/resource_index/resources_table?conceptids=<%=@ontology.ontologyId%>/<%=CGI.escape(@concept.id)%>');
+        // Load the resource index
+        if (selectedTab == "resource_index") {
+          callTab('resource_index', '/resource_index/resources_table?conceptids=<%=@ontology.ontologyId%>/'+encodeURIComponent(getConcept()));
         }
 
         setCache(node_id,tabData);
