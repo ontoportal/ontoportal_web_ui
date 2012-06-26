@@ -35,7 +35,7 @@ jQuery(document).ready(function(){
     jQuery("#resource_index_terms").ajaxChosen({
         minLength: 3,
         queryLimit: 10,
-        delay: 500,
+        delay: 750,
         chosenOptions: {},
         searchingText: "Searching for term ",
         noresultsText: "Term not found",
