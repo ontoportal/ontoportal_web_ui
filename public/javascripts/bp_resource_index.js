@@ -55,7 +55,7 @@ jQuery(document).ready(function(){
   if (jQuery("#resource_index_button").length > 0) {
     jQuery("#resource_index_button").click(function(){
       var url = "/resource_index/resources?conceptids="+currentConceptIds().join(",");
-      pushDisplayResources(url, {conceptids: concepts});
+      pushDisplayResources(url, {conceptids: currentConceptIds()});
       getSearchResults();
     });
   }
