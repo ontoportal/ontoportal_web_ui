@@ -24,6 +24,11 @@ class ResourceIndexController < ApplicationController
     @ri_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
   end
 
+  def resources_table
+    params[:conceptids] = params[:conceptids].split(",")
+    create()
+  end
+
   def create
     ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))
     ranked_elements = ri.ranked_elements(params[:conceptids])

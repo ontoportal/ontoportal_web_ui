@@ -46,3 +46,8 @@
       %div.clearing
 
 %div.clearing
+
+:javascript
+  bpResourceIndexEmbedded = (jQuery("#resource_table").parents("div.resource_index_embed").length > 0);
+  var resources = #{@resources_hash.to_json};
+  updateCounts();

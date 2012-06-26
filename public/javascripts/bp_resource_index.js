@@ -15,6 +15,74 @@
   });
 })(window);
 
+var bpResourceIndexEmbedded = false;
+jQuery(document).ready(function(){
+  bpResourceIndexEmbedded = (jQuery("#resource_table").parents("div.resource_index_embed").length > 0);
+
+  // Hide/Show resources
+  jQuery(".resource_link").live("click", function(event){
+    event.preventDefault();
+    switchResources(this);
+  });
+
+  // Spinner for pagination
+  jQuery(".pagination a").live("click", function(){
+    jQuery(this).parents("div.pagination").append('&nbsp;&nbsp; <span style="font-size: small; font-weight: normal;">loading</span> <img style="vertil-align: text-bottom;" src="/images/spinners/spinner_000000_16px.gif">');
+  })
+
+  // Make chosen work via ajax
+  if (jQuery("#resource_index_terms").length > 0) {
+    jQuery("#resource_index_terms").ajaxChosen({
+        minLength: 3,
+        queryLimit: 10,
+        delay: 500,
+        chosenOptions: {},
+        searchingText: "Searching for term ",
+        noresultsText: "Term not found",
+        initialQuery: false
+      }, function (options, response, event) {
+        jQuery.getJSON("/search/json", {query: options.term, ontology_ids: currentOntologyIds().join(",")}, function (data) {
+          var terms = {};
+          jQuery.each(data.results, function (index, result) {
+              terms[result.ontologyId + "/" + result.conceptIdShort] = "&nbsp;<span title='" + result.ontologyDisplayLabel + "'>" + result.preferredName + "<span class='search_dropdown_ont'>(" + result.ontologyDisplayLabel + ")</span></span>";
+          });
+          response(terms);
+      });
+    });
+  }
+
+  // Get search results
+  if (jQuery("#resource_index_button").length > 0) {
+    jQuery("#resource_index_button").click(function(){
+      var url = "/resource_index/resources?conceptids="+currentConceptIds().join(",");
+      pushDisplayResources(url, {conceptids: concepts});
+      getSearchResults();
+    });
+  }
+
+  // Show/Hide results with zero matches
+  jQuery("#show_hide_no_results").live("click", function(){
+    jQuery("#resource_table .zero_results").toggleClass("not_visible").effect("highlight", { color: "yellow" }, 500);
+    jQuery("#show_hide_no_results .show_hide_text").toggleClass("not_visible");
+  });
+
+  jQuery(".show_element_details").live("click", function(e){
+    e.preventDefault();
+
+    var el = jQuery(this);
+    var cleanElementId = el.attr("data-clean_element_id");
+    var el_text = jQuery("#"+cleanElementId+"_text");
+    el_text.toggleClass("not_visible");
+    if (el_text.attr("highlighted") !== "true") {
+      var element = new Element(el.attr("data-element_id"), cleanElementId, currentConceptIds(), el.attr("data-resource_id"));
+      jQuery("#"+element.cleanId+"_text .ri_legend_container").append("<span id='"+element.cleanId+"_ani'class='highlighting'>highlighting... <img style='vertical-align: text-bottom;' src='/images/spinners/spinner_000000_16px.gif'></span>");
+      element.highlightAnnotationPositions();
+      el_text.attr("highlighted", "true");
+    }
+  });
+});
+
+// Get parameters from the URL
 var BP_urlParams = {};
 (function () {
     var match,
@@ -48,21 +116,41 @@ function pageInit() {
 }
 
 function pushDisplayResource(url, params) {
-  params["route"] = "resource";
-  History.pushState(params, document.title, url);
+  var route = "resource";
+  if (bpResourceIndexEmbedded) {
+    router.route(route, params);
+  } else {
+    params["route"] = route;
+    History.pushState(params, document.title, url);
+  }
 }
 
 function pushDisplayResources(url, params) {
-  params["route"] = "resources";
-  History.pushState(params, document.title, url);
+  var route = "resources";
+  if (bpResourceIndexEmbedded) {
+    router.route(route, params);
+  } else {
+    params["route"] = "resources";
+    History.pushState(params, document.title, url);
+  }
 }
 
 function pushIndex() {
-  History.pushState(null, document.title, "/resource_index");
+  var route = "index";
+  if (bpResourceIndexEmbedded) {
+    router.route(route);
+  } else {
+    History.pushState(null, document.title, "/resource_index");
+  }
 }
 
 function replaceIndex() {
-  History.replaceState(null, document.title, "/resource_index");
+  var route = "index";
+  if (bpResourceIndexEmbedded) {
+    router.route(route);
+  } else {
+    History.replaceState(null, document.title, "/resource_index");
+  }
 }
 
 function Router() {
@@ -159,69 +247,6 @@ function updateChosen() {
   jQuery("#resource_index_terms").trigger("change");
 }
 
-jQuery(document).ready(function(){
-
-  // Hide/Show resources
-  jQuery(".resource_link").live("click", function(event){
-    event.preventDefault();
-    switchResources(this);
-  });
-
-  // Spinner for pagination
-  jQuery(".pagination a").live("click", function(){
-    jQuery(this).parents("div.pagination").append('&nbsp;&nbsp; <span style="font-size: small; font-weight: normal;">loading</span> <img style="vertil-align: text-bottom;" src="/images/spinners/spinner_000000_16px.gif">');
-  })
-
-  // Make chosen work via ajax
-  jQuery("#resource_index_terms").ajaxChosen({
-      minLength: 3,
-      queryLimit: 10,
-      delay: 500,
-      chosenOptions: {},
-      searchingText: "Searching for term ",
-      noresultsText: "Term not found",
-      initialQuery: false
-    }, function (options, response, event) {
-      jQuery.getJSON("/search/json", {query: options.term, ontology_ids: currentOntologyIds().join(",")}, function (data) {
-        var terms = {};
-        jQuery.each(data.results, function (index, result) {
-            terms[result.ontologyId + "/" + result.conceptIdShort] = "&nbsp;<span title='" + result.ontologyDisplayLabel + "'>" + result.preferredName + "<span class='search_dropdown_ont'>(" + result.ontologyDisplayLabel + ")</span></span>";
-        });
-        response(terms);
-    });
-  });
-
-  // Get search results
-  jQuery("#resource_index_button").click(function(){
-    var concepts = jQuery("#resource_index_terms").val();
-    var url = "/resource_index/resources?conceptids="+concepts.join(",");
-    pushDisplayResources(url, {conceptids: concepts});
-    getSearchResults();
-  });
-
-  // Show/Hide results with zero matches
-  jQuery("#show_hide_no_results").live("click", function(){
-    jQuery("#resource_table .zero_results").toggleClass("not_visible").effect("highlight", { color: "yellow" }, 500);
-    jQuery("#show_hide_no_results .show_hide_text").toggleClass("not_visible");
-    updateCounts();
-  });
-
-  jQuery(".show_element_details").live("click", function(e){
-    e.preventDefault();
-
-    var el = jQuery(this);
-    var cleanElementId = el.attr("data-clean_element_id");
-    var el_text = jQuery("#"+cleanElementId+"_text");
-    el_text.toggleClass("not_visible");
-    if (el_text.attr("highlighted") !== "true") {
-      var element = new Element(el.attr("data-element_id"), cleanElementId, currentConceptIds(), el.attr("data-resource_id"));
-      jQuery("#"+element.cleanId+"_text .ri_legend_container").append("<span id='"+element.cleanId+"_ani'class='highlighting'>highlighting... <img style='vertical-align: text-bottom;' src='/images/spinners/spinner_000000_16px.gif'></span>");
-      element.highlightAnnotationPositions();
-      el_text.attr("highlighted", "true");
-    }
-  });
-});
-
 function getSearchResults(success) {
   jQuery("#results_error").html("");
   jQuery("#resource_index_spinner").show();
@@ -278,15 +303,13 @@ function updateCounts() {
 jQuery("a.results_link").live("click", function(event){
   var resource = jQuery(this).data("resource_id");
   var resourceName = jQuery(this).data("resource_name");
-  var concepts = jQuery("#resource_index_terms").val();
-  var url = "/resource_index/resources/"+resource+"?conceptids="+concepts.join(",");
-  pushDisplayResource(url, {conceptids: concepts, resourceId: resource});
+  var url = "/resource_index/resources/"+resource+"?conceptids="+currentConceptIds().join(",");
+  pushDisplayResource(url, {conceptids: currentConceptIds(), resourceId: resource});
 });
 
 jQuery("a#show_all_resources").live("click", function(){
-  var concepts = jQuery("#resource_index_terms").val();
-  var url = "/resource_index/resources?conceptids="+concepts.join(",");
-  pushDisplayResources(url, {conceptids: concepts});
+  var url = "/resource_index/resources?conceptids="+currentConceptIds().join(",");
+  pushDisplayResources(url, {conceptids: currentConceptIds()});
 });
 
 function showResourceResults(resource, resourceName) {
@@ -408,31 +431,10 @@ function currentOntologyIds() {
 }
 
 function currentConceptIds() {
-  return jQuery("#resource_index_terms").val();
+  var conceptIds = jQuery("#resource_index_terms").val();
+  if (typeof conceptIds === "string") {
+    conceptIds = conceptIds.split(",");
+  }
+  return conceptIds;
 }
-
-function generateParameters() {
-  var params = [];
-  var new_params = jQuery.extend(true, {}, bp_last_params);
-  delete new_params["apikey"]
-  delete new_params["format"]
-  jQuery.each(new_params, function(k, v){
-    if (v != null && v !== "") {
-      params.push(k + "=" + v);
-    }
-  });
-  jQuery("#resource_index_parameters").html(params.join("&"));
-}
-
-// Enable sorting of numbers with commas in datatable
-jQuery.fn.dataTableExt.aTypes.unshift(
-    function ( sData )
-    {
-        var deformatted = sData.replace(/[^\d\-\.\/a-zA-Z]/g,'');
-        if ( $.isNumeric( deformatted ) ) {
-            return 'formatted-num';
-        }
-        return null;
-    }
-);
 

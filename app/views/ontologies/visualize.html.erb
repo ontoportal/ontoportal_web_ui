@@ -111,6 +111,11 @@
           jQuery("#" + tab_name + "_content").html('<h1><img src="/images/tree/spinner.gif" /> Loading Resources...</h1>');
           jQuery.get(url.replace("@ontology@",getOntology()).replace("@concept@",encodeURIComponent(getConcept())),function(data){
             jQuery("#" + tab_name + "_content").html(data);
+            jQuery("#" + tab_name + "_content").append(
+              jQuery("<input type='hidden'/>")
+                .attr("id", "resource_index_terms")
+                .val([jQuery(document.body).data("ont_id")+"/"+encodeURIComponent(getConcept())])
+            );
             setCache(getConcept() + tab_name,data);
             jQuery.unblockUI();
             tb_init('a.thickbox, area.thickbox, input.thickbox');
@@ -263,7 +268,7 @@
               <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
                 <%if !@ontology.isView.eql?('true')%>
-                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Term Resources</a></li>
+                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resource_index/resources_table?conceptids=<%=@ontology.ontologyId%>/<%=CGI.escape(@concept.id)%>');"><a href="#resource_index" alt="callTab('resource_index','/resource_index/resources_table?conceptids=<%=@ontology.ontologyId%>/<%=CGI.escape(@concept.id)%>')">Term Resources</a></li>
                 <% end %>
               <%end%>
           </ul>
@@ -276,7 +281,7 @@
           <div class="tab_container not_visible" id="visualization_content"></div>
           <div class="tab_container not_visible" id="notes_content"></div>
           <div class="tab_container not_visible" id="mappings_content"></div>
-          <div class="tab_container not_visible" id="resource_index_content"></div>
+          <div class="tab_container not_visible resource_index_embed" id="resource_index_content"></div>
         </div>
       </div>
 
@@ -293,7 +298,7 @@
               <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
                 <%if !@ontology.isView.eql?('true')%>
-                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resources/@ontology@?conceptid=@concept@');"><a href="#resource_index" alt="callTab('resource_index','/resources/<%=@ontology.id%>/<%=@concept.id%>')">Term Resources</a></li>
+                  <li class="tab" id="resource_index_top" onclick="callTab('resource_index','/resource_index/resources_table?conceptids=<%=@ontology.ontologyId%>/<%=CGI.escape(@concept.id)%>');"><a href="#resource_index" alt="callTab('resource_index','/resource_index/resources_table?conceptids=<%=@ontology.ontologyId%>/<%=CGI.escape(@concept.id)%>')">Term Resources</a></li>
                 <% else %>
                   <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Resource Index</a></li>
                 <% end %>
@@ -312,7 +317,7 @@
           <div class="tab_container not_visible" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
 
           <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
-            <div class="tab_container not_visible" id="resource_index_content"></div>
+            <div class="tab_container not_visible resource_index_embed" id="resource_index_content"></div>
           <%end%>
 
           <% if $PURL_ENABLED %>

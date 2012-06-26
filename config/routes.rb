@@ -36,8 +36,6 @@ ActionController::Routing::Routes.draw do |map|
 
   # Top-level pages
   map.connect '/feedback', :controller => 'home', :action => 'feedback'
-  map.connect '/resources', :controller => 'resource_index', :action => 'index'
-  # map.connect '/resources', :controller => 'home', :action => 'all_resources'
   map.connect '/account', :controller => 'home', :action => 'account'
   map.connect '/help', :controller => 'home', :action => 'help'
   map.connect '/robots.txt', :controller => 'home', :action => 'robots'
@@ -62,13 +60,6 @@ ActionController::Routing::Routes.draw do |map|
   map.note_virtual 'notes/virtual/:ontology', :controller => 'notes', :action => 'virtual_show'
   map.note_ajax_single 'notes/ajax/single/:ontology', :controller => 'notes', :action => 'show_single'
   map.note_ajax_single_list 'notes/ajax/single_list/:ontology', :controller => 'notes', :action => 'show_single_list'
-
-  # Resource Index
-  map.obr_details '/res_details/:id', :controller => 'resources', :action => 'details'
-  map.obr '/resources/:ontology/:id', :controller => 'resources', :action => 'show'
-  map.obrpage '/respage/', :controller => 'resources', :action => 'page'
-  map.connect '/resource_index/resources', :controller => 'resource_index', :action => 'index'
-  map.connect '/resource_index/resources/:resource_id', :controller => 'resource_index', :action => 'index'
 
   # Ajax
   map.ajax '/ajax/', :controller => 'ajax_proxy', :action => 'get'
@@ -99,17 +90,23 @@ ActionController::Routing::Routes.draw do |map|
   map.virtual_ont '/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+) }
   map.virtual '/virtual/:ontology/:id', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+) }
 
+  # Resource Index
+  map.obr_details '/res_details/:id', :controller => 'resources', :action => 'details'
+  map.obr '/resources/:ontology/:id', :controller => 'resources', :action => 'show'
+  map.obrpage '/respage/', :controller => 'resources', :action => 'page'
+  map.connect '/resource_index/resources', :controller => 'resource_index', :action => 'index'
+  map.connect '/resource_index/resources/:resource_id', :controller => 'resource_index', :action => 'index'
+  map.connect '/resource_index/:action', :controller => "resource_index", :action => /element_annotations|results_paginate|resources_table/
+  map.resources :resource_index
+
   # History
   map.remove_tab '/tab/remove/:ontology',:controller => 'history', :action => 'remove'
   map.update_tab '/tab/update/:ontology/:concept', :controller => 'history', :action=>'update'
 
-  # Resource Index
-  map.connect '/resource_index/:action', :controller => "resource_index", :action => /element_annotations|results_paginate/
-  map.resources :resource_index
-
   # Redirects from old URL locations
   map.connect '/annotate', :controller => 'redirect', :url=>'/annotator'
   map.connect '/all_resources', :controller =>'redirect', :url=>'/resources'
+  map.connect '/resources', :controller =>'redirect', :url=>'/resource_index'
   map.connect '/visconcepts/:ontology/', :controller => 'redirect', :url=>'/visualize/'
 
   # Install the default route as the lowest priority.

@@ -35,10 +35,10 @@
       <%end%>
 
       <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
-        <%if controller.action_name.eql?('all_resources')%>
-          <li id="bp_nav_resource_index_active"><a href="/resources" title="Resource Index" class="bp_nav_link"></a></li>
+        <%if controller.controller_name.eql?('resource_index')%>
+          <li id="bp_nav_resource_index_active"><a href="/resource_index" title="Resource Index" class="bp_nav_link"></a></li>
         <%else%>
-          <li id="bp_nav_resource_index"><a href="/resources" title="Resource Index" class="bp_nav_link"></a></li>
+          <li id="bp_nav_resource_index"><a href="/resource_index" title="Resource Index" class="bp_nav_link"></a></li>
         <%end%>
       <%end%>
 

@@ -49,7 +49,7 @@ function jumpToValueResource(){
     var search = confirm("Press OK to Search for resources using the term, or Cancel to select a term")
     if (search) {
       query = jQuery("#find_resource").val();
-      document.location="/resources?search="+query;
+      document.location="/resource_index";
       return;
     }
   }
@@ -58,7 +58,7 @@ function jumpToValueResource(){
     var concept_id = data[0];
     var ontology_version_id = data[2];
     var ontology_id = data[7];
-    document.location="/resources?conceptid="+encodeURIComponent(concept_id)+"&ontologyid="+ontology_id+"&ontologyversionid="+ontology_version_id;
+    document.location="/resource_index/resource_index?conceptids="+ontology_id+"/"+encodeURIComponent(concept_id);
     return;
   }
 }
@@ -238,7 +238,7 @@ function greybox(box){
             <td nowrap><input type="text" id="find_resource" size="30" class="greyed" style="width:240px;" size="30" onclick="greybox(this)" value="Enter a term, e.g. Melanoma" > <input class="home_button" type="button" value="Search" onclick="jumpToValueResource()"></td>
           </tr>
           <tr>
-            <td style="padding-left:15px"><a href="/resources">Advanced Resource Search</a></td>
+            <td style="padding-left:15px"><a href="/resource_index">Advanced Resource Search</a></td>
           </tr>
         </table>
       </fieldset>
