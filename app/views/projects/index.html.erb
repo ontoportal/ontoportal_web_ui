@@ -1,4 +1,25 @@
 <%@title = "Project Listing"%>
+<script type="text/javascript" src="/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/javascripts/JqueryPlugins/datatables/plugins/datatables.formatted.number.js"></script>
+<script type="text/javascript" src="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	jQuery("#projects").dataTable({   
+	    "bAutoWidth": false,
+	    "bLengthChange": false,
+	    "bFilter": false,
+	    "bInfo": false,
+	    "bPaginate": false,
+	    "bSort": false,
+	    "asStripClasses":["","alt"],
+	});
+    // Set the table width after it gets altered by jQuery DataTable
+    jQuery("#projects").css("width","100%");
+});
+</script>
+
 
 <h1 class="tab_header">Projects</h1>
 <p class="tab_description">
@@ -7,63 +28,62 @@
 </p>
 
 <div style="padding:10px;">
-
-<%if session[:user].nil?%>
-  <%=button_to "Create New Project", "/login", :method => :get%>
-<%else%>
-  <span><%=button_to "Create New Project", new_project_path, :method => :get%></span>
-<%end%>
-</div>
-
-<br>
-<br>
-<table class="zebra" width="98%" style="border:0px;margin-left:10px;" cellpadding="0" cellspacing="0">
-	<tr width="100%" style="padding-top:5px;padding-bottom:5px;">
-			<th align="left" width="30%">Project</th>
-			<th align="left" width="50%">Description</th>
-			<th align="left" width="10%">People</th>
-			<th align="left" width="10%">Institution</th>
-	</tr>
-	<%for project in @projects%>
-		<tr width="100%" style="border:none; margin:0px; padding:0px;">
-			<td colspan="4" height="5px" style="font-size:1%; border-right:none; border-left:none; margin:0px; padding:0px;">&nbsp;</td>
-		</tr>
-		<tr width="100%" style="padding-top:5px;padding-bottom:5px;">
-			<td class="pheader" width="30%" style="vertical-align:top;">
-				<strong><%= link_to project.name, project, :style=>"text-decoration:none;"%></strong>
-				<br>
-				<span style="font-size:75%; vertical-align:bottom;">
-					<%= link_to("Home Page", project.homepage, :target => "_blank") %>&nbsp;&nbsp;
-					
-					<%if isOwner?(project.id)%>
-						<%= link_to("Edit Project", edit_project_path(project))%>&nbsp;&nbsp;
-						<%= link_to("Delete Project", project, :confirm => "Are you sure?", :method => :delete) %>
-					<%end%>
-				</span>
-			</td>
-			<td align="left" width="50%" style="vertical-align:top;background-color:#EFEFEF;">
-		        <%if ! project.description.nil? %>
-		            <%descLength = 250%>
-		            <%if project.description.length < descLength%>
-		                <%= project.description%>
-		            <%else%>
-		                <%descShort = smart_truncate(project.description, :words => 20) %>
-		                <span title="<%= project.description%>" style="cursor:help;"><%= descShort%></span>
-		            <%end%>
-		        <%end%>
-			</td>
-			<td align="left" width="10%" style="vertical-align:top;background-color:#EFEFEF;">
-				<%= project.people%>
-			</td>
-			<td align="left" width="10%" style="vertical-align:top;background-color:#EFEFEF;">
-				<%= project.institution%>
-			</td>
-		</tr>
-	<%end%>
 	
-	<tr width="100%" style="border:none; margin:0px; padding:0px;">
-		<td colspan="4" height="5px" style="font-size:1%; border-right:none; border-left:none; margin:0px; padding:0px;">&nbsp;</td>
-	</tr>
-</table>
-
+	<span>
+		<%if session[:user].nil?%>
+		  <%=button_to "Create New Project", "/login", :method => :get%>
+		<%else%>
+		  <%=button_to "Create New Project", new_project_path, :method => :get%>
+		<%end%>
+	</span>
+	<br>
+	<br>
+	<table id="projects" class="zebra" cellpadding="0" cellspacing="0">
+	  <thead>
+	    <tr>
+	      <th>Project</th>
+	      <th>Description</th>
+	      <th>Contacts</th>
+	      <th>Institutions</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+		<%for project in @projects%>
+			<!--<tr width="100%" style="padding-top:5px;padding-bottom:5px;"> -->
+			<tr>
+				<td width="30%" style="vertical-align:top;">
+					<strong><%= link_to(project.name, project) %></strong>
+					<br>
+					<span style="font-size:75%; vertical-align:bottom;">
+						<%= link_to("Home Page", project.homepage, :target => "_blank") %> 
+						<span class="ui-icon ui-icon-extlink" style="display: inline-block; vertical-align: text-bottom;"></span>
+						&nbsp;&nbsp;
+						<%if isOwner?(project.id)%>
+							<%= link_to("Edit Project", edit_project_path(project))%>&nbsp;&nbsp;
+							<%= link_to("Delete Project", project, :confirm => "Are you sure?", :method => :delete) %>
+						<%end%>
+					</span>
+				</td>
+				<td width="50%" style="vertical-align:top;">
+			        <%if ! project.description.nil? %>
+			            <%descLength = 250%>
+			            <%if project.description.length < descLength%>
+			                <%= project.description%>
+			            <%else%>
+			                <%descShort = smart_truncate(project.description, :words => 20) %>
+			                <span title="<%= project.description%>" style="cursor:help;"><%= descShort%></span>
+			            <%end%>
+			        <%end%>
+				</td>
+				<td width="10%" style="vertical-align:top;">
+					<%= project.people%>
+				</td>
+				<td width="10%" style="vertical-align:top;">
+					<%= project.institution%>
+				</td>
+			</tr>
+		<%end%>
+	  </tbody>
+	</table>
+	
 </div>
