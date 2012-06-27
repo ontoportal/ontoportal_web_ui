@@ -418,7 +418,7 @@ module ApplicationHelper
   def smart_truncate(s, opts = {})
     opts = {:words => 20}.merge(opts)
     if opts[:sentences]
-      return s.split(/\.(\s|$)+/)[0, opts[:sentences]].map{|s| s.strip}.join('. ') + '. ...'
+      return s.split(/\w{2,}\.(\s|$)+/)[0, opts[:sentences]].map{|s| s.strip}.join('. ') + '. ...'
     end
     a = s.split(/\s/) # or /[ ]+/ to only split on spaces
     n = opts[:words]
