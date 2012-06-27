@@ -24,7 +24,7 @@ var orgSite = <%=$ORG_SITE.to_json%>
 <div style="padding: 1em;">
   <h1>Search Resource Index</h1>
   <p>
-	  <% intro_text = "Search biomedical resources for a term"%>
+	  <% intro_text = "Search biomedical resources"%>
 	  <%=t('home.resources.intro').nil? || t('home.resources.intro').empty? ? "#{intro_text}  #{help_icon("/help#Resource_Index_Tab")}" : t('home.resources.intro')%>
   </p>
 

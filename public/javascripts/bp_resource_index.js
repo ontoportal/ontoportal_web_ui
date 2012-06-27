@@ -32,7 +32,6 @@ jQuery(document).ready(function(){
 
   // Make chosen work via ajax
   if (jQuery("#resource_index_terms").length > 0) {
-    AbstractChosen.prototype.winnow_results = function() {};
     jQuery("#resource_index_terms").ajaxChosen({
         minLength: 3,
         queryLimit: 10,
@@ -99,8 +98,11 @@ var BP_urlParams = {};
         search = /([^&=]+)=?([^&]*)/g,
         decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
         query  = window.location.search.substring(1);
+        queryH = window.location.hash.substring(1);
 
     while (match = search.exec(query))
+       BP_urlParams[decode(match[1])] = decode(match[2]);
+    while (match = search.exec(queryH))
        BP_urlParams[decode(match[1])] = decode(match[2]);
 })();
 
