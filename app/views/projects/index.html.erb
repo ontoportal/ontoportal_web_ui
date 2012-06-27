@@ -17,22 +17,24 @@
 
 <br>
 <br>
-<table class="zebra" style="border:0px;margin-left:12px;" width="98%" cellpadding="0" cellspacing="0">
+<table class="zebra" width="98%" style="border:0px;margin-left:10px;" cellpadding="0" cellspacing="0">
 	<%for project in @projects%>
-		<tr style="width=100%;border:none;">
-			<td colspan="4" style="height=10px; border-right:none; border-left:none;">&nbsp;</td>
+		<tr width="100%" style="border:none;">
+			<td colspan="4" height=10px style="font-size:10%; border-right:none; border-left:none;">&nbsp;</td>
 		</tr>
-		<tr style="width=100%;padding-top:5px;margin-bottom:5px;">
-			<td class="pheader" style="width=30%;vertical-align:top;">
+		<tr width="100%" style="padding-top:5px;padding-bottom:5px;">
+			<td class="pheader" width="30%" style="vertical-align:top;">
 				<strong><%= link_to project.name, project, :style=>"text-decoration:none;"%></strong>
-				<br/>
+				<br>
 				<span style="font-size:75%; vertical-align:bottom;">
-					<%= link_to project.homepage, project.homepage%>
-					<br/>
-					<%if isOwner?(project.id)%><%= link_to "Edit Project",edit_project_path(project)%>&nbsp;&nbsp;<%= link_to 'Delete Project', project, :confirm => 'Are you sure?', :method => :delete %><%end%>
+					<%= link_to "Home Page", project.homepage %>&nbsp;&nbsp;
+					<%if isOwner?(project.id)%>
+						<%= link_to "Edit Project", edit_project_path(project)%>&nbsp;&nbsp;
+						<%= link_to 'Delete Project', project, :confirm => 'Are you sure?', :method => :delete %>
+					<%end%>
 				</span>
 			</td>
-			<td align="left" style="width=50%;vertical-align:top;background-color:#EFEFEF;">
+			<td align="left" width="50%" style="vertical-align:top;background-color:#EFEFEF;">
 		        <%if ! project.description.nil? %>
 		            <%descLength = 250%>
 		            <%if project.description.length < descLength%>
@@ -43,13 +45,17 @@
 		            <%end%>
 		        <%end%>
 			</td>
-			<td align="left" style="width=10%;vertical-align:top;background-color:#EFEFEF;"><%= project.people%></td>
-			<td align="left" style="width=10%;vertical-align:top;background-color:#EFEFEF;"><%= project.institution%></td>
+			<td align="left" width="10%" style="vertical-align:top;background-color:#EFEFEF;">
+				<%= project.people%>
+			</td>
+			<td align="left" width="10%" style="vertical-align:top;background-color:#EFEFEF;">
+				<%= project.institution%>
+			</td>
 		</tr>
 	<%end%>
 	
-	<tr style="width=100%;border:none;">
-		<td colspan="4" style="border-right:none;border-left:none;">&nbsp;</td>
+	<tr width="100%" style="border:none;">
+		<td colspan="4" height=10px style="font-size:10%; border-right:none; border-left:none;">&nbsp;</td>
 	</tr>
 </table>
 
