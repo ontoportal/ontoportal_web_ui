@@ -32,11 +32,11 @@
 			</td>
 			<td align="left" style="width=40%;vertical-align:top;background-color:#EFEFEF;">
 		        <%if ! project.description.nil? %>
-		            <%descLength = 200%>
+		            <%descLength = 250%>
 		            <%if project.description.length < descLength%>
 		                <%= project.description%>
 		            <%else%>
-		                <%descShort = smart_truncate(project.description, :sentences => 1) %>
+		                <%descShort = smart_truncate(project.description, :words => 20) %>
 		                <span title="<%= project.description%>" style="cursor:help;"><%= descShort%></span>
 		            <%end%>
 		        <%end%>
