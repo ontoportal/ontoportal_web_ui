@@ -33,10 +33,11 @@
 				<strong><%= link_to project.name, project, :style=>"text-decoration:none;"%></strong>
 				<br>
 				<span style="font-size:75%; vertical-align:bottom;">
-					<%= link_to "Home Page", project.homepage %>&nbsp;&nbsp;
+					<%= link_to("Home Page", project.homepage, :target => "_blank") %>&nbsp;&nbsp;
+					
 					<%if isOwner?(project.id)%>
-						<%= link_to "Edit Project", edit_project_path(project)%>&nbsp;&nbsp;
-						<%= link_to 'Delete Project', project, :confirm => 'Are you sure?', :method => :delete %>
+						<%= link_to("Edit Project", edit_project_path(project))%>&nbsp;&nbsp;
+						<%= link_to("Delete Project", project, :confirm => "Are you sure?", :method => :delete) %>
 					<%end%>
 				</span>
 			</td>
