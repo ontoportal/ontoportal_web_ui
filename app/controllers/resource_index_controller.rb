@@ -7,7 +7,6 @@ class ResourceIndexController < ApplicationController
   before_filter :set_encoding
 
   RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "http://#{$REST_DOMAIN}/resource_index/", :limit => 10}
-  # RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "http://localhost:8080/resource_index_api/", :limit => 25}
 
   def index
   	ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))

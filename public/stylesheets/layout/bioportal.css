@@ -2069,7 +2069,7 @@ a.truncated_less, a.truncated_more {
 /************************************
  * Resource Index
  ************************************/
-#resource_index_terms_chzn ul.chzn-results li.no-results:after {
+#resource_index_terms_chzn ul.chzn-results li.searching:after {
   background: url("/images/spinners/spinner_000000_16px.gif") no-repeat scroll 5px -1.5px transparent;
   color: #F4F4F4;
   content: "spacer";

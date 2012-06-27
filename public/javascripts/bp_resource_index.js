@@ -32,15 +32,17 @@ jQuery(document).ready(function(){
 
   // Make chosen work via ajax
   if (jQuery("#resource_index_terms").length > 0) {
+    AbstractChosen.prototype.winnow_results = function() {};
     jQuery("#resource_index_terms").ajaxChosen({
         minLength: 3,
         queryLimit: 10,
-        delay: 750,
+        delay: 500,
         chosenOptions: {},
         searchingText: "Searching for term ",
         noresultsText: "Term not found",
         initialQuery: false
       }, function (options, response, event) {
+        // jQuery("#resource_index_terms_chzn .chzn-results li.active-result").remove();
         jQuery.getJSON("/search/json", {query: options.term, ontology_ids: currentOntologyIds().join(",")}, function (data) {
           var terms = {};
           jQuery.each(data.results, function (index, result) {
@@ -50,6 +52,13 @@ jQuery(document).ready(function(){
       });
     });
   }
+
+  // If all terms are removed from the search, put the UI in base state
+  jQuery("#resource_index_terms").live("change", function(){
+    if (currentConceptIds() == null) {
+      pushIndex();
+    }
+  })
 
   // Get search results
   if (jQuery("#resource_index_button").length > 0) {

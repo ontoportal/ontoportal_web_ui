@@ -34,6 +34,7 @@ https://github.com/bicouy0/ajax-chosen
         clickSelector = ".chzn-single";
       }
       select.chosen(defaultedOptions.chosenOptions);
+      select.data('chosen').winnow_results = function(){};
       container = select.next('.chzn-container');
       field = container.find(inputSelector);
       if (defaultedOptions.initialQuery) {
@@ -55,19 +56,25 @@ https://github.com/bicouy0/ajax-chosen
         val = $.trim(field.attr('value'));
         prevVal = (_ref = field.data('prevVal')) != null ? _ref : false;
         field.data('prevVal', val);
+        var resultsDiv;
+        if (multiple) {
+          resultsDiv = field.parent().parent().siblings();
+        } else {
+          resultsDiv = field.parent().parent();
+        }
         clearSearchingLabel = function() {
-          var resultsDiv;
-          if (multiple) {
-            resultsDiv = field.parent().parent().siblings();
-          } else {
-            resultsDiv = field.parent().parent();
-          }
           return resultsDiv.find('.no-results').html(defaultedOptions.noresultsText + " '" + $(_this).attr('value') + "'");
         };
         if (val === prevVal || (val.length < defaultedOptions.minLength && evt.type === 'keyup')) {
           clearSearchingLabel();
           return false;
         }
+        if (resultsDiv.find(".no-results"),length < 1) {
+          resultsDiv.find(".no-results").remove();
+          resultsDiv.find(".chzn-results").prepend($("<li/>").addClass("no-results"));
+        }
+        resultsDiv.find(".active-result").remove();
+        resultsDiv.find('.no-results').addClass("searching").html(defaultedOptions.searchingText + " '" + val + "'");
         currentOptions = select.find('option');
         defaultedOptions.term = val;
         response = function(items, success) {
@@ -128,6 +135,7 @@ https://github.com/bicouy0/ajax-chosen
             noResult = $('<option>');
             noResult.addClass('no-results');
             noResult.html(defaultedOptions.noresultsText + " '" + latestVal + "'").attr('value', '');
+            select.find('.no-results').remove();
             select.append(noResult);
           } else {
             select.change();
