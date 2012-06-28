@@ -114,8 +114,8 @@ https://github.com/bicouy0/ajax-chosen
             currentOpt = currentOptions[_i];
             _fn(currentOpt);
           }
-          currentOptions = select.find('option');
           select.html(select.find("option:selected"));
+          currentOptions = select.find('option');
           _fn2 = function(newOpt) {
             var currentOption, presenceInCurrentOptions, _fn3, _k, _len3;
             presenceInCurrentOptions = false;
