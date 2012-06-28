@@ -53,9 +53,13 @@ jQuery(document).ready(function(){
   }
 
   // If all terms are removed from the search, put the UI in base state
-  jQuery("#resource_index_terms").live("change", function(){
+  jQuery("a.search-choice-close").live("click", function(){
     if (currentConceptIds() == null) {
       pushIndex();
+      var input = document.activeElement
+      jQuery(input).trigger("mousedown");
+      input.blur();
+      jQuery("#resource_index_terms_chzn .active-result").remove();
     }
   })
 
@@ -229,27 +233,30 @@ function displayResources(concepts) {
 }
 
 function displayTerms(concepts, completedCallback) {
-  var concept, conceptOpt, ontologyId, conceptId, ontologyName, conceptRetreivedCount;
+  var concept, conceptOpt, ontologyId, conceptId, ontologyName, conceptRetreivedCount, conceptsLength = concepts.length, params;
 
   conceptRetreivedCount = 0;
   jQuery("#resource_index_terms").html("");
-  for (var i = 0; i < concepts.length; i++) {
+  for (var i = 0; i < conceptsLength; i++) {
     concept = concepts[i];
     ontologyId = concept.split("/")[0];
     conceptId = concept.split("/")[1];
-    jQuery.getJSON("/ajax/json_term?ontologyid="+ontologyId+"&conceptid="+conceptId, function(data){
-      ontologyName = ont_names[ontologyId];
-      jQuery("#resource_index_terms").append(jQuery("<option/>").val(concept).html(" "+data.label+" <span class='search_dropdown_ont'>("+ontologyName+")</span>"));
-      conceptRetreivedCount += 1;
-      if (conceptRetreivedCount == concepts.length) {
-        for (var i = 0; i < concepts.length; i++) {
-          conceptOpt = concepts[i];
-          jQuery("#resource_index_terms option[value='"+conceptOpt+"']").attr("selected", true);
+    ontologyName = ont_names[ontologyId];
+    params = { ontologyid: ontologyId, conceptid: conceptId };
+    jQuery.getJSON("/ajax/json_term", params, (function(ontologyName){
+      return function(data){
+        jQuery("#resource_index_terms").append(jQuery("<option/>").val(concept).html(" "+data.label+" <span class='search_dropdown_ont'>("+ontologyName+")</span>"));
+        conceptRetreivedCount += 1;
+        if (conceptRetreivedCount == conceptsLength) {
+          for (var j = 0; j < conceptsLength; j++) {
+            conceptOpt = concepts[j];
+            jQuery("#resource_index_terms option[value='"+conceptOpt+"']").attr("selected", true);
+          }
+          updateChosen();
+          getSearchResults(completedCallback);
         }
-        updateChosen();
-        getSearchResults(completedCallback);
       }
-    });
+    })(ontologyName));
   }
 }
 
