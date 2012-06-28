@@ -63,7 +63,7 @@ class ResourceIndexController < ApplicationController
   end
 
   def element_annotations
-    ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))
+    ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS.merge({:limit => 9999})))
     concept_ids = params[:conceptids].kind_of?(Array) ? params[:conceptids] : params[:conceptids].split(",")
     annotations = ri.element_annotations(params[:elementid], concept_ids, params[:resourceid])
     positions = {}
