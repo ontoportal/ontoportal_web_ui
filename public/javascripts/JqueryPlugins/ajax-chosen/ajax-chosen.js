@@ -11,7 +11,7 @@ https://github.com/bicouy0/ajax-chosen
 
   (function($) {
     return $.fn.ajaxChosen = function(options, callback) {
-      var clickSelector, container, defaultedOptions, field, inputSelector, multiple, search, select,
+      var clickSelector, container, defaultedOptions, field, inputSelector, multiple, search, select, currentSearchId,
         _this = this;
       defaultedOptions = {
         minLength: 3,
@@ -52,10 +52,12 @@ https://github.com/bicouy0/ajax-chosen
         }), defaultedOptions.delay);
       });
       return search = function(evt) {
-        var clearSearchingLabel, currentOptions, prevVal, response, val, _ref;
+        var clearSearchingLabel, currentOptions, prevVal, response, val, _ref, thisSearchId;
         val = $.trim(field.attr('value'));
         prevVal = (_ref = field.data('prevVal')) != null ? _ref : false;
         field.data('prevVal', val);
+        thisSearchId = new Date().getTime() + val;
+        currentSearchId = thisSearchId;
         var resultsDiv;
         if (multiple) {
           resultsDiv = field.parent().parent().siblings();
@@ -80,6 +82,7 @@ https://github.com/bicouy0/ajax-chosen
         response = function(items, success) {
           var currentOpt, keydownEvent, latestVal, newOpt, newOptions, noResult, _fn, _fn2, _i, _j, _len, _len2;
           if (!field.is(':focus') && evt.type === 'keyup') return;
+          if (thisSearchId !== currentSearchId) return;
           newOptions = [];
           $.each(items, function(value, text) {
             var newOpt;
@@ -112,6 +115,7 @@ https://github.com/bicouy0/ajax-chosen
             _fn(currentOpt);
           }
           currentOptions = select.find('option');
+          select.html(select.find("option:selected"));
           _fn2 = function(newOpt) {
             var currentOption, presenceInCurrentOptions, _fn3, _k, _len3;
             presenceInCurrentOptions = false;
