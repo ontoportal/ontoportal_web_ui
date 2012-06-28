@@ -22,7 +22,8 @@
         -resource_name = @resources_hash[resource.resourceId.downcase.to_sym][:resourceName]
         %tr{:class => resource.totalResults.to_i == 0 && "zero_results not_visible"}
           %td
-            %a{:href => @resources_hash[resource.resourceId.downcase.to_sym][:resourceURL], :target => "_blank", :id => "resource_link_#{resource.resourceId}"} #{resource_name}
+            %a.results_link{:href => "javascript:void(0);", :data => {:resource_id => resource.resourceId, :resource_name => resource_name}} #{resource_name}
+            %a.resource_site{:href => @resources_hash[resource.resourceId.downcase.to_sym][:resourceURL], :target => "_blank", :id => "resource_link_#{resource.resourceId}"} site
             %span{:class => "ui-icon ui-icon-extlink", :style => "display: inline-block; vertical-align: text-bottom;"}
           %td.count
             -if resource.totalResults > 0

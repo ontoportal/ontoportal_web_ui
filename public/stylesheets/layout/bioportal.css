@@ -2193,3 +2193,7 @@ div#resource_results div.resource_results h2 {
 #resource_index_content {
   padding: .5em 1.4em 2em;
 }
+.resource_site {
+  padding-left: 15px;
+  font-size: 9pt;
+}
