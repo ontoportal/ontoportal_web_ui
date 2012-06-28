@@ -54,12 +54,13 @@ jQuery(document).ready(function(){
 
   // If all terms are removed from the search, put the UI in base state
   jQuery("a.search-choice-close").live("click", function(){
-    if (currentConceptIds() == null) {
+    if (currentConceptIds() === null) {
       pushIndex();
       var input = document.activeElement
-      jQuery(input).trigger("mousedown");
+      jQuery("#resource_index_terms_chzn").trigger("mousedown");
       input.blur();
-      jQuery("#resource_index_terms_chzn .active-result").remove();
+      jQuery("#resource_index_terms_chzn input").data("prevVal", "");
+      jQuery("#resource_index_terms_chzn .chzn-results li").remove();
     }
   })
 
