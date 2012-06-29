@@ -18,7 +18,7 @@
         %div.element_text
           -element[:weights].each do |weight|
             %h4= weight[:name].split("_")[1].capitalize
-            %p{:data => {:context_name => weight[:name]}}= h(element[:text][weight[:name]])
+            %p{:data => {:context_name => weight[:name]}}= element_text(element, weight)
           %span{:class => "element_info"}
             %a{:href => "#{@resources_hash[@resource_results.resourceId.downcase.to_sym][:resourceElementURL]}#{element[:localElementId]}", :target => "_blank"} view source record
   = will_paginate @resource_results, :update => "#{@resource_results.resourceId}_results",

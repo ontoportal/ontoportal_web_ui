@@ -169,6 +169,61 @@ function replaceIndex() {
   }
 }
 
+// This will look up any term labels that haven't already been processed. If there are none it just exits without doing anything.
+// To decrease ajax calls, we also use the bp_term_cache. This method is used via polling.
+var bp_term_cache = {};
+function lookupTermLabels() {
+  jQuery("#resource_results a.ri_concept[data-applied_label='false']").each(function(){
+    var link = jQuery(this);
+    var params = { conceptid: link.data("concept_id"), ontologyid: link.data("ontology_id") };
+    link.attr("data-applied_label", "true");
+
+    // Check to see if another thread is already making an ajax request and start polling
+    if (bp_term_cache[params.ontologyid+"/"+params.conceptid] === "getting") {
+      return setTimeout((function() {
+        return applyTermLabel(link, params);
+      }), 100);
+    }
+
+    if (typeof bp_term_cache[params.ontologyid+"/"+params.conceptid] === "undefined") {
+      bp_term_cache[params.ontologyid+"/"+params.conceptid] = "getting";
+      jQuery.ajax({
+        url: "/ajax/json_term",
+        data: params,
+        dataType: 'json',
+        success: (function(link){
+          return function(data){
+            bp_term_cache[params.ontologyid+"/"+params.conceptid] = data;
+            if (data !== null) jQuery(link).html(data.label);
+          }
+        })(this),
+      });
+    }
+  })
+}
+
+// Poll for term information
+jQuery(document).ready(function(){
+  setInterval((function() {
+    lookupTermLabels();
+ }), 1000);
+})
+
+// This function will poll to see if term information exists
+function applyTermLabel(link, params, calledAgain) {
+  var term_info = bp_term_cache[params.ontologyid+"/"+params.conceptid];
+  if (typeof calledAgain !== "undefined" && calledAgain > 1) console.log("recurse " + calledAgain)
+
+  if (term_info === "getting") {
+    if (typeof calledAgain !== "undefined") calledAgain = 0
+    return setTimeout((function() {
+      return applyTermLabel(link, params, calledAgain += 1);
+    }), 100);
+  }
+
+  if (term_info !== null) jQuery(link).html(term_info.label);
+}
+
 function Router() {
   this.route = function(route, params) {
     switch(route) {
