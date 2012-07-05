@@ -26,7 +26,9 @@ class SearchController < ApplicationController
 
   def json
     # Safety checks
-    params[:objecttypes] = params[:include_props] ? "class,property" : "class"
+    params[:objecttypes] = "class"  # default
+    params[:objecttypes] += ",property" if params[:include_props]
+    params[:objecttypes] += ",individual" if params[:include_individual]
     params[:page_size] = 250
     params[:includedefinitions] = "false"
     params[:query] = params[:query].strip
