@@ -27,8 +27,8 @@ class SearchController < ApplicationController
   def json
     # Safety checks
     params[:objecttypes] = "class"  # default
-    params[:objecttypes] += ",property" if params[:include_props]
-    params[:objecttypes] += ",individual" if params[:include_individual]
+    params[:objecttypes] << ",property" if params[:include_props]
+    params[:objecttypes] << ",individual" if params[:include_individual]
     params[:page_size] = 250
     params[:includedefinitions] = "false"
     params[:query] = params[:query].strip
@@ -52,7 +52,7 @@ class SearchController < ApplicationController
     filter_private_results(exact_results)
     exact_count = exact_results.results.length
 
-    if params[:exact_match].eql?("true")
+    if params[:exact_match].eql?("true")  # Why string?  boolean used above.
       results = exact_results
     else
       start_time = Time.now
@@ -91,7 +91,7 @@ class SearchController < ApplicationController
 
     separator = (params[:separator].nil?) ? "~!~" : params[:separator]
 
-    @results,@pages = DataAccess.getNodeNameContains([params[:id]],params[:q], 1, params)
+    @results,@pages = DataAccess.getNodeNameContains([params[:id]], params[:q], 1, params)
 
     if params[:id]
       LOG.add :info, 'jump_to_search', request, :virtual_id => params[:id], :search_term => params[:q], :result_count => @results.length
@@ -101,30 +101,44 @@ class SearchController < ApplicationController
 
     response = ""
     for result in @results
-      if filter_result?(result)
+      if filter_private_result?(result)
         @results.delete(result)
         next
       end
 
       record_type = format_record_type(result[:recordType])
-      record_type_value = ""
-      for type in record_type
-        record_type_value << type[0]
-      end
+      # format_record_type returns a string, not a list;
+      # record_type_value is not used elsewhere, removing it.
+      #record_type_value = ""
+      #for type in record_type
+      #  record_type_value << type[0]
+      #end
 
       target_value = result[:preferredName]
       case params[:target]
-      when "name" : target_value = result[:preferredName]
-      when "shortid" : target_value = result[:conceptIdShort]
-      when "uri" : target_value = result[:conceptId]
-      else
-        target_value = result[:preferredName]
+        when "name" :
+          target_value = result[:preferredName]
+        when "shortid" :
+          target_value = result[:conceptIdShort]
+        when "uri" :
+          target_value = result[:conceptId]
+        else
+          target_value = result[:preferredName]
       end
 
+      response << "#{target_value}"
+      response << "|#{result[:conceptIdShort]}"
+      response << "|#{record_type}"
+      response << "|#{result[:ontologyVersionId]}"
+      response << "|#{result[:conceptId]}"
+      response << "|#{result[:preferredName]}"
+      response << "|#{result[:contents]}"
       if params[:id] && params[:id].split(",").length == 1
-        response << "#{target_value}|#{result[:conceptIdShort]}|#{record_type}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}|#{CGI.escape(result[:definition])}#{separator}"
+        response << "|#{CGI.escape(result[:definition])}#{separator}"
       else
-        response << "#{target_value}|#{result[:conceptIdShort]}|#{record_type}|#{result[:ontologyVersionId]}|#{result[:conceptId]}|#{result[:preferredName]}|#{result[:contents]}|#{result[:ontologyDisplayLabel]}|#{result[:ontologyId]}|#{CGI.escape(result[:definition])}#{separator}"
+        response << "|#{result[:ontologyDisplayLabel]}"
+        response << "|#{result[:ontologyId]}"
+        response << "|#{CGI.escape(result[:definition])}#{separator}"
       end
     end
 
@@ -191,7 +205,8 @@ class SearchController < ApplicationController
     return results if session[:user] && session[:user].admin?
 
     results.results.delete_if { |result|
-      # Rescuing 'true' here has the same effect of not showing the result, which is appropriate if we get an error getting ontology metadata
+      # Rescuing 'true' here has the same effect of not showing the result,
+      # which is appropriate if we get an error getting ontology metadata
       private = DataAccess.getOntology(result["ontologyId"]).private? rescue true
       if !private
         false
@@ -203,14 +218,16 @@ class SearchController < ApplicationController
     results
   end
 
-  # Check if this result should be filtered based on whether or not the result ontology is private
-  def filter_result?(result)
+  # Check if this result should be filtered based on
+  # whether or not the result ontology is private
+  def filter_private_result?(result)
     return false if session[:user] && session[:user].admin?
 
     ontology_id = result["ontologyId"].to_i if result["ontologyId"]
     ontology_id ||= result[:ontologyId]
 
-    # Rescuing 'true' here has the same effect of not showing the result, which is appropriate if we get an error getting ontology metadata
+    # Rescuing 'true' here has the same effect of not showing the result, 
+    # which is appropriate if we get an error getting ontology metadata
     private = DataAccess.getOntology(ontology_id).private? rescue true
 
     if !private
