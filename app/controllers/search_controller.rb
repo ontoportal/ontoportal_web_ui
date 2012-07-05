@@ -32,7 +32,7 @@ class SearchController < ApplicationController
     params[:query] = params[:query].strip
     params[:ontology_ids] ||= []
     params[:ontology_ids] = [params[:ontology_ids]] if params[:ontology_ids].kind_of?(String)
-
+    
     # Add ontologies in the selected categories to the filter
     category_onts = DataAccess.getCategoriesWithOntologies
     unless params[:categories].nil? || params[:categories].length == 0
@@ -40,9 +40,6 @@ class SearchController < ApplicationController
         params[:ontology_ids].concat category_onts[category][:ontologies]
       end
     end
-
-    # Are we filtering at all by ontology?
-    filter_ontologies = params[:ontology_ids].eql?("") ? nil : params[:ontology_ids]
 
     # Temporary hack to figure out which results are exact matches
     start_time = Time.now
