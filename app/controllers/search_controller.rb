@@ -42,7 +42,7 @@ class SearchController < ApplicationController
     end
 
     # Are we filtering at all by ontology?
-    filter_ontologies = params[:ontology_ids].nil? || params[:ontology_ids].eql?("") ? nil : params[:ontology_ids]
+    filter_ontologies = params[:ontology_ids].eql?("") ? nil : params[:ontology_ids]
 
     # Temporary hack to figure out which results are exact matches
     start_time = Time.now
