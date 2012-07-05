@@ -32,12 +32,13 @@ class SearchController < ApplicationController
     params[:page_size] = 250
     params[:includedefinitions] = "false"
     params[:query] = params[:query].strip
+    # Ensure :ontology_ids is an array
     params[:ontology_ids] ||= []
     params[:ontology_ids] = [params[:ontology_ids]] if params[:ontology_ids].kind_of?(String)
     
     # Add ontologies in the selected categories to the filter
-    category_onts = DataAccess.getCategoriesWithOntologies
     unless params[:categories].nil?
+      category_onts = DataAccess.getCategoriesWithOntologies
       params[:categories].each do |category|
         params[:ontology_ids].concat category_onts[category][:ontologies]
       end
