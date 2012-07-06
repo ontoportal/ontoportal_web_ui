@@ -82,7 +82,11 @@ function formComplete_formatItem(row) {
     }
   });
   var BP_include_definitions = jQuery(input).attr("data-bp_include_definitions");
+  
+  
+  // TODO: Add formatting for different object types: class, property, individual.
 
+  
   // Set wider term name column
   if (BP_include_definitions === "true") {
     term_name_width = "150px";
