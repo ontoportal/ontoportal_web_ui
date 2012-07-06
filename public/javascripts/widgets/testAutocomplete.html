@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>AutoComplete Widget Test | NCBO BioPortal</title>
+</head>
+
+<body>
+
+<script src="form_complete.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+  var ontology_id = 1430;
+  var ontology_name = "AI/RHEUM";
+  var org_site = "NCBO BioPortal";
+  var concept_id = "";
+  var content_section = "widgets";
+  var concept_param = "";
+  var concept_name = "";
+  var metadata_only = false;
+  var current_purl = "";
+  var purl_prefix = "http://purl.bioontology.org/ontology/AIR";
+  var concept_name_title = (concept_name == "") ? "" : " - " + concept_name;
+</script>
+
+
+<h1>Adding NCBO Widgets for AI/RHEUM to Your Site</h1>
+<hr/>
+
+<h2>Form Autocomplete</h2>
+<h4>Fill in a field in your form with a term from AI/RHEUM</h4>
+
+<p>
+    Example 1 (start typing the term name to get its full URI) <br/>
+    <input type="text" name="a" class="bp_form_complete-1430-uri" size="100"/><br/>
+
+    Example 2 (get the ID for a term) <br/>
+    <input type="text" name="b" class="bp_form_complete-1430-shortid" size="100"/><br/>
+
+    Example 3 (get the preferred name for a term) <br/>
+    <input type="text" name="c" class="bp_form_complete-1430-name" size="100"/>
+</p>
+
+<p>
+For more help visit <a target="_blank"
+    href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO
+    Widget Wiki</a>
+</p>
+
+</body>
+</html>
+
