@@ -26,9 +26,7 @@ class SearchController < ApplicationController
 
   def json
     # Safety checks
-    params[:objecttypes] = "class"  # default
-    params[:objecttypes] << ",property" if params[:include_props]
-    params[:objecttypes] << ",individual" if params[:include_individual]
+    params[:objecttypes] = set_object_types(params)
     params[:page_size] = 250
     params[:includedefinitions] = "false"
     params[:query] = params[:query].strip
@@ -88,6 +86,8 @@ class SearchController < ApplicationController
       render :text => "No search term provided"
       return
     end
+    
+    params[:objecttypes] = set_object_types(params)
 
     separator = (params[:separator].nil?) ? "~!~" : params[:separator]
 
@@ -247,9 +247,17 @@ class SearchController < ApplicationController
         return "Synonym"
       when "dproperty"
         return "Property"
+      # TODO: Add 'individual' record type?
       else
         return ""
     end
+  end
+  
+  def set_object_types(params)
+    objecttypes = "class"  # default
+    objecttypes << ",property" if params[:objecttype_property]
+    objecttypes << ",individual" if params[:objecttype_individual]
+    return objecttypes
   end
 
 end

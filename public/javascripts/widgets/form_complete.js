@@ -139,43 +139,64 @@ function formComplete_setup_functions() {
       BP_include_definitions = "";
     }
 
+    var BP_objecttype_property = jQuery(this).attr("data-bp_objecttype_property");
+    if (typeof BP_objecttype_property === "undefined") {
+      BP_objecttype_property = "";
+    }
+    
+    var BP_objecttype_individual = jQuery(this).attr("data-bp_objecttype_individual");
+    if (typeof BP_objecttype_individual === "undefined") {
+      BP_objecttype_individual = "";
+    }
+
     jQuery(classes).each(function() {
       if (this.indexOf("bp_form_complete") === 0) {
         values = this.split("-");
-        ontology_id = values[1];
+        ontology_id = values[1]; // Can be CSV (see wiki documentation)
         target_property = values[2];
       }
     });
 
-    if (ontology_id == "all") { ontology_id = ""; }
+    if (ontology_id == "all") { // Doesn't handle CSV?
+    	ontology_id = "";
+    }
 
-    var extra_params = { input: this, target_property: target_property, subtreerootconceptid: encodeURIComponent(BP_search_branch), includedefinitions: BP_include_definitions, id: BP_ONTOLOGIES };
+    var extra_params = {
+    		input: this,
+    		target_property: target_property,
+    		subtreerootconceptid: encodeURIComponent(BP_search_branch),
+    		includedefinitions: BP_include_definitions,
+    		objecttype_individual: BP_objecttype_individual,
+    		objecttype_property: BP_objecttype_property,
+    		id: BP_ONTOLOGIES
+    };
 
     var result_width = 450;
-
-    // Add extra space for definition
+    // Add space for definition
     if (BP_include_definitions) {
       result_width += 275;
     }
-
     // Add space for ontology name
     if (ontology_id === "") {
       result_width += 200;
     }
 
-    jQuery(this).bioportal_autocomplete(BP_SEARCH_SERVER + "/search/json_search/"+ontology_id, {
-        extraParams: extra_params,
-        lineSeparator: "~!~",
-        matchSubset: 0,
-        // mustMatch: true,
-        sortRestuls: false,
-        minChars: 3,
-        maxItemsToShow: 20,
-        width: result_width,
-        onItemSelect: bpFormSelect,
-        footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="' + BP_SEARCH_SERVER + '">' + BP_ORG_SITE + '</a></div>',
-        formatItem: formComplete_formatItem
-    });
+    jQuery(this).bioportal_autocomplete(
+		BP_SEARCH_SERVER + "/search/json_search/" + ontology_id,
+		{
+	        extraParams: extra_params,
+	        lineSeparator: "~!~",
+	        matchSubset: 0,
+	        // mustMatch: true,
+	        sortRestuls: false, // Spelling of var????
+	        minChars: 3,
+	        maxItemsToShow: 20,
+	        width: result_width,
+	        onItemSelect: bpFormSelect,
+	        footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="' + BP_SEARCH_SERVER + '">' + BP_ORG_SITE + '</a></div>',
+	        formatItem: formComplete_formatItem
+	    }
+    );
 
     var html = "";
     if (document.getElementById(jQuery(this).attr('name') + "_bioportal_concept_id") == null)
