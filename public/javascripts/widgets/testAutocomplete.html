@@ -54,6 +54,34 @@
 				<br/>
 				<input type="text" name="d" data-bp_search_branch="Anatomic_Structure_System_or_Substance" class="bp_form_complete-1032-name" size="90%"/>
 			</li>
+			<li>
+				<strong>Include 'property' in the object types searched.</strong>
+				Use
+				<code>
+					data-bp_objecttype_property="true".
+				</code>
+				The default object type (term or concept type) to be searched is 'class'.  Including
+				'data-bp_objecttype_property' or 'data-bp_objecttype_individual'
+				(see below) adds these object types to the search.
+				For example, this search for 'heart' includes 'class' and 'property' concepts
+				from the NCI Thesaurus:
+				<br/>
+				<input type="text" name="d" data-bp_objecttype_property="true" class="bp_form_complete-1032-name" size="90%"/>
+			</li>
+			<li>
+				<strong>Include 'individual' in the object types searched.</strong>
+				Use
+				<code>
+					data-bp_objecttype_individual="true".
+				</code>
+				The default object type (term or concept type) to be searched is 'class'.  Including
+				'data-bp_objecttype_individual' or 'data-bp_objecttype_property'
+				(see above) adds these object types to the search.
+				For example, this search for 'heart' includes 'class' and 'individual' concepts
+				from the NCI Thesaurus:
+				<br/>
+				<input type="text" name="d" data-bp_objecttype_individual="true" class="bp_form_complete-1032-name" size="90%"/>
+			</li>
 		</ul>
 
 		<h2>Help</h2>
