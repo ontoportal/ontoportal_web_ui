@@ -33,9 +33,9 @@ class SearchController < ApplicationController
     # Ensure :ontology_ids is an array
     params[:ontology_ids] ||= []
     params[:ontology_ids] = [params[:ontology_ids]] if params[:ontology_ids].kind_of?(String)
-    
+
     # Add ontologies in the selected categories to the filter
-    unless params[:categories].nil?
+    unless params[:categories].nil? || params[:categories].length == 0
       category_onts = DataAccess.getCategoriesWithOntologies
       params[:categories].each do |category|
         params[:ontology_ids].concat category_onts[category][:ontologies]
@@ -86,7 +86,7 @@ class SearchController < ApplicationController
       render :text => "No search term provided"
       return
     end
-    
+
     params[:objecttypes] = set_object_types(params)
 
     separator = (params[:separator].nil?) ? "~!~" : params[:separator]
@@ -226,7 +226,7 @@ class SearchController < ApplicationController
     ontology_id = result["ontologyId"].to_i if result["ontologyId"]
     ontology_id ||= result[:ontologyId]
 
-    # Rescuing 'true' here has the same effect of not showing the result, 
+    # Rescuing 'true' here has the same effect of not showing the result,
     # which is appropriate if we get an error getting ontology metadata
     private = DataAccess.getOntology(ontology_id).private? rescue true
 
@@ -252,7 +252,7 @@ class SearchController < ApplicationController
         return ""
     end
   end
-  
+
   def set_object_types(params)
     objecttypes = "class"  # default
     objecttypes << ",property" if params[:objecttype_property]
