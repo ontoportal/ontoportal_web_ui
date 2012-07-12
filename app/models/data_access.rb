@@ -573,6 +573,7 @@ class DataAccess
   end
 
   def self.getUser(user_id)
+    return nil if user_id.nil?
     return self.cache_pull("user::#{user_id}", "getUser", { :user_id => user_id })
   end
 
