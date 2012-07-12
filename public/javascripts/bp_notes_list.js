@@ -3,6 +3,7 @@
  */
 
 var BP_NOTES_LIST_LOADED = true;
+var columns = { archived: 3, date: 6, subjectSort: 2 };
 
 jQuery(document).ready(function(){
 	jQuery(".notes_list_link").live('click', function(event){
@@ -55,14 +56,15 @@ function wireTableWithData(notesTableNew, aData) {
 		"aaData": aData,
 		"iDisplayLength": 50,
 		"sPaginationType": "full_numbers",
-		"aaSorting": [[5, 'desc']],
+		"aaSorting": [[columns.date, 'desc']],
 		"aoColumns": [
-			{ "iDataSort": 1 }, // Subject link
+      { "bVisible": false }, // Delete
+			{ "iDataSort": columns.subjectSort }, // Subject link
 			{ "bVisible": false }, // Subject for sort
 			{ "bVisible": false }, // Archive for filter
 			null, // Author
 			null, // Type
-			{ "bVisible": false }, // Subject for sort
+			{ "bVisible": false }, // Date for sort
 			null // Created
 		],
 		"fnDrawCallback": function(){
@@ -81,9 +83,10 @@ function wireTable(notesTableNew) {
   	"bDestroy": true,
     "iDisplayLength": 50,
     "sPaginationType": "full_numbers",
-    "aaSorting": [[5, 'desc']],
+    "aaSorting": [[columns.date, 'desc']],
     "aoColumns": [
-       { "iDataSort": 1 }, // Subject link
+       { "bVisible": false }, // Delete
+       { "iDataSort": columns.subjectSort }, // Subject link
        { "bVisible": false }, // Subject for sort
        { "bVisible": false }, // Archived for filter
        null, // Author
@@ -100,17 +103,15 @@ function wireTable(notesTableNew) {
 
   // Important! Table is somehow getting set to zero width. Reset here.$
   jQuery(notesTable).css("width", "100%");
-
-  //notesTable.fnFilter('false', 2);
 }
 
 function hideOrUnhideArchivedNotes() {
     if (jQuery("#hide_archived:checked").val() !== undefined) {
       // Checked
-      notesTable.fnFilter('false', 2);
+      notesTable.fnFilter('false', columns.archived);
     } else {
       // Unchecked
-      notesTable.fnFilter('', 2, true, false);
+      notesTable.fnFilter('', columns.archived, true, false);
     }
 }
 

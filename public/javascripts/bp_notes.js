@@ -19,9 +19,6 @@ jQuery(document).ready(function(){
     subscribeToNotes(this);
   });
 
-  // Wire up subscriptions button styling
-  jQuery("a.subscribe_to_notes").button();
-
   // Wire up submit note functionality
   jQuery(".create_note_submit").live('click', function(event) {
     submitNote(event, this);
@@ -34,6 +31,12 @@ jQuery(document).ready(function(){
     });
   });
 });
+
+function showDeleteInfo() {
+  if (typeof notesTable !== "undefined" && notesTable !== null) notesTable.fnSetColumnVis(0, true);
+  if (typeof ontNotesTable !== "undefined" && ontNotesTable !== null) ontNotesTable.fnSetColumnVis(0, true);
+  jQuery(".notes_delete").show();
+}
 
 function Comment(prefix, ONT) {
   this.form_fields = {
@@ -376,6 +379,7 @@ function submitNote(event, target) {
 
                     // We add the (+ "") statement to "cast" to a string
                     notesTable.fnAddData([
+                                '<input type="checkbox" id="delete_'+json.id+'" class="delete_note_checkbox" data-note_id="'+json.id+'">',
                                 json.subject_link + "",
                                 json.subject + "",
                                 "false", // archived should be false since we just created the note
@@ -402,6 +406,7 @@ function submitNote(event, target) {
 
                   // We add the (+ "") statement to "cast" to a string
                   ontNotesTable.fnAddData([
+                              '<input type="checkbox" id="delete_'+json.id+'" class="delete_note_checkbox" data-note_id="'+json.id+'">',
                               json.subject_link + "",
                               json.subject + "",
                               "false", // archived should be false since we just created the note
@@ -525,5 +530,72 @@ function validateForm(oForm) {
     }
   }
 }
+
+
+function calculateNoteCount(notesTable) {
+  if (typeof notesTable === "undefined" || notesTable === null) {
+    return;
+  }
+
+  var rows = notesTable.find("tbody tr");
+  var notes_count;
+  if (rows.length == 1 && jQuery(rows).children("td")[0].getAttribute("colspan") > 1) {
+    notes_count = 0;
+  } else {
+    notes_count = rows.length;
+  }
+  jQuery("#note_count").html(notes_count);
+}
+
+function deleteNotes(button) {
+  var notesToDelete = [], params;
+  var errors = jQuery(button).closest(".notes_list_container").find(".delete_notes_error");
+  var spinner = jQuery(button).closest(".notes_list_container").find(".delete_notes_spinner");
+
+  errors.html("");
+  spinner.show();
+
+  jQuery("input.delete_note_checkbox:checked").each(function(){
+    notesToDelete.push(jQuery(this).val());
+  });
+
+  params = {
+    noteids: notesToDelete,
+    _method: "delete",
+    ontologyid: ontology_id,
+    concept_id: concept_id
+  };
+
+  errors.html("");
+
+  jQuery.ajax({
+      url: "/ajax/notes/delete",
+      type: "POST",
+      data: params,
+      success: function(data){
+        var rowId;
+
+        spinner.hide();
+
+        for (note_id in data.success) {
+          jQuery(button).closest(".notes_list_container").find("." + data.success[note_id] + "_tr").remove();
+          jQuery(button).closest(".notes_list_container").find("#row_expanded_" + data.success[note_id]).remove();
+        }
+
+        for (note_id in data.error) {
+          errors.html("There was a problem deleting one or more note");
+          rowId = data.error[note_id];
+          jQuery(button).closest(".notes_list_container").find("." + rowId + "_tr").css("border", "red solid");
+        }
+
+        calculateNoteCount();
+      },
+      error: function(){
+        spinner.hide();
+        errors.html("There was a problem deleting, please try again");
+      }
+  });
+}
+
 
 
