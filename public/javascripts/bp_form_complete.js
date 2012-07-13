@@ -139,6 +139,11 @@ function bp_internal_formComplete_setup_functions() {
       BP_include_definitions = "";
     }
 
+    var BP_objecttypes = jQuery(this).attr("data-bp_objecttypes");
+    if (typeof BP_objecttypes === "undefined") {
+      BP_objecttypes = "";
+    }
+
     jQuery(classes).each(function() {
       if (this.indexOf("bp_internal_form_complete") === 0) {
         values = this.split("-");
@@ -149,7 +154,14 @@ function bp_internal_formComplete_setup_functions() {
 
     if (ontology_id == "all") { ontology_id = ""; }
 
-    var extra_params = { input: this, target_property: target_property, subtreerootconceptid: encodeURIComponent(BP_search_branch), includedefinitions: BP_include_definitions, id: BP_INTERNAL_ONTOLOGIES };
+    var extra_params = {
+    		input: this,
+    		target_property: target_property,
+    		subtreerootconceptid: encodeURIComponent(BP_search_branch),
+    		includedefinitions: BP_include_definitions,
+    		objecttypes: BP_objecttypes,
+    		id: BP_INTERNAL_ONTOLOGIES
+    };
 
     var result_width = 450;
 

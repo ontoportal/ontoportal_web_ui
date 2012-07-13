@@ -84,7 +84,7 @@ function formComplete_formatItem(row) {
   var BP_include_definitions = jQuery(input).attr("data-bp_include_definitions");
   
   
-  // TODO: Add formatting for different object types: class, property, individual.
+  // TODO: Add formatting for different object types: class, property, individual?
 
   
   // Set wider term name column
@@ -143,14 +143,9 @@ function formComplete_setup_functions() {
       BP_include_definitions = "";
     }
 
-    var BP_objecttype_property = jQuery(this).attr("data-bp_objecttype_property");
-    if (typeof BP_objecttype_property === "undefined") {
-      BP_objecttype_property = "";
-    }
-    
-    var BP_objecttype_individual = jQuery(this).attr("data-bp_objecttype_individual");
-    if (typeof BP_objecttype_individual === "undefined") {
-      BP_objecttype_individual = "";
+    var BP_objecttypes = jQuery(this).attr("data-bp_objecttypes");
+    if (typeof BP_objecttypes === "undefined") {
+      BP_objecttypes = "";
     }
 
     jQuery(classes).each(function() {
@@ -170,8 +165,7 @@ function formComplete_setup_functions() {
     		target_property: target_property,
     		subtreerootconceptid: encodeURIComponent(BP_search_branch),
     		includedefinitions: BP_include_definitions,
-    		objecttype_individual: BP_objecttype_individual,
-    		objecttype_property: BP_objecttype_property,
+    		objecttypes: BP_objecttypes,
     		id: BP_ONTOLOGIES
     };
 
