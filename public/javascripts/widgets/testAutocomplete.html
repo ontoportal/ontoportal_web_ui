@@ -37,9 +37,12 @@
 				<code>
 					data-bp_include_definitions="true"
 				</code>.
-				For example, type 'heart' into this text input field:
+				For example, display search results for 'heart' terms, with
+				definitions, in the NCI Thesaurus:
 				<br/>
+				<xmp><input type="text" name="d" data-bp_include_definitions="true" class="bp_form_complete-1032-name" /></xmp>
 				<input type="text" name="d" data-bp_include_definitions="true" class="bp_form_complete-1032-name" size="90%"/>
+				<br/>&nbsp;
 			</li>
 			<li>
 				<strong>Limit lookup to terms below a root term.</strong>
@@ -52,51 +55,61 @@
 				within the 'Anatomic_Structure_System_or_Substance'
 				branch of the NCI Thesaurus:
 				<br/>
+				<xmp><input type="text" name="d" data-bp_search_branch="Anatomic_Structure_System_or_Substance" class="bp_form_complete-1032-name" /></xmp>
 				<input type="text" name="d" data-bp_search_branch="Anatomic_Structure_System_or_Substance" class="bp_form_complete-1032-name" size="90%"/>
+				<br/>&nbsp;
 			</li>
 			<li>
-				<strong>Search 'class' and 'property' object types.</strong>
+				<strong>Search 'class' and 'property' objects.</strong>
 				Use
 				<code>
 					data-bp_objecttypes="class,property".
 				</code>
-				For example, this search for 'heart' searches both 'class' and 'property' objects
-				from the NCI Thesaurus:
+				For example, search for 'function' among both 'class' and
+				'property' objects from the "Adverse Event Reporting Ontology".
 				<br/>
-				<input type="text" name="d" data-bp_objecttypes="class,property" class="bp_form_complete-1032-name" size="90%"/>
+				<xmp><input type="text" name="d" data-bp_objecttypes="class,property" class="bp_form_complete-1580-uri" /></xmp>
+				<input type="text" name="d" data-bp_objecttypes="class,property" class="bp_form_complete-1580-uri" size="90%"/>
+				<br/>&nbsp;
 			</li>
 			<li>
-				<strong>Search only 'property' object types.</strong>
+				<strong>Search only 'property' objects.</strong>
 				Use
 				<code>
 					data-bp_objecttypes="property".
 				</code>
-				For example, this search for 'heart' only searches 'property' objects
-				from the NCI Thesaurus:
+				For example, search for 'function' among only 
+				'property' objects from the "Adverse Event Reporting Ontology".
 				<br/>
-				<input type="text" name="d" data-bp_objecttypes="property" class="bp_form_complete-1032-name" size="90%"/>
+				<xmp><input type="text" name="d" data-bp_objecttypes="property" class="bp_form_complete-1580-uri" /></xmp>
+				<input type="text" name="d" data-bp_objecttypes="property" class="bp_form_complete-1580-uri" size="90%"/>
+				<br/>&nbsp;
 			</li>
 			<li>
-				<strong>Search 'class' and 'individual' object types.</strong>
+				<strong>Search 'class' and 'individual' objects.</strong>
 				Use
 				<code>
 					data-bp_objecttypes="class,individual".
 				</code>
-				For example, this search for 'heart' includes 'class' and 'individual' objects
-				from the NCI Thesaurus:
+				For example, this search for 'seizure' includes 'class' and
+				'individual' objects from the "Adverse Event Reporting Ontology".
 				<br/>
-				<input type="text" name="d" data-bp_objecttypes="class,individual" class="bp_form_complete-1032-name" size="90%"/>
+				<xmp><input type="text" name="d" data-bp_objecttypes="class,individual" class="bp_form_complete-1580-uri" /></xmp>
+				<input type="text" name="d" data-bp_objecttypes="class,individual" class="bp_form_complete-1580-uri" size="90%"/>
+				<br/>&nbsp;
 			</li>
 			<li>
-				<strong>Only search 'individual' object types.</strong>
+				<strong>Only search 'individual' objects.</strong>
 				Use
 				<code>
 					data-bp_objecttypes="individual".
 				</code>
-				For example, this search for 'heart' includes only 'individual' objects
-				from the NCI Thesaurus:
+				For example, this search for 'seizure' includes only 
+				'individual' objects from the "Adverse Event Reporting Ontology".
 				<br/>
-				<input type="text" name="d" data-bp_objecttypes="individual" class="bp_form_complete-1032-name" size="90%"/>
+				<xmp><input type="text" name="d" data-bp_objecttypes="individual" class="bp_form_complete-1580-uri" /></xmp>
+				<input type="text" name="d" data-bp_objecttypes="individual" class="bp_form_complete-1580-uri" size="90%"/>
+				<br/>&nbsp;
 			</li>
 		</ul>
 
