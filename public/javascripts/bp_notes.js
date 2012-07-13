@@ -566,7 +566,7 @@ function deleteNotes(button) {
   spinner.show();
 
   jQuery("input.delete_note_checkbox:checked").each(function(){
-    notesToDelete.push(jQuery(this).val());
+    notesToDelete.push(jQuery(this).attr("data-note_id"));
   });
 
   params = {
@@ -589,6 +589,7 @@ function deleteNotes(button) {
 
         for (note_id in data.success) {
           jQuery(button).closest(".notes_list_container").find("." + data.success[note_id] + "_tr").remove();
+          jQuery("#delete_" + data.success[note_id]).closest("tr").remove();
           jQuery(button).closest(".notes_list_container").find("#row_expanded_" + data.success[note_id]).remove();
         }
 
