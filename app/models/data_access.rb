@@ -302,7 +302,7 @@ class DataAccess
 
   def self.deleteNote(note_id, ontology_id, appliesTo)
     params = { :note_id => note_id, :ontology_virtual_id => ontology_id }
-    note = SERVICE.deleteNote(params)
+    note = SERVICE.deleteNote(params) rescue nil
     CACHE.delete("#{note_id}")
     CACHE.delete("#{appliesTo}::notes")
     CACHE.delete("#{appliesTo}::notes::threaded=true::virtual=true")

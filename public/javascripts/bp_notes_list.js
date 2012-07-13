@@ -52,7 +52,8 @@ function insert_note(link, note_id) {
 // This will wire up a table with the dataTables config.
 function wireTableWithData(notesTableNew, aData) {
 	// Wire up table if it hasn't been done yet
-	notesTable = notesTableNew.dataTable({
+	notesTable = notesTableNew;
+  notesTable.dataTable({
 		"aaData": aData,
 		"iDisplayLength": 50,
 		"sPaginationType": "full_numbers",
@@ -69,9 +70,11 @@ function wireTableWithData(notesTableNew, aData) {
 		],
 		"fnDrawCallback": function(){
 			jQuery(".highlighted_row").removeClass("highlighted_row");
+      showDeleteInfo();
 		},
-		"fnInitComplete": function(){
-		}
+    "fnInitComplete": function(){
+      showDeleteInfo();
+    }
 	});
 }
 
@@ -79,7 +82,8 @@ function wireTableWithData(notesTableNew, aData) {
 // Needs to stay inline because IE won't recognize it in an external file.
 function wireTable(notesTableNew) {
   // Wire up table if it hasn't been done yet
-  notesTable = notesTableNew.dataTable({
+  notesTable = notesTableNew;
+  notesTable.dataTable({
   	"bDestroy": true,
     "iDisplayLength": 50,
     "sPaginationType": "full_numbers",
@@ -96,8 +100,10 @@ function wireTable(notesTableNew) {
     ],
     "fnDrawCallback": function(){
       jQuery(".highlighted_row").removeClass("highlighted_row");
+      showDeleteInfo();
     },
     "fnInitComplete": function(){
+      showDeleteInfo();
     }
   });
 

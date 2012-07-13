@@ -33,9 +33,11 @@ jQuery(document).ready(function(){
 });
 
 function showDeleteInfo() {
-  if (typeof notesTable !== "undefined" && notesTable !== null) notesTable.fnSetColumnVis(0, true);
-  if (typeof ontNotesTable !== "undefined" && ontNotesTable !== null) ontNotesTable.fnSetColumnVis(0, true);
-  jQuery(".notes_delete").show();
+  if (bp_notesDeletable) {
+    if (typeof notesTable !== "undefined") notesTable.fnSetColumnVis(0, true);
+    if (typeof ontNotesTable !== "undefined") ontNotesTable.fnSetColumnVis(0, true);
+    jQuery(".notes_delete").show();
+  }
 }
 
 function Comment(prefix, ONT) {
@@ -339,8 +341,6 @@ function submitNote(event, target) {
         data: note.member_variables,
         dataType: "json",
         success: function(data) {
-          button_reset(button);
-
           // What do we do with the returned data?
           if (action == "root") {
             jQuery.get("/notes/ajax/single/" + data.ontologyId + "?noteid=" + data.id,
@@ -348,6 +348,8 @@ function submitNote(event, target) {
                   // Show the response container
                   jQuery("#" + data.appliesTo.id + "_responses_container").show();
                   jQuery("#" + data.appliesTo.id + "_responses_container").append(html);
+
+                  button_reset(button);
                 }
             );
           } else if (action == "thread") {
@@ -361,6 +363,8 @@ function submitNote(event, target) {
                     jQuery(this).parent().hide();
                     jQuery(".create_reply_container").show();
                   });
+
+                  button_reset(button);
                 }
             );
           } else {
@@ -419,12 +423,18 @@ function submitNote(event, target) {
                   // Redraw table, including sort and filter options
                   ontNotesTable.fnFilter("");
                   jQuery("#notes_list_filter input").val("");
+
+                  button_reset(button);
                 }
             );
           }
 
           // Reset form fields
           note.reset();
+
+          // Show the delete button
+          bp_notesDeletable = true;
+          showDeleteInfo();
 
           // Update note_count
           var new_note_count = parseInt(jQuery("#note_count").text()) + 1;

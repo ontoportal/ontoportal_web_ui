@@ -181,14 +181,9 @@
 if (typeof BP_NOTES_LIST_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_list.js");
 
 // Global data
-var notesTable = null;
+var notesTable;
 var target = <%= (@context && @context.eql?("concept")) ? "{ 'bVisible': false }" : "null" %>;
 var bp_notesDeletable = <%=@notes_deletable.to_json%>;
-
-// Show delete column
-if (bp_notesDeletable) {
-  showDeleteInfo();
-}
 
 // Data needed in the external JS file stored in the body 'cache'
 <% if @concept %>
