@@ -6,16 +6,22 @@
 	</head>
 
 	<body>
-		<!--
-		<script type="text/javascript">
-			// The bioportal UI server for search queries.
-			var BP_SEARCH_SERVER = "http://bioportal.bioontology.org";
-			// Override the default for development debugging.  Check server
-			// logs for details on the RonR controller parameters.
-			BP_SEARCH_SERVER = "http://localhost:3000";
-		</script>
+		<!-- To open this HTML file from a development localhost server, try
+			 http://localhost:3000/javascripts/widgets/testAutocomplete.html		
+			 Then uncomment the following script blocks.
 		-->
+		<script type="text/javascript">
+			// Override the default search server for development.  Check server
+			// debug messages for details on the RonR controller parameters etc.
+			var BP_SEARCH_SERVER = "http://localhost:3000";
+		</script>
+		<script src="/javascripts/widgets/form_complete.js" type="text/javascript"></script>
+		
+		<!-- To open this HTML file in a browser using a file URL, try
+			file://bioportal_ui/public/javascripts/widgets/testAutocomplete.html		
+			Then comment out the script blocks above and enable this one
 		<script src="form_complete.js" type="text/javascript"></script>
+		-->
 
 		<h1>Adding NCBO Widgets for  Your Site</h1>
 		<hr/>
@@ -24,102 +30,102 @@
 
 		<h4>Fill in a field in this form with a term from the NCI Thesaurus [ontologyId=1032]</h4>
 		<form>
-			Example 1 (start typing a term name to get a full URI)
-			<br/>
-			<input type="text" name="a" class="bp_form_complete-1032-uri" size="90%"/>
-			<br/>
-			Example 2 (get the term ID)
-			<br/>
-			<input type="text" name="b" class="bp_form_complete-1032-shortid" size="90%"/>
-			<br/>
-			Example 3 (get the term preferred name)
-			<br/>
-			<input type="text" name="c" class="bp_form_complete-1032-name" size="90%"/>
+			<ul>
+				<li>
+					Example 1 (start typing a term name to get a full URI)
+					<br/>
+					<xmp><input type="text" name="a" class="bp_form_complete-1032-uri" /></xmp>
+					<input type="text" name="a" class="bp_form_complete-1032-uri" size="90%"/>
+					<br/>&nbsp;
+				</li>
+				<li>
+					Example 2 (get the term ID)
+					<br/>
+					<xmp><input type="text" name="b" class="bp_form_complete-1032-shortid" /></xmp>
+					<input type="text" name="b" class="bp_form_complete-1032-shortid" size="90%"/>
+					<br/>&nbsp;
+				</li>
+				<li>
+					Example 3 (get the term preferred name)
+					<br/>
+					<xmp><input type="text" name="c" class="bp_form_complete-1032-name" /></xmp>
+					<input type="text" name="c" class="bp_form_complete-1032-name" size="90%"/>
+					<br/>&nbsp;
+				</li>
+			</ul>
 		</form>
 
 		<h4>Optional attributes</h4>
+		<form>
 		<ul>
 			<li>
 				<strong>Include term definitions.</strong>
-				Use
-				<code>
-					data-bp_include_definitions="true"
-				</code>.
-				For example, display search results for 'heart' terms, with
-				definitions, in the NCI Thesaurus:
+				Use <code>data-bp_include_definitions="true"</code>.
+				This will display definitions with the list of terms that are returned.  For example, use this code to display search results for 'heart' terms, with
+				definitions, in the NCI Thesaurus.
 				<br/>
 				<xmp><input type="text" name="d" data-bp_include_definitions="true" class="bp_form_complete-1032-name" /></xmp>
-				<input type="text" name="d" data-bp_include_definitions="true" class="bp_form_complete-1032-name" size="90%"/>
+				Try it: <input type="text" name="d" data-bp_include_definitions="true" class="bp_form_complete-1032-name" size="90%"/>
 				<br/>&nbsp;
 			</li>
 			<li>
 				<strong>Limit lookup to terms below a root term.</strong>
-				Use
-				<code>
-					data-bp_search_branch="{conceptid}"
-				</code>
+				Use <code>data-bp_search_branch="{conceptid}"</code>
 				(replace {conceptid} with the term id for the term to use as the 
-				branch root).  For example, limit the search for 'heart' to terms 
+				branch root).  For example, use this code to limit the search for 'heart' to terms 
 				within the 'Anatomic_Structure_System_or_Substance'
-				branch of the NCI Thesaurus:
+				branch of the NCI Thesaurus.
 				<br/>
 				<xmp><input type="text" name="d" data-bp_search_branch="Anatomic_Structure_System_or_Substance" class="bp_form_complete-1032-name" /></xmp>
-				<input type="text" name="d" data-bp_search_branch="Anatomic_Structure_System_or_Substance" class="bp_form_complete-1032-name" size="90%"/>
+				Try it: <input type="text" name="d" data-bp_search_branch="Anatomic_Structure_System_or_Substance" class="bp_form_complete-1032-name" size="90%"/>
 				<br/>&nbsp;
 			</li>
-			<li>
-				<strong>Search 'class' and 'property' objects.</strong>
-				Use
-				<code>
-					data-bp_objecttypes="class,property".
-				</code>
-				For example, search for 'function' among both 'class' and
-				'property' objects from the "Adverse Event Reporting Ontology".
-				<br/>
-				<xmp><input type="text" name="d" data-bp_objecttypes="class,property" class="bp_form_complete-1580-uri" /></xmp>
-				<input type="text" name="d" data-bp_objecttypes="class,property" class="bp_form_complete-1580-uri" size="90%"/>
+			<li><strong>Object types</strong>
 				<br/>&nbsp;
-			</li>
-			<li>
-				<strong>Search only 'property' objects.</strong>
-				Use
-				<code>
-					data-bp_objecttypes="property".
-				</code>
-				For example, search for 'function' among only 
-				'property' objects from the "Adverse Event Reporting Ontology".
-				<br/>
-				<xmp><input type="text" name="d" data-bp_objecttypes="property" class="bp_form_complete-1580-uri" /></xmp>
-				<input type="text" name="d" data-bp_objecttypes="property" class="bp_form_complete-1580-uri" size="90%"/>
-				<br/>&nbsp;
-			</li>
-			<li>
-				<strong>Search 'class' and 'individual' objects.</strong>
-				Use
-				<code>
-					data-bp_objecttypes="class,individual".
-				</code>
-				For example, this search for 'seizure' includes 'class' and
-				'individual' objects from the "Adverse Event Reporting Ontology".
-				<br/>
-				<xmp><input type="text" name="d" data-bp_objecttypes="class,individual" class="bp_form_complete-1580-uri" /></xmp>
-				<input type="text" name="d" data-bp_objecttypes="class,individual" class="bp_form_complete-1580-uri" size="90%"/>
-				<br/>&nbsp;
-			</li>
-			<li>
-				<strong>Only search 'individual' objects.</strong>
-				Use
-				<code>
-					data-bp_objecttypes="individual".
-				</code>
-				For example, this search for 'seizure' includes only 
-				'individual' objects from the "Adverse Event Reporting Ontology".
-				<br/>
-				<xmp><input type="text" name="d" data-bp_objecttypes="individual" class="bp_form_complete-1580-uri" /></xmp>
-				<input type="text" name="d" data-bp_objecttypes="individual" class="bp_form_complete-1580-uri" size="90%"/>
-				<br/>&nbsp;
-			</li>
+				<ul>
+					<li>
+						<strong>Search 'class' and 'property' objects.</strong>
+						Use <code>data-bp_objecttypes="class,property".</code>
+						For example, use this code to search for 'function' among both 'class' and
+						'property' objects from the "Adverse Event Reporting Ontology".
+						<br/>
+						<xmp><input type="text" name="d" data-bp_objecttypes="class,property" class="bp_form_complete-1580-uri" /></xmp>
+						Try it: <input type="text" name="d" data-bp_objecttypes="class,property" class="bp_form_complete-1580-uri" size="90%"/>
+						<br/>&nbsp;
+					</li>
+					<li>
+						<strong>Search only 'property' objects.</strong>
+						Use <code>data-bp_objecttypes="property".</code>
+						For example, use this code to search for 'function' among only 
+						'property' objects from the "Adverse Event Reporting Ontology".
+						<br/>
+						<xmp><input type="text" name="d" data-bp_objecttypes="property" class="bp_form_complete-1580-uri" /></xmp>
+						Try it: <input type="text" name="d" data-bp_objecttypes="property" class="bp_form_complete-1580-uri" size="90%"/>
+						<br/>&nbsp;
+					</li>
+					<li>
+						<strong>Search 'class' and 'individual' objects.</strong>
+						Use <code>data-bp_objecttypes="class,individual".</code>
+						For example, use this code to search for 'seizure' among 'class' and
+						'individual' objects from the "Adverse Event Reporting Ontology".
+						<br/>
+						<xmp><input type="text" name="d" data-bp_objecttypes="class,individual" class="bp_form_complete-1580-uri" /></xmp>
+						Try it: <input type="text" name="d" data-bp_objecttypes="class,individual" class="bp_form_complete-1580-uri" size="90%"/>
+						<br/>&nbsp;
+					</li>
+					<li>
+						<strong>Only search 'individual' objects.</strong>
+						Use <code>data-bp_objecttypes="individual".</code>
+						For example, use this code to this search for 'seizure' only among 
+						'individual' objects from the "Adverse Event Reporting Ontology".
+						<br/>
+						<xmp><input type="text" name="d" data-bp_objecttypes="individual" class="bp_form_complete-1580-uri" /></xmp>
+						Try it: <input type="text" name="d" data-bp_objecttypes="individual" class="bp_form_complete-1580-uri" size="90%"/>
+						<br/>&nbsp;
+					</li>
+				</ul>
 		</ul>
+		</form>
 
 		<h2>Help</h2>
 		<p>

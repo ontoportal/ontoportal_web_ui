@@ -148,10 +148,12 @@ function formComplete_setup_functions() {
       BP_objecttypes = "";
     }
 
+    // Find the 'bp_form_complete-{ontologyId,...}-{property}' values
+    // in the class attribute(s)
     jQuery(classes).each(function() {
       if (this.indexOf("bp_form_complete") === 0) {
         values = this.split("-");
-        ontology_id = values[1]; // Can be CSV (see wiki documentation)
+        ontology_id = values[1]; // Could be CSV (see wiki documentation)
         target_property = values[2];
       }
     });
@@ -161,12 +163,12 @@ function formComplete_setup_functions() {
     }
 
     var extra_params = {
-    		input: this,
-    		target_property: target_property,
-    		subtreerootconceptid: encodeURIComponent(BP_search_branch),
-    		includedefinitions: BP_include_definitions,
-    		objecttypes: BP_objecttypes,
-    		id: BP_ONTOLOGIES
+		input: this,
+		target_property: target_property,
+		subtreerootconceptid: encodeURIComponent(BP_search_branch),
+		includedefinitions: BP_include_definitions,
+		objecttypes: BP_objecttypes,
+		id: BP_ONTOLOGIES // not 'ontology_id', see below...
     };
 
     var result_width = 450;
@@ -179,6 +181,7 @@ function formComplete_setup_functions() {
       result_width += 200;
     }
 
+    // see "public/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js"
     jQuery(this).bioportal_autocomplete(
 		BP_SEARCH_SERVER + "/search/json_search/" + ontology_id,
 		{
@@ -186,7 +189,7 @@ function formComplete_setup_functions() {
 	        lineSeparator: "~!~",
 	        matchSubset: 0,
 	        // mustMatch: true,
-	        sortRestuls: false, // Spelling of var????
+	        sortRestuls: false, // spelling?, not in crossdomain_autocomplete.js
 	        minChars: 3,
 	        maxItemsToShow: 20,
 	        width: result_width,
