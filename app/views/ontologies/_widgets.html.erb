@@ -58,39 +58,39 @@
                       <h2>Step 2: Follow the Instructions</h2>
                       <hr/>
             <div class="enable-lists">
-                          <ul>
-                              <li>
-                                  Download the <a rel="nofollow" title="<%= $UI_URL%>/javascripts/widgets/quick_jump.js" class="external free" href="<%= $UI_URL%>/javascripts/widgets/quick_jump.js"><b>quick_jump.js file</b></a>
-                                  and put it on your server
-                              </li>
-                              <li>
-                                  Copy the code below and paste it to your HTML page
-                                    <li>
-                                        <b>Note:</b>
-                                        If you would like to use Quick Jump across multiple ontologies:
-                                        <ul>
-                                          <li>
-                                              You can enter a comma-separated list of ontology ids:<br>var BP_ontology_id = "1032,1089";
+                  <ul>
+                      <li>
+                          Download the <a rel="nofollow" title="<%= $UI_URL%>/javascripts/widgets/quick_jump.js" class="external free" href="<%= $UI_URL%>/javascripts/widgets/quick_jump.js"><b>quick_jump.js file</b></a>
+                          and put it on your server
                       </li>
                       <li>
-                        You cans set the variable to 'all' to search all ontologies in <%= $SITE%>:<br>var BP_ontology_id = "all";
+                          Copy the code below and paste it to your HTML page
+	                      <li>
+	                        <b>Note:</b>
+	                        If you would like to use Quick Jump across multiple ontologies:
+	                        <ul>
+	                          <li>
+		                        You can enter a comma-separated list of ontology ids:<br>var BP_ontology_id = "1032,1089";
+					          </li>
+					          <li>
+					            You can set the variable to 'all' to search all ontologies in <%= $SITE%>:<br>var BP_ontology_id = "all";
+		                      </li>
+			                </ul>
+		                  </li>
                       </li>
-                    </ul>
-                  </li>
-                              </li>
                     <li>
                       To include definitions in the Jump To drop-down, add the following variable in Javascript:<br/>
                       <pre>var BP_include_definitions = true;</pre>
                     </li>
-                              <li>
-                                  In the code that you just pasted, make sure to change the path to the quick_jump.js file to point to the location where you put the file (relative to your HTML file)
-                                  <ul>
-                                      <li>
-                                          For example, if you put the quick_jump.js file in the same directory as your HTML file, this is the code you would use:
-                                      </li>
-                                  </ul>
-                              </li>
-                          </ul>
+                    <li>
+                      In the code that you just pasted, make sure to change the path to the quick_jump.js file to point to the location where you put the file (relative to your HTML file)
+                      <ul>
+                          <li>
+                              For example, if you put the quick_jump.js file in the same directory as your HTML file, this is the code you would use:
+                          </li>
+                      </ul>
+                    </li>
+                  </ul>
             </div>
 <textarea rows=8 cols=70>
 <div id="bp_quick_jump"></div>
