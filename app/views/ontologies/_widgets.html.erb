@@ -123,57 +123,47 @@
             Example 3 (get the preferred name for a term)
             <br/>
             <input type="text" name="c" class="bp_form_complete-<%= @ontology.ontologyId%>-name" size="100"/>
-                        <div id="form" style="display:none;">
+            <div id="form" style="display:none;">
               <div class="enable-lists" >
-                            <h2>Step 2: Follow the Instructions</h2>
-                            <hr/>
-                            <ul>
-                                <li>
-                                    Download the <a rel="nofollow" title="<%= $UI_URL%>/javascripts/widgets/form_complete.js" class="external free" href="<%= $UI_URL%>/javascripts/widgets/form_complete.js"><b>form_complete.js file</b></a>
-                                    and put it on your server
-                                </li>
-                                <li>
-                                    In the header for the page where you want the form field, include the <b>form_complete.js</b> file
-                                </li>
-                                <li>
-                                    On your form, for the fields where you want to use the term-selection widget, specify the field's class in the following format:
-                                    <code>
-                                        bp_form_complete-{ontology_id_list}-{value}
-                                    </code>
-                                    <ul>
-                                        <li>
-                                            For example,
-                                            <code>
-                                                bp_form_complete-1032-uri
-                                            </code>
-                                            will use NCI Thesaurus (ontology id is 1032) and will put the term URI in the field after the user selects the term from the pull-down list.
-                      <ul>
-                        <li><b>Note:</b> In addition to single ontology ids, you can use a list:<br><code>bp_form_complete-1032,1089-uri</code></li>
-                        <li><b>OR</b> use 'all' to search across all <%= $SITE%> ontologies:<br><code>bp_form_complete-all-uri</code></li>
-                        <li>The autocomplete widget accesses ontology content from the latest version of the ontology.</li>
-                      </ul>
-                                        </li>
-                                    </ul>
-                                        <li>
-                                            You can use the following parameters to select which value will be placed into the user-visible input field:
-                                            <ul>
-                                                <li>
-                                                    <code>
-                                                        uri
-                                                    </code>put the complete URI of the term (e.g., <a rel="nofollow" title="<%= $UI_URL%>/visualize/39478/Common_Neoplasm" class="external free" href="<%= $UI_URL%>/visualize/39478/Common_Neoplasm"><%= $UI_URL%>/visualize/39478/Common_Neoplasm</a>);
-                                                </li>
-                                                <li>
-                                                    <code>
-                                                        shortid
-                                                    </code>put the short id of the term, as used in <%= $SITE%> (e.g., "Common_Neoplasm");
-                                                </li>
-                                                <li>
-                                                    <code>
-                                                        name
-                                                    </code>put the preferred name of the term (e.g., "Common Neoplasm");
-                                                </li>
-                                            </ul>
-                                        </li>
+                <h2>Step 2: Follow the Instructions</h2>
+                <hr/>
+                <ul>
+                    <li>
+                        Download the <a rel="nofollow" title="<%= $UI_URL%>/javascripts/widgets/form_complete.js" class="external free" href="<%= $UI_URL%>/javascripts/widgets/form_complete.js"><b>form_complete.js file</b></a>
+                        and put it on your server.
+                    </li>
+                    <li>
+                        In the header for the page where you want the form field, include the <b>form_complete.js</b> file.
+                    </li>
+                    <li>
+                        On your form, for the fields where you want to use the term-selection widget, specify the field's class in the following format:
+                        <code>bp_form_complete-{ontology_id_list}-{value}</code>
+                        <ul>
+                            <li>For example, <code>bp_form_complete-1032-uri</code> will use NCI Thesaurus (ontology id is 1032) and will put the term URI in the field after the user selects the term from the pull-down list.
+			                    <ul>
+			                        <li><b>Note:</b> In addition to single ontology ids, you can use a list:<br><code>bp_form_complete-1032,1089-uri</code></li>
+			                        <li><b>OR</b> use 'all' to search across all <%= $SITE%> ontologies:<br><code>bp_form_complete-all-uri</code></li>
+			                        <li>The autocomplete widget accesses ontology content from the latest version of the ontology.</li>
+			                    </ul>
+                            </li>
+	                        <li>You can use the following parameters to select which value will be placed into the user-visible input field:
+	                            <ul>
+	                                <li>
+	                                    <code>uri</code>
+	                                    put the complete URI of the term (e.g., <a rel="nofollow" title="<%= $UI_URL%>/visualize/39478/Common_Neoplasm" class="external free" href="<%= $UI_URL%>/visualize/39478/Common_Neoplasm"><%= $UI_URL%>/visualize/39478/Common_Neoplasm</a>);
+	                                </li>
+	                                <li>
+	                                    <code>shortid</code>
+	                                    put the short id of the term, as used in <%= $SITE%> (e.g., "Common_Neoplasm");
+	                                </li>
+	                                <li>
+	                                    <code>name</code>
+	                                    put the preferred name of the term (e.g., "Common Neoplasm");
+	                                </li>
+	                            </ul>
+	                        </li>
+                        </ul>
+                    </li>
                     <li>
                       In addition to the input element you defined, there are four hidden form elements that are created and then set when a user selects a term from the list. For example, if you create a field with this code:
                       <ul>
@@ -188,15 +178,13 @@
                       </ul>
                     </li>
                     <li>
-                      To include definitions in the form complete drop-down, add the following attribute to the input field:<br/>
-                      <pre>data-bp_include_definitions="true"</pre>
+	                    Additional parameters are documented on the <a target="_blank" href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
                     </li>
-                                </li>
-                            </ul>
+                </ul>
               </div>
-                            <p>
-                                <b>Examples:</b>
-                                <br/>
+                <p>
+                    <b>Examples:</b>
+                    <br/>
 <textarea rows=8 cols=70>
 Example 1 (start typing the term name to get its full URI)
 <br/>
@@ -206,11 +194,11 @@ Example 1 (start typing the term name to get its full URI)
 <br/>
 <input type="text" name="c" class="bp_form_complete-<%= @ontology.ontologyId%>-name" size="100"/>
 </textarea>
-                            </p>
-                            <p>
-                                For more help visit <a target="_blank" href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
-                            </p>
-                        </div>
+                </p>
+                <p>
+                    For more help visit <a target="_blank" href="http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets">NCBO Widget Wiki</a>
+                </p>
+            </div>
                     </td>
                 </tr>
                 <tr>
