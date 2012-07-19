@@ -84,7 +84,6 @@ jQuery(document).ready(function(){
         ontology_ids: onts
       },
       dataType: "json",
-      async: false,
       success: function(data){
         var results = [];
         var ontologies = {};
@@ -117,15 +116,15 @@ jQuery(document).ready(function(){
         jQuery("a[rel*=facebox]").facebox();
         jQuery("#search_results").show();
         jQuery("#search_spinner").hide();
+        getAllDefinitions();
       },
       error: function(){
         jQuery("#search_spinner").hide();
         jQuery("#search_results").hide();
         jQuery("#search_messages").html("<span style='color: red'>Problem searching, please try again");
+        getAllDefinitions();
       }
     });
-
-    getAllDefinitions();
   });
 
   // Search on enter
