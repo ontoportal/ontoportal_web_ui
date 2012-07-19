@@ -3,6 +3,7 @@
 one:
   segment: MyString
   action: MyString
+  slice: MyString
   ip: MyString
   user: 1
   params: MyText
@@ -10,6 +11,7 @@ one:
 two:
   segment: MyString
   action: MyString
+  slice: MyString
   ip: MyString
   user: 1
   params: MyText

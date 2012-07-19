@@ -3,6 +3,7 @@ class CreateAnalytics < ActiveRecord::Migration
     create_table :analytics do |t|
       t.string :segment
       t.string :action
+      t.string :slice
       t.string :ip
       t.integer :user
       t.text :params
