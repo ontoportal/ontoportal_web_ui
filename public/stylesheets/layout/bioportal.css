@@ -1920,6 +1920,10 @@ div#search_categories_chzn .chzn-drop {
 #search_options label {
   line-height: 1.5em;
 }
+.concept_uri {
+  font-size: 9pt;
+  color: green;
+}
 
 
 /************************************

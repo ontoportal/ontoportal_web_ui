@@ -416,7 +416,7 @@ function currentOntologiesCount() {
 
 function termHTML(res, label_html, displayOntologyName) {
   var ontologyName = displayOntologyName ? " - " + res.ontologyDisplayLabel : "";
-  return "<div class='term_link'><a title='"+res.preferredName+"' data-bp_conceptid='"+encodeURIComponent(res.conceptId)+"' href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+jQuery(label_html).html()+ontologyName+"</a></div>";
+  return "<div class='term_link'><a title='"+res.preferredName+"' data-bp_conceptid='"+encodeURIComponent(res.conceptId)+"' href='/ontologies/"+res.ontologyId+"?p=terms&conceptid="+encodeURIComponent(res.conceptId)+"'>"+jQuery(label_html).html()+ontologyName+"</a><div class='concept_uri'>"+res.conceptId+"</div></div>";
 }
 
 function resultLinksHTML(res) {
