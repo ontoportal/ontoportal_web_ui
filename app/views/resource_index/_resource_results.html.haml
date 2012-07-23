@@ -17,7 +17,7 @@
             %div.clearing
         %div.element_text
           -element[:weights].each do |weight|
-            %h4= weight[:name].split("_")[1].capitalize
+            %h4= weight[:name].split("_").drop(1).join(" ").capitalize
             %p{:data => {:context_name => weight[:name]}}= element_text(element, weight)
           %span{:class => "element_info"}
             %a{:href => "#{@resources_hash[@resource_results.resourceId.downcase.to_sym][:resourceElementURL]}#{element[:localElementId]}", :target => "_blank"} view source record
