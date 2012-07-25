@@ -44,6 +44,7 @@ class PrecacheController < ApplicationController
         CACHE.delete("#{ont.ontologyId}::_latest")
         CACHE.delete("#{ont.ontologyId}::_versions")
         CACHE.delete("#{ont.ontologyId}::_details")
+        CACHE.delete("#{ont.ontologyId}::_metrics")
       end
 
       get_url("http://localhost:#{$UI_PORT}/ontologies/#{ont.ontologyId}")
