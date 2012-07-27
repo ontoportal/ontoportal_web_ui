@@ -240,6 +240,7 @@ class UsersController < ApplicationController
 private
 
   def get_ontology_list(ont_hash)
+    return "" if ont_hash.nil?
     ontologies = []
     ont_hash.each do |ont, checked|
       ontologies << ont if checked.to_i == 1
