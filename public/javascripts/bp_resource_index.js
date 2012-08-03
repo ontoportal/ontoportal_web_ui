@@ -354,6 +354,7 @@ function getSearchResults(success) {
         "aoData": [
           { "sType": "html" },
           { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] },
+          { "sType": "percent", "asSorting": [ "desc", "asc"] },
           { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }
         ]
       });
