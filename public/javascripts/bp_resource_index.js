@@ -241,6 +241,7 @@ function Router() {
   this.index = function() {
     jQuery("#results").html("");
     jQuery("#results_error").html("");
+    jQuery("#initial_resources").show();
     jQuery("#resource_index_terms_chzn .search-choice-close").click();
   }
 
@@ -344,6 +345,8 @@ function getSearchResults(success) {
       if (success && typeof success === "function") {
         success();
       }
+
+      jQuery("#initial_resources").hide();
 
       jQuery("#resource_table table").dataTable({
         "bPaginate": false,

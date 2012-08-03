@@ -18,7 +18,7 @@ class ResourceIndexController < ApplicationController
     @views = DataAccess.getViewList
     @onts_and_views = @ontologies | @views
     @resources_hash = ri.resources_hash
-    @resources = ri.resources.sort {|a,b| a[:resourceName] <=> b[:resourceName]}
+    @resources = ri.resources.sort {|a,b| a[:resourceName].downcase <=> b[:resourceName].downcase}
 
     @ri_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
   end
