@@ -37,6 +37,7 @@ function showDeleteInfo() {
     if (typeof notesTable !== "undefined") notesTable.fnSetColumnVis(0, true);
     if (typeof ontNotesTable !== "undefined") ontNotesTable.fnSetColumnVis(0, true);
     jQuery(".notes_delete").show();
+    jQuery("a.notes_delete.link_button").button();
   }
 }
 
@@ -566,7 +567,7 @@ function deleteNotes(button) {
   spinner.show();
 
   jQuery("input.delete_note_checkbox:checked").each(function(){
-    notesToDelete.push(jQuery(this).attr("data-note_id"));
+    notesToDelete.push(jQuery(this).val());
   });
 
   params = {
