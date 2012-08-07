@@ -567,7 +567,7 @@ function deleteNotes(button) {
   spinner.show();
 
   jQuery("input.delete_note_checkbox:checked").each(function(){
-    notesToDelete.push(jQuery(this).val());
+    notesToDelete.push(jQuery(this).attr("data-note_id"));
   });
 
   params = {
@@ -585,12 +585,17 @@ function deleteNotes(button) {
       data: params,
       success: function(data){
         var rowId;
+        var table = jQuery(button).closest(".notes_list_container").find("table.notes_list_table").dataTable();
 
         spinner.hide();
 
         for (note_id in data.success) {
-          jQuery(button).closest(".notes_list_container").find("." + data.success[note_id] + "_tr").remove();
-          jQuery("#delete_" + data.success[note_id]).closest("tr").remove();
+          var row = jQuery(button).closest(".notes_list_container").find("tr#" + data.success[note_id] + "_tr");
+          // rows added via the ui need another lookup
+          if (row === null || row.length === 0) {
+            row = jQuery("#delete_" + data.success[note_id]).closest("tr");
+          }
+          table.fnDeleteRow(row.index());
           jQuery(button).closest(".notes_list_container").find("#row_expanded_" + data.success[note_id]).remove();
         }
 
