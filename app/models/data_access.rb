@@ -303,39 +303,15 @@ class DataAccess
   def self.deleteNote(note_id, ontology_id, appliesTo)
     params = { :note_id => note_id, :ontology_virtual_id => ontology_id }
     note = SERVICE.deleteNote(params) rescue nil
-    CACHE.delete("#{note_id}")
-    CACHE.delete("#{appliesTo}::notes")
-    CACHE.delete("#{appliesTo}::notes::threaded=true::virtual=true")
-    CACHE.delete("#{ontology_id}::notes::threaded=true")
-    CACHE.delete("#{ontology_id}::notes")
+    self.delete_notes_cache(:appliesTo => appliesTo, :ontology_id => ontology_id)
     note
   end
 
   def self.createNote(params)
     note = SERVICE.createNote(params)
     CACHE.set("#{note.id}", note, CACHE_EXPIRE_TIME)
-    CACHE.delete("#{params[:appliesTo]}::notes") if params[:appliesToType].eql?("Class")
-    CACHE.delete("#{params[:ontology_virtual_id]}::notes")
 
-    # If this note is in a thread, traverse to top and delete from cache
-    if params[:appliesToType].eql?("Note")
-      note_temp = self.getNote(params[:ontology_virtual_id], params[:appliesTo], false, true)
-      while note_temp.appliesTo['type'].eql?("Note")
-        old_note_id = note_temp.id
-        parent_note_id = self.getNote(params[:ontology_virtual_id], note_temp.id, false, true).appliesTo['id']
-        CACHE.delete("#{old_note_id}")
-        CACHE.delete("#{old_note_id}::threaded")
-        note_temp = self.getNote(params[:ontology_virtual_id], parent_note_id, false, true)
-      end
-      CACHE.delete("#{note_temp.id}::threaded")
-      CACHE.delete("#{note_temp.id}")
-    end
-
-    # If this note applies to a class/concept/term then delete the count for that concept
-    CACHE.delete("#{params[:ontology_virtual_id]}::#{params[:appliesTo]}_NoteCount") if params[:appliesToType].eql?("Class")
-
-    # Remove cached notes for this ontology
-    CACHE.delete("#{params[:ontology_virtual_id]}::notes")
+    self.delete_notes_cache(:appliesTo => params[:appliesTo], :appliesToType => params[:appliesToType], :ontology_id => params[:ontology_virtual_id])
 
     # We rescue all so the user doesn't get an error if the add fails
     begin
@@ -714,6 +690,38 @@ private
     ont_list
   end
 
+  def self.delete_notes_cache(options = {})
+    options[:appliesToType] ||= "Class"
+
+    CACHE.delete("#{options[:note_id]}")
+    CACHE.delete("#{options[:note_id]}::threaded")
+    CACHE.delete("#{options[:appliesTo]}::notes")
+    CACHE.delete("#{options[:appliesTo]}::notes::threaded=true::virtual=true")
+    CACHE.delete("#{options[:appliesTo]}::notes::threaded=false::virtual=true")
+    CACHE.delete("#{options[:ontology_id]}::notes::threaded=true")
+    CACHE.delete("#{options[:ontology_id]}::notes::threaded=false")
+    CACHE.delete("#{options[:ontology_id]}::notes")
+
+    # If this note is in a thread, traverse to top and delete from cache
+    if options[:appliesToType].eql?("Note")
+      note_temp = self.getNote(options[:ontology_id], options[:appliesTo], false, true)
+      while note_temp.appliesTo['type'].eql?("Note")
+        old_note_id = note_temp.id
+        parent_note_id = self.getNote(options[:ontology_virtual_id], note_temp.id, false, true).appliesTo['id']
+        CACHE.delete("#{old_note_id}")
+        CACHE.delete("#{old_note_id}::threaded")
+        note_temp = self.getNote(options[:ontology_virtual_id], parent_note_id, false, true)
+      end
+      CACHE.delete("#{note_temp.id}::threaded")
+      CACHE.delete("#{note_temp.id}")
+    end
+
+    # If this note applies to a class/concept/term then delete the count for that concept
+    CACHE.delete("#{options[:ontology_id]}::#{options[:appliesTo]}_NoteCount") if options[:appliesToType].eql?("Class")
+
+    # Remove cached notes for this ontology
+    CACHE.delete("#{options[:ontology_id]}::notes")
+  end
 
   def self.param(string)
     return string.to_s.gsub(" ","_")
