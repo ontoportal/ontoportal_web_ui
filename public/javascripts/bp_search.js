@@ -393,7 +393,7 @@ function advancedOptionsSelected() {
     function(){return jQuery("#search_only_definitions").is(":checked");},
     function(){return jQuery("#search_exact_match").is(":checked");},
     function(){return jQuery("#search_categories").val() !== null && jQuery("#search_categories").val().length > 0;},
-    function(){return jQuery("#ontology_ontologyId").val() !== null && jQuery("#ontology_ontologyId").val().length > 0;},
+    function(){return jQuery("#ontology_ontologyId").val() !== null && jQuery("#ontology_ontologyId").val().length > 0;}
   ];
 
   var length = check.length;
