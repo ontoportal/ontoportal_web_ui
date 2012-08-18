@@ -593,9 +593,11 @@ function deleteNotes(button) {
           var row = jQuery(button).closest(".notes_list_container").find("tr#" + data.success[note_id] + "_tr");
           // rows added via the ui need another lookup
           if (row === null || row.length === 0) {
-            row = jQuery("#delete_" + data.success[note_id]).closest("tr");
+            row = document.getElementById("delete_" + data.success[note_id]).parentElement.parentElement;
+            table.fnDeleteRow(row);
+          } else {
+            table.fnDeleteRow(row.index());
           }
-          table.fnDeleteRow(row.index());
           jQuery(button).closest(".notes_list_container").find("#row_expanded_" + data.success[note_id]).remove();
         }
 
