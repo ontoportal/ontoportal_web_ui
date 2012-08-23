@@ -32,7 +32,7 @@ class AjaxProxyController < ApplicationController
   	http = Net::HTTP.new(url.host, url.port)
   	headers = { "Accept" => "application/json" }
   	res = http.get(full_path, headers)
-  	response = res.code.to_i >= 400 ? "{ \"status\": #{res.code.to_i} }" : res.body
+  	response = res.code.to_i >= 400 ? { :status => res.code.to_i, :body => res.body }.to_json : res.body
     render_json response, {:status => res.code}
   end
 
