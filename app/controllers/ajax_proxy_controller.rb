@@ -33,7 +33,7 @@ class AjaxProxyController < ApplicationController
   	headers = { "Accept" => "application/json" }
   	res = http.get(full_path, headers)
   	response = res.code.to_i >= 400 ? { :status => res.code.to_i, :body => res.body }.to_json : res.body
-    render_json response, {:status => res.code}
+    render_json response, {:status => 200}
   end
 
   def json_term
