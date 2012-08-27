@@ -1387,6 +1387,7 @@ private
         search_item[:preferredName]=searchBean.elements["preferredName"].get_text.value.strip
         search_item[:contents]=searchBean.elements["contents"].get_text.value.strip
         search_item[:definition]=searchBean.elements["definition"].get_text.value.strip rescue ""
+        search_item[:obsolete]=searchBean.elements["isObsolete"].get_text.value.strip.eql?("1")
         searchResults<< search_item
       }
     end
