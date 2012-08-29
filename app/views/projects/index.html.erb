@@ -103,17 +103,17 @@
 					<%ontologyCount = 0%>
 					<%ontologyLabels = ""%>
 				    <%for uses in project.uses%>
-					    <% if ! uses.ontology.nil? %>
+					    <%if ! uses.ontology.nil? %>
 			        		<!-- <%# ontologyLabels += "<tr><td><a href='/virtual/#uses.ontology_id'>#uses.ontology.displayLabel></a></td></tr>"%> -->
-			        		<% ontologyLabels += uses.ontology.displayLabel + "\n"%>
+			        		<%ontologyLabels += uses.ontology.displayLabel + "\n"%>
 							<%ontologyCount += 1%>
 						<%end%>
 					<%end%>
 					
 					<%if ontologyCount > 0 %>
-		                <span title="<%= ontologyLabels%>" style="cursor:help;"><%= ontologyCount %></span>
+		                <span title="<%=ontologyLabels%>" style="cursor:help;text-decoration: none; border-bottom:1px dotted;"><%=ontologyCount%></span>
 			        <%else%>
-						<%= ontologyCount %>
+						<%=ontologyCount%>
 					<%end%>
 				</td>
 			</tr>
