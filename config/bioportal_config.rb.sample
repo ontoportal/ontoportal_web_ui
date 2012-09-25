@@ -131,6 +131,15 @@ $SEARCH_FLEX_APIKEY = ""
 $RECOMMENDER_FLEX_APIKEY = ""
 $FLEXOVIZ_APIKEY = ""
 
+##
+# Custom Ontology Details
+# Custom details can be added on a per ontology basis using a key/value pair as columns of the details table
+#
+# Example:
+# $ADDITIONAL_ONTOLOGY_DETAILS = { 1000 => { "Additional Detail" => "Text to be shown in the right-hand column." } }
+##
+$ADDITIONAL_ONTOLOGY_DETAILS = {}
+
 
 #################################
 ## AUTO-GENERATED DO NOT MODIFY

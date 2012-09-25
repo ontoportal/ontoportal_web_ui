@@ -109,18 +109,7 @@
                   <%= @ontology.description %>
               </td>
           </tr>
-          <%license_information = {
-            1422 => 'The MedDRA ontology is maintained and distributed by the <a href="http://www.meddramsso.com/" target="_blank">MedDRA MSSO</a>.
-                This ontology is freely accessible on this site for academic and other
-                non-commercial uses. Users anticipating any commercial use of MedDRA must contact the MSSO to obtain a license.',
-            1699 => '<div class="enable-lists">Classes, properties and individuals in the VIVO namespace (http://vivoweb.org/ontology/core#) are licensed under the Creative Commons 3.0 BY license (http://creativecommons.org/licenses/by/3.0/)<br><br>The VIVO ontology package includes terms derived from the following namespaces used under the following licenses:<ul><li>http://purl.org/ontology/bibo/  -  Creative Commons 3.0<br>license statement based on http://bibliontology.com/</li><li>http://purl.org/dc/elements/1.1/ -  Creative Commons Attribution 3.0 Unported License<br>license statement based on http://dublincore.org/documents/dcmi-terms/</li><li>http://purl.org/dc/terms/ -  Creative Commons Attribution 3.0 Unported License<br>license statement based on http://dublincore.org/documents/dcmi-terms/</li><li>http://purl.org/NET/c4dm/event.owl#  -  Creative Commons 1.0<br>license statement based on http://motools.sourceforge.net/event/event.html</li><li>http://aims.fao.org/aos/geopolitical.owl# -  The use of this ontology is governed by the FAO copyright (http://www.fao.org/corp/copyright/en/)<br>license statement based on http://www.fao.org/countryprofiles/geoinfo.asp</li><li>http://xmlns.com/foaf/0.1/ -  Creative Commons 1.0<br>license statement based on http://xmlns.com/foaf/spec/</li><li>http://www.w3.org/2004/02/skos/core# - Copyright ©2009 W3C® (MIT, ERCIM, Keio), All Rights Reserved. W3C liability, trademark and document use rules apply<br>license statement based on http://www.w3.org/TR/swbp-skos-core-guide</li><li>http://www.w3.org/2008/05/skos# - Copyright ©2009 W3C® (MIT, ERCIM, Keio), All Rights Reserved. W3C liability, trademark and document use rules apply<br>license statement based on http://www.w3.org/TR/swbp-skos-core-guide</li><li>http://purl.obolibrary.org/obo/ -  Creative Commons 3.0 BY<br>license statement based on http://code.google.com/p/eagle-i/</li></ul></div>'
-          }%>
-          <% if license_information.keys.include?(@ontology.ontologyId.to_i) %>
-            <tr>
-              <th>License Information:</th>
-              <td><%=license_information[@ontology.ontologyId.to_i]%></td>
-            </tr>
-          <% end %>
+          <%= additional_details %>
       </table>
   </div>
 </div>
