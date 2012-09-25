@@ -100,19 +100,13 @@ class SearchController < ApplicationController
     end
 
     response = ""
+    obsolete_response = ""
     for result in @results
       if filter_private_result?(result)
-        @results.delete(result)
         next
       end
 
-      record_type = format_record_type(result[:recordType])
-      # format_record_type returns a string, not a list;
-      # record_type_value is not used elsewhere, removing it.
-      #record_type_value = ""
-      #for type in record_type
-      #  record_type_value << type[0]
-      #end
+      record_type = format_record_type(result[:recordType], result[:obsolete])
 
       target_value = result[:preferredName]
       case params[:target]
@@ -126,21 +120,32 @@ class SearchController < ApplicationController
           target_value = result[:preferredName]
       end
 
-      response << "#{target_value}"
-      response << "|#{result[:conceptIdShort]}"
-      response << "|#{record_type}"
-      response << "|#{result[:ontologyVersionId]}"
-      response << "|#{result[:conceptId]}"
-      response << "|#{result[:preferredName]}"
-      response << "|#{result[:contents]}"
+      json = []
+      json << "#{target_value}"
+      json << "|#{result[:conceptIdShort]}"
+      json << "|#{record_type}"
+      json << "|#{result[:ontologyVersionId]}"
+      json << "|#{result[:conceptId]}"
+      json << "|#{result[:preferredName]}"
+      json << "|#{result[:contents]}"
       if params[:id] && params[:id].split(",").length == 1
-        response << "|#{CGI.escape(result[:definition])}#{separator}"
+        json << "|#{CGI.escape(result[:definition])}#{separator}"
       else
-        response << "|#{result[:ontologyDisplayLabel]}"
-        response << "|#{result[:ontologyId]}"
-        response << "|#{CGI.escape(result[:definition])}#{separator}"
+        json << "|#{result[:ontologyDisplayLabel]}"
+        json << "|#{result[:ontologyId]}"
+        json << "|#{CGI.escape(result[:definition])}#{separator}"
+      end
+
+      # Obsolete results go at the end
+      if result[:obsolete]
+        obsolete_response << json.join
+      else
+        response << json.join
       end
     end
+
+    # Obsolete results merge
+    response << obsolete_response
 
     if params[:response].eql?("json")
       response = response.gsub("\"","'")
@@ -237,19 +242,21 @@ class SearchController < ApplicationController
     end
   end
 
-  def format_record_type(record_type)
+  def format_record_type(record_type, obsolete = false)
     case record_type
       when "apreferredname"
-        return "Preferred Name"
+        record_text = "Preferred Name"
       when "bconceptid"
-        return "Term ID"
+        record_text = "Term ID"
       when "csynonym"
-        return "Synonym"
+        record_text = "Synonym"
       when "dproperty"
-        return "Property"
+        record_text = "Property"
       else
-        return ""
+        record_text = ""
     end
+    record_text = "Obsolete Term" if obsolete
+    record_text
   end
 
   def set_objecttypes(params)

@@ -1,5 +1,3 @@
-require 'ostruct'
-
 class NotesController < ApplicationController
 
   layout 'ontology'

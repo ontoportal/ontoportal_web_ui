@@ -1,3 +1,5 @@
+require 'csv'
+
 class AnalyticsController < ApplicationController
   def track
     entry = Analytics.new
@@ -9,5 +11,31 @@ class AnalyticsController < ApplicationController
     entry.params = params.except(:segment, :analytics_action, :action, :controller)
     entry.save
     render :text => ""
+  end
+
+  def search_result_clicked
+    clicks = Analytics.find(:all, :conditions => {:segment => "search", :action => "result_clicked"})
+    rows = [["query", "position_clicked", "ontology_clicked", "higher_rated_ontologies", "additional_result", "concept_id", "time", "user", "slice", "ip_address"]]
+    clicks.each do |click|
+      next if click.params.empty?
+      rows << [
+        click.params["query"].delete("\t"),
+        click.params["position"],
+        click.params["ontology_clicked"],
+        click.params["higher_ontologies"].nil? ? "" : click.params["higher_ontologies"].join(";"),
+        click.params["additional_result"],
+        click.params["concept_id"],
+        click.created_at,
+        click.user,
+        click.slice,
+        click.ip
+      ]
+    end
+
+    output = ''
+    rows.each do |row|
+      CSV.generate_row(row, 10, output)
+    end
+    send_data output, :type => 'text/csv', :disposition => 'attachment; filename=search_result_clicked.csv'
   end
 end

@@ -60,6 +60,9 @@ var orgSite = <%=$ORG_SITE.to_json%>
 
 <div id="results_container" style="padding: 0 13px; margin: 0 0 2em; height: 100%;" data-bp_rest_server="<%=$REST_DOMAIN%>">
   <div id="results_error" style="color: red; margin-bottom: 7px;"></div>
+  <div id="initial_resources">
+    <%=render :partial => "resources_info"%>
+  </div>
   <div id="results"></div>
 </div>
 

@@ -224,7 +224,7 @@ function createFilterCheckboxes(filter_items, checkbox_class, checkbox_location)
   jQuery.each(filter_items, function(k, v){
       for_sort.push({label: k + " (" + v + ")", count: v, value: k, value_encoded: encodeURIComponent(k)});
   });
-  for_sort.sort(function(a, b){return a.label.trim() > b.label.trim()});
+  for_sort.sort(function(a, b){return jQuery.trim(a.label) > jQuery.trim(b.label)});
 
   // Create checkboxes for ontology filter
   jQuery.each(for_sort, function(){

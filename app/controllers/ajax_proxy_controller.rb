@@ -32,8 +32,8 @@ class AjaxProxyController < ApplicationController
   	http = Net::HTTP.new(url.host, url.port)
   	headers = { "Accept" => "application/json" }
   	res = http.get(full_path, headers)
-  	response = res.code.to_i == 404 ? '{ "error": "page not found" }' : res.body
-    render_json response, {:status => res.code}
+  	response = res.code.to_i >= 400 ? { :status => res.code.to_i, :body => res.body }.to_json : res.body
+    render_json response, {:status => 200}
   end
 
   def json_term
@@ -65,7 +65,7 @@ class AjaxProxyController < ApplicationController
   	    json
   	  end
   	end
-    render({:content_type => :js, :text => response}.merge(options))
+    render({:content_type => :json, :text => response}.merge(options))
   end
 
 end

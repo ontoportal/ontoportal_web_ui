@@ -1,8 +1,8 @@
 # required for typing in a password for sudo
 default_run_options[:pty] = true
 
-set :stage, "ncbostage-ror1"
-set :user, "palexand"
+set :stage, "stage-hostname"
+set :user, "SSHUserOnStage"
 set :flex_release, "stage"
 
 set :application, "BioPortal"
@@ -21,23 +21,11 @@ set :deploy_to, "/var/rails/#{application}"
 server stage, :app, :web, :db, :primary => true
 
 # production
-#role :app, "ncbo-ror-prod1.stanford.edu"
-#role :web, "ncbo-ror-prod1.stanford.edu"
-#role :db,  "ncbo-ror-prod1.stanford.edu", :primary => true
+#role :app, "ror-prod1.example.org"
+#role :web, "ror-prod1.example.org"
+#role :db,  "ror-prod1.example.org", :primary => true
 
 # svn export --force --username anonymous --password anonymous_ncbo https://bmir-gforge.stanford.edu/svn/flexviz/tags/$flexrelease/flex $destination/public/flex
-
-# #fix logs
-# #we want to store logs in /var/logs/rails
-# if [ ! -d /var/log/rails/$bpinstance ];
-# then
-#  mkdir -p /var/log/rails/$bpinstance
-#  chown -R $user:$user /var/log/rails/$bpinstance
-# fi
-# #update sym link
-# rm -Rf $destination/log
-# ln -s /var/log/rails/$bpinstance/ $destination/log
-
 
 # If you are using Passenger mod_rails uncomment this:
 namespace :deploy do

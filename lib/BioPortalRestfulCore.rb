@@ -1251,7 +1251,7 @@ private
       mysql_conn = Mysql.new(@mysql_config["host"], @mysql_config["username"], @mysql_config["password"], @mysql_config["database"])
       mysql_conn.query("INSERT INTO timeouts
                        (path, ontology_id, concept_id, params, created)
-                       VALUES('#{parsed_url.path}', #{ont_id.nil? ? "null" : ont_id}, '#{concept_id}', '#{url_parts[1]}', CURRENT_TIMESTAMP)")
+                       VALUES('#{parsed_url.path}', #{ont_id.nil? ? "null" : ont_id}, #{concept_id}, '#{url_parts[1]}', CURRENT_TIMESTAMP)")
       mysql_conn.close
     rescue Exception => e
       return nil
@@ -1387,6 +1387,7 @@ private
         search_item[:preferredName]=searchBean.elements["preferredName"].get_text.value.strip
         search_item[:contents]=searchBean.elements["contents"].get_text.value.strip
         search_item[:definition]=searchBean.elements["definition"].get_text.value.strip rescue ""
+        search_item[:obsolete]=searchBean.elements["isObsolete"].get_text.value.strip.eql?("1")
         searchResults<< search_item
       }
     end

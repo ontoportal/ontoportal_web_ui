@@ -218,7 +218,7 @@ module NotesHelper
 
   def delete_button
     user = session[:user]
-    return "" if user.nil?
+    user ||= anonymous_user
 
     params = "data-bp_user_id='#{user.id}'"
     spinner = '<span class="delete_notes_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>'

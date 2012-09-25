@@ -64,14 +64,15 @@ https://github.com/bicouy0/ajax-chosen
         } else {
           resultsDiv = field.parent().parent();
         }
-        clearSearchingLabel = function() {
-          return resultsDiv.find('.no-results').html(defaultedOptions.noresultsText + " '" + $(_this).attr('value') + "'");
+        clearSearchingLabel = function(val) {
+          if (typeof val === "undefined" || val === null || val === "") val = $(_this).attr('value');
+          return resultsDiv.find('.no-results').html(defaultedOptions.noresultsText + " '" + val + "'");
         };
         if (val === prevVal || (val.length < defaultedOptions.minLength && evt.type === 'keyup')) {
-          clearSearchingLabel();
+          clearSearchingLabel(val);
           return false;
         }
-        if (resultsDiv.find(".no-results"),length < 1) {
+        if (resultsDiv.find(".no-results").length < 1) {
           resultsDiv.find(".no-results").remove();
           resultsDiv.find(".chzn-results").prepend($("<li/>").addClass("no-results"));
         }
@@ -147,6 +148,7 @@ https://github.com/bicouy0/ajax-chosen
           select.trigger("liszt:updated");
           $('.no-results').removeClass('active-result');
           field.val(latestVal);
+          field.trigger($.Event("keydown"))
           if (!$.isEmptyObject(items)) {
             keydownEvent = $.Event('keydown');
             keydownEvent.which = 40;

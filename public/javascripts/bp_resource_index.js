@@ -241,6 +241,7 @@ function Router() {
   this.index = function() {
     jQuery("#results").html("");
     jQuery("#results_error").html("");
+    jQuery("#initial_resources").show();
     jQuery("#resource_index_terms_chzn .search-choice-close").click();
   }
 
@@ -345,12 +346,15 @@ function getSearchResults(success) {
         success();
       }
 
+      jQuery("#initial_resources").hide();
+
       jQuery("#resource_table table").dataTable({
         "bPaginate": false,
         "bFilter": false,
         "aoData": [
           { "sType": "html" },
           { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] },
+          { "sType": "percent", "asSorting": [ "desc", "asc"] },
           { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }
         ]
       });

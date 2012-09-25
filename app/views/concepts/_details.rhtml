@@ -57,7 +57,8 @@
     bottom_keys=[
       "disjoint",
       "subclass",
-      "is_a"]
+      "is_a",
+      "has_part"]
     top_set=[]
     bottom_set=[]
     leftover=[]
@@ -90,42 +91,44 @@
       <%next if exclude_relation?(key)%>
       <%unless @concept.properties[key].empty?%>
         <tr>
-          <td nowrap class="label"> <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span> </td>
+          <td nowrap class="label">
+            <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span>
+          </td>
           <td>
             <%=auto_link("<p>#{sanitize(@concept.properties[key]).split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")%>
           </td>
         </tr>
       <%end%>
-
-
     <%end%>
-
 
     <%for key in leftover%>
       <%next if exclude_relation?(key, @ontology)%>
       <%unless @concept.properties[key].empty?%>
         <tr>
-          <td nowrap class="label"> <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span> </td>
+          <td nowrap class="label">
+            <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span>
+          </td>
           <td>
             <%=auto_link("<p>#{sanitize(@concept.properties[key]).split("||%||").join("<\/p><p>").gsub("%ONT%", @concept.ontology.id)}</p>", :all, :target => "_blank")%>
           </td>
         </tr>
       <%end%>
-
     <%end%>
 
     <%for key in bottom_set%>
       <%next if exclude_relation?(key)%>
       <%unless @concept.properties[key].empty?%>
         <tr>
-          <td nowrap class="label"> <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span> </td>
+          <td nowrap class="label">
+            <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span>
+          </td>
           <td>
             <%=auto_link("<p>#{@concept.properties[key].split("||%||").join("<\/p><p>").gsub("%ONT%", @concept.ontology.id)}</p>", :all, :target => "_blank")%>
           </td>
         </tr>
       <%end%>
-
     <%end%>
+
   </table>
 </div>
 
