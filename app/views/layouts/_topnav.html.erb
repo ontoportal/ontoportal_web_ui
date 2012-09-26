@@ -2,51 +2,17 @@
   <div id="hd">
     <ul>
       <li style="padding-right: 30px;"><a href="/" title="Home"><img src="/images/layout/nav_logo.png" /></a></li>
-      <%if controller.controller_name.eql?('ontologies') || controller.controller_name.eql?('concepts')%>
-        <li id="bp_nav_browse_active"><a href="/ontologies" title="Browse" class="bp_nav_link"></a></li>
-      <%else%>
-        <li id="bp_nav_browse"><a href="/ontologies" title="Browse" class="bp_nav_link"></a></li>
-      <%end%>
-
-      <%if controller.controller_name.eql?('search')%>
-        <li id="bp_nav_search_active"><a href="/search" title="Search" class="bp_nav_link"></a></li>
-      <%else%>
-        <li id="bp_nav_search"><a href="/search" title="Search" class="bp_nav_link"></a></li>
-      <%end%>
-
-      <%if controller.controller_name.eql?('mappings')%>
-        <li id="bp_nav_mappings_active"><a href="/mappings" title="All Mappings" class="bp_nav_link"></a></li>
-      <%else%>
-        <li id="bp_nav_mappings"><a href="/mappings" title="All Mappings" class="bp_nav_link"></a></li>
-      <%end%>
-
-      <%if controller.controller_name.eql?('recommender')%>
-        <li id="bp_nav_recommender_active"><a href="/recommender" title="Ontology Recommender" class="bp_nav_link"></a></li>
-      <%else%>
-        <li id="bp_nav_recommender"><a href="/recommender" title="Ontology Recommender" class="bp_nav_link"></a></li>
-      <%end%>
-
+      <%=top_tab("Browse", "/ontologies", ["ontologies", "concepts"])%>
+      <%=top_tab("Search", "/search", "search")%>
+      <%=top_tab("Mappings", "/mappings", "mappings")%>
+      <%=top_tab("Recommender", "/recommender", "recommender")%>
       <%unless !$ANNOTATOR_DISABLED.nil? && $ANNOTATOR_DISABLED %>
-        <%if controller.controller_name.eql?('annotator')%>
-          <li id="bp_nav_annotator_active"><a href="/annotator" title="Annotator" class="bp_nav_link"></a></li>
-        <%else%>
-          <li id="bp_nav_annotator"><a href="/annotator" title="Annotator" class="bp_nav_link"></a></li>
-        <%end%>
+        <%=top_tab("Annotator", "/annotator", "annotator")%>
       <%end%>
-
       <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
-        <%if controller.controller_name.eql?('resource_index')%>
-          <li id="bp_nav_resource_index_active"><a href="/resource_index" title="Resource Index" class="bp_nav_link"></a></li>
-        <%else%>
-          <li id="bp_nav_resource_index"><a href="/resource_index" title="Resource Index" class="bp_nav_link"></a></li>
-        <%end%>
+        <%=top_tab("Resource Index", "/resource_index", "resource_index")%>
       <%end%>
-
-      <%if controller.controller_name.eql?('projects')%>
-        <li id="bp_nav_projects_active"><a href="/projects" title="Projects" class="bp_nav_link"></a></li>
-      <%else%>
-        <li id="bp_nav_projects"><a href="/projects" title="Projects" class="bp_nav_link"></a></li>
-      <%end%>
+      <%=top_tab("Projects", "/projects", "projects")%>
     </ul>
 
   <script type="text/javascript">

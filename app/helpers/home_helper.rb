@@ -16,4 +16,13 @@ module HomeHelper
     return help_text
   end
 
+  def top_tab(title, link, controllers = [])
+    controllers = controllers.kind_of?(Array) ? controllers : [controllers]
+    controllers.map! {|c| c.downcase}
+    active = controllers.include?(controller.controller_name)
+    active_class = active ? "nav_text_active" : ""
+    content_tag(:li, content_tag(:a, title, :href => link, :title => title), :class => "nav_text #{active_class}")
+  end
+
+
 end
