@@ -1638,6 +1638,31 @@ button.fg-button-menu, button.fg-button {
   color: lightGray !important;
 }
 
+/**
+ * Ordering of these two class definitions needs to remain as-is for high-res images to work
+ **/
+.nav_logo {
+  background: url(/images/layout/nav_logo.png) no-repeat;
+  background-size: 126px 43px;
+  height: 43px;
+  width: 126px;
+  display: block;
+}
+@media (-webkit-min-device-pixel-ratio: 2),
+(-o-min-device-pixel-ratio: 2/1),
+(min--moz-device-pixel-ratio: 2),
+(min-device-pixel-ratio: 2),
+(min-resolution: 2dppx),
+(dpi: 196dpi) {
+    .nav_logo {
+        background: url(/images/layout/nav_logo_hi_res.png) no-repeat;
+        background-size: 126px 43px;
+        height: 43px;
+        width: 126px;
+        display: block;
+    }
+}
+
 
 /************************************
  * Ontology picker
