@@ -1613,7 +1613,7 @@ button.fg-button-menu, button.fg-button {
 }
 
 /************************************
- * Topnav header image sprite
+ * Topnav header
  ************************************/
 
 .bp_nav_link {
@@ -1621,97 +1621,21 @@ button.fg-button-menu, button.fg-button {
   height: 43px;
 }
 
-#bp_nav_browse_active, #bp_nav_browse,
-#bp_nav_browse_active .bp_nav_link,
-#bp_nav_browse .bp_nav_link,
-#bp_nav_search_active, #bp_nav_search,
-#bp_nav_search_active .bp_nav_link,
-#bp_nav_search .bp_nav_link {
-  width: 75px;
+.nav_text a {
+  font-family: 'Droid Sans', sans-serif;
+  font-size: 1.1em;
+  padding: 25px 15px;
+  position: relative;
+  text-decoration: none;
+  top: 11px;
 }
 
-#bp_nav_projects_active, #bp_nav_projects,
-#bp_nav_projects_active .bp_nav_link,
-#bp_nav_projects .bp_nav_link {
-  width: 78px;
+.nav_text a:hover {
+  color: lightGray !important;
 }
 
-#bp_nav_mappings_active, #bp_nav_mappings,
-#bp_nav_mappings_active, .bp_nav_link,
-#bp_nav_mappings .bp_nav_link {
-  width: 88px;
-}
-
-#bp_nav_annotator_active, #bp_nav_annotator,
-#bp_nav_annotator_active, .bp_nav_link,
-#bp_nav_annotator .bp_nav_link {
-  width: 95px;
-}
-
-
-#bp_nav_recommender, #bp_nav_recommender_active,
-#bp_nav_recommender .bp_nav_link,
-#bp_nav_recommender_active .bp_nav_link,
-#bp_nav_resource_index_active, #bp_nav_resource_index
-#bp_nav_resource_index_active .bp_nav_link,
-#bp_nav_resource_index .bp_nav_link {
-  width: 121px;
-}
-
-#bp_nav_browse_active, #bp_nav_browse:hover {
-  background: url("/images/layout/bp_nav_sprite.png") -25px -516px;
-}
-
-#bp_nav_browse {
-  background: url("/images/layout/bp_nav_sprite.png") -25px -559px;
-}
-
-#bp_nav_search_active, #bp_nav_search:hover {
-  background: url("/images/layout/bp_nav_sprite.png") -25px -430px;
-}
-
-#bp_nav_search {
-  background: url("/images/layout/bp_nav_sprite.png") -25px -473px;
-}
-
-#bp_nav_projects_active, #bp_nav_projects:hover {
-  background: url("/images/layout/bp_nav_sprite.png") -23px -344px;
-}
-
-#bp_nav_projects {
-  background: url("/images/layout/bp_nav_sprite.png") -23px -387px;
-}
-
-#bp_nav_annotator_active, #bp_nav_annotator:hover {
-  background: url("/images/layout/bp_nav_sprite.png") -15px -258px;
-}
-
-#bp_nav_annotator {
-  background: url("/images/layout/bp_nav_sprite.png") -15px -301px;
-}
-
-#bp_nav_mappings_active, #bp_nav_mappings:hover {
-  background: url("/images/layout/bp_nav_sprite.png") -18px -172px;
-}
-
-#bp_nav_mappings {
-  background: url("/images/layout/bp_nav_sprite.png") -18px -215px;
-}
-
-#bp_nav_resource_index_active, #bp_nav_resource_index:hover {
-  background: url("/images/layout/bp_nav_sprite.png") 0 -86px;
-}
-
-#bp_nav_resource_index {
-  background: url("/images/layout/bp_nav_sprite.png") 0 -129px;
-}
-
-#bp_nav_recommender_active, #bp_nav_recommender:hover {
-  background: url("/images/layout/bp_nav_sprite.png") 0 0;
-}
-
-#bp_nav_recommender {
-  background: url("/images/layout/bp_nav_sprite.png") 0 -43px;
+.nav_text_active a {
+  color: lightGray !important;
 }
 
 
