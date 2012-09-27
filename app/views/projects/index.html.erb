@@ -1,12 +1,15 @@
 <%@title = "Project Listing"%>
-<script type="text/javascript" src="/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/javascripts/JqueryPlugins/datatables/js/FixedHeader.min.js"></script>
 <script type="text/javascript" src="/javascripts/JqueryPlugins/datatables/plugins/datatables.formatted.number.js"></script>
 <script type="text/javascript" src="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.min.js" charset="utf-8"></script>
 <link rel="stylesheet" href="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
 <script type="text/javascript">
+	var projectsTable;
+
 	jQuery(document).ready(function() {
-		jQuery("#projects").dataTable({   
+		projectsTable = jQuery("#projects").dataTable({
 		    "bAutoWidth": false,
 		    "bLengthChange": false,
 		    "bFilter": false,
@@ -14,17 +17,30 @@
 		    "bPaginate": false,
 		    "bSort": false,
 		    "asStripClasses":["","alt"],
+		    "fnDrawCallback": function(oSettings) {
+		      // Fix IE whitespace bug in table by removing whitespace
+		      // See: http://datatables.net/forums/discussion/5481/bug-ghost-columns-when-generating-large-tables
+		      if (navigator.appName == 'Microsoft Internet Explorer') {
+		        var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
+		        var tbhtml = jQuery('#projects').children("tbody").html();
+		        jQuery('#projects').children("tbody").html(tbhtml.replace(expr, '><'));
+		      }
+		    }
 		});
-	    // Set the table width after it gets altered by jQuery DataTable
-	    jQuery("#projects").css("width","100%");
+
+    // Set the table width after it gets altered by jQuery DataTable
+    jQuery("#projects").css("width","100%");
+
+    // Keep header at top of table even when scrolling
+    new FixedHeader(projectsTable);
 	});
-	
+
 	function descriptionDialog(title, body) {
 		jQuery("#DescriptionDialog").text(body);
 		jQuery("#DescriptionDialog").css("display:block")
 		jQuery("#DescriptionDialog").dialog({ dialogClass: "alert" });
 	};
-	
+
 </script>
 
 <div id="DescriptionDialog" title="project description" style="display: none" >
@@ -34,12 +50,12 @@
 
 <h1 class="tab_header">Projects</h1>
 <p class="tab_description">
-<% intro_text = "Browse a selection of projects that use #{$SITE} resources"%> 
+<% intro_text = "Browse a selection of projects that use #{$SITE} resources"%>
   <%=t('projects.intro').nil? || t('projects.intro').empty? ? "#{intro_text}  #{help_icon("/help#Projects_Tab")}" : t('projects.intro')%>
 </p>
 
 <div style="padding:10px;">
-	
+
 	<span>
 		<%if session[:user].nil?%>
 		  <%=button_to "Create New Project", "/login", :method => :get%>
@@ -67,7 +83,7 @@
 					<strong><%= link_to(project.name, project) %></strong>
 					<br>
 					<span style="font-size:75%; vertical-align:bottom;">
-						<%= link_to("Home Page", project.homepage, :target => "_blank") %> 
+						<%= link_to("Home Page", project.homepage, :target => "_blank") %>
 						<span class="ui-icon ui-icon-extlink" style="display: inline-block; vertical-align: text-bottom;"></span>
 						&nbsp;&nbsp;
 						<%if isOwner?(project.id)%>
@@ -109,7 +125,7 @@
 							<%ontologyCount += 1%>
 						<%end%>
 					<%end%>
-					
+
 					<%if ontologyCount > 0 %>
 		                <span title="<%=ontologyLabels%>" style="cursor:help;text-decoration: none; border-bottom:1px dotted;"><%=ontologyCount%></span>
 			        <%else%>
@@ -120,5 +136,5 @@
 		<%end%>
 	  </tbody>
 	</table>
-	
+
 </div>
