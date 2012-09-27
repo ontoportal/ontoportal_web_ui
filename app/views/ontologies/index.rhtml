@@ -1,5 +1,6 @@
 <%@title = "Ontology Listing"%>
-<script type="text/javascript" src="/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/javascripts/JqueryPlugins/datatables/js/FixedHeader.min.js"></script>
 <script type="text/javascript" src="/javascripts/JqueryPlugins/datatables/plugins/datatables.formatted.number.js"></script>
 <link rel="stylesheet" href="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <script src="/javascripts/JqueryPlugins/tooltip/jquery.tooltip.min.js" type="text/javascript" charset="utf-8"></script>
@@ -81,36 +82,48 @@ jQuery(document).ready(function() {
         {"bSearchable":false,"bVisible":false}, // Description
         {"bSearchable":false,"bVisible":false,"sType":"groups"}, // Categories
         {"bSearchable":false,"bVisible":false} // Groups
-      ],
-      "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-            /* Append the grade to the default row class name */
-            var children = jQuery(nRow).children();
-            jQuery(children[0]).children("div.ont_link").tooltip({
-              bodyHandler: function() {return aData[7]},
-                track: true,
-                delay: 0,
-                showURL: false,
-                opacity: 1,
-                fixPNG: true,
-                showBody: " - ",
-                extraClass: "pretty fancy",
-                top: 10,
-                left: 5
-            });
+    ],
+    "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+          /* Append the grade to the default row class name */
+          var children = jQuery(nRow).children();
+          jQuery(children[0]).children("div.ont_link").tooltip({
+            bodyHandler: function() {return aData[7]},
+              track: true,
+              delay: 0,
+              showURL: false,
+              opacity: 1,
+              fixPNG: true,
+              showBody: " - ",
+              extraClass: "pretty fancy",
+              top: 10,
+              left: 5
+          });
 
-            // Set the table width back to 90% after it gets jacked by jQuery DataTable
-            jQuery("#ontologies").css("width","100%");
-            // Show the RSS link
-            jQuery("#all_updates_rss").css("display","block");
+          // Set the table width back to 90% after it gets jacked by jQuery DataTable
+          jQuery("#ontologies").css("width","100%");
+          // Show the RSS link
+          jQuery("#all_updates_rss").css("display","block");
 
-            return nRow;
-          }
+          return nRow;
+      },
+      "fnDrawCallback": function(oSettings) {
+        // Fix IE whitespace bug in table by removing whitespace
+        // See: http://datatables.net/forums/discussion/5481/bug-ghost-columns-when-generating-large-tables
+        if (navigator.appName == 'Microsoft Internet Explorer') {
+          var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
+          var tbhtml = jQuery('#ontologies').children("tbody").html();
+          jQuery('#ontologies').children("tbody").html(tbhtml.replace(expr, '><'));
+        }
+      }
 
   });
 
   <%if params[:filter]%>
     setTimeout('filterByParam("<%=params[:filter]%>")',2000);
   <%end%>
+
+  // Keep header at top of table even when scrolling
+  new FixedHeader(ontologies_table);
 
 });
 
