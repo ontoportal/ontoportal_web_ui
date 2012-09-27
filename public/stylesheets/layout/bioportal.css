@@ -1723,7 +1723,7 @@ form.button-to {
 
 .not_visible {
   position: fixed !important;
-  left: -99999999px !important;
+  top: -999999px !important;
 }
 
 #search_results_container #search_results_info {
