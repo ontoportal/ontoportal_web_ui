@@ -17,7 +17,10 @@ config.action_controller.perform_caching             = false
 config.action_mailer.raise_delivery_errors = false
 
 # Autoload the lib folder in development
-# config.autoload_paths << "#{config.root_path}/lib"
+config.autoload_paths << "#{config.root_path}/lib"
+
+# Show log when using different rack servers
+config.middleware.use Rails::Rack::LogTailer
 
 memcache_options = {
   :c_threshold => 10_000,

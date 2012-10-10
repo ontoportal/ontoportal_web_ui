@@ -17,5 +17,5 @@ gem "haml"
 group :development do
   gem "ruby-debug"
   gem "mongrel"
-  gem "rails-footnotes", '< 3.7.0'
+  gem "thin"
 end
