@@ -225,18 +225,18 @@ class DataAccess
 
   def self.getOntologyVersions(ontology_virtual_id)
     # return self.cache_pull("#{ontology_virtual_id}::_versions", "getOntologyVersions", { :ontology_virtual_id => ontology_virtual_id })
-    return self.cache_pull("#{ontology_virtual_id}::_versions", "getOntologyVersions", { :ontology_virtual_id => ontology_virtual_id }, TEMP_EXTREMELY_SHORT)
+    return self.cache_pull("#{ontology_virtual_id}::_versions", "getOntologyVersions", { :ontology_virtual_id => ontology_virtual_id }. nil, TEMP_EXTREMELY_SHORT)
   end
 
   def self.getOntology(ontology_id)
     return self.getLatestOntology(ontology_id) if OntologyWrapper.virtual_id?(ontology_id)
     # return self.cache_pull("#{ontology_id}::_details", "getOntology", { :ontology_id => ontology_id })
-    return self.cache_pull("#{ontology_id}::_details", "getOntology", { :ontology_id => ontology_id }, TEMP_EXTREMELY_SHORT)
+    return self.cache_pull("#{ontology_id}::_details", "getOntology", { :ontology_id => ontology_id }, nil, TEMP_EXTREMELY_SHORT)
   end
 
   def self.getLatestOntology(ontology_virtual_id)
     # return self.cache_pull("#{ontology_virtual_id}::_latest", "getLatestOntology", { :ontology_virtual_id => ontology_virtual_id })
-    return self.cache_pull("#{ontology_virtual_id}::_latest", "getLatestOntology", { :ontology_virtual_id => ontology_virtual_id }, TEMP_EXTREMELY_SHORT )
+    return self.cache_pull("#{ontology_virtual_id}::_latest", "getLatestOntology", { :ontology_virtual_id => ontology_virtual_id }, nil, TEMP_EXTREMELY_SHORT )
   end
 
   def self.getOntologyProperties(ontology_id)
