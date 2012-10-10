@@ -13,7 +13,6 @@ class DataAccess
   MEDIUM_CACHE_EXPIRE_TIME = 60*60*12
   LONG_CACHE_EXPIRE_TIME = 60*60*24
   EXTENDED_CACHE_EXPIRE_TIME = 60*60*336 # two weeks
-  TEMP_EXTREMELY_SHORT = 10
 
   NO_CACHE = false
 
@@ -66,8 +65,7 @@ class DataAccess
   end
 
   def self.getOntologyList(filter_private = true, skip_filter = false)
-    # ont_list = self.cache_pull("ont_list", "getOntologyList", { :skip_filter => skip_filter }, MEDIUM_CACHE_EXPIRE_TIME)
-    ont_list = self.cache_pull("ont_list", "getOntologyList", { :skip_filter => skip_filter }, TEMP_EXTREMELY_SHORT)
+    ont_list = self.cache_pull("ont_list", "getOntologyList", { :skip_filter => skip_filter }, MEDIUM_CACHE_EXPIRE_TIME)
     filter_private_ontologies(ont_list) if filter_private
     ont_list
   end
@@ -104,8 +102,7 @@ class DataAccess
       ontology_acronyms << ontology.abbreviation.downcase unless ontology.abbreviation.nil?
     end
 
-    # CACHE.set("ontology_acronyms", ontology_acronyms, MEDIUM_CACHE_EXPIRE_TIME)
-    CACHE.set("ontology_acronyms", ontology_acronyms, TEMP_EXTREMELY_SHORT)
+    CACHE.set("ontology_acronyms", ontology_acronyms, MEDIUM_CACHE_EXPIRE_TIME)
 
     ontology_acronyms
   end
@@ -219,24 +216,20 @@ class DataAccess
   end
 
   def self.getActiveOntologies
-    # return self.cache_pull("act_ont_list", "getActiveOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
-    return self.cache_pull("act_ont_list", "getActiveOntologyList", nil, TEMP_EXTREMELY_SHORT)
+    return self.cache_pull("act_ont_list", "getActiveOntologyList", nil, MEDIUM_CACHE_EXPIRE_TIME)
   end
 
   def self.getOntologyVersions(ontology_virtual_id)
-    # return self.cache_pull("#{ontology_virtual_id}::_versions", "getOntologyVersions", { :ontology_virtual_id => ontology_virtual_id })
-    return self.cache_pull("#{ontology_virtual_id}::_versions", "getOntologyVersions", { :ontology_virtual_id => ontology_virtual_id }. nil, TEMP_EXTREMELY_SHORT)
+    return self.cache_pull("#{ontology_virtual_id}::_versions", "getOntologyVersions", { :ontology_virtual_id => ontology_virtual_id })
   end
 
   def self.getOntology(ontology_id)
     return self.getLatestOntology(ontology_id) if OntologyWrapper.virtual_id?(ontology_id)
-    # return self.cache_pull("#{ontology_id}::_details", "getOntology", { :ontology_id => ontology_id })
-    return self.cache_pull("#{ontology_id}::_details", "getOntology", { :ontology_id => ontology_id }, nil, TEMP_EXTREMELY_SHORT)
+    return self.cache_pull("#{ontology_id}::_details", "getOntology", { :ontology_id => ontology_id })
   end
 
   def self.getLatestOntology(ontology_virtual_id)
-    # return self.cache_pull("#{ontology_virtual_id}::_latest", "getLatestOntology", { :ontology_virtual_id => ontology_virtual_id })
-    return self.cache_pull("#{ontology_virtual_id}::_latest", "getLatestOntology", { :ontology_virtual_id => ontology_virtual_id }, nil, TEMP_EXTREMELY_SHORT )
+    return self.cache_pull("#{ontology_virtual_id}::_latest", "getLatestOntology", { :ontology_virtual_id => ontology_virtual_id })
   end
 
   def self.getOntologyProperties(ontology_id)
