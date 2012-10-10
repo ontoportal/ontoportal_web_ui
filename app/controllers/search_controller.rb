@@ -44,18 +44,24 @@ class SearchController < ApplicationController
 
     # Temporary hack to figure out which results are exact matches
     start_time = Time.now
+    # Force the search to be exact by adding the parameter to the call (this doesn't update the params hash)
     exact_results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params.merge({:exact_match => true}))
     LOG.add :debug, "Get exact matches: #{Time.now - start_time}s"
     exact_results.results = filter_advanced_options(exact_results.results, params)
     filter_private_results(exact_results)
     exact_count = exact_results.results.length
 
-    if params[:exact_match].eql?("true")  # Why string?  boolean used above.
+    if params[:exact_match].eql?("true")
       results = exact_results
     else
       start_time = Time.now
       results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
       LOG.add :debug, "Get other matches: #{Time.now - start_time}s"
+    end
+
+    # Add a tracker for exact results so we know which ones are exact when they get output to browser
+    results.results.each_with_index do |result, index|
+      result[:exactMatch] = index <= exact_count ? true : false
     end
 
     # Filter out ontologies using user-provided parameters
