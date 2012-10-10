@@ -15,7 +15,7 @@ class AnalyticsController < ApplicationController
 
   def search_result_clicked
     clicks = Analytics.find(:all, :conditions => {:segment => "search", :action => "result_clicked"})
-    rows = [["query", "position_clicked", "ontology_clicked", "higher_rated_ontologies", "additional_result", "concept_id", "time", "user", "slice", "ip_address"]]
+    rows = [["query", "position_clicked", "ontology_clicked", "higher_rated_ontologies", "additional_result", "exact_match", "concept_id", "time", "user", "slice", "ip_address"]]
     clicks.each do |click|
       next if click.params.empty?
       rows << [
@@ -24,6 +24,7 @@ class AnalyticsController < ApplicationController
         click.params["ontology_clicked"],
         click.params["higher_ontologies"].nil? ? "" : click.params["higher_ontologies"].join(";"),
         click.params["additional_result"],
+        click.params["exact_match"],
         click.params["concept_id"],
         click.created_at,
         click.user,
