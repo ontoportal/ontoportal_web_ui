@@ -65,6 +65,9 @@ function SearchAnalytics() {
     // Search query
     info.query = jQuery("#search_keywords").val();
 
+    // Exact match
+    info.exact_match = link.attr("data-exact_match");
+
     return info;
   }
 }
