@@ -42,20 +42,18 @@
       <h4 style="margin-top: .5em;"><a href="javascript:void(0);" id="expand_views">Expand All</a>  |  <a href="javascript:void(0);" id="collapse_views">Collapse All</a></h4>
 
       <% @ontology.views.each_with_index do |virtual, index| %>
-            <%if virtual[0].nil?
-              next
-            end %>
+        <%if virtual[0].nil?
+          next
+        end %>
 
         <style type="text/css">
           #view_head .lead {
             color: #708090;
             font-weight: bold;
           }
-
           .view_collapsible {
             margin: 0 1em;
           }
-
           .click_view_collapse:hover {
             text-decoration: underline;
           }
@@ -73,13 +71,34 @@
 
         <div id="view_<%=index%>_collapsible" class="view_collapsible" style="margin: 0 1em .5em; display: none;">
           <div id="view_head" style="margin: 0 0 .5em;" class="enable-lists">
-            <ul>
-              <li><span class="lead">Description:</span> <%=virtual[0].description %><br></li>
-              <% unless virtual[0].viewDefinition.empty? %><li><span class="lead">Definition:</span> <%=virtual[0].viewDefinition %><br></li><%end%>
-              <li><span class="lead">Ontology ID:</span> <%=virtual[0].ontologyId %></li>
-              <% unless virtual[0].viewGenerationEngine.empty? %><li><span class="lead">Generation Engine:</span> <%=virtual[0].viewGenerationEngine %></li><%end%>
-              <% unless virtual[0].viewDefinitionLanguage.empty? %><li><span class="lead">Definition Language:</span> <%=virtual[0].viewDefinitionLanguage %></li><%end%>
-            </ul>
+			<ul>
+				<li>
+					<span class="lead">Description:</span> <%=virtual[0].description %>
+				</li>
+				<% unless virtual[0].viewDefinition.empty? %>
+					<li>
+						<span class="lead">Definition:</span> <%=virtual[0].viewDefinition %>
+					</li>
+				<%end%>
+				<li>
+					<span class="lead">Ontology ID:</span> <%=virtual[0].ontologyId %>
+				</li>
+				<% unless virtual[0].viewGenerationEngine.empty? %>
+					<li><span class="lead">Generation Engine:</span> <%=virtual[0].viewGenerationEngine %>
+						
+					</li>
+				<%end%>
+				<% unless virtual[0].viewDefinitionLanguage.empty? %>
+					<li>
+						<span class="lead">Definition Language:</span> <%=virtual[0].viewDefinitionLanguage %>
+					</li>
+				<%end%>
+				<li>
+					<span class="lead">Created By:</span>
+					<% contact_name = view.contactName.nil? || view.contactName.empty? ? "" : view.contactName + ", " %>
+					<%= contact_name + view.contactEmail %>
+				</li>
+			</ul>
           </div>
 
               <table class="zebra" cellpadding="0" cellspacing="0" width="100%">
@@ -89,22 +108,16 @@
                               Version
                           </th>
                           <th>
-                              Base Version
+                              Ontology Version
                           </th>
                           <th>
-                              Created
+                              Release Date
                           </th>
                           <th>
-                              Created By
+                              Upload Date
                           </th>
                           <th>
-                              Ontology File
-                          </th>
-                          <th>
-                              Diff File
-                          </th>
-                          <th>
-                              Visibility
+                              Downloads
                           </th>
                       </tr>
                   </thead>
@@ -113,7 +126,7 @@
                   virtual.each_with_index do |view, view_index|  %>
                   <tr>
                       <td>
-                          <%= view.versionNumber %>
+                          <%= visibility_link(view.versionNumber) %>
                       </td>
                       <td>
                         <%= get_view_ontology_version(view.viewOnOntologyVersionId) rescue "unknown"%>
@@ -122,27 +135,24 @@
                           <%= view.dateReleased %>
                       </td>
                       <td>
-                        <% contact_name = view.contactName.nil? || view.contactName.empty? ? "" : view.contactName + ", " %>
-                        <%= contact_name + view.contactEmail %>
+                          <%= view.dateUploaded %>
                       </td>
                       <td>
                           <a href="<%=DataAccess.download(view.id)%>" target="_blank">Download View</a>
                       </td>
-                      <td>
+                      <!--
                           <%= get_diffs_link(view.diffs, view.versions_array, view, view_index) rescue ""%>
-                      </td>
-                      <td>
                           <%= visibility_link(view) %>
-                      </td>
+                      -->
                   </tr>
                   <%end %>
-                <%if virtual[0].admin?(session[:user]) %>
-              <tr>
-                <td colspan=7>
-                      <h3 style="margin-bottom: 0;"><a href="/ontologies/view/new/<%=virtual[0].id%>?version_id=<%=@ontology.id%>">Submit New View Version</a></h3>
-                </td>
-              </tr>
-                <%end %>
+				<%if virtual[0].admin?(session[:user]) %>
+					<tr><td colspan=7>
+						<h3 style="margin-bottom: 0;">
+							<a href="/ontologies/view/new/<%=virtual[0].id%>?version_id=<%=@ontology.id%>">Submit New View Version</a>
+						</h3>
+					</td></tr>
+				<%end %>
               </table>
      </div> <!-- collapsible div -->
            <%end %>
