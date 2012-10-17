@@ -26,12 +26,22 @@ $API_KEY = ""
 
 # REST core service address
 $REST_URL = "http://domain.com:8080/bioportal"
+# $REST_URL="http://localhost:8080/bioportal"
 
-# REST domain: this is the domain that hosts your services (Core, OBS, OBR, etc)
+# REST domain: this is the domain that hosts services (Core, OBS, OBR, etc)
 $REST_DOMAIN = "domain.com"
+
+# REST core service port number
+#$REST_PORT="80"
+$REST_PORT = "8080"
 
 # Resource Index REST service address
 $RESOURCE_INDEX_REST_URL = "http://domain.com/resource_index"
+
+# Resource Index UI Location
+$RESOURCE_INDEX_UI_URL = "http://ncbodev-riui1.stanford.edu/stage"
+#$RESOURCE_INDEX_UI_URL = "http://localhost/riui/"
+
 
 # Max number of children to return when rendering a tree view
 $MAX_CHILDREN = 2500
@@ -39,14 +49,8 @@ $MAX_CHILDREN = 2500
 # Max number of children that it's possible to display (more than this is either too slow or not helpful to users)
 $MAX_POSSIBLE_DISPLAY = 10000
 
-# Resource Index UI Location
-$RESOURCE_INDEX_UI_URL = "http://ncbodev-riui1.stanford.edu/stage"
-
 # Max size allowed for uploaded files
 $MAX_UPLOAD_SIZE = 1073741824
-
-# REST core service port number
-$REST_PORT = "8080"
 
 # Release version text (appears in footer of all pages, except 404 and 500 errors)
 $RELEASE_VERSION = ""
@@ -140,7 +144,6 @@ $FLEXOVIZ_APIKEY = ""
 ##
 $ADDITIONAL_ONTOLOGY_DETAILS = {}
 
-
 #################################
 ## AUTO-GENERATED DO NOT MODIFY
 #################################
@@ -150,5 +153,4 @@ $ORG_SITE = ($ORG.nil? || $ORG.empty?) ? $SITE : "#{$ORG} #{$SITE}"
 
 # Email address to mail when exceptions are raised
 ExceptionNotifier.exception_recipients = [$ERROR_EMAIL]
-
 
