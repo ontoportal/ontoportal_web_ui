@@ -53,8 +53,9 @@
                   Categories:
               </th>
               <td>
-                  <%for cat in @ontology.categories %><%= @categories[cat.to_s][:name] %>
-                  <br/>
+                  <%for cat in @ontology.categories %>
+                      <%= @categories[cat.to_s][:name] %>
+                      <br/>
                   <%end %>
               </td>
           </tr>
@@ -64,8 +65,8 @@
               </th>
               <td>
                   <%for group_id in @ontology.groups %>
-	                  <%= @groups.group_list[group_id.to_i][:name] rescue "" %>
-	                  <br/>
+                      <%= @groups.group_list[group_id.to_i][:name] rescue "" %>
+                      <br/>
                   <%end %>
               </td>
           </tr>
@@ -82,7 +83,7 @@
                   Home Page:
               </th>
               <td>
-                  <a href="<%= @ontology.homepage%>" target="_blank"><%= @ontology.homepage %></a>
+                  <a href="<%= @ontology.homepage %>" target="_blank"><%= @ontology.homepage %></a>
               </td>
           </tr>
           <tr>
@@ -90,7 +91,7 @@
                   Publications Page:
               </th>
               <td>
-                  <a href="<%= @ontology.publication%>" target="_blank"><%= @ontology.publication %></a>
+                  <a href="<%= @ontology.publication %>" target="_blank"><%= @ontology.publication %></a>
               </td>
           </tr>
           <tr>
@@ -98,7 +99,7 @@
                   Documentation Page:
               </th>
               <td>
-                  <a href="<%= @ontology.documentation%>" target="_blank"><%= @ontology.documentation %></a>
+                  <a href="<%= @ontology.documentation %>" target="_blank"><%= @ontology.documentation %></a>
               </td>
           </tr>
           <tr>
@@ -106,10 +107,10 @@
                   Description:
               </th>
               <td>
-                  <%= @ontology.description %>
+                  <%= @ontology.description rescue "" %>
               </td>
           </tr>
-          <%= additional_details %>
+          <%#= additional_details %>
       </table>
   </div>
 </div>
