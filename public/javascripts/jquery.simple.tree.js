@@ -48,10 +48,13 @@ $.fn.simpleTree = function(opt){
 			animate:	false,
 			autoclose:	false,
 			speed:		'fast',
+			beforeAjax: false,
 			afterAjax:	false,
+			afterAjaxError: false,
 			afterMove:	false,
 			afterClick:	false,
 			afterDblClick:	false,
+			timeout: 999999,
 			// added by Erik Dohmen (2BinBusiness.nl) to make context menu cliks available
 			afterContextMenu:	false,
 			docToFolderConvert:false
@@ -101,10 +104,13 @@ $.fn.simpleTree = function(opt){
 				}
 			}
 		};
-		TREE.setAjaxNodes = function(node, parentId, callback)
+		TREE.setAjaxNodes = function(node, parentId, successCallback, errorCallback)
 		{
 			if($.inArray(parentId,ajaxCache) == -1){
-				ajaxCache[ajaxCache.length]=parentId;
+				if(typeof TREE.option.beforeAjax == 'function')
+				{
+					TREE.option.beforeAjax(node);
+				}
 				var url = $.trim($('a', node).attr("href"));
 				if(url)
 				{
@@ -113,23 +119,35 @@ $.fn.simpleTree = function(opt){
 						url: url,
 						contentType:'html',
 						cache:false,
-						success: function(responce){
+						timeout:TREE.option.timeout,
+						success: function(response){
+							ajaxCache[ajaxCache.length]=parentId;
 							node.removeAttr('class');
-							node.html(responce);
+							node.html(response);
 							$.extend(node,{url:url});
 							TREE.setTreeNodes(node, true);
 							if(typeof TREE.option.afterAjax == 'function')
 							{
 								TREE.option.afterAjax(node);
 							}
-							if(typeof callback == 'function')
+							if(typeof successCallback == 'function')
 							{
-								callback(node);
+								successCallback(node);
+							}
+						},
+						error: function(response){
+							if(typeof TREE.option.afterAjaxError == 'function')
+							{
+								TREE.option.afterAjaxError(node);
+							}
+							if(typeof errorCallback == 'function')
+							{
+								errorCallback(node);
 							}
 						}
 					});
 				}
-				
+
 			}
 		};
 		TREE.setTreeNodes = function(obj, useParent){
@@ -274,7 +292,7 @@ $.fn.simpleTree = function(opt){
 						/*
 							Thanks for the idea of Erik Dohmen
 						*/
-						TREE.setAjaxNodes(ajaxChild,parent.id, function(){
+						TREE.setAjaxNodes(ajaxChild, parent.id, function(){
 							parent.className = parent.className.replace('close','open');
 							mouseMoved = true;
 							$("#tree_plus").attr('src','/images/tree/plus.gif');
