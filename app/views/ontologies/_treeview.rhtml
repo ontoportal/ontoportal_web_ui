@@ -26,21 +26,6 @@ jQuery(document).ready(function(){
   // Set the cache for the first concept we retrieved
   setCacheCurrent();
 
-  jQuery("#sd_expand").addClass("expand-down");
-  jQuery("#sd_expand").click(function(){
-    if (jQuery(this).hasClass("expand-down")) {
-      jQuery(this).removeClass("expand-down");
-      jQuery("#sd_content").removeClass("sd_max_height");
-      jQuery(this).addClass("expand-up");
-      jQuery(window).scrollTo(jQuery('a.active'));
-    } else {
-      jQuery(this).removeClass("expand-up");
-      jQuery(this).addClass("expand-down")
-      jQuery("#sd_content").addClass("sd_max_height");
-      jQuery("#sd_content").scrollTo(jQuery('a.active'));
-    }
-  });
-
   // Setup the "Get all terms" link for times when the children is greater than our max
   jQuery(".too_many_children_override").live('click', function(event) {
     event.preventDefault();
