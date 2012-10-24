@@ -1,3 +1,12 @@
+<style>
+.expansion_error {
+  color: red;
+  font-size: x-small;
+  font-style: oblique;
+  padding: 0 3px;
+}
+</style>
+
 <script type="text/javascript">
 
   jQuery.rloader([
@@ -7,16 +16,24 @@
 var simpleTreeCollection;
 jQuery(document).ready(function(){
   simpleTreeCollection = jQuery('.simpleTree').simpleTree({
-    autoclose: false, drag:false,
+    autoclose: false,
+    drag: false,
+    animate: true,
+    timeout: 20000,
     afterClick:function(node){
       History.pushState({p:"terms", conceptid:jQuery(node).children("a").attr("id")}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, jQuery(node).children("a").attr("href"));
     },
-    afterDblClick:function(node){
+    afterAjaxError: function(node){
+      simpleTreeCollection[0].option.animate = false;
+      simpleTreeCollection.get(0).nodeToggle(node.parent()[0]);
+      if (node.parent().children(".expansion_error").length == 0) {
+        node.parent().append("<span class='expansion_error'>Error, please try again");
+      }
+      simpleTreeCollection[0].option.animate = true;
     },
-    afterAjax:function()
-    {
-    },
-    animate:true
+    beforeAjax: function(node){
+      node.parent().children(".expansion_error").remove();
+    }
   });
 
   setConcept("<%=@concept.id%>");
@@ -25,21 +42,6 @@ jQuery(document).ready(function(){
 
   // Set the cache for the first concept we retrieved
   setCacheCurrent();
-
-  jQuery("#sd_expand").addClass("expand-down");
-  jQuery("#sd_expand").click(function(){
-    if (jQuery(this).hasClass("expand-down")) {
-      jQuery(this).removeClass("expand-down");
-      jQuery("#sd_content").removeClass("sd_max_height");
-      jQuery(this).addClass("expand-up");
-      jQuery(window).scrollTo(jQuery('a.active'));
-    } else {
-      jQuery(this).removeClass("expand-up");
-      jQuery(this).addClass("expand-down")
-      jQuery("#sd_content").addClass("sd_max_height");
-      jQuery("#sd_content").scrollTo(jQuery('a.active'));
-    }
-  });
 
   // Setup the "Get all terms" link for times when the children is greater than our max
   jQuery(".too_many_children_override").live('click', function(event) {

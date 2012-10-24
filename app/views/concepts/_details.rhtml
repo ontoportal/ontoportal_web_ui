@@ -83,8 +83,6 @@
     end
 
     leftover.sort! {|x,y| x.downcase <=> y.downcase }
-
-
     %>
 
     <%for key in top_set%>
@@ -92,7 +90,7 @@
       <%unless @concept.properties[key].empty?%>
         <tr>
           <td nowrap class="label">
-            <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span>
+            <span class="concept_property" title="#{key}"><%="#{remove_owl_notation(key)}"%></span>
           </td>
           <td>
             <%=auto_link("<p>#{sanitize(@concept.properties[key]).split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")%>
@@ -106,7 +104,7 @@
       <%unless @concept.properties[key].empty?%>
         <tr>
           <td nowrap class="label">
-            <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span>
+            <span class="concept_property" title="#{key}"><%="#{remove_owl_notation(key)}"%></span>
           </td>
           <td>
             <%=auto_link("<p>#{sanitize(@concept.properties[key]).split("||%||").join("<\/p><p>").gsub("%ONT%", @concept.ontology.id)}</p>", :all, :target => "_blank")%>
@@ -120,7 +118,7 @@
       <%unless @concept.properties[key].empty?%>
         <tr>
           <td nowrap class="label">
-            <span class="concept_property" title="<%=property_title(key)%>"><%="#{remove_owl_notation(key)}"%></span>
+            <span class="concept_property" title="#{key}"><%="#{remove_owl_notation(key)}"%></span>
           </td>
           <td>
             <%=auto_link("<p>#{@concept.properties[key].split("||%||").join("<\/p><p>").gsub("%ONT%", @concept.ontology.id)}</p>", :all, :target => "_blank")%>
