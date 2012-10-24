@@ -24,7 +24,10 @@
     <script src="/javascripts/bioportal.js?1301423855" type="text/javascript"></script>
   </head>
   <body>
+  	
+    <!-- hd_wrapper -->
     <div style="overflow: hidden;" id="hd_wrapper">
+          <!-- hd -->
           <div id="hd">
             <ul>
               <li style="padding-right: 30px;">
@@ -56,7 +59,6 @@
               var menu_nav = function(link) {
                 document.location = link.href;
               }
-    
               jQuery(document).ready(function() {
                 // Wire up navigation buttons
                 jQuery('#recently_viewed').fgmenu({
@@ -69,7 +71,6 @@
                   afterItemChosen : menu_nav
                 });
               });
-    
             </script>
             <ul id="top_right_menu" class="alignright">
               <a class="fg-button-menu ui-widget ui-state-default" href="/login?redirect=%2F">Sign In</a>
@@ -85,41 +86,49 @@
               </script>
               <a style="" class="fg-button-menu ui-widget ui-state-default top_right_menu_last" href="/feedback" onclick="popup('/feedback?pop=true'); return false;" tabindex="0">Feedback</a>
             </ul>
-          </div>
-        </div>
-    <div style="clear: both;"></div>
-    <div id="bd">
+          </div><!-- hd -->
+    </div><!-- hd_wrapper -->
+    
+    <div id="bd" style="clear:both;text-align: center">
       <br/>
       <br/>
       <br/>
       <br/>
       <br/>
-      <center>
-          <h1>The page you are looking for wasn't found. Please try again.</h1>
-      </center>
+      <h1>The page you are looking for wasn't found. Please try again.</h1>
       <br/>
       <br/>
       <br/>
       <br/>
-    </div>
-    </div>
+    </div><!-- bd -->
 
+    <!-- footer_wrapper -->
     <div style="padding:2em;text-align:center;background:#234979;color:white;clear:both;" id="footer_wrapper">
       The National Center for Biomedical Ontology is one of the
-      <a title="National Centers for Biomedical Computing" href="http://www.ncbcs.org/">National Centers for Biomedical Computing</a> supported by the
-      <a title="NIH Roadmap" href="http://nihroadmap.nih.gov/">NIH Roadmap</a>.
+      <a href="http://www.ncbcs.org/">National Centers for Biomedical Computing</a> supported by the
+      <a href="http://www.genome.gov/">NHGRI</a>, the
+      <a href="http://www.nhlbi.nih.gov/">NHLBI</a>, and the
+      <a href="https://commonfund.nih.gov/">NIH Common Fund</a> under grant U54-HG004028.
       <br/>
-
-      Copyright © 2005–2010, The Board of Trustees of Leland Stanford Junior University. All rights reserved.
+      Copyright &copy; <span id="copyright_years"> </span>, 
+      The Board of Trustees of Leland Stanford Junior University. All rights reserved.
       <br/>
       <a title="NCBO" href="http://www.bioontology.org">NCBO Website</a>&nbsp;
-      <a title="Release Notes" href="/home/release">Help / About</a> &nbsp;
-      <a title="Terms of Use" href="http://www.bioontology.org/terms.html">Terms of Use</a>
-      <a title="Privacy Policy" href="http://www.bioontology.org/privacy.html">Privacy Policy</a>
+      <a title="Release Notes" href="http://www.bioontology.org/wiki/index.php/BioPortal_Release_Notes">Release Notes</a>&nbsp;
+      <a title="Terms of Use" href="http://www.bioontology.org/terms.html">Terms of Use</a>&nbsp;
+      <a title="Privacy Policy" href="http://www.bioontology.org/privacy.html">Privacy Policy</a>&nbsp;
+      <a title="Cite BioPortal" href="/help#How_to_cite_NCBO_and_BioPortal" class="pop_window" style="font-size:1em" target="_blank">How to Cite</a>
       <br/>
-      <br/>
-
-      <br/>
-    </div>
+    </div><!-- footer_wrapper -->
+    
+    <script type="text/javascript">
+      jQuery(document).ready(function() {
+        var output = "2005&#x2011;";
+        var d = new Date();
+        output += d.getFullYear();
+        jQuery('#copyright_years').html(output);
+      });
+    </script>
+    
   </body>
 </html>
