@@ -1,6 +1,7 @@
 require 'BioPortalRestfulCore'
 require "digest/sha1"
 require "ontology_filter"
+require "cgi"
 include Spawn
 
 class DataAccess
@@ -21,7 +22,7 @@ class DataAccess
     view_string = view ? "view_" : ""
     ontology = self.getOntology(ontology_id)
     return self.cache_pull(
-      "#{view_string}#{param(ontology.id)}::#{node_id.to_s.gsub(" ","%20")}::max_children=#{max_children}",
+      "#{view_string}#{param(ontology.id)}::#{CGI.escape(node_id.to_s)}::max_children=#{max_children}",
       "getNode",
       { :ontology_id   => ontology_id,
         :concept_id    => node_id,
@@ -34,7 +35,7 @@ class DataAccess
     max_children = max_children.nil? ? $MAX_CHILDREN : max_children
     view_string = view ? "view_" : ""
     return self.cache_pull(
-      "#{view_string}#{param(ontology_id)}::#{node_id.to_s.gsub(" ","%20")}::max_children=#{max_children}_light",
+      "#{view_string}#{param(ontology_id)}::#{CGI.escape(node_id.to_s)}::max_children=#{max_children}_light",
       "getLightNode",
       { :ontology_id   => ontology_id,
         :concept_id    => node_id,
