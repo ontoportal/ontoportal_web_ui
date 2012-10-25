@@ -264,7 +264,7 @@
           <ul>
               <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
               <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
-              <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+              <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"></span>)</a></li>
               <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
                 <%if !@ontology.isView.eql?('true')%>
@@ -294,7 +294,7 @@
           <ul>
               <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
               <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
-              <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+              <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"></span>)</a></li>
               <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
                 <%if !@ontology.isView.eql?('true')%>
