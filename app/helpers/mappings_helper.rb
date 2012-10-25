@@ -21,7 +21,7 @@ module MappingsHelper
 
     @ontology_from = DataAccess.getOntology(ontology_from) rescue OntologyWrapper.new
     @ontology_to = DataAccess.getOntology(ontology_to) rescue OntologyWrapper.new
-    @concept_from = DataAccess.getLightNode(@ontology_from.id, concept_from) rescue NodeWrapper.new
-    @concept_to = DataAccess.getLightNode(@ontology_to.id, concept_to) rescue NodeWrapper.new
+    @concept_from = DataAccess.getNode(@ontology_from.id, concept_from) rescue NodeWrapper.new
+    @concept_to = DataAccess.getNode(@ontology_to.id, concept_to) rescue NodeWrapper.new
   end
 end
