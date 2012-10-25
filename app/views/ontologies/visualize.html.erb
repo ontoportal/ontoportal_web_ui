@@ -253,7 +253,7 @@
           <ul>
               <li class="selected first" id="details_top" onclick="return false;"><a href="#details" onclick="return false;" style="color: gray;">Details</a></li>
               <li id="visualization_top" onclick="return false;"><a href="#visualization" onclick="return false;" style="color: gray;">Visualization</a></li>
-              <li id="notes_top" onclick="return false;"><a href="#notes" onclick="return false;" style="color: gray;">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+              <li id="notes_top" onclick="return false;"><a href="#notes" onclick="return false;" style="color: gray;">Notes (<span id="note_count"></span>)</a></li>
               <li id="mappings_top" onclick="return false;"><a href="#mappings" onclick="return false;" style="color: gray;">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
                 <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Term Resources</a></li>
