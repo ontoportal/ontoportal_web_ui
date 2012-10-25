@@ -1142,6 +1142,10 @@ textarea.create_note_inputs {
   padding: 1em;
 }
 
+#note_count_wrapper {
+  display: none;
+}
+
 /* Datatables */
 .notes_list_table {
   clear: both;
