@@ -314,7 +314,7 @@
           <div class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
           <div class="tab_container not_visible" id="visualization_content"><%=render :partial =>'/concepts/biomixer'%></div>
           <div class="tab_container not_visible" id="notes_content"></div>
-          <div class="tab_container not_visible" id="mappings_content"></div>
+          <div class="tab_container not_visible" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
 
           <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
             <div class="tab_container not_visible resource_index_embed" id="resource_index_content"></div>
