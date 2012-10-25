@@ -18,6 +18,8 @@ class DataAccess
   NO_CACHE = false
 
   def self.getNode(ontology_id, node_id, max_children = $MAX_CHILDREN, view = false, no_relations = false)
+    return Node.new if node_id.nil? || node_id.empty?
+
     max_children = max_children.nil? ? $MAX_CHILDREN : max_children
     view_string = view ? "view_" : ""
     ontology = self.getOntology(ontology_id)
@@ -32,6 +34,8 @@ class DataAccess
   end
 
   def self.getLightNode(ontology_id, node_id, max_children = $MAX_CHILDREN, view = false, no_relations = false)
+    return Node.new if node_id.nil? || node_id.empty?
+
     max_children = max_children.nil? ? $MAX_CHILDREN : max_children
     view_string = view ? "view_" : ""
     return self.cache_pull(
@@ -45,6 +49,7 @@ class DataAccess
   end
 
   def self.getNodeLabel(ontology_id, node_id)
+    return Node.new if node_id.nil? || node_id.empty?
     return self.cache_pull("label::#{param(ontology_id)}::#{param(node_id.to_s)}", "getNodeLabel", { :ontology_id => ontology_id, :concept_id => node_id })
   end
 
