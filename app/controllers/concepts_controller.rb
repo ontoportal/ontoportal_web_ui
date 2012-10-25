@@ -226,9 +226,9 @@ class ConceptsController < ApplicationController
 
     # gathers the information for a node
     def gather_details
-      @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.id)
+      # @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.id)
       # check to see if user should get the option to delete
-      @delete_mapping_permission = check_delete_mapping_permission(@mappings)
+      # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
       update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
     end
 
