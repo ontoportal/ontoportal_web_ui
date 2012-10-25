@@ -345,6 +345,9 @@
     <%= render :partial => '/mappings/new_form', :locals => { :ontology_from => @ontology.id, :concept_from => @concept.fullId } %>
   </div>
 
+  <!-- Load notes JS data -->
+  <%= render :partial => '/notes/notes_concept_js' %>
+
 <% else # found an error %>
   <%= "<div id=\"error\"><h2>#{@error}</h2></div>" %>
 <% end %>
