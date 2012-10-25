@@ -1260,7 +1260,7 @@ private
 
     total_time = Time.now - start_time
     if total_time > 3
-      puts "Long REST query (#{caller[0].split(":")[0].split("/").last}:#{caller[0].split(" ")[1].gsub("`", "").gsub("'", "")}): #{"%0.2f" % ((total_time))}s"
+      puts "Long REST query (#{caller}): #{"%0.2f" % total_time}s"
       puts "Long REST query (URL): #{uri}"
     end
 
