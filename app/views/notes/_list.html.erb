@@ -14,11 +14,9 @@
     @notes_deletable = false
     @notes.each {|n| @notes_deletable = true if n.deletable?(session[:user])} unless @notes.nil?
     @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
-    @context = "concept"
   end
 
   @semi_uuid = (1000 * Time.now.to_f).to_i
-  note_colspan = (@context && @context.eql?("concept")) ? "5" : "6"
 %>
 
 <div class="notes_list_container" style="padding: 1%; width: 98%;">
@@ -170,31 +168,3 @@
 
 
 
-<!-- Move JS to end to avoid issues with getting via AJAX -->
-<script type="text/javascript">
-  jQuery.rloader([
-    {type:'css',src:'/javascripts/JqueryPlugins/superfish/superfish.css'},
-    {type:'js',src:'/javascripts/JqueryPlugins/superfish/superfish.js'}
-  ]);
-
-// Load external JS files
-if (typeof BP_NOTES_LIST_LOADED == 'undefined') jQuery.getScript("/javascripts/bp_notes_list.js");
-
-// Global data
-var notesTable;
-var target = <%= (@context && @context.eql?("concept")) ? "{ 'bVisible': false }" : "null" %>;
-var bp_notesDeletable = <%=@notes_deletable.to_json%>;
-
-// Data needed in the external JS file stored in the body 'cache'
-<% if @concept %>
-  jQuery.data(document.body, "node_id", "<%=@concept.id%>");
-<% end %>
-jQuery.data(document.body, "note_colspan", "<%=note_colspan%>");
-jQuery.data(document.body, "ontology_id", "<%=@ontology.ontologyId%>");
-jQuery.data(document.body, "semi_uuid", "<%=@semi_uuid%>");
-
-jQuery(document).ready(function(){
-  init_notes();
-});
-
-</script>
