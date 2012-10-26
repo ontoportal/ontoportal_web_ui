@@ -1734,7 +1734,7 @@ private
     xml = params[:xml]
     path = params[:path]
 
-    if xml.nil? || (xml.respond_to?("read") && xml.read.empty?)
+    if xml.nil? || (xml.respond_to?("string") && xml.string.empty?)
       return nil
     end
 
