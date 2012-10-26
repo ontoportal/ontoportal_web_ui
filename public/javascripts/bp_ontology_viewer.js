@@ -200,21 +200,21 @@ jQuery(document).ready(function() {
     // }
   }
 
-  // if (content_section !== "summary") {
-  //   jQuery.bioportal.ont_pages["summary"].retrieve_and_publish();
-  // }
+  if (content_section !== "summary") {
+    jQuery.bioportal.ont_pages["summary"].retrieve_and_publish();
+  }
 
-  // if (content_section !== "mappings") {
-  //   jQuery.bioportal.ont_pages["mappings"].retrieve_and_publish();
-  // }
+  if (content_section !== "mappings") {
+    jQuery.bioportal.ont_pages["mappings"].retrieve_and_publish();
+  }
 
-  // if (content_section !== "notes") {
-  //   jQuery.bioportal.ont_pages["notes"].retrieve_and_publish();
-  // }
+  if (content_section !== "notes") {
+    jQuery.bioportal.ont_pages["notes"].retrieve_and_publish();
+  }
 
-  // if (content_section !== "widgets" && metadata_only !== true) {
-  //   jQuery.bioportal.ont_pages["widgets"].retrieve_and_publish();
-  // }
+  if (content_section !== "widgets" && metadata_only !== true) {
+    jQuery.bioportal.ont_pages["widgets"].retrieve_and_publish();
+  }
 
   // Set the proper name in the nav menu
   if (content_section !== null) {
