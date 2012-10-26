@@ -117,7 +117,7 @@ class NotesController < ApplicationController
 
   def show_concept_list
     @ontology = DataAccess.getOntology(params[:ontology])
-    @concept = DataAccess.getNode(@ontology.id, params[:concept])
+    @concept = DataAccess.getLightNode(@ontology.id, params[:concept])
     render :partial => "/notes/list"
   end
 
