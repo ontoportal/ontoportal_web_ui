@@ -313,7 +313,7 @@
         <div id="contents">
           <div class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
           <div class="tab_container not_visible" id="visualization_content"><%=render :partial =>'/concepts/biomixer'%></div>
-          <div class="tab_container not_visible" id="notes_content"><a class="get_via_ajax" href="/ajax/notes/concept_list?ontology=<%=@ontology.id%>&concept=<%=@concept.fullId_proper%>"></a></div>
+          <div class="tab_container not_visible" id="notes_content"><a class="get_via_ajax" href="/ajax/notes/concept_list?ontology=<%=@ontology.id%>&concept=<%=param(@concept.fullId_proper)%>"></a></div>
           <div class="tab_container not_visible" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
 
           <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
