@@ -195,6 +195,11 @@ jQuery.data(document.body, "semi_uuid", "<%=@semi_uuid%>");
 
 jQuery(document).ready(function(){
   init_notes();
+
+  // Update notes count
+  var noteCount = jQuery("#notes_content .notes_table_container .notes_list_table tbody tr:not(#no_notes)").children("td:not(.dataTables_empty)").parent().parent().children("tr").length;
+  jQuery("#note_count").html(noteCount);
+  jQuery("#note_count_wrapper").show();
 });
 
 </script>
