@@ -643,7 +643,7 @@ jQuery(document).ready(function(){
 
 function getAjaxContent() {
   // Look for anchors with a get_via_ajax class and replace the parent with the resulting ajax call
-  $("a.get_via_ajax").each(function(){
+  $(".get_via_ajax").each(function(){
     if (typeof $(this).attr("getting_content") === 'undefined') {
       $(this).parent().load($(this).attr("href"));
       $(this).attr("getting_content", true);
