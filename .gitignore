@@ -18,3 +18,4 @@ config/bioportal_config.rb
 config/database.yml
 config/locales/en.rb
 **.DS_Store
+/public/**/cache/**
