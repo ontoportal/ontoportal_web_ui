@@ -253,7 +253,7 @@
           <ul>
               <li class="selected first" id="details_top" onclick="return false;"><a href="#details" onclick="return false;" style="color: gray;">Details</a></li>
               <li id="visualization_top" onclick="return false;"><a href="#visualization" onclick="return false;" style="color: gray;">Visualization</a></li>
-              <li id="notes_top" onclick="return false;"><a href="#notes" onclick="return false;" style="color: gray;">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+              <li id="notes_top" onclick="return false;"><a href="#notes" onclick="return false;" style="color: gray;">Notes <span id="note_count_wrapper">(<span id="note_count"></span>)</span></a></li>
               <li id="mappings_top" onclick="return false;"><a href="#mappings" onclick="return false;" style="color: gray;">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
                 <li id="resource_index_top" onclick="return false;"><a href="" onclick="return false;" style="color: gray;">Term Resources</a></li>
@@ -264,7 +264,7 @@
           <ul>
               <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
               <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
-              <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+              <li class="tab" id="notes_top"><a href="#notes">Notes <span id="note_count_wrapper">(<span id="note_count"></span>)</span></a></li>
               <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
                 <%if !@ontology.isView.eql?('true')%>
@@ -294,7 +294,7 @@
           <ul>
               <li class="selected tab first" id="details_top"><a href="#details">Details</a></li>
               <li class="tab" id="visualization_top"><a href="#visualization">Visualization</a></li>
-              <li class="tab" id="notes_top"><a href="#notes">Notes (<span id="note_count"><%=@concept.note_count%></span>)</a></li>
+              <li class="tab" id="notes_top"><a href="#notes">Notes <span id="note_count_wrapper">(<span id="note_count"></span>)</span></a></li>
               <li class="tab" id="mappings_top"><a href="#mappings">Term Mappings (<span id="mapping_count"><%=@concept.mapping_count%></span>)</a></li>
               <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
                 <%if !@ontology.isView.eql?('true')%>
@@ -313,7 +313,7 @@
         <div id="contents">
           <div class="tab_container" id="details_content"><%=render :partial =>'/concepts/details'%></div>
           <div class="tab_container not_visible" id="visualization_content"><%=render :partial =>'/concepts/biomixer'%></div>
-          <div class="tab_container not_visible" id="notes_content"><%=render :partial =>'/notes/list'%></div>
+          <div class="tab_container not_visible" id="notes_content"><a class="get_via_ajax" href="/ajax/notes/concept_list?ontology=<%=@ontology.id%>&concept=<%=CGI.escape(@concept.fullId)%>"></a></div>
           <div class="tab_container not_visible" id="mappings_content"><%=render :partial =>'/mappings/concept_mappings'%></div>
 
           <%unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED %>
@@ -344,6 +344,9 @@
   <div id="create_mapping" style="left: -99999px; position: absolute;">
     <%= render :partial => '/mappings/new_form', :locals => { :ontology_from => @ontology.id, :concept_from => @concept.fullId } %>
   </div>
+
+  <!-- Load notes JS data -->
+  <%= render :partial => '/notes/notes_concept_js' %>
 
 <% else # found an error %>
   <%= "<div id=\"error\"><h2>#{@error}</h2></div>" %>

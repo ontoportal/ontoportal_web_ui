@@ -750,8 +750,13 @@ class BioPortalRestfulCore
     timer = Benchmark.ms { notes = generic_parse(:xml => doc, :type => "Note") }
     LOG.add :debug, "note Parse Time: #{timer}ms"
 
-    notes.sort! { |x,y| x.created <=> y.created }
+    begin
+      notes.sort! { |x,y| x.created <=> y.created }
+    rescue
+      LOG.add :debug, "Error sorting notes"
+    end
 
+    notes = Array.new if !notes.kind_of?(Array)
     return notes
   end
 
@@ -786,7 +791,7 @@ class BioPortalRestfulCore
       LOG.add :debug, "Error sorting notes"
     end
 
-    return Array.new if !notes.kind_of?(Array)
+    notes = Array.new if !notes.kind_of?(Array)
     return notes
   end
 
@@ -1729,7 +1734,7 @@ private
     xml = params[:xml]
     path = params[:path]
 
-    if xml.nil?
+    if xml.nil? || (xml.respond_to?("string") && xml.string.empty?)
       return nil
     end
 

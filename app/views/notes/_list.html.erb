@@ -14,11 +14,9 @@
     @notes_deletable = false
     @notes.each {|n| @notes_deletable = true if n.deletable?(session[:user])} unless @notes.nil?
     @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
-    @context = "concept"
   end
 
   @semi_uuid = (1000 * Time.now.to_f).to_i
-  note_colspan = (@context && @context.eql?("concept")) ? "5" : "6"
 %>
 
 <div class="notes_list_container" style="padding: 1%; width: 98%;">
@@ -168,9 +166,11 @@
   </table>
 </div>
 
+<%
+  @context = "concept"
+  note_colspan = (@context && @context.eql?("concept")) ? "5" : "6"
+%>
 
-
-<!-- Move JS to end to avoid issues with getting via AJAX -->
 <script type="text/javascript">
   jQuery.rloader([
     {type:'css',src:'/javascripts/JqueryPlugins/superfish/superfish.css'},
@@ -195,6 +195,13 @@ jQuery.data(document.body, "semi_uuid", "<%=@semi_uuid%>");
 
 jQuery(document).ready(function(){
   init_notes();
+
+  // Update notes count
+  var noteCount = jQuery("#notes_content .notes_table_container .notes_list_table tbody tr:not(#no_notes)").children("td:not(.dataTables_empty)").parent().parent().children("tr").length;
+  jQuery("#note_count").html(noteCount);
+  jQuery("#note_count_wrapper").show();
 });
 
 </script>
+
+

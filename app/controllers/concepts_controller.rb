@@ -71,6 +71,16 @@ class ConceptsController < ApplicationController
     end
   end
 
+  def show_label
+    @ontology = DataAccess.getOntology(params[:ontology])
+    begin
+      term_label = DataAccess.getNodeLabel(@ontology.id, params[:concept]).label_html
+    rescue Exception => e
+      term_label = "<span title='This term cannot be viewed because the id cannot be found in the most recent version of the ontology' style='cursor: help;'>#{params[:concept]}</span>"
+    end
+    render :text => term_label
+  end
+
   def virtual
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:id] = params[:id].nil? ? params[:conceptid] : params[:id]

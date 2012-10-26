@@ -115,6 +115,12 @@ class NotesController < ApplicationController
     render :json => @note_row
   end
 
+  def show_concept_list
+    @ontology = DataAccess.getOntology(params[:ontology])
+    @concept = DataAccess.getLightNode(@ontology.id, params[:concept])
+    render :partial => "/notes/list"
+  end
+
   def show_for_ontology
     @notes = DataAccess.getNotesForOntology(params[:ontology])
     @ontology = DataAccess.getLatestOntology(params[:ontology])
