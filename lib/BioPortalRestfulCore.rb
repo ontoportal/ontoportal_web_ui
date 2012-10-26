@@ -1223,7 +1223,6 @@ private
     end
 
     xml = nil
-    start_time = Time.now
     begin
       LOG.add :debug, "Getting xml from:\n#{uri}"
       xml = open(uri, "User-Agent" => "BioPortal-UI")
@@ -1255,13 +1254,7 @@ private
                        VALUES('#{parsed_url.path}', #{ont_id.nil? ? "null" : ont_id}, #{concept_id}, '#{url_parts[1]}', CURRENT_TIMESTAMP)")
       mysql_conn.close
     rescue Exception => e
-      xml = nil
-    end
-
-    total_time = Time.now - start_time
-    if total_time > 3
-      puts "Long REST query (#{caller[0].split(":")[0].split("/").last}:#{caller[0].split(" ")[1].gsub("`", "").gsub("'", "")}): #{"%0.2f" % ((total_time))}s"
-      puts "Long REST query (URL): #{uri}"
+      return nil
     end
 
     xml
