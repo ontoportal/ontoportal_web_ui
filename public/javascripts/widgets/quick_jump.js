@@ -142,7 +142,7 @@ function jumpTo_formatItem(row, position, count) {
 }
 
 function definitionMarkup(ont, concept) {
-	return "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='/ajax/terms/definition?ontology="+ont+"&concept="+encodeURIComponent(concept)+"'></a></div>";
+	return "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='"+BP_SEARCH_SERVER+"/ajax/json_term?callback=?&ontologyid="+ont+"&conceptid="+encodeURIComponent(concept)+"'></a></div>";
 }
 
 function jumpTo_setup_functions() {
@@ -187,10 +187,13 @@ function jumpTo_setup_functions() {
 function getWidgetAjaxContent() {
   // Look for anchors with a get_via_ajax class and replace the parent with the resulting ajax call
   $(".get_definition_via_ajax").each(function(){
-    if (typeof $(this).attr("getting_content") === 'undefined') {
-      $(this).parent().load($(this).attr("href"));
-      // $(this).parent().html(truncateText(decodeURIComponent($(this).parent().replace(/\+/g, " "))));
-      $(this).attr("getting_content", true);
+  	var def_link = $(this);
+    if (typeof def_link.attr("getting_content") === 'undefined') {
+      def_link.attr("getting_content", true);
+      $.getJSON(def_link.attr("href"), function(data){
+        var definition = (typeof data.definitions === 'undefined') ? "" : data.definitions;
+        def_link.parent().html(truncateText(decodeURIComponent(definition.replace(/\+/g, " "))));
+      });
     }
   });
   setTimeout(getWidgetAjaxContent, 100);
