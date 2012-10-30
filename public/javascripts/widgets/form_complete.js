@@ -82,11 +82,11 @@ function formComplete_formatItem(row) {
     }
   });
   var BP_include_definitions = jQuery(input).attr("data-bp_include_definitions");
-  
-  
+
+
   // TODO: Add formatting for different object types: class, property, individual?
 
-  
+
   // Set wider term name column
   if (BP_include_definitions === "true") {
     term_name_width = "150px";
@@ -97,13 +97,13 @@ function formComplete_formatItem(row) {
   // Results
   var result_type = row[2];
   var result_term = row[0];
+  var result_ont_version = row[3];
+  var result_uri = row[4];
 
   // row[7] is the ontology_id, only included when searching multiple ontologies
   if (ontology_id !== "all") {
-    var result_def = row[7];
-
     if (BP_include_definitions === "true") {
-      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 75) + "</div>"
+      result += definitionMarkup(result_ont_version, result_uri);
     }
 
     result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>";
@@ -117,13 +117,17 @@ function formComplete_formatItem(row) {
     result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>"
 
     if (BP_include_definitions === "true") {
-      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 75) + "</div>"
+      result += definitionMarkup(result_ont_version, result_uri);
     }
 
     result += "<div>" + " <div class='result_type'>" + result_type + "</div><div class='result_ontology' style='overflow: hidden;'>" + truncateText(result_ont, 35) + "</div></div>";
   }
 
   return result;
+}
+
+function definitionMarkup(ont, concept) {
+  return "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='/ajax/terms/definition?ontology="+ont+"&concept="+encodeURIComponent(concept)+"'></a></div>";
 }
 
 function formComplete_setup_functions() {
@@ -140,7 +144,12 @@ function formComplete_setup_functions() {
 
     var BP_include_definitions = jQuery(this).attr("data-bp_include_definitions");
     if (typeof BP_include_definitions === "undefined") {
-      BP_include_definitions = "";
+      BP_include_definitions = false;
+    }
+
+    // Setup polling if we need definitions
+    if (BP_include_definitions) {
+      getWidgetAjaxContent();
     }
 
     var BP_objecttypes = jQuery(this).attr("data-bp_objecttypes");
@@ -163,12 +172,11 @@ function formComplete_setup_functions() {
     }
 
     var extra_params = {
-		input: this,
-		target_property: target_property,
-		subtreerootconceptid: encodeURIComponent(BP_search_branch),
-		includedefinitions: BP_include_definitions,
-		objecttypes: BP_objecttypes,
-		id: BP_ONTOLOGIES // not 'ontology_id', see below...
+  		input: this,
+  		target_property: target_property,
+  		subtreerootconceptid: encodeURIComponent(BP_search_branch),
+  		objecttypes: BP_objecttypes,
+  		id: BP_ONTOLOGIES // not 'ontology_id', see below...
     };
 
     var result_width = 450;
@@ -183,13 +191,11 @@ function formComplete_setup_functions() {
 
     // see "public/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js"
     jQuery(this).bioportal_autocomplete(
-		BP_SEARCH_SERVER + "/search/json_search/" + ontology_id,
-		{
+		  BP_SEARCH_SERVER + "/search/json_search/" + ontology_id,
+		  {
 	        extraParams: extra_params,
 	        lineSeparator: "~!~",
 	        matchSubset: 0,
-	        // mustMatch: true,
-	        sortRestuls: false, // spelling?, not in crossdomain_autocomplete.js
 	        minChars: 3,
 	        maxItemsToShow: 20,
 	        width: result_width,
@@ -234,6 +240,19 @@ function bpFormSelect(li) {
   jQuery("#" + jQuery(input).attr('name') + "_bioportal_ontology_id").val(li.extra[2]);
   jQuery("#" + jQuery(input).attr('name') + "_bioportal_full_id").val(li.extra[3]);
   jQuery("#" + jQuery(input).attr('name') + "_bioportal_preferred_name").val(li.extra[4]);
+}
+
+// Poll for potential definitions returned with results
+function getWidgetAjaxContent() {
+  // Look for anchors with a get_via_ajax class and replace the parent with the resulting ajax call
+  $(".get_definition_via_ajax").each(function(){
+    if (typeof $(this).attr("getting_content") === 'undefined') {
+      $(this).parent().load($(this).attr("href"));
+      // $(this).parent().html(truncateText(decodeURIComponent($(this).parent().replace(/\+/g, " "))));
+      $(this).attr("getting_content", true);
+    }
+  });
+  setTimeout(getWidgetAjaxContent, 100);
 }
 
 function truncateText(text, max_length) {
