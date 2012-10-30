@@ -67,12 +67,15 @@ module ApplicationHelper
   # end Notes-related helpers
 
   def remove_owl_notation(string)
+    # Remove 'titleize', see GForge ticket #4309.
     unless string.nil?
       strings = string.split(":")
       if strings.size<2
-        return string.titleize
+        #return string.titleize
+        return string
       else
-        return strings[1].titleize
+        #return strings[1].titleize
+        return strings[1]
       end
     end
   end
