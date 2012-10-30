@@ -106,6 +106,8 @@ function jumpTo_formatItem(row, position, count) {
   // Results
   var result_type = row[2];
   var result_term = row[0];
+  var result_ont_version = row[3];
+  var result_uri = row[4];
 
   // Set wider term name column
   if (BP_include_definitions) {
@@ -116,10 +118,8 @@ function jumpTo_formatItem(row, position, count) {
 
 	// row[7] is the ontology_id, only included when searching multiple ontologies
 	if (BP_ontology_id !== "") {
-    var result_def = row[7];
-
     if (BP_include_definitions) {
-      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 75) + "</div>"
+      result += definitionMarkup(result_ont_version, result_uri);
     }
 
 		result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>";
@@ -128,12 +128,11 @@ function jumpTo_formatItem(row, position, count) {
 	} else {
     // Results
     var result_ont = row[7];
-    var result_def = row[9];
 
 		result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>"
 
     if (BP_include_definitions) {
-      result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 75) + "</div>"
+      result += definitionMarkup(result_ont_version, result_uri);
     }
 
     result += "<div>" + " <div class='result_type'>" + result_type + "</div><div class='result_ontology' style='overflow: hidden;'>" + truncateText(result_ont, 30) + "</div></div>";
@@ -142,8 +141,12 @@ function jumpTo_formatItem(row, position, count) {
 	return result;
 }
 
+function definitionMarkup(ont, concept) {
+	return "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='"+BP_SEARCH_SERVER+"/ajax/json_term?callback=?&ontologyid="+ont+"&conceptid="+encodeURIComponent(concept)+"'></a></div>";
+}
+
 function jumpTo_setup_functions() {
-  var extra_params = { subtreerootconceptid: encodeURIComponent(BP_search_branch), includedefinitions: BP_include_definitions };
+  var extra_params = { subtreerootconceptid: encodeURIComponent(BP_search_branch) };
 
   var result_width = 350;
 
@@ -173,6 +176,27 @@ function jumpTo_setup_functions() {
   });
 
   jumpTo_searchbox = jQuery("#BP_search_box")[0].autocompleter;
+
+  // Setup polling to get definitions
+  if (BP_include_definitions) {
+  	getWidgetAjaxContent();
+  }
+}
+
+// Poll for potential definitions returned with results
+function getWidgetAjaxContent() {
+  // Look for anchors with a get_via_ajax class and replace the parent with the resulting ajax call
+  $(".get_definition_via_ajax").each(function(){
+  	var def_link = $(this);
+    if (typeof def_link.attr("getting_content") === 'undefined') {
+      def_link.attr("getting_content", true);
+      $.getJSON(def_link.attr("href"), function(data){
+        var definition = (typeof data.definitions === 'undefined') ? "" : data.definitions;
+        def_link.parent().html(truncateText(decodeURIComponent(definition.replace(/\+/g, " "))));
+      });
+    }
+  });
+  setTimeout(getWidgetAjaxContent, 100);
 }
 
 // Sets a hidden form value that records the concept id when a concept is chosen in the jump to
