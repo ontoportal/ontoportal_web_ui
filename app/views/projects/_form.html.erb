@@ -11,7 +11,8 @@
 
 <table class="form" width="60%">
 	<tr>
-		<th>Project Name:*</th><td class="top"><%=text_field :project, :name, :class=>"required"%></td>
+		<th>Project Name:*</th>
+		<td class="top"><%=text_field :project, :name, :class=>"required"%></td>
 	</tr>
 	<tr>
 		<th>Institution:</th><td><%=text_field :project, :institution%></td>
@@ -20,7 +21,13 @@
 		<th>People:</th><td><%=text_field :project, :people%></td>
 	</tr>
 	<tr>
-		<th>Homepage:*</th><td><%=text_field :project, :homepage, :class=>"required url"%></td>
+		<th>
+			Homepage:* <br/>
+			<span class="default_owl">
+				Example: <a target="_blank" href="http://en.wikipedia.org/wiki/SNOMED_CT">http://en.wikipedia.org/wiki/SNOMED_CT</a>
+			</span>
+		</th>
+		<td><%=text_field :project, :homepage, :class=>"required url"%></td>
 	</tr>
 	<tr>
 		<th>Description:*</th><td><%=text_area :project, :description, :rows=>6, :class=>"required"%></td>
@@ -54,8 +61,15 @@
 		//id(ul id),width,height(element height),row(elements in row)
 		fcbklist = $.fcbkListSelection("#fcbklist","800","50","5");
 		$("#form").submit(function(){gatherValues();})
-		// Validate the new project form fields (using a jQuery plugin).
+		// Initialize jquery.validate for the project form fields.
 		$("#form").validate();
+		// Start the form field for "Homepage" with "http://", only 
+		// when it is already empty.
+		var homepage = $("input#project_homepage").val();
+		if (homepage == null || homepage == ""){
+			homepage = "http://"
+		}
+		$("input#project_homepage").val(homepage);
 	});
 	
 	function gatherValues(){

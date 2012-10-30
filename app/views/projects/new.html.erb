@@ -1,5 +1,7 @@
 <%@title = "Add your project"%>
-<h1>New project</h1>
+<h1 style="padding: 10px;">
+  New project
+</h1>
 
 <%= error_messages_for :project %>
 
@@ -7,7 +9,7 @@
 
   <%=render :partial=>'form'%>
 
-  <p>
-    <%= f.submit "Create" ,:class=>"blueButton"%>
+  <p style="padding: 10px;">
+    <%= f.submit "Create", :class=>"blueButton"%>
   </p>
 <% end %>
