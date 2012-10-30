@@ -79,6 +79,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect "/ajax/notes/delete", :controller => "notes", :action => "destroy"
   map.connect "/ajax/notes/concept_list", :controller => "notes", :action => "show_concept_list"
   map.connect "/ajax/terms/label", :controller => "concepts", :action => "show_label"
+  map.connect "/ajax/terms/definition", :controller => "concepts", :action => "show_definition"
 
   # User
   map.logout '/logout', :controller => 'login', :action => 'destroy'

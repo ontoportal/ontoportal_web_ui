@@ -81,6 +81,13 @@ class ConceptsController < ApplicationController
     render :text => term_label
   end
 
+  def show_definition
+    @ontology = DataAccess.getOntology(params[:ontology])
+    term = DataAccess.getLightNode(@ontology.id, params[:concept])
+    definition = term.definitions.kind_of?(Array) ? term.definitions.join(" ") : term.definitions
+    render :text => definition
+  end
+
   def virtual
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:id] = params[:id].nil? ? params[:conceptid] : params[:id]
