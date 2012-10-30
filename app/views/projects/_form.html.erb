@@ -1,4 +1,9 @@
 <script src="/javascripts/fcbklistselection.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
+<!--
+<script src="/javascripts/jquery.validate.min.js" type="text/javascript" charset="utf-8"></script>
+-->
+
 <link rel="stylesheet" href="/stylesheets/layout/fcbklistselection.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
 
@@ -6,7 +11,7 @@
 
 <table class="form" width="60%">
 	<tr>
-		<th>Project Name:*</th><td class="top"><%=text_field :project, :name%></td>
+		<th>Project Name:*</th><td class="top"><%=text_field :project, :name, :class=>"required"%></td>
 	</tr>
 	<tr>
 		<th>Institution:</th><td><%=text_field :project, :institution%></td>
@@ -15,13 +20,12 @@
 		<th>People:</th><td><%=text_field :project, :people%></td>
 	</tr>
 	<tr>
-		<th>Homepage:*</th><td><%=text_field :project, :homepage%></td>
+		<th>Homepage:*</th><td><%=text_field :project, :homepage, :class=>"required url"%></td>
 	</tr>
 	<tr>
-		<th>Description:*</th><td><%=text_area :project, :description, :rows=>6%></td>
+		<th>Description:*</th><td><%=text_area :project, :description, :rows=>6, :class=>"required"%></td>
 	</tr>
 </table>
-
 
 
 <h2>Select Ontologies Used
@@ -43,20 +47,21 @@
 
 
 <script type="text/javascript" language="JavaScript">
-var fcbklist;
-    $(document).ready(function() {
-      //id(ul id),width,height(element height),row(elements in row)        
-      fcbklist = $.fcbkListSelection("#fcbklist","800","50","5");
-		$("#form").submit(function(){gatherValues();})
-    });    
 
+	var fcbklist;
+	
+	$(document).ready(function() {
+		//id(ul id),width,height(element height),row(elements in row)
+		fcbklist = $.fcbkListSelection("#fcbklist","800","50","5");
+		$("#form").submit(function(){gatherValues();})
+		// Validate the new project form fields (using a jQuery plugin).
+		$("#form").validate();
+	});
+	
 	function gatherValues(){
-		 eval("values = "+$("#fcbklist_values").val());
+		eval("values = "+$("#fcbklist_values").val());
 		for(val in values){
 			$("#form").append("<input type='hidden' name='ontologies[]' value='"+values[val]+"'/>")
 		}
-
 	}
-	
-
 </script>

@@ -5,12 +5,9 @@
 
 <% form_for(@project,:html=>{:id=>'form'}) do |f| %>
 
-	<%=render :partial=>'form'%>
-
-
+  <%=render :partial=>'form'%>
 
   <p>
     <%= f.submit "Create" ,:class=>"blueButton"%>
   </p>
 <% end %>
-
