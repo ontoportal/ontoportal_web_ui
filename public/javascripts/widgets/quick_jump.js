@@ -119,7 +119,7 @@ function jumpTo_formatItem(row, position, count) {
 	// row[7] is the ontology_id, only included when searching multiple ontologies
 	if (BP_ontology_id !== "") {
     if (BP_include_definitions) {
-      result += "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='/ajax/terms/definition?ontology="+result_ont_version+"&concept="+encodeURIComponent(result_uri)+"'></a></div>"
+      result += definitionMarkup(result_ont_version, result_uri);
     }
 
 		result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>";
@@ -132,13 +132,17 @@ function jumpTo_formatItem(row, position, count) {
 		result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>"
 
     if (BP_include_definitions) {
-      result += "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='/ajax/terms/definition?ontology="+result_ont_version+"&concept="+encodeURIComponent(result_uri)+"'></a></div>"
+      result += definitionMarkup(result_ont_version, result_uri);
     }
 
     result += "<div>" + " <div class='result_type'>" + result_type + "</div><div class='result_ontology' style='overflow: hidden;'>" + truncateText(result_ont, 30) + "</div></div>";
 	}
 
 	return result;
+}
+
+function definitionMarkup(ont, concept) {
+	return "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='/ajax/terms/definition?ontology="+ont+"&concept="+encodeURIComponent(concept)+"'></a></div>";
 }
 
 function jumpTo_setup_functions() {
