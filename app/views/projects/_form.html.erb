@@ -11,12 +11,18 @@
 	.required {
 	    color: black;
 	}
+	table.form {
+		width: auto;
+	}
+	table.form td {
+		width: 450px;
+	}
 </style>
 
 
 <div style="padding:10px">
 
-	<table class="form" width="60%">
+	<table class="form">
 		<tr>
 			<th>Project Name:*</th>
 			<td class="top"><%=text_field :project, :name, :class=>"required", :tabindex=>1 %></td>
@@ -41,7 +47,7 @@
 		</tr>
 	</table>
 	
-	<h2>Select Ontologies Used</h2>
+	<h2 style="padding-top: 20px;">Select Ontologies Used</h2>
 	<ul id="fcbklist">
 		<%for ontology in @ontologies%>
 		    <li>        
