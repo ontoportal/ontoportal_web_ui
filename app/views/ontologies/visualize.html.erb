@@ -240,7 +240,7 @@
       <% end %>
 
       <div id="sd_content" class="sd_max_height">
-        <%=render :partial => '/ontologies/treeview'%>
+        <%= loading_spinner(true) %>
       </div>
 
       <div style="clear:both;"></div>
@@ -347,6 +347,7 @@
 
   <!-- Load notes JS data -->
   <%= render :partial => '/notes/notes_concept_js' %>
+
 
 <% else # found an error %>
   <%= "<div id=\"error\"><h2>#{@error}</h2></div>" %>
