@@ -6,52 +6,53 @@
 
 <link rel="stylesheet" href="/stylesheets/layout/fcbklistselection.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
+<!-- Override the bioportal.css for .required to avoid red text in the input fields.  -->
+<style type="text/css">
+	.required {
+	    color: black;
+	}
+</style>
+
 
 <div style="padding:10px">
 
-<table class="form" width="60%">
-	<tr>
-		<th>Project Name:*</th>
-		<td class="top"><%=text_field :project, :name, :class=>"required"%></td>
-	</tr>
-	<tr>
-		<th>Institution:</th><td><%=text_field :project, :institution%></td>
-	</tr>
-	<tr>
-		<th>People:</th><td><%=text_field :project, :people%></td>
-	</tr>
-	<tr>
-		<th>
-			Homepage:* <br/>
-			<span class="default_owl">
-				Example: <a target="_blank" href="http://en.wikipedia.org/wiki/SNOMED_CT">http://en.wikipedia.org/wiki/SNOMED_CT</a>
-			</span>
-		</th>
-		<td><%=text_field :project, :homepage, :class=>"required url"%></td>
-	</tr>
-	<tr>
-		<th>Description:*</th><td><%=text_area :project, :description, :rows=>6, :class=>"required"%></td>
-	</tr>
-</table>
-
-
-<h2>Select Ontologies Used
-
-<ul id="fcbklist">
-	<%for ontology in @ontologies%>
-    <li>        
-        <strong><%=ontology.displayLabel%></strong><br /> 
-        <span class="fcbkitem_text"></span>
-        <input type="hidden"  value="<%=ontology.ontologyId%>" <%if !@usedOntologies.nil? && @usedOntologies.include?(ontology.ontologyId.to_i)%> checked="checked" <%end%>/>       
-    </li>
-	<%end%>
-  
-</ul>
-
-
+	<table class="form" width="60%">
+		<tr>
+			<th>Project Name:*</th>
+			<td class="top"><%=text_field :project, :name, :class=>"required", :tabindex=>1 %></td>
+		</tr>
+		<tr>
+			<th>Institution:</th><td><%=text_field :project, :institution, :tabindex=>2 %></td>
+		</tr>
+		<tr>
+			<th>People:</th><td><%=text_field :project, :people, :tabindex=>3 %></td>
+		</tr>
+		<tr>
+			<th>
+				Homepage:* <br/>
+				<span class="default_owl">
+					Example: <a target="_blank" href="http://en.wikipedia.org/wiki/SNOMED_CT">http://en.wikipedia.org/wiki/SNOMED_CT</a>
+				</span>
+			</th>
+			<td><%=text_field :project, :homepage, :class=>"required url", :tabindex=>4 %></td>
+		</tr>
+		<tr>
+			<th>Description:*</th><td><%=text_area :project, :description, :rows=>6, :class=>"required", :tabindex=>5 %></td>
+		</tr>
+	</table>
+	
+	<h2>Select Ontologies Used</h2>
+	<ul id="fcbklist">
+		<%for ontology in @ontologies%>
+		    <li>        
+		        <strong><%=ontology.displayLabel%></strong><br /> 
+		        <span class="fcbkitem_text"></span>
+		        <input type="hidden"  value="<%=ontology.ontologyId%>" <%if !@usedOntologies.nil? && @usedOntologies.include?(ontology.ontologyId.to_i)%> checked="checked" <%end%>/>       
+		    </li>
+		<%end%>
+	</ul>
 
 </div>
-
 
 <script type="text/javascript" language="JavaScript">
 
