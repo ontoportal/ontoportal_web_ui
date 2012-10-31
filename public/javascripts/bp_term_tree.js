@@ -136,7 +136,7 @@ function getTreeView() {
     },
     error: function(data) {
       jQuery.get("/ajax/terms/treeview?ontology="+ontology_id+"&conceptid=root", function(data){
-        var rootTree = "<div>We couldn't find your term in the tree. You can browse the default tree below.</div>" + data;
+        var rootTree = "<div class='tree_error'>We couldn't find your term in the tree. You can browse the default tree below.</div>" + data;
         placeTreeView(rootTree);
       });
     },
