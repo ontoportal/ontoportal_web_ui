@@ -88,6 +88,93 @@ class ConceptsController < ApplicationController
     render :text => definition
   end
 
+  def show_tree
+    view = false
+    if params[:view]
+      view = true
+    end
+
+    # Set the ontology we are viewing
+    if view
+      @ontology = DataAccess.getView(params[:ontology])
+    else
+      @ontology = DataAccess.getOntology(params[:ontology])
+    end
+
+    if !@ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root"))
+      # get the top level nodes for the root
+      @root = TreeNode.new()
+      nodes = @ontology.top_level_nodes(view)
+      nodes.sort!{|x,y| x.label.downcase<=>y.label.downcase}
+      for node in nodes
+        if node.label.downcase.include?("obsolete") || node.label.downcase.include?("deprecated")
+          nodes.delete(node)
+          nodes.push(node)
+        end
+      end
+
+      @root.set_children(nodes, @root)
+
+      # get the initial concepts to display
+      @concept = DataAccess.getNode(@ontology.id, @root.children.first.id, nil, view)
+
+      # Some ontologies have "too many children" at their root. These will not process and are handled here.
+      if @concept.nil?
+        raise Error404
+      end
+
+      LOG.add :info, 'visualize_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
+    elsif @ontology.flat? && (!params[:conceptid] || params[:conceptid].empty?)
+      # Don't display any terms in the tree
+      @concept = NodeWrapper.new
+      @concept.label = "Please search for a term using the Jump To field above"
+      @concept.id = "bp_fake_root"
+      @concept.fullId = "bp_fake_root"
+      @concept.child_size = 0
+      @concept.properties = {}
+      @concept.version_id = @ontology.id
+      @concept.children = []
+
+      @tree_concept = TreeNode.new(@concept)
+
+      @root = TreeNode.new
+      @root.children = [@tree_concept]
+    elsif @ontology.flat? && params[:conceptid]
+      # Display only the requested term in the tree
+      @concept = DataAccess.getNode(@ontology.id, params[:conceptid], nil, view)
+      @root = TreeNode.new
+      @root.children = [TreeNode.new(@concept)]
+    else
+      # if the id is coming from a param, use that to get concept
+      @concept = DataAccess.getNode(@ontology.id,params[:conceptid],view)
+
+      if @concept.nil?
+        raise Error404
+      end
+
+      # Did we come from the Jump To widget, if so change logging
+      if params[:jump_to_nav]
+        LOG.add :info, 'jump_to_nav', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
+      else
+        LOG.add :info, 'visualize_concept_direct', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
+      end
+
+      # This handles special cases where a passed concept id is for a concept
+      # that isn't browsable, usually a property for an ontology.
+      if !@concept.is_browsable
+        render :partial => "shared/not_browsable", :layout => "ontology"
+        return
+      end
+
+      # Create the tree
+      rootNode = @concept.path_to_root
+      @root = TreeNode.new()
+      @root.set_children(rootNode.children, rootNode)
+    end
+
+    render :partial => "ontologies/treeview"
+  end
+
   def virtual
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:id] = params[:id].nil? ? params[:conceptid] : params[:id]

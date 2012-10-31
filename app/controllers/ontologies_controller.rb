@@ -219,7 +219,6 @@ class OntologiesController < ApplicationController
       return
     end
 
-
     if !@ontology.flat? && (!params[:conceptid] || params[:conceptid].empty?)
       # get the top level nodes for the root
       @root = TreeNode.new()
@@ -254,22 +253,12 @@ class OntologiesController < ApplicationController
       @concept.version_id = @ontology.id
       @concept.children = []
 
-      @tree_concept = TreeNode.new(@concept)
-
-      @root = TreeNode.new
-      @root.children = [@tree_concept]
     elsif @ontology.flat? && params[:conceptid]
       # Display only the requested term in the tree
       @concept = DataAccess.getNode(@ontology.id, params[:conceptid], nil, view)
-      @root = TreeNode.new
-      @root.children = [TreeNode.new(@concept)]
     else
       # if the id is coming from a param, use that to get concept
       @concept = DataAccess.getNode(@ontology.id,params[:conceptid],view)
-
-      if @concept.nil?
-        raise Error404
-      end
 
       # Did we come from the Jump To widget, if so change logging
       if params[:jump_to_nav]
@@ -284,11 +273,10 @@ class OntologiesController < ApplicationController
         render :partial => "shared/not_browsable", :layout => "ontology"
         return
       end
+    end
 
-      # Create the tree
-      rootNode = @concept.path_to_root
-      @root = TreeNode.new()
-      @root.set_children(rootNode.children, rootNode)
+    if @concept.nil?
+      raise Error404
     end
 
     # set the current PURL for this term
