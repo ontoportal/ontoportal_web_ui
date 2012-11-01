@@ -14,7 +14,7 @@
 		if (args && !(args.propertyIsEnumerable('length')) && typeof args === 'object' && typeof args.length === 'number') {
 			list=args;
 		} else {list[0]=args;}
-		
+
 		$.each(list, function(i,res){
 			// is the resource loaded ?
 			function checkHist(src) {
@@ -39,7 +39,7 @@
 					src=src+"?"+d.getTime();
 				}
 				if (checkHist(options.src)>0) {return true;}
-				
+
 				$.rloader.track[options.src].status = 0;
 				var node = document.createElement('link');
 				node.type = 'text/css';
@@ -48,9 +48,9 @@
 				node.media = 'screen';
 				document.getElementsByTagName("head")[0].appendChild(node);
 				$.rloader.track[options.src].status = 1;
-				if(callback){callback(arg);}	
+				if(callback){callback(arg);}
 			}
-			
+
 			// Add a JS file to the document
 			function loadJS (options){
 				// Process options
@@ -61,7 +61,7 @@
 					arg	= options.arg || {};
 				if (options.callback) {callback=options.callback;}
 				if (typeof options.cache != 'undefined') {cache=options.cache;}
-		
+
 				if (checkHist(src)>0) {return true;}		// check status
 				$.rloader.track[src].status = 0;
 
@@ -82,7 +82,7 @@
 			if (typeof res.type=='string' && typeof res.src=='string') {
 				if (!$.rloader.track[res.src]) {
 					$.rloader.track[res.src] = {'status':0};
-				}	
+				}
 				if (res.type=='css') {
 					loadCSS(res);
 				}
