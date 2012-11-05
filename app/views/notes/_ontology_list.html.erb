@@ -120,7 +120,7 @@
                 <%= get_note_type_text(note.type) %>
               </td>
               <td>
-                <%= get_applies_to_link note.createdInOntologyVersion, note.appliesTo['type'], note.appliesTo['id'] %> (<%= note.appliesTo['type'] rescue "unknown" %>)
+                <%= get_applies_to_link note.createdInOntologyVersion, note.appliesTo['type'], note.appliesTo['id'] rescue "" %> (<%= note.appliesTo['type'] rescue "unknown" %>)
               </td>
               <td>
                 <%= time_formatted_from_java(note.created) %>
