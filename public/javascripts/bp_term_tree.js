@@ -1,40 +1,3 @@
-function wrapupTabChange(selectedTab) {
-  jQuery.unblockUI();
-  tb_init('a.thickbox, area.thickbox, input.thickbox');
-  jQuery(document).trigger("visualize_tab_change", [{tabType: selectedTab}]);
-  jQuery(document).trigger("tree_changed");
-}
-
-function setCacheCurrent() {
-  var currentData = [];
-
-  // Store notes table data
-  if (typeof notesTable !== 'undefined' && notesTable !== null && notesTable.length !== 0) {
-    currentData["notes_table_data"] = notesTable.fnGetData();
-  }
-
-  // Reset the table
-  resetNotesTable();
-
-  currentData[0] = jQuery('#visualization_content').html();
-  currentData[1] = jQuery('#details_content').html();
-  currentData[2] = jQuery('#notes_content').html();
-  currentData[3] = jQuery('#mappings_content').html();
-  currentData[5] = jQuery('#note_count').html();
-  currentData[6] = jQuery('#mapping_count').html();
-  setCache(getConcept(), currentData);
-}
-
-function resetNotesTable() {
-  jQuery(".notes_table_container div[class^=dataTables_]").remove();
-}
-
-function insertNotesTable(aData) {
-  jQuery(".notes_table_container").append(jQuery("#notes_list_table_clone").clone());
-  jQuery(".notes_table_container #notes_list_table_clone").attr("id", "notes_list_table");
-  wireTableWithData(jQuery("#notes_list_table"), aData);
-}
-
 var simpleTreeCollection;
 function initTermTree() {
   simpleTreeCollection = jQuery('.simpleTree').simpleTree({
@@ -58,8 +21,8 @@ function initTermTree() {
     }
   });
 
-  setConcept(concept_id);
-  setOntology(ontology_id);
+  setConcept("<%=@concept.id%>");
+  setOntology("<%=@ontology.id%>");
   jQuery("#sd_content").scrollTo(jQuery('a.active'));
 
   // Set the cache for the first concept we retrieved
@@ -94,7 +57,7 @@ function nodeClicked(node_id) {
   notesTable = null;
 
   if(node_id == 0){
-    alert("Sorry, we cannot display all the classes at this level in the hierarchy because there are too many of them. Please select another class or use the Search to find a specific term in this ontology");
+    alert("Sorry, we cannot display all the classes at this level in the hierarchy because there are too many of them. Please select another class or use the <%=$SITE%> Search to find a specific term in this ontology");
     return;
   }
 
@@ -128,7 +91,7 @@ function nodeClicked(node_id) {
     wrapupTabChange(selectedTab);
   } else {
     jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
-    jQuery.get('/ajax_concepts/'+ontology_id+'/?conceptid='+node_id+'&callback=load',
+    jQuery.get('/ajax_concepts/<%=@ontology.to_param%>/?conceptid='+node_id+'&callback=load',
       function(data){
         var tabData = data.split("|||");
         var loc;
@@ -143,7 +106,7 @@ function nodeClicked(node_id) {
 
         // Load the resource index
         if (selectedTab == "resource_index") {
-          callTab('resource_index', '/resource_index/resources_table?conceptids='+ontology_id+'/'+encodeURIComponent(getConcept()));
+          callTab('resource_index', '/resource_index/resources_table?conceptids=<%=@ontology.ontologyId%>/'+encodeURIComponent(getConcept()));
         }
 
         setCache(node_id,tabData);
@@ -173,11 +136,11 @@ function getTreeView() {
     },
     error: function(data) {
       jQuery.get("/ajax/terms/treeview?ontology="+ontology_id+"&conceptid=root", function(data){
-        var rootTree = "<div class='tree_error'>Displaying the path to this term has taken too long. You can browse terms below.</div>" + data;
+        var rootTree = "<div class='tree_error'>We couldn't find your term in the tree. You can browse the default tree below.</div>" + data;
         placeTreeView(rootTree);
       });
     },
-    timeout: 15000
+    timeout: 10000
   });
 }
 

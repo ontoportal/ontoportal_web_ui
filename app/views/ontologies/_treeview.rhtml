@@ -1,3 +1,47 @@
+<script type="text/javascript">
+  jQuery.rloader([
+    {type:'js',src:'/javascripts/jquery.scrollTo-1.4.0-min.js'}
+  ]);
+
+function wrapupTabChange(selectedTab) {
+  jQuery.unblockUI();
+  tb_init('a.thickbox, area.thickbox, input.thickbox');
+  jQuery(document).trigger("visualize_tab_change", [{tabType: selectedTab}]);
+  jQuery(document).trigger("tree_changed");
+}
+
+function setCacheCurrent() {
+  var currentData = [];
+
+  // Store notes table data
+  if (typeof notesTable !== 'undefined' && notesTable !== null && notesTable.length !== 0) {
+    currentData["notes_table_data"] = notesTable.fnGetData();
+  }
+
+  // Reset the table
+  resetNotesTable();
+
+  currentData[0] = jQuery('#visualization_content').html();
+  currentData[1] = jQuery('#details_content').html();
+  currentData[2] = jQuery('#notes_content').html();
+  currentData[3] = jQuery('#mappings_content').html();
+  currentData[5] = jQuery('#note_count').html();
+  currentData[6] = jQuery('#mapping_count').html();
+  setCache(getConcept(), currentData);
+}
+
+function resetNotesTable() {
+  jQuery(".notes_table_container div[class^=dataTables_]").remove();
+}
+
+function insertNotesTable(aData) {
+  jQuery(".notes_table_container").append(jQuery("#notes_list_table_clone").clone());
+  jQuery(".notes_table_container #notes_list_table_clone").attr("id", "notes_list_table");
+  wireTableWithData(jQuery("#notes_list_table"), aData);
+}
+
+</script>
+
 <ul class="simpleTree">
   <li class="root">
     <ul>
