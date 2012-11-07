@@ -17,4 +17,7 @@ gem "airbrake"
 
 group :development do
   gem "thin"
+  gem "pry"
+  gem "pry-nav"
+  gem "pry-stack_explorer"
 end
