@@ -11,11 +11,10 @@ gem "ncbo_annotator", ">= 1.0.13"
 gem "ncbo_resource_index", ">= 1.1"
 gem "memcache-client", "~> 1.8.5"
 gem "i18n", "~> 0.5.0"
-gem "airbrake"
 gem "haml"
+gem "will_paginate", "< 3.0"
+gem "airbrake"
 
 group :development do
-  gem "ruby-debug"
-  gem "mongrel"
   gem "thin"
 end
