@@ -34,7 +34,7 @@ class NodeWrapper
     self.original_properties = {}
 
     hash.each do |key,value|
-      if key.eql?("relations")
+      if key.eql?("relations") && value.kind_of?(Array)
         value.each do |relation_name,relation_value|
           case relation_name
             when "ChildCount"
