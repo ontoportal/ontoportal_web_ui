@@ -437,17 +437,17 @@ class DataAccess
   end
 
   def self.getConceptMappings(ontology_virtual_id, concept_id, page_number = 1, page_size = 100, params = {})
-    self.cache_pull("#{ontology_virtual_id}::#{CGI.escape(concept_id)}::map_page::page#{page_number}::size#{page_size}::params#{params.to_s}", "getConceptMappings", { :ontology_virtual_id => ontology_virtual_id, :concept_id => concept_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
+    self.cache_pull("#{ontology_virtual_id}::#{CGI.escape(concept_id)}::map_page::page#{page_number}::size#{page_size}::params#{CGI.escape(params.to_s)}", "getConceptMappings", { :ontology_virtual_id => ontology_virtual_id, :concept_id => concept_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
   end
 
   def self.getOntologyMappings(ontology_virtual_id, page_number = 1, page_size = 100, params = {})
-    self.cache_pull("#{ontology_virtual_id}::map_page::page#{page_number}::size#{page_size}::params#{params.to_s}", "getOntologyMappings", { :ontology_virtual_id => ontology_virtual_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
+    self.cache_pull("#{ontology_virtual_id}::map_page::page#{page_number}::size#{page_size}::params#{CGI.escape(params.to_s)}", "getOntologyMappings", { :ontology_virtual_id => ontology_virtual_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
   end
 
   def self.getBetweenOntologiesMappings(source_ontology_virtual_id, target_ontology_virtual_id, page_number = 1, page_size = 100, params = {})
     page_number ||= 1
     page_size ||= 100
-    self.cache_pull("#{source_ontology_virtual_id}::#{target_ontology_virtual_id}::map_page::page#{page_number}::size#{page_size}::params#{params.to_s}", "getBetweenOntologiesMappings", { :source_ontology_virtual_id => source_ontology_virtual_id, :target_ontology_virtual_id => target_ontology_virtual_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
+    self.cache_pull("#{source_ontology_virtual_id}::#{target_ontology_virtual_id}::map_page::page#{page_number}::size#{page_size}::params#{CGI.escape(params.to_s)}", "getBetweenOntologiesMappings", { :source_ontology_virtual_id => source_ontology_virtual_id, :target_ontology_virtual_id => target_ontology_virtual_id, :page_number => page_number, :page_size => page_size }.merge(params), LONG_CACHE_EXPIRE_TIME)
   end
 
   def self.getMappingCountOntology(ontology_virtual_id)
