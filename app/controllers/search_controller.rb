@@ -116,11 +116,11 @@ class SearchController < ApplicationController
 
       target_value = result[:preferredName]
       case params[:target]
-        when "name" :
+        when "name"
           target_value = result[:preferredName]
-        when "shortid" :
+        when "shortid"
           target_value = result[:conceptIdShort]
-        when "uri" :
+        when "uri"
           target_value = result[:conceptId]
         else
           target_value = result[:preferredName]
