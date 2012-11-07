@@ -54,7 +54,7 @@ class NodeWrapper
             list_values = []
             list_values_orig = []
 
-            unless relation_value.nil?
+            unless relation_value.nil? || !relation_value.kind_of?(Array)
               relation_value.each do |list_item|
                 if list_item.kind_of? Hash
                   # In order to link to terms, we look for ids and labels
