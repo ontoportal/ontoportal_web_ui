@@ -144,29 +144,18 @@ module ApplicationHelper
     end
   end
 
-  def draw_tree(root, id=nil,type="Menu")
-    string =""
+  def draw_tree(root, id = nil, type = "Menu")
+    string = ""
     if id.nil?
       id = root.children.first.id
     end
 
-    build_tree(root,nil,string,id)
+    build_tree(root, nil, string, id)
 
     return string
   end
 
-  def draw_tree(root, id=nil,type="Menu")
-    string =""
-    if id.nil?
-      id = root.children.first.id
-    end
-
-    build_tree(root,nil,string,id)
-
-    return string
-  end
-
-  def build_tree(node,parent,string,id)
+  def build_tree(node, parent, string, id)
     if parent.nil?
       draw_root = ''
     else
@@ -215,9 +204,10 @@ module ApplicationHelper
           end
           string << "</li>"
         end
-
       end
     end
+
+    string
   end
 
   def loading_spinner(padding = false, include_text = true)
