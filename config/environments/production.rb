@@ -55,4 +55,4 @@ OpenURI::Buffer.send :remove_const, 'StringMax' if OpenURI::Buffer.const_defined
 OpenURI::Buffer.const_set 'StringMax', 104857600
 
 # Include the BioPortal-specific configuration options
-require 'config/bioportal_config.rb'
+require RAILS_ROOT + '/config/bioportal_config.rb'
