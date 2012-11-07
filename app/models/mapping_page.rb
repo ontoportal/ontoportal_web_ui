@@ -18,23 +18,27 @@ class MappingPage < Array
     self.total_mappings = hash['numResultsTotal'].to_i
     self.size = hash['numResultsPage'].to_i
 
-    hash['contents']['mappings'].each do |k,mapping|
-      # Check for many to many mappings and convert to individual ones
-      if mapping['target'].size > 1 || mapping['source'].size > 1
-        sources = mapping['source'].values
-        targets = mapping['target'].values
+    mappings = hash['contents']['mappings']
 
-        sources.each do |source|
-          targets.each do |target|
-            mapping['source'] = source
-            mapping['target'] = target
-            self.push(Mapping.new(mapping))
+    if !mappings.nil? && mappings.kind_of?(Array)
+      mappings.each do |k,mapping|
+        # Check for many to many mappings and convert to individual ones
+        if mapping['target'].size > 1 || mapping['source'].size > 1
+          sources = mapping['source'].values
+          targets = mapping['target'].values
+
+          sources.each do |source|
+            targets.each do |target|
+              mapping['source'] = source
+              mapping['target'] = target
+              self.push(Mapping.new(mapping))
+            end
           end
+        else
+          mapping['source'] = mapping['source']['fullId']
+          mapping['target'] = mapping['target']['fullId']
+          self.push(Mapping.new(mapping))
         end
-      else
-        mapping['source'] = mapping['source']['fullId']
-        mapping['target'] = mapping['target']['fullId']
-        self.push(Mapping.new(mapping))
       end
     end
   end
