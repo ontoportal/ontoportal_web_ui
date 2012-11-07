@@ -20,7 +20,7 @@ class MappingPage < Array
 
     mappings = hash['contents']['mappings']
 
-    if !mappings.nil? && mappings.kind_of?(Array)
+    if !mappings.nil? && mappings.kind_of?(Hash)
       mappings.each do |k,mapping|
         # Check for many to many mappings and convert to individual ones
         if mapping['target'].size > 1 || mapping['source'].size > 1
