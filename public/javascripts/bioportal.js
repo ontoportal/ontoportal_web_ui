@@ -653,4 +653,15 @@ function getAjaxContent() {
   setTimeout(getAjaxContent, 500);
 }
 
+// Handle will_paginate using ajax
+jQuery(".pagination a").live("click", function(e){
+  var link = jQuery(this);
+  var replaceDiv = link.closest(".paginate_ajax");
+  e.preventDefault();
+  if (replaceDiv.length > 0) {
+    replaceDiv.load(link.attr("href"));
+  } else {
+    link.closest("div.pagination").parent().load(link.attr("href"));
+  }
+});
 
