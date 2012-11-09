@@ -1,4 +1,4 @@
-%div.element_results{:id => "#{@resource_results.resourceId}_results"}
+%div.element_results.paginate_ajax{:id => "#{@resource_results.resourceId}_results"}
   -@resource_results.each do |element|
     -element_id = CGI.escape(element[:localElementId].gsub(/[^0-9A-Za-z]/, ""))
     %div.element_result{:data => {:element_id => element_id}}
