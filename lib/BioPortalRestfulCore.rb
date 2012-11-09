@@ -1280,7 +1280,7 @@ private
     query = params.collect {|p| '--' + boundary + "\r\n" + p}.join('') + "--" + boundary + "--\r\n"
 
     uri = URI.parse(url)
-    uri.port = $REST_PORT
+    uri.port = $REST_PORT.to_i
 
     response = nil
     Net::HTTP.start(uri.host, uri.port) do |http|
@@ -1337,7 +1337,7 @@ private
     paramsHash.each {|k,v| params << "#{k}=#{v}"}
 
     uri = URI.parse(url)
-    uri.port = $REST_PORT
+    uri.port = $REST_PORT.to_i
 
     response = nil
     Net::HTTP.start(uri.host, uri.port) do |http|
@@ -1361,7 +1361,7 @@ private
     end
 
     uri = URI.parse(url)
-    uri.port = $REST_PORT
+    uri.port = $REST_PORT.to_i
 
     req = Net::HTTP::Post.new(uri.request_uri)
     req.form_data = paramsHash
