@@ -13,7 +13,7 @@ img{
 
 a{
 color:#3A3C72;
-	
+
 }
 a:visited{
 	color:#3A3C72;
@@ -27,7 +27,7 @@ a:hover{
 }
 #topNav li .selected{
 	margin: 0px 0px 0px 0px;
-	
+
 }
 .leftbar{
 	float:left;
@@ -40,9 +40,9 @@ a:hover{
 .content{
 /*	width:80%; */
 	overflow:hidden;
-	
 
-	
+
+
 }
 .quote{
 	font-weight:bold;
@@ -63,7 +63,7 @@ a:hover{
 	font-weight:bold;
 	color:#3A3C72;
 	text-shadow: #a3c5f8 0 1px 1px;
-	
+
 }
 
 h1{
@@ -74,7 +74,7 @@ border-bottom:1px dotted gray;
 .details{
 /*	width:100%; */
 	border-bottom:dotted 1px black;
-	
+
 }
 
 .details td{
@@ -82,7 +82,7 @@ border-bottom:1px dotted gray;
 	padding:5px;
 	margin-top:10px;
 	text-align:left;
-	
+
 
 }
 .details .label{
@@ -100,7 +100,7 @@ border-bottom:1px dotted gray;
 		margin-top:10px;
 }
 .mapping th{
-	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	background: #2647a0 url(/stylesheets/sprite.png) repeat-x left -1400px;
 	color: #fff;
 	border-bottom:2px groove;
 	padding: 0.25em .75em;
@@ -124,7 +124,7 @@ border-bottom:1px dotted gray;
 }
 .mapping .label{
 	border:0px;
-	background: #d8d8d8 url(sprite.png) repeat-x;
+	background: #d8d8d8 url(/stylesheets/sprite.png) repeat-x;
 	padding-left:10px;
 	font-weight:bold;
 	font-size:17px;
@@ -153,7 +153,7 @@ border-bottom:1px dotted gray;
 	border-left:1px solid #e3e3e3;
 }
 .ontologies th{
-	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	background: #2647a0 url(/stylesheets/sprite.png) repeat-x left -1400px;
 	color: #fff;
 	text-align:left;
 	padding: 0.25em .75em;
@@ -167,7 +167,7 @@ border-bottom:1px dotted gray;
 	/*none/hidden/dotted/dashed/solid/double/groove/ridge/inset/outset;;*/
 }
 .even{
-	
+
 }
 .odd{
 	background-color: #f2f6f2;
@@ -186,7 +186,7 @@ th.sorting_asc {
    }
 
 .subject{
-	background: #bfdaff url(sprite.png) repeat-x left -1300px;
+	background: #bfdaff url(/stylesheets/sprite.png) repeat-x left -1300px;
 	text-align:left;
 	padding: .25em;
 	white-space:nowrap;
@@ -203,7 +203,7 @@ th.sorting_asc {
 
 
 .blueButton{
-	background: #d8d8d8 url(sprite.png) repeat-x;
+	background: #d8d8d8 url(/stylesheets/sprite.png) repeat-x;
 	border: solid #a3a3a3 1px;
 	display:inline-block;
 	color: #000;
@@ -253,7 +253,7 @@ th.sorting_asc {
 	border-bottom: 1px solid #e8ecf2;
 }
 .outgoing .messages_bottom {
-	background: url(/images/m_shadow_bottom.png) repeat-x; 
+	background: url(/images/m_shadow_bottom.png) repeat-x;
 }
 .outgoing .messages_bottom .left {
 	background: url(/images/m_corner_left.png);
@@ -292,7 +292,7 @@ th.sorting_asc {
 	bottom: -4px;
 	background: url(/images/h_shadow_corner_left.png);
 	width: 4px;
-	height: 4px;	
+	height: 4px;
 }
 
 .header .right {
@@ -301,7 +301,7 @@ th.sorting_asc {
 	bottom: -4px;
 	background: url(/images/h_shadow_corner_right.png);
 	width: 4px;
-	height: 4px;	
+	height: 4px;
 }
 
 .header .sender {
@@ -390,10 +390,10 @@ th.sorting_asc {
 	margin-top:10px;
 	border:1px solid #2647a0;
 	width:350px;
-	
+
 }
 .feeds .header{
-	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	background: #2647a0 url(/stylesheets/sprite.png) repeat-x left -1400px;
 	color:white;
 	padding:5px;
 	font-family:sans-serif;
@@ -409,7 +409,7 @@ th.sorting_asc {
 		overflow:auto;
 }
 .myontologies .header{
-	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	background: #2647a0 url(/stylesheets/sprite.png) repeat-x left -1400px;
 	color:white;
 	padding:5px;
 	font-family:sans-serif;
@@ -426,7 +426,7 @@ th.sorting_asc {
 }
 
 .stats .header{
-	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	background: #2647a0 url(/stylesheets/sprite.png) repeat-x left -1400px;
 	color:white;
 	padding:5px;
 	font-family:sans-serif;
@@ -460,7 +460,7 @@ h4{
 	padding:5px;
 	border-bottom:solid 1px #F0F0F0;
 	margin-left:0px;
-	width:340px;	
+	width:340px;
 }
 
 .feeds li:hover{
@@ -507,7 +507,7 @@ h4{
 	vertical-align:top;
 	font-weight:bold;
 	cursor:pointer;
-	
+
 }
 .box{
 
@@ -516,7 +516,7 @@ h4{
 	font-size:13px;
 }
 .box .header{
-	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	background: #2647a0 url(/stylesheets/sprite.png) repeat-x left -1400px;
 	color:white;
 	padding:5px;
 	font-family:sans-serif;
@@ -525,7 +525,7 @@ h4{
 #searchBox{
 	margin-top:10px;
 	width:98%;
-	overflow:hidden;	
+	overflow:hidden;
 }
 
 #dragSpot {
@@ -534,7 +534,7 @@ h4{
 	height: 480px;
 	border: 2px ridge #e1e1e1;
 	background-color: #fafafa;
-	background-image:url(../images/default/layout/mini-left.gif);
+	background-image:url(/images/default/layout/mini-left.gif);
 	background-repeat:no-repeat;
 	background-position:center;
 	margin-right:2px;
@@ -557,7 +557,7 @@ h4{
 }
 .mainresource{
 
-	
+
 }
 .resources .mainresource td{
 	border-top:solid #c0c0c0 1px;
@@ -567,7 +567,7 @@ h4{
 	cursor:pointer;
 	padding:5px;
 	padding-top:10px;
-	background:#e8f2ff url(resourceheader.png) repeat-x;
+	background:#e8f2ff url(/stylesheets/resourceheader.png) repeat-x;
 }
 
 .annotations{
@@ -576,9 +576,9 @@ h4{
 }
 .annotations th{
 	text-align:left;
-	
-	
-	
+
+
+
 }
 .annotations td{
 	border-top:solid #c0c0c0 1px;
@@ -590,7 +590,7 @@ h4{
 	margin-left:10px;
 }
 .versions th{
-	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	background: #2647a0 url(/stylesheets/sprite.png) repeat-x left -1400px;
 	color: #fff;
 	text-align:left;
 	padding: 0.25em .75em;
@@ -624,14 +624,14 @@ h4{
 	list-style:none;
 }
 .metadata td li label{
-	
+
 	font-size:13px;
-	font-weight:bold;	
+	font-weight:bold;
 	margin-right:10px;
-}	
+}
 
 .metadata th.header {
-    background: #2647a0 url(sprite.png) repeat-x left -1400px;
+    background: #2647a0 url(/stylesheets/sprite.png) repeat-x left -1400px;
 	color: #fff;
 	border-bottom:2px groove;
 	padding: 0.25em .75em;
@@ -651,13 +651,13 @@ h4{
 
 
  .topnav a.close, .topnav a.close:hover{
- 	
+
 	display:block;
 
 	position:absolute;
 	top:0px;
 	right:0px;
-	
+
 	width:12px;
 	height:12px;
 	background-image:url("/images/arrows.gif");
@@ -684,7 +684,7 @@ padding:0px;
 	float:left;
 	display:block;
 	padding:3px 14px 3px 9px;
-	background: #d8d8d8 url(sprite.png) repeat-x;
+	background: #d8d8d8 url(/stylesheets/sprite.png) repeat-x;
 	border: solid #a3a3a3;
 	border-width: 1px 1px;
 	color: #000;
@@ -692,12 +692,12 @@ padding:0px;
 }
 
 .topnav li.selected{
-	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	background: #2647a0 url(/stylesheets/sprite.png) repeat-x left -1400px;
 	color:white;
 	font-family:sans-serif;
 	font-size:15px;
 	border-color: #243356;
-	
+
 }
 
 .topnav li.selected a{
@@ -716,7 +716,7 @@ padding:0px;
 	margin-left:10px;
 }
 .reviews th{
-	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	background: #2647a0 url(/stylesheets/sprite.png) repeat-x left -1400px;
 	color: #fff;
 	text-align:left;
 	padding: 0.25em .75em;
@@ -817,10 +817,10 @@ padding:0px;
 .maps{
 	width:800px;
 	margin:10px;
-	
+
 }
 .maps th{
-	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	background: #2647a0 url(/stylesheets/sprite.png) repeat-x left -1400px;
 	color: #fff;
 	text-align:left;
 	padding: 0.25em .75em;
@@ -842,10 +842,10 @@ padding:0px;
 .counts{
 	width:800px;
 	margin:10px;
-	
+
 }
 .counts th{
-	background: #2647a0 url(sprite.png) repeat-x left -1400px;
+	background: #2647a0 url(/stylesheets/sprite.png) repeat-x left -1400px;
 	color: #fff;
 	text-align:left;
 	padding: 0.25em .75em;
@@ -912,7 +912,7 @@ padding:0px;
 	background-color: #EFEFEF;
 	text-decoration:none;
 	color:black;
-	
+
 }
 
 .pagination .disabled{
