@@ -356,6 +356,9 @@ function showDefinition(data, def, keepOnlyDefinitions) {
   }
 
   if (data !== null && typeof data.definitions !== "undefined" && data.definitions !== null && data.definitions.length != 0) {
+    // Make sure definitions isn't an array
+    data.definitions = (typeof data.definitions === "string") ? data.definitions : data.definitions.join(". ")
+
     // Strip out xml elements and/or html
     data.definitions = jQuery("<div/>").html(data.definitions).text();
 
