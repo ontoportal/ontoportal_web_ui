@@ -1404,7 +1404,7 @@ private
     unless ontologyHitCounts.nil?
       ontologyHitCounts.elements.each("ontologyHitBean") { |ontHits|
         hits = {}
-        hits[:ontologyVersionId] = ontHits.elements["ontologyVersionId"].get_text.value.strip.to_i
+        hits[:ontologyVersionId] = ontHits.elements["ontologyVersionId"].get_text.value.strip.to_i rescue ""
         hits[:ontologyId] = ontHits.elements["ontologyId"].get_text.value.strip.to_i
         hits[:ontologyDisplayLabel] = ontHits.elements["ontologyDisplayLabel"].get_text.value.strip rescue ""
         hits[:numHits] = ontHits.elements["numHits"].get_text.value.strip.to_i
