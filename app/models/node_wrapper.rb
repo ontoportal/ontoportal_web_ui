@@ -90,6 +90,7 @@ class NodeWrapper
 
     # Cleanup
     self.definitions = self.definitions.kind_of?(Array) ? self.definitions : [] << self.definitions
+    self.definitions.compact!
     self.child_size = 0 if self.child_size.nil?
     self.isObsoleteBool = !self.isObsolete.nil? && self.isObsolete.eql?("1")
   end
