@@ -799,7 +799,9 @@ class BioPortalRestfulCore
     # Convert param names to match Core
     params[:ontologyid] = params[:ontology_virtual_id]
     params[:content] = params[:body]
-    params.each { |k,v| params[k.to_s.downcase.to_sym] = v }
+    params_sym = {}
+    params.each { |k,v| params_sym[k.to_s.downcase.to_sym] = v }
+    params = params_sym
 
     uri_gen = BioPortalResources::CreateNote.new(params)
     uri = uri_gen.generate_uri
