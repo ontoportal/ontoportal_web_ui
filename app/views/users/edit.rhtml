@@ -1,3 +1,20 @@
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
+<script type="text/javascript">
+    /* refer to input fields by name for rules */
+    /* refer to input fields by id for equalTo */
+	jQuery(document).ready(function() {
+	  jQuery("#user_info").validate({
+	    rules: {
+	      "user[email]": "required",
+	      "user[password]": "required",
+	      "user[password_confirmation]": { 
+	        required: true,
+	        equalTo: "#user_password",
+	      },
+	    }
+	  });
+	});
+</script>
 <script type="text/javascript">
 (function (jQuery) {
   // custom css expression for a case-insensitive contains()
@@ -37,8 +54,9 @@
   });
 }(jQuery));
 </script>
+
 <div style="padding: 1em;">
-  <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
+  <% form_for(:user, :url => user_path(@user), :html => { :id => "user_info", :method => :put }) do |f| %>
     <%unless @errors.nil?%>
       <div style="color: red; padding: 1em;" class="enable-lists">
       Errors creating your account:
@@ -63,8 +81,8 @@
       		<th>Last Name</td><td><%=text_field :user, :lastname%></td>
       	</tr>
       	<tr>
-      		<th>Email Address</td><td><%=text_field :user, :email%></td>
-      	</tr>	
+      		<th>Email Address *</td><td><%=text_field :user, :email%></td>
+      	</tr>
         <!--
       	<tr>
       		<th>Phone Number</td><td><%=text_field :user, :phone%></td>
@@ -169,50 +187,35 @@
           <%=hidden_field :user, :email%>
           <%=hidden_field :user, :phone%>
           <tr>
-            <th>Password:</td><td class="top"><%=password_field :user, :password%></td>
+            <th>Password: *</td>
+            <td class="top"><%=password_field :user, :password%></td>
           </tr>
           <tr>
-            <th>Re-enter Password:</td><td><%=password_field :user, :password_confirmation%></td>
+            <th>Re-enter Password: *</td>
+            <td><%=password_field :user, :password_confirmation%></td>
           </tr>
     	<%end%>
   
-      <%if !$ANNOUNCE_LIST.nil? && !$ANNOUNCE_LIST.empty? && @survey.nil?%>
-        <tr>
-          <td colspan="2" style="text-align: right;">
-            <div style="float: right; margin-left: 10px; position: relative; top: 5px;"><input type="checkbox" value="1" name="user[register_mail_list]" id="user_register_mail_list"></div>
-            <div style="overflow: hidden; line-height: 12px;"><label for="user_register_mail_list">Register for the <%=$SITE%> announcements email list<br/><span style="font-size: x-small;">(approximately two emails per month -- confirmation via email required)</span></label></div>
-          </td>
-        </tr>
-      <%end%>
+        <%if !$ANNOUNCE_LIST.nil? && !$ANNOUNCE_LIST.empty? && @survey.nil?%>
+          <tr>
+            <td colspan="2" style="text-align: right;">
+              <div style="float: right; margin-left: 10px; position: relative; top: 5px;"><input type="checkbox" value="1" name="user[register_mail_list]" id="user_register_mail_list"></div>
+              <div style="overflow: hidden; line-height: 12px;"><label for="user_register_mail_list">Register for the <%=$SITE%> announcements email list<br/><span style="font-size: x-small;">(approximately two emails per month -- confirmation via email required)</span></label></div>
+            </td>
+          </tr>
+        <%end%>
   
         <tr>
-            <td align="right" colspan="2">
+          <td align="right" colspan="2">
               <%unless params[:password].eql?("true")%>
                 <%=link_to "Change Password", edit_user_path(:id=>session[:user].id,:password=>'true')%>&nbsp;&nbsp;&nbsp;&nbsp;
               <%end%>
               <% apikey_text = @survey.nil? ? " and See API Key" : ""%>
               <%=submit_tag "Update#{apikey_text}", :class=>"greenbtn"%>
-            </td>
+          </td>
         </tr>
      </table>
-    <br>
+     <br/>
   <% end %>
   
 </div>
-<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
-<script type="text/javascript">
-    /* refer to input fields by name for rules */
-    /* refer to input fields by id for equalTo */
-	$(document).ready(function() {
-	  $("table.form").validate({
-	    rules: {
-	      "user[password]": "required",
-	      "user[password_confirmation]": { 
-	        required: true,
-	        equalTo: "#user_password",
-	      },
-	    }
-	  });
-	});
-</script>
-
