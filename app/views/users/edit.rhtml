@@ -6,7 +6,7 @@
 		width: auto;
 	}
 	table.form td {
-		width: 450px;
+		width: 500px;
 	}
 </style>
 <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
@@ -98,7 +98,7 @@
       	</tr>
       	<tr>
       		<th>Email Address *</td>
-      		<td><%=text_field :user, :email%>&nbsp;</td>
+      		<td><%=text_field :user, :email%>&nbsp;&nbsp;</td>
       	</tr>
         <!--
       	<tr>
@@ -205,11 +205,11 @@
           <%=hidden_field :user, :phone%>
           <tr>
             <th>Password: *</td>
-            <td class="top"><%=password_field :user, :password%>&nbsp;</td>
+            <td class="top"><%=password_field :user, :password%>&nbsp;&nbsp;</td>
           </tr>
           <tr>
             <th>Re-enter Password: *</td>
-            <td><%=password_field :user, :password_confirmation%>&nbsp;</td>
+            <td><%=password_field :user, :password_confirmation%>&nbsp;&nbsp;</td>
           </tr>
     	<%end%>
   
@@ -223,12 +223,12 @@
         <%end%>
   
         <tr>
-          <td align="right" colspan="2">
-              <%unless params[:password].eql?("true")%>
-                <%=link_to "Change Password", edit_user_path(:id=>session[:user].id,:password=>'true')%>&nbsp;&nbsp;&nbsp;&nbsp;
-              <%end%>
+          <td align="left" colspan="2">
               <% apikey_text = @survey.nil? ? " and See API Key" : ""%>
-              <%=submit_tag "Update#{apikey_text}", :class=>"greenbtn"%>
+              <%=submit_tag "Update#{apikey_text}", :class=>"greenbtn"%>&nbsp;&nbsp;&nbsp;&nbsp;
+              <%unless params[:password].eql?("true")%>
+                <%=link_to "Change Password", edit_user_path(:id=>session[:user].id,:password=>'true')%>
+              <%end%>
           </td>
         </tr>
      </table>
