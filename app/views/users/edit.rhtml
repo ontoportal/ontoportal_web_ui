@@ -206,11 +206,10 @@
 	$(document).ready(function() {
 	  $("table.form").validate({
 	    rules: {
-	      user[password]: { 
-	        required: true
-	      }, 
-	      user[confirm_password]: { 
-	        required: true, equalTo: "#user_password"
+	      "user[password]": "required",
+	      "user[password_confirmation]": { 
+	        required: true,
+	        equalTo: "#user_password",
 	      },
 	    }
 	  });
