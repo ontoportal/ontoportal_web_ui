@@ -1,3 +1,14 @@
+<style type="text/css">
+	.required {
+	    color: black;
+	}
+	table.form {
+		width: auto;
+	}
+	table.form td {
+		width: 450px;
+	}
+</style>
 <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
 <script type="text/javascript">
     /* refer to input fields by name for rules */
@@ -5,7 +16,10 @@
 	jQuery(document).ready(function() {
 	  jQuery("#user_info").validate({
 	    rules: {
-	      "user[email]": "required",
+	      "user[email]": {
+	        required: true,
+	      	email: true,
+	      },
 	      "user[password]": "required",
 	      "user[password_confirmation]": { 
 	        required: true,
@@ -75,13 +89,16 @@
     <table class="form">
       <% if @user.validate_password.nil?%>
       	<tr>
-      		<th>First Name</td><td class="top"><%=text_field :user, :firstname%></td>
+      		<th>First Name</td>
+      		<td class="top"><%=text_field :user, :firstname%></td>
       	</tr>
       	<tr>
-      		<th>Last Name</td><td><%=text_field :user, :lastname%></td>
+      		<th>Last Name</td>
+      		<td><%=text_field :user, :lastname%></td>
       	</tr>
       	<tr>
-      		<th>Email Address *</td><td><%=text_field :user, :email%></td>
+      		<th>Email Address *</td>
+      		<td><%=text_field :user, :email%>&nbsp;</td>
       	</tr>
         <!--
       	<tr>
@@ -188,11 +205,11 @@
           <%=hidden_field :user, :phone%>
           <tr>
             <th>Password: *</td>
-            <td class="top"><%=password_field :user, :password%></td>
+            <td class="top"><%=password_field :user, :password%>&nbsp;</td>
           </tr>
           <tr>
             <th>Re-enter Password: *</td>
-            <td><%=password_field :user, :password_confirmation%></td>
+            <td><%=password_field :user, :password_confirmation%>&nbsp;</td>
           </tr>
     	<%end%>
   
