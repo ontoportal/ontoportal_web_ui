@@ -57,7 +57,7 @@
     <%end%>
 
     <table class="form">
-    	<% if @user.validate_password.nil?%>
+      <% if @user.validate_password.nil?%>
       	<tr>
       		<th>First Name</td><td class="top"><%=text_field :user, :firstname%></td>
       	</tr>
@@ -163,18 +163,19 @@
             </tr>
       	  <% end %>
     	  <% end %>
+    	  
     	<%else%>
-      	<%=hidden_field :user, :username%>
-      	<%=hidden_field :user, :firstname%>
-      	<%=hidden_field :user, :lastname%>
-      	<%=hidden_field :user, :email%>
-      	<%=hidden_field :user, :phone%>
-      	<tr>
-      		<th>Password:</td><td class="top"><%=password_field :user, :password%></td>
-      	</tr>
-      	<tr>
-      		<th>Re-enter Password:</td><td><%=password_field :user, :password_confirmation%></td>
-      	</tr>
+          <%=hidden_field :user, :username%>
+          <%=hidden_field :user, :firstname%>
+          <%=hidden_field :user, :lastname%>
+          <%=hidden_field :user, :email%>
+          <%=hidden_field :user, :phone%>
+          <tr>
+            <th>Password:</td><td class="top"><%=password_field :user, :password%></td>
+          </tr>
+          <tr>
+            <th>Re-enter Password:</td><td><%=password_field :user, :password_confirmation%></td>
+          </tr>
     	<%end%>
   
       <%if !$ANNOUNCE_LIST.nil? && !$ANNOUNCE_LIST.empty? && @survey.nil?%>
@@ -192,7 +193,7 @@
                 <%=link_to "Change Password", edit_user_path(:id=>session[:user].id,:password=>'true')%>&nbsp;&nbsp;&nbsp;&nbsp;
               <%end%>
               <% apikey_text = @survey.nil? ? " and See API Key" : ""%>
-              <%= submit_tag "Update#{apikey_text}" ,:class=>"greenbtn"%>
+              <%=submit_tag "Update#{apikey_text}", :class=>"greenbtn"%>
             </td>
         </tr>
      </table>
