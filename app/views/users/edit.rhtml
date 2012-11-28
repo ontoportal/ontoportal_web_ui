@@ -1,27 +1,9 @@
-<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
-<script type="text/javascript">
-	$(document).ready(function() {
-	  $("table.form").validate({
-        /* refer to input fields by name for rules */
-	    rules: {
-	      user[password]: { 
-	        required: true
-	      }, 
-          /* refer to input fields by id for equalTo */
-	      user[confirm_password]: { 
-	        required: true, equalTo: "#user_password"
-	      },
-	    }
-	  }
-	};
-</script>
 <script type="text/javascript">
 (function (jQuery) {
   // custom css expression for a case-insensitive contains()
   jQuery.expr[':'].Contains = function(a,i,m){
       return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
   };
-
 
   function listFilter(header, list) { // header is any element, list is an unordered list
     // create and add the filter form to the header
@@ -55,7 +37,6 @@
   });
 }(jQuery));
 </script>
-
 <div style="padding: 1em;">
   <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
     <%unless @errors.nil?%>
@@ -218,3 +199,21 @@
   <% end %>
   
 </div>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
+<script type="text/javascript">
+    /* refer to input fields by name for rules */
+    /* refer to input fields by id for equalTo */
+	$(document).ready(function() {
+	  $("table.form").validate({
+	    rules: {
+	      user[password]: { 
+	        required: true
+	      }, 
+	      user[confirm_password]: { 
+	        required: true, equalTo: "#user_password"
+	      },
+	    }
+	  });
+	});
+</script>
+
