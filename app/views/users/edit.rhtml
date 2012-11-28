@@ -1,3 +1,20 @@
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+	  $("table.form").validate({
+        /* refer to input fields by name for rules */
+	    rules: {
+	      user[password]: { 
+	        required: true
+	      }, 
+          /* refer to input fields by id for equalTo */
+	      user[confirm_password]: { 
+	        required: true, equalTo: "#user_password"
+	      },
+	    }
+	  }
+	};
+</script>
 <script type="text/javascript">
 (function (jQuery) {
   // custom css expression for a case-insensitive contains()
