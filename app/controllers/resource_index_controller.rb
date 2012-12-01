@@ -6,7 +6,7 @@ class ResourceIndexController < ApplicationController
   # Resource Index annotation offsets rely on latin-1 character sets for the count to be right. So we set all responses as latin-1.
   before_filter :set_encoding
 
-  RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "http://#{$REST_DOMAIN}/resource_index/", :limit => 10}
+  RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "http://#{$REST_DOMAIN}/resource_index/", :limit => 10, :mode => :intersection}
 
   def index
   	ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))

@@ -291,6 +291,9 @@ private
     if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
       errors << "Please enter an email address"
     end
+    if !params[:password].eql?(params[:password_confirmation])
+      errors << "Your Password and Password Confirmation do not match"
+    end
 
     return errors
   end

@@ -1,10 +1,40 @@
+<style type="text/css">
+	.required {
+	    color: black;
+	}
+	table.form {
+		width: auto;
+	}
+	table.form td {
+		width: 500px;
+	}
+</style>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
+<script type="text/javascript">
+    /* refer to input fields by name for rules */
+    /* refer to input fields by id for equalTo */
+	jQuery(document).ready(function() {
+	  jQuery("#user_info").validate({
+	    rules: {
+	      "user[email]": {
+	        required: true,
+	      	email: true,
+	      },
+	      "user[password]": "required",
+	      "user[password_confirmation]": { 
+	        required: true,
+	        equalTo: "#user_password",
+	      },
+	    }
+	  });
+	});
+</script>
 <script type="text/javascript">
 (function (jQuery) {
   // custom css expression for a case-insensitive contains()
   jQuery.expr[':'].Contains = function(a,i,m){
       return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
   };
-
 
   function listFilter(header, list) { // header is any element, list is an unordered list
     // create and add the filter form to the header
@@ -40,7 +70,7 @@
 </script>
 
 <div style="padding: 1em;">
-  <% form_for(:user, :url => user_path(@user), :html => { :method => :put }) do |f| %>
+  <% form_for(:user, :url => user_path(@user), :html => { :id => "user_info", :method => :put }) do |f| %>
     <%unless @errors.nil?%>
       <div style="color: red; padding: 1em;" class="enable-lists">
       Errors creating your account:
@@ -57,16 +87,19 @@
     <%end%>
 
     <table class="form">
-    	<% if @user.validate_password.nil?%>
+      <% if @user.validate_password.nil?%>
       	<tr>
-      		<th>First Name</td><td class="top"><%=text_field :user, :firstname%></td>
+      		<th>First Name</td>
+      		<td class="top"><%=text_field :user, :firstname%></td>
       	</tr>
       	<tr>
-      		<th>Last Name</td><td><%=text_field :user, :lastname%></td>
+      		<th>Last Name</td>
+      		<td><%=text_field :user, :lastname%></td>
       	</tr>
       	<tr>
-      		<th>Email Address</td><td><%=text_field :user, :email%></td>
-      	</tr>	
+      		<th>Email Address *</td>
+      		<td><%=text_field :user, :email%>&nbsp;&nbsp;</td>
+      	</tr>
         <!--
       	<tr>
       		<th>Phone Number</td><td><%=text_field :user, :phone%></td>
@@ -163,40 +196,43 @@
             </tr>
       	  <% end %>
     	  <% end %>
+    	  
     	<%else%>
-      	<%=hidden_field :user, :username%>
-      	<%=hidden_field :user, :firstname%>
-      	<%=hidden_field :user, :lastname%>
-      	<%=hidden_field :user, :email%>
-      	<%=hidden_field :user, :phone%>
-      	<tr>
-      		<th>Password:</td><td class="top"><%=password_field :user, :password%></td>
-      	</tr>
-      	<tr>
-      		<th>Re-enter Password:</td><td><%=password_field :user, :password_confirmation%></td>
-      	</tr>
+          <%=hidden_field :user, :username%>
+          <%=hidden_field :user, :firstname%>
+          <%=hidden_field :user, :lastname%>
+          <%=hidden_field :user, :email%>
+          <%=hidden_field :user, :phone%>
+          <tr>
+            <th>Password: *</td>
+            <td class="top"><%=password_field :user, :password%>&nbsp;&nbsp;</td>
+          </tr>
+          <tr>
+            <th>Re-enter Password: *</td>
+            <td><%=password_field :user, :password_confirmation%>&nbsp;&nbsp;</td>
+          </tr>
     	<%end%>
   
-      <%if !$ANNOUNCE_LIST.nil? && !$ANNOUNCE_LIST.empty? && @survey.nil?%>
-        <tr>
-          <td colspan="2" style="text-align: right;">
-            <div style="float: right; margin-left: 10px; position: relative; top: 5px;"><input type="checkbox" value="1" name="user[register_mail_list]" id="user_register_mail_list"></div>
-            <div style="overflow: hidden; line-height: 12px;"><label for="user_register_mail_list">Register for the <%=$SITE%> announcements email list<br/><span style="font-size: x-small;">(approximately two emails per month -- confirmation via email required)</span></label></div>
-          </td>
-        </tr>
-      <%end%>
+        <%if !$ANNOUNCE_LIST.nil? && !$ANNOUNCE_LIST.empty? && @survey.nil?%>
+          <tr>
+            <td colspan="2" style="text-align: right;">
+              <div style="float: right; margin-left: 10px; position: relative; top: 5px;"><input type="checkbox" value="1" name="user[register_mail_list]" id="user_register_mail_list"></div>
+              <div style="overflow: hidden; line-height: 12px;"><label for="user_register_mail_list">Register for the <%=$SITE%> announcements email list<br/><span style="font-size: x-small;">(approximately two emails per month -- confirmation via email required)</span></label></div>
+            </td>
+          </tr>
+        <%end%>
   
         <tr>
-            <td align="right" colspan="2">
-              <%unless params[:password].eql?("true")%>
-                <%=link_to "Change Password", edit_user_path(:id=>session[:user].id,:password=>'true')%>&nbsp;&nbsp;&nbsp;&nbsp;
-              <%end%>
+          <td align="left" colspan="2">
               <% apikey_text = @survey.nil? ? " and See API Key" : ""%>
-              <%= submit_tag "Update#{apikey_text}" ,:class=>"greenbtn"%>
-            </td>
+              <%=submit_tag "Update#{apikey_text}", :class=>"greenbtn"%>&nbsp;&nbsp;&nbsp;&nbsp;
+              <%unless params[:password].eql?("true")%>
+                <%=link_to "Change Password", edit_user_path(:id=>session[:user].id,:password=>'true')%>
+              <%end%>
+          </td>
         </tr>
      </table>
-    <br>
+     <br/>
   <% end %>
   
 </div>
