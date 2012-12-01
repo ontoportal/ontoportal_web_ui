@@ -222,7 +222,7 @@ class SearchController < ApplicationController
       if !private
         false
       else
-        !(session[:user] && session[:user].acl.include?(result["ontologyId"].to_i))
+        !(session[:user] && session[:user].acl && session[:user].acl.include?(result["ontologyId"].to_i))
       end
     }
 
