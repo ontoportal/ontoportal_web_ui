@@ -14,6 +14,7 @@ gem "i18n", "~> 0.5.0"
 gem "haml"
 gem "will_paginate", "< 3.0"
 gem "airbrake"
+gem "rdoc"
 
 group :development do
   gem "thin"

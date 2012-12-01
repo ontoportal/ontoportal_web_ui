@@ -34,6 +34,7 @@ GEM
     haml (3.1.7)
     hpricot (0.8.6)
     i18n (0.5.0)
+    json (1.7.5)
     libxml-ruby (2.2.2)
     memcache-client (1.8.5)
     method_source (0.8.1)
@@ -60,6 +61,8 @@ GEM
       activesupport (= 2.3.14)
       rake (>= 0.8.3)
     rake (10.0.2)
+    rdoc (3.12)
+      json (~> 1.4)
     recaptcha (0.3.4)
     rest-client (1.6.7)
       mime-types (>= 1.16)
@@ -91,6 +94,7 @@ DEPENDENCIES
   pry-nav
   pry-stack_explorer
   rails (= 2.3.14)
+  rdoc
   recaptcha (~> 0.3.1)
   rest-client (~> 1.6.1)
   thin
