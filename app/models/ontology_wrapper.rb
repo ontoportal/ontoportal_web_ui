@@ -224,8 +224,12 @@ class OntologyWrapper
     return select_opts if self.userId.nil? || self.userId.empty? and (self.useracl.nil? or self.useracl.empty?)
 
     if self.useracl.nil? || self.useracl.empty?
-      self.userId.each do |userId|
-        select_opts << [DataAccess.getUser(userId).username, userId]
+      if self.userId.instance_of? Array
+        self.userId.each do |userId|
+          select_opts << [DataAccess.getUser(userId).username, userId]
+        end
+      else
+        select_opts << [DataAccess.getUser(self.userId).username, self.userId]
       end
     else
       self.useracl.each do |user|
