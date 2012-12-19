@@ -24,7 +24,7 @@
           Definitions
           <span class="slot_labels"><%unless @concept.ontology.definition_label.nil? || @concept.ontology.definition_label.to_s.length == 0%>(<%=@concept.ontology.definition_label%>)<%end%></span>
         </td>
-        <td><% for definition in @concept.definitions %><p><%= definition %></p><% end %></td>
+        <td><p><%= @concept.definitions %></p></td>
       </tr>
     <%end%>
     <tr>
