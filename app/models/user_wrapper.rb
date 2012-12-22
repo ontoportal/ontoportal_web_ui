@@ -73,8 +73,10 @@ class UserWrapper
 
       self.acl = []
       self.owns = []
-      if hash["ontologyAcl"].kind_of?(Array)
-        hash["ontologyAcl"].each do |key, ont|
+      acl = hash["ontologyAcl"]
+      acl = acl.values if acl.instance_of?(Hash) || acl.instance_of?(ActiveSupport::OrderedHash)
+      if acl.instance_of?(Array)
+        acl.each do |ont|
           self.acl << ont["ontologyId"].to_i
           self.owns << ont["ontologyId"].to_i if ont["isOwner"].eql?("true")
         end
