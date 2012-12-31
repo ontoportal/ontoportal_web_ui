@@ -26,7 +26,7 @@ class AjaxProxyController < ApplicationController
   	end
 
   	url = URI.parse($REST_URL + params[:path])
-  	url.port = $REST_PORT
+    url.port = $REST_PORT.to_i
   	full_path = (url.query.blank?) ? url.path : "#{url.path}?#{url.query}"
     full_path = full_path.include?("?") ? full_path + "&apikey=#{params[:apikey]}&userapikey=#{params[:userapikey]}" : full_path + "?apikey=#{params[:apikey]}&userapikey=#{params[:userapikey]}"
   	http = Net::HTTP.new(url.host, url.port)
