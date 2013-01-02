@@ -137,6 +137,9 @@ $SEARCH_FLEX_APIKEY = ""
 $RECOMMENDER_FLEX_APIKEY = ""
 $FLEXOVIZ_APIKEY = ""
 
+# URL where BioMixer GWT app is located
+$BIOMIXER_URL = "http://bioportal-integration.bio-mixer.appspot.com"
+
 ##
 # Custom Ontology Details
 # Custom details can be added on a per ontology basis using a key/value pair as columns of the details table
