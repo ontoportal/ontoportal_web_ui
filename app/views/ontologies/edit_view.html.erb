@@ -107,7 +107,7 @@
     </div>
     <%=hidden_field :ontology, :ontologyId %>
     <%=hidden_field :ontology, :viewOnOntologyVersionId %>
-    <%=hidden_field :ontology, :userId %>
+    <%=hidden_field_tag "ontology[userId]", !@ontology.userId.nil? && @ontology.userId.instance_of?(Array) ? @ontology.userId.join(",") : @ontology.userId %>
     <%=hidden_field :ontology, :isView, :value=>1 %>
     <%=hidden_field :ontology, :urn %>
     <style>

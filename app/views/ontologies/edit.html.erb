@@ -129,7 +129,7 @@ function showRestrictionLicensed() {
     <% form_for(:ontology, :url => ontology_path(@ontology.id), :html => { :method => :put }) do |f| %>
     <h1>Edit Metadata for <%=@ontology.displayLabel%> (version <%=@ontology.versionNumber%>)</h1>
     <%=hidden_field :ontology, :ontologyId %>
-    <%=hidden_field :ontology, :userId %>
+    <%=hidden_field_tag "ontology[userId]", !@ontology.userId.nil? && @ontology.userId.instance_of?(Array) ? @ontology.userId.join(",") : @ontology.userId %>
     <%=hidden_field :ontology, :isManual %>
     <br/>
     <table class="form" width="90%">
