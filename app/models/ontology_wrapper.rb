@@ -293,7 +293,7 @@ class OntologyWrapper
   end
 
   def admin?(user)
-    return true if user.admin?
+    return true if !user.nil? && user.admin?
     return false if self.userId.nil?
     !user.nil? && self.userId.include?(user.id.to_i)
   end
