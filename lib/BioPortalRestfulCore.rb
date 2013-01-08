@@ -1315,7 +1315,7 @@ private
   def self.postToRestlet(url, paramsHash)
     paramsHash[:apikey] = API_KEY
     for param in paramsHash.keys
-      if paramsHash[param].class.to_s.downcase.eql?("array")
+      if paramsHash[param].instance_of?(Array)
         paramsHash[param] = paramsHash[param].join(",")
       end
     end
@@ -1329,7 +1329,7 @@ private
 
     # Comma-separate lists
     for param in paramsHash.keys
-      if paramsHash[param].class.to_s.downcase.eql?("array")
+      if paramsHash[param].instance_of?(Array)
         paramsHash[param] = paramsHash[param].join(",")
       end
       paramsHash[param] = CGI.escape(paramsHash[param].to_s)
@@ -1357,7 +1357,7 @@ private
 
     # Comma-separate lists
     for param in paramsHash.keys
-      if paramsHash[param].class.to_s.downcase.eql?("array")
+      if paramsHash[param].instance_of?(Array)
         paramsHash[param] = paramsHash[param].join(",")
       end
     end
