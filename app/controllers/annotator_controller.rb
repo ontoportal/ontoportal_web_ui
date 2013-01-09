@@ -60,7 +60,14 @@ class AnnotatorController < ApplicationController
 
       # Add ontology information, this isn't added for ontologies that are returned for mappings in cases where the ontology list is filtered
       context_concept = annotation[:context][:concept] ||= annotation[:context][:mappedConcept] ||= annotation[:concept]
-      context_ontologies << DataAccess.getOntology(context_concept[:localOntologyId])
+      begin
+        context_ontologies << DataAccess.getOntology(context_concept[:localOntologyId])
+      rescue Error404
+        # Get the appropriate ontology from the list of ontologies with annotations because the annotation itself doesn't contain the virtual id
+        ont = annotations.ontologies.each {|ont| break ont if ont[:localOntologyId] == context_concept[:localOntologyId]}
+        # Retry with the virtual id
+        context_ontologies << DataAccess.getOntology(ont[:virtualOntologyId])
+      end
     end
     annotations.statistics[:parameters] = { :textToAnnotate => text, :apikey => $API_KEY }.merge(options)
     LOG.add :debug, "Processing annotations: #{Time.now - start}s"
