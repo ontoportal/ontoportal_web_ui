@@ -50,6 +50,7 @@ class AnnotatorController < ApplicationController
 
     start = Time.now
     context_ontologies = []
+    bad_annotations = []
     annotations.annotations.each do |annotation|
       if highlight_cache.key?([annotation[:context][:from], annotation[:context][:to]])
         annotation[:context][:highlight] = highlight_cache[[annotation[:context][:from], annotation[:context][:to]]]
@@ -66,9 +67,20 @@ class AnnotatorController < ApplicationController
         # Get the appropriate ontology from the list of ontologies with annotations because the annotation itself doesn't contain the virtual id
         ont = annotations.ontologies.each {|ont| break ont if ont[:localOntologyId] == context_concept[:localOntologyId]}
         # Retry with the virtual id
-        context_ontologies << DataAccess.getOntology(ont[:virtualOntologyId])
+        begin
+          context_ontologies << DataAccess.getOntology(ont[:virtualOntologyId])
+        rescue Error404
+          # If it failed with virtual id, mark the annotation as bad
+          bad_annotations << annotation
+        end
       end
     end
+
+    # Remove bad annotations
+    bad_annotations.each do |annotation|
+      annotations.annotations.delete(annotation)
+    end
+
     annotations.statistics[:parameters] = { :textToAnnotate => text, :apikey => $API_KEY }.merge(options)
     LOG.add :debug, "Processing annotations: #{Time.now - start}s"
 
