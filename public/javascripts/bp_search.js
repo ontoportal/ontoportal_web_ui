@@ -141,7 +141,7 @@ jQuery(document).ready(function(){
   // Position of popup for details
   jQuery(document).bind('reveal.facebox', function(){
     if (jQuery("div.term_details_pop").is(":visible")) {
-      jQuery("div.term_details_pop").css("max-height", jQuery(window).height() - jQuery("div.term_details_pop").offset().top * 2 + "px");
+      jQuery("#facebox").css("max-height", jQuery(window).height() - (jQuery("#facebox").offset().top - jQuery(window).scrollTop()) * 2 + "px");
     }
   });
 
