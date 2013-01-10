@@ -147,9 +147,7 @@ class ConceptsController < ApplicationController
       # if the id is coming from a param, use that to get concept
       @concept = DataAccess.getNode(@ontology.id,params[:conceptid],view)
 
-      if @concept.nil?
-        raise Error404
-      end
+      raise Error404 if @concept.nil?
 
       # Did we come from the Jump To widget, if so change logging
       if params[:jump_to_nav]
@@ -167,6 +165,8 @@ class ConceptsController < ApplicationController
 
       # Create the tree
       rootNode = @concept.path_to_root
+      raise Error404 if rootNode.nil?
+
       @root = TreeNode.new()
       @root.set_children(rootNode.children, rootNode)
     end

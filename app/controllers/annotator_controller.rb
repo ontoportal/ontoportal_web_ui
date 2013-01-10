@@ -89,7 +89,9 @@ class AnnotatorController < ApplicationController
     annotations.ontologies.each do |ont|
       ontologies_hash[ont[:localOntologyId]] = ont
     end
+
     context_ontologies.each do |ont|
+      next if ont.nil?
       if ontologies_hash[ont.id].nil?
         ontologies_hash[ont.id] = {
           :name => ont.displayLabel,

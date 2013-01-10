@@ -237,9 +237,7 @@ class OntologiesController < ApplicationController
       @concept = DataAccess.getNode(@ontology.id, @root.children.first.id, nil, view)
 
       # Some ontologies have "too many children" at their root. These will not process and are handled here.
-      if @concept.nil?
-        raise Error404
-      end
+      raise Error404 if @concept.nil?
 
       LOG.add :info, 'visualize_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
     elsif @ontology.flat? && (!params[:conceptid] || params[:conceptid].empty?)
@@ -256,9 +254,11 @@ class OntologiesController < ApplicationController
     elsif @ontology.flat? && params[:conceptid]
       # Display only the requested term in the tree
       @concept = DataAccess.getNode(@ontology.id, params[:conceptid], nil, view)
+      raise Error404 if @concept.nil?
     else
       # if the id is coming from a param, use that to get concept
       @concept = DataAccess.getNode(@ontology.id,params[:conceptid],view)
+      raise Error404 if @concept.nil?
 
       # Did we come from the Jump To widget, if so change logging
       if params[:jump_to_nav]
@@ -273,10 +273,6 @@ class OntologiesController < ApplicationController
         render :partial => "shared/not_browsable", :layout => "ontology"
         return
       end
-    end
-
-    if @concept.nil?
-      raise Error404
     end
 
     # set the current PURL for this term
