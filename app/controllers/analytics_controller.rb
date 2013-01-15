@@ -35,7 +35,7 @@ class AnalyticsController < ApplicationController
 
     output = ''
     rows.each do |row|
-      output << row.to_csv
+      output << row.to_csv.force_encoding('UTF-8')
     end
     send_data output, :type => 'text/csv', :disposition => 'attachment; filename=search_result_clicked.csv'
   end
