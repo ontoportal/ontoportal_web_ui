@@ -48,7 +48,7 @@ class SearchResults < Array
     self.total_hits = hash['contents']['numHitsTotal'].to_i
 
     # Populate hit list
-    if hash['contents']['ontologyHitList'].instance_of?(Enumerable)
+    if hash['contents']['ontologyHitList'].instance_of?(Hash) || hash['contents']['ontologyHitList'].instance_of?(ActiveSupport::OrderedHash)
       hash['contents']['ontologyHitList'].each do |hit|
         self.ontology_hit_counts[hit[1]['ontologyId'].to_i] = hit[1]
       end
