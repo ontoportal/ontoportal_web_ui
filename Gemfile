@@ -1,6 +1,6 @@
 # Required gems
 source :gemcutter
-gem "rails", "2.3.14"
+gem "rails", "2.3.15"
 
 gem "hpricot", "~> 0.8.6"
 gem "libxml-ruby", "~> 2.2.0"
