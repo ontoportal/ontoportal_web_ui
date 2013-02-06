@@ -4,6 +4,8 @@ class HomeController < ApplicationController
 
   layout 'ontology'
 
+  RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "http://#{$REST_DOMAIN}/resource_index/", :limit => 10, :mode => :intersection}
+
   def index
     @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
     @groups = DataAccess.getGroups()
@@ -138,7 +140,8 @@ class HomeController < ApplicationController
     @direct_expanded_annotations = ri_stats[:mgrepAnnotations].to_i + ri_stats[:isaAnnotations].to_i + ri_stats[:mappingAnnotations].to_i
     @direct_expanded_annotations = @direct_expanded_annotations == 0 ? 10416891634 : @direct_expanded_annotations
 
-    @number_of_resources = OBDWrapper.getResourcesInfo.length == 0 ? 24 : OBDWrapper.getResourcesInfo.length
+    ri = NCBO::ResourceIndex.new(RI_OPTIONS)
+    @number_of_resources = ri.resources.length rescue 38
 
     if !params[:ver].nil?
       render :action => "index#{params[:ver]}"
