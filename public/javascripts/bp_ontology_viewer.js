@@ -109,7 +109,7 @@ function displayTree(data) {
 
             // Make "clicked" node active
             jQuery("a.active").removeClass("active");
-            getConceptLinkEl(new_concept_id).addClass("active");
+            getConceptLinkEl(new_concept_id).children("a").addClass("active");
 
             // Clear the search box
             jQuery("#search_box").val("");
