@@ -230,12 +230,23 @@ class DataAccess
   end
 
   def self.getOntology(ontology_id)
-    return self.getLatestOntology(ontology_id) if OntologyWrapper.virtual_id?(ontology_id)
-    return self.cache_pull("#{ontology_id}::_details", "getOntology", { :ontology_id => ontology_id })
+    ontology = nil
+    ontology = self.getLatestOntology(ontology_id) if OntologyWrapper.virtual_id?(ontology_id)
+    ontology = self.cache_pull("#{ontology_id}::_details", "getOntology", { :ontology_id => ontology_id }) if ontology.nil?
+    ontology = self.getOntologyByAcronym(ontology_id) if ontology.nil?
+    return ontology
   end
 
   def self.getLatestOntology(ontology_virtual_id)
-    return self.cache_pull("#{ontology_virtual_id}::_latest", "getLatestOntology", { :ontology_virtual_id => ontology_virtual_id })
+    ontology = self.cache_pull("#{ontology_virtual_id}::_latest", "getLatestOntology", { :ontology_virtual_id => ontology_virtual_id })
+    ontology = self.getOntologyByAcronym(ontology_virtual_id) if ontology.nil?
+    return ontology
+  end
+
+  def self.getOntologyByAcronym(acronym)
+    ontologies = self.getOntologyList
+    ontologies.each {|o| return o if o.abbreviation.downcase.eql?(acronym.downcase)}
+    return nil
   end
 
   def self.getOntologyProperties(ontology_id)
