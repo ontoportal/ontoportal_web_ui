@@ -97,6 +97,11 @@ function displayTree(data) {
           // If the concept is already visible and in cache, then just switch to it
           if (getCache(data.conceptid) == null) {
             var list = jQuery("div#sd_content ul.simpleTree li.root ul");
+
+            // Remove existing terms
+            list.children().remove();
+
+            // Add new term
             jQuery(list).append('<li id="'+data.conceptid+'"><a href="/ontologies/'+ontology_id+'/?p=terms&conceptid='+data.conceptid+'">'+data.label+'</a></li>');
 
             // Configure tree
