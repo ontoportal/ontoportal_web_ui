@@ -141,6 +141,8 @@ class ConceptsController < ApplicationController
     elsif @ontology.flat? && params[:conceptid]
       # Display only the requested term in the tree
       @concept = DataAccess.getNode(@ontology.id, params[:conceptid], nil, view)
+      @concept.children = []
+      @concept.child_size = 0
       @root = TreeNode.new
       @root.children = [TreeNode.new(@concept)]
     else
