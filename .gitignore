@@ -23,5 +23,3 @@ config/locales/en.rb
 
 .ruby-version
 
-Gemfile.lock
-
