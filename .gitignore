@@ -22,3 +22,6 @@ config/locales/en.rb
 /public/**/cache/**
 
 .ruby-version
+
+Gemfile.lock
+
