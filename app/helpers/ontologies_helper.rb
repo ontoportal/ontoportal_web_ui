@@ -108,11 +108,15 @@ module OntologiesHelper
   # Generates a properly-formatted link for diffs
   def get_diffs_link(diffs, versions, current_version, index)
     for diff in diffs
-      if diff[1].to_i.eql?(current_version.id.to_i) && diff[0].to_i.eql?(versions[index + 1].id.to_i)
-        return "<a href='#{$REST_URL}/diffs/download/#{diff[0]}/#{diff[1]}?format=txt'>Diff</a>"
+      new = diff[0]
+      old = diff[1]
+      if new.to_i.eql?(current_version.id.to_i) && old.to_i.eql?(versions[index + 1].id.to_i)
+        return "<a href='#{$REST_URL}/diffs/download/#{new}/#{old}?format=xml'>Diff</a>"
+      end
+      if old.to_i.eql?(current_version.id.to_i) && new.to_i.eql?(versions[index + 1].id.to_i)
+        return "<a href='#{$REST_URL}/diffs/download/#{old}/#{new}?format=xml'>Diff</a>"
       end
     end
-
     return ""
   end
 
