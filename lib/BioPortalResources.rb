@@ -6,6 +6,7 @@ class BioPortalResources
     @@tokens = { "%ONT%" => :ontology_id, "%ONT_VIRTUAL%" => :ontology_virtual_id, "%CONC%" => :concept_id,
                  "%VIEW%" => :view_id, "%USR%" => :user_id, "%START%" => :ontology_id_start,
                  "%END%" => :ontology_id_end, "%VER1%" => :ontology_version1, "%VER2%" => :ontology_version2,
+                 "%FORMAT%" => :format,
                  "%NOTE%" => :note_id, "%IND%" => :individual_id, "%PAGE_SIZE%" => :page_size,
                  "%PAGE_NUM%" => :page_number, "%SOURCE_ONT_VIRTUAL%" => :source_ontology_virtual_id,
                  "%TARGET_ONT_VIRTUAL%" => :target_ontology_virtual_id, "%ONTS%" => :ontology_ids }
@@ -297,7 +298,7 @@ class BioPortalResources
     class DownloadDiff < BioPortalResources
       def initialize(params)
         super(params)
-        @uri << "/diffs/download/%VER1%/%VER2%"
+        @uri << "/diffs/download/%VER1%/%VER2%?format=%FORMAT%"
       end
     end
 

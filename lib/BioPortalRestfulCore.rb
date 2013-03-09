@@ -1165,8 +1165,8 @@ class BioPortalRestfulCore
     return pairs
   end
 
-  def self.diffDownload(ver1,ver2)
-    uri_gen = BioPortalResources::DownloadDiffs.new( :ontology_version1 => ver1, :ontology_version2 => ver2 )
+  def self.diffDownload(ver1,ver2,format)
+    uri_gen = BioPortalResources::DownloadDiff.new( :ontology_version1 => ver1, :ontology_version2 => ver2, :format => format )
     return uri_gen.generate_uri
   end
 

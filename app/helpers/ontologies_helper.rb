@@ -107,15 +107,28 @@ module OntologiesHelper
 
   # Generates a properly-formatted link for diffs
   def get_diffs_link(diffs, versions, current_version, index)
+    currID = current_version.id.to_i
+    # Search for a previous ontology version, with statusId == 3, 
+    # within the prior two versions of the ontology. The list of 
+    # versions is sorted by versionID, descending.
+    prevID = nil
+    versions[index + 1, 2].each do |v|
+      prevID = v.id.to_i if v.statusId.to_i == 3
+      break if not prevID.nil?
+    end
+    # Exit when there is no suitable previous version in the recent history.
+    return "" if prevID.nil?
+    # Find a 'diff' pair to match the current and previous versions, or vice versa.
     for diff in diffs
-      new = diff[0]
-      old = diff[1]
-      if new.to_i.eql?(current_version.id.to_i) && old.to_i.eql?(versions[index + 1].id.to_i)
-        return "<a href='#{$REST_URL}/diffs/download/#{new}/#{old}?format=xml'>Diff</a>"
+      if currID.eql?(diff[0].to_i) && prevID.eql?(diff[1].to_i)
+        new, old = diff[0..1]
+      elsif currID.eql?(diff[1].to_i) && prevID.eql?(diff[0].to_i)
+        new, old = diff[0..1].reverse
+      else
+        next
       end
-      if old.to_i.eql?(current_version.id.to_i) && new.to_i.eql?(versions[index + 1].id.to_i)
-        return "<a href='#{$REST_URL}/diffs/download/#{old}/#{new}?format=xml'>Diff</a>"
-      end
+      #return "<a href='#{$REST_URL}/diffs/download/#{new}/#{old}?format=xml' target='_blank'>Diff</a>"
+      return "<a href='#{DataAccess.getDiffDownloadURI(new, old)}' target='_blank'>Diff</a>"
     end
     return ""
   end

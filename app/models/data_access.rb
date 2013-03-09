@@ -649,6 +649,10 @@ class DataAccess
     return pairs
   end
 
+  def self.getDiffDownloadURI(verID1, verID2, format='xml')
+    return SERVICE.diffDownload(verID1, verID2, format)
+  end
+  
 private
 
   def self.delete_mapping_cache(params = {})
