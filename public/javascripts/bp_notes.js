@@ -259,6 +259,7 @@ function wireNotesAddClicks() {
 
   // Wire up the tabs in the 'Add Note' form box
   jQuery(".note_action").live("click", function(){
+    var prefix = jQuery.data(document.body, "semi_uuid") + "_";
     var spanId = jQuery(this).attr("id");
     var noteTypeId = jQuery(this).attr("note_type");
     var buttons_div = jQuery(this).parent(".create_note_buttons");
