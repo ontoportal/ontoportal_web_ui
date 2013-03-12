@@ -37,7 +37,6 @@ jQuery(document).ready(function(){
   // Events to run whenever search results are updated (mainly counts)
   jQuery(document).live("search_results_updated", function(){
     // Update count
-    jQuery("#result_count_total").html(currentResultsCount());
     jQuery("#ontologies_count_total").html(currentOntologiesCount());
 
     // Tooltip for ontology counts
@@ -104,12 +103,12 @@ jQuery(document).ready(function(){
 
         // Display error message if no results found
         var result_count = jQuery("#result_stats");
-        if (data.current_page_results == 0) {
+        if (data.current_page_results === 0) {
           result_count.html("");
-          jQuery("#search_results").html("<h2 style='padding-top: 1em;'>No results found</h2>");
+          jQuery("#search_results").html("<h2 style='padding-top: 1em;'>No matches found</h2>");
         } else {
-          var results_by_ont = jQuery("#ontology_ontologyId").val() === null ? " in <a id='ont_tooltip' href='javascript:void(0);'><span id='ontologies_count_total'>" + data.current_page_results + "</span> ontologies</a><div id='ontology_counts' class='ontology_counts_tooltip'/>" : "";
-          result_count.html("Top <span id='result_count_total'>" + data.disaggregated_current_page_results + "</span> results" + results_by_ont);
+          var results_by_ont = jQuery("#ontology_ontologyId").val() === null ? "<a id='ont_tooltip' href='javascript:void(0);'>Matchces in <span id='ontologies_count_total'>" + data.current_page_results + "</span> ontologies</a><div id='ontology_counts' class='ontology_counts_tooltip'/>" : "";
+          result_count.html(results_by_ont);
           jQuery("#search_results").html(results.join(""));
         }
 
@@ -170,14 +169,14 @@ jQuery(document).ready(function(){
 
     if ("ontologyids" in params) {
       var ontologyIds = params["ontologyids"].split(",");
-      jQuery("#search_select_ontologies").attr("checked", false)
+      jQuery("#search_select_ontologies").attr("checked", false);
       jQuery("#ontology_ontologyId").val(ontologyIds);
       jQuery("#ontology_ontologyId").trigger("liszt:updated");
       jQuery("#search_select_ontologies").click().change();
     }
 
     jQuery("#search_button").click();
-  } else if (jQuery("#search_keywords").val() != "") {
+  } else if (jQuery("#search_keywords").val() !== "") {
     jQuery("#search_button").click();
   }
 });
@@ -191,11 +190,11 @@ function processSearchResult(res) {
   // Additional terms for this ontology
   if (typeof res.additional_results !== "undefined" && res.additional_results.length > 0 ||
       typeof res.additional_results_obsolete !== "undefined" && res.additional_results_obsolete.length > 0) {
-    var additional_results = res.additional_results;
+    additional_results = res.additional_results;
     var additional_results_obsolete_count = typeof res.additional_results_obsolete !== "undefined" ? res.additional_results_obsolete.length : 0;
     var additional_results_count = typeof res.additional_results !== "undefined" ? res.additional_results.length : 0;
     var additional_rows = [];
-    var ontologyId = typeof additional_results === "undefined" || additional_results.length == 0 ? res.additional_results_obsolete[0].ontologyId : additional_results[0].ontologyId;
+    var ontologyId = typeof additional_results === "undefined" || additional_results.length === 0 ? res.additional_results_obsolete[0].ontologyId : additional_results[0].ontologyId;
 
     additional_results_link = jQuery("<span/>")
       .append(jQuery("<span/>")
@@ -256,7 +255,7 @@ function updatePopupCounts() {
     var result = jQuery(this);
     // Add one to the additional results to get total count (1 is for the primary result)
     var resultsCount = result.children("div.additional_results").find("div.search_result_additional").length + 1;
-    ontologies.push(result.attr("data-bp_ont_name")+" <span class='popup_counts'>"+resultsCount+"</span><br/>")
+    ontologies.push(result.attr("data-bp_ont_name")+" <span class='popup_counts'>"+resultsCount+"</span><br/>");
   });
 
   // Sort using case insensitive sorting
@@ -264,9 +263,9 @@ function updatePopupCounts() {
     var a = String(x).toUpperCase();
     var b = String(y).toUpperCase();
     if (a > b)
-       return 1
+       return 1;
     if (a < b)
-       return -1
+       return -1;
     return 0;
   });
 
@@ -351,13 +350,13 @@ function getDefinition(def, keepOnlyDefinitions, count, totalSearchResults) {
 function showDefinition(data, def, keepOnlyDefinitions) {
   var defLimit = 210;
 
-  if (typeof keepOnlyDefinitions === "undefined" || keepOnlyDefinitions == null) {
+  if (typeof keepOnlyDefinitions === "undefined" || keepOnlyDefinitions === null) {
     keepOnlyDefinitions = false;
   }
 
-  if (data !== null && typeof data.definitions !== "undefined" && data.definitions !== null && data.definitions.length != 0) {
+  if (data !== null && typeof data.definitions !== "undefined" && data.definitions !== null && data.definitions.length !== 0) {
     // Make sure definitions isn't an array
-    data.definitions = (typeof data.definitions === "string") ? data.definitions : data.definitions.join(". ")
+    data.definitions = (typeof data.definitions === "string") ? data.definitions : data.definitions.join(". ");
 
     // Strip out xml elements and/or html
     data.definitions = jQuery("<div/>").html(data.definitions).text();
@@ -368,7 +367,7 @@ function showDefinition(data, def, keepOnlyDefinitions) {
       defs.pop();
       def.html(defs.join(" ")+" ...");
     } else {
-      def.html(data.definitions)
+      def.html(data.definitions);
     }
   } else {
     if (keepOnlyDefinitions) {
