@@ -32,11 +32,18 @@ class AnalyticsController < ApplicationController
         click.ip
       ]
     end
+    respond_with_csv_file(rows, "search_result_clicked")
+  end
 
+
+  private
+
+  def respond_with_csv_file(rows, filename = "output")
     output = ''
     rows.each do |row|
       output << row.to_csv.force_encoding('UTF-8')
     end
-    send_data output, :type => 'text/csv', :disposition => 'attachment; filename=search_result_clicked.csv'
+    send_data output, :type => 'text/csv', :disposition => "attachment; filename=#{filename}.csv"
   end
+
 end
