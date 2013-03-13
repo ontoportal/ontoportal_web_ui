@@ -218,6 +218,10 @@ class HomeController < ApplicationController
     end
   end
 
+  def user_intention_survey
+    render :partial => "user_intention_survey", :layout => false
+  end
+
   def robots
     if @subdomain_filter[:active]
       robots = <<-EOF.gsub(/^\s+/, "")
