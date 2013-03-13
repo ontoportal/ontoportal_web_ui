@@ -1,0 +1,26 @@
+:css
+  div.user_intention_survey + a {
+    display: none;
+  }
+
+%h2{style: "margin-top: -1.5em;"} BioPortal User Intention Survey
+%p
+  We are collecting information on user intentions in
+  their interactions with BioPortal. To help us improve BioPortal, please answer
+  the following question:
+%form
+  %p
+    Very briefly, what are you trying to accomplish though your use of BioPortal.
+    %br
+    %textarea{id: "intention_response", style: "width: 450px; height: 225px;"}
+  %p
+    Enter your email address if you would like to be entered into a drawing for a $25 gift certificate.
+    %br
+    %input{id: "intention_email", type: "textfield"}
+  %p
+    %input{id: "intention_submit", type: "button", value: "Submit"}
+    %input{id: "intention_close", type: "button", value: "Close"}
+  %p
+    %input{type: "checkbox", name: "dont_show_again", id: "dont_show_again", disabled: true}
+    %label{for: "dont_show_again"} Don't show me this dialog again
+
