@@ -6,16 +6,26 @@
       <table class="form" width="100%">
           <tr>
               <th>
-                  Ontology Id:
+                  Ontology Id
               </th>
               <td class="top">
                   <%= @ontology.ontologyId %>
               </td>
           </tr>
+          <tr>
+            <th>Acronym</th>
+            <td><%=@ontology.abbreviation%></td>
+          </tr>
+          <% if @ontology.metadata_only? %>
+            <tr>
+              <th>Visibility</th>
+              <td><%=strip_links(visibility_link(@ontology))%></td>
+            </tr>
+          <% end %>
           <% if !$PURL_ENABLED.nil? && $PURL_ENABLED && !@ontology.metadata_only? %>
             <tr>
                 <th>
-                    <%= $SITE%> PURL:
+                    <%= $SITE%> PURL
                 </th>
                 <td>
                     <%= auto_link(@ontology.purl, :all, :target => "_blank")%>
@@ -24,7 +34,7 @@
           <% end %>
           <tr>
               <th>
-                  Status:
+                  Status
               </th>
               <td>
                   <%= @ontology.versionStatus.capitalize unless @ontology.versionStatus.nil? %>
@@ -33,7 +43,7 @@
           <% if @ontology.viewing_restricted? %>
           <tr>
               <th>
-                  Viewing Restriction:
+                  Viewing Restriction
               </th>
               <td>
                   <%= @ontology.viewingRestriction.capitalize %>
@@ -42,7 +52,7 @@
           <% end %>
           <tr>
               <th>
-                  Format:
+                  Format
               </th>
               <td>
                   <%= @ontology.format.split("-")[0] %>
@@ -50,7 +60,7 @@
           </tr>
           <tr>
               <th>
-                  Categories:
+                  Categories
               </th>
               <td>
                   <%for cat in @ontology.categories %>
@@ -61,7 +71,7 @@
           </tr>
           <tr>
               <th>
-                  Groups:
+                  Groups
               </th>
               <td>
                   <%for group_id in @ontology.groups %>
@@ -72,7 +82,7 @@
           </tr>
           <tr>
               <th>
-                  Contact:
+                  Contact
               </th>
               <td>
                   <%= @ontology.contactName %>, <%= @ontology.contactEmail %>
@@ -80,7 +90,7 @@
           </tr>
           <tr>
               <th>
-                  Home Page:
+                  Home Page
               </th>
               <td>
                   <a href="<%= @ontology.homepage %>" target="_blank"><%= @ontology.homepage %></a>
@@ -88,7 +98,7 @@
           </tr>
           <tr>
               <th>
-                  Publications Page:
+                  Publications Page
               </th>
               <td>
                   <a href="<%= @ontology.publication %>" target="_blank"><%= @ontology.publication %></a>
@@ -96,7 +106,7 @@
           </tr>
           <tr>
               <th>
-                  Documentation Page:
+                  Documentation Page
               </th>
               <td>
                   <a href="<%= @ontology.documentation %>" target="_blank"><%= @ontology.documentation %></a>
@@ -104,7 +114,7 @@
           </tr>
           <tr>
               <th>
-                  Description:
+                  Description
               </th>
               <td>
                   <%= @ontology.description rescue "" %>
