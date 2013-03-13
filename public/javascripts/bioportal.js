@@ -665,3 +665,9 @@ jQuery(".pagination a").live("click", function(e){
   }
 });
 
+// Facebox settings
+jQuery(document).ready(function(){
+  jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
+  jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
+});
+
