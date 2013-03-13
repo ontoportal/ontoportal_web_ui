@@ -18,7 +18,7 @@ function Analytics() {
         if (typeof callback === "function") callback();
       }
     });
-  }
+  };
 }
 
 function SearchAnalytics() {
@@ -29,18 +29,19 @@ function SearchAnalytics() {
       var params = new SearchAnalytics().linkInformation(this);
       new Analytics().track("search", "result_clicked", params, function(){
         window.location.href = href;
-      })
-    })
-  }
+      });
+    });
+  };
 
   this.linkInformation = function(link) {
-    var info = {}, resultsIndex = 0, link = jQuery(link);
+    var info = {}, resultsIndex = 0;
     var ontologyPosition = jQuery("#search_results div.search_result").index(jQuery(link).closest(".search_result")) + 1;
+    link = jQuery(link);
 
     info.ontology_clicked = link.closest(".search_result").attr("data-bp_ontology_id");
 
     // Find out the position of the search result in the list
-    if (link.closest(".additional_results").length == 0) {
+    if (link.closest(".additional_results").length === 0) {
       info.position = ontologyPosition;
     } else {
       info.position = link.closest(".additional_results").children(".search_result_additional").index(link.closest(".search_result_additional")) + 1;
@@ -50,7 +51,7 @@ function SearchAnalytics() {
     info.additional_result = link.closest(".additional_results").length > 0;
 
     // Get the name of ontologies higher in the list
-    if (info.position > 1 || info.additional_result == true) {
+    if (info.position > 1 || info.additional_result === true) {
       var results = jQuery("#search_results div.search_result");
       info.higher_ontologies = [];
       while (resultsIndex < ontologyPosition - 1) {
@@ -69,5 +70,6 @@ function SearchAnalytics() {
     info.exact_match = link.attr("data-exact_match");
 
     return info;
-  }
+  };
 }
+
