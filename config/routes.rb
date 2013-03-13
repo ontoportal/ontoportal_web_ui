@@ -54,7 +54,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/service.wsdl', :action => 'wsdl'
 
   # Analytics
-  map.connect '/analytics/:action', :controller => "analytics", :action => /search_result_clicked/
+  map.connect '/analytics/:action', :controller => "analytics", :action => /search_result_clicked|user_intention_surveys/
 
   # Old Notes
   map.notes_ont 'notes/ont/:ontology/:id', :controller => 'margin_notes', :action => 'ont_service'
