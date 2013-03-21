@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="/stylesheets/layout/jquery.rating.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
 <div style="padding: 1em;">
-  <%if session[:user].id.to_i.eql?(@project.user_id)%>
+  <%if session[:user] && (session[:user].id.to_i.eql?(@project.user_id) || session[:user].admin?)%>
     <%=link_to "Edit Project",edit_project_path(@project)%>
   <%end%>
   <br>
@@ -14,69 +14,69 @@
     <strong>Description: </strong>
     <%=@project.description%>
   </p>
-  
+
   <p style="margin-bottom: 5px;">
     <strong>Institution: </strong>
     <%=@project.institution%>
   </p>
-  
+
   <p style="margin-bottom: 5px;">
     <strong>People: </strong>
     <%=@project.people%>
   </p>
-  
+
   <p>
     <strong>Home Page: </strong>
     <%=link_to @project.homepage, @project.homepage%>
   </p>
-  
+
 
   <h2 style="padding-top: 1em;">Ontologies Used</h2>
     <%if @project.uses.length == 0%>
       No ontologies are currently associated with this project
     <%end%>
-  
+
   	<table class="zebra" cellpadding="0" cellspacing="0" width="70%">
       <%for uses in @project.uses%>
           <% if !uses.ontology.nil? %>
         		<thead>
         		<tr>
         			<th><a href="/virtual/<%=uses.ontology_id%>"> <%=uses.ontology.displayLabel%></a></th>
-        
+
         		</tr>
         		</thead>
         		<%if !@reviews[uses.ontology_id].nil?%>
         		<tr>
         			<td id="<%=uses.ontology_id%>_review" >
         				<div class="star_ratings">
-        				<%for rating in @reviews[uses.ontology_id].ratings%>				
+        				<%for rating in @reviews[uses.ontology_id].ratings%>
         				<li>
         						<%if rating.value.eql?(0)%>
         						<span style="float:left;">Not Rated</span>
         						<%else%>
-        						<input name="star_<%=rating.id%>" type="radio" class="star" value="1" <% if rating.value.to_i.eql?(1)%> checked="checked" <%end%> disabled="disabled" /> 
-        						<input name="star_<%=rating.id%>" type="radio" class="star" value="2" <% if rating.value.to_i.eql?(2)%> checked="checked" <%end%>disabled="disabled" /> 
-        						<input name="star_<%=rating.id%>" type="radio" class="star" value="3" <% if rating.value.to_i.eql?(3)%> checked="checked" <%end%>disabled="disabled" /> 
-        						<input name="star_<%=rating.id%>" type="radio" class="star" value="4" <% if rating.value.to_i.eql?(4)%> checked="checked" <%end%>disabled="disabled" /> 
+        						<input name="star_<%=rating.id%>" type="radio" class="star" value="1" <% if rating.value.to_i.eql?(1)%> checked="checked" <%end%> disabled="disabled" />
+        						<input name="star_<%=rating.id%>" type="radio" class="star" value="2" <% if rating.value.to_i.eql?(2)%> checked="checked" <%end%>disabled="disabled" />
+        						<input name="star_<%=rating.id%>" type="radio" class="star" value="3" <% if rating.value.to_i.eql?(3)%> checked="checked" <%end%>disabled="disabled" />
+        						<input name="star_<%=rating.id%>" type="radio" class="star" value="4" <% if rating.value.to_i.eql?(4)%> checked="checked" <%end%>disabled="disabled" />
         						<input name="star_<%=rating.id%>" type="radio" class="star" value="5" <% if rating.value.to_i.eql?(5)%> checked="checked" <%end%>disabled="disabled" />
-        
-        						
+
+
         						<%end%>
         					<b>&nbsp;<%=rating.rating_type.name%></b>
         				</li>
-        					
+
         				<%end%>
         				</div>
         				<p><%=@reviews[uses.ontology_id].review%></p>
-        				<%if session[:user].id.to_i.eql?(@project.user_id)%>
+                  <%if session[:user] && (session[:user].id.to_i.eql?(@project.user_id) || session[:user].admin?)%>
         					<a href="/reviews/<%=@reviews[uses.ontology_id].id%>/edit?height=500&width=600" title="Edit Review For <%=uses.ontology.displayLabel%>" class="thickbox">Edit Review</a>
         				<%end%>
         			</td>
         		</tr>
         		<%else%>
         			<tr>
-        				<td id="<%=uses.ontology_id%>_review">Not Reviewed Yet 
-        				<%if session[:user].id.to_i.eql?(@project.user_id)%>
+        				<td id="<%=uses.ontology_id%>_review">Not Reviewed Yet
+                  <%if session[:user] && (session[:user].id.to_i.eql?(@project.user_id) || session[:user].admin?)%>
         					<a href="/reviews/new?project=<%=@project.id%>&ontology=<%=uses.ontology_id%>&height=500&width=600" title="Review For <%=uses.ontology.displayLabel%>" class="thickbox">Review This Ontology</a>
         				<%end%>
         				</td>
