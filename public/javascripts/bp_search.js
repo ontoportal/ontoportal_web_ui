@@ -107,7 +107,7 @@ jQuery(document).ready(function(){
           result_count.html("");
           jQuery("#search_results").html("<h2 style='padding-top: 1em;'>No matches found</h2>");
         } else {
-          var results_by_ont = jQuery("#ontology_ontologyId").val() === null ? "<a id='ont_tooltip' href='javascript:void(0);'>Matchces in <span id='ontologies_count_total'>" + data.current_page_results + "</span> ontologies</a><div id='ontology_counts' class='ontology_counts_tooltip'/>" : "";
+          var results_by_ont = jQuery("#ontology_ontologyId").val() === null ? "<a id='ont_tooltip' href='javascript:void(0);'>Matches in <span id='ontologies_count_total'>" + data.current_page_results + "</span> ontologies</a><div id='ontology_counts' class='ontology_counts_tooltip'/>" : "";
           result_count.html(results_by_ont);
           jQuery("#search_results").html(results.join(""));
         }
