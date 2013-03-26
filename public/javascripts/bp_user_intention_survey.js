@@ -1,5 +1,9 @@
 jQuery(document).ready(function(){
-  new UserIntentionSurvey().bindTracker();
+  var timeout_key = "user_survey_timeout";
+  if (typeof BP_getCookie(timeout_key) === "undefined") {
+    new UserIntentionSurvey().bindTracker();
+    BP_setCookie(timeout_key, true, {days: 3});
+  }
 });
 
 function UserIntentionSurvey() {
