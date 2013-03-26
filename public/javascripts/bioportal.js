@@ -671,3 +671,37 @@ jQuery(document).ready(function(){
   jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
 });
 
+// Cookie handling
+var BP_setCookie = function(key, value, options) {
+  if (typeof options === "undefined") options = {};
+  var days = options["days"] || null;
+  var seconds = options["seconds"] || null;
+  var expdate = new Date();
+  var expires = "";
+
+  if (seconds !== null) {
+    expdate.setSeconds(expdate.getSeconds() + seconds);
+    expires = " expires=" + expdate.toGMTString();
+  }
+
+  if (days !== null) {
+    expdate.setDate(expdate.getDate() + days);
+    expires = " expires=" + expdate.toGMTString();
+  }
+
+  document.cookie=key + "=" + value + ";" + expires;
+}
+
+var BP_getCookies = function(){
+  var pairs = document.cookie.split(";");
+  var cookies = {};
+  for (var i=0; i<pairs.length; i++){
+    var pair = pairs[i].split("=");
+    cookies[jQuery.trim(pair[0])] = unescape(jQuery.trim(pair[1]));
+  }
+  return cookies;
+}
+
+var BP_getCookie = function(cookie) {
+  return BP_getCookies()[cookie];
+}
