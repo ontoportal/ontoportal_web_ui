@@ -16,12 +16,10 @@
             <th>Acronym</th>
             <td><%=@ontology.abbreviation%></td>
           </tr>
-          <% if @ontology.metadata_only? %>
-            <tr>
-              <th>Visibility</th>
-              <td><%=strip_links(visibility_link(@ontology))%></td>
-            </tr>
-          <% end %>
+          <tr>
+            <th>Visibility</th>
+            <td><%=strip_links(visibility_link(@ontology))%></td>
+          </tr>
           <% if !$PURL_ENABLED.nil? && $PURL_ENABLED && !@ontology.metadata_only? %>
             <tr>
                 <th>
