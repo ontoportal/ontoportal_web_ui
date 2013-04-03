@@ -31,6 +31,10 @@
     "history/jquery.history.js", "bioportal", "bp_analytics", "bp_user_intention_survey",
     :cache => "cache/all"%>
 
+  <script>
+    var USER_INTENTION_SURVEY = <%=$USER_INTENTION_SURVEY.to_json%>
+  </script>
+
   <!-- Airbrake Javascript exception notices -->
   <% airbrake_javascript_notifier %>
 </head>
