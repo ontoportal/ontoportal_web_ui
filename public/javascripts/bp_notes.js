@@ -32,14 +32,22 @@ jQuery(document).ready(function(){
   });
 });
 
-function showDeleteInfo() {
+var showDeleteInfo = function() {
   if (bp_notesDeletable) {
-    if (typeof notesTable !== "undefined") notesTable.fnSetColumnVis(0, true);
-    if (typeof ontNotesTable !== "undefined") ontNotesTable.fnSetColumnVis(0, true);
+    try {
+      if (typeof notesTable !== "undefined") notesTable.fnSetColumnVis(0, true);
+    } catch (exp) {
+      // do nothing
+    }
+    try {
+      if (typeof ontNotesTable !== "undefined") ontNotesTable.fnSetColumnVis(0, true);
+    } catch (exp) {
+      // do nothing
+    }
     jQuery(".notes_delete").show();
     jQuery("a.notes_delete.link_button").button();
   }
-}
+};
 
 function Comment(prefix, ONT) {
   this.form_fields = {
