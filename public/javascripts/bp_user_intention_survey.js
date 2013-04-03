@@ -1,6 +1,6 @@
 jQuery(document).ready(function(){
   var timeout_key = "user_survey_timeout";
-  if (typeof BP_getCookie(timeout_key) === "undefined") {
+  if (typeof BP_getCookie(timeout_key) === "undefined" && USER_INTENTION_SURVEY) {
     new UserIntentionSurvey().bindTracker();
     BP_setCookie(timeout_key, true, {days: 3});
   }
