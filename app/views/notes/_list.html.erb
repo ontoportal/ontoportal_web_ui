@@ -93,7 +93,7 @@
             <tr id="<%=note.id%>_tr" class="<%=note.id%>_tr">
               <td class="notes_delete">
                 <%if note.deletable?(session[:user])%>
-                  <input type="checkbox" class="delete_note_checkbox" id="delete_<%=note.id%>" data-note_id="<%=note.id%>" data-applies_to="<%=note.appliesTo%>">
+                  <input type="checkbox" class="delete_note_checkbox" id="delete_<%=note.id%>" data-note_id="<%=note.id%>" data-applies_to="<%=note.appliesTo['id']%>">
                 <%end%>
               </td>
               <td>
