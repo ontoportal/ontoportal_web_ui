@@ -12,16 +12,15 @@ class OntologiesController < ApplicationController
   # GET /ontologies
   # GET /ontologies.xml
   def index
-    @ontologies = DataAccess.getOntologyList()
-    @categories = DataAccess.getCategories()
-    @groups = DataAccess.getGroups()
-    @term_counts = DataAccess.getTermsCountOntologies
-    @mapping_counts = DataAccess.getMappingCountOntologiesHash
-    @note_counts = DataAccess.getNotesCounts
+    @ontologies = LinkedData::Client::Models::OntologySubmission.all
+    @categories = LinkedData::Client::Models::Category.all
+    @groups = LinkedData::Client::Models::Group.all
+    @term_counts = {}
+    @mapping_counts = {}
+    @note_counts = {}
 
     respond_to do |format|
       format.html # index.rhtml
-      format.xml  { render :xml => @ontologies.to_xml }
     end
   end
 

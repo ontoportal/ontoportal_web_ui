@@ -27,15 +27,15 @@ module OntologiesHelper
   end
 
   # Link for private/public/licensed ontologies
-  def visibility_link(ontology)
-    if ontology.metadata_only?
-      return "<a href='/ontologies/#{ontology.ontologyId}'>Summary Only</a>"
-    elsif ontology.private?
-      return "<a href='/ontologies/#{ontology.ontologyId}?p=terms'>Private</a>"
-    elsif ontology.licensed?
-      return "<a href='/ontologies/#{ontology.ontologyId}?p=terms'>Licensed</a>"
+  def visibility_link(submission)
+    if submission.summaryOnly
+      return "<a href='/ontologies/#{submission.ontology.acronym}'>Summary Only</a>"
+    elsif submission.ontology.private?
+      return "<a href='/ontologies/#{submission.ontology.acronym}?p=terms'>Private</a>"
+    elsif submission.ontology.licensed?
+      return "<a href='/ontologies/#{submission.ontology.acronym}?p=terms'>Licensed</a>"
     else
-      return "<a href='/ontologies/#{ontology.ontologyId}?p=terms'>Public</a>"
+      return "<a href='/ontologies/#{submission.ontology.acronym}?p=terms'>Public</a>"
     end
   end
 
@@ -94,7 +94,7 @@ module OntologiesHelper
       end
     end
 
-    if ontology.metadata_only?
+    if ontology.summaryOnly
       return "<a href=\"#{ontology.homepage}\" target=\"_blank\">Ontology Homepage</a>"
     else
       return "<a href=\"#{DataAccess.download(ontology.id)}\" target=\"_blank\">Ontology</a>"
@@ -108,8 +108,8 @@ module OntologiesHelper
   # Generates a properly-formatted link for diffs
   def get_diffs_link(diffs, versions, current_version, index)
     currID = current_version.id.to_i
-    # Search for a previous ontology version, with statusId == 3, 
-    # within the prior two versions of the ontology. The list of 
+    # Search for a previous ontology version, with statusId == 3,
+    # within the prior two versions of the ontology. The list of
     # versions is sorted by versionID, descending.
     prevID = nil
     versions[index + 1, 2].each do |v|
@@ -160,12 +160,12 @@ module OntologiesHelper
   end
 
   def terms_link(ontology, count)
-    loc = ontology.metadata_only? ? "summary" : "terms"
+    loc = ontology.summaryOnly ? "summary" : "terms"
 
     if count.nil? || count == 0
       return "0"
     else
-      return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
+      return "<a href='/ontologies/#{ontology.ontology.acronym}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
     end
   end
 
@@ -175,7 +175,7 @@ module OntologiesHelper
     if count.nil? || count == 0
       return "0"
     else
-      return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
+      return "<a href='/ontologies/#{ontology.ontology.acronym}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
     end
   end
 
@@ -185,7 +185,7 @@ module OntologiesHelper
     if count.nil? || count == 0
       return "0"
     else
-      return "<a href='/ontologies/#{ontology.ontologyId}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
+      return "<a href='/ontologies/#{ontology.ontology.acronym}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
     end
   end
 
