@@ -16,6 +16,8 @@ gem "will_paginate", "< 3.0"
 gem "airbrake"
 gem "rdoc"
 
+gem 'ontologies_api_client', :path => "~/Development/ontologies_api_ruby_client"
+
 group :development do
   gem "thin"
   gem "pry"
