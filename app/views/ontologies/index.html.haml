@@ -1,0 +1,212 @@
+- require 'date'
+- @title = "Ontology Listing"
+%script{:src => "/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.min.js", :type => "text/javascript"}
+%script{:src => "/javascripts/JqueryPlugins/datatables/js/FixedHeader.min.js", :type => "text/javascript"}
+%script{:src => "/javascripts/JqueryPlugins/datatables/plugins/datatables.formatted.number.js", :type => "text/javascript"}
+%link{:charset => "utf-8", :href => "/javascripts/JqueryPlugins/tooltip/jquery.tooltip.css", :media => "screen", :rel => "stylesheet", :title => "no title", :type => "text/css"}/
+%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/tooltip/jquery.tooltip.min.js", :type => "text/javascript"}
+%link{:href => "/syndication/rss", :rel => "alternate", :title => "#{@title} RSS", :type => "application/rss+xml"}/
+:javascript
+  var ontologies_table;
+  function drawMessage(text){
+      jQuery.cursorMessage(text,{"hideTimeout":3000});
+  }
+
+  function filterBySelection(selectbox){
+    if (selectbox.value == 0){
+      ontologies_table.fnFilter("", 11);
+    } else {
+      ontologies_table.fnFilter(selectbox.value, 11);
+    }
+
+  }
+
+
+  function filterByGroup(selectbox){
+    if(selectbox.value == 0){
+      ontologies_table.fnFilter("", 12);
+    } else {
+      ontologies_table.fnFilter(selectbox.value, 12, true, false);
+    }
+
+    jQuery("#filterlink").attr("href","/ontologies/?filter="+selectbox.value)
+  }
+
+  function filterByParam(param){
+    ontologies_table.fnFilter(param, 12);
+  }
+
+
+  function customFilterBox(value){
+    ontologies_table.fnFilter(value);
+  }
+
+
+  jQuery(document).ready(function() {
+    ontologies_table = jQuery('#ontologies').dataTable({
+      bLengthChange:false,
+      bAutoWidth:false,
+      iDisplayLength:800,
+      asStripClasses:["","alt"],
+      "oLanguage":{"sSearch":"Filter Ontologies"},
+      "aoData": [
+          { "sType": "html" }, // Ontology Name
+          { "sType": "html" }, // Visibility
+          { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Terms
+          { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Notes
+          { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Reviews
+          { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }, // Projects
+          { "bVisible":false }, // Format
+          { "bVisible":false }, // Version
+          { "asSorting": [ "desc", "asc"] }, // Uploaded
+          null, // Contact
+          {"bSearchable":false,"bVisible":false}, // Description
+          {"bSearchable":false,"bVisible":false}, // Categories
+          {"bSearchable":false,"bVisible":false} // Groups
+      ],
+      "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+            /* Append the grade to the default row class name */
+            var children = jQuery(nRow).children();
+            jQuery(children[0]).children("div.ont_link").tooltip({
+              bodyHandler: function() {return aData[7]},
+                track: true,
+                delay: 0,
+                showURL: false,
+                opacity: 1,
+                fixPNG: true,
+                showBody: " - ",
+                extraClass: "pretty fancy",
+                top: 10,
+                left: 5
+            });
+
+            // Set the table width back to 90% after it gets jacked by jQuery DataTable
+            jQuery("#ontologies").css("width","100%");
+            // Show the RSS link
+            jQuery("#all_updates_rss").css("display","block");
+
+            return nRow;
+        },
+        "fnDrawCallback": function(oSettings) {
+          // Fix IE whitespace bug in table by removing whitespace
+          // See: http://datatables.net/forums/discussion/5481/bug-ghost-columns-when-generating-large-tables
+          if (navigator.appName == 'Microsoft Internet Explorer') {
+            var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
+            var tbhtml = jQuery('#ontologies').children("tbody").html();
+            jQuery('#ontologies').children("tbody").html(tbhtml.replace(expr, '><'));
+          }
+        }
+
+    });
+
+    if (typeof jQuery.QueryString["filter"] !== "undefined") {
+      setTimeout('filterByParam(jQuery.QueryString.filter)',2000);
+    }
+
+    // Keep header at top of table even when scrolling
+    new FixedHeader(ontologies_table);
+  });
+
+%h1.tab_header Browse
+%p.tab_description
+  - intro_text = "Browse the library of ontologies"
+  = t('ontologies.intro').nil? || t('ontologies.intro').empty? ? "#{intro_text}  #{help_icon("/help#Browse_Tab")}" : t('ontologies.intro')
+#ontologies_bd_container
+  #ontologies_padding_container
+    - unless @subdomain_filter[:active]
+      #custom_ontology_ad{:style => "margin: 20px 0 3px;"}
+        - account_link = session[:user] ? "/account" : "/login?redirect=/account"
+        %span{:style => "color: red;"}
+          %b New:
+        %a{:href => account_link} Configure
+        which ontologies you see in #{$SITE}
+    #submit_new_ontology{:style => "margin: 0; position: absolute; left: 660px;"}
+      :javascript
+        jQuery(function() {
+          jQuery("#submit_new_ontology a").button();
+        });
+      - if session[:user].nil?
+        %a{:href => "/login?redirect=/ontologies/new"} Submit New Ontology
+      - else
+        = link_to "Submit New Ontology",new_ontology_path
+    %table.form{:style => "width: 630px;"}
+      %tr
+        %th
+          Filter by Category
+        %td.top
+          %select{:name => "cat", :onchange => "filterBySelection(this)"}
+            %option{:selected => "selected", :value => "0"} All Categories
+            - cats = @categories.sort{|a,b| a.name <=> b.name}
+            - for cat in cats
+              %option{:value => cat.acronym}= cat.name
+      %tr
+        %th
+          Filter by Group
+          \#{help_icon("http://www.bioontology.org/wiki/index.php/BioPortal_FAQ#Ontology_Groups", { :title => "Help documentation about Groups", :style => "margin-top: -2px;" })}
+        %td
+          %select#select_groups{:name => "groups", :onchange => "filterByGroup(this)"}
+            <option value="0"
+            - if params[:filter].nil?
+              selected="selected"
+            >All Groups
+            - @groups.each do |group|
+              <option value="#{group.acronym}"
+              - if !params[:filter].nil? && group.acronym.include?(params[:filter])
+                selected="selected"
+              >
+              \#{group.name} (#{group.acronym})
+          - filter_query_string = "?filter=#{params[:filter]}" if !params[:filter].nil?
+          %a#filterlink{:href => "/ontologies#{filter_query_string}", :title => "Link to filtered ontology list"}
+            %span.ui-icon.ui-icon-link{:style => "display: inline-block; vertical-align: text-bottom;"}
+      %tr
+        %th
+          Filter by Text
+        %td
+          %input{:name => "filt", :onkeyup => "customFilterBox(this.value)", :type => "text"}/
+    #all_updates_rss
+      %img{:border => "0", :height => "16px", :src => "/images/feed-icon.png", :width => "16px"}/
+      %a{:href => "/syndication/rss"} Subscribe to all updates
+    %table#ontologies.zebra{:cellpadding => "0", :cellspacing => "0"}
+      %thead
+        %tr
+          %th Ontology Name
+          %th Visibility
+          %th Terms
+          %th Notes
+          %th Reviews
+          %th Projects
+          %th Format
+          %th Version
+          %th Uploaded
+          %th Contact
+          %th{:style => "display:none;"} Description
+          %th{:style => "display:none;"} categories
+          %th{:style => "display:none;"} groups
+      %tbody
+        - @ontologies.each do |submission|
+          - # Group names
+          - submission_groups = []
+          - submission.ontology.explore.groups.each do |group|
+            - submission_groups << group.acronym
+          - submission_groups.sort! {|a,b| a <=> b}
+          %tr
+            %td{:style => "width:300px;"}
+              %span{:style => "padding-right: .5em;"}
+                %a{href: "/ontologies/#{submission.ontology.acronym}"}= submission.ontology.name
+                = submission.ontology.acronym
+                - #if submission.admin?(session[:user])
+                %span{:style => "font-size: xx-small; color: gray;"}= #get_status_text(submission)
+            %td{:style => "width:50px;"}= visibility_link(submission)
+            %td{:style => "width:30px;text-align:right;"}= terms_link(submission, "count not available")
+            %td{:style => "width:30px;text-align:right;"}= notes_link(submission, "count not available")
+            %td{:style => "width:30px;text-align:right;"}= submission.ontology.explore.reviews.length == 0 ? "0" : "<a href='/ontologies/#{submission.ontology.acronym}'>#{submission.ontology.explore.reviews.length}</a>"
+            %td{:style => "width:30px;text-align:right;"}= submission.ontology.explore.projects.length == 0 ? "0" : "<a href='/ontologies/#{submission.ontology.acronym}'>#{submission.ontology.explore.projects.length}</a>"
+            %td{:style => "width:50px;"}= submission.hasOntologyLanguage.split("-")[0]
+            %td{:style => "width:50px;"}= submission.version
+            %td{:style => "width:30px;"}= DateTime.parse(submission.creationDate).strftime("%m/%d/%Y")
+            %td{:style => "width:225px;"}= submission.contact.map {|c| c.name}.join(" ")
+            %td{:style => "display:none;"}
+              - unless !submission.description.nil? && submission.description.empty?
+                Description: #{submission.description}
+            %td{:style => "display:none;"}= submission.ontology.explore.categories.map {|c| c.name}.join(" ")
+            %td{:style => "display:none;"}= submission.ontology.explore.groups.map {|g| g.acronym}.join(" ")
