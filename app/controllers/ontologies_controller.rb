@@ -448,9 +448,8 @@ class OntologiesController < ApplicationController
   ## These are stub methods that let us invoke partials directly
   ###############################################
   def summary
-    @ontology_version = DataAccess.getOntology(params[:id])
-    raise Error404 if @ontology_version.nil?
-    @ontology = DataAccess.getLatestOntology(@ontology_version.ontologyId)
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
+    @submission = @ontology.explore.latest_submission
 
     # Check to see if user is requesting RDF+XML, return the file from REST service if so
     if request.accept.to_s.eql?("application/rdf+xml")
@@ -467,28 +466,26 @@ class OntologiesController < ApplicationController
     end
 
     # Grab Metadata
-    @groups = DataAccess.getGroups()
-    @categories = DataAccess.getCategories()
-    @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
-    @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
-    @metrics = DataAccess.getOntologyMetrics(@ontology.id)
-
-    LOG.add :info, 'show_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
+    # @groups = DataAccess.getGroups()
+    # @categories = DataAccess.getCategories()
+    # @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
+    # @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
+    # @metrics = DataAccess.getOntologyMetrics(@ontology.id)
 
     # Check to see if the metrics are from the most recent ontology version
-    if !@metrics.nil? && !@metrics.id.eql?(@ontology.id)
-      @old_metrics = @metrics
-      @old_ontology = DataAccess.getOntology(@old_metrics.id)
-    end
+    # if !@metrics.nil? && !@metrics.id.eql?(@ontology.id)
+    #   @old_metrics = @metrics
+    #   @old_ontology = DataAccess.getOntology(@old_metrics.id)
+    # end
 
-    @diffs = DataAccess.getDiffs(@ontology.ontologyId)
+    # @diffs = DataAccess.getDiffs(@ontology.ontologyId)
 
     #Grab Reviews Tab
-    @reviews = Review.find(:all,:conditions=>{:ontology_id=>@ontology.ontologyId},:include=>:ratings)
-    @reviews.sort! {|a,b| b.created_at <=> a.created_at}
+    @reviews = @ontology.explore.reviews
+    @reviews.sort! {|a,b| b.created <=> a.created}
 
     #Grab projects tab
-    @projects = Project.find(:all,:conditions=>"uses.ontology_id = '#{@ontology.ontologyId}'",:include=>:uses)
+    @projects = @ontology.explore.projects
 
     if request.xhr?
       render :partial => 'metadata', :layout => false
