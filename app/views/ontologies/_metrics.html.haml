@@ -1,0 +1,74 @@
+- return "" if @submission.summaryOnly
+#metrics_content{:style => "margin-left: 1em;"}
+  %div{:style => "clear:both;"}
+  %div{:style => "width: 400px;"}
+    %h2
+      %span{:style => "font-size: x-large;"} Metrics
+      = help_icon("http://www.bioontology.org/wiki/index.php/Ontology_Metrics", { :title => "View individual metrics definitions", :style => "margin-top: -7px;" })
+  /
+    <p style="border: 1px solid rgb(239, 239, 239); margin: 10px; padding: 10px;">
+    <haml:loud>t('ontologies.metrics.intro')</haml:loud>
+    </p>
+  - if @metrics.nil? || @metrics.empty?
+    %h2{:style => "padding-left: 1em;"} We have not yet calculated metrics for this ontology.
+  - else
+    - if @old_metrics
+      %h3
+        Metrics are not available for the most recent version of this ontology. The metrics displayed below are for the
+        %a{:href => "/visualize/#{@old_metrics.id}"}= @old_ontology.displayLabel + " " + @old_ontology.versionNumber.to_s
+        version.
+    :css
+      .metrics_table td {
+        text-align: right;
+      }
+        %table.form.metrics_table{:style => "width: 400px;"}
+      /
+        not calculated currently
+        <tr>
+        <th>Number of axioms:</th><td class="top"><haml:loud>@metrics.numberOfAxioms</haml:loud></td>
+        </tr>
+      %tr
+        %th Number of classes:
+        %td.top= @metrics.numberOfClasses
+      %tr
+        %th Number of individuals:
+        %td= @metrics.numberOfIndividuals
+      %tr
+        %th Number of properties:
+        %td= @metrics.numberOfProperties
+      %tr
+        %th Maximum depth:
+        %td= @metrics.maximumDepth
+      %tr
+        %th Maximum number of siblings:
+        %td= @metrics.maximumNumberOfSiblings
+      %tr
+        %th Average number of siblings:
+        %td= @metrics.averageNumberOfSiblings
+      %tr
+        %th{:style => "vertical-align: top;"} Classes with a single subclass:
+        %td
+          = format_metric_list(@metrics, @metrics.classesWithOneSubclass, "Classes with a single subclass")
+      %tr
+        %th{:style => "vertical-align: top;"} Classes with more than 25 subclasses:
+        %td
+          = format_metric_list(@metrics, @metrics.classesWithMoreThanXSubclasses, "Classes with more than 25 subclasses")
+      /
+        <tr>
+        <th style="vertical-align: top;">Classes with no author:</th>
+        <td>
+        <haml:loud> format_metric_list(@metrics, @metrics.classesWithNoAuthor, &amp;quot;Classes with no author&amp;quot;) </haml:loud>
+        </td>
+        </tr>
+      %tr
+        %th{:style => "vertical-align: top;"} Classes with no definition:
+        %td
+          = format_metric_list(@metrics, @metrics.classesWithNoDocumentation, "Classes with no definition")
+      /
+        not calculated currently
+        <tr>
+        <th style="vertical-align: top;">Classes with more than one property value:</th>
+        <td>
+        <haml:loud> format_metric_list(@metrics, @metrics.classesWithMoreThanOnePropertyValue, &amp;quot;Classes with more than one property value&amp;quot;) </haml:loud>
+        </td>
+        </tr>

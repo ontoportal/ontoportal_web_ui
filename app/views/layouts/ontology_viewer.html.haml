@@ -1,0 +1,155 @@
+- content_section = (params[:p]) ? params[:p] : "summary"
+- concept_title = @concept.nil? ? "" : " - #{@concept.label} - Terms"
+- @title = "#{@ontology.name}#{concept_title}"
+= render :partial =>'layouts/header'
+/[if gt IE 7]
+  <style>
+  \#admin_ontology .ui-icon-triangle-1-s {
+  margin-top: -16px;
+  }
+  </style>
+/[if IE 7]
+  <style>
+  \#admin_ontology .ui-icon-triangle-1-s {
+  margin-top: -16px;
+  }
+
+  \#nav_ontology {
+  position: absolute;
+  padding-top: .5em;
+  vertical-align: top !important;
+  }
+  </style>
+
+:javascript
+  // Set the background color for this page only
+  jQuery("html").css("background", "#234979");
+  jQuery(document.body).css("background", "#234979");
+  jQuery("#bd").css("background", "#234979");
+
+  // Javascript History HTML5 API
+  if ( typeof JSON === 'undefined' ) {
+    var
+      url = '/javascripts/history/json2.js',
+      scriptEl = document.createElement('script');
+    scriptEl.type = 'text/javascript';
+    scriptEl.src = url;
+    document.body.appendChild(scriptEl);
+  }
+
+  jQuery.rloader([
+    {type:'css',src:'/stylesheets/layout/jquery.rating.css'},
+    {type:'js',src:'/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.min.js'},
+    {type:'js',src:'/javascripts/jquery.rating.pack.js'}
+  ]);
+
+  var ontology_id = "#{@ontology.acronym}";
+  var ontology_version_id = "#{@submission.submissionId}";
+  var ontology_name = "#{@ontology.name}";
+  var org_site = "#{$ORG_SITE}";
+  var concept_id = "#{params[:conceptid]}";
+  var content_section = "#{content_section}";
+  var concept_param = "#{"conceptid=\#{params[:conceptid]}" unless params[:conceptid].nil? || params[:conceptid].empty?}";
+  var concept_name = "#{@concept.label unless @concept.nil?}";
+  var metadata_only = #{@submission.summaryOnly};
+  var current_purl = "#{@current_purl}";
+  var purl_prefix = "#{"\#{$PURL_PREFIX}/\#{@ontology.abbreviation}" if $PURL_ENABLED}";
+
+  var concept_name_title = (concept_name == "") ? "" : " - " + concept_name;
+
+= stylesheet_link_tag "/javascripts/JqueryPlugins/facebox/facebox.css"
+= javascript_include_tag "jquery.simple.tree.js"
+= javascript_include_tag "jquery.scrollTo-1.4.0-min.js"
+= javascript_include_tag "bp_term_tree.js"
+/ This gets placed here because we need it to run first out of the term events in the document.ready queue
+= javascript_include_tag "bp_ontology_viewer.js"
+= javascript_include_tag "bp_notes.js"
+= javascript_include_tag "bp_notes_list.js"
+= javascript_include_tag "bp_notes_ont_list.js"
+= javascript_include_tag "bp_resource_index.js"
+%div{:style => "padding: 1em 2em 0; background: #234979;"}
+  / %span{:style => "float: right;"}
+  / TODO_REV: Consider removing RSS syndication
+  / %a{:href => "/syndication/rss?ontologies=#{@ontology.acronym}"}
+  / %img{:border => "0", :height => "14", :src => "/images/feed-icon.png", :style => "vertical-align: text-bottom;", :width => "14"}/
+  %div
+    %span{:style => "color: white; font-size: xx-large;"}
+      %a#ont_sum_link{:href => "/ontologies/#{@ontology.acronym}"}= @ontology.name
+
+    %span#nav_ontology{:style => "padding-left: 4em; position: relative; top: -5px;"}
+      %a#ont_nav.fg-button.fg-button-icon-right.ui-widget.ui-state-default{:href => "#navigate", :tabindex => "0"}
+        %span.ui-icon.ui-icon-triangle-1-s
+        %span#nav_text Summary
+
+    #navigate_options.hidden
+      %ul
+        %li#summary_link.nav_links.summary_link
+          %a{"data-bp_ont_page" => "summary", :href => "/ontologies/#{@ontology.acronym}?p=summary"} Summary
+        - unless @submission.summaryOnly
+          %li#terms_link.nav_links.terms_link
+            %a{"data-bp_ont_page" => "terms", :href => "/ontologies/#{@ontology.acronym}?p=terms"} Terms
+        %li#notes_link.nav_links.notes_link
+          %a{"data-bp_ont_page" => "notes", :href => "/ontologies/#{@ontology.acronym}?p=notes"} Notes
+        %li#mappings_link.nav_links.mappings_link
+          %a{"data-bp_ont_page" => "mappings", :href => "/ontologies/#{@ontology.acronym}?p=mappings"} Mappings
+        - unless @submission.summaryOnly
+          %li#widgets_link.nav_links.widgets_link
+            %a{"data-bp_ont_page" => "widgets", :href => "/ontologies/#{@ontology.acronym}?p=widgets"} Widgets
+
+    - if @ontology.admin?(session[:user])
+      %span#admin_ontology{:style => "vertical-align: super; padding-left: 1em;"}
+        %a#ont_admin.fg-button.fg-button-icon-right.ui-widget.ui-state-default{:href => "#administer", :tabindex => "0"}
+          %span.ui-icon.ui-icon-triangle-1-s>
+          Administer
+      #adminster_options.hidden{:style => "text-align: left;"}
+        %ul
+          %li
+            - if @ontology.isView.eql?("true")
+              %a{:href => "/ontologies/view/new/#{@ontology.acronym}?version_id=#{@ontology.viewOnOntologyVersionId}"} Submit New View Version
+            - else
+              = link_to "Submit New Version",new_ontology_path(:id=>@ontology.acronym)
+          %li
+            - if @ontology.isView.eql?("true")
+              %a{:href => "/ontologies/view/edit/#{@ontology.acronym}"}
+                Edit View Information (version #{@ontology.version})
+            - else
+              = link_to "Edit Ontology Information (version #{@ontology.version})",edit_ontology_path(:id=>@ontology.acronym)
+
+  %div{:style => "clear: both; margin-bottom: 1em;"}
+  #ontology_content{:style => "background: white;"}
+    #ont_terms_content.ontology_viewer_content.hidden
+      - if content_section.eql?("terms")
+        :javascript
+          jQuery("#ont_terms_content").removeClass("hidden");
+        = yield
+      - else
+        = loading_spinner(true)
+    #ont_summary_content.ontology_viewer_content.hidden
+      - if content_section.eql?("summary")
+        :javascript
+          jQuery("#ont_summary_content").removeClass("hidden");
+        = yield
+      - else
+        = loading_spinner(true)
+    #ont_mappings_content.ontology_viewer_content.hidden
+      - if content_section.eql?("mappings")
+        :javascript
+          jQuery("#ont_mappings_content").removeClass("hidden");
+        = yield
+      - else
+        = loading_spinner(true)
+    #ont_notes_content.ontology_viewer_content.hidden
+      - if content_section.eql?("notes")
+        :javascript
+          jQuery("#ont_notes_content").removeClass("hidden");
+        = yield
+      - else
+        = loading_spinner(true)
+    #ont_widgets_content.ontology_viewer_content.hidden
+      - if content_section.eql?("widgets")
+        :javascript
+          jQuery("#ont_widgets_content").removeClass("hidden");
+        = yield
+      - else
+        = loading_spinner(true)
+= render :partial =>'layouts/footer'
