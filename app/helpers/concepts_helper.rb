@@ -5,10 +5,11 @@ module ConceptsHelper
 
     # Show or hide property based on the property and ontology settings
     if ontology
+      # TODO_REV: Handle obsolete terms
       # Hide owl:deprecated if a user has set class or property based obsolete checking
-      if !ontology.obsoleteParent.nil? && relation_to_check.include?("owl:deprecated") || !ontology.obsoleteProperty.nil? && relation_to_check.include?("owl:deprecated")
-        return true
-      end
+      # if !ontology.obsoleteParent.nil? && relation_to_check.include?("owl:deprecated") || !ontology.obsoleteProperty.nil? && relation_to_check.include?("owl:deprecated")
+      #   return true
+      # end
     end
 
     excluded_relations.each do |relation|
@@ -18,6 +19,8 @@ module ConceptsHelper
   end
 
   def property_title(property)
+    # TODO_REV: Get property names properly
+    return ""
     ontology_properties = DataAccess.getOntologyPropertiesHash(@concept.ontology_id, "id")
     no_definition = "Property id: #{property} | Definition: No definition provided"
     if ontology_properties[property].nil? || ontology_properties[property].definitions.nil?

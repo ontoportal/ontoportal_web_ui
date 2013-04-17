@@ -67,7 +67,9 @@ module ApplicationHelper
   # end Notes-related helpers
 
   def remove_owl_notation(string)
-    # Remove 'titleize', see GForge ticket #4309.
+    # TODO_REV: No OWL notation, but should we modify the IRI?
+    return string
+
     unless string.nil?
       strings = string.split(":")
       if strings.size<2
@@ -165,21 +167,15 @@ module ApplicationHelper
     unless node.children.nil? || node.children.length < 1
       for child in node.children
         icons = ""
-        if child.note_icon
-          icons << "<img src='/images/notes_icon.png'style='vertical-align:bottom;'height='15px' title='Term Has Margin Notes'>"
-        end
-
-        if child.map_icon
-          icons << "<img src='/images/map_icon.png' style='vertical-align:bottom;' height='15px' title='Term Has Mappings'>"
-        end
 
         active_style =""
+        child.id.eql?(id) rescue binding.pry
         if child.id.eql?(id)
           active_style="class='active'"
         end
 
         open = ""
-        if child.expanded
+        if child.expanded?
           open = "class='open'"
         end
 
@@ -189,15 +185,15 @@ module ApplicationHelper
         li_id = child.id.eql?("bp_fake_root") ? "bp_fake_root" : short_uuid
 
         # Return different result for too many children
-        if child.label.eql?("*** Too many children...")
-          number_of_terms = id.eql?("root") ? DataAccess.getLightNode(child.ontology_id, "root", 1).child_size : node.child_size
-          retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{child.ontology_id}/?conceptid=#{CGI.escape(id)}&callback=children&too_many_children_override=true'>Get all terms</a>"
+        if child.prefLabel.eql?("*** Too many children...")
+          number_of_terms = id.eql?("root") ? child.explore.ontology.explore.roots.length : node.childrenCount
+          retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(id)}&callback=children&too_many_children_override=true'>Get all terms</a>"
           string << "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{number_of_terms} terms at this level. Retrieving these may take several minutes. #{retry_link}</div>"
         else
-          string << "<li #{open} #{draw_root} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.ontology_id}/?p=terms&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.label_html} #{icons}</a>"
-          if child.child_size > 0 && !child.expanded
-            string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.ontology_id}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.child_size}'>#{child.label_html}</a></li></ul>"
-          elsif child.expanded
+          string << "<li #{open} #{draw_root} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=terms&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.prefLabel} #{icons}</a>"
+          if child.childrenCount > 0 && !child.expanded?
+            string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.childrenCount}'>#{child.prefLabel}</a></li></ul>"
+          elsif child.expanded?
             string << "<ul>"
             build_tree(child,"child",string,id)
             string << "</ul>"
