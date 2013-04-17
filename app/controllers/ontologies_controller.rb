@@ -166,122 +166,49 @@ class OntologiesController < ApplicationController
 
     # Set the ontology we are viewing
     if view
-      @ontology = DataAccess.getView(params[:ontology])
+      # TODO_REV: Add view support when REST support is available
+      # @ontology = DataAccess.getView(params[:ontology])
     else
-      @ontology = DataAccess.getOntology(params[:ontology])
+      @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     end
 
-    if @ontology.private? && (session[:user].nil? || !session[:user].has_access?(@ontology))
-      if request.xhr?
-        return render :partial => 'private_ontology', :layout => false
-      else
-        return render :partial => 'private_ontology', :layout => "ontology_viewer"
-      end
-    end
+    @submission = @ontology.explore.latest_submission
 
-    if @ontology.licensed? && (session[:user].nil? || !session[:user].has_access?(@ontology))
-      @user = UserWrapper.new
-      if request.xhr?
-        return render :partial => 'licensed_ontology', :layout => false
-      else
-        return render :partial => 'licensed_ontology', :layout => "ontology_viewer"
-      end
-    end
+    # TODO_REV: Support private ontologies
+    # if @ontology.private? && (session[:user].nil? || !session[:user].has_access?(@ontology))
+    #   if request.xhr?
+    #     return render :partial => 'private_ontology', :layout => false
+    #   else
+    #     return render :partial => 'private_ontology', :layout => "ontology_viewer"
+    #   end
+    # end
 
-    # Get most recent active version of ontology if there was a parsing error
-    skip_status = [1, 2, 4]
-    if OntologyWrapper.virtual_id?(params[:ontology]) && skip_status.include?(@ontology.statusId.to_i)
-      DataAccess.getActiveOntologies.each do |ont|
-        if ont.ontologyId.eql?(@ontology.ontologyId)
-          @ontology = DataAccess.getOntology(ont.id)
-          break
-        end
-      end
-    end
+    # TODO_REV: Support licensed ontologies
+    # if @ontology.licensed? && (session[:user].nil? || !session[:user].has_access?(@ontology))
+    #   @user = UserWrapper.new
+    #   if request.xhr?
+    #     return render :partial => 'licensed_ontology', :layout => false
+    #   else
+    #     return render :partial => 'licensed_ontology', :layout => "ontology_viewer"
+    #   end
+    # end
 
-    # Redirect to move recent unarchived version is this version is archived
-    if @ontology.statusId.to_i.eql?(6)
-      @latest_ontology = DataAccess.getLatestOntology(@ontology.ontologyId)
-      params[:ontology] = @latest_ontology.id
-      flash[:notice] = "The version of <b>#{@ontology.displayLabel}</b> you were attempting to view (#{@ontology.versionNumber}) has been archived and is no longer available for exploring. You have been redirected to the most recent version (#{@latest_ontology.versionNumber})."
-      concept_id = params[:conceptid] ? "?conceptid=#{params[:conceptid]}" : ""
-      redirect_to "/visualize/#{@latest_ontology.id}#{concept_id}", :status => :moved_permanently
-      return
-    end
+    # TODO_REV: Redirect to most recent parsed version when archived or bad parse
 
-    # Check to see if user is requesting RDF+XML, return the file from REST service if so
-    if request.accept.to_s.eql?("application/rdf+xml")
-      user_api_key = session[:user].nil? ? "" : session[:user].apikey
-      concept_id = params[:conceptid] ? params[:conceptid] : "root"
-      rdf = open($REST_URL + "/virtual/rdf/#{@ontology.ontologyId}?conceptid=#{CGI.escape(concept_id)}&apikey=#{$API_KEY}&userapikey=#{user_api_key}")
-      render :text => rdf.string, :content_type => "appllication/rdf+xml"
-      return
-    end
+    # TODO_REV: Output RDF as necessary (we may delegate this to the REST service)
 
-    if !@ontology.flat? && (!params[:conceptid] || params[:conceptid].empty?)
-      # get the top level nodes for the root
-      @root = TreeNode.new()
-      nodes = @ontology.top_level_nodes(view)
-      nodes.sort!{|x,y| x.label.downcase<=>y.label.downcase}
-      for node in nodes
-        if node.label.downcase.include?("obsolete") || node.label.downcase.include?("deprecated")
-          nodes.delete(node)
-          nodes.push(node)
-        end
-      end
-
-      @root.set_children(nodes, @root)
-
-      # get the initial concepts to display
-      @concept = DataAccess.getNode(@ontology.id, @root.children.first.id, nil, view)
-
-      # Some ontologies have "too many children" at their root. These will not process and are handled here.
-      raise Error404 if @concept.nil?
-
-      LOG.add :info, 'visualize_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
-    elsif @ontology.flat? && (!params[:conceptid] || params[:conceptid].empty?)
-      # Don't display any terms in the tree
-      @concept = NodeWrapper.new
-      @concept.label = "Please search for a term using the Jump To field above"
-      @concept.id = "bp_fake_root"
-      @concept.fullId = "bp_fake_root"
-      @concept.child_size = 0
-      @concept.properties = {}
-      @concept.version_id = @ontology.id
-      @concept.children = []
-
-    elsif @ontology.flat? && params[:conceptid]
-      # Display only the requested term in the tree
-      @concept = DataAccess.getNode(@ontology.id, params[:conceptid], nil, view)
-      raise Error404 if @concept.nil?
-    else
-      # if the id is coming from a param, use that to get concept
-      @concept = DataAccess.getNode(@ontology.id,params[:conceptid],view)
-      raise Error404 if @concept.nil?
-
-      # Did we come from the Jump To widget, if so change logging
-      if params[:jump_to_nav]
-        LOG.add :info, 'jump_to_nav', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
-      else
-        LOG.add :info, 'visualize_concept_direct', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
-      end
-
-      # This handles special cases where a passed concept id is for a concept
-      # that isn't browsable, usually a property for an ontology.
-      if !@concept.is_browsable
-        render :partial => "shared/not_browsable", :layout => "ontology"
-        return
-      end
-    end
+    get_class(params)
 
     # set the current PURL for this term
-    @current_purl = @concept.id.start_with?("http://") ? "#{$PURL_PREFIX}/#{@ontology.abbreviation}?conceptid=#{CGI.escape(@concept.id)}" : "#{$PURL_PREFIX}/#{@ontology.abbreviation}/#{CGI.escape(@concept.id)}" if $PURL_ENABLED
+    @current_purl = @concept.id.start_with?("http://") ? "#{$PURL_PREFIX}/#{@ontology.acronym}?conceptid=#{CGI.escape(@concept.id)}" : "#{$PURL_PREFIX}/#{@ontology.abbreviation}/#{CGI.escape(@concept.id)}" if $PURL_ENABLED
 
+    # TODO_REV: Mappings for classes
     # gets the initial mappings
-    @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.fullId)
+    # @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.fullId)
 
+    # TODO_REV: Support notes deletion
     # check to see if user should get the option to delete
-    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
+    # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
     unless @concept.id.to_s.empty?
       # Update the tab with the current concept
