@@ -1,0 +1,87 @@
+- require 'cgi'
+%div{:style => "padding: 1%; width: 98%;"}
+  %table.minimal.concept_details{:cellpadding => "0", :cellspacing => "0", :width => "100%"}
+    %tr
+      %td.label{:nowrap => ""}
+        Preferred Name
+        %span.slot_labels
+          /- unless @ontology.preferred_name_label.nil? || @ontology.preferred_name_label.to_s.length == 0
+          /  (#{@concept.ontology.preferred_name_label})
+      %td
+        %p= @concept.prefLabel
+    - unless @concept.synonym.nil? || @concept.synonym.empty?
+      %tr
+        %td.label{:nowrap => ""}
+          Synonyms
+          %span.slot_labels
+            /- unless @ontology.synonym_label.nil? || @ontology.synonym_label.to_s.length == 0
+            /  (#{@concept.ontology.synonym_label})
+        %td
+          - for synonym in @concept.synonym
+            %p= synonym
+    - unless @concept.definition.nil? || @concept.definition.empty?
+      %tr
+        %td.label{:nowrap => ""}
+          Definitions
+          %span.slot_labels
+            /- unless @ontology.definition_label.nil? || @ontology.definition_label.to_s.length == 0
+            /  (#{@ontology.definition_label})
+        %td
+          %p= @concept.definition.join(" ")
+    %tr
+      %td.label{:nowrap => ""} ID
+      %td
+        %p= @concept.id
+    - if @concept.obsolete?
+      %tr
+        %td.label{:nowrap => ""}
+          Obsolete
+          %span.slot_labels
+        %td
+          %p true
+    - keys = @concept.properties.members
+    - top_keys=["description", "comment"]
+    - bottom_keys=["disjoint", "subclass", "is_a", "has_part"]
+    - top_set=[]
+    - bottom_set=[]
+    - leftover=[]
+    - for key in keys
+      - key = key.to_s
+      - top=false
+      - bottom=false
+      - top_keys.each do |top_key|
+        - if key.downcase.include?(top_key)
+          - top_set << key
+          - top=true
+      - bottom_keys.each do |bottom_key|
+        - if key.downcase.include?(bottom_key)
+          - bottom_set << key
+          - bottom=true
+      - if !top && !bottom
+        - leftover << key
+    - leftover.sort! {|x,y| x.downcase <=> y.downcase }
+    - for key in top_set
+      - key = key.to_s
+      - next if exclude_relation?(key)
+      - if @concept.properties[key]
+        %tr
+          %td.label{:nowrap => ""}
+            %span.concept_property{:title => property_title(key)}= "#{remove_owl_notation(key)}"
+          %td
+            = auto_link("<p>#{sanitize(@concept.properties[key].join("<br/>")).split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")
+    - for key in leftover
+      - next if exclude_relation?(key, @ontology)
+      - if @concept.properties[key]
+        %tr
+          %td.label{:nowrap => ""}
+            %span.concept_property{:title => property_title(key)}= "#{remove_owl_notation(key)}"
+          %td
+            = auto_link("<p>#{sanitize(@concept.properties[key].join("<br/>")).split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
+    - for key in bottom_set
+      - next if exclude_relation?(key)
+      - if @concept.properties[key]
+        %tr
+          %td.label{:nowrap => ""}
+            %span.concept_property{:title => property_title(key)}= "#{remove_owl_notation(key)}"
+          %td
+            = auto_link("<p>#{@concept.properties[key].split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")

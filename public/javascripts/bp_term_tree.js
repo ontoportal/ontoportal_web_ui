@@ -167,7 +167,7 @@ function placeTreeView(treeHTML) {
 // Retrieve the tree view using ajax
 function getTreeView() {
   jQuery.ajax({
-    url: "/ajax/terms/treeview?ontology="+ontology_version_id+"&conceptid="+encodeURIComponent(concept_id),
+    url: "/ajax/terms/treeview?ontology="+ontology_id+"&conceptid="+encodeURIComponent(concept_id),
     success: function(data) {
       placeTreeView(data);
     },

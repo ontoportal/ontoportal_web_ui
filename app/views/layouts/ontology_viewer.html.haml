@@ -1,5 +1,5 @@
 - content_section = (params[:p]) ? params[:p] : "summary"
-- concept_title = @concept.nil? ? "" : " - #{@concept.label} - Terms"
+- concept_title = @concept.nil? ? "" : " - #{@concept.prefLabel} - Terms"
 - @title = "#{@ontology.name}#{concept_title}"
 = render :partial =>'layouts/header'
 /[if gt IE 7]
@@ -50,7 +50,7 @@
   var concept_id = "#{params[:conceptid]}";
   var content_section = "#{content_section}";
   var concept_param = "#{"conceptid=\#{params[:conceptid]}" unless params[:conceptid].nil? || params[:conceptid].empty?}";
-  var concept_name = "#{@concept.label unless @concept.nil?}";
+  var concept_name = "#{@concept.prefLabel unless @concept.nil?}";
   var metadata_only = #{@submission.summaryOnly};
   var current_purl = "#{@current_purl}";
   var purl_prefix = "#{"\#{$PURL_PREFIX}/\#{@ontology.abbreviation}" if $PURL_ENABLED}";
