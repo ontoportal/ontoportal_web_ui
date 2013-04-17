@@ -225,7 +225,7 @@ class ApplicationController < ActionController::Base
     end
 
     unless found
-      array << History.new(ontology.id,ontology.displayLabel,concept)
+      array << History.new(ontology.id,ontology.name,concept)
     end
 
     session[:ontologies]=array
@@ -280,6 +280,64 @@ class ApplicationController < ActionController::Base
     !ENV['USE_RECAPTCHA'].nil? && ENV['USE_RECAPTCHA'] == 'true'
   end
 
+  def get_class(params)
+    if !@ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root"))
+      # get the top level nodes for the root
+      @root = LinkedData::Client::Models::Class.new
+      # TODO_REV: Support views? Replace old view call: @ontology.top_level_terms(view)
+      root_children = @ontology.explore.roots
+      root_children.sort!{|x,y| x.prefLabel.downcase<=>y.prefLabel.downcase}
 
+      @root.children = root_children
+
+      # get the initial concepts to display
+      @concept = @root.children.first
+
+      # Some ontologies have "too many children" at their root. These will not process and are handled here.
+      raise Error404 if @concept.nil?
+    elsif @ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root"))
+      # TODO_REV: Handle flat ontologies
+      # Don't display any terms in the tree
+      @concept = NodeWrapper.new
+      @concept.label = "Please search for a term using the Jump To field above"
+      @concept.id = "bp_fake_root"
+      @concept.fullId = "bp_fake_root"
+      @concept.child_size = 0
+      @concept.properties = {}
+      @concept.version_id = @ontology.id
+      @concept.children = []
+
+      @tree_concept = TreeNode.new(@concept)
+
+      @root = TreeNode.new
+      @root.children = [@tree_concept]
+    elsif @ontology.flat? && params[:conceptid]
+      # TODO_REV: Handle flat ontologies
+      # Display only the requested term in the tree
+      @concept = DataAccess.getNode(@ontology.id, params[:conceptid], nil, view)
+      @concept.children = []
+      @concept.child_size = 0
+      @root = TreeNode.new
+      @root.children = [TreeNode.new(@concept)]
+    else
+      # if the id is coming from a param, use that to get concept
+      @concept = @ontology.explore.single_class(params[:conceptid])
+      raise Error404 if @concept.nil?
+
+      # Create the tree
+      rootNode = @concept.explore.tree.first
+      if rootNode.nil?
+        roots = @ontology.explore.roots
+        if roots.any? {|c| c.id == @concept.id}
+          rootNode = roots
+        else
+          rootNode = [@concept]
+        end
+      end
+
+      @root = LinkedData::Client::Models::Class.new
+      @root.children = rootNode
+    end
+  end
 
 end
