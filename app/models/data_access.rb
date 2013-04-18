@@ -1,12 +1,9 @@
-require 'BioPortalRestfulCore'
 require "digest/sha1"
 require "ontology_filter"
 require "cgi"
 include Spawn
 
 class DataAccess
-  # Sets what backend we are using
-  SERVICE = BioPortalRestfulCore
 
   # Last multiplicand is number of hours
   CACHE_EXPIRE_TIME = 60*60*4
@@ -652,7 +649,7 @@ class DataAccess
   def self.getDiffDownloadURI(verID1, verID2, format='xml')
     return SERVICE.diffDownload(verID1, verID2, format)
   end
-  
+
 private
 
   def self.delete_mapping_cache(params = {})
