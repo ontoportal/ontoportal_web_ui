@@ -1,7 +1,4 @@
 class HomeController < ApplicationController
-  require "OntrezService"
-
-
   layout 'ontology'
 
   RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "http://#{$REST_DOMAIN}/resource_index/", :limit => 10, :mode => :intersection}
