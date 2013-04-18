@@ -1,5 +1,6 @@
-PATH
-  remote: ~/Development/ontologies_api_ruby_client
+GIT
+  remote: https://github.com/ncbo/ontologies_api_ruby_client.git
+  revision: cdc1701ccf4c3dff48e2c37885fc1326a5c8fd7a
   specs:
     ontologies_api_client (0.0.1)
       faraday
