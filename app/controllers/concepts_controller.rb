@@ -220,9 +220,9 @@ class ConceptsController < ApplicationController
       gather_details
       render :partial => 'load'
     when 'children' # Children is called only for drawing the tree
-      @children = @concept.children || []
+      @children = @concept.explore.children.collection || []
       @children.sort!{|x,y| x.prefLabel.downcase<=>y.prefLabel.downcase} unless @children.empty?
-      render :partial => 'childNodes'
+      render :partial => 'child_nodes'
     end
   end
 
