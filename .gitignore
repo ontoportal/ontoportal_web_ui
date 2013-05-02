@@ -24,3 +24,7 @@ config/locales/en.rb
 
 .ruby-version
 
+# Ignore editor files
+.idea
+*.swp
+
