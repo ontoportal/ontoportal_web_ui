@@ -321,6 +321,8 @@ class DataAccess
     params = { :note_id => note_id, :ontology_virtual_id => ontology_id }
     note = SERVICE.deleteNote(params) rescue nil
     self.delete_notes_cache(:appliesTo => appliesTo, :ontology_id => ontology_id)
+    note_index_entry = NotesIndex.find_by_note_id(note_id)
+    note_index_entry.delete
     note
   end
 
@@ -652,7 +654,7 @@ class DataAccess
   def self.getDiffDownloadURI(verID1, verID2, format='xml')
     return SERVICE.diffDownload(verID1, verID2, format)
   end
-  
+
 private
 
   def self.delete_mapping_cache(params = {})

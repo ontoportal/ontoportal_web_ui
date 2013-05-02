@@ -32,11 +32,34 @@ class AnalyticsController < ApplicationController
         click.ip
       ]
     end
+    respond_with_csv_file(rows, "search_result_clicked")
+  end
 
+  def user_intention_surveys
+    surveys = Analytics.find(:all, :conditions => {:segment => "users", :action => "intention_survey"})
+    rows = [["page", "response", "email", "time", "user", "slice", "ip_address"]]
+    surveys.each do |survey|
+      rows << [
+        survey.params["page"],
+        survey.params["intention_response"],
+        survey.params["contest_email"],
+        survey.created_at,
+        survey.user,
+        survey.slice,
+        survey.ip
+      ]
+    end
+    respond_with_csv_file(rows, "user_intention_survey")
+  end
+
+  private
+
+  def respond_with_csv_file(rows, filename = "output")
     output = ''
     rows.each do |row|
       output << row.to_csv.force_encoding('UTF-8')
     end
-    send_data output, :type => 'text/csv', :disposition => 'attachment; filename=search_result_clicked.csv'
+    send_data output, :type => 'text/csv', :disposition => "attachment; filename=#{filename}.csv"
   end
+
 end
