@@ -1,5 +1,6 @@
 # Required gems
-source :gemcutter
+source 'https://rubygems.org'
+
 gem "rails", "2.3.15"
 
 gem "hpricot", "~> 0.8.6"
