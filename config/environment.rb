@@ -42,7 +42,7 @@ Rails::Initializer.run do |config|
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
     :key => '_bp_session',
-    :secret      => 'f8a5500d24178acfd38f883af2b2c16'
+    :secret => 'f8a5500d24178acfd38f883af2b2c16'
   }
 
   # Use the database for sessions instead of the cookie-based default,
@@ -64,6 +64,11 @@ Rails::Initializer.run do |config|
 
   # ontologies_api_client init
   require 'ontologies_api_client'
-  LinkedData::Client.config
+  LinkedData::Client.config do |config|
+    config.rest_url   = "http://stagedata.bioontology.org/"
+    config.apikey     = "35fdc91d-a3f6-475f-a0e6-d6d287d89d50"  # TODO: Change to UI API key
+    config.links_attr = "links"
+    config.cache      = false
+  end
 end
 

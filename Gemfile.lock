@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: c28a16aae85677cea088f22bae60f8942f263d99
+  revision: 8429dfe3ec8c41e94e16ed1ca1be09049fdeeed2
   specs:
-    ontologies_api_client (0.0.1)
+    ontologies_api_client (0.0.2)
       faraday
       multi_json
       oj
@@ -48,12 +48,13 @@ GEM
     haml (3.1.8)
     hpricot (0.8.6)
     i18n (0.5.0)
+    iconv (1.0.3)
     json (1.7.7)
     libxml-ruby (2.2.2)
     memcache-client (1.8.5)
     method_source (0.8.1)
     mime-types (1.23)
-    multi_json (1.7.2)
+    multi_json (1.7.3)
     multipart-post (1.2.0)
     mysql (2.8.1)
     ncbo_annotator (1.0.13)
@@ -102,6 +103,7 @@ DEPENDENCIES
   haml (< 4.0.0)
   hpricot (~> 0.8.6)
   i18n (~> 0.5.0)
+  iconv
   libxml-ruby (~> 2.2.0)
   memcache-client (~> 1.8.5)
   mysql (~> 2.8.1)

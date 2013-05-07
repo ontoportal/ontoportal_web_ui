@@ -1,8 +1,9 @@
 # Required gems
 source 'https://rubygems.org'
 
-gem "rails", "2.3.15"
+gem "rails", "2.3.17"
 
+gem "iconv"
 gem "hpricot", "~> 0.8.6"
 gem "libxml-ruby", "~> 2.2.0"
 gem "recaptcha", "~> 0.3.1"
