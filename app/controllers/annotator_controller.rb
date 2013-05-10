@@ -16,7 +16,9 @@ class AnnotatorController < ApplicationController
     end
     @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
 
-    @annotator_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
+    binding.pry
+    #@annotator_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
+    @annotator_ontologies = LinkedData::Client::Models::OntologySubmission.all
   end
 
   def create
@@ -134,4 +136,6 @@ private
     end
     annotator
   end
+
 end
+
