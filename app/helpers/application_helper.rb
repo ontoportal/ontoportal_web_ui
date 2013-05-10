@@ -238,9 +238,15 @@ module ApplicationHelper
   end
 
   def init_ontology_picker(ontologies = nil, selected_ontologies = [])
-    ontologies = DataAccess.getOntologyList if ontologies.nil?
-    groups = DataAccess.getGroups.to_a
-    categories = DataAccess.getCategories
+
+    # TODO: Replace DataAccess with Linked Data.
+    ontologies = LinkedData::Client::Models::OntologySubmission.all
+    categories = LinkedData::Client::Models::Category.all
+    groups = LinkedData::Client::Models::Group.all
+
+    #ontologies = DataAccess.getOntologyList if ontologies.nil?
+    #groups = DataAccess.getGroups.to_a
+    #categories = DataAccess.getCategories
 
     groups_map = {}
     categories_map = {}
@@ -290,7 +296,11 @@ module ApplicationHelper
   end
 
   def init_ontology_picker_single
-    ontologies = DataAccess.getOntologyList
+
+    # TODO: Replace DataAccess with Linked Data.
+    #ontologies = DataAccess.getOntologyList
+    ontologies = LinkedData::Client::Models::OntologySubmission.all
+
     @onts_for_select = []
     @onts_for_js = [];
     ontologies.each do |ont|
@@ -314,7 +324,11 @@ module ApplicationHelper
   end
 
   def categories_for_select
-    categories = DataAccess.getCategories
+
+    # TODO: Replace DataAccess with Linked Data.
+    #categories = DataAccess.getCategories
+    categories = LinkedData::Client::Models::Category.all
+
     categories_for_select = []
     categories.each do |cat_id, cat|
       categories_for_select << [ cat[:name], cat[:id] ]
