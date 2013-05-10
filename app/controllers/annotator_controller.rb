@@ -5,17 +5,17 @@ class AnnotatorController < ApplicationController
 
   def index
     annotator = set_apikey(NCBO::Annotator.new(ANNOTATOR_OPTIONS))
-    ontologies = annotator.ontologies
     ontology_ids = []
-    ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
+    annotator.ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
 
-    semantic_types = annotator.semantic_types
     @semantic_types_for_select = []
-    semantic_types.each do |semantic_type|
+    annotator.semantic_types.each do |semantic_type|
       @semantic_types_for_select << [ "#{semantic_type[:description]} (#{semantic_type[:semanticType]})", semantic_type[:semanticType]]
     end
     @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
 
+
+    # TODO: Match up ontology_ids to the linked data versions?
     binding.pry
     #@annotator_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
     @annotator_ontologies = LinkedData::Client::Models::OntologySubmission.all
@@ -64,13 +64,24 @@ class AnnotatorController < ApplicationController
       # Add ontology information, this isn't added for ontologies that are returned for mappings in cases where the ontology list is filtered
       context_concept = annotation[:context][:concept] ||= annotation[:context][:mappedConcept] ||= annotation[:concept]
       begin
+
+
+        # TODO: Change out DataAccess for LinkedData client.
         context_ontologies << DataAccess.getOntology(context_concept[:localOntologyId])
+
+
+
       rescue Error404
         # Get the appropriate ontology from the list of ontologies with annotations because the annotation itself doesn't contain the virtual id
         ont = annotations.ontologies.each {|ont| break ont if ont[:localOntologyId] == context_concept[:localOntologyId]}
         # Retry with the virtual id
         begin
+
+
+          # TODO: Change out DataAccess for LinkedData client.
           context_ontologies << DataAccess.getOntology(ont[:virtualOntologyId])
+
+
         rescue Error404
           # If it failed with virtual id, mark the annotation as bad
           bad_annotations << annotation
