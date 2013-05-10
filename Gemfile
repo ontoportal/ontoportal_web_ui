@@ -1,7 +1,7 @@
 # Required gems
 source 'https://rubygems.org'
 
-gem "rails", "2.3.15"
+gem "rails", "2.3.17"
 
 gem "hpricot", "~> 0.8.6"
 gem "libxml-ruby", "~> 2.2.0"
@@ -16,6 +16,7 @@ gem "haml", "< 4.0.0"
 gem "will_paginate", "< 3.0"
 gem "airbrake"
 gem "rdoc"
+gem "iconv"
 
 gem 'ontologies_api_client', :git => "https://github.com/ncbo/ontologies_api_ruby_client.git"
 
