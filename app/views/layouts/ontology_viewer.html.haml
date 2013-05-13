@@ -51,7 +51,7 @@
   var content_section = "#{content_section}";
   var concept_param = "#{"conceptid=\#{params[:conceptid]}" unless params[:conceptid].nil? || params[:conceptid].empty?}";
   var concept_name = "#{@concept.prefLabel unless @concept.nil?}";
-  var metadata_only = #{@submission.summaryOnly};
+  var metadata_only = "#{@submission.summaryOnly}";
   var current_purl = "#{@current_purl}";
   var purl_prefix = "#{"\#{$PURL_PREFIX}/\#{@ontology.abbreviation}" if $PURL_ENABLED}";
 
