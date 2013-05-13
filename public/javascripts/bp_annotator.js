@@ -5,37 +5,33 @@ var BP_COLUMNS = { terms: 0, ontologies: 1, types: 2, sem_types: 3, matched_term
 
 var CONCEPT_MAP = { "mapping": "mappedConcept", "mgrep": "concept", "closure": "concept" };
 
-jQuery(document).ready(function () {
-  jQuery("#annotator_button").click(getannotations);
-
-  jQuery("#semanticTypes").chosen({search_contains: true});
-
-  jQuery("#insert_text_link").click(insertSampleText);
-
-  // Init annotation table
-  annotationsTable = jQuery("#annotations").dataTable({
-    bPaginate: false,
-    bAutoWidth: false,
-    aaSorting: [],
-    oLanguage: {
-      sZeroRecords: "No annotations found"
-    },
-    "aoColumns": [
-      { "sWidth": "15%" },
-      { "sWidth": "15%" },
-      { "sWidth": "5%" },
-      { "sWidth": "5%", "bVisible": false },
-      { "sWidth": "30%" },
-      { "sWidth": "15%" },
-      { "sWidth": "15%" }
-    ]
-  });
-
-  filter_ontologies.init();
-  filter_terms.init();
-  filter_match_type.init();
-  filter_matched_ontologies.init();
-  filter_matched_terms.init();
+jQuery(document).ready(function() {
+    jQuery("#annotator_button").click(getannotations);
+    jQuery("#semanticTypes").chosen({search_contains: true});
+    jQuery("#insert_text_link").click(insertSampleText);
+    // Init annotation table
+    annotationsTable = jQuery("#annotations").dataTable({
+        bPaginate: false,
+        bAutoWidth: false,
+        aaSorting: [],
+        oLanguage: {
+            sZeroRecords: "No annotations found"
+        },
+        "aoColumns": [
+            { "sWidth": "15%" },
+            { "sWidth": "15%" },
+            { "sWidth": "5%" },
+            { "sWidth": "5%", "bVisible": false },
+            { "sWidth": "30%" },
+            { "sWidth": "15%" },
+            { "sWidth": "15%" }
+        ]
+    });
+    filter_ontologies.init();
+    filter_terms.init();
+    filter_match_type.init();
+    filter_matched_ontologies.init();
+    filter_matched_terms.init();
 }); // doc ready
 
 function insertSampleText() {
@@ -50,7 +46,7 @@ function getannotations() {
 
   // Validation
   if (jQuery("#annotation_text").val() === jQuery("#annotation_text").attr("title")) {
-    jQuery("#annotator_error").html(" Please enter text to annotate");
+    jQuery("#annotator_error").html("Please enter text to annotate");
     return;
   }
 
@@ -226,17 +222,16 @@ var displayFilteredColumnNames = function () {
   jQuery(".bp_popup_list input:checked").closest("th").each(function () {
     column_names.push(jQuery(this).attr("title"));
   });
-  jQuery("#filter_names").html(column_names.join(", "))
+  jQuery("#filter_names").html(column_names.join(", "));
   if (column_names.length > 0) {
     jQuery("#filter_list").show();
   } else {
     jQuery("#filter_list").hide();
   }
-}
+};
 
 function createFilterCheckboxes(filter_items, checkbox_class, checkbox_location) {
-  var for_sort = [];
-  var sorted = []
+  var for_sort = [], sorted = [];
 
   // Sort ontologies by number of results
   jQuery.each(filter_items, function (k, v) {
@@ -281,21 +276,18 @@ var filter_ontologies = {
 
   filterOntology: function (e) {
     e.stopPropagation();
-
     var search_regex = [];
     jQuery(".filter_ontology_checkboxes:checked").each(function () {
       search_regex.push(jQuery(this).val());
     });
-
     displayFilteredColumnNames();
-
-    if (search_regex.length == 0) {
+    if (search_regex.length === 0) {
       annotationsTable.fnFilter("", BP_COLUMNS.ontologies);
     } else {
       annotationsTable.fnFilter(search_regex.join("|"), BP_COLUMNS.ontologies, true, false);
     }
   }
-}
+};
 
 var filter_terms = {
   init: function () {
@@ -323,22 +315,19 @@ var filter_terms = {
 
   filterTerms: function (e) {
     e.stopPropagation();
-
     var search_regex = [];
     jQuery(".filter_terms_checkboxes:checked").each(function () {
       // Escape characters used in regex
       search_regex.push(jQuery(this).val().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"));
     });
-
     displayFilteredColumnNames();
-
-    if (search_regex.length == 0) {
+    if (search_regex.length === 0) {
       annotationsTable.fnFilter("", BP_COLUMNS.terms);
     } else {
       annotationsTable.fnFilter("^" + search_regex.join("(?!.)|^") + "(?!.)", BP_COLUMNS.terms, true, false);
     }
   }
-}
+};
 
 var filter_matched_ontologies = {
   init: function () {
@@ -366,21 +355,18 @@ var filter_matched_ontologies = {
 
   filter: function (e) {
     e.stopPropagation();
-
     var search_regex = [];
     jQuery(".filter_matched_ontology_checkboxes:checked").each(function () {
       search_regex.push(jQuery(this).val());
     });
-
     displayFilteredColumnNames();
-
-    if (search_regex.length == 0) {
+    if (search_regex.length === 0) {
       annotationsTable.fnFilter("", BP_COLUMNS.matched_ontologies);
     } else {
       annotationsTable.fnFilter(search_regex.join("|"), BP_COLUMNS.matched_ontologies, true, false);
     }
   }
-}
+};
 
 var filter_matched_terms = {
   init: function () {
@@ -408,22 +394,19 @@ var filter_matched_terms = {
 
   filter: function (e) {
     e.stopPropagation();
-
     var search_regex = [];
     jQuery(".filter_matched_terms_checkboxes:checked").each(function () {
       // Escape characters used in regex
       search_regex.push(jQuery(this).val().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"));
     });
-
     displayFilteredColumnNames();
-
-    if (search_regex.length == 0) {
+    if (search_regex.length === 0) {
       annotationsTable.fnFilter("", BP_COLUMNS.matched_terms);
     } else {
       annotationsTable.fnFilter("^" + search_regex.join("(?!.)|^") + "(?!.)", BP_COLUMNS.matched_terms, true, false);
     }
   }
-}
+};
 
 var filter_match_type = {
   init: function () {
@@ -451,22 +434,19 @@ var filter_match_type = {
 
   filterMatchType: function (e) {
     e.stopPropagation();
-
     var search_regex = [];
     jQuery(".filter_match_type_checkboxes:checked").each(function () {
       // Escape characters used in regex
       search_regex.push(jQuery(this).val().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"));
     });
-
     displayFilteredColumnNames();
-
-    if (search_regex.length == 0) {
+    if (search_regex.length === 0) {
       annotationsTable.fnFilter("", BP_COLUMNS.types);
     } else {
       annotationsTable.fnFilter("^" + search_regex.join("(?!.)|^") + "(?!.)", BP_COLUMNS.types, true, false);
     }
   }
-}
+};
 
 var removeFilters = function () {
   jQuery(".filter_ontology_checkboxes").attr("checked", false);
@@ -480,24 +460,22 @@ var removeFilters = function () {
   annotationsTable.fnFilter("", BP_COLUMNS.matched_terms);
   annotationsTable.fnFilter("", BP_COLUMNS.matched_ontologies);
   jQuery("#filter_list").hide();
-}
+};
 
 // Datatables reset sort extension
 jQuery.fn.dataTableExt.oApi.fnSortNeutral = function (oSettings) {
   /* Remove any current sorting */
   oSettings.aaSorting = [];
-
   /* Sort display arrays so we get them in numerical order */
-  oSettings.aiDisplay.sort(function (x, y) {
+  oSettings.aiDisplay.sort( function (x, y) {
     return x - y;
-  });
-  oSettings.aiDisplayMaster.sort(function (x, y) {
+  } );
+  oSettings.aiDisplayMaster.sort( function (x, y) {
     return x - y;
-  });
-
+  } );
   /* Redraw */
-  oSettings.oApi._fnReDraw(oSettings);
-}
+  oSettings.oApi._fnReDraw( oSettings );
+};
 
 // Creates an HTML form with a button that will POST to the annotator
 function annotatorPostForm(format) {
@@ -532,5 +510,163 @@ function generateParameters() {
   jQuery("#annotator_parameters").html(params.join("&"));
 }
 
+
+
+
+
+
+
+// ***************************************
+// TEST JAVASCRIPT FOR PARSING NEW API JSON
+
+// http://stagedata.bioontology.org/annotator?text=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+skin+but+also+in+the+bowel+and+the+eye
+
+//var text = "Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.";
+
+//function request_details(uri, propertyArray) {
+//  var obj = {};
+//  $.ajax({
+//    url: uri,
+//    datatype: 'json',
+//    async: false,
+//    success: function(json){
+//obj.name = json.name;
+//      var i = null;
+//      var jsonProperties = Object.keys(json); // ['name', 'value']
+//      jsonProperties.forEach(function (key) {
+//        i = $.inArray(key, propertyArray);
+//        if ( i > -1 ){
+// this key:value pair has been requested
+//          obj[key] = json[key];
+//        }
+//      });
+//    },
+//  });
+//  return obj;
+//}
+
+
+function get_link(uri, label) {
+    return '<a href="' + uri + '">' + label + '</a>';
+}
+
+
+function get_class_details(uri) {
+    var details = {};
+    $.ajax({
+        url: uri,
+        datatype: 'json',
+        async: false,
+        success: function(json) {
+            details.prefLabel = json.prefLabel;
+            //details.synonym = json.synonym;
+        }
+    });
+    return details;
+    // NOTE: Cute abstraction, but it's slower.
+    //return request_details(uri, ["name"]);
+}
+
+
+function get_ontology_details(uri) {
+    var details = {};
+    $.ajax({
+        url: uri,
+        datatype: 'json',
+        async: false,
+        success: function(json) {
+            details.name = json.name;
+        }
+    });
+    return details;
+    // NOTE: Cute abstraction, but it's slower.
+    //return request_details(uri, ["name"]);
+}
+
+
+function process_class(term) {
+    // Get class URI and prefLabel
+    // Use the '@id' value?
+    var cls = {},
+        details = null;
+    cls.uri = term.links.self;
+    // TODO: Replace with full URI
+    details = get_class_details(cls.uri + "?apikey=" + apikey);
+    //details = get_class_details('annotator_class.json');
+    cls.prefLabel = details.prefLabel;
+    //cls.synonym = details.synonym;
+    return cls;
+}
+
+
+function process_class_ontology(term) {
+    // Get ontology URI and name
+    // Use the '@id' value?
+    var ont = {},
+        details = null;
+    ont.uri = term.links.ontology;
+    // TODO: Replace with full URI
+    details = get_ontology_details(ont.uri + "?apikey=" + apikey);
+    //details = get_ontology_details('class_ontology.json');
+    ont.name = details.name;
+    return ont;
+}
+
+
+function process_annotation(annotation) {
+    "use strict";
+    var cls = process_class(annotation.annotatedClass),
+        ont = process_class_ontology(annotation.annotatedClass),
+        rows = "",
+        cls_cell = "<td>" + get_link(cls.uri, cls.prefLabel) + "</td>",
+        ont_cell = "<td>" + get_link(ont.uri, ont.name) + "</td>",
+        text_match = null,
+        text_prefix = null,
+        text_suffix = null,
+        text_markup = null;
+    $.each(annotation.annotations, function(i, a) {
+        rows += "<tr>";
+        rows += cls_cell + ont_cell;
+        // TODO: Use the actual parameter value for text instead of the static text var above.
+        text_match = text.substring(a.from - 1, a.to);
+        text_prefix = text.substring(0, a.from - 1);
+        text_suffix = text.substring(a.to);
+        text_markup = text_prefix + "<em>" + text_match + "</em>" + text_suffix;
+        //console.log('text markup: ' + text_markup);
+        rows += "<td>" + text_markup + "</td>";
+        rows += cls_cell + ont_cell;
+        rows += "</tr>";
+        // Add rows for any classes in the hierarchy.
+        //console.log(annotation.hierarchy);
+        var c = null, o = null;
+        $.each(annotation.hierarchy, function(i, h) {
+            c = process_class(h.annotatedClass);
+            o = process_class_ontology(h.annotatedClass);
+            rows += "<tr>";
+            rows += "<td>" + get_link(c.uri, c.prefLabel) + "</td>";
+            rows += "<td>" + get_link(o.uri, o.name) + "</td>";
+            rows += "<td>" + text_markup + "</td>";
+            rows += cls_cell + ont_cell;
+            rows += "</tr>";
+        }); // hierarchy loop
+        // TODO: Add rows for any classes in the mappings.
+        // Note that the ont_cell will be different.
+    }); // annotations loop
+    return rows;
+}
+
+
+// TODO: Figure out how to hook up this call to incoming parameters and/or data?
+//$.getJSON('annotator.json', function(data) {
+//$.getJSON('annotator.json', function(data) {
+//    //console.log(data);
+//    var output = "<h2>Annotator rows:</h2>";
+//    output += "<table cellpadding='5'>";
+//    for (var i = 0; i < data.length; i++) {
+//        output += process_annotation(data[i]);
+//    }
+//    output += "</table>";
+//    jQuery("#update").html(output);
+//});
 
 

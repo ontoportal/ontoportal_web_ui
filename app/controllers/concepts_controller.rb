@@ -210,8 +210,8 @@ class ConceptsController < ApplicationController
 
 
 
-  # PRIVATE -----------------------------------------
-  private
+# PRIVATE -----------------------------------------
+private
 
   def show_ajax_request
     case params[:callback]
@@ -226,28 +226,28 @@ class ConceptsController < ApplicationController
     end
   end
 
-    # gathers the full set of data for a node
-    def show_uri_request
-      gather_details
-      build_tree
-    end
+  # gathers the full set of data for a node
+  def show_uri_request
+    gather_details
+    build_tree
+  end
 
-    # gathers the information for a node
-    def gather_details
-      # TODO_REV: Support mappings for classes
-      # @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.id)
-      # TODO_REV: Support deleting mappings
-      # check to see if user should get the option to delete
-      # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
-      update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
-    end
+  # gathers the information for a node
+  def gather_details
+    # TODO_REV: Support mappings for classes
+    # @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.id)
+    # TODO_REV: Support deleting mappings
+    # check to see if user should get the option to delete
+    # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
+    update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
+  end
 
-    def build_tree
-      # find path to root
-      rootNode = @concept.explore.tree.first
-      @root = TreeNode.new()
-      @root.set_children(rootNode.children, rootNode) unless rootNode.nil?
-    end
+  def build_tree
+    # find path to root
+    rootNode = @concept.explore.tree.first
+    @root = TreeNode.new()
+    @root.set_children(rootNode.children, rootNode) unless rootNode.nil?
+  end
 
 
 end
