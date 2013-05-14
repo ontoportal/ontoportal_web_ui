@@ -18,6 +18,7 @@ gem "will_paginate", "< 3.0"
 gem "airbrake"
 gem "rdoc"
 gem "iconv"
+gem "pry"
 
 gem 'ontologies_api_client', :git => "https://github.com/ncbo/ontologies_api_ruby_client.git"
 

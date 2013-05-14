@@ -3,8 +3,7 @@
 require 'uri'
 require 'cgi'
 require 'digest/sha1'
-
-require 'pry'
+require 'pry' # used in a rescue
 
 module ApplicationHelper
 
@@ -284,7 +283,7 @@ module ApplicationHelper
     @onts_in_group_or_category_for_js = onts_in_group_or_category_map.keys
 
 
-    binding.pry
+    #binding.pry
 
 
     @groups_for_select = []
