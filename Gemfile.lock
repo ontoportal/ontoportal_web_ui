@@ -85,7 +85,7 @@ GEM
     recaptcha (0.3.5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    slop (3.4.4)
+    slop (3.4.5)
     thin (1.5.1)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)

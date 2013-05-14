@@ -240,21 +240,13 @@ module ApplicationHelper
 
   def init_ontology_picker(ontologies = nil, selected_ontologies = [])
 
-    # TODO: Replace DataAccess with Linked Data.
-    ontologies = LinkedData::Client::Models::OntologySubmission.all
-    categories = LinkedData::Client::Models::Category.all
-    groups = LinkedData::Client::Models::Group.all
-
-    #ontologies = DataAccess.getOntologyList if ontologies.nil?
-    #groups = DataAccess.getGroups.to_a
-    #categories = DataAccess.getCategories
-
     groups_map = {}
     categories_map = {}
     onts_in_group_or_category_map = {}
 
     @onts_for_select = []
     @onts_for_js = [];
+    ontologies = LinkedData::Client::Models::OntologySubmission.all
     ontologies.each do |ont|
 
       acronym = ont.ontology.acronym || ""
@@ -262,7 +254,7 @@ module ApplicationHelper
       #ont_id = ont.id #submission ID
       ont_id = ont.ontology.id # virtual ID
 
-      abbreviation = acronym.empty? ? "" : "(" + acronym + ")"
+      abbreviation = acronym.empty? ? "" : "(#{acronym})"
       @onts_for_select << [name.strip + " " + abbreviation, ont_id]
       @onts_for_js << "\"#{name.strip} #{abbreviation}\": \"#{acronym}\""
 
@@ -282,41 +274,31 @@ module ApplicationHelper
     @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
     @onts_in_group_or_category_for_js = onts_in_group_or_category_map.keys
 
-
-    #binding.pry
-
-
-    @groups_for_select = []
-    groups.each do |group|
-      acronym = group[:acronym].nil? ? "" : " (#{group[:acronym]})"
-      @groups_for_select << [ group[:name] + acronym, group[:id].to_i ]
-    end
-    @groups_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
-
+    @groups_for_select = groups_for_select
     @groups_for_js = []
-    groups_map.each do |group_id, groups|
-      @groups_for_js << "#{group_id}: [ #{groups.join(", ")} ]"
+    groups_map.each do |group_uri, groups|
+      @groups_for_js << "#{group_uri}: [ #{groups.join(", ")} ]"
     end
 
     @categories_for_select = categories_for_select
     @categories_for_js = []
-    categories_map.each do |cat_id, cat|
-      @categories_for_js << "#{cat_id}: [ #{cat.join(", ")} ]"
+    categories_map.each do |cat_uri, cats|
+      @categories_for_js << "#{cat_uri}: [ #{cats.join(", ")} ]"
     end
   end
 
   def init_ontology_picker_single
-
-    # TODO: Replace DataAccess with Linked Data.
-    #ontologies = DataAccess.getOntologyList
     ontologies = LinkedData::Client::Models::OntologySubmission.all
-
     @onts_for_select = []
     @onts_for_js = [];
     ontologies.each do |ont|
-      abbreviation = ont.abbreviation.nil? ? "" : "(" + ont.abbreviation + ")"
-      @onts_for_select << [ont.displayLabel.strip + " " + abbreviation, ont.ontologyId.to_i]
-      @onts_for_js << "\"#{ont.displayLabel.strip} #{abbreviation}\": \"#{abbreviation.gsub("(", "").gsub(")", "")}\""
+      acronym = ont.ontology.acronym || ""
+      name = ont.ontology.name
+      #ont_id = ont.id # ontology submission URI
+      ont_id = ont.ontology.id # ontology URI
+      abbreviation = acronym.empty? ? "" : "(#{acronym})"
+      @onts_for_select << [name.strip + " " + abbreviation, ont_id]
+      @onts_for_js << "\"#{name.strip} #{abbreviation}\": \"#{acronym}\""
     end
     @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
   end
@@ -334,17 +316,25 @@ module ApplicationHelper
   end
 
   def categories_for_select
-
-    # TODO: Replace DataAccess with Linked Data.
-    #categories = DataAccess.getCategories
-    categories = LinkedData::Client::Models::Category.all
-
     categories_for_select = []
-    categories.each do |cat_id, cat|
-      categories_for_select << [ cat[:name], cat[:id] ]
+    categories = LinkedData::Client::Models::Category.all
+    categories.each do |c|
+      categories_for_select << [ c.name, c.id ]
     end
     categories_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
     categories_for_select
+  end
+
+  def groups_for_select
+    groups_for_select = []
+    groups = LinkedData::Client::Models::Group.all
+    groups.each do |group|
+      acronym = group.acronym || ""
+      acronym = acronym.empty? ? "" : " (#{acronym})"
+      groups_for_select << [ group.name + acronym, group.id ]
+    end
+    groups_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+    groups_for_select
   end
 
   def truncate_with_more(text, options = {})
