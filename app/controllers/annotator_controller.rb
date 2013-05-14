@@ -14,19 +14,6 @@ class AnnotatorController < ApplicationController
     end
     @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
 
-
-    # TODO: Match up ontology_ids to the linked data versions?
-
-    # OLD DATA STRUCTURE:
-    #{:id=>945,
-    #:localOntologyId=>49933,
-    #:name=>"Mouse adult gross anatomy",
-    #:version=>"unknown",
-    #:description=>"",
-    #:status=>28,
-    #:virtualOntologyId=>1000,
-    #:format=>"OBO"}
-
     #@annotator_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
     @annotator_ontologies = LinkedData::Client::Models::OntologySubmission.all
   end

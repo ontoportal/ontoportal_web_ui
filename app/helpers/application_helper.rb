@@ -243,8 +243,8 @@ module ApplicationHelper
 
     # TODO: Replace DataAccess with Linked Data.
     ontologies = LinkedData::Client::Models::OntologySubmission.all
-    #categories = LinkedData::Client::Models::Category.all
-    #groups = LinkedData::Client::Models::Group.all
+    categories = LinkedData::Client::Models::Category.all
+    groups = LinkedData::Client::Models::Group.all
 
     #ontologies = DataAccess.getOntologyList if ontologies.nil?
     #groups = DataAccess.getGroups.to_a
@@ -267,28 +267,25 @@ module ApplicationHelper
       @onts_for_select << [name.strip + " " + abbreviation, ont_id]
       @onts_for_js << "\"#{name.strip} #{abbreviation}\": \"#{acronym}\""
 
-      groups = ont.ontology.explore.groups
-      groups.each do |group|
+      ont.ontology.explore.groups.each do |group|
         onts_in_group_or_category_map[ont_id] = 1
         groups_map[group.id] = Array.new if groups_map[group.id].nil?
         groups_map[group.id] << ont_id
       end
 
-      categories = ont.ontology.explore.categories
-      categories.each do |category|
+      ont.ontology.explore.categories.each do |category|
         onts_in_group_or_category_map[ont_id] = 1
         categories_map[category.id] = Array.new if categories_map[category.id].nil?
         categories_map[category.id] << ont_id
       end
-
-
-      binding.pry
-
-
     end
-    @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
 
+    @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
     @onts_in_group_or_category_for_js = onts_in_group_or_category_map.keys
+
+
+    binding.pry
+
 
     @groups_for_select = []
     groups.each do |group|
@@ -303,7 +300,6 @@ module ApplicationHelper
     end
 
     @categories_for_select = categories_for_select
-
     @categories_for_js = []
     categories_map.each do |cat_id, cat|
       @categories_for_js << "#{cat_id}: [ #{cat.join(", ")} ]"
