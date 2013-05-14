@@ -4,6 +4,8 @@ require 'uri'
 require 'cgi'
 require 'digest/sha1'
 
+require 'pry'
+
 module ApplicationHelper
 
   def isOwner?(id)
@@ -241,8 +243,8 @@ module ApplicationHelper
 
     # TODO: Replace DataAccess with Linked Data.
     ontologies = LinkedData::Client::Models::OntologySubmission.all
-    categories = LinkedData::Client::Models::Category.all
-    groups = LinkedData::Client::Models::Group.all
+    #categories = LinkedData::Client::Models::Category.all
+    #groups = LinkedData::Client::Models::Group.all
 
     #ontologies = DataAccess.getOntologyList if ontologies.nil?
     #groups = DataAccess.getGroups.to_a
@@ -255,21 +257,34 @@ module ApplicationHelper
     @onts_for_select = []
     @onts_for_js = [];
     ontologies.each do |ont|
-      abbreviation = ont.abbreviation.nil? ? "" : "(" + ont.abbreviation + ")"
-      @onts_for_select << [ont.displayLabel.strip + " " + abbreviation, ont.ontologyId.to_i]
-      @onts_for_js << "\"#{ont.displayLabel.strip} #{abbreviation}\": \"#{abbreviation.gsub("(", "").gsub(")", "")}\""
 
-      ont.groups.each do |group_id|
-        onts_in_group_or_category_map[ont.ontologyId] = 1
-        groups_map[group_id.to_i] = Array.new if groups_map[group_id.to_i].nil?
-        groups_map[group_id.to_i] << ont.ontologyId
+      acronym = ont.ontology.acronym || ""
+      name = ont.ontology.name
+      #ont_id = ont.id #submission ID
+      ont_id = ont.ontology.id # virtual ID
+
+      abbreviation = acronym.empty? ? "" : "(" + acronym + ")"
+      @onts_for_select << [name.strip + " " + abbreviation, ont_id]
+      @onts_for_js << "\"#{name.strip} #{abbreviation}\": \"#{acronym}\""
+
+      groups = ont.ontology.explore.groups
+      groups.each do |group|
+        onts_in_group_or_category_map[ont_id] = 1
+        groups_map[group.id] = Array.new if groups_map[group.id].nil?
+        groups_map[group.id] << ont_id
       end
 
-      ont.categories.each do |cat_id|
-        onts_in_group_or_category_map[ont.ontologyId] = 1
-        categories_map[cat_id.to_i] = Array.new if categories_map[cat_id.to_i].nil?
-        categories_map[cat_id.to_i] << ont.ontologyId
+      categories = ont.ontology.explore.categories
+      categories.each do |category|
+        onts_in_group_or_category_map[ont_id] = 1
+        categories_map[category.id] = Array.new if categories_map[category.id].nil?
+        categories_map[category.id] << ont_id
       end
+
+
+      binding.pry
+
+
     end
     @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
 
