@@ -66,7 +66,7 @@ Rails::Initializer.run do |config|
   require 'ontologies_api_client'
   LinkedData::Client.config do |config|
     config.rest_url   = "http://stagedata.bioontology.org/"
-    config.apikey     = "35fdc91d-a3f6-475f-a0e6-d6d287d89d50"  # TODO: Change to UI API key
+    config.apikey     = '4ea81d74-8960-4525-810b-fa1baab576ff' # $API_KEY in bioportal_config.rb
     config.links_attr = "links"
     config.cache      = false
   end
