@@ -1,9 +1,10 @@
 
 <script type="text/javascript">
+
 var abbreviationMap = { <%= @onts_for_js.join(", ") %> };
 var groupsMap = { <%= @groups_for_js.join(", ") %> };
 var categoriesMap = { <%= @categories_for_js.join(", ") %> };
-var ontsInGroupsOrCategories = [ <%= @onts_in_group_or_category_for_js.join(", ") %> ];
+var ontsInGroupsOrCategories = <%= @onts_in_group_or_category_for_js.to_s %>;
 var winHeight = jQuery(window).height();
 var ontSelectListPos = { top: 0, left: 0, width: 0 };
 var allSelected = false;

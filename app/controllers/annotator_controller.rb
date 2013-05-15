@@ -1,25 +1,23 @@
 class AnnotatorController < ApplicationController
   layout 'ontology'
 
-  ANNOTATOR_OPTIONS = {:apikey => $API_KEY, :annotator_location => "http://#{$REST_DOMAIN}/obs"}
-
   def index
-    annotator = set_apikey(NCBO::Annotator.new(ANNOTATOR_OPTIONS))
-    ontology_ids = []
-    annotator.ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
-
+    annotator = get_annotator_client
     @semantic_types_for_select = []
-    annotator.semantic_types.each do |semantic_type|
-      @semantic_types_for_select << [ "#{semantic_type[:description]} (#{semantic_type[:semanticType]})", semantic_type[:semanticType]]
+    annotator.semantic_types.each do |st|
+      @semantic_types_for_select << [ "#{st[:description]} (#{st[:semanticType]})", st[:semanticType]]
     end
     @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
 
+    # TODO: Duplicate the filteredOntologyList for the LinkedData client?
+    #ontology_ids = []
+    #annotator.ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
     #@annotator_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
     @annotator_ontologies = LinkedData::Client::Models::OntologySubmission.all
   end
 
   def create
-    annotator = set_apikey(NCBO::Annotator.new(ANNOTATOR_OPTIONS))
+    annotator = get_annotator_client
     text = params[:text].strip.gsub("\r\n", " ").gsub("\n", " ")
     options = { :ontologiesToKeepInResult => params[:ontology_ids] ||= [],
                 :withDefaultStopWords => true,
@@ -136,13 +134,12 @@ private
     [before, kept_space, highlight.join, after].join
   end
 
-  def set_apikey(annotator)
+  def get_annotator_client
+    options = {:apikey => $API_KEY, :annotator_location => "http://#{$REST_DOMAIN}/obs"}
     if session[:user]
-      annotator.options[:apikey] = session[:user].apikey
-    else
-      annotator.options[:apikey] = $API_KEY
+      options[:apikey] = session[:user].apikey
     end
-    annotator
+    NCBO::Annotator.new(options)
   end
 
 end

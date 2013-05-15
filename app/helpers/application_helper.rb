@@ -251,23 +251,23 @@ module ApplicationHelper
 
       acronym = ont.ontology.acronym || ""
       name = ont.ontology.name
-      #ont_id = ont.id #submission ID
-      ont_id = ont.ontology.id # virtual ID
+      #ont_uri = ont.id # ontology submission URI
+      ont_uri = ont.ontology.id # ontology URI
 
       abbreviation = acronym.empty? ? "" : "(#{acronym})"
-      @onts_for_select << [name.strip + " " + abbreviation, ont_id]
+      @onts_for_select << [name.strip + " " + abbreviation, ont_uri]
       @onts_for_js << "\"#{name.strip} #{abbreviation}\": \"#{acronym}\""
 
       ont.ontology.explore.groups.each do |group|
-        onts_in_group_or_category_map[ont_id] = 1
+        onts_in_group_or_category_map[ont_uri] = 1
         groups_map[group.id] = Array.new if groups_map[group.id].nil?
-        groups_map[group.id] << ont_id
+        groups_map[group.id] << ont_uri
       end
 
       ont.ontology.explore.categories.each do |category|
-        onts_in_group_or_category_map[ont_id] = 1
+        onts_in_group_or_category_map[ont_uri] = 1
         categories_map[category.id] = Array.new if categories_map[category.id].nil?
-        categories_map[category.id] << ont_id
+        categories_map[category.id] << ont_uri
       end
     end
 
@@ -277,13 +277,13 @@ module ApplicationHelper
     @groups_for_select = groups_for_select
     @groups_for_js = []
     groups_map.each do |group_uri, groups|
-      @groups_for_js << "#{group_uri}: [ #{groups.join(", ")} ]"
+      @groups_for_js << "\"#{group_uri}\": #{groups.to_s}"
     end
 
     @categories_for_select = categories_for_select
     @categories_for_js = []
     categories_map.each do |cat_uri, cats|
-      @categories_for_js << "#{cat_uri}: [ #{cats.join(", ")} ]"
+      @categories_for_js << "\"#{cat_uri}\": #{cats.to_s}"
     end
   end
 
@@ -294,10 +294,10 @@ module ApplicationHelper
     ontologies.each do |ont|
       acronym = ont.ontology.acronym || ""
       name = ont.ontology.name
-      #ont_id = ont.id # ontology submission URI
-      ont_id = ont.ontology.id # ontology URI
+      #ont_uri = ont.id # ontology submission URI
+      ont_uri = ont.ontology.id # ontology URI
       abbreviation = acronym.empty? ? "" : "(#{acronym})"
-      @onts_for_select << [name.strip + " " + abbreviation, ont_id]
+      @onts_for_select << [name.strip + " " + abbreviation, ont_uri]
       @onts_for_js << "\"#{name.strip} #{abbreviation}\": \"#{acronym}\""
     end
     @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
