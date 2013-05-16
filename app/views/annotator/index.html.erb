@@ -21,14 +21,17 @@
 
     <%=render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => @annotator_ontologies }%>
 
+    <!-- TODO: Enable this when the new API supports semantic types.
     <b>Select UMLS Semantic Types</b><br/>
-    <%= select_tag :semanticTypes, options_for_select(@semantic_types_for_select), :multiple => 'true', "data-placeholder".to_sym => "Type here to select UMLS semantic types", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text" %><br/>
+    <%#= select_tag :semanticTypes, options_for_select(@semantic_types_for_select), :multiple => 'true', "data-placeholder".to_sym => "Type here to select UMLS semantic types", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text" %><br/>
+    -->
 
+    <br/>
+    <p>
     <b>Include Mappings:</b>&nbsp;&nbsp;
     <%=check_box_tag :mappings, :automatic, false, :id => "mappings_automatic"%> <%=label_tag :mappings_automatic, "Automatic"%>&nbsp;&nbsp;
     <%=check_box_tag :mappings, :manual, false, :id => "mappings_manual"%> <%=label_tag :mappings_manual, "Manual"%><br/>
-
-    <br/>
+    </p>
 
     <p>
       <b>Include Ancestors Up To Level:</b>&nbsp;&nbsp;

@@ -62,12 +62,16 @@ function get_annotations() {
     data    : params,
     dataType: "json",
     success : function (data) {
-      console.log(data);
+//      console.log(data);
+      display_annotations(data);
+      jQuery(".annotator_spinner").hide();
+      jQuery("#annotations_container").show(600);
+      jQuery("#annotator_error").html(" Success in getting annotations, data in console log; TODO: format for web page.");
     },
     error   : function (data) {
       console.log(data);
       jQuery(".annotator_spinner").hide();
-      jQuery("#annotations_container").hide();
+      jQuery("#annotations_container").hide(600);
       jQuery("#annotator_error").html(" Problem getting annotations, please try again");
     }
   });
@@ -563,11 +567,13 @@ jQuery(document).ready(function () {
 
 
 function get_link(uri, label) {
+  "use strict";
   return '<a href="' + uri + '">' + label + '</a>';
 }
 
 
 function get_class_details(uri) {
+  "use strict";
   var details = {};
   $.ajax({
     url     : uri,
@@ -585,6 +591,7 @@ function get_class_details(uri) {
 
 
 function get_ontology_details(uri) {
+  "use strict";
   var details = {};
   $.ajax({
     url     : uri,
@@ -601,30 +608,30 @@ function get_ontology_details(uri) {
 
 
 function process_class(term) {
+  "use strict";
   // Get class URI and prefLabel
   // Use the '@id' value?
   var cls = {},
     details = null;
   cls.uri = term.links.self;
-  // TODO: Replace with full URI
-  details = get_class_details(cls.uri + "?apikey=" + apikey);
-  //details = get_class_details('annotator_class.json');
-  cls.prefLabel = details.prefLabel;
+  // TODO: Use the annotator_controller.create method to get this detail.
+  //details = get_class_details(cls.uri + "?apikey=" + apikey);
+  cls.prefLabel = "TODO: GET IT IN ANNOTATOR CONTROLLER?";
   //cls.synonym = details.synonym;
   return cls;
 }
 
 
 function process_class_ontology(term) {
+  "use strict";
   // Get ontology URI and name
   // Use the '@id' value?
   var ont = {},
     details = null;
   ont.uri = term.links.ontology;
-  // TODO: Replace with full URI
-  details = get_ontology_details(ont.uri + "?apikey=" + apikey);
-  //details = get_ontology_details('class_ontology.json');
-  ont.name = details.name;
+  // TODO: Use the annotator_controller.create method to get this detail.
+  //details = get_ontology_details(ont.uri + "?apikey=" + apikey);
+  ont.name = "TODO: GET IT IN ANNOTATOR CONTROLLER?";
   return ont;
 }
 
@@ -671,9 +678,19 @@ function process_annotation(annotation) {
   return rows;
 }
 
+function display_annotations(data) {
+  "use strict";
+  console.log(data);
+  //  var output = "<h2>Annotator rows:</h2>";
+  //  output += "<table cellpadding='5'>";
+  //  for (var i = 0; i < data.length; i++) {
+  //    output += process_annotation(data[i]);
+  //  }
+  //  output += "</table>";
+  //  jQuery("#annotations_container").html(output);
+}
 
 // TODO: Figure out how to hook up this call to incoming parameters and/or data?
-//$.getJSON('annotator.json', function(data) {
 //$.getJSON('annotator.json', function(data) {
 //    //console.log(data);
 //    var output = "<h2>Annotator rows:</h2>";
