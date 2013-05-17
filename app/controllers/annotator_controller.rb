@@ -9,10 +9,13 @@ require 'cgi'
 class AnnotatorController < ApplicationController
   layout 'ontology'
 
-  #REST_URL = "http://#{$REST_DOMAIN}"
-  REST_URL = "http://stagedata.bioontology.org"
-  ANNOTATOR_LOCATION = REST_URL + "/annotator"
+  #REST_URI = "http://#{$REST_DOMAIN}"
+  REST_URI = "http://stagedata.bioontology.org"
+  ANNOTATOR_URI = REST_URI + "/annotator"
   API_KEY = $API_KEY
+
+  # TODO: Evalute whether the ontologies hash could be in a REDIS key:value store.  If so, this could avoid all the repetitive API requests for basic ontology details.
+  @@ontologies = {}
 
   def index
     @semantic_types_for_select = []
@@ -63,12 +66,28 @@ class AnnotatorController < ApplicationController
 
     # TODO: Construct additional parameters in the query when they are supported.
     start = Time.now
-    query = ANNOTATOR_LOCATION
+    query = ANNOTATOR_URI
     query += "?text=" + CGI.escape(text_to_annotate)
     query += "&levelMax=" + options[:levelMax].to_s
-    annotations = parse_annotator_json(query)
+    annotations = parse_json(query)
     LOG.add :debug, "Getting annotations: #{Time.now - start}s"
 
+    # TODO: Evaluate whether the REST API could be doing this more efficiently.
+    annotations.each do |a|
+      # Get the class details required for display, assume this is necessary
+      # for every element of the annotations array because the API returns a set, right?
+      # Replace the annotated class with these simplified, yet enhanced details.
+      a["annotatedClass"] = get_class_details(a["annotatedClass"])
+      a["hierarchy"].each do |h|
+        h["annotatedClass"] = get_class_details(h["annotatedClass"])
+      end
+    end
+
+
+
+    #
+    # OLD API CODE...
+    #
     #highlight_cache = {}
     #start = Time.now
     #context_ontologies = []
@@ -141,6 +160,33 @@ class AnnotatorController < ApplicationController
 
 private
 
+
+  def get_class_details(annotatedClass)
+    # Get the class details required for display, assume this is necessary
+    # for every element of the annotations array because the API returns a set?
+    cls = {}
+    cls["uri"] = annotatedClass["links"]["self"]
+    cls_details = parse_json(cls["uri"])  # Additional API request (synchronous)
+    cls["id"] = cls_details["@id"]
+    cls["prefLabel"] = cls_details["prefLabel"]
+    ont_uri = annotatedClass["links"]["ontology"]
+    if @@ontologies.keys.include? ont_uri
+      # Use the saved ontology details to avoid repetitive API requests
+      ont = @@ontologies[ont_uri]
+    else
+      ont_details = parse_json(ont_uri)  # Additional API request (synchronous)
+      ont = {}
+      ont["acronym"] = ont_details["acronym"]
+      ont["name"] = ont_details["name"]
+      ont["id"] = ont_details["@id"]
+      ont["uri"] = ont_uri
+      @@ontologies[ont_uri] = ont
+    end
+    cls["ontology"] = ont
+    return cls
+  end
+
+
   def highlight_and_get_context(text, position, words_to_keep = 4)
     # Process the highlighted text
     highlight = ["<span style='color: #006600; padding: 2px 0; font-weight: bold;'>", "", "</span>"]
@@ -169,13 +215,12 @@ private
   #  NCBO::Annotator.new(options)
   #end
 
-  def parse_annotator_json(url)
+  def parse_json(uri)
     apikey = API_KEY
     if session[:user]
       apikey = session[:user].apikey
     end
-    JSON.parse(open(url, "Authorization" => "apikey token=#{apikey}").read)
-
+    JSON.parse(open(uri, "Authorization" => "apikey token=#{apikey}").read)
   end
 
 

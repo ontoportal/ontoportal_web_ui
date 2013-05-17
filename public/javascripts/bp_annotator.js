@@ -28,7 +28,8 @@ function get_annotations() {
     return;
   }
 
-  jQuery("#annotations_container").hide(600, jQuery(".annotator_spinner").show());
+  jQuery("#annotations_container").hide(300);
+  jQuery(".annotator_spinner").show();
 
   var params = {},
     ont_select = jQuery("#ontology_ontologyId"),
@@ -58,12 +59,12 @@ function get_annotations() {
 
   jQuery.ajax({
     type    : "POST",
-    url     : "/annotator",
+    url     : "/annotator",  // Call back to the UI annotation_controller::create method
     data    : params,
     dataType: "json",
     success : function (data) {
 //      console.log(data);
-      display_annotations(data);
+      display_annotations(data, params);
       jQuery(".annotator_spinner").hide();
       jQuery("#annotations_container").show(600);
       jQuery("#annotator_error").html(" Success in getting annotations, data in console log; TODO: format for web page.");
@@ -572,74 +573,74 @@ function get_link(uri, label) {
 }
 
 
-function get_class_details(uri) {
+//function get_class_details(uri) {
+//  "use strict";
+//  var details = {};
+//  $.ajax({
+//    url     : uri,
+//    datatype: 'json',
+//    async   : false,
+//    success : function (json) {
+//      details.prefLabel = json.prefLabel;
+//      //details.synonym = json.synonym;
+//    }
+//  });
+//  return details;
+//  // NOTE: Cute abstraction, but it's slower.
+//  //return request_details(uri, ["name"]);
+//}
+
+
+//function get_ontology_details(uri) {
+//  "use strict";
+//  var details = {};
+//  $.ajax({
+//    url     : uri,
+//    datatype: 'json',
+//    async   : false,
+//    success : function (json) {
+//      details.name = json.name;
+//    }
+//  });
+//  return details;
+//  // NOTE: Cute abstraction, but it's slower.
+//  //return request_details(uri, ["name"]);
+//}
+
+
+//function process_class(term) {
+//  "use strict";
+//  // Get class URI and prefLabel
+//  // Use the '@id' value?
+//  var cls = {},
+//    details = null;
+//  cls.uri = term.links.self;
+//  // TODO: Use the annotator_controller.create method to get this detail.
+//  //details = get_class_details(cls.uri + "?apikey=" + apikey);
+//  cls.prefLabel = "TODO: GET IT IN ANNOTATOR CONTROLLER?";
+//  //cls.synonym = details.synonym;
+//  return cls;
+//}
+
+
+//function process_class_ontology(term) {
+//  "use strict";
+//  // Get ontology URI and name
+//  // Use the '@id' value?
+//  var ont = {},
+//    details = null;
+//  ont.uri = term.links.ontology;
+//  // TODO: Use the annotator_controller.create method to get this detail.
+//  //details = get_ontology_details(ont.uri + "?apikey=" + apikey);
+//  ont.name = "TODO: GET IT IN ANNOTATOR CONTROLLER?";
+//  return ont;
+//}
+
+
+function process_annotation(annotation, text) {
   "use strict";
-  var details = {};
-  $.ajax({
-    url     : uri,
-    datatype: 'json',
-    async   : false,
-    success : function (json) {
-      details.prefLabel = json.prefLabel;
-      //details.synonym = json.synonym;
-    }
-  });
-  return details;
-  // NOTE: Cute abstraction, but it's slower.
-  //return request_details(uri, ["name"]);
-}
-
-
-function get_ontology_details(uri) {
-  "use strict";
-  var details = {};
-  $.ajax({
-    url     : uri,
-    datatype: 'json',
-    async   : false,
-    success : function (json) {
-      details.name = json.name;
-    }
-  });
-  return details;
-  // NOTE: Cute abstraction, but it's slower.
-  //return request_details(uri, ["name"]);
-}
-
-
-function process_class(term) {
-  "use strict";
-  // Get class URI and prefLabel
-  // Use the '@id' value?
-  var cls = {},
-    details = null;
-  cls.uri = term.links.self;
-  // TODO: Use the annotator_controller.create method to get this detail.
-  //details = get_class_details(cls.uri + "?apikey=" + apikey);
-  cls.prefLabel = "TODO: GET IT IN ANNOTATOR CONTROLLER?";
-  //cls.synonym = details.synonym;
-  return cls;
-}
-
-
-function process_class_ontology(term) {
-  "use strict";
-  // Get ontology URI and name
-  // Use the '@id' value?
-  var ont = {},
-    details = null;
-  ont.uri = term.links.ontology;
-  // TODO: Use the annotator_controller.create method to get this detail.
-  //details = get_ontology_details(ont.uri + "?apikey=" + apikey);
-  ont.name = "TODO: GET IT IN ANNOTATOR CONTROLLER?";
-  return ont;
-}
-
-
-function process_annotation(annotation) {
-  "use strict";
-  var cls = process_class(annotation.annotatedClass),
-    ont = process_class_ontology(annotation.annotatedClass),
+  var cls = annotation.annotatedClass,
+    ont = cls.ontology,
     rows = "",
     cls_cell = "<td>" + get_link(cls.uri, cls.prefLabel) + "</td>",
     ont_cell = "<td>" + get_link(ont.uri, ont.name) + "</td>",
@@ -650,7 +651,6 @@ function process_annotation(annotation) {
   $.each(annotation.annotations, function (i, a) {
     rows += "<tr>";
     rows += cls_cell + ont_cell;
-    // TODO: Use the actual parameter value for text instead of the static text var above.
     text_match = text.substring(a.from - 1, a.to);
     text_prefix = text.substring(0, a.from - 1);
     text_suffix = text.substring(a.to);
@@ -663,8 +663,8 @@ function process_annotation(annotation) {
     //console.log(annotation.hierarchy);
     var c = null, o = null;
     $.each(annotation.hierarchy, function (i, h) {
-      c = process_class(h.annotatedClass);
-      o = process_class_ontology(h.annotatedClass);
+      c = h.annotatedClass;
+      o = c.ontology;
       rows += "<tr>";
       rows += "<td>" + get_link(c.uri, c.prefLabel) + "</td>";
       rows += "<td>" + get_link(o.uri, o.name) + "</td>";
@@ -678,16 +678,17 @@ function process_annotation(annotation) {
   return rows;
 }
 
-function display_annotations(data) {
+function display_annotations(data, params) {
   "use strict";
-  console.log(data);
-  //  var output = "<h2>Annotator rows:</h2>";
-  //  output += "<table cellpadding='5'>";
-  //  for (var i = 0; i < data.length; i++) {
-  //    output += process_annotation(data[i]);
-  //  }
-  //  output += "</table>";
-  //  jQuery("#annotations_container").html(output);
+//  console.log(data);
+//  console.log(params);
+  var output = "<h2>Annotator rows:</h2>";
+  output += "<table cellpadding='5'>";
+  for (var i = 0; i < data.length; i++) {
+    output += process_annotation(data[i], params.text);
+  }
+  output += "</table>";
+  jQuery("#annotations_container").html(output);
 }
 
 // TODO: Figure out how to hook up this call to incoming parameters and/or data?
