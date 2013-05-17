@@ -25,7 +25,7 @@ class AnnotatorController < ApplicationController
     #annotator.semantic_types.each do |st|
     #  @semantic_types_for_select << [ "#{st[:description]} (#{st[:semanticType]})", st[:semanticType]]
     #end
-    @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
+    #@semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
 
     # TODO: Duplicate the filteredOntologyList for the LinkedData client?
     #ontology_ids = []
@@ -69,6 +69,7 @@ class AnnotatorController < ApplicationController
     query = ANNOTATOR_URI
     query += "?text=" + CGI.escape(text_to_annotate)
     query += "&levelMax=" + options[:levelMax].to_s
+    query += "&ontologies=" + CGI.escape(ont_uris.join(',')) unless ont_uris.empty?
     annotations = parse_json(query)
     LOG.add :debug, "Getting annotations: #{Time.now - start}s"
 
