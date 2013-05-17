@@ -62,13 +62,8 @@ Rails::Initializer.run do |config|
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
 
-  # ontologies_api_client init
+  # ontologies_api_client init (default config works for the UI)
   require 'ontologies_api_client'
-  LinkedData::Client.config do |config|
-    config.rest_url   = "http://stagedata.bioontology.org/"
-    config.apikey     = '4ea81d74-8960-4525-810b-fa1baab576ff' # $API_KEY in bioportal_config.rb
-    config.links_attr = "links"
-    config.cache      = false
-  end
+  LinkedData::Client.config
 end
 
