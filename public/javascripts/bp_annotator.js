@@ -63,14 +63,13 @@ function get_annotations() {
     data    : params,
     dataType: "json",
     success : function (data) {
-//      console.log(data);
       display_annotations(data, params);
       jQuery(".annotator_spinner").hide();
       jQuery("#annotations_container").show(600);
-      jQuery("#annotator_error").html(" Success in getting annotations, data in console log; TODO: format for web page.");
+      //jQuery("#annotator_error").html(" Success in getting annotations; TODO: format for web page.");
     },
     error   : function (data) {
-      console.log(data);
+      //console.log(data);
       jQuery(".annotator_spinner").hide();
       jQuery("#annotations_container").hide(600);
       jQuery("#annotator_error").html(" Problem getting annotations, please try again");
@@ -660,7 +659,6 @@ function process_annotation(annotation, text) {
     rows += cls_cell + ont_cell;
     rows += "</tr>";
     // Add rows for any classes in the hierarchy.
-    //console.log(annotation.hierarchy);
     var c = null, o = null;
     $.each(annotation.hierarchy, function (i, h) {
       c = h.annotatedClass;
@@ -680,8 +678,6 @@ function process_annotation(annotation, text) {
 
 function display_annotations(data, params) {
   "use strict";
-//  console.log(data);
-//  console.log(params);
   var output = "<h2>Annotator rows:</h2>";
   output += "<table cellpadding='5'>";
   for (var i = 0; i < data.length; i++) {
@@ -690,17 +686,5 @@ function display_annotations(data, params) {
   output += "</table>";
   jQuery("#annotations_container").html(output);
 }
-
-// TODO: Figure out how to hook up this call to incoming parameters and/or data?
-//$.getJSON('annotator.json', function(data) {
-//    //console.log(data);
-//    var output = "<h2>Annotator rows:</h2>";
-//    output += "<table cellpadding='5'>";
-//    for (var i = 0; i < data.length; i++) {
-//        output += process_annotation(data[i]);
-//    }
-//    output += "</table>";
-//    jQuery("#update").html(output);
-//});
 
 

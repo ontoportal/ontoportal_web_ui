@@ -36,8 +36,7 @@ class AnnotatorController < ApplicationController
 
   def create
     text_to_annotate = params[:text].strip.gsub("\r\n", " ").gsub("\n", " ")
-    ont_uris = params[:ontology_ids] ||= []
-    ont_uris = ont_uris.empty? ? [] : params[:ontology_ids]  # Convert an empty string to an empty array, if required.
+    ont_uris = params[:ontology_ids] ||= ""
     options = { :ontologiesToKeepInResult => ont_uris,
                 :withDefaultStopWords => true,
                 :levelMax => params[:levelMax] ||= 0,
@@ -69,7 +68,7 @@ class AnnotatorController < ApplicationController
     query = ANNOTATOR_URI
     query += "?text=" + CGI.escape(text_to_annotate)
     query += "&levelMax=" + options[:levelMax].to_s
-    query += "&ontologies=" + CGI.escape(ont_uris.join(',')) unless ont_uris.empty?
+    query += "&ontologies=" + CGI.escape(ont_uris) unless ont_uris.empty?
     annotations = parse_json(query)
     LOG.add :debug, "Getting annotations: #{Time.now - start}s"
 
@@ -83,7 +82,6 @@ class AnnotatorController < ApplicationController
         h["annotatedClass"] = get_class_details(h["annotatedClass"])
       end
     end
-
 
 
     #
