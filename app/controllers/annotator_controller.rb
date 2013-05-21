@@ -69,14 +69,16 @@ class AnnotatorController < ApplicationController
     query += "?text=" + CGI.escape(text_to_annotate)
     query += "&levelMax=" + options[:levelMax].to_s
     query += "&ontologies=" + CGI.escape(ont_uris) unless ont_uris.empty?
+    query += "&semanticTypes=" + options[:semanticTypes].join(',') unless options[:semanticTypes].empty?
+    query += "&mappingTypes=" + options[:mappingTypes].join(',') unless options[:mappingTypes].empty?
     annotations = parse_json(query)
     LOG.add :debug, "Getting annotations: #{Time.now - start}s"
 
     # TODO: Evaluate whether the REST API could be doing this more efficiently.
     annotations.each do |a|
       # Get the class details required for display, assume this is necessary
-      # for every element of the annotations array because the API returns a set, right?
-      # Replace the annotated class with these simplified, yet enhanced details.
+      # for every element of the annotations array because the API returns a set.
+      # Replace the annotated class with these modified details.
       a["annotatedClass"] = get_class_details(a["annotatedClass"])
       a["hierarchy"].each do |h|
         h["annotatedClass"] = get_class_details(h["annotatedClass"])
