@@ -15,7 +15,7 @@ class AnnotatorController < ApplicationController
   API_KEY = $API_KEY
 
   # TODO: Evalute whether the ontologies hash could be in a REDIS key:value store.  If so, this could avoid all the repetitive API requests for basic ontology details.
-  @@ontologies = {}
+  ONTOLOGIES = {}
 
   def index
     @semantic_types_for_select = []
@@ -39,7 +39,7 @@ class AnnotatorController < ApplicationController
     ont_uris = params[:ontology_ids] ||= ""
     options = { :ontologiesToKeepInResult => ont_uris,
                 :withDefaultStopWords => true,
-                :levelMax => params[:levelMax] ||= 0,
+                :max_level => params[:levelMax] ||= 0,
                 :semanticTypes => params[:semanticTypes] ||= [],
                 :mappingTypes => params[:mappingTypes] ||= [],
                 :wholeWordOnly => params[:wholeWordOnly] ||= true,
@@ -67,7 +67,7 @@ class AnnotatorController < ApplicationController
     start = Time.now
     query = ANNOTATOR_URI
     query += "?text=" + CGI.escape(text_to_annotate)
-    query += "&levelMax=" + options[:levelMax].to_s
+    query += "&max_level=" + options[:max_level].to_s
     query += "&ontologies=" + CGI.escape(ont_uris) unless ont_uris.empty?
     query += "&semanticTypes=" + options[:semanticTypes].join(',') unless options[:semanticTypes].empty?
     query += "&mappingTypes=" + options[:mappingTypes].join(',') unless options[:mappingTypes].empty?
@@ -166,22 +166,22 @@ private
     # Get the class details required for display, assume this is necessary
     # for every element of the annotations array because the API returns a set?
     cls = {}
-    cls["uri"] = annotatedClass["links"]["self"]
+    cls["uri"] = annotatedClass["links"]["self"]  # TODO: Change to UI link.
     cls_details = parse_json(cls["uri"])  # Additional API request (synchronous)
     cls["id"] = cls_details["@id"]
     cls["prefLabel"] = cls_details["prefLabel"]
     ont_uri = annotatedClass["links"]["ontology"]
-    if @@ontologies.keys.include? ont_uri
+    if ONTOLOGIES.keys.include? ont_uri
       # Use the saved ontology details to avoid repetitive API requests
-      ont = @@ontologies[ont_uri]
+      ont = ONTOLOGIES[ont_uri]
     else
       ont_details = parse_json(ont_uri)  # Additional API request (synchronous)
       ont = {}
       ont["acronym"] = ont_details["acronym"]
       ont["name"] = ont_details["name"]
       ont["id"] = ont_details["@id"]
-      ont["uri"] = ont_uri
-      @@ontologies[ont_uri] = ont
+      ont["uri"] = ont_uri  # TODO: Change to UI link.
+      ONTOLOGIES[ont_uri] = ont
     end
     cls["ontology"] = ont
     return cls

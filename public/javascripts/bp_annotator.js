@@ -63,6 +63,8 @@ function get_annotations() {
     data    : params,
     dataType: "json",
     success : function (data) {
+      //bp_last_params = data.statistics.parameters;
+      bp_last_params = params;
       display_annotations(data, params);
       jQuery(".annotator_spinner").hide();
       jQuery("#annotations_container").show(600);
@@ -70,6 +72,7 @@ function get_annotations() {
     },
     error   : function (data) {
       //console.log(data);
+      bp_last_params = params;
       jQuery(".annotator_spinner").hide();
       jQuery("#annotations_container").hide(600);
       jQuery("#annotator_error").html(" Problem getting annotations, please try again");
@@ -478,18 +481,15 @@ function annotatorPostForm(format) {
   var format_map = { "xml": "XML", "text": "Text", "tabDelimited": "CSV" };
   var params = bp_last_params;
   params["format"] = format;
-
   var form_fields = [];
   jQuery.each(params, function (k, v) {
     if (v != null) {
       form_fields.push("<input type='hidden' name='" + k + "' value='" + v + "'>");
     }
   });
-
-  var form = jQuery("<form action='http://" + jQuery("#annotations_container").data("bp_rest_server") + "/annotator/annotator' method='post' target='_blank'/>")
+  var form = jQuery("<form action='http://" + jQuery("#annotations_container").data("bp_rest_server") + "/annotator' method='post' target='_blank'/>")
     .append(form_fields.join(""))
     .append("<input type='submit' value='" + format_map[format] + "'>");
-
   jQuery("#download_links_" + format.toLowerCase()).html(form);
 }
 
@@ -636,55 +636,167 @@ function get_link(uri, label) {
 //}
 
 
-function process_annotation(annotation, text) {
+function get_annotation_rows(annotation, text) {
   "use strict";
+  var match_type_translation = { "mgrep": "direct", "mapping": "mapping", "closure": "ancestor" };
   var cls = annotation.annotatedClass,
-    ont = cls.ontology,
-    rows = "",
-    cls_cell = "<td>" + get_link(cls.uri, cls.prefLabel) + "</td>",
-    ont_cell = "<td>" + get_link(ont.uri, ont.name) + "</td>",
+    rows = [],
+    cells = [],
+    // TODO: Use a UI link instead of the data URI
+    cls_link = get_link(cls.uri, cls.prefLabel),
+    ont_link = get_link(cls.ontology.uri, cls.ontology.name),
+    match_type = '',
+    semantic_types = '',
     text_match = null,
     text_prefix = null,
     text_suffix = null,
     text_markup = null;
   $.each(annotation.annotations, function (i, a) {
-    rows += "<tr>";
-    rows += cls_cell + ont_cell;
+
+    // TODO: check for multiple matches in text, i.e. more than one set of positions.
+    // TODO: consider string truncation around the annotation markups.
+
     text_match = text.substring(a.from - 1, a.to);
     text_prefix = text.substring(0, a.from - 1);
     text_suffix = text.substring(a.to);
     text_markup = text_prefix + "<em>" + text_match + "</em>" + text_suffix;
     //console.log('text markup: ' + text_markup);
-    rows += "<td>" + text_markup + "</td>";
-    rows += cls_cell + ont_cell;
-    rows += "</tr>";
+    match_type = match_type_translation[a.matchType.toLowerCase()] || 'direct';
+    // TODO: Add semantic type extraction code.
+    //      // Gather sem types for display
+    //      var semantic_types = [];
+    //      jQuery.each(annotation.concept.semantic_types, function () {
+    //        semantic_types.push(this.description);
+    //      });
+    cells = [ cls_link, ont_link, match_type, semantic_types, text_markup, cls_link, ont_link ];
+    rows.push(cells);
     // Add rows for any classes in the hierarchy.
-    var c = null, o = null;
+    match_type = 'ancestor';
+    var c = null, o = null, h_cls_link = null, h_ont_link = null;
     $.each(annotation.hierarchy, function (i, h) {
       c = h.annotatedClass;
-      o = c.ontology;
-      rows += "<tr>";
-      rows += "<td>" + get_link(c.uri, c.prefLabel) + "</td>";
-      rows += "<td>" + get_link(o.uri, o.name) + "</td>";
-      rows += "<td>" + text_markup + "</td>";
-      rows += cls_cell + ont_cell;
-      rows += "</tr>";
+      // TODO: Use a UI link instead of the data URI
+      h_cls_link = get_link(c.uri, c.prefLabel);
+      h_ont_link = get_link(c.ontology.uri, c.ontology.name);
+      cells = [ h_cls_link, h_ont_link, match_type, semantic_types, text_markup, cls_link, ont_link ];
+      rows.push(cells);
     }); // hierarchy loop
     // TODO: Add rows for any classes in the mappings.
-    // Note that the ont_cell will be different.
+    // Note that the ont_link will be different.
   }); // annotations loop
   return rows;
+
+// OLD API code:
+//      // Create an array representing the row in the table
+//      var row = [
+//        "<a href='/ontologies/" + annotation.concept.localOntologyId + "?p=terms&conceptid=" + encodeURIComponent(annotation.concept.fullId) + "'>" + annotation.concept.preferredName + "</a>",
+//        "<a href='/ontologies/" + annotation.concept.localOntologyId + "'>" + ontology_name + "</a>",
+//        context_map[annotation.context.contextName.toLowerCase()],
+//        semantic_types.join("<br/>"),
+//        annotation.context.highlight,
+//        "<a href='/ontologies/" + matched_concept.localOntologyId + "?p=terms&conceptid=" + encodeURIComponent(matched_concept.fullId) + "'>" + matched_concept.preferredName + "</a>",
+//        "<a href='/ontologies/" + matched_concept.localOntologyId + "'>" + matched_ontology_name + "</a>"
+//      ];
+
+}
+
+
+function update_annotations_table(rowsArray) {
+  // Reset table
+  annotationsTable.fnClearTable();
+  annotationsTable.fnSortNeutral();
+  removeFilters();
+  // Need to re-init because we're not using "live" because of propagation issues
+  filter_ontologies.init();
+  filter_terms.init();
+  filter_match_type.init();
+  filter_matched_ontologies.init();
+  filter_matched_terms.init();
+  // Add data
+  annotationsTable.fnAddData(rowsArray);
 }
 
 function display_annotations(data, params) {
   "use strict";
-  var output = "<h2>Annotator rows:</h2>";
-  output += "<table cellpadding='5'>";
+  // TODO: Update the result counts.
+  var cls_annotations = null,
+    cls_rows = [],
+    all_rows = [],
+    stats = {
+      "ontologies": {},
+      "terms": {},
+      "match_types": {},
+      "matched_ontologies": {},
+      "matched_terms": {}
+    };
+
   for (var i = 0; i < data.length; i++) {
-    output += process_annotation(data[i], params.text);
+    cls_annotations = data[i];
+    cls_rows = get_annotation_rows(cls_annotations, params.text);
+    all_rows = all_rows.concat( cls_rows );
+
+    // TODO: These stats might have to go into process_annotation?
+//      // Keep track of how many results are associated with each ontology
+//      ontologies[ontology_name] = (ontology_name in ontologies) ? ontologies[ontology_name] + 1 : 1;
+//      // Keep track of how many results are associated with each term
+//      terms[concept_name.toLowerCase()] = (concept_name.toLowerCase() in terms) ? terms[concept_name.toLowerCase()] + 1 : 1;
+//      // Keep track of match types
+//      match_types[context_map[annotation.context.contextName.toLowerCase()]] = (context_map[annotation.context.contextName.toLowerCase()] in match_types) ? match_types[context_map[annotation.context.contextName.toLowerCase()]] + 1 : 1;
+//      // Keep track of matched terms
+//      matched_terms[matched_concept.preferredName.toLowerCase()] = (matched_concept.preferredName.toLowerCase() in matched_terms) ? matched_terms[matched_concept.preferredName.toLowerCase()] + 1 : 1;
+//      // Keep track of matched ontologies
+//      matched_ontologies[matched_ontology_name] = (matched_ontology_name in matched_ontologies) ? matched_ontologies[matched_ontology_name] + 1 : 1;
   }
-  output += "</table>";
-  jQuery("#annotations_container").html(output);
+  update_annotations_table(all_rows);
+  // TODO: Update the filter checkboxes.
+  //// Add checkboxes to filters
+  //createFilterCheckboxes(ontologies, "filter_ontology_checkboxes", "ontology_filter_list");
+  //createFilterCheckboxes(terms, "filter_terms_checkboxes", "terms_filter_list");
+  //createFilterCheckboxes(match_types, "filter_match_type_checkboxes", "match_type_filter_list");
+  //createFilterCheckboxes(matched_ontologies, "filter_matched_ontology_checkboxes", "matched_ontology_filter_list");
+  //createFilterCheckboxes(matched_terms, "filter_matched_terms_checkboxes", "matched_terms_filter_list");
+  // TODO: Fix result counts.
+  //  // Add result counts
+  var count_span = '<span class="result_count">'
+  //  //var total_count = data.statistics.mgrep + data.statistics.mapping + data.statistics.closure;
+  jQuery("#result_counts").html("total results " + count_span + all_rows.length + "</span>&nbsp;");
+  jQuery("#result_counts").append("(");
+  //  //jQuery("#result_counts").append(context_map["mgrep"] + count_span + data.statistics.mgrep + "</span>");
+  //  //jQuery("#result_counts").append("&nbsp;/&nbsp;" + context_map["closure"] + count_span + data.statistics.closure + "</span>");
+  //  //jQuery("#result_counts").append("&nbsp;/&nbsp;" + context_map["mapping"] + count_span + data.statistics.mapping + "</span>");
+  jQuery("#result_counts").append(")");
+  // TODO: Fix these links
+  // Add links for downloading results
+  annotatorPostForm("tabDelimited");
+  annotatorPostForm("text");
+  annotatorPostForm("xml");
+  // Generate parameters for list at bottom of page
+  generateParameters();
 }
+
+// OLD API CODE FOR STATS
+//  var results = [],
+//    resultCount = 1,
+//    ontologies = {},
+//    terms = {},
+//    match_types = {},
+//    matched_ontologies = {},
+//    matched_terms = {},
+//    context_map = { "mgrep": "direct", "mapping": "mapping", "closure": "ancestor" };
+//
+////  // There may be no data.annotations object in the new API.
+////  if (!jQuery.isEmptyObject(data.annotations)) {
+////    jQuery(data.annotations).each(function () {
+////      var annotation = this;
+////      var ontology_name = data.ontologies[annotation.concept.localOntologyId].name;
+////      var concept_name = annotation.concept.preferredName;
+////      var context_name = annotation.context.contextName;
+////      var matched_concept = context_name == "MGREP" ? annotation.concept : annotation.context[CONCEPT_MAP[context_name.toLowerCase()]];
+////      var matched_ontology_name = data.ontologies[matched_concept.localOntologyId].name;
+////
+////    });
+////  }
+//
+//
 
 
