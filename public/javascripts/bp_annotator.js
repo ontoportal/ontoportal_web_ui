@@ -22,13 +22,13 @@ function get_annotations() {
     return;
   }
 
-  // Really dumb, basic word counter. Counts spaces.
-  if (jQuery("#annotation_text").val().match(/ /g) !== null && jQuery("#annotation_text").val().match(/ /g).length > 500) {
+  // Really dumb, basic word counter.
+  if (jQuery("#annotation_text").val().split(' ').length > 500) {
     jQuery("#annotator_error").html("Please use less than 500 words. If you need to annotate larger pieces of text you can use the <a href='http://www.bioontology.org/wiki/index.php/Annotator_User_Guide' target='_blank'>Annotator Web Service</a>");
     return;
   }
 
-  jQuery("#annotations_container").hide(300);
+  jQuery("#annotations_container").hide(200);
   jQuery(".annotator_spinner").show();
 
   var params = {},
@@ -50,7 +50,7 @@ function get_annotations() {
     annotationsTable.fnSetColumnVis(BP_COLUMNS.sem_types, false);
   }
 
-  params.levelMax = jQuery("#levelMax").val();
+  params.max_level = jQuery("#max_level").val();
 
   jQuery("[name='mappings']:checked").each(function () {
     mappings.push(jQuery(this).val());
@@ -63,18 +63,16 @@ function get_annotations() {
     data    : params,
     dataType: "json",
     success : function (data) {
-      //bp_last_params = data.statistics.parameters;
       bp_last_params = params;
       display_annotations(data, params);
       jQuery(".annotator_spinner").hide();
-      jQuery("#annotations_container").show(600);
-      //jQuery("#annotator_error").html(" Success in getting annotations; TODO: format for web page.");
+      jQuery("#annotations_container").show(300);
     },
     error   : function (data) {
       //console.log(data);
       bp_last_params = params;
       jQuery(".annotator_spinner").hide();
-      jQuery("#annotations_container").hide(600);
+      jQuery("#annotations_container").hide(200);
       jQuery("#annotator_error").html(" Problem getting annotations, please try again");
     }
   });

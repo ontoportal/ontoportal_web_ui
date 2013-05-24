@@ -39,7 +39,7 @@ class AnnotatorController < ApplicationController
     ont_uris = params[:ontology_ids] ||= ""
     options = { :ontologiesToKeepInResult => ont_uris,
                 :withDefaultStopWords => true,
-                :max_level => params[:levelMax] ||= 0,
+                :max_level => params[:max_level] ||= 0,
                 :semanticTypes => params[:semanticTypes] ||= [],
                 :mappingTypes => params[:mappingTypes] ||= [],
                 :wholeWordOnly => params[:wholeWordOnly] ||= true,
