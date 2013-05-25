@@ -33,6 +33,10 @@
 
   <!-- Airbrake Javascript exception notices -->
   <% airbrake_javascript_notifier %>
+
+  <script>
+    jQuery(document).data({bp: {config: <%=bp_config_json%>}});
+  </script>
 </head>
 <body>
   <%=render :partial =>'layouts/topnav'%>
