@@ -33,7 +33,7 @@
 
     <p>
       <b>Include Ancestors Up To Level:</b>&nbsp;&nbsp;
-      <%=select_tag :levelMax, "<option selected='selected' value='0'>None</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option><option value='9'>9</option><option value='10'>10</option><option value='999'>All</option>", :style => "width: 70px;"%>
+      <%=select_tag :max_level, "<option selected='selected' value='0'>None</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option><option value='9'>9</option><option value='10'>10</option><option value='999'>All</option>", :style => "width: 70px;"%>
     </p>
 
     <!-- annotator_button calls 'get_annotations' in bp_annotator.js -->
@@ -87,14 +87,13 @@
   </table>
 
   <div id="download_links" style="margin-top: 1.5em;">
-    <table border=0 style="border: 0; margin-bottom: .5em;">
-      <tr>
-        <td style="padding: 0 3px 0 0;"><b>Format Results As </b></td>
-        <td id="download_links_text" style="padding: 3px;"></td>
-        <td id="download_links_tabdelimited" style="padding: 3px;"></td>
-        <td id="download_links_xml" style="padding: 3px;"></td>
-      </tr>
-    </table>
+    <p>
+      <span style="padding: 0 3px 0 0;"><b>Format Results As: </b></span>&nbsp;
+      <span class="link_button ui_button" id="download_links_tabdelimited"></span>&nbsp;
+      <span class="link_button ui_button" id="download_links_json"></span>&nbsp;
+      <span class="link_button ui_button" id="download_links_text"></span>&nbsp;
+      <span class="link_button ui_button" id="download_links_xml"></span>
+    </p>
 
     <span style="font-size: 8pt;">To reproduce these results use the following parameters:
       <br/>
