@@ -1,9 +1,18 @@
 var annotationsTable;
 var bp_last_params;
 
+// Note: the configuration is in config/bioportal_config.rb.
+var BP_CONFIG = jQuery(document).data().bp.config;
+
 var BP_COLUMNS = { terms: 0, ontologies: 1, types: 2, sem_types: 3, matched_terms: 5, matched_ontologies: 6 };
 
 var CONCEPT_MAP = { "mapping": "mappedConcept", "mgrep": "concept", "closure": "concept" };
+
+function set_last_params(params) {
+  bp_last_params = params;
+  bp_last_params.apikey = BP_CONFIG.apikey;// TODO: get the user apikey?
+  //console.log(bp_last_params);
+}
 
 function insertSampleText() {
   "use strict";
@@ -35,22 +44,22 @@ function get_annotations() {
     ont_select = jQuery("#ontology_ontologyId"),
     mappings = [];
 
-  params.ontology_ids = (ont_select.val() === null) ? "" : ont_select.val().join(",");
   params.text = jQuery("#annotation_text").val();
+  params.max_level = jQuery("#max_level").val();
+  params.ontologies = (ont_select.val() === null) ? [] : ont_select.val();
 
-  if (jQuery("#wholeWordOnly:checked").val() !== "undefined") {
-    params.wholeWordOnly = jQuery("#wholeWordOnly:checked").val();
-  }
+  // Use the annotator default for wholeWordOnly = true.
+  //if (jQuery("#wholeWordOnly:checked").val() !== undefined) {
+  //  params.wholeWordOnly = jQuery("#wholeWordOnly:checked").val();
+  //}
 
   if (jQuery("#semanticTypes").val() !== null) {
     params.semanticTypes = jQuery("#semanticTypes").val();
     annotationsTable.fnSetColumnVis(BP_COLUMNS.sem_types, true);
-    jQuery("#results_error").html("Only results from ontologies with semantic types available are displayed");
+    jQuery("#results_error").html("Only results from ontologies with semantic types available are displayed.");
   } else {
     annotationsTable.fnSetColumnVis(BP_COLUMNS.sem_types, false);
   }
-
-  params.max_level = jQuery("#max_level").val();
 
   jQuery("[name='mappings']:checked").each(function () {
     mappings.push(jQuery(this).val());
@@ -63,14 +72,13 @@ function get_annotations() {
     data    : params,
     dataType: "json",
     success : function (data) {
-      bp_last_params = params;
-      display_annotations(data, params);
+      set_last_params(params);
+      display_annotations(data, bp_last_params);
       jQuery(".annotator_spinner").hide();
       jQuery("#annotations_container").show(300);
     },
     error   : function (data) {
-      //console.log(data);
-      bp_last_params = params;
+      set_last_params(params);
       jQuery(".annotator_spinner").hide();
       jQuery("#annotations_container").hide(200);
       jQuery("#annotator_error").html(" Problem getting annotations, please try again");
@@ -474,35 +482,53 @@ jQuery.fn.dataTableExt.oApi.fnSortNeutral = function (oSettings) {
 };
 
 // Creates an HTML form with a button that will POST to the annotator
-function annotatorPostForm(format) {
+//function annotatorPostForm(format) {
+//  "use strict";
+//  // TODO: Check whether 'text' and 'tabDelimited' could work.
+//  // For now, assume that json and xml will work or should work.
+//  var format_map = { "json": "JSON", "xml": "XML", "text": "Text", "tabDelimited": "CSV" };
+//  var params = bp_last_params;
+//  params["format"] = format;
+//  var form_fields = [];
+//  jQuery.each(params, function (k, v) {
+//    if (v != null) {
+//      form_fields.push("<input type='hidden' name='" + k + "' value='" + v + "'>");
+//    }
+//  });
+//  var action = "action='" + BP_CONFIG.rest_url + "/annotator'";
+//  var form = jQuery("<form " + action + " method='post' target='_blank'/>")
+//    .append(form_fields.join(""))
+//    .append("<input type='submit' value='" + format_map[format] + "'>");
+//  jQuery("#download_links_" + format.toLowerCase()).html(form);
+//}
+
+
+function annotatorFormatLink(param_string, format) {
   "use strict";
-  var format_map = { "xml": "XML", "text": "Text", "tabDelimited": "CSV" };
-  var params = bp_last_params;
-  params["format"] = format;
-  var form_fields = [];
-  jQuery.each(params, function (k, v) {
-    if (v != null) {
-      form_fields.push("<input type='hidden' name='" + k + "' value='" + v + "'>");
-    }
-  });
-  var form = jQuery("<form action='http://" + jQuery("#annotations_container").data("bp_rest_server") + "/annotator' method='post' target='_blank'/>")
-    .append(form_fields.join(""))
-    .append("<input type='submit' value='" + format_map[format] + "'>");
-  jQuery("#download_links_" + format.toLowerCase()).html(form);
+  // TODO: Check whether 'text' and 'tabDelimited' could work.
+  // For now, assume that json and xml will work or should work.
+  var format_map = { "json": "JSON", "xml": "XML", "text": "Text", "tabDelimited": "CSV" };
+  var query = BP_CONFIG.rest_url + "annotator?apikey=" + BP_CONFIG.apikey + "&" + param_string;
+  if (format !== 'json') {
+    query += "&format=" + format;
+  }
+  var link = "<a href='" + encodeURI(query) + "' target='_blank'>" + format_map[format] + "</a>";
+  jQuery("#download_links_" + format.toLowerCase()).html(link);
 }
 
 function generateParameters() {
   "use strict";
   var params = [];
-  var new_params = jQuery.extend(true, {}, bp_last_params);
-  delete new_params["apikey"]
-  delete new_params["format"]
+  var new_params = jQuery.extend(true, {}, bp_last_params); // deep copy
+  delete new_params["apikey"];
+  delete new_params["format"];
+  //console.log(new_params);
   jQuery.each(new_params, function (k, v) {
-    if (v != null && v !== "") {
+    if (v !== null && v !== undefined && v !== "" && v.length > 0) {
       params.push(k + "=" + v);
     }
   });
-  jQuery("#annotator_parameters").html(params.join("&"));
+  return params.join("&");
 }
 
 jQuery(document).ready(function () {
@@ -764,12 +790,13 @@ function display_annotations(data, params) {
   //  //jQuery("#result_counts").append("&nbsp;/&nbsp;" + context_map["mapping"] + count_span + data.statistics.mapping + "</span>");
   jQuery("#result_counts").append(")");
   // TODO: Fix these links
-  // Add links for downloading results
-  annotatorPostForm("tabDelimited");
-  annotatorPostForm("text");
-  annotatorPostForm("xml");
   // Generate parameters for list at bottom of page
-  generateParameters();
+  var param_string = generateParameters(); // uses bp_last_param
+  jQuery("#annotator_parameters").html(param_string);
+  // Add links for downloading results
+  //annotatorFormatLink("tabDelimited");
+  annotatorFormatLink(param_string, "json");
+  annotatorFormatLink(param_string, "xml");
 }
 
 // OLD API CODE FOR STATS

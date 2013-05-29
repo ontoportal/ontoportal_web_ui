@@ -9,8 +9,8 @@ require 'cgi'
 class AnnotatorController < ApplicationController
   layout 'ontology'
 
-  #REST_URI = "http://#{$REST_DOMAIN}"
-  REST_URI = "http://stagedata.bioontology.org"
+  REST_URI = "http://#{$REST_DOMAIN}"
+  #REST_URI = "http://stagedata.bioontology.org"
   ANNOTATOR_URI = REST_URI + "/annotator"
   API_KEY = $API_KEY
 
@@ -36,14 +36,12 @@ class AnnotatorController < ApplicationController
 
   def create
     text_to_annotate = params[:text].strip.gsub("\r\n", " ").gsub("\n", " ")
-    ont_uris = params[:ontology_ids] ||= ""
-    options = { :ontologiesToKeepInResult => ont_uris,
-                :withDefaultStopWords => true,
-                :max_level => params[:max_level] ||= 0,
+    options = { :ontologies => params[:ontologies] ||= [],
+                :max_level => params[:max_level].to_i ||= 0,
                 :semanticTypes => params[:semanticTypes] ||= [],
                 :mappingTypes => params[:mappingTypes] ||= [],
-                :wholeWordOnly => params[:wholeWordOnly] ||= true,
-                :isVirtualOntologyId => true
+                # :wholeWordOnly => params[:wholeWordOnly] ||= true,  # service default is true
+                # :withDefaultStopWords => params[:withDefaultStopWords] ||= true,  # service default is true
     }
 
     # TODO: Fix this
@@ -68,13 +66,16 @@ class AnnotatorController < ApplicationController
     query = ANNOTATOR_URI
     query += "?text=" + CGI.escape(text_to_annotate)
     query += "&max_level=" + options[:max_level].to_s
-    query += "&ontologies=" + CGI.escape(ont_uris) unless ont_uris.empty?
+    query += "&ontologies=" + CGI.escape(options[:ontologies].join(',')) unless options[:ontologies].empty?
     query += "&semanticTypes=" + options[:semanticTypes].join(',') unless options[:semanticTypes].empty?
     query += "&mappingTypes=" + options[:mappingTypes].join(',') unless options[:mappingTypes].empty?
-    annotations = parse_json(query)
+    #query += "&wholeWordOnly=" + options[:wholeWordOnly].to_s unless options[:wholeWordOnly].empty?
+    #query += "&withDefaultStopWords=" + options[:withDefaultStopWords].to_s unless options[:withDefaultStopWords].empty?
+    annotations = parse_json(query) # parse_json adds APIKEY.
     LOG.add :debug, "Getting annotations: #{Time.now - start}s"
 
     # TODO: Evaluate whether the REST API could be doing this more efficiently.
+    start = Time.now
     annotations.each do |a|
       # Get the class details required for display, assume this is necessary
       # for every element of the annotations array because the API returns a set.
@@ -84,6 +85,7 @@ class AnnotatorController < ApplicationController
         h["annotatedClass"] = get_class_details(h["annotatedClass"])
       end
     end
+    LOG.add :debug, "Modified annotations: #{Time.now - start}s"
 
 
     #
@@ -167,7 +169,8 @@ private
     # for every element of the annotations array because the API returns a set?
     cls = {}
     cls["uri"] = annotatedClass["links"]["self"]  # TODO: Change to UI link.
-    cls_details = parse_json(cls["uri"])  # Additional API request (synchronous)
+    # Additional API request (synchronous)
+    cls_details = parse_json(cls["uri"])   # parse_json adds APIKEY.
     cls["id"] = cls_details["@id"]
     cls["prefLabel"] = cls_details["prefLabel"]
     ont_uri = annotatedClass["links"]["ontology"]
@@ -175,7 +178,8 @@ private
       # Use the saved ontology details to avoid repetitive API requests
       ont = ONTOLOGIES[ont_uri]
     else
-      ont_details = parse_json(ont_uri)  # Additional API request (synchronous)
+      # Additional API request (synchronous)
+      ont_details = parse_json(ont_uri)    # parse_json adds APIKEY.
       ont = {}
       ont["acronym"] = ont_details["acronym"]
       ont["name"] = ont_details["name"]
@@ -216,16 +220,17 @@ private
   #  NCBO::Annotator.new(options)
   #end
 
-  def parse_json(uri)
+  def get_apikey()
     apikey = API_KEY
     if session[:user]
       apikey = session[:user].apikey
     end
-    JSON.parse(open(uri, "Authorization" => "apikey token=#{apikey}").read)
+    return apikey
   end
 
-
-
+  def parse_json(uri)
+    JSON.parse(open(uri, "Authorization" => "apikey token=#{get_apikey}").read)
+  end
 
 end
 
