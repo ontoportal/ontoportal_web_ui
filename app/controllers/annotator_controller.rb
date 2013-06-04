@@ -84,12 +84,12 @@ class AnnotatorController < ApplicationController
     # TODO: Get this working when the REST batch service supports it.
     #ontNames = get_ontology_names(annotations)
 
+    # Get the class details required for display, assume this is necessary
+    # for every element of the annotations array because the API returns a set.
+    # Replace the annotated class with simplified details.
     start = Time.now
     annotations2delete = []
     annotations.each do |a|
-      # Get the class details required for display, assume this is necessary
-      # for every element of the annotations array because the API returns a set.
-      # Replace the annotated class with simplified details.
       ac_id = a['annotatedClass']['@id']
       details = classLabels[ac_id]
       if details.nil?
@@ -192,6 +192,23 @@ class AnnotatorController < ApplicationController
 
 private
 
+
+  def get_batch_results(params)
+    begin
+      uri = "http://stagedata.bioontology.org/batch/?apikey=#{get_apikey}"
+      response = RestClient.post uri, params.to_json, :content_type => :json, :accept => :json
+    rescue RestClient::Exception => error
+      @retries ||= 0
+      if @retries < 2
+        @retries += 1
+        retry
+      else
+        raise error
+      end
+    end
+    response
+  end
+
   def get_class_labels(annotations)
     # Use batch service to get class prefLabels
     classDetails = {}
@@ -205,9 +222,13 @@ private
         classList.push({'class'=>hc_id, 'ontology'=>ont_id}) # must be same ontology for hierarchy
       end
     end
+    # remove duplicates
+    classSet = classList.to_set # get unique class:ontology set
+    classList = classSet.to_a   # assume collection requires a list
+    # make the batch call
     call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>classList, 'include'=>['prefLabel']}}
-    uri = "http://stagedata.bioontology.org/batch/?apikey=#{get_apikey}"
-    response = RestClient.post uri, call_params.to_json, :content_type => :json, :accept => :json
+    response = get_batch_results(call_params)
+    # Simplify the response data for the UI
     classLabels = JSON.parse(response)
     classLabels["http://www.w3.org/2002/07/owl#Class"].each do |cls|
       # TODO: Replace the get_ontology_details with a batch call.

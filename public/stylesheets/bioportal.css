@@ -650,7 +650,7 @@ h4{
 
 
 
- .topnav a.close, .topnav a.close:hover{
+.topnav a.close, .topnav a.close:hover{
 
 	display:block;
 
@@ -662,10 +662,10 @@ h4{
 	height:12px;
 	background-image:url("/images/arrows.gif");
 }
- .topnav a.close{
+.topnav a.close{
 	background-position:-60px 0px;
 }
- .topnav a.close:hover{
+.topnav a.close:hover{
 	background-position:-60px -12px;
 }
 
@@ -938,4 +938,5 @@ padding:0px;
 .bp_tagList li { list-style-type: none; float: left; margin: 0 10px;  }
 .bp_tagList li a { text-decoration: none; }
 .bp_tagList list:hover { text-decoration: underline; }
+
 

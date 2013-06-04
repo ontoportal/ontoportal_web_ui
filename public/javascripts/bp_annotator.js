@@ -678,15 +678,15 @@ function get_annotation_rows(annotation, text) {
   ont_rel_ui = cls_rel_ui.replace(/\?p=terms.*$/, '?p=summary');
   cls_link = get_link(cls_rel_ui, cls.prefLabel);
   ont_link = get_link(ont_rel_ui, cls.ontology.name);
+  var match_markup_span = '<span style="color: rgb(0, 102, 0); font-weight: bold; padding: 2px 0px;">';
   jQuery.each(annotation.annotations, function (i, a) {
 
-    // TODO: check for multiple matches in text, i.e. more than one set of positions.
     // TODO: consider string truncation around the annotation markups.
 
     text_match = text.substring(a.from - 1, a.to);
     text_prefix = text.substring(0, a.from - 1);
     text_suffix = text.substring(a.to);
-    text_markup = text_prefix + "<em>" + text_match + "</em>" + text_suffix;
+    text_markup = text_prefix + match_markup_span + text_match + "</span>" + text_suffix;
     //console.log('text markup: ' + text_markup);
     match_type = match_type_translation[a.matchType.toLowerCase()] || 'direct';
     // TODO: Add semantic type extraction code.
