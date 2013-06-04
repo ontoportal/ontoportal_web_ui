@@ -678,7 +678,7 @@ function get_annotation_rows(annotation, text) {
   ont_rel_ui = cls_rel_ui.replace(/\?p=terms.*$/, '?p=summary');
   cls_link = get_link(cls_rel_ui, cls.prefLabel);
   ont_link = get_link(ont_rel_ui, cls.ontology.name);
-  var match_markup_span = '<span style="color: rgb(0, 102, 0); font-weight: bold; padding: 2px 0px;">';
+  var match_markup_span = '<span style="color: rgb(255, 128, 0); font-weight: bold; padding: 2px 0px;">';
   jQuery.each(annotation.annotations, function (i, a) {
 
     // TODO: consider string truncation around the annotation markups.
