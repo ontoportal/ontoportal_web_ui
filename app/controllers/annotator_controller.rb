@@ -200,6 +200,10 @@ private
       cls_id = a['annotatedClass']['@id']
       ont_id = a['annotatedClass']['links']['ontology']
       classList.push({'class'=>cls_id, 'ontology'=>ont_id})
+      a['hierarchy'].each do |h|
+        hc_id = h['annotatedClass']['@id']
+        classList.push({'class'=>hc_id, 'ontology'=>ont_id}) # must be same ontology for hierarchy
+      end
     end
     call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>classList, 'include'=>['prefLabel']}}
     uri = "http://stagedata.bioontology.org/batch/?apikey=#{get_apikey}"
