@@ -104,11 +104,8 @@ function get_annotations() {
    matched_terms = {},
    context_map = { "mgrep": "direct", "mapping": "mapping", "closure": "ancestor" };
 
-   // There may be no data.statistics object in the new API.
-   //bp_last_params = data.statistics.parameters;
-   bp_last_params = params; // Does this work instead?
+   bp_last_params = data.statistics.parameters;
 
-   // There may be no data.annotations object in the new API.
    if (!jQuery.isEmptyObject(data.annotations)) {
    jQuery(data.annotations).each(function () {
    var annotation = this;
@@ -121,7 +118,7 @@ function get_annotations() {
    // Gather sem types for display
    var semantic_types = [];
    jQuery.each(annotation.concept.semantic_types, function () {
-   semantic_types.push(this.description);
+     semantic_types.push(this.description);
    });
 
    // Create an array representing the row in the table
@@ -666,16 +663,22 @@ function get_annotation_rows(annotation, text) {
   var cls = annotation.annotatedClass,
     rows = [],
     cells = [],
-    // TODO: Use a UI link instead of the data URI
-    cls_link = get_link(cls.uri, cls.prefLabel),
-    ont_link = get_link(cls.ontology.uri, cls.ontology.name),
+    cls_rel_ui = null,
+    ont_rel_ui = null,
+    cls_link = null,
+    ont_link = null,
     match_type = '',
     semantic_types = '',
     text_match = null,
     text_prefix = null,
     text_suffix = null,
     text_markup = null;
-  $.each(annotation.annotations, function (i, a) {
+  // Extract relative URIs
+  cls_rel_ui = cls.ui.replace(/^.*\/\/[^\/]+/, '');
+  ont_rel_ui = cls_rel_ui.replace(/\?p=terms.*$/, '?p=summary');
+  cls_link = get_link(cls_rel_ui, cls.prefLabel);
+  ont_link = get_link(ont_rel_ui, cls.ontology.name);
+  jQuery.each(annotation.annotations, function (i, a) {
 
     // TODO: check for multiple matches in text, i.e. more than one set of positions.
     // TODO: consider string truncation around the annotation markups.
@@ -696,12 +699,15 @@ function get_annotation_rows(annotation, text) {
     rows.push(cells);
     // Add rows for any classes in the hierarchy.
     match_type = 'ancestor';
-    var c = null, o = null, h_cls_link = null, h_ont_link = null;
-    $.each(annotation.hierarchy, function (i, h) {
+    var c = null, o = null,
+      h_cls_link = null, h_ont_link = null,
+      c_rel_ui = null, o_rel_ui = null;
+    jQuery.each(annotation.hierarchy, function (i, h) {
       c = h.annotatedClass;
-      // TODO: Use a UI link instead of the data URI
-      h_cls_link = get_link(c.uri, c.prefLabel);
-      h_ont_link = get_link(c.ontology.uri, c.ontology.name);
+      c_rel_ui = c.ui.replace(/^.*\/\/[^\/]+/, '');
+      o_rel_ui = c_rel_ui.replace(/\?p=terms.*$/, '?p=summary');
+      h_cls_link = get_link(c_rel_ui, c.prefLabel);
+      h_ont_link = get_link(o_rel_ui, c.ontology.name);
       cells = [ h_cls_link, h_ont_link, match_type, semantic_types, text_markup, cls_link, ont_link ];
       rows.push(cells);
     }); // hierarchy loop
@@ -726,6 +732,7 @@ function get_annotation_rows(annotation, text) {
 
 
 function update_annotations_table(rowsArray) {
+  "use strict";
   // Reset table
   annotationsTable.fnClearTable();
   annotationsTable.fnSortNeutral();

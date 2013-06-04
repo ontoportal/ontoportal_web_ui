@@ -4,6 +4,8 @@
 require 'json'
 require 'open-uri'
 require 'cgi'
+require 'rest-client'
+require 'ontologies_api_client'
 
 
 class AnnotatorController < ApplicationController
@@ -14,27 +16,19 @@ class AnnotatorController < ApplicationController
   ANNOTATOR_URI = REST_URI + "/annotator"
   API_KEY = $API_KEY
 
-  # TODO: Semantic types should be pulled from the new API (June, 2013)
-  SEMANTIC_TYPES = [{:code=>"T000", :description=>"UMLS concept"}, {:code=>"T998", :description=>"Jax Mouse/Human Gene dictionary concept"}, {:code=>"T999", :description=>"NCBO BioPortal concept"}, {:code=>"T116", :description=>"Amino Acid, Peptide, or Protein"}, {:code=>"T121", :description=>"Pharmacologic Substance"}, {:code=>"T130", :description=>"Indicator, Reagent, or Diagnostic Aid"}, {:code=>"T119", :description=>"Lipid"}, {:code=>"T126", :description=>"Enzyme"}, {:code=>"T123", :description=>"Biologically Active Substance"}, {:code=>"T109", :description=>"Organic Chemical"}, {:code=>"T131", :description=>"Hazardous or Poisonous Substance"}, {:code=>"T110", :description=>"Steroid"}, {:code=>"T125", :description=>"Hormone"}, {:code=>"T114", :description=>"Nucleic Acid, Nucleoside, or Nucleotide"}, {:code=>"T111", :description=>"Eicosanoid"}, {:code=>"T118", :description=>"Carbohydrate"}, {:code=>"T124", :description=>"Neuroreactive Substance or Biogenic Amine"}, {:code=>"T127", :description=>"Vitamin"}, {:code=>"T195", :description=>"Antibiotic"}, {:code=>"T129", :description=>"Immunologic Factor"}, {:code=>"T024", :description=>"Tissue"}, {:code=>"T115", :description=>"Organophosphorus Compound"}, {:code=>"T073", :description=>"Manufactured Object"}, {:code=>"T081", :description=>"Quantitative Concept"}, {:code=>"T170", :description=>"Intellectual Product"}, {:code=>"T029", :description=>"Body Location or Region"}, {:code=>"T184", :description=>"Sign or Symptom"}, {:code=>"T033", :description=>"Finding"}, {:code=>"T037", :description=>"Injury or Poisoning"}, {:code=>"T191", :description=>"Neoplastic Process"}, {:code=>"T023", :description=>"Body Part, Organ, or Organ Component"}, {:code=>"T005", :description=>"Virus"}, {:code=>"T047", :description=>"Disease or Syndrome"}, {:code=>"T019", :description=>"Congenital Abnormality"}, {:code=>"T169", :description=>"Functional Concept"}, {:code=>"T190", :description=>"Anatomical Abnormality"}, {:code=>"T022", :description=>"Body System"}, {:code=>"T018", :description=>"Embryonic Structure"}, {:code=>"T101", :description=>"Patient or Disabled Group"}, {:code=>"T093", :description=>"Health Care Related Organization"}, {:code=>"T089", :description=>"Regulation or Law"}, {:code=>"T061", :description=>"Therapeutic or Preventive Procedure"}, {:code=>"T062", :description=>"Research Activity"}, {:code=>"T046", :description=>"Pathologic Function"}, {:code=>"T041", :description=>"Mental Process"}, {:code=>"T055", :description=>"Individual Behavior"}, {:code=>"T004", :description=>"Fungus"}, {:code=>"T060", :description=>"Diagnostic Procedure"}, {:code=>"T070", :description=>"Natural Phenomenon or Process"}, {:code=>"T197", :description=>"Inorganic Chemical"}, {:code=>"T057", :description=>"Occupational Activity"}, {:code=>"T083", :description=>"Geographic Area"}, {:code=>"T074", :description=>"Medical Device"}, {:code=>"T002", :description=>"Plant"}, {:code=>"T065", :description=>"Educational Activity"}, {:code=>"T092", :description=>"Organization"}, {:code=>"T009", :description=>"Invertebrate"}, {:code=>"T025", :description=>"Cell"}, {:code=>"T196", :description=>"Element, Ion, or Isotope"}, {:code=>"T067", :description=>"Phenomenon or Process"}, {:code=>"T080", :description=>"Qualitative Concept"}, {:code=>"T102", :description=>"Group Attribute"}, {:code=>"T098", :description=>"Population Group"}, {:code=>"T040", :description=>"Organism Function"}, {:code=>"T034", :description=>"Laboratory or Test Result"}, {:code=>"T201", :description=>"Clinical Attribute"}, {:code=>"T097", :description=>"Professional or Occupational Group"}, {:code=>"T064", :description=>"Governmental or Regulatory Activity"}, {:code=>"T054", :description=>"Social Behavior"}, {:code=>"T003", :description=>"Alga"}, {:code=>"T007", :description=>"Bacterium"}, {:code=>"T044", :description=>"Molecular Function"}, {:code=>"T053", :description=>"Behavior"}, {:code=>"T069", :description=>"Environmental Effect of Humans"}, {:code=>"T042", :description=>"Organ or Tissue Function"}, {:code=>"T103", :description=>"Chemical"}, {:code=>"T122", :description=>"Biomedical or Dental Material"}, {:code=>"T015", :description=>"Mammal"}, {:code=>"T020", :description=>"Acquired Abnormality"}, {:code=>"T030", :description=>"Body Space or Junction"}, {:code=>"T026", :description=>"Cell Component"}, {:code=>"T043", :description=>"Cell Function"}, {:code=>"T059", :description=>"Laboratory Procedure"}, {:code=>"T052", :description=>"Activity"}, {:code=>"T056", :description=>"Daily or Recreational Activity"}, {:code=>"T079", :description=>"Temporal Concept"}, {:code=>"T091", :description=>"Biomedical Occupation or Discipline"}, {:code=>"T192", :description=>"Receptor"}, {:code=>"T031", :description=>"Body Substance"}, {:code=>"T048", :description=>"Mental or Behavioral Dysfunction"}, {:code=>"T058", :description=>"Health Care Activity"}, {:code=>"T120", :description=>"Chemical Viewed Functionally"}, {:code=>"T100", :description=>"Age Group"}, {:code=>"T104", :description=>"Chemical Viewed Structurally"}, {:code=>"T171", :description=>"Language"}, {:code=>"T032", :description=>"Organism Attribute"}, {:code=>"T095", :description=>"Self-help or Relief Organization"}, {:code=>"T078", :description=>"Idea or Concept"}, {:code=>"T090", :description=>"Occupation or Discipline"}, {:code=>"T167", :description=>"Substance"}, {:code=>"T068", :description=>"Human-caused Phenomenon or Process"}, {:code=>"T168", :description=>"Food"}, {:code=>"T028", :description=>"Gene or Genome"}, {:code=>"T014", :description=>"Reptile"}, {:code=>"T050", :description=>"Experimental Model of Disease"}, {:code=>"T045", :description=>"Genetic Function"}, {:code=>"T011", :description=>"Amphibian"}, {:code=>"T013", :description=>"Fish"}, {:code=>"T094", :description=>"Professional Society"}, {:code=>"T087", :description=>"Amino Acid Sequence"}, {:code=>"T066", :description=>"Machine Activity"}, {:code=>"T185", :description=>"Classification"}, {:code=>"T006", :description=>"Rickettsia or Chlamydia"}, {:code=>"T049", :description=>"Cell or Molecular Dysfunction"}, {:code=>"T008", :description=>"Animal"}, {:code=>"T051", :description=>"Event"}, {:code=>"T038", :description=>"Biologic Function"}, {:code=>"T194", :description=>"Archaeon"}, {:code=>"T086", :description=>"Nucleotide Sequence"}, {:code=>"T039", :description=>"Physiologic Function"}, {:code=>"T012", :description=>"Bird"}, {:code=>"T063", :description=>"Molecular Biology Research Technique"}, {:code=>"T017", :description=>"Anatomical Structure"}, {:code=>"T082", :description=>"Spatial Concept"}, {:code=>"T088", :description=>"Carbohydrate Sequence"}, {:code=>"T099", :description=>"Family Group"}, {:code=>"T001", :description=>"Organism"}, {:code=>"T075", :description=>"Research Device"}, {:code=>"T096", :description=>"Group"}, {:code=>"T016", :description=>"Human"}, {:code=>"T072", :description=>"Physical Object"}, {:code=>"T071", :description=>"Entity"}, {:code=>"T200", :description=>"Clinical Drug"}, {:code=>"T085", :description=>"Molecular Sequence"}, {:code=>"T077", :description=>"Conceptual Entity"}, {:code=>"T010", :description=>"Vertebrate"}, {:code=>"T203", :description=>"Drug Delivery Device"}, {:code=>"T021", :description=>"Fully Formed Anatomical Structure"}, {:code=>"T204", :description=>"Eukaryote"}]
-
   # TODO: Evalute whether the ontologies hash could be in a REDIS key:value store.  If so, this could avoid all the repetitive API requests for basic ontology details.
   ONTOLOGIES = {}
 
-  def index
-    # DISABLE OLD API CLIENT
-    #annotator = get_annotator_client
-    #annotator.semantic_types.each do |st|
-    #  @semantic_types_for_select << [ "#{st[:description]} (#{st[:semanticType]})", st[:semanticType]]
-    #end
-    #@semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
+  # TODO: Semantic types should be pulled from the new API (June, 2013)
+  SEMANTIC_TYPES = [{:code=>"T000", :description=>"UMLS concept"}, {:code=>"T998", :description=>"Jax Mouse/Human Gene dictionary concept"}, {:code=>"T999", :description=>"NCBO BioPortal concept"}, {:code=>"T116", :description=>"Amino Acid, Peptide, or Protein"}, {:code=>"T121", :description=>"Pharmacologic Substance"}, {:code=>"T130", :description=>"Indicator, Reagent, or Diagnostic Aid"}, {:code=>"T119", :description=>"Lipid"}, {:code=>"T126", :description=>"Enzyme"}, {:code=>"T123", :description=>"Biologically Active Substance"}, {:code=>"T109", :description=>"Organic Chemical"}, {:code=>"T131", :description=>"Hazardous or Poisonous Substance"}, {:code=>"T110", :description=>"Steroid"}, {:code=>"T125", :description=>"Hormone"}, {:code=>"T114", :description=>"Nucleic Acid, Nucleoside, or Nucleotide"}, {:code=>"T111", :description=>"Eicosanoid"}, {:code=>"T118", :description=>"Carbohydrate"}, {:code=>"T124", :description=>"Neuroreactive Substance or Biogenic Amine"}, {:code=>"T127", :description=>"Vitamin"}, {:code=>"T195", :description=>"Antibiotic"}, {:code=>"T129", :description=>"Immunologic Factor"}, {:code=>"T024", :description=>"Tissue"}, {:code=>"T115", :description=>"Organophosphorus Compound"}, {:code=>"T073", :description=>"Manufactured Object"}, {:code=>"T081", :description=>"Quantitative Concept"}, {:code=>"T170", :description=>"Intellectual Product"}, {:code=>"T029", :description=>"Body Location or Region"}, {:code=>"T184", :description=>"Sign or Symptom"}, {:code=>"T033", :description=>"Finding"}, {:code=>"T037", :description=>"Injury or Poisoning"}, {:code=>"T191", :description=>"Neoplastic Process"}, {:code=>"T023", :description=>"Body Part, Organ, or Organ Component"}, {:code=>"T005", :description=>"Virus"}, {:code=>"T047", :description=>"Disease or Syndrome"}, {:code=>"T019", :description=>"Congenital Abnormality"}, {:code=>"T169", :description=>"Functional Concept"}, {:code=>"T190", :description=>"Anatomical Abnormality"}, {:code=>"T022", :description=>"Body System"}, {:code=>"T018", :description=>"Embryonic Structure"}, {:code=>"T101", :description=>"Patient or Disabled Group"}, {:code=>"T093", :description=>"Health Care Related Organization"}, {:code=>"T089", :description=>"Regulation or Law"}, {:code=>"T061", :description=>"Therapeutic or Preventive Procedure"}, {:code=>"T062", :description=>"Research Activity"}, {:code=>"T046", :description=>"Pathologic Function"}, {:code=>"T041", :description=>"Mental Process"}, {:code=>"T055", :description=>"Individual Behavior"}, {:code=>"T004", :description=>"Fungus"}, {:code=>"T060", :description=>"Diagnostic Procedure"}, {:code=>"T070", :description=>"Natural Phenomenon or Process"}, {:code=>"T197", :description=>"Inorganic Chemical"}, {:code=>"T057", :description=>"Occupational Activity"}, {:code=>"T083", :description=>"Geographic Area"}, {:code=>"T074", :description=>"Medical Device"}, {:code=>"T002", :description=>"Plant"}, {:code=>"T065", :description=>"Educational Activity"}, {:code=>"T092", :description=>"Organization"}, {:code=>"T009", :description=>"Invertebrate"}, {:code=>"T025", :description=>"Cell"}, {:code=>"T196", :description=>"Element, Ion, or Isotope"}, {:code=>"T067", :description=>"Phenomenon or Process"}, {:code=>"T080", :description=>"Qualitative Concept"}, {:code=>"T102", :description=>"Group Attribute"}, {:code=>"T098", :description=>"Population Group"}, {:code=>"T040", :description=>"Organism Function"}, {:code=>"T034", :description=>"Laboratory or Test Result"}, {:code=>"T201", :description=>"Clinical Attribute"}, {:code=>"T097", :description=>"Professional or Occupational Group"}, {:code=>"T064", :description=>"Governmental or Regulatory Activity"}, {:code=>"T054", :description=>"Social Behavior"}, {:code=>"T003", :description=>"Alga"}, {:code=>"T007", :description=>"Bacterium"}, {:code=>"T044", :description=>"Molecular Function"}, {:code=>"T053", :description=>"Behavior"}, {:code=>"T069", :description=>"Environmental Effect of Humans"}, {:code=>"T042", :description=>"Organ or Tissue Function"}, {:code=>"T103", :description=>"Chemical"}, {:code=>"T122", :description=>"Biomedical or Dental Material"}, {:code=>"T015", :description=>"Mammal"}, {:code=>"T020", :description=>"Acquired Abnormality"}, {:code=>"T030", :description=>"Body Space or Junction"}, {:code=>"T026", :description=>"Cell Component"}, {:code=>"T043", :description=>"Cell Function"}, {:code=>"T059", :description=>"Laboratory Procedure"}, {:code=>"T052", :description=>"Activity"}, {:code=>"T056", :description=>"Daily or Recreational Activity"}, {:code=>"T079", :description=>"Temporal Concept"}, {:code=>"T091", :description=>"Biomedical Occupation or Discipline"}, {:code=>"T192", :description=>"Receptor"}, {:code=>"T031", :description=>"Body Substance"}, {:code=>"T048", :description=>"Mental or Behavioral Dysfunction"}, {:code=>"T058", :description=>"Health Care Activity"}, {:code=>"T120", :description=>"Chemical Viewed Functionally"}, {:code=>"T100", :description=>"Age Group"}, {:code=>"T104", :description=>"Chemical Viewed Structurally"}, {:code=>"T171", :description=>"Language"}, {:code=>"T032", :description=>"Organism Attribute"}, {:code=>"T095", :description=>"Self-help or Relief Organization"}, {:code=>"T078", :description=>"Idea or Concept"}, {:code=>"T090", :description=>"Occupation or Discipline"}, {:code=>"T167", :description=>"Substance"}, {:code=>"T068", :description=>"Human-caused Phenomenon or Process"}, {:code=>"T168", :description=>"Food"}, {:code=>"T028", :description=>"Gene or Genome"}, {:code=>"T014", :description=>"Reptile"}, {:code=>"T050", :description=>"Experimental Model of Disease"}, {:code=>"T045", :description=>"Genetic Function"}, {:code=>"T011", :description=>"Amphibian"}, {:code=>"T013", :description=>"Fish"}, {:code=>"T094", :description=>"Professional Society"}, {:code=>"T087", :description=>"Amino Acid Sequence"}, {:code=>"T066", :description=>"Machine Activity"}, {:code=>"T185", :description=>"Classification"}, {:code=>"T006", :description=>"Rickettsia or Chlamydia"}, {:code=>"T049", :description=>"Cell or Molecular Dysfunction"}, {:code=>"T008", :description=>"Animal"}, {:code=>"T051", :description=>"Event"}, {:code=>"T038", :description=>"Biologic Function"}, {:code=>"T194", :description=>"Archaeon"}, {:code=>"T086", :description=>"Nucleotide Sequence"}, {:code=>"T039", :description=>"Physiologic Function"}, {:code=>"T012", :description=>"Bird"}, {:code=>"T063", :description=>"Molecular Biology Research Technique"}, {:code=>"T017", :description=>"Anatomical Structure"}, {:code=>"T082", :description=>"Spatial Concept"}, {:code=>"T088", :description=>"Carbohydrate Sequence"}, {:code=>"T099", :description=>"Family Group"}, {:code=>"T001", :description=>"Organism"}, {:code=>"T075", :description=>"Research Device"}, {:code=>"T096", :description=>"Group"}, {:code=>"T016", :description=>"Human"}, {:code=>"T072", :description=>"Physical Object"}, {:code=>"T071", :description=>"Entity"}, {:code=>"T200", :description=>"Clinical Drug"}, {:code=>"T085", :description=>"Molecular Sequence"}, {:code=>"T077", :description=>"Conceptual Entity"}, {:code=>"T010", :description=>"Vertebrate"}, {:code=>"T203", :description=>"Drug Delivery Device"}, {:code=>"T021", :description=>"Fully Formed Anatomical Structure"}, {:code=>"T204", :description=>"Eukaryote"}]
 
+  def index
     # TODO: Semantic types should be pulled from the new API (June, 2013)
     @semantic_types_for_select = []
     SEMANTIC_TYPES.each do |st|
       @semantic_types_for_select << [ "#{st[:description]} (#{st[:code]})", st[:code]]
     end
     @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
-
 
     # TODO: Duplicate the filteredOntologyList for the LinkedData client?
     #ontology_ids = []
@@ -81,23 +75,46 @@ class AnnotatorController < ApplicationController
     #query += "&wholeWordOnly=" + options[:wholeWordOnly].to_s unless options[:wholeWordOnly].empty?
     #query += "&withDefaultStopWords=" + options[:withDefaultStopWords].to_s unless options[:withDefaultStopWords].empty?
     annotations = parse_json(query) # parse_json adds APIKEY.
-    LOG.add :debug, "Getting annotations: #{Time.now - start}s"
+    LOG.add :debug, "Retrieved annotations: #{Time.now - start}s"
 
-    # TODO: Evaluate whether the REST API could be doing this more efficiently.
-    #classes = get_annotated_classes(annotations)
+    # Use the batch REST API to get all the annotated class prefLabels.
+    # Return a hash of class @id:prefLabel items.
+    classLabels = get_class_labels(annotations)
 
+    # TODO: Get this working when the REST batch service supports it.
+    #ontNames = get_ontology_names(annotations)
 
     start = Time.now
+    annotations2delete = []
     annotations.each do |a|
       # Get the class details required for display, assume this is necessary
       # for every element of the annotations array because the API returns a set.
-      # Replace the annotated class with these modified details.
-      a["annotatedClass"] = get_class_details(a["annotatedClass"])
-      a["hierarchy"].each do |h|
-        h["annotatedClass"] = get_class_details(h["annotatedClass"])
+      # Replace the annotated class with simplified details.
+      ac_id = a['annotatedClass']['@id']
+      details = classLabels[ac_id]
+      if details.nil?
+        LOG.add :debug, "Failed to get class details for: #{a['annotatedClass']['links']['self'] }"
+        annotations2delete.push(ac_id)
+      else
+        a['annotatedClass'] = details  # Simplify the class info
+        hierarchy2delete = []
+        a['hierarchy'].each do |h|
+          hc_id = h['annotatedClass']['@id']
+          details = classLabels[hc_id]
+          if details.nil?
+            LOG.add :debug, "Failed to get class details for: #{h['annotatedClass']['links']['self']}"
+            hierarchy2delete.push(hc_id)
+          else
+            h['annotatedClass'] = details  # Simplify the class info
+          end
+        end
+        # Remove any hierarchy classes that fail to resolve details.
+        a['hierarchy'].delete_if { |h| hierarchy2delete.include? h['annotatedClass']['@id'] }
       end
     end
-    LOG.add :debug, "Modified annotations: #{Time.now - start}s"
+    # Remove any annotations with annotated classes that fail to resolve details.
+    annotations.delete_if { |a| annotations2delete.include? a['annotatedClass']['@id'] }
+    LOG.add :debug, "Completed annotation class details: #{Time.now - start}s"
 
 
     #
@@ -175,35 +192,73 @@ class AnnotatorController < ApplicationController
 
 private
 
-  def get_annotated_classes(annotations)
-    # Use batch service to get prefLabels for all the annotated classes
+  def get_class_labels(annotations)
+    # Use batch service to get class prefLabels
+    classDetails = {}
+    classList = []
+    annotations.each do |a|
+      cls_id = a['annotatedClass']['@id']
+      ont_id = a['annotatedClass']['links']['ontology']
+      classList.push({'class'=>cls_id, 'ontology'=>ont_id})
+    end
+    call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>classList, 'include'=>['prefLabel']}}
+    uri = "http://stagedata.bioontology.org/batch/?apikey=#{get_apikey}"
+    response = RestClient.post uri, call_params.to_json, :content_type => :json, :accept => :json
+    classLabels = JSON.parse(response)
+    classLabels["http://www.w3.org/2002/07/owl#Class"].each do |cls|
+      # TODO: Replace the get_ontology_details with a batch call.
+      ont_details = get_ontology_details( cls['links']['ontology'] )
+      next if ont_details.nil? # No display for annotations on any class outside the BioPortal ontology set.
+      id = cls['@id']
+      classDetails[id] = {
+          '@id' => id,
+          'ui' => cls['links']['ui'],
+          'uri' => cls['links']['self'],
+          'prefLabel' => cls['prefLabel'],
+          'ontology' => ont_details,
+      }
+    end
+    return classDetails
   end
 
-  def get_class_details(annotatedClass)
-    # Get the class details required for display, assume this is necessary
-    # for every element of the annotations array because the API returns a set?
-    cls = {}
-    cls["uri"] = annotatedClass["links"]["self"]  # TODO: Change to UI link.
-    # Additional API request (synchronous)
-    cls_details = parse_json(cls["uri"])   # parse_json adds APIKEY.
-    cls["id"] = cls_details["@id"]
-    cls["prefLabel"] = cls_details["prefLabel"]
-    ont_uri = annotatedClass["links"]["ontology"]
+  #def get_ontology_names(annotations)
+  #  #
+  #  # TODO: Get this working when the batch service supports it.
+  #  # TODO: This should replace get_ontology_details().
+  #  #
+  #  # Use batch service to get ontology names
+  #  ontList = []
+  #  annotations.each do |a|
+  #    ont_id = a['annotatedClass']['links']['ontology']
+  #    ontList.push({'ontology'=>ont_id})
+  #  end
+  #  call_params = {'http://data.bioontology.org/metadata/Ontology'=>{'collection'=>ontList, 'include'=>['name']}}
+  #  uri = "http://stagedata.bioontology.org/batch/?apikey=#{get_apikey}"
+  #  response = RestClient.post uri, call_params.to_json, :content_type => :json, :accept => :json
+  #  ontNames = JSON.parse(response)
+  #  # TODO: massage the return values into something simple.
+  #end
+
+  def get_ontology_details(ont_uri)
     if ONTOLOGIES.keys.include? ont_uri
       # Use the saved ontology details to avoid repetitive API requests
       ont = ONTOLOGIES[ont_uri]
     else
-      # Additional API request (synchronous)
-      ont_details = parse_json(ont_uri)    # parse_json adds APIKEY.
-      ont = {}
-      ont["acronym"] = ont_details["acronym"]
-      ont["name"] = ont_details["name"]
-      ont["id"] = ont_details["@id"]
-      ont["uri"] = ont_uri  # TODO: Change to UI link.
-      ONTOLOGIES[ont_uri] = ont
+      begin
+        # Additional API request (synchronous)
+        ont_details = parse_json(ont_uri)    # parse_json adds APIKEY.
+        ont = {}
+        ont['uri'] = ont_uri  # TODO: Change to UI link.
+        ont['ui'] =  ont_details['links']['ui']
+        #ont['acronym'] = ont_details['acronym']
+        ont['name'] = ont_details['name']
+        ont['@id'] = ont_details['@id']
+        ONTOLOGIES[ont_uri] = ont
+      rescue
+        return nil
+      end
     end
-    cls["ontology"] = ont
-    return cls
+    return ont
   end
 
 
@@ -234,6 +289,8 @@ private
   end
 
   def parse_json(uri)
+    uri = URI.parse(uri)
+    LOG.add :debug, "Annotator URI: #{uri}"
     JSON.parse(open(uri, "Authorization" => "apikey token=#{get_apikey}").read)
   end
 

@@ -27,7 +27,7 @@ GEM
       json
     binding_of_caller (0.7.1)
       debug_inspector (>= 0.0.1)
-    builder (3.2.1)
+    builder (3.2.2)
     coderay (1.0.9)
     columnize (0.3.6)
     daemons (1.1.9)
@@ -54,7 +54,7 @@ GEM
     memcache-client (1.8.5)
     method_source (0.8.1)
     mime-types (1.23)
-    multi_json (1.7.4)
+    multi_json (1.7.5)
     multipart-post (1.2.0)
     mysql (2.8.1)
     ncbo_annotator (1.0.13)
