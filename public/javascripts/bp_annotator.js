@@ -557,110 +557,17 @@ jQuery(document).ready(function () {
 }); // doc ready
 
 
-// ***************************************
-// TEST JAVASCRIPT FOR PARSING NEW API JSON
-
-// http://stagedata.bioontology.org/annotator?text=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+skin+but+also+in+the+bowel+and+the+eye
-
-//var text = "Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.";
-
-//function request_details(uri, propertyArray) {
-//  var obj = {};
-//  $.ajax({
-//    url: uri,
-//    datatype: 'json',
-//    async: false,
-//    success: function(json){
-//obj.name = json.name;
-//      var i = null;
-//      var jsonProperties = Object.keys(json); // ['name', 'value']
-//      jsonProperties.forEach(function (key) {
-//        i = $.inArray(key, propertyArray);
-//        if ( i > -1 ){
-// this key:value pair has been requested
-//          obj[key] = json[key];
-//        }
-//      });
-//    },
-//  });
-//  return obj;
-//}
-
-
 function get_link(uri, label) {
   "use strict";
   return '<a href="' + uri + '">' + label + '</a>';
 }
 
 
-//function get_class_details(uri) {
-//  "use strict";
-//  var details = {};
-//  $.ajax({
-//    url     : uri,
-//    datatype: 'json',
-//    async   : false,
-//    success : function (json) {
-//      details.prefLabel = json.prefLabel;
-//      //details.synonym = json.synonym;
-//    }
-//  });
-//  return details;
-//  // NOTE: Cute abstraction, but it's slower.
-//  //return request_details(uri, ["name"]);
-//}
-
-
-//function get_ontology_details(uri) {
-//  "use strict";
-//  var details = {};
-//  $.ajax({
-//    url     : uri,
-//    datatype: 'json',
-//    async   : false,
-//    success : function (json) {
-//      details.name = json.name;
-//    }
-//  });
-//  return details;
-//  // NOTE: Cute abstraction, but it's slower.
-//  //return request_details(uri, ["name"]);
-//}
-
-
-//function process_class(term) {
-//  "use strict";
-//  // Get class URI and prefLabel
-//  // Use the '@id' value?
-//  var cls = {},
-//    details = null;
-//  cls.uri = term.links.self;
-//  // TODO: Use the annotator_controller.create method to get this detail.
-//  //details = get_class_details(cls.uri + "?apikey=" + apikey);
-//  cls.prefLabel = "TODO: GET IT IN ANNOTATOR CONTROLLER?";
-//  //cls.synonym = details.synonym;
-//  return cls;
-//}
-
-
-//function process_class_ontology(term) {
-//  "use strict";
-//  // Get ontology URI and name
-//  // Use the '@id' value?
-//  var ont = {},
-//    details = null;
-//  ont.uri = term.links.ontology;
-//  // TODO: Use the annotator_controller.create method to get this detail.
-//  //details = get_ontology_details(ont.uri + "?apikey=" + apikey);
-//  ont.name = "TODO: GET IT IN ANNOTATOR CONTROLLER?";
-//  return ont;
-//}
-
-
 function get_annotation_rows(annotation, text) {
   "use strict";
   var match_type_translation = { "mgrep": "direct", "mapping": "mapping", "closure": "ancestor" };
-  var cls = annotation.annotatedClass,
+  var result = {},
+    cls = annotation.annotatedClass,
     rows = [],
     cells = [],
     cls_rel_ui = null,
@@ -715,88 +622,93 @@ function get_annotation_rows(annotation, text) {
     // Note that the ont_link will be different.
   }); // annotations loop
   return rows;
-
-// OLD API code:
-//      // Create an array representing the row in the table
-//      var row = [
-//        "<a href='/ontologies/" + annotation.concept.localOntologyId + "?p=terms&conceptid=" + encodeURIComponent(annotation.concept.fullId) + "'>" + annotation.concept.preferredName + "</a>",
-//        "<a href='/ontologies/" + annotation.concept.localOntologyId + "'>" + ontology_name + "</a>",
-//        context_map[annotation.context.contextName.toLowerCase()],
-//        semantic_types.join("<br/>"),
-//        annotation.context.highlight,
-//        "<a href='/ontologies/" + matched_concept.localOntologyId + "?p=terms&conceptid=" + encodeURIComponent(matched_concept.fullId) + "'>" + matched_concept.preferredName + "</a>",
-//        "<a href='/ontologies/" + matched_concept.localOntologyId + "'>" + matched_ontology_name + "</a>"
-//      ];
-
 }
 
 
 function update_annotations_table(rowsArray) {
   "use strict";
+  var ontologies = {},
+    terms = {},
+    match_types = {},
+    matched_ontologies = {},
+    matched_terms = {};
+
+  jQuery(rowsArray).each(function () {
+    // [ cls_link, ont_link, match_type, semantic_types, text_markup, cls_link, ont_link ];
+    var row = this,
+      cls_link = row[0],
+      ont_link = row[1],
+      match_type = row[2],// direct, ancestors, mapping
+      //semantic_type = row[3],
+      //match_text = row[4],
+      match_cls_link = row[5],
+      match_ont_link = row[6];
+    // Extract labels from links (using non-greedy regex).
+    var cls_label = cls_link.replace(/^<a.*?>/,'').replace('</a>','').toLowerCase(),
+      ont_label = ont_link.replace(/^<a.*?>/,'').replace('</a>',''),
+      match_cls_label = match_cls_link.replace(/^<a.*?>/,'').replace('</a>','').toLowerCase(),
+      match_ont_label = match_ont_link.replace(/^<a.*?>/,'').replace('</a>','');
+
+    // TODO: Gather sem types for display
+//    var semantic_types = [];
+//    jQuery.each(annotation.concept.semantic_types, function () {
+//      semantic_types.push(this.description);
+//    });
+
+    // Keep track of how many results are associated with each ontology
+    ontologies[ont_label] = (ont_label in ontologies) ? ontologies[ont_label] + 1 : 1;
+    // Keep track of how many results are associated with each term
+    terms[cls_label] = (cls_label in terms) ? terms[cls_label] + 1 : 1;
+    // Keep track of match types
+    match_types[match_type] = (match_type in match_types) ? match_types[match_type] + 1 : 1;
+    // Keep track of matched terms
+    matched_terms[match_cls_label] = (match_cls_label in matched_terms) ? matched_terms[match_cls_label] + 1 : 1;
+    // Keep track of matched ontologies
+    matched_ontologies[match_ont_label] = (match_ont_label in matched_ontologies) ? matched_ontologies[match_ont_label] + 1 : 1;
+  });
+
+  // Add result counts
+  var count_span = '<span class="result_count">'
+  jQuery("#result_counts").html("total results " + count_span + rowsArray.length + "</span>&nbsp;");
+  var direct_count = ("direct" in match_types) ? match_types["direct"] : 0,
+    ancestor_count = ("ancestor" in match_types) ? match_types["ancestor"] : 0,
+    mapping_count = ("mapping" in match_types) ? match_types["mapping"] : 0;
+  jQuery("#result_counts").append("(");
+  jQuery("#result_counts").append("direct " + count_span  + direct_count + "</span>");
+  jQuery("#result_counts").append("&nbsp;/&nbsp;" + "ancestor " + count_span + ancestor_count + "</span>");
+  jQuery("#result_counts").append("&nbsp;/&nbsp;" + "mapping " + count_span + mapping_count + "</span>");
+  jQuery("#result_counts").append(")");
+
+  // Add checkboxes to filters
+  createFilterCheckboxes(ontologies, "filter_ontology_checkboxes", "ontology_filter_list");
+  createFilterCheckboxes(terms, "filter_terms_checkboxes", "terms_filter_list");
+  createFilterCheckboxes(match_types, "filter_match_type_checkboxes", "match_type_filter_list");
+  createFilterCheckboxes(matched_ontologies, "filter_matched_ontology_checkboxes", "matched_ontology_filter_list");
+  createFilterCheckboxes(matched_terms, "filter_matched_terms_checkboxes", "matched_terms_filter_list");
+
   // Reset table
   annotationsTable.fnClearTable();
   annotationsTable.fnSortNeutral();
   removeFilters();
+
   // Need to re-init because we're not using "live" because of propagation issues
   filter_ontologies.init();
   filter_terms.init();
   filter_match_type.init();
   filter_matched_ontologies.init();
   filter_matched_terms.init();
+
   // Add data
   annotationsTable.fnAddData(rowsArray);
 }
 
-function display_annotations(data, params) {
+function display_annotations(annotations, params) {
   "use strict";
-  // TODO: Update the result counts.
-  var cls_annotations = null,
-    cls_rows = [],
-    all_rows = [],
-    stats = {
-      "ontologies": {},
-      "terms": {},
-      "match_types": {},
-      "matched_ontologies": {},
-      "matched_terms": {}
-    };
-
-  for (var i = 0; i < data.length; i++) {
-    cls_annotations = data[i];
-    cls_rows = get_annotation_rows(cls_annotations, params.text);
-    all_rows = all_rows.concat( cls_rows );
-
-    // TODO: These stats might have to go into process_annotation?
-//      // Keep track of how many results are associated with each ontology
-//      ontologies[ontology_name] = (ontology_name in ontologies) ? ontologies[ontology_name] + 1 : 1;
-//      // Keep track of how many results are associated with each term
-//      terms[concept_name.toLowerCase()] = (concept_name.toLowerCase() in terms) ? terms[concept_name.toLowerCase()] + 1 : 1;
-//      // Keep track of match types
-//      match_types[context_map[annotation.context.contextName.toLowerCase()]] = (context_map[annotation.context.contextName.toLowerCase()] in match_types) ? match_types[context_map[annotation.context.contextName.toLowerCase()]] + 1 : 1;
-//      // Keep track of matched terms
-//      matched_terms[matched_concept.preferredName.toLowerCase()] = (matched_concept.preferredName.toLowerCase() in matched_terms) ? matched_terms[matched_concept.preferredName.toLowerCase()] + 1 : 1;
-//      // Keep track of matched ontologies
-//      matched_ontologies[matched_ontology_name] = (matched_ontology_name in matched_ontologies) ? matched_ontologies[matched_ontology_name] + 1 : 1;
+  var all_rows = [];
+  for (var i = 0; i < annotations.length; i++) {
+    all_rows = all_rows.concat(  get_annotation_rows(annotations[i], params.text) );
   }
   update_annotations_table(all_rows);
-  // TODO: Update the filter checkboxes.
-  //// Add checkboxes to filters
-  //createFilterCheckboxes(ontologies, "filter_ontology_checkboxes", "ontology_filter_list");
-  //createFilterCheckboxes(terms, "filter_terms_checkboxes", "terms_filter_list");
-  //createFilterCheckboxes(match_types, "filter_match_type_checkboxes", "match_type_filter_list");
-  //createFilterCheckboxes(matched_ontologies, "filter_matched_ontology_checkboxes", "matched_ontology_filter_list");
-  //createFilterCheckboxes(matched_terms, "filter_matched_terms_checkboxes", "matched_terms_filter_list");
-  // TODO: Fix result counts.
-  //  // Add result counts
-  var count_span = '<span class="result_count">'
-  //  //var total_count = data.statistics.mgrep + data.statistics.mapping + data.statistics.closure;
-  jQuery("#result_counts").html("total results " + count_span + all_rows.length + "</span>&nbsp;");
-  jQuery("#result_counts").append("(");
-  //  //jQuery("#result_counts").append(context_map["mgrep"] + count_span + data.statistics.mgrep + "</span>");
-  //  //jQuery("#result_counts").append("&nbsp;/&nbsp;" + context_map["closure"] + count_span + data.statistics.closure + "</span>");
-  //  //jQuery("#result_counts").append("&nbsp;/&nbsp;" + context_map["mapping"] + count_span + data.statistics.mapping + "</span>");
-  jQuery("#result_counts").append(")");
-  // TODO: Fix these links
   // Generate parameters for list at bottom of page
   var param_string = generateParameters(); // uses bp_last_param
   jQuery("#annotator_parameters").html(param_string);

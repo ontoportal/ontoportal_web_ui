@@ -185,7 +185,6 @@ class AnnotatorController < ApplicationController
     #  end
     #end
     #
-    #annotations.ontologies = ontologies_hash
 
     render :json => annotations
   end
@@ -316,7 +315,18 @@ private
   def parse_json(uri)
     uri = URI.parse(uri)
     LOG.add :debug, "Annotator URI: #{uri}"
-    JSON.parse(open(uri, "Authorization" => "apikey token=#{get_apikey}").read)
+    begin
+      response = open(uri, "Authorization" => "apikey token=#{get_apikey}").read
+    rescue RestClient::Exception => error
+      @retries ||= 0
+      if @retries < 2
+        @retries += 1
+        retry
+      else
+        raise error
+      end
+    end
+    JSON.parse(response)
   end
 
   # DISABLE THE OLD API CLIENT
