@@ -179,8 +179,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # Verifies if user is logged in
+  # rack-mini-profiler authorization
   def authorize
+    if session[:user] && session[:user].admin?
+      Rack::MiniProfiler.authorize_request
+    end
+  end
+
+  # Verifies if user is logged in
+  def authorize_and_redirect
     unless session[:user]
       redirect_to_home
     end

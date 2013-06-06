@@ -2,7 +2,7 @@ require 'cgi'
 class MappingsController < ApplicationController
 
   layout 'ontology'
-  before_filter :authorize, :only=>[:create,:new,:destroy]
+  before_filter :authorize_and_redirect, :only=>[:create,:new,:destroy]
 
   def index
     ontology_list = DataAccess.getOntologyList()
@@ -350,7 +350,7 @@ private
          </rdf:Property>
 
          "
-    
+
          for mapping in mappings
           rdf_text << "<mappings:One_To_One_Mapping rdf:about=\"#{mapping.id}\">
              <mappings:source rdf:resource='#{mapping.source}'/>
