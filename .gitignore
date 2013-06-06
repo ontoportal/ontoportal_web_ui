@@ -28,3 +28,5 @@ config/locales/en.rb
 .idea
 *.swp
 
+
+config.ru
