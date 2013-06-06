@@ -93,57 +93,54 @@ class SearchController < ApplicationController
       return
     end
 
-    params[:objecttypes] = set_objecttypes(params)
+    # Filter on ontology_id
+    params[:ontologies] = params[:id]
 
-    separator = (params[:separator].nil?) ? "~!~" : params[:separator]
-
-    @results, @pages = DataAccess.getNodeNameContains([params[:id]], params[:q], 1, params)
-
-    if params[:id]
-      LOG.add :info, 'jump_to_search', request, :virtual_id => params[:id], :search_term => params[:q], :result_count => @results.length
-    else
-      LOG.add :info, 'jump_to_search', request, :search_term => params[:q], :result_count => @results.length
-    end
+    search_page = LinkedData::Client::Models::Class.search(params[:q], params)
+    @results = search_page.collection
 
     response = ""
     obsolete_response = ""
+    separator = (params[:separator].nil?) ? "~!~" : params[:separator]
     for result in @results
-      if filter_private_result?(result)
-        next
-      end
+      # TODO_REV: Handle private ontologies
+      # if filter_private_result?(result)
+      #   next
+      # end
 
-      record_type = format_record_type(result[:recordType], result[:obsolete])
+      # TODO_REV: Format the response with type information, target information
+      # record_type = format_record_type(result[:recordType], result[:obsolete])
+      record_type = ""
 
-      target_value = result[:preferredName]
+      target_value = result.prefLabel
       case params[:target]
         when "name"
-          target_value = result[:preferredName]
+          target_value = result.prefLabel
         when "shortid"
-          target_value = result[:conceptIdShort]
+          target_value = result.id
         when "uri"
-          target_value = result[:conceptId]
-        else
-          target_value = result[:preferredName]
+          target_value = result.id
       end
 
       json = []
       json << "#{target_value}"
-      json << "|#{result[:conceptIdShort]}"
+      json << "|#{result.id}"
       json << "|#{record_type}"
-      json << "|#{result[:ontologyVersionId]}"
-      json << "|#{result[:conceptId]}"
-      json << "|#{result[:preferredName]}"
-      json << "|#{result[:contents]}"
+      json << "|#{result.explore.ontology.acronym}"
+      json << "|#{result.id}" # Duplicated because we used to have shortId and fullId
+      json << "|#{result.prefLabel}"
+      # json << "|#{result[:contents]}" TODO_REV: Fix contents for search
+      json << "|"
       if params[:id] && params[:id].split(",").length == 1
-        json << "|#{CGI.escape(result[:definition])}#{separator}"
+        json << "|#{CGI.escape((result.definition || []).join(". "))}#{separator}"
       else
-        json << "|#{result[:ontologyDisplayLabel]}"
-        json << "|#{result[:ontologyId]}"
-        json << "|#{CGI.escape(result[:definition])}#{separator}"
+        json << "|#{result.explore.ontology.name}"
+        json << "|#{result.explore.ontology.acronym}"
+        json << "|#{CGI.escape((result.definition || []).join(". "))}#{separator}"
       end
 
       # Obsolete results go at the end
-      if result[:obsolete]
+      if result.obsolete?
         obsolete_response << json.join
       else
         response << json.join
@@ -156,24 +153,6 @@ class SearchController < ApplicationController
     if params[:response].eql?("json")
       response = response.gsub("\"","'")
       response = "#{params[:callback]}({data:\"#{response}\"})"
-    end
-
-    #default widget
-    @widget="jump"
-    if !params[:target].nil?
-      #this is the form widget
-      @widget="form"
-    end
-
-    #dont save it if its a test
-    if !request.env['HTTP_REFERER'].nil? && !request.env["HTTP_REFERER"].downcase.include?("bioontology.org")
-      widget_log = WidgetLog.find_or_initialize_by_referer_and_widget(request.env["HTTP_REFERER"],@widget)
-      if widget_log.id.nil?
-        widget_log.count=1
-      else
-        widget_log.count+=1
-      end
-      widget_log.save
     end
 
     render :text => response
