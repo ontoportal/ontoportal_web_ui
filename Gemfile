@@ -18,6 +18,7 @@ gem "haml", "< 4.0.0"
 gem "will_paginate", "< 3.0"
 gem "airbrake"
 gem "rdoc"
+gem "rack-mini-profiler"
 
 gem 'ontologies_api_client', :git => "https://github.com/ncbo/ontologies_api_ruby_client.git"
 
