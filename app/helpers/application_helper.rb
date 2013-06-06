@@ -182,7 +182,7 @@ module ApplicationHelper
         icons = ""
 
         active_style =""
-        child.id.eql?(id) rescue binding.pry
+        child.id.eql?(id)
         if child.id.eql?(id)
           active_style="class='active'"
         end
@@ -204,8 +204,8 @@ module ApplicationHelper
           string << "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{number_of_terms} terms at this level. Retrieving these may take several minutes. #{retry_link}</div>"
         else
           string << "<li #{open} #{draw_root} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=terms&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.prefLabel} #{icons}</a>"
-          if child.childrenCount > 0 && !child.expanded?
-            string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.childrenCount}'>#{child.prefLabel}</a></li></ul>"
+          if child.childrenCount && child.childrenCount > 0 && !child.expanded?
+            string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.childrenCount}'>ajax_class</a></li></ul>"
           elsif child.expanded?
             string << "<ul>"
             build_tree(child,"child",string,id)

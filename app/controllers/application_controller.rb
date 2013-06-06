@@ -34,7 +34,6 @@ class ApplicationController < ActionController::Base
     MarginNote
     OntologyWrapper
     OntologyMetricsWrapper
-    TreeNode
     UserWrapper
     Groups
     SearchResults
@@ -290,50 +289,51 @@ class ApplicationController < ActionController::Base
   def get_class(params)
     if !@ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root"))
       # get the top level nodes for the root
-      @root = LinkedData::Client::Models::Class.new
+      @root = LinkedData::Client::Models::Class.new(read_only: true)
       # TODO_REV: Support views? Replace old view call: @ontology.top_level_terms(view)
       root_children = @ontology.explore.roots
-      root_children.sort!{|x,y| x.prefLabel.downcase<=>y.prefLabel.downcase}
+      root_children.sort!{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
 
       @root.children = root_children
 
-      # get the initial concepts to display
-      @concept = @root.children.first
+      # get the initial concept to display
+      @concept = @root.children.first.explore.self(full: true)
 
       # Some ontologies have "too many children" at their root. These will not process and are handled here.
       raise Error404 if @concept.nil?
     elsif @ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root"))
       # TODO_REV: Handle flat ontologies
       # Don't display any terms in the tree
-      @concept = NodeWrapper.new
-      @concept.label = "Please search for a term using the Jump To field above"
-      @concept.id = "bp_fake_root"
-      @concept.fullId = "bp_fake_root"
-      @concept.child_size = 0
-      @concept.properties = {}
-      @concept.version_id = @ontology.id
-      @concept.children = []
+      # @concept = NodeWrapper.new
+      # @concept.label = "Please search for a term using the Jump To field above"
+      # @concept.id = "bp_fake_root"
+      # @concept.fullId = "bp_fake_root"
+      # @concept.child_size = 0
+      # @concept.properties = {}
+      # @concept.version_id = @ontology.id
+      # @concept.children = []
 
-      @tree_concept = TreeNode.new(@concept)
+      # @tree_concept = TreeNode.new(@concept)
 
-      @root = TreeNode.new
-      @root.children = [@tree_concept]
+      # @root = TreeNode.new
+      # @root.children = [@tree_concept]
     elsif @ontology.flat? && params[:conceptid]
       # TODO_REV: Handle flat ontologies
       # Display only the requested term in the tree
-      @concept = DataAccess.getNode(@ontology.id, params[:conceptid], nil, view)
-      @concept.children = []
-      @concept.child_size = 0
-      @root = TreeNode.new
-      @root.children = [TreeNode.new(@concept)]
+      # @concept = DataAccess.getNode(@ontology.id, params[:conceptid], nil, view)
+      # @concept.children = []
+      # @concept.child_size = 0
+      # @root = TreeNode.new
+      # @root.children = [TreeNode.new(@concept)]
     else
       # if the id is coming from a param, use that to get concept
-      @concept = @ontology.explore.single_class(params[:conceptid])
+      @concept = @ontology.explore.single_class(params[:conceptid], full: true)
       raise Error404 if @concept.nil?
 
       # Create the tree
-      rootNode = @concept.explore.tree.first
-      if rootNode.nil?
+      rootNode = @concept.explore.tree(full: true)
+
+      if rootNode.nil? || rootNode.empty?
         roots = @ontology.explore.roots
         if roots.any? {|c| c.id == @concept.id}
           rootNode = roots
@@ -342,7 +342,9 @@ class ApplicationController < ActionController::Base
         end
       end
 
-      @root = LinkedData::Client::Models::Class.new
+      rootNode.sort!{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
+
+      @root = LinkedData::Client::Models::Class.new(read_only: true)
       @root.children = rootNode
     end
   end
