@@ -36,7 +36,7 @@
         if (false) {
           History.pushState({p:"terms", conceptid:sValue, suid:"jump_to", flat:true, label:li.extra[4]}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, "?p=terms&conceptid=" + sValue);
         } else {
-          document.location="/visualize/#{@ontology.id}/?conceptid="+encodeURIComponent(sValue)+"&jump_to_nav=true";
+          document.location="/ontologies/#{@ontology.acronym}/?p=terms&conceptid="+encodeURIComponent(sValue)+"&jump_to_nav=true";
           jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
           return;
         }
@@ -56,7 +56,11 @@
       var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
       var keywords = jQuery("#search_box").val().replace(specials, "\\$&").split(' ').join('|');
       var regex = new RegExp( '(' + keywords + ')', 'gi' );
-      return row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
+      var matchType = "";
+      if (typeof row[2] !== "undefined" && row[2] !== "") {
+        matchType = " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
+      }
+      return row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + matchType;
     }
 
     terms_init = function(){
