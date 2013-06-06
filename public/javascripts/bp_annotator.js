@@ -85,117 +85,6 @@ function get_annotations() {
     }
   });
 
-
-  /*
-   // OLD API
-
-   jQuery.ajax({
-   type: "POST",
-   url: "/annotator",
-   data: params,
-   dataType: "json",
-   success: function (data) {
-   var results = [],
-   resultCount = 1,
-   ontologies = {},
-   terms = {},
-   match_types = {},
-   matched_ontologies = {},
-   matched_terms = {},
-   context_map = { "mgrep": "direct", "mapping": "mapping", "closure": "ancestor" };
-
-   bp_last_params = data.statistics.parameters;
-
-   if (!jQuery.isEmptyObject(data.annotations)) {
-   jQuery(data.annotations).each(function () {
-   var annotation = this;
-   var ontology_name = data.ontologies[annotation.concept.localOntologyId].name;
-   var concept_name = annotation.concept.preferredName;
-   var context_name = annotation.context.contextName;
-   var matched_concept = context_name == "MGREP" ? annotation.concept : annotation.context[CONCEPT_MAP[context_name.toLowerCase()]];
-   var matched_ontology_name = data.ontologies[matched_concept.localOntologyId].name;
-
-   // Gather sem types for display
-   var semantic_types = [];
-   jQuery.each(annotation.concept.semantic_types, function () {
-     semantic_types.push(this.description);
-   });
-
-   // Create an array representing the row in the table
-   var row = [
-   "<a href='/ontologies/" + annotation.concept.localOntologyId + "?p=terms&conceptid=" + encodeURIComponent(annotation.concept.fullId) + "'>" + annotation.concept.preferredName + "</a>",
-   "<a href='/ontologies/" + annotation.concept.localOntologyId + "'>" + ontology_name + "</a>",
-   context_map[annotation.context.contextName.toLowerCase()],
-   semantic_types.join("<br/>"),
-   annotation.context.highlight,
-   "<a href='/ontologies/" + matched_concept.localOntologyId + "?p=terms&conceptid=" + encodeURIComponent(matched_concept.fullId) + "'>" + matched_concept.preferredName + "</a>",
-   "<a href='/ontologies/" + matched_concept.localOntologyId + "'>" + matched_ontology_name + "</a>"
-   ];
-   results.push(row);
-   resultCount++;
-   // Keep track of how many results are associated with each ontology
-   ontologies[ontology_name] = (ontology_name in ontologies) ? ontologies[ontology_name] + 1 : 1;
-
-   // Keep track of how many results are associated with each term
-   terms[concept_name.toLowerCase()] = (concept_name.toLowerCase() in terms) ? terms[concept_name.toLowerCase()] + 1 : 1;
-
-   // Keep track of match types
-   match_types[context_map[annotation.context.contextName.toLowerCase()]] = (context_map[annotation.context.contextName.toLowerCase()] in match_types) ? match_types[context_map[annotation.context.contextName.toLowerCase()]] + 1 : 1;
-
-   // Keep track of matched terms
-   matched_terms[matched_concept.preferredName.toLowerCase()] = (matched_concept.preferredName.toLowerCase() in matched_terms) ? matched_terms[matched_concept.preferredName.toLowerCase()] + 1 : 1;
-
-   // Keep track of matched ontologies
-   matched_ontologies[matched_ontology_name] = (matched_ontology_name in matched_ontologies) ? matched_ontologies[matched_ontology_name] + 1 : 1;
-   });
-   }
-
-   // Add result counts
-   //var total_count = data.statistics.mgrep + data.statistics.mapping + data.statistics.closure;
-   //jQuery("#result_counts").html("total results " + " <span class='result_count'>" + total_count + "</span>&nbsp;&nbsp;&nbsp;&nbsp;(");
-   //jQuery("#result_counts").append(context_map["mgrep"] + " <span class='result_count'>" + data.statistics.mgrep + "</span>");
-   //jQuery("#result_counts").append("&nbsp;&nbsp;/&nbsp;&nbsp;" + context_map["closure"] + " <span class='result_count'>" + data.statistics.closure + "</span>");
-   //jQuery("#result_counts").append("&nbsp;&nbsp;/&nbsp;&nbsp;" + context_map["mapping"] + " <span class='result_count'>" + data.statistics.mapping + "</span>");
-   //jQuery("#result_counts").append(")");
-
-   // Add checkboxes to filters
-   createFilterCheckboxes(ontologies, "filter_ontology_checkboxes", "ontology_filter_list");
-   createFilterCheckboxes(terms, "filter_terms_checkboxes", "terms_filter_list");
-   createFilterCheckboxes(match_types, "filter_match_type_checkboxes", "match_type_filter_list");
-   createFilterCheckboxes(matched_ontologies, "filter_matched_ontology_checkboxes", "matched_ontology_filter_list");
-   createFilterCheckboxes(matched_terms, "filter_matched_terms_checkboxes", "matched_terms_filter_list");
-
-   // Add links for downloading results
-   annotatorPostForm("tabDelimited");
-   annotatorPostForm("text");
-   annotatorPostForm("xml");
-
-   // Reset table
-   annotationsTable.fnClearTable();
-   annotationsTable.fnSortNeutral();
-   removeFilters();
-
-   // Generate parameters for list at bottom of page
-   generateParameters();
-
-   // Need to re-init because we're not using "live" because of propagation issues
-   filter_ontologies.init();
-   filter_terms.init();
-   filter_match_type.init();
-   filter_matched_ontologies.init();
-   filter_matched_terms.init();
-
-   // Add data
-   annotationsTable.fnAddData(results);
-
-   jQuery("#annotations_container").show(600, jQuery(".annotator_spinner").hide());
-   },
-   error: handleAnnotatorError
-   });
-
-   // OLD API
-   */
-
 } // get_annotations
 
 
@@ -478,27 +367,6 @@ jQuery.fn.dataTableExt.oApi.fnSortNeutral = function (oSettings) {
   oSettings.oApi._fnReDraw(oSettings);
 };
 
-// Creates an HTML form with a button that will POST to the annotator
-//function annotatorPostForm(format) {
-//  "use strict";
-//  // TODO: Check whether 'text' and 'tabDelimited' could work.
-//  // For now, assume that json and xml will work or should work.
-//  var format_map = { "json": "JSON", "xml": "XML", "text": "Text", "tabDelimited": "CSV" };
-//  var params = bp_last_params;
-//  params["format"] = format;
-//  var form_fields = [];
-//  jQuery.each(params, function (k, v) {
-//    if (v != null) {
-//      form_fields.push("<input type='hidden' name='" + k + "' value='" + v + "'>");
-//    }
-//  });
-//  var action = "action='" + BP_CONFIG.rest_url + "/annotator'";
-//  var form = jQuery("<form " + action + " method='post' target='_blank'/>")
-//    .append(form_fields.join(""))
-//    .append("<input type='submit' value='" + format_map[format] + "'>");
-//  jQuery("#download_links_" + format.toLowerCase()).html(form);
-//}
-
 
 function annotatorFormatLink(param_string, format) {
   "use strict";
@@ -718,29 +586,138 @@ function display_annotations(annotations, params) {
   annotatorFormatLink(param_string, "xml");
 }
 
-// OLD API CODE FOR STATS
-//  var results = [],
-//    resultCount = 1,
-//    ontologies = {},
-//    terms = {},
-//    match_types = {},
-//    matched_ontologies = {},
-//    matched_terms = {},
-//    context_map = { "mgrep": "direct", "mapping": "mapping", "closure": "ancestor" };
-//
-////  // There may be no data.annotations object in the new API.
-////  if (!jQuery.isEmptyObject(data.annotations)) {
-////    jQuery(data.annotations).each(function () {
-////      var annotation = this;
-////      var ontology_name = data.ontologies[annotation.concept.localOntologyId].name;
-////      var concept_name = annotation.concept.preferredName;
-////      var context_name = annotation.context.contextName;
-////      var matched_concept = context_name == "MGREP" ? annotation.concept : annotation.context[CONCEPT_MAP[context_name.toLowerCase()]];
-////      var matched_ontology_name = data.ontologies[matched_concept.localOntologyId].name;
-////
-////    });
-////  }
-//
-//
 
+
+
+/*
+// // OLD API
+//
+// jQuery.ajax({
+// type: "POST",
+// url: "/annotator",
+// data: params,
+// dataType: "json",
+// success: function (data) {
+// var results = [],
+// resultCount = 1,
+// ontologies = {},
+// terms = {},
+// match_types = {},
+// matched_ontologies = {},
+// matched_terms = {},
+// context_map = { "mgrep": "direct", "mapping": "mapping", "closure": "ancestor" };
+//
+// bp_last_params = data.statistics.parameters;
+//
+// if (!jQuery.isEmptyObject(data.annotations)) {
+// jQuery(data.annotations).each(function () {
+// var annotation = this;
+// var ontology_name = data.ontologies[annotation.concept.localOntologyId].name;
+// var concept_name = annotation.concept.preferredName;
+// var context_name = annotation.context.contextName;
+// var matched_concept = context_name == "MGREP" ? annotation.concept : annotation.context[CONCEPT_MAP[context_name.toLowerCase()]];
+// var matched_ontology_name = data.ontologies[matched_concept.localOntologyId].name;
+//
+// // Gather sem types for display
+// var semantic_types = [];
+// jQuery.each(annotation.concept.semantic_types, function () {
+// semantic_types.push(this.description);
+// });
+//
+// // Create an array representing the row in the table
+// var row = [
+// "<a href='/ontologies/" + annotation.concept.localOntologyId + "?p=terms&conceptid=" + encodeURIComponent(annotation.concept.fullId) + "'>" + annotation.concept.preferredName + "</a>",
+// "<a href='/ontologies/" + annotation.concept.localOntologyId + "'>" + ontology_name + "</a>",
+// context_map[annotation.context.contextName.toLowerCase()],
+// semantic_types.join("<br/>"),
+// annotation.context.highlight,
+// "<a href='/ontologies/" + matched_concept.localOntologyId + "?p=terms&conceptid=" + encodeURIComponent(matched_concept.fullId) + "'>" + matched_concept.preferredName + "</a>",
+// "<a href='/ontologies/" + matched_concept.localOntologyId + "'>" + matched_ontology_name + "</a>"
+// ];
+// results.push(row);
+// resultCount++;
+// // Keep track of how many results are associated with each ontology
+// ontologies[ontology_name] = (ontology_name in ontologies) ? ontologies[ontology_name] + 1 : 1;
+//
+// // Keep track of how many results are associated with each term
+// terms[concept_name.toLowerCase()] = (concept_name.toLowerCase() in terms) ? terms[concept_name.toLowerCase()] + 1 : 1;
+//
+// // Keep track of match types
+// match_types[context_map[annotation.context.contextName.toLowerCase()]] = (context_map[annotation.context.contextName.toLowerCase()] in match_types) ? match_types[context_map[annotation.context.contextName.toLowerCase()]] + 1 : 1;
+//
+// // Keep track of matched terms
+// matched_terms[matched_concept.preferredName.toLowerCase()] = (matched_concept.preferredName.toLowerCase() in matched_terms) ? matched_terms[matched_concept.preferredName.toLowerCase()] + 1 : 1;
+//
+// // Keep track of matched ontologies
+// matched_ontologies[matched_ontology_name] = (matched_ontology_name in matched_ontologies) ? matched_ontologies[matched_ontology_name] + 1 : 1;
+// });
+// }
+//
+// // Add result counts
+// //var total_count = data.statistics.mgrep + data.statistics.mapping + data.statistics.closure;
+// //jQuery("#result_counts").html("total results " + " <span class='result_count'>" + total_count + "</span>&nbsp;&nbsp;&nbsp;&nbsp;(");
+// //jQuery("#result_counts").append(context_map["mgrep"] + " <span class='result_count'>" + data.statistics.mgrep + "</span>");
+// //jQuery("#result_counts").append("&nbsp;&nbsp;/&nbsp;&nbsp;" + context_map["closure"] + " <span class='result_count'>" + data.statistics.closure + "</span>");
+// //jQuery("#result_counts").append("&nbsp;&nbsp;/&nbsp;&nbsp;" + context_map["mapping"] + " <span class='result_count'>" + data.statistics.mapping + "</span>");
+// //jQuery("#result_counts").append(")");
+//
+// // Add checkboxes to filters
+// createFilterCheckboxes(ontologies, "filter_ontology_checkboxes", "ontology_filter_list");
+// createFilterCheckboxes(terms, "filter_terms_checkboxes", "terms_filter_list");
+// createFilterCheckboxes(match_types, "filter_match_type_checkboxes", "match_type_filter_list");
+// createFilterCheckboxes(matched_ontologies, "filter_matched_ontology_checkboxes", "matched_ontology_filter_list");
+// createFilterCheckboxes(matched_terms, "filter_matched_terms_checkboxes", "matched_terms_filter_list");
+//
+// // Add links for downloading results
+// annotatorPostForm("tabDelimited");
+// annotatorPostForm("text");
+// annotatorPostForm("xml");
+//
+// // Reset table
+// annotationsTable.fnClearTable();
+// annotationsTable.fnSortNeutral();
+// removeFilters();
+//
+// // Generate parameters for list at bottom of page
+// generateParameters();
+//
+// // Need to re-init because we're not using "live" because of propagation issues
+// filter_ontologies.init();
+// filter_terms.init();
+// filter_match_type.init();
+// filter_matched_ontologies.init();
+// filter_matched_terms.init();
+//
+// // Add data
+// annotationsTable.fnAddData(results);
+//
+// jQuery("#annotations_container").show(600, jQuery(".annotator_spinner").hide());
+// },
+// error: handleAnnotatorError
+// });
+//
+// // OLD API
+*/
+
+
+// Creates an HTML form with a button that will POST to the annotator
+//function annotatorPostForm(format) {
+//  "use strict";
+//  // TODO: Check whether 'text' and 'tabDelimited' could work.
+//  // For now, assume that json and xml will work or should work.
+//  var format_map = { "json": "JSON", "xml": "XML", "text": "Text", "tabDelimited": "CSV" };
+//  var params = bp_last_params;
+//  params["format"] = format;
+//  var form_fields = [];
+//  jQuery.each(params, function (k, v) {
+//    if (v != null) {
+//      form_fields.push("<input type='hidden' name='" + k + "' value='" + v + "'>");
+//    }
+//  });
+//  var action = "action='" + BP_CONFIG.rest_url + "/annotator'";
+//  var form = jQuery("<form " + action + " method='post' target='_blank'/>")
+//    .append(form_fields.join(""))
+//    .append("<input type='submit' value='" + format_map[format] + "'>");
+//  jQuery("#download_links_" + format.toLowerCase()).html(form);
+//}
 
