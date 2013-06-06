@@ -186,11 +186,11 @@ jQuery(document).ready(function() {
 
   // Wire up navigation buttons
   jQuery('#ont_nav').fgmenu({
-    content: jQuery('#ont_nav').next().html(),
+    content: jQuery('#navigate_options').html(),
     afterItemChosen: nav_ont
   });
   jQuery('#ont_admin').fgmenu({
-    content: jQuery('#ont_admin').next().html(),
+    content: jQuery('#adminster_options').html(),
     afterItemChosen: menu_nav
   });
 

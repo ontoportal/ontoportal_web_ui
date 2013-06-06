@@ -5,6 +5,7 @@
       %td.label{:nowrap => ""}
         Preferred Name
         %span.slot_labels
+          / TODO_REV: Support names for properties
           /- unless @ontology.preferred_name_label.nil? || @ontology.preferred_name_label.to_s.length == 0
           /  (#{@concept.ontology.preferred_name_label})
       %td
@@ -14,6 +15,7 @@
         %td.label{:nowrap => ""}
           Synonyms
           %span.slot_labels
+            / TODO_REV: Support names for properties
             /- unless @ontology.synonym_label.nil? || @ontology.synonym_label.to_s.length == 0
             /  (#{@concept.ontology.synonym_label})
         %td
@@ -24,6 +26,7 @@
         %td.label{:nowrap => ""}
           Definitions
           %span.slot_labels
+            / TODO_REV: Support names for properties
             /- unless @ontology.definition_label.nil? || @ontology.definition_label.to_s.length == 0
             /  (#{@ontology.definition_label})
         %td
@@ -39,7 +42,7 @@
           %span.slot_labels
         %td
           %p true
-    
+
     - keys = @concept.properties.members
     - top_keys=["description", "comment"]
     - bottom_keys=["disjoint", "subclass", "is_a", "has_part"]

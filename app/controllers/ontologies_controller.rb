@@ -7,7 +7,7 @@ class OntologiesController < ApplicationController
   helper :concepts
   layout 'ontology'
 
-  before_filter :authorize, :only=>[:edit,:update,:create,:new]
+  before_filter :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
 
   # GET /ontologies
   # GET /ontologies.xml
