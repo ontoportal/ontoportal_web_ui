@@ -37,7 +37,7 @@ function get_annotations() {
     return;
   }
 
-  jQuery("#annotations_container").hide(200);
+  jQuery("#annotations_container").hide();
   jQuery(".annotator_spinner").show();
 
   var params = {},
@@ -74,13 +74,13 @@ function get_annotations() {
     success : function (data) {
       set_last_params(params);
       display_annotations(data, bp_last_params);
-      jQuery(".annotator_spinner").hide();
+      jQuery(".annotator_spinner").hide(200);
       jQuery("#annotations_container").show(300);
     },
     error   : function (data) {
       set_last_params(params);
-      jQuery(".annotator_spinner").hide();
-      jQuery("#annotations_container").hide(200);
+      jQuery(".annotator_spinner").hide(200);
+      jQuery("#annotations_container").hide();
       jQuery("#annotator_error").html(" Problem getting annotations, please try again");
     }
   });
@@ -443,7 +443,7 @@ function get_annotation_rows(annotation, text) {
     cls_link = null,
     ont_link = null,
     match_type = '',
-    semantic_types = '',
+    semantic_types = cls.semanticType.join('<br/>'),
     text_match = null,
     text_prefix = null,
     text_suffix = null,
@@ -453,7 +453,8 @@ function get_annotation_rows(annotation, text) {
   ont_rel_ui = cls_rel_ui.replace(/\?p=terms.*$/, '?p=summary');
   cls_link = get_link(cls_rel_ui, cls.prefLabel);
   ont_link = get_link(ont_rel_ui, cls.ontology.name);
-  var match_markup_span = '<span style="color: rgb(255, 128, 0); font-weight: bold; padding: 2px 0px;">';
+  var match_span = '<span style="color: rgb(153,153,153);">';
+  var match_markup_span = '<span style="color: rgb(35, 73, 121); font-weight: bold; padding: 2px 0px;">';
   jQuery.each(annotation.annotations, function (i, a) {
 
     // TODO: consider string truncation around the annotation markups.
@@ -461,15 +462,15 @@ function get_annotation_rows(annotation, text) {
     text_match = text.substring(a.from - 1, a.to);
     text_prefix = text.substring(0, a.from - 1);
     text_suffix = text.substring(a.to);
-    text_markup = text_prefix + match_markup_span + text_match + "</span>" + text_suffix;
+    text_markup = match_markup_span + text_match + "</span>";
+    text_markup = match_span + text_prefix + text_markup + text_suffix + "</span>";
     //console.log('text markup: ' + text_markup);
     match_type = match_type_translation[a.matchType.toLowerCase()] || 'direct';
-    // TODO: Add semantic type extraction code.
-    //      // Gather sem types for display
-    //      var semantic_types = [];
-    //      jQuery.each(annotation.concept.semantic_types, function () {
-    //        semantic_types.push(this.description);
-    //      });
+    // Gather sem types for display
+//    console.log(cls.semanticType);
+//    jQuery.each(cls.semanticType, function () {
+//      semantic_types.push(this);
+//    });
     cells = [ cls_link, ont_link, match_type, semantic_types, text_markup, cls_link, ont_link ];
     rows.push(cells);
     // Add rows for any classes in the hierarchy.
@@ -574,7 +575,7 @@ function display_annotations(annotations, params) {
   "use strict";
   var all_rows = [];
   for (var i = 0; i < annotations.length; i++) {
-    all_rows = all_rows.concat(  get_annotation_rows(annotations[i], params.text) );
+    all_rows = all_rows.concat( get_annotation_rows(annotations[i], params.text) );
   }
   update_annotations_table(all_rows);
   // Generate parameters for list at bottom of page
