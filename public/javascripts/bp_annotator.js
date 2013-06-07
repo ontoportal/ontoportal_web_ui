@@ -443,7 +443,7 @@ function get_annotation_rows(annotation, text) {
     cls_link = null,
     ont_link = null,
     match_type = '',
-    semantic_types = cls.semanticType.join('<br/>'),
+    semantic_types = cls.semanticType.join('; '),// test with 'abscess' text and sem type = T046,T020
     text_match = null,
     text_prefix = null,
     text_suffix = null,
