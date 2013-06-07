@@ -229,7 +229,7 @@ private
     LOG.add :debug, "Annotator URI: #{uri}"
     begin
       response = open(uri, "Authorization" => "apikey token=#{get_apikey}").read
-    rescue RestClient::Exception => error
+    rescue Exception => error
       @retries ||= 0
       if @retries < 2
         @retries += 1
@@ -246,7 +246,7 @@ private
     uri = "http://stagedata.bioontology.org/batch/?apikey=#{get_apikey}"
     begin
       response = RestClient.post uri, params.to_json, :content_type => :json, :accept => :json
-    rescue RestClient::Exception => error
+    rescue Exception => error
       LOG.add :debug, "ERROR: annotator batch POST, uri: #{uri}"
       LOG.add :debug, "ERROR: annotator batch POST, params: #{params}"
       @retries ||= 0
