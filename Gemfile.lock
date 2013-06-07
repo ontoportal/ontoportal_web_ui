@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 4c844b090a8d0761b388776dcdd2c1a4d601a965
+  revision: 78d94400c7977200b3e9dad370fb8632861dd395
   specs:
     ontologies_api_client (0.0.2)
       faraday
@@ -25,7 +25,7 @@ GEM
       activesupport
       builder
       json
-    binding_of_caller (0.7.1)
+    binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
     coderay (1.0.9)

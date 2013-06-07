@@ -466,11 +466,6 @@ function get_annotation_rows(annotation, text) {
     text_markup = match_span + text_prefix + text_markup + text_suffix + "</span>";
     //console.log('text markup: ' + text_markup);
     match_type = match_type_translation[a.matchType.toLowerCase()] || 'direct';
-    // Gather sem types for display
-//    console.log(cls.semanticType);
-//    jQuery.each(cls.semanticType, function () {
-//      semantic_types.push(this);
-//    });
     cells = [ cls_link, ont_link, match_type, semantic_types, text_markup, cls_link, ont_link ];
     rows.push(cells);
     // Add rows for any classes in the hierarchy.
