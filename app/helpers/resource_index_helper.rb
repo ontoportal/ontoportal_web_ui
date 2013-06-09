@@ -17,7 +17,7 @@ module ResourceIndexHelper
       resource_name = resource[:resourceName] ||= resources_hash[resource[:resourceId].downcase.to_sym][:resourceName] rescue "unknown"
       @resources_for_select << ["#{resource_name} (#{number_with_delimiter(resource[:totalElements] ||= resource[:totalResults], :delimiter => ",")} records)", resource[:resourceId]]
     end
-    render :partial => 'resources_links'
+    render :partial => 'resources_links'   # TODO: WHERE IS THIS PARTIAL FILE?
   end
 
   def resources_info(resources, popular_concepts)
