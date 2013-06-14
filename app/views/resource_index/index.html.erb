@@ -1,16 +1,10 @@
 <%@title = "Resources Search"%>
 
 <script type="text/javascript">
-<%ont_acronyms = []%>
-<%@onts_and_views.each {|ont| ont_acronyms << "#{ont.ontologyId}: '#{ont.abbreviation.nil? ? ont.displayLabel : ont.abbreviation}'"}%>
-<%ont_names = {}%>
-<%@onts_and_views.each {|ont| ont_names[ont.ontologyId] = ont.displayLabel}%>
-<%ri_ontology_ids = []%>
-<%@ri_ontologies.each {|ont| ri_ontology_ids << ont.ontologyId}%>
-var ont_acronyms = { <%=ont_acronyms.join(", ")%> };
-var ont_names = <%=ont_names.to_json%>;
-var ri_ontology_ids = [ <%=ri_ontology_ids.join(", ")%> ];
-var resources = <%=@resources_hash.to_json%>;
+var ont_acronyms = { <%=@ont_acronyms.join(", ")%> };
+var ont_names = <%=@ont_names.to_json%>;
+var ri_ontology_ids = [ <%=@ont_ids.join(", ")%> ];
+var resources = <%=@resources.to_json%>;
 var orgSite = <%=$ORG_SITE.to_json%>
 </script>
 
@@ -47,9 +41,9 @@ var orgSite = <%=$ORG_SITE.to_json%>
 
     <!-- hidden form input to use for tracking ontologies selected for filtering -->
     <div style="position: absolute; left: -99999px;">
-      <%= render :partial => "shared/ontology_picker", :locals => { :sel_text => "Ontologies", :custom_ontologies => @ri_ontologies }%>
+      <%= render :partial => "shared/ontology_picker", :locals => { :sel_text => "Ontologies", :custom_ontologies => @ontologies }%>
     </div>
-    <%=render_advanced_picker(nil, @ri_ontologies, "resource_index_terms_chzn")%>
+    <%=render_advanced_picker(nil, @ontologies, "resource_index_terms_chzn")%>
 
     <span style='color: red;' id="resource_index_error" class='resource_index_error'></span>
   </div>

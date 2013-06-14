@@ -7,36 +7,61 @@ require 'rest-client'
 require 'ontologies_api_client'
 
 
+require 'pry'
+
+
 class ResourceIndexController < ApplicationController
   include ActionView::Helpers::TextHelper
 
   layout 'ontology'
 
+  API_KEY = $API_KEY
   REST_URI = "http://#{$REST_DOMAIN}"
   RESOURCE_INDEX_REST_URL = REST_URI + "/resource_index"
-  API_KEY = $API_KEY
+  RESOURCES_REST_URL = RESOURCE_INDEX_REST_URL + "/resources"
 
+  # Disable old code:
   # Resource Index annotation offsets rely on latin-1 character sets for the count to be right. So we set all responses as latin-1.
-  before_filter :set_encoding
-
+  #before_filter :set_encoding
   #RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "http://#{$REST_DOMAIN}/resource_index/", :limit => 10, :mode => :intersection}
 
   def index
+
+    @ontologies = LinkedData::Client::Models::OntologySubmission.all
+    #@ri_ontologies = @ontologies  # TODO: check what this should be!
+
+    # Disable old code:
   	#ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))
     #ontologies = ri.ontologies
     #ontology_ids = []
     #ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
-
-    #@ontologies = DataAccess.getOntologyList
-    #@views = DataAccess.getViewList
-    @ontologies = LinkedData::Client::Models::OntologySubmission.all
-    @views =  LinkedData::Client::Models::View.all
-    @onts_and_views = @ontologies | @views
-    @resources_hash = ri.resources_hash
-    @resources = ri.resources.sort {|a,b| a[:resourceName].downcase <=> b[:resourceName].downcase}
-
     #@ri_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
-    @ri_ontologies = LinkedData::Client::Models::OntologySubmission.all
+    #ri_ontology_ids = []
+    #@ri_ontologies.each {|ont| ri_ontology_ids << ont.ontologyId}
+
+    # New code, but Ray says resource index should not be working with views.
+    #@views = []
+    #@ontologies.each { |ont| @views += ont.ontology.explore.views }
+    #@onts_and_views = @ontologies | @views
+
+    @resources = parse_json(RESOURCES_REST_URL)
+    @resources.sort! {|a,b| a["resourceName"].downcase <=> b["resourceName"].downcase}
+
+    # Extract ontology attributes for javascript
+    @ont_ids = []
+    @ont_acronyms = []
+    @ont_names = {}
+    @ontologies.each do |ont|
+      label = ont.ontology.acronym.nil? && ont.ontology.name || ont.ontology.acronym
+      @ont_acronyms.push "#{ont.ontology.id}: '#{label}'"
+      @ont_names[ont.ontology.id] = ont.ontology.name
+      @ont_ids.push ont.ontology.id
+    end
+
+
+    binding.pry
+
+
   end
 
 
@@ -102,11 +127,6 @@ class ResourceIndexController < ApplicationController
 private
 
 
-  def set_encoding
-    response.headers['Content-type'] = 'text/html; charset=ISO-8859-1'
-  end
-
-
   def convert_for_will_paginate(resources)
     resources_paginate = []
     resources.each do |resource|
@@ -114,16 +134,6 @@ private
     end
     resources_paginate
   end
-
-
-  #def set_apikey(ri)
-  #  if session[:user]
-  #    ri.options[:apikey] = session[:user].apikey
-  #  else
-  #    ri.options[:apikey] = $API_KEY
-  #  end
-  #  ri
-  #end
 
 
   def popular_concepts(ri)
@@ -162,6 +172,22 @@ private
     JSON.parse(response)
   end
 
+
+  # Disable old code:
+  #def set_encoding
+  #  response.headers['Content-type'] = 'text/html; charset=ISO-8859-1'
+  #end
+
+
+  # Disable old code:
+  #def set_apikey(ri)
+  #  if session[:user]
+  #    ri.options[:apikey] = session[:user].apikey
+  #  else
+  #    ri.options[:apikey] = $API_KEY
+  #  end
+  #  ri
+  #end
 
 
 end
