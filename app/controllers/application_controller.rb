@@ -3,6 +3,10 @@ require 'open-uri'
 require 'net/http'
 require 'net/https'
 require 'net/ftp'
+require 'json'
+require 'cgi'
+require 'rest-client'
+require 'ontologies_api_client'
 
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
@@ -12,6 +16,13 @@ class Error404 < StandardError; end
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
+
+  REST_URI = "http://#{$REST_DOMAIN}"
+  API_KEY = $API_KEY
+
+  # TODO: Evalute whether the ontologies hash could be in a REDIS key:value store.
+  # If so, this could avoid all the repetitive API requests for basic ontology details.
+  ONTOLOGIES = {}  # see get_ontology_details method.
 
   if !$EMAIL_EXCEPTIONS.nil? && $EMAIL_EXCEPTIONS == true
     include ExceptionNotifiable
@@ -347,6 +358,100 @@ class ApplicationController < ActionController::Base
       @root = LinkedData::Client::Models::Class.new(read_only: true)
       @root.children = rootNode
     end
+  end
+
+
+
+  # DLW: Methods moved from annotator_controller:
+
+
+  #def get_ontology_names(annotations)
+  #  #
+  #  # TODO: Get this working when the batch service supports it.
+  #  # TODO: This should replace get_ontology_details().
+  #  #
+  #  # Use batch service to get ontology names
+  #  ontList = []
+  #  annotations.each do |a|
+  #    ont_id = a['annotatedClass']['links']['ontology']
+  #    ontList.push({'ontology'=>ont_id})
+  #  end
+  #  # remove duplicates
+  #  ontSet = ontList.to_set # get unique ontology set
+  #  ontList = ontSet.to_a   # assume collection requires a list in batch call
+  #  # make the batch call
+  #  call_params = {'http://data.bioontology.org/metadata/Ontology'=>{'collection'=>ontList, 'include'=>['name']}}
+  #  response = get_batch_results(call_params)
+  #  ontNames = JSON.parse(response)
+  #  # TODO: massage the return values into something simple.
+  #end
+
+  def get_ontology_details(ont_uri)
+    if ONTOLOGIES.keys.include? ont_uri
+      # Use the saved ontology details to avoid repetitive API requests
+      ont = ONTOLOGIES[ont_uri]
+    else
+      begin
+        # Additional API request (synchronous)
+        ont_details = parse_json(ont_uri)    # parse_json adds APIKEY.
+        ont = {}
+        ont['uri'] = ont_uri
+        ont['ui'] =  ont_details['links']['ui']
+                                             #ont['acronym'] = ont_details['acronym']
+        ont['name'] = ont_details['name']
+        ont['@id'] = ont_details['@id']
+        ONTOLOGIES[ont_uri] = ont
+      rescue
+        return nil
+      end
+    end
+    return ont
+  end
+
+
+  def get_apikey()
+    apikey = API_KEY
+    if session[:user]
+      apikey = session[:user].apikey
+    end
+    return apikey
+  end
+
+
+  def parse_json(uri)
+    uri = URI.parse(uri)
+    LOG.add :debug, "Annotator URI: #{uri}"
+    begin
+      response = open(uri, "Authorization" => "apikey token=#{get_apikey}").read
+    rescue Exception => error
+      @retries ||= 0
+      if @retries < 1  # retry once only
+        @retries += 1
+        retry
+      else
+        raise error
+      end
+    end
+    JSON.parse(response)
+  end
+
+
+  def get_batch_results(params)
+    uri = "http://stagedata.bioontology.org/batch/?apikey=#{get_apikey}"
+    begin
+      response = RestClient.post uri, params.to_json, :content_type => :json, :accept => :json
+    rescue Exception => error
+      LOG.add :debug, "ERROR: annotator batch POST, uri: #{uri}"
+      LOG.add :debug, "ERROR: annotator batch POST, params: #{params}"
+      @retries ||= 0
+      if @retries < 1  # retry once only
+        @retries += 1
+        retry
+      else
+        raise error
+      end
+    end
+    response
   end
 
 end

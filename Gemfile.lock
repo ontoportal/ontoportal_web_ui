@@ -1,11 +1,11 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 78d94400c7977200b3e9dad370fb8632861dd395
+  revision: b8d42f6dc1efbc9b59019a78299082bada370302
   specs:
     ontologies_api_client (0.0.2)
       faraday
       multi_json
-      oj
+      oj (<= 2.0.14)
       typhoeus
 
 GEM
@@ -54,7 +54,7 @@ GEM
     memcache-client (1.8.5)
     method_source (0.8.1)
     mime-types (1.23)
-    multi_json (1.7.6)
+    multi_json (1.7.7)
     multipart-post (1.2.0)
     mysql (2.8.1)
     oj (2.0.14)
