@@ -399,7 +399,7 @@ class ApplicationController < ActionController::Base
 
   def parse_json(uri)
     uri = URI.parse(uri)
-    LOG.add :debug, "Annotator URI: #{uri}"
+    LOG.add :debug, "Parse URI: #{uri}"
     begin
       response = open(uri, "Authorization" => "apikey token=#{get_apikey}").read
     rescue Exception => error
@@ -420,8 +420,8 @@ class ApplicationController < ActionController::Base
     begin
       response = RestClient.post uri, params.to_json, :content_type => :json, :accept => :json
     rescue Exception => error
-      LOG.add :debug, "ERROR: annotator batch POST, uri: #{uri}"
-      LOG.add :debug, "ERROR: annotator batch POST, params: #{params}"
+      LOG.add :debug, "ERROR: batch POST, uri: #{uri}"
+      LOG.add :debug, "ERROR: batch POST, params: #{params}"
       @retries ||= 0
       if @retries < 1  # retry once only
         @retries += 1
