@@ -10,8 +10,9 @@ class AnnotatorController < ApplicationController
 
   def index
     @semantic_types_for_select = []
-    SEMANTIC_DICT.each_pair do |code, description|
-      @semantic_types_for_select << ["#{description} (#{code})", code]
+    semantic_types = get_semantic_types
+    semantic_types.each_pair do |code, label|
+      @semantic_types_for_select << ["#{label} (#{code})", code]
     end
     @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
     # TODO: Duplicate the filteredOntologyList for the LinkedData client?
@@ -90,6 +91,7 @@ private
 
   def get_class_details(annotations, semanticTypes)
     # Use batch service to get class prefLabels
+    semantic_types = get_semantic_types
     classDetails = {}
     classList = []
     annotations.each do |a|
@@ -111,7 +113,6 @@ private
     # Simplify the response data for the UI
     classResults = JSON.parse(response)
     classResults["http://www.w3.org/2002/07/owl#Class"].each do |cls|
-      # TODO: Replace the get_ontology_details with a batch call.
       ont_details = get_ontology_details( cls['links']['ontology'] )
       next if ont_details.nil? # No display for annotations on any class outside the BioPortal ontology set.
       id = cls['@id']
@@ -127,7 +128,7 @@ private
         semanticTypeURI = 'http://bioportal.bioontology.org/ontologies/umls/sty/'
         semanticCodes = cls['semanticType'].map {|t| t.sub( semanticTypeURI, '') }
         requestedCodes = semanticCodes.map {|code| (semanticTypes.include? code and code) || nil }.compact
-        requestedDescriptions = requestedCodes.map {|code| SEMANTIC_DICT[code] }.compact
+        requestedDescriptions = requestedCodes.map {|code| semantic_types[code] }.compact
         classDetails[id]['semanticType'] = requestedDescriptions
       else
         classDetails[id]['semanticType'] = []
