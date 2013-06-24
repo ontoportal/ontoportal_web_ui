@@ -1,11 +1,11 @@
 <%@title = "Resources Search"%>
 
 <script type="text/javascript">
-var ont_acronyms = { <%=@ont_acronyms.join(", ")%> };
-var ont_names = <%=@ont_names.to_json%>;
-var ri_ontology_ids = [ <%=@ont_ids.join(", ")%> ];
-var resources = <%=@resources.to_json%>;
-var orgSite = <%=$ORG_SITE.to_json%>
+    var ont_acronyms = { <%=@ont_acronyms.join(', ')%> };
+    var ont_names = <%=@ont_names.to_json%>;
+    var ri_ontology_ids = [ <%=@ont_ids.join(', ')%> ];
+    var resources = <%=@resources.to_json%>;
+    var orgSite = <%=$ORG_SITE.to_json%>;
 </script>
 
 <%=javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.js"%>
@@ -32,7 +32,13 @@ var orgSite = <%=$ORG_SITE.to_json%>
       </div>
 
       <% textarea_title = "Start typing to find terms to search the index with" %>
-      <%=select_tag :resource_index_terms, "", :multiple => 'true', "data-placeholder".to_sym => textarea_title, :title => textarea_title, :class => "help_text", :style => "width: 432px;" %>
+      <%=select_tag :resource_index_terms, "",
+                    :multiple => 'true',
+                    "data-placeholder".to_sym => textarea_title,
+                    :title => textarea_title,
+                    :class => "help_text",
+                    :style => "width: 432px;"
+      %>
 
       <div style="float: right; font-size: smaller;">
         <a id="ont_select_adv_href" href="javascript:void(0)">select ontologies to search</a>
@@ -41,6 +47,7 @@ var orgSite = <%=$ORG_SITE.to_json%>
 
     <!-- hidden form input to use for tracking ontologies selected for filtering -->
     <div style="position: absolute; left: -99999px;">
+      <!-- TODO: Double check the :custom_ontologies variable - it was @ri_ontologies or something -->
       <%= render :partial => "shared/ontology_picker", :locals => { :sel_text => "Ontologies", :custom_ontologies => @ontologies }%>
     </div>
     <%=render_advanced_picker(nil, @ontologies, "resource_index_terms_chzn")%>

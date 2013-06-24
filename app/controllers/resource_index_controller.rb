@@ -15,8 +15,6 @@ class ResourceIndexController < ApplicationController
 
   layout 'ontology'
 
-  API_KEY = $API_KEY
-  REST_URI = "http://#{$REST_DOMAIN}"
   RESOURCE_INDEX_REST_URL = REST_URI + "/resource_index"
   RESOURCES_REST_URL = RESOURCE_INDEX_REST_URL + "/resources"
 
@@ -57,10 +55,6 @@ class ResourceIndexController < ApplicationController
       @ont_names[ont.ontology.id] = ont.ontology.name
       @ont_ids.push ont.ontology.id
     end
-
-
-    binding.pry
-
 
   end
 
@@ -143,33 +137,6 @@ private
       CACHE.set("ri_popular_concepts", concepts)
     end
     concepts
-  end
-
-
-  def get_apikey()
-    apikey = API_KEY
-    if session[:user]
-      apikey = session[:user].apikey
-    end
-    return apikey
-  end
-
-
-  def parse_json(uri)
-    uri = URI.parse(uri)
-    LOG.add :debug, "Resource Index URI: #{uri}"
-    begin
-      response = open(uri, "Authorization" => "apikey token=#{get_apikey}").read
-    rescue Exception => error
-      @retries ||= 0
-      if @retries < 2
-        @retries += 1
-        retry
-      else
-        raise error
-      end
-    end
-    JSON.parse(response)
   end
 
 
