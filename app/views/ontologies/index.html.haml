@@ -205,8 +205,6 @@
             %td{:style => "width:50px;"}= submission.version
             %td{:style => "width:30px;"}= DateTime.parse(submission.creationDate).strftime("%m/%d/%Y")
             %td{:style => "width:225px;"}= submission.contact.map {|c| c.name}.join(" ")
-            %td{:style => "display:none;"}
-              - unless !submission.description.nil? && submission.description.empty?
-                Description: #{submission.description}
+            %td{:style => "display:none;"}= "Description: #{submission.description}" unless submission.description.nil?
             %td{:style => "display:none;"}= submission.ontology.explore.categories.map {|c| c.name}.join(" ")
             %td{:style => "display:none;"}= submission.ontology.explore.groups.map {|g| g.acronym}.join(" ")
