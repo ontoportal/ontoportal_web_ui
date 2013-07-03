@@ -420,13 +420,14 @@ class ApplicationController < ActionController::Base
     begin
       response = RestClient.post uri, params.to_json, :content_type => :json, :accept => :json
     rescue Exception => error
-      LOG.add :debug, "ERROR: batch POST, uri: #{uri}"
-      LOG.add :debug, "ERROR: batch POST, params: #{params}"
       @retries ||= 0
       if @retries < 1  # retry once only
         @retries += 1
         retry
       else
+        LOG.add :debug, "\nERROR: batch POST, uri: #{uri}"
+        LOG.add :debug, "\nERROR: batch POST, params: #{params.to_json}"
+        LOG.add :debug, "\nERROR: batch POST, error response: #{error.response}"
         raise error
       end
     end
