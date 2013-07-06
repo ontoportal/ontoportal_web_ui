@@ -1,11 +1,11 @@
 <%@title = "Resources Search"%>
 
 <script type="text/javascript">
-    var ont_acronyms = { <%=@ont_acronyms.join(', ')%> };
-    var ont_names = <%=@ont_names.to_json%>;
-    var ri_ontology_ids = [ <%=@ont_ids.join(', ')%> ];
-    var resources = <%=@resources.to_json%>;
-    var orgSite = <%=$ORG_SITE.to_json%>;
+var ont_acronyms = <%=@ont_acronyms.to_json%>;
+var ont_names = <%=@ont_names.to_json%>;
+var ri_ontology_ids = <%=@ont_ids.to_json%>;
+var resources = <%=@resources.to_json%>;
+var orgSite = <%=$ORG_SITE.to_json%>;
 </script>
 
 <%=javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.js"%>

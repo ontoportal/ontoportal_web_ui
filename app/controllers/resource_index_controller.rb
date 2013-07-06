@@ -6,7 +6,6 @@ require 'cgi'
 require 'rest-client'
 require 'ontologies_api_client'
 
-
 require 'pry'
 
 
@@ -15,8 +14,9 @@ class ResourceIndexController < ApplicationController
 
   layout 'ontology'
 
-  RESOURCE_INDEX_REST_URL = REST_URI + "/resource_index"
-  RESOURCES_REST_URL = RESOURCE_INDEX_REST_URL + "/resources"
+  RESOURCE_INDEX_URI = REST_URI + "/resource_index"
+  RI_RESOURCES_URI = RESOURCE_INDEX_URI + "/resources"
+  RI_ONTOLOGIES_URI = RESOURCE_INDEX_URI + "/ontologies"
 
   # Disable old code:
   # Resource Index annotation offsets rely on latin-1 character sets for the count to be right. So we set all responses as latin-1.
@@ -26,7 +26,14 @@ class ResourceIndexController < ApplicationController
   def index
 
     @ontologies = LinkedData::Client::Models::OntologySubmission.all
-    #@ri_ontologies = @ontologies  # TODO: check what this should be!
+
+
+
+
+    # @ri_ontologies = parse_json(RI_ONTOLOGIES_URI)
+
+
+
 
     # Disable old code:
   	#ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))
@@ -37,21 +44,16 @@ class ResourceIndexController < ApplicationController
     #ri_ontology_ids = []
     #@ri_ontologies.each {|ont| ri_ontology_ids << ont.ontologyId}
 
-    # New code, but Ray says resource index should not be working with views.
-    #@views = []
-    #@ontologies.each { |ont| @views += ont.ontology.explore.views }
-    #@onts_and_views = @ontologies | @views
-
-    @resources = parse_json(RESOURCES_REST_URL)
+    @resources = parse_json(RI_RESOURCES_URI)
     @resources.sort! {|a,b| a["resourceName"].downcase <=> b["resourceName"].downcase}
 
     # Extract ontology attributes for javascript
     @ont_ids = []
-    @ont_acronyms = []
+    @ont_acronyms = {}
     @ont_names = {}
     @ontologies.each do |ont|
-      label = ont.ontology.acronym.nil? && ont.ontology.name || ont.ontology.acronym
-      @ont_acronyms.push "#{ont.ontology.id}: '#{label}'"
+      acronym = ont.ontology.acronym.nil? && ont.ontology.name || ont.ontology.acronym
+      @ont_acronyms[ont.ontology.id] = acronym
       @ont_names[ont.ontology.id] = ont.ontology.name
       @ont_ids.push ont.ontology.id
     end
