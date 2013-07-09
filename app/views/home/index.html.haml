@@ -1,0 +1,291 @@
+- @title = "Welcome to the #{$ORG_SITE}"
+
+%link{:charset => "utf-8", :href => "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css", :media => "screen", :rel => "stylesheet", :title => "no title", :type => "text/css"}/
+%link{:href => "/javascripts/JqueryPlugins/superfish/superfish.css", :media => "screen", :rel => "stylesheet", :type => "text/css"}/
+%link{:charset => "utf-8", :href => "/javascripts/JqueryPlugins/superfish/superfish-vertical.css", :media => "screen", :rel => "stylesheet", :title => "no title", :type => "text/css"}/
+%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.js", :type => "text/javascript"}
+%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/superfish/hoverIntent.js", :type => "text/javascript"}
+%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/superfish/superfish.js", :type => "text/javascript"}
+
+- ont_names = @ontologies.map{|ont| "[\"#{ont.name} (#{ont.acronym})\",\"#{ont.acronym}\"]"}
+
+:javascript
+  function jumpToValueOntology() {
+    var ontology = jQuery("#find_ontology")[0].value;
+    var ontology_id = jQuery("#find_ontology_id").val();
+
+    if (ontology_id == null || ontology_id == "") {
+      // didnt pick an ont
+      alert("The ontology does not exist. You must pick an ontology from the list.")
+
+      return false;
+    }
+
+    if (!!ontology_id) {
+      var sValue = jQuery("#find_ontology_id").val();
+      if (sValue == null || sValue == "") {
+        sValue = data;
+      }
+      document.location="/ontologies/"+sValue;
+      jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Ontology...</h1>' });
+      return;
+    }
+  }
+
+  function formatResultOntologySearch(value, data) {
+    jQuery("#find_ontology_id").val("");
+    var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
+    var keywords = jQuery("#find_ontology").val().replace(specials, "\\$&").split(' ').join('|');
+    var regex = new RegExp( '(' + keywords + ')', 'gi' );
+    return value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>");
+  }
+
+  function jumpToValueResource(){
+    var term = jQuery("#find_resource")[0].value;
+    var data = jQuery('body').data("resource_results");
+
+    if (data == null) {
+      // Im doing a search
+
+      var search = confirm("Press OK to Search for resources using the term, or Cancel to select a term")
+      if (search) {
+        query = jQuery("#find_resource").val();
+        document.location="/resource_index";
+        return;
+      }
+    }
+
+    if (!!data) {
+      var concept_id = data[0];
+      var ontology_version_id = data[2];
+      var ontology_id = data[7];
+      document.location="/resource_index/resource_index?conceptids="+ontology_id+"/"+encodeURIComponent(concept_id);
+      return;
+    }
+  }
+
+  function formatItemResource(value, data) {
+    jQuery('body').data("resource_results", null);
+    var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
+    var keywords = jQuery("#find_resource").val().replace(specials, "\\$&").split(' ').join('|');
+    var regex = new RegExp( '(' + keywords + ')', 'gi' );
+
+    // data[7] is the ontology_id, only included when searching multiple ontologies
+    if (data[6] == undefined) {
+      var result = value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + data[1] + ")</span>";
+    } else {
+      var result = value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + data[1] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + data[6] + "</span>";
+    }
+
+    return result;
+  }
+
+  // We use this in conjunction with autocomplete because autocomplete
+  // fails when there are multiple results with the same term name
+  function selectResource(value, data) {
+    jQuery('body').data("resource_results", value.data);
+    jumpToValueResource();
+  }
+
+  // Sets a hidden form value that records the virtual id when a concept is chosen in the jump to
+  // This is a workaround because the default autocomplete search method cannot distinguish between two
+  // ontologies that have the same preferred name but different ids.
+  function selectFindOntology(value, data){
+    jQuery("#find_ontology_id").val(value.data[0]);
+    jQuery("#find_ontology").focus();
+    jumpToValueOntology();
+  }
+
+  var ontologies_array=[#{ont_names.join(",")}];
+
+  jQuery(document).ready(function() {
+    jQuery("#find_ontology").autocomplete({
+      selectFirst: true,
+      data: ontologies_array,
+      minChars: 1,
+      matchSubset: 1,
+      maxItemsToShow: 20,
+      delay: 1,
+      showResult: formatResultOntologySearch,
+      onItemSelect: selectFindOntology
+    });
+
+    jQuery("#find_resource").autocomplete({
+      selectFirst: true,
+      url: "/search/json_search/",
+      extraParams: { separator: "\n" },
+      cacheLength: 1,
+      maxCacheLength: 1,
+      matchSubset: 0,
+      minChars: 3,
+      maxItemsToShow: 20,
+      showResult: formatItemResource,
+      onItemSelect: selectResource
+    });
+
+    jQuery('ul.sf-menu').superfish({
+      animation: {height:'show'},   // slide-down effect without fade-in
+      delay:     1200               // 1.2 second delay on mouseout);
+    });
+
+  });
+
+
+  function greybox(box){
+
+    if(jQuery(box).hasClass("greyed")){
+      jQuery(box).removeClass('greyed');
+      jQuery(box).val("");
+    }
+  }
+
+
+:css
+  .greyed{
+    color:#CFCFCF;
+  }
+#social_networking{:style => "position: absolute; right: 7px; padding-top: 4px;"}
+  %div{:style => "float:right;", :title => "Cite BioPortal"}
+    %a.pop_window.help_link{:href => "/help#How_to_cite_NCBO_and_BioPortal", :target => "_blank"}
+      %span.ui-icon.ui-icon-note
+    %a.pop_window{:href => "/help#How_to_cite_NCBO_and_BioPortal", :target => "_blank"}
+      Cite Us
+  %div{:style => "float:right;"}= t('home.facebook_button')
+  %div{:style => "float:right;"}= t('home.twitter_button')
+- unless $FRONT_NOTICE.nil? || $FRONT_NOTICE.empty? || cookies[:front_page_notice_closed].eql?("true")
+  :javascript
+    function close_message(){
+      var exdate = new Date();
+      exdate.setDate(exdate.getDate() + 7);
+      document.cookie="front_page_notice_closed=true; expires="+exdate.toGMTString();
+      jQuery("#notice_message").hide();
+    }
+    %p#notice_message{:style => "padding: 10px; margin: 10px; border:1px solid #EFEFEF; background-color: #F9F9F9;"}
+    = $FRONT_NOTICE
+    \&nbsp;&nbsp;
+    %a{:href => "#", :onclick => "close_message(); return false;", :style => "font-size: small; color: darkGray;"} [close]
+%div{:style => "padding:10px;margin:10px;"}
+  = t('home.intro').nil? || t('home.intro').empty? ? "<b>Welcome to BioPortal!</b> For help using #{$SITE}, click on this icon: #{help_icon("/help#Home_Page")}" : t('home.intro')
+%table{:width => "100%"}
+  %tr
+    %td{:valign => "top", :width => "33%"}
+      - form_for(:search, :url => {:controller =>'search', :action=>'index'}, :html => { :method => :get }) do |f|
+        %fieldset
+          %legend Search all ontologies
+          %table
+            %tr
+              %td{:nowrap => ""}
+                %input.greyed{:name => "query", :onclick => "greybox(this)", :size => "30", :style => "width:190px;", :type => "text", :value => "Enter term, e.g. Melanoma"}/
+                = submit_tag 'Search',:class=>'home_button'
+            %tr
+              %td{:style => "padding-left:15px"}
+                %a{:href => "/search?opt=advanced"} Advanced Search
+    %td{:valign => "top", :width => "33%"}
+      %fieldset
+        %legend Find an ontology
+        %table
+          %tr
+            %td{:nowrap => ""}
+              %input#find_ontology.home_input.greyed{:name => "ontology", :onclick => "greybox(this)", :size => "30", :style => "width:240px;", :type => "text", :value => "Enter ontology name, e.g. NCI Thesaurus"}/
+              %input.home_button{:onclick => "jumpToValueOntology()", :type => "button", :value => "Explore"}/
+              %input#find_ontology_id{:type => "hidden"}/
+          - if at_slice?
+            %tr
+              %td &nbsp;
+          - else
+            %tr
+              %td{:style => "padding-left:15px;height:10px;"}
+                %ul.sf-menu.sf-vertical
+                  %li
+                    %a{:href => "#", :style => "white-space:nowrap;background:#fff;border:1px solid #fff;text-decoration:underline;padding:0px;"} Browse Ontologies >
+                    %ul
+                      %li
+                        %a{:href => "/ontologies"} All
+                      - @groups.to_a.each do |group|
+                        %li
+                          %a{:href => "/ontologies?filter=#{CGI.escape(group[:acronym])}"}= group[:name]
+    %td{:valign => "top", :width => "33%"}
+      %fieldset
+        %legend Search resources
+        %table
+          %tr
+            %td{:nowrap => ""}
+              %input#find_resource.greyed{:onclick => "greybox(this)", :size => "30", :style => "width:240px;", :type => "text", :value => "Enter a term, e.g. Melanoma"}/
+              %input.home_button{:onclick => "jumpToValueResource()", :type => "button", :value => "Search"}/
+          %tr
+            %td{:style => "padding-left:15px"}
+              %a{:href => "/resource_index"} Advanced Resource Search
+  %tr
+    %td{:valign => "top"}
+      %fieldset
+        %legend
+          Most Viewed Ontologies #{"in full #{$SITE} " if at_slice?}(#{t('most_viewed_date')})
+        = t('most_viewed')
+      - if t('stats').nil? || t('stats').empty?
+        %fieldset
+          %legend
+            Statistics #{"in full #{$SITE}" if at_slice?}
+          %table.minimal.align-right{:width => "100%"}
+            %tbody
+              %tr
+                %td Ontologies
+                %td= @ontologies.length
+              %tr
+                %td Terms
+                %td= number_with_delimiter("TODO", :delimiter => ",")
+              %tr
+                %td Resources Indexed
+                %td= number_with_delimiter(@number_of_resources, :delimiter => ",")
+              %tr
+                %td Indexed Records
+                %td= number_with_delimiter(@ri_record_count, :delimiter => ",")
+              %tr
+                %td Direct Annotations
+                %td= number_with_delimiter(@direct_annotations, :delimiter => ",")
+              %tr
+                %td Direct Plus Expanded Annotations
+                %td= number_with_delimiter(@direct_expanded_annotations, :delimiter => ",")
+      - else
+        %fieldset
+          = t('stats')
+    %td{:valign => "top"}
+      %fieldset
+        %legend Latest Notes
+        %table.minimal{:style => "width:300px"}
+          %tbody
+            - if @last_notes.nil? || @last_notes.empty?
+              No recent notes have been submitted
+            - else
+              - for note in @last_notes
+                %tr
+                  %td
+                    - begin
+                      %span{:style => "color:#AAAAAA"}
+                        = link_to "#{note.subject} (#{DataAccess.getLatestOntology(note.ontology_id).displayLabel})", Class.new.extend(NotesHelper).get_applies_to_url(DataAccess.getLatestOntology(note.ontology_id).id, note.applies_to_type, note.applies_to)
+                        = "#{time_ago_in_words(Time.at(convert_java_time(note.created.to_i)))} ago"
+                        by #{get_username(note.author)}
+                      - if note.body
+                        %p
+                          = truncate(strip_tags(note.body), :length => 100)
+                          \&nbsp;
+                    - rescue
+    %td{:valign => "top"}
+      %fieldset
+        %legend Latest Mappings
+        %table.minimal{:style => "width:300px"}
+          %tbody
+            - if @last_mappings.nil? || @last_mappings.empty?
+              No recent mappings have been submitted
+            - else
+              - for map in @last_mappings
+                %tr
+                  %td
+                    - if map.dest_node.nil?
+                    = "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})"
+                    - else
+                      = link_to "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})" , "/visualize/#{map.source_version_id}?conceptid=#{CGI.escape(map.source_id)}#mappings" |
+                    %br/
+                    %span{:style => "color:#AAAAAA"}
+                      = map.map_source
+                      = map.created_at.strftime("%m/%d/%y")
+                      = map.user.username
