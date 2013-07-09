@@ -166,6 +166,13 @@
     return this.bind('click.facebox', clickHandler)
   }
 
+  $.fn.centerElement = function() {
+    $(this).css({
+      top:  getPageScroll()[1] + (getPageHeight() / 10),
+      left: $(window).width() / 2 - $(this).width() / 2
+    });
+  }
+
   /*
    * Private methods
    */
