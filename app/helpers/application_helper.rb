@@ -72,7 +72,7 @@ module ApplicationHelper
   end
 
   def get_username(user_id)
-    user = DataAccess.getUser(user_id) rescue nil
+    user = LinkedData::Client::Models::User.find(user_id)
     username = user.nil? ? user_id : user.username
     username
   end
