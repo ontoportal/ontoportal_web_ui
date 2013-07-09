@@ -984,7 +984,30 @@ textarea.create_note_inputs {
 }
 .note_body {
   font-size: 12pt;
+  padding: 1em 0 0;
 }
+.discussion {
+  padding: 1em 0;
+}
+.discussion h3 {
+  font-size: 18px;
+}
+.discussion .reply {
+  padding: 1em 0 .5em;
+}
+.discussion .reply .reply {
+  padding-left: 3.5em;
+}
+.reply_author {
+  color: #234979;
+}
+.reply_body {
+  font-size: 12pt;
+}
+.reply:first-child {
+  padding-top: 0 !important;
+}
+
 
 /* Extra information (proposals) */
 .proposal_info {
@@ -997,6 +1020,8 @@ textarea.create_note_inputs {
 
 .proposal {
   width: 90%;
+  padding-top: .5em;
+  font-size: 12pt;
 }
 
 .proposal th, .proposal td, .proposal tr {
@@ -1005,15 +1030,15 @@ textarea.create_note_inputs {
 }
 
 .proposal th, .proposal td, .proposal tr {
-  padding: .25em;
+  padding: .2em .5em;
   vertical-align: top;
 }
 
 .proposal th {
   color: #A9A9A9 !important;
   font-weight: bold;
-  text-align: right !important;
-  width: 15%;
+  text-align: left !important;
+  width: 25%;
 }
 
 .proposal_root {
@@ -1140,10 +1165,6 @@ textarea.create_note_inputs {
 .notes_list_container {
   width: 90%;
   padding: 1em;
-}
-
-#note_count_wrapper {
-  display: none;
 }
 
 /* Datatables */
