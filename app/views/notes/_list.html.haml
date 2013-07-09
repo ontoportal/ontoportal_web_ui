@@ -1,0 +1,50 @@
+- require 'cgi'
+- # Check to see if we have notes, if not then try to get them
+- @note_link = "/ontologies/#{@ontology.acronym}/notes/"
+.notes_list_container
+  .subscribe_to_notes{:style => "float: left;"}
+    = subscribe_button(@ontology.acronym)
+  .notes_delete{:style => "float: left; margin-left: 1em;"}
+    / TODO_REV: Enable notes deletion
+    / delete_button
+
+  .concept_notes_table_container{:style => "clear: both; padding-top: 2em;"}
+    %table.zebra.notes_concept_list_table{:class => "concept_notes_list", :style => "width: 100%; clear: both;", :width => "100%"}
+      %thead
+        %tr
+          %th.notes_delete
+            Delete
+          %th
+            Subject
+          %th
+            Author
+          %th
+            Type
+          %th
+            Created
+      %tbody
+        - if @notes.nil? || @notes.empty?
+          %tr#concept_no_notes
+            %td No notes to display
+            %td
+            %td
+            %td
+        - else
+          - @notes.each do |note|
+            %tr{:class => "#{note.id}_tr", :id => "#{note.id}_tr"}
+              %td.notes_delete
+                - if note.deletable?(session[:user])
+                  / TODO_REV: Handle notes deletion
+                  / %input.delete_note_checkbox{"data-applies_to" => note.appliesTo['id'], "data-note_id" => note.id, :id => "delete_#{note.id}", :type => "checkbox"}/
+              %td
+                = link_to note.subject, "#{@note_link}#{CGI.escape(note.id)}", :id => "row_#{note.id}", :class => "concept_notes_list_link notes_list_link"
+                &nbsp;&nbsp;&nbsp;
+                %span{:id => "#{note.id}_row_archived", :style => "font-size: x-small; color: grey;"}
+                  - if note.archived
+                    archived
+              %td
+                = get_username(note.creator)
+              %td
+                = get_note_type_text(note.proposal.type) if note.proposal
+              %td
+                = DateTime.parse(note.created).strftime("%Y-%m-%d")

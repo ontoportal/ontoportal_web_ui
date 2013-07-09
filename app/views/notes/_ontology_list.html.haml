@@ -1,0 +1,148 @@
+- require 'cgi'
+- # Check to see if we have notes, if not then try to get them
+- if @notes.nil? && @concept && @ontology
+  - @note_link = "/ontologies/#{@ontology.acronym}/notes/"
+:javascript
+  jQuery.rloader([
+    {type:'css',src:'/javascripts/JqueryPlugins/superfish/superfish.css'},
+    {type:'js',src:'/javascripts/JqueryPlugins/superfish/superfish.js'}
+  ]);
+.notes_list_container
+  - unless @notes_for.nil?
+    %h1
+      Notes for #{link_to @notes_for, @notes_for_link}
+  .subscribe_to_notes{:style => "float: left;"}
+    = subscribe_button(@ontology.acronym)
+  .notes_delete{:style => "float: left; margin-left: 1em;"}
+    / TODO_REV: Enable notes deletion
+    / delete_button
+  %div.ont_notes_filter{style: "clear: both; padding-top: 10px;"}
+    Filter:
+    %input#hide_archived_ont{:checked => "true", :name => "hide_archived_ont", :type => "checkbox"}
+    %label{:for => "hide_archived_ont"} Hide Archived
+
+  .ont_notes_table_container{:style => "clear: both;"}
+    %table.zebra.notes_ont_list_table{:id => "ontology_notes_list", :style => "width: 100%; clear: both;", :width => "100%"}
+      %thead
+        %tr
+          %th.notes_delete
+            Delete
+          %th
+            Subject
+          %th
+            Subject Sort
+          %th
+            Archive Sort
+          %th
+            Author
+          %th
+            Type
+          %th
+            Class
+          %th
+            Created
+      %tbody
+        - if @notes.nil? || @notes.empty?
+          %tr#ont_no_notes
+            %td No notes to display
+            %td
+            %td
+            %td
+            %td
+            %td
+            %td
+            %td
+        - else
+          - @notes.each do |note|
+            %tr{:class => "#{note.id}_tr", :id => "#{note.id}_tr"}
+              %td.notes_delete
+                - if note.deletable?(session[:user])
+                  / TODO_REV: Handle notes deletion
+                  / %input.delete_note_checkbox{"data-applies_to" => note.appliesTo['id'], "data-note_id" => note.id, :id => "delete_#{note.id}", :type => "checkbox"}/
+              %td
+                = link_to note.subject, "#{@note_link}#{CGI.escape(note.id)}", :id => "row_#{note.id}", :class => "ont_notes_list_link notes_list_link"
+                &nbsp;&nbsp;&nbsp;
+                %span{:id => "#{note.id}_row_archived", :style => "font-size: x-small; color: grey;"}
+                  - if note.archived
+                    archived
+              %td
+                = note.subject
+              %td
+                = note.archived || "false"
+              %td
+                = get_username(note.creator)
+              %td
+                = get_note_type_text(note.proposal.type) if note.proposal
+              %td
+                - if note.relatedClass && note.relatedClass.length > 0
+                  %a{href: "/ontologies/#{@ontology.acronym}?p=terms&conceptid=#{note.relatedClass.first}"}= @ontology.explore.single_class(note.relatedClass.first).prefLabel
+              %td
+                = DateTime.parse(note.created).strftime("%Y-%m-%d")
+  / render :partial => 'notes/add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type, :action => "ont_list_" }
+/ Handle JS at the bottom of the page
+:javascript
+  // Global data
+  var ontNotesTable;
+  var bp_notesDeletable = #{@notes_deletable.to_json};
+
+  // Data needed in the external JS file stored in the body 'cache'
+  jQuery.data(document.body, "ontology_id", "#{@ontology.acronym}");
+
+  var ont_columns = { archived: 3, date: 6, subjectSort: 2 };
+
+  // This will wire up a table with the dataTables config.
+  // Needs to stay inline because IE won't recognize it in an external file.
+  function wireOntTable(ontNotesTableNew) {
+    // Wire up table if it hasn't been done yet
+    ontNotesTable = ontNotesTableNew;
+    ontNotesTable.dataTable({
+      "iDisplayLength": 50,
+      "sPaginationType": "full_numbers",
+      "aaSorting": [[ont_columns.date, 'desc']],
+      "aoColumns": [
+         null, // Delete
+         { "iDataSort": ont_columns.subjectSort }, // Subject link
+         { "bVisible": false }, // Subject for sort
+         { "bVisible": false }, // Archived for filter
+         null, // Author
+         null, // Type
+         null, // Target
+         null // Created
+      ],
+      "fnDrawCallback": function(){
+        showDeleteInfo();
+      },
+      "fnInitComplete": function(){
+        showDeleteInfo();
+      }
+    });
+
+    // Important! Table is somehow getting set to zero width. Reset here.
+    jQuery(ontNotesTable).css("width", "100%");
+
+    ontNotesTable.fnFilter('false', ont_columns.archived);
+  }
+
+  function hideOrUnhideArchivedOntNotes() {
+      if (jQuery("#hide_archived_ont:checked").val() !== undefined) {
+        // Checked
+        ontNotesTable.fnFilter('false', ont_columns.archived);
+      } else {
+        // Unchecked
+        ontNotesTable.fnFilter('', ont_columns.archived, true, false);
+      }
+  }
+
+  jQuery(document).ready(function(){
+    // Enable datatable
+    wireOntTable(jQuery("#ontology_notes_list"));
+
+
+    jQuery("#hide_archived_ont").click(function(){
+      hideOrUnhideArchivedOntNotes();
+    });
+
+    // Notes subscriptions button
+    jQuery("a.subscribe_to_notes").button();
+  });
+

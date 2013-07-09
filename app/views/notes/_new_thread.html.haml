@@ -1,0 +1,22 @@
+%div.note{style: "max-width: 850px;"}
+  %span.note_title
+    = @notes.subject
+  - if @notes.archived
+    %span{:style => "color: grey; font-size: 12pt;"} archived
+  %div
+    submitted by
+    %span.note_author= get_username(@notes.creator)
+    = time_ago_in_words(DateTime.parse(@notes.created))
+    ago
+  - if @notes.body && !@notes.body.empty?
+    %div.note_body= @notes.body
+  - if @notes.proposal
+    %div.proposal
+      %h3 Proposal Details
+      =proposal_html(@notes)
+  %a{href: "#reply", class: "reply_reply"} reply
+  - if @notes.reply && !@notes.reply.empty?
+    %div.discussion
+      %h3 Discussion
+      %div.discussion_container
+        = recurse_replies(@notes.reply)
