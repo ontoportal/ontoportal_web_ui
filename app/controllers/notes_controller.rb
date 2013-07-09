@@ -42,39 +42,33 @@ class NotesController < ApplicationController
   def virtual_show
     note_id = params[:noteid]
     concept_id = params[:conceptid]
-    ontology_virtual_id = params[:ontology]
+    ontology_acronym = params[:ontology]
 
-    @ontology = DataAccess.getLatestOntology(ontology_virtual_id)
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
 
     @notes_thread_title = "Responses"
 
     if note_id
-      notes = DataAccess.getNote(ontology_virtual_id, note_id, true, true)
-      if notes.kind_of?(Array)
-        @notes = notes[0]
-      else
-        @notes = notes
-      end
+      @notes = LinkedData::Client::Models::Note.get(params[:noteid], include_threads: true)
     elsif concept_id
-      @notes = DataAccess.getNotesForConcept(ontology_virtual_id, concept_id, true, true)
+      @notes = @ontology.explore.single_class(concept_id).explore.notes
       @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
       render :partial => 'list', :layout => 'ontology'
       return
     else
-      @notes = DataAccess.getNotesForOntology(ontology_virtual_id, true)
+      @notes = @ontology.explore.notes
       @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
       render :partial => 'list', :layout => 'ontology'
       return
     end
 
     if request.xhr?
-      render :partial => 'thread'
+      render :partial => 'new_thread'
       return
     end
 
     respond_to do |format|
       format.html { render :template => 'notes/show' }
-      format.xml  { render :xml => @note }
     end
   end
 
@@ -149,14 +143,19 @@ class NotesController < ApplicationController
   # POST /notes
   # POST /notes.xml
   def create
-    @errors = validate(params)
+    if params[:type] && params[:type].eql?("parent")
+      note = LinkedData::Client::Models::Reply.new(params)
+    else
+      note = LinkedData::Client::Models::Note.new(params)
+    end
+
+    binding.pry
+    # note.save
 
     unless @errors.empty?
       render :json => @errors, :status => 500
       return
     end
-
-    @note = DataAccess.createNote(params)
 
     unless @note.nil?
       render :json => @note.to_json
