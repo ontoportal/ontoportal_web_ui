@@ -210,6 +210,8 @@ class OntologiesController < ApplicationController
     # check to see if user should get the option to delete
     # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
+    @notes = @concept.explore.notes
+
     unless @concept.id.to_s.empty?
       # Update the tab with the current concept
       update_tab(@ontology,@concept.id)
@@ -459,11 +461,15 @@ class OntologiesController < ApplicationController
   end
 
   def notes
-    @ontology = DataAccess.getOntology(params[:id])
-    @notes = DataAccess.getNotesForOntology(@ontology.ontologyId, true)
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
+    @submission = @ontology.explore.latest_submission
+    @notes = @ontology.explore.notes
+
     @notes_deletable = false
-    @notes.each {|n| @notes_deletable = true if n.deletable?(session[:user])} if @notes.kind_of?(Array)
-    @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
+    # TODO_REV: Handle notes deletion
+    # @notes.each {|n| @notes_deletable = true if n.deletable?(session[:user])} if @notes.kind_of?(Array)
+
+    @note_link = "/ontologies/#{@ontology.acronym}/notes/"
     if request.xhr?
       render :partial => 'notes', :layout => false
     else
