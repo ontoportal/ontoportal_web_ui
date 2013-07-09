@@ -308,7 +308,7 @@
                 Notes
                 %span#note_count_wrapper
                   (
-                  %span#note_count>
+                  %span#note_count= @notes.length
                   )
             %li#mappings_top.tab
               %a{:href => "#mappings"}
@@ -330,8 +330,7 @@
         #contents
           #details_content.tab_container= render :partial =>'/concepts/details'
           #visualization_content.tab_container.not_visible=# TODO_REV: BioMixer render :partial =>'/concepts/biomixer'
-          #notes_content.tab_container.not_visible
-            %a.get_via_ajax{:href => "/ajax/notes/concept_list?ontology=#{@ontology.id}&concept=#{CGI.escape(@concept.fullId)}"}
+          #notes_content.tab_container.not_visible= render :partial =>'/notes/list'
           #mappings_content.tab_container.not_visible=# TODO_REV: Mappings tab for class render :partial =>'/mappings/concept_mappings'
           - unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED
             #resource_index_content.tab_container.not_visible.resource_index_embed
@@ -349,7 +348,5 @@
   / Create mapping UI
   #create_mapping{:style => "left: -99999px; position: absolute;"}
     =# TODO_REV: Mappings support (create mapping) render :partial => '/mappings/new_form', :locals => { :ontology_from => @ontology.id, :concept_from => @concept.fullId }
-  / Load notes JS data
-  =# TODO_REV: Notes support render :partial => '/notes/notes_concept_js'
 - else # found an error
   = "<div id=\"error\"><h2>#{@error}</h2></div>"
