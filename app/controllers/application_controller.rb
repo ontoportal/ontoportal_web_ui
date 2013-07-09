@@ -349,7 +349,7 @@ class ApplicationController < ActionController::Base
       # @root.children = [TreeNode.new(@concept)]
     else
       # if the id is coming from a param, use that to get concept
-      @concept = @ontology.explore.single_class(params[:conceptid], full: true)
+      @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
       raise Error404 if @concept.nil?
 
       # Create the tree

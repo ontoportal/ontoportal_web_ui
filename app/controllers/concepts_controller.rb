@@ -40,7 +40,7 @@ class ConceptsController < ApplicationController
     #   return
     # end
 
-    @concept = @ontology.explore.single_class(params[:id], full: true)
+    @concept = @ontology.explore.single_class({full: true}, params[:id])
 
     if @concept.nil?
       raise Error404
