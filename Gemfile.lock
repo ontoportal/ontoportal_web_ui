@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 90807411828cec0de5c478a0be357bee05393945
+  revision: 77f01b7e6b14acf2c989976317b716be12c38b2a
   specs:
     ontologies_api_client (0.0.2)
       faraday
@@ -32,12 +32,12 @@ GEM
     columnize (0.3.6)
     daemons (1.1.9)
     debug_inspector (0.0.2)
-    debugger (1.6.0)
+    debugger (1.6.1)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
-      debugger-ruby_core_source (~> 1.2.1)
+      debugger-ruby_core_source (~> 1.2.3)
     debugger-linecache (1.2.0)
-    debugger-ruby_core_source (1.2.2)
+    debugger-ruby_core_source (1.2.3)
     ethon (0.5.12)
       ffi (>= 1.3.0)
       mime-types (~> 1.18)
@@ -68,7 +68,7 @@ GEM
       binding_of_caller (>= 0.7)
       pry (~> 0.9.11)
     rack (1.1.6)
-    rack-mini-profiler (0.1.26)
+    rack-mini-profiler (0.1.27)
       rack (>= 1.1.3)
     rails (2.3.17)
       actionmailer (= 2.3.17)
