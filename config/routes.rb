@@ -61,9 +61,9 @@ ActionController::Routing::Routes.draw do |map|
   map.notes_ver 'notes/ver/:ontology/:id', :controller => 'margin_notes', :action => 'ver_service'
 
   # New Notes
-  map.notes_ontology 'ontologies/notes/virtual/:ontology', :controller => 'notes', :action => 'show_for_ontology'
+  # map.notes_ontology 'ontologies/notes/virtual/:ontology', :controller => 'notes', :action => 'show_for_ontology'
   #map.note 'notes/:ontology', :controller => 'notes', :action => 'show'
-  map.note_virtual 'notes/virtual/:ontology', :controller => 'notes', :action => 'virtual_show'
+  map.note_virtual 'ontologies/:ontology/notes/:noteid', :controller => 'notes', :action => 'virtual_show', :noteid => /.+/
   map.note_ajax_single 'notes/ajax/single/:ontology', :controller => 'notes', :action => 'show_single'
   map.note_ajax_single_list 'notes/ajax/single_list/:ontology', :controller => 'notes', :action => 'show_single_list'
 
