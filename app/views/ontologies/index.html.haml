@@ -198,7 +198,7 @@
                 %span{:style => "font-size: xx-small; color: gray;"}= #get_status_text(submission)
             %td{:style => "width:50px;"}= visibility_link(submission)
             %td{:style => "width:30px;text-align:right;"}= terms_link(submission, "count not available")
-            %td{:style => "width:30px;text-align:right;"}= notes_link(submission, "count not available")
+            %td{:style => "width:30px;text-align:right;"}= notes_link(submission, submission.ontology.explore.notes.length)
             %td{:style => "width:30px;text-align:right;"}= submission.ontology.explore.reviews.length == 0 ? "0" : "<a href='/ontologies/#{submission.ontology.acronym}'>#{submission.ontology.explore.reviews.length}</a>"
             %td{:style => "width:30px;text-align:right;"}= submission.ontology.explore.projects.length == 0 ? "0" : "<a href='/ontologies/#{submission.ontology.acronym}'>#{submission.ontology.explore.projects.length}</a>"
             %td{:style => "width:50px;"}= submission.hasOntologyLanguage.split("-")[0]
