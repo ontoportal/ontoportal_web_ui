@@ -31,9 +31,6 @@
     "history/jquery.history.js", "bioportal", "bp_analytics", "bp_user_intention_survey",
     :cache => "cache/all"%>
 
-  <!-- Airbrake Javascript exception notices -->
-  <% airbrake_javascript_notifier %>
-
   <script>
     jQuery(document).data({bp: {config: <%=bp_config_json%>}});
   </script>

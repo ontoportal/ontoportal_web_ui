@@ -40,8 +40,7 @@ class ApplicationController < ActionController::Base
   end
 
   # See ActionController::RequestForgeryProtection for details
-  # Uncomment the :secret if you're not using the cookie session store
-  protect_from_forgery # :secret => 'ba3e1ab68d3ab8bd1a1e109dfad93d30'
+  protect_from_forgery
 
   before_filter  :preload_models, :set_global_thread_values, :domain_ontology_set
 
