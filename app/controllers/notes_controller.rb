@@ -149,16 +149,15 @@ class NotesController < ApplicationController
       note = LinkedData::Client::Models::Note.new(params)
     end
 
-    binding.pry
-    # note.save
+    new_note = note.save
 
-    unless @errors.empty?
-      render :json => @errors, :status => 500
+    if note.respond_to?(:errors)
+      render :json => note.errors, :status => 500
       return
     end
 
-    unless @note.nil?
-      render :json => @note.to_json
+    unless new_note.nil?
+      render :json => new_note.to_json
     end
   end
 

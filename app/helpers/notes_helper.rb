@@ -2,18 +2,22 @@ require 'cgi'
 
 module NotesHelper
 
+  NOTES_TAGS = %w(a br b em strong i)
+
   def recurse_replies(replies)
     return "" if replies.nil?
     html = ""
     replies.each do |reply|
       reply_html = <<-html
         <div class="reply">
-          <div class="reply_body">
-            #{reply.body}<br/>
-          </div>
           <div class="reply_author">
             <b>#{get_username(reply.creator)}</b> #{time_ago_in_words(DateTime.parse(@notes.created))} ago
-            <a href="#reply" style="padding-left: .5em;" class="reply_reply" data-parent_id="#{reply.id}">reply</a>
+          </div>
+          <div class="reply_body">
+            #{sanitize reply.body, tags: NOTES_TAGS}<br/>
+          </div>
+          <div class="reply_meta">
+            <a href="#reply" class="reply_reply" data-parent_id="#{reply.id}">reply</a>
           </div>
           #{recurse_replies(reply.respond_to?(:children) ? reply.children : nil)}
         </div>
@@ -120,7 +124,7 @@ module NotesHelper
             <div class="note_corner">&nbsp;</div>
             <div id="note_#{note["@id"]}_collapse" class="collapsible">
               <div class="response_body">
-                #{note.body}
+                #{sanitize note.body, tags: NOTES_TAGS}
               </div>
               <div class="create_reply_container" id="#{note["@id"]}_reply_link">
                 <a class="create_reply" note_id="#{note["@id"]}" href="javascript:void(0)">reply</a>
@@ -206,7 +210,10 @@ module NotesHelper
     user = session[:user]
     return "<a href='/login?redirect=#{request.request_uri}' style='font-size: .9em;' class='subscribe_to_notes'>Subscribe to notes emails</a>" if user.nil?
 
+    # TODO_REV: Create subscription service?
+    return "<a href='/login?redirect=#{request.request_uri}' style='font-size: .9em;' class='subscribe_to_notes'>Subscribe to notes emails</a>"
     subs = DataAccess.getUserSubscriptions(user.id)
+
 
     if !subs.nil?
       sub_text = subbed_to_ont?(ontology_id, subs) ? "Unsubscribe" : "Subscribe"

@@ -13,7 +13,7 @@ jQuery(document).ready(function(){
     var note = jQuery(this).attr("data-note_id");
     var id = (typeof parent === "undefined") ? note : parent;
     var type = (typeof parent === "undefined") ? "note" : "parent";
-    var form = '<div><textarea rows="1" cols="1" name="text" tabindex="0" style="width: 500px; height: 100px;"></textarea></div>';
+    var form = '<textarea class="reply_body" rows="1" cols="1" name="text" tabindex="0" style="width: 500px; height: 100px;"></textarea><br/>';
     var buttons = '<button type="submit" data-parent_id="'+id+'" data-parent_type="'+type+'" onclick="" class="save" style="">save</button><button type="button" onclick="" class="cancel" style="">cancel</button><span class="reply_status"></span>';
     jQuery(this).parents("div.reply").append(jQuery("<div>").addClass("reply_box").html(form + buttons));
     jQuery(this).hide();
@@ -27,11 +27,11 @@ jQuery(document).ready(function(){
     var id = jQuery(this).attr("data-parent_id");
     var type = jQuery(this).attr("data-parent_type");
     var button = this;
-    jQuery(this).parents("div.reply").children(".reply_author").children("a.reply_reply").show();
+    var body = jQuery(this).parents("div.reply").children(".reply_box").children(".reply_body").val();
     jQuery.ajax({
       type: "POST",
       url: "/notes",
-      data: {parent: id, type: type},
+      data: {parent: id, type: type, body: body, creator: jQuery(document).data().bp.user["@id"]},
       success: function(){
         removeReplyBox(button);
         addReply(button);
@@ -45,11 +45,15 @@ jQuery(document).ready(function(){
   });
 });
 
+function validateReply(button) {
+
+}
+
 function addReply(button) {
 
 }
 
 function removeReplyBox(button) {
-  jQuery(button).parents("div.reply").children(".reply_author").children("a.reply_reply").show();
-  jQuery(button).closest("div.reply_box").remove();
+  jQuery(button).parents("div.reply").children(".reply_meta").children("a.reply_reply").show();
+  jQuery(button).parents("div.reply").children(".reply_box").remove();
 }
