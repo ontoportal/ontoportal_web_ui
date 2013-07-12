@@ -15,13 +15,15 @@ class LoginController < ApplicationController
   def create
     @errors = validate(params[:user])
     if @errors.size < 1
-      logged_in_user = DataAccess.authenticateUser(params[:user][:username],params[:user][:password])
+      logged_in_user = LinkedData::Client::Models::User.authenticate(params[:user][:username], params[:user][:password])
       if logged_in_user
         session[:user] = logged_in_user
 
-        session[:user_ontologies] = user_ontologies(logged_in_user)
+        # TODO_REV: Support custom ontology sets
+        # session[:user_ontologies] = user_ontologies(logged_in_user)
 
-        custom_ontologies_text = session[:user_ontologies] ? "The display is now based on your <a href='/account#custom_ontology_set'>Custom Ontology Set</a>." : ""
+        # custom_ontologies_text = session[:user_ontologies] ? "The display is now based on your <a href='/account#custom_ontology_set'>Custom Ontology Set</a>." : ""
+        custom_ontologies_text = ""
 
         flash[:notice] = "Welcome <b>" + logged_in_user.username.to_s+"</b>. " + custom_ontologies_text
         redirect = "/"
@@ -48,7 +50,7 @@ class LoginController < ApplicationController
     end
 
     user = params[:login_as]
-    new_user = DataAccess.getUserByUsername(user)
+    new_user = LinkedData::Client::Models::User.find_by_username(user)
 
     if new_user
       session[:admin_user] = session[:user]
@@ -82,7 +84,7 @@ class LoginController < ApplicationController
 
   # Sends a new password to the user
   def send_pass
-    user = DataAccess.getUserByUsername(params[:user][:account_name])
+    user = LinkedData::Client::Models::User.find_by_username(params[:user][:account_name])
 
     if !user.nil? && !user.email.downcase.eql?(params[:user][:email].downcase)
       user = nil
