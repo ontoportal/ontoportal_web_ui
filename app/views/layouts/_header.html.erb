@@ -32,7 +32,7 @@
     :cache => "cache/all"%>
 
   <script>
-    jQuery(document).data({bp: {config: <%=bp_config_json%>}});
+    jQuery(document).data({bp: {config: <%=bp_config_json%>, user: <%=(session[:user] || {}).to_hash.to_json%>}});
   </script>
 </head>
 <body>
