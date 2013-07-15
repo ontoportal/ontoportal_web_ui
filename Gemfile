@@ -16,7 +16,7 @@ gem "haml", "< 4.0.0"
 gem "will_paginate", "< 3.0"
 gem "rdoc"
 gem "rack-mini-profiler"
-gem 'faraday-http-cache', git: "https://github.com/ncbo/faraday-http-cache.git"
+gem 'faraday-http-cache', git => "https://github.com/ncbo/faraday-http-cache.git"
 
 gem 'ontologies_api_client', :git => "https://github.com/ncbo/ontologies_api_ruby_client.git"
 
