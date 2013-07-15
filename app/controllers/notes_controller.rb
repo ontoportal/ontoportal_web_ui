@@ -3,24 +3,6 @@ class NotesController < ApplicationController
   layout 'ontology'
 
 
-  # GET /notes
-  # GET /notes.xml
-  def index
-    #@notes = Note.all
-
-    @notes = []
-
-    rand(20).times {
-      @notes_count = 0
-      @notes << create_note(1)
-    }
-
-    respond_to do |format|
-      format.html { render :template => 'notes/show' }
-      format.xml  { render :xml => @notes }
-    end
-  end
-
   # GET /notes/1
   # GET /notes/1.xml
   def show
@@ -124,22 +106,6 @@ class NotesController < ApplicationController
     render :partial => 'list', :layout => 'ontology'
   end
 
-  # GET /notes/new
-  # GET /notes/new.xml
-  def new
-    @note = Note.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @note }
-    end
-  end
-
-  # GET /notes/1/edit
-  def edit
-    @note = Note.find(params[:id])
-  end
-
   # POST /notes
   # POST /notes.xml
   def create
@@ -151,13 +117,13 @@ class NotesController < ApplicationController
 
     new_note = note.save
 
-    if note.respond_to?(:errors)
-      render :json => note.errors, :status => 500
+    if new_note.respond_to?(:errors)
+      render :json => new_note.errors, :status => 500
       return
     end
 
     unless new_note.nil?
-      render :json => new_note.to_json
+      render :json => new_note.to_hash.to_json rescue binding.pry
     end
   end
 
