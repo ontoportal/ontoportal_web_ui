@@ -8,7 +8,7 @@ tmp = Rails.root.to_s + "/tmp/miniprofiler"
 FileUtils.mkdir_p(tmp) unless File.exists?(tmp)
 c.storage_options = {:path => tmp}
 c.storage = ::Rack::MiniProfiler::FileStore
-config.middleware.use(::Rack::MiniProfiler)
+Rails.configuration.middleware.use(::Rack::MiniProfiler)
 ::Rack::MiniProfiler.profile_method(ActionController::Base, :process) {|action| "Executing action: #{action}"}
 ::Rack::MiniProfiler.profile_method(ActionView::Template, :render) {|x,y| "Rendering: #{@virtual_path}"}
 ::Rack::MiniProfiler.config.position = 'right'
