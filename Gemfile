@@ -24,6 +24,6 @@ group :development do
   gem "thin"
   gem "pry"
   gem "pry-nav"
-  gem "pry-stack_explorer"
+  # gem "pry-stack_explorer"
   gem "debugger"
 end
