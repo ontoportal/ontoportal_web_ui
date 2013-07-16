@@ -19,7 +19,11 @@ module NotesHelper
           <div class="reply_meta">
             <a href="#reply" class="reply_reply" data-parent_id="#{reply.id}">reply</a>
           </div>
-          #{recurse_replies(reply.respond_to?(:children) ? reply.children : nil)}
+          <div class="discussion">
+            <div class="discussion_container">
+              #{recurse_replies(reply.respond_to?(:children) ? reply.children : nil)}
+            </div>
+          </div>
         </div>
       html
       html << reply_html
@@ -129,12 +133,6 @@ module NotesHelper
               <div class="create_reply_container" id="#{note["@id"]}_reply_link">
                 <a class="create_reply" note_id="#{note["@id"]}" href="javascript:void(0)">reply</a>
               </div>
-              <div class="reply_compose" id="note_#{note["@id"]}_reply">
-                <a href="javascript:void(0)" note_id="#{note["@id"]}" class="cancel_reply ui-icon ui-icon-closethick"></a>
-                <div id="reply_#{note["@id"]}" class="reply_form_container"></div>
-              </div>
-              <div class="spacer"></div>
-              <div class="response_children" id="#{note["@id"]}_children">
             </div>
       html
 
@@ -142,7 +140,6 @@ module NotesHelper
 
       html3 = <<-html
             </div>
-            <div class="response_spacer"></div>
           </div>
         </div>
       html

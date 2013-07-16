@@ -984,10 +984,6 @@ textarea.create_note_inputs {
 }
 .note_body {
   font-size: 12pt;
-  padding: 1em 0 0;
-}
-.discussion {
-  padding: 1em 0;
 }
 .discussion h3 {
   font-size: 18px;
