@@ -25,37 +25,30 @@ class ResourceIndexController < ApplicationController
 
   def index
 
-    @ontologies = LinkedData::Client::Models::OntologySubmission.all
-
-
-
-
-    # @ri_ontologies = parse_json(RI_ONTOLOGIES_URI)
-
-
-
-
-    # Disable old code:
-  	#ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))
-    #ontologies = ri.ontologies
-    #ontology_ids = []
-    #ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
-    #@ri_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
-    #ri_ontology_ids = []
-    #@ri_ontologies.each {|ont| ri_ontology_ids << ont.ontologyId}
-
     @resources = parse_json(RI_RESOURCES_URI)
-    @resources.sort! {|a,b| a["resourceName"].downcase <=> b["resourceName"].downcase}
+    # Note: REST API sorts by resourceId (acronym)
+    #@resources.sort! {|a,b| a["resourceName"].downcase <=> b["resourceName"].downcase}
 
+    # Resource Index ontologies - REST API filters them for those that are in the triple store.
+    # Data structure is a list of linked data ontology models
+    #{
+    #  "acronym": "GEOSPECIES",
+    #  "name": "GeoSpecies Ontology",
+    #  "@id": "http://stagedata.bioontology.org/ontologies/GEOSPECIES",
+    #  "@type": "http://data.bioontology.org/metadata/Ontology",
+    #  "links": { ... },
+    #  "@context": { ... },
+    #}
+    @ri_ontologies = LinkedData::Client::HTTP.get(RI_ONTOLOGIES_URI)
     # Extract ontology attributes for javascript
     @ont_ids = []
     @ont_acronyms = {}
     @ont_names = {}
-    @ontologies.each do |ont|
-      acronym = ont.ontology.acronym.nil? && ont.ontology.name || ont.ontology.acronym
-      @ont_acronyms[ont.ontology.id] = acronym
-      @ont_names[ont.ontology.id] = ont.ontology.name
-      @ont_ids.push ont.ontology.id
+    @ri_ontologies.each do |ont|
+      acronym = ont.acronym.nil? && ont.name || ont.acronym
+      @ont_acronyms[ont.id] = acronym
+      @ont_names[ont.id] = ont.name
+      @ont_ids.push ont.id
     end
 
   end

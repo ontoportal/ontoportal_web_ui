@@ -21,19 +21,6 @@ class ApplicationController < ActionController::Base
   REST_URI = "http://#{$REST_DOMAIN}"
   API_KEY = $API_KEY
 
-  def get_semantic_types()
-    semantic_types = {}
-    sty_prefix = 'http://bioportal.bioontology.org/ontologies/umls/sty/'
-    sty_uri = 'http://stagedata.bioontology.org/ontologies/STY'
-    sty_ont = LinkedData::Client::Models::Ontology.find(sty_uri)
-    sty_classes = sty_ont.explore.classes({'pagesize'=>500})
-    sty_classes.collection.each do |cls|
-      code = cls.id.sub(sty_prefix,'')
-      semantic_types[ code ] = cls.prefLabel
-    end
-    return semantic_types
-  end
-
 
   if !$EMAIL_EXCEPTIONS.nil? && $EMAIL_EXCEPTIONS == true
     include ExceptionNotifiable
@@ -431,6 +418,19 @@ class ApplicationController < ActionController::Base
       end
     end
     response
+  end
+
+  def get_semantic_types()
+    semantic_types = {}
+    sty_prefix = 'http://bioportal.bioontology.org/ontologies/umls/sty/'
+    sty_uri = 'http://stagedata.bioontology.org/ontologies/STY'
+    sty_ont = LinkedData::Client::Models::Ontology.find(sty_uri)
+    sty_classes = sty_ont.explore.classes({'pagesize'=>500})
+    sty_classes.collection.each do |cls|
+      code = cls.id.sub(sty_prefix,'')
+      semantic_types[ code ] = cls.prefLabel
+    end
+    return semantic_types
   end
 
 end

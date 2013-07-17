@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/faraday-http-cache.git
-  revision: ce328c0a47e0b86a19128b9e1092005a5b9bcdc3
+  revision: 5f6ddabc206218b8b837a332a8fbd253e93b70c4
   specs:
     faraday-http-cache (0.2.1)
       activesupport (>= 2.0)
@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 424ae83ca3a268c14ca07669441fb9566e1b3865
+  revision: 9e3377225d40199ce0154d2ec4225dea40b66a3f
   specs:
     ontologies_api_client (0.0.2)
       faraday

@@ -246,7 +246,10 @@ module ApplicationHelper
   end
 
   def anonymous_user
-    user = DataAccess.getUser($ANONYMOUS_USER)
+    #
+    # TODO: Fix and failures from removing 'DataAccess' call here.
+    #
+    #user = DataAccess.getUser($ANONYMOUS_USER)
     user ||= User.new({"id" => 0})
   end
 
@@ -258,56 +261,58 @@ module ApplicationHelper
 
     @onts_for_select = []
     @onts_for_js = [];
-    ontologies = LinkedData::Client::Models::OntologySubmission.all
+    ontologies ||= LinkedData::Client::Models::Ontology.all
+
     ontologies.each do |ont|
 
-      acronym = ont.ontology.acronym || ""
-      name = ont.ontology.name
-      #ont_uri = ont.id # ontology submission URI
-      ont_uri = ont.ontology.id # ontology URI
+      # TODO: ontologies parameter may be a list of ontology models (not ontology submission models):
+      # ont.acronym instead of ont.ontology.acronym
+      # ont.name instead of ont.ontology.name
+      # ont.id instead of ont.ontology.id
+
+      # TODO: resource index and annotator pass in 'custom_ontologies' to the ontologies parameter.
+
+      acronym = ont.acronym || ""
+      name = ont.name
+      ont_uri = ont.id # ontology URI
 
       abbreviation = acronym.empty? ? "" : "(#{acronym})"
       @onts_for_select << [name.strip + " " + abbreviation, ont_uri]
       @onts_for_js << "\"#{name.strip} #{abbreviation}\": \"#{acronym}\""
-
-      ont.ontology.explore.groups.each do |group|
-        onts_in_group_or_category_map[ont_uri] = 1
-        groups_map[group.id] = Array.new if groups_map[group.id].nil?
-        groups_map[group.id] << ont_uri
-      end
-
-      ont.ontology.explore.categories.each do |category|
-        onts_in_group_or_category_map[ont_uri] = 1
-        categories_map[category.id] = Array.new if categories_map[category.id].nil?
-        categories_map[category.id] << ont_uri
-      end
     end
 
     @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
-    @onts_in_group_or_category_for_js = onts_in_group_or_category_map.keys
 
+    @onts_in_group_or_category_for_js = Set.new
+
+    groups = LinkedData::Client::Models::Group.all(include: "ontologies,acronym")
     @groups_for_select = groups_for_select
     @groups_for_js = []
-    groups_map.each do |group_uri, groups|
-      @groups_for_js << "\"#{group_uri}\": #{groups.to_s}"
+    groups.each do |group|
+      @onts_in_group_or_category_for_js += group.ontologies
+      @groups_for_js << "\"#{group.id}\": #{group.ontologies.to_s}"
     end
 
+    categories = LinkedData::Client::Models::Category.all(include: "ontologies,acronym")
     @categories_for_select = categories_for_select
     @categories_for_js = []
-    categories_map.each do |cat_uri, cats|
-      @categories_for_js << "\"#{cat_uri}\": #{cats.to_s}"
+    categories.each do |cat|
+      @onts_in_group_or_category_for_js += cat.ontologies
+      @categories_for_js << "\"#{cat.id}\": #{cat.ontologies.to_s}"
     end
+
+    @onts_in_group_or_category_for_js = @onts_in_group_or_category_for_js.to_a
   end
 
   def init_ontology_picker_single
-    ontologies = LinkedData::Client::Models::OntologySubmission.all
+    ontologies = LinkedData::Client::Models::Ontology.all
     @onts_for_select = []
     @onts_for_js = [];
     ontologies.each do |ont|
-      acronym = ont.ontology.acronym || ""
-      name = ont.ontology.name
+      acronym = ont.acronym || ""
+      name = ont.name
       #ont_uri = ont.id # ontology submission URI
-      ont_uri = ont.ontology.id # ontology URI
+      ont_uri = ont.id # ontology URI
       abbreviation = acronym.empty? ? "" : "(#{acronym})"
       @onts_for_select << [name.strip + " " + abbreviation, ont_uri]
       @onts_for_js << "\"#{name.strip} #{abbreviation}\": \"#{acronym}\""
