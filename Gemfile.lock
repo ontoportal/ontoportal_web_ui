@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/faraday-http-cache.git
-  revision: ce328c0a47e0b86a19128b9e1092005a5b9bcdc3
+  revision: 5f6ddabc206218b8b837a332a8fbd253e93b70c4
   specs:
     faraday-http-cache (0.2.1)
       activesupport (>= 2.0)
