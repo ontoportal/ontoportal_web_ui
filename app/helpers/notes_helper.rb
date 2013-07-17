@@ -195,7 +195,7 @@ module NotesHelper
     when "Comment"
       return "Comment"
     when "ProposalNewClass"
-      return "New Term Proposal"
+      return "New Class Proposal"
     when "ProposalChangeHierarchy"
       return "New Relationship Proposal"
     when "ProposalChangeProperty"
