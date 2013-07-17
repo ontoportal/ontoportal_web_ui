@@ -19,7 +19,8 @@ class AnnotatorController < ApplicationController
     #ontology_ids = []
     #annotator.ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
     #@annotator_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
-    @annotator_ontologies = LinkedData::Client::Models::OntologySubmission.all
+    #@annotator_ontologies = LinkedData::Client::Models::OntologySubmission.all
+    @annotator_ontologies = LinkedData::Client::Models::Ontology.all
   end
 
 
@@ -91,7 +92,7 @@ private
 
   def get_class_details(annotations, semanticTypes)
     # Use batch service to get class prefLabels
-    semantic_types = get_semantic_types
+    semantic_types = get_semantic_types   # method in application_controller.rb
     classDetails = {}
     classList = []
     annotations.each do |a|
@@ -109,11 +110,11 @@ private
     # make the batch call
     properties = (semanticTypes.empty? && 'prefLabel') || 'prefLabel,semanticType'
     call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>classList, 'include'=>properties}}
-    response = get_batch_results(call_params)
+    response = get_batch_results(call_params)  # method in application_controller.rb
     # Simplify the response data for the UI
     classResults = JSON.parse(response)
     classResults["http://www.w3.org/2002/07/owl#Class"].each do |cls|
-      ont_details = get_ontology_details( cls['links']['ontology'] )
+      ont_details = get_ontology_details( cls['links']['ontology'] )  # method in application_controller.rb
       next if ont_details.nil? # No display for annotations on any class outside the BioPortal ontology set.
       id = cls['@id']
       classDetails[id] = {
