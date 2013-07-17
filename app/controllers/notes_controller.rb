@@ -54,58 +54,6 @@ class NotesController < ApplicationController
     end
   end
 
-  def show_single
-    note_id = params[:noteid]
-    ontology_virtual_id = params[:ontology]
-
-    @ontology = DataAccess.getLatestOntology(ontology_virtual_id)
-
-    if note_id
-      @note = DataAccess.getNote(ontology_virtual_id, note_id, true, true)
-    end
-
-    render :partial => 'single'
-  end
-
-  def show_single_list
-    note_id = params[:noteid]
-    ontology_virtual_id = params[:ontology]
-
-    @ontology = DataAccess.getLatestOntology(ontology_virtual_id)
-
-    if note_id
-      @note = DataAccess.getNote(ontology_virtual_id, note_id, true, true)
-    end
-
-    @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
-
-    @note_row = { :subject_link => "<a id='row_#{@note.id}' class='notes_list_link' href='#{@note_link}#{@note.id}'>#{@note.subject}</a>",
-        :subject => @note.subject,
-        :author => Class.new.extend(ApplicationHelper).get_username(@note.author),
-        :type => Class.new.extend(NotesHelper).get_note_type_text(@note.type),
-        :appliesTo => Class.new.extend(NotesHelper).get_applies_to_link(@note.createdInOntologyVersion, @note.appliesTo['type'], @note.appliesTo['id']) + " (#{@note.appliesTo['type']})",
-        :created => time_formatted_from_java(@note.created),
-        :id => @note.id
-    }
-
-    render :json => @note_row
-  end
-
-  def show_concept_list
-    @ontology = DataAccess.getOntology(params[:ontology])
-    @concept = DataAccess.getLightNode(@ontology.id, params[:concept])
-    render :partial => "/notes/list"
-  end
-
-  def show_for_ontology
-    @notes = DataAccess.getNotesForOntology(params[:ontology])
-    @ontology = DataAccess.getLatestOntology(params[:ontology])
-    @notes_for = @ontology.displayLabel
-    @notes_for_link = { :controller => 'ontologies', :action => 'virtual', :ontology => params[:ontology] }
-    @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
-    render :partial => 'list', :layout => 'ontology'
-  end
-
   # POST /notes
   # POST /notes.xml
   def create
@@ -124,25 +72,6 @@ class NotesController < ApplicationController
 
     unless new_note.nil?
       render :json => new_note.to_hash.to_json rescue binding.pry
-    end
-  end
-
-  # PUT /notes/1
-  # PUT /notes/1.xml
-  def update
-    @note = Note.find(params[:id])
-
-    @note.annotated_by = @note.annotated_by.split(%r{,\s*})
-
-    respond_to do |format|
-      if @note.update_attributes(params[:note])
-        flash[:notice] = 'Note was successfully updated.'
-        format.html { redirect_to(@note) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @note.errors, :status => :unprocessable_entity }
-      end
     end
   end
 
