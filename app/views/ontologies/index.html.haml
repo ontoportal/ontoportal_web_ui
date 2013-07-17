@@ -138,7 +138,7 @@
             %option{:selected => "selected", :value => "0"} All Categories
             - cats = @categories.sort{|a,b| a.name <=> b.name}
             - for cat in cats
-              %option{:value => cat.acronym}= cat.name
+              %option{:value => cat["@id"]}= cat.name
       %tr
         %th
           Filter by Group
@@ -150,11 +150,11 @@
               selected="selected"
             >All Groups
             - @groups.each do |group|
-              <option value="#{group.acronym}"
-              - if !params[:filter].nil? && group.acronym.include?(params[:filter])
+              <option value="#{group["@id"]}"
+              - if !params[:filter].nil? && group["@id"].include?(params[:filter])
                 selected="selected"
               >
-              \#{group.name} (#{group.acronym})
+              #{group.name} (#{group.acronym})
           - filter_query_string = "?filter=#{params[:filter]}" if !params[:filter].nil?
           %a#filterlink{:href => "/ontologies#{filter_query_string}", :title => "Link to filtered ontology list"}
             %span.ui-icon.ui-icon-link{:style => "display: inline-block; vertical-align: text-bottom;"}
@@ -183,28 +183,25 @@
           %th{:style => "display:none;"} categories
           %th{:style => "display:none;"} groups
       %tbody
-        - @ontologies.each do |submission|
-          - # Group names
-          - submission_groups = []
-          - submission.ontology.explore.groups.each do |group|
-            - submission_groups << group.acronym
-          - submission_groups.sort! {|a,b| a <=> b}
+        - @ontologies.each do |ontology|
+          - submission = @submissions_map[ontology.acronym]
+          - next if submission.nil?
           %tr
             %td{:style => "width:300px;"}
               %span{:style => "padding-right: .5em;"}
-                %a{href: "/ontologies/#{submission.ontology.acronym}"}= submission.ontology.name
-                = submission.ontology.acronym
+                %a{href: "/ontologies/#{ontology.acronym}"}= ontology.name
+                = ontology.acronym
                 - #if submission.admin?(session[:user])
                 %span{:style => "font-size: xx-small; color: gray;"}= #get_status_text(submission)
             %td{:style => "width:50px;"}= visibility_link(submission)
             %td{:style => "width:30px;text-align:right;"}= terms_link(submission, "count not available")
-            %td{:style => "width:30px;text-align:right;"}= notes_link(submission, submission.ontology.explore.notes.length)
-            %td{:style => "width:30px;text-align:right;"}= submission.ontology.explore.reviews.length == 0 ? "0" : "<a href='/ontologies/#{submission.ontology.acronym}'>#{submission.ontology.explore.reviews.length}</a>"
-            %td{:style => "width:30px;text-align:right;"}= submission.ontology.explore.projects.length == 0 ? "0" : "<a href='/ontologies/#{submission.ontology.acronym}'>#{submission.ontology.explore.projects.length}</a>"
+            %td{:style => "width:30px;text-align:right;"}= notes_link(submission, ontology.notes.length)
+            %td{:style => "width:30px;text-align:right;"}= ontology.reviews.length == 0 ? "0" : "<a href='/ontologies/#{ontology.acronym}'>#{ontology.reviews.length}</a>"
+            %td{:style => "width:30px;text-align:right;"}= ontology.projects.length == 0 ? "0" : "<a href='/ontologies/#{ontology.acronym}'>#{ontology.projects.length}</a>"
             %td{:style => "width:50px;"}= submission.hasOntologyLanguage.split("-")[0]
             %td{:style => "width:50px;"}= submission.version
             %td{:style => "width:30px;"}= DateTime.parse(submission.creationDate).strftime("%m/%d/%Y")
             %td{:style => "width:225px;"}= submission.contact.map {|c| c.name}.join(" ")
             %td{:style => "display:none;"}= "Description: #{submission.description}" unless submission.description.nil?
-            %td{:style => "display:none;"}= submission.ontology.explore.categories.map {|c| c.name}.join(" ")
-            %td{:style => "display:none;"}= submission.ontology.explore.groups.map {|g| g.acronym}.join(" ")
+            %td{:style => "display:none;"}= ontology.hasDomain.join(" ")
+            %td{:style => "display:none;"}= ontology.group.join(" ")
