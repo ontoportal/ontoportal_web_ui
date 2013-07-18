@@ -28,8 +28,6 @@ class NotesController < ApplicationController
 
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
 
-    @notes_thread_title = "Responses"
-
     if note_id
       @notes = LinkedData::Client::Models::Note.get(params[:noteid], include_threads: true)
     elsif concept_id
@@ -57,8 +55,14 @@ class NotesController < ApplicationController
   # POST /notes
   # POST /notes.xml
   def create
-    if params[:type] && params[:type].eql?("parent")
+    if params[:type] && params[:type].eql?("reply")
       note = LinkedData::Client::Models::Reply.new(params)
+    elsif params[:type] && params[:type].eql?("ontology")
+      params[:relatedOntology] = [params.delete(:parent)]
+      note = LinkedData::Client::Models::Note.new(params)
+    elsif params[:type] && params[:type].eql?("class")
+      params[:relatedClass] = [params.delete(:parent)]
+      note = LinkedData::Client::Models::Note.new(params)
     else
       note = LinkedData::Client::Models::Note.new(params)
     end
