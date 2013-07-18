@@ -53,6 +53,19 @@ class ResourceIndexController < ApplicationController
 
   end
 
+  def search
+    if params[:q].nil?
+      render :text => "No search term provided"
+      return
+    end
+    # Filter on ontology_id
+    params[:ontologies] = params[:ontology_ids]
+    search_page = LinkedData::Client::Models::Class.search(params[:q], params)
+    @results = search_page.collection
+    render :text => @results.to_json
+  end
+
+
 
   def resources_table
     params[:conceptids] = params[:conceptids].split(",")

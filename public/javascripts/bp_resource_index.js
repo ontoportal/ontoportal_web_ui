@@ -42,55 +42,21 @@ jQuery(document).ready(function () {
       initialQuery : false
     }, function (options, response, event) {
       // jQuery("#resource_index_terms_chzn .chzn-results li.active-result").remove();
-      //var search_params = {q: options.term, ontology_ids: currentOntologyIds().join(',')};
-//      jQuery.getJSON(search_url, search_params, function (data) {
-//        var terms = {};
-//
-//        // TODO: REMOVE THIS LOG
-//        console.log(data);
-//
-//        jQuery.each(data.results, function (index, result) {
-//          terms[result.ontologyId + "/" + result.conceptIdShort] = "&nbsp;<span title='" + result.ontologyDisplayLabel + "'>" + result.preferredName + "<span class='search_dropdown_ont'>(" + result.ontologyDisplayLabel + ")</span></span>";
-//        });
-//        response(terms);
-//      });
 
-      console.log(options);
+      var search_url = "/resource_index/search";
+      var search_params = {};
+      search_params['q'] = options.term;
+      search_params['ontology_ids'] = currentOntologyIds().join(',');
+      jQuery.post(search_url, search_params, function (data) {
 
-      jQuery.ajax({
-        type: "POST",
-        url: jQuery(document).data().bp.config.rest_url+"search?apikey=" + jQuery(document).data().bp.config.apikey,
-        data: {
-          q: options.term,
-          //include_props: includeProps,
-          //include_views: includeViews,
-          //include_obsolete: includeObsolete,
-          //include_non_production: includeNonProduction,
-          //only_definitions: includeOnlyDefinitions,
-          //exact_match: exactMatch,
-          //categories: categories,
-          ontology_ids: currentOntologyIds().join(','),
-          //pagesize: 150,
-          format: "json"
-        },
-        dataType: "json",
-        success: function(data){
-          var terms = {};
+        // TODO: REMOVE THIS LOG
+        console.log(data);
 
-          // TODO: REMOVE THIS LOG
-          console.log(data);
-
-          //jQuery.each(data.results, function (index, result) {
-          //  terms[result.ontologyId + "/" + result.conceptIdShort] = "&nbsp;<span title='" + result.ontologyDisplayLabel + "'>" + result.preferredName + "<span class='search_dropdown_ont'>(" + result.ontologyDisplayLabel + ")</span></span>";
-          //});
-          //response(terms);
-        },
-        error: function(){
-          console.log('Search JSONP failed.');
-          jQuery("#search_spinner").hide();
-          jQuery("#search_results").hide();
-          jQuery("#search_messages").html("<span style='color: red'>Problem searching, please try again");
-        }
+        //var terms = {};
+        //jQuery.each(data.results, function (index, result) {
+        //  terms[result.ontologyId + "/" + result.conceptIdShort] = "&nbsp;<span title='" + result.ontologyDisplayLabel + "'>" + result.preferredName + "<span class='search_dropdown_ont'>(" + result.ontologyDisplayLabel + ")</span></span>";
+        //});
+        response(terms);
       });
     });
   }
