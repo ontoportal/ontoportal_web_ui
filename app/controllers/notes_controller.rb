@@ -43,7 +43,7 @@ class NotesController < ApplicationController
     end
 
     if request.xhr?
-      render :partial => 'new_thread'
+      render :partial => 'thread'
       return
     end
 
