@@ -8,9 +8,10 @@
     {type:'js',src:'/javascripts/JqueryPlugins/superfish/superfish.js'}
   ]);
 .notes_list_container
-  - unless @notes_for.nil?
-    %h1
-      Notes for #{link_to @notes_for, @notes_for_link}
+  .add_comment{style: "float: left; margin-right: 1em;"}
+    <a href='javascript:void(0);' class='add_comment link_button' style="font-size: .9em;" data-parent_id="#{@ontology.id}" data-parent_type="ontology">Add comment</a>
+  .add_proposal{style: "float: left; margin-right: 1em;"}
+    <a href='javascript:void(0);' class='add_proposal link_button' style="font-size: .9em;" data-parent_id="#{@ontology.id}" data-parent_type="ontology">Add proposal</a>
   .subscribe_to_notes{:style => "float: left;"}
     = subscribe_button(@ontology.acronym)
   .notes_delete{:style => "float: left; margin-left: 1em;"}
@@ -20,6 +21,7 @@
     Filter:
     %input#hide_archived_ont{:checked => "true", :name => "hide_archived_ont", :type => "checkbox"}
     %label{:for => "hide_archived_ont"} Hide Archived
+  %div#create_note_form{style: "display: none; clear: both;"}
 
   .ont_notes_table_container{:style => "clear: both;"}
     %table.zebra.notes_ont_list_table{:id => "ontology_notes_list", :style => "width: 100%; clear: both;", :width => "100%"}
