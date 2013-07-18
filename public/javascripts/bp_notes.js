@@ -113,7 +113,7 @@ var displayError = function(button) {
 
 function addCommentBox(id, type) {
   var commentFormHTML = jQuery("<div>").addClass("reply_box").html(commentForm(id, type));
-  commentFormHTML.prepend("<br>").prepend(jQuery("<input>").attr("type", "text").addClass("reply_body").addClass("comment_subject"));
+  commentFormHTML.prepend("<br>").prepend(jQuery("<input>").attr("type", "text").attr("placeholder", "Subject").addClass("reply_body").addClass("comment_subject"));
   jQuery("#create_note_form").html(commentFormHTML);
   jQuery("#create_note_form").show();
 }
@@ -203,12 +203,12 @@ function removeReplyBox(button) {
 }
 
 function commentForm(id, type) {
-  var form = '<textarea class="reply_body" rows="1" cols="1" name="text" tabindex="0" style="width: 500px; height: 100px;"></textarea><br/>';
+  var form = '<textarea class="reply_body" rows="1" cols="1" name="text" tabindex="0" style="width: 500px; height: 100px;" placeholder="Comment"></textarea><br/>';
   return form + commentButtons(id, type);
 }
 
 function commentButtons(id, type) {
-  return '<button type="submit" data-parent_id="'+id+'" data-parent_type="'+type+'" onclick="" class="save" placeholder="Subject">save</button><button type="button" onclick="" class="cancel" style="">cancel</button><span class="reply_status" placeholder="Comment"></span>';
+  return '<button type="submit" data-parent_id="'+id+'" data-parent_type="'+type+'" onclick="" class="save">save</button><button type="button" onclick="" class="cancel" style="">cancel</button><span class="reply_status"></span>';
 }
 
 function appendField(id, text, div) {
