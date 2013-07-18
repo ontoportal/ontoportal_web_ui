@@ -28,10 +28,10 @@
           %tr
             %td
               = link_to project.name, project.homePage
-              %br{:style => "margin-bottom: 5px;"}/
-              - if isOwner?(project.id)
+              %br{:style => "margin-bottom: 5px;"}
+              - if false #TODO_REV: Enable project editing isOwner?(project.creator)
                 %span{:style => "font-size: x-small;"}
-                  (#{link_to "edit",edit_project_path(project)} |
+                  (#{link_to "edit", edit_project_path(project)} |
                   \#{link_to 'delete', project, :confirm => 'Are you sure?', :method => :delete})
             %td{:style => "width: 200px;"}
               .original_text= truncate(project.description, :length => 100, :separator => " ", :omission => "<a class='untruncate' href=''>...</a>")
