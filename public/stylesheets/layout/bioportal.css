@@ -1000,8 +1000,23 @@ textarea.create_note_inputs {
 .reply_body {
   font-size: 12pt;
 }
+textarea.reply_body {
+  padding: 3px;
+}
 .reply:first-child {
   padding-top: 0 !important;
+}
+.comment_subject {
+  margin: 5px 0;
+  padding: 1px;
+}
+.proposal_container {
+  padding: 12px 0;
+}
+.proposal_container input {
+  padding: 3px;
+  margin: 6px;
+  width: 170px;
 }
 
 
