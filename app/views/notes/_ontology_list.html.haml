@@ -16,7 +16,7 @@
   .notes_delete{:style => "float: left; margin-left: 1em;"}
     / TODO_REV: Enable notes deletion
     / delete_button
-  %div.ont_notes_filter{style: "clear: both; padding-top: 10px;"}
+  %div.ont_notes_filter{style: "clear: both; padding-top: 10px; float: right;"}
     Filter:
     %input#hide_archived_ont{:checked => "true", :name => "hide_archived_ont", :type => "checkbox"}
     %label{:for => "hide_archived_ont"} Hide Archived
@@ -88,7 +88,7 @@
   // Data needed in the external JS file stored in the body 'cache'
   jQuery.data(document.body, "ontology_id", "#{@ontology.acronym}");
 
-  var ont_columns = { archived: 3, date: 6, subjectSort: 2 };
+  var ont_columns = { archived: 3, date: 7, subjectSort: 2 };
 
   // This will wire up a table with the dataTables config.
   // Needs to stay inline because IE won't recognize it in an external file.
@@ -100,7 +100,7 @@
       "sPaginationType": "full_numbers",
       "aaSorting": [[ont_columns.date, 'desc']],
       "aoColumns": [
-         null, // Delete
+         { "bVisible": false }, // Delete
          { "iDataSort": ont_columns.subjectSort }, // Subject link
          { "bVisible": false }, // Subject for sort
          { "bVisible": false }, // Archived for filter
