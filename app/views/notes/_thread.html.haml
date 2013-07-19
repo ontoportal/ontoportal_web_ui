@@ -14,8 +14,10 @@
     %div.proposal
       %h3 Proposal Details
       =proposal_html(@notes)
-  %a{href: "#reply", class: "reply_reply"} reply
-  - if @notes.reply && !@notes.reply.empty?
-    %div.discussion
-      %div.discussion_container
-        = recurse_replies(@notes.reply)
+  %div.reply
+    %div.reply_meta
+      %a{href: "#reply", class: "reply_reply", :"data-parent_id" => @notes.id, :"data-parent_type" => "reply" } reply
+    - if @notes.reply && !@notes.reply.empty?
+      %div.discussion{style: "padding: 1em 0 0 1.5em;"}
+        %div.discussion_container
+          = recurse_replies(@notes.reply)

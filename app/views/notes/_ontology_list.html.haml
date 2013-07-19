@@ -8,18 +8,20 @@
     {type:'js',src:'/javascripts/JqueryPlugins/superfish/superfish.js'}
   ]);
 .notes_list_container
-  - unless @notes_for.nil?
-    %h1
-      Notes for #{link_to @notes_for, @notes_for_link}
+  .add_comment{style: "float: left; margin-right: 1em;"}
+    <a href='javascript:void(0);' class='add_comment link_button' style="font-size: .9em;" data-parent_id="#{@ontology.id}" data-parent_type="ontology">Add comment</a>
+  .add_proposal{style: "float: left; margin-right: 1em;"}
+    <a href='javascript:void(0);' class='add_proposal link_button' style="font-size: .9em;" data-parent_id="#{@ontology.id}" data-parent_type="ontology">Add proposal</a>
   .subscribe_to_notes{:style => "float: left;"}
     = subscribe_button(@ontology.acronym)
   .notes_delete{:style => "float: left; margin-left: 1em;"}
     / TODO_REV: Enable notes deletion
     / delete_button
-  %div.ont_notes_filter{style: "clear: both; padding-top: 10px;"}
+  %div.ont_notes_filter{style: "clear: both; padding-top: 10px; float: right;"}
     Filter:
     %input#hide_archived_ont{:checked => "true", :name => "hide_archived_ont", :type => "checkbox"}
     %label{:for => "hide_archived_ont"} Hide Archived
+  %div#create_note_form{style: "display: none; clear: both;"}
 
   .ont_notes_table_container{:style => "clear: both;"}
     %table.zebra.notes_ont_list_table{:id => "ontology_notes_list", :style => "width: 100%; clear: both;", :width => "100%"}
@@ -72,10 +74,10 @@
               %td
                 = get_username(note.creator)
               %td
-                = get_note_type_text(note.proposal.type) if note.proposal
+                = note.proposal ? get_note_type_text(note.proposal.type) : "Comment"
               %td
                 - if note.relatedClass && note.relatedClass.length > 0
-                  %a{href: "/ontologies/#{@ontology.acronym}?p=terms&conceptid=#{note.relatedClass.first}"}= @ontology.explore.single_class(note.relatedClass.first).prefLabel
+                  %a{href: "/ontologies/#{@ontology.acronym}?p=terms&conceptid=#{CGI.escape(note.relatedClass.first)}"}= @ontology.explore.single_class(note.relatedClass.first).prefLabel
               %td
                 = DateTime.parse(note.created).strftime("%Y-%m-%d")
   / render :partial => 'notes/add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type, :action => "ont_list_" }
@@ -88,7 +90,7 @@
   // Data needed in the external JS file stored in the body 'cache'
   jQuery.data(document.body, "ontology_id", "#{@ontology.acronym}");
 
-  var ont_columns = { archived: 3, date: 6, subjectSort: 2 };
+  var ont_columns = { archived: 3, date: 7, subjectSort: 2 };
 
   // This will wire up a table with the dataTables config.
   // Needs to stay inline because IE won't recognize it in an external file.
@@ -100,7 +102,7 @@
       "sPaginationType": "full_numbers",
       "aaSorting": [[ont_columns.date, 'desc']],
       "aoColumns": [
-         null, // Delete
+         { "bVisible": false }, // Delete
          { "iDataSort": ont_columns.subjectSort }, // Subject link
          { "bVisible": false }, // Subject for sort
          { "bVisible": false }, // Archived for filter
@@ -110,10 +112,12 @@
          null // Created
       ],
       "fnDrawCallback": function(){
-        showDeleteInfo();
+        // TODO_REV: Enable notes delete
+        // showDeleteInfo();
       },
       "fnInitComplete": function(){
-        showDeleteInfo();
+        // TODO_REV: Enable notes delete
+        // showDeleteInfo();
       }
     });
 

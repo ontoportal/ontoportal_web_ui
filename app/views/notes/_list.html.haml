@@ -2,11 +2,16 @@
 - # Check to see if we have notes, if not then try to get them
 - @note_link = "/ontologies/#{@ontology.acronym}/notes/"
 .notes_list_container
+  .add_comment{style: "float: left; margin-right: 1em;"}
+    <a href='javascript:void(0);' class='add_comment link_button' style="font-size: .9em;" data-parent_id="#{@concept.id}" data-parent_type="class">Add comment</a>
+  .add_proposal{style: "float: left; margin-right: 1em;"}
+    <a href='javascript:void(0);' class='add_proposal link_button' style="font-size: .9em;" data-parent_id="#{@concept.id}" data-parent_type="class">Add proposal</a>
   .subscribe_to_notes{:style => "float: left;"}
     = subscribe_button(@ontology.acronym)
   .notes_delete{:style => "float: left; margin-left: 1em;"}
     / TODO_REV: Enable notes deletion
     / delete_button
+  %div#create_note_form{style: "display: none; clear: both; padding-top: 1em;"}
 
   .concept_notes_table_container{:style => "clear: both; padding-top: 2em;"}
     %table.zebra.notes_concept_list_table{:class => "concept_notes_list", :style => "width: 100%; clear: both;", :width => "100%"}
@@ -45,6 +50,6 @@
               %td
                 = get_username(note.creator)
               %td
-                = get_note_type_text(note.proposal.type) if note.proposal
+                = note.proposal ? get_note_type_text(note.proposal.type) : "Comment"
               %td
                 = DateTime.parse(note.created).strftime("%Y-%m-%d")
