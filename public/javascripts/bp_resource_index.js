@@ -69,14 +69,19 @@ jQuery(document).ready(function () {
             spanClsB = "'>",
             spanOnt = "<span class='search_dropdown_ont'>",
             spanClose = "</span>";
+          // TODO: Remove this variable when search API supports ontologies parameter.
+          var ontologies = currentOntologyIds().join(',');
           jQuery.each(data.collection, function (index, cls) {
-            var id = cls['@id'];
             var ont = cls.links.ontology;
-            var ont_acronym = cls.links.ontology.split('/').slice(-1)[0];
-            termHTML = spanClsA + ont + spanClsB + cls.prefLabel;
-            termHTML += spanOnt + "(" + ont_acronym + ")" + spanClose;
-            termHTML += spanClose;
-            terms[id] = termHTML;
+            // TODO: Remove this condition when search API supports ontologies parameter.
+            if (ontologies.match(ont).length > 0){
+              var id = cls['@id'];
+              var ont_acronym = cls.links.ontology.split('/').slice(-1)[0];
+              termHTML = spanClsA + ont + spanClsB + cls.prefLabel;
+              termHTML += spanOnt + "(" + ont_acronym + ")" + spanClose;
+              termHTML += spanClose;
+              terms[id] = termHTML;
+            }
           });
           response(terms);
         },
@@ -90,31 +95,6 @@ jQuery(document).ready(function () {
 
     });
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -574,7 +554,7 @@ function PositionHighlighter() {
 
 function currentOntologyIds() {
   var selectedOntIds = jQuery("#ontology_ontologyId").val();
-  return selectedOntIds == null || selectedOntIds === "" ? ont_ids : selectedOntIds;
+  return selectedOntIds === null || selectedOntIds === "" ? ont_ids : selectedOntIds;
 }
 
 function currentConceptIds() {
