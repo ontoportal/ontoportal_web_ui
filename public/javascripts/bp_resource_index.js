@@ -43,23 +43,80 @@ jQuery(document).ready(function () {
     }, function (options, response, event) {
       // jQuery("#resource_index_terms_chzn .chzn-results li.active-result").remove();
 
-      var search_url = "/resource_index/search";
+      //var search_url = "/resource_index/search";
+      var search_url = jQuery(document).data().bp.config.rest_url+"search";
       var search_params = {};
+      search_params['apikey'] = jQuery(document).data().bp.config.apikey;
+      search_params['format'] = "jsonp";
       search_params['q'] = options.term;
-      search_params['ontology_ids'] = currentOntologyIds().join(',');
-      jQuery.post(search_url, search_params, function (data) {
-
-        // TODO: REMOVE THIS LOG
-        console.log(data);
-
-        //var terms = {};
-        //jQuery.each(data.results, function (index, result) {
-        //  terms[result.ontologyId + "/" + result.conceptIdShort] = "&nbsp;<span title='" + result.ontologyDisplayLabel + "'>" + result.preferredName + "<span class='search_dropdown_ont'>(" + result.ontologyDisplayLabel + ")</span></span>";
-        //});
-        response(terms);
+      // TODO: ENABLE ADDITIONAL PARAMETERS WHEN THE SEARCH API SUPPORTS THEM.
+      //search_params['ontologies'] = currentOntologyIds().join(',');
+      //search_params['includeProperties'] = includeProps;
+      //search_params['includeViews'] = includeViews;
+      //search_params['requireDefinitions'] = includeOnlyDefinitions;
+      //search_params['exactMatch'] = exactMatch;
+      //search_params['categories'] = categories;
+      jQuery.ajax({
+        url: search_url,
+        data: search_params,
+        dataType: "jsonp",
+        success: function(data){
+          jQuery("#search_spinner").hide();
+          jQuery("#search_results").show();
+          var terms = {},
+            termHTML = "",
+            spanClsA = "&nbsp;<span title='",
+            spanClsB = "'>",
+            spanOnt = "<span class='search_dropdown_ont'>",
+            spanClose = "</span>";
+          jQuery.each(data.collection, function (index, cls) {
+            var id = cls['@id'];
+            var ont = cls.links.ontology;
+            var ont_acronym = cls.links.ontology.split('/').slice(-1)[0];
+            termHTML = spanClsA + ont + spanClsB + cls.prefLabel;
+            termHTML += spanOnt + "(" + ont_acronym + ")" + spanClose;
+            termHTML += spanClose;
+            terms[id] = termHTML;
+          });
+          response(terms);
+        },
+        error: function(){
+          jQuery("#search_spinner").hide();
+          jQuery("#search_results").hide();
+          jQuery("#search_messages").html("<span style='color: red'>Problem searching, please try again");
+        }
       });
+
+
     });
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // If all terms are removed from the search, put the UI in base state
   jQuery("a.search-choice-close").live("click", function () {

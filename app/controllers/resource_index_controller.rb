@@ -53,18 +53,19 @@ class ResourceIndexController < ApplicationController
 
   end
 
+
   def search
+    # Note: could be called by bp_resource_index.js - document-ready binding on #resource_index_terms;
+    # however, the UI now calls the REST API directly.
     if params[:q].nil?
       render :text => "No search term provided"
       return
     end
-    # Filter on ontology_id
-    params[:ontologies] = params[:ontology_ids]
+    # NOTE: the search API is not supporting 'ontologies' (Jul, 2013).
     search_page = LinkedData::Client::Models::Class.search(params[:q], params)
     @results = search_page.collection
     render :text => @results.to_json
   end
-
 
 
   def resources_table
