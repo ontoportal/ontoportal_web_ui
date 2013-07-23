@@ -15,6 +15,7 @@ class ResourceIndexController < ApplicationController
   layout 'ontology'
 
   RESOURCE_INDEX_URI = REST_URI + "/resource_index"
+  RI_RANKED_ELEMENTS_URI = RESOURCE_INDEX_URI + "/ranked_elements"
   RI_RESOURCES_URI = RESOURCE_INDEX_URI + "/resources"
   RI_ONTOLOGIES_URI = RESOURCE_INDEX_URI + "/ontologies"
 
@@ -75,6 +76,26 @@ class ResourceIndexController < ApplicationController
 
 
   def create
+
+    classesArgs = []
+    if params[:classes].kind_of?(Hash)
+      classesHash = params[:classes]
+      classesHash.each do |ont_uri, cls_uris|
+        classesStr = 'classes[' + CGI::escape(ont_uri) + ']='
+        classesStr += CGI::escape( cls_uris.join(',') )
+        classesArgs.push(classesStr)
+      end
+    end
+    uri = RI_RANKED_ELEMENTS_URI + "?" + classesArgs.join('&')
+
+
+    binding.pry
+
+
+    response = LinkedData::Client::HTTP.get(uri)
+
+
+
     #ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))
     ranked_elements = ri.ranked_elements(params[:conceptids])
 

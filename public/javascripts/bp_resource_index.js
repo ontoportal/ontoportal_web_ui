@@ -15,10 +15,18 @@
   });
 }(window));
 
+var uri_split_chars = "\t::\t";
+var uri_split = function(combinedURIs) {
+  return combinedURIs.split(uri_split_chars);
+};
+var uri_combine = function(ont_uri, cls_uri) {
+  return ont_uri + uri_split_chars + cls_uri;
+};
+
+
 var bpResourceIndexEmbedded = false;
 jQuery(document).ready(function () {
   bpResourceIndexEmbedded = (jQuery("#resource_table").parents("div.resource_index_embed").length > 0);
-
   // Hide/Show resources
   jQuery(".resource_link").live("click", function (event) {
     event.preventDefault();
@@ -63,27 +71,28 @@ jQuery(document).ready(function () {
         success: function(data){
           jQuery("#search_spinner").hide();
           jQuery("#search_results").show();
-          var terms = {},
-            termHTML = "",
-            spanClsA = "&nbsp;<span title='",
-            spanClsB = "'>",
-            spanOnt = "<span class='search_dropdown_ont'>",
-            spanClose = "</span>";
+          var terms = {}, termHTML = "";
           // TODO: Remove this variable when search API supports ontologies parameter.
           var ontologies = currentOntologyIds().join(',');
           jQuery.each(data.collection, function (index, cls) {
-            var ont = cls.links.ontology;
+            var ont_uri = cls.links.ontology;
             // TODO: Remove this condition when search API supports ontologies parameter.
-            if (ontologies.match(ont).length > 0){
-              var id = cls['@id'];
+            if (ontologies.match(ont_uri).length > 0){
+              var cls_uri = cls['@id'];
               var ont_acronym = cls.links.ontology.split('/').slice(-1)[0];
-              termHTML = spanClsA + ont + spanClsB + cls.prefLabel;
-              termHTML += spanOnt + "(" + ont_acronym + ")" + spanClose;
-              termHTML += spanClose;
-              terms[id] = termHTML;
+              termHTML = "" +
+                "<span class='search_ontology' title='" + ont_uri + "'>" +
+                  "<span class='search_class' title='" + cls_uri + "'>" +
+                    cls.prefLabel +
+                    "<span class='search_ontology_acronym'>(" + ont_acronym + ")</span>" +
+                "</span>";
+              // Create a combination of ont_uri and cls_uri that can be split when retrieved.
+              // This will be the option value in the selected drop-down list.
+              var combined_uri = uri_combine(ont_uri, cls_uri);
+              terms[combined_uri] = termHTML;
             }
           });
-          response(terms);
+          response(terms);  // Chosen plugin creates select list.
         },
         error: function(){
           jQuery("#search_spinner").hide();
@@ -91,12 +100,8 @@ jQuery(document).ready(function () {
           jQuery("#search_messages").html("<span style='color: red'>Problem searching, please try again");
         }
       });
-
-
     });
   }
-
-
 
   // If all terms are removed from the search, put the UI in base state
   jQuery("a.search-choice-close").live("click", function () {
@@ -108,13 +113,16 @@ jQuery(document).ready(function () {
       jQuery("#resource_index_terms_chzn input").data("prevVal", "");
       jQuery("#resource_index_terms_chzn .chzn-results li").remove();
     }
-  })
+  });
 
   // Get search results
   if (jQuery("#resource_index_button").length > 0) {
     jQuery("#resource_index_button").click(function () {
-      var url = "/resource_index/resources?conceptids=" + currentConceptIds().join(",");
-      pushDisplayResources(url, {conceptids: currentConceptIds()});
+      //var url = "/resource_index/resources?conceptids=" + conceptIDs.join(",");
+      //pushDisplayResources(url, {conceptids: conceptIDs});
+      var classesArg = chosenSearchTermsToClassesArg();
+      var url = "/resource_index/resources?" + classesArg;
+      //pushDisplayResources(url, {classes: classesArg});
       getSearchResults();
     });
   }
@@ -127,7 +135,6 @@ jQuery(document).ready(function () {
 
   jQuery(".show_element_details").live("click", function (e) {
     e.preventDefault();
-
     var el = jQuery(this);
     var cleanElementId = el.attr("data-clean_element_id");
     var el_text = jQuery("#" + cleanElementId + "_text");
@@ -173,7 +180,6 @@ function pageInit() {
   jQuery.extend(params, BP_urlParams);
   params["conceptids"] = (typeof params["conceptids"] !== "undefined") ? params["conceptids"].split(",") : undefined;
   BP_urlParams = params;
-
   if (typeof params["resourceId"] !== "undefined") {
     router.route("resource", params);
   } else if (typeof params["resources"] !== "undefined") {
@@ -196,7 +202,7 @@ function pushDisplayResources(url, params) {
   if (bpResourceIndexEmbedded) {
     router.route(route, params);
   } else {
-    params["route"] = "resources";
+    params["route"] = route;
     History.pushState(params, document.title, url);
   }
 }
@@ -246,7 +252,7 @@ function lookupTermLabels() {
             bp_term_cache[params.ontologyid + "/" + params.conceptid] = data;
             if (data !== null) jQuery(link).html(data.label);
           }
-        })(this),
+        })(this)
       });
     }
   })
@@ -257,19 +263,17 @@ jQuery(document).ready(function () {
   setInterval((function () {
     lookupTermLabels();
   }), 1000);
-})
+});
 
 // This function will poll to see if term information exists
 function applyTermLabel(link, params, calledAgain) {
   var term_info = bp_term_cache[params.ontologyid + "/" + params.conceptid];
-
   if (term_info === "getting") {
     if (typeof calledAgain !== "undefined") calledAgain = 0
     return setTimeout((function () {
       return applyTermLabel(link, params, calledAgain += 1);
     }), 100);
   }
-
   if (term_info !== null) jQuery(link).html(term_info.label);
 }
 
@@ -279,50 +283,47 @@ function Router() {
       case "index":
         this.index();
         break;
-      case "resources":
-        this.resources(params);
-        break;
       case "resource":
         this.resource(params);
         break;
+      case "resources":
+        this.resources(params);
+        break;
     }
-  }
+  };
 
   this.index = function () {
     jQuery("#results").html("");
     jQuery("#results_error").html("");
     jQuery("#initial_resources").show();
     jQuery("#resource_index_terms_chzn .search-choice-close").click();
-  }
-
-  this.resources = function (params) {
-    if (typeof params["conceptids"] === "undefined") {
-      replaceIndex();
-    }
-
-    displayResources(params["conceptids"]);
-  }
+  };
 
   this.resource = function (params) {
     if (typeof params["conceptids"] === "undefined" || typeof params["resourceId"] === "undefined") {
       replaceIndex();
     }
-
     displayResource(params);
-  }
+  };
+
+  this.resources = function (params) {
+    if (typeof params["conceptids"] === "undefined") {
+      replaceIndex();
+    }
+    displayResources(params["conceptids"]);
+  };
+
 }
 router = new Router();
 
 function displayResource(params) {
   var resource = params["resourceId"];
   var resourceName = resources[resource.toLowerCase()].resourceName;
-
   // Only retreive term information if this is an initial load
   if (jQuery("#resource_index_terms").val() !== null) {
     showResourceResults(resource, resourceName);
     return;
   }
-
   displayTerms(params["conceptids"], function () {
     showResourceResults(resource, resourceName);
   });
@@ -334,7 +335,6 @@ function displayResources(concepts) {
     showAllResources();
     return;
   }
-
   displayTerms(concepts);
 }
 
@@ -351,7 +351,7 @@ function displayTerms(concepts, completedCallback) {
     params = { ontologyid: ontologyId, conceptid: conceptId };
     jQuery.getJSON("/ajax/json_term", params, (function (ontologyName) {
       return function (data) {
-        jQuery("#resource_index_terms").append(jQuery("<option/>").val(concept).html(" " + data.label + " <span class='search_dropdown_ont'>(" + ontologyName + ")</span>"));
+        jQuery("#resource_index_terms").append(jQuery("<option/>").val(concept).html(" " + data.label + " <span class='search_ontology_acronym'>(" + ontologyName + ")</span>"));
         conceptRetreivedCount += 1;
         if (conceptRetreivedCount == conceptsLength) {
           for (var j = 0; j < conceptsLength; j++) {
@@ -376,13 +376,11 @@ function getSearchResults(success) {
   jQuery("#resource_index_spinner").show();
   jQuery("#results.contains_search_results").hide();
   var params = {
-    "ontologyids": currentOntologyIds(),
-    "conceptids" : currentConceptIds()
+    'classes': chosenSearchTerms() // ontologyURI: [classURI, classURI, ... ]
   };
-
   jQuery.ajax({
     type    : 'POST',
-    url     : '/resource_index',
+    url     : "/resource_index",
     data    : params,
     dataType: 'html',
     success : function (data) {
@@ -391,13 +389,10 @@ function getSearchResults(success) {
       jQuery("#results.contains_search_results").show();
       jQuery("#results_container").show();
       jQuery("#resource_index_spinner").hide();
-
       if (success && typeof success === "function") {
         success();
       }
-
       jQuery("#initial_resources").hide();
-
       jQuery("#resource_table table").dataTable({
         "bPaginate": false,
         "bFilter"  : false,
@@ -408,7 +403,6 @@ function getSearchResults(success) {
           { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }
         ]
       });
-
       // Update result counts for resources with matches
       updateCounts();
     },
@@ -435,8 +429,9 @@ jQuery("a.results_link").live("click", function (event) {
 });
 
 jQuery("a#show_all_resources").live("click", function () {
-  var url = "/resource_index/resources?conceptids=" + currentConceptIds().join(",");
-  pushDisplayResources(url, {conceptids: currentConceptIds()});
+  var conceptIDs = currentConceptIds();
+  var url = "/resource_index/resources?conceptids=" + conceptIDs.join(",");
+  pushDisplayResources(url, {conceptids: conceptIDs});
 });
 
 function showResourceResults(resource, resourceName) {
@@ -563,5 +558,38 @@ function currentConceptIds() {
     conceptIds = conceptIds.split(",");
   }
   return conceptIds;
+}
+
+
+function chosenSearchTerms() {
+  var chosenTermsMap = {};
+  // get selected option values, an array of combined_uri strings.
+  var combined_uris = jQuery("#resource_index_terms").val();
+  if (typeof combined_uris === "string") {
+    combined_uris = combined_uris.split(); // coerce it to an Array
+  }
+  for(var i=0; i < combined_uris.length; i++){
+    var combined_uri = combined_uris[i];
+    var split_uris = uri_split(combined_uri);
+    var chosen_ont_uri = split_uris[0];
+    var chosen_cls_uri = split_uris[1];
+    if(! chosenTermsMap.hasOwnProperty(chosen_ont_uri)) {
+      chosenTermsMap[chosen_ont_uri] = new Array();
+    }
+    chosenTermsMap[chosen_ont_uri].push(chosen_cls_uri);
+  };
+  return chosenTermsMap;
+}
+
+function chosenSearchTermsToClassesArg() {
+  var chosenTermsMap = chosenSearchTerms();
+  var chosenClassesURI = "";
+  for (var ont_uri in chosenTermsMap) {
+    var chosenClassArr = chosenTermsMap[ont_uri];
+    chosenClassesURI += "classes[" + encodeURIComponent(ont_uri) + "]=";
+    chosenClassesURI += encodeURIComponent(chosenClassArr.join(','));
+    chosenClassesURI += "&";
+  }
+  return chosenClassesURI.slice(0,-1); // remove last '&'
 }
 

@@ -2114,12 +2114,12 @@ a.truncated_less, a.truncated_more {
   font-style: normal !important;
 }
 
-.search_dropdown_ont {
+.search_ontology_acronym {
   padding-left: 3px;
   color: gray;
 }
 
-.highlighted .search_dropdown_ont {
+.highlighted .search_ontology_acronym {
   color: white;
 }
 
