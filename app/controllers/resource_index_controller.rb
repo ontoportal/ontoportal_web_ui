@@ -77,6 +77,11 @@ class ResourceIndexController < ApplicationController
 
   def create
 
+    # NOTE: removed @classids, may crash partial.
+    # TODO: fix partial for change to @classids, now @classes hash
+    @classes = params[:classes]
+    @bp_last_params = params
+
     classesArgs = []
     if params[:classes].kind_of?(Hash)
       classesHash = params[:classes]
@@ -87,48 +92,51 @@ class ResourceIndexController < ApplicationController
       end
     end
     uri = RI_RANKED_ELEMENTS_URI + "?" + classesArgs.join('&')
-
-
-    binding.pry
-
-
-    response = LinkedData::Client::HTTP.get(uri)
-
-
-
-    #ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))
-    ranked_elements = ri.ranked_elements(params[:conceptids])
-
-    # Sort by weight
-    ranked_elements.resources.each do |resource|
-      resource[:elements].each do |element|
-        element[:weights].sort! {|a,b| b[:weight] <=> a[:weight]}
+    @elements = []
+    while true
+      begin
+        ranked_elements_page = LinkedData::Client::HTTP.get(uri)
+        @elements.concat ranked_elements_page['collection']
+        break if ranked_elements_page.nextPage.nil?
+        uri = ranked_elements_page.nextPage
+      rescue Exception => e
+        # TODO: log a meaningful message?
+        raise e
       end
     end
+    # Sort ranked elements list by resource name
+    @resources = LinkedData::Client::HTTP.get(RI_RESOURCES_URI)
+    @resources_hash = getResourcesHash(@resources)  # required in partial 'resources_results'
+    resources_map = getResourcesMapId2Name(@resources)
+    @elements.sort! {|a,b| resources_map[a.resourceId].downcase <=> resources_map[b.resourceId].downcase}
 
-    @resources_hash = ri.resources_hash
-    @elements = ranked_elements
-    @elements.resources = convert_for_will_paginate(@elements.resources)
-    @elements.resources.sort! {|a,b| @resources_hash[a.resourceId.downcase.to_sym][:resourceName].downcase <=> @resources_hash[b.resourceId.downcase.to_sym][:resourceName].downcase}
-    @concept_ids = params[:conceptids]
-    @bp_last_params = params
+    # Sort by weight
+    #@elements.each do |r|
+    #  r[:elements].each do |element|
+    #    element[:weights].sort! {|a,b| b[:weight] <=> a[:weight]}
+    #  end
+    #end
 
+    @elements = convert_for_will_paginate(@elements)
     render :partial => "resources_results"
   end
 
 
-  def results_paginate
-    #ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))
-    offset = (params[:page].to_i - 1) * params[:limit].to_i
-    ranked_elements = ri.ranked_elements(params[:conceptids], :resourceids => [params[:resourceId]], :offset => offset, :limit => params[:limit])
-
-    # There should be only one resource returned because we pass it in above
-    @resource_results = convert_for_will_paginate(ranked_elements.resources)[0]
-    @resources_hash = ri.resources_hash
-    @concept_ids = params[:conceptids]
-
-    render :partial => "resource_results"
-  end
+  #def results_paginate
+  #  #ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))
+  #  offset = (params[:page].to_i - 1) * params[:limit].to_i
+  #  ranked_elements = ri.ranked_elements(params[:conceptids], :resourceids => [params[:resourceId]], :offset => offset, :limit => params[:limit])
+  #
+  #  # There should be only one resource returned because we pass it in above
+  #
+  #  @resources = LinkedData::Client::HTTP.get(RI_RESOURCES_URI)
+  #  @resources_hash = getResourcesHash(@resources)  # required in partial 'resources_results'
+  #
+  #  @resource_results = convert_for_will_paginate(ranked_elements.resources)[0]
+  #  @concept_ids = params[:conceptids]
+  #
+  #  render :partial => "resource_results"
+  #end
 
 
   def element_annotations
@@ -151,30 +159,45 @@ class ResourceIndexController < ApplicationController
 private
 
 
+  def getResourcesHash(resourcesList)
+    resources_hash = {}
+    resourcesList.each do |r|
+      resources_hash[r[:resourceId]] = r
+    end
+    return resources_hash
+  end
+
+  def getResourcesMapId2Name(resourcesList)
+    resources_map = {}
+    resourcesList.each do |r|
+      resources_map[r[:resourceId]] = r[:resourceName]
+    end
+    return resources_map
+  end
+
   def convert_for_will_paginate(resources)
     resources_paginate = []
-    resources.each do |resource|
-      resources_paginate << ResourceIndexResultPaginatable.new(resource)
+    resources.each do |r|
+      resources_paginate.push ResourceIndexResultPaginatable.new(r)
     end
     resources_paginate
   end
 
 
-  def popular_concepts(ri)
-    concepts = CACHE.get("ri_popular_concepts")
-    if concepts.nil?
-      concepts = ri.popular_concepts
-      CACHE.set("ri_popular_concepts", concepts)
-    end
-    concepts
-  end
-
+  # Disable old code:
+  #def popular_concepts(ri)
+  #  concepts = CACHE.get("ri_popular_concepts")
+  #  if concepts.nil?
+  #    concepts = ri.popular_concepts
+  #    CACHE.set("ri_popular_concepts", concepts)
+  #  end
+  #  concepts
+  #end
 
   # Disable old code:
   #def set_encoding
   #  response.headers['Content-type'] = 'text/html; charset=ISO-8859-1'
   #end
-
 
   # Disable old code:
   #def set_apikey(ri)
@@ -185,6 +208,5 @@ private
   #  end
   #  ri
   #end
-
 
 end

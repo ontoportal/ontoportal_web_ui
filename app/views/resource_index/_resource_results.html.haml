@@ -1,30 +1,42 @@
 %div.element_results.paginate_ajax{:id => "#{@resource_results.resourceId}_results"}
+  -resource_id = @resource_results.resourceId
+  -resource_data = @resources_hash[resource_id]
+  -resource_url = resource_data.members.include?(:resourceElementURL) ? resource_data[:resourceElementURL] : ""
   -@resource_results.each do |element|
-    -element_id = CGI.escape(element[:localElementId].gsub(/[^0-9A-Za-z]/, ""))
+    -element_id = CGI.escape(element[:id].gsub(/[^0-9A-Za-z]/, ""))
+    -element_url = resource_url + element[:id]
+    -element_data = {:clean_element_id => element_id, :element_id => CGI.escape(element[:id]), :resource_id => resource_id}
     %div.element_result{:data => {:element_id => element_id}}
-      %div{:id => "#{element_id}_link"}
-        %a{:href => "javascript:void(0);", :class => "show_element_details", :data => {:clean_element_id => element_id, :element_id => CGI.escape(element[:localElementId]), :resource_id => @resource_results.resourceId}}= element[:text][@resources_hash[@resource_results.resourceId.downcase.to_sym][:mainContext]]
-      %div.not_visible.element_results{:id => element_id+"_text", :data => {:highlighted => false}}
-        %div.ri_legend_container
-          %div.ri_legend
-            %div <b>annotation types</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            %div <span class='definition' title="matched preferred name or synonym of the search term directly">direct</span>:
-            %div.mgrepContext.highlight_box &nbsp;
-            %div <span class='definition' title="matched preferred name or synonym of a term mapped to the search term">mapping</span>:
-            %div.mappingContext.highlight_box &nbsp;
-            %div <span class='definition' title="matched preferred name or synonym of a subclass of the search term">descendent</span>:
-            %div.isaContext.highlight_box &nbsp;
-            %div.clearing
-        %div.element_text
-          -element[:weights].each do |weight|
-            %h4= weight[:name].split("_").drop(1).join(" ").capitalize
-            %p{:data => {:context_name => weight[:name]}}= element_text(element, weight)
-          %span{:class => "element_info"}
-            %a{:href => "#{@resources_hash[@resource_results.resourceId.downcase.to_sym][:resourceElementURL]}#{element[:localElementId]}", :target => "_blank"} view source record
-  = will_paginate @resource_results, :update => "#{@resource_results.resourceId}_results",
+      -fields_hash = element.fields.to_h  # convert from read-only struct
+      -fields_hash.delete_if {|k,v| v.nil? }  # remove the 'links' and 'context', which have nil values.
+      -field_main = fields_hash[ resource_data[:mainContext].to_sym ] # extract the 'main' field.
+      -fields_sorted = fields_hash.sort_by { |k,v| v.weight }.reverse  # returns list like [ [k,v], ...]
+      -fields_sorted.each do |field_list|  # field_list contains [ field_symbol, field_struct ]
+        -field_name = field_list[0].to_s
+        -field = field_list[1]
+        %div{:id => "#{element_id}_link"}
+          %a{:href => "javascript:void(0);", :class => "show_element_details", :data => element_data}= field_main.text
+        %div.not_visible.element_results{:id => element_id+"_text", :data => {:highlighted => false}}
+          %div.ri_legend_container
+            %div.ri_legend
+              %div <b>annotation types</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              %div <span class='definition' title="matched preferred name or synonym of the search term directly">direct</span>:
+              %div.mgrepContext.highlight_box &nbsp;
+              %div <span class='definition' title="matched preferred name or synonym of a term mapped to the search term">mapping</span>:
+              %div.mappingContext.highlight_box &nbsp;
+              %div <span class='definition' title="matched preferred name or synonym of a subclass of the search term">descendent</span>:
+              %div.isaContext.highlight_box &nbsp;
+              %div.clearing
+          %div.element_text
+            %h4= field_name.split("_").drop(1).join(" ").capitalize
+            %p{:data => {:context_name => field_name}}= field_text(field)  # see resource_index_helper.rb
+            %span{:class => "element_info"}
+              %a{:href => element_url, :target => "_blank"} view source record
+  = will_paginate @resource_results, :update => "#{resource_id}_results",
     :params => { :offset => @resource_results.offset,
       :limit => @resource_results.limit,
-      :resourceId => @resource_results.resourceId,
-      :conceptids => @concept_ids,
+      :resourceId => resource_id,
+      :classes => @classes,
       :controller => "resource_index",
       :action => "results_paginate" }
+
