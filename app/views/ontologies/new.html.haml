@@ -1,0 +1,377 @@
+- @title = "Submit new ontology"
+= javascript_include_tag "bp_user_acl.js"
+:javascript
+  jQuery(function(){
+      jQuery("#datepicker").datepicker({
+          showOn: 'button',
+          buttonImage: '/images/calendar.gif',
+          buttonImageOnly: true
+      });
+  });
+
+  // Show/hide location inputs
+  function location_toggle(input_div) {
+    jQuery('.hidden_field').hide();
+    jQuery('.hidden_field input').attr("disabled", true);
+    jQuery('#' + input_div + " input").removeAttr("disabled");
+    jQuery('#' + input_div).show();
+  }
+
+  function hideAllRestrictions() {
+    jQuery(".viewing_restriction_disabled").attr("disabled", true);
+    jQuery("div.viewing_restriction_types").hide();
+  }
+
+  function showRestrictionPrivate() {
+    jQuery("#ontology_acl").removeAttr("disabled");
+    jQuery("#viewingRestrictionsPrivate").show();
+  }
+
+  function showRestrictionLicensed() {
+    jQuery("#ontology_licenseInformation").removeAttr("disabled");
+    jQuery("#viewingRestrictionsLicensed").show();
+  }
+
+  // Used to provide default text in fields
+  jQuery(document).ready(function(){
+    jQuery(".defaultText").each(function(){
+      if ($(this).val() == this.title) {
+        jQuery(this).addClass("defaultTextActive");
+        jQuery(this).val(jQuery(this)[0].title);
+      } else {
+        jQuery(this).removeClass("defaultTextActive");
+      }
+    });
+
+    jQuery(".defaultText").focus(function(srcc){
+        if ($(this).val() == $(this)[0].title) {
+            $(this).removeClass("defaultTextActive");
+            $(this).val("");
+        }
+    });
+
+    jQuery(".defaultText").blur(function(){
+        if ($(this).val() == "") {
+            $(this).addClass("defaultTextActive");
+            $(this).val($(this)[0].title);
+        }
+    });
+
+    jQuery(".defaultText").blur();
+
+    // Properly display the information for 'File Location' based on radio button
+    if (jQuery("#ontology_isRemote_0").is(":checked")) {
+      location_toggle("upload");
+    }
+
+    if (jQuery("#ontology_isRemote_1").is(":checked")) {
+      location_toggle("remote");
+    }
+
+    // Select default 'File Location' radio button
+    if (!jQuery("#ontology_isRemote_0").is(":checked") && !jQuery("#ontology_isRemote_1").is(":checked") && !jQuery("#ontology_isRemote_2").is(":checked")) {
+      jQuery("#ontology_isRemote_0").attr("checked", "checked")
+    }
+
+    // Wire up options for restriction how an ontology is viewed
+    jQuery("#ontology_viewingRestriction").change(function(){
+      var select = jQuery(this);
+      if (select.val() == "private") {
+        hideAllRestrictions()
+        showRestrictionPrivate();
+      } else if (select.val() == "licensed") {
+        hideAllRestrictions();
+        showRestrictionLicensed();
+      } else if (select.val() == "public") {
+        hideAllRestrictions();
+      }
+    });
+
+    // Make sure you can see the account select if the select list has private selected
+    if (jQuery("#ontology_viewingRestriction").val() == "private") {
+      showRestrictionPrivate();
+    } else if (jQuery("#ontology_viewingRestriction").val() == "licensed") {
+      showRestrictionLicensed();
+    }
+  });
+
+  jQuery("form").submit(function(){
+    jQuery(".defaultText").each(function(){
+      if ($(this).val() == this.title) {
+          $(this).val("");
+      }
+    });
+  });
+
+  // Handles showing/hiding options for a particular ontology format
+  jQuery(document).ready(function(){
+    jQuery("#ontology_hasOntologyLanguage").change(ontologyFormatChange);
+
+    // Check to see if owl is selected, show options if so
+    ontologyFormatChange()
+  });
+
+  function ontologyFormatChange(format){
+    var selected = jQuery("#ontology_hasOntologyLanguage option:selected");
+
+    switch(selected.val()){
+      case 'OWL':
+      case 'OWL-DL':
+      case 'OWL-FULL':
+      case 'OWL-LITE':
+      case 'PROTEGE':
+        jQuery(".format_options").optionsOut("fast");
+        jQuery("#owl_options").optionsIn("fast");
+        break;
+      case 'RRF':
+        jQuery(".format_options").optionsOut("fast");
+        jQuery("#rrf_options").optionsIn("fast");
+        break;
+      default:
+        jQuery(".format_options").optionsOut("fast");
+    }
+  }
+
+  jQuery.fn.optionsIn = function(speed, easing, callback){
+      jQuery("#format_spacing").css("margin", "1em 0");
+      this.fadeIn(speed);
+  };
+
+  jQuery.fn.optionsOut = function(speed, easing, callback){
+      this.css("display", "none");
+      jQuery("#format_spacing").css("margin", "0");
+  };
+
+%div{:style => "margin:10px;"}
+  - form_tag("/ontologies", {:multipart => true, :id => 'new_ontology'}) do
+    - unless @errors.nil?
+      .enable-lists{:style => "color:red;"}
+        %strong Errors On Form
+        %ul
+          - for error in @errors
+            %li
+              = error
+    %div{:style => "width:500px"}
+      %span.asterik{:style => "float:right;"} * fields are required
+      - if !@ontology.respond_to?(:acronym)
+        %h1 Submit New Ontology
+      - else
+        %h1 Submit New Version
+    = hidden_field :ontology, :acronym if @ontology.respond_to?(:acronym)
+    = hidden_field :ontology, :administeredBy
+    %table#new_ontology.form{:width => "90%"}
+      %tr
+        %th
+          Ontology Name:
+          %span.asterik *
+        %td.top
+          = text_field :ontology, :name
+      %tr
+        %th
+          Ontology Description:
+          %span.asterik *
+        %td
+          = text_area :ontology, :description, :rows => 5
+      %tr
+        %th
+          Ontology Acronym:
+          %span.asterik *
+        %td
+          = text_field :ontology, :acronym
+      %tr
+        %th
+          Ontology Format:
+          %span.asterik *
+        %td
+          - ont_formats = [ "OBO", "OWL", "OWL-DL", "OWL-FULL", "OWL-LITE" ]
+          - selected = @ontology.acronym.nil? ? "OWL" : @ontology.format
+          = select("ontology", "hasOntologyLanguage", ont_formats, { :selected => selected, :style => "width: 200px;" })
+          #format_spacing
+          %table#format_specific_options
+            %tbody#owl_options.format_options
+              %tr
+                %th
+                  Prefered Name Property
+                  %br/
+                  %span.default_owl
+                    default:
+                    %a{:href => "http://www.w3.org/2004/02/skos/core#prefLabel", :target => "_blank"} http://www.w3.org/2004/02/skos/core#prefLabel
+                %td
+                  = text_field :ontology, :preferredNameSlot, :placeholder => 'use default'
+              %tr
+                %th
+                  Synonym Property
+                  %br/
+                  %span.default_owl
+                    default:
+                    %a{:href => "http://www.w3.org/2004/02/skos/core#altLabel", :target => "_blank"} http://www.w3.org/2004/02/skos/core#altLabel
+                %td
+                  = text_field :ontology, :synonymSlot, :placeholder => 'use default'
+              %tr
+                %th
+                  Definition Property
+                  %br/
+                  %span.default_owl
+                    default:
+                    %a{:href => "http://www.w3.org/2004/02/skos/core#definition", :target => "_blank"} http://www.w3.org/2004/02/skos/core#definition
+                %td
+                  = text_field :ontology, :documentationSlot, :placeholder => 'use default'
+              %tr
+                %th
+                  Author Property
+                  %br/
+                  %span.default_owl
+                    default:
+                    %a{:href => "http://purl.org/dc/elements/1.1/creator", :target => "_blank"} http://purl.org/dc/elements/1.1/creator
+                %td
+                  = text_field :ontology, :authorSlot, :placeholder => 'use default'
+              %tr{:style => "border-left: none;"}
+                %td{:colspan => "2", :style => "border-left: none; border-right: none; padding: 1.5em 0 .5em;"}
+                  %b Determining Obsolete Terms
+                  = succeed "You" do
+                    %br/
+                  can use the following two methods to identify obsolete terms in your ontology:
+                  = succeed "1." do
+                    %br/
+                  Designate a root ID for an obsolete branch.
+                  = succeed "2." do
+                    %br/
+                  Identify a property id that indicates obsolete status. The value must be set to "true".
+              %tr
+                %th
+                  1. Root of obsolete branch (root is not obsolete)
+                %td
+                  = text_field :ontology, :obsoleteParent, :class => "defaultText"
+              %tr
+                %th
+                  2. Property to check for obsolete status
+                %td
+                  = text_field :ontology, :obsoleteProperty, :class => "defaultText"
+            %tbody#rrf_options.format_options
+              %tr
+                %th
+                  Target Terminologies (RRF Only)
+                %td
+                  = text_field :ontology, :targetTerminologies, :title => 'Target Terminologies'
+      %tr
+        %th
+          Ontology Version:
+        %td
+          = text_field :ontology, :versionNumber
+      %tr
+        %th
+          Status:
+        %td
+          - selected_status = @ontology.acronym.nil? ? "" : @ontology.versionStatus
+          - status_options = ["alpha", "beta", "production", "retired"]
+          = select :ontology, :versionStatus, status_options, { :include_blank => true, :selected => selected_status }
+      %tr
+        %th
+          Ontology Release Date:
+          %span.asterik *
+        %td
+          = text_field :ontology, :dateReleased,:id=>"datepicker"
+          %span{:style => "font-size: 90%; color: grey;"} ex: 05/25/2009
+      %tr
+        %th
+          Ontology Location
+          %span.asterik *
+        %td#location_options
+          = radio_button :ontology, :isRemote, 0, :onclick=>"location_toggle('upload');"
+          Upload Local File
+          %br/
+          %span{:style => "font-size:11px;"} (choose a file on your local file system to upload)
+          - display = "display:none;" if @ontology.isRemote.to_i.eql?(1) || @ontology.isRemote.to_i.eql?(3)
+          %div.hidden_field#upload{style: display}
+            #{file_field :ontology, :filePath}
+          %hr/
+
+          = radio_button :ontology, :isRemote, 1, :onclick=>"location_toggle('remote');"
+          Load from URL
+          %br/
+          %span{:style => "font-size:11px;"} (new versions loaded daily)
+          - display = "display:none;" if !@ontology.isRemote.to_i.eql?(0) || !@ontology.isRemote.to_i.eql?(3)
+          %div.hidden_field#remote{style: display}
+            URL: #{text_field :ontology, :pullLocation, :size => 100}
+          %hr/
+
+          = radio_button :ontology, :isRemote, 3, :onclick=>"$('.hidden_field').hide();"
+          Metadata Only
+          %br/
+          %span{:style => "font-size:11px;"}
+            (choose this option if you want users to search and view only the
+            %em metadata
+            for your ontology, but not its classes and properties)
+
+          %tr
+            %th
+              Ontology Viewing Restrictions
+            %td
+              - view_restiction_options = [["Public", "public"], ["Private", "private"], ["Licensed", "licensed"]]
+              - selected = @ontology.private? ? "private" : ""
+              - selected = @ontology.licensed? ? "licensed" : selected
+              - display_private = @ontology.private? ? "" : "display: none;"
+              - display_licensed = @ontology.licensed? ? "" : "display: none;"
+              = select :ontology, :viewingRestriction, view_restiction_options, { :selected => selected }
+              #viewingRestrictionsPrivate.viewing_restriction_types{:style => "padding: .5em; border: thin solid #C1DAD7; margin: .5em .5em .5em 0; #{display_private}"}
+                %h3 Add or remove accounts that are allowed to view terms in this ontology using the account name
+                = text_field :acl, :user_acl_add, :placeholder => "enter account name", :style => "margin-bottom: .5em"
+                %input#user_acl_add_button{:type => "button", :value => "Add Account"}
+                %span.user_acl_add_spinner{:style => "display: none;"}
+                  %img{:src => "/images/spinners/spinner_000000_16px.gif", :style => "vertical-align: text-bottom;"}
+                %span.user_acl_add_error{:style => "color: red;"}
+                - disabled = @ontology.private? ? {} : {:disabled => "true"}
+                = select :ontology, :acl, @ontology.acl_select, {  }, { :class => "viewing_restriction_disabled", :multiple => true }.merge(disabled)
+              #viewingRestrictionsLicensed.viewing_restriction_types{:style => "padding: .5em; border: thin solid #C1DAD7; margin: .5em .5em .5em 0; #{display_licensed}"}
+                %b License Text:
+                The text below explains what licensing information you want to collect before allowing access. We will display this text and record the user's response when the user attempts to access your ontology.
+                - disabled = @ontology.licensed? ? {} : {:disabled => "true"}
+                - @ontology.licenseInformation = @ontology.licenseInformation.nil? || @ontology.licenseInformation.empty? ? "Please enter your license number in the text box below to access this ontology" : @ontology.licenseInformation
+                = text_area :ontology, :licenseInformation, { :rows => 5, :class => "viewing_restriction_disabled", :style => "width: 90%;" }.merge(disabled)
+          %tr
+            %th
+              Categories:
+              %br/
+              (use Ctrl or Cmd to select more than one)
+            %td
+              %select{:multiple => "multiple", :name => "ontology[categoryId][]", :size => "6"}
+                - cats = @categories.sort{|a,b| a.name <=> b.name} rescue Array.new
+                - for cat in cats
+                  <option value="#{cat.id}"
+                  - if !@ontology.categories.nil? && @ontology.categories.include?(cat.id)
+                    selected
+                  >#{cat[:name]}
+          %tr
+            %th
+              Contact Name:
+              %span.asterik *
+            %td
+              = text_field :ontology, :"contact[name]"
+          %tr
+            %th
+              Contact Email:
+              %span.asterik *
+            %td
+              = text_field :ontology, :"contact[email]"
+          %tr
+            %th
+              Home Page:
+            %td
+              = text_field :ontology, :homepage
+          %tr
+            %th
+              Documentation Page:
+            %td
+              = text_field :ontology, :documentation
+          %tr
+            %th
+              Publications Page:
+            %td
+              = text_field :ontology, :publication
+          %tr
+            %td{:align => "right", :colspan => "2"}
+              = label :ontology, :subscribe_notifications, "Subscribe to email notifications for new notes"
+              = check_box :ontology, :subscribe_notifications
+          %tr
+            %td{:align => "right", :colspan => "2"}
+              = submit_tag "Submit"
