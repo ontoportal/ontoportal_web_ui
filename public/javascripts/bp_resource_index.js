@@ -105,7 +105,7 @@ jQuery(document).ready(function () {
 
   // If all terms are removed from the search, put the UI in base state
   jQuery("a.search-choice-close").live("click", function () {
-    if (currentConceptIds() === null) {
+    if (chosenSearchTermsToClassesArg() === null) {
       pushIndex();
       var input = document.activeElement
       jQuery("#resource_index_terms_chzn").trigger("mousedown");
@@ -118,11 +118,8 @@ jQuery(document).ready(function () {
   // Get search results
   if (jQuery("#resource_index_button").length > 0) {
     jQuery("#resource_index_button").click(function () {
-      //var url = "/resource_index/resources?conceptids=" + conceptIDs.join(",");
-      //pushDisplayResources(url, {conceptids: conceptIDs});
-      var classesArg = chosenSearchTermsToClassesArg();
-      var url = "/resource_index/resources?" + classesArg;
-      //pushDisplayResources(url, {classes: classesArg});
+      var url = "/resource_index/resources?" + chosenSearchTermsToClassesArg();
+      pushDisplayResources(url, {classes: chosenSearchTerms()});
       getSearchResults();
     });
   }
@@ -140,7 +137,7 @@ jQuery(document).ready(function () {
     var el_text = jQuery("#" + cleanElementId + "_text");
     el_text.toggleClass("not_visible");
     if (el_text.attr("highlighted") !== "true") {
-      var element = new Element(el.attr("data-element_id"), cleanElementId, currentConceptIds(), el.attr("data-resource_id"));
+      var element = new Element(el.attr("data-element_id"), cleanElementId, chosenSearchTerms(), el.attr("data-resource_id"));
       jQuery("#" + element.cleanId + "_text .ri_legend_container").append("<span id='" + element.cleanId + "_ani'class='highlighting'>highlighting... <img style='vertical-align: text-bottom;' src='/images/spinners/spinner_000000_16px.gif'></span>");
       element.highlightAnnotationPositions();
       el_text.attr("highlighted", "true");
@@ -178,7 +175,10 @@ function pageInit() {
     params[paramLocations[i]] = route[i];
   }
   jQuery.extend(params, BP_urlParams);
-  params["conceptids"] = (typeof params["conceptids"] !== "undefined") ? params["conceptids"].split(",") : undefined;
+  //
+  // TODO: may need to change the .split() on the classes params.
+  //
+  params["classes"] = (typeof params["classes"] !== "undefined") ? params["classes"].split(",") : undefined;
   BP_urlParams = params;
   if (typeof params["resourceId"] !== "undefined") {
     router.route("resource", params);
@@ -300,17 +300,17 @@ function Router() {
   };
 
   this.resource = function (params) {
-    if (typeof params["conceptids"] === "undefined" || typeof params["resourceId"] === "undefined") {
+    if (typeof params["classes"] === "undefined" || typeof params["resourceId"] === "undefined") {
       replaceIndex();
     }
     displayResource(params);
   };
 
   this.resources = function (params) {
-    if (typeof params["conceptids"] === "undefined") {
+    if (typeof params["classes"] === "undefined") {
       replaceIndex();
     }
-    displayResources(params["conceptids"]);
+    displayResources(params["classes"]);
   };
 
 }
@@ -318,33 +318,32 @@ router = new Router();
 
 function displayResource(params) {
   var resource = params["resourceId"];
-  var resourceName = resources[resource.toLowerCase()].resourceName;
-  // Only retreive term information if this is an initial load
+  var resourceName = resources[resource].resourceName;
+  // Only retrieve term information if this is an initial load
   if (jQuery("#resource_index_terms").val() !== null) {
     showResourceResults(resource, resourceName);
     return;
   }
-  displayTerms(params["conceptids"], function () {
+  displayTerms(params["classes"], function () {
     showResourceResults(resource, resourceName);
   });
 }
 
-function displayResources(concepts) {
-  // Only retreive term information if this is an initial load
+function displayResources(classes) {
+  // Only retrieve term information if this is an initial load
   if (jQuery("#resource_index_terms").val() !== null) {
     showAllResources();
     return;
   }
-  displayTerms(concepts);
+  displayTerms(classes);
 }
 
-function displayTerms(concepts, completedCallback) {
-  var concept, conceptOpt, ontologyId, conceptId, ontologyName, conceptRetreivedCount, conceptsLength = concepts.length, params;
-
+function displayTerms(classes, completedCallback) {
+  var concept, conceptOpt, ontologyId, conceptId, ontologyName, conceptRetreivedCount, conceptsLength = classes.length, params;
   conceptRetreivedCount = 0;
   jQuery("#resource_index_terms").html("");
   for (var i = 0; i < conceptsLength; i++) {
-    concept = concepts[i];
+    concept = classes[i];
     ontologyId = concept.split("/")[0];
     conceptId = concept.split("/")[1];
     ontologyName = ont_names[ontologyId];
@@ -355,7 +354,7 @@ function displayTerms(concepts, completedCallback) {
         conceptRetreivedCount += 1;
         if (conceptRetreivedCount == conceptsLength) {
           for (var j = 0; j < conceptsLength; j++) {
-            conceptOpt = concepts[j];
+            conceptOpt = classes[j];
             jQuery("#resource_index_terms option[value='" + conceptOpt + "']").attr("selected", true);
           }
           updateChosen();
@@ -423,15 +422,14 @@ function updateCounts() {
 
 jQuery("a.results_link").live("click", function (event) {
   var resource = jQuery(this).data("resource_id");
-  var resourceName = jQuery(this).data("resource_name");
-  var url = "/resource_index/resources/" + resource + "?conceptids=" + currentConceptIds().join(",");
-  pushDisplayResource(url, {conceptids: currentConceptIds(), resourceId: resource});
+  //var resourceName = jQuery(this).data("resource_name");
+  var url = "/resource_index/resources/" + resource + "?" + chosenSearchTermsToClassesArg();
+  pushDisplayResource(url, {classes: chosenSearchTerms(), resourceId: resource});
 });
 
 jQuery("a#show_all_resources").live("click", function () {
-  var conceptIDs = currentConceptIds();
-  var url = "/resource_index/resources?conceptids=" + conceptIDs.join(",");
-  pushDisplayResources(url, {conceptids: conceptIDs});
+  var url = "/resource_index/resources?" + chosenSearchTermsToClassesArg();
+  pushDisplayResources(url, {classes: chosenSearchTerms()});
 });
 
 function showResourceResults(resource, resourceName) {
@@ -452,12 +450,12 @@ function showAllResources() {
   updateCounts();
 }
 
-function Element(id, cleanId, conceptIds, resource) {
+function Element(id, cleanId, classes, resource) {
   this.positions;
   this.id = id;
   this.cleanId = cleanId;
   this.jdomId = "#" + cleanId + "_text";
-  this.conceptIds = conceptIds;
+  this.classes = classes;
   this.resource = resource;
   this.loadAni = null;
 
@@ -467,7 +465,7 @@ function Element(id, cleanId, conceptIds, resource) {
       url     : "/resource_index/element_annotations",
       data    : {
         elementid : this.id,
-        conceptids: this.conceptIds.join(","),
+        classes: chosenSearchTermsToClassesArg(this.classes),
         resourceid: this.resource
       },
       dataType: "json",
@@ -552,13 +550,13 @@ function currentOntologyIds() {
   return selectedOntIds === null || selectedOntIds === "" ? ont_ids : selectedOntIds;
 }
 
-function currentConceptIds() {
-  var conceptIds = jQuery("#resource_index_terms").val();
-  if (typeof conceptIds === "string") {
-    conceptIds = conceptIds.split(",");
-  }
-  return conceptIds;
-}
+//function currentConceptIds() {
+//  var conceptIds = jQuery("#resource_index_terms").val();
+//  if (typeof conceptIds === "string") {
+//    conceptIds = conceptIds.split(",");
+//  }
+//  return conceptIds;
+//}
 
 
 function chosenSearchTerms() {
@@ -581,8 +579,10 @@ function chosenSearchTerms() {
   return chosenTermsMap;
 }
 
-function chosenSearchTermsToClassesArg() {
-  var chosenTermsMap = chosenSearchTerms();
+function chosenSearchTermsToClassesArg(chosenTermsMap) {
+  if (chosenTermsMap === undefined){
+    chosenTermsMap = chosenSearchTerms();
+  }
   var chosenClassesURI = "";
   for (var ont_uri in chosenTermsMap) {
     var chosenClassArr = chosenTermsMap[ont_uri];

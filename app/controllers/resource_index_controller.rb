@@ -70,7 +70,7 @@ class ResourceIndexController < ApplicationController
 
 
   def resources_table
-    params[:conceptids] = params[:conceptids].split(",")
+    params[:classes] = params[:classes].split(",")
     create()
   end
 
@@ -82,16 +82,7 @@ class ResourceIndexController < ApplicationController
     @classes = params[:classes]
     @bp_last_params = params
 
-    classesArgs = []
-    if params[:classes].kind_of?(Hash)
-      classesHash = params[:classes]
-      classesHash.each do |ont_uri, cls_uris|
-        classesStr = 'classes[' + CGI::escape(ont_uri) + ']='
-        classesStr += CGI::escape( cls_uris.join(',') )
-        classesArgs.push(classesStr)
-      end
-    end
-    uri = RI_RANKED_ELEMENTS_URI + "?" + classesArgs.join('&')
+    uri = getRankedElementsURI(params)
     @elements = []
     while true
       begin
@@ -122,33 +113,54 @@ class ResourceIndexController < ApplicationController
   end
 
 
-  #def results_paginate
-  #  #ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))
-  #  offset = (params[:page].to_i - 1) * params[:limit].to_i
-  #  ranked_elements = ri.ranked_elements(params[:conceptids], :resourceids => [params[:resourceId]], :offset => offset, :limit => params[:limit])
+
   #
-  #  # There should be only one resource returned because we pass it in above
   #
-  #  @resources = LinkedData::Client::HTTP.get(RI_RESOURCES_URI)
-  #  @resources_hash = getResourcesHash(@resources)  # required in partial 'resources_results'
+  # TODO: Revise pagination to work with stagedata paged results object.
+  # Note: the create() method gets all the paged results, see ranked_elements_page above.
   #
-  #  @resource_results = convert_for_will_paginate(ranked_elements.resources)[0]
-  #  @concept_ids = params[:conceptids]
   #
-  #  render :partial => "resource_results"
-  #end
+
+  def results_paginate
+    #ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))
+    offset = (params[:page].to_i - 1) * params[:limit].to_i
+    ranked_elements = ri.ranked_elements(params[:conceptids], :resourceids => [params[:resourceId]], :offset => offset, :limit => params[:limit])
+
+    # There should be only one resource returned because we pass it in above
+
+    @resources = LinkedData::Client::HTTP.get(RI_RESOURCES_URI)
+    @resources_hash = getResourcesHash(@resources)  # required in partial 'resources_results'
+
+    @resource_results = convert_for_will_paginate(ranked_elements.resources)[0]
+    @concept_ids = params[:conceptids]
+
+    render :partial => "resource_results"
+  end
 
 
   def element_annotations
+
+
+    #binding.pry
+    #
+    #
+    # TODO: Make a call to the new API search to get element annotations.
+    #
+    #
+    #
+    #uri = '?'
+    #@annotations = LinkedData::Client::HTTP.get(uri)
+
+
     #ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS.merge({:limit => 9999})))
-    concept_ids = params[:conceptids].kind_of?(Array) ? params[:conceptids] : params[:conceptids].split(",")
-    annotations = ri.element_annotations(params[:elementid], concept_ids, params[:resourceid])
+    #concept_ids = params[:classes].kind_of?(Array) ? params[:classes] : params[:classes].split(",")
+    #annotations = ri.element_annotations(params[:elementid], concept_ids, params[:resourceid])
     positions = {}
-    annotations.annotations.each do |annotation|
-      context = annotation.context
-      positions[context[:contextName]] ||= []
-      positions[context[:contextName]] << {:to => context[:to], :from => context[:from], :type => context[:contextType]}
-    end
+    #annotations.annotations.each do |annotation|
+    #  context = annotation.context
+    #  positions[context[:contextName]] ||= []
+    #  positions[context[:contextName]] << {:to => context[:to], :from => context[:from], :type => context[:contextType]}
+    #end
 
     render :json => positions
   end
@@ -183,6 +195,18 @@ private
     resources_paginate
   end
 
+  def getRankedElementsURI(params)
+    classesArgs = []
+    if params[:classes].kind_of?(Hash)
+      classesHash = params[:classes]
+      classesHash.each do |ont_uri, cls_uris|
+        classesStr = 'classes[' + CGI::escape(ont_uri) + ']='
+        classesStr += CGI::escape( cls_uris.join(',') )
+        classesArgs.push(classesStr)
+      end
+    end
+    return RI_RANKED_ELEMENTS_URI + "?" + classesArgs.join('&')
+  end
 
   # Disable old code:
   #def popular_concepts(ri)

@@ -1,4 +1,5 @@
 - require 'cgi'
+- require 'bigdecimal'
 
 :css
   .count {
@@ -22,18 +23,24 @@
       -@elements.each do |r|
         -resource_data = @resources_hash[r.resourceId]
         -resource_name = resource_data[:resourceName]
-        %tr{:class => r.totalResults.to_i == 0 && "zero_results not_visible"}
+        -total_results = r.totalResults.to_i
+        -total_elements = resource_data[:totalElements]
+        -total_percent = (BigDecimal(total_results) / BigDecimal(total_elements)) * BigDecimal.new(100)
+        -total_percent = total_percent < 0.01 ? '< 0.01%' : sprintf('%0.2f%', total_percent)
+        -delim_results = number_with_delimiter(total_results, :delimiter => ",")
+        -delim_elements = number_with_delimiter(total_elements, :delimiter => ",")
+        %tr{:class => total_results == 0 && "zero_results not_visible"}
           %td
             %a.results_link{:href => "javascript:void(0);", :data => {:resource_id => r.resourceId, :resource_name => resource_name}} #{resource_name}
             / %a.resource_site{:href => @resources_hash[r.resourceId][:resourceURL], :target => "_blank", :id => "resource_link_#{r.resourceId}"} site
             / %span{:class => "ui-icon ui-icon-extlink", :style => "display: inline-block; vertical-align: text-bottom;"}
           %td.count
-            -if r.totalResults > 0
-              %a.results_link{:href => "javascript:void(0);", :data => {:resource_id => r.resourceId, :resource_name => resource_name}} #{number_with_delimiter(r.totalResults, :delimiter => ",")}
+            -if total_results > 0
+              %a.results_link{:href => "javascript:void(0);", :data => {:resource_id => r.resourceId, :resource_name => resource_name}} #{delim_results}
             -else
-              #{number_with_delimiter(r.totalResults, :delimiter => ",")}
-          %td.count= (((r.totalResults.to_f / resource_data[:totalElements].to_f)*100*100.0).ceil/100.0).to_s + "%" rescue "0%" # Complicated formula for rounding up to nearest tenth
-          %td.count #{number_with_delimiter(resource_data[:totalElements], :delimiter => ",")}
+              #{delim_results}
+          %td.count= total_percent
+          %td.count= delim_elements
 
 %h2.resource_title.not_visible
   %span#resource_title
