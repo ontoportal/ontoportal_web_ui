@@ -174,7 +174,7 @@ private
   def getResourcesHash(resourcesList)
     resources_hash = {}
     resourcesList.each do |r|
-      resources_hash[r[:resourceId]] = r
+      resources_hash[r[:resourceId]] = r.to_h # convert struct to hash (to_json will create a javascript object).
     end
     return resources_hash
   end

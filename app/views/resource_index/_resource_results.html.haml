@@ -1,7 +1,7 @@
 %div.element_results.paginate_ajax{:id => "#{@resource_results.resourceId}_results"}
   -resource_id = @resource_results.resourceId
   -resource_data = @resources_hash[resource_id]
-  -resource_url = resource_data.members.include?(:resourceElementURL) ? resource_data[:resourceElementURL] : ""
+  -resource_url = resource_data.include?(:resourceElementURL) ? resource_data[:resourceElementURL] : ""
   -@resource_results.each do |element|
     // this gsub generates: active_support/core_ext/string/output_safety.rb:22: warning: regexp match /.../n against to UTF-8 string
     -element_id = CGI.escape(element[:id].gsub(/[^0-9A-Za-z]/, ""))
