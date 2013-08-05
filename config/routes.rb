@@ -15,7 +15,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :concepts
 
-  map.resources :ontologies
+  map.resources :ontologies, :has_many => :submissions
+
+  map.resources :submissions
 
   map.resources :login
 
@@ -50,6 +52,7 @@ ActionController::Routing::Routes.draw do |map|
   map.ontology_virtual '/ontologies/virtual/:ontology', :controller => 'ontologies', :action => 'virtual'
   map.connect '/ontologies/success/:id', :controller => 'ontologies', :action => 'submit_success'
   map.connect '/ontologies/:acronym', controller: 'ontologies', action: 'update', conditions: {method: :post}
+  map.connect '/ontologies/:acronym/submissions/:id', controller: 'submissions', action: 'update', conditions: {method: :post}
 
   # Services
   map.connect ':controller/service.wsdl', :action => 'wsdl'
