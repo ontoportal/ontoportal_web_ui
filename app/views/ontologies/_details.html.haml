@@ -1,5 +1,6 @@
 - require 'cgi'
-%h2{:style => "font-size: x-large;"} Details
+%h2{:style => "font-size: x-large;"}
+  Details
 #metadata_content
   %div{:style => "float: left; width: 60%; overflow: hidden; min-width: 550px"}
     %table.form{:width => "100%"}
@@ -8,30 +9,60 @@
         %td.top= @ontology.acronym
       %tr
         %th Visibility
-        %td= strip_links(visibility_link(@submission))
-      - if !$PURL_ENABLED.nil? && $PURL_ENABLED && !@submission.summaryOnly
+        %td= strip_links(visibility_link(@ontology))
+      - if !$PURL_ENABLED.nil? && $PURL_ENABLED && !@ontology.summaryOnly
         %tr
           %th
             = $SITE
             PURL
           %td
             = auto_link(@ontology.purl, :all, :target => "_blank")
-      %tr
-        %th
-          Status
-        %td
-          = @submission.status.capitalize unless @submission.status.nil?
       - if @ontology.viewing_restricted?
         %tr
           %th
             Viewing Restriction
           %td
             = @ontology.viewingRestriction.capitalize
-      %tr
-        %th
-          Format
-        %td
-          = @submission.hasOntologyLanguage
+
+      - unless @submission.nil? || (@submission.respond_to?(:status) && @submission.status == 404)
+        %tr
+          %th
+            Description
+          %td
+            = @submission.description rescue ""
+        %tr
+          %th
+            Status
+          %td
+            = @submission.status.capitalize unless @submission.status.nil? rescue binding.pry
+        %tr
+          %th
+            Format
+          %td
+            = @submission.hasOntologyLanguage
+        %tr
+          %th
+            Contact
+          %td
+            = @submission.contact.map {|c| [c.name, c.email].join(", ") if c.member?(:name) && c.member?(:email)}.join("<br/>")
+        %tr
+          %th
+            Home Page
+          %td
+            %a{:href => @submission.homepage, :target => "_blank"}= @submission.homepage
+        %tr
+          %th
+            Publications Page
+          %td
+            %a{:href => @submission.publication, :target => "_blank"}= @submission.publication
+        %tr
+          %th
+            Documentation Page
+          %td
+            %a{:href => @submission.documentation, :target => "_blank"}= @submission.documentation
+        / TODO_REV: Enable additional details for ontologies
+        / = additional_details
+
       %tr
         %th
           Categories
@@ -42,29 +73,3 @@
           Groups
         %td
           = @ontology.explore.groups.map {|g| g.name}.join("<br/>")
-      %tr
-        %th
-          Contact
-        %td
-          = @submission.contact.map {|c| [c.name, c.email].join(", ") if c.member?(:name) && c.member?(:email)}.join("<br/>")
-      %tr
-        %th
-          Home Page
-        %td
-          %a{:href => @submission.homepage, :target => "_blank"}= @submission.homepage
-      %tr
-        %th
-          Publications Page
-        %td
-          %a{:href => @submission.publication, :target => "_blank"}= @submission.publication
-      %tr
-        %th
-          Documentation Page
-        %td
-          %a{:href => @submission.documentation, :target => "_blank"}= @submission.documentation
-      %tr
-        %th
-          Description
-        %td
-          = @submission.description rescue ""
-      / = additional_details

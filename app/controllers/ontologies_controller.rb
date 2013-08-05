@@ -79,60 +79,6 @@ class OntologiesController < ApplicationController
     redirect_to $REST_URL + "/ontologies/download/#{@ontology.id}?apikey=#{$API_KEY}"
   end
 
-  def update
-    params[:ontology][:isReviewed]=1
-    params[:ontology][:isFoundry]=0
-    unless !authorize_owner(params[:ontology][:userId].to_i)
-      return
-    end
-
-    @errors = validate(params[:ontology],true)
-
-    if @errors.length < 1
-      if params[:ontology][:isView] && params[:ontology][:isView].to_i == 1
-        @ontology = DataAccess.updateView(params[:ontology],params[:id])
-      else
-        @ontology = DataAccess.updateOntology(params[:ontology],params[:id])
-      end
-
-      if @ontology.kind_of?(Hash) && @ontology[:error]
-        flash[:notice]=@ontology[:longMessage]
-        redirect_to ontology_path(:id=>params[:id])
-      else
-        if @ontology.isView.eql?("true")
-          redirect_to ontology_path(@ontology.viewOnOntologyVersionId) + "#views"
-        else
-          redirect_to ontology_path(@ontology)
-        end
-      end
-    else
-      @ontology = OntologyWrapper.new
-      @ontology.from_params(params[:ontology])
-      @ontology.id = params[:id]
-      @categories = DataAccess.getCategories()
-
-      render :action=> 'edit'
-    end
-
-  end
-
-
-  def edit
-    @ontology = DataAccess.getOntology(params[:id])
-
-    authorize_owner(@ontology.userId)
-
-    @categories = DataAccess.getCategories()
-  end
-
-  def edit_view
-    @ontology = DataAccess.getView(params[:id])
-
-    authorize_owner(@ontology.userId)
-
-    @categories = DataAccess.getCategories()
-  end
-
   def visualize
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:conceptid] = params[:id].nil? ? params[:conceptid] : params[:id]
@@ -227,22 +173,23 @@ class OntologiesController < ApplicationController
   end
 
   def new
-    if(params[:id].nil?)
-      @ontology = OntologyWrapper.new
-      @ontology.userId = session[:user].id
+    if (params[:id].nil?)
+      @ontology = LinkedData::Client::Models::Ontology.new
+      @ontology.administeredBy = [session[:user].id]
     else
-      @ontology = DataAccess.getLatestOntology(params[:id])
+      @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     end
-    @categories = DataAccess.getCategories()
+    @categories = LinkedData::Client::Models::Category.all
+    @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
+    @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
   end
-
 
   def new_view
     if(params[:id].nil? || params[:id].to_i < 1)
       @new = true
       @ontology = OntologyWrapper.new
       @ontology_version_id = params[:version_id]
-      @ontology.userId = session[:user].id
+      @ontology.administeredBy = session[:user].id
     else
       @ontology = DataAccess.getView(params[:id])
     end
@@ -252,126 +199,106 @@ class OntologiesController < ApplicationController
 
 
   def create
-    params[:ontology][:isCurrent] = 1
-    params[:ontology][:isReviewed] = 1
-    params[:ontology][:isFoundry] = 0
+    @ontology = LinkedData::Client::Models::Ontology.new(values: params[:ontology])
+    @ontology_saved = @ontology.save
 
-    update = !params[:ontology][:ontologyId].nil? && !params[:ontology][:ontologyId].empty?
+    if @ontology_saved.errors
+      @categories = LinkedData::Client::Models::Category.all
+      @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
+      @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
+      @errors = response_errors(@ontology_saved)
+      @errors = {acronym: "Acronym already exists, please use another"} if @ontology_saved.status == 409
 
-    # If ontology is going to be pulled, it should not be manual
-    if params[:ontology][:isRemote].to_i.eql?(1) && (!params[:ontology][:downloadLocation].nil? || params[:ontology][:downloadLocation].length > 1)
-      params[:ontology][:isManual] = 0
-    else
-      params[:ontology][:isManual] = 1
-    end
-
-    if (session[:user].admin? && (params[:ontology][:userId].nil? || params[:ontology][:userId].empty?)) || !session[:user].admin?
-      params[:ontology][:userId] = session[:user].id
-    end
-
-    @errors = validate(params[:ontology], update)
-
-    if @errors.length < 1
-      @ontology = DataAccess.createOntology(params[:ontology])
-      if @ontology.kind_of?(Hash) && (@ontology.empty? || @ontology[:error]) || @ontology.nil?
-        notice = @ontology.nil? || @ontology[:longMessage].nil? ? "Error submitting ontology, please try again" : @ontology[:longMessage]
-        flash[:notice] = notice
-
-        if(params[:ontology][:ontologyId].empty?)
-          @ontology = OntologyWrapper.new
-          @ontology.from_params(params)
-        else
-          @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
-        end
-
-        if params[:ontology][:isView].to_i==1
-          render :action=>'new_view'
-        else
-          render :action=>'new'
-        end
+      if (@ontology.viewOf)
+        render :action => 'new_view'
       else
-        # Adds ontology to syndication
-        # Don't break here if we encounter problems, the RSS feed isn't critical
-        begin
-          event = EventItem.new
-          event.event_type="Ontology"
-          event.event_type_id=@ontology.id
-          event.ontology_id=@ontology.ontologyId
-          event.save
-        rescue
-        end
-
-        if params["ontology"]["subscribe_notifications"].eql?("1")
-          # begin
-         DataAccess.createUserSubscriptions(@ontology.userId, @ontology.ontologyId, NOTIFICATION_TYPES[:all])
-          # rescue
-          # end
-        end
-
-        if @ontology.isView=='true'
-          # Cleaning out the cache
-          parent_ontology=DataAccess.getOntology(@ontology.viewOnOntologyVersionId)
-          CACHE.delete("views::#{parent_ontology.ontologyId}")
-          redirect_to "/ontologies/success/#{@ontology.ontologyId}"
-        else
-          redirect_to "/ontologies/success/#{@ontology.ontologyId}"
-        end
+        render :action => 'new'
       end
     else
-      if(params[:ontology][:ontologyId].empty?)
-        @ontology = OntologyWrapper.new
-        @ontology.from_params(params[:ontology])
-        @categories = DataAccess.getCategories()
-      else
-        @ontology = DataAccess.getLatestOntology(params[:ontology][:ontologyId])
-        @ontology.from_params(params[:ontology])
-        @categories = DataAccess.getCategories()
-      end
+      # Adds ontology to syndication
+      # Don't break here if we encounter problems, the RSS feed isn't critical
+      # TODO_REV: What should we do about RSS / Syndication?
+      # begin
+      #   event = EventItem.new
+      #   event.event_type="Ontology"
+      #   event.event_type_id=@ontology.id
+      #   event.ontology_id=@ontology.ontologyId
+      #   event.save
+      # rescue
+      # end
 
-      if(params[:ontology][:isView].to_i==1)
-        render :action=>'new_view'
+      # TODO_REV: Enable subscriptions
+      # if params["ontology"]["subscribe_notifications"].eql?("1")
+      #  DataAccess.createUserSubscriptions(@ontology.administeredBy, @ontology.ontologyId, NOTIFICATION_TYPES[:all])
+      # end
+
+      if @ontology_saved.summaryOnly
+        redirect_to "/ontologies/success/#{CGI.escape(@ontology.id)}"
       else
-        render :action=>'new'
+        redirect_to new_ontology_submission_url
       end
     end
   end
 
   def submit_success
-    @ontology = DataAccess.getOntology(params[:id])
+    @ontology = LinkedData::Client::Models::Ontology.get(params[:id])
     render :partial => "submit_success", :layout => "ontology"
   end
 
+  def update
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym]).first
+    @ontology.update_from_params(params[:ontology])
+    error_response = @ontology.update
 
-  def exhibit
-    @ontologies = DataAccess.getOntologyList()
+    if error_response
+      @categories = LinkedData::Client::Models::Category.all
+      @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
+      @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
+      @errors = response_errors(error_response)
+      @errors = {acronym: "Acronym already exists, please use another"} if error_response.status == 409
 
-    string = ""
-    string << "{
-           \"items\" : [\n"
-
-    for ont in @ontologies
-      string << "{
-         \"title\" : \"#{ont.displayLabel}\" , \n
-         \"label\": \"#{ont.id}\",  \n
-         \"ontologyId\": \"#{ont.ontologyId}\",\n
-         \"version\": \"#{ont.versionNumber}\",\n
-         \"status\":\"#{ont.versionStatus}\",\n
-         \"format\":\"#{ont.format}\"\n"
-
-      if ont.eql?(@ontologies.last)
-        string << "}"
+      if (@ontology.viewOf)
+        render :action => 'new_view'
       else
-        string << "} , "
+        render :action => 'new'
       end
+    else
+      # Adds ontology to syndication
+      # Don't break here if we encounter problems, the RSS feed isn't critical
+      # TODO_REV: What should we do about RSS / Syndication?
+      # begin
+      #   event = EventItem.new
+      #   event.event_type="Ontology"
+      #   event.event_type_id=@ontology.id
+      #   event.ontology_id=@ontology.ontologyId
+      #   event.save
+      # rescue
+      # end
+
+      # TODO_REV: Enable subscriptions
+      # if params["ontology"]["subscribe_notifications"].eql?("1")
+      #  DataAccess.createUserSubscriptions(@ontology.administeredBy, @ontology.ontologyId, NOTIFICATION_TYPES[:all])
+      # end
+
+      redirect_to "/ontologies/#{@ontology.acronym}"
     end
-
-    response.headers['Content-Type'] = "text/html"
-
-    string<< "]}"
-    render :text => string
-
   end
 
+  def edit
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
+    redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
+    @categories = LinkedData::Client::Models::Category.all
+    @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
+    @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
+  end
+
+  def edit_view
+    @ontology = DataAccess.getView(params[:id])
+
+    authorize_owner(@ontology.administeredBy)
+
+    @categories = DataAccess.getCategories()
+  end
 
 
 
@@ -490,47 +417,11 @@ class OntologiesController < ApplicationController
 
   private
 
-  def calculate_note_counts(notes)
-    note_count_map = {}
-    note_count = []
-
-    unless notes.nil? || notes.empty?
-      ontology_id = notes[0].ontologyId
-      ontology = DataAccess.getLatestOntology(ontology_id)
-
-      notes.each do |note|
-        if note.appliesTo['type'].eql?("Class")
-          note_count_map[note.appliesTo['id']] = note_count_map[note.appliesTo['id']].nil? ? 1 : note_count_map[note.appliesTo['id']] += 1
-        end
-      end
-
-      if note_count_map.size > 35
-        note_count_map = note_count_map.sort {|a,b| b[1] <=> a[1]}
-
-        # Remove all elements above index 35
-        note_count_map.slice!(35, (note_count_map.size - 35))
-      end
-
-      note_count_map.each do |concept_id, count|
-        begin
-          concept = DataAccess.getNode(ontology.id, concept_id, ontology.isView)
-          note_count << [ concept.label, count, CGI.escape(concept.fullId_proper) ]
-        rescue
-          LOG.add :debug, "Failed to retrieve a concept for a note (likely it was from an earlier version of the ontology)"
-        end
-      end
-    end
-
-    note_count.sort! {|a,b| a[0] <=> b[0]}
-
-    note_count
-  end
-
   def validate(params, update=false)
     # strip all spaces from email
     params[:contactEmail] = params[:contactEmail].gsub(" ", "")
 
-    acronyms = DataAccess.getOntologyAcronyms
+    acronyms = LinkedData::Client::Models::Ontology.all.map {|o| o.acronym}
 
     errors=[]
     if params[:displayLabel].nil? || params[:displayLabel].length <1
@@ -569,21 +460,21 @@ class OntologiesController < ApplicationController
         errors << "File is too large"
       end
 
-      if params[:isRemote].to_i.eql?(1) && (params[:downloadLocation].nil? || params[:downloadLocation].length < 1)
+      if params[:isRemote].to_i.eql?(1) && (params[:pullLocation].nil? || params[:pullLocation].length < 1)
         errors << "Please Enter a URL"
       end
 
-      if params[:isRemote].to_i.eql?(1) && (!params[:downloadLocation].nil? || params[:downloadLocation].length > 1)
+      if params[:isRemote].to_i.eql?(1) && (!params[:pullLocation].nil? || params[:pullLocation].length > 1)
         begin
-          downloadLocation = URI.parse(params[:downloadLocation])
-          if downloadLocation.scheme.nil? || downloadLocation.host.nil?
+          pullLocation = URI.parse(params[:pullLocation])
+          if pullLocation.scheme.nil? || pullLocation.host.nil?
             errors << "Please enter a valid URL"
           end
         rescue URI::InvalidURIError
           errors << "Please enter a valid URL"
         end
 
-        if !remote_file_exists?(params[:downloadLocation])
+        if !remote_file_exists?(params[:pullLocation])
           errors << "The URL you provided for us to load an ontology from doesn't reference a valid file"
         end
       end
@@ -595,14 +486,6 @@ class OntologiesController < ApplicationController
 
     if params[:contactEmail].nil? || params[:contactEmail].length <1 || !params[:contactEmail].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
       errors << "Please Enter the Contact Email"
-    end
-
-    # options that use default text, remove them from the hash
-    default_text = "use default"
-    params.each do |name,value|
-      if value.eql?(default_text)
-        params[name] = ""
-      end
     end
 
     # Check for metadata only and set parameter

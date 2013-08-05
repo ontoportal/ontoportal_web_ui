@@ -184,11 +184,11 @@ jQuery(document).ready(function() {
     : jQuery.bioportal.ont_pages[content_section].page_name + " | " + org_site;
   document.title = title;
 
-  // Wire up navigation buttons
-  jQuery('#ont_nav').fgmenu({
-    content: jQuery('#navigate_options').html(),
-    afterItemChosen: nav_ont
-  });
+  // Naviation buttons
+  jQuery(".nav_link a").live("click", function(e){
+    e.preventDefault();
+    nav_ont(this);
+  })
   jQuery('#ont_admin').fgmenu({
     content: jQuery('#adminster_options').html(),
     afterItemChosen: menu_nav
@@ -197,12 +197,6 @@ jQuery(document).ready(function() {
   // Retrieve AJAX content if not already displayed
   if (content_section !== "terms" && metadata_only != true) {
     jQuery.bioportal.ont_pages["terms"].retrieve_and_publish();
-
-    // if (typeof concept_id !== 'undefined') {
-    //   jQuery.cache.terms[concept_id] = jQuery.bioportal.ont_pages["terms"].html;
-    // } else {
-    //   jQuery.cache.terms["root"] = jQuery.bioportal.ont_pages["terms"].html;
-    // }
   }
 
   if (content_section !== "summary") {

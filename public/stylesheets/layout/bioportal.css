@@ -573,9 +573,10 @@ table.align-right th:nth-child(2) {
   background: #f5fafa;
   color: #000;
 }
-.form td.top {
+.form td.top, table.form > :first-child > :first-child > td {
   border-top: 1px solid #C1DAD7;
 }
+
 /* Notes*/
 
 .notetype {
@@ -1640,29 +1641,6 @@ button.fg-button-menu, button.fg-button {
   font-size: x-small;
   text-transform: none;
   letter-spacing: 0;
-}
-
-#ontology_acl_chzn {
-  width: 100% !important;
-}
-
-#ontology_acl_chzn ul {
-  border: none;
-  background: none;
-  box-shadow: none;
-  margin-left: -5px;
-}
-
-#ontology_acl_chzn .chzn-drop {
-  display: none !important;
-}
-
-#ontology_acl_chzn .chzn-choices li.search-field {
-  display: none !important;
-}
-
-#ontology_acl_chzn ul.chzn-choices li.search-choice {
-  padding: 5px 19px 3px 6px !important;
 }
 
 /************************************

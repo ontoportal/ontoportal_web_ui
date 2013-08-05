@@ -49,6 +49,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/ontologies/view/new/:id', :controller => 'ontologies', :action => 'new_view'
   map.ontology_virtual '/ontologies/virtual/:ontology', :controller => 'ontologies', :action => 'virtual'
   map.connect '/ontologies/success/:id', :controller => 'ontologies', :action => 'submit_success'
+  map.connect '/ontologies/:acronym', controller: 'ontologies', action: 'update', conditions: {method: :post}
 
   # Services
   map.connect ':controller/service.wsdl', :action => 'wsdl'
