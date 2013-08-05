@@ -60,7 +60,7 @@ private
     start = Time.now
     annotations2delete = []
     annotations.each do |a|
-      ac_id = a['annotatedClass']['@id']
+      ac_id = a['annotatedClass']['id']
       details = classDetails[ac_id]
       if details.nil?
         LOG.add :debug, "Failed to get class details for: #{a['annotatedClass']['links']['self'] }"
@@ -70,7 +70,7 @@ private
         a['annotatedClass'] = details
         hierarchy2delete = []
         a['hierarchy'].each do |h|
-          hc_id = h['annotatedClass']['@id']
+          hc_id = h['annotatedClass']['id']
           details = classDetails[hc_id]
           if details.nil?
             LOG.add :debug, "Failed to get class details for: #{h['annotatedClass']['links']['self']}"
@@ -81,11 +81,11 @@ private
           end
         end
         # Remove any hierarchy classes that fail to resolve details.
-        a['hierarchy'].delete_if { |h| hierarchy2delete.include? h['annotatedClass']['@id'] }
+        a['hierarchy'].delete_if { |h| hierarchy2delete.include? h['annotatedClass']['id'] }
       end
     end
     # Remove any annotations with annotated classes that fail to resolve details.
-    annotations.delete_if { |a| annotations2delete.include? a['annotatedClass']['@id'] }
+    annotations.delete_if { |a| annotations2delete.include? a['annotatedClass']['id'] }
     LOG.add :debug, "Completed annotation modifications: #{Time.now - start}s"
   end
 
@@ -96,11 +96,11 @@ private
     classDetails = {}
     classList = []
     annotations.each do |a|
-      cls_id = a['annotatedClass']['@id']
+      cls_id = a['annotatedClass']['id']
       ont_id = a['annotatedClass']['links']['ontology']
       classList.push({'class'=>cls_id, 'ontology'=>ont_id})
       a['hierarchy'].each do |h|
-        hc_id = h['annotatedClass']['@id']
+        hc_id = h['annotatedClass']['id']
         classList.push({'class'=>hc_id, 'ontology'=>ont_id}) # must be same ontology for hierarchy
       end
     end
@@ -116,7 +116,7 @@ private
     classResults["http://www.w3.org/2002/07/owl#Class"].each do |cls|
       ont_details = get_ontology_details( cls['links']['ontology'] )  # method in application_controller.rb
       next if ont_details.nil? # No display for annotations on any class outside the BioPortal ontology set.
-      id = cls['@id']
+      id = cls['id']
       classDetails[id] = {
           'id' => id,
           'ui' => cls['links']['ui'],

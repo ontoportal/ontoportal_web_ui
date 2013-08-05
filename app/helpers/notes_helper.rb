@@ -124,14 +124,14 @@ module NotesHelper
     replies.each do |note|
       html1 = <<-html
         <div class="response_container">
-          <div class="response" id="note_#{note["@id"]}">
+          <div class="response" id="note_#{note.id}">
             <div class="note_corner">&nbsp;</div>
-            <div id="note_#{note["@id"]}_collapse" class="collapsible">
+            <div id="note_#{note.id}_collapse" class="collapsible">
               <div class="response_body">
                 #{sanitize note.body, tags: NOTES_TAGS}
               </div>
-              <div class="create_reply_container" id="#{note["@id"]}_reply_link">
-                <a class="create_reply" note_id="#{note["@id"]}" href="javascript:void(0)">reply</a>
+              <div class="create_reply_container" id="#{note.id}_reply_link">
+                <a class="create_reply" note_id="#{note.id}" href="javascript:void(0)">reply</a>
               </div>
             </div>
       html
