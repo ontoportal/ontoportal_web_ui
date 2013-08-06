@@ -15,9 +15,10 @@ class ResourceIndexController < ApplicationController
   layout 'ontology'
 
   RESOURCE_INDEX_URI = REST_URI + "/resource_index"
+  RI_ELEMENT_ANNOTATIONS_URI = RESOURCE_INDEX_URI + "/element_annotations"
+  RI_ONTOLOGIES_URI = RESOURCE_INDEX_URI + "/ontologies"
   RI_RANKED_ELEMENTS_URI = RESOURCE_INDEX_URI + "/ranked_elements"
   RI_RESOURCES_URI = RESOURCE_INDEX_URI + "/resources"
-  RI_ONTOLOGIES_URI = RESOURCE_INDEX_URI + "/ontologies"
 
   # Disable old code:
   # Resource Index annotation offsets rely on latin-1 character sets for the count to be right. So we set all responses as latin-1.
@@ -139,29 +140,13 @@ class ResourceIndexController < ApplicationController
 
 
   def element_annotations
-
-
-    #binding.pry
-    #
-    #
-    # TODO: Make a call to the new API search to get element annotations.
-    #
-    #
-    #
-    #uri = '?'
-    #@annotations = LinkedData::Client::HTTP.get(uri)
-
-
-    #ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS.merge({:limit => 9999})))
-    #concept_ids = params[:classes].kind_of?(Array) ? params[:classes] : params[:classes].split(",")
-    #annotations = ri.element_annotations(params[:elementid], concept_ids, params[:resourceid])
+    uri = RI_ELEMENT_ANNOTATIONS_URI + '?elements=' + params[:elementid] + '&resources=' + params[:resourceid] + '&' + params[:classes]
+    @annotations = LinkedData::Client::HTTP.get(uri)
     positions = {}
-    #annotations.annotations.each do |annotation|
-    #  context = annotation.context
-    #  positions[context[:contextName]] ||= []
-    #  positions[context[:contextName]] << {:to => context[:to], :from => context[:from], :type => context[:contextType]}
-    #end
-
+    @annotations.each do |a|
+      positions[a.elementField] ||= []
+      positions[a.elementField] << { :from => a.from, :to => a.to, :type => a.annotationType }
+    end
     render :json => positions
   end
 

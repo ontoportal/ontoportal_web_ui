@@ -470,6 +470,9 @@ function Element(id, cleanId, classes, resource) {
       },
       dataType: "json",
       success : function (data) {
+
+        console.log(data);
+
         element.positions = data;
         element.highlight();
       }

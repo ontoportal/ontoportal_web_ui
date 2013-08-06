@@ -18,11 +18,11 @@
           %div.ri_legend
             %div <b>annotation types</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             %div <span class='definition' title="matched preferred name or synonym of the search term directly">direct</span>:
-            %div.mgrepContext.highlight_box &nbsp;
+            %div.direct.highlight_box &nbsp;
             %div <span class='definition' title="matched preferred name or synonym of a term mapped to the search term">mapping</span>:
-            %div.mappingContext.highlight_box &nbsp;
+            %div.mapping.highlight_box &nbsp;
             %div <span class='definition' title="matched preferred name or synonym of a subclass of the search term">descendent</span>:
-            %div.isaContext.highlight_box &nbsp;
+            %div.hierarchy.highlight_box &nbsp;
             %div.clearing
         %div.element_text
           -fields_sorted = fields_hash.sort_by { |k,v| v.weight }.reverse  # returns list like [ [k,v], ...]

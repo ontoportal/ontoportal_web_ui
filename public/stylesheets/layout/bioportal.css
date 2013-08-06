@@ -2166,6 +2166,14 @@ ul.chzn-results {
 .clearing {
   clear: both;
 }
+
+/* BEGIN AnnotationType */
+/*
+// Annotation types change for the new API, as follows:
+// mgrepContext => direct
+// mappingContext => mapping
+// isaContext => hierarchy
+//
 .mgrepContext,
 .mgrepContext .mappingContext,
 .mappingContext .mgrepContext,
@@ -2179,6 +2187,23 @@ ul.chzn-results {
 .isaContext {
   background-color: #F2BFC5;
 }
+*/
+.direct,
+.direct .mapping,
+.mapping .direct,
+.direct .hierarchy,
+.hierarchy .direct {
+    background-color: #B0C4DE !important;
+}
+.mapping {
+    background-color: #7ABA7A;
+}
+.hierarchy {
+    background-color: #F2BFC5;
+}
+/* END AnnotationType */
+
+
 .element_result, .element_result a {
   font-size: 110%;
   margin-bottom: 15px;
