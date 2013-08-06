@@ -168,6 +168,34 @@ class ApplicationController < ActionController::Base
     file_exists
   end
 
+  def response_errors(error_struct)
+    return unless error_struct
+    return unless error_struct.respond_to?(:errors)
+    errors = {}
+    error_struct.errors.each {|e| ""} rescue binding.pry
+    error_struct.errors.each do |error|
+      if error.is_a?(Struct)
+        errors.merge!(struct_to_hash(error))
+      else
+        errors[:error] = error
+      end
+    end
+    errors
+  end
+
+  def struct_to_hash(struct)
+    hash = {}
+    struct.members.each do |attr|
+      next if [:links, :context].include?(attr)
+      if struct[attr].is_a?(Struct)
+        hash[attr] = struct_to_hash(struct[attr])
+      else
+        hash[attr] = struct[attr]
+      end
+    end
+    hash
+  end
+
   def redirect_to_browse # Redirect to the browse Ontologies page
     redirect_to "/ontologies"
   end
@@ -217,6 +245,15 @@ class ApplicationController < ActionController::Base
         redirect_to_home if !session[:user].admin? && !session[:user].id.to_i.eql?(id)
       end
     end
+  end
+
+  def authorize_admin
+    admin = session[:user] && session[:user].admin?
+    redirect_to_home unless admin
+  end
+
+  def current_user_admin?
+    session[:user] && session[:user].admin?
   end
 
   # generates a new random password
@@ -339,7 +376,7 @@ class ApplicationController < ActionController::Base
       raise Error404 if @concept.nil?
 
       # Create the tree
-      rootNode = @concept.explore.tree(full: true)
+      rootNode = @concept.explore.tree #(full: true)
 
       if rootNode.nil? || rootNode.empty?
         roots = @ontology.explore.roots

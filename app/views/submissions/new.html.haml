@@ -1,0 +1,5 @@
+- @title = "Add new ontology submission"
+
+%div{:style => "margin:10px;"}
+  - form_for :submission, @submission, url: {action: "create"} do |f|
+    = render f

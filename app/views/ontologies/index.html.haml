@@ -138,7 +138,7 @@
             %option{:selected => "selected", :value => "0"} All Categories
             - cats = @categories.sort{|a,b| a.name <=> b.name}
             - for cat in cats
-              %option{:value => cat["@id"]}= cat.name
+              %option{:value => cat.id}= cat.name
       %tr
         %th
           Filter by Group
@@ -150,8 +150,8 @@
               selected="selected"
             >All Groups
             - @groups.each do |group|
-              <option value="#{group["@id"]}"
-              - if !params[:filter].nil? && group["@id"].include?(params[:filter])
+              <option value="#{group.id}"
+              - if !params[:filter].nil? && group.id.include?(params[:filter])
                 selected="selected"
               >
               #{group.name} (#{group.acronym})
@@ -193,7 +193,7 @@
                 = ontology.acronym
                 - #if submission.admin?(session[:user])
                 %span{:style => "font-size: xx-small; color: gray;"}= #get_status_text(submission)
-            %td{:style => "width:50px;"}= visibility_link(submission)
+            %td{:style => "width:50px;"}= visibility_link(ontology)
             %td{:style => "width:30px;text-align:right;"}= terms_link(submission, "count not available")
             %td{:style => "width:30px;text-align:right;"}= notes_link(submission, ontology.notes.length)
             %td{:style => "width:30px;text-align:right;"}= ontology.reviews.length == 0 ? "0" : "<a href='/ontologies/#{ontology.acronym}'>#{ontology.reviews.length}</a>"

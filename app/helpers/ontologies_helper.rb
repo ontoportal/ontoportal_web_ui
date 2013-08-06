@@ -27,15 +27,15 @@ module OntologiesHelper
   end
 
   # Link for private/public/licensed ontologies
-  def visibility_link(submission)
-    if submission.summaryOnly
-      return "<a href='/ontologies/#{submission.ontology.acronym}'>Summary Only</a>"
-    elsif submission.ontology.private?
-      return "<a href='/ontologies/#{submission.ontology.acronym}?p=terms'>Private</a>"
-    elsif submission.ontology.licensed?
-      return "<a href='/ontologies/#{submission.ontology.acronym}?p=terms'>Licensed</a>"
+  def visibility_link(ontology)
+    if ontology.summaryOnly
+      return "<a href='/ontologies/#{ontology.acronym}'>Summary Only</a>"
+    elsif ontology.private?
+      return "<a href='/ontologies/#{ontology.acronym}?p=terms'>Private</a>"
+    elsif ontology.licensed?
+      return "<a href='/ontologies/#{ontology.acronym}?p=terms'>Licensed</a>"
     else
-      return "<a href='/ontologies/#{submission.ontology.acronym}?p=terms'>Public</a>"
+      return "<a href='/ontologies/#{ontology.acronym}?p=terms'>Public</a>"
     end
   end
 

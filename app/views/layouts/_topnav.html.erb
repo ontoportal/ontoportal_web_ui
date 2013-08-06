@@ -54,7 +54,7 @@
         <%=link_to "Sign In", { :controller =>'login', :redirect => request.request_uri }, :class => "fg-button-menu ui-widget ui-state-default" %>
         <!--<%=link_to "Register", new_user_path(:redirect=>@ontology), :class => "fg-button-menu ui-widget ui-state-default" %>-->
       <%else%>
-        <a tabindex="0" href="<%= edit_user_path(session[:user])%>" class="fg-button-menu fg-button-icon-right ui-widget ui-state-default" id="user_menu"><span class="ui-icon ui-icon-triangle-1-s"></span><%= session[:user].username %></a>
+        <a tabindex="0" href="<%= edit_user_path(session[:user].username)%>" class="fg-button-menu fg-button-icon-right ui-widget ui-state-default" id="user_menu"><span class="ui-icon ui-icon-triangle-1-s"></span><%= session[:user].username %></a>
         <div id="navigate_options" class="hidden">
           <ul>
             <li><%=link_to "Account", "/account"%></li>

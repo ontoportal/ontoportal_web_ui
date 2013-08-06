@@ -1,4 +1,4 @@
-- return "" if @submission.summaryOnly
+- return "" if (@submission.respond_to?(:status) && @submission.status == 404) || @ontology.summaryOnly
 #metrics_content{:style => "margin-left: 1em;"}
   %div{:style => "clear:both;"}
   %div{:style => "width: 400px;"}
