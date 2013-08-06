@@ -1,0 +1,69 @@
+%div{:style => "padding: 1em;"}
+  %table.form
+    %tr
+      %th.top First Name:
+      %td.top= @user.firstName
+    %tr
+      %th Last Name:
+      %td= @user.lastName
+    %tr
+      %th Email Address:
+      %td= @user.email
+    %tr
+      %th Account Name:
+      %td= @user.username
+    %tr
+      %td{:colspan => "2", :style => "text-align: right;"}
+        %a{:href => "/accounts/#{CGI.escape(@user.id)}/edit"} Edit Information
+  %br/
+  %span{:style => "font-size: large; font-weight: bold;"}
+    API Key
+    %span{:style => "font-weight: normal; padding-left: 1em; font-size: x-small; color: gray;"} Your API Key can be used to access the NCBO API (REST) Services
+  %p{:style => "padding: .5em 0 0 1em;"}
+    = session[:user].apikey
+  %br/
+  - unless @user_submitted_ontologies.nil? || @user_submitted_ontologies.length == 0
+    %h2 Submitted Ontologies
+    %h2
+    %ul{:style => "padding-left: 1em;"}
+      - @user_ontologies.each do |ont|
+        %li
+          %a{:href => "/ontologies/#{ont.id}"}= ont.displayLabel
+  :javascript
+    jQuery(document).ready(function(){
+      jQuery("#edit_custom_ontologies").click(editCustomOntologies);
+    });
+
+    function editCustomOntologies() {
+      jQuery("#custom_ontologies_picker").css("left", "").css("position", "");
+      jQuery("#custom_ontologies").hide();
+    }
+  / TODO_REV: Enable custom ontology sets
+  / %h2#custom_ontology_set{:style => "font-size: large;"}
+  /   Custom Ontology Set
+  / - unless @subdomain_filter[:active]
+  /   %span{:style => "font-weight: normal; font-size: 9pt; padding-left: 15px;"}
+  /     %a#edit_custom_ontologies{:href => "javascript:void(0);"} select ontologies
+  / #custom_ontologies.enable-lists
+  /   - if @subdomain_filter[:active]
+  /     %p{:style => "padding-left: 7px; font-size: 10pt; margin: -3px 0 7px;"}
+  /       Please
+  /       %a{:href => "#{$UI_URL}/account"} visit the main site
+  /       to modify your Custom Ontology Set.
+  / - else
+  /   %p{:style => "padding-left: 7px; font-size: 9pt; color: gray; margin: -3px 0 7px;"}
+  /     %b
+  /       Customize your #{$SITE} display:
+  /     Pick the ontologies that you want to see and #{$SITE} will hide all other ontologies. Note that this feature works only when you are logged in.
+  /   - if @user_ontologies && !@user_ontologies.empty?
+  /     %ul
+  /       - @user_ontologies[:virtual_ids].each do |ont|
+  /         %li
+  /           = DataAccess.getLatestOntology(ont).displayLabel
+  /           (#{DataAccess.getLatestOntology(ont).abbreviation})
+  /   - else
+  /     %p{:style => "padding-left: 7px;"} You haven't picked any ontologies yet
+  / #custom_ontologies_picker{:style => "left: -9999px; position: absolute;"}
+  /   - form_tag "/accounts/#{@user.id}/custom_ontologies" do
+  /     = render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => DataAccess.getOntologyList(true, true), :selected_ontologies => @user_ontologies[:virtual_ids].to_a, :sel_text => "Select Custom Ontologies" }
+  /     = submit_tag "Save Custom Ontologies", :class => "link_button"
