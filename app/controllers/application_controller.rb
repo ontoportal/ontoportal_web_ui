@@ -247,6 +247,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authorize_admin
+    admin = session[:user] && session[:user].admin?
+    redirect_to_home unless admin
+  end
+
+  def current_user_admin?
+    session[:user] && session[:user].admin?
+  end
+
   # generates a new random password
   def newpass( len )
     chars = ("a".."z").to_a + ("A".."Z").to_a + ("1".."9").to_a
