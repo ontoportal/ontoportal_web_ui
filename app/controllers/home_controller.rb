@@ -134,12 +134,7 @@ class HomeController < ApplicationController
     @user_ontologies = session[:user_ontologies]
     @user_ontologies ||= {}
 
-    @user = session[:user]
-    @survey = Survey.find_by_user_id(@user.id)
-    if @survey.nil?
-      redirect_to :controller => 'users', :action => 'edit', :id => @user.id
-      return
-    end
+    @user = LinkedData::Client::Models::User.get(session[:user].id, include: "all")
 
     render :partial => "users/details", :layout => "ontology"
   end
