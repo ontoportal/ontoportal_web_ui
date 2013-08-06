@@ -5,7 +5,10 @@ class LoginController < ApplicationController
   def index
     # Sets the redirect properties
     if params[:redirect]
-      session[:redirect] = params[:redirect]
+      # Get the original, encoded redirect
+      uri = URI.parse(request.url)
+      orig_params = Hash[uri.query.split("&").map {|e| e.split("=")}]
+      session[:redirect] = orig_params[:redirect]
     else
       session[:redirect] = request.referer
     end
@@ -29,7 +32,7 @@ class LoginController < ApplicationController
         redirect = "/"
 
         if session[:redirect]
-          redirect = session[:redirect]
+          redirect = CGI.unescape(session[:redirect])
         end
 
         redirect_to redirect
@@ -84,7 +87,7 @@ class LoginController < ApplicationController
 
   # Sends a new password to the user
   def send_pass
-    user = LinkedData::Client::Models::User.find_by_username(params[:user][:account_name])
+    user = LinkedData::Client::Models::User.find_by_username(params[:user][:account_name]).first
 
     if !user.nil? && !user.email.downcase.eql?(params[:user][:email].downcase)
       user = nil
@@ -96,15 +99,15 @@ class LoginController < ApplicationController
     else
       new_password = newpass(8)
       user.password = new_password
-      updated_user = DataAccess.updateUser(user.to_h, user.id)
+      error_response = user.update
 
-      if updated_user.kind_of?(UserWrapper)
-        Notifier.deliver_lost_password(user,new_password)
-        flash[:notice]="Your password has been sent to your email address"
-        redirect_to_home
+      if error_response
+        flash[:notice] = "Error retrieving account information, please try again"
+        redirect_to :action => 'lost_password'
       else
-        flash[:notice]="Error retrieving account information, please try again"
-        redirect_to :action=>'lost_password'
+        Notifier.deliver_lost_password(user, new_password)
+        flash[:notice] = "Your password has been sent to your email address"
+        redirect_to_home
       end
     end
   end
