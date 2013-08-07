@@ -20,27 +20,15 @@ class ResourceIndexController < ApplicationController
   RI_RANKED_ELEMENTS_URI = RESOURCE_INDEX_URI + "/ranked_elements"
   RI_RESOURCES_URI = RESOURCE_INDEX_URI + "/resources"
 
-  # Disable old code:
   # Resource Index annotation offsets rely on latin-1 character sets for the count to be right. So we set all responses as latin-1.
-  #before_filter :set_encoding
-  #RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "http://#{$REST_DOMAIN}/resource_index/", :limit => 10, :mode => :intersection}
+  before_filter :set_encoding
 
   def index
-
-    @resources = parse_json(RI_RESOURCES_URI)
     # Note: REST API sorts by resourceId (acronym)
+    @resources = parse_json(RI_RESOURCES_URI)
     #@resources.sort! {|a,b| a["resourceName"].downcase <=> b["resourceName"].downcase}
-
     # Resource Index ontologies - REST API filters them for those that are in the triple store.
     # Data structure is a list of linked data ontology models
-    #{
-    #  "acronym": "GEOSPECIES",
-    #  "name": "GeoSpecies Ontology",
-    #  "@id": "http://stagedata.bioontology.org/ontologies/GEOSPECIES",
-    #  "@type": "http://data.bioontology.org/metadata/Ontology",
-    #  "links": { ... },
-    #  "@context": { ... },
-    #}
     @ri_ontologies = LinkedData::Client::HTTP.get(RI_ONTOLOGIES_URI)
     # Extract ontology attributes for javascript
     @ont_ids = []
@@ -52,9 +40,7 @@ class ResourceIndexController < ApplicationController
       @ont_names[ont.id] = ont.name
       @ont_ids.push ont.id
     end
-
   end
-
 
   def search
     # Note: could be called by bp_resource_index.js - document-ready binding on #resource_index_terms;
@@ -69,28 +55,25 @@ class ResourceIndexController < ApplicationController
     render :text => @results.to_json
   end
 
-
   def resources_table
-    params[:classes] = params[:classes].split(",")
+    #params[:classes] = params[:classes].split(",")
     create()
   end
 
-
   def create
-
-    # NOTE: removed @classids, may crash partial.
-    # TODO: fix partial for change to @classids, now @classes hash
-    @classes = params[:classes]
     @bp_last_params = params
-
+    @classes = params[:classes]
     uri = getRankedElementsURI(params)
     @elements = []
+    @elements_page_count = 0
     while true
       begin
         ranked_elements_page = LinkedData::Client::HTTP.get(uri)
         @elements.concat ranked_elements_page['collection']
         break if ranked_elements_page.nextPage.nil?
+        break if @elements_page_count >= ranked_elements_page.pageCount
         uri = ranked_elements_page.nextPage
+        @elements_page_count += 1
       rescue Exception => e
         # TODO: log a meaningful message?
         raise e
@@ -101,19 +84,9 @@ class ResourceIndexController < ApplicationController
     @resources_hash = getResourcesHash(@resources)  # required in partial 'resources_results'
     resources_map = getResourcesMapId2Name(@resources)
     @elements.sort! {|a,b| resources_map[a.resourceId].downcase <=> resources_map[b.resourceId].downcase}
-
-    # Sort by weight
-    #@elements.each do |r|
-    #  r[:elements].each do |element|
-    #    element[:weights].sort! {|a,b| b[:weight] <=> a[:weight]}
-    #  end
-    #end
-
     @elements = convert_for_will_paginate(@elements)
     render :partial => "resources_results"
   end
-
-
 
   #
   #
@@ -121,7 +94,6 @@ class ResourceIndexController < ApplicationController
   # Note: the create() method gets all the paged results, see ranked_elements_page above.
   #
   #
-
   def results_paginate
     #ri = set_apikey(NCBO::ResourceIndex.new(RI_OPTIONS))
     offset = (params[:page].to_i - 1) * params[:limit].to_i
@@ -138,7 +110,6 @@ class ResourceIndexController < ApplicationController
     render :partial => "resource_results"
   end
 
-
   def element_annotations
     uri = RI_ELEMENT_ANNOTATIONS_URI + '?elements=' + params[:elementid] + '&resources=' + params[:resourceid] + '&' + params[:classes]
     @annotations = LinkedData::Client::HTTP.get(uri)
@@ -149,8 +120,6 @@ class ResourceIndexController < ApplicationController
     end
     render :json => positions
   end
-
-
 
 
 private
@@ -193,29 +162,8 @@ private
     return RI_RANKED_ELEMENTS_URI + "?" + classesArgs.join('&')
   end
 
-  # Disable old code:
-  #def popular_concepts(ri)
-  #  concepts = CACHE.get("ri_popular_concepts")
-  #  if concepts.nil?
-  #    concepts = ri.popular_concepts
-  #    CACHE.set("ri_popular_concepts", concepts)
-  #  end
-  #  concepts
-  #end
-
-  # Disable old code:
-  #def set_encoding
-  #  response.headers['Content-type'] = 'text/html; charset=ISO-8859-1'
-  #end
-
-  # Disable old code:
-  #def set_apikey(ri)
-  #  if session[:user]
-  #    ri.options[:apikey] = session[:user].apikey
-  #  else
-  #    ri.options[:apikey] = $API_KEY
-  #  end
-  #  ri
-  #end
+  def set_encoding
+    response.headers['Content-type'] = 'text/html; charset=ISO-8859-1'
+  end
 
 end
