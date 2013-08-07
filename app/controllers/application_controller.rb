@@ -395,6 +395,24 @@ class ApplicationController < ActionController::Base
   end
 
 
+  def get_simplified_ontologies_hash()
+    ontologies = {}
+    begin
+      ontology_models = LinkedData::Client::Models::Ontology.all
+      ontology_models.each do |o|
+        ont = {}
+        ont['ui'] =  o.links['ui']
+        ont['acronym'] = o.acronym
+        ont['name'] = o.name
+        ont['@id'] = o.id
+        ontologies[o.id] = ont
+      end
+    rescue
+      return nil
+    end
+    return ontologies
+  end
+
   def get_ontology_details(ont_uri)
     begin
       ont_model = LinkedData::Client::Models::Ontology.find(ont_uri)
@@ -403,7 +421,7 @@ class ApplicationController < ActionController::Base
       ont['ui'] =  ont_model.links['ui']
       ont['acronym'] = ont_model.acronym
       ont['name'] = ont_model.name
-      ont['id'] = ont_model.id
+      ont['@id'] = ont_model.id
     rescue
       return nil
     end
@@ -439,9 +457,10 @@ class ApplicationController < ActionController::Base
 
 
   def get_batch_results(params)
-    uri = "http://stagedata.bioontology.org/batch/?apikey=#{get_apikey}"
+    #uri = "http://stagedata.bioontology.org/batch/?apikey=#{get_apikey}"
+    uri = "http://stagedata.bioontology.org/batch"
     begin
-      response = RestClient.post uri, params.to_json, :content_type => :json, :accept => :json
+      response = RestClient.post uri, params.to_json, :content_type => :json, :accept => :json, :authorization => "apikey token=#{get_apikey}"
     rescue Exception => error
       @retries ||= 0
       if @retries < 1  # retry once only
