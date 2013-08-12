@@ -1,0 +1,53 @@
+- unless @errors.nil?
+  .enable-lists{:style => "color:red;"}
+    %strong Errors On Form
+    %ul
+      - @errors.each do |field, error|
+        %li
+          - if @ontology.public_methods(false).include?(field.to_sym)
+            - error = error.first[1] if error.is_a?(Hash)
+            = error
+            <style>#ontology_#{field} { border: thin solid red; }</style>
+          - else
+            = field
+
+/ Override the bioportal.css for .required to avoid red text in the input fields.
+:css
+  .required {
+    color: black;
+  }
+  table.form {
+  	width: auto;
+  }
+  table.form td {
+  	width: 450px;
+  }
+%div{:style => "padding:10px"}
+  %table.form
+    %tr
+      %th Name: *
+      %td.top= text_field :project, :name, value: @project.name, :class => "required", :tabindex => 1
+    %tr
+      - disabled = @project.id ? "disabled" : nil
+      %th Acronym: *
+      %td.top= text_field :project, :acronym, value: @project.acronym, :class => "required", :tabindex => 1, disabled: disabled
+    %tr
+      %th Institution:
+      %td= text_field :project, :institution, value: @project.institution, :tabindex => 2
+    %tr
+      %th Contacts:
+      %td= text_field :project, :contacts, value: @project.contacts, :tabindex => 3
+    %tr
+      %th
+        Homepage:*
+        %br/
+        %span.default_owl
+          Example:
+          %a{:href => "http://en.wikipedia.org/wiki/SNOMED_CT", :target => "_blank"} http://en.wikipedia.org/wiki/SNOMED_CT
+      %td= text_field :project, :homePage, value: @project.homePage, :class => "required url", :tabindex => 4
+    %tr
+      %th Description:*
+      %td= text_area :project, :description, value: @project.description, :rows=>6, :class=>"required", :tabindex=>5
+  %div#ontology_picker_project{style: "padding-top: 2em;"}
+    - locals = {sel_text: "Select Ontologies Used", selected_ontologies: @project.ontologyUsed, form_object: :project, form_attribute: "ontologyUsed"}
+    = render :partial => "shared/ontology_picker", locals: locals
