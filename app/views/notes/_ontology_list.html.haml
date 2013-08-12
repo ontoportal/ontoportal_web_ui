@@ -2,11 +2,7 @@
 - # Check to see if we have notes, if not then try to get them
 - if @notes.nil? && @concept && @ontology
   - @note_link = "/ontologies/#{@ontology.acronym}/notes/"
-:javascript
-  jQuery.rloader([
-    {type:'css',src:'/javascripts/JqueryPlugins/superfish/superfish.css'},
-    {type:'js',src:'/javascripts/JqueryPlugins/superfish/superfish.js'}
-  ]);
+
 .notes_list_container
   .add_comment{style: "float: left; margin-right: 1em;"}
     <a href='javascript:void(0);' class='add_comment link_button' style="font-size: .9em;" data-parent_id="#{@ontology.id}" data-parent_type="ontology">Add comment</a>
