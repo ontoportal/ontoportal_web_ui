@@ -1,30 +1,31 @@
 <%custom_ontologies ||= nil%>
 <%selected_ontologies ||= []%>
 <%init_ontology_picker(custom_ontologies, selected_ontologies)%>
-
-<% sel_text ||= "Select Ontologies"%>
+<%form_object ||= :ontology%>
+<%form_attribute ||= "ontologyId"%>
+<%sel_text ||= "Select Ontologies"%>
+<%@select_id = "#{form_object}_#{form_attribute}"%>
 
 <script type="text/javascript">
 jQuery(window).ready(function(){
-  jQuery("#ontology_ontologyId").chosen({search_contains: true});
+  jQuery("#<%=@select_id%>").chosen({search_contains: true});
 
   // Unbind the click handler from the ontology list
-  jQuery("#ontology_ontologyId_chzn").bind("focus", hideChosenResults);
-  jQuery("#ontology_ontologyId_chzn").bind("keydown", showChosenResults);
+  jQuery("#<%=@select_id%>_chzn").bind("focus", hideChosenResults);
+  jQuery("#<%=@select_id%>_chzn").bind("keydown", showChosenResults);
 });
 
 var showChosenResults = function(){
-  if (!jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").is(":visible")) {
-    jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").show();
+  if (!jQuery("#<%=@select_id%>_chzn_o_0").closest("div.chzn-drop").is(":visible")) {
+    jQuery("#<%=@select_id%>_chzn_o_0").closest("div.chzn-drop").show();
   }
 }
 
 var hideChosenResults = function(){
-  if (jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").is(":visible")) {
-    jQuery("#ontology_ontologyId_chzn_o_0").closest("div.chzn-drop").hide();
+  if (jQuery("#<%=@select_id%>_chzn_o_0").closest("div.chzn-drop").is(":visible")) {
+    jQuery("#<%=@select_id%>_chzn_o_0").closest("div.chzn-drop").hide();
   }
 }
-
 </script>
 
 
@@ -33,8 +34,8 @@ var hideChosenResults = function(){
     <%=sel_text%>
   </h2>
 
-  <div id="ontology_ontologyId_container">
-    <%= select :ontology, "ontologyId", options_for_select(@onts_for_select, selected_ontologies), { }, :multiple => 'true', "data-placeholder".to_sym => "Type here to select ontologies or leave blank to use all", :style => "width: 432px;" %>
+  <div id="<%=@select_id%>_container">
+    <%=select form_object, form_attribute, options_for_select(@onts_for_select, selected_ontologies), { }, :multiple => 'true', "data-placeholder".to_sym => "Type here to select ontologies or leave blank to use all", :style => "width: 432px;" %>
   </div>
 
   <div style="float: right; font-size: smaller;">

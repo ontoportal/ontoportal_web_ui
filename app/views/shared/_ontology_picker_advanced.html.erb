@@ -8,7 +8,7 @@ var ontsInGroupsOrCategories = <%= @onts_in_group_or_category_for_js.to_s %>;
 var winHeight = jQuery(window).height();
 var ontSelectListPos = { top: 0, left: 0, width: 0 };
 var allSelected = false;
-var alignToDOMId = "<%=align_to_dom_id%>";
+var alignToDOMId = "<%=align_to_dom_id || @select_id%>";
 
 jQuery(document).ready(function(){
   ontSelectListPos.top = jQuery("#"+alignToDOMId).offset().top;
@@ -16,7 +16,7 @@ jQuery(document).ready(function(){
   ontSelectListPos.width = jQuery("#"+alignToDOMId).width();
 
   // Watch for changes in the entry of the select list
-  jQuery("#ontology_ontologyId").change(function(e) {
+  jQuery("#<%=@select_id%>").change(function(e) {
     ontLabelToAbbr();
     syncFromList();
   });
@@ -63,9 +63,9 @@ jQuery(document).ready(function(){
     chzn_select.children("ul.chzn-choices").css("background", "white");
     // Chosen select list congig changes for IE
     chzn_select.children("ul.chzn-choices").css("filter", "none");
-    jQuery("#ontology_ontologyId_chzn input").css("filter", "none");
+    jQuery("#<%=@select_id%>_chzn input").css("filter", "none");
 
-    jQuery("#ontology_ontologyId_container").css("box-shadow", "0 0 10px gray");
+    jQuery("#<%=@select_id%>_container").css("box-shadow", "0 0 10px gray");
 
     jQuery("#ont_list_container").height(ont_select.height() - 80);
 
@@ -141,7 +141,7 @@ var hideAdvancedSelect = function(){
   if (jQuery("#ont_select_adv").is(":visible")) {
     jQuery("#ont_select_adv").hide();
     jQuery("#"+alignToDOMId).children("ul.chzn-choices").removeClass("no_right_border").css("background", "");
-    jQuery("#ontology_ontologyId_container").css("box-shadow", "");
+    jQuery("#<%=@select_id%>_container").css("box-shadow", "");
     jQuery("#"+alignToDOMId).css("z-index", "auto")
   }
 }
@@ -152,7 +152,7 @@ function syncFromList() {
     jQuery(this).attr("checked", false);
   });
 
-  jQuery("#ontology_ontologyId option:selected").each(function(){
+  jQuery("#<%=@select_id%> option:selected").each(function(){
     var id = jQuery(this).val();
     jQuery("#ont_select_adv_check" + id).attr("checked", true);
   });
@@ -210,7 +210,7 @@ function syncFromCheckboxes() {
   jQuery(".ont_select_boxes_tr input:checked").each(function(){
     checkedIds.push(jQuery(this).val());
   });
-  jQuery("#ontology_ontologyId").val(checkedIds);
+  jQuery("#<%=@select_id%>").val(checkedIds);
   refreshOntList();
 }
 
@@ -256,7 +256,7 @@ function syncGroupsAndCategories() {
 
 // Check the selected list of ontologies against the map and replace
 function ontLabelToAbbr() {
-  jQuery("#ontology_ontologyId_chzn > .chzn-choices > li > span").each(function(){
+  jQuery("#<%=@select_id%>_chzn > .chzn-choices > li > span").each(function(){
     if (jQuery(this).children("span.chzn-abbr").length == 0) {
       jQuery(this).html("<span class='chzn-abbr' title='"+jQuery(this).html()+"'>"+abbreviationMap[jQuery(this).html()]+"</span>");
     }
@@ -264,8 +264,8 @@ function ontLabelToAbbr() {
 }
 
 function refreshOntList() {
-  jQuery("#ontology_ontologyId").trigger("liszt:updated");
-  jQuery("#ontology_ontologyId").trigger("change");
+  jQuery("#<%=@select_id%>").trigger("liszt:updated");
+  jQuery("#<%=@select_id%>").trigger("change");
 }
 
 function showAllFiltered() {
@@ -282,8 +282,8 @@ function clearGroupsAndCategories() {
 }
 
 function clearAllSelections() {
-  jQuery("#ontology_ontologyId").val("");
-  jQuery("#ontology_ontologyId_chzn li.search-choice").remove();
+  jQuery("#<%=@select_id%>").val("");
+  jQuery("#<%=@select_id%>_chzn li.search-choice").remove();
   clearGroupsAndCategories();
   refreshOntList();
 }
