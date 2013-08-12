@@ -1,0 +1,107 @@
+- @title = "Project Listing"
+%script{:src => "/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.min.js", :type => "text/javascript"}
+%script{:src => "/javascripts/JqueryPlugins/datatables/js/FixedHeader.min.js", :type => "text/javascript"}
+%script{:src => "/javascripts/JqueryPlugins/datatables/plugins/datatables.formatted.number.js", :type => "text/javascript"}
+%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/tooltip/jquery.tooltip.min.js", :type => "text/javascript"}
+%link{:charset => "utf-8", :href => "/javascripts/JqueryPlugins/tooltip/jquery.tooltip.css", :media => "screen", :rel => "stylesheet", :title => "no title", :type => "text/css"}/
+:javascript
+  var projectsTable;
+
+  jQuery(document).ready(function() {
+    projectsTable = jQuery("#projects").dataTable({
+        "bAutoWidth": false,
+        "bLengthChange": false,
+        "bFilter": false,
+        "bInfo": false,
+        "bPaginate": false,
+        "bSort": false,
+        "asStripClasses":["","alt"],
+        "fnDrawCallback": function(oSettings) {
+          // Fix IE whitespace bug in table by removing whitespace
+          // See: http://datatables.net/forums/discussion/5481/bug-ghost-columns-when-generating-large-tables
+          if (navigator.appName == 'Microsoft Internet Explorer') {
+            var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
+            var tbhtml = jQuery('#projects').children("tbody").html();
+            jQuery('#projects').children("tbody").html(tbhtml.replace(expr, '><'));
+          }
+        }
+    });
+
+    // Set the table width after it gets altered by jQuery DataTable
+    jQuery("#projects").css("width","100%");
+
+    // Keep header at top of table even when scrolling
+    new FixedHeader(projectsTable);
+  });
+
+  function descriptionDialog(title, body) {
+    jQuery("#DescriptionDialog").text(body);
+    jQuery("#DescriptionDialog").css("display:block")
+    jQuery("#DescriptionDialog").dialog({ dialogClass: "alert" });
+  };
+
+#DescriptionDialog{:style => "display: none", :title => "project description"}
+  %p Description text
+%h1.tab_header Projects
+%p.tab_description
+  - intro_text = "Browse a selection of projects that use #{$SITE} resources"
+  = t('projects.intro').nil? || t('projects.intro').empty? ? "#{intro_text}  #{help_icon("/help#Projects_Tab")}" : t('projects.intro')
+%div{:style => "padding:10px;"}
+  %span
+    - if session[:user].nil?
+      = button_to "Create New Project", "/login", :method => :get
+    - else
+      = button_to "Create New Project", new_project_path, :method => :get
+  %br/
+  %br/
+  %table#projects.zebra{:cellpadding => "0", :cellspacing => "0"}
+    %thead
+      %tr
+        %th Project
+        %th Description
+        %th Contacts
+        %th Institutions
+        %th Ontologies
+    %tbody
+      - for project in @projects
+        %tr
+          / Project name, home page, and controls for editors
+          %td{:style => "vertical-align:top;", :width => "30%"}
+            %strong= link_to(project.name, project.homePage)
+            %br/
+            %span{:style => "font-size:75%; vertical-align:bottom;"}
+              = link_to("Home Page", project.homepage, :target => "_blank")
+              %span.ui-icon.ui-icon-extlink{:style => "display: inline-block; vertical-align: text-bottom;"}
+              \&nbsp;&nbsp;
+              - if session[:user] && (project.creator == session[:user].id || session[:user].admin?)
+                = link_to("Edit Project", edit_project_path(project.acronym))
+                / TODO_REV: Enable delete project
+                / \&nbsp;&nbsp;
+                / \#{link_to("Delete Project", project, :confirm => "Are you sure?", :method => :delete)}
+          / Project description (may be truncated with a dialog)
+          %td{:style => "vertical-align:top;", :width => "50%"}
+            - if ! project.description.nil?
+              - descLength = 250
+              - if project.description.length < descLength
+                = project.description
+              - else
+                - descShort = smart_truncate(project.description, :words => 20)
+                %span{:style => "cursor:help;", :title => project.description}
+                  = descShort
+          / Contacts
+          %td{:style => "vertical-align:top;", :width => "10%"}
+            = project.contacts
+          / Institutions
+          %td{:style => "vertical-align:top;", :width => "8%"}
+            = project.institution
+          / Ontologies
+          %td{:style => "vertical-align:top;", :width => "2%"}
+            - ontologyCount = 0
+            - ontologyLabels = ""
+            - for ontology in project.ontologyUsed
+              - ontologyLabels += LinkedData::Client::Models::Ontology.find(ontology).name + "\n" rescue next
+              - ontologyCount += 1
+            - if ontologyCount > 0
+              %span{:style => "cursor:help;text-decoration: none; border-bottom:1px dotted;", :title => ontologyLabels}= ontologyCount
+            - else
+              = ontologyCount

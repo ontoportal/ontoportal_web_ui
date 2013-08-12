@@ -5,27 +5,13 @@ class ProjectsController < ApplicationController
   layout 'ontology'
   
   def index
-
-    if params[:ontology]
-      @projects = Project.find(:all,:conditions=>"uses.ontology_id = '#{undo_param(params[:ontology])}'",:include=>:uses)
-    elsif params[:user]
-      @projects = Project.find(:all,:conditions=>{:user_id=>params[:user]})
-    else
-      @projects = Project.find(:all)
-    end
-    
+    @projects = LinkedData::Client::Models::Project.all
     @projects.sort! { |a,b| a.name.downcase <=> b.name.downcase }
-    
-    respond_to do |format|
-      
-      format.html {
-        if request.xhr? 
-          render :action => "index", :layout => false 
-        else 
-          render :action=>'index'
-        end
-        }# index.html.erb
-      format.xml  { render :xml => @projects }
+
+    if request.xhr?
+      render action: "index", layout: false
+    else
+      render action: 'index'
     end
   end
 
