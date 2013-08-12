@@ -5,60 +5,14 @@
     - if session[:user].nil?
       %a{:href => "/login?redirect=/ontologies/#{@ontology.acronym}"} Add your review
     - else
-      / %a.thickbox{:href => "/reviews/new?ontology=#{@ontology.ontologyId}&height=500&width=600", :title => "Review For #{@ontology.displayLabel}"} Add your review
+      %a.create_review{:href => "/reviews/new?ontology=#{CGI.escape(@ontology.id)}", :title => "Review For #{@ontology.displayLabel}"} Add your review
   #reviews_container
     - if @reviews.nil? || @reviews.empty?
       %h1{:style => "padding-bottom: .8em;"} No reviews available.
     - else
-      - for review in @reviews
-        %div{:id => "review_table_container_#{review.id}"}
-          %table.zebra{:cellpadding => "0", :cellspacing => "0", :id => "revew_table_#{review.id}", :style => "margin-bottom: 1em;", :width => "60%"}
-            %thead
-              %tr
-                %th
-                  Review By #{review.creator.split("/").last}
-                  on #{DateTime.parse(review.created).strftime('%m/%d/%Y')}
-                  / TODO_REV: Support user review editing
-                  /- if isOwner?(review.user_id)
-                  /  \&nbsp;&nbsp;#{link_to "Edit Review", edit_review_path(review) + "?height=500&width=600", :class => "thickbox"}
-            %tr
-              %td{:id => "review_#{review.id}"}
-                .star_ratings{:style => "padding: .5em .5em .3em;"}
-                  - ratings = organize_ratings(review)
-                  - if ratings.map {|r| r[:value]}.compact.empty?
-                    No ratings submitted with this review
-                  - else
-                    %ul
-                      - for rating in ratings
-                        %li
-                          - if rating[:value].eql?(0)
-                            %span{:style => "float:left;"} Not Rated
-                          - else
-                            <input name="star_#{rating.hash}" type="radio" class="star" value="1"
-                            - if rating[:value].to_i.eql?(1)
-                              checked="checked"
-                            disabled="disabled" />
-                            <input name="star_#{rating.hash}" type="radio" class="star" value="2"
-                            - if rating[:value].to_i.eql?(2)
-                              checked="checked"
-                            disabled="disabled" />
-                            <input name="star_#{rating.hash}" type="radio" class="star" value="3"
-                            - if rating[:value].to_i.eql?(3)
-                              checked="checked"
-                            disabled="disabled" />
-                            <input name="star_#{rating.hash}" type="radio" class="star" value="4"
-                            - if rating[:value].to_i.eql?(4)
-                              checked="checked"
-                            disabled="disabled" />
-                            <input name="star_#{rating.hash}" type="radio" class="star" value="5"
-                            - if rating[:value].to_i.eql?(5)
-                              checked="checked"
-                            disabled="disabled" />
-                          %b
-                            \&nbsp;#{rating[:name].capitalize}
-                %p
-                  = review.body
-#review_data_temp{:style => "display: none;"}
+      - @reviews.each_with_index do |review, review_count|
+        - @review = review
+        = render partial: "reviews/review"
 :javascript
   // Do this after the HTML above loads
   jQuery('input.star').rating();
