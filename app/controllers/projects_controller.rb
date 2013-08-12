@@ -18,14 +18,7 @@ class ProjectsController < ApplicationController
   # GET /projects/1
   # GET /projects/1.xml
   def show
-    @project = Project.find(params[:id],:include=>:uses)
-    ontologies = @project.uses.collect{|use| use.ontology_id}
-    reviews = Review.find(:all,:conditions=>["ontology_id in (?) AND project_id = #{params[:id]}",ontologies],:include=>:ratings)
-    @reviews = Hash[*(reviews.map{|rev| [rev.ontology_id, rev] }.flatten)]
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @project }
-    end
+    @project = LinkedData::Client::Models::Project.find_by_acronym(params[:id]).first
   end
 
   # GET /projects/new
