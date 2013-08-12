@@ -39,9 +39,9 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
-    @project = Project.find(params[:id])
-    @ontologies = DataAccess.getOntologyList()
-    @usedOntologies = @project.uses.collect{|used| used.ontology_id.to_i}
+    @project = LinkedData::Client::Models::Project.find_by_acronym(params[:id]).first
+    @ontologies = LinkedData::Client::Models::Ontology.all
+    @usedOntologies = @project.ontologyUsed
   end
 
   # POST /projects
@@ -79,30 +79,15 @@ class ProjectsController < ApplicationController
   # PUT /projects/1
   # PUT /projects/1.xml
   def update
-    @project = Project.find(params[:id])
-    @project.uses = []
-    unless params[:ontologies].nil?
-      for ontology in params[:ontologies]
-        
-        @project.uses << Use.new(:ontology_id=>ontology)
-      end
-    end
+    @project = LinkedData::Client::Models::Project.find_by_acronym(params[:id]).first
+    @project.update_from_params(params[:project])
+    error_response = @project.update
 
-    respond_to do |format|
-      if @project.update_attributes(params[:project])
-        
-        
-        
-        
-        flash[:notice] = 'Project was successfully updated.'
-         format.html { redirect_to @project}
-        format.xml  { head :ok }
-      else
-        @ontologies = DataAccess.getOntologyList()
-         @usedOntologies = @project.uses.collect{|used| used.ontology}
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @project.errors, :status => :unprocessable_entity }
-      end
+    if error_response
+      @errors = response_errors(error_response)
+    else
+      flash[:notice] = 'Project was successfully updated'
+      redirect_to project_path(@project.acronym)
     end
   end
 
