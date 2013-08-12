@@ -113,13 +113,6 @@
   = t('ontologies.intro').nil? || t('ontologies.intro').empty? ? "#{intro_text}  #{help_icon("/help#Browse_Tab")}" : t('ontologies.intro')
 #ontologies_bd_container
   #ontologies_padding_container
-    - unless @subdomain_filter[:active]
-      #custom_ontology_ad{:style => "margin: 20px 0 3px;"}
-        - account_link = session[:user] ? "/account" : "/login?redirect=/account"
-        %span{:style => "color: red;"}
-          %b New:
-        %a{:href => account_link} Configure
-        which ontologies you see in #{$SITE}
     #submit_new_ontology{:style => "margin: 0; position: absolute; left: 660px;"}
       :javascript
         jQuery(function() {
@@ -128,7 +121,7 @@
       - if session[:user].nil?
         %a{:href => "/login?redirect=/ontologies/new"} Submit New Ontology
       - else
-        = link_to "Submit New Ontology",new_ontology_path
+        = link_to "Submit New Ontology", new_ontology_path
     %table.form{:style => "width: 630px;"}
       %tr
         %th
@@ -163,6 +156,10 @@
           Filter by Text
         %td
           %input{:name => "filt", :onkeyup => "customFilterBox(this.value)", :type => "text"}/
+    - unless @subdomain_filter[:active]
+      #custom_ontology_ad{:style => "margin: 20px 0 3px;"}
+        - account_link = session[:user] ? "/account" : "/login?redirect=/account"
+        %a{:href => account_link} Configure which ontologies you see in #{$SITE}
     #all_updates_rss
       %img{:border => "0", :height => "16px", :src => "/images/feed-icon.png", :width => "16px"}/
       %a{:href => "/syndication/rss"} Subscribe to all updates
