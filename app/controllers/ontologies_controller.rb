@@ -407,7 +407,7 @@ class OntologiesController < ApplicationController
   end
 
   def widgets
-    @ontology = DataAccess.getOntology(params[:id])
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     if request.xhr?
       render :partial => 'widgets', :layout => false
     else
