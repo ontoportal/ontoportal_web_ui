@@ -33,7 +33,7 @@ function bindAddCommentClick() {
   jQuery("a.add_comment").live('click', function(){
     var id = jQuery(this).attr("data-parent_id");
     var type = jQuery(this).attr("data-parent_type");
-    addCommentBox(id, type);
+    addCommentBox(id, type, this);
   });
 }
 
@@ -53,20 +53,20 @@ function bindReplyClick() {
 }
 
 function bindReplyCancelClick() {
-  jQuery(".reply .cancel, #create_note_form .cancel").live('click', function(){
+  jQuery(".reply .cancel, .create_note_form .cancel").live('click', function(){
     removeReplyBox(this);
   });
 }
 
 function bindProposalChange() {
-  jQuery("#create_note_form .proposal_type").live('change', function(){
+  jQuery(".create_note_form .proposal_type").live('change', function(){
     var selector = jQuery(this);
     proposalFields(selector.val(), selector.parent().children(".proposal_container"));
   });
 }
 
 function bindReplySaveClick() {
-  jQuery(".reply .save, #create_note_form .save").live('click', function(){
+  jQuery(".reply .save, .create_note_form .save").live('click', function(){
     var id = jQuery(this).attr("data-parent_id");
     var type = jQuery(this).attr("data-parent_type");
     var button = this;
@@ -111,11 +111,12 @@ var displayError = function(button) {
   jQuery(button).parent().children(".reply_status").html("Error, please try again");
 }
 
-function addCommentBox(id, type) {
+function addCommentBox(id, type, button) {
+  var formContainer = jQuery(button).parents(".notes_list_container").children(".create_note_form");
   var commentFormHTML = jQuery("<div>").addClass("reply_box").html(commentForm(id, type));
   commentFormHTML.prepend("<br>").prepend(jQuery("<input>").attr("type", "text").attr("placeholder", "Subject").addClass("reply_body").addClass("comment_subject"));
-  jQuery("#create_note_form").html(commentFormHTML);
-  jQuery("#create_note_form").show();
+  formContainer.html(commentFormHTML);
+  formContainer.show();
 }
 
 function addProposalBox(id, type) {
@@ -136,8 +137,8 @@ function addProposalBox(id, type) {
 
   proposalForm.append(proposalContainer);
   proposalForm.append(jQuery("<div>").addClass("proposal_buttons").append(commentButtons(id, type)));
-  jQuery("#create_note_form").html(proposalForm);
-  jQuery("#create_note_form").show();
+  jQuery(".create_note_form").html(proposalForm);
+  jQuery(".create_note_form").show();
 }
 
 function addNoteOrReply(button, note) {
@@ -199,7 +200,7 @@ function addReplyBox(button) {
 function removeReplyBox(button) {
   jQuery(button).closest("div.reply").children(".reply_meta").children("a.reply_reply").show();
   jQuery(button).closest("div.reply").children(".reply_meta").children(".reply_box").remove();
-  jQuery(button).closest("#create_note_form").html("");
+  jQuery(button).closest(".create_note_form").html("");
 }
 
 function commentForm(id, type) {
@@ -243,7 +244,7 @@ function proposalFields(type, container) {
 function proposalMap() {
   var lists = ["synonym", "definition", "newRelationshipType"];
   var map = {};
-  map["type"] = jQuery("#create_note_form .proposal_type").val();
+  map["type"] = jQuery(".create_note_form .proposal_type").val();
   jQuery(".proposal_container input").each(function(){
     var input = jQuery(this);
     var id = input.attr("id");

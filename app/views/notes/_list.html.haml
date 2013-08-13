@@ -11,7 +11,7 @@
   .notes_delete{:style => "float: left; margin-left: 1em;"}
     / TODO_REV: Enable notes deletion
     / delete_button
-  %div#create_note_form{style: "display: none; clear: both; padding-top: 1em;"}
+  %div.create_note_form{style: "display: none; clear: both; padding-top: 1em;"}
 
   .concept_notes_table_container{:style => "clear: both; padding-top: 2em;"}
     %table.zebra.notes_concept_list_table{:class => "concept_notes_list", :style => "width: 100%; clear: both;", :width => "100%"}
@@ -53,3 +53,6 @@
                 = note.proposal ? get_note_type_text(note.proposal.type) : "Comment"
               %td
                 = DateTime.parse(note.created).strftime("%Y-%m-%d")
+
+:javascript
+  jQuery(".link_button").button();

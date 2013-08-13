@@ -17,7 +17,7 @@
     Filter:
     %input#hide_archived_ont{:checked => "true", :name => "hide_archived_ont", :type => "checkbox"}
     %label{:for => "hide_archived_ont"} Hide Archived
-  %div#create_note_form{style: "display: none; clear: both;"}
+  %div.create_note_form{style: "display: none; clear: both;"}
 
   .ont_notes_table_container{:style => "clear: both;"}
     %table.zebra.notes_ont_list_table{:id => "ontology_notes_list", :style => "width: 100%; clear: both;", :width => "100%"}
@@ -146,3 +146,4 @@
     jQuery("a.subscribe_to_notes").button();
   });
 
+  jQuery(".link_button").button();
