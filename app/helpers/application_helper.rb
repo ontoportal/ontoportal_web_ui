@@ -254,70 +254,51 @@ module ApplicationHelper
   end
 
   def init_ontology_picker(ontologies = nil, selected_ontologies = [])
-
+    get_ontologies_data(ontologies)
+    # get group ontologies as a json object (map)
     groups_map = {}
+    groups = LinkedData::Client::Models::Group.all(include: "ontologies,acronym")
+    @groups_for_select = groups_for_select
+    groups.each { |g| groups_map[g.id] = g.ontologies }
+    @groups_for_js = groups_map.to_json
+    onts_in_gp_or_cat = groups_map.values.flatten.to_set
+    # get category ontologies as a json object (map)
     categories_map = {}
-    onts_in_group_or_category_map = {}
+    categories = LinkedData::Client::Models::Category.all(include: "ontologies,acronym")
+    @categories_for_select = categories_for_select
+    @categories_for_js = []
+    categories.each { |c| categories_map[c.id] = c.ontologies }
+    @categories_for_js = categories_map.to_json
+    # merge group and category ontologies into a json array
+    onts_in_gp_or_cat.merge categories_map.values.flatten.to_set
+    onts_in_gp_or_cat = onts_in_gp_or_cat.delete 'http://stagedata.bioontology.org/ontologies'
+    @onts_in_gp_or_cat_for_js = onts_in_gp_or_cat.sort.to_json
+  end
 
-    @onts_for_select = []
-    @onts_for_js = [];
+  def init_ontology_picker_single
+    get_ontologies_data
+  end
+
+  def get_ontologies_data(ontologies=nil)
     ontologies ||= LinkedData::Client::Models::Ontology.all
-
+    @onts_for_select = []
+    @onts_acronym_map = {}
     ontologies.each do |ont|
-
       # TODO: ontologies parameter may be a list of ontology models (not ontology submission models):
       # ont.acronym instead of ont.ontology.acronym
       # ont.name instead of ont.ontology.name
       # ont.id instead of ont.ontology.id
-
       # TODO: resource index and annotator pass in 'custom_ontologies' to the ontologies parameter.
-
       acronym = ont.acronym || ""
       name = ont.name
-      ont_uri = ont.id # ontology URI
-
+      id = ont.id # ontology URI
       abbreviation = acronym.empty? ? "" : "(#{acronym})"
-      @onts_for_select << [name.strip + " " + abbreviation, ont_uri]
-      @onts_for_js << "\"#{name.strip} #{abbreviation}\": \"#{acronym}\""
-    end
-
-    @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
-
-    @onts_in_group_or_category_for_js = Set.new
-
-    groups = LinkedData::Client::Models::Group.all(include: "ontologies,acronym")
-    @groups_for_select = groups_for_select
-    @groups_for_js = []
-    groups.each do |group|
-      @onts_in_group_or_category_for_js += group.ontologies
-      @groups_for_js << "\"#{group.id}\": #{group.ontologies.to_s}"
-    end
-
-    categories = LinkedData::Client::Models::Category.all(include: "ontologies,acronym")
-    @categories_for_select = categories_for_select
-    @categories_for_js = []
-    categories.each do |cat|
-      @onts_in_group_or_category_for_js += cat.ontologies
-      @categories_for_js << "\"#{cat.id}\": #{cat.ontologies.to_s}"
-    end
-
-    @onts_in_group_or_category_for_js = @onts_in_group_or_category_for_js.to_a
-  end
-
-  def init_ontology_picker_single
-    ontologies = LinkedData::Client::Models::Ontology.all
-    @onts_for_select = []
-    @onts_for_js = [];
-    ontologies.each do |ont|
-      acronym = ont.acronym || ""
-      name = ont.name
-      #ont_uri = ont.id # ontology submission URI
-      ont_uri = ont.id # ontology URI
-      abbreviation = acronym.empty? ? "" : "(#{acronym})"
-      @onts_for_select << [name.strip + " " + abbreviation, ont_uri]
-      @onts_for_js << "\"#{name.strip} #{abbreviation}\": \"#{acronym}\""
+      ont_label = "#{name.strip} #{abbreviation}"
+      @onts_for_select << [ont_label, id]
+      @onts_acronym_map[ont_label] = acronym
     end
     @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+    @onts_for_js = @onts_acronym_map.to_json
   end
 
   def render_advanced_picker(custom_ontologies = nil, selected_ontologies = [], align_to_dom_id = nil)
@@ -345,10 +326,10 @@ module ApplicationHelper
   def groups_for_select
     groups_for_select = []
     groups = LinkedData::Client::Models::Group.all
-    groups.each do |group|
-      acronym = group.acronym || ""
+    groups.each do |g|
+      acronym = g.acronym || ""
       acronym = acronym.empty? ? "" : " (#{acronym})"
-      groups_for_select << [ group.name + acronym, group.id ]
+      groups_for_select << [ g.name + acronym, g.id ]
     end
     groups_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
     groups_for_select
