@@ -39,7 +39,7 @@ class AnnotatorController < ApplicationController
     query += "&max_level=" + options[:max_level].to_s
     query += "&ontologies=" + CGI.escape(options[:ontologies].join(',')) unless options[:ontologies].empty?
     query += "&semanticTypes=" + options[:semanticTypes].join(',') unless options[:semanticTypes].empty?
-    query += "&mappingTypes=" + options[:mappingTypes].join(',') unless options[:mappingTypes].empty?
+    query += "&mappings=" + options[:mappingTypes].join(',') unless options[:mappingTypes].empty?
     #query += "&wholeWordOnly=" + options[:wholeWordOnly].to_s unless options[:wholeWordOnly].empty?
     #query += "&withDefaultStopWords=" + options[:withDefaultStopWords].to_s unless options[:withDefaultStopWords].empty?
     annotations = parse_json(query) # See application_controller.rb
@@ -102,6 +102,9 @@ private
         a['hierarchy'].each {|h| classList << get_annotated_class_hash(h) }
       end
       if a.include? 'mappings'
+
+        binding.pry
+
         a['mappings'].each {|m| classList << get_annotated_class_hash(m) }
       end
     end
