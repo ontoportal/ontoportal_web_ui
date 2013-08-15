@@ -50,8 +50,6 @@ jQuery(document).ready(function () {
       initialQuery : false
     }, function (options, response, event) {
       // jQuery("#resource_index_terms_chzn .chzn-results li.active-result").remove();
-
-      //var search_url = "/resource_index/search";
       var search_url = jQuery(document).data().bp.config.rest_url+"search";
       var search_params = {};
       search_params['apikey'] = jQuery(document).data().bp.config.apikey;
@@ -81,19 +79,16 @@ jQuery(document).ready(function () {
             var cls_uri = cls['@id'];
             var ont_uri = cls.links.ontology;
             var ont_acronym = cls.links.ontology.split('/').slice(-1)[0];
-            // TODO: Remove this condition when search API supports ontologies parameter.
-            //if (ontologies.match(ont_uri).length > 0){
-              termHTML = "" +
-                "<span class='search_ontology' title='" + ont_uri + "'>" +
-                  "<span class='search_class' title='" + cls_uri + "'>" +
-                    cls.prefLabel +
-                    "<span class='search_ontology_acronym'>(" + ont_acronym + ")</span>" +
-                "</span>";
-              // Create a combination of ont_uri and cls_uri that can be split when retrieved.
-              // This will be the option value in the selected drop-down list.
-              var combined_uri = uri_combine(ont_uri, cls_uri);
-              terms[combined_uri] = termHTML;
-            //}
+            termHTML = "" +
+              "<span class='search_ontology' title='" + ont_uri + "'>" +
+                "<span class='search_class' title='" + cls_uri + "'>" +
+                  cls.prefLabel +
+                  "<span class='search_ontology_acronym'>(" + ont_acronym + ")</span>" +
+              "</span>";
+            // Create a combination of ont_uri and cls_uri that can be split when retrieved.
+            // This will be the option value in the selected drop-down list.
+            var combined_uri = uri_combine(ont_uri, cls_uri);
+            terms[combined_uri] = termHTML;
           });
           response(terms);  // Chosen plugin creates select list.
         },
