@@ -301,6 +301,13 @@ module ApplicationHelper
     @onts_for_js = @onts_acronym_map.to_json
   end
 
+  def categories_for_select
+    # This method is called in the search index page.
+    get_ontologies_data
+    get_categories_data
+    return @categories_for_select
+  end
+
   def get_categories_data
     @categories_for_select = []
     @categories_map = {}
