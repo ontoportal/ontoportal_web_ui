@@ -253,25 +253,21 @@ module ApplicationHelper
     user ||= User.new({"id" => 0})
   end
 
+  def render_advanced_picker(custom_ontologies = nil, selected_ontologies = [], align_to_dom_id = nil)
+    selected_ontologies ||= []
+    init_ontology_picker(custom_ontologies, selected_ontologies)
+    render :partial => "shared/ontology_picker_advanced", :locals => {
+        :custom_ontologies => custom_ontologies, :selected_ontologies => selected_ontologies, :align_to_dom_id => align_to_dom_id
+    }
+  end
+
   def init_ontology_picker(ontologies = nil, selected_ontologies = [])
     get_ontologies_data(ontologies)
-    # get group ontologies as a json object (map)
-    groups_map = {}
-    groups = LinkedData::Client::Models::Group.all(include: "ontologies,acronym")
-    @groups_for_select = groups_for_select
-    groups.each { |g| groups_map[g.id] = g.ontologies }
-    @groups_for_js = groups_map.to_json
-    onts_in_gp_or_cat = groups_map.values.flatten.to_set
-    # get category ontologies as a json object (map)
-    categories_map = {}
-    categories = LinkedData::Client::Models::Category.all(include: "ontologies,acronym")
-    @categories_for_select = categories_for_select
-    @categories_for_js = []
-    categories.each { |c| categories_map[c.id] = c.ontologies }
-    @categories_for_js = categories_map.to_json
+    get_groups_data
+    get_categories_data
     # merge group and category ontologies into a json array
-    onts_in_gp_or_cat.merge categories_map.values.flatten.to_set
-    onts_in_gp_or_cat = onts_in_gp_or_cat.delete 'http://stagedata.bioontology.org/ontologies'
+    onts_in_gp_or_cat = @groups_map.values.flatten.to_set
+    onts_in_gp_or_cat.merge @categories_map.values.flatten.to_set
     @onts_in_gp_or_cat_for_js = onts_in_gp_or_cat.sort.to_json
   end
 
@@ -279,60 +275,67 @@ module ApplicationHelper
     get_ontologies_data
   end
 
-  def get_ontologies_data(ontologies=nil)
-    ontologies ||= LinkedData::Client::Models::Ontology.all
+  def get_ontologies_data(ontologies = nil)
+    ontologies ||= LinkedData::Client::Models::Ontology.all(include: "acronym,name")
     @onts_for_select = []
     @onts_acronym_map = {}
+    @onts_uri2acronym_map = {}
     ontologies.each do |ont|
       # TODO: ontologies parameter may be a list of ontology models (not ontology submission models):
       # ont.acronym instead of ont.ontology.acronym
       # ont.name instead of ont.ontology.name
       # ont.id instead of ont.ontology.id
       # TODO: resource index and annotator pass in 'custom_ontologies' to the ontologies parameter.
-      acronym = ont.acronym || ""
+      next if ( ont.acronym.nil? or ont.acronym.empty? )
+      acronym = ont.acronym
       name = ont.name
-      id = ont.id # ontology URI
+      #id = ont.id # ontology URI
       abbreviation = acronym.empty? ? "" : "(#{acronym})"
       ont_label = "#{name.strip} #{abbreviation}"
-      @onts_for_select << [ont_label, id]
+      #@onts_for_select << [ont_label, id]  # using the URI crashes the UI checkbox selection behavior.
+      @onts_for_select << [ont_label, acronym]
       @onts_acronym_map[ont_label] = acronym
+      @onts_uri2acronym_map[ont.id] = acronym  # required in ontologies_to_acronyms
     end
     @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
     @onts_for_js = @onts_acronym_map.to_json
   end
 
-  def render_advanced_picker(custom_ontologies = nil, selected_ontologies = [], align_to_dom_id = nil)
-    selected_ontologies ||= []
-    init_ontology_picker(custom_ontologies, selected_ontologies)
-    render :partial => "shared/ontology_picker_advanced", :locals => {
-      :custom_ontologies => custom_ontologies, :selected_ontologies => selected_ontologies, :align_to_dom_id => align_to_dom_id
-    }
+  def get_categories_data
+    @categories_for_select = []
+    @categories_map = {}
+    categories = LinkedData::Client::Models::Category.all(include: "name,ontologies")
+    categories.each do |c|
+      @categories_for_select << [ c.name, c.id ]
+      @categories_map[c.id] = ontologies_to_acronyms(c.ontologies) # c.ontologies is a list of URIs
+    end
+    @categories_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+    @categories_for_js = @categories_map.to_json
+  end
+
+  def get_groups_data
+    @groups_map = {}
+    @groups_for_select = []
+    groups = LinkedData::Client::Models::Group.all(include: "acronym,name,ontologies")
+    groups.each do |g|
+      next if ( g.acronym.nil? or g.acronym.empty? )
+      @groups_for_select << [ g.name + " (#{g.acronym})", g.acronym ]
+      @groups_map[g.acronym] = ontologies_to_acronyms(g.ontologies) # g.ontologies is a list of URIs
+    end
+    @groups_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+    @groups_for_js = @groups_map.to_json
+  end
+
+  def ontologies_to_acronyms(ontologyIDs)
+    acronyms = []
+    ontologyIDs.each do |id|
+      acronyms << @onts_uri2acronym_map[id]  # hash generated in get_ontologies_data
+    end
+    return acronyms.compact # remove nil values from any failures to convert ontology URI to acronym
   end
 
   def at_slice?
     !@subdomain_filter.nil? && !@subdomain_filter[:active].nil? && @subdomain_filter[:active] == true
-  end
-
-  def categories_for_select
-    categories_for_select = []
-    categories = LinkedData::Client::Models::Category.all
-    categories.each do |c|
-      categories_for_select << [ c.name, c.id ]
-    end
-    categories_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
-    categories_for_select
-  end
-
-  def groups_for_select
-    groups_for_select = []
-    groups = LinkedData::Client::Models::Group.all
-    groups.each do |g|
-      acronym = g.acronym || ""
-      acronym = acronym.empty? ? "" : " (#{acronym})"
-      groups_for_select << [ g.name + acronym, g.id ]
-    end
-    groups_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
-    groups_for_select
   end
 
   def truncate_with_more(text, options = {})
