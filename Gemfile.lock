@@ -54,7 +54,7 @@ GEM
     libxml-ruby (2.2.2)
     memcache-client (1.8.5)
     method_source (0.8.2)
-    mime-types (1.23)
+    mime-types (1.24)
     multi_json (1.7.9)
     multipart-post (1.2.0)
     mysql (2.8.1)
