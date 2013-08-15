@@ -56,7 +56,7 @@ jQuery(document).ready(function () {
       search_params['format'] = "jsonp";
       search_params['q'] = options.term;
       // TODO: ENABLE ADDITIONAL PARAMETERS WHEN THE SEARCH API SUPPORTS THEM.
-      search_params['ontologies'] = currentOntologyAcronyms().join(',');  // acronyms
+      search_params['ontologies'] = currentOntologyAcronyms().join(',');
       //search_params['includeProperties'] = includeProps;
       //search_params['includeViews'] = includeViews;
       //search_params['requireDefinitions'] = includeOnlyDefinitions;
@@ -73,8 +73,6 @@ jQuery(document).ready(function () {
           jQuery("#search_spinner").hide();
           jQuery("#search_results").show();
           var terms = {}, termHTML = "";
-          // TODO: Remove this variable when search API supports ontologies parameter.
-          //var ontologies = currentOntologyIds().join(',');
           jQuery.each(data.collection, function (index, cls) {
             var cls_uri = cls['@id'];
             var ont_uri = cls.links.ontology;
@@ -574,7 +572,9 @@ function chosenSearchTerms() {
   var chosenTermsMap = {};
   // get selected option values, an array of combined_uri strings.
   var combined_uris = jQuery("#resource_index_terms").val();
-  if (typeof combined_uris === "string") {
+  if (combined_uris === null){
+    return chosenTermsMap;
+  } else if (typeof combined_uris === "string"){
     combined_uris = combined_uris.split(); // coerce it to an Array
   }
   for(var i=0; i < combined_uris.length; i++){
@@ -586,7 +586,7 @@ function chosenSearchTerms() {
       chosenTermsMap[chosen_ont_uri] = new Array();
     }
     chosenTermsMap[chosen_ont_uri].push(chosen_cls_uri);
-  };
+  }
   return chosenTermsMap;
 }
 
