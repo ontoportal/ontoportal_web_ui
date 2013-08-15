@@ -479,8 +479,9 @@ class ApplicationController < ActionController::Base
   def get_semantic_types()
     semantic_types = {}
     sty_prefix = 'http://bioportal.bioontology.org/ontologies/umls/sty/'
-    sty_uri = 'http://stagedata.bioontology.org/ontologies/STY'
-    sty_ont = LinkedData::Client::Models::Ontology.find(sty_uri)
+    sty_ont_find = LinkedData::Client::Models::Ontology.find_by_acronym('STY')
+    raise TypeError if not sty_ont_find.instance_of? Array
+    sty_ont = sty_ont_find[0]
     sty_classes = sty_ont.explore.classes({'pagesize'=>500})
     sty_classes.collection.each do |cls|
       code = cls.id.sub(sty_prefix,'')

@@ -64,7 +64,7 @@ function get_annotations() {
   jQuery("[name='mappings']:checked").each(function () {
     mappings.push(jQuery(this).val());
   });
-  params.mappingTypes = mappings;
+  params.mappings = mappings;
 
   jQuery.ajax({
     type    : "POST",
@@ -482,8 +482,21 @@ function get_annotation_rows(annotation, text) {
       cells = [ h_cls_link, h_ont_link, match_type, semantic_types, text_markup, cls_link, ont_link ];
       rows.push(cells);
     }); // hierarchy loop
-    // TODO: Add rows for any classes in the mappings.
+    // Add rows for any classes in the mappings.
     // Note that the ont_link will be different.
+    match_type = 'mapping';
+    var c = null, o = null,
+      m_cls_link = null, m_ont_link = null,
+      c_rel_ui = null, o_rel_ui = null;
+    jQuery.each(annotation.mappings, function (i, m) {
+      c = m.annotatedClass;
+      c_rel_ui = c.ui.replace(/^.*\/\/[^\/]+/, '');
+      o_rel_ui = c_rel_ui.replace(/\?p=terms.*$/, '?p=summary');
+      m_cls_link = get_link(c_rel_ui, c.prefLabel);
+      m_ont_link = get_link(o_rel_ui, c.ontology.name);
+      cells = [ m_cls_link, m_ont_link, match_type, semantic_types, text_markup, cls_link, ont_link ];
+      rows.push(cells);
+    }); // mappings loop
   }); // annotations loop
   return rows;
 }
