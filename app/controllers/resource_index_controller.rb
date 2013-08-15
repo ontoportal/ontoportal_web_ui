@@ -68,15 +68,26 @@ class ResourceIndexController < ApplicationController
     @elements_page_count = 0
     while true
       begin
-        ranked_elements_page = LinkedData::Client::HTTP.get(uri)
+        begin
+          # Resource index can be very slow and timeout, so allow a retry.
+          ranked_elements_page = LinkedData::Client::HTTP.get(uri)
+        rescue Exception => inner_error
+          @retries ||= 0
+          if @retries < 1  # retry once only
+            @retries += 1
+            retry
+          else
+            raise inner_error
+          end
+        end
         @elements.concat ranked_elements_page['collection']
         break if ranked_elements_page.nextPage.nil?
         break if @elements_page_count >= ranked_elements_page.pageCount
         uri = ranked_elements_page.nextPage
         @elements_page_count += 1
-      rescue Exception => e
+      rescue Exception => outer_error
         # TODO: log a meaningful message?
-        raise e
+        raise outer_error
       end
     end
     # Sort ranked elements list by resource name
