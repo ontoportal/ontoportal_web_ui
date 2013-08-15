@@ -58,12 +58,15 @@ jQuery(document).ready(function () {
       search_params['format'] = "jsonp";
       search_params['q'] = options.term;
       // TODO: ENABLE ADDITIONAL PARAMETERS WHEN THE SEARCH API SUPPORTS THEM.
-      //search_params['ontologies'] = currentOntologyIds().join(',');
+      search_params['ontologies'] = currentOntologyAcronyms().join(',');  // acronyms
       //search_params['includeProperties'] = includeProps;
       //search_params['includeViews'] = includeViews;
       //search_params['requireDefinitions'] = includeOnlyDefinitions;
       //search_params['exactMatch'] = exactMatch;
       //search_params['categories'] = categories;
+      // DEBUG console logs:
+      //console.log('RI term search URL: ' + search_url);
+      //console.log('RI term search params: ', search_params);
       jQuery.ajax({
         url: search_url,
         data: search_params,
@@ -73,13 +76,13 @@ jQuery(document).ready(function () {
           jQuery("#search_results").show();
           var terms = {}, termHTML = "";
           // TODO: Remove this variable when search API supports ontologies parameter.
-          var ontologies = currentOntologyIds().join(',');
+          //var ontologies = currentOntologyIds().join(',');
           jQuery.each(data.collection, function (index, cls) {
+            var cls_uri = cls['@id'];
             var ont_uri = cls.links.ontology;
+            var ont_acronym = cls.links.ontology.split('/').slice(-1)[0];
             // TODO: Remove this condition when search API supports ontologies parameter.
-            if (ontologies.match(ont_uri).length > 0){
-              var cls_uri = cls['@id'];
-              var ont_acronym = cls.links.ontology.split('/').slice(-1)[0];
+            //if (ontologies.match(ont_uri).length > 0){
               termHTML = "" +
                 "<span class='search_ontology' title='" + ont_uri + "'>" +
                   "<span class='search_class' title='" + cls_uri + "'>" +
@@ -90,7 +93,7 @@ jQuery(document).ready(function () {
               // This will be the option value in the selected drop-down list.
               var combined_uri = uri_combine(ont_uri, cls_uri);
               terms[combined_uri] = termHTML;
-            }
+            //}
           });
           response(terms);  // Chosen plugin creates select list.
         },
@@ -552,6 +555,16 @@ function currentOntologyIds() {
   var selectedOntIds = jQuery("#ontology_ontologyId").val();
   return selectedOntIds === null || selectedOntIds === "" ? ont_ids : selectedOntIds;
 }
+
+function currentOntologyAcronyms() {
+  var ont_acronyms = new Array();
+  var ontologies = currentOntologyIds();
+  for(var i=0; i < ontologies.length; i++){
+    ont_acronyms.push( ontologies[i].split('/').slice(-1)[0] );
+  }
+  return ont_acronyms;
+}
+
 
 //function currentConceptIds() {
 //  var conceptIds = jQuery("#resource_index_terms").val();
