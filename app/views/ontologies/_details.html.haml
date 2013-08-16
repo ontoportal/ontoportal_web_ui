@@ -67,9 +67,9 @@
         %th
           Categories
         %td
-          = @ontology.explore.categories.map {|c| c.name}.join("<br/>")
+          = @categories.map {|c| c.name}.sort.join(", ")
       %tr
         %th
           Groups
         %td
-          = @ontology.explore.groups.map {|g| g.name}.join("<br/>")
+          = @groups.map {|g| g.name}.sort.join(", ")
