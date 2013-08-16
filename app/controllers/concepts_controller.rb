@@ -55,9 +55,9 @@ class ConceptsController < ApplicationController
   end
 
   def show_label
-    @ontology = DataAccess.getOntology(params[:ontology])
+    @ontology = LinkedData::Client::Models::Ontology.find(params[:ontology])
     begin
-      term_label = DataAccess.getNodeLabel(@ontology.id, params[:concept]).label_html
+      term_label = @ontology.explore.single_class(params[:concept]).prefLabel
     rescue Exception => e
       term_label = "<span title='This term cannot be viewed because the id cannot be found in the most recent version of the ontology' style='cursor: help;'>#{params[:concept]}</span>"
     end
