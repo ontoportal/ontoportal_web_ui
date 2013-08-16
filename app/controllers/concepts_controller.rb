@@ -233,8 +233,7 @@ private
 
   # gathers the information for a node
   def gather_details
-    # TODO_REV: Support mappings for classes
-    # @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.id)
+    @mappings = @concept.explore.mappings
     # TODO_REV: Support deleting mappings
     # check to see if user should get the option to delete
     # @delete_mapping_permission = check_delete_mapping_permission(@mappings)

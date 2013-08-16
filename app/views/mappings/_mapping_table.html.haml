@@ -1,0 +1,25 @@
+%table#concept_mappings_table.zebra{:width => "100%"}
+  %thead
+    %tr
+      - if @delete_mapping_permission
+        %th
+      %th Mapping To
+      %th Ontology
+      %th Source
+  - if @mappings.length < 1
+    %tr
+      %td{:colspan => @delete_mapping_permission ? "4" : "3"} There are currently no mappings for this term.
+  - @mappings.each do |map|
+    - map.classes.each do |cls|
+      - next if cls.id == @concept.id
+      %tr.human{:id => map.id.split("/").last}
+        - if @delete_mapping_permission
+          %td{:style => "padding: 6px 12px;"}
+            - if session[:user].id.to_i == map.user_id || session[:user].admin?
+              = check_box_tag :delete_mapping, map.id
+        %td
+          = link_to "#{cls.id}<span href='/ajax/terms/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>", :controller => 'visualize', :action => 'virtual', :id => cls.explore.ontology.acronym, :conceptid => cls.id
+        %td
+          %a{:href => cls.explore.ontology.links["ui"]}= cls.explore.ontology.name
+        %td
+          #{map.process.map {|p| p.name}.join(", ")}

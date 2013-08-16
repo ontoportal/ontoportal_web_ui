@@ -150,11 +150,9 @@ class OntologiesController < ApplicationController
     # set the current PURL for this term
     @current_purl = @concept.id.start_with?("http://") ? "#{$PURL_PREFIX}/#{@ontology.acronym}?conceptid=#{CGI.escape(@concept.id)}" : "#{$PURL_PREFIX}/#{@ontology.abbreviation}/#{CGI.escape(@concept.id)}" if $PURL_ENABLED
 
-    # TODO_REV: Mappings for classes
-    # gets the initial mappings
-    # @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.fullId)
+    @mappings = @concept.explore.mappings
 
-    # TODO_REV: Support notes deletion
+    # TODO_REV: Support mappings deletion
     # check to see if user should get the option to delete
     # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
@@ -353,34 +351,20 @@ class OntologiesController < ApplicationController
   end
 
   def mappings
-    ontology_list = DataAccess.getOntologyList()
-    view_list = DataAccess.getViewList()
-    @ontology = DataAccess.getOntology(params[:id])
-    @ontologies_mapping_count = DataAccess.getMappingCountBetweenOntologies(@ontology.ontologyId)
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
 
-    ontologies_hash = {}
-    ontology_list.each do |ontology|
-      ontologies_hash[ontology.ontologyId] = ontology
+    counts = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}mappings/statistics/ontologies/#{params[:id]}")
+    @ontologies_mapping_count = []
+    counts.members.each do |acronym|
+      count = counts[acronym]
+      ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym.to_s).first
+      next unless ontology
+      @ontologies_mapping_count << {'ontology' => ontology, 'count' => count}
     end
+    @ontologies_mapping_count.sort! {|a,b| a['ontology'].name.downcase <=> b['ontology'].name.downcase } unless @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
 
-    view_list.each do |view|
-      ontologies_hash[view.ontologyId] = view
-    end
-
-    # Add ontologies to the mapping count array, delete if no ontology exists
-    @ontologies_mapping_count.delete_if do |ontology|
-      ontology['ontology'] = ontologies_hash[ontology['ontologyId']]
-      if ontology['ontology'].nil?
-        true
-      else
-        false
-      end
-    end
-
-    @ontology_id = @ontology.ontologyId
-    @ontology_label = @ontology.displayLabel
-
-    @ontologies_mapping_count.sort! {|a,b| a['ontology'].displayLabel.downcase <=> b['ontology'].displayLabel.downcase } unless @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
+    @ontology_id = @ontology.acronym
+    @ontology_label = @ontology.name
 
     if request.xhr?
       render :partial => 'mappings', :layout => false

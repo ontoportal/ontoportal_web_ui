@@ -8,8 +8,7 @@
 |||
 %a.get_via_ajax{:href => "/ajax/notes/concept_list?ontology=#{@ontology.acronym}&concept=#{CGI.escape(@concept.id)}"}
 |||
--# TODO_REV support mappings
--# #{render :partial =>'/mappings/concept_mappings'}
+#{render :partial =>'/mappings/concept_mappings'}
 |||
 / # This used to hold demo-specific info, now it's a placeholder
 &nbsp;

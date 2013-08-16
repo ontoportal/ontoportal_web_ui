@@ -330,7 +330,7 @@
           #details_content.tab_container= render :partial =>'/concepts/details'
           #visualization_content.tab_container.not_visible=# TODO_REV: BioMixer render :partial =>'/concepts/biomixer'
           #notes_content.tab_container.not_visible= render :partial =>'/notes/list'
-          #mappings_content.tab_container.not_visible=# TODO_REV: Mappings tab for class render :partial =>'/mappings/concept_mappings'
+          #mappings_content.tab_container.not_visible= render :partial => '/mappings/concept_mappings'
           - unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED
             #resource_index_content.tab_container.not_visible.resource_index_embed
           - if $PURL_ENABLED

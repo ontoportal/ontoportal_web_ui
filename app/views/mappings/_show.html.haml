@@ -1,0 +1,22 @@
+#mappings.paginate_ajax{:style => "overflow: auto; max-height: 600px; width: 800px;"}
+  #mapping_results
+    = will_paginate @page_results, :update => 'mappings', :params => { :target => params[:target] }
+    - if @mappings.nil? or @mappings.empty?
+      No mappings found
+    - else
+      %table.zebra
+        - for map in @mappings
+          %tr
+            %th{style: "background: #234979; color: white;", colspan: "2"} Mapping (sources: #{map.process.map {|p| p.name}.join(", ")})
+          %tr
+            %th Classes
+            %th Ontology
+          - map.classes.each do |cls|
+            %tr
+              %td
+                #{link_to "#{cls.id}<span href='/ajax/terms/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>", :controller => 'visualize', :action => 'virtual', :id => cls.explore.ontology.acronym, :conceptid => cls.id}
+              %td
+                %a{:href => cls.explore.ontology.links["ui"]}= cls.explore.ontology.name
+          %tr{style: "border: none;"}
+            %td{style: "border: none;"} &nbsp
+    = will_paginate @page_results, :update => 'mappings', :params => { :target => params[:target] }
