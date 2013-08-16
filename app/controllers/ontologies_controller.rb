@@ -305,7 +305,6 @@ class OntologiesController < ApplicationController
   ###############################################
   def summary
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
-    @submission = @ontology.explore.latest_submission
 
     # Check to see if user is requesting RDF+XML, return the file from REST service if so
     if request.accept.to_s.eql?("application/rdf+xml")
@@ -321,27 +320,21 @@ class OntologiesController < ApplicationController
       return
     end
 
-    # Grab Metadata
-    # @groups = DataAccess.getGroups()
-    # @categories = DataAccess.getCategories()
+    @categories = @ontology.explore.categories
+    @groups = @ontology.explore.groups
+    @metrics = @ontology.explore.metrics
+    @reviews = @ontology.explore.reviews.sort! {|a,b| b.created <=> a.created}
+    #@reviews.sort! {|a,b| b.created <=> a.created}
+    @projects = @ontology.explore.projects
+    @submission = @ontology.explore.latest_submission
+
+    # views?
+
     # @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     # @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
-    # @metrics = DataAccess.getOntologyMetrics(@ontology.id)
 
-    # Check to see if the metrics are from the most recent ontology version
-    # if !@metrics.nil? && !@metrics.id.eql?(@ontology.id)
-    #   @old_metrics = @metrics
-    #   @old_ontology = DataAccess.getOntology(@old_metrics.id)
-    # end
+    # @diffs = @ontology.explore.diffs # Is this access available?
 
-    # @diffs = DataAccess.getDiffs(@ontology.ontologyId)
-
-    #Grab Reviews Tab
-    @reviews = @ontology.explore.reviews
-    @reviews.sort! {|a,b| b.created <=> a.created}
-
-    #Grab projects tab
-    @projects = @ontology.explore.projects
 
     if request.xhr?
       render :partial => 'metadata', :layout => false
