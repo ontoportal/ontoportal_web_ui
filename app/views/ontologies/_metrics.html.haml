@@ -22,56 +22,33 @@
         text-align: right;
       }
     %table.form.metrics_table{:style => "width: 400px;"}
-      /
-        not calculated currently
-        <tr>
-        <th>Number of axioms:</th><td class="top"><haml:loud>@metrics.numberOfAxioms</haml:loud></td>
-        </tr>
       %tr
         %th Number of classes:
-        %td.top= @metrics.classes  # @metrics.numberOfClasses
+        %td.top= @metrics.classes
       %tr
         %th Number of individuals:
-        %td= @metrics.individuals  # @metrics.numberOfIndividuals
+        %td= @metrics.individuals
       %tr
         %th Number of properties:
-        %td= @metrics.properties  # @metrics.numberOfProperties
+        %td= @metrics.properties
       %tr
         %th Maximum depth:
-        %td= @metrics.max_depth  # @metrics.maximumDepth
+        %td= @metrics.maxDepth
       %tr
         %th Maximum number of children:
-        %td= @metrics.max_children  # @metrics.maximumNumberOfSiblings
+        %td= @metrics.maxChildCount
       %tr
         %th Average number of children:
-        %td= @metrics.avg_children  # @metrics.averageNumberOfSiblings
+        %td= @metrics.averageChildCount
       %tr
-        %th{:style => "vertical-align: top;"} Classes with a single subclass:
+        %th{:style => "vertical-align: top;"} Classes with a single child:
         %td
-          = @metrics.classes_one_child
-          =# format_metric_list(@metrics, @metrics.classes_one_child, "Classes with a single subclass")
+          = @metrics.classesWithOneChild
       %tr
-        %th{:style => "vertical-align: top;"} Classes with more than 25 subclasses:
+        %th{:style => "vertical-align: top;"} Classes with more than 25 children:
         %td
-          = @metrics.classes_25_children
-          =# format_metric_list(@metrics, @metrics.classes_25_children, "Classes with more than 25 subclasses")
+          = @metrics.classesWithMoreThan25Children
       %tr
         %th{:style => "vertical-align: top;"} Classes with no definition:
         %td
-          = @metrics.classes_with_no_definition
-          =# format_metric_list(@metrics, @metrics.classes_with_no_definition, "Classes with no definition")
-      /
-        <tr>
-        <th style="vertical-align: top;">Classes with no author:</th>
-        <td>
-        <haml:loud> format_metric_list(@metrics, @metrics.classesWithNoAuthor, &amp;quot;Classes with no author&amp;quot;) </haml:loud>
-        </td>
-        </tr>
-      /
-        not calculated currently
-        <tr>
-        <th style="vertical-align: top;">Classes with more than one property value:</th>
-        <td>
-        <haml:loud> format_metric_list(@metrics, @metrics.classesWithMoreThanOnePropertyValue, &amp;quot;Classes with more than one property value&amp;quot;) </haml:loud>
-        </td>
-        </tr>
+          = @metrics.classesWithNoDefinition
