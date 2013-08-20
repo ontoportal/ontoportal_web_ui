@@ -305,7 +305,6 @@ class OntologiesController < ApplicationController
   ###############################################
   def summary
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
-
     # Check to see if user is requesting RDF+XML, return the file from REST service if so
     if request.accept.to_s.eql?("application/rdf+xml")
       user_api_key = session[:user].nil? ? "" : session[:user].apikey
@@ -319,23 +318,17 @@ class OntologiesController < ApplicationController
       send_file rdf_file.path, :type => "appllication/rdf+xml"
       return
     end
-
+    # Explore the ontology links
     @categories = @ontology.explore.categories
     @groups = @ontology.explore.groups
     @metrics = @ontology.explore.metrics
     @reviews = @ontology.explore.reviews.sort! {|a,b| b.created <=> a.created}
-    #@reviews.sort! {|a,b| b.created <=> a.created}
     @projects = @ontology.explore.projects
     @submission = @ontology.explore.latest_submission
-
-    # views?
-
+    @views = @ontology.explore.views  # a list of ontologies (a view is an ontology model)
     # @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     # @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
-
     # @diffs = @ontology.explore.diffs # Is this access available?
-
-
     if request.xhr?
       render :partial => 'metadata', :layout => false
     else

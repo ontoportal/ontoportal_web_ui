@@ -22,144 +22,133 @@
   });
 </script>
 
-
 <div style="clear: both;"></div>
 <div id="views_content">
   <h2 style="margin: 2em 0 0">
     <span style="font-size: x-large; margin-right: 1.5em;">Views</span>
-    <%if session[:user].nil? %>
-      <a href="/login?redirect=<%=URI.escape("/ontologies/view/new?version_id=#{@ontology.id}")%>">Create new view</a>
-    <%else %>
-      <a href="/ontologies/view/new?version_id=<%=@ontology.id%>">Create new view</a>
-    <%end %>
+    <% if session[:user].nil? %>
+        <a href="/login?redirect=<%=URI.escape("/ontologies/view/new?version_id=#{@ontology.id}")%>">Create new view</a>
+    <% else %>
+        <a href="/ontologies/view/new?version_id=<%=@ontology.id%>">Create new view</a>
+    <% end %>
   </h2>
 
-    <div style="float:left;">
-      <%if @ontology.views.empty? || @ontology.views.first.size < 1 %>
-        <h1>No views available.</h1>
-      <%else %>
-
-      <h4 style="margin-top: .5em;"><a href="javascript:void(0);" id="expand_views">Expand All</a>  |  <a href="javascript:void(0);" id="collapse_views">Collapse All</a></h4>
-
-      <% @ontology.views.each_with_index do |virtual, index| %>
-        <%if virtual[0].nil?
-            next
-         else
-             virt0 = virtual[0]
-         end%>
+  <div style="float:left;">
+      <% if @views.empty? || @views.length < 1 %>
+          <h1>No views available.</h1>
+      <% else %>
 
         <style type="text/css">
-          #view_head .lead {
-            color: #708090;
-            font-weight: bold;
-          }
-          .view_collapsible {
-            margin: 0 1em;
-          }
-          .click_view_collapse:hover {
-            text-decoration: underline;
-          }
+            #view_head .lead {
+                color: #708090;
+                font-weight: bold;
+            }
+            .view_collapsible {
+                margin: 0 1em;
+            }
+            .click_view_collapse:hover {
+                text-decoration: underline;
+            }
         </style>
 
-        <div id="view_<%=index%>" class="view_title" style="margin: 1em 0 .5em; cursor: pointer;" >
-          <span id="view_<%=index%>_icon" class="ui-icon ui-icon-triangle-1-e click_view_collapse click_view_collapse_icon" style="float: left;"></span>
-          <span class="click_view_collapse" style="font-size: 120%; font-weight: bold;"><%= virt0.displayLabel %></span>
-          <span style="font-size: 90%;">
-            <%if virt0.admin?(session[:user]) %>
-               <span style="padding-left: 1em; vertical-align: text-bottom;">(<%= link_to "Edit Metadata", "/ontologies/view/edit/#{virt0.id}" %>)</span>
-            <%end%>
-          </span>
-        </div>
+        <h4 style="margin-top: .5em;">
+          <a href="javascript:void(0);" id="expand_views">Expand All</a>  |
+          <a href="javascript:void(0);" id="collapse_views">Collapse All</a>
+        </h4>
 
-        <div id="view_<%=index%>_collapsible" class="view_collapsible" style="margin: 0 1em .5em; display: none;">
-          <div id="view_head" style="margin: 0 0 .5em;" class="enable-lists">
-            <ul>
-                <li>
-                    <span class="lead">Description:</span> <%=virt0.description %>
-                </li>
-                <% unless virt0.viewDefinition.empty? %>
-                    <li>
-                        <span class="lead">Definition:</span> <%=virt0.viewDefinition %>
-                    </li>
-                <%end%>
-                <li>
-                    <span class="lead">Ontology ID:</span> <%=virt0.ontologyId %>
-                </li>
-                <% unless virt0.viewGenerationEngine.empty? %>
-                    <li><span class="lead">Generation Engine:</span> <%=virt0.viewGenerationEngine %>
-                        
-                    </li>
-                <%end%>
-                <% unless virt0.viewDefinitionLanguage.empty? %>
-                    <li>
-                        <span class="lead">Definition Language:</span> <%=virt0.viewDefinitionLanguage %>
-                    </li>
-                <%end%>
-                <li>
-                    <span class="lead">Created By:</span>
-                    <% contact_name = virt0.contactName.nil? || virt0.contactName.empty? ? "" : virt0.contactName + ", " %>
-                    <%= contact_name + virt0.contactEmail %>
-                </li>
-            </ul>
+        <% viewsURL = "/ontologies/#{@ontology.acronym}/views/" %>
+        <% @views.each_with_index do |view, index| %>
+          <% viewN = "view_#{index}" %>
+          <% viewName = view.name %>
+          <!-- TODO: add UI support for view submission browsing
+            See this ticket about support for per-submission view/ontology browsing:
+            https://bmir-jira.stanford.edu/browse/NCBO-145
+          -->
+          <% viewURL4data = view.id %>
+          <% viewURL4ui = view.links['ui'] %>
+          <% viewAdmin = view.admin?(session[:user]) %>
+          <% if viewAdmin %>
+            <!-- TODO: Check these URIs exist in the UI (they are not REST API URIs). -->
+            <% viewEditURL = "/ontologies/view/edit/#{view.id}" # edit view %>
+            <% viewSubmitURL = "/ontologies/view/new/#{view.id}?version_id=#{@ontology.id}" # submit new view %>
+          <% end %>
+
+          <% view_submissions = view.explore.submissions.sort {|a,b| a.released <=> b.released }.reverse %>
+          <% view_description = view_submissions[0].description %>
+          <% view_definition = view_submissions[0].definition %>
+          <% view_language = nil # TODO: view_submissions[0].naturalLanguage  # ????? %>
+          <% view_contacts = [] %>
+          <% view_submissions[0].contact.each {|c| view_contacts << "#{c.name}, #{c.email}" } %>
+
+          <div id="<%=viewN%>" class="view_title" style="margin: 1em 0 .5em; cursor: pointer;" >
+            <span id="<%=viewN%>_icon" class="ui-icon ui-icon-triangle-1-e click_view_collapse click_view_collapse_icon" style="float: left;">
+            </span>
+            <span class="click_view_collapse" style="font-size: 120%; font-weight: bold;">
+              <%= viewName %>
+            </span>
+            <span style="font-size: 90%;">
+              <% if viewAdmin %>
+                  <span style="padding-left: 1em; vertical-align: text-bottom;">
+                    (<%= link_to "Edit Metadata", viewEditURL %>)
+                  </span>
+              <% end %>
+            </span>
           </div>
-
-              <table class="zebra" cellpadding="0" cellspacing="0" width="100%">
-                  <thead>
-                      <tr>
-                          <th>
-                              Version
-                          </th>
-                          <th>
-                              Ontology Version
-                          </th>
-                          <th>
-                              Release Date
-                          </th>
-                          <th>
-                              Upload Date
-                          </th>
-                          <th>
-                              Downloads
-                          </th>
-                      </tr>
-                  </thead>
-                  <%
-                  virtual.sort!{|x,y| y.internalVersion<=>x.internalVersion}
-                  virtual.each_with_index do |view, view_index|  %>
+          <div id="<%=viewN%>_collapsible" class="view_collapsible" style="margin: 0 1em .5em; display: none;">
+            <div id="view_head" style="margin: 0 0 .5em;" class="enable-lists">
+              <ul>
+                <li> <span class="lead">Description:</span> <%= view_description %> </li>
+                <% unless view_definition.nil? %>
+                    <li> <span class="lead">Definition:</span> <%= view_definition %> </li>
+                <% end %>
+                <% unless view_language.nil? %>
+                    <li> <span class="lead">Definition Language:</span> <%= view_language %> </li>
+                <% end %>
+                <li> <span class="lead">Created By:</span> <%= view_contacts.join('; ') %> </li>
+              </ul>
+            </div> <!-- view_head -->
+            <table class="zebra" cellpadding="0" cellspacing="0" width="100%">
+              <thead>
                   <tr>
-                      <%#= debug view %>
-                      <td>
-                        <a href="/ontologies/<%=view.id%>?p=terms"><%=view.versionNumber%></a>
-                      </td>
-                      <td>
-                        <% ontVer = get_view_ontology_version(view.viewOnOntologyVersionId) rescue "unknown"%>
-                        <a href="/ontologies/<%=view.viewOnOntologyVersionId%>?p=terms"><%=ontVer%></a>
-                      </td>
-                      <td>
-                          <%= view.dateReleased %>
-                      </td>
-                      <td>
-                          <%= view.dateCreated %>
-                      </td>
-                      <td>
-                          <a href="<%=DataAccess.download(view.id)%>" target="_blank">Ontology View</a>
-                      </td>
-                      <!--
-                          <%#= get_diffs_link(view.diffs, view.versions_array, view, view_index) rescue ""%>
-                          <%#= visibility_link(view) %>
-                      -->
+                    <th>Version</th>
+                    <th>Ontology Version</th>
+                    <th>Release Date</th>
+                    <th>Upload Date</th>
+                    <!-- TODO: enable downloads
+                    <th>Downloads</th>
+                    -->
                   </tr>
-                  <%end %>
-                <%if virt0.admin?(session[:user]) %>
-                    <tr><td colspan=7>
-                        <h3 style="margin-bottom: 0;">
-                            <a href="/ontologies/view/new/<%=virt0.id%>?version_id=<%=@ontology.id%>">Submit New View Version</a>
-                        </h3>
-                    </td></tr>
-                <%end %>
-              </table>
-     </div> <!-- collapsible div -->
-           <%end %>
-          <%end %>
-    </div>
-</div>
+              </thead>
+                  <% view_submissions.each_with_index do |view_sub, view_index|  %>
+                      <tr>
+                          <%#= debug view %>
+                          <td>
+                            <a href="<%=view_sub.ontology.links['ui']%>"><%= view_sub.version %></a>
+                          </td>
+                          <td>
+                            <a href="<%=view_sub.ontology.links['ui']%>"><%= view_sub.ontology.acronym %></a>
+                          </td>
+                          <td> <%= view_sub.released %> </td>
+                          <td> <%= view_sub.creationDate %> </td>
+                          <!-- TODO: code REST API for downloads, see https://bmir-jira.stanford.edu/browse/NCBO-143
+                          <td>
+                              <a href="<%#=DataAccess.download(view.id)%>" target="_blank">Ontology View</a>
+                          </td>
+                          -->
+                      </tr>
+                  <% end %>
+              <% if viewAdmin %>
+                <tr>
+                  <td colspan=7>
+                    <h3 style="margin-bottom: 0;">
+                      <a href="<%viewSubmitURL%>">Submit New View Version</a>
+                    </h3>
+                  </td>
+                </tr>
+              <% end %>
+            </table>
+          </div> <!-- collapsible div -->
+        <% end %> <!-- @views.each -->
+      <% end %> <!-- if views ... -->
+  </div> <!-- float left -->
+</div> <!-- views_content -->
