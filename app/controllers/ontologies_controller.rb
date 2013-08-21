@@ -322,10 +322,10 @@ class OntologiesController < ApplicationController
     @categories = @ontology.explore.categories
     @groups = @ontology.explore.groups
     @metrics = @ontology.explore.metrics
-    @reviews = @ontology.explore.reviews.sort! {|a,b| b.created <=> a.created}
+    @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created}
     @projects = @ontology.explore.projects
     @submission = @ontology.explore.latest_submission
-    @views = @ontology.explore.views  # a list of ontologies (a view is an ontology model)
+    @views = @ontology.explore.views.sort {|a,b| b.acronym <=> a.acronym}  # a list of view ontology models
     # @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     # @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
     # @diffs = @ontology.explore.diffs # Is this access available?

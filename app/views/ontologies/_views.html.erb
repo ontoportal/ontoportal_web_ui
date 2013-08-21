@@ -56,16 +56,15 @@
           <a href="javascript:void(0);" id="collapse_views">Collapse All</a>
         </h4>
 
-        <% viewsURL = "/ontologies/#{@ontology.acronym}/views/" %>
-        <% @views.each_with_index do |view, index| %>
+        <% @views.reverse.each_with_index do |view, index| %>
           <% viewN = "view_#{index}" %>
           <% viewName = view.name %>
           <!-- TODO: add UI support for view submission browsing
             See this ticket about support for per-submission view/ontology browsing:
             https://bmir-jira.stanford.edu/browse/NCBO-145
           -->
-          <% viewURL4data = view.id %>
-          <% viewURL4ui = view.links['ui'] %>
+          <%# viewURL4data = view.id %>
+          <%# viewURL4ui = view.links['ui'] %>
           <% viewAdmin = view.admin?(session[:user]) %>
           <% if viewAdmin %>
             <!-- TODO: Check these URIs exist in the UI (they are not REST API URIs). -->
@@ -76,9 +75,10 @@
           <% view_submissions = view.explore.submissions.sort {|a,b| a.released <=> b.released }.reverse %>
           <% view_description = view_submissions[0].description %>
           <% view_definition = view_submissions[0].definition %>
-          <% view_language = nil # TODO: view_submissions[0].naturalLanguage  # ????? %>
-          <% view_contacts = [] %>
-          <% view_submissions[0].contact.each {|c| view_contacts << "#{c.name}, #{c.email}" } %>
+          <% view_language = nil # TODO: view_submissions[0].naturalLanguage -- Ray suggests leave it undefined. %>
+          <% view_contacts = Set.new %>
+          <% view_submissions[0].contact.each {|c| view_contacts.add("#{c.name}, #{c.email}") } %>
+          <% view_contacts = view_contacts.to_a.join('; ') %>
 
           <div id="<%=viewN%>" class="view_title" style="margin: 1em 0 .5em; cursor: pointer;" >
             <span id="<%=viewN%>_icon" class="ui-icon ui-icon-triangle-1-e click_view_collapse click_view_collapse_icon" style="float: left;">
@@ -96,15 +96,23 @@
           </div>
           <div id="<%=viewN%>_collapsible" class="view_collapsible" style="margin: 0 1em .5em; display: none;">
             <div id="view_head" style="margin: 0 0 .5em;" class="enable-lists">
+              <% view_sub = view_submissions[0] %>
               <ul>
-                <li> <span class="lead">Description:</span> <%= view_description %> </li>
+                <li>
+                  <span class="lead">Latest submission links:</span>
+                  <a href="<%=view_sub.ontology.links['ui']%>"><%= "UI view summary (#{view_sub.version})" %></a>,&nbsp;
+                  <a href="<%=view_sub.id%>" target="_blank"><%= "linked data (#{view_sub.version})" %></a>
+                </li>
+                <% unless view_description.nil? %>
+                    <li> <span class="lead">Description:</span> <%= view_description %> </li>
+                <% end %>
                 <% unless view_definition.nil? %>
                     <li> <span class="lead">Definition:</span> <%= view_definition %> </li>
                 <% end %>
                 <% unless view_language.nil? %>
                     <li> <span class="lead">Definition Language:</span> <%= view_language %> </li>
                 <% end %>
-                <li> <span class="lead">Created By:</span> <%= view_contacts.join('; ') %> </li>
+                <li> <span class="lead">Created By:</span> <%= view_contacts %> </li>
               </ul>
             </div> <!-- view_head -->
             <table class="zebra" cellpadding="0" cellspacing="0" width="100%">
@@ -114,7 +122,7 @@
                     <th>Ontology Version</th>
                     <th>Release Date</th>
                     <th>Upload Date</th>
-                    <!-- TODO: enable downloads
+                    <!-- TODO: enable downloads and increase colspan for submit new version below.
                     <th>Downloads</th>
                     -->
                   </tr>
@@ -122,12 +130,12 @@
                   <% view_submissions.each_with_index do |view_sub, view_index|  %>
                       <tr>
                           <%#= debug view %>
-                          <td>
-                            <a href="<%=view_sub.ontology.links['ui']%>"><%= view_sub.version %></a>
-                          </td>
-                          <td>
-                            <a href="<%=view_sub.ontology.links['ui']%>"><%= view_sub.ontology.acronym %></a>
-                          </td>
+                          <td> <%= view_sub.version %> </td>
+                          <% if (view_index == 0) %>
+                            <td> <%= "#{@ontology.acronym} (#{@submission.version})" %> </td>
+                          <% else %>
+                            <td> unknown <%#= "#{@ontology.acronym} (#{@submission.version})" %> </td>
+                          <% end %>
                           <td> <%= view_sub.released %> </td>
                           <td> <%= view_sub.creationDate %> </td>
                           <!-- TODO: code REST API for downloads, see https://bmir-jira.stanford.edu/browse/NCBO-143
@@ -139,7 +147,7 @@
                   <% end %>
               <% if viewAdmin %>
                 <tr>
-                  <td colspan=7>
+                  <td colspan=6>
                     <h3 style="margin-bottom: 0;">
                       <a href="<%viewSubmitURL%>">Submit New View Version</a>
                     </h3>
