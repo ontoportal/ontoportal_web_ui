@@ -137,8 +137,8 @@ class ConceptsController < ApplicationController
   # Renders a details pane for a given ontology/term
   def details
     raise Error404 if params[:conceptid].nil? || params[:conceptid].empty?
-    @ontology = DataAccess.getOntology(params[:ontology])
-    @concept = DataAccess.getNode(@ontology.id, params[:conceptid], params[:childrenlimit])
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
 
     if params[:styled].eql?("true")
       render :partial => "details", :layout => "partial"
