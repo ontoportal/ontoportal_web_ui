@@ -341,13 +341,15 @@ class OntologiesController < ApplicationController
 
     counts = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}mappings/statistics/ontologies/#{params[:id]}")
     @ontologies_mapping_count = []
-    counts.members.each do |acronym|
-      count = counts[acronym]
-      ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym.to_s).first
-      next unless ontology
-      @ontologies_mapping_count << {'ontology' => ontology, 'count' => count}
+    unless counts.nil?
+      counts.members.each do |acronym|
+        count = counts[acronym]
+        ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym.to_s).first
+        next unless ontology
+        @ontologies_mapping_count << {'ontology' => ontology, 'count' => count}
+      end
+      @ontologies_mapping_count.sort! {|a,b| a['ontology'].name.downcase <=> b['ontology'].name.downcase } unless @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
     end
-    @ontologies_mapping_count.sort! {|a,b| a['ontology'].name.downcase <=> b['ontology'].name.downcase } unless @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
 
     @ontology_id = @ontology.acronym
     @ontology_label = @ontology.name
