@@ -20,9 +20,13 @@ class HomeController < ApplicationController
       ont_uri = n.relatedOntology.first
       ont = LinkedData::Client::Models::Ontology.find(ont_uri)
       next if ont.nil?
-      creator = LinkedData::Client::Models::User.find(n.creator)
-      next if creator.nil?
-      username = "#{creator.firstName} #{creator.lastName}"
+      if n.creator.match('anonymous')
+        username = 'anonymous'
+      else
+        creator = LinkedData::Client::Models::User.find(n.creator)
+        next if creator.nil?
+        username = "#{creator.firstName} #{creator.lastName}"
+      end
       note = {
           :id => n.id,
           :subject => n.subject,
