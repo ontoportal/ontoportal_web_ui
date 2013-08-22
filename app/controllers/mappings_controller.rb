@@ -6,7 +6,6 @@ class MappingsController < ApplicationController
   before_filter :authorize_and_redirect, :only=>[:create,:new,:destroy]
 
   def index
-    binding.pry
     ontology_list = LinkedData::Client::Models::Ontology.all
     # TODO_REV: Views support for mappings
     # views_list = DataAccess.getViewList()
