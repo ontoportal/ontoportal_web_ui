@@ -90,26 +90,17 @@ class MappingsController < ApplicationController
     render :partial => "mapping_table"
   end
 
-  def upload
-    @ontologies = @ontologies = DataAccess.getOntologyList()
-    @users = User.find(:all)
-  end
-
-
-  def process_mappings
-     MappingLoader.processMappings(params)
-
-     flash[:notice] = 'Mappings are processed'
-     @ontologies = @ontologies = DataAccess.getOntologyList()
-     @users = User.find(:all)
-     render :action=>:upload
-  end
-
   def new
-    @ontology_from = DataAccess.getOntology(params[:ontology_from]) rescue OntologyWrapper.new
-    @ontology_to = DataAccess.getOntology(params[:ontology_to]) rescue OntologyWrapper.new
-    @concept_from = DataAccess.getNode(@ontology_from.id, params[:conceptid_from]) rescue NodeWrapper.new
-    @concept_to = DataAccess.getNode(@ontology_to.id, params[:conceptid_to]) rescue NodeWrapper.new
+    @ontology_from = LinkedData::Client::Models::Ontology.find(params[:ontology_from])
+    @ontology_to = LinkedData::Client::Models::Ontology.find(params[:ontology_to])
+    @concept_from = @ontology_from.explore.single_class({full: true}, params[:conceptid_from]) if @ontology_from
+    @concept_to = @ontology_to.explore.single_class({full: true}, params[:conceptid_to]) if @ontology_to
+
+    # Defaults just in case nothing gets provided
+    @ontology_from ||= LinkedData::Client::Models::Ontology.new
+    @ontology_to ||= LinkedData::Client::Models::Ontology.new
+    @concept_from ||= LinkedData::Client::Models::Class.new
+    @concept_to ||= LinkedData::Client::Models::Class.new
 
     if request.xhr? || params[:no_layout].eql?("true")
       render :layout => "minimal"
