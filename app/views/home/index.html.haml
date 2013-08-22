@@ -229,10 +229,10 @@
             %tbody
               %tr
                 %td Ontologies
-                %td= @ontologies.length
+                %td= @ont_count
               %tr
                 %td Terms
-                %td= number_with_delimiter("TODO", :delimiter => ",")
+                %td= number_with_delimiter(@cls_count, :delimiter => ",")
               %tr
                 %td Resources Indexed
                 %td= number_with_delimiter(@number_of_resources, :delimiter => ",")
@@ -251,7 +251,7 @@
     %td{:valign => "top"}
       %fieldset
         %legend Latest Notes
-        %table.minimal{:style => "width:300px"}
+        %table.minimal{:style => "width:100%"}
           %tbody
             - if @last_notes.nil? || @last_notes.empty?
               No recent notes have been submitted
@@ -261,12 +261,14 @@
                   %td
                     - begin
                       %span{:style => "color:#AAAAAA"}
-                        = link_to "#{note.subject} (#{DataAccess.getLatestOntology(note.ontology_id).displayLabel})", Class.new.extend(NotesHelper).get_applies_to_url(DataAccess.getLatestOntology(note.ontology_id).id, note.applies_to_type, note.applies_to)
-                        = "#{time_ago_in_words(Time.at(convert_java_time(note.created.to_i)))} ago"
-                        by #{get_username(note.author)}
-                      - if note.body
+                        =# link_to "#{note[:subject]} (#{note[:ont_name]})", Class.new.extend(NotesHelper).get_applies_to_url(DataAccess.getLatestOntology(note.ontology_id).id, note.applies_to_type, note.applies_to)
+                        = link_to "#{note[:subject]} (#{note[:ont_name]})", note[:id]
+                        =# "#{time_ago_in_words(Time.at(convert_java_time(note[:created])))} ago"
+                        = "#{time_ago_in_words(note[:created])} ago"
+                        by #{note[:author]}
+                      - if note[:body]
                         %p
-                          = truncate(strip_tags(note.body), :length => 100)
+                          = truncate(strip_tags(note[:body]), :length => 100)
                           \&nbsp;
                     - rescue
     %td{:valign => "top"}

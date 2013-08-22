@@ -3,20 +3,37 @@ class HomeController < ApplicationController
 
   RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "http://#{$REST_DOMAIN}/resource_index/", :limit => 10, :mode => :intersection}
 
+  NOTES_RECENT_MAX = 5
+
   def index
     @ontologies = LinkedData::Client::Models::Ontology.all
     @groups = LinkedData::Client::Models::Group.all
 
-    # TODO_REV: List of recent notes (just get all notes and sort by date in code)
-    # active_onts_by_notes_query = "select ontology_id,count(ontology_id) as note_count from notes_indices as note group by ontology_id order by note_count desc"
-    # @active_totals = ActiveRecord::Base.connection.select_rows(active_onts_by_notes_query);
-
     # TODO_REV: List of recent mappings (discuss with Manuel)
-    @last_notes = []
+    @last_mappings = []
 
     # TODO_REV: Handle custom ontology sets
     # Show only notes from custom ontology set
-    @last_mappings = []
+    @notes = LinkedData::Client::Models::Note.all
+    @last_notes = []
+    @notes.sort {|a,b| a.created <=> b.created }.reverse[0..20].each do |n|
+      ont_uri = n.relatedOntology.first
+      ont = LinkedData::Client::Models::Ontology.find(ont_uri)
+      next if ont.nil?
+      creator = LinkedData::Client::Models::User.find(n.creator)
+      next if creator.nil?
+      username = "#{creator.firstName} #{creator.lastName}"
+      note = {
+          :id => n.id,
+          :subject => n.subject,
+          :body => n.body,
+          :created => n.created,
+          :author => username,
+          :ont_name => ont.name
+      }
+      @last_notes.push note
+      break if @last_notes.length >= NOTES_RECENT_MAX
+    end
 
     # TODO_REV: Handle private ontologies
     # Hide notes from private ontologies
@@ -26,12 +43,31 @@ class HomeController < ApplicationController
     #   restricted_for_query << ont.ontologyId.to_i unless session[:user] && session[:user].has_access?(ont)
     # end
 
-    # calculate number of total RI records that have been processed
-    @ri_record_count = "TODO"
-    @direct_annotations = "TODO"
-    @direct_expanded_annotations = "TODO"
-    @direct_expanded_annotations = "TODO"
-    @number_of_resources = "TODO"
+    # calculate bioportal summary statistics
+    @ont_count = @ontologies.length
+    @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes}.sum
+    #
+    # OR, ensure the class count is based on the latest ontology submissions:
+    #
+    #@cls_count = 0
+    #@ontologies.each do |o|
+    #  s = o.explore.latest_submission
+    #  m = s.explore.metrics
+    #  if s.id == m.submission.first
+    #    # This is useful metrics data for the latest ontology submission
+    #    @cls_count += m.classes
+    #  end
+    #end
+
+
+
+    # TODO: calculate these values
+    @ri_record_count = 0
+    @direct_annotations = 0
+    @direct_expanded_annotations = 0
+    @direct_expanded_annotations = 0
+    @number_of_resources = 0
+
   end
 
   def release
