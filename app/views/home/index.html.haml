@@ -262,7 +262,7 @@
                     - begin
                       %span{:style => "color:#AAAAAA"}
                         =# link_to "#{note[:subject]} (#{note[:ont_name]})", Class.new.extend(NotesHelper).get_applies_to_url(DataAccess.getLatestOntology(note.ontology_id).id, note.applies_to_type, note.applies_to)
-                        = link_to "#{note[:subject]} (#{note[:ont_name]})", note[:id]
+                        = link_to "#{note[:subject]} (#{note[:ont_name]})", note[:uri]
                         =# "#{time_ago_in_words(Time.at(convert_java_time(note[:created])))} ago"
                         = "#{time_ago_in_words(note[:created])} ago"
                         by #{note[:author]}

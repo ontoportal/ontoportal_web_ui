@@ -29,6 +29,7 @@ class HomeController < ApplicationController
         username = "#{creator.firstName} #{creator.lastName}"
       end
       note = {
+          :uri => ont.links['ui'] + '/notes/' + n.id,
           :id => n.id,
           :subject => n.subject,
           :body => n.body,
