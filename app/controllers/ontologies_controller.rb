@@ -18,6 +18,14 @@ class OntologiesController < ApplicationController
     @categories = LinkedData::Client::Models::Category.all
     @groups = LinkedData::Client::Models::Group.all
     @term_counts = {}
+    @ontologies.each do |o|
+      begin
+        metrics = o.explore.metrics
+        @term_counts[o.id] = metrics.classes
+      rescue
+        next
+      end
+    end
     @mapping_counts = {}
     @note_counts = {}
 

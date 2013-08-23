@@ -10,6 +10,7 @@ class HomeController < ApplicationController
     @groups = LinkedData::Client::Models::Group.all
 
     # TODO_REV: List of recent mappings (discuss with Manuel)
+    # https://bmir-jira.stanford.edu/browse/NCBO-106
     @last_mappings = []
 
     # TODO_REV: Handle custom ontology sets
@@ -63,14 +64,12 @@ class HomeController < ApplicationController
     #  end
     #end
 
-
-
     # TODO: calculate these values
-    @ri_record_count = 0
-    @direct_annotations = 0
-    @direct_expanded_annotations = 0
-    @direct_expanded_annotations = 0
-    @number_of_resources = 0
+    @ri_record_count = 'TODO'
+    @direct_annotations = 'TODO'
+    @direct_expanded_annotations = 'TODO'
+    @direct_expanded_annotations = 'TODO'
+    @number_of_resources = 'TODO'
 
   end
 
