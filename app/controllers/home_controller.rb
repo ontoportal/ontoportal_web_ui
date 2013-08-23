@@ -54,11 +54,12 @@ class HomeController < ApplicationController
     @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes}.sum
 
     # TODO: calculate these values
-    @ri_record_count = 'TODO'
-    @direct_annotations = 'TODO'
-    @direct_expanded_annotations = 'TODO'
-    @direct_expanded_annotations = 'TODO'
-    @number_of_resources = 'TODO'
+    @resources = get_resource_index_resources # application_controller
+    @ri_resources = @resources.length
+    @ri_record_count = @resources.map {|r| r.totalElements}.sum
+    @direct_annotations = 'TODO - Ray?'
+    @direct_expanded_annotations = 'TODO - Ray?'
+    @direct_expanded_annotations = 'TODO - Ray?'
 
   end
 

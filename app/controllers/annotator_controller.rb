@@ -42,7 +42,8 @@ class AnnotatorController < ApplicationController
     query += "&mappings=" + options[:mappings].join(',') unless options[:mappings].empty?
     #query += "&wholeWordOnly=" + options[:wholeWordOnly].to_s unless options[:wholeWordOnly].empty?
     #query += "&withDefaultStopWords=" + options[:withDefaultStopWords].to_s unless options[:withDefaultStopWords].empty?
-    annotations = parse_json(query) # See application_controller.rb
+    #annotations = parse_json(query) # See application_controller.rb
+    annotations = LinkedData::Client::HTTP.get(query)
     LOG.add :debug, "Retrieved #{annotations.length} annotations: #{Time.now - start}s"
     massage_annotations(annotations, options) unless annotations.empty?
     render :json => annotations

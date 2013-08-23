@@ -14,22 +14,23 @@ class ResourceIndexController < ApplicationController
 
   layout 'ontology'
 
-  RESOURCE_INDEX_URI = REST_URI + "/resource_index"
-  RI_ELEMENT_ANNOTATIONS_URI = RESOURCE_INDEX_URI + "/element_annotations"
-  RI_ONTOLOGIES_URI = RESOURCE_INDEX_URI + "/ontologies"
-  RI_RANKED_ELEMENTS_URI = RESOURCE_INDEX_URI + "/ranked_elements"
-  RI_RESOURCES_URI = RESOURCE_INDEX_URI + "/resources"
+  # Constants moved to the ApplicationController so they are available elsewhere too.
+  #RESOURCE_INDEX_URI = REST_URI + "/resource_index"
+  #RI_ELEMENT_ANNOTATIONS_URI = RESOURCE_INDEX_URI + "/element_annotations"
+  #RI_ONTOLOGIES_URI = RESOURCE_INDEX_URI + "/ontologies"
+  #RI_RANKED_ELEMENTS_URI = RESOURCE_INDEX_URI + "/ranked_elements"
+  #RI_RESOURCES_URI = RESOURCE_INDEX_URI + "/resources"
 
   # Resource Index annotation offsets rely on latin-1 character sets for the count to be right. So we set all responses as latin-1.
   before_filter :set_encoding
 
   def index
     # Note: REST API sorts by resourceId (acronym)
-    @resources = parse_json(RI_RESOURCES_URI)
+    @resources = get_resource_index_resources # application_controller
     #@resources.sort! {|a,b| a["resourceName"].downcase <=> b["resourceName"].downcase}
     # Resource Index ontologies - REST API filters them for those that are in the triple store.
     # Data structure is a list of linked data ontology models
-    @ri_ontologies = LinkedData::Client::HTTP.get(RI_ONTOLOGIES_URI)
+    @ri_ontologies = get_resource_index_ontologies # application_controller
     # Extract ontology attributes for javascript
     @ont_ids = []
     @ont_acronyms = {}
@@ -91,9 +92,9 @@ class ResourceIndexController < ApplicationController
       end
     end
     # Sort ranked elements list by resource name
-    @resources = LinkedData::Client::HTTP.get(RI_RESOURCES_URI)
-    @resources_hash = getResourcesHash(@resources)  # required in partial 'resources_results'
-    resources_map = getResourcesMapId2Name(@resources)
+    @resources = get_resource_index_resources # application_controller
+    @resources_hash = resources2hash(@resources)  # required in partial 'resources_results'
+    resources_map = resources2map_id2name(@resources)
     @elements.sort! {|a,b| resources_map[a.resourceId].downcase <=> resources_map[b.resourceId].downcase}
     @elements = convert_for_will_paginate(@elements)
     render :partial => "resources_results"
@@ -112,8 +113,8 @@ class ResourceIndexController < ApplicationController
 
     # There should be only one resource returned because we pass it in above
 
-    @resources = LinkedData::Client::HTTP.get(RI_RESOURCES_URI)
-    @resources_hash = getResourcesHash(@resources)  # required in partial 'resources_results'
+    @resources = get_resource_index_resources # application_controller
+    @resources_hash = resources2hash(@resources)  # required in partial 'resources_results'
 
     @resource_results = convert_for_will_paginate(ranked_elements.resources)[0]
     @concept_ids = params[:conceptids]
@@ -136,7 +137,7 @@ class ResourceIndexController < ApplicationController
 private
 
 
-  def getResourcesHash(resourcesList)
+  def resources2hash(resourcesList)
     resources_hash = {}
     resourcesList.each do |r|
       resources_hash[r[:resourceId]] = r.to_h # convert struct to hash (to_json will create a javascript object).
@@ -144,7 +145,7 @@ private
     return resources_hash
   end
 
-  def getResourcesMapId2Name(resourcesList)
+  def resources2map_id2name(resourcesList)
     resources_map = {}
     resourcesList.each do |r|
       resources_map[r[:resourceId]] = r[:resourceName]

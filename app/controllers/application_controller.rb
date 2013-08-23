@@ -21,6 +21,12 @@ class ApplicationController < ActionController::Base
   REST_URI = "http://#{$REST_DOMAIN}"
   API_KEY = $API_KEY
 
+  # Constants used primarily in the resource_index_controller, but also elsewhere.
+  RESOURCE_INDEX_URI = REST_URI + "/resource_index"
+  RI_ELEMENT_ANNOTATIONS_URI = RESOURCE_INDEX_URI + "/element_annotations"
+  RI_ONTOLOGIES_URI = RESOURCE_INDEX_URI + "/ontologies"
+  RI_RANKED_ELEMENTS_URI = RESOURCE_INDEX_URI + "/ranked_elements"
+  RI_RESOURCES_URI = RESOURCE_INDEX_URI + "/resources"
 
   if !$EMAIL_EXCEPTIONS.nil? && $EMAIL_EXCEPTIONS == true
     include ExceptionNotifiable
@@ -444,6 +450,7 @@ class ApplicationController < ActionController::Base
   end
 
 
+  # This method might be defunct, replaced with LinkedData::Client::HTTP.get()
   def parse_json(uri)
     uri = URI.parse(uri)
     LOG.add :debug, "Parse URI: #{uri}"
@@ -482,13 +489,22 @@ class ApplicationController < ActionController::Base
     response
   end
 
+
+  def get_resource_index_resources
+    return LinkedData::Client::HTTP.get(RI_RESOURCES_URI)
+  end
+
+  def get_resource_index_ontologies
+    return LinkedData::Client::HTTP.get(RI_ONTOLOGIES_URI)
+  end
+
+
   def get_semantic_types()
     semantic_types = {}
     sty_prefix = 'http://bioportal.bioontology.org/ontologies/umls/sty/'
     begin
-      sty_ont_find = LinkedData::Client::Models::Ontology.find_by_acronym('STY')
-      raise TypeError if not sty_ont_find.instance_of? Array
-      sty_ont = sty_ont_find[0]
+      sty_ont = LinkedData::Client::Models::Ontology.find_by_acronym('STY').first
+      raise TypeError if sty_ont.nil?
       sty_classes = sty_ont.explore.classes({'pagesize'=>500})
       sty_classes.collection.each do |cls|
         code = cls.id.sub(sty_prefix,'')
