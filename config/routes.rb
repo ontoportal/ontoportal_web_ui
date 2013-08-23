@@ -67,6 +67,7 @@ ActionController::Routing::Routes.draw do |map|
   # New Notes
   # map.notes_ontology 'ontologies/notes/virtual/:ontology', :controller => 'notes', :action => 'show_for_ontology'
   #map.note 'notes/:ontology', :controller => 'notes', :action => 'show'
+  map.note '/notes/:id', :controller => 'notes', :action => 'show', :id => /.+/
   map.note_virtual 'ontologies/:ontology/notes/:noteid', :controller => 'notes', :action => 'virtual_show', :noteid => /.+/
   map.note_ajax_single 'notes/ajax/single/:ontology', :controller => 'notes', :action => 'show_single'
   map.note_ajax_single_list 'notes/ajax/single_list/:ontology', :controller => 'notes', :action => 'show_single_list'

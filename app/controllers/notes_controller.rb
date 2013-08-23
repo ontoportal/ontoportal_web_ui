@@ -6,16 +6,16 @@ class NotesController < ApplicationController
   # GET /notes/1
   # GET /notes/1.xml
   def show
-    note_id = params[:noteid]
-    ontology_id = params[:id]
+    @notes = LinkedData::Client::Models::Note.get(params[:id], include_threads: true)
+    @ontology = (@notes.explore.relatedOntology || []).first
 
-    @note = DataAccess.getNote(ontology_id, note_id, true)
-
-    #@note = Note.find(params[:id])
+    if request.xhr?
+      render :partial => 'thread'
+      return
+    end
 
     respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @note }
+      format.html { render :template => 'notes/show' }
     end
   end
 
@@ -26,7 +26,7 @@ class NotesController < ApplicationController
     concept_id = params[:conceptid]
     ontology_acronym = params[:ontology]
 
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_acronym).first
 
     if note_id
       @notes = LinkedData::Client::Models::Note.get(params[:noteid], include_threads: true)

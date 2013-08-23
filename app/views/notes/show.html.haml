@@ -1,3 +1,4 @@
-- @title = "Note on #{@ontology.name} | #{@notes.subject}"
+- ontology_name = @ontology ? " on #{@ontology.name}" : ""
+- @title = "Note#{ontology_name} | #{@notes.subject}"
 #note_container{:style => "padding: 1em;"}
   = render :partial => 'thread'
