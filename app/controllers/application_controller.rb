@@ -394,6 +394,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def get_metrics_hash
+    metrics_hash = {}
+    @metrics = LinkedData::Client::Models::Metrics.all
+    @metrics.each {|m| metrics_hash[m.links['ontology']] = m }
+    return metrics_hash
+  end
 
   def get_simplified_ontologies_hash()
     ontologies = {}

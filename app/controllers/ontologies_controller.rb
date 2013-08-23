@@ -17,11 +17,13 @@ class OntologiesController < ApplicationController
     @submissions_map = Hash[@submissions.map {|sub| [sub.ontology.acronym, sub] }]
     @categories = LinkedData::Client::Models::Category.all
     @groups = LinkedData::Client::Models::Group.all
+    # Count the number of terms in each ontology
+    metrics_hash = get_metrics_hash
     @term_counts = {}
     @ontologies.each do |o|
       begin
-        metrics = o.explore.metrics
-        @term_counts[o.id] = metrics.classes
+        # Using begin:rescue block because some ontologies may not have metrics available.
+        @term_counts[o.id] = metrics_hash[o.id].classes
       rescue
         next
       end
