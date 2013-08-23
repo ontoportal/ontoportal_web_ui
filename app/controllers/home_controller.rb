@@ -9,11 +9,11 @@ class HomeController < ApplicationController
     @ontologies = LinkedData::Client::Models::Ontology.all
     @groups = LinkedData::Client::Models::Group.all
 
-    # TODO_REV: List of recent mappings (discuss with Manuel)
+    # TODO: List of recent mappings (discuss with Manuel)
     # https://bmir-jira.stanford.edu/browse/NCBO-106
     @last_mappings = []
 
-    # TODO_REV: Handle custom ontology sets
+    # TODO: Handle custom ontology sets
     # Show only notes from custom ontology set
     @notes = LinkedData::Client::Models::Note.all
     @last_notes = []
@@ -29,7 +29,7 @@ class HomeController < ApplicationController
         username = "#{creator.firstName} #{creator.lastName}"
       end
       note = {
-          :uri => ont.links['ui'] + '/notes/' + n.id,
+          :uri => n.links['ui'],
           :id => n.id,
           :subject => n.subject,
           :body => n.body,
@@ -38,7 +38,7 @@ class HomeController < ApplicationController
           :ont_name => ont.name
       }
       @last_notes.push note
-      break if @last_notes.length >= NOTES_RECENT_MAX
+      break if @last_notes.length >= NOTES_RECENT_MAX  # 5
     end
 
     # TODO_REV: Handle private ontologies
@@ -52,18 +52,6 @@ class HomeController < ApplicationController
     # calculate bioportal summary statistics
     @ont_count = @ontologies.length
     @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes}.sum
-    #
-    # OR, ensure the class count is based on the latest ontology submissions:
-    #
-    #@cls_count = 0
-    #@ontologies.each do |o|
-    #  s = o.explore.latest_submission
-    #  m = s.explore.metrics
-    #  if s.id == m.submission.first
-    #    # This is useful metrics data for the latest ontology submission
-    #    @cls_count += m.classes
-    #  end
-    #end
 
     # TODO: calculate these values
     @ri_record_count = 'TODO'
