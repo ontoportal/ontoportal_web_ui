@@ -71,6 +71,7 @@ class ResourceIndexController < ApplicationController
       begin
         begin
           # Resource index can be very slow and timeout, so allow a retry.
+          #ranked_elements_page = parse_json(uri) # See application_controller.rb
           ranked_elements_page = LinkedData::Client::HTTP.get(uri)
         rescue Exception => inner_error
           @retries ||= 0
@@ -78,17 +79,29 @@ class ResourceIndexController < ApplicationController
             @retries += 1
             retry
           else
+            @retries = 0 # reset it for outer
             raise inner_error
           end
         end
+        # Might generate missing method exception here on a 404 response.
         @elements.concat ranked_elements_page['collection']
         break if ranked_elements_page.nextPage.nil?
         break if @elements_page_count >= ranked_elements_page.pageCount
         uri = ranked_elements_page.nextPage
         @elements_page_count += 1
       rescue Exception => outer_error
-        # TODO: log a meaningful message?
-        raise outer_error
+        #if ranked_elements_page.status == 404
+        #  # TODO: handle a 404 response?  Set some useful data for the UI display?
+        #  # use ranked_elements_page.errors
+        #end
+        @retries ||= 0
+        if @retries < 1  # retry once only
+          @retries += 1
+          retry
+        else
+          # TODO: log a meaningful message?
+          raise outer_error
+        end
       end
     end
     # Sort ranked elements list by resource name
