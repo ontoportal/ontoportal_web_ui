@@ -57,10 +57,11 @@ class HomeController < ApplicationController
     @resources = get_resource_index_resources # application_controller
     @ri_resources = @resources.length
     @ri_record_count = @resources.map {|r| r.totalElements}.sum
-    @direct_annotations = 'TODO - Ray?'
-    @direct_expanded_annotations = 'TODO - Ray?'
-    @direct_expanded_annotations = 'TODO - Ray?'
 
+    # retrieve annotation stats from old REST service
+    @ri_stats = get_resource_index_annotation_stats
+    @direct_annotations = @ri_stats[:direct]
+    @direct_expanded_annotations = @ri_stats[:expanded]
   end
 
   def release

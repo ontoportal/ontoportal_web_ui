@@ -5,6 +5,7 @@ require 'net/https'
 require 'net/ftp'
 require 'json'
 require 'cgi'
+require 'rexml/document'
 require 'rest-client'
 require 'ontologies_api_client'
 
@@ -491,6 +492,20 @@ class ApplicationController < ActionController::Base
     return LinkedData::Client::HTTP.get(RI_ONTOLOGIES_URI)
   end
 
+  def get_resource_index_annotation_stats
+    ri_statsURL = 'http://rest.bioontology.org/resource_index/statistics/all'
+    ri_statsConn = open(ri_statsURL + '?apikey=' + get_apikey)
+    doc = REXML::Document.new(ri_statsConn)
+    stats = doc.elements["/success/data/statistics"]
+    stats_hash = {}
+    stats_hash[:total] = stats.elements["aggregatedAnnotations"].get_text.value.strip.to_i
+    stats_hash[:direct] = stats.elements["mgrepAnnotations"].get_text.value.strip.to_i
+    stats_hash[:reported] = stats.elements["reportedAnnotations"].get_text.value.strip.to_i
+    stats_hash[:hierarchy] = stats.elements["isaAnnotations"].get_text.value.strip.to_i
+    stats_hash[:mapping] = stats.elements["mappingAnnotations"].get_text.value.strip.to_i
+    stats_hash[:expanded] = stats_hash[:direct] + stats_hash[:hierarchy] + stats_hash[:mapping]
+    return stats_hash
+  end
 
   def get_semantic_types()
     semantic_types = {}
