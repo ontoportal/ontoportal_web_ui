@@ -79,13 +79,14 @@ class MappingsController < ApplicationController
   end
 
   def get_concept_table
-    @ontology = DataAccess.getOntology(params[:ontologyid])
-    @concept = DataAccess.getNode(@ontology.id, params[:conceptid])
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontologyid]).first
+    @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
 
-    @mappings = DataAccess.getConceptMappings(@ontology.ontologyId, @concept.fullId)
+    @mappings = @concept.explore.mappings
 
+    # TODO_REV: Enable mappings deletion
     # check to see if user should get the option to delete
-    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
+    # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
     render :partial => "mapping_table"
   end
@@ -103,7 +104,7 @@ class MappingsController < ApplicationController
     @concept_to ||= LinkedData::Client::Models::Class.new
 
     if request.xhr? || params[:no_layout].eql?("true")
-      render :layout => "minimal"
+      render :layout => "none"
     else
       render :layout => "ontology"
     end
@@ -112,30 +113,29 @@ class MappingsController < ApplicationController
   # POST /mappings
   # POST /mappings.xml
   def create
-    source_ontology = DataAccess.getOntology(params[:map_from_bioportal_ontology_id])
-    target_ontology = DataAccess.getOntology(params[:map_to_bioportal_ontology_id])
-    source = DataAccess.getNode(source_ontology.id, params[:map_from_bioportal_full_id])
-    target = DataAccess.getNode(target_ontology.id, params[:map_to_bioportal_full_id])
-    comment = params[:mapping_comment]
-    unidirectional = params[:mapping_bidirectional].eql?("false")
-    relation = params[:mapping_relation]
+    source_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_from_bioportal_ontology_id]).first
+    target_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_to_bioportal_ontology_id]).first
+    source = source_ontology.explore.single_class(params[:map_from_bioportal_full_id])
+    target = target_ontology.explore.single_class(params[:map_to_bioportal_full_id])
 
-    @mapping = DataAccess.createMapping(source.fullId, source.ontology.ontologyId, target.fullId, target.ontology.ontologyId, session[:user].id, comment, unidirectional, relation)
+    values = {
+      terms: [
+        {term: [source.id], ontology: source_ontology.id},
+        {term: [target.id], ontology: target_ontology.id}
+      ],
+      creator: session[:user].id,
+      relation: params[:mapping_relation],
+      comment: params[:mapping_comment]
+    }
+    @mapping = LinkedData::Client::Models::Mapping.new(values: values)
 
-    # Adds mapping to syndication
-    begin
-      @mapping.each do |mapping|
-        event = EventItem.new
-        event.event_type= "Mapping"
-        event.event_type_id = mapping.id
-        event.ontology_id = mapping.source_ont
-        event.save
-      end
-    rescue Exception => e
-      LOG.add :debug, "Problem adding mapping to RSS feed"
+    @mapping_saved = @mapping.save
+
+    if @mapping_saved.errors
+      raise Exception, @mapping_saved.errors
+    else
+      render :json => @mapping_saved
     end
-
-    render :json => @mapping
   end
 
   def destroy

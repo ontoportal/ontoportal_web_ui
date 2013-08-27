@@ -49,7 +49,7 @@ Rails::Initializer.run do |config|
 
   # ontologies_api_client init (default config works for the UI)
   require 'ontologies_api_client'
-  LinkedData::Client.config {|config| config.cache = true}
+  LinkedData::Client.config {|config| config.cache = true, config.rest_url = "http://localhost:9393/"}
 
 end
 

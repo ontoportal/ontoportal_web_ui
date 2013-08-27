@@ -1,21 +1,18 @@
 jQuery(document).ready(function() {
-  jQuery("input.search_autocomplete").focus(function(){
-    var input = jQuery(this);
-    input[0].autocompleter.getOptions().footer = "";
-    input[0].autocompleter.getExtraParams()["id"] = jQuery("#" + input.attr("id") + "_picker").val();
-  });
-
   jQuery(".ontology_picker_single").live("change", function(){
     var current_side = jQuery(this).attr("id").replace("_picker", "");
     jQuery("#" + current_side)[0].autocompleter.flushCache();
     jQuery("#" + current_side)[0].autocompleter.getOptions().width = 450;
 
+    // Set the autocompleter ontology value
+    jQuery("#" + current_side)[0].autocompleter.getExtraParams()["id"] = jQuery(this).val();
+
     if (jQuery(this).val() == "") {
-      jQuery("#" + current_side + "_bioportal_ontology_id").val("all");
+      jQuery("#" + current_side + "_bioportal_ontology_id").val("");
     }
   });
 
-  jQuery("input.search_autocomplete").bind("autocomplete_selected", function(){
+  jQuery("input.search_autocomplete").live("autocomplete_selected", function(){
     var input = jQuery(this);
     if (input.val() != input.attr("title") && input.val() !== "") {
       getTermDetails(this);
@@ -39,8 +36,8 @@ jQuery(document).ready(function() {
   });
 
   // Reset mapping UI when tree changes or loaded from ajax
-  jQuery(document).bind("tree_changed", resetMappingUIWithFacebox);
-  jQuery(document).bind("terms_tab_visible", resetMappingUI);
+  jQuery(document).live("tree_changed", resetMappingUIWithFacebox);
+  jQuery(document).live("terms_tab_visible", resetMappingUI);
 
   // Details/visualze link to show details pane and visualize flexviz
   jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
@@ -59,7 +56,7 @@ function getTermDetails(input) {
   var current_ont_id = jQuery("#" + current_id + "_bioportal_ontology_id").val();
   var current_concept_id = jQuery("#" + current_id + "_bioportal_full_id").val();
   jQuery("#" + current_id + "_concept_details_table").html('<img style="padding: 5px;" src="/images/spinners/spinner_000000_16px.gif">');
-  jQuery("#" + current_id + "_concept_details_table").load("/ajax/term_details/" + current_ont_id + "?styled=false&conceptid=" + encodeURIComponent(current_concept_id));
+  jQuery("#" + current_id + "_concept_details_table").load("/ajax/term_details/" + encodeURIComponent(current_ont_id) + "?styled=false&conceptid=" + encodeURIComponent(current_concept_id));
   jQuery("#" + current_id + "_concept_details").show();
 }
 
@@ -75,7 +72,6 @@ function resetMappingUI() {
   getTermDetails(document.getElementById("map_from"));
 
   // Clear the map to side
-  jQuery("#map_to").val(jQuery("#map_to").attr("title")).addClass("help_text_font");
   jQuery("#map_to_concept_details").hide();
 
   // Clear mapping created messages
@@ -130,13 +126,12 @@ var bp_createMapping = {
 
     // If we have a concept mapping table, update it with new mappings
     if (document.getElementById("concept_mappings_table") != null) {
-      jQuery("#concept_mappings_table").load("/ajax/mappings/get_concept_table?ontologyid=" + ontology_id + "&conceptid=" + currentConcept, function(){
+      jQuery("#concept_mappings_table").load("/ajax/mappings/get_concept_table?ontologyid=" + ontology_id + "&conceptid=" + encodeURIComponent(currentConcept), function(){
         jQuery("#mapping_count").html(jQuery("#mapping_details tbody tr:visible").size());
       });
     }
 
     // Clear the map to side
-    jQuery("#map_to").val(jQuery("#map_to").attr("title")).addClass("help_text_font");
     jQuery("#map_to_concept_details").hide();
 
     jQuery.bioportal.ont_pages["mappings"].retrieve_and_publish();
@@ -178,7 +173,7 @@ var bp_createMapping = {
 // Popup for advanced options
 var create_mapping_advanced_options = {
   init: function() {
-    jQuery("#create_mapping_advanced").bind("click", function(e){bp_popup_init(e)});
+    jQuery("#create_mapping_advanced").live("click", function(e){bp_popup_init(e)});
     jQuery("#create_mapping_advanced_options").click(function(e){e.stopPropagation()});
     this.cleanup();
   },

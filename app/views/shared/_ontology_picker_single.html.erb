@@ -12,6 +12,6 @@
 </script>
 
 <div id="<%=picker_id%>_container" class="ontology_picker_single_container">
-  <%= select :ontology, "ontologyId", @onts_for_select, { :include_blank => true, :selected => selected.to_i }, :id => picker_id, :class => "ontology_picker_single", "data-placeholder".to_sym => "Select an Ontology" %>
+  <%= select :ontology, "ontologyId", @onts_for_select, { :include_blank => true, :selected => selected }, :id => picker_id, :class => "ontology_picker_single", "data-placeholder".to_sym => "Select an Ontology" %>
 </div>
 
