@@ -352,30 +352,23 @@ class ApplicationController < ActionController::Base
 
       # Some ontologies have "too many children" at their root. These will not process and are handled here.
       raise Error404 if @concept.nil?
-    elsif @ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root"))
-      # TODO_REV: Handle flat ontologies
+    elsif @ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root") || params[:conceptid].eql?("bp_fake_root"))
       # Don't display any terms in the tree
-      # @concept = NodeWrapper.new
-      # @concept.label = "Please search for a term using the Jump To field above"
-      # @concept.id = "bp_fake_root"
-      # @concept.fullId = "bp_fake_root"
-      # @concept.child_size = 0
-      # @concept.properties = {}
-      # @concept.version_id = @ontology.id
-      # @concept.children = []
-
-      # @tree_concept = TreeNode.new(@concept)
-
-      # @root = TreeNode.new
-      # @root.children = [@tree_concept]
+      @concept = LinkedData::Client::Models::Class.new
+      @concept.prefLabel = "Please search for a term using the Jump To field above"
+      @concept.id = "bp_fake_root"
+      @concept.child_size = 0
+      @concept.properties = {}
+      @concept.children = []
+      @root = LinkedData::Client::Models::Class.new
+      @root.children = [@concept]
     elsif @ontology.flat? && params[:conceptid]
-      # TODO_REV: Handle flat ontologies
       # Display only the requested term in the tree
-      # @concept = DataAccess.getNode(@ontology.id, params[:conceptid], nil, view)
-      # @concept.children = []
-      # @concept.child_size = 0
-      # @root = TreeNode.new
-      # @root.children = [TreeNode.new(@concept)]
+      @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+      @concept.children = []
+      @concept.child_size = 0
+      @root = LinkedData::Client::Models::Class.new
+      @root.children = [@concept]
     else
       # if the id is coming from a param, use that to get concept
       @concept = @ontology.explore.single_class({full: true}, params[:conceptid])

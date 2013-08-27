@@ -157,16 +157,18 @@ class OntologiesController < ApplicationController
 
     get_class(params)
 
+    # TODO_REV: Enable PURL
     # set the current PURL for this term
-    @current_purl = @concept.id.start_with?("http://") ? "#{$PURL_PREFIX}/#{@ontology.acronym}?conceptid=#{CGI.escape(@concept.id)}" : "#{$PURL_PREFIX}/#{@ontology.abbreviation}/#{CGI.escape(@concept.id)}" if $PURL_ENABLED
+    # @current_purl = @concept.id.start_with?("http://") ? "#{$PURL_PREFIX}/#{@ontology.acronym}?conceptid=#{CGI.escape(@concept.id)}" : "#{$PURL_PREFIX}/#{@ontology.abbreviation}/#{CGI.escape(@concept.id)}" if $PURL_ENABLED
 
-    @mappings = @concept.explore.mappings
+    @mappings = @concept.explore.mappings rescue []
 
     # TODO_REV: Support mappings deletion
     # check to see if user should get the option to delete
     # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
-    @notes = @concept.explore.notes
+    @notes = @concept.explore.notes rescue []
+    @concept.id rescue binding.pry
 
     unless @concept.id.to_s.empty?
       # Update the tab with the current concept
