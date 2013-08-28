@@ -39,6 +39,15 @@
       showRestrictionLicensed();
     }
 
+    jQuery("#ontology_isView").live("click", function(){
+      console.log(jQuery("#ontology_isView").is(":checked"))
+      if (jQuery("#ontology_isView").is(":checked")) {
+        jQuery("#ontology_viewOf").removeAttr('disabled').trigger("liszt:updated");
+      } else {
+        jQuery("#ontology_viewOf").attr('disabled', true).trigger("liszt:updated");
+      }
+    });
+
     // Wire up chosen selectors
     jQuery("#ontology_administeredBy").chosen();
     jQuery("#ontology_acl").chosen();
@@ -106,6 +115,17 @@
     %td
       - cat_select = @categories.sort{|a,b| a.name <=> b.name}.map{|c| [c.name, c.id]}
       = f.select(:hasDomain, cat_select, {selected: @ontology.hasDomain}, {multiple: true, :"data-placeholder" => "Select cateogory (domain)"})
+
+  %tr
+    %th
+      View:
+    %td
+      = f.check_box :isView, checked: @ontology.view?
+      = f.label :isView, "This ontology is a view"
+      #viewOf_picker{style: "padding-top: .3em;"}
+        - single_picker_locals = {:picker_id => "ontology_viewOf", placeholder: "Select an ontology to create a view on", field_name: "viewOf", disabled: !@ontology.view?}
+        = render :partial => "shared/ontology_picker_single", :locals => single_picker_locals
+
   %tr
     %td{:align => "right", :colspan => "2"}
       = f.label :subscribe_notifications, "Subscribe to email notifications for new notes"

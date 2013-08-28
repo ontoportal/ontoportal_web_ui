@@ -1,9 +1,12 @@
 <%custom_ontologies ||= nil%>
 <%selected_ontologies ||= []%>
 <%init_ontology_picker(custom_ontologies, selected_ontologies)%>
-
+<%placeholder ||= "Select an Ontology"%>
 <%picker_id ||= "ontology_picker_single"%>
 <%selected ||= nil%>
+<%field_name ||= "ontologyId"%>
+<%object_name ||= :ontology%>
+<%disabled ||= nil%>
 
 <script type="text/javascript">
   jQuery(document).ready(function(){
@@ -12,6 +15,6 @@
 </script>
 
 <div id="<%=picker_id%>_container" class="ontology_picker_single_container">
-  <%= select :ontology, "ontologyId", @onts_for_select, { :include_blank => true, :selected => selected }, :id => picker_id, :class => "ontology_picker_single", "data-placeholder".to_sym => "Select an Ontology" %>
+  <%= select object_name, field_name, @onts_for_select, { :include_blank => true, :selected => selected }, :id => picker_id, :class => "ontology_picker_single", "data-placeholder".to_sym => placeholder, disabled: disabled %>
 </div>
 

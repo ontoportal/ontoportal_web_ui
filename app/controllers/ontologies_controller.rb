@@ -194,20 +194,6 @@ class OntologiesController < ApplicationController
     @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
   end
 
-  def new_view
-    if(params[:id].nil? || params[:id].to_i < 1)
-      @new = true
-      @ontology = OntologyWrapper.new
-      @ontology_version_id = params[:version_id]
-      @ontology.administeredBy = session[:user].id
-    else
-      @ontology = DataAccess.getView(params[:id])
-    end
-
-    @categories = DataAccess.getCategories()
-  end
-
-
   def create
     @ontology = LinkedData::Client::Models::Ontology.new(values: params[:ontology])
     @ontology_saved = @ontology.save
@@ -218,12 +204,6 @@ class OntologiesController < ApplicationController
       @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
       @errors = response_errors(@ontology_saved)
       @errors = {acronym: "Acronym already exists, please use another"} if @ontology_saved.status == 409
-
-      if (@ontology.viewOf)
-        render :action => 'new_view'
-      else
-        render :action => 'new'
-      end
     else
       # Adds ontology to syndication
       # Don't break here if we encounter problems, the RSS feed isn't critical
@@ -245,7 +225,7 @@ class OntologiesController < ApplicationController
       if @ontology_saved.summaryOnly
         redirect_to "/ontologies/success/#{CGI.escape(@ontology.id)}"
       else
-        redirect_to new_ontology_submission_url
+        redirect_to new_ontology_submission_url(CGI.escape(@ontology_saved.id))
       end
     end
   end
@@ -266,12 +246,6 @@ class OntologiesController < ApplicationController
       @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
       @errors = response_errors(error_response)
       @errors = {acronym: "Acronym already exists, please use another"} if error_response.status == 409
-
-      if (@ontology.viewOf)
-        render :action => 'new_view'
-      else
-        render :action => 'new'
-      end
     else
       # Adds ontology to syndication
       # Don't break here if we encounter problems, the RSS feed isn't critical
@@ -301,16 +275,6 @@ class OntologiesController < ApplicationController
     @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
     @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
   end
-
-  def edit_view
-    @ontology = DataAccess.getView(params[:id])
-
-    authorize_owner(@ontology.administeredBy)
-
-    @categories = DataAccess.getCategories()
-  end
-
-
 
   ###############################################
   ## These are stub methods that let us invoke partials directly
