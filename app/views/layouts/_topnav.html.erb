@@ -41,9 +41,9 @@
           <ul>
             <%for tab in session[:ontologies]%>
               <%if !@ontology.nil? && @ontology.id.eql?(tab.ontology_id)%>
-                <li id="tab<%=to_param(tab.ontology_id)%>" class="selected"><a href="/visualize/<%=tab.ontology_id%>/?conceptid=<%=encode_param(tab.concept)%>"><em><%=tab.ontology_name%></em></a></li>
+                <li id="tab<%=to_param(tab.ontology_id)%>" class="selected"><a href="/ontologies/<%=tab.ontology_acronym%>/?p=terms&conceptid=<%=CGI.escape(tab.concept)%>"><em><%=tab.ontology_name%></em></a></li>
               <%else%>
-                <li id="tab<%=to_param(tab.ontology_id)%>" ><a href="/visualize/<%=tab.ontology_id%>/?conceptid=<%=encode_param(tab.concept)%>" ><em><%=tab.ontology_name%></em></a></li>
+                <li id="tab<%=to_param(tab.ontology_id)%>" ><a href="/ontologies/<%=tab.ontology_acronym%>/?p=terms&conceptid=<%=CGI.escape(tab.concept)%>" ><em><%=tab.ontology_name%></em></a></li>
               <%end%>
             <%end%>
           </ul>
