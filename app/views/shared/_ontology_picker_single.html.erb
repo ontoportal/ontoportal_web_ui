@@ -1,6 +1,7 @@
 <%custom_ontologies ||= nil%>
-<%selected_ontologies ||= []%>
-<%init_ontology_picker(custom_ontologies, selected_ontologies)%>
+<%selected ||= ""%>
+<%selected = selected.split("/").last if selected.start_with?("http")%>
+<%init_ontology_picker(custom_ontologies, [selected])%>
 <%placeholder ||= "Select an Ontology"%>
 <%picker_id ||= "ontology_picker_single"%>
 <%selected ||= nil%>

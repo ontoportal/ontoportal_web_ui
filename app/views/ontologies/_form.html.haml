@@ -106,7 +106,6 @@
         %b License Text:
         The text below explains what licensing information you want to collect before allowing access. We will display this text and record the user's response when the user attempts to access your ontology.
         - disabled = @ontology.licensed? ? {} : {:disabled => "true"}
-        - @ontology.licenseInformation = @ontology.licenseInformation.nil? || @ontology.licenseInformation.empty? ? "Please enter your license number in the text box below to access this ontology" : @ontology.licenseInformation
         = f.text_area :licenseInformation, { :rows => 5, :class => "viewing_restriction_disabled", :style => "width: 90%;" }.merge(disabled)
 
   %tr
@@ -121,9 +120,9 @@
       View:
     %td
       = f.check_box :isView, checked: @ontology.view?
-      = f.label :isView, "This ontology is a view"
+      = f.label :isView, "This ontology is a view of:"
       #viewOf_picker{style: "padding-top: .3em;"}
-        - single_picker_locals = {:picker_id => "ontology_viewOf", placeholder: "Select an ontology to create a view on", field_name: "viewOf", disabled: !@ontology.view?}
+        - single_picker_locals = {:picker_id => "ontology_viewOf", placeholder: "Select an ontology to create a view on", field_name: "viewOf", disabled: !@ontology.view?, selected: @ontology.viewOf}
         = render :partial => "shared/ontology_picker_single", :locals => single_picker_locals
 
   %tr

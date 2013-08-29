@@ -158,7 +158,7 @@ class OntologiesController < ApplicationController
 
   def new
     if (params[:id].nil?)
-      @ontology = LinkedData::Client::Models::Ontology.new
+      @ontology = LinkedData::Client::Models::Ontology.new(values: params[:ontology])
       @ontology.administeredBy = [session[:user].id]
     else
       @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
@@ -335,87 +335,6 @@ class OntologiesController < ApplicationController
     else
       render :partial => 'widgets', :layout => "ontology_viewer"
     end
-  end
-
-  private
-
-  def validate(params, update=false)
-    # strip all spaces from email
-    params[:contactEmail] = params[:contactEmail].gsub(" ", "")
-
-    acronyms = LinkedData::Client::Models::Ontology.all.map {|o| o.acronym}
-
-    errors=[]
-    if params[:displayLabel].nil? || params[:displayLabel].length <1
-      errors << "Please Enter an Ontology Name"
-    end
-
-    if params[:abbreviation].nil? || params[:abbreviation].empty?
-      errors << "Please Enter an Ontology Abbrevation"
-    elsif params[:abbreviation].include?(" ") || /[\^{}\[\]:;\$=\*`#\|@'\<>\(\)\+,\\\/]/.match(params[:abbreviation])
-      errors << "Abbreviations cannot contain spaces or the following characters: <span style='font-family: monospace;'>^{}[]:;$=*`#|@'<>()\+,\\/</span>"
-    elsif params[:abbreviation].length < 2
-      errors << "Abbreviation must be at least two characters"
-    elsif params[:abbreviation].length > 16
-      errors << "Abbreviations must be 16 characters or less"
-    elsif !/^[A-Za-z]/.match(params[:abbreviation])
-      errors << "Abbreviations must start with a letter"
-    elsif DataAccess.getOntologyAcronyms.include?(params[:abbreviation].downcase)
-      # We matched an existing acronym, but is it already ours from a previous version?
-      unless update && !DataAccess.getLatestOntology(params[:ontologyId]).nil? && DataAccess.getLatestOntology(params[:ontologyId]).abbreviation.downcase.eql?(params[:abbreviation].downcase)
-        errors << "That abbreviation is already in use. Please choose another."
-      end
-    end
-
-    if params[:dateReleased].nil? || params[:dateReleased].length < 1
-      errors << "Please Enter the Date Released"
-    elsif params[:dateReleased].match(/[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/).nil?
-      errors << "Please Enter a Date Formatted as MM/DD/YYYY"
-    end
-
-    unless update
-      if params[:isRemote].to_i.eql?(0) && (params[:filePath].nil? || params[:filePath].length < 1)
-        errors << "Please Choose a File"
-      end
-
-      if params[:isRemote].to_i.eql?(0) && !params[:filePath].nil? && params[:filePath].size.to_i > $MAX_UPLOAD_SIZE && !session[:user].admin?
-        errors << "File is too large"
-      end
-
-      if params[:isRemote].to_i.eql?(1) && (params[:pullLocation].nil? || params[:pullLocation].length < 1)
-        errors << "Please Enter a URL"
-      end
-
-      if params[:isRemote].to_i.eql?(1) && (!params[:pullLocation].nil? || params[:pullLocation].length > 1)
-        begin
-          pullLocation = URI.parse(params[:pullLocation])
-          if pullLocation.scheme.nil? || pullLocation.host.nil?
-            errors << "Please enter a valid URL"
-          end
-        rescue URI::InvalidURIError
-          errors << "Please enter a valid URL"
-        end
-
-        if !remote_file_exists?(params[:pullLocation])
-          errors << "The URL you provided for us to load an ontology from doesn't reference a valid file"
-        end
-      end
-    end
-
-    if params[:contactName].nil? || params[:contactName].length < 1
-      errors << "Please Enter the Contact Name"
-    end
-
-    if params[:contactEmail].nil? || params[:contactEmail].length <1 || !params[:contactEmail].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
-      errors << "Please Enter the Contact Email"
-    end
-
-    # Check for metadata only and set parameter
-    if params[:isRemote].to_i.eql?(3)
-      params[:isMetadataOnly] = 1
-    end
-
-    return errors
   end
 
 end

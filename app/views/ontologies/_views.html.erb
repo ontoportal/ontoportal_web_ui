@@ -27,9 +27,9 @@
   <h2 style="margin: 2em 0 0">
     <span style="font-size: x-large; margin-right: 1.5em;">Views</span>
     <% if session[:user].nil? %>
-        <a href="/login?redirect=<%=URI.escape("/ontologies/view/new?version_id=#{@ontology.id}")%>">Create new view</a>
+        <a href="/login?redirect=<%=URI.escape("/ontologies/new?ontology[viewOf]=#{CGI.escape(@ontology.id)}")%>">Create new view</a>
     <% else %>
-        <a href="/ontologies/view/new?version_id=<%=@ontology.id%>">Create new view</a>
+        <a href="/ontologies/new?ontology[viewOf]=<%=CGI.escape(@ontology.id)%>">Create new view</a>
     <% end %>
   </h2>
 
