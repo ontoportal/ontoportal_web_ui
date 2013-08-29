@@ -56,16 +56,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/ontologies/:ontology_id/submissions/new', :controller => 'submissions', :action => 'new', :ontology_id => /.+/
   map.connect '/ontologies/:ontology_id/submissions', :controller => 'submissions', :action => 'create', :ontology_id => /.+/, conditions: {method: :post}
 
-
-  # Services
-  map.connect ':controller/service.wsdl', :action => 'wsdl'
-
   # Analytics
   map.connect '/analytics/:action', :controller => "analytics", :action => /search_result_clicked|user_intention_surveys/
-
-  # Old Notes
-  map.notes_ont 'notes/ont/:ontology/:id', :controller => 'margin_notes', :action => 'ont_service'
-  map.notes_ver 'notes/ver/:ontology/:id', :controller => 'margin_notes', :action => 'ver_service'
 
   # New Notes
   # map.notes_ontology 'ontologies/notes/virtual/:ontology', :controller => 'notes', :action => 'show_for_ontology'
@@ -96,19 +88,6 @@ ActionController::Routing::Routes.draw do |map|
   map.custom_ontologies '/accounts/:id/custom_ontologies', :controller => 'users', :action => 'custom_ontologies'
   map.connect '/login_as/:login_as', :controller => 'login', :action => 'login_as'
 
-  # Visualize
-  map.virtual_visualize '/visualize/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :id => %r([^/?]+), :conceptid => %r([^/?]+) }
-  map.virtual_uri '/visualize/virtual/:ontology/:id', :controller => 'concepts', :action => 'virtual', :requirements => { :id => %r([^/?]+) }
-  map.visualize '/visualize/:ontology', :controller => 'ontologies', :action =>'visualize', :requirements => { :ontology => %r([^/?]+) }
-  map.uri '/visualize/:ontology/:conceptid', :controller => 'ontologies', :action => 'visualize', :requirements => { :ontology => %r([^/?]+), :conceptid => %r([^/?]+) }
-  map.visualize_concept '/visualize', :controller => 'ontologies', :action => 'visualize', :requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+),
-                                                                                                              :ontologyid => %r([^/?]+), :conceptid => %r([^/?]+) }
-  map.flexviz '/flexviz/:ontologyid', :controller => 'concepts', :action => 'flexviz', :requirements => { :ontologyid => %r([^/?]+) }
-
-  # Virtual
-  map.virtual_ont '/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+) }
-  map.virtual '/virtual/:ontology/:id', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+) }
-
   # Resource Index
   map.obr_details '/res_details/:id', :controller => 'resources', :action => 'details'
   map.obr '/resources/:ontology/:id', :controller => 'resources', :action => 'show'
@@ -123,14 +102,32 @@ ActionController::Routing::Routes.draw do |map|
   map.remove_tab '/tab/remove/:ontology',:controller => 'history', :action => 'remove'
   map.update_tab '/tab/update/:ontology/:concept', :controller => 'history', :action=>'update'
 
+  # Install the default route as the lowest priority.
+  map.connect ':controller/:action/:id.:format'
+  map.connect ':controller/:action/:id'
+  map.jam 'jambalaya/:ontology/:id', :controller => 'visual', :action => 'jam'
+
+  #####
+  ## OLD ROUTES
+  ## All of these should redirect to new addresses in the controller method or using the redirect controller
+  #####
+
   # Redirects from old URL locations
   map.connect '/annotate', :controller => 'redirect', :url=>'/annotator'
   map.connect '/all_resources', :controller =>'redirect', :url=>'/resources'
   map.connect '/resources', :controller =>'redirect', :url=>'/resource_index'
   map.connect '/visconcepts/:ontology/', :controller => 'redirect', :url=>'/visualize/'
 
-  # Install the default route as the lowest priority.
-  map.connect ':controller/:action/:id.:format'
-  map.connect ':controller/:action/:id'
-  map.jam 'jambalaya/:ontology/:id', :controller => 'visual', :action => 'jam'
+  # Visualize
+  map.virtual_visualize '/visualize/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :id => %r([^/?]+), :conceptid => %r([^/?]+) }
+  map.virtual_uri '/visualize/virtual/:ontology/:id', :controller => 'concepts', :action => 'virtual', :requirements => { :id => %r([^/?]+) }
+  map.visualize '/visualize/:ontology', :controller => 'ontologies', :action =>'visualize', :requirements => { :ontology => %r([^/?]+) }
+  map.uri '/visualize/:ontology/:conceptid', :controller => 'ontologies', :action => 'visualize', :requirements => { :ontology => %r([^/?]+), :conceptid => %r([^/?]+) }
+  map.visualize_concept '/visualize', :controller => 'ontologies', :action => 'visualize', :requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+),
+                                                                                                              :ontologyid => %r([^/?]+), :conceptid => %r([^/?]+) }
+  map.flexviz '/flexviz/:ontologyid', :controller => 'concepts', :action => 'flexviz', :requirements => { :ontologyid => %r([^/?]+) }
+
+  # Virtual
+  map.virtual_ont '/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+) }
+  map.virtual '/virtual/:ontology/:id', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+) }
 end
