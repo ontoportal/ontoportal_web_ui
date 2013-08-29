@@ -39,6 +39,16 @@ class OntologiesController < ApplicationController
   # GET /ontologies/1
   # GET /ontologies/1.xml
   def show
+    # Hack to make ontologyid and conceptid work in addition to id and ontology params
+    params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]
+    params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]
+
+    acronym = BPIDResolver.id_to_acronym(params[:ontology])
+    if acronym
+      redirect_new_api
+      return
+    end
+
     # This action is now a router using the 'p' parameter as the page to show
     case params[:p]
     when "terms"
@@ -63,25 +73,7 @@ class OntologiesController < ApplicationController
   end
 
   def virtual
-    @ontology = DataAccess.getLatestOntology(params[:ontology])
-
-    @versions = DataAccess.getOntologyVersions(@ontology.ontologyId).sort{|x,y| x.id <=> y.id}
-
-    LOG.add :info, 'show_virtual_ontology', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
-
-    if @ontology.statusId.to_i.eql?(3)
-      redirect_to "/ontologies/#{@ontology.id}"
-      return
-    else
-      for version in @versions
-        if version.statusId.to_i.eql?(3)
-          redirect_to "/ontologies/#{version.id}"
-          return
-        end
-      end
-    end
-    redirect_to "/ontologies/#{@ontology.id}"
-    return
+    redirect_new_api
   end
 
   def download_latest
@@ -90,25 +82,7 @@ class OntologiesController < ApplicationController
   end
 
   def visualize
-    # Hack to make ontologyid and conceptid work in addition to id and ontology params
-    params[:conceptid] = params[:id].nil? ? params[:conceptid] : params[:id]
-    params[:ontology] = params[:ontology].nil? ? params[:ontologyid] : params[:ontology]
-
-    # Error checking
-    if params[:ontology].nil? || params[:id] && params[:ontology].nil?
-      @error = "Please provide an ontology id or concept id with an ontology id."
-      return
-    end
-
-    params_array = []
-    params.each do |key,value|
-      stop_words = [ "ontology", "controller", "action" ]
-      next if stop_words.include?(key.to_s) || value.nil? || value.empty?
-      params_array << "#{key}=#{CGI.escape(value)}"
-    end
-    params_string = (params_array.empty?) ? "" : "&#{params_array.join('&')}"
-
-    redirect_to "/ontologies/#{params[:ontology]}?p=terms#{params_string}", :status => :moved_permanently
+    redirect_new_api(true)
   end
 
   # GET /visualize/:ontology

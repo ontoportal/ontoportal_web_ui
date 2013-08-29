@@ -90,48 +90,7 @@ class ConceptsController < ApplicationController
   end
 
   def virtual
-    # Hack to make ontologyid and conceptid work in addition to id and ontology params
-    params[:id] = params[:id].nil? ? params[:conceptid] : params[:id]
-    params[:ontology] = params[:ontology].nil? ? params[:ontologyid] : params[:ontology]
-
-    if !params[:id].nil? && params[:id].empty?
-      params[:id] = nil
-    end
-
-    @ontology = DataAccess.getLatestOntology(params[:ontology])
-    @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
-    unless params[:id].nil? || params[:id].empty?
-      @concept = DataAccess.getNode(@ontology.id,params[:id])
-    end
-
-    if @ontology.metadata_only?
-      redirect_to "/ontologies/#{@ontology.id}"
-      return
-    end
-
-    if @ontology.statusId.to_i.eql?(3) && @concept
-      LOG.add :info, 'show_virtual_concept', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
-      redirect_to "/visualize/#{@ontology.id}/?conceptid=#{CGI.escape(@concept.id)}"
-      return
-    elsif @ontology.statusId.to_i.eql?(3)
-      LOG.add :info, 'show_virtual', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
-      redirect_to "/visualize/#{@ontology.id}"
-      return
-    else
-      for version in @versions
-        if version.statusId.to_i.eql?(3) && @concept
-          LOG.add :info, 'show_virtual_concept', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
-          redirect_to "/visualize/#{version.id}/?conceptid=#{CGI.escape(@concept.id)}"
-          return
-        elsif version.statusId.to_i.eql?(3)
-          LOG.add :info, 'show_virtual', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
-          redirect_to "/visualize/#{version.id}"
-          return
-        end
-      end
-      redirect_to "/ontologies/#{@ontology.id}"
-      return
-    end
+    redirect_new_api(true)
   end
 
   # Renders a details pane for a given ontology/term

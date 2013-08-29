@@ -221,6 +221,35 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def redirect_new_api(class_view = false)
+    # Hack to make ontologyid and conceptid work in addition to id and ontology params
+    params[:ontology] = params[:ontology].nil? ? params[:ontologyid] : params[:ontology]
+
+    # Error checking
+    if params[:ontology].nil? || params[:id] && params[:ontology].nil?
+      @error = "Please provide an ontology id or concept id with an ontology id."
+      return
+    end
+
+    acronym = BPIDResolver.id_to_acronym(params[:ontology])
+    binding.pry unless acronym
+    raise Error404 unless acronym
+
+    params_array = []
+    params.each do |key,value|
+      stop_words = [ "ontology", "controller", "action", "id" ]
+      next if stop_words.include?(key.to_s) || value.nil? || value.empty?
+      params_array << "#{key}=#{CGI.escape(value)}"
+    end
+    params_string = (params_array.empty?) ? "" : "&#{params_array.join('&')}"
+
+    if class_view
+      redirect_to "/ontologies/#{acronym}?p=terms#{params_string}", :status => :moved_permanently
+    else
+      redirect_to "/ontologies/#{acronym}#{params_string.empty? ? "" : "?"}#{params_string[1..-1]}", :status => :moved_permanently
+    end
+  end
+
   # rack-mini-profiler authorization
   def authorize
     if session[:user] && session[:user].admin?
