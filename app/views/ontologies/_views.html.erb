@@ -113,6 +113,13 @@
                     <li> <span class="lead">Definition Language:</span> <%= view_language %> </li>
                 <% end %>
                 <li> <span class="lead">Created By:</span> <%= view_contacts %> </li>
+                <% if viewAdmin %>
+                    <li>
+                      <span class="lead">Administrator:</span>
+                      <a href="<%viewSubmitURL%>">Submit New View Version</a>
+                      <!-- edit || remove a view version -->
+                    </li>
+                <% end %>
               </ul>
             </div> <!-- view_head -->
             <table class="zebra" cellpadding="0" cellspacing="0" width="100%">
@@ -122,38 +129,22 @@
                     <th>Ontology Version</th>
                     <th>Release Date</th>
                     <th>Upload Date</th>
-                    <!-- TODO: enable downloads and increase colspan for submit new version below.
                     <th>Downloads</th>
-                    -->
                   </tr>
               </thead>
                   <% view_submissions.each_with_index do |view_sub, view_index|  %>
                       <tr>
-                          <%#= debug view %>
-                          <td> <%= view_sub.version %> </td>
-                          <% if (view_index == 0) %>
+                        <td> <%= view_sub.version %> </td>
+                        <% if (view_index == 0) %>
                             <td> <%= "#{@ontology.acronym} (#{@submission.version})" %> </td>
-                          <% else %>
+                        <% else %>
                             <td> unknown <%#= "#{@ontology.acronym} (#{@submission.version})" %> </td>
-                          <% end %>
-                          <td> <%= view_sub.released %> </td>
-                          <td> <%= view_sub.creationDate %> </td>
-                          <!-- TODO: code REST API for downloads, see https://bmir-jira.stanford.edu/browse/NCBO-143
-                          <td>
-                              <a href="<%#=DataAccess.download(view.id)%>" target="_blank">Ontology View</a>
-                          </td>
-                          -->
+                        <% end %>
+                        <td> <%= xmldatetime_to_date(view_sub.released) %> </td>
+                        <td> <%= xmldatetime_to_date(view_sub.creationDate) %> </td>
+                        <td> <a href="<%= view_sub.id + '/download' %>" target="_blank">Ontology View</a> </td>
                       </tr>
                   <% end %>
-              <% if viewAdmin %>
-                <tr>
-                  <td colspan=6>
-                    <h3 style="margin-bottom: 0;">
-                      <a href="<%viewSubmitURL%>">Submit New View Version</a>
-                    </h3>
-                  </td>
-                </tr>
-              <% end %>
             </table>
           </div> <!-- collapsible div -->
         <% end %> <!-- @views.each -->
