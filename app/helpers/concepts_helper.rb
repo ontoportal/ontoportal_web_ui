@@ -79,7 +79,6 @@ module ConceptsHelper
       data = { :key => key, :values => values }
       properties_data[label] = data
     end
-    binding.pry
     return properties_data
   end
 
