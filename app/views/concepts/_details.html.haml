@@ -43,7 +43,9 @@
         %td
           %p true
 
-    - keys = @concept.properties.members
+    -# keys = @concept.properties.members
+    - concept_properties = concept_properties2hash( @concept.properties ) # see concepts_helper.rb
+    - keys = concept_properties.keys
     - top_keys=["description", "comment"]
     - bottom_keys=["disjoint", "subclass", "is_a", "has_part"]
     - top_set=[]
@@ -67,25 +69,34 @@
     - for key in top_set
       - key = key.to_s
       - next if exclude_relation?(key)
-      - if @concept.properties[key]
+      - if concept_properties[key]
+        - data = concept_properties[key]
+        - full_key = data[:key]
+        - values = data[:values]
         %tr
           %td.label{:nowrap => ""}
-            %span.concept_property{:title => property_title(key)}= "#{remove_owl_notation(key)}"
+            %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
           %td
-            = auto_link("<p>#{sanitize(@concept.properties[key].join("<br/>")).split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")
+            = auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")
     - for key in leftover
       - next if exclude_relation?(key, @ontology)
-      - if @concept.properties[key]
+      - if concept_properties[key]
+        - data = concept_properties[key]
+        - full_key = data[:key]
+        - values = data[:values]
         %tr
           %td.label{:nowrap => ""}
-            %span.concept_property{:title => property_title(key)}= "#{remove_owl_notation(key)}"
+            %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
           %td
-            = auto_link("<p>#{sanitize(@concept.properties[key].join("<br/>")).split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
+            = auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
     - for key in bottom_set
       - next if exclude_relation?(key)
-      - if @concept.properties[key]
+      - if concept_properties[key]
+        - data = concept_properties[key]
+        - full_key = data[:key]
+        - values = data[:values]
         %tr
           %td.label{:nowrap => ""}
-            %span.concept_property{:title => property_title(key)}= "#{remove_owl_notation(key)}"
+            %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
           %td
-            = auto_link("<p>#{@concept.properties[key].split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
+            = auto_link("<p>#{values.split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
