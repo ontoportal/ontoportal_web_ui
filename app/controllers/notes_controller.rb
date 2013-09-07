@@ -75,7 +75,7 @@ class NotesController < ApplicationController
     end
 
     unless new_note.nil?
-      render :json => new_note.to_hash.to_json rescue binding.pry
+      render :json => new_note.to_hash.to_json
     end
   end
 
@@ -119,19 +119,14 @@ class NotesController < ApplicationController
     end
   end
 
-  def validate(params)
-    errors = {}
+  ################
+  ## REDIRECTS
+  ################
 
-    if using_captcha? && params[:anonymous].eql?("1")
-      if session[:user]
-        params["author"] = anonymous_user.id
-      else
-        valid_recaptcha = verify_recaptcha
-        errors[:valid_recaptcha] = false unless valid_recaptcha
-      end
-    end
-
-    errors
+  def show_concept_list
+    params[:p] = "terms"
+    params[:t] = "notes"
+    redirect_new_api
   end
 
 end
