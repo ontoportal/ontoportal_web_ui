@@ -43,10 +43,12 @@ class OntologiesController < ApplicationController
     params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]
     params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]
 
-    acronym = BPIDResolver.id_to_acronym(params[:ontology])
-    if acronym
-      redirect_new_api
-      return
+    if params[:ontology].to_i > 0
+      acronym = BPIDResolver.id_to_acronym(params[:ontology])
+      if acronym
+        redirect_new_api
+        return
+      end
     end
 
     # This action is now a router using the 'p' parameter as the page to show
