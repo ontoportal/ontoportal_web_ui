@@ -246,7 +246,28 @@ class ApplicationController < ActionController::Base
       redirect_to "/ontologies/#{acronym}?p=terms#{params_string}", :status => :moved_permanently
     else
       redirect_to "/ontologies/#{acronym}#{params_string.empty? ? "" : "?"}#{params_string[1..-1]}", :status => :moved_permanently
+  def params_cleanup_new_api
+    params = @_params
+    if params[:ontology] && params[:ontology].to_i > 0
+      params[:ontology] = BPIDResolver.id_to_acronym(params[:ontology])
     end
+
+    if params[:ontology] && params[:conceptid] && !params[:conceptid].start_with?("http")
+      params[:conceptid] = BPIDResolver.uri_from_short_id(params[:ontology], params[:conceptid])
+    end
+
+    params
+  end
+
+  def params_string_for_redirect(params, options = {})
+    prefix = options[:prefix] || "?"
+    stop_words = options[:stop_words] || ["ontology", "controller", "action", "id"]
+    params_array = []
+    params.each do |key,value|
+      next if stop_words.include?(key.to_s) || value.nil? || value.empty?
+      params_array << "#{key}=#{CGI.escape(value)}"
+    end
+    params_array.empty? ? "" : "#{prefix}#{params_array.join('&')}"
   end
 
   # rack-mini-profiler authorization
