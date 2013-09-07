@@ -15,31 +15,27 @@ class AjaxProxyController < ApplicationController
   end
 
   def jsonp
-  	if params[:apikey].nil? || params[:apikey].empty?
-  		render_json '{ "error": "Must supply apikey" }'
-  		return
-  	end
-
-  	if params[:path].nil? || params[:path].empty?
-	  	render_json '{ "error": "Must supply path" }'
-	  	return
-  	end
-
-  	url = URI.parse($REST_URL + params[:path])
-    url.port = $REST_PORT.to_i
-  	full_path = (url.query.blank?) ? url.path : "#{url.path}?#{url.query}"
-    full_path = full_path.include?("?") ? full_path + "&apikey=#{params[:apikey]}&userapikey=#{params[:userapikey]}" : full_path + "?apikey=#{params[:apikey]}&userapikey=#{params[:userapikey]}"
-  	http = Net::HTTP.new(url.host, url.port)
-  	headers = { "Accept" => "application/json" }
-  	res = http.get(full_path, headers)
-  	response = res.code.to_i >= 400 ? { :status => res.code.to_i, :body => res.body }.to_json : res.body
-    render_json response, {:status => 200}
+  	raise Error404
   end
 
   def json_term
-    max_children = params[:max_children] ||= 0
-    no_relations = params[:no_relations] ||= true
-    render_json DataAccess.getLightNode(DataAccess.getOntology(params[:ontologyid]).id, params[:conceptid], max_children, no_relations).to_json
+    raise Error404 if params[:conceptid].nil? || params[:conceptid].empty?
+
+    if params[:ontologyid].to_i > 0
+      params[:ontology] = params[:ontologyid]
+      params_cleanup_new_api()
+      stop_words = ["controller", "action", "ontologyid"]
+      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
+      return
+    end
+
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    raise Error404 if @ontology.nil?
+
+    @concept = @ontology.explore.single_class({}, params[:conceptid])
+    raise Error404 if @concept.nil?
+
+    render_json @concept.to_json
   end
 
   def recaptcha
@@ -65,7 +61,7 @@ class AjaxProxyController < ApplicationController
   	    json
   	  end
   	end
-    render({:content_type => :json, :text => response}.merge(options))
+    render({:content_type => "application/json", :text => response}.merge(options))
   end
 
 end
