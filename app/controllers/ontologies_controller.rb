@@ -142,7 +142,6 @@ class OntologiesController < ApplicationController
     # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
     @notes = @concept.explore.notes rescue []
-    @concept.id rescue binding.pry
 
     unless @concept.id.to_s.empty?
       # Update the tab with the current concept

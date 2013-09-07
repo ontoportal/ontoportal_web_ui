@@ -179,7 +179,7 @@ class ApplicationController < ActionController::Base
     return unless error_struct
     return unless error_struct.respond_to?(:errors)
     errors = {}
-    error_struct.errors.each {|e| ""} rescue binding.pry
+    error_struct.errors.each {|e| ""}
     error_struct.errors.each do |error|
       if error.is_a?(Struct)
         errors.merge!(struct_to_hash(error))
@@ -232,7 +232,6 @@ class ApplicationController < ActionController::Base
     end
 
     acronym = BPIDResolver.id_to_acronym(params[:ontology])
-    binding.pry unless acronym
     raise Error404 unless acronym
 
     params_array = []
