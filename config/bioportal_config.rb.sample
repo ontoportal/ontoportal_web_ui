@@ -76,6 +76,10 @@ $ANONYMOUS_USER = 0
 # If you plan on using Airbrake to track exceptions then provide your API Key here
 $AIRBRAKE_API_KEY = ""
 
+# Redis server to use for NCBO::Resolver
+$REDIS_HOST = ""
+$REDIS_PORT = 6379
+
 # If you don't use Airbrake you can have exceptions emailed to the $ERROR_EMAIL address by setting this to 'true'
 $EMAIL_EXCEPTIONS = true
 
