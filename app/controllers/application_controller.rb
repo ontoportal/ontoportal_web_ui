@@ -234,18 +234,17 @@ class ApplicationController < ActionController::Base
     acronym = BPIDResolver.id_to_acronym(params[:ontology])
     raise Error404 unless acronym
 
-    params_array = []
-    params.each do |key,value|
-      stop_words = [ "ontology", "controller", "action", "id" ]
-      next if stop_words.include?(key.to_s) || value.nil? || value.empty?
-      params_array << "#{key}=#{CGI.escape(value)}"
+    if params[:conceptid] && !params[:conceptid].start_with?("http")
+      params[:conceptid] = BPIDResolver.uri_from_short_id(acronym, params[:conceptid])
     end
-    params_string = (params_array.empty?) ? "" : "&#{params_array.join('&')}"
 
     if class_view
-      redirect_to "/ontologies/#{acronym}?p=terms#{params_string}", :status => :moved_permanently
+      redirect_to "/ontologies/#{acronym}?p=terms#{params_string_for_redirect(params, prefix: "&")}", :status => :moved_permanently
     else
-      redirect_to "/ontologies/#{acronym}#{params_string.empty? ? "" : "?"}#{params_string[1..-1]}", :status => :moved_permanently
+      redirect_to "/ontologies/#{acronym}#{params_string_for_redirect(params)}", :status => :moved_permanently
+    end
+  end
+
   def params_cleanup_new_api
     params = @_params
     if params[:ontology] && params[:ontology].to_i > 0
@@ -422,10 +421,10 @@ class ApplicationController < ActionController::Base
     else
       # if the id is coming from a param, use that to get concept
       @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
-      raise Error404 if @concept.nil?
+      raise Error404 if @concept.nil? || @concept.errors
 
       # Create the tree
-      rootNode = @concept.explore.tree #(full: true)
+      rootNode = @concept.explore.tree
 
       if rootNode.nil? || rootNode.empty?
         roots = @ontology.explore.roots
