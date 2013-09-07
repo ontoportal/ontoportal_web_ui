@@ -71,18 +71,15 @@ class ConceptsController < ApplicationController
   end
 
   def show_tree
-    view = false
-    if params[:view]
-      view = true
+    if params[:ontology].to_i > 0
+      params_cleanup_new_api()
+      stop_words = ["controller", "action"]
+      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
+      return
     end
 
-    # Set the ontology we are viewing
-    # TODO_REV: Handle ontology views
-    if view
-      @ontology = nil
-    else
-      @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    end
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    raise Error404 if @ontology.nil?
 
     get_class(params)
 
@@ -96,8 +93,19 @@ class ConceptsController < ApplicationController
   # Renders a details pane for a given ontology/term
   def details
     raise Error404 if params[:conceptid].nil? || params[:conceptid].empty?
+
+    if params[:ontology].to_i > 0
+      orig_id = params[:ontology]
+      params_cleanup_new_api()
+      redirect_to "#{request.path.sub(orig_id, params[:ontology])}#{params_string_for_redirect(params)}", :status => :moved_permanently
+      return
+    end
+
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    raise Error404 if @ontology.nil?
+
     @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+    raise Error404 if @concept.nil?
 
     if params[:styled].eql?("true")
       render :partial => "details", :layout => "partial"
