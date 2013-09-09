@@ -2,11 +2,11 @@
     function resetMemcacheConnection(){
         ajaxCall("resetcache", "#reset_memcache_status");
     }
-    
+
     function flushMemcache(){
         ajaxCall("clearcache", "#flush_memcache_status");
     }
-    
+
     function ajaxCall(operation, status){
         $(status).html("");
         $.ajax({
@@ -25,7 +25,7 @@
             }
         });
     };
-    
+
     function updateStatus(XMLHttpRequest, status){
         $(status).html("Loading");
     }
@@ -58,4 +58,11 @@
             </tr>
         </table>
     </div>
+</div>
+
+<div id="global_debug" style="clear: both; padding: 2em;">
+  <h2>Global Variables / Settings</h2>
+  <pre>
+    <%=PP.pp(@globals, "")%>
+  </pre>
 </div>
