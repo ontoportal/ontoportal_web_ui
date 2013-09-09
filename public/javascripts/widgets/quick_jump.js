@@ -91,7 +91,7 @@ function jumpTo_jumpToValue(li) {
 	if (jQuery("#jump_to_concept_id") != null && jQuery("#jump_to_ontology_id") != null) {
 		var sValue = jQuery("#jump_to_concept_id").val();
 		var ontology_id = jQuery("#jump_to_ontology_id").val();
-		document.location = BP_SEARCH_SERVER + "/visualize/" + ontology_id + "/?conceptid=" + encodeURIComponent(sValue);
+		document.location = BP_SEARCH_SERVER + "/ontologies/" + ontology_id + "/?p=terms&conceptid=" + encodeURIComponent(sValue);
 		return;
 	}
 }
@@ -191,7 +191,7 @@ function getWidgetAjaxContent() {
     if (typeof def_link.attr("getting_content") === 'undefined') {
       def_link.attr("getting_content", true);
       $.getJSON(def_link.attr("href"), function(data){
-        var definition = (typeof data.definitions === 'undefined') ? "" : data.definitions;
+        var definition = (typeof data.definition === 'undefined') ? "" : data.definition.join(" ");
         def_link.parent().html(truncateText(decodeURIComponent(definition.replace(/\+/g, " "))));
       });
     }

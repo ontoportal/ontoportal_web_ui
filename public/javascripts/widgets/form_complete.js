@@ -176,7 +176,8 @@ function formComplete_setup_functions() {
   		target_property: target_property,
   		subtreerootconceptid: encodeURIComponent(BP_search_branch),
   		objecttypes: BP_objecttypes,
-  		id: BP_ONTOLOGIES // not 'ontology_id', see below...
+  		id: BP_ONTOLOGIES, // not 'ontology_id', see below...
+      ontologies: ontology_id
     };
 
     var result_width = 450;
@@ -191,7 +192,7 @@ function formComplete_setup_functions() {
 
     // see "public/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js"
     jQuery(this).bioportal_autocomplete(
-		  BP_SEARCH_SERVER + "/search/json_search/" + ontology_id,
+		  BP_SEARCH_SERVER + "/search/json_search/",
 		  {
 	        extraParams: extra_params,
 	        lineSeparator: "~!~",
@@ -250,7 +251,8 @@ function getWidgetAjaxContent() {
     if (typeof def_link.attr("getting_content") === 'undefined') {
       def_link.attr("getting_content", true);
       $.getJSON(def_link.attr("href"), function(data){
-        var definition = (typeof data.definitions === 'undefined') ? "" : data.definitions;
+        var definition = (typeof data.definition === 'undefined') ? "" : data.definition.join(" ");
+        console.log(definition)
         def_link.parent().html(truncateText(decodeURIComponent(definition.replace(/\+/g, " "))));
       });
     }
