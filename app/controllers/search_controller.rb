@@ -93,8 +93,11 @@ class SearchController < ApplicationController
       return
     end
 
+    params[:q] = params[:q].strip
+    params[:q] = params[:q] + "*" unless params[:q].end_with?("*") # Add wildcard
+
     # Filter on ontology_id
-    params[:ontologies] = params[:id]
+    params[:ontologies] ||= params[:id]
 
     search_page = LinkedData::Client::Models::Class.search(params[:q], params)
     @results = search_page.collection
