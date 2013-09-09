@@ -20,9 +20,9 @@ class AjaxProxyController < ApplicationController
 
   def json_term
     raise Error404 if params[:conceptid].nil? || params[:conceptid].empty?
+    params[:ontology] ||= params[:ontologyid]
 
     if params[:ontologyid].to_i > 0
-      params[:ontology] = params[:ontologyid]
       params_cleanup_new_api()
       stop_words = ["controller", "action", "ontologyid"]
       redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
