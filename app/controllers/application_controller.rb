@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
   # See ActionController::RequestForgeryProtection for details
   protect_from_forgery
 
-  before_filter  :preload_models, :set_global_thread_values, :domain_ontology_set
+  before_filter  :preload_models, :set_global_thread_values, :domain_ontology_set, :authorize_miniprofiler
 
   # Needed for memcache to understand the models in storage
   def preload_models()
@@ -270,9 +270,13 @@ class ApplicationController < ActionController::Base
   end
 
   # rack-mini-profiler authorization
-  def authorize
+  def authorize_miniprofiler
     if session[:user] && session[:user].admin?
       Rack::MiniProfiler.authorize_request
+    elsif params[:enable_profiler] && params[:enable_profiler].eql?("true")
+      Rack::MiniProfiler.authorize_request
+    else
+      Rack::MiniProfiler.deauthorize_request
     end
   end
 
