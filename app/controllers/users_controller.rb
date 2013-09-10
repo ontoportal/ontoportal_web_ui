@@ -77,12 +77,17 @@ class UsersController < ApplicationController
     if @errors.size < 1
       @user = LinkedData::Client::Models::User.find(params[:id])
       @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
-      @user.update_from_params(params[:user])
-      error_response = @user.update
+
+      if params[:user][:password]
+        error_response = @user.update(values: {password: params[:user][:password]})
+      else
+        @user.update_from_params(params[:user])
+        error_response = @user.update
+      end
 
       if error_response
-        @errors = response_errors(@user_saved)
-        @errors = {acronym: "Username already exists, please use another"} if @user_saved.status == 409
+        @errors = response_errors(error_response)
+        @errors = {acronym: "Username already exists, please use another"} if error_response.status == 409
         render :action => "edit"
       else
         flash[:notice] = 'Account was successfully updated'

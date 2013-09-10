@@ -19,7 +19,7 @@ class LoginController < ApplicationController
     @errors = validate(params[:user])
     if @errors.size < 1
       logged_in_user = LinkedData::Client::Models::User.authenticate(params[:user][:username], params[:user][:password])
-      if logged_in_user
+      if logged_in_user && !logged_in_user.errors
         session[:user] = logged_in_user
 
         # TODO_REV: Support custom ontology sets
@@ -98,8 +98,7 @@ class LoginController < ApplicationController
       redirect_to :action=>'lost_password'
     else
       new_password = newpass(8)
-      user.password = new_password
-      error_response = user.update
+      error_response = user.update(values: {password: new_password})
 
       if error_response
         flash[:notice] = "Error retrieving account information, please try again"
