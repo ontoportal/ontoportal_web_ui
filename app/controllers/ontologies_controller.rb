@@ -270,7 +270,7 @@ class OntologiesController < ApplicationController
           raise Error404
         end
       end
-      send_file rdf_file.path, :type => "appllication/rdf+xml"
+      send_file rdf_file.path, :type => "application/rdf+xml"
       return
     end
     # Explore the ontology links
