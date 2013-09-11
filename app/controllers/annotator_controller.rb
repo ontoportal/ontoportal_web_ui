@@ -142,7 +142,7 @@ private
     return classDetails
   end
 
-  # TODO: Use this method to highlight matched terms in the annotation text.  Currently done in JS on the client.
+  # TODO: Use this method to highlight matched classes in the annotation text.  Currently done in JS on the client.
   def highlight_and_get_context(text, position, words_to_keep = 4)
     # Process the highlighted text
     highlight = ["<span style='color: #006600; padding: 2px 0; font-weight: bold;'>", "", "</span>"]

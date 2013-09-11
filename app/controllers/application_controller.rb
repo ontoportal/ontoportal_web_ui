@@ -239,7 +239,7 @@ class ApplicationController < ActionController::Base
     end
 
     if class_view
-      redirect_to "/ontologies/#{acronym}?p=terms#{params_string_for_redirect(params, prefix: "&")}", :status => :moved_permanently
+      redirect_to "/ontologies/#{acronym}?p=classes#{params_string_for_redirect(params, prefix: "&")}", :status => :moved_permanently
     else
       redirect_to "/ontologies/#{acronym}#{params_string_for_redirect(params)}", :status => :moved_permanently
     end
@@ -394,7 +394,7 @@ class ApplicationController < ActionController::Base
     if !@ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root"))
       # get the top level nodes for the root
       @root = LinkedData::Client::Models::Class.new(read_only: true)
-      # TODO_REV: Support views? Replace old view call: @ontology.top_level_terms(view)
+      # TODO_REV: Support views? Replace old view call: @ontology.top_level_classes(view)
       root_children = @ontology.explore.roots
       root_children.sort!{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
 
@@ -406,9 +406,9 @@ class ApplicationController < ActionController::Base
       # Some ontologies have "too many children" at their root. These will not process and are handled here.
       raise Error404 if @concept.nil?
     elsif @ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root") || params[:conceptid].eql?("bp_fake_root"))
-      # Don't display any terms in the tree
+      # Don't display any classes in the tree
       @concept = LinkedData::Client::Models::Class.new
-      @concept.prefLabel = "Please search for a term using the Jump To field above"
+      @concept.prefLabel = "Please search for a class using the Jump To field above"
       @concept.id = "bp_fake_root"
       @concept.child_size = 0
       @concept.properties = {}
@@ -416,7 +416,7 @@ class ApplicationController < ActionController::Base
       @root = LinkedData::Client::Models::Class.new
       @root.children = [@concept]
     elsif @ontology.flat? && params[:conceptid]
-      # Display only the requested term in the tree
+      # Display only the requested class in the tree
       @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
       @concept.children = []
       @concept.child_size = 0

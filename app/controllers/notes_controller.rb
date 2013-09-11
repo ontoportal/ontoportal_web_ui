@@ -124,7 +124,7 @@ class NotesController < ApplicationController
   ################
 
   def show_concept_list
-    params[:p] = "terms"
+    params[:p] = "classes"
     params[:t] = "notes"
     redirect_new_api
   end

@@ -31,8 +31,8 @@ var orgSite = <%=$ORG_SITE.to_json%>;
         <span id="resource_index_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
       </div>
 
-      <% textarea_title = "Start typing to find terms to search the index with" %>
-      <%=select_tag :resource_index_terms, "",
+      <% textarea_title = "Start typing to find concepts to search the index with" %>
+      <%=select_tag :resource_index_classes, "",
                     :multiple => 'true',
                     "data-placeholder".to_sym => textarea_title,
                     :title => textarea_title,
@@ -49,7 +49,7 @@ var orgSite = <%=$ORG_SITE.to_json%>;
     <div style="position: absolute; left: -99999px;">
       <%= render :partial => "shared/ontology_picker", :locals => { :sel_text => "Ontologies", :custom_ontologies => @ri_ontologies }%>
     </div>
-    <%=render_advanced_picker(nil, @ri_ontologies, "resource_index_terms_chzn")%>
+    <%=render_advanced_picker(nil, @ri_ontologies, "resource_index_classes_chzn")%>
 
     <span style='color: red;' id="resource_index_error" class='resource_index_error'></span>
   </div>

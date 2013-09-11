@@ -39,22 +39,22 @@ jQuery(document).ready(function () {
   });
 
   // Make chosen work via ajax
-  if (jQuery("#resource_index_terms").length > 0) {
-    jQuery("#resource_index_terms").ajaxChosen({
+  if (jQuery("#resource_index_classes").length > 0) {
+    jQuery("#resource_index_classes").ajaxChosen({
       minLength    : 3,
       queryLimit   : 10,
       delay        : 500,
       chosenOptions: {},
-      searchingText: "Searching for term ",
-      noresultsText: "Term not found",
+      searchingText: "Searching for concept ",
+      noresultsText: "Concepts not found",
       initialQuery : false
     }, function (options, response, event) {
-      // jQuery("#resource_index_terms_chzn .chzn-results li.active-result").remove();
+      // jQuery("#resource_index_classes_chzn .chzn-results li.active-result").remove();
       var search_url = jQuery(document).data().bp.config.rest_url+"search";
       var search_params = {};
       search_params['apikey'] = jQuery(document).data().bp.config.apikey;
       search_params['format'] = "jsonp";
-      search_params['q'] = options.term;
+      search_params['q'] = options.classes;
       // TODO: ENABLE ADDITIONAL PARAMETERS WHEN THE SEARCH API SUPPORTS THEM.
       search_params['ontologies'] = currentOntologyAcronyms().join(',');
       //search_params['includeProperties'] = includeProps;
@@ -63,8 +63,8 @@ jQuery(document).ready(function () {
       //search_params['exactMatch'] = exactMatch;
       //search_params['categories'] = categories;
       // DEBUG console logs:
-      //console.log('RI term search URL: ' + search_url);
-      //console.log('RI term search params: ', search_params);
+      //console.log('RI class search URL: ' + search_url);
+      //console.log('RI class search params: ', search_params);
       jQuery.ajax({
         url: search_url,
         data: search_params,
@@ -72,12 +72,12 @@ jQuery(document).ready(function () {
         success: function(data){
           jQuery("#search_spinner").hide();
           jQuery("#search_results").show();
-          var terms = {}, termHTML = "";
+          var classes = {}, classHTML = "";
           jQuery.each(data.collection, function (index, cls) {
             var cls_uri = cls['@id'];
             var ont_uri = cls.links.ontology;
             var ont_acronym = cls.links.ontology.split('/').slice(-1)[0];
-            termHTML = "" +
+            classHTML = "" +
               "<span class='search_ontology' title='" + ont_uri + "'>" +
                 "<span class='search_class' title='" + cls_uri + "'>" +
                   cls.prefLabel +
@@ -86,9 +86,9 @@ jQuery(document).ready(function () {
             // Create a combination of ont_uri and cls_uri that can be split when retrieved.
             // This will be the option value in the selected drop-down list.
             var combined_uri = uri_combine(ont_uri, cls_uri);
-            terms[combined_uri] = termHTML;
+            classes[combined_uri] = classHTML;
           });
-          response(terms);  // Chosen plugin creates select list.
+          response(classes);  // Chosen plugin creates select list.
         },
         error: function(){
           jQuery("#search_spinner").hide();
@@ -99,15 +99,15 @@ jQuery(document).ready(function () {
     });
   }
 
-  // If all terms are removed from the search, put the UI in base state
+  // If all classes are removed from the search, put the UI in base state
   jQuery("a.search-choice-close").live("click", function () {
     if (chosenSearchTermsToClassesArg() === null) {
       pushIndex();
       var input = document.activeElement
-      jQuery("#resource_index_terms_chzn").trigger("mousedown");
+      jQuery("#resource_index_classes_chzn").trigger("mousedown");
       input.blur();
-      jQuery("#resource_index_terms_chzn input").data("prevVal", "");
-      jQuery("#resource_index_terms_chzn .chzn-results li").remove();
+      jQuery("#resource_index_classes_chzn input").data("prevVal", "");
+      jQuery("#resource_index_classes_chzn .chzn-results li").remove();
     }
   });
 
@@ -221,9 +221,9 @@ function replaceIndex() {
   }
 }
 
-// This will look up any term labels that haven't already been processed. If there are none it just exits without doing anything.
-// To decrease ajax calls, we also use the bp_term_cache. This method is used via polling.
-var bp_term_cache = {};
+// This will look up any class labels that haven't already been processed. If there are none it just exits without doing anything.
+// To decrease ajax calls, we also use the bp_classes_cache. This method is used via polling.
+var bp_classes_cache = {};
 function lookupTermLabels() {
   jQuery("#resource_results a.ri_concept[data-applied_label='false']").each(function () {
     var link = jQuery(this);
@@ -231,21 +231,21 @@ function lookupTermLabels() {
     link.attr("data-applied_label", "true");
 
     // Check to see if another thread is already making an ajax request and start polling
-    if (bp_term_cache[params.ontologyid + "/" + params.conceptid] === "getting") {
+    if (bp_classes_cache[params.ontologyid + "/" + params.conceptid] === "getting") {
       return setTimeout((function () {
         return applyTermLabel(link, params);
       }), 100);
     }
 
-    if (typeof bp_term_cache[params.ontologyid + "/" + params.conceptid] === "undefined") {
-      bp_term_cache[params.ontologyid + "/" + params.conceptid] = "getting";
+    if (typeof bp_classes_cache[params.ontologyid + "/" + params.conceptid] === "undefined") {
+      bp_classes_cache[params.ontologyid + "/" + params.conceptid] = "getting";
       jQuery.ajax({
-        url     : "/ajax/json_term",
+        url     : "/ajax/json_class",
         data    : params,
         dataType: 'json',
         success : (function (link) {
           return function (data) {
-            bp_term_cache[params.ontologyid + "/" + params.conceptid] = data;
+            bp_classes_cache[params.ontologyid + "/" + params.conceptid] = data;
             if (data !== null) jQuery(link).html(data.label);
           }
         })(this)
@@ -254,23 +254,23 @@ function lookupTermLabels() {
   })
 }
 
-// Poll for term information
+// Poll for class information
 jQuery(document).ready(function () {
   setInterval((function () {
     lookupTermLabels();
   }), 1000);
 });
 
-// This function will poll to see if term information exists
+// This function will poll to see if class information exists
 function applyTermLabel(link, params, calledAgain) {
-  var term_info = bp_term_cache[params.ontologyid + "/" + params.conceptid];
-  if (term_info === "getting") {
+  var class_info = bp_classes_cache[params.ontologyid + "/" + params.conceptid];
+  if (class_info === "getting") {
     if (typeof calledAgain !== "undefined") calledAgain = 0
     return setTimeout((function () {
       return applyTermLabel(link, params, calledAgain += 1);
     }), 100);
   }
-  if (term_info !== null) jQuery(link).html(term_info.label);
+  if (class_info !== null) jQuery(link).html(class_info.label);
 }
 
 function Router() {
@@ -292,7 +292,7 @@ function Router() {
     jQuery("#results").html("");
     jQuery("#results_error").html("");
     jQuery("#initial_resources").show();
-    jQuery("#resource_index_terms_chzn .search-choice-close").click();
+    jQuery("#resource_index_classes_chzn .search-choice-close").click();
   };
 
   this.resource = function (params) {
@@ -315,8 +315,8 @@ router = new Router();
 function displayResource(params) {
   var resource = params["resourceId"];
   var resourceName = resources[resource].resourceName;
-  // Only retrieve term information if this is an initial load
-  if (jQuery("#resource_index_terms").val() !== null) {
+  // Only retrieve class information if this is an initial load
+  if (jQuery("#resource_index_classes").val() !== null) {
     showResourceResults(resource, resourceName);
     return;
   }
@@ -326,8 +326,8 @@ function displayResource(params) {
 }
 
 function displayResources(classes) {
-  // Only retrieve term information if this is an initial load
-  if (jQuery("#resource_index_terms").val() !== null) {
+  // Only retrieve class information if this is an initial load
+  if (jQuery("#resource_index_classes").val() !== null) {
     showAllResources();
     return;
   }
@@ -337,21 +337,21 @@ function displayResources(classes) {
 function displayTerms(classes, completedCallback) {
   var concept, conceptOpt, ontologyId, conceptId, ontologyName, conceptRetreivedCount, conceptsLength = classes.length, params;
   conceptRetreivedCount = 0;
-  jQuery("#resource_index_terms").html("");
+  jQuery("#resource_index_classes").html("");
   for (var i = 0; i < conceptsLength; i++) {
     concept = classes[i];
     ontologyId = concept.split("/")[0];
     conceptId = concept.split("/")[1];
     ontologyName = ont_names[ontologyId];
     params = { ontologyid: ontologyId, conceptid: conceptId };
-    jQuery.getJSON("/ajax/json_term", params, (function (ontologyName) {
+    jQuery.getJSON("/ajax/json_class", params, (function (ontologyName) {
       return function (data) {
-        jQuery("#resource_index_terms").append(jQuery("<option/>").val(concept).html(" " + data.label + " <span class='search_ontology_acronym'>(" + ontologyName + ")</span>"));
+        jQuery("#resource_index_classes").append(jQuery("<option/>").val(concept).html(" " + data.label + " <span class='search_ontology_acronym'>(" + ontologyName + ")</span>"));
         conceptRetreivedCount += 1;
         if (conceptRetreivedCount == conceptsLength) {
           for (var j = 0; j < conceptsLength; j++) {
             conceptOpt = classes[j];
-            jQuery("#resource_index_terms option[value='" + conceptOpt + "']").attr("selected", true);
+            jQuery("#resource_index_classes option[value='" + conceptOpt + "']").attr("selected", true);
           }
           updateChosen();
           getSearchResults(completedCallback);
@@ -362,8 +362,8 @@ function displayTerms(classes, completedCallback) {
 }
 
 function updateChosen() {
-  jQuery("#resource_index_terms").trigger("liszt:updated");
-  jQuery("#resource_index_terms").trigger("change");
+  jQuery("#resource_index_classes").trigger("liszt:updated");
+  jQuery("#resource_index_classes").trigger("change");
 }
 
 function getSearchResults(success) {
@@ -560,7 +560,7 @@ function currentOntologyAcronyms() {
 
 
 //function currentConceptIds() {
-//  var conceptIds = jQuery("#resource_index_terms").val();
+//  var conceptIds = jQuery("#resource_index_classes").val();
 //  if (typeof conceptIds === "string") {
 //    conceptIds = conceptIds.split(",");
 //  }
@@ -571,7 +571,7 @@ function currentOntologyAcronyms() {
 function chosenSearchTerms() {
   var chosenTermsMap = {};
   // get selected option values, an array of combined_uri strings.
-  var combined_uris = jQuery("#resource_index_terms").val();
+  var combined_uris = jQuery("#resource_index_classes").val();
   if (combined_uris === null){
     return chosenTermsMap;
   } else if (typeof combined_uris === "string"){

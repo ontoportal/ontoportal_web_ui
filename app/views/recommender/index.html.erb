@@ -70,7 +70,7 @@
 
                 var found_concepts = [];
                 jQuery.each(rec.annotatingConcepts, function(){
-                  found_concepts.push("<a href='/ontologies/"+rec.virtualOntologyId+"?p=terms&conceptid="+encodeURIComponent(this.fullId)+"'>"+this.preferredName+"</a>");
+                  found_concepts.push("<a href='/ontologies/"+rec.virtualOntologyId+"?p=classes&conceptid="+encodeURIComponent(this.fullId)+"'>"+this.preferredName+"</a>");
                 });
 
                 var found_concepts_html = "<div id='found_concepts_"+resultCount+"' class='found_concepts'><h2 style='margin-top: -2em;'>Matched Terms</h2>" + found_concepts.join("<br/>") + "</div>";

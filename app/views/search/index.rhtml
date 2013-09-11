@@ -19,9 +19,9 @@
     <div id="search_options" class="not_visible" style="padding-top: .6em; clear: both; margin-bottom: 40px;">
       <h2 style="margin-bottom: 3px; font-size: 12pt; !important;">Include in your search...</h2>
       <div id="include_options" class="search_options">
-        <%=check_box :search, :include_props%> <%=label :search, :include_props, "<span class='definition' title='Named association between two entities. Examples are &quot;definition&quot; (a relation between a term and some text) and &quot;part-of&quot; (a relation between two terms).'>Property</span> values</span>"%>
+        <%=check_box :search, :include_props%> <%=label :search, :include_props, "<span class='definition' title='Named association between two entities. Examples are &quot;definition&quot; (a relation between a class and some text) and &quot;part-of&quot; (a relation between two classes).'>Property</span> values</span>"%>
         <br/>
-        <%=check_box :search, :include_obsolete%> <%=label :search, :include_obsolete, "<span class='definition' title='A term that the authors of the ontology have flagged as being obsolete and which they recommend that people not use. These terms are often left in ontologies (rather than removing them entirely) so that existing systems that depend on them will continue to function.'>Obsolete terms</span>"%>
+        <%=check_box :search, :include_obsolete%> <%=label :search, :include_obsolete, "<span class='definition' title='A class that the authors of the ontology have flagged as being obsolete and which they recommend that people not use. These classes are often left in ontologies (rather than removing them entirely) so that existing systems that depend on them will continue to function.'>Obsolete classes</span>"%>
         <br/>
         <%=check_box :search, :include_non_production%> <%=label :search, :include_non_production, "Non-production ontologies"%>
         <br/>

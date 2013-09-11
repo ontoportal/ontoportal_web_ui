@@ -6,7 +6,7 @@
 <div style="padding: 1em;">
   <h1>Annotator</h1>
   <p>
-    <%=t('home.annotate.intro').nil? || t('home.annotate.intro').empty? ? "Get annotations for biomedical text with terms from the ontologies #{help_icon("/help#Annotator_Tab")}" : t('home.annotate.intro')%>
+    <%=t('home.annotate.intro').nil? || t('home.annotate.intro').empty? ? "Get annotations for biomedical text with concepts from the ontologies #{help_icon("/help#Annotator_Tab")}" : t('home.annotate.intro')%>
   </p>
 
   <div style="padding-bottom: 1em;">
@@ -65,7 +65,7 @@
       <tr>
         <th style="padding-right: 6px;" title="Term">
           Term
-          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_terms" class="bp_popup_link">filter</a></span><div id="terms_filter_list" class="bp_popup_list" style="display: none;"></div></span>
+          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_classes" class="bp_popup_link">filter</a></span><div id="classes_filter_list" class="bp_popup_list" style="display: none;"></div></span>
         </th>
         <th style="padding-right: 6px" title="Ontology">
           Ontology
@@ -79,7 +79,7 @@
         <th>Context</th>
         <th style="padding-right: 6px;" title="Matched Term">
           Matched Term
-          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_matched_terms" class="bp_popup_link">filter</a></span><div id="matched_terms_filter_list" class="bp_popup_list" style="display: none;"></div></span>
+          <span class="popup_container" style="padding-left: 1.7em;"><span class="bp_popup_link_container"><a href="javascript:void(0);" id="filter_matched_classes" class="bp_popup_link">filter</a></span><div id="matched_classes_filter_list" class="bp_popup_list" style="display: none;"></div></span>
         </th>
         <th style="padding-right: 6px; min-width: 200px;" title="Matched Ontology">
           Matched Ontology

@@ -43,7 +43,7 @@ function initTermTree() {
     animate: true,
     timeout: 20000,
     afterClick:function(node){
-      History.pushState({p:"terms", conceptid:jQuery(node).children("a").attr("id")}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, jQuery(node).children("a").attr("href"));
+      History.pushState({p:"classes", conceptid:jQuery(node).children("a").attr("id")}, jQuery.bioportal.ont_pages["classes"].page_name + " | " + org_site, jQuery(node).children("a").attr("href"));
     },
     afterAjaxError: function(node){
       simpleTreeCollection[0].option.animate = false;
@@ -65,7 +65,7 @@ function initTermTree() {
   // Set the cache for the first concept we retrieved
   setCacheCurrent();
 
-  // Setup the "Get all terms" link for times when the children is greater than our max
+  // Setup the "Get all classes" link for times when the children is greater than our max
   jQuery(".too_many_children_override").live('click', function(event) {
     event.preventDefault();
     var result = jQuery(this).closest("ul");
@@ -94,7 +94,7 @@ function nodeClicked(node_id) {
   notesTable = null;
 
   if(node_id == 0){
-    alert("Sorry, we cannot display all the classes at this level in the hierarchy because there are too many of them. Please select another class or use the Search to find a specific term in this ontology");
+    alert("Sorry, we cannot display all the classes at this level in the hierarchy because there are too many of them. Please select another class or use the Search to find a specific concept in this ontology");
     return;
   }
 
@@ -167,13 +167,13 @@ function placeTreeView(treeHTML) {
 // Retrieve the tree view using ajax
 function getTreeView() {
   jQuery.ajax({
-    url: "/ajax/terms/treeview?ontology="+ontology_id+"&conceptid="+encodeURIComponent(concept_id),
+    url: "/ajax/classes/treeview?ontology="+ontology_id+"&conceptid="+encodeURIComponent(concept_id),
     success: function(data) {
       placeTreeView(data);
     },
     error: function(data) {
-      jQuery.get("/ajax/terms/treeview?ontology="+ontology_id+"&conceptid=root", function(data){
-        var rootTree = "<div class='tree_error'>Displaying the path to this term has taken too long. You can browse terms below.</div>" + data;
+      jQuery.get("/ajax/classes/treeview?ontology="+ontology_id+"&conceptid=root", function(data){
+        var rootTree = "<div class='tree_error'>Displaying the path to this class has taken too long. You can browse classes below.</div>" + data;
         placeTreeView(rootTree);
       });
     },

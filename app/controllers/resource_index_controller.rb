@@ -44,10 +44,10 @@ class ResourceIndexController < ApplicationController
   end
 
   def search
-    # Note: could be called by bp_resource_index.js - document-ready binding on #resource_index_terms;
+    # Note: could be called by bp_resource_index.js - document-ready binding on #resource_index_classes;
     # however, the UI now calls the REST API directly.
     if params[:q].nil?
-      render :text => "No search term provided"
+      render :text => "No search class provided"
       return
     end
     # NOTE: the search API is not supporting 'ontologies' (Jul, 2013).

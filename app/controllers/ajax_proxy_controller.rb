@@ -18,7 +18,7 @@ class AjaxProxyController < ApplicationController
   	raise Error404
   end
 
-  def json_term
+  def json_class
     raise Error404 if params[:conceptid].nil? || params[:conceptid].empty?
     params[:ontology] ||= params[:ontologyid]
 

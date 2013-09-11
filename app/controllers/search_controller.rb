@@ -89,7 +89,7 @@ class SearchController < ApplicationController
 
   def json_search
     if params[:q].nil?
-      render :text => "No search term provided"
+      render :text => "No search class provided"
       return
     end
 
@@ -178,7 +178,7 @@ class SearchController < ApplicationController
         next unless ont.production? || (!params[:ontology_ids].nil? && params[:ontology_ids].include?(ont.ontologyId.to_s))
       end
 
-      # Discard if the result is an obsolete term
+      # Discard if the result is an obsolete class
       if params[:include_obsolete].eql?("false")
         next if result['obsolete']
       end

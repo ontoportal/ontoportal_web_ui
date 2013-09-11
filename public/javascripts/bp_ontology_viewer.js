@@ -14,7 +14,7 @@
     jQuery(document).trigger("ont_view_change");
 
     if (typeof state.data.p !== 'undefined') {
-      if (state.data.p == "terms") {
+      if (state.data.p == "classes") {
         displayTree(state.data);
       }
 
@@ -54,7 +54,7 @@
 
 // Handles display of the tree depending on parameters
 function displayTree(data) {
-  jQuery(document).trigger("terms_tab_visible");
+  jQuery(document).trigger("classes_tab_visible");
 
   var new_concept_id = data.conceptid;
 
@@ -65,7 +65,7 @@ function displayTree(data) {
   // Check to see if we're actually loading a new concept or just displaying the one we already loaded previously
   if (typeof new_concept_id === 'undefined' || new_concept_id == concept_id) {
     if (concept_id !== "") {
-      History.replaceState({p:"terms", conceptid:concept_id}, jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site, "?p=terms" + "&conceptid=" + concept_id);
+      History.replaceState({p:"classes", conceptid:concept_id}, jQuery.bioportal.ont_pages["classes"].page_name + " | " + org_site, "?p=classes" + "&conceptid=" + concept_id);
     }
 
     jQuery.unblockUI();
@@ -79,13 +79,13 @@ function displayTree(data) {
       concept_label = (new_concept_link.html() == null) ? "" : " - " + new_concept_link.html().trim().replace(/<(?:.|\n)*?>/gm, '');
 
       // Retrieve new concept and display tree
-      jQuery.bioportal.ont_pages["terms"] = new jQuery.bioportal.OntologyPage("terms", "/ontologies/" + ontology_id + "?p=terms" + new_concept_param, "Problem retrieving terms", ontology_name + concept_label + " - Terms", "Terms");
+      jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + ontology_id + "?p=classes" + new_concept_param, "Problem retrieving classes", ontology_name + concept_label + " - Terms", "Terms");
 
       if (typeof data.suid !== 'undefined' && data.suid === "jump_to") {
         jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
 
         if (data.flat === true) {
-          // We have a flat ontology, so we'll replace existing information in the UI and add the new term to the list
+          // We have a flat ontology, so we'll replace existing information in the UI and add the new class to the list
 
           // Remove fake root node if it exists
           if (jQuery("li#bp_fake_root").length) {
@@ -98,11 +98,11 @@ function displayTree(data) {
           if (getCache(data.conceptid) == null) {
             var list = jQuery("div#sd_content ul.simpleTree li.root ul");
 
-            // Remove existing terms
+            // Remove existing classes
             list.children().remove();
 
-            // Add new term
-            jQuery(list).append('<li id="'+data.conceptid+'"><a href="/ontologies/'+ontology_id+'/?p=terms&conceptid='+data.conceptid+'">'+data.label+'</a></li>');
+            // Add new class
+            jQuery(list).append('<li id="'+data.conceptid+'"><a href="/ontologies/'+ontology_id+'/?p=classes&conceptid='+data.conceptid+'">'+data.label+'</a></li>');
 
             // Configure tree
             jQuery(list).children(".line").remove();
@@ -126,7 +126,7 @@ function displayTree(data) {
           }
         } else {
           // Are we jumping into the ontology? If so, get the whole tree
-          jQuery.bioportal.ont_pages["terms"].retrieve_and_publish();
+          jQuery.bioportal.ont_pages["classes"].retrieve_and_publish();
           getConceptLinkEl(new_concept_id)
         }
       } else {
@@ -137,18 +137,18 @@ function displayTree(data) {
         } else {
           // Get a new copy of the tree because our concept isn't visible
           // This could be due to using the forward/back button
-          jQuery.bioportal.ont_pages["terms"].retrieve_and_publish();
+          jQuery.bioportal.ont_pages["classes"].retrieve_and_publish();
         }
       }
 
       concept_label = (getConceptLinkEl(new_concept_id).html() == null) ? "" : " - " + getConceptLinkEl(new_concept_id).html().trim().replace(/<(?:.|\n)*?>/gm, '');
-      jQuery.bioportal.ont_pages["terms"].page_name =  ontology_name + concept_label + " - Terms"
-      document.title = jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site;
+      jQuery.bioportal.ont_pages["classes"].page_name =  ontology_name + concept_label + " - Terms"
+      document.title = jQuery.bioportal.ont_pages["classes"].page_name + " | " + org_site;
     } else {
       // Retrieve new concept and display tree
       concept_label = (getConceptLinkEl(new_concept_id).html() == null) ? "" : " - " + getConceptLinkEl(new_concept_id).html().trim().replace(/<(?:.|\n)*?>/gm, '');
-      jQuery.bioportal.ont_pages["terms"] = new jQuery.bioportal.OntologyPage("terms", "/ontologies/" + ontology_id + "?p=terms", "Problem retrieving terms", ontology_name + concept_label + " - Terms", "Terms");
-      jQuery.bioportal.ont_pages["terms"].retrieve_and_publish();
+      jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + ontology_id + "?p=classes", "Problem retrieving classes", ontology_name + concept_label + " - Terms", "Terms");
+      jQuery.bioportal.ont_pages["classes"].retrieve_and_publish();
     }
 
     if (typeof new_concept_id !== 'undefined') {
@@ -195,8 +195,8 @@ jQuery(document).ready(function() {
   });
 
   // Retrieve AJAX content if not already displayed
-  if (content_section !== "terms" && metadata_only != true) {
-    jQuery.bioportal.ont_pages["terms"].retrieve_and_publish();
+  if (content_section !== "classes" && metadata_only != true) {
+    jQuery.bioportal.ont_pages["classes"].retrieve_and_publish();
   }
 
   if (content_section !== "summary") {
@@ -270,7 +270,7 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
   this.publish = function(){
     if (this.errored === false) {
       jQuery("#ont_" + this.id + "_content").html(this.html);
-      document.title = jQuery.bioportal.ont_pages["terms"].page_name + " | " + org_site;
+      document.title = jQuery.bioportal.ont_pages["classes"].page_name + " | " + org_site;
       jQuery.unblockUI();
     } else {
       jQuery("#ont_" + this.id + "_content").html("<div style='padding: 1em;'>" + this.error_string + "</div>");
@@ -282,7 +282,7 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
 // Setup AJAX page objects
 jQuery.bioportal.ont_pages = [];
 
-jQuery.bioportal.ont_pages["terms"] = new jQuery.bioportal.OntologyPage("terms", "/ontologies/" + ontology_id + "?p=terms&ajax=true" + concept_param, "Problem retrieving terms", ontology_name + concept_name_title + " - Terms", "Terms");
+jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + ontology_id + "?p=classes&ajax=true" + concept_param, "Problem retrieving classes", ontology_name + concept_name_title + " - Terms", "Terms");
 jQuery.bioportal.ont_pages["summary"] = new jQuery.bioportal.OntologyPage("summary", "/ontologies/" + ontology_id + "?p=summary&ajax=true", "Problem retrieving summary", ontology_name + " - Summary", "Summary");
 jQuery.bioportal.ont_pages["mappings"] = new jQuery.bioportal.OntologyPage("mappings", "/ontologies/" + ontology_id + "?p=mappings&ajax=true", "Problem retrieving mappings", ontology_name + " - Mappings", "Mappings");
 jQuery.bioportal.ont_pages["notes"] = new jQuery.bioportal.OntologyPage("notes", "/ontologies/" + ontology_id + "?p=notes&ajax=true", "Problem retrieving notes", ontology_name + " - Notes", "Notes");

@@ -1618,7 +1618,7 @@ button.fg-button-menu, button.fg-button {
   text-decoration: underline !important;
 }
 
-.obsolete_term {
+.obsolete_class {
   color: gray;
   font-style: oblique;
   cursor: help;
@@ -1774,7 +1774,7 @@ form.button-to {
   display: none;
 }
 
-.term_details_pop {
+.class_details_pop {
   overflow: auto;
   width: 750px !important;
   display: block !important;
@@ -1789,11 +1789,11 @@ div.search_result {
   margin-bottom: 1.5em;
 }
 
-div.term_link a {
+div.class_link a {
   font-size: 18px;
 }
 
-span.term_def {
+span.class_def {
   display: block;
   margin: 3px 0 2px;
   font-size: 12px;
@@ -1808,7 +1808,7 @@ div.search_result_additional {
   margin: 1em 0 1.2em;
 }
 
-div.search_result_additional .term_link a {
+div.search_result_additional .class_link a {
   font-size: 15px !important;
 }
 
@@ -2024,7 +2024,7 @@ a.link_button > span.ui-button-text {
   color: #525252;
 }
 
-.term_permalink {
+.class_permalink {
   background: none repeat scroll 0 0 white;
   border-color: #BCC6D0;
   border-style: solid none solid solid;
@@ -2109,7 +2109,7 @@ a.truncated_less, a.truncated_more {
 /************************************
  * Resource Index
  ************************************/
-#resource_index_terms_chzn ul.chzn-results li.searching:after {
+#resource_index_classes_chzn ul.chzn-results li.searching:after {
   background: url("/images/spinners/spinner_000000_16px.gif") no-repeat scroll 5px -1.5px transparent;
   color: #F4F4F4;
   content: "spacer";

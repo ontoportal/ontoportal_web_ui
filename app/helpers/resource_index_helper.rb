@@ -30,7 +30,7 @@ module ResourceIndexHelper
     split_id = local_concept_id.split("/")
     ontology_id = split_id[0]
     concept_id = split_id[1]
-    "/ontologies/#{ontology_id}?p=terms&conceptid=#{CGI.escape(concept_id)}"
+    "/ontologies/#{ontology_id}?p=classes&conceptid=#{CGI.escape(concept_id)}"
   end
 
   def element_text(element, weight)
@@ -45,8 +45,8 @@ module ResourceIndexHelper
         split_id = id.split("/")
         ontology_id = split_id[0]
         concept_id = split_id[1]
-        href = "#{$UI_URL}/ontologies/#{ontology_id}?p=terms&conceptid=#{concept_id}"
-        concept_links << "<a href='#{href}' class='ri_concept' data-ontology_id='#{ontology_id}' data-applied_label='false' data-concept_id='#{CGI.escape(concept_id)}'>view term in #{$SITE}</a>"
+        href = "#{$UI_URL}/ontologies/#{ontology_id}?p=classes&conceptid=#{concept_id}"
+        concept_links << "<a href='#{href}' class='ri_concept' data-ontology_id='#{ontology_id}' data-applied_label='false' data-concept_id='#{CGI.escape(concept_id)}'>view class in #{$SITE}</a>"
       end
       concept_links.join("<br/>")
     else
@@ -76,11 +76,11 @@ module ResourceIndexHelper
       #  split_id = id.split("/")
       #  ontology_id = split_id[0]
       #  concept_id = split_id[1]
-      #  href = "#{$UI_URL}/ontologies/#{ontology_id}?p=terms&conceptid=#{concept_id}"
+      #  href = "#{$UI_URL}/ontologies/#{ontology_id}?p=classes&conceptid=#{concept_id}"
       #
       #  binding.pry
       #
-      #  concept_links << "<a href='#{href}' class='ri_concept' data-ontology_id='#{ontology_id}' data-applied_label='false' data-concept_id='#{CGI::escape(concept_id)}'>view term in #{$SITE}</a>"
+      #  concept_links << "<a href='#{href}' class='ri_concept' data-ontology_id='#{ontology_id}' data-applied_label='false' data-concept_id='#{CGI::escape(concept_id)}'>view class in #{$SITE}</a>"
       #end
       concept_links.join("<br/>")
     end

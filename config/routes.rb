@@ -70,17 +70,17 @@ ActionController::Routing::Routes.draw do |map|
   # Ajax
   map.ajax '/ajax/', :controller => 'ajax_proxy', :action => 'get'
   map.connect '/ajax_concepts/:ontology/', :controller => 'concepts', :action => 'show', :requirements => { :id => %r([^/?]+) }
-  map.connect '/ajax/term_details/:ontology', :controller => 'concepts', :action => 'details'
+  map.connect '/ajax/class_details/:ontology', :controller => 'concepts', :action => 'details'
   map.connect "/ajax/mappings/get_concept_table", :controller => "mappings", :action => "get_concept_table"
-  map.connect "/ajax/json_term", :controller => "ajax_proxy", :action => "json_term"
+  map.connect "/ajax/json_class", :controller => "ajax_proxy", :action => "json_class"
   map.connect "/ajax/jsonp", :controller => "ajax_proxy", :action => "jsonp"
   map.connect "/ajax/recaptcha", :controller => "ajax_proxy", :action => "recaptcha"
   map.connect "/ajax/loading_spinner", :controller => "ajax_proxy", :action => "loading_spinner"
   map.connect "/ajax/notes/delete", :controller => "notes", :action => "destroy"
   map.connect "/ajax/notes/concept_list", :controller => "notes", :action => "show_concept_list"
-  map.connect "/ajax/terms/label", :controller => "concepts", :action => "show_label"
-  map.connect "/ajax/terms/definition", :controller => "concepts", :action => "show_definition"
-  map.connect "/ajax/terms/treeview", :controller => "concepts", :action => "show_tree"
+  map.connect "/ajax/classes/label", :controller => "concepts", :action => "show_label"
+  map.connect "/ajax/classes/definition", :controller => "concepts", :action => "show_definition"
+  map.connect "/ajax/classes/treeview", :controller => "concepts", :action => "show_tree"
 
   # User
   map.logout '/logout', :controller => 'login', :action => 'destroy'

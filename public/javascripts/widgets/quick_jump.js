@@ -91,7 +91,7 @@ function jumpTo_jumpToValue(li) {
 	if (jQuery("#jump_to_concept_id") != null && jQuery("#jump_to_ontology_id") != null) {
 		var sValue = jQuery("#jump_to_concept_id").val();
 		var ontology_id = jQuery("#jump_to_ontology_id").val();
-		document.location = BP_SEARCH_SERVER + "/ontologies/" + ontology_id + "/?p=terms&conceptid=" + encodeURIComponent(sValue);
+		document.location = BP_SEARCH_SERVER + "/ontologies/" + ontology_id + "/?p=classes&conceptid=" + encodeURIComponent(sValue);
 		return;
 	}
 }
@@ -101,19 +101,19 @@ function jumpTo_formatItem(row, position, count) {
   var keywords = jQuery("#BP_search_box").val().replace(specials, "\\$&").split(' ').join('|');
   var regex = new RegExp( '(' + keywords + ')', 'gi' );
   var result = "";
-  var term_name_width = "350px";
+  var class_name_width = "350px";
 
   // Results
   var result_type = row[2];
-  var result_term = row[0];
+  var result_class = row[0];
   var result_ont_version = row[3];
   var result_uri = row[4];
 
-  // Set wider term name column
+  // Set wider class name column
   if (BP_include_definitions) {
-    term_name_width = "150px";
+    class_name_width = "150px";
   } else if (BP_ontology_id == "") {
-    term_name_width = "300px";
+    class_name_width = "300px";
   }
 
 	// row[7] is the ontology_id, only included when searching multiple ontologies
@@ -122,14 +122,14 @@ function jumpTo_formatItem(row, position, count) {
       result += definitionMarkup(result_ont_version, result_uri);
     }
 
-		result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>";
+		result += "<div class='result_class' style='width: "+class_name_width+";'>" + result_class.replace(regex, "<b><span class='result_class_highlight'>$1</span></b>") + "</div>";
 
     result += "<div class='result_type' style='overflow: hidden; float: none;'>" + result_type + "</div>";
 	} else {
     // Results
     var result_ont = row[7];
 
-		result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>"
+		result += "<div class='result_class' style='width: "+class_name_width+";'>" + result_class.replace(regex, "<b><span class='result_class_highlight'>$1</span></b>") + "</div>"
 
     if (BP_include_definitions) {
       result += definitionMarkup(result_ont_version, result_uri);
@@ -142,7 +142,7 @@ function jumpTo_formatItem(row, position, count) {
 }
 
 function definitionMarkup(ont, concept) {
-	return "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='"+BP_SEARCH_SERVER+"/ajax/json_term?callback=?&ontologyid="+ont+"&conceptid="+encodeURIComponent(concept)+"'></a></div>";
+	return "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='"+BP_SEARCH_SERVER+"/ajax/json_class?callback=?&ontologyid="+ont+"&conceptid="+encodeURIComponent(concept)+"'></a></div>";
 }
 
 function jumpTo_setup_functions() {

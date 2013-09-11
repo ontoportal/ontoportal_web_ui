@@ -57,8 +57,8 @@ class NodeWrapper
             unless relation_value.nil? || !relation_value.kind_of?(Array)
               relation_value.each do |list_item|
                 if list_item.kind_of? Hash
-                  # In order to link to terms, we look for ids and labels
-                  # which identify hashes that represent terms. This is done
+                  # In order to link to classes, we look for ids and labels
+                  # which identify hashes that represent classes. This is done
                   # because we don't have a way to identify classBean elements
                   # at this point.
                   if !list_item['label'].nil? && !list_item['id'].nil? && !list_item['id'].start_with?("@") && (!list_item['type'].nil? && !list_item['type'].eql?("individual"))
@@ -121,11 +121,11 @@ class NodeWrapper
   end
 
   def label_html
-    self.obsolete? ? "<span class='obsolete_term' title='This term is obsolete'>#{self.label}</span>" : self.label
+    self.obsolete? ? "<span class='obsolete_class' title='This class is obsolete'>#{self.label}</span>" : self.label
   end
 
   def self.label_to_html(label, obsolete)
-    obsolete ? "<span class='obsolete_term' title='This term is obsolete'>#{label}</span>" : label
+    obsolete ? "<span class='obsolete_class' title='This class is obsolete'>#{label}</span>" : label
   end
 
   def to_param

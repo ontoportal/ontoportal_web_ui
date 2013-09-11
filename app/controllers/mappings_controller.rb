@@ -119,9 +119,9 @@ class MappingsController < ApplicationController
     target = target_ontology.explore.single_class(params[:map_to_bioportal_full_id])
 
     values = {
-      terms: [
-        {term: [source.id], ontology: source_ontology.id},
-        {term: [target.id], ontology: target_ontology.id}
+      classes: [
+        {class: [source.id], ontology: source_ontology.id},
+        {class: [target.id], ontology: target_ontology.id}
       ],
       creator: session[:user].id,
       relation: params[:mapping_relation],

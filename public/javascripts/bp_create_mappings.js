@@ -37,7 +37,7 @@ jQuery(document).ready(function() {
 
   // Reset mapping UI when tree changes or loaded from ajax
   jQuery(document).live("tree_changed", resetMappingUIWithFacebox);
-  jQuery(document).live("terms_tab_visible", resetMappingUI);
+  jQuery(document).live("classes_tab_visible", resetMappingUI);
 
   // Details/visualze link to show details pane and visualize flexviz
   jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
@@ -56,7 +56,7 @@ function getTermDetails(input) {
   var current_ont_id = jQuery("#" + current_id + "_bioportal_ontology_id").val();
   var current_concept_id = jQuery("#" + current_id + "_bioportal_full_id").val();
   jQuery("#" + current_id + "_concept_details_table").html('<img style="padding: 5px;" src="/images/spinners/spinner_000000_16px.gif">');
-  jQuery("#" + current_id + "_concept_details_table").load("/ajax/term_details/" + encodeURIComponent(current_ont_id) + "?styled=false&conceptid=" + encodeURIComponent(current_concept_id));
+  jQuery("#" + current_id + "_concept_details_table").load("/ajax/class_details/" + encodeURIComponent(current_ont_id) + "?styled=false&conceptid=" + encodeURIComponent(current_concept_id));
   jQuery("#" + current_id + "_concept_details").show();
 }
 
@@ -66,7 +66,7 @@ function resetMappingUIWithFacebox() {
 }
 
 function resetMappingUI() {
-  // Set the map from side to the new term from the tree
+  // Set the map from side to the new class from the tree
   jQuery("#map_from").val(jQuery.trim(jQuery("#sd_content a.active").text()));
   jQuery("#map_from_bioportal_full_id").val(jQuery("#sd_content a.active").attr("id"));
   getTermDetails(document.getElementById("map_from"));
@@ -150,12 +150,12 @@ var bp_createMapping = {
     var errored = false;
 
     if (concept_from_input.val() == "" || concept_from_input.val() == concept_from_input.attr("title")) {
-      errors.push("Please select term to map from");
+      errors.push("Please select class to map from");
       errored = true;
     }
 
     if (concept_to_input.val() == "" || concept_to_input.val() == concept_to_input.attr("title")) {
-      errors.push("Please select term to map to");
+      errors.push("Please select class to map to");
       errored = true;
     }
 

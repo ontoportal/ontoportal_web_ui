@@ -17,13 +17,13 @@ class OntologiesController < ApplicationController
     @submissions_map = Hash[@submissions.map {|sub| [sub.ontology.acronym, sub] }]
     @categories = LinkedData::Client::Models::Category.all
     @groups = LinkedData::Client::Models::Group.all
-    # Count the number of terms in each ontology
+    # Count the number of classes in each ontology
     metrics_hash = get_metrics_hash
-    @term_counts = {}
+    @class_counts = {}
     @ontologies.each do |o|
       begin
         # Using begin:rescue block because some ontologies may not have metrics available.
-        @term_counts[o.id] = metrics_hash[o.id].classes
+        @class_counts[o.id] = metrics_hash[o.id].classes
       rescue
         next
       end
@@ -54,7 +54,11 @@ class OntologiesController < ApplicationController
     # This action is now a router using the 'p' parameter as the page to show
     case params[:p]
     when "terms"
-      self.terms
+      params[:p].gsub!(/terms/,'classes')
+      redirect_new_api
+      return
+    when "classes"
+      self.classes
       return
     when "mappings"
       self.mappings
@@ -88,7 +92,7 @@ class OntologiesController < ApplicationController
   end
 
   # GET /visualize/:ontology
-  def terms
+  def classes
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]
     params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]
@@ -134,7 +138,7 @@ class OntologiesController < ApplicationController
     get_class(params)
 
     # TODO_REV: Enable PURL
-    # set the current PURL for this term
+    # set the current PURL for this class
     # @current_purl = @concept.id.start_with?("http://") ? "#{$PURL_PREFIX}/#{@ontology.acronym}?conceptid=#{CGI.escape(@concept.id)}" : "#{$PURL_PREFIX}/#{@ontology.abbreviation}/#{CGI.escape(@concept.id)}" if $PURL_ENABLED
 
     @mappings = @concept.explore.mappings rescue []

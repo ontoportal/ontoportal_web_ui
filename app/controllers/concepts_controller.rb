@@ -19,11 +19,11 @@ class ConceptsController < ApplicationController
     end
 
     if params[:callback].eql?('children') && params[:child_size].to_i > $MAX_CHILDREN && params[:child_size].to_i < $MAX_POSSIBLE_DISPLAY && !too_many_children_override
-      retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{params[:ontology]}/?conceptid=#{CGI.escape(params[:id])}&callback=children&too_many_children_override=true'>Get all terms</a>"
-      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} terms at this level. Retrieving these may take several minutes. #{retry_link}</div>"
+      retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{params[:ontology]}/?conceptid=#{CGI.escape(params[:id])}&callback=children&too_many_children_override=true'>Get all classes</a>"
+      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} classes at this level. Retrieving these may take several minutes. #{retry_link}</div>"
       return
     elsif params[:callback].eql?('children') && params[:child_size].to_i > $MAX_POSSIBLE_DISPLAY && !too_many_children_override
-      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} terms at this level. Please use the \"Jump To\" to search for specific terms.</div>"
+      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} classes at this level. Please use the \"Jump To\" to search for specific classes.</div>"
       return
     end
 
@@ -57,17 +57,17 @@ class ConceptsController < ApplicationController
   def show_label
     @ontology = LinkedData::Client::Models::Ontology.find(params[:ontology])
     begin
-      term_label = @ontology.explore.single_class(params[:concept]).prefLabel
+      class_label = @ontology.explore.single_class(params[:concept]).prefLabel
     rescue Exception => e
-      term_label = "<span title='This term cannot be viewed because the id cannot be found in the most recent version of the ontology' style='cursor: help;'>#{params[:concept]}</span>"
+      class_label = "<span title='This class cannot be viewed because the id cannot be found in the most recent version of the ontology' style='cursor: help;'>#{params[:concept]}</span>"
     end
-    render :text => term_label
+    render :text => class_label
   end
 
   def show_definition
     @ontology = LinkedData::Client::Models::Ontology.find(params[:ontology])
-    term = @ontology.explore.single_class(params[:concept])
-    render :text => term.definition
+    cls = @ontology.explore.single_class(params[:concept])
+    render :text => cls.definition
   end
 
   def show_tree
@@ -90,7 +90,7 @@ class ConceptsController < ApplicationController
     redirect_new_api(true)
   end
 
-  # Renders a details pane for a given ontology/term
+  # Renders a details pane for a given ontology/concept
   def details
     raise Error404 if params[:conceptid].nil? || params[:conceptid].empty?
 

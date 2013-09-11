@@ -68,13 +68,13 @@ jQuery(document).ready(function(){
 
   // Position of popup for details
   jQuery(document).bind('reveal.facebox', function(){
-    if (jQuery("div.term_details_pop").is(":visible")) {
+    if (jQuery("div.class_details_pop").is(":visible")) {
       jQuery("#facebox").css("max-height", jQuery(window).height() - (jQuery("#facebox").offset().top - jQuery(window).scrollTop()) * 2 + "px");
     }
   });
 
   // Use pop-up with flex via an iframe for "visualize" link
-  jQuery("a.term_visualize").live("click", (function(){
+  jQuery("a.class_visualize").live("click", (function(){
     var ontologyid = jQuery(this).attr("data-bp_ontologyid");
     var conceptid = jQuery(this).attr("data-bp_conceptid");
 
@@ -220,7 +220,7 @@ function formatSearchResults(ontologyResults) {
     jQuery(ontologyResults).each(function(){
       additional_rows.push([
         "<div class='search_result_additional'>",
-        termHTML(this, normalizeObsoleteTerms(this), false),
+        classHTML(this, normalizeObsoleteTerms(this), false),
         definitionHTML(this, "additional_def_container"),
         "<div class='search_result_links'>"+resultLinksHTML(this)+"</div>",
         "</div>"
@@ -238,7 +238,7 @@ function formatSearchResults(ontologyResults) {
 
   row = [
     "<div class='search_result' data-bp_ont_id='"+res.links.ontology+"'>",
-    termHTML(res, label_html, true),
+    classHTML(res, label_html, true),
     definitionHTML(res),
     "<div class='search_result_links'>"+resultLinksHTML(res) + additional_results_link+"</div>",
     additional_results,
@@ -275,8 +275,8 @@ function updatePopupCounts() {
 }
 
 function normalizeObsoleteTerms(res) {
-  // We have to look for a span here, indicating that the term is obsolete.
-  // If not, add the term to a new span to match obsolete structure so we can process them the same.
+  // We have to look for a span here, indicating that the class is obsolete.
+  // If not, add the class to a new span to match obsolete structure so we can process them the same.
   var max_word_length = 60;
   var elipses = (res.prefLabel.length > max_word_length) ? "..." : "";
   var label_html = (res.isObsolete == "1") ? jQuery(res.prefLabel) : jQuery("<span/>").append(res.prefLabel);
@@ -306,7 +306,7 @@ function shortenDefinition(def, keepOnlyDefinitions) {
     }
   } else {
     if (keepOnlyDefinitions) {
-      // Remove entire term
+      // Remove entire class
       def.parent().parent().remove();
     }
   }
@@ -368,14 +368,14 @@ function currentOntologiesCount() {
   return jQuery(".search_result").length;
 }
 
-function termHTML(res, label_html, displayOntologyName) {
+function classHTML(res, label_html, displayOntologyName) {
   var ontologyName = displayOntologyName ? "<span class='ont_name' data-ont='"+res.links.ontology+"'></span>" : "";
   setOntologyName(res);
-  return "<div class='term_link'><a title='"+res.prefLabel+"' data-bp_conceptid='"+encodeURIComponent(res["@id"])+"' data-exact_match='"+res.exactMatch+"' href='/ontologies/"+ontologyIdToAcronym(res.links.ontology)+"?p=terms&conceptid="+encodeURIComponent(res["@id"])+"'>"+jQuery(label_html).html()+ontologyName+"</a><div class='concept_uri'>"+res["@id"]+"</div></div>";
+  return "<div class='class_link'><a title='"+res.prefLabel+"' data-bp_conceptid='"+encodeURIComponent(res["@id"])+"' data-exact_match='"+res.exactMatch+"' href='/ontologies/"+ontologyIdToAcronym(res.links.ontology)+"?p=classes&conceptid="+encodeURIComponent(res["@id"])+"'>"+jQuery(label_html).html()+ontologyName+"</a><div class='concept_uri'>"+res["@id"]+"</div></div>";
 }
 
 function resultLinksHTML(res) {
-  return "<span class='additional'><a href='/ajax/term_details/"+ontologyIdToAcronym(res.links.ontology)+"?styled=false&conceptid="+encodeURIComponent(res["@id"])+"' class='term_details search_result_link' rel='facebox[.term_details_pop]'>details</a> - <a href='javascript:void(0);' data-bp_ontologyid='"+res.links.ontology+"' data-bp_conceptid='"+encodeURIComponent(res["@id"])+"' class='term_visualize search_result_link'>visualize</a></span>";
+  return "<span class='additional'><a href='/ajax/class_details/"+ontologyIdToAcronym(res.links.ontology)+"?styled=false&conceptid="+encodeURIComponent(res["@id"])+"' class='class_details search_result_link' rel='facebox[.class_details_pop]'>details</a> - <a href='javascript:void(0);' data-bp_ontologyid='"+res.links.ontology+"' data-bp_conceptid='"+encodeURIComponent(res["@id"])+"' class='class_visualize search_result_link'>visualize</a></span>";
 }
 
 function definitionHTML(res, defClass) {

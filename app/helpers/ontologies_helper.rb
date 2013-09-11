@@ -31,11 +31,11 @@ module OntologiesHelper
     if ontology.summaryOnly
       return "<a href='/ontologies/#{ontology.acronym}'>Summary Only</a>"
     elsif ontology.private?
-      return "<a href='/ontologies/#{ontology.acronym}?p=terms'>Private</a>"
+      return "<a href='/ontologies/#{ontology.acronym}?p=classes'>Private</a>"
     elsif ontology.licensed?
-      return "<a href='/ontologies/#{ontology.acronym}?p=terms'>Licensed</a>"
+      return "<a href='/ontologies/#{ontology.acronym}?p=classes'>Licensed</a>"
     else
-      return "<a href='/ontologies/#{ontology.acronym}?p=terms'>Public</a>"
+      return "<a href='/ontologies/#{ontology.acronym}?p=classes'>Public</a>"
     end
   end
 
@@ -76,7 +76,7 @@ module OntologiesHelper
     end
 
     if ontology.valid_tree_view?
-      return "<a href='/ontologies/#{ontology.id}?p=terms'>#{version_text}</a> <span style='font-size: x-small; color: gray; padding-left: 10px;'>#{status_text}</span>"
+      return "<a href='/ontologies/#{ontology.id}?p=classes'>#{version_text}</a> <span style='font-size: x-small; color: gray; padding-left: 10px;'>#{status_text}</span>"
     else
       return version_text + " <span style='font-size: x-small; color: gray; padding-left: 10px;'>" + status_text + "</span>"
     end
@@ -159,8 +159,8 @@ module OntologiesHelper
     links << "<a class='ont_icons' href=''>N<span class='ont_counts'>#{notes_count_formatted}</span></a>"
   end
 
-  def terms_link(ontology, count)
-    loc = ontology.summaryOnly ? "summary" : "terms"
+  def classes_link(ontology, count)
+    loc = ontology.summaryOnly ? "summary" : "classes"
 
     if count.nil? || count == 0
       return "0"

@@ -307,12 +307,12 @@ class OntologyWrapper
     self.isMetadataOnly.to_i == 1
   end
 
-  # Check criteria for browsable ontologies
-  def terms_disabled?
+  # Check criteria for ontology visualization
+  def classes_disabled?
     self.metadata_only? || (!$NOT_EXPLORABLE.nil? && $NOT_EXPLORABLE.include?(self.ontologyId.to_i))
   end
 
-  # Is this ontology just a huge bag of terms?
+  # Is this ontology just a huge bag of classes?
   def flat?
     !$NOT_EXPLORABLE.nil? && $NOT_EXPLORABLE.include?(self.ontologyId.to_i)
   end

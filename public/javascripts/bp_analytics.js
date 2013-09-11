@@ -23,7 +23,7 @@ function Analytics() {
 
 function SearchAnalytics() {
   this.bindTracker = function() {
-    jQuery("#search_results_container div.term_link a").live("click", function(e){
+    jQuery("#search_results_container div.class_link a").live("click", function(e){
       e.preventDefault();
       var href = jQuery(this).attr("href");
       var params = new SearchAnalytics().linkInformation(this);

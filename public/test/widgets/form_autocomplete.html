@@ -27,25 +27,25 @@
 
 		<h2>Form Autocomplete</h2>
 
-		<h4>Fill in a field in this form with a term from the NCI Thesaurus [ontologyId=NCIT]</h4>
+		<h4>Fill in a field in this form with a concept from the NCI Thesaurus [ontologyId=NCIT]</h4>
 		<form>
 			<ul>
 				<li>
-					Example 1 (start typing a term name to get a full URI)
+					Example 1 (start typing a class name to get a full URI)
 					<br/>
 					<xmp><input type="text" name="a" class="bp_form_complete-NCIT-uri" /></xmp>
 					<input type="text" name="a" class="bp_form_complete-NCIT-uri" size="90%"/>
 					<br/>&nbsp;
 				</li>
 				<li>
-					Example 2 (get the term ID)
+					Example 2 (get the class ID)
 					<br/>
 					<xmp><input type="text" name="b" class="bp_form_complete-NCIT-shortid" /></xmp>
 					<input type="text" name="b" class="bp_form_complete-NCIT-shortid" size="90%"/>
 					<br/>&nbsp;
 				</li>
 				<li>
-					Example 3 (get the term preferred name)
+					Example 3 (get the class preferred name)
 					<br/>
 					<xmp><input type="text" name="c" class="bp_form_complete-NCIT-name" /></xmp>
 					<input type="text" name="c" class="bp_form_complete-NCIT-name" size="90%"/>
@@ -58,9 +58,9 @@
 		<form>
 		<ul>
 			<li>
-				<strong>Include term definitions.</strong>
+				<strong>Include class definitions.</strong>
 				Use <code>data-bp_include_definitions="true"</code>.
-				This will display definitions with the list of terms that are returned.  For example, use this code to display search results for 'heart' terms, with
+				This will display definitions with the list of classes that are returned.  For example, use this code to display search results for 'heart' concepts, with
 				definitions, in the NCI Thesaurus.
 				<br/>
 				<xmp><input type="text" name="d" data-bp_include_definitions="true" class="bp_form_complete-NCIT-name" /></xmp>
@@ -68,10 +68,10 @@
 				<br/>&nbsp;
 			</li>
 			<li>
-				<strong>Limit lookup to terms below a root term.</strong>
+				<strong>Limit lookup to classes below a root class.</strong>
 				Use <code>data-bp_search_branch="{conceptid}"</code>
-				(replace {conceptid} with the term id for the term to use as the
-				branch root).  For example, use this code to limit the search for 'heart' to terms
+				(replace {conceptid} with the class id for the class to use as the
+				branch root).  For example, use this code to limit the search for 'heart' to classes
 				within the 'Anatomic_Structure_System_or_Substance'
 				branch of the NCI Thesaurus.
 				<br/>

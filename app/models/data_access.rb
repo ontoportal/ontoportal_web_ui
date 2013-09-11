@@ -111,38 +111,38 @@ class DataAccess
   end
 
   def self.getTotalTermCount
-    ontology_term_counts = self.getTermsCountOntologies
+    ontology_class_counts = self.getTermsCountOntologies
 
-    if ontology_term_counts.nil? || ontology_term_counts.length == 0
-      # Return a default term count, based on a value from Feb 2011
+    if ontology_class_counts.nil? || ontology_class_counts.length == 0
+      # Return a default class count, based on a value from Feb 2011
       return 4849100
     end
 
-    total_terms = 0
-    ontology_term_counts.each do |ontology, terms|
-      total_terms += terms.to_i rescue 0
+    total_classes = 0
+    ontology_class_counts.each do |ontology, classes|
+      total_classes += classes.to_i rescue 0
     end
 
-    total_terms
+    total_classes
   end
 
   def self.getTermsCountOntologies
-    ontology_terms = CACHE.get("terms_all_ontologies")
+    ontology_classes = CACHE.get("classes_all_ontologies")
 
-    if (ontology_terms.nil? || ontology_terms.to_s.length == 0)
+    if (ontology_classes.nil? || ontology_classes.to_s.length == 0)
       metrics = self.getAllOntologyMetrics
 
-      ontology_terms = {}
+      ontology_classes = {}
       unless metrics.nil?
         metrics.each do |metric|
-          ontology_terms[self.getOntology(metric.id).ontologyId.to_i] = metric.numberOfClasses.to_i
+          ontology_classes[self.getOntology(metric.id).ontologyId.to_i] = metric.numberOfClasses.to_i
         end
       end
 
-      CACHE.set("terms_all_ontologies", ontology_terms, LONG_CACHE_EXPIRE_TIME)
+      CACHE.set("classes_all_ontologies", ontology_classes, LONG_CACHE_EXPIRE_TIME)
     end
 
-    ontology_terms
+    ontology_classes
   end
 
   def self.getNotesCounts
@@ -158,7 +158,7 @@ class DataAccess
       CACHE.set("notes_all_ontologies", default_notes_counts)
       notes_counts = default_notes_counts
 
-      # Spawn a process to calculate total term size
+      # Spawn a process to calculate total class size
       spawn(:argv => "spawn_notes_counts") do
         notes_counts = {}
         ontologies.each do |ontology|
@@ -367,7 +367,7 @@ class DataAccess
       CACHE.delete("#{note_temp.id}")
     end
 
-    # If this note applies to a class/concept/term then delete the count for that concept
+    # If this note applies to a class/concept then delete the count for that concept
     CACHE.delete("#{params[:ontology_virtual_id]}::#{params[:appliesTo]}_NoteCount") if params[:appliesToType].eql?("Class")
 
     # Remove cached notes for this ontology
@@ -734,7 +734,7 @@ private
       CACHE.delete("#{note_temp.id}")
     end
 
-    # If this note applies to a class/concept/term then delete the count for that concept
+    # If this note applies to a class/concept then delete the count for that concept
     CACHE.delete("#{options[:ontology_id]}::#{options[:appliesTo]}_NoteCount") if options[:appliesToType].eql?("Class")
 
     # Remove cached notes for this ontology
