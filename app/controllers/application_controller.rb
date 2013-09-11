@@ -224,20 +224,16 @@ class ApplicationController < ActionController::Base
   def redirect_new_api(class_view = false)
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:ontology] = params[:ontology].nil? ? params[:ontologyid] : params[:ontology]
-
     # Error checking
     if params[:ontology].nil? || params[:id] && params[:ontology].nil?
       @error = "Please provide an ontology id or concept id with an ontology id."
       return
     end
-
     acronym = BPIDResolver.id_to_acronym(params[:ontology])
     raise Error404 unless acronym
-
     if params[:conceptid] && !params[:conceptid].start_with?("http")
       params[:conceptid] = BPIDResolver.uri_from_short_id(acronym, params[:conceptid])
     end
-
     if class_view
       redirect_to "/ontologies/#{acronym}?p=classes#{params_string_for_redirect(params, prefix: "&")}", :status => :moved_permanently
     else

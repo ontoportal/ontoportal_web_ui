@@ -53,28 +53,28 @@ class OntologiesController < ApplicationController
 
     # This action is now a router using the 'p' parameter as the page to show
     case params[:p]
-    when "terms"
-      params[:p].gsub!(/terms/,'classes')
-      redirect_new_api
-      return
-    when "classes"
-      self.classes
-      return
-    when "mappings"
-      self.mappings
-      return
-    when "notes"
-      self.notes
-      return
-    when "widgets"
-      self.widgets
-      return
-    when "summary"
-      self.summary
-      return
-    else
-      self.summary
-      return
+      when "terms"
+        params[:p] = 'classes'
+        redirect_to "/ontologies/#{params[:ontology]}#{params_string_for_redirect(params)}", :status => :moved_permanently
+        return
+      when "classes"
+        self.classes
+        return
+      when "mappings"
+        self.mappings
+        return
+      when "notes"
+        self.notes
+        return
+      when "widgets"
+        self.widgets
+        return
+      when "summary"
+        self.summary
+        return
+      else
+        self.summary
+        return
     end
   end
 
