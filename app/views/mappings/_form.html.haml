@@ -25,7 +25,7 @@
     #mapping_from_content{:style => "padding: 1em;"}
       %h2 Class 1
       = render :partial => "shared/ontology_picker_single", :locals => {:picker_id => "map_from_picker", :selected => @ontology_from.acronym}
-      = text_field_tag :map_from, @concept_from.prefLabel, :class => "bp_internal_form_complete-#{ontology_from_id}-name search_autocomplete", :placeholder => "Start typing to select a term", :style => "width: 415px; margin-top: 5px;"
+      = text_field_tag :map_from, @concept_from.prefLabel, :class => "bp_internal_form_complete-#{ontology_from_id}-name search_autocomplete", :placeholder => "Start typing to select a class", :style => "width: 415px; margin-top: 5px;"
       = hidden_field_tag :map_from_bioportal_full_id, @concept_from.id
       = hidden_field_tag :map_from_bioportal_ontology_id, @ontology_from.acronym
       #map_from_concept_details{:style => "display: none; margin-top: 2em;"}
@@ -36,7 +36,7 @@
     #mapping_to_content{:style => "padding: 1em;"}
       %h2 Class 2
       = render :partial => "shared/ontology_picker_single", :locals => {:picker_id => "map_to_picker", :selected => @ontology_to.acronym}
-      = text_field_tag :map_to, @concept_to.label, :class => "bp_internal_form_complete-#{ontology_to_id}-name search_autocomplete", :placeholder => "Start typing to select a term", :style => "width: 415px; margin-top: 5px;"
+      = text_field_tag :map_to, @concept_to.label, :class => "bp_internal_form_complete-#{ontology_to_id}-name search_autocomplete", :placeholder => "Start typing to select a class", :style => "width: 415px; margin-top: 5px;"
       = hidden_field_tag :map_to_bioportal_full_id, @concept_to.id
       = hidden_field_tag :map_to_bioportal_ontology_id, @ontology_to.acronym
       #map_to_concept_details{:style => "display: none; margin-top: 2em;"}

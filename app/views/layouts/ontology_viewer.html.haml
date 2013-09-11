@@ -55,8 +55,8 @@
 = stylesheet_link_tag "/javascripts/JqueryPlugins/superfish/superfish.css"
 = javascript_include_tag "jquery.simple.tree.js"
 = javascript_include_tag "jquery.scrollTo-1.4.0-min.js"
-= javascript_include_tag "bp_term_tree.js"
-/ This gets placed here because we need it to run first out of the term events in the document.ready queue
+= javascript_include_tag "bp_class_tree.js"
+/ This gets placed here because we need it to run first out of the class events in the document.ready queue
 = javascript_include_tag "bp_ontology_viewer.js"
 = javascript_include_tag "bp_reviews.js"
 = javascript_include_tag "bp_resource_index.js"
@@ -98,8 +98,8 @@
         %li#summary_link.summary_link.nav_link
           %a{"data-bp_ont_page" => "summary", :href => "/ontologies/#{@ontology.acronym}?p=summary"} Summary
         - unless @ontology.summaryOnly
-          %li#terms_link.terms_link.nav_link
-            %a{"data-bp_ont_page" => "terms", :href => "/ontologies/#{@ontology.acronym}?p=terms"} Terms
+          %li#classes_link.classes_link.nav_link
+            %a{"data-bp_ont_page" => "classes", :href => "/ontologies/#{@ontology.acronym}?p=classes"} Terms
         %li#notes_link.notes_link.nav_link
           %a{"data-bp_ont_page" => "notes", :href => "/ontologies/#{@ontology.acronym}?p=notes"} Notes
         %li#mappings_link.mappings_link.nav_link
@@ -118,10 +118,10 @@
 
   %div{:style => "clear: both; margin-bottom: 1em;"}
   #ontology_content{:style => "background: white;"}
-    #ont_terms_content.ontology_viewer_content.hidden
-      - if content_section.eql?("terms")
+    #ont_classes_content.ontology_viewer_content.hidden
+      - if content_section.eql?("classes")
         :javascript
-          jQuery("#ont_terms_content").removeClass("hidden");
+          jQuery("#ont_classes_content").removeClass("hidden");
         = yield
       - else
         = loading_spinner(true)

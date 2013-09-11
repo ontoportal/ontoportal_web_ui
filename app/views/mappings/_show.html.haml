@@ -14,7 +14,7 @@
           - map.classes.each do |cls|
             %tr
               %td
-                #{link_to "#{cls.id}<span href='/ajax/terms/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>", :controller => 'visualize', :action => 'virtual', :id => cls.explore.ontology.acronym, :conceptid => cls.id}
+                #{link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>", :controller => 'visualize', :action => 'virtual', :id => cls.explore.ontology.acronym, :conceptid => cls.id}
               %td
                 %a{:href => cls.explore.ontology.links["ui"]}= cls.explore.ontology.name
           %tr{style: "border: none;"}

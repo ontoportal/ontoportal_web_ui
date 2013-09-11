@@ -100,7 +100,7 @@
       - display_licensed = @ontology.licensed? ? "" : "hidden"
       = f.select :viewingRestriction, view_restiction_options, { :selected => selected }
       #viewingRestrictionsPrivate.viewing_restriction_types{:style => "padding: .5em; border: thin solid #C1DAD7; margin: .5em .5em .5em 0;", class: display_private}
-        %h3 Add or remove accounts that are allowed to view terms in this ontology using the account name
+        %h3 Add or remove accounts that are allowed to view classes in this ontology using the account name
         = f.select(:acl, @user_select_list, {include_blank: true, selected: @ontology.acl}, {multiple: true, :"data-placeholder" => "Select users who have access"})
       #viewingRestrictionsLicensed.viewing_restriction_types{:style => "padding: .5em; border: thin solid #C1DAD7; margin: .5em .5em .5em 0;", class: display_licensed}
         %b License Text:

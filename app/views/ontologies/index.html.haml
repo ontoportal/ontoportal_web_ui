@@ -183,7 +183,7 @@
         - @ontologies.each do |ontology|
           - submission = @submissions_map[ontology.acronym]
           - next if submission.nil?
-          - term_count = @term_counts[ontology.id] || "count not available"
+          - class_count = @class_counts[ontology.id] || "count not available"
           %tr
             %td{:style => "width:300px;"}
               %span{:style => "padding-right: .5em;"}
@@ -192,7 +192,7 @@
                 - #if submission.admin?(session[:user])
                 %span{:style => "font-size: xx-small; color: gray;"}= #get_status_text(submission)
             %td{:style => "width:50px;"}= visibility_link(ontology)
-            %td{:style => "width:30px;text-align:right;"}= terms_link(submission, term_count )
+            %td{:style => "width:30px;text-align:right;"}= classes_link(submission, class_count )
             %td{:style => "width:30px;text-align:right;"}= notes_link(submission, ontology.notes.length)
             %td{:style => "width:30px;text-align:right;"}= ontology.reviews.length == 0 ? "0" : "<a href='/ontologies/#{ontology.acronym}'>#{ontology.reviews.length}</a>"
             %td{:style => "width:30px;text-align:right;"}= ontology.projects.length == 0 ? "0" : "<a href='/ontologies/#{ontology.acronym}'>#{ontology.projects.length}</a>"

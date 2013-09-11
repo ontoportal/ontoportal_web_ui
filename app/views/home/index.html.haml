@@ -41,13 +41,13 @@
   }
 
   function jumpToValueResource(){
-    var term = jQuery("#find_resource")[0].value;
+    var cls = jQuery("#find_resource")[0].value;
     var data = jQuery('body').data("resource_results");
 
     if (data == null) {
       // Im doing a search
 
-      var search = confirm("Press OK to Search for resources using the term, or Cancel to select a term")
+      var search = confirm("Press OK to Search for resources using the concept, or Cancel to select a concept")
       if (search) {
         query = jQuery("#find_resource").val();
         document.location="/resource_index";
@@ -81,7 +81,7 @@
   }
 
   // We use this in conjunction with autocomplete because autocomplete
-  // fails when there are multiple results with the same term name
+  // fails when there are multiple results with the same class name
   function selectResource(value, data) {
     jQuery('body').data("resource_results", value.data);
     jumpToValueResource();
@@ -175,7 +175,7 @@
           %table
             %tr
               %td{:nowrap => ""}
-                %input.greyed{:name => "query", :onclick => "greybox(this)", :size => "30", :style => "width:190px;", :type => "text", :value => "Enter term, e.g. Melanoma"}/
+                %input.greyed{:name => "query", :onclick => "greybox(this)", :size => "30", :style => "width:190px;", :type => "text", :value => "Enter concept, e.g. Melanoma"}/
                 = submit_tag 'Search',:class=>'home_button'
             %tr
               %td{:style => "padding-left:15px"}
@@ -210,7 +210,7 @@
         %table
           %tr
             %td{:nowrap => ""}
-              %input#find_resource.greyed{:onclick => "greybox(this)", :size => "30", :style => "width:240px;", :type => "text", :value => "Enter a term, e.g. Melanoma"}/
+              %input#find_resource.greyed{:onclick => "greybox(this)", :size => "30", :style => "width:240px;", :type => "text", :value => "Enter a concept, e.g. Melanoma"}/
               %input.home_button{:onclick => "jumpToValueResource()", :type => "button", :value => "Search"}/
           %tr
             %td{:style => "padding-left:15px"}
