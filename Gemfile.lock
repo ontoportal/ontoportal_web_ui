@@ -17,7 +17,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: a9212b0247bdc072822f7f6ba3be5c5b7fe0d4ef
+  revision: 2607fbc215db2c1071cc5267b8658f095b73964b
   specs:
     ontologies_api_client (0.0.2)
       faraday
@@ -55,12 +55,11 @@ GEM
     i18n (0.5.0)
     iconv (1.0.3)
     json (1.8.0)
-    kgio (2.8.0)
     libxml-ruby (2.2.2)
     memcache-client (1.8.5)
     method_source (0.8.2)
     mime-types (1.25)
-    multi_json (1.7.9)
+    multi_json (1.8.0)
     multipart-post (1.2.0)
     mysql (2.8.1)
     oj (2.0.14)
@@ -81,7 +80,6 @@ GEM
       activeresource (= 2.3.17)
       activesupport (= 2.3.17)
       rake (>= 0.8.3)
-    raindrops (0.12.0)
     rake (10.1.0)
     rdoc (4.0.1)
       json (~> 1.4)
@@ -95,10 +93,6 @@ GEM
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
-    unicorn (4.6.3)
-      kgio (~> 2.6)
-      rack
-      raindrops (~> 0.7)
     will_paginate (2.3.16)
 
 PLATFORMS
@@ -124,5 +118,4 @@ DEPENDENCIES
   recaptcha (~> 0.3.1)
   rest-client (~> 1.6.1)
   thin
-  unicorn
   will_paginate (< 3.0)
