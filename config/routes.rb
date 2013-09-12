@@ -113,10 +113,13 @@ ActionController::Routing::Routes.draw do |map|
   #####
 
   # Redirects from old URL locations
-  map.connect '/annotate', :controller => 'redirect', :url=>'/annotator'
-  map.connect '/all_resources', :controller =>'redirect', :url=>'/resources'
-  map.connect '/resources', :controller =>'redirect', :url=>'/resource_index'
-  map.connect '/visconcepts/:ontology/', :controller => 'redirect', :url=>'/visualize/'
+  map.connect '/annotate', :controller => 'redirect', :url => '/annotator'
+  map.connect '/all_resources', :controller =>'redirect', :url => '/resources'
+  map.connect '/resources', :controller => 'redirect', :url => '/resource_index'
+  map.connect '/visconcepts/:ontology/', :controller => 'redirect', :url => '/visualize/'
+  map.connect '/ajax/terms/label', :controller => 'redirect', :url => '/ajax/classes/label'
+  map.connect '/ajax/terms/definition', :controller => 'redirect', :url => '/ajax/classes/definition'
+  map.connect '/ajax/terms/treeview', :controller => 'redirect', :url => '/ajax/classes/treeview'
 
   # Visualize
   map.virtual_visualize '/visualize/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :id => %r([^/?]+), :conceptid => %r([^/?]+) }
