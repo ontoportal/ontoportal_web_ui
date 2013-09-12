@@ -99,6 +99,20 @@ class SearchController < ApplicationController
     # Filter on ontology_id
     params[:ontologies] ||= params[:id]
 
+    if params[:ontologies]
+      if params[:ontologies].include?(",")
+        params[:ontologies] = params[:ontologies].split(",")
+      else
+        params[:ontologies] = [params[:ontologies]]
+      end
+
+      if params[:ontologies].first.to_i > 0
+        params[:ontologies].map! {|o| BPIDResolver.id_to_acronym(o)}
+      end
+
+      params[:ontologies] = params[:ontologies].join(",")
+    end
+
     search_page = LinkedData::Client::Models::Class.search(params[:q], params)
     @results = search_page.collection
 
