@@ -59,7 +59,6 @@ module OntologiesHelper
   # Creates a link based on the status of an ontology
   def status_link(ontology)
     version_text = ontology.versionNumber.nil? || ontology.versionNumber.length == 0 ? "unknown" : ontology.versionNumber
-
     case ontology.statusId.to_i
     when 1 # Ontology is parsing
       status_text = "waiting to parse"
@@ -74,7 +73,6 @@ module OntologiesHelper
     else
       status_text = ""
     end
-
     if ontology.valid_tree_view?
       return "<a href='/ontologies/#{ontology.id}?p=classes'>#{version_text}</a> <span style='font-size: x-small; color: gray; padding-left: 10px;'>#{status_text}</span>"
     else

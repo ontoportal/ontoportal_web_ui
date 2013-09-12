@@ -19,6 +19,14 @@ module ApplicationHelper
     }.to_json
   end
 
+  def get_apikey
+    unless session[:user].nil?
+      return session[:user].apikey
+    else
+      return LinkedData::Client.settings.apikey
+    end
+  end
+
   def isOwner?(id)
     unless session[:user].nil?
       if session[:user].admin?

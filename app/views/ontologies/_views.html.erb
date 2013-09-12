@@ -142,7 +142,7 @@
                         <% end %>
                         <td> <%= xmldatetime_to_date(view_sub.released) %> </td>
                         <td> <%= xmldatetime_to_date(view_sub.creationDate) %> </td>
-                        <td> <a href="<%= view_sub.id + '/download' %>" target="_blank">Ontology View</a> </td>
+                        <td> <a href="<%= view_sub.id + "/download?apikey=#{get_apikey}" %>" target="_blank">Ontology View</a> </td>
                       </tr>
                   <% end %>
             </table>
