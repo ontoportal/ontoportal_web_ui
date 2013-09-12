@@ -17,17 +17,12 @@ class HomeController < ApplicationController
     # Show only notes from custom ontology set
     @notes = LinkedData::Client::Models::Note.all
     @last_notes = []
-    @notes.sort {|a,b| a.created <=> b.created }.reverse[0..20].each do |n|
+    @notes.sort! {|a,b| b.created <=> a.created }
+    @notes[0..20].each do |n|
       ont_uri = n.relatedOntology.first
       ont = LinkedData::Client::Models::Ontology.find(ont_uri)
       next if ont.nil?
-      if n.creator.match('anonymous')
-        username = 'anonymous'
-      else
-        creator = LinkedData::Client::Models::User.find(n.creator)
-        next if creator.nil?
-        username = "#{creator.firstName} #{creator.lastName}"
-      end
+      username = n.creator.split("/").last
       note = {
           :uri => n.links['ui'],
           :id => n.id,
