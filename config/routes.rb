@@ -70,7 +70,7 @@ ActionController::Routing::Routes.draw do |map|
   # Ajax
   map.ajax '/ajax/', :controller => 'ajax_proxy', :action => 'get'
   map.connect '/ajax_concepts/:ontology/', :controller => 'concepts', :action => 'show', :requirements => { :id => %r([^/?]+) }
-  map.connect '/ajax/class_details/:ontology', :controller => 'concepts', :action => 'details'
+  map.connect '/ajax/class_details', :controller => 'concepts', :action => 'details'
   map.connect "/ajax/mappings/get_concept_table", :controller => "mappings", :action => "get_concept_table"
   map.connect "/ajax/json_class", :controller => "ajax_proxy", :action => "json_class"
   map.connect "/ajax/jsonp", :controller => "ajax_proxy", :action => "jsonp"
@@ -120,6 +120,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/ajax/terms/label', :controller => 'redirect', :url => '/ajax/classes/label'
   map.connect '/ajax/terms/definition', :controller => 'redirect', :url => '/ajax/classes/definition'
   map.connect '/ajax/terms/treeview', :controller => 'redirect', :url => '/ajax/classes/treeview'
+  map.connect '/ajax/term_details/:ontology', :controller => 'redirect', :url => '/ajax/class_details'
+  map.connect "/ajax/json_term", :controller => 'redirect', :url => '/ajax/json_class'
 
   # Visualize
   map.virtual_visualize '/visualize/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :id => %r([^/?]+), :conceptid => %r([^/?]+) }

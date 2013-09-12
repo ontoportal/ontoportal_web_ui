@@ -97,7 +97,8 @@ class ConceptsController < ApplicationController
     if params[:ontology].to_i > 0
       orig_id = params[:ontology]
       params_cleanup_new_api()
-      redirect_to "#{request.path.sub(orig_id, params[:ontology])}#{params_string_for_redirect(params)}", :status => :moved_permanently
+      options = {stop_words: ["controller", "action", "id"]}
+      redirect_to "#{request.path.sub(orig_id, params[:ontology])}#{params_string_for_redirect(params, options)}", :status => :moved_permanently
       return
     end
 
