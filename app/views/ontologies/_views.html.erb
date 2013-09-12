@@ -73,7 +73,8 @@
           <% end %>
 
           <% view_submissions = view.explore.submissions.sort {|a,b| a.released <=> b.released }.reverse %>
-          <% view_description = view_submissions[0].description %>
+          <% return if view_submissions.is_a?(Array) && view_submissions.empty?%>
+          <% view_description = view_submissions[0].description rescue binding.pry %>
           <% view_definition = view_submissions[0].definition %>
           <% view_language = nil # TODO: view_submissions[0].naturalLanguage -- Ray suggests leave it undefined. %>
           <% view_contacts = Set.new %>
