@@ -11,11 +11,10 @@ class RedirectController < ApplicationController
       first_param = true
       # Loop through the given params, ignore ones we know about or are provided by default
       params.each do |param, value|
-        if !param.eql?("url") || !param.eql?("action") || !param.eql?("controller")
-          seperator = first_param ? "?" : "&"
-          first_param = false
-          params_string += seperator + param + "=" + CGI.escape(value)
-        end
+        next if ["url", "action", "controller"].include?(param)
+        seperator = first_param ? "?" : "&"
+        first_param = false
+        params_string += seperator + param + "=" + CGI.escape(value)
       end
       # Redirect with params intact
       redirect_to params[:url] + params_string, :status=>:moved_permanently
