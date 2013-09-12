@@ -1,0 +1,52 @@
+- @title = "Search"
+= javascript_include_tag "http://cdn.jquerytools.org/1.2.7/all/jquery.tools.min.js"
+%div{:style => "padding: 1em;"}
+  #search_input{:style => "margin-bottom: 1em;"}
+    %h1 Class Search
+    %p
+      Search for a class in multiple ontologies  #{help_icon("/help#Search_Tab")}
+    = text_field :search, :keywords, :style => "width: 426px; height: 20px; float: left; margin-right: 1em;"
+    = button_to "Search", {}, :style => "font-size: 10pt !important; margin: -1.5px 0 0;", :id => "search_button"
+    %span
+      %span#search_spinner{:style => "position: relative; left: 85px; display: none; padding: 4px;"}
+        \&nbsp;
+        %img{:src => "/images/spinners/spinner_000000_16px.gif", :style => "vertical-align: inherit;"}/
+    #advanced_options_container
+      %a#advanced_options{:href => "javascript:void(0);"}
+        %span#hide_advanced_options.not_visible> hide
+        advanced options
+    #search_options.not_visible{:style => "padding-top: .6em; clear: both; margin-bottom: 40px;"}
+      %h2{:style => "margin-bottom: 3px; font-size: 12pt; !important;"} Include in your search...
+      #include_options.search_options
+        = check_box :search, :include_props
+        = label :search, :include_props, "<span class='definition' title='Named association between two entities. Examples are &quot;definition&quot; (a relation between a class and some text) and &quot;part-of&quot; (a relation between two classes).'>Property</span> values</span>"
+        %br/
+        /
+          Disable include obsolete until we support obsolete terms
+          <haml:loud>check_box :search, :include_obsolete</haml:loud> <haml:loud>label :search, :include_obsolete, &amp;quot;&amp;lt;span class='definition' title='A class that the authors of the ontology have flagged as being obsolete and which they recommend that people not use. These classes are often left in ontologies (rather than removing them entirely) so that existing systems that depend on them will continue to function.'&amp;gt;Obsolete classes&amp;lt;/span&amp;gt;&amp;quot;</haml:loud>
+          <br/>
+        = check_box :search, :include_non_production
+        = label :search, :include_non_production, "Non-production ontologies"
+        %br/
+        = check_box :search, :include_views
+        = label :search, :include_views, "Ontology views</a>"
+      %h2{:style => "margin: 10px 0 3px; font-size: 12pt; !important;"} Narrow your search to...
+      #remove_options.search_options
+        = check_box :search, :exact_match
+        = label :search, :exact_match, "Exact matches"
+        %br/
+        = check_box :search, :only_definitions
+        = label :search, :only_definitions, "Classes with definitions"
+        %br/
+        %br/
+        %h2{:style => "font-size: 10pt; !important; margin-bottom: 3px;"} Categories
+        = select :search, :categories, options_for_select(categories_for_select), { }, :style => "width: 432px", :multiple => 'true', "data-placeholder".to_sym => "Type here to select categories or leave blank to use all"
+        #ontology_picker_options{:style => "margin-top: 1em; position: relative; left: 2px;"}
+          = render :partial => "shared/ontology_picker", :locals => { :sel_text => "Ontologies" }
+  #search_results_container
+    #result_stats
+    #search_messages
+    #search_results
+#flexviz{:style => "display: none;"}
+/ Javascript at end to improve response time to user
+= javascript_include_tag "bp_search.js?nocache=2"
