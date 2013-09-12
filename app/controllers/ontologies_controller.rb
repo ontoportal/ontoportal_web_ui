@@ -280,6 +280,8 @@ class OntologiesController < ApplicationController
     @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created}
     @projects = @ontology.explore.projects
     @submission = @ontology.explore.latest_submission
+    @submissions = @ontology.explore.submissions
+    @submissions.sort!{|x,y| y.submissionId <=> x.submissionId }
     @views = @ontology.explore.views.sort {|a,b| b.acronym <=> a.acronym}  # a list of view ontology models
     # @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     # @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
