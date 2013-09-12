@@ -59,7 +59,7 @@
             }
 
             var links = [];
-            links.push('<thead><tr><th style="padding-right: 6px; text-align: right;">Rank</th><th>Ontology</th><th style="padding-right: 6px">Terms Matched</th></tr></thead>');
+            links.push('<thead><tr><th style="padding-right: 6px; text-align: right;">Rank</th><th>Ontology</th><th style="padding-right: 6px">Classes Matched</th></tr></thead>');
 
             var resultCount = 1;
             if (jQuery.isEmptyObject(data)) {
@@ -73,7 +73,7 @@
                   found_concepts.push("<a href='/ontologies/"+rec.virtualOntologyId+"?p=classes&conceptid="+encodeURIComponent(this.fullId)+"'>"+this.preferredName+"</a>");
                 });
 
-                var found_concepts_html = "<div id='found_concepts_"+resultCount+"' class='found_concepts'><h2 style='margin-top: -2em;'>Matched Terms</h2>" + found_concepts.join("<br/>") + "</div>";
+                var found_concepts_html = "<div id='found_concepts_"+resultCount+"' class='found_concepts'><h2 style='margin-top: -2em;'>Matched Classes</h2>" + found_concepts.join("<br/>") + "</div>";
 
                 links.push("<tr><td style='text-align: right; padding-right: 10px;'>"+resultCount+"</td><td style='padding: 6px 12px 6px 12px;'><a href='/ontologies/"+rec.virtualOntologyId+"'>"+rec.name+"</a></td><td style='text-align: right;'><a href='#found_concepts_"+resultCount+"' rel='facebox'>"+rec.nbAnnotatingConcept+" of "+rec.ontologySize+"</a>"+found_concepts_html+"</td></tr>");
 

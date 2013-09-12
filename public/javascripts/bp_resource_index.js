@@ -101,7 +101,7 @@ jQuery(document).ready(function () {
 
   // If all classes are removed from the search, put the UI in base state
   jQuery("a.search-choice-close").live("click", function () {
-    if (chosenSearchTermsToClassesArg() === null) {
+    if (chosenSearchClassesArgs() === null) {
       pushIndex();
       var input = document.activeElement
       jQuery("#resource_index_classes_chzn").trigger("mousedown");
@@ -114,8 +114,8 @@ jQuery(document).ready(function () {
   // Get search results
   if (jQuery("#resource_index_button").length > 0) {
     jQuery("#resource_index_button").click(function () {
-      var url = "/resource_index/resources?" + chosenSearchTermsToClassesArg();
-      pushDisplayResources(url, {classes: chosenSearchTerms()});
+      var url = "/resource_index/resources?" + chosenSearchClassesArgs();
+      pushDisplayResources(url, {classes: chosenSearchClasses()});
       getSearchResults();
     });
   }
@@ -133,7 +133,7 @@ jQuery(document).ready(function () {
     var el_text = jQuery("#" + cleanElementId + "_text");
     el_text.toggleClass("not_visible");
     if (el_text.attr("highlighted") !== "true") {
-      var element = new Element(el.attr("data-element_id"), cleanElementId, chosenSearchTerms(), el.attr("data-resource_id"));
+      var element = new Element(el.attr("data-element_id"), cleanElementId, chosenSearchClasses(), el.attr("data-resource_id"));
       jQuery("#" + element.cleanId + "_text .ri_legend_container").append("<span id='" + element.cleanId + "_ani'class='highlighting'>highlighting... <img style='vertical-align: text-bottom;' src='/images/spinners/spinner_000000_16px.gif'></span>");
       element.highlightAnnotationPositions();
       el_text.attr("highlighted", "true");
@@ -224,7 +224,7 @@ function replaceIndex() {
 // This will look up any class labels that haven't already been processed. If there are none it just exits without doing anything.
 // To decrease ajax calls, we also use the bp_classes_cache. This method is used via polling.
 var bp_classes_cache = {};
-function lookupTermLabels() {
+function lookupClassLabels() {
   jQuery("#resource_results a.ri_concept[data-applied_label='false']").each(function () {
     var link = jQuery(this);
     var params = { conceptid: link.data("concept_id"), ontologyid: link.data("ontology_id") };
@@ -233,7 +233,7 @@ function lookupTermLabels() {
     // Check to see if another thread is already making an ajax request and start polling
     if (bp_classes_cache[params.ontologyid + "/" + params.conceptid] === "getting") {
       return setTimeout((function () {
-        return applyTermLabel(link, params);
+        return applyClassLabel(link, params);
       }), 100);
     }
 
@@ -257,17 +257,17 @@ function lookupTermLabels() {
 // Poll for class information
 jQuery(document).ready(function () {
   setInterval((function () {
-    lookupTermLabels();
+    lookupClassLabels();
   }), 1000);
 });
 
 // This function will poll to see if class information exists
-function applyTermLabel(link, params, calledAgain) {
+function applyClassLabel(link, params, calledAgain) {
   var class_info = bp_classes_cache[params.ontologyid + "/" + params.conceptid];
   if (class_info === "getting") {
     if (typeof calledAgain !== "undefined") calledAgain = 0
     return setTimeout((function () {
-      return applyTermLabel(link, params, calledAgain += 1);
+      return applyClassLabel(link, params, calledAgain += 1);
     }), 100);
   }
   if (class_info !== null) jQuery(link).html(class_info.label);
@@ -320,7 +320,7 @@ function displayResource(params) {
     showResourceResults(resource, resourceName);
     return;
   }
-  displayTerms(params["classes"], function () {
+  displayClasses(params["classes"], function () {
     showResourceResults(resource, resourceName);
   });
 }
@@ -331,10 +331,10 @@ function displayResources(classes) {
     showAllResources();
     return;
   }
-  displayTerms(classes);
+  displayClasses(classes);
 }
 
-function displayTerms(classes, completedCallback) {
+function displayClasses(classes, completedCallback) {
   var concept, conceptOpt, ontologyId, conceptId, ontologyName, conceptRetreivedCount, conceptsLength = classes.length, params;
   conceptRetreivedCount = 0;
   jQuery("#resource_index_classes").html("");
@@ -371,7 +371,7 @@ function getSearchResults(success) {
   jQuery("#resource_index_spinner").show();
   jQuery("#results.contains_search_results").hide();
   var params = {
-    'classes': chosenSearchTerms() // ontologyURI: [classURI, classURI, ... ]
+    'classes': chosenSearchClasses() // ontologyURI: [classURI, classURI, ... ]
   };
   jQuery.ajax({
     type    : 'POST',
@@ -419,13 +419,13 @@ function updateCounts() {
 jQuery("a.results_link").live("click", function (event) {
   var resource = jQuery(this).data("resource_id");
   //var resourceName = jQuery(this).data("resource_name");
-  var url = "/resource_index/resources/" + resource + "?" + chosenSearchTermsToClassesArg();
-  pushDisplayResource(url, {classes: chosenSearchTerms(), resourceId: resource});
+  var url = "/resource_index/resources/" + resource + "?" + chosenSearchClassesArgs();
+  pushDisplayResource(url, {classes: chosenSearchClasses(), resourceId: resource});
 });
 
 jQuery("a#show_all_resources").live("click", function () {
-  var url = "/resource_index/resources?" + chosenSearchTermsToClassesArg();
-  pushDisplayResources(url, {classes: chosenSearchTerms()});
+  var url = "/resource_index/resources?" + chosenSearchClassesArgs();
+  pushDisplayResources(url, {classes: chosenSearchClasses()});
 });
 
 function showResourceResults(resource, resourceName) {
@@ -461,7 +461,7 @@ function Element(id, cleanId, classes, resource) {
       url     : "/resource_index/element_annotations",
       data    : {
         elementid : this.id,
-        classes: chosenSearchTermsToClassesArg(this.classes),
+        classes: chosenSearchClassesArgs(this.classes),
         resourceid: this.resource
       },
       dataType: "json",
@@ -568,12 +568,12 @@ function currentOntologyAcronyms() {
 //}
 
 
-function chosenSearchTerms() {
-  var chosenTermsMap = {};
+function chosenSearchClasses() {
+  var chosenClassesMap = {};
   // get selected option values, an array of combined_uri strings.
   var combined_uris = jQuery("#resource_index_classes").val();
   if (combined_uris === null){
-    return chosenTermsMap;
+    return chosenClassesMap;
   } else if (typeof combined_uris === "string"){
     combined_uris = combined_uris.split(); // coerce it to an Array
   }
@@ -582,21 +582,21 @@ function chosenSearchTerms() {
     var split_uris = uri_split(combined_uri);
     var chosen_ont_uri = split_uris[0];
     var chosen_cls_uri = split_uris[1];
-    if(! chosenTermsMap.hasOwnProperty(chosen_ont_uri)) {
-      chosenTermsMap[chosen_ont_uri] = new Array();
+    if(! chosenClassesMap.hasOwnProperty(chosen_ont_uri)) {
+      chosenClassesMap[chosen_ont_uri] = new Array();
     }
-    chosenTermsMap[chosen_ont_uri].push(chosen_cls_uri);
+    chosenClassesMap[chosen_ont_uri].push(chosen_cls_uri);
   }
-  return chosenTermsMap;
+  return chosenClassesMap;
 }
 
-function chosenSearchTermsToClassesArg(chosenTermsMap) {
-  if (chosenTermsMap === undefined){
-    chosenTermsMap = chosenSearchTerms();
+function chosenSearchClassesArgs(chosenClassesMap) {
+  if (chosenClassesMap === undefined){
+    chosenClassesMap = chosenSearchClasses();
   }
   var chosenClassesURI = "";
-  for (var ont_uri in chosenTermsMap) {
-    var chosenClassArr = chosenTermsMap[ont_uri];
+  for (var ont_uri in chosenClassesMap) {
+    var chosenClassArr = chosenClassesMap[ont_uri];
     chosenClassesURI += "classes[" + encodeURIComponent(ont_uri) + "]=";
     chosenClassesURI += encodeURIComponent(chosenClassArr.join(','));
     chosenClassesURI += "&";

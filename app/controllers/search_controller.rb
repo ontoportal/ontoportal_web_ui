@@ -235,7 +235,7 @@ class SearchController < ApplicationController
       when "apreferredname"
         record_text = "Preferred Name"
       when "bconceptid"
-        record_text = "Term ID"
+        record_text = "Class ID"
       when "csynonym"
         record_text = "Synonym"
       when "dproperty"
@@ -243,7 +243,7 @@ class SearchController < ApplicationController
       else
         record_text = ""
     end
-    record_text = "Obsolete Term" if obsolete
+    record_text = "Obsolete Class" if obsolete
     record_text
   end
 

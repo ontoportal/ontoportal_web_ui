@@ -205,7 +205,7 @@ function formatSearchResults(ontologyResults) {
   var res = ontologyResults.shift();
   var additional_results = "";
   var additional_results_link = "";
-  var label_html = normalizeObsoleteTerms(res);
+  var label_html = normalizeObsoleteClasses(res);
   var row;
   var additional_rows = [];
 
@@ -220,7 +220,7 @@ function formatSearchResults(ontologyResults) {
     jQuery(ontologyResults).each(function(){
       additional_rows.push([
         "<div class='search_result_additional'>",
-        classHTML(this, normalizeObsoleteTerms(this), false),
+        classHTML(this, normalizeObsoleteClasses(this), false),
         definitionHTML(this, "additional_def_container"),
         "<div class='search_result_links'>"+resultLinksHTML(this)+"</div>",
         "</div>"
@@ -274,7 +274,7 @@ function updatePopupCounts() {
   jQuery("#ontology_counts").html(ontologies.join(""));
 }
 
-function normalizeObsoleteTerms(res) {
+function normalizeObsoleteClasses(res) {
   // We have to look for a span here, indicating that the class is obsolete.
   // If not, add the class to a new span to match obsolete structure so we can process them the same.
   var max_word_length = 60;

@@ -173,7 +173,7 @@ var filter_classes = {
     });
     // Need to use bind to avoid "live" propogation issues
     jQuery(".filter_classes_checkboxes").bind("click", function (e) {
-      filter_classes.filterTerms(e)
+      filter_classes.filterClasses(e)
     });
     jQuery("#classes_filter_list").click(function (e) {
       e.stopPropagation()
@@ -191,7 +191,7 @@ var filter_classes = {
     });
   },
 
-  filterTerms: function (e) {
+  filterClasses: function (e) {
     "use strict";
     e.stopPropagation();
     var search_regex = [];

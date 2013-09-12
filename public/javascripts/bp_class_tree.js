@@ -36,7 +36,7 @@ function insertNotesTable(aData) {
 }
 
 var simpleTreeCollection;
-function initTermTree() {
+function initClassTree() {
   simpleTreeCollection = jQuery('.simpleTree').simpleTree({
     autoclose: false,
     drag: false,
@@ -127,7 +127,7 @@ function nodeClicked(node_id) {
 
     wrapupTabChange(selectedTab);
   } else {
-    jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
+    jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
     jQuery.get('/ajax_concepts/'+ontology_id+'/?conceptid='+node_id+'&callback=load',
       function(data){
         var tabData = data.split("|||");
@@ -160,7 +160,7 @@ function placeTreeView(treeHTML) {
     setTimeout(function(){placeTreeView(treeHTML)}, 500);
   } else {
     document.getElementById("sd_content").innerHTML = treeHTML;
-    initTermTree();
+    initClassTree();
   }
 }
 

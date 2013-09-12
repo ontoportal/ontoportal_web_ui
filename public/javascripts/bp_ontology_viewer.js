@@ -79,10 +79,10 @@ function displayTree(data) {
       concept_label = (new_concept_link.html() == null) ? "" : " - " + new_concept_link.html().trim().replace(/<(?:.|\n)*?>/gm, '');
 
       // Retrieve new concept and display tree
-      jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + ontology_id + "?p=classes" + new_concept_param, "Problem retrieving classes", ontology_name + concept_label + " - Terms", "Terms");
+      jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + ontology_id + "?p=classes" + new_concept_param, "Problem retrieving classes", ontology_name + concept_label + " - Classes", "Classes");
 
       if (typeof data.suid !== 'undefined' && data.suid === "jump_to") {
-        jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
+        jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
 
         if (data.flat === true) {
           // We have a flat ontology, so we'll replace existing information in the UI and add the new class to the list
@@ -130,7 +130,7 @@ function displayTree(data) {
           getConceptLinkEl(new_concept_id)
         }
       } else {
-        jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Term...</h1>', showOverlay: false });
+        jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
         if (document.getElementById(new_concept_id) !== null) {
           // We have a visible node that's been clicked, get the details for that node
           nodeClicked(new_concept_id);
@@ -142,12 +142,12 @@ function displayTree(data) {
       }
 
       concept_label = (getConceptLinkEl(new_concept_id).html() == null) ? "" : " - " + getConceptLinkEl(new_concept_id).html().trim().replace(/<(?:.|\n)*?>/gm, '');
-      jQuery.bioportal.ont_pages["classes"].page_name =  ontology_name + concept_label + " - Terms"
+      jQuery.bioportal.ont_pages["classes"].page_name =  ontology_name + concept_label + " - Classes"
       document.title = jQuery.bioportal.ont_pages["classes"].page_name + " | " + org_site;
     } else {
       // Retrieve new concept and display tree
       concept_label = (getConceptLinkEl(new_concept_id).html() == null) ? "" : " - " + getConceptLinkEl(new_concept_id).html().trim().replace(/<(?:.|\n)*?>/gm, '');
-      jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + ontology_id + "?p=classes", "Problem retrieving classes", ontology_name + concept_label + " - Terms", "Terms");
+      jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + ontology_id + "?p=classes", "Problem retrieving classes", ontology_name + concept_label + " - Classes", "Classes");
       jQuery.bioportal.ont_pages["classes"].retrieve_and_publish();
     }
 
@@ -282,7 +282,7 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
 // Setup AJAX page objects
 jQuery.bioportal.ont_pages = [];
 
-jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + ontology_id + "?p=classes&ajax=true" + concept_param, "Problem retrieving classes", ontology_name + concept_name_title + " - Terms", "Terms");
+jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + ontology_id + "?p=classes&ajax=true" + concept_param, "Problem retrieving classes", ontology_name + concept_name_title + " - Classes", "Classes");
 jQuery.bioportal.ont_pages["summary"] = new jQuery.bioportal.OntologyPage("summary", "/ontologies/" + ontology_id + "?p=summary&ajax=true", "Problem retrieving summary", ontology_name + " - Summary", "Summary");
 jQuery.bioportal.ont_pages["mappings"] = new jQuery.bioportal.OntologyPage("mappings", "/ontologies/" + ontology_id + "?p=mappings&ajax=true", "Problem retrieving mappings", ontology_name + " - Mappings", "Mappings");
 jQuery.bioportal.ont_pages["notes"] = new jQuery.bioportal.OntologyPage("notes", "/ontologies/" + ontology_id + "?p=notes&ajax=true", "Problem retrieving notes", ontology_name + " - Notes", "Notes");

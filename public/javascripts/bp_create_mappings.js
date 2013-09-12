@@ -15,7 +15,7 @@ jQuery(document).ready(function() {
   jQuery("input.search_autocomplete").live("autocomplete_selected", function(){
     var input = jQuery(this);
     if (input.val() != input.attr("title") && input.val() !== "") {
-      getTermDetails(this);
+      getClassDetails(this);
     }
   });
 
@@ -31,7 +31,7 @@ jQuery(document).ready(function() {
   jQuery("input.search_autocomplete").each(function(){
     var input = jQuery(this);
     if (input.val() != input.attr("title") && input.val() != "") {
-      getTermDetails(this);
+      getClassDetails(this);
     }
   });
 
@@ -51,7 +51,7 @@ jQuery(document).ready(function() {
   jQuery("#create_mapping_button").live("click", bp_createMapping.create);
 });
 
-function getTermDetails(input) {
+function getClassDetails(input) {
   var current_id = jQuery(input).attr("id");
   var current_ont_id = jQuery("#" + current_id + "_bioportal_ontology_id").val();
   var current_concept_id = jQuery("#" + current_id + "_bioportal_full_id").val();
@@ -69,7 +69,7 @@ function resetMappingUI() {
   // Set the map from side to the new class from the tree
   jQuery("#map_from").val(jQuery.trim(jQuery("#sd_content a.active").text()));
   jQuery("#map_from_bioportal_full_id").val(jQuery("#sd_content a.active").attr("id"));
-  getTermDetails(document.getElementById("map_from"));
+  getClassDetails(document.getElementById("map_from"));
 
   // Clear the map to side
   jQuery("#map_to_concept_details").hide();

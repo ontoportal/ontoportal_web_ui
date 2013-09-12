@@ -81,7 +81,7 @@ jQuery(document).ready(function(){
 
 function jumpTo_jumpToValue(li) {
 	if (jQuery("#jump_to_concept_id") == null && jQuery("#jump_to_ontology_id") == null) {
-		var search = confirm("Term could not be found or is not browsable in " + BP_SITE + ".\n\nPress OK to go to the " + BP_SITE + " Search page or Cancel to try again");
+		var search = confirm("Class could not be found or is not browsable in " + BP_SITE + ".\n\nPress OK to go to the " + BP_SITE + " Search page or Cancel to try again");
 		if (search) {
 		    document.location = BP_SEARCH_SERVER + "/search/";
 			return;
