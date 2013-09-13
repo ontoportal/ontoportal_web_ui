@@ -38,8 +38,7 @@
     <% @submissions.each_with_index do |sub, index| %>
       <% hidden_row_class = index >= 5 ? "hidden_ont hidden_select" : "" %>
       <tr <%= cycle("class='#{hidden_row_class}'", "class='alt #{hidden_row_class}'") %> class="<%=hidden_row_class%>">
-        <!--<td> <%#= status_link(sub) %> </td>-->
-        <td> <%= sub.version %> </td>
+        <td> <%= status_link(sub) %> </td>
         <td> <%= xmldatetime_to_date(sub.released) %> </td>
         <td> <%= xmldatetime_to_date(sub.creationDate) %> </td>
         <td> <a href="<%= sub.id + "/download?apikey=#{get_apikey}" %>" target="_blank">Ontology</a> </td>

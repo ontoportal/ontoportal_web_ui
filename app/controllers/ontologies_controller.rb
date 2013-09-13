@@ -267,9 +267,6 @@ class OntologiesController < ApplicationController
     end
   end
 
-  ###############################################
-  ## These are stub methods that let us invoke partials directly
-  ###############################################
   def summary
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     # Check to see if user is requesting RDF+XML, return the file from REST service if so

@@ -1525,6 +1525,12 @@ button.fg-button-menu, button.fg-button {
   padding-left: 5px;
 }
 
+.ontology_submission_status {
+    font-size: x-small;
+    color: gray;
+    padding-left: 10px;
+}
+
 
 /************************************
  * Top-right Nav Menu

@@ -56,28 +56,40 @@ module OntologiesHelper
     end
   end
 
-  # Creates a link based on the status of an ontology
-  def status_link(ontology)
-    version_text = ontology.versionNumber.nil? || ontology.versionNumber.length == 0 ? "unknown" : ontology.versionNumber
-    case ontology.statusId.to_i
-    when 1 # Ontology is parsing
-      status_text = "waiting to parse"
-    when 2
-      status_text = "parsing"
-    when 3 # Ontology is ready to be explored
-      status_text = ""
-    when 4 # Error in parsing
-      status_text = "<span style='color: red;'>parsing error</span>"
-    when 6 # Ontology is deprecated
-      status_text = "archived"
+  def submission_status2string(sub)
+    # Massage the submission status into a UI string
+    #submission status values, from:
+    # https://github.com/ncbo/ontologies_linked_data/blob/master/lib/ontologies_linked_data/models/submission_status.rb
+    # "UPLOADED", "RDF", "RDF_LABELS", "INDEXED", "METRICS", "ANNOTATOR", "ARCHIVED"  and 'ERROR_*' for each.
+    # Strip the URI prefix from the status codes (works even if they are not URIs)
+    # The order of the codes must be assumed to be random, it is not an entirely
+    # predictable sequence of ontology processing stages.  (Ignore 'UPLOADED'.)
+    codes = sub.submissionStatus.map {|s| s.split('/').last }
+    errors = codes.map {|c| c if c.start_with? 'ERROR'}.compact
+    statusCodes = []
+    statusCodes.push('Parsed') if (codes.include? 'RDF') && (codes.include? 'RDF_LABELS')
+    if not errors.empty?
+      statusCodes.concat errors
+      # Forget about other status codes.
     else
-      status_text = ""
+      # The order of this array imposes an oder on the UI status code string
+      [ "INDEXED", "METRICS", "ANNOTATOR", "ARCHIVED" ].each do |c|
+        statusCodes.push(c.capitalize) if codes.include? c
+      end
     end
-    if ontology.valid_tree_view?
-      return "<a href='/ontologies/#{ontology.id}?p=classes'>#{version_text}</a> <span style='font-size: x-small; color: gray; padding-left: 10px;'>#{status_text}</span>"
-    else
-      return version_text + " <span style='font-size: x-small; color: gray; padding-left: 10px;'>" + status_text + "</span>"
-    end
+    return statusCodes.join(', ')
+  end
+
+  # Creates a link based on the status of an ontology submission
+  def status_link(submission)
+    version_text = submission.version.nil? || submission.version.length == 0 ? "unknown" : submission.version
+    status_text = submission_status2string(submission)
+    return version_text + " <span class='ontology_submission_status'>(" + status_text + ")</span>"
+    #if submission.valid_tree_view?
+    #  return "<a href='/ontologies/#{submission.id}?p=classes'>#{version_text}</a> <span style='font-size: x-small; color: gray; padding-left: 10px;'>#{status_text}</span>"
+    #else
+    #  return version_text + " <span style='font-size: x-small; color: gray; padding-left: 10px;'>" + status_text + "</span>"
+    #end
   end
 
   # Provides a link for an ontology based on where it's hosted (Local or remote)
