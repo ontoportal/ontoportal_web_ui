@@ -561,7 +561,7 @@ class ApplicationController < ActionController::Base
     begin
       sty_ont = LinkedData::Client::Models::Ontology.find_by_acronym('STY').first
       raise TypeError if sty_ont.nil?
-      sty_classes = sty_ont.explore.classes({'pagesize'=>500})
+      sty_classes = sty_ont.explore.classes({'pagesize'=>500, include: 'prefLabel'})
       sty_classes.collection.each do |cls|
         code = cls.id.sub(sty_prefix,'')
         semantic_types[ code ] = cls.prefLabel
