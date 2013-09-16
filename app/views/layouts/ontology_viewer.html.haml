@@ -111,7 +111,7 @@
           %li
             = link_to "Edit ontology information",  "/ontologies/#{@ontology.acronym}/edit"
           %li
-            = link_to "Add submission", "/ontologies/#{@ontology.acronym}/new_submission"
+            = link_to "Add submission", "/ontologies/#{@ontology.acronym}/submissions/new"
           - unless @submission.nil? || (@submission.respond_to?(:status) && @submission.status == 404)
             %li
               = link_to "Edit submission information (#{@submission.version})", "/ontologies/#{@ontology.acronym}/submissions/#{@submission.submissionId}/edit"
