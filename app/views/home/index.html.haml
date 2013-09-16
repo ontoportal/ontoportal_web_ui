@@ -280,14 +280,21 @@
               No recent mappings have been submitted
             - else
               - for map in @last_mappings
+                - # map.classes might contain more than two items
+                - clsA = @classDetails[map.classes.first.id]
+                - ontA = clsA['ontology'].split('/').last
+                - clsB = @classDetails[map.classes.last.id]
+                - ontB = clsB['ontology'].split('/').last
                 %tr
                   %td
-                    - if map.dest_node.nil?
-                    = "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})"
-                    - else
-                      = link_to "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})" , "/visualize/#{map.source_version_id}?conceptid=#{CGI.escape(map.source_id)}#mappings" |
+                    = "#{clsA['prefLabel']} (#{ontA}) <=> #{clsB['prefLabel']} (#{ontB})"
+                    -# if map.dest_node.nil?
+                    =# "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})"
+                    -# else
+                      =# link_to "#{map.source_name} (#{map.source_ont_name}) => #{map.destination_name} (#{map.destination_ont_name})" , "/visualize/#{map.source_version_id}?conceptid=#{CGI.escape(map.source_id)}#mappings" |
                     %br/
                     %span{:style => "color:#AAAAAA"}
-                      = map.map_source
-                      = map.created_at.strftime("%m/%d/%y")
-                      = map.user.username
+                      = 'BioPortal UI'  # map.process.name            # map.map_source
+                      = xmldatetime_to_date(map.process.first.date)   # map.created_at.strftime("%m/%d/%y")
+                      =# map.user.username
+
