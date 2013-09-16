@@ -12,7 +12,12 @@ class OntologiesController < ApplicationController
   # GET /ontologies
   # GET /ontologies.xml
   def index
-    @ontologies = LinkedData::Client::Models::Ontology.all(include: "name,acronym,projects,notes,group,reviews,administeredBy,hasDomain,viewingRestriction")
+    ontLD = LinkedData::Client::Models::Ontology.all(include: "name,acronym,projects,notes,group,reviews,administeredBy,hasDomain,viewingRestriction,viewOf")
+    # exclude views
+    @ontologies = ontLD.map {|o| o if o.viewOf.nil? }
+    @ontologies.compact!
+    #@views = @ontologies.map {|o| o if not o.viewOf.nil? }
+    #@views.compact!
     @submissions = LinkedData::Client::Models::OntologySubmission.all
     @submissions_map = Hash[@submissions.map {|sub| [sub.ontology.acronym, sub] }]
     @categories = LinkedData::Client::Models::Category.all
