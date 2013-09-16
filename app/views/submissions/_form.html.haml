@@ -203,7 +203,7 @@
         %span{:style => "font-size:11px;"} (choose a file on your local file system to upload)
         - display = "display:none;" if @ontology.isRemote.to_i.eql?(1) || @ontology.isRemote.to_i.eql?(3)
         %div.hidden_field#upload{style: display}
-          #{file_field :submission, :filePath}
+          #{f.file_field :filePath}
         %hr/
 
         = radio_button :submission, :isRemote, 1, :onclick=>"location_toggle('remote');"
