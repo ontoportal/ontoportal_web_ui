@@ -18,6 +18,7 @@ class SubmissionsController < ApplicationController
 
     if @submission_saved.errors
       @errors = response_errors(@submission_saved)
+      render "new"
     else
       # Adds ontology to syndication
       # Don't break here if we encounter problems, the RSS feed isn't critical

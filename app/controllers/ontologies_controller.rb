@@ -104,6 +104,7 @@ class OntologiesController < ApplicationController
       @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
       @errors = response_errors(@ontology_saved)
       @errors = {acronym: "Acronym already exists, please use another"} if @ontology_saved.status == 409
+      render "new"
     else
       # Adds ontology to syndication
       # Don't break here if we encounter problems, the RSS feed isn't critical
