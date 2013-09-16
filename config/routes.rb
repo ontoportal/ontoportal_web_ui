@@ -17,7 +17,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :ontologies, :has_many => :submissions
 
-  map.resources :submissions
+  map.resources :submissions, :belongs_to => :ontologies
 
   map.resources :login
 
