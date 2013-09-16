@@ -113,7 +113,7 @@
         %span.asterik *
       %td
         - ont_formats = [ "OBO", "OWL", "OWL-DL", "OWL-FULL", "OWL-LITE" ]
-        - selected = @submission.hasOntologyLanguage ? "OWL" : @submission.hasOntologyLanguage
+        - selected = @submission.hasOntologyLanguage ? @submission.hasOntologyLanguage : "OWL"
         = select("submission", "hasOntologyLanguage", ont_formats, { :selected => selected, :style => "width: 200px;" })
         #format_spacing
         %table#format_specific_options
