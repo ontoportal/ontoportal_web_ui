@@ -52,13 +52,10 @@
         - viewName = view.name
         /
           TODO: add UI support for view submission browsing
-          See this ticket about support for per-submission view/ontology browsing:
-          https://bmir-jira.stanford.edu/browse/NCBO-145
         - viewAdmin = view.admin?(session[:user])
         - if viewAdmin
-          / TODO: Check these URIs exist in the UI (they are not REST API URIs).
-          - viewEditURL = "/ontologies/view/edit/#{view.id}" # edit view
-          - viewSubmitURL = "/ontologies/view/new/#{view.id}?version_id=#{@ontology.id}" # submit new view
+          - viewEditURL = "/ontologies/#{view.acronym}/submissions/#{view.explore.latest_submission.submissionId}/edit"
+          - viewSubmitURL = "/ontologies/#{view.acronym}/submissions/new" # submit new view
         - view_submissions = view.explore.submissions.sort {|a,b| a.released <=> b.released }.reverse
         - return if view_submissions.is_a?(Array) && view_submissions.empty?
         - view_description = view_submissions[0].description rescue binding.pry
@@ -102,7 +99,7 @@
               - if viewAdmin
                 %li
                   %span.lead Administrator:
-                  %a{:href => "<haml:silent>viewSubmitURL</haml:silent>"} Submit New View Version
+                  %a{:href => viewSubmitURL} Submit New View Version
                   / edit || remove a view version
           / view_head
           %table.zebra{:cellpadding => "0", :cellspacing => "0", :width => "100%"}
