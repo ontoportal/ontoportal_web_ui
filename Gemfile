@@ -27,4 +27,5 @@ group :development do
   gem "pry-nav"
   # gem "pry-stack_explorer"
   gem "debugger"
+  gem "unicorn"
 end
