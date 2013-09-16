@@ -32,7 +32,7 @@ class SubmissionsController < ApplicationController
       # rescue
       # end
 
-      redirect_to "/ontologies/success/#{CGI.escape(@ontology.id)}"
+      redirect_to "/ontologies/success/#{@ontology.acronym}"
     end
   end
 

@@ -123,7 +123,7 @@ class OntologiesController < ApplicationController
       #  DataAccess.createUserSubscriptions(@ontology.administeredBy, @ontology.ontologyId, NOTIFICATION_TYPES[:all])
       # end
       if @ontology_saved.summaryOnly
-        redirect_to "/ontologies/success/#{CGI.escape(@ontology.id)}"
+        redirect_to "/ontologies/success/#{@ontology.acronym}"
       else
         redirect_to new_ontology_submission_url(CGI.escape(@ontology_saved.id))
       end
@@ -233,7 +233,7 @@ class OntologiesController < ApplicationController
   end
 
   def submit_success
-    @ontology = LinkedData::Client::Models::Ontology.get(params[:id])
+    @acronym = params[:id]
     render :partial => "submit_success", :layout => "ontology"
   end
 
