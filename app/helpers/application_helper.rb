@@ -446,4 +446,16 @@ module ApplicationHelper
     a[0...n].join(' ') + (a.size > n ? '...' : '')
   end
 
+  # convert xml_date_time_str from triple store into "mm/dd/yyyy", e.g.:
+  # parse_xmldatetime_to_date( '2010-06-27T20:17:41-07:00' )
+  # => '06/27/2010'
+  def xmldatetime_to_date(xml_date_time_str)
+    require 'date'
+    d = DateTime.xmlschema( xml_date_time_str ).to_date
+    # Return conventional US date format:
+    return sprintf("%02d/%02d/%4d", d.month, d.day, d.year)
+    # Or return "yyyy/mm/dd" format with:
+    #return DateTime.xmlschema( xml_date_time_str ).to_date.to_s
+  end
+
 end

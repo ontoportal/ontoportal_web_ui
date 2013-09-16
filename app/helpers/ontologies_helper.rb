@@ -1,30 +1,30 @@
 module OntologiesHelper
 
-  # Provides a link or string based on the status of an ontology.
-  def get_status_text(ontology, params = {})
-    # Don't display a link for ontologies that aren't browsable
-    # (these are temporarily defined in environment.rb)
-    unless $NOT_EXPLORABLE.nil?
-      $NOT_EXPLORABLE.each do |virtual_id|
-        if ontology.ontologyId.eql?(virtual_id.to_s)
-          return ""
-        end
-      end
-    end
-
-    case ontology.statusId.to_i
-    when 1 # Ontology is parsing
-      return "waiting to parse"
-    when 2
-      return "parsing"
-    when 3 # Ontology is ready to be explored
-      return ""
-    when 4 # Error in parsing
-      return "<span style='color: red;'>parsing error</span>"
-    when 6 # Ontology is deprecated
-      return "archived"
-    end
-  end
+  ## Provides a link or string based on the status of an ontology.
+  #def get_status_text(ontology, params = {})
+  #  # Don't display a link for ontologies that aren't browsable
+  #  # (these are temporarily defined in environment.rb)
+  #  unless $NOT_EXPLORABLE.nil?
+  #    $NOT_EXPLORABLE.each do |virtual_id|
+  #      if ontology.ontologyId.eql?(virtual_id.to_s)
+  #        return ""
+  #      end
+  #    end
+  #  end
+  #
+  #  case ontology.statusId.to_i
+  #  when 1 # Ontology is parsing
+  #    return "waiting to parse"
+  #  when 2
+  #    return "parsing"
+  #  when 3 # Ontology is ready to be explored
+  #    return ""
+  #  when 4 # Error in parsing
+  #    return "<span style='color: red;'>parsing error</span>"
+  #  when 6 # Ontology is deprecated
+  #    return "archived"
+  #  end
+  #end
 
   # Link for private/public/licensed ontologies
   def visibility_link(ontology)
@@ -213,17 +213,5 @@ module OntologiesHelper
     html.join("")
   end
 
-
-  # convert xml_date_time_str from triple store into "mm/dd/yyyy", e.g.:
-  # parse_xmldatetime_to_date( '2010-06-27T20:17:41-07:00' )
-  # => '06/27/2010'
-  def xmldatetime_to_date(xml_date_time_str)
-    require 'date'
-    d = DateTime.xmlschema( xml_date_time_str ).to_date
-    # Return conventional US date format:
-    return sprintf("%02d/%02d/%4d", d.month, d.day, d.year)
-    # Or return "yyyy/mm/dd" format with:
-    #return DateTime.xmlschema( xml_date_time_str ).to_date.to_s
-  end
 
 end

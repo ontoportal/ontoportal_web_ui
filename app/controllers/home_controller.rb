@@ -9,10 +9,6 @@ class HomeController < ApplicationController
     @ontologies = LinkedData::Client::Models::Ontology.all
     @groups = LinkedData::Client::Models::Group.all
 
-    # TODO: List of recent mappings (discuss with Manuel)
-    # https://bmir-jira.stanford.edu/browse/NCBO-106
-    @last_mappings = []
-
     # TODO: Handle custom ontology sets
     # Show only notes from custom ontology set
     @notes = LinkedData::Client::Models::Note.all
@@ -35,7 +31,34 @@ class HomeController < ApplicationController
       @last_notes.push note
       break if @last_notes.length >= NOTES_RECENT_MAX  # 5
     end
-
+    # Get the latest manual mappings
+    # All mapping classes are bidirectional.
+    # Each class in the list maps to all other classes in the list.
+    @last_mappings = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}mappings/recent/")
+    # There is no 'include' parameter on the /mappings/recent API.
+    # The following is required just to get the prefLabel on each mapping class.
+    classList = []
+    @last_mappings.each do |m|
+      m.classes.each do |c|
+        classList.push( { :class => c.id, :ontology => c.links['ontology'] } )
+      end
+    end
+    # make the batch call to get all the class prefLabel values
+    call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>classList, 'include'=>'prefLabel'}}
+    classResponse = get_batch_results(call_params)  # method in application_controller.rb
+    # Simplify the response data for the UI
+    @classDetails = {}
+    classResults = JSON.parse(classResponse)
+    classResults["http://www.w3.org/2002/07/owl#Class"].each do |cls|
+      id = cls['@id']
+      @classDetails[id] = {
+          '@id' => id,
+          'ui' => cls['links']['ui'],
+          'uri' => cls['links']['self'],
+          'prefLabel' => cls['prefLabel'],
+          'ontology' => cls['links']['ontology'],
+      }
+    end
     # TODO_REV: Handle private ontologies
     # Hide notes from private ontologies
     # restricted_ontologies = DataAccess.getRestrictedOntologyList
@@ -43,16 +66,13 @@ class HomeController < ApplicationController
     # restricted_ontologies.each do |ont|
     #   restricted_for_query << ont.ontologyId.to_i unless session[:user] && session[:user].has_access?(ont)
     # end
-
+    #
     # calculate bioportal summary statistics
     @ont_count = @ontologies.length
     @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes}.sum
-
-    # TODO: calculate these values
     @resources = get_resource_index_resources # application_controller
     @ri_resources = @resources.length
     @ri_record_count = @resources.map {|r| r.totalElements}.sum
-
     # retrieve annotation stats from old REST service
     @ri_stats = get_resource_index_annotation_stats
     @direct_annotations = @ri_stats[:direct]
