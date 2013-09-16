@@ -1,5 +1,5 @@
 - content_section = (params[:p]) ? params[:p] : "summary"
-- concept_title = @concept.nil? ? "" : " - #{@concept.prefLabel} - Terms"
+- concept_title = @concept.nil? ? "" : " - #{@concept.prefLabel} - Classes"
 - @title = "#{@ontology.name}#{concept_title}"
 = render :partial =>'layouts/header'
 /[if gt IE 7]
@@ -99,7 +99,7 @@
           %a{"data-bp_ont_page" => "summary", :href => "/ontologies/#{@ontology.acronym}?p=summary"} Summary
         - unless @ontology.summaryOnly
           %li#classes_link.classes_link.nav_link
-            %a{"data-bp_ont_page" => "classes", :href => "/ontologies/#{@ontology.acronym}?p=classes"} Terms
+            %a{"data-bp_ont_page" => "classes", :href => "/ontologies/#{@ontology.acronym}?p=classes"} Classes
         %li#notes_link.notes_link.nav_link
           %a{"data-bp_ont_page" => "notes", :href => "/ontologies/#{@ontology.acronym}?p=notes"} Notes
         %li#mappings_link.mappings_link.nav_link

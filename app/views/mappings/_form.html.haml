@@ -29,7 +29,7 @@
       = hidden_field_tag :map_from_bioportal_full_id, @concept_from.id
       = hidden_field_tag :map_from_bioportal_ontology_id, @ontology_from.acronym
       #map_from_concept_details{:style => "display: none; margin-top: 2em;"}
-        %h2{:style => "margin-bottom: 5px;"} Term Details
+        %h2{:style => "margin-bottom: 5px;"} Class Details
         #map_from_concept_details_table{:style => "height: 200px; overflow: auto; border: thin solid lightgray"}
           %img{:src => "/images/spinners/spinner_000000_16px.gif", :style => "padding: 5px;"}/
   #mapping_to{:style => "width: 50%; float: right;"}
@@ -40,7 +40,7 @@
       = hidden_field_tag :map_to_bioportal_full_id, @concept_to.id
       = hidden_field_tag :map_to_bioportal_ontology_id, @ontology_to.acronym
       #map_to_concept_details{:style => "display: none; margin-top: 2em;"}
-        %h2{:style => "margin-bottom: 5px;"} Term Details
+        %h2{:style => "margin-bottom: 5px;"} Class Details
         #map_to_concept_details_table{:style => "height: 200px; overflow: auto; border: thin solid lightgray"}
           %img{:src => "/images/spinners/spinner_000000_16px.gif", :style => "padding: 5px;"}/
   #mapping_options{:style => "margin: 13px; clear: both;"}
