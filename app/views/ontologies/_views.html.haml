@@ -1,0 +1,135 @@
+:javascript
+  jQuery(document).ready(function(){
+    jQuery(".click_view_collapse").click(function(){
+      var collapse = "#" + jQuery(this).parent().attr("id") + "_collapsible";
+      var icon = "#" + jQuery(this).parent().attr("id") + "_icon";
+      jQuery(icon).toggleClass("ui-icon-triangle-1-e");
+      jQuery(icon).toggleClass("ui-icon-triangle-1-s");
+      jQuery(collapse).toggle();
+    });
+
+    jQuery("#expand_views").click(function(){
+      jQuery(".view_collapsible").show();
+      jQuery(".click_view_collapse_icon").removeClass("ui-icon-triangle-1-e");
+      jQuery(".click_view_collapse_icon").addClass("ui-icon-triangle-1-s");
+    });
+
+    jQuery("#collapse_views").click(function(){
+      jQuery(".view_collapsible").hide();
+      jQuery(".click_view_collapse_icon").removeClass("ui-icon-triangle-1-s");
+      jQuery(".click_view_collapse_icon").addClass("ui-icon-triangle-1-e");
+    });
+  });
+%div{:style => "clear: both;"}
+#views_content
+  %h2{:style => "margin: 2em 0 0"}
+    %span{:style => "font-size: x-large; margin-right: 1.5em;"} Views
+    - if session[:user].nil?
+      %a{:href => "/login?redirect=#{URI.escape("/ontologies/new?ontology[viewOf]=#{CGI.escape(@ontology.id)}")}"} Create new view
+    - else
+      %a{:href => "/ontologies/new?ontology[viewOf]=#{CGI.escape(@ontology.id)}"} Create new view
+  %div{:style => "float:left;"}
+    - if @views.empty? || @views.length < 1
+      %h1 No views available.
+    - else
+      :css
+        #view_head .lead {
+            color: #708090;
+            font-weight: bold;
+        }
+        .view_collapsible {
+            margin: 0 1em;
+        }
+        .click_view_collapse:hover {
+            text-decoration: underline;
+        }
+              %h4{:style => "margin-top: .5em;"}
+        %a#expand_views{:href => "javascript:void(0);"} Expand All
+        |
+        %a#collapse_views{:href => "javascript:void(0);"} Collapse All
+      - @views.reverse.each_with_index do |view, index|
+        - viewN = "view_#{index}"
+        - viewName = view.name
+        /
+          TODO: add UI support for view submission browsing
+          See this ticket about support for per-submission view/ontology browsing:
+          https://bmir-jira.stanford.edu/browse/NCBO-145
+        - viewAdmin = view.admin?(session[:user])
+        - if viewAdmin
+          / TODO: Check these URIs exist in the UI (they are not REST API URIs).
+          - viewEditURL = "/ontologies/view/edit/#{view.id}" # edit view
+          - viewSubmitURL = "/ontologies/view/new/#{view.id}?version_id=#{@ontology.id}" # submit new view
+        - view_submissions = view.explore.submissions.sort {|a,b| a.released <=> b.released }.reverse
+        - return if view_submissions.is_a?(Array) && view_submissions.empty?
+        - view_description = view_submissions[0].description rescue binding.pry
+        - view_definition = view_submissions[0].definition
+        - view_language = nil # TODO: view_submissions[0].naturalLanguage -- Ray suggests leave it undefined.
+        - view_contacts = Set.new
+        - view_submissions[0].contact.each {|c| view_contacts.add("#{c.name}, #{c.email}") }
+        - view_contacts = view_contacts.to_a.join('; ')
+        .view_title{:id => viewN, :style => "margin: 1em 0 .5em; cursor: pointer;"}
+          %span.ui-icon.ui-icon-triangle-1-e.click_view_collapse.click_view_collapse_icon{:id => "#{viewN}_icon", :style => "float: left;"}
+          %span.click_view_collapse{:style => "font-size: 120%; font-weight: bold;"}
+            = viewName
+          %span{:style => "font-size: 90%;"}
+            - if viewAdmin
+              %span{:style => "padding-left: 1em; vertical-align: text-bottom;"}
+                (#{link_to "Edit Metadata", viewEditURL})
+        .view_collapsible{:id => "#{viewN}_collapsible", :style => "margin: 0 1em .5em; display: none;"}
+          #view_head.enable-lists{:style => "margin: 0 0 .5em;"}
+            - view_sub = view_submissions[0]
+            %ul
+              %li
+                %span.lead Latest submission links:
+                = succeed ",&amp;nbsp;" do
+                  %a{:href => view_sub.ontology.links['ui']}= "UI view summary (#{view_sub.version})"
+                %a{:href => view_sub.id, :target => "_blank"}= "linked data (#{view_sub.version})"
+              - unless view_description.nil?
+                %li
+                  %span.lead Description:
+                  = view_description
+              - unless view_definition.nil?
+                %li
+                  %span.lead Definition:
+                  = view_definition
+              - unless view_language.nil?
+                %li
+                  %span.lead Definition Language:
+                  = view_language
+              %li
+                %span.lead Created By:
+                = view_contacts
+              - if viewAdmin
+                %li
+                  %span.lead Administrator:
+                  %a{:href => "<haml:silent>viewSubmitURL</haml:silent>"} Submit New View Version
+                  / edit || remove a view version
+          / view_head
+          %table.zebra{:cellpadding => "0", :cellspacing => "0", :width => "100%"}
+            %thead
+              %tr
+                %th Version
+                %th Ontology Version
+                %th Release Date
+                %th Upload Date
+                %th Downloads
+            - view_submissions.each_with_index do |view_sub, view_index|
+              %tr
+                %td
+                  = view_sub.version
+                - if (view_index == 0)
+                  %td
+                    = "#{@ontology.acronym} (#{@submission.version})"
+                - else
+                  %td unknown
+                %td
+                  = xmldatetime_to_date(view_sub.released)
+                %td
+                  = xmldatetime_to_date(view_sub.creationDate)
+                %td
+                  %a{:href => view_sub.id + "/download?apikey=#{get_apikey}", :target => "_blank"} Ontology View
+        / collapsible div
+      / @views.each
+    / if views ...
+  / float left
+/ views_content
