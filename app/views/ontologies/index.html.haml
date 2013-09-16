@@ -157,7 +157,8 @@
         %td
           %input{:name => "filt", :onkeyup => "customFilterBox(this.value)", :type => "text"}/
     - unless @subdomain_filter[:active]
-      #custom_ontology_ad{:style => "margin: 20px 0 3px;"}
+      / Disabled until we implement custom ontology sets
+      #custom_ontology_ad{:style => "margin: 20px 0 3px; display: none;"}
         - account_link = session[:user] ? "/account" : "/login?redirect=/account"
         %a{:href => account_link} Configure which ontologies you see in #{$SITE}
     #all_updates_rss
