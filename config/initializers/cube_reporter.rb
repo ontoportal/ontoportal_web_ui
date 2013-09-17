@@ -36,6 +36,6 @@ module Rack
   end
 end
 
-if global_variables.include?(:$CUBE_ENABLED) && $CUBE_ENABLED
+if global_variables.include?(:$ENABLE_CUBE) && $ENABLE_CUBE == true
   Rails.configuration.middleware.use(::Rack::CubeReporter, {cube_host: $CUBE_HOST, cube_port: $CUBE_PORT})
 end
