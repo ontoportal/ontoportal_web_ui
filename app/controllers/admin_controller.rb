@@ -13,9 +13,9 @@ class AdminController < ApplicationController
     @globals = {}
     globals.each {|g| @globals[g.to_s] = eval(g.to_s)}
 
-    @cache = CACHE
+    @cache = Rails.cache.instance_variable_get("@data")
 
-    if params[:resetcache]
+    if params[:resetcache] && @cache.respond_to?(:reset)
       begin
         @cache.reset
       rescue
@@ -27,7 +27,7 @@ class AdminController < ApplicationController
       render :partial => 'status'
     end
 
-    if params[:clearcache]
+    if params[:clearcache] && @cache.respond_to?(:flush_all)
       begin
         @cache.flush_all
       rescue
