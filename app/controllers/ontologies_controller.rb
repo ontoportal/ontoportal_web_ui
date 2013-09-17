@@ -12,7 +12,9 @@ class OntologiesController < ApplicationController
   # GET /ontologies
   # GET /ontologies.xml
   def index
-    ontLD = LinkedData::Client::Models::Ontology.all(include: "name,acronym,projects,notes,group,reviews,administeredBy,hasDomain,viewingRestriction,viewOf")
+    ontLD = LinkedData::Client::Models::Ontology.all(include: "acronym,administeredBy,group,hasDomain,name,notes,projects,reviews,summaryOnly,viewingRestriction,viewOf")
+    #summaryOnly = ontLD.map {|o| o if o.summaryOnly == true }.compact
+    #binding.pry
     # exclude views
     @ontologies = ontLD.map {|o| o if o.viewOf.nil? }
     @ontologies.compact!

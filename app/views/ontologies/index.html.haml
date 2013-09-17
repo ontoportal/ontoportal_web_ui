@@ -182,6 +182,8 @@
           %th{:style => "display:none;"} groups
       %tbody
         - @ontologies.each do |ontology|
+          -# Add display option for summaryOnly ontologies?
+          -# binding.pry if ontology.summaryOnly == true
           - submission = @submissions_map[ontology.acronym]
           - next if submission.nil?
           - class_count = @class_counts[ontology.id] || "count not available"
