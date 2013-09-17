@@ -6,11 +6,11 @@ module HomeHelper
   def get_help_page_from_wiki
     return nil if $WIKI_HELP_PAGE.nil? || $WIKI_HELP_PAGE.length == 0
 
-    help_text = CACHE.get("help_text")
+    help_text = Rails.cache.read("help_text")
     if help_text.nil?
       help_page = Hpricot(open($WIKI_HELP_PAGE))
       help_text = (help_page/"//*[@id='bodyContent']").inner_html
-      CACHE.set("help_text", help_text, 60*60)
+      Rails.cache.write("help_text", help_text, expires_in: 60*60) rescue binding.pry
     end
 
     return help_text
