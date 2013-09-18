@@ -35,9 +35,19 @@ class RecommenderController < ApplicationController
     #recommendations = LinkedData::Client::HTTP.get(query)
     LOG.add :debug, "Retrieved #{recommendations.length} recommendations: #{Time.now - start}s"
 
+    sorted = recommendations.sort {|a,b| a['numTermsMatched'] <=> b['numTermsMatched'] }.reverse
+    # Reduce the data package sent to the browser (via ajax)
+    #simple = sorted.map {|r| [r['score'], r['ontology']['acronym'], r["numTermsMatched"], r["numTermsTotal"]] }
+
     #massage_recommendations(recommendations, options) unless recommendations.empty?
 
-    render :json => recommendations
+    # reduce data package size to suit reasonable display size
+    if sorted.length > 24
+      simple = sorted[0..24]
+    else
+      simple = sorted
+    end
+    render :json => simple
   end
 
   private
