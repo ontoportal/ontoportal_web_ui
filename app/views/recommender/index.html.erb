@@ -35,15 +35,13 @@
     jQuery(".recommender_spinner").show();
 
     var params = {};
-
     var ont_select = jQuery("#ontology_ontologyId");
-
     var ontology_ids = (ont_select.val() == null) ? "" : ont_select.val().join(",");
 
-    params["ontology_ids"] = ontology_ids;
-    params["text"] = jQuery("#recommendation_text").val();
-    params["hierarchy"] = jQuery("[name='hierarchy']:checked").val() == "none" ? "" : jQuery("[name='hierarchy']:checked").val();
-    params["normalization"] = jQuery("[name='normalization']:checked").val() == "none" ? "" : jQuery("[name='normalization']:checked").val();
+    params.ontologies = ontology_ids;
+    params.text = jQuery("#recommendation_text").val();
+    params.hierarchy = jQuery("[name='hierarchy']:checked").val() == "none" ? "" : jQuery("[name='hierarchy']:checked").val();
+    params.normalization = jQuery("[name='normalization']:checked").val() == "none" ? "" : jQuery("[name='normalization']:checked").val();
 
     jQuery.ajax({
           type: "POST",
@@ -74,8 +72,8 @@
                 //
                 // TODO: ENABLE CLASSES MATCHED WHEN THE REST API PROVIDES THEM.
                 //
-                //jQuery.each(rec.annotatingConcepts, function(){
-                //  found_concepts.push("<a href='/ontologies/"+rec.virtualOntologyId+"?p=classes&conceptid="+encodeURIComponent(this.fullId)+"'>"+this.preferredName+"</a>");
+                //jQuery.each(rec.annotatedClasses, function(){
+                //  found_concepts.push("<a href='"+ontLink+"?p=classes&conceptid="+encodeURIComponent(this.id)+"'>"+this.prefLabel+"</a>");
                 //});
                 var found_concepts_html = "" +
                     "<div id='" + foundConceptsID + "' class='found_concepts'>" +

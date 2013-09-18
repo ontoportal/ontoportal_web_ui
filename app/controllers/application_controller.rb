@@ -579,4 +579,100 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def massage_annotated_classes(annotations, options)
+    # Get the class details required for display, assume this is necessary
+    # for every element of the annotations array because the API returns a set.
+    # Use the batch REST API to get all the annotated class prefLabels.
+    start = Time.now
+    semantic_types = options[:semanticTypes] || []
+    class_details = get_annotated_classes(annotations, semantic_types)
+    simplify_annotated_classes(annotations, class_details)
+    # repeat the simplification for any annotation hierarchy or mappings.
+    hierarchy = annotations.map {|a| a if a.keys.include? 'hierarchy' }.compact
+    hierarchy.each do |a|
+      simplify_annotated_classes(a['hierarchy'], class_details) if not a['hierarchy'].empty?
+    end
+    mappings = annotations.map {|a| a if a.keys.include? 'mappings' }.compact
+    mappings.each do |a|
+      simplify_annotated_classes(a['mappings'], class_details) if not a['mappings'].empty?
+    end
+    LOG.add :debug, "Completed massage for annotated classes: #{Time.now - start}s"
+  end
+
+  def simplify_annotated_classes(annotations, class_details)
+    annotations2delete = []
+    annotations.each do |a|
+      cls_id = a['annotatedClass']['@id']
+      details = class_details[cls_id]
+      if details.nil?
+        LOG.add :debug, "Failed to get class details for: #{a['annotatedClass']['links']['self']}"
+        annotations2delete.push(cls_id)
+      else
+        # Replace the annotated class with simplified details.
+        a['annotatedClass'] = details
+      end
+    end
+    # Remove any annotations that fail to resolve details.
+    annotations.delete_if { |a| annotations2delete.include? a['annotatedClass']['@id'] }
+  end
+
+  def get_annotated_class_hash(a)
+    return {
+        :class => a['annotatedClass']['@id'],
+        :ontology => a['annotatedClass']['links']['ontology']
+    }
+  end
+
+  def get_annotated_classes(annotations, semanticTypes=[])
+    # Use batch service to get class prefLabels
+    @ontologies_hash ||= get_simplified_ontologies_hash # method in application_controller.rb
+    classDetails = {}
+    classList = []
+    annotations.each {|a| classList << get_annotated_class_hash(a) }
+    hierarchy = annotations.map {|a| a if a.keys.include? 'hierarchy' }.compact
+    hierarchy.each do |a|
+      a['hierarchy'].each {|h| classList << get_annotated_class_hash(h) }
+    end
+    mappings = annotations.map {|a| a if a.keys.include? 'mappings' }.compact
+    mappings.each do |a|
+      a['mappings'].each {|m| classList << get_annotated_class_hash(m) }
+    end
+    return classDetails if classList.empty?
+    # remove duplicates
+    classSet = classList.to_set # get unique class:ontology set
+    classList = classSet.to_a   # collection requires a list in batch call
+    # make the batch call
+    properties = 'prefLabel'
+    properties = 'prefLabel,semanticType' if not semanticTypes.empty?
+    call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>classList, 'include'=>properties}}
+    response = get_batch_results(call_params)  # method in application_controller.rb
+    # Simplify the response data for the UI
+    classResults = JSON.parse(response)
+    classResults["http://www.w3.org/2002/07/owl#Class"].each do |cls|
+      ont_details = @ontologies_hash[ cls['links']['ontology'] ]
+      next if ont_details.nil? # No display for annotations on any class outside the BioPortal ontology set.
+      # simplified details for class in UI code
+      id = cls['@id']
+      classDetails[id] = {
+          '@id' => id,
+          'ui' => cls['links']['ui'],
+          'uri' => cls['links']['self'],
+          'prefLabel' => cls['prefLabel'],
+          'ontology' => ont_details,
+      }
+      unless semanticTypes.empty? || cls['semanticType'].nil?
+        @semantic_types ||= get_semantic_types   # method in application_controller.rb
+        # Extract the semantic type descriptions that are requested.
+        semanticTypeURI = 'http://bioportal.bioontology.org/ontologies/umls/sty/'
+        semanticCodes = cls['semanticType'].map {|t| t.sub( semanticTypeURI, '') }
+        requestedCodes = semanticCodes.map {|code| (semanticTypes.include? code and code) || nil }.compact
+        requestedDescriptions = requestedCodes.map {|code| @semantic_types[code] }.compact
+        classDetails[id]['semanticType'] = requestedDescriptions
+      else
+        classDetails[id]['semanticType'] = []
+      end
+    end
+    return classDetails
+  end
+
 end
