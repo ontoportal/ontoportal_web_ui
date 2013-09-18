@@ -202,7 +202,7 @@
             %td{:style => "width:50px;"}= submission.hasOntologyLanguage.split("-")[0]
             %td{:style => "width:50px;"}= submission.version
             %td{:style => "width:30px;"}= DateTime.parse(submission.creationDate).strftime("%m/%d/%Y")
-            %td{:style => "width:225px;"}= submission.contact.map {|c| c.name}.join(" ")
+            %td{:style => "width:225px;"}= submission.contact.compact.map {|c| c.name}.join(" ")
             %td{:style => "display:none;"}= "Description: #{submission.description}" unless submission.description.nil?
             %td{:style => "display:none;"}= ontology.hasDomain.join(" ")
             %td{:style => "display:none;"}= ontology.group.join(" ")
