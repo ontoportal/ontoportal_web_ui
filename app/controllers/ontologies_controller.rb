@@ -155,7 +155,7 @@ class OntologiesController < ApplicationController
     # TODO: Add parameter to get ontology views?
     #
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
-    counts = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}mappings/statistics/ontologies/#{params[:id]}")
+    counts = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}/mappings/statistics/ontologies/#{params[:id]}")
     @ontologies_mapping_count = []
     unless counts.nil?
       counts.members.each do |acronym|

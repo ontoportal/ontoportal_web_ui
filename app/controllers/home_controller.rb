@@ -34,7 +34,7 @@ class HomeController < ApplicationController
     # Get the latest manual mappings
     # All mapping classes are bidirectional.
     # Each class in the list maps to all other classes in the list.
-    @last_mappings = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}mappings/recent/")
+    @last_mappings = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}/mappings/recent/")
     @classDetails = {}
     if not @last_mappings.empty?
       # There is no 'include' parameter on the /mappings/recent API.

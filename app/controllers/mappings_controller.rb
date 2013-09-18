@@ -5,12 +5,14 @@ class MappingsController < ApplicationController
   layout 'ontology'
   before_filter :authorize_and_redirect, :only=>[:create,:new,:destroy]
 
+  MAPPINGS_URL = "#{LinkedData::Client.settings.rest_url}/mappings"
+
   def index
     ontology_list = LinkedData::Client::Models::Ontology.all
     # TODO_REV: Views support for mappings
     # views_list = DataAccess.getViewList()
 
-    ontologies_mapping_count = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}mappings/statistics/ontologies")
+    ontologies_mapping_count = LinkedData::Client::HTTP.get("#{MAPPINGS_URL}/statistics/ontologies")
 
     ontologies_hash = {}
     ontology_list.each do |ontology|
@@ -37,7 +39,7 @@ class MappingsController < ApplicationController
   def count
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
 
-    counts = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}mappings/statistics/ontologies/#{params[:id]}")
+    counts = LinkedData::Client::HTTP.get("#{MAPPINGS_URL}/statistics/ontologies/#{params[:id]}")
     @ontologies_mapping_count = []
     counts.members.each do |acronym|
       count = counts[acronym]
@@ -59,7 +61,7 @@ class MappingsController < ApplicationController
     @target_ontology = LinkedData::Client::Models::Ontology.find(params[:target])
     ontologies = [@ontology.id, @target_ontology.id]
 
-    @mapping_pages = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}mappings", {page: page, ontologies: ontologies.join(",")})
+    @mapping_pages = LinkedData::Client::HTTP.get(MAPPINGS_URL, {page: page, ontologies: ontologies.join(",")})
     @mappings = @mapping_pages.collection
 
     if @mapping_pages.nil? || @mapping_pages.collection.empty?
