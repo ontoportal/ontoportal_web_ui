@@ -12,13 +12,12 @@ class OntologiesController < ApplicationController
   # GET /ontologies
   # GET /ontologies.xml
   def index
-    ontLD = LinkedData::Client::Models::Ontology.all(include: "acronym,administeredBy,group,hasDomain,name,notes,projects,reviews,summaryOnly,viewingRestriction,viewOf")
-    # exclude views
-    @ontologies = ontLD.map {|o| o if o.viewOf.nil? }.compact
+    # ontology views are excluded from this collection.
+    @ontologies = LinkedData::Client::Models::Ontology.all(include: "acronym,administeredBy,group,hasDomain,name,notes,projects,reviews,summaryOnly,viewingRestriction")
     #@views = @ontologies.map {|o| o if not o.viewOf.nil? }.compact
     @submissions = LinkedData::Client::Models::OntologySubmission.all
     # try to get submission data for summaryOnly ontologies
-    summaryOnts = ontLD.map {|o| o if o.summaryOnly }.compact
+    summaryOnts = @ontologies.map {|o| o if o.summaryOnly }.compact
     summarySubs = summaryOnts.map {|o| o.explore.submissions.first }.compact
     @submissions.concat summarySubs
     @submissions_map = Hash[@submissions.map {|sub| [sub.ontology.acronym, sub] }]
@@ -56,6 +55,9 @@ class OntologiesController < ApplicationController
       # TODO_REV: Add view support when REST support is available
       # @ontology = DataAccess.getView(params[:ontology])
     else
+      #
+      # TODO: Add parameter to get ontology views?
+      #
       @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     end
     @submission = @ontology.explore.latest_submission
@@ -138,6 +140,9 @@ class OntologiesController < ApplicationController
   end
 
   def edit
+    #
+    # TODO: Add parameter to get ontology views?
+    #
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
     @categories = LinkedData::Client::Models::Category.all
@@ -146,12 +151,18 @@ class OntologiesController < ApplicationController
   end
 
   def mappings
+    #
+    # TODO: Add parameter to get ontology views?
+    #
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     counts = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}mappings/statistics/ontologies/#{params[:id]}")
     @ontologies_mapping_count = []
     unless counts.nil?
       counts.members.each do |acronym|
         count = counts[acronym]
+        #
+        # TODO: Add parameter to get ontology views?
+        #
         ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym.to_s).first
         next unless ontology
         @ontologies_mapping_count << {'ontology' => ontology, 'count' => count}
@@ -172,6 +183,9 @@ class OntologiesController < ApplicationController
       @ontology = LinkedData::Client::Models::Ontology.new(values: params[:ontology])
       @ontology.administeredBy = [session[:user].id]
     else
+      #
+      # TODO: Add parameter to get ontology views?
+      #
       @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     end
     @categories = LinkedData::Client::Models::Category.all
@@ -180,6 +194,9 @@ class OntologiesController < ApplicationController
   end
 
   def notes
+    #
+    # TODO: Add parameter to get ontology views?
+    #
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     @submission = @ontology.explore.latest_submission
     @notes = @ontology.explore.notes
@@ -240,6 +257,9 @@ class OntologiesController < ApplicationController
   end
 
   def update
+    #
+    # TODO: Add parameter to get ontology views?
+    #
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym]).first
     @ontology.update_from_params(params[:ontology])
     error_response = @ontology.update
@@ -271,6 +291,9 @@ class OntologiesController < ApplicationController
   end
 
   def summary
+    #
+    # TODO: Add parameter to get ontology views
+    #
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     # Check to see if user is requesting RDF+XML, return the file from REST service if so
     if request.accept.to_s.eql?("application/rdf+xml")
@@ -314,6 +337,9 @@ class OntologiesController < ApplicationController
   end
 
   def widgets
+    #
+    # TODO: Add parameter to get ontology views
+    #
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     if request.xhr?
       render :partial => 'widgets', :layout => false
