@@ -21,10 +21,6 @@ class OntologiesController < ApplicationController
     summaryOnts = ontLD.map {|o| o if o.summaryOnly }.compact
     summarySubs = summaryOnts.map {|o| o.explore.submissions.first }.compact
     @submissions.concat summarySubs
-    # try to get submission data for private ontologies
-    privateOnts = ontLD.map {|o| o if o.viewingRestriction == 'private' }.compact
-    privateSubs = privateOnts.map {|o| o.explore.submissions.first }.compact
-    @submissions.concat privateSubs
     @submissions_map = Hash[@submissions.map {|sub| [sub.ontology.acronym, sub] }]
     @categories = LinkedData::Client::Models::Category.all
     @groups = LinkedData::Client::Models::Group.all
