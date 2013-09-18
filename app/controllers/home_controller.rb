@@ -35,29 +35,31 @@ class HomeController < ApplicationController
     # All mapping classes are bidirectional.
     # Each class in the list maps to all other classes in the list.
     @last_mappings = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}mappings/recent/")
-    # There is no 'include' parameter on the /mappings/recent API.
-    # The following is required just to get the prefLabel on each mapping class.
-    classList = []
-    @last_mappings.each do |m|
-      m.classes.each do |c|
-        classList.push( { :class => c.id, :ontology => c.links['ontology'] } )
-      end
-    end
-    # make the batch call to get all the class prefLabel values
-    call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>classList, 'include'=>'prefLabel'}}
-    classResponse = get_batch_results(call_params)  # method in application_controller.rb
-    # Simplify the response data for the UI
     @classDetails = {}
-    classResults = JSON.parse(classResponse)
-    classResults["http://www.w3.org/2002/07/owl#Class"].each do |cls|
-      id = cls['@id']
-      @classDetails[id] = {
-          '@id' => id,
-          'ui' => cls['links']['ui'],
-          'uri' => cls['links']['self'],
-          'prefLabel' => cls['prefLabel'],
-          'ontology' => cls['links']['ontology'],
-      }
+    if not @last_mappings.empty?
+      # There is no 'include' parameter on the /mappings/recent API.
+      # The following is required just to get the prefLabel on each mapping class.
+      classList = []
+      @last_mappings.each do |m|
+        m.classes.each do |c|
+          classList.push( { :class => c.id, :ontology => c.links['ontology'] } )
+        end
+      end
+      # make the batch call to get all the class prefLabel values
+      call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>classList, 'include'=>'prefLabel'}}
+      classResponse = get_batch_results(call_params)  # method in application_controller.rb
+      # Simplify the response data for the UI
+      classResults = JSON.parse(classResponse)
+      classResults["http://www.w3.org/2002/07/owl#Class"].each do |cls|
+        id = cls['@id']
+        @classDetails[id] = {
+            '@id' => id,
+            'ui' => cls['links']['ui'],
+            'uri' => cls['links']['self'],
+            'prefLabel' => cls['prefLabel'],
+            'ontology' => cls['links']['ontology'],
+        }
+      end
     end
     # TODO_REV: Handle private ontologies
     # Hide notes from private ontologies
