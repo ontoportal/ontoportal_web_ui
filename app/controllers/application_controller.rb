@@ -36,23 +36,7 @@ class ApplicationController < ActionController::Base
   # See ActionController::RequestForgeryProtection for details
   protect_from_forgery
 
-  before_filter  :preload_models, :set_global_thread_values, :domain_ontology_set, :authorize_miniprofiler
-
-  # Needed for memcache to understand the models in storage
-  def preload_models()
-    Note
-    NodeWrapper
-    NodeLabel
-    Annotation
-    Mapping
-    MappingPage
-    MarginNote
-    OntologyWrapper
-    OntologyMetricsWrapper
-    UserWrapper
-    Groups
-    SearchResults
-  end
+  before_filter :set_global_thread_values, :domain_ontology_set, :authorize_miniprofiler
 
   def set_global_thread_values
     Thread.current[:session] = session
