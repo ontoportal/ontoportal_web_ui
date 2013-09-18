@@ -68,7 +68,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			"name", "FlexoViz",
 			"allowScriptAccess","always",
 			"type", "application/x-shockwave-flash",
-			"flashVars", "virtual=true&server=<%=$REST_URL%>&ontology=<%=params['ontologyid']%>&nodeid=<%=params['conceptid']%>",
+			"flashVars", "virtual=true&server=<%=$LEGACY_REST_URL%>&ontology=<%=params['ontologyid']%>&nodeid=<%=params['conceptid']%>",
 			"pluginspage", "http://www.adobe.com/go/getflashplayer"
 	);
   } else {
@@ -88,7 +88,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			<param name="quality" value="high" />
 			<param name="bgcolor" value="#ffffff" />
 			<param name="allowScriptAccess" value="always" />
-      <param name="flashVars" value="server=<%=$REST_URL%>&ontology=<%=params['ontologyid']%>&nodeid=<%=params['conceptid']%>" />
+      <param name="flashVars" value="server=<%=$LEGACY_REST_URL%>&ontology=<%=params['ontologyid']%>&nodeid=<%=params['conceptid']%>" />
 			<embed src="FlexoViz.swf" bgcolor="#ffffff"
 				width="<%=params['width']%>px" height="<%=params['height']%>px" name="FlexoViz" align="left"
 				play="true"

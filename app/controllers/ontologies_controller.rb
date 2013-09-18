@@ -137,11 +137,6 @@ class OntologiesController < ApplicationController
     end
   end
 
-  def download_latest
-    @ontology = DataAccess.getLatestOntology(params[:id])
-    redirect_to $REST_URL + "/ontologies/download/#{@ontology.id}?apikey=#{$API_KEY}"
-  end
-
   def edit
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
@@ -281,7 +276,7 @@ class OntologiesController < ApplicationController
     if request.accept.to_s.eql?("application/rdf+xml")
       user_api_key = session[:user].nil? ? "" : session[:user].apikey
       begin
-        rdf_file = RemoteFile.new($REST_URL + "/virtual/ontology/rdf/download/#{@ontology.ontologyId}?apikey=#{$API_KEY}&userapikey=#{user_api_key}")
+        rdf_file = RemoteFile.new($LEGACY_REST_URL + "/virtual/ontology/rdf/download/#{@ontology.ontologyId}?apikey=#{$API_KEY}&userapikey=#{user_api_key}")
       rescue Exception => e
         if !e.io.status.nil? && e.io.status[0].to_i == 404
           raise Error404

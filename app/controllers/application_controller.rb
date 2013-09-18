@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
   # Pull configuration parameters for REST connection.
-  REST_URI = "http://#{$REST_DOMAIN}"
+  REST_URI = $REST_URL
   API_KEY = $API_KEY
 
   # Constants used primarily in the resource_index_controller, but also elsewhere.
@@ -36,23 +36,7 @@ class ApplicationController < ActionController::Base
   # See ActionController::RequestForgeryProtection for details
   protect_from_forgery
 
-  before_filter  :preload_models, :set_global_thread_values, :domain_ontology_set, :authorize_miniprofiler
-
-  # Needed for memcache to understand the models in storage
-  def preload_models()
-    Note
-    NodeWrapper
-    NodeLabel
-    Annotation
-    Mapping
-    MappingPage
-    MarginNote
-    OntologyWrapper
-    OntologyMetricsWrapper
-    UserWrapper
-    Groups
-    SearchResults
-  end
+  before_filter :set_global_thread_values, :domain_ontology_set, :authorize_miniprofiler
 
   def set_global_thread_values
     Thread.current[:session] = session
