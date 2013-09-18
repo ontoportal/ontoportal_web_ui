@@ -37,12 +37,12 @@ $VERSIONS_IN_VIRTUAL_SPACE = Set.new([3905, 4525, 4531, 8056])
 $VIRTUAL_ID_UPPER_LIMIT = 9999
 
 class ImportOntologies
- 
+
   REST = BioPortalRestfulCore
 
   def self.import_ontologies
     setup_from
-    
+
     # Get ontologies array
     if !(defined? $INCLUDE_ONTOLOGIES).nil? && !$INCLUDE_ONTOLOGIES.nil? && !$INCLUDE_ONTOLOGIES.empty?
       ont_list = []
@@ -61,18 +61,18 @@ class ImportOntologies
     else
       ont_list = REST.getOntologyList
     end
-    
+
     puts "Total ontologies for import: #{ont_list.size}"
-    
+
     error_onts = []
     ont_list.each do |ont|
       begin
         setup_from
         ont_full = REST.getOntology(:ontology_id => ont.id)
-      
+
         # Get filename, prefer abbreviation
         filename = ont.abbreviation.nil? ? ont.displayLabel.downcase : ont.abbreviation.downcase
-      
+
         begin
           ont_file = RemoteFile.new("#{$FROM}/ontologies/download/#{ont.id}?apikey=#{$API_KEY}", "#{filename}.#{ont.format.downcase}")
         rescue OpenURI::HTTPError => e
@@ -85,41 +85,41 @@ class ImportOntologies
         end
 
         ont_hash = ont_full.to_params_hash
-        
+
         # Add file
         ont_hash["filePath"] = ont_file
-        
+
         # Change user
         ont_hash['userId'] = $ONTOLOGY_OWNER
-        
+
         # Reset status so the ontology will get parsed
         ont_hash['statusId'] = 1
-      
+
         setup_to
         new_ont = REST.createOntology(ont_hash)
         LOG.add :debug, "Ontology created from id #{ont.id} with new id #{new_ont.id}"
       rescue Exception => e
          error_onts << [ ont.id, ont.displayLabel, e.message ]
          puts "Problem: #{e.message}"
-      end   
+      end
     end
-    
+
     puts "\n\n\nerrors" unless error_onts.empty?
     error_onts.each { |ont| puts "#{ont[0]}\t#{ont[1]}\t#{ont[2]}" }
   end
-  
+
   def self.setup_from
-    $REST_URL = $FROM
+    $LEGACY_REST_URL = $FROM
     $REST_PORT = $FROM_PORT
     $API_KEY = $API_KEY_FROM
   end
-  
+
   def self.setup_to
-    $REST_URL = $TO
+    $LEGACY_REST_URL = $TO
     $REST_PORT = $TO_PORT
     $API_KEY = $API_KEY_TO
   end
 
   import_ontologies
-  
+
 end

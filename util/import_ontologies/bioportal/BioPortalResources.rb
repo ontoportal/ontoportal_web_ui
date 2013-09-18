@@ -12,7 +12,7 @@ class BioPortalResources
       if params
         @params = params.clone
       end
-      @uri_base_url = $REST_URL.clone
+      @uri_base_url = $LEGACY_REST_URL.clone
       @uri = @uri_base_url.clone
 
       if !Thread.current[:session].nil?

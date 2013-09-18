@@ -137,7 +137,7 @@ module OntologiesHelper
       else
         next
       end
-      #return "<a href='#{$REST_URL}/diffs/download/#{new}/#{old}?format=xml' target='_blank'>Diff</a>"
+      #return "<a href='#{$LEGACY_REST_URL}/diffs/download/#{new}/#{old}?format=xml' target='_blank'>Diff</a>"
       return "<a href='#{DataAccess.getDiffDownloadURI(new, old)}' target='_blank'>Diff</a>"
     end
     return ""

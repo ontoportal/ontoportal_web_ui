@@ -1,7 +1,7 @@
-require 'rest_client' 
+require 'rest_client'
 
 class LOG
-  
+
   # Log using local or remote methods
   #    Local: provide the log level as a symbol (:debug, :info, :error, etc)
   #    Remote: provide the request and a parameter hash
@@ -20,15 +20,15 @@ class LOG
       local(level, message)
     end
   end
-  
+
   private
-  
+
   def self.remote(level, event, request, params)
     params = {} if params.nil?
     params = convert_params(params) unless params.empty?
 
-    log = RestClient::Resource.new $REST_URL + "/log", :timeout => 30
-    
+    log = RestClient::Resource.new $LEGACY_REST_URL + "/log", :timeout => 30
+
     session = request.session
     params[:user] = session[:user].username rescue ""
     params[:userid] = session[:user].id rescue ""
@@ -37,7 +37,7 @@ class LOG
     params[:eventtype] = event
     params[:apikey] = $API_KEY
     params[:requesturl] = request.request_uri
-    
+
     begin
       ms = Benchmark.ms { log.post(params) }
       LOG.add :debug, "Logging action remotely (#{ms}ms)"
@@ -45,10 +45,10 @@ class LOG
       LOG.add :debug, "Remote logging failed: #{e.message}"
     end
   end
-  
+
   # Convert parameter names before making the call. Removes underscores.
   def self.convert_params(params)
-    params[:ontologyversionid] = params[:ontology_id] if params[:ontology_id] 
+    params[:ontologyversionid] = params[:ontology_id] if params[:ontology_id]
     params[:ontologyid] = params[:virtual_id] if params[:ontologyid]
     params[:ontologyname] = params[:ontology_name] if params[:ontology_name]
     params[:conceptid] = params[:concept_id] if params[:concept_id]
@@ -57,7 +57,7 @@ class LOG
     params[:numsearchresults] = params[:result_count] if params[:result_count]
     params
   end
-  
+
   def self.local(level, message)
     if defined? RAILS_DEFAULT_LOGGER
       RAILS_DEFAULT_LOGGER.send(level, message)
@@ -65,5 +65,5 @@ class LOG
       # puts message
     end
   end
-  
+
 end
