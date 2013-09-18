@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
   # Pull configuration parameters for REST connection.
-  REST_URI = "http://#{$REST_DOMAIN}"
+  REST_URI = $REST_URL
   API_KEY = $API_KEY
 
   # Constants used primarily in the resource_index_controller, but also elsewhere.

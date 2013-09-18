@@ -30,9 +30,6 @@ $API_KEY = ""
 $REST_URL = "http://domain.com:8080/bioportal"
 # $REST_URL="http://localhost:8080/bioportal"
 
-# REST domain: this is the domain that hosts services (Core, OBS, OBR, etc)
-$REST_DOMAIN = "domain.com"
-
 # REST core service port number
 #$REST_PORT="80"
 $REST_PORT = "8080"

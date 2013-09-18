@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   layout 'ontology'
 
-  RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "http://#{$REST_DOMAIN}/resource_index/", :limit => 10, :mode => :intersection}
+  RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "#{$REST_URL}/resource_index/", :limit => 10, :mode => :intersection}
 
   NOTES_RECENT_MAX = 5
 
