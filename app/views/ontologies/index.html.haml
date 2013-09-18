@@ -186,7 +186,7 @@
           -# binding.pry if ontology.summaryOnly == true
           - submission = @submissions_map[ontology.acronym]
           - next if submission.nil?
-          - class_count = @class_counts[ontology.id] || "count not available"
+          - class_count = @class_counts[ontology.id] || "unavailable"
           %tr
             %td{:style => "width:300px;"}
               %span{:style => "padding-right: .5em;"}
