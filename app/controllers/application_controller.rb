@@ -436,7 +436,7 @@ class ApplicationController < ActionController::Base
   def get_simplified_ontologies_hash()
     ontologies = {}
     begin
-      ontology_models = LinkedData::Client::Models::Ontology.all
+      ontology_models = LinkedData::Client::Models::Ontology.all({:include_views => true})
       ontology_models.each do |o|
         ont = {}
         ont['ui'] =  o.links['ui']
