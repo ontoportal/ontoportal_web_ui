@@ -26,19 +26,6 @@ module OntologiesHelper
   #  end
   #end
 
-  # Link for private/public/licensed ontologies
-  def visibility_link(ontology)
-    if ontology.summaryOnly
-      return "<a href='/ontologies/#{ontology.acronym}'>Summary Only</a>"
-    elsif ontology.private?
-      return "<a href='/ontologies/#{ontology.acronym}?p=classes'>Private</a>"
-    elsif ontology.licensed?
-      return "<a href='/ontologies/#{ontology.acronym}?p=classes'>Licensed</a>"
-    else
-      return "<a href='/ontologies/#{ontology.acronym}?p=classes'>Public</a>"
-    end
-  end
-
   ## Provides a link or string based on the status of an ontology.
   #def get_visualize_link(ontology, params = {})
   #  case ontology.statusId.to_i
@@ -56,40 +43,17 @@ module OntologiesHelper
   #  end
   #end
 
-  def submission_status2string(sub)
-    # Massage the submission status into a UI string
-    #submission status values, from:
-    # https://github.com/ncbo/ontologies_linked_data/blob/master/lib/ontologies_linked_data/models/submission_status.rb
-    # "UPLOADED", "RDF", "RDF_LABELS", "INDEXED", "METRICS", "ANNOTATOR", "ARCHIVED"  and 'ERROR_*' for each.
-    # Strip the URI prefix from the status codes (works even if they are not URIs)
-    # The order of the codes must be assumed to be random, it is not an entirely
-    # predictable sequence of ontology processing stages.  (Ignore 'UPLOADED'.)
-    codes = sub.submissionStatus.map {|s| s.split('/').last }
-    errors = codes.map {|c| c if c.start_with? 'ERROR'}.compact
-    statusCodes = []
-    statusCodes.push('Parsed') if (codes.include? 'RDF') && (codes.include? 'RDF_LABELS')
-    if not errors.empty?
-      statusCodes.concat errors
-      # Forget about other status codes.
-    else
-      # The order of this array imposes an oder on the UI status code string
-      [ "INDEXED", "METRICS", "ANNOTATOR", "ARCHIVED" ].each do |c|
-        statusCodes.push(c.capitalize) if codes.include? c
+
+  def additional_details
+    return "" if $ADDITIONAL_ONTOLOGY_DETAILS.nil? || $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.ontologyId.to_i].nil?
+    details = $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.ontologyId.to_i]
+    html = []
+    details.each do |title, value|
+      html << content_tag(:tr) do
+        [content_tag(:th, title), content_tag(:td, value)].join("")
       end
     end
-    return statusCodes.join(', ')
-  end
-
-  # Creates a link based on the status of an ontology submission
-  def status_link(submission)
-    version_text = submission.version.nil? || submission.version.length == 0 ? "unknown" : submission.version
-    status_text = submission_status2string(submission)
-    return version_text + " <span class='ontology_submission_status'>(" + status_text + ")</span>"
-    #if submission.valid_tree_view?
-    #  return "<a href='/ontologies/#{submission.id}?p=classes'>#{version_text}</a> <span style='font-size: x-small; color: gray; padding-left: 10px;'>#{status_text}</span>"
-    #else
-    #  return version_text + " <span style='font-size: x-small; color: gray; padding-left: 10px;'>" + status_text + "</span>"
-    #end
+    html.join("")
   end
 
   # Provides a link for an ontology based on where it's hosted (Local or remote)
@@ -103,7 +67,6 @@ module OntologiesHelper
         end
       end
     end
-
     if ontology.summaryOnly
       return "<a href=\"#{ontology.homepage}\" target=\"_blank\">Ontology Homepage</a>"
     else
@@ -169,48 +132,81 @@ module OntologiesHelper
     links << "<a class='ont_icons' href=''>N<span class='ont_counts'>#{notes_count_formatted}</span></a>"
   end
 
-  def classes_link(ontology, count)
-    loc = ontology.summaryOnly ? "summary" : "classes"
-
+  def count_links(ont_acronym, page_name='summary', count=0)
+    ont_url = "/ontologies/#{ont_acronym}"
     if count.nil? || count == 0
       return "0"
+      #return "<a href='#{ont_url}/?p=summary'>0</a>"
     else
-      return "<a href='/ontologies/#{ontology.ontology.acronym}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
+      return "<a href='#{ont_url}/?p=#{page_name}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
     end
+  end
+
+  def classes_link(ontology, count)
+    count = 0 if ontology.summaryOnly
+    return count_links(ontology.ontology.acronym, 'classes', count)
   end
 
   def mappings_link(ontology, count)
-    loc = "mappings"
-
-    if count.nil? || count == 0
-      return "0"
-    else
-      return "<a href='/ontologies/#{ontology.ontology.acronym}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
-    end
+    count = 0 if ontology.summaryOnly
+    return count_links(ontology.ontology.acronym, 'mappings', count)
   end
 
   def notes_link(ontology, count)
-    loc = "notes"
-
-    if count.nil? || count == 0
-      return "0"
-    else
-      return "<a href='/ontologies/#{ontology.ontology.acronym}/?p=#{loc}'>#{number_with_delimiter(count, :delimiter => ',')}</a>"
-    end
+    #count = 0 if ontology.summaryOnly
+    return count_links(ontology.ontology.acronym, 'notes', count)
   end
 
-  def additional_details
-    return "" if $ADDITIONAL_ONTOLOGY_DETAILS.nil? || $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.ontologyId.to_i].nil?
+  # Creates a link based on the status of an ontology submission
+  def status_link(submission)
+    version_text = submission.version.nil? || submission.version.length == 0 ? "unknown" : submission.version
+    status_text = submission_status2string(submission)
+    return version_text + " <span class='ontology_submission_status'>(" + status_text + ")</span>"
+    #if submission.valid_tree_view?
+    #  return "<a href='/ontologies/#{submission.id}?p=classes'>#{version_text}</a> <span style='font-size: x-small; color: gray; padding-left: 10px;'>#{status_text}</span>"
+    #else
+    #  return version_text + " <span style='font-size: x-small; color: gray; padding-left: 10px;'>" + status_text + "</span>"
+    #end
+  end
 
-    details = $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.ontologyId.to_i]
-
-    html = []
-    details.each do |title, value|
-      html << content_tag(:tr) do
-        [content_tag(:th, title), content_tag(:td, value)].join("")
+  def submission_status2string(sub)
+    # Massage the submission status into a UI string
+    #submission status values, from:
+    # https://github.com/ncbo/ontologies_linked_data/blob/master/lib/ontologies_linked_data/models/submission_status.rb
+    # "UPLOADED", "RDF", "RDF_LABELS", "INDEXED", "METRICS", "ANNOTATOR", "ARCHIVED"  and 'ERROR_*' for each.
+    # Strip the URI prefix from the status codes (works even if they are not URIs)
+    # The order of the codes must be assumed to be random, it is not an entirely
+    # predictable sequence of ontology processing stages.  (Ignore 'UPLOADED'.)
+    codes = sub.submissionStatus.map {|s| s.split('/').last }
+    errors = codes.map {|c| c if c.start_with? 'ERROR'}.compact
+    statusCodes = []
+    statusCodes.push('Parsed') if (codes.include? 'RDF') && (codes.include? 'RDF_LABELS')
+    if not errors.empty?
+      statusCodes.concat errors
+      # Forget about other status codes.
+    else
+      # The order of this array imposes an oder on the UI status code string
+      [ "INDEXED", "METRICS", "ANNOTATOR", "ARCHIVED" ].each do |c|
+        statusCodes.push(c.capitalize) if codes.include? c
       end
     end
-    html.join("")
+    return statusCodes.join(', ')
+  end
+
+  # Link for private/public/licensed ontologies
+  def visibility_link(ontology)
+    ont_url = "/ontologies/#{ontology.acronym}"  # 'ontology' is NOT a submission here
+    page_name = 'classes'  # default ontology page view for visibility link
+    link_name = 'Public'   # default ontology visibility
+    if ontology.summaryOnly
+      page_name = 'summary'
+      link_name = 'Summary Only'
+    elsif ontology.private?
+      link_name = 'Private'
+    elsif ontology.licensed?
+      link_name = 'Licensed'
+    end
+    return "<a href='#{ont_url}/?p=#{page_name}'>#{link_name}</a>"
   end
 
 
