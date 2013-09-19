@@ -129,7 +129,7 @@ function performSearch() {
   var categories = jQuery("#search_categories").val() || "";
 
   jQuery.ajax({
-    url: jQuery(document).data().bp.config.rest_url+"search",
+    url: jQuery(document).data().bp.config.rest_url+"/search",
     data: {
       q: query,
       include_properties: includeProps,

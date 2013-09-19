@@ -14,6 +14,29 @@ require File.join(File.dirname(__FILE__), 'boot')
 Encoding.default_external = Encoding::UTF_8
 Encoding.default_internal = Encoding::UTF_8
 
+# This is a monkeypatch to make Gem 2.x work with Rails 2.3
+# WARNING: IT WILL IGNORE VENDORED GEMS
+if RUBY_VERSION >= "2.0.0"
+  module Gem
+    def self.source_index
+      sources
+    end
+
+    def self.cache
+      sources
+    end
+
+    SourceIndex = Specification
+
+    class SourceList
+      # If you want vendor gems, this is where to start writing code.
+      def search( *args ); []; end
+      def each( &block ); end
+      include Enumerable
+    end
+  end
+end
+
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers

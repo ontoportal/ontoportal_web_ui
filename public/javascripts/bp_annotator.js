@@ -373,7 +373,7 @@ function annotatorFormatLink(param_string, format) {
   // TODO: Check whether 'text' and 'tabDelimited' could work.
   // For now, assume that json and xml will work or should work.
   var format_map = { "json": "JSON", "xml": "XML", "text": "Text", "tabDelimited": "CSV" };
-  var query = BP_CONFIG.rest_url + "annotator?apikey=" + BP_CONFIG.apikey + "&" + param_string;
+  var query = BP_CONFIG.rest_url + "/annotator?apikey=" + BP_CONFIG.apikey + "&" + param_string;
   if (format !== 'json') {
     query += "&format=" + format;
   }
