@@ -39,22 +39,22 @@ module OntologiesHelper
     end
   end
 
-  # Provides a link or string based on the status of an ontology.
-  def get_visualize_link(ontology, params = {})
-    case ontology.statusId.to_i
-    when 1 # Ontology is parsing
-      return "Waiting to Parse"
-    when 2
-      return "Parsing Ontology"
-    when 3 # Ontology is ready to be explored
-      return "<a href=\"/visualize/#{ontology.id}\">Explore</a>" if params[:path_only].nil?
-      return "/visualize/#{ontology.id}"
-    when 4 # Error in parsing
-      return "Parsing Error"
-    when 6 # Ontology is deprecated
-      return "Archived, not available to explore"
-    end
-  end
+  ## Provides a link or string based on the status of an ontology.
+  #def get_visualize_link(ontology, params = {})
+  #  case ontology.statusId.to_i
+  #  when 1 # Ontology is parsing
+  #    return "Waiting to Parse"
+  #  when 2
+  #    return "Parsing Ontology"
+  #  when 3 # Ontology is ready to be explored
+  #    return "<a href=\"/visualize/#{ontology.id}\">Explore</a>" if params[:path_only].nil?
+  #    return "/visualize/#{ontology.id}"
+  #  when 4 # Error in parsing
+  #    return "Parsing Error"
+  #  when 6 # Ontology is deprecated
+  #    return "Archived, not available to explore"
+  #  end
+  #end
 
   def submission_status2string(sub)
     # Massage the submission status into a UI string
