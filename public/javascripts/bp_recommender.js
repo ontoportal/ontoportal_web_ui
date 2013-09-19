@@ -49,37 +49,34 @@ function getRecommendations() {
       } else {
         jQuery(data).each(function(){
           var rec = this;
-          var ontName = rec.ontology.acronym;
-          var ontLink = rec.ontology.links.ui.replace(/.*ontologies/,'/ontologies');
+          var ontName = rec.ontology.name + ' (' + rec.ontology.acronym + ')';
+          var ontLink = rec.ontology.ui.replace(/.*ontologies/,'/ontologies');
           var termsStr = rec.numTermsMatched + " of " + rec.numTermsTotal;
           var foundConceptsID = 'found_concepts_' + resultCount;
           // Populate a facebox popup with matched concepts
-          var found_concepts = [];
           //
-          // TODO: ENABLE CLASSES MATCHED WHEN THE REST API PROVIDES THEM.
+          // TODO: ENABLE CLASSES MATCHED WHEN THE REST /batch IS RELIABLE.
+          // TODO: Consider retrieving all the class details only when requested using ajax.
           //
+          //var found_concepts = [];
           //jQuery.each(rec.annotatedClasses, function(){
           //  found_concepts.push("<a href='"+ontLink+"?p=classes&conceptid="+encodeURIComponent(this.id)+"'>"+this.prefLabel+"</a>");
           //});
-          var found_concepts_html = "" +
-            "<div id='" + foundConceptsID + "' class='found_concepts'>" +
-            "<h2 style='margin-top: -2em;'>Matched Classes</h2>" +
-            found_concepts.join("<br/>") +
-            "</div>";
+          //var found_concepts_html = "" +
+          //  "<div id='" + foundConceptsID + "' class='found_concepts'>" +
+          //    "<h2 style='margin-top: -2em;'>Matched Classes</h2>" +
+          //    found_concepts.join("<br/>") +
+          //  "</div>";
           // Create a row entry: rank, ontology, counts
           links.push(
             "<tr>" +
-              "<td style='text-align: right; padding-right: 10px;'>" +
-              resultCount +
-              "</td>" +
-              "<td style='padding: 6px 12px 6px 12px;'>" +
-              "<a href='" + ontLink + "'>" + ontName + "</a>" +
-              "</td>" +
+              "<td style='text-align: right; padding-right: 10px;'>" + resultCount + "</td>" +
+              "<td style='padding: 6px 12px 6px 12px;'>" + "<a href='" + ontLink + "'>" + ontName + "</a>" + "</td>" +
               "<td style='text-align: right;'>" +
-              "<a href='#" + foundConceptsID + "' rel='facebox'>" + termsStr + "</a>" +
-              found_concepts_html +
+                //"<a href='#" + foundConceptsID + "' rel='facebox'>" + termsStr + "</a>" + found_concepts_html +
+                termsStr +
               "</td>" +
-              "</tr>"
+            "</tr>"
           );
           resultCount++;
         });

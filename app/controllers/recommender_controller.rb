@@ -38,16 +38,22 @@ class RecommenderController < ApplicationController
     #recommendations = LinkedData::Client::HTTP.get(query)
     LOG.add :debug, "Retrieved #{recommendations.length} recommendations: #{Time.now - start}s"
     #
-    # TODO: get all the annotated class prefLabel values.
     #
+    # TODO: get all the annotated class prefLabel values.
     # Modify the annotated classes (methods in application_controller.rb)
     #massage_annotated_classes(recommendations, options) unless recommendations.empty?
-    #sorted = recommendations.sort {|a,b| a['numTermsMatched'] <=> b['numTermsMatched'] }.reverse
+    # TODO: discard this code after handling the class prefLabels in above method
+    recommendations.each {|r| r.delete 'annotatedClasses' }
+    #
+    #
+    # Sort the recommendations by their rank (high scores are better)
     sorted = recommendations.sort {|a,b| a['score'] <=> b['score'] }.reverse
-    # Reduce the data package sent to the browser (via ajax)
-    #simple = sorted.map {|r| [r['score'], r['ontology']['acronym'], r["numTermsMatched"], r["numTermsTotal"]] }
     # reduce data package size to suit reasonable display size
-    render :json => sorted[0..24]
+    sorted = sorted[0..24]
+    # Get the ontology names
+    ontologies_hash = get_simplified_ontologies_hash # method in application_controller.rb
+    sorted.each {|r| r['ontology'] = ontologies_hash[ r['ontology']['@id'] ] }
+    render :json => sorted
   end
 
 end
