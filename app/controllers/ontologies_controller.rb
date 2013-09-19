@@ -31,6 +31,7 @@ class OntologiesController < ApplicationController
         # Using begin:rescue block because some ontologies may not have metrics available.
         @class_counts[o.id] = metrics_hash[o.id].classes
       rescue
+        @class_counts[o.id] = 0 if o.summaryOnly
         next
       end
     end
