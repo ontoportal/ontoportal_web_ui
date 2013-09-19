@@ -612,6 +612,9 @@ class ApplicationController < ActionController::Base
     @ontologies_hash ||= get_simplified_ontologies_hash # method in application_controller.rb
     classDetails = {}
     classList = []
+
+    #binding.pry
+
     annotations.each {|a| classList << get_annotated_class_hash(a) }
     hierarchy = annotations.map {|a| a if a.keys.include? 'hierarchy' }.compact
     hierarchy.each do |a|

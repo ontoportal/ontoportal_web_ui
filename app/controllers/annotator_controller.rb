@@ -25,11 +25,15 @@ class AnnotatorController < ApplicationController
 
 
   def create
+    params[:mappings] ||= []
+    params[:max_level] ||= 0
+    params[:ontologies] ||= []
+    params[:semanticTypes] ||= []
     text_to_annotate = params[:text].strip.gsub("\r\n", " ").gsub("\n", " ")
-    options = { :ontologies => params[:ontologies] ||= "",
-                :max_level => params[:max_level].to_i ||= 0,
-                :semanticTypes => params[:semanticTypes] ||= [],
-                :mappings => params[:mappings] ||= [],
+    options = { :ontologies => params[:ontologies],
+                :max_level => params[:max_level].to_i,
+                :semanticTypes => params[:semanticTypes],
+                :mappings => params[:mappings],
                 # :wholeWordOnly => params[:wholeWordOnly] ||= true,  # service default is true
                 # :withDefaultStopWords => params[:withDefaultStopWords] ||= true,  # service default is true
     }
@@ -37,7 +41,7 @@ class AnnotatorController < ApplicationController
     query = ANNOTATOR_URI
     query += "?text=" + CGI.escape(text_to_annotate)
     query += "&max_level=" + options[:max_level].to_s
-    query += "&ontologies=" + CGI.escape(options[:ontologies]) unless options[:ontologies].empty?
+    query += "&ontologies=" + CGI.escape(options[:ontologies].join(',')) unless options[:ontologies].empty?
     query += "&semanticTypes=" + options[:semanticTypes].join(',') unless options[:semanticTypes].empty?
     query += "&mappings=" + options[:mappings].join(',') unless options[:mappings].empty?
     #query += "&wholeWordOnly=" + options[:wholeWordOnly].to_s unless options[:wholeWordOnly].empty?
