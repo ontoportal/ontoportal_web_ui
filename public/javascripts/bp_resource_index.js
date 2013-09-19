@@ -50,7 +50,7 @@ jQuery(document).ready(function () {
       initialQuery : false
     }, function (options, response, event) {
       // jQuery("#resource_index_classes_chzn .chzn-results li.active-result").remove();
-      var search_url = jQuery(document).data().bp.config.rest_url+"search";
+      var search_url = jQuery(document).data().bp.config.rest_url+"/search";
       var search_params = {};
       search_params['apikey'] = jQuery(document).data().bp.config.apikey;
       search_params['format'] = "jsonp";
