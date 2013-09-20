@@ -9,7 +9,7 @@
     <p style="border: 1px solid rgb(239, 239, 239); margin: 10px; padding: 10px;">
     <haml:loud>t('ontologies.metrics.intro')</haml:loud>
     </p>
-  - if @metrics.nil? || @metrics.respond_to?(:errors) || (@metrics.is_a?(Array) && @metrics.empty?)
+  - if @metrics.nil? || (@metrics.is_a?(Array) && @metrics.empty?)
     %h2{:style => "padding-left: 1em;"} We have not yet calculated metrics for this ontology.
   - else
     - if @old_metrics
