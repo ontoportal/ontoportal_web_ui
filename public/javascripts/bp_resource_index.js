@@ -54,7 +54,7 @@ jQuery(document).ready(function () {
       var search_params = {};
       search_params['apikey'] = jQuery(document).data().bp.config.apikey;
       search_params['format'] = "jsonp";
-      search_params['q'] = options.classes;
+      search_params['q'] = options.term;  // not options.class or options.classes !!
       // TODO: ENABLE ADDITIONAL PARAMETERS WHEN THE SEARCH API SUPPORTS THEM.
       search_params['ontologies'] = currentOntologyAcronyms().join(',');
       //search_params['includeProperties'] = includeProps;
