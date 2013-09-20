@@ -31,6 +31,7 @@ class OntologiesController < ApplicationController
         # Using begin:rescue block because some ontologies may not have metrics available.
         @class_counts[o.id] = metrics_hash[o.id].classes
       rescue
+        @class_counts[o.id] = 0 if o.summaryOnly
         next
       end
     end
@@ -256,44 +257,7 @@ class OntologiesController < ApplicationController
     render :partial => "submit_success", :layout => "ontology"
   end
 
-  def update
-    #
-    # TODO: Add parameter to get ontology views?
-    #
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym]).first
-    @ontology.update_from_params(params[:ontology])
-    error_response = @ontology.update
-    if error_response
-      @categories = LinkedData::Client::Models::Category.all
-      @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
-      @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
-      @errors = response_errors(error_response)
-      @errors = {acronym: "Acronym already exists, please use another"} if error_response.status == 409
-    else
-      # Adds ontology to syndication
-      # Don't break here if we encounter problems, the RSS feed isn't critical
-      # TODO_REV: What should we do about RSS / Syndication?
-      # begin
-      #   event = EventItem.new
-      #   event.event_type="Ontology"
-      #   event.event_type_id=@ontology.id
-      #   event.ontology_id=@ontology.ontologyId
-      #   event.save
-      # rescue
-      # end
-      #
-      # TODO_REV: Enable subscriptions
-      # if params["ontology"]["subscribe_notifications"].eql?("1")
-      #  DataAccess.createUserSubscriptions(@ontology.administeredBy, @ontology.ontologyId, NOTIFICATION_TYPES[:all])
-      # end
-      redirect_to "/ontologies/#{@ontology.acronym}"
-    end
-  end
-
   def summary
-    #
-    # TODO: Add parameter to get ontology views
-    #
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     # Check to see if user is requesting RDF+XML, return the file from REST service if so
     if request.accept.to_s.eql?("application/rdf+xml")
@@ -325,6 +289,40 @@ class OntologiesController < ApplicationController
       render :partial => 'metadata', :layout => false
     else
       render :partial => 'metadata', :layout => "ontology_viewer"
+    end
+  end
+
+  def update
+    #
+    # TODO: Add parameter to get ontology views?
+    #
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym]).first
+    @ontology.update_from_params(params[:ontology])
+    error_response = @ontology.update
+    if error_response
+      @categories = LinkedData::Client::Models::Category.all
+      @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
+      @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
+      @errors = response_errors(error_response)
+      @errors = {acronym: "Acronym already exists, please use another"} if error_response.status == 409
+    else
+      # Adds ontology to syndication
+      # Don't break here if we encounter problems, the RSS feed isn't critical
+      # TODO_REV: What should we do about RSS / Syndication?
+      # begin
+      #   event = EventItem.new
+      #   event.event_type="Ontology"
+      #   event.event_type_id=@ontology.id
+      #   event.ontology_id=@ontology.ontologyId
+      #   event.save
+      # rescue
+      # end
+      #
+      # TODO_REV: Enable subscriptions
+      # if params["ontology"]["subscribe_notifications"].eql?("1")
+      #  DataAccess.createUserSubscriptions(@ontology.administeredBy, @ontology.ontologyId, NOTIFICATION_TYPES[:all])
+      # end
+      redirect_to "/ontologies/#{@ontology.acronym}"
     end
   end
 
