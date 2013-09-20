@@ -525,17 +525,28 @@ class ApplicationController < ActionController::Base
   end
 
   def get_resource_index_annotation_stats
-    ri_statsURL = 'http://rest.bioontology.org/resource_index/statistics/all'
-    ri_statsConn = open(ri_statsURL + '?apikey=' + get_apikey)
-    doc = REXML::Document.new(ri_statsConn)
-    stats = doc.elements["/success/data/statistics"]
-    stats_hash = {}
-    stats_hash[:total] = stats.elements["aggregatedAnnotations"].get_text.value.strip.to_i
-    stats_hash[:direct] = stats.elements["mgrepAnnotations"].get_text.value.strip.to_i
-    stats_hash[:reported] = stats.elements["reportedAnnotations"].get_text.value.strip.to_i
-    stats_hash[:hierarchy] = stats.elements["isaAnnotations"].get_text.value.strip.to_i
-    stats_hash[:mapping] = stats.elements["mappingAnnotations"].get_text.value.strip.to_i
-    stats_hash[:expanded] = stats_hash[:direct] + stats_hash[:hierarchy] + stats_hash[:mapping]
+    stats_hash = {
+        :total => 'n/a',
+        :direct => 'n/a',
+        :reported => 'n/a',
+        :hierarchy => 'n/a',
+        :mapping => 'n/a',
+        :expanded => 'n/a'
+    }
+    begin
+      ri_statsURL = 'http://rest.bioontology.org/resource_index/statistics/all'
+      ri_statsConn = open(ri_statsURL + '?apikey=' + get_apikey)
+      doc = REXML::Document.new(ri_statsConn)
+      stats = doc.elements["/success/data/statistics"]
+      stats_hash[:total] = stats.elements["aggregatedAnnotations"].get_text.value.strip.to_i
+      stats_hash[:direct] = stats.elements["mgrepAnnotations"].get_text.value.strip.to_i
+      stats_hash[:reported] = stats.elements["reportedAnnotations"].get_text.value.strip.to_i
+      stats_hash[:hierarchy] = stats.elements["isaAnnotations"].get_text.value.strip.to_i
+      stats_hash[:mapping] = stats.elements["mappingAnnotations"].get_text.value.strip.to_i
+      stats_hash[:expanded] = stats_hash[:direct] + stats_hash[:hierarchy] + stats_hash[:mapping]
+    rescue Exception => e
+      LOG.add :error, e.message
+    end
     return stats_hash
   end
 
