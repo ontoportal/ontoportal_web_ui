@@ -34,10 +34,10 @@ var orgSite = <%=$ORG_SITE.to_json%>;
       <% textarea_title = "Start typing to find concepts to search the index with" %>
       <%=select_tag :resource_index_classes, "",
                     :multiple => 'true',
-                    "data-placeholder".to_sym => textarea_title,
+                    'data-placeholder'.to_sym => textarea_title,
                     :title => textarea_title,
-                    :class => "help_text",
-                    :style => "width: 432px;"
+                    :class => 'help_text',
+                    :style => 'width: 432px;'
       %>
 
       <div style="float: right; font-size: smaller;">
