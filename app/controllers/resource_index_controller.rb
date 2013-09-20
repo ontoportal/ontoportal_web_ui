@@ -71,8 +71,8 @@ class ResourceIndexController < ApplicationController
       begin
         begin
           # Resource index can be very slow and timeout, so allow a retry.
-          #ranked_elements_page = parse_json(uri) # See application_controller.rb
-          ranked_elements_page = LinkedData::Client::HTTP.get(uri)
+          ranked_elements_page = parse_json(uri) # See application_controller.rb
+          #ranked_elements_page = LinkedData::Client::HTTP.get(uri)  ## DOESN'T WORK, MANGLES 'classes' params?
         rescue Exception => inner_error
           @retries ||= 0
           if @retries < 1  # retry once only
@@ -85,14 +85,14 @@ class ResourceIndexController < ApplicationController
         end
         # Might generate missing method exception here on a 404 response.
         @elements.concat ranked_elements_page['collection']
-        break if ranked_elements_page.nextPage.nil?
-        break if @elements_page_count >= ranked_elements_page.pageCount
-        uri = ranked_elements_page.nextPage
+        break if @elements_page_count >= ranked_elements_page['pageCount']
+        break if ranked_elements_page['nextPage'].nil?
+        uri = ranked_elements_page['nextPage']
         @elements_page_count += 1
       rescue Exception => outer_error
-        #if ranked_elements_page.status == 404
+        #if ranked_elements_page['status'] == 404
         #  # TODO: handle a 404 response?  Set some useful data for the UI display?
-        #  # use ranked_elements_page.errors
+        #  # use ranked_elements_page['errors']
         #end
         @retries ||= 0
         if @retries < 1  # retry once only
@@ -108,8 +108,8 @@ class ResourceIndexController < ApplicationController
     @resources = get_resource_index_resources # application_controller
     @resources_hash = resources2hash(@resources)  # required in partial 'resources_results'
     resources_map = resources2map_id2name(@resources)
-    @elements.sort! {|a,b| resources_map[a.resourceId].downcase <=> resources_map[b.resourceId].downcase}
-    @elements = convert_for_will_paginate(@elements)
+    @elements.sort! {|a,b| resources_map[a['resourceId']].downcase <=> resources_map[b['resourceId']].downcase}
+    #@elements = convert_for_will_paginate(@elements)
     render :partial => "resources_results"
   end
 
@@ -153,7 +153,8 @@ private
   def resources2hash(resourcesList)
     resources_hash = {}
     resourcesList.each do |r|
-      resources_hash[r[:resourceId]] = r.to_h # convert struct to hash (to_json will create a javascript object).
+      # convert struct to hash (to_json will create a javascript object).
+      resources_hash[r[:resourceId]] = struct_to_hash(r)
     end
     return resources_hash
   end

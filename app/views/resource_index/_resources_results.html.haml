@@ -21,9 +21,10 @@
         %th.count Total Records
     %tbody
       -@elements.each do |r|
-        -resource_data = @resources_hash[r.resourceId]
+        -resourceId = r['resourceId']
+        -resource_data = @resources_hash[resourceId]
         -resource_name = resource_data[:resourceName]
-        -total_results = r.totalResults.to_i
+        -total_results = r['totalResults'].to_i
         -total_elements = resource_data[:totalElements]
         -total_percent = (BigDecimal(total_results) / BigDecimal(total_elements)) * BigDecimal.new(100)
         -total_percent = total_percent < 0.01 ? '< 0.01%' : sprintf('%0.2f%', total_percent)
@@ -31,12 +32,12 @@
         -delim_elements = number_with_delimiter(total_elements, :delimiter => ",")
         %tr{:class => total_results == 0 && "zero_results not_visible"}
           %td
-            %a.results_link{:href => "javascript:void(0);", :data => {:resource_id => r.resourceId, :resource_name => resource_name}} #{resource_name}
-            / %a.resource_site{:href => @resources_hash[r.resourceId][:resourceURL], :target => "_blank", :id => "resource_link_#{r.resourceId}"} site
+            %a.results_link{:href => "javascript:void(0);", :data => {:resource_id => resourceId, :resource_name => resource_name}} #{resource_name}
+            / %a.resource_site{:href => @resources_hash[resourceId][:resourceURL], :target => "_blank", :id => "resource_link_#{resourceId}"} site
             / %span{:class => "ui-icon ui-icon-extlink", :style => "display: inline-block; vertical-align: text-bottom;"}
           %td.count
             -if total_results > 0
-              %a.results_link{:href => "javascript:void(0);", :data => {:resource_id => r.resourceId, :resource_name => resource_name}} #{delim_results}
+              %a.results_link{:href => "javascript:void(0);", :data => {:resource_id => resourceId, :resource_name => resource_name}} #{delim_results}
             -else
               #{delim_results}
           %td.count= total_percent
@@ -49,10 +50,11 @@
 
 %div#resource_results
   -@elements.each do |r|
+    -resourceId = r['resourceId']
     -@resource_results = r
-    %div.resource_info.resource_details.not_visible{:id => "resource_info_#{r.resourceId}"}
+    %div.resource_info.resource_details.not_visible{:id => "resource_info_#{resourceId}"}
       %div.resource_image
-        %img{:src => @resources_hash[r.resourceId][:resourceLogo], :class => "resource_image"}
+        %img{:src => @resources_hash[resourceId][:resourceLogo], :class => "resource_image"}
       =render :partial => "resource_results"
       %div.clearing
 
