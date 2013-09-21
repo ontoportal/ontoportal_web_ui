@@ -22,6 +22,8 @@ class ApplicationController < ActionController::Base
   REST_URI = $REST_URL
   API_KEY = $API_KEY
 
+  BATCH_URI = REST_URI + '/batch'
+
   # Constants used primarily in the resource_index_controller, but also elsewhere.
   RESOURCE_INDEX_URI = REST_URI + '/resource_index'
   RI_ELEMENT_ANNOTATIONS_URI = RESOURCE_INDEX_URI + '/element_annotations'
@@ -499,17 +501,15 @@ class ApplicationController < ActionController::Base
 
 
   def get_batch_results(params)
-    #uri = "http://stagedata.bioontology.org/batch/?apikey=#{get_apikey}"
-    uri = "http://stagedata.bioontology.org/batch"
     begin
-      response = RestClient.post uri, params.to_json, :content_type => :json, :accept => :json, :authorization => "apikey token=#{get_apikey}"
+      response = RestClient.post BATCH_URI, params.to_json, :content_type => :json, :accept => :json, :authorization => "apikey token=#{get_apikey}"
     rescue Exception => error
       @retries ||= 0
       if @retries < 1  # retry once only
         @retries += 1
         retry
       else
-        LOG.add :debug, "\nERROR: batch POST, uri: #{uri}"
+        LOG.add :debug, "\nERROR: batch POST, uri: #{BATCH_URI}"
         LOG.add :debug, "\nERROR: batch POST, params: #{params.to_json}"
         LOG.add :debug, "\nERROR: batch POST, error response: #{error.response}"
         raise error
