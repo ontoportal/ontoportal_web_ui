@@ -36,15 +36,14 @@
         </tr>
     </thead>
     <% @submissions.each_with_index do |sub, index| %>
-      <% hidden_row_class = index >= 5 ? "hidden_ont hidden_select" : "" %>
-      <tr <%= cycle("class='#{hidden_row_class}'", "class='alt #{hidden_row_class}'") %> class="<%=hidden_row_class%>">
-        <td> <%= status_link(sub, index==0) %> </td>
-        <td> <%= xmldatetime_to_date(sub.released) %> </td>
-        <td> <%= xmldatetime_to_date(sub.creationDate) %> </td>
-        <td> <a href="<%= sub.id + "/download?apikey=#{get_apikey}" %>" target="_blank">Ontology</a> </td>
-      </tr>
-    <%end%>
-
+        <% hidden_row_class = index >= 5 ? "hidden_ont hidden_select" : "" %>
+        <tr <%= cycle("class='#{hidden_row_class}'", "class='alt #{hidden_row_class}'") %> class="<%=hidden_row_class%>">
+          <td> <%= status_link(sub, index==0) %> </td>
+          <td> <%= xmldatetime_to_date(sub.released) %> </td>
+          <td> <%= xmldatetime_to_date(sub.creationDate) %> </td>
+          <td> <%= download_link(sub) %> </td>
+        </tr>
+    <% end %>
     <% if @submissions.length >= 5 %>
       <tr>
         <td colspan="4" style="text-align: right;"><a href="" id="version_toggle">more...</a></td>

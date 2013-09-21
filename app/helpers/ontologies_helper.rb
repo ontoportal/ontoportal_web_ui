@@ -56,81 +56,81 @@ module OntologiesHelper
     html.join("")
   end
 
-  # Provides a link for an ontology based on where it's hosted (Local or remote)
-  def get_download_link(ontology)
-    # Don't display a link for ontologies that aren't downloadable
-    # (these are temporarily defined in environment.rb)
-    unless $NOT_DOWNLOADABLE.nil?
-      $NOT_DOWNLOADABLE.each do |virtual_id|
-        if ontology.ontologyId.eql?(virtual_id.to_s)
-          return "<span style='cursor: help;' title='Ontology download is unavailable because of licensing restrictions'>Unavailable</span>"
-        end
-      end
-    end
-    if ontology.summaryOnly
-      return "<a href=\"#{ontology.homepage}\" target=\"_blank\">Ontology Homepage</a>"
-    else
-      return "<a href=\"#{DataAccess.download(ontology.id)}\" target=\"_blank\">Ontology</a>"
-    end
-  end
+  ## Provides a link for an ontology based on where it's hosted (Local or remote)
+  #def get_download_link(ontology)
+  #  # Don't display a link for ontologies that aren't downloadable
+  #  # (these are temporarily defined in environment.rb)
+  #  unless $NOT_DOWNLOADABLE.nil?
+  #    $NOT_DOWNLOADABLE.each do |virtual_id|
+  #      if ontology.ontologyId.eql?(virtual_id.to_s)
+  #        return "<span style='cursor: help;' title='Ontology download is unavailable because of licensing restrictions'>Unavailable</span>"
+  #      end
+  #    end
+  #  end
+  #  if ontology.summaryOnly
+  #    return "<a href=\"#{ontology.homepage}\" target=\"_blank\">Ontology Homepage</a>"
+  #  else
+  #    return "<a href=\"#{DataAccess.download(ontology.id)}\" target=\"_blank\">Ontology</a>"
+  #  end
+  #end
 
-  def get_view_ontology_version(view_on_ontology_id)
-    return DataAccess.getOntology(view_on_ontology_id).versionNumber
-  end
+  #def get_view_ontology_version(view_on_ontology_id)
+  #  return DataAccess.getOntology(view_on_ontology_id).versionNumber
+  #end
 
-  # Generates a properly-formatted link for diffs
-  def get_diffs_link(diffs, versions, current_version, index)
-    currID = current_version.id.to_i
-    # Search for a previous ontology version, with statusId == 3,
-    # within the prior two versions of the ontology. The list of
-    # versions is sorted by versionID, descending.
-    prevID = nil
-    versions[index + 1, 2].each do |v|
-      prevID = v.id.to_i if v.statusId.to_i == 3
-      break if not prevID.nil?
-    end
-    # Exit when there is no suitable previous version in the recent history.
-    return "" if prevID.nil?
-    # Find a 'diff' pair to match the current and previous versions, or vice versa.
-    for diff in diffs
-      if currID.eql?(diff[0].to_i) && prevID.eql?(diff[1].to_i)
-        new, old = diff[0..1]
-      elsif currID.eql?(diff[1].to_i) && prevID.eql?(diff[0].to_i)
-        new, old = diff[0..1].reverse
-      else
-        next
-      end
-      #return "<a href='#{$LEGACY_REST_URL}/diffs/download/#{new}/#{old}?format=xml' target='_blank'>Diff</a>"
-      return "<a href='#{DataAccess.getDiffDownloadURI(new, old)}' target='_blank'>Diff</a>"
-    end
-    return ""
-  end
+  ## Generates a properly-formatted link for diffs
+  #def get_diffs_link(diffs, versions, current_version, index)
+  #  currID = current_version.id.to_i
+  #  # Search for a previous ontology version, with statusId == 3,
+  #  # within the prior two versions of the ontology. The list of
+  #  # versions is sorted by versionID, descending.
+  #  prevID = nil
+  #  versions[index + 1, 2].each do |v|
+  #    prevID = v.id.to_i if v.statusId.to_i == 3
+  #    break if not prevID.nil?
+  #  end
+  #  # Exit when there is no suitable previous version in the recent history.
+  #  return "" if prevID.nil?
+  #  # Find a 'diff' pair to match the current and previous versions, or vice versa.
+  #  for diff in diffs
+  #    if currID.eql?(diff[0].to_i) && prevID.eql?(diff[1].to_i)
+  #      new, old = diff[0..1]
+  #    elsif currID.eql?(diff[1].to_i) && prevID.eql?(diff[0].to_i)
+  #      new, old = diff[0..1].reverse
+  #    else
+  #      next
+  #    end
+  #    #return "<a href='#{$LEGACY_REST_URL}/diffs/download/#{new}/#{old}?format=xml' target='_blank'>Diff</a>"
+  #    return "<a href='#{DataAccess.getDiffDownloadURI(new, old)}' target='_blank'>Diff</a>"
+  #  end
+  #  return ""
+  #end
 
-  # Generates an array for use with version drop-down lists
-  def get_versions_array_for_select(ontology_version_id)
-    ontology = DataAccess.getOntology(ontology_version_id)
-    ont_versions = DataAccess.getOntologyVersions(ontology.ontologyId).sort! {|ont_a,ont_b| ont_b.internalVersion.to_i <=> ont_a.internalVersion.to_i}
-    ont_versions_array = []
-    ont_versions.each {|ont| ont_versions_array << [ ont.versionNumber, ont.id ] }
-    return ont_versions_array
-  end
+  ## Generates an array for use with version drop-down lists
+  #def get_versions_array_for_select(ontology_version_id)
+  #  ontology = DataAccess.getOntology(ontology_version_id)
+  #  ont_versions = DataAccess.getOntologyVersions(ontology.ontologyId).sort! {|ont_a,ont_b| ont_b.internalVersion.to_i <=> ont_a.internalVersion.to_i}
+  #  ont_versions_array = []
+  #  ont_versions.each {|ont| ont_versions_array << [ ont.versionNumber, ont.id ] }
+  #  return ont_versions_array
+  #end
 
-  def get_ont_icons(ontology)
-    mappings_count = DataAccess.getMappingCountOntologiesHash
-    mappings_count = mappings_count[ontology.ontologyId].to_i
-    notes_count = DataAccess.getNotesCounts
-    notes_count = notes_count[ontology.ontologyId].to_i
-
-    formatting_options = { :thousand => "K", :million => "M", :billion => "B" }
-
-    mappings_count_formatted = (mappings_count.nil? || mappings_count == 0) ? "" : number_to_human(mappings_count, :precision => 0, :units => formatting_options).gsub(" ", "")
-    notes_count_formatted = (notes_count.nil? || notes_count == 0) ? "" : number_to_human(notes_count, :units => formatting_options).gsub(" ", "")
-
-    links = ""
-    links << "<a class='ont_icons' href=''>T</a>"
-    links << "<a class='ont_icons' href=''>M<span class='ont_counts'>#{mappings_count_formatted}</span></a>"
-    links << "<a class='ont_icons' href=''>N<span class='ont_counts'>#{notes_count_formatted}</span></a>"
-  end
+  #def get_ont_icons(ontology)
+  #  mappings_count = DataAccess.getMappingCountOntologiesHash
+  #  mappings_count = mappings_count[ontology.ontologyId].to_i
+  #  notes_count = DataAccess.getNotesCounts
+  #  notes_count = notes_count[ontology.ontologyId].to_i
+  #
+  #  formatting_options = { :thousand => "K", :million => "M", :billion => "B" }
+  #
+  #  mappings_count_formatted = (mappings_count.nil? || mappings_count == 0) ? "" : number_to_human(mappings_count, :precision => 0, :units => formatting_options).gsub(" ", "")
+  #  notes_count_formatted = (notes_count.nil? || notes_count == 0) ? "" : number_to_human(notes_count, :units => formatting_options).gsub(" ", "")
+  #
+  #  links = ""
+  #  links << "<a class='ont_icons' href=''>T</a>"
+  #  links << "<a class='ont_icons' href=''>M<span class='ont_counts'>#{mappings_count_formatted}</span></a>"
+  #  links << "<a class='ont_icons' href=''>N<span class='ont_counts'>#{notes_count_formatted}</span></a>"
+  #end
 
   def count_links(ont_acronym, page_name='summary', count=0)
     ont_url = "/ontologies/#{ont_acronym}"
@@ -147,6 +147,22 @@ module OntologiesHelper
     return count_links(ontology.ontology.acronym, 'classes', count)
   end
 
+  # Creates a link based on the status of an ontology submission
+  def download_link(submission)
+    if submission.ontology.summaryOnly
+      if submission.homepage.nil?
+        link = 'N/A'
+      else
+        uri = submission.homepage
+        link = "<a href='#{uri}'>Home Page</a>"
+      end
+    else
+      uri = submission.id + "/download?apikey=#{get_apikey}"
+      link = "<a href='#{uri}' target='_blank'>Ontology</a>"
+    end
+    return link
+  end
+
   def mappings_link(ontology, count)
     count = 0 if ontology.summaryOnly
     return count_links(ontology.ontology.acronym, 'mappings', count)
@@ -160,7 +176,7 @@ module OntologiesHelper
   # Creates a link based on the status of an ontology submission
   def status_link(submission, latest=false)
     version_text = submission.version.nil? || submission.version.length == 0 ? "unknown" : submission.version
-    status_text = " <span class='ontology_submission_status'>(" + submission_status2string(submission) + ")</span>"
+    status_text = " <span class='ontology_submission_status'>" + submission_status2string(submission) + "</span>"
     if submission.ontology.summaryOnly || latest==false
       version_link = version_text
     else
@@ -190,7 +206,8 @@ module OntologiesHelper
         statusCodes.push(c.capitalize) if codes.include? c
       end
     end
-    return statusCodes.join(', ')
+    return '' if statusCodes.empty?
+    return '(' + statusCodes.join(', ') + ')'
   end
 
   # Link for private/public/licensed ontologies
