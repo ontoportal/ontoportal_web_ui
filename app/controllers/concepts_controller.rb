@@ -26,9 +26,11 @@ class ConceptsController < ApplicationController
       render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} classes at this level. Please use the \"Jump To\" to search for specific classes.</div>"
       return
     end
-
+    # Note that find_by_acronym includes views by default
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    @submission = @ontology.explore.latest_submission
+    # Get the latest 'ready' submission, or fallback to any latest submission
+    # TODO: change the logic here if the fallback will crash the visualization
+    @submission = get_ontology_submission_ready(@ontology)  # application_controller
 
     # TODO_REV: Support moving from archived to latest version
     # if @ontology.explore.latest_submission.submissionStatus == 6

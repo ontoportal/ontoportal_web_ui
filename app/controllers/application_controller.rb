@@ -438,6 +438,14 @@ class ApplicationController < ActionController::Base
     return metrics_hash
   end
 
+  def get_ontology_submission_ready(ontology)
+    # Get the latest 'ready' submission
+    submission = ontology.explore.latest_submission({:include_status => 'ready'})
+    # Fallback to the latest submission, even if it's not ready.
+    submission = ontology.explore.latest_submission if submission.nil?
+    return submission
+  end
+
   def get_simplified_ontologies_hash()
     ontologies = {}
     begin
