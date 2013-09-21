@@ -50,13 +50,16 @@ jQuery(document).ready(function () {
       initialQuery : false
     }, function (options, response, event) {
       // jQuery("#resource_index_classes_chzn .chzn-results li.active-result").remove();
-      var search_url = jQuery(document).data().bp.config.rest_url+"/search";
+      var format = 'json';
+      //var search_url = jQuery(document).data().bp.config.rest_url+"/search";
+      var search_url = "/search/json_search_ri";
       var search_params = {};
-      search_params['apikey'] = jQuery(document).data().bp.config.apikey;
-      search_params['format'] = "jsonp";
       search_params['q'] = options.term + '*';  // not options.class or options.classes !!
+      search_params['format'] = format;
+      search_params['apikey'] = jQuery(document).data().bp.config.apikey;
       // TODO: ENABLE ADDITIONAL PARAMETERS WHEN THE SEARCH API SUPPORTS THEM.
-      search_params['ontologies'] = currentOntologyAcronyms().join(',');
+      // NOTE: diabling ontologies because it may impact performance of the search drop-down.
+      //search_params['ontologies'] = currentOntologyAcronyms().join(',');
       //search_params['includeProperties'] = includeProps;
       //search_params['includeViews'] = includeViews;
       //search_params['requireDefinitions'] = includeOnlyDefinitions;
@@ -68,15 +71,16 @@ jQuery(document).ready(function () {
       jQuery.ajax({
         url: search_url,
         data: search_params,
-        dataType: "jsonp",
+        dataType: format,
         success: function(data){
           jQuery("#search_spinner").hide();
           jQuery("#search_results").show();
           var classes = {}, classHTML = "";
-          jQuery.each(data.collection, function (index, cls) {
-            var cls_uri = cls['@id'];
+          //jQuery.each(data.collection, function (index, cls) {
+          jQuery.each(data, function (index, cls) {
+            var cls_uri = cls.id;
             var ont_uri = cls.links.ontology;
-            var ont_acronym = cls.links.ontology.split('/').slice(-1)[0];
+            var ont_acronym = ont_uri.split('/').slice(-1)[0];
             classHTML = "" +
               "<span class='search_ontology' title='" + ont_uri + "'>" +
                 "<span class='search_class' title='" + cls_uri + "'>" +

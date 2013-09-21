@@ -16,27 +16,8 @@ class SearchController < ApplicationController
       render :text => "No search class provided"
       return
     end
-
-    params[:q] = params[:q].strip
-    params[:q] = params[:q] + "*" unless params[:q].end_with?("*") # Add wildcard
-
-    # Filter on ontology_id
-    params[:ontologies] ||= params[:id]
-
-    if params[:ontologies]
-      if params[:ontologies].include?(",")
-        params[:ontologies] = params[:ontologies].split(",")
-      else
-        params[:ontologies] = [params[:ontologies]]
-      end
-
-      if params[:ontologies].first.to_i > 0
-        params[:ontologies].map! {|o| BPIDResolver.id_to_acronym(o)}
-      end
-
-      params[:ontologies] = params[:ontologies].join(",")
-    end
-
+    check_params_query(params)
+    check_params_ontologies(params)  # Filter on ontology_id
     search_page = LinkedData::Client::Models::Class.search(params[:q], params)
     @results = search_page.collection
 
@@ -99,7 +80,48 @@ class SearchController < ApplicationController
     render :text => response
   end
 
+
+  def json_search_ri
+    if params[:q].nil?
+      render :text => "No search class provided"
+      return
+    end
+    check_params_query(params)
+    check_params_ontologies(params)  # Filter on ontology_id
+    search_page = LinkedData::Client::Models::Class.search(params[:q], params)
+    response = search_page.collection.to_json
+    if params[:response].eql?("json")
+      response = response.gsub("\"","'")
+      response = "#{params[:callback]}({data:\"#{response}\"})"
+    end
+    render :text => response
+  end
+
+
+
   private
+
+  def check_params_query(params)
+    params[:q] = params[:q].strip
+    params[:q] = params[:q] + '*' unless params[:q].end_with?("*") # Add wildcard
+  end
+
+  def check_params_ontologies(params)
+    params[:ontologies] ||= params[:id]
+    if params[:ontologies]
+      if params[:ontologies].include?(",")
+        params[:ontologies] = params[:ontologies].split(",")
+      else
+        params[:ontologies] = [params[:ontologies]]
+      end
+      if params[:ontologies].first.to_i > 0
+        params[:ontologies].map! {|o| BPIDResolver.id_to_acronym(o)}
+      end
+      params[:ontologies] = params[:ontologies].join(",")
+    end
+  end
+
+
 
   # Filters out ontologies from the advanced options that were selected
   # @params [Array] a list of results to filter
