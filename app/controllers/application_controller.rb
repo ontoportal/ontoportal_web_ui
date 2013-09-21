@@ -23,11 +23,14 @@ class ApplicationController < ActionController::Base
   API_KEY = $API_KEY
 
   # Constants used primarily in the resource_index_controller, but also elsewhere.
-  RESOURCE_INDEX_URI = REST_URI + "/resource_index"
-  RI_ELEMENT_ANNOTATIONS_URI = RESOURCE_INDEX_URI + "/element_annotations"
-  RI_ONTOLOGIES_URI = RESOURCE_INDEX_URI + "/ontologies"
-  RI_RANKED_ELEMENTS_URI = RESOURCE_INDEX_URI + "/ranked_elements"
-  RI_RESOURCES_URI = RESOURCE_INDEX_URI + "/resources"
+  RESOURCE_INDEX_URI = REST_URI + '/resource_index'
+  RI_ELEMENT_ANNOTATIONS_URI = RESOURCE_INDEX_URI + '/element_annotations'
+  RI_ONTOLOGIES_URI = RESOURCE_INDEX_URI + '/ontologies'
+  RI_RANKED_ELEMENTS_URI = RESOURCE_INDEX_URI + '/ranked_elements'
+  RI_RESOURCES_URI = RESOURCE_INDEX_URI + '/resources'
+  # Note that STATS is a direct connection to the JAVA-REST API
+  RI_STATS_URI = 'http://rest.bioontology.org/resource_index/statistics/all'
+  RI_STATS_EXPIRE = 60 * 60 * 24  # One day (in seconds)
 
   if !$EMAIL_EXCEPTIONS.nil? && $EMAIL_EXCEPTIONS == true
     include ExceptionNotifiable
@@ -534,10 +537,13 @@ class ApplicationController < ActionController::Base
         :expanded => 'n/a'
     }
     begin
-      ri_statsURL = 'http://rest.bioontology.org/resource_index/statistics/all'
-      ri_statsConn = open(ri_statsURL + '?apikey=' + get_apikey)
-      doc = REXML::Document.new(ri_statsConn)
-      stats = doc.elements["/success/data/statistics"]
+      stats = Rails.cache.read(RI_STATS_URI)
+      if stats.nil?
+        ri_statsConn = open(RI_STATS_URI + '?apikey=' + get_apikey)
+        doc = REXML::Document.new(ri_statsConn)
+        stats = doc.elements["/success/data/statistics"]
+        Rails.cache.write(RI_STATS_URI, stats, expires_in: RI_STATS_EXPIRE)
+      end
       stats_hash[:total] = stats.elements["aggregatedAnnotations"].get_text.value.strip.to_i
       stats_hash[:direct] = stats.elements["mgrepAnnotations"].get_text.value.strip.to_i
       stats_hash[:reported] = stats.elements["reportedAnnotations"].get_text.value.strip.to_i
