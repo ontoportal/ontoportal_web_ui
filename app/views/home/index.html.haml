@@ -275,14 +275,16 @@
         %legend Latest Mappings
         %table.minimal{:style => "width:100%"}
           %tbody
-            - if @last_mappings.nil? || @last_mappings.empty?
+            - mappings = @recent_mappings[:mappings]
+            - classes = @recent_mappings[:classes]
+            - if mappings.nil? || mappings.empty?
               No recent mappings have been submitted
             - else
-              - for map in @last_mappings
+              - for map in mappings
                 - # map.classes might contain more than two items, use first and last.
-                - clsA = @classDetails[map.classes.first.id]
+                - clsA = classes[map.classes.first.id]
                 - ontA = clsA['ontology'].split('/').last
-                - clsB = @classDetails[map.classes.last.id]
+                - clsB = classes[map.classes.last.id]
                 - ontB = clsB['ontology'].split('/').last
                 - mapProc = map.process.first
                 %tr

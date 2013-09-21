@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   layout 'ontology'
 
-  RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "#{$REST_URL}/resource_index/", :limit => 10, :mode => :intersection}
+  #RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "#{$REST_URL}/resource_index/", :limit => 10, :mode => :intersection}
 
   NOTES_RECENT_MAX = 5
 
@@ -33,38 +33,7 @@ class HomeController < ApplicationController
     # Get the latest manual mappings
     # All mapping classes are bidirectional.
     # Each class in the list maps to all other classes in the list.
-    @recent_mappings = []
-    begin
-      @recent_mappings = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}/mappings/recent/")
-      @classDetails = {}
-      if not @recent_mappings.empty?
-        # There is no 'include' parameter on the /mappings/recent API.
-        # The following is required just to get the prefLabel on each mapping class.
-        classList = []
-        @recent_mappings.each do |m|
-          m.classes.each do |c|
-            classList.push( { :class => c.id, :ontology => c.links['ontology'] } )
-          end
-        end
-        # make the batch call to get all the class prefLabel values
-        call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>classList, 'include'=>'prefLabel'}}
-        classResponse = get_batch_results(call_params)  # method in application_controller.rb
-        # Simplify the response data for the UI
-        classResults = JSON.parse(classResponse)
-        classResults["http://www.w3.org/2002/07/owl#Class"].each do |cls|
-          id = cls['@id']
-          @classDetails[id] = {
-              '@id' => id,
-              'ui' => cls['links']['ui'],
-              'uri' => cls['links']['self'],
-              'prefLabel' => cls['prefLabel'],
-              'ontology' => cls['links']['ontology'],
-          }
-        end
-      end
-    rescue
-      # leave recent mappings empty.
-    end
+    @recent_mappings = get_recent_mappings  # application_controller
     # TODO_REV: Handle private ontologies
     # Hide notes from private ontologies
     # restricted_ontologies = DataAccess.getRestrictedOntologyList
@@ -80,7 +49,7 @@ class HomeController < ApplicationController
     @ri_resources = @resources.length
     @ri_record_count = @resources.map {|r| r.totalElements}.sum
     # retrieve annotation stats from old REST service
-    @ri_stats = get_resource_index_annotation_stats
+    @ri_stats = get_resource_index_annotation_stats # application_controller
     @direct_annotations = @ri_stats[:direct]
     @direct_expanded_annotations = @ri_stats[:expanded]
   end

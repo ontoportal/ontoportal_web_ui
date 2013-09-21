@@ -518,6 +518,54 @@ class ApplicationController < ActionController::Base
     response
   end
 
+  def get_recent_mappings
+    recent_mappings_exp = 60 * 60 * 2 # 2 hours
+    recent_mappings_key = 'recent_mappings_key'
+    recent_mappings = Rails.cache.read(recent_mappings_key)
+    return recent_mappings if not recent_mappings.nil?
+    # No cache or it has expired
+    recent_mappings = {
+        :mappings => [],
+        :classes => {}
+    }
+    begin
+      class_details = {}
+      mappings = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}/mappings/recent/")
+      if not mappings.empty?
+        # There is no 'include' parameter on the /mappings/recent API.
+        # The following is required just to get the prefLabel on each mapping class.
+        classList = []
+        mappings.each do |m|
+          m.classes.each do |c|
+            classList.push( { :class => c.id, :ontology => c.links['ontology'] } )
+          end
+        end
+        # make the batch call to get all the class prefLabel values
+        call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>classList, 'include'=>'prefLabel'}}
+        class_response = get_batch_results(call_params)  # method in application_controller.rb
+        # Simplify the response data for the UI
+        class_results = JSON.parse(class_response)
+        class_results["http://www.w3.org/2002/07/owl#Class"].each do |cls|
+          id = cls['@id']
+          class_details[id] = {
+              '@id' => id,
+              'ui' => cls['links']['ui'],
+              'uri' => cls['links']['self'],
+              'prefLabel' => cls['prefLabel'],
+              'ontology' => cls['links']['ontology'],
+          }
+        end
+      end
+      # Only cache a successful retrieval
+      recent_mappings[:mappings] = mappings
+      recent_mappings[:classes] = class_details
+      Rails.cache.write(recent_mappings_key, recent_mappings, expires_in: recent_mappings_exp)
+    rescue Exception => e
+      LOG.add :error, e.message
+      # leave recent mappings empty.
+    end
+    return recent_mappings
+  end
 
   def get_resource_index_resources
     return LinkedData::Client::HTTP.get(RI_RESOURCES_URI)
