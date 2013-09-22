@@ -43,10 +43,21 @@ class ConceptsController < ApplicationController
     # end
 
     @concept = @ontology.explore.single_class({full: true}, params[:id])
+    raise Error404 if @concept.nil?
 
-    if @concept.nil?
-      raise Error404
-    end
+    # TODO: convert 'disjointWith' parameters into classes
+    # TODO: compare with concepts_helper::concept_properties2hash(properties)
+    #binding.pry
+    ## Try to resolve 'disjointWith' parameters into classes
+    #@concept_properties = struct_to_hash(@concept.properties)
+    #disjoint_key = @concept_properties.keys.map {|k| k if k.to_s.include? 'disjoint' }.compact.first
+    #if not disjoint_key.nil?
+    #  disjoint_val = @concept_properties[disjoint_key]
+    #  if disjoint_val.instance_of? Array
+    #    # Assume we have a list of class URIs that can be resolved by the batch service
+    #    classes = disjoint_val.map {|cls| {:class => cls, :ontology => @ontology.id } }
+    #  end
+    #end
 
     if request.xhr?
       show_ajax_request # process an ajax call
