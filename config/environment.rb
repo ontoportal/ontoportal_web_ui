@@ -16,7 +16,7 @@ Encoding.default_internal = Encoding::UTF_8
 
 # This is a monkeypatch to make Gem 2.x work with Rails 2.3
 # WARNING: IT WILL IGNORE VENDORED GEMS
-if RUBY_VERSION >= "2.0.0"
+if RUBY_VERSION >= "2.0.0" && (Gem::VERSION && Gem::VERSION > "2.0.0")
   module Gem
     def self.source_index
       sources
