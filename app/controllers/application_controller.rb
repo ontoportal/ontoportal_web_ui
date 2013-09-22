@@ -450,14 +450,7 @@ class ApplicationController < ActionController::Base
     ontologies = {}
     begin
       ontology_models = LinkedData::Client::Models::Ontology.all({:include_views => true})
-      ontology_models.each do |o|
-        ont = {}
-        ont['ui'] =  o.links['ui']
-        ont['acronym'] = o.acronym
-        ont['name'] = o.name
-        ont['@id'] = o.id
-        ontologies[o.id] = ont
-      end
+      ontology_models.each {|o| ontologies[o.id] = simplify_ontology_model(o) }
     rescue
       return nil
     end
@@ -467,18 +460,68 @@ class ApplicationController < ActionController::Base
   def get_ontology_details(ont_uri)
     begin
       ont_model = LinkedData::Client::Models::Ontology.find(ont_uri)
-      ont = {}
-      ont['uri'] = ont_uri
-      ont['ui'] =  ont_model.links['ui']
-      ont['acronym'] = ont_model.acronym
-      ont['name'] = ont_model.name
-      ont['@id'] = ont_model.id
+      ont = simplify_ontology_model(ont_model)
     rescue
       return nil
     end
     return ont
   end
 
+  def simplify_class_model(cls_model)
+    if cls_model.instance_of? Hash
+      # work with a hash object
+      cls = {
+          :id => cls_model['@id'],
+          :ui =>  cls_model['links']['ui'],
+          :uri => cls_model['links']['self'],
+          :ontology => cls_model['links']['ontology']
+      }
+    else
+      # try to work with a struct object (not possible to test with instance_of?)
+      begin
+        cls = {
+            :id => cls_model.id,
+            :ui =>  cls_model.links['ui'],
+            :uri => cls_model.links['self'],
+            :ontology => cls_model.links['ontology']
+        }
+      rescue Exception => e
+        LOG.add :error, "class model is neither a Hash or struct?"
+        LOG.add :error, e.message
+        return nil
+      end
+    end
+    return cls
+  end
+
+  def simplify_ontology_model(ont_model)
+    if ont_model.instance_of? Hash
+      # work with a hash object
+      ont = {
+          :id => ont_model['@id'],
+          :acronym => ont_model['acronym'],
+          :name => ont_model['name'],
+          :ui =>  ont_model['links']['ui'],
+          :uri => ont_model['links']['self']
+      }
+    else
+      # try to work with a struct object (not possible to test with instance_of?)
+      begin
+        ont = {
+            :id => ont_model.id,
+            :acronym => ont_model.acronym,
+            :name => ont_model.name,
+            :ui =>  ont_model.links['ui'],
+            :uri => ont_model.links['self']
+        }
+      rescue Exception => e
+        LOG.add :error, "ontology model is neither a Hash or struct?"
+        LOG.add :error, e.message
+        return nil
+      end
+    end
+    return ont
+  end
 
   def get_apikey()
     apikey = API_KEY
@@ -542,26 +585,22 @@ class ApplicationController < ActionController::Base
       if not mappings.empty?
         # There is no 'include' parameter on the /mappings/recent API.
         # The following is required just to get the prefLabel on each mapping class.
-        classList = []
+        class_list = []
         mappings.each do |m|
           m.classes.each do |c|
-            classList.push( { :class => c.id, :ontology => c.links['ontology'] } )
+            class_list.push( { :class => c.id, :ontology => c.links['ontology'] } )
           end
         end
         # make the batch call to get all the class prefLabel values
-        call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>classList, 'include'=>'prefLabel'}}
+        call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>class_list, 'include'=>'prefLabel'}}
         class_response = get_batch_results(call_params)  # method in application_controller.rb
         # Simplify the response data for the UI
         class_results = JSON.parse(class_response)
         class_results["http://www.w3.org/2002/07/owl#Class"].each do |cls|
-          id = cls['@id']
-          class_details[id] = {
-              '@id' => id,
-              'ui' => cls['links']['ui'],
-              'uri' => cls['links']['self'],
-              'prefLabel' => cls['prefLabel'],
-              'ontology' => cls['links']['ontology'],
-          }
+          c = simplify_class_model(cls)
+          cls_id = c[:id]
+          c[:prefLabel] = cls['prefLabel']
+          class_details[cls_id] = c
         end
       end
       # Only cache a successful retrieval
@@ -584,35 +623,40 @@ class ApplicationController < ActionController::Base
   end
 
   def get_resource_index_annotation_stats
-    stats_hash = {
-        :total => 'n/a',
-        :direct => 'n/a',
-        :reported => 'n/a',
-        :hierarchy => 'n/a',
-        :mapping => 'n/a',
-        :expanded => 'n/a'
-    }
+    stats_hash = Rails.cache.read(RI_STATS_URI)
+    return stats_hash if not stats_hash.nil?
     begin
-      stats = Rails.cache.read(RI_STATS_URI)
-      if stats.nil?
-        ri_statsConn = open(RI_STATS_URI + '?apikey=' + get_apikey)
-        doc = REXML::Document.new(ri_statsConn)
-        stats = doc.elements["/success/data/statistics"]
-        Rails.cache.write(RI_STATS_URI, stats, expires_in: RI_STATS_EXPIRE)
-      end
+      uri = RI_STATS_URI + '?apikey=' + get_apikey
+      ri_statsConn = open(uri)
+      doc = REXML::Document.new(ri_statsConn)
+      stats = doc.elements["/success/data/statistics"]
+      stats_hash = {}
       stats_hash[:total] = stats.elements["aggregatedAnnotations"].get_text.value.strip.to_i
       stats_hash[:direct] = stats.elements["mgrepAnnotations"].get_text.value.strip.to_i
       stats_hash[:reported] = stats.elements["reportedAnnotations"].get_text.value.strip.to_i
       stats_hash[:hierarchy] = stats.elements["isaAnnotations"].get_text.value.strip.to_i
       stats_hash[:mapping] = stats.elements["mappingAnnotations"].get_text.value.strip.to_i
       stats_hash[:expanded] = stats_hash[:direct] + stats_hash[:hierarchy] + stats_hash[:mapping]
+      Rails.cache.write(RI_STATS_URI, stats_hash, expires_in: RI_STATS_EXPIRE)
     rescue Exception => e
       LOG.add :error, e.message
+      stats_hash = {
+          :total => 'n/a',
+          :direct => 'n/a',
+          :reported => 'n/a',
+          :hierarchy => 'n/a',
+          :mapping => 'n/a',
+          :expanded => 'n/a'
+      }
     end
     return stats_hash
   end
 
   def get_semantic_types()
+    semantic_types_exp = 60 * 60 * 24 # 24 hours
+    semantic_types_key = 'semantic_types_key'
+    semantic_types = Rails.cache.read(semantic_types_key)
+    return semantic_types if not semantic_types.nil?
     semantic_types = {}
     sty_prefix = 'http://bioportal.bioontology.org/ontologies/umls/sty/'
     begin
@@ -623,7 +667,8 @@ class ApplicationController < ActionController::Base
         code = cls.id.sub(sty_prefix,'')
         semantic_types[ code ] = cls.prefLabel
       end
-      return semantic_types
+      # Only cache a successful retrieval
+      Rails.cache.write(semantic_types_key, semantic_types, expires_in: semantic_types_exp)
     rescue Exception => e
       @retries ||= 0
       if @retries < 1  # retry once only
@@ -631,9 +676,10 @@ class ApplicationController < ActionController::Base
         retry
       else
         LOG.add :debug, "\nERROR: failed to get semantic types."
-        raise e
+        # raise e  # let it fail and return an empty set of semantic types
       end
     end
+    return semantic_types
   end
 
   def massage_annotated_classes(annotations, options)
@@ -680,59 +726,52 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  def get_annotated_classes(annotations, semanticTypes=[])
+  def get_annotated_classes(annotations, semantic_types=[])
     # Use batch service to get class prefLabels
     @ontologies_hash ||= get_simplified_ontologies_hash # method in application_controller.rb
-    classDetails = {}
-    classList = []
-
-    #binding.pry
-
-    annotations.each {|a| classList << get_annotated_class_hash(a) }
+    class_details = {}
+    class_list = []
+    annotations.each {|a| class_list << get_annotated_class_hash(a) }
     hierarchy = annotations.map {|a| a if a.keys.include? 'hierarchy' }.compact
     hierarchy.each do |a|
-      a['hierarchy'].each {|h| classList << get_annotated_class_hash(h) }
+      a['hierarchy'].each {|h| class_list << get_annotated_class_hash(h) }
     end
     mappings = annotations.map {|a| a if a.keys.include? 'mappings' }.compact
     mappings.each do |a|
-      a['mappings'].each {|m| classList << get_annotated_class_hash(m) }
+      a['mappings'].each {|m| class_list << get_annotated_class_hash(m) }
     end
-    return classDetails if classList.empty?
+    return class_details if class_list.empty?
     # remove duplicates
-    classSet = classList.to_set # get unique class:ontology set
-    classList = classSet.to_a   # collection requires a list in batch call
+    class_set = class_list.to_set # get unique class:ontology set
+    class_list = class_set.to_a   # collection requires a list in batch call
     # make the batch call
     properties = 'prefLabel'
-    properties = 'prefLabel,semanticType' if not semanticTypes.empty?
-    call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>classList, 'include'=>properties}}
+    properties = 'prefLabel,semanticType' if not semantic_types.empty?
+    call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>class_list, 'include'=>properties}}
     response = get_batch_results(call_params)  # method in application_controller.rb
     # Simplify the response data for the UI
     classResults = JSON.parse(response)
     classResults["http://www.w3.org/2002/07/owl#Class"].each do |cls|
-      ont_details = @ontologies_hash[ cls['links']['ontology'] ]
+      c = simplify_class_model(cls)
+      cls_id = c[:id]
+      c[:prefLabel] = cls['prefLabel']
+      ont_details = @ontologies_hash[ c[:ontology] ]
       next if ont_details.nil? # No display for annotations on any class outside the BioPortal ontology set.
-      # simplified details for class in UI code
-      id = cls['@id']
-      classDetails[id] = {
-          '@id' => id,
-          'ui' => cls['links']['ui'],
-          'uri' => cls['links']['self'],
-          'prefLabel' => cls['prefLabel'],
-          'ontology' => ont_details,
-      }
-      unless semanticTypes.empty? || cls['semanticType'].nil?
+      c[:ontology] = ont_details
+      unless semantic_types.empty? || cls['semanticType'].nil?
         @semantic_types ||= get_semantic_types   # method in application_controller.rb
         # Extract the semantic type descriptions that are requested.
         semanticTypeURI = 'http://bioportal.bioontology.org/ontologies/umls/sty/'
         semanticCodes = cls['semanticType'].map {|t| t.sub( semanticTypeURI, '') }
-        requestedCodes = semanticCodes.map {|code| (semanticTypes.include? code and code) || nil }.compact
+        requestedCodes = semanticCodes.map {|code| (semantic_types.include? code and code) || nil }.compact
         requestedDescriptions = requestedCodes.map {|code| @semantic_types[code] }.compact
-        classDetails[id]['semanticType'] = requestedDescriptions
+        c[:semanticType] = requestedDescriptions
       else
-        classDetails[id]['semanticType'] = []
+        c[:semanticType] = []
       end
+      class_details[cls_id] = c
     end
-    return classDetails
+    return class_details
   end
 
 end

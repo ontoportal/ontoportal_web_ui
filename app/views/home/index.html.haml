@@ -283,14 +283,14 @@
               - for map in mappings
                 - # map.classes might contain more than two items, use first and last.
                 - clsA = classes[map.classes.first.id]
-                - ontA = clsA['ontology'].split('/').last
+                - ontA = clsA[:ontology].split('/').last
                 - clsB = classes[map.classes.last.id]
-                - ontB = clsB['ontology'].split('/').last
+                - ontB = clsB[:ontology].split('/').last
                 - mapProc = map.process.first
                 %tr
                   %td
-                    - mapStr = "#{clsA['prefLabel']} (#{ontA}) <=> #{clsB['prefLabel']} (#{ontB})"
-                    - mapLnk = clsA['ui'] + '#mappings'   # map.id is a linked-data URI
+                    - mapStr = "#{clsA[:prefLabel]} (#{ontA}) <=> #{clsB[:prefLabel]} (#{ontB})"
+                    - mapLnk = clsA[:ui] + '#mappings'   # map.id is a linked-data URI
                     = link_to mapStr, mapLnk
                     %br/
                     %span{:style => "color:#AAAAAA"}
