@@ -219,7 +219,8 @@
     %td{:valign => "top"}
       %fieldset
         %legend
-          Most Viewed Ontologies #{"in full #{$SITE} " if at_slice?}(#{t('most_viewed_date')})
+          - views_month = t('most_viewed_date').empty? ? "" : "(#{t('most_viewed_date')})"
+          Most Viewed Ontologies #{"in full #{$SITE} " if at_slice?}
         = t('most_viewed')
       - if t('stats').nil? || t('stats').empty?
         %fieldset
