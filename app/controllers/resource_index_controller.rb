@@ -67,29 +67,38 @@ class ResourceIndexController < ApplicationController
     uri = getRankedElementsURI(params)
     @elements = []
     @elements_page_count = 0
+    @error = nil
     while true
       begin
         # Resource index can be very slow and timeout, so parse_json includes one retry.
         ranked_elements_page = parse_json(uri) # See application_controller.rb
         #ranked_elements_page = LinkedData::Client::HTTP.get(uri)  ## DOESN'T WORK, MANGLES 'classes' params?
-        # Might generate missing method exception here on a 404 response.
+      rescue Exception => e
+        @error = e.message
+        LOG.add :error, @error
+        break
+      end
+      # Might generate missing method exception here on a 404 response.
+      @error = ranked_elements_page['error']
+      if @error.nil?
         @elements.concat ranked_elements_page['collection']
         break if @elements_page_count >= ranked_elements_page['pageCount']
         break if ranked_elements_page['nextPage'].nil?
         uri = ranked_elements_page['nextPage']
         @elements_page_count += 1
-      rescue Exception => e
-        #LOG.add :error, ranked_elements_page['errors'] if ranked_elements_page.keys.include? 'errors'
-        LOG.add :error, e.message
-        return
+      else
+        LOG.add :error, @error
+        break
       end
     end
-    # Sort ranked elements list by resource name
-    @resources = get_resource_index_resources # application_controller
-    @resources_hash = resources2hash(@resources)  # required in partial 'resources_results'
-    resources_map = resources2map_id2name(@resources)
-    @elements.sort! {|a,b| resources_map[a['resourceId']].downcase <=> resources_map[b['resourceId']].downcase}
-    #@elements = convert_for_will_paginate(@elements)
+    if @error.nil?
+      # Sort ranked elements list by resource name
+      @resources = get_resource_index_resources # application_controller
+      @resources_hash = resources2hash(@resources)  # required in partial 'resources_results'
+      resources_map = resources2map_id2name(@resources)
+      @elements.sort! {|a,b| resources_map[a['resourceId']].downcase <=> resources_map[b['resourceId']].downcase}
+      #@elements = convert_for_will_paginate(@elements)
+    end
     render :partial => "resources_results"
   end
 
@@ -116,12 +125,33 @@ class ResourceIndexController < ApplicationController
   end
 
   def element_annotations
-    uri = RI_ELEMENT_ANNOTATIONS_URI + '?elements=' + params[:elementid] + '&resources=' + params[:resourceid] + '&' + params[:classes]
-    @annotations = LinkedData::Client::HTTP.get(uri)
+    @annotations = []
     positions = {}
-    @annotations.each do |a|
-      positions[a.elementField] ||= []
-      positions[a.elementField] << { :from => a.from, :to => a.to, :type => a.annotationType }
+    @error = nil
+    uri = RI_ELEMENT_ANNOTATIONS_URI +
+        '?elements=' + params[:elementid] +
+        '&resources=' + params[:resourceid] +
+        '&' + params[:classes]
+    begin
+      # Resource index can be very slow and timeout, so parse_json includes one retry.
+      @annotations = parse_json(uri) # See application_controller.rb
+      # Removing HTTP.get because it mangles params in uri
+      #@annotations = LinkedData::Client::HTTP.get(uri)
+    rescue Exception => e
+      @error = e.message
+      LOG.add :error, @error
+    end
+    # Might generate missing method exception here on a 404 response.
+    #binding.pry
+    #@error = @annotations['error']  # not sure what this looks like on a 404 yet
+    if @error.nil?
+      @annotations.each do |a|
+        field = a['elementField']
+        positions[field] ||= []
+        positions[field] << { :from => a['from'], :to => a['to'], :type => a['annotationType'] }
+      end
+    else
+      LOG.add :error, @error
     end
     render :json => positions
   end
