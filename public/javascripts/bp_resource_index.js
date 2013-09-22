@@ -54,7 +54,8 @@ jQuery(document).ready(function () {
       //var search_url = jQuery(document).data().bp.config.rest_url+"/search";
       var search_url = "/search/json_search_ri";
       var search_params = {};
-      search_params['q'] = options.term + '*';  // not options.class or options.classes !!
+      //search_params['q'] = options.term + '*';  // not options.class or options.classes !!
+      search_params['q'] = options.term;  // /search/json_search_ri will add '*' for popup results.
       search_params['format'] = format;
       search_params['apikey'] = jQuery(document).data().bp.config.apikey;
       // TODO: ENABLE ADDITIONAL PARAMETERS WHEN THE SEARCH API SUPPORTS THEM.
@@ -79,7 +80,7 @@ jQuery(document).ready(function () {
           //jQuery.each(data.collection, function (index, cls) {
           jQuery.each(data, function (index, cls) {
             var cls_uri = cls.id;
-            var ont_uri = cls.links.ontology;
+            var ont_uri = cls.ontology;
             var ont_acronym = ont_uri.split('/').slice(-1)[0];
             classHTML = "" +
               "<span class='search_ontology' title='" + ont_uri + "'>" +

@@ -89,7 +89,14 @@ class SearchController < ApplicationController
     check_params_query(params)
     check_params_ontologies(params)  # Filter on ontology_id
     search_page = LinkedData::Client::Models::Class.search(params[:q], params)
-    response = search_page.collection.to_json
+    # Use up to the first 50 results
+    classes = []
+    search_page.collection[0...50].each do |cls|
+      c = simplify_class_model(cls)
+      c[:prefLabel] = cls['prefLabel']
+      classes.push c
+    end
+    response = classes.to_json
     if params[:response].eql?("json")
       response = response.gsub("\"","'")
       response = "#{params[:callback]}({data:\"#{response}\"})"
