@@ -384,7 +384,7 @@ function classHTML(res, label_html, displayOntologyName) {
 }
 
 function resultLinksHTML(res) {
-  return "<span class='additional'><a href='/ajax/class_details/"+ontologyIdToAcronym(res.links.ontology)+"?styled=false&conceptid="+encodeURIComponent(res["@id"])+"' class='class_details search_result_link' rel='facebox[.class_details_pop]'>details</a> - <a href='javascript:void(0);' data-bp_ontologyid='"+res.links.ontology+"' data-bp_conceptid='"+encodeURIComponent(res["@id"])+"' class='class_visualize search_result_link'>visualize</a></span>";
+  return "<span class='additional'><a href='/ajax/class_details?ontology="+ontologyIdToAcronym(res.links.ontology)+"&styled=false&conceptid="+encodeURIComponent(res["@id"])+"' class='class_details search_result_link' rel='facebox[.class_details_pop]'>details</a> - <a href='javascript:void(0);' data-bp_ontologyid='"+res.links.ontology+"' data-bp_conceptid='"+encodeURIComponent(res["@id"])+"' class='class_visualize search_result_link'>visualize</a></span>";
 }
 
 function definitionHTML(res, defClass) {
