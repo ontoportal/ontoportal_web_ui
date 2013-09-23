@@ -78,7 +78,7 @@ jQuery(document).ready(function(){
     var acronym = jQuery(this).attr("data-bp_ontologyid");
     var conceptid = jQuery(this).attr("data-bp_conceptid");
 
-    jQuery("#biomixer").html('<iframe src="/ajax/biomixer/?ontology'+acronym+'?conceptid='+conceptid+'" frameborder=0 height="500px" width="500px" scrolling="no"></iframe>').show();
+    jQuery("#biomixer").html('<iframe src="/ajax/biomixer/?ontology='+acronym+'&conceptid='+conceptid+'" frameborder=0 height="500px" width="500px" scrolling="no"></iframe>').show();
     jQuery.facebox({ div: '#biomixer' });
   }));
 
@@ -389,7 +389,7 @@ function resultLinksHTML(res) {
   var cls_id = res["@id"];
   var cls_id_encode = encodeURIComponent(cls_id);
   // construct class 'details'
-  var details_href = "href='" + "/ajax/class_details/ontology=" + ont_acronym + "?conceptid=" + cls_id_encode + "&styled=false" + "'";
+  var details_href = "href='" + "/ajax/class_details?ontology=" + ont_acronym + "?conceptid=" + cls_id_encode + "&styled=false" + "'";
   var details_css_class = " class='class_details search_result_link'" ;
   var details_rel = " rel='facebox[.class_details_pop]'";
   var details_anchor = "<a " + details_href + details_css_class + details_rel + ">details</a>";
