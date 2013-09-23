@@ -16,6 +16,11 @@ class BPIDResolver
     acronym
   end
 
+  def self.acronym_to_virtual_id(acronym)
+    return if $REDIS_HOST && $REDIS_HOST.empty?
+    RESOLVER::Ontologies.virtual_id_from_acronym(acronym)
+  end
+
   def self.uri_from_short_id(acronym, short_id)
     return if $REDIS_HOST && $REDIS_HOST.empty?
     RESOLVER::Classes.uri_from_short_id(acronym, short_id)
