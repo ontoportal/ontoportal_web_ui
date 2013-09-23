@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ncbo_resolver.git
-  revision: 837c3bec5c419bf7edb1574cd545d6686111d8d5
+  revision: 67989c445e53e019b3b3fa4905e0aa9d519df0ed
   specs:
     ncbo_resolver (0.0.1)
       recursive-open-struct
