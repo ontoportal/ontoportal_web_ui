@@ -391,7 +391,7 @@ function resultLinksHTML(res) {
   // construct class 'details'
   var details_href = "href='" + "/ajax/class_details/ontology=" + ont_acronym + "?conceptid=" + cls_id_encode + "&styled=false" + "'";
   var details_css_class = " class='class_details search_result_link'" ;
-  var details_rel = " rel='facebox[.class_details_pop]'>";
+  var details_rel = " rel='facebox[.class_details_pop]'";
   var details_anchor = "<a " + details_href + details_css_class + details_rel + ">details</a>";
   // construct 'visualize'
   var viz_href = "href='javascript:void(0);'";
