@@ -62,7 +62,7 @@ jQuery(document).ready(function(){
     }
   });
 
-  // Details/visualze link to show details pane and visualize flexviz
+  // Details/visualize link to show details pane and visualize flexviz
   jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
   jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
 
@@ -384,7 +384,22 @@ function classHTML(res, label_html, displayOntologyName) {
 }
 
 function resultLinksHTML(res) {
-  return "<span class='additional'><a href='/ajax/class_details/"+ontologyIdToAcronym(res.links.ontology)+"?styled=false&conceptid="+encodeURIComponent(res["@id"])+"' class='class_details search_result_link' rel='facebox[.class_details_pop]'>details</a> - <a href='javascript:void(0);' data-bp_ontologyid='"+res.links.ontology+"' data-bp_conceptid='"+encodeURIComponent(res["@id"])+"' class='class_visualize search_result_link'>visualize</a></span>";
+  var ont_id = res.links.ontology;
+  var ont_acronym = ontologyIdToAcronym(ont_id);
+  var cls_id = res["@id"];
+  var cls_id_encode = encodeURIComponent(cls_id);
+  // construct class 'details'
+  var details_href = "href='" + "/ajax/class_details/" + ont_acronym + "?conceptid=" + cls_id_encode + "&styled=false" + "'";
+  var details_css_class = " class='class_details search_result_link'" ;
+  var details_rel = " rel='facebox[.class_details_pop]'>";
+  var details_anchor = "<a " + details_href + details_css_class + details_rel + ">details</a>";
+  // construct 'visualize'
+  var viz_href = "href='javascript:void(0);'";
+  var viz_css_class = " class='class_visualize search_result_link'" ;
+  var viz_data_ont = " data-bp_ontologyid='" + ont_id + "'";        // use ont_acronym?
+  var viz_data_cls = " data-bp_conceptid='" + cls_id_encode + "'";  // no encoding on this one?
+  var viz_anchor = "<a " + viz_href + viz_css_class + viz_data_ont + viz_data_cls + ">visualize</a>";
+  return "<span class='additional'>" + details_anchor +  " - " + viz_anchor + "</span>";
 }
 
 function definitionHTML(res, defClass) {
