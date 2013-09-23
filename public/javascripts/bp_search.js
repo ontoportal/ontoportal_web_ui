@@ -62,7 +62,7 @@ jQuery(document).ready(function(){
     }
   });
 
-  // Details/visualize link to show details pane and visualize flexviz
+  // Details/visualize link to show details pane and visualize biomixer
   jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
   jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
 
@@ -75,11 +75,11 @@ jQuery(document).ready(function(){
 
   // Use pop-up with flex via an iframe for "visualize" link
   jQuery("a.class_visualize").live("click", (function(){
-    var ontologyid = jQuery(this).attr("data-bp_ontologyid");
+    var acronym = jQuery(this).attr("data-bp_ontologyid");
     var conceptid = jQuery(this).attr("data-bp_conceptid");
 
-    jQuery("#flexviz").html('<iframe src="/flexviz/'+ontologyid+'?conceptid='+conceptid+'" frameborder=0 height="500px" width="500px" scrolling="no"></iframe>').show();
-    jQuery.facebox({ div: '#flexviz' });
+    jQuery("#biomixer").html('<iframe src="/ajax/biomixer/?ontology'+acronym+'?conceptid='+conceptid+'" frameborder=0 height="500px" width="500px" scrolling="no"></iframe>').show();
+    jQuery.facebox({ div: '#biomixer' });
   }));
 
   // Check for existing parameters/queries and update UI accordingly
@@ -396,8 +396,8 @@ function resultLinksHTML(res) {
   // construct 'visualize'
   var viz_href = "href='javascript:void(0);'";
   var viz_css_class = " class='class_visualize search_result_link'" ;
-  var viz_data_ont = " data-bp_ontologyid='" + ont_id + "'";        // use ont_acronym?
-  var viz_data_cls = " data-bp_conceptid='" + cls_id_encode + "'";  // no encoding on this one?
+  var viz_data_ont = " data-bp_ontologyid='" + ont_acronym + "'";
+  var viz_data_cls = " data-bp_conceptid='" + cls_id_encode + "'";
   var viz_anchor = "<a " + viz_href + viz_css_class + viz_data_ont + viz_data_cls + ">visualize</a>";
   return "<span class='additional'>" + details_anchor +  " - " + viz_anchor + "</span>";
 }
