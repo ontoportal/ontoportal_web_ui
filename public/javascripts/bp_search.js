@@ -142,6 +142,7 @@ function performSearch() {
       ontologies: onts,
       pagesize: 150,
       apikey: jQuery(document).data().bp.config.apikey,
+      userapikey: jQuery(document).data().bp.config.userapikey,
       format: "jsonp"
     },
     dataType: "jsonp",
@@ -361,6 +362,7 @@ function setOntologyName(cls) {
     dataType: "jsonp",
     data: {
       apikey: jQuery(document).data().bp.config.apikey,
+      userapikey: jQuery(document).data().bp.config.userapikey,
       format: "jsonp"
     },
     success: function(ont){

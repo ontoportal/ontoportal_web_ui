@@ -15,6 +15,7 @@ module ApplicationHelper
       org_site: $ORG_SITE,
       ui_url: $UI_URL,
       apikey: LinkedData::Client.settings.apikey,
+      userapikey: get_apikey,
       rest_url: LinkedData::Client.settings.rest_url
     }.to_json
   end
