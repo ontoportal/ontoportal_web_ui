@@ -2,8 +2,10 @@
 <%  user_api_key = session[:user].nil? ? "" : session[:user].apikey %>
 
 <% virtual_id = BPIDResolver.acronym_to_virtual_id(@ontology.acronym) %>
+<% src_url = "#{$BIOMIXER_URL}/?mode=embed&embed_mode=paths_to_root&virtual_ontology_id=#{virtual_id}&full_concept_id=#{CGI.escape(@concept.fullId)}&userapikey=#{user_api_key}" %>
+<% original_src = @immediate_load ? src_url : "/ajax/loading_spinner"%>
 
 <div style="padding-left: .5%; width: 99.5%;">
-  <iframe id="biomixer_iframe" src="/ajax/loading_spinner" data-src="<%=$BIOMIXER_URL%>/?mode=embed&embed_mode=paths_to_root&virtual_ontology_id=<%=virtual_id%>&full_concept_id=<%=CGI.escape(@concept.fullId)%>&userapikey=<%=user_api_key%>"
+  <iframe id="biomixer_iframe" src="<%=original_src%>" data-src="<%=src_url%>"
     style="min-height: 500px;" height="100%" width="100%" frameborder="0"></iframe>
 </div>
