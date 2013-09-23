@@ -56,7 +56,7 @@ function getClassDetails(input) {
   var current_ont_id = jQuery("#" + current_id + "_bioportal_ontology_id").val();
   var current_concept_id = jQuery("#" + current_id + "_bioportal_full_id").val();
   jQuery("#" + current_id + "_concept_details_table").html('<img style="padding: 5px;" src="/images/spinners/spinner_000000_16px.gif">');
-  jQuery("#" + current_id + "_concept_details_table").load("/ajax/class_details/" + encodeURIComponent(current_ont_id) + "?styled=false&conceptid=" + encodeURIComponent(current_concept_id));
+  jQuery("#" + current_id + "_concept_details_table").load("/ajax/class_details?ontology=" + encodeURIComponent(current_ont_id) + "&styled=false&conceptid=" + encodeURIComponent(current_concept_id));
   jQuery("#" + current_id + "_concept_details").show();
 }
 
