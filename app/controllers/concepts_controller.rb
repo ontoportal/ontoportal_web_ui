@@ -140,6 +140,16 @@ class ConceptsController < ApplicationController
     render :partial => "flexviz", :layout => "partial"
   end
 
+  def biomixer
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    raise Error404 if @ontology.nil?
+
+    @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+    raise Error404 if @concept.nil?
+
+    render partial: "biomixer", layout: false
+  end
+
 # PRIVATE -----------------------------------------
 private
 
