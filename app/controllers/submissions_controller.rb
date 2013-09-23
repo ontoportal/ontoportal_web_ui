@@ -6,7 +6,8 @@ class SubmissionsController < ApplicationController
   def new
     @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params[:ontology_id])) rescue nil
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first unless @ontology
-    @submission = LinkedData::Client::Models::OntologySubmission.new
+    @submission = @ontology.explore.latest_submission
+    @submission ||= LinkedData::Client::Models::OntologySubmission.new
   end
 
   def create
