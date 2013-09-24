@@ -79,15 +79,28 @@ class OntologiesController < ApplicationController
     #
     # TODO_REV: Output RDF as necessary (we may delegate this to the REST service)
     #
-    get_class(params)
+    get_class(params)  # application_controller
     # TODO_REV: Enable PURL
     # set the current PURL for this class
     # @current_purl = @concept.id.start_with?("http://") ? "#{$PURL_PREFIX}/#{@ontology.acronym}?conceptid=#{CGI.escape(@concept.id)}" : "#{$PURL_PREFIX}/#{@ontology.abbreviation}/#{CGI.escape(@concept.id)}" if $PURL_ENABLED
-    @mappings = @concept.explore.mappings rescue []
+
+    begin
+      @mappings = @concept.explore.mappings
+    rescue Exception => e
+      LOG.add :error, "Failed to explore mappings for #{@concept.id} in #{@concept.links['ontology']}"
+      @mappings = []
+    end
     # TODO_REV: Support mappings deletion
     # check to see if user should get the option to delete
     # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
-    @notes = @concept.explore.notes rescue []
+
+    begin
+      @notes = @concept.explore.notes
+    rescue Exception => e
+      LOG.add :error, "Failed to explore notes for #{@concept.id} in #{@concept.links['ontology']}"
+      @notes = []
+    end
+
     unless @concept.id.to_s.empty?
       # Update the tab with the current concept
       update_tab(@ontology,@concept.id)
