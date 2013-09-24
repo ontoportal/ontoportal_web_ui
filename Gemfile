@@ -18,6 +18,7 @@ gem "rdoc"
 gem "rack-mini-profiler"
 gem 'faraday-http-cache', :git => "https://github.com/ncbo/faraday-http-cache.git"
 gem 'cube-ruby', require: 'cube'
+gem 'oink'
 
 gem 'ncbo_resolver', git: "https://github.com/ncbo/ncbo_resolver.git"
 gem 'ontologies_api_client', :git => "https://github.com/ncbo/ontologies_api_ruby_client.git"

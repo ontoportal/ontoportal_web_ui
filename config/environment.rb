@@ -69,5 +69,9 @@ Rails::Initializer.run do |config|
 
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
+
+  logfile = File.new(File.join(Rails.root, "log", "oink_mem.log"), "a")
+  require 'oink'
+  config.middleware.use Oink::Middleware, :logger => Hodel3000CompliantLogger.new(logfile), :instruments => :memory
 end
 
