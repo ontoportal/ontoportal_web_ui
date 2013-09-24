@@ -18,12 +18,15 @@
       - begin
         - ont_acronym = ont.acronym
         - ont_name = ont.name
-        -# ont_link2ui = ont.links["ui"].gsub(/^.*ontologies/,'/ontologies')
+        - ont_link = "/ontologies/#{ont_acronym}"
+        - ont_restricted = false
       - rescue
         -# Work around ontologies with access restrictions
-        - ont_acronym = cls.links['ontology'].split('/').last
-        - ont_name = ont_acronym  # no way to get the name here?
-      - ont_link2ui = "/ontologies/#{ont_acronym}"
+        - ont_restricted = true
+        -# ont_acronym = cls.links['ontology'].split('/').last
+        -# ont_name = ont_acronym  # no way to get the name here?
+        -# ont_link = ''  # no link to restricted ontologies
+      - next if ont_restricted
 
       %tr.human{:id => m.id.split("/").last}
         - if @delete_mapping_permission
@@ -33,6 +36,6 @@
         %td
           = link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{ont_acronym}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>", :controller => 'visualize', :action => 'virtual', :id => ont_acronym, :conceptid => cls.id
         %td
-          %a{:href => ont_link2ui}= ont_name
+          %a{:href => ont_link}= ont_name
         %td
           #{m.process.map {|p| p.name}.join(", ")}
