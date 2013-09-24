@@ -69,11 +69,8 @@ class ConceptsController < ApplicationController
 
   def show_label
     @ontology = LinkedData::Client::Models::Ontology.find(params[:ontology])
-    begin
-      class_label = @ontology.explore.single_class(params[:concept]).prefLabel
-    rescue Exception => e
-      class_label = "<span title='This class cannot be viewed because the id cannot be found in the most recent version of the ontology' style='cursor: help;'>#{params[:concept]}</span>"
-    end
+    @ontology ||= LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    class_label = @ontology.explore.single_class(params[:concept]).prefLabel rescue ""
     render :text => class_label
   end
 

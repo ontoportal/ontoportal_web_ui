@@ -75,7 +75,7 @@
         %tr
           %td.label{:nowrap => ""}
             %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
-          %td
+          %td.property_values
             = auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")
     - for key in leftover
       - next if exclude_relation?(key, @ontology)
@@ -86,7 +86,7 @@
         %tr
           %td.label{:nowrap => ""}
             %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
-          %td
+          %td.property_values
             = auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
     - for key in bottom_set
       - next if exclude_relation?(key)
@@ -98,5 +98,15 @@
         %tr
           %td.label{:nowrap => ""}
             %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
-          %td
+          %td.property_values
             = auto_link("<p>#{values.split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
+:javascript
+  jQuery("td.property_values a").each(function() {
+    var link = jQuery(this);
+    jQuery.get("/ajax/classes/label?ontology="+ontology_id+"&concept="+encodeURIComponent(this.href), function(data){
+      if (data !== "") {
+        link.text(data);
+        link.attr("href","/ontologies/"+ontology_id+"?p=classes&conceptid="+encodeURIComponent(link.attr("href")));
+      }
+    });
+  })
