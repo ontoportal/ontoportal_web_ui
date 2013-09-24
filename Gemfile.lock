@@ -17,7 +17,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: f7aac72e74151d6530cbbc695f41e9a80ff96a15
+  revision: 540b0589bf7e3709ff21bc50cf3119dca05139ee
   specs:
     ontologies_api_client (0.0.2)
       faraday
@@ -52,6 +52,7 @@ GEM
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
     haml (3.1.8)
+    hodel_3000_compliant_logger (0.1.1)
     hpricot (0.8.6)
     i18n (0.5.0)
     iconv (1.0.3)
@@ -63,6 +64,9 @@ GEM
     multi_json (1.8.0)
     multipart-post (1.2.0)
     mysql (2.8.1)
+    oink (0.10.1)
+      activerecord
+      hodel_3000_compliant_logger
     oj (2.0.14)
     patron (0.4.18)
     pry (0.9.12.2)
@@ -115,6 +119,7 @@ DEPENDENCIES
   memcache-client (~> 1.8.5)
   mysql (~> 2.8.1)
   ncbo_resolver!
+  oink
   ontologies_api_client!
   pry
   pry-nav
