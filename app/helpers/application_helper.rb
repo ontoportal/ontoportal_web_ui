@@ -186,6 +186,8 @@ module ApplicationHelper
       draw_root = ""
     end
 
+    node.children.sort! {|a,b| a.prefLabel.downcase <=> b.prefLabel.downcase}
+
     unless node.children.nil? || node.children.length < 1
       for child in node.children
         icons = ""
