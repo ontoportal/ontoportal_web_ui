@@ -35,9 +35,7 @@ class RecommenderController < ApplicationController
     #query += "&wholeWordOnly=" + options[:wholeWordOnly].to_s unless options[:wholeWordOnly].empty?
     #query += "&withDefaultStopWords=" + options[:withDefaultStopWords].to_s unless options[:withDefaultStopWords].empty?
     recommendations = parse_json(query) # See application_controller.rb
-    #recommendations = LinkedData::Client::HTTP.get(query)
     LOG.add :debug, "Retrieved #{recommendations.length} recommendations: #{Time.now - start}s"
-    #
     #
     # TODO: get all the annotated class prefLabel values.
     # Modify the annotated classes (methods in application_controller.rb)
@@ -45,15 +43,13 @@ class RecommenderController < ApplicationController
     # TODO: discard this code after handling the class prefLabels in above method
     recommendations.each {|r| r.delete 'annotatedClasses' }
     #
-    #
-    # Sort the recommendations by their rank (high scores are better)
-    sorted = recommendations.sort {|a,b| a['score'] <=> b['score'] }.reverse
+    # recommendations are already sorted by their rank (high scores are better)
     # reduce data package size to suit reasonable display size
-    sorted = sorted[0..24]
+    first25 = recommendations[0..24]
     # Get the ontology names
     ontologies_hash = get_simplified_ontologies_hash # method in application_controller.rb
-    sorted.each {|r| r['ontology'] = ontologies_hash[ r['ontology']['@id'] ] }
-    render :json => sorted
+    first25.each {|r| r['ontology'] = ontologies_hash[ r['ontology']['@id'] ] }
+    render :json => first25
   end
 
 end

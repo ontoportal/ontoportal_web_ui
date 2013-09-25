@@ -51,8 +51,8 @@ function getRecommendations() {
           var rec = this;
           var ontName = rec.ontology.name + ' (' + rec.ontology.acronym + ')';
           var ontLink = rec.ontology.ui.replace(/.*ontologies/,'/ontologies');
-          var termsStr = rec.numTermsMatched + " of " + rec.numTermsTotal;
-          var foundConceptsID = 'found_concepts_' + resultCount;
+          var termsStr = rec.numTermsMatched + " of " + rec.numTermsTotal; // + " (score=" + rec.score + ")";
+          //var foundConceptsID = 'found_concepts_' + resultCount;
           // Populate a facebox popup with matched concepts
           //
           // TODO: ENABLE CLASSES MATCHED WHEN THE REST /batch IS RELIABLE.
@@ -85,7 +85,7 @@ function getRecommendations() {
       jQuery("#recommendations").html(links.join(""));
       jQuery("#recommendations_container").show();
       // Wire concept modal dialog
-      jQuery("a[rel*=facebox]").facebox();
+      //jQuery("a[rel*=facebox]").facebox();
     },
     error: function(data) {
       jQuery("#recommendations_container").hide();
