@@ -413,7 +413,7 @@ class ApplicationController < ActionController::Base
       raise Error404 if @concept.nil? || @concept.errors
 
       # Create the tree
-      rootNode = @concept.explore.tree
+      rootNode = @concept.explore.tree(include: "prefLabel,childrenCount")
 
       if rootNode.nil? || rootNode.empty?
         roots = @ontology.explore.roots
