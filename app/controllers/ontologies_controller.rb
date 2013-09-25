@@ -163,9 +163,7 @@ class OntologiesController < ApplicationController
   end
 
   def edit
-    #
-    # TODO: Add parameter to get ontology views?
-    #
+    # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
     @categories = LinkedData::Client::Models::Category.all
@@ -174,18 +172,14 @@ class OntologiesController < ApplicationController
   end
 
   def mappings
-    #
-    # TODO: Add parameter to get ontology views?
-    #
+    # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     counts = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}/mappings/statistics/ontologies/#{params[:id]}")
     @ontologies_mapping_count = []
     unless counts.nil?
       counts.members.each do |acronym|
         count = counts[acronym]
-        #
-        # TODO: Add parameter to get ontology views?
-        #
+        # Note: find_by_acronym includes ontology views
         ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym.to_s).first
         next unless ontology
         @ontologies_mapping_count << {'ontology' => ontology, 'count' => count}
@@ -206,9 +200,7 @@ class OntologiesController < ApplicationController
       @ontology = LinkedData::Client::Models::Ontology.new(values: params[:ontology])
       @ontology.administeredBy = [session[:user].id]
     else
-      #
-      # TODO: Add parameter to get ontology views?
-      #
+      # Note: find_by_acronym includes ontology views
       @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     end
     @categories = LinkedData::Client::Models::Category.all
@@ -217,9 +209,7 @@ class OntologiesController < ApplicationController
   end
 
   def notes
-    #
-    # TODO: Add parameter to get ontology views?
-    #
+    # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     # Get the latest 'ready' submission, or fallback to any latest submission
     @submission = get_ontology_submission_ready(@ontology)  # application_controller
@@ -281,6 +271,7 @@ class OntologiesController < ApplicationController
   end
 
   def summary
+    # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     raise Error404 if @ontology.nil?
     # Check to see if user is requesting RDF+XML, return the file from REST service if so
@@ -301,7 +292,7 @@ class OntologiesController < ApplicationController
     @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created}
     @projects = @ontology.explore.projects
     @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId <=> a.submissionId }
-    LOG.add :error, "No submissions for ontology: #{@ontology.acronym}" if @submissions.empty?
+    LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
     # Get the latest submission, not necessarily the latest 'ready' submission
     @submission_latest = @ontology.explore.latest_submission
     @views = @ontology.explore.views.sort {|a,b| b.acronym <=> a.acronym}  # a list of view ontology models
@@ -316,9 +307,7 @@ class OntologiesController < ApplicationController
   end
 
   def update
-    #
-    # TODO: Add parameter to get ontology views?
-    #
+    # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym]).first
     @ontology.update_from_params(params[:ontology])
     error_response = @ontology.update
@@ -358,9 +347,7 @@ class OntologiesController < ApplicationController
   end
 
   def widgets
-    #
-    # TODO: Add parameter to get ontology views
-    #
+    # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     if request.xhr?
       render :partial => 'widgets', :layout => false
