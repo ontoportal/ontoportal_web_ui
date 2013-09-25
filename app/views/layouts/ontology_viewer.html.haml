@@ -38,7 +38,7 @@
   }
 
   var ontology_id = "#{@ontology.acronym}";
-  var ontology_version_id = "#{@submission.submissionId rescue ''}";
+  var ontology_version_id = "#{@submission_latest.submissionId rescue ''}";
   var ontology_name = "#{@ontology.name}";
   var org_site = "#{$ORG_SITE}";
   var concept_id = "#{params[:conceptid] || @concept ? @concept.id : 'root'}";
@@ -112,9 +112,9 @@
             = link_to "Edit ontology information",  "/ontologies/#{@ontology.acronym}/edit"
           %li
             = link_to "Add submission", "/ontologies/#{@ontology.acronym}/submissions/new"
-          - unless @submission.nil? || (@submission.respond_to?(:status) && @submission.status == 404)
+          - unless @submission_latest.nil? || (@submission_latest.respond_to?(:status) && @submission_latest.status == 404)
             %li
-              = link_to "Edit submission information (#{@submission.version})", "/ontologies/#{@ontology.acronym}/submissions/#{@submission.submissionId}/edit"
+              = link_to "Edit submission information (#{@submission_latest.version})", "/ontologies/#{@ontology.acronym}/submissions/#{@submission_latest.submissionId}/edit"
 
   %div{:style => "clear: both; margin-bottom: 1em;"}
   #ontology_content{:style => "background: white;"}
