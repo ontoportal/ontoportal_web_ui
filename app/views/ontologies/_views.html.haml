@@ -57,37 +57,35 @@
       - @views.each_with_index do |view, index|
         - viewN = "view_#{index}"
         - viewName = view.name
-        /
-        /  TODO: add UI support for view submission browsing
-        - view_submissions = view.explore.submissions.sort {|a,b| b.released <=> a.released }
-        - next if view_submissions.is_a?(Array) && view_submissions.empty?
-        - view_latest_sub = view_submissions.first
         - viewAdmin = view.admin?(session[:user])
-        - if viewAdmin
-          - viewEditURL = "/ontologies/#{view.acronym}/submissions/#{view_latest_sub.submissionId}/edit"
-          - viewSubmitURL = "/ontologies/#{view.acronym}/submissions/new" # submit new view
-        - view_description = view_latest_sub.description rescue view_description = ''
-        - view_definition = view_latest_sub.definition
-        - view_language = nil # TODO: view_latest_sub.naturalLanguage -- Ray suggests leave it undefined.
-        - view_contacts = Set.new
-        - view_latest_sub.contact.each {|c| view_contacts.add("#{c.name}, #{c.email}") }
-        - view_contacts = view_contacts.to_a.join('; ')
+        - view_submissions = view.explore.submissions.sort {|a,b| b.released <=> a.released }
+        - view_latest_sub = view_submissions.first
+        - begin
+          - view_description = view_latest_sub.description
+        - rescue
+          - view_description = nil
+        - begin
+          - view_definition = view_latest_sub.definition
+        - rescue
+          - view_definition = nil
+        - begin
+          - view_contacts = view_latest_sub.contact.map {|c| "#{c.name}, #{c.email}" }.join('; ')
+        - rescue
+          - view_contacts = nil
+
         .view_title{:id => viewN, :style => "margin: 1em 0 .5em; cursor: pointer;"}
           %span.ui-icon.ui-icon-triangle-1-e.click_view_collapse.click_view_collapse_icon{:id => "#{viewN}_icon", :style => "float: left;"}
           %span.click_view_collapse{:style => "font-size: 120%; font-weight: bold;"}
             = viewName
-          %span{:style => "font-size: 90%;"}
-            - if viewAdmin
-              %span{:style => "padding-left: 1em; vertical-align: text-bottom;"}
-                (#{link_to "Edit Metadata", viewEditURL})
         .view_collapsible{:id => "#{viewN}_collapsible", :style => "margin: 0 1em .5em; display: none;"}
+          / Display basic view metadata
           #view_head.enable-lists{:style => "margin: 0 0 .5em;"}
             %ul
-              %li
-                %span.lead Latest submission links:
-                = succeed "&nbsp;|&nbsp;" do
-                  %a{:href => view_latest_sub.ontology.links['ui']}= "UI view summary"
-                %a{:href => view_latest_sub.id, :target => "_blank"}= "linked data"
+              - if viewAdmin
+                - viewSubmitURL = "/ontologies/#{view.acronym}/submissions/new" # submit new view
+                %li
+                  %span.lead Administrator:
+                  %a{:href => viewSubmitURL} Submit new view version
               - unless view_description.nil?
                 %li
                   %span.lead Description:
@@ -96,46 +94,54 @@
                 %li
                   %span.lead Definition:
                   = view_definition
-              - unless view_language.nil?
+              -# unless view_language.nil?
                 %li
                   %span.lead Definition Language:
                   = view_language
-              %li
-                %span.lead Created By:
-                = view_contacts
-              - if viewAdmin
+              - unless view_contacts.nil?
                 %li
-                  %span.lead Administrator:
-                  %a{:href => viewSubmitURL} Submit New View Version
-                  / edit || remove a view version
-          / view_head
-          %table.zebra{:cellpadding => "0", :cellspacing => "0", :width => "100%"}
-            %thead
-              %tr
-                %th Version
-                -# The ontology version of any view is ALWAYS unknown in the new REST API data
-                -#%th Ontology Version
-                %th Release Date
-                %th Upload Date
-                %th Downloads
-            - view_submissions.each_with_index do |view_sub, view_index|
-              %tr
-                %td
-                  = view_sub.version
-                -# if (view_index == 0)
+                  %span.lead Created By:
+                  = view_contacts
+          / Display view submissions data (if any)
+          - unless view_latest_sub.nil?
+            / view_head
+            %table.zebra{:cellpadding => "0", :cellspacing => "0", :width => "100%"}
+              %thead
+                %tr
+                  %th Version
+                  -# The ontology version of any view is ALWAYS unknown in the new REST API data
+                  -#%th Ontology Version
+                  %th View Links
+                  %th Release Date
+                  %th Upload Date
+                  %th Downloads
+                  - if viewAdmin
+                    %th Admin Links
+              - view_submissions.each_with_index do |view_sub, view_index|
+                %tr
                   %td
-                    -# The ontology version of any view is ALWAYS unknown in the new REST API data
-                    =# "#{@ontology.acronym} (#{@ontology.explore.latest_submission.version})"
-                    unknown
-                -# else
-                  %td unknown
-                %td
-                  = xmldatetime_to_date(view_sub.released)
-                %td
-                  = xmldatetime_to_date(view_sub.creationDate)
-                %td
-                  %a{:href => view_sub.id + "/download?apikey=#{get_apikey}", :target => "_blank"} Ontology View
+                    = view_sub.version
+                  -# The ontology version of any view is ALWAYS unknown in the new REST API data
+                  /%td
+                  -# "#{@ontology.acronym} (#{@ontology.explore.latest_submission.version})"
+                  %td
+                    / TODO: change the ui link to a submissionId link
+                    %a{:href => view_sub.ontology.links['ui']}= 'UI view'
+                    &nbsp;|&nbsp;
+                    %a{:href => view_sub.id, :target => '_blank'}= 'linked data'
+                  %td
+                    = xmldatetime_to_date(view_sub.released)
+                  %td
+                    = xmldatetime_to_date(view_sub.creationDate)
+                  %td
+                    %a{:href => view_sub.id + "/download?apikey=#{get_apikey}", :target => "_blank"} Ontology View
+                  %td
+                    - if (view_index == 0) && viewAdmin
+                      - viewEditURL = "/ontologies/#{view.acronym}/submissions/#{view_sub.submissionId}/edit"
+                      #{link_to "Edit", viewEditURL}
+            / view submission table
         / collapsible div
+        / title div
       / @views.each
     / if views ...
   / float left
