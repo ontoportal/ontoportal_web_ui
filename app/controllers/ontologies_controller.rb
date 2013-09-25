@@ -92,7 +92,12 @@ class OntologiesController < ApplicationController
     begin
       @mappings = @concept.explore.mappings
     rescue Exception => e
-      LOG.add :error, "Failed to explore mappings for #{@concept.id} in #{@concept.links['ontology']}"
+      msg = ''
+      if @concept.instance_of?(LinkedData::Client::Models::Class) &&
+          @ontology.instance_of?(LinkedData::Client::Models::Ontology)
+        msg = "Failed to explore mappings for #{@concept.id} in #{@ontology.id}"
+      end
+      LOG.add :error, msg + "\n" + e.message
       @mappings = []
     end
     # TODO_REV: Support mappings deletion
@@ -102,7 +107,12 @@ class OntologiesController < ApplicationController
     begin
       @notes = @concept.explore.notes
     rescue Exception => e
-      LOG.add :error, "Failed to explore notes for #{@concept.id} in #{@concept.links['ontology']}"
+      msg = ''
+      if @concept.instance_of?(LinkedData::Client::Models::Class) &&
+          @ontology.instance_of?(LinkedData::Client::Models::Ontology)
+        msg = "Failed to explore notes for #{@concept.id} in #{@ontology.id}"
+      end
+      LOG.add :error, msg + "\n" + e.message
       @notes = []
     end
 
