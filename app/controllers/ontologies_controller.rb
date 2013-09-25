@@ -56,6 +56,11 @@ class OntologiesController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     # Get the latest 'ready' submission, or fallback to any latest submission
     @submission = get_ontology_submission_ready(@ontology)  # application_controller
+
+
+
+
+
     # TODO_REV: Support private ontologies
     # if @ontology.private? && (session[:user].nil? || !session[:user].has_access?(@ontology))
     #   if request.xhr?
@@ -286,12 +291,8 @@ class OntologiesController < ApplicationController
     @metrics = @ontology.explore.metrics
     @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created}
     @projects = @ontology.explore.projects
-    @submissions = @ontology.explore.submissions
-    @submissions.sort!{|x,y| y.submissionId <=> x.submissionId }
+    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId <=> a.submissionId }
     LOG.add :error, "No submissions for ontology: #{@ontology.acronym}" if @submissions.empty?
-    # Get the latest 'ready' submission, or fallback to any latest submission
-    @submission = get_ontology_submission_ready(@ontology)  # application_controller
-    @submission = @submissions.first if @submission.nil? && (not @submissions.empty?)
     @views = @ontology.explore.views.sort {|a,b| b.acronym <=> a.acronym}  # a list of view ontology models
     # @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     # @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}

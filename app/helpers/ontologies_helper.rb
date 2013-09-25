@@ -192,22 +192,24 @@ module OntologiesHelper
     # "UPLOADED", "RDF", "RDF_LABELS", "INDEXED", "METRICS", "ANNOTATOR", "ARCHIVED"  and 'ERROR_*' for each.
     # Strip the URI prefix from the status codes (works even if they are not URIs)
     # The order of the codes must be assumed to be random, it is not an entirely
-    # predictable sequence of ontology processing stages.  (Ignore 'UPLOADED'.)
+    # predictable sequence of ontology processing stages.
     codes = sub.submissionStatus.map {|s| s.split('/').last }
     errors = codes.map {|c| c if c.start_with? 'ERROR'}.compact
-    statusCodes = []
-    statusCodes.push('Parsed') if (codes.include? 'RDF') && (codes.include? 'RDF_LABELS')
+    status = []
+    status.push('Parsed') if (codes.include? 'RDF') && (codes.include? 'RDF_LABELS')
     if not errors.empty?
-      statusCodes.concat errors
+      status.concat errors
       # Forget about other status codes.
     else
       # The order of this array imposes an oder on the UI status code string
-      [ "INDEXED", "METRICS", "ANNOTATOR", "ARCHIVED" ].each do |c|
-        statusCodes.push(c.capitalize) if codes.include? c
+      status_list = [ "INDEXED", "METRICS", "ANNOTATOR", "ARCHIVED" ]
+      status_list.insert(0, 'UPLOADED') unless status.include?('Parsed')
+      status_list.each do |c|
+        status.push(c.capitalize) if codes.include? c
       end
     end
-    return '' if statusCodes.empty?
-    return '(' + statusCodes.join(', ') + ')'
+    return '' if status.empty?
+    return '(' + status.join(', ') + ')'
   end
 
   # Link for private/public/licensed ontologies

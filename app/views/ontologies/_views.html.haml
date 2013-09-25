@@ -56,9 +56,9 @@
         - if viewAdmin
           - viewEditURL = "/ontologies/#{view.acronym}/submissions/#{view.explore.latest_submission.submissionId}/edit"
           - viewSubmitURL = "/ontologies/#{view.acronym}/submissions/new" # submit new view
-        - view_submissions = view.explore.submissions.sort {|a,b| a.released <=> b.released }.reverse
+        - view_submissions = view.explore.submissions.sort {|a,b| b.released <=> a.released }
         - return if view_submissions.is_a?(Array) && view_submissions.empty?
-        - view_description = view_submissions[0].description rescue binding.pry
+        - view_description = view_submissions[0].description rescue view_description = ''
         - view_definition = view_submissions[0].definition
         - view_language = nil # TODO: view_submissions[0].naturalLanguage -- Ray suggests leave it undefined.
         - view_contacts = Set.new
@@ -78,9 +78,9 @@
             %ul
               %li
                 %span.lead Latest submission links:
-                = succeed ",&amp;nbsp;" do
-                  %a{:href => view_sub.ontology.links['ui']}= "UI view summary (#{view_sub.version})"
-                %a{:href => view_sub.id, :target => "_blank"}= "linked data (#{view_sub.version})"
+                = succeed ",&nbsp;" do
+                  %a{:href => view_sub.ontology.links['ui']}= "UI view summary"
+                %a{:href => view_sub.id, :target => "_blank"}= "linked data"
               - unless view_description.nil?
                 %li
                   %span.lead Description:
@@ -106,7 +106,7 @@
             %thead
               %tr
                 %th Version
-                %th Ontology Version
+                -#%th Ontology Version
                 %th Release Date
                 %th Upload Date
                 %th Downloads
@@ -114,10 +114,12 @@
               %tr
                 %td
                   = view_sub.version
-                - if (view_index == 0)
+                -# if (view_index == 0)
                   %td
-                    = "#{@ontology.acronym} (#{@submission.version})"
-                - else
+                    =# The ontology version of any view is ALWAYS unknown in the new REST API data
+                    =# "#{@ontology.acronym} (#{@ontology.explore.latest_submission.version})"
+                    unknown
+                -# else
                   %td unknown
                 %td
                   = xmldatetime_to_date(view_sub.released)

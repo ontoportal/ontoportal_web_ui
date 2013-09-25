@@ -35,10 +35,13 @@
             <th>Downloads</th>
         </tr>
     </thead>
+    <% submission_ready = @ontology.explore.latest_submission({:include_status => 'ready'}) %>
+    <% submission_readyId = -1 %>
+    <% submission_readyId = submission_ready.submissionId unless submission_ready.nil? %>
     <% @submissions.each_with_index do |sub, index| %>
         <% hidden_row_class = index >= 5 ? "hidden_ont hidden_select" : "" %>
         <tr <%= cycle("class='#{hidden_row_class}'", "class='alt #{hidden_row_class}'") %> class="<%=hidden_row_class%>">
-          <td> <%= status_link(sub, index==0) %> </td>
+          <td> <%= status_link(sub, sub.submissionId==submission_readyId) %> </td>
           <td> <%= xmldatetime_to_date(sub.released) %> </td>
           <td> <%= xmldatetime_to_date(sub.creationDate) %> </td>
           <td> <%= download_link(sub) %> </td>
