@@ -33,6 +33,7 @@
 
   <script>
     jQuery(document).data({bp: {config: <%=bp_config_json%>, user: <%=(session[:user] || {}).to_hash.to_json%>}});
+    var USER_INTENTION_SURVEY = <%=$USER_INTENTION_SURVEY.to_json%>
   </script>
 </head>
 <body>

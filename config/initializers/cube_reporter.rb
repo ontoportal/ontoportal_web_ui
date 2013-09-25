@@ -23,9 +23,11 @@ module Rack
       req_data = {
         duration_ms: ((finish - start)*1000).ceil,
         path: env["REQUEST_PATH"],
+        status: data[0],
         user: {
           apikey: apikey,
           username: username,
+          ip: env["REMOTE_ADDR"],
           user_agent: env["HTTP_USER_AGENT"]
         }
       }
