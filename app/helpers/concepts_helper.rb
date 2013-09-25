@@ -65,10 +65,15 @@ module ConceptsHelper
       # Shorten the key into a simple label
       k = key.to_s if key.kind_of?(Symbol)
       k ||= key
-      k = k.gsub(/.*#/,'')  # greedy regex replace everything up to last '#'
-      k = k.gsub(/.*\//,'') # greedy regex replace everything up to last '/'
-      # That might take care of nearly everything to be shortened.
-      label = k
+      if k.start_with?("http")
+        label = LinkedData::Client::HTTP.get("/ontologies/#{@ontology.acronym}/properties/#{CGI.escape(k)}/label").label rescue ""
+        if label.nil? || label.empty?
+          k = k.gsub(/.*#/,'')  # greedy regex replace everything up to last '#'
+          k = k.gsub(/.*\//,'') # greedy regex replace everything up to last '/'
+          # That might take care of nearly everything to be shortened.
+          label = k
+        end
+      end
       begin
         # Try to simplify the property values, when they are a struct.
         values = properties[key].map {|v| v.string }

@@ -104,9 +104,10 @@
   jQuery("td.property_values a").each(function() {
     var link = jQuery(this);
     jQuery.get("/ajax/classes/label?ontology="+ontology_id+"&concept="+encodeURIComponent(this.href), function(data){
-      if (data !== "") {
+      data = data.trim();
+      if (typeof data !== "undefined" && data.length > 0) {
         link.text(data);
-        link.attr("href","/ontologies/"+ontology_id+"?p=classes&conceptid="+encodeURIComponent(link.attr("href")));
+        link.attr("href", "/ontologies/"+ontology_id+"?p=classes&conceptid="+encodeURIComponent(link.attr("href")));
       }
     });
   })
