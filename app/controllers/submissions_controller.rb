@@ -44,12 +44,14 @@ class SubmissionsController < ApplicationController
 
   def edit
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
-    @submission = LinkedData::Client::Models::OntologySubmission.where {|sub| sub.ontology.id == @ontology.id && sub.submissionId == params[:id].to_i}.first
+    submissions = @ontology.explore.submissions
+    @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
   end
 
   def update
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
-    @submission = LinkedData::Client::Models::OntologySubmission.where {|sub| sub.ontology.id == @ontology.id && sub.submissionId == params[:id].to_i}.first
+    submissions = @ontology.explore.submissions
+    @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
     @submission.update_from_params(params[:submission])
     error_response = @submission.update
 
