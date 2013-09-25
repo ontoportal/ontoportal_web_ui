@@ -272,6 +272,7 @@ class OntologiesController < ApplicationController
 
   def summary
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
+    raise Error404 if @ontology.nil?
     # Check to see if user is requesting RDF+XML, return the file from REST service if so
     if request.accept.to_s.eql?("application/rdf+xml")
       user_api_key = session[:user].nil? ? "" : session[:user].apikey
