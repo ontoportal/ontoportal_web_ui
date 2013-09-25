@@ -287,13 +287,13 @@ class OntologiesController < ApplicationController
       return
     end
     # Explore the ontology links
-    @categories = @ontology.explore.categories
-    @groups = @ontology.explore.groups
     @metrics = @ontology.explore.metrics
     @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created}
     @projects = @ontology.explore.projects
     @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId <=> a.submissionId }
     LOG.add :error, "No submissions for ontology: #{@ontology.acronym}" if @submissions.empty?
+    # Get the latest submission, not necessarily the latest 'ready' submission
+    @submission_latest = @ontology.explore.latest_submission
     @views = @ontology.explore.views.sort {|a,b| b.acronym <=> a.acronym}  # a list of view ontology models
     # @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
     # @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
