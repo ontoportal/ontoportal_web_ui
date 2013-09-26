@@ -58,9 +58,10 @@ jQuery(document).ready(function () {
       search_params['q'] = options.term;  // /search/json_search_ri will add '*' for popup results.
       search_params['format'] = format;
       search_params['apikey'] = jQuery(document).data().bp.config.apikey;
-      // TODO: ENABLE ADDITIONAL PARAMETERS WHEN THE SEARCH API SUPPORTS THEM.
-      // NOTE: diabling ontologies because it may impact performance of the search drop-down.
+      // NOTE: disabled ontologies selection in the UI, ensure it has no value here.
+      // NOTE: disabled ontologies because it may impact performance of the search drop-down.
       //search_params['ontologies'] = currentOntologyAcronyms().join(',');
+      // TODO: ENABLE ADDITIONAL PARAMETERS WHEN THE SEARCH API SUPPORTS THEM.
       //search_params['includeProperties'] = includeProps;
       //search_params['includeViews'] = includeViews;
       //search_params['requireDefinitions'] = includeOnlyDefinitions;

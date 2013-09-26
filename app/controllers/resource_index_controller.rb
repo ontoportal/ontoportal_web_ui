@@ -27,7 +27,6 @@ class ResourceIndexController < ApplicationController
   def index
     # Note: REST API sorts by resourceId (acronym)
     @resources = get_resource_index_resources # application_controller
-    #@resources.sort! {|a,b| a["resourceName"].downcase <=> b["resourceName"].downcase}
     # Resource Index ontologies - REST API filters them for those that are in the triple store.
     # Data structure is a list of linked data ontology models
     @ri_ontologies = get_resource_index_ontologies # application_controller
@@ -45,19 +44,17 @@ class ResourceIndexController < ApplicationController
 
   def search
     # Note: could be called by bp_resource_index.js - document-ready binding on #resource_index_classes;
-    # however, the UI now calls the REST API directly.
+    # however, the UI now calls the search controller at /search/json_search_ri
     if params[:q].nil?
       render :text => "No search class provided"
       return
     end
-    # NOTE: the search API is not supporting 'ontologies' (Jul, 2013).
     search_page = LinkedData::Client::Models::Class.search(params[:q], params)
     @results = search_page.collection
     render :text => @results.to_json
   end
 
   def resources_table
-    #params[:classes] = params[:classes].split(",")
     create()
   end
 
