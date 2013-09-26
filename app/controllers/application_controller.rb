@@ -503,6 +503,8 @@ class ApplicationController < ActionController::Base
   end
 
   def simplify_class_model(cls_model)
+    # Simplify the class required required by the UI.
+    # No modification of the class ontology here, see simplify_classes.
     # Default simple class model
     cls = { :id => nil, :ontology => nil, :prefLabel => nil, :uri => nil, :ui => nil }
     begin
@@ -772,8 +774,6 @@ class ApplicationController < ActionController::Base
 
   def get_annotated_classes(annotations, semantic_types=[])
     # Use batch service to get class prefLabels
-    @ontologies_hash ||= get_simplified_ontologies_hash # method in application_controller.rb
-    class_details = {}
     class_list = []
     annotations.each {|a| class_list << get_annotated_class_hash(a) }
     hierarchy = annotations.map {|a| a if a.keys.include? 'hierarchy' }.compact
@@ -784,7 +784,8 @@ class ApplicationController < ActionController::Base
     mappings.each do |a|
       a['mappings'].each {|m| class_list << get_annotated_class_hash(m) }
     end
-    return class_details if class_list.empty?
+    classes_simple = {}
+    return classes_simple if class_list.empty?
     # remove duplicates
     class_set = class_list.to_set # get unique class:ontology set
     class_list = class_set.to_a   # collection requires a list in batch call
@@ -792,18 +793,17 @@ class ApplicationController < ActionController::Base
     properties = 'prefLabel'
     properties = 'prefLabel,semanticType' if not semantic_types.empty?
     call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>class_list, 'include'=>properties}}
-    response = get_batch_results(call_params)  # method in application_controller.rb
+    classes_json = get_batch_results(call_params)
     # Simplify the response data for the UI
-    classResults = JSON.parse(response)
-    classResults["http://www.w3.org/2002/07/owl#Class"].each do |cls|
+    @ontologies_hash ||= get_simplified_ontologies_hash # application_controller
+    classes_data = JSON.parse(classes_json)
+    classes_data["http://www.w3.org/2002/07/owl#Class"].each do |cls|
       c = simplify_class_model(cls)
-      cls_id = c[:id]
-      c[:prefLabel] = cls['prefLabel']
       ont_details = @ontologies_hash[ c[:ontology] ]
-      next if ont_details.nil? # No display for annotations on any class outside the BioPortal ontology set.
+      next if ont_details.nil? # NO DISPLAY FOR ANNOTATIONS ON ANY CLASS OUTSIDE THE BIOPORTAL ONTOLOGY SET.
       c[:ontology] = ont_details
       unless semantic_types.empty? || cls['semanticType'].nil?
-        @semantic_types ||= get_semantic_types   # method in application_controller.rb
+        @semantic_types ||= get_semantic_types   # application_controller
         # Extract the semantic type descriptions that are requested.
         semanticTypeURI = 'http://bioportal.bioontology.org/ontologies/umls/sty/'
         semanticCodes = cls['semanticType'].map {|t| t.sub( semanticTypeURI, '') }
@@ -813,9 +813,9 @@ class ApplicationController < ActionController::Base
       else
         c[:semanticType] = []
       end
-      class_details[cls_id] = c
+      classes_simple[c[:id]] = c
     end
-    return class_details
+    return classes_simple
   end
 
 end
