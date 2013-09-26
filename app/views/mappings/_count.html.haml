@@ -4,7 +4,7 @@
       %thead
         %tr
           %th Ontology
-          %th{:style => "text-align: right;"} Mappings Count
+          %th{:style => "text-align: right;"} Mapped Classes
       - if @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
         %td{:colspan => "2"} There are no mappings to or from this ontology
       - else
