@@ -101,13 +101,15 @@
           %td.property_values
             = auto_link("<p>#{values.split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
 :javascript
-  jQuery("td.property_values a").each(function() {
-    var link = jQuery(this);
-    jQuery.get("/ajax/classes/label?ontology="+ontology_id+"&concept="+encodeURIComponent(this.href), function(data){
-      data = data.trim();
-      if (typeof data !== "undefined" && data.length > 0) {
-        link.text(data);
-        link.attr("href", "/ontologies/"+ontology_id+"?p=classes&conceptid="+encodeURIComponent(link.attr("href")));
-      }
-    });
+  jQuery(document).ready(function(){
+    jQuery("td.property_values a").each(function() {
+      var link = jQuery(this);
+      jQuery.get("/ajax/classes/label?ontology=#{@concept.links["ontology"]}&concept="+encodeURIComponent(this.href), function(data){
+        data = data.trim();
+        if (typeof data !== "undefined" && data.length > 0) {
+          link.text(data);
+          link.attr("href", "/ontologies/#{@concept.links["ontology"]}?p=classes&conceptid="+encodeURIComponent(link.attr("href")));
+        }
+      });
+    })
   })
