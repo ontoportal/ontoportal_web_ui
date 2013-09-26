@@ -68,10 +68,15 @@ class ConceptsController < ApplicationController
   end
 
   def show_label
-    @ontology = LinkedData::Client::Models::Ontology.find(params[:ontology])
-    @ontology ||= LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    class_label = @ontology.explore.single_class(params[:concept]).prefLabel rescue ""
-    render :text => class_label
+    cls_id = params[:concept]   # cls_id should be a full URI
+    ont_id = params[:ontology]  # ont_id could be a full URI or an acronym
+    @ontology = LinkedData::Client::Models::Ontology.find(ont_id)
+    @ontology ||= LinkedData::Client::Models::Ontology.find_by_acronym(ont_id).first
+    # Retrieve a class prefLabel or return the class ID (URI)
+    # - mappings may contain class URIs that are not in bioportal (e.g. obo-xrefs)
+    cls_label = @ontology.explore.single_class(cls_id).prefLabel
+    cls_label ||= cls_id
+    render :text => cls_label
   end
 
   def show_definition
