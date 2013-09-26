@@ -136,5 +136,5 @@ ActionController::Routing::Routes.draw do |map|
 
   # Virtual
   map.virtual_ont '/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+) }
-  map.virtual '/virtual/:ontology/:id', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+) }
+  map.virtual '/virtual/:ontology/:conceptid', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+) }
 end
