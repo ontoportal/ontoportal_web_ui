@@ -646,12 +646,7 @@ class ApplicationController < ActionController::Base
         class_response = get_batch_results(call_params)  # method in application_controller.rb
         # Simplify the response data for the UI
         class_results = JSON.parse(class_response)
-        class_results["http://www.w3.org/2002/07/owl#Class"].each do |cls|
-          c = simplify_class_model(cls)
-          cls_id = c[:id]
-          c[:prefLabel] = cls['prefLabel']
-          class_details[cls_id] = c
-        end
+        class_details = simplify_classes(class_results["http://www.w3.org/2002/07/owl#Class"])
       end
       # Only cache a successful retrieval
       recent_mappings[:mappings] = mappings
