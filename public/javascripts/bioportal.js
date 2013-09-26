@@ -638,7 +638,7 @@ function loadingAnimation(loadId) {
 
 // Automatically get ajax content
 jQuery(document).ready(function(){
-  // We do this with a delay to avoid queing ahead of other async requests
+  // We do this with a delay to avoid queuing ahead of other async requests
   setTimeout(getAjaxContent, 1000);
 });
 
