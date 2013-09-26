@@ -59,17 +59,18 @@
         - viewName = view.name
         - viewAdmin = view.admin?(session[:user])
         - view_submissions = view.explore.submissions.sort {|a,b| b.released <=> a.released }
-        - view_latest_sub = view_submissions.first
+        - view_sub_latest = view.explore.latest_submission({:include_status => 'ready'})
+        - view_sub_latest ||= view_submissions.first  # fallback, if any
         - begin
-          - view_description = view_latest_sub.description
+          - view_description = view_sub_latest.description
         - rescue
           - view_description = nil
         - begin
-          - view_definition = view_latest_sub.definition
+          - view_definition = view_sub_latest.definition
         - rescue
           - view_definition = nil
         - begin
-          - view_contacts = view_latest_sub.contact.map {|c| "#{c.name}, #{c.email}" }.join('; ')
+          - view_contacts = view_sub_latest.contact.map {|c| "#{c.name}, #{c.email}" }.join('; ')
         - rescue
           - view_contacts = nil
 
@@ -85,7 +86,7 @@
                 - viewSubmitURL = "/ontologies/#{view.acronym}/submissions/new" # submit new view
                 %li
                   %span.lead Administrator:
-                  %a{:href => viewSubmitURL} Submit new view version
+                  %a{:href => viewSubmitURL} create new view submission
               - unless view_description.nil?
                 %li
                   %span.lead Description:
@@ -103,12 +104,12 @@
                   %span.lead Created By:
                   = view_contacts
           / Display view submissions data (if any)
-          - unless view_latest_sub.nil?
+          - unless view_submissions.empty?
             / view_head
             %table.zebra{:cellpadding => "0", :cellspacing => "0", :width => "100%"}
               %thead
                 %tr
-                  %th Version
+                  %th Submission
                   -# The ontology version of any view is ALWAYS unknown in the new REST API data
                   -#%th Ontology Version
                   %th View Links
@@ -117,10 +118,14 @@
                   %th Downloads
                   - if viewAdmin
                     %th Admin Links
+
+              - view_sub_latestId = -1
+              - view_sub_latestId = view_sub_latest.submissionId unless view_sub_latest.nil?
               - view_submissions.each_with_index do |view_sub, view_index|
                 %tr
                   %td
-                    = view_sub.version
+                    =# view_sub.version
+                    = status_link(view_sub, view_sub.submissionId==view_sub_latestId)
                   -# The ontology version of any view is ALWAYS unknown in the new REST API data
                   /%td
                   -# "#{@ontology.acronym} (#{@ontology.explore.latest_submission.version})"
