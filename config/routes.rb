@@ -97,6 +97,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/resource_index/resources/:resource_id', :controller => 'resource_index', :action => 'index'
   map.connect '/resource_index/:action', :controller => "resource_index", :action => /element_annotations|results_paginate|resources_table/
   map.connect '/resource_index/search', :controller => "resource_index", :action => 'search'
+  map.connect '/resource_index/class_search', :controller => "resource_index", :action => 'class_search'
   map.resources :resource_index
 
   # History

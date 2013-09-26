@@ -52,10 +52,10 @@ jQuery(document).ready(function () {
       // jQuery("#resource_index_classes_chzn .chzn-results li.active-result").remove();
       var format = 'json';
       //var search_url = jQuery(document).data().bp.config.rest_url+"/search";
-      var search_url = "/search/json_search_ri";
+      var search_url = "/resource_index/class_search";
       var search_params = {};
       //search_params['q'] = options.term + '*';  // not options.class or options.classes !!
-      search_params['q'] = options.term;  // /search/json_search_ri will add '*' for popup results.
+      search_params['q'] = options.term;  // search_url endpoint will add '*' for popup results.
       search_params['format'] = format;
       search_params['apikey'] = jQuery(document).data().bp.config.apikey;
       // NOTE: disabled ontologies selection in the UI, ensure it has no value here.
@@ -80,18 +80,18 @@ jQuery(document).ready(function () {
           var classes = {}, classHTML = "";
           //jQuery.each(data.collection, function (index, cls) {
           jQuery.each(data, function (index, cls) {
-            var cls_uri = cls.id;
-            var ont_uri = cls.ontology;
-            var ont_acronym = ont_uri.split('/').slice(-1)[0];
+            var cls_id = cls.id;
+            var ont_id = cls.ontology.id;
+            var ont_name = cls.ontology.name; //ont_uri.split('/').slice(-1)[0];
             classHTML = "" +
-              "<span class='search_ontology' title='" + ont_uri + "'>" +
-                "<span class='search_class' title='" + cls_uri + "'>" +
+              "<span class='search_ontology' title='" + ont_id + "'>" +
+                "<span class='search_class' title='" + cls_id + "'>" +
                   cls.prefLabel +
-                  "<span class='search_ontology_acronym'>(" + ont_acronym + ")</span>" +
+                  "<span class='search_ontology_acronym'>(" + ont_name + ")</span>" +
               "</span>";
-            // Create a combination of ont_uri and cls_uri that can be split when retrieved.
+            // Create a combination of ont_id and cls_id that can be split when retrieved.
             // This will be the option value in the selected drop-down list.
-            var combined_uri = uri_combine(ont_uri, cls_uri);
+            var combined_uri = uri_combine(ont_id, cls_id);
             classes[combined_uri] = classHTML;
           });
           response(classes);  // Chosen plugin creates select list.

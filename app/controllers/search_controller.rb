@@ -81,31 +81,6 @@ class SearchController < ApplicationController
   end
 
 
-  def json_search_ri
-    if params[:q].nil?
-      render :text => "No search class provided"
-      return
-    end
-    check_params_query(params)
-    check_params_ontologies(params)  # Filter on ontology_id
-    search_page = LinkedData::Client::Models::Class.search(params[:q], params)
-    # Use up to the first 50 results
-    classes = []
-    search_page.collection[0...50].each do |cls|
-      c = simplify_class_model(cls)
-      c[:prefLabel] = cls['prefLabel']
-      classes.push c
-    end
-    response = classes.to_json
-    if params[:response].eql?("json")
-      response = response.gsub("\"","'")
-      response = "#{params[:callback]}({data:\"#{response}\"})"
-    end
-    render :text => response
-  end
-
-
-
   private
 
   def check_params_query(params)
