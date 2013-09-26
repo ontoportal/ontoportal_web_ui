@@ -81,7 +81,7 @@
       - next if exclude_relation?(key, @ontology)
       - if concept_properties[key]
         - data = concept_properties[key]
-        - full_key = data[:key]
+        - full_key = data[:key].to_s # handle symbols
         - values = data[:values]
         %tr
           %td.label{:nowrap => ""}
