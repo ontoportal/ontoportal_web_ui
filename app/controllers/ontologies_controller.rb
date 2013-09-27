@@ -85,9 +85,9 @@ class OntologiesController < ApplicationController
     # TODO_REV: Output RDF as necessary (we may delegate this to the REST service)
     #
     get_class(params)  # application_controller
-    # TODO_REV: Enable PURL
+
     # set the current PURL for this class
-    # @current_purl = @concept.id.start_with?("http://") ? "#{$PURL_PREFIX}/#{@ontology.acronym}?conceptid=#{CGI.escape(@concept.id)}" : "#{$PURL_PREFIX}/#{@ontology.abbreviation}/#{CGI.escape(@concept.id)}" if $PURL_ENABLED
+    @current_purl = @concept.purl if $PURL_ENABLED
 
     begin
       @mappings = @concept.explore.mappings
