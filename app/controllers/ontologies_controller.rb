@@ -47,19 +47,11 @@ class OntologiesController < ApplicationController
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]
     params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]
-    view = false
-    if params[:view]
-      view = true
-    end
     # Set the ontology we are viewing
     # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     # Get the latest 'ready' submission, or fallback to any latest submission
     @submission = get_ontology_submission_ready(@ontology)  # application_controller
-
-
-
-
 
     # TODO_REV: Support private ontologies
     # if @ontology.private? && (session[:user].nil? || !session[:user].has_access?(@ontology))

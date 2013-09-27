@@ -284,9 +284,9 @@
               - for map in mappings
                 - # map.classes might contain more than two items, use first and last.
                 - clsA = classes[map.classes.first.id]
-                - ontA = clsA[:ontology].split('/').last
+                - ontA = clsA[:ontology][:acronym]
                 - clsB = classes[map.classes.last.id]
-                - ontB = clsB[:ontology].split('/').last
+                - ontB = clsB[:ontology][:acronym]
                 - mapProc = map.process.first
                 %tr
                   %td

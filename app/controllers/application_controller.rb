@@ -30,9 +30,14 @@ class ApplicationController < ActionController::Base
   RI_ONTOLOGIES_URI = RESOURCE_INDEX_URI + '/ontologies'
   RI_RANKED_ELEMENTS_URI = RESOURCE_INDEX_URI + '/ranked_elements'
   RI_RESOURCES_URI = RESOURCE_INDEX_URI + '/resources'
-  # Note that STATS is a direct connection to the JAVA-REST API
+  # Note that STATS is a DIRECT CONNECTION to the JAVA-REST API
   RI_STATS_URI = 'http://rest.bioontology.org/resource_index/statistics/all'
-  RI_STATS_EXPIRE = 60 * 60 * 24  # One day (in seconds)
+
+  # Rails.cache expiration
+  EXPIRY_SEMANTIC_TYPES = 60 * 60 * 24 # 24:00 hours
+  EXPIRY_RI_STATS = 60 * 60 * 24       # 24:00 hours
+  EXPIRY_RECENT_MAPPINGS = 60 * 60     #  1:00 hours
+  EXPIRY_ONTOLOGY_SIMPLIFIED = 60 * 1  #  0:10 minute
 
   if !$EMAIL_EXCEPTIONS.nil? && $EMAIL_EXCEPTIONS == true
     include ExceptionNotifiable
@@ -467,58 +472,108 @@ class ApplicationController < ActionController::Base
     return ont
   end
 
+  def simplify_classes(classes)
+    # Simplify the classes batch service data for the UI
+    # It takes a list of class objects (hashes or models) and the
+    # data structure returned is a hash of class hashes, which will
+    # contain details for the ontology they belong to.  For example:
+    #{
+    # "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12439" => {
+    #    :id => "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12439",
+    #    :ui => "http://ncbo-stg-app-12.stanford.edu/ontologies/NCIT?p=classes&conceptid=http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C12439",
+    #    :uri => "http://stagedata.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C12439",
+    #    :prefLabel => "Brain",
+    #    :ontology => {
+    #      :id => "http://stagedata.bioontology.org/ontologies/NCIT",
+    #      :uri => "http://stagedata.bioontology.org/ontologies/NCIT",
+    #      :acronym => "NCIT",
+    #      :name => "National Cancer Institute Thesaurus",
+    #      :ui => "http://ncbo-stg-app-12.stanford.edu/ontologies/NCIT"
+    #    },
+    #  },
+    #}
+    @ontologies_hash ||= get_simplified_ontologies_hash
+    classes_hash = {}
+    classes.each do |cls|
+      c = simplify_class_model(cls)
+      c[:ontology] = @ontologies_hash[ c[:ontology] ]
+      classes_hash[c[:id]] = c
+    end
+    return classes_hash
+  end
+
   def simplify_class_model(cls_model)
-    if cls_model.instance_of? Hash
-      # work with a hash object
-      cls = {
-          :id => cls_model['@id'],
-          :ui =>  cls_model['links']['ui'],
-          :uri => cls_model['links']['self'],
-          :ontology => cls_model['links']['ontology']
-      }
-    else
-      # try to work with a struct object (not possible to test with instance_of?)
-      begin
+    # Simplify the class required required by the UI.
+    # No modification of the class ontology here, see simplify_classes.
+    # Default simple class model
+    cls = { :id => nil, :ontology => nil, :prefLabel => nil, :uri => nil, :ui => nil }
+    begin
+      if cls_model.instance_of? Hash
+        cls = {
+            :id => cls_model['@id'],
+            :ui =>  cls_model['links']['ui'],
+            :uri => cls_model['links']['self'],  # different from id
+            :ontology => cls_model['links']['ontology']
+        }
+        # Try to carry through a prefLabel, if it exists.
+        cls[:prefLabel] = cls_model['prefLabel']
+      else
+        # try to work with a struct object or a LinkedData::Client::Models::Class
+        # if not a struct, then: cls_model.instance_of? LinkedData::Client::Models::Class
         cls = {
             :id => cls_model.id,
             :ui =>  cls_model.links['ui'],
-            :uri => cls_model.links['self'],
+            :uri => cls_model.links['self'],  # different from id
             :ontology => cls_model.links['ontology']
         }
-      rescue Exception => e
-        LOG.add :error, "class model is neither a Hash or struct?"
-        LOG.add :error, e.message
-        return nil
+        # Try to carry through a prefLabel, if it exists.
+        cls[:prefLabel] = cls_model.prefLabel if cls_model.respond_to?('prefLabel')
       end
+    rescue Exception => e
+      LOG.add :error, "Failure to simplify class: " + cls_model.to_s
+      LOG.add :error, e.message
     end
     return cls
   end
 
   def simplify_ontology_model(ont_model)
+    # Default simple ont model
+    id = nil
     if ont_model.instance_of? Hash
-      # work with a hash object
-      ont = {
-          :id => ont_model['@id'],
-          :acronym => ont_model['acronym'],
-          :name => ont_model['name'],
-          :ui =>  ont_model['links']['ui'],
-          :uri => ont_model['links']['self']
-      }
-    else
-      # try to work with a struct object (not possible to test with instance_of?)
-      begin
-        ont = {
-            :id => ont_model.id,
-            :acronym => ont_model.acronym,
-            :name => ont_model.name,
-            :ui =>  ont_model.links['ui'],
-            :uri => ont_model.links['self']
-        }
-      rescue Exception => e
-        LOG.add :error, "ontology model is neither a Hash or struct?"
-        LOG.add :error, e.message
-        return nil
+      id = ont_model['@id']
+    elsif ont_model.instance_of? LinkedData::Client::Models::Ontology
+      id = ont_model.id
+    end
+    ont = Rails.cache.read(id)
+    return ont unless ont.nil?
+    # No cache or it has expired
+    ont = { :id => nil, :uri => nil, :acronym => nil, :name => nil, :ui => nil }
+    begin
+      if ont_model.instance_of? Hash
+        id = ont_model['@id']
+        acronym = ont_model['acronym']
+        name = ont_model['name']
+        ui = ont_model['links']['ui']
+      else
+        # try to work with a struct object or a LinkedData::Client::Models::Ontology
+        # if not a struct, then: ont_model.instance_of? LinkedData::Client::Models::Ontology
+        id = ont_model.id
+        acronym = ont_model.acronym
+        name = ont_model.name
+        ui = ont_model.links['ui']
       end
+      ont[:id] = id
+      ont[:uri] = id
+      ont[:acronym] = acronym
+      ont[:name] = name
+      ont[:ui] =  ui
+    rescue Exception => e
+        LOG.add :error, "Failure to simplify ontology: " + ont_model.to_s
+        LOG.add :error, e.message
+    end
+    # Cache a complete representation of an ontology
+    unless ont[:id].nil? || ont[:uri].nil? || ont[:acronym].nil? || ont[:name].nil? || ont[:ui].nil?
+      Rails.cache.write(ont[:id], ont, expires_in: EXPIRY_ONTOLOGY_SIMPLIFIED)
     end
     return ont
   end
@@ -531,8 +586,6 @@ class ApplicationController < ActionController::Base
     return apikey
   end
 
-
-  # This method might be defunct, replaced with LinkedData::Client::HTTP.get()
   def parse_json(uri)
     uri = URI.parse(uri)
     LOG.add :debug, "Parse URI: #{uri}"
@@ -570,7 +623,6 @@ class ApplicationController < ActionController::Base
   end
 
   def get_recent_mappings
-    recent_mappings_exp = 60 * 60 * 2 # 2 hours
     recent_mappings_key = 'recent_mappings_key'
     recent_mappings = Rails.cache.read(recent_mappings_key)
     return recent_mappings if not recent_mappings.nil?
@@ -596,17 +648,12 @@ class ApplicationController < ActionController::Base
         class_response = get_batch_results(call_params)  # method in application_controller.rb
         # Simplify the response data for the UI
         class_results = JSON.parse(class_response)
-        class_results["http://www.w3.org/2002/07/owl#Class"].each do |cls|
-          c = simplify_class_model(cls)
-          cls_id = c[:id]
-          c[:prefLabel] = cls['prefLabel']
-          class_details[cls_id] = c
-        end
+        class_details = simplify_classes(class_results["http://www.w3.org/2002/07/owl#Class"])
       end
       # Only cache a successful retrieval
       recent_mappings[:mappings] = mappings
       recent_mappings[:classes] = class_details
-      Rails.cache.write(recent_mappings_key, recent_mappings, expires_in: recent_mappings_exp)
+      Rails.cache.write(recent_mappings_key, recent_mappings, expires_in: EXPIRY_RECENT_MAPPINGS)
     rescue Exception => e
       LOG.add :error, e.message
       # leave recent mappings empty.
@@ -637,7 +684,7 @@ class ApplicationController < ActionController::Base
       stats_hash[:hierarchy] = stats.elements["isaAnnotations"].get_text.value.strip.to_i
       stats_hash[:mapping] = stats.elements["mappingAnnotations"].get_text.value.strip.to_i
       stats_hash[:expanded] = stats_hash[:direct] + stats_hash[:hierarchy] + stats_hash[:mapping]
-      Rails.cache.write(RI_STATS_URI, stats_hash, expires_in: RI_STATS_EXPIRE)
+      Rails.cache.write(RI_STATS_URI, stats_hash, expires_in: EXPIRY_RI_STATS)
     rescue Exception => e
       LOG.add :error, e.message
       stats_hash = {
@@ -653,7 +700,6 @@ class ApplicationController < ActionController::Base
   end
 
   def get_semantic_types()
-    semantic_types_exp = 60 * 60 * 24 # 24 hours
     semantic_types_key = 'semantic_types_key'
     semantic_types = Rails.cache.read(semantic_types_key)
     return semantic_types if not semantic_types.nil?
@@ -668,7 +714,7 @@ class ApplicationController < ActionController::Base
         semantic_types[ code ] = cls.prefLabel
       end
       # Only cache a successful retrieval
-      Rails.cache.write(semantic_types_key, semantic_types, expires_in: semantic_types_exp)
+      Rails.cache.write(semantic_types_key, semantic_types, expires_in: EXPIRY_SEMANTIC_TYPES)
     rescue Exception => e
       @retries ||= 0
       if @retries < 1  # retry once only
@@ -728,8 +774,6 @@ class ApplicationController < ActionController::Base
 
   def get_annotated_classes(annotations, semantic_types=[])
     # Use batch service to get class prefLabels
-    @ontologies_hash ||= get_simplified_ontologies_hash # method in application_controller.rb
-    class_details = {}
     class_list = []
     annotations.each {|a| class_list << get_annotated_class_hash(a) }
     hierarchy = annotations.map {|a| a if a.keys.include? 'hierarchy' }.compact
@@ -740,7 +784,8 @@ class ApplicationController < ActionController::Base
     mappings.each do |a|
       a['mappings'].each {|m| class_list << get_annotated_class_hash(m) }
     end
-    return class_details if class_list.empty?
+    classes_simple = {}
+    return classes_simple if class_list.empty?
     # remove duplicates
     class_set = class_list.to_set # get unique class:ontology set
     class_list = class_set.to_a   # collection requires a list in batch call
@@ -748,18 +793,17 @@ class ApplicationController < ActionController::Base
     properties = 'prefLabel'
     properties = 'prefLabel,semanticType' if not semantic_types.empty?
     call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>class_list, 'include'=>properties}}
-    response = get_batch_results(call_params)  # method in application_controller.rb
+    classes_json = get_batch_results(call_params)
     # Simplify the response data for the UI
-    classResults = JSON.parse(response)
-    classResults["http://www.w3.org/2002/07/owl#Class"].each do |cls|
+    @ontologies_hash ||= get_simplified_ontologies_hash # application_controller
+    classes_data = JSON.parse(classes_json)
+    classes_data["http://www.w3.org/2002/07/owl#Class"].each do |cls|
       c = simplify_class_model(cls)
-      cls_id = c[:id]
-      c[:prefLabel] = cls['prefLabel']
       ont_details = @ontologies_hash[ c[:ontology] ]
-      next if ont_details.nil? # No display for annotations on any class outside the BioPortal ontology set.
+      next if ont_details.nil? # NO DISPLAY FOR ANNOTATIONS ON ANY CLASS OUTSIDE THE BIOPORTAL ONTOLOGY SET.
       c[:ontology] = ont_details
       unless semantic_types.empty? || cls['semanticType'].nil?
-        @semantic_types ||= get_semantic_types   # method in application_controller.rb
+        @semantic_types ||= get_semantic_types   # application_controller
         # Extract the semantic type descriptions that are requested.
         semanticTypeURI = 'http://bioportal.bioontology.org/ontologies/umls/sty/'
         semanticCodes = cls['semanticType'].map {|t| t.sub( semanticTypeURI, '') }
@@ -769,9 +813,9 @@ class ApplicationController < ActionController::Base
       else
         c[:semanticType] = []
       end
-      class_details[cls_id] = c
+      classes_simple[c[:id]] = c
     end
-    return class_details
+    return classes_simple
   end
 
 end
