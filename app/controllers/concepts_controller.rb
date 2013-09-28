@@ -70,6 +70,14 @@ class ConceptsController < ApplicationController
   def show_label
     cls_id = params[:concept]   # cls_id should be a full URI
     ont_id = params[:ontology]  # ont_id could be a full URI or an acronym
+
+    if ont_id.to_i > 0
+      params_cleanup_new_api()
+      stop_words = ["controller", "action"]
+      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
+      return
+    end
+
     @ontology = LinkedData::Client::Models::Ontology.find(ont_id)
     @ontology ||= LinkedData::Client::Models::Ontology.find_by_acronym(ont_id).first
     raise Error404 unless @ontology
@@ -81,6 +89,13 @@ class ConceptsController < ApplicationController
   end
 
   def show_definition
+    if params[:ontology].to_i > 0
+      params_cleanup_new_api()
+      stop_words = ["controller", "action"]
+      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
+      return
+    end
+
     @ontology = LinkedData::Client::Models::Ontology.find(params[:ontology])
     cls = @ontology.explore.single_class(params[:concept])
     render :text => cls.definition
