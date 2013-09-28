@@ -17,7 +17,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 39dab2c2090e1a1b1ffa12bb88ed5a865b1c3659
+  revision: 0c87dba48d3c5707457f3f729d6a453903123440
   specs:
     ontologies_api_client (0.0.2)
       faraday
@@ -42,7 +42,7 @@ GEM
     columnize (0.3.6)
     cube-ruby (0.0.3)
     daemons (1.1.9)
-    debugger (1.6.1)
+    debugger (1.6.2)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
       debugger-ruby_core_source (~> 1.2.3)
