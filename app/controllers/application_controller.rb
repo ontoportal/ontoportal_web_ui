@@ -34,8 +34,9 @@ class ApplicationController < ActionController::Base
   RI_STATS_URI = 'http://rest.bioontology.org/resource_index/statistics/all'
 
   # Rails.cache expiration
-  EXPIRY_SEMANTIC_TYPES = 60 * 60 * 24 # 24:00 hours
   EXPIRY_RI_STATS = 60 * 60 * 24       # 24:00 hours
+  EXPIRY_RI_ONTOLOGIES = 60 * 60 * 24  # 24:00 hours
+  EXPIRY_SEMANTIC_TYPES = 60 * 60 * 24 # 24:00 hours
   EXPIRY_RECENT_MAPPINGS = 60 * 60     #  1:00 hours
   EXPIRY_ONTOLOGY_SIMPLIFIED = 60 * 1  #  0:10 minute
 
