@@ -108,7 +108,7 @@
         data = data.trim();
         if (typeof data !== "undefined" && data.length > 0) {
           link.text(data);
-          link.attr("href", "/ontologies/#{@concept.links["ontology"]}?p=classes&conceptid="+encodeURIComponent(link.attr("href")));
+          link.attr("href", "/ontologies/#{@concept.links["ontology"].split("/")[-1]}?p=classes&conceptid="+encodeURIComponent(link.attr("href")));
         }
       });
     })
