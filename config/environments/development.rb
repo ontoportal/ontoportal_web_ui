@@ -19,6 +19,9 @@ config.action_mailer.raise_delivery_errors = false
 # Autoload the lib folder in development
 config.autoload_paths << "#{config.root_path}/lib"
 
+# Allow multiple threads in dev
+config.threadsafe!
+
 # Show log when using different rack servers
 config.middleware.use Rails::Rack::LogTailer
 
