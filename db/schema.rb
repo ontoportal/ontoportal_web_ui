@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120719010735) do
+ActiveRecord::Schema.define(:version => 20130930214323) do
 
   create_table "analytics", :force => true do |t|
     t.string   "segment"
@@ -174,7 +174,7 @@ ActiveRecord::Schema.define(:version => 20120719010735) do
   end
 
   create_table "virtual_appliance_users", :force => true do |t|
-    t.integer  "user_id"
+    t.string   "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
