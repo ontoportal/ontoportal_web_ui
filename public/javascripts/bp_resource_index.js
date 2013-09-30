@@ -52,7 +52,7 @@ jQuery(document).ready(function () {
       // jQuery("#resource_index_classes_chzn .chzn-results li.active-result").remove();
       var format = 'json';
       //var search_url = jQuery(document).data().bp.config.rest_url+"/search";
-      var search_url = "/resource_index/class_search";
+      var search_url = "/resource_index/search_classes";
       var search_params = {};
       //search_params['q'] = options.term + '*';  // not options.class or options.classes !!
       search_params['q'] = options.term;  // search_url endpoint will add '*' for popup results.

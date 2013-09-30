@@ -42,19 +42,7 @@ class ResourceIndexController < ApplicationController
     end
   end
 
-  def search
-    # Note: could be called by bp_resource_index.js - document-ready binding on #resource_index_classes;
-    # however, the UI now calls the search controller at /search/json_search_ri
-    if params[:q].nil?
-      render :text => "No search class provided"
-      return
-    end
-    search_page = LinkedData::Client::Models::Class.search(params[:q], params)
-    @results = search_page.collection
-    render :text => @results.to_json
-  end
-
-  def class_search
+  def search_classes
     # check query
     if params[:q].nil?
       render :text => "No search class provided"
@@ -74,7 +62,11 @@ class ResourceIndexController < ApplicationController
     params[:ontologies] = ri_ont_acronyms
     # Get the first 50 classes matching the query
     search_page = LinkedData::Client::Models::Class.search(params[:q], params)
-    classes = simplify_classes( search_page.collection[0...50] ) # application_controller
+    search_subset = search_page.collection[0...50]
+    # Simplify search results and get ontology details
+    classes_hash = simplify_classes( search_subset ) # application_controller
+    # Get the simplified classes in the search order
+    classes = search_subset.map {|cls| classes_hash[cls.id] }
     classes_json = classes.to_json
     if params[:response].eql?("json")
       classes_json = classes_json.gsub("\"","'")
