@@ -6,7 +6,6 @@ gem "rails", "2.3.17"
 gem "pry"
 gem "iconv"
 gem "hpricot", "~> 0.8.6"
-#gem "libxml-ruby", "~> 2.7.0"
 gem "recaptcha", "~> 0.3.1"
 gem "rest-client", "~> 1.6.1"
 gem "mysql", "~> 2.8.1"
@@ -25,7 +24,6 @@ gem 'ontologies_api_client', :git => "https://github.com/ncbo/ontologies_api_rub
 group :development do
   gem "pry"
   gem "pry-nav"
-  # gem "pry-stack_explorer"
   gem "thin"
   gem "unicorn"
 end
