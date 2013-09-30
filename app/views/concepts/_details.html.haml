@@ -106,7 +106,7 @@
       var link = jQuery(this);
       jQuery.get("/ajax/classes/label?ontology=#{@concept.links["ontology"]}&concept="+encodeURIComponent(this.href), function(data){
         data = data.trim();
-        if (typeof data !== "undefined" && data.length > 0 && !data.startsWith("http")) {
+        if (typeof data !== "undefined" && data.length > 0 && data.indexOf("http") !== 0) {
           link.text(data);
           link.attr("href", "/ontologies/#{@concept.links["ontology"].split("/")[-1]}?p=classes&conceptid="+encodeURIComponent(link.attr("href")));
         }
