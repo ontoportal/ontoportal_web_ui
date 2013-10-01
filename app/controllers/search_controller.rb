@@ -25,11 +25,6 @@ class SearchController < ApplicationController
     obsolete_response = ""
     separator = (params[:separator].nil?) ? "~!~" : params[:separator]
     for result in @results
-      # TODO_REV: Handle private ontologies
-      # if filter_private_result?(result)
-      #   next
-      # end
-
       # TODO_REV: Format the response with type information, target information
       # record_type = format_record_type(result[:recordType], result[:obsolete])
       record_type = ""
