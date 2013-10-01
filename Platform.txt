@@ -6,3 +6,8 @@ bundle --version
 
 gem --version
 => 2.0.3
+
+# If gem version is different, use:
+# gem update --system 2.0.3
+# bundle install
+
