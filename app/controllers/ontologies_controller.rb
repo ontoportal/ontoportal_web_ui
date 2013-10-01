@@ -27,13 +27,8 @@ class OntologiesController < ApplicationController
     metrics_hash = get_metrics_hash
     @class_counts = {}
     @ontologies.each do |o|
-      begin
-        # Using begin:rescue block because some ontologies may not have metrics available.
-        @class_counts[o.id] = metrics_hash[o.id].classes
-      rescue
-        @class_counts[o.id] = 0 if o.summaryOnly
-        next
-      end
+      @class_counts[o.id] = metrics_hash[o.id].classes if metrics_hash[o.id]
+      @class_counts[o.id] ||= 0
     end
     @mapping_counts = {}
     @note_counts = {}
