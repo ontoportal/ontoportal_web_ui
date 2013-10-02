@@ -11,10 +11,10 @@ GIT
   revision: 5103e81c30f7f1e0684e8597fa6ca0b8f11ea974
   specs:
     ontologies_api_client (0.0.2)
+      excon
       faraday
       multi_json
       oj (<= 2.0.14)
-      patron
 
 GEM
   remote: https://rubygems.org/
@@ -33,6 +33,7 @@ GEM
     cube-ruby (0.0.3)
     daemons (1.1.9)
     eventmachine (1.0.3)
+    excon (0.26.0)
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
     haml (3.1.8)
@@ -52,7 +53,6 @@ GEM
       activerecord
       hodel_3000_compliant_logger
     oj (2.0.14)
-    patron (0.4.18)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
@@ -75,7 +75,7 @@ GEM
       json (~> 1.4)
     recaptcha (0.3.5)
     recursive-open-struct (0.4.4)
-    redis (3.0.4)
+    redis (3.0.5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     slop (3.4.6)
