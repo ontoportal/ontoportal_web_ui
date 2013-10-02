@@ -45,9 +45,15 @@ class HomeController < ApplicationController
     # calculate bioportal summary statistics
     @ont_count = @ontologies.length
     @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes}.sum
-    @resources = get_resource_index_resources # application_controller
-    @ri_resources = @resources.length
-    @ri_record_count = @resources.map {|r| r.totalElements}.sum
+    begin
+      @resources = get_resource_index_resources # application_controller
+      @ri_resources = @resources.length
+      @ri_record_count = @resources.map {|r| r.totalElements}.sum
+    rescue
+      @resources = []
+      @ri_resources = 0
+      @ri_record_count = 0
+    end
     # retrieve annotation stats from old REST service
     @ri_stats = get_resource_index_annotation_stats # application_controller
     @direct_annotations = @ri_stats[:direct]
