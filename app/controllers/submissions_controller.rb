@@ -49,6 +49,9 @@ class SubmissionsController < ApplicationController
   end
 
   def update
+    # Make the contacts an array
+    params[:submission][:contact] = params[:submission][:contact].values
+
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
     submissions = @ontology.explore.submissions
     @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
