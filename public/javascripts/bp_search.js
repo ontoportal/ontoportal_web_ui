@@ -1,3 +1,17 @@
+// History and navigation management
+(function (window, undefined) {
+  // Establish Variables
+  var History = window.History;
+  History.debug.enable = true;
+
+  // Bind to State Change
+  History.Adapter.bind(window, 'statechange', function () {
+    var state = History.getState();
+    console.log("searching");
+    autoSearch();
+  });
+}(window));
+
 jQuery(document).ready(function(){
   // Wire advanced search categories
   jQuery("#search_categories").chosen({search_contains: true});
@@ -52,7 +66,7 @@ jQuery(document).ready(function(){
   // Perform search
   jQuery("#search_button").click(function(event){
     event.preventDefault();
-    performSearch();
+    History.pushState(currentSearchParams(), document.title, "/search?"+objToQueryString(currentSearchParams()));
   });
 
   // Search on enter
@@ -82,33 +96,98 @@ jQuery(document).ready(function(){
     jQuery.facebox({ div: '#biomixer' });
   }));
 
+  autoSearch();
+});
+
+// Automatically perform search based on input parameters
+function autoSearch() {
   // Check for existing parameters/queries and update UI accordingly
-  var params = jQuery.QueryString;
+  var params = BP_queryString();
+
   if ("q" in params || "query" in params) {
     var query = ("q" in params) ? params["q"] : params["query"];
     jQuery("#search_keywords").val(query);
 
-    if (params["exactmatch"] == "true") {
-      jQuery("#search_exact_match").click();
+    if (params["exactmatch"] == "true" || params["exact_match"] == "true") {
+      if (!jQuery("#search_exact_match").is(":checked"))
+        jQuery("#search_exact_match").attr("checked", true);
+    } else {
+      jQuery("#search_exact_match").attr("checked", false);
     }
 
-    if (params["searchproperties"] == "true") {
-      jQuery("#search_include_props").click();
+    if (params["searchproperties"] == "true" || params["include_properties"] == "true") {
+      if (!jQuery("#search_include_properties").is(":checked"))
+        jQuery("#search_include_properties").attr("checked", true);
+    } else {
+      jQuery("#search_include_properties").attr("checked", false);
     }
 
-    if ("ontologyids" in params) {
-      var ontologyIds = params["ontologyids"].split(",");
-      jQuery("#search_select_ontologies").attr("checked", false);
+    if (params["require_definition"] == "true") {
+      if (!jQuery("#search_require_definition").is(":checked"))
+        jQuery("#search_require_definition").attr("checked", true);
+    } else {
+      jQuery("#search_require_definition").attr("checked", false);
+    }
+
+    if (params["include_views"] == "true") {
+      if (!jQuery("#search_include_views").is(":checked"))
+        jQuery("#search_include_views").attr("checked", true);
+    } else {
+      jQuery("#search_include_views").attr("checked", false);
+    }
+
+    if ("ontologyids" in params || "ontologies" in params) {
+      var ontologyIds = params["ontologies"] || params["ontologyids"] || "";
+      ontologyIds = ontologyIds.split(",");
       jQuery("#ontology_ontologyId").val(ontologyIds);
       jQuery("#ontology_ontologyId").trigger("liszt:updated");
-      jQuery("#search_select_ontologies").click().change();
     }
 
-    jQuery("#search_button").click();
-  } else if (jQuery("#search_keywords").val() !== "") {
-    jQuery("#search_button").click();
+    if ("categories" in params) {
+      var categories = params["categories"] || "";
+      categories = categories.split(",");
+      jQuery("#search_categories").val(categories);
+      jQuery("#search_categories").trigger("liszt:updated");
+    }
   }
-});
+
+  // Show/hide on refresh
+  if (advancedOptionsSelected()) {
+    jQuery("#search_options").removeClass("not_visible");
+  }
+
+  if (typeof params.q !== "undefined")
+    performSearch();
+}
+
+function currentSearchParams() {
+  var params = {};
+
+  // Search query
+  params.q = jQuery("#search_keywords").val();
+
+  // Ontologies
+  var ont_val = jQuery("#ontology_ontologyId").val();
+  params.ontologies = (ont_val === null) ? "" : ont_val.join(",");
+
+  // Advanced options
+  params.include_properties = jQuery("#search_include_properties").is(":checked");
+  params.include_views = jQuery("#search_include_views").is(":checked");
+  // var includeObsolete = jQuery("#search_include_obsolete").is(":checked");
+  // var includeNonProduction = jQuery("#search_include_non_production").is(":checked");
+  params.require_definition = jQuery("#search_require_definition").is(":checked");
+  params.exact_match = jQuery("#search_exact_match").is(":checked");
+  params.categories = jQuery("#search_categories").val() || "";
+
+  return params;
+}
+
+function objToQueryString(obj) {
+  var str = [];
+  for(var p in obj)
+     str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+  return str.join("&");
+}
 
 function performSearch() {
   jQuery("#search_spinner").show();
@@ -331,7 +410,7 @@ function advancedOptionsSelected() {
   }
 
   var check = [
-    function(){return jQuery("#search_include_props").is(":checked");},
+    function(){return jQuery("#search_include_properties").is(":checked");},
     function(){return jQuery("#search_include_views").is(":checked");},
     function(){return jQuery("#search_include_non_production").is(":checked");},
     function(){return jQuery("#search_include_obsolete").is(":checked");},
