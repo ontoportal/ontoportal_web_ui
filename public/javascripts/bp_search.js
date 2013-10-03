@@ -105,7 +105,7 @@ function autoSearch() {
   var params = BP_queryString();
 
   if ("q" in params || "query" in params) {
-    var query = ("q" in params) ? params["q"] : params["query"];
+    var query = params["query"] || params["q"];
     jQuery("#search_keywords").val(query);
 
     if (params["exactmatch"] == "true" || params["exact_match"] == "true") {
@@ -156,7 +156,7 @@ function autoSearch() {
     jQuery("#search_options").removeClass("not_visible");
   }
 
-  if (typeof params.q !== "undefined")
+  if (jQuery("#search_keywords").val() !== "")
     performSearch();
 }
 
