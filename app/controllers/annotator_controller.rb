@@ -1,137 +1,78 @@
+
+require 'json'
+require 'cgi'
+
 class AnnotatorController < ApplicationController
   layout 'ontology'
 
-  ANNOTATOR_OPTIONS = {:apikey => $API_KEY, :annotator_location => "http://#{$REST_DOMAIN}/obs"}
+  # REST_URI is defined in application_controller.rb
+  ANNOTATOR_URI = REST_URI + "/annotator"
 
   def index
-    annotator = set_apikey(NCBO::Annotator.new(ANNOTATOR_OPTIONS))
-    ontologies = annotator.ontologies
-    ontology_ids = []
-    ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
-
-    semantic_types = annotator.semantic_types
     @semantic_types_for_select = []
-    semantic_types.each do |semantic_type|
-      @semantic_types_for_select << [ "#{semantic_type[:description]} (#{semantic_type[:semanticType]})", semantic_type[:semanticType]]
+    @semantic_types ||= get_semantic_types
+    @semantic_types.each_pair do |code, label|
+      @semantic_types_for_select << ["#{label} (#{code})", code]
     end
     @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
-
-    @annotator_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
+    # TODO: Duplicate the filteredOntologyList for the LinkedData client?
+    #ontology_ids = []
+    #annotator.ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
+    #@annotator_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
+    #@annotator_ontologies = LinkedData::Client::Models::OntologySubmission.all
+    @annotator_ontologies = LinkedData::Client::Models::Ontology.all
   end
 
+
   def create
-    annotator = set_apikey(NCBO::Annotator.new(ANNOTATOR_OPTIONS))
-    text = params[:text].strip.gsub("\r\n", " ").gsub("\n", " ")
-    options = { :ontologiesToKeepInResult => params[:ontology_ids] ||= [],
-                :withDefaultStopWords => true,
-                :levelMax => params[:levelMax] ||= 0,
-                :semanticTypes => params[:semanticTypes] ||= [],
-                :mappingTypes => params[:mappingTypes] ||= [],
-                :wholeWordOnly => params[:wholeWordOnly] ||= true,
-                :isVirtualOntologyId => true
+    params[:mappings] ||= []
+    params[:max_level] ||= 0
+    params[:ontologies] ||= []
+    params[:semanticTypes] ||= []
+    text_to_annotate = params[:text].strip.gsub("\r\n", " ").gsub("\n", " ")
+    options = { :ontologies => params[:ontologies],
+                :max_level => params[:max_level].to_i,
+                :semanticTypes => params[:semanticTypes],
+                :mappings => params[:mappings],
+                # :wholeWordOnly => params[:wholeWordOnly] ||= true,  # service default is true
+                # :withDefaultStopWords => params[:withDefaultStopWords] ||= true,  # service default is true
     }
-
-    # Add "My BioPortal" ontologies to the ontologies to keep in result parameter
-    OntologyFilter.pre(:annotator, options)
-
-    # Make sure that custom ontologies exist in the annotator ontology set
-    if session[:user_ontologies]
-      annotator_ontologies = Set.new([])
-      annotator.ontologies.each {|ont| annotator_ontologies << ont[:virtualOntologyId]}
-      options[:ontologiesToKeepInResult] = options[:ontologiesToKeepInResult].split(",") if options[:ontologiesToKeepInResult].kind_of?(String)
-      options[:ontologiesToKeepInResult].reject! {|a| !annotator_ontologies.include?(a.to_i)}
-    end
-
     start = Time.now
-    annotations = annotator.annotate(text, options)
-    LOG.add :debug, "Getting annotations: #{Time.now - start}s"
-
-    highlight_cache = {}
-
-    start = Time.now
-    context_ontologies = []
-    bad_annotations = []
-    annotations.annotations.each do |annotation|
-      if highlight_cache.key?([annotation[:context][:from], annotation[:context][:to]])
-        annotation[:context][:highlight] = highlight_cache[[annotation[:context][:from], annotation[:context][:to]]]
-      else
-        annotation[:context][:highlight] = highlight_and_get_context(text, [annotation[:context][:from], annotation[:context][:to]])
-        highlight_cache[[annotation[:context][:from], annotation[:context][:to]]] = annotation[:context][:highlight]
-      end
-
-      # Add ontology information, this isn't added for ontologies that are returned for mappings in cases where the ontology list is filtered
-      context_concept = annotation[:context][:concept] ||= annotation[:context][:mappedConcept] ||= annotation[:concept]
-      begin
-        context_ontologies << DataAccess.getOntology(context_concept[:localOntologyId])
-      rescue Error404
-        # Get the appropriate ontology from the list of ontologies with annotations because the annotation itself doesn't contain the virtual id
-        ont = annotations.ontologies.each {|ont| break ont if ont[:localOntologyId] == context_concept[:localOntologyId]}
-        # Retry with the virtual id
-        begin
-          context_ontologies << DataAccess.getOntology(ont[:virtualOntologyId])
-        rescue Error404
-          # If it failed with virtual id, mark the annotation as bad
-          bad_annotations << annotation
-        end
-      end
-    end
-
-    # Remove bad annotations
-    bad_annotations.each do |annotation|
-      annotations.annotations.delete(annotation)
-    end
-
-    annotations.statistics[:parameters] = { :textToAnnotate => text, :apikey => $API_KEY }.merge(options)
-    LOG.add :debug, "Processing annotations: #{Time.now - start}s"
-
-    # Combine all ontologies (context and normal) into a hash
-    ontologies_hash = {}
-    annotations.ontologies.each do |ont|
-      ontologies_hash[ont[:localOntologyId]] = ont
-    end
-
-    context_ontologies.each do |ont|
-      next if ont.nil?
-      if ontologies_hash[ont.id].nil?
-        ontologies_hash[ont.id] = {
-          :name => ont.displayLabel,
-          :localOntologyId   => ont.id,
-          :virtualOntologyId => ont.ontologyId
-        }
-      end
-    end
-
-    annotations.ontologies = ontologies_hash
-
+    query = ANNOTATOR_URI
+    query += "?text=" + CGI.escape(text_to_annotate)
+    query += "&max_level=" + options[:max_level].to_s
+    query += "&ontologies=" + CGI.escape(options[:ontologies].join(',')) unless options[:ontologies].empty?
+    query += "&semanticTypes=" + options[:semanticTypes].join(',') unless options[:semanticTypes].empty?
+    query += "&mappings=" + options[:mappings].join(',') unless options[:mappings].empty?
+    #query += "&wholeWordOnly=" + options[:wholeWordOnly].to_s unless options[:wholeWordOnly].empty?
+    #query += "&withDefaultStopWords=" + options[:withDefaultStopWords].to_s unless options[:withDefaultStopWords].empty?
+    annotations = parse_json(query) # See application_controller.rb
+    #annotations = LinkedData::Client::HTTP.get(query)
+    LOG.add :debug, "Retrieved #{annotations.length} annotations: #{Time.now - start}s"
+    massage_annotated_classes(annotations, options) unless annotations.empty?
     render :json => annotations
   end
 
+
 private
 
+
+  # TODO: Use this method to highlight matched classes in the annotation text.  Currently done in JS on the client.
   def highlight_and_get_context(text, position, words_to_keep = 4)
     # Process the highlighted text
     highlight = ["<span style='color: #006600; padding: 2px 0; font-weight: bold;'>", "", "</span>"]
     highlight[1] = text.utf8_slice(position[0] - 1, position[1] - position[0] + 1)
-
     # Use scan to split the text on spaces while keeping the spaces
     scan_filter = Regexp.new(/[ ]+?[-\?'"\+\.,]+\w+|[ ]+?[-\?'"\+\.,]+\w+[-\?'"\+\.,]|\w+[-\?'"\+\.,]+|[ ]+?\w+/)
     before = text.utf8_slice(0, position[0] - 1).match(/(\s+\S+|\S+\s+){0,4}$/).to_s
     after = text.utf8_slice(position[1], ActiveSupport::Multibyte::Chars.new(text).length - position[1]).match(/^(\S+\s+\S+|\s+\S+|\S+\s+){0,4}/).to_s
-
     # The process above will not keep a space right before the highlighted word, so let's keep it here if needed
     # 32 is the character code for space
     kept_space = text.utf8_slice(position[0] - 2) == " " ? " " : ""
-
     # Put it all together
     [before, kept_space, highlight.join, after].join
   end
 
-  def set_apikey(annotator)
-    if session[:user]
-      annotator.options[:apikey] = session[:user].apikey
-    else
-      annotator.options[:apikey] = $API_KEY
-    end
-    annotator
-  end
+
 end
+

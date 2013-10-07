@@ -22,32 +22,21 @@ config.autoload_paths << "#{config.root_path}/lib"
 # Show log when using different rack servers
 config.middleware.use Rails::Rack::LogTailer
 
-memcache_options = {
-  :c_threshold => 10_000,
-  :compression => true,
-  :debug => true,
-  :namespace => 'BioPortal',
-  :readonly => false,
-  :urlencode => false,
-  :check_size => false
-}
+# memcache setup
+# config.cache_store = :memory_store
+config.cache_store = :mem_cache_store, 'localhost', { :namespace => 'BioPortal' }
 
-require 'memcache'
-CACHE = MemCache.new memcache_options
-CACHE.servers = 'localhost:11211'
-
-FALLBACK_CACHE = {}
-
-ActionController::Base.session_options[:cache] = CACHE
-# end memcache setup
-
-if defined?(PhusionPassenger)
-  PhusionPassenger.on_event(:starting_worker_process) do |forked|
-    if forked # We're in smart spawning mode, se we need to reset connections to stuff when forked
-      CACHE.reset # reset memcache connection
-    else # We're in conservative spawning mode. We don't need to do anything.
-    end
-  end
+begin
+   PhusionPassenger.on_event(:starting_worker_process) do |forked|
+     if forked
+       # We're in smart spawning mode, so...
+       # Close duplicated memcached connections - they will open themselves
+      cache = Rails.cache.instance_variable_get("@data")
+      cache.reset if cache && cache.respond_to?(:reset)
+     end
+   end
+rescue NameError
+  # In case you're not running under Passenger (i.e. devmode with mongrel)
 end
 
 # Don't allow downloaded files to be created as tempfiles. Force storage in memory using StringIO.

@@ -19,213 +19,133 @@ class ConceptsController < ApplicationController
     end
 
     if params[:callback].eql?('children') && params[:child_size].to_i > $MAX_CHILDREN && params[:child_size].to_i < $MAX_POSSIBLE_DISPLAY && !too_many_children_override
-      retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{params[:ontology]}/?conceptid=#{CGI.escape(params[:id])}&callback=children&too_many_children_override=true'>Get all terms</a>"
-      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} terms at this level. Retrieving these may take several minutes. #{retry_link}</div>"
+      retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{params[:ontology]}/?conceptid=#{CGI.escape(params[:id])}&callback=children&too_many_children_override=true'>Get all classes</a>"
+      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} classes at this level. Retrieving these may take several minutes. #{retry_link}</div>"
       return
     elsif params[:callback].eql?('children') && params[:child_size].to_i > $MAX_POSSIBLE_DISPLAY && !too_many_children_override
-      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} terms at this level. Please use the \"Jump To\" to search for specific terms.</div>"
+      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} classes at this level. Please use the \"Jump To\" to search for specific classes.</div>"
       return
     end
+    # Note that find_by_acronym includes views by default
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    # Get the latest 'ready' submission, or fallback to any latest submission
+    # TODO: change the logic here if the fallback will crash the visualization
+    @submission = get_ontology_submission_ready(@ontology)  # application_controller
 
-    @ontology = DataAccess.getOntology(params[:ontology])
+    # TODO_REV: Support moving from archived to latest version
+    # if @ontology.explore.latest_submission.submissionStatus == 6
+    #   @latest_ontology = DataAccess.getLatestOntology(@ontology.ontologyId)
+    #   params[:ontology] = @latest_ontology.id
+    #   flash[:notice] = "The version of <b>#{@ontology.displayLabel}</b> you were attempting to view (#{@ontology.versionNumber}) has been archived and is no longer available for exploring. You have been redirected to the most recent version (#{@latest_ontology.versionNumber})."
+    #   concept_id = params[:id] ? "?conceptid=#{params[:id]}" : ""
+    #   redirect_to "/visualize/#{@latest_ontology.id}#{concept_id}", :status => :moved_permanently
+    #   return
+    # end
 
-    if @ontology.statusId.to_i.eql?(6)
-      @latest_ontology = DataAccess.getLatestOntology(@ontology.ontologyId)
-      params[:ontology] = @latest_ontology.id
-      flash[:notice] = "The version of <b>#{@ontology.displayLabel}</b> you were attempting to view (#{@ontology.versionNumber}) has been archived and is no longer available for exploring. You have been redirected to the most recent version (#{@latest_ontology.versionNumber})."
-      concept_id = params[:id] ? "?conceptid=#{params[:id]}" : ""
-      redirect_to "/visualize/#{@latest_ontology.id}#{concept_id}", :status => :moved_permanently
-      return
-    end
+    @concept = @ontology.explore.single_class({full: true}, params[:id])
+    raise Error404 if @concept.nil?
 
-    # If we're looking for children, just use the light version of the call
-    if params[:callback].eql?("children")
-      if too_many_children_override
-        @concept = DataAccess.getNode(@ontology.id, params[:id], 99999999999)
-      else
-        @concept = DataAccess.getNode(@ontology.id, params[:id])
-      end
-    else
-      @concept = DataAccess.getNode(@ontology.id, params[:id])
-    end
-
-    if @concept.nil?
-      raise Error404
-    end
-
-    # This handles special cases where a passed concept id is for a concept
-    # that isn't browsable, usually a property for an ontology.
-    if !@concept.is_browsable
-      render :partial => "shared/not_browsable", :layout => "ontology"
-      return
-    end
+    # TODO: convert 'disjointWith' parameters into classes
+    # TODO: compare with concepts_helper::concept_properties2hash(properties)
+    #binding.pry
+    ## Try to resolve 'disjointWith' parameters into classes
+    #@concept_properties = struct_to_hash(@concept.properties)
+    #disjoint_key = @concept_properties.keys.map {|k| k if k.to_s.include? 'disjoint' }.compact.first
+    #if not disjoint_key.nil?
+    #  disjoint_val = @concept_properties[disjoint_key]
+    #  if disjoint_val.instance_of? Array
+    #    # Assume we have a list of class URIs that can be resolved by the batch service
+    #    classes = disjoint_val.map {|cls| {:class => cls, :ontology => @ontology.id } }
+    #  end
+    #end
 
     if request.xhr?
       show_ajax_request # process an ajax call
     else
-      # We only want to log concept loading, not showing a list of child concepts
-      LOG.add :info, 'visualize_concept_direct', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id if @concept && @ontology
-
       show_uri_request # process a full call
-      render :file=> '/ontologies/visualize',:use_full_path =>true, :layout=>'ontology' # done this way to share a view
+      render :file => '/ontologies/visualize', :use_full_path => true, :layout => 'ontology'
     end
   end
 
   def show_label
-    @ontology = DataAccess.getOntology(params[:ontology])
-    begin
-      term_label = DataAccess.getNodeLabel(@ontology.id, params[:concept]).label_html
-    rescue Exception => e
-      term_label = "<span title='This term cannot be viewed because the id cannot be found in the most recent version of the ontology' style='cursor: help;'>#{params[:concept]}</span>"
+    cls_id = params[:concept]   # cls_id should be a full URI
+    ont_id = params[:ontology]  # ont_id could be a full URI or an acronym
+
+    if ont_id.to_i > 0
+      params_cleanup_new_api()
+      stop_words = ["controller", "action"]
+      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
+      return
     end
-    render :text => term_label
+
+    @ontology = LinkedData::Client::Models::Ontology.find(ont_id)
+    @ontology ||= LinkedData::Client::Models::Ontology.find_by_acronym(ont_id).first
+    raise Error404 unless @ontology
+    # Retrieve a class prefLabel or return the class ID (URI)
+    # - mappings may contain class URIs that are not in bioportal (e.g. obo-xrefs)
+    cls_label = @ontology.explore.single_class(cls_id).prefLabel
+    cls_label ||= cls_id
+    render :text => cls_label
   end
 
   def show_definition
-    @ontology = DataAccess.getOntology(params[:ontology])
-    term = DataAccess.getLightNode(@ontology.id, params[:concept])
-    render :text => term.definitions
+    if params[:ontology].to_i > 0
+      params_cleanup_new_api()
+      stop_words = ["controller", "action"]
+      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
+      return
+    end
+
+    @ontology = LinkedData::Client::Models::Ontology.find(params[:ontology])
+    cls = @ontology.explore.single_class(params[:concept])
+    render :text => cls.definition
   end
 
   def show_tree
-    view = false
-    if params[:view]
-      view = true
+    if params[:ontology].to_i > 0
+      params_cleanup_new_api()
+      stop_words = ["controller", "action"]
+      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
+      return
     end
 
-    # Set the ontology we are viewing
-    if view
-      @ontology = DataAccess.getView(params[:ontology])
-    else
-      @ontology = DataAccess.getOntology(params[:ontology])
-    end
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    raise Error404 if @ontology.nil?
 
-    if !@ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root"))
-      # get the top level nodes for the root
-      @root = TreeNode.new()
-      nodes = @ontology.top_level_nodes(view)
-      nodes.sort!{|x,y| x.label.downcase<=>y.label.downcase}
-      for node in nodes
-        if node.label.downcase.include?("obsolete") || node.label.downcase.include?("deprecated")
-          nodes.delete(node)
-          nodes.push(node)
-        end
-      end
-
-      @root.set_children(nodes, @root)
-
-      # get the initial concepts to display
-      @concept = DataAccess.getNode(@ontology.id, @root.children.first.id, nil, view)
-
-      # Some ontologies have "too many children" at their root. These will not process and are handled here.
-      if @concept.nil?
-        raise Error404
-      end
-
-      LOG.add :info, 'visualize_ontology', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
-    elsif @ontology.flat? && (!params[:conceptid] || params[:conceptid].empty?)
-      # Don't display any terms in the tree
-      @concept = NodeWrapper.new
-      @concept.label = "Please search for a term using the Jump To field above"
-      @concept.id = "bp_fake_root"
-      @concept.fullId = "bp_fake_root"
-      @concept.child_size = 0
-      @concept.properties = {}
-      @concept.version_id = @ontology.id
-      @concept.children = []
-
-      @tree_concept = TreeNode.new(@concept)
-
-      @root = TreeNode.new
-      @root.children = [@tree_concept]
-    elsif @ontology.flat? && params[:conceptid]
-      # Display only the requested term in the tree
-      @concept = DataAccess.getNode(@ontology.id, params[:conceptid], nil, view)
-      @concept.children = []
-      @concept.child_size = 0
-      @root = TreeNode.new
-      @root.children = [TreeNode.new(@concept)]
-    else
-      # if the id is coming from a param, use that to get concept
-      @concept = DataAccess.getNode(@ontology.id,params[:conceptid],view)
-
-      raise Error404 if @concept.nil?
-
-      # Did we come from the Jump To widget, if so change logging
-      if params[:jump_to_nav]
-        LOG.add :info, 'jump_to_nav', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
-      else
-        LOG.add :info, 'visualize_concept_direct', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
-      end
-
-      # This handles special cases where a passed concept id is for a concept
-      # that isn't browsable, usually a property for an ontology.
-      if !@concept.is_browsable
-        render :partial => "shared/not_browsable", :layout => "ontology"
-        return
-      end
-
-      # Create the tree
-      rootNode = @concept.path_to_root
-      raise Error404 if rootNode.nil?
-
-      @root = TreeNode.new()
-      @root.set_children(rootNode.children, rootNode)
-    end
+    get_class(params)
 
     render :partial => "ontologies/treeview"
   end
 
   def virtual
-    # Hack to make ontologyid and conceptid work in addition to id and ontology params
-    params[:id] = params[:id].nil? ? params[:conceptid] : params[:id]
-    params[:ontology] = params[:ontology].nil? ? params[:ontologyid] : params[:ontology]
-
-    if !params[:id].nil? && params[:id].empty?
-      params[:id] = nil
-    end
-
-    @ontology = DataAccess.getLatestOntology(params[:ontology])
-    @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
-    unless params[:id].nil? || params[:id].empty?
-      @concept = DataAccess.getNode(@ontology.id,params[:id])
-    end
-
-    if @ontology.metadata_only?
-      redirect_to "/ontologies/#{@ontology.id}"
-      return
-    end
-
-    if @ontology.statusId.to_i.eql?(3) && @concept
-      LOG.add :info, 'show_virtual_concept', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
-      redirect_to "/visualize/#{@ontology.id}/?conceptid=#{CGI.escape(@concept.id)}"
-      return
-    elsif @ontology.statusId.to_i.eql?(3)
-      LOG.add :info, 'show_virtual', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
-      redirect_to "/visualize/#{@ontology.id}"
-      return
-    else
-      for version in @versions
-        if version.statusId.to_i.eql?(3) && @concept
-          LOG.add :info, 'show_virtual_concept', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id
-          redirect_to "/visualize/#{version.id}/?conceptid=#{CGI.escape(@concept.id)}"
-          return
-        elsif version.statusId.to_i.eql?(3)
-          LOG.add :info, 'show_virtual', request, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel
-          redirect_to "/visualize/#{version.id}"
-          return
-        end
+    if params[:ontology].to_i > 0
+      acronym = BPIDResolver.id_to_acronym(params[:ontology])
+      if acronym
+        redirect_new_api(true)
+        return
       end
-      redirect_to "/ontologies/#{@ontology.id}"
-      return
+    else
+      redirect_to "/ontologies/#{params[:ontology]}?p=classes&#{params_string_for_redirect(params, prefix: "")}", :status => :moved_permanently
     end
   end
 
-  # Renders a details pane for a given ontology/term
+  # Renders a details pane for a given ontology/concept
   def details
     raise Error404 if params[:conceptid].nil? || params[:conceptid].empty?
-    @ontology = DataAccess.getOntology(params[:ontology])
-    @concept = DataAccess.getNode(@ontology.id, params[:conceptid], params[:childrenlimit])
+
+    if params[:ontology].to_i > 0
+      orig_id = params[:ontology]
+      params_cleanup_new_api()
+      options = {stop_words: ["controller", "action", "id"]}
+      redirect_to "#{request.path.sub(orig_id, params[:ontology])}#{params_string_for_redirect(params, options)}", :status => :moved_permanently
+      return
+    end
+
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    raise Error404 if @ontology.nil?
+
+    @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+    raise Error404 if @concept.nil?
 
     if params[:styled].eql?("true")
       render :partial => "details", :layout => "partial"
@@ -238,111 +158,54 @@ class ConceptsController < ApplicationController
     render :partial => "flexviz", :layout => "partial"
   end
 
-  def exhibit
-    time = Time.now
-    #puts "Starting Retrieval"
-    @concept =  DataAccess.getNode(params[:ontology],params[:id])
-    #puts "Finished in #{Time.now- time}"
+  def biomixer
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    raise Error404 if @ontology.nil?
 
-    string =""
-    string << "{
-           \"items\" : [\n
-       	{ \n
-       \"title\": \"#{@concept.label_html}\" , \n
-       \"label\": \"#{@concept.id}\" \n"
-    for property in @concept.properties.keys
-      if @concept.properties[property].empty?
-        next
-      end
+    @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+    raise Error404 if @concept.nil?
 
-      string << " , "
+    @immediate_load = true
 
-      string << "\"#{property.gsub(":","")}\" : \"#{@concept.properties[property]}\"\n"
-
-    end
-
-    if @concept.children.length > 0
-      string << "} , \n"
-    else
-      string << "}"
-    end
-
-
-    for child in @concept.children
-      string << "{
-         \"title\" : \"#{child.label_html}\" , \n
-         \"label\": \"#{child.id}\"  \n"
-      for property in child.properties.keys
-        if child.properties[property].empty?
-          next
-        end
-
-        string << " , "
-
-        string << "\"#{property.gsub(":","")}\" : \"#{child.properties[property]}\"\n"
-      end
-      if child.eql?(@concept.children.last)
-        string << "}"
-      else
-        string << "} , "
-      end
-    end
-
-    response.headers['Content-Type'] = "text/html"
-
-    string<< "]}"
-
-    render :text=> string
+    render partial: "biomixer", layout: false
   end
 
-
-
-  # PRIVATE -----------------------------------------
-  private
+# PRIVATE -----------------------------------------
+private
 
   def show_ajax_request
     case params[:callback]
     when 'load' # Load pulls in all the details of a node
-      time = Time.now
       gather_details
-      LOG.add :debug, "Processed concept details (#{Time.now - time})"
-
-      # We only want to log concept loading, not showing a list of child concepts
-      LOG.add :info, 'visualize_concept_browse', request, :ontology_id => @ontology.id, :virtual_id => @ontology.ontologyId, :ontology_name => @ontology.displayLabel, :concept_name => @concept.label, :concept_id => @concept.id if @concept && @ontology
-
       render :partial => 'load'
     when 'children' # Children is called only for drawing the tree
-      @children =[]
-      start_tree = Time.now
-      for child in @concept.children
-        @children << TreeNode.new(child, @concept)
-        @children.sort!{|x,y| x.label.downcase<=>y.label.downcase} unless @children.empty?
-      end
-      LOG.add :debug,  "Get children (#{Time.now - start_tree})"
-      render :partial => 'childNodes'
+      @children = @concept.explore.children(full: true).collection || []
+      @children.sort!{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase} unless @children.empty?
+      render :partial => 'child_nodes'
     end
   end
 
-    # gathers the full set of data for a node
-    def show_uri_request
-      gather_details
-      build_tree
-    end
+  # gathers the full set of data for a node
+  def show_uri_request
+    gather_details
+    build_tree
+  end
 
-    # gathers the information for a node
-    def gather_details
-      @mappings = DataAccess.getConceptMappings(@concept.ontology.ontologyId, @concept.id)
-      # check to see if user should get the option to delete
-      @delete_mapping_permission = check_delete_mapping_permission(@mappings)
-      update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
-    end
+  # gathers the information for a node
+  def gather_details
+    @mappings = @concept.explore.mappings
+    # TODO_REV: Support deleting mappings
+    # check to see if user should get the option to delete
+    # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
+    update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
+  end
 
-    def build_tree
-      # find path to root
-      rootNode = @concept.path_to_root
-      @root = TreeNode.new()
-      @root.set_children(rootNode.children, rootNode) unless rootNode.nil?
-    end
+  def build_tree
+    # find path to root
+    rootNode = @concept.explore.tree(include: "prefLabel,childrenCount")
+    @root = LinkedData::Client::Models::Class.new(read_only: true)
+    @root.children = rootNode unless rootNode.nil?
+  end
 
 
 end

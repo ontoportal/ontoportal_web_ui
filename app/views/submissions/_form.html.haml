@@ -1,0 +1,270 @@
+- button_text ||= "Add submission"
+- title_text ||= "Add New Submission"
+
+:javascript
+  jQuery(function(){
+    jQuery("#datepicker").datepicker({
+      showOn: 'button',
+      buttonImage: '/images/calendar.gif',
+      buttonImageOnly: true,
+      dateFormat: 'yy-mm-dd'
+    });
+  });
+
+  // Show/hide location inputs
+  function location_toggle(input_div) {
+    jQuery('.hidden_field').hide();
+    jQuery('.hidden_field input').attr("disabled", true);
+    jQuery('#' + input_div + " input").removeAttr("disabled");
+    jQuery('#' + input_div).show();
+  }
+
+  jQuery(document).ready(function(){
+    // Properly display the information for 'File Location' based on radio button
+    if (jQuery("#submission_isRemote_0").is(":checked")) {
+      location_toggle("upload");
+    }
+
+    if (jQuery("#submission_isRemote_1").is(":checked")) {
+      location_toggle("remote");
+    }
+
+    // Select default 'File Location' radio button
+    if (!jQuery("#submission_isRemote_0").is(":checked") && !jQuery("#submission_isRemote_1").is(":checked") && !jQuery("#submission_isRemote_2").is(":checked")) {
+      jQuery("#submission_isRemote_0").attr("checked", "checked")
+    }
+
+  });
+
+  // Handles showing/hiding options for a particular ontology format
+  jQuery(document).ready(function(){
+    jQuery("#submission_hasOntologyLanguage").change(ontologyFormatChange);
+
+    // Check to see if owl is selected, show options if so
+    ontologyFormatChange()
+  });
+
+  function ontologyFormatChange(format){
+    var selected = jQuery("#submission_hasOntologyLanguage option:selected");
+
+    switch(selected.val()){
+      case 'OWL':
+      case 'OWL-DL':
+      case 'OWL-FULL':
+      case 'OWL-LITE':
+      case 'PROTEGE':
+        jQuery(".format_options").optionsOut("fast");
+        jQuery("#owl_options").optionsIn("fast");
+        break;
+      case 'RRF':
+        jQuery(".format_options").optionsOut("fast");
+        jQuery("#rrf_options").optionsIn("fast");
+        break;
+      default:
+        jQuery(".format_options").optionsOut("fast");
+    }
+  }
+
+  jQuery.fn.optionsIn = function(speed, easing, callback){
+    jQuery("#format_spacing").css("margin", "1em 0");
+    this.fadeIn(speed);
+  };
+
+  jQuery.fn.optionsOut = function(speed, easing, callback){
+    this.css("display", "none");
+    jQuery("#format_spacing").css("margin", "0");
+  };
+
+  function addContact() {
+    var contact = jQuery(jQuery("#contacts").children(".contact")[0]);
+    var newContact = jQuery(jQuery("<div>").html(contact.html()).addClass("contact"));
+    newContact.children("input").each(function(){
+      var index =  jQuery("#contacts").children(".contact").length;
+      var newId = jQuery(this).attr("id").replace(/0/g, index);
+      var newName = jQuery(this).attr("name").replace(/0/g, index);
+      jQuery(this).attr("id", newId).attr("name", newName).attr("value", "")
+    })
+    jQuery("#contacts").append(newContact);
+  }
+
+
+- unless @errors.nil?
+  .enable-lists{:style => "color:red;"}
+    %strong Errors On Form
+    %ul
+      - for error in @errors
+        %li
+          = error
+%div{:style => "width:500px"}
+  %span.asterik{:style => "float:right;"} * fields are required
+  %h1 #{title_text}
+  = hidden_field :submission, :ontology, value: @ontology.id
+  %table#new_ontology.form{style: "min-width: 800px;"}
+    %tr
+      %th
+        Description
+        %span.asterik *
+      %td
+        = text_area :submission, :description, rows: 5, value: @submission.description
+
+    %tr
+      %th
+        Format
+        %span.asterik *
+      %td
+        - ont_formats = [ "OBO", "OWL", "OWL-DL", "OWL-FULL", "OWL-LITE" ]
+        - selected = @submission.hasOntologyLanguage ? @submission.hasOntologyLanguage : "OWL"
+        = select("submission", "hasOntologyLanguage", ont_formats, { :selected => selected, :style => "width: 200px;" })
+        #format_spacing
+        %table#format_specific_options
+          %tbody#owl_options.format_options
+            %tr
+              %th
+                Prefered Name Property
+                %br/
+                %span.default_owl
+                  default:
+                  %a{:href => "http://www.w3.org/2004/02/skos/core#prefLabel", :target => "_blank"} http://www.w3.org/2004/02/skos/core#prefLabel
+              %td
+                = text_field :submission, :prefLabelProperty, :placeholder => 'use default', value: @submission.prefLabelProperty
+            %tr
+              %th
+                Synonym Property
+                %br/
+                %span.default_owl
+                  default:
+                  %a{:href => "http://www.w3.org/2004/02/skos/core#altLabel", :target => "_blank"} http://www.w3.org/2004/02/skos/core#altLabel
+              %td
+                = text_field :submission, :synonymProperty, :placeholder => 'use default', value: @submission.synonymProperty
+            %tr
+              %th
+                Definition Property
+                %br/
+                %span.default_owl
+                  default:
+                  %a{:href => "http://www.w3.org/2004/02/skos/core#definition", :target => "_blank"} http://www.w3.org/2004/02/skos/core#definition
+              %td
+                = text_field :submission, :definitionProperty, :placeholder => 'use default', value: @submission.definitionProperty
+            %tr
+              %th
+                Author Property
+                %br/
+                %span.default_owl
+                  default:
+                  %a{:href => "http://purl.org/dc/elements/1.1/creator", :target => "_blank"} http://purl.org/dc/elements/1.1/creator
+              %td
+                = text_field :submission, :authorProperty, :placeholder => 'use default', value: @submission.authorProperty
+            %tr{:style => "border-left: none;"}
+              %td{:colspan => "2", :style => "border-left: none; border-right: none; padding: 1.5em 0 .5em;"}
+                %b Determining Obsolete Classes
+                You can use the following two methods to identify obsolete classes in your ontology:
+                %br/
+                1. Designate a root ID for an obsolete branch.
+                %br/
+                2. Identify a property id that indicates obsolete status. The value must be set to "true".
+            %tr
+              %th
+                1. Root of obsolete branch (root is not obsolete)
+              %td
+                = text_field :submission, :obsoleteParent, value: @submission.obsoleteParent
+            %tr
+              %th
+                2. Property to check for obsolete status
+              %td
+                = text_field :submission, :obsoleteProperty, value: @submission.obsoleteProperty
+    %tr
+      %th
+        Version
+      %td
+        = text_field :submission, :version, value: @submission.version
+    %tr
+      %th
+        Status
+        %span.asterik *
+      %td
+        - selected_status = @submission.status ? @submission.status : "alpha"
+        - status_options = ["alpha", "beta", "production", "retired"]
+        = select :submission, :status, status_options, { :selected => selected_status }
+    %tr
+      %th
+        Release Date
+        %span.asterik *
+      %td
+        = text_field :submission, :released, :id => "datepicker", value: @submission.released, placeholder: "Date format: #{Date.today.to_s}"
+        %span{:style => "font-size: 90%; color: grey;"}
+    %tr
+      %th
+        Location
+        %span.asterik *
+      %td#location_options
+        - checked = @submission.pullLocation && @ontology.summaryOnly
+        = radio_button :submission, :isRemote, 0, :onclick=>"location_toggle('upload');", checked: checked
+        Upload Local File
+        %br/
+        %span{:style => "font-size:11px;"} (choose a file on your local file system to upload)
+        - display = "display:none;" unless checked
+        %div.hidden_field#upload{style: display}
+          #{f.file_field :filePath}
+        %hr/
+
+        - checked = @submission.pullLocation && !@submission.pullLocation.empty?
+        = radio_button :submission, :isRemote, 1, :onclick=>"location_toggle('remote');", checked: checked
+        Load from URL
+        %br/
+        %span{:style => "font-size:11px;"} (new versions loaded daily)
+        - display = "display:none;" unless checked
+        %div.hidden_field#remote{style: display}
+          URL: #{text_field :submission, :pullLocation, :size => 100, value: @submission.pullLocation}
+        %hr/
+
+        - checked = @ontology.summaryOnly
+        = radio_button :submission, :isRemote, 3, :onclick=>"$('.hidden_field').hide();"
+        Metadata Only
+        %br/
+        %span{:style => "font-size:11px;"}
+          (choose this option if you want users to search and view only the
+          %em metadata
+          for your ontology, but not its classes and properties)
+
+    %tr
+      %th
+        Contact
+        %span.asterik *
+      %td
+        %div#contacts
+          %div#contact_button{style: "float: right; margin-top -1em;"}
+            = button_to_function("Add contact", "addContact()")
+          - if @submission.contact
+            - @submission.contact.each_with_index do |contact, i|
+              %div.contact
+                Name:&nbsp;
+                = text_field :submission, :"contact[#{i}][name]", value: contact.name
+                &nbsp;&nbsp;&nbsp;
+                Email:&nbsp;
+                = text_field :submission, :"contact[#{i}][email]", value: contact.email
+          - else
+            %div.contact
+              Name:&nbsp;
+              = text_field :submission, :"contact[0][name]"
+              &nbsp;&nbsp;&nbsp;
+              Email:&nbsp;
+              = text_field :submission, :"contact[0][email]"
+
+    %tr
+      %th
+        Home Page
+      %td
+        = text_field :submission, :homepage, value: @submission.homepage
+    %tr
+      %th
+        Documentation Page
+      %td
+        = text_field :submission, :documentation, value: @submission.documentation
+    %tr
+      %th
+        Publications Page
+      %td
+        = text_field :submission, :publication, value: @submission.publication
+    %tr
+      %td{:align => "right", :colspan => "2"}
+        = submit_tag button_text

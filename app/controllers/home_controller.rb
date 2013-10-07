@@ -1,151 +1,63 @@
 class HomeController < ApplicationController
-  require "OntrezService"
-
-
   layout 'ontology'
 
-  RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "http://#{$REST_DOMAIN}/resource_index/", :limit => 10, :mode => :intersection}
+  #RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "#{$REST_URL}/resource_index/", :limit => 10, :mode => :intersection}
+
+  NOTES_RECENT_MAX = 5
 
   def index
-    @ontologies = DataAccess.getOntologyList() # -- Gets list of ontologies
-    @groups = DataAccess.getGroups()
-
-    active_onts_by_notes_query = "select ontology_id,count(ontology_id) as note_count from notes_indices as note group by ontology_id order by note_count desc"
-    @active_totals = ActiveRecord::Base.connection.select_rows(active_onts_by_notes_query);
-
-    active_onts_by_maps_query = "select source_ont,count(source_ont) as map_count from mappings group by source_ont order by map_count desc"
-    active_maps = ActiveRecord::Base.connection.select_rows(active_onts_by_maps_query);
-
-    for total in @active_totals
-      total[3]=0
-      total[2]=0
-      if total[0].nil?
-        next
-      end
-      for map in active_maps
-        if map[0].to_i.eql?(total[0].to_i)
-          total[2]=map[1].to_i
-          total[3]=map[1].to_i+total[1].to_i
-          active_maps.delete(map)
-        end
-      end
-    end
-
-    # ontologies with mappings but no notes
-    for map in active_maps
-      map[2]= map[1].to_i
-      map[3]= map[1].to_i
-      map[1]=0
-      @active_totals << map
-    end
-
-    # ontologies with notes but no mappings
-    for total in @active_totals
-      if total[3].nil? || total[3].eql?(0)
-        total[2]=0
-        total[3]=total[1]
-      end
-    end
-
+    @ontologies = LinkedData::Client::Models::Ontology.all
+    @groups = LinkedData::Client::Models::Group.all
+    # TODO: Handle custom ontology sets
     # Show only notes from custom ontology set
-    user_ontologies = session[:user_ontologies] ? session[:user_ontologies][:virtual_ids].to_a : []
-    conditions = user_ontologies.empty? ? [] : ["ontology_id in (?)", user_ontologies]
-
+    @notes = LinkedData::Client::Models::Note.all
+    @last_notes = []
+    @notes.sort! {|a,b| b.created <=> a.created }
+    @notes[0..20].each do |n|
+      ont_uri = n.relatedOntology.first
+      ont = LinkedData::Client::Models::Ontology.find(ont_uri)
+      next if ont.nil?
+      username = n.creator.split("/").last
+      note = {
+          :uri => n.links['ui'],
+          :id => n.id,
+          :subject => n.subject,
+          :body => n.body,
+          :created => n.created,
+          :author => username,
+          :ont_name => ont.name
+      }
+      @last_notes.push note
+      break if @last_notes.length >= NOTES_RECENT_MAX  # 5
+    end
+    # Get the latest manual mappings
+    # All mapping classes are bidirectional.
+    # Each class in the list maps to all other classes in the list.
+    @recent_mappings = get_recent_mappings  # application_controller
+    # TODO_REV: Handle private ontologies
     # Hide notes from private ontologies
-    restricted_ontologies = DataAccess.getRestrictedOntologyList
-    restricted_for_query = []
-    restricted_ontologies.each do |ont|
-      restricted_for_query << ont.ontologyId.to_i unless session[:user] && session[:user].has_access?(ont)
+    # restricted_ontologies = DataAccess.getRestrictedOntologyList
+    # restricted_for_query = []
+    # restricted_ontologies.each do |ont|
+    #   restricted_for_query << ont.ontologyId.to_i unless session[:user] && session[:user].has_access?(ont)
+    # end
+    #
+    # calculate bioportal summary statistics
+    @ont_count = @ontologies.length
+    @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes}.sum
+    begin
+      @resources = get_resource_index_resources # application_controller
+      @ri_resources = @resources.length
+      @ri_record_count = @resources.map {|r| r.totalElements}.sum
+    rescue
+      @resources = []
+      @ri_resources = 0
+      @ri_record_count = 0
     end
-
-    # Get a list of all ontology ids
-    all_ontology_ids = []
-    @ontologies.each do |ont|
-      all_ontology_ids << ont.ontologyId.to_i
-    end
-
-    # Subtract the restricted onts from the non-restricted list
-    okay_ontologies = all_ontology_ids - restricted_for_query
-
-    restricted_condition = "ontology_id in (?)"
-    if conditions.empty?
-      conditions = [restricted_condition, okay_ontologies]
-    else
-      conditions[0] << " AND " + restricted_condition
-      conditions.push(okay_ontologies)
-    end
-
-    @active_totals = @active_totals.sort{|x,y| y[3].to_i<=>x[3].to_i}
-    @active_totals = @active_totals[0,5]
-
-    @categories = DataAccess.getCategories()
-    @last_notes = NotesIndex.find(:all, :order => 'created desc', :limit => 5, :conditions => conditions)
-    @last_mappings = DataAccess.getRecentMappings
-
-    #build hash for quick grabbing
-    @ontology_hash = {}
-    for ont in @ontologies
-      @ontology_hash[ont.ontologyId]=ont
-    end
-
-    @sorted_ontologies={}
-    @sorted_ontologies["0"]=[]
-
-    for cat in @categories.keys
-      @sorted_ontologies[cat]=[]
-    end
-
-    for ontology in @ontologies
-      unless ontology.categories.nil?
-        for cat in ontology.categories
-          @sorted_ontologies[cat] << ontology
-        end
-      end
-
-      if ontology.categories.nil? || ontology.categories.empty?
-        @sorted_ontologies["0"] << ontology
-      end
-    end
-
-    @category_tree = @categories.clone
-
-    for value in @category_tree.values
-      value[:children]=[]
-    end
-
-    for category in @categories.values
-      if !category[:parentId].nil? && !category[:parentId].eql?("")
-        @category_tree[category[:parentId]][:children]<<category
-      end
-    end
-
-    for value in @categories.values
-      if !value[:parentId].nil? && !value[:parentId].eql?("")
-        @category_tree.delete(value[:id])
-      end
-    end
-
-    @sorted_categories = @category_tree.values.sort{|a,b| a[:name] <=> b[:name]}
-
-    # calculate number of total RI records that have been processed
-    resources = OBDWrapper.getResourcesInfo
-    @ri_record_count = 0
-    resources.each do |resource|
-      @ri_record_count += resource.record_count.to_i rescue 0
-    end
-    @ri_record_count = @ri_record_count == 0 ? 3212530 : @ri_record_count
-
-    ri_stats = OBDWrapper.getResourceStats
-    @direct_annotations = ri_stats[:mgrepAnnotations].to_i == 0 ? 1011241184 : ri_stats[:mgrepAnnotations]
-    @direct_expanded_annotations = ri_stats[:mgrepAnnotations].to_i + ri_stats[:isaAnnotations].to_i + ri_stats[:mappingAnnotations].to_i
-    @direct_expanded_annotations = @direct_expanded_annotations == 0 ? 10416891634 : @direct_expanded_annotations
-
-    ri = NCBO::ResourceIndex.new(RI_OPTIONS)
-    @number_of_resources = ri.resources.length rescue 38
-
-    if !params[:ver].nil?
-      render :action => "index#{params[:ver]}"
-    end
+    # retrieve annotation stats from old REST service
+    @ri_stats = get_resource_index_annotation_stats # application_controller
+    @direct_annotations = @ri_stats[:direct]
+    @direct_expanded_annotations = @ri_stats[:expanded]
   end
 
   def release
@@ -248,12 +160,7 @@ class HomeController < ApplicationController
     @user_ontologies = session[:user_ontologies]
     @user_ontologies ||= {}
 
-    @user = session[:user]
-    @survey = Survey.find_by_user_id(@user.id)
-    if @survey.nil?
-      redirect_to :controller => 'users', :action => 'edit', :id => @user.id
-      return
-    end
+    @user = LinkedData::Client::Models::User.get(session[:user].id, include: "all")
 
     render :partial => "users/details", :layout => "ontology"
   end

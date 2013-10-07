@@ -71,7 +71,7 @@ function formComplete_formatItem(row) {
   var regex = new RegExp( '(' + keywords + ')', 'gi' );
   var result = "";
   var ontology_id;
-  var term_name_width = "350px";
+  var class_name_width = "350px";
 
   // Get ontology id and other parameters
   var classes = jQuery(input).attr('class').split(" ");
@@ -87,16 +87,16 @@ function formComplete_formatItem(row) {
   // TODO: Add formatting for different object types: class, property, individual?
 
 
-  // Set wider term name column
+  // Set wider class name column
   if (BP_include_definitions === "true") {
-    term_name_width = "150px";
+    class_name_width = "150px";
   } else if (ontology_id == "all") {
-    term_name_width = "320px";
+    class_name_width = "320px";
   }
 
   // Results
   var result_type = row[2];
-  var result_term = row[0];
+  var result_class = row[0];
   var result_ont_version = row[3];
   var result_uri = row[4];
 
@@ -106,7 +106,7 @@ function formComplete_formatItem(row) {
       result += definitionMarkup(result_ont_version, result_uri);
     }
 
-    result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>";
+    result += "<div class='result_class' style='width: "+class_name_width+";'>" + result_class.replace(regex, "<b><span class='result_class_highlight'>$1</span></b>") + "</div>";
 
     result += "<div class='result_type' style='overflow: hidden;'>" + result_type + "</div>";
   } else {
@@ -114,7 +114,7 @@ function formComplete_formatItem(row) {
     var result_ont = row[7];
     var result_def = row[9];
 
-    result += "<div class='result_term' style='width: "+term_name_width+";'>" + result_term.replace(regex, "<b><span class='result_term_highlight'>$1</span></b>") + "</div>"
+    result += "<div class='result_class' style='width: "+class_name_width+";'>" + result_class.replace(regex, "<b><span class='result_class_highlight'>$1</span></b>") + "</div>"
 
     if (BP_include_definitions === "true") {
       result += definitionMarkup(result_ont_version, result_uri);
@@ -127,7 +127,7 @@ function formComplete_formatItem(row) {
 }
 
 function definitionMarkup(ont, concept) {
-  return "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='"+BP_SEARCH_SERVER+"/ajax/json_term?callback=?&ontologyid="+ont+"&conceptid="+encodeURIComponent(concept)+"'></a></div>";
+  return "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='"+BP_SEARCH_SERVER+"/ajax/json_class?callback=?&ontologyid="+ont+"&conceptid="+encodeURIComponent(concept)+"'></a></div>";
 }
 
 function formComplete_setup_functions() {
@@ -176,7 +176,8 @@ function formComplete_setup_functions() {
   		target_property: target_property,
   		subtreerootconceptid: encodeURIComponent(BP_search_branch),
   		objecttypes: BP_objecttypes,
-  		id: BP_ONTOLOGIES // not 'ontology_id', see below...
+  		id: BP_ONTOLOGIES, // not 'ontology_id', see below...
+      ontologies: ontology_id
     };
 
     var result_width = 450;
@@ -191,7 +192,7 @@ function formComplete_setup_functions() {
 
     // see "public/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js"
     jQuery(this).bioportal_autocomplete(
-		  BP_SEARCH_SERVER + "/search/json_search/" + ontology_id,
+		  BP_SEARCH_SERVER + "/search/json_search/",
 		  {
 	        extraParams: extra_params,
 	        lineSeparator: "~!~",
@@ -250,7 +251,8 @@ function getWidgetAjaxContent() {
     if (typeof def_link.attr("getting_content") === 'undefined') {
       def_link.attr("getting_content", true);
       $.getJSON(def_link.attr("href"), function(data){
-        var definition = (typeof data.definitions === 'undefined') ? "" : data.definitions;
+        var definition = (typeof data.definition === 'undefined') ? "" : data.definition.join(" ");
+        console.log(definition)
         def_link.parent().html(truncateText(decodeURIComponent(definition.replace(/\+/g, " "))));
       });
     }

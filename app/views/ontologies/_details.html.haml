@@ -1,0 +1,87 @@
+- require 'cgi'
+%h2{:style => "font-size: x-large;"}
+  Details
+#metadata_content
+  %div{:style => "float: left; width: 60%; overflow: hidden; min-width: 550px"}
+    %table.form{:width => "100%"}
+      %tr
+        %th Acronym
+        %td.top= @ontology.acronym
+      %tr
+        %th Visibility
+        %td= strip_links(visibility_link(@ontology))
+      - if !$PURL_ENABLED.nil? && $PURL_ENABLED && !@ontology.summaryOnly
+        %tr
+          %th
+            = $SITE
+            PURL
+          %td
+            = auto_link(@ontology.purl, :all, :target => "_blank")
+      - if @ontology.viewing_restricted?
+        %tr
+          %th
+            Viewing Restriction
+          %td
+            = @ontology.viewingRestriction.capitalize
+
+      -# Get the latest submission (not necessarily the latest ready submission).
+      - sub = @submission_latest
+      - unless sub.nil? || (sub.respond_to?(:status) && sub.status == 404)
+        %tr
+          %th
+            Description
+          %td
+            = sub.description rescue ""
+        %tr
+          %th
+            Status
+          %td
+            = sub.status.capitalize unless sub.status.nil?
+        %tr
+          %th
+            Format
+          %td
+            = sub.hasOntologyLanguage
+        %tr
+          %th
+            Contact
+          %td
+            = sub.contact.map {|c| [c.name, c.email].join(", ") if c.member?(:name) && c.member?(:email)}.join("<br/>")
+        %tr
+          %th
+            Home Page
+          %td
+            %a{:href => sub.homepage, :target => "_blank"}= sub.homepage
+        %tr
+          %th
+            Publications Page
+          %td
+            %a{:href => sub.publication, :target => "_blank"}= sub.publication
+        %tr
+          %th
+            Documentation Page
+          %td
+            %a{:href => sub.documentation, :target => "_blank"}= sub.documentation
+        / TODO_REV: Enable additional details for ontologies
+        / = additional_details
+
+      %tr
+        %th
+          Categories
+        %td
+          - categories = []
+          - begin
+            - categories = @ontology.explore.categories
+          - rescue
+            - LOG.add :error, "Failed to explore categories on #{@ontology.to_json}"
+          = categories.map {|c| c.name}.sort.join(", ")
+      %tr
+        %th
+          Groups
+        %td
+          - groups = []
+          - begin
+            - groups = @ontology.explore.groups
+          - rescue
+            - LOG.add :error, "Failed to explore groups on #{@ontology.to_json}"
+          = groups.map {|g| g.name}.sort.join(", ")

@@ -8,142 +8,56 @@ class SearchController < ApplicationController
 
   def index
     @search_query = params[:query].nil? ? params[:q] : params[:query]
-    @search_query = "" if @search_query.nil?
-  end
-
-  def concept #search for concept for mappings
-    @ontology = DataAccess.getOntology(params[:ontology])
-    @concepts,@pages = DataAccess.getNodeNameContains([@ontology.ontologyId],params[:name],1)
-    render :partial => 'concepts'
-  end
-
-  def concept_preview #get the priview of the concept for mapping
-    @ontology = DataAccess.getOntology(params[:ontology])
-    @concept = DataAccess.getNode(params[:ontology],params[:id])
-    @children = @concept.children
-    render :partial =>'concept_preview'
-  end
-
-  def json
-    # Safety checks
-    params[:objecttypes] = set_objecttypes(params)
-    params[:page_size] = 250
-    params[:includedefinitions] = "false"
-    params[:query] = params[:query].strip
-    # Ensure :ontology_ids is an array
-    params[:ontology_ids] ||= []
-    params[:ontology_ids] = [params[:ontology_ids]] if params[:ontology_ids].kind_of?(String)
-
-    # Add ontologies in the selected categories to the filter
-    unless params[:categories].nil? || params[:categories].length == 0
-      category_onts = DataAccess.getCategoriesWithOntologies
-      params[:categories].each do |category|
-        params[:ontology_ids].concat category_onts[category][:ontologies]
-      end
-    end
-
-    # Temporary hack to figure out which results are exact matches
-    start_time = Time.now
-    # Force the search to be exact by adding the parameter to the call (this doesn't update the params hash)
-    exact_results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params.merge({:exact_match => true}))
-    LOG.add :debug, "Get exact matches: #{Time.now - start_time}s"
-    exact_results.results = filter_advanced_options(exact_results.results, params)
-    filter_private_results(exact_results)
-    exact_count = exact_results.results.length
-
-    if params[:exact_match].eql?("true")
-      results = exact_results
-    else
-      start_time = Time.now
-      results = DataAccess.searchQuery(params[:ontology_ids], params[:query], params[:page], params)
-      LOG.add :debug, "Get other matches: #{Time.now - start_time}s"
-    end
-
-    # Add a tracker for exact results so we know which ones are exact when they get output to browser
-    results.results.each_with_index do |result, index|
-      result[:exactMatch] = index <= exact_count ? true : false
-    end
-
-    # Filter out ontologies using user-provided parameters
-    start_time = Time.now
-    results.results = filter_advanced_options(results.results, params)
-    LOG.add :debug, "Filter advanced options: #{Time.now - start_time}s"
-
-    # Store the total results counts before aggregation
-    results.disaggregated_current_page_results = results.current_page_results
-
-    # TODO: It would be nice to include a delete command in the iteration above so we don't
-    # iterate over the results twice, but it wasn't working and no time to troubleshoot
-    start_time = Time.now
-    filter_private_results(results)
-    LOG.add :debug, "Filter private ontologies: #{Time.now - start_time}s"
-
-    start_time = Time.now
-    results.results = results.rank_results(exact_count)
-    LOG.add :debug, "Rank search results: #{Time.now - start_time}s"
-
-    results.current_page_results = results.results.length + results.obsolete_results.length
-
-    render :text => results.hash_for_serialization.to_json
+    @search_query ||= ""
   end
 
   def json_search
     if params[:q].nil?
-      render :text => "No search term provided"
+      render :text => "No search class provided"
       return
     end
-
-    params[:objecttypes] = set_objecttypes(params)
-
-    separator = (params[:separator].nil?) ? "~!~" : params[:separator]
-
-    @results,@pages = DataAccess.getNodeNameContains([params[:id]], params[:q], 1, params)
-
-    if params[:id]
-      LOG.add :info, 'jump_to_search', request, :virtual_id => params[:id], :search_term => params[:q], :result_count => @results.length
-    else
-      LOG.add :info, 'jump_to_search', request, :search_term => params[:q], :result_count => @results.length
-    end
+    check_params_query(params)
+    check_params_ontologies(params)  # Filter on ontology_id
+    search_page = LinkedData::Client::Models::Class.search(params[:q], params)
+    @results = search_page.collection
 
     response = ""
     obsolete_response = ""
+    separator = (params[:separator].nil?) ? "~!~" : params[:separator]
     for result in @results
-      if filter_private_result?(result)
-        next
-      end
+      # TODO_REV: Format the response with type information, target information
+      # record_type = format_record_type(result[:recordType], result[:obsolete])
+      record_type = ""
 
-      record_type = format_record_type(result[:recordType], result[:obsolete])
-
-      target_value = result[:preferredName]
+      target_value = result.prefLabel
       case params[:target]
         when "name"
-          target_value = result[:preferredName]
+          target_value = result.prefLabel
         when "shortid"
-          target_value = result[:conceptIdShort]
+          target_value = result.id
         when "uri"
-          target_value = result[:conceptId]
-        else
-          target_value = result[:preferredName]
+          target_value = result.id
       end
 
       json = []
       json << "#{target_value}"
-      json << "|#{result[:conceptIdShort]}"
+      json << "|#{result.id}"
       json << "|#{record_type}"
-      json << "|#{result[:ontologyVersionId]}"
-      json << "|#{result[:conceptId]}"
-      json << "|#{result[:preferredName]}"
-      json << "|#{result[:contents]}"
+      json << "|#{result.explore.ontology.acronym}"
+      json << "|#{result.id}" # Duplicated because we used to have shortId and fullId
+      json << "|#{result.prefLabel}"
+      # json << "|#{result[:contents]}" TODO_REV: Fix contents for search
+      json << "|"
       if params[:id] && params[:id].split(",").length == 1
-        json << "|#{CGI.escape(result[:definition])}#{separator}"
+        json << "|#{CGI.escape((result.definition || []).join(". "))}#{separator}"
       else
-        json << "|#{result[:ontologyDisplayLabel]}"
-        json << "|#{result[:ontologyId]}"
-        json << "|#{CGI.escape(result[:definition])}#{separator}"
+        json << "|#{result.explore.ontology.name}"
+        json << "|#{result.explore.ontology.acronym}"
+        json << "|#{CGI.escape((result.definition || []).join(". "))}#{separator}"
       end
 
       # Obsolete results go at the end
-      if result[:obsolete]
+      if result.obsolete?
         obsolete_response << json.join
       else
         response << json.join
@@ -158,28 +72,33 @@ class SearchController < ApplicationController
       response = "#{params[:callback]}({data:\"#{response}\"})"
     end
 
-    #default widget
-    @widget="jump"
-    if !params[:target].nil?
-      #this is the form widget
-      @widget="form"
-    end
-
-    #dont save it if its a test
-    if !request.env['HTTP_REFERER'].nil? && !request.env["HTTP_REFERER"].downcase.include?("bioontology.org")
-      widget_log = WidgetLog.find_or_initialize_by_referer_and_widget(request.env["HTTP_REFERER"],@widget)
-      if widget_log.id.nil?
-        widget_log.count=1
-      else
-        widget_log.count+=1
-      end
-      widget_log.save
-    end
-
     render :text => response
   end
 
+
   private
+
+  def check_params_query(params)
+    params[:q] = params[:q].strip
+    params[:q] = params[:q] + '*' unless params[:q].end_with?("*") # Add wildcard
+  end
+
+  def check_params_ontologies(params)
+    params[:ontologies] ||= params[:id]
+    if params[:ontologies]
+      if params[:ontologies].include?(",")
+        params[:ontologies] = params[:ontologies].split(",")
+      else
+        params[:ontologies] = [params[:ontologies]]
+      end
+      if params[:ontologies].first.to_i > 0
+        params[:ontologies].map! {|o| BPIDResolver.id_to_acronym(o)}
+      end
+      params[:ontologies] = params[:ontologies].join(",")
+    end
+  end
+
+
 
   # Filters out ontologies from the advanced options that were selected
   # @params [Array] a list of results to filter
@@ -196,7 +115,7 @@ class SearchController < ApplicationController
         next unless ont.production? || (!params[:ontology_ids].nil? && params[:ontology_ids].include?(ont.ontologyId.to_s))
       end
 
-      # Discard if the result is an obsolete term
+      # Discard if the result is an obsolete class
       if params[:include_obsolete].eql?("false")
         next if result['obsolete']
       end
@@ -253,7 +172,7 @@ class SearchController < ApplicationController
       when "apreferredname"
         record_text = "Preferred Name"
       when "bconceptid"
-        record_text = "Term ID"
+        record_text = "Class ID"
       when "csynonym"
         record_text = "Synonym"
       when "dproperty"
@@ -261,7 +180,7 @@ class SearchController < ApplicationController
       else
         record_text = ""
     end
-    record_text = "Obsolete Term" if obsolete
+    record_text = "Obsolete Class" if obsolete
     record_text
   end
 

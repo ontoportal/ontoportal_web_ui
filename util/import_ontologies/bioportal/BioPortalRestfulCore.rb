@@ -15,7 +15,7 @@ class BioPortalRestfulCore
   # Constants
   SUPERCLASS = "SuperClass"
   SUBCLASS = "SubClass"
-  CHILDCOUNT = "ChildCount"  
+  CHILDCOUNT = "ChildCount"
 
   # Track paths that have already been processed when building a path to root tree
   @seen_paths = {}
@@ -855,9 +855,9 @@ class BioPortalRestfulCore
     object_types = params[:objecttypes].nil? ? "" : "&objecttypes=#{params[:objecttypes]}"
     include_definitions = params[:includedefinitions].nil? || !params[:includedefinitions].eql?("true") ? "" : "&includedefinitions=true"
 
-    LOG.add :debug, $REST_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}#{object_types}#{include_definitions}"
+    LOG.add :debug, $LEGACY_REST_URL+SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%",CGI.escape(search))+"&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}#{object_types}#{include_definitions}"
     begin
-      doc = REXML::Document.new(get_xml($REST_URL + SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%", CGI.escape(search)) + "&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}#{object_types}#{include_definitions}"))
+      doc = REXML::Document.new(get_xml($LEGACY_REST_URL + SEARCH_PATH.gsub("%ONT%",ontologies).gsub("%query%", CGI.escape(search)) + "&isexactmatch=0&pagesize=50&pagenum=#{page}&includeproperties=0&maxnumhits=15#{search_branch}#{object_types}#{include_definitions}"))
     rescue Exception=>e
       doc = REXML::Document.new(e.io.read)
     end

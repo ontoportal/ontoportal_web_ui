@@ -573,9 +573,10 @@ table.align-right th:nth-child(2) {
   background: #f5fafa;
   color: #000;
 }
-.form td.top {
+.form td.top, table.form > :first-child > :first-child > td {
   border-top: 1px solid #C1DAD7;
 }
+
 /* Notes*/
 
 .notetype {
@@ -985,6 +986,40 @@ textarea.create_note_inputs {
 .note_body {
   font-size: 12pt;
 }
+.discussion h3 {
+  font-size: 18px;
+}
+.discussion .reply {
+  padding: 1em 0 .5em;
+}
+.discussion .reply .reply {
+  padding-left: 3.5em;
+}
+.reply_author {
+  color: #234979;
+}
+.reply_body {
+  font-size: 12pt;
+}
+textarea.reply_body {
+  padding: 3px;
+}
+.reply:first-child {
+  padding-top: 0 !important;
+}
+.comment_subject {
+  margin: 5px 0;
+  padding: 1px;
+}
+.proposal_container {
+  padding: 12px 0;
+}
+.proposal_container input {
+  padding: 3px;
+  margin: 6px;
+  width: 170px;
+}
+
 
 /* Extra information (proposals) */
 .proposal_info {
@@ -997,6 +1032,8 @@ textarea.create_note_inputs {
 
 .proposal {
   width: 90%;
+  padding-top: .5em;
+  font-size: 12pt;
 }
 
 .proposal th, .proposal td, .proposal tr {
@@ -1005,15 +1042,15 @@ textarea.create_note_inputs {
 }
 
 .proposal th, .proposal td, .proposal tr {
-  padding: .25em;
+  padding: .2em .5em;
   vertical-align: top;
 }
 
 .proposal th {
   color: #A9A9A9 !important;
   font-weight: bold;
-  text-align: right !important;
-  width: 15%;
+  text-align: left !important;
+  width: 25%;
 }
 
 .proposal_root {
@@ -1140,10 +1177,6 @@ textarea.create_note_inputs {
 .notes_list_container {
   width: 90%;
   padding: 1em;
-}
-
-#note_count_wrapper {
-  display: none;
 }
 
 /* Datatables */
@@ -1487,6 +1520,17 @@ button.fg-button-menu, button.fg-button {
   display: none;
 }
 
+#new_ontology img.ui-datepicker-trigger {
+  vertical-align: middle;
+  padding-left: 5px;
+}
+
+.ontology_submission_status {
+    font-size: x-small;
+    color: gray;
+    padding-left: 10px;
+}
+
 
 /************************************
  * Top-right Nav Menu
@@ -1580,7 +1624,7 @@ button.fg-button-menu, button.fg-button {
   text-decoration: underline !important;
 }
 
-.obsolete_term {
+.obsolete_class {
   color: gray;
   font-style: oblique;
   cursor: help;
@@ -1603,29 +1647,6 @@ button.fg-button-menu, button.fg-button {
   font-size: x-small;
   text-transform: none;
   letter-spacing: 0;
-}
-
-#ontology_useracl_chzn {
-  width: 100% !important;
-}
-
-#ontology_useracl_chzn ul {
-  border: none;
-  background: none;
-  box-shadow: none;
-  margin-left: -5px;
-}
-
-#ontology_useracl_chzn .chzn-drop {
-  display: none !important;
-}
-
-#ontology_useracl_chzn .chzn-choices li.search-field {
-  display: none !important;
-}
-
-#ontology_useracl_chzn ul.chzn-choices li.search-choice {
-  padding: 5px 19px 3px 6px !important;
 }
 
 /************************************
@@ -1759,7 +1780,7 @@ form.button-to {
   display: none;
 }
 
-.term_details_pop {
+.class_details_pop {
   overflow: auto;
   width: 750px !important;
   display: block !important;
@@ -1774,11 +1795,11 @@ div.search_result {
   margin-bottom: 1.5em;
 }
 
-div.term_link a {
+div.class_link a {
   font-size: 18px;
 }
 
-span.term_def {
+span.class_def {
   display: block;
   margin: 3px 0 2px;
   font-size: 12px;
@@ -1793,7 +1814,7 @@ div.search_result_additional {
   margin: 1em 0 1.2em;
 }
 
-div.search_result_additional .term_link a {
+div.search_result_additional .class_link a {
   font-size: 15px !important;
 }
 
@@ -2009,7 +2030,7 @@ a.link_button > span.ui-button-text {
   color: #525252;
 }
 
-.term_permalink {
+.class_permalink {
   background: none repeat scroll 0 0 white;
   border-color: #BCC6D0;
   border-style: solid none solid solid;
@@ -2082,19 +2103,19 @@ a.truncated_less, a.truncated_more {
   font-style: normal !important;
 }
 
-.search_dropdown_ont {
+.search_ontology_acronym {
   padding-left: 3px;
   color: gray;
 }
 
-.highlighted .search_dropdown_ont {
+.highlighted .search_ontology_acronym {
   color: white;
 }
 
 /************************************
  * Resource Index
  ************************************/
-#resource_index_terms_chzn ul.chzn-results li.searching:after {
+#resource_index_classes_chzn ul.chzn-results li.searching:after {
   background: url("/images/spinners/spinner_000000_16px.gif") no-repeat scroll 5px -1.5px transparent;
   color: #F4F4F4;
   content: "spacer";
@@ -2134,6 +2155,14 @@ ul.chzn-results {
 .clearing {
   clear: both;
 }
+
+/* BEGIN AnnotationType */
+/*
+// Annotation types change for the new API, as follows:
+// mgrepContext => direct
+// mappingContext => mapping
+// isaContext => hierarchy
+//
 .mgrepContext,
 .mgrepContext .mappingContext,
 .mappingContext .mgrepContext,
@@ -2147,6 +2176,23 @@ ul.chzn-results {
 .isaContext {
   background-color: #F2BFC5;
 }
+*/
+.direct,
+.direct .mapping,
+.mapping .direct,
+.direct .hierarchy,
+.hierarchy .direct {
+    background-color: #B0C4DE !important;
+}
+.mapping {
+    background-color: #7ABA7A;
+}
+.hierarchy {
+    background-color: #F2BFC5;
+}
+/* END AnnotationType */
+
+
 .element_result, .element_result a {
   font-size: 110%;
   margin-bottom: 15px;

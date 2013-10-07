@@ -1,17 +1,11 @@
 <%@title = "Resources Search"%>
 
 <script type="text/javascript">
-<%ont_acronyms = []%>
-<%@onts_and_views.each {|ont| ont_acronyms << "#{ont.ontologyId}: '#{ont.abbreviation.nil? ? ont.displayLabel : ont.abbreviation}'"}%>
-<%ont_names = {}%>
-<%@onts_and_views.each {|ont| ont_names[ont.ontologyId] = ont.displayLabel}%>
-<%ri_ontology_ids = []%>
-<%@ri_ontologies.each {|ont| ri_ontology_ids << ont.ontologyId}%>
-var ont_acronyms = { <%=ont_acronyms.join(", ")%> };
-var ont_names = <%=ont_names.to_json%>;
-var ri_ontology_ids = [ <%=ri_ontology_ids.join(", ")%> ];
-var resources = <%=@resources_hash.to_json%>;
-var orgSite = <%=$ORG_SITE.to_json%>
+var ont_acronyms = <%=@ont_acronyms.to_json%>;
+var ont_names = <%=@ont_names.to_json%>;
+var ont_ids = <%=@ont_ids.to_json%>;
+var resources = <%=@resources.to_json%>;
+var orgSite = <%=$ORG_SITE.to_json%>;
 </script>
 
 <%=javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.js"%>
@@ -37,25 +31,31 @@ var orgSite = <%=$ORG_SITE.to_json%>
         <span id="resource_index_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
       </div>
 
-      <% textarea_title = "Start typing to find terms to search the index with" %>
-      <%=select_tag :resource_index_terms, "", :multiple => 'true', "data-placeholder".to_sym => textarea_title, :title => textarea_title, :class => "help_text", :style => "width: 432px;" %>
+      <% textarea_title = "Start typing to find concepts to search the index with" %>
+      <%=select_tag :resource_index_classes, "",
+                    :multiple => 'true',
+                    'data-placeholder'.to_sym => textarea_title,
+                    :title => textarea_title,
+                    :class => 'help_text',
+                    :style => 'width: 432px;'
+      %>
 
-      <div style="float: right; font-size: smaller;">
-        <a id="ont_select_adv_href" href="javascript:void(0)">select ontologies to search</a>
-      </div>
+      <!--<div style="float: right; font-size: smaller;">-->
+        <!--<a id="ont_select_adv_href" href="javascript:void(0)">select ontologies to search</a>-->
+      <!--</div>-->
     </div>
 
     <!-- hidden form input to use for tracking ontologies selected for filtering -->
     <div style="position: absolute; left: -99999px;">
       <%= render :partial => "shared/ontology_picker", :locals => { :sel_text => "Ontologies", :custom_ontologies => @ri_ontologies }%>
     </div>
-    <%=render_advanced_picker(nil, @ri_ontologies, "resource_index_terms_chzn")%>
+    <%=render_advanced_picker(nil, @ri_ontologies, "resource_index_classes_chzn")%>
 
     <span style='color: red;' id="resource_index_error" class='resource_index_error'></span>
   </div>
 </div>
 
-<div id="results_container" style="padding: 0 13px; margin: 0 0 2em; height: 100%;" data-bp_rest_server="<%=$REST_DOMAIN%>">
+<div id="results_container" style="padding: 0 13px; margin: 0 0 2em; height: 100%;">
   <div id="results_error" style="color: red; margin-bottom: 7px;"></div>
   <div id="initial_resources">
     <%=render :partial => "resources_info"%>

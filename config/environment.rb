@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.15' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.17' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -13,6 +13,29 @@ require File.join(File.dirname(__FILE__), 'boot')
 # Set default encoding
 Encoding.default_external = Encoding::UTF_8
 Encoding.default_internal = Encoding::UTF_8
+
+# This is a monkeypatch to make Gem 2.x work with Rails 2.3
+# WARNING: IT WILL IGNORE VENDORED GEMS
+if RUBY_VERSION >= "2.0.0" && (Gem::VERSION && Gem::VERSION > "2.0.0")
+  module Gem
+    def self.source_index
+      sources
+    end
+
+    def self.cache
+      sources
+    end
+
+    SourceIndex = Specification
+
+    class SourceList
+      # If you want vendor gems, this is where to start writing code.
+      def search( *args ); []; end
+      def each( &block ); end
+      include Enumerable
+    end
+  end
+end
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
@@ -36,21 +59,6 @@ Rails::Initializer.run do |config|
   # (by default production uses :info, the others :debug)
   # config.log_level = :debug
 
-  # Your secret key for verifying cookie session data integrity.
-  # If you change this key, all old sessions will become invalid!
-  # Make sure the secret is at least 30 characters and all random,
-  # no regular words or you'll be exposed to dictionary attacks.
-  config.action_controller.session = {
-    :key => '_bp_session',
-    :secret      => 'f8a5500d24178acfd38f883af2b2c16'
-  }
-
-  # Use the database for sessions instead of the cookie-based default,
-  # which shouldn't be used to store highly confidential information
-  # (create the session table with 'rake db:sessions:create')
-  # config.action_controller.session_store = :active_record_store
-  config.action_controller.session_store = :mem_cache_store
-
   # Use SQL instead of Active Record's schema dumper when creating the test database.
   # This is necessary if your schema can't be completely dumped by the schema dumper,
   # like if you have constraints or database-specific column types
@@ -61,5 +69,9 @@ Rails::Initializer.run do |config|
 
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
+
+  logfile = File.new(File.join(Rails.root, "log", "oink_mem.log"), "a")
+  require 'oink'
+  config.middleware.use Oink::Middleware, :logger => Hodel3000CompliantLogger.new(logfile), :instruments => :memory
 end
 

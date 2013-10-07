@@ -1,0 +1,18 @@
+- require 'date'
+#reviews_content{:style => "padding-top: 2em;"}
+  %h2{:style => "margin-bottom: .5em;"}
+    %span{:style => "font-size: x-large; margin-right: 1.5em;"} Reviews
+    - if session[:user].nil?
+      %a{:href => "/login?redirect=/ontologies/#{@ontology.acronym}"} Add your review
+    - else
+      %a.create_review{:href => "/reviews/new?ontology=#{CGI.escape(@ontology.id)}", :title => "Review For #{@ontology.displayLabel}"} Add your review
+  #reviews_container
+    - if @reviews.nil? || @reviews.empty?
+      %h1{:style => "padding-bottom: .8em;"} No reviews available.
+    - else
+      - @reviews.each_with_index do |review, review_count|
+        - @review = review
+        = render partial: "reviews/review"
+:javascript
+  // Do this after the HTML above loads
+  jQuery('input.star').rating();

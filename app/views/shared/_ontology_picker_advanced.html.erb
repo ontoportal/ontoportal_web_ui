@@ -1,13 +1,14 @@
 
 <script type="text/javascript">
-var abbreviationMap = { <%= @onts_for_js.join(", ") %> };
-var groupsMap = { <%= @groups_for_js.join(", ") %> };
-var categoriesMap = { <%= @categories_for_js.join(", ") %> };
-var ontsInGroupsOrCategories = [ <%= @onts_in_group_or_category_for_js.join(", ") %> ];
+
+var abbreviationMap = <%= @onts_for_js %>;
+var groupsMap = <%= @groups_for_js %>;
+var categoriesMap = <%= @categories_for_js %>;
+var ontsInGroupsOrCategories = <%= @onts_in_gp_or_cat_for_js %>;
 var winHeight = jQuery(window).height();
 var ontSelectListPos = { top: 0, left: 0, width: 0 };
 var allSelected = false;
-var alignToDOMId = "<%=align_to_dom_id%>";
+var alignToDOMId = "<%=align_to_dom_id || @select_id%>";
 
 jQuery(document).ready(function(){
   ontSelectListPos.top = jQuery("#"+alignToDOMId).offset().top;
@@ -15,7 +16,7 @@ jQuery(document).ready(function(){
   ontSelectListPos.width = jQuery("#"+alignToDOMId).width();
 
   // Watch for changes in the entry of the select list
-  jQuery("#ontology_ontologyId").change(function(e) {
+  jQuery("#<%=@select_id%>").change(function(e) {
     ontLabelToAbbr();
     syncFromList();
   });
@@ -37,7 +38,7 @@ jQuery(document).ready(function(){
     if (e.keyCode == 27) { hideAdvancedSelect(); } // esc
   });
 
-  // Wire advaced selection
+  // Wire advanced selection
   jQuery('#ont_select_adv').click(function(event){
     event.stopPropagation();
     bp_popup_cleanup();
@@ -62,9 +63,9 @@ jQuery(document).ready(function(){
     chzn_select.children("ul.chzn-choices").css("background", "white");
     // Chosen select list congig changes for IE
     chzn_select.children("ul.chzn-choices").css("filter", "none");
-    jQuery("#ontology_ontologyId_chzn input").css("filter", "none");
+    jQuery("#<%=@select_id%>_chzn input").css("filter", "none");
 
-    jQuery("#ontology_ontologyId_container").css("box-shadow", "0 0 10px gray");
+    jQuery("#<%=@select_id%>_container").css("box-shadow", "0 0 10px gray");
 
     jQuery("#ont_list_container").height(ont_select.height() - 80);
 
@@ -97,34 +98,23 @@ jQuery(document).ready(function(){
   jQuery("#ont_select_all").click(function(){
     if (jQuery(this).attr("checked")) {
       allSelected = true;
-
-      jQuery(".ont_select_boxes_tr input:checkbox").attr("checked", true);
-
-      syncFromCheckboxes();
-      refreshOntList();
     } else {
       allSelected = false;
-
-      jQuery(".ont_select_boxes_tr input:checkbox").attr("checked", false);
-
-      syncFromCheckboxes();
-      refreshOntList();
     }
+    jQuery(".ont_select_boxes_tr input:checkbox").attr("checked", allSelected);
+    syncFromCheckboxes();
+    refreshOntList();
   });
 
   // Select ontologies that are visible in the filter list
   jQuery("#ont_select_all_filtered").click(function(){
     if (jQuery(this).attr("checked")) {
       jQuery(".ont_select_boxes_tr input:checkbox:visible").attr("checked", true);
-
-      syncFromCheckboxes();
-      refreshOntList();
     } else {
       jQuery(".ont_select_boxes_tr input:checkbox:visible").attr("checked", false);
-
-      syncFromCheckboxes();
-      refreshOntList();
     }
+    syncFromCheckboxes();
+    refreshOntList();
   });
 
   // Wire up group/category select
@@ -140,7 +130,7 @@ var hideAdvancedSelect = function(){
   if (jQuery("#ont_select_adv").is(":visible")) {
     jQuery("#ont_select_adv").hide();
     jQuery("#"+alignToDOMId).children("ul.chzn-choices").removeClass("no_right_border").css("background", "");
-    jQuery("#ontology_ontologyId_container").css("box-shadow", "");
+    jQuery("#<%=@select_id%>_container").css("box-shadow", "");
     jQuery("#"+alignToDOMId).css("z-index", "auto")
   }
 }
@@ -151,7 +141,7 @@ function syncFromList() {
     jQuery(this).attr("checked", false);
   });
 
-  jQuery("#ontology_ontologyId option:selected").each(function(){
+  jQuery("#<%=@select_id%> option:selected").each(function(){
     var id = jQuery(this).val();
     jQuery("#ont_select_adv_check" + id).attr("checked", true);
   });
@@ -174,7 +164,6 @@ var select_groups = {
 
   selectGroup: function(e) {
     e.stopPropagation();
-
     syncGroupsAndCategories();
     syncFromCheckboxes();
   }
@@ -197,7 +186,6 @@ var select_categories = {
 
   selectCategory: function(e) {
     e.stopPropagation();
-
     syncGroupsAndCategories();
     syncFromCheckboxes();
   }
@@ -209,7 +197,7 @@ function syncFromCheckboxes() {
   jQuery(".ont_select_boxes_tr input:checked").each(function(){
     checkedIds.push(jQuery(this).val());
   });
-  jQuery("#ontology_ontologyId").val(checkedIds);
+  jQuery("#<%=@select_id%>").val(checkedIds);
   refreshOntList();
 }
 
@@ -218,53 +206,51 @@ function syncGroupsAndCategories() {
 
   var groups = jQuery("#ont_select_adv tr.group_select_boxes_tr input:checked");
   var categories = jQuery("#ont_select_adv tr.category_select_boxes_tr input:checked");
-  var selected_ontologies = {};
-  var group_category_names = [];
-
-  groups.each(function(){
-    jQuery(groupsMap[jQuery(this).val()]).each(function(){
-      selected_ontologies[this] = 1;
-    });
-
-    group_category_names.push(jQuery("label[for='" + jQuery(this).attr("id") + "']").html().match(/\((.+?)\)/)[1]);
-  });
-
-  categories.each(function(){
-    jQuery(categoriesMap[jQuery(this).val()]).each(function(){
-      selected_ontologies[this] = 1;
-    });
-
-    group_category_names.push(jQuery("label[for='" + jQuery(this).attr("id") + "']").html());
-  });
-
-  // Hide ontologies not in a selected group/category, show if in a selected group/category
-  jQuery("#ont_select_adv tr.ont_select_boxes_tr input").each(function(){
-    var ont_id = jQuery(this).val();
-    if (!(ont_id in selected_ontologies)) {
-      jQuery(this).closest("tr").hide();
-    } else {
-      jQuery(this).closest("tr").show();
-    }
-    jQuery("#select_all_filtered_row").show();
-  });
-
-  // Put group/category names on the screen
-  jQuery("#groups_and_category_names").html(group_category_names.join(", "));
-  jQuery("#groups_categories_names_container").show();
+  if(groups.length === 0 && categories.length === 0) {
+      showAllFiltered();
+  } else {
+      var selected_ontologies = {};
+      var group_category_names = [];
+      groups.each(function(){
+          jQuery(groupsMap[jQuery(this).val()]).each(function(){
+              selected_ontologies[this] = 1; // this is an ontology URI (ID)
+          });
+          group_category_names.push(jQuery("label[for='" + jQuery(this).attr("id") + "']").html());
+      });
+      categories.each(function(){
+          jQuery(categoriesMap[jQuery(this).val()]).each(function(){
+              selected_ontologies[this] = 1; // this is an ontology URI (ID)
+          });
+          group_category_names.push(jQuery("label[for='" + jQuery(this).attr("id") + "']").html());
+      });
+      // Hide ontologies not in a selected group/category, show if in a selected group/category
+      jQuery("#ont_select_adv tr.ont_select_boxes_tr input").each(function(){
+          var ont_id = jQuery(this).val();
+          if (!(ont_id in selected_ontologies)) {
+              jQuery(this).closest("tr").hide();
+          } else {
+              jQuery(this).closest("tr").show();
+          }
+          jQuery("#select_all_filtered_row").show();
+      });
+      // Put group/category names on the screen
+      jQuery("#groups_and_category_names").html(group_category_names.join(", "));
+      jQuery("#groups_categories_names_container").show();
+  }
 }
 
 // Check the selected list of ontologies against the map and replace
 function ontLabelToAbbr() {
-  jQuery("#ontology_ontologyId_chzn > .chzn-choices > li > span").each(function(){
-    if (jQuery(this).children("span.chzn-abbr").length == 0) {
+  jQuery("#<%=@select_id%>_chzn > .chzn-choices > li > span").each(function(){
+    if (jQuery(this).children("span.chzn-abbr").length === 0) {
       jQuery(this).html("<span class='chzn-abbr' title='"+jQuery(this).html()+"'>"+abbreviationMap[jQuery(this).html()]+"</span>");
     }
   });
 }
 
 function refreshOntList() {
-  jQuery("#ontology_ontologyId").trigger("liszt:updated");
-  jQuery("#ontology_ontologyId").trigger("change");
+  jQuery("#<%=@select_id%>").trigger("liszt:updated");
+  jQuery("#<%=@select_id%>").trigger("change");
 }
 
 function showAllFiltered() {
@@ -281,8 +267,8 @@ function clearGroupsAndCategories() {
 }
 
 function clearAllSelections() {
-  jQuery("#ontology_ontologyId").val("");
-  jQuery("#ontology_ontologyId_chzn li.search-choice").remove();
+  jQuery("#<%=@select_id%>").val("");
+  jQuery("#<%=@select_id%>_chzn li.search-choice").remove();
   clearGroupsAndCategories();
   refreshOntList();
 }

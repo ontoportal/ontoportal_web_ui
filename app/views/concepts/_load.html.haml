@@ -1,0 +1,18 @@
+- require 'cgi'
+- #Created a different way to parse because of the limitations of JSon to do large HTML segments ||| divides the areas , final 2 are mappings and notes to be updated
+
+#{render :partial =>'/concepts/biomixer'}
+|||
+#{render :partial =>'details'}
+|||
+%a.get_via_ajax{:href => "/ajax/notes/concept_list?ontology=#{@ontology.acronym}&concept=#{CGI.escape(@concept.id)}"}
+|||
+#{render :partial =>'/mappings/concept_mappings'}
+|||
+/ # This used to hold demo-specific info, now it's a placeholder
+&nbsp;
+|||
+/ used to hold notes count
+|||
+-# TODO_REV support mappings
+-# #{@concept.mapping_count}

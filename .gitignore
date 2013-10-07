@@ -28,3 +28,9 @@ config/locales/en.rb
 .idea
 *.swp
 
+
+config.ru
+
+.tags
+
+.tags_sorted_by_file

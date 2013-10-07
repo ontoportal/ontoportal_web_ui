@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120719010735) do
+ActiveRecord::Schema.define(:version => 20130930214323) do
 
   create_table "analytics", :force => true do |t|
     t.string   "segment"
@@ -42,42 +42,25 @@ ActiveRecord::Schema.define(:version => 20120719010735) do
     t.datetime "updated_at"
   end
 
-  create_table "mapping_import_errors", :force => true do |t|
-    t.integer   "mapping_id", :null => false
-    t.string    "error"
-    t.timestamp "timestamp"
-    t.string    "run_name"
-  end
-
-  add_index "mapping_import_errors", ["mapping_id", "run_name"], :name => "id_run", :unique => true
-
   create_table "mappings", :force => true do |t|
     t.integer  "user_id"
+    t.integer  "source_ont"
+    t.integer  "destination_ont"
+    t.integer  "source_version_id"
+    t.integer  "destination_version_id"
     t.string   "source_id"
     t.string   "destination_id"
     t.string   "map_type"
-    t.string   "source_ont"
-    t.string   "destination_ont"
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.string   "map_source"
-    t.text     "comment"
     t.string   "relationship_type"
     t.string   "source_name"
     t.string   "destination_name"
     t.string   "source_ont_name"
     t.string   "destination_ont_name"
-    t.integer  "source_version_id"
-    t.integer  "destination_version_id"
+    t.text     "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
-
-  add_index "mappings", ["destination_id"], :name => "destination_id"
-  add_index "mappings", ["destination_ont"], :name => "X_destination_ont"
-  add_index "mappings", ["destination_version_id"], :name => "X_destination_version_id"
-  add_index "mappings", ["map_type"], :name => "X_map_type"
-  add_index "mappings", ["source_id"], :name => "X_source_id"
-  add_index "mappings", ["source_ont"], :name => "X_source_ont"
-  add_index "mappings", ["source_version_id"], :name => "X_source_version_id"
 
   create_table "margin_notes", :force => true do |t|
     t.integer  "parent_id"
@@ -89,20 +72,6 @@ ActiveRecord::Schema.define(:version => 20120719010735) do
     t.string   "concept_id"
     t.string   "subject"
     t.text     "comment"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "notes", :force => true do |t|
-    t.string   "subject"
-    t.text     "body"
-    t.string   "author"
-    t.boolean  "archived"
-    t.string   "hasStatus"
-    t.integer  "ontology_id"
-    t.string   "concept_id"
-    t.integer  "annotates"
-    t.text     "annotated_by"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -149,22 +118,12 @@ ActiveRecord::Schema.define(:version => 20120719010735) do
 
   create_table "reviews", :force => true do |t|
     t.integer  "user_id"
-    t.string   "ontology_id"
+    t.integer  "ontology_id"
+    t.integer  "project_id"
     t.text     "review"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "project_id"
   end
-
-  create_table "sessions", :force => true do |t|
-    t.string   "session_id", :null => false
-    t.text     "data"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
-  add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
   create_table "surveys", :force => true do |t|
     t.integer "user_id"
@@ -195,14 +154,6 @@ ActiveRecord::Schema.define(:version => 20120719010735) do
     t.datetime "created"
   end
 
-  create_table "tools", :force => true do |t|
-    t.string   "name"
-    t.string   "website"
-    t.string   "content"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "users", :force => true do |t|
     t.string   "first_name"
     t.string   "last_name"
@@ -223,7 +174,7 @@ ActiveRecord::Schema.define(:version => 20120719010735) do
   end
 
   create_table "virtual_appliance_users", :force => true do |t|
-    t.integer  "user_id"
+    t.string   "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

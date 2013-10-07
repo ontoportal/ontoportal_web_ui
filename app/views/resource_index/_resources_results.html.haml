@@ -1,4 +1,5 @@
 - require 'cgi'
+- require 'bigdecimal'
 
 :css
   .count {
@@ -19,20 +20,28 @@
         %th.count % Matched
         %th.count Total Records
     %tbody
-      -@elements.resources.each do |resource|
-        -resource_name = @resources_hash[resource.resourceId.downcase.to_sym][:resourceName]
-        %tr{:class => resource.totalResults.to_i == 0 && "zero_results not_visible"}
+      -@elements.each do |r|
+        -resourceId = r['resourceId']
+        -resource_data = @resources_hash[resourceId]
+        -resource_name = resource_data[:resourceName]
+        -total_results = r['totalResults'].to_i
+        -total_elements = resource_data[:totalElements]
+        -total_percent = (BigDecimal(total_results) / BigDecimal(total_elements)) * BigDecimal.new(100)
+        -total_percent = total_percent < 0.01 ? '< 0.01%' : sprintf('%0.2f%', total_percent)
+        -delim_results = number_with_delimiter(total_results, :delimiter => ",")
+        -delim_elements = number_with_delimiter(total_elements, :delimiter => ",")
+        %tr{:class => total_results == 0 && "zero_results not_visible"}
           %td
-            %a.results_link{:href => "javascript:void(0);", :data => {:resource_id => resource.resourceId, :resource_name => resource_name}} #{resource_name}
-            / %a.resource_site{:href => @resources_hash[resource.resourceId.downcase.to_sym][:resourceURL], :target => "_blank", :id => "resource_link_#{resource.resourceId}"} site
+            %a.results_link{:href => "javascript:void(0);", :data => {:resource_id => resourceId, :resource_name => resource_name}} #{resource_name}
+            / %a.resource_site{:href => @resources_hash[resourceId][:resourceURL], :target => "_blank", :id => "resource_link_#{resourceId}"} site
             / %span{:class => "ui-icon ui-icon-extlink", :style => "display: inline-block; vertical-align: text-bottom;"}
           %td.count
-            -if resource.totalResults > 0
-              %a.results_link{:href => "javascript:void(0);", :data => {:resource_id => resource.resourceId, :resource_name => resource_name}} #{number_with_delimiter(resource.totalResults, :delimiter => ",")}
+            -if total_results > 0
+              %a.results_link{:href => "javascript:void(0);", :data => {:resource_id => resourceId, :resource_name => resource_name}} #{delim_results}
             -else
-              #{number_with_delimiter(resource.totalResults, :delimiter => ",")}
-          %td.count= (((resource.totalResults.to_f / @resources_hash[resource.resourceId.downcase.to_sym][:totalElements].to_f)*100*100.0).ceil/100.0).to_s + "%" rescue "0%" # Complicated formula for rounding up to nearest tenth
-          %td.count #{number_with_delimiter(@resources_hash[resource.resourceId.downcase.to_sym][:totalElements], :delimiter => ",")}
+              #{delim_results}
+          %td.count= total_percent
+          %td.count= delim_elements
 
 %h2.resource_title.not_visible
   %span#resource_title
@@ -40,11 +49,12 @@
     %a.h2_link{:href => "javascript:void(0);", :id => "show_all_resources"} show all resources
 
 %div#resource_results
-  -@elements.resources.each do |resource|
-    -@resource_results = resource
-    %div.resource_info.resource_details.not_visible{:id => "resource_info_#{resource.resourceId}"}
+  -@elements.each do |r|
+    -resourceId = r['resourceId']
+    -@resource_results = r
+    %div.resource_info.resource_details.not_visible{:id => "resource_info_#{resourceId}"}
       %div.resource_image
-        %img{:src => @resources_hash[resource.resourceId.downcase.to_sym][:resourceLogo], :class => "resource_image"}
+        %img{:src => @resources_hash[resourceId][:resourceLogo], :class => "resource_image"}
       =render :partial => "resource_results"
       %div.clearing
 

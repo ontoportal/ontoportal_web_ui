@@ -13,7 +13,7 @@ class PrecacheController < ApplicationController
       CACHE.delete("act_ont_list")
       CACHE.delete("ont_list")
       CACHE.delete("ontology_acronyms")
-      CACHE.delete("terms_all_ontologies")
+      CACHE.delete("classes_all_ontologies")
     end
 
     get_url("http://localhost:#{$UI_PORT}")
@@ -22,17 +22,17 @@ class PrecacheController < ApplicationController
     precache_ontology_summary(delete_cache)
     precache_ontology_notes(delete_cache)
     precache_ontology_mappings(delete_cache)
-    precache_ontology_terms(delete_cache)
+    precache_ontology_classes(delete_cache)
   end
 
-  def self.precache_ontology_terms(delete_cache = false)
+  def self.precache_ontology_classes(delete_cache = false)
     ontologies = DataAccess.getOntologyList
     ontologies.each do |ont|
       if delete_cache
         # remove relevant cache data
       end
 
-      get_url("http://localhost:#{$UI_PORT}/ontologies/#{ont.ontologyId}?p=terms")
+      get_url("http://localhost:#{$UI_PORT}/ontologies/#{ont.ontologyId}?p=classes")
     end
   end
 

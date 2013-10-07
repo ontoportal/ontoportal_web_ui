@@ -1,161 +1,112 @@
 require 'cgi'
 class MappingsController < ApplicationController
+  include ActionView::Helpers::NumberHelper
 
   layout 'ontology'
-  before_filter :authorize, :only=>[:create,:new,:destroy]
+  before_filter :authorize_and_redirect, :only=>[:create,:new,:destroy]
+
+  MAPPINGS_URL = "#{LinkedData::Client.settings.rest_url}/mappings"
 
   def index
-    ontology_list = DataAccess.getOntologyList()
-    views_list = DataAccess.getViewList()
-    ontologies_mapping_count = DataAccess.getMappingCountOntologies
+    ontology_list = LinkedData::Client::Models::Ontology.all
+    # TODO_REV: Views support for mappings
+    # views_list = DataAccess.getViewList()
+
+    ontologies_mapping_count = LinkedData::Client::HTTP.get("#{MAPPINGS_URL}/statistics/ontologies")
 
     ontologies_hash = {}
     ontology_list.each do |ontology|
-      ontologies_hash[ontology.ontologyId] = ontology
+      ontologies_hash[ontology.acronym] = ontology
     end
 
-    views_list.each do |view|
-      ontologies_hash[view.ontologyId] = view
-    end
+    # TODO_REV: Views support for mappings
+    # views_list.each do |view|
+    #   ontologies_hash[view.ontologyId] = view
+    # end
 
     @options = {}
-    ontologies_mapping_count.each do |ontology|
-      next if ontology["totalMappings"].nil?
-      @options[ontologies_hash[ontology['ontologyId']].displayLabel + " (#{ontology['totalMappings']})"] = ontologies_hash[ontology['ontologyId']].id unless ontologies_hash[ontology['ontologyId']].nil?
+    ontologies_mapping_count.members.each do |ontology_acronym|
+      ontology = ontologies_hash[ontology_acronym.to_s]
+      mapping_count = ontologies_mapping_count[ontology_acronym]
+      next unless ontology && mapping_count > 0
+      select_text = "#{ontology.name} - #{ontology.acronym} (#{number_with_delimiter(mapping_count, delimiter: ',')})"
+      @options[select_text] = ontology_acronym
     end
 
     @options = @options.sort
   end
 
   def count
-    ontology_list = DataAccess.getOntologyList()
-    view_list = DataAccess.getViewList()
-    @ontology = DataAccess.getOntology(params[:id])
-    @ontologies_mapping_count = DataAccess.getMappingCountBetweenOntologies(@ontology.ontologyId)
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
 
-    ontologies_hash = {}
-    ontology_list.each do |ontology|
-      ontologies_hash[ontology.ontologyId] = ontology
+    counts = LinkedData::Client::HTTP.get("#{MAPPINGS_URL}/statistics/ontologies/#{params[:id]}")
+    @ontologies_mapping_count = []
+    counts.members.each do |acronym|
+      count = counts[acronym]
+      ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym.to_s).first
+      next unless ontology
+      @ontologies_mapping_count << {'ontology' => ontology, 'count' => count}
     end
+    @ontologies_mapping_count.sort! {|a,b| a['ontology'].name.downcase <=> b['ontology'].name.downcase } unless @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
 
-    view_list.each do |view|
-      ontologies_hash[view.ontologyId] = view
-    end
-
-    @ontologies_mapping_count.each do |ontology|
-      ontology['ontology'] = ontologies_hash[ontology['ontologyId']]
-    end
-
-    @ontologies_mapping_count.delete_if {|ont| ont['ontology'].nil?}
-
-    @ontology_id = @ontology.ontologyId
-    @ontology_label = @ontology.displayLabel
-
-    @ontologies_mapping_count.sort! {|a,b| a['ontology'].displayLabel.downcase <=> b['ontology'].displayLabel.downcase } unless @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
+    @ontology_id = @ontology.acronym
+    @ontology_label = @ontology.name
 
     render :partial => 'count'
   end
 
   def show
-    @ontology = DataAccess.getLatestOntology(params[:id])
-    @target_ontology = DataAccess.getLatestOntology(params[:target])
+    page = params[:page] || 1
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
+    @target_ontology = LinkedData::Client::Models::Ontology.find(params[:target])
+    ontologies = [@ontology.id, @target_ontology.id]
 
-    if params[:rdf].nil? || !params[:rdf].eql?("rdf")
-      @mapping_pages = DataAccess.getBetweenOntologiesMappings(@ontology.ontologyId, @target_ontology.ontologyId, params[:page], 10, :user_id => params[:user], :sources => params[:map_source], :unidirectional => "true", :ranked => "true")
-      @mappings = {}
-      @map_sources = []
-      @users = []
-      user_count = DataAccess.getMappingCountOntologyUsers(@ontology.ontologyId, @target_ontology.ontologyId)
+    @mapping_pages = LinkedData::Client::HTTP.get(MAPPINGS_URL, {page: page, ontologies: ontologies.join(",")})
+    @mappings = @mapping_pages.collection
 
-      user_count.each do |user|
-        @users << DataAccess.getUser(user['userId'])
-      end
-      @users.sort! {|a,b| a.username.downcase <=> b.username.downcase}
-
-      for map in @mapping_pages
-        @map_sources << map.map_source.gsub(/(<[^>]*>)/mi, "") unless map.map_source.nil? || map.map_source.empty?
-        @map_sources.uniq!
-
-        if @mappings[map.source_id].nil?
-          @mappings[map.source_id] = [{:source_ont_name=>map.source_ont_name,:destination_ont_name=>map.destination_ont_name,:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.username],:count=>1,:source_missing=>map.source_missing?,:target_missing=>map.target_missing?}]
-        else
-          @mappings[map.source_id]
-
-          found = false
-          for mapping in @mappings[map.source_id]
-            if mapping[:destination_id].eql?(map.destination_id)
-              found = true
-              mapping[:users] << map.user.username
-              mapping[:users].uniq!
-              mapping[:count] += 1
-            end
-          end
-
-          unless found
-           @mappings[map.source_id] << {:source_ont_name=>map.source_ont_name,:destination_ont_name=>map.destination_ont_name,:source_ont=>map.source_ont,:source_name=>map.source_name,:destination_ont=>map.destination_ont,:destination_name=>map.destination_name,:destination_id=>map.destination_id,:users=>[map.user.username],:count=>1,:source_missing=>map.source_missing?,:target_missing=>map.target_missing?}
-          end
-        end
-      end
-
-      @mappings = @mappings.sort {|a,b| b[1].length<=>a[1].length}
-
-      if @mapping_pages.nil? || @mapping_pages.empty?
-        @mapping_pages = MappingPage.new
-        @mapping_pages.page_size = 1
-        @mapping_pages.total_mappings = 0
-        @mapping_pages.page_number = 1
-      end
-
-      # This converts the mappings into an object that can be used with the pagination plugin
-      @page_results = WillPaginate::Collection.create(@mapping_pages.page_number, @mapping_pages.page_size, @mapping_pages.total_mappings) do |pager|
-         pager.replace(@mapping_pages)
-      end
-    else
-      @mapping_pages = DataAccess.getBetweenOntologiesMappings(@ontology.ontologyId, @target_ontology.ontologyId, 1, 10000, :user_id => params[:user], :sources => params[:map_source], :unidirectional => "true")
+    if @mapping_pages.nil? || @mapping_pages.collection.empty?
+      @mapping_pages = MappingPage.new
+      @mapping_pages.page = 1
+      @mapping_pages.pageCount = 1
     end
 
-    if params[:rdf].nil? || !params[:rdf].eql?("rdf")
-      render :partial => 'show'
-    else
-      send_data to_RDF(@mapping_pages), :type => 'text/html', :disposition => 'attachment; filename=mappings.rdf'
+    total_results = @mapping_pages.pageCount * @mapping_pages.collection.length
+
+    # This converts the mappings into an object that can be used with the pagination plugin
+    @page_results = WillPaginate::Collection.create(@mapping_pages.page, @mapping_pages.collection.length, total_results) do |pager|
+       pager.replace(@mapping_pages.collection)
     end
+
+    render :partial => 'show'
   end
 
   def get_concept_table
-    @ontology = DataAccess.getOntology(params[:ontologyid])
-    @concept = DataAccess.getNode(@ontology.id, params[:conceptid])
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontologyid]).first
+    @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
 
-    @mappings = DataAccess.getConceptMappings(@ontology.ontologyId, @concept.fullId)
+    @mappings = @concept.explore.mappings
 
+    # TODO_REV: Enable mappings deletion
     # check to see if user should get the option to delete
-    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
+    # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
     render :partial => "mapping_table"
   end
 
-  def upload
-    @ontologies = @ontologies = DataAccess.getOntologyList()
-    @users = User.find(:all)
-  end
-
-
-  def process_mappings
-     MappingLoader.processMappings(params)
-
-     flash[:notice] = 'Mappings are processed'
-     @ontologies = @ontologies = DataAccess.getOntologyList()
-     @users = User.find(:all)
-     render :action=>:upload
-  end
-
   def new
-    @ontology_from = DataAccess.getOntology(params[:ontology_from]) rescue OntologyWrapper.new
-    @ontology_to = DataAccess.getOntology(params[:ontology_to]) rescue OntologyWrapper.new
-    @concept_from = DataAccess.getNode(@ontology_from.id, params[:conceptid_from]) rescue NodeWrapper.new
-    @concept_to = DataAccess.getNode(@ontology_to.id, params[:conceptid_to]) rescue NodeWrapper.new
+    @ontology_from = LinkedData::Client::Models::Ontology.find(params[:ontology_from])
+    @ontology_to = LinkedData::Client::Models::Ontology.find(params[:ontology_to])
+    @concept_from = @ontology_from.explore.single_class({full: true}, params[:conceptid_from]) if @ontology_from
+    @concept_to = @ontology_to.explore.single_class({full: true}, params[:conceptid_to]) if @ontology_to
+
+    # Defaults just in case nothing gets provided
+    @ontology_from ||= LinkedData::Client::Models::Ontology.new
+    @ontology_to ||= LinkedData::Client::Models::Ontology.new
+    @concept_from ||= LinkedData::Client::Models::Class.new
+    @concept_to ||= LinkedData::Client::Models::Class.new
 
     if request.xhr? || params[:no_layout].eql?("true")
-      render :layout => "minimal"
+      render :layout => "none"
     else
       render :layout => "ontology"
     end
@@ -164,30 +115,29 @@ class MappingsController < ApplicationController
   # POST /mappings
   # POST /mappings.xml
   def create
-    source_ontology = DataAccess.getOntology(params[:map_from_bioportal_ontology_id])
-    target_ontology = DataAccess.getOntology(params[:map_to_bioportal_ontology_id])
-    source = DataAccess.getNode(source_ontology.id, params[:map_from_bioportal_full_id])
-    target = DataAccess.getNode(target_ontology.id, params[:map_to_bioportal_full_id])
-    comment = params[:mapping_comment]
-    unidirectional = params[:mapping_bidirectional].eql?("false")
-    relation = params[:mapping_relation]
+    source_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_from_bioportal_ontology_id]).first
+    target_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_to_bioportal_ontology_id]).first
+    source = source_ontology.explore.single_class(params[:map_from_bioportal_full_id])
+    target = target_ontology.explore.single_class(params[:map_to_bioportal_full_id])
 
-    @mapping = DataAccess.createMapping(source.fullId, source.ontology.ontologyId, target.fullId, target.ontology.ontologyId, session[:user].id, comment, unidirectional, relation)
+    values = {
+      classes: [
+        {class: [source.id], ontology: source_ontology.id},
+        {class: [target.id], ontology: target_ontology.id}
+      ],
+      creator: session[:user].id,
+      relation: params[:mapping_relation],
+      comment: params[:mapping_comment]
+    }
+    @mapping = LinkedData::Client::Models::Mapping.new(values: values)
 
-    # Adds mapping to syndication
-    begin
-      @mapping.each do |mapping|
-        event = EventItem.new
-        event.event_type= "Mapping"
-        event.event_type_id = mapping.id
-        event.ontology_id = mapping.source_ont
-        event.save
-      end
-    rescue Exception => e
-      LOG.add :debug, "Problem adding mapping to RSS feed"
+    @mapping_saved = @mapping.save
+
+    if @mapping_saved.errors
+      raise Exception, @mapping_saved.errors
+    else
+      render :json => @mapping_saved
     end
-
-    render :json => @mapping
   end
 
   def destroy
@@ -216,169 +166,5 @@ class MappingsController < ApplicationController
 
     render :json => { :success => successes, :error => errors }
   end
-
-private
-
-  # TODO: mappings in triple store now use different properties (May 2012):
-  # mappings:source_ontology  => ontology URI
-  # mappings:target_ontology  => ontology URI
-  # May need to update the properties and replace these lines below:
-  #<mappings:source_ontology_id rdf:datatype=\"xsd:int\">#{mapping.source_ontology}</mappings:source_ontology_id>
-  #<mappings:target_ontology_id rdf:datatype=\"xsd:int\">#{mapping.target_ontology}</mappings:target_ontology_id>
-
-  def to_RDF(mappings)
-    rdf_text = "<?xml version='1.0' encoding='UTF-8'?>
-
-  <rdf:RDF
-    xmlns=\"http://bioontology.org/mappings/mappings.rdf#\"
-        xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\"
-    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"
-    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"
-    xmlns:mappings=\"http://protege.stanford.edu/ontologies/mappings/mappings.rdfs#\">
-
-         <rdfs:Class rdf:about=\"mappings:One_To_One_Mapping\">
-             <rdfs:label rdf:datatype=\"xsd:string\"
-                 >One_To_One_Mapping</rdfs:label>
-         </rdfs:Class>
-
-         <rdf:Property rdf:about=\"mappings:id\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:anyURI\"/>
-             <rdfs:label rdf:datatype=\"xsd:string\">id</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:source\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:anyURI\"/>
-             <rdfs:label rdf:datatype=\"xsd:string\">source</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:target\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:anyURI\"/>
-             <rdfs:label rdf:datatype=\"xsd:string\">target</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:relation\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:anyURI\"/>
-              <rdfs:label rdf:datatype=\"xsd:string\">relation</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:source_ontology_id\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:int\"/>
-              <rdfs:label rdf:datatype=\"xsd:string\">source ontology id</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:target_ontology_id\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:int\"/>
-              <rdfs:label rdf:datatype=\"xsd:string\">target ontology id</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:created_in_source_ontology_version\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:int\"/>
-              <rdfs:label rdf:datatype=\"xsd:string\">created in source ontology version</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:created_in_target_ontology_version\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:int\"/>
-              <rdfs:label rdf:datatype=\"xsd:string\">created in target ontology version</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:date\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:datetime\"/>
-             <rdfs:label rdf:datatype=\"xsd:string\">date</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:submitted_by\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:int\"/>
-             <rdfs:label rdf:datatype=\"xsd:string\">submitted by</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:mapping_type\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:string\"/>
-             <rdfs:label rdf:datatype=\"xsd:string\">mapping type</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:dependency\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:anyURI\"/>
-             <rdfs:label rdf:datatype=\"xsd:string\">dependency</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:comment\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:string\"/>
-              <rdfs:label rdf:datatype=\"xsd:string\">comment</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:mapping_source\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:string\"/>
-             <rdfs:label rdf:datatype=\"xsd:string\">mapping source</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:mapping_source_name\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:string\"/>
-             <rdfs:label rdf:datatype=\"xsd:string\">mapping_source_name</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:mapping_source_contact_info\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:string\"/>
-             <rdfs:label rdf:datatype=\"xsd:string\">mapping source contact info</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:mapping_source_site\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:anyURI\"/>
-             <rdfs:label rdf:datatype=\"xsd:string\">mapping source site</rdfs:label>
-         </rdf:Property>
-
-         <rdf:Property rdf:about=\"mappings:mapping_source_algorithm\">
-             <rdfs:domain rdf:resource=\"mappings:One_To_One_Mapping\"/>
-             <rdfs:range rdf:resource=\"xsd:anyURI\"/>
-             <rdfs:label rdf:datatype=\"xsd:string\">mapping source algorithm</rdfs:label>
-         </rdf:Property>
-
-         "
-    
-         for mapping in mappings
-          rdf_text << "<mappings:One_To_One_Mapping rdf:about=\"#{mapping.id}\">
-             <mappings:source rdf:resource='#{mapping.source}'/>
-             <mappings:target rdf:resource='#{mapping.target}'/>
-             <mappings:relation rdf:resource='#{mapping.relation}' />
-             <mappings:source_ontology_id rdf:datatype=\"xsd:int\">#{mapping.source_ontology}</mappings:source_ontology_id>
-             <mappings:target_ontology_id rdf:datatype=\"xsd:int\">#{mapping.target_ontology}</mappings:target_ontology_id>
-             <mappings:created_in_source_ontology_version rdf:datatype=\"xsd:int\">#{mapping.source_ontology_version}</mappings:created_in_source_ontology_version>
-             <mappings:created_in_target_ontology_version rdf:datatype=\"xsd:int\">#{mapping.target_ontology_version}</mappings:created_in_target_ontology_version>
-             <mappings:date rdf:datatype=\"xsd:datetime\">#{mapping.date}</mappings:date>
-             <mappings:submitted_by rdf:datatype=\"xsd:int\">#{mapping.submitted_by}</mappings:submitted_by>
-             <mappings:mapping_type rdf:datatype=\"xsd:string\">#{mapping.mapping_type}</mappings:mapping_type>
-             <mappings:dependency rdf:resource='#{mapping.dependency}' />
-             <mappings:comment rdf:datatype=\"xsd:string\">#{mapping.comment}</mappings:comment>
-             <mappings:mapping_source rdf:datatype=\"xsd:string\">#{mapping.mapping_source}</mappings:mapping_source>
-             <mappings:mapping_source_name rdf:datatype=\"xsd:string\">#{mapping.mapping_source_name}</mappings:mapping_source_name>
-             <mappings:mapping_source_contact_info rdf:datatype=\"xsd:string\">#{mapping.mapping_source_contact_info}</mappings:mapping_source_contact_info>
-             <mappings:mapping_source_site rdf:resource='#{mapping.mapping_source_site}' />
-             <mappings:mapping_source_algorithm rdf:datatype=\"xsd:string\">#{mapping.mapping_source_algorithm}</mappings:mapping_source_algorithm>
-          </mappings:One_To_One_Mapping>
-
-          "
-        end
-
-
-     rdf_text << "</rdf:RDF>"
-     return rdf_text
-  end
-
 
 end

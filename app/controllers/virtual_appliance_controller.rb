@@ -20,12 +20,12 @@ class VirtualApplianceController < ApplicationController
     users_with_access = VirtualApplianceUser.find(:all)
     @users_with_access = []
     users_with_access.each do |user|
-      @users_with_access << DataAccess.getUser(user.user_id)
+      @users_with_access << LinkedData::Client::Models::User.find(user.user_id)
     end
   end
 
   def create
-    user = DataAccess.getUserByUsername(params[:appliance_user][:user_id])
+    user = LinkedData::Client::Models::User.find_by_username(params[:appliance_user][:user_id]).first
 
     if user.nil?
       flash[:admin_error] = "Problem adding account <b>#{params[:appliance_user][:user_id]}</b>, account does not exist"

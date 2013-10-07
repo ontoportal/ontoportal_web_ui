@@ -3,8 +3,30 @@
 require 'uri'
 require 'cgi'
 require 'digest/sha1'
+require 'pry' # used in a rescue
 
 module ApplicationHelper
+
+  def bp_config_json
+    {
+      org: $ORG,
+      org_url: $ORG_URL,
+      site: $SITE,
+      org_site: $ORG_SITE,
+      ui_url: $UI_URL,
+      apikey: LinkedData::Client.settings.apikey,
+      userapikey: get_apikey,
+      rest_url: LinkedData::Client.settings.rest_url
+    }.to_json
+  end
+
+  def get_apikey
+    unless session[:user].nil?
+      return session[:user].apikey
+    else
+      return LinkedData::Client.settings.apikey
+    end
+  end
 
   def isOwner?(id)
     unless session[:user].nil?
@@ -59,7 +81,7 @@ module ApplicationHelper
   end
 
   def get_username(user_id)
-    user = DataAccess.getUser(user_id) rescue nil
+    user = LinkedData::Client::Models::User.find(user_id)
     username = user.nil? ? user_id : user.username
     username
   end
@@ -67,7 +89,9 @@ module ApplicationHelper
   # end Notes-related helpers
 
   def remove_owl_notation(string)
-    # Remove 'titleize', see GForge ticket #4309.
+    # TODO_REV: No OWL notation, but should we modify the IRI?
+    return string
+
     unless string.nil?
       strings = string.split(":")
       if strings.size<2
@@ -162,24 +186,20 @@ module ApplicationHelper
       draw_root = ""
     end
 
+    node.children.sort! {|a,b| a.prefLabel.downcase <=> b.prefLabel.downcase}
+
     unless node.children.nil? || node.children.length < 1
       for child in node.children
         icons = ""
-        if child.note_icon
-          icons << "<img src='/images/notes_icon.png'style='vertical-align:bottom;'height='15px' title='Term Has Margin Notes'>"
-        end
-
-        if child.map_icon
-          icons << "<img src='/images/map_icon.png' style='vertical-align:bottom;' height='15px' title='Term Has Mappings'>"
-        end
 
         active_style =""
+        child.id.eql?(id)
         if child.id.eql?(id)
           active_style="class='active'"
         end
 
         open = ""
-        if child.expanded
+        if child.expanded?
           open = "class='open'"
         end
 
@@ -189,15 +209,17 @@ module ApplicationHelper
         li_id = child.id.eql?("bp_fake_root") ? "bp_fake_root" : short_uuid
 
         # Return different result for too many children
-        if child.label.eql?("*** Too many children...")
-          number_of_terms = id.eql?("root") ? DataAccess.getLightNode(child.ontology_id, "root", 1).child_size : node.child_size
-          retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{child.ontology_id}/?conceptid=#{CGI.escape(id)}&callback=children&too_many_children_override=true'>Get all terms</a>"
-          string << "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{number_of_terms} terms at this level. Retrieving these may take several minutes. #{retry_link}</div>"
+        if child.prefLabel.eql?("*** Too many children...")
+          number_of_classes = id.eql?("root") ? child.explore.ontology.explore.roots.length : node.childrenCount
+          retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(id)}&callback=children&too_many_children_override=true'>Get all classes</a>"
+          string << "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{number_of_classes} classes at this level. Retrieving these may take several minutes. #{retry_link}</div>"
+        elsif child.id.eql?("bp_fake_root")
+          string << "<li class='active' id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='#' #{active_style}>#{child.prefLabel}</a></li>"
         else
-          string << "<li #{open} #{draw_root} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.ontology_id}/?p=terms&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.label_html} #{icons}</a>"
-          if child.child_size > 0 && !child.expanded
-            string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.ontology_id}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.child_size}'>#{child.label_html}</a></li></ul>"
-          elsif child.expanded
+          string << "<li #{open} #{draw_root} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.prefLabel} #{icons}</a>"
+          if child.childrenCount && child.childrenCount > 0 && !child.expanded?
+            string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.childrenCount}'>ajax_class</a></li></ul>"
+          elsif child.expanded?
             string << "<ul>"
             build_tree(child,"child",string,id)
             string << "</ul>"
@@ -237,94 +259,103 @@ module ApplicationHelper
   end
 
   def anonymous_user
-    user = DataAccess.getUser($ANONYMOUS_USER)
+    #
+    # TODO: Fix and failures from removing 'DataAccess' call here.
+    #
+    #user = DataAccess.getUser($ANONYMOUS_USER)
     user ||= User.new({"id" => 0})
   end
 
-  def init_ontology_picker(ontologies = nil, selected_ontologies = [])
-    ontologies = DataAccess.getOntologyList if ontologies.nil?
-    groups = DataAccess.getGroups.to_a
-    categories = DataAccess.getCategories
-
-    groups_map = {}
-    categories_map = {}
-    onts_in_group_or_category_map = {}
-
-    @onts_for_select = []
-    @onts_for_js = [];
-    ontologies.each do |ont|
-      abbreviation = ont.abbreviation.nil? ? "" : "(" + ont.abbreviation + ")"
-      @onts_for_select << [ont.displayLabel.strip + " " + abbreviation, ont.ontologyId.to_i]
-      @onts_for_js << "\"#{ont.displayLabel.strip} #{abbreviation}\": \"#{abbreviation.gsub("(", "").gsub(")", "")}\""
-
-      ont.groups.each do |group_id|
-        onts_in_group_or_category_map[ont.ontologyId] = 1
-        groups_map[group_id.to_i] = Array.new if groups_map[group_id.to_i].nil?
-        groups_map[group_id.to_i] << ont.ontologyId
-      end
-
-      ont.categories.each do |cat_id|
-        onts_in_group_or_category_map[ont.ontologyId] = 1
-        categories_map[cat_id.to_i] = Array.new if categories_map[cat_id.to_i].nil?
-        categories_map[cat_id.to_i] << ont.ontologyId
-      end
-    end
-    @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
-
-    @onts_in_group_or_category_for_js = onts_in_group_or_category_map.keys
-
-    @groups_for_select = []
-    groups.each do |group|
-      acronym = group[:acronym].nil? ? "" : " (#{group[:acronym]})"
-      @groups_for_select << [ group[:name] + acronym, group[:id].to_i ]
-    end
-    @groups_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
-
-    @groups_for_js = []
-    groups_map.each do |group_id, groups|
-      @groups_for_js << "#{group_id}: [ #{groups.join(", ")} ]"
-    end
-
-    @categories_for_select = categories_for_select
-
-    @categories_for_js = []
-    categories_map.each do |cat_id, cat|
-      @categories_for_js << "#{cat_id}: [ #{cat.join(", ")} ]"
-    end
-  end
-
-  def init_ontology_picker_single
-    ontologies = DataAccess.getOntologyList
-    @onts_for_select = []
-    @onts_for_js = [];
-    ontologies.each do |ont|
-      abbreviation = ont.abbreviation.nil? ? "" : "(" + ont.abbreviation + ")"
-      @onts_for_select << [ont.displayLabel.strip + " " + abbreviation, ont.ontologyId.to_i]
-      @onts_for_js << "\"#{ont.displayLabel.strip} #{abbreviation}\": \"#{abbreviation.gsub("(", "").gsub(")", "")}\""
-    end
-    @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
-  end
-
-  def render_advanced_picker(custom_ontologies = nil, selected_ontologies = [], align_to_dom_id = "ontology_ontologyId_chzn")
+  def render_advanced_picker(custom_ontologies = nil, selected_ontologies = [], align_to_dom_id = nil)
     selected_ontologies ||= []
     init_ontology_picker(custom_ontologies, selected_ontologies)
     render :partial => "shared/ontology_picker_advanced", :locals => {
-      :custom_ontologies => custom_ontologies, :selected_ontologies => selected_ontologies, :align_to_dom_id => align_to_dom_id
+        :custom_ontologies => custom_ontologies, :selected_ontologies => selected_ontologies, :align_to_dom_id => align_to_dom_id
     }
+  end
+
+  def init_ontology_picker(ontologies = nil, selected_ontologies = [])
+    get_ontologies_data(ontologies)
+    get_groups_data
+    get_categories_data
+    # merge group and category ontologies into a json array
+    onts_in_gp_or_cat = @groups_map.values.flatten.to_set
+    onts_in_gp_or_cat.merge @categories_map.values.flatten.to_set
+    @onts_in_gp_or_cat_for_js = onts_in_gp_or_cat.sort.to_json
+  end
+
+  def init_ontology_picker_single
+    get_ontologies_data
+  end
+
+  def get_ontologies_data(ontologies = nil)
+    ontologies ||= LinkedData::Client::Models::Ontology.all(include: "acronym,name")
+    @onts_for_select = []
+    @onts_acronym_map = {}
+    @onts_uri2acronym_map = {}
+    ontologies.each do |ont|
+      # TODO: ontologies parameter may be a list of ontology models (not ontology submission models):
+      # ont.acronym instead of ont.ontology.acronym
+      # ont.name instead of ont.ontology.name
+      # ont.id instead of ont.ontology.id
+      # TODO: resource index and annotator pass in 'custom_ontologies' to the ontologies parameter.
+      next if ( ont.acronym.nil? or ont.acronym.empty? )
+      acronym = ont.acronym
+      name = ont.name
+      #id = ont.id # ontology URI
+      abbreviation = acronym.empty? ? "" : "(#{acronym})"
+      ont_label = "#{name.strip} #{abbreviation}"
+      #@onts_for_select << [ont_label, id]  # using the URI crashes the UI checkbox selection behavior.
+      @onts_for_select << [ont_label, acronym]
+      @onts_acronym_map[ont_label] = acronym
+      @onts_uri2acronym_map[ont.id] = acronym  # required in ontologies_to_acronyms
+    end
+    @onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+    @onts_for_js = @onts_acronym_map.to_json
+  end
+
+  def categories_for_select
+    # This method is called in the search index page.
+    get_ontologies_data
+    get_categories_data
+    return @categories_for_select
+  end
+
+  def get_categories_data
+    @categories_for_select = []
+    @categories_map = {}
+    categories = LinkedData::Client::Models::Category.all(include: "name,ontologies")
+    categories.each do |c|
+      @categories_for_select << [ c.name, c.id ]
+      @categories_map[c.id] = ontologies_to_acronyms(c.ontologies) # c.ontologies is a list of URIs
+    end
+    @categories_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+    @categories_for_js = @categories_map.to_json
+  end
+
+  def get_groups_data
+    @groups_map = {}
+    @groups_for_select = []
+    groups = LinkedData::Client::Models::Group.all(include: "acronym,name,ontologies")
+    groups.each do |g|
+      next if ( g.acronym.nil? or g.acronym.empty? )
+      @groups_for_select << [ g.name + " (#{g.acronym})", g.acronym ]
+      @groups_map[g.acronym] = ontologies_to_acronyms(g.ontologies) # g.ontologies is a list of URIs
+    end
+    @groups_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+    @groups_for_js = @groups_map.to_json
+  end
+
+  def ontologies_to_acronyms(ontologyIDs)
+    acronyms = []
+    ontologyIDs.each do |id|
+      acronyms << @onts_uri2acronym_map[id]  # hash generated in get_ontologies_data
+    end
+    return acronyms.compact # remove nil values from any failures to convert ontology URI to acronym
   end
 
   def at_slice?
     !@subdomain_filter.nil? && !@subdomain_filter[:active].nil? && @subdomain_filter[:active] == true
-  end
-
-  def categories_for_select
-    categories = DataAccess.getCategories
-    categories_for_select = []
-    categories.each do |cat_id, cat|
-      categories_for_select << [ cat[:name], cat[:id] ]
-    end
-    categories_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
-    categories_for_select
   end
 
   def truncate_with_more(text, options = {})
@@ -416,6 +447,18 @@ module ApplicationHelper
     a = s.split(/\s/) # or /[ ]+/ to only split on spaces
     n = opts[:words]
     a[0...n].join(' ') + (a.size > n ? '...' : '')
+  end
+
+  # convert xml_date_time_str from triple store into "mm/dd/yyyy", e.g.:
+  # parse_xmldatetime_to_date( '2010-06-27T20:17:41-07:00' )
+  # => '06/27/2010'
+  def xmldatetime_to_date(xml_date_time_str)
+    require 'date'
+    d = DateTime.xmlschema( xml_date_time_str ).to_date
+    # Return conventional US date format:
+    return sprintf("%02d/%02d/%4d", d.month, d.day, d.year)
+    # Or return "yyyy/mm/dd" format with:
+    #return DateTime.xmlschema( xml_date_time_str ).to_date.to_s
   end
 
 end

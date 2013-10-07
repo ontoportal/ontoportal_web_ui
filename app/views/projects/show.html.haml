@@ -1,0 +1,30 @@
+- @title = "Project #{@project.name}"
+%script{:charset => "utf-8", :src => "/javascripts/jquery.rating.pack.js", :type => "text/javascript"}
+%link{:charset => "utf-8", :href => "/stylesheets/layout/jquery.rating.css", :media => "screen", :rel => "stylesheet", :title => "no title", :type => "text/css"}/
+%div{:style => "padding: 1em;"}
+  %h1{:style => "font-size: xx-large;"}= @project.name
+  - if session[:user] && (session[:user].id == @project.creator || session[:user].admin?)
+    = link_to "Edit Project", edit_project_path(@project.acronym)
+  %br/
+  %br/
+  %p{:style => "margin-bottom: 5px;"}
+    %strong Description:
+    = @project.description
+  %p{:style => "margin-bottom: 5px;"}
+    %strong Institution:
+    = @project.institution
+  %p{:style => "margin-bottom: 5px;"}
+    %strong Contacts:
+    = @project.contacts
+  %p
+    %strong Home Page:
+    - if @project.homePage
+      = link_to @project.homePage, @project.homePage
+  %h2{:style => "padding-top: 1em;"} Ontologies Used
+  - if @project.ontologyUsed.length == 0
+    No ontologies are currently associated with this project
+  %table.zebra{:cellpadding => "0", :cellspacing => "0", :width => "70%"}
+    %ul
+      - for ontology_id in @project.ontologyUsed
+        - ontology = LinkedData::Client::Models::Ontology.find(ontology_id)
+        %li= link_to ontology.name, ontology_path(ontology.acronym)
