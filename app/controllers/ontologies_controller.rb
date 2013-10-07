@@ -16,10 +16,6 @@ class OntologiesController < ApplicationController
     @ontologies = LinkedData::Client::Models::Ontology.all(include: "acronym,administeredBy,group,hasDomain,name,notes,projects,reviews,summaryOnly,viewingRestriction")
     #@views = @ontologies.map {|o| o if not o.viewOf.nil? }.compact
     @submissions = LinkedData::Client::Models::OntologySubmission.all
-    # try to get submission data for summaryOnly ontologies
-    summaryOnts = @ontologies.map {|o| o if o.summaryOnly }.compact
-    summarySubs = summaryOnts.map {|o| o.explore.submissions.first }.compact
-    @submissions.concat summarySubs
     @submissions_map = Hash[@submissions.map {|sub| [sub.ontology.acronym, sub] }]
     @categories = LinkedData::Client::Models::Category.all
     @groups = LinkedData::Client::Models::Group.all
