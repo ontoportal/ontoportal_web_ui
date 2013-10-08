@@ -459,8 +459,7 @@ function get_annotation_rows(annotation, text) {
     text_match = text.substring(a.from - 1, a.to);
     text_prefix = text.substring(0, a.from - 1);
     text_suffix = text.substring(a.to);
-    // TODO: consider string truncation around the annotation markups.
-    // remove everything prior to *the word preceding* the second space before the end of the string:
+    // remove everything prior to the preceding three words (using space delimiters):
     text_prefix = text_prefix.replace(/.* ((?:[^ ]* ){2}[^ ]*$)/, "... $1");
     // remove the fourth space and everything following it:
     text_suffix = text_suffix.replace(/^((?:[^ ]* ){3}[^ ]*) [\S\s]*/, "$1 ...");
