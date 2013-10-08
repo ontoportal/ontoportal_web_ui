@@ -143,7 +143,7 @@ module OntologiesHelper
   end
 
   def classes_link(ontology, count)
-    count = 0 if ontology.summaryOnly
+    return "0" if (ontology.summaryOnly || count.nil? || count == 0)
     return count_links(ontology.ontology.acronym, 'classes', count)
   end
 
@@ -164,7 +164,7 @@ module OntologiesHelper
   end
 
   def mappings_link(ontology, count)
-    count = 0 if ontology.summaryOnly
+    return "0" if (ontology.summaryOnly || count.nil? || count == 0)
     return count_links(ontology.ontology.acronym, 'mappings', count)
   end
 
@@ -215,10 +215,9 @@ module OntologiesHelper
   # Link for private/public/licensed ontologies
   def visibility_link(ontology)
     ont_url = "/ontologies/#{ontology.acronym}"  # 'ontology' is NOT a submission here
-    page_name = 'classes'  # default ontology page view for visibility link
+    page_name = 'summary'  # default ontology page view for visibility link
     link_name = 'Public'   # default ontology visibility
     if ontology.summaryOnly
-      page_name = 'summary'
       link_name = 'Summary Only'
     elsif ontology.private?
       link_name = 'Private'
