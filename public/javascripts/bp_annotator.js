@@ -456,12 +456,14 @@ function get_annotation_rows(annotation, text) {
   var match_span = '<span style="color: rgb(153,153,153);">';
   var match_markup_span = '<span style="color: rgb(35, 73, 121); font-weight: bold; padding: 2px 0px;">';
   jQuery.each(annotation.annotations, function (i, a) {
-
-    // TODO: consider string truncation around the annotation markups.
-
     text_match = text.substring(a.from - 1, a.to);
     text_prefix = text.substring(0, a.from - 1);
     text_suffix = text.substring(a.to);
+    // TODO: consider string truncation around the annotation markups.
+    // remove everything prior to *the word preceding* the second space before the end of the string:
+    text_prefix = text_prefix.replace(/.* ((?:[^ ]* ){2}[^ ]*$)/, "... $1");
+    // remove the fourth space and everything following it:
+    text_suffix = text_suffix.replace(/^((?:[^ ]* ){3}[^ ]*) [\S\s]*/, "$1 ...");
     text_markup = match_markup_span + text_match + "</span>";
     text_markup = match_span + text_prefix + text_markup + text_suffix + "</span>";
     //console.log('text markup: ' + text_markup);
