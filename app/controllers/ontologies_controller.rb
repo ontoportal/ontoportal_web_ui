@@ -228,16 +228,16 @@ class OntologiesController < ApplicationController
         redirect_to "/ontologies/#{params[:ontology]}#{params_string_for_redirect(params)}", :status => :moved_permanently
         return
       when "classes"
-        self.classes
+        self.classes rescue self.summary
         return
       when "mappings"
-        self.mappings
+        self.mappings rescue self.summary
         return
       when "notes"
-        self.notes
+        self.notes rescue self.summary
         return
       when "widgets"
-        self.widgets
+        self.widgets rescue self.summary
         return
       when "summary"
         self.summary
