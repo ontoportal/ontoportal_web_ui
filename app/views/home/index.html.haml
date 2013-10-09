@@ -165,7 +165,7 @@
     \&nbsp;&nbsp;
     %a{:href => "#", :onclick => "close_message(); return false;", :style => "font-size: small; color: darkGray;"} [close]
 %div{:style => "padding:10px;margin:10px;"}
-  = t('home.intro').nil? || t('home.intro').empty? ? "<span style='font-size:2em'><b>Welcome to BioPortal!</b></span> For help using #{$SITE}, click on this icon: #{help_icon("/help#Home_Page")}" : t('home.intro')
+  = t('home.intro').nil? || t('home.intro').empty? ? "<span style='font-size:1.5em'><b>Welcome to BioPortal!</b> For help using #{$SITE}, click on this icon: #{help_icon("/help#Home_Page")}</span>" : t('home.intro')
 %table{:width => "100%"}
   %tr
     %td{:valign => "top", :width => "33%"}

@@ -10,19 +10,33 @@
       %tr
         %th Visibility
         %td= strip_links(visibility_link(@ontology))
+
       - if !$PURL_ENABLED.nil? && $PURL_ENABLED && !@ontology.summaryOnly
         %tr
           %th
-            = $SITE
-            PURL
+            = "#{$SITE} PURL".strip
           %td
             = auto_link(@ontology.purl, :all, :target => "_blank")
+
       - if @ontology.viewing_restricted?
         %tr
           %th
             Viewing Restriction
           %td
             = @ontology.viewingRestriction.capitalize
+
+      - if @ontology.respond_to?('viewOf')
+        - unless @ontology.viewOf.nil?
+          %tr
+            %th
+              View of Ontology
+            %td
+              - ont_parent_acronym = @ontology.viewOf.split('/').last
+              - if !$PURL_ENABLED.nil? && $PURL_ENABLED
+                - ont_url = @ontology.purl.sub(@ontology.acronym, ont_parent_acronym)
+              - else
+                - ont_url = @ontology.links['ui'].sub(@ontology.acronym, ont_parent_acronym)
+              = auto_link(ont_url, :all, :target => "_blank")
 
       -# Get the latest submission (not necessarily the latest ready submission).
       - sub = @submission_latest
