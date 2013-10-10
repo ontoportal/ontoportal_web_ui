@@ -47,7 +47,7 @@ class SearchController < ApplicationController
       json << "|#{result.id}" # Duplicated because we used to have shortId and fullId
       json << "|#{result.prefLabel}"
       # json << "|#{result[:contents]}" TODO_REV: Fix contents for search
-      json << "|"
+      json << '|' + MultiJson.dump({synonym: result.synonym})
       if params[:id] && params[:id].split(",").length == 1
         json << "|#{CGI.escape((result.definition || []).join(". "))}#{separator}"
       else
