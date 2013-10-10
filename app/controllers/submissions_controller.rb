@@ -52,6 +52,10 @@ class SubmissionsController < ApplicationController
     # Make the contacts an array
     params[:submission][:contact] = params[:submission][:contact].values
 
+    # Update summaryOnly on ontology object
+    @ontology.summaryOnly = @submission.isRemote.eql?("3")
+    @ontology.save
+
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
     submissions = @ontology.explore.submissions
     @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
