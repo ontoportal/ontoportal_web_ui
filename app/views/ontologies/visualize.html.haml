@@ -53,11 +53,22 @@
     // Formats the Jump To search results
     function formatItem(row) {
       var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
-      var keywords = jQuery("#search_box").val().replace(specials, "\\$&").split(' ').join('|');
+      var keywords = jQuery("#search_box").val().trim().replace(specials, "\\$&").split(' ').join('|');
       var regex = new RegExp( '(' + keywords + ')', 'gi' );
       var matchType = "";
       if (typeof row[2] !== "undefined" && row[2] !== "") {
         matchType = " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
+      }
+
+      if (row[0].match(regex) == null) {
+        var contents = JSON.parse(row[6].replace("'", '"', "gi"));
+        var synonym = contents.synonym || null;
+        if (synonym !== null) {
+          var matchSynonym = jQuery.grep(synonym, function(e){
+            return e.match(regex) != null;
+          });
+          row[0] = row[0] + " (synonym: " + matchSynonym.join(" ") + ")";
+        }
       }
       return row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + matchType;
     }
