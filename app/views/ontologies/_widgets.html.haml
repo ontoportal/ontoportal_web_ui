@@ -1,6 +1,6 @@
 
-- widget_uri = "/ontologies/#{@ontology.acronym}?p=widgets"
-- get_code_prefix = widget_uri + '#TB_inline?height=400&width=600'
+- ont_uri = "/ontologies/#{@ontology.acronym}"
+- get_code_prefix = ont_uri + '?p=widgets#TB_inline&height=400&width=600'
 
 - if @ontology.metadata_only?
   #widgets_content{:style => "padding: 1em;"}
