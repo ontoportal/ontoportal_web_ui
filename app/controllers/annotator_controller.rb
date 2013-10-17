@@ -15,11 +15,6 @@ class AnnotatorController < ApplicationController
       @semantic_types_for_select << ["#{label} (#{code})", code]
     end
     @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
-    # TODO: Duplicate the filteredOntologyList for the LinkedData client?
-    #ontology_ids = []
-    #annotator.ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
-    #@annotator_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
-    #@annotator_ontologies = LinkedData::Client::Models::OntologySubmission.all
     @annotator_ontologies = LinkedData::Client::Models::Ontology.all
   end
 
@@ -49,7 +44,9 @@ class AnnotatorController < ApplicationController
     annotations = parse_json(query) # See application_controller.rb
     #annotations = LinkedData::Client::HTTP.get(query)
     LOG.add :debug, "Retrieved #{annotations.length} annotations: #{Time.now - start}s"
-    massage_annotated_classes(annotations, options) unless annotations.empty?
+    unless annotations.empty? || params[:raw]
+      massage_annotated_classes(annotations, options)
+    end
     # Trying to generate highlighted match context in controller.  More
     # overhead on controller and more data transfer to the client.
     # This is handled in bp_annotator.js, to move the processing load onto
