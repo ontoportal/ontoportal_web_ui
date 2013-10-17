@@ -1,3 +1,7 @@
+
+- widget_uri = "/ontologies/#{@ontology.acronym}?p=widgets"
+- get_code_prefix = widget_uri + '#TB_inline?height=400&width=600'
+
 - if @ontology.metadata_only?
   #widgets_content{:style => "padding: 1em;"}
     %p
@@ -40,11 +44,10 @@
               %h4
                 Type a class in #{@ontology.name} and jump to it in #{$SITE}
               %br/
-              %a.thickbox.getcode{:href => "#TB_inline?height=400&width=600&inlineId=jump"} Get Code
+              %a.thickbox.getcode{:href => "#{get_code_prefix}&inlineId=jump".html_safe} Get Code
             %td
               #bp_quick_jump
               :javascript
-                // Set defaults for this installation
                 var BP_SEARCH_SERVER = "#{$UI_URL}";
                 var BP_SITE = "#{$SITE}";
                 var BP_ORG = "#{$ORG}";
@@ -99,7 +102,7 @@
               %h4
                 Fill in a field in your form with a class from #{@ontology.name}
               %br/
-              %a.thickbox.getcode{:href => "#TB_inline?height=400&width=600&inlineId=form"} Get Code
+              %a.thickbox.getcode{:href => "#{get_code_prefix}&inlineId=form".html_safe} Get Code
             %td
               = javascript_include_tag "/javascripts/widgets/form_complete.js"
               Example 1 (start typing the class name to get its full URI)
@@ -155,8 +158,7 @@
                               put the complete URI of the class (e.g.,
                               = succeed ");" do
                                 %a.external.free{:href => "#{$UI_URL}/visualize/39478/Common_Neoplasm", :rel => "nofollow", :title => "#{$UI_URL}/visualize/39478/Common_Neoplasm"}
-                                  = $UI_URL
-                                  \/visualize/39478/Common_Neoplasm
+                                  = "#{$UI_URL}/visualize/39478/Common_Neoplasm"
                             %li
                               %code shortid
                               put the short id of the class, as used in #{$SITE} (e.g., "Common_Neoplasm");
@@ -189,7 +191,7 @@
               %h4
                 Get RSS feed for changes in #{@ontology.name}
               %br/
-              %a.thickbox.getcode{:href => "#TB_inline?height=400&width=600&inlineId=feed"} Get Code
+              %a.thickbox.getcode{:href => "#{get_code_prefix}&inlineId=feed".html_safe} Get Code
             %td
               #bp_feed_container
               :javascript
