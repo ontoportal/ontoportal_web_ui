@@ -47,6 +47,7 @@ function get_annotations() {
   params.text = jQuery("#annotation_text").val();
   params.max_level = jQuery("#max_level").val();
   params.ontologies = (ont_select.val() === null) ? [] : ont_select.val();
+  //params.raw = true;  // do not resolve class prefLabel or ontology names.
 
   // Use the annotator default for wholeWordOnly = true.
   //if (jQuery("#wholeWordOnly:checked").val() !== undefined) {
@@ -431,7 +432,7 @@ function get_link(uri, label) {
 }
 
 
-function get_annotation_rows(annotation, text) {
+function get_annotation_rows(annotation, params) {
   "use strict";
   var match_type_translation = { "mgrep": "direct", "mapping": "mapping", "closure": "ancestor" };
   var result = {},
@@ -456,9 +457,9 @@ function get_annotation_rows(annotation, text) {
   var match_span = '<span style="color: rgb(153,153,153);">';
   var match_markup_span = '<span style="color: rgb(35, 73, 121); font-weight: bold; padding: 2px 0px;">';
   jQuery.each(annotation.annotations, function (i, a) {
-    text_match = text.substring(a.from - 1, a.to);
-    text_prefix = text.substring(0, a.from - 1);
-    text_suffix = text.substring(a.to);
+    text_match = params.text.substring(a.from - 1, a.to);
+    text_prefix = params.text.substring(0, a.from - 1);
+    text_suffix = params.text.substring(a.to);
     // remove everything prior to the preceding three words (using space delimiters):
     text_prefix = text_prefix.replace(/.* ((?:[^ ]* ){2}[^ ]*$)/, "... $1");
     // remove the fourth space and everything following it:
@@ -584,7 +585,7 @@ function display_annotations(annotations, params) {
   "use strict";
   var all_rows = [];
   for (var i = 0; i < annotations.length; i++) {
-    all_rows = all_rows.concat( get_annotation_rows(annotations[i], params.text) );
+    all_rows = all_rows.concat( get_annotation_rows(annotations[i], params) );
   }
   update_annotations_table(all_rows);
   // Generate parameters for list at bottom of page
