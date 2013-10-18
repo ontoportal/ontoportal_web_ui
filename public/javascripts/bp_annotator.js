@@ -431,31 +431,96 @@ function get_link(uri, label) {
   return '<a href="' + uri + '">' + label + '</a>';
 }
 
+function get_class_details(cls) {
+  var
+    cls_rel_ui = cls.ui.replace(/^.*\/\/[^\/]+/, ''),
+    ont_rel_ui = cls_rel_ui.replace(/\?p=classes.*$/, '?p=summary');
+  return class_details = {
+    cls_rel_ui: cls_rel_ui,
+    ont_rel_ui: ont_rel_ui,
+    cls_link: get_link(cls_rel_ui, cls.prefLabel),
+    ont_link: get_link(ont_rel_ui, cls.ontology.name),
+    semantic_types: cls.semanticType.join('; ') // test with 'abscess' text and sem type = T046,T020
+  }
+}
+
 
 function get_annotation_rows(annotation, params) {
   "use strict";
-  var match_type_translation = { "mgrep": "direct", "mapping": "mapping", "closure": "ancestor" };
-  var result = {},
-    cls = annotation.annotatedClass,
+  // data independent var declarations
+  var
     rows = [],
     cells = [],
-    cls_rel_ui = null,
-    ont_rel_ui = null,
-    cls_link = null,
-    ont_link = null,
-    match_type = '',
-    semantic_types = cls.semanticType.join('; '),// test with 'abscess' text and sem type = T046,T020
     text_match = null,
     text_prefix = null,
     text_suffix = null,
-    text_markup = null;
-  // Extract relative URIs
-  cls_rel_ui = cls.ui.replace(/^.*\/\/[^\/]+/, '');
-  ont_rel_ui = cls_rel_ui.replace(/\?p=classes.*$/, '?p=summary');
-  cls_link = get_link(cls_rel_ui, cls.prefLabel);
-  ont_link = get_link(ont_rel_ui, cls.ontology.name);
-  var match_span = '<span style="color: rgb(153,153,153);">';
-  var match_markup_span = '<span style="color: rgb(35, 73, 121); font-weight: bold; padding: 2px 0px;">';
+    text_markup = null,
+    match_type = '',
+    match_type_translation = { "mgrep": "direct", "mapping": "mapping", "closure": "ancestor" },
+    match_span = '<span style="color: rgb(153,153,153);">',
+    match_markup_span = '<span style="color: rgb(35, 73, 121); font-weight: bold; padding: 2px 0px;">';
+  // data dependent var declarations
+  var cls = get_class_details(annotation.annotatedClass);
+  jQuery.each(annotation.annotations, function (i, a) {
+    text_match = params.text.substring(a.from - 1, a.to);
+    text_prefix = params.text.substring(0, a.from - 1);
+    text_suffix = params.text.substring(a.to);
+    // remove everything prior to the preceding three words (using space delimiters):
+    text_prefix = text_prefix.replace(/.* ((?:[^ ]* ){2}[^ ]*$)/, "... $1");
+    // remove the fourth space and everything following it:
+    text_suffix = text_suffix.replace(/^((?:[^ ]* ){3}[^ ]*) [\S\s]*/, "$1 ...");
+    text_markup = match_markup_span + text_match + "</span>";
+    text_markup = match_span + text_prefix + text_markup + text_suffix + "</span>";
+    //console.log('text markup: ' + text_markup);
+    match_type = match_type_translation[a.matchType.toLowerCase()] || 'direct';
+    cells = [ cls.cls_link, cls.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link ];
+    rows.push(cells);
+    // Add rows for any classes in the hierarchy.
+    match_type = 'ancestor';
+    var c = null, o = null, h_c = null;
+    jQuery.each(annotation.hierarchy, function (i, h) {
+      h_c = get_class_details(h.annotatedClass);
+      cells = [ h_c.cls_link, h_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link ];
+      rows.push(cells);
+    }); // hierarchy loop
+    // Add rows for any classes in the mappings. Note the ont_link will be different.
+    match_type = 'mapping';
+    var c = null, o = null, m_c = null;
+    jQuery.each(annotation.mappings, function (i, m) {
+      m_c = get_class_details(m.annotatedClass);
+      cells = [ m_c.cls_link, m_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link ];
+      rows.push(cells);
+    }); // mappings loop
+  }); // annotations loop
+  return rows;
+}
+
+function get_annotation_rows_from_raw(annotation, params) {
+  "use strict";
+  // data independent var declarations
+  var
+    rows = [],
+    cells = [],
+    text_match = null,
+    text_prefix = null,
+    text_suffix = null,
+    text_markup = null,
+    match_type = '',
+    match_type_translation = { "mgrep": "direct", "mapping": "mapping", "closure": "ancestor" },
+    match_span = '<span style="color: rgb(153,153,153);">',
+    match_markup_span = '<span style="color: rgb(35, 73, 121); font-weight: bold; padding: 2px 0px;">';
+  // data dependent var declarations
+  var
+    cls = annotation.annotatedClass,
+    cls_rel_ui = cls.links.ui.replace(/^.*\/\/[^\/]+/, ''),
+    ont_rel_ui = cls_rel_ui.replace(/\?p=classes.*$/, '?p=summary'),
+    cls_link = get_link(cls_rel_ui, cls['@id']),
+    ont_link = get_link(ont_rel_ui, cls.links.ontology);
+  //
+  // TODO: Get semantic types from raw data, currently provided by controller.
+  //
+  //semantic_types = cls.semanticType.join('; '); // test with 'abscess' text and sem type = T046,T020
+  var semantic_types = ''; // test with 'abscess' text and sem type = T046,T020
   jQuery.each(annotation.annotations, function (i, a) {
     text_match = params.text.substring(a.from - 1, a.to);
     text_prefix = params.text.substring(0, a.from - 1);
@@ -581,11 +646,22 @@ function update_annotations_table(rowsArray) {
   annotationsTable.fnAddData(rowsArray);
 }
 
+
 function display_annotations(annotations, params) {
   "use strict";
   var all_rows = [];
-  for (var i = 0; i < annotations.length; i++) {
-    all_rows = all_rows.concat( get_annotation_rows(annotations[i], params) );
+  if (params.raw !== undefined && params.raw === true) {
+    // The annotator_controller does not 'massage' the REST data.
+    // The class prefLabel and ontology name must be resolved with ajax.
+    for (var i = 0; i < annotations.length; i++) {
+      all_rows = all_rows.concat( get_annotation_rows_from_raw(annotations[i], params) );
+    }
+  } else {
+    // The annotator_controller does 'massage' the REST data.
+    // The class prefLabel and ontology name get resoled with a batch all in the controller.
+    for (var i = 0; i < annotations.length; i++) {
+      all_rows = all_rows.concat( get_annotation_rows(annotations[i], params) );
+    }
   }
   update_annotations_table(all_rows);
   // Generate parameters for list at bottom of page
