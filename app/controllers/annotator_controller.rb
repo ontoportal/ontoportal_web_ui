@@ -46,8 +46,21 @@ class AnnotatorController < ApplicationController
     LOG.add :debug, "Retrieved #{annotations.length} annotations: #{Time.now - start}s"
     unless annotations.empty? || params[:raw]
       massage_annotated_classes(annotations, options)
+      # ensure consistent data structure in response;
+      # ontology and semantic type data are in annotations already.
+      response = {
+          annotations: annotations,
+          ontologies: {},
+          semantic_types: {}
+      }
+    else
+      response = {
+          annotations: annotations,
+          ontologies: get_simplified_ontologies_hash,  # application_controller
+          semantic_types: get_semantic_types           # application_controller
+      }
     end
-    # Trying to generate highlighted match context in controller.  More
+    # Avoid highlighted match context in controller; it's more
     # overhead on controller and more data transfer to the client.
     # This is handled in bp_annotator.js, to move the processing load onto
     # the client side in JS.  (TODO: evaluate if JS handles UTF8.)
@@ -60,7 +73,7 @@ class AnnotatorController < ApplicationController
     #    annotation['context'] = context
     #  end
     #end
-    render :json => annotations
+    render :json => response
   end
 
 
