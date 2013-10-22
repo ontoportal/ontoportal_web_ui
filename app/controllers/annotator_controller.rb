@@ -15,11 +15,6 @@ class AnnotatorController < ApplicationController
       @semantic_types_for_select << ["#{label} (#{code})", code]
     end
     @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
-    # TODO: Duplicate the filteredOntologyList for the LinkedData client?
-    #ontology_ids = []
-    #annotator.ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
-    #@annotator_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
-    #@annotator_ontologies = LinkedData::Client::Models::OntologySubmission.all
     @annotator_ontologies = LinkedData::Client::Models::Ontology.all
   end
 
@@ -49,8 +44,23 @@ class AnnotatorController < ApplicationController
     annotations = parse_json(query) # See application_controller.rb
     #annotations = LinkedData::Client::HTTP.get(query)
     LOG.add :debug, "Retrieved #{annotations.length} annotations: #{Time.now - start}s"
-    massage_annotated_classes(annotations, options) unless annotations.empty?
-    # Trying to generate highlighted match context in controller.  More
+    unless annotations.empty? || params[:raw]
+      massage_annotated_classes(annotations, options)
+      # ensure consistent data structure in response;
+      # ontology and semantic type data are in annotations already.
+      response = {
+          annotations: annotations,
+          ontologies: {},
+          semantic_types: {}
+      }
+    else
+      response = {
+          annotations: annotations,
+          ontologies: get_simplified_ontologies_hash,  # application_controller
+          semantic_types: get_semantic_types           # application_controller
+      }
+    end
+    # Avoid highlighted match context in controller; it's more
     # overhead on controller and more data transfer to the client.
     # This is handled in bp_annotator.js, to move the processing load onto
     # the client side in JS.  (TODO: evaluate if JS handles UTF8.)
@@ -63,7 +73,7 @@ class AnnotatorController < ApplicationController
     #    annotation['context'] = context
     #  end
     #end
-    render :json => annotations
+    render :json => response
   end
 
 

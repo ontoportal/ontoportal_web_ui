@@ -1376,7 +1376,10 @@ div.tree_error {
   cursor: default;
   background-color: #B9D5E4;
   font-weight: bold;
-  padding: 2px;
+  padding-top: 0px;
+  padding-right: 2px;
+  padding-bottom: 0px;
+  padding-left: 2px;
 }
 .simpleTree a, .simpleTree a:hover {
   text-decoration: none;
