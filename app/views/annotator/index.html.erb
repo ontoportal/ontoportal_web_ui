@@ -40,6 +40,12 @@
       <%=select_tag :max_level, "<option selected='selected' value='0'>None</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option><option value='9'>9</option><option value='10'>10</option><option value='999'>All</option>", :style => "width: 70px;"%>
     </p>
 
+    <p>
+      <%=check_box_tag :use_ajax, false, false, :id => "use_ajax"%>
+      <%=label_tag :use_ajax, "Use Ajax to resolve class/ontology labels."%>
+      <br/>
+    </p>
+
     <!-- annotator_button calls 'get_annotations' in bp_annotator.js -->
     <input type="button" id="annotator_button" value="Get Annotations" style="margin-top: 15px;" class="link_button">
     <span class="annotator_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>

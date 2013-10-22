@@ -1,6 +1,7 @@
 var
   annotationsTable = null,
   bp_last_params = null,
+  annotator_ontologies = null,
   annotator_ajax_process_cls_interval = null,
   annotator_ajax_process_ont_interval = null,
   annotator_ajax_process_timing = 250; // It takes about 250 msec to resolve a class ID to a prefLabel
@@ -169,7 +170,13 @@ function get_annotations() {
   params.text = jQuery("#annotation_text").val();
   params.max_level = jQuery("#max_level").val();
   params.ontologies = (ont_select.val() === null) ? [] : ont_select.val();
-  params.raw = true;  // do not resolve class prefLabel or ontology names.
+
+  // UI checkbox to control using the batch call in the controller.
+  if( jQuery("#use_ajax").length > 0 ) {
+    params.raw = jQuery("#use_ajax").is(':checked');
+  } else {
+    params.raw = true;  // do not use batch call to resolve class prefLabel and ontology names.
+  }
 
   // Use the annotator default for wholeWordOnly = true.
   //if (jQuery("#wholeWordOnly:checked").val() !== undefined) {
@@ -572,11 +579,19 @@ function get_class_details_from_raw(cls) {
     ont_acronym = cls.links.ontology.replace(/.*\//,''),
     ont_rel_ui = '/ontologies/' + ont_acronym,
     cls_rel_ui = cls.links.ui.replace(/^.*\/\/[^\/]+/, '');
+  var
+    ont_name = annotator_ontologies[cls.links.ontology].name,
+    ont_link = null;
+  if(ont_name === undefined){
+    ont_link = get_link_for_ont_ajax(ont_acronym);
+  } else {
+    ont_link = get_link(ont_rel_ui, ont_name); // no ajax required!
+  }
   return class_details = {
     cls_rel_ui: cls_rel_ui,
     ont_rel_ui: ont_rel_ui,
     cls_link: get_link_for_cls_ajax(cls['@id'], ont_acronym),
-    ont_link: get_link_for_ont_ajax(ont_acronym),
+    ont_link: ont_link,
     //
     // TODO: Get semantic types from raw data, currently provided by controller.
     //semantic_types: cls.semanticType.join('; ') // test with 'abscess' text and sem type = T046,T020
@@ -756,7 +771,7 @@ function display_annotations(data, params) {
   if (params.raw !== undefined && params.raw === true) {
     // The annotator_controller does not 'massage' the REST data.
     // The class prefLabel and ontology name must be resolved with ajax.
-    var ontologies = data.ontologies;
+    annotator_ontologies = data.ontologies;
     for (var i = 0; i < annotations.length; i++) {
       all_rows = all_rows.concat( get_annotation_rows_from_raw(annotations[i], params) );
     }
