@@ -3,7 +3,7 @@ var
   bp_last_params = null,
   annotator_ajax_process_cls_interval = null,
   annotator_ajax_process_ont_interval = null,
-  annotator_ajax_process_timing = 200; // msec
+  annotator_ajax_process_timing = 250; // It takes about 250 msec to resolve a class ID to a prefLabel
 
 var annotator_ajax_process_halt = function () {
   "use strict";
@@ -14,14 +14,14 @@ var annotator_ajax_process_cls_halt = function () {
   "use strict";
   // clear all the classes and ontologies to be resolved by ajax
   jQuery("a.cls4ajax").removeClass('cls4ajax');
-  jQuery("a.ajax-modified").removeClass('ajax-modified');
+  jQuery("a.ajax-modified-cls").removeClass('ajax-modified-cls');
   window.clearInterval(annotator_ajax_process_cls_interval); // stop the ajax process
 };
 var annotator_ajax_process_ont_halt = function () {
   "use strict";
   // clear all the classes and ontologies to be resolved by ajax
   jQuery("a.ont4ajax").removeClass('ont4ajax');
-  jQuery("a.ajax-modified").removeClass('ajax-modified');
+  jQuery("a.ajax-modified-ont").removeClass('ajax-modified-ont');
   window.clearInterval(annotator_ajax_process_ont_interval); // stop the ajax process
 };
 
@@ -35,7 +35,7 @@ var ajax_process_ont = function() {
   if(linkA === undefined){
     return true;
   }
-  if(linkA.hasClass('ajax-modified') ){
+  if(linkA.hasClass('ajax-modified-ont') ){
     return true; // processed this one already.
   }
   linkA.removeClass('ont4ajax'); // processing this one.
@@ -45,14 +45,14 @@ var ajax_process_ont = function() {
     if(typeof data !== "undefined" && data.hasOwnProperty('name')){
       var ont_name = data.name;
       linkA.text(ont_name);
-      linkA.addClass('ajax-modified'); // processed this one.
+      linkA.addClass('ajax-modified-ont'); // processed this one.
       // find and process any identical ontologies
       jQuery( 'a[href="/ontologies/' + ontAcronym + '"]').each(function(i,e){
         var link = jQuery(this);
-        if(! link.hasClass('ajax-modified') ){
+        if(! link.hasClass('ajax-modified-ont') ){
           link.removeClass('ont4ajax');   // processing this one.
           link.text(ont_name);
-          link.addClass('ajax-modified'); // processed this one.
+          link.addClass('ajax-modified-ont'); // processed this one.
         }
       });
     }
@@ -69,7 +69,7 @@ var ajax_process_cls = function() {
   if(linkA === undefined){
     return true;
   }
-  if(linkA.hasClass('ajax-modified') ){
+  if(linkA.hasClass('ajax-modified-cls') ){
     return true; // processed this one already.
   }
   linkA.removeClass('cls4ajax'); // processing this one.
@@ -86,15 +86,15 @@ var ajax_process_cls = function() {
       var cls_name = data;
       linkA.html(cls_name);
       linkA.attr('href', cls_uri);
-      linkA.addClass('ajax-modified');
+      linkA.addClass('ajax-modified-cls');
       // find and process any identical classes
       jQuery( 'a[href="' + unique_id + '"]').each(function(i,e){
         var link = jQuery(this);
-        if(! link.hasClass('ajax-modified') ){
+        if(! link.hasClass('ajax-modified-cls') ){
           link.removeClass('cls4ajax');   // processing this one.
           link.html(cls_name);
           link.attr('href', cls_uri);
-          link.addClass('ajax-modified'); // processed this one.
+          link.addClass('ajax-modified-cls'); // processed this one.
         }
       });
     }
