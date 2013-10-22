@@ -47,6 +47,10 @@ var ajax_process = function() {
     });
     link.removeClass('ont4ajax'); // OK, tried to process this one.
   }
+  // Check on whether to stop the ajax_process
+  if( jQuery("a.cls4ajax").length === 0 && jQuery("a.ont4ajax").length === 0 ){
+    window.clearInterval(annotator_ajax_interval_process);
+  }
 };
 
 function get_link_for_cls_ajax(cls_id, ont_acronym) {
