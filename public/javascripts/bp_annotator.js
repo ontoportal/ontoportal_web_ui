@@ -1,31 +1,19 @@
 var
   annotationsTable = null,
   bp_last_params = null,
-  annotator_ajax_processing = false,
-  annotator_ajax_interval_interrupt = null,
   annotator_ajax_interval_process = null,
   annotator_ajax_process_timing = 100, // msec
   annotator_ajax_process_toggle = 'class'; // toggle resolving class/ontology data
 
-var check_ajax_interrupt = function(){
+var ajax_process_halt = function () {
   "use strict";
   // clear all the classes and ontologies to be resolved by ajax
   jQuery("a.cls4ajax").removeClass('cls4ajax');
   jQuery("a.ont4ajax").removeClass('ont4ajax');
-  // annotator_ajax_processing is set only in functions that run ajax calls, not here.
-  if(! annotator_ajax_processing){
-    window.clearInterval(annotator_ajax_interval_process);   // stop the ajax process interval
-    window.clearInterval(annotator_ajax_interval_interrupt); // the interrupt work is done
-  }
-};
-
-var ajax_processes_halt = function () {
-  "use strict";
-  annotator_ajax_interval_interrupt = window.setInterval(check_ajax_interrupt, 25);
+  window.clearInterval(annotator_ajax_interval_process);   // stop the ajax process interval
 };
 
 var ajax_process = function() {
-  annotator_ajax_processing = true;
   if(annotator_ajax_process_toggle === 'class'){
     annotator_ajax_process_toggle = 'ontology'; // next time process an ontology
     var ajax_prefix = "/ajax/classes/label?ontology=";
@@ -46,22 +34,30 @@ var ajax_process = function() {
     link.removeClass('cls4ajax'); // OK, tried to process this one.
   } else {
     annotator_ajax_process_toggle = 'class'; // next time process a class
+    var ajax_prefix = "/ajax/json_ontology/?ontology=";
     var link = jQuery("a.ont4ajax").first(); // FIFO queue
-    var ont_acronym = link.attr('href');
+    var ont_acronym = link.text();
     var ont_encoded = encodeURIComponent(ont_acronym);
-    var ont_uri = "/ontologies/" + ont_acronym;
-//    var ajax_uri = ajax_prefix + ont_acronym;
-//    jQuery.get(ajax_uri, function(data){
-//      data = data.trim();
-//      if (typeof data !== "undefined" && data.length > 0 && data.indexOf("http") !== 0) {
-//        link.text(data);
-//        link.attr("href", ont_uri);
-//      }
-//    });
+    //var ont_uri = "/ontologies/" + ont_acronym;
+    var ajax_uri = ajax_prefix + ont_encoded;
+    jQuery.get(ajax_uri, function(data){
+      if(typeof data !== "undefined" && data.hasOwnProperty('name')){
+        link.text(data.name);
+      }
+    });
     link.removeClass('ont4ajax'); // OK, tried to process this one.
   }
-  annotator_ajax_processing = false;
 };
+
+function get_link_for_cls_ajax(cls_id, ont_acronym) {
+  "use strict";
+  // ajax call will replace the href and label (triggered by class='cls4ajax'
+  return '<a class="cls4ajax" href="' + cls_id + '"' + ' data-ont="' + ont_acronym + '">' + cls_id + '</a>';
+}
+function get_link_for_ont_ajax(ont_acronym) {
+  "use strict";
+  return '<a class="ont4ajax" href="/ontologies/' + ont_acronym + '">' + ont_acronym + '</a>';
+}
 
 
 
@@ -104,7 +100,7 @@ function get_annotations() {
 
   jQuery("#annotations_container").hide();
   jQuery(".annotator_spinner").show();
-  ajax_processes_halt();
+  ajax_process_halt();
 
   var params = {},
     ont_select = jQuery("#ontology_ontologyId"),
@@ -496,16 +492,6 @@ jQuery(document).ready(function () {
 function get_link(uri, label) {
   "use strict";
   return '<a href="' + uri + '">' + label + '</a>';
-}
-
-function get_link_for_cls_ajax(cls_id, ont_acronym) {
-  "use strict";
-  // ajax call will replace the href and label (triggered by class='cls4ajax'
-  return '<a class="cls4ajax" href="' + cls_id + '"' + ' data-ont="' + ont_acronym + '">' + cls_id + '</a>';
-}
-function get_link_for_ont_ajax(ont_acronym) {
-  "use strict";
-  return '<a class="ont4ajax" href="/ontologies/' + ont_acronym + '">' + ont_acronym + '</a>';
 }
 
 function get_class_details(cls) {
