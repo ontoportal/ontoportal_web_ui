@@ -12,23 +12,25 @@ class HomeController < ApplicationController
     # Show only notes from custom ontology set
     @notes = LinkedData::Client::Models::Note.all
     @last_notes = []
-    @notes.sort! {|a,b| b.created <=> a.created }
-    @notes[0..20].each do |n|
-      ont_uri = n.relatedOntology.first
-      ont = LinkedData::Client::Models::Ontology.find(ont_uri)
-      next if ont.nil?
-      username = n.creator.split("/").last
-      note = {
-          :uri => n.links['ui'],
-          :id => n.id,
-          :subject => n.subject,
-          :body => n.body,
-          :created => n.created,
-          :author => username,
-          :ont_name => ont.name
-      }
-      @last_notes.push note
-      break if @last_notes.length >= NOTES_RECENT_MAX  # 5
+    unless @notes.empty?
+      @notes.sort! {|a,b| b.created <=> a.created }
+      @notes[0..20].each do |n|
+        ont_uri = n.relatedOntology.first
+        ont = LinkedData::Client::Models::Ontology.find(ont_uri)
+        next if ont.nil?
+        username = n.creator.split("/").last
+        note = {
+            :uri => n.links['ui'],
+            :id => n.id,
+            :subject => n.subject,
+            :body => n.body,
+            :created => n.created,
+            :author => username,
+            :ont_name => ont.name
+        }
+        @last_notes.push note
+        break if @last_notes.length >= NOTES_RECENT_MAX  # 5
+      end
     end
     # Get the latest manual mappings
     # All mapping classes are bidirectional.
