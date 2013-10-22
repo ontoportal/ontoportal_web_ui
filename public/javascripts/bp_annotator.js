@@ -775,10 +775,11 @@ function display_annotations(data, params) {
   //annotatorFormatLink("tabDelimited");
   annotatorFormatLink(param_string, "json");
   annotatorFormatLink(param_string, "xml");
-
-  // Initiate ajax calls to resolve class ID to prefLabel and ontology acronym to name.
-  annotator_ajax_process_cls_interval = window.setInterval(ajax_process_cls, annotator_ajax_process_timing);
-  annotator_ajax_process_ont_interval = window.setInterval(ajax_process_ont, annotator_ajax_process_timing);
+  if (params.raw !== undefined && params.raw === true) {
+    // Initiate ajax calls to resolve class ID to prefLabel and ontology acronym to name.
+    annotator_ajax_process_cls_interval = window.setInterval(ajax_process_cls, annotator_ajax_process_timing);
+    annotator_ajax_process_ont_interval = window.setInterval(ajax_process_ont, annotator_ajax_process_timing);
+  }
 }
 
 
