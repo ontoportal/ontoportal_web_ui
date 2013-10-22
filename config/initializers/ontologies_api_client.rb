@@ -4,4 +4,5 @@ LinkedData::Client.config do |config|
   config.cache       = $CLIENT_REQUEST_CACHING
   config.rest_url    = $REST_URL
   config.purl_prefix = $PURL_PREFIX
+  config.apikey = $API_KEY
 end
