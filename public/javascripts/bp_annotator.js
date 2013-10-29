@@ -183,18 +183,18 @@ function get_annotations() {
   //  params.wholeWordOnly = jQuery("#wholeWordOnly:checked").val();
   //}
 
-  if (jQuery("#semanticTypes").val() !== null) {
-    params.semanticTypes = jQuery("#semanticTypes").val();
+  jQuery("[name='mappings']:checked").each(function () {
+    mappings.push(jQuery(this).val());
+  });
+  params.mappings = mappings;
+
+  if (jQuery("#semantic_types").val() !== null) {
+    params.semantic_types = jQuery("#semantic_types").val();
     annotationsTable.fnSetColumnVis(BP_COLUMNS.sem_types, true);
     jQuery("#results_error").html("Only results from ontologies with semantic types available are displayed.");
   } else {
     annotationsTable.fnSetColumnVis(BP_COLUMNS.sem_types, false);
   }
-
-  jQuery("[name='mappings']:checked").each(function () {
-    mappings.push(jQuery(this).val());
-  });
-  params.mappings = mappings;
 
   jQuery.ajax({
     type    : "POST",
@@ -530,7 +530,7 @@ function generateParameters() {
 jQuery(document).ready(function () {
   "use strict";
   jQuery("#annotator_button").click(get_annotations);
-  jQuery("#semanticTypes").chosen({search_contains: true});
+  jQuery("#semantic_types").chosen({search_contains: true});
   jQuery("#insert_text_link").click(insertSampleText);
   // Init annotation table
   annotationsTable = jQuery("#annotations").dataTable({
@@ -570,7 +570,7 @@ function get_class_details(cls) {
     ont_rel_ui: ont_rel_ui,
     cls_link: get_link(cls_rel_ui, cls.prefLabel),
     ont_link: get_link(ont_rel_ui, cls.ontology.name),
-    semantic_types: cls.semanticType.join('; ') // test with 'abscess' text and sem type = T046,T020
+    semantic_types: cls.semantic_types.join('; ') // test with 'abscess' text and sem type = T046,T020
   }
 }
 
@@ -594,7 +594,7 @@ function get_class_details_from_raw(cls) {
     ont_link: ont_link,
     //
     // TODO: Get semantic types from raw data, currently provided by controller.
-    //semantic_types: cls.semanticType.join('; ') // test with 'abscess' text and sem type = T046,T020
+    //semantic_types: cls.semantic_types.join('; ') // test with 'abscess' text and sem type = T046,T020
     semantic_types: ''
   }
 }

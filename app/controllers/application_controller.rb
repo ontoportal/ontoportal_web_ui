@@ -737,7 +737,7 @@ class ApplicationController < ActionController::Base
     # for every element of the annotations array because the API returns a set.
     # Use the batch REST API to get all the annotated class prefLabels.
     start = Time.now
-    semantic_types = options[:semanticTypes] || []
+    semantic_types = options[:semantic_types] || []
     class_details = get_annotated_classes(annotations, semantic_types)
     simplify_annotated_classes(annotations, class_details)
     # repeat the simplification for any annotation hierarchy or mappings.
@@ -813,9 +813,9 @@ class ApplicationController < ActionController::Base
         semanticCodes = cls['semanticType'].map {|t| t.sub( semanticTypeURI, '') }
         requestedCodes = semanticCodes.map {|code| (semantic_types.include? code and code) || nil }.compact
         requestedDescriptions = requestedCodes.map {|code| @semantic_types[code] }.compact
-        c[:semanticType] = requestedDescriptions
+        c[:semantic_types] = requestedDescriptions
       else
-        c[:semanticType] = []
+        c[:semantic_types] = []
       end
       classes_simple[c[:id]] = c
     end
