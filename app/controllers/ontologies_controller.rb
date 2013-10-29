@@ -281,9 +281,6 @@ class OntologiesController < ApplicationController
     # Get the latest submission, not necessarily the latest 'ready' submission
     @submission_latest = @ontology.explore.latest_submission
     @views = @ontology.explore.views.sort {|a,b| b.acronym <=> a.acronym}  # a list of view ontology models
-    # @versions = DataAccess.getOntologyVersions(@ontology.ontologyId)
-    # @versions.sort!{|x,y| y.internalVersion.to_i<=>x.internalVersion.to_i}
-    # @diffs = @ontology.explore.diffs # Is this access available?
     if request.xhr?
       render :partial => 'metadata', :layout => false
     else
