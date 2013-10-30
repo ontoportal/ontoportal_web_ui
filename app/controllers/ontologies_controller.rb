@@ -44,30 +44,13 @@ class OntologiesController < ApplicationController
     # Get the latest 'ready' submission, or fallback to any latest submission
     @submission = get_ontology_submission_ready(@ontology)  # application_controller
 
-    # TODO_REV: Support private ontologies
-    # if @ontology.private? && (session[:user].nil? || !session[:user].has_access?(@ontology))
-    #   if request.xhr?
-    #     return render :partial => 'private_ontology', :layout => false
-    #   else
-    #     return render :partial => 'private_ontology', :layout => "ontology_viewer"
-    #   end
-    # end
-    #
-    # TODO_REV: Support licensed ontologies
-    # if @ontology.licensed? && (session[:user].nil? || !session[:user].has_access?(@ontology))
-    #   @user = UserWrapper.new
-    #   if request.xhr?
-    #     return render :partial => 'licensed_ontology', :layout => false
-    #   else
-    #     return render :partial => 'licensed_ontology', :layout => "ontology_viewer"
-    #   end
-    # end
-    #
-    # TODO_REV: Redirect to most recent parsed version when archived or bad parse
-    #
-    # TODO_REV: Output RDF as necessary (we may delegate this to the REST service)
-    #
-    get_class(params)  # application_controller
+    get_class(params)
+
+    if request.accept.to_s.eql?("application/ld+json")
+      headers['Content-Type'] = "application/ld+json"
+      render text: @concept.to_jsonld
+      return
+    end
 
     # set the current PURL for this class
     @current_purl = @concept.purl if $PURL_ENABLED
@@ -260,16 +243,9 @@ class OntologiesController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     raise Error404 if @ontology.nil?
     # Check to see if user is requesting RDF+XML, return the file from REST service if so
-    if request.accept.to_s.eql?("application/rdf+xml")
-      user_api_key = session[:user].nil? ? "" : session[:user].apikey
-      begin
-        rdf_file = RemoteFile.new($LEGACY_REST_URL + "/virtual/ontology/rdf/download/#{@ontology.ontologyId}?apikey=#{$API_KEY}&userapikey=#{user_api_key}")
-      rescue Exception => e
-        if !e.io.status.nil? && e.io.status[0].to_i == 404
-          raise Error404
-        end
-      end
-      send_file rdf_file.path, :type => "application/rdf+xml"
+    if request.accept.to_s.eql?("application/ld+json")
+      headers['Content-Type'] = "application/ld+json"
+      render text: @ontology.to_jsonld
       return
     end
     # Explore the ontology links
