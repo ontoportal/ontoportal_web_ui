@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 4ce4faf37e9cd9ebff2219fdcc73d5d9c3dad48a
+  revision: b57b784b0730b75e0a872051ee560cd13e4114fc
   specs:
     ontologies_api_client (0.0.2)
       excon
@@ -79,9 +79,9 @@ GEM
     rest-client (1.6.7)
       mime-types (>= 1.16)
     slop (3.4.6)
-    thin (1.5.1)
+    thin (1.6.1)
       daemons (>= 1.0.9)
-      eventmachine (>= 0.12.6)
+      eventmachine (>= 1.0.0)
       rack (>= 1.0.0)
     unicorn (4.6.3)
       kgio (~> 2.6)
