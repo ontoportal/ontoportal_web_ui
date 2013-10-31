@@ -15,11 +15,6 @@ class AnnotatorController < ApplicationController
       @semantic_types_for_select << ["#{label} (#{code})", code]
     end
     @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
-    # TODO: Duplicate the filteredOntologyList for the LinkedData client?
-    #ontology_ids = []
-    #annotator.ontologies.each {|ont| ontology_ids << ont[:virtualOntologyId]}
-    #@annotator_ontologies = DataAccess.getFilteredOntologyList(ontology_ids)
-    #@annotator_ontologies = LinkedData::Client::Models::OntologySubmission.all
     @annotator_ontologies = LinkedData::Client::Models::Ontology.all
   end
 
@@ -28,11 +23,11 @@ class AnnotatorController < ApplicationController
     params[:mappings] ||= []
     params[:max_level] ||= 0
     params[:ontologies] ||= []
-    params[:semanticTypes] ||= []
+    params[:semantic_types] ||= []
     text_to_annotate = params[:text].strip.gsub("\r\n", " ").gsub("\n", " ")
     options = { :ontologies => params[:ontologies],
                 :max_level => params[:max_level].to_i,
-                :semanticTypes => params[:semanticTypes],
+                :semantic_types => params[:semantic_types],
                 :mappings => params[:mappings],
                 # :wholeWordOnly => params[:wholeWordOnly] ||= true,  # service default is true
                 # :withDefaultStopWords => params[:withDefaultStopWords] ||= true,  # service default is true
@@ -42,15 +37,30 @@ class AnnotatorController < ApplicationController
     query += "?text=" + CGI.escape(text_to_annotate)
     query += "&max_level=" + options[:max_level].to_s
     query += "&ontologies=" + CGI.escape(options[:ontologies].join(',')) unless options[:ontologies].empty?
-    query += "&semanticTypes=" + options[:semanticTypes].join(',') unless options[:semanticTypes].empty?
+    query += "&semantic_types=" + options[:semantic_types].join(',') unless options[:semantic_types].empty?
     query += "&mappings=" + options[:mappings].join(',') unless options[:mappings].empty?
     #query += "&wholeWordOnly=" + options[:wholeWordOnly].to_s unless options[:wholeWordOnly].empty?
     #query += "&withDefaultStopWords=" + options[:withDefaultStopWords].to_s unless options[:withDefaultStopWords].empty?
     annotations = parse_json(query) # See application_controller.rb
     #annotations = LinkedData::Client::HTTP.get(query)
     LOG.add :debug, "Retrieved #{annotations.length} annotations: #{Time.now - start}s"
-    massage_annotated_classes(annotations, options) unless annotations.empty?
-    # Trying to generate highlighted match context in controller.  More
+    if annotations.empty? || params[:raw] == "true"
+      # TODO: if params contains select ontologies and/or semantic types, only return those selected.
+      response = {
+          annotations: annotations,
+          ontologies: get_simplified_ontologies_hash,  # application_controller
+          semantic_types: get_semantic_types           # application_controller
+      }
+    else
+      massage_annotated_classes(annotations, options)
+      response = {
+          annotations: annotations,
+          ontologies: {},        # ontology data are in annotations already.
+          semantic_types: {}     # semantic types are in annotations already.
+      }
+    end
+
+    # Avoid highlighted match context in controller; it's more
     # overhead on controller and more data transfer to the client.
     # This is handled in bp_annotator.js, to move the processing load onto
     # the client side in JS.  (TODO: evaluate if JS handles UTF8.)
@@ -63,7 +73,7 @@ class AnnotatorController < ApplicationController
     #    annotation['context'] = context
     #  end
     #end
-    render :json => annotations
+    render :json => response
   end
 
 

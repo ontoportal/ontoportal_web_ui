@@ -22,7 +22,7 @@
     <%=render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => @annotator_ontologies }%>
 
     <b>Select UMLS Semantic Types</b><br/>
-    <%= select_tag :semanticTypes, options_for_select(@semantic_types_for_select), :multiple => 'true', "data-placeholder".to_sym => "Type here to select UMLS semantic types", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text" %><br/>
+    <%= select_tag :semantic_types, options_for_select(@semantic_types_for_select), :multiple => 'true', "data-placeholder".to_sym => "Type here to select UMLS semantic types", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text" %><br/>
 
     <br/>
     <p>
@@ -38,6 +38,12 @@
     <p>
       <b>Include Ancestors Up To Level:</b>&nbsp;&nbsp;
       <%=select_tag :max_level, "<option selected='selected' value='0'>None</option><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option><option value='6'>6</option><option value='7'>7</option><option value='8'>8</option><option value='9'>9</option><option value='10'>10</option><option value='999'>All</option>", :style => "width: 70px;"%>
+    </p>
+
+    <p>
+      <%=check_box_tag :use_ajax, false, false, :id => "use_ajax"%>
+      <%=label_tag :use_ajax, "Use Ajax to resolve class/ontology labels."%>
+      <br/>
     </p>
 
     <!-- annotator_button calls 'get_annotations' in bp_annotator.js -->
@@ -103,7 +109,8 @@
       <br/>
       <span id="annotator_parameters" style="color: gray; font-weight: bold;"></span>
       <br/>
-      Additional parameters are documented at <a href="http://stagedata.bioontology.org/documentation#nav_annotator" target="_blank">Annotator Web Service</a>
+      Additional parameters are documented at
+      <%= link_to 'Annotator Web Service', "#{$REST_URL}/documentation#nav_annotator", :target => "_blank" %>
     </span>
   </div>
 </div>

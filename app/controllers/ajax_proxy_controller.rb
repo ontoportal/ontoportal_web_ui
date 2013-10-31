@@ -56,6 +56,14 @@ class AjaxProxyController < ApplicationController
     render_json @concept.to_json
   end
 
+
+  def json_ontology
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    raise Error404 if @ontology.nil?
+    simple_ontology = simplify_ontology_model(@ontology)  # application_controller (cached)
+    render_json simple_ontology.to_json
+  end
+
   def recaptcha
     render :partial => "recaptcha"
   end

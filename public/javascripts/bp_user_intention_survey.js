@@ -1,13 +1,15 @@
 jQuery(document).ready(function(){
-  var timeout_key = "user_survey_timeout";
-  if (typeof BP_getCookie(timeout_key) === "undefined" && USER_INTENTION_SURVEY) {
-    new UserIntentionSurvey().bindTracker();
-    BP_setCookie(timeout_key, true, {days: 3});
-  }
+  new UserIntentionSurvey().bindTracker();
 });
 
 function UserIntentionSurvey() {
+  var timeoutKey = "user_survey_timeout";
+
   this.bindTracker = function() {
+    if (BP_getCookie(timeoutKey) === "true" || !USER_INTENTION_SURVEY) {
+      return false;
+    }
+
     var path = window.location.pathname.split("/");
     if (path.length > 2) return false;
 
@@ -16,7 +18,13 @@ function UserIntentionSurvey() {
     });
 
     jQuery(document).live("afterClose.facebox", function(){
-      new UserIntentionSurvey().submitSurvey();
+      var survey = new UserIntentionSurvey();
+      if (jQuery("#dont_show_again").is(":checked")) {
+        survey.disablePermanently();
+      } else {
+        survey.disableTemporarily();
+      }
+      survey.submitSurvey();
     });
 
     jQuery("#intention_submit").live("click", function(){
@@ -26,6 +34,18 @@ function UserIntentionSurvey() {
     jQuery("#intention_close").live("click", function(){
       new UserIntentionSurvey().closeDialog();
     });
+  };
+
+  this.timeoutKey = function() {
+    return timeoutKey;
+  };
+
+  this.disablePermanently = function() {
+    BP_setCookie(timeoutKey, true, {days: 365});
+  };
+
+  this.disableTemporarily = function() {
+    BP_setCookie(timeoutKey, true, {days: 7});
   };
 
   this.closeDialog = function() {

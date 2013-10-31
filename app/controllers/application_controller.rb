@@ -227,7 +227,8 @@ class ApplicationController < ActionController::Base
     acronym = BPIDResolver.id_to_acronym(params[:ontology])
     raise Error404 unless acronym
     if params[:conceptid] && !params[:conceptid].start_with?("http")
-      params[:conceptid] = BPIDResolver.uri_from_short_id(acronym, params[:conceptid])
+      uri = BPIDResolver.uri_from_short_id(acronym, params[:conceptid])
+      params[:conceptid] = uri if uri
     end
     if class_view
       redirect_to "/ontologies/#{acronym}?p=classes#{params_string_for_redirect(params, prefix: "&")}", :status => :moved_permanently
@@ -243,7 +244,8 @@ class ApplicationController < ActionController::Base
     end
 
     if params[:ontology] && params[:conceptid] && !params[:conceptid].start_with?("http")
-      params[:conceptid] = BPIDResolver.uri_from_short_id(params[:ontology], params[:conceptid])
+      uri = BPIDResolver.uri_from_short_id(params[:ontology], params[:conceptid])
+      params[:conceptid] = uri if uri
     end
 
     params
@@ -453,17 +455,19 @@ class ApplicationController < ActionController::Base
   end
 
   def get_simplified_ontologies_hash()
-    ontologies = {}
+    # Note the simplify_ontology_model will cache individual ontology data.
+    simple_ontologies = {}
     begin
       ontology_models = LinkedData::Client::Models::Ontology.all({:include_views => true})
-      ontology_models.each {|o| ontologies[o.id] = simplify_ontology_model(o) }
+      ontology_models.each {|o| simple_ontologies[o.id] = simplify_ontology_model(o) }
     rescue
       return nil
     end
-    return ontologies
+    return simple_ontologies
   end
 
   def get_ontology_details(ont_uri)
+    # Note the simplify_ontology_model will cache individual ontology data.
     begin
       ont_model = LinkedData::Client::Models::Ontology.find(ont_uri)
       ont = simplify_ontology_model(ont_model)
@@ -700,7 +704,7 @@ class ApplicationController < ActionController::Base
     return stats_hash
   end
 
-  def get_semantic_types()
+  def get_semantic_types
     semantic_types_key = 'semantic_types_key'
     semantic_types = Rails.cache.read(semantic_types_key)
     return semantic_types if not semantic_types.nil?
@@ -709,6 +713,7 @@ class ApplicationController < ActionController::Base
     begin
       sty_ont = LinkedData::Client::Models::Ontology.find_by_acronym('STY').first
       raise TypeError if sty_ont.nil?
+      # The first 500 items should be more than sufficient to get all semantic types.
       sty_classes = sty_ont.explore.classes({'pagesize'=>500, include: 'prefLabel'})
       sty_classes.collection.each do |cls|
         code = cls.id.sub(sty_prefix,'')
@@ -722,7 +727,7 @@ class ApplicationController < ActionController::Base
         @retries += 1
         retry
       else
-        LOG.add :debug, "\nERROR: failed to get semantic types."
+        LOG.add :error, "Failed to get semantic types: #{e.message}"
         # raise e  # let it fail and return an empty set of semantic types
       end
     end
@@ -734,7 +739,7 @@ class ApplicationController < ActionController::Base
     # for every element of the annotations array because the API returns a set.
     # Use the batch REST API to get all the annotated class prefLabels.
     start = Time.now
-    semantic_types = options[:semanticTypes] || []
+    semantic_types = options[:semantic_types] || []
     class_details = get_annotated_classes(annotations, semantic_types)
     simplify_annotated_classes(annotations, class_details)
     # repeat the simplification for any annotation hierarchy or mappings.
@@ -810,9 +815,9 @@ class ApplicationController < ActionController::Base
         semanticCodes = cls['semanticType'].map {|t| t.sub( semanticTypeURI, '') }
         requestedCodes = semanticCodes.map {|code| (semantic_types.include? code and code) || nil }.compact
         requestedDescriptions = requestedCodes.map {|code| @semantic_types[code] }.compact
-        c[:semanticType] = requestedDescriptions
+        c[:semantic_types] = requestedDescriptions
       else
-        c[:semanticType] = []
+        c[:semantic_types] = []
       end
       classes_simple[c[:id]] = c
     end

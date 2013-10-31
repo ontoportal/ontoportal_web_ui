@@ -159,6 +159,10 @@ module OntologiesHelper
     else
       uri = submission.id + "/download?apikey=#{get_apikey}"
       link = "<a href='#{uri}' target='_blank'>Ontology</a>"
+      unless submission.diffFilePath.nil?
+        uri = submission.id + "/download_diff?apikey=#{get_apikey}"
+        link = link + " | <a href='#{uri}' target='_blank'>Diff</a>"
+      end
     end
     return link
   end

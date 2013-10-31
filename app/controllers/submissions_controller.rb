@@ -58,6 +58,10 @@ class SubmissionsController < ApplicationController
     @submission.update_from_params(params[:submission])
     error_response = @submission.update
 
+    # Update summaryOnly on ontology object
+    @ontology.summaryOnly = @submission.isRemote.eql?("3")
+    @ontology.save
+
     if error_response
       @errors = response_errors(error_response)
     else

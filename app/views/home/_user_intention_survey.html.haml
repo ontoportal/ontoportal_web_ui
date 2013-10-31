@@ -7,12 +7,9 @@
     %h2{style: "margin-bottom: 0;"} What are you trying to accomplish with BioPortal during this visit?
     %textarea{id: "intention_response", style: "width: 600px; height: 225px; padding: 3px;"}
   %p
-    Enter your email address if you would like to be entered into a drawing for one of four gift certificates for $25
-    %br
-    %input{id: "intention_email", type: "textfield", style: "width: 250px; padding: 3px;", placeholder: "email@example.org"}
+    %input{type: "checkbox", name: "dont_show_again", id: "dont_show_again"}
+    %label{for: "dont_show_again"} Don't show me this dialog again
   %p
     %input{id: "intention_submit", type: "button", value: "Submit"}
-  %p
-    %input{type: "checkbox", name: "dont_show_again", id: "dont_show_again", disabled: true}
-    %label{for: "dont_show_again"} Don't show me this dialog again
+    %input{id: "intention_close", type: "button", value: "Close"}
 
