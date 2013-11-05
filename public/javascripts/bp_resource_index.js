@@ -320,6 +320,9 @@ router = new Router();
 
 function displayResource(params) {
   var resource = params["resourceId"];
+  if (resource === undefined) {
+    return;
+  }
   var resourceName = resources[resource].resourceName;
   // Only retrieve class information if this is an initial load
   if (jQuery("#resource_index_classes").val() !== null) {
