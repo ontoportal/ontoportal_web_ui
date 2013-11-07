@@ -25,7 +25,7 @@
 </script>
 
 <% # Don't display any downloads for ontologies with license restrictions %>
-<% restrict_downloads = ["ICPC2P", "MDDB", "MEDDRA", "MSHFRE", "MSHSPA_1", "NDDF", "NDDF", "NDFRT", "NIC", "RCD", "SCTSPA", "SNOMEDCT", "WHO-ART"] %>
+<% restrict_downloads = ["CPT","ICD10","ICNP","ICPC2P","MDDB","MEDDRA","MSHFRE","MSHSPA_1","NDDF","NDFRT","NIC","RCD","SCTSPA","SNOMEDCT","WHO-ART"] %>
 <% ont_restricted = restrict_downloads.include? @ontology.acronym %>
 <% more_colspan = 4 %>
 <% more_colspan = 3 if ont_restricted %>
