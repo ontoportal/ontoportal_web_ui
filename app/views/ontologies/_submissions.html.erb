@@ -24,6 +24,12 @@
   });
 </script>
 
+<% # Don't display any downloads for ontologies with license restrictions %>
+<% restrict_downloads = ["ICPC2P", "MDDB", "MEDDRA", "MSHFRE", "MSHSPA_1", "NDDF", "NDDF", "NDFRT", "NIC", "RCD", "SCTSPA", "SNOMEDCT", "WHO-ART"] %>
+<% ont_restricted = restrict_downloads.include? @ontology.acronym %>
+<% more_colspan = 4 %>
+<% more_colspan = 3 if ont_restricted %>
+
 <div id="versions_content" class="click_versions_collapse" style="padding-top: 1em;">
   <h2 style="font-size: x-large;">Submissions</h2>
   <table id="ontology_versions" class="zebra" cellpadding="0" cellspacing="0" width="60%">
@@ -32,7 +38,9 @@
             <th>Submission</th>
             <th>Release Date</th>
             <th>Upload Date</th>
-            <th>Downloads</th>
+            <% unless ont_restricted %>
+                <th>Downloads</th>
+            <% end %>
         </tr>
     </thead>
     <% submission_ready = @ontology.explore.latest_submission({:include_status => 'ready'}) %>
@@ -44,12 +52,14 @@
           <td> <%= status_link(sub, sub.submissionId==submission_readyId) %> </td>
           <td> <%= xmldatetime_to_date(sub.released) %> </td>
           <td> <%= xmldatetime_to_date(sub.creationDate) %> </td>
-          <td> <%= download_link(sub) %> </td>
+          <% unless ont_restricted %>
+              <td> <%= download_link(sub) %> </td>
+          <% end %>
         </tr>
     <% end %>
     <% if @submissions.length >= 5 %>
       <tr>
-        <td colspan="4" style="text-align: right;"><a href="" id="version_toggle">more...</a></td>
+        <td colspan="<%=more_colspan%>" style="text-align: right;"><a href="" id="version_toggle">more...</a></td>
       </tr>
     <% end %>
   </table>

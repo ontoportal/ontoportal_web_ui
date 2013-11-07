@@ -20,6 +20,7 @@ class ResourceIndexController < ApplicationController
   #RI_ONTOLOGIES_URI = RESOURCE_INDEX_URI + "/ontologies"
   #RI_RANKED_ELEMENTS_URI = RESOURCE_INDEX_URI + "/ranked_elements"
   #RI_RESOURCES_URI = RESOURCE_INDEX_URI + "/resources"
+  RI_HIERARCHY_MAX_LEVEL='3'
 
   # Resource Index annotation offsets rely on latin-1 character sets for the count to be right. So we set all responses as latin-1.
   before_filter :set_encoding
@@ -148,7 +149,8 @@ class ResourceIndexController < ApplicationController
     uri = RI_ELEMENT_ANNOTATIONS_URI +
         '?elements=' + params[:elementid] +
         '&resources=' + params[:resourceid] +
-        '&' + params[:classes]
+        '&' + params[:classes] +
+        '&max_level=' + RI_HIERARCHY_MAX_LEVEL
     begin
       # Resource index can be very slow and timeout, so parse_json includes one retry.
       @annotations = parse_json(uri) # See application_controller.rb
@@ -212,7 +214,7 @@ private
         classesArgs.push(classesStr)
       end
     end
-    return RI_RANKED_ELEMENTS_URI + "?" + classesArgs.join('&')
+    return RI_RANKED_ELEMENTS_URI + "?" + classesArgs.join('&') + '&max_level=' + RI_HIERARCHY_MAX_LEVEL
   end
 
   def set_encoding
