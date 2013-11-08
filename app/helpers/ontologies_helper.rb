@@ -45,8 +45,8 @@ module OntologiesHelper
 
 
   def additional_details
-    return "" if $ADDITIONAL_ONTOLOGY_DETAILS.nil? || $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.ontologyId.to_i].nil?
-    details = $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.ontologyId.to_i]
+    return "" if $ADDITIONAL_ONTOLOGY_DETAILS.nil? || $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.acronym].nil?
+    details = $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.acronym]
     html = []
     details.each do |title, value|
       html << content_tag(:tr) do
