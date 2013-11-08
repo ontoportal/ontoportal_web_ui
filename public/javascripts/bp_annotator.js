@@ -172,11 +172,10 @@ function get_annotations() {
   params.ontologies = (ont_select.val() === null) ? [] : ont_select.val();
 
   // UI checkbox to control using the batch call in the controller.
-  if( jQuery("#use_ajax").length > 0 ) {
-    params.raw = jQuery("#use_ajax").is(':checked');
-  } else {
-    params.raw = true;  // do not use batch call to resolve class prefLabel and ontology names.
-  }
+  params.raw = true;  // do not use batch call to resolve class prefLabel and ontology names.
+  //if( jQuery("#use_ajax").length > 0 ) {
+  //  params.raw = jQuery("#use_ajax").is(':checked');
+  //}
 
   // Use the annotator default for wholeWordOnly = true.
   //if (jQuery("#wholeWordOnly:checked").val() !== undefined) {
