@@ -76,8 +76,6 @@
             Documentation Page
           %td
             %a{:href => sub.documentation, :target => "_blank"}= sub.documentation
-        / TODO_REV: Enable additional details for ontologies
-        / = additional_details
 
       %tr
         %th
@@ -99,3 +97,5 @@
           - rescue
             - LOG.add :error, "Failed to explore groups on #{@ontology.to_json}"
           = groups.map {|g| g.name}.sort.join(", ")
+
+      = additional_details
