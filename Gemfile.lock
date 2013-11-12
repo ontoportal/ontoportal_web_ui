@@ -13,6 +13,7 @@ GIT
     ontologies_api_client (0.0.2)
       excon
       faraday
+      lz4-ruby
       multi_json
       oj (<= 2.0.14)
 
@@ -29,7 +30,7 @@ GEM
     activeresource (2.3.17)
       activesupport (= 2.3.17)
     activesupport (2.3.17)
-    coderay (1.0.9)
+    coderay (1.1.0)
     cube-ruby (0.0.3)
     daemons (1.1.9)
     eventmachine (1.0.3)
@@ -43,6 +44,7 @@ GEM
     iconv (1.0.3)
     json (1.8.1)
     kgio (2.8.1)
+    lz4-ruby (0.1.7)
     memcache-client (1.8.5)
     method_source (0.8.2)
     mime-types (2.0)
@@ -53,8 +55,8 @@ GEM
       activerecord
       hodel_3000_compliant_logger
     oj (2.0.14)
-    pry (0.9.12.2)
-      coderay (~> 1.0.5)
+    pry (0.9.12.3)
+      coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
     pry-nav (0.2.3)
