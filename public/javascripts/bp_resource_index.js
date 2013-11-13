@@ -51,25 +51,19 @@ jQuery(document).ready(function () {
     }, function (options, response, event) {
       // jQuery("#resource_index_classes_chzn .chzn-results li.active-result").remove();
       var format = 'json';
-      //var search_url = jQuery(document).data().bp.config.rest_url+"/search";
-      var search_url = "/resource_index/search_classes";
+      //var search_url = jQuery(document).data().bp.config.rest_url+"/search"; // direct REST API
+      var search_url = "/resource_index/search_classes";  // REST API via resource_index_controller::search_classes
+      var search_term = jQuery.trim(options.term);
+      if (! search_term.endsWith('*')) {
+        search_term += '*';
+      }
       var search_params = {};
-      //search_params['q'] = options.term + '*';  // not options.class or options.classes !!
-      search_params['q'] = options.term;  // search_url endpoint will add '*' for popup results.
+      search_params['q'] = search_term;
       search_params['format'] = format;
       search_params['apikey'] = jQuery(document).data().bp.config.apikey;
       // NOTE: disabled ontologies selection in the UI, ensure it has no value here.
-      // NOTE: disabled ontologies because it may impact performance of the search drop-down.
+      // NOTE: ontologies are specified in resource_index_controller::search_classes
       //search_params['ontologies'] = currentOntologyAcronyms().join(',');
-      // TODO: ENABLE ADDITIONAL PARAMETERS WHEN THE SEARCH API SUPPORTS THEM.
-      //search_params['includeProperties'] = includeProps;
-      //search_params['includeViews'] = includeViews;
-      //search_params['requireDefinitions'] = includeOnlyDefinitions;
-      //search_params['exactMatch'] = exactMatch;
-      //search_params['categories'] = categories;
-      // DEBUG console logs:
-      //console.log('RI class search URL: ' + search_url);
-      //console.log('RI class search params: ', search_params);
       jQuery.ajax({
         url: search_url,
         data: search_params,
