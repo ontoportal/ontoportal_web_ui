@@ -119,20 +119,17 @@ class MappingsController < ApplicationController
     target_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_to_bioportal_ontology_id]).first
     source = source_ontology.explore.single_class(params[:map_from_bioportal_full_id])
     target = target_ontology.explore.single_class(params[:map_to_bioportal_full_id])
-
     values = {
-      classes: [
-        {class: [source.id], ontology: source_ontology.id},
-        {class: [target.id], ontology: target_ontology.id}
+      terms: [
+        {term: [source.id], ontology: source_ontology.id},
+        {term: [target.id], ontology: target_ontology.id}
       ],
       creator: session[:user].id,
       relation: params[:mapping_relation],
       comment: params[:mapping_comment]
     }
     @mapping = LinkedData::Client::Models::Mapping.new(values: values)
-
     @mapping_saved = @mapping.save
-
     if @mapping_saved.errors
       raise Exception, @mapping_saved.errors
     else
