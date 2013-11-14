@@ -2,6 +2,13 @@
 // To get around this, we re-calculate based on the mapping table size
 jQuery(document).ready(function(){
   calculateMappingCount();
+  jQuery("#delete_mappings_permission").hide(); // Ensure we can't see the permission checkbox.
+  var mapping_permission = jQuery("#delete_mappings_permission").is(':checked');
+  if (mapping_permission === true) {
+    jQuery("#delete_mappings_button").show();
+  } else {
+    jQuery("#delete_mappings_button").hide();
+  }
 });
 
 jQuery(document).bind("tree_changed", calculateMappingCount);
