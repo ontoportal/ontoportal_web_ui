@@ -642,12 +642,7 @@ class ApplicationController < ActionController::Base
       if not mappings.empty?
         # There is no 'include' parameter on the /mappings/recent API.
         # The following is required just to get the prefLabel on each mapping class.
-        class_list = []
-        mappings.each do |m|
-          m.classes.each do |c|
-            class_list.push( { :class => c.id, :ontology => c.links['ontology'] } )
-          end
-        end
+        class_list = mappings.map {|m| m.classes.map {|c| { :class => c.id, :ontology => c.links['ontology'] } } }.flatten
         # make the batch call to get all the class prefLabel values
         call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>class_list, 'include'=>'prefLabel'}}
         class_response = get_batch_results(call_params)  # method in application_controller.rb
@@ -655,10 +650,14 @@ class ApplicationController < ActionController::Base
         class_results = JSON.parse(class_response)
         class_details = simplify_classes(class_results["http://www.w3.org/2002/07/owl#Class"])
       end
-      # Only cache a successful retrieval
       recent_mappings[:mappings] = mappings
       recent_mappings[:classes] = class_details
-      Rails.cache.write(recent_mappings_key, recent_mappings, expires_in: EXPIRY_RECENT_MAPPINGS)
+      unless mappings.nil? || class_details.nil?
+        unless mappings.empty? || class_details.empty?
+          # Only cache a successful retrieval
+          Rails.cache.write(recent_mappings_key, recent_mappings, expires_in: EXPIRY_RECENT_MAPPINGS)
+        end
+      end
     rescue Exception => e
       LOG.add :error, e.message
       # leave recent mappings empty.
