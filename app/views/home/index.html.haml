@@ -278,7 +278,7 @@
           %tbody
             - mappings = @recent_mappings[:mappings]
             - classes = @recent_mappings[:classes]
-            - if mappings.nil? || mappings.empty?
+            - if mappings.nil? || mappings.empty? || classes.nil? || classes.empty?
               No recent mappings have been submitted
             - else
               - for map in mappings
