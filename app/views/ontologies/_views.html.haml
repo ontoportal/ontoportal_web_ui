@@ -58,8 +58,8 @@
         - viewN = "view_#{index}"
         - viewName = view.name
         - viewAdmin = view.admin?(session[:user])
-        - view_submissions = view.explore.submissions.sort {|a,b| b.released <=> a.released }
-        - view_sub_latest = view.explore.latest_submission({:include_status => 'ready'})
+        - view_submissions = view.explore.submissions.sort {|a,b| b.released <=> a.released } rescue []
+        - view_sub_latest = view.explore.latest_submission({:include_status => 'ready'}) rescue view.explore.latest_submission({:include_status => 'ready', include: ""})
         - view_sub_latest ||= view_submissions.first  # fallback, if any
         - begin
           - view_description = view_sub_latest.description
