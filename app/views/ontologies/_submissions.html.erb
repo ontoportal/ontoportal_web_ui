@@ -43,7 +43,7 @@
             <% end %>
         </tr>
     </thead>
-    <% submission_ready = @ontology.explore.latest_submission({:include_status => 'ready'}) %>
+    <% submission_ready = @ontology.explore.latest_submission({:include_status => 'ready'}) rescue @ontology.explore.latest_submission({:include_status => 'ready', include: ""})%>
     <% submission_readyId = -1 %>
     <% submission_readyId = submission_ready.submissionId unless submission_ready.nil? %>
     <% @submissions.each_with_index do |sub, index| %>
