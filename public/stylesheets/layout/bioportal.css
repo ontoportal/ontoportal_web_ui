@@ -818,6 +818,12 @@ tr.mainresource td {
   margin-bottom: 0.5em;
 }
 
+.obsolete_term {
+  color: gray;
+  font-style: oblique;
+  cursor: help;
+}
+
 .concept_details p {
   /*margin-top: .5em;*/
   margin-bottom: .5em;

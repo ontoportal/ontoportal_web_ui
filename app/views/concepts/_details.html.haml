@@ -9,7 +9,8 @@
           /- unless @ontology.preferred_name_label.nil? || @ontology.preferred_name_label.to_s.length == 0
           /  (#{@concept.ontology.preferred_name_label})
       %td
-        %p= @concept.prefLabel
+        -#%p= @concept.prefLabel
+        %p= @concept.prefLabel_to_html
     - unless @concept.synonym.nil? || @concept.synonym.empty?
       %tr
         %td.label{:nowrap => ""}
@@ -94,12 +95,12 @@
         - data = concept_properties[key]
         - full_key = data[:key]
         - values = data[:values]
-        -# binding.pry if key.downcase.include? "disjoint"
         %tr
           %td.label{:nowrap => ""}
             %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
           %td.property_values
             = auto_link("<p>#{values.split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
+
 :javascript
   jQuery(document).ready(function(){
     jQuery("td.property_values a").each(function() {

@@ -169,63 +169,57 @@ module ApplicationHelper
   end
 
   def draw_tree(root, id = nil, type = "Menu")
-    string = ""
     if id.nil?
       id = root.children.first.id
     end
-
-    build_tree(root, nil, string, id)
-
-    return string
+    # TODO: handle tree view for obsolete classes, e.g. 'http://purl.obolibrary.org/obo/GO_0030400'
+    build_tree(root, nil, "", id)  # returns a string, representing nested list items
   end
 
   def build_tree(node, parent, string, id)
+    if node.children.nil? || node.children.length < 1
+      return string # unchanged
+    end
     if parent.nil?
       draw_root = ''
     else
-      draw_root = ""
+      draw_root = ""  # this is no different, why?
     end
-
     node.children.sort! {|a,b| a.prefLabel.downcase <=> b.prefLabel.downcase}
-
-    unless node.children.nil? || node.children.length < 1
-      for child in node.children
-        icons = ""
-
-        active_style =""
-        child.id.eql?(id)
-        if child.id.eql?(id)
-          active_style="class='active'"
-        end
-
+    for child in node.children
+      icons = ""
+      if child.id.eql?(id)
+        active_style="class='active'"
+      else
+        active_style = ""
+      end
+      if child.expanded?
+        open = "class='open'"
+      else
         open = ""
-        if child.expanded?
-          open = "class='open'"
+      end
+      relation = child.relation_icon
+
+      # This fake root will be present at the root of "flat" ontologies, we need to keep the id intact
+      li_id = child.id.eql?("bp_fake_root") ? "bp_fake_root" : short_uuid
+
+      # Return different result for too many children
+      if child.prefLabel.eql?("*** Too many children...")
+        number_of_classes = id.eql?("root") ? child.explore.ontology.explore.roots.length : node.childrenCount
+        retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(id)}&callback=children&too_many_children_override=true'>Get all classes</a>"
+        string << "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{number_of_classes} classes at this level. Retrieving these may take several minutes. #{retry_link}</div>"
+      elsif child.id.eql?("bp_fake_root")
+        string << "<li class='active' id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='#' #{active_style}>#{child.prefLabel}</a></li>"
+      else
+        string << "<li #{open} #{draw_root} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.prefLabel} #{icons}</a>"
+        if child.childrenCount && child.childrenCount > 0 && !child.expanded?
+          string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.childrenCount}'>ajax_class</a></li></ul>"
+        elsif child.expanded?
+          string << "<ul>"
+          build_tree(child,"child",string,id)
+          string << "</ul>"
         end
-
-        relation = child.relation_icon
-
-        # This fake root will be present at the root of "flat" ontologies, we need to keep the id intact
-        li_id = child.id.eql?("bp_fake_root") ? "bp_fake_root" : short_uuid
-
-        # Return different result for too many children
-        if child.prefLabel.eql?("*** Too many children...")
-          number_of_classes = id.eql?("root") ? child.explore.ontology.explore.roots.length : node.childrenCount
-          retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(id)}&callback=children&too_many_children_override=true'>Get all classes</a>"
-          string << "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{number_of_classes} classes at this level. Retrieving these may take several minutes. #{retry_link}</div>"
-        elsif child.id.eql?("bp_fake_root")
-          string << "<li class='active' id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='#' #{active_style}>#{child.prefLabel}</a></li>"
-        else
-          string << "<li #{open} #{draw_root} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.prefLabel} #{icons}</a>"
-          if child.childrenCount && child.childrenCount > 0 && !child.expanded?
-            string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.childrenCount}'>ajax_class</a></li></ul>"
-          elsif child.expanded?
-            string << "<ul>"
-            build_tree(child,"child",string,id)
-            string << "</ul>"
-          end
-          string << "</li>"
-        end
+        string << "</li>"
       end
     end
 
