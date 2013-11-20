@@ -10,7 +10,7 @@
           /  (#{@concept.ontology.preferred_name_label})
       %td
         -#%p= @concept.prefLabel
-        %p= @concept.prefLabel_to_html
+        %p= @concept.prefLabel({:use_html => true})
     - unless @concept.synonym.nil? || @concept.synonym.empty?
       %tr
         %td.label{:nowrap => ""}

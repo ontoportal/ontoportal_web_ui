@@ -44,7 +44,7 @@ class OntologiesController < ApplicationController
     # Get the latest 'ready' submission, or fallback to any latest submission
     @submission = get_ontology_submission_ready(@ontology)  # application_controller
 
-    get_class(params)
+    get_class(params)   # application_controller::get_class
 
     if request.accept.to_s.eql?("application/ld+json")
       headers['Content-Type'] = "application/ld+json"
