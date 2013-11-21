@@ -9,7 +9,6 @@
           /- unless @ontology.preferred_name_label.nil? || @ontology.preferred_name_label.to_s.length == 0
           /  (#{@concept.ontology.preferred_name_label})
       %td
-        -#%p= @concept.prefLabel
         %p= @concept.prefLabel({:use_html => true})
     - unless @concept.synonym.nil? || @concept.synonym.empty?
       %tr
