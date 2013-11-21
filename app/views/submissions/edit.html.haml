@@ -1,6 +1,5 @@
 - @title = "Edit ontology submission"
 
 %div{:style => "margin:10px;"}
-  / - form_for :submission, @submission, url: {action: "update"} do |f|
-  - form_for :submission, @submission, url: ontology_submission_path(@ontology.acronym, @submission.submissionId), html: {method: :put} do |f|
+  - form_for :submission, @submission, url: ontology_submission_path(@ontology.acronym, @submission.submissionId), html: {method: :put, multipart: true} do |f|
     = render partial: "form", locals: {f: f, button_text: "Save submission", title_text: "Edit Submission Information"}
