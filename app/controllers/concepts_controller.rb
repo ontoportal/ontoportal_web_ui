@@ -47,7 +47,6 @@ class ConceptsController < ApplicationController
 
     # TODO: convert 'disjointWith' parameters into classes
     # TODO: compare with concepts_helper::concept_properties2hash(properties)
-    #binding.pry
     ## Try to resolve 'disjointWith' parameters into classes
     #@concept_properties = struct_to_hash(@concept.properties)
     #disjoint_key = @concept_properties.keys.map {|k| k if k.to_s.include? 'disjoint' }.compact.first
