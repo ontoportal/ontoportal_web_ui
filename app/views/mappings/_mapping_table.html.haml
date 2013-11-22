@@ -1,14 +1,19 @@
+-# called from views/mappings/_concept_mappings.html.haml
+
 %table#concept_mappings_table.zebra{:width => "100%"}
   %thead
     %tr
-      - if @delete_mapping_permission
-        %th
+      -#- if @delete_mapping_permission
+      -#  %th
+      %th{:class => 'delete_mapping_column', :style => "display: none;"} Delete
       %th Mapping To
       %th Ontology
       %th Source
   - if @mappings.length < 1
     %tr
-      %td{:colspan => @delete_mapping_permission ? "4" : "3"} There are currently no mappings for this class.
+      -#%td{:colspan => @delete_mapping_permission ? "4" : "3"} There are currently no mappings for this class.
+      %td{:class => 'delete_mapping_column', :style => "display: none;"}
+      %td{:colspan => "3"} There are currently no mappings for this class.
 
   - @mappings.each do |m|
     -# next if m.classes.map {|c| c.instance_of? LinkedData::Client::Models::Class }.to_set != [true].to_set
@@ -27,11 +32,14 @@
           -# ont_name = ont_acronym  # no way to get the name here?
           -# ont_link = ''  # no link to restricted ontologies
         - if ont_access
-          %tr.human{:id => m.id.split("/").last}
-            - if @delete_mapping_permission
-              %td{:style => "padding: 6px 12px;"}
-                - if session[:user].id.to_i == m.user_id || session[:user].admin?
-                  = check_box_tag :delete_mapping, m.id
+          - map_id = m.id.split("/").last
+          %tr.human{:id => map_id}
+            -#- if @delete_mapping_permission
+            -#  %td{:style => "padding: 6px 12px;"}
+            -#    - if session[:user].id.to_i == m.user_id || session[:user].admin?
+            -#      = check_box_tag :delete_mapping, m.id
+            %td{:class => 'delete_mapping_column', :style => "padding: 6px 12px; display: none;"}
+              = check_box_tag :delete_mapping_checkbox, m.id, false
             %td
               = link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{ont_acronym}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>", :controller => 'visualize', :action => 'virtual', :id => ont_acronym, :conceptid => cls.id
             %td

@@ -138,28 +138,29 @@ class MappingsController < ApplicationController
   end
 
   def destroy
-    mapping_ids = params[:mappingids].split(",")
-    concept_id = params[:conceptid].empty? ? "root" : params[:conceptid]
-
-    ontology = DataAccess.getOntology(params[:ontologyid])
-    concept = DataAccess.getNode(ontology.id, concept_id)
-    concept = concept_id.eql?("root") ? concept.children[0] : concept
-
     errors = []
     successes = []
+    mapping_ids = params[:mappingids].split(",")
     mapping_ids.each do |map_id|
       begin
-        result = DataAccess.deleteMapping(map_id)
-        raise Exception if !result.nil? && result["errorCode"]
+        # TODO: double check permission to delete mappings?
+        #mapping = LinkedData::Client::Models::Mapping.find(map_id)
+        #mapping.delete
+        map_uri = "#{MAPPINGS_URL}/#{CGI.escape(map_id)}"
+        result = LinkedData::Client::HTTP.delete(map_uri)
+        raise Exception if !result.nil? #&& result["errorCode"]
+        successes << map_id
       rescue Exception => e
         errors << map_id
-        next
       end
-      successes << map_id
     end
 
-    CACHE.delete("#{ontology.ontologyId}::#{CGI.escape(concept.fullId)}::map_page::page1::size100::params")
-    CACHE.delete("#{ontology.ontologyId}::#{CGI.escape(concept.fullId)}::map_count")
+    # TODO: clear any cache that might contain mappings in successes.
+    #ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontologyid]).first
+    #concept_id = params[:conceptid].empty? ? "root" : params[:conceptid]
+    #concept = ontology.explore.single_class(concept_id)
+    #CACHE.delete("#{ontology.id}::#{CGI.escape(concept.id)}::map_page::page1::size100::params")
+    #CACHE.delete("#{ontology.id}::#{CGI.escape(concept.id)}::map_count")
 
     render :json => { :success => successes, :error => errors }
   end
