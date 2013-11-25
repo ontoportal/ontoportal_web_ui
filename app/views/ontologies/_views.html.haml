@@ -1,3 +1,9 @@
+- begin
+  - if @views.nil?
+    - @views = @ontology.explore.views.sort {|a,b| a.acronym.downcase <=> b.acronym.downcase }
+- rescue
+  - @views = []
+
 :javascript
   jQuery(document).ready(function(){
     jQuery(".click_view_collapse").click(function(){

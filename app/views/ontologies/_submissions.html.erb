@@ -1,4 +1,12 @@
 <% return "" if @ontology.metadata_only? %>
+<% begin %>
+    <% if @submissions.nil? %>
+        <% submissions = @ontology.explore.submissions %>
+        <% @submissions = submissions.sort {|a,b| b.submissionId <=> a.submissionId } %>
+    <% end %>
+<% rescue %>
+    <% @submissions = [] %>
+<% end %>
 
 <script type="text/javascript">
   jQuery(document).ready(function(){
@@ -43,9 +51,12 @@
             <% end %>
         </tr>
     </thead>
-    <% submission_ready = @ontology.explore.latest_submission({:include_status => 'ready'}) rescue @ontology.explore.latest_submission({:include_status => 'ready', include: ""})%>
-    <% submission_readyId = -1 %>
-    <% submission_readyId = submission_ready.submissionId unless submission_ready.nil? %>
+    <% begin %>
+        <% submission_ready = @ontology.explore.latest_submission({:include_status => 'ready'}) %>
+        <% submission_readyId = submission_ready.submissionId unless submission_ready.nil? %>
+    <% rescue %>
+        <% submission_readyId = -1 %>
+    <% end %>
     <% @submissions.each_with_index do |sub, index| %>
         <% hidden_row_class = index >= 5 ? "hidden_ont hidden_select" : "" %>
         <tr <%= cycle("class='#{hidden_row_class}'", "class='alt #{hidden_row_class}'") %> class="<%=hidden_row_class%>">

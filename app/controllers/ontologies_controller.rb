@@ -250,13 +250,14 @@ class OntologiesController < ApplicationController
     end
     # Explore the ontology links
     @metrics = @ontology.explore.metrics
-    @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created}
-    @projects = @ontology.explore.projects
-    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId <=> a.submissionId } rescue []
+    @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created} || []
+    @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
+    # retrieve submissions in descending submissionId order, should be reverse chronological order.
+    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId <=> a.submissionId } || []
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
     # Get the latest submission, not necessarily the latest 'ready' submission
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
-    @views = @ontology.explore.views.sort {|a,b| b.acronym <=> a.acronym}  # a list of view ontology models
+    @views = @ontology.explore.views.sort {|a,b| a.acronym.downcase <=> b.acronym.downcase } || []
     if request.xhr?
       render :partial => 'metadata', :layout => false
     else
