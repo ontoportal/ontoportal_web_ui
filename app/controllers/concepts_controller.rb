@@ -83,6 +83,7 @@ class ConceptsController < ApplicationController
     cls = @ontology.explore.single_class(cls_id)
     # TODO: log any cls.errors
     # TODO: NCBO-402 might be implemented here, but it throws off a lot of ajax result rendering.
+    #cls_label = cls.prefLabel({:use_html => true}) || cls_id
     cls_label = cls.prefLabel || cls_id
     render :text => cls_label
   end
