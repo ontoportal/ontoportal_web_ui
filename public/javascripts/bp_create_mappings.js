@@ -53,18 +53,29 @@ jQuery(document).ready(function() {
 
 // Also in bp_mappings.js
 function updateMappingDeletePermissions() {
-  var mapping_permission_checkbox = jQuery("#delete_mapping_permission");
-  // Ensure the permission checkbox is hidden and disabled.
-  mapping_permission_checkbox.hide();
-  mapping_permission_checkbox.attr("disabled", true);
-  if (mapping_permission_checkbox.is(':checked')) {
-    jQuery("#delete_mappings_button").show();
-    jQuery(".delete_mapping_column").show();
-  } else {
+  var mapping_permission_checkbox = jQuery("#delete_mappings_permission");
+  if (mapping_permission_checkbox.length === 0){
+    //console.error("Failed to select #delete_mappings_permission");
     jQuery("#delete_mappings_button").hide();
-    jQuery(".delete_mapping_column").hide();
+    jQuery(".delete_mappings_column").hide();
+    jQuery("input[name='delete_mapping_checkbox']").prop('disabled', true);
+  } else {
+    // Ensure the permission checkbox is hidden.
+    mapping_permission_checkbox.hide();
+    if (mapping_permission_checkbox.is(':checked')) {
+      jQuery("#delete_mappings_button").show();
+      jQuery(".delete_mappings_column").show();
+      jQuery("input[name='delete_mapping_checkbox']").prop('disabled', false);
+    } else {
+      jQuery("#delete_mappings_button").hide();
+      jQuery(".delete_mappings_column").hide();
+      jQuery("input[name='delete_mapping_checkbox']").prop('disabled', true);
+    }
   }
+  jQuery("input[name='delete_mapping_checkbox']").prop('checked', false);
 }
+
+
 function getClassDetails(input) {
   var current_id = jQuery(input).attr("id");
   var current_ont_id = jQuery("#" + current_id + "_bioportal_ontology_id").val();
@@ -77,7 +88,6 @@ function getClassDetails(input) {
 function resetMappingUIWithFacebox() {
   jQuery('a[rel*=facebox]').facebox();
   resetMappingUI();
-  updateMappingDeletePermissions();
 }
 
 function resetMappingUI() {
@@ -139,7 +149,8 @@ var bp_createMapping = {
 
     // If we have a concept mapping table, update it with new mappings
     if (document.getElementById("concept_mappings_table") != null) {
-      jQuery("#concept_mappings_table").load("/ajax/mappings/get_concept_table?ontologyid=" + ontology_id + "&conceptid=" + encodeURIComponent(currentConcept), function(){
+      var url = "/ajax/mappings/get_concept_table?ontologyid=" + ontology_id + "&conceptid=" + encodeURIComponent(currentConcept);
+      jQuery("#concept_mappings_table").load(url, function(){
         jQuery("#mapping_count").html(jQuery("#mapping_details tbody tr:visible").size());
       });
     }

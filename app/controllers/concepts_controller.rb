@@ -189,9 +189,7 @@ private
   # gathers the information for a node
   def gather_details
     @mappings = @concept.explore.mappings
-    # TODO_REV: Support deleting mappings
-    # check to see if user should get the option to delete
-    # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
+    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
   end
 

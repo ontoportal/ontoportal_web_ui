@@ -63,6 +63,7 @@ class MappingsController < ApplicationController
 
     @mapping_pages = LinkedData::Client::HTTP.get(MAPPINGS_URL, {page: page, ontologies: ontologies.join(",")})
     @mappings = @mapping_pages.collection
+    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
     if @mapping_pages.nil? || @mapping_pages.collection.empty?
       @mapping_pages = MappingPage.new
@@ -86,9 +87,7 @@ class MappingsController < ApplicationController
 
     @mappings = @concept.explore.mappings
 
-    # TODO_REV: Enable mappings deletion
-    # check to see if user should get the option to delete
-    # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
+    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
     render :partial => "mapping_table"
   end
@@ -133,11 +132,13 @@ class MappingsController < ApplicationController
     if @mapping_saved.errors
       raise Exception, @mapping_saved.errors
     else
+      @delete_mapping_permission = check_delete_mapping_permission(@mapping_saved)
       render :json => @mapping_saved
     end
   end
 
   def destroy
+    # ajax method
     errors = []
     successes = []
     mapping_ids = params[:mappingids].split(",")

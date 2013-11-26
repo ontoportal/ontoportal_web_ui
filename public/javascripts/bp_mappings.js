@@ -20,20 +20,33 @@ function updateMappingCount() {
 
 // Also in bp_create_mappings.js
 function updateMappingDeletePermissions() {
-  var mapping_permission_checkbox = jQuery("#delete_mapping_permission");
-  // Ensure the permission checkbox is hidden and disabled.
-  mapping_permission_checkbox.hide();
-  mapping_permission_checkbox.attr("disabled", true);
-  if (mapping_permission_checkbox.is(':checked')) {
-    jQuery("#delete_mappings_button").show();
-    jQuery(".delete_mapping_column").show();
-  } else {
+  var mapping_permission_checkbox = jQuery("#delete_mappings_permission");
+  if (mapping_permission_checkbox.length === 0){
+    //console.error("Failed to select #delete_mappings_permission");
     jQuery("#delete_mappings_button").hide();
-    jQuery(".delete_mapping_column").hide();
+    jQuery(".delete_mappings_column").hide();
+    jQuery("input[name='delete_mapping_checkbox']").prop('disabled', true);
+  } else {
+    // Ensure the permission checkbox is hidden.
+    mapping_permission_checkbox.hide();
+    if (mapping_permission_checkbox.is(':checked')) {
+      jQuery("#delete_mappings_button").show();
+      jQuery(".delete_mappings_column").show();
+      jQuery("input[name='delete_mapping_checkbox']").prop('disabled', false);
+    } else {
+      jQuery("#delete_mappings_button").hide();
+      jQuery(".delete_mappings_column").hide();
+      jQuery("input[name='delete_mapping_checkbox']").prop('disabled', true);
+    }
   }
   jQuery("input[name='delete_mapping_checkbox']").prop('checked', false);
 }
 
+// deleteMappings() is a callback that is called by "#delete_mappings_button" created in
+// /app/views/mappings/_concept_mappings.html.haml
+// The appearance of that button is controlled by updateMappingDeletePermissions(), which
+// relies on @delete_mapping_permission in /app/views/mappings/_mapping_table.html.haml; which,
+// in turn, is set by /app/controllers/application_controller.check_delete_mapping_permission()
 function deleteMappings() {
   var mappingsToDelete = [], params;
 

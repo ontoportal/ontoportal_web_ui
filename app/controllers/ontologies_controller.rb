@@ -66,9 +66,7 @@ class OntologiesController < ApplicationController
       LOG.add :error, msg + "\n" + e.message
       @mappings = []
     end
-    # TODO_REV: Support mappings deletion
-    # check to see if user should get the option to delete
-    # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
+    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
     begin
       @notes = @concept.explore.notes

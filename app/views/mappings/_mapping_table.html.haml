@@ -1,18 +1,31 @@
--# called from views/mappings/_concept_mappings.html.haml
+-# called from mappings_controller in several ways:
+-# 1. mappings_controller::get_concept_table via /app/views/mappings/_concept_mappings.html.haml
+-# 2. directly from mappings_controller::get_concept_table
+
+-#NOTES on control over mapping deletion:
+-#deleteMappings() is a callback that is called by "#delete_mappings_button" created below.
+-#The appearance of that button is controlled by updateMappingDeletePermissions(), which
+-#relies on @delete_mapping_permission in /app/views/mappings/_mapping_table.html.haml; which,
+-#in turn, is set by /app/controllers/application_controller.check_delete_mapping_permission()
+-#
+-# The delete mappings button display is controlled by JS on page ready (see bp_mappings.js)
+-# check_box_tag(name, value = "1", checked = false, options = {})
+= check_box_tag "delete_mappings_permission", @delete_mapping_permission, @delete_mapping_permission, :style => "display: none;"
 
 %table#concept_mappings_table.zebra{:width => "100%"}
   %thead
     %tr
       -#- if @delete_mapping_permission
       -#  %th
-      %th{:class => 'delete_mapping_column', :style => "display: none;"} Delete
+      %th{:class => 'delete_mappings_column'} Delete
       %th Mapping To
       %th Ontology
       %th Source
+      %th Linked Data
   - if @mappings.length < 1
     %tr
       -#%td{:colspan => @delete_mapping_permission ? "4" : "3"} There are currently no mappings for this class.
-      %td{:class => 'delete_mapping_column', :style => "display: none;"}
+      %td{:class => 'delete_mappings_column', :style => "display: none;"}
       %td{:colspan => "3"} There are currently no mappings for this class.
 
   - @mappings.each do |m|
@@ -38,11 +51,14 @@
             -#  %td{:style => "padding: 6px 12px;"}
             -#    - if session[:user].id.to_i == m.user_id || session[:user].admin?
             -#      = check_box_tag :delete_mapping, m.id
-            %td{:class => 'delete_mapping_column', :style => "padding: 6px 12px; display: none;"}
-              = check_box_tag :delete_mapping_checkbox, m.id, false
+            %td{:class => 'delete_mappings_column', :style => "padding: 6px 12px;"}
+              = check_box_tag :delete_mapping_checkbox, m.id
             %td
               = link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{ont_acronym}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>", :controller => 'visualize', :action => 'virtual', :id => ont_acronym, :conceptid => cls.id
             %td
               %a{:href => ont_link}= ont_name
             %td
               #{m.process.map {|p| p.name}.join(", ")}
+            %td
+              - map_uri = $REST_URL + '/mappings/' + CGI.escape(m.id)  # not as easy because m.id is not the resource
+              = link_to map_id, map_uri, :id => m.id, :target => '_blank'
