@@ -59,7 +59,7 @@ class MappingsController < ApplicationController
     page = params[:page] || 1
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     @target_ontology = LinkedData::Client::Models::Ontology.find(params[:target])
-    ontologies = [@ontology.id, @target_ontology.id]
+    ontologies = [@ontology.acronym, @target_ontology.acronym]
 
     @mapping_pages = LinkedData::Client::HTTP.get(MAPPINGS_URL, {page: page, ontologies: ontologies.join(",")})
     @mappings = @mapping_pages.collection
