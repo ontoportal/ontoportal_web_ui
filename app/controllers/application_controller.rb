@@ -55,36 +55,31 @@ class ApplicationController < ActionController::Base
   end
 
   def domain_ontology_set
-    # TODO_REV: Custom ontology sets
-    # if !$ENABLE_SLICES.nil? && $ENABLE_SLICES == true
-    #   host = request.host
-    #   host_parts = host.split(".")
-    #   subdomain = host_parts[0]
+    @subdomain_filter = { :active => false, :name => "", :acronym => "" }
 
-    #   groups = DataAccess.getGroupsWithOntologies
-    #   groups_hash = {}
-    #   groups.group_list.each do |group_id, group|
-    #     groups_hash[group[:acronym].downcase.gsub(" ", "-")] = { :name => group[:name], :ontologies => group[:ontologies] }
-    #   end
-    #   $ONTOLOGY_SLICES.merge!(groups_hash)
+    if !$ENABLE_SLICES.nil? && $ENABLE_SLICES == true
+      host = request.host
+      host_parts = host.split(".")
+      subdomain = host_parts[0].downcase
 
-    #   @subdomain_filter = { :active => false, :name => "", :acronym => "" }
+      slices = LinkedData::Client::Models::Slice.all
+      slices_acronyms = slices.map {|s| s.acronym}
 
-    #   # Set custom ontologies if we're on a subdomain that has them
-    #   # Else, make sure user ontologies are set appropriately
-    #   if $ONTOLOGY_SLICES.include?(subdomain)
-    #     session[:user_ontologies] = { :virtual_ids => Set.new($ONTOLOGY_SLICES[subdomain][:ontologies]), :ontologies => nil }
-    #     @subdomain_filter[:active] = true
-    #     @subdomain_filter[:name] = $ONTOLOGY_SLICES[subdomain][:name]
-    #     @subdomain_filter[:acronym] = subdomain
-    #   elsif session[:user]
-    #     session[:user_ontologies] = user_ontologies(session[:user])
-    #   else
-    #     session[:user_ontologies] = nil
-    #   end
-    # else
-      @subdomain_filter = { :active => false, :name => "", :acronym => "" }
-    # end
+      # Set custom ontologies if we're on a subdomain that has them
+      # Else, make sure user ontologies are set appropriately
+      if slices_acronyms.include?(subdomain)
+        session[:user_ontologies] = { :acronyms => Set.new(slices_acronyms), :ontologies => nil }
+        slice = slices.select {|s| s.acronym.eql?(subdomain)}.first
+        @subdomain_filter[:active] = true
+        @subdomain_filter[:name] = slice.name
+        @subdomain_filter[:acronym] = slice.acronym
+      elsif session[:user]
+        # TODO_REV Custom ontology sets for users
+        # session[:user_ontologies] = user_ontologies(session[:user])
+      end
+    end
+
+    Thread.current[:slice] = @subdomain_filter
   end
 
   def user_ontologies(user)
