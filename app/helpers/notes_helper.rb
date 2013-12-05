@@ -205,22 +205,33 @@ module NotesHelper
 
   def subscribe_button(ontology_id)
     user = session[:user]
-    return "<a href='/login?redirect=#{request.request_uri}' style='font-size: .9em;' class='subscribe_to_notes'>Subscribe to notes emails</a>" if user.nil?
-
-    # TODO_REV: Create subscription service?
-    return "<a href='/login?redirect=#{request.request_uri}' style='font-size: .9em;' class='subscribe_to_notes'>Subscribe to notes emails</a>"
-    subs = DataAccess.getUserSubscriptions(user.id)
-
-
-    if !subs.nil?
-      sub_text = subbed_to_ont?(ontology_id, subs) ? "Unsubscribe" : "Subscribe"
-      params = "data-bp_ontology_id='#{ontology_id}' data-bp_is_subbed='#{subbed_to_ont?(ontology_id, subs)}' data-bp_user_id='#{user.id}'"
-      spinner = '<span class="notes_subscribe_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>'
-      error = "<span style='color: red;' class='notes_sub_error'></span>"
-      return "<a href='javascript:void(0);' class='subscribe_to_notes link_button' #{params}>#{sub_text} to notes emails</a> #{spinner} #{error}"
-    else
-      return ""
+    if user.nil?
+      # subscribe button must redirect to login
+      return "<a href='/login?redirect=#{request.request_uri}' style='font-size: .9em;' class='subscribe_to_notes'>Subscribe to notes emails</a>"
     end
+    # Init subscribe button parameters.
+    sub_text = "Subscribe"
+    params = "data-bp_ontology_id='#{ontology_id}' data-bp_is_subbed='false' data-bp_user_id='#{user.id}'"
+    begin
+      # Try to create an intelligent subscribe button.
+      # User is logged in, check the subscriptions
+      user.bring(:subscription) if user.subscription.nil?
+      subs = user.subscription  # ???  Array of subscriptions like {ontology: ontology_id, notification_type: "NOTES"}
+      # Get the ontology linked data instance
+      if ontology_id.start_with? 'http'
+        ont = LinkedData::Client::Models::Ontology.find(ontology_id)
+      else
+        ont = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_id).first
+      end
+      subscribed = subscribed_to_ontology?(ont.acronym, subs)
+      sub_text = subscribed ? "Unsubscribe" : "Subscribe"
+      params = "data-bp_ontology_id='#{ont.acronym}' data-bp_is_subbed='#{subscribed}' data-bp_user_id='#{user.id}'"
+    rescue
+      # pass, fallback init done above begin block to scope parameters beyond the begin/rescue block
+    end
+    spinner = '<span class="notes_subscribe_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>'
+    error = "<span style='color: red;' class='notes_sub_error'></span>"
+    return "<a href='javascript:void(0);' class='subscribe_to_notes link_button' #{params}>#{sub_text} to notes emails</a> #{spinner} #{error}"
   end
 
   def delete_button
@@ -234,9 +245,12 @@ module NotesHelper
     return "<a href='#' onclick='deleteNotes(this);return false;' style='display: inline-block !important;' class='notes_delete link_button' #{params}>Delete selected notes</a> #{spinner} #{error}"
   end
 
-  def subbed_to_ont?(ontology_id, subscriptions)
+  def subscribed_to_ontology?(ontology_acronym, subscriptions)
+    return false if subscriptions.nil? or subscriptions.empty?
     subscriptions.each do |sub|
-      return true if sub["ontologyId"].to_i == ontology_id.to_i
+      #sub = {ontology: ontology_acronym, notification_type: "NOTES"}
+      sub_ont_acronym = sub[:ontology].split('/').last # make sure we get the acronym, even if it's a full URI
+      return true if sub_ont_acronym == ontology_acronym
     end
     return false
   end
