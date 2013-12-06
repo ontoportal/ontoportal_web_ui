@@ -49,9 +49,6 @@ class SubscriptionsController < ApplicationController
     rescue
       updated_sub = false
     end
-
-    binding.pry
-
     render :json => { :updated_sub => updated_sub, :user_subscriptions => u.subscription }
   end
 
