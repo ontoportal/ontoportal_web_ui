@@ -24,14 +24,16 @@ class SubscriptionsController < ApplicationController
       subscription = {ontology: ont.acronym, notification_type: "NOTES"} #NOTIFICATION_TYPES[:notes]}
       u.subscription.push(subscription)
     end
-    #
-    # TODO: DOUBLE CHECK THIS BEGIN/RESCUE BLOCK
-    #
+    # Try to update the user instance and the session user.
     begin
-      u.update # this calls with an HTTP PATCH to the user id
-      # How do we get success or failure status from u.update?
-      #updated_sub = u.valid?
-      updated_sub = true
+      error_response = u.update
+      if error_response.nil?
+        updated_sub = true
+        session[:user] = u
+      else
+        updated_sub = false
+        #errors = response_errors(error_response)
+      end
     rescue
       updated_sub = false
     end
