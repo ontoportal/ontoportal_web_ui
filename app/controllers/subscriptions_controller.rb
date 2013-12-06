@@ -29,7 +29,14 @@ class SubscriptionsController < ApplicationController
       error_response = u.update
       if error_response.nil?
         updated_sub = true
-        session[:user] = u
+        #session[:user] = u
+        # Cannot update session[:user] as above.  The session user object is special because it only
+        # gets set when someone logs in and the user object returned when authenticating is the
+        # only one that will contain the api key for security reasons. So we actually need to use
+        # the update_from_params method, can’t just set the object to the user linked data instance.
+        # TODO: update the subscribe details for the session[:user].
+        #binding.pry
+        #session[:user].update_from_params(params[:user])
       else
         updated_sub = false
         #errors = response_errors(error_response)
