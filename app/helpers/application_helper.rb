@@ -432,6 +432,47 @@ module ApplicationHelper
     decimal_format.gsub(/%n/, formatted_number).gsub(/%u/, unit).strip
   end
 
+  def subscribe_ontology_button(ontology_id, user = nil)
+    user = session[:user] if user.nil?
+    if user.nil?
+      # subscribe button must redirect to login
+      return "<a href='/login?redirect=#{request.request_uri}' style='font-size: .9em;' class='subscribe_to_ontology'>Subscribe</a>"
+    end
+    # Init subscribe button parameters.
+    sub_text = "Subscribe"
+    params = "data-bp_ontology_id='#{ontology_id}' data-bp_is_subbed='false' data-bp_user_id='#{user.id}'"
+    begin
+      # Try to create an intelligent subscribe button.
+      if ontology_id.start_with? 'http'
+        ont = LinkedData::Client::Models::Ontology.find(ontology_id)
+      else
+        ont = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_id).first
+      end
+      subscribed = subscribed_to_ontology?(ont.acronym, user)  # application_helper
+      sub_text = subscribed ? "Unsubscribe" : "Subscribe"
+      params = "data-bp_ontology_id='#{ont.acronym}' data-bp_is_subbed='#{subscribed}' data-bp_user_id='#{user.id}'"
+    rescue
+      # pass, fallback init done above begin block to scope parameters beyond the begin/rescue block
+    end
+    # TODO: modify/copy CSS for notes_sub_error => subscribe_error
+    # TODO: modify/copy CSS for subscribe_to_notes => subscribe_to_ontology
+    spinner = '<span class="subscribe_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>'
+    error = "<span style='color: red;' class='subscribe_error'></span>"
+    return "<a href='javascript:void(0);' class='subscribe_to_ontology link_button' #{params}>#{sub_text}</a> #{spinner} #{error}"
+  end
+
+  def subscribed_to_ontology?(ontology_acronym, user)
+    user.bring(:subscription) if user.subscription.nil?
+    # user.subscription is an array of subscriptions like {ontology: ontology_id, notification_type: "NOTES"}
+    return false if user.subscription.nil? or user.subscription.empty?
+    user.subscription.each do |sub|
+      #sub = {ontology: ontology_acronym, notification_type: "NOTES"}
+      sub_ont_acronym = sub[:ontology].split('/').last # make sure we get the acronym, even if it's a full URI
+      return true if sub_ont_acronym == ontology_acronym
+    end
+    return false
+  end
+
   # http://stackoverflow.com/questions/1293573/rails-smart-text-truncation
   def smart_truncate(s, opts = {})
     opts = {:words => 20}.merge(opts)
