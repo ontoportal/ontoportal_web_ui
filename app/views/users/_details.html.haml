@@ -26,10 +26,11 @@
     %h2 Subscriptions
     %ul{:style => "padding-left: 1em;"}
       - @user.subscription.each do |subscription|
-        - ont = subscription[:ontology]
+        - ont = subscription[:ontology].split('/').last # ensure we get the acronym
         - type = subscription[:notification_type].downcase
         %li
-          %a{:href => "/ontologies/#{ont}"}="#{ont}&nbsp;#{type}"
+          %a{:href => "/ontologies/#{ont}?p=notes"}= ont
+          ="&nbsp;" + type
   %br/
   - unless @user_submitted_ontologies.nil? || @user_submitted_ontologies.length == 0
     %h2 Submitted Ontologies
