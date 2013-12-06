@@ -21,7 +21,7 @@ class SubscriptionsController < ApplicationController
       u.subscription.delete_if {|sub| sub[:ontology].eql?(ont.acronym) }
     else
       # Not subscribed yet, so this request must be for adding subscription
-      subscription = {ontology: ont.acronym, notification_type: NOTIFICATION_TYPES[:notes]}
+      subscription = {ontology: ont.acronym, notification_type: "NOTES"} #NOTIFICATION_TYPES[:notes]}
       u.subscription.push(subscription)
     end
     #
