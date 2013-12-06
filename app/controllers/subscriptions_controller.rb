@@ -18,7 +18,7 @@ class SubscriptionsController < ApplicationController
     if subscribed.eql?("true")
       # Already subscribed, so this request must be a delete
       # Note that this routine removes ALL subscriptions for the ontology, regardless of type.
-      u.subscription.delete_if {|sub| sub[:ontology].eql?(ont.acronym) }
+      u.subscription.delete_if {|sub| sub[:ontology].split('/').last.eql?(ont.acronym) }
     else
       # Not subscribed yet, so this request must be for adding subscription
       subscription = {ontology: ont.acronym, notification_type: "NOTES"} #NOTIFICATION_TYPES[:notes]}
@@ -29,14 +29,19 @@ class SubscriptionsController < ApplicationController
       error_response = u.update
       if error_response.nil?
         updated_sub = true
+        session[:user].subscription = u.subscription
         #session[:user] = u
-        # Cannot update session[:user] as above.  The session user object is special because it only
-        # gets set when someone logs in and the user object returned when authenticating is the
-        # only one that will contain the api key for security reasons. So we actually need to use
-        # the update_from_params method, can’t just set the object to the user linked data instance.
-        # TODO: update the subscribe details for the session[:user].
-        #binding.pry
+        # NOTES:
+        # - Cannot update session[:user] as above.  The session user object is special because it only
+        #   gets set when someone logs in and the user object returned when authenticating is the
+        #   only one that will contain the api key for security reasons. So we actually need to use
+        #   the update_from_params method, can’t just set the object to the user linked data instance.
+        #
         #session[:user].update_from_params(params[:user])
+        # update_from_params first gets all attributes from the REST service for the object being updated,
+        # then sets the values provided in the params hash where the param keys match setter names on the
+        # object (in this case, for example, :subscription would set the @subscription value on the instance).
+        # That’s all it does, no saving or anything.
       else
         updated_sub = false
         #errors = response_errors(error_response)
@@ -44,6 +49,9 @@ class SubscriptionsController < ApplicationController
     rescue
       updated_sub = false
     end
+
+    binding.pry
+
     render :json => { :updated_sub => updated_sub, :user_subscriptions => u.subscription }
   end
 
