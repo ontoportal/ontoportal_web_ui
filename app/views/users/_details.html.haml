@@ -22,11 +22,19 @@
   %p{:style => "padding: .5em 0 0 1em;"}
     = session[:user].apikey
   %br/
+  - unless @user.subscription.nil? || @user.subscription.empty?
+    %h2 Subscriptions
+    %ul{:style => "padding-left: 1em;"}
+      - @user.subscription.each do |subscription|
+        - ont = subscription[:ontology]
+        - type = subscription[:notification_type].downcase
+        %li
+          %a{:href => "/ontologies/#{ont}"}="#{ont}&nbsp;#{type}"
+  %br/
   - unless @user_submitted_ontologies.nil? || @user_submitted_ontologies.length == 0
     %h2 Submitted Ontologies
-    %h2
     %ul{:style => "padding-left: 1em;"}
-      - @user_ontologies.each do |ont|
+      - @user_submitted_ontologies.each do |ont|
         %li
           %a{:href => "/ontologies/#{ont.id}"}= ont.displayLabel
   :javascript
