@@ -36,7 +36,7 @@ class UsersController < ApplicationController
   # GET /users/1;edit
   def edit
     @user = LinkedData::Client::Models::User.find(params[:id])
-    @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
+    @user ||= LinkedData::Client::Models::User.find_by_username(params[:id]).first
 
     if (params[:password].eql?("true"))
       @user.validate_password = true
@@ -92,7 +92,7 @@ class UsersController < ApplicationController
       else
         flash[:notice] = 'Account was successfully updated'
         session[:user].update_from_params(params[:user])
-        redirect_to user_path(CGI.escape(@user.id))
+        redirect_to user_path(@user.username)
       end
     else
       render :action => "edit"
