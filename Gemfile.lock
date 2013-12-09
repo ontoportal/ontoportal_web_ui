@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/MiniProfiler/rack-mini-profiler.git
+  revision: 32e7f2d2b75f7c875885e4f64734e5534d17ca7f
+  specs:
+    rack-mini-profiler (0.9.0.pre)
+      rack (>= 1.1.3)
+
+GIT
   remote: https://github.com/ncbo/ncbo_resolver.git
   revision: 67989c445e53e019b3b3fa4905e0aa9d519df0ed
   specs:
@@ -42,7 +49,7 @@ GEM
     hodel_3000_compliant_logger (0.1.1)
     hpricot (0.8.6)
     i18n (0.5.2)
-    iconv (1.0.3)
+    iconv (1.0.4)
     json (1.8.1)
     kgio (2.8.1)
     lz4-ruby (0.2.0)
@@ -63,8 +70,6 @@ GEM
     pry-nav (0.2.3)
       pry (~> 0.9.10)
     rack (1.1.6)
-    rack-mini-profiler (0.1.31)
-      rack (>= 1.1.3)
     rails (2.3.17)
       actionmailer (= 2.3.17)
       actionpack (= 2.3.17)
@@ -108,7 +113,7 @@ DEPENDENCIES
   ontologies_api_client!
   pry
   pry-nav
-  rack-mini-profiler
+  rack-mini-profiler!
   rails (= 2.3.17)
   rdoc
   recaptcha (~> 0.3.1)
