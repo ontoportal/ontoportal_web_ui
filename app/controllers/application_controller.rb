@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
   EXPIRY_RI_ONTOLOGIES = 60 * 60 * 24  # 24:00 hours
   EXPIRY_SEMANTIC_TYPES = 60 * 60 * 24 # 24:00 hours
   EXPIRY_RECENT_MAPPINGS = 60 * 60     #  1:00 hours
-  EXPIRY_ONTOLOGY_SIMPLIFIED = 60 * 1  #  0:10 minute
+  EXPIRY_ONTOLOGY_SIMPLIFIED = 60 * 1  #  0:01 minute
 
   if !$EMAIL_EXCEPTIONS.nil? && $EMAIL_EXCEPTIONS == true
     include ExceptionNotifiable
