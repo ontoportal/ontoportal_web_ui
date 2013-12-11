@@ -159,10 +159,10 @@ class HomeController < ApplicationController
       return
     end
 
-    @user_ontologies = session[:user_ontologies]
-    @user_ontologies ||= {}
-
     @user = LinkedData::Client::Models::User.get(session[:user].id, include: "all")
+
+    @user_ontologies = @user.customOntology
+    @user_ontologies ||= {}
 
     render :partial => "users/details", :layout => "ontology"
   end
