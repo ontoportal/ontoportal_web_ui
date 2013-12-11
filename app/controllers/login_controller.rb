@@ -22,11 +22,7 @@ class LoginController < ApplicationController
       if logged_in_user && !logged_in_user.errors
         session[:user] = logged_in_user
 
-        # TODO_REV: Support custom ontology sets
-        # session[:user_ontologies] = user_ontologies(logged_in_user)
-
-        # custom_ontologies_text = session[:user_ontologies] ? "The display is now based on your <a href='/account#custom_ontology_set'>Custom Ontology Set</a>." : ""
-        custom_ontologies_text = ""
+        custom_ontologies_text = !session[:user].customOntology.empty? ? "The display is now based on your <a href='/account#custom_ontology_set'>Custom Ontology Set</a>." : ""
 
         flash[:notice] = "Welcome <b>" + logged_in_user.username.to_s+"</b>. " + custom_ontologies_text
         redirect = "/"
@@ -59,7 +55,6 @@ class LoginController < ApplicationController
       session[:admin_user] = session[:user]
       session[:user] = new_user
       session[:user].apikey = session[:admin_user].apikey
-      session[:user_ontologies] = user_ontologies(session[:user])
     end
 
     redirect_to request.referer rescue redirect_to "/"
@@ -71,14 +66,12 @@ class LoginController < ApplicationController
       old_user = session[:user]
       session[:user] = session[:admin_user]
       session.delete(:admin_user)
-      session[:user_ontologies] = user_ontologies(session[:user])
       flash[:notice] = "Logged out <b>#{old_user.username}</b>, returned to <b>#{session[:user].username}</b>"
     else
       session[:user] = nil
-      session[:user_ontologies] = nil
       flash[:notice] = "Logged out"
     end
-    redirect_to request.referer
+    redirect_to request.referer || "/"
   end
 
   def lost_password
