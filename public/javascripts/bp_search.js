@@ -465,7 +465,21 @@ function currentOntologiesCount() {
 function classHTML(res, label_html, displayOntologyName) {
   var ontologyName = displayOntologyName ? "<span class='ont_name' data-ont='"+res.links.ontology+"'></span>" : "";
   setOntologyName(res);
-  return "<div class='class_link'><a title='"+res.prefLabel+"' data-bp_conceptid='"+encodeURIComponent(res["@id"])+"' data-exact_match='"+res.exactMatch+"' href='/ontologies/"+ontologyIdToAcronym(res.links.ontology)+"?p=classes&conceptid="+encodeURIComponent(res["@id"])+"'>"+jQuery(label_html).html()+ontologyName+"</a><div class='concept_uri'>"+res["@id"]+"</div></div>";
+
+  var title = " title='" + res.prefLabel + "' ";
+  var conceptIdCode = encodeURIComponent(res["@id"]);
+  var dataConceptId = " data-bp_conceptid='" + conceptIdCode + "' ";
+  var dataExactMatch = " data-exact_match='" + res.exactMatch + "' ";
+  var linkHref = " href='/ontologies/" + ontologyIdToAcronym(res.links.ontology) + "?p=classes&conceptid=" + conceptIdCode + "' ";
+  return "" +
+  "<div class='class_link'>" +
+    "<a " + title + dataConceptId + dataExactMatch + linkHref + "> " +
+      label_html.prop('outerHTML') + ontologyName +
+    "</a> " +
+    "<div class='concept_uri'>" +
+      res["@id"] +
+    "</div> " +
+  "</div> ";
 }
 
 function resultLinksHTML(res) {
