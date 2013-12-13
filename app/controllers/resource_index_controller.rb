@@ -50,7 +50,6 @@ class ResourceIndexController < ApplicationController
       return
     end
     params[:q] = params[:q].strip
-    params[:q] = params[:q] + '*' unless params[:q].end_with?("*") # Add wildcard
     # Get Resource Index ontologies - REST API filters them for those that are in the triple store.
     ri_ont_acronym_key = 'ri_ont_acronym_key'
     ri_ont_acronyms = Rails.cache.read(ri_ont_acronym_key)

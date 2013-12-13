@@ -20,12 +20,8 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
-    @user = LinkedData::Client::Models::User.find(params[:id])
-    @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
-
-    # TODO_REV: Enable custom ontology sets
-    # @user_ontologies = session[:user_ontologies]
-    @user_ontologies ||= {}
+    @user = session[:user]
+    @user_ontologies = @user.customOntology
   end
 
   # GET /users/new
@@ -99,34 +95,24 @@ class UsersController < ApplicationController
     end
   end
 
-  def submit_license
-    user = session[:user]
-    user.ontologylicensetext = params[:ontologylicensetext]
-    user.ontologylicense = params[:ontologylicense]
-    ontology_id = params[:ontologylicense]
+  def custom_ontologies
+    @user = LinkedData::Client::Models::User.find(params[:id])
+    @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
 
-    redirect_location = params[:redirect_location].nil? || params[:redirect_location].empty? ? :back : params[:redirect_location]
-
-    if user.ontologylicensetext.length > 512
-      redirect_to :back, :flash => { :error => "License information cannot be longer than 512 characters" }
-      return
+    if params[:ontology] && params[:ontology][:ontologyId]
+      custom_ontologies = params[:ontology][:ontologyId].map {|acr| LinkedData::Client::Models::Ontology.find_by_acronym(acr).first.id}
     end
+    @user.update_from_params(customOntology: custom_ontologies || [])
+    error_response = @user.update
 
-    if user.ontologylicensetext.length < 2
-      redirect_to :back, :flash => { :error => "License information must contain at least two characters" }
-      return
+    if error_response
+      flash[:notice] = 'Error saving Custom Ontologies, please try again'
+    else
+      updated_user = LinkedData::Client::Models::User.find(@user.id)
+      flash[:notice] = 'Custom Ontologies were saved'
+      session[:user].update_from_params(customOntology: updated_user.customOntology)
     end
-
-    begin
-      updated_user = DataAccess.updateUser(user.to_h, user.id)
-    rescue Exception => e
-      redirect_to :back, :flash => { :error => "There was a problem submitting your license, please try again" }
-      return
-    end
-
-    DataAccess.removeLatestOntologyFromCache(ontology_id)
-
-    redirect_to redirect_location
+    redirect_to user_path(@user.username)
   end
 
   private
@@ -140,26 +126,6 @@ class UsersController < ApplicationController
     if session[:user].nil? || (!session[:user].id.eql?(params[:id]) && !session[:user].username.eql?(params[:id]))
       redirect_to :controller => 'login', :action => 'index', :redirect => "/accounts/#{params[:id]}"
     end
-  end
-
-  def custom_ontologies
-    ontologies = params["ontology"] ? params["ontology"]["ontologyId"].collect {|a| a.to_i} : nil
-
-    custom_ontologies = CustomOntologies.find_or_create_by_user_id(session[:user].id)
-
-    if ontologies.nil?
-      custom_ontologies.destroy
-      session[:user_ontologies] = nil
-    else
-      custom_ontologies.ontologies = ontologies
-      custom_ontologies.save
-
-      session[:user_ontologies] = {} if session[:user_ontologies].nil?
-      session[:user_ontologies][:virtual_ids] = custom_ontologies.ontologies
-    end
-
-    flash[:notice] = 'Custom Ontologies were saved'
-    redirect_to user_path(session[:user].id)
   end
 
   def get_ontology_list(ont_hash)

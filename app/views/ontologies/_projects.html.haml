@@ -1,3 +1,9 @@
+- begin
+  - if @projects.nil?
+    - @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase }
+- rescue
+  - @projects = []
+
 :javascript
   jQuery(document).ready(function(){
     jQuery(".untruncate").click(function(event){

@@ -818,6 +818,12 @@ tr.mainresource td {
   margin-bottom: 0.5em;
 }
 
+.obsolete_class {
+  color: gray;
+  font-style: oblique;
+  cursor: help;
+}
+
 .concept_details p {
   /*margin-top: .5em;*/
   margin-bottom: .5em;
@@ -1625,12 +1631,6 @@ button.fg-button-menu, button.fg-button {
 .too_many_children_override:hover {
   color: #234979 !important;
   text-decoration: underline !important;
-}
-
-.obsolete_class {
-  color: gray;
-  font-style: oblique;
-  cursor: help;
 }
 
 

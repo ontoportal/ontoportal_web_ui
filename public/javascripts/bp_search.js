@@ -362,9 +362,13 @@ function normalizeObsoleteClasses(res) {
   // We have to look for a span here, indicating that the class is obsolete.
   // If not, add the class to a new span to match obsolete structure so we can process them the same.
   var max_word_length = 60;
-  var elipses = (res.prefLabel.length > max_word_length) ? "..." : "";
-  var label_html = (res.isObsolete == "1") ? jQuery(res.prefLabel) : jQuery("<span/>").append(res.prefLabel);
-  label_html = jQuery("<span/>").append(label_html.html(label_html.html().substring(0, max_word_length)+elipses));
+  var label_text = (res.prefLabel.length > max_word_length) ? res.prefLabel.substring(0, max_word_length) + "..." : res.prefLabel;
+  var label_html = jQuery("<span/>").addClass('prefLabel').append(label_text);
+  if (res.obsolete === true){
+    label_html.removeClass('prefLabel');
+    label_html.addClass('obsolete_class');
+    label_html.attr('title', 'obsolete class');
+  }
   return label_html;
 }
 
@@ -461,7 +465,21 @@ function currentOntologiesCount() {
 function classHTML(res, label_html, displayOntologyName) {
   var ontologyName = displayOntologyName ? "<span class='ont_name' data-ont='"+res.links.ontology+"'></span>" : "";
   setOntologyName(res);
-  return "<div class='class_link'><a title='"+res.prefLabel+"' data-bp_conceptid='"+encodeURIComponent(res["@id"])+"' data-exact_match='"+res.exactMatch+"' href='/ontologies/"+ontologyIdToAcronym(res.links.ontology)+"?p=classes&conceptid="+encodeURIComponent(res["@id"])+"'>"+jQuery(label_html).html()+ontologyName+"</a><div class='concept_uri'>"+res["@id"]+"</div></div>";
+
+  var title = " title='" + res.prefLabel + "' ";
+  var conceptIdCode = encodeURIComponent(res["@id"]);
+  var dataConceptId = " data-bp_conceptid='" + conceptIdCode + "' ";
+  var dataExactMatch = " data-exact_match='" + res.exactMatch + "' ";
+  var linkHref = " href='/ontologies/" + ontologyIdToAcronym(res.links.ontology) + "?p=classes&conceptid=" + conceptIdCode + "' ";
+  return "" +
+  "<div class='class_link'>" +
+    "<a " + title + dataConceptId + dataExactMatch + linkHref + "> " +
+      label_html.prop('outerHTML') + ontologyName +
+    "</a> " +
+    "<div class='concept_uri'>" +
+      res["@id"] +
+    "</div> " +
+  "</div> ";
 }
 
 function resultLinksHTML(res) {

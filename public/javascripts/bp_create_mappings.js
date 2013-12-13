@@ -39,7 +39,7 @@ jQuery(document).ready(function() {
   jQuery(document).live("tree_changed", resetMappingUIWithFacebox);
   jQuery(document).live("classes_tab_visible", resetMappingUI);
 
-  // Details/visualze link to show details pane and visualize flexviz
+  // Details/visualize link to show details pane and visualize flexviz
   jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
   jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
 
@@ -50,6 +50,31 @@ jQuery(document).ready(function() {
 
   jQuery("#create_mapping_button").live("click", bp_createMapping.create);
 });
+
+// Also in bp_mappings.js
+function updateMappingDeletePermissions() {
+  var mapping_permission_checkbox = jQuery("#delete_mappings_permission");
+  if (mapping_permission_checkbox.length === 0){
+    //console.error("Failed to select #delete_mappings_permission");
+    jQuery("#delete_mappings_button").hide();
+    jQuery(".delete_mappings_column").hide();
+    jQuery("input[name='delete_mapping_checkbox']").prop('disabled', true);
+  } else {
+    // Ensure the permission checkbox is hidden.
+    mapping_permission_checkbox.hide();
+    if (mapping_permission_checkbox.is(':checked')) {
+      jQuery("#delete_mappings_button").show();
+      jQuery(".delete_mappings_column").show();
+      jQuery("input[name='delete_mapping_checkbox']").prop('disabled', false);
+    } else {
+      jQuery("#delete_mappings_button").hide();
+      jQuery(".delete_mappings_column").hide();
+      jQuery("input[name='delete_mapping_checkbox']").prop('disabled', true);
+    }
+  }
+  jQuery("input[name='delete_mapping_checkbox']").prop('checked', false);
+}
+
 
 function getClassDetails(input) {
   var current_id = jQuery(input).attr("id");
@@ -70,14 +95,12 @@ function resetMappingUI() {
   jQuery("#map_from").val(jQuery.trim(jQuery("#sd_content a.active").text()));
   jQuery("#map_from_bioportal_full_id").val(jQuery("#sd_content a.active").attr("id"));
   getClassDetails(document.getElementById("map_from"));
-
   // Clear the map to side
   jQuery("#map_to_concept_details").hide();
-
   // Clear mapping created messages
   jQuery("#create_mapping_success_messages").html("");
-
   jQuery("a.link_button, input.link_button").button();
+  updateMappingDeletePermissions();
 }
 
 var bp_createMapping = {
@@ -106,8 +129,8 @@ var bp_createMapping = {
       map_to_bioportal_full_id: concept_to_id.val(),
       mapping_comment: mapping_comment.val(),
       mapping_relation: mapping_relation.val(),
-      mapping_bidirectional: mapping_bidirectional,
-    }
+      mapping_bidirectional: mapping_bidirectional
+    };
 
     jQuery.ajax({
         url: "/mappings",
@@ -126,7 +149,8 @@ var bp_createMapping = {
 
     // If we have a concept mapping table, update it with new mappings
     if (document.getElementById("concept_mappings_table") != null) {
-      jQuery("#concept_mappings_table").load("/ajax/mappings/get_concept_table?ontologyid=" + ontology_id + "&conceptid=" + encodeURIComponent(currentConcept), function(){
+      var url = "/ajax/mappings/get_concept_table?ontologyid=" + ontology_id + "&conceptid=" + encodeURIComponent(currentConcept);
+      jQuery("#concept_mappings_table").load(url, function(){
         jQuery("#mapping_count").html(jQuery("#mapping_details tbody tr:visible").size());
       });
     }
@@ -135,6 +159,7 @@ var bp_createMapping = {
     jQuery("#map_to_concept_details").hide();
 
     jQuery.bioportal.ont_pages["mappings"].retrieve_and_publish();
+    updateMappingDeletePermissions();
   },
 
   error: function() {

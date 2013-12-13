@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
   EXPIRY_RI_ONTOLOGIES = 60 * 60 * 24  # 24:00 hours
   EXPIRY_SEMANTIC_TYPES = 60 * 60 * 24 # 24:00 hours
   EXPIRY_RECENT_MAPPINGS = 60 * 60     #  1:00 hours
-  EXPIRY_ONTOLOGY_SIMPLIFIED = 60 * 1  #  0:10 minute
+  EXPIRY_ONTOLOGY_SIMPLIFIED = 60 * 1  #  0:01 minute
 
   if !$EMAIL_EXCEPTIONS.nil? && $EMAIL_EXCEPTIONS == true
     include ExceptionNotifiable
@@ -55,45 +55,27 @@ class ApplicationController < ActionController::Base
   end
 
   def domain_ontology_set
-    # TODO_REV: Custom ontology sets
-    # if !$ENABLE_SLICES.nil? && $ENABLE_SLICES == true
-    #   host = request.host
-    #   host_parts = host.split(".")
-    #   subdomain = host_parts[0]
+    @subdomain_filter = { :active => false, :name => "", :acronym => "" }
 
-    #   groups = DataAccess.getGroupsWithOntologies
-    #   groups_hash = {}
-    #   groups.group_list.each do |group_id, group|
-    #     groups_hash[group[:acronym].downcase.gsub(" ", "-")] = { :name => group[:name], :ontologies => group[:ontologies] }
-    #   end
-    #   $ONTOLOGY_SLICES.merge!(groups_hash)
+    if !$ENABLE_SLICES.nil? && $ENABLE_SLICES == true
+      host = request.host
+      host_parts = host.split(".")
+      subdomain = host_parts[0].downcase
 
-    #   @subdomain_filter = { :active => false, :name => "", :acronym => "" }
+      slices = LinkedData::Client::Models::Slice.all
+      slices_acronyms = slices.map {|s| s.acronym}
 
-    #   # Set custom ontologies if we're on a subdomain that has them
-    #   # Else, make sure user ontologies are set appropriately
-    #   if $ONTOLOGY_SLICES.include?(subdomain)
-    #     session[:user_ontologies] = { :virtual_ids => Set.new($ONTOLOGY_SLICES[subdomain][:ontologies]), :ontologies => nil }
-    #     @subdomain_filter[:active] = true
-    #     @subdomain_filter[:name] = $ONTOLOGY_SLICES[subdomain][:name]
-    #     @subdomain_filter[:acronym] = subdomain
-    #   elsif session[:user]
-    #     session[:user_ontologies] = user_ontologies(session[:user])
-    #   else
-    #     session[:user_ontologies] = nil
-    #   end
-    # else
-      @subdomain_filter = { :active => false, :name => "", :acronym => "" }
-    # end
-  end
-
-  def user_ontologies(user)
-    custom_ontologies = CustomOntologies.find(:first, :conditions => ["user_id = ?", user.id])
-    if custom_ontologies.nil? || custom_ontologies.ontologies.empty?
-      return nil
-    else
-      return { :virtual_ids => Set.new(custom_ontologies.ontologies), :ontologies => nil }
+      # Set custom ontologies if we're on a subdomain that has them
+      # Else, make sure user ontologies are set appropriately
+      if slices_acronyms.include?(subdomain)
+        slice = slices.select {|s| s.acronym.eql?(subdomain)}.first
+        @subdomain_filter[:active] = true
+        @subdomain_filter[:name] = slice.name
+        @subdomain_filter[:acronym] = slice.acronym
+      end
     end
+
+    Thread.current[:slice] = @subdomain_filter
   end
 
   def anonymous_user
@@ -353,15 +335,16 @@ class ApplicationController < ActionController::Base
   end
 
   def check_delete_mapping_permission(mappings)
+    # ensure mappings is an Array of mappings (some calls may provide only a single mapping instance)
+    mappings = [mappings] if mappings.instance_of? LinkedData::Client::Models::Mapping
     delete_mapping_permission = false
     if session[:user]
-      delete_mapping_permission = true if session[:user].admin?
+      delete_mapping_permission = session[:user].admin?
       mappings.each do |mapping|
         break if delete_mapping_permission
-        delete_mapping_permission = true if session[:user].id.to_i == mapping.user_id
+        delete_mapping_permission = mapping.creator == session[:user].id
       end
     end
-
     delete_mapping_permission
   end
 
@@ -642,12 +625,7 @@ class ApplicationController < ActionController::Base
       if not mappings.empty?
         # There is no 'include' parameter on the /mappings/recent API.
         # The following is required just to get the prefLabel on each mapping class.
-        class_list = []
-        mappings.each do |m|
-          m.classes.each do |c|
-            class_list.push( { :class => c.id, :ontology => c.links['ontology'] } )
-          end
-        end
+        class_list = mappings.map {|m| m.classes.map {|c| { :class => c.id, :ontology => c.links['ontology'] } } }.flatten
         # make the batch call to get all the class prefLabel values
         call_params = {'http://www.w3.org/2002/07/owl#Class'=>{'collection'=>class_list, 'include'=>'prefLabel'}}
         class_response = get_batch_results(call_params)  # method in application_controller.rb
@@ -655,10 +633,14 @@ class ApplicationController < ActionController::Base
         class_results = JSON.parse(class_response)
         class_details = simplify_classes(class_results["http://www.w3.org/2002/07/owl#Class"])
       end
-      # Only cache a successful retrieval
       recent_mappings[:mappings] = mappings
       recent_mappings[:classes] = class_details
-      Rails.cache.write(recent_mappings_key, recent_mappings, expires_in: EXPIRY_RECENT_MAPPINGS)
+      unless mappings.nil? || class_details.nil?
+        unless mappings.empty? || class_details.empty?
+          # Only cache a successful retrieval
+          Rails.cache.write(recent_mappings_key, recent_mappings, expires_in: EXPIRY_RECENT_MAPPINGS)
+        end
+      end
     rescue Exception => e
       LOG.add :error, e.message
       # leave recent mappings empty.

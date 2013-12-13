@@ -44,7 +44,7 @@ class OntologiesController < ApplicationController
     # Get the latest 'ready' submission, or fallback to any latest submission
     @submission = get_ontology_submission_ready(@ontology)  # application_controller
 
-    get_class(params)
+    get_class(params)   # application_controller::get_class
 
     if request.accept.to_s.eql?("application/ld+json")
       headers['Content-Type'] = "application/ld+json"
@@ -66,9 +66,7 @@ class OntologiesController < ApplicationController
       LOG.add :error, msg + "\n" + e.message
       @mappings = []
     end
-    # TODO_REV: Support mappings deletion
-    # check to see if user should get the option to delete
-    # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
+    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
     begin
       @notes = @concept.explore.notes
@@ -250,13 +248,14 @@ class OntologiesController < ApplicationController
     end
     # Explore the ontology links
     @metrics = @ontology.explore.metrics
-    @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created}
-    @projects = @ontology.explore.projects
-    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId <=> a.submissionId } rescue []
+    @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created} || []
+    @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
+    # retrieve submissions in descending submissionId order, should be reverse chronological order.
+    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId <=> a.submissionId } || []
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
     # Get the latest submission, not necessarily the latest 'ready' submission
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
-    @views = @ontology.explore.views.sort {|a,b| b.acronym <=> a.acronym}  # a list of view ontology models
+    @views = @ontology.explore.views.sort {|a,b| a.acronym.downcase <=> b.acronym.downcase } || []
     if request.xhr?
       render :partial => 'metadata', :layout => false
     else

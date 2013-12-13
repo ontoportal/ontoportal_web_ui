@@ -59,10 +59,11 @@ class MappingsController < ApplicationController
     page = params[:page] || 1
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     @target_ontology = LinkedData::Client::Models::Ontology.find(params[:target])
-    ontologies = [@ontology.id, @target_ontology.id]
+    ontologies = [@ontology.acronym, @target_ontology.acronym]
 
     @mapping_pages = LinkedData::Client::HTTP.get(MAPPINGS_URL, {page: page, ontologies: ontologies.join(",")})
     @mappings = @mapping_pages.collection
+    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
     if @mapping_pages.nil? || @mapping_pages.collection.empty?
       @mapping_pages = MappingPage.new
@@ -86,9 +87,7 @@ class MappingsController < ApplicationController
 
     @mappings = @concept.explore.mappings
 
-    # TODO_REV: Enable mappings deletion
-    # check to see if user should get the option to delete
-    # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
+    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
     render :partial => "mapping_table"
   end
@@ -119,51 +118,51 @@ class MappingsController < ApplicationController
     target_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_to_bioportal_ontology_id]).first
     source = source_ontology.explore.single_class(params[:map_from_bioportal_full_id])
     target = target_ontology.explore.single_class(params[:map_to_bioportal_full_id])
-
     values = {
-      classes: [
-        {class: [source.id], ontology: source_ontology.id},
-        {class: [target.id], ontology: target_ontology.id}
+      terms: [
+        {term: [source.id], ontology: source_ontology.id},
+        {term: [target.id], ontology: target_ontology.id}
       ],
       creator: session[:user].id,
       relation: params[:mapping_relation],
       comment: params[:mapping_comment]
     }
     @mapping = LinkedData::Client::Models::Mapping.new(values: values)
-
     @mapping_saved = @mapping.save
-
     if @mapping_saved.errors
       raise Exception, @mapping_saved.errors
     else
+      @delete_mapping_permission = check_delete_mapping_permission(@mapping_saved)
       render :json => @mapping_saved
     end
   end
 
   def destroy
-    mapping_ids = params[:mappingids].split(",")
-    concept_id = params[:conceptid].empty? ? "root" : params[:conceptid]
-
-    ontology = DataAccess.getOntology(params[:ontologyid])
-    concept = DataAccess.getNode(ontology.id, concept_id)
-    concept = concept_id.eql?("root") ? concept.children[0] : concept
-
+    # ajax method, called from bp_mappings.js
     errors = []
     successes = []
+    mapping_ids = params[:mappingids].split(",")
     mapping_ids.each do |map_id|
       begin
-        result = DataAccess.deleteMapping(map_id)
-        raise Exception if !result.nil? && result["errorCode"]
+        # TODO: double check permission to delete mappings?
+        #mapping = LinkedData::Client::Models::Mapping.find(map_id)
+        #mapping.delete
+        # NOTE: LinkedData::Client should automatically add the right API key.
+        #map_uri = "#{MAPPINGS_URL}/#{CGI.escape(map_id)}?apikey=#{get_apikey}"
+        map_uri = "#{MAPPINGS_URL}/#{CGI.escape(map_id)}"
+        result = LinkedData::Client::HTTP.delete(map_uri)
+        raise Exception if !result.nil? #&& result["errorCode"]
+        successes << map_id
       rescue Exception => e
         errors << map_id
-        next
       end
-      successes << map_id
     end
-
-    CACHE.delete("#{ontology.ontologyId}::#{CGI.escape(concept.fullId)}::map_page::page1::size100::params")
-    CACHE.delete("#{ontology.ontologyId}::#{CGI.escape(concept.fullId)}::map_count")
-
+    # TODO: clear any cache that might contain mappings in successes.
+    #ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontologyid]).first
+    #concept_id = params[:conceptid].empty? ? "root" : params[:conceptid]
+    #concept = ontology.explore.single_class(concept_id)
+    #CACHE.delete("#{ontology.id}::#{CGI.escape(concept.id)}::map_page::page1::size100::params")
+    #CACHE.delete("#{ontology.id}::#{CGI.escape(concept.id)}::map_count")
     render :json => { :success => successes, :error => errors }
   end
 

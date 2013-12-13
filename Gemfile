@@ -14,7 +14,9 @@ gem "i18n", "~> 0.5.0"
 gem "haml", "< 4.0.0"
 gem "will_paginate", "< 3.0"
 gem "rdoc"
-gem "rack-mini-profiler"
+# Update rack-mini-profiler to fix missing jQuery error, i.e.
+# https://github.com/MiniProfiler/rack-mini-profiler/issues/29
+gem "rack-mini-profiler", :github => 'MiniProfiler/rack-mini-profiler'
 gem 'cube-ruby', require: 'cube'
 gem 'oink'
 

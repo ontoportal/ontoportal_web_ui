@@ -69,21 +69,22 @@ class ConceptsController < ApplicationController
   def show_label
     cls_id = params[:concept]   # cls_id should be a full URI
     ont_id = params[:ontology]  # ont_id could be a full URI or an acronym
-
     if ont_id.to_i > 0
       params_cleanup_new_api()
       stop_words = ["controller", "action"]
       redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
       return
     end
-
     @ontology = LinkedData::Client::Models::Ontology.find(ont_id)
     @ontology ||= LinkedData::Client::Models::Ontology.find_by_acronym(ont_id).first
     raise Error404 unless @ontology
     # Retrieve a class prefLabel or return the class ID (URI)
     # - mappings may contain class URIs that are not in bioportal (e.g. obo-xrefs)
-    cls_label = @ontology.explore.single_class(cls_id).prefLabel
-    cls_label ||= cls_id
+    cls = @ontology.explore.single_class(cls_id)
+    # TODO: log any cls.errors
+    # TODO: NCBO-402 might be implemented here, but it throws off a lot of ajax result rendering.
+    #cls_label = cls.prefLabel({:use_html => true}) || cls_id
+    cls_label = cls.prefLabel || cls_id
     render :text => cls_label
   end
 
@@ -94,7 +95,6 @@ class ConceptsController < ApplicationController
       redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
       return
     end
-
     @ontology = LinkedData::Client::Models::Ontology.find(params[:ontology])
     cls = @ontology.explore.single_class(params[:concept])
     render :text => cls.definition
@@ -107,12 +107,9 @@ class ConceptsController < ApplicationController
       redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
       return
     end
-
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     raise Error404 if @ontology.nil?
-
-    get_class(params)
-
+    get_class(params)   # application_controller
     render :partial => "ontologies/treeview"
   end
 
@@ -193,9 +190,7 @@ private
   # gathers the information for a node
   def gather_details
     @mappings = @concept.explore.mappings
-    # TODO_REV: Support deleting mappings
-    # check to see if user should get the option to delete
-    # @delete_mapping_permission = check_delete_mapping_permission(@mappings)
+    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
   end
 

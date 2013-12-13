@@ -278,7 +278,9 @@
           %tbody
             - mappings = @recent_mappings[:mappings]
             - classes = @recent_mappings[:classes]
-            - if mappings.nil? || mappings.empty?
+            - if mappings.nil? || classes.nil?
+              No recent mappings have been submitted
+            - elsif mappings.empty? || classes.empty?
               No recent mappings have been submitted
             - else
               - for map in mappings
@@ -291,7 +293,9 @@
                 %tr
                   %td
                     - mapStr = "#{clsA[:prefLabel]} (#{ontA}) <=> #{clsB[:prefLabel]} (#{ontB})"
-                    - mapLnk = clsA[:ui] + '#mappings'   # map.id is a linked-data URI
+                    -# Don't link to map.id, it is a linked-data URI.
+                    -# Use a relative UI link to the first class in the mapping.
+                    - mapLnk = clsA[:ui].gsub(/^.*\/ontologies/,'/ontologies') + '#mappings'
                     = link_to mapStr, mapLnk
                     %br/
                     %span{:style => "color:#AAAAAA"}

@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/MiniProfiler/rack-mini-profiler.git
+  revision: 14da9ec7b4760fcc7f744e839d5b42e02215a85c
+  specs:
+    rack-mini-profiler (0.9.0.pre)
+      rack (>= 1.1.3)
+
+GIT
   remote: https://github.com/ncbo/ncbo_resolver.git
   revision: 67989c445e53e019b3b3fa4905e0aa9d519df0ed
   specs:
@@ -8,9 +15,10 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: f640856a7b60036856d447766472103851d3ea16
+  revision: 5bb1a5ad097d5757df928602a56492b331c2594d
   specs:
-    ontologies_api_client (0.0.2)
+    ontologies_api_client (0.0.3)
+      activesupport (<= 3.0)
       excon
       faraday
       lz4-ruby
@@ -34,17 +42,17 @@ GEM
     cube-ruby (0.0.3)
     daemons (1.1.9)
     eventmachine (1.0.3)
-    excon (0.29.0)
+    excon (0.30.0)
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
     haml (3.1.8)
     hodel_3000_compliant_logger (0.1.1)
     hpricot (0.8.6)
-    i18n (0.5.0)
-    iconv (1.0.3)
+    i18n (0.5.3)
+    iconv (1.0.4)
     json (1.8.1)
     kgio (2.8.1)
-    lz4-ruby (0.1.7)
+    lz4-ruby (0.2.0)
     memcache-client (1.8.5)
     method_source (0.8.2)
     mime-types (2.0)
@@ -55,15 +63,13 @@ GEM
       activerecord
       hodel_3000_compliant_logger
     oj (2.0.14)
-    pry (0.9.12.3)
+    pry (0.9.12.4)
       coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
     pry-nav (0.2.3)
       pry (~> 0.9.10)
     rack (1.1.6)
-    rack-mini-profiler (0.1.31)
-      rack (>= 1.1.3)
     rails (2.3.17)
       actionmailer (= 2.3.17)
       actionpack (= 2.3.17)
@@ -107,7 +113,7 @@ DEPENDENCIES
   ontologies_api_client!
   pry
   pry-nav
-  rack-mini-profiler
+  rack-mini-profiler!
   rails (= 2.3.17)
   rdoc
   recaptcha (~> 0.3.1)
