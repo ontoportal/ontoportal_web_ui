@@ -54,7 +54,7 @@ jQuery(document).ready(function () {
       //var search_url = jQuery(document).data().bp.config.rest_url+"/search"; // direct REST API
       var search_url = "/resource_index/search_classes";  // REST API via resource_index_controller::search_classes
       var search_term = jQuery.trim(options.term);
-      if (! search_term.endsWith('*')) {
+      if (/[^*]$/.test(search_term)) {
         search_term += '*';
       }
       var search_params = {};
