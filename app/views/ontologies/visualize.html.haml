@@ -61,9 +61,10 @@
       }
 
       if (row[0].match(regex) == null) {
-        var contents = JSON.parse(row[6].replace("'", '"', "gi"));
-        var synonym = contents.synonym || null;
-        if (synonym !== null) {
+        var contents = row[6].split("\t");
+        var synonym = contents[0] || "";
+        synonym = synonym.split(";");
+        if (synonym !== "") {
           var matchSynonym = jQuery.grep(synonym, function(e){
             return e.match(regex) != null;
           });
