@@ -46,8 +46,10 @@ class SearchController < ApplicationController
       json << "|#{result.explore.ontology.acronym}"
       json << "|#{result.id}" # Duplicated because we used to have shortId and fullId
       json << "|#{result.prefLabel}"
-      # json << "|#{result[:contents]}" TODO_REV: Fix contents for search
-      json << '|' + MultiJson.dump({synonym: result.synonym})
+      # This is nasty, but hard to workaround unless we rewrite everything (form_autocomplete, jump_to, crossdomain_autocomplete)
+      # to use JSON from the bottom up. To avoid this, we pass a tab separated column list
+      # Columns: synonym
+      json << "|#{(result.synonym || []).join(";")}"
       if params[:id] && params[:id].split(",").length == 1
         json << "|#{CGI.escape((result.definition || []).join(". "))}#{separator}"
       else
