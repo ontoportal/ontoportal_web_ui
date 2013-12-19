@@ -289,7 +289,7 @@ function formatSearchResults(ontologyResults) {
   var res = ontologyResults.shift();
   var additional_results = "";
   var additional_results_link = "";
-  var label_html = normalizeObsoleteClasses(res);
+  var label_html = markupClass(res);
   var row;
   var additional_rows = [];
 
@@ -304,7 +304,7 @@ function formatSearchResults(ontologyResults) {
     jQuery(ontologyResults).each(function(){
       additional_rows.push([
         "<div class='search_result_additional'>",
-        classHTML(this, normalizeObsoleteClasses(this), false),
+        classHTML(this, markupClass(this), false),
         definitionHTML(this, "additional_def_container"),
         "<div class='search_result_links'>"+resultLinksHTML(this)+"</div>",
         "</div>"
@@ -358,18 +358,17 @@ function updatePopupCounts() {
   jQuery("#ontology_counts").html(ontologies.join(""));
 }
 
-function normalizeObsoleteClasses(res) {
-  // We have to look for a span here, indicating that the class is obsolete.
-  // If not, add the class to a new span to match obsolete structure so we can process them the same.
+function markupClass(cls) {
+  // Wrap the class prefLabel in a span, indicating that the class is obsolete if necessary.
   var max_word_length = 60;
-  var label_text = (res.prefLabel.length > max_word_length) ? res.prefLabel.substring(0, max_word_length) + "..." : res.prefLabel;
+  var label_text = (cls.prefLabel.length > max_word_length) ? cls.prefLabel.substring(0, max_word_length) + "..." : cls.prefLabel;
   var label_html = jQuery("<span/>").addClass('prefLabel').append(label_text);
-  if (res.obsolete === true){
+  if (cls.obsolete === true){
     label_html.removeClass('prefLabel');
     label_html.addClass('obsolete_class');
     label_html.attr('title', 'obsolete class');
   }
-  return label_html;
+  return label_html; // returns a jQuery object; use .prop('outerHTML') to get markup text.
 }
 
 function filterCategories(results, filterCats) {

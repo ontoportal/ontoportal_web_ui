@@ -80,7 +80,7 @@ jQuery(document).ready(function () {
             classHTML = "" +
               "<span class='search_ontology' title='" + ont_id + "'>" +
                 "<span class='search_class' title='" + cls_id + "'>" +
-                  cls.prefLabel +
+                  markupClass(cls).prop('outerHTML') +
                   "<span class='search_ontology_acronym'>(" + ont_name + ")</span>" +
               "</span>";
             // Create a combination of ont_id and cls_id that can be split when retrieved.
@@ -97,6 +97,19 @@ jQuery(document).ready(function () {
         }
       });
     });
+  }
+
+  function markupClass(cls) {
+    // Wrap the class prefLabel in a span, indicating that the class is obsolete if necessary.
+    var max_word_length = 60;
+    var label_text = (cls.prefLabel.length > max_word_length) ? cls.prefLabel.substring(0, max_word_length) + "..." : cls.prefLabel;
+    var label_html = jQuery("<span/>").addClass('prefLabel').append(label_text);
+    if (cls.obsolete === true){
+      label_html.removeClass('prefLabel');
+      label_html.addClass('obsolete_class');
+      label_html.attr('title', 'obsolete class');
+    }
+    return label_html; // returns a jQuery object; use .prop('outerHTML') to get markup text.
   }
 
   // If all classes are removed from the search, put the UI in base state

@@ -494,7 +494,7 @@ class ApplicationController < ActionController::Base
     # Simplify the class required required by the UI.
     # No modification of the class ontology here, see simplify_classes.
     # Default simple class model
-    cls = { :id => nil, :ontology => nil, :prefLabel => nil, :uri => nil, :ui => nil }
+    cls = { :id => nil, :ontology => nil, :prefLabel => nil, :uri => nil, :ui => nil, :obsolete => false }
     begin
       if cls_model.instance_of? Hash
         cls = {
@@ -503,8 +503,9 @@ class ApplicationController < ActionController::Base
             :uri => cls_model['links']['self'],  # different from id
             :ontology => cls_model['links']['ontology']
         }
-        # Try to carry through a prefLabel, if it exists.
+        # Try to carry through a prefLabel and the obsolete attribute, if they exist.
         cls[:prefLabel] = cls_model['prefLabel']
+        cls[:obsolete] = cls_model['obsolete'] || false
       else
         # try to work with a struct object or a LinkedData::Client::Models::Class
         # if not a struct, then: cls_model.instance_of? LinkedData::Client::Models::Class
@@ -512,10 +513,11 @@ class ApplicationController < ActionController::Base
             :id => cls_model.id,
             :ui =>  cls_model.links['ui'],
             :uri => cls_model.links['self'],  # different from id
-            :ontology => cls_model.links['ontology']
+            :ontology => cls_model.links['ontology'],
         }
-        # Try to carry through a prefLabel, if it exists.
+        # Try to carry through a prefLabel and the obsolete attribute, if they exist.
         cls[:prefLabel] = cls_model.prefLabel if cls_model.respond_to?('prefLabel')
+        cls[:obsolete] = cls_model.respond_to?('obsolete') && cls_model.obsolete || false
       end
     rescue Exception => e
       LOG.add :error, "Failure to simplify class: " + cls_model.to_s
