@@ -1,6 +1,8 @@
 - button_text ||= "Add submission"
 - title_text ||= "Add New Submission"
 
+%script(src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js")
+
 :javascript
   jQuery(function(){
     jQuery("#datepicker").datepicker({
@@ -35,6 +37,7 @@
     jQuery("#submission_hasOntologyLanguage").change(ontologyFormatChange);
     // Check to see if owl is selected, show options if so
     ontologyFormatChange();
+    jQuery("#ontology_submission_form").validate();
   });
 
   function ontologyFormatChange(format){
@@ -80,7 +83,6 @@
     jQuery("#contacts").append(newContact);
   }
 
-
 - unless @errors.nil?
   .enable-lists{:style => "color:red;"}
     %strong Errors On Form
@@ -98,7 +100,7 @@
         Description
         %span.asterik *
       %td
-        = text_area :submission, :description, rows: 5, value: @submission.description
+        = text_area :submission, :description, rows: 5, value: @submission.description, :required => true
 
     %tr
       %th
@@ -107,7 +109,7 @@
       %td
         - ont_formats = [ "OBO", "OWL", "OWL-DL", "OWL-FULL", "OWL-LITE" ]
         - selected = @submission.hasOntologyLanguage ? @submission.hasOntologyLanguage : "OWL"
-        = select("submission", "hasOntologyLanguage", ont_formats, { :selected => selected, :style => "width: 200px;" })
+        = select("submission", "hasOntologyLanguage", ont_formats, { :selected => selected, :style => "width: 200px;", :required => true })
         #format_spacing
         %table#format_specific_options
           %tbody#owl_options.format_options
@@ -177,13 +179,13 @@
       %td
         - selected_status = @submission.status ? @submission.status : "alpha"
         - status_options = ["alpha", "beta", "production", "retired"]
-        = select :submission, :status, status_options, { :selected => selected_status }
+        = select :submission, :status, status_options, { :selected => selected_status, :required => true }
     %tr
       %th
         Release Date
         %span.asterik *
       %td
-        = text_field :submission, :released, :id => "datepicker", value: @submission.released, placeholder: "Date format: #{Date.today.to_s}"
+        = text_field :submission, :released, :id => "datepicker", value: @submission.released, placeholder: "Date format: #{Date.today.to_s}", :required => true
         %span{:style => "font-size: 90%; color: grey;"}
     %tr
       %th
@@ -191,7 +193,7 @@
         %span.asterik *
       %td#location_options
         - checked = @ontology.summaryOnly
-        = radio_button :submission, :isRemote, 3, :onclick=>"$('.hidden_field').hide();", checked: checked
+        = radio_button :submission, :isRemote, 3, :onclick=>"$('.hidden_field').hide();", checked: checked, :required => true
         Metadata Only
         %br/
         %span{:style => "font-size:11px;"}
@@ -233,16 +235,16 @@
               %div.contact
                 Name:&nbsp;
                 = text_field :submission, :"contact[#{i}][name]", value: contact.name
-                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;
                 Email:&nbsp;
                 = text_field :submission, :"contact[#{i}][email]", value: contact.email
           - else
             %div.contact
               Name:&nbsp;
-              = text_field :submission, :"contact[0][name]"
-              &nbsp;&nbsp;&nbsp;
+              = text_field :submission, :"contact[0][name]", :required => true
+              %br
               Email:&nbsp;
-              = text_field :submission, :"contact[0][email]"
+              = text_field :submission, :"contact[0][email]", :required => true
 
     %tr
       %th
