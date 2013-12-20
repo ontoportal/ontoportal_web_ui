@@ -69,7 +69,7 @@ class ApplicationController < ActionController::Base
 
       # Set custom ontologies if we're on a subdomain that has them
       # Else, make sure user ontologies are set appropriately
-      if slices_acronym && slices_acronyms.include?(subdomain)
+      if slices_acronyms && slices_acronyms.include?(subdomain)
         slice = slices.select {|s| s.acronym.eql?(subdomain)}.first
         @subdomain_filter[:active] = true
         @subdomain_filter[:name] = slice.name
