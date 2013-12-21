@@ -22,7 +22,8 @@ class ApplicationController < ActionController::Base
   REST_URI = $REST_URL
   API_KEY = $API_KEY
 
-  BATCH_URI = REST_URI + '/batch'
+  REST_URI_BATCH = REST_URI + '/batch'
+  REST_URI_RECENT_MAPPINGS = "#{REST_URI}/mappings/recent/"
 
   # Constants used primarily in the resource_index_controller, but also elsewhere.
   RESOURCE_INDEX_URI = REST_URI + '/resource_index'
@@ -39,6 +40,7 @@ class ApplicationController < ActionController::Base
   EXPIRY_SEMANTIC_TYPES = 60 * 60 * 24 # 24:00 hours
   EXPIRY_RECENT_MAPPINGS = 60 * 60     #  1:00 hours
   EXPIRY_ONTOLOGY_SIMPLIFIED = 60 * 1  #  0:01 minute
+
 
   if !$EMAIL_EXCEPTIONS.nil? && $EMAIL_EXCEPTIONS == true
     include ExceptionNotifiable
@@ -596,14 +598,14 @@ class ApplicationController < ActionController::Base
 
   def get_batch_results(params)
     begin
-      response = RestClient.post BATCH_URI, params.to_json, :content_type => :json, :accept => :json, :authorization => "apikey token=#{get_apikey}"
+      response = RestClient.post REST_URI_BATCH, params.to_json, :content_type => :json, :accept => :json, :authorization => "apikey token=#{get_apikey}"
     rescue Exception => error
       @retries ||= 0
       if @retries < 1  # retry once only
         @retries += 1
         retry
       else
-        LOG.add :debug, "\nERROR: batch POST, uri: #{BATCH_URI}"
+        LOG.add :debug, "\nERROR: batch POST, uri: #{REST_URI_BATCH}"
         LOG.add :debug, "\nERROR: batch POST, params: #{params.to_json}"
         LOG.add :debug, "\nERROR: batch POST, error response: #{error.response}"
         raise error
@@ -613,18 +615,18 @@ class ApplicationController < ActionController::Base
   end
 
   def get_recent_mappings
-    recent_mappings_key = 'recent_mappings_key'
-    recent_mappings = Rails.cache.read(recent_mappings_key)
-    return recent_mappings if not recent_mappings.nil?
-    # No cache or it has expired
     recent_mappings = {
         :mappings => [],
         :classes => {}
     }
     begin
+      cached_mappings_key = REST_URI_RECENT_MAPPINGS
+      cached_mappings = Rails.cache.read(cached_mappings_key)
+      return cached_mappings if not cached_mappings.nil?
+      # No cache or it has expired
       class_details = {}
-      mappings = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}/mappings/recent/")
-      if not mappings.empty?
+      mappings = LinkedData::Client::HTTP.get(REST_URI_RECENT_MAPPINGS)
+      unless mappings.nil? || mappings.empty?
         # There is no 'include' parameter on the /mappings/recent API.
         # The following is required just to get the prefLabel on each mapping class.
         class_list = mappings.map {|m| m.classes.map {|c| { :class => c.id, :ontology => c.links['ontology'] } } }.flatten
@@ -640,7 +642,7 @@ class ApplicationController < ActionController::Base
       unless mappings.nil? || class_details.nil?
         unless mappings.empty? || class_details.empty?
           # Only cache a successful retrieval
-          Rails.cache.write(recent_mappings_key, recent_mappings, expires_in: EXPIRY_RECENT_MAPPINGS)
+          Rails.cache.write(cached_mappings_key, recent_mappings, expires_in: EXPIRY_RECENT_MAPPINGS)
         end
       end
     rescue Exception => e
