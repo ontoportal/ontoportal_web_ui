@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/MiniProfiler/rack-mini-profiler.git
-  revision: fc38ead73563b1202af5d6ac3ee14a0f38a81ad1
+  revision: ee5e42912939cab565be025f6a980d5fd601b0f5
   specs:
     rack-mini-profiler (0.9.0.pre)
       rack (>= 1.1.3)
@@ -78,7 +78,7 @@ GEM
       activesupport (= 2.3.17)
       rake (>= 0.8.3)
     raindrops (0.12.0)
-    rake (10.1.0)
+    rake (10.1.1)
     rdoc (4.0.1)
       json (~> 1.4)
     recaptcha (0.3.5)
