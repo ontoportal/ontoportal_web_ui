@@ -23,7 +23,7 @@
       %th Mapping To
       %th Ontology
       %th Source
-      %th Linked Data
+      -#%th Linked Data
   - if @mappings.length < 1
     %tr
       -#%td{:colspan => @delete_mapping_permission ? "4" : "3"} There are currently no mappings for this class.
@@ -61,7 +61,7 @@
               %a{:href => ont_link}= ont_name
             %td
               #{m.process.map {|p| p.name}.join(", ")}
-            %td
-              - map_uri = $REST_URL + '/mappings/' + CGI.escape(m.id)  # not as easy because m.id is not the resource
-              - map_uri += "?#{get_apikey}"
-              = link_to map_id, map_uri, :id => m.id, :target => '_blank'
+            -#%td
+            -#  - map_uri = $REST_URL + '/mappings/' + CGI.escape(m.id)  # not as easy because m.id is not the resource
+            -#  - map_uri += "?#{get_apikey}"
+            -#  = link_to map_id, map_uri, :id => m.id, :target => '_blank'
