@@ -285,11 +285,11 @@
             - else
               - for map in mappings
                 - # map.classes might contain more than two items, use first and last.
-                - clsA = classes[map.classes.first.id]
-                - ontA = clsA[:ontology][:acronym]
-                - clsB = classes[map.classes.last.id]
-                - ontB = clsB[:ontology][:acronym]
-                - mapProc = map.process.first
+                - clsA = classes[map.classes.first.id] rescue next
+                - ontA = clsA[:ontology][:acronym] rescue next
+                - clsB = classes[map.classes.last.id] rescue next
+                - ontB = clsB[:ontology][:acronym] rescue next
+                - mapProc = map.process.first rescue next
                 %tr
                   %td
                     - mapStr = "#{clsA[:prefLabel]} (#{ontA}) <=> #{clsB[:prefLabel]} (#{ontB})"
