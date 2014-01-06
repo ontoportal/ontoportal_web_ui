@@ -46,8 +46,8 @@ class OntologiesController < ApplicationController
 
     get_class(params)   # application_controller::get_class
 
-    if request.accept.to_s.eql?("application/ld+json")
-      headers['Content-Type'] = "application/ld+json"
+    if request.accept.to_s.eql?("application/ld+json") || request.accept.to_s.eql?("application/json")
+      headers['Content-Type'] = request.accept.to_s
       render text: @concept.to_jsonld
       return
     end
@@ -241,8 +241,8 @@ class OntologiesController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     raise Error404 if @ontology.nil?
     # Check to see if user is requesting RDF+XML, return the file from REST service if so
-    if request.accept.to_s.eql?("application/ld+json")
-      headers['Content-Type'] = "application/ld+json"
+    if request.accept.to_s.eql?("application/ld+json") || request.accept.to_s.eql?("application/json")
+      headers['Content-Type'] = request.accept.to_s
       render text: @ontology.to_jsonld
       return
     end
