@@ -87,6 +87,7 @@ ActionController::Routing::Routes.draw do |map|
   # User
   map.logout '/logout', :controller => 'login', :action => 'destroy'
   map.lost_pass '/lost_pass', :controller => 'login', :action => 'lost_password'
+  map.lost_pass '/reset_password', :controller => 'login', :action => 'reset_password'
   map.custom_ontologies '/accounts/:id/custom_ontologies', :controller => 'users', :action => 'custom_ontologies'
   map.connect '/login_as/:login_as', :controller => 'login', :action => 'login_as'
 
