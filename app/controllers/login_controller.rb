@@ -20,11 +20,8 @@ class LoginController < ApplicationController
     if @errors.size < 1
       logged_in_user = LinkedData::Client::Models::User.authenticate(params[:user][:username], params[:user][:password])
       if logged_in_user && !logged_in_user.errors
-        session[:user] = logged_in_user
+        login(logged_in_user)
 
-        custom_ontologies_text = !session[:user].customOntology.empty? ? "The display is now based on your <a href='/account#custom_ontology_set'>Custom Ontology Set</a>." : ""
-
-        flash[:notice] = "Welcome <b>" + logged_in_user.username.to_s+"</b>. " + custom_ontologies_text
         redirect = "/"
 
         if session[:redirect]
@@ -75,36 +72,45 @@ class LoginController < ApplicationController
   end
 
   def lost_password
-
   end
 
   # Sends a new password to the user
   def send_pass
-    user = LinkedData::Client::Models::User.find_by_username(params[:user][:account_name]).first
-
-    if !user.nil? && !user.email.downcase.eql?(params[:user][:email].downcase)
-      user = nil
-    end
-
-    if user.nil?
-      flash[:notice]="No account exists with that email address and account name combination"
-      redirect_to :action=>'lost_password'
+    username = params[:user][:account_name]
+    email = params[:user][:email]
+    resp = LinkedData::Client::HTTP.post("/users/create_reset_password_token", {username: username, email: email})
+    if resp.nil?
+      flash[:notice] = "Please check your email for a message with reset instructions"
+      redirect_to "/login"
     else
-      new_password = newpass(8)
-      error_response = user.update(values: {password: new_password})
+      flash[:notice] = resp.errors.first + ". Please try again."
+      redirect_to "/lost_pass"
+    end
+  end
 
-      if error_response
-        flash[:notice] = "Error retrieving account information, please try again"
-        redirect_to :action => 'lost_password'
-      else
-        Notifier.deliver_lost_password(user, new_password)
-        flash[:notice] = "Your password has been sent to your email address"
-        redirect_to_home
-      end
+  def reset_password
+    username = params[:un]
+    email = params[:em]
+    token = params[:tk]
+    @user = LinkedData::Client::HTTP.post("/users/reset_password", {username: username, email: email, token: token})
+    if @user.is_a?(LinkedData::Client::Models::User)
+      @user.validate_password = true
+      login(@user)
+      render "users/edit"
+    else
+      flash[:notice] = @user.errors.first + ". Please reset your password again."
+      redirect_to "/lost_pass"
     end
   end
 
   private
+
+  def login(user)
+    return unless user
+    session[:user] = user
+    custom_ontologies_text = session[:user].customOntology && !session[:user].customOntology.empty? ? "The display is now based on your <a href='/account#custom_ontology_set'>Custom Ontology Set</a>." : ""
+    flash[:notice] = "Welcome <b>" + user.username.to_s+"</b>. " + custom_ontologies_text
+  end
 
   def validate(params)
     errors=[]
