@@ -32,16 +32,6 @@ class ConceptsController < ApplicationController
     # TODO: change the logic here if the fallback will crash the visualization
     @submission = get_ontology_submission_ready(@ontology)  # application_controller
 
-    # TODO_REV: Support moving from archived to latest version
-    # if @ontology.explore.latest_submission.submissionStatus == 6
-    #   @latest_ontology = DataAccess.getLatestOntology(@ontology.ontologyId)
-    #   params[:ontology] = @latest_ontology.id
-    #   flash[:notice] = "The version of <b>#{@ontology.displayLabel}</b> you were attempting to view (#{@ontology.versionNumber}) has been archived and is no longer available for exploring. You have been redirected to the most recent version (#{@latest_ontology.versionNumber})."
-    #   concept_id = params[:id] ? "?conceptid=#{params[:id]}" : ""
-    #   redirect_to "/visualize/#{@latest_ontology.id}#{concept_id}", :status => :moved_permanently
-    #   return
-    # end
-
     @concept = @ontology.explore.single_class({full: true}, params[:id])
     raise Error404 if @concept.nil?
 

@@ -69,7 +69,7 @@ class ApplicationController < ActionController::Base
 
       # Set custom ontologies if we're on a subdomain that has them
       # Else, make sure user ontologies are set appropriately
-      if slices_acronyms.include?(subdomain)
+      if slices_acronyms && slices_acronyms.include?(subdomain)
         slice = slices.select {|s| s.acronym.eql?(subdomain)}.first
         @subdomain_filter[:active] = true
         @subdomain_filter[:name] = slice.name
@@ -445,7 +445,8 @@ class ApplicationController < ActionController::Base
     begin
       ontology_models = LinkedData::Client::Models::Ontology.all({:include_views => true})
       ontology_models.each {|o| simple_ontologies[o.id] = simplify_ontology_model(o) }
-    rescue
+    rescue Exception => e
+      LOG.add :error, e.message
       return nil
     end
     return simple_ontologies
@@ -456,7 +457,8 @@ class ApplicationController < ActionController::Base
     begin
       ont_model = LinkedData::Client::Models::Ontology.find(ont_uri)
       ont = simplify_ontology_model(ont_model)
-    rescue
+    rescue Exception => e
+      LOG.add :error, e.message
       return nil
     end
     return ont
@@ -522,14 +524,13 @@ class ApplicationController < ActionController::Base
         cls[:obsolete] = cls_model.respond_to?('obsolete') && cls_model.obsolete || false
       end
     rescue Exception => e
-      LOG.add :error, "Failure to simplify class: " + cls_model.to_s
       LOG.add :error, e.message
+      LOG.add :error, "Failure to simplify class: #{cls}"
     end
     return cls
   end
 
   def simplify_ontology_model(ont_model)
-    # Default simple ont model
     id = nil
     if ont_model.instance_of? Hash
       id = ont_model['@id']
@@ -539,32 +540,25 @@ class ApplicationController < ActionController::Base
     ont = Rails.cache.read(id)
     return ont unless ont.nil?
     # No cache or it has expired
-    ont = { :id => nil, :uri => nil, :acronym => nil, :name => nil, :ui => nil }
-    begin
-      if ont_model.instance_of? Hash
-        id = ont_model['@id']
-        acronym = ont_model['acronym']
-        name = ont_model['name']
-        ui = ont_model['links']['ui']
-      else
-        # try to work with a struct object or a LinkedData::Client::Models::Ontology
-        # if not a struct, then: ont_model.instance_of? LinkedData::Client::Models::Ontology
-        id = ont_model.id
-        acronym = ont_model.acronym
-        name = ont_model.name
-        ui = ont_model.links['ui']
-      end
-      ont[:id] = id
-      ont[:uri] = id
-      ont[:acronym] = acronym
-      ont[:name] = name
-      ont[:ui] =  ui
-    rescue Exception => e
-        LOG.add :error, "Failure to simplify ontology: " + ont_model.to_s
-        LOG.add :error, e.message
+    LOG.add :debug, "No cache or expired cache for ontology: #{id}"
+    ont = {}
+    ont[:id] = id
+    ont[:uri] = id
+    if ont_model.instance_of? Hash
+      ont[:acronym] = ont_model['acronym']
+      ont[:name] = ont_model['name']
+      ont[:ui] = ont_model['links']['ui']
+    else
+      # try to work with a struct object or a LinkedData::Client::Models::Ontology
+      # if not a struct, then: ont_model.instance_of? LinkedData::Client::Models::Ontology
+      ont[:acronym] = ont_model.acronym
+      ont[:name] = ont_model.name
+      ont[:ui] = ont_model.links['ui']
     end
-    # Cache a complete representation of an ontology
-    unless ont[:id].nil? || ont[:uri].nil? || ont[:acronym].nil? || ont[:name].nil? || ont[:ui].nil?
+    # Only cache a complete representation of a simplified ontology
+    if ont[:id].nil? || ont[:uri].nil? || ont[:acronym].nil? || ont[:name].nil? || ont[:ui].nil?
+      raise "Incomplete simple ontology: #{id}, #{ont}"
+    else
       Rails.cache.write(ont[:id], ont, expires_in: EXPIRY_ONTOLOGY_SIMPLIFIED)
     end
     return ont
@@ -622,7 +616,7 @@ class ApplicationController < ActionController::Base
     begin
       cached_mappings_key = REST_URI_RECENT_MAPPINGS
       cached_mappings = Rails.cache.read(cached_mappings_key)
-      return cached_mappings if not cached_mappings.nil?
+      return cached_mappings unless (cached_mappings.nil? || cached_mappings.empty?)
       # No cache or it has expired
       class_details = {}
       mappings = LinkedData::Client::HTTP.get(REST_URI_RECENT_MAPPINGS)
@@ -636,6 +630,8 @@ class ApplicationController < ActionController::Base
         # Simplify the response data for the UI
         class_results = JSON.parse(class_response)
         class_details = simplify_classes(class_results["http://www.w3.org/2002/07/owl#Class"])
+      else
+        LOG.add :error, "No recent mappings: #{mappings}"
       end
       recent_mappings[:mappings] = mappings
       recent_mappings[:classes] = class_details
@@ -661,9 +657,9 @@ class ApplicationController < ActionController::Base
   end
 
   def get_resource_index_annotation_stats
-    stats_hash = Rails.cache.read(RI_STATS_URI)
-    return stats_hash if not stats_hash.nil?
     begin
+      stats_hash = Rails.cache.read(RI_STATS_URI)
+      return stats_hash unless stats_hash.nil?
       uri = RI_STATS_URI + '?apikey=' + get_apikey
       ri_statsConn = open(uri)
       doc = REXML::Document.new(ri_statsConn)
