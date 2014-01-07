@@ -284,23 +284,32 @@
               No recent mappings have been submitted
             - else
               - for map in mappings
-                - # map.classes might contain more than two items, use first and last.
-                - clsA = classes[map.classes.first.id] rescue next
-                - ontA = clsA[:ontology][:acronym] rescue next
-                - clsB = classes[map.classes.last.id] rescue next
-                - ontB = clsB[:ontology][:acronym] rescue next
-                - mapProc = map.process.first rescue next
-                %tr
-                  %td
-                    - mapStr = "#{clsA[:prefLabel]} (#{ontA}) <=> #{clsB[:prefLabel]} (#{ontB})"
-                    -# Don't link to map.id, it is a linked-data URI.
-                    -# Use a relative UI link to the first class in the mapping.
-                    - mapLnk = clsA[:ui].gsub(/^.*\/ontologies/,'/ontologies') + '#mappings'
-                    = link_to mapStr, mapLnk
-                    %br/
-                    %span{:style => "color:#AAAAAA"}
-                      = mapProc.name || 'BioPortal UI'
-                      = xmldatetime_to_date(mapProc.date)
-                      by
-                      = mapProc.creator.gsub(/.*\//,'')
+                - begin
+                  - # map.classes might contain more than two items, use first and last.
+                  - clsA = classes[map.classes.first.id]
+                  - clsB = classes[map.classes.last.id]
+                  - raise "recent mapping class error" if clsA.nil? || clsB.nil?
+                  - ontA = clsA[:ontology][:acronym]
+                  - ontB = clsB[:ontology][:acronym]
+                  - raise "recent mapping ontology error" if ontA.nil? || ontB.nil?
+                  - mapProc = map.process.first
+                  - raise "recent mapping process error" if mapProc.nil?
+                  %tr
+                    %td
+                      - mapStr = "#{clsA[:prefLabel]} (#{ontA}) <=> #{clsB[:prefLabel]} (#{ontB})"
+                      -# Don't link to map.id, it is a linked-data URI.
+                      -# Use a relative UI link to the first class in the mapping.
+                      - mapLnk = clsA[:ui].gsub(/^.*\/ontologies/,'/ontologies') + '#mappings'
+                      = link_to mapStr, mapLnk
+                      %br/
+                      %span{:style => "color:#AAAAAA"}
+                        = mapProc.name || 'BioPortal UI'
+                        = xmldatetime_to_date(mapProc.date)
+                        by
+                        = mapProc.creator.gsub(/.*\//,'')
+                - rescue Exception => e
+                  - LOG.add :error, e.message
+                  - LOG.add :error, "recent mapping error: #{map}"
+                  - next
+
 
