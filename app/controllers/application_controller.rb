@@ -599,9 +599,9 @@ class ApplicationController < ActionController::Base
         @retries += 1
         retry
       else
-        LOG.add :debug, "\nERROR: batch POST, uri: #{REST_URI_BATCH}"
-        LOG.add :debug, "\nERROR: batch POST, params: #{params.to_json}"
-        LOG.add :debug, "\nERROR: batch POST, error response: #{error.response}"
+        LOG.add :error, "\nERROR: batch POST, uri: #{REST_URI_BATCH}"
+        LOG.add :error, "\nERROR: batch POST, params: #{params.to_json}"
+        LOG.add :error, "\nERROR: batch POST, error response: #{error.response}"
         raise error
       end
     end
