@@ -819,10 +819,15 @@ tr.mainresource td {
 }
 
 .obsolete_class {
-  color: gray;
+  color: rgb(100,100,100);
   font-style: oblique;
   cursor: help;
 }
+/* markup obsolete class in resource index search drop-down list */
+.chzn-results .highlighted .obsolete_class {
+  color: rgb(200,200,200);
+}
+
 
 .concept_details p {
   /*margin-top: .5em;*/
