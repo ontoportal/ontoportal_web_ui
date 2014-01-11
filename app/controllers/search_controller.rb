@@ -41,6 +41,7 @@ class SearchController < ApplicationController
 
       json = []
       json << "#{target_value}"
+      json << " [obsolete]" if result.obsolete? # used by JS in ontologies/visualize to markup obsolete classes
       json << "|#{result.id}"
       json << "|#{record_type}"
       json << "|#{result.explore.ontology.acronym}"

@@ -823,11 +823,13 @@ tr.mainresource td {
   font-style: oblique;
   cursor: help;
 }
-/* markup obsolete class in resource index search drop-down list */
+/* markup obsolete class when 'highlighted' */
 .chzn-results .highlighted .obsolete_class {
   color: rgb(200,200,200);
 }
-
+li.ac_over > span.obsolete_class {
+  color: rgb(200,200,200);
+}
 
 .concept_details p {
   /*margin-top: .5em;*/
