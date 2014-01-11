@@ -1,5 +1,4 @@
 require 'uri'
-require 'ontology_wrapper'
 
 class PrecacheController < ApplicationController
 
