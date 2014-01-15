@@ -41,6 +41,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/account', :controller => 'home', :action => 'account'
   map.connect '/help', :controller => 'home', :action => 'help'
   map.connect '/robots.txt', :controller => 'home', :action => 'robots'
+  map.connect '/site_config', :controller => 'home', :action => 'site_config'
 
   # Analytics endpoint
   map.connect '/analytics', :controller => 'analytics', :action => 'track'
