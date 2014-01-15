@@ -66,27 +66,11 @@ module ApplicationHelper
      "#{encode_param(string.gsub(" ","_"))}"
   end
 
-  # Notes-related helpers that could be useful elsewhere
-
-  def convert_java_time(time_in_millis)
-    time_in_millis.to_i / 1000
-  end
-
-  def time_from_java(java_time)
-    Time.at(convert_java_time(java_time.to_i))
-  end
-
-  def time_formatted_from_java(java_time)
-    time_from_java(java_time).strftime("%m/%d/%Y")
-  end
-
   def get_username(user_id)
     user = LinkedData::Client::Models::User.find(user_id)
     username = user.nil? ? user_id : user.username
     username
   end
-
-  # end Notes-related helpers
 
   def remove_owl_notation(string)
     # TODO_REV: No OWL notation, but should we modify the IRI?

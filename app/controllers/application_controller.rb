@@ -292,14 +292,6 @@ class ApplicationController < ActionController::Base
     session[:user] && session[:user].admin?
   end
 
-  # generates a new random password
-  def newpass( len )
-    chars = ("a".."z").to_a + ("A".."Z").to_a + ("1".."9").to_a
-    newpass = ""
-    1.upto(len) { |i| newpass << chars[rand(chars.size-1)] }
-    return newpass
-  end
-
   # updates the 'history' tab with the current selected concept
   def update_tab(ontology, concept)
     array = session[:ontologies] || []
@@ -348,20 +340,6 @@ class ApplicationController < ActionController::Base
       end
     end
     delete_mapping_permission
-  end
-
-  # Notes-related helpers that could be useful elsewhere
-
-  def convert_java_time(time_in_millis)
-    time_in_millis.to_i / 1000
-  end
-
-  def time_from_java(java_time)
-    Time.at(convert_java_time(java_time.to_i))
-  end
-
-  def time_formatted_from_java(java_time)
-    time_from_java(java_time).strftime("%m/%d/%Y")
   end
 
   def using_captcha?
