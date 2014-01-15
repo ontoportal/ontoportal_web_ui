@@ -17,6 +17,7 @@ class Error404 < StandardError; end
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
+  helper_method :bp_config_json # export this method to helpers
 
   # Pull configuration parameters for REST connection.
   REST_URI = $REST_URL
@@ -108,6 +109,20 @@ class ApplicationController < ActionController::Base
     unless name.nil?
       name.to_s.gsub('_'," ")
     end
+  end
+
+  def bp_config_json
+    {
+        org: $ORG,
+        org_url: $ORG_URL,
+        site: $SITE,
+        org_site: $ORG_SITE,
+        ui_url: $UI_URL,
+        apikey: LinkedData::Client.settings.apikey,
+        userapikey: get_apikey,
+        rest_url: LinkedData::Client.settings.rest_url,
+        biomixer_url: $BIOMIXER_URL
+    }.to_json
   end
 
   def remote_file_exists?(url)
