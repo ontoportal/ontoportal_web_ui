@@ -195,24 +195,26 @@ jQuery(document).ready(function() {
   });
 
   // Retrieve AJAX content if not already displayed
-  if (content_section !== "classes" && metadata_only != true) {
-    jQuery.bioportal.ont_pages["classes"].retrieve_and_publish();
-  }
+  if ($.QueryString["skip_ajax_tabs"] != 'true') {
+    if (content_section !== "classes" && metadata_only != true) {
+      jQuery.bioportal.ont_pages["classes"].retrieve_and_publish();
+    }
 
-  if (content_section !== "summary") {
-    jQuery.bioportal.ont_pages["summary"].retrieve_and_publish();
-  }
+    if (content_section !== "summary") {
+      jQuery.bioportal.ont_pages["summary"].retrieve_and_publish();
+    }
 
-  if (content_section !== "mappings") {
-    jQuery.bioportal.ont_pages["mappings"].retrieve_and_publish();
-  }
+    if (content_section !== "mappings") {
+      jQuery.bioportal.ont_pages["mappings"].retrieve_and_publish();
+    }
 
-  if (content_section !== "notes") {
-    jQuery.bioportal.ont_pages["notes"].retrieve_and_publish();
-  }
+    if (content_section !== "notes") {
+      jQuery.bioportal.ont_pages["notes"].retrieve_and_publish();
+    }
 
-  if (content_section !== "widgets" && metadata_only !== true) {
-    jQuery.bioportal.ont_pages["widgets"].retrieve_and_publish();
+    if (content_section !== "widgets" && metadata_only !== true) {
+      jQuery.bioportal.ont_pages["widgets"].retrieve_and_publish();
+    }
   }
 
   // Set the proper name in the nav menu
