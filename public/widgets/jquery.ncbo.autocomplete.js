@@ -118,6 +118,10 @@
         }
       }
 
+      function hasScroll(container) {
+        return container.height() < container[$.fn.prop ? "prop" : "attr"]("scrollHeight");
+      }
+
       function scrollTo(container, target, options, callback) {
         var settings = $.extend({
             scrollTarget  : target,
@@ -125,12 +129,19 @@
             duration      : 0,
             easing        : 'linear'
         }, options);
-
         var scrollPane = $(container);
         var scrollTarget = (typeof settings.scrollTarget === 'number') ? settings.scrollTarget : $(settings.scrollTarget);
-        var scrollY = (typeof scrollTarget === 'number') ? scrollTarget : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop, 10);
-        scrollPane.animate({scrollTop: scrollY}, parseInt(settings.duration, 10), settings.easing);
-      };
+        if (hasScroll(scrollPane)) {
+          var offset = scrollTarget.offset().top - scrollPane.offset().top,
+            scroll = scrollPane.scrollTop(),
+            elementHeight = scrollPane.height();
+          if (offset < 0) {
+            scrollPane.scrollTop(scroll + offset);
+          } else if (offset >= elementHeight) {
+            scrollPane.scrollTop(scroll + offset - elementHeight + scrollTarget.height());
+          }
+        }
+      }
 
 
       /**
@@ -249,6 +260,7 @@
         }
         else if (settings.url && typeof settings.url === 'string') {
           var text = this.value;
+
           if (text.length < settings.minCharacters) {
             clearAndHideResults();
             return false;
@@ -304,6 +316,10 @@
             $(currentSelection).trigger('click');
             return false;
           case 40: // down key
+            // only fire on keydown
+            if (e.type == "keyup") {
+              return false;
+            }
             if (typeof currentSelection === 'undefined') {
               currentSelection = $('li:first', results).get(0);
             }
@@ -318,6 +334,10 @@
 
             return false;
           case 38: // up key
+            // only fire on keydown
+            if (e.type == "keyup") {
+              return false;
+            }
             if (typeof currentSelection === 'undefined') {
               currentSelection = $('li:last', results).get(0);
             }
@@ -350,6 +370,7 @@
 
       obj.after(results).
         keydown(keyListener).
+        keyup(keyListener).
         blur(function(e) {
           // We need to make sure we don't hide the result set
           // if the input blur event is called because of clicking on

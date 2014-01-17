@@ -45,7 +45,7 @@
       afterSelect:       false,
       afterJumpToClass:  false,
       timeout:           999999,
-      treeClass:         "simpleTree",
+      treeClass:         "ncboTree",
       autocompleteClass: "ncboAutocomplete",
       width:             350,
       ncboAPIURL:        "http://data.bioontology.org",
@@ -119,7 +119,7 @@
       $(TREE_CONTAINER).html("")
 
       // Add the autocomplete
-      var autocompleteContainer = $("<div>").addClass(TREE.option.autocompleteClass);
+      var autocompleteContainer = $("<div>").addClass(TREE.option.autocompleteClass).addClass("ncboTree");
       var input = $("<input>")
         .addClass(TREE.option.autocompleteClass)
         .css("width", TREE.option.width)
