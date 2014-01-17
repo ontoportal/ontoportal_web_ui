@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/MiniProfiler/rack-mini-profiler.git
-  revision: 3f750c3edf4da9875645489f923ae725f1e7f5ce
+  revision: 8cd4ab1b0ccb7f81d91c4fcc9bd0663d0e40de3e
   specs:
     rack-mini-profiler (0.9.0)
       rack (>= 1.1.3)
@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: e81ee7101cf220ba877a22d048cd21f25eabd627
+  revision: 1e7e4b5ff550fc286b960d1a02bcb81c327106dd
   specs:
     ontologies_api_client (0.0.3)
       activesupport (<= 3.0)
@@ -43,8 +43,8 @@ GEM
     daemons (1.1.9)
     eventmachine (1.0.3)
     excon (0.31.0)
-    faraday (0.8.8)
-      multipart-post (~> 1.2.0)
+    faraday (0.9.0)
+      multipart-post (>= 1.2, < 3)
     haml (3.1.8)
     hodel_3000_compliant_logger (0.1.1)
     hpricot (0.8.6)
@@ -56,8 +56,8 @@ GEM
     memcache-client (1.8.5)
     method_source (0.8.2)
     mime-types (2.0)
-    multi_json (1.8.2)
-    multipart-post (1.2.0)
+    multi_json (1.8.4)
+    multipart-post (2.0.0)
     mysql (2.8.1)
     oink (0.10.1)
       activerecord
@@ -79,7 +79,7 @@ GEM
       rake (>= 0.8.3)
     raindrops (0.12.0)
     rake (10.1.1)
-    rdoc (4.1.0)
+    rdoc (4.1.1)
       json (~> 1.4)
     recaptcha (0.3.6)
     recursive-open-struct (0.4.5)
@@ -91,7 +91,7 @@ GEM
       daemons (>= 1.0.9)
       eventmachine (>= 1.0.0)
       rack (>= 1.0.0)
-    unicorn (4.7.0)
+    unicorn (4.8.0)
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
