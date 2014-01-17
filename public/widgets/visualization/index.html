@@ -1,0 +1,38 @@
+<html>
+<head>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+<div id="vis_iframe">Loading...</div>
+<script>
+  // Method for getting parameters from the query string of a URL
+  (function($) {
+    $.QueryString = (function(a) {
+      if (a == "") return {};
+      var b = {};
+      for (var i = 0; i < a.length; ++i) {
+        var p=a[i].split('=');
+        if (p.length != 2) continue;
+        b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+      }
+      return b;
+    })(window.location.search.substr(1).split('&'))
+  })(jQuery);
+
+  $.ajax({
+    url: "/site_config",
+    dataType: "json",
+    success: function(config){
+      var params = $.QueryString;
+      if (typeof params.apikey == 'undefined') {
+        document.write("Please provide an API Key by using the `apikey` query string parameter");
+        throw new Error("Please provide an API Key by using the `apikey` query string parameter");
+      } else {
+        var biomixer_url = config.biomixer_url + "/?mode=embed&embed_mode=paths_to_root&ontology_acronym=" + params.ontology + "&full_concept_id=" + encodeURIComponent(params.class) + "&userapikey=" + params.apikey + "&embed_mode=concept_neighbourhood ";
+        $("#vis_iframe").html($("<iframe>").attr("src", biomixer_url).attr("frameborder", "0").attr("width", "100%").attr("height", "100%"));
+      }
+    }
+  });
+</script>
+</body>
+</html>

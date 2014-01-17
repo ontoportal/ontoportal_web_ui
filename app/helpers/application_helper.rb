@@ -7,19 +7,6 @@ require 'pry' # used in a rescue
 
 module ApplicationHelper
 
-  def bp_config_json
-    {
-      org: $ORG,
-      org_url: $ORG_URL,
-      site: $SITE,
-      org_site: $ORG_SITE,
-      ui_url: $UI_URL,
-      apikey: LinkedData::Client.settings.apikey,
-      userapikey: get_apikey,
-      rest_url: LinkedData::Client.settings.rest_url
-    }.to_json
-  end
-
   def get_apikey
     unless session[:user].nil?
       return session[:user].apikey

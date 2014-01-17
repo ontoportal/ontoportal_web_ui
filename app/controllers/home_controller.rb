@@ -152,6 +152,10 @@ class HomeController < ApplicationController
     end
   end
 
+  def site_config
+    render json: bp_config_json
+  end
+
   def account
     @title = "Account Information"
     if session[:user].nil?
