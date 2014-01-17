@@ -136,14 +136,14 @@
                       %ul
                         %li
                           For example,
-                          %code bp_form_complete-1032-uri
-                          will use NCI Thesaurus (ontology id is 1032) and will put the class URI in the field after the user selects the class from the pull-down list.
+                          %code bp_form_complete-NCIT-uri
+                          will use NCI Thesaurus (ontology id is NCIT) and will put the class URI in the field after the user selects the class from the pull-down list.
                           %ul
                             %li
                               %b Note:
                               In addition to single ontology ids, you can use a list:
                               %br/
-                              %code bp_form_complete-1032,1089-uri
+                              %code bp_form_complete-NCIT,NCBITAXON-uri
                             %li
                               %b OR
                               use 'all' to search across all #{$SITE} ontologies:
@@ -156,9 +156,9 @@
                             %li
                               %code uri
                               put the complete URI of the class (e.g.,
-                              = succeed ");" do
-                                %a.external.free{:href => "#{$UI_URL}/visualize/39478/Common_Neoplasm", :rel => "nofollow", :title => "#{$UI_URL}/visualize/39478/Common_Neoplasm"}
-                                  = "#{$UI_URL}/visualize/39478/Common_Neoplasm"
+                              = succeed ")" do
+                                %a.external.free{:href => @ontology.explore.roots.first.id, :rel => "nofollow", :title => "#{$UI_URL}/visualize/39478/Common_Neoplasm"}
+                                  = @ontology.explore.roots.first.id
                             %li
                               %code shortid
                               put the short id of the class, as used in #{$SITE} (e.g., "Common_Neoplasm");
