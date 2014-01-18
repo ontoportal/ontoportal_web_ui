@@ -433,20 +433,11 @@ function ontologyIdToAcronym(id) {
   return id.split("/").slice(-1)[0];
 }
 
-function setOntologyName(cls) {
-  jQuery.ajax({
-    url: cls.links.ontology,
-    async: false,
-    dataType: "jsonp",
-    data: {
-      apikey: jQuery(document).data().bp.config.apikey,
-      userapikey: jQuery(document).data().bp.config.userapikey,
-      format: "jsonp"
-    },
-    success: function(ont){
-      jQuery(".ont_name[data-ont='" + cls.links.ontology + "']").html(" - " + ont.name + " (" + ont.acronym + ")");
-    }
-  });
+function getOntologyName(cls) {
+  var ont = jQuery(document).data().bp.ontologies[cls.links.ontology];
+  if (typeof ont === 'undefined')
+    return "";
+  return " - " + ont.name + " (" + ont.acronym + ")";
 }
 
 function currentResultsCount() {
@@ -458,14 +449,12 @@ function currentOntologiesCount() {
 }
 
 function classHTML(res, label_html, displayOntologyName) {
-  var ontologyName = displayOntologyName ? "<span class='ont_name' data-ont='"+res.links.ontology+"'></span>" : "";
-  setOntologyName(res);
-
   var title = " title='" + res.prefLabel + "' ";
   var conceptIdCode = encodeURIComponent(res["@id"]);
   var dataConceptId = " data-bp_conceptid='" + conceptIdCode + "' ";
   var dataExactMatch = " data-exact_match='" + res.exactMatch + "' ";
   var linkHref = " href='/ontologies/" + ontologyIdToAcronym(res.links.ontology) + "?p=classes&conceptid=" + conceptIdCode + "' ";
+  var ontologyName = displayOntologyName ? getOntologyName(res) : "";
   return "" +
   "<div class='class_link'>" +
     "<a " + title + dataConceptId + dataExactMatch + linkHref + "> " +
