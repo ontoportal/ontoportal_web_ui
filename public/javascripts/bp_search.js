@@ -7,7 +7,6 @@
   // Bind to State Change
   History.Adapter.bind(window, 'statechange', function () {
     var state = History.getState();
-    console.log("searching");
     autoSearch();
   });
 }(window));
@@ -173,8 +172,8 @@ function currentSearchParams() {
   // Advanced options
   params.include_properties = jQuery("#search_include_properties").is(":checked");
   params.include_views = jQuery("#search_include_views").is(":checked");
-  // var includeObsolete = jQuery("#search_include_obsolete").is(":checked");
-  // var includeNonProduction = jQuery("#search_include_non_production").is(":checked");
+  params.includeObsolete = jQuery("#search_include_obsolete").is(":checked");
+  // params.includeNonProduction = jQuery("#search_include_non_production").is(":checked");
   params.require_definition = jQuery("#search_require_definition").is(":checked");
   params.exact_match = jQuery("#search_exact_match").is(":checked");
   params.categories = jQuery("#search_categories").val() || "";
@@ -213,7 +212,7 @@ function performSearch() {
       q: query,
       include_properties: includeProps,
       include_views: includeViews,
-      include_obsolete: includeObsolete,
+      obsolete: includeObsolete,
       include_non_production: includeNonProduction,
       require_definition: includeOnlyDefinitions,
       exact_match: exactMatch,
@@ -351,9 +350,6 @@ function updatePopupCounts() {
        return -1;
     return 0;
   });
-
-  // Insert header at beginning
-  // ontologies.splice(0, 0, "<b>Ontology<span class='popup_counts'>Results</span></b><br/>");
 
   jQuery("#ontology_counts").html(ontologies.join(""));
 }
