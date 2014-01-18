@@ -1,5 +1,4 @@
 - @title = "Search"
-= javascript_include_tag "http://cdn.jquerytools.org/1.2.7/all/jquery.tools.min.js"
 %div{:style => "padding: 1em;"}
   #search_input{:style => "margin-bottom: 1em;"}
     %h1 Class Search
@@ -50,4 +49,5 @@
     #search_results
 #biomixer{:style => "display: none;"}
 / Javascript at end to improve response time to user
+= javascript_include_tag "http://cdn.jquerytools.org/1.2.7/all/jquery.tools.min.js"
 = javascript_include_tag "bp_search.js?nocache=2"
