@@ -3,143 +3,6 @@
 %link{:charset => "utf-8", :href => "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css", :media => "screen", :rel => "stylesheet", :title => "no title", :type => "text/css"}/
 %link{:href => "/javascripts/JqueryPlugins/superfish/superfish.css", :media => "screen", :rel => "stylesheet", :type => "text/css"}/
 %link{:charset => "utf-8", :href => "/javascripts/JqueryPlugins/superfish/superfish-vertical.css", :media => "screen", :rel => "stylesheet", :title => "no title", :type => "text/css"}/
-%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.js", :type => "text/javascript"}
-%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/superfish/hoverIntent.js", :type => "text/javascript"}
-%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/superfish/superfish.js", :type => "text/javascript"}
-
-- ont_names = @ontologies.map{|ont| "[\"#{ont.name} (#{ont.acronym})\",\"#{ont.acronym}\"]"}
-
-:javascript
-  function jumpToValueOntology() {
-    var ontology = jQuery("#find_ontology")[0].value;
-    var ontology_id = jQuery("#find_ontology_id").val();
-
-    if (ontology_id == null || ontology_id == "") {
-      // didnt pick an ont
-      alert("The ontology does not exist. You must pick an ontology from the list.")
-
-      return false;
-    }
-
-    if (!!ontology_id) {
-      var sValue = jQuery("#find_ontology_id").val();
-      if (sValue == null || sValue == "") {
-        sValue = data;
-      }
-      document.location="/ontologies/"+sValue;
-      jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Ontology...</h1>' });
-      return;
-    }
-  }
-
-  function formatResultOntologySearch(value, data) {
-    jQuery("#find_ontology_id").val("");
-    var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
-    var keywords = jQuery("#find_ontology").val().replace(specials, "\\$&").split(' ').join('|');
-    var regex = new RegExp( '(' + keywords + ')', 'gi' );
-    return value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>");
-  }
-
-  function jumpToValueResource(){
-    var cls = jQuery("#find_resource")[0].value;
-    var data = jQuery('body').data("resource_results");
-
-    if (data == null) {
-      // Im doing a search
-
-      var search = confirm("Press OK to Search for resources using the concept, or Cancel to select a concept")
-      if (search) {
-        query = jQuery("#find_resource").val();
-        document.location="/resource_index";
-        return;
-      }
-    }
-
-    if (!!data) {
-      var concept_id = data[0];
-      var ontology_version_id = data[2];
-      var ontology_id = data[7];
-      document.location="/resource_index/resource_index?conceptids="+ontology_id+"/"+encodeURIComponent(concept_id);
-      return;
-    }
-  }
-
-  function formatItemResource(value, data) {
-    jQuery('body').data("resource_results", null);
-    var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
-    var keywords = jQuery("#find_resource").val().replace(specials, "\\$&").split(' ').join('|');
-    var regex = new RegExp( '(' + keywords + ')', 'gi' );
-
-    // data[7] is the ontology_id, only included when searching multiple ontologies
-    if (data[6] == undefined) {
-      var result = value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + data[1] + ")</span>";
-    } else {
-      var result = value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + data[1] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + data[6] + "</span>";
-    }
-
-    return result;
-  }
-
-  // We use this in conjunction with autocomplete because autocomplete
-  // fails when there are multiple results with the same class name
-  function selectResource(value, data) {
-    jQuery('body').data("resource_results", value.data);
-    jumpToValueResource();
-  }
-
-  // Sets a hidden form value that records the virtual id when a concept is chosen in the jump to
-  // This is a workaround because the default autocomplete search method cannot distinguish between two
-  // ontologies that have the same preferred name but different ids.
-  function selectFindOntology(value, data){
-    jQuery("#find_ontology_id").val(value.data[0]);
-    jQuery("#find_ontology").focus();
-    jumpToValueOntology();
-  }
-
-  var ontologies_array=[#{ont_names.join(",")}];
-
-  jQuery(document).ready(function() {
-    jQuery("#find_ontology").autocomplete({
-      selectFirst: true,
-      data: ontologies_array,
-      minChars: 1,
-      matchSubset: 1,
-      maxItemsToShow: 20,
-      delay: 1,
-      showResult: formatResultOntologySearch,
-      onItemSelect: selectFindOntology
-    });
-
-    jQuery("#find_resource").autocomplete({
-      selectFirst: true,
-      url: "/search/json_search/",
-      extraParams: { separator: "\n" },
-      cacheLength: 1,
-      maxCacheLength: 1,
-      matchSubset: 0,
-      minChars: 3,
-      maxItemsToShow: 20,
-      showResult: formatItemResource,
-      onItemSelect: selectResource
-    });
-
-    jQuery('ul.sf-menu').superfish({
-      animation: {height:'show'},   // slide-down effect without fade-in
-      delay:     1200               // 1.2 second delay on mouseout);
-    });
-
-  });
-
-
-  function greybox(box){
-
-    if(jQuery(box).hasClass("greyed")){
-      jQuery(box).removeClass('greyed');
-      jQuery(box).val("");
-    }
-  }
-
-
 :css
   .greyed{
     color:#CFCFCF;
@@ -311,4 +174,141 @@
                   - LOG.add :error, e.message
                   - LOG.add :error, "UI-view error for recent mapping: #{map.to_json}"
                   - next
+
+%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.js", :type => "text/javascript"}
+%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/superfish/hoverIntent.js", :type => "text/javascript"}
+%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/superfish/superfish.js", :type => "text/javascript"}
+
+- ont_names = @ontologies.map{|ont| "[\"#{ont.name} (#{ont.acronym})\",\"#{ont.acronym}\"]"}
+
+:javascript
+  function jumpToValueOntology() {
+    var ontology = jQuery("#find_ontology")[0].value;
+    var ontology_id = jQuery("#find_ontology_id").val();
+
+    if (ontology_id == null || ontology_id == "") {
+      // didnt pick an ont
+      alert("The ontology does not exist. You must pick an ontology from the list.")
+
+      return false;
+    }
+
+    if (!!ontology_id) {
+      var sValue = jQuery("#find_ontology_id").val();
+      if (sValue == null || sValue == "") {
+        sValue = data;
+      }
+      document.location="/ontologies/"+sValue;
+      jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Ontology...</h1>' });
+      return;
+    }
+  }
+
+  function formatResultOntologySearch(value, data) {
+    jQuery("#find_ontology_id").val("");
+    var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
+    var keywords = jQuery("#find_ontology").val().replace(specials, "\\$&").split(' ').join('|');
+    var regex = new RegExp( '(' + keywords + ')', 'gi' );
+    return value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>");
+  }
+
+  function jumpToValueResource(){
+    var cls = jQuery("#find_resource")[0].value;
+    var data = jQuery('body').data("resource_results");
+
+    if (data == null) {
+      // Im doing a search
+
+      var search = confirm("Press OK to Search for resources using the concept, or Cancel to select a concept")
+      if (search) {
+        query = jQuery("#find_resource").val();
+        document.location="/resource_index";
+        return;
+      }
+    }
+
+    if (!!data) {
+      var concept_id = data[0];
+      var ontology_version_id = data[2];
+      var ontology_id = data[7];
+      document.location="/resource_index/resource_index?conceptids="+ontology_id+"/"+encodeURIComponent(concept_id);
+      return;
+    }
+  }
+
+  function formatItemResource(value, data) {
+    jQuery('body').data("resource_results", null);
+    var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
+    var keywords = jQuery("#find_resource").val().replace(specials, "\\$&").split(' ').join('|');
+    var regex = new RegExp( '(' + keywords + ')', 'gi' );
+
+    // data[7] is the ontology_id, only included when searching multiple ontologies
+    if (data[6] == undefined) {
+      var result = value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + data[1] + ")</span>";
+    } else {
+      var result = value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + data[1] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + data[6] + "</span>";
+    }
+
+    return result;
+  }
+
+  // We use this in conjunction with autocomplete because autocomplete
+  // fails when there are multiple results with the same class name
+  function selectResource(value, data) {
+    jQuery('body').data("resource_results", value.data);
+    jumpToValueResource();
+  }
+
+  // Sets a hidden form value that records the virtual id when a concept is chosen in the jump to
+  // This is a workaround because the default autocomplete search method cannot distinguish between two
+  // ontologies that have the same preferred name but different ids.
+  function selectFindOntology(value, data){
+    jQuery("#find_ontology_id").val(value.data[0]);
+    jQuery("#find_ontology").focus();
+    jumpToValueOntology();
+  }
+
+  var ontologies_array=[#{ont_names.join(",")}];
+
+  jQuery(document).ready(function() {
+    jQuery("#find_ontology").autocomplete({
+      selectFirst: true,
+      data: ontologies_array,
+      minChars: 1,
+      matchSubset: 1,
+      maxItemsToShow: 20,
+      delay: 1,
+      showResult: formatResultOntologySearch,
+      onItemSelect: selectFindOntology
+    });
+
+    jQuery("#find_resource").autocomplete({
+      selectFirst: true,
+      url: "/search/json_search/",
+      extraParams: { separator: "\n" },
+      cacheLength: 1,
+      maxCacheLength: 1,
+      matchSubset: 0,
+      minChars: 3,
+      maxItemsToShow: 20,
+      showResult: formatItemResource,
+      onItemSelect: selectResource
+    });
+
+    jQuery('ul.sf-menu').superfish({
+      animation: {height:'show'},   // slide-down effect without fade-in
+      delay:     1200               // 1.2 second delay on mouseout);
+    });
+
+  });
+
+
+  function greybox(box){
+
+    if(jQuery(box).hasClass("greyed")){
+      jQuery(box).removeClass('greyed');
+      jQuery(box).val("");
+    }
+  }
+
 
