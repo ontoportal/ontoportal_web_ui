@@ -1,12 +1,14 @@
-%table#mapping_count_table{:width => "50%"}
-  %td{:valign => "top"}
-    %table.zebra{:cellpadding => "0", :cellspacing => "0", :style => "margin: 20px 0;", :width => "90%"}
-      %thead
-        %tr
-          %th Ontology
-          %th{:style => "text-align: right;"} Mapped Classes
+%div{style: "width: 50%"}
+  %table#mapping_count_table.zebra{:cellpadding => "0", :cellspacing => "0", :style => "margin: 20px 0;", :width => "90%"}
+    %thead
+      %tr
+        %th Ontology
+        %th{:style => "text-align: right;"} Mapped Classes
+    %tbody
       - if @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
-        %td{:colspan => "2"} There are no mappings to or from this ontology
+        %tr
+          %td There are no mappings to or from this ontology
+          %td &nbsp;
       - else
         - for ontology in @ontologies_mapping_count
           - next if ontology["ontology"].viewOf
