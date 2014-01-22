@@ -15,7 +15,12 @@
   - if @options.empty?
     No mappings available
   - else
-    = select('search', 'ontologies', @options, {:include_blank => ""},{:onchange=>"loadMappings(this.value);", "data-placeholder".to_sym => "Select an Ontology"})
+    = select('search', 'ontologies', @options, {:include_blank => ""},{:onchange=>"loadMappings(this.value);", "data-placeholder".to_sym => "Select an Ontology", autocomplete: "off"})
+%p{style: "padding-left: 10px; margin-bottom: 0;", id: "display_options"}
+  %input{type: "radio", name: "display_type", value: "table", id: "display_table", checked: true, autocomplete: "off"}
+  %label{for: "display_table"} Table
+  %input{type: "radio", name: "display_type", value: "visualization", id: "display_visualization", autocomplete: "off"}
+  %label{for: "display_visualization"} Visualization
 #mapping_load{:style => "padding: 1em 1em 0; margin-bottom: -1em; display: none;"}
   %img{:src => "/images/tree/spinner.gif", :style => "vertical-align: text-bottom;"}/
   Loading mappings...
@@ -26,23 +31,41 @@
 = javascript_include_tag "/themes/cupertino/js/jquery-ui-1.8.1.custom.min.js"
 :javascript
   function loadMappings(value) {
+    jQuery('#mappingCount').html("");
     jQuery('#mapping_load').show();
-    jQuery('#mappingCount').load('/mappings/count/'+value, function() {
-      jQuery('#mapping_load').hide();
-      jQuery("#mapping_count_table").effect("highlight", { color: "#F5F5F5" }, 500);
-      jQuery("#mapping_count_table").dataTable({
-        "bPaginate": false,
-        "bInfo": false,
-        "bFilter": false,
-        "aoData": [
-          null,
-          { "sType": "formatted-num", "asSorting": [ "desc", "asc"] }
-        ]
+    if (jQuery("#display_table").is(":checked")) {
+      jQuery('#mappingCount').load('/mappings/count/'+value, function() {
+        jQuery('#mapping_load').hide();
+        jQuery("#mapping_count_table").effect("highlight", { color: "#F5F5F5" }, 500);
+        jQuery("#mapping_count_table").dataTable({
+          "bPaginate": false,
+          "bInfo": false,
+          "bFilter": false,
+          "aoData": [
+            null,
+            { "sType": "formatted-num", "asSorting": [ "desc", "asc"] }
+          ]
+        });
       });
-    });
-    jQuery('#mappings').html('');
+    } else {
+      jQuery('#mapping_load').hide();
+      var iframe = jQuery("<iframe>")
+        .attr("src", "#{$BIOMIXER_URL+"/ontologyMappingOverview.html?ontology_acronym="}"+value)
+        .attr("frameborder", "0")
+        .attr("width", "100%")
+        .attr("height", "800");
+      jQuery('#mappingCount').html(iframe);
+    }
   }
 
   jQuery(document).ready(function(){
       jQuery("#search_ontologies").chosen({search_contains: true});
+
+      // Handle visualization changes
+      jQuery("#display_options input").on("click", function(e, button){
+        var selectedOnt = jQuery("#search_ontologies").val();
+        if (selectedOnt !== "") {
+          loadMappings(selectedOnt);
+        }
+      });
   });
