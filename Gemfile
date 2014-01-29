@@ -26,6 +26,7 @@ gem 'ontologies_api_client', :git => "https://github.com/ncbo/ontologies_api_rub
 group :development do
   gem "pry"
   gem "pry-nav"
+  gem "pry-stack_explorer"
   gem "thin"
   gem "unicorn"
 end

@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/MiniProfiler/rack-mini-profiler.git
-  revision: 3f750c3edf4da9875645489f923ae725f1e7f5ce
+  revision: a286f3827f7a1f02e77843d1bf8bb3d366d13d12
   specs:
     rack-mini-profiler (0.9.0)
       rack (>= 1.1.3)
@@ -38,13 +38,16 @@ GEM
     activeresource (2.3.17)
       activesupport (= 2.3.17)
     activesupport (2.3.17)
+    binding_of_caller (0.7.2)
+      debug_inspector (>= 0.0.1)
     coderay (1.1.0)
     cube-ruby (0.0.3)
     daemons (1.1.9)
+    debug_inspector (0.0.2)
     eventmachine (1.0.3)
     excon (0.31.0)
-    faraday (0.8.8)
-      multipart-post (~> 1.2.0)
+    faraday (0.9.0)
+      multipart-post (>= 1.2, < 3)
     haml (3.1.8)
     hodel_3000_compliant_logger (0.1.1)
     hpricot (0.8.6)
@@ -56,8 +59,8 @@ GEM
     memcache-client (1.8.5)
     method_source (0.8.2)
     mime-types (2.0)
-    multi_json (1.8.2)
-    multipart-post (1.2.0)
+    multi_json (1.8.4)
+    multipart-post (2.0.0)
     mysql (2.8.1)
     oink (0.10.1)
       activerecord
@@ -69,6 +72,9 @@ GEM
       slop (~> 3.4)
     pry-nav (0.2.3)
       pry (~> 0.9.10)
+    pry-stack_explorer (0.4.9.1)
+      binding_of_caller (>= 0.7)
+      pry (>= 0.9.11)
     rack (1.1.6)
     rails (2.3.17)
       actionmailer (= 2.3.17)
@@ -79,11 +85,11 @@ GEM
       rake (>= 0.8.3)
     raindrops (0.12.0)
     rake (10.1.1)
-    rdoc (4.1.0)
+    rdoc (4.1.1)
       json (~> 1.4)
     recaptcha (0.3.6)
     recursive-open-struct (0.4.5)
-    redis (3.0.6)
+    redis (3.0.7)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     slop (3.4.7)
@@ -91,7 +97,7 @@ GEM
       daemons (>= 1.0.9)
       eventmachine (>= 1.0.0)
       rack (>= 1.0.0)
-    unicorn (4.7.0)
+    unicorn (4.8.0)
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
@@ -113,6 +119,7 @@ DEPENDENCIES
   ontologies_api_client!
   pry
   pry-nav
+  pry-stack_explorer
   rack-mini-profiler!
   rails (= 2.3.17)
   rdoc
