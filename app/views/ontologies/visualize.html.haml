@@ -74,9 +74,7 @@
       // Cleanup obsolete class tag before markup for search keywords.
       if(row[0].indexOf("[obsolete]") != -1) {
         row[0] = row[0].replace("[obsolete]", "");
-        // remove the usual title attribute because the CSS adds a help arrow that interferes with selection.
-        //obsolete_prefix = "<span class='obsolete_class' title='obsolete class'>";
-        obsolete_prefix = "<span class='obsolete_class'>";
+        obsolete_prefix = "<span class='obsolete_class' title='obsolete class'>";
         obsolete_suffix = "</span>";
       } else {
         obsolete_prefix = "";
