@@ -378,6 +378,7 @@ class ApplicationController < ActionController::Base
       # Don't display any classes in the tree
       @concept = LinkedData::Client::Models::Class.new
       @concept.prefLabel = "Please search for a class using the Jump To field above"
+      @concept.obsolete = false
       @concept.id = "bp_fake_root"
       @concept.child_size = 0
       @concept.properties = {}
@@ -392,13 +393,13 @@ class ApplicationController < ActionController::Base
       @root = LinkedData::Client::Models::Class.new
       @root.children = [@concept]
     else
+
       # if the id is coming from a param, use that to get concept
       @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
       raise Error404 if @concept.nil? || @concept.errors
 
       # Create the tree
-      rootNode = @concept.explore.tree(include: "prefLabel,childrenCount")
-
+      rootNode = @concept.explore.tree(include: "prefLabel,childrenCount,obsolete")
       if rootNode.nil? || rootNode.empty?
         roots = @ontology.explore.roots
         if roots.any? {|c| c.id == @concept.id}
@@ -407,7 +408,6 @@ class ApplicationController < ActionController::Base
           rootNode = [@concept]
         end
       end
-
       rootNode.sort!{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
 
       @root = LinkedData::Client::Models::Class.new(read_only: true)
