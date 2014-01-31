@@ -1,5 +1,4 @@
 - @title = "Search"
-= javascript_include_tag "http://cdn.jquerytools.org/1.2.7/all/jquery.tools.min.js"
 %div{:style => "padding: 1em;"}
   #search_input{:style => "margin-bottom: 1em;"}
     %h1 Class Search
@@ -21,10 +20,9 @@
         = check_box :search, :include_properties
         = label :search, :include_properties, "<span class='definition' title='Named association between two entities. Examples are &quot;definition&quot; (a relation between a class and some text) and &quot;part-of&quot; (a relation between two classes).'>Property</span> values</span>"
         %br/
-        /
-          Disable include obsolete until we support obsolete terms
-          <haml:loud>check_box :search, :include_obsolete</haml:loud> <haml:loud>label :search, :include_obsolete, &amp;quot;&amp;lt;span class='definition' title='A class that the authors of the ontology have flagged as being obsolete and which they recommend that people not use. These classes are often left in ontologies (rather than removing them entirely) so that existing systems that depend on them will continue to function.'&amp;gt;Obsolete classes&amp;lt;/span&amp;gt;&amp;quot;</haml:loud>
-          <br/>
+        = check_box :search, :include_obsolete
+        = label :search, :include_obsolete, "<span class='definition' title='A class that the authors of the ontology have flagged as being obsolete and which they recommend that people not use. These classes are often left in ontologies (rather than removing them entirely) so that existing systems that depend on them will continue to function.'>Obsolete classes</span>"
+        %br/
         /
           Disable until we support non-production filtering on rest
           = check_box :search, :include_non_production
@@ -51,4 +49,8 @@
     #search_results
 #biomixer{:style => "display: none;"}
 / Javascript at end to improve response time to user
+= javascript_include_tag "http://cdn.jquerytools.org/1.2.7/all/jquery.tools.min.js"
 = javascript_include_tag "bp_search.js?nocache=2"
+:javascript
+  // Hash of ontology id => name, acronym for lookup use via JS
+  jQuery(document).data().bp.ontologies = #{Hash[LinkedData::Client::Models::Ontology.all(include_views: true).map {|o| [o.id, {name: o.name, acronym: o.acronym}]}].to_json}

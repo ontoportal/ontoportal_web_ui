@@ -263,10 +263,8 @@ class ApplicationController < ActionController::Base
 
   # rack-mini-profiler authorization
   def authorize_miniprofiler
-    if session[:user] && session[:user].admin?
-      Rack::MiniProfiler.authorize_request
-    elsif params[:enable_profiler] && params[:enable_profiler].eql?("true")
-      Rack::MiniProfiler.authorize_request
+    if params[:enable_profiler] && params[:enable_profiler].eql?("true")
+      Rack::MiniProfiler.authorize_request if session[:user] && session[:user].admin?
     else
       Rack::MiniProfiler.deauthorize_request
     end
@@ -305,14 +303,6 @@ class ApplicationController < ActionController::Base
 
   def current_user_admin?
     session[:user] && session[:user].admin?
-  end
-
-  # generates a new random password
-  def newpass( len )
-    chars = ("a".."z").to_a + ("A".."Z").to_a + ("1".."9").to_a
-    newpass = ""
-    1.upto(len) { |i| newpass << chars[rand(chars.size-1)] }
-    return newpass
   end
 
   # updates the 'history' tab with the current selected concept
@@ -365,20 +355,6 @@ class ApplicationController < ActionController::Base
     delete_mapping_permission
   end
 
-  # Notes-related helpers that could be useful elsewhere
-
-  def convert_java_time(time_in_millis)
-    time_in_millis.to_i / 1000
-  end
-
-  def time_from_java(java_time)
-    Time.at(convert_java_time(java_time.to_i))
-  end
-
-  def time_formatted_from_java(java_time)
-    time_from_java(java_time).strftime("%m/%d/%Y")
-  end
-
   def using_captcha?
     !ENV['USE_RECAPTCHA'].nil? && ENV['USE_RECAPTCHA'] == 'true'
   end
@@ -402,6 +378,7 @@ class ApplicationController < ActionController::Base
       # Don't display any classes in the tree
       @concept = LinkedData::Client::Models::Class.new
       @concept.prefLabel = "Please search for a class using the Jump To field above"
+      @concept.obsolete = false
       @concept.id = "bp_fake_root"
       @concept.child_size = 0
       @concept.properties = {}
@@ -416,13 +393,13 @@ class ApplicationController < ActionController::Base
       @root = LinkedData::Client::Models::Class.new
       @root.children = [@concept]
     else
+
       # if the id is coming from a param, use that to get concept
       @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
       raise Error404 if @concept.nil? || @concept.errors
 
       # Create the tree
-      rootNode = @concept.explore.tree(include: "prefLabel,childrenCount")
-
+      rootNode = @concept.explore.tree(include: "prefLabel,childrenCount,obsolete")
       if rootNode.nil? || rootNode.empty?
         roots = @ontology.explore.roots
         if roots.any? {|c| c.id == @concept.id}
@@ -431,7 +408,6 @@ class ApplicationController < ActionController::Base
           rootNode = [@concept]
         end
       end
-
       rootNode.sort!{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
 
       @root = LinkedData::Client::Models::Class.new(read_only: true)
@@ -614,9 +590,9 @@ class ApplicationController < ActionController::Base
         @retries += 1
         retry
       else
-        LOG.add :debug, "\nERROR: batch POST, uri: #{REST_URI_BATCH}"
-        LOG.add :debug, "\nERROR: batch POST, params: #{params.to_json}"
-        LOG.add :debug, "\nERROR: batch POST, error response: #{error.response}"
+        LOG.add :error, "\nERROR: batch POST, uri: #{REST_URI_BATCH}"
+        LOG.add :error, "\nERROR: batch POST, params: #{params.to_json}"
+        LOG.add :error, "\nERROR: batch POST, error response: #{error.response}"
         raise error
       end
     end

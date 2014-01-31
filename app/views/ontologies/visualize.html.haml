@@ -71,7 +71,18 @@
           row[0] = row[0] + " (synonym: " + matchSynonym.join(" ") + ")";
         }
       }
-      return row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + matchType;
+      // Cleanup obsolete class tag before markup for search keywords.
+      if(row[0].indexOf("[obsolete]") != -1) {
+        row[0] = row[0].replace("[obsolete]", "");
+        obsolete_prefix = "<span class='obsolete_class' title='obsolete class'>";
+        obsolete_suffix = "</span>";
+      } else {
+        obsolete_prefix = "";
+        obsolete_suffix = "";
+      }
+      // Markup the search keywords.
+      var row0_markup = row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>");
+      return obsolete_prefix + row0_markup + matchType + obsolete_suffix;
     }
 
     classes_init = function(){
@@ -142,7 +153,7 @@
         lineSeparator: "~!~",
         matchSubset: 0,
         minChars: 1,
-        maxItemsToShow: 20,
+        maxItemsToShow: 25,
         onFindValue: jumpToValue,
         onItemSelect: jumpToSelect,
         formatItem: formatItem

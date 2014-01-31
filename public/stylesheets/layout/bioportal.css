@@ -819,9 +819,18 @@ tr.mainresource td {
 }
 
 .obsolete_class {
-  color: gray;
-  font-style: oblique;
+  color: rgb(100,100,100);
   cursor: help;
+  font-style: oblique;
+}
+/* markup obsolete class when 'highlighted' */
+.chzn-results .highlighted .obsolete_class {
+  color: rgb(200,200,200);
+  cursor: inherit;  /*override the help cursor for selection menus*/
+}
+li.ac_over > .obsolete_class {
+  color: rgb(200,200,200);
+  cursor: inherit;  /*override the help cursor for selection menus*/
 }
 
 .concept_details p {
