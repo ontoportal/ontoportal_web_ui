@@ -58,7 +58,7 @@ GEM
     lz4-ruby (0.2.0)
     memcache-client (1.8.5)
     method_source (0.8.2)
-    mime-types (2.0)
+    mime-types (2.1)
     multi_json (1.8.4)
     multipart-post (2.0.0)
     mysql (2.8.1)
@@ -66,7 +66,7 @@ GEM
       activerecord
       hodel_3000_compliant_logger
     oj (2.0.14)
-    pry (0.9.12.4)
+    pry (0.9.12.6)
       coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
@@ -97,7 +97,7 @@ GEM
       daemons (>= 1.0.9)
       eventmachine (>= 1.0.0)
       rack (>= 1.0.0)
-    unicorn (4.8.0)
+    unicorn (4.8.1)
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
