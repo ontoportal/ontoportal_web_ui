@@ -192,8 +192,8 @@
               %span{:style => "padding-right: .5em;"}
                 %a{href: "/ontologies/#{ontology.acronym}"}= ontology.name
                 = ontology.acronym
-                - #if submission.admin?(session[:user])
-                %span{:style => "font-size: xx-small; color: gray;"}= #get_status_text(submission)
+                - if session[:user] && session[:user].admin?
+                  %span{:style => "font-size: xx-small; color: gray;"}= submission_status2string(submission)
             %td{:style => "width:50px;"}= visibility_link(ontology)
             %td{:style => "width:30px;text-align:right;"}= classes_link(submission, class_count )
             %td{:style => "width:30px;text-align:right;"}= notes_link(submission, ontology.notes.length)
