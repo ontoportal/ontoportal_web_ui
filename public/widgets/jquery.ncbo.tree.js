@@ -57,14 +57,6 @@
 
     TREE.option = $.extend(TREE.option, opt);
 
-    // Add the autocomplete code
-    $.ajax({
-      url: TREE.option.ncboUIURL + "/widgets/jquery.ncbo.autocomplete.js",
-      type: "GET",
-      async: false,
-      dataType: "script"
-    });
-
     // Required options
     if (TREE.option.apikey == null)
       throw new Error("You must provide an API Key for NCBO Tree Widget to operate");
@@ -422,8 +414,18 @@
 
     // Returns the original object(s) so they can be chained
     return this.each(function() {
-      setupTree(this, TREE, TREE.option)
-      TREE.init();
+      var $this = this;
+
+      // Add the autocomplete code
+      $.ajax({
+        url: TREE.option.ncboUIURL + "/widgets/jquery.ncbo.autocomplete.js",
+        type: "GET",
+        dataType: "script",
+        success: function(){
+          setupTree($this, TREE, TREE.option)
+          TREE.init();
+        }
+      });
     });
   }
 }(jQuery));
