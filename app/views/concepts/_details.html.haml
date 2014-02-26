@@ -65,6 +65,8 @@
       - if !top && !bottom
         - leftover << key
     - leftover.sort! {|x,y| x.downcase <=> y.downcase }
+
+    -# TOP set of properties
     - for key in top_set
       - key = key.to_s
       - next if exclude_relation?(key)
@@ -76,7 +78,11 @@
           %td.label{:nowrap => ""}
             %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
           %td.property_values
+
+            -# TODO: modify values to use bp_ajax_controller classes in anchors?
             = auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")
+
+    -# LEFTOVER set of properties
     - for key in leftover
       - next if exclude_relation?(key, @ontology)
       - if concept_properties[key]
@@ -87,7 +93,11 @@
           %td.label{:nowrap => ""}
             %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
           %td.property_values
+
+            -# TODO: modify values to use bp_ajax_controller classes in anchors?
             = auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
+
+    -# BOTTOM set of properties
     - for key in bottom_set
       - next if exclude_relation?(key)
       - if concept_properties[key]
@@ -98,18 +108,34 @@
           %td.label{:nowrap => ""}
             %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
           %td.property_values
+
+            -# TODO: modify values to use bp_ajax_controller classes in anchors?
             = auto_link("<p>#{values.split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
 
 :javascript
+
+  // TODO: Add ajax control functions to stop ajax ontology/class ID:name resolution when facebox is closed.
+  // TODO: NCBO-419
+
   jQuery(document).ready(function(){
+    // TODO: evaluate whether this getScript is necessary, don't want to do it every time.
+    jQuery.getScript("/javascripts/bp_ajax_controller.js", function(){
+       console.log("bp_ajax_controller loaded and executed.");
+    });
+
+    jQuery("#facebox a.close").bind("click", function() { ajax_process_halt(); });
+
+    // TODO: modify the following to use the bp_ajax_controller interval timers?
     jQuery("td.property_values a").each(function() {
       var link = jQuery(this);
-      jQuery.get("/ajax/classes/label?ontology=#{@concept.links["ontology"]}&concept="+encodeURIComponent(this.href), function(data){
+      var ont = "#{@concept.links["ontology"]}"
+      var ont_acronym = "#{@concept.links["ontology"].split("/").last}"
+      jQuery.get("/ajax/classes/label?ontology=" + ont + "&concept="+encodeURIComponent(this.href), function(data){
         data = data.trim();
         if (typeof data !== "undefined" && data.length > 0 && data.indexOf("http") !== 0) {
           link.text(data);
-          link.attr("href", "/ontologies/#{@concept.links["ontology"].split("/")[-1]}?p=classes&conceptid="+encodeURIComponent(link.attr("href")));
+          link.attr("href", "/ontologies/" + ont_acronym + "?p=classes&conceptid="+encodeURIComponent(link.attr("href")));
         }
       });
-    })
+    });
   })

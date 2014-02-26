@@ -1,5 +1,24 @@
 module ConceptsHelper
 
+  ###BEGIN ruby equivalent of JS code in bp_ajax_controller.
+  ###Note: this code used concepts/_details partial.
+  UNIQUE_SPLIT_STR = '||||'
+  def unique_class_id(cls_id, ont_acronym)
+    return cls_id + UNIQUE_SPLIT_STR + ont_acronym
+  end
+  def unique_id_split(unique_id)
+    return unique_id.split(UNIQUE_SPLIT_STR)
+  end
+  def get_link_for_cls_ajax(cls_id, ont_acronym)
+    # ajax call will replace the href and label (triggered by class='cls4ajax')
+    return "<a class='cls4ajax' href='#{unique_class_id(cls_id, ont_acronym)}'>#{cls_id}</a>"
+  end
+  def get_link_for_ont_ajax(ont_acronym)
+    # ajax call will replace the acronym with an ontology name (triggered by class='ont4ajax')
+    return "<a class='ont4ajax' href='/ontologies/#{ont_acronym}'>#{ont_acronym}</a>"
+  end
+  ###END ruby equivalent of JS code in bp_ajax_controller.
+
   def exclude_relation?(relation_to_check, ontology = nil)
     excluded_relations = [ "type", "rdf:type", "[R]", "SuperClass", "InstanceCount" ]
 

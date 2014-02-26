@@ -80,7 +80,7 @@ jQuery(document).ready(function(){
   jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
 
   // Position of popup for details
-  jQuery(document).bind('reveal.facebox', function(){
+  jQuery(document).bind("reveal.facebox", function(){
     if (jQuery("div.class_details_pop").is(":visible")) {
       jQuery("#facebox").css("max-height", jQuery(window).height() - (jQuery("#facebox").offset().top - jQuery(window).scrollTop()) * 2 + "px");
     }
