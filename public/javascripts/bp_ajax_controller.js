@@ -95,6 +95,10 @@ var ajax_process_cls = function() {
           link.addClass('ajax-modified-cls'); // processed this one.
         }
       });
+    } else {
+      // remove the unique_id separator and the ontology acronym from the href
+      linkA.attr('href', cls_id);  // it may not be an ontology class, don't use the cls_uri
+      linkA.addClass('ajax-modified-cls');
     }
   });
 };

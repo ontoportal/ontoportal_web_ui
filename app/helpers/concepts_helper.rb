@@ -10,8 +10,15 @@ module ConceptsHelper
     return unique_id.split(UNIQUE_SPLIT_STR)
   end
   def get_link_for_cls_ajax(cls_id, ont_acronym)
-    # ajax call will replace the href and label (triggered by class='cls4ajax')
-    return "<a class='cls4ajax' href='#{unique_class_id(cls_id, ont_acronym)}'>#{cls_id}</a>"
+    # Note: bp_ajax_controller.ajax_process_cls will try to resolve class labels.
+    # Uses 'http' as a more generic attempt to resolve class labels than .include? ont_acronym; the
+    # bp_ajax_controller.ajax_process_cls will try to resolve class labels and
+    # otherwise remove the UNIQUE_SPLIT_STR and the ont_acronym.
+    if cls_id.include? 'http'
+      return "<a class='cls4ajax' href='#{unique_class_id(cls_id, ont_acronym)}' target='_blank'>#{cls_id}</a>"
+    else
+      return auto_link(cls_id, :all, :target => '_blank')
+    end
   end
   def get_link_for_ont_ajax(ont_acronym)
     # ajax call will replace the acronym with an ontology name (triggered by class='ont4ajax')

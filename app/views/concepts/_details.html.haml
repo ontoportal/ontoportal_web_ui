@@ -78,9 +78,10 @@
           %td.label{:nowrap => ""}
             %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
           %td.property_values
-
-            -# TODO: modify values to use bp_ajax_controller classes in anchors?
-            = auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")
+            -# Note: get_link_for_cls_ajax is in concepts_helper.rb, it calls auto_link when necessary.
+            - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym) }
+            = "<p>#{sanitize(ajax_links.join('</p><p>'))}</p>"
+            -# auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")
 
     -# LEFTOVER set of properties
     - for key in leftover
@@ -93,9 +94,10 @@
           %td.label{:nowrap => ""}
             %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
           %td.property_values
-
-            -# TODO: modify values to use bp_ajax_controller classes in anchors?
-            = auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
+            -# Note: get_link_for_cls_ajax is in concepts_helper.rb, it calls auto_link when necessary.
+            - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym) }
+            = "<p>#{sanitize(ajax_links.join('</p><p>'))}</p>"
+            -# auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
 
     -# BOTTOM set of properties
     - for key in bottom_set
@@ -108,34 +110,32 @@
           %td.label{:nowrap => ""}
             %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
           %td.property_values
-
-            -# TODO: modify values to use bp_ajax_controller classes in anchors?
-            = auto_link("<p>#{values.split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
+            -# Note: get_link_for_cls_ajax is in concepts_helper.rb, it calls auto_link when necessary.
+            - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym)}
+            = "<p>#{ajax_links.join('</p><p>')}</p>"
+            -# auto_link("<p>#{values.split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
 
 :javascript
 
-  // TODO: Add ajax control functions to stop ajax ontology/class ID:name resolution when facebox is closed.
-  // TODO: NCBO-419
-
   jQuery(document).ready(function(){
-    // TODO: evaluate whether this getScript is necessary, don't want to do it every time.
-    jQuery.getScript("/javascripts/bp_ajax_controller.js", function(){
-       console.log("bp_ajax_controller loaded and executed.");
-    });
+    // Ajax globals and functions are in  "/javascripts/bp_ajax_controller.js"
+    // Note: bind any 'responsive elements' to the ajax_proces_halt() function, e.g.
+    jQuery("#facebox a.close").click(function(event){ ajax_process_halt(); });
+    // Initiate ajax calls to resolve class ID to prefLabel.
+    ajax_process_cls_interval = window.setInterval(ajax_process_cls, ajax_process_timing);
+    //ajax_process_ont_interval = window.setInterval(ajax_process_ont, ajax_process_timing);
 
-    jQuery("#facebox a.close").bind("click", function() { ajax_process_halt(); });
-
-    // TODO: modify the following to use the bp_ajax_controller interval timers?
-    jQuery("td.property_values a").each(function() {
-      var link = jQuery(this);
-      var ont = "#{@concept.links["ontology"]}"
-      var ont_acronym = "#{@concept.links["ontology"].split("/").last}"
-      jQuery.get("/ajax/classes/label?ontology=" + ont + "&concept="+encodeURIComponent(this.href), function(data){
-        data = data.trim();
-        if (typeof data !== "undefined" && data.length > 0 && data.indexOf("http") !== 0) {
-          link.text(data);
-          link.attr("href", "/ontologies/" + ont_acronym + "?p=classes&conceptid="+encodeURIComponent(link.attr("href")));
-        }
-      });
-    });
+    // Note: replaced the following to use the bp_ajax_controller interval timers (as above).
+    //jQuery("td.property_values a").each(function() {
+    //  var link = jQuery(this);
+    //  var ont = "#{@concept.links["ontology"]}"
+    //  var ont_acronym = "#{@concept.links["ontology"].split("/").last}"
+    //  jQuery.get("/ajax/classes/label?ontology=" + ont + "&concept="+encodeURIComponent(this.href), function(data){
+    //    data = data.trim();
+    //    if (typeof data !== "undefined" && data.length > 0 && data.indexOf("http") !== 0) {
+    //      link.text(data);
+    //      link.attr("href", "/ontologies/" + ont_acronym + "?p=classes&conceptid="+encodeURIComponent(link.attr("href")));
+    //    }
+    //  });
+    //});
   })
