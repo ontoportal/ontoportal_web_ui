@@ -672,8 +672,7 @@ function display_annotations(data, params) {
   annotatorFormatLink(param_string, "xml");
   if (params.raw !== undefined && params.raw === true) {
     // Initiate ajax calls to resolve class ID to prefLabel and ontology acronym to name.
-    ajax_process_cls_interval = window.setInterval(ajax_process_cls, ajax_process_timing);
-    ajax_process_ont_interval = window.setInterval(ajax_process_ont, ajax_process_timing);
+    ajax_process_init();  // see bp_ajax_controller.js
   }
 }
 
