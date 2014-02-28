@@ -111,6 +111,10 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/:action/:id'
   map.jam 'jambalaya/:ontology/:id', :controller => 'visual', :action => 'jam'
 
+  # Admin
+  map.connect '/admin/clearcache', controller: 'admin', action: 'clearcache', conditions: {method: :post}
+  map.connect '/admin/resetcache', controller: 'admin', action: 'resetcache', conditions: {method: :post}
+
   #####
   ## OLD ROUTES
   ## All of these should redirect to new addresses in the controller method or using the redirect controller
