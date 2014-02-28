@@ -2,19 +2,21 @@
 "use strict";
 
 // Note similar code in concepts_helper.rb mirrors the following code:
-var unique_split_str = '||||';
-function unique_class_id(cls_id, ont_acronym){
-  return cls_id + unique_split_str + ont_acronym;
+function bp_ont_link(ont_acronym){
+  return "/ontologies/" + ont_acronym;
 }
-function unique_id_split(unique_id){
-  return unique_id.split(unique_split_str);
+function bp_cls_link(cls_id, ont_acronym){
+  return bp_ont_link(ont_acronym) + "?p=classes&conceptid=" + encodeURIComponent(cls_id);
 }
 function get_link_for_cls_ajax(cls_id, ont_acronym) {
-  // ajax call will replace the href and label (triggered by class='cls4ajax')
-  return '<a class="cls4ajax" href="' + unique_class_id(cls_id, ont_acronym) + '">' + cls_id + '</a>';
+  // ajax call will replace the class label using data attributes (triggered by class='cls4ajax')
+  var data_cls = " data-cls='" + cls_id + "' ";
+  var data_ont = " data-ont='" + ont_acronym + "' ";
+  return "<a class='cls4ajax'" + data_cls + data_ont + "href='" + bp_cls_link(cls_id, ont_acronym) + "'>" + cls_id + "</a>";
 }
 function get_link_for_ont_ajax(ont_acronym) {
-  return '<a class="ont4ajax" href="/ontologies/' + ont_acronym + '">' + ont_acronym + '</a>';
+  var data_ont = " data-ont='" + ont_acronym + "' ";
+  return "<a class='ont4ajax'" + data_ont + "href='" + bp_ont_link(ont_acronym) + "'>" + ont_acronym + "</a>";
 }
 
 var
@@ -72,8 +74,8 @@ var ajax_process_ont = function() {
     return true; // processed this one already.
   }
   linkA.removeClass('ont4ajax'); // processing this one.
-  var ontAcronym = linkA.text();
-  var ajaxURI = "/ajax/json_ontology/?ontology=" + encodeURIComponent(ontAcronym);
+  var ont_acronym = linkA.attr('data-ont');
+  var ajax_uri = "/ajax/json_ontology/?ontology=" + encodeURIComponent(ont_acronym);
   jQuery.ajax({
     url: ajax_uri,
     timeout: 180 * 1000, // 180 seconds (3 mins)
@@ -142,9 +144,12 @@ var ajax_process_cls = function() {
   }
   linkA.removeClass('cls4ajax'); // processing this one.
   var unique_id = linkA.attr('href');
-  var ids = unique_id_split(unique_id);
-  var cls_id = ids[0];
-  var ont_acronym = ids[1];
+
+
+  // TODO: retrieve 'data-cls' and 'data-ont' attributes.
+
+  var cls_id = linkA.attr('data-cls');
+  var ont_acronym = linkA.attr('data-ont');
   var ont_uri = "/ontologies/" + ont_acronym;
   var cls_uri = ont_uri + "?p=classes&conceptid=" + encodeURIComponent(cls_id);
   var ajax_uri = "/ajax/classes/label?ontology=" + ont_acronym + "&concept=" + encodeURIComponent(cls_id);

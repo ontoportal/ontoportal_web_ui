@@ -1,13 +1,14 @@
 module ConceptsHelper
 
+
+
   ###BEGIN ruby equivalent of JS code in bp_ajax_controller.
-  ###Note: this code used concepts/_details partial.
-  UNIQUE_SPLIT_STR = '||||'
-  def unique_class_id(cls_id, ont_acronym)
-    return cls_id + UNIQUE_SPLIT_STR + ont_acronym
+  ###Note: this code is used in concepts/_details partial.
+  def bp_ont_link(ont_acronym)
+    return "/ontologies/#{ont_acronym}"
   end
-  def unique_id_split(unique_id)
-    return unique_id.split(UNIQUE_SPLIT_STR)
+  def bp_class_link(cls_id, ont_acronym)
+    return "#{bp_ont_link(ont_acronym)}?p=classes&conceptid=#{URI.escape(cls_id)}"
   end
   def get_link_for_cls_ajax(cls_id, ont_acronym)
     # Note: bp_ajax_controller.ajax_process_cls will try to resolve class labels.
@@ -15,14 +16,19 @@ module ConceptsHelper
     # bp_ajax_controller.ajax_process_cls will try to resolve class labels and
     # otherwise remove the UNIQUE_SPLIT_STR and the ont_acronym.
     if cls_id.include? 'http'
-      return "<a class='cls4ajax' href='#{unique_class_id(cls_id, ont_acronym)}' target='_blank'>#{cls_id}</a>"
+      href_cls = " href='#{bp_class_link(cls_id, ont_acronym)}' "
+      data_cls = " data-cls='#{cls_id}' "
+      data_ont = " data-ont='#{ont_acronym}' "
+      return "<a class='cls4ajax' #{data_ont} #{data_cls} #{href_cls} target='_blank'>#{cls_id}</a>"
     else
       return auto_link(cls_id, :all, :target => '_blank')
     end
   end
   def get_link_for_ont_ajax(ont_acronym)
     # ajax call will replace the acronym with an ontology name (triggered by class='ont4ajax')
-    return "<a class='ont4ajax' href='/ontologies/#{ont_acronym}'>#{ont_acronym}</a>"
+    href_ont = " href='#{bp_ont_link(ont_acronym)}' "
+    data_ont = " data-ont='#{ont_acronym}' "
+    return "<a class='ont4ajax' #{data_ont} #{href_ont}>#{ont_acronym}</a>"
   end
   ###END ruby equivalent of JS code in bp_ajax_controller.
 
