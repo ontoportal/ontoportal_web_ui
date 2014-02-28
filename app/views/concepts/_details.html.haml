@@ -66,9 +66,6 @@
         - leftover << key
     - leftover.sort! {|x,y| x.downcase <=> y.downcase }
 
-
-
-
     -# TOP set of properties
     - for key in top_set
       - key = key.to_s
@@ -81,8 +78,8 @@
           %td.label{:nowrap => ""}
             %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
           %td.property_values
-            -# Note: get_link_for_cls_ajax is in concepts_helper.rb, it calls auto_link when necessary.
-            - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym) }
+            -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
+            - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank') }
             = "<p>#{sanitize(ajax_links.join('</p><p>'))}</p>"
             -# auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")
 
@@ -97,8 +94,8 @@
           %td.label{:nowrap => ""}
             %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
           %td.property_values
-            -# Note: get_link_for_cls_ajax is in concepts_helper.rb, it calls auto_link when necessary.
-            - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym) }
+            -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
+            - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank') }
             = "<p>#{sanitize(ajax_links.join('</p><p>'))}</p>"
             -# auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
 
@@ -113,8 +110,8 @@
           %td.label{:nowrap => ""}
             %span.concept_property{:title => property_title(full_key)}= "#{remove_owl_notation(key)}"
           %td.property_values
-            -# Note: get_link_for_cls_ajax is in concepts_helper.rb, it calls auto_link when necessary.
-            - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym)}
+            -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
+            - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank')}
             = "<p>#{ajax_links.join('</p><p>')}</p>"
             -# auto_link("<p>#{values.split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
 

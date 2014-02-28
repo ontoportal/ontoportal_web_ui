@@ -22,6 +22,7 @@ function get_link_for_ont_ajax(ont_acronym) {
 var
   ajax_process_cls_interval = null,
   ajax_process_ont_interval = null,
+  ajax_process_timeout = 10, // Timeout after 10 sec.
   ajax_process_timing = 250; // It takes about 250 msec to resolve a class ID to a prefLabel
 
 var ajax_process_init = function () {
@@ -78,7 +79,7 @@ var ajax_process_ont = function() {
   var ajax_uri = "/ajax/json_ontology/?ontology=" + encodeURIComponent(ont_acronym);
   jQuery.ajax({
     url: ajax_uri,
-    timeout: 180 * 1000, // 180 seconds (3 mins)
+    timeout: ajax_process_timeout * 1000,
     success: function(data){
       if(typeof data !== "undefined" && data.hasOwnProperty('name')){
         var ont_name = data.name;
@@ -155,7 +156,7 @@ var ajax_process_cls = function() {
   var ajax_uri = "/ajax/classes/label?ontology=" + ont_acronym + "&concept=" + encodeURIComponent(cls_id);
   jQuery.ajax({
     url: ajax_uri,
-    timeout: 180 * 1000, // 180 seconds (3 mins)
+    timeout: ajax_process_timeout * 1000,
     success: function(data){
       data = data.trim();
       if (typeof data !== "undefined" && data.length > 0 && data.indexOf("http") !== 0) {
