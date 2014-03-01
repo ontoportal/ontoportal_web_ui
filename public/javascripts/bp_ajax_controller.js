@@ -22,7 +22,7 @@ function get_link_for_ont_ajax(ont_acronym) {
 var
   ajax_process_cls_interval = null,
   ajax_process_ont_interval = null,
-  ajax_process_timeout = 10, // Timeout after 10 sec.
+  ajax_process_timeout = 20, // Timeout after 20 sec.
   ajax_process_timing = 250; // It takes about 250 msec to resolve a class ID to a prefLabel
 
 var ajax_process_init = function () {
@@ -95,6 +95,9 @@ var ajax_process_ont = function() {
           }
         });
       }
+    },
+    error: function(data){
+      linkA.addClass('ajax-error'); // processed this one.
     }
   });
 };
@@ -179,6 +182,9 @@ var ajax_process_cls = function() {
         linkA.attr('href', cls_id);  // it may not be an ontology class, don't use the cls_uri
         linkA.addClass('ajax-modified-cls');
       }
+    },
+    error: function(data){
+      linkA.addClass('ajax-error'); // processed this one.
     }
   });
 };
