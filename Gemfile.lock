@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/MiniProfiler/rack-mini-profiler.git
-  revision: a286f3827f7a1f02e77843d1bf8bb3d366d13d12
+  revision: 8a6c23638a5b7e74670a25c8348dde0bee51f213
   specs:
     rack-mini-profiler (0.9.0)
       rack (>= 1.1.3)
@@ -45,7 +45,7 @@ GEM
     daemons (1.1.9)
     debug_inspector (0.0.2)
     eventmachine (1.0.3)
-    excon (0.31.0)
+    excon (0.32.0)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     haml (3.1.8)
@@ -54,7 +54,7 @@ GEM
     i18n (0.5.3)
     iconv (1.0.4)
     json (1.8.1)
-    kgio (2.9.1)
+    kgio (2.9.2)
     lz4-ruby (0.2.0)
     memcache-client (1.8.5)
     method_source (0.8.2)
@@ -83,7 +83,7 @@ GEM
       activeresource (= 2.3.17)
       activesupport (= 2.3.17)
       rake (>= 0.8.3)
-    raindrops (0.12.0)
+    raindrops (0.13.0)
     rake (10.1.1)
     rdoc (4.1.1)
       json (~> 1.4)
@@ -93,7 +93,7 @@ GEM
     rest-client (1.6.7)
       mime-types (>= 1.16)
     slop (3.4.7)
-    thin (1.6.1)
+    thin (1.6.2)
       daemons (>= 1.0.9)
       eventmachine (>= 1.0.0)
       rack (>= 1.0.0)
