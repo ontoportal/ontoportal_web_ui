@@ -52,7 +52,8 @@
       ncboUIURL:         "http://bioportal.bioontology.org",
       apikey:            null,
       ontology:          null,
-      startingClass:     null
+      startingClass:     null,
+      startingRoot:      "roots"
     };
 
     TREE.option = $.extend(TREE.option, opt);
@@ -123,6 +124,7 @@
         resultAttribute: "collection",
         property: "prefLabel",
         searchTextSuffix: "*",
+        searchFromRoot: TREE.option.startingRoot,
         onSelect: function(item, searchInput) {
           TREE.jumpToClass(item["@id"]);
           searchInput.val("");
@@ -399,11 +401,15 @@
           TREE.option.startingClass = null;
         } else {
           $.ajax({
-            url: TREE.option.ncboAPIURL + "/ontologies/" + TREE.option.ontology + "/classes/roots",
+            url: TREE.option.ncboAPIURL + "/ontologies/" + TREE.option.ontology + "/classes/" + encodeURIComponent(TREE.option.startingRoot),
             data: {apikey: TREE.option.apikey, include: "prefLabel,childrenCount", no_context: true},
             contentType: 'json',
             crossDomain: true,
             success: function(roots){
+              // Flatten potentially nested arrays
+              roots = $.map([roots], function(n){
+                return n;
+              });
               ROOT.append(TREE.formatNodes(roots));
               TREE.setTreeNodes(ROOT, false);
             }
