@@ -13,6 +13,9 @@ config.whiny_nils = true
 config.action_controller.consider_all_requests_local = true
 config.action_controller.perform_caching             = false
 
+# Add custom data attributes to sanitize allowed list
+config.action_view.sanitized_allowed_attributes = 'id', 'class', 'style', 'data-cls', 'data-ont'
+
 # Disable request forgery protection in test environment
 config.action_controller.allow_forgery_protection    = false
 

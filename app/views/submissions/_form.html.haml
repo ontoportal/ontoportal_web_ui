@@ -48,13 +48,8 @@
       case 'OWL-DL':
       case 'OWL-FULL':
       case 'OWL-LITE':
-      case 'PROTEGE':
         jQuery(".format_options").optionsOut("fast");
         jQuery("#owl_options").optionsIn("fast");
-        break;
-      case 'RRF':
-        jQuery(".format_options").optionsOut("fast");
-        jQuery("#rrf_options").optionsIn("fast");
         break;
       default:
         jQuery(".format_options").optionsOut("fast");
@@ -107,7 +102,7 @@
         Format
         %span.asterik *
       %td
-        - ont_formats = [ "OBO", "OWL", "OWL-DL", "OWL-FULL", "OWL-LITE" ]
+        - ont_formats = [ "OBO", "OWL", "OWL-DL", "OWL-FULL", "OWL-LITE", "UMLS" ]
         - selected = @submission.hasOntologyLanguage ? @submission.hasOntologyLanguage : "OWL"
         = select("submission", "hasOntologyLanguage", ont_formats, { :selected => selected, :style => "width: 200px;", :required => true })
         #format_spacing

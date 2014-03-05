@@ -76,10 +76,17 @@
         searchParameter: 'search',
         additionalParameters: {},
         resultAttribute: null,
-        searchTextSuffix: ""
+        searchTextSuffix: "",
+        searchFromRoot: null
       },
       getJSONTimeout;
     settings = $.extend(defaults, settings);
+
+    // Handle search in subtree for cases where the root node is not the actual root of the ontology
+    if (settings.searchFromRoot != null) {
+      settings.additionalParameters.subtree_id = settings.searchFromRoot
+      settings.additionalParameters.ontology = settings.additionalParameters.ontologies
+    }
 
     return this.each(function() {
       /**

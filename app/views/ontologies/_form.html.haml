@@ -113,7 +113,7 @@
       Categories:
     %td
       - cat_select = @categories.sort{|a,b| a.name <=> b.name}.map{|c| [c.name, c.id]}
-      = f.select(:hasDomain, cat_select, {selected: @ontology.hasDomain}, {multiple: true, :"data-placeholder" => "Select cateogory (domain)"})
+      = f.select(:hasDomain, cat_select, {selected: @ontology.hasDomain}, {multiple: true, :"data-placeholder" => "Select category (domain)"})
 
   %tr
     %th

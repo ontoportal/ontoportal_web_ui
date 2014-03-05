@@ -15,6 +15,8 @@ jQuery(document).ready(function(){
   // Wire advanced search categories
   jQuery("#search_categories").chosen({search_contains: true});
   jQuery("#search_button").button({search_contains: true});
+  jQuery("#search_button").click(function(event){ ajax_process_halt(); });
+  jQuery("#search_keywords").click(function(event){ ajax_process_halt(); });
 
   // Put cursor in search box by default
   jQuery("#search_keywords").focus();
@@ -80,7 +82,7 @@ jQuery(document).ready(function(){
   jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
 
   // Position of popup for details
-  jQuery(document).bind('reveal.facebox', function(){
+  jQuery(document).bind("reveal.facebox", function(){
     if (jQuery("div.class_details_pop").is(":visible")) {
       jQuery("#facebox").css("max-height", jQuery(window).height() - (jQuery("#facebox").offset().top - jQuery(window).scrollTop()) * 2 + "px");
     }

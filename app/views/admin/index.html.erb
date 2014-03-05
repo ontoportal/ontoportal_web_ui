@@ -10,8 +10,8 @@
     function ajaxCall(operation, status){
         $(status).html("");
         $.ajax({
-            type: "GET",
-            url: "/admin?" + operation + "=true",
+            type: "POST",
+            url: "/admin/" + operation,
             data: "",
             dataType: "text",
             beforeSend: function(XMLHttpRequest){
