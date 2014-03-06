@@ -360,59 +360,124 @@ class ApplicationController < ActionController::Base
   end
 
   def get_class(params)
-    if !@ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root"))
-      # get the top level nodes for the root
-      @root = LinkedData::Client::Models::Class.new(read_only: true)
-      # TODO_REV: Support views? Replace old view call: @ontology.top_level_classes(view)
-      root_children = @ontology.explore.roots
-      root_children.sort!{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
 
-      @root.children = root_children
+    if @ontology.flat?
 
-      # get the initial concept to display
-      @concept = @root.children.first.explore.self(full: true)
-
-      # Some ontologies have "too many children" at their root. These will not process and are handled here.
-      raise Error404 if @concept.nil?
-    elsif @ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root") || params[:conceptid].eql?("bp_fake_root"))
-      # Don't display any classes in the tree
-      @concept = LinkedData::Client::Models::Class.new
-      @concept.prefLabel = "Please search for a class using the Jump To field above"
-      @concept.obsolete = false
-      @concept.id = "bp_fake_root"
-      @concept.child_size = 0
-      @concept.properties = {}
-      @concept.children = []
+      ignore_concept_param = params[:conceptid].nil? ||
+          params[:conceptid].empty? ||
+          params[:conceptid].eql?("root") ||
+          params[:conceptid].eql?("bp_fake_root")
+      if ignore_concept_param
+        # Don't display any classes in the tree
+        @concept = LinkedData::Client::Models::Class.new
+        @concept.prefLabel = "Please search for a class using the Jump To field above"
+        @concept.obsolete = false
+        @concept.id = "bp_fake_root"
+        @concept.child_size = 0
+        @concept.properties = {}
+        @concept.children = []
+      else
+        # Display only the requested class in the tree
+        @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+        @concept.children = []
+        @concept.child_size = 0
+      end
       @root = LinkedData::Client::Models::Class.new
       @root.children = [@concept]
-    elsif @ontology.flat? && params[:conceptid]
-      # Display only the requested class in the tree
-      @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
-      @concept.children = []
-      @concept.child_size = 0
-      @root = LinkedData::Client::Models::Class.new
-      @root.children = [@concept]
+
     else
 
-      # if the id is coming from a param, use that to get concept
-      @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
-      raise Error404 if @concept.nil? || @concept.errors
-
-      # Create the tree
-      rootNode = @concept.explore.tree(include: "prefLabel,childrenCount,obsolete")
-      if rootNode.nil? || rootNode.empty?
+      ignore_concept_param = params[:conceptid].nil? ||
+          params[:conceptid].empty? ||
+          params[:conceptid].eql?("root")
+          # not ignoring 'bp_fake_root' here
+      if ignore_concept_param
+        # get the top level nodes for the root
+        # TODO_REV: Support views? Replace old view call: @ontology.top_level_classes(view)
         roots = @ontology.explore.roots
-        if roots.any? {|c| c.id == @concept.id}
-          rootNode = roots
-        else
-          rootNode = [@concept]
+        raise Error404 if roots.nil? || roots.empty?
+        @root = LinkedData::Client::Models::Class.new(read_only: true)
+        @root.children = roots.sort{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
+        # get the initial concept to display
+        root_child = @root.children.first
+        raise Error404 if root_child.nil?
+        @concept = root_child.explore.self(full: true)
+        # Some ontologies have "too many children" at their root. These will not process and are handled here.
+        raise Error404 if @concept.nil?
+      else
+        # if the id is coming from a param, use that to get concept
+        @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+        raise Error404 if @concept.nil? || @concept.errors
+        # Create the tree
+        rootNode = @concept.explore.tree(include: "prefLabel,childrenCount,obsolete")
+        if rootNode.nil? || rootNode.empty?
+          roots = @ontology.explore.roots
+          raise Error404 if roots.nil? || roots.empty?
+          if roots.any? {|c| c.id == @concept.id}
+            rootNode = roots
+          else
+            rootNode = [@concept]
+          end
         end
+        @root = LinkedData::Client::Models::Class.new(read_only: true)
+        @root.children = rootNode.sort{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
       end
-      rootNode.sort!{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
 
-      @root = LinkedData::Client::Models::Class.new(read_only: true)
-      @root.children = rootNode
     end
+
+    #if !@ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root"))
+    #  # get the top level nodes for the root
+    #  @root = LinkedData::Client::Models::Class.new(read_only: true)
+    #  # TODO_REV: Support views? Replace old view call: @ontology.top_level_classes(view)
+    #  root_children = @ontology.explore.roots
+    #  root_children.sort!{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
+    #
+    #  @root.children = root_children
+    #
+    #  # get the initial concept to display
+    #  @concept = @root.children.first.explore.self(full: true)
+    #
+    #  # Some ontologies have "too many children" at their root. These will not process and are handled here.
+    #  raise Error404 if @concept.nil?
+    #elsif @ontology.flat? && (!params[:conceptid] || params[:conceptid].empty? || params[:conceptid].eql?("root") || params[:conceptid].eql?("bp_fake_root"))
+    #  # Don't display any classes in the tree
+    #  @concept = LinkedData::Client::Models::Class.new
+    #  @concept.prefLabel = "Please search for a class using the Jump To field above"
+    #  @concept.obsolete = false
+    #  @concept.id = "bp_fake_root"
+    #  @concept.child_size = 0
+    #  @concept.properties = {}
+    #  @concept.children = []
+    #  @root = LinkedData::Client::Models::Class.new
+    #  @root.children = [@concept]
+    #elsif @ontology.flat? && params[:conceptid]
+    #  # Display only the requested class in the tree
+    #  @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+    #  @concept.children = []
+    #  @concept.child_size = 0
+    #  @root = LinkedData::Client::Models::Class.new
+    #  @root.children = [@concept]
+    #else
+    #
+    #  # if the id is coming from a param, use that to get concept
+    #  @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+    #  raise Error404 if @concept.nil? || @concept.errors
+    #
+    #  # Create the tree
+    #  rootNode = @concept.explore.tree(include: "prefLabel,childrenCount,obsolete")
+    #  if rootNode.nil? || rootNode.empty?
+    #    roots = @ontology.explore.roots
+    #    if roots.any? {|c| c.id == @concept.id}
+    #      rootNode = roots
+    #    else
+    #      rootNode = [@concept]
+    #    end
+    #  end
+    #  rootNode.sort!{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
+    #
+    #  @root = LinkedData::Client::Models::Class.new(read_only: true)
+    #  @root.children = rootNode
+    #end
   end
 
   def get_metrics_hash

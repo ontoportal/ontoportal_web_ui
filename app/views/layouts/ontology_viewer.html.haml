@@ -36,12 +36,11 @@
     scriptEl.src = url;
     document.body.appendChild(scriptEl);
   }
-
   var ontology_id = "#{@ontology.acronym}";
   var ontology_version_id = "#{@submission_latest.submissionId rescue ''}";
   var ontology_name = "#{@ontology.name}";
   var org_site = "#{$ORG_SITE}";
-  var concept_id = "#{params[:conceptid] || @concept ? @concept.id : 'root'}";
+  var concept_id = "#{params[:conceptid] || (@concept ? @concept.id : 'root')}";
   var content_section = "#{content_section}";
   var concept_param = "#{"conceptid=\#{params[:conceptid]}" unless params[:conceptid].nil? || params[:conceptid].empty?}";
   var concept_name = "#{@concept.prefLabel unless @concept.nil?}";
