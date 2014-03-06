@@ -31,8 +31,6 @@ class MarginNotesController < ApplicationController
 
   end
 
-
-
   # POST /margin_notes
   # POST /margin_notes.xml
   def create
@@ -60,27 +58,12 @@ class MarginNotesController < ApplicationController
       end
     end
 
-      # Adds note to syndication
-      event = EventItem.new
-      event.event_type="Note"
-      event.event_type_id=@margin_note.id
-      event.ontology_id = @margin_note.ontology_id
-      event.save
-
-
-
     #prepopulates new marginal note
     @margin_note = MarginNote.new
     @margin_note.concept_id = params[:concept_id]
     @margin_note.mapping_id = params[:mapping_id]
 
-
-
-
-
-
     render :partial =>'update'
-
   end
 
   def ont_service

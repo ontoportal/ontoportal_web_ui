@@ -102,18 +102,6 @@ class OntologiesController < ApplicationController
       @errors = {acronym: "Acronym already exists, please use another"} if @ontology_saved.status == 409
       render "new"
     else
-      # Adds ontology to syndication
-      # Don't break here if we encounter problems, the RSS feed isn't critical
-      # TODO_REV: What should we do about RSS / Syndication?
-      # begin
-      #   event = EventItem.new
-      #   event.event_type="Ontology"
-      #   event.event_type_id=@ontology.id
-      #   event.ontology_id=@ontology.ontologyId
-      #   event.save
-      # rescue
-      # end
-      #
       # TODO_REV: Enable subscriptions
       # if params["ontology"]["subscribe_notifications"].eql?("1")
       #  DataAccess.createUserSubscriptions(@ontology.administeredBy, @ontology.ontologyId, NOTIFICATION_TYPES[:all])
@@ -275,18 +263,6 @@ class OntologiesController < ApplicationController
       @errors = response_errors(error_response)
       @errors = {acronym: "Acronym already exists, please use another"} if error_response.status == 409
     else
-      # Adds ontology to syndication
-      # Don't break here if we encounter problems, the RSS feed isn't critical
-      # TODO_REV: What should we do about RSS / Syndication?
-      # begin
-      #   event = EventItem.new
-      #   event.event_type="Ontology"
-      #   event.event_type_id=@ontology.id
-      #   event.ontology_id=@ontology.ontologyId
-      #   event.save
-      # rescue
-      # end
-      #
       # TODO_REV: Enable subscriptions
       # if params["ontology"]["subscribe_notifications"].eql?("1")
       #  DataAccess.createUserSubscriptions(@ontology.administeredBy, @ontology.ontologyId, NOTIFICATION_TYPES[:all])

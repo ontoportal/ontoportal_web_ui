@@ -48,13 +48,6 @@ class ProjectsController < ApplicationController
     if @project_saved.errors
       @errors = response_errors(@project_saved)
     else
-      # TODO_REV: Enable syndication
-      # Adds project to syndication
-      # event = EventItem.new
-      # event.event_type="Project"
-      # event.event_type_id=@project.id
-      # event.save
-
       flash[:notice] = 'Project was successfully created'
       redirect_to project_path(@project.acronym)
     end

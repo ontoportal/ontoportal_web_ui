@@ -26,18 +26,6 @@ class SubmissionsController < ApplicationController
       @errors = response_errors(@submission_saved)
       render "new"
     else
-      # Adds ontology to syndication
-      # Don't break here if we encounter problems, the RSS feed isn't critical
-      # TODO_REV: What should we do about RSS / Syndication?
-      # begin
-      #   event = EventItem.new
-      #   event.event_type="Ontology"
-      #   event.event_type_id=@ontology.id
-      #   event.ontology_id=@ontology.ontologyId
-      #   event.save
-      # rescue
-      # end
-
       redirect_to "/ontologies/success/#{@ontology.acronym}"
     end
   end
@@ -65,18 +53,6 @@ class SubmissionsController < ApplicationController
     if error_response
       @errors = response_errors(error_response)
     else
-      # Adds ontology to syndication
-      # Don't break here if we encounter problems, the RSS feed isn't critical
-      # TODO_REV: What should we do about RSS / Syndication?
-      # begin
-      #   event = EventItem.new
-      #   event.event_type="Ontology"
-      #   event.event_type_id=@ontology.id
-      #   event.ontology_id=@ontology.ontologyId
-      #   event.save
-      # rescue
-      # end
-
       redirect_to "/ontologies/#{@ontology.acronym}"
     end
   end
