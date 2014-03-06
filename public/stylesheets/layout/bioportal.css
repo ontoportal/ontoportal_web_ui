@@ -790,25 +790,6 @@ tr.mainresource td {
   display: none;
 }
 
-#all_updates_rss {
-  text-align: right;
-  margin-bottom: .5em;
-  width: 100%;
-  display: none;
-}
-
-#all_updates_rss a {
-  text-decoration: none;
-}
-
-#all_updates_rss a:hover {
-  text-decoration: underline;
-}
-
-#all_updates_rss img {
-  vertical-align: text-bottom;
-}
-
 .metrics p {
   margin-bottom: 0.5em;
 }
