@@ -92,6 +92,10 @@ class OntologiesController < ApplicationController
   end
 
   def create
+    if params['commit'] == 'Cancel'
+      redirect_to "/ontologies"
+      return
+    end
     @ontology = LinkedData::Client::Models::Ontology.new(values: params[:ontology])
     @ontology_saved = @ontology.save
     if @ontology_saved.errors
@@ -252,6 +256,11 @@ class OntologiesController < ApplicationController
   end
 
   def update
+    if params['commit'] == 'Cancel'
+      acronym = params['id']
+      redirect_to "/ontologies/#{acronym}"
+      return
+    end
     # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym]).first
     @ontology.update_from_params(params[:ontology])

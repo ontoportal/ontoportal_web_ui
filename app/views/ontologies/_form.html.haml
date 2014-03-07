@@ -82,7 +82,7 @@
       Acronym:
       %span.asterik *
     %td
-      = f.text_field :acronym, value: @ontology.acronym
+      = f.text_field :acronym, value: @ontology.acronym, :disabled => ! @ontology.acronym.nil?
   %tr
     %th
       Administrators:
@@ -131,4 +131,6 @@
       = f.check_box :subscribe_notifications
   %tr
     %td{:align => "right", :colspan => "2"}
+      = submit_tag "Cancel"
       = submit_tag button_text
+
