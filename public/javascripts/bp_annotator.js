@@ -52,6 +52,8 @@ function get_annotations() {
   params.max_level = jQuery("#max_level").val();
   params.ontologies = (ont_select.val() === null) ? [] : ont_select.val();
 
+  params.longest_only = jQuery("#longest_only").is(':checked');
+
   // UI checkbox to control using the batch call in the controller.
   params.raw = true;  // do not use batch call to resolve class prefLabel and ontology names.
   //if( jQuery("#use_ajax").length > 0 ) {
@@ -398,10 +400,19 @@ function generateParameters() {
   var new_params = jQuery.extend(true, {}, bp_last_params); // deep copy
   delete new_params["apikey"];
   delete new_params["format"];
+  delete new_params["raw"];
   //console.log(new_params);
   jQuery.each(new_params, function (k, v) {
-    if (v !== null && v !== undefined && v !== "" && v.length > 0) {
-      params.push(k + "=" + v);
+    if (v !== null && v !== undefined) {
+      if (typeof v == "boolean") {
+        params.push(k + "=" + v);
+      } else if (typeof v == "string" && v.length > 0) {
+        params.push(k + "=" + v);
+      } else if (typeof v == "array" && v.length > 0) {
+        params.push(k + "=" + v.join(','));
+      } else if (typeof v == "object" && v.length > 0) {
+        params.push(k + "=" + v.join(','));
+      }
     }
   });
   return params.join("&");
