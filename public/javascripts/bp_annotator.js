@@ -683,7 +683,10 @@ function display_annotations(data, params) {
   update_annotations_table(all_rows);
   // Generate parameters for list at bottom of page
   var param_string = generateParameters(); // uses bp_last_param
-  jQuery("#annotator_parameters").html(param_string);
+  var query = BP_CONFIG.rest_url + "/annotator?" + param_string;
+  var query_encoded = BP_CONFIG.rest_url + "/annotator?" + encodeURIComponent(param_string);
+  jQuery("#annotator_parameters").html(query);
+  jQuery("#annotator_parameters_encoded").html(query_encoded);
   // Add links for downloading results
   //annotatorFormatLink("tabDelimited");
   annotatorFormatLink(param_string, "json");
