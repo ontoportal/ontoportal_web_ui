@@ -32,6 +32,7 @@
 
 (function($) {
   $.fn.NCBOTree = function(opt) {
+    var ROOT_ID = "roots";
     var TREE_CONTAINER = this;
     var TREE = $("<ul>").append($("<li>").addClass("root"));
     var ROOT;
@@ -53,7 +54,7 @@
       apikey:            null,
       ontology:          null,
       startingClass:     null,
-      startingRoot:      "roots"
+      startingRoot:      ROOT_ID
     };
 
     TREE.option = $.extend(TREE.option, opt);
@@ -111,6 +112,9 @@
       // Empty out the tree container
       $(TREE_CONTAINER).html("")
 
+      // Only set starting root when something other than roots is selected
+      var startingRoot = (TREE.option.startingRoot == ROOT_ID) ? null : TREE.option.startingRoot;
+
       // Add the autocomplete
       var autocompleteContainer = $("<div>").addClass(TREE.option.autocompleteClass).addClass("ncboTree");
       var input = $("<input>")
@@ -124,7 +128,7 @@
         resultAttribute: "collection",
         property: "prefLabel",
         searchTextSuffix: "*",
-        searchFromRoot: TREE.option.startingRoot,
+        searchFromRoot: startingRoot,
         onSelect: function(item, searchInput) {
           TREE.jumpToClass(item["@id"]);
           searchInput.val("");
