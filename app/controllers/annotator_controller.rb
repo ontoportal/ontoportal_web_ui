@@ -35,6 +35,7 @@ class AnnotatorController < ApplicationController
     start = Time.now
     query = ANNOTATOR_URI
     query += "?text=" + CGI.escape(text_to_annotate)
+    query += "&include=prefLabel"
     query += "&max_level=" + options[:max_level].to_s
     query += "&ontologies=" + CGI.escape(options[:ontologies].join(',')) unless options[:ontologies].empty?
     query += "&semantic_types=" + options[:semantic_types].join(',') unless options[:semantic_types].empty?

@@ -457,20 +457,27 @@ function get_class_details(cls) {
 function get_class_details_from_raw(cls) {
   var
     ont_acronym = cls.links.ontology.replace(/.*\//,''),
-    ont_rel_ui = '/ontologies/' + ont_acronym,
-    cls_rel_ui = cls.links.ui.replace(/^.*\/\/[^\/]+/, '');
-  var
     ont_name = annotator_ontologies[cls.links.ontology].name,
+    ont_rel_ui = '/ontologies/' + ont_acronym,
     ont_link = null;
   if(ont_name === undefined){
     ont_link = get_link_for_ont_ajax(ont_acronym);
   } else {
     ont_link = get_link(ont_rel_ui, ont_name); // no ajax required!
   }
+  var
+    cls_rel_ui = cls.links.ui.replace(/^.*\/\/[^\/]+/, ''),
+    cls_label = cls.prefLabel,
+    cls_link = null;
+  if(cls_label === undefined){
+    cls_link = get_link_for_cls_ajax(cls['@id'], ont_acronym);
+  } else {
+    cls_link = get_link(cls_rel_ui, cls_label); // no ajax required!
+  }
   return class_details = {
     cls_rel_ui: cls_rel_ui,
     ont_rel_ui: ont_rel_ui,
-    cls_link: get_link_for_cls_ajax(cls['@id'], ont_acronym),
+    cls_link: cls_link,
     ont_link: ont_link,
     //
     // TODO: Get semantic types from raw data, currently provided by controller.
