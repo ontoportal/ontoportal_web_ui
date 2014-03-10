@@ -18,7 +18,7 @@ class SubmissionsController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find(@submission.ontology)
     @submission_saved = @submission.save
     if @submission_saved.errors
-      @errors = response_errors(@submission_saved)
+      @errors = response_errors(@submission_saved) # see application_controller::response_errors
       render "new"
     else
       # Update summaryOnly on ontology object
@@ -49,7 +49,7 @@ class SubmissionsController < ApplicationController
     @ontology.save
 
     if error_response
-      @errors = response_errors(error_response)
+      @errors = response_errors(error_response) # see application_controller::response_errors
     else
       redirect_to "/ontologies/#{@ontology.acronym}"
     end
