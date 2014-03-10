@@ -17,15 +17,13 @@ class SubmissionsController < ApplicationController
     @submission = LinkedData::Client::Models::OntologySubmission.new(values: params[:submission])
     @ontology = LinkedData::Client::Models::Ontology.find(@submission.ontology)
     @submission_saved = @submission.save
-
-    # Update summaryOnly on ontology object
-    @ontology.summaryOnly = @submission.isRemote.eql?("3")
-    @ontology.save
-
     if @submission_saved.errors
       @errors = response_errors(@submission_saved)
       render "new"
     else
+      # Update summaryOnly on ontology object
+      @ontology.summaryOnly = @submission.isRemote.eql?("3")
+      @ontology.save
       redirect_to "/ontologies/success/#{@ontology.acronym}"
     end
   end
