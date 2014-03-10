@@ -239,7 +239,7 @@ class OntologiesController < ApplicationController
       return
     end
     # Explore the ontology links
-    @metrics = @ontology.explore.metrics
+    @metrics = @ontology.explore.metrics rescue []
     @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created} || []
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
