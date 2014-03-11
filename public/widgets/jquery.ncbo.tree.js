@@ -54,7 +54,8 @@
       apikey:            null,
       ontology:          null,
       startingClass:     null,
-      startingRoot:      ROOT_ID
+      startingRoot:      ROOT_ID,
+      defaultRoot:       ROOT_ID
     };
 
     TREE.option = $.extend(TREE.option, opt);
@@ -113,7 +114,7 @@
       $(TREE_CONTAINER).html("")
 
       // Only set starting root when something other than roots is selected
-      var startingRoot = (TREE.option.startingRoot == ROOT_ID) ? null : TREE.option.startingRoot;
+      var startingRoot = (TREE.option.startingRoot == TREE.option.defaultRoot) ? null : TREE.option.startingRoot;
 
       // Add the autocomplete
       var autocompleteContainer = $("<div>").addClass(TREE.option.autocompleteClass).addClass("ncboTree");
@@ -149,58 +150,9 @@
       TREE.addClass(TREE.option.treeClass);
 
       // format the nodes to match what simpleTree is expecting
-      TREE.formatNodes = function(nodes, foundStartingRoot) {
+      TREE.formatNodes = function(nodes) {
         var holder = $("<span>");
-        var ul = $("<ul>");
-        var append = true;
-
-        // Find out if the tree should start somewhere other than the roots
-        var startingRoot = (TREE.option.startingRoot == ROOT_ID) ? null : TREE.option.startingRoot;
-
-        // Sort by prefLabel
-        nodes.sort(function(a, b){
-          var aName = a.prefLabel.toLowerCase();
-          var bName = b.prefLabel.toLowerCase();
-          return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
-        });
-
-        $.each(nodes, function(index, node){
-          var li = $("<li>");
-          var a = $("<a>").attr("href", node.links.self).html(node.prefLabel);
-          a.attr("data-id", encodeURIComponent(node["@id"]));
-
-          // Only add node if 1) we don't have a starting root set or 2) the starting root is set and we've found it
-          if (startingRoot == null || (startingRoot != null && (node["@id"] == startingRoot || foundStartingRoot == true))) {
-            ul.append(li.append(a));
-            foundStartingRoot = true;
-          } else {
-            append = false;
-            foundStartingRoot = false;
-          }
-
-          var hasChildrenNotExpanded = typeof node.children !== 'undefined' && node.childrenCount > 0 && node.children.length == 0;
-          if (node.childrenCount > 0 && typeof node.children === 'undefined' || hasChildrenNotExpanded) {
-            var ajax_ul = $("<ul>").addClass("ajax");
-            var ajax_li = $("<li>");
-            var ajax_a = $("<a>").attr("href", node.links.children);
-            li.append(ajax_ul.append(ajax_li.append(ajax_a)));
-          } else if (typeof node.children !== 'undefined' && node.children.length > 0) {
-            var child_ul = TREE.formatNodes(node.children, foundStartingRoot);
-            li.attr("class", "folder-open")
-            li.append(child_ul);
-          }
-        });
-
-        if (append)
-          holder.append(ul)
-
-        return holder.html();
-      }
-
-      // format the nodes to match what simpleTree is expecting
-      TREE.formatChildren = function(nodes) {
-        var holder = $("<span>");
-        var ul = $("<ul>");
+        var ul = $("<ul>")
 
         // Sort by prefLabel
         nodes.sort(function(a, b){
@@ -215,16 +167,41 @@
           a.attr("data-id", encodeURIComponent(node["@id"]));
 
           ul.append(li.append(a));
+
+          var hasChildrenNotExpanded = typeof node.children !== 'undefined' && node.childrenCount > 0 && node.children.length == 0;
           if (node.childrenCount > 0 && typeof node.children === 'undefined' || hasChildrenNotExpanded) {
             var ajax_ul = $("<ul>").addClass("ajax");
             var ajax_li = $("<li>");
             var ajax_a = $("<a>").attr("href", node.links.children);
             li.append(ajax_ul.append(ajax_li.append(ajax_a)));
+          } else if (typeof node.children !== 'undefined' && node.children.length > 0) {
+            var child_ul = TREE.formatNodes(node.children);
+            li.attr("class", "folder-open")
+            li.append(child_ul);
           }
         });
 
         holder.append(ul)
         return holder.html();
+      }
+
+      TREE.findRootNode = function(nodes) {
+        var startingRoot = (TREE.option.startingRoot == TREE.option.defaultRoot) ? null : TREE.option.startingRoot;
+        if (startingRoot == null) {return nodes;}
+
+        var foundNode = false;
+        var searchQueue = nodes;
+
+        while (searchQueue.length > 0 || foundNode == false) {
+          var node = searchQueue.shift();
+          if (node["@id"] == startingRoot) {
+            foundNode = [node];
+          } else if (typeof node.children !== 'undefined' && node.children.length > 0) {
+            searchQueue = searchQueue.concat(node.children);
+          }
+        }
+
+        return foundNode;
       }
 
       TREE.jumpToClass = function(cls, callback) {
@@ -235,6 +212,7 @@
           contentType: 'json',
           crossDomain: true,
           success: function(roots){
+            roots = TREE.findRootNode(roots);
             ROOT.html(TREE.formatNodes(roots));
             TREE.setTreeNodes(ROOT, false);
 
@@ -291,7 +269,7 @@
             contentType: 'json',
             timeout: TREE.option.timeout,
             success: function(response) {
-              var nodes = TREE.formatChildren(response.collection)
+              var nodes = TREE.formatNodes(response.collection)
               node.removeAttr('class');
               node.html(nodes);
               $.extend(node, {url:url});
