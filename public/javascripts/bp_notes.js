@@ -19,6 +19,10 @@ NOTES_PROPOSAL_TYPES = {
   "ProposalChangeProperty": "Change Property Value Proposal"
 }
 
+function getUser() {
+  return jQuery(document).data().bp.user;
+}
+
 function setupFacebox() {
   jQuery("a.notes_list_link").attr("rel", "facebox[.facebox_note]");
   jQuery("a.notes_list_link").facebox();
@@ -71,8 +75,9 @@ function bindProposalChange() {
 
 function bindReplySaveClick() {
   jQuery(".reply .save, .create_note_form .save").live('click', function(){
-    var id = jQuery(this).attr("data-parent_id");
-    var type = jQuery(this).attr("data-parent_type");
+    var user = getUser();
+    var id = jQuery(this).data("parent_id");
+    var type = jQuery(this).data("parent_type");
     var button = this;
     var body = jQuery(this).closest(".reply_box").children(".reply_body").val();
     var subject = subjectForNote(button);
@@ -83,7 +88,7 @@ function bindReplySaveClick() {
     jQuery.ajax({
       type: "POST",
       url: "/notes",
-      data: {parent: id, type: type, subject: subject, body: body, proposal: proposalMap(), creator: jQuery(document).data().bp.user["@id"]},
+      data: {parent: id, type: type, subject: subject, body: body, proposal: proposalMap(), creator: user["id"]},
       success: function(data){
         var note = data;
         var status = data[1];
@@ -117,9 +122,14 @@ var displayError = function(button) {
 
 function addCommentBox(id, type, button) {
   var formContainer = jQuery(button).parents(".notes_list_container").children(".create_note_form");
-  var commentFormHTML = jQuery("<div>").addClass("reply_box").html(commentForm(id, type));
-  commentFormHTML.prepend("<br>").prepend(jQuery("<input>").attr("type", "text").attr("placeholder", "Subject").addClass("reply_body").addClass("comment_subject"));
-  formContainer.html(commentFormHTML);
+  var commentSubject = jQuery("<input>")
+    .attr("type", "text")
+    .attr("placeholder", "Subject")
+    .addClass("comment_subject")
+    .add("<br>");
+  var commentFields = commentSubject.add(commentForm(id,type));
+  var commentWrapper = jQuery("<div>").addClass("reply_box").append(commentFields);
+  formContainer.html(commentWrapper);
   formContainer.show();
 }
 
@@ -156,7 +166,7 @@ function addNoteOrReply(button, note) {
 }
 
 function addNote(button, note) {
-  var username = jQuery(document).data().bp.user["username"];
+  var user = getUser();
   var id = note["@id"].split("/").pop();
   var noteLink = generateNoteLink(id, note);
   var noteLinkHTML = jQuery("<div>").append(noteLink).html();
@@ -164,12 +174,12 @@ function addNote(button, note) {
   // TODO_REV: Add column for note delete checkbox
   var deleteBox = "";
   var noteType = getNoteType(note);
-  var noteRow = [deleteBox, noteLinkHTML, note["subject"], "false", username, noteType, "", created];
+  var noteRow = [deleteBox, noteLinkHTML, note["subject"], "false", user["username"], noteType, "", created];
   // Add note to concept table (if we're on a concept page)
   if (jQuery(button).closest("#notes_content").length > 0) {
     var jRow = jQuery("<tr>");
     jRow.append(jQuery("<td>").html(generateNoteLink("concept_"+id, note)));
-    jRow.append(jQuery("<td>").html(username));
+    jRow.append(jQuery("<td>").html(user["username"]));
     jRow.append(jQuery("<td>").html(noteType));
     jRow.append(jQuery("<td>").html(created));
     jQuery("table.concept_notes_list").prepend(jRow);
@@ -184,9 +194,9 @@ function addNote(button, note) {
 }
 
 function addReply(button, note) {
-  var username = jQuery(document).data().bp.user["username"];
+  var user = getUser();
   var reply = jQuery("<div>").addClass("reply");
-  var replyAuthor = jQuery("<div>").addClass("reply_author").html("<b>"+username+"</b> seconds ago");
+  var replyAuthor = jQuery("<div>").addClass("reply_author").html("<b>"+user["username"]+"</b> seconds ago");
   var replyBody = jQuery("<div>").addClass("reply_body").html(note.body);
   var replyMeta = jQuery("<div>").addClass("reply_meta");
   replyMeta.append(jQuery("<a>").addClass("reply_reply").attr("data-parent_id", note["@id"]).attr("href", "#reply").html("reply"));
@@ -208,12 +218,41 @@ function removeReplyBox(button) {
 }
 
 function commentForm(id, type) {
-  var form = '<textarea class="reply_body" rows="1" cols="1" name="text" tabindex="0" style="width: 500px; height: 100px;" placeholder="Comment"></textarea><br/>';
-  return form + commentButtons(id, type);
+  return commentTextArea().add(commentButtons(id, type));
+}
+
+function commentTextArea() {
+  return jQuery("<textarea>")
+    .addClass("reply_body")
+    .attr("rows","1")
+    .attr("cols","1")
+    .attr("name","text")
+    .attr("tabindex","0")
+    .attr("placeholder","Comment")
+    .css({"width": "500px", "height": "100px"})
+    .add("<br>");
 }
 
 function commentButtons(id, type) {
-  return '<button type="submit" data-parent_id="'+id+'" data-parent_type="'+type+'" onclick="" class="save">save</button><button type="button" onclick="" class="cancel" style="">cancel</button><span class="reply_status"></span>';
+//  var button_submit = '<button type="submit" data-parent_id="'+id+'" data-parent_type="'+type+'" onclick="" class="save">save</button><span class="reply_status"></span>';
+//  var button_cancel = '<button type="button" onclick="" class="cancel" style="">cancel</button><span class="reply_status"></span>';
+//  var span_status = '<span class="reply_status"></span>';
+  var button_submit = jQuery("<button>")
+    .attr("type","submit")
+    .attr("onclick","")
+    .data("parent_id", id)
+    .data("parent_type", type)
+    .addClass("save")
+    .html("save");
+  var button_cancel = jQuery("<button>")
+    .attr("type","button")
+    .attr("onclick","")
+    .addClass("cancel")
+    .html("cancel");
+  var span_status = jQuery("<span>")
+    .addClass("reply_status")
+    .css({"color": "red", "paddingLeft": "5px"});
+  return button_submit.add(button_cancel).add(span_status);
 }
 
 function appendField(id, text, div) {
