@@ -75,8 +75,8 @@
             - else
               = errors_field
       - else
-        -# TODO: complete this when an example arises?
-
+        -# A generic fallback
+        = @errors.to_json
 
 %div{:style => "width:500px"}
   %span.asterik{:style => "float:right;"} * fields are required
