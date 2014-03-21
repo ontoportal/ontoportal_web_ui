@@ -56,24 +56,22 @@ class NotesController < ApplicationController
   # POST /notes.xml
   def create
     if params[:type].eql?("reply")
-      note = LinkedData::Client::Models::Reply.new(params)
+      note = LinkedData::Client::Models::Reply.new(values: params)
     elsif params[:type].eql?("ontology")
       params[:relatedOntology] = [params.delete(:parent)]
-      note = LinkedData::Client::Models::Note.new(params)
+      note = LinkedData::Client::Models::Note.new(values: params)
     elsif params[:type].eql?("class")
       params[:relatedClass] = [params.delete(:parent)]
-      note = LinkedData::Client::Models::Note.new(params)
+      params[:relatedOntology] = params[:relatedClass].map {|c| c["ontology"]}
+      note = LinkedData::Client::Models::Note.new(values: params)
     else
-      note = LinkedData::Client::Models::Note.new(params)
+      note = LinkedData::Client::Models::Note.new(values: params)
     end
 
-    # NCBO-640 fails here due to issue in ontologies_api_ruby_client, which
-    # is not getting and/or setting the relatedOntology value correctly.
     new_note = note.save
 
-    if new_note.respond_to?(:errors)
-      #render :json => new_note.errors, :status => 500
-      render :json => new_note.errors, :status => new_note.status
+    if new_note.errors
+      render :json => new_note.errors, :status => 500
       return
     end
 
