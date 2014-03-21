@@ -92,7 +92,7 @@ function bindReplySaveClick() {
       success: function(data){
         var note = data;
         var status = data[1];
-        if (status >= 400) {
+        if (status && status >= 400) {
           displayError(button);
         } else {
           addNoteOrReply(button, note);
@@ -156,10 +156,10 @@ function addProposalBox(id, type) {
 }
 
 function addNoteOrReply(button, note) {
-  if (note["@type"] === "http://data.bioontology.org/metadata/Note") {
+  if (note["type"] === "http://data.bioontology.org/metadata/Note") {
     // Create a new note in the note table
     addNote(button, note);
-  } else if (note["@type"] === "http://data.bioontology.org/metadata/Reply") {
+  } else if (note["type"] === "http://data.bioontology.org/metadata/Reply") {
     // Create a new reply in the thread
     addReply(button, note);
   }
@@ -167,7 +167,8 @@ function addNoteOrReply(button, note) {
 
 function addNote(button, note) {
   var user = getUser();
-  var id = note["@id"].split("/").pop();
+  console.log("test")
+  var id = note["id"].split("/").pop();
   var noteLink = generateNoteLink(id, note);
   var noteLinkHTML = jQuery("<div>").append(noteLink).html();
   var created = note["created"].split("T")[0];
@@ -199,7 +200,7 @@ function addReply(button, note) {
   var replyAuthor = jQuery("<div>").addClass("reply_author").html("<b>"+user["username"]+"</b> seconds ago");
   var replyBody = jQuery("<div>").addClass("reply_body").html(note.body);
   var replyMeta = jQuery("<div>").addClass("reply_meta");
-  replyMeta.append(jQuery("<a>").addClass("reply_reply").attr("data-parent_id", note["@id"]).attr("href", "#reply").html("reply"));
+  replyMeta.append(jQuery("<a>").addClass("reply_reply").attr("data-parent_id", note["id"]).attr("href", "#reply").html("reply"));
   reply.append(replyAuthor).append(replyBody).append(replyMeta);
   jQuery(button).closest("div.reply").children(".discussion").children(".discussion_container").prepend(reply);
 }
@@ -310,7 +311,7 @@ function generateNoteLink(id, note) {
   return jQuery("<a>")
     .addClass("ont_notes_list_link")
     .addClass("notes_list_link")
-    .attr("href", "/ontologies/"+ontology_id+"/notes/"+encodeURIComponent(note["@id"]))
+    .attr("href", "/ontologies/"+ontology_id+"/notes/"+encodeURIComponent(note["id"]))
     .attr("id", id)
     .html(note["subject"]);
 }
