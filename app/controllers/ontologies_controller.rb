@@ -98,7 +98,7 @@ class OntologiesController < ApplicationController
     end
     @ontology = LinkedData::Client::Models::Ontology.new(values: params[:ontology])
     @ontology_saved = @ontology.save
-    if @ontology_saved.errors
+    if !@ontology_saved || @ontology_saved.errors
       @categories = LinkedData::Client::Models::Category.all
       @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
       @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
