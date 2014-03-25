@@ -1798,8 +1798,15 @@ span.class_def {
   font-size: 12px;
 }
 
-div.additional_results {
-  padding-top: 3px;
+div.additional_ont_results {
+  padding: 2em;
+  margin: 2em;
+  background-color: rgb(230,230,230);
+}
+div.additional_cls_results {
+  padding: 2em;
+  margin: 2em;
+  background-color: rgb(230,230,230);
 }
 
 div.search_result_additional {

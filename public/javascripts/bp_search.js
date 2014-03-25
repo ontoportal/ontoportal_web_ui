@@ -11,6 +11,25 @@
   });
 }(window));
 
+
+var showAdditionalResults = function(obj, resultSelector){
+  var ontAcronym = jQuery(obj).attr("data-bp_ont");
+  jQuery(resultSelector + ontAcronym).toggleClass("not_visible");
+  jQuery(obj).children(".hide_link").toggleClass("not_visible");
+  jQuery(obj).toggleClass("not_underlined");
+};
+
+var showAdditionalOntResults = function(event){
+  event.preventDefault();
+  showAdditionalResults(this, "#additional_ont_results_")
+};
+
+var showAdditionalClsResults = function(event){
+  event.preventDefault();
+  showAdditionalResults(this, "#additional_cls_results_")
+};
+
+
 jQuery(document).ready(function(){
   // Wire advanced search categories
   jQuery("#search_categories").chosen({search_contains: true});
@@ -36,13 +55,18 @@ jQuery(document).ready(function(){
     }
   });
 
-  jQuery("#search_results a.additional_results_link").live("click", function(event){
-    event.preventDefault();
-    var ontId = jQuery(this).attr("data-bp_additional_results_for");
-    jQuery("#additional_results_"+ontId).toggleClass("not_visible");
-    jQuery(this).children(".hide_link").toggleClass("not_visible");
-    jQuery(this).toggleClass("not_underlined");
-  });
+//  jQuery(".search_result .additional_ont_results_title").live("click", function(event){
+//    event.preventDefault();
+//    var ontAcronym = jQuery(this).attr("data-bp_ont");
+//    jQuery("#additional_ont_results_" + ontAcronym).toggleClass("not_visible");
+//    var searchResult = jQuery(this).parents(".search_result")[0];
+//    var additionalOntResultsLink = searchResult.children(".additional_ont_results_link")[0];
+//    additionalOntResultsLink.children(".hide_link").toggleClass("not_visible");
+//    additionalOntResultsLink.children(".search_link").toggleClass("not_underlined");
+//  });
+
+  jQuery("#search_results a.additional_ont_results_link").live("click", showAdditionalOntResults);
+  jQuery("#search_results a.additional_cls_results_link").live("click", showAdditionalClsResults);
 
   // Show advanced options
   jQuery("#advanced_options").click(function(event){
@@ -268,30 +292,85 @@ function performSearch() {
 }
 
 function aggregateResults(results) {
-
-  // TODO: Testing class URI aggregation, within ontology aggregation, using first class of ontology aggregation.
-  //var classes = aggregateResultsByClassURI(results);
-
-  return aggregateResultsByOntology(results);
+  // class URI aggregation, promotes a class that belongs to 'owning' ontology, e.g.
+  // /search?q=cancer returns several hits for 'http://purl.obolibrary.org/obo/DOID_162'
+  // and those results should be aggregated below the result that belongs to the DOID ontology.
+  var classes = aggregateResultsByClassURI(results);
+//  var ontologies = aggregateResultsByOntology(results);
+  var ontologies = aggregateResultsByOntologyWithClasses(results, classes);
+  return ontologies;
 
 }
 
+function aggregateResultsByOntologyWithClasses(results, classes) {
+  // NOTE: Cannot rely on the order of hash keys (obj properties) to preserve the order of the results, see
+  //       http://stackoverflow.com/questions/280713/elements-order-in-a-for-in-loop
+  var ontologies = {
+    "list" : [],  // used to ensure we have ordered ontologies
+    "hash" : {}
+  };
+  var ont = null,
+    cls = null,
+    res = null;
+  for (var i in results) {
+    res = results[i];
+    cls = res['@id'];
+    ont = res.links.ontology;
+    if (typeof ontologies.hash[ont] === "undefined") {
+      ontologies.hash[ont] = {
+        "same_cls" : [],  // list of classes with same URI, from non 'owner' ontologies
+        "same_ont" : []   // list of other classes from the same ontology
+      };
+      ontologies.list.push(ont); // an ordered set of ontologies (no duplicates)
+    }
+    ontologies.hash[ont].same_ont.push(res);
+    // Determine whether this result has the same ontology as the first entry in classes[cls]. If it is not,
+    // skip this result because it will be listed below the 'owner' ontology.  This means that  aggregation for
+    // classes with the same URI will override aggregation for different classes in the same ontology.
+    var ont_owner = (classes[cls][0].links.ontology === ont);
+//    if (! ont_owner) {
+//      continue;
+//    }
+    if (ont_owner && classes[cls].length > 1) {
+      // This result must be a class in an 'owner' ontology (or there are no 'owner' ontologies for this class).
+      // Now aggregate the same class from other ontologies within this result (skip the first entry).
+      ontologies.hash[ont].same_cls = classes[cls].slice(1); // all entries after the first.
+    }
+  }
+  var resultsByOntology = [];
+  for (var o in ontologies.list) { // iterate the ordered ontologies, not the hash keys
+    ont = ontologies.list[o];
+    resultsByOntology.push(ontologies.hash[ont]);
+  }
+  return resultsByOntology;
+}
+
 function aggregateResultsByOntology(results) {
-    var ontologies = {};
-    for (var i in results) {
-      var res = results[i];
-      if (typeof ontologies[res.links.ontology] === "undefined") {
-        ontologies[res.links.ontology] = [];
-      }
-      ontologies[res.links.ontology].push(res);
+  // NOTE: Cannot rely on the order of hash keys (obj properties) to preserve the order of the results, see
+  //       http://stackoverflow.com/questions/280713/elements-order-in-a-for-in-loop
+  var ontologies = {
+    "list" : [],  // used to ensure we have ordered ontologies
+    "hash" : {}
+  };
+  var res = null, ont = null;
+  for (var i in results) {
+    res = results[i];
+    ont = res.links.ontology;
+    if (typeof ontologies.hash[ont] === "undefined") {
+      ontologies.hash[ont] = {
+        "same_cls" : [],  // list of classes with same URI, from non 'owner' ontologies
+        "same_ont" : []   // list of other classes from the same ontology
+      };
+      ontologies.list.push(ont); // an ordered set of ontologies (no duplicates)
     }
-    // NOTE: Cannot rely on this construct to preserve the order of the results, see
-    //       http://stackoverflow.com/questions/280713/elements-order-in-a-for-in-loop
-    var resultsByOntology = [];
-    for (var j in ontologies) {
-      resultsByOntology.push(ontologies[j]);
-    }
-    return resultsByOntology;
+    ontologies.hash[ont].same_ont.push(res);
+  }
+  var resultsByOntology = [];
+  for (var o in ontologies.list) { // iterate the ordered ontologies, not the hash keys
+    ont = ontologies.list[o];
+    resultsByOntology.push(ontologies.hash[ont]);
+  }
+  return resultsByOntology;
 }
 
 function aggregateResultsByClassURI(results) {
@@ -306,26 +385,32 @@ function aggregateResultsByClassURI(results) {
   }
   // Detect and 'promote' the class with an 'owner' ontology.
   for (var cls_id in cls_hash) {
+    var ont_owner_acronym = "";
+    var ont_owner_index = 0;
     var cls_list = cls_hash[cls_id];
+    //console.log("Before owner, cls: " + cls_id +
+    //  ", ont: " + ontologyIdToAcronym(cls_list[0].links.ontology) +
+    //  ", #results: " + cls_list.length);
     if (cls_list.length > 1) {
-      //console.log("Before owner: " + cls_list[0].links.ontology);
-      var owner_index = null;
+      // Find the class in the 'owner' ontology (cf. ontologies that import the class, or views).
       for (var c in cls_list) {
-        var c_ont_acronym = cls_list[c].links.ontology.split('/').slice(-1)[0];
+        var c_ont_acronym = ontologyIdToAcronym(cls_list[c].links.ontology);
         // Does the cls_id contain the ont acronym?
-        // If so, the result is the ontology owner (there should be only 1 owner?)
-        if (cls_id.indexOf(c_ont_acronym) > -1) {
-          if (owner_index === null) {
-            owner_index = c;
-            break; // Can we break here if there is always only 1 ontology owner?
-          } //else { console.debug("More than one class ontology owner:" + cls_id); }
+        // If so, the result is a potential ontology owner.
+        // Update the ontology owner, if the ontology acronym
+        // matches and it is longer than any previous ontology owner.
+        if ( (cls_id.indexOf(c_ont_acronym) > -1) && (c_ont_acronym.length > ont_owner_acronym.length)) {
+          ont_owner_acronym = c_ont_acronym;
+          ont_owner_index = c;
+          //console.log("Detected owner: index = " + ont_owner_index + ", ont = " + ont_owner_acronym);
         }
       }
-      if (owner_index > 0) {
+      // Only promote the class result if the ontology owner is not already in the first position.
+      if (ont_owner_index > 0) {
         // pop the owner and shift it to the top of the list, everything else can stay put
-        var owner_result = cls_list.splice(owner_index,1)[0];  // modifies cls_list in place
-        cls_list.unshift(owner_result);  // modifies cls_list in place
-        //console.log("After owner: index = " + owner_index + ", ont = " + cls_list[0].links.ontology);
+        var ont_owner_result = cls_list.splice(ont_owner_index,1)[0];  // modifies cls_list in place
+        cls_list.unshift(ont_owner_result);  // modifies cls_list in place
+        //console.log("Promoted owner: index = " + ont_owner_index + ", ont = " + ont_owner_acronym);
       }
     }
   }
@@ -345,59 +430,128 @@ function sortResultsByOntology(results) {
 
 
 
-function formatSearchResults(ontologyResults) {
-  var res = ontologyResults.shift();
-  var additional_results = "";
-  var additional_results_link = "";
-  var label_html = markupClass(res);
-  var row;
-  var additional_rows = [];
+function formatSearchResults(aggOntologyResults) {
+  var ontResults = aggOntologyResults.same_ont;
+  var clsResults = aggOntologyResults.same_cls;
 
-  // Process additional results if any
-  if (ontologyResults.length > 0) {
-    var shortOntId = ontologyIdToAcronym(res.links.ontology);
-    additional_results_link = jQuery("<span/>")
-      .append(jQuery("<span/>")
-      .addClass("additional_results_link search_result_link")
-      .html(" - <a href='#additional_results' class='additional_results_link' data-bp_additional_results_for='"+shortOntId+"'>" + (ontologyResults.length) + " more from this ontology<span class='not_visible hide_link'>[hide]</span></a>")).html();
+  var res = ontResults.shift();
+  var ontAcronym = ontologyIdToAcronym(res.links.ontology);
+  var clsID = res["@id"];
+  var clsCode = encodeURIComponent(clsID);
+  var additionalOntResults = null;
+  var additionalClsResults = null;
+  var label_html = classLabelSpan(res);
 
-    jQuery(ontologyResults).each(function(){
-      additional_rows.push([
-        "<div class='search_result_additional'>",
-        classHTML(this, markupClass(this), false),
-        definitionHTML(this, "additional_def_container"),
-        "<div class='search_result_links'>"+resultLinksHTML(this)+"</div>",
-        "</div>"
-      ].join(""));
+  var searchResultDiv = jQuery("<div>")
+    .addClass("search_result")
+    .attr("data-bp_ont_id", res.links.ontology)
+    .append( classDiv(res, label_html, true) )
+    .append( definitionDiv(res) );
+
+  var additionalResultsSpan = jQuery("<span>")
+    .addClass("additional_results_link")
+    .addClass("search_result_link");
+
+  var additionalResultsHide = jQuery("<span>")
+    .addClass("not_visible")
+    .addClass("hide_link")
+    .text("[hide]");
+
+  // Process additional ontology results if any
+  if (ontResults.length > 0) {
+
+    var additionalOntResultsAnchor = jQuery("<a>")
+      .addClass("additional_ont_results_link")
+      .addClass("search_result_link")
+      .attr({
+        "href": "#additional_ont_results",  // TODO: add 'ont' and modify JS selector somewhere
+        "data-bp_ont": ontAcronym,
+        "data-bp_cls": clsID
+      })
+      .append(ontResults.length + " more from this ontology")
+      .append(additionalResultsHide.clone());
+
+    additionalResultsSpan.append(" - ").append(additionalOntResultsAnchor);
+
+    var additionalOntTitle = jQuery("<span>")
+      .addClass("additional_ont_results_title")
+      .addClass("search_result_link")
+      .attr("data-bp_ont", ontAcronym)
+      .text("Same Ontology - Other Classes");
+    additionalOntResults = jQuery("<div>")
+      .attr("id", "additional_ont_results_" + ontAcronym)
+      .addClass("additional_ont_results")
+      .addClass("not_visible")
+      .append(additionalOntTitle);
+    jQuery(ontResults).each(function(){
+      var searchResultDiv = jQuery("<div>")
+        .addClass("search_result_links")
+        .append(resultLinksSpan(this));
+      var classDetails = jQuery("<div>")
+        .addClass("search_result_additional")
+        .append(classDiv(this, classLabelSpan(this), false)) // display prefLabel without ontology name
+        .append(definitionDiv(this, "additional_def_container"))
+        .append(searchResultDiv);
+      additionalOntResults.append(classDetails);
     });
-
-    additional_results = jQuery("<div/>")
-                                .append(jQuery("<div/>")
-                                .attr("id", "additional_results_"+shortOntId)
-                                .addClass("additional_results")
-                                .addClass("not_visible")
-                                .html(additional_rows.join("")))
-                                .html();
   }
 
-  row = [
-    "<div class='search_result' data-bp_ont_id='"+res.links.ontology+"'>",
-    classHTML(res, label_html, true),
-    definitionHTML(res),
-    "<div class='search_result_links'>"+resultLinksHTML(res) + additional_results_link+"</div>",
-    additional_results,
-    "</div>"
-  ];
+  // process additional clsResults, if any.
+  if (clsResults.length > 0) {
 
-  return row.join("");
+    var additionalClsResultsAnchor = jQuery("<a>")
+      .addClass("additional_cls_results_link")
+      .addClass("search_result_link")
+      .attr({
+        "href": "#additional_cls_results",
+        "data-bp_ont": ontAcronym,
+        "data-bp_cls": clsID
+      })
+      .append(clsResults.length + " more for this class")
+      .append(additionalResultsHide.clone());
+
+    additionalResultsSpan.append(" - ").append(additionalClsResultsAnchor);
+
+    var additionalClsTitle = jQuery("<h3>")
+      .addClass("additional_cls_results_title")
+      .text("Same Class URI - Other Ontologies");
+    additionalClsResults = jQuery("<div>")
+      .attr("id", "additional_cls_results_" + ontAcronym)  // jQuery selector doesn't work with clsID or clsCode
+      .addClass("additional_cls_results")
+      .addClass("not_visible")
+      .append(additionalClsTitle);
+    jQuery(clsResults).each(function(){
+      var searchResultDiv = jQuery("<div>")
+        .addClass("search_result_links")
+        .append(resultLinksSpan(this));
+      var classDetails = jQuery("<div>")
+        .addClass("search_result_additional")
+        .append(classDiv(this, classLabelSpan(this), true)) // display prefLabel with ontology name
+        .append(definitionDiv(this, "additional_def_container"))
+        .append(searchResultDiv);
+      additionalClsResults.append(classDetails);
+    });
+  }
+
+  return searchResultDiv
+    .append(
+      jQuery("<div>")
+        .addClass("search_result_links")
+        .append(resultLinksSpan(res))
+        .append(additionalResultsSpan) // TODO: OK if this is an empty span?
+    )
+    .append(additionalOntResults)
+    .append(additionalClsResults)
+    .prop("outerHTML");
 }
+
 
 function updatePopupCounts() {
   var ontologies = [];
   jQuery("#search_results div.search_result").each(function(){
     var result = jQuery(this);
     // Add one to the additional results to get total count (1 is for the primary result)
-    var resultsCount = result.children("div.additional_results").find("div.search_result_additional").length + 1;
+    var resultsCount = result.children("div.additional_ont_results").find("div.search_result_additional").length + 1;
     ontologies.push(result.attr("data-bp_ont_name")+" <span class='popup_counts'>"+resultsCount+"</span><br/>");
   });
 
@@ -415,17 +569,17 @@ function updatePopupCounts() {
   jQuery("#ontology_counts").html(ontologies.join(""));
 }
 
-function markupClass(cls) {
+function classLabelSpan(cls) {
   // Wrap the class prefLabel in a span, indicating that the class is obsolete if necessary.
   var max_word_length = 60;
   var label_text = (cls.prefLabel.length > max_word_length) ? cls.prefLabel.substring(0, max_word_length) + "..." : cls.prefLabel;
-  var label_html = jQuery("<span/>").addClass('prefLabel').append(label_text);
+  var labelSpan = jQuery("<span>").addClass('prefLabel').text(label_text);
   if (cls.obsolete === true){
-    label_html.removeClass('prefLabel');
-    label_html.addClass('obsolete_class');
-    label_html.attr('title', 'obsolete class');
+    labelSpan.removeClass('prefLabel');
+    labelSpan.addClass('obsolete_class');
+    labelSpan.attr('title', 'obsolete class');
   }
-  return label_html; // returns a jQuery object; use .prop('outerHTML') to get markup text.
+  return labelSpan; // returns a jQuery object; use .prop('outerHTML') to get markup.
 }
 
 function filterCategories(results, filterCats) {
@@ -509,54 +663,64 @@ function currentOntologiesCount() {
   return jQuery(".search_result").length;
 }
 
-function classHTML(res, label_html, displayOntologyName) {
-  var title = " title='" + res.prefLabel + "' ";
-  var conceptIdCode = encodeURIComponent(res["@id"]);
-  var dataConceptId = " data-bp_conceptid='" + conceptIdCode + "' ";
-  var dataExactMatch = " data-exact_match='" + res.exactMatch + "' ";
-  var linkHref = " href='/ontologies/" + ontologyIdToAcronym(res.links.ontology) + "?p=classes&conceptid=" + conceptIdCode + "' ";
+function classDiv(res, classLabel, displayOntologyName) {
+  var classCode = encodeURIComponent(res["@id"]);
+  var classURI = "/ontologies/" + ontologyIdToAcronym(res.links.ontology) + "?p=classes&conceptid=" + classCode;
   var ontologyName = displayOntologyName ? getOntologyName(res) : "";
-  return "" +
-  "<div class='class_link'>" +
-    "<a " + title + dataConceptId + dataExactMatch + linkHref + "> " +
-      label_html.prop('outerHTML') + ontologyName +
-    "</a> " +
-    "<div class='concept_uri'>" +
-      res["@id"] +
-    "</div> " +
-  "</div> ";
+
+  var classAnchor = jQuery("<a>")
+    .attr({
+      "title":  res.prefLabel,
+      "data-bp_conceptid": classCode,
+      "data-exact_match": res.exactMatch,
+      "href": classURI
+    })
+    .append(classLabel)
+    .append(ontologyName);
+
+  var classIdDiv = jQuery("<div>")
+    .addClass("concept_uri")
+    .text(res["@id"]);
+
+  return jQuery("<div>")
+    .addClass("class_link")
+    .append(classAnchor)
+    .append(classIdDiv);
 }
 
-function resultLinksHTML(res) {
-  var ont_id = res.links.ontology;
-  var ont_acronym = ontologyIdToAcronym(ont_id);
-  var cls_id = res["@id"];
-  var cls_id_encode = encodeURIComponent(cls_id);
+function resultLinksSpan(res) {
+  var ont_acronym = ontologyIdToAcronym(res.links.ontology);
+  var cls_id_encode = encodeURIComponent(res["@id"]);
   // construct link for class 'details' in facebox
   var details_href = "/ajax/class_details?ontology=" + ont_acronym + "&conceptid=" + cls_id_encode + "&styled=false";
   var details_anchor = jQuery("<a>")
-    .attr('href', details_href)
-    .attr('rel', "facebox[.class_details_pop]")
-    .addClass('class_details')
-    .addClass('search_result_link')
-    .text('details');
+    .attr({
+      "href": details_href,
+      "rel": "facebox[.class_details_pop]"
+    })
+    .addClass("class_details")
+    .addClass("search_result_link")
+    .text("details");
   // construct link for class 'visualizer' in facebox
   var viz_anchor = jQuery("<a>")
-    .attr("data-bp_ontologyid", ont_acronym)
-    .attr("data-bp_conceptid", cls_id_encode)
-    .attr("href", "javascript:void(0);")
+    .attr({
+      "href": "javascript:void(0);",
+      "data-bp_conceptid": cls_id_encode,
+      "data-bp_ontologyid": ont_acronym
+    })
     .addClass("class_visualize")
     .addClass("search_result_link")
     .text("visualize");
   return jQuery("<span>")
-    .addClass('additional')
+    .addClass("additional")
     .append(details_anchor)
     .append(" - ")
-    .append(viz_anchor)
-    .prop('outerHTML');
+    .append(viz_anchor);
 }
 
-function definitionHTML(res, defClass) {
+function definitionDiv(res, defClass) {
   defClass = typeof defClass === "undefined" ? "def_container" : defClass;
-  return "<div class='"+defClass+"'>"+shortenDefinition(res.definition)+"</div>";
+  return jQuery("<div>")
+    .addClass(defClass)
+    .text(shortenDefinition(res.definition));
 }
