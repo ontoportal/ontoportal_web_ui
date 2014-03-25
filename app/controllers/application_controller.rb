@@ -170,8 +170,9 @@ class ApplicationController < ActionController::Base
   end
 
   def response_errors(error_struct)
-    return unless error_struct
-    return unless error_struct.respond_to?(:errors)
+    errors = {error: "There was an error, please try again"}
+    return errors unless error_struct
+    return errors unless error_struct.respond_to?(:errors)
     errors = {}
     error_struct.errors.each {|e| ""}
     error_struct.errors.each do |error|

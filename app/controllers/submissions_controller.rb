@@ -17,7 +17,7 @@ class SubmissionsController < ApplicationController
     @submission = LinkedData::Client::Models::OntologySubmission.new(values: params[:submission])
     @ontology = LinkedData::Client::Models::Ontology.find(@submission.ontology)
     @submission_saved = @submission.save
-    if @submission_saved.errors
+    if !@submission_saved || @submission_saved.errors
       @errors = response_errors(@submission_saved) # see application_controller::response_errors
       render "new"
     else
