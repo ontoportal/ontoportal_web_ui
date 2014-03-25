@@ -451,9 +451,10 @@
       $.ajax({
         url: TREE.option.ncboUIURL + "/widgets/jquery.ncbo.autocomplete.js",
         type: "GET",
+        crossDomain: true,
         dataType: "script",
         success: function(){
-          setupTree($this, TREE, TREE.option)
+          setupTree($this, TREE, TREE.option);
           TREE.init();
         }
       });
