@@ -4,7 +4,9 @@
 %div{:style => "padding: 1em;"}
   %h1{:style => "font-size: xx-large;"}= @project.name
   - if session[:user] && (session[:user].id == @project.creator || session[:user].admin?)
-    = link_to "Edit Project", edit_project_path(@project.acronym)
+    -# NCBO-658: Avoid stale cached data from LD client: provide project params to the edit link_to.
+    -# link_to "Edit Project", edit_project_path(@project.acronym)
+    = link_to "Edit Project", {:action => 'edit', :id => @project.acronym, :project => @project.to_param}
   %br/
   %br/
   %p{:style => "margin-bottom: 5px;"}
@@ -21,10 +23,10 @@
     - if @project.homePage
       = link_to @project.homePage, @project.homePage
   %h2{:style => "padding-top: 1em;"} Ontologies Used
-  - if @project.ontologyUsed.length == 0
+  - if @usedOntologies.empty?
     No ontologies are currently associated with this project
   %table.zebra{:cellpadding => "0", :cellspacing => "0", :width => "70%"}
     %ul
-      - for ontology_id in @project.ontologyUsed
+      - for ontology_id in @usedOntologies
         - ontology = LinkedData::Client::Models::Ontology.find(ontology_id)
         %li= link_to ontology.name, ontology_path(ontology.acronym)
