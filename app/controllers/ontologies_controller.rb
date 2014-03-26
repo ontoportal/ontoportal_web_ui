@@ -262,7 +262,7 @@ class OntologiesController < ApplicationController
       return
     end
     # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym]).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym] || params[:id]).first
     @ontology.update_from_params(params[:ontology])
     error_response = @ontology.update
     if error_response
