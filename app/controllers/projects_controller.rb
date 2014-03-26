@@ -41,6 +41,7 @@ class ProjectsController < ApplicationController
   # POST /projects
   # POST /projects.xml
   def create
+    return if cancel?(params)
     @project = LinkedData::Client::Models::Project.new(values: params[:project])
     @project.creator = session[:user].id
     @project_saved = @project.save
@@ -49,6 +50,10 @@ class ProjectsController < ApplicationController
       @errors = response_errors(@project_saved)
     else
       flash[:notice] = 'Project was successfully created'
+      # NCBO-658 notes:
+      # @project contains the updated data, but project_path() calls the
+      # show method and it gets stale cached data from a new call to
+      # @project = LinkedData::Client::Models::Project.find_by_acronym(params[:id]).first
       redirect_to project_path(@project.acronym)
     end
   end
@@ -56,6 +61,7 @@ class ProjectsController < ApplicationController
   # PUT /projects/1
   # PUT /projects/1.xml
   def update
+    return if cancel?(params)
     @project = LinkedData::Client::Models::Project.find_by_acronym(params[:id]).first
     @project.update_from_params(params[:project])
     error_response = @project.update
@@ -64,6 +70,10 @@ class ProjectsController < ApplicationController
       @errors = response_errors(error_response)
     else
       flash[:notice] = 'Project was successfully updated'
+      # NCBO-658 notes:
+      # @project contains the updated data, but project_path() calls the
+      # show method and it gets stale cached data from a new call to
+      # @project = LinkedData::Client::Models::Project.find_by_acronym(params[:id]).first
       redirect_to project_path(@project.acronym)
     end
   end
@@ -71,6 +81,7 @@ class ProjectsController < ApplicationController
   # DELETE /projects/1
   # DELETE /projects/1.xml
   def destroy
+    return if cancel?(params)
     @project = Project.find(params[:id])
     @project.destroy
 
@@ -79,4 +90,17 @@ class ProjectsController < ApplicationController
       format.xml  { head :ok }
     end
   end
+
+  private
+
+  def cancel?(params)
+    if params['commit'] == 'Cancel'
+      redirect_to "/projects"
+      return true
+    else
+      return false
+    end
+  end
+
+
 end

@@ -7,4 +7,5 @@
 - form_for(@project, url: project_path(@project.acronym), html: {method: :put}) do |f|
   = render partial: f
   %p{:style => "padding-left: 10px;"}
+    = submit_tag "Cancel"
     = f.submit "Update Project", :class => "blueButton"
