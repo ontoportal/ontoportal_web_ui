@@ -457,6 +457,43 @@ function formatSearchResults(aggOntologyResults) {
     .addClass("hide_link")
     .text("[hide]");
 
+  // process additional clsResults, if any.
+  if (clsResults.length > 0) {
+
+    var additionalClsResultsAnchor = jQuery("<a>")
+      .addClass("additional_cls_results_link")
+      .addClass("search_result_link")
+      .attr({
+        "href": "#additional_cls_results",
+        "data-bp_ont": ontAcronym,
+        "data-bp_cls": clsID
+      })
+      .append(clsResults.length + " more for this class")
+      .append(additionalResultsHide.clone());
+
+    additionalResultsSpan.append(" - ").append(additionalClsResultsAnchor);
+
+    var additionalClsTitle = jQuery("<h3>")
+      .addClass("additional_cls_results_title")
+      .text("Same Class URI - Other Ontologies");
+    additionalClsResults = jQuery("<div>")
+      .attr("id", "additional_cls_results_" + ontAcronym)  // jQuery selector doesn't work with clsID or clsCode
+      .addClass("additional_cls_results")
+      .addClass("not_visible")
+      .append(additionalClsTitle);
+    jQuery(clsResults).each(function(){
+      var searchResultDiv = jQuery("<div>")
+        .addClass("search_result_links")
+        .append(resultLinksSpan(this));
+      var classDetails = jQuery("<div>")
+        .addClass("search_result_additional")
+        .append(classDiv(this, classLabelSpan(this), true)) // display prefLabel with ontology name
+        .append(definitionDiv(this, "additional_def_container"))
+        .append(searchResultDiv);
+      additionalClsResults.append(classDetails);
+    });
+  }
+
   // Process additional ontology results if any
   if (ontResults.length > 0) {
 
@@ -496,42 +533,10 @@ function formatSearchResults(aggOntologyResults) {
     });
   }
 
-  // process additional clsResults, if any.
-  if (clsResults.length > 0) {
-
-    var additionalClsResultsAnchor = jQuery("<a>")
-      .addClass("additional_cls_results_link")
-      .addClass("search_result_link")
-      .attr({
-        "href": "#additional_cls_results",
-        "data-bp_ont": ontAcronym,
-        "data-bp_cls": clsID
-      })
-      .append(clsResults.length + " more for this class")
-      .append(additionalResultsHide.clone());
-
-    additionalResultsSpan.append(" - ").append(additionalClsResultsAnchor);
-
-    var additionalClsTitle = jQuery("<h3>")
-      .addClass("additional_cls_results_title")
-      .text("Same Class URI - Other Ontologies");
-    additionalClsResults = jQuery("<div>")
-      .attr("id", "additional_cls_results_" + ontAcronym)  // jQuery selector doesn't work with clsID or clsCode
-      .addClass("additional_cls_results")
-      .addClass("not_visible")
-      .append(additionalClsTitle);
-    jQuery(clsResults).each(function(){
-      var searchResultDiv = jQuery("<div>")
-        .addClass("search_result_links")
-        .append(resultLinksSpan(this));
-      var classDetails = jQuery("<div>")
-        .addClass("search_result_additional")
-        .append(classDiv(this, classLabelSpan(this), true)) // display prefLabel with ontology name
-        .append(definitionDiv(this, "additional_def_container"))
-        .append(searchResultDiv);
-      additionalClsResults.append(classDetails);
-    });
-  }
+  // TODO: Try to identify additional ontology results for each class result.  If there are any,
+  // TODO: construct a nested group of ontology results (remove them from the additionalOntResults).
+  // TODO: This will be a complete rework of the method, so copy/paste/rename
+  // TODO: the method to keep this current code available.
 
   return searchResultDiv
     .append(
