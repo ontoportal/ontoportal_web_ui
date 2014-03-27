@@ -4,4 +4,5 @@
 - form_for :project, @project, url: {action: "create"}, html: {id: 'form'} do |f|
   = render partial: 'form'
   %p{:style => "padding: 10px;"}
+    = submit_tag "Cancel"
     = f.submit "Create Project", class: "blueButton"
