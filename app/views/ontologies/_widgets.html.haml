@@ -60,7 +60,7 @@
                   %ul
                     %li
                       Download the
-                      %a.external.free{:href => "#{$UI_URL}/javascripts/widgets/quick_jump.js", :rel => "nofollow", :title => "#{$UI_URL}/javascripts/widgets/quick_jump.js"}
+                      %a.external.free{:href => "/javascripts/widgets/quick_jump.js", :rel => "nofollow", :title => "/javascripts/widgets/quick_jump.js"}
                         %b quick_jump.js file
                       and put it on your server
                     %li
@@ -123,7 +123,7 @@
                   %ul
                     %li
                       Download the
-                      %a.external.free{:href => "#{$UI_URL}/javascripts/widgets/form_complete.js", :rel => "nofollow", :title => "#{$UI_URL}/javascripts/widgets/form_complete.js"}
+                      %a.external.free{:href => "/javascripts/widgets/form_complete.js", :rel => "nofollow", :title => "/javascripts/widgets/form_complete.js"}
                         %b form_complete.js file
                       and put it on your server.
                     %li
@@ -157,7 +157,7 @@
                               %code uri
                               put the complete URI of the class (e.g.,
                               = succeed ")" do
-                                %a.external.free{:href => @ontology.explore.classes["collection"].first.id, :rel => "nofollow", :title => "#{$UI_URL}/visualize/39478/Common_Neoplasm"}
+                                %a.external.free{:href => @ontology.explore.classes["collection"].first.id, :rel => "nofollow", :title => "/visualize/39478/Common_Neoplasm"}
                                   = @ontology.explore.classes["collection"].first.id
                             %li
                               %code shortid
@@ -194,7 +194,7 @@
               %a.thickbox.getcode{:href => "#{get_code_prefix}&inlineId=vis".html_safe} Get Code
             %td
               #bp_vis_container
-                <iframe frameborder="0" src="#{$UI_URL}/widgets/visualization?ontology=#{@ontology.acronym}&class=#{CGI.escape(@ontology.explore.classes["collection"].first.id)}&apikey=#{$APIKEY}" width="100%" height="350"></iframe>
+                <iframe frameborder="0" src="/widgets/visualization?ontology=#{@ontology.acronym}&class=#{CGI.escape(@ontology.explore.classes["collection"].first.id)}&apikey=#{$APIKEY}" width="100%" height="350"></iframe>
               #vis{:style => "display:none;"}
                 %h2 Step 2: Follow the Instructions
                 %hr/
@@ -204,7 +204,7 @@
                 %pre
                   = preserve do
                     :escaped
-                      <iframe frameborder="0" src="#{$UI_URL}/widgets/visualization?ontology=#{@ontology.acronym}&class=#{CGI.escape(@ontology.explore.classes["collection"].first.id)}&apikey=YOUR_API_KEY"></iframe>
+                      <iframe frameborder="0" src="/widgets/visualization?ontology=#{@ontology.acronym}&class=#{CGI.escape(@ontology.explore.classes["collection"].first.id)}&apikey=YOUR_API_KEY"></iframe>
                 %p
                   For more help visit
                   %a{:href => "http://bioontology.org/wiki/index.php/NCBO_Widgets#How_to_use_NCBO_Widgets", :target => "_blank"} NCBO Widget Wiki
@@ -219,8 +219,8 @@
                 %a.thickbox.getcode{:href => "#{get_code_prefix}&inlineId=widget_tree_popup".html_safe} Get Code
               %td
                 #bp_widget_tree_container
-                  <link rel="stylesheet" type="text/css" href="#{$UI_URL}/widgets/jquery.ncbo.tree.css">
-                  <script src="#{$UI_URL}/widgets/jquery.ncbo.tree.js"></script>
+                  <link rel="stylesheet" type="text/css" href="/widgets/jquery.ncbo.tree.css">
+                  <script src="/widgets/jquery.ncbo.tree.js"></script>
                   <div id="widget_tree"></div>
                   :javascript
                     var widget_tree = $("#widget_tree").NCBOTree({
@@ -238,8 +238,8 @@
                   %pre
                     = preserve do
                       :escaped
-                        <link rel="stylesheet" type="text/css" href="#{$UI_URL}/widgets/jquery.ncbo.tree.css">
-                        <script src="#{$UI_URL}/widgets/jquery.ncbo.tree.js"></script>
+                        <link rel="stylesheet" type="text/css" href="/widgets/jquery.ncbo.tree.css">
+                        <script src="/widgets/jquery.ncbo.tree.js"></script>
                         <div id="widget_tree"></div>
                         var widget_tree = $("#widget_tree").NCBOTree({
                           apikey: "YOUR_API_KEY",

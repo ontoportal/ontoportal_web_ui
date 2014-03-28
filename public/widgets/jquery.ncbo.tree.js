@@ -449,7 +449,7 @@
 
       // Add the autocomplete code
       $.ajax({
-        url: TREE.option.ncboUIURL + "/widgets/jquery.ncbo.autocomplete.js",
+        url: TREE.option.ncboUIURL.replace("http:", ('https:' == document.location.protocol ? 'https:' : 'http:')) + "/widgets/jquery.ncbo.autocomplete.js",
         type: "GET",
         crossDomain: true,
         dataType: "script",
