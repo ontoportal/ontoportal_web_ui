@@ -260,6 +260,9 @@ h1 a:hover, h2 a:hover {
 #ontologies_bd_container {
   width: 100%;
 }
+#ontologies_bd_container table#ontologies {
+  margin: 1em 0;
+}
 #ontologies_padding_container {
   padding: 0 1em 1em;
 }

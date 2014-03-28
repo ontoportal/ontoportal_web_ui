@@ -235,7 +235,7 @@ function performSearch() {
   var categories = jQuery("#search_categories").val() || "";
 
   jQuery.ajax({
-    url: jQuery(document).data().bp.config.rest_url+"/search",
+    url: determineHTTPS(jQuery(document).data().bp.config.rest_url)+"/search",
     data: {
       q: query,
       include_properties: includeProps,
@@ -728,4 +728,8 @@ function definitionDiv(res, defClass) {
   return jQuery("<div>")
     .addClass(defClass)
     .text(shortenDefinition(res.definition));
+}
+
+function determineHTTPS(url) {
+  return url.replace("http:", ('https:' == document.location.protocol ? 'https:' : 'http:'));
 }

@@ -54,6 +54,11 @@ if (typeof BP_include_definitions === 'undefined' || BP_include_definitions !== 
   var BP_include_definitions = false;
 }
 
+function determineHTTPS(url) {
+  return url.replace("http:", ('https:' == document.location.protocol ? 'https:' : 'http:'));
+}
+
+BP_SEARCH_SERVER = determineHTTPS(BP_SEARCH_SERVER);
 
 // Process after document is fully loaded
 jQuery(document).ready(function(){
