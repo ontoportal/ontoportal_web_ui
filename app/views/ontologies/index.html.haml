@@ -5,7 +5,6 @@
 %script{:src => "/javascripts/JqueryPlugins/datatables/plugins/datatables.formatted.number.js", :type => "text/javascript"}
 %link{:charset => "utf-8", :href => "/javascripts/JqueryPlugins/tooltip/jquery.tooltip.css", :media => "screen", :rel => "stylesheet", :title => "no title", :type => "text/css"}/
 %script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/tooltip/jquery.tooltip.min.js", :type => "text/javascript"}
-%link{:href => "/syndication/rss", :rel => "alternate", :title => "#{@title} RSS", :type => "application/rss+xml"}/
 :javascript
   var ontologies_table;
   function drawMessage(text){
@@ -82,8 +81,6 @@
 
             // Set the table width back to 90% after it gets jacked by jQuery DataTable
             jQuery("#ontologies").css("width","100%");
-            // Show the RSS link
-            jQuery("#all_updates_rss").css("display","block");
 
             return nRow;
         },
@@ -161,9 +158,6 @@
       #custom_ontology_ad{:style => "margin: 20px 0 3px; display: none;"}
         - account_link = session[:user] ? "/account" : "/login?redirect=/account"
         %a{:href => account_link} Configure which ontologies you see in #{$SITE}
-    #all_updates_rss
-      %img{:border => "0", :height => "16px", :src => "/images/feed-icon.png", :width => "16px"}/
-      %a{:href => "/syndication/rss"} Subscribe to all updates
     %table#ontologies.zebra{:cellpadding => "0", :cellspacing => "0"}
       %thead
         %tr

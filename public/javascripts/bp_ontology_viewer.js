@@ -57,21 +57,20 @@ function displayTree(data) {
   jQuery(document).trigger("classes_tab_visible");
 
   var new_concept_id = data.conceptid;
-
   var new_concept_link = getConceptLinkEl(new_concept_id);
-
   var concept_label;
 
   // Check to see if we're actually loading a new concept or just displaying the one we already loaded previously
   if (typeof new_concept_id === 'undefined' || new_concept_id == concept_id) {
+
     if (concept_id !== "") {
       History.replaceState({p:"classes", conceptid:concept_id}, jQuery.bioportal.ont_pages["classes"].page_name + " | " + org_site, "?p=classes" + "&conceptid=" + concept_id);
     }
-
     jQuery.unblockUI();
-
     return;
+
   } else {
+
     var new_concept_param = (typeof new_concept_id === 'undefined') ? "" : "&conceptid=" + new_concept_id;
 
     if (typeof new_concept_id !== 'undefined') {
@@ -79,7 +78,11 @@ function displayTree(data) {
       concept_label = (new_concept_link.html() == null) ? "" : " - " + new_concept_link.html().trim().replace(/<(?:.|\n)*?>/gm, '');
 
       // Retrieve new concept and display tree
-      jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + ontology_id + "?p=classes" + new_concept_param, "Problem retrieving classes", ontology_name + concept_label + " - Classes", "Classes");
+      jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes",
+        "/ontologies/" + ontology_id + "?p=classes" + new_concept_param,
+        "Problem retrieving classes",
+        ontology_name + concept_label + " - Classes",
+        "Classes");
 
       if (typeof data.suid !== 'undefined' && data.suid === "jump_to") {
         jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });

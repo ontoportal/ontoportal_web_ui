@@ -17,27 +17,13 @@ class SubmissionsController < ApplicationController
     @submission = LinkedData::Client::Models::OntologySubmission.new(values: params[:submission])
     @ontology = LinkedData::Client::Models::Ontology.find(@submission.ontology)
     @submission_saved = @submission.save
-
-    # Update summaryOnly on ontology object
-    @ontology.summaryOnly = @submission.isRemote.eql?("3")
-    @ontology.save
-
-    if @submission_saved.errors
-      @errors = response_errors(@submission_saved)
+    if !@submission_saved || @submission_saved.errors
+      @errors = response_errors(@submission_saved) # see application_controller::response_errors
       render "new"
     else
-      # Adds ontology to syndication
-      # Don't break here if we encounter problems, the RSS feed isn't critical
-      # TODO_REV: What should we do about RSS / Syndication?
-      # begin
-      #   event = EventItem.new
-      #   event.event_type="Ontology"
-      #   event.event_type_id=@ontology.id
-      #   event.ontology_id=@ontology.ontologyId
-      #   event.save
-      # rescue
-      # end
-
+      # Update summaryOnly on ontology object
+      @ontology.summaryOnly = @submission.isRemote.eql?("3")
+      @ontology.save
       redirect_to "/ontologies/success/#{@ontology.acronym}"
     end
   end
@@ -63,20 +49,8 @@ class SubmissionsController < ApplicationController
     @ontology.save
 
     if error_response
-      @errors = response_errors(error_response)
+      @errors = response_errors(error_response) # see application_controller::response_errors
     else
-      # Adds ontology to syndication
-      # Don't break here if we encounter problems, the RSS feed isn't critical
-      # TODO_REV: What should we do about RSS / Syndication?
-      # begin
-      #   event = EventItem.new
-      #   event.event_type="Ontology"
-      #   event.event_type_id=@ontology.id
-      #   event.ontology_id=@ontology.ontologyId
-      #   event.save
-      # rescue
-      # end
-
       redirect_to "/ontologies/#{@ontology.acronym}"
     end
   end

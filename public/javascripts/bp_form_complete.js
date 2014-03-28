@@ -19,7 +19,11 @@ if (typeof BP_INTERNAL_ONTOLOGIES === 'undefined') {
 
 var BP_INTERNAL_ORG_SITE = (BP_INTERNAL_ORG == "") ? BP_INTERNAL_SITE : BP_INTERNAL_ORG + " " + BP_INTERNAL_SITE;
 
+function determineHTTPS(url) {
+  return url.replace("http:", ('https:' == document.location.protocol ? 'https:' : 'http:'));
+}
 
+BP_INTERNAL_SEARCH_SERVER = determineHTTPS(BP_INTERNAL_SEARCH_SERVER);
 
 jQuery(document).ready(function(){
   // Install any CSS we need (check to make sure it hasn't been loaded)

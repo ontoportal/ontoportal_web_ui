@@ -193,6 +193,8 @@ function objToQueryString(obj) {
 function performSearch() {
   jQuery("#search_spinner").show();
   jQuery("#search_messages").html("");
+  jQuery("#search_results").html("");
+  jQuery("#result_stats").html("");
 
   var ont_val = jQuery("#ontology_ontologyId").val();
 
@@ -209,7 +211,7 @@ function performSearch() {
   var categories = jQuery("#search_categories").val() || "";
 
   jQuery.ajax({
-    url: jQuery(document).data().bp.config.rest_url+"/search",
+    url: determineHTTPS(jQuery(document).data().bp.config.rest_url)+"/search",
     data: {
       q: query,
       include_properties: includeProps,
@@ -229,16 +231,15 @@ function performSearch() {
     success: function(data){
       var results = [];
       var ontologies = {};
-      var ontology_links = [];
-      var ontologyResults;
+      var groupedResults;
 
       if (categories.length > 0) {
         data.collection = filterCategories(data.collection, categories);
       }
 
       if (!jQuery.isEmptyObject(data)) {
-        ontologyResults = aggregateResults(data.collection);
-        jQuery(ontologyResults).each(function(){
+        groupedResults = aggregateResults(data.collection);
+        jQuery(groupedResults).each(function(){
           results.push(formatSearchResults(this));
         });
       }
@@ -249,7 +250,7 @@ function performSearch() {
         result_count.html("");
         jQuery("#search_results").html("<h2 style='padding-top: 1em;'>No matches found</h2>");
       } else {
-        var results_by_ont = jQuery("#ontology_ontologyId").val() === null ? "<a id='ont_tooltip' href='javascript:void(0);'>Matches in <span id='ontologies_count_total'>" + ontologyResults.length + "</span> ontologies</a><div id='ontology_counts' class='ontology_counts_tooltip'/>" : "";
+        var results_by_ont = jQuery("#ontology_ontologyId").val() === null ? "<a id='ont_tooltip' href='javascript:void(0);'>Matches in <span id='ontologies_count_total'>" + groupedResults.length + "</span> ontologies</a><div id='ontology_counts' class='ontology_counts_tooltip'/>" : "";
         result_count.html(results_by_ont);
         jQuery("#search_results").html(results.join(""));
       }
@@ -267,24 +268,82 @@ function performSearch() {
 }
 
 function aggregateResults(results) {
-  var ontologies = {};
-  var resultsByOntology = [];
 
+  // TODO: Testing class URI aggregation, within ontology aggregation, using first class of ontology aggregation.
+  //var classes = aggregateResultsByClassURI(results);
+
+  return aggregateResultsByOntology(results);
+
+}
+
+function aggregateResultsByOntology(results) {
+    var ontologies = {};
+    for (var i in results) {
+      var res = results[i];
+      if (typeof ontologies[res.links.ontology] === "undefined") {
+        ontologies[res.links.ontology] = [];
+      }
+      ontologies[res.links.ontology].push(res);
+    }
+    // NOTE: Cannot rely on this construct to preserve the order of the results, see
+    //       http://stackoverflow.com/questions/280713/elements-order-in-a-for-in-loop
+    var resultsByOntology = [];
+    for (var j in ontologies) {
+      resultsByOntology.push(ontologies[j]);
+    }
+    return resultsByOntology;
+}
+
+function aggregateResultsByClassURI(results) {
+  var cls_hash = {};
   for (var i in results) {
     var res = results[i];
-    if (typeof ontologies[res.links.ontology] === "undefined") {
-      ontologies[res.links.ontology] = [];
+    var cls_id = res['@id'];
+    if (typeof cls_hash[cls_id] === "undefined") {
+      cls_hash[cls_id] = [];
     }
-
-    ontologies[res.links.ontology].push(res);
+    cls_hash[cls_id].push(res);
   }
-
-  for (var j in ontologies) {
-    resultsByOntology.push(ontologies[j]);
+  // Detect and 'promote' the class with an 'owner' ontology.
+  for (var cls_id in cls_hash) {
+    var cls_list = cls_hash[cls_id];
+    if (cls_list.length > 1) {
+      //console.log("Before owner: " + cls_list[0].links.ontology);
+      var owner_index = null;
+      for (var c in cls_list) {
+        var c_ont_acronym = cls_list[c].links.ontology.split('/').slice(-1)[0];
+        // Does the cls_id contain the ont acronym?
+        // If so, the result is the ontology owner (there should be only 1 owner?)
+        if (cls_id.indexOf(c_ont_acronym) > -1) {
+          if (owner_index === null) {
+            owner_index = c;
+            break; // Can we break here if there is always only 1 ontology owner?
+          } //else { console.debug("More than one class ontology owner:" + cls_id); }
+        }
+      }
+      if (owner_index > 0) {
+        // pop the owner and shift it to the top of the list, everything else can stay put
+        var owner_result = cls_list.splice(owner_index,1)[0];  // modifies cls_list in place
+        cls_list.unshift(owner_result);  // modifies cls_list in place
+        //console.log("After owner: index = " + owner_index + ", ont = " + cls_list[0].links.ontology);
+      }
+    }
   }
-
-  return resultsByOntology;
+  return cls_hash;
 }
+
+function sortResultsByOntology(results) {
+  // See http://www.sitepoint.com/sophisticated-sorting-in-javascript/
+  return results.sort( function(a, b)
+    {
+      var ontA = a.links.ontology.toLowerCase();
+      var ontB = b.links.ontology.toLowerCase();
+      return ontA < ontB ? -1 : ontA > ontB ? 1 : 0;
+    }
+  );
+}
+
+
 
 function formatSearchResults(ontologyResults) {
   var res = ontologyResults.shift();
@@ -473,21 +532,35 @@ function resultLinksHTML(res) {
   var ont_acronym = ontologyIdToAcronym(ont_id);
   var cls_id = res["@id"];
   var cls_id_encode = encodeURIComponent(cls_id);
-  // construct class 'details'
-  var details_href = "href='" + "/ajax/class_details?ontology=" + ont_acronym + "&conceptid=" + cls_id_encode + "&styled=false" + "'";
-  var details_css_class = " class='class_details search_result_link'" ;
-  var details_rel = " rel='facebox[.class_details_pop]'";
-  var details_anchor = "<a " + details_href + details_css_class + details_rel + ">details</a>";
-  // construct 'visualize'
-  var viz_href = "href='javascript:void(0);'";
-  var viz_css_class = " class='class_visualize search_result_link'" ;
-  var viz_data_ont = " data-bp_ontologyid='" + ont_acronym + "'";
-  var viz_data_cls = " data-bp_conceptid='" + cls_id_encode + "'";
-  var viz_anchor = "<a " + viz_href + viz_css_class + viz_data_ont + viz_data_cls + ">visualize</a>";
-  return "<span class='additional'>" + details_anchor +  " - " + viz_anchor + "</span>";
+  // construct link for class 'details' in facebox
+  var details_href = "/ajax/class_details?ontology=" + ont_acronym + "&conceptid=" + cls_id_encode + "&styled=false";
+  var details_anchor = jQuery("<a>")
+    .attr('href', details_href)
+    .attr('rel', "facebox[.class_details_pop]")
+    .addClass('class_details')
+    .addClass('search_result_link')
+    .text('details');
+  // construct link for class 'visualizer' in facebox
+  var viz_anchor = jQuery("<a>")
+    .attr("data-bp_ontologyid", ont_acronym)
+    .attr("data-bp_conceptid", cls_id_encode)
+    .attr("href", "javascript:void(0);")
+    .addClass("class_visualize")
+    .addClass("search_result_link")
+    .text("visualize");
+  return jQuery("<span>")
+    .addClass('additional')
+    .append(details_anchor)
+    .append(" - ")
+    .append(viz_anchor)
+    .prop('outerHTML');
 }
 
 function definitionHTML(res, defClass) {
   defClass = typeof defClass === "undefined" ? "def_container" : defClass;
   return "<div class='"+defClass+"'>"+shortenDefinition(res.definition)+"</div>";
+}
+
+function determineHTTPS(url) {
+  return url.replace("http:", ('https:' == document.location.protocol ? 'https:' : 'http:'));
 }

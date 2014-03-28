@@ -52,6 +52,8 @@ function get_annotations() {
   params.max_level = jQuery("#max_level").val();
   params.ontologies = (ont_select.val() === null) ? [] : ont_select.val();
 
+  params.longest_only = jQuery("#longest_only").is(':checked');
+
   // UI checkbox to control using the batch call in the controller.
   params.raw = true;  // do not use batch call to resolve class prefLabel and ontology names.
   //if( jQuery("#use_ajax").length > 0 ) {
@@ -398,10 +400,19 @@ function generateParameters() {
   var new_params = jQuery.extend(true, {}, bp_last_params); // deep copy
   delete new_params["apikey"];
   delete new_params["format"];
+  delete new_params["raw"];
   //console.log(new_params);
   jQuery.each(new_params, function (k, v) {
-    if (v !== null && v !== undefined && v !== "" && v.length > 0) {
-      params.push(k + "=" + v);
+    if (v !== null && v !== undefined) {
+      if (typeof v == "boolean") {
+        params.push(k + "=" + v);
+      } else if (typeof v == "string" && v.length > 0) {
+        params.push(k + "=" + v);
+      } else if (typeof v == "array" && v.length > 0) {
+        params.push(k + "=" + v.join(','));
+      } else if (typeof v == "object" && v.length > 0) {
+        params.push(k + "=" + v.join(','));
+      }
     }
   });
   return params.join("&");
@@ -457,20 +468,27 @@ function get_class_details(cls) {
 function get_class_details_from_raw(cls) {
   var
     ont_acronym = cls.links.ontology.replace(/.*\//,''),
-    ont_rel_ui = '/ontologies/' + ont_acronym,
-    cls_rel_ui = cls.links.ui.replace(/^.*\/\/[^\/]+/, '');
-  var
     ont_name = annotator_ontologies[cls.links.ontology].name,
+    ont_rel_ui = '/ontologies/' + ont_acronym,
     ont_link = null;
   if(ont_name === undefined){
     ont_link = get_link_for_ont_ajax(ont_acronym);
   } else {
     ont_link = get_link(ont_rel_ui, ont_name); // no ajax required!
   }
+  var
+    cls_rel_ui = cls.links.ui.replace(/^.*\/\/[^\/]+/, ''),
+    cls_label = cls.prefLabel,
+    cls_link = null;
+  if(cls_label === undefined){
+    cls_link = get_link_for_cls_ajax(cls['@id'], ont_acronym);
+  } else {
+    cls_link = get_link(cls_rel_ui, cls_label); // no ajax required!
+  }
   return class_details = {
     cls_rel_ui: cls_rel_ui,
     ont_rel_ui: ont_rel_ui,
-    cls_link: get_link_for_cls_ajax(cls['@id'], ont_acronym),
+    cls_link: cls_link,
     ont_link: ont_link,
     //
     // TODO: Get semantic types from raw data, currently provided by controller.
@@ -665,7 +683,10 @@ function display_annotations(data, params) {
   update_annotations_table(all_rows);
   // Generate parameters for list at bottom of page
   var param_string = generateParameters(); // uses bp_last_param
-  jQuery("#annotator_parameters").html(param_string);
+  var query = BP_CONFIG.rest_url + "/annotator?" + param_string;
+  var query_encoded = BP_CONFIG.rest_url + "/annotator?" + encodeURIComponent(param_string);
+  jQuery("#annotator_parameters").html(query);
+  jQuery("#annotator_parameters_encoded").html(query_encoded);
   // Add links for downloading results
   //annotatorFormatLink("tabDelimited");
   annotatorFormatLink(param_string, "json");

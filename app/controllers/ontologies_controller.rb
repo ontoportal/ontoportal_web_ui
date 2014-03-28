@@ -92,9 +92,13 @@ class OntologiesController < ApplicationController
   end
 
   def create
+    if params['commit'] == 'Cancel'
+      redirect_to "/ontologies"
+      return
+    end
     @ontology = LinkedData::Client::Models::Ontology.new(values: params[:ontology])
     @ontology_saved = @ontology.save
-    if @ontology_saved.errors
+    if !@ontology_saved || @ontology_saved.errors
       @categories = LinkedData::Client::Models::Category.all
       @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
       @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
@@ -102,18 +106,6 @@ class OntologiesController < ApplicationController
       @errors = {acronym: "Acronym already exists, please use another"} if @ontology_saved.status == 409
       render "new"
     else
-      # Adds ontology to syndication
-      # Don't break here if we encounter problems, the RSS feed isn't critical
-      # TODO_REV: What should we do about RSS / Syndication?
-      # begin
-      #   event = EventItem.new
-      #   event.event_type="Ontology"
-      #   event.event_type_id=@ontology.id
-      #   event.ontology_id=@ontology.ontologyId
-      #   event.save
-      # rescue
-      # end
-      #
       # TODO_REV: Enable subscriptions
       # if params["ontology"]["subscribe_notifications"].eql?("1")
       #  DataAccess.createUserSubscriptions(@ontology.administeredBy, @ontology.ontologyId, NOTIFICATION_TYPES[:all])
@@ -209,16 +201,16 @@ class OntologiesController < ApplicationController
         redirect_to "/ontologies/#{params[:ontology]}#{params_string_for_redirect(params)}", :status => :moved_permanently
         return
       when "classes"
-        self.classes rescue self.summary
+        self.classes #rescue self.summary
         return
       when "mappings"
-        self.mappings rescue self.summary
+        self.mappings #rescue self.summary
         return
       when "notes"
-        self.notes rescue self.summary
+        self.notes #rescue self.summary
         return
       when "widgets"
-        self.widgets rescue self.summary
+        self.widgets #rescue self.summary
         return
       when "summary"
         self.summary
@@ -247,7 +239,7 @@ class OntologiesController < ApplicationController
       return
     end
     # Explore the ontology links
-    @metrics = @ontology.explore.metrics
+    @metrics = @ontology.explore.metrics rescue []
     @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created} || []
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
@@ -264,8 +256,13 @@ class OntologiesController < ApplicationController
   end
 
   def update
+    if params['commit'] == 'Cancel'
+      acronym = params['id']
+      redirect_to "/ontologies/#{acronym}"
+      return
+    end
     # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym]).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym] || params[:id]).first
     @ontology.update_from_params(params[:ontology])
     error_response = @ontology.update
     if error_response
@@ -275,18 +272,6 @@ class OntologiesController < ApplicationController
       @errors = response_errors(error_response)
       @errors = {acronym: "Acronym already exists, please use another"} if error_response.status == 409
     else
-      # Adds ontology to syndication
-      # Don't break here if we encounter problems, the RSS feed isn't critical
-      # TODO_REV: What should we do about RSS / Syndication?
-      # begin
-      #   event = EventItem.new
-      #   event.event_type="Ontology"
-      #   event.event_type_id=@ontology.id
-      #   event.ontology_id=@ontology.ontologyId
-      #   event.save
-      # rescue
-      # end
-      #
       # TODO_REV: Enable subscriptions
       # if params["ontology"]["subscribe_notifications"].eql?("1")
       #  DataAccess.createUserSubscriptions(@ontology.administeredBy, @ontology.ontologyId, NOTIFICATION_TYPES[:all])

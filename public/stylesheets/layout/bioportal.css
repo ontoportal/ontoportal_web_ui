@@ -260,6 +260,9 @@ h1 a:hover, h2 a:hover {
 #ontologies_bd_container {
   width: 100%;
 }
+#ontologies_bd_container table#ontologies {
+  margin: 1em 0;
+}
 #ontologies_padding_container {
   padding: 0 1em 1em;
 }
@@ -788,25 +791,6 @@ tr.mainresource td {
 
 #ontologies_filter.dataTables_filter {
   display: none;
-}
-
-#all_updates_rss {
-  text-align: right;
-  margin-bottom: .5em;
-  width: 100%;
-  display: none;
-}
-
-#all_updates_rss a {
-  text-decoration: none;
-}
-
-#all_updates_rss a:hover {
-  text-decoration: underline;
-}
-
-#all_updates_rss img {
-  vertical-align: text-bottom;
 }
 
 .metrics p {

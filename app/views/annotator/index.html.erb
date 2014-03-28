@@ -26,13 +26,16 @@
 
     <br/>
     <p>
+      <%=check_box_tag :longest_only, :all, false, :id => "longest_only"%> <%=label_tag :longest_only, "Match longest only"%>
+    </p>
+    <p>
 
       <!-- TODO: When the REST API supports different mapping types, revise this section of the UI.
         <b>Include Mappings:</b>&nbsp;&nbsp;
         <%#=check_box_tag :mappings, :automatic, false, :id => "mappings_automatic"%> <%#=label_tag :mappings_automatic, "Automatic"%>&nbsp;&nbsp;
         <%#=check_box_tag :mappings, :manual, false, :id => "mappings_manual"%> <%#=label_tag :mappings_manual, "Manual"%><br/>
       -->
-      <%=check_box_tag :mappings, :all, false, :id => "mappings_all"%> <%=label_tag :mappings_all, "Include Manual Mappings"%><br/>
+      <%=check_box_tag :mappings, :all, false, :id => "mappings_all"%> <%=label_tag :mappings_all, "Include Manual Mappings"%>
     </p>
 
     <p>
@@ -105,9 +108,11 @@
       <span class="link_button ui_button" id="download_links_xml"></span>
     </p>
 
-    <span style="font-size: 8pt;">To reproduce these results use the following parameters:
+    <span style="font-size: 8pt;">To reproduce these results:
       <br/>
       <span id="annotator_parameters" style="color: gray; font-weight: bold;"></span>
+      <!--<br/>-->
+      <!--<span id="annotator_parameters_encoded" style="color: gray; font-weight: bold;"></span>-->
       <br/>
       Additional parameters are documented at
       <%= link_to 'Annotator Web Service', "#{$REST_URL}/documentation#nav_annotator", :target => "_blank" %>

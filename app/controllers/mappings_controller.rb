@@ -9,11 +9,7 @@ class MappingsController < ApplicationController
 
   def index
     ontology_list = LinkedData::Client::Models::Ontology.all
-    # TODO_REV: Views support for mappings
-    # views_list = DataAccess.getViewList()
-
     ontologies_mapping_count = LinkedData::Client::HTTP.get("#{MAPPINGS_URL}/statistics/ontologies")
-
     ontologies_hash = {}
     ontology_list.each do |ontology|
       ontologies_hash[ontology.acronym] = ontology

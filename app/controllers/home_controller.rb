@@ -36,14 +36,6 @@ class HomeController < ApplicationController
     # All mapping classes are bidirectional.
     # Each class in the list maps to all other classes in the list.
     @recent_mappings = get_recent_mappings  # application_controller
-    # TODO_REV: Handle private ontologies
-    # Hide notes from private ontologies
-    # restricted_ontologies = DataAccess.getRestrictedOntologyList
-    # restricted_for_query = []
-    # restricted_ontologies.each do |ont|
-    #   restricted_for_query << ont.ontologyId.to_i unless session[:user] && session[:user].has_access?(ont)
-    # end
-    #
     # calculate bioportal summary statistics
     @ont_count = @ontologies.length
     @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes}.sum

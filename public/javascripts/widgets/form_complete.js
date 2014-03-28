@@ -44,7 +44,11 @@ if (typeof BP_ONTOLOGIES === 'undefined') {
 
 var BP_ORG_SITE = (BP_ORG == "") ? BP_SITE : BP_ORG + " " + BP_SITE;
 
+function determineHTTPS(url) {
+  return url.replace("http:", ('https:' == document.location.protocol ? 'https:' : 'http:'));
+}
 
+BP_SEARCH_SERVER = determineHTTPS(BP_SEARCH_SERVER);
 
 jQuery(document).ready(function(){
   // Install any CSS we need (check to make sure it hasn't been loaded)

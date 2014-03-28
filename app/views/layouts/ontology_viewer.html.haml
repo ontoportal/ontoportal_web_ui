@@ -36,12 +36,11 @@
     scriptEl.src = url;
     document.body.appendChild(scriptEl);
   }
-
   var ontology_id = "#{@ontology.acronym}";
   var ontology_version_id = "#{@submission_latest.submissionId rescue ''}";
   var ontology_name = "#{@ontology.name}";
   var org_site = "#{$ORG_SITE}";
-  var concept_id = "#{params[:conceptid] || @concept ? @concept.id : 'root'}";
+  var concept_id = "#{params[:conceptid] || (@concept ? @concept.id : 'root')}";
   var content_section = "#{content_section}";
   var concept_param = "#{"conceptid=\#{params[:conceptid]}" unless params[:conceptid].nil? || params[:conceptid].empty?}";
   var concept_name = "#{@concept.prefLabel unless @concept.nil?}";
@@ -66,10 +65,6 @@
 
 
 %div{:style => "padding: 1em 2em 0; background: #234979;"}
-  / %span{:style => "float: right;"}
-  / TODO_REV: Consider removing RSS syndication
-  / %a{:href => "/syndication/rss?ontologies=#{@ontology.acronym}"}
-  / %img{:border => "0", :height => "14", :src => "/images/feed-icon.png", :style => "vertical-align: text-bottom;", :width => "14"}/
   %div
     %span{:style => "color: white; font-size: xx-large;"}
       %a#ont_sum_link{:href => "/ontologies/#{@ontology.acronym}"}= @ontology.name

@@ -101,75 +101,6 @@ class SearchController < ApplicationController
     end
   end
 
-
-
-  # Filters out ontologies from the advanced options that were selected
-  # @params [Array] a list of results to filter
-  # @params [Hash] hash of parameters from user, can just provide from global params
-  # @return [Array] filtered list of results
-  def filter_advanced_options(results, params)
-    # Remove results due to advanced search options
-    advanced_options_results = []
-    results.each do |result|
-      # The following statements filter results using defaults. They can be overridden with "advanced options"
-      # Discard if ontology is not production
-      if params[:include_non_production].eql?("false")
-        ont = DataAccess.getOntology(result['ontologyId'])
-        next unless ont.production? || (!params[:ontology_ids].nil? && params[:ontology_ids].include?(ont.ontologyId.to_s))
-      end
-
-      # Discard if the result is an obsolete class
-      if params[:include_obsolete].eql?("false")
-        next if result['obsolete']
-      end
-
-      # Discard if the ontology is a view
-      if params[:include_views].eql?("false")
-        next if DataAccess.getOntology(result['ontologyId']).view?
-      end
-
-      advanced_options_results << result
-    end
-    advanced_options_results
-  end
-
-  # Filter an array of results based on whether or not the result ontology is private
-  def filter_private_results(results)
-    return results if session[:user] && session[:user].admin?
-
-    results.results.delete_if { |result|
-      # Rescuing 'true' here has the same effect of not showing the result,
-      # which is appropriate if we get an error getting ontology metadata
-      private = DataAccess.getOntology(result["ontologyId"]).private? rescue true
-      if !private
-        false
-      else
-        !(session[:user] && session[:user].acl && session[:user].acl.include?(result["ontologyId"].to_i))
-      end
-    }
-
-    results
-  end
-
-  # Check if this result should be filtered based on
-  # whether or not the result ontology is private
-  def filter_private_result?(result)
-    return false if session[:user] && session[:user].admin?
-
-    ontology_id = result["ontologyId"].to_i if result["ontologyId"]
-    ontology_id ||= result[:ontologyId]
-
-    # Rescuing 'true' here has the same effect of not showing the result,
-    # which is appropriate if we get an error getting ontology metadata
-    private = DataAccess.getOntology(ontology_id).private? rescue true
-
-    if !private
-      return false
-    else
-      return !(session[:user] && session[:user].acl.include?(ontology_id.to_i))
-    end
-  end
-
   def format_record_type(record_type, obsolete = false)
     case record_type
       when "apreferredname"
@@ -185,15 +116,6 @@ class SearchController < ApplicationController
     end
     record_text = "Obsolete Class" if obsolete
     record_text
-  end
-
-  def set_objecttypes(params)
-    if params[:objecttypes].nil? || params[:objecttypes].length == 0
-      objecttypes = "class"  # default
-    else
-      objecttypes = params[:objecttypes]
-    end
-    return objecttypes
   end
 
 end
