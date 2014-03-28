@@ -207,7 +207,7 @@
       TREE.jumpToClass = function(cls, callback) {
         ROOT.html($("<span>").html("Loading...").css("font-size", "smaller"));
         $.ajax({
-          url: determineHTTPS(TREE.option.ncboUIURL) + "/ontologies/" + TREE.option.ontology + "/classes/" + encodeURIComponent(cls) + "/tree",
+          url: determineHTTPS(TREE.option.ncboAPIURL) + "/ontologies/" + TREE.option.ontology + "/classes/" + encodeURIComponent(cls) + "/tree",
           data: {apikey: TREE.option.apikey, include: "prefLabel,childrenCount", no_context: true},
           contentType: 'json',
           crossDomain: true,
@@ -430,7 +430,7 @@
           TREE.option.startingClass = null;
         } else {
           $.ajax({
-            url: determineHTTPS(TREE.option.ncboUIURL) + "/ontologies/" + TREE.option.ontology + "/classes/" + encodeURIComponent(TREE.option.startingRoot),
+            url: determineHTTPS(TREE.option.ncboAPIURL) + "/ontologies/" + TREE.option.ontology + "/classes/" + encodeURIComponent(TREE.option.startingRoot),
             data: {apikey: TREE.option.apikey, include: "prefLabel,childrenCount", no_context: true},
             contentType: 'json',
             crossDomain: true,
