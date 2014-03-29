@@ -163,7 +163,7 @@
 
         $.each(nodes, function(index, node){
           var li = $("<li>");
-          var a = $("<a>").attr("href", determineHTTPS(node.links.self)).html(node.prefLabel);
+          var a = $("<a>").attr("href", TREE.determineHTTPS(node.links.self)).html(node.prefLabel);
           a.attr("data-id", encodeURIComponent(node["@id"]));
 
           ul.append(li.append(a));
@@ -207,7 +207,7 @@
       TREE.jumpToClass = function(cls, callback) {
         ROOT.html($("<span>").html("Loading...").css("font-size", "smaller"));
         $.ajax({
-          url: determineHTTPS(TREE.option.ncboAPIURL) + "/ontologies/" + TREE.option.ontology + "/classes/" + encodeURIComponent(cls) + "/tree",
+          url: TREE.determineHTTPS(TREE.option.ncboAPIURL) + "/ontologies/" + TREE.option.ontology + "/classes/" + encodeURIComponent(cls) + "/tree",
           data: {apikey: TREE.option.apikey, include: "prefLabel,childrenCount", no_context: true},
           contentType: 'json',
           crossDomain: true,
@@ -430,7 +430,7 @@
           TREE.option.startingClass = null;
         } else {
           $.ajax({
-            url: determineHTTPS(TREE.option.ncboAPIURL) + "/ontologies/" + TREE.option.ontology + "/classes/" + encodeURIComponent(TREE.option.startingRoot),
+            url: TREE.determineHTTPS(TREE.option.ncboAPIURL) + "/ontologies/" + TREE.option.ontology + "/classes/" + encodeURIComponent(TREE.option.startingRoot),
             data: {apikey: TREE.option.apikey, include: "prefLabel,childrenCount", no_context: true},
             contentType: 'json',
             crossDomain: true,
@@ -453,7 +453,7 @@
 
       // Add the autocomplete code
       $.ajax({
-        url: determineHTTPS(TREE.option.ncboUIURL) + "/widgets/jquery.ncbo.autocomplete.js",
+        url: TREE.option.ncboUIURL.replace("http:", ('https:' == document.location.protocol ? 'https:' : 'http:')) + "/widgets/jquery.ncbo.autocomplete.js",
         type: "GET",
         crossDomain: true,
         dataType: "script",

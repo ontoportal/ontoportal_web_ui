@@ -281,13 +281,18 @@
             var params = {};
             params[settings.searchParameter] = text + settings.searchTextSuffix;
             $.extend(params, settings.additionalParameters);
-            $.getJSON(settings.url.replace("http:", ('https:' == document.location.protocol ? 'https:' : 'http:')), params, function(data) {
-              if (data) {
-                var results = (settings.resultAttribute === null) ? data : data[settings.resultAttribute];
-                buildResults(results, text);
-              }
-              else {
-                clearAndHideResults();
+            $.ajax({
+              url: settings.url.replace("http:", ('https:' == document.location.protocol ? 'https:' : 'http:')),
+              data: params,
+              contentType: 'json',
+              success: function(data) {
+                if (data) {
+                  var results = (settings.resultAttribute === null) ? data : data[settings.resultAttribute];
+                  buildResults(results, text);
+                }
+                else {
+                  clearAndHideResults();
+                }
               }
             });
           }, 500);
