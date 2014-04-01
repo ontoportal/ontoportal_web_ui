@@ -46,7 +46,7 @@ class LoginController < ApplicationController
     end
 
     user = params[:login_as]
-    new_user = LinkedData::Client::Models::User.find_by_username(user)
+    new_user = LinkedData::Client::Models::User.find_by_username(user).first
 
     if new_user
       session[:admin_user] = session[:user]
