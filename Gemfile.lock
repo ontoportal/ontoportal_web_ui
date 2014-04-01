@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 51d148acab9ea8521b1d3249274c877f4deae089
+  revision: 5d8faba391859d614caa3061ec715ea26fe48e87
   specs:
     ontologies_api_client (0.0.5)
       activesupport (<= 3.0)
@@ -84,7 +84,7 @@ GEM
       activesupport (= 2.3.17)
       rake (>= 0.8.3)
     raindrops (0.13.0)
-    rake (10.2.1)
+    rake (10.2.2)
     rdoc (4.1.1)
       json (~> 1.4)
     recaptcha (0.3.6)
