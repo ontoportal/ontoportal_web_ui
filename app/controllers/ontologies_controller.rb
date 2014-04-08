@@ -103,7 +103,7 @@ class OntologiesController < ApplicationController
       @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
       @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
       @errors = response_errors(@ontology_saved)
-      @errors = {acronym: "Acronym already exists, please use another"} if @ontology_saved.status == 409
+      #@errors = {acronym: "Acronym already exists, please use another"} if @ontology_saved.status == 409
       render "new"
     else
       # TODO_REV: Enable subscriptions
