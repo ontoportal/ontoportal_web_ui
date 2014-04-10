@@ -81,21 +81,15 @@
         %th
           Categories
         %td
-          - categories = []
-          - begin
-            - categories = @ontology.explore.categories
-          - rescue
-            - LOG.add :error, "Failed to explore categories on #{@ontology.to_json}"
-          = categories.map {|c| c.name}.sort.join(", ")
+          - categories_hash = LinkedData::Client::Models::Category.all_to_hash
+          - categories = @ontology.hasDomain
+          = categories.map {|c| categories_hash[c].name}.sort.join(", ")
       %tr
         %th
           Groups
         %td
-          - groups = []
-          - begin
-            - groups = @ontology.explore.groups
-          - rescue
-            - LOG.add :error, "Failed to explore groups on #{@ontology.to_json}"
-          = groups.map {|g| g.name}.sort.join(", ")
+          - groups_hash = LinkedData::Client::Models::Group.all_to_hash
+          - groups = @ontology.group
+          = groups.map {|g| groups_hash[g].name}.sort.join(", ")
 
       = additional_details
