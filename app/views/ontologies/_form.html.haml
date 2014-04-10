@@ -125,6 +125,7 @@
       Categories:
     %td
       - cat_select = @categories.sort{|a,b| a.name <=> b.name}.map{|c| [c.name, c.id]}
+      = f.hidden_field(:hasDomain, {value: "", id: "ontology_hasDomain_empty_select_hack", name: "ontology[hasDomain][]"})
       = f.select(:hasDomain, cat_select, {selected: @ontology.hasDomain}, {multiple: true, :"data-placeholder" => "Select category (domain)"})
 
   %tr
