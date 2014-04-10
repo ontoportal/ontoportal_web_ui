@@ -329,49 +329,60 @@ function aggregateResults(results) {
   // e.g. /search?q=cancer returns several hits for
   // 'http://purl.obolibrary.org/obo/DOID_162'
   // those results should be aggregated below the DOID ontology.
-  var classes = aggregateResultsByClassURI(results),
-  ontologies = aggregateResultsByOntology(results);
+  // var classes = aggregateResultsByClassURI(results);
+  var ontologies = aggregateResultsByOntology(results);
   // return aggregateResultsByOntologyWithClasses(results, classes);
   // return aggregateResultsWithoutDuplicateClasses(ontologies, classes);
-  return aggregateResultsWithSubordinateOntologies(ontologies, classes);
+  // return aggregateResultsWithSubordinateOntologies(ontologies, classes);
+  return aggregateResultsWithSubordinateOntologies(ontologies);
 }
 
 
-function aggregateResultsWithSubordinateOntologies(ontologies, classes) {
-  var resultsWithSubordinateOntologies = [],
-  ownerOnt = null,
+function aggregateResultsWithSubordinateOntologies(ontologies) {
+  var i, j,
+  resultsWithSubordinateOntologies = [],
   tmpOnt = null,
   tmpResult = null,
-  tmpClasses = null,
-  tmpClsOwned = null,
+  tmpClsID = null,
   tmpOntOwner = null,
+  ontAcronyms = [],
   clsOntOwnerTracker = {};
+  // build hash of ontology acronyms
+  for (i = 0, j = ontologies.length; i < j; i++) {
+    tmpOnt = ontologies[i];
+    tmpResult = tmpOnt.same_ont[0]; // primary result for this ontology
+    ontAcronyms.push(ontologyIdToAcronym(tmpResult.links.ontology));
+  }
   // build hash of primary class results with an ontology owner
-  for (var i = 0, j = ontologies.length; i < j; i++) {
+  for (i = 0, j = ontologies.length; i < j; i++) {
     tmpOnt = ontologies[i];
     tmpOnt.sub_ont = [];  // add array for any subordinate ontology results
     tmpResult = tmpOnt.same_ont[0];
-    tmpOntOwner = classes[tmpResult["@id"]].clsOntOwner;
+    tmpClsID = tmpResult["@id"];
+    if (clsOntOwnerTracker.hasOwnProperty(tmpClsID)){
+      continue;
+    }
+    // find the best match for the ontology owner (must iterate over all ontAcronyms)
+    tmpOntOwner = findOntologyOwnerOfClass(tmpClsID, ontAcronyms);
     if (tmpOntOwner.index !== null) {
-      if (tmpOntOwner.acronym === ontologyIdToAcronym(tmpResult.links.ontology)){
-        // This primary class result is owned by it's ontology
-        clsOntOwnerTracker[tmpResult["@id"]] = i;
-      }
+        // This primary class result is owned by an ontology
+        clsOntOwnerTracker[tmpClsID] = tmpOntOwner;
     }
   }
-  // shuffle the ontology results into primary and subordinate results
-  for (var i = 0, j = ontologies.length; i < j; i++) {
+  // aggregate the subordinate results below the owner ontology results
+  for (i = 0, j = ontologies.length; i < j; i++) {
     tmpOnt = ontologies[i];
     tmpResult = tmpOnt.same_ont[0];
-    if (clsOntOwnerTracker.hasOwnProperty(tmpResult["@id"])){
+    tmpClsID = tmpResult["@id"];
+    if (clsOntOwnerTracker.hasOwnProperty(tmpClsID)){
       // get the ontology that owns this class (if any)
-      var tmpOwnerOntIndex = clsOntOwnerTracker[tmpResult["@id"]];
-      if (tmpOwnerOntIndex === i) {
-        // the current ontology is the primary owner
+      tmpOntOwner = clsOntOwnerTracker[tmpClsID];
+      if (tmpOntOwner.index === i) {
+        // the current ontology is the owner of this primary result
         resultsWithSubordinateOntologies.push(tmpOnt);
       } else {
-        // There is an owner, so put this ont result into the sub_ont array
-        var tmpOwnerOnt = ontologies[tmpOwnerOntIndex];
+        // There is an owner, so put this ont result set into the sub_ont array
+        var tmpOwnerOnt = ontologies[tmpOntOwner.index];
         tmpOwnerOnt.sub_ont.push(tmpOnt);
       }
     } else {
@@ -382,6 +393,68 @@ function aggregateResultsWithSubordinateOntologies(ontologies, classes) {
   }
   return resultsWithSubordinateOntologies;
 }
+
+// function aggregateResultsWithSubordinateOntologies(ontologies, classes) {
+//   var resultsWithSubordinateOntologies = [],
+//   ownerOnt = null,
+//   tmpOnt = null,
+//   tmpResult = null,
+//   tmpClasses = null,
+//   tmpClsOwned = null,
+//   tmpOntOwner = null,
+//   ontAcronyms = [],
+//   clsOntOwnerTracker = {};
+//   // build hash of ontology acronyms
+//   for (var i = 0, j = ontologies.length; i < j; i++) {
+//     tmpOnt = ontologies[i];
+//     tmpResult = tmpOnt.same_ont[0]; // primary result for this ontology
+//     ontologyIdToAcronym(tmpResult.links.ontology)
+
+
+//     tmpOntOwner = classes[tmpResult["@id"]].clsOntOwner;
+//     if (tmpOntOwner.index !== null) {
+//       if (tmpOntOwner.acronym === ontologyIdToAcronym(tmpResult.links.ontology)){
+//         // This primary class result is owned by it's ontology
+//         clsOntOwnerTracker[tmpResult["@id"]] = i;
+//       }
+//     }
+//   }
+//   // build hash of primary class results with an ontology owner
+//   for (var i = 0, j = ontologies.length; i < j; i++) {
+//     tmpOnt = ontologies[i];
+//     tmpOnt.sub_ont = [];  // add array for any subordinate ontology results
+//     tmpResult = tmpOnt.same_ont[0];
+//     tmpOntOwner = classes[tmpResult["@id"]].clsOntOwner;
+//     if (tmpOntOwner.index !== null) {
+//       if (tmpOntOwner.acronym === ontologyIdToAcronym(tmpResult.links.ontology)){
+//         // This primary class result is owned by it's ontology
+//         clsOntOwnerTracker[tmpResult["@id"]] = i;
+//       }
+//     }
+//   }
+//   // aggregate the subordinate results below the owner ontology results
+//   for (var i = 0, j = ontologies.length; i < j; i++) {
+//     tmpOnt = ontologies[i];
+//     tmpResult = tmpOnt.same_ont[0];
+//     if (clsOntOwnerTracker.hasOwnProperty(tmpResult["@id"])){
+//       // get the ontology that owns this class (if any)
+//       var tmpOwnerOntIndex = clsOntOwnerTracker[tmpResult["@id"]];
+//       if (tmpOwnerOntIndex === i) {
+//         // the current ontology is the primary owner
+//         resultsWithSubordinateOntologies.push(tmpOnt);
+//       } else {
+//         // There is an owner, so put this ont result into the sub_ont array
+//         var tmpOwnerOnt = ontologies[tmpOwnerOntIndex];
+//         tmpOwnerOnt.sub_ont.push(tmpOnt);
+//       }
+//     } else {
+//       // There is no ontology that owns this primary class result, just
+//       // display this at the top level (it's not a subordinate)
+//       resultsWithSubordinateOntologies.push(tmpOnt);
+//     }
+//   }
+//   return resultsWithSubordinateOntologies;
+// }
 
 
 function aggregateResultsWithoutDuplicateClasses(ontologies, classes) {
@@ -569,8 +642,7 @@ function findClassWithOntologyOwner(cls_id, cls_list) {
     // Does the cls_id contain the ont acronym? If so, the result is a
     // potential ontology owner. Update the ontology owner, if the ontology
     // acronym matches and it is longer than any previous ontology owner.
-    // Use case insensitive for class ID <=> ontology acronym match.
-    ontIsOwner = cls_id.toLowerCase().indexOf(ontAcronym.toLowerCase()) > -1;
+    ontIsOwner = OntologyOwnsClass(ontAcronym, clsID);
     if ( ontIsOwner && (ontAcronym.length > ontOwner.acronym.length) ) {
       ontOwner.acronym = ontAcronym;
       ontOwner.index = i;
@@ -578,6 +650,31 @@ function findClassWithOntologyOwner(cls_id, cls_list) {
     }
   }
   return ontOwner;
+}
+
+
+function findOntologyOwnerOfClass(clsID, ontAcronyms) {
+  // Find the index of cls_id in cls_list results with the cls_id in the 'owner'
+  // ontology (cf. ontologies that import the class, or views).
+  var ontAcronym = "", ontIsOwner = false, ontOwner = {"index": null, "acronym": ""};
+  for (var i = 0, j = ontAcronyms.length; i < j; i++) {
+    ontAcronym = ontAcronyms[i];
+    // Does the cls_id contain the ont acronym? If so, the result is a
+    // potential ontology owner. Update the ontology owner, if the ontology
+    // acronym matches and it is longer than any previous ontology owner.
+    ontIsOwner = OntologyOwnsClass(clsID, ontAcronym);
+    if ( ontIsOwner && (ontAcronym.length > ontOwner.acronym.length) ) {
+      ontOwner.acronym = ontAcronym;
+      ontOwner.index = i;
+    }
+  }
+  return ontOwner;
+}
+
+function OntologyOwnsClass(clsID, ontAcronym) {
+    // Does the clsID contain the ontAcronym?
+    // Use case insensitive match
+    return clsID.toLowerCase().indexOf(ontAcronym.toLowerCase()) > -1;
 }
 
 
