@@ -50,11 +50,19 @@ class ApplicationController < ActionController::Base
   # See ActionController::RequestForgeryProtection for details
   protect_from_forgery
 
-  before_filter :set_global_thread_values, :domain_ontology_set, :authorize_miniprofiler
+  before_filter :set_global_thread_values, :domain_ontology_set, :authorize_miniprofiler, :clean_empty_strings_from_params_arrays
 
   def set_global_thread_values
     Thread.current[:session] = session
     Thread.current[:request] = request
+  end
+
+  def clean_empty_strings_from_params_arrays(params = nil)
+    params ||= params()
+    params.keys.each do |k|
+      clean_empty_strings_from_params_arrays(params[k]) if params[k].is_a?(Hash)
+      params[k] = params[k].select {|e| !e.eql?("")} if params[k].is_a?(Array)
+    end
   end
 
   def domain_ontology_set
