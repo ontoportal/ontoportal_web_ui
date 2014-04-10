@@ -331,15 +331,63 @@ function aggregateResults(results) {
   // those results should be aggregated below the DOID ontology.
   var classes = aggregateResultsByClassURI(results),
   ontologies = aggregateResultsByOntology(results);
-  //return aggregateResultsByOntologyWithClasses(ontologies, classes);
-  return aggregateResultsWithoutDuplicateClasses(ontologies, classes);
+  // return aggregateResultsByOntologyWithClasses(results, classes);
+  // return aggregateResultsWithoutDuplicateClasses(ontologies, classes);
+  return aggregateResultsWithSubordinateOntologies(ontologies, classes);
 }
+
+
+function aggregateResultsWithSubordinateOntologies(ontologies, classes) {
+  var resultsWithSubordinateOntologies = [],
+  ownerOnt = null,
+  tmpOnt = null,
+  tmpResult = null,
+  tmpClasses = null,
+  tmpClsOwned = null,
+  tmpOntOwner = null,
+  clsOntOwnerTracker = {};
+  // build hash of primary class results with an ontology owner
+  for (var i = 0, j = ontologies.length; i < j; i++) {
+    tmpOnt = ontologies[i];
+    tmpOnt.sub_ont = [];  // add array for any subordinate ontology results
+    tmpResult = tmpOnt.same_ont[0];
+    tmpOntOwner = classes[tmpResult["@id"]].clsOntOwner;
+    if (tmpOntOwner.index !== null) {
+      if (tmpOntOwner.acronym === ontologyIdToAcronym(tmpResult.links.ontology)){
+        // This primary class result is owned by it's ontology
+        clsOntOwnerTracker[tmpResult["@id"]] = i;
+      }
+    }
+  }
+  // shuffle the ontology results into primary and subordinate results
+  for (var i = 0, j = ontologies.length; i < j; i++) {
+    tmpOnt = ontologies[i];
+    tmpResult = tmpOnt.same_ont[0];
+    if (clsOntOwnerTracker.hasOwnProperty(tmpResult["@id"])){
+      // get the ontology that owns this class (if any)
+      var tmpOwnerOntIndex = clsOntOwnerTracker[tmpResult["@id"]];
+      if (tmpOwnerOntIndex === i) {
+        // the current ontology is the primary owner
+        resultsWithSubordinateOntologies.push(tmpOnt);
+      } else {
+        // There is an owner, so put this ont result into the sub_ont array
+        var tmpOwnerOnt = ontologies[tmpOwnerOntIndex];
+        tmpOwnerOnt.sub_ont.push(tmpOnt);
+      }
+    } else {
+      // There is no ontology that owns this primary class result, just
+      // display this at the top level (it's not a subordinate)
+      resultsWithSubordinateOntologies.push(tmpOnt);
+    }
+  }
+  return resultsWithSubordinateOntologies;
+}
+
 
 function aggregateResultsWithoutDuplicateClasses(ontologies, classes) {
   var resultsWithoutDuplicateClasses = [],
   tmpResult = null,
   tmpOnt = null,
-  tmpOntI = null,
   tmpOntDisplay = null,
   tmpOntResults = null,
   cloneOntResults = null,
@@ -357,7 +405,7 @@ function aggregateResultsWithoutDuplicateClasses(ontologies, classes) {
       // pull the first result
       tmpResult = tmpOntResults.shift();
       // Must be at least 1 entry.
-      tmpClasses = classes[tmpResult["@id"]];
+      tmpClasses = classes[tmpResult["@id"]].clsResults;
       if (tmpClasses[0].links.ontology === tmpResult.links.ontology) {
         // This is an ontology with at least one top level class to display,
         // because classes[classID] has been constructed with 'owner' ontology
@@ -401,12 +449,7 @@ function aggregateResultsByOntologyWithClasses(results, classes) {
     cls = res['@id'];
     ont = res.links.ontology;
     if ( typeof ontologies.hash[ont] === "undefined") {
-      ontologies.hash[ont] = {
-        // classes with same URI
-        "same_cls": [],
-        // other classes from the same ontology
-        "same_ont": []
-      };
+      ontologies.hash[ont] = initOntologyResults();
       // Manage an ordered set of ontologies (no duplicates)
       ontologies.list.push(ont);
     }
@@ -416,15 +459,15 @@ function aggregateResultsByOntologyWithClasses(results, classes) {
     // below the 'owner' ontology. This means that aggregation for classes with
     // the same URI will override aggregation for different classes in the same
     // ontology.
-    ont_owner = (classes[cls][0].links.ontology === ont);
+    ont_owner = (classes[cls].clsResults[0].links.ontology === ont);
     // if (! ont_owner) {
     // continue;
     // }
-    if (ont_owner && classes[cls].length > 1) {
+    if (ont_owner && classes[cls].clsResults.length > 1) {
       // This result must be a class in an 'owner' ontology (or there are no
       // 'owner' ontologies for this class). Now aggregate the same class from
       // other ontologies within this result (skip the first entry).
-      ontologies.hash[ont].same_cls = classes[cls].slice(1);
+      ontologies.hash[ont].same_cls = classes[cls].clsResults.slice(1);
     }
   }
   return resultsByOntologyArray(ontologies);
@@ -444,18 +487,25 @@ function aggregateResultsByOntology(results) {
     res = results[r];
     ont = res.links.ontology;
     if ( typeof ontologies.hash[ont] === "undefined") {
-      ontologies.hash[ont] = {
-        // classes with same URI
-        "same_cls": [],
-        // other classes from the same ontology
-        "same_ont": []
-      };
+      ontologies.hash[ont] = initOntologyResults();
       // Manage an ordered set of ontologies (no duplicates)
       ontologies.list.push(ont);
     }
     ontologies.hash[ont].same_ont.push(res);
   }
   return resultsByOntologyArray(ontologies);
+}
+
+
+function initOntologyResults(){
+  return {
+        // classes with same URI
+        "same_cls": [],
+        // other classes from the same ontology
+        "same_ont": [],
+        // subordinate ontologies
+        "sub_ont": []
+      }
 }
 
 
@@ -476,9 +526,12 @@ function aggregateResultsByClassURI(results) {
     res = results[r];
     cls_id = res['@id'];
     if ( typeof cls_hash[cls_id] === "undefined") {
-      cls_hash[cls_id] = [];
+      cls_hash[cls_id] = {
+        "clsResults": [],
+        "clsOntOwner": null
+      };
     }
-    cls_hash[cls_id].push(res);
+    cls_hash[cls_id].clsResults.push(res);
   }
   promoteClassesWithOntologyOwner(cls_hash);
   // passed by ref, modified in-place.
@@ -487,19 +540,20 @@ function aggregateResultsByClassURI(results) {
 
 
 function promoteClassesWithOntologyOwner(cls_hash) {
-  var cls_id = null, cls_list = null, ont_owner_index = null, ont_owner_result = null;
+  var cls_id = null, clsData = null, ont_owner_result = null;
   // Detect and 'promote' the class with an 'owner' ontology.
   for (cls_id in cls_hash) {
-    cls_list = cls_hash[cls_id];
+    clsData = cls_hash[cls_id];
     // Find the class in the 'owner' ontology (cf. ontologies that import the
     // class, or views). Only promote the class result if the ontology owner
     // is not already in the first position.
-    ont_owner_index = findClassWithOntologyOwner(cls_id, cls_list);
-    if (ont_owner_index > 0) {
+    clsData.clsOntOwner = findClassWithOntologyOwner(cls_id, clsData.clsResults);
+    if (clsData.clsOntOwner.index > 0) {
       // pop the owner and shift it to the top of the list; note that splice and
       // unshift modify in-place so there's no need to reassign into cls_hash.
-      ont_owner_result = cls_list.splice(ont_owner_index, 1)[0];
-      cls_list.unshift(ont_owner_result);
+      ont_owner_result = clsData.clsResults.splice(clsData.clsOntOwner.index, 1)[0];
+      clsData.clsResults.unshift(ont_owner_result);
+      clsData.clsOntOwner.index = 0;
     }
   }
 }
@@ -508,22 +562,22 @@ function promoteClassesWithOntologyOwner(cls_hash) {
 function findClassWithOntologyOwner(cls_id, cls_list) {
   // Find the index of cls_id in cls_list results with the cls_id in the 'owner'
   // ontology (cf. ontologies that import the class, or views).
-  var cls_result = null, ont_acronym = "", ont_owner_acronym = "", ont_owner_index = 0;
-  if (cls_list.length > 1) {
-    for (var i = 0, j = cls_list.length; i < j; i++) {
-      cls_result = cls_list[i];
-      ont_acronym = ontologyIdToAcronym(cls_result.links.ontology);
-      // Does the cls_id contain the ont acronym? If so, the result is a
-      // potential ontology owner. Update the ontology owner, if the ontology
-      // acronym matches and it is longer than any previous ontology owner.
-      if ((cls_id.indexOf(ont_acronym) > -1) && (ont_acronym.length > ont_owner_acronym.length)) {
-        ont_owner_acronym = ont_acronym;
-        ont_owner_index = i;
-        // console.log("Detected owner: index = " + ont_owner_index + ", ont = " + ont_owner_acronym);
-      }
-    };
+  var clsResult = null, ontAcronym = "", ontOwner = {"index": null, "acronym": ""}, ontIsOwner = false;
+  for (var i = 0, j = cls_list.length; i < j; i++) {
+    clsResult = cls_list[i];
+    ontAcronym = ontologyIdToAcronym(clsResult.links.ontology);
+    // Does the cls_id contain the ont acronym? If so, the result is a
+    // potential ontology owner. Update the ontology owner, if the ontology
+    // acronym matches and it is longer than any previous ontology owner.
+    // Use case insensitive for class ID <=> ontology acronym match.
+    ontIsOwner = cls_id.toLowerCase().indexOf(ontAcronym.toLowerCase()) > -1;
+    if ( ontIsOwner && (ontAcronym.length > ontOwner.acronym.length) ) {
+      ontOwner.acronym = ontAcronym;
+      ontOwner.index = i;
+      // console.log("Detected owner: index = " + ontOwner.index + ", ont = " + ontOwner.acronym);
+    }
   }
-  return ont_owner_index;
+  return ontOwner;
 }
 
 
@@ -607,6 +661,16 @@ function formatSearchResults(aggOntologyResults) {
     additionalClsResults = formatAdditionalClsResults(clsResults, ontAcronym);
   }
 
+  // Nest subordinate ontology results
+  var subOntResults = "";
+  if (aggOntologyResults.sub_ont.length > 0) {
+    subOntResults = jQuery("<div>");
+    subOntResults.addClass("subordinate_results");
+    jQuery(aggOntologyResults.sub_ont).each(function() {
+      subOntResults.append(formatSearchResults(this));
+    });
+  }
+
   searchResultLinks = jQuery("<div>");
   searchResultLinks.addClass("search_result_links");
   searchResultLinks.append(resultLinksSpan(res));
@@ -615,6 +679,7 @@ function formatSearchResults(aggOntologyResults) {
   searchResultDiv.append(searchResultLinks);
   searchResultDiv.append(additionalOntResults);
   searchResultDiv.append(additionalClsResults);
+  searchResultDiv.append(subOntResults);
   return searchResultDiv.prop("outerHTML");
 }
 

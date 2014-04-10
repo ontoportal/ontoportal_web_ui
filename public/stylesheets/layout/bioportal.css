@@ -1811,6 +1811,11 @@ div.additional_cls_results {
   margin: 2em;
   background-color: rgb(230,230,230);
 }
+div.subordinate_results {
+  padding: 1em;
+  margin: 1em;
+  background-color: rgb(240,240,240);
+}
 
 div.search_result_additional {
   padding-left: 30px;
