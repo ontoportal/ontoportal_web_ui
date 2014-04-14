@@ -38,7 +38,7 @@ class HomeController < ApplicationController
     @recent_mappings = get_recent_mappings  # application_controller
     # calculate bioportal summary statistics
     @ont_count = @ontologies.length
-    @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes}.sum
+    @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes.to_i}.sum
     begin
       @resources = get_resource_index_resources # application_controller
       @ri_resources = @resources.length
