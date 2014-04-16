@@ -1801,20 +1801,26 @@ span.class_def {
   font-size: 12px;
 }
 
-div.additional_ont_results {
+.additional_ont_results {
   padding: 2em;
   margin: 2em;
   background-color: rgb(230,230,230);
 }
-div.additional_cls_results {
+.additional_cls_results {
   padding: 2em;
   margin: 2em;
   background-color: rgb(230,230,230);
 }
-div.subordinate_results {
+
+.subordinate_ont_results {
   padding: 1em;
   margin: 1em;
   background-color: rgb(240,240,240);
+}
+.subordinate_ont_results_title {
+  color: rgb(100,100,100);
+  background: rgb(200,200,200);
+  padding: 0.5em;
 }
 
 div.search_result_additional {

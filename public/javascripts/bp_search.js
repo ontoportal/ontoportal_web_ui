@@ -705,7 +705,16 @@ function formatSearchResults(aggOntologyResults) {
   clsCode = encodeURIComponent(clsID),
   label_html = classLabelSpan(res),
   // init search results jQuery objects
-  searchResultLinks = null, searchResultDiv = null, additionalResultsSpan = null, additionalResultsHide = null, additionalOntResultsAnchor = null, additionalOntResults = "", additionalOntResultsAttr = null, additionalClsResults = "", additionalClsResultsAttr = null, additionalClsResultsAnchor = null;
+  searchResultLinks = null,
+  searchResultDiv = null,
+  additionalResultsSpan = null,
+  additionalResultsHide = null,
+  additionalOntResultsAnchor = null,
+  additionalOntResults = "",
+  additionalOntResultsAttr = null,
+  additionalClsResults = "",
+  additionalClsResultsAttr = null,
+  additionalClsResultsAnchor = null;
 
   searchResultDiv = jQuery("<div>");
   searchResultDiv.addClass("search_result");
@@ -759,10 +768,16 @@ function formatSearchResults(aggOntologyResults) {
   }
 
   // Nest subordinate ontology results
-  var subOntResults = "";
+  var subOntResults = "", subordinateOntTitle = "";
   if (aggOntologyResults.sub_ont.length > 0) {
     subOntResults = jQuery("<div>");
-    subOntResults.addClass("subordinate_results");
+    subOntResults.addClass("subordinate_ont_results");
+    subordinateOntTitle = jQuery( "<h3>" );
+    subordinateOntTitle.addClass("subordinate_ont_results_title");
+    subordinateOntTitle.addClass("search_result_link");
+    subordinateOntTitle.attr("data-bp_ont", ontAcronym);
+    subordinateOntTitle.text("Additional References from other Ontologies");
+    subOntResults.append(subordinateOntTitle);
     jQuery(aggOntologyResults.sub_ont).each(function() {
       subOntResults.append(formatSearchResults(this));
     });
