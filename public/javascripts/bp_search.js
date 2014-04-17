@@ -654,9 +654,10 @@ function findClassWithOntologyOwner(cls_id, cls_list) {
 }
 
 
-// Declare the blacklisted class ID entities at the top level, to
-// avoid repetitive execution within blacklistClsIDComponents.  The
-// order of the declarations here matches the order of removal.
+// Declare the blacklisted class ID entities at the top level, to avoid
+// repetitive execution within blacklistClsIDComponents.  The order of the
+// declarations here matches the order of removal.  The fixed strings are
+// removed once, the regex strings are removed globally from the class ID.
 var blacklistFixStrArr = [],
     blacklistRegexArr = [],
     blacklistRegexMod = "ig";
@@ -669,6 +670,7 @@ blacklistFixStrArr.push("swrl.stanford.edu/ontologies/");
 blacklistRegexArr.push(new RegExp("abnormalities", blacklistRegexMod));
 blacklistRegexArr.push(new RegExp("biological", blacklistRegexMod));
 blacklistRegexArr.push(new RegExp("biology", blacklistRegexMod));
+blacklistRegexArr.push(new RegExp("bioontology", blacklistRegexMod));
 blacklistRegexArr.push(new RegExp("clinical", blacklistRegexMod));
 blacklistRegexArr.push(new RegExp("extension", blacklistRegexMod));
 blacklistRegexArr.push(new RegExp("ontology", blacklistRegexMod));
