@@ -1814,7 +1814,11 @@ span.class_def {
 
 .subordinate_ont_results {
   padding: 1em;
+  padding-left: 2em;
+  padding-top: 2em;
   margin: 1em;
+  margin-left: 2em;
+  margin-top: 2em;
   background-color: rgb(240,240,240);
 }
 .subordinate_ont_results_title {
@@ -1852,14 +1856,14 @@ div.additional_results_link {
 
 #result_stats {
   padding-bottom: 15px;
-  width: 675px;
+  width: 800px;
   color: gray;
   text-align: right;
 }
 
 #search_results {
   display: none;
-  width: 675px;
+  width: 800px;
 }
 
 #search_results_container {
