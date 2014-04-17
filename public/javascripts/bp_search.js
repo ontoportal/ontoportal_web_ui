@@ -655,19 +655,21 @@ function findClassWithOntologyOwner(cls_id, cls_list) {
 
 
 // Declare the blacklisted class ID entities at the top level, to
-// avoid repetitive execution within blacklistClsIDComponents.
-var blacklistRegexArr = [],
-    blacklistFixStrArr = [];
-blacklistRegexArr.push("extension");
-blacklistRegexArr.push("ontology");
-blacklistRegexArr.push("ontologies");
-blacklistRegexArr.push("semanticweb");
+// avoid repetitive execution within blacklistClsIDComponents.  The
+// order of the declarations here matches the order of removal.
+var blacklistFixStrArr = [],
+    blacklistRegexArr = [],
+    blacklistRegexMod = "ig";
 blacklistFixStrArr.push("https://");
 blacklistFixStrArr.push("http://");
 blacklistFixStrArr.push("bioportal.bioontology.org/ontologies/");
 blacklistFixStrArr.push("purl.bioontology.org/ontology/");
 blacklistFixStrArr.push("purl.obolibrary.org/obo/");
 blacklistFixStrArr.push("swrl.stanford.edu/ontologies/");
+blacklistRegexArr.push(new RegExp("extension", blacklistRegexMod));
+blacklistRegexArr.push(new RegExp("ontology", blacklistRegexMod));
+blacklistRegexArr.push(new RegExp("ontologies", blacklistRegexMod));
+blacklistRegexArr.push(new RegExp("semanticweb", blacklistRegexMod));
 
 function blacklistClsIDComponents(clsID) {
     var strippedID = clsID;
@@ -677,8 +679,7 @@ function blacklistClsIDComponents(clsID) {
     };
     // cleanup with regex replacements
     for (var i = 0; i < blacklistRegexArr.length; i++) {
-        var re = new RegExp(blacklistRegexArr[i], "ig");
-        strippedID = strippedID.replace(re, "");
+        strippedID = strippedID.replace(blacklistRegexArr[i], "");
     };
     return strippedID;
 }
