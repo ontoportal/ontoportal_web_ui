@@ -151,12 +151,14 @@
                   - # map.classes might contain more than two items, use first and last.
                   - clsA = classes[map.classes.first.id] || nil
                   - clsB = classes[map.classes.last.id] || nil
-                  - raise "UI-view error for recent mapping class" if clsA.nil? || clsB.nil?
+                  - raise "UI-view error for recent mapping class #{map.classes.first.id}" if clsA.nil?
+                  - raise "UI-view error for recent mapping class #{map.classes.last.id}" if clsB.nil?
                   - ontA = clsA[:ontology] && clsA[:ontology][:acronym] || nil
                   - ontB = clsB[:ontology] && clsB[:ontology][:acronym] || nil
-                  - raise "UI-view error for recent mapping ontology" if ontA.nil? || ontB.nil?
+                  - raise "UI-view error for recent mapping ontology #{clsA[:ontology]}" if ontA.nil?
+                  - raise "UI-view error for recent mapping ontology #{clsB[:ontology]}" if ontB.nil?
                   - mapProc = map.process.first
-                  - raise "UI-view error for recent mapping process" if mapProc.nil?
+                  - raise "UI-view error for recent mapping process #{map.process}" if mapProc.nil?
                   %tr
                     %td
                       - mapStr = "#{clsA[:prefLabel]} (#{ontA}) <=> #{clsB[:prefLabel]} (#{ontB})"
@@ -172,7 +174,7 @@
                         = mapProc.creator.gsub(/.*\//,'')
                 - rescue Exception => e
                   - LOG.add :error, e.message
-                  - LOG.add :error, "UI-view error for recent mapping: #{map.to_json}"
+                  - LOG.add :error, "Recent mapping: #{map.to_json}"
                   - next
 
 %script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.js", :type => "text/javascript"}
