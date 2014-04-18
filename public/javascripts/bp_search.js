@@ -703,22 +703,39 @@ function findOntologyOwnerOfClass(clsID, ontAcronyms) {
     // Find the index of cls_id in cls_list results with the cls_id in the 'owner'
     // ontology (cf. ontologies that import the class, or views).
     var ontAcronym = "",
+        ontWeight = 0,
         ontIsOwner = false,
         ontOwner = {
+            "acronym": "",
             "index": null,
-            "acronym": ""
+            "weight": 0
         };
     for (var i = 0, j = ontAcronyms.length; i < j; i++) {
         ontAcronym = ontAcronyms[i];
         // Does the cls_id contain the ont acronym? If so, the result is a
         // potential ontology owner. Update the ontology owner, if the ontology
         // acronym matches and it is longer than any previous ontology owner.
-        ontIsOwner = OntologyOwnsClass(clsID, ontAcronym);
-        if (ontIsOwner && (ontAcronym.length > ontOwner.acronym.length)) {
-            ontOwner.acronym = ontAcronym;
-            ontOwner.index = i;
-            // Cannot break here, in case another acronym has longer match.
+
+        // Note: superceded acronym length with algorithm below.
+        // ontIsOwner = OntologyOwnsClass(clsID, ontAcronym);
+        // if (ontIsOwner && (ontAcronym.length > ontOwner.acronym.length)) {
+        //     ontOwner.acronym = ontAcronym;
+        //     ontOwner.index = i;
+        //     // Cannot break here, in case another acronym has longer match.
+        // }
+
+        // Alternate algorithm that places greater weight on matching an
+        // ontology acronym later in the class URI.
+        if (OntologyOwnsClass(clsID, ontAcronym)) {
+            ontWeight = ontAcronym.length * (clsID.toLowerCase().indexOf(ontAcronym.toLowerCase()) + 1);
+            if (ontWeight > ontOwner.weight) {
+                ontOwner.acronym = ontAcronym;
+                ontOwner.index = i;
+                ontOwner.weight = ontWeight;
+                // Cannot break here, in case another acronym has greater weight.
+            }
         }
+
     }
     return ontOwner;
 }
