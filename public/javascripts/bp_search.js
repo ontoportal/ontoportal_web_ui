@@ -257,6 +257,8 @@ function performSearch() {
         categories = jQuery("#search_categories").val() || "";
 
     jQuery.ajax({
+        // bp.config is created in views/layouts/_header..., which calls
+        // ApplicationController::bp_config_json
         url: determineHTTPS(jQuery(document).data().bp.config.rest_url) + "/search",
         data: {
             q: query,
