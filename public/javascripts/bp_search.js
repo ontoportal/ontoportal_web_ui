@@ -669,12 +669,14 @@ blacklistFixStrArr.push("bioportal.bioontology.org/ontologies/");
 blacklistFixStrArr.push("purl.bioontology.org/ontology/");
 blacklistFixStrArr.push("purl.obolibrary.org/obo/");
 blacklistFixStrArr.push("swrl.stanford.edu/ontologies/");
+blacklistFixStrArr.push("mesh.owl"); // Avoids RH-MESH subordinate to MESH
 blacklistRegexArr.push(new RegExp("abnormalities", blacklistRegexMod));
 blacklistRegexArr.push(new RegExp("biological", blacklistRegexMod));
 blacklistRegexArr.push(new RegExp("biology", blacklistRegexMod));
 blacklistRegexArr.push(new RegExp("bioontology", blacklistRegexMod));
 blacklistRegexArr.push(new RegExp("clinical", blacklistRegexMod));
 blacklistRegexArr.push(new RegExp("extension", blacklistRegexMod));
+blacklistRegexArr.push(new RegExp("\.gov", blacklistRegexMod));
 blacklistRegexArr.push(new RegExp("ontology", blacklistRegexMod));
 blacklistRegexArr.push(new RegExp("ontologies", blacklistRegexMod));
 blacklistRegexArr.push(new RegExp("semanticweb", blacklistRegexMod));
