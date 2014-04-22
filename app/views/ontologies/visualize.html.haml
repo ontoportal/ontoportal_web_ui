@@ -6,6 +6,7 @@
       {type:'css',src:'/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css'},
       {type:'js',src:'/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js?nocache=20120302'},
       {type:'js',src:'/javascripts/jquery.tools.min.js'},
+      {type:'js',src:'/javascripts/JqueryPlugins/jquery-cookie-1.4.0/jquery.cookie.js'},
       {type:'js',src:'/javascripts/JqueryPlugins/splitter/splitter.js'},
       {type:'js',src:'/javascripts/bp_mappings.js'}
     ]);
@@ -93,8 +94,9 @@
 
       // Split bar
       jQuery("#bd_content").splitter({
-        sizeLeft: 300,
-        resizeToWidth: true
+        sizeLeft: 400,
+        resizeToWidth: true,
+        cookie: "vsplitbar_position"
       });
     }
 
