@@ -10,7 +10,6 @@ class UsersController < ApplicationController
   # GET /users.xml
   def index
     @users = LinkedData::Client::Models::User.all
-
     respond_to do |format|
       format.html
       format.xml  { render :xml => @users.to_xml }
@@ -20,7 +19,7 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
-    @user = session[:user]
+    @user = LinkedData::Client::Models::User.find(session[:user].id)
     @user_ontologies = @user.customOntology
   end
 
@@ -83,7 +82,7 @@ class UsersController < ApplicationController
 
       if error_response
         @errors = response_errors(error_response)
-        @errors = {acronym: "Username already exists, please use another"} if error_response.status == 409
+        # @errors = {acronym: "Username already exists, please use another"} if error_response.status == 409
         render :action => "edit"
       else
         flash[:notice] = 'Account was successfully updated'
@@ -101,16 +100,22 @@ class UsersController < ApplicationController
 
     if params[:ontology] && params[:ontology][:ontologyId]
       custom_ontologies = params[:ontology][:ontologyId].map {|acr| LinkedData::Client::Models::Ontology.find_by_acronym(acr).first.id}
+    else
+      custom_ontologies = []
     end
-    @user.update_from_params(customOntology: custom_ontologies || [])
+    @user.update_from_params(customOntology: custom_ontologies)
     error_response = @user.update
 
     if error_response
       flash[:notice] = 'Error saving Custom Ontologies, please try again'
     else
       updated_user = LinkedData::Client::Models::User.find(@user.id)
-      flash[:notice] = 'Custom Ontologies were saved'
       session[:user].update_from_params(customOntology: updated_user.customOntology)
+      if updated_user.customOntology.empty?
+        flash[:notice] = 'Custom Ontologies were cleared'
+      else
+        flash[:notice] = 'Custom Ontologies were saved'
+      end
     end
     redirect_to user_path(@user.username)
   end
