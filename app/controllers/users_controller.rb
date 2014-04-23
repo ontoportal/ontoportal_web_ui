@@ -49,7 +49,7 @@ class UsersController < ApplicationController
       @user_saved = @user.save
       if @user_saved.errors
         @errors = response_errors(@user_saved)
-        @errors = {acronym: "Username already exists, please use another"} if @user_saved.status == 409
+        # @errors = {acronym: "Username already exists, please use another"} if @user_saved.status == 409
         render :action => "new"
       else
         # Attempt to register user to list
