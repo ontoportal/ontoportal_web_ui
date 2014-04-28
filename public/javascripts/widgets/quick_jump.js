@@ -40,7 +40,9 @@ if (typeof BP_ORG === 'undefined') {
 
 var BP_ORG_SITE = (BP_ORG == "") ? BP_SITE : BP_ORG + " " + BP_SITE;
 
-var jumpTo_searchbox;
+var jumpTo_searchBoxID = "BP_search_box",
+ 	jumpTo_searchBoxSelector = "#" + jumpTo_searchBoxID,
+	jumpTo_searchBox = null;
 
 if (BP_ontology_id == undefined || BP_ontology_id == "all") {
   var BP_ontology_id = ""
@@ -50,6 +52,7 @@ if (BP_search_branch == undefined) {
   var BP_search_branch = ""
 }
 
+var BP_include_definitions = true;
 if (typeof BP_include_definitions === 'undefined' || BP_include_definitions !== true) {
   var BP_include_definitions = false;
 }
@@ -73,7 +76,7 @@ jQuery(document).ready(function(){
 		});
 	}
 
-	jQuery("#bp_quick_jump").append("Jump To: <input type=\"textbox\" id=\"BP_search_box\" size=\"30\"> <input type=\"button\" value=\"Go to " + BP_SITE + "\" onclick=\"jumpTo_jump_clicked();\">");
+	jQuery("#bp_quick_jump").append("Jump To: <input type=\"textbox\" id=\"" + jumpTo_searchBoxID + "\" size=\"30\"> <input type=\"button\" value=\"Go to " + BP_SITE + "\" onclick=\"jumpTo_jump_clicked();\">");
 	jQuery("#bp_quick_jump").append("<input type='hidden' id='jump_to_concept_id'>");
 	jQuery("#bp_quick_jump").append("<input type='hidden' id='jump_to_ontology_id'>");
 
@@ -92,7 +95,6 @@ function jumpTo_jumpToValue(li) {
 			return;
 		}
 	}
-
 	if (jQuery("#jump_to_concept_id") != null && jQuery("#jump_to_ontology_id") != null) {
 		var sValue = jQuery("#jump_to_concept_id").val();
 		var ontology_id = jQuery("#jump_to_ontology_id").val();
@@ -101,50 +103,74 @@ function jumpTo_jumpToValue(li) {
 	}
 }
 
-function jumpTo_formatItem(row, position, count) {
-  var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
-  var keywords = jQuery("#BP_search_box").val().replace(specials, "\\$&").split(' ').join('|');
-  var regex = new RegExp( '(' + keywords + ')', 'gi' );
-  var result = "";
-  var class_name_width = "350px";
-
-  // Results
-  var result_type = row[2];
-  var result_class = row[0];
-  var result_ont_version = row[3];
-  var result_uri = row[4];
-
-  // Set wider class name column
-  if (BP_include_definitions) {
-    class_name_width = "150px";
-  } else if (BP_ontology_id == "") {
-    class_name_width = "300px";
+// Formats the Jump To search results
+function jumpTo_formatItem(row) {
+  var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"), // .*+?|()[]{}\
+	  keywords = jQuery(jumpTo_searchBoxSelector).val().trim().replace(specials, "\\$&").split(' ').join('|'),
+	  regex = new RegExp( '(' + keywords + ')', 'gi' ),
+	  matchType = "";
+  if (typeof row[2] !== "undefined" && row[2] !== "") {
+  	matchType = " <span style='font-size:9px;color:blue;'>(" + row[2] + ")</span>";
   }
-
-	// row[7] is the ontology_id, only included when searching multiple ontologies
-	if (BP_ontology_id !== "") {
-    if (BP_include_definitions) {
-      result += definitionMarkup(result_ont_version, result_uri);
-    }
-
-		result += "<div class='result_class' style='width: "+class_name_width+";'>" + result_class.replace(regex, "<b><span class='result_class_highlight'>$1</span></b>") + "</div>";
-
-    result += "<div class='result_type' style='overflow: hidden; float: none;'>" + result_type + "</div>";
-	} else {
-    // Results
-    var result_ont = row[7];
-
-		result += "<div class='result_class' style='width: "+class_name_width+";'>" + result_class.replace(regex, "<b><span class='result_class_highlight'>$1</span></b>") + "</div>"
-
-    if (BP_include_definitions) {
-      result += definitionMarkup(result_ont_version, result_uri);
-    }
-
-    result += "<div>" + " <div class='result_type'>" + result_type + "</div><div class='result_ontology' style='overflow: hidden;'>" + truncateText(result_ont, 30) + "</div></div>";
-	}
-
-	return result;
+  if (row[0].match(regex) == null) {
+  	var contents = row[6].split("\t");
+  	var synonym = contents[0] || "";
+  	synonym = synonym.split(";");
+  	if (synonym !== "") {
+  		var matchSynonym = jQuery.grep(synonym, function(e){
+  			return e.match(regex) != null;
+  		});
+  		row[0] = row[0] + " (synonym: " + matchSynonym.join(" ") + ")";
+  	}
+  }
+  // Cleanup obsolete class tag before markup for search keywords.
+  if(row[0].indexOf("[obsolete]") != -1) {
+  	row[0] = row[0].replace("[obsolete]", "");
+  	obsolete_prefix = "<span class='obsolete_class' title='obsolete class'>";
+  	obsolete_suffix = "</span>";
+  } else {
+  	obsolete_prefix = "";
+  	obsolete_suffix = "";
+  }
+  // Markup the search keywords.
+  var row0_markup = row[0].replace(regex, "<b><span style='color:#006600;'>$1</span></b>");
+  return obsolete_prefix + row0_markup + matchType + obsolete_suffix;
 }
+
+// function jumpTo_formatItem(row, position, count) {
+//   var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"), // .*+?|()[]{}\
+// 	  keywords = jQuery(jumpTo_searchBoxSelector).val().replace(specials, "\\$&").split(' ').join('|'),
+// 	  regex = new RegExp( '(' + keywords + ')', 'gi' ),
+// 	  result_class = row[0].replace(regex, "<b><span class='result_class_highlight'>$1</span></b>"),
+// 	  result_type = row[2],
+// 	  result_ont_version = row[3],
+// 	  result_uri = row[4],
+// 	  result = "";
+//   // Set wider class name column
+// 	var  class_name_width = "350px";
+//   if (BP_include_definitions) {
+//   	class_name_width = "150px";
+//   } else if (BP_ontology_id == "") {
+//   	class_name_width = "300px";
+//   }
+// 	// row[7] is the ontology_id, only included when searching multiple ontologies
+// 	if (BP_ontology_id !== "") {
+// 		if (BP_include_definitions) {
+// 			result += definitionMarkup(result_ont_version, result_uri);
+// 		}
+// 		result += "<div class='result_class' style='width: " + class_name_width + ";'>" + result_class + "</div>";
+// 		result += "<div class='result_type' style='overflow: hidden; float: none;'>" + result_type + "</div>";
+// 	} else {
+//     var result_ont = row[7];
+//     result += "<div class='result_class' style='width: " + class_name_width + ";'>" + result_class + "</div>";
+//     if (BP_include_definitions) {
+//     	result += definitionMarkup(result_ont_version, result_uri);
+//     }
+//     result += "<div>" + " <div class='result_type'>" + result_type + "</div>";
+//     result += "<div class='result_ontology' style='overflow: hidden;'>" + truncateText(result_ont, 30) + "</div></div>";
+//   }
+//   return result;
+// }
 
 function definitionMarkup(ont, concept) {
 	return "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='"+BP_SEARCH_SERVER+"/ajax/json_class?callback=?&ontologyid="+ont+"&conceptid="+encodeURIComponent(concept)+"'></a></div>";
@@ -152,22 +178,18 @@ function definitionMarkup(ont, concept) {
 
 function jumpTo_setup_functions() {
   var extra_params = { subtreerootconceptid: encodeURIComponent(BP_search_branch) };
-
   var result_width = 350;
-
   // Add extra space for definition
   if (BP_include_definitions) {
     result_width += 300;
   }
-
   // Add space for ontology name
   if (BP_ontology_id === "") {
     result_width += 250;
   } else {
     result_width += 100;
   }
-
-  jQuery("#BP_search_box").bioportal_autocomplete(BP_SEARCH_SERVER + "/search/json_search/" + BP_ontology_id, {
+  jQuery(jumpTo_searchBoxSelector).bioportal_autocomplete(BP_SEARCH_SERVER + "/search/json_search/" + BP_ontology_id, {
   	extraParams: extra_params,
   	lineSeparator: "~!~",
   	matchSubset: 0,
@@ -179,9 +201,7 @@ function jumpTo_setup_functions() {
   	footer: '<div style="color: grey; font-size: 8pt; font-family: Verdana; padding: .8em .5em .3em;">Results provided by <a style="color: grey;" href="' + BP_SEARCH_SERVER + '">' + BP_ORG_SITE + '</a></div>',
   	formatItem: jumpTo_formatItem
   });
-
-  jumpTo_searchbox = jQuery("#BP_search_box")[0].autocompleter;
-
+  jumpTo_searchBox = jQuery(jumpTo_searchBoxSelector)[0].autocompleter;
   // Setup polling to get definitions
   if (BP_include_definitions) {
   	getWidgetAjaxContent();
@@ -213,34 +233,26 @@ function jumpTo_jumpToSelect(li) {
 }
 
 function jumpTo_jump_clicked() {
-    jumpTo_searchbox.findValue();
+    jumpTo_searchBox.findValue();
 }
 
 function truncateText(text, max_length) {
   if (typeof max_length === 'undefined' || max_length == "") {
     max_length = 70;
   }
-
   var more = '...';
-
   var content_length = $.trim(text).length;
   if (content_length <= max_length)
     return text;  // bail early if not overlong
-
   var actual_max_length = max_length - more.length;
   var truncated_node = jQuery("<div>");
   var full_node = jQuery("<div>").html(text).hide();
-
   text = text.replace(/^ /, '');  // node had trailing whitespace.
-
   var text_short = text.slice(0, max_length);
-
   // Ensure HTML entities are encoded
   // http://debuggable.com/posts/encode-html-entities-with-jquery:480f4dd6-13cc-4ce9-8071-4710cbdd56cb
   text_short = $('<div/>').text(text_short).html();
-
   var other_text = text.slice(max_length, text.length);
-
   text_short += "<span class='expand_icon'><b>"+more+"</b></span>";
   text_short += "<span class='long_text'>" + other_text + "</span>";
   return text_short;
