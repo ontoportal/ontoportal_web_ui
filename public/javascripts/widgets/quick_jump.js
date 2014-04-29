@@ -40,10 +40,6 @@ if (typeof BP_ORG === 'undefined') {
 
 var BP_ORG_SITE = (BP_ORG == "") ? BP_SITE : BP_ORG + " " + BP_SITE;
 
-var jumpTo_searchBoxID = "BP_search_box",
-    jumpTo_searchBoxSelector = "#" + jumpTo_searchBoxID,
-    jumpTo_searchBox = null;
-
 if (BP_ontology_id == undefined || BP_ontology_id == "all") {
     var BP_ontology_id = ""
 }
@@ -61,6 +57,13 @@ function determineHTTPS(url) {
 }
 
 BP_SEARCH_SERVER = determineHTTPS(BP_SEARCH_SERVER);
+
+
+var jumpTo_searchBoxID = "BP_search_box",
+    jumpTo_searchBoxSelector = "#" + jumpTo_searchBoxID,
+    jumpTo_searchBox = null;
+
+
 
 // Process after document is fully loaded
 jQuery(document).ready(function() {
@@ -103,7 +106,6 @@ function jumpTo_jumpToValue(li) {
 }
 
 // Formats the Jump To search results
-
 function jumpTo_formatItem(row) {
     var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"), // .*+?|()[]{}\
         keywords = jQuery(jumpTo_searchBoxSelector).val().trim().replace(specials, "\\$&").split(' ').join('|'),
