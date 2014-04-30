@@ -1,18 +1,16 @@
+"use strict";
+
 // The count returned may not match the actual number of mappings
 // To get around this, we re-calculate based on the mapping table size
-jQuery(document).ready(function(){
-  updateMappingCount();
-  updateMappingDeletePermissions();
-});
-
-jQuery(document).bind("tree_changed", updateMappingCount);
 
 function updateMappingCount() {
-  var rows = jQuery("#concept_mappings_table tbody tr");
-  var mappings_count;
-  if (rows.length == 1 && jQuery(rows).children("td")[0].getAttribute("colspan") > 1) {
-    mappings_count = 0;
-  } else {
+  var rows = jQuery("#concept_mappings_table tbody tr"), mappings_count = null;
+  rows.first().children("td").each(function() {
+    if (this.innerHTML.indexOf("no mappings") > -1) {
+      mappings_count = 0;
+    }
+  });
+  if (mappings_count === null) {
     mappings_count = rows.length;
   }
   jQuery("#mapping_count").html(mappings_count);
@@ -41,6 +39,13 @@ function updateMappingDeletePermissions() {
   }
   jQuery("input[name='delete_mapping_checkbox']").prop('checked', false);
 }
+
+jQuery(document).ready(function(){
+  updateMappingCount();
+  updateMappingDeletePermissions();
+});
+
+jQuery(document).bind("tree_changed", updateMappingCount);
 
 // deleteMappings() is a callback that is called by "#delete_mappings_button" created in
 // /app/views/mappings/_concept_mappings.html.haml

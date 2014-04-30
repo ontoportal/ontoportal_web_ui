@@ -120,6 +120,9 @@ class ApplicationController < ActionController::Base
   end
 
   def bp_config_json
+    # For config settings, see
+    # config/bioportal_config.rb
+    # config/initializers/ontologies_api_client.rb
     {
         org: $ORG,
         org_url: $ORG_URL,
@@ -143,7 +146,7 @@ class ApplicationController < ActionController::Base
         check = check_http_file(url)
       end
 
-    rescue Exception => e
+    rescue
       return false
     end
 
@@ -164,7 +167,7 @@ class ApplicationController < ActionController::Base
     ftp.login
     begin
       file_exists = ftp.size(uri.path) > 0
-    rescue Exception => e
+    rescue
       # Check using another method
       path = uri.path.split("/")
       filename = path.pop
