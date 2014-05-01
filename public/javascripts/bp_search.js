@@ -452,21 +452,34 @@ function aggregateResultsWithSubordinateOntologies(ontologies) {
         ontAcronym = null,
         ontAcronyms = [],
         clsOntOwnerTracker = {};
-    // build hash of ontology acronyms
+    // build array of ontology acronyms
     for (i = 0, j = ontologies.length; i < j; i++) {
         tmpOnt = ontologies[i];
         tmpResult = tmpOnt.same_ont[0]; // primary result for this ontology
         ontAcronym = ontologyIdToAcronym(tmpResult.links.ontology);
         ontAcronyms.push(ontAcronym);
     }
-    // Remove any ontology acronyms from the blacklistSearchWordsArr
+    // Remove any items in blacklistSearchWordsArr that match ontology acronyms.
     i = 0;
     while (i < blacklistSearchWordsArr.length) {
-        if (ontAcronyms.indexOf(blacklistSearchWordsArr[i].toUpperCase()) > -1) {
-            // Remove this ontology acronym from the blacklisted search words.
+        // Check for any substring matches against ontology acronyms, where the
+        // acronyms are assumed to be upper case strings.  (Note, cannot use the
+        // ontAcronyms array .indexOf() method, because it doesn't search for
+        // substring matches).
+        var searchToken = blacklistSearchWordsArr[i].toUpperCase();
+        var match = false;
+        for (var j = ontAcronyms.length - 1; j >= 0; j--) {
+            if (ontAcronyms[j].indexOf(searchToken) > -1) {
+                match = true;
+                break;
+            }
+        };
+        if (match) {
+            // Remove this blacklisted search token because it matches or partially matches an ontology acronym.
             blacklistSearchWordsArr.splice(i,1);
+            // Don't increment i, the slice moves everything so i+1 is now at i.
         } else {
-            i++;
+            i++; // check the next search token.
         }
     }
     // Convert blacklistSearchWordsArr to regex constructs so they are removed
