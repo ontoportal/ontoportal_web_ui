@@ -78,7 +78,7 @@ function OntologyOwnsClass(clsID, ontAcronym) {
     // Does the clsID contain the ontAcronym?
     // Use case insensitive match
     clsID = blacklistClsIDComponents(clsID);
-    return clsID.toLowerCase().indexOf(ontAcronym.toLowerCase()) > -1;
+    return clsID.toUpperCase().lastIndexOf(ontAcronym) > -1;
 }
 
 function findOntologyOwnerOfClass(clsID, ontAcronyms) {
@@ -94,22 +94,14 @@ function findOntologyOwnerOfClass(clsID, ontAcronyms) {
         };
     for (var i = 0, j = ontAcronyms.length; i < j; i++) {
         ontAcronym = ontAcronyms[i];
-        // Does the cls_id contain the ont acronym? If so, the result is a
+        // Does the class ID contain the ontology acronym? If so, the result is a
         // potential ontology owner. Update the ontology owner, if the ontology
-        // acronym matches and it is longer than any previous ontology owner.
-
-        // Note: superceded acronym length with algorithm below.
-        // ontIsOwner = OntologyOwnsClass(clsID, ontAcronym);
-        // if (ontIsOwner && (ontAcronym.length > ontOwner.acronym.length)) {
-        //     ontOwner.acronym = ontAcronym;
-        //     ontOwner.index = i;
-        //     // Cannot break here, in case another acronym has longer match.
-        // }
-
-        // Alternate algorithm that places greater weight on matching an
-        // ontology acronym later in the class URI.
-        if (OntologyOwnsClass(clsID, ontAcronym, ontAcronyms)) {
-            ontWeight = ontAcronym.length * (clsID.toLowerCase().indexOf(ontAcronym.toLowerCase()) + 1);
+        // acronym matches and it has a greater 'weight' than any previous ontology owner.
+        // Note that OntologyOwnsClass() modifies the clsID to blacklist various strings that
+        // cause false or misleading matches for ontology acronyms in class ID.
+        if (OntologyOwnsClass(clsID, ontAcronym)) {
+            // This weighting that places greater value on matching an ontology acronym later in the class ID.
+            ontWeight = ontAcronym.length * (clsID.toUpperCase().lastIndexOf(ontAcronym) + 1);
             if (ontWeight > ontOwner.weight) {
                 ontOwner.acronym = ontAcronym;
                 ontOwner.index = i;
