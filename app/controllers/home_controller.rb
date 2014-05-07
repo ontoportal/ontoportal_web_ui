@@ -163,6 +163,9 @@ class HomeController < ApplicationController
     onts = LinkedData::Client::Models::Ontology.all;
     @admin_ontologies = onts.select {|o| o.administeredBy.include? @user.id }
 
+    projects = LinkedData::Client::Models::Project.all;
+    @user_projects = projects.select {|p| p.creator.include? @user.id }
+
     render :partial => "users/details", :layout => "ontology"
   end
 

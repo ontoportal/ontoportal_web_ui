@@ -43,6 +43,15 @@
               = subscribe_ontology_button(ont, @user)
     %br/
 
+  - unless @user_projects.nil? || @user_projects.empty?
+    %h2#user_projects{:style => "font-size: large;"}
+      Projects Created
+    %ul{:style => "padding-left: 1em;"}
+      - @user_projects.each do |project|
+        %li
+          %a{:href => "/projects/#{project.acronym}"}= project.name
+    %br/
+
   - unless @admin_ontologies.nil? || @admin_ontologies.empty?
     %h2#admin_ontologies{:style => "font-size: large;"}
       Submitted Ontologies
