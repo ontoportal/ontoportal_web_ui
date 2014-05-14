@@ -61,12 +61,13 @@
         %a#collapse_views{:href => "javascript:void(0);"} Collapse All
 
       - @views.each_with_index do |view, index|
+        - next unless view.access?(session[:user])
         - viewN = "view_#{index}"
         - viewName = view.name
         - viewAdmin = view.admin?(session[:user])
-        - view_submissions = view.explore.submissions.sort {|a,b| b.released <=> a.released } rescue []
+        - view_submissions = view.explore.submissions.sort {|a,b| b.released <=> a.released } || [] rescue []
         - view_sub_latest = view.explore.latest_submission({:include_status => 'ready'}) rescue view.explore.latest_submission({:include_status => 'ready', include: ""})
-        - view_sub_latest ||= view_submissions.first  # fallback, if any
+        - view_sub_latest ||= view_submissions.first # fallback, if any
         - begin
           - view_description = view_sub_latest.description
         - rescue
