@@ -755,33 +755,15 @@ class ApplicationController < ActionController::Base
   end
 
   def get_semantic_types
-    semantic_types_key = 'semantic_types_key'
-    semantic_types = Rails.cache.read(semantic_types_key)
-    return semantic_types if not semantic_types.nil?
     semantic_types = {}
-    sty_prefix = 'http://bioportal.bioontology.org/ontologies/umls/sty/'
-    begin
-      sty_ont = LinkedData::Client::Models::Ontology.find_by_acronym('STY').first
-      raise TypeError if sty_ont.nil?
-      # The first 500 items should be more than sufficient to get all semantic types.
-      sty_classes = sty_ont.explore.classes({'pagesize'=>500, include: 'prefLabel'})
-      sty_classes.collection.each do |cls|
-        code = cls.id.sub(sty_prefix,'')
-        semantic_types[ code ] = cls.prefLabel
-      end
-      # Only cache a successful retrieval
-      Rails.cache.write(semantic_types_key, semantic_types, expires_in: EXPIRY_SEMANTIC_TYPES)
-    rescue Exception => e
-      @retries ||= 0
-      if @retries < 1  # retry once only
-        @retries += 1
-        retry
-      else
-        LOG.add :error, "Failed to get semantic types: #{e.message}"
-        # raise e  # let it fail and return an empty set of semantic types
-      end
+    sty_ont = LinkedData::Client::Models::Ontology.find_by_acronym('STY').first
+    # The first 500 items should be more than sufficient to get all semantic types.
+    sty_classes = sty_ont.explore.classes({'pagesize'=>500, include: 'prefLabel'})
+    sty_classes.collection.each do |cls|
+      code = cls.id.split("/").last
+      semantic_types[ code ] = cls.prefLabel
     end
-    return semantic_types
+    semantic_types
   end
 
   def massage_annotated_classes(annotations, options)
