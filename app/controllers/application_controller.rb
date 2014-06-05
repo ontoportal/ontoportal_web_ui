@@ -246,7 +246,6 @@ class ApplicationController < ActionController::Base
       else
         uri = concept.id.to_s
       end
-      binding.pry
       redirect_to "/ontologies/#{acronym}?p=classes#{params_string_for_redirect(params, prefix: "&")}", :status => :moved_permanently
     else
       redirect_to "/ontologies/#{acronym}#{params_string_for_redirect(params)}", :status => :moved_permanently
