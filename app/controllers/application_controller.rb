@@ -237,11 +237,16 @@ class ApplicationController < ActionController::Base
     end
     acronym = BPIDResolver.id_to_acronym(params[:ontology])
     raise Error404 unless acronym
-    if params[:conceptid] && !params[:conceptid].start_with?("http")
-      uri = BPIDResolver.uri_from_short_id(acronym, params[:conceptid])
-      params[:conceptid] = uri if uri
-    end
     if class_view
+      @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym).first
+      concept = get_class(params).first
+      if concept.nil?
+        uri = BPIDResolver.uri_from_short_id(acronym, params[:conceptid])
+        params[:conceptid] = uri if uri
+      else
+        uri = concept.id.to_s
+      end
+      binding.pry
       redirect_to "/ontologies/#{acronym}?p=classes#{params_string_for_redirect(params, prefix: "&")}", :status => :moved_permanently
     else
       redirect_to "/ontologies/#{acronym}#{params_string_for_redirect(params)}", :status => :moved_permanently
