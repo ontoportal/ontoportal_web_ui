@@ -185,45 +185,6 @@ function definitionDiv(ont, concept) {
     return definitionDiv;
 }
 
-// function jumpTo_formatItem(row, position, count) {
-//   var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"), // .*+?|()[]{}\
-// 	  keywords = jQuery(jumpTo_searchBoxSelector).val().replace(specials, "\\$&").split(' ').join('|'),
-// 	  regex = new RegExp( '(' + keywords + ')', 'gi' ),
-// 	  result_class = row[0].replace(regex, "<b><span class='result_class_highlight'>$1</span></b>"),
-// 	  result_type = row[2],
-// 	  result_ont_version = row[3],
-// 	  result_uri = row[4],
-// 	  result = "";
-//   // Set wider class name column
-// 	var  class_name_width = "350px";
-//   if (BP_include_definitions) {
-//   	class_name_width = "150px";
-//   } else if (BP_ontology_id == "") {
-//   	class_name_width = "300px";
-//   }
-// 	// row[7] is the ontology_id, only included when searching multiple ontologies
-// 	if (BP_ontology_id !== "") {
-// 		if (BP_include_definitions) {
-// 			result += definitionMarkup(result_ont_version, result_uri);
-// 		}
-// 		result += "<div class='result_class' style='width: " + class_name_width + ";'>" + result_class + "</div>";
-// 		result += "<div class='result_type' style='overflow: hidden; float: none;'>" + result_type + "</div>";
-// 	} else {
-//     var result_ont = row[7];
-//     result += "<div class='result_class' style='width: " + class_name_width + ";'>" + result_class + "</div>";
-//     if (BP_include_definitions) {
-//     	result += definitionMarkup(result_ont_version, result_uri);
-//     }
-//     result += "<div>" + " <div class='result_type'>" + result_type + "</div>";
-//     result += "<div class='result_ontology' style='overflow: hidden;'>" + truncateText(result_ont, 30) + "</div></div>";
-//   }
-//   return result;
-// }
-
-// function definitionMarkup(ont, concept) {
-// 	return "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='"+BP_SEARCH_SERVER+"/ajax/json_class?callback=?&ontologyid="+ont+"&conceptid="+encodeURIComponent(concept)+"'></a></div>";
-// }
-
 function jumpTo_setup_functions() {
     var extra_params = {
         subtreerootconceptid: encodeURIComponent(BP_search_branch)
@@ -259,7 +220,6 @@ function jumpTo_setup_functions() {
 }
 
 // Poll for potential definitions returned with results
-
 function getWidgetAjaxContent() {
     // Look for anchors with a get_via_ajax class and replace the parent with the resulting ajax call
     $(".get_definition_via_ajax").each(function() {
