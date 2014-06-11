@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/MiniProfiler/rack-mini-profiler.git
-  revision: e034905ef3542e4701cbb40e8db3dcfc0d33ebca
+  revision: f719ff7444380a01c4ef2f6fcd6deb215e05064f
   specs:
     rack-mini-profiler (0.9.1)
       rack (>= 1.1.3)
@@ -15,15 +15,15 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 1b031520578af5c8b7c3fae43bc78c593182b2a7
+  revision: 123ff37cc5f8a66b00e31b53ed6aa808cf58ef89
   specs:
-    ontologies_api_client (0.0.5)
+    ontologies_api_client (0.0.6)
       activesupport (<= 3.0)
-      excon
-      faraday
-      lz4-ruby
-      multi_json
-      oj (<= 2.0.14)
+      excon (~> 0.29)
+      faraday (~> 0.8)
+      lz4-ruby (~> 0.1)
+      multi_json (~> 1.8)
+      oj (~> 2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -45,27 +45,27 @@ GEM
     daemons (1.1.9)
     debug_inspector (0.0.2)
     eventmachine (1.0.3)
-    excon (0.33.0)
+    excon (0.37.0)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     haml (3.1.8)
     hodel_3000_compliant_logger (0.1.1)
     hpricot (0.8.6)
-    i18n (0.5.3)
+    i18n (0.5.4)
     iconv (1.0.4)
     json (1.8.1)
     kgio (2.9.2)
-    lz4-ruby (0.3.1)
+    lz4-ruby (0.3.2)
     memcache-client (1.8.5)
     method_source (0.8.2)
-    mime-types (2.2)
-    multi_json (1.10.0)
+    mime-types (2.3)
+    multi_json (1.10.1)
     multipart-post (2.0.0)
     mysql (2.8.1)
     oink (0.10.1)
       activerecord
       hodel_3000_compliant_logger
-    oj (2.0.14)
+    oj (2.9.5)
     pry (0.9.12.6)
       coderay (~> 1.0)
       method_source (~> 0.8)
@@ -84,12 +84,12 @@ GEM
       activesupport (= 2.3.17)
       rake (>= 0.8.3)
     raindrops (0.13.0)
-    rake (10.3.1)
+    rake (10.3.2)
     rdoc (4.1.1)
       json (~> 1.4)
     recaptcha (0.3.6)
     recursive-open-struct (0.4.5)
-    redis (3.0.7)
+    redis (3.1.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     slop (3.5.0)
@@ -97,7 +97,7 @@ GEM
       daemons (>= 1.0.9)
       eventmachine (>= 1.0.0)
       rack (>= 1.0.0)
-    unicorn (4.8.2)
+    unicorn (4.8.3)
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
