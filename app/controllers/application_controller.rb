@@ -440,6 +440,7 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    @concept
   end
 
   def get_metrics_hash
