@@ -50,7 +50,6 @@ function determineHTTPS(url) {
 
 BP_SEARCH_SERVER = determineHTTPS(BP_SEARCH_SERVER);
 
-
 var formComplete_searchBoxID = "BP_search_box",
     formComplete_searchBoxSelector = "#" + formComplete_searchBoxID;
     // formComplete_searchBox = null;
@@ -74,10 +73,6 @@ jQuery(document).ready(function(){
   });
 });
 
-
-
-
-
 // Formats the search results
 function formComplete_formatItem(row) {
 
@@ -93,7 +88,7 @@ function formComplete_formatItem(row) {
     jQuery(classes).each(function() {
       if (this.indexOf("bp_form_complete") === 0) {
         var values = this.split("-");
-        ontology_id = values[1];
+        ontology_id = decodeURIComponent(values[1]);
       }
     });
     if (ontology_id == "all") {
@@ -184,80 +179,6 @@ function definitionDiv(ont, concept) {
     return definitionDiv;
 }
 
-
-
-
-
-
-
-
-
-// function formComplete_formatItem(row) {
-//   var input = this.extraParams.input;
-//   var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
-//   var keywords = jQuery(input).val().replace(specials, "\\$&").split(' ').join('|');
-//   var regex = new RegExp( '(' + keywords + ')', 'gi' );
-//   var result = "";
-//   var ontology_id;
-//   var class_name_width = "350px";
-
-//   // Get ontology id and other parameters
-//   var classes = jQuery(input).attr('class').split(" ");
-//   jQuery(classes).each(function() {
-//     if (this.indexOf("bp_form_complete") === 0) {
-//       var values = this.split("-");
-//       ontology_id = values[1];
-//     }
-//   });
-//   var BP_include_definitions = jQuery(input).attr("data-bp_include_definitions");
-
-
-//   // TODO: Add formatting for different object types: class, property, individual?
-
-
-//   // Set wider class name column
-//   if (BP_include_definitions === "true") {
-//     class_name_width = "150px";
-//   } else if (ontology_id == "all") {
-//     class_name_width = "320px";
-//   }
-
-//   // Results
-//   var result_type = row[2];
-//   var result_class = row[0];
-//   var result_ont_version = row[3];
-//   var result_uri = row[4];
-
-//   // row[7] is the ontology_id, only included when searching multiple ontologies
-//   if (ontology_id !== "all") {
-//     if (BP_include_definitions === "true") {
-//       result += definitionMarkup(result_ont_version, result_uri);
-//     }
-
-//     result += "<div class='result_class' style='width: "+class_name_width+";'>" + result_class.replace(regex, "<b><span class='result_class_highlight'>$1</span></b>") + "</div>";
-
-//     result += "<div class='result_type' style='overflow: hidden;'>" + result_type + "</div>";
-//   } else {
-//     // Results
-//     var result_ont = row[7];
-//     var result_def = row[9];
-
-//     result += "<div class='result_class' style='width: "+class_name_width+";'>" + result_class.replace(regex, "<b><span class='result_class_highlight'>$1</span></b>") + "</div>"
-
-//     if (BP_include_definitions === "true") {
-//       result += definitionMarkup(result_ont_version, result_uri);
-//     }
-
-//     result += "<div>" + " <div class='result_type'>" + result_type + "</div><div class='result_ontology' style='overflow: hidden;'>" + truncateText(result_ont, 35) + "</div></div>";
-//   }
-
-//   return result;
-// }
-
-// function definitionMarkup(ont, concept) {
-//   return "<div class='result_definition'>retreiving definitions...<a class='get_definition_via_ajax' href='"+BP_SEARCH_SERVER+"/ajax/json_class?callback=?&ontologyid="+ont+"&conceptid="+encodeURIComponent(concept)+"'></a></div>";
-// }
-
 function formComplete_setup_functions() {
   jQuery("input[class*='bp_form_complete']").each(function(){
     var classes = this.className.split(" ");
@@ -290,7 +211,7 @@ function formComplete_setup_functions() {
     jQuery(classes).each(function() {
       if (this.indexOf("bp_form_complete") === 0) {
         values = this.split("-");
-        ontology_id = values[1]; // Could be CSV (see wiki documentation)
+        ontology_id = decodeURIComponent(values[1]); // Could be CSV (see wiki documentation)
         target_property = values[2];
       }
     });
@@ -381,7 +302,6 @@ function getWidgetAjaxContent() {
       def_link.attr("getting_content", true);
       $.getJSON(def_link.attr("href"), function(data){
         var definition = (typeof data.definition === 'undefined') ? "" : data.definition.join(" ");
-        console.log(definition)
         def_link.parent().html(truncateText(decodeURIComponent(definition.replace(/\+/g, " "))));
       });
     }
