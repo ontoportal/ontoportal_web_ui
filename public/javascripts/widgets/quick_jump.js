@@ -238,7 +238,6 @@ function getWidgetAjaxContent() {
 // Sets a hidden form value that records the concept id when a concept is chosen in the jump to
 // This is a workaround because the default autocomplete search method cannot distinguish between two
 // concepts that have the same preferred name but different ids.
-
 function jumpTo_jumpToSelect(li) {
     jQuery("#jump_to_concept_id").val(li.extra[0]);
     jQuery("#jump_to_ontology_id").val(li.extra[2]);
