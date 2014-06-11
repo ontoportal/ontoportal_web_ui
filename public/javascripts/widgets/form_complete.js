@@ -50,7 +50,6 @@ function determineHTTPS(url) {
 
 BP_SEARCH_SERVER = determineHTTPS(BP_SEARCH_SERVER);
 
-
 var formComplete_searchBoxID = "BP_search_box",
     formComplete_searchBoxSelector = "#" + formComplete_searchBoxID;
     // formComplete_searchBox = null;
@@ -74,10 +73,6 @@ jQuery(document).ready(function(){
   });
 });
 
-
-
-
-
 // Formats the search results
 function formComplete_formatItem(row) {
 
@@ -93,7 +88,7 @@ function formComplete_formatItem(row) {
     jQuery(classes).each(function() {
       if (this.indexOf("bp_form_complete") === 0) {
         var values = this.split("-");
-        ontology_id = values[1];
+        ontology_id = decodeURIComponent(values[1]);
       }
     });
     if (ontology_id == "all") {
@@ -216,7 +211,7 @@ function formComplete_setup_functions() {
     jQuery(classes).each(function() {
       if (this.indexOf("bp_form_complete") === 0) {
         values = this.split("-");
-        ontology_id = values[1]; // Could be CSV (see wiki documentation)
+        ontology_id = decodeURIComponent(values[1]); // Could be CSV (see wiki documentation)
         target_property = values[2];
       }
     });
@@ -307,7 +302,6 @@ function getWidgetAjaxContent() {
       def_link.attr("getting_content", true);
       $.getJSON(def_link.attr("href"), function(data){
         var definition = (typeof data.definition === 'undefined') ? "" : data.definition.join(" ");
-        console.log(definition)
         def_link.parent().html(truncateText(decodeURIComponent(definition.replace(/\+/g, " "))));
       });
     }
