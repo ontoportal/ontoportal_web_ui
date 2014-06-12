@@ -1,0 +1,46 @@
+:javascript
+  var process_id = "#{@process_id}";
+  var timer = null;
+
+  var getErrors = function() {
+    jQuery.ajax({
+      url: determineHTTPS(jQuery(document).data().bp.config.rest_url) + "/validate_ontology_file/" + process_id,
+      data: {
+        apikey: jQuery(document).data().bp.config.apikey,
+        userapikey: jQuery(document).data().bp.config.userapikey,
+        format: "jsonp"
+      },
+      dataType: "jsonp",
+      success: function(data){
+        if (typeof data === 'string') {
+          // still processing
+          jQuery("#processing_text").append("...");
+        } else {
+          // done processing, show errors or all clear
+          jQuery("#processing").hide();
+          if (data.length === 0) {
+            // no errors
+            jQuery("#success_container").show();
+          } else {
+            jQuery("#errors").html("<p>" + data.join("</p><p>") + "</p>");
+            jQuery("#errors_container").show();
+          }
+          clearTimeout(timer);
+        }
+      }
+    });
+
+    timer = setTimeout(getErrors, 1500);
+  };
+
+  getErrors();
+
+%div#processing_container{style: "padding: 3em;"}
+  %div#processing
+    %h1#processing_text Processing
+  %div#success_container{style: "display: none;"}
+    %h1 Valid Ontology
+    %p No errors were found
+  %div#errors_container{style: "display: none;"}
+    %h1 Errors
+    %div#errors

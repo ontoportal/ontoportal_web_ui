@@ -159,7 +159,7 @@ class HomeController < ApplicationController
 
     @user_ontologies = @user.customOntology
     @user_ontologies ||= []
-    
+
     onts = LinkedData::Client::Models::Ontology.all;
     @admin_ontologies = onts.select {|o| o.administeredBy.include? @user.id }
 
@@ -170,6 +170,14 @@ class HomeController < ApplicationController
   end
 
   def feedback_complete
+  end
+
+  def validate_ontology_file_show
+  end
+
+  def validate_ontology_file
+    response = LinkedData::Client::HTTP.post("/validate_ontology_file", ontology_file: params[:ontology_file])
+    @process_id = response.process_id
   end
 
 end

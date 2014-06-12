@@ -42,6 +42,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/help', :controller => 'home', :action => 'help'
   map.connect '/robots.txt', :controller => 'home', :action => 'robots'
   map.connect '/site_config', :controller => 'home', :action => 'site_config'
+  map.connect '/validate_ontology_file', :controller => 'home', :action => 'validate_ontology_file', conditions: {method: :post}
+  map.connect '/validate_ontology_file', :controller => 'home', :action => 'validate_ontology_file_show'
 
   # Analytics endpoint
   map.connect '/analytics', :controller => 'analytics', :action => 'track'
