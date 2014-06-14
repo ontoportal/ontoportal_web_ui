@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 123ff37cc5f8a66b00e31b53ed6aa808cf58ef89
+  revision: b7b764b8df81e29b7df25bb540fbc6a1c7d23d72
   specs:
     ontologies_api_client (0.0.6)
       activesupport (<= 3.0)
@@ -38,12 +38,9 @@ GEM
     activeresource (2.3.17)
       activesupport (= 2.3.17)
     activesupport (2.3.17)
-    binding_of_caller (0.7.2)
-      debug_inspector (>= 0.0.1)
     coderay (1.1.0)
     cube-ruby (0.0.3)
     daemons (1.1.9)
-    debug_inspector (0.0.2)
     eventmachine (1.0.3)
     excon (0.37.0)
     faraday (0.9.0)
@@ -70,11 +67,6 @@ GEM
       coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
-    pry-nav (0.2.3)
-      pry (~> 0.9.10)
-    pry-stack_explorer (0.4.9.1)
-      binding_of_caller (>= 0.7)
-      pry (>= 0.9.11)
     rack (1.1.6)
     rails (2.3.17)
       actionmailer (= 2.3.17)
@@ -118,8 +110,6 @@ DEPENDENCIES
   oink
   ontologies_api_client!
   pry
-  pry-nav
-  pry-stack_explorer
   rack-mini-profiler!
   rails (= 2.3.17)
   rdoc
