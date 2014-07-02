@@ -78,20 +78,16 @@ module OntologiesHelper
     # The order of the codes must be assumed to be random, it is not an entirely
     # predictable sequence of ontology processing stages.
     codes = sub.submissionStatus.map {|s| s.split('/').last }
-    errors = codes.map {|c| c if c.start_with? 'ERROR'}.compact
+    errors = codes.select {|c| c.start_with? 'ERROR'}.map {|c| c.gsub("_", " ").split(/(\W)/).map(&:capitalize).join}.compact
     status = []
     status.push('Parsed') if (codes.include? 'RDF') && (codes.include? 'RDF_LABELS')
-    if not errors.empty?
-      status.concat errors
-      # Forget about other status codes.
-    else
-      # The order of this array imposes an oder on the UI status code string
-      status_list = [ "INDEXED", "METRICS", "ANNOTATOR", "ARCHIVED" ]
-      status_list.insert(0, 'UPLOADED') unless status.include?('Parsed')
-      status_list.each do |c|
-        status.push(c.capitalize) if codes.include? c
-      end
+    # The order of this array imposes an oder on the UI status code string
+    status_list = [ "INDEXED", "METRICS", "ANNOTATOR", "ARCHIVED" ]
+    status_list.insert(0, 'UPLOADED') unless status.include?('Parsed')
+    status_list.each do |c|
+      status.push(c.capitalize) if codes.include? c
     end
+    status.concat errors
     return '' if status.empty?
     return '(' + status.join(', ') + ')'
   end

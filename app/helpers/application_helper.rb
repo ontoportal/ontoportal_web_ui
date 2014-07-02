@@ -156,7 +156,7 @@ module ApplicationHelper
     else
       draw_root = ""  # this is no different, why?
     end
-    node.children.sort! {|a,b| a.prefLabel.downcase <=> b.prefLabel.downcase}
+    node.children.sort! {|a,b| (a.prefLabel || a.id).downcase <=> (b.prefLabel || b.id).downcase}
     for child in node.children
       icons = ""
       if child.id.eql?(id)
