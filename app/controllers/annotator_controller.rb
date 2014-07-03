@@ -1,4 +1,3 @@
-
 require 'json'
 require 'cgi'
 
@@ -11,6 +10,7 @@ class AnnotatorController < ApplicationController
   def index
     @semantic_types_for_select = []
     @semantic_types ||= get_semantic_types
+    @sem_type_ont = LinkedData::Client::Models::Ontology.find_by_acronym('STY').first
     @semantic_types.each_pair do |code, label|
       @semantic_types_for_select << ["#{label} (#{code})", code]
     end

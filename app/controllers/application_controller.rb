@@ -708,6 +708,7 @@ class ApplicationController < ActionController::Base
   def get_semantic_types
     semantic_types = {}
     sty_ont = LinkedData::Client::Models::Ontology.find_by_acronym('STY').first
+    return semantic_types if sty_ont.nil?
     # The first 500 items should be more than sufficient to get all semantic types.
     sty_classes = sty_ont.explore.classes({'pagesize'=>500, include: 'prefLabel'})
     sty_classes.collection.each do |cls|
