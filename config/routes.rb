@@ -49,7 +49,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/analytics', :controller => 'analytics', :action => 'track'
 
   # Ontologies
-  map.connect '/exhibit/:ontology/:id', :controller => 'concepts', :action=>'exhibit'
   map.connect '/ontologies/view/edit/:id', :controller => 'ontologies', :action => 'edit_view', :requirements => { :id => %r([^/?]+) }
   map.connect '/ontologies/view/new/:id', :controller => 'ontologies', :action => 'new_view'
   map.ontology_virtual '/ontologies/virtual/:ontology', :controller => 'ontologies', :action => 'virtual'
@@ -58,13 +57,12 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/ontologies/:acronym/submissions/:id', controller: 'submissions', action: 'update', conditions: {method: :post}
   map.connect '/ontologies/:ontology_id/submissions/new', :controller => 'submissions', :action => 'new', :ontology_id => /.+/
   map.connect '/ontologies/:ontology_id/submissions', :controller => 'submissions', :action => 'create', :ontology_id => /.+/, conditions: {method: :post}
+  map.connect '/ontologies/:acronym/:purl_conceptid', controller: 'ontologies', action: 'show'
 
   # Analytics
   map.connect '/analytics/:action', :controller => "analytics", :action => /search_result_clicked|user_intention_surveys/
 
   # New Notes
-  # map.notes_ontology 'ontologies/notes/virtual/:ontology', :controller => 'notes', :action => 'show_for_ontology'
-  #map.note 'notes/:ontology', :controller => 'notes', :action => 'show'
   map.note '/notes/:id', :controller => 'notes', :action => 'show', :id => /.+/
   map.note_virtual 'ontologies/:ontology/notes/:noteid', :controller => 'notes', :action => 'virtual_show', :noteid => /.+/
   map.note_ajax_single 'notes/ajax/single/:ontology', :controller => 'notes', :action => 'show_single'
@@ -141,6 +139,7 @@ ActionController::Routing::Routes.draw do |map|
   map.visualize_concept '/visualize', :controller => 'ontologies', :action => 'visualize', :requirements => { :ontology => %r([^/?]+), :id => %r([^/?]+),
                                                                                                               :ontologyid => %r([^/?]+), :conceptid => %r([^/?]+) }
   map.flexviz '/flexviz/:ontologyid', :controller => 'concepts', :action => 'flexviz', :requirements => { :ontologyid => %r([^/?]+) }
+  map.connect '/exhibit/:ontology/:id', :controller => 'concepts', :action=>'exhibit'
 
   # Virtual
   map.virtual_ont '/virtual/:ontology', :controller => 'concepts', :action => 'virtual', :requirements => { :ontology => %r([^/?]+) }
