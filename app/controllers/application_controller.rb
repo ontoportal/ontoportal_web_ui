@@ -268,7 +268,7 @@ class ApplicationController < ActionController::Base
 
   def params_string_for_redirect(params, options = {})
     prefix = options[:prefix] || "?"
-    stop_words = options[:stop_words] || ["ontology", "controller", "action", "id"]
+    stop_words = options[:stop_words] || ["ontology", "controller", "action", "id", "acronym"]
     params_array = []
     params.each do |key,value|
       next if stop_words.include?(key.to_s) || value.nil? || value.empty?

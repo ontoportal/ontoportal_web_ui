@@ -187,6 +187,14 @@ class OntologiesController < ApplicationController
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]
     params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]
+
+    # PURL-specific redirect to handle /ontologies/{ACR}/{CLASS_ID} paths
+    if params[:purl_conceptid]
+      params[:conceptid] = params.delete(:purl_conceptid)
+      redirect_to "/ontologies/#{params[:acronym]}?p=classes#{params_string_for_redirect(params, prefix: "&")}", :status => :moved_permanently
+      return
+    end
+
     if params[:ontology].to_i > 0
       acronym = BPIDResolver.id_to_acronym(params[:ontology])
       if acronym
