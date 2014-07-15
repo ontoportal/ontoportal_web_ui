@@ -3,7 +3,7 @@ jQuery(document).ready(function(){
 });
 
 function UserIntentionSurvey() {
-  var timeoutKey = "user_survey_timeout";
+  var timeoutKey = "user_survey_timeout_" + USER_INTENTION_SURVEY;
 
   this.bindTracker = function() {
     if (BP_getCookie(timeoutKey) === "true" || !USER_INTENTION_SURVEY) {
@@ -22,12 +22,15 @@ function UserIntentionSurvey() {
       if (jQuery("#dont_show_again").is(":checked")) {
         survey.disablePermanently();
       } else {
-        survey.disableTemporarily();
+        survey.remindMe();
       }
-      survey.submitSurvey();
     });
 
     jQuery("#intention_submit").live("click", function(){
+      new UserIntentionSurvey().disablePermanentlyAndForward(USER_INTENTION_SURVEY_EXTERNAL_FORWARD);
+    });
+
+    jQuery("#intention_remind").live("click", function(){
       new UserIntentionSurvey().closeDialog();
     });
 
@@ -40,6 +43,13 @@ function UserIntentionSurvey() {
     return timeoutKey;
   };
 
+  this.disablePermanentlyAndForward = function(url) {
+    BP_setCookie(timeoutKey, true, {days: 365});
+    setTimeout(function() {
+      document.location = url;
+    }, 500);
+  };
+
   this.disablePermanently = function() {
     BP_setCookie(timeoutKey, true, {days: 365});
   };
@@ -47,6 +57,10 @@ function UserIntentionSurvey() {
   this.disableTemporarily = function() {
     BP_setCookie(timeoutKey, true, {days: 7});
   };
+
+  this.remindMe = function() {
+    BP_setCookie(timeoutKey, true, {days: 1});
+  }
 
   this.closeDialog = function() {
     jQuery(document).trigger('close.facebox');
