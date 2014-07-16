@@ -190,7 +190,11 @@ class OntologiesController < ApplicationController
 
     # PURL-specific redirect to handle /ontologies/{ACR}/{CLASS_ID} paths
     if params[:purl_conceptid]
-      params[:conceptid] = params.delete(:purl_conceptid) if params[:purl_conceptid]
+      if params[:conceptid]
+        params.delete(:purl_conceptid)
+      else
+        params[:conceptid] = params.delete(:purl_conceptid)
+      end
       redirect_to "/ontologies/#{params[:acronym]}?p=classes#{params_string_for_redirect(params, prefix: "&")}", :status => :moved_permanently
       return
     end
