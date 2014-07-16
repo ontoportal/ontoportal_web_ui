@@ -1,0 +1,34 @@
+- case $USER_INTENTION_SURVEY
+- when :accomplish
+  :javascript
+    jQuery(document).ready(function(){
+      var surveyName = #{$USER_INTENTION_SURVEY.to_json};
+      var options = {
+        surveyName: surveyName
+      };
+      new UserIntentionSurvey(options).bindTracker();
+    });
+- when :external_july_2014
+  :javascript
+    jQuery(document).ready(function(){
+      var surveyName = #{$USER_INTENTION_SURVEY.to_json};
+      var options = {
+        surveyName: surveyName,
+        remindUser: true,
+        forwardOnSubmit: true,
+        forwardToUrl: "http://surveymonkey.com",
+        submitForAnalytics: false
+      };
+      new UserIntentionSurvey(options).bindTracker();
+    });
+
+  :css
+    .user_intention_survey_text {
+      border: solid thick #234979 !important;
+      padding: 15px;
+      border-radius: 5px;
+      background: lightGrey;
+    }
+    .user_intention_survey {
+      width: 450px !important;
+    }

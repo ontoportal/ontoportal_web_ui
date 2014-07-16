@@ -1,12 +1,18 @@
-jQuery(document).ready(function(){
-  new UserIntentionSurvey().bindTracker();
-});
+function UserIntentionSurvey(options) {
+  if (typeof options === 'undefined') {return;};
 
-function UserIntentionSurvey() {
-  var timeoutKey = "user_survey_timeout_" + USER_INTENTION_SURVEY;
+  var self                    = this;
+  self.surveyName         = options.surveyName;
+  self.forwardOnSubmit    = options.forwardOnSubmit == true ? true : false;
+  self.forwardToUrl       = options.forwardToUrl;
+  self.submitForAnalytics = options.submitForAnalytics == false ? false : true;
+  self.remindUser         = options.remindUser == true ? true : false;
+  self.surveyEnabled      = self.surveyName == "" ? false : true;
+  self.timeoutKey         = "user_survey_timeout_" + self.surveyName;
+  console.log(options)
 
-  this.bindTracker = function() {
-    if (BP_getCookie(timeoutKey) === "true" || !USER_INTENTION_SURVEY) {
+  self.bindTracker = function() {
+    if (BP_getCookie(self.timeoutKey) === "true" || !self.surveyEnabled) {
       return false;
     }
 
@@ -18,60 +24,69 @@ function UserIntentionSurvey() {
     });
 
     jQuery(document).live("afterClose.facebox", function(){
-      var survey = new UserIntentionSurvey();
+      console.log("closed")
+      console.log(self.remindUser)
       if (jQuery("#dont_show_again").is(":checked")) {
-        survey.disablePermanently();
+        self.disablePermanently();
       } else {
-        survey.remindMe();
+        if (self.remindUser) {
+          self.remindMe()
+        } else {
+          self.disableTemporarily();
+        }
+      }
+      if (self.submitForAnalytics) {
+        self.submitSurvey();
       }
     });
 
     jQuery("#intention_submit").live("click", function(){
-      new UserIntentionSurvey().disablePermanentlyAndForward(USER_INTENTION_SURVEY_EXTERNAL_FORWARD);
+      if (self.forwardToUrl) {
+        self.disablePermanentlyAndForward(self.forwardToUrl);
+      } else {
+        self.closeDialog();
+      }
     });
 
     jQuery("#intention_remind").live("click", function(){
-      new UserIntentionSurvey().closeDialog();
+      self.closeDialog();
     });
 
     jQuery("#intention_close").live("click", function(){
-      new UserIntentionSurvey().closeDialog();
+      self.closeDialog();
     });
   };
 
-  this.timeoutKey = function() {
-    return timeoutKey;
-  };
-
-  this.disablePermanentlyAndForward = function(url) {
-    BP_setCookie(timeoutKey, true, {days: 365});
+  self.disablePermanentlyAndForward = function(url) {
+    BP_setCookie(self.timeoutKey, true, {days: 365});
     setTimeout(function() {
       document.location = url;
     }, 500);
   };
 
-  this.disablePermanently = function() {
-    BP_setCookie(timeoutKey, true, {days: 365});
+  self.disablePermanently = function() {
+    BP_setCookie(self.timeoutKey, true, {days: 365});
   };
 
-  this.disableTemporarily = function() {
-    BP_setCookie(timeoutKey, true, {days: 7});
+  self.disableTemporarily = function() {
+    BP_setCookie(self.timeoutKey, true, {days: 7});
   };
 
-  this.remindMe = function() {
-    BP_setCookie(timeoutKey, true, {days: 1});
+  self.remindMe = function() {
+    console.log(self.timeoutKey)
+    BP_setCookie(self.timeoutKey, true, {days: 1});
   }
 
-  this.closeDialog = function() {
+  self.closeDialog = function() {
     jQuery(document).trigger('close.facebox');
   };
 
-  this.submitSurvey = function() {
-    var params = new UserIntentionSurvey().surveyInformation();
+  self.submitSurvey = function() {
+    var params = self.surveyInformation();
     new Analytics().track("users", "intention_survey", params);
   };
 
-  this.surveyInformation = function() {
+  self.surveyInformation = function() {
     var info = {};
     info.intention_response = jQuery("#intention_response").val();
     info.contest_email = jQuery("#intention_email").val();
