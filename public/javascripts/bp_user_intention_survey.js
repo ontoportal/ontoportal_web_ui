@@ -12,9 +12,9 @@ function UserIntentionSurvey(options) {
   console.log(options)
 
   self.bindTracker = function() {
-    if (BP_getCookie(self.timeoutKey) === "true" || !self.surveyEnabled) {
-      return false;
-    }
+    // if (BP_getCookie(self.timeoutKey) === "true" || !self.surveyEnabled) {
+    //   return false;
+    // }
 
     var path = window.location.pathname.split("/");
     if (path.length > 2) return false;
