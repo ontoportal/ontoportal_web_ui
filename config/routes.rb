@@ -57,6 +57,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/ontologies/:acronym/submissions/:id', controller: 'submissions', action: 'update', conditions: {method: :post}
   map.connect '/ontologies/:ontology_id/submissions/new', :controller => 'submissions', :action => 'new', :ontology_id => /.+/
   map.connect '/ontologies/:ontology_id/submissions', :controller => 'submissions', :action => 'create', :ontology_id => /.+/, conditions: {method: :post}
+  map.connect '/ontologies/:acronym/classes/:purl_conceptid', controller: 'ontologies', action: 'show', purl_conceptid: "root"
   map.connect '/ontologies/:acronym/:purl_conceptid', controller: 'ontologies', action: 'show'
 
   # Analytics
