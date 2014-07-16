@@ -189,6 +189,7 @@ class OntologiesController < ApplicationController
     params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]
 
     # PURL-specific redirect to handle /ontologies/{ACR}/{CLASS_ID} paths
+    puts "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%", request.referer
     if params[:purl_conceptid] || (request.referer && request.referer.include?($PURL_PREFIX))
       params[:conceptid] = params.delete(:purl_conceptid) if params[:purl_conceptid]
       redirect_to "/ontologies/#{params[:acronym]}?p=classes#{params_string_for_redirect(params, prefix: "&")}", :status => :moved_permanently
