@@ -9,7 +9,6 @@ function UserIntentionSurvey(options) {
   self.remindUser         = options.remindUser == true ? true : false;
   self.surveyEnabled      = self.surveyName == "" ? false : true;
   self.timeoutKey         = "user_survey_timeout_" + self.surveyName;
-  console.log(options)
 
   self.bindTracker = function() {
     // if (BP_getCookie(self.timeoutKey) === "true" || !self.surveyEnabled) {
