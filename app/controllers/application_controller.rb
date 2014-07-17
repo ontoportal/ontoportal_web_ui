@@ -411,24 +411,39 @@ class ApplicationController < ActionController::Base
         # get the top level nodes for the root
         # TODO_REV: Support views? Replace old view call: @ontology.top_level_classes(view)
         roots = @ontology.explore.roots
-        raise Error404 if roots.nil? || roots.empty?
+        if roots.nil? || roots.empty?
+          LOG.add :debug, "Missing roots for #{@ontology.acronym}"
+          raise Error404
+        end
+
         @root = LinkedData::Client::Models::Class.new(read_only: true)
         @root.children = roots.sort{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
+
         # get the initial concept to display
         root_child = @root.children.first
-        raise Error404 if root_child.nil?
+
         @concept = root_child.explore.self(full: true)
         # Some ontologies have "too many children" at their root. These will not process and are handled here.
-        raise Error404 if @concept.nil?
+        if @concept.nil?
+          LOG.add :debug, "Missing class #{root_child.links.self}"
+          raise Error404
+        end
       else
         # if the id is coming from a param, use that to get concept
         @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
-        raise Error404 if @concept.nil? || @concept.errors
+        if @concept.nil? || @concept.errors
+          LOG.add :debug, "Missing class #{@ontology.acronym}"
+          raise Error404
+        end
+
         # Create the tree
         rootNode = @concept.explore.tree(include: "prefLabel,childrenCount,obsolete")
         if rootNode.nil? || rootNode.empty?
           roots = @ontology.explore.roots
-          raise Error404 if roots.nil? || roots.empty?
+          if roots.nil? || roots.empty?
+            LOG.add :debug, "Missing roots for #{@ontology.acronym}"
+            raise Error404
+          end
           if roots.any? {|c| c.id == @concept.id}
             rootNode = roots
           else
