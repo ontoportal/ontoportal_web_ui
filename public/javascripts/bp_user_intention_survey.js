@@ -6,7 +6,7 @@ function UserIntentionSurvey(options) {
   self.forwardOnSubmit    = options.forwardOnSubmit == true ? true : false;
   self.forwardToUrl       = options.forwardToUrl;
   self.submitForAnalytics = options.submitForAnalytics == false ? false : true;
-  self.remindUser         = options.remindUser == true ? true : false;
+  self.tempDisableLength  = options.tempDisableLength || 7;
   self.surveyEnabled      = self.surveyName == "" ? false : true;
   self.timeoutKey         = "user_survey_timeout_" + self.surveyName;
 
@@ -23,16 +23,10 @@ function UserIntentionSurvey(options) {
     });
 
     jQuery(document).live("afterClose.facebox", function(){
-      console.log("closed")
-      console.log(self.remindUser)
       if (jQuery("#dont_show_again").is(":checked")) {
         self.disablePermanently();
       } else {
-        if (self.remindUser) {
-          self.remindMe()
-        } else {
-          self.disableTemporarily();
-        }
+        self.disableTemporarily();
       }
       if (self.submitForAnalytics) {
         self.submitSurvey();
@@ -68,13 +62,8 @@ function UserIntentionSurvey(options) {
   };
 
   self.disableTemporarily = function() {
-    BP_setCookie(self.timeoutKey, true, {days: 7});
+    BP_setCookie(self.timeoutKey, true, {days: self.tempDisableLength});
   };
-
-  self.remindMe = function() {
-    console.log(self.timeoutKey)
-    BP_setCookie(self.timeoutKey, true, {days: 1});
-  }
 
   self.closeDialog = function() {
     jQuery(document).trigger('close.facebox');
