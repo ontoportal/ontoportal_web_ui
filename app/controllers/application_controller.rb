@@ -432,7 +432,7 @@ class ApplicationController < ActionController::Base
         # if the id is coming from a param, use that to get concept
         @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
         if @concept.nil? || @concept.errors
-          LOG.add :debug, "Missing class #{@ontology.acronym}"
+          LOG.add :debug, "Missing class #{@ontology.acronym} / #{params[:conceptid]}"
           raise Error404
         end
 

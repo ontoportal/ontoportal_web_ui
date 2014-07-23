@@ -2,7 +2,7 @@
   <h2>This ontology is licensed by the owner</h2>
   <% ontology_authors = @ontology.contactName.nil? || @ontology.contactName.empty? ? "the owners" : @ontology.contactName%>
     <%if session[:user].nil?%>
-      <p>If you already have a license then please <a href="/login?redirect=<%= request.request_uri%>">log in</a>.</p>
+      <p>If you already have a license then please <%=sanitize("<a href='/login?redirect=#{request.request_uri}'>log in</a>")%>.</p>
     <%else%>
       <!-- Handle when a user is logged in -->
       <script type="text/javascript">

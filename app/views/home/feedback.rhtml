@@ -52,11 +52,11 @@ Errors On Form
   <% if session[:user].nil? %>
     <tr>
       <th class="top">Name:*</th>
-      <td class="top"><input type="text" name="name" style="width:180px" value="<%=params[:name]%>"></td>
+      <td class="top"><input type="text" name="name" style="width:180px" value="<%=h(params[:name])%>"></td>
     </tr>
     <tr>
       <th>Email Address:*</th>
-      <td><input type="text" name="email" style="width:180px" value="<%=params[:email]%>"></td>
+      <td><input type="text" name="email" style="width:180px" value="<%=h(params[:email])%>"></td>
     </tr>
   <% else %>
     Hello <b><%=session[:user].username%></b>, please send us your comment below (we'll email you a copy):
@@ -66,7 +66,7 @@ Errors On Form
 
 	<tr>
 		<th class="top">Comment:*</th>
-		<td class="top"><textarea name="comment" cols='60' rows=8><%=params[:comment]%></textarea></td>
+		<td class="top"><textarea name="comment" cols='60' rows=8><%=h(params[:comment])%></textarea></td>
 	</tr>
     <% if ENV['USE_RECAPTCHA'] == 'true' && !session[:user]%>
         <tr>
