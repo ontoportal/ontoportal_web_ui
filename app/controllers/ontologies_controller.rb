@@ -9,6 +9,8 @@ class OntologiesController < ApplicationController
 
   before_filter :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
 
+  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary"])
+
   # GET /ontologies
   # GET /ontologies.xml
   def index
@@ -206,6 +208,10 @@ class OntologiesController < ApplicationController
         return
       end
     end
+
+    # Fix parameters to only use known pages
+    params[:p] = nil unless KNOWN_PAGES.include?(params[:p])
+
     # This action is now a router using the 'p' parameter as the page to show
     case params[:p]
       when "terms"

@@ -1,12 +1,12 @@
 # Required gems
 source 'https://rubygems.org'
 
-gem "rails", "2.3.17"
+gem "rails", "2.3.18"
 
 gem "pry"
 gem "iconv"
 gem "hpricot", "~> 0.8.6"
-gem "recaptcha", "~> 0.3.1"
+gem "recaptcha", "= 0.3.4"
 gem "rest-client", "~> 1.6.1"
 gem "mysql", "~> 2.8.1"
 gem "memcache-client", "~> 1.8.5"

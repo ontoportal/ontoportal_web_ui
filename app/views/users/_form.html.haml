@@ -16,10 +16,10 @@
     %td= text_field :user, :email_confirmation, value: @user.email_confirmation
   %tr
     %th Password:*
-    %td= password_field :user, :password
+    %td= password_field :user, :password, :autocomplete => "off"
   %tr
     %th Re-enter Password:*
-    %td= password_field :user, :password_confirmation
+    %td= password_field :user, :password_confirmation, :autocomplete => "off"
   - if ENV['USE_RECAPTCHA'] == 'true'
     %tr
       %th Please enter the following text:*
