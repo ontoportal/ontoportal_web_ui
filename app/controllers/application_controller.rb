@@ -423,7 +423,12 @@ class ApplicationController < ActionController::Base
       else
         # if the id is coming from a param, use that to get concept
         @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
-        raise Error404 if @concept.nil? || @concept.errors
+
+        if @concept.nil? || @concept.errors
+          LOG.add :debug, "Missing class #{@ontology.acronym} / #{params[:conceptid]}"
+          raise Error404
+        end
+
         # Create the tree
         rootNode = @concept.explore.tree(include: "prefLabel,childrenCount,obsolete")
         if rootNode.nil? || rootNode.empty?
