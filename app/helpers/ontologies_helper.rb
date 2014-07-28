@@ -28,7 +28,8 @@ module OntologiesHelper
   end
 
   # Creates a link based on the status of an ontology submission
-  def download_link(submission)
+  def download_link(submission, ontology = nil)
+    ontology ||= @ontology
     if submission.ontology.summaryOnly
       if submission.homepage.nil?
         link = 'N/A'
@@ -39,8 +40,8 @@ module OntologiesHelper
     else
       uri = submission.id + "/download?apikey=#{get_apikey}"
       link = "<a href='#{uri}'>#{submission.hasOntologyLanguage}</a>"
-      if @ontology.explore.latest_submission({:include_status => 'ready'}).submissionId == submission.submissionId
-        link += " | <a href='#{@ontology.id}/download?apikey=#{get_apikey}&download_format=csv'>CSV</a>"
+      if ontology.explore.latest_submission({:include_status => 'ready'}).submissionId == submission.submissionId
+        link += " | <a href='#{ontology.id}/download?apikey=#{get_apikey}&download_format=csv'>CSV</a>"
       end
       unless submission.diffFilePath.nil?
         uri = submission.id + "/download_diff?apikey=#{get_apikey}"
