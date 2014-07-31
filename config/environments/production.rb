@@ -7,6 +7,11 @@ config.cache_classes = true
 # Use a different logger for distributed setups
 # config.logger = SyslogLogger.new
 
+# enable json logging format.  Useful for logstash
+require 'rackstash'
+config.rackstash.enabled = true
+config.rackstash.tags = ['ruby', 'rails2']
+
 # Full error reports are disabled and caching is turned on
 config.action_controller.consider_all_requests_local = false
 config.action_controller.perform_caching             = true
