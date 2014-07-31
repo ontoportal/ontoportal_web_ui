@@ -29,7 +29,7 @@
 
 
 %div{:style => "clear: both;"}
-#views_content
+#views_content{style: "width: 60%;"}
 
   %h2{:style => "margin: 2em 0 0"}
     %span{:style => "font-size: x-large; margin-right: 1.5em;"} Views
@@ -117,9 +117,6 @@
               %thead
                 %tr
                   %th Submission
-                  -# The ontology version of any view is ALWAYS unknown in the new REST API data
-                  -#%th Ontology Version
-                  %th View Links
                   %th Release Date
                   %th Upload Date
                   %th Downloads
@@ -131,24 +128,15 @@
               - view_submissions.each_with_index do |view_sub, view_index|
                 %tr
                   %td
-                    =# view_sub.version
                     = status_link(view_sub, view_sub.submissionId==view_sub_latestId)
-                  -# The ontology version of any view is ALWAYS unknown in the new REST API data
-                  /%td
-                  -# "#{@ontology.acronym} (#{@ontology.explore.latest_submission.version})"
-                  %td
-                    / TODO: change the ui link to a submissionId link
-                    %a{:href => view_sub.ontology.links['ui']}= 'UI view'
-                    &nbsp;|&nbsp;
-                    %a{:href => view_sub.id, :target => '_blank'}= 'linked data'
                   %td
                     = xmldatetime_to_date(view_sub.released)
                   %td
                     = xmldatetime_to_date(view_sub.creationDate)
                   %td
-                    %a{:href => view_sub.id + "/download?apikey=#{get_apikey}", :target => "_blank"} Ontology View
-                  %td
-                    - if (view_index == 0) && viewAdmin
+                    = download_link(view_sub, view)
+                  - if (view_index == 0) && viewAdmin
+                    %td
                       - viewEditURL = "/ontologies/#{view.acronym}/submissions/#{view_sub.submissionId}/edit"
                       #{link_to "Edit", viewEditURL}
             / view submission table

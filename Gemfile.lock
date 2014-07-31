@@ -18,6 +18,15 @@ GIT
       multi_json
       oj
 
+GIT
+  remote: https://github.com/planio-gmbh/rackstash.git
+  revision: 93a1cc1fb74b11f213012a516389420320c9ef98
+  specs:
+    rackstash (0.0.1)
+      activesupport
+      logstash-event (< 1.2.0)
+      thor
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -45,6 +54,7 @@ GEM
     iconv (1.0.4)
     json (1.8.1)
     kgio (2.9.2)
+    logstash-event (1.1.5)
     lz4-ruby (0.3.3)
     memcache-client (1.8.5)
     method_source (0.8.2)
@@ -85,6 +95,7 @@ GEM
       daemons (>= 1.0.9)
       eventmachine (>= 1.0.0)
       rack (>= 1.0.0)
+    thor (0.19.1)
     unicorn (4.8.3)
       kgio (~> 2.6)
       rack
@@ -107,6 +118,7 @@ DEPENDENCIES
   ontologies_api_client!
   pry
   rack-mini-profiler
+  rackstash!
   rails (= 2.3.18)
   rdoc
   recaptcha (= 0.3.4)
