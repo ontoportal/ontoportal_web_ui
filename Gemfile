@@ -18,9 +18,6 @@ gem "rack-mini-profiler"
 gem 'cube-ruby', require: 'cube'
 gem 'oink'
 
-#logs in json format, useful for shipping logs to logstash
-gem 'rackstash', git: "https://github.com/planio-gmbh/rackstash.git"
-
 gem 'ncbo_resolver', git: "https://github.com/ncbo/ncbo_resolver.git"
 gem 'ontologies_api_client', :git => "https://github.com/ncbo/ontologies_api_ruby_client.git"
 
