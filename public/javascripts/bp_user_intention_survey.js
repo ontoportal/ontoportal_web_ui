@@ -11,9 +11,9 @@ function UserIntentionSurvey(options) {
   self.timeoutKey         = "user_survey_timeout_" + self.surveyName;
 
   self.bindTracker = function() {
-    // if (BP_getCookie(self.timeoutKey) === "true" || !self.surveyEnabled) {
-    //   return false;
-    // }
+    if (BP_getCookie(self.timeoutKey) === "true" || !self.surveyEnabled) {
+      return false;
+    }
 
     var path = window.location.pathname.split("/");
     if (path.length > 2) return false;
