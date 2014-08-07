@@ -46,16 +46,6 @@ class ResourceIndexController < ApplicationController
       return
     end
     params[:q] = params[:q].strip
-    # Get Resource Index ontologies - REST API filters them for those that are in the triple store.
-    ri_ont_acronym_key = 'ri_ont_acronym_key'
-    ri_ont_acronyms = Rails.cache.read(ri_ont_acronym_key)
-    if ri_ont_acronyms.nil?
-      @ri_ontologies ||= get_resource_index_ontologies # application_controller
-      ri_ont_acronyms = @ri_ontologies.map {|o| o.acronym }.join(',')
-      # EXPIRY_RI_ONTOLOGIES set in application controller
-      Rails.cache.write(ri_ont_acronym_key, ri_ont_acronyms, expires_in: EXPIRY_RI_ONTOLOGIES)
-    end
-    params[:ontologies] = ri_ont_acronyms
     # Get the first 50 classes matching the query
     search_page = LinkedData::Client::Models::Class.search(params[:q], params)
     search_subset = search_page.collection[0...50]
@@ -79,7 +69,7 @@ class ResourceIndexController < ApplicationController
   def create
     @bp_last_params = params
     @classes = params[:classes]
-    uri = getRankedElementsURI(params)
+    uri = getCountsURI(params)
     @elements = []
     @elements_page_count = 0
     @error = nil
@@ -199,7 +189,7 @@ private
     resources_paginate
   end
 
-  def getRankedElementsURI(params)
+  def getCountsURI(params)
     classesArgs = []
     if params[:classes].kind_of?(Hash)
       classesHash = params[:classes]
@@ -209,7 +199,7 @@ private
         classesArgs.push(classesStr)
       end
     end
-    return RI_RANKED_ELEMENTS_URI + "?" + classesArgs.join('&') + '&max_level=' + RI_HIERARCHY_MAX_LEVEL
+    return "#{REST_URI}/resource_index/counts" + "?" + classesArgs.join('&')
   end
 
   def set_encoding

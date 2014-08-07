@@ -24,7 +24,7 @@
         -acronym = r['acronym']
         -resource_data = @resources_hash[acronym]
         -resource_name = resource_data[:name]
-        -total_results = r['totalResults'].to_i
+        -total_results = r['count'].to_i
         -total_elements = resource_data[:count]
         -total_percent = (BigDecimal(total_results) / BigDecimal(total_elements)) * BigDecimal.new(100)
         -total_percent = total_percent < 0.01 ? '< 0.01%' : sprintf('%0.2f%', total_percent)

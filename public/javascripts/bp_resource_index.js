@@ -51,8 +51,7 @@ jQuery(document).ready(function () {
     }, function (options, response, event) {
       // jQuery("#resource_index_classes_chzn .chzn-results li.active-result").remove();
       var format = 'json';
-      //var search_url = jQuery(document).data().bp.config.rest_url+"/search"; // direct REST API
-      var search_url = "/resource_index/search_classes";  // REST API via resource_index_controller::search_classes
+      var search_url = jQuery(document).data().bp.config.rest_url+"/search"; // direct REST API
       var search_term = jQuery.trim(options.term);
       if (/[^*]$/.test(search_term)) {
         search_term += '*';
@@ -72,11 +71,10 @@ jQuery(document).ready(function () {
           jQuery("#search_spinner").hide();
           jQuery("#search_results").show();
           var classes = {}, classHTML = "";
-          //jQuery.each(data.collection, function (index, cls) {
-          jQuery.each(data, function (index, cls) {
-            var cls_id = cls.id;
-            var ont_id = cls.ontology.id;
-            var ont_name = cls.ontology.name; //ont_uri.split('/').slice(-1)[0];
+          jQuery.each(data.collection, function (index, cls) {
+            var cls_id = cls["@id"];
+            var ont_id = cls.links.ontology;
+            var ont_name = ont_id.split('/').slice(-1)[0];
             classHTML = "" +
               "<span class='search_ontology' title='" + ont_id + "'>" +
                 "<span class='search_class' title='" + cls_id + "'>" +
@@ -163,7 +161,7 @@ var BP_urlParams = {};
     decode = function (s) {
       return decodeURIComponent(s.replace(pl, " "));
     },
-    query = window.location.search.substring(1);
+  query = window.location.search.substring(1);
   queryH = window.location.hash.substring(1);
 
   while (match = search.exec(query)) {
