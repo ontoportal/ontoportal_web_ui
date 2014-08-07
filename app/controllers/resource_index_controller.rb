@@ -186,7 +186,7 @@ private
   def resources2map_id2name(resourcesList)
     resources_map = {}
     resourcesList.each do |r|
-      resources_map[r[:acronym]] = r[:resourceName]
+      resources_map[r[:acronym]] = r[:name]
     end
     return resources_map
   end

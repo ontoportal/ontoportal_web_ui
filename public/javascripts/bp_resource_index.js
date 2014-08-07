@@ -330,14 +330,14 @@ function displayResource(params) {
   if (resource === undefined) {
     return;
   }
-  var resourceName = resources[resource].resourceName;
+  var name = resources[resource].name;
   // Only retrieve class information if this is an initial load
   if (jQuery("#resource_index_classes").val() !== null) {
-    showResourceResults(resource, resourceName);
+    showResourceResults(resource, name);
     return;
   }
   displayClasses(params["classes"], function () {
-    showResourceResults(resource, resourceName);
+    showResourceResults(resource, name);
   });
 }
 
@@ -434,7 +434,7 @@ function updateCounts() {
 
 jQuery("a.results_link").live("click", function (event) {
   var resource = jQuery(this).data("resource_id");
-  //var resourceName = jQuery(this).data("resource_name");
+  //var name = jQuery(this).data("resource_name");
   var url = "/resource_index/resources/" + resource + "?" + chosenSearchClassesArgs();
   pushDisplayResource(url, {classes: chosenSearchClasses(), acronym: resource});
 });
@@ -444,11 +444,11 @@ jQuery("a#show_all_resources").live("click", function () {
   pushDisplayResources(url, {classes: chosenSearchClasses()});
 });
 
-function showResourceResults(resource, resourceName) {
+function showResourceResults(resource, name) {
   jQuery(".resource_info").addClass("not_visible");
   jQuery("#resource_table").addClass("not_visible");
   jQuery("#resource_info_" + resource).removeClass("not_visible");
-  jQuery("#resource_title").html(resourceName);
+  jQuery("#resource_title").html(name);
   jQuery(".resource_title").removeClass("not_visible");
   jQuery("#resource_title").removeClass("not_visible");
   updateCounts();

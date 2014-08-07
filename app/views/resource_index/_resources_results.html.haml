@@ -23,7 +23,7 @@
       -@elements.each do |r|
         -acronym = r['acronym']
         -resource_data = @resources_hash[acronym]
-        -resource_name = resource_data[:resourceName]
+        -resource_name = resource_data[:name]
         -total_results = r['totalResults'].to_i
         -total_elements = resource_data[:count]
         -total_percent = (BigDecimal(total_results) / BigDecimal(total_elements)) * BigDecimal.new(100)
