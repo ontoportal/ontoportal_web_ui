@@ -1,13 +1,13 @@
--resourceId = @resource_results['resourceId']
-%div.element_results.paginate_ajax{:id => "#{resourceId}_results"}
-  -resource_data = @resources_hash[resourceId]
+-acronym = @resource_results['acronym']
+%div.element_results.paginate_ajax{:id => "#{acronym}_results"}
+  -resource_data = @resources_hash[acronym]
   -resource_url = resource_data.include?(:resourceElementURL) ? resource_data[:resourceElementURL] : ""
   -@resource_results['elements'].each do |element|
     // this gsub generates: active_support/core_ext/string/output_safety.rb:22: warning: regexp match /.../n against to UTF-8 string
     -element_id = element['id']
     -element_id_clean = CGI.escape(element_id.gsub(/[^0-9A-Za-z]/, ""))
     -element_url = resource_url + element_id
-    -element_data = {:clean_element_id => element_id_clean, :element_id => CGI.escape(element_id), :resource_id => resourceId}
+    -element_data = {:clean_element_id => element_id_clean, :element_id => CGI.escape(element_id), :resource_id => acronym}
     -fields_hash = element['fields']
     -fields_hash.delete_if {|k,v| v.nil? }  # remove the 'links' and 'context', which have nil values.
     -field_main = fields_hash[ resource_data[:mainContext] ] # extract the 'main' field.
@@ -34,10 +34,10 @@
             %p{:data => {:context_name => field_name}}= field_text(field_data)  # see resource_index_helper.rb
           %span{:class => "element_info"}
             %a{:href => element_url, :target => "_blank"} view source record
-  =# will_paginate @resource_results, :update => "#{resourceId}_results",
+  =# will_paginate @resource_results, :update => "#{acronym}_results",
     :params => { :offset => @resource_results['offset'],
       :limit => @resource_results['limit'],
-      :resourceId => resourceId,
+      :acronym => acronym,
       :classes => @classes,
       :controller => "resource_index",
       :action => "results_paginate" }

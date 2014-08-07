@@ -110,7 +110,7 @@ class ResourceIndexController < ApplicationController
       @resources ||= get_resource_index_resources # application_controller
       @resources_hash ||= resources2hash(@resources)  # required in partial 'resources_results'
       resources_map = resources2map_id2name(@resources)
-      @elements.sort! {|a,b| resources_map[a['resourceId']].downcase <=> resources_map[b['resourceId']].downcase}
+      @elements.sort! {|a,b| resources_map[a['acronym']].downcase <=> resources_map[b['acronym']].downcase}
       #@elements = convert_for_will_paginate(@elements)
     end
     render :partial => "resources_results"
@@ -124,7 +124,7 @@ class ResourceIndexController < ApplicationController
   #
   def results_paginate
     offset = (params[:page].to_i - 1) * params[:limit].to_i
-    ranked_elements = ri.ranked_elements(params[:conceptids], :resourceids => [params[:resourceId]], :offset => offset, :limit => params[:limit])
+    ranked_elements = ri.ranked_elements(params[:conceptids], :acronyms => [params[:acronym]], :offset => offset, :limit => params[:limit])
 
     # There should be only one resource returned because we pass it in above
 
@@ -143,7 +143,7 @@ class ResourceIndexController < ApplicationController
     @error = nil
     uri = RI_ELEMENT_ANNOTATIONS_URI +
         '?elements=' + params[:elementid] +
-        '&resources=' + params[:resourceid] +
+        '&resources=' + params[:acronym] +
         '&' + params[:classes] +
         '&max_level=' + RI_HIERARCHY_MAX_LEVEL
     begin
@@ -178,7 +178,7 @@ private
     resources_hash = {}
     resourcesList.each do |r|
       # convert struct to hash (to_json will create a javascript object).
-      resources_hash[r[:resourceId]] = struct_to_hash(r)
+      resources_hash[r[:acronym]] = struct_to_hash(r)
     end
     return resources_hash
   end
@@ -186,7 +186,7 @@ private
   def resources2map_id2name(resourcesList)
     resources_map = {}
     resourcesList.each do |r|
-      resources_map[r[:resourceId]] = r[:resourceName]
+      resources_map[r[:acronym]] = r[:resourceName]
     end
     return resources_map
   end

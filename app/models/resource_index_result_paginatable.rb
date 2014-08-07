@@ -1,5 +1,5 @@
 class ResourceIndexResultPaginatable < WillPaginate::Collection
-  attr_accessor :totalResults, :offset, :limit, :resourceId
+  attr_accessor :totalResults, :offset, :limit, :acronym
 
   def initialize(hash)
     return if hash.nil?
@@ -8,7 +8,7 @@ class ResourceIndexResultPaginatable < WillPaginate::Collection
     self.totalResults = hash[:totalResults]
     self.offset = hash[:offset]
     self.limit = hash[:limit]
-    self.resourceId = hash[:resourceId]
+    self.acronym = hash[:acronym]
 
     # Fill out attributes needed by will_paginate
     page_number = (self.offset / self.limit) + 1

@@ -6,7 +6,7 @@ module ResourceIndexHelper
     @elements = elements
     @resources_hash = resources_hash
     # Sort resources alphabetically
-    @elements.resources.sort! {|a,b| @resources_hash[a[:resourceId]][:resourceName] <=> @resources_hash[b[:resourceId]][:resourceName]}
+    @elements.resources.sort! {|a,b| @resources_hash[a[:acronym]][:resourceName] <=> @resources_hash[b[:acronym]][:resourceName]}
     render :partial => 'resource_results'
   end
 
@@ -14,8 +14,8 @@ module ResourceIndexHelper
     @resources_for_links = resources
     @resources_for_select = []
     resources.each do |resource|
-      resource_name = resource[:resourceName] ||= resources_hash[resource[:resourceId].downcase.to_sym][:resourceName] rescue "unknown"
-      @resources_for_select << ["#{resource_name} (#{number_with_delimiter(resource[:totalElements] ||= resource[:totalResults], :delimiter => ",")} records)", resource[:resourceId]]
+      resource_name = resource[:resourceName] ||= resources_hash[resource[:acronym].downcase.to_sym][:resourceName] rescue "unknown"
+      @resources_for_select << ["#{resource_name} (#{number_with_delimiter(resource[:totalElements] ||= resource[:totalResults], :delimiter => ",")} records)", resource[:acronym]]
     end
     render :partial => 'resources_links'   # TODO: WHERE IS THIS PARTIAL FILE?
   end

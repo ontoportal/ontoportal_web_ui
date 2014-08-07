@@ -176,7 +176,7 @@ var BP_urlParams = {};
 
 function pageInit() {
   var state = History.getState();
-  var params = {}, paramLocations = ["root", "resources", "resourceId"], route, queryString;
+  var params = {}, paramLocations = ["root", "resources", "acronym"], route, queryString;
   route = state.hash.split("?");
   queryString = (typeof route[1] !== "undefined") ? "" : route[1];
   route = route[0].split("/").slice(1);
@@ -189,7 +189,7 @@ function pageInit() {
   //
   params["classes"] = (typeof params["classes"] !== "undefined") ? params["classes"].split(",") : undefined;
   BP_urlParams = params;
-  if (typeof params["resourceId"] !== "undefined") {
+  if (typeof params["acronym"] !== "undefined") {
     router.route("resource", params);
   } else if (typeof params["resources"] !== "undefined") {
     router.route("resources", params);
@@ -309,7 +309,7 @@ function Router() {
   };
 
   this.resource = function (params) {
-    if (typeof params["classes"] === "undefined" || typeof params["resourceId"] === "undefined") {
+    if (typeof params["classes"] === "undefined" || typeof params["acronym"] === "undefined") {
       replaceIndex();
     }
     displayResource(params);
@@ -326,7 +326,7 @@ function Router() {
 router = new Router();
 
 function displayResource(params) {
-  var resource = params["resourceId"];
+  var resource = params["acronym"];
   if (resource === undefined) {
     return;
   }
@@ -436,7 +436,7 @@ jQuery("a.results_link").live("click", function (event) {
   var resource = jQuery(this).data("resource_id");
   //var resourceName = jQuery(this).data("resource_name");
   var url = "/resource_index/resources/" + resource + "?" + chosenSearchClassesArgs();
-  pushDisplayResource(url, {classes: chosenSearchClasses(), resourceId: resource});
+  pushDisplayResource(url, {classes: chosenSearchClasses(), acronym: resource});
 });
 
 jQuery("a#show_all_resources").live("click", function () {
@@ -478,7 +478,7 @@ function Element(id, cleanId, classes, resource) {
       data    : {
         elementid : this.id,
         classes: chosenSearchClassesArgs(this.classes),
-        resourceid: this.resource
+        acronym: this.resource
       },
       dataType: "json",
       success : function (data) {
