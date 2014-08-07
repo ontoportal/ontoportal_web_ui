@@ -26,12 +26,8 @@ class ResourceIndexController < ApplicationController
   before_filter :set_encoding
 
   def index
-    # Note: REST API sorts by resourceId (acronym)
     @resources ||= get_resource_index_resources # application_controller
-    # Resource Index ontologies - REST API filters them for those that are in the triple store.
-    # Data structure is a list of linked data ontology models
-    @ri_ontologies ||= get_resource_index_ontologies # application_controller
-    # Extract ontology attributes for javascript
+    @ri_ontologies = LinkedData::Client::Models::Ontology.all(include: "acronym,administeredBy,group,hasDomain,name,notes,projects,reviews,summaryOnly,viewingRestriction")
     @ont_ids = []
     @ont_acronyms = {}
     @ont_names = {}
