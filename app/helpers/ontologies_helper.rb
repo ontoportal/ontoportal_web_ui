@@ -40,7 +40,8 @@ module OntologiesHelper
     else
       uri = submission.id + "/download?apikey=#{get_apikey}"
       link = "<a href='#{uri}'>#{submission.hasOntologyLanguage}</a>"
-      if ontology.explore.latest_submission({:include_status => 'ready'}).submissionId == submission.submissionId
+      latest = ontology.explore.latest_submission({:include_status => 'ready'})
+      if latest && latest.submissionId == submission.submissionId
         link += " | <a href='#{ontology.id}/download?apikey=#{get_apikey}&download_format=csv'>CSV</a>"
       end
       unless submission.diffFilePath.nil?
