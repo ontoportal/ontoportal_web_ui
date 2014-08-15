@@ -5,7 +5,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :users, :as => :accounts
 
-  map.resources :users
+  map.resources :users, :requirements => { :id => /.*/ }
 
   map.resources :reviews
 
