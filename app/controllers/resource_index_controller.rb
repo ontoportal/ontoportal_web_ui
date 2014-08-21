@@ -26,7 +26,7 @@ class ResourceIndexController < ApplicationController
   before_filter :set_encoding
 
   def index
-    @resources ||= get_resource_index_resources # application_controller
+    @resources ||= LinkedData::Client::ResourceIndex.resources
     @ri_ontologies = LinkedData::Client::Models::Ontology.all(include: "acronym,administeredBy,group,hasDomain,name,notes,projects,reviews,summaryOnly,viewingRestriction")
     @ont_ids = []
     @ont_acronyms = {}
@@ -61,68 +61,31 @@ class ResourceIndexController < ApplicationController
     render :text => classes_json
   end
 
-
   def resources_table
     create()
   end
 
   def create
     @bp_last_params = params
-    @classes = params[:classes]
-    uri = getCountsURI(params)
-    @elements = []
-    @elements_page_count = 0
-    @error = nil
-    while true
-      begin
-        # Resource index can be very slow and timeout, so parse_json includes one retry.
-        ranked_elements_page = parse_json(uri) # See application_controller.rb
-      rescue Exception => e
-        @error = e.message
-        LOG.add :error, @error
-        break
-      end
-      # Might generate missing method exception here on a 404 response.
-      @error = ranked_elements_page['error']
-      if @error.nil?
-        @elements.concat ranked_elements_page['collection']
-        break if @elements_page_count >= ranked_elements_page['pageCount']
-        break if ranked_elements_page['nextPage'].nil?
-        uri = ranked_elements_page['nextPage']
-        @elements_page_count += 1
-      else
-        LOG.add :error, @error
-        break
-      end
-    end
-    if @error.nil?
-      # Sort ranked elements list by resource name
-      @resources ||= get_resource_index_resources # application_controller
-      @resources_hash ||= resources2hash(@resources)  # required in partial 'resources_results'
-      resources_map = resources2map_id2name(@resources)
-      @elements.sort! {|a,b| resources_map[a['acronym']].downcase <=> resources_map[b['acronym']].downcase}
-      #@elements = convert_for_will_paginate(@elements)
-    end
+    @classes = lookup_classes(params)
+    @counts = LinkedData::Client::ResourceIndex.counts(@classes)
+
+    @resources ||= LinkedData::Client::ResourceIndex.resources # application_controller
+    @resources_hash ||= resources2hash(@resources)  # required in partial 'resources_results'
+
     render :partial => "resources_results"
   end
 
-  #
-  #
-  # TODO: Revise pagination to work with stagedata paged results object.
-  # Note: the create() method gets all the paged results, see ranked_elements_page above.
-  #
-  #
   def results_paginate
-    offset = (params[:page].to_i - 1) * params[:limit].to_i
-    ranked_elements = ri.ranked_elements(params[:conceptids], :acronyms => [params[:acronym]], :offset => offset, :limit => params[:limit])
+    params[:page]  ||= 1
+    params[:limit] ||= 10
+    @classes = lookup_classes(params)
+    @documents = LinkedData::Client::ResourceIndex.documents(params[:acronym], @classes, page: params[:page], pagesize: params[:limit])
+    @resource_results = ResourceIndexResultPaginatable.new(@documents)
+    @acronym = params[:acronym]
 
-    # There should be only one resource returned because we pass it in above
-
-    @resources ||= get_resource_index_resources # application_controller
+    @resources ||= LinkedData::Client::ResourceIndex.resources
     @resources_hash ||= resources2hash(@resources)  # required in partial 'resources_results'
-
-    @resource_results = convert_for_will_paginate(ranked_elements.resources)[0]
-    @concept_ids = params[:conceptids]
 
     render :partial => "resource_results"
   end
@@ -146,8 +109,6 @@ class ResourceIndexController < ApplicationController
       LOG.add :error, @error
     end
     # Might generate missing method exception here on a 404 response.
-    #binding.pry
-    #@error = @annotations['error']  # not sure what this looks like on a 404 yet
     if @error.nil?
       @annotations.each do |a|
         field = a['elementField']
@@ -160,9 +121,7 @@ class ResourceIndexController < ApplicationController
     render :json => positions
   end
 
-
-private
-
+  private
 
   def resources2hash(resourcesList)
     resources_hash = {}
@@ -200,6 +159,19 @@ private
       end
     end
     return "#{REST_URI}/resource_index/counts" + "?" + classesArgs.join('&')
+  end
+
+  def lookup_classes(params)
+    classes = []
+    if params[:classes].kind_of?(Hash)
+      classesHash = params[:classes]
+      classesHash.each do |ont_uri, cls_uris|
+        cls_uris = cls_uris.is_a?(Array) ? cls_uris : [cls_uris]
+        ont = LinkedData::Client::Models::Ontology.find(ont_uri)
+        cls_uris.each {|cls_id| classes << ont.explore.single_class(cls_id)}
+      end
+    end
+    return classes
   end
 
   def set_encoding

@@ -681,10 +681,6 @@ class ApplicationController < ActionController::Base
     return recent_mappings
   end
 
-  def get_resource_index_resources
-    return LinkedData::Client::HTTP.get(RI_RESOURCES_URI)
-  end
-
   def get_resource_index_annotation_stats
     begin
       stats_hash = Rails.cache.read(RI_STATS_URI)

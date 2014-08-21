@@ -5,18 +5,16 @@ class ResourceIndexResultPaginatable < WillPaginate::Collection
     return if hash.nil?
 
     # Our custom attributes
-    self.totalResults = hash[:totalResults]
-    self.offset = hash[:offset]
-    self.limit = hash[:limit]
-    self.acronym = hash[:acronym]
+    self.totalResults = hash.pageCount * hash.collection.length
+    self.offset = hash.page * hash.collection.length
+    self.limit = hash.collection.length
 
     # Fill out attributes needed by will_paginate
-    page_number = (self.offset / self.limit) + 1
-    @current_page = page_number
+    @current_page = hash.page
     @per_page = self.limit
     self.total_entries = self.totalResults
 
     # Put the array elements in place
-    self.replace(hash[:elements])
+    self.replace(hash.collection)
   end
 end

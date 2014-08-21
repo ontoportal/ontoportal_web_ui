@@ -54,14 +54,14 @@ module ResourceIndexHelper
     end
   end
 
-  def field_text(field)
+  def field_text(text, field_info)
     # Adapted from element_text for the new API data. (TODO: element_text could disappear if this works?)
-    onts = field['associatedOntologies']
+    onts = field_info[:ontology]
     # onts is a list of ontologies associated with an element field.  It may be empty.
     # If it contains ontology data, it may contain an ontology id (int > 0) and we should return a link.
     # We'll resolve the link to a label using JS once the page loads.
-    if onts.empty?
-      h(field['text'])
+    if !onts || onts.empty?
+      h(text)
     else
       # TODO
       # TODO
