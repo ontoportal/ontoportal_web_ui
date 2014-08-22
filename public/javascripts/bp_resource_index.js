@@ -51,8 +51,7 @@ jQuery(document).ready(function () {
     }, function (options, response, event) {
       // jQuery("#resource_index_classes_chzn .chzn-results li.active-result").remove();
       var format = 'json';
-      //var search_url = jQuery(document).data().bp.config.rest_url+"/search"; // direct REST API
-      var search_url = "/resource_index/search_classes";  // REST API via resource_index_controller::search_classes
+      var search_url = jQuery(document).data().bp.config.rest_url+"/search"; // direct REST API
       var search_term = jQuery.trim(options.term);
       if (/[^*]$/.test(search_term)) {
         search_term += '*';
@@ -72,11 +71,10 @@ jQuery(document).ready(function () {
           jQuery("#search_spinner").hide();
           jQuery("#search_results").show();
           var classes = {}, classHTML = "";
-          //jQuery.each(data.collection, function (index, cls) {
-          jQuery.each(data, function (index, cls) {
-            var cls_id = cls.id;
-            var ont_id = cls.ontology.id;
-            var ont_name = cls.ontology.name; //ont_uri.split('/').slice(-1)[0];
+          jQuery.each(data.collection, function (index, cls) {
+            var cls_id = cls["@id"];
+            var ont_id = cls.links.ontology;
+            var ont_name = ont_id.split('/').slice(-1)[0];
             classHTML = "" +
               "<span class='search_ontology' title='" + ont_id + "'>" +
                 "<span class='search_class' title='" + cls_id + "'>" +
@@ -147,7 +145,7 @@ jQuery(document).ready(function () {
     el_text.toggleClass("not_visible");
     if (el_text.attr("highlighted") !== "true") {
       var element = new Element(el.attr("data-element_id"), cleanElementId, chosenSearchClasses(), el.attr("data-resource_id"));
-      jQuery("#" + element.cleanId + "_text .ri_legend_container").append("<span id='" + element.cleanId + "_ani'class='highlighting'>highlighting... <img style='vertical-align: text-bottom;' src='/images/spinners/spinner_000000_16px.gif'></span>");
+      el.parent().append("<span id='" + element.cleanId + "_ani'class='highlighting'>highlighting... <img style='vertical-align: text-bottom;' src='/images/spinners/spinner_000000_16px.gif'></span>");
       element.highlightAnnotationPositions();
       el_text.attr("highlighted", "true");
     }
@@ -163,7 +161,7 @@ var BP_urlParams = {};
     decode = function (s) {
       return decodeURIComponent(s.replace(pl, " "));
     },
-    query = window.location.search.substring(1);
+  query = window.location.search.substring(1);
   queryH = window.location.hash.substring(1);
 
   while (match = search.exec(query)) {
@@ -176,7 +174,7 @@ var BP_urlParams = {};
 
 function pageInit() {
   var state = History.getState();
-  var params = {}, paramLocations = ["root", "resources", "resourceId"], route, queryString;
+  var params = {}, paramLocations = ["root", "resources", "acronym"], route, queryString;
   route = state.hash.split("?");
   queryString = (typeof route[1] !== "undefined") ? "" : route[1];
   route = route[0].split("/").slice(1);
@@ -189,7 +187,7 @@ function pageInit() {
   //
   params["classes"] = (typeof params["classes"] !== "undefined") ? params["classes"].split(",") : undefined;
   BP_urlParams = params;
-  if (typeof params["resourceId"] !== "undefined") {
+  if (typeof params["acronym"] !== "undefined") {
     router.route("resource", params);
   } else if (typeof params["resources"] !== "undefined") {
     router.route("resources", params);
@@ -309,7 +307,7 @@ function Router() {
   };
 
   this.resource = function (params) {
-    if (typeof params["classes"] === "undefined" || typeof params["resourceId"] === "undefined") {
+    if (typeof params["classes"] === "undefined" || typeof params["acronym"] === "undefined") {
       replaceIndex();
     }
     displayResource(params);
@@ -326,18 +324,18 @@ function Router() {
 router = new Router();
 
 function displayResource(params) {
-  var resource = params["resourceId"];
-  if (resource === undefined) {
+  var resource = params["acronym"];
+  if (resource === undefined || resources[resource] === undefined) {
     return;
   }
-  var resourceName = resources[resource].resourceName;
+  var name = resources[resource].name;
   // Only retrieve class information if this is an initial load
   if (jQuery("#resource_index_classes").val() !== null) {
-    showResourceResults(resource, resourceName);
+    showResourceResults(resource, name);
     return;
   }
   displayClasses(params["classes"], function () {
-    showResourceResults(resource, resourceName);
+    showResourceResults(resource, name);
   });
 }
 
@@ -434,9 +432,9 @@ function updateCounts() {
 
 jQuery("a.results_link").live("click", function (event) {
   var resource = jQuery(this).data("resource_id");
-  //var resourceName = jQuery(this).data("resource_name");
+  //var name = jQuery(this).data("resource_name");
   var url = "/resource_index/resources/" + resource + "?" + chosenSearchClassesArgs();
-  pushDisplayResource(url, {classes: chosenSearchClasses(), resourceId: resource});
+  pushDisplayResource(url, {classes: chosenSearchClasses(), acronym: resource});
 });
 
 jQuery("a#show_all_resources").live("click", function () {
@@ -444,11 +442,11 @@ jQuery("a#show_all_resources").live("click", function () {
   pushDisplayResources(url, {classes: chosenSearchClasses()});
 });
 
-function showResourceResults(resource, resourceName) {
+function showResourceResults(resource, name) {
   jQuery(".resource_info").addClass("not_visible");
   jQuery("#resource_table").addClass("not_visible");
   jQuery("#resource_info_" + resource).removeClass("not_visible");
-  jQuery("#resource_title").html(resourceName);
+  jQuery("#resource_title").html(name);
   jQuery(".resource_title").removeClass("not_visible");
   jQuery("#resource_title").removeClass("not_visible");
   updateCounts();
@@ -473,18 +471,21 @@ function Element(id, cleanId, classes, resource) {
 
   this.highlightAnnotationPositions = function () {
     var element = this;
+    var text_map = {};
+    jQuery(this.jdomId + " .element_text p").each(function(){
+      var p = jQuery(this);
+      text_map[p.attr("data-context_name")] = p.html();
+    });
     jQuery.ajax({
-      url     : "/resource_index/element_annotations",
+      url     : "/resource_index/element_annotations?"+chosenSearchClassesArgs(this.classes),
       data    : {
         elementid : this.id,
-        classes: chosenSearchClassesArgs(this.classes),
-        resourceid: this.resource
+        element_text: text_map,
+        acronym: this.resource
       },
       dataType: "json",
+      type: "POST",
       success : function (data) {
-
-        console.log(data);
-
         element.positions = data;
         element.highlight();
       }
@@ -493,17 +494,15 @@ function Element(id, cleanId, classes, resource) {
 
   this.highlight = function () {
     var element = this;
-    jQuery.each(this.positions,
-      function (contextName, positions) {
-        var context = jQuery(element.jdomId + " p[data-context_name=" + contextName + "]");
-        if (context.length !== 0) {
-          highlighter = new PositionHighlighter();
-          // Replace the current text with highlighted version
-          context.html(highlighter.highlightUsingPosition(context.html(), positions));
-        }
+    jQuery.each(this.positions, function(contextName, positions) {
+      var context = jQuery(element.jdomId + " p[data-context_name=" + contextName + "]");
+      if (positions.length > 0) {
+        highlighter = new PositionHighlighter();
+        // Replace the current text with highlighted version
+        context.html(highlighter.highlightUsingPosition(context.html(), positions));
       }
-    );
-    jQuery("#" + this.cleanId + "_text").find(".highlighting").remove();
+    });
+    jQuery("#" + this.cleanId + "_link").find(".highlighting").remove();
     if (this.loadAni !== null) {
       clearInterval(this.loadAni);
     }
@@ -530,7 +529,7 @@ function PositionHighlighter() {
     }
 
     for (var j = 0; j < positionsLength; j++) {
-      highlightType = positions[j]['type'];
+      highlightType = positions[j]['type'] || "direct";
       startPosition = positions[j]['from'];
       endPosition = positions[j]['to'];
 
@@ -573,16 +572,6 @@ function currentOntologyAcronyms() {
   }
   return ont_acronyms;
 }
-
-
-//function currentConceptIds() {
-//  var conceptIds = jQuery("#resource_index_classes").val();
-//  if (typeof conceptIds === "string") {
-//    conceptIds = conceptIds.split(",");
-//  }
-//  return conceptIds;
-//}
-
 
 function chosenSearchClasses() {
   var chosenClassesMap = {};

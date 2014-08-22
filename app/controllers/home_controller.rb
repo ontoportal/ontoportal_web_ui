@@ -42,7 +42,7 @@ class HomeController < ApplicationController
     begin
       @resources = get_resource_index_resources # application_controller
       @ri_resources = @resources.length
-      @ri_record_count = @resources.map {|r| r.totalElements}.sum
+      @ri_record_count = @resources.map {|r| r.count}.sum
     rescue
       @resources = []
       @ri_resources = 0

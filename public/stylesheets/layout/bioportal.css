@@ -2247,10 +2247,6 @@ div#resource_results div.resource_results h2 {
 }
 .highlighting {
   font-style: oblique;
-  padding-left: 10px;
-  margin-left: 475px;
-  margin-top: -35px;
-  position: absolute;
 }
 #search_button {
   float: right;
