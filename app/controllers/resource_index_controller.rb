@@ -14,14 +14,6 @@ class ResourceIndexController < ApplicationController
 
   layout 'ontology'
 
-  # Constants moved to the ApplicationController so they are available elsewhere too.
-  #RESOURCE_INDEX_URI = REST_URI + "/resource_index"
-  #RI_ELEMENT_ANNOTATIONS_URI = RESOURCE_INDEX_URI + "/element_annotations"
-  #RI_ONTOLOGIES_URI = RESOURCE_INDEX_URI + "/ontologies"
-  #RI_RANKED_ELEMENTS_URI = RESOURCE_INDEX_URI + "/ranked_elements"
-  #RI_RESOURCES_URI = RESOURCE_INDEX_URI + "/resources"
-  RI_HIERARCHY_MAX_LEVEL='3'
-
   # Resource Index annotation offsets rely on latin-1 character sets for the count to be right. So we set all responses as latin-1.
   before_filter :set_encoding
 

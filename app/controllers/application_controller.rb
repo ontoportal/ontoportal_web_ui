@@ -26,11 +26,6 @@ class ApplicationController < ActionController::Base
   REST_URI_BATCH = REST_URI + '/batch'
   REST_URI_RECENT_MAPPINGS = "#{REST_URI}/mappings/recent/"
 
-  # Constants used primarily in the resource_index_controller, but also elsewhere.
-  RESOURCE_INDEX_URI = REST_URI + '/resource_index'
-  RI_ELEMENT_ANNOTATIONS_URI = RESOURCE_INDEX_URI + '/element_annotations'
-  RI_RANKED_ELEMENTS_URI = RESOURCE_INDEX_URI + '/ranked_elements'
-  RI_RESOURCES_URI = RESOURCE_INDEX_URI + '/resources'
   # Note that STATS is a DIRECT CONNECTION to the JAVA-REST API
   RI_STATS_URI = 'http://rest.bioontology.org/resource_index/statistics/all'
 
