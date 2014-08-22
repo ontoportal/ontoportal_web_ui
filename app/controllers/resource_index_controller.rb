@@ -103,6 +103,7 @@ class ResourceIndexController < ApplicationController
     class_ids = classes.values
     text_sections.keys.each do |section|
       text = text_sections[section]
+      next if text.nil? || text.empty?
       threads << Thread.new do
         query = "#{$REST_URL}/annotator"
         query += "?text=" + CGI.escape(text)
