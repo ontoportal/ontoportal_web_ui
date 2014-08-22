@@ -12,7 +12,7 @@
     Search Results
     %a.h2_link{:href => "javascript:void(0);", :id => "show_hide_no_results"} <span class="show_hide_text">show</span><span class="show_hide_text not_visible">hide</span> resources with no matches
 
-  %table.zebra{:style => "width: 600px;"}
+  %table.zebra{:style => "width: 800px;"}
     %thead
       %tr
         %th Resource
@@ -51,7 +51,6 @@
 %div#resource_results
   -@counts.each do |acronym, count|
     - next unless count
-    /-@resource_results = r #TODO figure out how to get the resource data via
     %div.resource_info.resource_details.not_visible{:id => "resource_info_#{acronym}"}
       %div.resource_image
         %img{:src => @resources_hash[acronym.to_s][:logo], :class => "resource_image"}

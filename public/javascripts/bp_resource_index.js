@@ -145,7 +145,7 @@ jQuery(document).ready(function () {
     el_text.toggleClass("not_visible");
     if (el_text.attr("highlighted") !== "true") {
       var element = new Element(el.attr("data-element_id"), cleanElementId, chosenSearchClasses(), el.attr("data-resource_id"));
-      jQuery("#" + element.cleanId + "_text .ri_legend_container").append("<span id='" + element.cleanId + "_ani'class='highlighting'>highlighting... <img style='vertical-align: text-bottom;' src='/images/spinners/spinner_000000_16px.gif'></span>");
+      el.parent().append("<span id='" + element.cleanId + "_ani'class='highlighting'>highlighting... <img style='vertical-align: text-bottom;' src='/images/spinners/spinner_000000_16px.gif'></span>");
       element.highlightAnnotationPositions();
       el_text.attr("highlighted", "true");
     }
@@ -325,7 +325,7 @@ router = new Router();
 
 function displayResource(params) {
   var resource = params["acronym"];
-  if (resource === undefined) {
+  if (resource === undefined || resources[resource] === undefined) {
     return;
   }
   var name = resources[resource].name;
@@ -471,18 +471,21 @@ function Element(id, cleanId, classes, resource) {
 
   this.highlightAnnotationPositions = function () {
     var element = this;
+    var text_map = {};
+    jQuery(this.jdomId + " .element_text p").each(function(){
+      var p = jQuery(this);
+      text_map[p.attr("data-context_name")] = p.html();
+    });
     jQuery.ajax({
-      url     : "/resource_index/element_annotations",
+      url     : "/resource_index/element_annotations?"+chosenSearchClassesArgs(this.classes),
       data    : {
         elementid : this.id,
-        classes: chosenSearchClassesArgs(this.classes),
+        element_text: text_map,
         acronym: this.resource
       },
       dataType: "json",
+      type: "POST",
       success : function (data) {
-
-        console.log(data);
-
         element.positions = data;
         element.highlight();
       }
@@ -491,17 +494,15 @@ function Element(id, cleanId, classes, resource) {
 
   this.highlight = function () {
     var element = this;
-    jQuery.each(this.positions,
-      function (contextName, positions) {
-        var context = jQuery(element.jdomId + " p[data-context_name=" + contextName + "]");
-        if (context.length !== 0) {
-          highlighter = new PositionHighlighter();
-          // Replace the current text with highlighted version
-          context.html(highlighter.highlightUsingPosition(context.html(), positions));
-        }
+    jQuery.each(this.positions, function(contextName, positions) {
+      var context = jQuery(element.jdomId + " p[data-context_name=" + contextName + "]");
+      if (positions.length > 0) {
+        highlighter = new PositionHighlighter();
+        // Replace the current text with highlighted version
+        context.html(highlighter.highlightUsingPosition(context.html(), positions));
       }
-    );
-    jQuery("#" + this.cleanId + "_text").find(".highlighting").remove();
+    });
+    jQuery("#" + this.cleanId + "_link").find(".highlighting").remove();
     if (this.loadAni !== null) {
       clearInterval(this.loadAni);
     }
@@ -528,7 +529,7 @@ function PositionHighlighter() {
     }
 
     for (var j = 0; j < positionsLength; j++) {
-      highlightType = positions[j]['type'];
+      highlightType = positions[j]['type'] || "direct";
       startPosition = positions[j]['from'];
       endPosition = positions[j]['to'];
 
@@ -571,16 +572,6 @@ function currentOntologyAcronyms() {
   }
   return ont_acronyms;
 }
-
-
-//function currentConceptIds() {
-//  var conceptIds = jQuery("#resource_index_classes").val();
-//  if (typeof conceptIds === "string") {
-//    conceptIds = conceptIds.split(",");
-//  }
-//  return conceptIds;
-//}
-
 
 function chosenSearchClasses() {
   var chosenClassesMap = {};

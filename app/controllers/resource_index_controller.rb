@@ -91,37 +91,30 @@ class ResourceIndexController < ApplicationController
   end
 
   def element_annotations
-    @annotations = []
-    positions = {}
-    @error = nil
-    uri = RI_ELEMENT_ANNOTATIONS_URI +
-        '?elements=' + params[:elementid] +
-        '&resources=' + params[:acronym] +
-        '&' + params[:classes] +
-        '&max_level=' + RI_HIERARCHY_MAX_LEVEL
-    begin
-      # Resource index can be very slow and timeout, so parse_json includes one retry.
-      @annotations = parse_json(uri) # See application_controller.rb
-      # Removing HTTP.get because it mangles params in uri
-      #@annotations = LinkedData::Client::HTTP.get(uri)
-    rescue Exception => e
-      @error = e.message
-      LOG.add :error, @error
-    end
-    # Might generate missing method exception here on a 404 response.
-    if @error.nil?
-      @annotations.each do |a|
-        field = a['elementField']
-        positions[field] ||= []
-        positions[field] << { :from => a['from'], :to => a['to'], :type => a['annotationType'] }
-      end
-    else
-      LOG.add :error, @error
-    end
-    render :json => positions
+    render :json => annotate_filter_to_classes(params["element_text"], params["classes"])
   end
 
   private
+
+  ##
+  # Annotate with a given ontology and filter results to given class
+  def annotate_filter_to_classes(text_sections, classes)
+    threads = []
+    class_ids = classes.values
+    text_sections.keys.each do |section|
+      text = text_sections[section]
+      threads << Thread.new do
+        query = "#{$REST_URL}/annotator"
+        query += "?text=" + CGI.escape(text)
+        query += "&ontologies=" + CGI.escape(classes.keys.join(","))
+        query += "&mappings=false" # not supported in RI yet
+        all_annotations = parse_json(query) # See application_controller.rb
+        text_sections[section] = all_annotations.lazy.select {|a| class_ids.include?(a["annotatedClass"]["@id"])}.map {|a| a["annotations"]}.force.flatten
+      end
+    end
+    threads.each(&:join)
+    text_sections
+  end
 
   def resources2hash(resourcesList)
     resources_hash = {}

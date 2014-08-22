@@ -607,7 +607,6 @@ class ApplicationController < ActionController::Base
 
   def parse_json(uri)
     uri = URI.parse(uri)
-    LOG.add :debug, "Parse URI: #{uri}"
     begin
       response = open(uri, "Authorization" => "apikey token=#{get_apikey}").read
     rescue Exception => error
