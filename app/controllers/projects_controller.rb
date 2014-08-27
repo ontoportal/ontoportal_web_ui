@@ -34,6 +34,8 @@ class ProjectsController < ApplicationController
       redirect_to :controller => 'login', :action => 'index'
     else
       @project = LinkedData::Client::Models::Project.new
+      @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
+      @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
     end
   end
 
@@ -46,6 +48,8 @@ class ProjectsController < ApplicationController
       return
     end
     @project = projects.first
+    @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
+    @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
     @usedOntologies = @project.ontologyUsed || []
     @ontologies = LinkedData::Client::Models::Ontology.all
   end
@@ -57,8 +61,8 @@ class ProjectsController < ApplicationController
       redirect_to projects_path
       return
     end
+
     @project = LinkedData::Client::Models::Project.new(values: params[:project])
-    @project.creator = session[:user].id
     @project_saved = @project.save
 
     if @project_saved.errors

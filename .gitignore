@@ -24,6 +24,7 @@ config/locales/en.rb
 **.DS_Store
 /public/**/cache/**
 /public/umls/*
+nohup.out
 
 .ruby-version
 

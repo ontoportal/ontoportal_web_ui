@@ -4,8 +4,8 @@
 %p{:style => "padding-left: 10px;"}
   / TODO_REV: Enable project delete
   / = link_to("Delete Project", @project, :confirm => "Are you sure?", :method => :delete)
-- form_for(@project, url: project_path(@project.acronym), html: {method: :put}) do |f|
-  = render partial: f
+- form_for(:project, @project, url: project_path(@project.acronym), html: {method: :put}) do |f|
+  = render partial: 'form', locals: { f: f }
   %p{:style => "padding-left: 10px;"}
     = submit_tag "Cancel"
     = f.submit "Update Project", :class => "blueButton"
