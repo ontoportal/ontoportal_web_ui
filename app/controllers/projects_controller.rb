@@ -6,6 +6,7 @@ class ProjectsController < ApplicationController
 
   def index
     @projects = LinkedData::Client::Models::Project.all
+    @projects.reject! { |p| p.name.nil? }
     @projects.sort! { |a,b| a.name.downcase <=> b.name.downcase }
     if request.xhr?
       render action: "index", layout: false
@@ -64,13 +65,20 @@ class ProjectsController < ApplicationController
 
     @project = LinkedData::Client::Models::Project.new(values: params[:project])
     @project_saved = @project.save
-
-    if @project_saved.errors
-      @errors = response_errors(@project_saved)
-    else
+    
+    # Project successfully created.
+    if not @project_saved.errors
       flash[:notice] = 'Project successfully created'
       redirect_to project_path(@project.acronym)
+      return
     end
+
+    # Errors creating project.
+    @errors = response_errors(@project_saved)
+    @project = LinkedData::Client::Models::Project.new
+    @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
+    @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
+    render "new"
   end
 
   # PUT /projects/1
