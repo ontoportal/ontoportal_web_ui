@@ -75,10 +75,10 @@ class ProjectsController < ApplicationController
 
     # Errors creating project.
     @errors = response_errors(@project_saved)
-    @project = LinkedData::Client::Models::Project.new
+    @project = LinkedData::Client::Models::Project.new(values: params[:project])
     @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
     @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
-    render "new"
+    render action: "new"
   end
 
   # PUT /projects/1
