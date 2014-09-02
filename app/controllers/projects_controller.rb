@@ -74,7 +74,13 @@ class ProjectsController < ApplicationController
     end
 
     # Errors creating project.
-    @errors = response_errors(@project_saved)
+    if @project_saved.status == 409
+      error = OpenStruct.new existence: "Project with acronym #{params[:project][:acronym]} already exists.  Please enter a unique acronym."
+      @errors = Hash[:error, OpenStruct.new(acronym: error)]
+    else
+      @errors = response_errors(@project_saved)
+    end
+
     @project = LinkedData::Client::Models::Project.new(values: params[:project])
     @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
     @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}

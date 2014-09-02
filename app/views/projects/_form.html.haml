@@ -17,7 +17,7 @@
             - if error.instance_of? OpenStruct
               - error_hash = error.to_h.except :links, :context
               - error_hash.each do |f, e|
-                = "#{f} : #{e}"
+                = "#{e}"
             - else
               = field
       - else
