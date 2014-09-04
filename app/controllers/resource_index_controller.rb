@@ -1,13 +1,9 @@
-
 # TODO: Put these requires and the get_json method into a new annotator client
 require 'json'
 require 'open-uri'
 require 'cgi'
 require 'rest-client'
 require 'ontologies_api_client'
-
-require 'pry'
-
 
 class ResourceIndexController < ApplicationController
   include ActionView::Helpers::TextHelper
@@ -155,7 +151,7 @@ class ResourceIndexController < ApplicationController
     if params[:classes].kind_of?(Hash)
       classesHash = params[:classes]
       classesHash.each do |ont_uri, cls_uris|
-        cls_uris = cls_uris.is_a?(Array) ? cls_uris : [cls_uris]
+        cls_uris = cls_uris.is_a?(Array) ? cls_uris : cls_uris.split(",")
         ont = LinkedData::Client::Models::Ontology.find(ont_uri)
         cls_uris.each {|cls_id| classes << ont.explore.single_class(cls_id)}
       end
