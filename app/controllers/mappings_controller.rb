@@ -115,10 +115,10 @@ class MappingsController < ApplicationController
     source = source_ontology.explore.single_class(params[:map_from_bioportal_full_id])
     target = target_ontology.explore.single_class(params[:map_to_bioportal_full_id])
     values = {
-      terms: [
-        {term: [source.id], ontology: source_ontology.id},
-        {term: [target.id], ontology: target_ontology.id}
-      ],
+      classes: {
+        source.id => source_ontology.id,
+        target.id => target_ontology.id
+      },
       creator: session[:user].id,
       relation: params[:mapping_relation],
       comment: params[:mapping_comment]
@@ -134,17 +134,11 @@ class MappingsController < ApplicationController
   end
 
   def destroy
-    # ajax method, called from bp_mappings.js
     errors = []
     successes = []
     mapping_ids = params[:mappingids].split(",")
     mapping_ids.each do |map_id|
       begin
-        # TODO: double check permission to delete mappings?
-        #mapping = LinkedData::Client::Models::Mapping.find(map_id)
-        #mapping.delete
-        # NOTE: LinkedData::Client should automatically add the right API key.
-        #map_uri = "#{MAPPINGS_URL}/#{CGI.escape(map_id)}?apikey=#{get_apikey}"
         map_uri = "#{MAPPINGS_URL}/#{CGI.escape(map_id)}"
         result = LinkedData::Client::HTTP.delete(map_uri)
         raise Exception if !result.nil? #&& result["errorCode"]
@@ -153,12 +147,6 @@ class MappingsController < ApplicationController
         errors << map_id
       end
     end
-    # TODO: clear any cache that might contain mappings in successes.
-    #ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontologyid]).first
-    #concept_id = params[:conceptid].empty? ? "root" : params[:conceptid]
-    #concept = ontology.explore.single_class(concept_id)
-    #CACHE.delete("#{ontology.id}::#{CGI.escape(concept.id)}::map_page::page1::size100::params")
-    #CACHE.delete("#{ontology.id}::#{CGI.escape(concept.id)}::map_count")
     render :json => { :success => successes, :error => errors }
   end
 
