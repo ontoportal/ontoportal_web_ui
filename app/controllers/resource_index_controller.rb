@@ -59,7 +59,7 @@ class ResourceIndexController < ApplicationController
     @counts = LinkedData::Client::ResourceIndex.counts(@classes)
 
     @resources ||= LinkedData::Client::ResourceIndex.resources # application_controller
-    @resources_hash ||= resources2hash(@resources)  # required in partial 'resources_results'
+    @resources_hash ||= resources_to_hash(@resources)  # required in partial 'resources_results'
 
     # Enable for retrieving the first 10 docs from all resources at once
     # @documents_by_resource = LinkedData::Client::ResourceIndex.documents_all_resources(@classes, page: 1, pagesize: 10)
@@ -76,7 +76,7 @@ class ResourceIndexController < ApplicationController
     @acronym = params[:acronym]
 
     @resources ||= LinkedData::Client::ResourceIndex.resources
-    @resources_hash ||= resources2hash(@resources)  # required in partial 'resources_results'
+    @resources_hash ||= resources_to_hash(@resources)  # required in partial 'resources_results'
 
     render :partial => "resource_results"
   end
@@ -108,7 +108,7 @@ class ResourceIndexController < ApplicationController
     text_sections
   end
 
-  def resources2hash(resourcesList)
+  def resources_to_hash(resourcesList)
     resources_hash = {}
     resourcesList.each do |r|
       # convert struct to hash (to_json will create a javascript object).
@@ -117,33 +117,12 @@ class ResourceIndexController < ApplicationController
     return resources_hash
   end
 
-  def resources2map_id2name(resourcesList)
-    resources_map = {}
-    resourcesList.each do |r|
-      resources_map[r[:acronym]] = r[:name]
-    end
-    return resources_map
-  end
-
   def convert_for_will_paginate(resources)
     resources_paginate = []
     resources.each do |r|
       resources_paginate.push ResourceIndexResultPaginatable.new(r)
     end
     resources_paginate
-  end
-
-  def getCountsURI(params)
-    classesArgs = []
-    if params[:classes].kind_of?(Hash)
-      classesHash = params[:classes]
-      classesHash.each do |ont_uri, cls_uris|
-        classesStr = 'classes[' + CGI::escape(ont_uri) + ']='
-        classesStr += CGI::escape( cls_uris.join(',') )
-        classesArgs.push(classesStr)
-      end
-    end
-    return "#{REST_URI}/resource_index/counts" + "?" + classesArgs.join('&')
   end
 
   def lookup_classes(params)
