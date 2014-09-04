@@ -259,7 +259,7 @@ var bp_classes_cache = {};
 function lookupClassLabels() {
   jQuery("#resource_results a.ri_concept[data-applied_label='false']").each(function () {
     var link = jQuery(this);
-    var params = { conceptid: link.data("concept_id"), ontologyid: link.data("ontology_id") };
+    var params = { conceptid: decodeURIComponent(link.data("concept_id")), ontologyid: link.data("ontology_id") };
     link.attr("data-applied_label", "true");
 
     // Check to see if another thread is already making an ajax request and start polling
@@ -278,7 +278,7 @@ function lookupClassLabels() {
         success : (function (link) {
           return function (data) {
             bp_classes_cache[params.ontologyid + "/" + params.conceptid] = data;
-            if (data !== null) jQuery(link).html(data.label);
+            if (data !== null) jQuery(link).html(data.prefLabel);
           }
         })(this)
       });
@@ -302,7 +302,7 @@ function applyClassLabel(link, params, calledAgain) {
       return applyClassLabel(link, params, calledAgain += 1);
     }), 100);
   }
-  if (class_info !== null) jQuery(link).html(class_info.label);
+  if (class_info !== null) jQuery(link).html(class_info.prefLabel);
 }
 
 function Router() {
