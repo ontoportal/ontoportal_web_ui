@@ -23,28 +23,16 @@ module ResourceIndexHelper
     # If it contains ontology data, it may contain an ontology id (int > 0) and we should return a link.
     # We'll resolve the link to a label using JS once the page loads.
     if !onts || onts.empty?
-      h(text)
+      return h(text)
     else
-      # TODO
-      # TODO
-      # TODO : modify this section of code when the API transforms data like this into something else:
-      #"text"=> "1351/D020224> 1351/D019295> 1351/D008969> 1351/D001483> 1351/D017398> 1351/D000465> 1351/D005796> 1351/D008433> 1351/D009690> 1351/D005091",
-      #
-      # TODO: work with field[:associatedClasses]
-      #
       concept_links = []
-      #concept_ids = field.text.split("> ")
-      #concept_ids.each do |id|
-      #  split_id = id.split("/")
-      #  ontology_id = split_id[0]
-      #  concept_id = split_id[1]
-      #  href = "#{$UI_URL}/ontologies/#{ontology_id}?p=classes&conceptid=#{concept_id}"
-      #
-      #  binding.pry
-      #
-      #  concept_links << "<a href='#{href}' class='ri_concept' data-ontology_id='#{ontology_id}' data-applied_label='false' data-concept_id='#{CGI::escape(concept_id)}'>view class in #{$SITE}</a>"
-      #end
-      concept_links.join("<br/>")
+      text = text.is_a?(Array) ? text : [text]
+      text.each do |ont_cls_id|
+        acronym, cls_uri = ont_cls_id.split("\C-_")
+        href = "#{$UI_URL}/ontologies/#{acronym}?p=classes&conceptid=#{CGI.escape(cls_uri)}"
+        concept_links << "<a href='#{href}' class='ri_concept' data-ontology_id='#{acronym}' data-applied_label='false' data-concept_id='#{CGI::escape(cls_uri)}'>view class in #{$SITE}</a>"
+      end
+      return concept_links.join("<br/>")
     end
   end
 end
