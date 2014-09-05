@@ -14,7 +14,8 @@ class ResourceIndexController < ApplicationController
   before_filter :set_encoding
 
   def index
-    @resources ||= LinkedData::Client::ResourceIndex.resources
+    @resources = LinkedData::Client::ResourceIndex.resources
+    @resources_hash = resources_to_hash(@resources)
     @ri_ontologies = LinkedData::Client::Models::Ontology.all(include: "acronym,administeredBy,group,hasDomain,name,notes,projects,reviews,summaryOnly,viewingRestriction")
     @ont_ids = []
     @ont_acronyms = {}
@@ -56,7 +57,7 @@ class ResourceIndexController < ApplicationController
   def create
     @bp_last_params = params
     @classes = lookup_classes(params)
-    @counts = LinkedData::Client::ResourceIndex.counts(@classes)
+    @counts = LinkedData::Client::ResourceIndex.counts(@classes, params)
 
     @resources ||= LinkedData::Client::ResourceIndex.resources # application_controller
     @resources_hash ||= resources_to_hash(@resources)  # required in partial 'resources_results'

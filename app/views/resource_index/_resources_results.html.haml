@@ -7,10 +7,13 @@
   }
 
 %div#resource_table{:style => "margin-top: 1em;"}
-  %div#result_counts
   %h2{:style => "font-size: 150%; margin-bottom: 3px;"}
     Search Results
-    %a.h2_link{:href => "javascript:void(0);", :id => "show_hide_no_results"} <span class="show_hide_text">show</span><span class="show_hide_text not_visible">hide</span> resources with no matches
+    %span#result_counts_container
+      %span#result_counts
+      (
+      %a.h2_link{:href => "javascript:void(0);", :id => "show_hide_no_results"} <span class="show_hide_text">show</span><span class="show_hide_text not_visible">hide</span> resources with no matches
+      )
 
   %table.zebra{:style => "width: 800px;"}
     %thead

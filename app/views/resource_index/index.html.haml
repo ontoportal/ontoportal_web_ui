@@ -1,0 +1,69 @@
+- @title = "Search Resource Resources"
+:javascript
+  var ont_acronyms = #{@ont_acronyms.to_json};
+  var ont_names = #{@ont_names.to_json};
+  var ont_ids = #{@ont_ids.to_json};
+  var resources = #{@resources_hash.to_json};
+  var orgSite = #{$ORG_SITE.to_json};
+= javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.js"
+= javascript_include_tag "JqueryPlugins/datatables/plugins/datatables.formatted.number.js"
+%script{:charset => "ISO-8859-1", :src => "/javascripts/bp_resource_index.js?1338489986", :type => "text/javascript"}
+
+%div{:style => "padding: 1em;"}
+  %h1 Search Resource Index
+  %p
+    - intro_text = "Search biomedical resources"
+    = t('home.resources.intro').nil? || t('home.resources.intro').empty? ? "#{intro_text}  #{help_icon("/help#Resource_Index_Tab")}" : t('home.resources.intro')
+
+  %div{:style => "padding-bottom: 1em;"}
+    %div{:style => "width: 432px;"}
+      #search_button
+        %input#resource_index_button.link_button{:type => "button", :value => "Search Resource Index"}/
+        %span#resource_index_spinner{:style => "display: none;"}
+          %img{:src => "/images/spinners/spinner_000000_16px.gif", :style => "vertical-align: text-bottom;"}/
+      - textarea_title = "Start typing to find classes to search the index with"
+      = select_tag :resource_index_classes, "",        |
+          :multiple => 'true',                         |
+          'data-placeholder'.to_sym => textarea_title, |
+          :style => 'width: 432px;'                    |
+      #advanced_options_container
+        %a#advanced_options{:href => "javascript:void(0);"}
+          %span#hide_advanced_options.not_visible> hide&nbsp;
+          advanced options
+      #search_options.not_visible{:style => "padding-top: .6em; clear: both;"}
+        %div{style: "margin-top: 1em;"}
+          %h2{:style => "font-size: 10pt; !important; margin-bottom: 3px;"} Boolean Options
+          Matched documents must contain: &nbsp;
+          %input{type: "radio", id: "boolean_operator_and", name: "boolean_operator", value: "and", checked: true}
+          %label{for: "boolean_operator_and"} All classes &nbsp;
+          %input{type: "radio", id: "boolean_operator_or", name: "boolean_operator", value: "or"}
+          %label{for: "boolean_operator_or"} Any class
+        %div{style: "margin-top: 1em;"}
+          %h2{:style => "font-size: 10pt; !important; margin-bottom: 3px;"} Hierarchy Expansion
+          Find documents containing: &nbsp;
+          %input{type: "radio", id: "expand_hierarchy_true", name: "expand_hierarchy", value: "false", checked: true}
+          %label{for: "expand_hierarchy_true"} Class(es) &nbsp;
+          %input{type: "radio", id: "expand_hierarchy_false", name: "expand_hierarchy", value: "true"}
+          %label{for: "expand_hierarchy_false"} Class(es) and descendants
+        %div
+          #ontology_picker_options{:style => "margin-top: 1em;"}
+            = render :partial => "shared/ontology_picker", :locals => { :sel_text => "Only Show Autocomplete Results From" }
+
+    %span#resource_index_error.resource_index_error{:style => "color: red;"}
+
+#results_container{:style => "padding: 0 13px; margin: 0 0 2em; height: 100%;"}
+  #results_error{:style => "color: red; margin-bottom: 7px;"}
+  #initial_resources
+    = render :partial => "resources_info"
+  #results
+
+:javascript
+  jQuery(document).ready(function(){
+    pageInit();
+  });
+
+  // Show/Hide advanced options
+  jQuery("#advanced_options").click(function(event) {
+      jQuery("#search_options").toggleClass("not_visible");
+      jQuery("#hide_advanced_options").toggleClass("not_visible");
+  });

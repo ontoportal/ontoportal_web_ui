@@ -62,7 +62,7 @@ jQuery(document).ready(function () {
       search_params['apikey'] = jQuery(document).data().bp.config.apikey;
       // NOTE: disabled ontologies selection in the UI, ensure it has no value here.
       // NOTE: ontologies are specified in resource_index_controller::search_classes
-      //search_params['ontologies'] = currentOntologyAcronyms().join(',');
+      search_params['ontologies'] = currentOntologyAcronyms().join(',');
       jQuery.ajax({
         url: search_url,
         data: search_params,
@@ -173,7 +173,7 @@ var BP_urlParams = {};
       if (paramHash[decode(hashParamMatch[2])] === undefined) {
         paramHash[decode(hashParamMatch[2])] = [];
       }
-      paramHash[decode(hashParamMatch[2])].push(decode(match[2]));
+      paramHash[decode(hashParamMatch[2])] = decode(match[2]).split(",");
       BP_urlParams[hashParamMatch[1]] = paramHash;
     } else {
       BP_urlParams[decode(match[1])] = decode(match[2]);
@@ -189,7 +189,7 @@ var BP_urlParams = {};
       if (paramHash[decode(hashParamMatch[2])] === undefined) {
         paramHash[decode(hashParamMatch[2])] = [];
       }
-      paramHash[decode(hashParamMatch[2])].push(decode(match[2]));
+      paramHash[decode(hashParamMatch[2])] = decode(match[2]).split(",");
       BP_urlParams[hashParamMatch[1]] = paramHash;
     } else {
       BP_urlParams[decode(match[1])] = decode(match[2]);
@@ -208,7 +208,7 @@ function pageInit() {
   }
   jQuery.extend(params, BP_urlParams);
   BP_urlParams = params;
-  if (typeof params["acronym"] !== "undefined" && params["acronym"] !== "search") {
+  if (typeof params["acronym"] !== "undefined") {
     router.route("resource", params);
   } else if (typeof params["resources"] !== "undefined") {
     router.route("resources", params);
@@ -418,7 +418,9 @@ function getSearchResults(success) {
   jQuery("#resource_index_spinner").show();
   jQuery("#results.contains_search_results").hide();
   var params = {
-    'classes': chosenSearchClasses() // ontologyURI: [classURI, classURI, ... ]
+    classes: chosenSearchClasses(), // ontologyURI: [classURI, classURI, ... ]
+    boolean_operator: jQuery('input:radio[name=boolean_operator]:checked').val(),
+    expand_hierarchy: jQuery('input:radio[name=expand_hierarchy]:checked').val()
   };
   jQuery.ajax({
     type    : 'POST',

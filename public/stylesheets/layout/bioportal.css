@@ -2158,8 +2158,8 @@ ul.chzn-results {
   margin: 0 0 10px 10px;
   width: 200px;
 }
-#result_counts {
-  float: right;
+#result_counts_container {
+  padding-left: 1em;
   margin-top: 7px;
   font-size: 9pt;
 }
@@ -2171,7 +2171,6 @@ ul.chzn-results {
 }
 .h2_link {
   font-size: 9pt;
-  padding-left: 1em;
 }
 .clearing {
   clear: both;
