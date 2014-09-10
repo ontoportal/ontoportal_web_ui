@@ -6,6 +6,7 @@ class ProjectsController < ApplicationController
 
   def index
     @projects = LinkedData::Client::Models::Project.all
+    @projects.reject! { |p| p.name.nil? }
     @projects.sort! { |a,b| a.name.downcase <=> b.name.downcase }
     if request.xhr?
       render action: "index", layout: false
@@ -34,6 +35,8 @@ class ProjectsController < ApplicationController
       redirect_to :controller => 'login', :action => 'index'
     else
       @project = LinkedData::Client::Models::Project.new
+      @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
+      @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
     end
   end
 
@@ -46,6 +49,8 @@ class ProjectsController < ApplicationController
       return
     end
     @project = projects.first
+    @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
+    @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
     @usedOntologies = @project.ontologyUsed || []
     @ontologies = LinkedData::Client::Models::Ontology.all
   end
@@ -57,16 +62,29 @@ class ProjectsController < ApplicationController
       redirect_to projects_path
       return
     end
-    @project = LinkedData::Client::Models::Project.new(values: params[:project])
-    @project.creator = session[:user].id
-    @project_saved = @project.save
 
-    if @project_saved.errors
-      @errors = response_errors(@project_saved)
-    else
+    @project = LinkedData::Client::Models::Project.new(values: params[:project])
+    @project_saved = @project.save
+    
+    # Project successfully created.
+    if not @project_saved.errors
       flash[:notice] = 'Project successfully created'
       redirect_to project_path(@project.acronym)
+      return
     end
+
+    # Errors creating project.
+    if @project_saved.status == 409
+      error = OpenStruct.new existence: "Project with acronym #{params[:project][:acronym]} already exists.  Please enter a unique acronym."
+      @errors = Hash[:error, OpenStruct.new(acronym: error)]
+    else
+      @errors = response_errors(@project_saved)
+    end
+
+    @project = LinkedData::Client::Models::Project.new(values: params[:project])
+    @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
+    @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
+    render action: "new"
   end
 
   # PUT /projects/1

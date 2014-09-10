@@ -26,9 +26,11 @@ config.autoload_paths << "#{config.root_path}/lib"
 config.middleware.use Rails::Rack::LogTailer
 
 # memcache setup
-config.cache_store = :memory_store
+config.cache_store = ActiveSupport::Cache::MemoryStore.new
 # config.cache_store = ActiveSupport::Cache::MemCacheStore.new('localhost', namespace: 'BioPortal')
-# config.cache_store.logger = Logger.new("/dev/null")
+
+# silence cache output
+config.cache_store.logger = Logger.new("/dev/null") if config.cache_store.respond_to?(:logger)
 
 begin
    PhusionPassenger.on_event(:starting_worker_process) do |forked|

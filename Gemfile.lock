@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: b7b764b8df81e29b7df25bb540fbc6a1c7d23d72
+  revision: 77bb2e0d293dc64d7d989669d28ecef99d6ac5c7
   specs:
     ontologies_api_client (0.0.6)
       activesupport (<= 3.0)
@@ -44,7 +44,7 @@ GEM
     cube-ruby (0.0.3)
     daemons (1.1.9)
     eventmachine (1.0.3)
-    excon (0.38.0)
+    excon (0.39.5)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     haml (3.1.8)
@@ -65,8 +65,8 @@ GEM
     oink (0.10.1)
       activerecord
       hodel_3000_compliant_logger
-    oj (2.9.9)
-    pry (0.10.0)
+    oj (2.10.2)
+    pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)

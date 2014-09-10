@@ -36,7 +36,7 @@
     }
 </style>
 <div class="feedback" style="width: 80%; padding: 2em;">
-    <%= render :partial => 'memcache_stats' %>
+    <%= render :partial => 'memcache_stats' if @cache.respond_to?(:stats)%>
     <div>
         <h2>Memcache Utilities</h2>
         <table class="admin_utilities" style="float: left;">

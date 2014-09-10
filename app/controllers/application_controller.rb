@@ -26,12 +26,6 @@ class ApplicationController < ActionController::Base
   REST_URI_BATCH = REST_URI + '/batch'
   REST_URI_RECENT_MAPPINGS = "#{REST_URI}/mappings/recent/"
 
-  # Constants used primarily in the resource_index_controller, but also elsewhere.
-  RESOURCE_INDEX_URI = REST_URI + '/resource_index'
-  RI_ELEMENT_ANNOTATIONS_URI = RESOURCE_INDEX_URI + '/element_annotations'
-  RI_ONTOLOGIES_URI = RESOURCE_INDEX_URI + '/ontologies'
-  RI_RANKED_ELEMENTS_URI = RESOURCE_INDEX_URI + '/ranked_elements'
-  RI_RESOURCES_URI = RESOURCE_INDEX_URI + '/resources'
   # Note that STATS is a DIRECT CONNECTION to the JAVA-REST API
   RI_STATS_URI = 'http://rest.bioontology.org/resource_index/statistics/all'
 
@@ -360,6 +354,7 @@ class ApplicationController < ActionController::Base
   def check_delete_mapping_permission(mappings)
     # ensure mappings is an Array of mappings (some calls may provide only a single mapping instance)
     mappings = [mappings] if mappings.instance_of? LinkedData::Client::Models::Mapping
+    return false if mappings.all? {|m| m.id.to_s.empty?}
     delete_mapping_permission = false
     if session[:user]
       delete_mapping_permission = session[:user].admin?
@@ -608,7 +603,6 @@ class ApplicationController < ActionController::Base
 
   def parse_json(uri)
     uri = URI.parse(uri)
-    LOG.add :debug, "Parse URI: #{uri}"
     begin
       response = open(uri, "Authorization" => "apikey token=#{get_apikey}").read
     rescue Exception => error
@@ -680,14 +674,6 @@ class ApplicationController < ActionController::Base
       # leave recent mappings empty.
     end
     return recent_mappings
-  end
-
-  def get_resource_index_resources
-    return LinkedData::Client::HTTP.get(RI_RESOURCES_URI)
-  end
-
-  def get_resource_index_ontologies
-    return LinkedData::Client::HTTP.get(RI_ONTOLOGIES_URI)
   end
 
   def get_resource_index_annotation_stats
