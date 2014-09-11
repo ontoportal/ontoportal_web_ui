@@ -143,9 +143,7 @@
           %tbody
             - mappings = @recent_mappings[:mappings]
             - classes = @recent_mappings[:classes]
-            - if mappings.nil? || classes.nil?
-              No recent mappings have been submitted
-            - elsif mappings.empty? || classes.empty?
+            - if mappings.nil? || classes.nil? || mappings.empty? || classes.empty?
               No recent mappings have been submitted
             - else
               - for map in mappings
@@ -159,7 +157,7 @@
                   - ontB = clsB[:ontology] && clsB[:ontology][:acronym] || nil
                   - raise "UI-view error for recent mapping ontology #{clsA[:ontology]}" if ontA.nil?
                   - raise "UI-view error for recent mapping ontology #{clsB[:ontology]}" if ontB.nil?
-                  - mapProc = map.process.first
+                  - mapProc = map.process
                   - raise "UI-view error for recent mapping process #{map.process}" if mapProc.nil?
                   %tr
                     %td
