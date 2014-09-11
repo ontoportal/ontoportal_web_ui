@@ -82,7 +82,7 @@ GEM
       rake (>= 0.8.3)
     raindrops (0.13.0)
     rake (10.3.2)
-    rdoc (4.1.1)
+    rdoc (4.1.2)
       json (~> 1.4)
     recaptcha (0.3.4)
     recursive-open-struct (0.5.0)
