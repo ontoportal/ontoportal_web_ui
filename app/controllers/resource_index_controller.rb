@@ -16,7 +16,7 @@ class ResourceIndexController < ApplicationController
   def index
     @resources = LinkedData::Client::ResourceIndex.resources
     @resources_hash = resources_to_hash(@resources)
-    @ri_ontologies = LinkedData::Client::Models::Ontology.all(include: "acronym,administeredBy,group,hasDomain,name,notes,projects,reviews,summaryOnly,viewingRestriction")
+    @ri_ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params)
     @ont_ids = []
     @ont_acronyms = {}
     @ont_names = {}

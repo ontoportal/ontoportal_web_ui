@@ -20,6 +20,7 @@ class UsersController < ApplicationController
   # GET /users/1.xml
   def show
     @user = LinkedData::Client::Models::User.find(session[:user].id)
+    @all_ontologies = LinkedData::Client::Models::Ontology.all(ignore_custom_ontologies: true)
     @user_ontologies = @user.customOntology
   end
 
@@ -98,11 +99,7 @@ class UsersController < ApplicationController
     @user = LinkedData::Client::Models::User.find(params[:id])
     @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
 
-    if params[:ontology] && params[:ontology][:ontologyId]
-      custom_ontologies = params[:ontology][:ontologyId].map {|acr| LinkedData::Client::Models::Ontology.find_by_acronym(acr).first.id}
-    else
-      custom_ontologies = []
-    end
+    custom_ontologies = params[:ontology] ? params[:ontology][:ontologyId] : []
     @user.update_from_params(customOntology: custom_ontologies)
     error_response = @user.update
 
