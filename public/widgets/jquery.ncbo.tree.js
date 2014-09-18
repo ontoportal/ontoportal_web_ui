@@ -32,13 +32,10 @@
 
 (function($) {
   $.fn.NCBOTree = function(opt) {
+    var OPTIONS;
     var ROOT_ID = "roots";
-    var TREE_CONTAINER = this;
-    var TREE = $("<ul>").append($("<li>").addClass("root"));
-    var ROOT;
-    var mousePressed = false;
 
-    TREE.option = {
+    OPTIONS = {
       autoclose:         false,
       beforeExpand:      false,
       afterExpand:       false,
@@ -58,73 +55,38 @@
       defaultRoot:       ROOT_ID
     };
 
-    TREE.option = $.extend(TREE.option, opt);
+    OPTIONS = $.extend(OPTIONS, opt);
 
     // Required options
-    if (TREE.option.apikey == null)
+    if (OPTIONS.apikey == null)
       throw new Error("You must provide an API Key for NCBO Tree Widget to operate");
 
-    if (TREE.option.ontology == null)
+    if (OPTIONS.ontology == null)
       throw new Error("You must provide an ontology id for NCBO Tree Widget to operate");
 
-    // These methods will be added to the tree object
-    // they are essentially "public". Doing the following
-    // gives you a handle to inspect the tree from:
-    // var tree = $("#my_div").NCBOTree(opts);
-    // And then you can do: tree.selectedClass()
-    $.extend(this, {
-      selectedClass: function(){
-        var cls = $($(this).find("a.active")[0]);
-        if (cls.length == 0) {
-          return null;
-        } else {
-          return {
-            id: decodeURIComponent(cls.data("id")),
-            prefLabel: cls.html(),
-            URL: cls.attr("href")
-          };
-        }
-      },
-
-      selectClass: function(cls){
-        var foundClass = $($(this).find("a[data-id='" + encodeURIComponent(cls) + "']"));
-        $($(this).find("a.active")[0]).removeClass("active");
-        foundClass.addClass("active");
-      },
-
-      jumpToClass: function(cls, callback){
-        TREE.jumpToClass(cls, callback);
-      },
-
-      changeOntology: function(ont){
-        var newTree = $("<ul>").append($("<li>").addClass("root"));
-        setupTree(TREE_CONTAINER, newTree, TREE.option);
-        TREE.option.ontology = ont;
-        TREE.init();
-      }
-    });
-
-    setupTree = function(container, tree, option) {
-      TREE = tree;
-      TREE.option = option;
-      ROOT = $('.root', TREE);
-      TREE.css("width", TREE.option.width);
+    setupTree = function(container, option) {
+      var $TREE_CONTAINER = container;
+      var TREE = $("<ul>").append($("<li>").addClass("root"));
+      var OPTIONS = option;
+      var ROOT = $('.root', TREE);
+      var mousePressed = false;
+      TREE.css("width", OPTIONS.width);
 
       // Empty out the tree container
-      $(TREE_CONTAINER).html("")
+      $TREE_CONTAINER.html("");
 
       // Only set starting root when something other than roots is selected
-      var startingRoot = (TREE.option.startingRoot == TREE.option.defaultRoot) ? null : TREE.option.startingRoot;
+      var startingRoot = (OPTIONS.startingRoot == OPTIONS.defaultRoot) ? null : OPTIONS.startingRoot;
 
       // Add the autocomplete
-      var autocompleteContainer = $("<div>").addClass(TREE.option.autocompleteClass).addClass("ncboTree");
+      var autocompleteContainer = $("<div>").addClass(OPTIONS.autocompleteClass).addClass("ncboTree");
       var input = $("<input>")
-        .addClass(TREE.option.autocompleteClass)
-        .css("width", TREE.option.width)
+        .addClass(OPTIONS.autocompleteClass)
+        .css("width", OPTIONS.width)
         .attr("placeholder", "Search for class...");
       autocompleteContainer.append(input);
       input.NCBOAutocomplete({
-        url: TREE.option.ncboAPIURL + "/search",
+        url: OPTIONS.ncboAPIURL + "/search",
         searchParameter: "q",
         resultAttribute: "collection",
         property: "prefLabel",
@@ -136,18 +98,18 @@
         },
         minCharacters: 3,
         additionalParameters: {
-          apikey: TREE.option.apikey,
+          apikey: OPTIONS.apikey,
           no_context: true,
-          ontologies: TREE.option.ontology
+          ontologies: OPTIONS.ontology
         }
       });
-      $(TREE_CONTAINER).append(autocompleteContainer);
+      $TREE_CONTAINER.append(autocompleteContainer);
 
       // Add the actual tree
-      $(TREE_CONTAINER).append(TREE);
+      $TREE_CONTAINER.append(TREE);
 
       // Add provided class
-      TREE.addClass(TREE.option.treeClass);
+      TREE.addClass(OPTIONS.treeClass);
 
       // format the nodes to match what simpleTree is expecting
       TREE.formatNodes = function(nodes) {
@@ -186,7 +148,7 @@
       }
 
       TREE.findRootNode = function(nodes) {
-        var startingRoot = (TREE.option.startingRoot == TREE.option.defaultRoot) ? null : TREE.option.startingRoot;
+        var startingRoot = (OPTIONS.startingRoot == OPTIONS.defaultRoot) ? null : OPTIONS.startingRoot;
         if (startingRoot == null) {return nodes;}
 
         var foundNode = false;
@@ -207,8 +169,8 @@
       TREE.jumpToClass = function(cls, callback) {
         ROOT.html($("<span>").html("Loading...").css("font-size", "smaller"));
         $.ajax({
-          url: TREE.determineHTTPS(TREE.option.ncboAPIURL) + "/ontologies/" + TREE.option.ontology + "/classes/" + encodeURIComponent(cls) + "/tree",
-          data: {apikey: TREE.option.apikey, include: "prefLabel,childrenCount", no_context: true},
+          url: TREE.determineHTTPS(OPTIONS.ncboAPIURL) + "/ontologies/" + OPTIONS.ontology + "/classes/" + encodeURIComponent(cls) + "/tree",
+          data: {apikey: OPTIONS.apikey, include: "prefLabel,childrenCount", no_context: true},
           contentType: 'json',
           crossDomain: true,
           success: function(roots){
@@ -220,13 +182,19 @@
               callback();
             }
 
-            TREE_CONTAINER.selectClass(cls);
-            if (typeof TREE.option.afterJumpToClass == 'function') {
-              TREE.option.afterJumpToClass(cls);
+            TREE.selectClass(cls);
+            if (typeof OPTIONS.afterJumpToClass == 'function') {
+              OPTIONS.afterJumpToClass(cls);
             }
-            TREE_CONTAINER.trigger("afterJumpToClass", cls);
+            $TREE_CONTAINER.trigger("afterJumpToClass", cls);
           }
         });
+      }
+
+      TREE.selectClass = function(cls){
+        var foundClass = $($(this).find("a[data-id='" + encodeURIComponent(cls) + "']"));
+        $(TREE.find("a.active")[0]).removeClass("active");
+        foundClass.addClass("active");
       }
 
       TREE.closeNearby = function(obj) {
@@ -246,7 +214,7 @@
         } else {
           obj.className = obj.className.replace('close','open');
           childUl.show();
-          if (TREE.option.autoclose)
+          if (OPTIONS.autoclose)
             TREE.closeNearby(obj);
           if (childUl.is('.ajax'))
             TREE.setAjaxNodes(childUl, obj.id);
@@ -254,42 +222,42 @@
       };
 
       TREE.setAjaxNodes = function(node, parentId, successCallback, errorCallback) {
-        if (typeof TREE.option.beforeExpand == 'function') {
-          TREE.option.beforeExpand(node);
+        if (typeof OPTIONS.beforeExpand == 'function') {
+          OPTIONS.beforeExpand(node);
         }
-        TREE_CONTAINER.trigger("beforeExpand", node);
+        $TREE_CONTAINER.trigger("beforeExpand", node);
 
         var url = $.trim($('a', node).attr("href"));
         if (url) {
           $.ajax({
             type: "GET",
             url: url,
-            data: {apikey: TREE.option.apikey, include: "prefLabel,childrenCount", no_context: true},
+            data: {apikey: OPTIONS.apikey, include: "prefLabel,childrenCount", no_context: true},
             crossDomain: true,
             contentType: 'json',
-            timeout: TREE.option.timeout,
+            timeout: OPTIONS.timeout,
             success: function(response) {
               var nodes = TREE.formatNodes(response.collection)
               node.removeAttr('class');
               node.html(nodes);
               $.extend(node, {url:url});
               TREE.setTreeNodes(node, true);
-              if (typeof TREE.option.afterExpand == 'function') {
-                TREE.option.afterExpand(node);
+              if (typeof OPTIONS.afterExpand == 'function') {
+                OPTIONS.afterExpand(node);
               }
-              TREE_CONTAINER.trigger("afterExpand", node);
+              $TREE_CONTAINER.trigger("afterExpand", node);
               if (typeof successCallback == 'function') {
                 successCallback(node);
               }
             },
             error: function(response) {
-              if (typeof TREE.option.afterExpandError == 'function') {
-                TREE.option.afterExpandError(node);
+              if (typeof OPTIONS.afterExpandError == 'function') {
+                OPTIONS.afterExpandError(node);
               }
               if (typeof errorCallback == 'function') {
                 errorCallback(node);
               }
-              TREE_CONTAINER.trigger("afterExpandError", node);
+              $TREE_CONTAINER.trigger("afterExpandError", node);
             }
           });
         }
@@ -306,18 +274,18 @@
           if (this.className == 'text') {
             this.className = 'active';
           }
-          if (typeof TREE.option.afterSelect == 'function') {
-            TREE.option.afterSelect(decodeURIComponent(selectedNode.data("id")), selectedNode.text(), selectedNode);
+          if (typeof OPTIONS.afterSelect == 'function') {
+            OPTIONS.afterSelect(decodeURIComponent(selectedNode.data("id")), selectedNode.text(), selectedNode);
           }
-          TREE_CONTAINER.trigger("afterSelect", [decodeURIComponent(selectedNode.data("id")), selectedNode.text(), selectedNode]);
+          $TREE_CONTAINER.trigger("afterSelect", [decodeURIComponent(selectedNode.data("id")), selectedNode.text(), selectedNode]);
           return false;
         }).bind("contextmenu",function(){
           $('.active', TREE).attr('class', 'text');
           if (this.className == 'text') {
             this.className = 'active';
           }
-          if (typeof TREE.option.afterContextMenu == 'function') {
-            TREE.option.afterContextMenu(parent);
+          if (typeof OPTIONS.afterContextMenu == 'function') {
+            OPTIONS.afterContextMenu(parent);
           }
           return false;
         }).mousedown(function(event) {
@@ -425,13 +393,14 @@
 
       // Populate roots and init tree
       TREE.init = function() {
-        if (TREE.option.startingClass !== null) {
-          TREE.jumpToClass(TREE.option.startingClass);
-          TREE.option.startingClass = null;
+        if (OPTIONS.startingClass !== null) {
+          TREE.jumpToClass(OPTIONS.startingClass);
+          OPTIONS.startingClass = null;
         } else {
+          ROOT.html($("<span>").html("Loading...").css("font-size", "smaller"));
           $.ajax({
-            url: TREE.determineHTTPS(TREE.option.ncboAPIURL) + "/ontologies/" + TREE.option.ontology + "/classes/" + encodeURIComponent(TREE.option.startingRoot),
-            data: {apikey: TREE.option.apikey, include: "prefLabel,childrenCount", no_context: true},
+            url: TREE.determineHTTPS(OPTIONS.ncboAPIURL) + "/ontologies/" + OPTIONS.ontology + "/classes/" + encodeURIComponent(OPTIONS.startingRoot),
+            data: {apikey: OPTIONS.apikey, include: "prefLabel,childrenCount", no_context: true},
             contentType: 'json',
             crossDomain: true,
             success: function(roots){
@@ -439,27 +408,66 @@
               roots = $.map([roots], function(n){
                 return n;
               });
-              ROOT.append(TREE.formatNodes(roots));
+              ROOT.html(TREE.formatNodes(roots));
               TREE.setTreeNodes(ROOT, false);
             }
           });
         }
       };
+
+      return TREE;
     }
 
     // Returns the original object(s) so they can be chained
     return this.each(function() {
-      var $this = this;
+      var $this = $(this);
+
+      // These methods will be added to the tree object
+      // they are essentially "public". Doing the following
+      // gives you a handle to inspect the tree from:
+      // var tree = $("#my_div").NCBOTree(opts);
+      // And then you can do: tree.selectedClass()
+      $.extend(this, {
+        selectedClass: function(){
+          var cls = $($(this).find("a.active")[0]);
+          if (cls.length == 0) {
+            return null;
+          } else {
+            return {
+              id: decodeURIComponent(cls.data("id")),
+              prefLabel: cls.html(),
+              URL: cls.attr("href")
+            };
+          }
+        },
+
+        selectClass: function(cls){
+          var foundClass = $($(this).find("a[data-id='" + encodeURIComponent(cls) + "']"));
+          $($(this).find("a.active")[0]).removeClass("active");
+          foundClass.addClass("active");
+        },
+
+        jumpToClass: function(cls, callback){
+          TREE.jumpToClass(cls, callback);
+        },
+
+        changeOntology: function(ont){
+          var newTree = $("<ul>").append($("<li>").addClass("root"));
+          setupTree($TREE_CONTAINER, newTree, OPTIONS);
+          OPTIONS.ontology = ont;
+          TREE.init();
+        }
+      });
 
       // Add the autocomplete code
       $.ajax({
-        url: TREE.option.ncboUIURL.replace("http:", ('https:' == document.location.protocol ? 'https:' : 'http:')) + "/widgets/jquery.ncbo.autocomplete.js",
+        url: OPTIONS.ncboUIURL.replace("http:", ('https:' == document.location.protocol ? 'https:' : 'http:')) + "/widgets/jquery.ncbo.autocomplete.js",
         type: "GET",
         crossDomain: true,
         dataType: "script",
         success: function(){
-          setupTree($this, TREE, TREE.option);
-          TREE.init();
+          var tree = setupTree($this, OPTIONS);
+          tree.init();
         }
       });
     });
