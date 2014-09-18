@@ -15,7 +15,7 @@ class OntologiesController < ApplicationController
   # GET /ontologies.xml
   def index
     # ontology views are excluded from this collection.
-    @ontologies = LinkedData::Client::Models::Ontology.all(include: "acronym,administeredBy,group,hasDomain,name,notes,projects,reviews,summaryOnly,viewingRestriction")
+    @ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params)
     #@views = @ontologies.map {|o| o if not o.viewOf.nil? }.compact
     @submissions = LinkedData::Client::Models::OntologySubmission.all
     @submissions_map = Hash[@submissions.map {|sub| [sub.ontology.acronym, sub] }]

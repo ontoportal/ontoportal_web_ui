@@ -132,5 +132,6 @@
   #custom_ontologies_picker{:style => "left: -9999px; position: absolute;"}
     - form_tag "/accounts/#{@user.username}/custom_ontologies" do
       - selected = @user.customOntology.map {|o| LinkedData::Client::Models::Ontology.get(o).acronym}
-      = render :partial => "shared/ontology_picker", :locals => { :selected_ontologies => selected, :sel_text => "Select Custom Ontologies" }
+      - locals = { :custom_ontologies => @all_ontologies, :selected_ontologies => selected, :sel_text => "Select Custom Ontologies" }
+      = render :partial => "shared/ontology_picker", :locals => locals
       = submit_tag "Save Custom Ontologies", :class => "link_button"
