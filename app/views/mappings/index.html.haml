@@ -9,15 +9,15 @@
     No mappings available
   - else
     = select('search', 'ontologies', @options, {:include_blank => ""},{:onchange=>"loadMappings(this.value);", "data-placeholder".to_sym => "Select an Ontology", autocomplete: "off"})
-%p{style: "padding-left: 10px; margin-bottom: 0;", id: "display_options"}
-  %input{type: "radio", name: "display_type", value: "table", id: "display_table", checked: true, autocomplete: "off"}
-  %label{for: "display_table"} Table
-  %input{type: "radio", name: "display_type", value: "visualization", id: "display_visualization", autocomplete: "off"}
-  %label{for: "display_visualization"} Visualization
-#mapping_load{:style => "padding: 1em 1em 0; margin-bottom: -1em; display: none;"}
-  %img{:src => "/images/tree/spinner.gif", :style => "vertical-align: text-bottom;"}/
-  Loading mappings...
-#mappingCount{:style => "text-align:center;overflow:hidden;padding:10px;"}
+    %p{style: "padding-left: 10px; margin-bottom: 0;", id: "display_options"}
+      %input{type: "radio", name: "display_type", value: "table", id: "display_table", checked: true, autocomplete: "off"}
+      %label{for: "display_table"} Table
+      %input{type: "radio", name: "display_type", value: "visualization", id: "display_visualization", autocomplete: "off"}
+      %label{for: "display_visualization"} Visualization
+    #mapping_load{:style => "padding: 1em 1em 0; margin-bottom: -1em; display: none;"}
+      %img{:src => "/images/tree/spinner.gif", :style => "vertical-align: text-bottom;"}/
+      Loading mappings...
+    #mappingCount{:style => "text-align:center;overflow:hidden;padding:10px;"}
 
 = javascript_include_tag "/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.min.js"
 = javascript_include_tag "/javascripts/JqueryPlugins/datatables/plugins/dataTables.formatted.number.js"

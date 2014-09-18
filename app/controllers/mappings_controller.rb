@@ -21,12 +21,14 @@ class MappingsController < ApplicationController
     # end
 
     @options = {}
-    ontologies_mapping_count.members.each do |ontology_acronym|
-      ontology = ontologies_hash[ontology_acronym.to_s]
-      mapping_count = ontologies_mapping_count[ontology_acronym]
-      next unless ontology && mapping_count > 0
-      select_text = "#{ontology.name} - #{ontology.acronym} (#{number_with_delimiter(mapping_count, delimiter: ',')})"
-      @options[select_text] = ontology_acronym
+    if ontologies_mapping_count
+      ontologies_mapping_count.members.each do |ontology_acronym|
+        ontology = ontologies_hash[ontology_acronym.to_s]
+        mapping_count = ontologies_mapping_count[ontology_acronym]
+        next unless ontology && mapping_count > 0
+        select_text = "#{ontology.name} - #{ontology.acronym} (#{number_with_delimiter(mapping_count, delimiter: ',')})"
+        @options[select_text] = ontology_acronym
+      end
     end
 
     @options = @options.sort
