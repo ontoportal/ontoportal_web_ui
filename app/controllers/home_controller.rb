@@ -46,10 +46,10 @@ class HomeController < ApplicationController
       @ri_resources = 0
       @ri_record_count = 0
     end
-    # retrieve annotation stats from old REST service
-    @ri_stats = get_resource_index_annotation_stats # application_controller
-    @direct_annotations = @ri_stats[:direct]
-    @direct_expanded_annotations = @ri_stats[:expanded]
+    # TODO: Update stats for new RI
+    # @ri_stats = get_resource_index_annotation_stats # application_controller
+    # @direct_annotations = @ri_stats[:direct]
+    # @direct_expanded_annotations = @ri_stats[:expanded]
   end
 
   def release
