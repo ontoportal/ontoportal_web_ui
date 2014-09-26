@@ -8,8 +8,6 @@ class HomeController < ApplicationController
   def index
     @ontologies = LinkedData::Client::Models::Ontology.all
     @groups = LinkedData::Client::Models::Group.all
-    # TODO: Handle custom ontology sets
-    # Show only notes from custom ontology set
     @notes = LinkedData::Client::Models::Note.all
     @last_notes = []
     unless @notes.empty?
@@ -40,7 +38,7 @@ class HomeController < ApplicationController
     @ont_count = @ontologies.length
     @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes.to_i}.sum
     begin
-      @resources = get_resource_index_resources # application_controller
+      @resources = LinkedData::Client::ResourceIndex.resources # application_controller
       @ri_resources = @resources.length
       @ri_record_count = @resources.map {|r| r.count}.sum
     rescue
@@ -48,10 +46,10 @@ class HomeController < ApplicationController
       @ri_resources = 0
       @ri_record_count = 0
     end
-    # retrieve annotation stats from old REST service
-    @ri_stats = get_resource_index_annotation_stats # application_controller
-    @direct_annotations = @ri_stats[:direct]
-    @direct_expanded_annotations = @ri_stats[:expanded]
+    # TODO: Update stats for new RI
+    # @ri_stats = get_resource_index_annotation_stats # application_controller
+    # @direct_annotations = @ri_stats[:direct]
+    # @direct_expanded_annotations = @ri_stats[:expanded]
   end
 
   def release

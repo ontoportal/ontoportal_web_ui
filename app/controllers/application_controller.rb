@@ -676,36 +676,6 @@ class ApplicationController < ActionController::Base
     return recent_mappings
   end
 
-  def get_resource_index_annotation_stats
-    begin
-      stats_hash = Rails.cache.read(RI_STATS_URI)
-      return stats_hash unless stats_hash.nil?
-      uri = RI_STATS_URI + '?apikey=' + get_apikey
-      ri_statsConn = open(uri)
-      doc = REXML::Document.new(ri_statsConn)
-      stats = doc.elements["/success/data/statistics"]
-      stats_hash = {}
-      stats_hash[:total] = stats.elements["aggregatedAnnotations"].get_text.value.strip.to_i
-      stats_hash[:direct] = stats.elements["mgrepAnnotations"].get_text.value.strip.to_i
-      stats_hash[:reported] = stats.elements["reportedAnnotations"].get_text.value.strip.to_i
-      stats_hash[:hierarchy] = stats.elements["isaAnnotations"].get_text.value.strip.to_i
-      stats_hash[:mapping] = stats.elements["mappingAnnotations"].get_text.value.strip.to_i
-      stats_hash[:expanded] = stats_hash[:direct] + stats_hash[:hierarchy] + stats_hash[:mapping]
-      Rails.cache.write(RI_STATS_URI, stats_hash, expires_in: EXPIRY_RI_STATS)
-    rescue Exception => e
-      LOG.add :error, e.message
-      stats_hash = {
-          :total => 'n/a',
-          :direct => 'n/a',
-          :reported => 'n/a',
-          :hierarchy => 'n/a',
-          :mapping => 'n/a',
-          :expanded => 'n/a'
-      }
-    end
-    return stats_hash
-  end
-
   def get_semantic_types
     semantic_types = {}
     sty_ont = LinkedData::Client::Models::Ontology.find_by_acronym('STY').first
