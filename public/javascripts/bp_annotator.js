@@ -88,6 +88,8 @@ function get_annotations() {
       annotationsTable.fnSetColumnVis(BP_COLUMNS.sem_types, false);
     }
 
+    params["recognizer"] = jQuery("#recognizer").val();
+
     jQuery.ajax({
       type: "POST",
       url: "/annotator", // Call back to the UI annotation_controller::create method
