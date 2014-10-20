@@ -43,6 +43,7 @@ class AnnotatorController < ApplicationController
     query += "&semantic_types=" + options[:semantic_types].join(',') unless options[:semantic_types].empty?
     query += "&mappings=" + options[:mappings].join(',') unless options[:mappings].empty?
     query += "&longest_only=#{options[:longest_only]}"
+    query += "&recognizer=#{params[:recognizer]}"
     #query += "&wholeWordOnly=" + options[:wholeWordOnly].to_s unless options[:wholeWordOnly].empty?
     #query += "&withDefaultStopWords=" + options[:withDefaultStopWords].to_s unless options[:withDefaultStopWords].empty?
     annotations = parse_json(query) # See application_controller.rb
