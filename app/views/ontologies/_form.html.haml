@@ -17,6 +17,8 @@
     jQuery("#viewingRestrictionsLicensed").removeClass("hidden");
   }
 
+  jQuery(document).data().bp.acronyms = #{LinkedData::Client::Models::Ontology.all.map {|o| o.acronym}.to_json};
+
   jQuery(document).ready(function(){
     // Wire up options for restriction how an ontology is viewed
     jQuery("#ontology_viewingRestriction").change(function(){
@@ -52,6 +54,45 @@
     jQuery("#ontology_administeredBy").chosen();
     jQuery("#ontology_acl").chosen();
     jQuery("#ontology_hasDomain").chosen();
+
+    // Make acronym upcase as you type
+    jQuery("#ontology_acronym").on('input', function(e) {
+      var input = $(this);
+      var start = input[0].selectionStart;
+      $(this).val(function (_, val) {
+        return val.toUpperCase();
+      });
+      input[0].selectionStart = input[0].selectionEnd = start;
+    });
+
+    // Check acronym as you type
+    jQuery("#ontology_acronym").on('input', function(e) {
+      var $this = $(this);
+      var errors = [];
+      var errorHTML = "";
+
+      if ($this.val().match("^[^a-z^A-Z]{1}")) {
+        errors.push("Acronym must start with a letter");
+      }
+
+      if ($this.val().match("[^-_0-9a-zA-Z]")) {
+        errors.push("Acronym must only contain the folowing characters: -, _, letters, and numbers");
+      }
+
+      if ($this.val().match(".{17,}")) {
+        errors.push("Acronym must be sixteen characters or less");
+      }
+
+      if (jQuery(document).data().bp.acronyms.indexOf($this.val()) !== -1) {
+        errors.push("Acronym already in use");
+      }
+
+      if (errors.length > 0) {
+        errorHTML = "<li>" + errors.join("</li><li>") + "</li>";
+      }
+
+      jQuery("#acronym_errors").html(errorHTML);
+    });
   });
 
 - unless @errors.nil?
@@ -95,6 +136,7 @@
     %td
       - acronym_enabled = @ontology.acronym.nil? || ! @errors.nil?
       = f.text_field :acronym, value: @ontology.acronym, :disabled => ! acronym_enabled
+      %ul#acronym_errors.enable-lists{style: "color: red; padding: 3px;"}
   %tr
     %th
       Administrators:
