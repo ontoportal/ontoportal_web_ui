@@ -36,7 +36,8 @@
       %p
         %b Entity Recognizer:
         &nbsp;&nbsp;
-        = select_tag :recognizer, options_for_select(@recognizers.map {|r| [r,r]}, "mgrep")
+        - default_recognizer = @recognizers.include?("mgrep") ? "mgrep" : @recognizers.first
+        = select_tag :recognizer, options_for_select(@recognizers.map {|r| [r,r]}, default_recognizer)
 
 
     / annotator_button calls 'get_annotations' in bp_annotator.js
