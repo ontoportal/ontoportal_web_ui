@@ -69,14 +69,14 @@
             %span.bp_popup_link_container
               %a#filter_ontologies.bp_popup_link{:href => "javascript:void(0);"} filter
           #ontology_filter_list.bp_popup_list{:style => "display: none;"}
-        %th{:style => "padding-right: 6px; min-width: 85px;", :title => "Type"}
+        %th{:style => "padding-right: 6px; min-width: 85px;", :title => "Type", class: "match_type"}
           Type
           %span.popup_container{:style => "padding-left: 1.7em;"}
             %span.bp_popup_link_container
               %a#filter_match_type.bp_popup_link{:href => "javascript:void(0);"} filter
           #match_type_filter_list.bp_popup_list{:style => "display: none;"}
         %th UMLS Sem Type
-        %th Context
+        %th{class: "match_context"} Context
         %th{:style => "padding-right: 6px;", :title => "Matched Class"}
           Matched Class
           %span.popup_container{:style => "padding-left: 1.7em;"}
@@ -94,11 +94,8 @@
     %p
       %span{:style => "padding: 0 3px 0 0;"}>
         %b Format Results As:
-      = succeed "&amp;nbsp;" do
         %span#download_links_tabdelimited.link_button.ui_button
-      = succeed "&amp;nbsp;" do
         %span#download_links_json.link_button.ui_button
-      = succeed "&amp;nbsp;" do
         %span#download_links_text.link_button.ui_button
       %span#download_links_xml.link_button.ui_button
     %span{:style => "font-size: 8pt;"}
