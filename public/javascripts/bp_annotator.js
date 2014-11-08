@@ -600,28 +600,33 @@ function get_annotation_rows_from_raw(annotation, params) {
     };
   // data dependent var declarations
   var cls = get_class_details_from_raw(annotation.annotatedClass);
-  jQuery.each(annotation.annotations, function(i, a) {
-    text_markup = get_text_markup(params.text, a.from, a.to);
-    match_type = match_type_translation[a.matchType.toLowerCase()] || 'direct';
-    cells = [cls.cls_link, cls.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link];
+  if (annotation.annotations.length == 0) {
+    cells = [cls.cls_link, cls.ont_link, null, cls.semantic_types, null, cls.cls_link, cls.ont_link];
     rows.push(cells);
-    // Add rows for any classes in the hierarchy.
-    match_type = 'ancestor';
-    var h_c = null;
-    jQuery.each(annotation.hierarchy, function(i, h) {
-      h_c = get_class_details_from_raw(h.annotatedClass);
-      cells = [h_c.cls_link, h_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link];
+  } else {
+    jQuery.each(annotation.annotations, function(i, a) {
+      text_markup = get_text_markup(params.text, a.from, a.to);
+      match_type = match_type_translation[a.matchType.toLowerCase()] || 'direct';
+      cells = [cls.cls_link, cls.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link];
       rows.push(cells);
-    }); // hierarchy loop
-    // Add rows for any classes in the mappings. Note the ont_link will be different.
-    match_type = 'mapping';
-    var m_c = null;
-    jQuery.each(annotation.mappings, function(i, m) {
-      m_c = get_class_details_from_raw(m.annotatedClass);
-      cells = [m_c.cls_link, m_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link];
-      rows.push(cells);
-    }); // mappings loop
-  }); // annotations loop
+      // Add rows for any classes in the hierarchy.
+      match_type = 'ancestor';
+      var h_c = null;
+      jQuery.each(annotation.hierarchy, function(i, h) {
+        h_c = get_class_details_from_raw(h.annotatedClass);
+        cells = [h_c.cls_link, h_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link];
+        rows.push(cells);
+      }); // hierarchy loop
+      // Add rows for any classes in the mappings. Note the ont_link will be different.
+      match_type = 'mapping';
+      var m_c = null;
+      jQuery.each(annotation.mappings, function(i, m) {
+        m_c = get_class_details_from_raw(m.annotatedClass);
+        cells = [m_c.cls_link, m_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link];
+        rows.push(cells);
+      }); // mappings loop
+    }); // annotations loop
+  }
   return rows;
 }
 
@@ -632,7 +637,8 @@ function update_annotations_table(rowsArray) {
     classes = {},
     match_types = {},
     matched_ontologies = {},
-    matched_classes = {};
+    matched_classes = {},
+    context_count = 0;
 
   jQuery(rowsArray).each(function() {
     // [ cls_link, ont_link, match_type, semantic_types, text_markup, cls_link, ont_link ];
@@ -655,6 +661,9 @@ function update_annotations_table(rowsArray) {
     //    jQuery.each(annotation.concept.semantic_types, function () {
     //      semantic_types.push(this.description);
     //    });
+
+    // Keep track of contexts. If there are none (IE when using mallet), hide the column
+    if (row[4] !== null) context_count++;
 
     // Keep track of how many results are associated with each ontology
     ontologies[ont_label] = (ont_label in ontologies) ? ontologies[ont_label] + 1 : 1;
@@ -701,6 +710,14 @@ function update_annotations_table(rowsArray) {
 
   // Add data
   annotationsTable.fnAddData(rowsArray);
+
+  // Hide columns as necessary
+  if (context_count == 0)
+    annotationsTable.fnSetColumnVis(4, false);
+
+  var match_keys = Object.keys(match_types);
+  if (match_keys.length == 1 && match_keys[0] === "null")
+    annotationsTable.fnSetColumnVis(2, false);
 }
 
 
