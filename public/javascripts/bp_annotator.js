@@ -601,7 +601,7 @@ function get_annotation_rows_from_raw(annotation, params) {
   // data dependent var declarations
   var cls = get_class_details_from_raw(annotation.annotatedClass);
   if (annotation.annotations.length == 0) {
-    cells = [cls.cls_link, cls.ont_link, null, cls.semantic_types, null, cls.cls_link, cls.ont_link];
+    cells = [cls.cls_link, cls.ont_link, "", cls.semantic_types, "", cls.cls_link, cls.ont_link];
     rows.push(cells);
   } else {
     jQuery.each(annotation.annotations, function(i, a) {
@@ -663,7 +663,7 @@ function update_annotations_table(rowsArray) {
     //    });
 
     // Keep track of contexts. If there are none (IE when using mallet), hide the column
-    if (row[4] !== null) context_count++;
+    if (row[4] !== "") context_count++;
 
     // Keep track of how many results are associated with each ontology
     ontologies[ont_label] = (ont_label in ontologies) ? ontologies[ont_label] + 1 : 1;
@@ -716,7 +716,7 @@ function update_annotations_table(rowsArray) {
     annotationsTable.fnSetColumnVis(4, false);
 
   var match_keys = Object.keys(match_types);
-  if (match_keys.length == 1 && match_keys[0] === "null")
+  if (match_keys.length == 1 && match_keys[0] === "")
     annotationsTable.fnSetColumnVis(2, false);
 }
 
