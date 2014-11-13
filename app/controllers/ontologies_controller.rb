@@ -5,7 +5,7 @@ class OntologiesController < ApplicationController
   #caches_page :index
 
   helper :concepts
-  layout 'ontology'
+  layout :resolve_layout
 
   before_filter :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
 
@@ -313,6 +313,17 @@ class OntologiesController < ApplicationController
       render :partial => 'widgets', :layout => false
     else
       render :partial => 'widgets', :layout => "ontology_viewer"
+    end
+  end
+
+  private
+
+  def resolve_layout
+    case action_name
+    when 'browse'
+      'angular'
+    else
+      'ontology'
     end
   end
 
