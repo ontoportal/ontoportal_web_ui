@@ -14,13 +14,12 @@ class OntologiesController < ApplicationController
   # GET /ontologies
   # GET /ontologies.xml
   def index
-    # ontology views are excluded from this collection.
     @ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params)
-    #@views = @ontologies.map {|o| o if not o.viewOf.nil? }.compact
     @submissions = LinkedData::Client::Models::OntologySubmission.all
     @submissions_map = Hash[@submissions.map {|sub| [sub.ontology.acronym, sub] }]
     @categories = LinkedData::Client::Models::Category.all
     @groups = LinkedData::Client::Models::Group.all
+
     # Count the number of classes in each ontology
     metrics_hash = get_metrics_hash
     @class_counts = {}
@@ -28,11 +27,18 @@ class OntologiesController < ApplicationController
       @class_counts[o.id] = metrics_hash[o.id].classes if metrics_hash[o.id]
       @class_counts[o.id] ||= 0
     end
+
     @mapping_counts = {}
     @note_counts = {}
     respond_to do |format|
       format.html # index.rhtml
     end
+  end
+
+  def browse
+    @app_name = "FacetedBrowsing"
+    @app_dir = "/browse"
+    @base_path = @app_dir
   end
 
   # GET /visualize/:ontology

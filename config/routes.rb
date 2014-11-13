@@ -48,6 +48,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/analytics', :controller => 'analytics', :action => 'track'
 
   # Ontologies
+  map.connect '/browse', :controller => 'ontologies', :action => 'browse'
   map.connect '/ontologies/view/edit/:id', :controller => 'ontologies', :action => 'edit_view', :requirements => { :id => %r([^/?]+) }
   map.connect '/ontologies/view/new/:id', :controller => 'ontologies', :action => 'new_view'
   map.ontology_virtual '/ontologies/virtual/:ontology', :controller => 'ontologies', :action => 'virtual'
