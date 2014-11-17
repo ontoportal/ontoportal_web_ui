@@ -39,6 +39,41 @@ class OntologiesController < ApplicationController
     @app_name = "FacetedBrowsing"
     @app_dir = "/browse"
     @base_path = @app_dir
+    @ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params, include_views: true)
+
+    submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true)
+    submissions_map = Hash[submissions.map {|sub| [sub.ontology.acronym, sub] }]
+
+    @categories = LinkedData::Client::Models::Category.all
+    @groups = LinkedData::Client::Models::Group.all
+
+    reviews = {}
+    LinkedData::Client::Models::Review.all.each do |r|
+      reviews[r.reviewedOntology] ||= []
+      reviews[r.reviewedOntology] << r
+    end
+
+    metrics_hash = get_metrics_hash
+
+    @formats = Set.new
+
+    @ontologies.each do |o|
+      if metrics_hash[o.id]
+        o.class_count = metrics_hash[o.id].classes
+      else
+        o.class_count = 0
+      end
+
+      o.reviews = reviews[o.id]
+
+      o.submission = submissions_map[o.acronym]
+      next unless o.submission
+
+      @formats << o.submission.hasOntologyLanguage
+
+      creation_date = DateTime.parse(o.submission.creationDate)
+      o.creationDateFormatted = l(creation_date, format: "%m/%d/%Y")
+    end
   end
 
   # GET /visualize/:ontology

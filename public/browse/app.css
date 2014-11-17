@@ -1,30 +1,45 @@
-/* app css stylesheet */
-
-.menu {
-  list-style: none;
-  border-bottom: 0.1em solid black;
-  margin-bottom: 2em;
-  padding: 0 0 0.5em;
+[ng-cloak].splash {
+  display: block !important;
 }
-
-.menu:before {
-  content: "[";
+.splash {
+  display: none;
 }
-
-.menu:after {
-  content: "]";
+[ng-cloak] {
+  display: none;
 }
-
-.menu > li {
-  display: inline;
+#facets {
+  margin-top: 1em;
 }
-
-.menu > li:before {
-  content: "|";
-  padding-right: 0.3em;
+.facet {
+  margin: 1em 0;
+  border: thin lightGray solid;
+  padding: 5px;
+  border-radius: 3px;
 }
-
-.menu > li:nth-child(1):before {
-  content: "";
-  padding: 0;
+.checkbox_list input[type=checkbox] {
+  margin-left: -1.2em;
 }
+.checkbox_list {
+  padding-left: 1.2em;
+  max-height: 200px;
+  overflow: auto;
+}
+#sorting {
+}
+#sorting_float {
+  float: right;
+  margin-bottom: .5em;
+}
+#ontologies {
+}
+.ontology {
+  border: thin gray solid;
+  border-radius: 7px;
+  clear: both;
+  padding: .5em 1em .5em;
+  margin: 2em 0;
+}
+.badge {border-radius: 7px; text-align: center; max-width: 80px; height: 65px; max-height: 65px; border: solid #234979 thin;}
+.badge:hover {box-shadow: 0px 0px 10px 5px rgba(25, 25, 25, .5); cursor: pointer; border: none;}
+.badge_title {border-radius: 6px 6px 0 0; padding: .2em; height: 15px; font-size: 1.1em; color: white; background-color: #234979;}
+.badge_count {height: 40px; padding-top: 10px; font-size: 1.8em; font-weight: bold; color: #234979;}
