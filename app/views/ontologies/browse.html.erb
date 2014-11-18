@@ -123,12 +123,14 @@
         </style>
 
         <div class="badges grid-40 grid-parent" ng-show="ontology.submission">
-          <div class="grid-25 badge_grid">
-            <div class="badge">
-              <div class="badge_title">classes</div>
-              <div class="badge_count">{{ontology.class_count}}</div>
+          <a href="/ontologies/{{ontology.acronym}}?p=classes">
+            <div class="grid-25 badge_grid">
+              <div class="badge">
+                <div class="badge_title">classes</div>
+                <div class="badge_count">{{ontology.class_count | humanShortNum}}</div>
+              </div>
             </div>
-          </div>
+          </a>
 
           <div class="grid-25 badge_grid" ng-show="ontology.projects">
             <div class="badge">
