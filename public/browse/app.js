@@ -13,6 +13,9 @@ config( ['$locationProvider', function ($locationProvider) {
 var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
 
 .controller('OntologyList', ['$scope', function($scope) {
+  $scope.debug = jQuery(document).data().bp.development;
+  $scope.admin = jQuery(document).data().bp.admin;
+  $scope.visible_ont_count = 0;
   $scope.facets = {
     types: ["ontology"],
     formats: [],
@@ -35,19 +38,81 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
     return 0;
   });
 
+  $scope.facets.filters = {
+    types: function(ontology) {
+      if ($scope.facets.types.length == 0)
+        return true;
+      if ($scope.facets.types.indexOf(ontology.type) === -1)
+        return false;
+      return true;
+    },
+    formats: function(ontology) {
+      if ($scope.facets.formats.length == 0)
+        return true;
+      if ($scope.facets.formats.indexOf((ontology.submission || {}).hasOntologyLanguage) === -1)
+        return false;
+      return true;
+    },
+    groups: function(ontology) {
+      if ($scope.facets.groups.length == 0)
+        return true;
+      console.log(ontology.groups)
+      if (intersection($scope.facets.groups, ontology.groups).length === 0)
+        return false;
+      return true;
+    },
+    categories: function(ontology) {
+      if ($scope.facets.categories.length == 0)
+        return true;
+      if (intersection($scope.facets.categories, ontology.categories).length === 0)
+        return false;
+      return true;
+    },
+    artifacts: function(ontology) {
+      if ($scope.facets.artifacts.length == 0)
+        return true;
+      if (intersection($scope.facets.artifacts, ontology.artifacts).length === 0)
+        return false;
+      return true;
+    }
+  }
+
+  // This watches the facets and updates the list depending on which facets are selected
+  // The facets cascade
   $scope.$watch('facets', function() {
-    var ontology;
+    var ontology, count = 0;
     for (var i = 0; i < $scope.ontologies.length; i++) {
       ontology = $scope.ontologies[i];
-      ontology.show = true;
-      if ($scope.facets.types.length > 0) {
-        if ($scope.facets.types.indexOf(ontology.type) === -1) {
-          ontology.show = false;
-          continue;
-        }
+
+      // Filter out ontologies based on their filter functions
+      ontology.show = Object.keys($scope.facets.filters).map(function(key){
+        return $scope.facets.filters[key](ontology);
+      }).every(Boolean);
+
+      if (ontology.show) {count++;}
+    }
+    $scope.visible_ont_count = count;
+  }, true);
+
+  var intersection = function(a, b) {
+    if (typeof a === 'undefined' || typeof b === 'undefined') {return [];}
+    var ai = 0, bi = 0;
+    var result = [];
+
+    while (ai < a.length && bi < b.length) {
+      if      (a[ai] < b[bi] ){ ai++; }
+      else if (a[ai] > b[bi] ){ bi++; }
+      else {
+        /* they're equal */
+        result.push(ai);
+        ai++;
+        bi++;
       }
     }
-  }, true);
+
+    return result;
+  }
+
 }])
 
 .filter('idToTitle', function() {

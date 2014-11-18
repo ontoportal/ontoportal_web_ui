@@ -3,6 +3,8 @@
   jQuery(document).data().bp.categories = <%=@categories.to_json%>;
   jQuery(document).data().bp.groups = <%=@groups.to_json%>;
   jQuery(document).data().bp.formats = <%=@formats.to_json%>;
+  jQuery(document).data().bp.admin = <%=@admin.to_json%>;
+  jQuery(document).data().bp.development = <%=@development.to_json%>;
 </script>
 
 <link href="//cdnjs.cloudflare.com/ajax/libs/unsemantic/0/unsemantic-grid-responsive-tablet.css" rel="stylesheet" type="text/css" media="screen">
@@ -19,11 +21,37 @@
 
   <div ng-controller="OntologyList" ng-cloak>
     <div id="facets" class="grid-15">
-    types: {{facets.types}}<br/>
-    artifacts: {{facets.artifacts}}<br/>
-    formats: {{facets.formats}}<br/>
-    groups: {{facets.groups}}<br/>
-    categories: {{facets.categories}}<br/>
+      <div ng-show="debug">
+        types: {{facets.types}}<br/>
+        artifacts: {{facets.artifacts}}<br/>
+        formats: {{facets.formats}}<br/>
+        groups: {{facets.groups}}<br/>
+        categories: {{facets.categories}}<br/>
+      </div>
+
+      Selected ontologies: {{visible_ont_count}}
+
+      <div id="category_facet" class="facet">
+        <h4>Category</h4>
+        <div class="checkbox_list">
+          <span ng-repeat="category in categories">
+            <input type="checkbox" checklist-model="facets.categories" checklist-value="category.id" name="category" id="category_{{category.acronym}}">
+            <label for="category_{{category.acronym}}">{{category.name}}</label>
+            <br/>
+          </span>
+        </div>
+      </div>
+
+      <div id="group_facet" class="facet">
+        <h4>Group</h4>
+        <div class="checkbox_list">
+          <span ng-repeat="group in groups">
+            <input type="checkbox" checklist-model="facets.groups" checklist-value="group.id" name="group" id="group_{{group.acronym}}">
+            <label for="group_{{group.acronym}}" title="{{group.name}}">{{group.acronym}}</label>
+            <br/>
+          </span>
+        </div>
+      </div>
 
       <div id="ont_view_facet" class="facet">
         <h4>Entry Type</h4>
@@ -58,35 +86,14 @@
         </div>
       </div>
 
-      <div id="group_facet" class="facet">
-        <h4>Group</h4>
-        <div class="checkbox_list">
-          <span ng-repeat="group in groups">
-            <input type="checkbox" checklist-model="facets.groups" checklist-value="group" name="group" id="group_{{group.acronym}}">
-            <label for="group_{{group.acronym}}" title="{{group.name}}">{{group.acronym}}</label>
-            <br/>
-          </span>
-        </div>
-      </div>
-
-      <div id="category_facet" class="facet">
-        <h4>Category</h4>
-        <div class="checkbox_list">
-          <span ng-repeat="category in categories">
-            <input type="checkbox" checklist-model="facets.categories" checklist-value="category" name="category" id="category_{{category.acronym}}">
-            <label for="category_{{category.acronym}}">{{category.name}}</label>
-            <br/>
-          </span>
-        </div>
-      </div>
     </div>
 
     <div id="ontologies" class="grid-85">
       <div id="sorting">
         <div id="sorting_float">
           <label for="sort_order">Sort:</label>
-          <select>
-            <option value="pop">Popular</option>
+          <select disabled="true">
+            <option value="pop" selected="true">Popular</option>
             <option value="pop">Size</option>
             <option value="pop">Projects</option>
             <option value="pop">Rating</option>
@@ -95,15 +102,15 @@
         </div>
       </div>
 
-      <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies" ng-show="ontology.show">
+      <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies | orderBy:'popularity':true" ng-show="ontology.show">
         <div class="grid-60">
-          <h2 style="font-size: 1.8em;">{{$index}} {{ontology.type}} {{ontology.name}} ({{ontology.acronym}})</h2>
+          <h2 style="font-size: 1.8em;"><span ng-show="debug">{{$index}} {{ontology.type}} </span>{{ontology.name}} ({{ontology.acronym}})</h2>
           <div ng-show="ontology.submission">
             <p>{{ontology.submission.description.split(". ")[0]}}</p>
             <span class="ont-info"><b>Uploaded</b>: {{ontology.submission.creationDate | date:'shortDate'}}</span>
             <span class="ont-info"><b>Format</b>: {{ontology.submission.hasOntologyLanguage}}</span>
             <span class="ont-info" ng-show="ontology.submission.homepage"><a href="{{ontology.submission.homepage}}">Home</a></span>
-            <div class="admin">
+            <div class="admin" ng-show="debug">
               <span ng-show="ontology.submission.pullLocation"><b>Pull URL</b>: {{ontology.submission.pullLocation}}</span>
             </div>
           </div>
