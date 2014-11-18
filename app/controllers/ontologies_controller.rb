@@ -68,11 +68,14 @@ class OntologiesController < ApplicationController
         o.class_count = 0
       end
 
-      o.type       = o.viewOf.nil? ? "ontology" : "ontology_view"
-      o.show       = o.viewOf.nil? ? true : false # show ontologies only by default
-      o.reviews    = reviews[o.id] || []
-      o.groups     = o.group || []
-      o.categories = o.hasDomain || []
+      o.type          = o.viewOf.nil? ? "ontology" : "ontology_view"
+      o.show          = o.viewOf.nil? ? true : false # show ontologies only by default
+      o.reviews       = reviews[o.id] || []
+      o.groups        = o.group || []
+      o.categories    = o.hasDomain || []
+      o.note_count    = o.notes.length
+      o.review_count  = o.reviews.length
+      o.project_count = o.projects.length
 
       o.artifacts = []
       o.artifacts << "notes" if o.notes.length > 0
