@@ -23,7 +23,7 @@
         <h4>Entry Type</h4>
         <div class="checkbox_list">
           <span ng-repeat="type in types">
-            <input type="checkbox" ng-click="filterList()" checklist-model="facets.types" checklist-value="type" id="include_{{type}}" name="include_{{type}}">
+            <input type="checkbox" checklist-model="facets.types" checklist-value="type" id="include_{{type}}" name="include_{{type}}">
             <label for="include_{{type}}">{{type | idToTitle}}</label>
             <br/>
           </span>
@@ -80,9 +80,9 @@
         </div>
       </div>
 
-      <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies">
+      <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies" ng-show="ontology.show">
         <div class="grid-60">
-          <h2 style="font-size: 1.8em;">{{$index}} {{ontology.name}} ({{ontology.acronym}})</h2>
+          <h2 style="font-size: 1.8em;">{{$index}} {{ontology.type}} {{ontology.name}} ({{ontology.acronym}})</h2>
           <div ng-show="ontology.submission">
             <p>{{ontology.submission.description.split(". ")[0]}}</p>
             <span class="ont-info"><b>Uploaded</b>: {{ontology.creationDateFormatted}}</span>
