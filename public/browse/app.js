@@ -27,3 +27,22 @@ angular.module('FacetedBrowsing.OntologyList', [])
   });
 
 }]);
+.filter('idToTitle', function() {
+  return function(input) {
+    if (input) {
+      var splitInput = input.replace(/_/g, " ").split(" ");
+      var newInput = [];
+      var word;
+      for (word in splitInput) {
+        word = splitInput[word];
+        if (word[0].toUpperCase() == word[0]) {
+          newInput.push(word);
+        } else {
+          newInput.push(word[0].toUpperCase() + word.slice(1));
+        }
+
+      }
+      return newInput.join(" ");
+    }
+  };
+});
