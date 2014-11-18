@@ -112,9 +112,11 @@ DEPENDENCIES
   i18n (~> 0.5.0)
   iconv
   memcache-client (~> 1.8.5)
+  multi_json
   mysql (~> 2.8.1)
   ncbo_resolver!
   oink
+  oj
   ontologies_api_client!
   pry
   rack-mini-profiler

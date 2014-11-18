@@ -1,10 +1,10 @@
 <script>
-  jQuery(document).data().bp.ontologies = <%=@ontologies.to_json%>;
-  jQuery(document).data().bp.categories = <%=@categories.to_json%>;
-  jQuery(document).data().bp.groups = <%=@groups.to_json%>;
-  jQuery(document).data().bp.formats = <%=@formats.to_json%>;
-  jQuery(document).data().bp.admin = <%=@admin.to_json%>;
-  jQuery(document).data().bp.development = <%=@development.to_json%>;
+  jQuery(document).data().bp.ontologies = <%=MultiJson.dump(@ontologies)%>;
+  jQuery(document).data().bp.categories = <%=MultiJson.dump(@categories)%>;
+  jQuery(document).data().bp.groups = <%=MultiJson.dump(@groups)%>;
+  jQuery(document).data().bp.formats = <%=MultiJson.dump(@formats)%>;
+  jQuery(document).data().bp.admin = <%=MultiJson.dump(@admin)%>;
+  jQuery(document).data().bp.development = <%=MultiJson.dump(@development)%>;
 </script>
 
 <link href="//cdnjs.cloudflare.com/ajax/libs/unsemantic/0/unsemantic-grid-responsive-tablet.css" rel="stylesheet" type="text/css" media="screen">

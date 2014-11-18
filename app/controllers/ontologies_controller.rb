@@ -1,5 +1,6 @@
 class OntologiesController < ApplicationController
 
+  require "multi_json"
   require 'cgi'
 
   #caches_page :index

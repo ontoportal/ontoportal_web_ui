@@ -18,6 +18,9 @@ gem "rack-mini-profiler"
 gem 'cube-ruby', require: 'cube'
 gem 'oink'
 
+gem 'oj'
+gem 'multi_json'
+
 #logs in json format, useful for shipping logs to logstash
 gem 'rackstash', git: "https://github.com/planio-gmbh/rackstash.git"
 
