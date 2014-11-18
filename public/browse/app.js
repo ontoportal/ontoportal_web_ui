@@ -13,18 +13,12 @@ config( ['$locationProvider', function ($locationProvider) {
 var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
 
 .controller('OntologyList', ['$scope', function($scope) {
+  // Default values
+  $scope.visible_ont_count = 0;
+
+  // Data transfer from Rails
   $scope.debug = jQuery(document).data().bp.development;
   $scope.admin = jQuery(document).data().bp.admin;
-  $scope.visible_ont_count = 0;
-  $scope.facets = {
-    types: ["ontology"],
-    formats: [],
-    groups: [],
-    categories: [],
-    artifacts: []
-  }
-  $scope.types = ["ontology", "ontology_view"];
-  $scope.artifacts = ["notes", "reviews", "projects"];
   $scope.ontologies = jQuery(document).data().bp.ontologies;
   $scope.formats = jQuery(document).data().bp.formats.sort();
   $scope.categories = jQuery(document).data().bp.categories.sort(function(a, b){
@@ -38,6 +32,20 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
     return 0;
   });
 
+  // Default setup for facets
+  $scope.facets = {
+    types: ["ontology"],
+    formats: [],
+    groups: [],
+    categories: [],
+    artifacts: []
+  }
+
+  // Default values for facets that aren't definied on the ontologies
+  $scope.types = ["ontology", "ontology_view"];
+  $scope.artifacts = ["notes", "reviews", "projects"];
+
+  // Functions for determining whether or not a particular filter applies to a given ontology
   $scope.facets.filters = {
     types: function(ontology) {
       if ($scope.facets.types.length == 0)
