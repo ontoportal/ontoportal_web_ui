@@ -20,17 +20,17 @@
   <div class="splash" ng-cloak>Loading...</div>
 
   <div ng-controller="OntologyList" ng-cloak>
-    <div id="facets" class="grid-15">
-      <div ng-show="debug">
-        types: {{facets.types}}<br/>
-        artifacts: {{facets.artifacts}}<br/>
-        formats: {{facets.formats}}<br/>
-        groups: {{facets.groups}}<br/>
-        categories: {{facets.categories}}<br/>
-      </div>
-
+    <div ng-show="debug" class="facet" style="position: relative;">
+      <h2>Debug Info</h2>
+      types: {{facets.types}}<br/>
+      artifacts: {{facets.artifacts}}<br/>
+      formats: {{facets.formats}}<br/>
+      groups: {{facets.groups}}<br/>
+      categories: {{facets.categories}}<br/>
       Selected ontologies: {{visible_ont_count}}
+    </div>
 
+    <div id="facets" class="grid-15">
       <div id="category_facet" class="facet">
         <h4>Category</h4>
         <div class="checkbox_list">
@@ -75,7 +75,7 @@
         </div>
       </div>
 
-      <div id="has_artifacts_facet" class="facet">
+      <div id="artifacts_facet" class="facet">
         <h4>Entries With</h4>
         <div class="checkbox_list">
           <span ng-repeat="artifact in artifacts">
