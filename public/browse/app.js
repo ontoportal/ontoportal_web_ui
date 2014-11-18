@@ -10,9 +10,18 @@ config( ['$locationProvider', function ($locationProvider) {
 }])
 ;
 
-angular.module('FacetedBrowsing.OntologyList', [])
+var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
 
 .controller('OntologyList', ['$scope', function($scope) {
+  $scope.facets = {
+    types: [],
+    formats: [],
+    groups: [],
+    categories: [],
+    artifacts: []
+  }
+  $scope.types = ["ontology", "ontology_views"];
+  $scope.artifacts = ["notes", "reviews", "projects"];
   $scope.ontologies = jQuery(document).data().bp.ontologies;
   $scope.formats = jQuery(document).data().bp.formats.sort();
   $scope.categories = jQuery(document).data().bp.categories.sort(function(a, b){

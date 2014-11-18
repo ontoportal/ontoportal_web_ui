@@ -22,41 +22,45 @@
       <div id="ont_view_facet" class="facet">
         <h4>Entry Type</h4>
         <div class="checkbox_list">
-          <input type="checkbox" ng-model="entry_type" id="include_ontologies" name="include_ontologies"> <label for="include_ontologies">Ontology</label>
-          <br/>
-          <input type="checkbox" ng-model="entry_type" id="include_views" name="include_views"> <label for="include_views">Ontology View</label>
+          <span ng-repeat="type in types">
+            <input type="checkbox" ng-click="filterList()" checklist-model="facets.types" checklist-value="type" id="include_{{type}}" name="include_{{type}}">
+            <label for="include_{{type}}">{{type | idToTitle}}</label>
+            <br/>
+          </span>
         </div>
       </div>
 
       <div id="format_facet" class="facet">
         <h4>Format</h4>
         <div class="checkbox_list">
-          <span ng-repeat="format in formats"><input type="checkbox" name="format" id="format_{{format}}" value="{{format}}"> <label for="format_{{format}}">{{format}}</label><br/></span>
+          <span ng-repeat="format in formats">
+            <input type="checkbox" checklist-model="facets.formats" checklist-value="format" name="format" id="format_{{format}}">
+            <label for="format_{{format}}">{{format}}</label>
+            <br/>
+          </span>
         </div>
       </div>
 
       <div id="has_artifacts_facet" class="facet">
         <h4>Entries With</h4>
         <div class="checkbox_list">
-          <input type="checkbox" id="has_notes" name="has_notes"> <label for="has_notes">Notes</label>
-          <br/>
-          <input type="checkbox" id="has_reviews" name="has_reviews"> <label for="has_reviews">Reviews</label>
-          <br/>
-          <input type="checkbox" id="has_projects" name="has_projects"> <label for="has_projects">Projects</label>
+          <span ng-repeat="artifact in artifacts">
+            <input type="checkbox" checklist-model="facets.artifacts" checklist-value="artifact" name="artifact" id="artifact_{{format}}"> <label for="artifact_{{artifact}}">{{artifact | idToTitle}}</label><br/>
+          </span>
         </div>
       </div>
 
       <div id="group_facet" class="facet">
         <h4>Group</h4>
         <div class="checkbox_list">
-          <span ng-repeat="group in groups"><input type="checkbox" name="group" id="group_{{group.acronym}}" > <label for="group_{{group.acronym}}" title="{{group.name}}">{{group.acronym}}</label><br/></span>
+          <span ng-repeat="group in groups"><input type="checkbox" checklist-model="facets.groups" checklist-value="group" name="group" id="group_{{group.acronym}}" > <label for="group_{{group.acronym}}" title="{{group.name}}">{{group.acronym}}</label><br/></span>
         </div>
       </div>
 
       <div id="category_facet" class="facet">
         <h4>Category</h4>
         <div class="checkbox_list">
-          <span ng-repeat="category in categories"><input type="checkbox" name="category" id="category_{{category.acronym}}"> <label for="category_{{category.acronym}}">{{category.name}}</label><br/></span>
+          <span ng-repeat="category in categories"><input type="checkbox" checklist-model="facets.categories" checklist-value="category" name="category" id="category_{{category.acronym}}"> <label for="category_{{category.acronym}}">{{category.name}}</label><br/></span>
         </div>
       </div>
 
