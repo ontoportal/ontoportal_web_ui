@@ -56,7 +56,6 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
     groups: function(ontology) {
       if ($scope.facets.groups.length == 0)
         return true;
-      console.log(ontology.groups)
       if (intersection($scope.facets.groups, ontology.groups).length === 0)
         return false;
       return true;
@@ -78,7 +77,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
   }
 
   // This watches the facets and updates the list depending on which facets are selected
-  // The facets cascade
+  // All facets are basically ANDed together and return true if no options under the facet are selected.
   $scope.$watch('facets', function() {
     var ontology, count = 0;
     for (var i = 0; i < $scope.ontologies.length; i++) {
@@ -94,23 +93,18 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
     $scope.visible_ont_count = count;
   }, true);
 
-  var intersection = function(a, b) {
-    if (typeof a === 'undefined' || typeof b === 'undefined') {return [];}
-    var ai = 0, bi = 0;
-    var result = [];
-
-    while (ai < a.length && bi < b.length) {
-      if      (a[ai] < b[bi] ){ ai++; }
-      else if (a[ai] > b[bi] ){ bi++; }
-      else {
-        /* they're equal */
-        result.push(ai);
-        ai++;
-        bi++;
+  var intersection = function(x, y) {
+    if (typeof x === 'undefined' || typeof y === 'undefined') {return [];}
+    var ret = [];
+    for (var i = 0; i < x.length; i++) {
+      for (var z = 0; z < y.length; z++) {
+        if (x[i] == y[z]) {
+          ret.push(i);
+          break;
+        }
       }
     }
-
-    return result;
+    return ret;
   }
 
 }])
