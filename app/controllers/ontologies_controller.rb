@@ -41,6 +41,8 @@ class OntologiesController < ApplicationController
     @app_dir = "/browse"
     @base_path = @app_dir
     @ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params + ",viewOf", include_views: true)
+    @admin = session[:user] ? session[:user].admin? : false
+    @development = Rails.env.development?
 
     submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true)
     submissions_map = Hash[submissions.map {|sub| [sub.ontology.acronym, sub] }]
@@ -65,9 +67,18 @@ class OntologiesController < ApplicationController
         o.class_count = 0
       end
 
-      o.type = o.viewOf.nil? ? "ontology" : "ontology_view"
-      o.show = o.viewOf.nil? ? true : false # show ontologies only by default
-      o.reviews = reviews[o.id]
+      o.type       = o.viewOf.nil? ? "ontology" : "ontology_view"
+      o.show       = o.viewOf.nil? ? true : false # show ontologies only by default
+      o.reviews    = reviews[o.id] || []
+      o.groups     = o.group || []
+      o.categories = o.hasDomain || []
+
+      o.artifacts = []
+      o.artifacts << "notes" if o.notes.length > 0
+      o.artifacts << "reviews" if o.reviews.length > 0
+      o.artifacts << "projects" if o.projects.length > 0
+
+      o.popularity = ONTOLOGY_RANK[o.acronym] || 0
 
       o.submission = submissions_map[o.acronym]
       next unless o.submission
