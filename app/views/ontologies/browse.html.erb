@@ -85,7 +85,7 @@
           <h2 style="font-size: 1.8em;">{{$index}} {{ontology.type}} {{ontology.name}} ({{ontology.acronym}})</h2>
           <div ng-show="ontology.submission">
             <p>{{ontology.submission.description.split(". ")[0]}}</p>
-            <span class="ont-info"><b>Uploaded</b>: {{ontology.creationDateFormatted}}</span>
+            <span class="ont-info"><b>Uploaded</b>: {{ontology.submission.creationDate | date:'shortDate'}}</span>
             <span class="ont-info"><b>Format</b>: {{ontology.submission.hasOntologyLanguage}}</span>
             <span class="ont-info" ng-show="ontology.submission.homepage"><a href="{{ontology.submission.homepage}}">Home</a></span>
             <div class="admin">
