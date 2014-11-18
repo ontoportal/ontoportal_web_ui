@@ -51,7 +51,9 @@
         <h4>Entries With</h4>
         <div class="checkbox_list">
           <span ng-repeat="artifact in artifacts">
-            <input type="checkbox" checklist-model="facets.artifacts" checklist-value="artifact" name="artifact" id="artifact_{{format}}"> <label for="artifact_{{artifact}}">{{artifact | idToTitle}}</label><br/>
+            <input type="checkbox" checklist-model="facets.artifacts" checklist-value="artifact" name="artifact" id="artifact_{{format}}">
+            <label for="artifact_{{artifact}}">{{artifact | idToTitle}}</label>
+            <br/>
           </span>
         </div>
       </div>
@@ -59,17 +61,24 @@
       <div id="group_facet" class="facet">
         <h4>Group</h4>
         <div class="checkbox_list">
-          <span ng-repeat="group in groups"><input type="checkbox" checklist-model="facets.groups" checklist-value="group" name="group" id="group_{{group.acronym}}" > <label for="group_{{group.acronym}}" title="{{group.name}}">{{group.acronym}}</label><br/></span>
+          <span ng-repeat="group in groups">
+            <input type="checkbox" checklist-model="facets.groups" checklist-value="group" name="group" id="group_{{group.acronym}}">
+            <label for="group_{{group.acronym}}" title="{{group.name}}">{{group.acronym}}</label>
+            <br/>
+          </span>
         </div>
       </div>
 
       <div id="category_facet" class="facet">
         <h4>Category</h4>
         <div class="checkbox_list">
-          <span ng-repeat="category in categories"><input type="checkbox" checklist-model="facets.categories" checklist-value="category" name="category" id="category_{{category.acronym}}"> <label for="category_{{category.acronym}}">{{category.name}}</label><br/></span>
+          <span ng-repeat="category in categories">
+            <input type="checkbox" checklist-model="facets.categories" checklist-value="category" name="category" id="category_{{category.acronym}}">
+            <label for="category_{{category.acronym}}">{{category.name}}</label>
+            <br/>
+          </span>
         </div>
       </div>
-
     </div>
 
     <div id="ontologies" class="grid-85">
