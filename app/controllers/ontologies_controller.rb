@@ -39,7 +39,7 @@ class OntologiesController < ApplicationController
     @app_name = "FacetedBrowsing"
     @app_dir = "/browse"
     @base_path = @app_dir
-    @ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params, include_views: true)
+    @ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params + ",viewOf", include_views: true)
 
     submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true)
     submissions_map = Hash[submissions.map {|sub| [sub.ontology.acronym, sub] }]
@@ -64,6 +64,8 @@ class OntologiesController < ApplicationController
         o.class_count = 0
       end
 
+      o.type = o.viewOf.nil? ? "ontology" : "ontology_view"
+      o.show = o.viewOf.nil? ? true : false # show ontologies only by default
       o.reviews = reviews[o.id]
 
       o.submission = submissions_map[o.acronym]
