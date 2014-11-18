@@ -72,9 +72,6 @@ class OntologiesController < ApplicationController
       next unless o.submission
 
       @formats << o.submission.hasOntologyLanguage
-
-      creation_date = DateTime.parse(o.submission.creationDate)
-      o.creationDateFormatted = l(creation_date, format: "%m/%d/%Y")
     end
   end
 
