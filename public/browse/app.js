@@ -127,4 +127,21 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
       return newInput.join(" ");
     }
   };
-});
+})
+
+.filter('humanShortNum', function() {
+  return function(input) {
+    if (input) {
+      var num = parseInt(input);
+      if (num < 10000) {return num;}
+      if (num > 10000 && num < 1000000) {
+        return String(+(Math.round(num / 1000 + "e+1")  + "e-1")) + "k"
+      }
+      if (num > 1000000) {
+        return String(+(Math.round(num / 100000 + "e+1")  + "e-1")) + "M"
+      }
+      return newInput.join(" ");
+    }
+  };
+})
+;
