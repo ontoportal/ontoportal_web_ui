@@ -15,6 +15,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
 .controller('OntologyList', ['$scope', function($scope) {
   // Default values
   $scope.visible_ont_count = 0;
+  $scope.ontology_sort_order = "-popularity";
 
   // Data transfer from Rails
   $scope.debug = jQuery(document).data().bp.development;

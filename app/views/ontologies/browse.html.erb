@@ -92,18 +92,18 @@
       <div id="sorting">
         <div id="sorting_float">
           <label for="sort_order">Sort:</label>
-          <select>
-            <option value="popularity" selected="selected">Popular</option>
-            <option value="class_count">Size</option>
-            <option value="project_count">Projects</option>
-            <option value="note_count">Notes</option>
+          <select ng-model="ontology_sort_order" disabled="disabled">
+            <option value="-popularity" selected="selected">Popular</option>
+            <option value="-class_count">Size</option>
+            <option value="-project_count">Projects</option>
+            <option value="-note_count">Notes</option>
             <!-- <option value="ratings">Rating</option> -->
-            <option value="submission.creationDate">Upload Date</option>
+            <option value="-submission.creationDate">Upload Date</option>
           </select>
         </div>
       </div>
 
-      <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies | orderBy:'popularity':true" ng-show="ontology.show">
+      <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies | orderBy:ontology_sort_order" ng-show="ontology.show">
         <div class="grid-60">
           <h2 style="font-size: 1.8em;"><span ng-show="debug">{{$index}} {{ontology.type}} </span>{{ontology.name}} ({{ontology.acronym}})</h2>
           <div ng-show="ontology.submission">
