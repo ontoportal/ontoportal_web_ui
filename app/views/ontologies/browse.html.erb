@@ -105,16 +105,35 @@
 
       <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies | orderBy:ontology_sort_order" ng-show="ontology.show">
         <div class="grid-60">
-          <h2 style="font-size: 1.8em;"><span ng-show="debug">{{$index}} {{ontology.type}} </span>{{ontology.name}} ({{ontology.acronym}})</h2>
+          <h2 style="font-size: 1.8em;">
+            <a href="/ontologies/{{ontology.acronym}}">
+              <span ng-show="debug">{{$index}} {{ontology.type}} </span>
+              {{ontology.name}} ({{ontology.acronym}})
+            </a>
+          </h2>
+
           <div ng-show="ontology.submission">
             <p>{{ontology.submission.description.split(". ")[0]}}</p>
-            <span class="ont-info"><b>Uploaded</b>: {{ontology.submission.creationDate | date:'shortDate'}}</span>
-            <span class="ont-info"><b>Format</b>: {{ontology.submission.hasOntologyLanguage}}</span>
-            <span class="ont-info" ng-show="ontology.submission.homepage"><a href="{{ontology.submission.homepage}}">Home</a></span>
+            <span class="ont-info">
+              <b>Uploaded</b>: {{ontology.submission.creationDate | date:'shortDate'}}
+            </span>
+            <span class="ont-info" ng-show="facets.formats.length > 1">
+              <b>Format</b>: {{ontology.submission.hasOntologyLanguage}}
+            </span>
+            <!-- TODO
+
+                Add other information that should be shown when a facet is selected (see format for example)
+
+
+            -->
+            <!-- <span class="ont-info" ng-show="ontology.submission.homepage">
+              <a href="{{ontology.submission.homepage}}">Home</a>
+            </span> -->
             <div class="admin" ng-show="debug">
               <span ng-show="ontology.submission.pullLocation"><b>Pull URL</b>: {{ontology.submission.pullLocation}}</span>
             </div>
           </div>
+
           <span ng-hide="ontology.submission">No submissions available</span>
         </div>
 
@@ -133,26 +152,33 @@
             </div>
           </a>
 
-          <div class="grid-25 badge_grid" ng-show="ontology.projects">
-            <div class="badge">
-              <div class="badge_title">projects</div>
-              <div class="badge_count">{{ontology.projects.length}}</div>
+          <a href="/ontologies/{{ontology.acronym}}#projects_content">
+            <div class="grid-25 badge_grid" ng-show="ontology.projects">
+              <div class="badge">
+                <div class="badge_title">projects</div>
+                <div class="badge_count">{{ontology.projects.length}}</div>
+              </div>
             </div>
-          </div>
+          </a>
 
-          <div class="grid-25 badge_grid" ng-show="ontology.notes">
-            <div class="badge">
-              <div class="badge_title">notes</div>
-              <div class="badge_count">{{ontology.notes.length}}</div>
+          <a href="/ontologies/{{ontology.acronym}}?p=notes">
+            <div class="grid-25 badge_grid" ng-show="ontology.notes">
+              <div class="badge">
+                <div class="badge_title">notes</div>
+                <div class="badge_count">{{ontology.notes.length}}</div>
+              </div>
             </div>
-          </div>
+          </a>
 
-          <div class="grid-25 badge_grid" ng-show="ontology.reviews">
-            <div class="badge">
-              <div class="badge_title">rating</div>
-              <div class="badge_count">4.5 / 5</div>
+          <a href="/ontologies/{{ontology.acronym}}#reviews_content">
+            <div class="grid-25 badge_grid" ng-show="ontology.reviews">
+              <div class="badge">
+                <div class="badge_title">rating</div>
+                <div class="badge_count">4.5 / 5</div>
+              </div>
             </div>
-          </div>
+          </a>
+
         </div>
       </div>
     </div>
