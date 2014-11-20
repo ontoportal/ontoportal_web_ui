@@ -37,13 +37,13 @@
 }
 .ontology {
   border: thin gray solid;
-  border-radius: 7px;
+  border-radius: 5px;
   clear: both;
   padding: .5em 1em .5em;
   margin: 2em 0;
 }
 .badge {
-  border-radius: 7px;
+  border-radius: 5px;
   text-align: center;
   max-width: 80px;
   height: 65px;
