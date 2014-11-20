@@ -43,12 +43,12 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
   }
 
   // Default values for facets that aren't definied on the ontologies
-  $scope.types = [
-    {id: "ontology", enabled: true},
-    {id: "ontology_view", enabled: true},
-    {id: "CIMI_model", enabled: false},
-    {id: "NLM_value_set", enabled: false}
-  ];
+  $scope.types = {
+    ontology: {enabled: true, count: 0},
+    ontology_view: {enabled: true, count: 0},
+    CIMI_model: {enabled: false, count: 0},
+    NLM_value_set: {enabled: false, count: 0}
+  };
   $scope.artifacts = ["notes", "reviews", "projects"];
 
   // Functions for determining whether or not a particular filter applies to a given ontology
@@ -93,8 +93,15 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
   // This watches the facets and updates the list depending on which facets are selected
   // All facets are basically ANDed together and return true if no options under the facet are selected.
   $scope.$watch('facets', function() {
-    var ontology, count = 0;
-    for (var i = 0; i < $scope.ontologies.length; i++) {
+    var i, ontology, count = 0;
+
+    // Reset type counts
+    for (var key in $scope.types) {
+      $scope.types[key].count = 0;
+    }
+
+    // Filter ontologies
+    for (i = 0; i < $scope.ontologies.length; i++) {
       ontology = $scope.ontologies[i];
 
       // Filter out ontologies based on their filter functions
@@ -102,7 +109,10 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
         return $scope.facets.filters[key](ontology);
       }).every(Boolean);
 
-      if (ontology.show) {count++;}
+      if (ontology.show) {
+        count++;
+        $scope.types[ontology.type].count++;
+      }
     }
     $scope.visible_ont_count = count;
   }, true);
