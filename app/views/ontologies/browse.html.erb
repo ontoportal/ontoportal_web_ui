@@ -31,6 +31,17 @@
     </div>
 
     <div id="facets" class="grid-15">
+      <div id="ont_view_facet" class="facet">
+        <h4>Entry Type</h4>
+        <div class="checkbox_list">
+          <span ng-repeat="type in types">
+            <input type="checkbox" checklist-model="facets.types" checklist-value="type.id" id="include_{{type.id}}" name="include_{{type.id}}" ng-disabled="!type.enabled">
+            <label for="include_{{type}}" ng-class="{facet_disabled: !type.enabled}">{{type.id | idToTitle}}</label>
+            <br/>
+          </span>
+        </div>
+      </div>
+
       <div id="category_facet" class="facet">
         <h4>Category</h4>
         <div class="checkbox_list">
@@ -48,17 +59,6 @@
           <span ng-repeat="group in groups">
             <input type="checkbox" checklist-model="facets.groups" checklist-value="group.id" name="group" id="group_{{group.acronym}}">
             <label for="group_{{group.acronym}}" title="{{group.name}}">{{group.acronym}}</label>
-            <br/>
-          </span>
-        </div>
-      </div>
-
-      <div id="ont_view_facet" class="facet">
-        <h4>Entry Type</h4>
-        <div class="checkbox_list">
-          <span ng-repeat="type in types">
-            <input type="checkbox" checklist-model="facets.types" checklist-value="type" id="include_{{type}}" name="include_{{type}}">
-            <label for="include_{{type}}">{{type | idToTitle}}</label>
             <br/>
           </span>
         </div>
@@ -92,7 +92,7 @@
       <div id="sorting">
         <div id="sorting_float">
           <label for="sort_order">Sort:</label>
-          <select ng-model="ontology_sort_order" disabled="disabled">
+          <select ng-model="ontology_sort_order">
             <option value="-popularity" selected="selected">Popular</option>
             <option value="-class_count">Size</option>
             <option value="-project_count">Projects</option>
@@ -123,12 +123,9 @@
             <!-- TODO
 
                 Add other information that should be shown when a facet is selected (see format for example)
-
+                Figure out what other pieces of data to show here
 
             -->
-            <!-- <span class="ont-info" ng-show="ontology.submission.homepage">
-              <a href="{{ontology.submission.homepage}}">Home</a>
-            </span> -->
             <div class="admin" ng-show="debug">
               <span ng-show="ontology.submission.pullLocation"><b>Pull URL</b>: {{ontology.submission.pullLocation}}</span>
             </div>

@@ -16,6 +16,9 @@
   padding: 5px;
   border-radius: 3px;
 }
+.facet_disabled {
+  color: gray;
+}
 .checkbox_list input[type=checkbox] {
   margin-left: -1.2em;
 }

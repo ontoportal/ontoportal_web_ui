@@ -43,7 +43,12 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
   }
 
   // Default values for facets that aren't definied on the ontologies
-  $scope.types = ["ontology", "ontology_view"];
+  $scope.types = [
+    {id: "ontology", enabled: true},
+    {id: "ontology_view", enabled: true},
+    {id: "CIMI_model", enabled: false},
+    {id: "NLM_value_set", enabled: false}
+  ];
   $scope.artifacts = ["notes", "reviews", "projects"];
 
   // Functions for determining whether or not a particular filter applies to a given ontology
