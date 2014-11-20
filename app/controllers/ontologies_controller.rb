@@ -37,6 +37,7 @@ class OntologiesController < ApplicationController
     end
   end
 
+  include ActionView::Helpers::NumberHelper
   def browse
     @app_name = "FacetedBrowsing"
     @app_dir = "/browse"
@@ -67,6 +68,7 @@ class OntologiesController < ApplicationController
       else
         o.class_count = 0
       end
+      o.class_count_formatted = number_with_delimiter(o.class_count, :delimiter => ",")
 
       o.type          = o.viewOf.nil? ? "ontology" : "ontology_view"
       o.show          = o.viewOf.nil? ? true : false # show ontologies only by default

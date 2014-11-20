@@ -139,12 +139,12 @@
         .ont-info {margin-right: 10px;}
         </style>
 
-        <div class="badges grid-40 grid-parent" ng-show="ontology.submission">
+        <div class="badges grid-40 grid-parent" ng-show="ontology.submission && ontology.class_count">
           <a href="/ontologies/{{ontology.acronym}}?p=classes">
             <div class="grid-25 badge_grid">
               <div class="badge">
                 <div class="badge_title">classes</div>
-                <div class="badge_count">{{ontology.class_count | humanShortNum}}</div>
+                <div class="badge_count">{{ontology.class_count_formatted}}</div>
               </div>
             </div>
           </a>
