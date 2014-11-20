@@ -127,17 +127,12 @@
 
             -->
             <div class="admin" ng-show="debug">
-              <span ng-show="ontology.submission.pullLocation"><b>Pull URL</b>: {{ontology.submission.pullLocation}}</span>
+              <!-- <span ng-show="ontology.submission.pullLocation"><b>Pull URL</b>: {{ontology.submission.pullLocation}}</span> -->
             </div>
           </div>
 
           <span ng-hide="ontology.submission">No submissions available</span>
         </div>
-
-        <style>
-        .badge_grid {float: right;}
-        .ont-info {margin-right: 10px;}
-        </style>
 
         <div class="badges grid-40 grid-parent" ng-show="ontology.submission && ontology.class_count">
           <a href="/ontologies/{{ontology.acronym}}?p=classes">
