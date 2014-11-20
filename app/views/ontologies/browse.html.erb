@@ -38,10 +38,10 @@
       <div id="ont_view_facet" class="facet">
         <h4>Entry Type <span class="smaller">({{visible_ont_count}})</span></h4>
         <div class="checkbox_list">
-          <span ng-repeat="(type_id, type) in types">
-            <input type="checkbox" checklist-model="facets.types" checklist-value="type_id" id="include_{{type_id}}" name="include_{{type_id}}" ng-disabled="!type.enabled">
+          <span ng-repeat="type in types | toArray | orderBy:sort">
+            <input type="checkbox" checklist-model="facets.types" checklist-value="type.id" id="include_{{type.id}}" name="include_{{type.id}}" ng-disabled="!type.enabled">
             <label for="include_{{type}}" ng-class="{facet_disabled: !type.enabled}">
-              {{type_id | idToTitle}}
+              {{type.id | idToTitle}}
               <span ng-show="type.count"><span class="smaller">({{type.count}})</span></span>
             </label>
             <br/>

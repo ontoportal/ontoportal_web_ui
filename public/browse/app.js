@@ -44,10 +44,10 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
 
   // Default values for facets that aren't definied on the ontologies
   $scope.types = {
-    ontology: {enabled: true, count: 0},
-    ontology_view: {enabled: true, count: 0},
-    CIMI_model: {enabled: false, count: 0},
-    NLM_value_set: {enabled: false, count: 0}
+    ontology: {enabled: true, count: 0, sort: 1, id: "ontology"},
+    ontology_view: {enabled: true, count: 0, sort: 2, id: "ontology_view"},
+    CIMI_model: {enabled: false, count: 0, sort: 3, id: "CIMI_model"},
+    NLM_value_set: {enabled: false, count: 0, sort: 4, id: "NLM_value_set"}
   };
   $scope.artifacts = ["notes", "reviews", "projects"];
 
@@ -166,6 +166,16 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
       }
       return newInput.join(" ");
     }
+  };
+})
+
+.filter("toArray", function(){
+  return function(obj) {
+    var result = [];
+    angular.forEach(obj, function(val, key) {
+      result.push(val);
+    });
+    return result;
   };
 })
 ;
