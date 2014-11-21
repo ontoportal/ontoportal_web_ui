@@ -93,12 +93,12 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
   // This watches the facets and updates the list depending on which facets are selected
   // All facets are basically ANDed together and return true if no options under the facet are selected.
   $scope.$watch('facets', function() {
-    var i, ontology, count = 0;
+    var key, i, ontology, count = 0;
 
     // Reset type counts
-    for (var key in $scope.types) {
+    Object.keys($scope.types).forEach(function(key) {
       $scope.types[key].count = 0;
-    }
+    });
 
     // Filter ontologies
     for (i = 0; i < $scope.ontologies.length; i++) {
