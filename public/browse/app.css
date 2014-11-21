@@ -22,13 +22,16 @@
 .facet_disabled {
   color: gray;
 }
-.checkbox_list input[type=checkbox] {
-  margin-left: -1.3em;
-}
 .checkbox_list {
-  padding-left: 1.3em;
   max-height: 200px;
   overflow: auto;
+}
+.checkbox_list > span {
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 200px;
+  display: block;
 }
 #sorting {
 }
