@@ -7,7 +7,8 @@
   jQuery(document).data().bp.development = <%=MultiJson.dump(@development)%>;
 </script>
 
-<link href="//cdnjs.cloudflare.com/ajax/libs/unsemantic/0/unsemantic-grid-responsive-tablet.css" rel="stylesheet" type="text/css" media="screen">
+<link href="font/whhg.css"rel="stylesheet" type="text/css" media="all" />
+<link href="//cdnjs.cloudflare.com/ajax/libs/unsemantic/0/unsemantic-grid-responsive-tablet.css" rel="stylesheet" type="text/css" media="screen" />
 <meta name="viewport" content="
     width=device-width,
     initial-scale=1,
@@ -65,7 +66,7 @@
         <div class="checkbox_list">
           <span ng-repeat="group in groups">
             <input type="checkbox" checklist-model="facets.groups" checklist-value="group.id" name="group" id="group_{{group.acronym}}">
-            <label for="group_{{group.acronym}}" title="{{group.name}}">{{group.acronym}}</label>
+            <label for="group_{{group.acronym}}" title="{{group.name}}">{{group.name}}</label>
             <br/>
           </span>
         </div>
@@ -98,7 +99,8 @@
     <div id="ontologies" class="grid-80">
       <div id="sorting">
         <div id="sorting_float">
-          <label for="sort_order">Sort:</label>
+          <span style="margin-right: .5em; color: gray;">Entries: <span style="color: black;">{{visible_ont_count}}</span></span>
+          <label for="sort_order" style="color: gray;">Sort:</label>
           <select ng-model="ontology_sort_order">
             <option value="-popularity" selected="selected">Popular</option>
             <option value="-class_count">Size</option>
@@ -117,6 +119,7 @@
               <span ng-show="debug">{{$index}} {{ontology.type}} </span>
               {{ontology.name}} ({{ontology.acronym}})
             </a>
+            <i title="Private Ontology" ng-show="ontology.private" class="icon-key locked_ont"></i>
           </h2>
 
           <div ng-show="ontology.submission">

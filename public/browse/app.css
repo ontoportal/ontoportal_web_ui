@@ -1,3 +1,6 @@
+.grid-container {
+  max-width: 1400px;
+}
 [ng-cloak].splash {
   display: block !important;
 }
@@ -20,10 +23,10 @@
   color: gray;
 }
 .checkbox_list input[type=checkbox] {
-  margin-left: -1.2em;
+  margin-left: -1.3em;
 }
 .checkbox_list {
-  padding-left: 1.2em;
+  padding-left: 1.3em;
   max-height: 200px;
   overflow: auto;
 }
@@ -41,6 +44,24 @@
   clear: both;
   padding: .5em 1em .5em;
   margin: 2em 0;
+}
+.locked_ont {
+  font-size: .65em;
+  padding-left: .2em;
+  color: gray;
+  cursor: help;
+  /* Make the lock appear in the upper left corner */
+  /*
+  background-color: #234979;
+  padding: 2.5px 4px;
+  font-size: 1em;
+  color: white;
+  position: relative;
+  left: -10px;
+  top: -8px;
+  border-radius: 5px 0px;
+  float: left;
+  */
 }
 .ont-info {
   margin-right: 10px;

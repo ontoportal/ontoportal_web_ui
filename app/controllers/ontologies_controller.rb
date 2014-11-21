@@ -78,6 +78,7 @@ class OntologiesController < ApplicationController
       o.note_count    = o.notes.length
       o.review_count  = o.reviews.length
       o.project_count = o.projects.length
+      o.private       = o.private?
 
       o.artifacts = []
       o.artifacts << "notes" if o.notes.length > 0
