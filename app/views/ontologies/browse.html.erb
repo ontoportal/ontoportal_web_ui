@@ -104,8 +104,8 @@
 
     <div id="ontologies" class="grid-80" ng-show="visible_ont_count">
       <div id="searching">
+        <input type="text" placeholder="Search&hellip;" ng-model="searchText" ng-model-options="{debounce: 200}" style="float: left; width: 150px;">
         <!-- TODO
-        <input placeholder="Search&hellip;" ng-model="searchText" ng-model-options="{debounce: 200}" style="float: left; width: 150px;">
 
              - Use http://lunrjs.com/docs/ for a basic search index
              - Create a $watch function for the search input
@@ -130,7 +130,7 @@
         </div>
       </div>
 
-      <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies | orderBy:ontology_sort_order" ng-show="ontology.show">
+      <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies | filter:searchText | orderBy:ontology_sort_order" ng-show="ontology.show">
         <div class="grid-70">
           <div ng-show="ontology.type == 'ontology_view'" class="ontology_view_badge" title="This ontology is a view of {{ontology.viewOfOnt.name}}">
             <a href="/ontologies/{{ontology.viewOfOnt.acronym}}">{{ontology.viewOfOnt.acronym}} VIEW</a>
