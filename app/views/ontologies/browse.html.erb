@@ -41,7 +41,7 @@
         <div class="checkbox_list">
           <span ng-repeat="type in types | toArray | orderBy:sort">
             <input type="checkbox" checklist-model="facets.types" checklist-value="type.id" id="include_{{type.id}}" name="include_{{type.id}}" ng-disabled="!type.enabled">
-            <label for="include_{{type}}" ng-class="{facet_disabled: !type.enabled}">
+            <label for="include_{{type.id}}" ng-class="{facet_disabled: !type.enabled}">
               {{type.id | idToTitle}}
               <span ng-show="type.count"><span class="smaller">({{type.count}})</span></span>
             </label>
@@ -98,7 +98,16 @@
 
     <div id="ontologies" class="grid-80">
       <div id="searching">
-        <input placeholder="Search&hellip;" ng-model="searchText" style="float: left; width: 150px;">
+        <!-- TODO
+        <input placeholder="Search&hellip;" ng-model="searchText" ng-model-options="{debounce: 200}" style="float: left; width: 150px;">
+
+             - Use http://lunrjs.com/docs/ for a basic search index
+             - Create a $watch function for the search input
+             - Set ontology.show for found ontologies
+               - (this is used in an ng-show directive and is much faster than an ng-repeat filter)
+             - Add a "Search Rank" sort order that's only visible when searching
+             - Sort by "Search Rank" when searching
+         -->
       </div>
       <div id="sorting">
         <div id="sorting_float">
@@ -116,7 +125,10 @@
       </div>
 
       <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies | orderBy:ontology_sort_order" ng-show="ontology.show">
-        <div class="grid-60">
+        <div class="grid-70">
+          <div ng-show="ontology.type == 'ontology_view'" class="ontology_view_badge" title="This ontology is a view of {{ontology.viewOfOnt.name}}">
+            <a href="/ontologies/{{ontology.viewOfOnt.acronym}}">{{ontology.viewOfOnt.acronym}} VIEW</a>
+          </div>
           <h2 style="font-size: 1.8em;">
             <a href="/ontologies/{{ontology.acronym}}">
               <span ng-show="debug">{{$index}} {{ontology.type}} </span>
@@ -124,7 +136,6 @@
             </a>
             <i title="Private Ontology" ng-show="ontology.private" class="icon-key locked_ont"></i>
           </h2>
-
           <div ng-show="ontology.submission">
             <p>{{ontology.submission.description.split(". ")[0]}}</p>
             <span class="ont-info">
@@ -147,9 +158,9 @@
           <span ng-hide="ontology.submission">No submissions available</span>
         </div>
 
-        <div class="badges grid-40 grid-parent" ng-show="ontology.submission && ontology.class_count">
+        <div class="badges grid-30 grid-parent" ng-show="ontology.submission && ontology.class_count">
           <a href="/ontologies/{{ontology.acronym}}?p=classes">
-            <div class="grid-25 badge_grid">
+            <div class="grid-33 badge_grid">
               <div class="badge">
                 <div class="badge_title">classes</div>
                 <div class="badge_count">{{ontology.class_count_formatted}}</div>
@@ -158,7 +169,7 @@
           </a>
 
           <a href="/ontologies/{{ontology.acronym}}#projects_content">
-            <div class="grid-25 badge_grid" ng-show="ontology.projects">
+            <div class="grid-33 badge_grid" ng-show="ontology.projects">
               <div class="badge">
                 <div class="badge_title">projects</div>
                 <div class="badge_count">{{ontology.projects.length}}</div>
@@ -167,19 +178,10 @@
           </a>
 
           <a href="/ontologies/{{ontology.acronym}}?p=notes">
-            <div class="grid-25 badge_grid" ng-show="ontology.notes">
+            <div class="grid-33 badge_grid" ng-show="ontology.notes">
               <div class="badge">
                 <div class="badge_title">notes</div>
                 <div class="badge_count">{{ontology.notes.length}}</div>
-              </div>
-            </div>
-          </a>
-
-          <a href="/ontologies/{{ontology.acronym}}#reviews_content">
-            <div class="grid-25 badge_grid" ng-show="ontology.reviews">
-              <div class="badge">
-                <div class="badge_title">rating</div>
-                <div class="badge_count">4.5 / 5</div>
               </div>
             </div>
           </a>

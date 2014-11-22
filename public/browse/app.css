@@ -48,6 +48,22 @@
   padding: .5em 1em .5em;
   margin: 2em 0;
 }
+.ontology_view_badge {
+  float: left;
+  height: 1em;
+  padding: 5px;
+  text-align: center;
+  margin-right: 5px;
+  border-radius: 3px;
+  color: white;
+  background-color: #234979;
+  font-size: 1em;
+  font-weight: bold;
+}
+.ontology_view_badge a {
+  color: white;
+  text-decoration: none;
+}
 .locked_ont {
   font-size: .65em;
   padding-left: .2em;

@@ -43,6 +43,7 @@ class OntologiesController < ApplicationController
     @app_dir = "/browse"
     @base_path = @app_dir
     @ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params + ",viewOf", include_views: true)
+    ontologies_hash = Hash[@ontologies.map {|o| [o.id, o] }]
     @admin = session[:user] ? session[:user].admin? : false
     @development = Rails.env.development?
 
@@ -79,6 +80,7 @@ class OntologiesController < ApplicationController
       o.review_count  = o.reviews.length
       o.project_count = o.projects.length
       o.private       = o.private?
+      o.viewOfOnt     = ontologies_hash[o.viewOf]
 
       o.artifacts = []
       o.artifacts << "notes" if o.notes.length > 0
