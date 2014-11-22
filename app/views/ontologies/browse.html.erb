@@ -96,7 +96,13 @@
 
     </div>
 
-    <div id="ontologies" class="grid-80">
+    <div class="ontology grid-80" ng-show="visible_ont_count == 0" style="border: solid thin lightGray;">
+      <div style="text-align: center; color: gray; height: 2em; padding: 4em;">
+        <h2 style="font-weight: normal;">There are no items that match the combination of options you have selected</h2>
+      </div>
+    </div>
+
+    <div id="ontologies" class="grid-80" ng-show="visible_ont_count">
       <div id="searching">
         <!-- TODO
         <input placeholder="Search&hellip;" ng-model="searchText" ng-model-options="{debounce: 200}" style="float: left; width: 150px;">

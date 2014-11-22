@@ -41,10 +41,12 @@
 }
 #ontologies {
 }
+.clear {
+  clear: both;
+}
 .ontology {
   border: thin gray solid;
   border-radius: 5px;
-  clear: both;
   padding: .5em 1em .5em;
   margin: 2em 0;
 }
