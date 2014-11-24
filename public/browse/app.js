@@ -35,11 +35,21 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
 
   // Default setup for facets
   $scope.facets = {
-    types: ["ontology"],
-    formats: [],
-    groups: [],
-    categories: [],
-    artifacts: []
+    types: {
+      active: ["ontology"]
+    },
+    formats: {
+      active: []
+    },
+    groups: {
+      active: []
+    },
+    categories: {
+      active: []
+    },
+    artifacts: {
+      active: []
+    }
   }
 
   // Default values for facets that aren't definied on the ontologies
@@ -54,37 +64,37 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
   // Functions for determining whether or not a particular filter applies to a given ontology
   $scope.facets.filters = {
     types: function(ontology) {
-      if ($scope.facets.types.length == 0)
+      if ($scope.facets.types.active.length == 0)
         return true;
-      if ($scope.facets.types.indexOf(ontology.type) === -1)
+      if ($scope.facets.types.active.indexOf(ontology.type) === -1)
         return false;
       return true;
     },
     formats: function(ontology) {
-      if ($scope.facets.formats.length == 0)
+      if ($scope.facets.formats.active.length == 0)
         return true;
-      if ($scope.facets.formats.indexOf((ontology.submission || {}).hasOntologyLanguage) === -1)
+      if ($scope.facets.formats.active.indexOf((ontology.submission || {}).hasOntologyLanguage) === -1)
         return false;
       return true;
     },
     groups: function(ontology) {
-      if ($scope.facets.groups.length == 0)
+      if ($scope.facets.groups.active.length == 0)
         return true;
-      if (intersection($scope.facets.groups, ontology.groups).length === 0)
+      if (intersection($scope.facets.groups.active. ontology.groups).length === 0)
         return false;
       return true;
     },
     categories: function(ontology) {
-      if ($scope.facets.categories.length == 0)
+      if ($scope.facets.categories.active.length == 0)
         return true;
-      if (intersection($scope.facets.categories, ontology.categories).length === 0)
+      if (intersection($scope.facets.categories.active, ontology.categories).length === 0)
         return false;
       return true;
     },
     artifacts: function(ontology) {
-      if ($scope.facets.artifacts.length == 0)
+      if ($scope.facets.artifacts.active.length == 0)
         return true;
-      if (intersection($scope.facets.artifacts, ontology.artifacts).length === 0)
+      if (intersection($scope.facets.artifacts.active, ontology.artifacts).length === 0)
         return false;
       return true;
     }
@@ -129,6 +139,10 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
       }
     }
     return ret;
+  }
+
+  var countFacets = function(ontology) {
+
   }
 
 }])

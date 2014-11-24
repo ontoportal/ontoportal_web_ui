@@ -23,11 +23,11 @@
   <div ng-controller="OntologyList" ng-cloak>
     <div ng-show="debug" class="facet" style="position: relative;">
       <h2>Debug Info</h2>
-      types: {{facets.types}}<br/>
-      artifacts: {{facets.artifacts}}<br/>
-      formats: {{facets.formats}}<br/>
-      groups: {{facets.groups}}<br/>
-      categories: {{facets.categories}}<br/>
+      types: {{facets.types.active}}<br/>
+      artifacts: {{facets.artifacts.active}}<br/>
+      formats: {{facets.formats.active}}<br/>
+      groups: {{facets.groups.active}}<br/>
+      categories: {{facets.categories.active}}<br/>
       Selected ontologies: {{visible_ont_count}}
     </div>
 
@@ -37,13 +37,13 @@
 
     <div id="facets" class="grid-20">
       <div id="ont_view_facet" class="facet">
-        <h4>Entry Type <span class="smaller">({{visible_ont_count}})</span></h4>
+        <h4>Entry Type</h4>
         <div class="checkbox_list">
-          <span ng-repeat="type in types | toArray | orderBy:sort">
-            <input type="checkbox" checklist-model="facets.types" checklist-value="type.id" id="include_{{type.id}}" name="include_{{type.id}}" ng-disabled="!type.enabled">
+          <span ng-repeat="type in types | toArray | orderBy:'sort'">
+            <input type="checkbox" checklist-model="facets.types.active" checklist-value="type.id" id="include_{{type.id}}" name="include_{{type.id}}" ng-disabled="!type.enabled">
             <label for="include_{{type.id}}" ng-class="{facet_disabled: !type.enabled}">
               {{type.id | idToTitle}}
-              <span ng-show="type.count"><span class="smaller">({{type.count}})</span></span>
+              <span class="smaller">({{type.count}})</span>
             </label>
             <br/>
           </span>
@@ -54,7 +54,7 @@
         <h4>Category</h4>
         <div class="checkbox_list">
           <span ng-repeat="category in categories">
-            <input type="checkbox" checklist-model="facets.categories" checklist-value="category.id" name="category" id="category_{{category.acronym}}">
+            <input type="checkbox" checklist-model="facets.categories.active" checklist-value="category.id" name="category" id="category_{{category.acronym}}">
             <label for="category_{{category.acronym}}">{{category.name}}</label>
             <br/>
           </span>
@@ -65,8 +65,8 @@
         <h4>Group</h4>
         <div class="checkbox_list">
           <span ng-repeat="group in groups">
-            <input type="checkbox" checklist-model="facets.groups" checklist-value="group.id" name="group" id="group_{{group.acronym}}">
-            <label for="group_{{group.acronym}}" title="{{group.name}}">{{group.name}}</label>
+            <input type="checkbox" checklist-model="facets.groups.active" checklist-value="group.id" name="group" id="group_{{group.acronym}}">
+            <label for="group_{{group.acronym}}" title="{{group.name}}">{{group.acronym}}</label>
             <br/>
           </span>
         </div>
@@ -76,7 +76,7 @@
         <h4>Format</h4>
         <div class="checkbox_list">
           <span ng-repeat="format in formats">
-            <input type="checkbox" checklist-model="facets.formats" checklist-value="format" name="format" id="format_{{format}}">
+            <input type="checkbox" checklist-model="facets.formats.active" checklist-value="format" name="format" id="format_{{format}}">
             <label for="format_{{format}}">{{format}}</label>
             <br/>
           </span>
@@ -87,7 +87,7 @@
         <h4>Entries With</h4>
         <div class="checkbox_list">
           <span ng-repeat="artifact in artifacts">
-            <input type="checkbox" checklist-model="facets.artifacts" checklist-value="artifact" name="artifact" id="artifact_{{format}}">
+            <input type="checkbox" checklist-model="facets.artifacts.active" checklist-value="artifact" name="artifact" id="artifact_{{format}}">
             <label for="artifact_{{artifact}}">{{artifact | idToTitle}}</label>
             <br/>
           </span>
