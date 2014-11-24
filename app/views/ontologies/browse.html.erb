@@ -98,7 +98,7 @@
 
     <div class="ontology grid-80" ng-show="visible_ont_count == 0" style="border: solid thin lightGray;">
       <div style="text-align: center; color: gray; height: 2em; padding: 4em;">
-        <h2 style="font-weight: normal;">There are no items that match the combination of options you have selected</h2>
+        <h2 style="font-weight: normal;">No matches!</h2>
       </div>
     </div>
 
@@ -147,7 +147,7 @@
             <span class="ont-info">
               <b>Uploaded</b>: {{ontology.submission.creationDate | date:'shortDate'}}
             </span>
-            <span class="ont-info" ng-show="facets.formats.length > 1">
+            <span class="ont-info" ng-show="facets.formats.active.active.length > 1">
               <b>Format</b>: {{ontology.submission.hasOntologyLanguage}}
             </span>
             <!-- TODO
@@ -164,7 +164,7 @@
           <span ng-hide="ontology.submission">No submissions available</span>
         </div>
 
-        <div class="badges grid-30 grid-parent" ng-show="ontology.submission && ontology.class_count">
+        <div class="badges grid-30 grid-parent" ng-show="ontology.submission !== null && ontology.class_count > 0">
           <a href="/ontologies/{{ontology.acronym}}?p=classes">
             <div class="grid-33 badge_grid">
               <div class="badge">
@@ -175,7 +175,7 @@
           </a>
 
           <a href="/ontologies/{{ontology.acronym}}#projects_content">
-            <div class="grid-33 badge_grid" ng-show="ontology.projects">
+            <div class="grid-33 badge_grid" ng-show="ontology.projects.length > 0">
               <div class="badge">
                 <div class="badge_title">projects</div>
                 <div class="badge_count">{{ontology.projects.length}}</div>
@@ -184,7 +184,7 @@
           </a>
 
           <a href="/ontologies/{{ontology.acronym}}?p=notes">
-            <div class="grid-33 badge_grid" ng-show="ontology.notes">
+            <div class="grid-33 badge_grid" ng-show="ontology.notes.length > 0">
               <div class="badge">
                 <div class="badge_title">notes</div>
                 <div class="badge_count">{{ontology.notes.length}}</div>
