@@ -85,7 +85,11 @@
   */
 }
 .ont-info {
-  margin-right: 10px;
+  margin: 5px 5px 0 0;
+  display: inline-block;
+  padding: 5px 10px 3px;
+  border-radius: 3px;
+  background-color: #ECECEC;
 }
 .badge_grid {
   float: right !important;

@@ -51,7 +51,11 @@ class OntologiesController < ApplicationController
     submissions_map = Hash[submissions.map {|sub| [sub.ontology.acronym, sub] }]
 
     @categories = LinkedData::Client::Models::Category.all
+    @categories_hash = Hash[@categories.map {|c| [c.id, c] }]
+
     @groups = LinkedData::Client::Models::Group.all
+    @groups_hash = Hash[@groups.map {|g| [g.id, g] }]
+
 
     reviews = {}
     LinkedData::Client::Models::Review.all.each do |r|
@@ -86,6 +90,7 @@ class OntologiesController < ApplicationController
       o.artifacts << "notes" if o.notes.length > 0
       o.artifacts << "reviews" if o.reviews.length > 0
       o.artifacts << "projects" if o.projects.length > 0
+      o.artifacts << "summary_only" if o.summaryOnly
 
       o.popularity = ONTOLOGY_RANK[o.acronym] || 0
 

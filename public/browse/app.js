@@ -27,11 +27,13 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
     if (a.name > b.name) return 1;
     return 0;
   });
+  $scope.categories_hash = jQuery(document).data().bp.categories_hash;
   $scope.groups = jQuery(document).data().bp.groups.sort(function(a, b){
     if (a.acronym < b.acronym) return -1;
     if (a.acronym > b.acronym) return 1;
     return 0;
   });
+  $scope.groups_hash = jQuery(document).data().bp.groups_hash;
 
   // Default setup for facets
   $scope.facets = {
@@ -107,6 +109,22 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
     NLM_value_set: {sort: 4, id: "NLM_value_set"}
   };
   $scope.artifacts = ["notes", "reviews", "projects"];
+
+  $scope.groupAcronyms = function(groups) {
+    var groupNames = [];
+    angular.forEach(groups, function(group) {
+      groupNames.push($scope.groups_hash[group].acronym);
+    });
+    return groupNames;
+  };
+
+  $scope.categoryNames = function(categories) {
+    var catNames = [];
+    angular.forEach(categories, function(category) {
+      catNames.push($scope.categories_hash[category].name)
+    })
+    return catNames;
+  }
 
   // This watches the facets and updates the list depending on which facets are selected
   // All facets are basically ANDed together and return true if no options under the facet are selected.
@@ -208,7 +226,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
   };
 })
 
-.filter("toArray", function(){
+.filter("toArray", function() {
   return function(obj) {
     var result = [];
     angular.forEach(obj, function(val, key) {
