@@ -43,7 +43,7 @@
             <input type="checkbox" checklist-model="facets.types.active" checklist-value="type.id" id="include_{{type.id}}" name="include_{{type.id}}" ng-disabled="!facet_counts['types'][type.id]">
             <label for="include_{{type.id}}" ng-class="{facet_disabled: !facet_counts['types'][type.id]}">
               {{type.id | idToTitle}}
-              <span ng-show="facet_counts['types'][type.id]" class="smaller">({{facet_counts["types"][type.id]}})</span>
+              <span class="smaller">({{facet_counts["types"][type.id] || 0}})</span>
             </label>
             <br/>
           </span>
@@ -54,9 +54,9 @@
         <h4>Category</h4>
         <div class="checkbox_list">
           <span ng-repeat="category in categories">
-            <input type="checkbox" checklist-model="facets.categories.active" checklist-value="category.id" name="category" id="category_{{category.acronym}}">
-            <label for="category_{{category.acronym}}">{{category.name}}</label>
-            <span ng-show="facet_counts['categories'][category.id]" class="smaller">({{facet_counts["categories"][category.id]}})</span>
+            <input type="checkbox" checklist-model="facets.categories.active" checklist-value="category.id" name="category" id="category_{{category.acronym}}" ng-disabled="!facet_counts['categories'][category.id]">
+            <label for="category_{{category.acronym}}" ng-class="{facet_disabled: !facet_counts['categories'][category.id]}">{{category.name}}</label>
+            <span class="smaller">({{facet_counts["categories"][category.id] || 0}})</span>
             <br/>
           </span>
         </div>
@@ -66,9 +66,9 @@
         <h4>Group</h4>
         <div class="checkbox_list">
           <span ng-repeat="group in groups">
-            <input type="checkbox" checklist-model="facets.groups.active" checklist-value="group.id" name="group" id="group_{{group.acronym}}">
-            <label for="group_{{group.acronym}}" title="{{group.name}}">{{group.acronym}}</label>
-            <span ng-show="facet_counts['groups'][group.id]" class="smaller">({{facet_counts["groups"][group.id]}})</span>
+            <input type="checkbox" checklist-model="facets.groups.active" checklist-value="group.id" name="group" id="group_{{group.acronym}}" ng-disabled="!facet_counts['groups'][group.id]">
+            <label for="group_{{group.acronym}}" title="{{group.name}}" ng-class="{facet_disabled: !facet_counts['groups'][group.id]}">{{group.acronym}}</label>
+            <span class="smaller">({{facet_counts["groups"][group.id] || 0}})</span>
             <br/>
           </span>
         </div>
@@ -78,9 +78,9 @@
         <h4>Format</h4>
         <div class="checkbox_list">
           <span ng-repeat="format in formats">
-            <input type="checkbox" checklist-model="facets.formats.active" checklist-value="format" name="format" id="format_{{format}}">
-            <label for="format_{{format}}">{{format}}</label>
-            <span ng-show="facet_counts['formats'][format]" class="smaller">({{facet_counts["formats"][format]}})</span>
+            <input type="checkbox" checklist-model="facets.formats.active" checklist-value="format" name="format" id="format_{{format}}" ng-disabled="!facet_counts['formats'][format]">
+            <label for="format_{{format}}" ng-class="{facet_disabled: !facet_counts['formats'][format]}">{{format}}</label>
+            <span class="smaller">({{facet_counts["formats"][format] || 0}})</span>
             <br/>
           </span>
         </div>
@@ -90,9 +90,9 @@
         <h4>Entries With</h4>
         <div class="checkbox_list">
           <span ng-repeat="artifact in artifacts">
-            <input type="checkbox" checklist-model="facets.artifacts.active" checklist-value="artifact" name="artifact" id="artifact_{{format}}">
-            <label for="artifact_{{artifact}}">{{artifact | idToTitle}}</label>
-            <span ng-show="facet_counts['artifacts'][artifact]" class="smaller">({{facet_counts["artifacts"][artifact]}})</span>
+            <input type="checkbox" checklist-model="facets.artifacts.active" checklist-value="artifact" name="artifact" id="artifact_{{format}}" ng-disabled="!facet_counts['artifacts'][artifact]">
+            <label for="artifact_{{artifact}}" ng-class="{facet_disabled: !facet_counts['artifacts'][artifact]}">{{artifact | idToTitle}}</label>
+            <span class="smaller">({{facet_counts["artifacts"][artifact] || 0}})</span>
             <br/>
           </span>
         </div>
@@ -137,7 +137,7 @@
       <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies | filter:searchText | orderBy:ontology_sort_order" ng-show="ontology.show">
         <div class="grid-70">
           <div ng-show="ontology.type == 'ontology_view'" class="ontology_view_badge" title="This ontology is a view of {{ontology.viewOfOnt.name}}">
-            <a href="/ontologies/{{ontology.viewOfOnt.acronym}}">{{ontology.viewOfOnt.acronym}} VIEW</a>
+            <a href="/ontologies/{{ontology.viewOfOnt.acronym}}">VIEW</a>
           </div>
           <h2 style="font-size: 1.8em;">
             <a href="/ontologies/{{ontology.acronym}}">

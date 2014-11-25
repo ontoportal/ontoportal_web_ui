@@ -146,7 +146,6 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
 
       if (ontology.show) {$scope.visible_ont_count++};
     }
-    console.log($scope.facet_counts);
   }, true);
 
   var countAllInFacet = function(facet) {
