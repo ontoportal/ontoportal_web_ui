@@ -104,45 +104,6 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
   };
   $scope.artifacts = ["notes", "reviews", "projects"];
 
-  // Functions for determining whether or not a particular filter applies to a given ontology
-  $scope.filters = {
-    types: function(ontology) {
-      if ($scope.facets.types.active.length == 0)
-        return true;
-      if ($scope.facets.types.active.indexOf(ontology.type) === -1)
-        return false;
-      return true;
-    },
-    formats: function(ontology) {
-      if ($scope.facets.formats.active.length == 0)
-        return true;
-      if ($scope.facets.formats.active.indexOf((ontology.submission || {}).hasOntologyLanguage) === -1)
-        return false;
-      return true;
-    },
-    groups: function(ontology) {
-      if ($scope.facets.groups.active.length == 0)
-        return true;
-      if (intersection($scope.facets.groups.active. ontology.groups).length === 0)
-        return false;
-      return true;
-    },
-    categories: function(ontology) {
-      if ($scope.facets.categories.active.length == 0)
-        return true;
-      if (intersection($scope.facets.categories.active, ontology.categories).length === 0)
-        return false;
-      return true;
-    },
-    artifacts: function(ontology) {
-      if ($scope.facets.artifacts.active.length == 0)
-        return true;
-      if (intersection($scope.facets.artifacts.active, ontology.artifacts).length === 0)
-        return false;
-      return true;
-    }
-  }
-
   // This watches the facets and updates the list depending on which facets are selected
   // All facets are basically ANDed together and return true if no options under the facet are selected.
   $scope.$watch('facets', function() {
