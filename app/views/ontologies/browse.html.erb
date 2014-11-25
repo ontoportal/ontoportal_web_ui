@@ -104,7 +104,7 @@
         <h4>Missing Status</h4>
         <div class="checkbox_list">
           <select ng-model="facets.missing_status.active">
-            <option ng-repeat="status in facets.missing_status.values" value="{{status}}">
+            <option ng-repeat="status in facets.missing_status.values" value="{{status}}" ng-selected="$index == 0">
               {{status | idToTitle}}
             </option>
           </select>

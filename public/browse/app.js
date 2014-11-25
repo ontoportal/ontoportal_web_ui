@@ -95,7 +95,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
     missing_status: {
       active: "",
       ont_property: "submissionStatus",
-      values: ["RDF", "OBSOLETE", "METRICS", "RDF_LABELS", "UPLOADED", "INDEXED", "ANNOTATOR", "DIFF"],
+      values: ["None", "RDF", "OBSOLETE", "METRICS", "RDF_LABELS", "UPLOADED", "INDEXED", "ANNOTATOR", "DIFF"],
       filter: function(ontology) {
         if ($scope.facets.missing_status.active.length == 0)
           return true;
