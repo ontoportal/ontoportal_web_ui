@@ -217,4 +217,17 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
     return result;
   };
 })
+
+.filter('htmlToText', function() {
+  return function(text) {
+    return String(text).replace(/<[^>]+>/gm, '');
+  }
+})
+
+.filter('descriptionToText', function() {
+  return function(text) {
+    text = String(text).replace(/<[^>]+>/gm, '');
+    return text.split(/\.\W/)[0];
+  }
+})
 ;

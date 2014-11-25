@@ -147,7 +147,7 @@
             <i title="Private Ontology" ng-show="ontology.private" class="icon-key locked_ont"></i>
           </h2>
           <div ng-show="ontology.submission">
-            <p>{{ontology.submission.description.split(". ")[0]}}</p>
+            <p>{{ontology.submission.description | descriptionToText}}</p>
             <span class="ont-info">
               <b>Uploaded</b>: {{ontology.submission.creationDate | date:'shortDate'}}
             </span>
