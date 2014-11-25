@@ -108,7 +108,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
     CIMI_model: {sort: 3, id: "CIMI_model"},
     NLM_value_set: {sort: 4, id: "NLM_value_set"}
   };
-  $scope.artifacts = ["notes", "reviews", "projects"];
+  $scope.artifacts = ["notes", "reviews", "projects", "summary_only"];
 
   $scope.groupAcronyms = function(groups) {
     var groupNames = [];

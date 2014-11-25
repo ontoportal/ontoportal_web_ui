@@ -88,11 +88,11 @@
         </div>
       </div>
 
-      <div id="admin_facet" class="facet">
-        <h4>Entries With</h4>
+      <div id="admin_facet" class="facet" ng-show="admin">
+        <h4>Admin Only</h4>
         <div class="checkbox_list">
           <span ng-repeat="artifact in artifacts">
-            <input type="checkbox" checklist-model="facets.artifacts.active" checklist-value="artifact" name="artifact" id="artifact_{{format}}" ng-disabled="!facet_counts['artifacts'][artifact]">
+            <input type="checkbox" checklist-model="facets.artifacts.active" checklist-value="artifact" name="artifact" id="artifact_{{artifact}}" ng-disabled="!facet_counts['artifacts'][artifact]">
             <label for="artifact_{{artifact}}" ng-class="{facet_disabled: !facet_counts['artifacts'][artifact]}">{{artifact | idToTitle}}</label>
             <span class="smaller">({{facet_counts["artifacts"][artifact] || 0}})</span>
             <br/>
@@ -164,6 +164,9 @@
             </span>
             <span class="ont-info" ng-show="facets.categories.active.length > 1">
               <b>Categories</b>: {{categoryNames(ontology.categories).join(', ')}}
+            </span>
+            <span class="ont-info" ng-show="ontology.summaryOnly">
+              <b>Summary Only</b>
             </span>
             <!-- TODO
 
