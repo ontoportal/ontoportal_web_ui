@@ -38,6 +38,7 @@ class OntologiesController < ApplicationController
   end
 
   include ActionView::Helpers::NumberHelper
+  include OntologiesHelper
   def browse
     @app_name = "FacetedBrowsing"
     @app_dir = "/browse"
@@ -75,16 +76,18 @@ class OntologiesController < ApplicationController
       end
       o.class_count_formatted = number_with_delimiter(o.class_count, :delimiter => ",")
 
-      o.type          = o.viewOf.nil? ? "ontology" : "ontology_view"
-      o.show          = o.viewOf.nil? ? true : false # show ontologies only by default
-      o.reviews       = reviews[o.id] || []
-      o.groups        = o.group || []
-      o.categories    = o.hasDomain || []
-      o.note_count    = o.notes.length
-      o.review_count  = o.reviews.length
-      o.project_count = o.projects.length
-      o.private       = o.private?
-      o.viewOfOnt     = ontologies_hash[o.viewOf]
+      o.type             = o.viewOf.nil? ? "ontology" : "ontology_view"
+      o.show             = o.viewOf.nil? ? true : false # show ontologies only by default
+      o.reviews          = reviews[o.id] || []
+      o.groups           = o.group || []
+      o.categories       = o.hasDomain || []
+      o.note_count       = o.notes.length
+      o.review_count     = o.reviews.length
+      o.project_count    = o.projects.length
+      o.private          = o.private?
+      o.viewOfOnt        = ontologies_hash[o.viewOf]
+      o.popularity       = ONTOLOGY_RANK[o.acronym] || 0
+      o.submissionStatus = o.submission ? o.submission.submissionStatus : []
 
       o.artifacts = []
       o.artifacts << "notes" if o.notes.length > 0
@@ -92,10 +95,10 @@ class OntologiesController < ApplicationController
       o.artifacts << "projects" if o.projects.length > 0
       o.artifacts << "summary_only" if o.summaryOnly
 
-      o.popularity = ONTOLOGY_RANK[o.acronym] || 0
-
       o.submission = submissions_map[o.acronym]
       next unless o.submission
+
+      o.submissionStatusFormatted = submission_status2string(o.submission).gsub(/\(|\)/, "")
 
       o.format = o.submission.hasOntologyLanguage
       @formats << o.submission.hasOntologyLanguage

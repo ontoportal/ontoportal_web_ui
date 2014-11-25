@@ -91,6 +91,18 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
           return false;
         return true;
       },
+    },
+    missing_status: {
+      active: "",
+      ont_property: "submissionStatus",
+      values: ["RDF", "OBSOLETE", "METRICS", "RDF_LABELS", "UPLOADED", "INDEXED", "ANNOTATOR", "DIFF"],
+      filter: function(ontology) {
+        if ($scope.facets.missing_status.active.length == 0)
+          return true;
+        if (ontology.submissionStatus.indexOf($scope.facets.missing_status.active) !== -1)
+          return false;
+        return true;
+      }
     }
   }
 
@@ -124,6 +136,10 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
       catNames.push($scope.categories_hash[category].name)
     })
     return catNames;
+  }
+
+  $scope.adminUsernames = function(admins) {
+    return admins.map(function(a){return a.split('/').slice(-1)[0]});
   }
 
   // This watches the facets and updates the list depending on which facets are selected

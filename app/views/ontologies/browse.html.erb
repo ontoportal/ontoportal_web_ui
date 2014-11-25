@@ -19,11 +19,15 @@
   " />
 
 <div class="splash" ng-cloak>
-  <div style="font-size: 3em;">Ontologies Loading</div>
+  <div style="font-size: 3em;">Ontologies loading</div>
   <p>please wait...</p>
 </div>
 
 <main class="grid-container" role="main" style="margin-bottom: 1em; margin-top: 1em;" ng-cloak>
+<div class="welcome_admin admin" ng-hide="admin">
+  <b>Welcome admin</b><br/>This coloring indicates admin-only features.
+</div>
+
   <h1 style="font-size: 3em;">Browse</h1>
   <p>
     <%intro_text = "Browse the library of ontologies"%>
@@ -96,7 +100,18 @@
         </div>
       </div>
 
-      <div id="admin_facet" class="facet" ng-show="admin">
+      <div id="missing_status_facet" class="facet admin" ng-show="admin">
+        <h4>Missing Status</h4>
+        <div class="checkbox_list">
+          <select ng-model="facets.missing_status.active">
+            <option ng-repeat="status in facets.missing_status.values" value="{{status}}">
+              {{status | idToTitle}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div id="admin_facet" class="facet admin" ng-show="admin">
         <h4>Admin Only</h4>
         <div class="checkbox_list">
           <span ng-repeat="artifact in artifacts">
@@ -167,24 +182,26 @@
             <span class="ont-info" ng-show="ontology.type == 'ontology_view'">
               <b>View of</b>: <a href="/ontologies/{{ontology.viewOfOnt.acronym}}">{{ontology.viewOfOnt.acronym}}</a>
             </span>
+            <span class="ont-info" ng-show="ontology.summaryOnly">
+              <b>Summary Only</b>
+            </span>
             <span class="ont-info" ng-show="facets.groups.active.length > 1">
               <b>Groups</b>: {{groupAcronyms(ontology.groups).join(', ')}}
             </span>
             <span class="ont-info" ng-show="facets.categories.active.length > 1">
               <b>Categories</b>: {{categoryNames(ontology.categories).join(', ')}}
             </span>
-            <span class="ont-info" ng-show="ontology.summaryOnly">
-              <b>Summary Only</b>
+            <span>
+              <span class="ont-info admin" ng-show="admin">
+                <b>Admins</b>: {{adminUsernames(ontology.administeredBy).join(', ')}}
+              </span>
+              <span class="ont-info admin" ng-show="admin && ontology.submission.pullLocation">
+                <b><a href="{{ontology.submission.pullLocation}}">Pull URL</a></b>
+              </span>
+              <span class="ont-info admin" ng-show="admin && ontology.submission">
+                <b>Status</b>: {{ontology.submissionStatusFormatted}}
+              </span>
             </span>
-            <!-- TODO
-
-                Add other information that should be shown when a facet is selected (see format for example)
-                Figure out what other pieces of data to show here
-
-            -->
-            <div class="admin" ng-show="debug">
-              <!-- <span ng-show="ontology.submission.pullLocation"><b>Pull URL</b>: {{ontology.submission.pullLocation}}</span> -->
-            </div>
           </div>
 
           <span ng-hide="ontology.submission">No submissions available</span>

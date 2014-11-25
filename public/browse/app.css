@@ -17,6 +17,16 @@
 [ng-cloak] {
   display: none;
 }
+.admin {
+  background-color: #EFFFEF !important;
+}
+.welcome_admin {
+  margin: 1em auto -4em;
+  width: 25%;
+  padding: 7px 10px 5px;
+  border-radius: 3px;
+  text-align: center;
+}
 #facets {
   margin-top: 1em;
 }
