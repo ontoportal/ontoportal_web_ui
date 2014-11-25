@@ -92,6 +92,7 @@ class OntologiesController < ApplicationController
       o.submission = submissions_map[o.acronym]
       next unless o.submission
 
+      o.format = o.submission.hasOntologyLanguage
       @formats << o.submission.hasOntologyLanguage
     end
   end

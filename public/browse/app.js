@@ -48,26 +48,29 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
     },
     formats: {
       active: [],
+      ont_property: "format",
       filter: function(ontology) {
         if ($scope.facets.formats.active.length == 0)
           return true;
-        if ($scope.facets.formats.active.indexOf((ontology.submission || {}).hasOntologyLanguage) === -1)
+        if ($scope.facets.formats.active.indexOf(ontology.format) === -1)
           return false;
         return true;
       },
     },
     groups: {
       active: [],
+      ont_property: "groups",
       filter: function(ontology) {
         if ($scope.facets.groups.active.length == 0)
           return true;
-        if (intersection($scope.facets.groups.active. ontology.groups).length === 0)
+        if (intersection($scope.facets.groups.active, ontology.groups).length === 0)
           return false;
         return true;
       },
     },
     categories: {
       active: [],
+      ont_property: "categories",
       filter: function(ontology) {
         if ($scope.facets.categories.active.length == 0)
           return true;
@@ -78,6 +81,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
     },
     artifacts: {
       active: [],
+      ont_property: "artifacts",
       filter: function(ontology) {
         if ($scope.facets.artifacts.active.length == 0)
           return true;
@@ -97,10 +101,10 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
 
   // Default values for facets that aren't definied on the ontologies
   $scope.types = {
-    ontology: {enabled: true, sort: 1, id: "ontology"},
-    ontology_view: {enabled: true, sort: 2, id: "ontology_view"},
-    CIMI_model: {enabled: false, sort: 3, id: "CIMI_model"},
-    NLM_value_set: {enabled: false, sort: 4, id: "NLM_value_set"}
+    ontology: {sort: 1, id: "ontology"},
+    ontology_view: {sort: 2, id: "ontology_view"},
+    CIMI_model: {sort: 3, id: "CIMI_model"},
+    NLM_value_set: {sort: 4, id: "NLM_value_set"}
   };
   $scope.artifacts = ["notes", "reviews", "projects"];
 
@@ -130,7 +134,13 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
         show = other_facets.map(function(other_facet){return $scope.facets[other_facet].filter(ontology)}).every(Boolean);
         if (show) {
           facet_count = $scope.facet_counts[key];
-          facet_count[ontology[facet.ont_property]] = (facet_count[ontology[facet.ont_property]] || 0) + 1;
+          if (angular.isArray(ontology[facet.ont_property])) {
+            ontology[facet.ont_property].forEach(function(val) {
+              facet_count[val] = (facet_count[val] || 0) + 1;
+            });
+          } else {
+            facet_count[ontology[facet.ont_property]] = (facet_count[ontology[facet.ont_property]] || 0) + 1;
+          }
         }
       });
 
