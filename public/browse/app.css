@@ -34,6 +34,11 @@
   margin-top: -5px;
   width: 200px;
 }
+.smaller {
+  color: gray;
+  font-size: .8em;
+  padding-bottom: 2px;
+}
 #facets {
   margin-top: 1em;
 }
