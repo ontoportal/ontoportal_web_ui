@@ -36,33 +36,76 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
   // Default setup for facets
   $scope.facets = {
     types: {
-      active: ["ontology"]
+      active: ["ontology"],
+      ont_property: "type",
+      filter: function(ontology) {
+        if ($scope.facets.types.active.length == 0)
+          return true;
+        if ($scope.facets.types.active.indexOf(ontology.type) === -1)
+          return false;
+        return true;
+      },
     },
     formats: {
-      active: []
+      active: [],
+      filter: function(ontology) {
+        if ($scope.facets.formats.active.length == 0)
+          return true;
+        if ($scope.facets.formats.active.indexOf((ontology.submission || {}).hasOntologyLanguage) === -1)
+          return false;
+        return true;
+      },
     },
     groups: {
-      active: []
+      active: [],
+      filter: function(ontology) {
+        if ($scope.facets.groups.active.length == 0)
+          return true;
+        if (intersection($scope.facets.groups.active. ontology.groups).length === 0)
+          return false;
+        return true;
+      },
     },
     categories: {
-      active: []
+      active: [],
+      filter: function(ontology) {
+        if ($scope.facets.categories.active.length == 0)
+          return true;
+        if (intersection($scope.facets.categories.active, ontology.categories).length === 0)
+          return false;
+        return true;
+      },
     },
     artifacts: {
-      active: []
+      active: [],
+      filter: function(ontology) {
+        if ($scope.facets.artifacts.active.length == 0)
+          return true;
+        if (intersection($scope.facets.artifacts.active, ontology.artifacts).length === 0)
+          return false;
+        return true;
+      },
     }
   }
 
+  // Instantiate object counts
+  // This doesn't happen on the facet itself because
+  // there is a $watch directive and updating counts
+  // on the facets causes an infinite loop.
+  $scope.facet_counts = {};
+  Object.keys($scope.facets).forEach(function(facet) {$scope.facet_counts[facet] = {}});
+
   // Default values for facets that aren't definied on the ontologies
   $scope.types = {
-    ontology: {enabled: true, count: 0, sort: 1, id: "ontology"},
-    ontology_view: {enabled: true, count: 0, sort: 2, id: "ontology_view"},
-    CIMI_model: {enabled: false, count: 0, sort: 3, id: "CIMI_model"},
-    NLM_value_set: {enabled: false, count: 0, sort: 4, id: "NLM_value_set"}
+    ontology: {enabled: true, sort: 1, id: "ontology"},
+    ontology_view: {enabled: true, sort: 2, id: "ontology_view"},
+    CIMI_model: {enabled: false, sort: 3, id: "CIMI_model"},
+    NLM_value_set: {enabled: false, sort: 4, id: "NLM_value_set"}
   };
   $scope.artifacts = ["notes", "reviews", "projects"];
 
   // Functions for determining whether or not a particular filter applies to a given ontology
-  $scope.facets.filters = {
+  $scope.filters = {
     types: function(ontology) {
       if ($scope.facets.types.active.length == 0)
         return true;
@@ -103,11 +146,12 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
   // This watches the facets and updates the list depending on which facets are selected
   // All facets are basically ANDed together and return true if no options under the facet are selected.
   $scope.$watch('facets', function() {
-    var key, i, ontology, count = 0;
+    var key, i, ontology, facet, facet_count, show, other_facets;
+    $scope.visible_ont_count = 0;
 
-    // Reset type counts
-    Object.keys($scope.types).forEach(function(key) {
-      $scope.types[key].count = 0;
+    // Reset facet counts
+    Object.keys($scope.facet_counts).forEach(function(key) {
+      $scope.facet_counts[key] = {};
     });
 
     // Filter ontologies
@@ -115,17 +159,32 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
       ontology = $scope.ontologies[i];
 
       // Filter out ontologies based on their filter functions
-      ontology.show = Object.keys($scope.facets.filters).map(function(key){
-        return $scope.facets.filters[key](ontology);
+      ontology.show = Object.keys($scope.facets).map(function(key) {
+        return $scope.facets[key].filter(ontology);
       }).every(Boolean);
 
-      if (ontology.show) {
-        count++;
-        $scope.types[ontology.type].count++;
-      }
+      Object.keys($scope.facets).forEach(function(key) {
+        facet = $scope.facets[key];
+        other_facets = Object.keys($scope.facets).filter(function(f){return key != f});
+        show = other_facets.map(function(other_facet){return $scope.facets[other_facet].filter(ontology)}).every(Boolean);
+        if (show) {
+          facet_count = $scope.facet_counts[key];
+          facet_count[ontology[facet.ont_property]] = (facet_count[ontology[facet.ont_property]] || 0) + 1;
+        }
+      });
+
+      if (ontology.show) {$scope.visible_ont_count++};
     }
-    $scope.visible_ont_count = count;
+    console.log($scope.facet_counts);
   }, true);
+
+  var countAllInFacet = function(facet) {
+    var active_facets = Object.keys($scope.facets).filter(function(facet) {return $scope.facets[facet].active.length > 0});
+    if (active_facets.length == 0 || (active_facets.length == 1 && active_facets[0] == facet)) {
+      return true;
+    }
+    return false;
+  }
 
   var intersection = function(x, y) {
     if (typeof x === 'undefined' || typeof y === 'undefined') {return [];}
@@ -139,10 +198,6 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
       }
     }
     return ret;
-  }
-
-  var countFacets = function(ontology) {
-
   }
 
 }])
