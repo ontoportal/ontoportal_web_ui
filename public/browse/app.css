@@ -6,6 +6,13 @@
 }
 .splash {
   display: none;
+  width: 25%;
+  height: 4em;
+  padding: 2em;
+  text-align: center;
+  margin: 2em auto;
+  background-color: #ECECEC;
+  border-radius: 3px;
 }
 [ng-cloak] {
   display: none;
