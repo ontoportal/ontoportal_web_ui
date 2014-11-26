@@ -21,11 +21,14 @@
   background-color: #EFFFEF !important;
 }
 .welcome_admin {
-  margin: 1em auto -4em;
-  width: 25%;
+  width: 33%;
   padding: 7px 10px 5px;
   border-radius: 3px;
   text-align: center;
+  top: -5em;
+  position: relative;
+  float: right;
+  left: -33%;
 }
 .search {
   float: left;

@@ -24,10 +24,6 @@
 </div>
 
 <main class="grid-container" role="main" style="margin-bottom: 1em; margin-top: 1em;" ng-cloak>
-<div class="welcome_admin admin" ng-hide="admin">
-  <b>Welcome admin</b><br/>This coloring indicates admin-only features
-</div>
-
   <h1 style="font-size: 3em;">Browse</h1>
   <p>
     <%intro_text = "Browse the library of ontologies"%>
@@ -35,6 +31,10 @@
   </p>
 
   <div ng-controller="OntologyList">
+    <div class="welcome_admin admin" ng-show="admin">
+      <b>Welcome admin</b><br/>This coloring indicates admin-only features
+    </div>
+
     <div ng-show="debug" class="facet" style="position: relative;">
       <h2>Debug Info</h2>
       types: {{facets.types.active}}<br/>
