@@ -99,6 +99,7 @@ class OntologiesController < ApplicationController
       next unless o.submission
 
       o.submissionStatusFormatted = submission_status2string(o.submission).gsub(/\(|\)/, "")
+      o.creationDate = o.submission.creationDate
 
       o.format = o.submission.hasOntologyLanguage
       @formats << o.submission.hasOntologyLanguage

@@ -60,6 +60,17 @@
         </div>
       </div>
 
+      <div id="upload_date_facet" class="facet">
+        <h4>Uploaded in the Last</h4>
+        <div class="checkbox_list">
+          <select ng-model="facets.upload_date.active">
+            <option ng-repeat="day in facets.upload_date.day_text" value="{{facets.upload_date.values[day]}}">
+              {{day | idToTitle}}
+            </option>
+          </select>
+        </div>
+      </div>
+
       <div id="category_facet" class="facet">
         <h4>Category</h4>
         <div class="checkbox_list">
@@ -150,7 +161,7 @@
             <option value="-project_count">Projects</option>
             <option value="-note_count">Notes</option>
             <!-- <option value="ratings">Rating</option> -->
-            <option value="-submission.creationDate">Upload Date</option>
+            <option value="-creationDate">Upload Date</option>
           </select>
         </div>
       </div>

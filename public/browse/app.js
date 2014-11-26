@@ -97,11 +97,28 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
       ont_property: "submissionStatus",
       values: ["None", "RDF", "OBSOLETE", "METRICS", "RDF_LABELS", "UPLOADED", "INDEXED", "ANNOTATOR", "DIFF"],
       filter: function(ontology) {
-        if ($scope.facets.missing_status.active.length == 0)
+        if ($scope.facets.missing_status.active == "")
           return true;
         if (ontology.submissionStatus.indexOf($scope.facets.missing_status.active) !== -1)
           return false;
         return true;
+      }
+    },
+    upload_date: {
+      active: "",
+      ont_property: "creationDate",
+      values: {day: 1, week: 7, month: 30, three_months: 90, six_months: 180, year: 365, all: "all"},
+      day_text: ["day", "week", "month", "three_months", "six_months", "year", "all"],
+      filter: function(ontology) {
+        var active = $scope.facets.upload_date.active;
+        if (active == "" || active == "all")
+          return true;
+        var ontDate = new Date(ontology.creationDate);
+        var compareDate = new Date();
+        compareDate.setDate(compareDate.getDate() - active);
+        if (ontDate >= compareDate)
+          return true;
+        return false;
       }
     }
   }
