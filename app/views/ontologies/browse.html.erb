@@ -25,7 +25,7 @@
 
 <main class="grid-container" role="main" style="margin-bottom: 1em; margin-top: 1em;" ng-cloak>
 <div class="welcome_admin admin" ng-hide="admin">
-  <b>Welcome admin</b><br/>This coloring indicates admin-only features.
+  <b>Welcome admin</b><br/>This coloring indicates admin-only features
 </div>
 
   <h1 style="font-size: 3em;">Browse</h1>
@@ -100,7 +100,7 @@
         <h4>Missing Status</h4>
         <div class="checkbox_list">
           <select ng-model="facets.missing_status.active">
-            <option ng-repeat="status in facets.missing_status.values" value="{{status}}" ng-selected="$index == 0">
+            <option ng-repeat="status in facets.missing_status.values" value="{{status}}">
               {{status | idToTitle}}
             </option>
           </select>
@@ -129,7 +129,7 @@
 
     <div id="ontologies" class="grid-80" ng-show="visible_ont_count">
       <div id="searching">
-        <input type="text" placeholder="Search&hellip;" ng-model="searchText" ng-model-options="{debounce: 200}" style="float: left; width: 150px;">
+        <input type="text" placeholder="Search&hellip;" ng-model="searchText" ng-model-options="{debounce: 200}" class="search">
         <!-- TODO
 
              - Use http://lunrjs.com/docs/ for a basic search index
