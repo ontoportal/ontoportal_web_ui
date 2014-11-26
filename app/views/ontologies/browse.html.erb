@@ -63,7 +63,7 @@
       <div id="upload_date_facet" class="facet">
         <h4>Uploaded in the Last</h4>
         <div class="checkbox_list">
-          <select ng-model="facets.upload_date.active">
+          <select ng-model="facets.upload_date.active" ng-change="ontologySortOrder('-creationDate')">
             <option ng-repeat="day in facets.upload_date.day_text" value="{{facets.upload_date.values[day]}}">
               {{day | idToTitle}}
             </option>

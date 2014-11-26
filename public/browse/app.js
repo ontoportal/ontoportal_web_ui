@@ -159,6 +159,10 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
     return admins.map(function(a){return a.split('/').slice(-1)[0]});
   }
 
+  $scope.ontologySortOrder = function(newOrder) {
+    $scope.ontology_sort_order = newOrder;
+  }
+
   // This watches the facets and updates the list depending on which facets are selected
   // All facets are basically ANDed together and return true if no options under the facet are selected.
   $scope.$watch('facets', function() {
