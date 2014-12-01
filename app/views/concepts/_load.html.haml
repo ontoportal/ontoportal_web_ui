@@ -5,14 +5,14 @@
 |||
 #{render :partial =>'details'}
 |||
-%a.get_via_ajax{:href => "/ajax/notes/concept_list?ontology=#{@ontology.acronym}&concept=#{CGI.escape(@concept.id)}"}
+#{render partial: '/notes/list'}
 |||
 #{render :partial =>'/mappings/concept_mappings'}
 |||
 / # This used to hold demo-specific info, now it's a placeholder
 &nbsp;
 |||
--# default notes count = 0
+/ # default notes count = 0
 =0
 |||
 -# TODO_REV support mappings
