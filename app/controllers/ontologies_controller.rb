@@ -15,7 +15,7 @@ class OntologiesController < ApplicationController
 
   # GET /ontologies
   # GET /ontologies.xml
-  def index
+  def index_old
     @ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params)
     @submissions = LinkedData::Client::Models::OntologySubmission.all
     @submissions_map = Hash[@submissions.map {|sub| [sub.ontology.acronym, sub] }]
@@ -39,7 +39,7 @@ class OntologiesController < ApplicationController
 
   include ActionView::Helpers::NumberHelper
   include OntologiesHelper
-  def browse
+  def index
     @app_name = "FacetedBrowsing"
     @app_dir = "/browse"
     @base_path = @app_dir
@@ -104,6 +104,8 @@ class OntologiesController < ApplicationController
       o.format = o.submission.hasOntologyLanguage
       @formats << o.submission.hasOntologyLanguage
     end
+
+    render 'browse'
   end
 
   # GET /visualize/:ontology
@@ -391,7 +393,7 @@ class OntologiesController < ApplicationController
 
   def resolve_layout
     case action_name
-    when 'browse'
+    when 'index'
       'angular'
     else
       'ontology'
