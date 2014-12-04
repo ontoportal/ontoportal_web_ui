@@ -57,6 +57,7 @@
 .checkbox_list {
   max-height: 200px;
   overflow: auto;
+  padding-left: 1px;
 }
 .checkbox_list > span {
   overflow-x: hidden;
