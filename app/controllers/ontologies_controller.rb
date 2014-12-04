@@ -85,9 +85,9 @@ class OntologiesController < ApplicationController
       o.review_count     = o.reviews.length
       o.project_count    = o.projects.length
       o.private          = o.private?
-      o.viewOfOnt        = ontologies_hash[o.viewOf]
       o.popularity       = ONTOLOGY_RANK[o.acronym] || 0
       o.submissionStatus = o.submission ? o.submission.submissionStatus : []
+      o.viewOfOnt        = ontologies_hash[o.viewOf] ? ontologies_hash[o.viewOf].dup : nil
 
       o.artifacts = []
       o.artifacts << "notes" if o.notes.length > 0
