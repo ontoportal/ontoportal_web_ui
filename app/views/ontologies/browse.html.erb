@@ -132,15 +132,9 @@
 
     </div>
 
-    <div class="ontology grid-80" ng-show="visible_ont_count == 0" style="border: solid thin lightGray;">
-      <div style="text-align: center; color: gray; height: 2em; padding: 4em;">
-        <h2 style="font-weight: normal;">No matches!</h2>
-      </div>
-    </div>
-
-    <div id="ontologies" class="grid-80" ng-show="visible_ont_count">
+    <div id="ontologies" class="grid-80">
       <div id="searching">
-        <input type="text" placeholder="Search&hellip;" ng-model="searchText" ng-model-options="{debounce: 200}" class="search">
+        <input type="text" placeholder="Search&hellip;" ng-model="searchText" ng-model-options="{debounce: 100}" class="search">
         <!-- TODO
 
              - Use http://lunrjs.com/docs/ for a basic search index
@@ -151,7 +145,7 @@
              - Sort by "Search Rank" when searching
          -->
       </div>
-      <div id="sorting">
+      <div id="sorting" ng-show="visible_ont_count">
         <div id="sorting_float">
           <span style="margin-right: .5em;">Showing {{visible_ont_count}} of {{ontologies.length}}</span>
           <label for="sort_order">Sort:</label>
@@ -162,11 +156,18 @@
             <option value="-note_count">Notes</option>
             <!-- <option value="ratings">Rating</option> -->
             <option value="-creationDate">Upload Date</option>
+            <option value="-search_rank" ng-show="searchText.length > 0">Search Rank</option>
           </select>
         </div>
       </div>
 
-      <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies | filter:searchText | orderBy:ontology_sort_order" ng-show="ontology.show">
+      <div class="ontology" ng-show="visible_ont_count == 0" style="border: solid thin lightGray;">
+        <div style="text-align: center; color: gray; height: 2em; padding: 4em;">
+          <h2 style="font-weight: normal;">No matches!</h2>
+        </div>
+      </div>
+
+      <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies | orderBy:ontology_sort_order" ng-show="ontology.show">
         <div class="grid-70">
           <div ng-show="ontology.type == 'ontology_view'" class="ontology_view_badge" title="This ontology is a view of {{ontology.viewOfOnt.name}}">
             <a href="/ontologies/{{ontology.viewOfOnt.acronym}}">VIEW</a>

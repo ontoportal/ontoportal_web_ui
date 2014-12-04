@@ -16,6 +16,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
   // Default values
   $scope.visible_ont_count = 0;
   $scope.ontology_sort_order = "-popularity";
+  $scope.previous_sort_order = "-popularity";
 
   // Data transfer from Rails
   $scope.debug = jQuery(document).data().bp.development;
@@ -34,6 +35,24 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
     return 0;
   });
   $scope.groups_hash = jQuery(document).data().bp.groups_hash;
+
+  // Search setup
+  $scope.searchText = null;
+  $scope.ontIndex = lunr(function() {
+    this.field('acronym', 100);
+    this.field('title', 50);
+    this.field('description');
+    this.ref('id');
+  });
+
+  angular.forEach($scope.ontologies, function(ont) {
+    $scope.ontIndex.add({
+      id: ont.id,
+      acronym: ont.acronym,
+      title: ont.title,
+      description: ont.description
+    })
+  });
 
   // Default setup for facets
   $scope.facets = {
@@ -166,6 +185,14 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
   // This watches the facets and updates the list depending on which facets are selected
   // All facets are basically ANDed together and return true if no options under the facet are selected.
   $scope.$watch('facets', function() {
+    filterOntologies();
+  }, true);
+
+  $scope.$watch('searchText', function() {
+    filterOntologies();
+  });
+
+  var filterOntologies = function() {
     var key, i, ontology, facet, facet_count, show, other_facets;
     $scope.visible_ont_count = 0;
 
@@ -174,15 +201,25 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
       $scope.facet_counts[key] = {};
     });
 
-    // Filter ontologies
+    // First, filter by search. Do this first because the facets
+    // will apply on top of the search results (EX: for hiding views)
+    filterSearch();
+
+    // Filter ontologies based on facet + count for facets
     for (i = 0; i < $scope.ontologies.length; i++) {
       ontology = $scope.ontologies[i];
 
-      // Filter out ontologies based on their filter functions
+      if (searchActive() && ontology.show === false) continue;
+
+      // Filter out ontologies based on their facet filter functions
       ontology.show = Object.keys($scope.facets).map(function(key) {
         return $scope.facets[key].filter(ontology);
       }).every(Boolean);
 
+      // Check each facet entry to calculate counts
+      // Counts are calculated by looking at whether or not ontologies match OTHER facets
+      // IE, counts show what will be available for a given facet entry if that entry
+      // were to be selected relative to what is already selected in other facets.
       Object.keys($scope.facets).forEach(function(key) {
         facet = $scope.facets[key];
         other_facets = Object.keys($scope.facets).filter(function(f){return key != f});
@@ -201,7 +238,35 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
 
       if (ontology.show) {$scope.visible_ont_count++};
     }
-  }, true);
+  }
+
+  var filterSearch = function() {
+    var i, results, ontology, found = {};
+    if (!searchActive()) {
+      $scope.ontologySortOrder($scope.previous_sort_order);
+      return;
+    }
+    if ($scope.ontology_sort_order !== "-search_rank") {
+      $scope.previous_sort_order = $scope.ontology_sort_order;
+    }
+    $scope.ontologySortOrder("-search_rank");
+    results = $scope.ontIndex.search($scope.searchText);
+
+    angular.forEach(results, function(r){found[r.ref] = r});
+    for (i = 0; i < $scope.ontologies.length; i++) {
+      ontology = $scope.ontologies[i];
+      ontology.show = false;
+      ontology.search_rank = 0;
+      if (found[ontology.id]) {
+        ontology.show = true;
+        ontology.search_rank = found[ontology.id].score;
+      }
+    }
+  }
+
+  var searchActive = function() {
+    return !($scope.searchText === null || $scope.searchText === "");
+  }
 
   var countAllInFacet = function(facet) {
     var active_facets = Object.keys($scope.facets).filter(function(facet) {return $scope.facets[facet].active.length > 0});
