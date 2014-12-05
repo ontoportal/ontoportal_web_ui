@@ -135,15 +135,6 @@
     <div id="ontologies" class="grid-80">
       <div id="searching">
         <input type="text" placeholder="Search&hellip;" ng-model="searchText" ng-model-options="{debounce: 100}" class="search">
-        <!-- TODO
-
-             - Use http://lunrjs.com/docs/ for a basic search index
-             - Create a $watch function for the search input
-             - Set ontology.show for found ontologies
-               - (this is used in an ng-show directive and is much faster than an ng-repeat filter)
-             - Add a "Search Rank" sort order that's only visible when searching
-             - Sort by "Search Rank" when searching
-         -->
       </div>
       <div id="sorting" ng-show="visible_ont_count">
         <div id="sorting_float">
