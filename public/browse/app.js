@@ -10,13 +10,14 @@ config( ['$locationProvider', function ($locationProvider) {
 }])
 ;
 
-var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
+var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ngAnimate'])
 
-.controller('OntologyList', ['$scope', function($scope) {
+.controller('OntologyList', ['$scope', '$animate', function($scope, $animate) {
   // Default values
   $scope.visible_ont_count = 0;
   $scope.ontology_sort_order = "-popularity";
   $scope.previous_sort_order = "-popularity";
+  $scope.show_highlight = false;
 
   // Data transfer from Rails
   $scope.debug = jQuery(document).data().bp.development;
@@ -193,8 +194,9 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
   });
 
   var filterOntologies = function() {
-    var key, i, ontology, facet, facet_count, show, other_facets;
-    $scope.visible_ont_count = 0;
+    var key, i, ontology, facet, facet_count, show, other_facets, count = 0;
+    $scope.show_highlight = false;
+    $scope.show_highlight = true;
 
     // Reset facet counts
     Object.keys($scope.facet_counts).forEach(function(key) {
@@ -236,7 +238,17 @@ var app = angular.module('FacetedBrowsing.OntologyList', ["checklist-model"])
         }
       });
 
-      if (ontology.show) {$scope.visible_ont_count++};
+      if (ontology.show) {count++};
+    }
+
+    $scope.visible_ont_count = count;
+
+    // Highlight the count
+    count = $("#visible_ont_count");
+    if (count.hasClass("trigger_highlight")) {
+      $animate.removeClass(count, "trigger_highlight");
+    } else {
+      $animate.addClass(count, "trigger_highlight");
     }
   }
 
