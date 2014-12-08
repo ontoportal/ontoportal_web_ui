@@ -57,6 +57,7 @@
 .checkbox_list {
   max-height: 200px;
   overflow: auto;
+  padding-left: 1px;
 }
 .checkbox_list > span {
   overflow-x: hidden;
@@ -70,6 +71,26 @@
 #sorting_float {
   float: right;
   margin-bottom: .5em;
+}
+@keyframes highlight {
+  0% {
+    background: yellow;
+  }
+  100% {
+    background: none;
+  }
+}
+@-webkit-keyframes highlight {
+  0% {
+    background: yellow;
+  }
+  100% {
+    background: none;
+  }
+}
+.trigger_highlight-add, .trigger_highlight-remove {
+  -webkit-animation: highlight 1s;
+  animation: highlight 1s;
 }
 #ontologies {
 }
