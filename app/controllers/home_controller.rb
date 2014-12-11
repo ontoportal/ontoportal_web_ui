@@ -52,6 +52,11 @@ class HomeController < ApplicationController
     # @direct_expanded_annotations = @ri_stats[:expanded]
   end
 
+  def render_layout_partial
+    partial = params[:partial]
+    render partial: "layouts/#{partial}"
+  end
+
   def release
     redirect_to :controller => 'home', :action => 'help'
   end

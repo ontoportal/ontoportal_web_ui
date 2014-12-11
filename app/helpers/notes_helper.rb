@@ -134,7 +134,7 @@ module NotesHelper
     user = session[:user]
     if user.nil?
       # subscribe button must redirect to login
-      return sanitize("<a href='/login?redirect=#{request.request_uri}' style='font-size: .9em;' class='subscribe_to_notes'>Subscribe to notes emails</a>")
+      return sanitize("<a href='/login?redirect=#{request.request_uri}' style='font-size: .9em;' class='link_button subscribe_to_notes'>Subscribe to notes emails</a>")
     end
     # Init subscribe button parameters.
     sub_text = "Subscribe"

@@ -455,7 +455,8 @@ class ApplicationController < ActionController::Base
 
   def get_metrics_hash
     metrics_hash = {}
-    @metrics = LinkedData::Client::Models::Metrics.all
+    # TODO: Metrics do not return for views on the backend, need to enable include_views param there
+    @metrics = LinkedData::Client::Models::Metrics.all(include_views: true)
     @metrics.each {|m| metrics_hash[m.links['ontology']] = m }
     return metrics_hash
   end
