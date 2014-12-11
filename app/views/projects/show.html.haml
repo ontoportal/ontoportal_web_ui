@@ -5,8 +5,6 @@
   %h1{:style => "font-size: xx-large;"}= @project.name
   - if session[:user] && (@project.creator.include?(session[:user].id) || session[:user].admin?)
     = link_to "Edit Project", edit_project_path(@project.acronym)
-    -# NCBO-658: Avoid stale cached data from LD client: provide project params to the edit link_to.
-    -# link_to "Edit Project", {:action => 'edit', :id => @project.acronym, :project => @project.to_param}
   %br/
   %br/
   %p{:style => "margin-bottom: 5px;"}
