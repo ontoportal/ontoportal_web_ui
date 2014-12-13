@@ -43,23 +43,22 @@ class OntologiesController < ApplicationController
     @app_name = "FacetedBrowsing"
     @app_dir = "/browse"
     @base_path = @app_dir
-    @ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params + ",viewOf", include_views: true)
-    ontologies_hash = Hash[@ontologies.map {|o| [o.id, o] }]
+    ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params + ",viewOf", include_views: true, display_links: false, display_context: false)
+    ontologies_hash = Hash[ontologies.map {|o| [o.id, o] }]
     @admin = session[:user] ? session[:user].admin? : false
     @development = Rails.env.development?
 
-    submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true)
+    submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true, display_links: false, display_context: false)
     submissions_map = Hash[submissions.map {|sub| [sub.ontology.acronym, sub] }]
 
-    @categories = LinkedData::Client::Models::Category.all
+    @categories = LinkedData::Client::Models::Category.all(display_links: false, display_context: false)
     @categories_hash = Hash[@categories.map {|c| [c.id, c] }]
 
-    @groups = LinkedData::Client::Models::Group.all
+    @groups = LinkedData::Client::Models::Group.all(display_links: false, display_context: false)
     @groups_hash = Hash[@groups.map {|g| [g.id, g] }]
 
-
     reviews = {}
-    LinkedData::Client::Models::Review.all.each do |r|
+    LinkedData::Client::Models::Review.all(display_links: false, display_context: false).each do |r|
       reviews[r.reviewedOntology] ||= []
       reviews[r.reviewedOntology] << r
     end
@@ -68,41 +67,60 @@ class OntologiesController < ApplicationController
 
     @formats = Set.new
 
-    @ontologies.each do |o|
-      if metrics_hash[o.id]
-        o.class_count = metrics_hash[o.id].classes
+    @ontologies = []
+    ontologies.each do |ont|
+      o = {}
+
+      if metrics_hash[ont.id]
+        o[:class_count] = metrics_hash[ont.id].classes
       else
-        o.class_count = 0
+        o[:class_count] = 0
       end
-      o.class_count_formatted = number_with_delimiter(o.class_count, :delimiter => ",")
+      o[:class_count_formatted] = number_with_delimiter(o[:class_count], :delimiter => ",")
 
-      o.type             = o.viewOf.nil? ? "ontology" : "ontology_view"
-      o.show             = o.viewOf.nil? ? true : false # show ontologies only by default
-      o.reviews          = reviews[o.id] || []
-      o.groups           = o.group || []
-      o.categories       = o.hasDomain || []
-      o.note_count       = o.notes.length
-      o.review_count     = o.reviews.length
-      o.project_count    = o.projects.length
-      o.private          = o.private?
-      o.popularity       = ONTOLOGY_RANK[o.acronym] || 0
-      o.submissionStatus = o.submission ? o.submission.submissionStatus : []
-      o.viewOfOnt        = ontologies_hash[o.viewOf] ? ontologies_hash[o.viewOf].dup : nil
+      o[:type]             = ont.viewOf.nil? ? "ontology" : "ontology_view"
+      o[:show]             = ont.viewOf.nil? ? true : false # show ontologies only by default
+      o[:reviews]          = reviews[ont.id] || []
+      o[:groups]           = ont.group || []
+      o[:categories]       = ont.hasDomain || []
+      o[:note_count]       = ont.notes.length
+      o[:review_count]     = ont.reviews.length
+      o[:project_count]    = ont.projects.length
+      o[:private]          = ont.private?
+      o[:popularity]       = ONTOLOGY_RANK[ont.acronym] || 0
+      o[:submissionStatus] = []
+      o[:administeredBy]   = ont.administeredBy
+      o[:name]             = ont.name
+      o[:acronym]          = ont.acronym
+      o[:projects]         = ont.projects
+      o[:notes]            = ont.notes
 
-      o.artifacts = []
-      o.artifacts << "notes" if o.notes.length > 0
-      o.artifacts << "reviews" if o.reviews.length > 0
-      o.artifacts << "projects" if o.projects.length > 0
-      o.artifacts << "summary_only" if o.summaryOnly
+      o[:viewOfOnt] = {
+        name: ontologies_hash[ont.viewOf].name,
+        acronym: ontologies_hash[ont.viewOf].acronym
+      } if o[:type].eql?("ontology_view")
 
-      o.submission = submissions_map[o.acronym]
-      next unless o.submission
+      o[:artifacts] = []
+      o[:artifacts] << "notes" if ont.notes.length > 0
+      o[:artifacts] << "reviews" if ont.reviews.length > 0
+      o[:artifacts] << "projects" if ont.projects.length > 0
+      o[:artifacts] << "summary_only" if ont.summaryOnly
 
-      o.submissionStatusFormatted = submission_status2string(o.submission).gsub(/\(|\)/, "")
-      o.creationDate = o.submission.creationDate
+      sub = submissions_map[ont.acronym]
+      if sub
+        o[:submissionStatus]          = sub.submissionStatus
+        o[:submission]                = true
+        o[:pullLocation]              = sub.pullLocation
+        o[:description]               = sub.description
+        o[:creationDate]              = sub.creationDate
+        o[:creationDate]              = sub.creationDate
+        o[:submissionStatusFormatted] = submission_status2string(sub).gsub(/\(|\)/, "")
 
-      o.format = o.submission.hasOntologyLanguage
-      @formats << o.submission.hasOntologyLanguage
+        o[:format] = sub.hasOntologyLanguage
+        @formats << sub.hasOntologyLanguage
+      end
+
+      @ontologies << o
     end
 
     render 'browse'

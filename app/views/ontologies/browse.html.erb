@@ -172,9 +172,9 @@
             <i title="Private Ontology" ng-show="ontology.private" class="icon-key locked_ont"></i>
           </h2>
           <div ng-show="ontology.submission">
-            <p>{{ontology.submission.description | descriptionToText}}</p>
+            <p>{{ontology.description | descriptionToText}}</p>
             <span class="ont-info">
-              <b>Uploaded</b>: {{ontology.submission.creationDate | date:'shortDate'}}
+              <b>Uploaded</b>: {{ontology.creationDate | date:'shortDate'}}
             </span>
             <span class="ont-info" ng-show="facets.formats.active.length > 1">
               <b>Format</b>: {{ontology.format}}
@@ -195,8 +195,8 @@
               <span class="ont-info admin" ng-show="admin">
                 <b>Admins</b>: {{adminUsernames(ontology.administeredBy).join(', ')}}
               </span>
-              <span class="ont-info admin" ng-show="admin && ontology.submission.pullLocation">
-                <b><a href="{{ontology.submission.pullLocation}}">Pull URL</a></b>
+              <span class="ont-info admin" ng-show="admin && ontology.pullLocation">
+                <b><a href="{{ontology.pullLocation}}">Pull URL</a></b>
               </span>
               <span class="ont-info admin" ng-show="admin && ontology.submission">
                 <b>Status</b>: {{ontology.submissionStatusFormatted}}
