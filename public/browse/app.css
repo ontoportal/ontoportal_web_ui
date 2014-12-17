@@ -45,6 +45,13 @@
 #facets {
   margin-top: 1em;
 }
+.new_ontology_button {
+  display: inline-block;
+  width: 100%;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  margin-top: 1em;
+}
 .facet {
   margin: 1em 0;
   border: thin lightGray solid;
