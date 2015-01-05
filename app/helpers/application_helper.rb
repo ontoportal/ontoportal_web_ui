@@ -151,11 +151,6 @@ module ApplicationHelper
     if node.children.nil? || node.children.length < 1
       return string # unchanged
     end
-    if parent.nil?
-      draw_root = ''
-    else
-      draw_root = ""  # this is no different, why?
-    end
     node.children.sort! {|a,b| (a.prefLabel || a.id).downcase <=> (b.prefLabel || b.id).downcase}
     for child in node.children
       icons = ""
@@ -182,7 +177,7 @@ module ApplicationHelper
       elsif child.id.eql?("bp_fake_root")
         string << "<li class='active' id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='#' #{active_style}>#{child.prefLabel}</a></li>"
       else
-        string << "<li #{open} #{draw_root} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.prefLabel({use_html: true})} #{icons}</a>"
+        string << "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.prefLabel({use_html: true})} #{icons}</a>"
         if child.childrenCount && child.childrenCount > 0 && !child.expanded?
           string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.childrenCount}'>ajax_class</a></li></ul>"
         elsif child.expanded?
