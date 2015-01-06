@@ -8,7 +8,7 @@ class MappingsController < ApplicationController
   MAPPINGS_URL = "#{LinkedData::Client.settings.rest_url}/mappings"
 
   def index
-    ontology_list = LinkedData::Client::Models::Ontology.all
+    ontology_list = LinkedData::Client::Models::Ontology.all.select {|o| !o.summaryOnly}
     ontologies_mapping_count = LinkedData::Client::HTTP.get("#{MAPPINGS_URL}/statistics/ontologies")
     ontologies_hash = {}
     ontology_list.each do |ontology|
