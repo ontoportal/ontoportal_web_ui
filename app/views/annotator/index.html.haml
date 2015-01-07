@@ -31,7 +31,7 @@
       %b Include Ancestors Up To Level:
       &nbsp;&nbsp;
       - options = [["None", 0], *(1..10).map {|i| [i, i]}, ["All", 999]]
-      = select_tag :max_level, options_for_select(options, 0), style: "width: 70px;"
+      = select_tag :class_hierarchy_max_level, options_for_select(options, 0), style: "width: 70px;"
     - if @recognizers.length > 1
       %p
         %b Entity Recognizer:

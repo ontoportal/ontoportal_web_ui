@@ -27,7 +27,8 @@ class AnnotatorController < ApplicationController
     params[:semantic_types] ||= []
     text_to_annotate = params[:text].strip.gsub("\r\n", " ").gsub("\n", " ")
     options = { :ontologies => params[:ontologies],
-                :max_level => params[:max_level].to_i,
+                :class_hierarchy_max_level => params[:class_hierarchy_max_level].to_i,
+                :expand_class_hierarchy => params[:class_hierarchy_max_level].to_i > 0,
                 :semantic_types => params[:semantic_types],
                 :mappings => params[:mappings],
                 :longest_only => params[:longest_only],
@@ -38,7 +39,8 @@ class AnnotatorController < ApplicationController
     query = ANNOTATOR_URI
     query += "?text=" + CGI.escape(text_to_annotate)
     query += "&include=prefLabel"
-    query += "&max_level=" + options[:max_level].to_s
+    query += "&expand_class_hierarchy=true" if options[:class_hierarchy_max_level] > 0
+    query += "&class_hierarchy_max_level=" + options[:class_hierarchy_max_level].to_s if options[:class_hierarchy_max_level] > 0
     query += "&ontologies=" + CGI.escape(options[:ontologies].join(',')) unless options[:ontologies].empty?
     query += "&semantic_types=" + options[:semantic_types].join(',') unless options[:semantic_types].empty?
     query += "&mappings=" + options[:mappings].join(',') unless options[:mappings].empty?
