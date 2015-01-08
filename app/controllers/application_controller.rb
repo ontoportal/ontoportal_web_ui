@@ -24,7 +24,6 @@ class ApplicationController < ActionController::Base
   API_KEY = $API_KEY
 
   REST_URI_BATCH = REST_URI + '/batch'
-  REST_URI_RECENT_MAPPINGS = "#{REST_URI}/mappings/recent/"
 
   # Note that STATS is a DIRECT CONNECTION to the JAVA-REST API
   RI_STATS_URI = 'http://rest.bioontology.org/resource_index/statistics/all'
@@ -643,12 +642,13 @@ class ApplicationController < ActionController::Base
         :classes => {}
     }
     begin
-      cached_mappings_key = REST_URI_RECENT_MAPPINGS
+      recent_url = "#{REST_URI}/mappings/recent/"
+      cached_mappings_key = recent_url
       cached_mappings = Rails.cache.read(cached_mappings_key)
       return cached_mappings unless (cached_mappings.nil? || cached_mappings.empty?)
       # No cache or it has expired
       class_details = {}
-      mappings = LinkedData::Client::HTTP.get(REST_URI_RECENT_MAPPINGS)
+      mappings = LinkedData::Client::HTTP.get(recent_url, {size: 20})
       unless mappings.nil? || mappings.empty?
         # There is no 'include' parameter on the /mappings/recent API.
         # The following is required just to get the prefLabel on each mapping class.

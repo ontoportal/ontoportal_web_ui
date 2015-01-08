@@ -146,7 +146,9 @@
             - if mappings.nil? || classes.nil? || mappings.empty? || classes.empty?
               No recent mappings have been submitted
             - else
+              - good_count = 0
               - for map in mappings
+                - break if good_count == 5
                 - begin
                   - # map.classes might contain more than two items, use first and last.
                   - clsA = classes[map.classes.first.id] || nil
@@ -159,6 +161,7 @@
                   - raise "UI-view error for recent mapping ontology #{clsB[:ontology]}" if ontB.nil?
                   - mapProc = map.process
                   - raise "UI-view error for recent mapping process #{map.process}" if mapProc.nil?
+                  - good_count += 1
                   %tr
                     %td
                       - mapStr = "#{clsA[:prefLabel]} (#{ontA}) <=> #{clsB[:prefLabel]} (#{ontB})"
