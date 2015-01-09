@@ -29,7 +29,17 @@
         &nbsp;&nbsp;
         = f.submit "Add User"
 
-      %h2{:style => "margin-top: 1em;"} Accounts with access:
-      %ul
+      %h2{:style => "margin-top: 1em;"}
+        Accounts with access
+      %table#user_table.zebra{style: "border: thin lightGray solid; background-color: white;"}
+        %thead
+          %tr
+            %th Username
+            %th Name
+            %th Email
+        %tbody
         -@users_with_access.compact.each do |user|
-          %li= user.username
+          %tr
+            %td= user.username
+            %td= (user.firstName.to_s + " " + user.lastName.to_s).strip
+            %td= user.email
