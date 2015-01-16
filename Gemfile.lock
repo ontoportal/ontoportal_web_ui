@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 2b4ab81fb3e5ae590f8564735551ac5f66a8efc7
+  revision: 1a4dd1efecb3a030a6a1cc56e98333bacce6743f
   specs:
     ontologies_api_client (0.0.6)
       activesupport (<= 3.0)
@@ -43,17 +43,17 @@ GEM
     coderay (1.1.0)
     cube-ruby (0.0.3)
     daemons (1.1.9)
-    eventmachine (1.0.3)
-    excon (0.40.0)
-    faraday (0.9.0)
+    eventmachine (1.0.4)
+    excon (0.43.0)
+    faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
     haml (3.1.8)
     hodel_3000_compliant_logger (0.1.1)
     hpricot (0.8.6)
     i18n (0.5.4)
     iconv (1.0.4)
-    json (1.8.1)
-    kgio (2.9.2)
+    json (1.8.2)
+    kgio (2.9.3)
     logstash-event (1.1.5)
     lz4-ruby (0.3.3)
     memcache-client (1.8.5)
@@ -65,7 +65,7 @@ GEM
     oink (0.10.1)
       activerecord
       hodel_3000_compliant_logger
-    oj (2.11.0)
+    oj (2.11.2)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -81,12 +81,12 @@ GEM
       activesupport (= 2.3.18)
       rake (>= 0.8.3)
     raindrops (0.13.0)
-    rake (10.3.2)
-    rdoc (4.1.2)
+    rake (10.4.2)
+    rdoc (4.2.0)
       json (~> 1.4)
     recaptcha (0.3.4)
     recursive-open-struct (0.5.0)
-    redis (3.1.0)
+    redis (3.2.0)
     rest-client (1.6.8)
       mime-types (~> 1.16)
       rdoc (>= 2.4.2)
