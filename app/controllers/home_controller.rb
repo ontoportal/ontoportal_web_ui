@@ -47,9 +47,9 @@ class HomeController < ApplicationController
       @ri_record_count = 0
     end
     # TODO: Update stats for new RI
-    # @ri_stats = get_resource_index_annotation_stats # application_controller
-    # @direct_annotations = @ri_stats[:direct]
-    # @direct_expanded_annotations = @ri_stats[:expanded]
+    @ri_stats = LinkedData::Client::ResourceIndex.annotation_counts
+    @direct_annotations = @ri_stats[:total][:direct]
+    @direct_expanded_annotations = @ri_stats[:total][:ancestors]
   end
 
   def render_layout_partial
