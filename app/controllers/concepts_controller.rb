@@ -103,6 +103,19 @@ class ConceptsController < ApplicationController
     render :partial => "ontologies/treeview"
   end
 
+  def property_tree
+    if params[:ontology].to_i > 0
+      params_cleanup_new_api()
+      stop_words = ["controller", "action"]
+      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
+      return
+    end
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    raise Error404 if @ontology.nil?
+    @root = @ontology.property_tree
+    render json: LinkedData::Client::Models::Property.properties_to_hash(@root.children)
+  end
+
   def virtual
     if params[:ontology].to_i > 0
       acronym = BPIDResolver.id_to_acronym(params[:ontology])

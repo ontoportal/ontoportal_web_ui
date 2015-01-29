@@ -83,6 +83,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect "/ajax/classes/label", :controller => "concepts", :action => "show_label"
   map.connect "/ajax/classes/definition", :controller => "concepts", :action => "show_definition"
   map.connect "/ajax/classes/treeview", :controller => "concepts", :action => "show_tree"
+  map.connect "/ajax/properties/tree", :controller => "concepts", :action => "property_tree"
   map.connect '/ajax/biomixer', :controller => 'concepts', :action => 'biomixer'
 
   # User
