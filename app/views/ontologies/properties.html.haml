@@ -1,0 +1,61 @@
+%link{type: "text/css", rel: "stylesheet", href: "/widgets/jquery.ncbo.tree.css"}
+%script{src: "/javascripts/bp_property_tree.js"}
+
+:css
+  #ont_properties #prop_container #prop_contents {
+    float: left;
+    margin: .5em 1em;
+  }
+
+  #ont_properties #prop_sidebar {
+    display: block;
+    overflow: auto;
+    float: left;
+    width: 100%;
+    height: 100%;
+    min-height: 350px;
+  }
+
+  #propTree a {
+    font-family: "Myriad Pro","Myriad Web Pro","Myriad Web","Myriad","Trebuchet MS","Tahoma","Helvetica","Arial",sans-serif;
+    font: small/1.231 arial,helvetica,clean,sans-serif;
+  }
+
+#ont_properties.explore
+  #prop_sidebar
+    #prop_tree_content
+      %div#propTree
+
+    %div{style: "clear:both;"}
+
+  #prop_container
+    #prop_contents
+      %p
+        Test!
+      %p
+        Test!
+      %p
+        Test!
+      %p
+        Test!
+    %div{style: "clear:both;"}
+
+%div{style: "clear: both;"}
+
+:javascript
+  var bd_content_width = jQuery("#ontology_content").width();
+  jQuery("#ont_properties").width(bd_content_width);
+
+  jQuery("#ont_properties").splitter({
+    sizeLeft: 400,
+    resizeToWidth: true
+  });
+
+  var ontProptree = $("#propTree").NCBOPropertyTree({
+    ontology: "#{@ontology.acronym}",
+    ncboUIURL: "http://localhost:3000",
+  });
+
+  ontProptree.on("afterSelect", function (e, classId, label, node) {
+    console.log(node.data());
+  });
