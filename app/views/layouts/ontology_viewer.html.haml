@@ -96,6 +96,8 @@
         - unless @ontology.summaryOnly
           %li#classes_link.classes_link.nav_link
             %a{"data-bp_ont_page" => "classes", :href => "/ontologies/#{@ontology.acronym}?p=classes"} Classes
+          %li#properties_link.properties_link.nav_link
+            %a{"data-bp_ont_page" => "properties", :href => "/ontologies/#{@ontology.acronym}?p=properties"} Properties
         %li#notes_link.notes_link.nav_link
           %a{"data-bp_ont_page" => "notes", :href => "/ontologies/#{@ontology.acronym}?p=notes"} Notes
         %li#mappings_link.mappings_link.nav_link
@@ -118,6 +120,13 @@
       - if content_section.eql?("classes")
         :javascript
           jQuery("#ont_classes_content").removeClass("hidden");
+        = yield
+      - else
+        = loading_spinner(true)
+    #ont_properties_content.ontology_viewer_content.hidden
+      - if content_section.eql?("properties")
+        :javascript
+          jQuery("#ont_properties_content").removeClass("hidden");
         = yield
       - else
         = loading_spinner(true)

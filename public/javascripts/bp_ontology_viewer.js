@@ -203,6 +203,10 @@ jQuery(document).ready(function() {
       jQuery.bioportal.ont_pages["classes"].retrieve_and_publish();
     }
 
+    if (content_section !== "properties" && metadata_only !== true) {
+      jQuery.bioportal.ont_pages["properties"].retrieve_and_publish();
+    }
+
     if (content_section !== "summary") {
       jQuery.bioportal.ont_pages["summary"].retrieve_and_publish();
     }
@@ -288,6 +292,7 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
 jQuery.bioportal.ont_pages = [];
 
 jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + ontology_id + "?p=classes&ajax=true" + concept_param, "Problem retrieving classes", ontology_name + concept_name_title + " - Classes", "Classes");
+jQuery.bioportal.ont_pages["properties"] = new jQuery.bioportal.OntologyPage("properties", "/ontologies/" + ontology_id + "?p=properties&ajax=true", "Problem retrieving properties", ontology_name + " - Properties", "Properties");
 jQuery.bioportal.ont_pages["summary"] = new jQuery.bioportal.OntologyPage("summary", "/ontologies/" + ontology_id + "?p=summary&ajax=true", "Problem retrieving summary", ontology_name + " - Summary", "Summary");
 jQuery.bioportal.ont_pages["mappings"] = new jQuery.bioportal.OntologyPage("mappings", "/ontologies/" + ontology_id + "?p=mappings&ajax=true", "Problem retrieving mappings", ontology_name + " - Mappings", "Mappings");
 jQuery.bioportal.ont_pages["notes"] = new jQuery.bioportal.OntologyPage("notes", "/ontologies/" + ontology_id + "?p=notes&ajax=true", "Problem retrieving notes", ontology_name + " - Notes", "Notes");
