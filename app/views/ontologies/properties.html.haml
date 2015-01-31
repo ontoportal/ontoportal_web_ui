@@ -89,7 +89,7 @@
 
   $("#propTree").NCBOPropertyTree({
     ontology: "#{@ontology.acronym}",
-    ncboUIURL: "http://localhost:3000",
+    ncboUIURL: jQuery(document).data().bp.config.ui_url,
     onInit: function() {
       var ontPropTree = $("#propTree").data().NCBOPropertyTree;
       var data = $("#propTree").find("a:first").data();
