@@ -2,7 +2,7 @@
   <head>
     <link rel="stylesheet" type="text/css" href="/widgets/jquery.ncbo.tree.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="/widgets/jquery.ncbo.tree.js"></script>
+    <script src="/widgets/jquery.ncbo.tree-2.0.0.js"></script>
   </head>
   <body style="font-family: sans-serif;">
     <div id="events" style="margin-bottom: 1em; border: thin solid black; padding: 1em;">
@@ -35,18 +35,20 @@
         events.scrollTop(events[0].scrollHeight);
       }
 
+      var myTree;
+
       $.ajax({
         url: "/site_config",
         dataType: "json",
         success: function(config){
-          var tree = $("#tree").NCBOTree({
+          myTree = $("#tree").NCBOTree({
             apikey: config.apikey,
             ontology: ontology,
             ncboUIURL: config.ui_url,
             ncboAPIURL: config.rest_url
           });
 
-          tree.on("afterSelect", function (e, classId, label, node) {
+          myTree.on("afterSelect", function (e, classId, label, node) {
             displayEvent("afterSelect", "classId: " + classId + ", prefLabel: " + label + ", selectedNode: " + node);
             $.ajax({
               url: config.rest_url + "/ontologies/" + ontology + "/classes/" + encodeURIComponent(classId),
@@ -59,15 +61,15 @@
             });
           });
 
-          tree.on("beforeExpand", function(e, expandedNode){
+          myTree.on("beforeExpand", function(e, expandedNode){
             displayEvent("beforeExpand", "expandedNode: " + expandedNode);
           });
 
-          tree.on("afterExpand", function(e, expandedNode){
+          myTree.on("afterExpand", function(e, expandedNode){
             displayEvent("afterExpand", "expandedNode: " + expandedNode);
           });
 
-          tree.on("afterJumpToClass", function(e, classId){
+          myTree.on("afterJumpToClass", function(e, classId){
             displayEvent("afterJumpToClass", "classId: " + classId);
 
             $.ajax({
