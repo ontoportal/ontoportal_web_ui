@@ -366,6 +366,7 @@ class OntologiesController < ApplicationController
     @metrics = @ontology.explore.metrics rescue []
     @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created} || []
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
+    @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
     @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId <=> a.submissionId } || []
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
