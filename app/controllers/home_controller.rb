@@ -6,8 +6,9 @@ class HomeController < ApplicationController
   NOTES_RECENT_MAX = 5
 
   def index
-    @ontologies = LinkedData::Client::Models::Ontology.all(include_views: true)
-    @ontologies_hash = Hash[@ontologies.map {|o| [o.acronym, o]}]
+    @ontologies_views = LinkedData::Client::Models::Ontology.all(include_views: true)
+    @ontologies = @ontologies_views.select {|o| !o.viewOf}
+    @ontologies_hash = Hash[@ontologies_views.map {|o| [o.acronym, o]}]
     @groups = LinkedData::Client::Models::Group.all
     @notes = LinkedData::Client::Models::Note.all
     @last_notes = []
