@@ -1,6 +1,8 @@
 %div{:style => "padding: 1em;"}
-  %div
-    %div{:style => "float: right; width: 40%"}= render :partial => 'metrics'
+  %div{:style => "float: right; width: 40%"}
+    %div{style: "padding-left: 1em;"}
+      = render :partial => 'metrics'
+  %div{style: "width: 60%;"}
     = render :partial => 'details'
   %div{:style => "clear: both;"}
   = render :partial => 'reviews'
