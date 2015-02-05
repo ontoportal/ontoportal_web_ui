@@ -1,3 +1,4 @@
+- months_to_show = 18
 #visits_content{:style => "margin: 2em 1em 0;"}
   %div{:style => "clear:both;"}
   %div{:style => "width: 100%;"}
@@ -6,12 +7,17 @@
       -# = help_icon("http://www.bioontology.org/wiki/index.php/Ontology_Metrics", { :title => "View individual metrics definitions", :style => "margin-top: -7px;" })
       &nbsp;&nbsp;
       %a{href: @ontology.links["analytics"] + "?apikey=#{get_apikey}&format=csv", style: "font-size: smaller;", target: "_blank"} Download as CSV
-    %div{style: "padding: 0 0 1em 2em; overflow-x: auto;"}
+    %div{style: "padding: 0 0 1em 2em;"}
       %canvas#visits_chart{width: 600, height: 300}
 
 :javascript
+  var numberWithCommas = function(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+  Chart.defaults.global.scaleLabel = "<%=numberWithCommas(value)%>";
+
   var data = {
-      labels: #{visits_data[:labels][0..11].to_json},
+      labels: #{visits_data[:labels][0..months_to_show-1].to_json},
       datasets: [
           {
               label: "Visits",
@@ -21,7 +27,7 @@
               pointStrokeColor: "#fff",
               pointHighlightFill: "#fff",
               pointHighlightStroke: "rgba(151,187,205,1)",
-              data: #{visits_data[:visits][0..11].to_json}
+              data: #{visits_data[:visits][0..months_to_show-1].to_json}
           }
       ]
   };
