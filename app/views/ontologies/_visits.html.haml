@@ -7,8 +7,8 @@
       -# = help_icon("http://www.bioontology.org/wiki/index.php/Ontology_Metrics", { :title => "View individual metrics definitions", :style => "margin-top: -7px;" })
       &nbsp;&nbsp;
       %a{href: @ontology.links["analytics"] + "?apikey=#{get_apikey}&format=csv", style: "font-size: smaller;", target: "_blank"} Download as CSV
-    %div{style: "padding: 0 0 1em 2em;"}
-      %canvas#visits_chart{width: 600, height: 300}
+    %div
+      %canvas#visits_chart{style: "width: 100% !important; max-width: 600px; height: 300 !important;"}
 
 :javascript
   var numberWithCommas = function(x) {
@@ -32,5 +32,5 @@
       ]
   };
   var ctx = document.getElementById("visits_chart").getContext("2d");
-  var myLineChart = new Chart(ctx).Line(data);
+  var myLineChart = new Chart(ctx).Line(data, { responsive: true });
 
