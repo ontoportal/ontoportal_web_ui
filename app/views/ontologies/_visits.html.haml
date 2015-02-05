@@ -5,13 +5,13 @@
       %span{:style => "font-size: x-large;"} Visits
       -# = help_icon("http://www.bioontology.org/wiki/index.php/Ontology_Metrics", { :title => "View individual metrics definitions", :style => "margin-top: -7px;" })
       &nbsp;&nbsp;
-      %a{href: @ontology.links["analytics"] + "?apikey=#{get_apikey}", style: "font-size: smaller;", target: "_blank"} Download as JSON
-    %div{style: "padding-left: 2em; overflow: auto; height: 400px;"}
-      %canvas#visits_chart{width: visits_data[:visits].length * 100, height: 400}
+      %a{href: @ontology.links["analytics"] + "?apikey=#{get_apikey}&format=csv", style: "font-size: smaller;", target: "_blank"} Download as CSV
+    %div{style: "padding: 0 0 1em 2em; overflow-x: auto;"}
+      %canvas#visits_chart{width: 600, height: 300}
 
 :javascript
   var data = {
-      labels: #{visits_data[:labels].to_json},
+      labels: #{visits_data[:labels][0..11].to_json},
       datasets: [
           {
               label: "Visits",
@@ -21,7 +21,7 @@
               pointStrokeColor: "#fff",
               pointHighlightFill: "#fff",
               pointHighlightStroke: "rgba(151,187,205,1)",
-              data: #{visits_data[:visits].to_json}
+              data: #{visits_data[:visits][0..11].to_json}
           }
       ]
   };
