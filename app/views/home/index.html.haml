@@ -106,11 +106,14 @@
           %h2 Visits for #{@analytics.date.strftime("%B %Y")}
           %table.minimal.align-right{width: "800px"}
             %tbody
+              - count = 0
               - @analytics.onts.each do |visits|
-                -ont = @ontologies_hash[visits[:ont].to_s]
-                -next if ont.nil?
+                - ont = @ontologies_hash[visits[:ont].to_s]
+                - next if ont.nil?
+                - count += 1
                 %tr
                   %td
+                    #{count}.
                     %a{href: "/ontologies/#{ont.acronym}"} #{ont.name} (#{ont.acronym})
                   %td= visits[:views]
 
