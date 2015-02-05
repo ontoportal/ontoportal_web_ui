@@ -1,0 +1,30 @@
+#visits_content{:style => "margin: 2em 1em 0;"}
+  %div{:style => "clear:both;"}
+  %div{:style => "width: 100%;"}
+    %h2
+      %span{:style => "font-size: x-large;"} Visits
+      -# = help_icon("http://www.bioontology.org/wiki/index.php/Ontology_Metrics", { :title => "View individual metrics definitions", :style => "margin-top: -7px;" })
+      &nbsp;&nbsp;
+      %a{href: @ontology.links["analytics"] + "?apikey=#{get_apikey}", style: "font-size: smaller;", target: "_blank"} Download as JSON
+    %div{style: "padding-left: 2em; overflow: auto; height: 400px;"}
+      %canvas#visits_chart{width: visits_data[:visits].length * 100, height: 400}
+
+:javascript
+  var data = {
+      labels: #{visits_data[:labels].to_json},
+      datasets: [
+          {
+              label: "Visits",
+              fillColor: "rgba(151,187,205,0.2)",
+              strokeColor: "rgba(151,187,205,1)",
+              pointColor: "rgba(151,187,205,1)",
+              pointStrokeColor: "#fff",
+              pointHighlightFill: "#fff",
+              pointHighlightStroke: "rgba(151,187,205,1)",
+              data: #{visits_data[:visits].to_json}
+          }
+      ]
+  };
+  var ctx = document.getElementById("visits_chart").getContext("2d");
+  var myLineChart = new Chart(ctx).Line(data);
+
