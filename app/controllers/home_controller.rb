@@ -6,7 +6,8 @@ class HomeController < ApplicationController
   NOTES_RECENT_MAX = 5
 
   def index
-    @ontologies = LinkedData::Client::Models::Ontology.all
+    @ontologies = LinkedData::Client::Models::Ontology.all(include_views: true)
+    @ontologies_hash = Hash[@ontologies.map {|o| [o.acronym, o]}]
     @groups = LinkedData::Client::Models::Group.all
     @notes = LinkedData::Client::Models::Note.all
     @last_notes = []
@@ -46,10 +47,10 @@ class HomeController < ApplicationController
       @ri_resources = 0
       @ri_record_count = 0
     end
-    # TODO: Update stats for new RI
     @ri_stats = LinkedData::Client::ResourceIndex.annotation_counts
     @direct_annotations = @ri_stats[:total][:direct]
     @direct_expanded_annotations = @ri_stats[:total][:ancestors]
+    @analytics = LinkedData::Client::Analytics.last_month
   end
 
   def render_layout_partial
