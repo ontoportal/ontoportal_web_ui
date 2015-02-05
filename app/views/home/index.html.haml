@@ -87,7 +87,7 @@
           Ontology Visits #{"in full #{$SITE} " if at_slice?} (#{@analytics.date.strftime("%B %Y")})
         %table.minimal.align-right{width: "100%"}
           %tbody
-            -@analytics.onts[0..9].each do |visits|
+            -@analytics.onts[0..4].each do |visits|
               -ont = @ontologies_hash[visits[:ont].to_s]
               -binding.pry if ont.nil?
               %tr
