@@ -14,7 +14,7 @@
   var numberWithCommas = function(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-  Chart.defaults.global.scaleLabel = "<%=numberWithCommas(value)%>";
+  Chart.defaults.global.scaleLabel = "<%=' ' + numberWithCommas(value)%>";
 
   var data = {
       labels: #{visits_data[:labels][0..months_to_show-1].to_json},
