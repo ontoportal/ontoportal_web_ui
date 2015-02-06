@@ -1,0 +1,106 @@
+%link{type: "text/css", rel: "stylesheet", href: "/widgets/jquery.ncbo.tree.css"}
+%script{src: "/javascripts/bp_property_tree.js"}
+
+:css
+  #propTree a {
+    font-family: "Myriad Pro","Myriad Web Pro","Myriad Web","Myriad","Trebuchet MS","Tahoma","Helvetica","Arial",sans-serif;
+    font: small/1.231 arial,helvetica,clean,sans-serif;
+  }
+
+  #ont_properties .container {
+    background: none !important;
+  }
+
+#ont_properties.bd_content.explore
+  .sidebar
+    #prop_tree_content
+      %div#propTree
+
+    %div{style: "clear:both;"}
+
+  .container
+    #prop_contents
+    %div{style: "clear:both;"}
+
+%div{style: "clear: both;"}
+
+:plain
+  <script id="property-details" type="text/x-handlebars-template">
+    <div style="padding: 1%; width: 98%;">
+      <h2 style="font-size: 150%; margin: 0 10px 15px;">Property Details</h2>
+      <table cellpadding="0" cellspacing="0" class="minimal concept_details" width="100%">
+        {{#if label}}
+          <tr>
+            <td class="label">
+              Labels
+            </td>
+            <td>
+              <p>
+                {{label}}&nbsp;
+              </p>
+            </td>
+          </tr>
+        {{/if}}
+        {{#if definition}}
+          <tr>
+            <td class="label">
+              Definitions
+            </td>
+            <td>
+              <p>
+                {{definition}}&nbsp;
+              </p>
+            </td>
+          </tr>
+        {{/if}}
+        <tr>
+          <td class="label">ID</td>
+          <td>
+            <p>
+              {{id}}&nbsp;
+            </p>
+          </td>
+        </tr>
+        {{#if parents}}
+          <tr>
+            <td class="label">Parent</td>
+            <td>
+              <p>
+                {{parents}}&nbsp;
+              </p>
+            </td>
+          </tr>
+        {{/if}}
+      </table>
+    </div>
+  </script>
+
+:javascript
+  jQuery("#ont_properties").splitter({
+    sizeLeft: 400,
+    resizeToWidth: true
+  });
+
+  var content_width = jQuery("#ontology_content").width();
+  jQuery("#ont_properties").width(content_width);
+
+  var source = jQuery("#property-details").html();
+  var propDetailsTemp = Handlebars.compile(source);
+
+  $("#propTree").NCBOPropertyTree({
+    ontology: "#{@ontology.acronym}",
+    ncboUIURL: jQuery(document).data().bp.config.ui_url,
+    onInit: function() {
+      var ontPropTree = $("#propTree").data().NCBOPropertyTree;
+      var data = $("#propTree").find("a:first").data();
+      if (data !== null) {
+        ontPropTree.selectClass(data.id);
+        data.id = decodeURIComponent(data.id);
+        jQuery("#prop_contents").html(propDetailsTemp(data));
+      }
+    }
+  }).on("afterSelect", function (e, classId, label, node) {
+    var data = node.data();
+    data.id = decodeURIComponent(data.id);
+    jQuery("#prop_contents").html(propDetailsTemp(data));
+  });

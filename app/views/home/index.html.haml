@@ -84,9 +84,39 @@
     %td{:valign => "top"}
       %fieldset
         %legend
-          - views_month = t('most_viewed_date').empty? ? "" : "(#{t('most_viewed_date')})"
-          Most Viewed Ontologies #{"in full #{$SITE} " if at_slice?}
-        = t('most_viewed')
+          Ontology Visits #{"in full #{$SITE} " if at_slice?} (#{@analytics.date.strftime("%B %Y")})
+        %table.minimal.align-right{width: "100%"}
+          %tbody
+            -@analytics.onts[0..4].each do |visits|
+              -ont = @ontologies_hash[visits[:ont].to_s]
+              -binding.pry if ont.nil?
+              %tr
+                %td
+                  %a{href: "/ontologies/#{ont.acronym}"} #{ont.name} (#{ont.acronym})
+                %td= visits[:views]
+            %tr
+              %td{colspan: 2, style: "text-align: right;"}
+                %a{href: "#ont_views", rel: "facebox"} More
+        :css
+          #bd #ont_views {
+            left: -99999px;
+            position: absolute;
+          }
+        %div#ont_views
+          %h2 Visits for #{@analytics.date.strftime("%B %Y")}
+          %table.minimal.align-right{width: "800px"}
+            %tbody
+              - count = 0
+              - @analytics.onts.each do |visits|
+                - ont = @ontologies_hash[visits[:ont].to_s]
+                - next if ont.nil?
+                - count += 1
+                %tr
+                  %td
+                    #{count}.
+                    %a{href: "/ontologies/#{ont.acronym}"} #{ont.name} (#{ont.acronym})
+                  %td= visits[:views]
+
       - if t('stats').nil? || t('stats').empty?
         %fieldset
           %legend
@@ -105,12 +135,12 @@
               %tr
                 %td Indexed Records
                 %td= number_with_delimiter(@ri_record_count, :delimiter => ",")
-              /%tr
-              /  %td Direct Annotations
-              /  %td= number_with_delimiter(@direct_annotations, :delimiter => ",")
-              /%tr
-              /  %td Direct Plus Expanded Annotations
-              /  %td= number_with_delimiter(@direct_expanded_annotations, :delimiter => ",")
+              %tr
+                %td Direct Annotations
+                %td= number_with_delimiter(@direct_annotations, :delimiter => ",")
+              %tr
+                %td Direct Plus Expanded Annotations
+                %td= number_with_delimiter(@direct_expanded_annotations, :delimiter => ",")
       - else
         %fieldset
           = t('stats')

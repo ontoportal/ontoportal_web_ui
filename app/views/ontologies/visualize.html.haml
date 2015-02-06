@@ -6,8 +6,6 @@
       {type:'css',src:'/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css'},
       {type:'js',src:'/javascripts/JqueryPlugins/autocomplete/crossdomain_autocomplete.js?nocache=20120302'},
       {type:'js',src:'/javascripts/jquery.tools.min.js'},
-      {type:'js',src:'/javascripts/JqueryPlugins/jquery-cookie-1.4.0/jquery.cookie.js'},
-      {type:'js',src:'/javascripts/JqueryPlugins/splitter/splitter.js'},
       {type:'js',src:'/javascripts/bp_mappings.js'}
     ]);
 
@@ -247,8 +245,8 @@
     });
 
   .tooltip
-  #bd_content.explore
-    #sidebar
+  #bd_content.bd_content.explore
+    .sidebar
       #qsearch
         Jump To:
         %input#search_box{:size => "30", :type => "textbox"}/
@@ -263,7 +261,7 @@
 
     - if @concept.id.eql?("bp_fake_root")
       / When we have an ontology with a flat hierarchy, we initially disable the tabs because we don't have a class to display
-      #container
+      .container
         #fake_tabs.tabs
           %ul
             %li#details_top.selected.first{:onclick => "return false;"}
@@ -320,7 +318,7 @@
           #mappings_content.tab_container.not_visible
           #resource_index_content.tab_container.not_visible.resource_index_embed
     - else
-      #container
+      .container
         .tabs
           %ul
             %li#details_top.selected.tab.first

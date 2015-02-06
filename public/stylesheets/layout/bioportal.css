@@ -267,17 +267,17 @@ h1 a:hover, h2 a:hover {
   padding: 0 1em 1em;
 }
 
-#bd #bd_content {
+#bd .bd_content {
   display:block;
   float:left;
   padding-left:25px;
 }
-#bd #bd_content.explore {
+#bd .bd_content.explore {
   width:95%;
   border-top:1px solid #e9eaeb;
   padding-left:0;
 }
-#sidebar {
+.sidebar {
   float:left;
   width:25%;
   font-size:90%;
@@ -286,7 +286,7 @@ h1 a:hover, h2 a:hover {
   height:600px;
   min-width:250px;
 }
-#sidebar #sd_hd {
+.sidebar #sd_hd {
   background:#dadde0;
   height:24px;
   border-bottom:1px solid #bcc6d0;
@@ -294,11 +294,11 @@ h1 a:hover, h2 a:hover {
   float:left;
   width:100%;
 }
-#sidebar #sd_hd h2 {
+.sidebar #sd_hd h2 {
   padding:5px 0 0 25px;
   font-weight:normal;
 }
-#sidebar #sd_content {
+.sidebar #sd_content {
   display:block;
   overflow:auto;
   float:left;
@@ -308,7 +308,7 @@ h1 a:hover, h2 a:hover {
   border-bottom: #D3D3D3 thick solid;
 }
 
-#sidebar .sd_max_height {
+.sidebar .sd_max_height {
   max-height:600px;
 }
 
@@ -323,43 +323,43 @@ h1 a:hover, h2 a:hover {
   border-right:1px solid #ccc;
   border-left:1px solid #ccc;
 }
-#sidebar #sd_ft {
+.sidebar #sd_ft {
   float:left;
   width:300px;
   color:#7f7f7f;
 }
-#sidebar #sd_ft p {
+.sidebar #sd_ft p {
   padding:5px 0 0 25px;
 }
-#bd #bd_content #container {
+#bd .bd_content .container {
   position:relative;
   background:url("/images/layout/subnav_bg.png") repeat-x;
   width: 75%;
   min-width: 400px;
   float: left;
 }
-#bd #bd_content #container .tabs {
+#bd .bd_content .container .tabs {
   height:24px;
   float:left;
 }
-#bd #bd_content #container .tabs ul {
+#bd .bd_content .container .tabs ul {
   margin:0;
   float:left;
 }
-#bd #bd_content #container .tabs li {
+#bd .bd_content .container .tabs li {
   margin:0;
 }
-#bd #bd_content #container .tabs li.first {
+#bd .bd_content .container .tabs li.first {
   padding-left:0;
 }
-#bd #bd_content #container .tabs a {
+#bd .bd_content .container .tabs a {
   padding:5px 15px 0 15px;
 }
-#bd #bd_content #container #contents {
+#bd .bd_content .container #contents {
   float:left;
   /* padding:10px; */
   width:100%;
-  max-height:600px; /* match #sidebar.sd_max_height */
+  max-height:600px; /* match .sidebar.sd_max_height */
   overflow: auto;
 }
 

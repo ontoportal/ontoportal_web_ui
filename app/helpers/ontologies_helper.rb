@@ -112,5 +112,20 @@ module OntologiesHelper
     return "<a href='#{ont_url}/?p=#{page_name}'>#{link_name}</a>"
   end
 
+  def visits_data
+    return @visits_data if @visits_data
+    visits_data = {visits: [], labels: []}
+    years = @analytics[@ontology.acronym.to_sym].to_h.keys.map {|e| e.to_s.to_i}.select {|e| e > 0}.sort
+    now = Time.now
+    years.each do |year|
+      months = @analytics[@ontology.acronym.to_sym].to_h[year.to_s.to_sym].to_h.keys.map {|e| e.to_s.to_i}.select {|e| e > 0}.sort
+      months.each do |month|
+        next if now.year == year && now.month <= month || (year == 2013 && month < 10) # we don't have good data going back past Oct 2013
+        visits_data[:visits] << @analytics[@ontology.acronym.to_sym].to_h[year.to_s.to_sym][month.to_s.to_sym]
+        visits_data[:labels] << DateTime.parse("#{year}/#{month}").strftime("%b %Y")
+      end
+    end
+    @visits_data = visits_data
+  end
 
 end

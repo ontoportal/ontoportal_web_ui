@@ -62,6 +62,10 @@
 = javascript_include_tag "jquery.rating.pack.js"
 = javascript_include_tag "/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.min.js"
 = javascript_include_tag "/javascripts/JqueryPlugins/superfish/superfish.js"
+= javascript_include_tag "/javascripts/JqueryPlugins/jquery-cookie-1.4.0/jquery.cookie.js"
+= javascript_include_tag "/javascripts/JqueryPlugins/splitter/splitter.js"
+= javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"
+= javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1/Chart.min.js"
 
 
 %div{:style => "padding: 1em 2em 0; background: #234979;"}
@@ -95,6 +99,8 @@
         - unless @ontology.summaryOnly
           %li#classes_link.classes_link.nav_link
             %a{"data-bp_ont_page" => "classes", :href => "/ontologies/#{@ontology.acronym}?p=classes"} Classes
+          %li#properties_link.properties_link.nav_link
+            %a{"data-bp_ont_page" => "properties", :href => "/ontologies/#{@ontology.acronym}?p=properties"} Properties
         %li#notes_link.notes_link.nav_link
           %a{"data-bp_ont_page" => "notes", :href => "/ontologies/#{@ontology.acronym}?p=notes"} Notes
         - unless @ontology.summaryOnly
@@ -117,6 +123,13 @@
       - if content_section.eql?("classes")
         :javascript
           jQuery("#ont_classes_content").removeClass("hidden");
+        = yield
+      - else
+        = loading_spinner(true)
+    #ont_properties_content.ontology_viewer_content.hidden
+      - if content_section.eql?("properties")
+        :javascript
+          jQuery("#ont_properties_content").removeClass("hidden");
         = yield
       - else
         = loading_spinner(true)
