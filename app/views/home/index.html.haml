@@ -89,7 +89,6 @@
           %tbody
             -@analytics.onts[0..4].each do |visits|
               -ont = @ontologies_hash[visits[:ont].to_s]
-              -binding.pry if ont.nil?
               %tr
                 %td
                   %a{href: "/ontologies/#{ont.acronym}"} #{ont.name} (#{ont.acronym})
