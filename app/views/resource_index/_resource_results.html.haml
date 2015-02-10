@@ -1,6 +1,6 @@
 %div.element_results{:id => "#{@acronym}_results"}
   -resource_data = @resources_hash[@acronym]
-  -resource_url = resource_data.include?(:lookupURL) ? resource_data[:lookupURL] : "" rescue binding.pry
+  -resource_url = resource_data.include?(:lookupURL) ? resource_data[:lookupURL] : ""
   -@resource_results.each do |document|
     -element_id = document['documentId']
     // this gsub generates: active_support/core_ext/string/output_safety.rb:22: warning: regexp match /.../n against to UTF-8 string
