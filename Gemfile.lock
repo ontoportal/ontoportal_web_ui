@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: f89f79d197c98974da370969cac6bfa1477bbc24
+  revision: 697a9b21fba9844f620f427ce2c2b2b3c1399644
   specs:
     ontologies_api_client (0.0.6)
       activesupport (<= 3.0)
