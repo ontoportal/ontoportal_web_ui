@@ -61,8 +61,10 @@ function get_annotations() {
     params.text = jQuery("#annotation_text").val();
     params.max_level = jQuery("#max_level").val();
     params.ontologies = (ont_select.val() === null) ? [] : ont_select.val();
-
     params.longest_only = jQuery("#longest_only").is(':checked');
+    params.exclude_numbers = jQuery("#exclude_numbers").is(':checked');
+    params.whole_word_only = jQuery("#whole_word_only").is(':checked');
+    params.exclude_synonyms = jQuery("#exclude_synonyms").is(':checked');
 
     // UI checkbox to control using the batch call in the controller.
     params.raw = true; // do not use batch call to resolve class prefLabel and ontology names.

@@ -21,12 +21,19 @@
     %p
       = check_box_tag :longest_only, :all, false, :id => "longest_only"
       = label_tag :longest_only, "Match Longest Only"
-
       &nbsp;&nbsp;
-
       / TODO: When the REST API supports different mapping types, revise this section of the UI.
       = check_box_tag :mappings, :all, false, :id => "mappings_all"
       = label_tag :mappings_all, "Include Mappings"
+    %p
+      = check_box_tag :exclude_numbers, :all, false, :id => "exclude_numbers"
+      = label_tag :exclude_numbers, "Exclude Numbers"
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      = check_box_tag :whole_word_only, :all, false, :id => "whole_word_only"
+      = label_tag :whole_word_only, "Match Partial Words"
+    %p
+      = check_box_tag :exclude_synonyms, :all, false, :id => "exclude_synonyms"
+      = label_tag :exclude_synonyms, "Exclude Synonyms"
     %p
       %b Include Ancestors Up To Level:
       &nbsp;&nbsp;
