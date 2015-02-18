@@ -78,6 +78,7 @@ class OntologiesController < ApplicationController
       end
       o[:class_count_formatted] = number_with_delimiter(o[:class_count], :delimiter => ",")
 
+      o[:id]               = ont.id
       o[:type]             = ont.viewOf.nil? ? "ontology" : "ontology_view"
       o[:show]             = ont.viewOf.nil? ? true : false # show ontologies only by default
       o[:reviews]          = reviews[ont.id] || []

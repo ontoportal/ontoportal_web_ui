@@ -41,7 +41,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
   $scope.searchText = null;
   $scope.ontIndex = lunr(function() {
     this.field('acronym', 100);
-    this.field('title', 50);
+    this.field('name', 50);
     this.field('description');
     this.ref('id');
   });
@@ -50,7 +50,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
     $scope.ontIndex.add({
       id: ont.id,
       acronym: ont.acronym,
-      title: ont.title,
+      name: ont.name,
       description: ont.description
     })
   });
