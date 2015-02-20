@@ -1,50 +1,82 @@
-# Settings specified here will take precedence over those in config/environment.rb
+BioportalWebUi::Application.configure do
+  # Settings specified here will take precedence over those in config/application.rb
 
-# The production environment is meant for finished, "live" apps.
-# Code is not reloaded between requests
-config.cache_classes = true
+  # Code is not reloaded between requests
+  config.cache_classes = true
 
-# Use a different logger for distributed setups
-# config.logger = SyslogLogger.new
+  # Full error reports are disabled and caching is turned on
+  config.consider_all_requests_local       = false
+  config.action_controller.perform_caching = true
 
-# enable json logging format.  Useful for logstash
-require 'rackstash'
-config.rackstash.enabled = true
-config.rackstash.tags = ['ruby', 'rails2']
+  # Disable Rails's static asset server (Apache or nginx will already do this)
+  config.serve_static_assets = false
 
-# Full error reports are disabled and caching is turned on
-config.action_controller.consider_all_requests_local = false
-config.action_controller.perform_caching             = true
+  # Compress JavaScripts and CSS
+  config.assets.compress = true
 
-# Add custom data attributes to sanitize allowed list
-config.action_view.sanitized_allowed_attributes = 'id', 'class', 'style', 'data-cls', 'data-ont'
+  # Don't fallback to assets pipeline if a precompiled asset is missed
+  config.assets.compile = false
 
-# Enable serving of images, stylesheets, and javascripts from an asset server
-# config.action_controller.asset_host                  = "http://assets.example.com"
+  # Generate digests for assets URLs
+  config.assets.digest = true
 
-# Disable delivery errors, bad email addresses will be ignored
-# config.action_mailer.raise_delivery_errors = false
+  # Defaults to nil and saved in location specified by config.assets.prefix
+  # config.assets.manifest = YOUR_PATH
 
-# memcache setup
-config.cache_store = :mem_cache_store, 'localhost', { :namespace => 'BioPortal' }
+  # Specifies the header that your server uses for sending files
+  # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for apache
+  # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
 
-begin
-   PhusionPassenger.on_event(:starting_worker_process) do |forked|
-     if forked
-       # We're in smart spawning mode, so...
-       # Close duplicated memcached connections - they will open themselves
-      cache = Rails.cache.instance_variable_get("@data")
-      cache.reset if cache && cache.respond_to?(:reset)
-     end
-   end
-rescue NameError
-  # In case you're not running under Passenger (i.e. devmode with mongrel)
+  # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
+  # config.force_ssl = true
+
+  # See everything in the log (default is :info)
+  # config.log_level = :debug
+
+  # Prepend all log lines with the following tags
+  # config.log_tags = [ :subdomain, :uuid ]
+
+  # Use a different logger for distributed setups
+  # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
+
+  # Use a different cache store in production
+  # config.cache_store = :mem_cache_store
+
+  # Enable serving of images, stylesheets, and JavaScripts from an asset server
+  # config.action_controller.asset_host = "http://assets.example.com"
+
+  # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
+  # config.assets.precompile += %w( search.js )
+
+  # Disable delivery errors, bad email addresses will be ignored
+  # config.action_mailer.raise_delivery_errors = false
+
+  # Enable threaded mode
+  # config.threadsafe!
+
+  # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
+  # the I18n.default_locale when a translation can not be found)
+  config.i18n.fallbacks = true
+
+  # Send deprecation notices to registered listeners
+  config.active_support.deprecation = :notify
+
+  # Log the query plan for queries taking more than this (works
+  # with SQLite, MySQL, and PostgreSQL)
+  # config.active_record.auto_explain_threshold_in_seconds = 0.5
+
+  # memcache setup
+  config.cache_store = :mem_cache_store, 'localhost', { :namespace => 'BioPortal' }
+
+  # Include the BioPortal-specific configuration options
+  require RAILS_ROOT + '/config/bioportal_config.rb'
+
+  # Add custom data attributes to sanitize allowed list
+  ActionView::Base.sanitized_allowed_tags = 'id', 'class', 'style', 'data-cls', 'data-ont'
+
+  # TODO: Fix this?
+  # enable json logging format.  Useful for logstash
+  # require 'rackstash'
+  # config.rackstash.enabled = true
+  # config.rackstash.tags = ['ruby', 'rails2']  
 end
-
-# Don't allow downloaded files to be created as tempfiles. Force storage in memory using StringIO.
-require 'open-uri'
-OpenURI::Buffer.send :remove_const, 'StringMax' if OpenURI::Buffer.const_defined?('StringMax')
-OpenURI::Buffer.const_set 'StringMax', 104857600
-
-# Include the BioPortal-specific configuration options
-require RAILS_ROOT + '/config/bioportal_config.rb'
