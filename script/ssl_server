@@ -22,7 +22,7 @@ options = {
   :Port            => 443,
   :Host            => "0.0.0.0",
   :environment     => (ENV['RAILS_ENV'] || "development").dup,
-  :config          => RAILS_ROOT + "/config.ru",
+  :config          => Rails.root + "/config.ru",
   :detach          => false,
   :debugger        => false,
   :path            => nil,
@@ -58,12 +58,12 @@ puts "=> Booting #{ActiveSupport::Inflector.demodulize(server)}"
 puts "=> Rails #{Rails.version} application starting on http://#{options[:Host]}:#{options[:Port]}#{options[:path]}"
 
 %w(cache pids sessions sockets).each do |dir_to_make|
-  FileUtils.mkdir_p(File.join(RAILS_ROOT, 'tmp', dir_to_make))
+  FileUtils.mkdir_p(Rails.root.join('tmp', dir_to_make))
 end
 
 if options[:detach]
   Process.daemon
-  pid = "#{RAILS_ROOT}/tmp/pids/server.pid"
+  pid = "#{Rails.root}/tmp/pids/server.pid"
   File.open(pid, 'w'){ |f| f.write(Process.pid) }
   at_exit { File.delete(pid) if File.exist?(pid) }
 end
@@ -84,7 +84,7 @@ if File.exist?(options[:config])
     inner_app = Object.const_get(File.basename(config, '.rb').capitalize)
   end
 else
-  require RAILS_ROOT + "/config/environment"
+  require Rails.root.join('config', 'environment')
   inner_app = ActionController::Dispatcher.new
 end
 
