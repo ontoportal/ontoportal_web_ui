@@ -59,8 +59,8 @@ class LOG
   end
 
   def self.local(level, message)
-    if defined? RAILS_DEFAULT_LOGGER
-      RAILS_DEFAULT_LOGGER.send(level, message)
+    if defined? Rails.logger
+      Rails.logger.send(level, message)
     else
       p "#{level} || #{message}"
     end
