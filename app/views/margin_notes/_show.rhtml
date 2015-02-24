@@ -46,7 +46,7 @@ javascripts = "resetNoteForm(#{uniq});"
 <%# need seperate forms for if its a modal window%>
 <% if @modal%>
 <div id="modal_comment" name="forms">	
-<% form_for(:margin_note, :url => margin_notes_path,:html=>{:onsubmit=>"ajaxForm(this,'#modal_notes',function(){jQuery('#modal_form').html('');});return false;"}) do |f| %>
+<%= form_for(:margin_note, :url => margin_notes_path,:html=>{:onsubmit=>"ajaxForm(this,'#modal_notes',function(){jQuery('#modal_form').html('');});return false;"}) do |f| %>
 	<%=hidden_field 'margin_note', 'concept_id'%>
 	<%unless @ontology.nil?%>
 		<%=hidden_field 'margin_note', 'ontology_version_id', :value=>@ontology.id%>
@@ -85,7 +85,7 @@ javascripts = "resetNoteForm(#{uniq});"
 </div>
 <%else%>
 <div id="commentForm" name="forms">	
-<% form_for(:margin_note, :url => margin_notes_path,:html=>{:onsubmit=>"ajaxForm(this,'#notes',tb_remove());return false;"}) do |f| %>
+<%= form_for(:margin_note, :url => margin_notes_path,:html=>{:onsubmit=>"ajaxForm(this,'#notes',tb_remove());return false;"}) do |f| %>
 	<%=hidden_field 'margin_note', 'concept_id'%>
 	<%unless @ontology.nil?%>
 		<%=hidden_field 'margin_note', 'ontology_version_id', :value=>@ontology.id%>

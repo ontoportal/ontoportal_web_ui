@@ -25,7 +25,7 @@
 
       <br/>
 
-      <% form_tag "/users/submit_license" do %>
+      <%= form_tag "/users/submit_license" do %>
         <%= hidden_field_tag :ontologylicense, @ontology.ontologyId%>
         <%= text_area_tag :ontologylicensetext, "", :rows => 7, :style => "width: 500px;"%><br/>
         <br/>

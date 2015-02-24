@@ -9,7 +9,7 @@
   });
 </script>
 
-<% form_for(:review, :url=>review_path(@review), :html=>{:onsubmit=>"ajaxForm(this, '#review_table_container_#{@review.id}', editReview); return false;"}) do  %>
+<%= form_for(:review, :url=>review_path(@review), :html=>{:onsubmit=>"ajaxForm(this, '#review_table_container_#{@review.id}', editReview); return false;"}) do  %>
 
 <input type="hidden" value="put" name="_method"/>
 <%=hidden_field :review,:ontology_id%>
