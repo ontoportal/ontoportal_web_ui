@@ -38,5 +38,3 @@ config.ru
 
 .tags_sorted_by_file
 
-*.rails2
-vendor/plugins/rails_upgrade
