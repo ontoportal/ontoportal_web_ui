@@ -50,7 +50,7 @@ gem "will_paginate", "~> 3.0"
 gem "rdoc"
 gem "rack-mini-profiler"
 gem 'cube-ruby', require: 'cube'
-
+gem 'calendar_date_select'
 gem 'oj'
 gem 'multi_json'
 
