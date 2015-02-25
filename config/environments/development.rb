@@ -43,5 +43,5 @@ BioportalWebUi::Application.configure do
   config.cache_store.logger = Logger.new("/dev/null") if config.cache_store.respond_to?(:logger)
 
   # Include the BioPortal-specific configuration options
-  require Rails.root + '/config/bioportal_config.rb'
+  require Rails.root.join('config', 'bioportal_config.rb')
 end
