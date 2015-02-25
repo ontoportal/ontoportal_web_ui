@@ -17,7 +17,7 @@
 
 <div id="form" style="display:none;clear:both;">
 <div id="proposalForm" name="forms">
-<%= remote_form_for(:margin_note, :url => margin_notes_path,:update =>"notes",:complete=>"document.getElementById('form').style.display='none';document.getElementById('buttons').style.display='';") do |f| %>
+<%= form_for(:margin_note, :url => margin_notes_path, :update => "notes", :complete => "document.getElementById('form').style.display='none';document.getElementById('buttons').style.display='';", :remote => true) do |f| %>
 	<%=hidden_field 'margin_note', 'concept_id'%>
 	<%unless @ontology.nil?%>
 	<%=hidden_field 'margin_note', 'ontology_id', :value=>@ontology.name%>
@@ -53,7 +53,7 @@
 <%end%>
 
 <div id="commentForm" name="forms">
-	<%= remote_form_for(:margin_note, :url => margin_notes_path,:update =>"notes",:complete=>"document.getElementById('form').style.display='none';document.getElementById('buttons').style.display='';") do |f| %>
+	<%= form_for(:margin_note, :url => margin_notes_path, :update => "notes", :complete => "document.getElementById('form').style.display='none';document.getElementById('buttons').style.display='';", :remote => true) do |f| %>
 	<%=hidden_field 'margin_note', 'concept_id'%>
 	<%unless @ontology.nil?%>
 	<%=hidden_field 'margin_note', 'ontology_id', :value=>@ontology.id%>
