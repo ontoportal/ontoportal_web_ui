@@ -17,7 +17,7 @@ class VirtualApplianceController < ApplicationController
       @virtual_appliance_access = true
     end
 
-    users_with_access = VirtualApplianceUser.find(:all)
+    users_with_access = VirtualApplianceUser.all
     @users_with_access = []
     users_with_access.each do |user|
       @users_with_access << LinkedData::Client::Models::User.find(user.user_id)
