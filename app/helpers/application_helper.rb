@@ -407,7 +407,7 @@ module ApplicationHelper
     user = session[:user] if user.nil?
     if user.nil?
       # subscribe button must redirect to login
-      return sanitize("<a href='/login?redirect=#{request.request_uri}' style='font-size: .9em;' class='subscribe_to_ontology'>Subscribe</a>")
+      return sanitize("<a href='/login?redirect=#{request.url}' style='font-size: .9em;' class='subscribe_to_ontology'>Subscribe</a>")
     end
     # Init subscribe button parameters.
     sub_text = "Subscribe"
