@@ -78,7 +78,7 @@
       <% if !help_text.nil? && !help_text.empty? %>
 
         <div id="wiki_text">
-          <%= help_text %>
+          <%= help_text.html_safe %>
         </div>
 
       <%else%>
