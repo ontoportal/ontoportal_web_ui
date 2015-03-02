@@ -1,12 +1,12 @@
 <script>
-  jQuery(document).data().bp.ontologies = <%=MultiJson.dump(@ontologies)%>;
-  jQuery(document).data().bp.categories = <%=MultiJson.dump(@categories)%>;
-  jQuery(document).data().bp.categories_hash = <%=MultiJson.dump(@categories_hash)%>;
-  jQuery(document).data().bp.groups = <%=MultiJson.dump(@groups)%>;
-  jQuery(document).data().bp.groups_hash = <%=MultiJson.dump(@groups_hash)%>;
-  jQuery(document).data().bp.formats = <%=MultiJson.dump(@formats)%>;
-  jQuery(document).data().bp.admin = <%=MultiJson.dump(@admin)%>;
-  jQuery(document).data().bp.development = <%=MultiJson.dump(@development)%>;
+  jQuery(document).data().bp.ontologies = <%=MultiJson.dump(@ontologies).html_safe%>;
+  jQuery(document).data().bp.categories = <%=MultiJson.dump(@categories).html_safe%>;
+  jQuery(document).data().bp.categories_hash = <%=MultiJson.dump(@categories_hash).html_safe%>;
+  jQuery(document).data().bp.groups = <%=MultiJson.dump(@groups).html_safe%>;
+  jQuery(document).data().bp.groups_hash = <%=MultiJson.dump(@groups_hash).html_safe%>;
+  jQuery(document).data().bp.formats = <%=MultiJson.dump(@formats).html_safe%>;
+  jQuery(document).data().bp.admin = <%=MultiJson.dump(@admin).html_safe%>;
+  jQuery(document).data().bp.development = <%=MultiJson.dump(@development).html_safe%>;
 </script>
 
 <link href="font/whhg.css"rel="stylesheet" type="text/css" media="all" />
