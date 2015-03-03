@@ -75,6 +75,11 @@ GEM
     execjs (2.3.0)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
+    fast_stack (0.1.0)
+      rake
+      rake-compiler
+    flamegraph (0.1.0)
+      fast_stack
     haml (4.0.6)
       tilt
     hike (1.2.3)
@@ -130,6 +135,8 @@ GEM
       thor (>= 0.14.6, < 2.0)
     raindrops (0.13.0)
     rake (10.4.2)
+    rake-compiler (0.9.5)
+      rake
     rdoc (3.12.2)
       json (~> 1.4)
     recaptcha (0.3.4)
@@ -172,6 +179,7 @@ DEPENDENCIES
   calendar_date_select
   coffee-rails (~> 3.2.1)
   cube-ruby
+  flamegraph
   haml (~> 4.0.0)
   hpricot (~> 0.8.6)
   i18n (~> 0)
