@@ -114,6 +114,7 @@ module OntologiesHelper
   end
 
   def visits_data
+    return nil unless @analytics && @analytics[@ontology.acronym.to_sym]
     return @visits_data if @visits_data
     visits_data = {visits: [], labels: []}
     years = @analytics[@ontology.acronym.to_sym].to_h.keys.map {|e| e.to_s.to_i}.select {|e| e > 0}.sort
