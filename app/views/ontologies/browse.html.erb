@@ -27,7 +27,7 @@
   <h1 style="font-size: 3em;">Browse</h1>
   <p>
     <%intro_text = "Browse the library of ontologies"%>
-    <%= t('ontologies.intro').nil? || t('ontologies.intro').empty? ? "#{intro_text}  #{help_icon("/help#Browse_Tab")}" : t('ontologies.intro')%>
+    <%= t('ontologies.intro').html_safe.nil? || t('ontologies.intro').html_safe.empty? ? "#{intro_text}  #{help_icon("/help#Browse_Tab")}".html_safe : t('ontologies.intro').html_safe%>
   </p>
 
   <div ng-controller="OntologyList">
