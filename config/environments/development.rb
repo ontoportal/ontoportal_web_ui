@@ -36,8 +36,7 @@ BioportalWebUi::Application.configure do
   config.assets.debug = true
 
   # memcache setup
-  config.cache_store = ActiveSupport::Cache::MemoryStore.new
-  # config.cache_store = ActiveSupport::Cache::MemCacheStore.new('localhost', namespace: 'BioPortal')
+  config.cache_store = ActiveSupport::Cache::MemCacheStore.new('localhost', namespace: 'BioPortal')
 
   # silence cache output
   config.cache_store.logger = Logger.new("/dev/null") if config.cache_store.respond_to?(:logger)
