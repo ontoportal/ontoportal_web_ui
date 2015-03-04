@@ -71,7 +71,7 @@ GEM
     coffee-script-source (1.9.1)
     cube-ruby (0.0.3)
     erubis (2.7.0)
-    excon (0.44.3)
+    excon (0.44.4)
     execjs (2.3.0)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
@@ -100,7 +100,7 @@ GEM
     memcache-client (1.8.5)
     method_source (0.8.2)
     mime-types (1.25.1)
-    multi_json (1.10.1)
+    multi_json (1.11.0)
     multipart-post (2.0.0)
     mysql (2.8.1)
     oj (2.11.5)
@@ -126,6 +126,8 @@ GEM
       activesupport (= 3.2.21)
       bundler (~> 1.0)
       railties (= 3.2.21)
+    rails_autolink (1.1.6)
+      rails (> 3.1)
     railties (3.2.21)
       actionpack (= 3.2.21)
       activesupport (= 3.2.21)
@@ -195,6 +197,7 @@ DEPENDENCIES
   rack-mini-profiler
   rackstash!
   rails (= 3.2.21)
+  rails_autolink
   rdoc
   recaptcha (= 0.3.4)
   rest-client (~> 1.6.1)
