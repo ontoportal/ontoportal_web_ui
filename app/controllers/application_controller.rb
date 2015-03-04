@@ -272,8 +272,8 @@ class ApplicationController < ActionController::Base
 
   # rack-mini-profiler authorization
   def authorize_miniprofiler
-    if params[:enable_profiler] && params[:enable_profiler].eql?("true")
-      Rack::MiniProfiler.authorize_request if session[:user] && session[:user].admin?
+    if params[:enable_profiler] && params[:enable_profiler].eql?("true") && session[:user] && session[:user].admin?
+      Rack::MiniProfiler.authorize_request
     else
       Rack::MiniProfiler.deauthorize_request
     end
