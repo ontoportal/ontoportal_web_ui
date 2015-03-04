@@ -91,10 +91,10 @@
                   = descShort
           / Contacts
           %td{:style => "vertical-align:top;", :width => "10%"}
-            = project.contacts
+            = raw project.contacts
           / Institutions
           %td{:style => "vertical-align:top;", :width => "8%"}
-            = project.institution
+            = raw project.institution
           / Ontologies
           %td{:style => "vertical-align:top;", :width => "2%"}
             - ontologyCount = 0
