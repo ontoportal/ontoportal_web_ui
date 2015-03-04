@@ -171,8 +171,7 @@
         %table.minimal{:style => "width:100%"}
           %tbody
             - mappings = @recent_mappings[:mappings]
-            - classes = @recent_mappings[:classes]
-            - if mappings.nil? || classes.nil? || mappings.empty? || classes.empty?
+            - if mappings.nil? || mappings.empty?
               No recent mappings have been submitted
             - else
               - good_count = 0
@@ -180,12 +179,13 @@
                 - break if good_count == 5
                 - begin
                   - # map.classes might contain more than two items, use first and last.
-                  - clsA = classes[map.classes.first.id] || nil
-                  - clsB = classes[map.classes.last.id] || nil
+                  - clsA = map.classes.first
+                  - clsB = map.classes.last
+                  - next unless clsA.prefLabel && clsB.prefLabel
                   - raise "UI-view error for recent mapping class #{map.classes.first.id}" if clsA.nil?
                   - raise "UI-view error for recent mapping class #{map.classes.last.id}" if clsB.nil?
-                  - ontA = clsA[:ontology] && clsA[:ontology][:acronym] || nil
-                  - ontB = clsB[:ontology] && clsB[:ontology][:acronym] || nil
+                  - ontA = clsA.explore.ontology
+                  - ontB = clsB.explore.ontology
                   - raise "UI-view error for recent mapping ontology #{clsA[:ontology]}" if ontA.nil?
                   - raise "UI-view error for recent mapping ontology #{clsB[:ontology]}" if ontB.nil?
                   - mapProc = map.process
@@ -193,10 +193,10 @@
                   - good_count += 1
                   %tr
                     %td
-                      - mapStr = "#{clsA[:prefLabel]} (#{ontA}) <=> #{clsB[:prefLabel]} (#{ontB})"
+                      - mapStr = "#{clsA[:prefLabel]} (#{ontA.acronym}) <=> #{clsB[:prefLabel]} (#{ontB.acronym})"
                       -# Don't link to map.id, it is a linked-data URI.
                       -# Use a relative UI link to the first class in the mapping.
-                      - mapLnk = clsA[:ui].gsub(/^.*\/ontologies/,'/ontologies') + '#mappings'
+                      - mapLnk = clsA["links"]["ui"].gsub(/^.*\/ontologies/,'/ontologies') + '#mappings'
                       = link_to mapStr, mapLnk
                       %br/
                       %span{:style => "color:#AAAAAA"}
@@ -204,9 +204,9 @@
                         = xmldatetime_to_date(mapProc.date)
                         by
                         = mapProc.creator.gsub(/.*\//,'')
-                - rescue Exception => e
-                  - LOG.add :error, e.message
-                  - LOG.add :error, "Recent mapping: #{map.to_json}"
+                - rescue => e
+                  - LOG.add :error, e.message, e.backtrace.join("\n\t")
+                  - LOG.add :error, "Recent mapping: #{map.id}, classes: #{map.classes.map {|c| "#{c.ontology.acronym} #{c.id}" }.join(', ')}"
                   - next
 
 %script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.js", :type => "text/javascript"}
