@@ -25,6 +25,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :recommender
 
+  map.resources :recommender_v1
+
   map.resources :annotator
 
   map.resources :virtual_appliance
