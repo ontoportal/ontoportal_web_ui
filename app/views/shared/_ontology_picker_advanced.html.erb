@@ -1,10 +1,10 @@
 
 <script type="text/javascript">
 
-var abbreviationMap = <%= @onts_for_js.to_json.html_safe %>;
-var groupsMap = <%= @groups_for_js.to_json.html_safe %>;
-var categoriesMap = <%= @categories_for_js.to_json.html_safe %>;
-var ontsInGroupsOrCategories = <%= @onts_in_gp_or_cat_for_js.to_json.html_safe %>;
+var abbreviationMap = <%= @onts_for_js.html_safe %>;
+var groupsMap = <%= @groups_for_js.html_safe %>;
+var categoriesMap = <%= @categories_for_js.html_safe %>;
+var ontsInGroupsOrCategories = <%= @onts_in_gp_or_cat_for_js.html_safe %>;
 var winHeight = jQuery(window).height();
 var ontSelectListPos = { top: 0, left: 0, width: 0 };
 var allSelected = false;
