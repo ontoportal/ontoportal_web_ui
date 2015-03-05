@@ -5,7 +5,7 @@
 <% end %>
 
 <div style="margin:20px;">
-<%form_tag('/feedback') do%>
+<%= form_tag('/feedback') do%>
 <%=
     # Simulate form_for by providing a hidden field to check for submission
     hidden_field_tag 'sim_submit', 'true'
