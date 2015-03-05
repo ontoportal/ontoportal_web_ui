@@ -31,7 +31,7 @@ function getRecommendations() {
 
   jQuery.ajax({
     type: "POST",
-    url: "/recommender",
+    url: "/recommender_v1",
     data: params,
     dataType: "json",
     success: function(data) {
