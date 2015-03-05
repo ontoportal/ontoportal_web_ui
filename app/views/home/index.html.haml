@@ -34,7 +34,7 @@
 %table{:width => "100%"}
   %tr
     %td{:valign => "top", :width => "33%"}
-      - form_for(:search, :url => {:controller =>'search', :action=>'index'}, :html => { :method => :get }) do |f|
+      = form_for(:search, :url => {:controller =>'search', :action=>'index'}, :html => { :method => :get }) do |f|
         %fieldset
           %legend Search all ontologies
           %table
