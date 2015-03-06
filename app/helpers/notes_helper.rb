@@ -154,7 +154,7 @@ module NotesHelper
     end
     spinner = '<span class="notes_subscribe_spinner" style="display: none;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>'
     error = "<span style='color: red;' class='notes_sub_error'></span>"
-    return "<a href='javascript:void(0);' class='subscribe_to_notes link_button' #{params}>#{sub_text} to notes emails</a> #{spinner} #{error}"
+    return "<a href='javascript:void(0);' class='subscribe_to_notes link_button' #{params}>#{sub_text} to notes emails</a> #{spinner} #{error}".html_safe
   end
 
   def delete_button

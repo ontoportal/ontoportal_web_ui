@@ -40,10 +40,10 @@
                   (#{link_to "edit", edit_project_path(project)} |
                   \#{link_to 'delete', project, :confirm => 'Are you sure?', :method => :delete})
             %td{:style => "width: 200px;"}
-              .original_text= truncate(project.description, :length => 100, :separator => " ", :omission => "<a class='untruncate' href=''>...</a>")
-              .untruncated_text{:style => "display: none;"}= project.description
+              .original_text= truncate(project.description, :length => 100, :separator => " ", :omission => "<a class='untruncate' href=''>...</a>").html_safe
+              .untruncated_text{:style => "display: none;"}= project.description.html_safe
             %td
-              .original_text= truncate(project.contacts, :length => 50, :separator => " ", :omission => "<a class='untruncate' href=''>...</a>")
-              .untruncated_text{:style => "display: none;"}= project.contacts
+              .original_text= truncate(project.contacts, :length => 100, :separator => " ", :omission => "<a class='untruncate' href=''>...</a>").html_safe
+              .untruncated_text{:style => "display: none;"}= project.contacts.html_safe
             %td
               = project.institution
