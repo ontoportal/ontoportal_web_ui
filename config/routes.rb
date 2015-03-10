@@ -60,7 +60,7 @@ BioportalWebUi::Application.routes.draw do
 
   resources :projects
 
-  resources :users
+  resources :users, :as => :accounts, :requirements => { :id => /.+/ }
 
   resources :reviews
 
@@ -70,9 +70,9 @@ BioportalWebUi::Application.routes.draw do
 
   resources :concepts
 
-  resources :ontologies
-
-  resources :submissions
+  resources :ontologies do 
+    resources :submissions
+  end
 
   resources :login
 
