@@ -1,5 +1,6 @@
 <script>
-  jQuery(document).data().bp.ontologies = <%=MultiJson.dump(@ontologies)%>;
+  jQuery(document).data().bp.ontologies = <%=MultiJson.dump(@ontologies[0..19])%>;
+  jQuery(document).data().bp.fullOntologies = <%=MultiJson.dump(@ontologies)%>;
   jQuery(document).data().bp.categories = <%=MultiJson.dump(@categories)%>;
   jQuery(document).data().bp.categories_hash = <%=MultiJson.dump(@categories_hash)%>;
   jQuery(document).data().bp.groups = <%=MultiJson.dump(@groups)%>;

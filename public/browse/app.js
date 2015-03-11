@@ -10,9 +10,9 @@ config( ['$locationProvider', function ($locationProvider) {
 }])
 ;
 
-var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ngAnimate'])
+var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ngAnimate', 'pasvaz.bindonce'])
 
-.controller('OntologyList', ['$scope', '$animate', function($scope, $animate) {
+.controller('OntologyList', ['$scope', '$animate', '$timeout', function($scope, $animate, $timeout) {
   // Default values
   $scope.visible_ont_count = 0;
   $scope.ontology_sort_order = "-popularity";
@@ -301,6 +301,13 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
     }
     return ret;
   }
+
+
+  $scope.init = function() {
+    $scope.ontologies = jQuery(document).data().bp.fullOntologies;
+    filterOntologies();
+  }
+  $timeout($scope.init);
 
 }])
 
