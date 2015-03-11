@@ -132,7 +132,11 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
       filter: function(ontology) {
         var active = $scope.facets.upload_date.active;
         if (active == "" || active == "all")
+          if (!ontology.submission)
+            return false;
           return true;
+        if (!ontology.submission)
+          return false;
         var ontDate = new Date(ontology.creationDate);
         var compareDate = new Date();
         compareDate.setDate(compareDate.getDate() - active);
