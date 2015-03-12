@@ -78,7 +78,7 @@
                 / TODO_REV: Enable delete project for admins
               - if session[:user] && session[:user].admin?
                 &nbsp;&nbsp;
-                = link_to("Delete (admin only)", project_path(project.acronym), :confirm => "Are you sure?", :method => 'delete')
+                = link_to("Delete (admin only)", project_path(project.acronym), :method => :delete, :confirm => "Are you sure?")
           / Project description (may be truncated with a dialog)
           %td{:style => "vertical-align:top;", :width => "50%"}
             - if ! project.description.nil?
