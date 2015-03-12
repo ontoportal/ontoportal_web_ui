@@ -127,13 +127,13 @@
               - view_submissions.each_with_index do |view_sub, view_index|
                 %tr
                   %td
-                    = status_link(view_sub, view_sub.submissionId==view_sub_latestId)
+                    = raw status_link(view_sub, view_sub.submissionId==view_sub_latestId)
                   %td
                     = xmldatetime_to_date(view_sub.released)
                   %td
                     = xmldatetime_to_date(view_sub.creationDate)
                   %td
-                    = download_link(view_sub, view)
+                    = raw download_link(view_sub, view)
                   - if (view_index == 0) && viewAdmin
                     %td
                       - viewEditURL = "/ontologies/#{view.acronym}/submissions/#{view_sub.submissionId}/edit"
