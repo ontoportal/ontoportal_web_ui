@@ -26,26 +26,33 @@ class AnnotatorController < ApplicationController
     params[:ontologies] ||= []
     params[:semantic_types] ||= []
     text_to_annotate = params[:text].strip.gsub("\r\n", " ").gsub("\n", " ")
+
     options = { :ontologies => params[:ontologies],
-                :max_level => params[:max_level].to_i,
+                :class_hierarchy_max_level => params[:class_hierarchy_max_level].to_i,
+                :expand_class_hierarchy => params[:class_hierarchy_max_level].to_i > 0,
                 :semantic_types => params[:semantic_types],
                 :mappings => params[:mappings],
                 :longest_only => params[:longest_only],
-                # :wholeWordOnly => params[:wholeWordOnly] ||= true,  # service default is true
-                # :withDefaultStopWords => params[:withDefaultStopWords] ||= true,  # service default is true
+                :exclude_numbers => params[:exclude_numbers] ||= "false",  # service default is false
+                :whole_word_only => (params[:whole_word_only] == "true") ? "false" : "true",  # service default is true
+                :exclude_synonyms => params[:exclude_synonyms] ||= "false"  # service default is false
     }
+
     start = Time.now
     query = ANNOTATOR_URI
     query += "?text=" + CGI.escape(text_to_annotate)
     query += "&include=prefLabel"
-    query += "&max_level=" + options[:max_level].to_s
+    query += "&expand_class_hierarchy=true" if options[:class_hierarchy_max_level] > 0
+    query += "&class_hierarchy_max_level=" + options[:class_hierarchy_max_level].to_s if options[:class_hierarchy_max_level] > 0
     query += "&ontologies=" + CGI.escape(options[:ontologies].join(',')) unless options[:ontologies].empty?
     query += "&semantic_types=" + options[:semantic_types].join(',') unless options[:semantic_types].empty?
     query += "&mappings=" + options[:mappings].join(',') unless options[:mappings].empty?
     query += "&longest_only=#{options[:longest_only]}"
     query += "&recognizer=#{params[:recognizer]}"
-    #query += "&wholeWordOnly=" + options[:wholeWordOnly].to_s unless options[:wholeWordOnly].empty?
-    #query += "&withDefaultStopWords=" + options[:withDefaultStopWords].to_s unless options[:withDefaultStopWords].empty?
+    query += "&exclude_numbers=" + options[:exclude_numbers].to_s unless options[:exclude_numbers].empty?
+    query += "&whole_word_only=" + options[:whole_word_only].to_s unless options[:whole_word_only].empty?
+    query += "&exclude_synonyms=" + options[:exclude_synonyms].to_s unless options[:exclude_synonyms].empty?
+
     annotations = parse_json(query) # See application_controller.rb
     #annotations = LinkedData::Client::HTTP.get(query)
     LOG.add :debug, "Retrieved #{annotations.length} annotations: #{Time.now - start}s"

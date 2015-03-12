@@ -144,17 +144,12 @@ module ApplicationHelper
       id = root.children.first.id
     end
     # TODO: handle tree view for obsolete classes, e.g. 'http://purl.obolibrary.org/obo/GO_0030400'
-    build_tree(root, nil, "", id)  # returns a string, representing nested list items
+    build_tree(root, "", id)  # returns a string, representing nested list items
   end
 
-  def build_tree(node, parent, string, id)
+  def build_tree(node, string, id)
     if node.children.nil? || node.children.length < 1
       return string # unchanged
-    end
-    if parent.nil?
-      draw_root = ''
-    else
-      draw_root = ""  # this is no different, why?
     end
     node.children.sort! {|a,b| (a.prefLabel || a.id).downcase <=> (b.prefLabel || b.id).downcase}
     for child in node.children
@@ -182,12 +177,12 @@ module ApplicationHelper
       elsif child.id.eql?("bp_fake_root")
         string << "<li class='active' id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='#' #{active_style}>#{child.prefLabel}</a></li>"
       else
-        string << "<li #{open} #{draw_root} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.prefLabel({use_html: true})} #{icons}</a>"
+        string << "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.prefLabel({use_html: true})} #{icons}</a>"
         if child.childrenCount && child.childrenCount > 0 && !child.expanded?
           string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.childrenCount}'>ajax_class</a></li></ul>"
         elsif child.expanded?
           string << "<ul>"
-          build_tree(child,"child",string,id)
+          build_tree(child, string, id)
           string << "</ul>"
         end
         string << "</li>"

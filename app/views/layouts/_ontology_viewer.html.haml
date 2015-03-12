@@ -103,9 +103,9 @@
             %a{"data-bp_ont_page" => "properties", :href => "/ontologies/#{@ontology.acronym}?p=properties"} Properties
         %li#notes_link.notes_link.nav_link
           %a{"data-bp_ont_page" => "notes", :href => "/ontologies/#{@ontology.acronym}?p=notes"} Notes
-        %li#mappings_link.mappings_link.nav_link
-          %a{"data-bp_ont_page" => "mappings", :href => "/ontologies/#{@ontology.acronym}?p=mappings"} Mappings
         - unless @ontology.summaryOnly
+          %li#mappings_link.mappings_link.nav_link
+            %a{"data-bp_ont_page" => "mappings", :href => "/ontologies/#{@ontology.acronym}?p=mappings"} Mappings
           %li#widgets_link.widgets_link.nav_link
             %a{"data-bp_ont_page" => "widgets", :href => "/ontologies/#{@ontology.acronym}?p=widgets"} Widgets
         - if @ontology.admin?(session[:user])
