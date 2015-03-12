@@ -72,7 +72,7 @@ BioportalWebUi::Application.configure do
   require Rails.root + '/config/bioportal_config.rb'
 
   # Add custom data attributes to sanitize allowed list
-  ActionView::Base.sanitized_allowed_tags = 'id', 'class', 'style', 'data-cls', 'data-ont'
+  config.action_view.sanitized_allowed_attributes = ['id', 'class', 'style', 'data-cls', 'data-ont']
 
   # TODO: Fix this?
   # enable json logging format.  Useful for logstash

@@ -41,6 +41,9 @@ BioportalWebUi::Application.configure do
   # silence cache output
   config.cache_store.logger = Logger.new("/dev/null") if config.cache_store.respond_to?(:logger)
 
+  # Add custom data attributes to sanitize allowed list
+  config.action_view.sanitized_allowed_attributes = ['id', 'class', 'style', 'data-cls', 'data-ont']
+
   # Include the BioPortal-specific configuration options
   require Rails.root.join('config', 'bioportal_config.rb')
 end
