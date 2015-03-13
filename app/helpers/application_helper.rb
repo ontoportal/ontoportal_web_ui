@@ -144,7 +144,7 @@ module ApplicationHelper
       id = root.children.first.id
     end
     # TODO: handle tree view for obsolete classes, e.g. 'http://purl.obolibrary.org/obo/GO_0030400'
-    build_tree(root, "", id)  # returns a string, representing nested list items
+    raw build_tree(root, "", id)  # returns a string, representing nested list items
   end
 
   def build_tree(node, string, id)
@@ -195,9 +195,9 @@ module ApplicationHelper
   def loading_spinner(padding = false, include_text = true)
     loading_text = include_text ? " loading..." : ""
     if padding
-      '<div style="padding: 1em;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;">' + loading_text + '</div>'
+      raw('<div style="padding: 1em;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;">' + loading_text + '</div>')
     else
-      '<img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;">' + loading_text
+      raw('<img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;">' + loading_text)
     end
   end
 

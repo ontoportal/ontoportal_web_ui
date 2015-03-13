@@ -5,4 +5,4 @@
   - if child.childrenCount && child.childrenCount > 0
     - output << "<ul class='ajax'><li id='#{short_uuid}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.childrenCount}'>#{child.prefLabel}</a></li></ul>"
   - output << "</li>"
-= output
+= raw output
