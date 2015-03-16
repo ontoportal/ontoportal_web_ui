@@ -60,7 +60,7 @@ BioportalWebUi::Application.routes.draw do
 
   resources :projects
 
-  resources :users, :as => :accounts, :requirements => { :id => /.+/ }
+  resources :users, :path => :accounts, :requirements => { :id => /.+/ }
 
   resources :reviews
 
