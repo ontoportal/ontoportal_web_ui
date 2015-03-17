@@ -46,15 +46,6 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
     this.ref('id');
   });
 
-  angular.forEach($scope.ontologies, function(ont) {
-    $scope.ontIndex.add({
-      id: ont.id,
-      acronym: ont.acronym,
-      name: ont.name,
-      description: ont.description
-    })
-  });
-
   // Default setup for facets
   $scope.facets = {
     types: {
@@ -310,6 +301,14 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
   $scope.init = function() {
     $scope.ontologies = jQuery(document).data().bp.fullOntologies;
     filterOntologies();
+    angular.forEach($scope.ontologies, function(ont) {
+      $scope.ontIndex.add({
+        id: ont.id,
+        acronym: ont.acronym,
+        name: ont.name,
+        description: ont.description
+      })
+    });
   }
   $timeout($scope.init);
 
