@@ -43,20 +43,18 @@ label {
 }
 
 .optionsLinks {
-    width: 650px;
+    width: 610px;
     margin-left: 0px;
-    margin-top: 10px;
 }
 
-.optionsLinksLeft {
-   width: 60%;
-   float: left;
-}
-
-.optionsLinksRight {
-    width: 40%;
+.optionsLinksBottomRight {
     text-align: right;
-    float: right;
+    margin-top: -4px;
+}
+
+.optionsLinksTopRight {
+    text-align: right;
+    margin-bottom: 2px;
 }
 
 .optionsLinks a {
@@ -67,18 +65,25 @@ label {
 #inputText {
     box-shadow: 0 0 3px gray;
     padding: 5px;
-    width: 640px;
+    width: 600px;
     height: 200px;
+    margin-bottom: 0px;
 }
 
-#recommenderResults {
+#inputText.default {
+    color: gray;
+    font-style: oblique;
+}
+
+#inputTextHighlighted {
     color: #ccc;
     display:none;
     overflow-y:auto;
     box-shadow: 0 0 3px gray;
     padding: 5px;
-    width: 640px;
+    width: 600px;
     height: 200px;
+    margin-bottom: 6px;
 }
 
 .generalError, .invalidMaxOntError, .invalidWeightsError, .notTextError, .sumWeightsError, .rangeWeightsError, .maxOntologiesError {
