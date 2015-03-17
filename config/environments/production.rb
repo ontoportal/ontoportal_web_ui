@@ -69,7 +69,7 @@ BioportalWebUi::Application.configure do
   config.cache_store = :mem_cache_store, 'localhost', { :namespace => 'BioPortal' }
 
   # Include the BioPortal-specific configuration options
-  require Rails.root + '/config/bioportal_config.rb'
+  require Rails.root.join('config', 'bioportal_config.rb')
 
   # Add custom data attributes to sanitize allowed list
   config.action_view.sanitized_allowed_attributes = ['id', 'class', 'style', 'data-cls', 'data-ont']
