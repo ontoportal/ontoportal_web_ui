@@ -11,7 +11,7 @@ GIT
   revision: 3de275a1da2382e45df04b777a161f3facc243b6
   specs:
     ontologies_api_client (0.0.6)
-      activesupport (<= 3.0)
+      activesupport (< 3.0)
       excon
       faraday
       lz4-ruby
@@ -42,9 +42,9 @@ GEM
     activesupport (2.3.18)
     coderay (1.1.0)
     cube-ruby (0.0.3)
-    daemons (1.1.9)
+    daemons (1.2.1)
     eventmachine (1.0.7)
-    excon (0.44.3)
+    excon (0.44.4)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
     haml (3.1.8)
@@ -59,13 +59,13 @@ GEM
     memcache-client (1.8.5)
     method_source (0.8.2)
     mime-types (1.25.1)
-    multi_json (1.10.1)
+    multi_json (1.11.0)
     multipart-post (2.0.0)
     mysql (2.8.1)
     oink (0.10.1)
       activerecord
       hodel_3000_compliant_logger
-    oj (2.11.5)
+    oj (2.12.1)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
