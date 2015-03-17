@@ -45,7 +45,7 @@
 %h1.tab_header Projects
 %p.tab_description
   - intro_text = "Browse a selection of projects that use #{$SITE} resources"
-  = t('projects.intro').nil? || t('projects.intro').empty? ? "#{intro_text}  #{help_icon("/help#Projects_Tab")}" : t('projects.intro')
+  = I18n.t('projects.intro').nil? || I18n.t('projects.intro').empty? ? "#{intro_text}  #{help_icon("/help#Projects_Tab")}" : I18n.t('projects.intro')
 %div{:style => "padding:10px;"}
   %span
     - if session[:user].nil?

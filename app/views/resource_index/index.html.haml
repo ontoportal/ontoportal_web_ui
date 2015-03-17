@@ -13,7 +13,7 @@
   %h1 Search Resource Index
   %p
     - intro_text = "Search biomedical resources"
-    = t('home.resources.intro').nil? || t('home.resources.intro').empty? ? "#{intro_text}  #{help_icon("/help#Resource_Index_Tab")}" : t('home.resources.intro')
+    = I18n.t('home.resources.intro').nil? || I18n.t('home.resources.intro').empty? ? "#{intro_text}  #{help_icon("/help#Resource_Index_Tab")}" : I18n.t('home.resources.intro')
 
   %div{:style => "padding-bottom: 1em;"}
     %div{:style => "width: 432px;"}

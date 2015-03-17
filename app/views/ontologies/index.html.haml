@@ -107,7 +107,7 @@
 %h1.tab_header Browse
 %p.tab_description
   - intro_text = "Browse the library of ontologies"
-  = t('ontologies.intro').nil? || t('ontologies.intro').empty? ? "#{intro_text}  #{help_icon("/help#Browse_Tab")}" : t('ontologies.intro')
+  = I18n.t('ontologies.intro').nil? || I18n.t('ontologies.intro').empty? ? "#{intro_text}  #{help_icon("/help#Browse_Tab")}" : I18n.t('ontologies.intro')
 #ontologies_bd_container
   #ontologies_padding_container
     #submit_new_ontology{:style => "margin: 0; position: absolute; left: 660px;"}
