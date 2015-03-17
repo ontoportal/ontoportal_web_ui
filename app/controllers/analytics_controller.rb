@@ -14,7 +14,7 @@ class AnalyticsController < ApplicationController
   end
 
   def search_result_clicked
-    clicks = Analytics.find(:all, :conditions => {:segment => "search", :action => "result_clicked"})
+    clicks = Analytics.where(:segment => "search", :action => "result_clicked").all
     rows = [["query", "position_clicked", "ontology_clicked", "higher_rated_ontologies", "additional_result", "exact_match", "concept_id", "time", "user", "slice", "ip_address"]]
     clicks.each do |click|
       next if click.params.empty?
@@ -36,7 +36,7 @@ class AnalyticsController < ApplicationController
   end
 
   def user_intention_surveys
-    surveys = Analytics.find(:all, :conditions => {:segment => "users", :action => "intention_survey"})
+    surveys = Analytics.where(:segment => "users", :action => "intention_survey").all
     rows = [["page", "response", "email", "time", "user", "slice", "ip_address"]]
     surveys.each do |survey|
       rows << [

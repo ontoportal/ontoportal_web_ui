@@ -7,7 +7,8 @@
     "org.semanticweb.owlapi.rdf.rdfxml.parser.RDFXMLParser": "RDF/XML",
     "org.semanticweb.owlapi.owlxml.parser.OWLXMLParser": "OWL or OWL/XML",
     "org.semanticweb.owlapi.functional.parser.OWLFunctionalSyntaxOWLParser": "OWL Functional",
-    "org.semanticweb.owlapi.manchestersyntax.parser.ManchesterOWLSyntaxOntologyParser": "Manchester OWL"
+    "org.semanticweb.owlapi.manchestersyntax.parser.ManchesterOWLSyntaxOntologyParser": "Manchester OWL",
+    "org.bioontology.UnknownParseError": "Unknown"
   };
 
   var getErrors = function() {
@@ -19,7 +20,7 @@
         format: "jsonp"
       },
       dataType: "jsonp",
-      timeout: 1000,
+      timeout: 30000,
       success: function(data){
         if (typeof data === 'string') {
           // still processing
@@ -27,7 +28,7 @@
         } else {
           // done processing, show errors or all clear
           jQuery("#processing").hide();
-          if (data.length === 0) {
+          if (Object.keys(data).length === 0) {
             // no errors
             jQuery("#success_container").show();
           } else {
@@ -54,7 +55,7 @@
           clearTimeout(timer);
         }
       },
-      error: function() {
+      error: function(data, errorStr, error) {
         clearTimeout(timer);
         if (jQuery("#errors").html().length > 0) { return; }
         jQuery("#processing").hide();

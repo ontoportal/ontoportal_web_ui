@@ -93,7 +93,7 @@ class ApplicationController < ActionController::Base
   def render_404
     respond_to do |type|
       #type.html { render :template => "errors/error_404", :status => 404, :layout => 'error' }
-      type.all { render :file => "#{RAILS_ROOT}/public/404.html", :status => 404 }
+      type.all { render :file => "#{Rails.root}/public/404.html", :status => 404 }
     end
     true
   end
@@ -272,8 +272,8 @@ class ApplicationController < ActionController::Base
 
   # rack-mini-profiler authorization
   def authorize_miniprofiler
-    if params[:enable_profiler] && params[:enable_profiler].eql?("true")
-      Rack::MiniProfiler.authorize_request if session[:user] && session[:user].admin?
+    if params[:enable_profiler] && params[:enable_profiler].eql?("true") && session[:user] && session[:user].admin?
+      Rack::MiniProfiler.authorize_request
     else
       Rack::MiniProfiler.deauthorize_request
     end

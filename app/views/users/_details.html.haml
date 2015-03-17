@@ -40,7 +40,7 @@
               = type
           %td{:style => "padding: 5px;"}
             .subscribe_to_ontology{:style => "float: left;"}
-              = subscribe_ontology_button(ont, @user)
+              = raw subscribe_ontology_button(ont, @user)
     %br/
 
   - unless @user_projects.nil? || @user_projects.empty?

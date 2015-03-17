@@ -24,7 +24,7 @@ class ReviewsController < ApplicationController
   # GET /reviews/1/edit
   def edit
     @review = Review.find(params[:id])
-    @rating_types = RatingType.find(:all)
+    @rating_types = RatingType.all
 
     if request.xhr?
       render layout: false

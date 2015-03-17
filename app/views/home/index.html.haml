@@ -13,8 +13,8 @@
       %span.ui-icon.ui-icon-note
     %a.pop_window{:href => "/help#How_to_cite_NCBO_and_BioPortal", :target => "_blank"}
       Cite Us
-  %div{:style => "float:right;"}= t('home.facebook_button')
-  %div{:style => "float:right;"}= t('home.twitter_button')
+  %div{:style => "float:right;"}= t('home.facebook_button').html_safe
+  %div{:style => "float:right;"}= t('home.twitter_button').html_safe
 - unless $FRONT_NOTICE.nil? || $FRONT_NOTICE.empty? || cookies[:front_page_notice_closed].eql?("true")
   :javascript
     function close_message(){
@@ -30,11 +30,11 @@
 %div{:style => "padding:10px;margin:10px;"}
   - bp_welcome = "<p><span style='font-size:1.75em; font-weight:bold;'>Welcome to #{$SITE}</span><span style='font-size:1.6em'>, the world&rsquo;s most comprehensive repository of biomedical ontologies.</span></p>"
   - help = "<p style='font-size:1.3em'>For help using #{$SITE}, click on this icon: #{help_icon('/help#Home_Page')}</p>"
-  = t('home.intro').nil? || t('home.intro').empty? ? bp_welcome + help : t('home.intro')
+  = t('home.intro').html_safe.nil? || t('home.intro').html_safe.empty? ? bp_welcome.html_safe + help.html_safe : t('home.intro').html_safe
 %table{:width => "100%"}
   %tr
     %td{:valign => "top", :width => "33%"}
-      - form_for(:search, :url => {:controller =>'search', :action=>'index'}, :html => { :method => :get }) do |f|
+      = form_for(:search, :url => {:controller =>'search', :action=>'index'}, :html => { :method => :get }) do |f|
         %fieldset
           %legend Search all ontologies
           %table
@@ -116,7 +116,7 @@
                     %a{href: "/ontologies/#{ont.acronym}"} #{ont.name} (#{ont.acronym})
                   %td= visits[:views]
 
-      - if t('stats').nil? || t('stats').empty?
+      - if t('stats').html_safe.nil? || t('stats').html_safe.empty?
         %fieldset
           %legend
             Statistics #{"in full #{$SITE}" if at_slice?}
@@ -142,7 +142,7 @@
                 %td= number_with_delimiter(@direct_expanded_annotations, :delimiter => ",")
       - else
         %fieldset
-          = t('stats')
+          = t('stats').html_safe
     %td{:valign => "top"}
       %fieldset
         %legend Latest Notes

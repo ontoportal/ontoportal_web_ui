@@ -1,7 +1,7 @@
 <br>
 <h1><%=flash[:notice]%></h1>
 
-<% form_tag ("/process/mapping", {:multipart => true}) do %>
+<%= form_tag ("/process/mapping", {:multipart => true}) do %>
     <label for="file">File:</label> 
     <%= file_field_tag "file" %>
 <br>

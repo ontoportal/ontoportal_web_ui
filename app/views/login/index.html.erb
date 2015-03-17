@@ -1,6 +1,6 @@
 <%@title = "Login"%>
 
-<% form_for(:user, :url => {:controller => 'login',:action=>'create'}) do |f| %>
+<%= form_for(:user, :url => {:controller => 'login',:action=>'create'}) do |f| %>
 <%unless @errors.nil?%>
 <div style="color:red;">
 Errors On Form
