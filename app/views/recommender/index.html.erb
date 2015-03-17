@@ -8,7 +8,8 @@
 
 <div id="container">
   <h1>Ontology Recommender</h1>
-  <p>Get recommendations for the most relevant ontologies based on an excerpt from a biomedical text or a list of keywords.</p>
+  <p>Get recommendations for the most relevant ontologies based on an excerpt from a biomedical text or a list of keywords
+    <%=help_icon("/help#Recommender_Tab")%></p>
 
   <!-- Basic options -->
   <div id=basicOptions>
@@ -23,17 +24,30 @@
     <!-- Output type -->
     <div class="optionsBoxRight">
       <h3>Output</h3>
-      <input type="radio" id="radio_ot_single" autocomplete="off" checked="checked" name="output_type" value="1" />
+      <input type="radio" id="radioOtSingle" autocomplete="off" checked="checked" name="output_type" value="1" />
       <label>Ontologies</label>
-      <input type="radio" id="radio_ot_sets" autocomplete="off" name="output_type" value="2" />
+      <input type="radio" id="radioOtSets" autocomplete="off" name="output_type" value="2" />
       <label>Ontology sets</label>
     </div>
   </div>
   <div style="clear:both"></div>
+  <div class="optionsLinks">
+    <div class="optionsLinksTopRight">
+      <a href="javascript:void(0);" id="insertInputLink">insert sample input</a>
+    </div>
+  </div>
 
-  <!-- Ontology picker -->
-  <div id="ontologyPicker">
-    <%=render :partial => "shared/ontology_picker"%>
+  <!-- Input text area -->
+  <div><textarea id="inputText" class="default">Please paste a paragraph of text or some keywords to use in calculating ontology recommendations</textarea></div>
+
+  <!-- Input text including highlighted annotations -->
+  <div id="inputTextHighlighted"></div>
+
+  <div class="optionsLinks" style="">
+    <div class="optionsLinksBottomRight">
+      <a href="javascript:void(0);" id="showAdvancedOptionsLink">show advanced options</a>
+      <a href="javascript:void(0);" id="hideAdvancedOptionsLink">hide advanced options</a>
+    </div>
   </div>
 
   <!-- Advanced options -->
@@ -51,26 +65,10 @@
     </div>
   </div>
 
-  <!-- Links to insert sample text/keywords and hide/show advanced options -->
-  <div class="optionsLinks">
-    <div class="optionsLinksLeft">
-      <a href="javascript:void(0);" id="insertTextLink" style="margin-right: 5px">insert sample text</a>
-      <a href="javascript:void(0);" id="insertKeywordsLink">insert sample keywords</a>
-    </div>
-    <div class="optionsLinksRight">
-      <a href="javascript:void(0);" id="showAdvancedOptionsLink">show advanced options</a>
-      <a href="javascript:void(0);" id="hideAdvancedOptionsLink">hide advanced options</a>
-    </div>
+  <!-- Ontology picker -->
+  <div id="ontologyPicker">
+    <%=render :partial => "shared/ontology_picker"%>
   </div>
-  <div style="clear:both;margin-bottom:2px"></div>
-
-  <!-- Input text area -->
-  <div>
-    <textarea id="inputText"></textarea>
-  </div>
-
-  <!-- Recommender results -->
-  <div id="recommenderResults"></div>
 
   <!-- Get recommendations / Edit Input buttons -->
   <input id="recommenderButton" type="button" style="margin-top: 10px;" class="link_button ui-button ui-widget ui-state-default ui-corner-all" value="Get Recommendations" />
@@ -78,16 +76,17 @@
 
   <span class="recommenderSpinner"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;"></span>
   <br /><br />
-  <span class="notTextError">Please paste some text or keywords to use in calculating ontology recommendations<br></span>
-  <span class="sumWeightsError">The sum of the weights must be greater than zero<br></span>
-  <span class="rangeWeightsError">All the weights must be greater or equal to zero<br></span>
-  <span class="invalidWeightsError">All the weights must be valid numeric values<br></span>
-  <span class="invalidMaxOntError">The maximum ontologies per set must be a valid integer value<br></span>
-  <span class="maxOntologiesError">The maximum ontologies per set must be a number between 2 and 4<br></span>
-  <span class="generalError">Problem getting recommendations, please try again<br></span>
+  <span class="notTextError">Please paste a paragraph of text or some keywords to use in calculating ontology recommendations.<br></span>
+  <span class="sumWeightsError">The sum of the weights must be greater than zero.<br></span>
+  <span class="rangeWeightsError">All the weights must be greater or equal to zero.<br></span>
+  <span class="invalidWeightsError">All the weights must be valid numeric values.<br></span>
+  <span class="invalidMaxOntError">The maximum ontologies per set must be a valid integer value.<br></span>
+  <span class="maxOntologiesError">The maximum ontologies per set must be a number between 2 and 4.<br></span>
+  <span class="generalError">Problem getting recommendations, please try again.<br></span>
+  <span id="noResults" style="margin-left: 3px">No recommendations found.<br></span>
+  <span id="noResultsSets" style="margin-left: 3px">There are no ontology sets recommended for the input provided. Please try the "Ontologies" output.<br></span>
   <!--<span class="inputSizeError">Please use less than 500 words. If you need to annotate larger pieces of text you can use the Recommender Web Service<br></span>-->
   <br />
   <h2 id="resultsHeader"></h2>
   <div id="results"></div>
-  <div id="noResults" style="margin-left: 3px"><span>No recommendations found</span></div>
 </div>
