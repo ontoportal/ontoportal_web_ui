@@ -52,5 +52,3 @@ OpenURI::Buffer.const_set 'StringMax', 104857600
 
 # Include the BioPortal-specific configuration options
 require RAILS_ROOT + '/config/bioportal_config.rb'
-
-ExceptionNotifier.exception_recipients = %w(palexander@stanford.edu)
