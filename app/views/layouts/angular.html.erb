@@ -17,17 +17,11 @@
   <link rel="stylesheet" href="lib/html5-boilerplate/css/normalize.css">
   <link rel="stylesheet" href="lib/html5-boilerplate/css/main.css">
   <link rel="stylesheet" href="app.css">
-  <script src="lib/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
 
   <%=render partial: 'layouts/head_common'%>
-
-  <!-- Javascript -->
-  <%=javascript_include_tag "//www.google.com/recaptcha/api/js/recaptcha_ajax.js"%>
-  <script src="//code.jquery.com/jquery-1.8.3.min.js"></script>
-  <%=render partial: 'layouts/head_js'%>
-  <%=render partial: 'layouts/js_data'%>
 </head>
 <body>
+  <script src="//code.jquery.com/jquery-1.8.3.min.js"></script>
   <%=render partial: 'layouts/topnav'%>
   <%=render partial: 'layouts/notices'%>
 
@@ -45,6 +39,7 @@
   <!-- <script src="lib/angular-route/angular-route.js"></script> -->
   <!-- <script src="lib/angular-animate/angular-animate.min.js"></script> -->
 
+  <script src="lib/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
   <script src="lib/angular-bindonce/bindonce.min.js"></script>
   <script src="checklist-model.js"></script>
   <script src="app.js"></script>

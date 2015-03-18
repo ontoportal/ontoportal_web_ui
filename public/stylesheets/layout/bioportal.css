@@ -2247,7 +2247,7 @@ div#resource_results div.resource_results h2 {
 .highlighting {
   font-style: oblique;
 }
-#search_button {
+#search_button, #resource_index_search_button {
   float: right;
   margin-left: 445px;
   position: absolute;

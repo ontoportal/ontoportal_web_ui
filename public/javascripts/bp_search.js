@@ -286,10 +286,6 @@ function autoSearch() {
     if (advancedOptionsSelected()) {
         jQuery("#search_options").removeClass("not_visible");
     }
-
-    if (jQuery("#search_keywords").val() !== "") {
-        performSearch();
-    }
 }
 
 
@@ -331,7 +327,7 @@ function performSearch() {
     jQuery("#search_results").html("");
     jQuery("#result_stats").html("");
 
-    var ont_val = jQuery("#ontology_ontologyId").val(),
+    var ont_val = jQuery("#ontology_ontologyId").val() || null,
         onts = (ont_val === null) ? "" : ont_val.join(","),
         query = jQuery("#search_keywords").val(),
         // Advanced options
@@ -1060,10 +1056,10 @@ function advancedOptionsSelected() {
             return jQuery("#search_exact_match").is(":checked");
         },
         function() {
-            return jQuery("#search_categories").val() !== null && jQuery("#search_categories").val().length > 0;
+            return jQuery("#search_categories").val() !== null && (jQuery("#search_categories").val() || []).length > 0;
         },
         function() {
-            return jQuery("#ontology_ontologyId").val() !== null && jQuery("#ontology_ontologyId").val().length > 0;
+            return jQuery("#ontology_ontologyId").val() !== null && (jQuery("#ontology_ontologyId").val() || []).length > 0;
         }
     ];
     for (i = 0, j = check.length; i < j; i++) {

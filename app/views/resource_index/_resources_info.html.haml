@@ -16,13 +16,15 @@
         %td= DateTime.parse(resource['updated']).strftime("%Y-%m-%d") rescue ""
 
 :javascript
-  jQuery("#resources_desc").dataTable({
-    "bPaginate": false,
-    "bFilter": false,
-    "aoData": [
-      { "sType": "html" },
-      { "bSortable": false },
-      { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] },
-      { "asSorting": [ "desc", "asc" ] }
-    ]
+  jQuery(document).ready(function() {
+    jQuery("#resources_desc").dataTable({
+      "bPaginate": false,
+      "bFilter": false,
+      "aoData": [
+        { "sType": "html" },
+        { "bSortable": false },
+        { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] },
+        { "asSorting": [ "desc", "asc" ] }
+      ]
+    });
   });
