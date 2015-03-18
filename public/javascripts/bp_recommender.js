@@ -248,7 +248,7 @@ rec.getRecommendations = function() {
                         for (var i = 0; i < data.length; i++) {
                             var position = i + 1;
                             // Terms covered
-                            var terms = new String("");
+                            var terms = '';
                             for (var j = 0; j < data[i].coverageResult.annotations.length; j++) {
                                 terms += ('<a target="_blank" href=' + data[i].coverageResult.annotations[j].annotatedClass.links.ui + '>' + data[i].coverageResult.annotations[j].text + '</a>, ');
                             }
@@ -264,11 +264,9 @@ rec.getRecommendations = function() {
                             var row = '<tr class="row"><td>' + position + '</td><td>';
 
                             $.each(data[i].ontologies, function (j, item) {
-                                if (params.output_type == 1) {
-                                    var ontologyLinkStyle = "";
-                                }
-                                else {
-                                    var ontologyLinkStyle = 'style="color: ' + rec.colors[j] + '"';
+                                var ontologyLinkStyle = 1
+                                if (params.output_type == 2) {
+                                    ontologyLinkStyle = 'style="color: ' + rec.colors[j] + '"';
                                 }
                                 row += '<a ' + ontologyLinkStyle + /*'title= "' + data[i].ontologies[j].name +*/ '" target="_blank" href=' + data[i].ontologies[j].links.ui + '>'
                                 + data[i].ontologies[j].acronym + '</a><br />'});
@@ -279,7 +277,6 @@ rec.getRecommendations = function() {
                             + '<td><div style="width:120px"><div style="text-align:left;width:' + acceptanceScore.toFixed(0) + '%;background-color:#8cabd6;border-style:solid;border-width:1px;border-color:#3e76b6">' + acceptanceScore.toFixed(1) + '</div></div>' + '</td>'
                             + '<td><div style="width:120px"><div style="text-align:left;width:' + detailScore.toFixed(0) + '%;background-color:#8cabd6;border-style:solid;border-width:1px;border-color:#3e76b6">' + detailScore.toFixed(1) + '</div></div>' + '</td>'
                             + '<td><div style="width:120px"><div style="text-align:left;width:' + specializationScore.toFixed(0) + '%;background-color:#8cabd6;border-style:solid;border-width:1px;border-color:#3e76b6">' + specializationScore.toFixed(1) + '</div></div>' + '</td>'
-                                //+ '<td>' + terms + '</td>'
                             + '<td>' + data[i].coverageResult.annotations.length + '</td>'
                             + '<td>' + '<div style="text-align:center"><input style="vertical-align:middle" id="chk' + i + '" type="checkbox"/></div>'
                             + '</tr>';
