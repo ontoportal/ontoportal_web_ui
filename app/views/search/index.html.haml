@@ -49,8 +49,12 @@
     #search_results
 #biomixer{:style => "display: none;"}
 / Javascript at end to improve response time to user
-= javascript_include_tag "/javascripts/JqueryPlugins/jquery.tools.min.js"
-= javascript_include_tag "bp_search.js?nocache=3"
 :javascript
   // Hash of ontology id => name, acronym for lookup use via JS
-  jQuery(document).data().bp.ontologies = #{Hash[LinkedData::Client::Models::Ontology.all(include_views: true).map {|o| [o.id, {name: o.name, acronym: o.acronym}]}].to_json.html_safe}
+  jQuery(document).ready(function() {
+    jQuery(document).data().bp.ontologies = #{Hash[LinkedData::Client::Models::Ontology.all(include_views: true).map {|o| [o.id, {name: o.name, acronym: o.acronym}]}].to_json.html_safe}
+
+    if (jQuery("#search_keywords").val() !== "") {
+        performSearch();
+    }
+  });

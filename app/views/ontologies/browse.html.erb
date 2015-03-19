@@ -1,15 +1,3 @@
-<script>
-  jQuery(document).data().bp.ontologies = <%=MultiJson.dump(@ontologies[0..19]).html_safe%>;
-  jQuery(document).data().bp.fullOntologies = <%=MultiJson.dump(@ontologies).html_safe%>;
-  jQuery(document).data().bp.categories = <%=MultiJson.dump(@categories).html_safe%>;
-  jQuery(document).data().bp.categories_hash = <%=MultiJson.dump(@categories_hash).html_safe%>;
-  jQuery(document).data().bp.groups = <%=MultiJson.dump(@groups).html_safe%>;
-  jQuery(document).data().bp.groups_hash = <%=MultiJson.dump(@groups_hash).html_safe%>;
-  jQuery(document).data().bp.formats = <%=MultiJson.dump(@formats).html_safe%>;
-  jQuery(document).data().bp.admin = <%=MultiJson.dump(@admin).html_safe%>;
-  jQuery(document).data().bp.development = <%=MultiJson.dump(@development).html_safe%>;
-</script>
-
 <link href="font/whhg.css"rel="stylesheet" type="text/css" media="all" />
 <link href="//cdnjs.cloudflare.com/ajax/libs/unsemantic/0/unsemantic-grid-responsive-tablet.css" rel="stylesheet" type="text/css" media="screen" />
 <meta name="viewport" content="
@@ -253,4 +241,18 @@
 </main>
 
 <!-- JS at end (before footer) -->
+<%=render partial: 'layouts/footer_js'%>
+
+<script>
+  jQuery(document).data().bp.ontologies = <%=MultiJson.dump(@ontologies[0..19]).html_safe%>;
+  jQuery(document).data().bp.fullOntologies = <%=MultiJson.dump(@ontologies).html_safe%>;
+  jQuery(document).data().bp.categories = <%=MultiJson.dump(@categories).html_safe%>;
+  jQuery(document).data().bp.categories_hash = <%=MultiJson.dump(@categories_hash).html_safe%>;
+  jQuery(document).data().bp.groups = <%=MultiJson.dump(@groups).html_safe%>;
+  jQuery(document).data().bp.groups_hash = <%=MultiJson.dump(@groups_hash).html_safe%>;
+  jQuery(document).data().bp.formats = <%=MultiJson.dump(@formats).html_safe%>;
+  jQuery(document).data().bp.admin = <%=MultiJson.dump(@admin).html_safe%>;
+  jQuery(document).data().bp.development = <%=MultiJson.dump(@development).html_safe%>;
+</script>
+
 <script src="lib/lunr.js/lunr.min.js"></script>
