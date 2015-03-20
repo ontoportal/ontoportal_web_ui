@@ -86,7 +86,7 @@ label {
     margin-bottom: 6px;
 }
 
-.generalError, .invalidMaxOntError, .invalidWeightsError, .notTextError, .sumWeightsError, .rangeWeightsError, .maxOntologiesError {
+.generalError, .invalidMaxOntError, .invalidWeightsError, .notTextError, .sumWeightsError, .rangeWeightsError, .maxOntologiesError, .inputSizeError {
     color: red;
 }
 
