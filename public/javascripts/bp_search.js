@@ -4,7 +4,13 @@
 (function(window, undefined) {
     // Establish Variables
     var History = window.History;
-    History.debug.enable = true;
+    // History.debug.enable = true;
+
+    // Abort it not right page
+    var path = currentPathArray();
+    if (path[0] !== "search") {
+      return;
+    }
 
     // Bind to State Change
     History.Adapter.bind(window, 'statechange', function() {

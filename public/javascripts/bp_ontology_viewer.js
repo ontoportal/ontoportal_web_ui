@@ -4,6 +4,12 @@
   var History = window.History;
   // History.debug.enable = true;
 
+  // Abort it not right page
+  var path = currentPathArray();
+  if (path[0] !== "ontologies" || (path[0] === "ontologies" && path.length === 1)) {
+    return;
+  }
+
   // Bind to State Change
   History.Adapter.bind(window, 'statechange', function() {
     var hashParams = null;
