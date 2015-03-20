@@ -47,6 +47,7 @@ gem "will_paginate", "~> 3.0"
 gem "rdoc"
 gem "rack-mini-profiler"
 gem "flamegraph"
+gem "stackprof", :require => false
 gem 'cube-ruby', require: 'cube'
 gem 'calendar_date_select'
 gem 'oj'

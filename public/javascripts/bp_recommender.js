@@ -1,8 +1,9 @@
 // Namespace for global variables and functions
 var rec = { }
+rec.maxInputWords = 500;
 
 jQuery(document).ready(function() {
-    rec.emptyInput = true
+    rec.emptyInput = true;
     $("#recommenderButton").click(rec.getRecommendations);
     $("#insertInputLink").click(rec.insertInput);
     $("input[name=input_type]:radio").change(function () {
@@ -21,25 +22,15 @@ jQuery(document).ready(function() {
     $("#input_ws").focus(rec.enableEdition);
     $("#input_max_ontologies").focus(rec.enableEdition);
     $("#inputText").click(rec.prepareForRealInput);
-    $("#showAdvancedOptionsLink").click(rec.showAdvancedOptions);
-    $("#hideAdvancedOptionsLink").click(rec.hideAdvancedOptions);
+    $("#advancedOptionsLink").click(rec.showOrHideAdvancedOptions);
     $("#advancedOptions").hide();
-    $("#hideAdvancedOptionsLink").hide();
     $(".recommenderSpinner").hide();
     $("#editButton").hide();
     rec.hideErrorMessages();
 });
 
-rec.showAdvancedOptions = function() {
-    $("#advancedOptions").show();
-    $("#showAdvancedOptionsLink").hide();
-    $("#hideAdvancedOptionsLink").show();
-}
-
-rec.hideAdvancedOptions = function() {
-    $("#advancedOptions").hide();
-    $("#showAdvancedOptionsLink").show();
-    $("#hideAdvancedOptionsLink").hide();
+rec.showOrHideAdvancedOptions = function() {
+    $("#advancedOptions").toggle();
 }
 
 rec.insertInput = function() {
@@ -52,7 +43,7 @@ rec.insertInput = function() {
     }
 }
 
-rec.defaultMessage = true
+rec.defaultMessage = true;
 rec.prepareForRealInput = function() {
     $("#inputText").removeClass()
     rec.emptyInput = false;
@@ -93,9 +84,9 @@ rec.insertSampleKeywords = function() {
 rec.colors = ["#234979" , "#cc0000", "#339900", "#ff9900"];
 rec.getHighlightedTerms = function(data, rowNumber) {
     var inputText = document.getElementById("inputText").value;
-    var newText = new String("");
+    var newText = '';
     var lastPosition = 0;
-    var ontologyIds = [ ]
+    var ontologyIds = [ ];
     for (var k = 0; k < data[rowNumber].ontologies.length; k++) {
         ontologyIds[k] = data[rowNumber].ontologies[k]["@id"];
     }
@@ -132,7 +123,7 @@ rec.getHighlightedTerms = function(data, rowNumber) {
 
 rec.hideErrorMessages = function() {
     $(".generalError").hide();
-    //$(".inputSizeError").hide();
+    $(".inputSizeError").hide();
     $(".invalidWeightsError").hide();
     $(".rangeWeightsError").hide();
     $(".sumWeightsError").hide();
@@ -151,12 +142,11 @@ rec.getRecommendations = function() {
         $(".notTextError").show();
         errors = true;
     }
-    //var count = $("#inputText").val().length;
-    //// Checks input size (basic word counter)
-    //else if ($("#inputText").val().length > 2048) {
-    //    $(".inputSizeError").show();
-    //    errors = true;
-    //}
+    // Checks the input size using a basic word counter
+    if ($("#inputText").val().split(' ').length > rec.maxInputWords) {
+        $(".inputSizeError").show();
+        errors = true;
+    }
     var wc = parseFloat($("#input_wc").val());
     var wa = parseFloat($("#input_wa").val());
     var wd = parseFloat($("#input_wd").val());
@@ -239,7 +229,6 @@ rec.getRecommendations = function() {
                         + "<th>Acceptance <br>score</th>"
                         + "<th>Detail <br>score</th>"
                         + "<th>Specialization <br>score</th>"
-                            //+ "<th>Terms</th>"
                         + "<th>Annotations</th>"
                         + "<th>Highlight <br>annotations</th>"
                         + "</th>");
@@ -248,7 +237,7 @@ rec.getRecommendations = function() {
                         for (var i = 0; i < data.length; i++) {
                             var position = i + 1;
                             // Terms covered
-                            var terms = new String("");
+                            var terms = '';
                             for (var j = 0; j < data[i].coverageResult.annotations.length; j++) {
                                 terms += ('<a target="_blank" href=' + data[i].coverageResult.annotations[j].annotatedClass.links.ui + '>' + data[i].coverageResult.annotations[j].text + '</a>, ');
                             }
@@ -264,11 +253,9 @@ rec.getRecommendations = function() {
                             var row = '<tr class="row"><td>' + position + '</td><td>';
 
                             $.each(data[i].ontologies, function (j, item) {
-                                if (params.output_type == 1) {
-                                    var ontologyLinkStyle = "";
-                                }
-                                else {
-                                    var ontologyLinkStyle = 'style="color: ' + rec.colors[j] + '"';
+                                var ontologyLinkStyle = 1
+                                if (params.output_type == 2) {
+                                    ontologyLinkStyle = 'style="color: ' + rec.colors[j] + '"';
                                 }
                                 row += '<a ' + ontologyLinkStyle + /*'title= "' + data[i].ontologies[j].name +*/ '" target="_blank" href=' + data[i].ontologies[j].links.ui + '>'
                                 + data[i].ontologies[j].acronym + '</a><br />'});
@@ -279,7 +266,6 @@ rec.getRecommendations = function() {
                             + '<td><div style="width:120px"><div style="text-align:left;width:' + acceptanceScore.toFixed(0) + '%;background-color:#8cabd6;border-style:solid;border-width:1px;border-color:#3e76b6">' + acceptanceScore.toFixed(1) + '</div></div>' + '</td>'
                             + '<td><div style="width:120px"><div style="text-align:left;width:' + detailScore.toFixed(0) + '%;background-color:#8cabd6;border-style:solid;border-width:1px;border-color:#3e76b6">' + detailScore.toFixed(1) + '</div></div>' + '</td>'
                             + '<td><div style="width:120px"><div style="text-align:left;width:' + specializationScore.toFixed(0) + '%;background-color:#8cabd6;border-style:solid;border-width:1px;border-color:#3e76b6">' + specializationScore.toFixed(1) + '</div></div>' + '</td>'
-                                //+ '<td>' + terms + '</td>'
                             + '<td>' + data[i].coverageResult.annotations.length + '</td>'
                             + '<td>' + '<div style="text-align:center"><input style="vertical-align:middle" id="chk' + i + '" type="checkbox"/></div>'
                             + '</tr>';
@@ -337,8 +323,6 @@ rec.getRecommendations = function() {
             error: function(errorData) {
                 $(".recommenderSpinner").hide();
                 $(".generalError").show();
-                //$("#results").append("error!");
-                //$("#results").append(JSON.stringify(errorData));
                 console.log("error", errorData);
             }
         });
