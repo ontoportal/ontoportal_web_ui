@@ -58,8 +58,8 @@ function initClassTree() {
     }
   });
 
-  setConcept(concept_id);
-  setOntology(ontology_id);
+  setConcept(jQuery(document).data().bp.ont_viewer.concept_id);
+  setOntology(jQuery(document).data().bp.ont_viewer.ontology_id);
   jQuery("#sd_content").scrollTo(jQuery('a.active'));
 
   // Set the cache for the first concept we retrieved
@@ -128,7 +128,7 @@ function nodeClicked(node_id) {
     wrapupTabChange(selectedTab);
   } else {
     jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
-    jQuery.get('/ajax_concepts/'+ontology_id+'/?conceptid='+node_id+'&callback=load',
+    jQuery.get('/ajax_concepts/'+jQuery(document).data().bp.ont_viewer.ontology_id+'/?conceptid='+node_id+'&callback=load',
       function(data){
         var tabData = data.split("|||");
         var loc;
@@ -143,7 +143,7 @@ function nodeClicked(node_id) {
 
         // Load the resource index
         if (selectedTab == "resource_index") {
-          callTab('resource_index', '/resource_index/resources_table?conceptids='+ontology_id+'/'+encodeURIComponent(getConcept()));
+          callTab('resource_index', '/resource_index/resources_table?conceptids='+jQuery(document).data().bp.ont_viewer.ontology_id+'/'+encodeURIComponent(getConcept()));
         }
 
         setCache(node_id,tabData);
@@ -167,12 +167,12 @@ function placeTreeView(treeHTML) {
 // Retrieve the tree view using ajax
 function getTreeView() {
   jQuery.ajax({
-    url: "/ajax/classes/treeview?ontology="+ontology_id+"&conceptid="+encodeURIComponent(concept_id),
+    url: "/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&conceptid="+encodeURIComponent(jQuery(document).data().bp.ont_viewer.concept_id),
     success: function(data) {
       placeTreeView(data);
     },
     error: function(data) {
-      jQuery.get("/ajax/classes/treeview?ontology="+ontology_id+"&conceptid=root", function(data){
+      jQuery.get("/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&conceptid=root", function(data){
         var rootTree = "<div class='tree_error'>Displaying the path to this class has taken too long. You can browse classes below.</div>" + data;
         placeTreeView(rootTree);
       });
