@@ -45,8 +45,7 @@
 
   <div class="optionsLinks" style="">
     <div class="optionsLinksBottomRight">
-      <a href="javascript:void(0);" id="showAdvancedOptionsLink">show advanced options</a>
-      <a href="javascript:void(0);" id="hideAdvancedOptionsLink">hide advanced options</a>
+      <a href="javascript:void(0);" id="advancedOptionsLink">advanced options</a>
     </div>
   </div>
 
@@ -63,11 +62,10 @@
       <h2 class="optionsHeader">Ontology sets</h2>
       <label>Maximum number of ontologies per set</label><input type="number" id="input_max_ontologies" min="2" max="4" step="1" value="3">
     </div>
-  </div>
-
-  <!-- Ontology picker -->
-  <div id="ontologyPicker">
-    <%=render :partial => "shared/ontology_picker"%>
+    <!-- Ontology picker -->
+    <div id="ontologyPicker">
+      <%=render :partial => "shared/ontology_picker"%>
+    </div>
   </div>
 
   <!-- Get recommendations / Edit Input buttons -->
