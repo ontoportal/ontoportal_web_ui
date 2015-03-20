@@ -1,30 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-
-  <!-- Force IE to use latest rendering engine -->
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-
-  <!-- Google Webmaster Tools verifications -->
-  <meta name="google-site-verification" content="IBxfKu6VbYH9atd5OLu2zXVD2ZRWi9SgMKTi8nvw3ks" />
-
-  <%= csrf_meta_tag %>
-
-  <title><%if @title.nil?%><%=$ORG_SITE%><%else%><%="#{$ORG_SITE}: #{@title}"%><%end%></title>
-  <!-- Dependency source files -->
-  <%=stylesheet_link_tag 'layout/bioportal'%>
-  <%=stylesheet_link_tag 'layout/thickbox'%>
-  <link rel="stylesheet" type="text/css" href="/themes/cupertino/css/cupertino/jquery-ui-1.8.1.custom.css">
-
-  <%=javascript_include_tag "jquery.js"%>
-  <%=javascript_include_tag "jrails.js"%>
-  <%=javascript_include_tag "JqueryPlugins/jquery.blockUI.js"%>
-  <%=javascript_include_tag "jquery.thickbox.compressed.js"%>
-  <%=javascript_include_tag "JqueryPlugins/bbq/jquery.bbq.min.js"%>
-  <%=javascript_include_tag "jquery-ui.js" %>
-  <%=javascript_include_tag "bioportal"%>
-
+  <%=render partial: 'layouts/head_common'%>
+  <%=render partial: 'layouts/js_data'%>
+  <%=render partial: 'layouts/head_js'%>
 </head>
 <body style="min-width: 800px; max-width: 800px;">
 
