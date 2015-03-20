@@ -22,25 +22,15 @@ jQuery(document).ready(function() {
     $("#input_ws").focus(rec.enableEdition);
     $("#input_max_ontologies").focus(rec.enableEdition);
     $("#inputText").click(rec.prepareForRealInput);
-    $("#showAdvancedOptionsLink").click(rec.showAdvancedOptions);
-    $("#hideAdvancedOptionsLink").click(rec.hideAdvancedOptions);
+    $("#advancedOptionsLink").click(rec.showOrHideAdvancedOptions);
     $("#advancedOptions").hide();
-    $("#hideAdvancedOptionsLink").hide();
     $(".recommenderSpinner").hide();
     $("#editButton").hide();
     rec.hideErrorMessages();
 });
 
-rec.showAdvancedOptions = function() {
-    $("#advancedOptions").show();
-    $("#showAdvancedOptionsLink").hide();
-    $("#hideAdvancedOptionsLink").show();
-}
-
-rec.hideAdvancedOptions = function() {
-    $("#advancedOptions").hide();
-    $("#showAdvancedOptionsLink").show();
-    $("#hideAdvancedOptionsLink").hide();
+rec.showOrHideAdvancedOptions = function() {
+    $("#advancedOptions").toggle();
 }
 
 rec.insertInput = function() {
