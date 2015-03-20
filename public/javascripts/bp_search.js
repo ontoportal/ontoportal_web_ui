@@ -43,6 +43,7 @@ var showAdditionalClsResults = function(event) {
 // removed once, the regex strings are removed globally from the class ID.
 var blacklistFixStrArr = [],
     blacklistSearchWordsArr = [], // see performSearch and aggregateResultsWithSubordinateOntologies
+    blacklistSearchWordsArrRegex = [],
     blacklistRegexArr = [],
     blacklistRegexMod = "ig";
 blacklistFixStrArr.push("https://");
@@ -74,8 +75,8 @@ function blacklistClsIDComponents(clsID) {
         strippedID = strippedID.replace(blacklistRegexArr[i], "");
     };
     // remove search keywords (see performSearch and aggregateResultsWithSubordinateOntologies)
-    for (var i = 0; i < blacklistSearchWordsArr.length; i++) {
-        strippedID = strippedID.replace(blacklistSearchWordsArr[i], "");
+    for (var i = 0; i < blacklistSearchWordsArrRegex.length; i++) {
+        strippedID = strippedID.replace(blacklistSearchWordsArrRegex[i], "");
     };
     return strippedID;
 }
@@ -443,13 +444,17 @@ function aggregateResultsWithSubordinateOntologies(ontologies) {
         ontAcronyms.push(ontAcronym);
     }
     // Remove any items in blacklistSearchWordsArr that match ontology acronyms.
-    i = 0;
-    while (i < blacklistSearchWordsArr.length) {
+    blacklistSearchWordsArrRegex = [];
+    for (var i = 0; i < blacklistSearchWordsArr.length; i++) {
+        // Convert blacklistSearchWordsArr to regex constructs so they are removed
+        // with case insensitive matches in blacklistClsIDComponents
+        blacklistSearchWordsArrRegex.push(new RegExp(blacklistSearchWordsArr[i], blacklistRegexMod));
+
         // Check for any substring matches against ontology acronyms, where the
         // acronyms are assumed to be upper case strings.  (Note, cannot use the
         // ontAcronyms array .indexOf() method, because it doesn't search for
         // substring matches).
-        var searchToken = blacklistSearchWordsArr[i].toUpperCase();
+        var searchToken = blacklistSearchWordsArr[i];
         var match = false;
         for (var j = ontAcronyms.length - 1; j >= 0; j--) {
             if (ontAcronyms[j].indexOf(searchToken) > -1) {
@@ -465,11 +470,6 @@ function aggregateResultsWithSubordinateOntologies(ontologies) {
             i++; // check the next search token.
         }
     }
-    // Convert blacklistSearchWordsArr to regex constructs so they are removed
-    // with case insensitive matches in blacklistClsIDComponents
-    for (var i = blacklistSearchWordsArr.length - 1; i >= 0; i--) {
-        blacklistSearchWordsArr[i] = new RegExp(blacklistSearchWordsArr[i], blacklistRegexMod);
-    };
     // build hash of primary class results with an ontology owner
     for (i = 0, j = ontologies.length; i < j; i++) {
         tmpOnt = ontologies[i];
