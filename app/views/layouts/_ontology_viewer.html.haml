@@ -50,7 +50,8 @@
   jQuery(document).data().bp.ont_viewer.metadata_only = "#{@ontology.summaryOnly}";
   jQuery(document).data().bp.ont_viewer.current_purl = "#{@current_purl}";
   jQuery(document).data().bp.ont_viewer.purl_prefix = "#{($PURL_ENABLED ? $PURL_PREFIX+"/"+@ontology.acronym : '')}";
-  jQuery(document).data().bp.ont_viewer.concept_name_title = (concept_name == "") ? "" : " - " + concept_name;
+  jQuery(document).data().bp.ont_viewer.concept_name_title = (jQuery(document).data().bp.ont_viewer.concept_name == "") ?
+      "" : " - " + jQuery(document).data().bp.ont_viewer.concept_name;
 
 
 %div{:style => "padding: 1em 2em 0; background: #234979;"}
