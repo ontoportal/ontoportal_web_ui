@@ -1,6 +1,7 @@
 // Note duplicated code in _visits.html.haml due to Ajax loading
 jQuery(document).ready(function() {
-  if (typeof Chart !== 'undefined' && !jQuery(document).data().bp.ont_chart.chartInstantiated) {
+  if (typeof Chart !== 'undefined' && !jQuery(document).data().bp.ont_chart.chartInstantiated
+      && document.getElementById("visits_chart")) {
     Chart.defaults.global.scaleLabel = jQuery(document).data().bp.ont_chart.scaleLabel;
 
     var data = {
