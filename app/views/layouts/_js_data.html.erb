@@ -1,3 +1,6 @@
 <script>
   jQuery(document).data({bp: {config: <%=bp_config_json.html_safe%>, user: <%=(session[:user] || {}).to_hash.to_json.html_safe%>}});
+  <%if @ontology%>
+    jQuery(document).data().bp.ontology = <%=@ontology.to_json.html_safe%>;
+  <% end %>
 </script>
