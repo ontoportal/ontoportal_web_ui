@@ -206,10 +206,6 @@
                   - LOG.add :error, "Recent mapping: #{map.id}, classes: #{map.classes.map {|c| "#{c.ontology.acronym} #{c.id}" }.join(', ')}"
                   - next
 
-%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.js", :type => "text/javascript"}
-%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/superfish/hoverIntent.js", :type => "text/javascript"}
-%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/superfish/superfish.js", :type => "text/javascript"}
-
 - ont_names = @ontologies.map{|ont| "[\"#{ont.name} (#{ont.acronym})\",\"#{ont.acronym}\"]"}
 
 :javascript

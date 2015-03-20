@@ -1,6 +1,4 @@
 - @title = "Project #{@project.name}"
-%script{:charset => "utf-8", :src => "/javascripts/jquery.rating.pack.js", :type => "text/javascript"}
-%link{:charset => "utf-8", :href => "/stylesheets/layout/jquery.rating.css", :media => "screen", :rel => "stylesheet", :title => "no title", :type => "text/css"}/
 %div{:style => "padding: 1em;"}
   %h1{:style => "font-size: xx-large;"}= @project.name
   - if session[:user] && (@project.creator.include?(session[:user].id) || session[:user].admin?)
