@@ -46,13 +46,13 @@
 
       if (typeof params["p"] !== 'undefined' && content_section != params["p"]) {
         showOntologyContent(params["p"]);
-        document.title = jQuery.bioportal.ont_pages[params["p"]].page_name + " | " + org_site;
+        document.title = jQuery.bioportal.ont_pages[params["p"]].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site;
 
         // We need to get everything using AJAX
         content_section = null;
       } else {
         showOntologyContent(content_section);
-        document.title = jQuery.bioportal.ont_pages[content_section].page_name + " | " + org_site;
+        document.title = jQuery.bioportal.ont_pages[content_section].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site;
       }
     }
   });
@@ -196,7 +196,7 @@ function showOntologyContent(content_section) {
 // Instead, fire some history events
 var nav_ont = function(link) {
   var page = jQuery(link).attr("data-bp_ont_page");
-  History.pushState({p:page}, jQuery.bioportal.ont_pages[page].page_name + " | " + org_site, "?p=" + page);
+  History.pushState({p:page}, jQuery.bioportal.ont_pages[page].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site, "?p=" + page);
 }
 
 
