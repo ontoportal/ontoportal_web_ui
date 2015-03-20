@@ -150,19 +150,6 @@ jQuery(document).ready(function() {
         }
     });
 
-    // jQuery(".search_result
-    // .additional_ont_results_title").live("click", function(event){
-    // event.preventDefault();
-    // var ontAcronym = jQuery(this).attr("data-bp_ont");
-    // jQuery("#additional_ont_results_" +
-    // ontAcronym).toggleClass("not_visible");
-    // var searchResult = jQuery(this).parents(".search_result")[0];
-    // var additionalOntResultsLink =
-    // searchResult.children(".additional_ont_results_link")[0];
-    // additionalOntResultsLink.children(".hide_link").toggleClass("not_visible");
-    // additionalOntResultsLink.children(".search_link").toggleClass("not_underlined");
-    // });
-
     jQuery("#search_results a.additional_ont_results_link").live("click", showAdditionalOntResults);
     jQuery("#search_results a.additional_cls_results_link").live("click", showAdditionalClsResults);
 
@@ -180,9 +167,9 @@ jQuery(document).ready(function() {
         // Tooltip for ontology counts
         updatePopupCounts();
         jQuery("#ont_tooltip").tooltip({
-            position: "bottom right",
-            opacity: "90%",
-            offset: [-18, 5]
+          position: "bottom right",
+          opacity: "90%",
+          offset: [-18, 5]
         });
     });
 
@@ -284,7 +271,7 @@ function autoSearch() {
 
     // Show/hide on refresh
     if (advancedOptionsSelected()) {
-        jQuery("#search_options").removeClass("not_visible");
+      jQuery("#search_options").removeClass("not_visible");
     }
 }
 
@@ -515,145 +502,6 @@ function aggregateResultsWithSubordinateOntologies(ontologies) {
     }
     return resultsWithSubordinateOntologies;
 }
-
-// function aggregateResultsWithSubordinateOntologies(ontologies, classes) {
-//   var resultsWithSubordinateOntologies = [],
-//   ownerOnt = null,
-//   tmpOnt = null,
-//   tmpResult = null,
-//   tmpClasses = null,
-//   tmpClsOwned = null,
-//   tmpOntOwner = null,
-//   clsOntOwnerTracker = {};
-//   // build hash of primary class results with an ontology owner
-//   for (var i = 0, j = ontologies.length; i < j; i++) {
-//     tmpOnt = ontologies[i];
-//     tmpOnt.sub_ont = [];  // add array for any subordinate ontology results
-//     tmpResult = tmpOnt.same_ont[0];
-//     tmpOntOwner = classes[tmpResult["@id"]].clsOntOwner;
-//     if (tmpOntOwner.index !== null) {
-//       if (tmpOntOwner.acronym === ontologyIdToAcronym(tmpResult.links.ontology)){
-//         // This primary class result is owned by it's ontology
-//         clsOntOwnerTracker[tmpResult["@id"]] = i;
-//       }
-//     }
-//   }
-//   // aggregate the subordinate results below the owner ontology results
-//   for (var i = 0, j = ontologies.length; i < j; i++) {
-//     tmpOnt = ontologies[i];
-//     tmpResult = tmpOnt.same_ont[0];
-//     if (clsOntOwnerTracker.hasOwnProperty(tmpResult["@id"])){
-//       // get the ontology that owns this class (if any)
-//       var tmpOwnerOntIndex = clsOntOwnerTracker[tmpResult["@id"]];
-//       if (tmpOwnerOntIndex === i) {
-//         // the current ontology is the primary owner
-//         resultsWithSubordinateOntologies.push(tmpOnt);
-//       } else {
-//         // There is an owner, so put this ont result into the sub_ont array
-//         var tmpOwnerOnt = ontologies[tmpOwnerOntIndex];
-//         tmpOwnerOnt.sub_ont.push(tmpOnt);
-//       }
-//     } else {
-//       // There is no ontology that owns this primary class result, just
-//       // display this at the top level (it's not a subordinate)
-//       resultsWithSubordinateOntologies.push(tmpOnt);
-//     }
-//   }
-//   return resultsWithSubordinateOntologies;
-// }
-
-
-// function aggregateResultsWithoutDuplicateClasses(ontologies, classes) {
-//     var resultsWithoutDuplicateClasses = [],
-//         tmpResult = null,
-//         tmpOnt = null,
-//         tmpOntDisplay = null,
-//         tmpOntResults = null,
-//         cloneOntResults = null,
-//         tmpClasses = null;
-//     for (var i = 0, j = ontologies.length; i < j; i++) {
-//         tmpOnt = ontologies[i];
-//         // clone the results
-//         tmpOntResults = tmpOnt.same_ont.slice(0);
-//         cloneOntResults = tmpOnt.same_ont.slice(0);
-//         // Try to find a class in the ontology results that should be displayed
-//         // at the top level.  There might be many results that are 'subordinate'
-//         // classes, which should be demoted to the bottom of the ontology results.
-//         tmpOntDisplay = false;
-//         while (tmpOntResults.length > 0) {
-//             // pull the first result
-//             tmpResult = tmpOntResults.shift();
-//             // Must be at least 1 entry.
-//             tmpClasses = classes[tmpResult["@id"]].clsResults;
-//             if (tmpClasses[0].links.ontology === tmpResult.links.ontology) {
-//                 // This is an ontology with at least one top level class to display,
-//                 // because classes[classID] has been constructed with 'owner' ontology
-//                 // results promoted to the top of the search results.
-//                 tmpOntDisplay = true;
-//                 break;
-//                 // Note: alt algorithm to remove subordinate classes cannot stop here.
-//             } else {
-//                 // Note: alternate algorithm could remove the 'subordinate' class
-//                 //       from the results for this ontology.
-//                 // Push the first result to the end of the array (using cloneOntResults).
-//                 if (cloneOntResults.length > 1) {
-//                     cloneOntResults.push(cloneOntResults.shift());
-//                 } else {
-//                     // There's nothing to manipulate, we're done.
-//                     break;
-//                 }
-//             }
-//         }
-//         if (tmpOntDisplay) {
-//             // update original array with reordered array.
-//             tmpOnt.same_ont = cloneOntResults;
-//             resultsWithoutDuplicateClasses.push(tmpOnt);
-//         }
-//     }
-//     return resultsWithoutDuplicateClasses;
-// }
-
-
-// function aggregateResultsByOntologyWithClasses(results, classes) {
-//     // NOTE: Cannot rely on the order of hash keys (obj properties) to preserve
-//     // the order of the results, see
-//     // http://stackoverflow.com/questions/280713/elements-order-in-a-for-in-loop
-//     var ontologies = {
-//         "list": [], // used to ensure we have ordered ontologies
-//         "hash": {}
-//     },
-//         ont = null,
-//         cls = null,
-//         res = null,
-//         ont_owner = null;
-//     for (var r in results) {
-//         res = results[r];
-//         cls = res['@id'];
-//         ont = res.links.ontology;
-//         if (typeof ontologies.hash[ont] === "undefined") {
-//             ontologies.hash[ont] = initOntologyResults();
-//             // Manage an ordered set of ontologies (no duplicates)
-//             ontologies.list.push(ont);
-//         }
-//         ontologies.hash[ont].same_ont.push(res);
-//         // Determine whether this result has the same ontology as the first entry in
-//         // classes[cls]. If it is not, skip this result because it will be listed
-//         // below the 'owner' ontology. This means that aggregation for classes with
-//         // the same URI will override aggregation for different classes in the same
-//         // ontology.
-//         ont_owner = (classes[cls].clsResults[0].links.ontology === ont);
-//         // if (! ont_owner) {
-//         // continue;
-//         // }
-//         if (ont_owner && classes[cls].clsResults.length > 1) {
-//             // This result must be a class in an 'owner' ontology (or there are no
-//             // 'owner' ontologies for this class). Now aggregate the same class from
-//             // other ontologies within this result (skip the first entry).
-//             ontologies.hash[ont].same_cls = classes[cls].clsResults.slice(1);
-//         }
-//     }
-//     return resultsByOntologyArray(ontologies);
-// }
 
 
 function aggregateResultsByOntology(results) {
