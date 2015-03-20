@@ -14,8 +14,8 @@
 
     // Bind to State Change
     History.Adapter.bind(window, 'statechange', function() {
-        var state = History.getState();
-        autoSearch();
+      var state = History.getState();
+      autoSearch();
     });
 }(window));
 
@@ -273,6 +273,8 @@ function autoSearch() {
             jQuery("#search_categories").val(categories);
             jQuery("#search_categories").trigger("liszt:updated");
         }
+
+      performSearch();
     }
 
     // Show/hide on refresh
