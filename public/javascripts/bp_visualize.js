@@ -1,5 +1,3 @@
-var searchbox;
-
 // Called when the "Go" button on the Jump To form is clicked
 function jumpToValue(li){
   jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
@@ -23,7 +21,7 @@ function jumpToValue(li){
     if (false) {
       History.pushState({p:"classes", conceptid:sValue, suid:"jump_to", flat:true, label:li.extra[4]}, jQuery.bioportal.ont_pages["classes"].page_name + " | " + org_site, "?p=classes&conceptid=" + sValue);
     } else {
-      document.location="/ontologies/#{@ontology.acronym}/?p=classes&conceptid="+encodeURIComponent(sValue)+"&jump_to_nav=true";
+      document.location="/ontologies/"+jQuery(document).data().bp.ontology.acronym+"/?p=classes&conceptid="+encodeURIComponent(sValue)+"&jump_to_nav=true";
       jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
       return;
     }
@@ -73,24 +71,26 @@ function formatItem(row) {
   return obsolete_prefix + row0_markup + matchType + obsolete_suffix;
 }
 
-classes_init = function(){
+var classes_init = function(){
   // Override the side of the bd_content div to avoid problems with
   // the window resizing, which can sometimes cause the right-hand content div to drop down
   var bd_content_width = jQuery("#ontology_content").width();
   jQuery("#bd_content").width(bd_content_width);
 
   // Split bar
-  jQuery("#bd_content").splitter({
-    sizeLeft: 400,
-    resizeToWidth: true,
-    cookie: "vsplitbar_position"
-  });
+  if (jQuery("#bd_content").find(".vsplitbar").length == 0) {
+    jQuery("#bd_content").splitter({
+      sizeLeft: 400,
+      resizeToWidth: true,
+      cookie: "vsplitbar_position"
+    });
+  }
 }
 
 // The tab system
 jQuery(".tab").live("click", function(){
-    var tabId = jQuery(this).children("a:first").attr("href").replace("#", "");
-    showClassesTab(tabId);
+  var tabId = jQuery(this).children("a:first").attr("href").replace("#", "");
+  showClassesTab(tabId);
 });
 
 function showClassesTab(tabId) {
@@ -134,26 +134,22 @@ function callTab(tab_name, url) {
     }
 }
 
-search_box_init = function(){
-  jQuery("#search_box").bioportal_autocomplete("/search/json_search/#{@ontology.acronym}", {
-    extraParams: { objecttypes: "class" },
-    width: "400px",
-    selectFirst: true,
-    lineSeparator: "~!~",
-    matchSubset: 0,
-    minChars: 1,
-    maxItemsToShow: 25,
-    onFindValue: jumpToValue,
-    onItemSelect: jumpToSelect,
-    formatItem: formatItem
-  });
-  searchbox = jQuery("#search_box")[0].autocompleter;
+var search_box_init = function(){
+  if (jQuery("#search_box").bioportal_autocomplete) {
+    jQuery("#search_box").bioportal_autocomplete("/search/json_search/"+jQuery(document).data().bp.ontology.acronym, {
+      extraParams: { objecttypes: "class" },
+      width: "400px",
+      selectFirst: true,
+      lineSeparator: "~!~",
+      matchSubset: 0,
+      minChars: 1,
+      maxItemsToShow: 25,
+      onFindValue: jumpToValue,
+      onItemSelect: jumpToSelect,
+      formatItem: formatItem
+    });
+  }
 }
-
-jQuery(document).ready(function() {
-  classes_init();
-  search_box_init();
-});
 
 jQuery(document).ready(function(){
   // TODO_REV: Handle views (replace `if (false)` with `@ontology.isView == 'true'`)
@@ -231,4 +227,9 @@ jQuery(document).ready(function(){
   jQuery("#purl_input").live("focus", function(){
     this.select();
   });
+});
+
+jQuery(document).ready(function() {
+  classes_init();
+  search_box_init();
 });
