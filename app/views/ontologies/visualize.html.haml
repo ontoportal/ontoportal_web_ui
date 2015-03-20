@@ -128,3 +128,9 @@
     =# TODO_REV: Mappings support (create mapping) render :partial => '/mappings/new_form', :locals => { :ontology_from => @ontology.id, :concept_from => @concept.fullId }
 - else # found an error
   = "<div id=\"error\"><h2>#{@error}</h2></div>"
+
+:javascript
+  jQuery(document).ready(function() {
+    classes_init();
+    search_box_init();
+  });
