@@ -15,4 +15,6 @@
         = render partial: "reviews/review"
 :javascript
   // Do this after the HTML above loads
-  jQuery('input.star').rating();
+  jQuery(document).ready(function() {
+    jQuery('input.star').rating();
+  });
