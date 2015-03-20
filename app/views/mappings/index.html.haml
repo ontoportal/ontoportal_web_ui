@@ -19,9 +19,6 @@
       Loading mappings...
     #mappingCount{:style => "text-align:center;overflow:hidden;padding:10px;"}
 
-= javascript_include_tag "/javascripts/JqueryPlugins/datatables/js/jquery.dataTables.min.js"
-= javascript_include_tag "/javascripts/JqueryPlugins/datatables/plugins/dataTables.formatted.number.js"
-= javascript_include_tag "/themes/cupertino/js/jquery-ui-1.8.1.custom.min.js"
 :javascript
   function loadMappings(value) {
     jQuery('#mappingCount').html("");
@@ -52,13 +49,13 @@
   }
 
   jQuery(document).ready(function(){
-      jQuery("#search_ontologies").chosen({search_contains: true});
+    jQuery("#search_ontologies").chosen({search_contains: true});
 
-      // Handle visualization changes
-      jQuery("#display_options input").on("click", function(e, button){
-        var selectedOnt = jQuery("#search_ontologies").val();
-        if (selectedOnt !== "") {
-          loadMappings(selectedOnt);
-        }
-      });
+    // Handle visualization changes
+    jQuery("#display_options input").on("click", function(e, button){
+      var selectedOnt = jQuery("#search_ontologies").val();
+      if (selectedOnt !== "") {
+        loadMappings(selectedOnt);
+      }
+    });
   });
