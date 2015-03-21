@@ -1,56 +1,3 @@
-jQuery(document).ready(function() {
-  jQuery(".ontology_picker_single").live("change", function(){
-    var current_side = jQuery(this).attr("id").replace("_picker", "");
-    jQuery("#" + current_side)[0].autocompleter.flushCache();
-    jQuery("#" + current_side)[0].autocompleter.getOptions().width = 450;
-
-    // Set the autocompleter ontology value
-    jQuery("#" + current_side)[0].autocompleter.getExtraParams()["id"] = jQuery(this).val();
-
-    if (jQuery(this).val() == "") {
-      jQuery("#" + current_side + "_bioportal_ontology_id").val("");
-    }
-  });
-
-  jQuery("input.search_autocomplete").live("autocomplete_selected", function(){
-    var input = jQuery(this);
-    if (input.val() != input.attr("title") && input.val() !== "") {
-      getClassDetails(this);
-    }
-  });
-
-  jQuery("input.search_autocomplete").blur(function(){
-    var input = jQuery(this);
-    setTimeout(function() {
-      if (input.val() == "" || input.val() == input.attr("title")) {
-        jQuery("#" + input.attr("id") + "_concept_details").hide();
-      }
-    }, 1);
-  });
-
-  jQuery("input.search_autocomplete").each(function(){
-    var input = jQuery(this);
-    if (input.val() != input.attr("title") && input.val() != "") {
-      getClassDetails(this);
-    }
-  });
-
-  // Reset mapping UI when tree changes or loaded from ajax
-  jQuery(document).live("tree_changed", resetMappingUIWithFacebox);
-  jQuery(document).live("classes_tab_visible", resetMappingUI);
-
-  // Details/visualize link to show details pane and visualize flexviz
-  jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
-  jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
-
-  jQuery('a[rel*=facebox]').facebox();
-
-  // Wire up popup for advanced options
-  create_mapping_advanced_options.init();
-
-  jQuery("#create_mapping_button").live("click", bp_createMapping.create);
-});
-
 // Also in bp_mappings.js
 function updateMappingDeletePermissions() {
   var mapping_permission_checkbox = jQuery("#delete_mappings_permission");
@@ -212,3 +159,55 @@ var create_mapping_advanced_options = {
 
 }
 
+jQuery(document).ready(function() {
+  jQuery(".ontology_picker_single").live("change", function(){
+    var current_side = jQuery(this).attr("id").replace("_picker", "");
+    jQuery("#" + current_side)[0].autocompleter.flushCache();
+    jQuery("#" + current_side)[0].autocompleter.getOptions().width = 450;
+
+    // Set the autocompleter ontology value
+    jQuery("#" + current_side)[0].autocompleter.getExtraParams()["id"] = jQuery(this).val();
+
+    if (jQuery(this).val() == "") {
+      jQuery("#" + current_side + "_bioportal_ontology_id").val("");
+    }
+  });
+
+  jQuery("input.search_autocomplete").live("autocomplete_selected", function(){
+    var input = jQuery(this);
+    if (input.val() != input.attr("title") && input.val() !== "") {
+      getClassDetails(this);
+    }
+  });
+
+  jQuery("input.search_autocomplete").blur(function(){
+    var input = jQuery(this);
+    setTimeout(function() {
+      if (input.val() == "" || input.val() == input.attr("title")) {
+        jQuery("#" + input.attr("id") + "_concept_details").hide();
+      }
+    }, 1);
+  });
+
+  jQuery("input.search_autocomplete").each(function(){
+    var input = jQuery(this);
+    if (input.val() != input.attr("title") && input.val() != "") {
+      getClassDetails(this);
+    }
+  });
+
+  // Reset mapping UI when tree changes or loaded from ajax
+  jQuery(document).live("tree_changed", resetMappingUIWithFacebox);
+  jQuery(document).live("classes_tab_visible", resetMappingUI);
+
+  // Details/visualize link to show details pane and visualize flexviz
+  jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
+  jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
+
+  jQuery('a[rel*=facebox]').facebox();
+
+  // Wire up popup for advanced options
+  create_mapping_advanced_options.init();
+
+  jQuery("#create_mapping_button").live("click", bp_createMapping.create);
+});

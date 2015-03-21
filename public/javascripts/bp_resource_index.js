@@ -39,6 +39,12 @@ jQuery(document).ready(function () {
     switchResources(this);
   });
 
+  // Show/Hide advanced options
+  jQuery("#advanced_options").click(function(event) {
+    jQuery("#search_options").toggleClass("not_visible");
+    jQuery("#hide_advanced_options").toggleClass("not_visible");
+  });
+
   // Spinner for pagination
   jQuery(".pagination a").live("click", function () {
     jQuery(this).parents("div.pagination").append('&nbsp;&nbsp; <span style="font-size: small; font-weight: normal;">loading</span> <img style="vertil-align: text-bottom;" src="/images/spinners/spinner_000000_16px.gif">');
@@ -101,6 +107,8 @@ jQuery(document).ready(function () {
         }
       });
     });
+
+    pageInit();
   }
 
   function markupClass(cls) {
