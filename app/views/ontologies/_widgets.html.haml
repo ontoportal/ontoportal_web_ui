@@ -194,7 +194,7 @@
               %a.thickbox.getcode{:href => "#{get_code_prefix}&inlineId=vis".html_safe} Get Code
             %td
               #bp_vis_container
-                <iframe frameborder="0" src="/widgets/visualization?ontology=#{@ontology.acronym}&class=#{CGI.escape(@ontology.explore.classes["collection"].first.id)}&apikey=#{$APIKEY}" width="100%" height="350"></iframe>
+                -# <iframe frameborder="0" src="/widgets/visualization?ontology=#{@ontology.acronym}&class=#{CGI.escape(@ontology.explore.classes["collection"].first.id)}&apikey=#{$APIKEY}" width="100%" height="350"></iframe>
               #vis{:style => "display:none;"}
                 %h2 Step 2: Follow the Instructions
                 %hr/

@@ -54,13 +54,3 @@
   var ont_ids = #{@ont_ids.to_json};
   var resources = #{@resources_hash.to_json};
   var orgSite = #{$ORG_SITE.to_json};
-
-  jQuery(document).ready(function(){
-    pageInit();
-  });
-
-  // Show/Hide advanced options
-  jQuery("#advanced_options").click(function(event) {
-    jQuery("#search_options").toggleClass("not_visible");
-    jQuery("#hide_advanced_options").toggleClass("not_visible");
-  });

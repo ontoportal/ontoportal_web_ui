@@ -107,6 +107,8 @@ jQuery(document).ready(function () {
         }
       });
     });
+
+    pageInit();
   }
 
   function markupClass(cls) {
