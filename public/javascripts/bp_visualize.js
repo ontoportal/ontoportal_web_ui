@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 (function(window,undefined) {
   // Abort it not right page
   var path = currentPathArray();
