@@ -1,7 +1,7 @@
 (function(window,undefined) {
   // Abort it not right page
   var path = currentPathArray();
-  if (path[0] !== "ontologies" || (path[0] === "ontologies" && path.length > 2)) {
+  if (path[0] !== "ontologies" || (path[0] === "ontologies" && path.length !== 2)) {
     return;
   }
 
