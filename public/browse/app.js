@@ -45,6 +45,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
     this.field('description');
     this.ref('id');
   });
+  $scope.ontIndex.pipeline.reset();
 
   // Default setup for facets
   $scope.facets = {
