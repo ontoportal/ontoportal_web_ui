@@ -76,31 +76,35 @@
   </script>
 
 :javascript
-  jQuery("#ont_properties").splitter({
-    sizeLeft: 400,
-    resizeToWidth: true
-  });
+  jQuery(document).data().bp.ontPropertiesTab = {};
 
-  var content_width = jQuery("#ontology_content").width();
-  jQuery("#ont_properties").width(content_width);
+  jQuery(document).data().bp.ontPropertiesTab.init = function() {
+    jQuery("#ont_properties").splitter({
+      sizeLeft: 400,
+      resizeToWidth: true
+    });
 
-  var source = jQuery("#property-details").html();
-  var propDetailsTemp = Handlebars.compile(source);
+    var content_width = jQuery("#ontology_content").width();
+    jQuery("#ont_properties").width(content_width);
 
-  $("#propTree").NCBOPropertyTree({
-    ontology: "#{@ontology.acronym}",
-    ncboUIURL: jQuery(document).data().bp.config.ui_url,
-    onInit: function() {
-      var ontPropTree = $("#propTree").data().NCBOPropertyTree;
-      var data = $("#propTree").find("a:first").data();
-      if (data !== null) {
-        ontPropTree.selectClass(data.id);
-        data.id = decodeURIComponent(data.id);
-        jQuery("#prop_contents").html(propDetailsTemp(data));
+    var source = jQuery("#property-details").html();
+    var propDetailsTemp = Handlebars.compile(source);
+
+    $("#propTree").NCBOPropertyTree({
+      ontology: "#{@ontology.acronym}",
+      ncboUIURL: jQuery(document).data().bp.config.ui_url,
+      onInit: function() {
+        var ontPropTree = $("#propTree").data().NCBOPropertyTree;
+        var data = $("#propTree").find("a:first").data();
+        if (data !== null) {
+          ontPropTree.selectClass(data.id);
+          data.id = decodeURIComponent(data.id);
+          jQuery("#prop_contents").html(propDetailsTemp(data));
+        }
       }
-    }
-  }).on("afterSelect", function (e, classId, label, node) {
-    var data = node.data();
-    data.id = decodeURIComponent(data.id);
-    jQuery("#prop_contents").html(propDetailsTemp(data));
-  });
+    }).on("afterSelect", function (e, classId, label, node) {
+      var data = node.data();
+      data.id = decodeURIComponent(data.id);
+      jQuery("#prop_contents").html(propDetailsTemp(data));
+    });
+  }

@@ -129,10 +129,3 @@
 - else # found an error
   = "<div id=\"error\"><h2>#{@error}</h2></div>"
 
-:javascript
-  jQuery(document).ready(function() {
-    if (typeof classes_init !== 'undefined')
-      classes_init();
-    if (typeof search_box_init !== 'undefined')
-      search_box_init();
-  });

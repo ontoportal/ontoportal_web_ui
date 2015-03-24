@@ -5,6 +5,8 @@
     return;
   }
 
+  jQuery(document).data().bp.classesTab = {};
+
   // Called when the "Go" button on the Jump To form is clicked
   function jumpToValue(li){
     jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
@@ -78,7 +80,7 @@
     return obsolete_prefix + row0_markup + matchType + obsolete_suffix;
   }
 
-  var classes_init = function(){
+  jQuery(document).data().bp.classesTab.classes_init = function(){
     // Override the side of the bd_content div to avoid problems with
     // the window resizing, which can sometimes cause the right-hand content div to drop down
     var bd_content_width = jQuery("#ontology_content").width();
@@ -141,7 +143,7 @@
       }
   }
 
-  var search_box_init = function(){
+  jQuery(document).data().bp.classesTab.search_box_init = function(){
     if (jQuery("#search_box").bioportal_autocomplete) {
       jQuery("#search_box").bioportal_autocomplete("/search/json_search/"+jQuery(document).data().bp.ontology.acronym, {
         extraParams: { objecttypes: "class" },
@@ -230,8 +232,5 @@
     jQuery("#purl_input").live("focus", function(){
       this.select();
     });
-
-    classes_init();
-    search_box_init();
   });
 })(window);
