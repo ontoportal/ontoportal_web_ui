@@ -2,39 +2,6 @@
 var rec = { }
 rec.maxInputWords = 500;
 
-jQuery(document).ready(function() {
-    // Abort it not right page
-    var path = currentPathArray();
-    if (path[0] !== "recommender") {
-      return;
-    }
-
-    rec.emptyInput = true;
-    $("#recommenderButton").click(rec.getRecommendations);
-    $("#insertInputLink").click(rec.insertInput);
-    $("input[name=input_type]:radio").change(function () {
-        rec.enableEdition()});
-    $("input[name=output_type]:radio").change(function () {
-        rec.enableEdition()});
-    $("#ontologyPicker").click(rec.enableEdition);
-    $("#input_wc").click(rec.enableEdition);
-    $("#input_wa").click(rec.enableEdition);
-    $("#input_wd").click(rec.enableEdition);
-    $("#input_ws").click(rec.enableEdition);
-    $("#input_max_ontologies").click(rec.enableEdition);
-    $("#input_wc").focus(rec.enableEdition);
-    $("#input_wa").focus(rec.enableEdition);
-    $("#input_wd").focus(rec.enableEdition);
-    $("#input_ws").focus(rec.enableEdition);
-    $("#input_max_ontologies").focus(rec.enableEdition);
-    $("#inputText").click(rec.prepareForRealInput);
-    $("#advancedOptionsLink").click(rec.showOrHideAdvancedOptions);
-    $("#advancedOptions").hide();
-    $(".recommenderSpinner").hide();
-    $("#editButton").hide();
-    rec.hideErrorMessages();
-});
-
 rec.showOrHideAdvancedOptions = function() {
     $("#advancedOptions").toggle();
 }
@@ -345,3 +312,36 @@ rec.checkFirst = function(data) {
     $("#inputTextHighlighted").show();
     $("#chk0").parents(".row:first").css("background-color", "#e2ebf0");
 }
+
+jQuery(document).ready(function() {
+    // Abort it not right page
+    var path = currentPathArray();
+    if (path[0] !== "recommender") {
+      return;
+    }
+
+    rec.emptyInput = true;
+    $("#recommenderButton").click(rec.getRecommendations);
+    $("#insertInputLink").click(rec.insertInput);
+    $("input[name=input_type]:radio").change(function () {
+        rec.enableEdition()});
+    $("input[name=output_type]:radio").change(function () {
+        rec.enableEdition()});
+    $("#ontologyPicker").click(rec.enableEdition);
+    $("#input_wc").click(rec.enableEdition);
+    $("#input_wa").click(rec.enableEdition);
+    $("#input_wd").click(rec.enableEdition);
+    $("#input_ws").click(rec.enableEdition);
+    $("#input_max_ontologies").click(rec.enableEdition);
+    $("#input_wc").focus(rec.enableEdition);
+    $("#input_wa").focus(rec.enableEdition);
+    $("#input_wd").focus(rec.enableEdition);
+    $("#input_ws").focus(rec.enableEdition);
+    $("#input_max_ontologies").focus(rec.enableEdition);
+    $("#inputText").click(rec.prepareForRealInput);
+    $("#advancedOptionsLink").click(rec.showOrHideAdvancedOptions);
+    $("#advancedOptions").hide();
+    $(".recommenderSpinner").hide();
+    $("#editButton").hide();
+    rec.hideErrorMessages();
+});
