@@ -333,7 +333,6 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
   });
 
   jQuery.bioportal.ont_pages["summary"] = new jQuery.bioportal.OntologyPage("summary", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=summary&ajax=true", "Problem retrieving summary", jQuery(document).data().bp.ont_viewer.ontology_name + " - Summary", "Summary", function() {
-    console.log("init")
     jQuery(document).data().bp.ontChart.init();
   });
 
