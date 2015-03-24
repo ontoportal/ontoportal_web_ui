@@ -3,6 +3,12 @@ var rec = { }
 rec.maxInputWords = 500;
 
 jQuery(document).ready(function() {
+    // Abort it not right page
+    var path = currentPathArray();
+    if (path[0] !== "recommender") {
+      return;
+    }
+
     rec.emptyInput = true;
     $("#recommenderButton").click(rec.getRecommendations);
     $("#insertInputLink").click(rec.insertInput);
