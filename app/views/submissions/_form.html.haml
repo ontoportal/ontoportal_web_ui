@@ -224,10 +224,10 @@
             - @submission.contact.each_with_index do |contact, i|
               %div.contact
                 Name:&nbsp;
-                = text_field :submission, :"contact[#{i}][name]", value: contact.name
+                = text_field :submission, :"contact[#{i}][name]", value: contact["name"]
                 &nbsp;&nbsp;
                 Email:&nbsp;
-                = text_field :submission, :"contact[#{i}][email]", value: contact.email
+                = text_field :submission, :"contact[#{i}][email]", value: contact["email"]
           - else
             %div.contact
               Name:&nbsp;
