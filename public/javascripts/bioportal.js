@@ -719,5 +719,11 @@ var BP_getCookie = function(cookie) {
 }
 
 var currentPathArray = function() {
-  return window.location.pathname.slice(1, window.location.pathname.length).split('/');
+  var path, cleanPath = [];
+  path = window.location.pathname.split('/');
+  for (var i = 0; i < path.length; i++) {
+    if (path[i].length > 0)
+      cleanPath.push(path[i]);
+  }
+  return cleanPath;
 }

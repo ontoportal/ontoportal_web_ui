@@ -131,6 +131,8 @@
 
 :javascript
   jQuery(document).ready(function() {
-    classes_init();
-    search_box_init();
+    if (typeof classes_init !== 'undefined')
+      classes_init();
+    if (typeof search_box_init !== 'undefined')
+      search_box_init();
   });

@@ -196,10 +196,8 @@
         });
       }
     */
-  });
 
-  // Tab auto-select based on parameter "t"
-  jQuery(document).ready(function(){
+    // Tab auto-select based on parameter "t"
     var url, urlFragment, paramsList, params = {}, splitParam, content;
     url = document.URL;
 
@@ -218,10 +216,8 @@
         showClassesTab(params["t"]);
       }
     }
-  });
 
-  // Javascript for the permalink box
-  jQuery(document).ready(function(){
+    // Javascript for the permalink box
     jQuery("#close_permalink").live("click", function(){
       jQuery("#purl_link_container").hide();
     });
@@ -234,9 +230,7 @@
     jQuery("#purl_input").live("focus", function(){
       this.select();
     });
-  });
 
-  jQuery(document).ready(function() {
     classes_init();
     search_box_init();
   });
