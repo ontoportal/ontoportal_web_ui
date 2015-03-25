@@ -6,7 +6,7 @@ module OntologiesHelper
     html = []
     details.each do |title, value|
       html << content_tag(:tr) do
-        concat(content_tag(:th, title)) 
+        concat(content_tag(:th, title))
         concat(content_tag(:td, raw(value)))
       end
     end
@@ -40,11 +40,13 @@ module OntologiesHelper
       end
     else
       uri = submission.id + "/download?apikey=#{get_apikey}"
-      link = "<a href='#{uri}'>#{submission.hasOntologyLanguage}</a>"
+      link = "<a href='#{uri}'>#{submission.pretty_format}</a>"
       latest = ontology.explore.latest_submission({:include_status => 'ready'})
       if latest && latest.submissionId == submission.submissionId
         link += " | <a href='#{ontology.id}/download?apikey=#{get_apikey}&download_format=csv'>CSV</a>"
-        link += " | <a href='#{ontology.id}/download?apikey=#{get_apikey}&download_format=rdf'>RDF</a>"
+        if !latest.hasOntologyLanguage.eql?("UMLS")
+          link += " | <a href='#{ontology.id}/download?apikey=#{get_apikey}&download_format=rdf'>RDF/XML</a>"
+        end
       end
       unless submission.diffFilePath.nil?
         uri = submission.id + "/download_diff?apikey=#{get_apikey}"
