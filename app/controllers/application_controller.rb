@@ -382,14 +382,12 @@ class ApplicationController < ActionController::Base
         @concept.prefLabel = "Please search for a class using the Jump To field above"
         @concept.obsolete = false
         @concept.id = "bp_fake_root"
-        @concept.child_size = 0
         @concept.properties = {}
         @concept.children = []
       else
         # Display only the requested class in the tree
         @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
         @concept.children = []
-        @concept.child_size = 0
       end
       @root = LinkedData::Client::Models::Class.new
       @root.children = [@concept]

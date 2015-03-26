@@ -11,21 +11,12 @@ class ConceptsController < ApplicationController
   def show
     # Handle multiple methods of passing concept ids
     params[:id] = params[:id] ? params[:id] : params[:conceptid]
-    too_many_children_override = params[:too_many_children_override].eql?("true")
 
     if params[:id].nil? || params[:id].empty?
       render :text => "Error: You must provide a valid concept id"
       return
     end
 
-    if params[:callback].eql?('children') && params[:child_size].to_i > $MAX_CHILDREN && params[:child_size].to_i < $MAX_POSSIBLE_DISPLAY && !too_many_children_override
-      retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{params[:ontology]}/?conceptid=#{CGI.escape(params[:id])}&callback=children&too_many_children_override=true'>Get all classes</a>"
-      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} classes at this level. Retrieving these may take several minutes. #{retry_link}</div>"
-      return
-    elsif params[:callback].eql?('children') && params[:child_size].to_i > $MAX_POSSIBLE_DISPLAY && !too_many_children_override
-      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} classes at this level. Please use the \"Jump To\" to search for specific classes.</div>"
-      return
-    end
     # Note that find_by_acronym includes views by default
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     # Get the latest 'ready' submission, or fallback to any latest submission
