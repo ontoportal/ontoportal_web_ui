@@ -173,32 +173,6 @@
       });
     }
 
-    // TODO_REV: Handle search index notice when ontology isn't indexed
-    /*
-      if !@ontology.in_search_index?
-        if !@ontology.latest?
-        // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
-        jQuery("#qsearch").children().filter(":input").each(function(){
-          jQuery(this).attr("readonly", true);
-        });
-        jQuery("#qsearch").attr("style", "color: grey;");
-
-        if @ontology.latest?
-          message = "This ontology has recently been updated and new classes may not yet be available through \"Jump To\""
-        else
-          message = "\"Jump To\" only works with the most recently indexed version of this ontology"
-
-        // Set up a hovertip on the qsearch input element
-        jQuery("#qsearch :input").attr("title", message);
-        jQuery("#qsearch :input").tooltip({
-            position: "top center",
-            offset: [-5, 0],
-            tip: '.tooltip',
-            opacity: 0.9
-        });
-      }
-    */
-
     // Tab auto-select based on parameter "t"
     var url, urlFragment, paramsList, params = {}, splitParam, content;
     url = document.URL;
