@@ -65,6 +65,7 @@ function displayTree(data) {
   var new_concept_id = data.conceptid;
   var new_concept_link = getConceptLinkEl(new_concept_id);
   var concept_label;
+  var old_html;
 
   var ontology_id = jQuery(document).data().bp.ont_viewer.ontology_id;
   var ontology_version_id = jQuery(document).data().bp.ont_viewer.ontology_version_id;
@@ -97,6 +98,7 @@ function displayTree(data) {
       concept_label = (new_concept_link.html() == null) ? "" : " - " + new_concept_link.html().trim().replace(/<(?:.|\n)*?>/gm, '');
 
       // Retrieve new concept and display tree
+      old_html = jQuery.bioportal.ont_pages["classes"].html;
       jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes",
         "/ontologies/" + ontology_id + "?p=classes" + new_concept_param,
         "Problem retrieving classes",
@@ -155,6 +157,8 @@ function displayTree(data) {
         jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
         if (document.getElementById(new_concept_id) !== null) {
           // We have a visible node that's been clicked, get the details for that node
+          jQuery.bioportal.ont_pages["classes"].html = old_html;
+          jQuery.bioportal.ont_pages["classes"].published = true;
           nodeClicked(new_concept_id);
         } else {
           // Get a new copy of the tree because our concept isn't visible
