@@ -19,29 +19,18 @@ class ConceptsController < ApplicationController
 
     # Note that find_by_acronym includes views by default
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    # Get the latest 'ready' submission, or fallback to any latest submission
-    # TODO: change the logic here if the fallback will crash the visualization
-    @submission = get_ontology_submission_ready(@ontology)  # application_controller
-
-    @concept = @ontology.explore.single_class({full: true}, params[:id])
-    raise Error404 if @concept.nil?
-
-    # TODO: convert 'disjointWith' parameters into classes
-    # TODO: compare with concepts_helper::concept_properties2hash(properties)
-    ## Try to resolve 'disjointWith' parameters into classes
-    #@concept_properties = struct_to_hash(@concept.properties)
-    #disjoint_key = @concept_properties.keys.map {|k| k if k.to_s.include? 'disjoint' }.compact.first
-    #if not disjoint_key.nil?
-    #  disjoint_val = @concept_properties[disjoint_key]
-    #  if disjoint_val.instance_of? Array
-    #    # Assume we have a list of class URIs that can be resolved by the batch service
-    #    classes = disjoint_val.map {|cls| {:class => cls, :ontology => @ontology.id } }
-    #  end
-    #end
-
     if request.xhr?
+      @concept = @ontology.explore.single_class({include: "prefLabel"}, params[:id])
+      raise Error404 if @concept.nil?
       show_ajax_request # process an ajax call
     else
+      # Get the latest 'ready' submission, or fallback to any latest submission
+      # TODO: change the logic here if the fallback will crash the visualization
+      @submission = get_ontology_submission_ready(@ontology)  # application_controller
+
+      @concept = @ontology.explore.single_class({full: true}, params[:id])
+      raise Error404 if @concept.nil?
+
       show_uri_request # process a full call
       render :file => '/ontologies/visualize', :use_full_path => true, :layout => 'ontology'
     end
@@ -169,7 +158,7 @@ private
       gather_details
       render :partial => 'load'
     when 'children' # Children is called only for drawing the tree
-      @children = @concept.explore.children(full: true, pagesize: 750).collection || []
+      @children = @concept.explore.children(pagesize: 750).collection || []
       @children.sort!{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase} unless @children.empty?
       render :partial => 'child_nodes'
     end
