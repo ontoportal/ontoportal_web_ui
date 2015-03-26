@@ -161,18 +161,6 @@
   }
 
   jQuery(document).ready(function(){
-    // TODO_REV: Handle views (replace `if (false)` with `@ontology.isView == 'true'`)
-    if (false) {
-      // Set up a hovertip on the qsearch input element
-      jQuery("#resource_index_top").attr("style", "color: grey;");
-      jQuery("#resource_index_top").attr("title", "Resource Index isn't available for Views");
-      jQuery("#resource_index_top").tooltip({
-          position: "bottom center",
-          tip: '.tooltip',
-          opacity: 0.7
-      });
-    }
-
     // Tab auto-select based on parameter "t"
     var url, urlFragment, paramsList, params = {}, splitParam, content;
     url = document.URL;
