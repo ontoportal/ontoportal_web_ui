@@ -20,7 +20,8 @@ class ConceptsController < ApplicationController
     # Note that find_by_acronym includes views by default
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     if request.xhr?
-      @concept = @ontology.explore.single_class({include: "prefLabel"}, params[:id])
+      display = params[:callback].eql?('load') ? {full: true} : {display: "prefLabel"}
+      @concept = @ontology.explore.single_class(display, params[:id])
       raise Error404 if @concept.nil?
       show_ajax_request # process an ajax call
     else
