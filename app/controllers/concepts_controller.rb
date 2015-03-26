@@ -174,6 +174,7 @@ private
   # gathers the information for a node
   def gather_details
     @mappings = @concept.explore.mappings
+    @notes = @concept.explore.notes
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
   end
