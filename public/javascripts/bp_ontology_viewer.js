@@ -157,7 +157,7 @@ function displayTree(data) {
         jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
         if (document.getElementById(new_concept_id) !== null) {
           // We have a visible node that's been clicked, get the details for that node
-          jQuery.bioportal.ont_pages["classes"].html = old_html;
+          jQuery.bioportal.ont_pages["classes"].manualRetrieve(old_html);
           jQuery.bioportal.ont_pages["classes"].published = true;
           nodeClicked(new_concept_id);
         } else {
@@ -227,7 +227,7 @@ jQuery(document).ready(function() {
   });
 
   // Set up the JS version of the active content section
-  jQuery.bioportal.ont_pages[content_section].html = jQuery("#ont_" + content_section + "_content").html();
+  jQuery.bioportal.ont_pages[content_section].manuelRetrieve(jQuery("#ont_" + content_section + "_content").html());
   jQuery.bioportal.ont_pages[content_section].published = true;
   if (typeof jQuery.bioportal.ont_pages[content_section].init === 'function') {
     jQuery.bioportal.ont_pages[content_section].init(jQuery.bioportal.ont_pages[content_section]);
@@ -273,6 +273,7 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
   this.errored = false;
   this.html;
   this.published = false;
+  this.retrieved = false;
   this.init = init || null;
 
   this.retrieve = function(){
@@ -282,12 +283,19 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
       context: this,
       success: function(data){
         this.html = data;
+        this.retrieved = true;
       },
       error: function(){
         this.errored = true;
+        this.retrieved = true;
       }
     });
   };
+
+  this.manuelRetrieve = function(html) {
+    this.html = html;
+    this.retrieved = true;
+  }
 
   this.retrieve_and_publish = function(){
     jQuery.ajax({
@@ -295,26 +303,44 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
       url: this.location_path,
       context: this,
       success: function(data){
+        this.manuelRetrieve(data);
         this.publish();
       },
       error: function(){
         this.errored = true;
+        this.manuelRetrieve(null);
         this.publish();
       }
     });
   };
 
+  this.publishAction = function() {
+    jQuery("#ont_" + this.id + "_content").html("");
+    jQuery("#ont_" + this.id + "_content").html(this.html);
+    document.title = jQuery.bioportal.ont_pages["classes"].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site;
+    if (typeof this.init === 'function') {
+      this.init(this);
+    }
+    jQuery.unblockUI();
+    this.published = true;
+  }
+
   this.publish = function(){
     if (this.errored === false) {
       if (this.published) { return; }
-      jQuery("#ont_" + this.id + "_content").html("");
-      jQuery("#ont_" + this.id + "_content").html(this.html);
-      document.title = jQuery.bioportal.ont_pages["classes"].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site;
-      if (typeof this.init === 'function') {
-        this.init(this);
+      if (this.retrieved) {
+        this.publishAction();
+      } else {
+        var _this = this;
+        var publishRetry = setInterval(function() {
+          console.log("retrying!!! " + _this.retrieved)
+          if (_this.retrieved) {
+            console.log("publishing!!!")
+            _this.publishAction();
+            clearInterval(publishRetry);
+          }
+        }, 100);
       }
-      jQuery.unblockUI();
-      this.published = true;
     } else {
       jQuery("#ont_" + this.id + "_content").html("");
       jQuery("#ont_" + this.id + "_content").html("<div style='padding: 1em;'>" + this.error_string + "</div>");
