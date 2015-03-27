@@ -373,6 +373,7 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
 
   jQuery.bioportal.ont_pages["notes"] = new jQuery.bioportal.OntologyPage("notes", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=notes&ajax=true", "Problem retrieving notes", jQuery(document).data().bp.ont_viewer.ontology_name + " - Notes", "Notes", function() {
     setupNotesFacebox();
+    jQuery("#ont_notes_content .link_button").button();
   });
 
   jQuery.bioportal.ont_pages["widgets"] = new jQuery.bioportal.OntologyPage("widgets", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=widgets&ajax=true", "Problem retrieving widgets", jQuery(document).data().bp.ont_viewer.ontology_name + " - Widgets", "Widgets");
