@@ -1,6 +1,5 @@
 jQuery(document).ready(function(){
-  setupFacebox();
-  setupFaceboxSizing();
+  setupNotesFaceboxSizing();
   bindAddCommentClick();
   bindAddProposalClick();
   bindProposalChange();
@@ -23,12 +22,17 @@ function getUser() {
   return jQuery(document).data().bp.user;
 }
 
-function setupFacebox() {
+function setupNotesFacebox() {
   jQuery("a.notes_list_link").attr("rel", "facebox[.facebox_note]");
-  jQuery("a.notes_list_link").facebox();
+  jQuery("a.notes_list_link").each(function() {
+    if (!jQuery(this).data().faceboxInit) {
+      jQuery(this).facebox();
+      jQuery(this).data().faceboxInit = true;
+    }
+  });;
 }
 
-function setupFaceboxSizing() {
+function setupNotesFaceboxSizing() {
   jQuery(document).bind('afterReveal.facebox', function() {
     jQuery("div.facebox_note").parents("div#facebox").width('850px');
     jQuery("div.facebox_note").width('820px');
@@ -49,7 +53,7 @@ function bindAddProposalClick() {
   jQuery("a.add_proposal").live('click', function(){
     var id = jQuery(this).attr("data-parent_id");
     var type = jQuery(this).attr("data-parent_type");
-    addProposalBox(id, type);
+    addProposalBox(id, type, this);
   });
 }
 
@@ -89,7 +93,7 @@ function bindReplySaveClick() {
     jQuery.ajax({
       type: "POST",
       url: "/notes",
-      data: {parent: id, type: type, subject: subject, body: body, proposal: proposalMap(), creator: user["id"]},
+      data: {parent: id, type: type, subject: subject, body: body, proposal: proposalMap(button), creator: user["id"]},
       success: function(data){
         var note = data;
         var status = data[1];
@@ -134,7 +138,8 @@ function addCommentBox(id, type, button) {
   formContainer.show();
 }
 
-function addProposalBox(id, type) {
+function addProposalBox(id, type, button) {
+  var formContainer = jQuery(button).parents(".notes_list_container").children(".create_note_form");
   var proposalForm = jQuery("<div>").addClass("reply_box");
   var select = jQuery("<select>").addClass("proposal_type");
   var proposalContainer;
@@ -152,8 +157,8 @@ function addProposalBox(id, type) {
 
   proposalForm.append(proposalContainer);
   proposalForm.append(jQuery("<div>").addClass("proposal_buttons").append(commentButtons(id, type)));
-  jQuery(".create_note_form").html(proposalForm);
-  jQuery(".create_note_form").show();
+  formContainer.html(proposalForm);
+  formContainer.show();
 }
 
 function addNoteOrReply(button, note) {
@@ -235,9 +240,6 @@ function commentTextArea() {
 }
 
 function commentButtons(id, type) {
-//  var button_submit = '<button type="submit" data-parent_id="'+id+'" data-parent_type="'+type+'" onclick="" class="save">save</button><span class="reply_status"></span>';
-//  var button_cancel = '<button type="button" onclick="" class="cancel" style="">cancel</button><span class="reply_status"></span>';
-//  var span_status = '<span class="reply_status"></span>';
   var button_submit = jQuery("<button>")
     .attr("type","submit")
     .attr("onclick","")
@@ -280,16 +282,18 @@ function proposalFields(type, container) {
     appendField("classId", "Class id", container);
     appendField("label", "Label", container);
     appendField("synonym", "Synonym", container);
-    appendField("definition", "Definision", container);
+    appendField("definition", "Definition", container);
     appendField("parent", "Parent", container);
   }
 }
 
-function proposalMap() {
+function proposalMap(button) {
+  var formContainer = jQuery(button).parents(".notes_list_container").children(".create_note_form");
   var lists = ["synonym", "definition", "newRelationshipType"];
   var map = {};
-  map["type"] = jQuery(".create_note_form .proposal_type").val();
-  jQuery(".proposal_container input").each(function(){
+  map["type"] = formContainer.find(".proposal_type").val();
+  console.log(formContainer.find(".proposal_container input"))
+  formContainer.find(".proposal_container input").each(function(){
     var input = jQuery(this);
     var id = input.attr("id");
     var val = (jQuery.inArray(id, lists) >= 0) ? input.val().split(",") : input.val();
