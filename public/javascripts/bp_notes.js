@@ -81,6 +81,7 @@ function bindReplySaveClick() {
     var button = this;
     var body = jQuery(this).closest(".reply_box").children(".reply_body").val();
     var subject = subjectForNote(button);
+    var ontology_id = jQuery(document).data().bp.ont_viewer.ontology_id;
     jQuery(button).parent().children(".reply_status").html("");
     if (type === "class") {
       id = {class: id, ontology: ontology_id};
@@ -167,7 +168,6 @@ function addNoteOrReply(button, note) {
 
 function addNote(button, note) {
   var user = getUser();
-  console.log("test")
   var id = note["id"].split("/").pop();
   var noteLink = generateNoteLink(id, note);
   var noteLinkHTML = jQuery("<div>").append(noteLink).html();
@@ -311,7 +311,7 @@ function generateNoteLink(id, note) {
   return jQuery("<a>")
     .addClass("ont_notes_list_link")
     .addClass("notes_list_link")
-    .attr("href", "/ontologies/"+ontology_id+"/notes/"+encodeURIComponent(note["id"]))
+    .attr("href", "/ontologies/"+jQuery(document).data().bp.ont_viewer.ontology_id+"/notes/"+encodeURIComponent(note["id"]))
     .attr("id", id)
     .html(note["subject"]);
 }
