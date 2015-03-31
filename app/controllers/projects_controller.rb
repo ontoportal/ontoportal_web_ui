@@ -20,7 +20,7 @@ class ProjectsController < ApplicationController
   def show
     projects = LinkedData::Client::Models::Project.find_by_acronym(params[:id])
     if projects.nil? || projects.empty?
-      flash[:notice] = flash_error("Project not found: #{h(params[:id])}")
+      flash[:notice] = flash_error("Project not found: #{params[:id]}")
       redirect_to projects_path
       return
     end
@@ -44,7 +44,7 @@ class ProjectsController < ApplicationController
   def edit
     projects = LinkedData::Client::Models::Project.find_by_acronym(params[:id])
     if projects.nil? || projects.empty?
-      flash[:notice] = flash_error("Project not found: #{h(params[:id])}")
+      flash[:notice] = flash_error("Project not found: #{params[:id]}")
       redirect_to projects_path
       return
     end
@@ -96,7 +96,7 @@ class ProjectsController < ApplicationController
     end
     projects = LinkedData::Client::Models::Project.find_by_acronym(params[:id])
     if projects.nil? || projects.empty?
-      flash[:notice] = flash_error("Project not found: #{h(params[:id])}")
+      flash[:notice] = flash_error("Project not found: #{params[:id]}")
       redirect_to projects_path
       return
     end
@@ -116,7 +116,7 @@ class ProjectsController < ApplicationController
   def destroy
     projects = LinkedData::Client::Models::Project.find_by_acronym(params[:id])
     if projects.nil? || projects.empty?
-      flash[:notice] = flash_error("Project not found: #{h(params[:id])}")
+      flash[:notice] = flash_error("Project not found: #{params[:id]}")
       redirect_to projects_path
       return
     end
@@ -143,7 +143,10 @@ class ProjectsController < ApplicationController
   private
 
   def flash_error(msg)
-    "<span style='color:red;'>#{msg}</span>"
+    html = ''.html_safe
+    html << '<span style=color:red;>'.html_safe
+    html << msg
+    html << '</span>'.html_safe
   end
 
 
