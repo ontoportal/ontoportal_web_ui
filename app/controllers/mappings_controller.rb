@@ -103,7 +103,7 @@ class MappingsController < ApplicationController
     @concept_to ||= LinkedData::Client::Models::Class.new
 
     if request.xhr? || params[:no_layout].eql?("true")
-      render :layout => "none"
+      render :layout => false
     else
       render :layout => "ontology"
     end

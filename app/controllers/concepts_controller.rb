@@ -124,7 +124,7 @@ class ConceptsController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     raise Error404 if @ontology.nil?
 
-    @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+    @concept = @ontology.explore.single_class({full: true}, CGI.unescape(params[:conceptid]))
     raise Error404 if @concept.nil?
 
     if params[:styled].eql?("true")
