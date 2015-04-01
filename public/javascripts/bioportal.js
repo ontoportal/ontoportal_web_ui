@@ -1,6 +1,9 @@
 // BioPortal jQuery Namespace
 jQuery.bioportal = {};
 
+// Backport function name
+jQuery.curCSS = jQuery.css;
+
 // CSRF protection support
 $(document).ajaxSend(function(e, xhr, options) {
   var token = $("meta[name='csrf-token']").attr('content');
