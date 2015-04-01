@@ -93,7 +93,11 @@
                 %td= visits[:views]
             %tr
               %td{colspan: 2, style: "text-align: right;"}
-                %a{href: "#ont_views", rel: "facebox"} More
+                %a#ont_view_popup{href: "#ont_views", rel: "facebox"} More
+                :javascript
+                  jQuery(document).ready(function(){
+                    jQuery("#ont_view_popup").facebox();
+                  });
         :css
           #bd #ont_views {
             left: -99999px;
