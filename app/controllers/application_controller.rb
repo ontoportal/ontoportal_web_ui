@@ -92,7 +92,7 @@ class ApplicationController < ActionController::Base
 
   def render_404
     respond_to do |type|
-      type.all { render :file => Rails.root.join('public', '404.html'), :status => 404 }
+      type.all { render :file => Rails.root.join('public', '404.html'), :status => 404, :layout => false }
     end
     true
   end
