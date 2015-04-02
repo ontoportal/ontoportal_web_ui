@@ -157,7 +157,7 @@
                 %tr
                   %td
                     - begin
-                      = link_to "#{note[:subject]} (#{note[:ont_name]})", note[:uri]
+                      = link_to "#{note[:subject]} (#{note[:ont_name]})", note_path(CGI.escape(note[:id]))
                       %br/
                       %span{:style => "color:#AAAAAA"}
                         = "#{time_ago_in_words(note[:created])} ago"
