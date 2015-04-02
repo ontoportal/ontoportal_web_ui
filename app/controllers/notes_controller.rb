@@ -6,7 +6,10 @@ class NotesController < ApplicationController
   # GET /notes/1
   # GET /notes/1.xml
   def show
-    @notes = LinkedData::Client::Models::Note.get(params[:id], include_threads: true)
+    # Some application servers (apache, nginx) mangle encoded slashes, check for that here
+    id = params[:id].match(/\Ahttp:\/\w/) ? params[:id].sub('http:/', 'http://') : params[:id]
+
+    @notes = LinkedData::Client::Models::Note.get(id, include_threads: true)
     @ontology = (@notes.explore.relatedOntology || []).first
 
     if request.xhr?
