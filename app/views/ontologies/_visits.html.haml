@@ -9,7 +9,7 @@
       - if visits_data
         %a{href: @ontology.links["analytics"] + "?apikey=#{get_apikey}&format=csv", style: "font-size: smaller;", target: "_blank"} Download as CSV
     - if visits_data
-      %div
+      %div#visits_chart_container
         %canvas#visits_chart{style: "width: 100% !important; max-width: 600px; height: 300 !important;"}
     - else
       %h2{:style => "padding-left: 1em;"}
@@ -18,26 +18,13 @@
 
 - if visits_data
   :javascript
+    // Note duplicated code in bp_ont_chart due to Ajax loading
     var numberWithCommas = function(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
-    Chart.defaults.global.scaleLabel = "<%=' ' + numberWithCommas(value)%>";
 
-    var data = {
-        labels: #{visits_data[:labels][0..months_to_show-1].to_json},
-        datasets: [
-            {
-                label: "Visits",
-                fillColor: "rgba(151,187,205,0.2)",
-                strokeColor: "rgba(151,187,205,1)",
-                pointColor: "rgba(151,187,205,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(151,187,205,1)",
-                data: #{visits_data[:visits][0..months_to_show-1].to_json}
-            }
-        ]
-    };
-    var ctx = document.getElementById("visits_chart").getContext("2d");
-    var myLineChart = new Chart(ctx).Line(data, { responsive: true });
+    jQuery(document).data().bp.ont_chart = {};
+    jQuery(document).data().bp.ont_chart.scaleLabel = "<%=' ' + numberWithCommas(value)%>";
+    jQuery(document).data().bp.ont_chart.visitsLabels = #{visits_data[:labels][0..months_to_show-1].to_json};
+    jQuery(document).data().bp.ont_chart.visitsData = #{visits_data[:visits][0..months_to_show-1].to_json};
 

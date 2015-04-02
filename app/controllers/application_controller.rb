@@ -92,8 +92,7 @@ class ApplicationController < ActionController::Base
 
   def render_404
     respond_to do |type|
-      #type.html { render :template => "errors/error_404", :status => 404, :layout => 'error' }
-      type.all { render :file => "#{RAILS_ROOT}/public/404.html", :status => 404 }
+      type.all { render :file => Rails.root.join('public', '404.html'), :status => 404, :layout => false }
     end
     true
   end
@@ -272,8 +271,8 @@ class ApplicationController < ActionController::Base
 
   # rack-mini-profiler authorization
   def authorize_miniprofiler
-    if params[:enable_profiler] && params[:enable_profiler].eql?("true")
-      Rack::MiniProfiler.authorize_request if session[:user] && session[:user].admin?
+    if params[:enable_profiler] && params[:enable_profiler].eql?("true") && session[:user] && session[:user].admin?
+      Rack::MiniProfiler.authorize_request
     else
       Rack::MiniProfiler.deauthorize_request
     end
@@ -383,14 +382,12 @@ class ApplicationController < ActionController::Base
         @concept.prefLabel = "Please search for a class using the Jump To field above"
         @concept.obsolete = false
         @concept.id = "bp_fake_root"
-        @concept.child_size = 0
         @concept.properties = {}
         @concept.children = []
       else
         # Display only the requested class in the tree
         @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
         @concept.children = []
-        @concept.child_size = 0
       end
       @root = LinkedData::Client::Models::Class.new
       @root.children = [@concept]
@@ -431,7 +428,7 @@ class ApplicationController < ActionController::Base
         end
 
         # Create the tree
-        rootNode = @concept.explore.tree(include: "prefLabel,childrenCount,obsolete")
+        rootNode = @concept.explore.tree(include: "prefLabel,hasChildren,obsolete")
         if rootNode.nil? || rootNode.empty?
           roots = @ontology.explore.roots
           if roots.nil? || roots.empty?

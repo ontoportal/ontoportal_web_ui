@@ -1,8 +1,5 @@
 - @title = "Welcome to the #{$ORG_SITE}"
 
-%link{:charset => "utf-8", :href => "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.css", :media => "screen", :rel => "stylesheet", :title => "no title", :type => "text/css"}/
-%link{:href => "/javascripts/JqueryPlugins/superfish/superfish.css", :media => "screen", :rel => "stylesheet", :type => "text/css"}/
-%link{:charset => "utf-8", :href => "/javascripts/JqueryPlugins/superfish/superfish-vertical.css", :media => "screen", :rel => "stylesheet", :title => "no title", :type => "text/css"}/
 :css
   .greyed{
     color:#CFCFCF;
@@ -13,8 +10,8 @@
       %span.ui-icon.ui-icon-note
     %a.pop_window{:href => "/help#How_to_cite_NCBO_and_BioPortal", :target => "_blank"}
       Cite Us
-  %div{:style => "float:right;"}= I18n.t('home.facebook_button')
-  %div{:style => "float:right;"}= I18n.t('home.twitter_button')
+  %div{:style => "float:right;"}= t('home.facebook_button').html_safe
+  %div{:style => "float:right;"}= t('home.twitter_button').html_safe
 - unless $FRONT_NOTICE.nil? || $FRONT_NOTICE.empty? || cookies[:front_page_notice_closed].eql?("true")
   :javascript
     function close_message(){
@@ -30,11 +27,11 @@
 %div{:style => "padding:10px;margin:10px;"}
   - bp_welcome = "<p><span style='font-size:1.75em; font-weight:bold;'>Welcome to #{$SITE}</span><span style='font-size:1.6em'>, the world&rsquo;s most comprehensive repository of biomedical ontologies.</span></p>"
   - help = "<p style='font-size:1.3em'>For help using #{$SITE}, click on this icon: #{help_icon('/help#Home_Page')}</p>"
-  = I18n.t('home.intro').nil? || I18n.t('home.intro').empty? ? bp_welcome + help : I18n.t('home.intro')
+  = t('home.intro').html_safe.nil? || t('home.intro').html_safe.empty? ? bp_welcome.html_safe + help.html_safe : t('home.intro').html_safe
 %table{:width => "100%"}
   %tr
     %td{:valign => "top", :width => "33%"}
-      - form_for(:search, :url => {:controller =>'search', :action=>'index'}, :html => { :method => :get }) do |f|
+      = form_for(:search, :url => {:controller =>'search', :action=>'index'}, :html => { :method => :get }) do |f|
         %fieldset
           %legend Search all ontologies
           %table
@@ -89,13 +86,18 @@
           %tbody
             -@analytics.onts[0..4].each do |visits|
               -ont = @ontologies_hash[visits[:ont].to_s]
+              -next if ont.nil?
               %tr
                 %td
                   %a{href: "/ontologies/#{ont.acronym}"} #{ont.name} (#{ont.acronym})
                 %td= visits[:views]
             %tr
               %td{colspan: 2, style: "text-align: right;"}
-                %a{href: "#ont_views", rel: "facebox"} More
+                %a#ont_view_popup{href: "#ont_views", rel: "facebox"} More
+                :javascript
+                  jQuery(document).ready(function(){
+                    jQuery("#ont_view_popup").facebox();
+                  });
         :css
           #bd #ont_views {
             left: -99999px;
@@ -116,7 +118,7 @@
                     %a{href: "/ontologies/#{ont.acronym}"} #{ont.name} (#{ont.acronym})
                   %td= visits[:views]
 
-      - if I18n.t('stats').nil? || I18n.t('stats').empty?
+      - if t('stats').html_safe.nil? || t('stats').html_safe.empty?
         %fieldset
           %legend
             Statistics #{"in full #{$SITE}" if at_slice?}
@@ -142,7 +144,7 @@
                 %td= number_with_delimiter(@direct_expanded_annotations, :delimiter => ",")
       - else
         %fieldset
-          = I18n.t('stats')
+          = t('stats').html_safe
     %td{:valign => "top"}
       %fieldset
         %legend Latest Notes
@@ -155,7 +157,7 @@
                 %tr
                   %td
                     - begin
-                      = link_to "#{note[:subject]} (#{note[:ont_name]})", note[:uri]
+                      = link_to "#{note[:subject]} (#{note[:ont_name]})", note_path(CGI.escape(note[:id]))
                       %br/
                       %span{:style => "color:#AAAAAA"}
                         = "#{time_ago_in_words(note[:created])} ago"
@@ -208,10 +210,6 @@
                   - LOG.add :error, e.message, e.backtrace.join("\n\t")
                   - LOG.add :error, "Recent mapping: #{map.id}, classes: #{map.classes.map {|c| "#{c.ontology.acronym} #{c.id}" }.join(', ')}"
                   - next
-
-%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/autocomplete/jquery.autocomplete.js", :type => "text/javascript"}
-%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/superfish/hoverIntent.js", :type => "text/javascript"}
-%script{:charset => "utf-8", :src => "/javascripts/JqueryPlugins/superfish/superfish.js", :type => "text/javascript"}
 
 - ont_names = @ontologies.map{|ont| "[\"#{ont.name} (#{ont.acronym})\",\"#{ont.acronym}\"]"}
 

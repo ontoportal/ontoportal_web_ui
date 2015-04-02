@@ -36,7 +36,7 @@ class LOG
     params[:sessionid] = request.session_options[:id]
     params[:eventtype] = event
     params[:apikey] = $API_KEY
-    params[:requesturl] = request.request_uri
+    params[:requesturl] = request.url
 
     begin
       ms = Benchmark.ms { log.post(params) }
@@ -59,8 +59,8 @@ class LOG
   end
 
   def self.local(level, message)
-    if defined? RAILS_DEFAULT_LOGGER
-      RAILS_DEFAULT_LOGGER.send(level, message)
+    if defined? Rails.logger
+      Rails.logger.send(level, message)
     else
       p "#{level} || #{message}"
     end

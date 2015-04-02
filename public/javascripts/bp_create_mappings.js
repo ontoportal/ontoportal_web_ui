@@ -43,7 +43,7 @@ jQuery(document).ready(function() {
   jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
   jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
 
-  jQuery('a[rel*=facebox]').facebox();
+  jQuery('#mappings_content a[rel*=facebox]').facebox();
 
   // Wire up popup for advanced options
   create_mapping_advanced_options.init();
@@ -86,7 +86,7 @@ function getClassDetails(input) {
 }
 
 function resetMappingUIWithFacebox() {
-  jQuery('a[rel*=facebox]').facebox();
+  jQuery('#mappings_content a[rel*=facebox]').facebox();
   resetMappingUI();
 }
 

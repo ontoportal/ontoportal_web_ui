@@ -1,4 +1,5 @@
 - require 'cgi'
+- require 'rails_autolink'
 %h2{:style => "font-size: x-large;"}
   Details
 #metadata_content
@@ -92,4 +93,4 @@
           - groups = @ontology.group
           = groups.map {|g| groups_hash[g].name}.sort.join(", ")
 
-      = additional_details
+      = raw additional_details

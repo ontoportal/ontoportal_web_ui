@@ -4,6 +4,12 @@
   var History = window.History;
   // History.debug.enable = true;
 
+  // Abort it not right page
+  var path = currentPathArray();
+  if (path[0] !== "ontologies" || (path[0] === "ontologies" && path.length !== 2)) {
+    return;
+  }
+
   // Bind to State Change
   History.Adapter.bind(window, 'statechange', function() {
     var hashParams = null;
@@ -40,13 +46,13 @@
 
       if (typeof params["p"] !== 'undefined' && content_section != params["p"]) {
         showOntologyContent(params["p"]);
-        document.title = jQuery.bioportal.ont_pages[params["p"]].page_name + " | " + org_site;
+        document.title = jQuery.bioportal.ont_pages[params["p"]].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site;
 
         // We need to get everything using AJAX
         content_section = null;
       } else {
         showOntologyContent(content_section);
-        document.title = jQuery.bioportal.ont_pages[content_section].page_name + " | " + org_site;
+        document.title = jQuery.bioportal.ont_pages[content_section].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site;
       }
     }
   });
@@ -59,6 +65,20 @@ function displayTree(data) {
   var new_concept_id = data.conceptid;
   var new_concept_link = getConceptLinkEl(new_concept_id);
   var concept_label;
+  var old_html;
+
+  var ontology_id = jQuery(document).data().bp.ont_viewer.ontology_id;
+  var ontology_version_id = jQuery(document).data().bp.ont_viewer.ontology_version_id;
+  var ontology_name = jQuery(document).data().bp.ont_viewer.ontology_name;
+  var org_site = jQuery(document).data().bp.ont_viewer.org_site;
+  var concept_id = jQuery(document).data().bp.ont_viewer.concept_id;
+  var content_section = jQuery(document).data().bp.ont_viewer.content_section;
+  var concept_param = jQuery(document).data().bp.ont_viewer.concept_param;
+  var concept_name = jQuery(document).data().bp.ont_viewer.concept_name;
+  var metadata_only = jQuery(document).data().bp.ont_viewer.metadata_only;
+  var current_purl = jQuery(document).data().bp.ont_viewer.current_purl;
+  var purl_prefix = jQuery(document).data().bp.ont_viewer.purl_prefix;
+  var concept_name_title = jQuery(document).data().bp.ont_viewer.concept_name_title;
 
   // Check to see if we're actually loading a new concept or just displaying the one we already loaded previously
   if (typeof new_concept_id === 'undefined' || new_concept_id == concept_id) {
@@ -78,6 +98,7 @@ function displayTree(data) {
       concept_label = (new_concept_link.html() == null) ? "" : " - " + new_concept_link.html().trim().replace(/<(?:.|\n)*?>/gm, '');
 
       // Retrieve new concept and display tree
+      old_html = jQuery.bioportal.ont_pages["classes"].html;
       jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes",
         "/ontologies/" + ontology_id + "?p=classes" + new_concept_param,
         "Problem retrieving classes",
@@ -136,6 +157,8 @@ function displayTree(data) {
         jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
         if (document.getElementById(new_concept_id) !== null) {
           // We have a visible node that's been clicked, get the details for that node
+          jQuery.bioportal.ont_pages["classes"].manualRetrieve(old_html);
+          jQuery.bioportal.ont_pages["classes"].published = true;
           nodeClicked(new_concept_id);
         } else {
           // Get a new copy of the tree because our concept isn't visible
@@ -168,71 +191,79 @@ function getConceptLinkEl(concept_id) {
 }
 
 function showOntologyContent(content_section) {
+  jQuery.bioportal.ont_pages[content_section].publish();
   jQuery(".ontology_viewer_content").addClass("hidden");
   jQuery("#ont_" + content_section + "_content").removeClass("hidden");
-  jQuery("#nav_text").html(jQuery.bioportal.ont_pages[content_section].nav_text);
 }
 
 // Prevent the default behavior of clicking the ontology page links
 // Instead, fire some history events
 var nav_ont = function(link) {
   var page = jQuery(link).attr("data-bp_ont_page");
-  History.pushState({p:page}, jQuery.bioportal.ont_pages[page].page_name + " | " + org_site, "?p=" + page);
+  History.pushState({p:page}, jQuery.bioportal.ont_pages[page].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site, "?p=" + page);
 }
 
 
 jQuery(document).ready(function() {
+  var path = currentPathArray();
+  if (path[0] !== "ontologies" || (path[0] === "ontologies" && path.length !== 2)) {
+    return;
+  }
+
   // Set appropriate title
+  var content_section = jQuery(document).data().bp.ont_viewer.content_section || "";
+  var ontology_name = jQuery(document).data().bp.ont_viewer.ontology_name;
+  var org_site = jQuery(document).data().bp.ont_viewer.org_site;
+  var metadata_only = jQuery(document).data().bp.ont_viewer.metadata_only;
+  var content_section_obj = jQuery.bioportal.ont_pages[content_section] || {};
   var title = (content_section == null) ? ontology_name + " | " + org_site
-    : jQuery.bioportal.ont_pages[content_section].page_name + " | " + org_site;
+    : content_section_obj.page_name + " | " + org_site;
   document.title = title;
 
   // Naviation buttons
   jQuery(".nav_link a").live("click", function(e){
     e.preventDefault();
     nav_ont(this);
-  })
-  jQuery('#ont_admin').fgmenu({
-    content: jQuery('#adminster_options').html(),
-    afterItemChosen: menu_nav
   });
+
+  // Set up the JS version of the active content section
+  jQuery.bioportal.ont_pages[content_section].manuelRetrieve(jQuery("#ont_" + content_section + "_content").html());
+  jQuery.bioportal.ont_pages[content_section].published = true;
+  if (typeof jQuery.bioportal.ont_pages[content_section].init === 'function') {
+    jQuery.bioportal.ont_pages[content_section].init(jQuery.bioportal.ont_pages[content_section]);
+  }
 
   // Retrieve AJAX content if not already displayed
   if ($.QueryString["skip_ajax_tabs"] != 'true') {
     if (content_section !== "classes" && metadata_only != true) {
-      jQuery.bioportal.ont_pages["classes"].retrieve_and_publish();
+      jQuery.bioportal.ont_pages["classes"].retrieve();
     }
 
     if (content_section !== "properties" && metadata_only !== true) {
-      jQuery.bioportal.ont_pages["properties"].retrieve_and_publish();
+      jQuery.bioportal.ont_pages["properties"].retrieve();
     }
 
     if (content_section !== "summary") {
-      jQuery.bioportal.ont_pages["summary"].retrieve_and_publish();
+      jQuery.bioportal.ont_pages["summary"].retrieve();
     }
 
     if (content_section !== "mappings") {
-      jQuery.bioportal.ont_pages["mappings"].retrieve_and_publish();
+      jQuery.bioportal.ont_pages["mappings"].retrieve();
     }
 
     if (content_section !== "notes") {
-      jQuery.bioportal.ont_pages["notes"].retrieve_and_publish();
+      jQuery.bioportal.ont_pages["notes"].retrieve();
     }
 
     if (content_section !== "widgets" && metadata_only !== true) {
-      jQuery.bioportal.ont_pages["widgets"].retrieve_and_publish();
+      jQuery.bioportal.ont_pages["widgets"].retrieve();
     }
-  }
-
-  // Set the proper name in the nav menu
-  if (content_section !== null) {
-    jQuery("#nav_text").html(jQuery.bioportal.ont_pages[content_section].nav_text);
   }
 });
 
 // Parent class to ontology pages
 // We're using a monkeypatched function to setup prototyping, see bioportal.js
-jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_name, nav_text, init){
+jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_name, nav_text, init) {
   this.id = id;
   this.location_path = location_path;
   this.error_string = error_string;
@@ -241,6 +272,9 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
   this.nav_text = nav_text;
   this.errored = false;
   this.html;
+  this.published = false;
+  this.retrieved = false;
+  this.init = init || null;
 
   this.retrieve = function(){
     jQuery.ajax({
@@ -249,12 +283,19 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
       context: this,
       success: function(data){
         this.html = data;
+        this.retrieved = true;
       },
       error: function(){
         this.errored = true;
+        this.retrieved = true;
       }
     });
   };
+
+  this.manuelRetrieve = function(html) {
+    this.html = html;
+    this.retrieved = true;
+  }
 
   this.retrieve_and_publish = function(){
     jQuery.ajax({
@@ -262,38 +303,78 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
       url: this.location_path,
       context: this,
       success: function(data){
-        this.html = data;
-        jQuery("#ont_" + this.id + "_content").html("");
-        jQuery("#ont_" + this.id + "_content").html(this.html);
-        jQuery.unblockUI();
+        this.manuelRetrieve(data);
+        this.publish();
       },
       error: function(){
         this.errored = true;
-        jQuery("#ont_" + this.id + "_content").html("");
-        jQuery("#ont_" + this.id + "_content").html("<div style='padding: 1em;'>" + this.error_string + "</div>");
-        jQuery.unblockUI();
+        this.manuelRetrieve(null);
+        this.publish();
       }
     });
   };
 
+  this.publishAction = function() {
+    jQuery("#ont_" + this.id + "_content").html("");
+    jQuery("#ont_" + this.id + "_content").html(this.html);
+    document.title = jQuery.bioportal.ont_pages["classes"].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site;
+    if (typeof this.init === 'function') {
+      this.init(this);
+    }
+    jQuery.unblockUI();
+    this.published = true;
+  }
+
   this.publish = function(){
     if (this.errored === false) {
-      jQuery("#ont_" + this.id + "_content").html(this.html);
-      document.title = jQuery.bioportal.ont_pages["classes"].page_name + " | " + org_site;
-      jQuery.unblockUI();
+      if (this.published) { return; }
+      if (this.retrieved) {
+        this.publishAction();
+      } else {
+        var _this = this;
+        var publishRetry = setInterval(function() {
+          console.log("retrying!!! " + _this.retrieved)
+          if (_this.retrieved) {
+            console.log("publishing!!!")
+            _this.publishAction();
+            clearInterval(publishRetry);
+          }
+        }, 100);
+      }
     } else {
+      jQuery("#ont_" + this.id + "_content").html("");
       jQuery("#ont_" + this.id + "_content").html("<div style='padding: 1em;'>" + this.error_string + "</div>");
       jQuery.unblockUI();
     }
   };
-}
+};
 
-// Setup AJAX page objects
-jQuery.bioportal.ont_pages = [];
+(function(window,undefined) {
+  // Setup AJAX page objects
+  jQuery.bioportal.ont_pages = [];
 
-jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + ontology_id + "?p=classes&ajax=true" + concept_param, "Problem retrieving classes", ontology_name + concept_name_title + " - Classes", "Classes");
-jQuery.bioportal.ont_pages["properties"] = new jQuery.bioportal.OntologyPage("properties", "/ontologies/" + ontology_id + "?p=properties&ajax=true", "Problem retrieving properties", ontology_name + " - Properties", "Properties");
-jQuery.bioportal.ont_pages["summary"] = new jQuery.bioportal.OntologyPage("summary", "/ontologies/" + ontology_id + "?p=summary&ajax=true", "Problem retrieving summary", ontology_name + " - Summary", "Summary");
-jQuery.bioportal.ont_pages["mappings"] = new jQuery.bioportal.OntologyPage("mappings", "/ontologies/" + ontology_id + "?p=mappings&ajax=true", "Problem retrieving mappings", ontology_name + " - Mappings", "Mappings");
-jQuery.bioportal.ont_pages["notes"] = new jQuery.bioportal.OntologyPage("notes", "/ontologies/" + ontology_id + "?p=notes&ajax=true", "Problem retrieving notes", ontology_name + " - Notes", "Notes");
-jQuery.bioportal.ont_pages["widgets"] = new jQuery.bioportal.OntologyPage("widgets", "/ontologies/" + ontology_id + "?p=widgets&ajax=true", "Problem retrieving widgets", ontology_name + " - Widgets", "Widgets");
+  jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=classes&ajax=true" + jQuery(document).data().bp.ont_viewer.concept_param, "Problem retrieving classes", jQuery(document).data().bp.ont_viewer.ontology_name + jQuery(document).data().bp.ont_viewer.concept_name_title + " - Classes", "Classes", function() {
+    jQuery(document).data().bp.classesTab.classes_init();
+    jQuery(document).data().bp.classesTab.search_box_init();
+    setupNotesFacebox();
+  });
+
+  jQuery.bioportal.ont_pages["properties"] = new jQuery.bioportal.OntologyPage("properties", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=properties&ajax=true", "Problem retrieving properties", jQuery(document).data().bp.ont_viewer.ontology_name + " - Properties", "Properties", function() {
+    jQuery(document).data().bp.ontPropertiesTab.init();
+  });
+
+  jQuery.bioportal.ont_pages["summary"] = new jQuery.bioportal.OntologyPage("summary", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=summary&ajax=true", "Problem retrieving summary", jQuery(document).data().bp.ont_viewer.ontology_name + " - Summary", "Summary", function() {
+    jQuery(document).data().bp.ontChart.init();
+  });
+
+  jQuery.bioportal.ont_pages["mappings"] = new jQuery.bioportal.OntologyPage("mappings", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=mappings&ajax=true", "Problem retrieving mappings", jQuery(document).data().bp.ont_viewer.ontology_name + " - Mappings", "Mappings", function() {
+    jQuery(".facebox").facebox();
+  });
+
+  jQuery.bioportal.ont_pages["notes"] = new jQuery.bioportal.OntologyPage("notes", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=notes&ajax=true", "Problem retrieving notes", jQuery(document).data().bp.ont_viewer.ontology_name + " - Notes", "Notes", function() {
+    setupNotesFacebox();
+    jQuery("#ont_notes_content .link_button").button();
+  });
+
+  jQuery.bioportal.ont_pages["widgets"] = new jQuery.bioportal.OntologyPage("widgets", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=widgets&ajax=true", "Problem retrieving widgets", jQuery(document).data().bp.ont_viewer.ontology_name + " - Widgets", "Widgets");
+})(window);

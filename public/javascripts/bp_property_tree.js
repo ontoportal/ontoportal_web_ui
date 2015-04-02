@@ -95,8 +95,8 @@
 
         ul.append(li.append(a));
 
-        var hasChildrenNotExpanded = typeof node.children !== 'undefined' && node.childrenCount > 0 && node.children.length == 0;
-        if (node.childrenCount > 0 && typeof node.children === 'undefined' || hasChildrenNotExpanded) {
+        var hasChildrenNotExpanded = typeof node.children !== 'undefined' && node.hasChildren && node.children.length == 0;
+        if (node.hasChildren && typeof node.children === 'undefined' || hasChildrenNotExpanded) {
           var ajax_ul = $("<ul>").addClass("ajax");
           var ajax_li = $("<li>");
           var ajax_a = $("<a>").attr("href", node.links.children);
@@ -165,7 +165,7 @@
         $.ajax({
           type: "GET",
           url: url,
-          data: {apikey: OPTIONS.apikey, include: "prefLabel,childrenCount", no_context: true},
+          data: {apikey: OPTIONS.apikey, include: "prefLabel,hasChildren", no_context: true},
           crossDomain: true,
           contentType: 'json',
           timeout: OPTIONS.timeout,

@@ -6,7 +6,7 @@
     <a href='javascript:void(0);' class='add_comment link_button' style="font-size: .9em;" data-parent_id="#{@concept.id}" data-parent_type="class">Add comment</a>
   .add_proposal{style: "float: left; margin-right: 1em;"}
     <a href='javascript:void(0);' class='add_proposal link_button' style="font-size: .9em;" data-parent_id="#{@concept.id}" data-parent_type="class">Add proposal</a>
-  .subscribe_to_notes{:style => "float: left;"}
+  .subscribe_to_notes.link_button{:style => "float: left;"}
     = subscribe_button(@ontology.acronym)
   .notes_delete{:style => "float: left; margin-left: 1em;"}
     / TODO_REV: Enable notes deletion
@@ -53,6 +53,3 @@
                 = note.proposal ? get_note_type_text(note.proposal.type) : "Comment"
               %td
                 = DateTime.parse(note.created).strftime("%Y-%m-%d")
-
-:javascript
-  jQuery(".link_button").button();

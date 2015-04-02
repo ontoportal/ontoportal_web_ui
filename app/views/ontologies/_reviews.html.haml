@@ -5,7 +5,7 @@
     - if session[:user].nil?
       %a{:href => "/login?redirect=/ontologies/#{@ontology.acronym}"} Add your review
     - else
-      %a.create_review{:href => "/reviews/new?ontology=#{CGI.escape(@ontology.id)}", :title => "Review For #{@ontology.displayLabel}"} Add your review
+      %a.create_review{:href => "/reviews/new?ontology=#{CGI.escape(@ontology.id)}", :title => "Review for #{@ontology.name}"} Add your review
   #reviews_container
     - if @reviews.nil? || @reviews.empty?
       %h1{:style => "padding-bottom: .8em;"} No reviews available.
@@ -15,4 +15,8 @@
         = render partial: "reviews/review"
 :javascript
   // Do this after the HTML above loads
-  jQuery('input.star').rating();
+  jQuery(document).ready(function() {
+    jQuery('input.star').rating();
+    setupReviewFacebox();
+    setupReviewFaceboxSizing();
+  });

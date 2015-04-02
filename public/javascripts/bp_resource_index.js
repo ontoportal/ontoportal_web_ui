@@ -2,7 +2,13 @@
 (function (window, undefined) {
   // Establish Variables
   var History = window.History;
-  History.debug.enable = true;
+  // History.debug.enable = true;
+
+  // Abort it not right page
+  var path = currentPathArray();
+  if (path[0] !== "resource_index") {
+    return;
+  }
 
   // Bind to State Change
   History.Adapter.bind(window, 'statechange', function () {
@@ -31,6 +37,12 @@ jQuery(document).ready(function () {
   jQuery(".resource_link").live("click", function (event) {
     event.preventDefault();
     switchResources(this);
+  });
+
+  // Show/Hide advanced options
+  jQuery("#resource_index_advanced_options").on("click", function(event) {
+    jQuery("#search_options").toggleClass("not_visible");
+    jQuery("#hide_advanced_options").toggleClass("not_visible");
   });
 
   // Spinner for pagination
@@ -140,11 +152,11 @@ jQuery(document).ready(function () {
   jQuery(".show_element_details").live("click", function (e) {
     e.preventDefault();
     var el = jQuery(this);
-    var cleanElementId = el.attr("data-clean_element_id");
+    var cleanElementId = el.data().cleanElementId;
     var el_text = jQuery("#" + cleanElementId + "_text");
     el_text.toggleClass("not_visible");
     if (el_text.attr("highlighted") !== "true") {
-      var element = new Element(el.attr("data-element_id"), cleanElementId, chosenSearchClasses(), el.attr("data-resource_id"));
+      var element = new Element(el.data().elementId, cleanElementId, chosenSearchClasses(), el.data().resourceId);
       el.parent().append("<span id='" + element.cleanId + "_ani'class='highlighting'>highlighting... <img style='vertical-align: text-bottom;' src='/images/spinners/spinner_000000_16px.gif'></span>");
       element.highlightAnnotationPositions();
       el_text.attr("highlighted", "true");
@@ -466,8 +478,7 @@ function updateCounts() {
 }
 
 jQuery("a.results_link").live("click", function (event) {
-  var resource = jQuery(this).data("resource_id");
-  //var name = jQuery(this).data("resource_name");
+  var resource = jQuery(this).data().resourceId;
   var url = "/resource_index/resources/" + resource + "?" + chosenSearchClassesArgs();
   pushDisplayResource(url, {classes: chosenSearchClasses(), acronym: resource});
 });
@@ -510,7 +521,7 @@ function Element(id, cleanId, classes, resource) {
     var text_map = {};
     jQuery(this.jdomId + " .element_text p").each(function(){
       var p = jQuery(this);
-      text_map[p.attr("data-context_name")] = p.html();
+      text_map[p.data().contextName] = p.html();
     });
     jQuery.ajax({
       url     : "/resource_index/element_annotations?"+chosenSearchClassesArgs(this.classes),
@@ -531,7 +542,7 @@ function Element(id, cleanId, classes, resource) {
   this.highlight = function () {
     var element = this;
     jQuery.each(this.positions, function(contextName, positions) {
-      var context = jQuery(element.jdomId + " p[data-context_name=" + contextName + "]");
+      var context = jQuery(element.jdomId + " p[data-context-name=" + contextName + "]");
       if (positions.length > 0) {
         highlighter = new PositionHighlighter();
         // Replace the current text with highlighted version

@@ -223,7 +223,7 @@ class OntologiesController < ApplicationController
       if @ontology_saved.summaryOnly
         redirect_to "/ontologies/success/#{@ontology.acronym}"
       else
-        redirect_to new_ontology_submission_url(CGI.escape(@ontology_saved.id))
+        redirect_to new_ontology_submission_url(ontology_id: @ontology.acronym)
       end
     end
   end

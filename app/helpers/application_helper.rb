@@ -144,7 +144,7 @@ module ApplicationHelper
       id = root.children.first.id
     end
     # TODO: handle tree view for obsolete classes, e.g. 'http://purl.obolibrary.org/obo/GO_0030400'
-    build_tree(root, "", id)  # returns a string, representing nested list items
+    raw build_tree(root, "", id)  # returns a string, representing nested list items
   end
 
   def build_tree(node, string, id)
@@ -169,17 +169,12 @@ module ApplicationHelper
       # This fake root will be present at the root of "flat" ontologies, we need to keep the id intact
       li_id = child.id.eql?("bp_fake_root") ? "bp_fake_root" : short_uuid
 
-      # Return different result for too many children
-      if child.prefLabel.eql?("*** Too many children...")
-        number_of_classes = id.eql?("root") ? child.explore.ontology.explore.roots.length : node.childrenCount
-        retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(id)}&callback=children&too_many_children_override=true'>Get all classes</a>"
-        string << "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{number_of_classes} classes at this level. Retrieving these may take several minutes. #{retry_link}</div>"
-      elsif child.id.eql?("bp_fake_root")
+      if child.id.eql?("bp_fake_root")
         string << "<li class='active' id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='#' #{active_style}>#{child.prefLabel}</a></li>"
       else
         string << "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.prefLabel({use_html: true})} #{icons}</a>"
-        if child.childrenCount && child.childrenCount > 0 && !child.expanded?
-          string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.childrenCount}'>ajax_class</a></li></ul>"
+        if child.hasChildren && !child.expanded?
+          string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children'>ajax_class</a></li></ul>"
         elsif child.expanded?
           string << "<ul>"
           build_tree(child, string, id)
@@ -195,9 +190,9 @@ module ApplicationHelper
   def loading_spinner(padding = false, include_text = true)
     loading_text = include_text ? " loading..." : ""
     if padding
-      '<div style="padding: 1em;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;">' + loading_text + '</div>'
+      raw('<div style="padding: 1em;"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;">' + loading_text + '</div>')
     else
-      '<img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;">' + loading_text
+      raw('<img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;">' + loading_text)
     end
   end
 
@@ -328,81 +323,11 @@ module ApplicationHelper
     output = "<span class='more_less_container'><span class='truncated_more'>#{truncate(text, :length => length, :omission => trailing_text)}" + more + "</span>"
   end
 
-
-  # BACKPORTED RAILS 3 HELPERS
-
-  def csrf_meta_tag
-    if protect_against_forgery?
-      out = %(<meta name="csrf-param" content="%s"/>\n)
-      out << %(<meta name="csrf-token" content="%s"/>)
-      out % [ Rack::Utils.escape_html(request_forgery_protection_token),
-              Rack::Utils.escape_html(form_authenticity_token) ]
-    end
-  end
-
-  DECIMAL_UNITS = {0 => :unit, 1 => :ten, 2 => :hundred, 3 => :thousand, 6 => :million, 9 => :billion, 12 => :trillion, 15 => :quadrillion,
-    -1 => :deci, -2 => :centi, -3 => :mili, -6 => :micro, -9 => :nano, -12 => :pico, -15 => :femto}.freeze
-
-  def number_to_human(number, options = {})
-    options.symbolize_keys!
-
-    number = begin
-      Float(number)
-    rescue ArgumentError, TypeError
-      if options[:raise]
-        raise InvalidNumberError, number
-      else
-        return number
-      end
-    end
-
-    units = { :unit => "", :ten => "", :hundred => "", :thousand => "Thousand", :million => "Million", :billion => "Billion", :trillion => "Trillion", :quadrillion => "Quadrillion" }
-    units.merge!(options.delete :units)
-    options[:units] = units
-
-    defaults = I18n.translate('number.format''number.format', :locale => options[:locale], :default => {})
-    human    = I18n.translate('number.human.format''number.human.format', :locale => options[:locale], :default => {})
-    defaults = defaults.merge(human)
-
-    options = options.reverse_merge(defaults)
-    #for backwards compatibility with those that didn't add strip_insignificant_zeros to their locale files
-    options[:strip_insignificant_zeros] = true if not options.key?(:strip_insignificant_zeros)
-
-    units = options.delete :units
-    unit_exponents = case units
-    when Hash
-      units
-    when String, Symbol
-      I18n.translate("#{units}""#{units}", :locale => options[:locale], :raise => true)
-    when nil
-      I18n.translate("number.human.decimal_units.units""number.human.decimal_units.units", :locale => options[:locale], :raise => true)
-    else
-      raise ArgumentError, ":units must be a Hash or String translation scope."
-    end.keys.map{|e_name| DECIMAL_UNITS.invert[e_name] }.sort_by{|e| -e}
-
-    number_exponent = number != 0 ? Math.log10(number.abs).floor : 0
-    display_exponent = unit_exponents.find{|e| number_exponent >= e }
-    number /= 10 ** display_exponent
-
-    unit = case units
-    when Hash
-      units[DECIMAL_UNITS[display_exponent]]
-    when String, Symbol
-      I18n.translate("#{units}.#{DECIMAL_UNITS[display_exponent]}""#{units}.#{DECIMAL_UNITS[display_exponent]}", :locale => options[:locale], :count => number.to_i)
-    else
-      I18n.translate("number.human.decimal_units.units.#{DECIMAL_UNITS[display_exponent]}""number.human.decimal_units.units.#{DECIMAL_UNITS[display_exponent]}", :locale => options[:locale], :count => number.to_i)
-    end
-
-    decimal_format = options[:format] || I18n.translate('number.human.decimal_units.format''number.human.decimal_units.format', :locale => options[:locale], :default => "%n %u")
-    formatted_number = number_with_precision(number, options)
-    decimal_format.gsub(/%n/, formatted_number).gsub(/%u/, unit).strip
-  end
-
   def subscribe_ontology_button(ontology_id, user = nil)
     user = session[:user] if user.nil?
     if user.nil?
       # subscribe button must redirect to login
-      return sanitize("<a href='/login?redirect=#{request.request_uri}' style='font-size: .9em;' class='subscribe_to_ontology'>Subscribe</a>")
+      return sanitize("<a href='/login?redirect=#{request.url}' style='font-size: .9em;' class='subscribe_to_ontology'>Subscribe</a>")
     end
     # Init subscribe button parameters.
     sub_text = "Subscribe"

@@ -1,14 +1,14 @@
 
 <script type="text/javascript">
 
-var abbreviationMap = <%= @onts_for_js %>;
-var groupsMap = <%= @groups_for_js %>;
-var categoriesMap = <%= @categories_for_js %>;
-var ontsInGroupsOrCategories = <%= @onts_in_gp_or_cat_for_js %>;
+var abbreviationMap = <%= @onts_for_js.html_safe %>;
+var groupsMap = <%= @groups_for_js.html_safe %>;
+var categoriesMap = <%= @categories_for_js.html_safe %>;
+var ontsInGroupsOrCategories = <%= @onts_in_gp_or_cat_for_js.html_safe %>;
 var winHeight = jQuery(window).height();
 var ontSelectListPos = { top: 0, left: 0, width: 0 };
 var allSelected = false;
-var alignToDOMId = "<%=align_to_dom_id || @select_id%>";
+var alignToDOMId = <%=(align_to_dom_id || @select_id).to_json.html_safe%>;
 
 jQuery(document).ready(function(){
   ontSelectListPos.top = jQuery("#"+alignToDOMId).offset().top;

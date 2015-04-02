@@ -54,7 +54,7 @@ class UsersController < ApplicationController
       else
         # Attempt to register user to list
         if params[:user][:register_mail_list]
-          Notifier.deliver_register_for_announce_list(@user.email) rescue nil
+          Notifier.register_for_announce_list(@user.email).deliver rescue nil
         end
 
         flash[:notice] = 'Account was successfully created'

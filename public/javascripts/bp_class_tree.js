@@ -43,7 +43,7 @@ function initClassTree() {
     animate: true,
     timeout: 20000,
     afterClick:function(node){
-      History.pushState({p:"classes", conceptid:jQuery(node).children("a").attr("id")}, jQuery.bioportal.ont_pages["classes"].page_name + " | " + org_site, jQuery(node).children("a").attr("href"));
+      History.pushState({p:"classes", conceptid:jQuery(node).children("a").attr("id")}, jQuery.bioportal.ont_pages["classes"].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site, jQuery(node).children("a").attr("href"));
     },
     afterAjaxError: function(node){
       simpleTreeCollection[0].option.animate = false;
@@ -58,8 +58,8 @@ function initClassTree() {
     }
   });
 
-  setConcept(concept_id);
-  setOntology(ontology_id);
+  setConcept(jQuery(document).data().bp.ont_viewer.concept_id);
+  setOntology(jQuery(document).data().bp.ont_viewer.ontology_id);
   jQuery("#sd_content").scrollTo(jQuery('a.active'));
 
   // Set the cache for the first concept we retrieved
@@ -105,7 +105,7 @@ function nodeClicked(node_id) {
   var concept_uri = (node_id.indexOf("http://") == 0 || node_id.indexOf(encodeURIComponent("http://")) == 0 );
   var purl_anchor = concept_uri ? "?conceptid="+node_id : "/"+node_id;
   var selectedTab = jQuery("#bd_content div.tabs li.selected a").attr("href").slice(1);
-  jQuery("#purl_input").val(purl_prefix + purl_anchor);
+  jQuery("#purl_input").val(jQuery(document).data().bp.ont_viewer.purl_prefix + purl_anchor);
 
   if (getCache(node_id) != null) {
     var tabData = getCache(node_id);
@@ -128,7 +128,7 @@ function nodeClicked(node_id) {
     wrapupTabChange(selectedTab);
   } else {
     jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
-    jQuery.get('/ajax_concepts/'+ontology_id+'/?conceptid='+node_id+'&callback=load',
+    jQuery.get('/ajax_concepts/'+jQuery(document).data().bp.ont_viewer.ontology_id+'/?conceptid='+node_id+'&callback=load',
       function(data){
         var tabData = data.split("|||");
         var loc;
@@ -143,7 +143,7 @@ function nodeClicked(node_id) {
 
         // Load the resource index
         if (selectedTab == "resource_index") {
-          callTab('resource_index', '/resource_index/resources_table?conceptids='+ontology_id+'/'+encodeURIComponent(getConcept()));
+          callTab('resource_index', '/resource_index/resources_table?conceptids='+jQuery(document).data().bp.ont_viewer.ontology_id+'/'+encodeURIComponent(getConcept()));
         }
 
         setCache(node_id,tabData);
@@ -167,12 +167,12 @@ function placeTreeView(treeHTML) {
 // Retrieve the tree view using ajax
 function getTreeView() {
   jQuery.ajax({
-    url: "/ajax/classes/treeview?ontology="+ontology_id+"&conceptid="+encodeURIComponent(concept_id),
+    url: "/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&conceptid="+encodeURIComponent(jQuery(document).data().bp.ont_viewer.concept_id),
     success: function(data) {
       placeTreeView(data);
     },
     error: function(data) {
-      jQuery.get("/ajax/classes/treeview?ontology="+ontology_id+"&conceptid=root", function(data){
+      jQuery.get("/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&conceptid=root", function(data){
         var rootTree = "<div class='tree_error'>Displaying the path to this class has taken too long. You can browse classes below.</div>" + data;
         placeTreeView(rootTree);
       });
@@ -184,5 +184,11 @@ function getTreeView() {
 // Get the treeview using ajax
 // We do this right after writing #sd_content to the dom to make sure it loads before other async portions of the page
 jQuery(document).ready(function(){
+  // Abort it not right page
+  var path = currentPathArray();
+  if (path[0] !== "ontologies" || (path[0] === "ontologies" && path.length !== 2)) {
+    return;
+  }
+
   getTreeView();
 });

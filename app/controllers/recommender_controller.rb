@@ -2,54 +2,48 @@ class RecommenderController < ApplicationController
   layout 'ontology'
 
   # REST_URI is defined in application_controller.rb
-  RECOMMENDER_URI = REST_URI + "/recommender"
+  RECOMMENDER_URI = "/recommender"
 
   def index
   end
 
+  # def create
+  #   # Parse params (default values are set at the service level)
+  #   input = params[:input].strip.gsub("\r\n", " ").gsub("\n", " ")
+  #   start = Time.now
+  #   query = RECOMMENDER_URI
+  #   query += "?input=" + CGI.escape(input)
+  #   query += "&ontologies=" + CGI.escape(params[:ontologies].join(',')) unless params[:ontologies].nil?
+  #   query += "&input_type=" + params[:input_type] unless params[:input_type].nil?
+  #   query += "&output_type=" + params[:output_type] unless params[:output_type].nil?
+  #   query += "&max_elements_set=" + params[:max_elements_set] unless params[:output_type].nil?
+  #   query += "&wc=" + params[:wc].to_s unless params[:wc].nil?
+  #   query += "&ws=" + params[:ws].to_s unless params[:ws].nil?
+  #   query += "&wa=" + params[:wa].to_s unless params[:wa].nil?
+  #   query += "&wd=" + params[:wd].to_s unless params[:wd].nil?
+  #   recommendations = parse_json(query) # See application_controller.rb
+  #   LOG.add :debug, "Retrieved #{recommendations.length} recommendations: #{Time.now - start}s"
+  #   render :json => recommendations
+  # end
+
+  # NOTE: this call (POST) works at a local environment but not in staging
   def create
-    # Set defaults
-    params[:ontologies] ||= []
-    params[:hierarchy] ||= 5
-    params[:normalization] ||= 2
-    # Parse params
-    text = params[:text].strip.gsub("\r\n", " ").gsub("\n", " ")
-    options = { :ontologies => params[:ontologies],
-                :hierarchy => params[:hierarchy].to_i,
-                :normalization => params[:normalization].to_i,
-                #:max_level => params[:max_level].to_i ||= 0,
-                #:semanticTypes => params[:semanticTypes] ||= [],
-                #:mappings => params[:mappings] ||= [],
-                #:wholeWordOnly => params[:wholeWordOnly] ||= true,  # service default is true
-                #:withDefaultStopWords => params[:withDefaultStopWords] ||= true,  # service default is true
-    }
     start = Time.now
-    query = RECOMMENDER_URI
-    query += "?text=" + CGI.escape(text)
-    query += "&hierarchy=" + options[:hierarchy].to_s
-    query += "&normalization=" + options[:normalization].to_s
-    #query += "&max_level=" + options[:max_level].to_s
-    query += "&ontologies=" + CGI.escape(options[:ontologies].join(',')) unless options[:ontologies].empty?
-    #query += "&semanticTypes=" + options[:semanticTypes].join(',') unless options[:semanticTypes].empty?
-    #query += "&mappings=" + options[:mappings].join(',') unless options[:mappings].empty?
-    #query += "&wholeWordOnly=" + options[:wholeWordOnly].to_s unless options[:wholeWordOnly].empty?
-    #query += "&withDefaultStopWords=" + options[:withDefaultStopWords].to_s unless options[:withDefaultStopWords].empty?
-    recommendations = parse_json(query) # See application_controller.rb
+    input = params[:input].strip.gsub("\r\n", " ").gsub("\n", " ")
+    # Default values are set at the service level)
+    form_data = Hash.new
+    form_data['input'] = input
+    form_data['ontologies'] = params[:ontologies].join(',') unless params[:ontologies].nil?
+    form_data['input_type'] = params[:input_type] unless params[:input_type].nil?
+    form_data['output_type'] = params[:output_type] unless params[:output_type].nil?
+    form_data['max_elements_set'] = params[:max_elements_set] unless params[:output_type].nil?
+    form_data['wc'] = params[:wc].to_s unless params[:wc].nil?
+    form_data['ws'] = params[:ws].to_s unless params[:ws].nil?
+    form_data['wa'] = params[:wa].to_s unless params[:wa].nil?
+    form_data['wd'] = params[:wd].to_s unless params[:wd].nil?
+    recommendations = LinkedData::Client::HTTP.post(RECOMMENDER_URI, form_data, raw: true)
     LOG.add :debug, "Retrieved #{recommendations.length} recommendations: #{Time.now - start}s"
-    #
-    # TODO: get all the annotated class prefLabel values.
-    # Modify the annotated classes (methods in application_controller.rb)
-    #massage_annotated_classes(recommendations, options) unless recommendations.empty?
-    # TODO: discard this code after handling the class prefLabels in above method
-    recommendations.each {|r| r.delete 'annotatedClasses' }
-    #
-    # recommendations are already sorted by their rank (high scores are better)
-    # reduce data package size to suit reasonable display size
-    first25 = recommendations[0..24]
-    # Get the ontology names
-    ontologies_hash = get_simplified_ontologies_hash # method in application_controller.rb
-    first25.each {|r| r['ontology'] = ontologies_hash[ r['ontology']['@id'] ] }
-    render :json => first25
+    render json: recommendations
   end
 
 end

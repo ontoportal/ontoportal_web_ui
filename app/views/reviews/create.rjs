@@ -1,6 +1,0 @@
-@review = @review_saved
-page.insert_html :top, :reviews_container, partial: "reviews/review.html.haml"
-page << "jQuery('input.star').rating();"
-page << "jQuery(document).trigger('close.facebox');"
-page << "jQuery('review_table_#{@review.hash}').highlight();"
-flash.discard

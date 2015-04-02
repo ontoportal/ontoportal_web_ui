@@ -9,7 +9,7 @@
           /- unless @ontology.preferred_name_label.nil? || @ontology.preferred_name_label.to_s.length == 0
           /  (#{@concept.ontology.preferred_name_label})
       %td
-        %p= @concept.prefLabel({:use_html => true})
+        %p= @concept.prefLabel({:use_html => true}).html_safe
     - unless @concept.synonym.nil? || @concept.synonym.empty?
       %tr
         %td.label{:nowrap => ""}
@@ -80,7 +80,7 @@
           %td.property_values
             -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
             - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank') }
-            = "<p>#{sanitize(ajax_links.join('</p><p>'))}</p>"
+            = "<p>#{sanitize(ajax_links.join('</p><p>'))}</p>".html_safe
             -# auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")
 
     -# LEFTOVER set of properties
@@ -101,7 +101,7 @@
 
             -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
             - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank') }
-            = "<p>#{sanitize(ajax_links.join('</p><p>'))}</p>"
+            = "<p>#{sanitize(ajax_links.join('</p><p>'))}</p>".html_safe
             -# auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
 
     -# BOTTOM set of properties
@@ -117,7 +117,7 @@
           %td.property_values
             -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
             - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank')}
-            = "<p>#{ajax_links.join('</p><p>')}</p>"
+            = "<p>#{ajax_links.join('</p><p>')}</p>".html_safe
             -# auto_link("<p>#{values.split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
 
 :javascript

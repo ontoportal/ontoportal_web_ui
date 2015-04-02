@@ -1,3 +1,3 @@
 Please see the 'Bioportal_UI_Deployment.rtf' file in the /doc directory for instructions on installation and deployment.
 
-Run "rake appdoc" to generate API documentation for your models and controllers.
+Run "rake doc:app" to generate API documentation for your models, controllers, helpers, and libraries.

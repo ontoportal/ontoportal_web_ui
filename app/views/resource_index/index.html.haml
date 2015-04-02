@@ -1,33 +1,24 @@
 - @title = "Search Resource Resources"
-:javascript
-  var ont_acronyms = #{@ont_acronyms.to_json};
-  var ont_names = #{@ont_names.to_json};
-  var ont_ids = #{@ont_ids.to_json};
-  var resources = #{@resources_hash.to_json};
-  var orgSite = #{$ORG_SITE.to_json};
-= javascript_include_tag "JqueryPlugins/datatables/js/jquery.dataTables.js"
-= javascript_include_tag "JqueryPlugins/datatables/plugins/datatables.formatted.number.js"
-%script{:charset => "ISO-8859-1", :src => "/javascripts/bp_resource_index.js?1338489986", :type => "text/javascript"}
 
 %div{:style => "padding: 1em;"}
   %h1 Search Resource Index
   %p
     - intro_text = "Search biomedical resources"
-    = I18n.t('home.resources.intro').nil? || I18n.t('home.resources.intro').empty? ? "#{intro_text}  #{help_icon("/help#Resource_Index_Tab")}" : I18n.t('home.resources.intro')
+    = t('home.resources.intro').html_safe.nil? || t('home.resources.intro').html_safe.empty? ? "#{intro_text}  #{help_icon("/help#Resource_Index_Tab")}".html_safe : t('home.resources.intro').html_safe
 
   %div{:style => "padding-bottom: 1em;"}
     %div{:style => "width: 432px;"}
-      #search_button
-        %input#resource_index_button.link_button{:type => "button", :value => "Search Resource Index"}/
+      #resource_index_search_button
+        %input#resource_index_button.link_button{:type => "button", :value => "Search Resource Index"}
         %span#resource_index_spinner{:style => "display: none;"}
-          %img{:src => "/images/spinners/spinner_000000_16px.gif", :style => "vertical-align: text-bottom;"}/
+          %img{:src => "/images/spinners/spinner_000000_16px.gif", :style => "vertical-align: text-bottom;"}
       - textarea_title = "Start typing to find classes to search the index with"
       = select_tag :resource_index_classes, "",        |
           :multiple => 'true',                         |
           'data-placeholder'.to_sym => textarea_title, |
           :style => 'width: 432px;'                    |
       #advanced_options_container
-        %a#advanced_options{:href => "javascript:void(0);"}
+        %a#resource_index_advanced_options{:href => "javascript:void(0);"}
           %span#hide_advanced_options.not_visible> hide&nbsp;
           advanced options
       #search_options.not_visible{:style => "padding-top: .6em; clear: both;"}
@@ -58,12 +49,18 @@
   #results
 
 :javascript
+  var ont_acronyms = #{@ont_acronyms.to_json};
+  var ont_names = #{@ont_names.to_json};
+  var ont_ids = #{@ont_ids.to_json};
+  var resources = #{@resources_hash.to_json};
+  var orgSite = #{$ORG_SITE.to_json};
+
   jQuery(document).ready(function(){
     pageInit();
   });
 
   // Show/Hide advanced options
   jQuery("#advanced_options").click(function(event) {
-      jQuery("#search_options").toggleClass("not_visible");
-      jQuery("#hide_advanced_options").toggleClass("not_visible");
+    jQuery("#search_options").toggleClass("not_visible");
+    jQuery("#hide_advanced_options").toggleClass("not_visible");
   });

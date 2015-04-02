@@ -24,7 +24,7 @@ class ReviewsController < ApplicationController
   # GET /reviews/1/edit
   def edit
     @review = Review.find(params[:id])
-    @rating_types = RatingType.find(:all)
+    @rating_types = RatingType.all
 
     if request.xhr?
       render layout: false
@@ -44,7 +44,9 @@ class ReviewsController < ApplicationController
           flash[:notice] = 'Review was successfully created'
           redirect_to "/ontologies/#{@ontology.acronym}?p=summary"
         end
-        format.js
+        format.js do
+          render json: {}
+        end
       end
     end
   end

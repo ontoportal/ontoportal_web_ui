@@ -1,9 +1,6 @@
 -# called from mappings_controller in several ways:
 -# 1. mappings_controller::get_concept_table via /app/views/mappings/_concept_mappings.html.haml
 -# 2. directly from mappings_controller::get_concept_table
-
-= javascript_include_tag "bp_mappings.js"
-
 -#NOTES on control over mapping deletion:
 -#deleteMappings() is a callback that is called by "#delete_mappings_button" created below.
 -#The appearance of that button is controlled by updateMappingDeletePermissions(), which
@@ -54,8 +51,7 @@
               = check_box_tag :delete_mapping_checkbox, map.id
           %td
             -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
-            = get_link_for_cls_ajax(cls.id, ont_acronym)
-            -# link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{ont_acronym}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>", :controller => 'visualize', :action => 'virtual', :id => ont_acronym, :conceptid => cls.id
+            = raw(get_link_for_cls_ajax(cls.id, ont_acronym))
           %td
             %a{:href => ont_link}= ont_name
           %td
