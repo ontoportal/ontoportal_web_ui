@@ -7,7 +7,7 @@ class NotesController < ApplicationController
   # GET /notes/1.xml
   def show
     # Some application servers (apache, nginx) mangle encoded slashes, check for that here
-    id = params[:id].match(/\Ahttp:\/\w/) ? params[:id].sub('http:/', 'http://') : params[:id]
+    id = clean_note_id(params[:id])
 
     @notes = LinkedData::Client::Models::Note.get(id, include_threads: true)
     @ontology = (@notes.explore.relatedOntology || []).first
@@ -32,6 +32,7 @@ class NotesController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_acronym).first
 
     if note_id
+      id = clean_note_id(params[:noteid])
       @notes = LinkedData::Client::Models::Note.get(params[:noteid], include_threads: true)
     elsif concept_id
       @notes = @ontology.explore.single_class(concept_id).explore.notes
@@ -131,6 +132,12 @@ class NotesController < ApplicationController
     params[:p] = "classes"
     params[:t] = "notes"
     redirect_new_api
+  end
+
+  ##
+  # Sometimes note ids come from the params with a bad prefix
+  def clean_note_id(id)
+    id.match(/\Ahttp:\/\w/) ? id.sub('http:/', 'http://') : id
   end
 
 end
