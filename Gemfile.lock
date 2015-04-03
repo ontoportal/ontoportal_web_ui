@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 33e7f13fb0662cc71aaa70c4b6335da7a6651aeb
-  branch: staging
+  revision: dd22b45c3adeb8681aa01874fe513f7044c0dde0
+  branch: master
   specs:
     ontologies_api_client (0.0.6)
       activesupport (~> 3.0)
@@ -143,7 +143,7 @@ GEM
     rdoc (3.12.2)
       json (~> 1.4)
     recaptcha (0.3.4)
-    recursive-open-struct (0.5.0)
+    recursive-open-struct (0.6.1)
     redis (3.2.1)
     rest-client (1.6.8)
       mime-types (~> 1.16)
