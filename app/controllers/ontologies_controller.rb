@@ -116,11 +116,13 @@ class OntologiesController < ApplicationController
         o[:pullLocation]              = sub.pullLocation
         o[:description]               = sub.description
         o[:creationDate]              = sub.creationDate
-        o[:creationDate]              = sub.creationDate
         o[:submissionStatusFormatted] = submission_status2string(sub).gsub(/\(|\)/, "")
 
         o[:format] = sub.hasOntologyLanguage
         @formats << sub.hasOntologyLanguage
+      else
+        # Used to sort ontologies without subnissions to the end when sorting on upload date
+        o[:creationDate] = DateTime.parse("19900601")
       end
 
       @ontologies << o
