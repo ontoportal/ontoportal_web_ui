@@ -33,7 +33,7 @@ class NotesController < ApplicationController
 
     if note_id
       id = clean_note_id(params[:noteid])
-      @notes = LinkedData::Client::Models::Note.get(params[:noteid], include_threads: true)
+      @notes = LinkedData::Client::Models::Note.get(id, include_threads: true)
     elsif concept_id
       @notes = @ontology.explore.single_class(concept_id).explore.notes
       @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
@@ -137,7 +137,9 @@ class NotesController < ApplicationController
   ##
   # Sometimes note ids come from the params with a bad prefix
   def clean_note_id(id)
-    id.match(/\Ahttp:\/\w/) ? id.sub('http:/', 'http://') : id
+    id = id.match(/\Ahttp:\/\w/) ? id.sub('http:/', 'http://') : id
+    puts id
+    id
   end
 
 end
