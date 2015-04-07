@@ -3,8 +3,6 @@ class OntologiesController < ApplicationController
   require "multi_json"
   require 'cgi'
 
-  #caches_page :index
-
   helper :concepts
   layout :resolve_layout
 
