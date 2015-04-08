@@ -300,6 +300,7 @@ class OntologiesController < ApplicationController
 
     # PURL-specific redirect to handle /ontologies/{ACR}/{CLASS_ID} paths
     if params[:purl_conceptid]
+      params[:purl_conceptid] = "root" if params[:purl_conceptid].eql?("classes")
       if params[:conceptid]
         params.delete(:purl_conceptid)
       else
