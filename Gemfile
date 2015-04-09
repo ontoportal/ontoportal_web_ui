@@ -45,6 +45,7 @@ gem 'calendar_date_select'
 gem 'oj'
 gem 'multi_json'
 gem 'rails_autolink'
+gem 'dalli'
 
 #logs in json format, useful for shipping logs to logstash
 gem 'rackstash', git: "https://github.com/planio-gmbh/rackstash.git"

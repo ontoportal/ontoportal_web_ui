@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 33e7f13fb0662cc71aaa70c4b6335da7a6651aeb
+  revision: e82f618e020dd580683fb209115ef52df9cb6378
   branch: rails4
   specs:
     ontologies_api_client (0.0.6)
@@ -79,6 +79,7 @@ GEM
       execjs
     coffee-script-source (1.9.1)
     cube-ruby (0.0.3)
+    dalli (2.7.4)
     domain_name (0.5.23)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
@@ -215,6 +216,7 @@ DEPENDENCIES
   calendar_date_select
   coffee-rails (~> 4.1.0)
   cube-ruby
+  dalli
   flamegraph
   haml (~> 4.0.0)
   hpricot (~> 0.8.6)
