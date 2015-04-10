@@ -6,7 +6,10 @@ class NotesController < ApplicationController
   # GET /notes/1
   # GET /notes/1.xml
   def show
-    @notes = LinkedData::Client::Models::Note.get(params[:id], include_threads: true)
+    # Some application servers (apache, nginx) mangle encoded slashes, check for that here
+    id = clean_note_id(params[:id])
+
+    @notes = LinkedData::Client::Models::Note.get(id, include_threads: true)
     @ontology = (@notes.explore.relatedOntology || []).first
 
     if request.xhr?
@@ -29,7 +32,8 @@ class NotesController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_acronym).first
 
     if note_id
-      @notes = LinkedData::Client::Models::Note.get(params[:noteid], include_threads: true)
+      id = clean_note_id(params[:noteid])
+      @notes = LinkedData::Client::Models::Note.get(id, include_threads: true)
     elsif concept_id
       @notes = @ontology.explore.single_class(concept_id).explore.notes
       @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
@@ -128,6 +132,14 @@ class NotesController < ApplicationController
     params[:p] = "classes"
     params[:t] = "notes"
     redirect_new_api
+  end
+
+  ##
+  # Sometimes note ids come from the params with a bad prefix
+  def clean_note_id(id)
+    id = id.match(/\Ahttp:\/\w/) ? id.sub('http:/', 'http://') : id
+    puts id
+    id
   end
 
 end

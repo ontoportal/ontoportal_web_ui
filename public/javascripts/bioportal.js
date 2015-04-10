@@ -1,6 +1,9 @@
 // BioPortal jQuery Namespace
 jQuery.bioportal = {};
 
+// Backport function name
+jQuery.curCSS = jQuery.css;
+
 // CSRF protection support
 $(document).ajaxSend(function(e, xhr, options) {
   var token = $("meta[name='csrf-token']").attr('content');
@@ -678,10 +681,8 @@ jQuery(".pagination a").live("click", function(e){
 });
 
 // Facebox settings
-jQuery(document).ready(function(){
-  jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
-  jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
-});
+jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
+jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
 
 // Cookie handling
 var BP_setCookie = function(key, value, options) {
@@ -719,5 +720,11 @@ var BP_getCookie = function(cookie) {
 }
 
 var currentPathArray = function() {
-  return window.location.pathname.slice(1, window.location.pathname.length).split('/');
+  var path, cleanPath = [];
+  path = window.location.pathname.split('/');
+  for (var i = 0; i < path.length; i++) {
+    if (path[i].length > 0)
+      cleanPath.push(path[i]);
+  }
+  return cleanPath;
 }

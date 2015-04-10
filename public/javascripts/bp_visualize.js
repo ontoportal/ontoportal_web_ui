@@ -5,6 +5,8 @@
     return;
   }
 
+  jQuery(document).data().bp.classesTab = {};
+
   // Called when the "Go" button on the Jump To form is clicked
   function jumpToValue(li){
     jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
@@ -78,7 +80,7 @@
     return obsolete_prefix + row0_markup + matchType + obsolete_suffix;
   }
 
-  var classes_init = function(){
+  jQuery(document).data().bp.classesTab.classes_init = function(){
     // Override the side of the bd_content div to avoid problems with
     // the window resizing, which can sometimes cause the right-hand content div to drop down
     var bd_content_width = jQuery("#ontology_content").width();
@@ -141,7 +143,7 @@
       }
   }
 
-  var search_box_init = function(){
+  jQuery(document).data().bp.classesTab.search_box_init = function(){
     if (jQuery("#search_box").bioportal_autocomplete) {
       jQuery("#search_box").bioportal_autocomplete("/search/json_search/"+jQuery(document).data().bp.ontology.acronym, {
         extraParams: { objecttypes: "class" },
@@ -159,47 +161,7 @@
   }
 
   jQuery(document).ready(function(){
-    // TODO_REV: Handle views (replace `if (false)` with `@ontology.isView == 'true'`)
-    if (false) {
-      // Set up a hovertip on the qsearch input element
-      jQuery("#resource_index_top").attr("style", "color: grey;");
-      jQuery("#resource_index_top").attr("title", "Resource Index isn't available for Views");
-      jQuery("#resource_index_top").tooltip({
-          position: "bottom center",
-          tip: '.tooltip',
-          opacity: 0.7
-      });
-    }
-
-    // TODO_REV: Handle search index notice when ontology isn't indexed
-    /*
-      if !@ontology.in_search_index?
-        if !@ontology.latest?
-        // This shows a tooltip on the disabled for elements when ontology isn't the newest (ie missing from index)
-        jQuery("#qsearch").children().filter(":input").each(function(){
-          jQuery(this).attr("readonly", true);
-        });
-        jQuery("#qsearch").attr("style", "color: grey;");
-
-        if @ontology.latest?
-          message = "This ontology has recently been updated and new classes may not yet be available through \"Jump To\""
-        else
-          message = "\"Jump To\" only works with the most recently indexed version of this ontology"
-
-        // Set up a hovertip on the qsearch input element
-        jQuery("#qsearch :input").attr("title", message);
-        jQuery("#qsearch :input").tooltip({
-            position: "top center",
-            offset: [-5, 0],
-            tip: '.tooltip',
-            opacity: 0.9
-        });
-      }
-    */
-  });
-
-  // Tab auto-select based on parameter "t"
-  jQuery(document).ready(function(){
+    // Tab auto-select based on parameter "t"
     var url, urlFragment, paramsList, params = {}, splitParam, content;
     url = document.URL;
 
@@ -218,10 +180,8 @@
         showClassesTab(params["t"]);
       }
     }
-  });
 
-  // Javascript for the permalink box
-  jQuery(document).ready(function(){
+    // Javascript for the permalink box
     jQuery("#close_permalink").live("click", function(){
       jQuery("#purl_link_container").hide();
     });
@@ -234,10 +194,5 @@
     jQuery("#purl_input").live("focus", function(){
       this.select();
     });
-  });
-
-  jQuery(document).ready(function() {
-    classes_init();
-    search_box_init();
   });
 })(window);

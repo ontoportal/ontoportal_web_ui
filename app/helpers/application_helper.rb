@@ -169,17 +169,12 @@ module ApplicationHelper
       # This fake root will be present at the root of "flat" ontologies, we need to keep the id intact
       li_id = child.id.eql?("bp_fake_root") ? "bp_fake_root" : short_uuid
 
-      # Return different result for too many children
-      if child.prefLabel.eql?("*** Too many children...")
-        number_of_classes = id.eql?("root") ? child.explore.ontology.explore.roots.length : node.childrenCount
-        retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(id)}&callback=children&too_many_children_override=true'>Get all classes</a>"
-        string << "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{number_of_classes} classes at this level. Retrieving these may take several minutes. #{retry_link}</div>"
-      elsif child.id.eql?("bp_fake_root")
+      if child.id.eql?("bp_fake_root")
         string << "<li class='active' id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='#' #{active_style}>#{child.prefLabel}</a></li>"
       else
         string << "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{relation} #{child.prefLabel({use_html: true})} #{icons}</a>"
-        if child.childrenCount && child.childrenCount > 0 && !child.expanded?
-          string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&child_size=#{child.childrenCount}'>ajax_class</a></li></ul>"
+        if child.hasChildren && !child.expanded?
+          string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children'>ajax_class</a></li></ul>"
         elsif child.expanded?
           string << "<ul>"
           build_tree(child, string, id)

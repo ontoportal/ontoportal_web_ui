@@ -86,13 +86,18 @@
           %tbody
             -@analytics.onts[0..4].each do |visits|
               -ont = @ontologies_hash[visits[:ont].to_s]
+              -next if ont.nil?
               %tr
                 %td
                   %a{href: "/ontologies/#{ont.acronym}"} #{ont.name} (#{ont.acronym})
                 %td= visits[:views]
             %tr
               %td{colspan: 2, style: "text-align: right;"}
-                %a{href: "#ont_views", rel: "facebox"} More
+                %a#ont_view_popup{href: "#ont_views", rel: "facebox"} More
+                :javascript
+                  jQuery(document).ready(function(){
+                    jQuery("#ont_view_popup").facebox();
+                  });
         :css
           #bd #ont_views {
             left: -99999px;
@@ -152,7 +157,7 @@
                 %tr
                   %td
                     - begin
-                      = link_to "#{note[:subject]} (#{note[:ont_name]})", note[:uri]
+                      = link_to "#{note[:subject]} (#{note[:ont_name]})", note_path(CGI.escape(note[:id]))
                       %br/
                       %span{:style => "color:#AAAAAA"}
                         = "#{time_ago_in_words(note[:created])} ago"

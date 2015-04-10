@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 2fc99d45bed2948af42b04d47d7670856152d888
+  revision: 33e7f13fb0662cc71aaa70c4b6335da7a6651aeb
   branch: staging
   specs:
     ontologies_api_client (0.0.6)
@@ -72,7 +72,7 @@ GEM
     coffee-script-source (1.9.1)
     cube-ruby (0.0.3)
     erubis (2.7.0)
-    excon (0.44.4)
+    excon (0.45.1)
     execjs (2.4.0)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)

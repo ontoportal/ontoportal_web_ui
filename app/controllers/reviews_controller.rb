@@ -44,7 +44,9 @@ class ReviewsController < ApplicationController
           flash[:notice] = 'Review was successfully created'
           redirect_to "/ontologies/#{@ontology.acronym}?p=summary"
         end
-        format.js
+        format.js do
+          render json: {}
+        end
       end
     end
   end

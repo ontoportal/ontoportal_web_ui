@@ -43,7 +43,7 @@ function initClassTree() {
     animate: true,
     timeout: 20000,
     afterClick:function(node){
-      History.pushState({p:"classes", conceptid:jQuery(node).children("a").attr("id")}, jQuery.bioportal.ont_pages["classes"].page_name + " | " + org_site, jQuery(node).children("a").attr("href"));
+      History.pushState({p:"classes", conceptid:jQuery(node).children("a").attr("id")}, jQuery.bioportal.ont_pages["classes"].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site, jQuery(node).children("a").attr("href"));
     },
     afterAjaxError: function(node){
       simpleTreeCollection[0].option.animate = false;
@@ -105,7 +105,7 @@ function nodeClicked(node_id) {
   var concept_uri = (node_id.indexOf("http://") == 0 || node_id.indexOf(encodeURIComponent("http://")) == 0 );
   var purl_anchor = concept_uri ? "?conceptid="+node_id : "/"+node_id;
   var selectedTab = jQuery("#bd_content div.tabs li.selected a").attr("href").slice(1);
-  jQuery("#purl_input").val(purl_prefix + purl_anchor);
+  jQuery("#purl_input").val(jQuery(document).data().bp.ont_viewer.purl_prefix + purl_anchor);
 
   if (getCache(node_id) != null) {
     var tabData = getCache(node_id);
@@ -184,5 +184,11 @@ function getTreeView() {
 // Get the treeview using ajax
 // We do this right after writing #sd_content to the dom to make sure it loads before other async portions of the page
 jQuery(document).ready(function(){
+  // Abort it not right page
+  var path = currentPathArray();
+  if (path[0] !== "ontologies" || (path[0] === "ontologies" && path.length !== 2)) {
+    return;
+  }
+
   getTreeView();
 });

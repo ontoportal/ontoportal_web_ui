@@ -11,46 +11,27 @@ class ConceptsController < ApplicationController
   def show
     # Handle multiple methods of passing concept ids
     params[:id] = params[:id] ? params[:id] : params[:conceptid]
-    too_many_children_override = params[:too_many_children_override].eql?("true")
 
     if params[:id].nil? || params[:id].empty?
       render :text => "Error: You must provide a valid concept id"
       return
     end
 
-    if params[:callback].eql?('children') && params[:child_size].to_i > $MAX_CHILDREN && params[:child_size].to_i < $MAX_POSSIBLE_DISPLAY && !too_many_children_override
-      retry_link = "<a class='too_many_children_override' href='/ajax_concepts/#{params[:ontology]}/?conceptid=#{CGI.escape(params[:id])}&callback=children&too_many_children_override=true'>Get all classes</a>"
-      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} classes at this level. Retrieving these may take several minutes. #{retry_link}</div>"
-      return
-    elsif params[:callback].eql?('children') && params[:child_size].to_i > $MAX_POSSIBLE_DISPLAY && !too_many_children_override
-      render :text => "<div style='background: #eeeeee; padding: 5px; width: 80%;'>There are #{params[:child_size]} classes at this level. Please use the \"Jump To\" to search for specific classes.</div>"
-      return
-    end
     # Note that find_by_acronym includes views by default
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    # Get the latest 'ready' submission, or fallback to any latest submission
-    # TODO: change the logic here if the fallback will crash the visualization
-    @submission = get_ontology_submission_ready(@ontology)  # application_controller
-
-    @concept = @ontology.explore.single_class({full: true}, params[:id])
-    raise Error404 if @concept.nil?
-
-    # TODO: convert 'disjointWith' parameters into classes
-    # TODO: compare with concepts_helper::concept_properties2hash(properties)
-    ## Try to resolve 'disjointWith' parameters into classes
-    #@concept_properties = struct_to_hash(@concept.properties)
-    #disjoint_key = @concept_properties.keys.map {|k| k if k.to_s.include? 'disjoint' }.compact.first
-    #if not disjoint_key.nil?
-    #  disjoint_val = @concept_properties[disjoint_key]
-    #  if disjoint_val.instance_of? Array
-    #    # Assume we have a list of class URIs that can be resolved by the batch service
-    #    classes = disjoint_val.map {|cls| {:class => cls, :ontology => @ontology.id } }
-    #  end
-    #end
-
     if request.xhr?
+      display = params[:callback].eql?('load') ? {full: true} : {display: "prefLabel"}
+      @concept = @ontology.explore.single_class(display, params[:id])
+      raise Error404 if @concept.nil?
       show_ajax_request # process an ajax call
     else
+      # Get the latest 'ready' submission, or fallback to any latest submission
+      # TODO: change the logic here if the fallback will crash the visualization
+      @submission = get_ontology_submission_ready(@ontology)  # application_controller
+
+      @concept = @ontology.explore.single_class({full: true}, params[:id])
+      raise Error404 if @concept.nil?
+
       show_uri_request # process a full call
       render :file => '/ontologies/visualize', :use_full_path => true, :layout => 'ontology'
     end
@@ -143,7 +124,7 @@ class ConceptsController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     raise Error404 if @ontology.nil?
 
-    @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+    @concept = @ontology.explore.single_class({full: true}, CGI.unescape(params[:conceptid]))
     raise Error404 if @concept.nil?
 
     if params[:styled].eql?("true")
@@ -178,7 +159,7 @@ private
       gather_details
       render :partial => 'load'
     when 'children' # Children is called only for drawing the tree
-      @children = @concept.explore.children(full: true, pagesize: 750).collection || []
+      @children = @concept.explore.children(pagesize: 750).collection || []
       @children.sort!{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase} unless @children.empty?
       render :partial => 'child_nodes'
     end
@@ -193,13 +174,14 @@ private
   # gathers the information for a node
   def gather_details
     @mappings = @concept.explore.mappings
+    @notes = @concept.explore.notes
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
   end
 
   def build_tree
     # find path to root
-    rootNode = @concept.explore.tree(include: "prefLabel,childrenCount,obsolete")
+    rootNode = @concept.explore.tree(include: "prefLabel,hasChildren,obsolete")
     @root = LinkedData::Client::Models::Class.new(read_only: true)
     @root.children = rootNode unless rootNode.nil?
   end

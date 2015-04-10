@@ -1,9 +1,9 @@
-function setupFacebox() {
+function setupReviewFacebox() {
   jQuery("a.create_review").attr("rel", "facebox[.facebox_review]");
   jQuery("a.create_review").facebox();
 }
 
-function setupFaceboxSizing() {
+function setupReviewFaceboxSizing() {
   jQuery(document).bind('afterReveal.facebox', function() {
     jQuery("div.facebox_review").parents("div#facebox").width('850px');
     jQuery("div.facebox_review").width('820px');
@@ -12,6 +12,6 @@ function setupFaceboxSizing() {
   });
 }
 
-function submitReview(form, element, callback) {
-  debugger;
-}
+jQuery(document).on("ajax:success", ".facebox_review form", function() {
+  location.reload();
+});

@@ -116,11 +116,13 @@ class OntologiesController < ApplicationController
         o[:pullLocation]              = sub.pullLocation
         o[:description]               = sub.description
         o[:creationDate]              = sub.creationDate
-        o[:creationDate]              = sub.creationDate
         o[:submissionStatusFormatted] = submission_status2string(sub).gsub(/\(|\)/, "")
 
         o[:format] = sub.hasOntologyLanguage
         @formats << sub.hasOntologyLanguage
+      else
+        # Used to sort ontologies without subnissions to the end when sorting on upload date
+        o[:creationDate] = DateTime.parse("19900601")
       end
 
       @ontologies << o
@@ -223,7 +225,7 @@ class OntologiesController < ApplicationController
       if @ontology_saved.summaryOnly
         redirect_to "/ontologies/success/#{@ontology.acronym}"
       else
-        redirect_to new_ontology_submission_url(CGI.escape(@ontology_saved.id))
+        redirect_to new_ontology_submission_url(ontology_id: @ontology.acronym)
       end
     end
   end
@@ -300,6 +302,7 @@ class OntologiesController < ApplicationController
 
     # PURL-specific redirect to handle /ontologies/{ACR}/{CLASS_ID} paths
     if params[:purl_conceptid]
+      params[:purl_conceptid] = "root" if params[:purl_conceptid].eql?("classes")
       if params[:conceptid]
         params.delete(:purl_conceptid)
       else

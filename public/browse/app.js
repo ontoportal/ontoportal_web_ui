@@ -123,9 +123,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
       day_text: ["day", "week", "month", "three_months", "six_months", "year", "all"],
       filter: function(ontology) {
         var active = $scope.facets.upload_date.active;
-        if (active == "" || active == "all")
-          if (!ontology.submission)
-            return false;
+        if (active == "")
           return true;
         if (!ontology.submission)
           return false;
@@ -233,11 +231,9 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
           }
         }
       });
-
-      if (ontology.show) {count++};
     }
 
-    $scope.visible_ont_count = count;
+    $scope.visible_ont_count = $scope.ontologies.filter(function(ont) {return ont.show}).length;
 
     // Highlight the count
     count = $("#visible_ont_count");
