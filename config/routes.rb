@@ -2,7 +2,7 @@ BioportalWebUi::Application.routes.draw do
 
   root :to => 'home#index'
 
-  resources :notes
+  resources :notes, constraints: { id: /.+/ }
 
   resources :projects
 
@@ -65,7 +65,6 @@ BioportalWebUi::Application.routes.draw do
   get '/analytics/:action' => 'analytics#(?-mix:search_result_clicked|user_intention_surveys)'
 
   # New Notes
-  get '/notes/:id' => 'notes#show', :as => :note, :id => /.+/
   get 'ontologies/:ontology/notes/:noteid' => 'notes#virtual_show', :as => :note_virtual, :noteid => /.+/
   get 'notes/ajax/single/:ontology' => 'notes#show_single', :as => :note_ajax_single
   get 'notes/ajax/single_list/:ontology' => 'notes#show_single_list', :as => :note_ajax_single_list
@@ -90,8 +89,8 @@ BioportalWebUi::Application.routes.draw do
 
   # User
   get '/logout' => 'login#destroy', :as => :logout
-  get '/lost_pass' => 'login#lost_password', :as => :lost_pass
-  get '/reset_password' => 'login#reset_password', :as => :lost_pass
+  get '/lost_pass' => 'login#lost_password'
+  get '/reset_password' => 'login#reset_password'
   get '/accounts/:id/custom_ontologies' => 'users#custom_ontologies', :as => :custom_ontologies
   get '/login_as/:login_as' => 'login#login_as'
 
