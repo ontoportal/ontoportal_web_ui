@@ -1,7 +1,7 @@
 class SubmissionsController < ApplicationController
 
   layout 'ontology'
-  before_filter :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
+  before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
 
   def new
     @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params[:ontology_id])) rescue nil

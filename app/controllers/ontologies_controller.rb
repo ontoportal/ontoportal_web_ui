@@ -6,7 +6,7 @@ class OntologiesController < ApplicationController
   helper :concepts
   layout :resolve_layout
 
-  before_filter :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
+  before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
 
   KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties"])
 

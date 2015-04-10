@@ -11,7 +11,7 @@ class ResourceIndexController < ApplicationController
   layout 'ontology'
 
   # Resource Index annotation offsets rely on latin-1 character sets for the count to be right. So we set all responses as latin-1.
-  before_filter :set_encoding
+  before_action :set_encoding
 
   def index
     @resources = LinkedData::Client::ResourceIndex.resources
