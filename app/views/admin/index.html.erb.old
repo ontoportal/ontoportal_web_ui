@@ -60,6 +60,13 @@
     </div>
 </div>
 
+
+<div id="container" style="clear:left">
+  <h2>Ontology Administration</h2>
+
+</div>
+
+
 <div id="global_debug" style="clear: both; padding: 2em;">
   <h2>Global Variables / Settings</h2>
   <pre>
