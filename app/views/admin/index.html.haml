@@ -1,0 +1,76 @@
+- @title = "BioPortal Administration"
+:javascript
+  var ontologiesTable;
+
+  jQuery(document).ready(function() {
+    ontologiesTable = jQuery("#ontologies").dataTable({
+        "bAutoWidth": false,
+        "bLengthChange": false,
+        "bFilter": false,
+        "bInfo": false,
+        "bPaginate": false,
+        "bSort": true,
+        "asStripClasses":["","alt"],
+        "fnDrawCallback": function(oSettings) {
+          // Fix IE whitespace bug in table by removing whitespace
+          // See: http://datatables.net/forums/discussion/5481/bug-ghost-columns-when-generating-large-tables
+          if (navigator.appName == 'Microsoft Internet Explorer') {
+            var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
+            var tbhtml = jQuery('#ontologies').children("tbody").html();
+            jQuery('#ontologies').children("tbody").html(tbhtml.replace(expr, '><'));
+          }
+        }
+    });
+
+    // Set the table width after it gets altered by jQuery DataTable
+    jQuery("#ontologies").css("width","100%");
+
+    // Keep header at top of table even when scrolling
+    new FixedHeader(ontologiesTable);
+  });
+
+#DescriptionDialog{:style => "display: none", :title => "admin description"}
+
+%h1.tab_header Ontology Administration
+%p.tab_description
+  = "Administer ontologies from here"
+
+
+
+
+  %div
+    %a{:href => "/admin?problem_ontologies=true"} Problem Ontologies
+    |
+    %a{:href => "/admin"} All Ontologies
+
+
+
+
+  %table#ontologies.zebra{:cellpadding => "0", :cellspacing => "0"}
+    %thead
+      %tr
+        %th Acronym
+        %th URL
+        %th Error Status
+        %th Missing Status
+        %th Issues
+        %th Actions
+    %tbody
+      - hide_fields = ["uri", "errErrorStatus", "errMissingStatus", "problem"]
+      - for acronym, ontology in @ontologies
+        %tr
+          %td{:style => "vertical-align:top;#{ontology['problem'] === true ? 'color:red' : ''}", :width => "8%"}
+            = acronym
+          %td{:style => "vertical-align:top;", :width => "16%"}
+            = link_to(ontology["uri"], ontology["uri"])
+          %td{:style => "vertical-align:top;", :width => "8%"}
+            = ontology["errErrorStatus"].join(", ") if ontology["errErrorStatus"]
+          %td{:style => "vertical-align:top;", :width => "8%"}
+            = ontology["errMissingStatus"].join(", ") if ontology["errMissingStatus"]
+          %td{:style => "vertical-align:top;", :width => "20%"}
+            = ontology.select {|k, v| !hide_fields.include?(k)}.values.join("<br/>").html_safe
+
+          %td{:style => "vertical-align:top;", :width => "40%"}
+            %a{:href => "/admin/ontologies/#{acronym}"} Submissions
+            |
+            %button Delete
