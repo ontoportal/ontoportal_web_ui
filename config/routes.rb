@@ -170,7 +170,17 @@ BioportalWebUi::Application.routes.draw do
   # Admin
   match '/admin/clearcache' => 'admin#clearcache', :via => :post
   match '/admin/resetcache' => 'admin#resetcache', :via => :post
-  
+
+
+
+
+
+
+
+
+
+
+
   #####
   ## OLD ROUTES
   ## All of these should redirect to new addresses in the controller method or using the redirect controller
