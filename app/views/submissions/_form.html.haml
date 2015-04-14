@@ -36,6 +36,11 @@
     // Check to see if owl is selected, show options if so
     ontologyFormatChange();
     jQuery("#ontology_submission_form").validate();
+
+    jQuery('#add_contact_button').click(function(event) {
+      addContact();
+      event.preventDefault();
+    })
   });
 
   function ontologyFormatChange(format){
@@ -219,7 +224,7 @@
       %td
         %div#contacts
           %div#contact_button{style: "float: right; margin-top -1em;"}
-            = button_to_function("Add contact", "addContact()")
+            = button_to 'Add contact', '#', id: 'add_contact_button'
           - if @submission.contact
             - @submission.contact.each_with_index do |contact, i|
               %div.contact
