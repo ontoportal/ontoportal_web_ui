@@ -67,7 +67,9 @@
     timer = setTimeout(getErrors, 750);
   };
 
-  getErrors();
+  jQuery(document).ready(function() {
+    getErrors();
+  });
 
 %div#processing_container{style: "padding: 3em;"}
   %div#processing
