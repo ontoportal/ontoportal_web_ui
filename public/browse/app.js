@@ -297,6 +297,12 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
 
   $scope.init = function() {
     $scope.ontologies = jQuery(document).data().bp.fullOntologies;
+    if (BP_queryString().filter) {
+      angular.forEach($scope.groups, function(group) {
+        if (group.acronym == BP_queryString().filter)
+          $scope.facets.groups.active.push(group.id);
+      });
+    }
     filterOntologies();
     angular.forEach($scope.ontologies, function(ont) {
       $scope.ontIndex.add({

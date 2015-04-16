@@ -1,21 +1,14 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.21'
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rails', '4.2.1'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
-# Gems used only for assets and not required
-# in production environments by default.
-group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
-
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  # gem 'therubyracer', :platforms => :ruby
-
-  gem 'uglifier', '>= 1.0.3'
-end
+gem 'sass-rails', '~> 5.0'
+gem 'coffee-rails', '~> 4.1.0'
+gem 'uglifier', '>= 1.0.3'
+# See https://github.com/rails/execjs#readme for more supported runtimes
+# gem 'therubyracer', platforms: :ruby
+gem 'duktape'
 
 gem 'jquery-rails'
 
@@ -37,9 +30,9 @@ gem 'unicorn'
 gem "pry"
 gem "iconv"
 gem "hpricot", "~> 0.8.6"
-gem "recaptcha", "= 0.3.4"
-gem "rest-client", "~> 1.6.1"
-gem "mysql", "~> 2.8.1"
+gem "recaptcha", "= 0.4.0"
+gem "rest-client", "~> 1.8.0"
+gem "mysql", "~> 2.9.1"
 gem "memcache-client", "~> 1.8.5"
 gem "i18n", "~> 0"
 gem "haml", "~> 4.0.0"
@@ -53,6 +46,7 @@ gem 'calendar_date_select'
 gem 'oj'
 gem 'multi_json'
 gem 'rails_autolink'
+gem 'dalli'
 
 #logs in json format, useful for shipping logs to logstash
 gem 'rackstash', git: "https://github.com/planio-gmbh/rackstash.git"

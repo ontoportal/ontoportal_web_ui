@@ -61,7 +61,7 @@
           %th
             Contact
           %td
-            = sub.contact.map {|c| [c.name, c.email].join(", ") if c.member?(:name) && c.member?(:email)}.join("<br/>")
+            = raw sub.contact.map {|c| [c.name, c.email].join(", ") if c.member?(:name) && c.member?(:email)}.join("<br/>")
         %tr
           %th
             Home Page
