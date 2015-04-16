@@ -28,6 +28,7 @@
 
   });
 %h1.tab_header Ontology Submissions for #{@ontology.acronym}
+%br
 %p.tab_description
   %a{:href => "/admin"} Back to Admin
 
@@ -54,7 +55,8 @@
       %td
         = xmldatetime_to_date(sub.creationDate)
       %td
-        = raw download_link(sub)
+        %a{:href => "/admin", :class => "link_button"} Parse
+        %a{:href => "/admin", :class => "link_button"} Delete
     - if @submissions.length >= 10
       %tr
         %td{:colspan => 4, :style => "text-align: right;"}
