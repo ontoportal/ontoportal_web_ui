@@ -108,14 +108,18 @@ BioportalWebUi::Application.routes.draw do
   get '/tab/remove/:ontology' => 'history#remove', :as => :remove_tab
   get '/tab/update/:ontology/:concept' => 'history#update', :as => :update_tab
 
-  # Install the default route as the lowest priority.
-  get '/:controller(/:action(/:id))'
   get 'jambalaya/:ontology/:id' => 'visual#jam', :as => :jam
 
   # Admin
   match '/admin/clearcache' => 'admin#clearcache', via: [:get, :post]
   match '/admin/resetcache' => 'admin#resetcache', via: [:get, :post]
-  
+  match '/admin/ontologies/:id' => 'admin#submissions', via: [:get, :post]
+
+  ###########################################################################################################
+  # Install the default route as the lowest priority.
+  get '/:controller(/:action(/:id))'
+  ###########################################################################################################
+
   #####
   ## OLD ROUTES
   ## All of these should redirect to new addresses in the controller method or using the redirect controller
