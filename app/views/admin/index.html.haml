@@ -95,34 +95,4 @@
 #DescriptionDialog{:style => "display: none", :title => "admin description"}
 %h1.tab_header Ontology Administration
 %p.tab_description
-
-.ontologies_list_container
-
-  %table#adminOntologies.zebra{:cellpadding => "0", :cellspacing => "0"}
-    %thead
-      %tr
-        %th Acronym
-        %th URL
-        %th Error Status
-        %th Missing Status
-        %th Issues
-        %th Actions
-    %tbody
-      - hide_fields = ["uri", "errErrorStatus", "errMissingStatus", "problem"]
-      - for acronym, ontology in @ontologies
-        %tr{:class => "#{ontology['problem'] === true ? 'problem' : ''}", :id => "tr_#{acronym}"}
-          %td{:style => "vertical-align:top;", :width => "8%"}
-            %a{:href => "/admin/ontologies/#{acronym}", :style => "#{ontology['problem'] === true ? 'color:red' : ''}"} #{acronym}
-          %td{:style => "vertical-align:top;", :width => "16%"}
-            %a{:href => "#{ontology["uri"]}", :target => "_blank"} REST
-            |
-            %a{:href => "#{$UI_URL}/ontologies/#{acronym}", :target => "_blank"} BioPortal
-          %td{:style => "vertical-align:top;", :width => "8%"}
-            = ontology["errErrorStatus"].join(", ") if ontology["errErrorStatus"]
-          %td{:style => "vertical-align:top;", :width => "8%"}
-            = ontology["errMissingStatus"].join(", ") if ontology["errMissingStatus"]
-          %td{:style => "vertical-align:top;", :width => "20%"}
-            = ontology.select {|k, v| !hide_fields.include?(k)}.values.join("<br/>").html_safe
-          %td{:style => "vertical-align:top;", :width => "40%"}
-            %a{:href => "#", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "deleteOntology('#{acronym}')"}
-              %span{:class => "ui-button-text #{acronym}"} Delete
+  = render partial: "layouts/ontology_report_table"
