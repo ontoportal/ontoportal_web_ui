@@ -17,6 +17,7 @@
 }
 .ontologies_list_container .dataTables_filter {
     float: right;
+    padding-top: 3px;
 }
 .ontologies_list_container .dataTables_filter input {
     width: 200px;
@@ -39,8 +40,11 @@
 .ontologies_list_container .first, .ontologies_list_container .previous, .ontologies_list_container .next, .ontologies_list_container .last {
     padding: 0 .5em;
 }
-
-.ontology_links {
+.ontology_nav {
     float: left;
     padding: 5px 0 1em 0;
+}
+.success_message,
+.error_message {
+    margin-left: 100px;
 }

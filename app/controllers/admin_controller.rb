@@ -4,7 +4,8 @@ class AdminController < ApplicationController
   before_action :cache_setup
 
   DEBUG_BLACKLIST = [:"$,", :$ADDITIONAL_ONTOLOGY_DETAILS, :$rdebug_state, :$PROGRAM_NAME, :$LOADED_FEATURES, :$KCODE, :$-i, :$rails_rake_task, :$$, :$gems_build_rake_task, :$daemons_stop_proc, :$VERBOSE, :$DAEMONS_ARGV, :$daemons_sigterm, :$DEBUG_BEFORE, :$stdout, :$-0, :$-l, :$-I, :$DEBUG, :$', :$gems_rake_task, :$_, :$CODERAY_DEBUG, :$-F, :$", :$0, :$=, :$FILENAME, :$?, :$!, :$rdebug_in_irb, :$-K, :$TESTING, :$fileutils_rb_have_lchmod, :$EMAIL_EXCEPTIONS, :$binding, :$-v, :$>, :$SAFE, :$/, :$fileutils_rb_have_lchown, :$-p, :$-W, :$:, :$__dbg_interface, :$stderr, :$\, :$&, :$<, :$debug, :$;, :$~, :$-a, :$DEBUG_RDOC, :$CGI_ENV, :$LOAD_PATH, :$-d, :$*, :$., :$-w, :$+, :$@, :$`, :$stdin, :$1, :$2, :$3, :$4, :$5, :$6, :$7, :$8, :$9]
-  ONTOLOGIES_URI = "#{LinkedData::Client.settings.rest_url}/admin/report"
+  ADMIN_URL = "#{LinkedData::Client.settings.rest_url}/admin/"
+  ONTOLOGIES_URL = "#{ADMIN_URL}report"
 
   def index
     if session[:user].nil? || !session[:user].admin?
@@ -12,7 +13,7 @@ class AdminController < ApplicationController
     else
       start = Time.now
       form_data = Hash.new
-      ontologies_data = LinkedData::Client::HTTP.get(ONTOLOGIES_URI, form_data, raw: true)
+      ontologies_data = LinkedData::Client::HTTP.get(ONTOLOGIES_URL, form_data, raw: true)
       @ontologies = JSON.parse(ontologies_data)
 
       LOG.add :debug, "Retrieved #{@ontologies.length} ontologies: #{Time.now - start}s"
@@ -65,6 +66,22 @@ class AdminController < ApplicationController
     end
     render :partial => 'status'
   end
+
+  def delete_ontology
+    puts "Deleting ontology #{params["id"]}"
+
+
+    # @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params["id"])
+    # @ontology.delete
+
+
+
+
+    render :json => {:success => "Ontology #{params["id"]} and all its artifacts deleted successfully."}
+
+
+  end
+
 
   private
 

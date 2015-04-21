@@ -7,17 +7,53 @@
     showAll = val;
   }
 
+  function deleteOntology(acronym) {
+    if (confirm("Are you sure you want to delete " + acronym + " ontology and all its artifacts?\nThis action is irreversible!")) {
+      doSubmit(acronym, "/admin/ontologies/" + acronym, "DELETE", {});
+    }
+    return false;
+  }
+
+  function doSubmit(acronym, path, method, params) {
+    jQuery('.progressSpinner').show();
+    jQuery.ajax({
+      type: method,
+      url: path,
+      data: params,
+      dataType: "json",
+      success: function(data) {
+        jQuery('.progressSpinner').hide();
+        if (data) {
+          //remove row from the table
+          var ontologiesTable = jQuery('#adminOntologies').DataTable();
+          ontologiesTable.row(jQuery("#tr_" + acronym)).remove().draw();
+          jQuery(".success_message").html(data["success"]);
+          jQuery(".success_message").show();
+        }
+      },
+      error: function(errorData) {
+        jQuery('.progressSpinner').hide();
+        jQuery(".error_message").html(errorData["error"]);
+        jQuery(".error_message").show();
+        console.log("error", errorData);
+      }
+    });
+  }
+
   jQuery(document).ready(function() {
     ontologiesTable = jQuery("#adminOntologies").dataTable({
       "bAutoWidth": false,
       "bLengthChange": false,
       "bFilter": true,
+      "oLanguage": {
+        "sSearch": "Filter: "
+      },
       "bInfo": true,
       "bPaginate": true,
       "iDisplayLength": 50,
       "bSort": true,
       "asStripClasses": ["","alt"],
-      "dom": '<"ontology_links">frtip',
+      "dom": '<"ontology_nav">frtip',
       "fnDrawCallback": function(oSettings) {
         // Fix IE whitespace bug in table by removing whitespace
         // See: http://datatables.net/forums/discussion/5481/bug-ghost-columns-when-generating-large-tables
@@ -29,7 +65,10 @@
       }
     });
 
-    jQuery("div.ontology_links").html('<span class="toggle-row-display"><a href="#" onclick="toggleShow(false);">Problem Ontologies</a> | <a href="#" onclick="toggleShow(true);">All Ontologies</a></span>');
+    jQuery("div.ontology_nav").html('<span class="toggle-row-display"><a href="#" onclick="toggleShow(true);">All</a> | <a href="#" onclick="toggleShow(false);">Problem Only</a></span><span class="progressSpinner"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;margin-left:20px;"></span><span class="error_message">Problem performing this action. Please try again.</span><span class="success_message">Action completed successfully.</span>');
+    jQuery(".error_message").hide();
+    jQuery(".success_message").hide();
+    jQuery(".progressSpinner").hide();
 
     jQuery.fn.dataTableExt.afnFiltering.push(
       function( oSettings, aData, iDataIndex ) {
@@ -71,7 +110,7 @@
     %tbody
       - hide_fields = ["uri", "errErrorStatus", "errMissingStatus", "problem"]
       - for acronym, ontology in @ontologies
-        %tr{:class => "#{ontology['problem'] === true ? 'problem' : ''}"}
+        %tr{:class => "#{ontology['problem'] === true ? 'problem' : ''}", :id => "tr_#{acronym}"}
           %td{:style => "vertical-align:top;", :width => "8%"}
             %a{:href => "/admin/ontologies/#{acronym}", :style => "#{ontology['problem'] === true ? 'color:red' : ''}"} #{acronym}
           %td{:style => "vertical-align:top;", :width => "16%"}
@@ -85,7 +124,5 @@
           %td{:style => "vertical-align:top;", :width => "20%"}
             = ontology.select {|k, v| !hide_fields.include?(k)}.values.join("<br/>").html_safe
           %td{:style => "vertical-align:top;", :width => "40%"}
-            %a{:href => "/admin", :class => "link_button"} Delete
-            %a{:href => "/admin", :class => "link_button"} Index
-            %a{:href => "/admin", :class => "link_button"} Annotator
-            %a{:href => "/admin", :class => "link_button"} Metrics
+            %a{:href => "#", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "deleteOntology('#{acronym}')"}
+              %span{:class => "ui-button-text #{acronym}"} Delete

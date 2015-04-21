@@ -115,6 +115,9 @@ BioportalWebUi::Application.routes.draw do
   match '/admin/resetcache' => 'admin#resetcache', via: [:get, :post]
   match '/admin/ontologies/:id' => 'admin#submissions', via: [:get, :post]
 
+  match '/admin/ontologies/:id' => 'admin#delete_ontology', via: [:delete]
+
+
   ###########################################################################################################
   # Install the default route as the lowest priority.
   get '/:controller(/:action(/:id))'
