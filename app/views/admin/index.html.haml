@@ -1,25 +1,49 @@
 - @title = "BioPortal Administration"
 :javascript
   var ontologiesTable;
+  var showAll = 1;
+
+  function toggleShow(val) {
+    showAll = val;
+  }
 
   jQuery(document).ready(function() {
     ontologiesTable = jQuery("#adminOntologies").dataTable({
-        "bAutoWidth": false,
-        "bLengthChange": false,
-        "bFilter": true,
-        "bInfo": true,
-        "bPaginate": false,
-        "bSort": true,
-        "asStripClasses":["","alt"],
-        "fnDrawCallback": function(oSettings) {
-          // Fix IE whitespace bug in table by removing whitespace
-          // See: http://datatables.net/forums/discussion/5481/bug-ghost-columns-when-generating-large-tables
-          if (navigator.appName == 'Microsoft Internet Explorer') {
-            var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
-            var tbhtml = jQuery('#adminOntologies').children("tbody").html();
-            jQuery('#adminOntologies').children("tbody").html(tbhtml.replace(expr, '><'));
-          }
+      "bAutoWidth": false,
+      "bLengthChange": false,
+      "bFilter": true,
+      "bInfo": true,
+      "bPaginate": true,
+      "iDisplayLength": 50,
+      "bSort": true,
+      "asStripClasses": ["","alt"],
+      "dom": '<"ontology_links">frtip',
+      "fnDrawCallback": function(oSettings) {
+        // Fix IE whitespace bug in table by removing whitespace
+        // See: http://datatables.net/forums/discussion/5481/bug-ghost-columns-when-generating-large-tables
+        if (navigator.appName == 'Microsoft Internet Explorer') {
+          var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
+          var tbhtml = jQuery('#adminOntologies').children("tbody").html();
+          jQuery('#adminOntologies').children("tbody").html(tbhtml.replace(expr, '><'));
         }
+      }
+    });
+
+    jQuery("div.ontology_links").html('<span class="toggle-row-display"><a href="#" onclick="toggleShow(false);">Problem Ontologies</a> | <a href="#" onclick="toggleShow(true);">All Ontologies</a></span>');
+
+    jQuery.fn.dataTableExt.afnFiltering.push(
+      function( oSettings, aData, iDataIndex ) {
+        var row = oSettings.aoData[iDataIndex].nTr;
+        if (!showAll && !row.classList.contains("problem")) {
+          return false;
+        }
+        return true;
+      }
+    );
+
+    jQuery(".toggle-row-display a").live("click", function() {
+      jQuery("#adminOntologies").dataTable().fnDraw();
+      return false;
     });
 
     // Set the table width after it gets altered by jQuery DataTable
@@ -31,14 +55,9 @@
 
 #DescriptionDialog{:style => "display: none", :title => "admin description"}
 %h1.tab_header Ontology Administration
-%br
 %p.tab_description
-  %a{:href => "/admin?problem_ontologies=true"} Problem Ontologies
-  |
-  %a{:href => "/admin"} All Ontologies
 
-
-
+.ontologies_list_container
 
   %table#adminOntologies.zebra{:cellpadding => "0", :cellspacing => "0"}
     %thead
@@ -52,7 +71,7 @@
     %tbody
       - hide_fields = ["uri", "errErrorStatus", "errMissingStatus", "problem"]
       - for acronym, ontology in @ontologies
-        %tr
+        %tr{:class => "#{ontology['problem'] === true ? 'problem' : ''}"}
           %td{:style => "vertical-align:top;", :width => "8%"}
             %a{:href => "/admin/ontologies/#{acronym}", :style => "#{ontology['problem'] === true ? 'color:red' : ''}"} #{acronym}
           %td{:style => "vertical-align:top;", :width => "16%"}
@@ -65,7 +84,6 @@
             = ontology["errMissingStatus"].join(", ") if ontology["errMissingStatus"]
           %td{:style => "vertical-align:top;", :width => "20%"}
             = ontology.select {|k, v| !hide_fields.include?(k)}.values.join("<br/>").html_safe
-
           %td{:style => "vertical-align:top;", :width => "40%"}
             %a{:href => "/admin", :class => "link_button"} Delete
             %a{:href => "/admin", :class => "link_button"} Index

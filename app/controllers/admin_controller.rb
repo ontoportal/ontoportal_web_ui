@@ -4,11 +4,7 @@ class AdminController < ApplicationController
   before_action :cache_setup
 
   DEBUG_BLACKLIST = [:"$,", :$ADDITIONAL_ONTOLOGY_DETAILS, :$rdebug_state, :$PROGRAM_NAME, :$LOADED_FEATURES, :$KCODE, :$-i, :$rails_rake_task, :$$, :$gems_build_rake_task, :$daemons_stop_proc, :$VERBOSE, :$DAEMONS_ARGV, :$daemons_sigterm, :$DEBUG_BEFORE, :$stdout, :$-0, :$-l, :$-I, :$DEBUG, :$', :$gems_rake_task, :$_, :$CODERAY_DEBUG, :$-F, :$", :$0, :$=, :$FILENAME, :$?, :$!, :$rdebug_in_irb, :$-K, :$TESTING, :$fileutils_rb_have_lchmod, :$EMAIL_EXCEPTIONS, :$binding, :$-v, :$>, :$SAFE, :$/, :$fileutils_rb_have_lchown, :$-p, :$-W, :$:, :$__dbg_interface, :$stderr, :$\, :$&, :$<, :$debug, :$;, :$~, :$-a, :$DEBUG_RDOC, :$CGI_ENV, :$LOAD_PATH, :$-d, :$*, :$., :$-w, :$+, :$@, :$`, :$stdin, :$1, :$2, :$3, :$4, :$5, :$6, :$7, :$8, :$9]
-  PROBLEM_ONTOLOGIES_URI = "#{LinkedData::Client.settings.rest_url}/admin/problem_ontologies"
   ONTOLOGIES_URI = "#{LinkedData::Client.settings.rest_url}/admin/report"
-
-
-
 
   def index
     if session[:user].nil? || !session[:user].admin?
@@ -16,12 +12,7 @@ class AdminController < ApplicationController
     else
       start = Time.now
       form_data = Hash.new
-
-      if params["problem_ontologies"]
-        ontologies_data = LinkedData::Client::HTTP.get(PROBLEM_ONTOLOGIES_URI, form_data, raw: true)
-      else
-        ontologies_data = LinkedData::Client::HTTP.get(ONTOLOGIES_URI, form_data, raw: true)
-      end
+      ontologies_data = LinkedData::Client::HTTP.get(ONTOLOGIES_URI, form_data, raw: true)
       @ontologies = JSON.parse(ontologies_data)
 
       LOG.add :debug, "Retrieved #{@ontologies.length} ontologies: #{Time.now - start}s"
@@ -34,14 +25,16 @@ class AdminController < ApplicationController
     # globals.each {|g| @globals[g.to_s] = eval(g.to_s)}
   end
 
+  def show
+    puts "executing show"
+  end
 
-  def ontologies
+  def submissions
     @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params["id"])) rescue nil
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params["id"]).first unless @ontology
     puts "This is a sumbmissions controller for #{params["id"]}"
     render action: "submissions"
   end
-
 
   def clearcache
     if @cache.respond_to?(:flush_all)
