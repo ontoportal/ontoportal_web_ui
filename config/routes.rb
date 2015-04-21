@@ -100,7 +100,7 @@ BioportalWebUi::Application.routes.draw do
   get '/respage/' => 'resources#page', :as => :obrpage
   get '/resource_index/resources' => 'resource_index#index'
   get '/resource_index/resources/:resource_id' => 'resource_index#index'
-  get '/resource_index/:action' => 'resource_index#(?-mix:element_annotations|results_paginate|resources_table)'
+  match '/resource_index/:action', to: 'resource_index#(?-mix:element_annotations|results_paginate|resources_table)', via: [:get, :post]
   get '/resource_index/search_classes' => 'resource_index#search_classes'
   resources :resource_index
 
