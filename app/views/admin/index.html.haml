@@ -55,6 +55,12 @@
       "asStripClasses": ["","alt"],
       "dom": '<"ontology_nav">frtip',
       "fnDrawCallback": function(oSettings) {
+
+
+
+        jQuery('a[rel*=facebox]').facebox();
+
+
         // Fix IE whitespace bug in table by removing whitespace
         // See: http://datatables.net/forums/discussion/5481/bug-ghost-columns-when-generating-large-tables
         if (navigator.appName == 'Microsoft Internet Explorer') {
@@ -87,6 +93,9 @@
 
     // Set the table width after it gets altered by jQuery DataTable
     jQuery("#adminOntologies").css("width","100%");
+
+
+
 
     // Keep header at top of table even when scrolling
     new FixedHeader(ontologiesTable);

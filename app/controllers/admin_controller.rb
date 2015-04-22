@@ -31,10 +31,16 @@ class AdminController < ApplicationController
   end
 
   def submissions
+    @submissions = nil
     @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params["id"])) rescue nil
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params["id"]).first unless @ontology
-    puts "This is a sumbmissions controller for #{params["id"]}"
-    render action: "submissions"
+    begin
+      submissions = @ontology.explore.submissions
+      @submissions = submissions.sort {|a,b| b.submissionId <=> a.submissionId }
+    rescue
+      @submissions = []
+    end
+    render :partial => "layouts/ontology_report_submissions"
   end
 
   def clearcache
@@ -49,7 +55,7 @@ class AdminController < ApplicationController
     else
       @status = "Error: the cache does not respond to the `flush_all` command"
     end
-    render :partial => 'status'
+    render :partial => "status"
   end
 
   def resetcache
@@ -70,16 +76,10 @@ class AdminController < ApplicationController
   def delete_ontology
     puts "Deleting ontology #{params["id"]}"
 
-
-    # @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params["id"])
-    # @ontology.delete
-
-
-
+    # ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params["id"]).first
+    # error_response = ontology.delete
 
     render :json => {:success => "Ontology #{params["id"]} and all its artifacts deleted successfully."}
-
-
   end
 
 
