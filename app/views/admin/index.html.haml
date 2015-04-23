@@ -1,3 +1,4 @@
+= javascript_include_tag "/javascripts/alertify/alertify.min.js"
 - @title = "BioPortal Administration"
 :javascript
   var ontologiesTable;
@@ -8,9 +9,11 @@
   }
 
   function deleteOntology(acronym) {
-    if (confirm("Are you sure you want to delete " + acronym + " ontology and all its artifacts?\nThis action is irreversible!")) {
-      doSubmit(acronym, "/admin/ontologies/" + acronym, "DELETE", {});
-    }
+    alertify.confirm("Are you sure you want to delete <span style='color:red;font-weight:bold;'>" + acronym + "</span> ontology and all its artifacts?<br/><b>This action CAN NOT be undone!!!</b>", function(e) {
+      if (e) {
+        doSubmit(acronym, "/admin/ontologies/" + acronym, "DELETE", {});
+      }
+    });
     return false;
   }
 
