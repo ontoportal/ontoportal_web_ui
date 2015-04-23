@@ -12,24 +12,24 @@
       - hide_fields = ["uri", "errErrorStatus", "errMissingStatus", "problem"]
       - for acronym, ontology in @ontologies
         %tr{:class => "#{ontology['problem'] === true ? 'problem' : ''}", :id => "tr_#{acronym}"}
-          %td{:style => "vertical-align:top;", :width => "10%"}
+          %td{:style => "vertical-align:top;", :width => "12%"}
             %a{:id => "link_submissions_#{acronym}", :href => "javascript:;", :style => "#{ontology['problem'] === true ? 'color:red' : ''}"} #{acronym}
             :javascript
               jQuery("#link_submissions_#{acronym}").click(function(event) {
                 event.preventDefault();
                 jQuery.facebox({ ajax: "#{$UI_URL}/admin/ontologies/#{acronym}" });
               });
-          %td{:style => "vertical-align:top;", :width => "8%"}
+          %td{:style => "vertical-align:top;", :width => "9%"}
             %a{:href => "#{ontology["uri"]}", :target => "_blank"} REST
             |
             %a{:href => "#{$UI_URL}/ontologies/#{acronym}", :target => "_blank"} BioPortal
-          %td{:style => "vertical-align:top;", :width => "8%"}
+          %td{:style => "vertical-align:top;", :width => "10%"}
             = ontology["errErrorStatus"].join(", ") if ontology["errErrorStatus"]
-          %td{:style => "vertical-align:top;", :width => "8%"}
+          %td{:style => "vertical-align:top;", :width => "10%"}
             = ontology["errMissingStatus"].join(", ") if ontology["errMissingStatus"]
-          %td{:style => "vertical-align:top;", :width => "20%"}
+          %td{:style => "vertical-align:top;", :width => "26%"}
             = ontology.select {|k, v| !hide_fields.include?(k)}.values.join("<br/>").html_safe
-          %td{:style => "vertical-align:top;", :width => "46%"}
+          %td{:style => "vertical-align:top;", :width => "33%"}
             %a{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "deleteOntology('#{acronym}')"}
               %span{:class => "ui-button-text #{acronym}"} Delete
 

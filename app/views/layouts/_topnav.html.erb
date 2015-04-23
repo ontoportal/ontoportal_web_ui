@@ -13,6 +13,9 @@
         <%=top_tab("Resource Index", "/resource_index", "resource_index")%>
       <%end%>
       <%=top_tab("Projects", "/projects", "projects")%>
+      <%if !session[:user].nil? && session[:user].admin? %>
+        <%=top_tab("Admin", "/admin", "admin")%>
+      <%end%>
     </ul>
 
   <script type="text/javascript">
