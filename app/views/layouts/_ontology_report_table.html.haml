@@ -13,9 +13,10 @@
       - for acronym, ontology in @ontologies
         %tr{:class => "#{ontology['problem'] === true ? 'problem' : ''}", :id => "tr_#{acronym}"}
           %td{:style => "vertical-align:top;", :width => "10%"}
-            %a{:id => "link_submissions_#{acronym}", :href => "#", :style => "#{ontology['problem'] === true ? 'color:red' : ''}"} #{acronym}
+            %a{:id => "link_submissions_#{acronym}", :href => "javascript:;", :style => "#{ontology['problem'] === true ? 'color:red' : ''}"} #{acronym}
             :javascript
-              jQuery("#link_submissions_#{acronym}").click(function() {
+              jQuery("#link_submissions_#{acronym}").click(function(event) {
+                event.preventDefault();
                 jQuery.facebox({ ajax: "#{$UI_URL}/admin/ontologies/#{acronym}" });
               });
           %td{:style => "vertical-align:top;", :width => "8%"}
@@ -29,7 +30,7 @@
           %td{:style => "vertical-align:top;", :width => "20%"}
             = ontology.select {|k, v| !hide_fields.include?(k)}.values.join("<br/>").html_safe
           %td{:style => "vertical-align:top;", :width => "46%"}
-            %a{:href => "#", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "deleteOntology('#{acronym}')"}
+            %a{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "deleteOntology('#{acronym}')"}
               %span{:class => "ui-button-text #{acronym}"} Delete
 
 

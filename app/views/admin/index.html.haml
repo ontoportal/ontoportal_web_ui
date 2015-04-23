@@ -24,11 +24,13 @@
       success: function(data) {
         jQuery('.progressSpinner').hide();
         if (data) {
-          //remove row from the table
-          var ontologiesTable = jQuery('#adminOntologies').DataTable();
-          ontologiesTable.row(jQuery("#tr_" + acronym)).remove().draw();
-          jQuery(".success_message").html(data["success"]);
-          jQuery(".success_message").show();
+          if (method == "DELETE") {
+            //remove row from the table
+            var ontologiesTable = jQuery('#adminOntologies').DataTable();
+            ontologiesTable.row(jQuery("#tr_" + acronym)).remove().draw();
+            jQuery(".success_message").html(data["success"]);
+            jQuery(".success_message").show();
+          }
         }
       },
       error: function(errorData) {
