@@ -1,30 +1,19 @@
 :javascript
-  jQuery(document).ready(function(){
-    jQuery(".click_versions_collapse").click(function(){
-      var collapse = "#" + jQuery(this).parent().attr("id") + "_collapsible";
-      var icon = "#" + jQuery(this).parent().attr("id") + "_icon";
-      jQuery(icon).toggleClass("ui-icon-triangle-1-e");
-      jQuery(icon).toggleClass("ui-icon-triangle-1-s");
-      jQuery(collapse).toggle();
-    });
-
-    jQuery("#version_toggle").click(function(event){
+  jQuery(document).ready(function() {
+    jQuery("#version_toggle").click(function(event) {
       event.preventDefault();
       jQuery("#ontology_versions tr.hidden_select").toggleClass("hidden_ont");
     });
 
-    jQuery("#version_toggle").toggle(function() {
-      jQuery(this).text("less...");
-    },
-
-    function() {
-      jQuery(this).text("more...");
+    jQuery("#version_toggle").toggle(
+      function() {
+        jQuery(this).text("less...");
+      },
+      function() {
+        jQuery(this).text("more...");
     });
   });
 %h1.tab_header Ontology Submissions for #{@ontology.acronym}
-%br
-%p.tab_description
-  %a{:href => "/admin"} Back to Admin
 %table#ontology_versions.zebra{:cellpadding => "0", :cellspacing => "0", width: "100%"}
   %thead
     %tr
@@ -41,7 +30,7 @@
     - hidden_row_class = index >= 10 ? "hidden_ont hidden_select" : ""
     <tr #{cycle("class='#{hidden_row_class}'", "class='alt #{hidden_row_class}'")} class="#{hidden_row_class}">
     %td
-      = raw status_link(sub, sub.submissionId==submission_readyId)
+      = raw status_link(sub, sub.submissionId==submission_readyId, target="_blank")
     %td
       = xmldatetime_to_date(sub.released)
     %td

@@ -13,7 +13,11 @@
       - for acronym, ontology in @ontologies
         %tr{:class => "#{ontology['problem'] === true ? 'problem' : ''}", :id => "tr_#{acronym}"}
           %td{:style => "vertical-align:top;", :width => "10%"}
-            %a{:href => "/admin/ontologies/#{acronym}", :rel => "facebox", :style => "#{ontology['problem'] === true ? 'color:red' : ''}"} #{acronym}
+            %a{:id => "link_submissions_#{acronym}", :href => "#", :style => "#{ontology['problem'] === true ? 'color:red' : ''}"} #{acronym}
+            :javascript
+              jQuery("#link_submissions_#{acronym}").click(function() {
+                jQuery.facebox({ ajax: "#{$UI_URL}/admin/ontologies/#{acronym}" });
+              });
           %td{:style => "vertical-align:top;", :width => "8%"}
             %a{:href => "#{ontology["uri"]}", :target => "_blank"} REST
             |

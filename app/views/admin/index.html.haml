@@ -55,12 +55,6 @@
       "asStripClasses": ["","alt"],
       "dom": '<"ontology_nav">frtip',
       "fnDrawCallback": function(oSettings) {
-
-
-
-        jQuery('a[rel*=facebox]').facebox();
-
-
         // Fix IE whitespace bug in table by removing whitespace
         // See: http://datatables.net/forums/discussion/5481/bug-ghost-columns-when-generating-large-tables
         if (navigator.appName == 'Microsoft Internet Explorer') {
@@ -69,6 +63,18 @@
           jQuery('#adminOntologies').children("tbody").html(tbhtml.replace(expr, '><'));
         }
       }
+    });
+
+    // make sure facebox window is empty before populating it
+    // otherwise ajax requests stack up and you see more than
+    // one ontology's submissions
+    jQuery(document).bind('beforeReveal.facebox', function() {
+      jQuery("#facebox .content").empty();
+    });
+    // remove hidden divs for submissions of previously
+    // clicked ontologies
+    jQuery(document).bind('reveal.facebox', function() {
+      jQuery('div[id=facebox]:hidden').remove();
     });
 
     jQuery("div.ontology_nav").html('<span class="toggle-row-display"><a href="#" onclick="toggleShow(true);">All</a> | <a href="#" onclick="toggleShow(false);">Problem Only</a></span><span class="progressSpinner"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;margin-left:20px;"></span><span class="error_message">Problem performing this action. Please try again.</span><span class="success_message">Action completed successfully.</span>');
@@ -93,10 +99,6 @@
 
     // Set the table width after it gets altered by jQuery DataTable
     jQuery("#adminOntologies").css("width","100%");
-
-
-
-
     // Keep header at top of table even when scrolling
     new FixedHeader(ontologiesTable);
   });

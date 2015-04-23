@@ -20,10 +20,12 @@
       jQuery("#ontology_versions tr.hidden_select").toggleClass("hidden_ont");
     });
 
-    jQuery("#version_toggle").toggle(function() {
-      jQuery(this).text("less...");
-    }, function() {
-      jQuery(this).text("more...");
+    jQuery("#version_toggle").toggle(
+      function() {
+        jQuery(this).text("less...");
+      },
+      function() {
+        jQuery(this).text("more...");
     });
 
   });
