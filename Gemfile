@@ -37,7 +37,7 @@ gem 'unicorn'
 gem "pry"
 gem "iconv"
 gem "hpricot", "~> 0.8.6"
-gem "recaptcha", "= 0.3.4"
+gem "recaptcha", "~> 0.4.0"
 gem "rest-client", "~> 1.6.1"
 gem "mysql", "~> 2.8.1"
 gem "memcache-client", "~> 1.8.5"
