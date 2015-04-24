@@ -130,7 +130,7 @@
       jQuery('div[id=facebox]:hidden').remove();
     });
 
-    jQuery("div.ontology_nav").html('<span class="toggle-row-display"><a href="#" onclick="toggleShow(true);">All</a> | <a href="#" onclick="toggleShow(false);">Problem Only</a></span><span class="progressSpinner"><img src="/images/spinners/spinner_000000_16px.gif" style="vertical-align: text-bottom;margin-left:20px;"></span>');
+    jQuery("div.ontology_nav").html('<span class="toggle-row-display"><a href="#" onclick="toggleShow(true);">All</a> | <a href="#" onclick="toggleShow(false);">Problem Only</a></span>');
     jQuery(".error_message").hide();
     jQuery(".success_message").hide();
     jQuery(".progressSpinner").hide();
@@ -168,6 +168,8 @@
       %a{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "resetMemcacheConnection();"}
         %span{:class => "ui-button-text"} Reset Memcache Connection
     %td
+      %span.progressSpinner
+        %img{:src => "/images/spinners/spinner_000000_16px.gif", :style => "vertical-align: text-bottom;"}
       %span#request_status{:class => "success_message"}
       %span#request_status{:class => "error_message"}
 %p.tab_description{:style => "clear: both;padding-top:25px;"}
