@@ -182,7 +182,7 @@ GEM
       sprockets-rails (>= 2.0, < 4.0)
       tilt (~> 1.1)
     slop (3.6.0)
-    sprockets (3.0.1)
+    sprockets (3.0.2)
       rack (~> 1.0)
     sprockets-rails (2.2.4)
       actionpack (>= 3.0)
