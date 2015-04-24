@@ -66,14 +66,14 @@ GEM
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
       railties (~> 3.2.0)
-    coffee-script (2.3.0)
+    coffee-script (2.4.1)
       coffee-script-source
       execjs
-    coffee-script-source (1.9.1)
+    coffee-script-source (1.9.1.1)
     cube-ruby (0.0.3)
     erubis (2.7.0)
-    excon (0.45.1)
-    execjs (2.4.0)
+    excon (0.45.3)
+    execjs (2.5.2)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
     fast_stack (0.1.0)
@@ -104,7 +104,7 @@ GEM
     multi_json (1.11.0)
     multipart-post (2.0.0)
     mysql (2.8.1)
-    oj (2.12.1)
+    oj (2.12.4)
     polyglot (0.3.5)
     pry (0.10.1)
       coderay (~> 1.1.0)
@@ -142,8 +142,8 @@ GEM
       rake
     rdoc (3.12.2)
       json (~> 1.4)
-    recaptcha (0.3.4)
-    recursive-open-struct (0.6.1)
+    recaptcha (0.4.0)
+    recursive-open-struct (0.6.3)
     redis (3.2.1)
     rest-client (1.6.8)
       mime-types (~> 1.16)
@@ -165,11 +165,11 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.43)
+    tzinfo (0.3.44)
     uglifier (2.7.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
-    unicorn (4.8.3)
+    unicorn (4.9.0)
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
@@ -200,7 +200,7 @@ DEPENDENCIES
   rails (= 3.2.21)
   rails_autolink
   rdoc
-  recaptcha (= 0.3.4)
+  recaptcha (~> 0.4.0)
   rest-client (~> 1.6.1)
   sass-rails (~> 3.2.3)
   stackprof
