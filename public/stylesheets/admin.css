@@ -1,12 +1,13 @@
+.memcached_utilities td {
+    padding: .5em;
+}
 #adminOntologies {
     clear: both;
 }
-
 .ontologies_list_container {
     width: 90%;
     padding: 1em;
 }
-
 /* Datatables */
 .ontologies_list_container {
     clear: both;

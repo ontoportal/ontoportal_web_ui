@@ -35,6 +35,10 @@
         padding: .5em;
     }
 </style>
+
+
+
+
 <div class="feedback" style="width: 80%; padding: 2em;">
     <%= render :partial => 'memcache_stats' if @cache.respond_to?(:stats)%>
     <div>
@@ -59,6 +63,11 @@
         </table>
     </div>
 </div>
+
+
+
+
+
 
 
 <div id="container" style="clear:left">

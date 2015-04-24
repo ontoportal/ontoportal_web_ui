@@ -30,7 +30,7 @@
           %td{:style => "vertical-align:top;", :width => "26%"}
             = ontology.select {|k, v| !hide_fields.include?(k)}.values.join("<br/>").html_safe
           %td{:style => "vertical-align:top;", :width => "33%"}
-            %a{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "deleteOntology('#{acronym}')"}
+            %a{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "deleteOntology('#{acronym}');"}
               %span{:class => "ui-button-text #{acronym}"} Delete
 
 
