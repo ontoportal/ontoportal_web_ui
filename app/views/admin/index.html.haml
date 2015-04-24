@@ -55,7 +55,7 @@
       },
       "bInfo": true,
       "bPaginate": true,
-      "iDisplayLength": 50,
+      "iDisplayLength": 100,
       "bSort": true,
       "asStripClasses": ["","alt"],
       "dom": '<"ontology_nav">frtip',
@@ -97,18 +97,19 @@
       }
     );
 
+    // for toggling between all and problem ontologies
     jQuery(".toggle-row-display a").live("click", function() {
       jQuery("#adminOntologies").dataTable().fnDraw();
       return false;
     });
 
-    // Set the table width after it gets altered by jQuery DataTable
-    jQuery("#adminOntologies").css("width","100%");
     // Keep header at top of table even when scrolling
     new FixedHeader(ontologiesTable);
   });
 
 #DescriptionDialog{:style => "display: none", :title => "admin description"}
 %h1.tab_header Ontology Administration
+%br
 %p.tab_description
+  Report generated on #{@report_date}
   = render partial: "layouts/ontology_report_table"

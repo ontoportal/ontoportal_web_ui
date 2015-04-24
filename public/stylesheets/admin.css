@@ -48,3 +48,7 @@
 .error_message {
     margin-left: 100px;
 }
+/* to fix facebox default sizing in chrome */
+#facebox .body {
+    width: 375px !important;
+}

@@ -14,7 +14,9 @@ class AdminController < ApplicationController
       start = Time.now
       form_data = Hash.new
       ontologies_data = LinkedData::Client::HTTP.get(ONTOLOGIES_URL, form_data, raw: true)
-      @ontologies = JSON.parse(ontologies_data)
+      ontologies_data_parsed = JSON.parse(ontologies_data)
+      @ontologies = ontologies_data_parsed["ontologies"]
+      @report_date = ontologies_data_parsed["date_generated"]
 
       LOG.add :debug, "Retrieved #{@ontologies.length} ontologies: #{Time.now - start}s"
       # render json: problem_ontologies
@@ -75,13 +77,10 @@ class AdminController < ApplicationController
 
   def delete_ontology
     puts "Deleting ontology #{params["id"]}"
-
-    # ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params["id"]).first
-    # error_response = ontology.delete
-
+    ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params["id"]).first
+    error_response = ontology.delete
     render :json => {:success => "Ontology #{params["id"]} and all its artifacts deleted successfully."}
   end
-
 
   private
 
