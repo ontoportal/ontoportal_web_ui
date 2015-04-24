@@ -10,7 +10,7 @@ class VirtualApplianceController < ApplicationController
       return
     end
 
-    @virtual_appliance_user = VirtualApplianceUser.find_all_by_user_id(@user.id.to_i)
+    @virtual_appliance_user = VirtualApplianceUser.where(user_id: @user.id.to_i)
 
     @virtual_appliance_access = false
     if !@virtual_appliance_user.nil? && !@virtual_appliance_user.empty? || @user.admin?
@@ -33,7 +33,7 @@ class VirtualApplianceController < ApplicationController
       return
     end
 
-    @new_user = VirtualApplianceUser.find_all_by_user_id(user.id)
+    @new_user = VirtualApplianceUser.where(user_id: user.id)
     if @new_user.nil? || @new_user.empty?
       @new_user = VirtualApplianceUser.new
       @new_user.user_id = user.id
