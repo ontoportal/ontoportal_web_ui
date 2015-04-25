@@ -34,8 +34,8 @@ class AdminController < ApplicationController
 
   def submissions
     @submissions = nil
-    @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params["id"])) rescue nil
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params["id"]).first unless @ontology
+    @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params["acronym"])) rescue nil
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params["acronym"]).first unless @ontology
     begin
       submissions = @ontology.explore.submissions
       @submissions = submissions.sort {|a,b| b.submissionId <=> a.submissionId }
@@ -49,13 +49,12 @@ class AdminController < ApplicationController
     if @cache.respond_to?(:flush_all)
       begin
         @cache.flush_all
-      rescue
-        @status = "There was a problem flushing the cache"
+        @status = "Cache successfully flushed"
+      rescue Exception => e
+        @status = "Error: problem flushing the cache - #{e.message}"
       end
-
-      @status = "Cache successfully flushed"
     else
-      @status = "Error: the cache does not respond to the `flush_all` command"
+      @status = "Error: the cache does not respond to the 'flush_all' command"
     end
     render :partial => "status"
   end
@@ -64,22 +63,41 @@ class AdminController < ApplicationController
     if @cache.respond_to?(:reset)
       begin
         @cache.reset
-      rescue
-        @status = "There was a problem reseting the cache connection"
+        @status = "Cache connection successfully reset"
+      rescue Exception => e
+        @status = "Error: problem resetting the cache connection - #{e.message}"
       end
-
-      @status = "Cache connection successfully reset"
     else
-      @status = "Error: the cache does not respond to the `reset` command"
+      @status = "Error: the cache does not respond to the 'reset' command"
     end
-    render :partial => 'status'
+    render :partial => "status"
   end
 
   def delete_ontology
-    puts "Deleting ontology #{params["id"]}"
-    ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params["id"]).first
-    error_response = ontology.delete
-    render :json => {:success => "Ontology #{params["id"]} and all its artifacts deleted successfully."}
+    @status = "Ontology #{params["acronym"]} and all its artifacts deleted successfully"
+    begin
+      ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params["acronym"]).first
+
+      if ontology
+        error_response = ontology.delete
+
+        if error_response
+          @status = "Error: "
+          @errors = response_errors(error_response) # see application_controller::response_errors
+          @errors.each {|k, v| @status << "#{v}, "}
+          @status = @status[0...-2]
+        end
+      else
+        @status = "Error: Ontology #{params["acronym"]} was not found in the system"
+      end
+    rescue Exception => e
+      @status = "Error: problem deleting ontology #{params["acronym"]} - #{e.message}"
+    end
+    render :partial => "status"
+  end
+
+  def delete_submssion
+    puts "Deleting submission #{params["id"]} of ontology #{params["acronym"]}"
   end
 
   private

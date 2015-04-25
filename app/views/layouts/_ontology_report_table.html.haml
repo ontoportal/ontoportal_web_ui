@@ -17,12 +17,14 @@
             :javascript
               jQuery("#link_submissions_#{acronym}").click(function(event) {
                 event.preventDefault();
-                jQuery.facebox({ ajax: "#{$UI_URL}/admin/ontologies/#{acronym}" });
+                jQuery.facebox({ ajax: "#{$UI_URL}/admin/ontologies/#{acronym}/submissions" });
               });
           %td{:style => "vertical-align:top;", :width => "9%"}
+            %a{:href => "#", :target => "_blank"} Log
+            |
             %a{:href => "#{ontology["uri"]}", :target => "_blank"} REST
             |
-            %a{:href => "#{$UI_URL}/ontologies/#{acronym}", :target => "_blank"} BioPortal
+            %a{:href => "#{$UI_URL}/ontologies/#{acronym}", :target => "_blank"} UI
           %td{:style => "vertical-align:top;", :width => "10%"}
             = ontology["errErrorStatus"].join(", ") if ontology["errErrorStatus"]
           %td{:style => "vertical-align:top;", :width => "10%"}

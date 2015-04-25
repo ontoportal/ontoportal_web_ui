@@ -111,12 +111,11 @@ BioportalWebUi::Application.routes.draw do
   get 'jambalaya/:ontology/:id' => 'visual#jam', :as => :jam
 
   # Admin
-  match '/admin/clearcache' => 'admin#clearcache', via: [:get, :post]
-  match '/admin/resetcache' => 'admin#resetcache', via: [:get, :post]
-  match '/admin/ontologies/:id' => 'admin#submissions', via: [:get, :post]
-
-  match '/admin/ontologies/:id' => 'admin#delete_ontology', via: [:delete]
-
+  match '/admin/clearcache' => 'admin#clearcache', via: [:post]
+  match '/admin/resetcache' => 'admin#resetcache', via: [:post]
+  match '/admin/ontologies/:acronym/submissions/:id' => 'admin#delete_submssion', via: [:delete]
+  match '/admin/ontologies/:acronym/submissions' => 'admin#submissions', via: [:get]
+  match '/admin/ontologies/:acronym' => 'admin#delete_ontology', via: [:delete]
 
   ###########################################################################################################
   # Install the default route as the lowest priority.

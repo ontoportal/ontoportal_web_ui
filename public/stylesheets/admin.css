@@ -46,8 +46,9 @@
     padding: 5px 0 1em 0;
 }
 .success_message,
-.error_message {
-    margin-left: 100px;
+.error_message,
+.progressSpinner {
+    display: none;
 }
 /* to fix facebox default sizing in chrome */
 #facebox .body {
