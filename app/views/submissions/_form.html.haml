@@ -188,7 +188,7 @@
         %span.asterik *
       %td#location_options
         - checked = @ontology.summaryOnly
-        = radio_button :submission, :isRemote, 3, :onclick=>"$('.hidden_field').hide();", checked: checked, :required => true
+        = radio_button :submission, :isRemote, 3, :onclick=>"$('.hidden_field').hide();", checked: checked
         Metadata Only
         %br/
         %span{:style => "font-size:11px;"}
