@@ -22,7 +22,7 @@ BioportalWebUi::Application.routes.draw do
 
   resources :login
 
-  resources :admin
+  resources :admin, :except => :destroy
 
   resources :subscriptions
 
@@ -113,9 +113,9 @@ BioportalWebUi::Application.routes.draw do
   # Admin
   match '/admin/clearcache' => 'admin#clearcache', via: [:post]
   match '/admin/resetcache' => 'admin#resetcache', via: [:post]
+  match '/admin/ontologies' => 'admin#delete_ontologies', via: [:delete]
   match '/admin/ontologies/:acronym/submissions/:id' => 'admin#delete_submssion', via: [:delete]
   match '/admin/ontologies/:acronym/submissions' => 'admin#submissions', via: [:get]
-  match '/admin/ontologies/:acronym' => 'admin#delete_ontology', via: [:delete]
 
   ###########################################################################################################
   # Install the default route as the lowest priority.

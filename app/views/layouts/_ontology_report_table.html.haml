@@ -9,7 +9,7 @@
         %th Issues
         %th Actions
     %tbody
-      - hide_fields = ["uri", "errErrorStatus", "errMissingStatus", "problem"]
+      - hide_fields = ["errErrorStatus", "errMissingStatus", "problem"]
       - for acronym, ontology in @ontologies
         %tr{:class => "#{ontology['problem'] === true ? 'problem' : ''}", :id => "tr_#{acronym}"}
           %td{:style => "vertical-align:top;", :width => "12%"}
@@ -24,7 +24,7 @@
             |
             %a{:href => "#{ontology["uri"]}", :target => "_blank"} REST
             |
-            %a{:href => "#{$UI_URL}/ontologies/#{acronym}", :target => "_blank"} UI
+            %a{:href => "#{$UI_URL}/ontologies/#{acronym}", :target => "_blank"} BioPortal
           %td{:style => "vertical-align:top;", :width => "10%"}
             = ontology["errErrorStatus"].join(", ") if ontology["errErrorStatus"]
           %td{:style => "vertical-align:top;", :width => "10%"}

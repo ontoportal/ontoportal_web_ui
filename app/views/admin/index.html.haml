@@ -22,7 +22,7 @@
   function deleteOntology(acronym) {
     alertify.confirm("Are you sure you want to delete <span style='color:red;font-weight:bold;'>" + acronym + "</span> ontology and all its artifacts?<br/><b>This action CAN NOT be undone!!!</b>", function(e) {
       if (e) {
-        ajaxCall("DELETE", "ontologies/" + acronym, {});
+        ajaxCall("DELETE", "ontologies", {ontologies: acronym});
       }
     });
     return false;
@@ -54,24 +54,28 @@
         resetStatusMessages();
         jQuery(".progressSpinner").show();
       },
-      success: function(data, msg) {
+      success: function(dataJson, msg) {
+        data = JSON.parse(dataJson);
         jQuery(".progressSpinner").hide();
 
-        if ("Error:" === data.substring(0, 6)) {
-          jQuery(".error_message").text(data).html();
+        if (data.errors) {
+          jQuery(".error_message").text(data.errors).html();
           jQuery(".error_message").show();
-        } else {
-          var re = /^ontologies\/([\w.\-]+)$/;
-          var match = operation.match(re);
+        }
 
+        if (data.success) {
           // deleting an ontology
-          if (match != null && operation == match[0] && httpMethod == "DELETE") {
-            // remove ontology row from the table
-            var acronym = match[1];
+          if (operation === "ontologies" && httpMethod === "DELETE" &&
+              params["ontologies"]) {
+            var ontologies = params["ontologies"].split(",");
             var ontologiesTable = jQuery('#adminOntologies').DataTable();
-            ontologiesTable.row(jQuery("#tr_" + acronym)).remove().draw();
+
+            // remove each ontology row from the table
+            for (var i = 0; i < ontologies.length; i++) {
+              ontologiesTable.row(jQuery("#tr_" + ontologies[i])).remove().draw();
+            }
           }
-          jQuery(".success_message").text(data).html();
+          jQuery(".success_message").text(data.success).html();
           jQuery(".success_message").show();
         }
       },
