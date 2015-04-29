@@ -28,6 +28,14 @@
     return false;
   }
 
+  function deleteSubmission(acronym, submissionId) {
+    alertify.confirm("Are you sure you want to delete submission <span style='color:red;font-weight:bold;'>" + submissionId + "</span> for ontology <span style='color:red;font-weight:bold;'>" + acronym + "</span>?<br/><b>This action CAN NOT be undone!!!</b>", function(e) {
+      if (e) {
+        ajaxCall("DELETE", "ontologies/" + acronym + "/submissions/" + submissionId, {});
+      }
+    });
+  }
+
   function refreshReport() {
     alertify.confirm("Refreshing this report takes a while...<br/>Are you sure you're ready for some coffee time?", function(e) {
       if (e) {
@@ -73,6 +81,16 @@
             // remove each ontology row from the table
             for (var i = 0; i < ontologies.length; i++) {
               ontologiesTable.row(jQuery("#tr_" + ontologies[i])).remove().draw();
+            }
+          } else {
+            var re = /^ontologies\/([\w.\-]+)\/submissions\/(\d+)$/;
+            var match = operation.match(re);
+
+            // deleting a submission of an ontology
+            // reload submissions facebox window
+            if (match != null && httpMethod == "DELETE") {
+              var acronym = match[1];
+              jQuery.facebox({ ajax: "#{$UI_URL}/admin/ontologies/" + acronym + "/submissions" });
             }
           }
           jQuery(".success_message").text(data.success).html();
@@ -122,6 +140,11 @@
     // clicked ontologies
     jQuery(document).bind('reveal.facebox', function() {
       jQuery('div[id=facebox]:hidden').remove();
+    });
+    // convert facebox window into a modal mode
+    jQuery(document).bind('loading.facebox', function() {
+      jQuery(document).unbind('keydown.facebox');
+      jQuery('#facebox_overlay').unbind('click');
     });
 
     jQuery("div.ontology_nav").html('<span class="toggle-row-display"><a href="#" onclick="toggleShow(true);">All</a> | <a href="#" onclick="toggleShow(false);">Problem Only</a></span>');

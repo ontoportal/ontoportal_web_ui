@@ -108,7 +108,36 @@ class AdminController < ApplicationController
   end
 
   def delete_submssion
-    puts "Deleting submission #{params["id"]} of ontology #{params["acronym"]}"
+    response = {errors: '', success: ''}
+
+    begin
+      ont = params["acronym"]
+      ontology = LinkedData::Client::Models::Ontology.find_by_acronym(ont).first
+
+      if ontology
+        submissions = ontology.explore.submissions
+        submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
+
+        if submission
+          error_response = submission.delete
+
+          if error_response
+            errors = response_errors(error_response) # see application_controller::response_errors
+            errors.each {|_, v| response[:errors] << "#{v}, "}
+            response[:errors] = response[:errors][0...-2]
+          else
+            response[:success] << "Submission #{params["id"]} for ontology #{ont} was deleted successfully"
+          end
+        else
+          response[:errors] << "Submission #{params["id"]} for ontology #{ont} was not found in the system"
+        end
+      else
+        response[:errors] << "Ontology #{ont} was not found in the system"
+      end
+    rescue Exception => e
+      response[:errors] << "Problem deleting submission #{params["id"]} for ontology #{ont} - #{e.message}"
+    end
+    render :json => response
   end
 
   private
