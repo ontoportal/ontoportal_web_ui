@@ -215,7 +215,9 @@
         - display = (checked and "" or "display:none;")
         %div.hidden_field#upload{style: display}
           #{f.file_field :filePath}
-        %hr/
+        %br/
+        - if @masterFileOptions
+          = f.select("masterFileName", @masterFileOptions, { include_blank: "Select primary file from zip contents", required: true}, {style: "border-color: red;"})
 
     %tr
       %th
