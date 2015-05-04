@@ -22,5 +22,6 @@
 //= require facebox
 //= require fg.menu
 //= require history/jquery.history
+//= require jquery.rating
 
 
