@@ -13,10 +13,10 @@
  *= require_tree .
  *
  *= require alertify
- *= require autocomplete
  *= require chosen
  *= require facebox
  *= require fg.menu
+ *= require jquery.autocomplete
  *= require jquery.rating
  *
  */
