@@ -187,37 +187,45 @@
         Location
         %span.asterik *
       %td#location_options
-        - checked = @ontology.summaryOnly
-        = radio_button :submission, :isRemote, 3, :onclick=>"$('.hidden_field').hide();", checked: checked
-        Metadata Only
-        %br/
-        %span{:style => "font-size:11px;"}
-          (choose this option if you want users to search and view only the
-          %em metadata
-          for your ontology, but not its classes and properties)
-        %hr/
+        - if !@masterFileOptions
+          - checked = @ontology.summaryOnly
+          = radio_button :submission, :isRemote, 3, :onclick=>"$('.hidden_field').hide();", checked: checked
+          Metadata Only
+          %br/
+          %span{:style => "font-size:11px;"}
+            (choose this option if you want users to search and view only the
+            %em metadata
+            for your ontology, but not its classes and properties)
+          %hr/
 
-        - checked = !( @submission.pullLocation.nil? || @submission.pullLocation.empty? )
-        = radio_button :submission, :isRemote, 1, :onclick=>"location_toggle('remote');", checked: checked
-        Load from URL
-        %br/
-        %span{:style => "font-size:11px;"} (new versions loaded daily)
-        - display = (checked and "" or "display:none;")
-        %div.hidden_field#remote{style: display}
-          URL: #{text_field :submission, :pullLocation, :size => 100, value: @submission.pullLocation}
-        %hr/
+          - checked = !( @submission.pullLocation.nil? || @submission.pullLocation.empty? )
+          = radio_button :submission, :isRemote, 1, :onclick=>"location_toggle('remote');", checked: checked
+          Load from URL
+          %br/
+          %span{:style => "font-size:11px;"} (new versions loaded daily)
+          - display = (checked and "" or "display:none;")
+          %div.hidden_field#remote{style: display}
+            URL: #{text_field :submission, :pullLocation, :size => 100, value: @submission.pullLocation}
+          %hr/
 
-        - checked = (!@ontology.summaryOnly) && @submission.pullLocation.nil?
-        = radio_button :submission, :isRemote, 0, :onclick=>"location_toggle('upload');", checked: checked
-        Upload Local File
-        %br/
-        %span{:style => "font-size:11px;"} (choose a file on your local file system to upload)
-        - display = (checked and "" or "display:none;")
-        %div.hidden_field#upload{style: display}
-          #{f.file_field :filePath}
-        %br/
-        - if @masterFileOptions
-          = f.select("masterFileName", @masterFileOptions, { include_blank: "Select primary file from zip contents", required: true}, {style: "border-color: red;"})
+          - checked = (!@ontology.summaryOnly) && @submission.pullLocation.nil?
+          = radio_button :submission, :isRemote, 0, :onclick=>"location_toggle('upload');", checked: checked
+          Upload Local File
+          %br/
+          %span{:style => "font-size:11px;"} (choose a file on your local file system to upload)
+          - display = (checked and "" or "display:none;")
+          %div.hidden_field#upload{style: display}
+            #{f.file_field :filePath}
+
+        - else
+          = radio_button :submission, :isRemote, 0, :onclick=>"location_toggle('upload');", checked: true
+          Upload Local File
+          %br/
+          %span{:style => "font-size:11px;"} (choose a file on your local file system to upload)
+          - display = (checked and "" or "display:none;")
+          %div#upload{style: display}
+            = f.file_field :filePath, required: true
+            = f.select("masterFileName", @masterFileOptions, { include_blank: "Select primary file from zip contents", required: true}, {style: "border-color: red;"})
 
     %tr
       %th
