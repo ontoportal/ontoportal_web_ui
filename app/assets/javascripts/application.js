@@ -20,5 +20,6 @@
 //= require calendar_date_select
 //= require chosen
 //= require facebox
+//= require fg.menu
 
 
