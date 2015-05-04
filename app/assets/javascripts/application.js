@@ -16,5 +16,6 @@
 //= require_tree .
 //
 //= require alertify
+//= require autocomplete
 
 
