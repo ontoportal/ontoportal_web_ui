@@ -18,5 +18,6 @@
 //= require alertify
 //= require autocomplete
 //= require calendar_date_select
+//= require chosen
 
 
