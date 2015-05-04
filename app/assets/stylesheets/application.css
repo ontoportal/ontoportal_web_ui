@@ -18,5 +18,6 @@
  *= require fg.menu
  *= require jquery.autocomplete
  *= require jquery.rating
+ *= require superfish
  *
  */

@@ -24,5 +24,6 @@
 //= require history/jquery.history
 //= require jquery.rating
 //= require splitter
+//= require superfish
 
 
