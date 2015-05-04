@@ -23,5 +23,6 @@
 //= require fg.menu
 //= require history/jquery.history
 //= require jquery.rating
+//= require splitter
 
 
