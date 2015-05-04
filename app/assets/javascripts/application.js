@@ -21,5 +21,6 @@
 //= require chosen
 //= require facebox
 //= require fg.menu
+//= require history/jquery.history
 
 
