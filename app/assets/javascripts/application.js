@@ -15,13 +15,18 @@
 //= require jquery-ui
 //= require_tree .
 //
+//= require ajax-chosen
 //= require alertify
 //= require autocomplete
 //= require calendar_date_select
-//= require chosen
+//= require chosen.jquery
+//= require datatables.formatted.numbers
 //= require facebox
 //= require fg.menu
 //= require history/jquery.history
+//= require ie6notice
+//= require jquery.blockUI
+//= require jquery.cookie
 //= require jquery.rating
 //= require jquery.tooltip
 //= require splitter
