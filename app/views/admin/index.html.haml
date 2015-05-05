@@ -90,7 +90,7 @@
             // reload submissions facebox window
             if (match != null && httpMethod == "DELETE") {
               var acronym = match[1];
-              jQuery.facebox({ ajax: "#{$UI_URL}/admin/ontologies/" + acronym + "/submissions" });
+              jQuery.facebox({ ajax: "/admin/ontologies/" + acronym + "/submissions?time=" + new Date().getTime() });
             }
           }
           jQuery(".success_message").text(data.success).html();

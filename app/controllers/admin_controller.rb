@@ -30,8 +30,7 @@ class AdminController < ApplicationController
 
   def submissions
     @submissions = nil
-    @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params["acronym"])) rescue nil
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params["acronym"]).first unless @ontology
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params["acronym"]).first
     begin
       submissions = @ontology.explore.submissions
       @submissions = submissions.sort {|a,b| b.submissionId <=> a.submissionId }
@@ -107,7 +106,7 @@ class AdminController < ApplicationController
     render :json => response
   end
 
-  def delete_submssion
+  def delete_submission
     response = {errors: '', success: ''}
 
     begin
