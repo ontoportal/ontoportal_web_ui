@@ -27,8 +27,14 @@
 //= require ie6notice
 //= require jquery.blockUI
 //= require jquery.cookie
-//= require jquery.rating
+//= require jquery.hoverIntent
+//= require jquery.rating.pack
+//= require jquery.scrollTo-1.4.0-min
+//= require jquery.simple.tree
+//= require jquery.thickbox.compressed
 //= require jquery.tooltip
+//= require jquerytools
+//= require prototype
 //= require splitter
 //= require superfish
 
