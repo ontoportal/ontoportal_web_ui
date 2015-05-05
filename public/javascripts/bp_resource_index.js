@@ -519,7 +519,7 @@ function Element(id, cleanId, classes, resource) {
   this.highlightAnnotationPositions = function () {
     var element = this;
     var text_map = {};
-    jQuery(this.jdomId + " .element_text p").each(function(){
+    jQuery(this.jdomId).find(".element_text p").each(function() {
       var p = jQuery(this);
       text_map[p.data().contextName] = p.html();
     });

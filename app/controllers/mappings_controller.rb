@@ -3,7 +3,7 @@ class MappingsController < ApplicationController
   include ActionView::Helpers::NumberHelper
 
   layout 'ontology'
-  before_filter :authorize_and_redirect, :only=>[:create,:new,:destroy]
+  before_action :authorize_and_redirect, :only=>[:create,:new,:destroy]
 
   MAPPINGS_URL = "#{LinkedData::Client.settings.rest_url}/mappings"
 
