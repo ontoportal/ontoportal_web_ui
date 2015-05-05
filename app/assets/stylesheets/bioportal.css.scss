@@ -141,7 +141,7 @@ h1 a:hover, h2 a:hover {
 }
 
 #hd {
-  background: url('/images/layout/header_bg.png') repeat-x;
+  background: image-url('layout/header_bg.png') repeat-x;
   width: 100%;
   min-width: 1200px;
   height: 43px;
@@ -173,7 +173,7 @@ h1 a:hover, h2 a:hover {
 .tabs {
   float:left;
   width:100%;
-  background:url("/images/layout/subnav_bg.png") repeat-x;
+  background: image-url('layout/subnav_bg.png') repeat-x;
   height:24px;
   display:block;
   border-bottom:1px solid #bcc6d0;
@@ -313,7 +313,7 @@ h1 a:hover, h2 a:hover {
 }
 
 #grab-point {
-  background:url('/images/layout/bar-ext.gif') repeat-y;
+  background: image-url('layout/bar-ext.gif') repeat-y;
   width:5px;
   height:100%;
   min-height:350px;
@@ -333,7 +333,7 @@ h1 a:hover, h2 a:hover {
 }
 #bd .bd_content .container {
   position:relative;
-  background:url("/images/layout/subnav_bg.png") repeat-x;
+  background: image-url('layout/subnav_bg.png') repeat-x;
   width: 75%;
   min-width: 400px;
   float: left;
@@ -738,7 +738,7 @@ tr.mainresource td {
 }
 
 .home_button{
-    background-image:url('/images/layout/home_button.png');
+    background-image: image-url('layout/home_button.png');
     height:37px;
     width:106px;
     border:0px;
@@ -763,12 +763,12 @@ tr.mainresource td {
   padding:5px;
 }
 .sorting_asc{
-    background-image:url( "/images/layout/asc.png");
+    background-image: image-url('layout/asc.png');
     background-repeat:no-repeat;
     background-position:98%;
 }
 .sorting_desc{
-    background-image:url("/images/layout/desc.png");
+    background-image: image-url('layout/desc.png');
     background-repeat:no-repeat;
     background-position:98%;
 }
@@ -1303,7 +1303,7 @@ div.tree_error {
   line-height: 3px;
   height:3px;
   font-size:3px;
-  background: url(/images/tree/line_bg.gif) 0 0 no-repeat transparent;
+  background: image-url('tree/line_bg.gif') 0 0 no-repeat transparent;
 }
 .simpleTree .line-last {
   margin:0 0 0 -16px;
@@ -1311,7 +1311,7 @@ div.tree_error {
   line-height: 3px;
   height:3px;
   font-size:3px;
-  background: url(/images/tree/spacer.gif) 0 0 no-repeat transparent;
+  background: image-url('tree/spacer.gif') 0 0 no-repeat transparent;
 }
 .simpleTree .line-over {
   margin:0 0 0 -16px;
@@ -1319,7 +1319,7 @@ div.tree_error {
   line-height: 3px;
   height:3px;
   font-size:3px;
-  background: url(/images/tree/line_bg_over.gif) 0 0 no-repeat transparent;
+  background: image-url('tree/line_bg_over.gif') 0 0 no-repeat transparent;
 }
 .simpleTree .line-over-last {
   margin:0 0 0 -16px;
@@ -1327,34 +1327,34 @@ div.tree_error {
   line-height: 3px;
   height:3px;
   font-size:3px;
-  background: url(/images/tree/line_bg_over_last.gif) 0 0 no-repeat transparent;
+  background: image-url('tree/line_bg_over_last.gif') 0 0 no-repeat transparent;
 }
 .simpleTree .folder-open {
   margin-left:-16px;
-  background: url(/images/tree/collapsable.gif) 0 -2px no-repeat #fff;
+  background: image-url('tree/collapsable.gif') 0 -2px no-repeat #fff;
 }
 .simpleTree .folder-open-last {
   margin-left:-16px;
-  background: url(/images/tree/collapsable-last.gif) 0 -2px no-repeat #fff;
+  background: image-url('tree/collapsable-last.gif') 0 -2px no-repeat #fff;
 }
 .simpleTree .folder-close {
   margin-left:-16px;
-  background: url(/images/tree/expandable.gif) 0 -2px no-repeat #fff;
+  background: image-url('tree/expandable.gif') 0 -2px no-repeat #fff;
 }
 .simpleTree .folder-close-last {
   margin-left:-16px;
-  background: url(/images/tree/expandable-last.gif) 0 -2px no-repeat #fff;
+  background: image-url('tree/expandable-last.gif') 0 -2px no-repeat #fff;
 }
 .simpleTree .doc {
   margin-left:-16px;
-  background: url(/images/tree/leaf.gif) 0 -1px no-repeat #fff;
+  background: image-url('tree/leaf.gif') 0 -1px no-repeat #fff;
 }
 .simpleTree .doc-last {
   margin-left:-16px;
-  background: url(/images/tree/leaf-last.gif) 0 -1px no-repeat #fff;
+  background: image-url('tree/leaf-last.gif') 0 -1px no-repeat #fff;
 }
 .simpleTree .ajax {
-  background: url(/images/tree/spinner.gif) no-repeat 0 0 #ffffff;
+  background: image-url('tree/spinner.gif') no-repeat 0 0 #ffffff;
   height: 16px;
   display:none;
 }
@@ -1413,13 +1413,13 @@ div.tree_error {
   padding:0;
 }
 #drag_container li.doc, #drag_container li.doc-last {
-  background: url(/images/tree/leaf.gif) no-repeat -17px 0 #ffffff;
+  background: image-url('tree/leaf.gif') no-repeat -17px 0 #ffffff;
 }
 #drag_container .folder-close, #drag_container .folder-close-last {
-  background: url(/images/tree/expandable.gif) no-repeat -17px 0 #ffffff;
+  background: image-url('tree/expandable.gif') no-repeat -17px 0 #ffffff;
 }
 #drag_container .folder-open, #drag_container .folder-open-last {
-  background: url(/images/tree/collapsable.gif) no-repeat -17px 0 #ffffff;
+  background: image-url('tree/collapsable.gif') no-repeat -17px 0 #ffffff;
 }
 .contextMenu {
   display:none;
@@ -1450,7 +1450,7 @@ div.tooltip {
 /* used for vertical split bar */
 .vsplitbar {
   width: 5px;
-  background: #DADDE0 url(/javascripts/JqueryPlugins/splitter/img/vgrabber.gif) no-repeat scroll center center;
+  background: #DADDE0 image-url('splitter/vgrabber.gif') no-repeat scroll center center;
 }
 
 .vsplitbar:hover {
@@ -1678,7 +1678,7 @@ button.fg-button-menu, button.fg-button {
  * Ordering of these two class definitions needs to remain as-is for high-res images to work
  **/
 .nav_logo {
-  background: url(/images/layout/nav_logo.png) no-repeat;
+  background: image-url('layout/nav_logo.png') no-repeat;
   background-size: 126px 43px;
   height: 43px;
   width: 126px;
@@ -1691,7 +1691,7 @@ button.fg-button-menu, button.fg-button {
 (min-resolution: 2dppx),
 (dpi: 196dpi) {
     .nav_logo {
-        background: url(/images/layout/nav_logo_hi_res.png) no-repeat;
+        background: image-url('layout/nav_logo_hi_res.png') no-repeat;
         background-size: 126px 43px;
         height: 43px;
         width: 126px;
@@ -2137,7 +2137,7 @@ a.truncated_less, a.truncated_more {
  * Resource Index
  ************************************/
 #resource_index_classes_chzn ul.chzn-results li.searching:after {
-  background: url("/images/spinners/spinner_000000_16px.gif") no-repeat scroll 5px -1.5px transparent;
+  background: image-url('spinners/spinner_000000_16px.gif') no-repeat scroll 5px -1.5px transparent;
   color: #F4F4F4;
   content: "spacer";
 }
