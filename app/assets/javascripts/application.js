@@ -20,7 +20,7 @@
 //= require autocomplete
 //= require calendar_date_select
 //= require chosen.jquery
-//= require datatables.formatted.numbers
+//= require datatables.formatted.number
 //= require facebox
 //= require fg.menu
 //= require history/jquery.history
