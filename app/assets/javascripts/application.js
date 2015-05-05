@@ -15,6 +15,7 @@
 //= require jquery-ui
 //= require_tree .
 //
+//= require prototype
 //= require ajax-chosen
 //= require alertify
 //= require autocomplete
@@ -34,7 +35,6 @@
 //= require jquery.thickbox.compressed
 //= require jquery.tooltip
 //= require jquerytools
-//= require prototype
 //= require splitter
 //= require superfish
 
