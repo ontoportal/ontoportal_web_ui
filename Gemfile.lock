@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 080e58a82e2ed95b6dd001ce9858c3fdaab80389
-  branch: staging
+  revision: 18623ace033340a185427044f6ec2dd9b9ef2a0e
+  branch: master
   specs:
     ontologies_api_client (0.0.6)
       activesupport (~> 4.2.1)
@@ -109,7 +109,7 @@ GEM
     json (1.8.2)
     kgio (2.9.3)
     logstash-event (1.1.5)
-    loofah (2.0.1)
+    loofah (2.0.2)
       nokogiri (>= 1.5.9)
     lz4-ruby (0.3.3)
     mail (2.6.3)
@@ -125,7 +125,7 @@ GEM
     netrc (0.10.3)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
-    oj (2.12.5)
+    oj (2.12.6)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
