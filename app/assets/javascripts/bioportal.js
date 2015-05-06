@@ -493,8 +493,6 @@ function BP_queryString() {
   return b;
 }
 
-
-
 function bpPopWindow(e) {
   e.preventDefault();
   var url = jQuery(e.currentTarget).attr("href");
@@ -506,9 +504,7 @@ function bpPopWindow(e) {
   newwindow = window.open(url,'bp_popup_window','height=700,width=800,resizable=yes,scrollbars=yes,toolbar=no,status=no');
   if (window.focus) {newwindow.focus()};
 }
-jQuery("a.pop_window").live("click", { link: this }, bpPopWindow);
-
-
+jQuery("#top_right_menu").on("click", "a.pop_window", { link: this }, bpPopWindow)
 
 /**************************************************************
  * Standardized BP modal popups
