@@ -16,6 +16,7 @@
  *= require chosen
  *= require facebox
  *= require fg.menu
+ *= require jquery-ui-1.8.1.custom
  *= require jquery.autocomplete
  *= require jquery.rating
  *= require jquery.tooltip
