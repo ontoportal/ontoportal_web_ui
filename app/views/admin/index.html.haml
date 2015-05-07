@@ -19,13 +19,53 @@
     showAll = val;
   }
 
-  function deleteOntology(acronym) {
-    alertify.confirm("Are you sure you want to delete <span style='color:red;font-weight:bold;'>" + acronym + "</span> ontology and all its artifacts?<br/><b>This action CAN NOT be undone!!!</b>", function(e) {
+  function deleteOntologies(acronyms) {
+    ontMsg = acronyms.replace(new RegExp(',', 'g'), ', ');
+    alertify.set({labels: {ok: "Delete!", cancel: "Cancel"}});
+    alertify.confirm("You are about to delete the following ontologies:<br/><span style='color:red;font-weight:bold;'>" + ontMsg + "</span><br/><b>This action CAN NOT be undone!!! Are you sure?</b>", function(e) {
       if (e) {
-        ajaxCall("DELETE", "ontologies", {ontologies: acronym});
+        ajaxCall("DELETE", "ontologies", {ontologies: acronyms});
       }
     });
     return false;
+  }
+
+  function performActionOnOntologies() {
+    var actionSelect = jQuery('#admin_action');
+    var action = actionSelect.val();
+    var acronyms = '';
+
+    if (!action) {
+      alertify.alert("Please choose an action to perform on the selected ontologies.");
+      return;
+    }
+
+    var ontologiesTable = jQuery('#adminOntologies').DataTable();
+    ontologiesTable.rows('.selected').every(function() {
+      //var d = this.data();
+      //var idx = this.index();
+      //var tr = jQuery(this).parents('tr');
+      //var cell = ontologiesTable.cell(idx, 0);
+      //var td0HTMLElem = cell.node();
+      var trId = this.node().id;
+      acronyms += trId.substring("tr_".length) + ",";
+    });
+
+    if (acronyms.length) {
+      acronyms = acronyms.slice(0, -1);
+    } else {
+      alertify.alert("Please select at least one ontology from the table to perform action on.");
+      return;
+    }
+
+    switch(action) {
+      case "delete":
+        deleteOntologies(acronyms);
+        break;
+      case "reparse":
+        console.log("reparsing");
+        break;
+    }
   }
 
   function deleteSubmission(acronym, submissionId) {
@@ -72,7 +112,7 @@
         }
 
         if (data.success) {
-          // deleting an ontology
+          // deleting ontologies
           if (operation === "ontologies" && httpMethod === "DELETE" &&
               params["ontologies"]) {
             var ontologies = params["ontologies"].split(",");
@@ -83,10 +123,10 @@
               ontologiesTable.row(jQuery("#tr_" + ontologies[i])).remove().draw();
             }
           } else {
+            // deleting a single submission
             var re = /^ontologies\/([\w.\-]+)\/submissions\/(\d+)$/;
             var match = operation.match(re);
 
-            // deleting a submission of an ontology
             // reload submissions facebox window
             if (match != null && httpMethod == "DELETE") {
               var acronym = match[1];
@@ -147,13 +187,13 @@
       jQuery('#facebox_overlay').unbind('click');
     });
 
-    jQuery("div.ontology_nav").html('<span class="toggle-row-display"><a href="#" onclick="toggleShow(true);">All</a> | <a href="#" onclick="toggleShow(false);">Problem Only</a></span>');
+    jQuery("div.ontology_nav").html('<span class="toggle-row-display"><a id="show_all_ontologies_action" href="javascript:;"">All</a> | <a id="show_problem_only_ontologies_action" href="javascript:;">Problem Only</a></span>');
     jQuery(".error_message").hide();
     jQuery(".success_message").hide();
     jQuery(".progressSpinner").hide();
 
     jQuery.fn.dataTableExt.afnFiltering.push(
-      function( oSettings, aData, iDataIndex ) {
+      function(oSettings, aData, iDataIndex) {
         var row = oSettings.aoData[iDataIndex].nTr;
         if (!showAll && !row.classList.contains("problem")) {
           return false;
@@ -168,6 +208,40 @@
       return false;
     });
 
+    // allow selecting of rows
+    jQuery('#adminOntologies tbody').on('click', 'tr', function() {
+      jQuery(this).toggleClass('selected');
+    });
+
+    // BUTTON onclick actions ---------------------------------------
+
+    // onclick action for "Go" button for performing an action on a set of ontologies
+    jQuery("#admin_action_submit").click(function() {
+      performActionOnOntologies();
+    });
+
+    // onclick action for "Flush Memcache" button
+    jQuery("#flush_memcache_action").click(function() {
+      flushMemcache();
+    });
+
+    // onclick action for "Reset Memcache Connection" button
+    jQuery("#reset_memcache_connection").click(function() {
+      resetMemcacheConnection();
+    });
+
+    // onclick action for "Show All Ontologies" link
+    jQuery("#show_all_ontologies_action").click(function() {
+      toggleShow(true);
+    });
+
+    // onclick action for "Show Problem Only Ontologies" link
+    jQuery("#show_problem_only_ontologies_action").click(function() {
+      toggleShow(false);
+    });
+
+    // end: BUTTON onclick actions -----------------------------------
+
     // Keep header at top of table even when scrolling
     new FixedHeader(ontologiesTable);
   });
@@ -178,18 +252,29 @@
 %table.memcached_utilities{:style => "float:left;margin-left:8px;"}
   %tr
     %td
-      %a{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "flushMemcache();"}
+      %a#flush_memcache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
         %span{:class => "ui-button-text"} Flush Memcache
     %td
-      %a{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "resetMemcacheConnection();"}
+      %a{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
         %span{:class => "ui-button-text"} Reset Memcache Connection
     %td
       %span.progressSpinner
         %img{:src => "/images/spinners/spinner_000000_16px.gif", :style => "vertical-align: text-bottom;"}
       %span.success_message
       %span.error_message
-%p.tab_description{:style => "clear: both;padding-top:25px;"}
-  Report generated on #{@report_date}
-  %a{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "refreshReport();", :style => "margin-left:15px;"}
-    %span{:class => "ui-button-text"} Refresh
+  %tr
+    %td{:colspan => 2}
+      Apply to Selected Rows:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      %select#admin_action{:name => "admin_action"}
+        %option{:value => ""} Please Select
+        %option{:value => "delete"} Delete
+        %option{:value => "reparse"} Re-parse
+      &nbsp;&nbsp;&nbsp;
+      %a#admin_action_submit{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
+        %span{:class => "ui-button-text"} Go
+    %td{:style => "padding-left:20px;"}
+      Report generated on #{@report_date}
+      %a{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "refreshReport();", :style => "margin-left:15px;"}
+        %span{:class => "ui-button-text"} Refresh
+%p.tab_description{:style => "clear: both;"}
   = render partial: "layouts/ontology_report_table"
