@@ -21,7 +21,9 @@
 //= require autocomplete
 //= require calendar_date_select
 //= require chosen.jquery
+//= require jquery.dataTables
 //= require datatables.formatted.number
+//= require dataTables.fixedHeader
 //= require facebox
 //= require fg.menu
 //= require history/jquery.history
