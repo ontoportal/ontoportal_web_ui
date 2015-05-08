@@ -40,8 +40,8 @@ jQuery(document).ready(function() {
   jQuery(document).live("classes_tab_visible", resetMappingUI);
 
   // Details/visualize link to show details pane and visualize flexviz
-  jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
-  jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
+  jQuery.facebox.settings.closeImage = "<%= asset_path("facebox/closelabel.png") %>";
+  jQuery.facebox.settings.loadingImage = "<%= asset_path("facebox/loading.gif") %>";
 
   jQuery('#mappings_content a[rel*=facebox]').facebox();
 

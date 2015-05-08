@@ -677,8 +677,8 @@ jQuery(".pagination a").live("click", function(e){
 });
 
 // Facebox settings
-jQuery.facebox.settings.closeImage = '/javascripts/JqueryPlugins/facebox/closelabel.png';
-jQuery.facebox.settings.loadingImage = '/javascripts/JqueryPlugins/facebox/loading.gif';
+jQuery.facebox.settings.closeImage = "<%= asset_path("facebox/closelabel.png") %>";
+jQuery.facebox.settings.loadingImage = "<%= asset_path("facebox/loading.gif") %>";
 
 // Cookie handling
 var BP_setCookie = function(key, value, options) {
