@@ -37,7 +37,6 @@
 //= require jquery.rating.pack
 //= require history/jquery.history
 //= require alertify
-//= require calendar_date_select
 //= require ie6notice
 //= require jquery.tooltip
 //
