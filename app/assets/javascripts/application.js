@@ -18,7 +18,7 @@
 //  3rd party library code
 //= require jquery.blockUI
 //= require facebox
-//= require jquery.thickbox.compressed
+//= require thickbox
 //= require fg.menu
 //= require jquery.tools.min
 //= require jquery.dataTables
