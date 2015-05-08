@@ -16,7 +16,6 @@
 //= require jquery-ui
 //
 //  3rd party library code
-//= require prototype
 //= require jquery.blockUI
 //= require facebox
 //= require jquery.thickbox.compressed
