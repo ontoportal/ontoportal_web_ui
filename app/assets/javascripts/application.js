@@ -11,9 +11,9 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
+//= require jquery-migrate-1.2.1.min
 //= require jquery_ujs
 //= require jquery-ui
-//= require jquery-migrate-1.2.1.min
 //
 //  3rd party library code
 //= require prototype
