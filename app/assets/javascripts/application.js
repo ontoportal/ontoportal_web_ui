@@ -21,7 +21,7 @@
 //= require facebox
 //= require jquery.thickbox.compressed
 //= require fg.menu
-//= require jquerytools
+//= require jquery.tools.min
 //= require jquery.dataTables
 //= require datatables.formatted.number
 //= require dataTables.fixedHeader
