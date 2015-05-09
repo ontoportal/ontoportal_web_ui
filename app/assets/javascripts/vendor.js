@@ -1,9 +1,17 @@
+// This is a manifest file that'll be compiled into vendor.js, which will include all the files
+// listed below.
+//
+// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
+// the compiled file.
+//
+// WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
+// GO AFTER THE REQUIRES BELOW.
+//
 //= require jquery
 //= require jquery-migrate-1.2.1.min
 //= require jquery_ujs
 //= require jquery-ui
 //
-//  3rd party library code
 //= require jquery.blockUI
 //= require facebox
 //= require thickbox
@@ -26,3 +34,4 @@
 //= require alertify
 //= require ie6notice
 //= require jquery.tooltip
+
