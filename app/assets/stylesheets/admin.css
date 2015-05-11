@@ -4,6 +4,11 @@
 #adminOntologies {
     clear: both;
 }
+
+table.dataTable tbody tr.selected {
+    background-color: #D7E3EA;
+}
+
 .ontologies_list_container {
     width: 90%;
     padding: 1em;
