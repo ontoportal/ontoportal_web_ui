@@ -59,6 +59,10 @@ module ApplicationHelper
     username
   end
 
+  def current_user_admin?
+    session[:user] && session[:user].admin?
+  end
+
   def remove_owl_notation(string)
     # TODO_REV: No OWL notation, but should we modify the IRI?
     return string
