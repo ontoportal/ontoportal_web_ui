@@ -47,7 +47,7 @@ jQuery(document).ready(function () {
 
   // Spinner for pagination
   jQuery(".pagination a").live("click", function () {
-    jQuery(this).parents("div.pagination").append('&nbsp;&nbsp; <span style="font-size: small; font-weight: normal;">loading</span> <img style="vertil-align: text-bottom;" src="/images/spinners/spinner_000000_16px.gif">');
+    jQuery(this).parents("div.pagination").append('&nbsp;&nbsp; <span style="font-size: small; font-weight: normal;">loading</span> ' + '<%= image_tag("spinners/spinner_000000_16px.gif", style: "vertical-align: text-bottom;") %>');
   });
 
   // Make chosen work via ajax
