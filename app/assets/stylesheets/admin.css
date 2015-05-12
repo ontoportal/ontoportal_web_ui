@@ -4,11 +4,9 @@
 #adminOntologies {
     clear: both;
 }
-
 table.dataTable tbody tr.selected {
     background-color: #D7E3EA;
 }
-
 .ontologies_list_container {
     width: 90%;
     padding: 1em;
@@ -50,10 +48,14 @@ table.dataTable tbody tr.selected {
     float: left;
     padding: 5px 0 1em 0;
 }
-.success_message,
-.error_message,
-.progressSpinner {
+#success_message,
+#error_message,
+#progress_message {
     display: none;
+}
+#progress_message {
+    background: url("/images/spinners/spinner_000000_16px.gif") no-repeat scroll 0 center transparent;
+    padding-left: 30px;
 }
 /* to fix facebox default sizing in chrome */
 #facebox .body {
