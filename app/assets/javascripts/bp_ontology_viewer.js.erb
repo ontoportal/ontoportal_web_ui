@@ -106,7 +106,7 @@ function displayTree(data) {
         "Classes");
 
       if (typeof data.suid !== 'undefined' && data.suid === "jump_to") {
-        jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
+        jQuery.blockUI({ message: '<h1><img src="<%= asset_path("jquery.simple.tree/spinner.gif") %>" /> Loading Class...</h1>', showOverlay: false });
 
         if (data.flat === true) {
           // We have a flat ontology, so we'll replace existing information in the UI and add the new class to the list
@@ -154,7 +154,7 @@ function displayTree(data) {
           getConceptLinkEl(new_concept_id)
         }
       } else {
-        jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
+        jQuery.blockUI({ message: '<h1><img src="<%= asset_path("jquery.simple.tree/spinner.gif") %>" /> Loading Class...</h1>', showOverlay: false });
         if (document.getElementById(new_concept_id) !== null) {
           // We have a visible node that's been clicked, get the details for that node
           jQuery.bioportal.ont_pages["classes"].manualRetrieve(old_html);

@@ -9,7 +9,7 @@
 
   // Called when the "Go" button on the Jump To form is clicked
   function jumpToValue(li){
-    jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
+    jQuery.blockUI({ message: '<h1><img src="<%= asset_path("jquery.simple.tree/spinner.gif") %>" /> Loading Class...</h1>', showOverlay: false });
 
     if( li == null ){
       // User performs a search
@@ -31,7 +31,7 @@
         History.pushState({p:"classes", conceptid:sValue, suid:"jump_to", flat:true, label:li.extra[4]}, jQuery.bioportal.ont_pages["classes"].page_name + " | " + org_site, "?p=classes&conceptid=" + sValue);
       } else {
         document.location="/ontologies/"+jQuery(document).data().bp.ontology.acronym+"/?p=classes&conceptid="+encodeURIComponent(sValue)+"&jump_to_nav=true";
-        jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Class...</h1>', showOverlay: false });
+        jQuery.blockUI({ message: '<h1><img src="<%= asset_path("jquery.simple.tree/spinner.gif") %>" /> Loading Class...</h1>', showOverlay: false });
         return;
       }
     }
@@ -128,7 +128,7 @@
       if (getCache(getConcept() + tab_name) != null) {
             document.getElementById(tab_name + "_content").innerHTML=getCache(getConcept() + tab_name);
       } else {
-        jQuery("#" + tab_name + "_content").html('<h1><img src="/images/tree/spinner.gif" /> Loading Resources...</h1>');
+        jQuery("#" + tab_name + "_content").html('<h1><img src="<%= asset_path("jquery.simple.tree/spinner.gif") %>" /> Loading Resources...</h1>');
         jQuery.get(url.replace("@ontology@",getOntology()).replace("@concept@",encodeURIComponent(getConcept())),function(data){
           jQuery("#" + tab_name + "_content").html(data);
           jQuery("#" + tab_name + "_content").append(
