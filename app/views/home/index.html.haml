@@ -130,18 +130,6 @@
               %tr
                 %td Classes
                 %td= number_with_delimiter(@cls_count, :delimiter => ",")
-              %tr
-                %td Resources Indexed
-                %td= number_with_delimiter(@ri_resources, :delimiter => ",")
-              %tr
-                %td Indexed Records
-                %td= number_with_delimiter(@ri_record_count, :delimiter => ",")
-              %tr
-                %td Direct Annotations
-                %td= number_with_delimiter(@direct_annotations, :delimiter => ",")
-              %tr
-                %td Direct Plus Expanded Annotations
-                %td= number_with_delimiter(@direct_expanded_annotations, :delimiter => ",")
       - else
         %fieldset
           = t('stats').html_safe
