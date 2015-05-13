@@ -294,13 +294,13 @@
 %br
 %table.memcached_utilities{:style => "float:left;margin-left:8px;"}
   %tr
-    %td{:style => "white-space:nowrap;width:123px;"}
+    %td{:valign => "top", :style => "white-space:nowrap;width:123px;"}
       %a#flush_memcache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
         %span{:class => "ui-button-text"} Flush Memcache
-    %td{:style => "white-space:nowrap;width:190px;"}
+    %td{:valign => "top", :style => "white-space:nowrap;width:190px;"}
       %a#reset_memcache_connection_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
         %span{:class => "ui-button-text"} Reset Memcache Connection
-    %td{:rowspan => 2, :valign => "top"}
+    %td{:valign => "top", :rowspan => 2}
       %div#progress_message
       %div#success_message{:class => "success_message"}
       %div#error_message{:class => "error_message"}

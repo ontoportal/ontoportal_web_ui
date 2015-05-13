@@ -716,7 +716,9 @@ function update_annotations_table(rowsArray) {
   filter_matched_classes.init();
 
   // Add data
-  annotationsTable.fnAddData(rowsArray);
+  if (rowsArray.length > 0) {
+    annotationsTable.fnAddData(rowsArray);
+  }
 
   // Hide columns as necessary
   if (context_count == 0)
