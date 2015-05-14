@@ -10,6 +10,7 @@ gem 'uglifier', '>= 1.0.3'
 # gem 'therubyracer', platforms: :ruby
 gem 'duktape'
 
+gem 'jquery-ui-rails'
 gem 'jquery-rails'
 
 # To use ActiveModel has_secure_password

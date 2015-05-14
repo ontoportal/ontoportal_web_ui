@@ -210,6 +210,8 @@
                   - LOG.add :error, e.message, e.backtrace.join("\n\t")
                   - LOG.add :error, "Recent mapping: #{map.id}, classes: #{map.classes.map {|c| "#{c.ontology.acronym} #{c.id}" }.join(', ')}"
                   - next
+      %div{style: "padding: 3.5em 0 0; text-align: center;"}
+        %img{src: "http://www.bioontology.org/sites/all/themes/bioontology/logo.png"}
 
 - ont_names = @ontologies.map{|ont| "[\"#{ont.name} (#{ont.acronym})\",\"#{ont.acronym}\"]"}
 
@@ -231,7 +233,7 @@
         sValue = data;
       }
       document.location="/ontologies/"+sValue;
-      jQuery.blockUI({ message: '<h1><img src="/images/tree/spinner.gif" /> Loading Ontology...</h1>' });
+      jQuery.blockUI({ message: '<h1>#{image_tag("jquery.simple.tree/spinner.gif")} Loading Ontology...</h1>' });
       return;
     }
   }
