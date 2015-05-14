@@ -2,7 +2,7 @@
 - @title = "BioPortal Administration"
 :javascript
   var DUMMY_ONTOLOGY = "DUMMY_ONT";
-  var ontologiesTable;
+  var ontologiesTable = null;
   var showAll = 1;
 
   // memcached reset functions ------------------
@@ -77,14 +77,81 @@
     });
   }
 
+
+
+
+
+
+
+
+
   function refreshReport() {
-    alertify.confirm("Refreshing this report takes a while...<br/>Are you sure you're ready for some coffee time?", function(e) {
-      if (e) {
+    //alertify.confirm("Refreshing this report takes a while...<br/>Are you sure you're ready for some coffee time?", function(e) {
+    //  if (e) {
         ajaxCall("POST", "REPORT REGENERATION", "refresh_report", {ontologies: DUMMY_ONTOLOGY});
-      }
-    });
+    //  }
+    //});
     return false;
   }
+
+  function display_ontologies(data) {
+    var ontologies = data.ontologies;
+    var all_rows = [];
+
+    for (var acronym in ontologies) {
+      var ontology = ontologies[acronym];
+      var ontLink = "<a id='link_submissions_" + acronym + "' href='javascript:;' onclick='showSubmissions(event, \"" + acronym + "\")' style='" + (ontology["problem"] === true ? "color:red" : "") + "'>" + acronym + "</a>";
+      var bpLinks = '<a href="#" target="_blank">Log</a> | <a href="' + BP_CONFIG.rest_url + '/ontologies/' + acronym + '" target="_blank">REST</a> | <a href="' + BP_CONFIG.ui_url + '/ontologies/' + acronym + '" target="_blank">BioPortal</a>';
+      var errStatus = ontology["errErrorStatus"] ? ontology["errErrorStatus"].join(", ") : '';
+      var missingStatus = ontology["errMissingStatus"] ? ontology["errMissingStatus"].join(", ") : '';
+      var errMsg = "Error messages go here";
+
+      row = [ontLink, bpLinks, errStatus, missingStatus, errMsg];
+      all_rows.push(row);
+    }
+
+
+
+
+
+    var ontologiesTable = jQuery('#adminOntologies').DataTable();
+    ontologiesTable.clear();
+    ontologiesTable.rows.add(all_rows);
+    ontologiesTable.draw();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  function showSubmissions(ev, acronym) {
+    ev.preventDefault();
+    jQuery.facebox({ ajax: BP_CONFIG.ui_url + "/admin/ontologies/" + acronym + "/submissions" });
+  }
+
+
 
   function clearStatusMessages() {
     jQuery("#progress_message").hide();
@@ -118,6 +185,36 @@
     }
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   function ajaxCall(httpMethod, operation, path, params) {
     var ontArr = [];
     var errors = [];
@@ -149,8 +246,19 @@
             }
 
             if (data.success) {
+
+              if (path === "refresh_report") {
+
+
+
+                display_ontologies(data);
+
+
+
+
+
               // deleting ontologies
-              if (path === "ontologies" && httpMethod === "DELETE" &&
+              } else if (path === "ontologies" && httpMethod === "DELETE" &&
                   params["ontologies"]) {
                 var ontologiesTable = jQuery('#adminOntologies').DataTable();
                 // remove ontology row from the table
@@ -188,9 +296,11 @@
   }
 
   jQuery(document).ready(function() {
-    var ontologiesTable = jQuery("#adminOntologies").dataTable({
-      "bAutoWidth": false,
-      "bLengthChange": false,
+    ontologiesTable = jQuery("#adminOntologies").DataTable({
+      "autoWidth": false,
+      "lengthChange": false,
+
+
       "bFilter": true,
       "oLanguage": {
         "sSearch": "Filter: "
@@ -228,6 +338,17 @@
       jQuery(document).unbind('keydown.facebox');
       jQuery('#facebox_overlay').unbind('click');
     });
+
+
+
+
+
+
+
+
+
+
+
 
     jQuery("div.ontology_nav").html('<span class="toggle-row-display">View Ontologies:&nbsp;&nbsp;&nbsp;&nbsp;<a id="show_all_ontologies_action" href="javascript:;"">All</a> | <a id="show_problem_only_ontologies_action" href="javascript:;">Problem Only</a></span><span style="padding-left:30px;">Apply to Selected Rows:&nbsp;&nbsp;&nbsp;&nbsp;<select id="admin_action" name="admin_action"><option value="">Please Select</option><option value="delete">Delete</option><option value="reparse">Re-parse</option></select>&nbsp;&nbsp;&nbsp;&nbsp;<a class="link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" href="javascript:;" id="admin_action_submit"><span class="ui-button-text">Go</span></a></span>');
     jQuery.fn.dataTableExt.afnFiltering.push(
@@ -286,7 +407,7 @@
     // end: BUTTON onclick actions -----------------------------------
 
     // Keep header at top of table even when scrolling
-    new FixedHeader(ontologiesTable);
+    new jQuery.fn.dataTable.FixedHeader(ontologiesTable);
   });
 
 #DescriptionDialog{:style => "display:none", :title => "admin description"}

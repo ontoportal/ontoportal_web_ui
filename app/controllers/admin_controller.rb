@@ -63,18 +63,21 @@ class AdminController < ApplicationController
   end
 
   def refresh_report
-    response = _ontologies_report(true)
 
 
 
 
 
-    # render :json => response
+
+    # response = _ontologies_report(true)
+    response = _ontologies_report(false)
+
+
+
+
+
+
     render :json => response
-
-
-
-
   end
 
   def delete_ontologies
@@ -165,6 +168,7 @@ class AdminController < ApplicationController
         response[:errors] = ontologies_data_parsed["errors"]
       else
         @data = ontologies_data_parsed
+        ontologies_data_parsed.each { |k, v| response[k.to_sym] = v }
         response[:success] = "Report successfully regenerated on #{ontologies_data_parsed["date_generated"]}"
         LOG.add :debug, "Ontologies Report - retrieved #{@data["ontologies"].length} ontologies in #{Time.now - start}s"
       end

@@ -12,12 +12,7 @@
       - for acronym, ontology in @data["ontologies"]
         %tr{:class => "#{ontology['problem'] === true ? 'problem' : ''}", :id => "tr_#{acronym}"}
           %td{:style => "vertical-align:top;", :width => "12%"}
-            %a{:id => "link_submissions_#{acronym}", :href => "javascript:;", :style => "#{ontology['problem'] === true ? 'color:red' : ''}"} #{acronym}
-            :javascript
-              jQuery("#link_submissions_#{acronym}").click(function(event) {
-                event.preventDefault();
-                jQuery.facebox({ ajax: "#{$UI_URL}/admin/ontologies/#{acronym}/submissions" });
-              });
+            %a.link_submissions{:id => "link_submissions_#{acronym}", :href => "javascript:;", :onclick => "showSubmissions(event, '#{acronym}')", :style => "#{ontology['problem'] === true ? 'color:red' : ''}"} #{acronym}
           %td{:style => "vertical-align:top;", :width => "9%"}
             %a{:href => "#", :target => "_blank"} Log
             |
