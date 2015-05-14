@@ -9,7 +9,7 @@
         %th Issues
     %tbody
       - hide_fields = ["errErrorStatus", "errMissingStatus", "problem"]
-      - for acronym, ontology in @ontologies
+      - for acronym, ontology in @data["ontologies"]
         %tr{:class => "#{ontology['problem'] === true ? 'problem' : ''}", :id => "tr_#{acronym}"}
           %td{:style => "vertical-align:top;", :width => "12%"}
             %a{:id => "link_submissions_#{acronym}", :href => "javascript:;", :style => "#{ontology['problem'] === true ? 'color:red' : ''}"} #{acronym}

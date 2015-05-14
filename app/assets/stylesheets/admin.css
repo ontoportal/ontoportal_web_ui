@@ -21,7 +21,7 @@ table.dataTable tbody tr.selected {
 }
 .ontologies_list_container .dataTables_filter {
     float: right;
-    padding-top: 3px;
+    padding-top: 10px;
 }
 .ontologies_list_container .dataTables_filter input {
     width: 200px;
@@ -46,7 +46,10 @@ table.dataTable tbody tr.selected {
 }
 .ontology_nav {
     float: left;
-    padding: 5px 0 1em 0;
+    padding: 0 0 1em 0;
+}
+.success_message {
+    margin: 0 0 10px !important;
 }
 #success_message,
 #error_message,
@@ -56,6 +59,7 @@ table.dataTable tbody tr.selected {
 #progress_message {
     background: url("/images/spinners/spinner_000000_16px.gif") no-repeat scroll 0 center transparent;
     padding-left: 30px;
+    margin-top: 5px;
 }
 /* to fix facebox default sizing in chrome */
 #facebox .body {

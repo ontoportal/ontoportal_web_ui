@@ -6,26 +6,15 @@ class AdminController < ApplicationController
   DEBUG_BLACKLIST = [:"$,", :$ADDITIONAL_ONTOLOGY_DETAILS, :$rdebug_state, :$PROGRAM_NAME, :$LOADED_FEATURES, :$KCODE, :$-i, :$rails_rake_task, :$$, :$gems_build_rake_task, :$daemons_stop_proc, :$VERBOSE, :$DAEMONS_ARGV, :$daemons_sigterm, :$DEBUG_BEFORE, :$stdout, :$-0, :$-l, :$-I, :$DEBUG, :$', :$gems_rake_task, :$_, :$CODERAY_DEBUG, :$-F, :$", :$0, :$=, :$FILENAME, :$?, :$!, :$rdebug_in_irb, :$-K, :$TESTING, :$fileutils_rb_have_lchmod, :$EMAIL_EXCEPTIONS, :$binding, :$-v, :$>, :$SAFE, :$/, :$fileutils_rb_have_lchown, :$-p, :$-W, :$:, :$__dbg_interface, :$stderr, :$\, :$&, :$<, :$debug, :$;, :$~, :$-a, :$DEBUG_RDOC, :$CGI_ENV, :$LOAD_PATH, :$-d, :$*, :$., :$-w, :$+, :$@, :$`, :$stdin, :$1, :$2, :$3, :$4, :$5, :$6, :$7, :$8, :$9]
   ADMIN_URL = "#{LinkedData::Client.settings.rest_url}/admin/"
   ONTOLOGIES_URL = "#{ADMIN_URL}ontologies_report"
+  REPORT_NEVER_GENERATED = "NEVER GENERATED"
 
   def index
     if session[:user].nil? || !session[:user].admin?
       redirect_to :controller => 'login', :action => 'index', :redirect => '/admin'
     else
-      start = Time.now
-      form_data = Hash.new
-      ontologies_data = LinkedData::Client::HTTP.get(ONTOLOGIES_URL, form_data, raw: true)
-      ontologies_data_parsed = JSON.parse(ontologies_data)
-      @ontologies = ontologies_data_parsed["ontologies"]
-      @report_date = ontologies_data_parsed["date_generated"]
-
-      LOG.add :debug, "Retrieved #{@ontologies.length} ontologies: #{Time.now - start}s"
-      # render json: problem_ontologies
+      response = _ontologies_report(false)
       render action: "index"
     end
-
-    # globals =  global_variables - DEBUG_BLACKLIST
-    # @globals = {}
-    # globals.each {|g| @globals[g.to_s] = eval(g.to_s)}
   end
 
   def submissions
@@ -71,6 +60,21 @@ class AdminController < ApplicationController
       response[:errors] = "The cache does not respond to the 'reset' command"
     end
     render :json => response
+  end
+
+  def refresh_report
+    response = _ontologies_report(true)
+
+
+
+
+
+    # render :json => response
+    render :json => response
+
+
+
+
   end
 
   def delete_ontologies
@@ -144,6 +148,30 @@ class AdminController < ApplicationController
 
   def cache_setup
     @cache = Rails.cache.instance_variable_get("@data")
+  end
+
+  def _ontologies_report(refresh=false)
+    response = {errors: '', success: ''}
+    start = Time.now
+    form_data = Hash.new
+    form_data["refresh"] = "true" if refresh
+    @data = {"ontologies" => Hash.new, "date_generated" => REPORT_NEVER_GENERATED}
+
+    begin
+      ontologies_data = LinkedData::Client::HTTP.get(ONTOLOGIES_URL, form_data, raw: true)
+      ontologies_data_parsed = JSON.parse(ontologies_data)
+
+      if ontologies_data_parsed["errors"]
+        response[:errors] = ontologies_data_parsed["errors"]
+      else
+        @data = ontologies_data_parsed
+        response[:success] = "Report successfully regenerated on #{ontologies_data_parsed["date_generated"]}"
+        LOG.add :debug, "Ontologies Report - retrieved #{@data["ontologies"].length} ontologies in #{Time.now - start}s"
+      end
+    rescue Exception => e
+      response[:errors] = "Problem retrieving ontologies report - #{e.message}"
+    end
+    response
   end
 
 end

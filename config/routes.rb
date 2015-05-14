@@ -113,6 +113,7 @@ BioportalWebUi::Application.routes.draw do
   # Admin
   match '/admin/clearcache' => 'admin#clearcache', via: [:post]
   match '/admin/resetcache' => 'admin#resetcache', via: [:post]
+  match '/admin/refresh_report' => 'admin#refresh_report', via: [:post]
   match '/admin/ontologies' => 'admin#delete_ontologies', via: [:delete]
   match '/admin/ontologies/:acronym/submissions/:id' => 'admin#delete_submission', via: [:delete]
   match '/admin/ontologies/:acronym/submissions' => 'admin#submissions', via: [:get]

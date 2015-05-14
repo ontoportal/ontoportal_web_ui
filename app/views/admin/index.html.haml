@@ -79,7 +79,7 @@
   function refreshReport() {
     alertify.confirm("Refreshing this report takes a while...<br/>Are you sure you're ready for some coffee time?", function(e) {
       if (e) {
-        console.log("refreshing report...");
+        ajaxCall("POST", "REPORT REGENERATION", "refresh_report", {ontologies: DUMMY_ONTOLOGY});
       }
     });
     return false;
@@ -103,20 +103,17 @@
     }
     jQuery("#progress_message").text(msg).html();
     jQuery("#progress_message").show();
-    //jQuery(".progress_message").css('display', 'inline-block');
   }
 
   function showStatusMessages(success, errors) {
     if (success.length > 0) {
       jQuery("#success_message").text(success.join(", ")).html();
       jQuery("#success_message").show();
-      //jQuery(".success_message").css('display', 'inline-block');
     }
 
     if (errors.length > 0) {
       jQuery("#error_message").text(errors.join(", ")).html();
       jQuery("#error_message").show();
-      //jQuery(".error_message").css('display', 'inline-block');
     }
   }
 
@@ -134,52 +131,55 @@
     showProgressMessage(ontArr, operation);
 
     for (var i = 0; i < ontArr.length; i++) {
-      params["ontologies"] = ontArr[i];
-      var req = jQuery.ajax({
-        type: httpMethod,
-        url: "/admin/" + path,
-        data: params,
-        dataType: "text",
-        success: function(dataJson, msg) {
-          var data = JSON.parse(dataJson);
-          var reg = /\s*\,\s*/g;
+      // using javascript closure for passing index to asyncronous calls
+      (function(i) {
+        params["ontologies"] = ontArr[i];
+        var req = jQuery.ajax({
+          type: httpMethod,
+          url: "/admin/" + path,
+          data: params,
+          dataType: "json",
+          success: function(data, msg) {
+            var reg = /\s*\,\s*/g;
 
-          if (data.errors) {
-            var err = data.errors.replace(reg, ',');
-            errors.push.apply(errors, err.split(","));
-          }
-
-          if (data.success) {
-            // deleting ontologies
-            if (path === "ontologies" && httpMethod === "DELETE" &&
-                params["ontologies"]) {
-              var ontologiesTable = jQuery('#adminOntologies').DataTable();
-              // remove ontology row from the table
-              ontologiesTable.row(jQuery("#tr_" + ontArr[i])).remove().draw();
-            } else {
-              // deleting a single submission
-              var re = /^ontologies\/([\w.\-]+)\/submissions\/(\d+)$/;
-              var match = path.match(re);
-
-              // reload submissions facebox window
-              if (match != null && httpMethod == "DELETE") {
-                jQuery.facebox({ ajax: "/admin/ontologies/" + ontArr[i] + "/submissions?time=" + new Date().getTime() });
-              }
+            if (data.errors) {
+              var err = data.errors.replace(reg, ',');
+              errors.push.apply(errors, err.split(","));
             }
-            var suc = data.success.replace(reg, ',');
-            success.push.apply(success, suc.split(","));
+
+            if (data.success) {
+              // deleting ontologies
+              if (path === "ontologies" && httpMethod === "DELETE" &&
+                  params["ontologies"]) {
+                var ontologiesTable = jQuery('#adminOntologies').DataTable();
+                // remove ontology row from the table
+                ontologiesTable.row(jQuery("#tr_" + ontArr[i])).remove().draw();
+              } else {
+                // deleting a single submission
+                var re = /^ontologies\/([\w.\-]+)\/submissions\/(\d+)$/;
+                var match = path.match(re);
+
+                // reload submissions facebox window
+                if (match != null && httpMethod == "DELETE") {
+                  jQuery.facebox({ ajax: "/admin/ontologies/" + ontArr[i] + "/submissions?time=" + new Date().getTime() });
+                }
+              }
+              var suc = data.success.replace(reg, ',');
+              success.push.apply(success, suc.split(","));
+            }
+            showStatusMessages(success, errors);
+          },
+          error: function(request, textStatus, errorThrown) {
+            errors.push(request.status + ": " + errorThrown);
+            showStatusMessages(success, errors);
           }
-          showStatusMessages(success, errors);
-        },
-        error: function(request, textStatus, errorThrown) {
-          errors.push(request.status + ": " + errorThrown);
-          showStatusMessages(success, errors);
-        }
-      });
-      promises.push(req);
+        });
+        promises.push(req);
+      })(i);
     }
+
     // hide progress message and deselect rows after ALL operations have completed
-    jQuery.when.apply(null, promises).done(function() {
+    jQuery.when.apply(null, promises).always(function() {
       jQuery("#progress_message").hide();
       jQuery("#progress_message").html("");
       jQuery('#adminOntologies tbody tr').removeClass('selected');
@@ -228,7 +228,7 @@
       jQuery('#facebox_overlay').unbind('click');
     });
 
-    jQuery("div.ontology_nav").html('<span class="toggle-row-display"><a id="show_all_ontologies_action" href="javascript:;"">All</a> | <a id="show_problem_only_ontologies_action" href="javascript:;">Problem Only</a></span>');
+    jQuery("div.ontology_nav").html('<span class="toggle-row-display">View Ontologies:&nbsp;&nbsp;&nbsp;&nbsp;<a id="show_all_ontologies_action" href="javascript:;"">All</a> | <a id="show_problem_only_ontologies_action" href="javascript:;">Problem Only</a></span><span style="padding-left:30px;">Apply to Selected Rows:&nbsp;&nbsp;&nbsp;&nbsp;<select id="admin_action" name="admin_action"><option value="">Please Select</option><option value="delete">Delete</option><option value="reparse">Re-parse</option></select>&nbsp;&nbsp;&nbsp;&nbsp;<a class="link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" href="javascript:;" id="admin_action_submit"><span class="ui-button-text">Go</span></a></span>');
     jQuery.fn.dataTableExt.afnFiltering.push(
       function(oSettings, aData, iDataIndex) {
         var row = oSettings.aoData[iDataIndex].nTr;
@@ -277,6 +277,11 @@
       toggleShow(false);
     });
 
+    // onclick action for "Refresh Report" link
+    jQuery("#refresh_report_action").click(function() {
+      refreshReport();
+    });
+
     // end: BUTTON onclick actions -----------------------------------
 
     // Keep header at top of table even when scrolling
@@ -288,29 +293,24 @@
 %br
 %table.memcached_utilities{:style => "float:left;margin-left:8px;"}
   %tr
-    %td{:style => "white-space:nowrap;width:120px;"}
+    %td{:valign => "top", :style => "white-space:nowrap;width:123px;"}
       %a#flush_memcache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
         %span{:class => "ui-button-text"} Flush Memcache
-    %td{:style => "white-space:nowrap;width:190px;"}
+    %td{:valign => "top", :style => "white-space:nowrap;width:190px;"}
       %a#reset_memcache_connection_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
         %span{:class => "ui-button-text"} Reset Memcache Connection
-    %td
+    %td{:valign => "top", :rowspan => 2}
       %div#progress_message
       %div#success_message{:class => "success_message"}
       %div#error_message{:class => "error_message"}
   %tr
     %td{:colspan => 2}
-      Apply to Selected Rows:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      %select#admin_action{:name => "admin_action"}
-        %option{:value => ""} Please Select
-        %option{:value => "delete"} Delete
-        %option{:value => "reparse"} Re-parse
-      &nbsp;&nbsp;&nbsp;
-      %a#admin_action_submit{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
-        %span{:class => "ui-button-text"} Go
-    %td{:style => "padding-left:20px;"}
-      Report generated on #{@report_date}
-      %a{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "refreshReport();", :style => "margin-left:15px;"}
-        %span{:class => "ui-button-text"} Refresh
+      Report generated on:&nbsp;&nbsp;#{@data["date_generated"]}
+      %a#refresh_report_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :style => "margin-left:15px;"}
+        %span{:class => "ui-button-text"}
+          - if @report_date === AdminController::REPORT_NEVER_GENERATED
+            Generate
+          - else
+            Refresh
 %p.tab_description{:style => "clear: both;"}
   = render partial: "layouts/ontology_report_table"
