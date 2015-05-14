@@ -70,12 +70,14 @@ class SearchController < ApplicationController
     # Obsolete results merge
     response << obsolete_response
 
+    content_type = "text/html"
     if params[:response].eql?("json")
       response = response.gsub("\"","'")
       response = "#{params[:callback]}({data:\"#{response}\"})"
+      content_type = "application/javascript"
     end
 
-    render :text => response
+    render text: response, content_type: content_type
   end
 
 
