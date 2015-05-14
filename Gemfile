@@ -43,7 +43,6 @@ gem "rack-mini-profiler"
 gem "flamegraph"
 gem "stackprof", :require => false
 gem 'cube-ruby', require: 'cube'
-gem 'calendar_date_select'
 gem 'oj'
 gem 'multi_json'
 gem 'rails_autolink'
