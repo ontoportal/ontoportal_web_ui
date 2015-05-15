@@ -57,7 +57,7 @@ table.dataTable tbody tr.selected {
     display: none;
 }
 #progress_message {
-    background: url("/images/spinners/spinner_000000_16px.gif") no-repeat scroll 0 center transparent;
+    background: image-url("spinners/spinner_000000_16px.gif") no-repeat scroll 0 center transparent;
     padding-left: 30px;
     margin-top: 5px;
 }

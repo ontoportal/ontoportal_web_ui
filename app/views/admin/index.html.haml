@@ -1,8 +1,7 @@
 - @title = "BioPortal Administration"
 :javascript
   var DUMMY_ONTOLOGY = "DUMMY_ONT";
-  var ontologiesTable = null;
-  var showAll = 1;
+  var problemOnly = true;
 
   // memcached reset functions ------------------
   function resetMemcacheConnection() {
@@ -16,7 +15,7 @@
 
   // ontologies table functions ------------------
   function toggleShow(val) {
-    showAll = val;
+    problemOnly = val;
   }
 
   function deleteOntologies(acronyms) {
@@ -40,8 +39,8 @@
       return;
     }
 
-    var ontologiesTable = jQuery('#adminOntologies').DataTable();
-    ontologiesTable.rows('.selected').every(function() {
+    var ontTable = jQuery('#adminOntologies').DataTable();
+    ontTable.rows('.selected').every(function() {
       //var d = this.data();
       //var idx = this.index();
       //var tr = jQuery(this).parents('tr');
@@ -87,70 +86,115 @@
   function refreshReport() {
     //alertify.confirm("Refreshing this report takes a while...<br/>Are you sure you're ready for some coffee time?", function(e) {
     //  if (e) {
-        ajaxCall("POST", "REPORT REGENERATION", "refresh_report", {ontologies: DUMMY_ONTOLOGY});
+        ajaxCall("POST", "REPORT REGENERATION", "refresh_ontologies_report", {ontologies: DUMMY_ONTOLOGY});
     //  }
     //});
     return false;
   }
 
-  function display_ontologies(data) {
+  function populateOntologyRows(data) {
     var ontologies = data.ontologies;
-    var all_rows = [];
+    var allRows = [];
+    var hideFields = ["errErrorStatus", "errMissingStatus", "problem"];
 
     for (var acronym in ontologies) {
+      var errorMessages = [];
       var ontology = ontologies[acronym];
       var ontLink = "<a id='link_submissions_" + acronym + "' href='javascript:;' onclick='showSubmissions(event, \"" + acronym + "\")' style='" + (ontology["problem"] === true ? "color:red" : "") + "'>" + acronym + "</a>";
       var bpLinks = '<a href="#" target="_blank">Log</a> | <a href="' + BP_CONFIG.rest_url + '/ontologies/' + acronym + '" target="_blank">REST</a> | <a href="' + BP_CONFIG.ui_url + '/ontologies/' + acronym + '" target="_blank">BioPortal</a>';
       var errStatus = ontology["errErrorStatus"] ? ontology["errErrorStatus"].join(", ") : '';
       var missingStatus = ontology["errMissingStatus"] ? ontology["errMissingStatus"].join(", ") : '';
-      var errMsg = "Error messages go here";
 
-      row = [ontLink, bpLinks, errStatus, missingStatus, errMsg];
-      all_rows.push(row);
+      for (var k in ontology) {
+        if (jQuery.inArray(k, hideFields) === -1) {
+          errorMessages.push(ontology[k]);
+        }
+      }
+      row = [ontLink, bpLinks, errStatus, missingStatus, errorMessages.join("<br/>"), ontology["problem"]];
+      allRows.push(row);
     }
-
-
-
-
-
-    var ontologiesTable = jQuery('#adminOntologies').DataTable();
-    ontologiesTable.clear();
-    ontologiesTable.rows.add(all_rows);
-    ontologiesTable.draw();
+    return allRows;
   }
 
+  function displayOntologies(data) {
+    var ontTable = null;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    if (jQuery.fn.dataTable.isDataTable('#adminOntologies')) {
+      allRows = populateOntologyRows(data);
+      ontTable = jQuery('#adminOntologies').DataTable();
+      ontTable.clear();
+      ontTable.rows.add(allRows);
+      ontTable.draw();
+    } else {
+      ontTable = jQuery("#adminOntologies").DataTable({
+        "ajax": {
+          "url": BP_CONFIG.ui_url + "/admin/ontologies_report",
+          "contentType": "application/json",
+          "dataSrc": function (json) {
+            return populateOntologyRows(json);
+          }
+        },
+        "rowCallback": function(row, data, index) {
+          if (data[data.length - 1] === true) {
+            jQuery(row).addClass("problem");
+          }
+        },
+        "columnDefs": [
+          {
+            "targets": [0],
+            "searchable": true,
+            "title": "Acronym"
+          },
+          {
+            "targets": [1],
+            "searchable": false,
+            "title": "URL"
+          },
+          {
+            "targets": [2],
+            "searchable": true,
+            "title": "Error Status"
+          },
+          {
+            "targets": [3],
+            "searchable": true,
+            "title": "Missing Status"
+          },
+          {
+            "targets": [4],
+            "searchable": true,
+            "title": "Issues"
+          },
+          {
+            "targets": [ 5 ],
+            "searchable": true,
+            "visible": false
+          }
+        ],
+        "autoWidth": false,
+        "lengthChange": false,
+        "searching": true,
+        "language": {
+          "search": "Filter: ",
+          "emptyTable": "No ontologies available"
+        },
+        "info": true,
+        "paging": true,
+        "pageLength": 100,
+        "ordering": true,
+        "stripeClasses": ["", "alt"],
+        "dom": '<"ontology_nav">frtip'
+      });
+      // Keep header at top of table even when scrolling
+      new jQuery.fn.dataTable.FixedHeader(ontTable);
+    }
+    return ontTable;
+  }
 
   function showSubmissions(ev, acronym) {
     ev.preventDefault();
     jQuery.facebox({ ajax: BP_CONFIG.ui_url + "/admin/ontologies/" + acronym + "/submissions" });
   }
-
-
 
   function clearStatusMessages() {
     jQuery("#progress_message").hide();
@@ -245,12 +289,11 @@
             }
 
             if (data.success) {
-
-              if (path === "refresh_report") {
-
+              if (path === "refresh_ontologies_report") {
 
 
-                display_ontologies(data);
+
+                displayOntologies(data);
 
 
 
@@ -259,9 +302,9 @@
               // deleting ontologies
               } else if (path === "ontologies" && httpMethod === "DELETE" &&
                   params["ontologies"]) {
-                var ontologiesTable = jQuery('#adminOntologies').DataTable();
+                var ontTable = jQuery('#adminOntologies').DataTable();
                 // remove ontology row from the table
-                ontologiesTable.row(jQuery("#tr_" + ontArr[i])).remove().draw();
+                ontTable.row(jQuery("#tr_" + ontArr[i])).remove().draw();
               } else {
                 // deleting a single submission
                 var re = /^ontologies\/([\w.\-]+)\/submissions\/(\d+)$/;
@@ -269,7 +312,7 @@
 
                 // reload submissions facebox window
                 if (match != null && httpMethod == "DELETE") {
-                  jQuery.facebox({ ajax: "/admin/ontologies/" + ontArr[i] + "/submissions?time=" + new Date().getTime() });
+                  jQuery.facebox({ ajax: BP_CONFIG.ui_url + "/admin/ontologies/" + ontArr[i] + "/submissions?time=" + new Date().getTime() });
                 }
               }
               var suc = data.success.replace(reg, ',');
@@ -295,31 +338,8 @@
   }
 
   jQuery(document).ready(function() {
-    ontologiesTable = jQuery("#adminOntologies").DataTable({
-      "autoWidth": false,
-      "lengthChange": false,
-
-
-      "bFilter": true,
-      "oLanguage": {
-        "sSearch": "Filter: "
-      },
-      "bInfo": true,
-      "bPaginate": true,
-      "iDisplayLength": 100,
-      "bSort": true,
-      "asStripClasses": ["","alt"],
-      "dom": '<"ontology_nav">frtip',
-      "fnDrawCallback": function(oSettings) {
-        // Fix IE whitespace bug in table by removing whitespace
-        // See: http://datatables.net/forums/discussion/5481/bug-ghost-columns-when-generating-large-tables
-        if (navigator.appName == 'Microsoft Internet Explorer') {
-          var expr = new RegExp('>[ \t\r\n\v\f]*<', 'g');
-          var tbhtml = jQuery('#adminOntologies').children("tbody").html();
-          jQuery('#adminOntologies').children("tbody").html(tbhtml.replace(expr, '><'));
-        }
-      }
-    });
+    // display ontologies table on load
+    displayOntologies({});
 
     // make sure facebox window is empty before populating it
     // otherwise ajax requests stack up and you see more than
@@ -327,33 +347,26 @@
     jQuery(document).bind('beforeReveal.facebox', function() {
       jQuery("#facebox .content").empty();
     });
+
     // remove hidden divs for submissions of previously
     // clicked ontologies
     jQuery(document).bind('reveal.facebox', function() {
       jQuery('div[id=facebox]:hidden').remove();
     });
+
     // convert facebox window into a modal mode
     jQuery(document).bind('loading.facebox', function() {
       jQuery(document).unbind('keydown.facebox');
       jQuery('#facebox_overlay').unbind('click');
     });
 
-
-
-
-
-
-
-
-
-
-
-
     jQuery("div.ontology_nav").html('<span class="toggle-row-display">View Ontologies:&nbsp;&nbsp;&nbsp;&nbsp;<a id="show_all_ontologies_action" href="javascript:;"">All</a> | <a id="show_problem_only_ontologies_action" href="javascript:;">Problem Only</a></span><span style="padding-left:30px;">Apply to Selected Rows:&nbsp;&nbsp;&nbsp;&nbsp;<select id="admin_action" name="admin_action"><option value="">Please Select</option><option value="delete">Delete</option><option value="reparse">Re-parse</option></select>&nbsp;&nbsp;&nbsp;&nbsp;<a class="link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" href="javascript:;" id="admin_action_submit"><span class="ui-button-text">Go</span></a></span>');
-    jQuery.fn.dataTableExt.afnFiltering.push(
-      function(oSettings, aData, iDataIndex) {
-        var row = oSettings.aoData[iDataIndex].nTr;
-        if (showAll || row.classList.contains("problem")) {
+
+    // toggle between all and problem ontologies
+    jQuery.fn.dataTable.ext.search.push(
+      function(settings, data, dataIndex) {
+        var row = settings.aoData[dataIndex].nTr;
+        if (!problemOnly || row.classList.contains("problem") || data[data.length - 1] === "true") {
           return true;
         }
         return false;
@@ -362,7 +375,7 @@
 
     // for toggling between all and problem ontologies
     jQuery(".toggle-row-display a").live("click", function() {
-      jQuery("#adminOntologies").dataTable().fnDraw();
+      jQuery("#adminOntologies").DataTable().draw();
       return false;
     });
 
@@ -390,12 +403,12 @@
 
     // onclick action for "Show All Ontologies" link
     jQuery("#show_all_ontologies_action").click(function() {
-      toggleShow(true);
+      toggleShow(false);
     });
 
     // onclick action for "Show Problem Only Ontologies" link
     jQuery("#show_problem_only_ontologies_action").click(function() {
-      toggleShow(false);
+      toggleShow(true);
     });
 
     // onclick action for "Refresh Report" link
@@ -404,9 +417,6 @@
     });
 
     // end: BUTTON onclick actions -----------------------------------
-
-    // Keep header at top of table even when scrolling
-    new jQuery.fn.dataTable.FixedHeader(ontologiesTable);
   });
 
 #DescriptionDialog{:style => "display:none", :title => "admin description"}
@@ -426,12 +436,13 @@
       %div#error_message{:class => "error_message"}
   %tr
     %td{:colspan => 2}
-      Report generated on:&nbsp;&nbsp;#{@data["date_generated"]}
-      %a#refresh_report_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :style => "margin-left:15px;"}
+      Report generated on:&nbsp;&nbsp;&nbsp;#{@data[:date_generated]}
+      %a#refresh_report_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :style => "margin-left:11px;"}
         %span{:class => "ui-button-text"}
-          - if @report_date === AdminController::REPORT_NEVER_GENERATED
+          - if @data[:date_generated] === AdminController::REPORT_NEVER_GENERATED
             Generate
           - else
             Refresh
 %p.tab_description{:style => "clear: both;"}
-  = render partial: "layouts/ontology_report_table"
+.ontologies_list_container
+  %table#adminOntologies.zebra{:cellpadding => "0", :cellspacing => "0", :width => "100%"}

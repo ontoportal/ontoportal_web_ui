@@ -62,7 +62,15 @@ class AdminController < ApplicationController
     render :json => response
   end
 
-  def refresh_report
+
+  def ontologies_report
+    response = _ontologies_report(false)
+    render :json => response
+  end
+
+
+
+  def refresh_ontologies_report
 
 
 
@@ -97,7 +105,7 @@ class AdminController < ApplicationController
 
             if error_response
               errors = response_errors(error_response) # see application_controller::response_errors
-              errors.each {|_, v| response[:errors] << "#{v}, "}
+              _process_errors(errors, response, false)
             else
               response[:success] << "Ontology #{ont} and all its artifacts deleted successfully, "
             end
@@ -130,8 +138,7 @@ class AdminController < ApplicationController
 
           if error_response
             errors = response_errors(error_response) # see application_controller::response_errors
-            errors.each {|_, v| response[:errors] << "#{v}, "}
-            response[:errors] = response[:errors][0...-2]
+            _process_errors(errors, response, true)
           else
             response[:success] << "Submission #{params["id"]} for ontology #{ont} was deleted successfully"
           end
@@ -154,28 +161,36 @@ class AdminController < ApplicationController
   end
 
   def _ontologies_report(refresh=false)
-    response = {errors: '', success: ''}
+    response = {ontologies: Hash.new, date_generated: REPORT_NEVER_GENERATED, errors: '', success: ''}
     start = Time.now
     form_data = Hash.new
     form_data["refresh"] = "true" if refresh
-    @data = {"ontologies" => Hash.new, "date_generated" => REPORT_NEVER_GENERATED}
 
     begin
       ontologies_data = LinkedData::Client::HTTP.get(ONTOLOGIES_URL, form_data, raw: true)
-      ontologies_data_parsed = JSON.parse(ontologies_data)
+      ontologies_data_parsed = JSON.parse(ontologies_data, :symbolize_names => true)
 
-      if ontologies_data_parsed["errors"]
-        response[:errors] = ontologies_data_parsed["errors"]
+      if ontologies_data_parsed[:errors]
+        _process_errors(ontologies_data_parsed[:errors], response, true)
       else
-        @data = ontologies_data_parsed
-        ontologies_data_parsed.each { |k, v| response[k.to_sym] = v }
-        response[:success] = "Report successfully regenerated on #{ontologies_data_parsed["date_generated"]}"
-        LOG.add :debug, "Ontologies Report - retrieved #{@data["ontologies"].length} ontologies in #{Time.now - start}s"
+        response.merge!(ontologies_data_parsed)
+        response[:success] = "Report successfully regenerated on #{ontologies_data_parsed[:date_generated]}"
+        LOG.add :debug, "Ontologies Report - retrieved #{response[:ontologies].length} ontologies in #{Time.now - start}s"
       end
     rescue Exception => e
       response[:errors] = "Problem retrieving ontologies report - #{e.message}"
     end
+    @data = response
     response
+  end
+
+  def _process_errors(errors, response, remove_trailing_comma=true)
+    if errors.is_a?(Hash)
+      errors.each {|_, v| response[:errors] << "#{v}, "}
+    elsif errors.kind_of?(Array)
+      errors.each {|err| response[:errors] << "#{err}, "}
+    end
+    response[:errors] = response[:errors][0...-2] if remove_trailing_comma
   end
 
 end
