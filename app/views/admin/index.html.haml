@@ -135,9 +135,12 @@
           }
         },
         "rowCallback": function(row, data, index) {
-          if (data[data.length - 1] === true) {
-            jQuery(row).addClass("problem");
-          }
+          var acronym = jQuery('td:first', row).text();
+          jQuery(row).attr("id", "tr_" + acronym);
+
+        if (data[data.length - 1] === true) {
+          jQuery(row).addClass("problem");
+        }
         },
         "columnDefs": [
           {
@@ -166,7 +169,7 @@
             "title": "Issues"
           },
           {
-            "targets": [ 5 ],
+            "targets": [5],
             "searchable": true,
             "visible": false
           }
