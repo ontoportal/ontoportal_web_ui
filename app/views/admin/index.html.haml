@@ -449,9 +449,9 @@
       %a#reset_memcache_connection_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
         %span{:class => "ui-button-text"} Reset Memcache Connection
     %td{:valign => "top", :rowspan => 2}
-      %div#progress_message
-      %div#success_message{:class => "success_message"}
-      %div#error_message{:class => "error_message"}
+      %div#progress_message{:class => "alert-box progress"}
+      %div#success_message{:class => "alert-box success"}
+      %div#error_message{:class => "alert-box error"}
   %tr
     %td{:colspan => 2}
       Report generated on:&nbsp;&nbsp;&nbsp;#{@data[:date_generated]}
