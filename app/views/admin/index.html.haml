@@ -7,202 +7,6 @@
     problemOnly = val;
   }
 
-
-
-
-
-  // memcached reset functions ------------------
-  function resetMemcacheConnection() {
-    ajaxCall("POST", "MEMCACHE CONNECTION RESET", "resetcache", {ontologies: DUMMY_ONTOLOGY});
-  }
-
-  function flushMemcache() {
-    ajaxCall("POST", "FLUSHING OF MEMCACHE", "clearcache", {ontologies: DUMMY_ONTOLOGY});
-  }
-  // end: memcached reset functions ------------------
-
-  // ontologies table functions ------------------
-
-  function deleteOntologies(acronyms) {
-    ontMsg = acronyms.replace(new RegExp(',', 'g'), ', ');
-    alertify.set({labels: {ok: "Delete!", cancel: "Cancel"}});
-    alertify.confirm("You are about to delete the following ontologies:<br/><span style='color:red;font-weight:bold;'>" + ontMsg + "</span><br/><b>This action CAN NOT be undone!!! Are you sure?</b>", function(e) {
-      if (e) {
-        ajaxCall("DELETE", "ONTOLOGY DELETION", "ontologies", {ontologies: acronyms});
-      }
-    });
-    return false;
-  }
-
-  function deleteSubmission(acronym, submissionId) {
-    alertify.confirm("Are you sure you want to delete submission <span style='color:red;font-weight:bold;'>" + submissionId + "</span> for ontology <span style='color:red;font-weight:bold;'>" + acronym + "</span>?<br/><b>This action CAN NOT be undone!!!</b>", function(e) {
-      if (e) {
-        ajaxCall("DELETE", "SUBMISSION DELETION", "ontologies/" + acronym + "/submissions/" + submissionId, {ontologies: acronym});
-      }
-    });
-  }
-
-
-
-
-
-
-
-
-
-  function refreshReport() {
-    //alertify.confirm("Refreshing this report takes a while...<br/>Are you sure you're ready for some coffee time?", function(e) {
-    //  if (e) {
-        ajaxCall("POST", "REPORT REGENERATION", "refresh_ontologies_report", {ontologies: DUMMY_ONTOLOGY});
-    //  }
-    //});
-    return false;
-  }
-
-
-  function clearStatusMessages() {
-    jQuery("#progress_message").hide();
-    jQuery("#success_message").hide();
-    jQuery("#error_message").hide();
-    jQuery("#progress_message").html("");
-    jQuery("#success_message").html("");
-    jQuery("#error_message").html("");
-  }
-
-  function showProgressMessage(ontologies, operation) {
-    clearStatusMessages();
-    var msg = "Processing " + operation;
-
-    if (ontologies[0] !== DUMMY_ONTOLOGY) {
-      msg += " for " + ontologies.join(", ");
-    }
-    jQuery("#progress_message").text(msg).html();
-    jQuery("#progress_message").show();
-  }
-
-  function showStatusMessages(success, errors) {
-    if (success.length > 0) {
-      jQuery("#success_message").text(success.join(", ")).html();
-      jQuery("#success_message").show();
-    }
-
-    if (errors.length > 0) {
-      jQuery("#error_message").text(errors.join(", ")).html();
-      jQuery("#error_message").show();
-    }
-  }
-
-  function ajaxCall(httpMethod, operation, path, params) {
-    var ontArr = [];
-    var errors = [];
-    var success = [];
-    var promises = [];
-
-    if (params && params["ontologies"]) {
-      ontArr = params["ontologies"].split(",");
-      params["ontologies"] = '';
-    }
-
-    showProgressMessage(ontArr, operation);
-
-    for (var i = 0; i < ontArr.length; i++) {
-      // using javascript closure for passing index to asyncronous calls
-      (function(i) {
-        params["ontologies"] = ontArr[i];
-        var req = jQuery.ajax({
-          type: httpMethod,
-          url: "/admin/" + path,
-          data: params,
-          dataType: "json",
-          success: function(data, msg) {
-            var reg = /\s*\,\s*/g;
-
-            if (data.errors) {
-              var err = data.errors.replace(reg, ',');
-              errors.push.apply(errors, err.split(","));
-            }
-
-            if (data.success) {
-              if (path === "refresh_ontologies_report") {
-
-              // deleting ontologies
-              } else if (path === "ontologies" && httpMethod === "DELETE" &&
-                  params["ontologies"]) {
-                var ontTable = jQuery('#adminOntologies').DataTable();
-                // remove ontology row from the table
-                ontTable.row(jQuery("#tr_" + ontArr[i])).remove().draw();
-              } else {
-                // deleting a single submission
-                var re = /^ontologies\/([\w.\-]+)\/submissions\/(\d+)$/;
-                var match = path.match(re);
-
-                // reload submissions facebox window
-                if (match != null && httpMethod == "DELETE") {
-                  jQuery.facebox({ ajax: BP_CONFIG.ui_url + "/admin/ontologies/" + ontArr[i] + "/submissions?time=" + new Date().getTime() });
-                }
-              }
-              var suc = data.success.replace(reg, ',');
-              success.push.apply(success, suc.split(","));
-            }
-            showStatusMessages(success, errors);
-          },
-          error: function(request, textStatus, errorThrown) {
-            errors.push(request.status + ": " + errorThrown);
-            showStatusMessages(success, errors);
-          }
-        });
-        promises.push(req);
-      })(i);
-    }
-
-    // hide progress message and deselect rows after ALL operations have completed
-    jQuery.when.apply(null, promises).always(function() {
-      jQuery("#progress_message").hide();
-      jQuery("#progress_message").html("");
-      jQuery('#adminOntologies tbody tr').removeClass('selected');
-    });
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   var AjaxAction = function(httpMethod, operation, path, params) {
     params = params || {};
     this.httpMethod = httpMethod;
@@ -215,10 +19,15 @@
       delete params["ontologies"];
     }
     this.params = params;
+    this.confirmMsg = "Are you sure?";
   };
 
   AjaxAction.prototype.getOntologies = function() {
     return this.ontologies;
+  };
+
+  AjaxAction.prototype.setConfirmMsg = function(msg) {
+    this.confirmMsg = msg;
   };
 
   AjaxAction.prototype.clearStatusMessages = function() {
@@ -253,7 +62,7 @@
     }
   };
 
-  AjaxAction.prototype.ajaxCall = function() {
+  AjaxAction.prototype._ajaxCall = function() {
     var self = this;
     var errors = [];
     var success = [];
@@ -300,6 +109,25 @@
     });
   };
 
+  AjaxAction.prototype.ajaxCall = function() {
+    var self = this;
+
+    if (self.ontologies.length === 0) {
+      alertify.alert("Please select at least one ontology from the table to perform action on.");
+      return;
+    }
+
+    if (self.confirmMsg) {
+      alertify.confirm(self.confirmMsg, function(e) {
+        if (e) {
+          self._ajaxCall();
+        }
+      });
+    } else {
+      self._ajaxCall();
+    }
+  };
+
   AjaxAction.prototype.setSelectedOntologies = function() {
     var acronyms = '';
     var ontTable = jQuery('#adminOntologies').DataTable();
@@ -325,6 +153,7 @@
 
   function ResetMemcacheConnection() {
     AjaxAction.call(this, "POST", "MEMCACHE CONNECTION RESET", "resetcache");
+    this.setConfirmMsg('');
   }
 
   ResetMemcacheConnection.prototype = Object.create(AjaxAction.prototype);
@@ -335,6 +164,7 @@
 
   function FlushMemcache() {
     AjaxAction.call(this, "POST", "FLUSHING OF MEMCACHE", "clearcache");
+    this.setConfirmMsg('');
   }
 
   FlushMemcache.prototype = Object.create(AjaxAction.prototype);
@@ -346,6 +176,7 @@
   function DeleteSubmission(ontology, submissionId) {
     AjaxAction.call(this, "DELETE", "SUBMISSION DELETION", "ontologies/" + ontology + "/submissions/" + submissionId, {ontologies: ontology});
     this.submissionId = submissionId;
+    this.setConfirmMsg("Are you sure you want to delete submission <span style='color:red;font-weight:bold;'>" + submissionId + "</span> for ontology <span style='color:red;font-weight:bold;'>" + ontology + "</span>?<br/><b>This action CAN NOT be undone!!!</b>");
   }
 
   DeleteSubmission.prototype = Object.create(AjaxAction.prototype);
@@ -357,15 +188,12 @@
   };
 
   DeleteSubmission.act = function(ontology, submissionId) {
-    alertify.confirm("Are you sure you want to delete submission <span style='color:red;font-weight:bold;'>" + submissionId + "</span> for ontology <span style='color:red;font-weight:bold;'>" + ontology + "</span>?<br/><b>This action CAN NOT be undone!!!</b>", function(e) {
-      if (e) {
-        new DeleteSubmission(ontology, submissionId).ajaxCall();
-      }
-    });
+    new DeleteSubmission(ontology, submissionId).ajaxCall();
   };
 
   function RefreshReport() {
     AjaxAction.call(this, "POST", "REPORT REGENERATION", "refresh_ontologies_report");
+    this.setConfirmMsg("Refreshing this report takes a while...<br/>Are you sure you're ready for some coffee time?");
   }
 
   RefreshReport.prototype = Object.create(AjaxAction.prototype);
@@ -375,16 +203,14 @@
   };
 
   RefreshReport.act = function() {
-    alertify.confirm("Refreshing this report takes a while...<br/>Are you sure you're ready for some coffee time?", function(e) {
-      if (e) {
-        new RefreshReport().ajaxCall();
-      }
-    });
+    new RefreshReport().ajaxCall();
   };
 
   function DeleteOntologies() {
     AjaxAction.call(this, "DELETE", "ONTOLOGY DELETION", "ontologies");
     this.setSelectedOntologies();
+    var ontMsg = this.ontologies.join(", ");
+    this.setConfirmMsg("You are about to delete the following ontologies:<br/><span style='color:red;font-weight:bold;'>" + ontMsg + "</span><br/><b>This action CAN NOT be undone!!! Are you sure?</b>");
   }
 
   DeleteOntologies.prototype = Object.create(AjaxAction.prototype);
@@ -396,83 +222,8 @@
   };
 
   DeleteOntologies.act = function() {
-    var o = new DeleteOntologies();
-    var ontologies = o.getOntologies();
-
-    if (ontologies.length === 0) {
-      alertify.alert("Please select at least one ontology from the table to delete.");
-      return;
-    }
-
-    var ontMsg = ontologies.join(", ");
-    alertify.set({labels: {ok: "Delete!", cancel: "Cancel"}});
-    alertify.confirm("You are about to delete the following ontologies:<br/><span style='color:red;font-weight:bold;'>" + ontMsg + "</span><br/><b>This action CAN NOT be undone!!! Are you sure?</b>", function(e) {
-      if (e) {
-        o.ajaxCall();
-      }
-    });
+    new DeleteOntologies().ajaxCall();
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   function performActionOnOntologies() {
     var action = jQuery('#admin_action').val();
