@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 080e58a82e2ed95b6dd001ce9858c3fdaab80389
+  revision: e0fc2629b179ea85352900bc21978cf3866baae0
   branch: staging
   specs:
     ontologies_api_client (0.0.6)
@@ -18,6 +18,7 @@ GIT
       lz4-ruby
       multi_json
       oj
+      spawnling
 
 GIT
   remote: https://github.com/planio-gmbh/rackstash.git
@@ -184,6 +185,7 @@ GEM
       sprockets-rails (>= 2.0, < 4.0)
       tilt (~> 1.1)
     slop (3.6.0)
+    spawnling (2.1.6)
     sprockets (3.1.0)
       rack (~> 1.0)
     sprockets-rails (2.3.1)
