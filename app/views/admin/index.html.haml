@@ -236,7 +236,7 @@
               var err = data.errors.replace(reg, ',');
               errors.push.apply(errors, err.split(","));
             } else {
-              success.push("Refresh of ontologies report completed successfully.")
+              success[0] = "Refresh of ontologies report completed successfully";
               displayOntologies(data);
             }
             clearInterval(timer);
@@ -319,6 +319,17 @@
     return allRows;
   }
 
+  function setDateGenerated(data) {
+    var dateRe = /^\d{2}\/\d{2}\/\d{4}\s\d{2}:\d{2}\w{2}$/i;
+    var buttonText = "Generate";
+
+    if (dateRe.test(data.date_generated)) {
+      buttonText = "Refresh";
+    }
+    jQuery(".date_generated").text(data.date_generated).html();
+    jQuery(".date_generated_button").text(buttonText).html();
+  }
+
   function displayOntologies(data) {
     var ontTable = null;
 
@@ -328,6 +339,7 @@
       ontTable.clear();
       ontTable.rows.add(allRows);
       ontTable.draw();
+      setDateGenerated(data);
     } else {
       ontTable = jQuery("#adminOntologies").DataTable({
         "ajax": {
@@ -341,9 +353,14 @@
           var acronym = jQuery('td:first', row).text();
           jQuery(row).attr("id", "tr_" + acronym);
 
-        if (data[data.length - 1] === true) {
-          jQuery(row).addClass("problem");
-        }
+          if (data[data.length - 1] === true) {
+            jQuery(row).addClass("problem");
+          }
+        },
+        "initComplete": function(settings, json) {
+          setDateGenerated(json);
+          // Keep header at top of table even when scrolling
+          new jQuery.fn.dataTable.FixedHeader(ontTable);
         },
         "columnDefs": [
           {
@@ -396,8 +413,6 @@
         "stripeClasses": ["", "alt"],
         "dom": '<"ontology_nav">frtip'
       });
-      // Keep header at top of table even when scrolling
-      new jQuery.fn.dataTable.FixedHeader(ontTable);
     }
     return ontTable;
   }
@@ -496,23 +511,20 @@
   %tr
     %td{:valign => "top", :style => "white-space:nowrap;width:123px;"}
       %a#flush_memcache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
-        %span{:class => "ui-button-text"} Flush Memcache
+        %span.ui-button-text Flush Memcache
     %td{:valign => "top", :style => "white-space:nowrap;width:190px;"}
       %a#reset_memcache_connection_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
-        %span{:class => "ui-button-text"} Reset Memcache Connection
+        %span.ui-button-text Reset Memcache Connection
     %td{:valign => "top", :rowspan => 2}
       %div#progress_message{:class => "alert-box progress"}
       %div#success_message{:class => "alert-box success"}
       %div#error_message{:class => "alert-box error"}
   %tr
     %td{:colspan => 2}
-      Report generated on:&nbsp;&nbsp;&nbsp;#{@data[:date_generated]}
+      Report generated on:&nbsp;&nbsp;
+      %span.date_generated
       %a#refresh_report_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :style => "margin-left:11px;"}
-        %span{:class => "ui-button-text"}
-          - if @data[:date_generated] === AdminController::REPORT_NEVER_GENERATED
-            Generate
-          - else
-            Refresh
+        %span.ui-button-text{:class => "date_generated_button"}
 %p.tab_description{:style => "clear: both;"}
 .ontologies_list_container
   %table#adminOntologies.zebra{:cellpadding => "0", :cellspacing => "0", :width => "100%"}
