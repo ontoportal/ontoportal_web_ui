@@ -233,6 +233,13 @@
             // done processing, show errors or process data
             if (data.errors) {
               var reg = /\s*\,\s*/g;
+
+
+
+              console.log(data);
+              
+
+
               var err = data.errors.replace(reg, ',');
               errors.push.apply(errors, err.split(","));
             } else {
