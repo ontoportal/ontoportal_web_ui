@@ -12,7 +12,7 @@ class AdminController < ApplicationController
     if session[:user].nil? || !session[:user].admin?
       redirect_to :controller => 'login', :action => 'index', :redirect => '/admin'
     else
-      response = _ontologies_report(false)
+      response = _ontologies_report
       render action: "index"
     end
   end
@@ -62,29 +62,21 @@ class AdminController < ApplicationController
     render :json => response
   end
 
-
   def ontologies_report
-    response = _ontologies_report(false)
+    response = _ontologies_report
     render :json => response
   end
 
-
-
   def refresh_ontologies_report
+    response = {errors: '', success: ''}
 
-
-
-
-
-
-    # response = _ontologies_report(true)
-    response = _ontologies_report(false)
-
-
-
-
-
-
+    begin
+      response_raw = LinkedData::Client::HTTP.post(ONTOLOGIES_URL, {}, raw: true)
+      response = JSON.parse(response_raw, :symbolize_names => true)
+      response[:success] = "Refresh of ontologies report started successfully";
+    rescue Exception => e
+      response[:errors] = "Problem refreshing report - #{e.message}"
+    end
     render :json => response
   end
 
@@ -160,14 +152,12 @@ class AdminController < ApplicationController
     @cache = Rails.cache.instance_variable_get("@data")
   end
 
-  def _ontologies_report(refresh=false)
+  def _ontologies_report
     response = {ontologies: Hash.new, date_generated: REPORT_NEVER_GENERATED, errors: '', success: ''}
     start = Time.now
-    form_data = Hash.new
-    form_data["refresh"] = "true" if refresh
 
     begin
-      ontologies_data = LinkedData::Client::HTTP.get(ONTOLOGIES_URL, form_data, raw: true)
+      ontologies_data = LinkedData::Client::HTTP.get(ONTOLOGIES_URL, {}, raw: true)
       ontologies_data_parsed = JSON.parse(ontologies_data, :symbolize_names => true)
 
       if ontologies_data_parsed[:errors]

@@ -67,6 +67,7 @@
     var errors = [];
     var success = [];
     var promises = [];
+    var status = {progress: false};
     var params = jQuery.extend(true, {}, self.params);
     self.showProgressMessage();
 
@@ -87,9 +88,12 @@
           }
 
           if (data.success) {
-            self.onSuccessAction(data, ontology);
-            var suc = data.success.replace(reg, ',');
-            success.push.apply(success, suc.split(","));
+            self.onSuccessAction(data, ontology, status);
+
+            if (data.success) {
+              var suc = data.success.replace(reg, ',');
+              success.push.apply(success, suc.split(","));
+            }
           }
           self.showStatusMessages(success, errors);
         },
@@ -103,9 +107,11 @@
 
     // hide progress message and deselect rows after ALL operations have completed
     jQuery.when.apply(null, promises).always(function() {
-      jQuery("#progress_message").hide();
-      jQuery("#progress_message").html("");
-      jQuery('#adminOntologies tbody tr').removeClass('selected');
+      if (!status.progress) {
+        jQuery("#progress_message").hide();
+        jQuery("#progress_message").html("");
+        jQuery('#adminOntologies tbody tr').removeClass('selected');
+      }
     });
   };
 
@@ -143,7 +149,7 @@
     }
   };
 
-  AjaxAction.prototype.onSuccessAction = function(data, ontology) {
+  AjaxAction.prototype.onSuccessAction = function(data, ontology, status) {
     // nothing to do by default
   };
 
@@ -158,6 +164,7 @@
 
   ResetMemcacheConnection.prototype = Object.create(AjaxAction.prototype);
   ResetMemcacheConnection.prototype.constructor = ResetMemcacheConnection;
+
   ResetMemcacheConnection.act = function() {
     new ResetMemcacheConnection().ajaxCall();
   };
@@ -169,6 +176,7 @@
 
   FlushMemcache.prototype = Object.create(AjaxAction.prototype);
   FlushMemcache.prototype.constructor = FlushMemcache;
+
   FlushMemcache.act = function() {
     new FlushMemcache().ajaxCall();
   };
@@ -181,7 +189,8 @@
 
   DeleteSubmission.prototype = Object.create(AjaxAction.prototype);
   DeleteSubmission.prototype.constructor = DeleteSubmission;
-  DeleteSubmission.prototype.onSuccessAction = function(data, ontology) {
+
+  DeleteSubmission.prototype.onSuccessAction = function(data, ontology, status) {
     jQuery.facebox({
       ajax: BP_CONFIG.ui_url + "/admin/ontologies/" + ontology + "/submissions?time=" + new Date().getTime()
     });
@@ -198,8 +207,51 @@
 
   RefreshReport.prototype = Object.create(AjaxAction.prototype);
   RefreshReport.prototype.constructor = RefreshReport;
-  RefreshReport.prototype.onSuccessAction = function(data, ontology) {
-    displayOntologies(data);
+
+  RefreshReport.prototype.onSuccessAction = function(data, ontology, status) {
+    var processId = data["process_id"];
+    var errors = [];
+    var success = [];
+    data.success = '';
+    status.progress = true;
+    var self = this;
+    var timer = setInterval(function() {
+      jQuery.ajax({
+        url: determineHTTPS(BP_CONFIG.rest_url) + "/admin/ontologies_report/" + processId,
+        data: {
+          apikey: jQuery(document).data().bp.config.apikey,
+          userapikey: jQuery(document).data().bp.config.userapikey,
+          format: "jsonp"
+        },
+        dataType: "jsonp",
+        timeout: 30000,
+        success: function(data) {
+          if (typeof data === 'string') {
+            // still processing
+            jQuery("#progress_message").append(".");
+          } else {
+            // done processing, show errors or process data
+            if (data.errors) {
+              var reg = /\s*\,\s*/g;
+              var err = data.errors.replace(reg, ',');
+              errors.push.apply(errors, err.split(","));
+            } else {
+              success.push("Refresh of ontologies report completed successfully.")
+              displayOntologies(data);
+            }
+            clearInterval(timer);
+            jQuery("#progress_message").hide();
+            self.showStatusMessages(success, errors);
+          }
+        },
+        error: function(request, textStatus, errorThrown) {
+          clearInterval(timer);
+          errors.push(request.status + ": " + errorThrown);
+          jQuery("#progress_message").hide();
+          self.showStatusMessages(success, errors);
+        }
+      });
+    }, 5000);
   };
 
   RefreshReport.act = function() {
@@ -215,7 +267,7 @@
 
   DeleteOntologies.prototype = Object.create(AjaxAction.prototype);
   DeleteOntologies.prototype.constructor = DeleteOntologies;
-  DeleteOntologies.prototype.onSuccessAction = function(data, ontology) {
+  DeleteOntologies.prototype.onSuccessAction = function(data, ontology, status) {
     var ontTable = jQuery('#adminOntologies').DataTable();
     // remove ontology row from the table
     ontTable.row(jQuery("#tr_" + ontology)).remove().draw();
