@@ -302,13 +302,18 @@ function performActionOnOntologies() {
 function populateOntologyRows(data) {
   var ontologies = data.ontologies;
   var allRows = [];
-  var hideFields = ["errErrorStatus", "errMissingStatus", "problem"];
+  var hideFields = ["errErrorStatus", "errMissingStatus", "problem", "logFilePath"];
 
   for (var acronym in ontologies) {
     var errorMessages = [];
     var ontology = ontologies[acronym];
     var ontLink = "<a id='link_submissions_" + acronym + "' href='javascript:;' onclick='showSubmissions(event, \"" + acronym + "\")' style='" + (ontology["problem"] === true ? "color:red" : "") + "'>" + acronym + "</a>";
-    var bpLinks = '<a href="#" target="_blank">Log</a> | <a href="' + BP_CONFIG.rest_url + '/ontologies/' + acronym + '" target="_blank">REST</a> | <a href="' + BP_CONFIG.ui_url + '/ontologies/' + acronym + '" target="_blank">BioPortal</a>';
+    var bpLinks = '';
+
+    if (ontology["logFilePath"] != '') {
+      bpLinks += "<a href='" + BP_CONFIG.ui_url + "/admin/ontologies/" + acronym + "/log' target='_blank'>Log</a> | ";
+    }
+    bpLinks += "<a href='" + BP_CONFIG.rest_url + "/ontologies/" + acronym + "' target='_blank'>REST</a> | <a href='" + BP_CONFIG.ui_url + "/ontologies/" + acronym + "' target='_blank'>BioPortal</a>";
     var errStatus = ontology["errErrorStatus"] ? ontology["errErrorStatus"].join(", ") : '';
     var missingStatus = ontology["errMissingStatus"] ? ontology["errMissingStatus"].join(", ") : '';
 

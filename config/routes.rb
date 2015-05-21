@@ -118,6 +118,7 @@ BioportalWebUi::Application.routes.draw do
   match '/admin/ontologies' => 'admin#delete_ontologies', via: [:delete]
   match '/admin/ontologies/:acronym/submissions/:id' => 'admin#delete_submission', via: [:delete]
   match '/admin/ontologies/:acronym/submissions' => 'admin#submissions', via: [:get]
+  match '/admin/ontologies/:acronym/log' => 'admin#parse_log', via: [:get]
 
   ###########################################################################################################
   # Install the default route as the lowest priority.

@@ -6,6 +6,7 @@ class AdminController < ApplicationController
   DEBUG_BLACKLIST = [:"$,", :$ADDITIONAL_ONTOLOGY_DETAILS, :$rdebug_state, :$PROGRAM_NAME, :$LOADED_FEATURES, :$KCODE, :$-i, :$rails_rake_task, :$$, :$gems_build_rake_task, :$daemons_stop_proc, :$VERBOSE, :$DAEMONS_ARGV, :$daemons_sigterm, :$DEBUG_BEFORE, :$stdout, :$-0, :$-l, :$-I, :$DEBUG, :$', :$gems_rake_task, :$_, :$CODERAY_DEBUG, :$-F, :$", :$0, :$=, :$FILENAME, :$?, :$!, :$rdebug_in_irb, :$-K, :$TESTING, :$fileutils_rb_have_lchmod, :$EMAIL_EXCEPTIONS, :$binding, :$-v, :$>, :$SAFE, :$/, :$fileutils_rb_have_lchown, :$-p, :$-W, :$:, :$__dbg_interface, :$stderr, :$\, :$&, :$<, :$debug, :$;, :$~, :$-a, :$DEBUG_RDOC, :$CGI_ENV, :$LOAD_PATH, :$-d, :$*, :$., :$-w, :$+, :$@, :$`, :$stdin, :$1, :$2, :$3, :$4, :$5, :$6, :$7, :$8, :$9]
   ADMIN_URL = "#{LinkedData::Client.settings.rest_url}/admin/"
   ONTOLOGIES_URL = "#{ADMIN_URL}ontologies_report"
+  PARSE_LOG_URL = lambda { |acronym| "#{ADMIN_URL}ontologies/#{acronym}/log" }
   REPORT_NEVER_GENERATED = "NEVER GENERATED"
 
   def index
@@ -28,6 +29,23 @@ class AdminController < ApplicationController
       @submissions = []
     end
     render :partial => "layouts/ontology_report_submissions"
+  end
+
+  def parse_log
+    @acronym = params["acronym"]
+    @parse_log = LinkedData::Client::HTTP.get(PARSE_LOG_URL.call(params["acronym"]), {}, raw: false)
+    ontologies_report = _ontologies_report
+    ontology = ontologies_report[:ontologies][params["acronym"].to_sym]
+    @log_file_path = ''
+
+    if ontology
+      full_log_file_path = ontology[:logFilePath]
+      @log_file_path = /#{params["acronym"]}\/\d+\/\w+\.log$/.match(full_log_file_path)
+    else
+      @parse_log = "No record exists for ontology #{params["acronym"]}"
+      @log_file_path = "None"
+    end
+    render action: "parse_log"
   end
 
   def clearcache
