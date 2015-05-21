@@ -138,8 +138,7 @@ class NotesController < ApplicationController
   # Sometimes note ids come from the params with a bad prefix
   def clean_note_id(id)
     id = id.match(/\Ahttp:\/\w/) ? id.sub('http:/', 'http://') : id
-    puts id
-    id
+    CGI.unescape(id)
   end
 
 end
