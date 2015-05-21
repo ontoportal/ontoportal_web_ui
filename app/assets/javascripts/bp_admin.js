@@ -369,7 +369,19 @@ function displayOntologies(data) {
       "initComplete": function(settings, json) {
         setDateGenerated(json);
         // Keep header at top of table even when scrolling
-        new jQuery.fn.dataTable.FixedHeader(ontTable);
+
+
+
+
+
+
+
+
+        //new jQuery.fn.dataTable.FixedHeader(ontTable);
+
+
+
+
       },
       "columnDefs": [
         {
@@ -421,7 +433,7 @@ function displayOntologies(data) {
       "pageLength": 100,
       "ordering": true,
       "stripeClasses": ["", "alt"],
-      "dom": '<"ontology_nav">frtip'
+      "dom": '<"ontology_nav"><"top"fi>rtip'
     });
   }
   return ontTable;
