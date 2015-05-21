@@ -95,6 +95,7 @@
     });
 
     jQuery("#ontologyForm").validate({
+      errorClass: "ontologyFormError",
       errorElement: "div",
       rules: {
         "ontology[name]": "required",
@@ -108,7 +109,7 @@
   });
 
 :css
-  div.error {
+  div.ontologyFormError {
     color: red;
     padding-top: 3px;
   }
