@@ -122,7 +122,7 @@ AjaxAction.prototype.ajaxCall = function() {
   var self = this;
 
   if (self.ontologies.length === 0) {
-    alertify.alert("Please select at least one ontology from the table to perform action on.");
+    alertify.alert("Please select at least one ontology from the table to perform action on.<br/>To select/de-select ontologies, simply click anywhere in the ontology row.");
     return;
   }
 
