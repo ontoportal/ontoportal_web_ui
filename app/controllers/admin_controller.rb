@@ -98,6 +98,36 @@ class AdminController < ApplicationController
     render :json => response
   end
 
+
+  def process_ontology
+
+
+
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   def delete_ontologies
     response = {errors: '', success: ''}
 
@@ -200,5 +230,100 @@ class AdminController < ApplicationController
     end
     response[:errors] = response[:errors][0...-2] if remove_trailing_comma
   end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  def _process_ontologies(ontologies, doneKeyword, problemKeyword)
+    response = {errors: '', success: ''}
+
+    if params["ontologies"].nil? || params["ontologies"].empty?
+      response[:errors] = "No ontologies parameter passed. Syntax: ?ontologies=ONT1,ONT2,...,ONTN"
+    else
+      ontologies = params["ontologies"].split(",").map {|o| o.strip}
+
+      ontologies.each do |ont|
+        begin
+          ontology = LinkedData::Client::Models::Ontology.find_by_acronym(ont).first
+
+          if ontology
+
+
+
+            error_response = ontology.delete
+
+
+
+
+            if error_response
+              errors = response_errors(error_response) # see application_controller::response_errors
+              _process_errors(errors, response, false)
+            else
+              response[:success] << "Ontology #{ont} and all its artifacts deleted successfully, "
+            end
+          else
+            response[:errors] << "Ontology #{ont} was not found in the system, "
+          end
+        rescue Exception => e
+          response[:errors] << "Problem deleting ontology #{ont} - #{e.message}, "
+        end
+      end
+      response[:success] = response[:success][0...-2] unless response[:success].empty?
+      response[:errors] = response[:errors][0...-2] unless response[:errors].empty?
+    end
+    render :json => response
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 end

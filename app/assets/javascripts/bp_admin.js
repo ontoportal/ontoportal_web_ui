@@ -44,7 +44,7 @@ AjaxAction.prototype.clearStatusMessages = function() {
 
 AjaxAction.prototype.showProgressMessage = function() {
   this.clearStatusMessages();
-  var msg = "Processing " + this.operation;
+  var msg = "Performing " + this.operation;
 
   if (this.ontologies[0] !== DUMMY_ONTOLOGY) {
     msg += " for " + this.ontologies.join(", ");
@@ -266,7 +266,7 @@ function DeleteOntologies() {
   AjaxAction.call(this, "DELETE", "ONTOLOGY DELETION", "ontologies");
   this.setSelectedOntologies();
   var ontMsg = this.ontologies.join(", ");
-  this.setConfirmMsg("You are about to delete the following ontologies:<br/><span style='color:red;font-weight:bold;'>" + ontMsg + "</span><br/><b>This action CAN NOT be undone!!! Are you sure?</b>");
+  this.setConfirmMsg("You are about to delete the following ontologies:<br style='margin-bottom:5px;'/><span style='color:red;font-weight:bold;'>" + ontMsg + "</span><br/><b>This action CAN NOT be undone!!! Are you sure?</b>");
 }
 
 DeleteOntologies.prototype = Object.create(AjaxAction.prototype);
@@ -281,6 +281,27 @@ DeleteOntologies.act = function() {
   new DeleteOntologies().ajaxCall();
 };
 
+function ProcessOntologies(action) {
+  var actions = {
+    all: "FULL ONTOLOGY RE-PROCESSING",
+    process_annotator: "PROCESSING OF ONTOLOGY FOR ANNOTATOR",
+    diff: "CALCULATION OF ONTOLOGY DIFFS",
+    index_search: "PROCESSING OF ONTOLOGY FOR SEARCH",
+    run_metrics: "CALCULATION OF ONTOLOGY METRICS"
+  };
+  AjaxAction.call(this, "POST", actions[action], "ontologies", {action: action});
+  this.setSelectedOntologies();
+  var ontMsg = this.ontologies.join(", ");
+  this.setConfirmMsg("You are about to perform " + actions[action] + " on the following ontologies:<br style='margin-bottom:5px;'/><span style='color:red;font-weight:bold;'>" + ontMsg + "</span><br/>The ontologies will be added to the queue and processed on the next cron job execution.<br style='margin:10px 0;'/><b>Should I proceed?</b>");
+}
+
+ProcessOntologies.prototype = Object.create(AjaxAction.prototype);
+ProcessOntologies.prototype.constructor = ProcessOntologies;
+
+ProcessOntologies.act = function(action) {
+  new ProcessOntologies(action).ajaxCall();
+};
+
 function performActionOnOntologies() {
   var action = jQuery('#admin_action').val();
 
@@ -293,8 +314,8 @@ function performActionOnOntologies() {
     case "delete":
       DeleteOntologies.act();
       break;
-    case "reparse":
-      console.log("reparsing");
+    default:
+      ProcessOntologies.act(action);
       break;
   }
 }
@@ -369,19 +390,7 @@ function displayOntologies(data) {
       "initComplete": function(settings, json) {
         setDateGenerated(json);
         // Keep header at top of table even when scrolling
-
-
-
-
-
-
-
-
-        //new jQuery.fn.dataTable.FixedHeader(ontTable);
-
-
-
-
+        new jQuery.fn.dataTable.FixedHeader(ontTable);
       },
       "columnDefs": [
         {
@@ -467,7 +476,7 @@ jQuery(document).ready(function() {
     jQuery('#facebox_overlay').unbind('click');
   });
 
-  jQuery("div.ontology_nav").html('<span class="toggle-row-display">View Ontologies:&nbsp;&nbsp;&nbsp;&nbsp;<a id="show_all_ontologies_action" href="javascript:;"">All</a> | <a id="show_problem_only_ontologies_action" href="javascript:;">Problem Only</a></span><span style="padding-left:30px;">Apply to Selected Rows:&nbsp;&nbsp;&nbsp;&nbsp;<select id="admin_action" name="admin_action"><option value="">Please Select</option><option value="delete">Delete</option><option value="reparse">Re-parse</option></select>&nbsp;&nbsp;&nbsp;&nbsp;<a class="link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" href="javascript:;" id="admin_action_submit"><span class="ui-button-text">Go</span></a></span>');
+  jQuery("div.ontology_nav").html('<span class="toggle-row-display">View Ontologies:&nbsp;&nbsp;&nbsp;&nbsp;<a id="show_all_ontologies_action" href="javascript:;"">All</a> | <a id="show_problem_only_ontologies_action" href="javascript:;">Problem Only</a></span><span style="padding-left:30px;">Apply to Selected Rows:&nbsp;&nbsp;&nbsp;&nbsp;<select id="admin_action" name="admin_action"><option value="">Please Select</option><option value="delete">Delete</option><option value="all">Process</option><option value="process_annotator">Annotate</option><option value="diff">Diff</option><option value="index_search">Index</option><option value="run_metrics">Metrics</option></select>&nbsp;&nbsp;&nbsp;&nbsp;<a class="link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" href="javascript:;" id="admin_action_submit"><span class="ui-button-text">Go</span></a></span>');
 
   // toggle between all and problem ontologies
   jQuery.fn.dataTable.ext.search.push(
