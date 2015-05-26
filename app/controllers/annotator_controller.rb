@@ -5,6 +5,7 @@ class AnnotatorController < ApplicationController
   layout 'ontology'
 
   # REST_URI is defined in application_controller.rb
+  #ANNOTATOR_URI = REST_URI + "/annotator"
   ANNOTATOR_URI = $ANNOTATOR_URL
 
   def index
@@ -42,6 +43,7 @@ class AnnotatorController < ApplicationController
     start = Time.now
     query = ANNOTATOR_URI
     query += "?text=" + CGI.escape(text_to_annotate)
+    query += "&apikey=" + API_KEY
     query += "&include=prefLabel"
     query += "&expand_class_hierarchy=true" if options[:class_hierarchy_max_level] > 0
     query += "&class_hierarchy_max_level=" + options[:class_hierarchy_max_level].to_s if options[:class_hierarchy_max_level] > 0
@@ -57,6 +59,7 @@ class AnnotatorController < ApplicationController
 
     annotations = parse_json(query) # See application_controller.rb
     #annotations = LinkedData::Client::HTTP.get(query)
+    LOG.add :debug, "Query: #{query}"
     LOG.add :debug, "Retrieved #{annotations.length} annotations: #{Time.now - start}s"
     if annotations.empty? || params[:raw] == "true"
       # TODO: if params contains select ontologies and/or semantic types, only return those selected.
