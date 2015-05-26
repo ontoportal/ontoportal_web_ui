@@ -12,7 +12,8 @@ var BP_COLUMNS = {
   types: 2,
   sem_types: 3,
   matched_classes: 5,
-  matched_ontologies: 6
+  matched_ontologies: 6,
+  score: 7
 };
 
 var CONCEPT_MAP = {
@@ -66,6 +67,11 @@ function get_annotations() {
     params.exclude_synonyms = jQuery("#exclude_synonyms").is(':checked');
 
     params.score = jQuery("#score").val();
+    if (params.score) {
+      annotationsTable.fnSetColumnVis(BP_COLUMNS.score, true);
+    } else {
+      annotationsTable.fnSetColumnVis(BP_COLUMNS.score, false);
+    }
 
     var maxLevel = parseInt(jQuery("#class_hierarchy_max_level").val());
     if (maxLevel > 0) {
@@ -480,6 +486,9 @@ jQuery(document).ready(function() {
       "sWidth": "15%"
     }, {
       "sWidth": "15%"
+    }, {
+      "sWidth": "5%",
+      "bVisible": false
     }]
   });
   filter_ontologies.init();
@@ -528,11 +537,16 @@ function get_class_details_from_raw(cls) {
   } else {
     cls_link = get_link(cls_rel_ui, cls_label); // no ajax required!
   }
+  var score = '';
+  if (typeof cls.score !== 'undefined') {
+    score = cls.score;
+  }
   return class_details = {
     cls_rel_ui: cls_rel_ui,
     ont_rel_ui: ont_rel_ui,
     cls_link: cls_link,
     ont_link: ont_link,
+    score: score,
     //
     // TODO: Get semantic types from raw data, currently provided by controller.
     //semantic_types: cls.semantic_types.join('; ') // test with 'abscess' text and sem type = T046,T020
@@ -594,6 +608,7 @@ function get_annotation_rows(annotation, params) {
   return rows;
 }
 
+
 function get_annotation_rows_from_raw(annotation, params) {
   "use strict";
   // data independent var declarations
@@ -610,20 +625,20 @@ function get_annotation_rows_from_raw(annotation, params) {
   // data dependent var declarations
   var cls = get_class_details_from_raw(annotation.annotatedClass);
   if (annotation.annotations.length == 0) {
-    cells = [cls.cls_link, cls.ont_link, "", cls.semantic_types, "", cls.cls_link, cls.ont_link];
+    cells = [cls.cls_link, cls.ont_link, "", cls.semantic_types, "", cls.cls_link, cls.ont_link, cls.score];
     rows.push(cells);
   } else {
     jQuery.each(annotation.annotations, function(i, a) {
       text_markup = get_text_markup(params.text, a.from, a.to);
       match_type = match_type_translation[a.matchType.toLowerCase()] || 'direct';
-      cells = [cls.cls_link, cls.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link];
+      cells = [cls.cls_link, cls.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, cls.score];
       rows.push(cells);
       // Add rows for any classes in the hierarchy.
       match_type = 'ancestor';
       var h_c = null;
       jQuery.each(annotation.hierarchy, function(i, h) {
         h_c = get_class_details_from_raw(h.annotatedClass);
-        cells = [h_c.cls_link, h_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link];
+        cells = [h_c.cls_link, h_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, h_c.score];
         rows.push(cells);
       }); // hierarchy loop
       // Add rows for any classes in the mappings. Note the ont_link will be different.
@@ -631,7 +646,7 @@ function get_annotation_rows_from_raw(annotation, params) {
       var m_c = null;
       jQuery.each(annotation.mappings, function(i, m) {
         m_c = get_class_details_from_raw(m.annotatedClass);
-        cells = [m_c.cls_link, m_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link];
+        cells = [m_c.cls_link, m_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, m_c.score];
         rows.push(cells);
       }); // mappings loop
     }); // annotations loop
