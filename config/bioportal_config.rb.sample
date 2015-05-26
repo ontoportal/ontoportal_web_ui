@@ -29,6 +29,9 @@ $API_KEY = ""
 # REST core service address
 $REST_URL = "http://example.org:8080/"
 
+# Annotator REST service address
+$ANNOTATOR_URL = "http://example.org:8080/annotator/"
+
 # Legacy REST core service address (BioPortal v3.x and lower)
 $LEGACY_REST_URL = "http://example.org:8080/bioportal"
 
