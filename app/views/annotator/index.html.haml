@@ -37,6 +37,11 @@
       &nbsp;&nbsp;
       - options = [["None", 0], *(1..10).map {|i| [i, i]}, ["All", 999]]
       = select_tag :class_hierarchy_max_level, options_for_select(options, 0), style: "width: 70px;"
+    %p
+      %b Include Score:
+      &nbsp;&nbsp;
+      - options = [["None", ""], ["Old", "old"], ["cvalue", "cvalue"], ["cvalueh", "cvalueh"]]
+      = select_tag :score, options_for_select(options, 0), style: "width: 70px;"
     - if @recognizers.length > 1
       %p
         %b Entity Recognizer:

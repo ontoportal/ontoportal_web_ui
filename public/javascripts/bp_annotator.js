@@ -65,6 +65,8 @@ function get_annotations() {
     params.whole_word_only = jQuery("#whole_word_only").is(':checked');
     params.exclude_synonyms = jQuery("#exclude_synonyms").is(':checked');
 
+    params.score = jQuery("#score").val();
+
     var maxLevel = parseInt(jQuery("#class_hierarchy_max_level").val());
     if (maxLevel > 0) {
       params.expand_class_hierarchy = "true";

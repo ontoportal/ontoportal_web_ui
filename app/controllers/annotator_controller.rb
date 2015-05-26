@@ -35,7 +35,8 @@ class AnnotatorController < ApplicationController
                 :longest_only => params[:longest_only],
                 :exclude_numbers => params[:exclude_numbers] ||= "false",  # service default is false
                 :whole_word_only => (params[:whole_word_only] == "true") ? "false" : "true",  # service default is true
-                :exclude_synonyms => params[:exclude_synonyms] ||= "false"  # service default is false
+                :exclude_synonyms => params[:exclude_synonyms] ||= "false",  # service default is false
+                :score => params[:score]
     }
 
     start = Time.now
@@ -44,6 +45,7 @@ class AnnotatorController < ApplicationController
     query += "&include=prefLabel"
     query += "&expand_class_hierarchy=true" if options[:class_hierarchy_max_level] > 0
     query += "&class_hierarchy_max_level=" + options[:class_hierarchy_max_level].to_s if options[:class_hierarchy_max_level] > 0
+    query += "&score=" + options[:score] unless options[:score] == ""
     query += "&ontologies=" + CGI.escape(options[:ontologies].join(',')) unless options[:ontologies].empty?
     query += "&semantic_types=" + options[:semantic_types].join(',') unless options[:semantic_types].empty?
     query += "&mappings=" + options[:mappings].join(',') unless options[:mappings].empty?
