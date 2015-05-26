@@ -10,7 +10,7 @@ class VirtualApplianceController < ApplicationController
       return
     end
 
-    @virtual_appliance_user = VirtualApplianceUser.where(user_id: @user.id.to_i)
+    @virtual_appliance_user = VirtualApplianceUser.where(user_id: @user.id)
 
     @virtual_appliance_access = false
     if !@virtual_appliance_user.nil? && !@virtual_appliance_user.empty? || @user.admin?
