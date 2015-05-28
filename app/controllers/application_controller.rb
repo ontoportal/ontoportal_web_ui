@@ -124,6 +124,7 @@ class ApplicationController < ActionController::Base
         apikey: LinkedData::Client.settings.apikey,
         userapikey: get_apikey,
         rest_url: LinkedData::Client.settings.rest_url,
+        annotator_url: $ANNOTATOR_URL,
         biomixer_url: $BIOMIXER_URL
     }.to_json
   end
