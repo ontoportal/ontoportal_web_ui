@@ -420,11 +420,13 @@ function annotatorFormatLink(param_string, format) {
   // For now, assume that json and xml will work or should work.
   var format_map = {
     "json": "JSON",
+    "rdf": "RDF",
     "xml": "XML",
     "text": "Text",
     "tabDelimited": "CSV"
   };
-  var query = BP_CONFIG.rest_url + "/annotator?apikey=" + BP_CONFIG.apikey + "&" + param_string;
+  //var query = BP_CONFIG.rest_url + "/annotator?apikey=" + BP_CONFIG.apikey + "&" + param_string;
+  var query = BP_CONFIG.annotator_url + "?apikey=" + BP_CONFIG.apikey + "&" + param_string;
   if (format !== 'json') {
     query += "&format=" + format;
   }
@@ -776,7 +778,13 @@ function display_annotations(data, params) {
   // Add links for downloading results
   //annotatorFormatLink("tabDelimited");
   annotatorFormatLink(param_string, "json");
-  annotatorFormatLink(param_string, "xml");
+  //annotatorFormatLink(param_string, "xml");
+  //TODO: make RDF format works with score
+  jQuery("#download_links_rdf").html("");
+  if (params.score === "") {
+    annotatorFormatLink(param_string, "rdf");
+  }
+
   if (params.raw !== undefined && params.raw === true) {
     // Initiate ajax calls to resolve class ID to prefLabel and ontology acronym to name.
     ajax_process_init(); // see bp_ajax_controller.js
