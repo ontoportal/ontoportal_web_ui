@@ -640,7 +640,7 @@ function get_annotation_rows_from_raw(annotation, params) {
       var h_c = null;
       jQuery.each(annotation.hierarchy, function(i, h) {
         h_c = get_class_details_from_raw(h.annotatedClass);
-        cells = [h_c.cls_link, h_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, h_c.score, get_annotation_score(h)];
+        cells = [h_c.cls_link, h_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, get_annotation_score(h)];
         rows.push(cells);
       }); // hierarchy loop
       // Add rows for any classes in the mappings. Note the ont_link will be different.
@@ -648,7 +648,7 @@ function get_annotation_rows_from_raw(annotation, params) {
       var m_c = null;
       jQuery.each(annotation.mappings, function(i, m) {
         m_c = get_class_details_from_raw(m.annotatedClass);
-        cells = [m_c.cls_link, m_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, m_c.score, get_annotation_score(m)];
+        cells = [m_c.cls_link, m_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, get_annotation_score(m)];
         rows.push(cells);
       }); // mappings loop
     }); // annotations loop
