@@ -208,7 +208,7 @@ jQuery(document).ready(function() {
     jQuery("a.class_visualize").live("click", function() {
         var acronym = jQuery(this).attr("data-bp_ontologyid"),
             conceptid = jQuery(this).attr("data-bp_conceptid");
-        jQuery("#biomixer").html('<iframe src="/ajax/biomixer/?ontology=' + acronym + '&conceptid=' + conceptid + '" frameborder=0 height="500px" width="500px" scrolling="no"></iframe>').show();
+        jQuery("#biomixer").html('<iframe src="/ajax/biomixer/?ontology=' + acronym + '&conceptid=' + encodeURIComponent(conceptid) + '" frameborder=0 height="500px" width="500px" scrolling="no"></iframe>').show();
         jQuery.facebox({
             div: '#biomixer'
         });
