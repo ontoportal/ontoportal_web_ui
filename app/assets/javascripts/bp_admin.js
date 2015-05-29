@@ -65,6 +65,17 @@ AjaxAction.prototype.showStatusMessages = function(success, errors) {
   }
 };
 
+AjaxAction.prototype.getSelectedOntologiesForDisplay = function() {
+  var msg = '';
+
+  if (this.ontologies.length > 0) {
+    var ontMsg = this.ontologies.join(", ");
+    msg = "<br style='margin-bottom:5px;'/><span style='color:red;font-weight:bold;'>" + ontMsg + "</span><br/>";
+  }
+
+  return msg;
+};
+
 AjaxAction.prototype._ajaxCall = function() {
   var self = this;
   var errors = [];
@@ -78,7 +89,7 @@ AjaxAction.prototype._ajaxCall = function() {
   jQuery.each(self.ontologies, function(index, ontology) {
     params["ontologies"] = ontology;
     var req = jQuery.ajax({
-      type: self.httpMethod,
+      method: self.httpMethod,
       url: "/admin/" + self.path,
       data: params,
       dataType: "json",
@@ -205,13 +216,24 @@ DeleteSubmission.act = function(ontology, submissionId) {
 
 function RefreshReport() {
   AjaxAction.call(this, "POST", "REPORT REGENERATION", "refresh_ontologies_report");
-  this.setConfirmMsg("Refreshing this report takes a while...<br/>Are you sure you're ready for some coffee time?");
+  var msg = "Refreshing this report takes a while...<br/>Are you sure you're ready for some coffee time?";
+  this.setSelectedOntologies();
+
+  if (this.ontologies.length > 0) {
+    msg = "Ready to refresh report for ontologies:" + this.getSelectedOntologiesForDisplay() + "Proceed?";
+  } else {
+    this.ontologies = [DUMMY_ONTOLOGY];
+  }
+  this.setConfirmMsg(msg);
 }
 
 RefreshReport.prototype = Object.create(AjaxAction.prototype);
 RefreshReport.prototype.constructor = RefreshReport;
 
 RefreshReport.prototype.onSuccessAction = function(data, ontology, status) {
+  if (ontology === DUMMY_ONTOLOGY) {
+    return;
+  }
   var processId = data["process_id"];
   var errors = [];
   var success = [];
@@ -265,8 +287,7 @@ RefreshReport.act = function() {
 function DeleteOntologies() {
   AjaxAction.call(this, "DELETE", "ONTOLOGY DELETION", "ontologies");
   this.setSelectedOntologies();
-  var ontMsg = this.ontologies.join(", ");
-  this.setConfirmMsg("You are about to delete the following ontologies:<br style='margin-bottom:5px;'/><span style='color:red;font-weight:bold;'>" + ontMsg + "</span><br/><b>This action CAN NOT be undone!!! Are you sure?</b>");
+  this.setConfirmMsg("You are about to delete the following ontologies:" + this.getSelectedOntologiesForDisplay() + "<b>This action CAN NOT be undone!!! Are you sure?</b>");
 }
 
 DeleteOntologies.prototype = Object.create(AjaxAction.prototype);
@@ -289,10 +310,9 @@ function ProcessOntologies(action) {
     index_search: "PROCESSING OF ONTOLOGY FOR SEARCH",
     run_metrics: "CALCULATION OF ONTOLOGY METRICS"
   };
-  AjaxAction.call(this, "POST", actions[action], "ontologies", {action: action});
+  AjaxAction.call(this, "PUT", actions[action], "ontologies", {actions: action});
   this.setSelectedOntologies();
-  var ontMsg = this.ontologies.join(", ");
-  this.setConfirmMsg("You are about to perform " + actions[action] + " on the following ontologies:<br style='margin-bottom:5px;'/><span style='color:red;font-weight:bold;'>" + ontMsg + "</span><br/>The ontologies will be added to the queue and processed on the next cron job execution.<br style='margin:10px 0;'/><b>Should I proceed?</b>");
+  this.setConfirmMsg("You are about to perform " + actions[action] + " on the following ontologies:" + this.getSelectedOntologiesForDisplay() + "The ontologies will be added to the queue and processed on the next cron job execution.<br style='margin:10px 0;'/><b>Should I proceed?</b>");
 }
 
 ProcessOntologies.prototype = Object.create(AjaxAction.prototype);

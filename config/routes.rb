@@ -22,7 +22,7 @@ BioportalWebUi::Application.routes.draw do
 
   resources :login
 
-  resources :admin, :except => [:show, :destroy]
+  resources :admin, :only => [:index]
 
   resources :subscriptions
 
@@ -116,6 +116,7 @@ BioportalWebUi::Application.routes.draw do
   match '/admin/ontologies_report' => 'admin#ontologies_report', via: [:get]
   match '/admin/refresh_ontologies_report' => 'admin#refresh_ontologies_report', via: [:post]
   match '/admin/ontologies' => 'admin#delete_ontologies', via: [:delete]
+  match '/admin/ontologies' => 'admin#process_ontologies', via: [:put]
   match '/admin/ontologies/:acronym/submissions/:id' => 'admin#delete_submission', via: [:delete]
   match '/admin/ontologies/:acronym/submissions' => 'admin#submissions', via: [:get]
   match '/admin/ontologies/:acronym/log' => 'admin#parse_log', via: [:get]

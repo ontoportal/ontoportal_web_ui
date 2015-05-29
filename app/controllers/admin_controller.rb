@@ -6,7 +6,8 @@ class AdminController < ApplicationController
   DEBUG_BLACKLIST = [:"$,", :$ADDITIONAL_ONTOLOGY_DETAILS, :$rdebug_state, :$PROGRAM_NAME, :$LOADED_FEATURES, :$KCODE, :$-i, :$rails_rake_task, :$$, :$gems_build_rake_task, :$daemons_stop_proc, :$VERBOSE, :$DAEMONS_ARGV, :$daemons_sigterm, :$DEBUG_BEFORE, :$stdout, :$-0, :$-l, :$-I, :$DEBUG, :$', :$gems_rake_task, :$_, :$CODERAY_DEBUG, :$-F, :$", :$0, :$=, :$FILENAME, :$?, :$!, :$rdebug_in_irb, :$-K, :$TESTING, :$fileutils_rb_have_lchmod, :$EMAIL_EXCEPTIONS, :$binding, :$-v, :$>, :$SAFE, :$/, :$fileutils_rb_have_lchown, :$-p, :$-W, :$:, :$__dbg_interface, :$stderr, :$\, :$&, :$<, :$debug, :$;, :$~, :$-a, :$DEBUG_RDOC, :$CGI_ENV, :$LOAD_PATH, :$-d, :$*, :$., :$-w, :$+, :$@, :$`, :$stdin, :$1, :$2, :$3, :$4, :$5, :$6, :$7, :$8, :$9]
   ADMIN_URL = "#{LinkedData::Client.settings.rest_url}/admin/"
   ONTOLOGIES_URL = "#{ADMIN_URL}ontologies_report"
-  PARSE_LOG_URL = lambda { |acronym| "#{ADMIN_URL}ontologies/#{acronym}/log" }
+  ONTOLOGY_URL = lambda { |acronym| "#{ADMIN_URL}ontologies/#{acronym}" }
+  PARSE_LOG_URL = lambda { |acronym| "#{ONTOLOGY_URL.call(acronym)}/log" }
   REPORT_NEVER_GENERATED = "NEVER GENERATED"
 
   def index
@@ -89,77 +90,27 @@ class AdminController < ApplicationController
     response = {errors: '', success: ''}
 
     begin
-      response_raw = LinkedData::Client::HTTP.post(ONTOLOGIES_URL, {}, raw: true)
+      response_raw = LinkedData::Client::HTTP.post(ONTOLOGIES_URL, params, raw: true)
       response = JSON.parse(response_raw, :symbolize_names => true)
-      response[:success] = "Refresh of ontologies report started successfully";
+
+      if params["ontologies"].nil? || params["ontologies"].empty?
+        response[:success] = "Refresh of ontologies report started successfully";
+      else
+        ontologies = params["ontologies"].split(",").map {|o| o.strip}
+        response[:success] = "Refresh of report for ontologies: #{ontologies.join(", ")} completed successfully";
+      end
     rescue Exception => e
       response[:errors] = "Problem refreshing report - #{e.message}"
     end
     render :json => response
   end
 
-
-  def process_ontology
-
-
-
+  def process_ontologies
+    _process_ontologies('enqueued for processing', 'processing', :_process_ontology)
   end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   def delete_ontologies
-    response = {errors: '', success: ''}
-
-    if params["ontologies"].nil? || params["ontologies"].empty?
-      response[:errors] = "No ontologies parameter passed. Syntax: ?ontologies=ONT1,ONT2,...,ONTN"
-    else
-      ontologies = params["ontologies"].split(",").map {|o| o.strip}
-
-      ontologies.each do |ont|
-        begin
-          ontology = LinkedData::Client::Models::Ontology.find_by_acronym(ont).first
-
-          if ontology
-            error_response = ontology.delete
-
-            if error_response
-              errors = response_errors(error_response) # see application_controller::response_errors
-              _process_errors(errors, response, false)
-            else
-              response[:success] << "Ontology #{ont} and all its artifacts deleted successfully, "
-            end
-          else
-            response[:errors] << "Ontology #{ont} was not found in the system, "
-          end
-        rescue Exception => e
-          response[:errors] << "Problem deleting ontology #{ont} - #{e.message}, "
-        end
-      end
-      response[:success] = response[:success][0...-2] unless response[:success].empty?
-      response[:errors] = response[:errors][0...-2] unless response[:errors].empty?
-    end
-    render :json => response
+    _process_ontologies('and all its artifacts deleted', 'deleting', :_delete_ontology)
   end
 
   def delete_submission
@@ -231,29 +182,16 @@ class AdminController < ApplicationController
     response[:errors] = response[:errors][0...-2] if remove_trailing_comma
   end
 
+  def _delete_ontology(ontology, params)
+    error_response = ontology.delete
+    error_response
+  end
 
+  def _process_ontology(ontology, params)
+    response_raw = LinkedData::Client::HTTP.put(ONTOLOGY_URL.call(ontology.acronym), params, raw: true)
+  end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  def _process_ontologies(ontologies, doneKeyword, problemKeyword)
+  def _process_ontologies(success_keyword, error_keyword, process_proc)
     response = {errors: '', success: ''}
 
     if params["ontologies"].nil? || params["ontologies"].empty?
@@ -266,25 +204,19 @@ class AdminController < ApplicationController
           ontology = LinkedData::Client::Models::Ontology.find_by_acronym(ont).first
 
           if ontology
-
-
-
-            error_response = ontology.delete
-
-
-
+            error_response = self.send(process_proc, ontology, params)
 
             if error_response
               errors = response_errors(error_response) # see application_controller::response_errors
               _process_errors(errors, response, false)
             else
-              response[:success] << "Ontology #{ont} and all its artifacts deleted successfully, "
+              response[:success] << "Ontology #{ont} #{success_keyword} successfully, "
             end
           else
             response[:errors] << "Ontology #{ont} was not found in the system, "
           end
         rescue Exception => e
-          response[:errors] << "Problem deleting ontology #{ont} - #{e.message}, "
+          response[:errors] << "Problem #{error_keyword} ontology #{ont} - #{e.message}, "
         end
       end
       response[:success] = response[:success][0...-2] unless response[:success].empty?
@@ -292,38 +224,5 @@ class AdminController < ApplicationController
     end
     render :json => response
   end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 end
