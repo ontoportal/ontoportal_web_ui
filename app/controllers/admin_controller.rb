@@ -90,7 +90,7 @@ class AdminController < ApplicationController
     response = {errors: '', success: ''}
 
     begin
-      response_raw = LinkedData::Client::HTTP.post(ONTOLOGIES_URL, params)
+      response_raw = LinkedData::Client::HTTP.post(ONTOLOGIES_URL, params, raw: true)
       response_json = JSON.parse(response_raw, :symbolize_names => true)
 
       if response_json[:errors]
@@ -106,7 +106,11 @@ class AdminController < ApplicationController
         end
       end
     rescue Exception => e
-      response[:errors] = "Problem refreshing report - #{e.message}"
+      response[:errors] = "Problem refreshing report - #{e.class}: #{e.message}"
+
+      puts "#{e.class}: #{e.message}\n#{e.backtrace.join("\n\t")}"
+
+
     end
     render :json => response
   end
