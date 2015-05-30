@@ -32,6 +32,5 @@
 //= require jquery.rating.pack
 //= require history/jquery.history
 //= require alertify
-//= require ie6notice
 //= require jquery.tooltip
 
