@@ -87,7 +87,9 @@ AjaxAction.prototype._ajaxCall = function() {
 
   // using javascript closure for passing index to asynchronous calls
   jQuery.each(self.ontologies, function(index, ontology) {
-    params["ontologies"] = ontology;
+    if (ontology != DUMMY_ONTOLOGY) {
+      params["ontologies"] = ontology;
+    }
     var req = jQuery.ajax({
       method: self.httpMethod,
       url: "/admin/" + self.path,
@@ -231,9 +233,6 @@ RefreshReport.prototype = Object.create(AjaxAction.prototype);
 RefreshReport.prototype.constructor = RefreshReport;
 
 RefreshReport.prototype.onSuccessAction = function(data, ontology, status) {
-  if (ontology === DUMMY_ONTOLOGY) {
-    return;
-  }
   var processId = data["process_id"];
   var errors = [];
   var success = [];
@@ -262,7 +261,13 @@ RefreshReport.prototype.onSuccessAction = function(data, ontology, status) {
           } else {
             var end = new Date().getTime();
             var tm = end - start;
-            success[0] = "Refresh of ontologies report completed in " + millisToMinutesAndSeconds(tm);
+
+            if (ontology === DUMMY_ONTOLOGY) {
+              success[0] = "Refresh of ontologies report completed in " + millisToMinutesAndSeconds(tm);
+            } else {
+              var msgStr = self.ontologies.join(", ");
+              success[0] = "Refresh of report for ontologies " + msgStr + " completed in " + millisToMinutesAndSeconds(tm);
+            }
             displayOntologies(data);
           }
           clearInterval(timer);
@@ -343,13 +348,14 @@ function performActionOnOntologies() {
 function populateOntologyRows(data) {
   var ontologies = data.ontologies;
   var allRows = [];
-  var hideFields = ["errErrorStatus", "errMissingStatus", "problem", "logFilePath"];
+  var hideFields = ["date_updated", "errErrorStatus", "errMissingStatus", "problem", "logFilePath"];
 
   for (var acronym in ontologies) {
     var errorMessages = [];
     var ontology = ontologies[acronym];
     var ontLink = "<a id='link_submissions_" + acronym + "' href='javascript:;' onclick='showSubmissions(event, \"" + acronym + "\")' style='" + (ontology["problem"] === true ? "color:red" : "") + "'>" + acronym + "</a>";
     var bpLinks = '';
+    var dateUpdated = ontology["date_updated"];
 
     if (ontology["logFilePath"] != '') {
       bpLinks += "<a href='" + BP_CONFIG.ui_url + "/admin/ontologies/" + acronym + "/log' target='_blank'>Log</a> | ";
@@ -363,7 +369,7 @@ function populateOntologyRows(data) {
         errorMessages.push(ontology[k]);
       }
     }
-    row = [ontLink, bpLinks, errStatus, missingStatus, errorMessages.join("<br/>"), ontology["problem"]];
+    var row = [ontLink, dateUpdated, bpLinks, errStatus, missingStatus, errorMessages.join("<br/>"), ontology["problem"]];
     allRows.push(row);
   }
   return allRows;
@@ -417,35 +423,42 @@ function displayOntologies(data) {
           "targets": 0,
           "searchable": true,
           "title": "Acronym",
-          "width": "12%"
+          "width": "9%"
         },
+
         {
           "targets": 1,
+          "searchable": true,
+          "title": "Update Date",
+          "width": "9%"
+        },
+        {
+          "targets": 2,
           "searchable": false,
           "orderable": false,
           "title": "URL",
           "width": "9%"
         },
         {
-          "targets": 2,
+          "targets": 3,
           "searchable": true,
           "title": "Error Status",
           "width": "10%"
         },
         {
-          "targets": 3,
+          "targets": 4,
           "searchable": true,
           "title": "Missing Status",
           "width": "10%"
         },
         {
-          "targets": 4,
+          "targets": 5,
           "searchable": true,
           "title": "Issues",
-          "width": "26%"
+          "width": "53%"
         },
         {
-          "targets": 5,
+          "targets": 6,
           "searchable": true,
           "visible": false
         }

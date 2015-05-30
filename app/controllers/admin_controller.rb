@@ -91,13 +91,19 @@ class AdminController < ApplicationController
 
     begin
       response_raw = LinkedData::Client::HTTP.post(ONTOLOGIES_URL, params, raw: true)
-      response = JSON.parse(response_raw, :symbolize_names => true)
+      response_json = JSON.parse(response_raw, :symbolize_names => true)
 
-      if params["ontologies"].nil? || params["ontologies"].empty?
-        response[:success] = "Refresh of ontologies report started successfully";
+      if response_json[:errors]
+        _process_errors(response_json[:errors], response, true)
       else
-        ontologies = params["ontologies"].split(",").map {|o| o.strip}
-        response[:success] = "Refresh of report for ontologies: #{ontologies.join(", ")} completed successfully";
+        response = response_json
+
+        if params["ontologies"].nil? || params["ontologies"].empty?
+          response[:success] = "Refresh of ontologies report started successfully";
+        else
+          ontologies = params["ontologies"].split(",").map {|o| o.strip}
+          response[:success] = "Refresh of report for ontologies: #{ontologies.join(", ")} started successfully";
+        end
       end
     rescue Exception => e
       response[:errors] = "Problem refreshing report - #{e.message}"
@@ -106,7 +112,7 @@ class AdminController < ApplicationController
   end
 
   def process_ontologies
-    _process_ontologies('enqueued for processing', 'processing', :_process_ontology)
+    _process_ontologies('enqued for processing', 'processing', :_process_ontology)
   end
 
   def delete_ontologies
@@ -175,7 +181,14 @@ class AdminController < ApplicationController
 
   def _process_errors(errors, response, remove_trailing_comma=true)
     if errors.is_a?(Hash)
-      errors.each {|_, v| response[:errors] << "#{v}, "}
+      errors.each do |_, v|
+        if v.kind_of?(Array)
+          response[:errors] << v.join(", ")
+          response[:errors] << ", "
+        else
+          response[:errors] << "#{v}, "
+        end
+      end
     elsif errors.kind_of?(Array)
       errors.each {|err| response[:errors] << "#{err}, "}
     end
