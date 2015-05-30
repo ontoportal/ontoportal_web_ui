@@ -90,7 +90,7 @@ class AdminController < ApplicationController
     response = {errors: '', success: ''}
 
     begin
-      response_raw = LinkedData::Client::HTTP.post(ONTOLOGIES_URL, params, raw: true)
+      response_raw = LinkedData::Client::HTTP.post(ONTOLOGIES_URL, params)
       response_json = JSON.parse(response_raw, :symbolize_names => true)
 
       if response_json[:errors]
@@ -201,7 +201,8 @@ class AdminController < ApplicationController
   end
 
   def _process_ontology(ontology, params)
-    response_raw = LinkedData::Client::HTTP.put(ONTOLOGY_URL.call(ontology.acronym), params, raw: true)
+    error_response = LinkedData::Client::HTTP.put(ONTOLOGY_URL.call(ontology.acronym), params)
+    error_response
   end
 
   def _process_ontologies(success_keyword, error_keyword, process_proc)
@@ -229,7 +230,7 @@ class AdminController < ApplicationController
             response[:errors] << "Ontology #{ont} was not found in the system, "
           end
         rescue Exception => e
-          response[:errors] << "Problem #{error_keyword} ontology #{ont} - #{e.message}, "
+          response[:errors] << "Problem #{error_keyword} ontology #{ont} - #{e.class}: #{e.message}, "
         end
       end
       response[:success] = response[:success][0...-2] unless response[:success].empty?
