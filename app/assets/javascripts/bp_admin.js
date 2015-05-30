@@ -54,15 +54,7 @@ AjaxAction.prototype.showProgressMessage = function() {
 };
 
 AjaxAction.prototype.showStatusMessages = function(success, errors) {
-  if (success.length > 0) {
-    jQuery("#success_message").text(success.join(", ")).html();
-    jQuery("#success_message").show();
-  }
-
-  if (errors.length > 0) {
-    jQuery("#error_message").text(errors.join(", ")).html();
-    jQuery("#error_message").show();
-  }
+  _showStatusMessages(success, errors);
 };
 
 AjaxAction.prototype.getSelectedOntologiesForDisplay = function() {
@@ -386,8 +378,21 @@ function setDateGenerated(data) {
   jQuery(".date_generated_button").text(buttonText).html();
 }
 
+function _showStatusMessages(success, errors) {
+  if (success.length > 0) {
+    jQuery("#success_message").text(success.join(", ")).html();
+    jQuery("#success_message").show();
+  }
+
+  if (errors.length > 0) {
+    jQuery("#error_message").text(errors.join(", ")).html();
+    jQuery("#error_message").show();
+  }
+}
+
 function displayOntologies(data) {
   var ontTable = null;
+  var errors = [];
 
   if (jQuery.fn.dataTable.isDataTable('#adminOntologies')) {
     allRows = populateOntologyRows(data);
@@ -414,6 +419,9 @@ function displayOntologies(data) {
         }
       },
       "initComplete": function(settings, json) {
+        if (json.errors) {
+          _showStatusMessages([], [json.errors]);
+        }
         setDateGenerated(json);
         // Keep header at top of table even when scrolling
         new jQuery.fn.dataTable.FixedHeader(ontTable);
