@@ -14,11 +14,12 @@ function millisToMinutesAndSeconds(millis) {
   return minutes + " minutes " + seconds + " seconds";
 }
 
-var AjaxAction = function(httpMethod, operation, path, params) {
+var AjaxAction = function(httpMethod, operation, path, isLongOperation, params) {
   params = params || {};
   this.httpMethod = httpMethod;
   this.operation = operation;
   this.path = path;
+  this.isLongOperation = isLongOperation;
   this.ontologies = [DUMMY_ONTOLOGY];
 
   if (params["ontologies"]) {
@@ -53,8 +54,8 @@ AjaxAction.prototype.showProgressMessage = function() {
   jQuery("#progress_message").show();
 };
 
-AjaxAction.prototype.showStatusMessages = function(success, errors) {
-  _showStatusMessages(success, errors);
+AjaxAction.prototype.showStatusMessages = function(success, errors, isAppendMode) {
+  _showStatusMessages(success, errors, isAppendMode);
 };
 
 AjaxAction.prototype.getSelectedOntologiesForDisplay = function() {
@@ -103,11 +104,11 @@ AjaxAction.prototype._ajaxCall = function() {
             success.push.apply(success, suc.split(","));
           }
         }
-        self.showStatusMessages(success, errors);
+        self.showStatusMessages(success, errors, false);
       },
       error: function(request, textStatus, errorThrown) {
         errors.push(request.status + ": " + errorThrown);
-        self.showStatusMessages(success, errors);
+        self.showStatusMessages(success, errors, false);
       }
     });
     promises.push(req);
@@ -142,6 +143,77 @@ AjaxAction.prototype.ajaxCall = function() {
   }
 };
 
+AjaxAction.prototype.onSuccessAction = function(data, ontology, status) {
+  var self = this;
+  if (!self.isLongOperation) {
+    return;
+  }
+  var processId = data["process_id"];
+  var errors = [];
+  var success = [];
+  var done = [];
+  data.success = '';
+  status.progress = true;
+  var start = new Date().getTime();
+  var timer = setInterval(function() {
+    jQuery.ajax({
+      url: determineHTTPS(BP_CONFIG.rest_url) + "/admin/ontologies_report/" + processId,
+      data: {
+        apikey: jQuery(document).data().bp.config.apikey,
+        userapikey: jQuery(document).data().bp.config.userapikey,
+        format: "jsonp"
+      },
+      dataType: "jsonp",
+      timeout: 30000,
+      success: function(data) {
+        if (typeof data === 'string') {
+          // still processing
+          jQuery("#progress_message").append(".");
+        } else {
+          if (jQuery.inArray(ontology, done) != -1) {
+            return;
+          }
+          done.push(ontology);
+          clearInterval(timer);
+
+          // done processing, show errors or process data
+          if (data.errors && data.errors.length > 0) {
+            errors[0] = data.errors[0];
+          } else {
+            var end = new Date().getTime();
+            var tm = end - start;
+
+            if (ontology === DUMMY_ONTOLOGY) {
+              success[0] = self.operation + " completed in " + millisToMinutesAndSeconds(tm);
+            } else {
+              //var msgStr = self.ontologies.join(", ");
+              success[0] = self.operation + " for " + ontology + " completed in " + millisToMinutesAndSeconds(tm);
+            }
+            self.onSuccessActionLongOperation(data, ontology);
+          }
+          jQuery("#progress_message").hide();
+          self.showStatusMessages(success, errors, true);
+        }
+      },
+      error: function(request, textStatus, errorThrown) {
+        if (jQuery.inArray(ontology, done) != -1) {
+          return;
+        }
+        done.push(ontology);
+        clearInterval(timer);
+
+        errors.push(request.status + ": " + errorThrown);
+        jQuery("#progress_message").hide();
+        self.showStatusMessages(success, errors, true);
+      }
+    });
+  }, 5000);
+};
+
+AjaxAction.prototype.onSuccessActionLongOperation = function(data, ontology) {
+  // nothing to do by default
+};
+
 AjaxAction.prototype.setSelectedOntologies = function() {
   var acronyms = '';
   var ontTable = jQuery('#adminOntologies').DataTable();
@@ -157,16 +229,12 @@ AjaxAction.prototype.setSelectedOntologies = function() {
   }
 };
 
-AjaxAction.prototype.onSuccessAction = function(data, ontology, status) {
-  // nothing to do by default
-};
-
 AjaxAction.prototype.act = function() {
   alert("AjaxAction.act is not implemented");
 };
 
 function ResetMemcacheConnection() {
-  AjaxAction.call(this, "POST", "MEMCACHE CONNECTION RESET", "resetcache");
+  AjaxAction.call(this, "POST", "MEMCACHE CONNECTION RESET", "resetcache", false);
   this.setConfirmMsg('');
 }
 
@@ -178,7 +246,7 @@ ResetMemcacheConnection.act = function() {
 };
 
 function FlushMemcache() {
-  AjaxAction.call(this, "POST", "FLUSHING OF MEMCACHE", "clearcache");
+  AjaxAction.call(this, "POST", "FLUSHING OF MEMCACHE", "clearcache", false);
   this.setConfirmMsg('');
 }
 
@@ -190,7 +258,7 @@ FlushMemcache.act = function() {
 };
 
 function DeleteSubmission(ontology, submissionId) {
-  AjaxAction.call(this, "DELETE", "SUBMISSION DELETION", "ontologies/" + ontology + "/submissions/" + submissionId, {ontologies: ontology});
+  AjaxAction.call(this, "DELETE", "SUBMISSION DELETION", "ontologies/" + ontology + "/submissions/" + submissionId, false, {ontologies: ontology});
   this.submissionId = submissionId;
   this.setConfirmMsg("Are you sure you want to delete submission <span style='color:red;font-weight:bold;'>" + submissionId + "</span> for ontology <span style='color:red;font-weight:bold;'>" + ontology + "</span>?<br/><b>This action CAN NOT be undone!!!</b>");
 }
@@ -209,7 +277,7 @@ DeleteSubmission.act = function(ontology, submissionId) {
 };
 
 function RefreshReport() {
-  AjaxAction.call(this, "POST", "REPORT REGENERATION", "refresh_ontologies_report");
+  AjaxAction.call(this, "POST", "REFRESH OF ONTOLOGIES REPORT", "refresh_ontologies_report", true);
   var msg = "Refreshing this report takes a while...<br/>Are you sure you're ready for some coffee time?";
   this.setSelectedOntologies();
 
@@ -224,57 +292,8 @@ function RefreshReport() {
 RefreshReport.prototype = Object.create(AjaxAction.prototype);
 RefreshReport.prototype.constructor = RefreshReport;
 
-RefreshReport.prototype.onSuccessAction = function(data, ontology, status) {
-  var processId = data["process_id"];
-  var errors = [];
-  var success = [];
-  data.success = '';
-  status.progress = true;
-  var self = this;
-  var start = new Date().getTime();
-  var timer = setInterval(function() {
-    jQuery.ajax({
-      url: determineHTTPS(BP_CONFIG.rest_url) + "/admin/ontologies_report/" + processId,
-      data: {
-        apikey: jQuery(document).data().bp.config.apikey,
-        userapikey: jQuery(document).data().bp.config.userapikey,
-        format: "jsonp"
-      },
-      dataType: "jsonp",
-      timeout: 30000,
-      success: function(data) {
-        if (typeof data === 'string') {
-          // still processing
-          jQuery("#progress_message").append(".");
-        } else {
-          // done processing, show errors or process data
-          if (data.errors && data.errors.length > 0) {
-            errors[0] = data.errors[0];
-          } else {
-            var end = new Date().getTime();
-            var tm = end - start;
-
-            if (ontology === DUMMY_ONTOLOGY) {
-              success[0] = "Refresh of ontologies report completed in " + millisToMinutesAndSeconds(tm);
-            } else {
-              var msgStr = self.ontologies.join(", ");
-              success[0] = "Refresh of report for ontologies " + msgStr + " completed in " + millisToMinutesAndSeconds(tm);
-            }
-            displayOntologies(data);
-          }
-          clearInterval(timer);
-          jQuery("#progress_message").hide();
-          self.showStatusMessages(success, errors);
-        }
-      },
-      error: function(request, textStatus, errorThrown) {
-        clearInterval(timer);
-        errors.push(request.status + ": " + errorThrown);
-        jQuery("#progress_message").hide();
-        self.showStatusMessages(success, errors);
-      }
-    });
-  }, 5000);
+RefreshReport.prototype.onSuccessActionLongOperation = function(data, ontology) {
+  displayOntologies(data, ontology);
 };
 
 RefreshReport.act = function() {
@@ -282,7 +301,7 @@ RefreshReport.act = function() {
 };
 
 function DeleteOntologies() {
-  AjaxAction.call(this, "DELETE", "ONTOLOGY DELETION", "ontologies");
+  AjaxAction.call(this, "DELETE", "ONTOLOGY DELETION", "ontologies", false);
   this.setSelectedOntologies();
   this.setConfirmMsg("You are about to delete the following ontologies:" + this.getSelectedOntologiesForDisplay() + "<b>This action CAN NOT be undone!!! Are you sure?</b>");
 }
@@ -307,7 +326,7 @@ function ProcessOntologies(action) {
     index_search: "PROCESSING OF ONTOLOGY FOR SEARCH",
     run_metrics: "CALCULATION OF ONTOLOGY METRICS"
   };
-  AjaxAction.call(this, "PUT", actions[action], "ontologies", {actions: action});
+  AjaxAction.call(this, "PUT", actions[action], "ontologies", false, {actions: action});
   this.setSelectedOntologies();
   this.setConfirmMsg("You are about to perform " + actions[action] + " on the following ontologies:" + this.getSelectedOntologiesForDisplay() + "The ontologies will be added to the queue and processed on the next cron job execution.<br style='margin:10px 0;'/><b>Should I proceed?</b>");
 }
@@ -378,29 +397,53 @@ function setDateGenerated(data) {
   jQuery(".date_generated_button").text(buttonText).html();
 }
 
-function _showStatusMessages(success, errors) {
+function _showStatusMessages(success, errors, isAppendMode) {
   if (success.length > 0) {
-    jQuery("#success_message").text(success.join(", ")).html();
+    if (isAppendMode) {
+      var appendStr = (jQuery.trim(jQuery('#success_message').html()).length) ? ", " : ""
+      jQuery("#success_message").append(appendStr + success.join(", ")).html();
+    } else {
+      jQuery("#success_message").text(success.join(", ")).html();
+    }
     jQuery("#success_message").show();
   }
 
   if (errors.length > 0) {
-    jQuery("#error_message").text(errors.join(", ")).html();
+    if (isAppendMode) {
+      var appendStr = (jQuery.trim(jQuery('#error_message').html()).length) ? ", " : ""
+      jQuery("#error_message").append(appendStr + success.join(", ")).html();
+    } else {
+      jQuery("#error_message").text(success.join(", ")).html();
+    }
     jQuery("#error_message").show();
   }
 }
 
-function displayOntologies(data) {
+function displayOntologies(data, ontology) {
   var ontTable = null;
   var errors = [];
 
   if (jQuery.fn.dataTable.isDataTable('#adminOntologies')) {
-    allRows = populateOntologyRows(data);
     ontTable = jQuery('#adminOntologies').DataTable();
-    ontTable.clear();
-    ontTable.rows.add(allRows);
-    ontTable.draw();
-    setDateGenerated(data);
+
+    if (ontology === DUMMY_ONTOLOGY) {
+      // refreshing entire table
+      allRows = populateOntologyRows(data);
+      ontTable.clear();
+      ontTable.rows.add(allRows);
+      ontTable.draw();
+      setDateGenerated(data);
+    } else {
+      // refreshing individual row
+      var jQueryRow = jQuery("#tr_" + ontology);
+      var row = ontTable.row(jQueryRow);
+      var rowData = {ontologies: {}};
+      rowData["ontologies"][ontology] = data["ontologies"][ontology];
+      allRows = populateOntologyRows(rowData);
+      row.data(allRows[0]);
+      row.invalidate().draw();
+      jQueryRow.removeClass('selected');
+    }
   } else {
     ontTable = jQuery("#adminOntologies").DataTable({
       "ajax": {
@@ -420,7 +463,7 @@ function displayOntologies(data) {
       },
       "initComplete": function(settings, json) {
         if (json.errors) {
-          _showStatusMessages([], [json.errors]);
+          _showStatusMessages([], [json.errors], false);
         }
         setDateGenerated(json);
         // Keep header at top of table even when scrolling
@@ -496,7 +539,7 @@ function showSubmissions(ev, acronym) {
 
 jQuery(document).ready(function() {
   // display ontologies table on load
-  displayOntologies({});
+  displayOntologies({}, DUMMY_ONTOLOGY);
 
   // make sure facebox window is empty before populating it
   // otherwise ajax requests stack up and you see more than
