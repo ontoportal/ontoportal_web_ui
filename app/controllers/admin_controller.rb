@@ -150,7 +150,7 @@ class AdminController < ApplicationController
         response[:errors] << "Ontology #{ont} was not found in the system"
       end
     rescue Exception => e
-      response[:errors] << "Problem deleting submission #{params["id"]} for ontology #{ont} - #{e.message}"
+      response[:errors] << "Problem deleting submission #{params["id"]} for ontology #{ont} - #{e.class}: #{e.message}"
     end
     render :json => response
   end
@@ -234,7 +234,13 @@ class AdminController < ApplicationController
             response[:errors] << "Ontology #{ont} was not found in the system, "
           end
         rescue Exception => e
-          response[:errors] << "Problem #{error_keyword} ontology #{ont} - #{e.class}: #{e.message}, "
+          response[:errors] << "Problem #{error_keyword} ontology #{ont} - #{e.class}: #{e.message}, #{e.backtrace.join("\n\t")}"
+
+
+          # puts "#{e.class}: #{e.message}\n#{e.backtrace.join("\n\t")}"
+
+
+
         end
       end
       response[:success] = response[:success][0...-2] unless response[:success].empty?
