@@ -479,39 +479,39 @@ function displayOntologies(data, ontology) {
           "targets": 0,
           "searchable": true,
           "title": "Acronym",
-          "width": "9%"
+          "width": "11%"
         },
 
         {
           "targets": 1,
           "searchable": true,
           "title": "Update Date",
-          "width": "9%"
+          "width": "11%"
         },
         {
           "targets": 2,
           "searchable": false,
           "orderable": false,
           "title": "URL",
-          "width": "9%"
+          "width": "11%"
         },
         {
           "targets": 3,
           "searchable": true,
           "title": "Error Status",
-          "width": "10%"
+          "width": "12%"
         },
         {
           "targets": 4,
           "searchable": true,
           "title": "Missing Status",
-          "width": "10%"
+          "width": "12%"
         },
         {
           "targets": 5,
           "searchable": true,
           "title": "Issues",
-          "width": "53%"
+          "width": "43%"
         },
         {
           "targets": 6,
