@@ -485,7 +485,7 @@ function displayOntologies(data, ontology) {
         {
           "targets": 1,
           "searchable": true,
-          "title": "Update Date",
+          "title": "Report Date",
           "width": "11%"
         },
         {
