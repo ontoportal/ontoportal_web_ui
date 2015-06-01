@@ -392,11 +392,15 @@ function populateOntologyRows(data) {
   return allRows;
 }
 
-function setDateGenerated(data) {
+function isDateGeneratedSet(data) {
   var dateRe = /^\d{2}\/\d{2}\/\d{4}\s\d{2}:\d{2}\w{2}$/i;
+  return dateRe.test(data.date_generated);
+}
+
+function setDateGenerated(data) {
   var buttonText = "Generate";
 
-  if (dateRe.test(data.date_generated)) {
+  if (isDateGeneratedSet(data)) {
     buttonText = "Refresh";
   }
   jQuery(".date_generated").text(data.date_generated).html();
@@ -467,7 +471,7 @@ function displayOntologies(data, ontology) {
         }
       },
       "initComplete": function(settings, json) {
-        if (json.errors) {
+        if (json.errors && isDateGeneratedSet(data)) {
           _showStatusMessages([], [json.errors], false);
         }
         setDateGenerated(json);
