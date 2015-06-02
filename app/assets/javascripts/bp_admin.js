@@ -377,7 +377,8 @@ function populateOntologyRows(data) {
     if (ontology["logFilePath"] != '') {
       bpLinks += "<a href='" + BP_CONFIG.ui_url + "/admin/ontologies/" + acronym + "/log' target='_blank'>Log</a> | ";
     }
-    bpLinks += "<a href='" + BP_CONFIG.rest_url + "/ontologies/" + acronym + "' target='_blank'>REST</a> | <a href='" + BP_CONFIG.ui_url + "/ontologies/" + acronym + "' target='_blank'>BioPortal</a>";
+    bpLinks += "<a href='" + BP_CONFIG.rest_url + "/ontologies/" + acronym + "?apikey=" + jQuery(document).data().bp.config.apikey + "&userapikey: " + jQuery(document).data().bp.config.userapikey + "' target='_blank'>REST</a> | ";
+    bpLinks += "<a href='" + BP_CONFIG.ui_url + "/ontologies/" + acronym + "' target='_blank'>BioPortal</a>";
     var errStatus = ontology["errErrorStatus"] ? ontology["errErrorStatus"].join(", ") : '';
     var missingStatus = ontology["errMissingStatus"] ? ontology["errMissingStatus"].join(", ") : '';
 
@@ -546,6 +547,16 @@ function showSubmissions(ev, acronym) {
   jQuery.facebox({ ajax: BP_CONFIG.ui_url + "/admin/ontologies/" + acronym + "/submissions" });
 }
 
+function showOntologiesToggleLinks(problemOnly) {
+  var str = 'View Ontologies:&nbsp;&nbsp;&nbsp;&nbsp;';
+  if (problemOnly) {
+    str += '<a id="show_all_ontologies_action" href="javascript:;">All</a> | <strong>Problem Only</strong>';
+  } else {
+    str += '<strong>All</strong> | <a id="show_problem_only_ontologies_action" href="javascript:;">Problem Only</a>';
+  }
+  return str;
+}
+
 jQuery(document).ready(function() {
   // display ontologies table on load
   displayOntologies({}, DUMMY_ONTOLOGY);
@@ -569,7 +580,7 @@ jQuery(document).ready(function() {
     jQuery('#facebox_overlay').unbind('click');
   });
 
-  jQuery("div.ontology_nav").html('<span class="toggle-row-display">View Ontologies:&nbsp;&nbsp;&nbsp;&nbsp;<a id="show_all_ontologies_action" href="javascript:;"">All</a> | <a id="show_problem_only_ontologies_action" href="javascript:;">Problem Only</a></span><span style="padding-left:30px;">Apply to Selected Rows:&nbsp;&nbsp;&nbsp;&nbsp;<select id="admin_action" name="admin_action"><option value="">Please Select</option><option value="delete">Delete</option><option value="all">Process</option><option value="process_annotator">Annotate</option><option value="diff">Diff</option><option value="index_search">Index</option><option value="run_metrics">Metrics</option></select>&nbsp;&nbsp;&nbsp;&nbsp;<a class="link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" href="javascript:;" id="admin_action_submit"><span class="ui-button-text">Go</span></a></span>');
+  jQuery("div.ontology_nav").html('<span class="toggle-row-display">' + showOntologiesToggleLinks(problemOnly) + '</span><span style="padding-left:30px;">Apply to Selected Rows:&nbsp;&nbsp;&nbsp;&nbsp;<select id="admin_action" name="admin_action"><option value="">Please Select</option><option value="delete">Delete</option><option value="all">Process</option><option value="process_annotator">Annotate</option><option value="diff">Diff</option><option value="index_search">Index</option><option value="run_metrics">Metrics</option></select>&nbsp;&nbsp;&nbsp;&nbsp;<a class="link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" href="javascript:;" id="admin_action_submit"><span class="ui-button-text">Go</span></a></span>');
 
   // toggle between all and problem ontologies
   jQuery.fn.dataTable.ext.search.push(
@@ -584,7 +595,10 @@ jQuery(document).ready(function() {
 
   // for toggling between all and problem ontologies
   jQuery(".toggle-row-display a").live("click", function() {
+    toggleShow(!problemOnly);
     jQuery("#adminOntologies").DataTable().draw();
+    str = showOntologiesToggleLinks(problemOnly);
+    jQuery(".toggle-row-display").html(str);
     return false;
   });
 
@@ -608,16 +622,6 @@ jQuery(document).ready(function() {
   // onclick action for "Reset Memcache Connection" button
   jQuery("#reset_memcache_connection_action").click(function() {
     ResetMemcacheConnection.act();
-  });
-
-  // onclick action for "Show All Ontologies" link
-  jQuery("#show_all_ontologies_action").click(function() {
-    toggleShow(false);
-  });
-
-  // onclick action for "Show Problem Only Ontologies" link
-  jQuery("#show_problem_only_ontologies_action").click(function() {
-    toggleShow(true);
   });
 
   // onclick action for "Refresh Report" link
