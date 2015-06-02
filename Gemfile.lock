@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: a3fbe54bfca080e7aea2f94daf174c4790f7c7c6
+  revision: e0fc2629b179ea85352900bc21978cf3866baae0
   branch: staging
   specs:
     ontologies_api_client (0.0.6)
@@ -186,7 +186,7 @@ GEM
       tilt (~> 1.1)
     slop (3.6.0)
     spawnling (2.1.6)
-    sprockets (3.1.0)
+    sprockets (3.2.0)
       rack (~> 1.0)
     sprockets-rails (2.3.1)
       actionpack (>= 3.0)
