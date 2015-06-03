@@ -581,10 +581,15 @@ jQuery(document).ready(function() {
   });
 
   jQuery("div.ontology_nav").html('<span class="toggle-row-display">' + showOntologiesToggleLinks(problemOnly) + '</span><span style="padding-left:30px;">Apply to Selected Rows:&nbsp;&nbsp;&nbsp;&nbsp;<select id="admin_action" name="admin_action"><option value="">Please Select</option><option value="delete">Delete</option><option value="all">Process</option><option value="process_annotator">Annotate</option><option value="diff">Diff</option><option value="index_search">Index</option><option value="run_metrics">Metrics</option></select>&nbsp;&nbsp;&nbsp;&nbsp;<a class="link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" href="javascript:;" id="admin_action_submit"><span class="ui-button-text">Go</span></a></span>');
+  var allowOntologiesFilter = ['adminOntologies'];
 
   // toggle between all and problem ontologies
   jQuery.fn.dataTable.ext.search.push(
     function(settings, data, dataIndex) {
+      if (jQuery.inArray(settings.nTable.getAttribute('id'), allowOntologiesFilter) === -1 ) {
+        return true;
+      }
+
       var row = settings.aoData[dataIndex].nTr;
       if (!problemOnly || row.classList.contains("problem") || data[data.length - 1] === "true") {
         return true;
