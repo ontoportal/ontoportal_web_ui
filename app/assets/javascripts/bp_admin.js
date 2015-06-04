@@ -90,6 +90,7 @@ AjaxAction.prototype._ajaxCall = function() {
       deferredObj.resolve();
     }
     promises.push(deferredObj);
+    var errorState = false;
 
     var req = jQuery.ajax({
       method: self.httpMethod,
@@ -100,8 +101,13 @@ AjaxAction.prototype._ajaxCall = function() {
         var reg = /\s*,\s*/g;
 
         if (data.errors) {
+          errorState = true;
           var err = data.errors.replace(reg, ',');
           errors.push.apply(errors, err.split(","));
+
+          if (deferredObj.state() === "pending") {
+            deferredObj.resolve();
+          }
         }
 
         if (data.success) {
@@ -115,13 +121,13 @@ AjaxAction.prototype._ajaxCall = function() {
         self.showStatusMessages(success, errors, false);
       },
       error: function(request, textStatus, errorThrown) {
+        errorState = true;
         errors.push(request.status + ": " + errorThrown);
         self.showStatusMessages(success, errors, false);
       },
       complete: function(request, textStatus) {
-        if (ontology != DUMMY_ONTOLOGY && !self.isLongOperation) {
-          var jQueryRow = jQuery("#tr_" + ontology);
-          jQueryRow.removeClass('selected');
+        if (errorState || !self.isLongOperation) {
+          self.removeSelectedRow(ontology);
         }
       }
     });
@@ -133,6 +139,13 @@ AjaxAction.prototype._ajaxCall = function() {
     jQuery("#progress_message").hide();
     jQuery("#progress_message").html("");
   });
+};
+
+AjaxAction.prototype.removeSelectedRow = function(ontology) {
+  if (ontology != DUMMY_ONTOLOGY) {
+    var jQueryRow = jQuery("#tr_" + ontology);
+    jQueryRow.removeClass('selected');
+  }
 };
 
 AjaxAction.prototype.ajaxCall = function() {
@@ -196,7 +209,6 @@ AjaxAction.prototype.onSuccessAction = function(data, ontology, deferredObj) {
             if (ontology === DUMMY_ONTOLOGY) {
               success[0] = self.operation + " completed in " + millisToMinutesAndSeconds(tm);
             } else {
-              //var msgStr = self.ontologies.join(", ");
               success[0] = self.operation + " for " + ontology + " completed in " + millisToMinutesAndSeconds(tm);
             }
             self.onSuccessActionLongOperation(data, ontology);
@@ -212,7 +224,7 @@ AjaxAction.prototype.onSuccessAction = function(data, ontology, deferredObj) {
         done.push(ontology);
         clearInterval(timer);
         errors.push(request.status + ": " + errorThrown);
-        deferredObj.reject();
+        deferredObj.resolve();
         self.showStatusMessages(success, errors, true);
       }
     });
@@ -378,9 +390,9 @@ function populateOntologyRows(data) {
     var dateUpdated = ontology["date_updated"];
 
     if (ontology["logFilePath"] != '') {
-      bpLinks += "<a href='" + BP_CONFIG.ui_url + "/admin/ontologies/" + acronym + "/log' target='_blank'>Log</a> | ";
+      bpLinks += "<a href='" + BP_CONFIG.ui_url + "/admin/ontologies/" + acronym + "/log' target='_blank'>Log</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
     }
-    bpLinks += "<a href='" + BP_CONFIG.rest_url + "/ontologies/" + acronym + "?apikey=" + BP_CONFIG.apikey + "&userapikey: " + BP_CONFIG.userapikey + "' target='_blank'>REST</a> | ";
+    bpLinks += "<a href='" + BP_CONFIG.rest_url + "/ontologies/" + acronym + "?apikey=" + BP_CONFIG.apikey + "&userapikey: " + BP_CONFIG.userapikey + "' target='_blank'>REST</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
     bpLinks += "<a id='link_submissions_" + acronym + "' href='javascript:;' onclick='showSubmissions(event, \"" + acronym + "\")'>Submissions</a>";
 
     var errStatus = ontology["errErrorStatus"] ? ontology["errErrorStatus"].join(", ") : '';
@@ -487,40 +499,39 @@ function displayOntologies(data, ontology) {
         {
           "targets": 0,
           "searchable": true,
-          "title": "Acronym",
-          "width": "11%"
+          "title": "Ontology",
+          "width": "160px"
         },
 
         {
           "targets": 1,
           "searchable": true,
           "title": "Report Date",
-          "width": "11%"
+          "width": "110px"
         },
         {
           "targets": 2,
           "searchable": false,
           "orderable": false,
           "title": "URL",
-          "width": "13%"
+          "width": "140px"
         },
         {
           "targets": 3,
           "searchable": true,
           "title": "Error Status",
-          "width": "12%"
+          "width": "130px"
         },
         {
           "targets": 4,
           "searchable": true,
           "title": "Missing Status",
-          "width": "12%"
+          "width": "130px"
         },
         {
           "targets": 5,
           "searchable": true,
-          "title": "Issues",
-          "width": "41%"
+          "title": "Issues"
         },
         {
           "targets": 6,
@@ -555,9 +566,9 @@ function showSubmissions(ev, acronym) {
 function showOntologiesToggleLinks(problemOnly) {
   var str = 'View Ontologies:&nbsp;&nbsp;&nbsp;&nbsp;';
   if (problemOnly) {
-    str += '<a id="show_all_ontologies_action" href="javascript:;">All</a> | <strong>Problem Only</strong>';
+    str += '<a id="show_all_ontologies_action" href="javascript:;">All</a>&nbsp;&nbsp;|&nbsp;&nbsp;<strong>Problem Only</strong>';
   } else {
-    str += '<strong>All</strong> | <a id="show_problem_only_ontologies_action" href="javascript:;">Problem Only</a>';
+    str += '<strong>All</strong>&nbsp;&nbsp;|&nbsp;&nbsp;<a id="show_problem_only_ontologies_action" href="javascript:;">Problem Only</a>';
   }
   return str;
 }
