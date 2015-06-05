@@ -380,7 +380,7 @@ function performActionOnOntologies() {
 function populateOntologyRows(data) {
   var ontologies = data.ontologies;
   var allRows = [];
-  var hideFields = ["date_updated", "errErrorStatus", "errMissingStatus", "problem", "logFilePath"];
+  var hideFields = ["format", "date_updated", "errErrorStatus", "errMissingStatus", "problem", "logFilePath"];
 
   for (var acronym in ontologies) {
     var errorMessages = [];
