@@ -3,7 +3,10 @@ class ErrorsController < ApplicationController
   layout 'ontology'
 
   def show
-  	@exception = env["action_dispatch.exception"]
-    render action: request.path[1..-1]
+  	# Use this variable in the views to access detailed error information.
+    @exception = env["action_dispatch.exception"]
+    
+    status_code = request.path[1..-1]
+    render action: status_code
   end  
 end
