@@ -42,8 +42,8 @@ BioportalWebUi::Application.routes.draw do
   get '/help' => 'home#help'
   get '/robots.txt' => 'home#robots'
   get '/site_config' => 'home#site_config'
-  match '/validate_ontology_file' => 'home#validate_ontology_file', via: [:get, :post]
   get '/validate_ontology_file' => 'home#validate_ontology_file_show'
+  match '/validate_ontology_file' => 'home#validate_ontology_file', via: [:get, :post]
   get '/layout_partial/:partial' => 'home#render_layout_partial'
   
   # Analytics endpoint
