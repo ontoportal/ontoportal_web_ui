@@ -1,12 +1,4 @@
 GIT
-  remote: https://github.com/ncbo/ncbo_resolver.git
-  revision: 67989c445e53e019b3b3fa4905e0aa9d519df0ed
-  specs:
-    ncbo_resolver (0.0.1)
-      recursive-open-struct
-      redis
-
-GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
   revision: 48516c6e81b518bbfec5ff23d075a08f7afd8755
   branch: staging
@@ -133,7 +125,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    rack (1.6.2)
+    rack (1.6.4)
     rack-mini-profiler (0.9.3)
       rack (>= 1.1.3)
     rack-test (0.6.3)
@@ -171,8 +163,6 @@ GEM
     rdoc (4.2.0)
       json (~> 1.4)
     recaptcha (0.4.0)
-    recursive-open-struct (0.6.4)
-    redis (3.2.1)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
@@ -229,7 +219,6 @@ DEPENDENCIES
   memcache-client (~> 1.8.5)
   multi_json
   mysql (~> 2.9.1)
-  ncbo_resolver!
   oj
   ontologies_api_client!
   pry
