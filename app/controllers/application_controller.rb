@@ -106,7 +106,7 @@ class ApplicationController < ActionController::Base
     # For config settings, see
     # config/bioportal_config.rb
     # config/initializers/ontologies_api_client.rb
-    {
+    config = {
         org: $ORG,
         org_url: $ORG_URL,
         site: $SITE,
@@ -116,7 +116,9 @@ class ApplicationController < ActionController::Base
         userapikey: get_apikey,
         rest_url: LinkedData::Client.settings.rest_url,
         biomixer_url: $BIOMIXER_URL
-    }.to_json
+    }
+    config[:ncbo_slice] = @subdomain_filter[:acronym] if (@subdomain_filter[:active] && !@subdomain_filter[:acronym].empty?)
+    config.to_json
   end
 
   def remote_file_exists?(url)
