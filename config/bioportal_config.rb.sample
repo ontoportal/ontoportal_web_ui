@@ -57,10 +57,6 @@ $ANALYTICS_ID = ""
 # A user id for user 'anonymous' for use when a user is required for an action on the REST service but you don't want to require a user to login
 $ANONYMOUS_USER = 0
 
-# Redis server to use for NCBO::Resolver
-$REDIS_HOST = ""
-$REDIS_PORT = 6379
-
 # Cube metrics reporting
 $ENABLE_CUBE = false
 $CUBE_HOST = "localhost"

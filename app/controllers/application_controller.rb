@@ -224,13 +224,7 @@ class ApplicationController < ActionController::Base
     not_found unless acronym
     if class_view
       @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym).first
-      concept = get_class(params).first
-      if concept.nil?
-        uri = BPIDResolver.uri_from_short_id(acronym, params[:conceptid])
-        params[:conceptid] = uri if uri
-      else
-        uri = concept.id.to_s
-      end
+      concept = get_class(params).first.to_s
       redirect_to "/ontologies/#{acronym}?p=classes#{params_string_for_redirect(params, prefix: "&")}", :status => :moved_permanently
     else
       redirect_to "/ontologies/#{acronym}#{params_string_for_redirect(params)}", :status => :moved_permanently
@@ -241,11 +235,6 @@ class ApplicationController < ActionController::Base
     params = @_params
     if params[:ontology] && params[:ontology].to_i > 0
       params[:ontology] = BPIDResolver.id_to_acronym(params[:ontology])
-    end
-
-    if params[:ontology] && params[:conceptid] && !params[:conceptid].start_with?("http")
-      uri = BPIDResolver.uri_from_short_id(params[:ontology], params[:conceptid])
-      params[:conceptid] = uri if uri
     end
 
     params
