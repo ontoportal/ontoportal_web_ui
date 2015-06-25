@@ -49,56 +49,13 @@
           %table
             %tr
               %td{:nowrap => ""}
-                %input.greyed{:name => "query", :onclick => "greybox(this)", :size => "30", :style => "width:190px;", :type => "text", :value => "Enter concept, e.g. Melanoma"}/
-                = submit_tag 'Search',:class=>'home_button'
-            %tr
-              %td{:style => "padding-left:15px"}
-                %a{:href => "/search?opt=advanced"} Advanced Search
-    %td{:valign => "top", :width => "33%"}
-      %fieldset
-        %legend Find an ontology
-        %table
-          %tr
-            %td{:nowrap => ""}
-              %input#find_ontology.home_input.greyed{:name => "ontology", :onclick => "greybox(this)", :size => "30", :style => "width:240px;", :type => "text", :value => "Enter ontology name, e.g. NCI Thesaurus"}/
-              %input.home_button{:onclick => "jumpToValueOntology()", :type => "button", :value => "Explore"}/
-              %input#find_ontology_id{:type => "hidden"}/
-          - if at_slice?
-            %tr
-              %td &nbsp;
-          - else
-            %tr
-              %td{:style => "padding-left:15px;height:10px;"}
-                %ul.sf-menu.sf-vertical
-                  %li
-                    %a{:href => "#", :style => "white-space:nowrap;background:#fff;border:1px solid #fff;text-decoration:underline;padding:0px;"} Browse Ontologies >
-                    %ul
-                      %li
-                        %a{:href => "/ontologies"} All
-                      - @groups.to_a.each do |group|
-                        %li
-                          %a{:href => "/ontologies?filter=#{CGI.escape(group[:acronym])}"}= group[:name]
-    %td{:valign => "top", :width => "33%"}
-      %fieldset
-        %legend Search resources
-        %table
-          %tr
-            %td{:nowrap => ""}
-              %input#find_resource.greyed{:onclick => "greybox(this)", :size => "30", :style => "width:240px;", :type => "text", :value => "Enter a concept, e.g. Melanoma"}/
-              %input.home_button{:onclick => "jumpToValueResource()", :type => "button", :value => "Search"}/
-          %tr
-            %td{:style => "padding-left:15px"}
-              %a{:href => "/resource_index"} Advanced Resource Search
-  %tr
-    %td{:valign => "top"}
-      %fieldset{style: "display: none;"}
-        %legend
-          Ontology Visits #{"in full #{$SITE} " if at_slice?} (#{@analytics.date.strftime("%B %Y")})
-        %table.minimal.align-right{width: "100%"}
-          %tbody
-            -@analytics.onts[0..4].each do |visits|
-              -ont = @ontologies_hash[visits[:ont].to_s]
-              -next if ont.nil?
+                %input#find_ontology.home_input.greyed{:name => "ontology", :onclick => "greybox(this)", :size => "30", :style => "width:240px;", :type => "text", :value => "Enter ontology name, e.g. NCI Thesaurus"}/
+                %input.home_button{:onclick => "jumpToValueOntology()", :type => "button", :value => "Explore"}/
+                %input#find_ontology_id{:type => "hidden"}/
+            - if at_slice?
+              %tr
+                %td &nbsp;
+            - else
               %tr
                 %td{:style => "padding-left:15px;height:10px;"}
                   %ul.sf-menu.sf-vertical
@@ -242,7 +199,7 @@
                     - LOG.add :error, e.message, e.backtrace.join("\n\t")
                     - LOG.add :error, "Recent mapping: #{map.id}, classes: #{map.classes.map {|c| "#{c.ontology.acronym} #{c.id}" }.join(', ')}"
                     - next
-%div{style: "padding: 3.5em 0 0; text-align: center; position: bottom"}
+%div{style: "padding: 3.5em 0 0; text-align: center;"}
   %img{src: "http://www.bioontology.org/sites/all/themes/bioontology/logo.png"}
   %img{src: "/images/logo_lirmm.png"}
   %img{src: "/images/ibc_logo.png"}
