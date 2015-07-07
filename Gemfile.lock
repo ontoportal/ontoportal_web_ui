@@ -86,7 +86,6 @@ GEM
     dalli (2.7.4)
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
-    duktape (1.2.1.0)
     erubis (2.7.0)
     excon (0.45.3)
     execjs (2.5.2)
@@ -226,7 +225,6 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   cube-ruby
   dalli
-  duktape
   flamegraph
   haml (~> 4.0.0)
   hpricot (~> 0.8.6)

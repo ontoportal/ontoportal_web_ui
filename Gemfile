@@ -8,7 +8,7 @@ gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '>= 1.0.3'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
-gem 'duktape'
+# gem 'duktape'
 
 gem 'jquery-ui-rails'
 gem 'jquery-rails'
@@ -18,10 +18,6 @@ gem 'jquery-rails'
 
 # To use Jbuilder templates for JSON
 # gem 'jbuilder'
-
-
-# Deploy with Capistrano
-# gem 'capistrano'
 
 # To use debugger
 # gem 'debugger'
@@ -55,7 +51,7 @@ gem 'logstash-logger'
 
 gem 'ontologies_api_client', :git => "https://github.com/ncbo/ontologies_api_ruby_client.git", branch: "staging"
 
-group :development do
+#group :development do
     #Capistrano
     gem 'capistrano', '~> 3.4.0', require: false
     # rails specific capistrano funcitons
@@ -64,4 +60,4 @@ group :development do
     gem 'capistrano-bundler', require: false
     # passenger reload
     gem 'capistrano-passenger', require: false
-end
+#end
