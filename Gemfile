@@ -19,8 +19,6 @@ gem 'jquery-rails'
 # To use Jbuilder templates for JSON
 # gem 'jbuilder'
 
-# Use unicorn as the app server
-gem 'unicorn'
 
 # Deploy with Capistrano
 # gem 'capistrano'
@@ -57,3 +55,13 @@ gem 'logstash-logger'
 
 gem 'ontologies_api_client', :git => "https://github.com/ncbo/ontologies_api_ruby_client.git", branch: "staging"
 
+group :development do
+    #Capistrano
+    gem 'capistrano', '~> 3.4.0', require: false
+    # rails specific capistrano funcitons
+    gem 'capistrano-rails', '~> 1.1.0', require: false
+    # integrate bundler with capistrano
+    gem 'capistrano-bundler', require: false
+    # passenger reload
+    gem 'capistrano-passenger', require: false
+end
