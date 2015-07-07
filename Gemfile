@@ -48,6 +48,9 @@ gem 'multi_json'
 gem 'rails_autolink'
 gem 'dalli'
 
+# application monitoring
+gem 'newrelic_rpm'
+
 #logs in json format, useful for shipping logs to logstash
 gem 'rackstash', git: "https://github.com/planio-gmbh/rackstash.git"
 gem 'logstash-logger'
