@@ -50,17 +50,15 @@ set :passenger_restart_with_touch, true
 namespace :deploy do
 
   desc 'Incorporate the bioportal_conf private repository content'
-  #Get cofiguration from repo if ENV NCBO_CONFIG_REPO is set 
+  #Get cofiguration from repo if PRIVATE_CONFIG_REPO is set 
   #(should be set to NCBO private config repo)
   task :get_config do
-    if ENV.include?('NCBO_CONFIG_REPO') 
-       PRIVATE_REPO = ENV['NCBO_CONFIG_REPO'] 
-       CONFIG_PATH = "/tmp/#{SecureRandom.hex(15)}"
+     if defined?(PRIVATE_CONFIG_REPO)
+       TMP_CONFIG_PATH = "/tmp/#{SecureRandom.hex(15)}"
        on roles(:web) do
-          execute "git clone -q #{PRIVATE_REPO} #{CONFIG_PATH}"
-          #execute "rsync -av #{CONFIG_PATH}/#{fetch(:application)}/ #{fetch(:deploy_to)}/shared"
-          execute "rsync -av #{CONFIG_PATH}/#{fetch(:application)}/ #{release_path}/"
-          execute "rm -rf #{CONFIG_PATH}"
+          execute "git clone -q #{PRIVATE_CONFIG_REPO} #{TMP_CONFIG_PATH}"
+          execute "rsync -av #{TMP_CONFIG_PATH}/#{fetch(:application)}/ #{release_path}/"
+          execute "rm -rf #{TMP_CONFIG_PATH}"
       end
     end
   end
