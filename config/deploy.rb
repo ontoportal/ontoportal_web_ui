@@ -9,8 +9,6 @@ set :repo_url, "git@github.com:ncbo/#{fetch(:application)}.git"
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
-NCBO_BRANCH = ENV.include?('NCBO_BRANCH') ? ENV['NCBO_BRANCH'] : 'staging'
-set :branch, "#{NCBO_BRANCH}"
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, "/srv/rails/#{fetch(:application)}"
@@ -28,10 +26,11 @@ set :deploy_to, "/srv/rails/#{fetch(:application)}"
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/bioportal_config.rb config/database.yml public/robots.txt config/newrelic.yml}
+#set :linked_files, %w{config/bioportal_config.rb config/database.yml public/robots.txt config/newrelic.yml}
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{bin log tmp/pids tmp/cache public/system public/assets config/locales}
+#set :linked_dirs, %w{bin log tmp/pids tmp/cache public/system public/assets config/locales}
+set :linked_dirs, %w{bin log tmp/pids tmp/cache public/system public/assets}
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -59,12 +58,9 @@ namespace :deploy do
        CONFIG_PATH = "/tmp/#{SecureRandom.hex(15)}"
        on roles(:web) do
           execute "git clone -q #{PRIVATE_REPO} #{CONFIG_PATH}"
-          execute "rsync -av #{CONFIG_PATH}/#{fetch(:application)}/ #{fetch(:deploy_to)}/shared"
+          #execute "rsync -av #{CONFIG_PATH}/#{fetch(:application)}/ #{fetch(:deploy_to)}/shared"
+          execute "rsync -av #{CONFIG_PATH}/#{fetch(:application)}/ #{release_path}/"
           execute "rm -rf #{CONFIG_PATH}"
-          ## Modify the bioportal_config.rb file for DEPLOY_TARGET on the remote system
-#	  cfg_file = File.join(release_path, "config", "bioportal_config.rb")
-#	  sed_cmd = "\'s/^deploy_target =.*/deploy_target = \"#{DEPLOY_TARGET}\"/\'"
-#	  execute "sed -i -e #{sed_cmd} #{cfg_file}"
       end
     end
   end
@@ -77,7 +73,8 @@ namespace :deploy do
     end
   end
 
-  before :started, :get_config
+  #before :started, :get_config
+  after :updating, :get_config
   after :publishing, :restart
 
   after :restart, :clear_cache do
