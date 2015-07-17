@@ -60,7 +60,7 @@
   - if !got_internal_mappings
     %tr
       %td{:class => 'delete_mappings_column', :style => "display: none;"}
-      %td{:colspan => "3"} There are currently no mappings for this class.
+      %td{:colspan => "3"} There are currently internal no mappings for this class.
 
 %br
 %h2 Interportal mappings
@@ -101,7 +101,7 @@
   - if !got_interportal_mappings
     %tr
       %td{:class => 'delete_mappings_column', :style => "display: none;"}
-      %td{:colspan => "3"} There are currently no mappings for this class.
+      %td{:colspan => "3"} There are currently no interportal mappings for this class.
 
 %br
 %h2 External mappings
@@ -142,7 +142,7 @@
   - if got_external_mappings == false
     %tr
       %td{:class => 'delete_mappings_column', :style => "display: none;"}
-      %td{:colspan => "3"} There are currently no mappings for this class.
+      %td{:colspan => "3"} There are currently no external mappings for this class.
 
 :javascript
   jQuery(document).ready(function(){
