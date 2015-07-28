@@ -13,12 +13,16 @@
           %tr
             - cls = map.classes.shift
             %td
-              -#{link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>".html_safe, :controller => 'visualize', :action => 'virtual', :id => cls.explore.ontology.acronym, :conceptid => cls.id}
-              #{link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>".html_safe, :controller => 'visualize', :action => 'virtual', :id => cls.id, :conceptid => cls.id}
+              - if cls.links["self"].to_s.start_with?(LinkedData::Client.settings.rest_url)
+                #{link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>".html_safe, :controller => 'visualize', :action => 'virtual', :id => cls.explore.ontology.acronym, :conceptid => cls.id}
+              - else
+                #{raw("<a href='#{cls.links["self"]}'>#{cls.id}</a>")}
             - cls = map.classes.shift
             %td
-              -#{link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>".html_safe, :controller => 'visualize', :action => 'virtual', :id => cls.explore.ontology.acronym, :conceptid => cls.id}
-              #{link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>".html_safe, :controller => 'visualize', :action => 'virtual', :id => cls.id, :conceptid => cls.id}
+              - if cls.links["self"].to_s.start_with?(LinkedData::Client.settings.rest_url)
+                #{link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>".html_safe, :controller => 'visualize', :action => 'virtual', :id => cls.explore.ontology.acronym, :conceptid => cls.id}
+              - else
+                #{raw("<a href='#{cls.links["self"]}'>#{cls.id}</a>")}
             %td
               #{map.source} #{(map.process || {})[:source_name]}
     = will_paginate @page_results, :update => 'mappings', :params => { :target => params[:target] }
