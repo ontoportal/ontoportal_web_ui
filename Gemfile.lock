@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 48516c6e81b518bbfec5ff23d075a08f7afd8755
+  revision: c4b27c971ca266f4f4df660e64fce458dceb8d31
   branch: staging
   specs:
     ontologies_api_client (0.0.6)
@@ -175,7 +175,6 @@ GEM
     rake-compiler (0.9.5)
       rake
     rdoc (4.2.0)
-      json (~> 1.4)
     recaptcha (0.4.0)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -251,3 +250,6 @@ DEPENDENCIES
   stackprof
   uglifier (>= 1.0.3)
   will_paginate (~> 3.0)
+
+BUNDLED WITH
+   1.10.6
