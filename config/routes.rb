@@ -16,7 +16,7 @@ BioportalWebUi::Application.routes.draw do
 
   resources :concepts
 
-  resources :ontologies do 
+  resources :ontologies do
     resources :submissions
   end
 
@@ -35,7 +35,7 @@ BioportalWebUi::Application.routes.draw do
   resources :virtual_appliance
 
   get '' => 'home#index'
-  
+
   # Top-level pages
   get '/feedback' => 'home#feedback'
   get '/account' => 'home#account'
@@ -45,7 +45,7 @@ BioportalWebUi::Application.routes.draw do
   get '/validate_ontology_file' => 'home#validate_ontology_file_show'
   match '/validate_ontology_file' => 'home#validate_ontology_file', via: [:get, :post]
   get '/layout_partial/:partial' => 'home#render_layout_partial'
-  
+
   # Error pages
   match ':status', to: 'errors#show', constraints: {status: /\d{3}/}, via: :all
 
@@ -94,7 +94,7 @@ BioportalWebUi::Application.routes.draw do
   get '/logout' => 'login#destroy', :as => :logout
   get '/lost_pass' => 'login#lost_password'
   get '/reset_password' => 'login#reset_password'
-  get '/accounts/:id/custom_ontologies' => 'users#custom_ontologies', :as => :custom_ontologies
+  post '/accounts/:id/custom_ontologies' => 'users#custom_ontologies', :as => :custom_ontologies
   get '/login_as/:login_as' => 'login#login_as'
 
   # Resource Index
@@ -154,7 +154,7 @@ BioportalWebUi::Application.routes.draw do
 
   get '/flexviz/:ontologyid' => 'concepts#flexviz', :as => :flexviz, :constraints => { :ontologyid => /[^\/?]+/ }
   get '/exhibit/:ontology/:id' => 'concepts#exhibit'
-  
+
   # Virtual
   get '/virtual/:ontology' => 'concepts#virtual', :as => :virtual_ont, :constraints => { :ontology => /[^\/?]+/ }
   get '/virtual/:ontology/:conceptid' => 'concepts#virtual', :as => :virtual, :constraints => { :ontology => /[^\/?]+/, :conceptid => /[^\/?]+/ }
