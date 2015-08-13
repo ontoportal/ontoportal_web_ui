@@ -96,6 +96,7 @@ BioportalWebUi::Application.routes.draw do
   get '/reset_password' => 'login#reset_password'
   post '/accounts/:id/custom_ontologies' => 'users#custom_ontologies', :as => :custom_ontologies
   get '/login_as/:login_as' => 'login#login_as'
+  post '/login/send_pass', to: 'login#send_pass'
 
   # Resource Index
   get '/res_details/:id' => 'resources#details', :as => :obr_details
