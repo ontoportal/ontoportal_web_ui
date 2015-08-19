@@ -37,7 +37,7 @@ BioportalWebUi::Application.routes.draw do
   get '' => 'home#index'
 
   # Top-level pages
-  get '/feedback' => 'home#feedback'
+  match '/feedback', to: 'home#feedback', via: [:get, :post]
   get '/account' => 'home#account'
   get '/help' => 'home#help'
   get '/robots.txt' => 'home#robots'
