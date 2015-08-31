@@ -8,8 +8,7 @@ function updateMappingCount() {
   var rows = jQuery("#concept_mappings_table tbody tr"), mappings_count = 0;
   rows.each(function() {
     if (this.innerHTML.indexOf("currently no") < 0) {
-      console.log("mapping count: " + mappings_count);
-      mappings_count = mappings_count + 1;
+      mappings_count++;
     }
   });
   if (mappings_count === null) {
