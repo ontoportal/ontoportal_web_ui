@@ -38,7 +38,7 @@ function insertSampleText() {
 function get_annotations() {
   jQuery("#results_error").html("");
   jQuery("#annotator_error").html("");
-    
+
   // Validation
   if (jQuery("#annotation_text").val() === jQuery("#annotation_text").attr("title")) {
     jQuery("#annotator_error").html("Please enter text to annotate");
