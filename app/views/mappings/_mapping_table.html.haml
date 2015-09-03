@@ -87,7 +87,8 @@
         - next
       - if !map.process.nil? && map.process["name"] == "Interportal Mapping"
         -# In case this is an interportal mapping, getting cls and ontology informations directly from the cls object
-        - cls_link = raw("<a href='#{cls.links["self"]}' target='_blank'>#{cls.id}</a>")
+        - clsLabel = getPrefLabel(cls.links["self"])
+        - cls_link = raw("<a href='#{cls.links["self"]}' target='_blank'>#{clsLabel}</a>")
         - ont_acronym = cls.links['ontology']
         - ont_name = cls.links['ontology']
         - ont_link = cls.links['ontology']

@@ -25,4 +25,14 @@ module MappingsHelper
     end
   end
 
+  def getPrefLabel(class_uri)
+    json_class = JSON.parse(Net::HTTP.get(URI.parse("#{class_uri}?apikey=4a5011ea-75fa-4be6-8e89-f45c8c84844e")))
+    if !json_class["prefLabel"].nil?
+      prefLabel = json_class["prefLabel"]
+    else
+      prefLabel = nil
+    end
+    return prefLabel
+  end
+
 end
