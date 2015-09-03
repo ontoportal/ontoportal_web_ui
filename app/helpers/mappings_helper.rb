@@ -25,12 +25,23 @@ module MappingsHelper
     end
   end
 
-  def getPrefLabel(class_uri)
+  # method to get (using http) prefLabel for interportal classes
+  def getInterportalPrefLabel(class_uri)
     json_class = JSON.parse(Net::HTTP.get(URI.parse("#{class_uri}?apikey=4a5011ea-75fa-4be6-8e89-f45c8c84844e")))
     if !json_class["prefLabel"].nil?
       prefLabel = json_class["prefLabel"]
     else
       prefLabel = nil
+    end
+    return prefLabel
+  end
+
+  # method to extract the prefLabel from the external class URI
+  def getExternalPrefLabel(class_uri)
+    if class_uri.include? "#"
+      prefLabel = class_uri.split("#")[-1]
+    else
+      prefLabel = class_uri.split("/")[-1]
     end
     return prefLabel
   end
