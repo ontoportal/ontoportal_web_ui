@@ -45,11 +45,13 @@ module MappingsHelper
   # to get the apikey from the interportal instance of the interportal class.
   # The best way to know from which interportal instance the class came is to compare the UI url
   def getInterportalKey(class_ui_url)
-    INTERPORTAL_HASH.each do |key, value|
-      if class_ui_url.start_with?(value["ui"])
-        return value["apikey"]
-      else
-        return nil
+    if !INTERPORTAL_HASH.nil?
+      INTERPORTAL_HASH.each do |key, value|
+        if class_ui_url.start_with?(value["ui"])
+          return value["apikey"]
+        else
+          return nil
+        end
       end
     end
   end
