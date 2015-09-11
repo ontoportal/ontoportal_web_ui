@@ -17,7 +17,7 @@ module MappingsHelper
 
   # a little method that returns true if the URIs array contain a gold:translation or gold:freeTranslation
   def is_translation(relation_array)
-    begin
+    if relation_array.kind_of?(Array)
       relation_array.map!(&:downcase)
       if relation_array.include? "http://purl.org/linguistics/gold/translation"
         true
@@ -26,8 +26,8 @@ module MappingsHelper
       else
         false
       end
-    rescue => e
-      LOG.add :error, "Error while parsing the mapping relation array : #{e}!"
+    else
+      LOG.add :error, "Warning: Mapping relation is not an array"
       false
     end
   end
