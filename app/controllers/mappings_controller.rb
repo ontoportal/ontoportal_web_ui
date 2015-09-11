@@ -171,6 +171,25 @@ class MappingsController < ApplicationController
     end
   end
 
+  def new_external
+    @ontology_from = LinkedData::Client::Models::Ontology.find(params[:ontology_from])
+    @ontology_to = LinkedData::Client::Models::Ontology.find(params[:ontology_to])
+    @concept_from = @ontology_from.explore.single_class({full: true}, params[:conceptid_from]) if @ontology_from
+    @concept_to = @ontology_to.explore.single_class({full: true}, params[:conceptid_to]) if @ontology_to
+
+    # Defaults just in case nothing gets provided
+    @ontology_from ||= LinkedData::Client::Models::Ontology.new
+    @ontology_to ||= LinkedData::Client::Models::Ontology.new
+    @concept_from ||= LinkedData::Client::Models::Class.new
+    @concept_to ||= LinkedData::Client::Models::Class.new
+
+    if request.xhr? || params[:no_layout].eql?("true")
+      render :layout => false
+    else
+      render :layout => "ontology"
+    end
+  end
+
   # POST /mappings
   # POST /mappings.xml
   def create
