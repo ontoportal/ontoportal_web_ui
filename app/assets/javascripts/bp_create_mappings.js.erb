@@ -35,7 +35,18 @@ jQuery(document).ready(function() {
     }
   });
 
-  // Reset mapping UI when tree changes or loaded from ajax
+
+  jQuery(".mapping_type").live("click", function() {
+    var test = jQuery(this).val();
+    jQuery("div.mapping_form").hide();
+    if (test == "interportal") {
+      jQuery("div#interportal_form").show();
+    } else {
+      jQuery("div#external_form").show();
+    }
+  });
+
+    // Reset mapping UI when tree changes or loaded from ajax
   jQuery(document).live("tree_changed", resetMappingUIWithFacebox);
   jQuery(document).live("classes_tab_visible", resetMappingUI);
 

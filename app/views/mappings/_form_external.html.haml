@@ -23,7 +23,7 @@
   #mapping_from{:style => "float: left; width: 50%; height: 100%;"}
     %div{:style => "float: right; border-right: thin solid lightGray; margin: 0 10px 0 20px; height: 360px; clear: none;"}
     #mapping_from_content{:style => "padding: 1em;"}
-      %h2 Class 1
+      %h2 Mapping from Class
       = render :partial => "shared/ontology_picker_single", :locals => {:picker_id => "map_from_picker", :selected => @ontology_from.acronym}
       = text_field_tag :map_from, @concept_from.prefLabel, :class => "bp_internal_form_complete-#{ontology_from_id}-name search_autocomplete", :placeholder => "Start typing to select a class", :style => "width: 415px; margin-top: 5px;"
       = hidden_field_tag :map_from_bioportal_full_id, @concept_from.id
@@ -34,7 +34,16 @@
           %img{:src => asset_path('spinners/spinner_000000_16px.gif'), :style => "padding: 5px;"}/
   #mapping_to{:style => "width: 50%; float: right;"}
     #mapping_to_content{:style => "padding: 1em;"}
-      %h2 Class 2
+      %h2 To External Class
+      %p{style: "padding-left: 10px; margin-bottom: 0;", id: "display_options"}
+        %input{type: "radio", name: "mapping_type", class: "mapping_type", value: "interportal", id: "interportal_form", checked: true, autocomplete: "off"}
+          %label{for: "interportal_form"} Interportal
+        %input{type: "radio", name: "mapping_type", class: "mapping_type", value: "external", id: "external_form", autocomplete: "off"}
+          %label{for: "external_form"} External
+      %div{:id => "interportal_form", :class => "mapping_form", :style => "display: none;"}
+        %p this is interportal
+      %div{:id => "external_form", :class => "mapping_form", :style => "display: none;"}
+        %p this is external
       = render :partial => "shared/ontology_picker_single", :locals => {:picker_id => "map_to_picker", :selected => @ontology_to.acronym}
       = text_field_tag :map_to, @concept_to.label, :class => "bp_internal_form_complete-#{ontology_to_id}-name search_autocomplete", :placeholder => "Start typing to select a class", :style => "width: 415px; margin-top: 5px;"
       = hidden_field_tag :map_to_bioportal_full_id, @concept_to.id
