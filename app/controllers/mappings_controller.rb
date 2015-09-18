@@ -202,13 +202,8 @@ class MappingsController < ApplicationController
   def create
     if params.has_key?(:mapping_type)
       # Means its an external or interportal mapping
-      if params[:mapping_type] == "external"
-        target_ontology = params[:map_to_bioportal_ontology_id]
-        target = params[:map_to_bioportal_full_id]
-      else
-        # if it's an interportal mapping
-
-      end
+      target_ontology = params[:map_to_bioportal_ontology_id]
+      target = params[:map_to_bioportal_full_id]
     else
       # Means it's a regular internal mapping
       target_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_to_bioportal_ontology_id]).first
