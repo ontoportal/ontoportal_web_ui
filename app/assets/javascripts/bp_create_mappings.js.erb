@@ -240,7 +240,9 @@ var bp_createExternalMapping = {
             return false;
         }
 
-        if (jQuery(".mapping_radio:checked").val() == "interportal") {
+        var mapping_type = jQuery(".mapping_radio:checked").val();
+
+        if (mapping_type == "interportal") {
 
         } else {
             var ontology_from = jQuery("#map_from_bioportal_ontology_id");
@@ -253,6 +255,7 @@ var bp_createExternalMapping = {
         }
 
         var params = {
+            mapping_type: mapping_type,
             map_from_bioportal_ontology_id: ontology_from.val(),
             map_to_bioportal_ontology_id: ontology_to,
             map_from_bioportal_full_id: concept_from_id.val(),

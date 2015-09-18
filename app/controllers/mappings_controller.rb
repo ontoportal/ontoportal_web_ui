@@ -193,14 +193,27 @@ class MappingsController < ApplicationController
   # POST /mappings
   # POST /mappings.xml
   def create
+    if params.has_key?(:mapping_type)
+      # Means its an external or interportal mapping
+      if params[:mapping_type] == "external"
+        target_ontology = params[:map_to_bioportal_ontology_id]
+        target = params[:map_to_bioportal_full_id]
+      else
+        # if it's an interportal mapping
+
+      end
+    else
+      # Means it's a regular internal mapping
+      target_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_to_bioportal_ontology_id]).first
+      target = target_ontology.explore.single_class(params[:map_to_bioportal_full_id]).id
+      target_ontology = target_ontology.id
+    end
     source_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_from_bioportal_ontology_id]).first
-    target_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_to_bioportal_ontology_id]).first
     source = source_ontology.explore.single_class(params[:map_from_bioportal_full_id])
-    target = target_ontology.explore.single_class(params[:map_to_bioportal_full_id])
     values = {
       classes: {
         source.id => source_ontology.id,
-        target.id => target_ontology.id
+        target => target_ontology
       },
       creator: session[:user].id,
       relation: params[:mapping_relation],
