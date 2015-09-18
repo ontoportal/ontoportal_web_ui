@@ -11,6 +11,8 @@ class MappingsController < ApplicationController
   EXTERNAL_URL_PARAM_STR = "mappings:external"
   INTERPORTAL_URL_PARAM_STR = "interportal:"
 
+  INTERPORTAL_HASH = $INTERPORTAL_HASH ||= {}
+
   def index
     ontology_list = LinkedData::Client::Models::Ontology.all.select {|o| !o.summaryOnly}
     ontologies_mapping_count = LinkedData::Client::HTTP.get("#{MAPPINGS_URL}/statistics/ontologies")
@@ -176,6 +178,11 @@ class MappingsController < ApplicationController
     @ontology_to = LinkedData::Client::Models::Ontology.find(params[:ontology_to])
     @concept_from = @ontology_from.explore.single_class({full: true}, params[:conceptid_from]) if @ontology_from
     @concept_to = @ontology_to.explore.single_class({full: true}, params[:conceptid_to]) if @ontology_to
+
+    @interportal_options = []
+    INTERPORTAL_HASH.each do |key, value|
+      @interportal_options.push([key, key])
+    end
 
     # Defaults just in case nothing gets provided
     @ontology_from ||= LinkedData::Client::Models::Ontology.new
