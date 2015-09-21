@@ -282,9 +282,15 @@ var bp_createExternalMapping = {
 
     success: function(data) {
         jQuery("#create_mapping_spinner").hide();
-        jQuery("#create_mapping_success_messages").prepend(jQuery("<div/>").addClass("success_message").html(
-                "Mapping from <b>" + jQuery("#map_from").val() + "</b> to <b>" + jQuery("#map_to_class").val() + "</b> was created"
-        ));
+        if (jQuery(".mapping_radio:checked").val() == "interportal") {
+            jQuery("#create_mapping_success_messages").prepend(jQuery("<div/>").addClass("success_message").html(
+                    "Mapping from <b>" + jQuery("#map_from").val() + "</b> to <b>" + jQuery("#map_to_interportal_class").val() + "</b> was created"
+            ));
+        } else {
+            jQuery("#create_mapping_success_messages").prepend(jQuery("<div/>").addClass("success_message").html(
+                    "Mapping from <b>" + jQuery("#map_from").val() + "</b> to <b>" + jQuery("#map_to_external_class").val() + "</b> was created"
+            ));
+        }
 
         // If we have a concept mapping table, update it with new mappings
         if (document.getElementById("concept_mappings_table") != null) {
