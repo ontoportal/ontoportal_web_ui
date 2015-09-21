@@ -45,14 +45,14 @@
         - options = @interportal_options
         = select_tag :map_to_interportal, options_for_select(options, 0), style: "width: 80px;"
         %h4{:style => "margin-top: 5px;"} Ontology (acronym)
-        = text_field_tag :map_to_ontology, nil, placeholder: 'Enter the ontology ACRONYM', :style => "width: 415px; margin-top: 5px;"
+        = text_field_tag :map_to_interportal_ontology, nil, placeholder: 'Enter the ontology ACRONYM', :style => "width: 415px; margin-top: 5px;"
         %h4{:style => "margin-top: 5px;"} Class
-        = text_field_tag :map_to_class, nil, placeholder: 'Enter the class URI', :style => "width: 415px; margin-top: 5px;"
+        = text_field_tag :map_to_interportal_class, nil, placeholder: 'Enter the class URI', :style => "width: 415px; margin-top: 5px;"
       %div{:id => "external_form", :class => "mapping_form", :style => "display: none;"}
         %h4{:style => "margin-top: 5px;"} Ontology
-        = text_field_tag :map_to_ontology, nil, placeholder: 'Enter the ontology URI', :style => "width: 415px; margin-top: 5px;"
+        = text_field_tag :map_to_external_ontology, nil, placeholder: 'Enter the ontology URI', :style => "width: 415px; margin-top: 5px;"
         %h4{:style => "margin-top: 5px;"} Class
-        = text_field_tag :map_to_class, nil, placeholder: 'Enter the class URI', :style => "width: 415px; margin-top: 5px;"
+        = text_field_tag :map_to_external_class, nil, placeholder: 'Enter the class URI', :style => "width: 415px; margin-top: 5px;"
   #mapping_options{:style => "margin: 13px; clear: both;"}
     = text_area(:mapping, :comment, :class => "", :placeholder => "Comment", :style => "padding: 3px; height: 3.2em; width: 100%;")
     %br/

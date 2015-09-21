@@ -244,17 +244,17 @@ var bp_createExternalMapping = {
 
         if (mapping_type == "interportal") {
             var ontology_from = jQuery("#map_from_bioportal_ontology_id");
-            var ontology_to = jQuery("#map_to_interportal").val() + ":" + jQuery("#map_to_ontology").val();
+            var ontology_to = jQuery("#map_to_interportal").val() + ":" + jQuery("#map_to_interportal_ontology").val();
             var concept_from_id = jQuery("#map_from_bioportal_full_id");
-            var concept_to_id = jQuery("#map_to_class");
+            var concept_to_id = jQuery("#map_to_interportal_class");
             var mapping_comment = jQuery("#mapping_comment");
             var mapping_relation = jQuery("#mapping_relation");
             var mapping_bidirectional = jQuery("#mapping_bidirectional").is(":checked");
         } else {
             var ontology_from = jQuery("#map_from_bioportal_ontology_id");
-            var ontology_to = "ext:" + jQuery("#map_to_ontology").val();
+            var ontology_to = "ext:" + jQuery("#map_to_external_ontology").val();
             var concept_from_id = jQuery("#map_from_bioportal_full_id");
-            var concept_to_id = jQuery("#map_to_class");
+            var concept_to_id = jQuery("#map_to_external_class");
             var mapping_comment = jQuery("#mapping_comment");
             var mapping_relation = jQuery("#mapping_relation");
             var mapping_bidirectional = jQuery("#mapping_bidirectional").is(":checked");
