@@ -233,6 +233,11 @@ var bp_createExternalMapping = {
         jQuery("#create_mapping_spinner").show();
         var errored = bp_createExternalMapping.validate();
 
+        var relation_array = new Array();
+        jQuery.each(jQuery("input[name='mapping_relations']:checked"), function() {
+            relation_array.push(jQuery(this).val());
+        });
+
         if (errored) {
             jQuery("#create_mapping_spinner").hide();
             return false;
@@ -246,7 +251,6 @@ var bp_createExternalMapping = {
             var concept_from_id = jQuery("#map_from_bioportal_full_id");
             var concept_to_id = jQuery("#map_to_interportal_class");
             var mapping_comment = jQuery("#mapping_comment");
-            var mapping_relation = jQuery("#mapping_relation");
             var mapping_bidirectional = jQuery("#mapping_bidirectional").is(":checked");
         } else {
             var ontology_from = jQuery("#map_from_bioportal_ontology_id");
@@ -254,7 +258,6 @@ var bp_createExternalMapping = {
             var concept_from_id = jQuery("#map_from_bioportal_full_id");
             var concept_to_id = jQuery("#map_to_external_class");
             var mapping_comment = jQuery("#mapping_comment");
-            var mapping_relation = jQuery("#mapping_relation");
             var mapping_bidirectional = jQuery("#mapping_bidirectional").is(":checked");
         }
 
@@ -265,7 +268,7 @@ var bp_createExternalMapping = {
             map_from_bioportal_full_id: concept_from_id.val(),
             map_to_bioportal_full_id: concept_to_id.val(),
             mapping_comment: mapping_comment.val(),
-            mapping_relation: mapping_relation.val(),
+            mapping_relation: relation_array,
             mapping_bidirectional: mapping_bidirectional
         };
 
