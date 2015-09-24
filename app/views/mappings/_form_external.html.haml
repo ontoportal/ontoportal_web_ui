@@ -84,6 +84,8 @@
           %label
             %input{:type => "checkbox", :name => "mapping_relations", :value => "http://purl.org/linguistics/gold/freeTranslation"} Free Translation (gold:freeTranslation)
           %br/
+          Other:&nbsp;
+          = text_field_tag :relation_text_box, nil, placeholder: 'Enter the relation URI', :style => "margin-top: 5px; width: 230px; "
       #create_mapping_error{:style => "color: red; margin: 7px 0;"}
       #create_mapping_success_messages{:style => "float: right; clear: both; margin: -35px 0 15px;"}
 
