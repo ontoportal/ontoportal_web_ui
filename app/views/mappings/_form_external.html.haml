@@ -54,6 +54,28 @@
         %h4{:style => "margin-top: 5px;"} Class
         = text_field_tag :map_to_external_class, nil, placeholder: 'Enter the class URI', :style => "width: 415px; margin-top: 5px;"
   #mapping_options{:style => "margin: 13px; clear: both;"}
+    %h4 Relations
+    %label
+      %input{:type => "checkbox", :name => "relation", :value => "http://www.w3.org/2004/02/skos/core#exactMatch", :checked => "checked"} Identical (skos:exactMatch)
+    %br/
+    %label
+      %input{:type => "checkbox", :name => "relation", :value => "http://www.w3.org/2004/02/skos/core#closeMatch"} Similar (skos:closeMatch)
+    %br/
+    %label
+      %input{:type => "checkbox", :name => "relation", :value => "http://www.w3.org/2004/02/skos/core#relatedMatch"} Related (skos:relatedMatch)
+    %br/
+    %label
+      %input{:type => "checkbox", :name => "relation", :value => "http://www.w3.org/2004/02/skos/core#broadMatch"} Broader (skos:broadMatch)
+    %br/
+    %label
+      %input{:type => "checkbox", :name => "relation", :value => "http://www.w3.org/2004/02/skos/core#narrowMatch"} Narrower (skos:narrowMatch)
+    %br/
+    %label
+      %input{:type => "checkbox", :name => "relation", :value => "http://purl.org/linguistics/gold/translation"} Translation (gold:translation)
+    %br/
+    %label
+      %input{:type => "checkbox", :name => "relation", :value => "http://purl.org/linguistics/gold/freeTranslation"} Free Translation (gold:freeTranslation)
+    %br/
     = text_area(:mapping, :comment, :class => "", :placeholder => "Comment", :style => "padding: 3px; height: 3.2em; width: 100%;")
     %br/
     %div{:style => "height: 50px; width: 100%;"}
