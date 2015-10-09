@@ -1,7 +1,11 @@
 // History and navigation management
 (function(window,undefined) {
   // Establish Variables
-  var History = window.History;
+  try {
+    var History = window.History;
+  } catch (e) {
+    console.log("History.js failed to load");
+  }
   // History.debug.enable = true;
 
   // Abort it not right page
