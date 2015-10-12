@@ -28,8 +28,6 @@
       - if cls.id == @concept.id
         - # process is likely 'same_uris'
         - next if cls.links['ontology'] == @concept.links['ontology']
-      - if map.process.nil?
-        - next
       -# this is a different class or the same class in another ontology (for same_uri mappings).
       - unless !map.process.nil? && (map.process["name"] == "Interportal Mapping" ||  map.process["name"] == "External Mapping")
         - ont = cls.explore.ontology
@@ -60,12 +58,14 @@
             %a{:href => ont_link}= ont_name
           %td
             #{map.source} #{(map.process || {})[:source_name]}
-            - if is_translation(map.process["relation"])
-              %img{:src => asset_path('sifr/english_language_flag.png'), :style => "padding: 5px", :align => "right", :title => "Traduction"}
+            - if !map.process.nil?
+              - if is_translation(map.process["relation"])
+                %img{:src => asset_path('sifr/english_language_flag.png'), :style => "padding: 5px", :align => "right", :title => "Traduction"}
           %td
-            - map.process["relation"].each do |relation|
-              = get_prefixed_uri(relation)
-              %br/
+            - if !map.process.nil?
+              - map.process["relation"].each do |relation|
+                = get_prefixed_uri(relation)
+                %br/
   - if !got_internal_mappings
     %tr
       %td{:class => 'delete_mappings_column', :style => "display: none;"}
