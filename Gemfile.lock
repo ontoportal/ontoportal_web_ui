@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 81d118c24825c203fd8a341accdbb5d593f95fc1
+  revision: 485c9ef3830aaff0017c8f86b1d8a0dfdaf13738
   branch: master
   specs:
     ontologies_api_client (0.0.6)
@@ -70,7 +70,7 @@ GEM
       sshkit (~> 1.2)
     capistrano-passenger (0.1.1)
       capistrano (~> 3.0)
-    capistrano-rails (1.1.3)
+    capistrano-rails (1.1.4)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
     coderay (1.1.0)
@@ -84,12 +84,12 @@ GEM
     colorize (0.7.7)
     cube-ruby (0.0.3)
     dalli (2.7.4)
-    domain_name (0.5.24)
+    domain_name (0.5.25)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
     excon (0.45.4)
     execjs (2.6.0)
-    faraday (0.9.1)
+    faraday (0.9.2)
       multipart-post (>= 1.2, < 3)
     fast_stack (0.1.0)
       rake
@@ -181,7 +181,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
-    sass (3.4.18)
+    sass (3.4.19)
     sass-rails (5.0.4)
       railties (>= 4.0.0, < 5.0)
       sass (~> 3.1)
@@ -190,7 +190,7 @@ GEM
       tilt (>= 1.1, < 3)
     slop (3.6.0)
     spawnling (2.1.6)
-    sprockets (3.3.5)
+    sprockets (3.4.0)
       rack (> 1, < 3)
     sprockets-rails (2.3.3)
       actionpack (>= 3.0)
