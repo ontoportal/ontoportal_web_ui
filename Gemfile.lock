@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: edc467c2be6d027a3f55b2da1d7745d1c40d867b
+  revision: 34ef3e892b2f4d9f732526ec3fd1e7ace22ebb6c
   branch: staging
   specs:
     ontologies_api_client (0.0.6)
@@ -70,7 +70,7 @@ GEM
       sshkit (~> 1.2)
     capistrano-passenger (0.1.1)
       capistrano (~> 3.0)
-    capistrano-rails (1.1.4)
+    capistrano-rails (1.1.5)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
     coderay (1.1.0)
@@ -132,11 +132,11 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (3.0.1)
     netrc (0.10.3)
-    newrelic_rpm (3.13.2.302)
+    newrelic_rpm (3.14.0.305)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
-    oj (2.12.14)
-    pry (0.10.2)
+    oj (2.13.0)
+    pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
