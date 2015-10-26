@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 34ef3e892b2f4d9f732526ec3fd1e7ace22ebb6c
+  revision: edc467c2be6d027a3f55b2da1d7745d1c40d867b
   branch: staging
   specs:
     ontologies_api_client (0.0.6)
@@ -83,10 +83,12 @@ GEM
     coffee-script-source (1.9.1.1)
     colorize (0.7.7)
     cube-ruby (0.0.3)
+    daemons (1.2.3)
     dalli (2.7.4)
     domain_name (0.5.25)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
+    eventmachine (1.0.8)
     excon (0.45.4)
     execjs (2.6.0)
     faraday (0.9.2)
@@ -201,6 +203,10 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     stackprof (0.2.7)
+    thin (1.6.4)
+      daemons (~> 1.0, >= 1.0.9)
+      eventmachine (~> 1.0, >= 1.0.4)
+      rack (~> 1.0)
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (2.0.1)
@@ -249,5 +255,6 @@ DEPENDENCIES
   rest-client (~> 1.8.0)
   sass-rails (~> 5.0)
   stackprof
+  thin
   uglifier (>= 1.0.3)
   will_paginate (~> 3.0)
