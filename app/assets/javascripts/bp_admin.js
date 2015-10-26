@@ -17,6 +17,21 @@ function millisToMinutesAndSeconds(millis) {
   return minutes + " minutes " + seconds + " seconds";
 }
 
+function parseReportDate(dateStr) {
+  //parse date in a format: 10/05/2011 01:19PM
+  if (dateStr.trim() === "") return "";
+  var reggie = /^(((0[13578]|1[02])[\/\.-](0[1-9]|[12]\d|3[01])[\/\.-]((19|[2-9]\d)\d{2})\s(0[0-9]|1[0-2]):(0[0-9]|[1-59]\d)(AM|am|PM|pm))|((0[13456789]|1[012])[\/\.-](0[1-9]|[12]\d|30)[\/\.-]((19|[2-9]\d)\d{2})\s(0[0-9]|1[0-2]):(0[0-9]|[1-59]\d)(AM|am|PM|pm))|((02)[\/\.-](0[1-9]|1\d|2[0-8])[\/\.-]((19|[2-9]\d)\d{2})\s(0[0-9]|1[0-2]):(0[0-9]|[1-59]\d)(AM|am|PM|pm))|((02)[\/\.-](29)[\/\.-]((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))\s(0[0-9]|1[0-2]):(0[0-9]|[1-59]\d)(AM|am|PM|pm)))$/g;
+  var dateArr = reggie.exec(dateStr);
+  dateArr = dateArr.filter(function(e){return e});
+  var hours = Number(dateArr[7]);
+  var ampm = dateArr[9].toUpperCase();
+  if (ampm == "PM" && hours < 12) hours = hours + 12;
+  if (ampm == "AM" && hours == 12) hours = hours - 12;
+  var strHours = hours.toString();
+  var dateObj = new Date(dateArr[5], dateArr[3], dateArr[4], strHours, dateArr[8], "00", "00");
+  return dateObj.toLocaleString();
+}
+
 var AjaxAction = function(httpMethod, operation, path, isLongOperation, params) {
   params = params || {};
   this.httpMethod = httpMethod;
@@ -400,8 +415,8 @@ function populateOntologyRows(data) {
     var ontLink = "<a href='" + BP_CONFIG.ui_url + "/ontologies/" + acronym + "' target='_blank' style='" + (ontology["problem"] === true ? "color:red;" : "") + "'>" + acronym + "</a>";
     var bpLinks = '';
     var format = ontology["format"];
-    var reportDateUpdated = ontology["report_date_updated"];
-    var ontologyDateCreated = ontology["date_created"];
+    var reportDateUpdated = parseReportDate(ontology["report_date_updated"]);
+    var ontologyDateCreated = parseReportDate(ontology["date_created"]);
 
     if (ontology["logFilePath"] != '') {
       bpLinks += "<a href='" + BP_CONFIG.ui_url + "/admin/ontologies/" + acronym + "/log' target='_blank'>Log</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
@@ -526,13 +541,15 @@ function displayOntologies(data, ontology) {
           "targets": 2,
           "searchable": true,
           "title": "Date Created",
-          "width": "110px"
+          "type": "date",
+          "width": "127px"
         },
         {
           "targets": 3,
           "searchable": true,
           "title": "Report Date",
-          "width": "110px"
+          "type": "date",
+          "width": "127px"
         },
         {
           "targets": 4,
