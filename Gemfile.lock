@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 5720674745ac60873c3395a25cb830e3341fb5d5
+  revision: 35a7c55e85855d78d275aca625ad890a5d846e6f
   branch: master
   specs:
     ontologies_api_client (0.0.6)
@@ -120,7 +120,6 @@ GEM
     lz4-ruby (0.3.3)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
-    memcache-client (1.8.5)
     method_source (0.8.2)
     mime-types (2.6.2)
     mini_portile (0.6.2)
@@ -233,7 +232,6 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   logstash-logger
-  memcache-client (~> 1.8.5)
   multi_json
   mysql (~> 2.9.1)
   newrelic_rpm
@@ -251,3 +249,6 @@ DEPENDENCIES
   stackprof
   uglifier (>= 1.0.3)
   will_paginate (~> 3.0)
+
+BUNDLED WITH
+   1.10.6
