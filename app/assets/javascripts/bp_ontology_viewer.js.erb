@@ -215,6 +215,7 @@ jQuery(document).ready(function() {
 
   if (typeof jQuery(document).data().bp.ont_viewer.content_section === 'undefined') {
     console.log('content_section is undefined')
+    return;
   } else {
     var msg = 'content_section is: '
     console.log(msg.concat(jQuery(document).data().bp.ont_viewer.content_section))
