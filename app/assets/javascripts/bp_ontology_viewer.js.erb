@@ -215,7 +215,6 @@ jQuery(document).ready(function() {
 
   if (typeof jQuery(document).data().bp.ont_viewer.content_section === 'undefined') {
     console.log('content_section is undefined')
-    return;
   } else {
     var msg = 'content_section is: '
     console.log(msg.concat(jQuery(document).data().bp.ont_viewer.content_section))
@@ -238,10 +237,12 @@ jQuery(document).ready(function() {
   });
 
   // Set up the JS version of the active content section
-  jQuery.bioportal.ont_pages[content_section].manuelRetrieve(jQuery("#ont_" + content_section + "_content").html());
-  jQuery.bioportal.ont_pages[content_section].published = true;
-  if (typeof jQuery.bioportal.ont_pages[content_section].init === 'function') {
-    jQuery.bioportal.ont_pages[content_section].init(jQuery.bioportal.ont_pages[content_section]);
+  if (typeof jQuery(document).data().bp.ont_viewer.content_section !== 'undefined') {
+    jQuery.bioportal.ont_pages[content_section].manuelRetrieve(jQuery("#ont_" + content_section + "_content").html());
+    jQuery.bioportal.ont_pages[content_section].published = true;
+    if (typeof jQuery.bioportal.ont_pages[content_section].init === 'function') {
+      jQuery.bioportal.ont_pages[content_section].init(jQuery.bioportal.ont_pages[content_section]);
+    }
   }
 
   // Retrieve AJAX content if not already displayed
