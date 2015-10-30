@@ -13,6 +13,29 @@ module OntologiesHelper
     html.join("")
   end
 
+  def additional_metadata(sub)
+    return "" if $ADDITIONAL_ONTOLOGY_METADATA.nil?
+    html = []
+    $ADDITIONAL_ONTOLOGY_METADATA.each do |metadata|
+      if sub.send(metadata).kind_of?(Array)
+        if sub.send(metadata).any?
+          html << content_tag(:tr) do
+            concat(content_tag(:th, metadata.gsub(/\s(?=[A-Z])/, " ")))
+            concat(content_tag(:td, raw(sub.send(metadata).join(", "))))
+          end
+        end
+      else
+        if !sub.send(metadata).nil?
+          html << content_tag(:tr) do
+            concat(content_tag(:th, metadata.gsub(/\s(?=[A-Z])/, " ")))
+            concat(content_tag(:td, raw(sub.send(metadata))))
+          end
+        end
+      end
+    end
+    html.join("")
+  end
+
   def count_links(ont_acronym, page_name='summary', count=0)
     ont_url = "/ontologies/#{ont_acronym}"
     if count.nil? || count == 0
