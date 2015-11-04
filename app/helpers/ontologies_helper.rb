@@ -16,22 +16,26 @@ module OntologiesHelper
   def additional_metadata(sub)
     return "" if $ADDITIONAL_ONTOLOGY_METADATA.nil?
     html = []
-    $ADDITIONAL_ONTOLOGY_METADATA.each do |metadata|
-      if sub.send(metadata).kind_of?(Array)
-        if sub.send(metadata).any?
-          html << content_tag(:tr) do
-            concat(content_tag(:th, metadata.gsub(/(?=[A-Z])/, " ")))
-            concat(content_tag(:td, raw(sub.send(metadata).join(", "))))
+    begin
+      $ADDITIONAL_ONTOLOGY_METADATA.each do |metadata|
+        if sub.send(metadata).kind_of?(Array)
+          if sub.send(metadata).any?
+            html << content_tag(:tr) do
+              concat(content_tag(:th, metadata.gsub(/(?=[A-Z])/, " ")))
+              concat(content_tag(:td, raw(sub.send(metadata).join(", "))))
+            end
           end
-        end
-      else
-        if !sub.send(metadata).nil?
-          html << content_tag(:tr) do
-            concat(content_tag(:th, metadata.gsub(/(?=[A-Z])/, " ")))
-            concat(content_tag(:td, raw(sub.send(metadata))))
+        else
+          if !sub.send(metadata).nil?
+            html << content_tag(:tr) do
+              concat(content_tag(:th, metadata.gsub(/(?=[A-Z])/, " ")))
+              concat(content_tag(:td, raw(sub.send(metadata))))
+            end
           end
         end
       end
+    rescue => e
+      LOG.add :debug, "Unable to retrieve additional ontology metadata"
     end
     html.join("")
   end
