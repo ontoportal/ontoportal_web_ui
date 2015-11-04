@@ -45,13 +45,15 @@ gem 'thin'
 # application monitoring
 gem 'newrelic_rpm'
 
-#logs in json format, useful for shipping logs to logstash
-gem 'rackstash', git: "https://github.com/planio-gmbh/rackstash.git"
-gem 'logstash-logger'
-
 gem 'ontologies_api_client', :git => "https://github.com/ncbo/ontologies_api_ruby_client.git", branch: "staging"
 
-#group :development do
+group :staging, :production do
+  #logs in json format, useful for shipping logs to logstash
+  gem 'rackstash', git: "https://github.com/planio-gmbh/rackstash.git"
+  gem 'logstash-logger'
+end
+
+group :development do
     #Capistrano
     gem 'capistrano', '~> 3.4.0', require: false
     # rails specific capistrano funcitons
@@ -60,4 +62,4 @@ gem 'ontologies_api_client', :git => "https://github.com/ncbo/ontologies_api_rub
     gem 'capistrano-bundler', require: false
     # passenger reload
     gem 'capistrano-passenger', require: false
-#end
+end
