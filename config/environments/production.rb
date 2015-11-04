@@ -77,11 +77,16 @@ BioportalWebUi::Application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  # memcache setup
-  config.cache_store = :mem_cache_store, 'localhost', { :namespace => 'BioPortal' }
-
   # Include the BioPortal-specific configuration options
   require Rails.root.join('config', "bioportal_config_#{Rails.env}.rb")
+
+  # memcache setup
+  # https://github.com/mperham/dalli#usage-with-rails-3x-and-4x
+  config.cache_store = :dalli_store, nil, { :namespace => 'bioportal_web_ui', :expires_in => 1.day }
+
+  # Disable serving static files from the `/public` folder by default since
+  # Apache or NGINX already handles this.
+  config.serve_static_files = ENV['RAILS_SERVE_STATIC_FILES'].present?
 
   # Add custom data attributes to sanitize allowed list
   config.action_view.sanitized_allowed_attributes = ['id', 'class', 'style', 'data-cls', 'data-ont']
