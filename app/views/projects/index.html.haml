@@ -94,16 +94,15 @@
             = raw project.institution
           / Ontologies
           %td{:style => "vertical-align:top;", :width => "2%"}
-            / - ontologyCount = 0
-            / - ontologyLabels = ""
-            / - for ontology in project.ontologyUsed
-            /   - ontologyLabels += LinkedData::Client::Models::Ontology.find(ontology).name + "\n" rescue next
-            /   - ontologyCount += 1
-            / - if ontologyCount > 0
-            /   %span{:style => "cursor:help;text-decoration: none; border-bottom:1px dotted;", :title => ontologyLabels}= ontologyCount
-            / - else
-            /   = ontologyCount
-            = project.ontologyUsed.size
+            - ontologyCount = 0
+            - ontologyLabels = ""
+            - for ontology in project.ontologyUsed
+              - ontologyLabels += @ontologies_hash[ontology].name + "\n" rescue next
+              - ontologyCount += 1
+            - if ontologyCount > 0
+              %span{:style => "cursor:help;text-decoration: none; border-bottom:1px dotted;", :title => ontologyLabels}= ontologyCount
+            - else
+              = ontologyCount
           - if current_user_admin?
             %td
               = project.creator.map {|c| c.split("/").last}.join(", ")
