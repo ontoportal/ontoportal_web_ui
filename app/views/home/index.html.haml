@@ -25,8 +25,11 @@
     \&nbsp;&nbsp;
     %a{:href => "#", :onclick => "close_message(); return false;", :style => "font-size: small; color: darkGray;"} [close]
 #release_info{style: "position: absolute; right: 7px; padding-top: 38px; font-size: 1.3em;"}
-  Current Release: 
+  Current Release:
   %a{href: "http://www.bioontology.org/wiki/index.php/BioPortal_Release_Notes", target: "_blank"} 4.20 (August 2015)
+  %br/
+  Issue tracking on
+  %a{href: "https://github.com/sifrproject/bioportal_web_ui/issues", target: "_blank"} GitHub
 %div{:style => "padding:10px;margin:10px;"}
   - bp_welcome = "<p><span style='font-size:1.75em; font-weight:bold;'>Welcome to #{$SITE}</span><span style='font-size:1.6em'>, the world&rsquo;s most comprehensive repository of biomedical ontologies.</span></p>"
   - help = "<p style='font-size:1.3em'>For help using #{$SITE}, click on this icon: #{help_icon('/help#Home_Page')}</p>"
@@ -230,7 +233,7 @@
       %img{src: "/images/numev_logo.jpg"} &nbsp;
     %a{href: "http://www.ibc-montpellier.fr", style: "text-decoration:none;"}
       %img{src: "/images/ibc_logo.png"} &nbsp;
-  %br
+  %br/
   %span With the collaboration of
   %div
     %a{href: "http://www.bioontology.org", style: "text-decoration:none;"}
