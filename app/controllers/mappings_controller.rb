@@ -67,6 +67,7 @@ class MappingsController < ApplicationController
       @mapping_pages = MappingPage.new
       @mapping_pages.page = 1
       @mapping_pages.pageCount = 1
+      @mapping_pages.collection = []
     end
 
     total_results = @mapping_pages.pageCount * @mapping_pages.collection.length
