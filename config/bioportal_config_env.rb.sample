@@ -29,9 +29,8 @@ $API_KEY = ""
 # REST core service address
 $REST_URL = "http://example.org:8080/"
 
-
 # Annotator REST service address
-$ANNOTATOR_URL = "http://services.example.org/annotator/"
+$ANNOTATOR_URL = "http://example.org:8080/annotator/"
 
 # Used to define other bioportal that can be mapped to
 # Example to map to ncbo bioportal : {"ncbo" => {"api" => "http://data.bioontology.org", "ui" => "http://bioportal.bioontology.org", "apikey" => ""}
