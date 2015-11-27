@@ -238,45 +238,31 @@ var ajax_process_interportal_cls = function() {
     linkA.removeClass('interportalcls4ajax'); // processing this one.
     var unique_id = linkA.attr('href');
 
-
-    // TODO: retrieve 'data-cls' and 'data-ont' attributes.
-
-    var ajax_uri = linkA.attr('data-cls');
-    var cls_href = linkA.attr('href');
-    console.log("BEFORE jQUERY AJAX");
-    //var ont_acronym = linkA.attr('data-ont');
-    //var ont_uri = "/ontologies/" + ont_acronym;
-    //var cls_uri = ont_uri + "?p=classes&conceptid=" + encodeURIComponent(cls_id);
-    //var ajax_uri = "/ajax/classes/label?ontology=" + ont_acronym + "&concept=" + encodeURIComponent(cls_id);
+    var portal_acronym = linkA.attr('portal-cls');
+    var ajax_uri = linkA.attr('data-cls') + jQuery(document).data().bp.config.interportal_hash[portal_acronym].apikey;
     jQuery.ajax({
         url: ajax_uri,
-        //timeout: ajax_process_timeout * 10000000,
+        timeout: ajax_process_timeout * 1000,
         success: function(data){
-            console.log("AJAX OK");
-            data = data.trim();
-            if (typeof data !== "undefined" && data.length > 0 && data.indexOf("http") !== 0) {
-                var cls_name = data;
-                linkA.html(cls_name);
-                linkA.attr('href', cls_href);
+            var label = data.prefLabel
+            if (typeof label !== "undefined" && label.length > 0) {
+                linkA.html(label);
                 linkA.addClass('ajax-modified-cls');
                 // find and process any identical classes (low probability)
                 jQuery( 'a[href="' + unique_id + '"]').each(function(i,e){
                     var link = jQuery(this);
                     if(! link.hasClass('ajax-modified-cls') ){
                         link.removeClass('interportalcls4ajax');   // processing this one.
-                        link.html(cls_name);
-                        link.attr('href', cls_href);
+                        link.html(label);
                         link.addClass('ajax-modified-cls'); // processed this one.
                     }
                 });
             } else {
                 // remove the unique_id separator and the ontology acronym from the href
-                linkA.attr('href', cls_id);  // it may not be an ontology class, don't use the cls_uri
                 linkA.addClass('ajax-modified-cls');
             }
         },
         error: function(data){
-            console.log("AJAX ERROR");
             linkA.addClass('ajax-error'); // processed this one.
         }
     });

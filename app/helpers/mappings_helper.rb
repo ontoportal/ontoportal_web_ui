@@ -71,35 +71,27 @@ module MappingsHelper
   # method to get (using http) prefLabel for interportal classes
   # Using bp_ajax_controller.ajax_process_interportal_cls will try to resolve class labels.
   def get_link_for_interportal_cls_ajax(cls)
+    interportal_acro = get_interportal_acronym(cls.links["ui"])
+    if interportal_acro
+      href_cls = " href='#{cls.links["ui"]}' "
+      data_cls = " data-cls='#{cls.links["self"]}?apikey=' "
+      portal_cls = " portal-cls='#{interportal_acro}' "
+      return "<a class='interportalcls4ajax' #{data_cls} #{portal_cls} #{href_cls} target='_blank'>#{cls.id}</a>"
+    else
+      href_cls = " href='#{cls.links["ui"]}' "
+      return "<a #{href_cls} target='_blank'>#{cls.id}</a>"
+    end
+
+=begin
+    # to use the /ajax/classes/label system
+    # but the bioportal target need to answer with a 'Access-Control-Allow-Origin' header
     href_cls = " href='#{cls.links["ui"]}' "
     portal_url = cls.links["ui"].split("/")[0..-3].join("/")
     cls_ont = cls.links["ontology"].split("/")[-1]
     data_cls = " data-cls='#{portal_url}/ajax/classes/label?ontology=#{cls_ont}&concept=#{URI.escape(cls.id)}'"
     return "<a class='interportalcls4ajax' #{data_cls} #{href_cls} target='_blank'>#{cls.id}</a>"
-
-=begin
-    interportal_key = get_interportal_key(class_ui_url)
-    if interportal_key
-      href_cls = " href='#{class_ui_url}' "
-      data_cls = " data-cls='#{class_uri}?apikey=#{interportal_key}' "
-      return "<a class='interportalcls4ajax' #{data_cls} #{href_cls} target='_blank'>#{cls_id}</a>"
-    else
-      href_cls = " href='#{class_ui_url}' "
-      return "<a #{href_cls} target='_blank'>#{cls_id}</a>"
-    end
-
-    interportal_key = get_interportal_key(class_ui_url)
-    if interportal_key
-      json_class = JSON.parse(Net::HTTP.get(URI.parse("#{class_uri}?apikey=#{interportal_key}")))
-      if !json_class["prefLabel"].nil?
-        return json_class["prefLabel"]
-      else
-        return nil
-      end
-    else
-      return nil
-    end
 =end
+
   end
 
   def get_link_for_cls_ajax(cls_id, ont_acronym, target=nil)
@@ -124,11 +116,11 @@ module MappingsHelper
 
   # to get the apikey from the interportal instance of the interportal class.
   # The best way to know from which interportal instance the class came is to compare the UI url
-  def get_interportal_key(class_ui_url)
+  def get_interportal_acronym(class_ui_url)
     if !INTERPORTAL_HASH.nil?
       INTERPORTAL_HASH.each do |key, value|
         if class_ui_url.start_with?(value["ui"])
-          return value["apikey"]
+          return key
         else
           return nil
         end
