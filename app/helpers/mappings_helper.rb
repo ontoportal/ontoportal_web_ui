@@ -48,8 +48,46 @@ module MappingsHelper
     return uri
   end
 
+  def get_link_for_cls_ajax(cls_id, ont_acronym, target=nil)
+    # Note: bp_ajax_controller.ajax_process_cls will try to resolve class labels.
+    # Uses 'http' as a more generic attempt to resolve class labels than .include? ont_acronym; the
+    # bp_ajax_controller.ajax_process_cls will try to resolve class labels and
+    # otherwise remove the UNIQUE_SPLIT_STR and the ont_acronym.
+    if target.nil?
+      target = ""
+    else
+      target = " target='#{target}' "
+    end
+    if cls_id.start_with? 'http://'
+      href_cls = " href='#{bp_class_link(cls_id, ont_acronym)}' "
+      data_cls = " data-cls='#{cls_id}' "
+      data_ont = " data-ont='#{ont_acronym}' "
+      return "<a class='cls4ajax' #{data_ont} #{data_cls} #{href_cls} #{target}>#{cls_id}</a>"
+    else
+      return auto_link(cls_id, :all, :target => '_blank')
+    end
+  end
+
   # method to get (using http) prefLabel for interportal classes
-  def get_link_for_interportal_cls_ajax(class_uri, class_ui_url)
+  # Using bp_ajax_controller.ajax_process_interportal_cls will try to resolve class labels.
+  def get_link_for_interportal_cls_ajax(cls)
+    href_cls = " href='#{cls.links["ui"]}' "
+    portal_url = cls.links["ui"].split("/")[0..-3].join("/")
+    cls_ont = cls.links["ontology"].split("/")[-1]
+    data_cls = " data-cls='#{portal_url}/ajax/classes/label?ontology=#{cls_ont}&concept=#{URI.escape(cls.id)}'"
+    return "<a class='interportalcls4ajax' #{data_cls} #{href_cls} target='_blank'>#{cls.id}</a>"
+
+=begin
+    interportal_key = get_interportal_key(class_ui_url)
+    if interportal_key
+      href_cls = " href='#{class_ui_url}' "
+      data_cls = " data-cls='#{class_uri}?apikey=#{interportal_key}' "
+      return "<a class='interportalcls4ajax' #{data_cls} #{href_cls} target='_blank'>#{cls_id}</a>"
+    else
+      href_cls = " href='#{class_ui_url}' "
+      return "<a #{href_cls} target='_blank'>#{cls_id}</a>"
+    end
+
     interportal_key = get_interportal_key(class_ui_url)
     if interportal_key
       json_class = JSON.parse(Net::HTTP.get(URI.parse("#{class_uri}?apikey=#{interportal_key}")))
@@ -61,6 +99,7 @@ module MappingsHelper
     else
       return nil
     end
+=end
   end
 
   def get_link_for_cls_ajax(cls_id, ont_acronym, target=nil)
