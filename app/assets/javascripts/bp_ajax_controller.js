@@ -21,6 +21,7 @@ function get_link_for_ont_ajax(ont_acronym) {
 
 var
   ajax_process_cls_interval = null,
+  ajax_process_interportal_cls_interval = null,
   ajax_process_ont_interval = null,
   ajax_process_timeout = 20, // Timeout after 20 sec.
   ajax_process_timing = 250; // It takes about 250 msec to resolve a class ID to a prefLabel
@@ -30,6 +31,7 @@ var ajax_process_init = function () {
   ajax_process_ont_init();
   ajax_process_interportal_cls_init();
 };
+
 var ajax_process_halt = function () {
   ajax_process_cls_halt();
   ajax_process_ont_halt();
@@ -202,12 +204,12 @@ var ajax_interportal_cls_array = [];
 
 var ajax_process_interportal_cls_init = function() {
     ajax_interportal_cls_array = jQuery("a.interportalcls4ajax").toArray();
-    ajax_process_cls_interval = window.setInterval(ajax_process_interportal_cls, ajax_process_timing);
+    ajax_process_interportal_cls_interval = window.setInterval(ajax_process_interportal_cls, ajax_process_timing);
 };
 
 var ajax_process_interportal_cls_halt = function () {
     ajax_interportal_cls_array = [];
-    window.clearInterval(ajax_process_cls_interval); // stop the ajax process
+    window.clearInterval(ajax_process_interportal_cls_interval); // stop the ajax process
     // Note: might leave faulty href links, but it usually means moving on to entirely different content
     //       so it's not likely those links will be available for interaction.
     // clear all the classes and ontologies to be resolved by ajax
@@ -225,7 +227,7 @@ var ajax_process_interportal_cls = function() {
     //       means the ajax_process_init must be called after all the elements
     //       are created because they will not be detected in a dynamic iteration.
     //var linkA = jQuery("a.cls4ajax").first();
-    var linkA = ajax_interportal_cls_array.shift();
+    var linkA = ajax_interportal_cls_array.shift(); // put first item in linkA and delete it from array
     if(linkA === undefined){
         return true;
     }
