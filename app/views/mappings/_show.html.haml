@@ -21,7 +21,7 @@
                 #{raw(get_link_for_interportal_cls_ajax(cls))}
                 //#{raw("<a href='#{cls.links["ui"]}' target='_blank'>#{cls.id}</a>")}
               - else
-                #{raw("<a href='#{cls.links["self"]}' target='_blank'>#{cls.id}</a>")}
+                #{raw("<a href='#{cls.links["self"]}' target='_blank'>#{get_link_for_external_cls(cls.id)}</a>")}
             - cls = map.classes.shift
             %td
               - if cls.links["self"].to_s.start_with?(LinkedData::Client.settings.rest_url)
@@ -30,7 +30,7 @@
               - elsif cls.links.has_key?("ui")
                 #{raw(get_link_for_interportal_cls_ajax(cls))}
               - else
-                #{raw("<a href='#{cls.links["self"]}' target='_blank'>#{cls.prefLabel}</a>")}
+                #{raw("<a href='#{cls.links["self"]}' target='_blank'>#{get_link_for_external_cls(cls.id)}</a>")}
             %td
               #{map.source} #{(map.process || {})[:source_name]}
     = will_paginate @page_results, :update => 'mappings', :params => { :target => params[:target] }
