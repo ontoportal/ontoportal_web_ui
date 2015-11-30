@@ -28,7 +28,7 @@
                 #{link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>".html_safe, :controller => 'visualize', :action => 'virtual', :id => cls.explore.ontology.acronym, :conceptid => cls.id}
                 //#{raw(get_link_for_cls_ajax(cls.id, cls.explore.ontology.acronym))} // Other way to do it, slower
               - elsif cls.links.has_key?("ui")
-                #{raw("<a href='#{cls.links["ui"]}' target='_blank'>#{cls.prefLabel}</a>")}
+                #{raw(get_link_for_interportal_cls_ajax(cls))}
               - else
                 #{raw("<a href='#{cls.links["self"]}' target='_blank'>#{cls.prefLabel}</a>")}
             %td
