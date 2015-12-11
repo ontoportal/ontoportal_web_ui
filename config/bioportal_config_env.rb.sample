@@ -101,6 +101,9 @@ ENV['USE_RECAPTCHA'] = 'false'
 ENV['RECAPTCHA_PUBLIC_KEY']  = ''
 ENV['RECAPTCHA_PRIVATE_KEY'] = ''
 
+# Memcached servers
+ENV['MEMCACHE_SERVERS'] = 'localhost'
+
 # Custom BioPortal logging
 require 'log'
 $REMOTE_LOGGING = false
