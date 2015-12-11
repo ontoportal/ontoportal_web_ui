@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: edc467c2be6d027a3f55b2da1d7745d1c40d867b
+  revision: f64631ac3b371bd9e752f431656ebebfb497dded
   branch: staging
   specs:
     ontologies_api_client (0.0.6)
@@ -133,7 +133,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (3.0.1)
     netrc (0.11.0)
-    newrelic_rpm (3.14.0.305)
+    newrelic_rpm (3.14.1.311)
     nokogiri (1.6.7)
       mini_portile2 (~> 2.0.0.rc2)
     oj (2.14.0)
@@ -256,6 +256,3 @@ DEPENDENCIES
   thin
   uglifier (>= 1.0.3)
   will_paginate (~> 3.0)
-
-BUNDLED WITH
-   1.10.6
