@@ -219,7 +219,6 @@
                           = mapProc.creator.gsub(/.*\//,'')
                   - rescue => e
                     - LOG.add :error, e.message, e.backtrace.join("\n\t")
-                    - LOG.add :error, "Recent mapping: #{map.id}, classes: #{map.classes.map {|c| "#{c.id}" }.join(', ')}"
                     - next
 %div{style: "padding: 3.5em 0 0; text-align: center;"}
   %span With the collaboration of
