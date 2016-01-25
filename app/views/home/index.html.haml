@@ -165,8 +165,8 @@
                             = truncate(strip_tags(note[:body]), :length => 100)
                             \&nbsp;
                       - rescue
-      - if $DISPLAY_RECENT.nil? || $DISPLAY_RECENT == true
-        %td{:valign => "top"}
+      %td{:valign => "top"}
+        - if $DISPLAY_RECENT.nil? || $DISPLAY_RECENT == true
           %fieldset
             %legend Latest Mappings
             %table.minimal{:style => "width:100%"}
