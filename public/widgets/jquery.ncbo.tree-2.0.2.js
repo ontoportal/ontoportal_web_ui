@@ -211,7 +211,7 @@
       }
       $TREE_CONTAINER.trigger("beforeExpand", node);
 
-      var url = $.trim($('a', node).attr("href"));
+      var url = determineHTTPS($.trim($('a', node).attr("href")));
       if (url) {
         $.ajax({
           type: "GET",
