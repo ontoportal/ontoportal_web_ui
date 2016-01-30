@@ -78,7 +78,7 @@
       ROOT.html($("<span>").html("Loading...").css("font-size", "smaller"));
       $.ajax({
         url: determineHTTPS(OPTIONS.ncboAPIURL) + "/ontologies/" + OPTIONS.ontology + "/classes/" + encodeURIComponent(cls) + "/tree",
-        data: {apikey: OPTIONS.apikey, include: "prefLabel,hasChildren", no_context: true},
+        data: {apikey: OPTIONS.apikey, display: "prefLabel,hasChildren", no_context: true},
         contentType: 'json',
         crossDomain: true,
         success: function(roots) {
@@ -216,7 +216,7 @@
         $.ajax({
           type: "GET",
           url: url,
-          data: {apikey: OPTIONS.apikey, include: "prefLabel,hasChildren", no_context: true},
+          data: {apikey: OPTIONS.apikey, display: "prefLabel,hasChildren", no_context: true},
           crossDomain: true,
           contentType: 'json',
           timeout: OPTIONS.timeout,
@@ -374,7 +374,7 @@
         ROOT.html($("<span>").html("Loading...").css("font-size", "smaller"));
         $.ajax({
           url: determineHTTPS(OPTIONS.ncboAPIURL) + "/ontologies/" + OPTIONS.ontology + "/classes/" + encodeURIComponent(OPTIONS.startingRoot),
-          data: {apikey: OPTIONS.apikey, include: "prefLabel,hasChildren", no_context: true},
+          data: {apikey: OPTIONS.apikey, display: "prefLabel,hasChildren", no_context: true},
           contentType: 'json',
           crossDomain: true,
           success: function(roots) {
