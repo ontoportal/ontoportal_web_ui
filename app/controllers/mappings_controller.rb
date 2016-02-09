@@ -24,7 +24,7 @@ class MappingsController < ApplicationController
     if ontologies_mapping_count
       ontologies_mapping_count.members.each do |ontology_acronym|
         ontology = ontologies_hash[ontology_acronym.to_s]
-        mapping_count = ontologies_mapping_count[ontology_acronym]
+        mapping_count = ontologies_mapping_count[ontology_acronym] || 0
         next unless ontology && mapping_count > 0
         select_text = "#{ontology.name} - #{ontology.acronym} (#{number_with_delimiter(mapping_count, delimiter: ',')})"
         @options[select_text] = ontology_acronym
@@ -67,6 +67,7 @@ class MappingsController < ApplicationController
       @mapping_pages = MappingPage.new
       @mapping_pages.page = 1
       @mapping_pages.pageCount = 1
+      @mapping_pages.collection = []
     end
 
     total_results = @mapping_pages.pageCount * @mapping_pages.collection.length

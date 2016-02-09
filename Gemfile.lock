@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 81d118c24825c203fd8a341accdbb5d593f95fc1
+  revision: ca4ebf8faff2533a713e95803af934f14dfd7b9a
   branch: master
   specs:
     ontologies_api_client (0.0.6)
@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: https://github.com/planio-gmbh/rackstash.git
-  revision: 93a1cc1fb74b11f213012a516389420320c9ef98
+  revision: 15b547f63c8b08e881bc21b4cb25a490f12cb4a4
   specs:
     rackstash (0.0.1)
       activesupport
@@ -68,28 +68,30 @@ GEM
     capistrano-bundler (1.1.4)
       capistrano (~> 3.1)
       sshkit (~> 1.2)
-    capistrano-passenger (0.1.1)
+    capistrano-passenger (0.2.0)
       capistrano (~> 3.0)
-    capistrano-rails (1.1.3)
+    capistrano-rails (1.1.6)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
     coderay (1.1.0)
-    coffee-rails (4.1.0)
+    coffee-rails (4.1.1)
       coffee-script (>= 2.2.0)
-      railties (>= 4.0.0, < 5.0)
+      railties (>= 4.0.0, < 5.1.x)
     coffee-script (2.4.1)
       coffee-script-source
       execjs
-    coffee-script-source (1.9.1.1)
-    colorize (0.7.7)
+    coffee-script-source (1.10.0)
+    concurrent-ruby (1.0.0)
     cube-ruby (0.0.3)
-    dalli (2.7.4)
-    domain_name (0.5.24)
+    daemons (1.2.3)
+    dalli (2.7.5)
+    domain_name (0.5.25)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
+    eventmachine (1.0.9.1)
     excon (0.45.4)
     execjs (2.6.0)
-    faraday (0.9.1)
+    faraday (0.9.2)
       multipart-post (>= 1.2, < 3)
     fast_stack (0.1.0)
       rake
@@ -105,7 +107,7 @@ GEM
       domain_name (~> 0.5)
     i18n (0.7.0)
     iconv (1.0.4)
-    jquery-rails (4.0.5)
+    jquery-rails (4.1.0)
       rails-dom-testing (~> 1.0)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
@@ -120,28 +122,27 @@ GEM
     lz4-ruby (0.3.3)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
-    memcache-client (1.8.5)
     method_source (0.8.2)
-    mime-types (2.6.2)
-    mini_portile (0.6.2)
-    minitest (5.8.1)
+    mime-types (2.99)
+    mini_portile2 (2.0.0)
+    minitest (5.8.3)
     multi_json (1.11.2)
     multipart-post (2.0.0)
     mysql (2.9.1)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
-    net-ssh (3.0.1)
-    netrc (0.10.3)
-    newrelic_rpm (3.13.2.302)
-    nokogiri (1.6.6.2)
-      mini_portile (~> 0.6.0)
-    oj (2.12.14)
-    pry (0.10.2)
+    net-ssh (3.0.2)
+    netrc (0.11.0)
+    newrelic_rpm (3.14.1.311)
+    nokogiri (1.6.7.2)
+      mini_portile2 (~> 2.0.0.rc2)
+    oj (2.14.3)
+    pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
     rack (1.6.4)
-    rack-mini-profiler (0.9.7)
+    rack-mini-profiler (0.9.8)
       rack (>= 1.1.3)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -171,17 +172,17 @@ GEM
       activesupport (= 4.2.1)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rake (10.4.2)
+    rake (10.5.0)
     rake-compiler (0.9.5)
       rake
-    rdoc (4.2.0)
+    rdoc (4.2.1)
       json (~> 1.4)
     recaptcha (0.4.0)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
-    sass (3.4.18)
+    sass (3.4.21)
     sass-rails (5.0.4)
       railties (>= 4.0.0, < 5.0)
       sass (~> 3.1)
@@ -190,20 +191,24 @@ GEM
       tilt (>= 1.1, < 3)
     slop (3.6.0)
     spawnling (2.1.6)
-    sprockets (3.3.5)
+    sprockets (3.5.2)
+      concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
-    sprockets-rails (2.3.3)
-      actionpack (>= 3.0)
-      activesupport (>= 3.0)
-      sprockets (>= 2.8, < 4.0)
-    sshkit (1.7.1)
-      colorize (>= 0.7.0)
+    sprockets-rails (3.0.0)
+      actionpack (>= 4.0)
+      activesupport (>= 4.0)
+      sprockets (>= 3.0.0)
+    sshkit (1.8.1)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
-    stackprof (0.2.7)
+    stackprof (0.2.8)
+    thin (1.6.4)
+      daemons (~> 1.0, >= 1.0.9)
+      eventmachine (~> 1.0, >= 1.0.4)
+      rack (~> 1.0)
     thor (0.19.1)
     thread_safe (0.3.5)
-    tilt (2.0.1)
+    tilt (2.0.2)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uglifier (2.7.2)
@@ -212,7 +217,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
-    will_paginate (3.0.7)
+    will_paginate (3.1.0)
 
 PLATFORMS
   ruby
@@ -233,7 +238,6 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   logstash-logger
-  memcache-client (~> 1.8.5)
   multi_json
   mysql (~> 2.9.1)
   newrelic_rpm
@@ -249,5 +253,6 @@ DEPENDENCIES
   rest-client (~> 1.8.0)
   sass-rails (~> 5.0)
   stackprof
+  thin
   uglifier (>= 1.0.3)
   will_paginate (~> 3.0)
