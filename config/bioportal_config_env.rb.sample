@@ -122,7 +122,7 @@ $RECOMMENDER_FLEX_APIKEY = ""
 $FLEXOVIZ_APIKEY = ""
 
 # URL where BioMixer GWT app is located
-$BIOMIXER_URL = "http://bioportal-integration.bio-mixer.appspot.com"
+$BIOMIXER_URL = 'http://biomixer.bioontology.org'
 
 # Array with all the additional ontology metadata to display in the ontology details
 $ADDITIONAL_ONTOLOGY_METADATA = ["naturalLanguage", "hasLicense", "notes", "modificationDate", "URI", "hasContributor", "hasCreator", "endorsedBy", "hasDomain",
