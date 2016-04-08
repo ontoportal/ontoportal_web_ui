@@ -214,7 +214,7 @@
                   - LOG.add :error, "Recent mapping: #{map.id}, classes: #{map.classes.map {|c| "#{c.ontology.acronym} #{c.id}" }.join(', ')}"
                   - next
       %div{style: "padding: 3.5em 0 0; text-align: center;"}
-        %img{src: "http://www.bioontology.org/sites/all/themes/bioontology/logo.png"}
+        %img{src: image_path("logo.png")}
 
 - ont_names = @ontologies.map{|ont| "[\"#{ont.name} (#{ont.acronym})\",\"#{ont.acronym}\"]"}
 
