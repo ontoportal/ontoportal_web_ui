@@ -47,7 +47,8 @@ BioportalWebUi::Application.routes.draw do
   get '/layout_partial/:partial' => 'home#render_layout_partial'
 
   # Error pages
-  match ':status', to: 'errors#show', constraints: {status: /\d{3}/}, via: :all
+  match "/404", to: "errors#not_found", via: :all
+  match "/500", to: "errors#internal_server_error", via: :all
 
   # Analytics endpoint
   get '/analytics' => 'analytics#track'
