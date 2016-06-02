@@ -67,6 +67,7 @@
             Home Page
           %td
             %a{:href => sub.homepage, :target => "_blank"}= sub.homepage
+        //- sub.homepage.each |homepage| do %a{:href => homepage, :target => "_blank"}= homepage test for a array of value for homepage
         %tr
           %th
             Publications Page
