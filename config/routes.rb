@@ -1,6 +1,5 @@
 BioportalWebUi::Application.routes.draw do
 
-  get 'landscape/index'
 
   root :to => 'home#index'
 
@@ -33,6 +32,8 @@ BioportalWebUi::Application.routes.draw do
   resources :recommender_v1
 
   resources :annotator
+
+  resources :landscape
 
   resources :virtual_appliance
 
