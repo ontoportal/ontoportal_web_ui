@@ -32,7 +32,7 @@ class LandscapeController < ApplicationController
     end
 
     natural_language_hash.each do |lang,no|
-      @natural_language_json_cloud.push({"text"=>lang.to_s,"size"=>10})
+      @natural_language_json_cloud.push({"text"=>lang.to_s,"size"=>no*5})
 
       @natural_language_json_pie.push({"label"=>lang.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
       color_index += 1
