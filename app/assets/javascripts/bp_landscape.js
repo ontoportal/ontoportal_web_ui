@@ -83,7 +83,7 @@ d3.layout.cloud().size([800, 300])
 
 function draw(words) {
     // Add the svg tagcloud to body
-    d3.select("body").append("svg")
+    d3.select("#cloudChart").append("svg")
         .attr("width", 850)
         .attr("height", 350)
         .attr("class", "wordcloud")
