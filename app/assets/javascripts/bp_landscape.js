@@ -95,7 +95,8 @@ function draw(words) {
         .data(words)
         .enter().append("text")
         .style("font-size", function(d) { return d.size + "px"; })
-        .style("fill", function(d, i) { return color(i); })
+        // Get color from the color key in the JSON
+        .style("fill", function(d, i) { return d.color; })
         .attr("transform", function(d) {
             return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
         })
