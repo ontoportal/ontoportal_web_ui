@@ -3,12 +3,54 @@
 =javascript_include_tag "d3.layout.cloud"
 
 - @title = "Landscape"
-%div{:style => "padding: 1em;"}
+%div{:style => "padding: 1em;", :align => "center"}
   %h1 Landscape
 
   %div#pieChart
 
   %div#cloudChart
+
+  %div
+    %h1 Average
+
+    %table.minimal.align-right{width: "30%"}
+      %tbody
+        %tr
+          %td Number of classes:
+          %td
+            = @metrics_num_classes_average
+        %tr
+          %td Number of individuals:
+          %td
+            = @metrics_number_of_individuals
+        %tr
+          %td Number of properties:
+          %td
+            = @number_of_properties
+        %tr
+          %td  Max depth:
+          %td
+            = @metrics_max_depth
+        %tr
+          %td Max child count:
+          %td
+            = @metrics_max_child_count
+        %tr
+          %td Average child count
+          %td
+            = @metrics_average_child_count
+        %tr
+          %td Classes with one child
+          %td
+            = @metrics_classes_with_one_child
+        %tr
+          %td Classes with more than 25 children
+          %td
+            = @metrics_classes_25_children
+        %tr
+          %td Classes with no definition
+          %td
+            = @metrics_classes_no_definition
 
 :javascript
 
