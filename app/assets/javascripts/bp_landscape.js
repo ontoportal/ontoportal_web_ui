@@ -4,12 +4,12 @@
 var pie = new d3pie("pieChart", {
     "header": {
         "title": {
-            "text": "Ontologies natural languages in BioPortal",
+            "text": "Ontologies natural languages in AgroPortal",
             "fontSize": 24,
             "font": "open sans"
         },
         "subtitle": {
-            "text": "A full pie chart to show the different natural languages used in BioPortal",
+            "text": "A pie chart to show the different natural languages used in AgroPortal",
             "color": "#999999",
             "fontSize": 12,
             "font": "open sans"
