@@ -73,8 +73,13 @@ var createPie = function(divName, json, title, subtitle) {
 // To create a new pie chart: add "%div#prefLabelPieChartDiv" to html and use the createPie function
 var naturalLanguagePie = createPie("naturalLanguagePieChartDiv", naturalLanguagePieJson, "Ontologies natural languages in AgroPortal", "A pie chart to show the different natural languages used in AgroPortal");
 
-var prefLabelPie = createPie("prefLabelPieChartDiv", prefLabelPieJson, "Ontologies prefLabel properties in AgroPortal", "A pie chart to show the different prefLabel property URIs used for OWL ontologies in AgroPortal");
+var prefLabelPie = createPie("prefLabelPropertyPieChartDiv", prefLabelPieJson, "Ontologies prefLabel properties in AgroPortal", "A pie chart to show the different prefLabel property URIs used for OWL ontologies in AgroPortal");
 
+var synonymPie = createPie("synonymPropertyPieChartDiv", synonymPieJson, "Ontologies synonym properties in AgroPortal", "A pie chart to show the different synonym property URIs used for OWL ontologies in AgroPortal");
+
+var definitionPie = createPie("definitionPropertyPieChartDiv", definitionPieJson, "Ontologies definition properties in AgroPortal", "A pie chart to show the different definition property URIs used for OWL ontologies in AgroPortal");
+
+var authorPie = createPie("authorPropertyPieChartDiv", authorPieJson, "Ontologies author properties in AgroPortal", "A pie chart to show the different author property URIs used for OWL ontologies in AgroPortal");
 
 // Generate the tag cloud
 var color = d3.scale.linear()

@@ -8,7 +8,13 @@
 
   %div#naturalLanguagePieChartDiv
 
-  %div#prefLabelPieChartDiv
+  %div#prefLabelPropertyPieChartDiv
+
+  %div#synonymPropertyPieChartDiv
+
+  %div#definitionPropertyPieChartDiv
+
+  %div#authorPropertyPieChartDiv
 
   %div#cloudChart
 
@@ -60,8 +66,12 @@
   var naturalLanguagePieJson = #{@natural_language_json_pie}
   // Get the data to generate the cloud chart for naturalLanguages
   var cloudJson = #{@natural_language_json_cloud}
-  // Get the data for the prefLabel pie chart
+  // Get the data for the used properties pie charts
   var prefLabelPieJson = #{@prefLabelProperty_json_pie}
+  var synonymPieJson = #{@synonymProperty_json_pie}
+  var definitionPieJson = #{@definitionProperty_json_pie}
+  var authorPieJson = #{@authorProperty_json_pie}
+
 
 / This javascript needs to be called after pieJson and cloudJson have been set
 =javascript_include_tag "bp_landscape"

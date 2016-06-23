@@ -11,6 +11,10 @@ class LandscapeController < ApplicationController
     # A hash with the language label and the number of time it appears in sub.naturalLanguage
     natural_language_hash = {}
     prefLabelProperty_hash = {}
+    synonymProperty_hash = {}
+    definitionProperty_hash = {}
+    authorProperty_hash = {}
+
     array_metrics_num_classes = []
     array_metrics_number_of_individuals = []
     array_metrics_number_of_properties = []
@@ -47,20 +51,13 @@ class LandscapeController < ApplicationController
 
         # Get the prefLabelProperty used for OWL properties in a hash
         if sub.hasOntologyLanguage.eql?("OWL")
-          if sub.prefLabelProperty.nil? || sub.prefLabelProperty.empty?
-            # if prefLabelProperty null then we increment the default value (skos;prefLabel)
-            sub_pref_label = "http://www.w3.org/2004/02/skos/core#prefLabel"
-          else
-            sub_pref_label = sub.prefLabelProperty.to_s
-          end
+          prefLabelProperty_hash = get_used_properties(sub.prefLabelProperty, "http://www.w3.org/2004/02/skos/core#prefLabel", prefLabelProperty_hash)
 
-          # If prefLabelProperty already in hash then we increment the count of the prefLabel in the hash
-          if prefLabelProperty_hash.has_key?(sub_pref_label)
-            prefLabelProperty_hash[sub_pref_label] = prefLabelProperty_hash[sub_pref_label] + 1
-          else
-            prefLabelProperty_hash[sub_pref_label] = 1
-          end
+          synonymProperty_hash = get_used_properties(sub.synonymProperty, "http://www.w3.org/2004/02/skos/core#altLabel", synonymProperty_hash)
 
+          definitionProperty_hash = get_used_properties(sub.definitionProperty, "http://www.w3.org/2004/02/skos/core#definition", definitionProperty_hash)
+
+          authorProperty_hash = get_used_properties(sub.authorProperty, "http://purl.org/dc/elements/1.1/creator", authorProperty_hash)
         end
 
         # Adding metrics to their arrays
@@ -112,6 +109,9 @@ class LandscapeController < ApplicationController
     @natural_language_json_cloud = []
     # Generate the JSON to put natural languages in the pie chart
     @prefLabelProperty_json_pie = []
+    @synonymProperty_json_pie = []
+    @definitionProperty_json_pie = []
+    @authorProperty_json_pie = []
 
     natural_language_hash.each do |lang,no|
       @natural_language_json_cloud.push({"text"=>lang.to_s,"size"=>no*5, "color"=>pie_colors_array[color_index]})
@@ -124,14 +124,48 @@ class LandscapeController < ApplicationController
       @prefLabelProperty_json_pie.push({"label"=>pref_label.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
       color_index += 1
     end
+    synonymProperty_hash.each do |synonym,no|
+      @synonymProperty_json_pie.push({"label"=>synonym.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
+      color_index += 1
+    end
+    definitionProperty_hash.each do |definition,no|
+      @definitionProperty_json_pie.push({"label"=>definition.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
+      color_index += 1
+    end
+    authorProperty_hash.each do |author,no|
+      @authorProperty_json_pie.push({"label"=>author.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
+      color_index += 1
+    end
 
     @natural_language_json_cloud = @natural_language_json_cloud.to_json.html_safe
     @natural_language_json_pie = @natural_language_json_pie.to_json.html_safe
+
+    # used properties pie charts html safe formatting
     @prefLabelProperty_json_pie = @prefLabelProperty_json_pie.to_json.html_safe
+    @synonymProperty_json_pie = @synonymProperty_json_pie.to_json.html_safe
+    @definitionProperty_json_pie = @definitionProperty_json_pie.to_json.html_safe
+    @authorProperty_json_pie = @authorProperty_json_pie.to_json.html_safe
 
   end
 
   def get_average(integer_array)
     return (integer_array.sum / integer_array.size.to_f).round(2)
+  end
+
+  def get_used_properties(attr_value, default_property, property_hash)
+    if attr_value.nil? || attr_value.empty?
+      # if prefLabelProperty null then we increment the default value
+      attr_value = default_property
+    else
+      attr_value = attr_value.to_s
+    end
+
+    # If attribute value property already in hash then we increment the count of the prefLabel in the hash
+    if property_hash.has_key?(attr_value)
+      property_hash[attr_value] = property_hash[attr_value] + 1
+    else
+      property_hash[attr_value] = 1
+    end
+    return property_hash
   end
 end
