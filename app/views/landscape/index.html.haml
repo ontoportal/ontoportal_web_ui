@@ -8,18 +8,20 @@
 
   %div#naturalLanguagePieChartDiv
 
-  %div#prefLabelPropertyPieChartDiv
-
-  %div#synonymPropertyPieChartDiv
-
-  %div#definitionPropertyPieChartDiv
-
-  %div#authorPropertyPieChartDiv
-
-  %div#cloudChart
+  %h1 Properties used in AgroPortal
 
   %div
-    %h1 Average
+    %div#prefLabelPropertyPieChartDiv{:style => "float: left; width: 50%;"}
+    %div#synonymPropertyPieChartDiv{:style => "float: right; width: 50%;"}
+
+  %div
+    %div#definitionPropertyPieChartDiv{:style => "float: left; width: 50%;"}
+    %div#authorPropertyPieChartDiv{:style => "float: right; width: 50%;"}
+
+  //%div#cloudChart
+
+  %div
+    %h1 Average metrics
 
     %table.minimal.align-right{width: "30%"}
       %tbody
