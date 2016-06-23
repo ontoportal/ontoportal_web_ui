@@ -24,6 +24,7 @@ class LandscapeController < ApplicationController
     array_metrics_classes_with_one_child = []
     array_metrics_classes_25_children = []
     array_metrics_classes_no_definition = []
+    array_metrics_no_axioms = []
 
     color_index = 0
 
@@ -88,6 +89,9 @@ class LandscapeController < ApplicationController
         if !sub.classesWithNoDefinition.nil?
           array_metrics_classes_no_definition.push(sub.classesWithNoDefinition)
         end
+        if !sub.numberOfAxioms.nil?
+          array_metrics_no_axioms.push(sub.numberOfAxioms)
+        end
 
       end
     end
@@ -101,6 +105,7 @@ class LandscapeController < ApplicationController
     @metrics_classes_with_one_child = get_average(array_metrics_classes_with_one_child)
     @metrics_classes_25_children = get_average(array_metrics_classes_25_children)
     @metrics_classes_no_definition = get_average(array_metrics_classes_no_definition)
+    @metrics_no_axioms = get_average(array_metrics_no_axioms)
 
 
     # Generate the JSON to put natural languages in the pie chart
