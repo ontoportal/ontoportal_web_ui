@@ -6,7 +6,9 @@
 %div{:style => "padding: 1em;", :align => "center"}
   %h1 Landscape
 
-  %div#pieChart
+  %div#naturalLanguagePieChartDiv
+
+  %div#prefLabelPieChartDiv
 
   %div#cloudChart
 
@@ -55,9 +57,11 @@
 :javascript
 
   // Get the data to generate the pie chart for naturalLanguages
-  var pieJson = #{@natural_language_json_pie}
+  var naturalLanguagePieJson = #{@natural_language_json_pie}
   // Get the data to generate the cloud chart for naturalLanguages
   var cloudJson = #{@natural_language_json_cloud}
+  // Get the data for the prefLabel pie chart
+  var prefLabelPieJson = #{@prefLabelProperty_json_pie}
 
 / This javascript needs to be called after pieJson and cloudJson have been set
 =javascript_include_tag "bp_landscape"

@@ -10,6 +10,7 @@ class LandscapeController < ApplicationController
 
     # A hash with the language label and the number of time it appears in sub.naturalLanguage
     natural_language_hash = {}
+    prefLabelProperty_hash = {}
     array_metrics_num_classes = []
     array_metrics_number_of_individuals = []
     array_metrics_number_of_properties = []
@@ -28,6 +29,7 @@ class LandscapeController < ApplicationController
 
       if !sub.nil?
 
+        # Get hash of natural language use
         if !sub.naturalLanguage.nil? && !sub.naturalLanguage.empty?
           sub.naturalLanguage.each do |sub_lang|
             # replace lexvo URI by lexvo prefix
@@ -41,6 +43,24 @@ class LandscapeController < ApplicationController
               natural_language_hash[sub_lang.to_s] = 1
             end
           end
+        end
+
+        # Get the prefLabelProperty used for OWL properties in a hash
+        if sub.hasOntologyLanguage.eql?("OWL")
+          if sub.prefLabelProperty.nil? || sub.prefLabelProperty.empty?
+            # if prefLabelProperty null then we increment the default value (skos;prefLabel)
+            sub_pref_label = "http://www.w3.org/2004/02/skos/core#prefLabel"
+          else
+            sub_pref_label = sub.prefLabelProperty.to_s
+          end
+
+          # If prefLabelProperty already in hash then we increment the count of the prefLabel in the hash
+          if prefLabelProperty_hash.has_key?(sub_pref_label)
+            prefLabelProperty_hash[sub_pref_label] = prefLabelProperty_hash[sub_pref_label] + 1
+          else
+            prefLabelProperty_hash[sub_pref_label] = 1
+          end
+
         end
 
         # Adding metrics to their arrays
@@ -90,6 +110,8 @@ class LandscapeController < ApplicationController
     @natural_language_json_pie = []
     # Get the different naturalLanguage of submissions to generate a tag cloud
     @natural_language_json_cloud = []
+    # Generate the JSON to put natural languages in the pie chart
+    @prefLabelProperty_json_pie = []
 
     natural_language_hash.each do |lang,no|
       @natural_language_json_cloud.push({"text"=>lang.to_s,"size"=>no*5, "color"=>pie_colors_array[color_index]})
@@ -98,9 +120,14 @@ class LandscapeController < ApplicationController
       color_index += 1
     end
 
+    prefLabelProperty_hash.each do |pref_label,no|
+      @prefLabelProperty_json_pie.push({"label"=>pref_label.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
+      color_index += 1
+    end
+
     @natural_language_json_cloud = @natural_language_json_cloud.to_json.html_safe
     @natural_language_json_pie = @natural_language_json_pie.to_json.html_safe
-
+    @prefLabelProperty_json_pie = @prefLabelProperty_json_pie.to_json.html_safe
 
   end
 

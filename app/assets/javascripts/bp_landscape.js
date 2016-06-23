@@ -1,72 +1,79 @@
-// Get the data to generate the pie chart for the naturalLanguage
 
 // Creating a pie chart using d3pie.js
-var pie = new d3pie("pieChart", {
-    "header": {
-        "title": {
-            "text": "Ontologies natural languages in AgroPortal",
-            "fontSize": 24,
-            "font": "open sans"
+// function to generate a pie chart given 4 simple params: the div class name (the html div where the pie chart will go)
+// the JSON containing the chart data. 2 strings for chart title and subtitle
+var createPie = function(divName, json, title, subtitle) {
+    new d3pie(divName, {
+        "header": {
+            "title": {
+                "text": title,
+                "fontSize": 24,
+                "font": "open sans"
+            },
+            "subtitle": {
+                "text": subtitle,
+                "color": "#999999",
+                "fontSize": 12,
+                "font": "open sans"
+            },
+            "titleSubtitlePadding": 9
         },
-        "subtitle": {
-            "text": "A pie chart to show the different natural languages used in AgroPortal",
+        "footer": {
             "color": "#999999",
-            "fontSize": 12,
-            "font": "open sans"
+            "fontSize": 10,
+            "font": "open sans",
+            "location": "bottom-left"
         },
-        "titleSubtitlePadding": 9
-    },
-    "footer": {
-        "color": "#999999",
-        "fontSize": 10,
-        "font": "open sans",
-        "location": "bottom-left"
-    },
-    "size": {
-        "canvasWidth": 590,
-        "pieOuterRadius": "90%"
-    },
-    "data": {
-        "sortOrder": "value-desc",
-        "content": pieJson
-    },
-    "labels": {
-        "outer": {
-            "pieDistance": 32
+        "size": {
+            "canvasWidth": 590,
+            "pieOuterRadius": "90%"
         },
-        "inner": {
-            "hideWhenLessThanPercentage": 3
+        "data": {
+            "sortOrder": "value-desc",
+            "content": json
         },
-        "mainLabel": {
-            "fontSize": 11
+        "labels": {
+            "outer": {
+                "pieDistance": 32
+            },
+            "inner": {
+                "hideWhenLessThanPercentage": 3
+            },
+            "mainLabel": {
+                "fontSize": 11
+            },
+            "percentage": {
+                "color": "#ffffff",
+                "decimalPlaces": 0
+            },
+            "value": {
+                "color": "#adadad",
+                "fontSize": 11
+            },
+            "lines": {
+                "enabled": true
+            }
         },
-        "percentage": {
-            "color": "#ffffff",
-            "decimalPlaces": 0
+        "effects": {
+            "pullOutSegmentOnClick": {
+                "effect": "linear",
+                "speed": 400,
+                "size": 8
+            }
         },
-        "value": {
-            "color": "#adadad",
-            "fontSize": 11
-        },
-        "lines": {
-            "enabled": true
+        "misc": {
+            "gradient": {
+                "enabled": true,
+                "percentage": 100
+            }
         }
-    },
-    "effects": {
-        "pullOutSegmentOnClick": {
-            "effect": "linear",
-            "speed": 400,
-            "size": 8
-        }
-    },
-    "misc": {
-        "gradient": {
-            "enabled": true,
-            "percentage": 100
-        }
-    }
-});
+    })
+}
 
+// To create a new pie chart: add "%div#prefLabelPieChartDiv" to html and use the createPie function
+var naturalLanguagePie = createPie("naturalLanguagePieChartDiv", naturalLanguagePieJson, "Ontologies natural languages in AgroPortal", "A pie chart to show the different natural languages used in AgroPortal");
+
+var prefLabelPie = createPie("prefLabelPieChartDiv", prefLabelPieJson, "Ontologies prefLabel properties in AgroPortal", "A pie chart to show the different prefLabel property URIs used for OWL ontologies in AgroPortal");
 
 
 // Generate the tag cloud
