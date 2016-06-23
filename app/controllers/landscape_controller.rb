@@ -5,8 +5,9 @@ class LandscapeController < ApplicationController
     @ontologies = LinkedData::Client::Models::Ontology.all(include_views: false)
     #@submissions = LinkedData::Client::Models::OntologySubmission.all(values: params[:submission])
 
-    # Array with color codes for the pie chart
+    # Array with color codes for the pie charts. iterate color_index to change color
     pie_colors_array = ["#2484c1", "#0c6197", "#4daa4b", "#90c469", "#daca61", "#e4a14b", "#e98125", "#cb2121", "#830909", "#923e99", "#ae83d5", "#bf273e", "#ce2aeb", "#bca44a", "#618d1b", "#1ee67b", "#b0ec44", "#a4a0c9", "#322849", "#86f71a", "#d1c87f", "#7d9058", "#44b9b0", "#7c37c0", "#cc9fb1", "#e65414", "#8b6834", "#248838"];
+    color_index = 0
 
     # A hash with the language label and the number of time it appears in sub.naturalLanguage
     natural_language_hash = {}
@@ -15,18 +16,16 @@ class LandscapeController < ApplicationController
     definitionProperty_hash = {}
     authorProperty_hash = {}
 
-    array_metrics_num_classes = []
-    array_metrics_number_of_individuals = []
-    array_metrics_number_of_properties = []
-    array_metrics_max_depth = []
-    array_metrics_max_child_count = []
-    array_metrics_average_child_count = []
-    array_metrics_classes_with_one_child = []
-    array_metrics_classes_25_children = []
-    array_metrics_classes_no_definition = []
-    array_metrics_no_axioms = []
-
-    color_index = 0
+    @metrics_average = [{:attr => "numberOfClasses", :label => "Number of classes", :array => []},
+                        {:attr => "numberOfIndividuals", :label => "Number of individuals", :array => []},
+                        {:attr => "numberOfProperties", :label => "Number of properties", :array => []},
+                        {:attr => "maxDepth", :label => "Max depth", :array => []},
+                        {:attr => "maxChildCount", :label => "Max child count", :array => []},
+                        {:attr => "averageChildCount", :label => "Average child count", :array => []},
+                        {:attr => "classesWithOneChild", :label => "Classes with one child", :array => []},
+                        {:attr => "classesWithMoreThan25Children", :label => "Classes with more than 25 children", :array => []},
+                        {:attr => "classesWithNoDefinition", :label => "Classes with no definition	", :array => []},
+                        {:attr => "numberOfAxioms", :label => "Number of axioms (triples)", :array => []}]
 
     # Iterate ontologies to get the submissions with all metadata
     @ontologies.each do |ont|
@@ -61,52 +60,15 @@ class LandscapeController < ApplicationController
           authorProperty_hash = get_used_properties(sub.authorProperty, "http://purl.org/dc/elements/1.1/creator", authorProperty_hash)
         end
 
-        # Adding metrics to their arrays
-        if !sub.numberOfClasses.nil?
-          array_metrics_num_classes.push(sub.numberOfClasses)
-        end
-        if !sub.numberOfIndividuals.nil?
-          array_metrics_number_of_individuals.push(sub.numberOfIndividuals)
-        end
-        if !sub.numberOfProperties.nil?
-          array_metrics_number_of_properties.push(sub.numberOfProperties)
-        end
-        if !sub.maxDepth.nil?
-          array_metrics_max_depth.push(sub.maxDepth)
-        end
-        if !sub.maxChildCount.nil?
-          array_metrics_max_child_count.push(sub.maxChildCount)
-        end
-        if !sub.averageChildCount.nil?
-          array_metrics_average_child_count.push(sub.averageChildCount)
-        end
-        if !sub.classesWithOneChild.nil?
-          array_metrics_classes_with_one_child.push(sub.classesWithOneChild)
-        end
-        if !sub.classesWithMoreThan25Children.nil?
-          array_metrics_classes_25_children.push(sub.classesWithMoreThan25Children)
-        end
-        if !sub.classesWithNoDefinition.nil?
-          array_metrics_classes_no_definition.push(sub.classesWithNoDefinition)
-        end
-        if !sub.numberOfAxioms.nil?
-          array_metrics_no_axioms.push(sub.numberOfAxioms)
-        end
+        get_metrics_for_average(sub)
 
       end
     end
 
-    @metrics_num_classes_average = get_average(array_metrics_num_classes)
-    @metrics_number_of_individuals = get_average(array_metrics_number_of_individuals)
-    @number_of_properties = get_average(array_metrics_number_of_properties)
-    @metrics_max_depth = get_average(array_metrics_max_depth)
-    @metrics_max_child_count = get_average(array_metrics_max_child_count)
-    @metrics_average_child_count = get_average(array_metrics_average_child_count)
-    @metrics_classes_with_one_child = get_average(array_metrics_classes_with_one_child)
-    @metrics_classes_25_children = get_average(array_metrics_classes_25_children)
-    @metrics_classes_no_definition = get_average(array_metrics_classes_no_definition)
-    @metrics_no_axioms = get_average(array_metrics_no_axioms)
-
+    # Add value of metrics to the @metrics_average hash
+    @metrics_average.each do |metrics|
+      metrics[:average] = (metrics[:array].sum / metrics[:array].size.to_f).round(2)
+    end
 
     # Generate the JSON to put natural languages in the pie chart
     @natural_language_json_pie = []
@@ -153,19 +115,31 @@ class LandscapeController < ApplicationController
 
   end
 
-  def get_average(integer_array)
-    return (integer_array.sum / integer_array.size.to_f).round(2)
+
+  ##
+  # Add metrics metadata from the param sub to the @metrics_average var to get the average for each metrics
+  def get_metrics_for_average(sub)
+    # Adding metrics to their arrays
+
+    @metrics_average.each do |metrics|
+      if !sub.send(metrics[:attr]).nil?
+        metrics[:array].push(sub.send(metrics[:attr]))
+      end
+    end
   end
 
+  ##
+  # Increment the hash entry for the property used by the submission for the given attribute
+  # If null it increments the value for the default_property (for prefLabel prop or synonym prop for example)
   def get_used_properties(attr_value, default_property, property_hash)
     if attr_value.nil? || attr_value.empty?
-      # if prefLabelProperty null then we increment the default value
+      # if property null then we increment the default value
       attr_value = default_property
     else
       attr_value = attr_value.to_s
     end
 
-    # If attribute value property already in hash then we increment the count of the prefLabel in the hash
+    # If attribute value property already in hash then we increment the count of the property in the hash
     if property_hash.has_key?(attr_value)
       property_hash[attr_value] = property_hash[attr_value] + 1
     else
