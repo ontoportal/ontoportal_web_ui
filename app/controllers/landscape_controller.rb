@@ -43,6 +43,7 @@ class LandscapeController < ApplicationController
           end
         end
 
+        # Adding metrics to their arrays
         if !sub.numberOfClasses.nil?
           array_metrics_num_classes.push(sub.numberOfClasses)
         end
@@ -70,10 +71,6 @@ class LandscapeController < ApplicationController
         if !sub.classesWithNoDefinition.nil?
           array_metrics_classes_no_definition.push(sub.classesWithNoDefinition)
         end
-
-
-
-
 
       end
     end
