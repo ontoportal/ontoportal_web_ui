@@ -59,4 +59,8 @@ class SubmissionsController < ApplicationController
     end
   end
 
+  def edit_metadata
+
+  end
+
 end
