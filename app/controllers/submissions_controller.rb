@@ -59,8 +59,12 @@ class SubmissionsController < ApplicationController
     end
   end
 
+  ###
+  # Controller of views/submission/edit_metadata.html.haml
   def edit_metadata
-
+    # Get the submission metadata from the REST API
+    json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
+    @metadata = json_metadata
   end
 
 end
