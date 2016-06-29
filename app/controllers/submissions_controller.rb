@@ -71,9 +71,11 @@ class SubmissionsController < ApplicationController
       @metadata = json_metadata
 
     elsif request.post?
+      @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:acronym]).first
+      @submission = @ontology.explore.latest_submission
 
       # For the moment just print in console and redirect to the same page
-      puts "test in post_metadata"
+      puts @submission
       redirect_to "#{request.fullpath}"
     end
   end
