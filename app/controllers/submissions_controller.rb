@@ -75,7 +75,7 @@ class SubmissionsController < ApplicationController
       @submission = @ontology.explore.latest_submission
 
       # For the moment just print in console and redirect to the same page
-      puts @submission
+      puts @submission.send("id")
       redirect_to "#{request.fullpath}"
     end
   end

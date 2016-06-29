@@ -9,7 +9,16 @@
     - for attr in @metadata
       - if attr["extracted"]
         %br
-        = text_field_tag(attr["attribute"])
+        - if attr["enforce"].include?("integer")
+          = number_field_tag(attr["attribute"])
+        - elsif attr["enforce"].include?("date_time")
+          = date_field_tag(attr["attribute"])
+        - elsif attr["enforce"].include?("uri")
+          = url_field_tag(attr["attribute"])
+        - elsif attr["enforce"].include?("boolean")
+          = select_tag(attr["attribute"], "<option>true</option><option>false</option>".html_safe)
+        - else
+          = text_field_tag(attr["attribute"])
         = label_tag(attr["attribute"], attr["attribute"])
 
     = submit_tag("Add metadata")
