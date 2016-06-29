@@ -1,1 +1,17 @@
-= @metadata
+- @title = "Edit submission metadata"
+
+%div{:style => "padding: 1em;"}
+  %h1 Add submission metadata
+
+  = form_tag
+  = # For unknown reason Rails is not creating the above form if there is no comment. This call the same page with "POST" (redirect to edit_metadata in sub controller)
+
+    - for attr in @metadata
+      - if attr["extracted"]
+        %br
+        = text_field_tag(attr["attribute"])
+        = label_tag(attr["attribute"], attr["attribute"])
+
+        - if attr["enforce"].include?("integer")
+
+  = submit_tag("yeah")

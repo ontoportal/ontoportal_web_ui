@@ -61,10 +61,22 @@ class SubmissionsController < ApplicationController
 
   ###
   # Controller of views/submission/edit_metadata.html.haml
+  # When GET: retrieve metadata infos to display form
+  # When POST: edit the submission metadata
   def edit_metadata
-    # Get the submission metadata from the REST API
-    json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
-    @metadata = json_metadata
+
+    if request.get?
+      # Get the submission metadata from the REST API
+      json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
+      @metadata = json_metadata
+
+    elsif request.post?
+
+      # For the moment just print in console and redirect to the same page
+      puts "test in post_metadata"
+      redirect_to "#{request.fullpath}"
+    end
   end
+
 
 end
