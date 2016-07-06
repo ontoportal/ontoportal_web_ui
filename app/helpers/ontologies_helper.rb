@@ -1,5 +1,8 @@
 module OntologiesHelper
 
+  REST_URI = $REST_URL
+  API_KEY = $API_KEY
+
   def additional_details
     return "" if $ADDITIONAL_ONTOLOGY_DETAILS.nil? || $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.acronym].nil?
     details = $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.acronym]
@@ -14,20 +17,29 @@ module OntologiesHelper
   end
 
   def additional_metadata(sub)
-    return "" if $ADDITIONAL_ONTOLOGY_METADATA.nil?
+    # Get the list of metadata attribute from the REST API
+    json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
+    metadata_list = []
+    json_metadata.each do |metadata|
+      if metadata["extracted"] == true
+        metadata_list << metadata["attribute"]
+      end
+    end
+
     html = []
     begin
-      $ADDITIONAL_ONTOLOGY_METADATA.each do |metadata|
+      metadata_list.each do |metadata|
+        # different html build if list or single value
         if sub.send(metadata).kind_of?(Array)
           if sub.send(metadata).any?
             html << content_tag(:tr) do
               concat(content_tag(:th, metadata.gsub(/(?=[A-Z])/, " ")))
               metadata_array = []
-              sub.send(metadata).each do |metadata|
-                if metadata.start_with?("http:") || metadata.start_with?("https:")
-                  metadata_array.push("<a href=\"#{metadata}\" target=\"_blank\">#{metadata}</a>")
+              sub.send(metadata).each do |metadata_value|
+                if metadata_value.to_s.start_with?("http:") || metadata_value.to_s.start_with?("https:")
+                  metadata_array.push("<a href=\"#{metadata_value.to_s}\" target=\"_blank\">#{metadata_value.to_s}</a>")
                 else
-                  metadata_array.push(metadata)
+                  metadata_array.push(metadata_value)
                 end
               end
               concat(content_tag(:td, raw(metadata_array.join(", "))))
@@ -37,10 +49,10 @@ module OntologiesHelper
           if !sub.send(metadata).nil?
             html << content_tag(:tr) do
               concat(content_tag(:th, metadata.gsub(/(?=[A-Z])/, " ")))
-              if sub.send(metadata).start_with?("http:") || sub.send(metadata).start_with?("https:")
-                concat(content_tag(:td, raw("<a href=\"#{sub.send(metadata)}\" target=\"_blank\">#{sub.send(metadata)}</a>")))
+              if sub.send(metadata).to_s.start_with?("http:") || sub.send(metadata).to_s.start_with?("https:")
+                concat(content_tag(:td, raw("<a href=\"#{sub.send(metadata).to_s}\" target=\"_blank\">#{sub.send(metadata).to_s}</a>")))
               else
-                concat(content_tag(:td, raw(sub.send(metadata))))
+                concat(content_tag(:td, raw(sub.send(metadata).to_s)))
               end
             end
           end
@@ -48,6 +60,8 @@ module OntologiesHelper
       end
     rescue => e
       LOG.add :debug, "Unable to retrieve additional ontology metadata"
+      LOG.add :debug, "error: #{e}"
+      LOG.add :debug, "error message: #{e.message}"
     end
     html.join("")
   end
