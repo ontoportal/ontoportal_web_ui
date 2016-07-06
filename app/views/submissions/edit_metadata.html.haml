@@ -16,7 +16,7 @@
         - elsif attr["enforce"].include?("uri")
           = url_field_tag(attr["attribute"])
         - elsif attr["enforce"].include?("boolean")
-          = select_tag(attr["attribute"], "<option>true</option><option>false</option>".html_safe)
+          = select_tag(attr["attribute"], "<option>none</option><option>true</option><option>false</option>".html_safe)
         - else
           = text_field_tag(attr["attribute"])
         = label_tag(attr["attribute"], attr["attribute"])
