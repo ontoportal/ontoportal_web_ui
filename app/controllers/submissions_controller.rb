@@ -1,7 +1,7 @@
 class SubmissionsController < ApplicationController
 
   layout 'ontology'
-  before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
+  before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new, :edit_metadata]
 
   def new
     @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params[:ontology_id])) rescue nil
@@ -72,11 +72,68 @@ class SubmissionsController < ApplicationController
 
     elsif request.post?
       @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:acronym]).first
-      @submission = @ontology.explore.latest_submission
+      submissions = @ontology.explore.submissions
+      @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
 
+      puts "submission #{@submission.to_s}"
+
+      # Get the list of extracted metadata
+      json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
+      extracted_metadata_array = []
+      json_metadata.each do |metadata|
+        extracted_metadata_array << metadata["attribute"] if metadata["extracted"]
+      end
+
+      new_values = {}
       # For the moment just print in console and redirect to the same page
-      puts @submission.send("id")
+      params.each do |param|
+        if extracted_metadata_array.include?(param[0])
+          puts "param #{param}"
+          if param.length > 0 && !param[1].nil? && !param[1].eql?("") && !param[0].eql?("deprecated")
+            # TODO: enelever l'exception pour deprecated
+            new_values[param[0].to_s] = param[1]
+          end
+        end
+      end
+
+
+
+      # Get list of ontologies in the portal
+      ##json_ontologies = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/ontologies?apikey=#{API_KEY}")), {:symbolize_names => true})
+      # JSON keys have been symbolized
+=begin
+      puts "REST uri #{REST_URI}"
+      uri = URI.parse(REST_URI)
+      http = Net::HTTP.new(uri.host, uri.port)
+
+      # curl http://localhost9393/ontologies/AGROOE/latest_submission
+      # curl -X PATCH -H "Content-Type: application/json" -H "Authorization: apikey token=1cfae05f-9e67-486f-820b-b393dec5764b" -d '{"notes": "teeest"}' http://localhost9393/ontologies/AGROOE/latest_submission
+
+      req = Net::HTTP::Patch.new("#{REST_URI}/ontologies/#{params[:acronym].to_s}/latest_submission")
+      req['Content-Type'] = "application/json"
+      req['Authorization'] = "apikey token=#{API_KEY}"
+      req.body = new_values.to_json
+
+      puts "paaath /ontologies/#{params[:acronym].to_s}/submissions/#{params[:submissionId].to_s}"
+      puts "jsoooon #{new_values.to_json}"
+
+      response = http.start do |http|
+        http.request(req)
+      end
+
+      puts "Response status : #{response.code} #{response.body}"
+      puts " "
+
+=end
+
+      puts "new values #{new_values}"
+
+      @submission.update_from_params(new_values)
+      @submission.update
+      @ontology.save
+      #puts response.errors
       redirect_to "#{request.fullpath}"
+      #redirect_to "#{"http://google.com"}"
     end
   end
 
