@@ -45,7 +45,9 @@ class OntologiesController < ApplicationController
     @admin = session[:user] ? session[:user].admin? : false
     @development = Rails.env.development?
 
-    submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true, display_links: false, display_context: false)
+    # The attributes used when retrieving the submission. We are not retrieving all attributes to be faster
+    browse_attributes = "ontology,acronym,submissionStatus,description,pullLocation,creationDate,name"
+    submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true, display_links: false, display_context: false, include: browse_attributes)
     submissions_map = Hash[submissions.map {|sub| [sub.ontology.acronym, sub] }]
 
     @categories = LinkedData::Client::Models::Category.all(display_links: false, display_context: false)
