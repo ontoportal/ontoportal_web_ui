@@ -1,7 +1,7 @@
 class SubmissionsController < ApplicationController
 
   layout 'ontology'
-  before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new, :edit_metadata]
+  before_action :authorize_and_redirect, :only=>[:edit, :update, :create, :new, :edit_metadata]
 
   def new
     @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params[:ontology_id])) rescue nil
@@ -96,8 +96,6 @@ class SubmissionsController < ApplicationController
         end
       end
 
-
-
       # Get list of ontologies in the portal
       ##json_ontologies = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/ontologies?apikey=#{API_KEY}")), {:symbolize_names => true})
       # JSON keys have been symbolized
@@ -126,14 +124,28 @@ class SubmissionsController < ApplicationController
 
 =end
 
+      @submission.update_from_params(params[:submission])
+      error_response = @submission.update
+
+      if error_response
+        @errors = response_errors(error_response) # see application_controller::response_errors
+      else
+        redirect_to "#{request.fullpath}"
+      end
+=begin
       puts "new values #{new_values}"
+
+      binding.pry
 
       @submission.update_from_params(new_values)
       @submission.update
+      puts "errorss: #{@submission.errors}"
       @ontology.save
       #puts response.errors
+      # update marche pas.
       redirect_to "#{request.fullpath}"
       #redirect_to "#{"http://google.com"}"
+=end
     end
   end
 
