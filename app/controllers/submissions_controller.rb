@@ -80,24 +80,40 @@ class SubmissionsController < ApplicationController
       # Get the list of extracted metadata
       json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
       extracted_metadata_array = []
+      boolean_metadata_array = []
+      int_metadata_array = []
       json_metadata.each do |metadata|
         extracted_metadata_array << metadata["attribute"] if metadata["extracted"]
+        boolean_metadata_array << metadata["attribute"] if metadata["enforce"].include?("boolean")
+        int_metadata_array << metadata["attribute"] if metadata["enforce"].include?("integer")
       end
 
       # We need to initialize ontology param to get the update working...
       new_values = {"ontology"=>params[:acronym]}
       # For the moment just print in console and redirect to the same page
       params.each do |param|
+        # param is an array with 2 values: [metadata attribute, metadata value]
         if extracted_metadata_array.include?(param[0])
-          puts "param #{param}"
-          if param.length > 0 && !param[1].nil? && !param[1].eql?("") && !param[0].eql?("deprecated")
-            # TODO: enlever l'exception pour deprecated
-            new_values[param[0].to_s] = param[1]
+          if param.length > 0 && !param[1].nil? && !param[1].eql?("")
+            attr = param[0]
+            attr_value = param[1]
+            if boolean_metadata_array.include?(attr.to_s)
+              # If the attribute is a boolean
+              if attr_value.to_s.downcase.eql?("true")
+                new_values[attr.to_s] = true
+              elsif attr_value.to_s.downcase.eql?("false")
+                new_values[attr.to_s] = false
+              end
+            elsif int_metadata_array.include?(attr.to_s)
+              # If the attribute is an integer
+              new_values[attr.to_s] = Integer(attr_value)
+            else
+              new_values[attr.to_s] = attr_value
+            end
           end
         end
       end
-
-      #binding.pry
+      
       @submission.update_from_params(new_values)
       error_response = @submission.update
 
@@ -106,20 +122,6 @@ class SubmissionsController < ApplicationController
       else
         redirect_to "/ontologies/#{@ontology.acronym}"
       end
-=begin
-      puts "new values #{new_values}"
-
-      binding.pry
-
-      @submission.update_from_params(new_values)
-      @submission.update
-      puts "errorss: #{@submission.errors}"
-      @ontology.save
-      #puts response.errors
-      # update marche pas.
-      redirect_to "#{request.fullpath}"
-      #redirect_to "#{"http://google.com"}"
-=end
     end
   end
 
