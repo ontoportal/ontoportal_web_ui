@@ -84,53 +84,27 @@ class SubmissionsController < ApplicationController
         extracted_metadata_array << metadata["attribute"] if metadata["extracted"]
       end
 
-      new_values = {}
+      # We need to initialize ontology param to get the update working...
+      new_values = {"ontology"=>params[:acronym]}
       # For the moment just print in console and redirect to the same page
       params.each do |param|
         if extracted_metadata_array.include?(param[0])
           puts "param #{param}"
           if param.length > 0 && !param[1].nil? && !param[1].eql?("") && !param[0].eql?("deprecated")
-            # TODO: enelever l'exception pour deprecated
+            # TODO: enlever l'exception pour deprecated
             new_values[param[0].to_s] = param[1]
           end
         end
       end
 
-      # Get list of ontologies in the portal
-      ##json_ontologies = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/ontologies?apikey=#{API_KEY}")), {:symbolize_names => true})
-      # JSON keys have been symbolized
-=begin
-      puts "REST uri #{REST_URI}"
-      uri = URI.parse(REST_URI)
-      http = Net::HTTP.new(uri.host, uri.port)
-
-      # curl http://localhost9393/ontologies/AGROOE/latest_submission
-      # curl -X PATCH -H "Content-Type: application/json" -H "Authorization: apikey token=1cfae05f-9e67-486f-820b-b393dec5764b" -d '{"notes": "teeest"}' http://localhost9393/ontologies/AGROOE/latest_submission
-
-      req = Net::HTTP::Patch.new("#{REST_URI}/ontologies/#{params[:acronym].to_s}/latest_submission")
-      req['Content-Type'] = "application/json"
-      req['Authorization'] = "apikey token=#{API_KEY}"
-      req.body = new_values.to_json
-
-      puts "paaath /ontologies/#{params[:acronym].to_s}/submissions/#{params[:submissionId].to_s}"
-      puts "jsoooon #{new_values.to_json}"
-
-      response = http.start do |http|
-        http.request(req)
-      end
-
-      puts "Response status : #{response.code} #{response.body}"
-      puts " "
-
-=end
-
-      @submission.update_from_params(params[:submission])
+      #binding.pry
+      @submission.update_from_params(new_values)
       error_response = @submission.update
 
       if error_response
         @errors = response_errors(error_response) # see application_controller::response_errors
       else
-        redirect_to "#{request.fullpath}"
+        redirect_to "/ontologies/#{@ontology.acronym}"
       end
 =begin
       puts "new values #{new_values}"
