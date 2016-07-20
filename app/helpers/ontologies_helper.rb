@@ -29,8 +29,8 @@ module OntologiesHelper
     html = []
     begin
       metadata_list.each do |metadata|
-        # Don't display status and description, they are already in main details
-        if !metadata.eql?("status") && !metadata.eql?("description")
+        # Don't display documentation, publication, homepage, status and description, they are already in main details
+        if !metadata.eql?("status") && !metadata.eql?("description") && !metadata.eql?("documentation") && !metadata.eql?("publication") && !metadata.eql?("homepage")
           # different html build if list or single value
           if sub.send(metadata).kind_of?(Array)
             if sub.send(metadata).any?
