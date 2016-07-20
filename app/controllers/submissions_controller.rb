@@ -82,10 +82,12 @@ class SubmissionsController < ApplicationController
       extracted_metadata_array = []
       boolean_metadata_array = []
       int_metadata_array = []
+      list_metadata_array = []
       json_metadata.each do |metadata|
         extracted_metadata_array << metadata["attribute"] if metadata["extracted"]
         boolean_metadata_array << metadata["attribute"] if metadata["enforce"].include?("boolean")
         int_metadata_array << metadata["attribute"] if metadata["enforce"].include?("integer")
+        list_metadata_array << metadata["attribute"] if metadata["enforce"].include?("list")
       end
 
       # We need to initialize ontology param to get the update working...
@@ -97,6 +99,12 @@ class SubmissionsController < ApplicationController
           if param.length > 0 && !param[1].nil? && !param[1].eql?("")
             attr = param[0]
             attr_value = param[1]
+            if list_metadata_array.include?(attr.to_s)
+              if new_values[attr.to_s].nil?
+                new_values[attr.to_s] = []
+              end
+            end
+
             if boolean_metadata_array.include?(attr.to_s)
               # If the attribute is a boolean
               if attr_value.to_s.downcase.eql?("true")
@@ -106,9 +114,20 @@ class SubmissionsController < ApplicationController
               end
             elsif int_metadata_array.include?(attr.to_s)
               # If the attribute is an integer
-              new_values[attr.to_s] = Integer(attr_value)
+              if list_metadata_array.include?(attr.to_s)
+                new_values[attr.to_s] << Integer(attr_value)
+              else
+                new_values[attr.to_s] = Integer(attr_value)
+              end
             else
-              new_values[attr.to_s] = attr_value
+              if list_metadata_array.include?(attr.to_s)
+                # If metadata is a list then we also get value from input 1 and 2 (see views/submissions/edit_metadata.html.haml)
+                new_values[attr.to_s] << attr_value
+                new_values[attr.to_s] << params[attr + "1"]
+                new_values[attr.to_s] << params[attr + "2"]
+              else
+                new_values[attr.to_s] = attr_value
+              end
             end
           end
         end
