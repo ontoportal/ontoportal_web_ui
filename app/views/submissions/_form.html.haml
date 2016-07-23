@@ -287,6 +287,7 @@
         Has Formality Level
       %td
         = text_field :submission, :hasFormalityLevel, value: @submission.hasFormalityLevel
+        = select_tag :hasFormalityLevel, options_for_select($FORMALITY_LEVELS.collect{ |u| [u, u] }, 0)
 
     %tr
       %td{:align => "right", :colspan => "2"}
