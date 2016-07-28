@@ -11,6 +11,7 @@
         - if @submission.send(attr["attribute"]).nil?
           %div{:style => "padding-top: 10px;"}
             = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
+            = label_tag(attr["enforce"], "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})") if attr["enforce"].length > 1
             - if attr["enforce"].include?("integer")
               = number_field_tag(attr["attribute"])
             - elsif attr["enforce"].include?("date_time")
