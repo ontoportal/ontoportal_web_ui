@@ -9,7 +9,7 @@
     %table
       - for attr in @metadata
         - if attr["extracted"]
-          - if @submission.send(attr["attribute"]).nil?
+          - if @submission.send(attr["attribute"]).nil? || @submission.send(attr["attribute"]).empty?
             %tr
               %th
                 = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
