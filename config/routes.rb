@@ -33,7 +33,7 @@ BioportalWebUi::Application.routes.draw do
 
   resources :annotator
 
-  resources :landscape
+  #resources :landscape
 
   resources :virtual_appliance
 
