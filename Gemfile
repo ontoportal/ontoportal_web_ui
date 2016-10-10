@@ -41,6 +41,7 @@ gem 'rails_autolink'
 gem 'dalli'
 gem 'thin'
 gem 'open_uri_redirections'
+gem 'nokogiri'
 
 # application monitoring
 gem 'newrelic_rpm'
