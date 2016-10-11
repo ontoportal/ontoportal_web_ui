@@ -1,0 +1,2 @@
+Rails.cache.silence!
+
