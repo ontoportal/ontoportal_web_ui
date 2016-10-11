@@ -9,7 +9,7 @@ module HomeHelper
 
     help_text = Rails.cache.read("help_text")
     if help_text.nil?
-      doc = Nokogiri::HTML(open($WIKI_HELP_PAGE, :allow_redirections => :safe))
+      doc = Nokogiri::HTML(open($WIKI_HELP_PAGE, :allow_redirections => :all))
       help_text = doc.xpath("//*[@id='bodyContent']").inner_html
       Rails.cache.write("help_text", help_text, expires_in: 60*60)
     end
