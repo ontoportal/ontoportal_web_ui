@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.1'
+gem 'rails', '4.2.6'
 
 gem 'sass-rails', '~> 5.0'
 gem 'coffee-rails', '~> 4.1.0'
@@ -24,7 +24,6 @@ gem 'jquery-rails'
 
 gem "pry"
 gem "iconv"
-gem "hpricot", "~> 0.8.6"
 gem "recaptcha", "= 0.4.0"
 gem "rest-client", "~> 1.8.0"
 gem "mysql", "~> 2.9.1"
@@ -41,6 +40,8 @@ gem 'multi_json'
 gem 'rails_autolink'
 gem 'dalli'
 gem 'thin'
+gem 'open_uri_redirections'
+gem 'nokogiri'
 
 # application monitoring
 gem 'newrelic_rpm'
