@@ -35,3 +35,14 @@ $ONTOLOGY_SYNTAXES = {
   "http://www.w3.org/ns/formats/Turtle" => "Turtle",
   "http://www.w3.org/ns/formats/TriG" => "TriG"
 }
+
+$LICENSES = {
+    "https://opensource.org/licenses/MIT" => "MIT License",
+    "http://www.gnu.org/licenses/gpl-2.0" => "GNU General Public License 2.0",
+    "http://www.gnu.org/licenses/gpl-3.0" => "GNU General Public License 3.0",
+    "http://www.apache.org/licenses/LICENSE-2.0" => "Apache License 2.0",
+    "https://opensource.org/licenses/BSD-3-Clause" => "BSD 3-Clause License",
+    "https://creativecommons.org/publicdomain/mark/1.0/" => "CC Public Domain Mark 1.0",
+    "http://creativecommons.org/licenses/by-nc/4.0/" => "CC Attribution-NonCommercial 4.0",
+    "other" => "Other"
+}

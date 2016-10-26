@@ -278,8 +278,8 @@
       %td
         %div{:style => "float:left;width:50%;"}
           = #text_field :submission, :licenseTextzz, value: @submission.license
-          = select_tag :license, options_for_select(["none"].concat($FORMALITY_LEVELS.collect{ |k, v| [v,k] }), 0)
-          = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
+          = select_tag :licenseSelect, options_for_select(["none"].concat($LICENSES.collect{ |k, v| [v,k] }), 0)
+          = text_field :submission, :license, :style => 'display:none;margin-top:7px;'
         %div{:style => "float:right;width:50%;text-align:right;"}
           Consider using a
           = link_to "URI to describe your License", "http://rdflicense.appspot.com", target: "_blank"
@@ -326,11 +326,14 @@
 :javascript
 
   $(function() {
-    $('#license').change(function() {
-      if ($('#license').val() == "http://w3id.org/nkos/nkostype#ontology") {
-        $('#submission_licenseText').show();
+    $('#licenseSelect').change(function() {
+      if ($('#licenseSelect').val() == "other") {
+        $('#submission_license').val("");
+        $('#submission_license').show();
       } else {
-        $('#submission_licenseText').hide();
+        $('#submission_license').val($('#licenseSelect').val());
+        $('#submission_license').hide();
+        console.log($('#submission_license').val());
       }
     });
   })
