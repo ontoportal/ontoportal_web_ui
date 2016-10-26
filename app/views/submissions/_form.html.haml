@@ -279,7 +279,11 @@
         %div{:style => "float:left;width:50%;"}
           = text_field :submission, :license, value: @submission.license
         %div{:style => "float:right;width:50%;text-align:right;"}
-          Open property, use URI if possible
+          Consider using a
+          = link_to "URI to describe your License", "http://rdflicense.appspot.com", target: "_blank"
+          %br
+          Don't know which License to use, consider using
+          = link_to "INRIA licentia", "http://licentia.inria.fr/", target: "_blank"
     %tr
       %th
         Ontology Syntax
@@ -306,9 +310,11 @@
         %div{:style => "float:left;width:50%;"}
           = text_field :submission, :naturalLanguage, value: @submission.naturalLanguage
         %div{:style => "float:right;width:50%;text-align:right;"}
-          We recommand using
-          = link_to "Lexvo", "http://www.lexvo.org", target: "_blank"
-          URI with ISO639-3 codes
+          Consider using a
+          = link_to "Lexvo URI", "http://www.lexvo.org", target: "_blank"
+          with ISO639-3 code
+          %br
+          e.g.: http://lexvo.org/id/iso639-3/eng
 
     %tr
       %td{:align => "right", :colspan => "2"}
