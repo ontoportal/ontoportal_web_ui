@@ -50,7 +50,10 @@ class SubmissionsController < ApplicationController
     # Update also hasOntologySyntax and hasFormalityLevel that are in select tag and cant be in params[:submission]
     params[:submission][:hasOntologySyntax] = params[:hasOntologySyntax] if params[:hasOntologySyntax] != "none"
     params[:submission][:hasFormalityLevel] = params[:hasFormalityLevel] if params[:hasFormalityLevel] != "none"
-    params[:submission][:license] = params[:submission][:license] if params[:submission][:license] != "none"
+    params[:submission][:hasLicense] = params[:submission][:hasLicense] if params[:submission][:hasLicense] != "none"
+
+    puts "liceeeeeeeeeeeeeeeense"
+    puts params[:submission][:hasLicense]
 
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
     submissions = @ontology.explore.submissions
