@@ -56,5 +56,7 @@ $NATURAL_LANGUAGES = {
     "http://lexvo.org/id/iso639-3/fra" => "French",
     "http://lexvo.org/id/iso639-3/spa" => "Spanish",
     "http://lexvo.org/id/iso639-3/por" => "Portuguese",
+    "http://lexvo.org/id/iso639-3/ita" => "Italian",
+    "http://lexvo.org/id/iso639-3/deu" => "German",
     "other" => "Other"
 }
