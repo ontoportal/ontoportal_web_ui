@@ -52,9 +52,6 @@ class SubmissionsController < ApplicationController
     params[:submission][:hasFormalityLevel] = params[:hasFormalityLevel] if params[:hasFormalityLevel] != "none"
     params[:submission][:hasLicense] = params[:submission][:hasLicense] if params[:submission][:hasLicense] != "none"
 
-    puts "liceeeeeeeeeeeeeeeense"
-    puts params[:submission][:hasLicense]
-
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
     submissions = @ontology.explore.submissions
     @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
