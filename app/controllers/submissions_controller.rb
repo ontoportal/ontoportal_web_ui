@@ -56,6 +56,12 @@ class SubmissionsController < ApplicationController
     submissions = @ontology.explore.submissions
     @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
 
+    # Add new language to naturalLanguage list
+    natural_languages = @submission.naturalLanguage
+    natural_languages = [] if natural_languages.nil?
+    natural_languages.push(params[:submission][:naturalLanguage]) if params[:submission][:naturalLanguage] != "none"
+    params[:submission][:naturalLanguage] = natural_languages
+
     @submission.update_from_params(params[:submission])
     # Update summaryOnly on ontology object
     @ontology.summaryOnly = @submission.isRemote.eql?("3")

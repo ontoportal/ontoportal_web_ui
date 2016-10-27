@@ -277,8 +277,7 @@
         License
       %td
         %div{:style => "float:left;width:50%;"}
-          = #text_field :submission, :licenseTextzz, value: @submission.license
-          = select_tag :licenseSelect, options_for_select(["none"].concat($LICENSES.collect{ |k, v| [v,k] }), 0)
+          = select_tag :licenseSelect, options_for_select($LICENSES.collect{ |k, v| [v,k] })
           = text_field :submission, :hasLicense, :style => 'display:none;margin-top:7px;'
         %div{:style => "float:right;width:50%;text-align:right;"}
           Consider using a
@@ -292,7 +291,7 @@
         Ontology Syntax
       %td
         %div{:style => "float:left;width:50%;"}
-          = select_tag :hasOntologySyntax, options_for_select(["none"].concat($ONTOLOGY_SYNTAXES.collect{ |k, v| [v,k] }), 0)
+          = select_tag :hasOntologySyntax, options_for_select($ONTOLOGY_SYNTAXES.collect{ |k, v| [v,k] })
         %div{:style => "float:right;width:50%;text-align:right;"}
           Properties taken from
           = link_to "W3C URIs for file format", "https://www.w3.org/ns/formats/", target: "_blank"
@@ -301,7 +300,7 @@
         Has Formality Level
       %td
         %div{:style => "float:left;width:50%;"}
-          = select_tag :hasFormalityLevel, options_for_select(["none"].concat($FORMALITY_LEVELS.collect{ |k, v| [v,k] }), 0)
+          = select_tag :hasFormalityLevel, options_for_select($FORMALITY_LEVELS.collect{ |k, v| [v,k] })
         %div{:style => "float:right;width:50%;text-align:right;"}
           Properties taken from
           = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
@@ -311,7 +310,9 @@
         Natural Language
       %td
         %div{:style => "float:left;width:50%;"}
-          = text_field :submission, :naturalLanguage, value: @submission.naturalLanguage
+          = #text_field :submission, :naturalLanguage, value: @submission.naturalLanguage
+          = select_tag :naturalLanguageSelect, options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] })
+          = text_field :submission, :naturalLanguage, :style => 'display:none;margin-top:7px;'
         %div{:style => "float:right;width:50%;text-align:right;"}
           Consider using a
           = link_to "Lexvo URI", "http://www.lexvo.org", target: "_blank"
@@ -333,6 +334,15 @@
       } else {
         $('#submission_hasLicense').val($('#licenseSelect').val());
         $('#submission_hasLicense').hide();
+      }
+    });
+    $('#naturalLanguageSelect').change(function() {
+      if ($('#naturalLanguageSelect').val() == "other") {
+        $('#submission_naturalLanguage').val("");
+        $('#submission_naturalLanguage').show();
+      } else {
+        $('#submission_naturalLanguage').val($('#naturalLanguageSelect').val());
+        $('#submission_naturalLanguage').hide();
       }
     });
   })
