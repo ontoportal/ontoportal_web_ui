@@ -66,6 +66,7 @@ class SubmissionsController < ApplicationController
     # Update summaryOnly on ontology object
     @ontology.summaryOnly = @submission.isRemote.eql?("3")
     @ontology.update
+    # TODO: really slow!
     error_response = @submission.update
 
     if error_response
