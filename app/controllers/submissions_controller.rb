@@ -18,7 +18,12 @@ class SubmissionsController < ApplicationController
     # Update also hasOntologySyntax and hasFormalityLevel that are in select tag and cant be in params[:submission]
     params[:submission][:hasOntologySyntax] = params[:hasOntologySyntax] if params[:hasOntologySyntax] != "none"
     params[:submission][:hasFormalityLevel] = params[:hasFormalityLevel] if params[:hasFormalityLevel] != "none"
-    # TODO: handle hasLicense and naturalLanguage like in "update" !
+    params[:submission][:hasLicense] = params[:submission][:hasLicense] if params[:submission][:hasLicense] != "none"
+
+    # Add new language to naturalLanguage list
+    natural_languages = []
+    natural_languages.push(params[:submission][:naturalLanguage]) if params[:submission][:naturalLanguage] != "none"
+    params[:submission][:naturalLanguage] = natural_languages
 
     @submission = LinkedData::Client::Models::OntologySubmission.new(values: params[:submission])
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
@@ -34,11 +39,7 @@ class SubmissionsController < ApplicationController
       else
         redirect_to "/ontologies/success/#{@ontology.acronym}"
       end
-      # TODO: BUG HRDO
-      # AbstractController::DoubleRenderError (Render and/or redirect were called multiple times in this action.
-      # Please note that you may only call render OR redirect, and at most once per action. Also note that neither redirect nor render terminate execution of the action,
-      # so if you want to exit an action after redirecting, you need to do something like "redirect_to(...) and return".):
-      # app/controllers/submissions_controller.rb:34:in `create'
+      #Rails.logger.warn "ERRROR: #{@errors}"
       render "new"
     else
       redirect_to "/ontologies/success/#{@ontology.acronym}"
