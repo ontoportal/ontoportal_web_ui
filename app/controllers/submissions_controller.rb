@@ -3,6 +3,7 @@ class SubmissionsController < ApplicationController
   layout 'ontology'
   before_action :authorize_and_redirect, :only=>[:edit, :update, :create, :new, :edit_metadata]
 
+  # Called by create (what's the point of that?)
   def new
     @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params[:ontology_id])) rescue nil
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first unless @ontology
@@ -10,12 +11,14 @@ class SubmissionsController < ApplicationController
     @submission ||= LinkedData::Client::Models::OntologySubmission.new
   end
 
+  # Called when form to "Add submission" is submitted
   def create
     # Make the contacts an array
     params[:submission][:contact] = params[:submission][:contact].values
     # Update also hasOntologySyntax and hasFormalityLevel that are in select tag and cant be in params[:submission]
     params[:submission][:hasOntologySyntax] = params[:hasOntologySyntax] if params[:hasOntologySyntax] != "none"
     params[:submission][:hasFormalityLevel] = params[:hasFormalityLevel] if params[:hasFormalityLevel] != "none"
+    # TODO: handle hasLicense and naturalLanguage like in "update" !
 
     @submission = LinkedData::Client::Models::OntologySubmission.new(values: params[:submission])
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
@@ -31,6 +34,11 @@ class SubmissionsController < ApplicationController
       else
         redirect_to "/ontologies/success/#{@ontology.acronym}"
       end
+      # TODO: BUG HRDO
+      # AbstractController::DoubleRenderError (Render and/or redirect were called multiple times in this action.
+      # Please note that you may only call render OR redirect, and at most once per action. Also note that neither redirect nor render terminate execution of the action,
+      # so if you want to exit an action after redirecting, you need to do something like "redirect_to(...) and return".):
+      # app/controllers/submissions_controller.rb:34:in `create'
       render "new"
     else
       redirect_to "/ontologies/success/#{@ontology.acronym}"
