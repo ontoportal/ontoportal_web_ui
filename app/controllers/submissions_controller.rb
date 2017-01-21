@@ -24,7 +24,7 @@ class SubmissionsController < ApplicationController
     natural_languages = []
     natural_languages.push(params[:submission][:naturalLanguage]) if params[:submission][:naturalLanguage] != "none"
     params[:submission][:naturalLanguage] = natural_languages
-    
+
     @submission = LinkedData::Client::Models::OntologySubmission.new(values: params[:submission])
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
     # Update summaryOnly on ontology object
