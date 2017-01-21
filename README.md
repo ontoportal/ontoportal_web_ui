@@ -20,3 +20,8 @@ end
 ```
 
 
+## Log to production.log
+
+```ruby
+Rails.logger.warn "Submission params: #{params[:submission]}"
+```
