@@ -195,18 +195,18 @@ rec.getRecommendations = function() {
                             ontologyHeader = "Ontologies";
                         }
                         var table = $('<table id="recommendations" class="zebra" border="1" style="display: inline-block; padding:0px" ></table>'); //create table
-                        var header = $("<tr><th>POS.</th>"
-                        + "<th>" + ontologyHeader +"</th>"
-                        + "<th>Final score</th>"
-                        + "<th>Coverage <br>score</th>"
-                        + "<th>Acceptance <br>score</th>"
-                        + "<th>Detail <br>score</th>"
-                        + "<th>Specialization <br>score</th>"
-                        + "<th>Annotations</th>"
-                        + "<th>Highlight <br>annotations</th>"
-                        + "</th>");
+                        var header = $('<thead><tr><th title="Position of the ontology in the ranking">POS.</th>'
+                        + '<th title="Ontology acronym">' + ontologyHeader + '</th>'
+                        + '<th title="Final recommendation score for the ontology. It represents the appropriateness of the ontology to describe the input data">Final score</th>'
+                        + '<th title="The coverage score represents the extent to what the ontology covers the input data">Coverage<br>score</th>'
+                        + '<th title="The acceptance score represents how well known and trusted is the ontology by the biomedical community">Acceptance<br>score</th>'
+                        + '<th title="The detail score represents the richness of the ontology representation for the input data">Detail<br>score</th>'
+                        + '<th title="The specialization score represents the level of specialization of the ontology to the domain of the input data">Specialization<br>score</th>'
+                        + '<th title="Number of annotations performed with the ontology for the input data">Annotations</th>'
+                        + '<th title="This columns makes it possible to highlight the annotations performed with each ontology">Highlight <br>annotations</th>'
+                        + '</th></tr></thead>');
                         table.append(header);
-
+                        table.append('<tbody>');
                         for (var i = 0; i < data.length; i++) {
                             var position = i + 1;
                             // Terms covered
@@ -244,6 +244,7 @@ rec.getRecommendations = function() {
                             + '</tr>';
                             table.append(row); // Append row to table
                         }
+                        table.append('</tbody>');
                         $("#results").append(table); // Append table to your dom wherever you want
 
                         // Hide get recommentations button
@@ -284,6 +285,19 @@ rec.getRecommendations = function() {
                         $("#editButton").click( function(){
                             rec.enableEdition()
                         });
+
+                        // DataTable initialization
+                        jQuery("#recommendations").dataTable({
+                            paging: false,
+                            info: false,
+                            searching: false,
+                            order: [[ 0, "asc" ]],
+                            columnDefs: [ {
+                                targets: [ 2, 3, 4, 5, 6, 7 ],
+                                orderSequence: [ "desc", "asc" ]
+                            } ]
+                        });
+
                     }
                     else { // No results
                         if ($("#radioOtSets").is(":checked"))
