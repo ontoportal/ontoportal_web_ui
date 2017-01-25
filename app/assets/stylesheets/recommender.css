@@ -87,6 +87,7 @@ label {
 }
 
 .generalError, .invalidMaxOntError, .invalidWeightsError, .notTextError, .sumWeightsError, .rangeWeightsError, .maxOntologiesError, .inputSizeError {
+    display: none;
     color: red;
 }
 
