@@ -1,4 +1,51 @@
 
+/* Sticky footer styles from Bootstrap: 
+   http://getbootstrap.com/examples/sticky-footer/sticky-footer.css
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 320px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 320px;
+  color: #757575;
+  /*background-color: #f5f5f5;*/
+  background-color: #ccc;
+  padding: 30px 0;
+}
+
+/* Footer 
+-------------------------------------------------- */
+.social-icons li {
+  margin-right: 10px;
+  margin-top: 5px;
+}
+
+@media only screen and (max-width: 992px) {
+  .footer {
+    height: 375px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .footer {
+    height: 650px;
+  }
+}
+
+
+
+
+/* TODO: We are moving to Bootstrap, and away from YUI.  YUI styles should be stripped out. */
+
 /* Initialize */
 /* Adapted from YUI Library: http://yui.yahooapis.com/2.5.1/build/reset-fonts-grids/reset-fonts-grids.css */
 /*
@@ -81,9 +128,9 @@ pre, code, kbd, samp, tt {
   font-size:108%;
   line-height:100%;
 }
-body {
+/*body {
   text-align:center;
-}
+}*/
 #ft {
   clear:both;
 }
