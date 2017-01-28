@@ -4,14 +4,6 @@
   .greyed{
     color:#CFCFCF;
   }
-#social_networking
-  %div{title: "Cite BioPortal"}
-    %a.pop_window.help_link{href: "/help#How_to_cite_NCBO_and_BioPortal", target: "_blank"}
-      %span.ui-icon.ui-icon-note
-    %a.pop_window{href: "/help#How_to_cite_NCBO_and_BioPortal", target: "_blank"}
-      Cite Us
-  %div= t('home.facebook_button').html_safe
-  %div= t('home.twitter_button').html_safe
 - unless $FRONT_NOTICE.nil? || $FRONT_NOTICE.empty? || cookies[:front_page_notice_closed].eql?("true")
   :javascript
     function close_message(){
