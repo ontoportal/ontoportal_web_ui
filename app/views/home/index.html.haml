@@ -139,28 +139,6 @@
           = t('stats').html_safe
     %td{:valign => "top"}
       %fieldset
-        %legend Latest Notes
-        %table.minimal{:style => "width:100%"}
-          %tbody
-            - if @last_notes.nil? || @last_notes.empty?
-              No recent notes have been submitted
-            - else
-              - for note in @last_notes
-                %tr
-                  %td
-                    - begin
-                      = link_to "#{note[:subject]} (#{note[:ont_name]})", note_path(CGI.escape(note[:id]))
-                      %br/
-                      %span{:style => "color:#AAAAAA"}
-                        = "#{time_ago_in_words(note[:created])} ago"
-                        by #{note[:author]}
-                      - if note[:body]
-                        %p
-                          = truncate(strip_tags(note[:body]), :length => 100)
-                          \&nbsp;
-                    - rescue
-    %td{:valign => "top"}
-      %fieldset
         %legend Latest Mappings
         %table.minimal{:style => "width:100%"}
           %tbody
