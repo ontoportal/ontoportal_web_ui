@@ -9,12 +9,7 @@ class HomeController < ApplicationController
     @ontologies_hash = Hash[@ontologies_views.map {|o| [o.acronym, o]}]
     @groups = LinkedData::Client::Models::Group.all
 
-    # Get the latest manual mappings
-    # All mapping classes are bidirectional.
-    # Each class in the list maps to all other classes in the list.
-    @recent_mappings = get_recent_mappings  # application_controller
-
-    # calculate bioportal summary statistics
+    # Calculate BioPortal summary statistics
     @ont_count = @ontologies.length
     @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes.to_i}.sum
     begin

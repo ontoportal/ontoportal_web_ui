@@ -620,6 +620,9 @@ class ApplicationController < ActionController::Base
     response
   end
 
+  # Get the latest manual mappings
+  # All mapping classes are bidirectional.
+  # Each class in the list maps to all other classes in the list.
   def get_recent_mappings
     recent_mappings = {
         :mappings => [],
