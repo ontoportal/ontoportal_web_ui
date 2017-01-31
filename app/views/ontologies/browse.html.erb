@@ -123,7 +123,7 @@
             <input type="checkbox" checklist-model="facets.natural_languages.active" checklist-value="language_uri" name="natural_language"
                    id="language_{{language_label.toLowerCase().split(' ').join('_')}}" ng-disabled="!facet_counts['natural_languages'][language_uri]">
             <label for="language_{{language_label.toLowerCase().split(' ').join('_')}}" ng-class="{facet_disabled: !facet_counts['natural_languages'][language_uri]}">{{language_label}}</label>
-            <span class="smaller">({{facet_counts["formality_levels"][formality_uri] || 0}})</span>
+            <span class="smaller">({{facet_counts["natural_languages"][language_uri] || 0}})</span>
             <br/>
           </span>
         </div>
