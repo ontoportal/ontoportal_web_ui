@@ -104,6 +104,18 @@
         </div>
       </div>
 
+      <div id="admin_facet" class="facet">
+        <h4>Ontology Content</h4>
+        <div class="checkbox_list">
+          <span ng-repeat="artifact in artifacts">
+            <input type="checkbox" checklist-model="facets.artifacts.active" checklist-value="artifact" name="artifact" id="artifact_{{artifact}}" ng-disabled="!facet_counts['artifacts'][artifact]">
+            <label for="artifact_{{artifact}}" ng-class="{facet_disabled: !facet_counts['artifacts'][artifact]}">{{artifact | idToTitle}}</label>
+            <span class="smaller">({{facet_counts["artifacts"][artifact] || 0}})</span>
+            <br/>
+          </span>
+        </div>
+      </div>
+
       <div id="formality_level_facet" class="facet">
         <h4>Formality Levels</h4>
         <div class="checkbox_list">
@@ -125,18 +137,6 @@
               {{status | idToTitle}}
             </option>
           </select>
-        </div>
-      </div>
-
-      <div id="admin_facet" class="facet admin" ng-show="admin">
-        <h4>Admin Only</h4>
-        <div class="checkbox_list">
-          <span ng-repeat="artifact in artifacts">
-            <input type="checkbox" checklist-model="facets.artifacts.active" checklist-value="artifact" name="artifact" id="artifact_{{artifact}}" ng-disabled="!facet_counts['artifacts'][artifact]">
-            <label for="artifact_{{artifact}}" ng-class="{facet_disabled: !facet_counts['artifacts'][artifact]}">{{artifact | idToTitle}}</label>
-            <span class="smaller">({{facet_counts["artifacts"][artifact] || 0}})</span>
-            <br/>
-          </span>
         </div>
       </div>
 
