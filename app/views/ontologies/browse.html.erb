@@ -106,8 +106,9 @@
         <h4>Formality Levels</h4>
         <div class="checkbox_list">
           <span ng-repeat="(formality_uri,formality_label) in formality_levels">
-            <input type="checkbox" checklist-model="facets.formality_levels.active" checklist-value="format" name="format" id="formality_{{formality_label}}" ng-disabled="!facet_counts['formality_levels'][formality_uri]">
-            <label for="formality_{{formality_label}}" ng-class="{facet_disabled: !facet_counts['formality_levels'][formality_uri]}">{{formality_label}}</label>
+            <input type="checkbox" checklist-model="facets.formality_levels.active" checklist-value="formality_level" name="formality_level"
+                   id="formality_{{formality_label.toLowerCase().split(' ').join('_')}}" ng-disabled="!facet_counts['formality_levels'][formality_uri]">
+            <label for="formality_{{formality_label.toLowerCase().split(' ').join('_')}}" ng-class="{facet_disabled: !facet_counts['formality_levels'][formality_uri]}">{{formality_label}}</label>
             <span class="smaller">({{facet_counts["formality_levels"][formality_uri] || 0}})</span>
             <br/>
           </span>

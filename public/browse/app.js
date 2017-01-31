@@ -68,6 +68,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
       active: [],
       ont_property: "format",
       filter: function(ontology) {
+        console.log(ontology);
         if ($scope.facets.formats.active.length == 0)
           return true;
         if ($scope.facets.formats.active.indexOf(ontology.format) === -1)
@@ -143,9 +144,9 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
       active: [],
       ont_property: "hasFormalityLevel",
       filter: function(ontology) {
-        if ($scope.facets.formats.active.length == 0)
+        if ($scope.facets.formality_levels.active.length == 0)
           return true;
-        if ($scope.facets.formats.active.indexOf(ontology.hasFormalityLevel) === -1)
+        if ($scope.facets.formality_levels.active.indexOf(ontology.hasFormalityLevel) === -1)
           return false;
         return true;
       },
