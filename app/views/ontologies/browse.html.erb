@@ -40,7 +40,8 @@
         </a>
       <%end%>
 
-      <!-- Angular controller defined in public/browse/app.js -->
+      <!-- To add a new facet: set new filter to $scope.facets in angular defined in public/browse/app.js
+      Retrieve the attr value in browse_attributes and set it in the @ontologies in app/controllers/ontologies_controller.rb -->
       <div id="ont_view_facet" class="facet">
         <h4>Entry Type</h4>
         <div class="checkbox_list">
@@ -106,7 +107,7 @@
         <h4>Formality Levels</h4>
         <div class="checkbox_list">
           <span ng-repeat="(formality_uri,formality_label) in formality_levels">
-            <input type="checkbox" checklist-model="facets.formality_levels.active" checklist-value="formality_level" name="formality_level"
+            <input type="checkbox" checklist-model="facets.formality_levels.active" checklist-value="formality_uri" name="formality_level"
                    id="formality_{{formality_label.toLowerCase().split(' ').join('_')}}" ng-disabled="!facet_counts['formality_levels'][formality_uri]">
             <label for="formality_{{formality_label.toLowerCase().split(' ').join('_')}}" ng-class="{facet_disabled: !facet_counts['formality_levels'][formality_uri]}">{{formality_label}}</label>
             <span class="smaller">({{facet_counts["formality_levels"][formality_uri] || 0}})</span>
