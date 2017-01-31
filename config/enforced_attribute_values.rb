@@ -12,7 +12,7 @@ $FORMALITY_LEVELS = {
   "http://w3id.org/nkos/nkostype#taxonomy" => "Taxonomy",
   "http://w3id.org/nkos/nkostype#terminology" => "Terminology",
   "http://w3id.org/nkos/nkostype#thesaurus" => "Thesaurus",
-  "eeee" => "Topic Tree",
+  #"" => "Topic Tree",
   "http://w3id.org/nkos/nkostype#gazetteer" => "Gazetteer"
 }
 

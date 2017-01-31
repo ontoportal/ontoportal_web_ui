@@ -13,6 +13,7 @@ config( ['$locationProvider', function ($locationProvider) {
 var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ngAnimate', 'pasvaz.bindonce'])
 
 .controller('OntologyList', ['$scope', '$animate', '$timeout', function($scope, $animate, $timeout) {
+  console.log("tesst");
   // Default values
   $scope.visible_ont_count = 0;
   $scope.ontology_sort_order = "-popularity";
@@ -36,6 +37,9 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
     return 0;
   });
   $scope.groups_hash = jQuery(document).data().bp.groups_hash;
+
+  $scope.formality_levels = jQuery(document).data().bp.formality_levels;
+  console.log($scope.formality_levels);
 
   // Search setup
   $scope.searchText = null;
@@ -134,6 +138,17 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
           return true;
         return false;
       }
+    },
+    formality_levels: {
+      active: [],
+      ont_property: "hasFormalityLevel",
+      filter: function(ontology) {
+        if ($scope.facets.formats.active.length == 0)
+          return true;
+        if ($scope.facets.formats.active.indexOf(ontology.hasFormalityLevel) === -1)
+          return false;
+        return true;
+      },
     }
   }
 

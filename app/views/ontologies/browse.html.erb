@@ -1,11 +1,6 @@
 <link href="font/whhg.css"rel="stylesheet" type="text/css" media="all" />
 <link href="//cdnjs.cloudflare.com/ajax/libs/unsemantic/0/unsemantic-grid-responsive-tablet.css" rel="stylesheet" type="text/css" media="screen" />
-<meta name="viewport" content="
-    width=device-width,
-    initial-scale=1,
-    minimum-scale=1,
-    maximum-scale=1
-  " />
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1" />
 
 <div class="splash" ng-cloak>
   <div style="font-size: 3em;">Ontologies loading</div>
@@ -45,6 +40,7 @@
         </a>
       <%end%>
 
+      <!-- Angular controller defined in public/browse/app.js -->
       <div id="ont_view_facet" class="facet">
         <h4>Entry Type</h4>
         <div class="checkbox_list">
@@ -101,6 +97,18 @@
             <input type="checkbox" checklist-model="facets.formats.active" checklist-value="format" name="format" id="format_{{format}}" ng-disabled="!facet_counts['formats'][format]">
             <label for="format_{{format}}" ng-class="{facet_disabled: !facet_counts['formats'][format]}">{{format}}</label>
             <span class="smaller">({{facet_counts["formats"][format] || 0}})</span>
+            <br/>
+          </span>
+        </div>
+      </div>
+
+      <div id="formality_level_facet" class="facet">
+        <h4>Formality Levels</h4>
+        <div class="checkbox_list">
+          <span ng-repeat="(formality_uri,formality_label) in formality_levels">
+            <input type="checkbox" checklist-model="facets.formality_levels.active" checklist-value="format" name="format" id="formality_{{formality_label}}" ng-disabled="!facet_counts['formality_levels'][formality_uri]">
+            <label for="formality_{{formality_label}}" ng-class="{facet_disabled: !facet_counts['formality_levels'][formality_uri]}">{{formality_label}}</label>
+            <span class="smaller">({{facet_counts["formality_levels"][formality_uri] || 0}})</span>
             <br/>
           </span>
         </div>
@@ -253,6 +261,8 @@
   jQuery(document).data().bp.formats = <%=MultiJson.dump(@formats).html_safe%>;
   jQuery(document).data().bp.admin = <%=MultiJson.dump(@admin).html_safe%>;
   jQuery(document).data().bp.development = <%=MultiJson.dump(@development).html_safe%>;
+
+  jQuery(document).data().bp.formality_levels = <%=MultiJson.dump($FORMALITY_LEVELS).html_safe%>;
 </script>
 
 <script src="lib/lunr.js/lunr.min.js"></script>

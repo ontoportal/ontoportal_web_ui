@@ -277,7 +277,7 @@
         License
       %td
         %div{:style => "float:left;width:50%;"}
-          = select_tag :licenseSelect, options_for_select($LICENSES.collect{ |k, v| [v,k] })
+          = select_tag :licenseSelect, options_for_select($LICENSES.collect{ |k, v| [v,k] })  # in config/enforced_attribute_values.rb
           = text_field :submission, :hasLicense, :style => 'display:none;margin-top:7px;'
         %div{:style => "float:right;width:50%;text-align:right;"}
           Consider using a
