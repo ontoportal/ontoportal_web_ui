@@ -38,6 +38,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
   $scope.groups_hash = jQuery(document).data().bp.groups_hash;
 
   $scope.formality_levels = jQuery(document).data().bp.formality_levels;
+  $scope.natural_languages = jQuery(document).data().bp.natural_languages;
 
   // Search setup
   $scope.searchText = null;
@@ -146,7 +147,22 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
         if ($scope.facets.formality_levels.active.indexOf(ontology.hasFormalityLevel) === -1)
           return false;
         return true;
-      },
+      }
+    },
+    natural_languages: {
+      active: [],
+      ont_property: "naturalLanguage",
+      filter: function(ontology) {
+        if ($scope.facets.natural_languages.active.length == 0)
+          return true;
+        if ( !ontology.naturalLanguage )
+          return false;
+        for (var i = 0; i < ontology.naturalLanguage.length; i++) {
+          if ($scope.facets.natural_languages.active.indexOf(ontology.naturalLanguage[i]) !== -1)
+            return true;
+        }
+        return false;
+      }
     }
   }
 

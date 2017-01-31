@@ -116,6 +116,19 @@
         </div>
       </div>
 
+      <div id="language_facet" class="facet">
+        <h4>Natural Language</h4>
+        <div class="checkbox_list">
+          <span ng-repeat="(language_uri,language_label) in natural_languages">
+            <input type="checkbox" checklist-model="facets.natural_languages.active" checklist-value="language_uri" name="natural_language"
+                   id="language_{{language_label.toLowerCase().split(' ').join('_')}}" ng-disabled="!facet_counts['natural_languages'][language_uri]">
+            <label for="language_{{language_label.toLowerCase().split(' ').join('_')}}" ng-class="{facet_disabled: !facet_counts['natural_languages'][language_uri]}">{{language_label}}</label>
+            <span class="smaller">({{facet_counts["formality_levels"][formality_uri] || 0}})</span>
+            <br/>
+          </span>
+        </div>
+      </div>
+
       <div id="formality_level_facet" class="facet">
         <h4>Formality Levels</h4>
         <div class="checkbox_list">
@@ -266,6 +279,7 @@
   jQuery(document).data().bp.development = <%=MultiJson.dump(@development).html_safe%>;
 
   jQuery(document).data().bp.formality_levels = <%=MultiJson.dump($FORMALITY_LEVELS).html_safe%>;
+  jQuery(document).data().bp.natural_languages = <%=MultiJson.dump($NATURAL_LANGUAGES).html_safe%>;
 </script>
 
 <script src="lib/lunr.js/lunr.min.js"></script>
