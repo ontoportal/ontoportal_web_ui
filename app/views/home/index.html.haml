@@ -85,7 +85,8 @@
                 %tr
                   %td
                     %a{href: "/ontologies/#{ont.acronym}"} #{ont.name} (#{ont.acronym})
-                  %td= visits[:views]
+                  %td
+                    = number_with_delimiter(visits[:views])
               %tr
                 %td{colspan: 2, style: "text-align: right;"}
                   %a#ont_view_popup{href: "#ont_views", rel: "facebox"} More
