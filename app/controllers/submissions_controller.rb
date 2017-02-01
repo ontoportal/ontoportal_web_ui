@@ -88,6 +88,17 @@ class SubmissionsController < ApplicationController
           params[:submission][hash["attribute"].to_s.to_sym] = Integer(params[:submission][hash["attribute"].to_s.to_sym])
         end
       end
+      if hash["enforce"].include?("boolean") && !params[:submission][hash["attribute"]].nil?
+        if params[:submission][hash["attribute"]].eql?("true")
+          params[:submission][hash["attribute"].to_s.to_sym] = true
+        elsif params[:submission][hash["attribute"]].eql?("false")
+          params[:submission][hash["attribute"].to_s.to_sym] = false
+        end
+      end
+      if hash["enforce"].include?("date_time") && !params[:submission][hash["attribute"]].nil?
+        puts hash["attribute"]
+        puts params[:submission][hash["attribute"]]
+      end
     end
 
     @submission.update_from_params(params[:submission])

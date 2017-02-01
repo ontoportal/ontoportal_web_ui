@@ -323,11 +323,11 @@
           %br
           e.g.: http://lexvo.org/id/iso639-3/eng
 
-  %button#simpleBtn{:style => "margin-top: 2em;", :type => "button", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "toggleSimple()"} Show Simple metadata
+  %button#simpleBtn{:style => "margin-top: 2em;", :type => "button", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "toggleSimple()"} Show common metadata
   %br
 
   %div#simpleMetadataDiv{:style => "margin-top: 2em;display: none;"}
-    %h2 More metadata:
+    %h2 Common metadata:
 
     - for attr in @metadata
       - if attr["display"].eql? "simple"
@@ -347,7 +347,7 @@
                 = number_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
 
               - elsif attr["enforce"].include?("date_time")
-                = date_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
+                = date_field :submission, attr["attribute"].to_s.to_sym, value: DateTime.parse(@submission.send(attr["attribute"])).to_date.to_s
 
               - elsif attr["enforce"].include?("uri")
                 = url_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
@@ -356,7 +356,7 @@
                   = url_field_tag(attr["attribute"] + "2")
 
               - elsif attr["enforce"].include?("boolean")
-                = select_tag(attr["attribute"], "<option>none</option><option>true</option><option>false</option>".html_safe)
+                = select("submission", attr["attribute"].to_s, ["none", "true", "false"], { :selected => @submission.send(attr["attribute"])})
 
               - else
                 = text_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
@@ -365,12 +365,12 @@
                   = text_field_tag(attr["attribute"] + "2")
 
 
-  %button#completeBtn{:style => "margin-top: 2em;", :type => "button", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "toggleComplete()"} Show Complete metadata
+  %button#completeBtn{:style => "margin-top: 2em;", :type => "button", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "toggleComplete()"} Show detailed metadata
   %br
 
   %div#completeMetadataDiv{:style => "margin-top: 2em;display: none;"}
 
-    %h2 Even more metadata:
+    %h2 Detailed metadata:
 
     - for attr in @metadata
       - if attr["display"].eql? "complete"
@@ -388,8 +388,11 @@
                 = #number_field_tag(attr["attribute"])
 
               - elsif attr["enforce"].include?("date_time")
-                = date_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
-                = #date_field_tag(attr["attribute"])
+                - if @submission.send(attr["attribute"]).nil?
+                  - date_value = nil
+                - else
+                  - date_value = DateTime.parse(@submission.send(attr["attribute"])).to_date.to_s
+                = date_field :submission, attr["attribute"].to_s.to_sym, value: date_value
 
               - elsif attr["enforce"].include?("uri")
                 = url_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
@@ -439,10 +442,10 @@
     var e = document.getElementById("simpleMetadataDiv");
     if (e.style.display == 'block') {
       e.style.display = 'none';
-      document.getElementById("simpleBtn").innerText = "Show Simple metadata";
+      document.getElementById("simpleBtn").innerText = "Show common metadata";
     } else {
       e.style.display = 'block';
-      document.getElementById("simpleBtn").innerText = "Hide Simple metadata";
+      document.getElementById("simpleBtn").innerText = "Hide common metadata";
     }
   }
 
@@ -454,9 +457,9 @@
     var e = document.getElementById("completeMetadataDiv");
     if (e.style.display == 'block') {
       e.style.display = 'none';
-      document.getElementById("completeBtn").innerText = "Show Complete metadata";
+      document.getElementById("completeBtn").innerText = "Show detailed metadata";
     } else {
       e.style.display = 'block';
-      document.getElementById("completeBtn").innerText = "Hide Complete metadata";
+      document.getElementById("completeBtn").innerText = "Hide detailed metadata";
     }
   }
