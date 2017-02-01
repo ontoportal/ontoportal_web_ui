@@ -323,8 +323,9 @@
           %br
           e.g.: http://lexvo.org/id/iso639-3/eng
 
+  %button#simpleBtn{:style => "margin-bottom: 3%;", :type => "button", :class => "btn btn-default", :onclick => "toggleSimple()"} Show Simple metadata
 
-  %div{:style => "margin-top: 2em;"}
+  %div#simpleMetadataDiv{:style => "margin-top: 2em;display: none;"}
     %h2 More metadata:
 
     - for attr in @metadata
@@ -357,7 +358,9 @@
                     = text_field_tag(attr["attribute"] + "2")
 
 
-  %div{:style => "margin-top: 2em;"}
+  %button#completeBtn{:style => "margin-bottom: 3%;", :type => "button", :class => "btn btn-default", :onclick => "toggleComplete()"} Show Complete metadata
+
+  %div#completeMetadataDiv{:style => "margin-top: 2em;display: none;"}
 
     %h2 Even more metadata:
 
@@ -414,3 +417,33 @@
       }
     });
   })
+
+   /**
+   * To show/hide the simple metadata div
+   */
+  function toggleSimple()
+  {
+    var e = document.getElementById("simpleMetadataDiv");
+    if (e.style.display == 'block') {
+      e.style.display = 'none';
+      document.getElementById("simpleBtn").innerText = "Show Simple metadata";
+    } else {
+      e.style.display = 'block';
+      document.getElementById("simpleBtn").innerText = "Hide Simple metadata";
+    }
+  }
+
+  /**
+   * To show/hide the complete metadata div
+   */
+  function toggleComplete()
+  {
+    var e = document.getElementById("completeMetadataDiv");
+    if (e.style.display == 'block') {
+      e.style.display = 'none';
+      document.getElementById("completeBtn").innerText = "Show Complete metadata";
+    } else {
+      e.style.display = 'block';
+      document.getElementById("completeBtn").innerText = "Hide Complete metadata";
+    }
+  }
