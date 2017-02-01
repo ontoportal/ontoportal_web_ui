@@ -1,19 +1,19 @@
 
 $FORMALITY_LEVELS = {
   "none" => "None",
-  "http://w3id.org/nkos/nkostype#name_authority_list" => "Name authority list",
   "http://w3id.org/nkos/nkostype#classification_schema" => "Classification scheme",
   "http://w3id.org/nkos/nkostype#dictionary" => "Dictionary",
-  #"" => "Encyclopedia",
+  "http://w3id.org/nkos/nkostype#gazetteer" => "Gazetteer",
   "http://w3id.org/nkos/nkostype#glossary" => "Glossary",
-  #"" => "Lexical Database",
+  "http://w3id.org/nkos/nkostype#list" => "List",
+  "http://w3id.org/nkos/nkostype#name_authority_list" => "Name authority list",
   "http://w3id.org/nkos/nkostype#ontology" => "Ontology",
+  "http://w3id.org/nkos/nkostype#semantic_network" => "Semantic network",
   "http://w3id.org/nkos/nkostype#subject_heading_scheme" => "Subject heading scheme",
+  "http://w3id.org/nkos/nkostype#synonym_ring" => "Synonym ring",
   "http://w3id.org/nkos/nkostype#taxonomy" => "Taxonomy",
   "http://w3id.org/nkos/nkostype#terminology" => "Terminology",
-  "http://w3id.org/nkos/nkostype#thesaurus" => "Thesaurus",
-  #"" => "Topic Tree",
-  "http://w3id.org/nkos/nkostype#gazetteer" => "Gazetteer"
+  "http://w3id.org/nkos/nkostype#thesaurus" => "Thesaurus"
 }
 
 $ONTOLOGY_SYNTAXES = {
@@ -51,6 +51,31 @@ $LICENSES = {
     "http://www.apache.org/licenses/LICENSE-2.0" => "Apache License 2.0",
     "other" => "Other"
 }
+
+$IS_OF_TYPE = {
+    "Application Ontology" => "Application Ontology",
+    "Domain Ontology" => "Domain Ontology",
+    "Task Ontology" => "Task Ontology",
+    "Upper Level Ontology" => "Upper Level Ontology",
+    "Vocabulary" => "Vocabulary"
+}
+
+=begin
+$DC_TYPE = {
+    "http://purl.org/dc/dcmitype/Collection" => "Collection",
+    "http://purl.org/dc/dcmitype/Dataset" => "Dataset",
+    "http://purl.org/dc/dcmitype/Event" => "Event",
+    "http://purl.org/dc/dcmitype/Image" => "Image",
+    "http://purl.org/dc/dcmitype/InteractiveResource" => "InteractiveResource",
+    "http://purl.org/dc/dcmitype/MovingImage" => "MovingImage",
+    "http://purl.org/dc/dcmitype/PhysicalObject" => "PhysicalObject",
+    "http://purl.org/dc/dcmitype/Service" => "Service",
+    "http://purl.org/dc/dcmitype/Software" => "Software",
+    "http://purl.org/dc/dcmitype/Sound" => "Sound",
+    "http://purl.org/dc/dcmitype/StillImage" => "StillImage",
+    "http://purl.org/dc/dcmitype/Text" => "Text"
+}
+=end
 
 $NATURAL_LANGUAGES = {
     "none" => "None",
