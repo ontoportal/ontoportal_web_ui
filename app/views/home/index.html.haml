@@ -46,7 +46,7 @@
         %div{class: "panel-body"}
           %table
             %tr
-              %td{:nowrap => ""}
+              %td
                 %input#find_ontology.home_input.greyed{:name => "ontology", :onclick => "greybox(this)", :type => "text", :value => "Enter ontology name, e.g. NCI Thesaurus"}/
                 %input.home_button{:onclick => "jumpToValueOntology()", :type => "button", :value => "Explore"}/
                 %input#find_ontology_id{:type => "hidden"}/
@@ -55,7 +55,7 @@
                 %td &nbsp;
             - else
               %tr
-                %td{:style => "padding-left:15px;height:10px;"}
+                %td
                   %ul.sf-menu.sf-vertical
                     %li
                       = link_to("Browse Ontologies", "#", style: "white-space: nowrap; padding: 0px; background: #fff; border: 1px solid #fff;")
