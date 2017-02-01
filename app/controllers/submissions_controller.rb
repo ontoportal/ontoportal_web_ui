@@ -17,6 +17,7 @@ class SubmissionsController < ApplicationController
 
   # Called when form to "Add submission" is submitted
   def create
+    puts "creaaate"
     # Make the contacts an array
     params[:submission][:contact] = params[:submission][:contact].values
     # Update also hasOntologySyntax and hasFormalityLevel that are in select tag and cant be in params[:submission]
@@ -26,8 +27,30 @@ class SubmissionsController < ApplicationController
 
     # Add new language to naturalLanguage list
     natural_languages = []
-    natural_languages.push(params[:submission][:naturalLanguage]) if params[:submission][:naturalLanguage] != "none"
+    natural_languages.push(params[:submission][:naturalLanguage])
+    addedNaturalLanguage = params[:addedNaturalLanguage] #.select &:present?
+    natural_languages.push(addedNaturalLanguage)
+
     params[:submission][:naturalLanguage] = natural_languages
+
+    # Get the submission metadata from the REST API
+    json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
+    @metadata = json_metadata
+    # Convert metadata that needs to be integer to int
+    @metadata.map do |hash|
+      if hash["enforce"].include?("integer")
+        if !params[:submission][hash["attribute"]].nil? && !params[:submission][hash["attribute"]].eql?("")
+          params[:submission][hash["attribute"].to_s.to_sym] = Integer(params[:submission][hash["attribute"].to_s.to_sym])
+        end
+      end
+      if hash["enforce"].include?("boolean") && !params[:submission][hash["attribute"]].nil?
+        if params[:submission][hash["attribute"]].eql?("true")
+          params[:submission][hash["attribute"].to_s.to_sym] = true
+        elsif params[:submission][hash["attribute"]].eql?("false")
+          params[:submission][hash["attribute"].to_s.to_sym] = false
+        end
+      end
+    end
 
     @submission = LinkedData::Client::Models::OntologySubmission.new(values: params[:submission])
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
@@ -76,11 +99,16 @@ class SubmissionsController < ApplicationController
     submissions = @ontology.explore.submissions
     @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
 
+    #params[:submission][:naturalLanguage] = params[:naturalLanguageSelect]
     # Add new language to naturalLanguage list
-    #natural_languages = @submission.naturalLanguage
-    #natural_languages = [] if natural_languages.nil?
-    #natural_languages.push(params[:submission][:naturalLanguage]) if params[:submission][:naturalLanguage] != "none"
-    params[:submission][:naturalLanguage] = params[:naturalLanguageSelect]
+    #natural_languages = []
+    natural_languages = params[:naturalLanguageSelect]
+    addedNaturalLanguage = params[:addedNaturalLanguage] #.select &:present?
+    puts "addeeeed"
+    puts params[:addedNaturalLanguage]
+    natural_languages.concat(addedNaturalLanguage)
+
+    params[:submission][:naturalLanguage] = natural_languages
 
     # Get the submission metadata from the REST API
     json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))

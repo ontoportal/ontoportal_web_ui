@@ -313,7 +313,9 @@
         %div{:style => "float:left;width:50%;"}
           = select_tag "naturalLanguageSelect[]", options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] }, @submission.naturalLanguage),
           :multiple => 'true', "data-placeholder".to_sym => "Click here to select ontologies",:style => "margin-bottom: 15px;", :id => 'naturalLanguageSelect'
-          = text_field :submission, :naturalLanguage, :style => 'display:none;margin-top:7px;'
+
+          %button#addLangBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "addLang()"} Add new language
+          %div#addLangDiv
 
         %div{:style => "float:right;width:50%;text-align:right;"}
           Add a natural language to the list
@@ -432,6 +434,25 @@
       }
     });
   })
+
+  /**
+   * To add a new lang when btn clicked
+   */
+  function addLang()
+  {
+    // = text_field :submission, :naturalLanguage, :style => 'display:none;margin-top:7px;'
+    var addedHtml = '<input type="text" name="addedNaturalLanguage[]" id="addedNaturalLanguage">\n';
+    document.getElementById('addLangDiv').innerHTML += addedHtml;
+
+    /*var e = document.getElementById("addLangDiv");
+    if (e.style.display == 'block') {
+      e.style.display = 'none';
+      document.getElementById("addLangBtn").innerText = "Show common metadata";
+    } else {
+      e.style.display = 'block';
+      document.getElementById("addLangBtn").innerText = "Hide common metadata";
+    }*/
+  }
 
    /**
    * To show/hide the simple metadata div
