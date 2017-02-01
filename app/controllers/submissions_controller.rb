@@ -57,8 +57,8 @@ class SubmissionsController < ApplicationController
     # Make the contacts an array
     params[:submission][:contact] = params[:submission][:contact].values
     # Update also hasOntologySyntax and hasFormalityLevel that are in select tag and cant be in params[:submission]
-    params[:submission][:hasOntologySyntax] = params[:hasOntologySyntax] if params[:hasOntologySyntax] != "none"
-    params[:submission][:hasFormalityLevel] = params[:hasFormalityLevel] if params[:hasFormalityLevel] != "none"
+    params[:submission][:hasOntologySyntax] = params[:submission][:hasOntologySyntax] if params[:submission][:hasOntologySyntax] != "none"
+    params[:submission][:hasFormalityLevel] = params[:submission][:hasFormalityLevel] if params[:submission][:hasFormalityLevel] != "none"
     params[:submission][:hasLicense] = params[:submission][:hasLicense] if params[:submission][:hasLicense] != "none"
 
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])

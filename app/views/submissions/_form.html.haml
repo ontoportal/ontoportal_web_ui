@@ -277,7 +277,9 @@
         License
       %td
         %div{:style => "float:left;width:50%;"}
-          = select_tag :licenseSelect, options_for_select($LICENSES.collect{ |k, v| [v,k] })  # in config/enforced_attribute_values.rb
+          = select("submission", "hasLicense", $LICENSES.collect{ |k, v| [v,k] }, { :selected => @submission.hasLicense })
+          = #select("submission", "hasLicense", ["null", "-- select an option --"].push($LICENSES.collect{ |k, v| [v,k] }), { :selected => @submission.hasLicense })
+          = #select_tag :licenseSelect, options_for_select($LICENSES.collect{ |k, v| [v,k] })  # in config/enforced_attribute_values.rb
           = text_field :submission, :hasLicense, :style => 'display:none;margin-top:7px;'
         %div{:style => "float:right;width:50%;text-align:right;"}
           Consider using a
@@ -291,7 +293,7 @@
         Ontology Syntax
       %td
         %div{:style => "float:left;width:50%;"}
-          = select_tag :hasOntologySyntax, options_for_select($ONTOLOGY_SYNTAXES.collect{ |k, v| [v,k] })
+          = select("submission", "hasOntologySyntax", $ONTOLOGY_SYNTAXES.collect{ |k, v| [v,k] }, { :selected => @submission.hasOntologySyntax })
         %div{:style => "float:right;width:50%;text-align:right;"}
           Properties taken from
           = link_to "W3C URIs for file format", "https://www.w3.org/ns/formats/", target: "_blank"
@@ -300,7 +302,9 @@
         Has Formality Level
       %td
         %div{:style => "float:left;width:50%;"}
-          = select_tag :hasFormalityLevel, options_for_select($FORMALITY_LEVELS.collect{ |k, v| [v,k] })
+          = select("submission", "hasFormalityLevel", $FORMALITY_LEVELS.collect{ |k, v| [v,k] }, { :selected => @submission.hasFormalityLevel })
+
+          = #select_tag :hasFormalityLevel, options_for_select($FORMALITY_LEVELS.collect{ |k, v| [v,k] }), { :selected => @submission.hasFormalityLevel }
         %div{:style => "float:right;width:50%;text-align:right;"}
           Properties taken from
           = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
@@ -329,12 +333,12 @@
 :javascript
 
   $(function() {
-    $('#licenseSelect').change(function() {
-      if ($('#licenseSelect').val() == "other") {
+    $('#hasLicense').change(function() {
+      if ($('#hasLicense').val() == "other") {
         $('#submission_hasLicense').val("");
         $('#submission_hasLicense').show();
       } else {
-        $('#submission_hasLicense').val($('#licenseSelect').val());
+        $('#submission_hasLicense').val($('#hasLicense').val());
         $('#submission_hasLicense').hide();
       }
     });
