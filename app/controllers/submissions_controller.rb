@@ -60,6 +60,9 @@ class SubmissionsController < ApplicationController
     params[:submission][:hasOntologySyntax] = params[:submission][:hasOntologySyntax] if params[:submission][:hasOntologySyntax] != "none"
     params[:submission][:hasFormalityLevel] = params[:submission][:hasFormalityLevel] if params[:submission][:hasFormalityLevel] != "none"
     params[:submission][:hasLicense] = params[:submission][:hasLicense] if params[:submission][:hasLicense] != "none"
+    if params[:submission][:hasLicense] == "other"
+      params[:submission][:hasLicense] = params[:submission][:licenseText]
+    end
 
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
     submissions = @ontology.explore.submissions

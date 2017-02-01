@@ -278,8 +278,6 @@
       %td
         %div{:style => "float:left;width:50%;"}
           = select("submission", "hasLicense", $LICENSES.collect{ |k, v| [v,k] }, { :selected => @submission.hasLicense })
-          = #select("submission", "hasLicense", ["null", "-- select an option --"].push($LICENSES.collect{ |k, v| [v,k] }), { :selected => @submission.hasLicense })
-          = #select_tag :licenseSelect, options_for_select($LICENSES.collect{ |k, v| [v,k] })  # in config/enforced_attribute_values.rb
           = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
         %div{:style => "float:right;width:50%;text-align:right;"}
           Consider using a
@@ -303,8 +301,6 @@
       %td
         %div{:style => "float:left;width:50%;"}
           = select("submission", "hasFormalityLevel", $FORMALITY_LEVELS.collect{ |k, v| [v,k] }, { :selected => @submission.hasFormalityLevel })
-
-          = #select_tag :hasFormalityLevel, options_for_select($FORMALITY_LEVELS.collect{ |k, v| [v,k] }), { :selected => @submission.hasFormalityLevel }
         %div{:style => "float:right;width:50%;text-align:right;"}
           Properties taken from
           = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
@@ -312,6 +308,7 @@
     %tr
       %th
         Natural Language
+        - # TODO: FAIRE un multiple select (comme dans annotator, voir ncbo_annotatorplus) et add les none dans l'ui  (pas dans le fichier de config)
       %td
         %div{:style => "float:left;width:50%;"}
           = #text_field :submission, :naturalLanguage, value: @submission.naturalLanguage
