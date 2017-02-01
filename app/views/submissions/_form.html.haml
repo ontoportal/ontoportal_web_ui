@@ -280,7 +280,7 @@
           = select("submission", "hasLicense", $LICENSES.collect{ |k, v| [v,k] }, { :selected => @submission.hasLicense })
           = #select("submission", "hasLicense", ["null", "-- select an option --"].push($LICENSES.collect{ |k, v| [v,k] }), { :selected => @submission.hasLicense })
           = #select_tag :licenseSelect, options_for_select($LICENSES.collect{ |k, v| [v,k] })  # in config/enforced_attribute_values.rb
-          = text_field :submission, :hasLicense, :style => 'display:none;margin-top:7px;'
+          = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
         %div{:style => "float:right;width:50%;text-align:right;"}
           Consider using a
           = link_to "URI to describe your License", "http://rdflicense.appspot.com", target: "_blank"
@@ -333,13 +333,13 @@
 :javascript
 
   $(function() {
-    $('#hasLicense').change(function() {
-      if ($('#hasLicense').val() == "other") {
-        $('#submission_hasLicense').val("");
-        $('#submission_hasLicense').show();
+    $('#submission_hasLicense').change(function() {
+      if ($('#submission_hasLicense').val() == "other") {
+        $('#submission_licenseText').val("");
+        $('#submission_licenseText').show();
       } else {
-        $('#submission_hasLicense').val($('#hasLicense').val());
-        $('#submission_hasLicense').hide();
+        $('#submission_licenseText').val($('#submission_hasLicense').val());
+        $('#submission_licenseText').hide();
       }
     });
     $('#naturalLanguageSelect').change(function() {
