@@ -78,7 +78,6 @@ $DC_TYPE = {
 =end
 
 $NATURAL_LANGUAGES = {
-    "none" => "None",
     "http://lexvo.org/id/iso639-3/eng" => "English",
     "http://lexvo.org/id/iso639-3/fra" => "French",
     "http://lexvo.org/id/iso639-3/spa" => "Spanish",

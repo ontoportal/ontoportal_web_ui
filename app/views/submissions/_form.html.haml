@@ -311,9 +311,10 @@
         - # TODO: FAIRE un multiple select (comme dans annotator, voir ncbo_annotatorplus) et add les none dans l'ui  (pas dans le fichier de config)
       %td
         %div{:style => "float:left;width:50%;"}
-          = #text_field :submission, :naturalLanguage, value: @submission.naturalLanguage
-          = select_tag :naturalLanguageSelect, options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] })
-          = text_field :submission, :naturalLanguage, value: "none", :style => 'display:none;margin-top:7px;'
+          = select_tag "naturalLanguageSelect[]", options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] }), :multiple => 'true', "data-placeholder".to_sym => "Click here to select ontologies",
+          :style => "margin-bottom: 15px; width: 433px;", :id => 'naturalLanguageSelect'
+
+          = text_field :submission, :naturalLanguage, :style => 'display:none;margin-top:7px;'
         %div{:style => "float:right;width:50%;text-align:right;"}
           Add a natural language to the list
           %br
@@ -461,3 +462,13 @@
       document.getElementById("completeBtn").innerText = "Hide detailed metadata";
     }
   }
+
+  /**
+   * For natural language multiple select
+   */
+  jQuery(document).ready(function() {
+    "use strict";
+    jQuery("#naturalLanguageSelect").chosen({
+      search_contains: true
+    });
+  });
