@@ -44,27 +44,20 @@
         %div{class: "panel-heading"}
           %h3{class: "panel-title"} Find an ontology
         %div{class: "panel-body"}
-          %table
-            %tr
-              %td
-                %input#find_ontology.home_input{name: "ontology", type: "text", placeholder: "Enter an ontology, e.g. NCI Thesaurus"}/
-                %input.home_button{:onclick => "jumpToValueOntology()", :type => "button", :value => "Explore"}/
-                %input#find_ontology_id{:type => "hidden"}/
-            - if at_slice?
-              %tr
-                %td &nbsp;
-            - else
-              %tr
-                %td
-                  %ul.sf-menu.sf-vertical
+          %div
+            %input#find_ontology.home_input{name: "ontology", type: "text", placeholder: "Enter an ontology, e.g. NCI Thesaurus"}/
+            %input.home_button{:onclick => "jumpToValueOntology()", :type => "button", :value => "Explore"}/
+            %input#find_ontology_id{:type => "hidden"}/
+          %div
+            %ul.sf-menu.sf-vertical
+              %li
+                = link_to("Browse Ontologies", "#", style: "white-space: nowrap; padding: 0px; background: #fff; border: 1px solid #fff;")
+                %ul
+                  %li
+                    = link_to("All", ontologies_path())
+                  - @groups.to_a.each do |group|
                     %li
-                      = link_to("Browse Ontologies", "#", style: "white-space: nowrap; padding: 0px; background: #fff; border: 1px solid #fff;")
-                      %ul
-                        %li
-                          = link_to("All", ontologies_path())
-                        - @groups.to_a.each do |group|
-                          %li
-                            = link_to(group[:name], ontologies_path(filter: "#{CGI.escape(group[:acronym])}"))    
+                      = link_to(group[:name], ontologies_path(filter: "#{CGI.escape(group[:acronym])}"))    
 
   %div.statistics{class: "row"}
     -# Ontology visits
