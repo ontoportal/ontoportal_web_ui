@@ -29,19 +29,19 @@
   %div.search{class: "row"}
     -# Search for a class across ontologies
     %div{class: "col-md-6"}
-      = form_for(:search, :url => {:controller =>'search', :action=>'index'}, :html => { :method => :get }) do |f|
-        %div{class: "panel panel-default"}
-          %div{class: "panel-heading"}
-            %h3{class: "panel-title"} Search for a class
-          %div{class: "panel-body"}
-            %table
-              %tr
-                %td{:nowrap => ""}
-                  %input.greyed{:name => "query", :onclick => "greybox(this)", :type => "text", :value => "Enter concept, e.g. Melanoma"}/
-                  = submit_tag 'Search',:class=>'home_button'
-              %tr
-                %td{:style => "padding-left:15px"}
-                  %a{:href => "/search?opt=advanced"} Advanced Search
+      %div{class: "panel panel-default"}
+        %div{class: "panel-heading"}
+          %h3{class: "panel-title"} Search for a class
+        %div{class: "panel-body"}
+          %table
+            %tr
+              %td
+                = form_tag("/search", method: "get") do
+                  = text_field_tag("query", nil, placeholder: "Enter class, e.g. Melanoma")
+                  = submit_tag("Search", class: "home_button")
+            %tr
+              %td
+                %a{:href => "/search?opt=advanced"} Advanced Search
 
     -# Search for an ontology
     %div{class: "col-md-6"}
