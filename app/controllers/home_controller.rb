@@ -3,40 +3,13 @@ class HomeController < ApplicationController
 
   #RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "#{$REST_URL}/resource_index/", :limit => 10, :mode => :intersection}
 
-  NOTES_RECENT_MAX = 5
-
   def index
     @ontologies_views = LinkedData::Client::Models::Ontology.all(include_views: true)
     @ontologies = @ontologies_views.select {|o| !o.viewOf}
     @ontologies_hash = Hash[@ontologies_views.map {|o| [o.acronym, o]}]
     @groups = LinkedData::Client::Models::Group.all
-    @notes = LinkedData::Client::Models::Note.all
-    @last_notes = []
-    unless @notes.empty?
-      @notes.sort! {|a,b| b.created <=> a.created }
-      @notes[0..20].each do |n|
-        ont_uri = n.relatedOntology.first
-        ont = LinkedData::Client::Models::Ontology.find(ont_uri)
-        next if ont.nil?
-        username = n.creator.split("/").last
-        note = {
-            :uri => n.links['ui'],
-            :id => n.id,
-            :subject => n.subject,
-            :body => n.body,
-            :created => n.created,
-            :author => username,
-            :ont_name => ont.name
-        }
-        @last_notes.push note
-        break if @last_notes.length >= NOTES_RECENT_MAX  # 5
-      end
-    end
-    # Get the latest manual mappings
-    # All mapping classes are bidirectional.
-    # Each class in the list maps to all other classes in the list.
-    @recent_mappings = get_recent_mappings  # application_controller
-    # calculate bioportal summary statistics
+
+    # Calculate BioPortal summary statistics
     @ont_count = @ontologies.length
     @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes.to_i}.sum
     begin

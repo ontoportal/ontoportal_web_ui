@@ -241,7 +241,7 @@
 </main>
 
 <!-- JS at end (before footer) -->
-<%=render partial: 'layouts/footer_js'%>
+<%= javascript_include_tag "application" %>
 
 <script>
   jQuery(document).data().bp.ontologies = <%=MultiJson.dump(@ontologies[0..19]).html_safe%>;
