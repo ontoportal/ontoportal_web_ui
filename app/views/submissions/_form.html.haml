@@ -323,8 +323,9 @@
           %br
           e.g.: http://lexvo.org/id/iso639-3/eng
 
-  %button#simpleBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "toggleSimple()"} Show common metadata
-  %br
+  %div{:style => "text-align: center;"}
+    %button#simpleBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "toggleSimple()"} Show common metadata
+    %br
 
   %div#simpleMetadataDiv{:style => "margin-top: 2em;display: none;"}
     %h2 Common metadata:
@@ -361,9 +362,9 @@
                   = text_field_tag(attr["attribute"] + "1")
                   = text_field_tag(attr["attribute"] + "2")
 
-
-  %button#completeBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "toggleComplete()"} Show detailed metadata
-  %br
+  %div{:style => "text-align: center;"}
+    %button#completeBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "toggleComplete()"} Show detailed metadata
+    %br
 
   %div#completeMetadataDiv{:style => "margin-top: 2em;display: none;"}
 
@@ -405,8 +406,8 @@
                 - if attr["enforce"].include?("list")
                   = text_field_tag(attr["attribute"] + "1")
                   = text_field_tag(attr["attribute"] + "2")
-
-  = submit_tag button_text, {:style => "margin-top: 2em;", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
+  %div{:style => "text-align: center;"}
+    = submit_tag button_text, {:style => "margin-top: 2em;margin-bottom: 2em;", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
 
 :javascript
 
