@@ -47,7 +47,7 @@
           %table
             %tr
               %td
-                %input#find_ontology.home_input.greyed{:name => "ontology", :onclick => "greybox(this)", :type => "text", :value => "Enter ontology name, e.g. NCI Thesaurus"}/
+                %input#find_ontology.home_input{name: "ontology", type: "text", placeholder: "Enter ontology name, e.g. NCI Thesaurus"}/
                 %input.home_button{:onclick => "jumpToValueOntology()", :type => "button", :value => "Explore"}/
                 %input#find_ontology_id{:type => "hidden"}/
             - if at_slice?
@@ -262,14 +262,3 @@
     });
 
   });
-
-
-  function greybox(box){
-
-    if(jQuery(box).hasClass("greyed")){
-      jQuery(box).removeClass('greyed');
-      jQuery(box).val("");
-    }
-  }
-
-
