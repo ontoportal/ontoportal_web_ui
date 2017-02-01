@@ -3,12 +3,16 @@ class SubmissionsController < ApplicationController
   layout 'ontology'
   before_action :authorize_and_redirect, :only=>[:edit, :update, :create, :new, :edit_metadata]
 
-  # Called by create (what's the point of that?)
+  # When getting "Add submission" form to display
   def new
     @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params[:ontology_id])) rescue nil
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first unless @ontology
     @submission = @ontology.explore.latest_submission
     @submission ||= LinkedData::Client::Models::OntologySubmission.new
+
+    # Get the submission metadata from the REST API
+    json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
+    @metadata = json_metadata
   end
 
   # Called when form to "Add submission" is submitted
@@ -73,10 +77,10 @@ class SubmissionsController < ApplicationController
     @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
 
     # Add new language to naturalLanguage list
-    natural_languages = @submission.naturalLanguage
-    natural_languages = [] if natural_languages.nil?
-    natural_languages.push(params[:submission][:naturalLanguage]) if params[:submission][:naturalLanguage] != "none"
-    params[:submission][:naturalLanguage] = natural_languages
+    #natural_languages = @submission.naturalLanguage
+    #natural_languages = [] if natural_languages.nil?
+    #natural_languages.push(params[:submission][:naturalLanguage]) if params[:submission][:naturalLanguage] != "none"
+    params[:submission][:naturalLanguage] = params[:naturalLanguageSelect]
 
     # Get the submission metadata from the REST API
     json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
@@ -94,10 +98,6 @@ class SubmissionsController < ApplicationController
         elsif params[:submission][hash["attribute"]].eql?("false")
           params[:submission][hash["attribute"].to_s.to_sym] = false
         end
-      end
-      if hash["enforce"].include?("date_time") && !params[:submission][hash["attribute"]].nil?
-        puts hash["attribute"]
-        puts params[:submission][hash["attribute"]]
       end
     end
 
