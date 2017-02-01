@@ -323,7 +323,8 @@
           %br
           e.g.: http://lexvo.org/id/iso639-3/eng
 
-  %button#simpleBtn{:style => "margin-bottom: 3%;", :type => "button", :class => "btn btn-default", :onclick => "toggleSimple()"} Show Simple metadata
+  %button#simpleBtn{:style => "margin-top: 2em;", :type => "button", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "toggleSimple()"} Show Simple metadata
+  %br
 
   %div#simpleMetadataDiv{:style => "margin-top: 2em;display: none;"}
     %h2 More metadata:
@@ -358,7 +359,8 @@
                     = text_field_tag(attr["attribute"] + "2")
 
 
-  %button#completeBtn{:style => "margin-bottom: 3%;", :type => "button", :class => "btn btn-default", :onclick => "toggleComplete()"} Show Complete metadata
+  %button#completeBtn{:style => "margin-top: 2em;", :type => "button", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "toggleComplete()"} Show Complete metadata
+  %br
 
   %div#completeMetadataDiv{:style => "margin-top: 2em;display: none;"}
 
@@ -393,7 +395,7 @@
                     = text_field_tag(attr["attribute"] + "1")
                     = text_field_tag(attr["attribute"] + "2")
 
-  = submit_tag button_text, {:style => "margin-top: 2em;"}
+  = submit_tag button_text, {:style => "margin-top: 2em;", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
 
 :javascript
 
