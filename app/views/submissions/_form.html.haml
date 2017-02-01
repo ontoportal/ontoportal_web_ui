@@ -331,32 +331,38 @@
 
     - for attr in @metadata
       - if attr["display"].eql? "simple"
-        - if @submission.send(attr["attribute"]).nil? || @submission.send(attr["attribute"]).empty?
-          %table.form{style: "min-width: 800px;"}
-            %tr
-              %th{:style => "padding-bottom: 2%;"}
-                - if ["notes", "keywords", ].include?(attr["attribute"])
-                  = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
-                - else
-                  = label_tag(attr["attribute"], attr["attribute"])
-                = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
-              %td{:style => "padding-bottom: 2%;"}
-                - if attr["enforce"].include?("integer")
-                  = number_field_tag(attr["attribute"])
-                - elsif attr["enforce"].include?("date_time")
-                  = date_field_tag(attr["attribute"])
-                - elsif attr["enforce"].include?("uri")
-                  = url_field_tag(attr["attribute"])
-                  - if attr["enforce"].include?("list")
-                    = url_field_tag(attr["attribute"] + "1")
-                    = url_field_tag(attr["attribute"] + "2")
-                - elsif attr["enforce"].include?("boolean")
-                  = select_tag(attr["attribute"], "<option>none</option><option>true</option><option>false</option>".html_safe)
-                - else
-                  = text_field_tag(attr["attribute"])
-                  - if attr["enforce"].include?("list")
-                    = text_field_tag(attr["attribute"] + "1")
-                    = text_field_tag(attr["attribute"] + "2")
+        - puts " attr " + attr["attribute"]
+        - test = @submission.send(attr["attribute"])
+        - puts test
+        %table.form{style: "min-width: 800px;"}
+          %tr
+            %th{:style => "padding-bottom: 2%;"}
+              - if ["notes", "keywords", ].include?(attr["attribute"])
+                = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
+              - else
+                = label_tag(attr["attribute"], attr["attribute"])
+              = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
+            %td{:style => "padding-bottom: 2%;"}
+              - if attr["enforce"].include?("integer")
+                = number_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
+
+              - elsif attr["enforce"].include?("date_time")
+                = date_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
+
+              - elsif attr["enforce"].include?("uri")
+                = url_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
+                - if attr["enforce"].include?("list")
+                  = url_field_tag(attr["attribute"] + "1")
+                  = url_field_tag(attr["attribute"] + "2")
+
+              - elsif attr["enforce"].include?("boolean")
+                = select_tag(attr["attribute"], "<option>none</option><option>true</option><option>false</option>".html_safe)
+
+              - else
+                = text_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
+                - if attr["enforce"].include?("list")
+                  = text_field_tag(attr["attribute"] + "1")
+                  = text_field_tag(attr["attribute"] + "2")
 
 
   %button#completeBtn{:style => "margin-top: 2em;", :type => "button", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "toggleComplete()"} Show Complete metadata
@@ -368,32 +374,37 @@
 
     - for attr in @metadata
       - if attr["display"].eql? "complete"
-        - if @submission.send(attr["attribute"]).nil? || @submission.send(attr["attribute"]).empty?
-          %table.form{style: "min-width: 800px;"}
-            %tr
-              %th{:style => "padding-bottom: 2%;"}
-                - if ["notes", "keywords", ].include?(attr["attribute"])
-                  = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
-                - else
-                  = label_tag(attr["attribute"], attr["attribute"])
-                = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
-              %td{:style => "padding-bottom: 2%;"}
-                - if attr["enforce"].include?("integer")
-                  = number_field_tag(attr["attribute"])
-                - elsif attr["enforce"].include?("date_time")
-                  = date_field_tag(attr["attribute"])
-                - elsif attr["enforce"].include?("uri")
-                  = url_field_tag(attr["attribute"])
-                  - if attr["enforce"].include?("list")
-                    = url_field_tag(attr["attribute"] + "1")
-                    = url_field_tag(attr["attribute"] + "2")
-                - elsif attr["enforce"].include?("boolean")
-                  = select_tag(attr["attribute"], "<option>none</option><option>true</option><option>false</option>".html_safe)
-                - else
-                  = text_field_tag(attr["attribute"])
-                  - if attr["enforce"].include?("list")
-                    = text_field_tag(attr["attribute"] + "1")
-                    = text_field_tag(attr["attribute"] + "2")
+        %table.form{style: "min-width: 800px;"}
+          %tr
+            %th{:style => "padding-bottom: 2%;"}
+              - if ["notes", "keywords", ].include?(attr["attribute"])
+                = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
+              - else
+                = label_tag(attr["attribute"], attr["attribute"])
+              = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
+            %td{:style => "padding-bottom: 2%;"}
+              - if attr["enforce"].include?("integer")
+                = number_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
+                = #number_field_tag(attr["attribute"])
+
+              - elsif attr["enforce"].include?("date_time")
+                = date_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
+                = #date_field_tag(attr["attribute"])
+
+              - elsif attr["enforce"].include?("uri")
+                = url_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
+                - if attr["enforce"].include?("list")
+                  = url_field_tag(attr["attribute"] + "1")
+                  = url_field_tag(attr["attribute"] + "2")
+
+              - elsif attr["enforce"].include?("boolean")
+                = select_tag(attr["attribute"], "<option>none</option><option>true</option><option>false</option>".html_safe)
+
+              - else
+                = text_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
+                - if attr["enforce"].include?("list")
+                  = text_field_tag(attr["attribute"] + "1")
+                  = text_field_tag(attr["attribute"] + "2")
 
   = submit_tag button_text, {:style => "margin-top: 2em;", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
 

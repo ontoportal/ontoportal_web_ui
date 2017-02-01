@@ -78,6 +78,18 @@ class SubmissionsController < ApplicationController
     natural_languages.push(params[:submission][:naturalLanguage]) if params[:submission][:naturalLanguage] != "none"
     params[:submission][:naturalLanguage] = natural_languages
 
+    # Get the submission metadata from the REST API
+    json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
+    @metadata = json_metadata
+    # Convert metadata that needs to be integer to int
+    @metadata.map do |hash|
+      if hash["enforce"].include?("integer")
+        if !params[:submission][hash["attribute"]].nil? && !params[:submission][hash["attribute"]].eql?("")
+          params[:submission][hash["attribute"].to_s.to_sym] = Integer(params[:submission][hash["attribute"].to_s.to_sym])
+        end
+      end
+    end
+
     @submission.update_from_params(params[:submission])
     # Update summaryOnly on ontology object
     @ontology.summaryOnly = @submission.isRemote.eql?("3")
