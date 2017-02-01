@@ -34,7 +34,7 @@
           %h3{class: "panel-title"} Search for a class
         %div{class: "panel-body"}
           = form_tag("/search", method: "get") do
-            = text_field_tag("query", nil, placeholder: "Enter class, e.g. Melanoma")
+            = text_field_tag("query", nil, placeholder: "Enter a class, e.g. Melanoma")
             = submit_tag("Search", class: "home_button")
           %a{:href => "/search?opt=advanced"} Advanced Search
 
@@ -47,7 +47,7 @@
           %table
             %tr
               %td
-                %input#find_ontology.home_input{name: "ontology", type: "text", placeholder: "Enter ontology name, e.g. NCI Thesaurus"}/
+                %input#find_ontology.home_input{name: "ontology", type: "text", placeholder: "Enter an ontology, e.g. NCI Thesaurus"}/
                 %input.home_button{:onclick => "jumpToValueOntology()", :type => "button", :value => "Explore"}/
                 %input#find_ontology_id{:type => "hidden"}/
             - if at_slice?
