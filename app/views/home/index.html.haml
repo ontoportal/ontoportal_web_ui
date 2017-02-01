@@ -33,15 +33,10 @@
         %div{class: "panel-heading"}
           %h3{class: "panel-title"} Search for a class
         %div{class: "panel-body"}
-          %table
-            %tr
-              %td
-                = form_tag("/search", method: "get") do
-                  = text_field_tag("query", nil, placeholder: "Enter class, e.g. Melanoma")
-                  = submit_tag("Search", class: "home_button")
-            %tr
-              %td
-                %a{:href => "/search?opt=advanced"} Advanced Search
+          = form_tag("/search", method: "get") do
+            = text_field_tag("query", nil, placeholder: "Enter class, e.g. Melanoma")
+            = submit_tag("Search", class: "home_button")
+          %a{:href => "/search?opt=advanced"} Advanced Search
 
     -# Search for an ontology
     %div{class: "col-md-6"}
