@@ -323,7 +323,7 @@
           %br
           e.g.: http://lexvo.org/id/iso639-3/eng
 
-  %button#simpleBtn{:style => "margin-top: 2em;", :type => "button", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "toggleSimple()"} Show common metadata
+  %button#simpleBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "toggleSimple()"} Show common metadata
   %br
 
   %div#simpleMetadataDiv{:style => "margin-top: 2em;display: none;"}
@@ -331,9 +331,6 @@
 
     - for attr in @metadata
       - if attr["display"].eql? "simple"
-        - puts " attr " + attr["attribute"]
-        - test = @submission.send(attr["attribute"])
-        - puts test
         %table.form{style: "min-width: 800px;"}
           %tr
             %th{:style => "padding-bottom: 2%;"}
@@ -365,7 +362,7 @@
                   = text_field_tag(attr["attribute"] + "2")
 
 
-  %button#completeBtn{:style => "margin-top: 2em;", :type => "button", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :onclick => "toggleComplete()"} Show detailed metadata
+  %button#completeBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "toggleComplete()"} Show detailed metadata
   %br
 
   %div#completeMetadataDiv{:style => "margin-top: 2em;display: none;"}
