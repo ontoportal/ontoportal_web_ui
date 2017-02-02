@@ -71,17 +71,18 @@
                         - @groups.to_a.each do |group|
                           %li
                             %a{:href => "/ontologies?filter=#{CGI.escape(group[:acronym])}"}= group[:name]
-      %td{:valign => "top", :width => "33%"}
-        %fieldset
-          %legend Search resources
-          %table
-            %tr
-              %td{:nowrap => ""}
-                %input#find_resource.greyed{:onclick => "greybox(this)", :size => "30", :style => "width:240px;", :type => "text", :value => "Enter a concept, e.g. Melanoma"}/
-                %input.home_button{:onclick => "jumpToValueResource()", :type => "button", :value => "Search"}/
-            %tr
-              %td{:style => "padding-left:15px"}
-                %a{:href => "/resource_index"} Advanced Resource Search
+      - if $RESOURCE_INDEX_DISABLED == false
+        %td{:valign => "top", :width => "33%"}
+          %fieldset
+            %legend Search resources
+            %table
+              %tr
+                %td{:nowrap => ""}
+                  %input#find_resource.greyed{:onclick => "greybox(this)", :size => "30", :style => "width:240px;", :type => "text", :value => "Enter a concept, e.g. Melanoma"}/
+                  %input.home_button{:onclick => "jumpToValueResource()", :type => "button", :value => "Search"}/
+              %tr
+                %td{:style => "padding-left:15px"}
+                  %a{:href => "/resource_index"} Advanced Resource Search
     %tr
       %td{:valign => "top"}
         %fieldset
