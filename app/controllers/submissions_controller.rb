@@ -26,7 +26,6 @@ class SubmissionsController < ApplicationController
 
     # Add new language to naturalLanguage list
     natural_languages = params[:naturalLanguageSelect]
-    puts "naturalLanguageSelect: #{params[:naturalLanguageSelect]}"
     natural_languages = [] if natural_languages.nil?
     natural_languages.concat(params[:addednaturalLanguage]) if !params[:addednaturalLanguage].nil? && params[:addednaturalLanguage] != []
     params[:submission][:naturalLanguage] = natural_languages
@@ -51,12 +50,14 @@ class SubmissionsController < ApplicationController
         end
       end
       if hash["enforce"].include?("list") && !hash["display"].include?("no")
-        if !params[:submission][hash["attribute"]].nil?
+        if !params[:submission][hash["attribute"]].nil? && !params[:submission][hash["attribute"]].eql?("")
           params[:submission][hash["attribute"]] = [params[:submission][hash["attribute"]]]
           if !params["added#{hash["attribute"]}".to_sym].nil? && params["added#{hash["attribute"]}".to_sym] != []
             # Get added values for list
             params[:submission][hash["attribute"]] = params[:submission][hash["attribute"]].concat(params["added#{hash["attribute"]}".to_sym])
           end
+        else
+          params[:submission][hash["attribute"]] = nil
         end
       end
     end
@@ -110,11 +111,7 @@ class SubmissionsController < ApplicationController
     submissions = @ontology.explore.submissions
     @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
 
-    #params[:submission][:naturalLanguage] = params[:naturalLanguageSelect]
-    # Add new language to naturalLanguage list
-    #natural_languages = []
     natural_languages = params[:naturalLanguageSelect]
-    puts "naturalLanguageSelect: #{params[:naturalLanguageSelect]}"
     natural_languages = [] if natural_languages.nil?
     natural_languages.concat(params[:addednaturalLanguage]) if !params[:addednaturalLanguage].nil? && params[:addednaturalLanguage] != []
     params[:submission][:naturalLanguage] = natural_languages
@@ -152,7 +149,7 @@ class SubmissionsController < ApplicationController
     end
 
     @submission.update_from_params(params[:submission])
-    binding.pry
+    #binding.pry
 
     # Update summaryOnly on ontology object
     @ontology.summaryOnly = @submission.isRemote.eql?("3")

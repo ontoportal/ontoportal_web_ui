@@ -313,8 +313,8 @@
         %div{:style => "float:left;width:50%;"}
           = select_tag "naturalLanguageSelect[]", options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] }, @submission.naturalLanguage),
           :multiple => 'true', "data-placeholder".to_sym => "Click here to select ontologies",:style => "margin-bottom: 15px;", :id => 'naturalLanguageSelect'
-
-          %button#naturalLanguageBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => 'addInput("naturalLanguage", "text")'} Add new language
+          %br
+          %button#naturalLanguageBtn{:style => "margin-bottom: 0.5em;margin-top: 0.5em;", :type => "button", :class => "btn btn-info", :onclick => 'addInput("naturalLanguage", "text")'} Add new language
           %div#naturalLanguageDiv
 
         %div{:style => "float:right;width:50%;text-align:right;"}
@@ -362,7 +362,8 @@
                   - uri_value = @submission.send(attr["attribute"])
                 = url_field :submission, attr["attribute"].to_s.to_sym, value: uri_value
                 - if attr["enforce"].include?("list")
-                  %button{:id => "add#{attr["attribute"]}", :style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'url')"} Add new value
+                  %br
+                  %button{:id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'url')"} Add new value
                   %div{:id => "#{attr["attribute"]}Div"}
 
               - elsif attr["enforce"].include?("boolean")
@@ -371,7 +372,8 @@
               - else
                 = text_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
                 - if attr["enforce"].include?("list")
-                  %button{:id => "add#{attr["attribute"]}", :style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'text')"} Add new value
+                  %br
+                  %button{:id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'text')"} Add new value
                   %div{:id => "#{attr["attribute"]}Div"}
 
   %div{:style => "text-align: center;"}
@@ -412,7 +414,8 @@
                   - uri_value = @submission.send(attr["attribute"])
                 = url_field :submission, attr["attribute"].to_s.to_sym, value: uri_value
                 - if attr["enforce"].include?("list")
-                  %button{:id => "add#{attr["attribute"]}", :style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'url')"} Add new value
+                  %br
+                  %button{:id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'url')"} Add new value
                   %div{:id => "#{attr["attribute"]}Div"}
 
               - elsif attr["enforce"].include?("boolean")
@@ -421,7 +424,8 @@
               - else
                 = text_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
                 - if attr["enforce"].include?("list")
-                  %button{:id => "add#{attr["attribute"]}", :style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'text')"} Add new value
+                  %br
+                  %button{:id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'text')"} Add new value
                   %div{:id => "#{attr["attribute"]}Div"}
 
   %div{:style => "text-align: center;"}
@@ -456,7 +460,7 @@
   function addInput(attr, inputType)
   {
     // = text_field :submission, :naturalLanguage, :style => 'display:none;margin-top:7px;'
-    var addedHtml = '<input type="' + inputType + '" name="added' + attr + '[]" id="added' + attr + '"><br>';
+    var addedHtml = '<input type="' + inputType + '" name="added' + attr + '[]" id="added' + attr + '" style="margin-bottom: 0.3em;"><br>';
     document.getElementById(attr + 'Div').innerHTML += addedHtml;
 
     /*var e = document.getElementById("addLangDiv");
