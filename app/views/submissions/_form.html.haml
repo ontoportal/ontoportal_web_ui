@@ -333,9 +333,9 @@
   %div#simpleMetadataDiv{:style => "margin-top: 2em;display: none;"}
     %h2 Common metadata:
 
-    - for attr in @metadata
-      - if attr["display"].eql? "simple"
-        %table.form{style: "min-width: 800px;"}
+    %table.form{style: "min-width: 800px;"}
+      - for attr in @metadata
+        - if attr["display"].eql? "simple"
           %tr
             %th{:style => "padding-bottom: 2%;"}
               - if ["notes", "keywords", ].include?(attr["attribute"])
@@ -384,9 +384,9 @@
 
     %h2 Detailed metadata:
 
-    - for attr in @metadata
-      - if attr["display"].eql? "complete"
-        %table.form{style: "min-width: 800px;"}
+    %table.form{style: "min-width: 800px;"}
+      - for attr in @metadata
+        - if attr["display"].eql? "complete"
           %tr
             %th{:style => "padding-bottom: 2%;"}
               - if ["notes", "keywords", ].include?(attr["attribute"])
