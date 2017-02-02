@@ -365,7 +365,6 @@
                 = date_field :submission, attr["attribute"].to_s.to_sym, value: date_value
 
               - elsif attr["enforce"].include?("uri")
-                - puts "uuuri: #{@submission.send(attr["attribute"])}"
                 - if @submission.send(attr["attribute"]).nil?
                   - uri_value = ""
                 - else
@@ -417,7 +416,6 @@
                 = date_field :submission, attr["attribute"].to_s.to_sym, value: date_value
 
               - elsif attr["enforce"].include?("uri")
-                - puts "uuuri: #{@submission.send(attr["attribute"])}"
                 - if @submission.send(attr["attribute"]).nil?
                   - uri_value = ""
                 - else
