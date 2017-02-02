@@ -23,6 +23,7 @@ class SubmissionsController < ApplicationController
     params[:submission][:hasOntologySyntax] = "" if params[:submission][:hasOntologySyntax].eql?("none")
     params[:submission][:hasFormalityLevel] = "" if params[:submission][:hasFormalityLevel].eql?("none")
     params[:submission][:hasLicense] = "" if params[:submission][:hasLicense].eql?("none")
+    params[:submission][:ifOfType] = "" if params[:submission][:ifOfType].eql?("none")
 
     # Add new language to naturalLanguage list
     natural_languages = params[:naturalLanguageSelect]

@@ -307,6 +307,13 @@
 
     %tr
       %th
+        Is Of Type
+      %td
+        %div{:style => "float:left;width:50%;"}
+          = select("submission", "isOfType", [["None", "none"]].concat($IS_OF_TYPE.collect{ |k, v| [v,k] }), { :selected => @submission.isOfType })
+
+    %tr
+      %th
         Natural Language
         - # TODO: FAIRE un multiple select (comme dans annotator, voir ncbo_annotatorplus) et add les none dans l'ui  (pas dans le fichier de config)
       %td
