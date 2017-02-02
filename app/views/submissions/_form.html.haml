@@ -314,7 +314,7 @@
           = select_tag "naturalLanguageSelect[]", options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] }, @submission.naturalLanguage),
           :multiple => 'true', "data-placeholder".to_sym => "Click here to select ontologies",:style => "margin-bottom: 15px;", :id => 'naturalLanguageSelect'
 
-          %button#naturalLanguageBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => 'addInput("naturalLanguage")'} Add new language
+          %button#naturalLanguageBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => 'addInput("naturalLanguage", "text")'} Add new language
           %div#naturalLanguageDiv
 
         %div{:style => "float:right;width:50%;text-align:right;"}
@@ -347,7 +347,7 @@
               - if attr["enforce"].include?("integer")
                 = number_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
 
-              - elsif attr["enforce"].include?("date_time") && !@submission.send(attr["attribute"]).nil?
+              - elsif attr["enforce"].include?("date_time")
                 - if @submission.send(attr["attribute"]).nil?
                   - date_value = nil
                 - else
@@ -355,10 +355,15 @@
                 = date_field :submission, attr["attribute"].to_s.to_sym, value: date_value
 
               - elsif attr["enforce"].include?("uri")
-                = url_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
+                - puts "uuuri: #{@submission.send(attr["attribute"])}"
+                - if @submission.send(attr["attribute"]).nil?
+                  - uri_value = ""
+                - else
+                  - uri_value = @submission.send(attr["attribute"])
+                = url_field :submission, attr["attribute"].to_s.to_sym, value: uri_value
                 - if attr["enforce"].include?("list")
-                  = url_field_tag(attr["attribute"] + "1")
-                  = url_field_tag(attr["attribute"] + "2")
+                  %button{:id => "add#{attr["attribute"]}", :style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'url')"} Add new value
+                  %div{:id => "#{attr["attribute"]}Div"}
 
               - elsif attr["enforce"].include?("boolean")
                 = select("submission", attr["attribute"].to_s, ["none", "true", "false"], { :selected => @submission.send(attr["attribute"])})
@@ -366,7 +371,7 @@
               - else
                 = text_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
                 - if attr["enforce"].include?("list")
-                  %button{:id => "add#{attr["attribute"]}", :style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}')"} Add new value
+                  %button{:id => "add#{attr["attribute"]}", :style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'text')"} Add new value
                   %div{:id => "#{attr["attribute"]}Div"}
 
   %div{:style => "text-align: center;"}
@@ -400,19 +405,25 @@
                 = date_field :submission, attr["attribute"].to_s.to_sym, value: date_value
 
               - elsif attr["enforce"].include?("uri")
-                = url_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
+                - puts "uuuri: #{@submission.send(attr["attribute"])}"
+                - if @submission.send(attr["attribute"]).nil?
+                  - uri_value = ""
+                - else
+                  - uri_value = @submission.send(attr["attribute"])
+                = url_field :submission, attr["attribute"].to_s.to_sym, value: uri_value
                 - if attr["enforce"].include?("list")
-                  = url_field_tag(attr["attribute"] + "1")
-                  = url_field_tag(attr["attribute"] + "2")
+                  %button{:id => "add#{attr["attribute"]}", :style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'url')"} Add new value
+                  %div{:id => "#{attr["attribute"]}Div"}
 
               - elsif attr["enforce"].include?("boolean")
-                = select_tag(attr["attribute"], "<option>none</option><option>true</option><option>false</option>".html_safe)
+                = select("submission", attr["attribute"].to_s, ["none", "true", "false"], { :selected => @submission.send(attr["attribute"])})
 
               - else
                 = text_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
                 - if attr["enforce"].include?("list")
-                  = text_field_tag(attr["attribute"] + "1")
-                  = text_field_tag(attr["attribute"] + "2")
+                  %button{:id => "add#{attr["attribute"]}", :style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'text')"} Add new value
+                  %div{:id => "#{attr["attribute"]}Div"}
+
   %div{:style => "text-align: center;"}
     = submit_tag button_text, {:style => "margin-top: 2em;margin-bottom: 2em;", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
 
@@ -442,10 +453,10 @@
   /**
    * To add a new input when btn clicked. Using the given attribute to get elements id
    */
-  function addInput(attr)
+  function addInput(attr, inputType)
   {
     // = text_field :submission, :naturalLanguage, :style => 'display:none;margin-top:7px;'
-    var addedHtml = '<input type="text" name="added' + attr + '[]" id="added' + attr + '"><br>';
+    var addedHtml = '<input type="' + inputType + '" name="added' + attr + '[]" id="added' + attr + '"><br>';
     document.getElementById(attr + 'Div').innerHTML += addedHtml;
 
     /*var e = document.getElementById("addLangDiv");

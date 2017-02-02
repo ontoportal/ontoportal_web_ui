@@ -51,9 +51,12 @@ class SubmissionsController < ApplicationController
         end
       end
       if hash["enforce"].include?("list") && !hash["display"].include?("no")
-        params[:submission][hash["attribute"]] = [params[:submission][hash["attribute"]]]
-        if !params["added#{hash["attribute"]}".to_sym].nil? && params["added#{hash["attribute"]}".to_sym] != []
-          params[:submission][hash["attribute"]] = params[:submission][hash["attribute"]].concat(params["added#{hash["attribute"]}".to_sym])
+        if !params[:submission][hash["attribute"]].nil?
+          params[:submission][hash["attribute"]] = [params[:submission][hash["attribute"]]]
+          if !params["added#{hash["attribute"]}".to_sym].nil? && params["added#{hash["attribute"]}".to_sym] != []
+            # Get added values for list
+            params[:submission][hash["attribute"]] = params[:submission][hash["attribute"]].concat(params["added#{hash["attribute"]}".to_sym])
+          end
         end
       end
     end
@@ -136,15 +139,15 @@ class SubmissionsController < ApplicationController
         end
       end
       if hash["enforce"].include?("list") && !hash["display"].include?("no")
-        puts "liiiist"
-        puts "#{params["added#{hash["attribute"]}".to_sym]}"
-        puts "solo"
-        puts "#{params[:submission][hash["attribute"]]}"
-        params[:submission][hash["attribute"]] = [params[:submission][hash["attribute"]]]
-        if !params["added#{hash["attribute"]}".to_sym].nil? && params["added#{hash["attribute"]}".to_sym] != []
-          params[:submission][hash["attribute"]] = params[:submission][hash["attribute"]].concat(params["added#{hash["attribute"]}".to_sym])
+        if !params[:submission][hash["attribute"]].nil? && !params[:submission][hash["attribute"]].eql?("")
+          params[:submission][hash["attribute"]] = [params[:submission][hash["attribute"]]]
+          if !params["added#{hash["attribute"]}".to_sym].nil? && params["added#{hash["attribute"]}".to_sym] != []
+            # Get added values for list
+            params[:submission][hash["attribute"]] = params[:submission][hash["attribute"]].concat(params["added#{hash["attribute"]}".to_sym])
+          end
+        else
+          params[:submission][hash["attribute"]] = nil
         end
-        puts "#{params[:submission][hash["attribute"]]}"
       end
     end
 
