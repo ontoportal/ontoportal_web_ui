@@ -314,8 +314,8 @@
           = select_tag "naturalLanguageSelect[]", options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] }, @submission.naturalLanguage),
           :multiple => 'true', "data-placeholder".to_sym => "Click here to select ontologies",:style => "margin-bottom: 15px;", :id => 'naturalLanguageSelect'
 
-          %button#addLangBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "addLang()"} Add new language
-          %div#addLangDiv
+          %button#naturalLanguageBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => 'addInput("naturalLanguage")'} Add new language
+          %div#naturalLanguageDiv
 
         %div{:style => "float:right;width:50%;text-align:right;"}
           Add a natural language to the list
@@ -347,8 +347,12 @@
               - if attr["enforce"].include?("integer")
                 = number_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
 
-              - elsif attr["enforce"].include?("date_time")
-                = date_field :submission, attr["attribute"].to_s.to_sym, value: DateTime.parse(@submission.send(attr["attribute"])).to_date.to_s
+              - elsif attr["enforce"].include?("date_time") && !@submission.send(attr["attribute"]).nil?
+                - if @submission.send(attr["attribute"]).nil?
+                  - date_value = nil
+                - else
+                  - date_value = DateTime.parse(@submission.send(attr["attribute"])).to_date.to_s
+                = date_field :submission, attr["attribute"].to_s.to_sym, value: date_value
 
               - elsif attr["enforce"].include?("uri")
                 = url_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
@@ -362,8 +366,8 @@
               - else
                 = text_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
                 - if attr["enforce"].include?("list")
-                  = text_field_tag(attr["attribute"] + "1")
-                  = text_field_tag(attr["attribute"] + "2")
+                  %button{:id => "add#{attr["attribute"]}", :style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}')"} Add new value
+                  %div{:id => "#{attr["attribute"]}Div"}
 
   %div{:style => "text-align: center;"}
     %button#completeBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-info", :onclick => "toggleComplete()"} Show detailed metadata
@@ -436,13 +440,13 @@
   })
 
   /**
-   * To add a new lang when btn clicked
+   * To add a new input when btn clicked. Using the given attribute to get elements id
    */
-  function addLang()
+  function addInput(attr)
   {
     // = text_field :submission, :naturalLanguage, :style => 'display:none;margin-top:7px;'
-    var addedHtml = '<input type="text" name="addedNaturalLanguage[]" id="addedNaturalLanguage">\n';
-    document.getElementById('addLangDiv').innerHTML += addedHtml;
+    var addedHtml = '<input type="text" name="added' + attr + '[]" id="added' + attr + '"><br>';
+    document.getElementById(attr + 'Div').innerHTML += addedHtml;
 
     /*var e = document.getElementById("addLangDiv");
     if (e.style.display == 'block') {

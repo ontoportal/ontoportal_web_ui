@@ -17,20 +17,18 @@ class SubmissionsController < ApplicationController
 
   # Called when form to "Add submission" is submitted
   def create
-    puts "creaaate"
     # Make the contacts an array
     params[:submission][:contact] = params[:submission][:contact].values
     # Update also hasOntologySyntax and hasFormalityLevel that are in select tag and cant be in params[:submission]
-    params[:submission][:hasOntologySyntax] = params[:hasOntologySyntax] if params[:hasOntologySyntax] != "none"
-    params[:submission][:hasFormalityLevel] = params[:hasFormalityLevel] if params[:hasFormalityLevel] != "none"
-    params[:submission][:hasLicense] = params[:submission][:hasLicense] if params[:submission][:hasLicense] != "none"
+    params[:submission][:hasOntologySyntax] = "" if params[:submission][:hasOntologySyntax].eql?("none")
+    params[:submission][:hasFormalityLevel] = "" if params[:submission][:hasFormalityLevel].eql?("none")
+    params[:submission][:hasLicense] = "" if params[:submission][:hasLicense].eql?("none")
 
     # Add new language to naturalLanguage list
-    natural_languages = []
-    natural_languages.push(params[:submission][:naturalLanguage])
-    addedNaturalLanguage = params[:addedNaturalLanguage] #.select &:present?
-    natural_languages.push(addedNaturalLanguage)
-
+    natural_languages = params[:naturalLanguageSelect]
+    puts "naturalLanguageSelect: #{params[:naturalLanguageSelect]}"
+    natural_languages = [] if natural_languages.nil?
+    natural_languages.concat(params[:addednaturalLanguage]) if !params[:addednaturalLanguage].nil? && params[:addednaturalLanguage] != []
     params[:submission][:naturalLanguage] = natural_languages
 
     # Get the submission metadata from the REST API
@@ -48,6 +46,8 @@ class SubmissionsController < ApplicationController
           params[:submission][hash["attribute"].to_s.to_sym] = true
         elsif params[:submission][hash["attribute"]].eql?("false")
           params[:submission][hash["attribute"].to_s.to_sym] = false
+        else
+          params[:submission][hash["attribute"].to_s.to_sym] = nil
         end
       end
     end
@@ -87,10 +87,11 @@ class SubmissionsController < ApplicationController
   def update
     # Make the contacts an array
     params[:submission][:contact] = params[:submission][:contact].values
+
     # Update also hasOntologySyntax and hasFormalityLevel that are in select tag and cant be in params[:submission]
-    params[:submission][:hasOntologySyntax] = params[:submission][:hasOntologySyntax] if params[:submission][:hasOntologySyntax] != "none"
-    params[:submission][:hasFormalityLevel] = params[:submission][:hasFormalityLevel] if params[:submission][:hasFormalityLevel] != "none"
-    params[:submission][:hasLicense] = params[:submission][:hasLicense] if params[:submission][:hasLicense] != "none"
+    params[:submission][:hasOntologySyntax] = "" if params[:submission][:hasOntologySyntax].eql?("none")
+    params[:submission][:hasFormalityLevel] = "" if params[:submission][:hasFormalityLevel].eql?("none")
+    params[:submission][:hasLicense] = "" if params[:submission][:hasLicense].eql?("none")
     if params[:submission][:hasLicense] == "other"
       params[:submission][:hasLicense] = params[:submission][:licenseText]
     end
@@ -103,11 +104,9 @@ class SubmissionsController < ApplicationController
     # Add new language to naturalLanguage list
     #natural_languages = []
     natural_languages = params[:naturalLanguageSelect]
-    addedNaturalLanguage = params[:addedNaturalLanguage] #.select &:present?
-    puts "addeeeed"
-    puts params[:addedNaturalLanguage]
-    natural_languages.concat(addedNaturalLanguage)
-
+    puts "naturalLanguageSelect: #{params[:naturalLanguageSelect]}"
+    natural_languages = [] if natural_languages.nil?
+    natural_languages.concat(params[:addednaturalLanguage]) if !params[:addednaturalLanguage].nil? && params[:addednaturalLanguage] != []
     params[:submission][:naturalLanguage] = natural_languages
 
     # Get the submission metadata from the REST API
@@ -125,11 +124,24 @@ class SubmissionsController < ApplicationController
           params[:submission][hash["attribute"].to_s.to_sym] = true
         elsif params[:submission][hash["attribute"]].eql?("false")
           params[:submission][hash["attribute"].to_s.to_sym] = false
+        else
+          params[:submission][hash["attribute"].to_s.to_sym] = nil
         end
+      end
+      if hash["enforce"].include?("list") && !hash["display"].include?("no") && !params["added#{hash["attribute"]}".to_sym].nil?
+        puts "liiiist"
+        puts "#{params["added#{hash["attribute"]}".to_sym]}"
+        puts "solo"
+        puts "#{params[:submission][hash["attribute"]]}"
+        params[:submission][hash["attribute"]] = [params[:submission][hash["attribute"]]].concat(params["added#{hash["attribute"]}".to_sym])
+        puts "#{params[:submission][hash["attribute"]]}"
       end
     end
 
     @submission.update_from_params(params[:submission])
+
+    binding.pry
+
     # Update summaryOnly on ontology object
     @ontology.summaryOnly = @submission.isRemote.eql?("3")
     @ontology.update
