@@ -167,7 +167,6 @@
                             = truncate(strip_tags(note[:body]), :length => 100)
                             \&nbsp;
                       - rescue
-      %td{:valign => "top"}
         - if $DISPLAY_RECENT.nil? || $DISPLAY_RECENT == true
           %fieldset
             %legend Latest Mappings
@@ -223,6 +222,7 @@
                     - rescue => e
                       - LOG.add :error, e.message, e.backtrace.join("\n\t")
                       - next
+      %td{:valign => "top"}
         - if !$ENABLE_SLICES.nil? && $ENABLE_SLICES == true && !at_slice?
           %fieldset
             %legend Slices
