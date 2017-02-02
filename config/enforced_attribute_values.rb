@@ -1,6 +1,5 @@
 
 $FORMALITY_LEVELS = {
-  "none" => "None",
   "http://w3id.org/nkos/nkostype#classification_schema" => "Classification scheme",
   "http://w3id.org/nkos/nkostype#dictionary" => "Dictionary",
   "http://w3id.org/nkos/nkostype#gazetteer" => "Gazetteer",
@@ -17,7 +16,6 @@ $FORMALITY_LEVELS = {
 }
 
 $ONTOLOGY_SYNTAXES = {
-  "none" => "None",
   "http://www.w3.org/ns/formats/JSON-LD" => "JSON-LD",
   "http://www.w3.org/ns/formats/N3" => "N3",
   "http://www.w3.org/ns/formats/N-Quads" => "N-Quads",
@@ -39,7 +37,6 @@ $ONTOLOGY_SYNTAXES = {
 }
 
 $LICENSES = {
-    "none" => "None",
     "https://creativecommons.org/licenses/by/4.0/" => "CC Attribution 4.0 International",
     "https://creativecommons.org/licenses/by/3.0/" => "CC Attribution 3.0",
     "https://creativecommons.org/publicdomain/zero/1.0/" => "CC Public Domain Dedication",
