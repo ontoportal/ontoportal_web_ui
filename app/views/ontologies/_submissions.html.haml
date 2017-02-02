@@ -29,7 +29,7 @@
     });
 
   });
-- ont_restricted = $RESTRICTED_DOWNLOADS.include? @ontology.acronym
+- ont_restricted = $RESTRICTED_DOWNLOADS.include? @ontology.acronym if !$RESTRICTED_DOWNLOADS.nil?
 - more_colspan = 4
 - more_colspan = 3 if ont_restricted
 #versions_content.click_versions_collapse{:style => "padding-top: 1em;"}
