@@ -277,8 +277,12 @@
         License
       %td
         %div{:style => "float:left;width:50%;"}
-          = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => @submission.hasLicense })
-          = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
+          - if $LICENSES.include?(@submission.hasLicense) && !@submission.hasLicense.nil? && !@submission.hasLicense.eql?("")
+            = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => @submission.hasLicense })
+            = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
+          - else
+            = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "other" })
+            = text_field :submission, :licenseText, :style => 'margin-top:7px;', value: @submission.hasLicense
         %div{:style => "float:right;width:50%;text-align:right;"}
           Consider using a
           = link_to "URI to describe your License", "http://rdflicense.appspot.com", target: "_blank"
@@ -315,7 +319,6 @@
     %tr
       %th
         Natural Language
-        - # TODO: FAIRE un multiple select (comme dans annotator, voir ncbo_annotatorplus) et add les none dans l'ui  (pas dans le fichier de config)
       %td
         %div{:style => "float:left;width:50%;"}
           = select_tag "naturalLanguageSelect[]", options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] }, @submission.naturalLanguage),
@@ -466,21 +469,12 @@
    */
   function addInput(attr, inputType)
   {
-    // = text_field :submission, :naturalLanguage, :style => 'display:none;margin-top:7px;'
-    var addedHtml = '<input type="' + inputType + '" name="added' + attr + '[]" id="added' + attr + '" style="margin-bottom: 0.3em;"><br>';
-    document.getElementById(attr + 'Div').innerHTML += addedHtml;
-
-    /*var e = document.getElementById("addLangDiv");
-    if (e.style.display == 'block') {
-      e.style.display = 'none';
-      document.getElementById("addLangBtn").innerText = "Show common metadata";
-    } else {
-      e.style.display = 'block';
-      document.getElementById("addLangBtn").innerText = "Hide common metadata";
-    }*/
+    var container = document.createElement("div");
+    container.innerHTML = '<input type="' + inputType + '" name="added' + attr + '[]" id="added' + attr + '" style="margin-bottom: 0.3em;"><br>';
+    document.getElementById(attr + 'Div').appendChild(container);
   }
 
-   /**
+  /**
    * To show/hide the simple metadata div
    */
   function toggleSimple()
