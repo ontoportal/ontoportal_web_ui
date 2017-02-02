@@ -50,6 +50,12 @@ class SubmissionsController < ApplicationController
           params[:submission][hash["attribute"].to_s.to_sym] = nil
         end
       end
+      if hash["enforce"].include?("list") && !hash["display"].include?("no")
+        params[:submission][hash["attribute"]] = [params[:submission][hash["attribute"]]]
+        if !params["added#{hash["attribute"]}".to_sym].nil? && params["added#{hash["attribute"]}".to_sym] != []
+          params[:submission][hash["attribute"]] = params[:submission][hash["attribute"]].concat(params["added#{hash["attribute"]}".to_sym])
+        end
+      end
     end
 
     @submission = LinkedData::Client::Models::OntologySubmission.new(values: params[:submission])
@@ -67,6 +73,7 @@ class SubmissionsController < ApplicationController
         redirect_to "/ontologies/success/#{@ontology.acronym}"
       end
       #Rails.logger.warn "ERRROR: #{@errors}"
+      # TODO: ERROR HERE
       render "new"
     else
       redirect_to "/ontologies/success/#{@ontology.acronym}"
@@ -128,18 +135,20 @@ class SubmissionsController < ApplicationController
           params[:submission][hash["attribute"].to_s.to_sym] = nil
         end
       end
-      if hash["enforce"].include?("list") && !hash["display"].include?("no") && !params["added#{hash["attribute"]}".to_sym].nil?
+      if hash["enforce"].include?("list") && !hash["display"].include?("no")
         puts "liiiist"
         puts "#{params["added#{hash["attribute"]}".to_sym]}"
         puts "solo"
         puts "#{params[:submission][hash["attribute"]]}"
-        params[:submission][hash["attribute"]] = [params[:submission][hash["attribute"]]].concat(params["added#{hash["attribute"]}".to_sym])
+        params[:submission][hash["attribute"]] = [params[:submission][hash["attribute"]]]
+        if !params["added#{hash["attribute"]}".to_sym].nil? && params["added#{hash["attribute"]}".to_sym] != []
+          params[:submission][hash["attribute"]] = params[:submission][hash["attribute"]].concat(params["added#{hash["attribute"]}".to_sym])
+        end
         puts "#{params[:submission][hash["attribute"]]}"
       end
     end
 
     @submission.update_from_params(params[:submission])
-
     binding.pry
 
     # Update summaryOnly on ontology object
