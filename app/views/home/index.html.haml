@@ -72,8 +72,28 @@
         %div{class: "panel-heading"}
           %h3{class: "panel-title"} Ontology Visits #{"in full #{$SITE} " if at_slice?} (#{@analytics.date.strftime("%B %Y")})
         %div{class: "panel-body"}
+
+
+
           %table.minimal.align-right{width: "100%", style: "margin-bottom: 25px;"}
             %tbody
+
+
+
+
+
+
+              %tr
+                %td{colspan: 2}
+
+                  %canvas#myChart
+
+
+
+
+
+
+
               -@analytics.onts[0..4].each do |visits|
                 -ont = @ontologies_hash[visits[:ont].to_s]
                 -next if ont.nil?
@@ -89,6 +109,9 @@
                     jQuery(document).ready(function(){
                       jQuery("#ont_view_popup").facebox();
                     });
+
+
+
           :css
             #bd #ont_views {
               left: -99999px;
@@ -109,6 +132,15 @@
                       = link_to("#{ont.name} (#{ont.acronym})", ontology_path(ont.acronym))
                     %td
                       = number_with_delimiter(visits[:views])
+
+
+
+
+
+
+
+
+
 
     -# Ontology statistics
     %div{class: "col-md-6"}
@@ -140,7 +172,49 @@
 
 - ont_names = @ontologies.map{|ont| "[\"#{ont.name} (#{ont.acronym})\",\"#{ont.acronym}\"]"}
 
+- analyt = []
+- @analytics.onts.each do |visits|
+  - ont = @ontologies_hash[visits[:ont].to_s]
+  - analyt << {:ont => "#{ont.name} (#{ont.acronym})", :count => number_with_delimiter(visits[:views]) }
+- analyt.to_json
+
+
+
 :javascript
+
+  var ctx = document.getElementById("myChart");
+
+
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {}
+  });
+
+
   function jumpToValueOntology() {
     var ontology = jQuery("#find_ontology")[0].value;
     var ontology_id = jQuery("#find_ontology_id").val();
