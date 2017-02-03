@@ -1,8 +1,5 @@
 BioportalWebUi::Application.routes.draw do
 
-
-  get 'about/index'
-
   root :to => 'home#index'
 
   resources :notes, constraints: { id: /.+/ }
