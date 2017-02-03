@@ -236,7 +236,12 @@
                       - LOG.add :error, e.message, e.backtrace.join("\n\t")
                       - next
       %td{:valign => "top"}
-        - # TODO: rajouter du contenu dans cette colonne
+        %fieldset
+          %legend News
+          %p News
+        %fieldset
+          %legend Links
+          %p Links
 %div{style: "padding: 3.5em 0 0; text-align: center;"}
   %span With the collaboration of
   %div
