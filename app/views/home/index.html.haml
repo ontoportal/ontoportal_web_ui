@@ -22,8 +22,8 @@
   %div{class: "row"}
     %div{class: "col-md-12"}
       %div{class: "page-header text-center"}
-        %h1 
-          Welcome to BioPortal, 
+        %h1
+          Welcome to BioPortal,
           %small the world&rsquo;s most comprehensive repository of biomedical ontologies
 
   %div.search{class: "row"}
@@ -63,52 +63,24 @@
                     = link_to("All", ontologies_path())
                   - @groups.to_a.each do |group|
                     %li
-                      = link_to(group[:name], ontologies_path(filter: "#{CGI.escape(group[:acronym])}"))    
+                      = link_to(group[:name], ontologies_path(filter: "#{CGI.escape(group[:acronym])}"))
 
   %div.statistics{class: "row"}
     -# Ontology visits
     %div{class: "col-md-6"}
-      %div{class: "panel panel-default"}
+      %div{class: "panel panel-default", style: "min-height:350px;"}
         %div{class: "panel-heading"}
           %h3{class: "panel-title"} Ontology Visits #{"in full #{$SITE} " if at_slice?} (#{@analytics.date.strftime("%B %Y")})
         %div{class: "panel-body"}
 
+          %canvas#myChart
 
+          %a#ont_view_popup{href: "#ont_views", rel: "facebox"} More
+          :javascript
+            jQuery(document).ready(function(){
+              jQuery("#ont_view_popup").facebox();
+            });
 
-          %table.minimal.align-right{width: "100%", style: "margin-bottom: 25px;"}
-            %tbody
-
-
-
-
-
-
-              %tr
-                %td{colspan: 2}
-
-                  %canvas#myChart
-
-
-
-
-
-
-
-              -@analytics.onts[0..4].each do |visits|
-                -ont = @ontologies_hash[visits[:ont].to_s]
-                -next if ont.nil?
-                %tr
-                  %td
-                    = link_to("#{ont.name} (#{ont.acronym})", ontology_path(ont.acronym))
-                  %td
-                    = number_with_delimiter(visits[:views])
-              %tr
-                %td{colspan: 2, style: "text-align: right;"}
-                  %a#ont_view_popup{href: "#ont_views", rel: "facebox"} More
-                  :javascript
-                    jQuery(document).ready(function(){
-                      jQuery("#ont_view_popup").facebox();
-                    });
 
 
 
@@ -144,7 +116,7 @@
 
     -# Ontology statistics
     %div{class: "col-md-6"}
-      %div{class: "panel panel-default"}
+      %div{class: "panel panel-default", style: "min-height:350px;"}
         %div{class: "panel-heading"}
           %h3{class: "panel-title"} #{$SITE} Statistics #{"in full #{$SITE}" if at_slice?}
         %div{class: "panel-body"}
@@ -172,26 +144,28 @@
 
 - ont_names = @ontologies.map{|ont| "[\"#{ont.name} (#{ont.acronym})\",\"#{ont.acronym}\"]"}
 
-- analyt = []
-- @analytics.onts.each do |visits|
+- anal_ont_names = {}
+- anal_ont_numbers = []
+- @analytics.onts[0..4].each do |visits|
   - ont = @ontologies_hash[visits[:ont].to_s]
-  - analyt << {:ont => "#{ont.name} (#{ont.acronym})", :count => number_with_delimiter(visits[:views]) }
-- analyt.to_json
+  - anal_ont_names[ont.acronym] = "#{ont.name} (#{ont.acronym})"
+  - anal_ont_numbers << visits[:views]
 
 
 
 :javascript
-
+  var ontNames = #{anal_ont_names.keys.to_json.html_safe};
+  var ontNumbers = #{anal_ont_numbers.to_json.html_safe};
+  var onts = #{anal_ont_names.to_json.html_safe};
   var ctx = document.getElementById("myChart");
 
-
   var myChart = new Chart(ctx, {
-    type: 'bar',
+    type: 'horizontalBar',
     data: {
-      labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+      labels: ontNames,
       datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
+        label: "Ontology Visits",
+        data: ontNumbers,
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(54, 162, 235, 0.2)',
@@ -211,7 +185,20 @@
         borderWidth: 1
       }]
     },
-    options: {}
+    options: {
+      tooltips: {
+        enabled: true,
+        callbacks: {
+          title: function(tooltipItems, data) {
+            // var ind = tooltipItems[0].index;
+            // console.log(tooltipItems[0]);
+            // console.log("hello");
+            // console.log(ind);
+            return onts[tooltipItems[0].yLabel];
+          }
+        }
+      }
+    }
   });
 
 
