@@ -50,7 +50,7 @@
         %div{class: "panel-body"}
           %input#find_ontology_id{:type => "hidden"}
           %div{class: "input-group"}
-            = text_field_tag("ontology", nil, id: "find_ontology", class: "form-control", placeholder: "Enter an ontology, e.g. NCI Thesaurus")
+            = text_field_tag("ontology", nil, id: "find_ontology", class: "form-control", placeholder: "Start entering ontology name, e.g. Cancer, then choose from list")
             %span{class: "input-group-btn"}
               = button_tag(class: "btn btn-primary", onclick: "jumpToValueOntology()", aria: {label: "Find an ontology"}) do
                 %i{class: "fa fa-search fa-lg", aria: {hidden: "true"}}
