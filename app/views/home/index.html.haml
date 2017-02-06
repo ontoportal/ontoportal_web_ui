@@ -141,17 +141,13 @@
                 %td Direct Plus Expanded Annotations
                 %td= number_with_delimiter(@direct_expanded_annotations, :delimiter => ",")
 
-
 - ont_names = @ontologies.map{|ont| "[\"#{ont.name} (#{ont.acronym})\",\"#{ont.acronym}\"]"}
-
 - anal_ont_names = {}
 - anal_ont_numbers = []
 - @analytics.onts[0..4].each do |visits|
   - ont = @ontologies_hash[visits[:ont].to_s]
   - anal_ont_names[ont.acronym] = "#{ont.name} (#{ont.acronym})"
   - anal_ont_numbers << visits[:views]
-
-
 
 :javascript
   var ontNames = #{anal_ont_names.keys.to_json.html_safe};
@@ -166,22 +162,8 @@
       datasets: [{
         label: "Ontology Visits",
         data: ontNumbers,
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255,99,132,1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
-        ],
+        backgroundColor: "rgba(151,187,205,0.2)",
+        borderColor: "rgba(151,187,205,1)",
         borderWidth: 1
       }]
     },
@@ -190,21 +172,39 @@
       legend: {
         display: false
       },
+      scales: {
+        xAxes: [{
+          ticks: {
+            beginAtZero: true,
+            stepSize: 5000,
+           	// Return an empty string to draw the tick line but hide the tick label
+           	// Return `null` or `undefined` to hide the tick line entirely
+           	userCallback: function(value, index, values) {
+              return numberWithCommas(value);
+            }
+          }
+        }],
+        yAxes: [{
+          ticks: {}
+        }]
+      },
       tooltips: {
         enabled: true,
         callbacks: {
           title: function(tooltipItems, data) {
-            // var ind = tooltipItems[0].index;
-            // console.log(tooltipItems[0]);
-            // console.log("hello");
-            // console.log(ind);
             return onts[tooltipItems[0].yLabel];
+          },
+          label: function(tooltipItem, data) {
+            return data.datasets[0].label + ": " + numberWithCommas(tooltipItem.xLabel);
           }
         }
       }
     }
   });
 
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 
   function jumpToValueOntology() {
     var ontology = jQuery("#find_ontology")[0].value;
