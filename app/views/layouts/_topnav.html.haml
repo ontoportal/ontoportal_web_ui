@@ -1,0 +1,76 @@
+%nav.navbar.navbar-inverse.navbar-static-top
+  
+  %div.container-fluid
+
+    %div.navbar-header
+      = button_tag(type: "button", class: "navbar-toggle collapsed", data: { toggle: "collapse", target: "#navbar" }, aria: { expanded: "false", controls: "navbar" }) do
+        %span{class: "sr-only"} Toggle navigation
+        %span{class: "icon-bar"}
+        %span{class: "icon-bar"}
+        %span{class: "icon-bar"}
+      = link_to(image_tag("logos/bioportal-logo.png"), root_path(), class: "navbar-brand")
+
+    %div#navbar.navbar-collapse.collapse
+
+      %ul.nav.navbar-nav.navbar-right
+        - if session[:user].nil?
+          %li
+            = link_to("Login", login_index_path(redirect: request.original_url), style: "color: #C58612")
+        - else
+          -# Account menu
+          %li.dropdown
+            = link_to("#", class: "dropdown-toggle", role: "button", data: {toggle: "dropdown"}, aria: {haspopup: "true", expanded: "false"}) do
+              = session[:user].username
+              %i.fa.fa-caret-square-o-down{aria: "hidden: true"}
+            %ul.dropdown-menu
+              %li
+                = link_to("Account Settings", "/account")
+              - unless session[:ontologies].nil?
+                %li.divider{role: "separator"}
+                %li.dropdown-header Recently Viewed
+                - for ont in session[:ontologies]
+                  %li
+                    = link_to(ont.ontology_name, "/ontologies/#{ont.ontology_acronym}/?p=classes&conceptid=#{CGI.escape(ont.concept)}")
+                %li.divider{role: "separator"}
+              %li
+                = link_to("Logout", logout_path())
+
+        -# Tools menu
+        %li.dropdown
+          = link_to("#", class: "dropdown-toggle", role: "button", data: {toggle: "dropdown"}, aria: {haspopup: "true", expanded: "false"}) do
+            Tools
+            %i.fa.fa-caret-square-o-down{aria: "hidden: true"}
+          %ul.dropdown-menu
+            -if (!session[:user].nil? && session[:user].admin?)
+              %li
+                = link_to("Admin", admin_index_path())
+            %li
+              = link_to("Ontology Browser", ontologies_path())
+            %li
+              = link_to("Search", "/search")
+            %li
+              = link_to("Annotator", annotator_index_path())
+            %li
+              = link_to("Mappings", mappings_path())
+            %li
+              = link_to("Recommender", recommender_index_path())
+            %li
+              = link_to("Resource Index", resource_index_index_path())            
+        
+        -# Support menu
+        %li.dropdown
+          = link_to("#", class: "dropdown-toggle", role: "button", data: {toggle: "dropdown"}, aria: {haspopup: "true", expanded: "false"}) do
+            Support
+            %i.fa.fa-caret-square-o-down{aria: "hidden: true"}
+          %ul.dropdown-menu.support-menu
+            %li
+              = link_to("Submit Feedback", feedback_path(location: encode_param(request.url)), class: 'pop_window')
+            %li.divider{role: "separator"}
+            %li.dropdown-header Documentation
+            %li
+              = link_to("Help", "https://www.bioontology.org/wiki/index.php/BioPortal_Help", target: "_blank")
+            %li
+              = link_to("Release Notes", "https://www.bioontology.org/wiki/index.php/BioPortal_Release_Notes", target: "_blank")
+            %li
+              = link_to("How to Cite", "https://www.bioontology.org/wiki/index.php/BioPortal_Help#How_to_cite_NCBO_and_BioPortal", target: "_blank")
+

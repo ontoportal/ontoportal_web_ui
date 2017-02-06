@@ -25,10 +25,10 @@
               </ul>
             </div>
 
-            <div class='col-sm-3'>
+            <div class='col-sm-3 footer-support'>
               <h4>SUPPORT</h4>
               <ul class='list-unstyled'>
-                <li><%= link_to 'Contact Us', feedback_path(location: encode_param(request.url)) %></li>
+                <li><%= link_to 'Contact Us', feedback_path(location: encode_param(request.url)), class: 'pop_window' %></li>
                 <li><%= link_to 'Documentation', 'https://www.bioontology.org/wiki/index.php/BioPortal_Help', target: '_blank' %></li>
                 <li><%= link_to 'NCBO Wiki', 'https://www.bioontology.org/wiki/', target: '_blank' %></li>
               </ul>
@@ -66,7 +66,7 @@
 
           <div class='row col-sm-12'>
             <ul class='list-inline'>
-              <li><%= link_to 'CITE US', 'http://bioportal.bioontology.org/help#How_to_cite_NCBO_and_BioPortal', target: '_blank' %></li>
+              <li><%= link_to 'CITE US', 'https://www.bioontology.org/wiki/index.php/BioPortal_Help#How_to_cite_NCBO_and_BioPortal', target: '_blank' %></li>
               <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
               <li><%= link_to 'PRIVACY POLICY', 'http://www.bioontology.org/privacy.html',  target: '_blank' %></li>
               <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
