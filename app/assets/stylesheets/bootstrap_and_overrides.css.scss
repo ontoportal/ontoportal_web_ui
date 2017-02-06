@@ -19,9 +19,31 @@ body {
   /* Set the fixed height of the footer here */
   height: 320px;
   color: #757575;
-  /*background-color: #f5f5f5;*/
   background-color: #ccc;
   padding: 30px 0;
+}
+
+/* Top navigation bar
+-------------------------------------------------- */
+.navbar-inverse {
+  background-color: #234979;
+}
+
+.navbar-brand {
+  height: 80px;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+  font-size: 150%;
+  height: 80px;
+  line-height: 80px;
+  padding-top: 0;
+}
+
+.navbar-inverse .navbar-nav > .open > a, 
+.navbar-inverse .navbar-nav > .open > a:hover, 
+.navbar-inverse .navbar-nav > .open > a:focus {
+  background-color: #4D82C5;
 }
 
 /* Footer 
