@@ -72,18 +72,12 @@
         %div{class: "panel-heading"}
           %h3{class: "panel-title"} Ontology Visits #{"in full #{$SITE} " if at_slice?} (#{@analytics.date.strftime("%B %Y")})
         %div{class: "panel-body"}
-
           %canvas#myChart
-
           %a#ont_view_popup{href: "#ont_views", rel: "facebox"} More
           :javascript
             jQuery(document).ready(function(){
               jQuery("#ont_view_popup").facebox();
             });
-
-
-
-
           :css
             #bd #ont_views {
               left: -99999px;
@@ -104,15 +98,6 @@
                       = link_to("#{ont.name} (#{ont.acronym})", ontology_path(ont.acronym))
                     %td
                       = number_with_delimiter(visits[:views])
-
-
-
-
-
-
-
-
-
 
     -# Ontology statistics
     %div{class: "col-md-6"}
@@ -146,7 +131,7 @@
 - anal_ont_numbers = []
 - @analytics.onts[0..4].each do |visits|
   - ont = @ontologies_hash[visits[:ont].to_s]
-  - anal_ont_names[ont.acronym] = "#{ont.name} (#{ont.acronym})"
+  - anal_ont_names[ont.acronym] = ont.name
   - anal_ont_numbers << visits[:views]
 
 :javascript
@@ -192,7 +177,12 @@
         enabled: true,
         callbacks: {
           title: function(tooltipItems, data) {
-            return onts[tooltipItems[0].yLabel];
+            lbl = onts[tooltipItems[0].yLabel];
+
+            if (lbl.length > 45) {
+              lbl = lbl.substring(0, 40) + "...";
+            }
+            return lbl + " (" + tooltipItems[0].yLabel + ")";
           },
           label: function(tooltipItem, data) {
             return data.datasets[0].label + ": " + numberWithCommas(tooltipItem.xLabel);
