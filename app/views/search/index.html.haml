@@ -1,11 +1,13 @@
 - @title = "Search"
 
-#search_input{:style => "margin-bottom: 1em;"}
+%div#search_input
   %h1 Class Search
-  %p
-    Search for a class in multiple ontologies  #{help_icon("/help#Search_Tab").html_safe}
-  = text_field :search, :keywords, :style => "width: 426px; height: 20px; float: left; margin-right: 1em;"
-  = button_to "Search", {}, :style => "font-size: 10pt !important; margin: -1.5px 0 0;", :id => "search_button"
+  %p Search for a class in multiple ontologies  #{help_icon("/help#Search_Tab").html_safe}
+
+  = form_tag("/search", method: "post") do
+    = text_field_tag("search_keywords", nil, placeholder: "Enter a class, e.g. Melanoma", style: "width: 426px; height: 20px; float: left; margin-right: 1em;")
+    = button_tag("Search", id: "search_button", style: "font-size: 10pt !important; margin: -1.5px 0 0;")
+
   %span
     %span#search_spinner{:style => "position: relative; left: 85px; display: none; padding: 4px;"}
       \&nbsp;
@@ -43,14 +45,13 @@
       = select :search, :categories, options_for_select(categories_for_select), { }, :style => "width: 432px", :multiple => 'true', "data-placeholder".to_sym => "Type here to select categories or leave blank to use all"
       #ontology_picker_options{:style => "margin-top: 1em; position: relative; left: 2px;"}
         = render :partial => "shared/ontology_picker", :locals => { :sel_text => "Ontologies" }
-#search_results_container
+%div#search_results_container
   #result_stats
   #search_messages
   #search_results
 
-#biomixer{:style => "display: none;"}
+%div#biomixer{style: "display: none;"}
 
-/ Javascript at end to improve response time to user
 :javascript
   // Hash of ontology id => name, acronym for lookup use via JS
   jQuery(document).ready(function() {
