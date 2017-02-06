@@ -1,8 +1,85 @@
   </div>
 
+  <!-- TODO: Rethink how Virtual Appliance users can customize footer. -->
+  <!--   
   <div style="padding:2em;text-align:center;background:#234979;color:white;clear:both;" id="footer_wrapper">
-    <%=t('home.footer').html_safe%>
+    <%#t('home.footer').html_safe%>
   </div>
+  -->
+
+  </div>
+
+  <footer class='footer'>
+    <div class='container'>       
+      <div class='row'>
+
+        <div class='col-sm-10 col-sm-offset-1'>
+          <div class='row'>
+            <div class='col-sm-3'>
+              <h4>PRODUCTS</h4>
+              <ul class='list-unstyled'>
+                <li><%= link_to 'BioPortal', '#' %></li>
+                <li><%= link_to 'BioPortal REST API', 'http://data.bioontology.org/documentation', target: '_blank' %></li>
+                <li><%= link_to 'BioPortal Virtual Appliance', 'https://www.bioontology.org/wiki/index.php/Category:NCBO_Virtual_Appliance', target: '_blank' %></li>
+                <li><%= link_to 'NCBO Widgets', 'http://www.bioontology.org/wiki/index.php/NCBO_Widgets', target: '_blank' %></li>
+              </ul>
+            </div>
+
+            <div class='col-sm-3 footer-support'>
+              <h4>SUPPORT</h4>
+              <ul class='list-unstyled'>
+                <li><%= link_to 'Contact Us', feedback_path(location: encode_param(request.url)), class: 'pop_window' %></li>
+                <li><%= link_to 'Documentation', 'https://www.bioontology.org/wiki/index.php/BioPortal_Help', target: '_blank' %></li>
+                <li><%= link_to 'NCBO Wiki', 'https://www.bioontology.org/wiki/', target: '_blank' %></li>
+              </ul>
+            </div>
+
+            <div class='col-sm-3'>
+              <h4>ABOUT</h4>
+              <ul class='list-unstyled'>
+                <li><%= link_to 'About Us', 'https://www.bioontology.org/about-ncbo', target: '_blank' %></li>
+                <li><%= link_to raw('Mission &amp; Vision'), 'https://www.bioontology.org/mission', target: '_blank' %></li>
+                <li><%= link_to 'Team', 'https://www.bioontology.org/project-team', target: '_blank' %></li>
+                <li><%= link_to 'Projects', projects_path %></li>
+              </ul>
+            </div>
+
+            <div class='col-sm-3'>
+              <h4>CONNECT</h4>
+              <ul class='list-inline social-icons'>
+                <li><%= link_to raw(icon('facebook', class: 'fa-3x')), 'https://www.facebook.com/National-Center-for-Biomedical-Ontology-127444774011153/', target: '_blank' %></li>
+                <li><%= link_to raw(icon('twitter', class: 'fa-3x')), 'http://twitter.com/bioontology', target: '_blank' %></li>
+                <li><%= link_to raw(icon('github', class: 'fa-3x')), 'http://github.com/ncbo', target: '_blank' %></li>
+              </ul>
+            </div>
+
+          </div>
+        
+          <div class='row col-sm-12' style='padding-top: 30px;'>
+            <p>The <strong>National Center for Biomedical Ontology</strong> was founded as one of the National Centers for Biomedical Computing, 
+            supported by the NHGRI, the NHLBI, and the NIH Common Fund under grant U54-HG004028.</p>
+          </div>
+
+          <div class='row col-sm-12'>
+            <p>Copyright &copy; 2005‑2017, The Board of Trustees of Leland Stanford Junior University. All rights reserved.</p>
+          </div>
+
+          <div class='row col-sm-12'>
+            <ul class='list-inline'>
+              <li><%= link_to 'CITE US', 'https://www.bioontology.org/wiki/index.php/BioPortal_Help#How_to_cite_NCBO_and_BioPortal', target: '_blank' %></li>
+              <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+              <li><%= link_to 'PRIVACY POLICY', 'http://www.bioontology.org/privacy.html',  target: '_blank' %></li>
+              <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+              <li><%= link_to 'TERMS', 'http://www.bioontology.org/terms.html', target: '_blank' %></li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <%=javascript_include_tag "application"%>
 
   <% unless $ANALYTICS_ID.nil? || $ANALYTICS_ID.empty? %>
     <script type="text/javascript">

@@ -504,7 +504,7 @@ function bpPopWindow(e) {
   newwindow = window.open(url,'bp_popup_window','height=700,width=800,resizable=yes,scrollbars=yes,toolbar=no,status=no');
   if (window.focus) {newwindow.focus()};
 }
-jQuery("#top_right_menu").on("click", "a.pop_window", { link: this }, bpPopWindow)
+jQuery("div.footer-support, ul.dropdown-menu.support-menu").on("click", "a.pop_window", { link: this }, bpPopWindow)
 
 /**************************************************************
  * Standardized BP modal popups
