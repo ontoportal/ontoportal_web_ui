@@ -34,4 +34,5 @@
 //= require history/jquery.history
 //= require alertify
 //= require jquery.tooltip
+//= require Chart
 

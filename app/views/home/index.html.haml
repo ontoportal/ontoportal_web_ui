@@ -22,14 +22,14 @@
   %div{class: "row"}
     %div{class: "col-md-12"}
       %div{class: "page-header text-center"}
-        %h1 
-          Welcome to BioPortal, 
+        %h1
+          Welcome to BioPortal,
           %small the world&rsquo;s most comprehensive repository of biomedical ontologies
 
   %div.search{class: "row"}
     -# Search for a class across ontologies
     %div{class: "col-md-6"}
-      %div{class: "panel panel-default"}
+      %div{class: "panel panel-default", style: "min-height:134px;"}
         %div{class: "panel-heading"}
           %h3{class: "panel-title"} Search for a class
         %div{class: "panel-body"}
@@ -44,7 +44,7 @@
 
     -# Search for an ontology
     %div{class: "col-md-6"}
-      %div{class: "panel panel-default"}
+      %div{class: "panel panel-default", style: "min-height:134px;"}
         %div{class: "panel-heading"}
           %h3{class: "panel-title"} Find an ontology
         %div{class: "panel-body"}
@@ -63,32 +63,21 @@
                     = link_to("All", ontologies_path())
                   - @groups.to_a.each do |group|
                     %li
-                      = link_to(group[:name], ontologies_path(filter: "#{CGI.escape(group[:acronym])}"))    
+                      = link_to(group[:name], ontologies_path(filter: "#{CGI.escape(group[:acronym])}"))
 
   %div.statistics{class: "row"}
     -# Ontology visits
     %div{class: "col-md-6"}
-      %div{class: "panel panel-default"}
+      %div{class: "panel panel-default", style: "min-height:350px;"}
         %div{class: "panel-heading"}
           %h3{class: "panel-title"} Ontology Visits #{"in full #{$SITE} " if at_slice?} (#{@analytics.date.strftime("%B %Y")})
         %div{class: "panel-body"}
-          %table.minimal.align-right{width: "100%", style: "margin-bottom: 25px;"}
-            %tbody
-              -@analytics.onts[0..4].each do |visits|
-                -ont = @ontologies_hash[visits[:ont].to_s]
-                -next if ont.nil?
-                %tr
-                  %td
-                    = link_to("#{ont.name} (#{ont.acronym})", ontology_path(ont.acronym))
-                  %td
-                    = number_with_delimiter(visits[:views])
-              %tr
-                %td{colspan: 2, style: "text-align: right;"}
-                  %a#ont_view_popup{href: "#ont_views", rel: "facebox"} More
-                  :javascript
-                    jQuery(document).ready(function(){
-                      jQuery("#ont_view_popup").facebox();
-                    });
+          %canvas#myChart
+          %a#ont_view_popup{href: "#ont_views", rel: "facebox"} More
+          :javascript
+            jQuery(document).ready(function(){
+              jQuery("#ont_view_popup").facebox();
+            });
           :css
             #bd #ont_views {
               left: -99999px;
@@ -112,7 +101,7 @@
 
     -# Ontology statistics
     %div{class: "col-md-6"}
-      %div{class: "panel panel-default"}
+      %div{class: "panel panel-default", style: "min-height:350px;"}
         %div{class: "panel-heading"}
           %h3{class: "panel-title"} #{$SITE} Statistics #{"in full #{$SITE}" if at_slice?}
         %div{class: "panel-body"}
@@ -137,10 +126,76 @@
                 %td Direct Plus Expanded Annotations
                 %td= number_with_delimiter(@direct_expanded_annotations, :delimiter => ",")
 
-
 - ont_names = @ontologies.map{|ont| "[\"#{ont.name} (#{ont.acronym})\",\"#{ont.acronym}\"]"}
+- anal_ont_names = {}
+- anal_ont_numbers = []
+- @analytics.onts[0..4].each do |visits|
+  - ont = @ontologies_hash[visits[:ont].to_s]
+  - anal_ont_names[ont.acronym] = ont.name
+  - anal_ont_numbers << visits[:views]
 
 :javascript
+  var ontNames = #{anal_ont_names.keys.to_json.html_safe};
+  var ontNumbers = #{anal_ont_numbers.to_json.html_safe};
+  var onts = #{anal_ont_names.to_json.html_safe};
+  var ctx = document.getElementById("myChart");
+
+  var myChart = new Chart(ctx, {
+    type: 'horizontalBar',
+    data: {
+      labels: ontNames,
+      datasets: [{
+        label: "Ontology Visits",
+        data: ontNumbers,
+        backgroundColor: "rgba(151,187,205,0.2)",
+        borderColor: "rgba(151,187,205,1)",
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      legend: {
+        display: false
+      },
+      scales: {
+        xAxes: [{
+          ticks: {
+            beginAtZero: true,
+            stepSize: 5000,
+           	// Return an empty string to draw the tick line but hide the tick label
+           	// Return `null` or `undefined` to hide the tick line entirely
+           	userCallback: function(value, index, values) {
+              return numberWithCommas(value);
+            }
+          }
+        }],
+        yAxes: [{
+          ticks: {}
+        }]
+      },
+      tooltips: {
+        enabled: true,
+        callbacks: {
+          title: function(tooltipItems, data) {
+            lbl = onts[tooltipItems[0].yLabel];
+
+            if (lbl.length > 45) {
+              lbl = lbl.substring(0, 37) + "...";
+            }
+            return lbl + " (" + tooltipItems[0].yLabel + ")";
+          },
+          label: function(tooltipItem, data) {
+            return data.datasets[0].label + ": " + numberWithCommas(tooltipItem.xLabel);
+          }
+        }
+      }
+    }
+  });
+
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
   function jumpToValueOntology() {
     var ontology = jQuery("#find_ontology")[0].value;
     var ontology_id = jQuery("#find_ontology_id").val();
