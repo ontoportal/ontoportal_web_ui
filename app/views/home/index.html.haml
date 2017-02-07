@@ -254,14 +254,16 @@
                   See event
         %fieldset
           %legend Links
-          %div{:class => "row"}
-            %div{:class => "col-sm-4"}
-              Link to JSON API
-            %div{:class => "col-sm-4"}
-              Documentation: https://github.com/agroportal/documentation/wiki
-            %div{:class => "col-sm-4"}
-              %a{href: "https://github.com/sifrproject/", style: "text-decoration:none;"}
-                %img{src: "images/github_logo.png"} &nbsp;
+          %div{style: "text-align: center;"}
+            %div{style: "display: inline;"}
+              %a{href: "#{$REST_URL}", style: "text-decoration:none;", target: "blank", title: "BioPortal RESTful API"}
+                %img{src: "images/api_logo.png", style: "width: 20%;"} &nbsp;
+            %div{style: "display: inline;"}
+              %a{href: "https://github.com/agroportal/documentation/wiki", style: "text-decoration:none;", title: "API documentation", target: "blank"}
+                %img{src: "images/books_logo.png", style: "width: 20%;"} &nbsp;
+            %div{style: "display: inline;"}
+              %a{href: "https://github.com/sifrproject/", style: "text-decoration:none;", title: "GitHub project", target: "blank"}
+                %img{src: "images/github_logo.png", style: "width: 20%;"} &nbsp;
 
           %p VEST/AP registry
 %div{style: "padding: 3.5em 0 0; text-align: center;"}
