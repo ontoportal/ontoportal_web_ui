@@ -223,7 +223,7 @@ rec.getRecommendations = function() {
                             var detailScore = data[i].detailResult.normalizedScore * 100;
                             var specializationScore = data[i].specializationResult.normalizedScore * 100;
 
-                            var row = '<tr class="row"><td>' + position + '</td><td>';
+                            var row = '<tr><td>' + position + '</td><td>';
 
                             $.each(data[i].ontologies, function (j, item) {
                                 var ontologyLinkStyle = 1;
