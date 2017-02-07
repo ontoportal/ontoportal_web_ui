@@ -5,7 +5,7 @@ var DUMMY_ONTOLOGY = "DUMMY_ONT";
 if (window.BP_CONFIG === undefined) {
   window.BP_CONFIG = jQuery(document).data().bp.config;
 }
-var problemOnly = false;
+var problemOnly = true;
 
 function toggleShow(val) {
   problemOnly = val;
