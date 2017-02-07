@@ -5,7 +5,7 @@ var DUMMY_ONTOLOGY = "DUMMY_ONT";
 if (window.BP_CONFIG === undefined) {
   window.BP_CONFIG = jQuery(document).data().bp.config;
 }
-var problemOnly = true;
+var problemOnly = false;
 
 function toggleShow(val) {
   problemOnly = val;
@@ -30,7 +30,7 @@ function parseReportDate(dateStr) {
   var strHours = hours.toString();
   var strMonth = (Number(dateArr[3]) - 1).toString();
   var dateObj = new Date(dateArr[5], strMonth, dateArr[4], strHours, dateArr[8], "00", "00");
-  return dateObj.toLocaleString();
+  return dateObj.toLocaleString([], {month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit'});
 }
 
 var AjaxAction = function(httpMethod, operation, path, isLongOperation, params) {
@@ -420,7 +420,7 @@ function performActionOnOntologies() {
 function populateOntologyRows(data) {
   var ontologies = data.ontologies;
   var allRows = [];
-  var hideFields = ["format", "date_created", "report_date_updated", "errErrorStatus", "errMissingStatus", "problem", "logFilePath"];
+  var hideFields = ["format", "administeredBy", "date_created", "report_date_updated", "errErrorStatus", "errMissingStatus", "problem", "logFilePath"];
 
   for (var acronym in ontologies) {
     var errorMessages = [];
@@ -428,6 +428,7 @@ function populateOntologyRows(data) {
     var ontLink = "<a href='" + BP_CONFIG.ui_url + "/ontologies/" + acronym + "' target='_blank' style='" + (ontology["problem"] === true ? "color:red;" : "") + "'>" + acronym + "</a>";
     var bpLinks = '';
     var format = ontology["format"];
+    var admin = ontology["administeredBy"].split(", ");
     var reportDateUpdated = parseReportDate(ontology["report_date_updated"]);
     var ontologyDateCreated = parseReportDate(ontology["date_created"]);
 
@@ -445,7 +446,7 @@ function populateOntologyRows(data) {
         errorMessages.push(ontology[k]);
       }
     }
-    var row = [ontLink, format, ontologyDateCreated, reportDateUpdated, bpLinks, errStatus, missingStatus, errorMessages.join("<br/>"), ontology["problem"]];
+    var row = [ontLink, admin.join("<br/>"), format, ontologyDateCreated, reportDateUpdated, bpLinks, errStatus, missingStatus, errorMessages.join("<br/>"), ontology["problem"]];
     allRows.push(row);
   }
   return allRows;
@@ -547,49 +548,55 @@ function displayOntologies(data, ontology) {
         {
           "targets": 1,
           "searchable": true,
-          "title": "Format",
-          "width": "55px"
+          "title": "Admin",
+          "width": "160px"
         },
         {
           "targets": 2,
           "searchable": true,
-          "title": "Date Created",
-          "type": "date",
-          "width": "127px"
+          "title": "Format",
+          "width": "55px"
         },
         {
           "targets": 3,
           "searchable": true,
-          "title": "Report Date",
+          "title": "Date Created",
           "type": "date",
-          "width": "127px"
+          "width": "170px"
         },
         {
           "targets": 4,
+          "searchable": true,
+          "title": "Report Date",
+          "type": "date",
+          "width": "170px"
+        },
+        {
+          "targets": 5,
           "searchable": false,
           "orderable": false,
           "title": "URL",
           "width": "140px"
         },
         {
-          "targets": 5,
+          "targets": 6,
           "searchable": true,
           "title": "Error Status",
           "width": "130px"
         },
         {
-          "targets": 6,
+          "targets": 7,
           "searchable": true,
           "title": "Missing Status",
           "width": "130px"
         },
         {
-          "targets": 7,
+          "targets": 8,
           "searchable": true,
           "title": "Issues"
         },
         {
-          "targets": 8,
+          "targets": 9,
           "searchable": true,
           "visible": false
         }
