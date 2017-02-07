@@ -135,63 +135,6 @@
   - anal_ont_numbers << visits[:views]
 
 :javascript
-  var ontNames = #{anal_ont_names.keys.to_json.html_safe};
-  var ontNumbers = #{anal_ont_numbers.to_json.html_safe};
-  var onts = #{anal_ont_names.to_json.html_safe};
-  var ctx = document.getElementById("myChart");
-
-  var myChart = new Chart(ctx, {
-    type: 'horizontalBar',
-    data: {
-      labels: ontNames,
-      datasets: [{
-        label: "Ontology Visits",
-        data: ontNumbers,
-        backgroundColor: "rgba(151,187,205,0.2)",
-        borderColor: "rgba(151,187,205,1)",
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      legend: {
-        display: false
-      },
-      scales: {
-        xAxes: [{
-          ticks: {
-            beginAtZero: true,
-            stepSize: 5000,
-           	// Return an empty string to draw the tick line but hide the tick label
-           	// Return `null` or `undefined` to hide the tick line entirely
-           	userCallback: function(value, index, values) {
-              return numberWithCommas(value);
-            }
-          }
-        }],
-        yAxes: [{
-          ticks: {}
-        }]
-      },
-      tooltips: {
-        enabled: true,
-        callbacks: {
-          title: function(tooltipItems, data) {
-            lbl = onts[tooltipItems[0].yLabel];
-
-            if (lbl.length > 45) {
-              lbl = lbl.substring(0, 37) + "...";
-            }
-            return lbl + " (" + tooltipItems[0].yLabel + ")";
-          },
-          label: function(tooltipItem, data) {
-            return data.datasets[0].label + ": " + numberWithCommas(tooltipItem.xLabel);
-          }
-        }
-      }
-    }
-  });
-
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
@@ -315,4 +258,79 @@
       delay:     1200               // 1.2 second delay on mouseout);
     });
 
+    var ontNames = #{anal_ont_names.keys.to_json.html_safe};
+    var ontNumbers = #{anal_ont_numbers.to_json.html_safe};
+    var onts = #{anal_ont_names.to_json.html_safe};
+    var ctx = document.getElementById("myChart");
+
+    var myChart = new Chart(ctx, {
+      type: 'horizontalBar',
+      data: {
+        labels: ontNames,
+        datasets: [{
+          label: "Ontology Visits",
+          data: ontNumbers,
+          backgroundColor: "rgba(151,187,205,0.2)",
+          borderColor: "rgba(151,187,205,1)",
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            ticks: {
+              beginAtZero: true,
+              stepSize: 5000,
+              // Return an empty string to draw the tick line but hide the tick label
+              // Return `null` or `undefined` to hide the tick line entirely
+              userCallback: function(value, index, values) {
+                return numberWithCommas(value);
+              }
+            }
+          }],
+          yAxes: [{
+            ticks: {}
+          }]
+        },
+        tooltips: {
+          enabled: true,
+          callbacks: {
+            title: function(tooltipItems, data) {
+              lbl = onts[tooltipItems[0].yLabel];
+
+              if (lbl.length > 45) {
+                lbl = lbl.substring(0, 37) + "...";
+              }
+              return lbl + " (" + tooltipItems[0].yLabel + ")";
+            },
+            label: function(tooltipItem, data) {
+              return data.datasets[0].label + ": " + numberWithCommas(tooltipItem.xLabel);
+            }
+          }
+        },
+        hover: {
+          onHover: function(e) {
+            jQuery("#myChart").css("cursor", e[0] ? "pointer" : "default");
+          }
+        }
+      }
+    });
+
+    ctx.onclick = function(evt) {
+      var activePoints = myChart.getElementsAtEvent(evt);
+
+      if (activePoints.length > 0) {
+        //get the internal index of slice in pie chart
+        var clickedElementIndex = activePoints[0]["_index"];
+        //get specific label by index
+        var label = myChart.data.labels[clickedElementIndex];
+        //get value by index
+        // var value = myChart.data.datasets[0].data[clickedElementIndex];
+        window.location.href = "#{ontologies_path()}/" + label;
+      }
+    }
   });
