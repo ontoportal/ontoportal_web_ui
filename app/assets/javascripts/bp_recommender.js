@@ -204,7 +204,7 @@ rec.getRecommendations = function() {
                         + '<th title="The specialization score represents the level of specialization of the ontology to the domain of the input data">Specialization<br>score</th>'
                         + '<th title="Number of annotations performed with the ontology for the input data">Annotations</th>'
                         + '<th title="This columns makes it possible to highlight the annotations performed with each ontology">Highlight <br>annotations</th>'
-                        + '</th></tr></thead>');
+                        + '</tr></thead>');
                         table.append(header);
                         table.append('<tbody>');
                         for (var i = 0; i < data.length; i++) {
@@ -226,7 +226,7 @@ rec.getRecommendations = function() {
                             var row = '<tr class="row"><td>' + position + '</td><td>';
 
                             $.each(data[i].ontologies, function (j, item) {
-                                var ontologyLinkStyle = 1
+                                var ontologyLinkStyle = 1;
                                 if (params.output_type == 2) {
                                     ontologyLinkStyle = 'style="color: ' + rec.colors[j] + '"';
                                 }
