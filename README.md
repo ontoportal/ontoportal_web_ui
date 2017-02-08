@@ -58,6 +58,11 @@ Generalizes, HASDISJUNCTIONSWITH, et toutes les metadata de relations entre onto
 Dans Default Properties sur le spreadsheet des metadata elles sont groupées
 
 
+* Dans browse: permettre de trier dans l'ordre alphabétique
+* Ajouter des petits drapeaux à côté des naturalLang (dans browse et dans la page de présentation des submissions)
+
+* IncludedInDataCatalog: faudrait avoir des boutons plutôt (voir avec logo, pour les catalogs connus comme ontobee)
+
 
 
 * Possibilité de saisir plusieurs lang
