@@ -1,0 +1,30 @@
+%div.container
+  
+  %div.row
+    %div.col-xs-10.col-xs-offset-1
+      %h1{style: "margin-bottom: 25px;"}
+        Ontology Visits
+        %small (#{@analytics.date.strftime("%B %Y")})
+      
+  %div.row
+    %div.col-xs-10.col-xs-offset-1
+      %div.table-responsive
+        %table.table.table-hover
+          %thead
+            %tr 
+              %th #
+              %th name
+              %th # visits
+          %tbody
+            - count = 0
+            - @analytics.onts.each do |visits|
+              - ont = @ontologies_hash[visits[:ont].to_s]
+              - next if ont.nil?
+              - count += 1
+              %tr
+                %td
+                  #{count}
+                %td
+                  = link_to("#{ont.name} (#{ont.acronym})", ontology_path(ont.acronym))
+                %td
+                  = number_with_delimiter(visits[:views])            
