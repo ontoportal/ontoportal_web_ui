@@ -45,6 +45,7 @@ BioportalWebUi::Application.routes.draw do
   get '/validate_ontology_file' => 'home#validate_ontology_file_show'
   match '/validate_ontology_file' => 'home#validate_ontology_file', via: [:get, :post]
   get '/layout_partial/:partial' => 'home#render_layout_partial'
+  match '/visits', to: 'visits#index', via: :get
 
   # Error pages
   match "/404", to: "errors#not_found", via: :all
