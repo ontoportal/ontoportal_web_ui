@@ -235,7 +235,7 @@
       %td
         %div#contacts
           %div#contact_button{style: "float: right; margin-top -1em;"}
-            = button_to 'Add contact', '#', id: 'add_contact_button'
+            = button_to 'Add contact', '#', id: 'add_contact_button', class: "btn btn-info"
           - if @submission.contact
             - @submission.contact.each_with_index do |contact, i|
               %div.contact
