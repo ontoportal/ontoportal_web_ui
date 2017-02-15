@@ -3,7 +3,7 @@
 
 :javascript
   jQuery(function(){
-    jQuery("#datepicker").datepicker({
+    jQuery(".datepicker").datepicker({
       showOn: 'button',
       buttonImage: "#{image_path('calendar.gif')}",
       buttonImageOnly: true,
@@ -181,7 +181,7 @@
         Release Date
         %span.asterik *
       %td
-        = text_field :submission, :released, :id => "datepicker", value: "#{@submission.released}", :required => true
+        = text_field :submission, :released, :class => "datepicker", value: "#{@submission.released}", :required => true
         %span{:style => "font-size: 90%; color: grey;"}
     %tr
       %th
@@ -365,7 +365,7 @@
                   - date_value = nil
                 - else
                   - date_value = DateTime.parse(@submission.send(attr["attribute"])).to_date.to_s
-                = date_field :submission, attr["attribute"].to_s.to_sym, value: date_value
+                = text_field :submission, attr["attribute"].to_s.to_sym, :class => "datepicker", value: "#{date_value}"
 
               - elsif attr["enforce"].include?("uri")
                 - if @submission.send(attr["attribute"]).nil?
@@ -416,7 +416,7 @@
                   - date_value = nil
                 - else
                   - date_value = DateTime.parse(@submission.send(attr["attribute"])).to_date.to_s
-                = date_field :submission, attr["attribute"].to_s.to_sym, value: date_value
+                = text_field :submission, attr["attribute"].to_s.to_sym, :class => "datepicker", value: "#{date_value}"
 
               - elsif attr["enforce"].include?("uri")
                 - if @submission.send(attr["attribute"]).nil?
