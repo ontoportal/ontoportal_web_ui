@@ -8,7 +8,7 @@
 
 <script type="text/javascript">
 jQuery(window).ready(function(){
-  jQuery("#<%=@select_id%>").chosen({search_contains: true});
+  jQuery("#<%=@select_id%>").chosen({search_contains: true, width: '100%'});
 
   // Unbind the click handler from the ontology list
   jQuery("#<%=@select_id%>_chzn").bind("focus", hideChosenResults);

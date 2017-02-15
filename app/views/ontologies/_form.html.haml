@@ -44,9 +44,9 @@
     jQuery("#ontology_isView").live("click", function(){
       console.log(jQuery("#ontology_isView").is(":checked"))
       if (jQuery("#ontology_isView").is(":checked")) {
-        jQuery("#ontology_viewOf").removeAttr('disabled').trigger("liszt:updated");
+        jQuery("#ontology_viewOf").removeAttr('disabled').trigger("chosen:updated");
       } else {
-        jQuery("#ontology_viewOf").attr('disabled', true).trigger("liszt:updated");
+        jQuery("#ontology_viewOf").attr('disabled', true).trigger("chosen:updated");
       }
     });
 

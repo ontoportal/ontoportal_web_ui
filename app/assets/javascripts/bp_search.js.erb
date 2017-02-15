@@ -153,7 +153,7 @@ jQuery(document).ready(function() {
         } else {
             jQuery("#ontology_picker_options").addClass("not_visible");
             jQuery("#ontology_ontologyId").val("");
-            jQuery("#ontology_ontologyId").trigger("liszt:updated");
+            jQuery("#ontology_ontologyId").trigger("chosen:updated");
         }
     });
 
@@ -265,14 +265,14 @@ function autoSearch() {
             ontologyIds = params.ontologies || params.ontologyids || "";
             ontologyIds = ontologyIds.split(",");
             jQuery("#ontology_ontologyId").val(ontologyIds);
-            jQuery("#ontology_ontologyId").trigger("liszt:updated");
+            jQuery("#ontology_ontologyId").trigger("chosen:updated");
         }
 
         if (params.hasOwnProperty("categories")) {
             categories = params.categories || "";
             categories = categories.split(",");
             jQuery("#search_categories").val(categories);
-            jQuery("#search_categories").trigger("liszt:updated");
+            jQuery("#search_categories").trigger("chosen:updated");
         }
 
       performSearch();
