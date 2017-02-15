@@ -7,6 +7,17 @@ A rails application for biological ontologies, see http://bioportal.bioontology.
 
 ### Finir les metadata (grosse prio)
 
+#### Grosses tâches
+
+* Faire en sorte de bien récupèrer quand on a des array de metadata (en ajoutant les champs)
+  * Faire une method générique (genre une class) qui permet de facilement distinguer les types de metadata (pas besoin d'ajouter les champs en dur dans le code)
+
+* Passer à bootstrap pour faire le joli layout?
+  * Dans un premier temps import bootstrap seulement dans le form?
+  * On pourrait faire des col pour ranger les metadata par "dates", "description", "links" dans des panels bootstrap
+
+#### Plein de petits todo
+
 * Permettre de filtrer les ontos en fct des metadata 
 Voir col P : https://docs.google.com/spreadsheets/d/1r1twxJvXdQXrkX0Ocis6YY08nlO5cGneCAQ5F7U_CoA/edit#gid=0
 Surtout dans les pages browse et welcome (voir les trucs en orange). Page Landscape plus tard
