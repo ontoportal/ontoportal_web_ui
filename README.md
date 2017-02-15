@@ -26,7 +26,7 @@ Le but c'est d'avoir des résultats visibles
 * 2eme bloc avec les metadata que le portal utilise: description, documentation...
 * Expliquer que quand on ajoute un fichier les metadata sont updatés avec les metadata contenues dans le fichier (après le bloc des metadata non extraites)a
 
-Add contact > même type de bouton que Add new Language (voir mail Clément)
+X Add contact > même type de bouton que Add new Language (voir mail Clément)
 
 Petit ? quand tu le survoles on dit qu'on extrait normalement cette metadata de l'onto à partir de: list des metadata mappings
 Et on note "omv:description + rdfs:comment" quand on prend les valeurs de chaque propriété
@@ -34,7 +34,7 @@ Trouver comment montrer qu'on prend omv:naturalLanguage plusieurs fois si rempli
 
 Rassembler toutes les dates ensembles (au lieu de simple et complete) dans un même table
 
-Attention date picker par défaut marche pas sur firefox (utiliser date picker de jQuery, celui used par NCBO)
+X Attention date picker par défaut marche pas sur firefox (utiliser date picker de jQuery, celui used par NCBO)
 
 Mettre des espaces : HASCONTRIBUTOR & cie
 

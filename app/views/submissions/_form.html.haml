@@ -352,9 +352,10 @@
           %tr
             %th{:style => "padding-bottom: 2%;"}
               - if ["notes", "keywords", ].include?(attr["attribute"])
+                = # TODO: highlight in bold NOT WORKING. Find another way to do it.
                 = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
               - else
-                = label_tag(attr["attribute"], attr["attribute"])
+                = label_tag(attr["attribute"].gsub(/(?=[A-Z])/, " "))
               = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
             %td{:style => "padding-bottom: 2%;"}
               - if attr["enforce"].include?("integer")
@@ -404,7 +405,7 @@
               - if ["notes", "keywords", ].include?(attr["attribute"])
                 = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
               - else
-                = label_tag(attr["attribute"], attr["attribute"])
+                = label_tag(attr["attribute"].gsub(/(?=[A-Z])/, " "))
               = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
             %td{:style => "padding-bottom: 2%;"}
               - if attr["enforce"].include?("integer")
