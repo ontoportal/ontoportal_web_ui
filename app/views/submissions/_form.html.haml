@@ -277,7 +277,10 @@
         License
       %td
         %div{:style => "float:left;width:50%;"}
-          - if $LICENSES.include?(@submission.hasLicense) && !@submission.hasLicense.nil? && !@submission.hasLicense.eql?("")
+          - if @submission.hasLicense.nil? || @submission.hasLicense.eql?("")
+            = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "none" })
+            = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
+          - elsif $LICENSES.include?(@submission.hasLicense)
             = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => @submission.hasLicense })
             = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
           - else
