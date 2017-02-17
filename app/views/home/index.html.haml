@@ -27,8 +27,8 @@
     %a{:href => "#", :onclick => "close_message(); return false;", :style => "font-size: small; color: darkGray;"} [close]
 
 #release_info
-  Current Release: 
-  = link_to $RELEASE_VERSION, "http://www.bioontology.org/wiki/index.php/BioPortal_Release_Notes", target: "_blank"
+  Current Release:
+  = link_to $RELEASE_VERSION, "https://github.com/agroportal/documentation/wiki/Release-notes", target: "_blank"
   %br/
   Issue tracking on
   = link_to "GitHub", "https://github.com/agroportal/agroportal_web_ui/issues", target: "_blank"
@@ -243,6 +243,7 @@
           %legend Links
           %div{style: "text-align: center;"}
             %div{style: "display: inline;"}
+<<<<<<< HEAD
               %a{href: "https://github.com/agroportal/documentation/wiki", style: "text-decoration:none;", title: "Documentation", target: "blank"}
                 %img{src: "images/books_logo.png", style: "width: 15%;"} &nbsp;
             %div{style: "display: inline; padding: 3%;"} &nbsp;
@@ -252,6 +253,21 @@
             %div{style: "display: inline; padding: 3%;"} &nbsp;
             %div{style: "display: inline;"}
               %a{href: "https://github.com/agroportal", style: "text-decoration:none;", title: "GitHub project", target: "blank"}
+=======
+              %a{href: "#{$REST_URL}", style: "text-decoration:none;", target: "blank", title: "BioPortal RESTful API"}
+                %img{src: "images/api_logo.png", style: "width: 15%;"} &nbsp;
+            %div{style: "display: inline; padding: 3%;"} &nbsp;
+            %div{style: "display: inline;"}
+              %a{href: "http://sparql.#{$SITE_URL}/test", style: "text-decoration:none;", title: "SPARQL endpoint", target: "blank"}
+                %img{src: "images/sparql_logo.png", style: "width: 15%;"} &nbsp;
+            %div{style: "display: inline; padding: 3%;"} &nbsp;
+            %div{style: "display: inline;"}
+              %a{href: "https://github.com/sifrproject/bioportal_web_ui/wiki", style: "text-decoration:none;", title: "Documentation", target: "blank"}
+                %img{src: "images/books_logo.png", style: "width: 15%;"} &nbsp;
+            %div{style: "display: inline; padding: 3%;"} &nbsp;
+            %div{style: "display: inline;"}
+              %a{href: "https://github.com/sifrproject/", style: "text-decoration:none;", title: "GitHub project", target: "blank"}
+>>>>>>> lirmm
                 %img{src: "images/github_logo.png", style: "width: 15%;"} &nbsp;
 %div{style: "padding: 3.5em 0 0; text-align: center;"}
   %span Supported by
