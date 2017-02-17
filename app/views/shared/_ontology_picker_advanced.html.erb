@@ -249,7 +249,7 @@ function ontLabelToAbbr() {
 }
 
 function refreshOntList() {
-  jQuery("#<%=@select_id%>").trigger("liszt:updated");
+  jQuery("#<%=@select_id%>").trigger("chosen:updated");
   jQuery("#<%=@select_id%>").trigger("change");
 }
 

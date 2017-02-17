@@ -39,7 +39,7 @@ function get_annotations() {
   jQuery("#annotator_error").html("");
 
   // Validation
-  if (jQuery("#annotation_text").val() === jQuery("#annotation_text").attr("title")) {
+  if (!jQuery("#annotation_text").val()) {
     jQuery("#annotator_error").html("Please enter text to annotate");
     return;
   }
@@ -483,6 +483,12 @@ jQuery(document).ready(function() {
   filter_match_type.init();
   filter_matched_ontologies.init();
   filter_matched_classes.init();
+
+  jQuery('#annotator-help').click(function (event) {
+    bpPopWindow(event);
+  });
+
+  jQuery("#annotations_container").hide();
 }); // doc ready
 
 
