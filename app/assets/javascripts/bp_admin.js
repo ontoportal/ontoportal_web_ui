@@ -428,7 +428,7 @@ function populateOntologyRows(data) {
     var ontLink = "<a href='" + BP_CONFIG.ui_url + "/ontologies/" + acronym + "' target='_blank' style='" + (ontology["problem"] === true ? "color:red;" : "") + "'>" + acronym + "</a>";
     var bpLinks = '';
     var format = ontology["format"];
-    var admin = ontology["administeredBy"].split(", ");
+    var admin = ontology["administeredBy"];
     var reportDateUpdated = parseReportDate(ontology["report_date_updated"]);
     var ontologyDateCreated = parseReportDate(ontology["date_created"]);
 
