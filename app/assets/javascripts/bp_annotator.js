@@ -35,6 +35,9 @@ function insertSampleText() {
   jQuery("#annotation_text").val(text);
 }
 
+/**
+ * Main function called when the Get annotations button is clicked in the Annotator
+ */
 function get_annotations() {
   jQuery("#results_error").html("");
   jQuery("#annotator_error").html("");
@@ -66,6 +69,10 @@ function get_annotations() {
   params.exclude_synonyms = jQuery("#exclude_synonyms").is(':checked');
   params.expand_mappings = jQuery("#expand_mappings").is(':checked');
   params.ncbo_slice = (("ncbo_slice" in BP_CONFIG) ? BP_CONFIG.ncbo_slice : '');
+
+  params.negation = jQuery("#negation").is(':checked');
+  params.experiencer = jQuery("#experiencer").is(':checked');
+  params.temporality = jQuery("#temporality").is(':checked');
 
   params.score = jQuery("#score").val();
   if (params.score) {
