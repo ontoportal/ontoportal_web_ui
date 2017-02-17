@@ -618,6 +618,20 @@ table.align-right th:nth-child(2) {
   border-left: 1px solid #C1DAD7;
   border-right: 1px solid #C1DAD7;
 }
+
+/* Ontology submission details */
+
+form input[type="text"], input[type="url"] {
+  width: 90%;
+  max-width: 500px;
+}
+
+form textarea {
+  width: 90%;
+  max-width: 500px;
+}
+
+
 /* Resources Tab*/
 
 .resources caption {
