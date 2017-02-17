@@ -241,7 +241,7 @@
               %div.contact
                 Name:&nbsp;
                 = text_field :submission, :"contact[#{i}][name]", value: contact["name"]
-                &nbsp;&nbsp;
+                %br
                 Email:&nbsp;
                 = text_field :submission, :"contact[#{i}][email]", value: contact["email"]
           - else
