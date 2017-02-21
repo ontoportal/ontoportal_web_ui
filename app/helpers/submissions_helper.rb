@@ -36,11 +36,24 @@ module SubmissionsHelper
 
     else
       # If a simple text
-      input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"]))
+      # button to add metadata fields
       if attr["enforce"].include?("list")
+        @submission.send(attr["attribute"]).each_with_index do |metadata_val, index|
+          if index == 0
+            puts "attends"
+            input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: metadata_val, :style => "margin-bottom: 0.3em;")
+          else
+            input_html << text_field_tag("added" + attr["attribute"].to_s + "[]", metadata_val, :id => "added" + attr["attribute"].to_s, :style => "margin-bottom: 0.3em;")
+          end
+        end
+
         input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;",
                                  :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'text')")
         input_html << content_tag(:div, "", id: "#{attr["attribute"]}Div")
+
+      else
+        # if single value
+        input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"]))
       end
       return input_html
     end
