@@ -38,7 +38,6 @@ module SubmissionsHelper
       # If a simple text
       input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"]))
       if attr["enforce"].include?("list")
-        #input_html << content_tag(:br)
         input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;",
                                  :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'text')")
         input_html << content_tag(:div, "", id: "#{attr["attribute"]}Div")
