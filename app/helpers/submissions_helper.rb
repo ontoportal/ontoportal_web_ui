@@ -24,13 +24,12 @@ module SubmissionsHelper
 
       if attr["enforce"].include?("list")
         input_html << url_field(:submission, attr["attribute"].to_s.to_sym, value: uri_value[0], :style => "margin-bottom: 0.3em;")
-        # Add field if list of metadata
+        # Add field if list of URI
         @submission.send(attr["attribute"]).each_with_index do |metadata_val, index|
           if index != 0
             input_html << url_field_tag("added" + attr["attribute"].to_s + "[]", metadata_val, :id => "added" + attr["attribute"].to_s, :style => "margin-bottom: 0.3em;")
           end
         end
-
         input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;",
                                  :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'url')")
         input_html << content_tag(:div, "", id: "#{attr["attribute"]}Div")
