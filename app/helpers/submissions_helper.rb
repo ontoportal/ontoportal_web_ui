@@ -38,11 +38,9 @@ module SubmissionsHelper
       # If a simple text
       # button to add metadata fields
       if attr["enforce"].include?("list")
+        input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])[0], :style => "margin-bottom: 0.3em;")
         @submission.send(attr["attribute"]).each_with_index do |metadata_val, index|
-          if index == 0
-            puts "attends"
-            input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: metadata_val, :style => "margin-bottom: 0.3em;")
-          else
+          if index != 0
             input_html << text_field_tag("added" + attr["attribute"].to_s + "[]", metadata_val, :id => "added" + attr["attribute"].to_s, :style => "margin-bottom: 0.3em;")
           end
         end
