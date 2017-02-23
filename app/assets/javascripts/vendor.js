@@ -35,4 +35,5 @@
 //= require alertify
 //= require jquery.tooltip
 //= require Chart
+//= require select2
 
