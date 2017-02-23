@@ -107,6 +107,7 @@ class SubmissionsController < ApplicationController
     params[:submission][:hasOntologySyntax] = "" if params[:submission][:hasOntologySyntax].eql?("none")
     params[:submission][:hasFormalityLevel] = "" if params[:submission][:hasFormalityLevel].eql?("none")
     params[:submission][:hasLicense] = "" if params[:submission][:hasLicense].eql?("none")
+    params[:submission][:isOfType] = "" if params[:submission][:isOfType].eql?("none")
     if params[:submission][:hasLicense].eql?("other")
       params[:submission][:hasLicense] = params[:submission][:licenseText]
     end
