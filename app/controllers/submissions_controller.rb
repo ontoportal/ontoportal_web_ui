@@ -27,7 +27,6 @@ class SubmissionsController < ApplicationController
     if params[:submission][:hasLicense].eql?("other")
       params[:submission][:hasLicense] = params[:submission][:licenseText]
     end
-    params[:submission][:ifOfType] = "" if params[:submission][:ifOfType].eql?("none")
 
     # Add new language to naturalLanguage list
     natural_languages = params[:naturalLanguageSelect]
