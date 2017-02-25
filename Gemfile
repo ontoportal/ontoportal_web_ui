@@ -15,6 +15,7 @@ gem 'jquery-rails'
 gem 'bootstrap-sass', '~> 3.3.7'
 gem 'font-awesome-sass', '~> 4.7.0'
 gem 'chart-js-rails'
+gem 'select2-rails'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
