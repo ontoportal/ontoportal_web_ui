@@ -16,3 +16,14 @@
   margin-bottom: 35px;
 }
 
+.result-scores {
+  background-color: #8cabd6;
+  border: 1px solid #3e76b6;
+}
+
+.final-score {
+  color: #ccc;
+  background-color: #234979;
+  border: 1px solid #234979;
+}
+
