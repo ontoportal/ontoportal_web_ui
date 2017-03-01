@@ -237,11 +237,11 @@ rec.getRecommendations = function() {
 
                             row += "</td>";
                             row += 
-                              '<td><div style="width:120px"><div style="width:' + finalScore.toFixed(0) + '%;" class="final-score">' + finalScore.toFixed(1) + '</div></div>' + '</td>'
-                            + '<td><div style="width:120px"><div style="width:' + coverageScore.toFixed(0) + '%;" class="result-scores">' + coverageScore.toFixed(1) + '</div></div>' + '</td>'
-                            + '<td><div style="width:120px"><div style="width:' + acceptanceScore.toFixed(0) + '%;" class="result-scores">' + acceptanceScore.toFixed(1) + '</div></div>' + '</td>'
-                            + '<td><div style="width:120px"><div style="width:' + detailScore.toFixed(0) + '%;" class="result-scores">' + detailScore.toFixed(1) + '</div></div>' + '</td>'
-                            + '<td><div style="width:120px"><div style="width:' + specializationScore.toFixed(0) + '%;" class="result-scores">' + specializationScore.toFixed(1) + '</div></div>' + '</td>'
+                              '<td><div><div style="width:' + finalScore.toFixed(0) + '%;" class="final-score">' + finalScore.toFixed(1) + '</div></div>' + '</td>'
+                            + '<td><div><div style="width:' + coverageScore.toFixed(0) + '%;" class="result-scores">' + coverageScore.toFixed(1) + '</div></div>' + '</td>'
+                            + '<td><div><div style="width:' + acceptanceScore.toFixed(0) + '%;" class="result-scores">' + acceptanceScore.toFixed(1) + '</div></div>' + '</td>'
+                            + '<td><div><div style="width:' + detailScore.toFixed(0) + '%;" class="result-scores">' + detailScore.toFixed(1) + '</div></div>' + '</td>'
+                            + '<td><div><div style="width:' + specializationScore.toFixed(0) + '%;" class="result-scores">' + specializationScore.toFixed(1) + '</div></div>' + '</td>'
                             + '<td>' + data[i].coverageResult.annotations.length + '</td>'
                             + '<td>' + '<div style="text-align:center"><input style="vertical-align:middle" id="chk' + i + '" type="checkbox"/></div>'
                             + '</tr>';
