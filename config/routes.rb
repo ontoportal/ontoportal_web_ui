@@ -28,8 +28,6 @@ BioportalWebUi::Application.routes.draw do
 
   resources :recommender
 
-  resources :recommender_v1
-
   resources :annotator
 
   resources :virtual_appliance

@@ -67,4 +67,5 @@ group :development do
     gem 'capistrano-bundler', require: false
     # passenger reload
     gem 'capistrano-passenger', require: false
+    gem 'html2haml'
 end
