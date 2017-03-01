@@ -9,6 +9,7 @@ rec.showOrHideAdvancedOptions = function() {
 }
 
 rec.insertInput = function() {
+    event.preventDefault();
     rec.prepareForRealInput();
     if ($("#radioItText").is(":checked")) {
         rec.insertSampleText()
