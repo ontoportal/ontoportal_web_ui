@@ -38,19 +38,19 @@
           %label Weights configuration
           %div.row
             %div.form-group
-              %div.col-xs-2
+              %div.col-xs-9.col-lg-3
                 %div.input-group
                   %span#coverage-addon.input-group-addon Coverage:
                   = number_field_tag("input_wc", "0.55", min: "0", step: "1", class: "form-control", aria: {describedby: "coverage-addon"})
-              %div.col-xs-2
+              %div.col-xs-9.col-lg-3
                 %div.input-group
                   %span#acceptance-addon.input-group-addon Acceptance:
                   = number_field_tag("input_wa", "0.15", min: "0", step: "1", class: "form-control", aria: {describedby: "acceptance-addon"})              
-              %div.col-xs-2
+              %div.col-xs-9.col-lg-3
                 %div.input-group
                   %span#knowledge-addon.input-group-addon Knowledge detail:
                   = number_field_tag("input_wd", "0.15", min: "0", step: "1", class: "form-control", aria: {describedby: "knowledge-addon"})              
-              %div.col-xs-2
+              %div.col-xs-9.col-lg-3
                 %div.input-group
                   %span#specialization-addon.input-group-addon Specialization:
                   = number_field_tag("input_ws", "0.15", min: "0", step: "1", class: "form-control", aria: {describedby: "specialization-addon"})
@@ -59,7 +59,7 @@
             %label Ontology sets    
             %div.row
               %div.form-group
-                %div.col-xs-2
+                %div.col-xs-9.col-lg-3
                   %div.input-group
                     %span#sets-addon.input-group-addon Maximum ontologies per set:
                     = number_field_tag("input_max_ontologies", "3", in: 2...5, class: "form-control", aria: {describedby: "sets-addon"})
