@@ -237,11 +237,11 @@ rec.getRecommendations = function() {
 
                             row += "</td>";
                             row += 
-                              '<td><div style="width:' + finalScore.toFixed(0) + '%;" class="final-score">' + finalScore.toFixed(1) + '</div></td>'
-                            + '<td><div style="width:' + coverageScore.toFixed(0) + '%;" class="result-scores">' + coverageScore.toFixed(1) + '</div></td>'
-                            + '<td><div style="width:' + acceptanceScore.toFixed(0) + '%;" class="result-scores">' + acceptanceScore.toFixed(1) + '</div></td>'
-                            + '<td><div style="width:' + detailScore.toFixed(0) + '%;" class="result-scores">' + detailScore.toFixed(1) + '</div></td>'
-                            + '<td><div style="width:' + specializationScore.toFixed(0) + '%;" class="result-scores">' + specializationScore.toFixed(1) + '</div></td>'
+                              '<td><div style="width:' + finalScore.toFixed(0) + '%;" class="final-score"><span class="score-number">' + finalScore.toFixed(1) + '</span></div></td>'
+                            + '<td><div style="width:' + coverageScore.toFixed(0) + '%;" class="result-scores"><span class="score-number">' + coverageScore.toFixed(1) + '</span></div></td>'
+                            + '<td><div style="width:' + acceptanceScore.toFixed(0) + '%;" class="result-scores"><span class="score-number">' + acceptanceScore.toFixed(1) + '</span></div></td>'
+                            + '<td><div style="width:' + detailScore.toFixed(0) + '%;" class="result-scores"><span class="score-number">' + detailScore.toFixed(1) + '</span></div></td>'
+                            + '<td><div style="width:' + specializationScore.toFixed(0) + '%;" class="result-scores"><span class="score-number">' + specializationScore.toFixed(1) + '</span></div></td>'
                             + '<td>' + data[i].coverageResult.annotations.length + '</td>'
                             + '<td>' + '<div style="text-align:center"><input style="vertical-align:middle" id="chk' + i + '" type="checkbox"/></div>'
                             + '</tr>';
