@@ -1,94 +1,113 @@
-- require 'ostruct'
-#container
-  %h1 Ontology Recommender
-  %p
-    Get recommendations for the most relevant ontologies based on an excerpt from a biomedical text or a list of keywords
-    \#{help_icon("/help#Recommender_Tab").html_safe}
-  / Basic options
-  #basicOptions
-    / Input type
-    .optionsBoxLeft
-      %h3 Input
-      %input#radioItText{:autocomplete => "off", :checked => "checked", :name => "input_type", :type => "radio", :value => "1"}/
-      %label Text
-      %input#radioItKeywords{:autocomplete => "off", :name => "input_type", :type => "radio", :value => "2"}/
-      %label Keywords (separated by commas)
-    / Output type
-    .optionsBoxRight
-      %h3 Output
-      %input#radioOtSingle{:autocomplete => "off", :checked => "checked", :name => "output_type", :type => "radio", :value => "1"}/
-      %label Ontologies
-      %input#radioOtSets{:autocomplete => "off", :name => "output_type", :type => "radio", :value => "2"}/
-      %label Ontology sets
-  %div{:style => "clear:both"}
-  .optionsLinks
-    .optionsLinksTopRight
-      %a#insertInputLink{:href => "javascript:void(0);"} insert sample input
-  / Input text area
-  %div
-    %textarea#inputText.default Please paste a paragraph of text or some keywords to use in calculating ontology recommendations
-  / Input text including highlighted annotations
-  #inputTextHighlighted
-  .optionsLinks{:style => ""}
-    .optionsLinksBottomRight
-      %a#advancedOptionsLink{:href => "javascript:void(0);"} advanced options
-  / Advanced options
-  #advancedOptions
-    .optionsBox
-      %h2.optionsHeader Weights configuration
-      %label Coverage
-      %input#input_wc{:min => "0", :step => "1", :type => "number", :value => "0.55"}/
-      %label Acceptance
-      %input#input_wa{:min => "0", :step => "1", :type => "number", :value => "0.15"}/
-      %label Knowledge Detail
-      %input#input_wd{:min => "0", :step => "1", :type => "number", :value => "0.15"}/
-      %label Specialization
-      %input#input_ws{:min => "0", :step => "1", :type => "number", :value => "0.15"}/
-    .optionsBox
-      %h2.optionsHeader Ontology sets
-      %label Maximum number of ontologies per set
-      %input#input_max_ontologies{:max => "4", :min => "2", :step => "1", :type => "number", :value => "3"}/
-    / Ontology picker
-    #ontologyPicker
-      = render :partial => "shared/ontology_picker"
-  / Get Recommendations / Edit Input buttons
-  = content_tag :div, style: "margin-top: 10px;" do
-    = submit_tag "Get Recommendations", id: "recommenderButton", type: "button", class: "link_button ui-button ui-widget ui-state-default ui-corner-all"
-    = submit_tag "Edit Input", id: "editButton", type: "button", style: "display: none;", class: "link_button ui-button ui-widget ui-state-default ui-corner-all"
-    = content_tag :span, class: "recommenderSpinner" do
-      = image_tag "spinners/spinner_000000_16px.gif", style: "vertical-align: middle;"
-  %br/
-  %br/
-  %span.notTextError
-    Please paste a paragraph of text or some keywords to use in calculating ontology recommendations.
-    %br/
-  %span.sumWeightsError
-    The sum of the weights must be greater than zero.
-    %br/
-  %span.rangeWeightsError
-    All the weights must be greater or equal to zero.
-    %br/
-  %span.invalidWeightsError
-    All the weights must be valid numeric values.
-    %br/
-  %span.invalidMaxOntError
-    The maximum ontologies per set must be a valid integer value.
-    %br/
-  %span.maxOntologiesError
-    The maximum ontologies per set must be a number between 2 and 4.
-    %br/
-  %span.generalError
-    Problem getting recommendations, please try again.
-    %br/
-  %span#noResults{:style => "margin-left: 3px; display:none"}
-    No recommendations found.
-    %br/
-  %span#noResultsSets{:style => "margin-left: 3px; display:none"}
-    There are no ontology sets recommended for the input provided. Please try the "Ontologies" output.
-    %br/
-  %span.inputSizeError
-    Please use less than 500 words. If you need to annotate larger pieces of text you can use the Recommender Web Service
-    %br/
-  %br/
-  %h2#resultsHeader
-  #results
+%div.container-fluid
+
+  %div.row
+    %div.col-xs-12
+      %h1 Ontology Recommender
+      %p
+        = t('recommender.intro').html_safe
+        = link_to(help_path(anchor: "Recommender_Tab"), id: "recommender-help", target: "_blank") do
+          %i.fa.fa-question-circle.fa-lg{aria: {hidden: true}, style: "margin-left: .5em"}
+
+  %div.row
+    %div.col-xs-12
+      %form
+
+        %h4 Input
+        %label.radio-inline
+          %input#radioItText{name: "input_type", type: "radio", value: "1", checked: "checked"} Text
+        %label.radio-inline
+          %input#radioItKeywords{name: "input_type", type: "radio", value: "2"} Keywords (separated by commas)
+
+        %h4{style: "margin-top: 25px"} Output
+        %label.radio-inline
+          %input#radioOtSingle{name: "output_type", type: "radio", value: "1", checked: "checked"} Ontologies
+        %label.radio-inline
+          %input#radioOtSets{name: "output_type", type: "radio", value: "2"} Ontology sets
+
+        %div.form-group{style: "margin-top: 25px"}
+          = text_area_tag("inputText", nil, rows: 10, class: "form-control default", placeholder: "Paste a paragraph of text or some keywords to use in calculating ontology recommendations")
+          %div#inputTextHighlighted.well
+          %p.help-block
+            %a#insertInputLink{href: "#"} insert sample input
+
+        %a#advancedOptionsLink{:href => "javascript:void(0);"} Show advanced options >>
+          
+        / Advanced options
+        %div#advancedOptions.optionsBox
+          / Weights
+          %label Weights configuration
+          %div.row
+            %div.form-group
+              %div.col-xs-2
+                %div.input-group
+                  %span#coverage-addon.input-group-addon Coverage:
+                  = number_field_tag("input_wc", "0.55", min: "0", step: "1", class: "form-control", aria: {describedby: "coverage-addon"})
+              %div.col-xs-2
+                %div.input-group
+                  %span#acceptance-addon.input-group-addon Acceptance:
+                  = number_field_tag("input_wa", "0.15", min: "0", step: "1", class: "form-control", aria: {describedby: "acceptance-addon"})              
+              %div.col-xs-2
+                %div.input-group
+                  %span#knowledge-addon.input-group-addon Knowledge detail:
+                  = number_field_tag("input_wd", "0.15", min: "0", step: "1", class: "form-control", aria: {describedby: "knowledge-addon"})              
+              %div.col-xs-2
+                %div.input-group
+                  %span#specialization-addon.input-group-addon Specialization:
+                  = number_field_tag("input_ws", "0.15", min: "0", step: "1", class: "form-control", aria: {describedby: "specialization-addon"})
+          / Ontology sets
+          %div.optionsBox
+            %label Ontology sets    
+            %div.row
+              %div.form-group
+                %div.col-xs-2
+                  %div.input-group
+                    %span#sets-addon.input-group-addon Maximum ontologies per set:
+                    = number_field_tag("input_max_ontologies", "3", in: 2...5, class: "form-control", aria: {describedby: "sets-addon"})
+          /Ontology picker
+          %div#ontologyPicker.optionsBox
+            = render(partial: "shared/ontology_picker")
+  
+        %div{style: "margin-top: 25px;"}
+          = submit_tag("Get Recommendations", id: "recommenderButton", type: "button", class: "btn btn-primary")
+          = submit_tag("Edit Input", id: "editButton", type: "button", style: "display: none;", class: "btn btn-primary")
+          = content_tag(:span, class: "recommenderSpinner") do
+            = image_tag("spinners/spinner_000000_16px.gif", style: "vertical-align: middle;")
+  
+  %div.row
+    %div.col-xs-12
+      %br
+      %br
+      %span.notTextError
+        Please paste a paragraph of text or some keywords to use in calculating ontology recommendations.
+        %br/
+      %span.sumWeightsError
+        The sum of the weights must be greater than zero.
+        %br/
+      %span.rangeWeightsError
+        All the weights must be greater or equal to zero.
+        %br/
+      %span.invalidWeightsError
+        All the weights must be valid numeric values.
+        %br/
+      %span.invalidMaxOntError
+        The maximum ontologies per set must be a valid integer value.
+        %br/
+      %span.maxOntologiesError
+        The maximum ontologies per set must be a number between 2 and 4.
+        %br/
+      %span.generalError
+        Problem getting recommendations, please try again.
+        %br/
+      %span#noResults{:style => "margin-left: 3px; display:none"}
+        No recommendations found.
+        %br/
+      %span#noResultsSets{:style => "margin-left: 3px; display:none"}
+        There are no ontology sets recommended for the input provided. Please try the "Ontologies" output.
+        %br/
+      %span.inputSizeError
+        Please use less than 500 words. If you need to annotate larger pieces of text you can use the Recommender Web Service
+
+  %div.row#resultsDisplay
+    %div.col-xs-12
+      %h2#resultsHeader
+      #results

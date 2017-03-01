@@ -3,7 +3,9 @@ var rec = { }
 rec.maxInputWords = 500;
 
 rec.showOrHideAdvancedOptions = function() {
-    $("#advancedOptions").toggle();
+  $("#advancedOptions").toggle();
+  var text = $("#advancedOptions").is(':visible') ? "Hide advanced options <<" : "Show advanced options >>";
+  $("#advancedOptionsLink").text(text);
 }
 
 rec.insertInput = function() {
@@ -18,7 +20,6 @@ rec.insertInput = function() {
 
 rec.defaultMessage = true;
 rec.prepareForRealInput = function() {
-    $("#inputText").removeClass()
     rec.emptyInput = false;
     if (rec.defaultMessage == true) {
         $("#inputText").val('');
@@ -33,6 +34,7 @@ rec.enableEdition = function() {
     $("#results").empty();
     $("#editButton").hide();
     $("#recommenderButton").show();
+    $("#insertInputLink").show();
     $("input[name=input_type]").attr("disabled",false);
 }
 
@@ -194,7 +196,7 @@ rec.getRecommendations = function() {
                         else {
                             ontologyHeader = "Ontologies";
                         }
-                        var table = $('<table id="recommendations" class="zebra" border="1" style="display: inline-block; padding:0px" ></table>'); //create table
+                        var table = $('<table id="recommendations" class="zebra" style="display: inline-block; padding:0px"></table>'); //create table
                         var header = $('<thead><tr><th title="Position of the ontology in the ranking">POS.</th>'
                         + '<th title="Ontology acronym">' + ontologyHeader + '</th>'
                         + '<th title="Final recommendation score for the ontology. It represents the appropriateness of the ontology to describe the input data">Final score</th>'
@@ -247,8 +249,9 @@ rec.getRecommendations = function() {
                         table.append('</tbody>');
                         $("#results").append(table); // Append table to your dom wherever you want
 
-                        // Hide get recommentations button
+                        // Hide "Get Recommendations" button
                         $("#recommenderButton").hide();
+                        $("#insertInputLink").hide();
                         // Show edit button
                         $("#editButton").show();
 
@@ -358,4 +361,8 @@ jQuery(document).ready(function() {
     $(".recommenderSpinner").hide();
     $("#editButton").hide();
     rec.hideErrorMessages();
+
+    jQuery('#recommender-help').click(function (event) {
+      bpPopWindow(event);
+    });
 });
