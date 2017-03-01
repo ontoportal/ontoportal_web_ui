@@ -111,4 +111,13 @@ if @errors[:error][:uploadFilePath] && @errors[:error][:uploadFilePath].first[:o
 end
 ```
 
+## How to
+
+### Add a facet filter for a metadata in browse
+
+In 3 files :
+* app/views/ontologies/browse.html.erb
+* public/browse/app.js
+* app/controllers/ontologies_controller.rb
+
 
