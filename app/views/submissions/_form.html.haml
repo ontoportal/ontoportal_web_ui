@@ -91,17 +91,11 @@
           = error
 
 
-%div#editMetadataDiv{:style => "width: 50%;margin: 0 auto;"}
+%div#editMetadataDiv{:style => "width: 50%;margin: 3em auto;"}
   %span.asterik{:style => "float:right;"} * fields are required
   %h1{:style => "text-align: center;"} #{title_text}
   = hidden_field :submission, :ontology, value: @ontology.id
   %table#new_ontology.form{style: "min-width: 800px;"}
-    %tr
-      %th
-        Description
-        %span.asterik *
-      %td
-        = text_area :submission, :description, rows: 5, value: @submission.description, :required => true
 
     %tr
       %th
@@ -344,55 +338,90 @@
           %br
           e.g.: http://lexvo.org/id/iso639-3/eng
 
-  %div{:style => "text-align: center;"}
-    %button#simpleBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleSimple()"} Show common metadata
-    %br
+%div{:class => "row"}
+  %div{:class => "col-sm-4"}
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Description
+      %div{:class => "panel-body"}
+        %div
+          %label Description
+          %span.asterik *
+          %br
+          = text_area :submission, :description, rows: 5, value: @submission.description, :required => true
+        %div
+          %label Abstract
+          %br
+          = text_area :submission, :abstract, rows: 5, value: @submission.abstract, :required => true
+        %div
+          %label Keywords
+          = raw generate_attribute_input(@metadata, "keywords")
 
+
+  %div{:class => "col-sm-4"}
+    %div{:class => "panel panel-default"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} People
+      %div{:class => "panel-body"}
+        Testt
+
+  %div{:class => "col-sm-4"}
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Dates
+      %div{:class => "panel-body"}
+        Testt
+
+%div{:class => "col-sm-4"}
   %div{:class => "panel panel-primary"}
     %div{:class => "panel-heading"}
-      %h3{:class => "panel-title"} ouais
-    %div{:class => "panel-content"}
+      %h3{:class => "panel-title"} Ontology relations
+    %div{:class => "panel-body"}
       Testt
 
-  %div#simpleMetadataDiv{:style => "margin-top: 2em;display: none;"}
-    %h2 Common metadata:
+%div{:style => "text-align: center;"}
+  %button#simpleBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleSimple()"} Show common metadata
+  %br
 
-    %table.form{style: "min-width: 800px;"}
-      - for attr in @metadata
-        - if attr["display"].eql? "simple"
-          %tr
-            %th{:style => "padding-bottom: 2%;"}
-              - if ["notes", "keywords", ].include?(attr["attribute"])
-                = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
-              - else
-                = label_tag(attr["attribute"].gsub(/(?=[A-Z])/, " "))
-              = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
-            %td{:style => "padding-bottom: 2%;"}
-              = raw generate_attribute_input(attr)
+%div#simpleMetadataDiv{:style => "margin-top: 2em;display: none;"}
+  %h2 Common metadata:
 
-  %div{:style => "text-align: center;"}
-    %button#completeBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleComplete()"} Show detailed metadata
-    %br
+  %table.form{style: "min-width: 800px;"}
+    - for attr in @metadata
+      - if attr["display"].eql? "simple"
+        %tr
+          %th{:style => "padding-bottom: 2%;"}
+            - if ["notes", "keywords", ].include?(attr["attribute"])
+              = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
+            - else
+              = label_tag(attr["attribute"].gsub(/(?=[A-Z])/, " "))
+            = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
+          %td{:style => "padding-bottom: 2%;"}
+            = raw generate_attribute_input(@metadata, attr["attribute"])
 
-  %div#completeMetadataDiv{:style => "margin-top: 2em;display: none;"}
+%div{:style => "text-align: center;"}
+  %button#completeBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleComplete()"} Show detailed metadata
+  %br
 
-    %h2 Detailed metadata:
+%div#completeMetadataDiv{:style => "margin-top: 2em;display: none;"}
 
-    %table.form{style: "min-width: 800px;"}
-      - for attr in @metadata
-        - if attr["display"].eql? "complete"
-          %tr
-            %th{:style => "padding-bottom: 2%;"}
-              - if ["notes", "keywords", ].include?(attr["attribute"])
-                = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
-              - else
-                = label_tag(attr["attribute"].gsub(/(?=[A-Z])/, " "))
-              = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
-            %td{:style => "padding-bottom: 2%;"}
-              = raw generate_attribute_input(attr)
+  %h2 Detailed metadata:
 
-  %div{:style => "text-align: center;"}
-    = submit_tag button_text, {:style => "margin-top: 2em;margin-bottom: 2em;", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
+  %table.form{style: "min-width: 800px;"}
+    - for attr in @metadata
+      - if attr["display"].eql? "complete"
+        %tr
+          %th{:style => "padding-bottom: 2%;"}
+            - if ["notes", "keywords", ].include?(attr["attribute"])
+              = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
+            - else
+              = label_tag(attr["attribute"].gsub(/(?=[A-Z])/, " "))
+            = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
+          %td{:style => "padding-bottom: 2%;"}
+            = raw generate_attribute_input(@metadata, attr["attribute"])
+
+%div{:style => "text-align: center;"}
+  = submit_tag button_text, {:style => "margin-top: 2em;margin-bottom: 2em;", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
 
 :javascript
 
