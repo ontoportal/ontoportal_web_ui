@@ -18,18 +18,6 @@ module ConceptsHelper
     return false
   end
 
-  def property_title(property)
-    # TODO_REV: Get property names properly
-    return ""
-    ontology_properties = DataAccess.getOntologyPropertiesHash(@concept.ontology_id, "id")
-    no_definition = "Property id: #{property} | Definition: No definition provided"
-    if ontology_properties[property].nil? || ontology_properties[property].definitions.nil?
-      no_definition
-    else
-      "Property id: #{property} | Definition: #{strip_tags(ontology_properties[property].definitions)}"
-    end
-  end
-
   def concept_properties2hash(properties)
     # NOTE: example properties
     #

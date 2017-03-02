@@ -58,8 +58,7 @@
         - full_key = data[:key]
         - values = data[:values]
         %tr
-          %td{nowrap: ""}
-            %span{title: property_title(full_key)}= "#{remove_owl_notation(key)}"
+          %td{nowrap: ""}= "#{remove_owl_notation(key)}"
           %td.property_values
             -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
             - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank') }
@@ -74,8 +73,7 @@
         - full_key = data[:key].to_s # handle symbols
         - values = data[:values]
         %tr
-          %td{nowrap: ""}
-            %span{title: property_title(full_key)}= "#{remove_owl_notation(key)}"
+          %td{nowrap: ""}= "#{remove_owl_notation(key)}"
           %td.property_values
 
             -# NCBO-648 Note: a property with complex values might return an array of nils from the REST-API client code.
@@ -94,8 +92,7 @@
         - full_key = data[:key]
         - values = data[:values]
         %tr
-          %td{nowrap: ""}
-            %span{title: property_title(full_key)}= "#{remove_owl_notation(key)}"
+          %td{nowrap: ""}= "#{remove_owl_notation(key)}"
           %td.property_values
             -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
             - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank')}
