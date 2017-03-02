@@ -1,5 +1,8 @@
 - button_text ||= "Add submission"
 - title_text ||= "Add New Submission"
+- # Load bootstrap for this page from public/stylesheets
+%link{:type => "text/css", :rel => "stylesheet", :href => "/stylesheets/bootstrap.css"}
+%link{:type => "text/css", :rel => "stylesheet", :href => "/stylesheets/bootstrap-theme.css"}
 
 :javascript
   jQuery(function(){
@@ -86,6 +89,8 @@
       - for error in @errors
         %li
           = error
+
+
 %div#editMetadataDiv{:style => "width: 50%;margin: 0 auto;"}
   %span.asterik{:style => "float:right;"} * fields are required
   %h1{:style => "text-align: center;"} #{title_text}
@@ -342,6 +347,12 @@
   %div{:style => "text-align: center;"}
     %button#simpleBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleSimple()"} Show common metadata
     %br
+
+  %div{:class => "panel panel-primary"}
+    %div{:class => "panel-heading"}
+      %h3{:class => "panel-title"} ouais
+    %div{:class => "panel-content"}
+      Testt
 
   %div#simpleMetadataDiv{:style => "margin-top: 2em;display: none;"}
     %h2 Common metadata:
