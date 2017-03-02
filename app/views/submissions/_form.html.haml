@@ -177,13 +177,6 @@
         = select :submission, :status, status_options, { :selected => selected_status, :required => true }
     %tr
       %th
-        Release Date
-        %span.asterik *
-      %td
-        = text_field :submission, :released, :class => "datepicker", value: "#{@submission.released}", :required => true
-        %span{:style => "font-size: 90%; color: grey;"}
-    %tr
-      %th
         Location
         %span.asterik *
       %td#location_options
@@ -229,28 +222,9 @@
 
     %tr
       %th
-        Contact
-        %span.asterik *
+        URI
       %td
-        %div#contacts
-          %div#contact_button{style: "float: right; margin-top -1em;"}
-            = button_to 'Add contact', '#', id: 'add_contact_button', class: "btn btn-info"
-          - if @submission.contact
-            - @submission.contact.each_with_index do |contact, i|
-              %div.contact
-                Name:&nbsp;
-                = text_field :submission, :"contact[#{i}][name]", value: contact["name"]
-                %br
-                Email:&nbsp;
-                = text_field :submission, :"contact[#{i}][email]", value: contact["email"]
-          - else
-            %div.contact
-              Name:&nbsp;
-              = text_field :submission, :"contact[0][name]", :required => true
-              %br
-              Email:&nbsp;
-              = text_field :submission, :"contact[0][email]", :required => true
-
+        = raw generate_attribute_input("URI")
     %tr
       %th
         Home Page
@@ -355,7 +329,7 @@
           = text_area :submission, :abstract, rows: 5, value: @submission.abstract, :required => true
         %div
           %label Keywords
-          = raw generate_attribute_input(@metadata, "keywords")
+          = raw generate_attribute_input("keywords")
 
 
   %div{:class => "col-sm-4"}
@@ -363,21 +337,61 @@
       %div{:class => "panel-heading"}
         %h3{:class => "panel-title"} People
       %div{:class => "panel-body"}
-        Testt
+        %label Contact
+        %span.asterik *
+        %div#contacts
+          %div#contact_button{style: "float: right; margin-top -1em;"}
+            = button_to 'Add contact', '#', id: 'add_contact_button', class: "btn btn-info"
+          - if @submission.contact
+            - @submission.contact.each_with_index do |contact, i|
+              %div.contact
+                Name:&nbsp;
+                = text_field :submission, :"contact[#{i}][name]", value: contact["name"]
+                %br
+                Email:&nbsp;
+                = text_field :submission, :"contact[#{i}][email]", value: contact["email"]
+          - else
+            %div.contact
+              Name:&nbsp;
+              = text_field :submission, :"contact[0][name]", :required => true
+              %br
+              Email:&nbsp;
+              = text_field :submission, :"contact[0][email]", :required => true
 
   %div{:class => "col-sm-4"}
     %div{:class => "panel panel-primary"}
       %div{:class => "panel-heading"}
         %h3{:class => "panel-title"} Dates
       %div{:class => "panel-body"}
-        Testt
+        %div
+          %label Release date
+          %span.asterik *
+          = text_field :submission, :released, :class => "datepicker", value: "#{@submission.released}", :required => true
+          %span{:style => "font-size: 90%; color: grey;"}
+        %div
+          %label Modification date
+          %span.asterik *
+          = raw generate_attribute_input("modificationDate")
 
-%div{:class => "col-sm-4"}
-  %div{:class => "panel panel-primary"}
-    %div{:class => "panel-heading"}
-      %h3{:class => "panel-title"} Ontology relations
-    %div{:class => "panel-body"}
-      Testt
+%div{:class => "row"}
+  %div{:class => "col-sm-4"}
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Ontology relations
+      %div{:class => "panel-body"}
+        totototo
+
+  %div{:class => "col-sm-4"}
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Ontology content
+      %div{:class => "panel-body"}
+        - for attr in @metadata
+          - if attr["display"].eql? "content"
+            = label_tag(attr["attribute"])
+            = raw generate_attribute_input(attr["attribute"])
+
+
 
 %div{:style => "text-align: center;"}
   %button#simpleBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleSimple()"} Show common metadata
@@ -397,7 +411,7 @@
               = label_tag(attr["attribute"].gsub(/(?=[A-Z])/, " "))
             = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
           %td{:style => "padding-bottom: 2%;"}
-            = raw generate_attribute_input(@metadata, attr["attribute"])
+            = raw generate_attribute_input(attr["attribute"])
 
 %div{:style => "text-align: center;"}
   %button#completeBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleComplete()"} Show detailed metadata
@@ -418,7 +432,7 @@
               = label_tag(attr["attribute"].gsub(/(?=[A-Z])/, " "))
             = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
           %td{:style => "padding-bottom: 2%;"}
-            = raw generate_attribute_input(@metadata, attr["attribute"])
+            = raw generate_attribute_input(attr["attribute"])
 
 %div{:style => "text-align: center;"}
   = submit_tag button_text, {:style => "margin-top: 2em;margin-bottom: 2em;", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}

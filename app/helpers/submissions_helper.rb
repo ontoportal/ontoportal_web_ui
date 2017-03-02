@@ -1,11 +1,11 @@
 module SubmissionsHelper
 
   # Generate the HTML input for every attributes
-  def generate_attribute_input(attr_array, attr_label)
+  def generate_attribute_input(attr_label)
     input_html = ''.html_safe
 
     # Get the attribute hash corresponding to the given attribute
-    attr = attr_array.select{ |attr_hash| attr_hash["attribute"].to_s.eql?(attr_label) }.first
+    attr = @metadata.select{ |attr_hash| attr_hash["attribute"].to_s.eql?(attr_label) }.first
 
     if attr["enforce"].include?("integer")
       number_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
