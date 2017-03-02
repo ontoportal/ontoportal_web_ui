@@ -59,7 +59,7 @@
         - values = data[:values]
         %tr
           %td{nowrap: ""}= "#{remove_owl_notation(key)}"
-          %td.property_values
+          %td
             -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
             - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank') }
             = "<p>#{sanitize(ajax_links.join('</p><p>'))}</p>".html_safe
@@ -74,7 +74,7 @@
         - values = data[:values]
         %tr
           %td{nowrap: ""}= "#{remove_owl_notation(key)}"
-          %td.property_values
+          %td
 
             -# NCBO-648 Note: a property with complex values might return an array of nils from the REST-API client code.
             -# If we use values.compact or values.any? we may miss exceptions on data that should be handled better.
@@ -93,7 +93,7 @@
         - values = data[:values]
         %tr
           %td{nowrap: ""}= "#{remove_owl_notation(key)}"
-          %td.property_values
+          %td
             -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
             - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank')}
             = "<p>#{ajax_links.join('</p><p>')}</p>".html_safe
