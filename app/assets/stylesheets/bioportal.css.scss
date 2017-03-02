@@ -816,12 +816,10 @@ li.ac_over > .obsolete_class {
 }
 
 .concept_details p {
-  /*margin-top: .5em;*/
   margin-bottom: .5em;
 }
 
 .concept_details .label {
-  /*padding-top: 1em;*/
   vertical-align: top;
   width: 180px;
   max-width: 200px;
@@ -840,10 +838,6 @@ li.ac_over > .obsolete_class {
 
 #format_specific_options #owl_options {
   display: none;
-}
-
-span.concept_property {
-  cursor: help;
 }
 
 .defaultText {
