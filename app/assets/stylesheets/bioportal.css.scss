@@ -832,6 +832,10 @@ li.ac_over > .obsolete_class {
   word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
+.concept_details td:nth-child(1) {
+  white-space: nowrap;
+}
+
 #format_specific_options td {
   border-top: 1px solid #C1DAD7;
 }
