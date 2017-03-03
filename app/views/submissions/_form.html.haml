@@ -330,6 +330,11 @@
         %div
           %label Keywords
           = raw generate_attribute_input("keywords")
+        - for attr in @metadata
+          - if attr["display"].eql? "description"
+            = label_tag(attr["attribute"])
+            = raw generate_attribute_input(attr["attribute"])
+            %br
 
 
   %div{:class => "col-sm-4"}
@@ -357,6 +362,11 @@
               %br
               Email:&nbsp;
               = text_field :submission, :"contact[0][email]", :required => true
+        - for attr in @metadata
+          - if attr["display"].eql? "people"
+            = label_tag(attr["attribute"])
+            = raw generate_attribute_input(attr["attribute"])
+            %br
 
   %div{:class => "col-sm-4"}
     %div{:class => "panel panel-primary"}
@@ -372,6 +382,11 @@
           %label Modification date
           %span.asterik *
           = raw generate_attribute_input("modificationDate")
+        - for attr in @metadata
+          - if attr["display"].eql? "dates"
+            = label_tag(attr["attribute"])
+            = raw generate_attribute_input(attr["attribute"])
+            %br
 
 %div{:class => "row"}
   %div{:class => "col-sm-4"}
@@ -379,7 +394,11 @@
       %div{:class => "panel-heading"}
         %h3{:class => "panel-title"} Ontology relations
       %div{:class => "panel-body"}
-        totototo
+        - for attr in @metadata
+          - if attr["display"].eql? "relations"
+            = label_tag(attr["attribute"])
+            = raw generate_attribute_input(attr["attribute"])
+            %br
 
   %div{:class => "col-sm-4"}
     %div{:class => "panel panel-primary"}
@@ -388,6 +407,17 @@
       %div{:class => "panel-body"}
         - for attr in @metadata
           - if attr["display"].eql? "content"
+            = label_tag(attr["attribute"])
+            = raw generate_attribute_input(attr["attribute"])
+            %br
+
+  %div{:class => "col-sm-4"}
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Community
+      %div{:class => "panel-body"}
+        - for attr in @metadata
+          - if attr["display"].eql? "community"
             = label_tag(attr["attribute"])
             = raw generate_attribute_input(attr["attribute"])
             %br
