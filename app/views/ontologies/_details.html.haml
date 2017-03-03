@@ -46,7 +46,7 @@
           %th
             Description
           %td
-            = sub.description rescue ""
+            = sanitize(sub.description)
         %tr
           %th
             Status
