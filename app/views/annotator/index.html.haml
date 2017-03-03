@@ -73,19 +73,19 @@
         %table#annotations.zebra{:style => "display: inline-block; min-width: 700px; width: 100%;"}
           %thead
             %tr
-              %th{:style => "padding-right: 6px;", :title => "Class"}
+              %th{:title => "Class"}
                 Class
                 %span.popup_container{:style => "padding-left: 1.7em;"}
                   %span.bp_popup_link_container
                     %a#filter_classes.bp_popup_link{:href => "javascript:void(0);"} filter
                   %div#classes_filter_list.bp_popup_list
-              %th{:style => "padding-right: 6px", :title => "Ontology"}
+              %th{:title => "Ontology"}
                 Ontology
                 %span.popup_container{:style => "padding-left: 1.7em;"}
                   %span.bp_popup_link_container
                     %a#filter_ontologies.bp_popup_link{:href => "javascript:void(0);"} filter
                   %div#ontology_filter_list.bp_popup_list
-              %th{:style => "padding-right: 6px; min-width: 85px;", :title => "Type", class: "match_type"}
+              %th{:style => "min-width: 85px;", :title => "Type", class: "match_type"}
                 Type
                 %span.popup_container{:style => "padding-left: 1.7em;"}
                   %span.bp_popup_link_container
@@ -93,13 +93,13 @@
                   %div#match_type_filter_list.bp_popup_list
               %th UMLS Sem Type
               %th{class: "match_context"} Context
-              %th{:style => "padding-right: 6px;", :title => "Matched Class"}
+              %th{:title => "Matched Class"}
                 Matched Class
                 %span.popup_container{:style => "padding-left: 1.7em;"}
                   %span.bp_popup_link_container
                     %a#filter_matched_classes.bp_popup_link{:href => "javascript:void(0);"} filter
                   %div#matched_classes_filter_list.bp_popup_list
-              %th{:style => "padding-right: 6px; min-width: 200px;", :title => "Matched Ontology"}
+              %th{:style => "min-width: 200px;", :title => "Matched Ontology"}
                 Matched Ontology
                 %span.popup_container{:style => "padding-left: 1.7em;"}
                   %span.bp_popup_link_container
