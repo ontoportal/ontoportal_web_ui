@@ -122,7 +122,8 @@ var displayFilteredColumnNames = function() {
   "use strict";
   var column_names = [];
   jQuery(".bp_popup_list input:checked").closest("th").each(function() {
-    column_names.push(jQuery(this).attr("title"));
+    var header_text = this.childNodes[0].textContent.trim();
+    column_names.push(header_text);
   });
   jQuery("#filter_names").html(column_names.join(", "));
   if (column_names.length > 0) {
