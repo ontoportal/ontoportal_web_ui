@@ -61,8 +61,8 @@
 
   %div.row
     %div.col-xs-12
-      #annotations_container{:style => "display: none; margin-top: 10px; margin-bottom: 25px;"}
-        #result_counts{:style => "float: right; font-style: oblique; color: gray;"}
+      #annotations_container
+        #result_counts
         %h2{:style => "margin-bottom: 0;"}
           Annotations
         #filter_list{:style => "font-size: 9pt; color: gray; display: none; clear: both; margin: -15px 0 5px"}
@@ -117,7 +117,7 @@
           %span{:style => "font-size: 8pt;"}
             To reproduce these results:
             %br/
-            %span#annotator_parameters{:style => "color: gray; font-weight: bold;"}
+            %span#annotator_parameters
             %br/
             Additional parameters are documented at
             \#{link_to 'Annotator Web Service', "#{$REST_URL}/documentation#nav_annotator", :target => "_blank"}
