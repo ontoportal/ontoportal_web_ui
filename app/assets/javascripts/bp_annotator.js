@@ -121,8 +121,9 @@ function get_annotations() {
 var displayFilteredColumnNames = function() {
   "use strict";
   var column_names = [];
+  var header_text;
   jQuery(".bp_popup_list input:checked").closest("th").each(function() {
-    var header_text = this.childNodes[0].textContent.trim();
+    header_text = this.childNodes[0].textContent.trim();
     column_names.push(header_text);
   });
   jQuery("#filter_names").html(column_names.join(", "));
