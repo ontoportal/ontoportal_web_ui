@@ -8,7 +8,7 @@ rec.showOrHideAdvancedOptions = function() {
   $("#advancedOptionsLink").text(text);
 }
 
-rec.insertInput = function() {
+rec.insertInput = function(event) {
     event.preventDefault();
     rec.prepareForRealInput();
     if ($("#radioItText").is(":checked")) {
