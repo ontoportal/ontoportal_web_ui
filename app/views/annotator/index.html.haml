@@ -16,7 +16,7 @@
         %div.form-group
           = text_area_tag("annotation_text", nil, rows: 15, class: "form-control", placeholder: "Enter or paste text to be annotated")
           %p.help-block
-            %a#insert_text_link{href: "#"} insert sample text
+            %a#insert_text_link{href: "javascript:void(0);"} insert sample text
 
         = label_tag("longest_only", nil, class: "checkbox-inline") do
           = check_box_tag("longest_only", "all", false)
