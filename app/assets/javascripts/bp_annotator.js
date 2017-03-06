@@ -27,8 +27,9 @@ function set_last_params(params) {
   //console.log(bp_last_params);
 }
 
-function insertSampleText() {
+function insertSampleText(event) {
   "use strict";
+  event.preventDefault();
   var text = "Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.";
   jQuery("#annotation_text").focus();
   jQuery("#annotation_text").val(text);
@@ -121,8 +122,10 @@ function get_annotations() {
 var displayFilteredColumnNames = function() {
   "use strict";
   var column_names = [];
+  var header_text;
   jQuery(".bp_popup_list input:checked").closest("th").each(function() {
-    column_names.push(jQuery(this).attr("title"));
+    header_text = this.childNodes[0].textContent.trim();
+    column_names.push(header_text);
   });
   jQuery("#filter_names").html(column_names.join(", "));
   if (column_names.length > 0) {

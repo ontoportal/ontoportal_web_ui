@@ -16,7 +16,7 @@
         %div.form-group
           = text_area_tag("annotation_text", nil, rows: 15, class: "form-control", placeholder: "Enter or paste text to be annotated")
           %p.help-block
-            %a#insert_text_link{href: "#"} insert sample text
+            %a#insert_text_link{href: "javascript:void(0);"} insert sample text
 
         = label_tag("longest_only", nil, class: "checkbox-inline") do
           = check_box_tag("longest_only", "all", false)
@@ -61,8 +61,8 @@
 
   %div.row
     %div.col-xs-12
-      #annotations_container{:style => "display: none; margin-top: 10px; margin-bottom: 25px;"}
-        #result_counts{:style => "float: right; font-style: oblique; color: gray;"}
+      #annotations_container
+        #result_counts
         %h2{:style => "margin-bottom: 0;"}
           Annotations
         #filter_list{:style => "font-size: 9pt; color: gray; display: none; clear: both; margin: -15px 0 5px"}
@@ -70,41 +70,41 @@
           \&nbsp;
           %span#filter_names
         #results_error{:style => "color: red; margin-bottom: 7px;"}
-        %table#annotations.zebra{:style => "display: inline-block; min-width: 700px; width: 100%;"}
+        %table#annotations.zebra{:style => "min-width: 700px; width: 100%;"}
           %thead
             %tr
-              %th{:style => "padding-right: 6px;", :title => "Class"}
+              %th
                 Class
-                %span.popup_container{:style => "padding-left: 1.7em;"}
+                %span.popup_container
                   %span.bp_popup_link_container
                     %a#filter_classes.bp_popup_link{:href => "javascript:void(0);"} filter
-                #classes_filter_list.bp_popup_list{:style => "display: none;"}
-              %th{:style => "padding-right: 6px", :title => "Ontology"}
+                  %div#classes_filter_list.bp_popup_list
+              %th
                 Ontology
-                %span.popup_container{:style => "padding-left: 1.7em;"}
+                %span.popup_container
                   %span.bp_popup_link_container
                     %a#filter_ontologies.bp_popup_link{:href => "javascript:void(0);"} filter
-                #ontology_filter_list.bp_popup_list{:style => "display: none;"}
-              %th{:style => "padding-right: 6px; min-width: 85px;", :title => "Type", class: "match_type"}
+                  %div#ontology_filter_list.bp_popup_list
+              %th{class: "match_type"}
                 Type
-                %span.popup_container{:style => "padding-left: 1.7em;"}
+                %span.popup_container
                   %span.bp_popup_link_container
                     %a#filter_match_type.bp_popup_link{:href => "javascript:void(0);"} filter
-                #match_type_filter_list.bp_popup_list{:style => "display: none;"}
+                  %div#match_type_filter_list.bp_popup_list
               %th UMLS Sem Type
               %th{class: "match_context"} Context
-              %th{:style => "padding-right: 6px;", :title => "Matched Class"}
+              %th
                 Matched Class
-                %span.popup_container{:style => "padding-left: 1.7em;"}
+                %span.popup_container
                   %span.bp_popup_link_container
                     %a#filter_matched_classes.bp_popup_link{:href => "javascript:void(0);"} filter
-                #matched_classes_filter_list.bp_popup_list{:style => "display: none;"}
-              %th{:style => "padding-right: 6px; min-width: 200px;", :title => "Matched Ontology"}
+                  %div#matched_classes_filter_list.bp_popup_list
+              %th
                 Matched Ontology
-                %span.popup_container{:style => "padding-left: 1.7em;"}
+                %span.popup_container
                   %span.bp_popup_link_container
                     %a#filter_matched_ontologies.bp_popup_link{:href => "javascript:void(0);"} filter
-                #matched_ontology_filter_list.bp_popup_list{:style => "display: none;"}
+                  %div#matched_ontology_filter_list.bp_popup_list
           %tbody
         #download_links{:style => "margin-top: 1.5em;"}
           %p
@@ -117,7 +117,7 @@
           %span{:style => "font-size: 8pt;"}
             To reproduce these results:
             %br/
-            %span#annotator_parameters{:style => "color: gray; font-weight: bold;"}
+            %span#annotator_parameters
             %br/
             Additional parameters are documented at
             \#{link_to 'Annotator Web Service', "#{$REST_URL}/documentation#nav_annotator", :target => "_blank"}
