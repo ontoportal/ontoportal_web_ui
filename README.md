@@ -16,6 +16,9 @@ A rails application for biological ontologies, see http://bioportal.bioontology.
   * Dans un premier temps import bootstrap seulement dans le form?
   * On pourrait faire des col pour ranger les metadata par "dates", "description", "links" dans des panels bootstrap
 
+* Meilleur affichage des metadata :
+  * Bouton pour les valeurs qui reviennent tout le temps
+
 #### Plein de petits todo
 
 * Permettre de filtrer les ontos en fct des metadata 
