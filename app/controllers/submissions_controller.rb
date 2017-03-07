@@ -101,7 +101,7 @@ class SubmissionsController < ApplicationController
   # When editing a submission (called when submit "Edit submission information" form)
   def update
     # Make the contacts an array
-    params[:submission][:contact] = params[:submission][:contact].values
+    params[:submission][:contact] = params[:submission][:contact].values if !params[:submission][:contact].nil?
 
     # Update also hasOntologySyntax and hasFormalityLevel that are in select tag and cant be in params[:submission]
     params[:submission][:hasOntologySyntax] = "" if params[:submission][:hasOntologySyntax].eql?("none")
