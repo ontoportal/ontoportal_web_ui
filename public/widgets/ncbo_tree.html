@@ -35,6 +35,10 @@
         events.scrollTop(events[0].scrollHeight);
       }
 
+      var determineHTTPS = function(url) {
+        return url.replace("http:", ('https:' == document.location.protocol ? 'https:' : 'http:'));
+      }
+
       var myTree;
 
       $.ajax({
@@ -51,7 +55,7 @@
           myTree.on("afterSelect", function (e, classId, label, node) {
             displayEvent("afterSelect", "classId: " + classId + ", prefLabel: " + label + ", selectedNode: " + node);
             $.ajax({
-              url: config.rest_url + "/ontologies/" + ontology + "/classes/" + encodeURIComponent(classId),
+              url: determineHTTPS(config.rest_url) + "/ontologies/" + ontology + "/classes/" + encodeURIComponent(classId),
               dataType: "json",
               data: {apikey: config.apikey},
               crossDomain: true,
@@ -73,7 +77,7 @@
             displayEvent("afterJumpToClass", "classId: " + classId);
 
             $.ajax({
-              url: config.rest_url + "/ontologies/" + ontology + "/classes/" + encodeURIComponent(classId),
+              url: determineHTTPS(config.rest_url) + "/ontologies/" + ontology + "/classes/" + encodeURIComponent(classId),
               dataType: "json",
               data: {apikey: config.apikey},
               crossDomain: true,
