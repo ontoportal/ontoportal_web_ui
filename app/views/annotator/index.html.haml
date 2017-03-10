@@ -8,27 +8,29 @@
   %p
     = t('home.annotate.intro').html_safe.nil? || t('home.annotate.intro').html_safe.empty? ? "Get annotations for biomedical text with concepts from the ontologies #{help_icon("/help#Annotator_Tab")}".html_safe : t('home.annotate.intro').html_safe
   %div{:style => "padding-bottom: 1em;"}
-    %div
-      %div{:style => "display: inline-block; width: 60%;"}
-        - textarea_title = "Enter or paste text to be annotated"
-        = text_area :annotation, :text, :title => textarea_title, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px; width: 100%; max-width: 100%;", :class => "help_text"
-      %div{:style => "display: inline-block; vertical-align: top; margin-left: 2em;"}
-        %br{:style => "margin-bottom: 10px;"}/
-        = render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => @annotator_ontologies }
-        - if @sem_type_ont
-          %b Select UMLS Semantic Types
-          %br/
-          = select_tag :semantic_types, options_for_select(@semantic_types_for_select), :multiple => 'true', "data-placeholder".to_sym => "Type here to select UMLS semantic types", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text"
-          %br/
-          %br/
-          %b Select UMLS Semantic Groups
-          %br/
-          = select_tag :semantic_groups, options_for_select(@semantic_groups_for_select), :multiple => 'true', "data-placeholder".to_sym => "Type here to select UMLS semantic groups", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text"
-          %br/
-          %br/
+    %div{:style => "width: 60%;"}
+      - textarea_title = "Enter or paste text to be annotated"
+      = text_area :annotation, :text, :title => textarea_title, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px; width: 100%; max-width: 100%;", :class => "help_text"
     %a#insert_text_link{:href => "javascript:void(0);", :style => "font-size: 8pt; text-decoration: none; margin-bottom: 3px;"} insert sample text
     %div
-      %div{:class => "panel panel-primary", :style => "width: 17em; display: inline-block;"}
+      %div{:class => "panel panel-primary", :style => "width: 460px; display: inline-block;"}
+        %div{:class => "panel-heading"}
+          %h3{:class => "panel-title"} Ontology filters
+        %div{:class => "panel-body"}
+          = render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => @annotator_ontologies }
+          - if @sem_type_ont
+            %b Select UMLS Semantic Types
+            %br/
+            = select_tag :semantic_types, options_for_select(@semantic_types_for_select), :multiple => 'true', "data-placeholder".to_sym => "Type here to select UMLS semantic types", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text"
+            %br/
+            %br/
+            %b Select UMLS Semantic Groups
+            %br/
+            = select_tag :semantic_groups, options_for_select(@semantic_groups_for_select), :multiple => 'true', "data-placeholder".to_sym => "Type here to select UMLS semantic groups", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text"
+            %br/
+            %br/
+
+      %div{:class => "panel panel-info", :style => "width: 17em; display: inline-block; vertical-align: top;"}
         %div{:class => "panel-heading"}
           %h3{:class => "panel-title"} Matching parameters
         %div{:class => "panel-body"}
