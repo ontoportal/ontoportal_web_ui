@@ -164,19 +164,6 @@
                   = text_field :submission, :obsoleteProperty, value: @submission.obsoleteProperty
       %tr
         %th
-          Version
-        %td
-          = text_field :submission, :version, value: @submission.version
-      %tr
-        %th
-          Status
-          %span.asterik *
-        %td
-          - selected_status = @submission.status ? @submission.status : "alpha"
-          - status_options = ["alpha", "beta", "production", "retired"]
-          = select :submission, :status, status_options, { :selected => selected_status, :required => true }
-      %tr
-        %th
           Location
           %span.asterik *
         %td#location_options
@@ -220,56 +207,67 @@
               = f.file_field :filePath, required: true
               = f.select("masterFileName", @masterFileOptions, { include_blank: "Select primary file from zip contents", required: true}, {style: "border-color: red;"})
 
-      %tr
-        %th
-          URI
-        %td
-          = raw generate_attribute_input("URI")
-      %tr
-        %th
-          Ontology Syntax
-        %td
-          %div{:style => "float:left;width:50%;"}
-            = select("submission", "hasOntologySyntax", [["None", "none"]].concat($ONTOLOGY_SYNTAXES.collect{ |k, v| [v,k] }), { :selected => @submission.hasOntologySyntax })
-          %div{:style => "float:right;width:50%;text-align:right;"}
-            Properties taken from
-            = link_to "W3C URIs for file format", "https://www.w3.org/ns/formats/", target: "_blank"
-      %tr
-        %th
-          Has Formality Level
-        %td
-          %div{:style => "float:left;width:50%;"}
-            = select("submission", "hasFormalityLevel", [["None", "none"]].concat($FORMALITY_LEVELS.collect{ |k, v| [v,k] }), { :selected => @submission.hasFormalityLevel })
-          %div{:style => "float:right;width:50%;text-align:right;"}
-            Properties taken from
-            = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
+  %div{:class => "row"}
+    %div{:class => "col-sm-4"}
+      %div{:class => "panel panel-primary"}
+        %div{:class => "panel-heading"}
+          %h3{:class => "panel-title"} Key properties
+        %div{:class => "panel-body"}
 
-      %tr
-        %th
-          Is Of Type
-        %td
-          %div{:style => "float:left;width:50%;"}
-            = select("submission", "isOfType", [["None", "none"]].concat($IS_OF_TYPE.collect{ |k, v| [v,k] }), { :selected => @submission.isOfType })
+          %div
+            = generate_attribute_label("URI")
+            = raw generate_attribute_input("URI")
 
-      %tr
-        %th
-          Natural Language
-        %td
-          %div{:style => "float:left;width:50%;"}
-            = select_tag "naturalLanguageSelect[]", options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] }, @submission.naturalLanguage),
-            :multiple => 'true', "data-placeholder".to_sym => "Click here to select ontologies",:style => "margin-bottom: 15px;", :id => 'naturalLanguageSelect'
-            %br
-            %button#naturalLanguageBtn{:style => "margin-bottom: 0.5em;margin-top: 0.5em;", :type => "button", :class => "btn btn-info", :onclick => 'addInput("naturalLanguage", "text")'} Add new language
-            %div#naturalLanguageDiv
+          %div
+            = generate_attribute_label("status")
+            %span.asterik *
+            - selected_status = @submission.status ? @submission.status : "alpha"
+            - status_options = ["alpha", "beta", "production", "retired"]
+            = select :submission, :status, status_options, { :selected => selected_status, :required => true }
 
-          %div{:style => "float:right;width:50%;text-align:right;"}
-            Add a natural language to the list
-            %br
-            Consider using a
-            = link_to "Lexvo URI", "http://www.lexvo.org", target: "_blank"
-            with ISO639-3 code
-            %br
-            e.g.: http://lexvo.org/id/iso639-3/eng
+          %div
+            = generate_attribute_label("version")
+            = raw generate_attribute_input("version")
+
+          %div
+            = generate_attribute_label("hasOntologySyntax")
+            %div{:style => "float:left;width:50%;"}
+              = select("submission", "hasOntologySyntax", [["None", "none"]].concat($ONTOLOGY_SYNTAXES.collect{ |k, v| [v,k] }), { :selected => @submission.hasOntologySyntax })
+            %div{:style => "float:right;width:50%;text-align:right;"}
+              Properties taken from
+              = link_to "W3C URIs for file format", "https://www.w3.org/ns/formats/", target: "_blank"
+
+          %div
+            = generate_attribute_label("hasFormalityLevel")
+            %div{:style => "float:left;width:50%;"}
+              = select("submission", "hasFormalityLevel", [["None", "none"]].concat($FORMALITY_LEVELS.collect{ |k, v| [v,k] }), { :selected => @submission.hasFormalityLevel })
+            %div{:style => "float:right;width:50%;text-align:right;"}
+              Properties taken from
+              = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
+
+          %div
+            = generate_attribute_label("isOfType")
+            %div{:style => "float:left;width:50%;"}
+              = select("submission", "isOfType", [["None", "none"]].concat($IS_OF_TYPE.collect{ |k, v| [v,k] }), { :selected => @submission.isOfType })
+
+          %div
+            = generate_attribute_label("naturalLanguage")
+            %div{:style => "float:left;width:50%;"}
+              = select_tag "naturalLanguageSelect[]", options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] }, @submission.naturalLanguage),
+              :multiple => 'true', "data-placeholder".to_sym => "Click here to select ontologies",:style => "margin-bottom: 15px;", :id => 'naturalLanguageSelect'
+              %br
+              %button#naturalLanguageBtn{:style => "margin-bottom: 0.5em;margin-top: 0.5em;", :type => "button", :class => "btn btn-info", :onclick => 'addInput("naturalLanguage", "text")'} Add new language
+              %div#naturalLanguageDiv
+
+            %div{:style => "float:right;width:50%;text-align:right;"}
+              Add a natural language to the list
+              %br
+              Consider using a
+              = link_to "Lexvo URI", "http://www.lexvo.org", target: "_blank"
+              with ISO639-3 code
+              %br
+              e.g.: http://lexvo.org/id/iso639-3/eng
+
 
   %div{:class => "row"}
     %div{:class => "col-sm-4"}
@@ -459,48 +457,6 @@
                 = raw generate_attribute_input(attr["attribute"])
                 %br
 
-
-
-  %div{:style => "text-align: center;"}
-    %button#simpleBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleSimple()"} Show common metadata
-    %br
-
-  %div#simpleMetadataDiv{:style => "margin-top: 2em;display: none;"}
-    %h2 Common metadata:
-
-    %table.form{style: "min-width: 800px;"}
-      - for attr in @metadata
-        - if attr["display"].eql? "simple"
-          %tr
-            %th{:style => "padding-bottom: 2%;"}
-              - if ["notes", "keywords", ].include?(attr["attribute"])
-                = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
-              - else
-                = label_tag(attr["attribute"].gsub(/(?=[A-Z])/, " "))
-              = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
-            %td{:style => "padding-bottom: 2%;"}
-              = raw generate_attribute_input(attr["attribute"])
-
-  %div{:style => "text-align: center;"}
-    %button#completeBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleComplete()"} Show detailed metadata
-    %br
-
-  %div#completeMetadataDiv{:style => "margin-top: 2em;display: none;"}
-
-    %h2 Detailed metadata:
-
-    %table.form{style: "min-width: 800px;"}
-      - for attr in @metadata
-        - if attr["display"].eql? "complete"
-          %tr
-            %th{:style => "padding-bottom: 2%;"}
-              - if ["notes", "keywords", ].include?(attr["attribute"])
-                = label_tag(attr["attribute"], attr["attribute"], style: "font-weight: bold;")
-              - else
-                = label_tag(attr["attribute"].gsub(/(?=[A-Z])/, " "))
-              = "(#{(attr["enforce"] - ["no_list"]).map(&:capitalize).join(", ")})" if attr["enforce"].length > 1
-            %td{:style => "padding-bottom: 2%;"}
-              = raw generate_attribute_input(attr["attribute"])
 
   %div{:style => "text-align: center;"}
     = submit_tag button_text, {:style => "margin-top: 2em;margin-bottom: 2em;", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
