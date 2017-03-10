@@ -397,11 +397,15 @@
                 %br
                 Email:&nbsp;
                 = text_field :submission, :"contact[0][email]", :required => true
-          - for attr in @metadata
-            - if attr["display"].eql? "people"
-              = label_tag(attr["attribute"])
-              = raw generate_attribute_input(attr["attribute"])
-              %br
+          %button#communityBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community')"} Show common metadata
+          %br
+
+          %div#communityDiv{:style => "margin-top: 2em;display: none;"}
+            - for attr in @metadata
+              - if attr["display"].eql? "people"
+                = label_tag(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
 
   %div{:class => "row"}
     %div{:class => "col-sm-4"}
@@ -519,6 +523,22 @@
   /**
    * To show/hide the simple metadata div
    */
+  function toggleDiv(divId)
+  {
+    var e = document.getElementById(divId + "Div");
+    if (e.style.display == 'block') {
+      e.style.display = 'none';
+      document.getElementById(divId + "Btn").innerText = "Show more metadata";
+    } else {
+      e.style.display = 'block';
+      document.getElementById(divId + "Btn").innerText = "Hide metadata";
+    }
+  }
+
+  /**
+   * TODO: remove
+   * To show/hide the simple metadata div
+   */
   function toggleSimple()
   {
     var e = document.getElementById("simpleMetadataDiv");
@@ -532,6 +552,7 @@
   }
 
   /**
+   * TODO: remove
    * To show/hide the complete metadata div
    */
   function toggleComplete()
