@@ -227,26 +227,6 @@
           = raw generate_attribute_input("URI")
       %tr
         %th
-          Home Page
-        %td
-          = text_field :submission, :homepage, value: @submission.homepage
-      %tr
-        %th
-          Documentation Page
-        %td
-          = text_field :submission, :documentation, value: @submission.documentation
-      %tr
-        %th
-          Publications Page
-        %td
-          = text_field :submission, :publication, value: @submission.publication
-      %tr
-        %th
-          Publisher
-        %td
-          = text_field :submission, :publisher, value: @submission.publisher
-      %tr
-        %th
           Ontology Syntax
         %td
           %div{:style => "float:left;width:50%;"}
@@ -306,6 +286,15 @@
             %label Abstract
             %br
             = text_area :submission, :abstract, rows: 5, value: @submission.abstract
+          %div
+            = generate_attribute_label("homepage")
+            = raw generate_attribute_input("homepage")
+          %div
+            = generate_attribute_label("documentation")
+            = raw generate_attribute_input("documentation")
+          %div
+            = generate_attribute_label("publication")
+            = raw generate_attribute_input("publication")
           %div
             = generate_attribute_label("keywords")
             = raw generate_attribute_input("keywords")
@@ -407,6 +396,10 @@
                 %br
                 Email:&nbsp;
                 = text_field :submission, :"contact[0][email]", :required => true
+
+          %div
+            = generate_attribute_label("publisher")
+            = raw generate_attribute_input("publisher")
           %div
             = generate_attribute_label("hasContributor")
             = raw generate_attribute_input("hasContributor")
@@ -429,11 +422,18 @@
         %div{:class => "panel-heading"}
           %h3{:class => "panel-title"} Ontology relations
         %div{:class => "panel-body"}
-          - for attr in @metadata
-            - if attr["display"].eql? "relations"
-              = generate_attribute_label(attr["attribute"])
-              = raw generate_attribute_input(attr["attribute"])
-              %br
+          %div
+            = generate_attribute_label("useImports")
+            = raw generate_attribute_input("useImports")
+          %div{:style => "text-align: center;"}
+            %button#relationsBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('relations')"} More relations metadata
+
+          %div#relationsDiv{:style => "margin-top: 2em;display: none;"}
+            - for attr in @metadata
+              - if attr["display"].eql? "relations"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
 
     %div{:class => "col-sm-4"}
       %div{:class => "panel panel-primary"}

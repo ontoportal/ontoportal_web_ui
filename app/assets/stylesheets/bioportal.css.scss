@@ -624,6 +624,11 @@ table.align-right th:nth-child(2) {
 #editMetadataDiv input[type="text"], input[type="url"], textarea {
   width: 90%;
   max-width: 500px;
+  margin-bottom: 5px;
+}
+
+.metadataInput {
+  width: 100%;
 }
 
 .contact {

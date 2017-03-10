@@ -5,9 +5,9 @@ module SubmissionsHelper
     attr = @metadata.select{ |attr_hash| attr_hash["attribute"].to_s.eql?(attr_label) }.first
 
     if !attr["label"].nil?
-      label_tag(attr["label"])
+      label_tag("submission_#{attr_label}", attr["label"], style: "margin-top: 1em;")
     else
-      label_tag(attr_label.underscore.humanize)
+      label_tag("submission_#{attr_label}", attr_label.underscore.humanize, style: "margin-top: 1em;")
     end
   end
 
@@ -37,12 +37,12 @@ module SubmissionsHelper
       end
 
       if attr["enforce"].include?("list")
-        input_html << url_field(:submission, attr["attribute"].to_s.to_sym, value: uri_value[0], :style => "margin-bottom: 0.3em;")
+        input_html << url_field(:submission, attr["attribute"].to_s.to_sym, value: uri_value[0], class: "metadataInput")
         # Add field if list of URI
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
           @submission.send(attr["attribute"]).each_with_index do |metadata_val, index|
             if index != 0
-              input_html << url_field_tag("added" + attr["attribute"].to_s + "[]", metadata_val, :id => "added" + attr["attribute"].to_s, :style => "margin-bottom: 0.3em;")
+              input_html << url_field_tag("added" + attr["attribute"].to_s + "[]", metadata_val, :id => "added" + attr["attribute"].to_s, class: "metadataInput")
             end
           end
         end
@@ -52,7 +52,7 @@ module SubmissionsHelper
 
       else
         # if single value
-        input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: uri_value)
+        input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: uri_value, class: "metadataInput")
       end
       return input_html
 
@@ -66,12 +66,12 @@ module SubmissionsHelper
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
           firstVal = @submission.send(attr["attribute"])[0]
         end
-        input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: firstVal, :style => "margin-bottom: 0.3em;")
+        input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: firstVal, class: "metadataInput")
         # Add field if list of metadata
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
           @submission.send(attr["attribute"]).each_with_index do |metadata_val, index|
             if index != 0
-              input_html << text_field_tag("added" + attr["attribute"].to_s + "[]", metadata_val, :id => "added" + attr["attribute"].to_s, :style => "margin-bottom: 0.3em;")
+              input_html << text_field_tag("added" + attr["attribute"].to_s + "[]", metadata_val, :id => "added" + attr["attribute"].to_s, class: "metadataInput")
             end
           end
         end
@@ -84,9 +84,9 @@ module SubmissionsHelper
         # if single value text
         # TODO: For some reason @submission.send("URI") FAILS... I don't know why... so I need to call it manually
         if attr["attribute"].to_s.eql?("URI")
-          input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.URI)
+          input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.URI,class: "metadataInput")
         else
-          input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"]))
+          input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"]), class: "metadataInput")
         end
       end
       return input_html
