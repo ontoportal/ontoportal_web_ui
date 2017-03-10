@@ -5,9 +5,9 @@ module SubmissionsHelper
     attr = @metadata.select{ |attr_hash| attr_hash["attribute"].to_s.eql?(attr_label) }.first
 
     if !attr["label"].nil?
-      label_tag("submission_#{attr_label}", attr["label"], style: "margin-top: 1em;")
+      label_tag("submission_#{attr_label}", attr["label"])
     else
-      label_tag("submission_#{attr_label}", attr_label.underscore.humanize, style: "margin-top: 1em;")
+      label_tag("submission_#{attr_label}", attr_label.underscore.humanize)
     end
   end
 
