@@ -208,7 +208,7 @@
               = f.select("masterFileName", @masterFileOptions, { include_blank: "Select primary file from zip contents", required: true}, {style: "border-color: red;"})
 
   %div{:class => "row"}
-    %div{:class => "col-sm-4"}
+    %div{:class => "col-md-4"}
       %div{:class => "panel panel-primary"}
         %div{:class => "panel-heading"}
           %h3{:class => "panel-title"} Key properties
@@ -270,7 +270,7 @@
 
 
   %div{:class => "row"}
-    %div{:class => "col-sm-4"}
+    %div{:class => "col-md-4"}
       %div{:class => "panel panel-primary"}
         %div{:class => "panel-heading"}
           %h3{:class => "panel-title"} Description
@@ -280,10 +280,19 @@
             %span.asterik *
             %br
             = text_area :submission, :description, rows: 5, value: @submission.description, :required => true
-          %div
-            %label Abstract
-            %br
-            = text_area :submission, :abstract, rows: 5, value: @submission.abstract
+
+          %div{:style => "text-align: center;"}
+            %button#detailsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('details')"} More details metadata
+
+          %div#detailsDiv{:style => "margin-top: 2em;display: none;"}
+            %div
+              %label Abstract
+              %br
+              = text_area :submission, :abstract, rows: 5, value: @submission.abstract
+            %div
+              = generate_attribute_label("keywords")
+              = raw generate_attribute_input("keywords")
+
           %div
             = generate_attribute_label("homepage")
             = raw generate_attribute_input("homepage")
@@ -293,9 +302,6 @@
           %div
             = generate_attribute_label("publication")
             = raw generate_attribute_input("publication")
-          %div
-            = generate_attribute_label("keywords")
-            = raw generate_attribute_input("keywords")
           %div
             = generate_attribute_label("usedOntologyEngineeringTool")
             %div
@@ -310,7 +316,7 @@
                 = text_field :submission, :ontologyToolText, :style => 'margin-top:7px;', value: @submission.usedOntologyEngineeringTool
 
           %div{:style => "text-align: center;"}
-            %button#descriptionBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description')"} More description metadata
+            %button#descriptionBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description')"} More description metadata
 
           %div#descriptionDiv{:style => "margin-top: 2em;display: none;"}
             - for attr in @metadata
@@ -319,7 +325,7 @@
                 = raw generate_attribute_input(attr["attribute"])
                 %br
 
-    %div{:class => "col-sm-4"}
+    %div{:class => "col-md-4"}
       %div{:class => "panel panel-primary"}
         %div{:class => "panel-heading"}
           %h3{:class => "panel-title"} Dates
@@ -369,7 +375,7 @@
             = generate_attribute_label("morePermissions")
             = raw generate_attribute_input("morePermissions")
 
-    %div{:class => "col-sm-4"}
+    %div{:class => "col-md-4"}
       %div{:class => "panel panel-default"}
         %div{:class => "panel-heading"}
           %h3{:class => "panel-title"} Community
@@ -405,7 +411,7 @@
             = generate_attribute_label("hasCreator")
             = raw generate_attribute_input("hasCreator")
           %div{:style => "text-align: center;"}
-            %button#communityBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community')"} More community metadata
+            %button#communityBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community')"} More community metadata
 
           %div#communityDiv{:style => "margin-top: 2em;display: none;"}
             - for attr in @metadata
@@ -415,7 +421,7 @@
                 %br
 
   %div{:class => "row"}
-    %div{:class => "col-sm-4"}
+    %div{:class => "col-md-4"}
       %div{:class => "panel panel-primary"}
         %div{:class => "panel-heading"}
           %h3{:class => "panel-title"} Ontology relations
@@ -424,7 +430,7 @@
             = generate_attribute_label("useImports")
             = raw generate_attribute_input("useImports")
           %div{:style => "text-align: center;"}
-            %button#relationsBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('relations')"} More relations metadata
+            %button#relationsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('relations')"} More relations metadata
 
           %div#relationsDiv{:style => "margin-top: 2em;display: none;"}
             - for attr in @metadata
@@ -433,7 +439,7 @@
                 = raw generate_attribute_input(attr["attribute"])
                 %br
 
-    %div{:class => "col-sm-4"}
+    %div{:class => "col-md-4"}
       %div{:class => "panel panel-primary"}
         %div{:class => "panel-heading"}
           %h3{:class => "panel-title"} Ontology content
@@ -448,7 +454,7 @@
             = raw generate_attribute_input("preferredNamespaceUri")
 
           %div{:style => "text-align: center;"}
-            %button#contentBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('content')"} More content metadata
+            %button#contentBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('content')"} More content metadata
 
           %div#contentDiv{:style => "margin-top: 2em;display: none;"}
             - for attr in @metadata
