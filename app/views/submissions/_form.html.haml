@@ -336,6 +336,41 @@
               = raw generate_attribute_input(attr["attribute"])
               %br
 
+    %div{:class => "col-sm-4"}
+      %div{:class => "panel panel-primary"}
+        %div{:class => "panel-heading"}
+          %h3{:class => "panel-title"} Dates
+        %div{:class => "panel-body"}
+          %div
+            %label Release date
+            %span.asterik *
+            = text_field :submission, :released, :class => "datepicker", value: "#{@submission.released}", :required => true
+            %span{:style => "font-size: 90%; color: grey;"}
+          %div
+            %label Modification date
+            %span.asterik *
+            = raw generate_attribute_input("modificationDate")
+          - for attr in @metadata
+            - if attr["display"].eql? "dates"
+              = label_tag(attr["attribute"])
+              = raw generate_attribute_input(attr["attribute"])
+              %br
+      %div{:class => "panel panel-primary"}
+        %div{:class => "panel-heading"}
+          %h3{:class => "panel-title"} Licenses
+        %div{:class => "panel-body"}
+          %div
+            %label Has license
+            %span.asterik *
+            = raw generate_attribute_input("hasLicense")
+          %div
+            %label Copyright holder
+            %span.asterik *
+            = raw generate_attribute_input("copyrightHolder")
+          %div
+            %label More permissions
+            %span.asterik *
+            = raw generate_attribute_input("morePermissions")
 
     %div{:class => "col-sm-4"}
       %div{:class => "panel panel-default"}
@@ -364,26 +399,6 @@
                 = text_field :submission, :"contact[0][email]", :required => true
           - for attr in @metadata
             - if attr["display"].eql? "people"
-              = label_tag(attr["attribute"])
-              = raw generate_attribute_input(attr["attribute"])
-              %br
-
-    %div{:class => "col-sm-4"}
-      %div{:class => "panel panel-primary"}
-        %div{:class => "panel-heading"}
-          %h3{:class => "panel-title"} Dates
-        %div{:class => "panel-body"}
-          %div
-            %label Release date
-            %span.asterik *
-            = text_field :submission, :released, :class => "datepicker", value: "#{@submission.released}", :required => true
-            %span{:style => "font-size: 90%; color: grey;"}
-          %div
-            %label Modification date
-            %span.asterik *
-            = raw generate_attribute_input("modificationDate")
-          - for attr in @metadata
-            - if attr["display"].eql? "dates"
               = label_tag(attr["attribute"])
               = raw generate_attribute_input(attr["attribute"])
               %br
