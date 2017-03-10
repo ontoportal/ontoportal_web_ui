@@ -280,11 +280,15 @@
         %div{:style => "text-align: center;"}
           %button#detailsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('details')"} More details metadata
 
-        %div#detailsDiv{:style => "margin-top: 2em;display: none;"}
+        %div#detailsDiv{:style => "margin-top: 1em;display: none;"}
           %div
             %label Abstract
             %br
-            = text_area :submission, :abstract, rows: 5, value: @submission.abstract
+            = text_area :submission, :abstract, rows: 3, value: @submission.abstract
+          %div
+            = generate_attribute_label("notes")
+            %br
+            = text_area :submission, :notes, rows: 3, value: @submission.abstract
           %div
             = generate_attribute_label("keywords")
             = raw generate_attribute_input("keywords")
@@ -437,11 +441,9 @@
       %div{:class => "panel-body"}
         %div
           = generate_attribute_label("preferredNamespacePrefix")
-          %span.asterik *
           = raw generate_attribute_input("preferredNamespacePrefix")
         %div
           = generate_attribute_label("preferredNamespaceUri")
-          %span.asterik *
           = raw generate_attribute_input("preferredNamespaceUri")
 
         %div{:style => "text-align: center;"}
