@@ -319,7 +319,7 @@
           %h3{:class => "panel-title"} Description
         %div{:class => "panel-body"}
           %div
-            %label Description
+            = generate_attribute_label("description")
             %span.asterik *
             %br
             = text_area :submission, :description, rows: 5, value: @submission.description, :required => true
@@ -328,13 +328,21 @@
             %br
             = text_area :submission, :abstract, rows: 5, value: @submission.abstract
           %div
-            %label Keywords
+            = generate_attribute_label("keywords")
             = raw generate_attribute_input("keywords")
-          - for attr in @metadata
-            - if attr["display"].eql? "description"
-              = label_tag(attr["attribute"])
-              = raw generate_attribute_input(attr["attribute"])
-              %br
+          %div
+            = generate_attribute_label("usedOntologyEngineeringTool")
+            = raw generate_attribute_input("usedOntologyEngineeringTool")
+            
+          %div{:style => "text-align: center;"}
+            %button#descriptionBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description')"} More description metadata
+
+          %div#descriptionDiv{:style => "margin-top: 2em;display: none;"}
+            - for attr in @metadata
+              - if attr["display"].eql? "description"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
 
     %div{:class => "col-sm-4"}
       %div{:class => "panel panel-primary"}
@@ -348,11 +356,10 @@
             %span{:style => "font-size: 90%; color: grey;"}
           %div
             %label Modification date
-            %span.asterik *
             = raw generate_attribute_input("modificationDate")
           - for attr in @metadata
             - if attr["display"].eql? "dates"
-              = label_tag(attr["attribute"])
+              = generate_attribute_label(attr["attribute"])
               = raw generate_attribute_input(attr["attribute"])
               %br
       %div{:class => "panel panel-primary"}
@@ -375,7 +382,7 @@
     %div{:class => "col-sm-4"}
       %div{:class => "panel panel-default"}
         %div{:class => "panel-heading"}
-          %h3{:class => "panel-title"} People
+          %h3{:class => "panel-title"} Community
         %div{:class => "panel-body"}
           %label Contact
           %span.asterik *
@@ -397,13 +404,21 @@
                 %br
                 Email:&nbsp;
                 = text_field :submission, :"contact[0][email]", :required => true
-          %button#communityBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community')"} Show common metadata
-          %br
+          %div
+            %label Contributors
+            %span.asterik *
+            = raw generate_attribute_input("hasContributor")
+          %div
+            %label Creators
+            %span.asterik *
+            = raw generate_attribute_input("hasCreator")
+          %div{:style => "text-align: center;"}
+            %button#communityBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community')"} More community metadata
 
           %div#communityDiv{:style => "margin-top: 2em;display: none;"}
             - for attr in @metadata
-              - if attr["display"].eql? "people"
-                = label_tag(attr["attribute"])
+              - if attr["display"].eql? "community"
+                = generate_attribute_label(attr["attribute"])
                 = raw generate_attribute_input(attr["attribute"])
                 %br
 
@@ -415,7 +430,7 @@
         %div{:class => "panel-body"}
           - for attr in @metadata
             - if attr["display"].eql? "relations"
-              = label_tag(attr["attribute"])
+              = generate_attribute_label(attr["attribute"])
               = raw generate_attribute_input(attr["attribute"])
               %br
 
@@ -424,22 +439,24 @@
         %div{:class => "panel-heading"}
           %h3{:class => "panel-title"} Ontology content
         %div{:class => "panel-body"}
-          - for attr in @metadata
-            - if attr["display"].eql? "content"
-              = label_tag(attr["attribute"])
-              = raw generate_attribute_input(attr["attribute"])
-              %br
+          %div
+            = generate_attribute_label("preferredNamespacePrefix")
+            %span.asterik *
+            = raw generate_attribute_input("preferredNamespacePrefix")
+          %div
+            = generate_attribute_label("preferredNamespaceUri")
+            %span.asterik *
+            = raw generate_attribute_input("preferredNamespaceUri")
 
-    %div{:class => "col-sm-4"}
-      %div{:class => "panel panel-primary"}
-        %div{:class => "panel-heading"}
-          %h3{:class => "panel-title"} Community
-        %div{:class => "panel-body"}
-          - for attr in @metadata
-            - if attr["display"].eql? "community"
-              = label_tag(attr["attribute"])
-              = raw generate_attribute_input(attr["attribute"])
-              %br
+          %div{:style => "text-align: center;"}
+            %button#contentBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('content')"} More content metadata
+
+          %div#contentDiv{:style => "margin-top: 2em;display: none;"}
+            - for attr in @metadata
+              - if attr["display"].eql? "content"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
 
 
 
@@ -528,42 +545,10 @@
     var e = document.getElementById(divId + "Div");
     if (e.style.display == 'block') {
       e.style.display = 'none';
-      document.getElementById(divId + "Btn").innerText = "Show more metadata";
+      document.getElementById(divId + "Btn").innerText = "More " + divId + " metadata";
     } else {
       e.style.display = 'block';
       document.getElementById(divId + "Btn").innerText = "Hide metadata";
-    }
-  }
-
-  /**
-   * TODO: remove
-   * To show/hide the simple metadata div
-   */
-  function toggleSimple()
-  {
-    var e = document.getElementById("simpleMetadataDiv");
-    if (e.style.display == 'block') {
-      e.style.display = 'none';
-      document.getElementById("simpleBtn").innerText = "Show common metadata";
-    } else {
-      e.style.display = 'block';
-      document.getElementById("simpleBtn").innerText = "Hide common metadata";
-    }
-  }
-
-  /**
-   * TODO: remove
-   * To show/hide the complete metadata div
-   */
-  function toggleComplete()
-  {
-    var e = document.getElementById("completeMetadataDiv");
-    if (e.style.display == 'block') {
-      e.style.display = 'none';
-      document.getElementById("completeBtn").innerText = "Show detailed metadata";
-    } else {
-      e.style.display = 'block';
-      document.getElementById("completeBtn").innerText = "Hide detailed metadata";
     }
   }
 

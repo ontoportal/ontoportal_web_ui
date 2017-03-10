@@ -1,5 +1,16 @@
 module SubmissionsHelper
 
+  def generate_attribute_label(attr_label)
+    # Get the attribute hash corresponding to the given attribute
+    attr = @metadata.select{ |attr_hash| attr_hash["attribute"].to_s.eql?(attr_label) }.first
+
+    if !attr["label"].nil?
+      label_tag(attr["label"])
+    else
+      label_tag(attr_label.underscore.humanize)
+    end
+  end
+
   # Generate the HTML input for every attributes
   def generate_attribute_input(attr_label)
     input_html = ''.html_safe
