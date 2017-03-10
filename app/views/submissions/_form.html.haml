@@ -247,27 +247,6 @@
           = text_field :submission, :publisher, value: @submission.publisher
       %tr
         %th
-          License
-        %td
-          %div{:style => "float:left;width:50%;"}
-            - if @submission.hasLicense.nil? || @submission.hasLicense.eql?("")
-              = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "none" })
-              = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
-            - elsif $LICENSES.include?(@submission.hasLicense)
-              = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => @submission.hasLicense })
-              = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
-            - else
-              = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "other" })
-              = text_field :submission, :licenseText, :style => 'margin-top:7px;', value: @submission.hasLicense
-          %div{:style => "float:right;width:50%;text-align:right;"}
-            Consider using a
-            = link_to "URI to describe your License", "http://rdflicense.appspot.com", target: "_blank"
-            %br
-            Consider using
-            = link_to "INRIA licentia", "http://licentia.inria.fr/", target: "_blank"
-            to choose your license
-      %tr
-        %th
           Ontology Syntax
         %td
           %div{:style => "float:left;width:50%;"}
@@ -333,7 +312,7 @@
           %div
             = generate_attribute_label("usedOntologyEngineeringTool")
             = raw generate_attribute_input("usedOntologyEngineeringTool")
-            
+
           %div{:style => "text-align: center;"}
             %button#descriptionBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description')"} More description metadata
 
@@ -367,16 +346,31 @@
           %h3{:class => "panel-title"} Licenses
         %div{:class => "panel-body"}
           %div
-            %label Has license
-            %span.asterik *
-            = raw generate_attribute_input("hasLicense")
+            = generate_attribute_label("hasLicense")
+            %div
+              - if @submission.hasLicense.nil? || @submission.hasLicense.eql?("")
+                = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "none" })
+                = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
+              - elsif $LICENSES.include?(@submission.hasLicense)
+                = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => @submission.hasLicense })
+                = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
+              - else
+                = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "other" })
+                = text_field :submission, :licenseText, :style => 'margin-top:7px;', value: @submission.hasLicense
+
+            %div{:style => "float:right;width:50%;text-align:right;"}
+              Consider using a
+              = link_to "URI to describe your License", "http://rdflicense.appspot.com", target: "_blank"
+              %br
+              Consider using
+              = link_to "INRIA licentia", "http://licentia.inria.fr/", target: "_blank"
+              to choose your license
+
           %div
-            %label Copyright holder
-            %span.asterik *
+            = generate_attribute_label("copyrightHolder")
             = raw generate_attribute_input("copyrightHolder")
           %div
-            %label More permissions
-            %span.asterik *
+            = generate_attribute_label("morePermissions")
             = raw generate_attribute_input("morePermissions")
 
     %div{:class => "col-sm-4"}
@@ -405,12 +399,10 @@
                 Email:&nbsp;
                 = text_field :submission, :"contact[0][email]", :required => true
           %div
-            %label Contributors
-            %span.asterik *
+            = generate_attribute_label("hasContributor")
             = raw generate_attribute_input("hasContributor")
           %div
-            %label Creators
-            %span.asterik *
+            = generate_attribute_label("hasCreator")
             = raw generate_attribute_input("hasCreator")
           %div{:style => "text-align: center;"}
             %button#communityBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community')"} More community metadata
