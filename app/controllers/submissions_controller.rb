@@ -27,6 +27,10 @@ class SubmissionsController < ApplicationController
     if params[:submission][:hasLicense].eql?("other")
       params[:submission][:hasLicense] = params[:submission][:licenseText]
     end
+    params[:submission][:usedOntologyEngineeringTool] = "" if params[:submission][:usedOntologyEngineeringTool].eql?("none")
+    if params[:submission][:usedOntologyEngineeringTool].eql?("other")
+      params[:submission][:usedOntologyEngineeringTool] = params[:submission][:ontologyToolText]
+    end
 
     # Add new language to naturalLanguage list
     natural_languages = params[:naturalLanguageSelect]
@@ -111,6 +115,11 @@ class SubmissionsController < ApplicationController
     if params[:submission][:hasLicense].eql?("other")
       params[:submission][:hasLicense] = params[:submission][:licenseText]
     end
+    params[:submission][:usedOntologyEngineeringTool] = "" if params[:submission][:usedOntologyEngineeringTool].eql?("none")
+    if params[:submission][:usedOntologyEngineeringTool].eql?("other")
+      params[:submission][:usedOntologyEngineeringTool] = params[:submission][:ontologyToolText]
+    end
+
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
     submissions = @ontology.explore.submissions
     @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first

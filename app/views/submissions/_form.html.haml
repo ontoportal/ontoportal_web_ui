@@ -311,7 +311,16 @@
             = raw generate_attribute_input("keywords")
           %div
             = generate_attribute_label("usedOntologyEngineeringTool")
-            = raw generate_attribute_input("usedOntologyEngineeringTool")
+            %div
+              - if @submission.usedOntologyEngineeringTool.nil? || @submission.usedOntologyEngineeringTool.eql?("")
+                = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => "none" })
+                = text_field :submission, :ontologyToolText, :style => 'display:none;margin-top:7px;'
+              - elsif $ONTOLOGY_TOOLS.include?(@submission.usedOntologyEngineeringTool)
+                = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => @submission.usedOntologyEngineeringTool })
+                = text_field :submission, :ontologyToolText, :style => 'display:none;margin-top:7px;'
+              - else
+                = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => "other" })
+                = text_field :submission, :ontologyToolText, :style => 'margin-top:7px;', value: @submission.usedOntologyEngineeringTool
 
           %div{:style => "text-align: center;"}
             %button#descriptionBtn{:style => "margin-top: 2em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description')"} More description metadata
@@ -506,6 +515,15 @@
       } else {
         $('#submission_licenseText').val($('#submission_hasLicense').val());
         $('#submission_licenseText').hide();
+      }
+    });
+    $('#submission_usedOntologyEngineeringTool').change(function() {
+      if ($('#submission_usedOntologyEngineeringTool').val() == "other") {
+        $('#submission_ontologyToolText').val("");
+        $('#submission_ontologyToolText').show();
+      } else {
+        $('#submission_ontologyToolText').val($('#submission_usedOntologyEngineeringTool').val());
+        $('#submission_ontologyToolText').hide();
       }
     });
     $('#naturalLanguageSelect').change(function() {
