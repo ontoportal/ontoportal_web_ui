@@ -207,262 +207,252 @@
               = f.file_field :filePath, required: true
               = f.select("masterFileName", @masterFileOptions, { include_blank: "Select primary file from zip contents", required: true}, {style: "border-color: red;"})
 
-  %div{:class => "row", style: "width: 80%; margin: 0 auto;"}
-    %div{:class => "col-md-6"}
-      %div{:class => "panel panel-primary"}
-        %div{:class => "panel-heading"}
-          %h3{:class => "panel-title"} Key properties
-        %div{:class => "panel-body"}
+  %div{:class => "row", style: "width: 50%; margin: 0 auto;"}
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Key properties
+      %div{:class => "panel-body"}
 
-          %div
-            = generate_attribute_label("URI")
-            = raw generate_attribute_input("URI")
+        %div
+          = generate_attribute_label("URI")
+          = raw generate_attribute_input("URI")
 
-          %div
-            = generate_attribute_label("status")
-            %span.asterik *
-            - selected_status = @submission.status ? @submission.status : "alpha"
-            - status_options = ["alpha", "beta", "production", "retired"]
-            = select :submission, :status, status_options, { :selected => selected_status, :required => true }
+        %div
+          = generate_attribute_label("status")
+          %span.asterik *
+          - selected_status = @submission.status ? @submission.status : "alpha"
+          - status_options = ["alpha", "beta", "production", "retired"]
+          = select :submission, :status, status_options, { :selected => selected_status, :required => true }
 
-          %div
-            = generate_attribute_label("version")
-            = raw generate_attribute_input("version")
+        %div
+          = generate_attribute_label("version")
+          = raw generate_attribute_input("version")
 
-          %div
-            = generate_attribute_label("hasOntologySyntax")
-            %div{:style => "float:left;width:50%;"}
-              = select("submission", "hasOntologySyntax", [["None", "none"]].concat($ONTOLOGY_SYNTAXES.collect{ |k, v| [v,k] }), { :selected => @submission.hasOntologySyntax })
-            %div{:style => "float:right;width:50%;text-align:right;"}
-              Properties taken from
-              = link_to "W3C URIs for file format", "https://www.w3.org/ns/formats/", target: "_blank"
+        %div
+          = generate_attribute_label("hasOntologySyntax")
+          %div{:style => "float:left;width:50%;"}
+            = select("submission", "hasOntologySyntax", [["None", "none"]].concat($ONTOLOGY_SYNTAXES.collect{ |k, v| [v,k] }), { :selected => @submission.hasOntologySyntax })
+          %div{:style => "float:right;width:50%;text-align:right;"}
+            Properties taken from
+            = link_to "W3C URIs for file format", "https://www.w3.org/ns/formats/", target: "_blank"
 
-          %div
-            = generate_attribute_label("hasFormalityLevel")
-            %div{:style => "float:left;width:50%;"}
-              = select("submission", "hasFormalityLevel", [["None", "none"]].concat($FORMALITY_LEVELS.collect{ |k, v| [v,k] }), { :selected => @submission.hasFormalityLevel })
-            %div{:style => "float:right;width:50%;text-align:right;"}
-              Properties taken from
-              = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
+        %div
+          = generate_attribute_label("hasFormalityLevel")
+          %div{:style => "float:left;width:50%;"}
+            = select("submission", "hasFormalityLevel", [["None", "none"]].concat($FORMALITY_LEVELS.collect{ |k, v| [v,k] }), { :selected => @submission.hasFormalityLevel })
+          %div{:style => "float:right;width:50%;text-align:right;"}
+            Properties taken from
+            = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
 
-          %div
-            = generate_attribute_label("isOfType")
-            %div{:style => "float:left;width:50%;"}
-              = select("submission", "isOfType", [["None", "none"]].concat($IS_OF_TYPE.collect{ |k, v| [v,k] }), { :selected => @submission.isOfType })
+        %div
+          = generate_attribute_label("isOfType")
+          %div{:style => "float:left;width:50%;"}
+            = select("submission", "isOfType", [["None", "none"]].concat($IS_OF_TYPE.collect{ |k, v| [v,k] }), { :selected => @submission.isOfType })
 
-          %div
-            = generate_attribute_label("naturalLanguage")
-            %div{:style => "float:left;width:50%;"}
-              = select_tag "naturalLanguageSelect[]", options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] }, @submission.naturalLanguage),
-              :multiple => 'true', "data-placeholder".to_sym => "Click here to select ontologies",:style => "margin-bottom: 15px;", :id => 'naturalLanguageSelect'
-              %br
-              %button#naturalLanguageBtn{:style => "margin-bottom: 0.5em;margin-top: 0.5em;", :type => "button", :class => "btn btn-info", :onclick => 'addInput("naturalLanguage", "text")'} Add new language
-              %div#naturalLanguageDiv
-
-            %div{:style => "float:right;width:50%;text-align:right;"}
-              Add a natural language to the list
-              %br
-              Consider using a
-              = link_to "Lexvo URI", "http://www.lexvo.org", target: "_blank"
-              with ISO639-3 code
-              %br
-              e.g.: http://lexvo.org/id/iso639-3/eng
-
-    %div{:class => "col-md-6"}
-      %div{:class => "panel panel-primary"}
-        %div{:class => "panel-heading"}
-          %h3{:class => "panel-title"} Description
-        %div{:class => "panel-body"}
-          %div
-            = generate_attribute_label("description")
-            %span.asterik *
+        %div
+          = generate_attribute_label("naturalLanguage")
+          %div{:style => "float:left;width:50%;"}
+            = select_tag "naturalLanguageSelect[]", options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] }, @submission.naturalLanguage),
+            :multiple => 'true', "data-placeholder".to_sym => "Click here to select ontologies",:style => "margin-bottom: 15px;", :id => 'naturalLanguageSelect'
             %br
-            = text_area :submission, :description, rows: 5, value: @submission.description, :required => true
+            %button#naturalLanguageBtn{:style => "margin-bottom: 0.5em;margin-top: 0.5em;", :type => "button", :class => "btn btn-info", :onclick => 'addInput("naturalLanguage", "text")'} Add new language
+            %div#naturalLanguageDiv
 
-          %div{:style => "text-align: center;"}
-            %button#detailsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('details')"} More details metadata
+          %div{:style => "float:right;width:50%;text-align:right;"}
+            Add a natural language to the list
+            %br
+            Consider using a
+            = link_to "Lexvo URI", "http://www.lexvo.org", target: "_blank"
+            with ISO639-3 code
+            %br
+            e.g.: http://lexvo.org/id/iso639-3/eng
 
-          %div#detailsDiv{:style => "margin-top: 2em;display: none;"}
-            %div
-              %label Abstract
-              %br
-              = text_area :submission, :abstract, rows: 5, value: @submission.abstract
-            %div
-              = generate_attribute_label("keywords")
-              = raw generate_attribute_input("keywords")
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Description
+      %div{:class => "panel-body"}
+        %div
+          = generate_attribute_label("description")
+          %span.asterik *
+          %br
+          = text_area :submission, :description, rows: 5, value: @submission.description, :required => true
 
+        %div{:style => "text-align: center;"}
+          %button#detailsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('details')"} More details metadata
+
+        %div#detailsDiv{:style => "margin-top: 2em;display: none;"}
           %div
-            = generate_attribute_label("homepage")
-            = raw generate_attribute_input("homepage")
+            %label Abstract
+            %br
+            = text_area :submission, :abstract, rows: 5, value: @submission.abstract
           %div
-            = generate_attribute_label("documentation")
-            = raw generate_attribute_input("documentation")
+            = generate_attribute_label("keywords")
+            = raw generate_attribute_input("keywords")
+
+        %div
+          = generate_attribute_label("homepage")
+          = raw generate_attribute_input("homepage")
+        %div
+          = generate_attribute_label("documentation")
+          = raw generate_attribute_input("documentation")
+        %div
+          = generate_attribute_label("publication")
+          = raw generate_attribute_input("publication")
+        %div
+          = generate_attribute_label("usedOntologyEngineeringTool")
           %div
-            = generate_attribute_label("publication")
-            = raw generate_attribute_input("publication")
-          %div
-            = generate_attribute_label("usedOntologyEngineeringTool")
-            %div
-              - if @submission.usedOntologyEngineeringTool.nil? || @submission.usedOntologyEngineeringTool.eql?("")
-                = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => "none" })
-                = text_field :submission, :ontologyToolText, :style => 'display:none;margin-top:7px;'
-              - elsif $ONTOLOGY_TOOLS.include?(@submission.usedOntologyEngineeringTool)
-                = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => @submission.usedOntologyEngineeringTool })
-                = text_field :submission, :ontologyToolText, :style => 'display:none;margin-top:7px;'
-              - else
-                = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => "other" })
-                = text_field :submission, :ontologyToolText, :style => 'margin-top:7px;', value: @submission.usedOntologyEngineeringTool
+            - if @submission.usedOntologyEngineeringTool.nil? || @submission.usedOntologyEngineeringTool.eql?("")
+              = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => "none" })
+              = text_field :submission, :ontologyToolText, :style => 'display:none;margin-top:7px;'
+            - elsif $ONTOLOGY_TOOLS.include?(@submission.usedOntologyEngineeringTool)
+              = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => @submission.usedOntologyEngineeringTool })
+              = text_field :submission, :ontologyToolText, :style => 'display:none;margin-top:7px;'
+            - else
+              = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => "other" })
+              = text_field :submission, :ontologyToolText, :style => 'margin-top:7px;', value: @submission.usedOntologyEngineeringTool
 
-          %div{:style => "text-align: center;"}
-            %button#descriptionBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description')"} More description metadata
+        %div{:style => "text-align: center;"}
+          %button#descriptionBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description')"} More description metadata
 
-          %div#descriptionDiv{:style => "margin-top: 2em;display: none;"}
-            - for attr in @metadata
-              - if attr["display"].eql? "description"
-                = generate_attribute_label(attr["attribute"])
-                = raw generate_attribute_input(attr["attribute"])
-                %br
-
-
-  %div{:class => "row", style: "width: 80%; margin: 0 auto;"}
-
-    %div{:class => "col-md-6"}
-      %div{:class => "panel panel-primary"}
-        %div{:class => "panel-heading"}
-          %h3{:class => "panel-title"} Dates
-        %div{:class => "panel-body"}
-          %div
-            %label Release date
-            %span.asterik *
-            = text_field :submission, :released, :class => "datepicker", value: "#{@submission.released}", :required => true
-            %span{:style => "font-size: 90%; color: grey;"}
-          %div
-            %label Modification date
-            = raw generate_attribute_input("modificationDate")
+        %div#descriptionDiv{:style => "margin-top: 2em;display: none;"}
           - for attr in @metadata
-            - if attr["display"].eql? "dates"
+            - if attr["display"].eql? "description"
               = generate_attribute_label(attr["attribute"])
               = raw generate_attribute_input(attr["attribute"])
               %br
-      %div{:class => "panel panel-primary"}
-        %div{:class => "panel-heading"}
-          %h3{:class => "panel-title"} Licenses
-        %div{:class => "panel-body"}
-          %div
-            = generate_attribute_label("hasLicense")
-            %div
-              - if @submission.hasLicense.nil? || @submission.hasLicense.eql?("")
-                = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "none" })
-                = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
-              - elsif $LICENSES.include?(@submission.hasLicense)
-                = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => @submission.hasLicense })
-                = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
-              - else
-                = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "other" })
-                = text_field :submission, :licenseText, :style => 'margin-top:7px;', value: @submission.hasLicense
 
-            %div{:style => "float:right;width:50%;text-align:right;"}
-              Consider using a
-              = link_to "URI to describe your License", "http://rdflicense.appspot.com", target: "_blank"
-              %br
-              Consider using
-              = link_to "INRIA licentia", "http://licentia.inria.fr/", target: "_blank"
-              to choose your license
-
-          %div
-            = generate_attribute_label("copyrightHolder")
-            = raw generate_attribute_input("copyrightHolder")
-          %div
-            = generate_attribute_label("morePermissions")
-            = raw generate_attribute_input("morePermissions")
-
-    %div{:class => "col-md-6"}
-      %div{:class => "panel panel-default"}
-        %div{:class => "panel-heading"}
-          %h3{:class => "panel-title"} Community
-        %div{:class => "panel-body"}
-          %label Contact
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Dates
+      %div{:class => "panel-body"}
+        %div
+          %label Release date
           %span.asterik *
-          %div#contacts
-            %div#contact_button{style: "float: right; margin-top -1em;"}
-              = button_to 'Add contact', '#', id: 'add_contact_button', class: "btn btn-info"
-            - if @submission.contact
-              - @submission.contact.each_with_index do |contact, i|
-                %div.contact
-                  Name:&nbsp;
-                  = text_field :submission, :"contact[#{i}][name]", value: contact["name"]
-                  %br
-                  Email:&nbsp;
-                  = text_field :submission, :"contact[#{i}][email]", value: contact["email"]
+          = text_field :submission, :released, :class => "datepicker", value: "#{@submission.released}", :required => true
+          %span{:style => "font-size: 90%; color: grey;"}
+        %div
+          %label Modification date
+          = raw generate_attribute_input("modificationDate")
+        - for attr in @metadata
+          - if attr["display"].eql? "dates"
+            = generate_attribute_label(attr["attribute"])
+            = raw generate_attribute_input(attr["attribute"])
+            %br
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Licenses
+      %div{:class => "panel-body"}
+        %div
+          = generate_attribute_label("hasLicense")
+          %div
+            - if @submission.hasLicense.nil? || @submission.hasLicense.eql?("")
+              = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "none" })
+              = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
+            - elsif $LICENSES.include?(@submission.hasLicense)
+              = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => @submission.hasLicense })
+              = text_field :submission, :licenseText, :style => 'display:none;margin-top:7px;'
             - else
+              = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "other" })
+              = text_field :submission, :licenseText, :style => 'margin-top:7px;', value: @submission.hasLicense
+
+          %div{:style => "float:right;width:50%;text-align:right;"}
+            Consider using a
+            = link_to "URI to describe your License", "http://rdflicense.appspot.com", target: "_blank"
+            %br
+            Consider using
+            = link_to "INRIA licentia", "http://licentia.inria.fr/", target: "_blank"
+            to choose your license
+
+        %div
+          = generate_attribute_label("copyrightHolder")
+          = raw generate_attribute_input("copyrightHolder")
+        %div
+          = generate_attribute_label("morePermissions")
+          = raw generate_attribute_input("morePermissions")
+
+    %div{:class => "panel panel-default"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Community
+      %div{:class => "panel-body"}
+        %label Contact
+        %span.asterik *
+        %div#contacts
+          %div#contact_button{style: "float: right; margin-top -1em;"}
+            = button_to 'Add contact', '#', id: 'add_contact_button', class: "btn btn-info"
+          - if @submission.contact
+            - @submission.contact.each_with_index do |contact, i|
               %div.contact
                 Name:&nbsp;
-                = text_field :submission, :"contact[0][name]", :required => true
+                = text_field :submission, :"contact[#{i}][name]", value: contact["name"]
                 %br
                 Email:&nbsp;
-                = text_field :submission, :"contact[0][email]", :required => true
+                = text_field :submission, :"contact[#{i}][email]", value: contact["email"]
+          - else
+            %div.contact
+              Name:&nbsp;
+              = text_field :submission, :"contact[0][name]", :required => true
+              %br
+              Email:&nbsp;
+              = text_field :submission, :"contact[0][email]", :required => true
 
-          %div
-            = generate_attribute_label("publisher")
-            = raw generate_attribute_input("publisher")
-          %div
-            = generate_attribute_label("hasContributor")
-            = raw generate_attribute_input("hasContributor")
-          %div
-            = generate_attribute_label("hasCreator")
-            = raw generate_attribute_input("hasCreator")
-          %div{:style => "text-align: center;"}
-            %button#communityBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community')"} More community metadata
+        %div
+          = generate_attribute_label("publisher")
+          = raw generate_attribute_input("publisher")
+        %div
+          = generate_attribute_label("hasContributor")
+          = raw generate_attribute_input("hasContributor")
+        %div
+          = generate_attribute_label("hasCreator")
+          = raw generate_attribute_input("hasCreator")
+        %div{:style => "text-align: center;"}
+          %button#communityBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community')"} More community metadata
 
-          %div#communityDiv{:style => "margin-top: 2em;display: none;"}
-            - for attr in @metadata
-              - if attr["display"].eql? "community"
-                = generate_attribute_label(attr["attribute"])
-                = raw generate_attribute_input(attr["attribute"])
-                %br
+        %div#communityDiv{:style => "margin-top: 2em;display: none;"}
+          - for attr in @metadata
+            - if attr["display"].eql? "community"
+              = generate_attribute_label(attr["attribute"])
+              = raw generate_attribute_input(attr["attribute"])
+              %br
 
-  %div{:class => "row", style: "width: 80%; margin: 0 auto;"}
-    %div{:class => "col-md-6"}
-      %div{:class => "panel panel-primary"}
-        %div{:class => "panel-heading"}
-          %h3{:class => "panel-title"} Ontology relations
-        %div{:class => "panel-body"}
-          %div
-            = generate_attribute_label("useImports")
-            = raw generate_attribute_input("useImports")
-          %div{:style => "text-align: center;"}
-            %button#relationsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('relations')"} More relations metadata
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Ontology relations
+      %div{:class => "panel-body"}
+        %div
+          = generate_attribute_label("useImports")
+          = raw generate_attribute_input("useImports")
+        %div{:style => "text-align: center;"}
+          %button#relationsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('relations')"} More relations metadata
 
-          %div#relationsDiv{:style => "margin-top: 2em;display: none;"}
-            - for attr in @metadata
-              - if attr["display"].eql? "relations"
-                = generate_attribute_label(attr["attribute"])
-                = raw generate_attribute_input(attr["attribute"])
-                %br
+        %div#relationsDiv{:style => "margin-top: 2em;display: none;"}
+          - for attr in @metadata
+            - if attr["display"].eql? "relations"
+              = generate_attribute_label(attr["attribute"])
+              = raw generate_attribute_input(attr["attribute"])
+              %br
 
-    %div{:class => "col-md-6"}
-      %div{:class => "panel panel-primary"}
-        %div{:class => "panel-heading"}
-          %h3{:class => "panel-title"} Ontology content
-        %div{:class => "panel-body"}
-          %div
-            = generate_attribute_label("preferredNamespacePrefix")
-            %span.asterik *
-            = raw generate_attribute_input("preferredNamespacePrefix")
-          %div
-            = generate_attribute_label("preferredNamespaceUri")
-            %span.asterik *
-            = raw generate_attribute_input("preferredNamespaceUri")
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Ontology content
+      %div{:class => "panel-body"}
+        %div
+          = generate_attribute_label("preferredNamespacePrefix")
+          %span.asterik *
+          = raw generate_attribute_input("preferredNamespacePrefix")
+        %div
+          = generate_attribute_label("preferredNamespaceUri")
+          %span.asterik *
+          = raw generate_attribute_input("preferredNamespaceUri")
 
-          %div{:style => "text-align: center;"}
-            %button#contentBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('content')"} More content metadata
+        %div{:style => "text-align: center;"}
+          %button#contentBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('content')"} More content metadata
 
-          %div#contentDiv{:style => "margin-top: 2em;display: none;"}
-            - for attr in @metadata
-              - if attr["display"].eql? "content"
-                = generate_attribute_label(attr["attribute"])
-                = raw generate_attribute_input(attr["attribute"])
-                %br
+        %div#contentDiv{:style => "margin-top: 2em;display: none;"}
+          - for attr in @metadata
+            - if attr["display"].eql? "content"
+              = generate_attribute_label(attr["attribute"])
+              = raw generate_attribute_input(attr["attribute"])
+              %br
 
 
   %div{:style => "text-align: center;"}
