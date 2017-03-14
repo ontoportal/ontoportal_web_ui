@@ -446,7 +446,7 @@
 
         %div#relationsDiv{:style => "margin-top: 2em;display: none;"}
           - for attr in @metadata
-            - if attr["display"].eql? "relations"
+            - if attr["display"].eql?("relations") || attr["display"].eql?("isOntology")
               = generate_attribute_label(attr["attribute"])
               = raw generate_attribute_input(attr["attribute"])
               %br
