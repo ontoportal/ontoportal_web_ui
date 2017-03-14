@@ -29,10 +29,9 @@ module SubmissionsHelper
       end
       text_field :submission, attr["attribute"].to_s.to_sym, :class => "datepicker", value: "#{date_value}"
 
-    #elsif attr["display"].eql("isOntology")
+    #TODO: elsif attr["display"].eql("isOntology")
     elsif attr["enforce"].include?("uri")
-      puts "tttt"
-      puts @ontologies_for_select
+
       select_tag "#{attr_label}[]", options_for_select(@ontologies_for_select), :multiple => 'true', "data-placeholder".to_sym => "Select ontologies",
                    :style => "margin-bottom: 15px; width: 433px;", :id => attr_label, :class => "selectOntology"
 
