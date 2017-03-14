@@ -261,7 +261,7 @@
             %br
             e.g.: http://lexvo.org/id/iso639-3/eng
           = select_tag "naturalLanguageSelect[]", options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] }, @submission.naturalLanguage),
-          :multiple => 'true', "data-placeholder".to_sym => "Click here to select ontologies",:style => "margin-bottom: 15px;", :id => 'naturalLanguageSelect'
+          :multiple => 'true', "data-placeholder".to_sym => "Click here to select languages",:style => "margin-bottom: 15px;", :id => 'naturalLanguageSelect'
           %br
           %button#naturalLanguageBtn{:style => "margin-bottom: 0.5em;margin-top: 0.5em;", :type => "button", :class => "btn btn-info", :onclick => 'addInput("naturalLanguage", "text")'} Add new language
           %div#naturalLanguageDiv
@@ -534,11 +534,14 @@
   }
 
   /**
-   * For natural language multiple select
+   * For Multiple select
    */
   jQuery(document).ready(function() {
     "use strict";
     jQuery("#naturalLanguageSelect").chosen({
+      search_contains: true
+    });
+    jQuery(".selectOntology").chosen({
       search_contains: true
     });
   });

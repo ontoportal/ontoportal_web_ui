@@ -29,6 +29,22 @@ module SubmissionsHelper
       end
       text_field :submission, attr["attribute"].to_s.to_sym, :class => "datepicker", value: "#{date_value}"
 
+    #elsif attr["display"].eql("isOntology")
+    elsif attr["enforce"].include?("uri")
+      puts "tttt"
+      puts @ontologies_for_select
+      select_tag "#{attr_label}[]", options_for_select(@ontologies_for_select), :multiple => 'true', "data-placeholder".to_sym => "Select ontologies",
+                   :style => "margin-bottom: 15px; width: 433px;", :id => attr_label, :class => "selectOntology"
+
+      # Faire un petit bouton + qui ouvre un champ texte pour ajouter une nouvelle valeur à la liste
+      # Ou ajouter un element dans le DOM (dans les options)
+
+=begin : faut ajouter ce javascript
+      jQuery("#naturalLanguageSelect").chosen({
+      search_contains: true
+      });
+=end
+
     elsif attr["enforce"].include?("uri")
       if @submission.send(attr["attribute"]).nil?
         uri_value = ""
