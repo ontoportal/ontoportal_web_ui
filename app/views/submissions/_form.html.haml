@@ -280,7 +280,7 @@
         %div{:style => "text-align: center;"}
           %button#detailsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('details')"} More details metadata
 
-        %div#detailsDiv{:class => "panel panel-primary", :style => "margin-top: 1em;display: none;"}
+        %div#detailsDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
             %h3{:class => "panel-title"} Detailed description
           %div{:class => "panel-body"}
@@ -318,8 +318,11 @@
               = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => "other" })
               = text_field :submission, :ontologyToolText, :style => 'margin-top:7px;', value: @submission.usedOntologyEngineeringTool
 
-        %div{:style => "text-align: center;"}
-          %button#descriptionBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description')"} More description metadata
+        %div{:class => "row", :style => "text-align: center;"}
+          %div{:class => "col-md-6"}
+            %button#descriptionBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description')"} More description metadata
+          %div{:class => "col-md-6"}
+            %button#imagesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('images')"} More images metadata
 
         %div#descriptionDiv{:style => "margin-top: 2em;display: none;"}
           - for attr in @metadata
@@ -327,6 +330,17 @@
               = generate_attribute_label(attr["attribute"])
               = raw generate_attribute_input(attr["attribute"])
               %br
+
+        %div#imagesDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} Ontology images
+          %div{:class => "panel-body"}
+            %div
+              = generate_attribute_label("depiction")
+              = raw generate_attribute_input("depiction")
+            %div
+              = generate_attribute_label("logo")
+              = raw generate_attribute_input("logo")
 
     %div{:class => "panel panel-primary"}
       %div{:class => "panel-heading"}
