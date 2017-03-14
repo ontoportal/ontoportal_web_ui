@@ -12,10 +12,8 @@ class SubmissionsController < ApplicationController
 
     @ontologies_for_select = []
     LinkedData::Client::Models::Ontology.all.each do |onto|
-      @ontologies << ["#{onto.name} (#{onto.acronym})", onto.acronym]
+      @ontologies_for_select << ["#{onto.name} (#{onto.acronym})", onto.id]
     end
-    puts "new"
-    puts @ontologies_for_select
 
     # Get the submission metadata from the REST API
     json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
@@ -104,13 +102,10 @@ class SubmissionsController < ApplicationController
     submissions = @ontology.explore.submissions
     @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
 
-    puts "teeeewtzzz"
     @ontologies_for_select = []
     LinkedData::Client::Models::Ontology.all.each do |onto|
-      @ontologies_for_select << ["#{onto.name} (#{onto.acronym})", onto.acronym]
+      @ontologies_for_select << ["#{onto.name} (#{onto.acronym})", onto.id]
     end
-    puts "teeeewt"
-    puts @ontologies_for_select
 
     # Get the submission metadata from the REST API
     json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
