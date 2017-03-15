@@ -31,19 +31,33 @@ module SubmissionsHelper
 
     elsif attr["display"].eql?("isOntology")
       # TODO: avant on concatene les ontos qui sont en dehors du site;, avec celle du site  ?
+      metadata_values = @submission.send(attr["attribute"])
+      select_values = @ontologies_for_select.dup
+      puts 'sellllect'
+      puts select_values.to_s
+      # Add in the select ontologies that are not in the portal but are in the values
+      if metadata_values.kind_of?(Array)
+        metadata_values.map do |metadata|
+          if !select_values.flatten.include?(metadata)
+            select_values << metadata
+          end
+        end
+      else
+        if !select_values.include?(metadata_values)
+          select_values << metadata_values
+        end
+      end
+
       if attr["enforce"].include?("list")
-        input_html << select_tag("submission[#{attr_label}][]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])), :multiple => 'true',
+        input_html << select_tag("submission[#{attr_label}][]", options_for_select(select_values, metadata_values), :multiple => 'true',
             "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 433px;", :id => "select_#{attr["attribute"]}", :class => "selectOntology")
 
       else
         input_html << select_tag("submission[#{attr_label}]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])),
                    :style => "margin-bottom: 15px; width: 433px;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :include_blank => true)
       end
-      # Faire un petit bouton + qui ouvre un champ texte pour ajouter une nouvelle valeur à la liste
-      # Ou ajouter un element dans le DOM (dans les options)
-
+      # Button and field to add new value (not in the select)
       input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil)
-
       input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;",
                                :type => "button", :class => "btn btn-info", :onclick => "addValueToSelect('#{attr["attribute"]}')")
 

@@ -562,7 +562,7 @@
    */
   function addValueToSelect(attr)
   {
-    var newOption = $('#add_' + attr).val();
+    var newOption = jQuery('#add_' + attr).val();
     var selectedOptions = jQuery('#select_' + attr).val();
     jQuery('#select_' + attr).append(jQuery('<option>', {
       value: newOption,
@@ -575,6 +575,7 @@
     }
     jQuery('#select_' + attr).val(selectedOptions)
     jQuery('#select_' + attr).trigger("liszt:updated");
+    jQuery('#add_' + attr).val("");
   }
 
   /**
