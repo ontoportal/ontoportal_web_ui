@@ -319,20 +319,44 @@
               = text_field :submission, :ontologyToolText, :style => 'margin-top:7px;', value: @submission.usedOntologyEngineeringTool
 
         %div{:class => "row", :style => "text-align: center;"}
-          %div{:class => "col-md-4"}
-            %button#descriptionBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description', 'Add description metadata')"} Add description metadata
-          %div{:class => "col-md-4"}
+          %div{:class => "col-md-3"}
+            %button#usageBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('usage', 'Define usage')"} Define usage
+
+          %div{:class => "col-md-3"}
+            %button#methodologyBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('methodology', 'Add methodology informations')"} Add methodology informations
+
+          %div{:class => "col-md-3"}
+            %button#linksBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('links', 'Add links')"} Add links
+
+          %div{:class => "col-md-3"}
             %button#imagesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('images', 'Add images')"} Add images
 
-          %div{:class => "col-md-4"}
-            %button#accrualBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('accrual', 'Add accrual informations')"} Add accrual informations
-
-        %div#descriptionDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+        %div#linksDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
-            %h3{:class => "panel-title"} More description
+            %h3{:class => "panel-title"} Add links
           %div{:class => "panel-body"}
             - for attr in @metadata
-              - if attr["display"].eql? "description"
+              - if attr["display"].eql? "links"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
+
+        %div#methodologyDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} Methodology informations
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "methodology"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
+
+        %div#usageDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} Define usage
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "usage"
                 = generate_attribute_label(attr["attribute"])
                 = raw generate_attribute_input(attr["attribute"])
                 %br
@@ -343,16 +367,6 @@
           %div{:class => "panel-body"}
             - for attr in @metadata
               - if attr["display"].eql? "images"
-                = generate_attribute_label(attr["attribute"])
-                = raw generate_attribute_input(attr["attribute"])
-                %br
-
-        %div#accrualDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
-          %div{:class => "panel-heading"}
-            %h3{:class => "panel-title"} Accrual informations
-          %div{:class => "panel-body"}
-            - for attr in @metadata
-              - if attr["display"].eql? "accrual"
                 = generate_attribute_label(attr["attribute"])
                 = raw generate_attribute_input(attr["attribute"])
                 %br
@@ -405,7 +419,7 @@
           = generate_attribute_label("morePermissions")
           = raw generate_attribute_input("morePermissions")
 
-    %div{:class => "panel panel-default"}
+    %div{:class => "panel panel-primary"}
       %div{:class => "panel-heading"}
         %h3{:class => "panel-title"} Community
       %div{:class => "panel-body"}
