@@ -50,15 +50,15 @@ module SubmissionsHelper
 
       if attr["enforce"].include?("list")
         input_html << select_tag("submission[#{attr_label}][]", options_for_select(select_values, metadata_values), :multiple => 'true',
-            "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 433px;", :id => "select_#{attr["attribute"]}", :class => "selectOntology")
+            "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology")
 
       else
         input_html << select_tag("submission[#{attr_label}]", options_for_select(select_values, metadata_values),
-                   :style => "margin-bottom: 15px; width: 433px;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :include_blank => true)
+                   :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :include_blank => true)
       end
       # Button and field to add new value (not in the select)
-      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil)
-      input_html << button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;",
+      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;")
+      input_html << button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 1em;margin-top: 1em;",
                                :type => "button", :class => "btn btn-info", :onclick => "addValueToSelect('#{attr["attribute"]}')")
 
       return input_html;
@@ -80,7 +80,7 @@ module SubmissionsHelper
             end
           end
         end
-        input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;",
+        input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;margin-left: 0.5em;",
                                  :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'url')")
         input_html << content_tag(:div, "", id: "#{attr["attribute"]}Div")
 
