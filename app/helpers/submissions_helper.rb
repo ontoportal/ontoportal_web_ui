@@ -33,8 +33,6 @@ module SubmissionsHelper
       # TODO: avant on concatene les ontos qui sont en dehors du site;, avec celle du site  ?
       metadata_values = @submission.send(attr["attribute"])
       select_values = @ontologies_for_select.dup
-      puts 'sellllect'
-      puts select_values.to_s
       # Add in the select ontologies that are not in the portal but are in the values
       if metadata_values.kind_of?(Array)
         metadata_values.map do |metadata|
@@ -43,9 +41,11 @@ module SubmissionsHelper
           end
         end
       else
-        if !select_values.include?(metadata_values)
+        puts "olala #{metadata_values.to_s}"
+        if !select_values.flatten.include?(metadata_values)
           select_values << metadata_values
         end
+        puts select_values.to_s
       end
 
       if attr["enforce"].include?("list")
@@ -53,12 +53,12 @@ module SubmissionsHelper
             "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 433px;", :id => "select_#{attr["attribute"]}", :class => "selectOntology")
 
       else
-        input_html << select_tag("submission[#{attr_label}]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])),
+        input_html << select_tag("submission[#{attr_label}]", options_for_select(select_values, metadata_values),
                    :style => "margin-bottom: 15px; width: 433px;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :include_blank => true)
       end
       # Button and field to add new value (not in the select)
       input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil)
-      input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;",
+      input_html << button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;",
                                :type => "button", :class => "btn btn-info", :onclick => "addValueToSelect('#{attr["attribute"]}')")
 
       return input_html;
