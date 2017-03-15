@@ -62,17 +62,6 @@ class SubmissionsController < ApplicationController
           params[:submission][hash["attribute"].to_s.to_sym] = nil
         end
       end
-      if hash["enforce"].include?("list") && !hash["display"].include?("no")
-        metadata_value_array = []
-        if !params[:submission][hash["attribute"]].nil? && !params[:submission][hash["attribute"]].eql?("")
-          metadata_value_array.push(params[:submission][hash["attribute"]])
-        end
-        if !params["added#{hash["attribute"]}".to_sym].nil? && params["added#{hash["attribute"]}".to_sym] != []
-          # Get added values for list
-          metadata_value_array = metadata_value_array.concat(params["added#{hash["attribute"]}".to_sym])
-        end
-        params[:submission][hash["attribute"]] = metadata_value_array
-      end
     end
 
     @submission = LinkedData::Client::Models::OntologySubmission.new(values: params[:submission])
@@ -157,17 +146,6 @@ class SubmissionsController < ApplicationController
         else
           params[:submission][hash["attribute"].to_s.to_sym] = nil
         end
-      end
-      if hash["enforce"].include?("list") && !hash["display"].include?("no")
-        metadata_value_array = []
-        if !params[:submission][hash["attribute"]].nil? && !params[:submission][hash["attribute"]].eql?("")
-          metadata_value_array.push(params[:submission][hash["attribute"]])
-        end
-        if !params["added#{hash["attribute"]}".to_sym].nil? && params["added#{hash["attribute"]}".to_sym] != []
-          # Get added values for list
-          metadata_value_array = metadata_value_array.concat(params["added#{hash["attribute"]}".to_sym])
-        end
-        params[:submission][hash["attribute"]] = metadata_value_array
       end
     end
 

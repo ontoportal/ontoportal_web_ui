@@ -49,8 +49,6 @@ module SubmissionsHelper
       end
 
       if attr["enforce"].include?("list")
-        #input_html << url_field(:submission, "#{attr["attribute"].to_s}[]", value: uri_value[0], class: "metadataInput")
-
         input_html << url_field_tag("submission[#{attr["attribute"].to_s}][]", uri_value[0], :id => attr["attribute"].to_s, class: "metadataInput")
         # Add field if list of URI
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
@@ -81,12 +79,13 @@ module SubmissionsHelper
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
           firstVal = @submission.send(attr["attribute"])[0]
         end
-        input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: firstVal, class: "metadataInput")
+        input_html << text_field_tag("submission[#{attr["attribute"].to_s}][]", firstVal, :id => attr["attribute"].to_s, class: "metadataInput")
+
         # Add field if list of metadata
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
           @submission.send(attr["attribute"]).each_with_index do |metadata_val, index|
             if index != 0
-              input_html << text_field_tag("added" + attr["attribute"].to_s + "[]", metadata_val, :id => "added" + attr["attribute"].to_s, class: "metadataInput")
+              input_html << text_field_tag("submission[#{attr["attribute"].to_s}][]", metadata_val, :id => "submission_#{attr["attribute"].to_s}", class: "metadataInput")
             end
           end
         end
