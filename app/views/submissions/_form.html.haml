@@ -278,7 +278,7 @@
           = text_area :submission, :description, rows: 5, value: @submission.description, :required => true
 
         %div{:style => "text-align: center;"}
-          %button#detailsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('details')"} More details metadata
+          %button#detailsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('details', 'Add details')"} Add details
 
         %div#detailsDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
@@ -320,9 +320,9 @@
 
         %div{:class => "row", :style => "text-align: center;"}
           %div{:class => "col-md-6"}
-            %button#descriptionBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description')"} More description metadata
+            %button#descriptionBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description', 'Add description metadata')"} Add description metadata
           %div{:class => "col-md-6"}
-            %button#imagesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('images')"} More images metadata
+            %button#imagesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('images', 'Add images')"} Add images
 
         %div#descriptionDiv{:style => "margin-top: 2em;display: none;"}
           - for attr in @metadata
@@ -425,7 +425,7 @@
           = generate_attribute_label("hasCreator")
           = raw generate_attribute_input("hasCreator")
         %div{:style => "text-align: center;"}
-          %button#communityBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community')"} More community metadata
+          %button#communityBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community', 'More community metadata')"} More community metadata
 
         %div#communityDiv{:style => "margin-top: 2em;display: none;"}
           - for attr in @metadata
@@ -442,7 +442,7 @@
           = generate_attribute_label("useImports")
           = raw generate_attribute_input("useImports")
         %div{:style => "text-align: center;"}
-          %button#relationsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('relations')"} More relations metadata
+          %button#relationsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('relations', 'Add relations')"} Add relations
 
         %div#relationsDiv{:style => "margin-top: 2em;display: none;"}
           - for attr in @metadata
@@ -463,7 +463,7 @@
           = raw generate_attribute_input("preferredNamespaceUri")
 
         %div{:style => "text-align: center;"}
-          %button#contentBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('content')"} More content metadata
+          %button#contentBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('content', 'Add content metadata')"} Add content metadata
 
         %div#contentDiv{:style => "margin-top: 2em;display: none;"}
           - for attr in @metadata
@@ -521,15 +521,15 @@
   /**
    * To show/hide the simple metadata div
    */
-  function toggleDiv(divId)
+  function toggleDiv(divId, btnText)
   {
     var e = document.getElementById(divId + "Div");
     if (e.style.display == 'block') {
       e.style.display = 'none';
-      document.getElementById(divId + "Btn").innerText = "More " + divId + " metadata";
+      document.getElementById(divId + "Btn").innerText = btnText;
     } else {
       e.style.display = 'block';
-      document.getElementById(divId + "Btn").innerText = "Hide metadata";
+      document.getElementById(divId + "Btn").innerText = "Hide";
     }
   }
 
