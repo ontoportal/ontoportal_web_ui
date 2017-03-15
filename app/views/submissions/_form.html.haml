@@ -558,19 +558,22 @@
   }
 
   /**
-   * To add a new input when btn clicked. Using the given attribute to get elements id
+   * To add a new value to selectDropdown when btn clicked
    */
   function addValueToSelect(attr)
   {
     var newOption = $('#add_' + attr).val();
-    var options = jQuery('#select_' + attr).val();
+    var selectedOptions = jQuery('#select_' + attr).val();
     jQuery('#select_' + attr).append(jQuery('<option>', {
       value: newOption,
       text: newOption
     }));
-    options.push(newOption);
-    console.log(options);
-    jQuery('#select_' + attr).val(options)
+    if (selectedOptions.constructor === Array) {
+      selectedOptions.push(newOption);
+    } else {
+      selectedOptions = newOption;
+    }
+    jQuery('#select_' + attr).val(selectedOptions)
     jQuery('#select_' + attr).trigger("liszt:updated");
   }
 
