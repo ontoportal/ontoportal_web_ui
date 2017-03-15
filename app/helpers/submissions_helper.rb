@@ -32,14 +32,22 @@ module SubmissionsHelper
     elsif attr["display"].eql?("isOntology")
       # TODO: avant on concatene les ontos qui sont en dehors du site;, avec celle du site  ?
       if attr["enforce"].include?("list")
-        select_tag "submission[#{attr_label}][]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])), :multiple => 'true',
-                   "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 433px;", :id => attr_label, :class => "selectOntology"
+        input_html << select_tag("submission[#{attr_label}][]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])), :multiple => 'true',
+            "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 433px;", :id => "select_#{attr["attribute"]}", :class => "selectOntology")
+
       else
-        select_tag "submission[#{attr_label}]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])),
-                   :style => "margin-bottom: 15px; width: 433px;", :id => attr_label, :class => "selectOntology", :include_blank => true
+        input_html << select_tag("submission[#{attr_label}]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])),
+                   :style => "margin-bottom: 15px; width: 433px;", :id => attr_label, :class => "selectOntology", :include_blank => true)
       end
       # Faire un petit bouton + qui ouvre un champ texte pour ajouter une nouvelle valeur à la liste
       # Ou ajouter un element dans le DOM (dans les options)
+
+      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil)
+
+      input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;",
+                               :type => "button", :class => "btn btn-info", :onclick => "addValueToSelect('#{attr["attribute"]}')")
+
+      return input_html;
 
     elsif attr["enforce"].include?("uri")
       if @submission.send(attr["attribute"]).nil?
