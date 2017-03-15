@@ -29,8 +29,7 @@ module SubmissionsHelper
       end
       text_field :submission, attr["attribute"].to_s.to_sym, :class => "datepicker", value: "#{date_value}"
 
-    elsif attr["display"].eql("isOntology")
-
+    elsif attr["display"].eql?("isOntology")
       # TODO: avant on concatene les ontos qui sont en dehors du site;, avec celle du site  ?
       if attr["enforce"].include?("list")
         select_tag "#{attr_label}[]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])), :multiple => 'true',
