@@ -553,7 +553,7 @@
   function addInput(attr, inputType)
   {
     var container = document.createElement("div");
-    container.innerHTML = '<input type="' + inputType + '" name="added' + attr + '[]" id="added' + attr + '" style="margin-bottom: 0.3em;"><br>';
+    container.innerHTML = '<input type="' + inputType + '" name="submission[' + attr + '][]" id="submission_' + attr + '" style="margin-bottom: 0.3em;"><br>';
     document.getElementById(attr + 'Div').appendChild(container);
   }
 
