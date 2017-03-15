@@ -32,7 +32,7 @@ module SubmissionsHelper
     elsif attr["display"].eql?("isOntology")
       # TODO: avant on concatene les ontos qui sont en dehors du site;, avec celle du site  ?
       if attr["enforce"].include?("list")
-        select_tag "#{attr_label}[]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])), :multiple => 'true',
+        select_tag "submission[#{attr_label}][]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])), :multiple => 'true',
                    "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 433px;", :id => attr_label, :class => "selectOntology"
       else
         select_tag "submission[#{attr_label}]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])),
