@@ -41,11 +41,10 @@ module SubmissionsHelper
           end
         end
       else
-        puts "olala #{metadata_values.to_s}"
+
         if !select_values.flatten.include?(metadata_values)
           select_values << metadata_values
         end
-        puts select_values.to_s
       end
 
       if attr["enforce"].include?("list")
@@ -57,8 +56,9 @@ module SubmissionsHelper
                    :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :include_blank => true)
       end
       # Button and field to add new value (not in the select)
-      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;")
-      input_html << button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 1em;margin-top: 1em;",
+      input_html << tag(:br)
+      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;")
+      input_html << button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;",
                                :type => "button", :class => "btn btn-info", :onclick => "addValueToSelect('#{attr["attribute"]}')")
 
       return input_html;

@@ -483,8 +483,10 @@
           %div{:class => "panel-body"}
             - for attr in @metadata
               - if attr["display"].eql?("relations") || attr["display"].eql?("isOntology")
-                = generate_attribute_label(attr["attribute"])
-                = raw generate_attribute_input(attr["attribute"])
+                %div{:class => "col-md-3"}
+                  = generate_attribute_label(attr["attribute"])
+                %div{:class => "col-md-9"}
+                  = raw generate_attribute_input(attr["attribute"])
                 %br
 
     %div{:class => "panel panel-primary"}
@@ -611,6 +613,6 @@
     });
     // only way to change select width... Lib poorly written.
     jQuery(".chzn-container").css("width", "auto");
-    jQuery(".chzn-container").css("min-width", "20em");
+    jQuery(".chzn-container").css("min-width", "30em");
     jQuery("input.default").css("width", "100%");
   });
