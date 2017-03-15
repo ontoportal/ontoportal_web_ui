@@ -35,8 +35,8 @@ module SubmissionsHelper
         select_tag "#{attr_label}[]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])), :multiple => 'true',
                    "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 433px;", :id => attr_label, :class => "selectOntology"
       else
-        select_tag "#{attr_label}[]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])), "data-placeholder".to_sym => "Select ontologies",
-                   :style => "margin-bottom: 15px; width: 433px;", :id => attr_label, :class => "selectOntology"
+        select_tag "submission[#{attr_label}]", options_for_select(@ontologies_for_select, @submission.send(attr["attribute"])),
+                   :style => "margin-bottom: 15px; width: 433px;", :id => attr_label, :class => "selectOntology", :include_blank => true
       end
       # Faire un petit bouton + qui ouvre un champ texte pour ajouter une nouvelle valeur à la liste
       # Ou ajouter un element dans le DOM (dans les options)
