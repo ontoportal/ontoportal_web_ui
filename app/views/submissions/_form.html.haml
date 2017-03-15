@@ -319,19 +319,19 @@
               = text_field :submission, :ontologyToolText, :style => 'margin-top:7px;', value: @submission.usedOntologyEngineeringTool
 
         %div{:class => "row", :style => "text-align: center;"}
-          %div{:class => "col-md-3"}
-            %button#usageBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('usage')"} Define usage
+          %div{:class => "col-md-3 descriptionBtn"}
+            %button#usageBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('usage', 'description')"} Define usage
 
-          %div{:class => "col-md-3"}
-            %button#methodologyBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('methodology')"} Add methodology informations
+          %div{:class => "col-md-3 descriptionBtn"}
+            %button#methodologyBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('methodology', 'description')"} Add methodology informations
 
-          %div{:class => "col-md-3"}
-            %button#linksBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('links')"} Add links
+          %div{:class => "col-md-3 descriptionBtn"}
+            %button#linksBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('links', 'description')"} Add links
 
-          %div{:class => "col-md-3"}
-            %button#imagesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('images')"} Add images
+          %div{:class => "col-md-3 descriptionBtn"}
+            %button#imagesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('images', 'description')"} Add images
 
-        %div#linksDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+        %div#linksDiv{:class => "panel panel-info descriptionPanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
             %h3{:class => "panel-title"} Add links
           %div{:class => "panel-body"}
@@ -341,7 +341,7 @@
                 = raw generate_attribute_input(attr["attribute"])
                 %br
 
-        %div#methodologyDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+        %div#methodologyDiv{:class => "panel panel-info descriptionPanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
             %h3{:class => "panel-title"} Methodology informations
           %div{:class => "panel-body"}
@@ -351,7 +351,7 @@
                 = raw generate_attribute_input(attr["attribute"])
                 %br
 
-        %div#usageDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+        %div#usageDiv{:class => "panel panel-info descriptionPanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
             %h3{:class => "panel-title"} Define usage
           %div{:class => "panel-body"}
@@ -361,7 +361,7 @@
                 = raw generate_attribute_input(attr["attribute"])
                 %br
 
-        %div#imagesDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+        %div#imagesDiv{:class => "panel panel-info descriptionPanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
             %h3{:class => "panel-title"} Ontology images
           %div{:class => "panel-body"}
@@ -388,6 +388,7 @@
             = generate_attribute_label(attr["attribute"])
             = raw generate_attribute_input(attr["attribute"])
             %br
+
     %div{:class => "panel panel-primary"}
       %div{:class => "panel-heading"}
         %h3{:class => "panel-title"} Licenses
@@ -456,7 +457,7 @@
         %div{:style => "text-align: center;"}
           %button#communityBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community')"} More community metadata
 
-        %div#communityDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+        %div#communityDiv{:class => "panel panel-info metadataPanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
             %h3{:class => "panel-title"} More community metadata
           %div{:class => "panel-body"}
@@ -476,7 +477,7 @@
         %div{:style => "text-align: center;"}
           %button#relationsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('relations')"} Add relations
 
-        %div#relationsDiv{:class => "panel panel-info", :style => "margin-top: 2em;display: none;"}
+        %div#relationsDiv{:class => "panel panel-info metadataPanels", :style => "margin-top: 2em;display: none;"}
           %div{:class => "panel-heading"}
             %h3{:class => "panel-title"} Add more relations
           %div{:class => "panel-body"}
@@ -500,7 +501,7 @@
         %div{:style => "text-align: center;"}
           %button#contentBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('content')"} Add content metadata
 
-        %div#contentDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+        %div#contentDiv{:class => "panel panel-info metadataPanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
             %h3{:class => "panel-title"} Add more content informations
           %div{:class => "panel-body"}
@@ -559,13 +560,18 @@
   /**
    * To show/hide the simple metadata div
    */
-  function toggleDiv(divId)
+  function toggleDiv(divId, panelGroup = "none")
   {
     var e = document.getElementById(divId + "Div");
     if (e.style.display == 'block') {
       e.style.display = 'none';
       document.getElementById(divId + "Btn").classList.remove("active");
     } else {
+      if (panelGroup === "description") {
+        // if panel chosen isPart of description, close the others
+        jQuery(".descriptionPanels").css("display", "none");
+        jQuery(".descriptionBtn").removeClass("active");
+      }
       e.style.display = 'block';
       document.getElementById(divId + "Btn").classList.add("active");
     }
