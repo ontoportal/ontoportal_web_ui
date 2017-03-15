@@ -319,17 +319,17 @@
               = text_field :submission, :ontologyToolText, :style => 'margin-top:7px;', value: @submission.usedOntologyEngineeringTool
 
         %div{:class => "row", :style => "text-align: center;"}
-          %div{:class => "col-md-3 descriptionBtn"}
-            %button#usageBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('usage', 'description')"} Define usage
+          %div{:class => "col-md-3"}
+            %button#usageBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('usage', 'description')"} Define usage
 
-          %div{:class => "col-md-3 descriptionBtn"}
-            %button#methodologyBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('methodology', 'description')"} Add methodology informations
+          %div{:class => "col-md-3"}
+            %button#methodologyBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('methodology', 'description')"} Add methodology informations
 
-          %div{:class => "col-md-3 descriptionBtn"}
-            %button#linksBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('links', 'description')"} Add links
+          %div{:class => "col-md-3"}
+            %button#linksBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('links', 'description')"} Add links
 
-          %div{:class => "col-md-3 descriptionBtn"}
-            %button#imagesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('images', 'description')"} Add images
+          %div{:class => "col-md-3"}
+            %button#imagesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('images', 'description')"} Add images
 
         %div#linksDiv{:class => "panel panel-info descriptionPanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
