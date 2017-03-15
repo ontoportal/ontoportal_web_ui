@@ -69,7 +69,7 @@ module SubmissionsHelper
       return input_html
 
     elsif attr["enforce"].include?("boolean")
-      select("submission", attr["attribute"].to_s, ["none", "true", "false"], { :selected => @submission.send(attr["attribute"])})
+      select("submission", attr["attribute"].to_s, ["none", "true", "false"], { :selected => @submission.send(attr["attribute"])}, {:class => "form-control"})
 
     else
       # If a simple text

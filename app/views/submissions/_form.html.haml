@@ -104,7 +104,7 @@
         %td
           - ont_formats = [ "OBO", "OWL", "UMLS", "SKOS" ].sort
           - selected = @submission.hasOntologyLanguage ? @submission.hasOntologyLanguage : "OWL"
-          = select("submission", "hasOntologyLanguage", ont_formats, { :selected => selected, :style => "width: 200px;", :required => true })
+          = select("submission", "hasOntologyLanguage", ont_formats, { :selected => selected, :style => "width: 200px;", :required => true}, {:class => "form-control"})
           #format_spacing
           %table#format_specific_options
             %tbody#owl_options.format_options
@@ -222,7 +222,7 @@
           %span.asterik *
           - selected_status = @submission.status ? @submission.status : "alpha"
           - status_options = ["alpha", "beta", "production", "retired"]
-          = select :submission, :status, status_options, { :selected => selected_status, :required => true }
+          = select :submission, :status, status_options, { :selected => selected_status, :required => true}, {:class => "form-control"}
 
         %div
           = generate_attribute_label("version")
@@ -231,7 +231,7 @@
         %div
           %div{:style => "width:50%; margin-bottom: 1em;"}
             = generate_attribute_label("hasOntologySyntax")
-            = select("submission", "hasOntologySyntax", [["None", "none"]].concat($ONTOLOGY_SYNTAXES.collect{ |k, v| [v,k] }), { :selected => @submission.hasOntologySyntax })
+            = select("submission", "hasOntologySyntax", [["None", "none"]].concat($ONTOLOGY_SYNTAXES.collect{ |k, v| [v,k] }), { :selected => @submission.hasOntologySyntax}, {:class => "form-control"})
           %div{:style => "float:right;width:50%;text-align:right;"}
             Properties taken from
             = link_to "W3C URIs for file format", "https://www.w3.org/ns/formats/", target: "_blank"
@@ -239,7 +239,7 @@
         %div
           %div{:style => "width:50%; margin-bottom: 1em;"}
             = generate_attribute_label("hasFormalityLevel")
-            = select("submission", "hasFormalityLevel", [["None", "none"]].concat($FORMALITY_LEVELS.collect{ |k, v| [v,k] }), { :selected => @submission.hasFormalityLevel })
+            = select("submission", "hasFormalityLevel", [["None", "none"]].concat($FORMALITY_LEVELS.collect{ |k, v| [v,k] }), { :selected => @submission.hasFormalityLevel}, {:class => "form-control"})
           %div{:style => "float:right;width:50%;text-align:right;"}
             Properties taken from
             = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
@@ -247,7 +247,7 @@
         %div
           %div{:style => "width:50%; margin-bottom: 1em;"}
             = generate_attribute_label("isOfType")
-            = select("submission", "isOfType", [["None", "none"]].concat($IS_OF_TYPE.collect{ |k, v| [v,k] }), { :selected => @submission.isOfType })
+            = select("submission", "isOfType", [["None", "none"]].concat($IS_OF_TYPE.collect{ |k, v| [v,k] }), { :selected => @submission.isOfType}, {:class => "form-control"})
 
         %div
           %div{:style => "width:50%;"}
@@ -309,13 +309,13 @@
           = generate_attribute_label("usedOntologyEngineeringTool")
           %div
             - if @submission.usedOntologyEngineeringTool.nil? || @submission.usedOntologyEngineeringTool.eql?("")
-              = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => "none" })
+              = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => "none"}, {:class => "form-control"})
               = text_field :submission, :ontologyToolText, :style => 'display:none;margin-top:7px;'
             - elsif $ONTOLOGY_TOOLS.include?(@submission.usedOntologyEngineeringTool)
-              = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => @submission.usedOntologyEngineeringTool })
+              = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => @submission.usedOntologyEngineeringTool}, {:class => "form-control"})
               = text_field :submission, :ontologyToolText, :style => 'display:none;margin-top:7px;'
             - else
-              = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => "other" })
+              = select("submission", "usedOntologyEngineeringTool", [["None", "none"]].concat($ONTOLOGY_TOOLS.collect{ |k, v| [v,k] }), { :selected => "other"}, {:class => "form-control"})
               = text_field :submission, :ontologyToolText, :style => 'margin-top:7px;', value: @submission.usedOntologyEngineeringTool
 
         %div{:class => "row", :style => "text-align: center;"}
@@ -404,13 +404,13 @@
           to choose your license
         %div
           - if @submission.hasLicense.nil? || @submission.hasLicense.eql?("")
-            = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "none", style: "margin-bottom: 1em;"})
+            = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "none", style: "margin-bottom: 1em;"}, {:class => "form-control"})
             = text_field :submission, :licenseText, :style => 'display:none;'
           - elsif $LICENSES.include?(@submission.hasLicense)
-            = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => @submission.hasLicense, style: "margin-bottom: 1em;"})
+            = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => @submission.hasLicense, style: "margin-bottom: 1em;"}, {:class => "form-control"})
             = text_field :submission, :licenseText, :style => 'display:none;'
           - else
-            = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "other", style: "margin-bottom: 1em;"})
+            = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "other", style: "margin-bottom: 1em;"}, {:class => "form-control"})
             = text_field :submission, :licenseText, value: @submission.hasLicense
 
         %div
