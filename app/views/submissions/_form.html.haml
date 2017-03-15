@@ -323,8 +323,9 @@
             %button#descriptionBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description', 'Add description metadata')"} Add description metadata
           %div{:class => "col-md-4"}
             %button#imagesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('images', 'Add images')"} Add images
+
           %div{:class => "col-md-4"}
-            %button#accrualBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('images', 'Add images')"} Add images
+            %button#accrualBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('accrual', 'Add accrual informations')"} Add accrual informations
 
         %div#descriptionDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
@@ -348,7 +349,7 @@
 
         %div#accrualDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
-            %h3{:class => "panel-title"} Ontology images
+            %h3{:class => "panel-title"} Accrual informations
           %div{:class => "panel-body"}
             - for attr in @metadata
               - if attr["display"].eql? "accrual"
