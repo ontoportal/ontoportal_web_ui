@@ -5,6 +5,14 @@ html {
   color:#000;
   background:#338D0C;
 }
+
+
+
+form .form-control {
+  display: inline;
+  width: auto;
+}
+
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, input, textarea, p, blockquote, th, td {
   margin:0;
   padding:0;
@@ -631,6 +639,12 @@ table.align-right th:nth-child(2) {
 #editMetadataDiv input[type="text"], input[type="url"], textarea {
   width: 90%;
   max-width: 500px;
+  margin-bottom: 5px;
+}
+
+.metadataInput {
+  width: 100%;
+  margin-bottom: 1em;
 }
 
 .contact {
@@ -2122,6 +2136,7 @@ a.link_button > span.ui-button-text {
 
 div#semanticTypes_chzn.chzn-container input.default {
   font-style: oblique !important;
+  height:100%;
 }
 
 div#semanticTypes_chzn.chzn-container-active input.default {
@@ -2131,6 +2146,16 @@ div#semanticTypes_chzn.chzn-container-active input.default {
 div#annotations_filter, div#annotations_info {
   display: none;
 }
+
+div#ontology_ontologyId_chzn #search-field {
+  width: 100%;
+  height:100%;
+}
+        
+div#ontology_ontologyId_chzny {
+  height:2em;
+}
+ 
 
 .result_count {
   font-weight: bold;
