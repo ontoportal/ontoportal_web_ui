@@ -319,28 +319,42 @@
               = text_field :submission, :ontologyToolText, :style => 'margin-top:7px;', value: @submission.usedOntologyEngineeringTool
 
         %div{:class => "row", :style => "text-align: center;"}
-          %div{:class => "col-md-6"}
+          %div{:class => "col-md-4"}
             %button#descriptionBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('description', 'Add description metadata')"} Add description metadata
-          %div{:class => "col-md-6"}
+          %div{:class => "col-md-4"}
             %button#imagesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('images', 'Add images')"} Add images
+          %div{:class => "col-md-4"}
+            %button#accrualBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('images', 'Add images')"} Add images
 
-        %div#descriptionDiv{:style => "margin-top: 2em;display: none;"}
-          - for attr in @metadata
-            - if attr["display"].eql? "description"
-              = generate_attribute_label(attr["attribute"])
-              = raw generate_attribute_input(attr["attribute"])
-              %br
+        %div#descriptionDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} More description
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "description"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
 
         %div#imagesDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
             %h3{:class => "panel-title"} Ontology images
           %div{:class => "panel-body"}
-            %div
-              = generate_attribute_label("depiction")
-              = raw generate_attribute_input("depiction")
-            %div
-              = generate_attribute_label("logo")
-              = raw generate_attribute_input("logo")
+            - for attr in @metadata
+              - if attr["display"].eql? "images"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
+
+        %div#accrualDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} Ontology images
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "accrual"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
 
     %div{:class => "panel panel-primary"}
       %div{:class => "panel-heading"}
@@ -427,12 +441,15 @@
         %div{:style => "text-align: center;"}
           %button#communityBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community', 'More community metadata')"} More community metadata
 
-        %div#communityDiv{:style => "margin-top: 2em;display: none;"}
-          - for attr in @metadata
-            - if attr["display"].eql? "community"
-              = generate_attribute_label(attr["attribute"])
-              = raw generate_attribute_input(attr["attribute"])
-              %br
+        %div#communityDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} More community metadata
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "community"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
 
     %div{:class => "panel panel-primary"}
       %div{:class => "panel-heading"}
@@ -444,12 +461,15 @@
         %div{:style => "text-align: center;"}
           %button#relationsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('relations', 'Add relations')"} Add relations
 
-        %div#relationsDiv{:style => "margin-top: 2em;display: none;"}
-          - for attr in @metadata
-            - if attr["display"].eql?("relations") || attr["display"].eql?("isOntology")
-              = generate_attribute_label(attr["attribute"])
-              = raw generate_attribute_input(attr["attribute"])
-              %br
+        %div#relationsDiv{:class => "panel panel-info", :style => "margin-top: 2em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} Add more relations
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql?("relations") || attr["display"].eql?("isOntology")
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
 
     %div{:class => "panel panel-primary"}
       %div{:class => "panel-heading"}
@@ -465,12 +485,15 @@
         %div{:style => "text-align: center;"}
           %button#contentBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('content', 'Add content metadata')"} Add content metadata
 
-        %div#contentDiv{:style => "margin-top: 2em;display: none;"}
-          - for attr in @metadata
-            - if attr["display"].eql? "content"
-              = generate_attribute_label(attr["attribute"])
-              = raw generate_attribute_input(attr["attribute"])
-              %br
+        %div#contentDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} Add more content informations
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "content"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
 
 
   %div{:style => "text-align: center;"}
