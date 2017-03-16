@@ -14,6 +14,7 @@ module SubmissionsHelper
     if (attr["helpText"] != nil)
       #label_html << help_tooltip(attr["helpText"], {"data-toggle" => "tooltip", "data-placement" => "right", :id => "tooltip#{attr["attribute"]}", :onclick => "toggleTooltip(this.id)"}).html_safe
       label_html << help_tooltip(attr["helpText"], {:id => "tooltip#{attr["attribute"]}", :onclick => "toggleTooltip(this.id)", :style => "opacity: inherit; display: inline;"}).html_safe
+      #label_html << help_tooltip("ceci est un test &lt;a href=&quot;http://google.com&quot;&gt;yooo&lt;/a&gt;", {:id => "tooltip#{attr["attribute"]}", :onclick => "toggleTooltip(this.id)", :style => "opacity: inherit; display: inline;"}).html_safe
     end
     return label_html
   end

@@ -601,12 +601,6 @@
     }
   }
 
-  function toggleTooltip(tooltipElem)
-  {
-    console.log(tooltipElem);
-    jQuery("#" + tooltipElem).tooltip('open');
-  }
-
   /**
    * For Multiple select
    */
@@ -620,7 +614,13 @@
     });
 
     $('.tooltip').tooltipster({
-      theme: 'tooltipster-light'
+      interactive: true,
+      position: "right",
+      contentAsHTML: true,
+      animation: 'fade',
+      delay: 200,
+      theme: 'tooltipster-light',
+      trigger: 'hover'
     });
 
     /*$('#helpuri').on({
