@@ -5,16 +5,20 @@ module SubmissionsHelper
     attr = @metadata.select{ |attr_hash| attr_hash["attribute"].to_s.eql?(attr_label) }.first
     label_html = ''.html_safe
 
-    if !attr["label"].nil?
-      label_html << label_tag("submission_#{attr_label}", attr["label"])
+    if !attr["namespace"].nil?
+      fullProperty = "#{attr["namespace"]}:#{attr["attribute"]}"
     else
-      label_html << label_tag("submission_#{attr_label}", attr_label.underscore.humanize)
+      fullProperty = "bioportal:#{attr["attribute"]}"
+    end
+
+    if !attr["label"].nil?
+      label_html << label_tag("submission_#{attr_label}", attr["label"], title: fullProperty)
+    else
+      label_html << label_tag("submission_#{attr_label}", attr_label.underscore.humanize, title: fullProperty)
     end
 
     if (attr["helpText"] != nil)
-      #label_html << help_tooltip(attr["helpText"], {"data-toggle" => "tooltip", "data-placement" => "right", :id => "tooltip#{attr["attribute"]}", :onclick => "toggleTooltip(this.id)"}).html_safe
-      label_html << help_tooltip(attr["helpText"], {:id => "tooltip#{attr["attribute"]}", :onclick => "toggleTooltip(this.id)", :style => "opacity: inherit; display: inline;"}).html_safe
-      #label_html << help_tooltip("ceci est un test &lt;a href=&quot;http://google.com&quot;&gt;yooo&lt;/a&gt;", {:id => "tooltip#{attr["attribute"]}", :onclick => "toggleTooltip(this.id)", :style => "opacity: inherit; display: inline;"}).html_safe
+      label_html << help_tooltip(attr["helpText"], {:id => "tooltip#{attr["attribute"]}", :style => "opacity: inherit; display: inline;position: initial;margin-right: 1em;"}).html_safe
     end
     return label_html
   end
