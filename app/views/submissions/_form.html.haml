@@ -215,7 +215,6 @@
 
         %div
           = generate_attribute_label("URI")
-          = help_icon("#", {"data-toggle" => "tooltip", "data-placement" => "right", :title => "test"}).html_safe
           = raw generate_attribute_input("URI")
 
         %div
@@ -602,6 +601,12 @@
     }
   }
 
+  function toggleTooltip(tooltipElem)
+  {
+    console.log(tooltipElem);
+    jQuery("#" + tooltipElem).tooltip('open');
+  }
+
   /**
    * For Multiple select
    */
@@ -612,6 +617,16 @@
     });
     jQuery(".selectOntology").chosen({
       search_contains: true
+    });
+
+    $('#helpuri').on({
+      "click": function() {
+        $(this).tooltip({ items: "#helpuri", content: "Displaying on click"});
+        $(this).tooltip("open");
+      },
+      "mouseout": function() {
+         $(this).tooltip("disable");
+      }
     });
 
     jQuery('[data-toggle="tooltip"]').tooltip();

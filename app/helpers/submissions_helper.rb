@@ -3,12 +3,19 @@ module SubmissionsHelper
   def generate_attribute_label(attr_label)
     # Get the attribute hash corresponding to the given attribute
     attr = @metadata.select{ |attr_hash| attr_hash["attribute"].to_s.eql?(attr_label) }.first
+    label_html = ''.html_safe
 
     if !attr["label"].nil?
-      label_tag("submission_#{attr_label}", attr["label"])
+      label_html << label_tag("submission_#{attr_label}", attr["label"])
     else
-      label_tag("submission_#{attr_label}", attr_label.underscore.humanize)
+      label_html << label_tag("submission_#{attr_label}", attr_label.underscore.humanize)
     end
+
+    if (attr["helpText"] != nil)
+      label_html << help_tooltip(attr["helpText"], {"data-toggle" => "tooltip", "data-placement" => "right", :id => "tooltip#{attr["attribute"]}",
+                                                    :onclick => "toggleTooltip(this.id)"}).html_safe
+    end
+    return label_html
   end
 
   # Generate the HTML input for every attributes
