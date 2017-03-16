@@ -28,12 +28,15 @@
         jQuery('#mapping_load').hide();
         jQuery("#mapping_count_table").effect("highlight", { color: "#F5F5F5" }, 500);
         jQuery("#mapping_count_table").dataTable({
-          "bPaginate": false,
-          "bInfo": false,
-          "bFilter": false,
-          "aoData": [
+          "paging": false,
+          "info": false,
+          "searching": false,
+          "columns": [
             null,
-            { "sType": "formatted-num", "asSorting": [ "desc", "asc"] }
+            { 
+              "type": "num-fmt",
+              "orderSequence": [ "desc", "asc" ]
+            }
           ]
         });
       });
