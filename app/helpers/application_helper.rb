@@ -222,7 +222,7 @@ module ApplicationHelper
     attribs = []
     html_attribs.each {|k,v| attribs << "#{k.to_s}='#{v}'"}
     return <<-BLOCK
-          <button type="button" class='pop_window help_link' #{attribs.join(" ")}>
+          <button type="button" class='pop_window help_link tooltip' #{attribs.join(" ")}>
             <span class="pop_window ui-icon ui-icon-help"></span>
           </button>
     BLOCK

@@ -619,7 +619,11 @@
       search_contains: true
     });
 
-    $('#helpuri').on({
+    $('.tooltip').tooltipster({
+      theme: 'tooltipster-light'
+    });
+
+    /*$('#helpuri').on({
       "click": function() {
         $(this).tooltip({ items: "#helpuri", content: "Displaying on click"});
         $(this).tooltip("open");
@@ -629,7 +633,7 @@
       }
     });
 
-    jQuery('[data-toggle="tooltip"]').tooltip();
+    jQuery('[data-toggle="tooltip"]').tooltip();*/
   });
 
   $("#id_of_textbox").keyup(function(event){
