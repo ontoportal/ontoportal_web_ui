@@ -232,6 +232,10 @@
           = select :submission, :status, status_options, { :selected => selected_status, :required => true}, {:class => "form-control"}
 
         %div
+          = generate_attribute_label("deprecated")
+          = raw generate_attribute_input("deprecated")
+
+        %div
           = generate_attribute_label("version")
           = raw generate_attribute_input("version")
 
@@ -294,11 +298,11 @@
             %div
               = generate_attribute_label("abstract")
               %br
-              = text_area :submission, :abstract, rows: 3, value: @submission.abstract
+              = raw generate_attribute_input("abstract")
             %div
               = generate_attribute_label("notes")
               %br
-              = text_area :submission, :notes, rows: 3, value: @submission.abstract
+              = raw generate_attribute_input("notes")
             %div
               = generate_attribute_label("keywords")
               = raw generate_attribute_input("keywords")
@@ -330,7 +334,7 @@
             %button#usageBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('usage', 'description')"} Define usage
 
           %div{:class => "col-md-3"}
-            %button#methodologyBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('methodology', 'description')"} Methodology informations
+            %button#methodologyBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('methodology', 'description')"} More methodology information
 
           %div{:class => "col-md-3"}
             %button#linksBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('links', 'description')"} More links
@@ -350,7 +354,7 @@
 
         %div#methodologyDiv{:class => "panel panel-info descriptionPanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
-            %h3{:class => "panel-title"} Methodology informations
+            %h3{:class => "panel-title"} Methodology information
           %div{:class => "panel-body"}
             - for attr in @metadata
               - if attr["display"].eql? "methodology"

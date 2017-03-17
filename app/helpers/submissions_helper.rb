@@ -53,6 +53,9 @@ module SubmissionsHelper
       end
       text_field :submission, attr["attribute"].to_s.to_sym, :class => "datepicker", value: "#{date_value}"
 
+    elsif attr["enforce"].include?("textarea")
+      text_area :submission, attr["attribute"].to_s.to_sym, rows: 3, value: @submission.send(attr["attribute"])
+
     elsif attr["display"].eql?("isOntology")
       metadata_values = @submission.send(attr["attribute"])
       select_values = @ontologies_for_select.dup
