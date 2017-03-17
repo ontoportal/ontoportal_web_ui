@@ -56,7 +56,7 @@ module SubmissionsHelper
     elsif attr["enforce"].include?("textarea")
       text_area :submission, attr["attribute"].to_s.to_sym, rows: 3, value: @submission.send(attr["attribute"])
 
-    elsif attr["display"].eql?("isOntology")
+    elsif attr["enforce"].include?("isOntology")
       metadata_values = @submission.send(attr["attribute"])
       select_values = @ontologies_for_select.dup
       # Add in the select ontologies that are not in the portal but are in the values

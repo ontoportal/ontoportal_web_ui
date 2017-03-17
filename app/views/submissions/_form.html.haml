@@ -534,7 +534,7 @@
             %h3{:class => "panel-title"} More relations
           %div{:class => "panel-body"}
             - for attr in @metadata
-              - if attr["display"].eql?("relations") || attr["display"].eql?("isOntology")
+              - if attr["display"].eql?("relations")
                 %div{:class => "row"}
                   %div{:class => "col-md-3"}
                     = generate_attribute_label(attr["attribute"])
