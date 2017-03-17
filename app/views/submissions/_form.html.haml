@@ -285,7 +285,7 @@
           = text_area :submission, :description, rows: 5, value: @submission.description, :required => true
 
         %div{:style => "text-align: center;"}
-          %button#detailsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('details')"} Add details
+          %button#detailsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('details')"} More details
 
         %div#detailsDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
@@ -333,14 +333,14 @@
             %button#methodologyBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('methodology', 'description')"} Methodology informations
 
           %div{:class => "col-md-3"}
-            %button#linksBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('links', 'description')"} Add links
+            %button#linksBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('links', 'description')"} More links
 
           %div{:class => "col-md-3"}
             %button#imagesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('images', 'description')"} Add images
 
         %div#linksDiv{:class => "panel panel-info descriptionPanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
-            %h3{:class => "panel-title"} Add links
+            %h3{:class => "panel-title"} More links
           %div{:class => "panel-body"}
             - for attr in @metadata
               - if attr["display"].eql? "links"
@@ -482,11 +482,11 @@
           = generate_attribute_label("useImports")
           = raw generate_attribute_input("useImports")
         %div{:style => "text-align: center;"}
-          %button#relationsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('relations')"} Add relations
+          %button#relationsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('relations')"} More relations
 
         %div#relationsDiv{:class => "panel panel-info metadataPanels", :style => "margin-top: 2em;display: none;"}
           %div{:class => "panel-heading"}
-            %h3{:class => "panel-title"} Add more relations
+            %h3{:class => "panel-title"} More relations
           %div{:class => "panel-body"}
             - for attr in @metadata
               - if attr["display"].eql?("relations") || attr["display"].eql?("isOntology")
@@ -509,11 +509,11 @@
           = raw generate_attribute_input("preferredNamespaceUri")
 
         %div{:style => "text-align: center;"}
-          %button#contentBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('content')"} Add content metadata
+          %button#contentBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('content')"} More content metadata
 
         %div#contentDiv{:class => "panel panel-info metadataPanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
-            %h3{:class => "panel-title"} Add more content informations
+            %h3{:class => "panel-title"} More content informations
           %div{:class => "panel-body"}
             - for attr in @metadata
               - if attr["display"].eql? "content"
