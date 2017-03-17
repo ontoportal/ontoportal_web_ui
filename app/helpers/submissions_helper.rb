@@ -85,8 +85,9 @@ module SubmissionsHelper
         input_html << select("submission", attr["attribute"], select_values, { :selected => metadata_values}, {:class => "form-control", :id => "select_#{attr["attribute"]}"})
       end
       # Button and field to add new value (not in the select)
-      input_html << tag(:br)
-      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em;", :placeholder => "Provide the value")
+      # TODO: hide this. On affiche si other est sélectionné
+
+      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em;", :placeholder => "Or provide the value")
       input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;",
                                :type => "button", :class => "btn btn-info btn-sm", :onclick => "addValueToSelect('#{attr["attribute"]}')")
 
