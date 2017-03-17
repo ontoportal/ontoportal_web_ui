@@ -92,8 +92,15 @@
 
 %div
   %div#editMetadataDiv{:style => "width: 50%;margin: 3em auto;"}
-    %span.asterik{:style => "float:right;"} * fields are required
     %h1{:style => "text-align: center;"} #{title_text}
+    %p{:style => "text-align: center;"}
+      More informations about ontologies metadata in
+      %a{:href => "https://github.com/agroportal/documentation/wiki/Ontology-metadata", :target => "_blank"} the Wiki
+    %div{:style => "text-align: center;"}
+      %span.asterik * fields are required
+      %br
+      %span.extractedAsterix * metadata that can be extracted from the ontology
+
     = hidden_field :submission, :ontology, value: @ontology.id
     %table#new_ontology.form{style: "min-width: 800px;"}
 
