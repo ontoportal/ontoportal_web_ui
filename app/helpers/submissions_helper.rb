@@ -92,6 +92,7 @@ module SubmissionsHelper
       input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;display: none;vertical-align: baseline;",
                                :type => "button", :class => "btn btn-info btn-sm", :onclick => "addValueToSelect('#{attr["attribute"]}')")
 
+      # To show/hide textbox when other option is selected or not
       input_html << javascript_tag("$(function() {
         $('#select_#{attr["attribute"]}').change(function() {
           if ($('#select_#{attr["attribute"]}').val() == 'other') {
@@ -104,6 +105,13 @@ module SubmissionsHelper
           }
         });
       })")
+
+      # To link text field with button (allowing enter in text field to submit button)
+      input_html << javascript_tag("$('#add_#{attr["attribute"]}').keyup(function(event){
+        if(event.keyCode == 13){
+            addValueToSelect('#{attr["attribute"]}')
+        }
+        });")
 
       return input_html
 
@@ -135,9 +143,15 @@ module SubmissionsHelper
       end
       # Button and field to add new value (not in the select)
       input_html << tag(:br)
-      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em;", :placeholder => "Ontology outside of the Portal")
+      input_html << text_field_tag("add_#{attr["attribute"]}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em;", :placeholder => "Ontology outside of the Portal")
       input_html << button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;",
                                :type => "button", :class => "btn btn-info btn-sm", :onclick => "addOntoToSelect('#{attr["attribute"]}')")
+
+      input_html << javascript_tag("$('#add_#{attr["attribute"]}').keyup(function(event){
+        if(event.keyCode == 13){
+            addOntoToSelect('#{attr["attribute"]}')
+        }
+        });")
 
       return input_html
 

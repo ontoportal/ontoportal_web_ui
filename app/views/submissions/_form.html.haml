@@ -699,12 +699,3 @@
       trigger: 'hover'
     });
   });
-
-  /**
-   * To link text field with button (allowing enter in text field to submit button)
-   */
-  $("#id_of_textbox").keyup(function(event){
-    if(event.keyCode == 13){
-        $("#id_of_button").click();
-    }
-  });
