@@ -143,13 +143,19 @@ module SubmissionsHelper
       end
       # Button and field to add new value (not in the select)
       input_html << tag(:br)
-      input_html << text_field_tag("add_#{attr["attribute"]}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em;", :placeholder => "Ontology outside of the Portal")
+
+      # TODO: use keydown instead of add javascript_tag ?
+      input_html << text_field_tag("add_#{attr["attribute"]}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em;",
+                                   :placeholder => "Ontology outside of the Portal", :onkeydown => "if (event.keyCode == 13) { addOntoToSelect('#{attr["attribute"]}'); return false;}")
+
       input_html << button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;",
                                :type => "button", :class => "btn btn-info btn-sm", :onclick => "addOntoToSelect('#{attr["attribute"]}')")
 
+      # Add the typed onto when hit enter
+      # TODO: don't work properly atm
       input_html << javascript_tag("$('#add_#{attr["attribute"]}').keyup(function(event){
         if(event.keyCode == 13){
-            addOntoToSelect('#{attr["attribute"]}')
+            addOntoToSelect('#{attr["attribute"]}');
         }
         });")
 
