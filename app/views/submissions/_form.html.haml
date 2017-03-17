@@ -398,14 +398,22 @@
             = generate_attribute_label("modificationDate")
           %div.col-md-9
             = raw generate_attribute_input("modificationDate")
-        - for attr in @metadata
-          - if attr["display"].eql? "dates"
-            %div.row
-              %div.col-md-3
-                = generate_attribute_label(attr["attribute"])
-              %div.col-md-9
-                = raw generate_attribute_input(attr["attribute"])
-            %br
+
+        %div{:style => "text-align: center;"}
+          %button#datesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('dates')"} More dates
+
+        %div#datesDiv{:class => "panel panel-info metadataPanels", :style => "margin-top: 2em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} More dates
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "dates"
+                %div.row
+                  %div.col-md-3
+                    = generate_attribute_label(attr["attribute"])
+                  %div.col-md-9
+                    = raw generate_attribute_input(attr["attribute"])
+                %br
 
     %div{:class => "panel panel-primary"}
       %div{:class => "panel-heading"}
@@ -492,6 +500,7 @@
         %div
           = generate_attribute_label("useImports")
           = raw generate_attribute_input("useImports")
+
         %div{:style => "text-align: center;"}
           %button#relationsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('relations')"} More relations
 
