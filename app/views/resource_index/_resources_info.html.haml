@@ -18,13 +18,13 @@
 :javascript
   jQuery(document).ready(function() {
     jQuery("#resources_desc").dataTable({
-      "bPaginate": false,
-      "bFilter": false,
-      "aoData": [
-        { "sType": "html" },
-        { "bSortable": false },
-        { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] },
-        { "asSorting": [ "desc", "asc" ] }
+      "paging": false,
+      "searching": false,
+      "columns": [
+        { "type": "html" },
+        { "orderable": false },
+        { "type": "num-fmt", "orderSequence": [ "desc", "asc"] },
+        { "orderSequence": [ "desc", "asc" ] }
       ]
     });
   });
