@@ -35,8 +35,8 @@ module SubmissionsHelper
     return label_html
   end
 
-  # Generate the HTML input for every attributes
-  def generate_attribute_input(attr_label)
+  # Generate the HTML input for every attributes.
+  def generate_attribute_input(attr_label, select_options = nil)
     input_html = ''.html_safe
 
     # Get the attribute hash corresponding to the given attribute
@@ -51,10 +51,47 @@ module SubmissionsHelper
       else
         date_value = DateTime.parse(@submission.send(attr["attribute"])).to_date.to_s
       end
-      text_field :submission, attr["attribute"].to_s.to_sym, :class => "datepicker", value: "#{date_value}"
+      text_field(:submission, attr["attribute"].to_s.to_sym, :class => "datepicker", value: "#{date_value}")
 
     elsif attr["enforce"].include?("textarea")
-      text_area :submission, attr["attribute"].to_s.to_sym, rows: 3, value: @submission.send(attr["attribute"])
+      text_area(:submission, attr["attribute"].to_s.to_sym, rows: 3, value: @submission.send(attr["attribute"]))
+
+    # Create select dropdown when asked
+    # TODO: elsif attr["enforce"].include?("selectOther")
+    elsif attr["attribute"].eql?("hasOntologySyntax")
+      metadata_values = @submission.send(attr["attribute"])
+      select_values = select_options.collect{ |k, v| [v,k]}
+      # Add in the select ontologies that are not in the portal but are in the values
+      if metadata_values.kind_of?(Array)
+        metadata_values.map do |metadata|
+          if !select_values.flatten.include?(metadata)
+            select_values << metadata
+          end
+        end
+      else
+        if !select_values.flatten.include?(metadata_values)
+          select_values << metadata_values
+        end
+      end
+      select_values << ["None", "none"]
+
+      if attr["enforce"].include?("list")
+        input_html << select_tag("submission[#{attr_label}][]", options_for_select(select_values, metadata_values), :multiple => 'true',
+                                 "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology")
+
+      else
+        #input_html << select_tag("submission[#{attr_label}]", options_for_select(select_values, metadata_values), "data-placeholder".to_sym => "Select ontology", :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :include_blank => true)
+
+        input_html << select("submission", attr["attribute"], select_values, { :selected => metadata_values}, {:class => "form-control", :id => "select_#{attr["attribute"]}"})
+      end
+      # Button and field to add new value (not in the select)
+      input_html << tag(:br)
+      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em;", :placeholder => "Provide the value")
+      input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;",
+                               :type => "button", :class => "btn btn-info btn-sm", :onclick => "addValueToSelect('#{attr["attribute"]}')")
+
+      return input_html
+
 
     elsif attr["enforce"].include?("isOntology")
       metadata_values = @submission.send(attr["attribute"])
@@ -85,9 +122,9 @@ module SubmissionsHelper
       input_html << tag(:br)
       input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em;", :placeholder => "Ontology outside of the Portal")
       input_html << button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;",
-                               :type => "button", :class => "btn btn-info btn-sm", :onclick => "addValueToSelect('#{attr["attribute"]}')")
+                               :type => "button", :class => "btn btn-info btn-sm", :onclick => "addOntoToSelect('#{attr["attribute"]}')")
 
-      return input_html;
+      return input_html
 
     elsif attr["enforce"].include?("uri")
       if @submission.send(attr["attribute"]).nil?

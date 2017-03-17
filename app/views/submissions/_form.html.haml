@@ -242,7 +242,7 @@
         %div
           %div{:style => "width:50%; margin-bottom: 1em;"}
             = generate_attribute_label("hasOntologySyntax")
-            = select("submission", "hasOntologySyntax", [["None", "none"]].concat($ONTOLOGY_SYNTAXES.collect{ |k, v| [v,k] }), { :selected => @submission.hasOntologySyntax}, {:class => "form-control"})
+            = generate_attribute_input("hasOntologySyntax", $ONTOLOGY_SYNTAXES)
           %div{:style => "float:right;width:50%;text-align:right;"}
             Properties taken from
             = link_to "W3C URIs for file format", "https://www.w3.org/ns/formats/", target: "_blank"
@@ -615,20 +615,44 @@
    */
   function addValueToSelect(attr)
   {
-    var newOption = jQuery('#add_' + attr).val();
-    var selectedOptions = jQuery('#select_' + attr).val();
-    jQuery('#select_' + attr).append(jQuery('<option>', {
-      value: newOption,
-      text: newOption
-    }));
-    if (selectedOptions.constructor === Array) {
-      selectedOptions.push(newOption);
-    } else {
-      selectedOptions = newOption;
+    if(jQuery('#add_' + attr).val()) {
+      var newOption = jQuery('#add_' + attr).val();
+      var selectedOptions = jQuery('#select_' + attr).val();
+      jQuery('#select_' + attr).append(jQuery('<option>', {
+        value: newOption,
+        text: newOption
+      }));
+      if (selectedOptions.constructor === Array) {
+        selectedOptions.push(newOption);
+      } else {
+        selectedOptions = newOption;
+      }
+      jQuery('#select_' + attr).val(selectedOptions)
+      jQuery('#add_' + attr).val("");
     }
-    jQuery('#select_' + attr).val(selectedOptions)
-    jQuery('#select_' + attr).trigger("liszt:updated");
-    jQuery('#add_' + attr).val("");
+  }
+
+  /**
+   * To add a new value to selectDropdown when btn clicked
+   */
+  function addOntoToSelect(attr)
+  {
+    if(jQuery('#add_' + attr).val()) {
+      var newOption = jQuery('#add_' + attr).val();
+      var selectedOptions = jQuery('#select_' + attr).val();
+      jQuery('#select_' + attr).append(jQuery('<option>', {
+        value: newOption,
+        text: newOption
+      }));
+      if (selectedOptions.constructor === Array) {
+        selectedOptions.push(newOption);
+      } else {
+        selectedOptions = newOption;
+      }
+      jQuery('#select_' + attr).val(selectedOptions)
+      jQuery('#select_' + attr).trigger("liszt:updated");
+      jQuery('#add_' + attr).val("");
+    }
   }
 
   /**
