@@ -382,18 +382,25 @@
       %div{:class => "panel-heading"}
         %h3{:class => "panel-title"} Dates
       %div{:class => "panel-body"}
-        %div
-          = generate_attribute_label("released")
-          %span.asterik *
-          = text_field :submission, :released, :class => "datepicker", value: "#{@submission.released}", :required => true
+        %div.row
+          %div.col-md-3
+            = generate_attribute_label("released")
+            %span.asterik *
+          %div.col-md-9
+            = text_field :submission, :released, :class => "datepicker", value: "#{@submission.released}", :required => true
           %span{:style => "font-size: 90%; color: grey;"}
-        %div
-          = generate_attribute_label("modificationDate")
-          = raw generate_attribute_input("modificationDate")
+        %div.row
+          %div.col-md-3
+            = generate_attribute_label("modificationDate")
+          %div.col-md-9
+            = raw generate_attribute_input("modificationDate")
         - for attr in @metadata
           - if attr["display"].eql? "dates"
-            = generate_attribute_label(attr["attribute"])
-            = raw generate_attribute_input(attr["attribute"])
+            %div.row
+              %div.col-md-3
+                = generate_attribute_label(attr["attribute"])
+              %div.col-md-9
+                = raw generate_attribute_input(attr["attribute"])
             %br
 
     %div{:class => "panel panel-primary"}
