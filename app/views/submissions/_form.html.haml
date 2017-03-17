@@ -250,7 +250,7 @@
         %div
           %div{:style => "width:50%; margin-bottom: 1em;"}
             = generate_attribute_label("hasFormalityLevel")
-            = select("submission", "hasFormalityLevel", [["None", "none"]].concat($FORMALITY_LEVELS.collect{ |k, v| [v,k] }), { :selected => @submission.hasFormalityLevel}, {:class => "form-control"})
+            = generate_attribute_input("hasFormalityLevel", $FORMALITY_LEVELS)
           %div{:style => "float:right;width:50%;text-align:right;"}
             Properties taken from
             = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
@@ -258,7 +258,7 @@
         %div
           %div{:style => "width:50%; margin-bottom: 1em;"}
             = generate_attribute_label("isOfType")
-            = select("submission", "isOfType", [["None", "none"]].concat($IS_OF_TYPE.collect{ |k, v| [v,k] }), { :selected => @submission.isOfType}, {:class => "form-control"})
+            = generate_attribute_input("isOfType", $IS_OF_TYPE)
 
         %div
           %div{:style => "width:50%;"}
