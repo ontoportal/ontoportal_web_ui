@@ -74,6 +74,7 @@ module SubmissionsHelper
         end
       end
       select_values << ["None", "none"]
+      select_values << ["Other", "other"]
 
       if attr["enforce"].include?("list")
         input_html << select_tag("submission[#{attr_label}][]", options_for_select(select_values, metadata_values), :multiple => 'true',
@@ -82,14 +83,27 @@ module SubmissionsHelper
       else
         #input_html << select_tag("submission[#{attr_label}]", options_for_select(select_values, metadata_values), "data-placeholder".to_sym => "Select ontology", :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :include_blank => true)
 
-        input_html << select("submission", attr["attribute"], select_values, { :selected => metadata_values}, {:class => "form-control", :id => "select_#{attr["attribute"]}"})
+        input_html << select("submission", attr["attribute"], select_values, { :selected => metadata_values}, {:class => "form-control", :id => "select_#{attr["attribute"]}", :style=> "margin-bottom: 1em;"})
       end
       # Button and field to add new value (not in the select)
       # TODO: hide this. On affiche si other est sélectionné
 
-      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em;", :placeholder => "Or provide the value")
-      input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;",
+      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;width: 16em;display: none;", :placeholder => "Or provide the value")
+      input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;display: none;vertical-align: baseline;",
                                :type => "button", :class => "btn btn-info btn-sm", :onclick => "addValueToSelect('#{attr["attribute"]}')")
+
+      input_html << javascript_tag("$(function() {
+        $('#select_#{attr["attribute"]}').change(function() {
+          if ($('#select_#{attr["attribute"]}').val() == 'other') {
+            $('#add_#{attr["attribute"].to_s}').val("");
+            $('#btnAdd#{attr["attribute"]}').show();
+            $('#add_#{attr["attribute"].to_s}').show();
+          } else {
+            $('#btnAdd#{attr["attribute"]}').hide();
+            $('#add_#{attr["attribute"].to_s}').hide();
+          }
+        });
+      })")
 
       return input_html
 
