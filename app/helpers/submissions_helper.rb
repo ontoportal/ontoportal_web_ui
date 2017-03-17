@@ -12,6 +12,10 @@ module SubmissionsHelper
       label_html << label_tag("submission_#{attr_label}", attr_label.underscore.humanize)
     end
 
+    if !attr["extracted"].nil? && attr["extracted"] == true
+      label_html << content_tag(:span, '*', class: "extractedAsterix")
+    end
+
     # Generate tooltip
     if !attr["namespace"].nil?
       help_text = "&lt;strong&gt;#{attr["namespace"]}:#{attr["attribute"]}&lt;/strong&gt;"
@@ -27,7 +31,7 @@ module SubmissionsHelper
       help_text << "&lt;br&gt;#{attr["helpText"]}"
     end
 
-    label_html << help_tooltip(help_text, {:id => "tooltip#{attr["attribute"]}", :style => "opacity: inherit; display: inline;position: initial;margin-right: 1em;"}).html_safe
+    label_html << help_tooltip(help_text, {:id => "tooltip#{attr["attribute"]}", :style => "opacity: inherit; display: inline;position: initial;margin-right: 0.5em;"}).html_safe
     return label_html
   end
 
