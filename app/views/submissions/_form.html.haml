@@ -439,12 +439,18 @@
             = select("submission", "hasLicense", [["None", "none"]].concat($LICENSES.collect{ |k, v| [v,k] }), { :selected => "other", style: "margin-bottom: 1em;"}, {:class => "form-control"})
             = text_field :submission, :licenseText, value: @submission.hasLicense
 
-        %div
-          = generate_attribute_label("copyrightHolder")
-          = raw generate_attribute_input("copyrightHolder")
-        %div
-          = generate_attribute_label("morePermissions")
-          = raw generate_attribute_input("morePermissions")
+        %div{:style => "text-align: center;"}
+          %button#licenseBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('license')"} More licensing information
+
+        %div#licenseDiv{:class => "panel panel-info metadataPanels", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} Licensing information
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "license"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
 
     %div{:class => "panel panel-primary"}
       %div{:class => "panel-heading"}
@@ -471,9 +477,6 @@
               Email:&nbsp;
               = text_field :submission, :"contact[0][email]", :required => true
 
-        %div
-          = generate_attribute_label("publisher")
-          = raw generate_attribute_input("publisher")
         %div
           = generate_attribute_label("hasContributor")
           = raw generate_attribute_input("hasContributor")
