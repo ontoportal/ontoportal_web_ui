@@ -48,6 +48,17 @@ jQuery(document).ready(function () {
     jQuery(this).parents("div.pagination").append('&nbsp;&nbsp; <span style="font-size: small; font-weight: normal;">loading</span> ' + '<%= image_tag("spinners/spinner_000000_16px.gif", style: "vertical-align: text-bottom;") %>');
   });
 
+  jQuery("#resources_desc").dataTable({
+    "paging": false,
+    "searching": false,
+    "columns": [
+      { "type": "html" },
+      { "orderable": false },
+      { "type": "num-fmt", "orderSequence": [ "desc", "asc"] },
+      { "orderSequence": [ "desc", "asc" ] }
+    ]
+  });
+
   function formattedCls(cls) {
     return "<span>" + cls.prefLabel + " (" + cls.ontologyName + ")</span>";
   }
