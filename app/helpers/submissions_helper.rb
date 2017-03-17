@@ -54,7 +54,6 @@ module SubmissionsHelper
       text_field :submission, attr["attribute"].to_s.to_sym, :class => "datepicker", value: "#{date_value}"
 
     elsif attr["display"].eql?("isOntology")
-      # TODO: avant on concatene les ontos qui sont en dehors du site;, avec celle du site  ?
       metadata_values = @submission.send(attr["attribute"])
       select_values = @ontologies_for_select.dup
       # Add in the select ontologies that are not in the portal but are in the values
@@ -81,7 +80,7 @@ module SubmissionsHelper
       end
       # Button and field to add new value (not in the select)
       input_html << tag(:br)
-      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;")
+      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em;")
       input_html << button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;",
                                :type => "button", :class => "btn btn-info", :onclick => "addValueToSelect('#{attr["attribute"]}')")
 
@@ -95,6 +94,8 @@ module SubmissionsHelper
       end
 
       if attr["enforce"].include?("list")
+        input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;margin-left: 0.5em;",
+                                 :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'url')")
         input_html << url_field_tag("submission[#{attr["attribute"].to_s}][]", uri_value[0], :id => attr["attribute"].to_s, class: "metadataInput")
         # Add field if list of URI
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
@@ -104,8 +105,6 @@ module SubmissionsHelper
             end
           end
         end
-        input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;margin-left: 0.5em;",
-                                 :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'url')")
         input_html << content_tag(:div, "", id: "#{attr["attribute"]}Div")
 
       else
@@ -119,8 +118,11 @@ module SubmissionsHelper
              {:class => "form-control", :style => "margin-top: 0.5em; margin-bottom: 0.5em;"})
 
     else
-      # If a simple text
+      # If input a simple text
+
       if attr["enforce"].include?("list")
+        input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;",
+                                 :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'text')")
         firstVal = ""
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
           firstVal = @submission.send(attr["attribute"])[0]
@@ -136,8 +138,6 @@ module SubmissionsHelper
           end
         end
 
-        input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;",
-                                 :type => "button", :class => "btn btn-info", :onclick => "addInput('#{attr["attribute"]}', 'text')")
         input_html << content_tag(:div, "", id: "#{attr["attribute"]}Div")
 
       else

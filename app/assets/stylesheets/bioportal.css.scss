@@ -629,7 +629,7 @@ table.align-right th:nth-child(2) {
 
 /* Ontology submission details */
 
-#editMetadataDiv input[type="text"], input[type="url"], textarea {
+#editMetadataDiv input[type=text], input[type="url"], textarea {
   width: 90%;
   max-width: 100%;
   margin-bottom: 5px;
@@ -649,6 +649,9 @@ table.align-right th:nth-child(2) {
   width: 50% !important;
 }
 
+#editMetadataDiv input.datepicker {
+  width: inherit;
+}
 
 /* Resources Tab*/
 
