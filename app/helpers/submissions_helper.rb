@@ -14,19 +14,17 @@ module SubmissionsHelper
 
     # Generate tooltip
     if !attr["namespace"].nil?
-      help_text = "&lt;strong&gt;#{attr["namespace"]}:#{attr["attribute"]}&lt;/strong&gt;&lt;br&gt;"
+      help_text = "&lt;strong&gt;#{attr["namespace"]}:#{attr["attribute"]}&lt;/strong&gt;"
     else
-      help_text = "&lt;strong&gt;bioportal:#{attr["attribute"]}&lt;/strong&gt;&lt;br&gt;"
+      help_text = "&lt;strong&gt;bioportal:#{attr["attribute"]}&lt;/strong&gt;"
     end
 
     if (attr["metadataMappings"] != nil)
-      help_text << "Mappings: "
-      help_text << attr["metadataMappings"].join(", ")
-      help_text << "&lt;br&gt;"
+      help_text << " (#{attr["metadataMappings"].join(", ")})"
     end
 
     if (attr["helpText"] != nil)
-      help_text << attr["helpText"]
+      help_text << "&lt;br&gt;#{attr["helpText"]}"
     end
 
     label_html << help_tooltip(help_text, {:id => "tooltip#{attr["attribute"]}", :style => "opacity: inherit; display: inline;position: initial;margin-right: 1em;"}).html_safe
