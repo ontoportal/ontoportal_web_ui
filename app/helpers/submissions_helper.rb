@@ -1,25 +1,35 @@
 module SubmissionsHelper
 
+  # Generate the HTML label for every attributes
   def generate_attribute_label(attr_label)
     # Get the attribute hash corresponding to the given attribute
     attr = @metadata.select{ |attr_hash| attr_hash["attribute"].to_s.eql?(attr_label) }.first
     label_html = ''.html_safe
 
-    if !attr["namespace"].nil?
-      fullProperty = "#{attr["namespace"]}:#{attr["attribute"]}"
+    if !attr["label"].nil?
+      label_html << label_tag("submission_#{attr_label}", attr["label"])
     else
-      fullProperty = "bioportal:#{attr["attribute"]}"
+      label_html << label_tag("submission_#{attr_label}", attr_label.underscore.humanize)
     end
 
-    if !attr["label"].nil?
-      label_html << label_tag("submission_#{attr_label}", attr["label"], title: fullProperty)
+    # Generate tooltip
+    if !attr["namespace"].nil?
+      help_text = "&lt;strong&gt;#{attr["namespace"]}:#{attr["attribute"]}&lt;/strong&gt;&lt;br&gt;"
     else
-      label_html << label_tag("submission_#{attr_label}", attr_label.underscore.humanize, title: fullProperty)
+      help_text = "&lt;strong&gt;bioportal:#{attr["attribute"]}&lt;/strong&gt;&lt;br&gt;"
+    end
+
+    if (attr["metadataMappings"] != nil)
+      help_text << "Mappings: "
+      help_text << attr["metadataMappings"].join(", ")
+      help_text << "&lt;br&gt;"
     end
 
     if (attr["helpText"] != nil)
-      label_html << help_tooltip(attr["helpText"], {:id => "tooltip#{attr["attribute"]}", :style => "opacity: inherit; display: inline;position: initial;margin-right: 1em;"}).html_safe
+      help_text << attr["helpText"]
     end
+
+    label_html << help_tooltip(help_text, {:id => "tooltip#{attr["attribute"]}", :style => "opacity: inherit; display: inline;position: initial;margin-right: 1em;"}).html_safe
     return label_html
   end
 
