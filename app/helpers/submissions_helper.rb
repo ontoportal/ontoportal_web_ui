@@ -60,9 +60,8 @@ module SubmissionsHelper
     elsif attr["enforce"].include?("textarea")
       text_area(:submission, attr["attribute"].to_s.to_sym, rows: 3, value: @submission.send(attr["attribute"]))
 
-    # Create select dropdown when asked
+    # Create select dropdown when asked. But let the user enter its own value if Other selected
     elsif attr["enforce"].include?("selectOther")
-    #elsif attr["attribute"].eql?("hasOntologySyntax")
       metadata_values = @submission.send(attr["attribute"])
       select_values = select_options.collect{ |k, v| [v,k]}
       # Add in the select ontologies that are not in the portal but are in the values
@@ -90,7 +89,7 @@ module SubmissionsHelper
 
       else
 
-        select_values << ["None", "none"]
+        select_values << ["None", ""]
         select_values << ["Other", "other"]
         #input_html << select_tag("submission[#{attr_label}]", options_for_select(select_values, metadata_values), "data-placeholder".to_sym => "Select ontology", :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :include_blank => true)
 
