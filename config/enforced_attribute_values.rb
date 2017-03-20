@@ -33,7 +33,8 @@ $ONTOLOGY_SYNTAXES = {
   "http://www.w3.org/ns/formats/RDF_XML" => "RDF/XML",
   "http://www.w3.org/ns/formats/RIF_XML" => "RIF XML Syntax",
   "http://www.w3.org/ns/formats/Turtle" => "Turtle",
-  "http://www.w3.org/ns/formats/TriG" => "TriG"
+  "http://www.w3.org/ns/formats/TriG" => "TriG",
+  "http://purl.obolibrary.org/obo/oboformat/spec.html" => "OBO"
 }
 
 $LICENSES = {
@@ -45,8 +46,7 @@ $LICENSES = {
     "https://opensource.org/licenses/Artistic-2.0" => "Open Source Artictic license 2.0",
     "https://opensource.org/licenses/MIT" => "MIT License",
     "https://opensource.org/licenses/BSD-3-Clause" => "BSD 3-Clause License",
-    "http://www.apache.org/licenses/LICENSE-2.0" => "Apache License 2.0",
-    "other" => "Other"
+    "http://www.apache.org/licenses/LICENSE-2.0" => "Apache License 2.0"
 }
 
 $IS_OF_TYPE = {
@@ -70,8 +70,7 @@ $ONTOLOGY_TOOLS = {
     "OntoBuilder" => "OntoBuilder",
     "WSMO Studio" => "WSMO Studio",
     "VocBench" => "VocBench",
-    "TopBraid" => "TopBraid",
-    "other" => "Other"
+    "TopBraid" => "TopBraid"
 }
 
 =begin
@@ -97,6 +96,5 @@ $NATURAL_LANGUAGES = {
     "http://lexvo.org/id/iso639-3/spa" => "Spanish",
     "http://lexvo.org/id/iso639-3/por" => "Portuguese",
     "http://lexvo.org/id/iso639-3/ita" => "Italian",
-    "http://lexvo.org/id/iso639-3/deu" => "German",
-    "other" => "Other"
+    "http://lexvo.org/id/iso639-3/deu" => "German"
 }
