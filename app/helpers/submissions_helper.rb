@@ -69,7 +69,7 @@ module SubmissionsHelper
           end
         end
       else
-        if !select_values.flatten.include?(metadata_values)
+        if (!select_values.flatten.include?(metadata_values) && !metadata_values.to_s.empty?)
           select_values << metadata_values
         end
       end
