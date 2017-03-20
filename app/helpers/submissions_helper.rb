@@ -91,7 +91,7 @@ module SubmissionsHelper
       input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;width: 16em;display: none;", :placeholder => "Or provide the value",
                                    :onkeydown => "if (event.keyCode == 13) { addValueToSelect('#{attr["attribute"]}'); return false;}")
 
-      input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;display: none;vertical-align: baseline;",
+      input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;display: none;vertical-align: baseline;",
                                :type => "button", :class => "btn btn-info btn-sm", :onclick => "addValueToSelect('#{attr["attribute"]}')")
 
       # To show/hide textbox when other option is selected or not
