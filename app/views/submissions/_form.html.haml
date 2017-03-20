@@ -263,6 +263,7 @@
         %div
           %div{:style => "width:50%;"}
             = generate_attribute_label("naturalLanguage")
+            = generate_attribute_input("naturalLanguage", $NATURAL_LANGUAGES)
           %div{:style => "float:right;width:50%;text-align:right;"}
             Add a natural language to the list
             %br
@@ -271,11 +272,6 @@
             with ISO639-3 code
             %br
             e.g.: http://lexvo.org/id/iso639-3/eng
-          = select_tag "naturalLanguageSelect[]", options_for_select($NATURAL_LANGUAGES.collect{ |k, v| [v,k] }, @submission.naturalLanguage),
-          :multiple => 'true', "data-placeholder".to_sym => "Click here to select languages",:style => "margin-bottom: 15px;", :id => 'naturalLanguageSelect'
-          %br
-          %button#naturalLanguageBtn{:style => "margin-bottom: 0.5em;margin-top: 0.5em;", :type => "button", :class => "btn btn-info btn-sm", :onclick => 'addInput("naturalLanguage", "text")'} Add new language
-          %div#naturalLanguageDiv
 
 
     %div{:class => "panel panel-primary"}
