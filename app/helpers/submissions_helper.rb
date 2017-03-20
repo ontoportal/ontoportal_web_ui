@@ -57,8 +57,8 @@ module SubmissionsHelper
       text_area(:submission, attr["attribute"].to_s.to_sym, rows: 3, value: @submission.send(attr["attribute"]))
 
     # Create select dropdown when asked
-    # TODO: elsif attr["enforce"].include?("selectOther")
-    elsif attr["attribute"].eql?("hasOntologySyntax")
+    elsif attr["enforce"].include?("selectOther")
+    #elsif attr["attribute"].eql?("hasOntologySyntax")
       metadata_values = @submission.send(attr["attribute"])
       select_values = select_options.collect{ |k, v| [v,k]}
       # Add in the select ontologies that are not in the portal but are in the values
@@ -153,11 +153,13 @@ module SubmissionsHelper
 
       # Add the typed onto when hit enter
       # TODO: don't work properly atm
+=begin
       input_html << javascript_tag("$('#add_#{attr["attribute"]}').keyup(function(event){
         if(event.keyCode == 13){
             addOntoToSelect('#{attr["attribute"]}');
         }
         });")
+=end
 
       return input_html
 

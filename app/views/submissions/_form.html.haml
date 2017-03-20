@@ -646,7 +646,10 @@
         value: newOption,
         text: newOption
       }));
-      if (selectedOptions.constructor === Array) {
+      if (selectedOptions === null) {
+        selectedOptions = [];
+        selectedOptions.push(newOption);
+      } else if (selectedOptions.constructor === Array) {
         selectedOptions.push(newOption);
       } else {
         selectedOptions = newOption;
