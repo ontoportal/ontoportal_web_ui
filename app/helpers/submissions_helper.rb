@@ -27,8 +27,12 @@ module SubmissionsHelper
       help_text << " (#{attr["metadataMappings"].join(", ")})"
     end
 
+    if (!attr["enforce"].nil? && attr["enforce"].include?("uri"))
+      help_text << "&lt;br&gt;This metadata should be an &lt;strong&gt;URI&lt;/strong&gt;"
+    end
+
     if (attr["helpText"] != nil)
-      help_text << "&lt;br&gt;#{attr["helpText"]}"
+      help_text << "&lt;br&gt;&lt;br&gt;#{attr["helpText"]}"
     end
 
     label_html << help_tooltip(help_text, {:id => "tooltip#{attr["attribute"]}", :style => "opacity: inherit; display: inline;position: initial;margin-right: 0.5em;"}).html_safe
