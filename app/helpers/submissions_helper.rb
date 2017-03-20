@@ -108,7 +108,6 @@ module SubmissionsHelper
         });
       })")
 
-
       return input_html
 
 
@@ -145,16 +144,6 @@ module SubmissionsHelper
 
       input_html << button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;",
                                :type => "button", :class => "btn btn-info btn-sm", :onclick => "addOntoToSelect('#{attr["attribute"]}')")
-
-      # Add the typed onto when hit enter
-      # TODO: don't work properly atm
-=begin
-      input_html << javascript_tag("$('#add_#{attr["attribute"]}').keyup(function(event){
-        if(event.keyCode == 13){
-            addOntoToSelect('#{attr["attribute"]}');
-        }
-        });")
-=end
 
       return input_html
 
