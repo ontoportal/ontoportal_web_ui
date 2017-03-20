@@ -88,7 +88,9 @@ module SubmissionsHelper
       # Button and field to add new value (not in the select)
       # TODO: hide this. On affiche si other est sélectionné
 
-      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;width: 16em;display: none;", :placeholder => "Or provide the value")
+      input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;width: 16em;display: none;", :placeholder => "Or provide the value",
+                                   :onkeydown => "if (event.keyCode == 13) { addValueToSelect('#{attr["attribute"]}'); return false;}")
+
       input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;display: none;vertical-align: baseline;",
                                :type => "button", :class => "btn btn-info btn-sm", :onclick => "addValueToSelect('#{attr["attribute"]}')")
 
@@ -106,12 +108,6 @@ module SubmissionsHelper
         });
       })")
 
-      # To link text field with button (allowing enter in text field to submit button)
-      input_html << javascript_tag("$('#add_#{attr["attribute"]}').keyup(function(event){
-        if(event.keyCode == 13){
-            addValueToSelect('#{attr["attribute"]}')
-        }
-        });")
 
       return input_html
 
@@ -144,7 +140,6 @@ module SubmissionsHelper
       # Button and field to add new value (not in the select)
       input_html << tag(:br)
 
-      # TODO: use keydown instead of add javascript_tag ?
       input_html << text_field_tag("add_#{attr["attribute"]}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em;",
                                    :placeholder => "Ontology outside of the Portal", :onkeydown => "if (event.keyCode == 13) { addOntoToSelect('#{attr["attribute"]}'); return false;}")
 
