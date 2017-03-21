@@ -480,12 +480,12 @@
 
         %div{:class => "row", :style => "text-align: center;"}
           %div{:class => "col-md-6"}
-            %button#communityBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community')"} More community informations
+            %button#communityBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success commupleBtn", :onclick => "toggleDiv('community', 'commuple')"} More community informations
 
           %div{:class => "col-md-6"}
-            %button#peopleBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('people')"} More people informations
+            %button#peopleBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success commupleBtn", :onclick => "toggleDiv('people', 'commuple')"} More people informations
 
-        %div#communityDiv{:class => "panel panel-info metadataPanels", :style => "margin-top: 1em;display: none;"}
+        %div#communityDiv{:class => "panel panel-info commuplePanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
             %h3{:class => "panel-title"} More community informations
           %div{:class => "panel-body"}
@@ -495,7 +495,7 @@
                 = raw generate_attribute_input(attr["attribute"])
                 %br
 
-        %div#peopleDiv{:class => "panel panel-info metadataPanels", :style => "margin-top: 1em;display: none;"}
+        %div#peopleDiv{:class => "panel panel-info commuplePanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
             %h3{:class => "panel-title"} More people informations
           %div{:class => "panel-body"}
@@ -682,7 +682,11 @@
         // if panel chosen isPart of description, close the others
         jQuery(".descriptionPanels").css("display", "none");
         jQuery(".descriptionBtn").removeClass("active");
+      } else if (panelGroup === "commuple") {
+        jQuery(".commuplePanels").css("display", "none");
+        jQuery(".commupleBtn").removeClass("active");
       }
+
       e.style.display = 'block';
       document.getElementById(divId + "Btn").classList.add("active");
     }
