@@ -580,9 +580,10 @@
           %div{:class => "panel-heading"}
             %h3{:class => "panel-title"} More metrics informations
           %div{:class => "panel-body"}
+            %p
+              Metrics are automatically computed by the Portal using the OWLAPI (except the number of entities and number of axioms)
             - for attr in @metadata
               - if attr["display"].eql? "metrics"
-
                 %div{:class => "row", :style => "margin-bottom: 0.5em;"}
                   %div{:class => "col-md-3"}
                     = generate_attribute_label(attr["attribute"])
