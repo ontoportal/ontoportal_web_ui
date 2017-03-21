@@ -559,10 +559,14 @@
           = generate_attribute_label("preferredNamespaceUri")
           = raw generate_attribute_input("preferredNamespaceUri")
 
-        %div{:style => "text-align: center;"}
-          %button#contentBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('content')"} More content informations
+        %div{:class => "row", :style => "text-align: center;"}
+          %div{:class => "col-md-6"}
+            %button#contentBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success ontocontentBtn", :onclick => "toggleDiv('content', 'ontocontent')"} More content informations
 
-        %div#contentDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "col-md-6"}
+            %button#metricsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success ontocontentBtn", :onclick => "toggleDiv('metrics', 'ontocontent')"} More metrics informations
+
+        %div#contentDiv{:class => "panel panel-info ontocontentPanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
             %h3{:class => "panel-title"} More content informations
           %div{:class => "panel-body"}
@@ -571,6 +575,20 @@
                 = generate_attribute_label(attr["attribute"])
                 = raw generate_attribute_input(attr["attribute"])
                 %br
+
+        %div#metricsDiv{:class => "panel panel-info ontocontentPanels", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} More metrics informations
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "metrics"
+
+                %div{:class => "row", :style => "margin-bottom: 0.5em;"}
+                  %div{:class => "col-md-3"}
+                    = generate_attribute_label(attr["attribute"])
+                  %div{:class => "col-md-9"}
+                    = raw generate_attribute_input(attr["attribute"])
+                  %br
 
 
   %div{:style => "text-align: center;"}
@@ -685,6 +703,9 @@
       } else if (panelGroup === "commuple") {
         jQuery(".commuplePanels").css("display", "none");
         jQuery(".commupleBtn").removeClass("active");
+      } else if (panelGroup === "ontocontent") {
+        jQuery(".ontocontentPanels").css("display", "none");
+        jQuery(".ontocontentBtn").removeClass("active");
       }
 
       e.style.display = 'block';
