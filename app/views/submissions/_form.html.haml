@@ -221,55 +221,67 @@
       %div{:class => "panel-body"}
 
         %div
-          = generate_attribute_label("URI")
-          = raw generate_attribute_input("URI")
+          %div.col-md-3
+            = generate_attribute_label("URI")
+          %div.col-md-9
+            = raw generate_attribute_input("URI")
 
         %div
-          = generate_attribute_label("status")
-          %span.asterik *
-          - selected_status = @submission.status ? @submission.status : "alpha"
-          - status_options = ["alpha", "beta", "production", "retired"]
-          = select :submission, :status, status_options, { :selected => selected_status, :required => true}, {:class => "form-control"}
+          %div.col-md-3
+            = generate_attribute_label("status")
+            %span.asterik *
+          %div.col-md-9
+            - selected_status = @submission.status ? @submission.status : "alpha"
+            - status_options = ["alpha", "beta", "production", "retired"]
+            = select :submission, :status, status_options, { :selected => selected_status, :required => true}, {:class => "form-control"}
 
         %div
-          = generate_attribute_label("deprecated")
-          = raw generate_attribute_input("deprecated")
+          %div.col-md-3
+            = generate_attribute_label("deprecated")
+          %div.col-md-9
+            = raw generate_attribute_input("deprecated")
 
         %div
-          = generate_attribute_label("version")
-          = raw generate_attribute_input("version")
+          %div.col-md-3
+            = generate_attribute_label("version")
+          %div.col-md-9
+            = raw generate_attribute_input("version")
 
         %div
-          %div{:style => "width:50%; margin-bottom: 1em;display: inline;"}
+          %div.col-md-3
             = generate_attribute_label("hasOntologySyntax")
+          %div.col-md-9
             = generate_attribute_input("hasOntologySyntax", $ONTOLOGY_SYNTAXES)
-          %div{:style => "float:right;width:50%;text-align:right;"}
-            Properties taken from
-            = link_to "W3C URIs for file format", "https://www.w3.org/ns/formats/", target: "_blank"
+            %p
+              Properties taken from
+              = link_to "W3C URIs for file format", "https://www.w3.org/ns/formats/", target: "_blank"
 
         %div
-          %div{:style => "width:50%; margin-bottom: 1em;"}
+          %div.col-md-3
             = generate_attribute_label("hasFormalityLevel")
+          %div.col-md-9
             = generate_attribute_input("hasFormalityLevel", $FORMALITY_LEVELS)
-          %div{:style => "float:right;width:50%;text-align:right;"}
-            Properties taken from
-            = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
+            %p
+              Properties taken from
+              = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
 
         %div
-          %div{:style => "width:50%; margin-bottom: 1em;"}
+          %div.col-md-3
             = generate_attribute_label("isOfType")
+          %div.col-md-9
             = generate_attribute_input("isOfType", $IS_OF_TYPE)
 
         %div
-          %div{:style => "width:50%;"}
+          %div.col-md-3
             = generate_attribute_label("naturalLanguage")
+          %div.col-md-9
             = generate_attribute_input("naturalLanguage", $NATURAL_LANGUAGES)
-          %div{:style => "float:right;width:50%;text-align:right;"}
-            Consider using a
-            = link_to "Lexvo URI", "http://www.lexvo.org", target: "_blank"
-            with ISO639-3 code
-            %br
-            e.g.: http://lexvo.org/id/iso639-3/eng
+            %p
+              Consider using a
+              = link_to "Lexvo URI", "http://www.lexvo.org", target: "_blank"
+              with ISO639-3 code
+              %br
+              e.g.: http://lexvo.org/id/iso639-3/eng
 
 
     %div{:class => "panel panel-primary"}
@@ -413,13 +425,13 @@
         %div
           = generate_attribute_label("hasLicense")
           = raw generate_attribute_input("hasLicense", $LICENSES)
-        %div{:style => "float:right;width:50%;text-align:right;"}
-          Consider using a
-          = link_to "URI to describe your License", "http://rdflicense.appspot.com", target: "_blank"
-          %br
-          Consider using
-          = link_to "INRIA licentia", "http://licentia.inria.fr/", target: "_blank"
-          to choose your license
+          %p
+            Consider using a
+            = link_to "URI to describe your License", "http://rdflicense.appspot.com", target: "_blank"
+            %br
+            Consider using
+            = link_to "INRIA licentia", "http://licentia.inria.fr/", target: "_blank"
+            to choose your license
 
         %div{:style => "text-align: center;"}
           %button#licenseBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('license')"} More licensing information
