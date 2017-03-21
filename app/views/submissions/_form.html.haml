@@ -477,8 +477,13 @@
         %div
           = generate_attribute_label("hasCreator")
           = raw generate_attribute_input("hasCreator")
-        %div{:style => "text-align: center;"}
-          %button#communityBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community')"} More community informations
+
+        %div{:class => "row", :style => "text-align: center;"}
+          %div{:class => "col-md-6"}
+            %button#communityBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('community')"} More community informations
+
+          %div{:class => "col-md-6"}
+            %button#peopleBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('people')"} More people informations
 
         %div#communityDiv{:class => "panel panel-info metadataPanels", :style => "margin-top: 1em;display: none;"}
           %div{:class => "panel-heading"}
@@ -486,6 +491,16 @@
           %div{:class => "panel-body"}
             - for attr in @metadata
               - if attr["display"].eql? "community"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
+
+        %div#peopleDiv{:class => "panel panel-info metadataPanels", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} More people informations
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "people"
                 = generate_attribute_label(attr["attribute"])
                 = raw generate_attribute_input(attr["attribute"])
                 %br
@@ -511,9 +526,9 @@
 
         %div{:class => "row"}
           %div{:class => "col-md-3"}
-            = generate_attribute_label("translationOfWork")
+            = generate_attribute_label("ontologyRelatedTo")
           %div{:class => "col-md-9"}
-            = raw generate_attribute_input("translationOfWork")
+            = raw generate_attribute_input("ontologyRelatedTo")
           %br
 
 
