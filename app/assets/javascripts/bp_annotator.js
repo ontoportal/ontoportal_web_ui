@@ -77,7 +77,8 @@ function get_annotations() {
   params.experiencer = jQuery("#experiencer").is(':checked');
   params.temporality = jQuery("#temporality").is(':checked');
 
-  params.lemmatize = jQuery("#lemmatize").is(':checked');
+  //params.lemmatize = jQuery("#lemmatize").is(':checked');
+  params.lemmatize = false;
 
   params.score = jQuery("#score").val();
   if (params.score) {
