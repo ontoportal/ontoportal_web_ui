@@ -57,17 +57,11 @@ class AnnotatorController < ApplicationController
                 :lemmatize => params[:lemmatize] ||= "false",
                 :ncbo_slice => params[:ncbo_slice] || ''
     }
-    
-    if (!session[:user].nil?)
-      annotator_apikey = session[:user].apikey
-    else
-      annotator_apikey = API_KEY
-    end
 
     start = Time.now
     query = ANNOTATOR_URI
     query += "?text=" + CGI.escape(text_to_annotate)
-    query += "&apikey=" + annotator_apikey
+    #query += "&apikey=" + annotator_apikey
     #query += "&include=prefLabel"
     # Include= prefLabel causes an internal error when retrieving mappings
     query += "&expand_class_hierarchy=true" if options[:class_hierarchy_max_level] > 0
