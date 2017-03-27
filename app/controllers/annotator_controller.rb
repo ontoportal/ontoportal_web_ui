@@ -26,7 +26,7 @@ class AnnotatorController < ApplicationController
       # Get recognizers from ontologies_api only if asked
       @recognizers = parse_json(REST_URI + "/annotator/recognizers")
     else
-      @recognizers = [:mgrep]
+      @recognizers = []
     end
     @annotator_ontologies = LinkedData::Client::Models::Ontology.all
   end
