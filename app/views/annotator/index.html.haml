@@ -13,7 +13,7 @@
       = text_area :annotation, :text, :title => textarea_title, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px; width: 100%; max-width: 100%;", :class => "help_text"
     %a#insert_text_link{:href => "javascript:void(0);", :style => "font-size: 8pt; text-decoration: none; margin-bottom: 1em;"} insert sample text
     %div
-      %div{:class => "panel panel-primary", :style => "width: 460px; display: inline-block;"}
+      %div{:class => "panel panel-success", :style => "width: 460px; display: inline-block;"}
         %div{:class => "panel-heading"}
           %h3{:class => "panel-title"} Ontology filters
         %div{:class => "panel-body"}
@@ -31,7 +31,7 @@
             %br/
             %br/
 
-      %div{:class => "panel panel-info", :style => "width: 17em; display: inline-block; vertical-align: top; height: 256px;"}
+      %div{:class => "panel panel-warning", :style => "width: 17em; display: inline-block; vertical-align: top; height: 256px;"}
         %div{:class => "panel-heading"}
           %h3{:class => "panel-title"} Matching parameters
         %div{:class => "panel-body"}
@@ -53,7 +53,7 @@
           -#= check_box_tag :lemmatize, :all, false, :id => "lemmatize"
           -#= label_tag :lemmatize, "Lemmatize (beta)"
 
-      %div{:class => "panel panel-primary", :style => "width: 17em; display: inline-block; vertical-align: top; height: 256px;"}
+      %div{:class => "panel panel-success", :style => "width: 17em; display: inline-block; vertical-align: top; height: 256px;"}
         %div{:class => "panel-heading"}
           %h3{:class => "panel-title"} NegEx / ConText
         %div{:class => "panel-body"}
