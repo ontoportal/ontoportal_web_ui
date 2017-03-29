@@ -61,10 +61,6 @@
             = check_box_tag :negation, :all, false, :id => "negation"
             = label_tag :negation, "Detect negation"
             = help_icon("/annotator", {:title => "Detect if a concept has been negated (affirmed, negated, possible)"}).html_safe
-          %p{title: "Detect who experienced the found concept (patient, other)"}
-            = check_box_tag :experiencer, :all, false, :id => "experiencer"
-            = label_tag :experiencer, "Detect experiencer"
-            = help_icon("/annotator", {:title => "Detect who experienced the found concept (patient, other)"}).html_safe
           %p{title: "Detect when the annotated concept occurred (recent, historical, hypothetical)"}
             = check_box_tag :temporality, :all, false, :id => "temporality"
             = label_tag :temporality, "Detect temporality"

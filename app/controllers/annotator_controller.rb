@@ -51,7 +51,7 @@ class AnnotatorController < ApplicationController
                 :whole_word_only => params[:whole_word_only] ||= "true", # service default is true
                 :exclude_synonyms => params[:exclude_synonyms] ||= "false",  # service default is false
                 :negation => params[:negation] ||= "false",  # service default is false
-                :experiencer => params[:experiencer] ||= "false",  # service default is false
+                #:experiencer => params[:experiencer] ||= "false",  # service default is false
                 :temporality => params[:temporality] ||= "false",  # service default is false
                 :score => params[:score],
                 :lemmatize => params[:lemmatize] ||= "false",
@@ -68,7 +68,7 @@ class AnnotatorController < ApplicationController
     query += "&class_hierarchy_max_level=" + options[:class_hierarchy_max_level].to_s if options[:class_hierarchy_max_level] > 0
     query += "&score=" + options[:score] unless options[:score] == ""
     query += "&negation=" + options[:negation] unless options[:negation].empty?
-    query += "&experiencer=" + options[:experiencer] unless options[:experiencer].empty?
+    #query += "&experiencer=" + options[:experiencer] unless options[:experiencer].empty?
     query += "&temporality=" + options[:temporality] unless options[:temporality].empty?
     query += "&ontologies=" + CGI.escape(options[:ontologies].join(',')) unless options[:ontologies].empty?
     query += "&semantic_types=" + options[:semantic_types].join(',') unless options[:semantic_types].empty?

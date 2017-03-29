@@ -74,7 +74,7 @@ function get_annotations() {
   params.ncbo_slice = (("ncbo_slice" in BP_CONFIG) ? BP_CONFIG.ncbo_slice : '');
 
   params.negation = jQuery("#negation").is(':checked');
-  params.experiencer = jQuery("#experiencer").is(':checked');
+  //params.experiencer = jQuery("#experiencer").is(':checked');
   params.temporality = jQuery("#temporality").is(':checked');
 
   //params.lemmatize = jQuery("#lemmatize").is(':checked');
