@@ -54,7 +54,7 @@ rec.insertSampleKeywords = function() {
     $("#radioItKeywords").prop("checked", true);
 }
 
-rec.colors = ["#338D0C" , "#cc0000", "#339900", "#ff9900"];
+rec.colors = ["#76A7CC" , "#cc0000", "#339900", "#ff9900"];
 rec.getHighlightedTerms = function(data, rowNumber) {
     var inputText = document.getElementById("inputText").value;
     var newText = '';
