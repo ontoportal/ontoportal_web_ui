@@ -833,8 +833,6 @@ function display_annotations(data, params) {
     // The class prefLabel and ontology name must be resolved with ajax.
     annotator_ontologies = data.ontologies;
     for (var i = 0; i < annotations.length; i++) {
-      console.log("ANNNNNNOOOO");
-      console.log(annotations);
       all_rows = all_rows.concat(get_annotation_rows_from_raw(annotations[i], params));
     }
   } else {
@@ -849,7 +847,8 @@ function display_annotations(data, params) {
   var param_string = generateParameters(); // uses bp_last_param
   var query = BP_CONFIG.annotator_url + "?" + param_string;
   var query_encoded = BP_CONFIG.annotator_url + "?" + encodeURIComponent(param_string);
-  jQuery("#annotator_parameters").html(query);
+  // Todo: add the apikey if logged?
+  jQuery("#annotator_parameters").html("<a href='" + query + "' target='_blank'>" + query + "</a>");
   jQuery("#annotator_parameters_encoded").html(query_encoded);
   // Add links for downloading results
   //annotatorFormatLink("tabDelimited");
