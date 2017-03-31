@@ -144,8 +144,6 @@ function get_annotations() {
     dataType: "json",
     success: function(data) {
       set_last_params(params);
-      console.log("dataaaa");
-      console.log(data);
       display_annotations(data, bp_last_params);
       jQuery(".annotator_spinner").hide(200);
       jQuery("#annotations_container").show(300);
@@ -699,7 +697,6 @@ function get_annotation_rows_from_raw(annotation, params) {
     rows.push(cells);
   } else {
     jQuery.each(annotation.annotations, function(i, a) {
-      console.log(a);
       text_markup = get_text_markup(params.text, a.from, a.to);
       match_type = match_type_translation[a.matchType.toLowerCase()] || 'direct';
       cells = [cls.cls_link, cls.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, get_annotation_score(annotation), get_context_value(a.negationContext), get_context_value(a.experiencerContext), get_context_value(a.temporalityContext)];
@@ -719,8 +716,6 @@ function get_annotation_rows_from_raw(annotation, params) {
         m_c = get_class_details_from_raw(m.annotatedClass);
         cells = [m_c.cls_link, m_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, get_annotation_score(m), get_context_value(a.negationContext), get_context_value(a.experiencerContext), get_context_value(a.temporalityContext)];
         rows.push(cells);
-      console.log("rooooowwww");
-      console.log(rows);
       }); // mappings loop
     }); // annotations loop
   }
@@ -827,7 +822,6 @@ function display_annotations(data, params) {
   "use strict";
   var annotations = data.annotations;
   var all_rows = [];
-  console.log("DANS DISPLAY");
   if (params.raw !== undefined && params.raw === true) {
     // The annotator_controller does not 'massage' the REST data.
     // The class prefLabel and ontology name must be resolved with ajax.
@@ -846,8 +840,10 @@ function display_annotations(data, params) {
   // Generate parameters for list at bottom of page
   var param_string = generateParameters(); // uses bp_last_param
   var query = BP_CONFIG.annotator_url + "?" + param_string;
+  if (jQuery(document).data().bp.user.apikey !== undefined) {
+    query += "&apikey=" + jQuery(document).data().bp.user.apikey;
+  }
   var query_encoded = BP_CONFIG.annotator_url + "?" + encodeURIComponent(param_string);
-  // Todo: add the apikey if logged?
   jQuery("#annotator_parameters").html("<a href='" + query + "' target='_blank'>" + query + "</a>");
   jQuery("#annotator_parameters_encoded").html(query_encoded);
   // Add links for downloading results
