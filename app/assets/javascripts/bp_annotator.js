@@ -442,7 +442,9 @@ jQuery.fn.dataTableExt.oApi.fnSortNeutral = function(oSettings) {
   oSettings.oApi._fnReDraw(oSettings);
 };
 
-
+/**
+ * Generate Links to annotator REST API
+ */
 function annotatorFormatLink(param_string, format) {
   "use strict";
   // TODO: Check whether 'text' and 'tabDelimited' could work.
