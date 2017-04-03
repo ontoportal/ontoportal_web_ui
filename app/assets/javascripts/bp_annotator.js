@@ -443,7 +443,9 @@ jQuery.fn.dataTableExt.oApi.fnSortNeutral = function(oSettings) {
   oSettings.oApi._fnReDraw(oSettings);
 };
 
-
+/**
+ * Generate Links to annotator REST API
+ */
 function annotatorFormatLink(param_string, format) {
   "use strict";
   // TODO: Check whether 'text' and 'tabDelimited' could work.
@@ -460,7 +462,7 @@ function annotatorFormatLink(param_string, format) {
   if (format !== 'json') {
     query += "&format=" + format;
   }
-  var link = "<a href='" + encodeURI(query) + "' target='_blank'>" + format_map[format] + "</a>";
+  var link = "<a href=\"" + encodeURI(query) + "\" class=\"btn btn-default btn-sm\" target=\"_blank\">" + format_map[format] + "</a>";
   jQuery("#download_links_" + format.toLowerCase()).html(link);
 }
 
@@ -840,15 +842,14 @@ function display_annotations(data, params) {
   update_annotations_table(all_rows);
   // Generate parameters for list at bottom of page
   var param_string = generateParameters(); // uses bp_last_param
-  var query = BP_CONFIG.annotator_url + "?" + param_string;
+  var query = BP_CONFIG.annotator_url + "?" + param_string + "&display_links=false&display_context=false";
   if (jQuery(document).data().bp.user.apikey !== undefined) {
     query += "&apikey=" + jQuery(document).data().bp.user.apikey;
   }
   var query_encoded = BP_CONFIG.annotator_url + "?" + encodeURIComponent(param_string);
-  jQuery("#annotator_parameters").html("<a href='" + query + "' target='_blank'>" + query + "</a>");
+  jQuery("#annotator_parameters").html("<a href=\"" + encodeURI(query) + "\" class=\"btn btn-info\" target=\"_blank\">Corresponding REST web service call</a>");
   jQuery("#annotator_parameters_encoded").html(query_encoded);
   // Add links for downloading results
-  //annotatorFormatLink("tabDelimited");
   annotatorFormatLink(param_string, "json");
   //annotatorFormatLink(param_string, "xml");
   //TODO: make RDF format works with score
