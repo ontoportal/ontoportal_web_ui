@@ -51,10 +51,10 @@ $LICENSES = {
 
 $IS_OF_TYPE = {
     "Application Ontology" => "Application Ontology",
+    "Core Ontology" => "Core Ontology",
     "Domain Ontology" => "Domain Ontology",
     "Task Ontology" => "Task Ontology",
-    "Upper Level Ontology" => "Upper Level Ontology",
-    "Vocabulary" => "Vocabulary"
+    "Upper Level Ontology" => "Upper Level Ontology"
 }
 
 $ONTOLOGY_TOOLS = {
