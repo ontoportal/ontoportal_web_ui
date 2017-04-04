@@ -50,11 +50,11 @@ $LICENSES = {
 }
 
 $IS_OF_TYPE = {
-    "Application Ontology" => "Application Ontology",
-    "Core Ontology" => "Core Ontology",
-    "Domain Ontology" => "Domain Ontology",
-    "Task Ontology" => "Task Ontology",
-    "Upper Level Ontology" => "Upper Level Ontology"
+    "http://omv.ontoware.org/2005/05/ontology#ApplicationOntology" => "Application Ontology",
+    "http://omv.ontoware.org/2005/05/ontology#CoreOntology" => "Core Ontology",
+    "http://omv.ontoware.org/2005/05/ontology#DomainOntology" => "Domain Ontology",
+    "http://omv.ontoware.org/2005/05/ontology#TaskOntology" => "Task Ontology",
+    "http://omv.ontoware.org/2005/05/ontology#UpperLevelOntology" => "Upper Level Ontology"
 }
 
 $ONTOLOGY_TOOLS = {
