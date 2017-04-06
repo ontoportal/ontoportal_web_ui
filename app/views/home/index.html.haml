@@ -147,6 +147,7 @@
           %fieldset
             %legend
               Statistics #{"in full #{$SITE}" if at_slice?}
+              = help_icon("#", {:title => "Metrics are computed by the OWL API. The number of classes and individuals roughly represent the number of concepts in the portal respectively for OWL ontologies and SKOS vocabularies"}).html_safe
             %table.minimal.align-right{:width => "100%"}
               %tbody
                 %tr
