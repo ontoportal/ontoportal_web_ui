@@ -156,6 +156,9 @@
                   %td Classes
                   %td= number_with_delimiter(@cls_count, :delimiter => ",")
                 %tr
+                  %td Individuals
+                  %td= number_with_delimiter(@individuals_count, :delimiter => ",")
+                %tr
                   %td Projects
                   %td= LinkedData::Client::Models::Project.all.length
                 %tr
