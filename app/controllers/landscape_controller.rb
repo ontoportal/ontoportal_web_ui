@@ -27,6 +27,8 @@ class LandscapeController < ApplicationController
                         {:attr => "classesWithNoDefinition", :label => "Classes with no definition	", :array => []},
                         {:attr => "numberOfAxioms", :label => "Number of axioms (triples)", :array => []}]
 
+    ontologyFormatsCount = {"OWL" => 0, "SKOS" => 0, "UMLS" => 0, "OBO" => 0}
+
     # Iterate ontologies to get the submissions with all metadata
     @ontologies.each do |ont|
       sub = ont.explore.latest_submission
@@ -61,6 +63,9 @@ class LandscapeController < ApplicationController
         end
 
         get_metrics_for_average(sub)
+
+        # Get number of ontologies for each format (for horizontal bar chart)
+        ontologyFormatsCount[sub.hasOntologyLanguage] += 1
 
       end
     end
@@ -104,6 +109,13 @@ class LandscapeController < ApplicationController
       color_index += 1
     end
 
+    # Format the ontologyFormatsCount hash as the JSON needed to generate the chart
+    @ontologyFormatsChartJson = { :labels => ontologyFormatsCount.keys,
+        :datasets => [{ :label => "Ontology count", :data => ontologyFormatsCount.values,
+                       :backgroundColor => ["#669911", "#119966", "#66A2EB", "#FCCE56"],
+                       :hoverBackgroundColor => ["#66A2EB", "#FCCE56", "#669911", "#119966"]}]
+    };
+
     @natural_language_json_cloud = @natural_language_json_cloud.to_json.html_safe
     @natural_language_json_pie = @natural_language_json_pie.to_json.html_safe
 
@@ -112,7 +124,7 @@ class LandscapeController < ApplicationController
     @synonymProperty_json_pie = @synonymProperty_json_pie.to_json.html_safe
     @definitionProperty_json_pie = @definitionProperty_json_pie.to_json.html_safe
     @authorProperty_json_pie = @authorProperty_json_pie.to_json.html_safe
-
+    @ontologyFormatsChartJson = @ontologyFormatsChartJson.to_json.html_safe
   end
 
 
