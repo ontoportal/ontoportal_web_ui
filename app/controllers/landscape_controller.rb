@@ -113,8 +113,7 @@ class LandscapeController < ApplicationController
     @ontologyFormatsChartJson = { :labels => ontologyFormatsCount.keys,
         :datasets => [{ :label => "Ontology count", :data => ontologyFormatsCount.values,
                        :backgroundColor => ["#669911", "#119966", "#66A2EB", "#FCCE56"],
-                       :hoverBackgroundColor => ["#66A2EB", "#FCCE56", "#669911", "#119966"]}]
-    };
+                       :hoverBackgroundColor => ["#66A2EB", "#FCCE56", "#669911", "#119966"]}] };
 
     @natural_language_json_cloud = @natural_language_json_cloud.to_json.html_safe
     @natural_language_json_pie = @natural_language_json_pie.to_json.html_safe
