@@ -9,13 +9,14 @@
 - @title = "Landscape"
 %div{:class => "container theme-showcase", :role => "main", :style => "width: 80%; display: block;", :align => "center"}
 
-  %h1 Format used
+  %div{:class => "row"}
+    %div{:class => "col-md-3"}
+      %h2 Format used
+      %canvas#formatCanvas
 
-  %div{:style => "width: 50%;margin: 3em auto;"}
-    %canvas#formatCanvas
-
-  %div{:style => "width: 50%;margin: 3em auto;"}
-    %canvas#groupsCanvas
+    %div{:class => "col-md-3"}
+      %h2 Ontologies by group
+      %canvas#groupsCanvas
 
   %hr
   %h1 Properties used
