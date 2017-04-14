@@ -16,6 +16,8 @@
 
   %div#naturalLanguagePieChartDiv
 
+  %div#licensePieChartDiv
+
   %hr
   %h1 Properties used in AgroPortal
 
@@ -48,6 +50,7 @@
   // Get the data to generate the cloud chart for naturalLanguages
   var cloudJson = #{@natural_language_json_cloud}
   // Get the data for the used properties pie charts
+  var licensePieJson = #{@licenseProperty_json_pie}
   var prefLabelPieJson = #{@prefLabelProperty_json_pie}
   var synonymPieJson = #{@synonymProperty_json_pie}
   var definitionPieJson = #{@definitionProperty_json_pie}

@@ -11,6 +11,7 @@ class LandscapeController < ApplicationController
 
     # A hash with the language label and the number of time it appears in sub.naturalLanguage
     natural_language_hash = {}
+    licenseProperty_hash = {}
     prefLabelProperty_hash = {}
     synonymProperty_hash = {}
     definitionProperty_hash = {}
@@ -53,6 +54,8 @@ class LandscapeController < ApplicationController
 
         # Get the prefLabelProperty used for OWL properties in a hash
         if sub.hasOntologyLanguage.eql?("OWL")
+          licenseProperty_hash = get_used_properties(sub.hasLicense, "none", licenseProperty_hash)
+
           prefLabelProperty_hash = get_used_properties(sub.prefLabelProperty, "http://www.w3.org/2004/02/skos/core#prefLabel", prefLabelProperty_hash)
 
           synonymProperty_hash = get_used_properties(sub.synonymProperty, "http://www.w3.org/2004/02/skos/core#altLabel", synonymProperty_hash)
@@ -80,6 +83,7 @@ class LandscapeController < ApplicationController
     # Get the different naturalLanguage of submissions to generate a tag cloud
     @natural_language_json_cloud = []
     # Generate the JSON to put natural languages in the pie chart
+    @licenseProperty_json_pie = []
     @prefLabelProperty_json_pie = []
     @synonymProperty_json_pie = []
     @definitionProperty_json_pie = []
@@ -89,6 +93,11 @@ class LandscapeController < ApplicationController
       @natural_language_json_cloud.push({"text"=>lang.to_s,"size"=>no*5, "color"=>pie_colors_array[color_index]})
 
       @natural_language_json_pie.push({"label"=>lang.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
+      color_index += 1
+    end
+
+    licenseProperty_hash.each do |license,no|
+      @licenseProperty_json_pie.push({"label"=>license.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
       color_index += 1
     end
 
@@ -117,6 +126,7 @@ class LandscapeController < ApplicationController
 
     @natural_language_json_cloud = @natural_language_json_cloud.to_json.html_safe
     @natural_language_json_pie = @natural_language_json_pie.to_json.html_safe
+    @licenseProperty_json_pie = @licenseProperty_json_pie.to_json.html_safe
 
     # used properties pie charts html safe formatting
     @prefLabelProperty_json_pie = @prefLabelProperty_json_pie.to_json.html_safe
