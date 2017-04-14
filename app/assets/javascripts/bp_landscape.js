@@ -33,6 +33,10 @@ var createPie = function(divName, json, title, subtitle) {
             "content": json
         },
         "labels": {
+            "truncation": {
+              "enabled": true,
+              "truncateLength": 40
+            },
             "outer": {
                 "pieDistance": 32
             },

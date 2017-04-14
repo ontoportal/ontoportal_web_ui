@@ -14,20 +14,26 @@
   %div{:style => "width: 50%;margin: 3em auto;"}
     %canvas#formatCanvas
 
+  %hr
+  %h1 Properties used
+
   %div#naturalLanguagePieChartDiv
 
   %div#licensePieChartDiv
 
   %hr
-  %h1 Properties used in AgroPortal
 
-  %div
-    %div#prefLabelPropertyPieChartDiv{:style => "float: left; width: 50%;"}
-    %div#synonymPropertyPieChartDiv{:style => "float: right; width: 50%;"}
+  %div{:class => "row"}
+    %div{:class => "col-md-3"}
+      %div#prefLabelPropertyPieChartDiv
+    %div{:class => "col-md-3"}
+      %div#synonymPropertyPieChartDiv
 
-  %div
-    %div#definitionPropertyPieChartDiv{:style => "float: left; width: 50%;"}
-    %div#authorPropertyPieChartDiv{:style => "float: right; width: 50%;"}
+    %div{:class => "col-md-3"}
+      %div#definitionPropertyPieChartDiv
+
+    %div{:class => "col-md-3"}
+      %div#authorPropertyPieChartDiv
 
   %div#cloudChart
 
