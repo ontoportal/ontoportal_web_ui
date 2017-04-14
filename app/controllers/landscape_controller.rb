@@ -54,7 +54,7 @@ class LandscapeController < ApplicationController
 
         # Get the prefLabelProperty used for OWL properties in a hash
         if sub.hasOntologyLanguage.eql?("OWL")
-          licenseProperty_hash = get_used_properties(sub.hasLicense, "none", licenseProperty_hash)
+          licenseProperty_hash = get_used_properties(sub.hasLicense, nil, licenseProperty_hash)
 
           prefLabelProperty_hash = get_used_properties(sub.prefLabelProperty, "http://www.w3.org/2004/02/skos/core#prefLabel", prefLabelProperty_hash)
 
@@ -155,9 +155,20 @@ class LandscapeController < ApplicationController
   def get_used_properties(attr_value, default_property, property_hash)
     if attr_value.nil? || attr_value.empty?
       # if property null then we increment the default value
+      if default_property.nil?
+        return property_hash
+      end
       attr_value = default_property
     else
       attr_value = attr_value.to_s
+    end
+
+    # Replace namespace by prefix (defined in application_controller.rb)
+    RESOLVE_NAMESPACE.each do |prefix, namespace|
+      if attr_value.start_with?(namespace)
+        attr_value = attr_value.sub(namespace, "#{prefix}:")
+        break;
+      end
     end
 
     # If attribute value property already in hash then we increment the count of the property in the hash
