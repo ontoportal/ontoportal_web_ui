@@ -120,28 +120,34 @@ class LandscapeController < ApplicationController
       color_index += 1
     end
 
+    color_index = 0
     people_count_hash.each do |people,no|
       @people_count_json_cloud.push({"text"=>people.to_s,"size"=>no*5, "color"=>pie_colors_array[color_index]})
       color_index += 1
     end
 
+    color_index = 0
     licenseProperty_hash.each do |license,no|
       @licenseProperty_json_pie.push({"label"=>license.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
       color_index += 1
     end
 
+    color_index = 0
     prefLabelProperty_hash.each do |pref_label,no|
       @prefLabelProperty_json_pie.push({"label"=>pref_label.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
       color_index += 1
     end
+    color_index = 0
     synonymProperty_hash.each do |synonym,no|
       @synonymProperty_json_pie.push({"label"=>synonym.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
       color_index += 1
     end
+    color_index = 0
     definitionProperty_hash.each do |definition,no|
       @definitionProperty_json_pie.push({"label"=>definition.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
       color_index += 1
     end
+    color_index = 0
     authorProperty_hash.each do |author,no|
       @authorProperty_json_pie.push({"label"=>author.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
       color_index += 1
