@@ -7,7 +7,7 @@ var createPie = function(divName, json, title, subtitle) {
         "header": {
             "title": {
                 "text": title,
-                "fontSize": 24,
+                "fontSize": 22,
                 "font": "open sans"
             },
             "subtitle": {
@@ -75,17 +75,17 @@ var createPie = function(divName, json, title, subtitle) {
 }
 
 // To create a new pie chart: add "%div#prefLabelPieChartDiv" to html and use the createPie function
-var naturalLanguagePie = createPie("naturalLanguagePieChartDiv", naturalLanguagePieJson, "Ontologies natural languages in AgroPortal", "A pie chart to show the different natural languages used in AgroPortal");
+var naturalLanguagePie = createPie("naturalLanguagePieChartDiv", naturalLanguagePieJson, "Ontologies natural languages", "Languages of the ontologies");
 
-var licensePie = createPie("licensePieChartDiv", licensePieJson, "Ontologies licenses in AgroPortal", "A pie chart to show the different licenses used in AgroPortal");
+var licensePie = createPie("licensePieChartDiv", licensePieJson, "Ontologies licenses", "Licenses used by the ontologies");
 
-var prefLabelPie = createPie("prefLabelPropertyPieChartDiv", prefLabelPieJson, "Ontologies prefLabel properties in AgroPortal", "A pie chart to show the different prefLabel property URIs used for OWL ontologies in AgroPortal");
+var prefLabelPie = createPie("prefLabelPropertyPieChartDiv", prefLabelPieJson, "Ontologies prefLabel properties", "prefLabel property URIs used for OWL ontologies");
 
-var synonymPie = createPie("synonymPropertyPieChartDiv", synonymPieJson, "Ontologies synonym properties in AgroPortal", "A pie chart to show the different synonym property URIs used for OWL ontologies in AgroPortal");
+var synonymPie = createPie("synonymPropertyPieChartDiv", synonymPieJson, "Ontologies synonym properties", "synonym property URIs used for OWL ontologies");
 
-var definitionPie = createPie("definitionPropertyPieChartDiv", definitionPieJson, "Ontologies definition properties in AgroPortal", "A pie chart to show the different definition property URIs used for OWL ontologies in AgroPortal");
+var definitionPie = createPie("definitionPropertyPieChartDiv", definitionPieJson, "Ontologies definition properties", "definition property URIs used for OWL ontologies");
 
-var authorPie = createPie("authorPropertyPieChartDiv", authorPieJson, "Ontologies author properties in AgroPortal", "A pie chart to show the different author property URIs used for OWL ontologies in AgroPortal");
+var authorPie = createPie("authorPropertyPieChartDiv", authorPieJson, "Ontologies author properties", "author property URIs used for OWL ontologies");
 
 // Generate the tag cloud
 var color = d3.scale.linear()
