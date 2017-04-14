@@ -25,7 +25,7 @@ var createPie = function(divName, json, title, subtitle) {
             "location": "bottom-left"
         },
         "size": {
-            "canvasWidth": 590,
+            "canvasWidth": document.getElementById(divName).offsetWidth,
             "pieOuterRadius": "90%"
         },
         "data": {
