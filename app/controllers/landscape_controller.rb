@@ -18,6 +18,8 @@ class LandscapeController < ApplicationController
     definitionProperty_hash = {}
     authorProperty_hash = {}
 
+    people_count_hash = {}
+
     @metrics_average = [{:attr => "numberOfClasses", :label => "Number of classes", :array => []},
                         {:attr => "numberOfIndividuals", :label => "Number of individuals", :array => []},
                         {:attr => "numberOfProperties", :label => "Number of properties", :array => []},
@@ -80,6 +82,20 @@ class LandscapeController < ApplicationController
           end
 
         end
+
+        # Get people that are mentioned as ontology actors (contact, contributors, creators, curator) to create a tag cloud
+        # hasContributor hasCreator contact(explore,name) curatedBy
+        contributors_attr_list = [:hasContributor, :hasCreator]
+        contributors_attr_list.each do |contributor|
+          contributor_label = sub.send(contributor.to_s)
+          if !contributor_label.nil?
+            if people_count_hash.has_key?(contributor_label)
+              people_count_hash[contributor_label] += 1
+            else
+              people_count_hash[contributor_label] = 1
+            end
+          end
+        end
       end
     end
 
@@ -91,7 +107,7 @@ class LandscapeController < ApplicationController
     # Generate the JSON to put natural languages in the pie chart
     @natural_language_json_pie = []
     # Get the different naturalLanguage of submissions to generate a tag cloud
-    @natural_language_json_cloud = []
+    @people_count_json_cloud = []
     # Generate the JSON to put natural languages in the pie chart
     @licenseProperty_json_pie = []
     @prefLabelProperty_json_pie = []
@@ -100,9 +116,12 @@ class LandscapeController < ApplicationController
     @authorProperty_json_pie = []
 
     natural_language_hash.each do |lang,no|
-      @natural_language_json_cloud.push({"text"=>lang.to_s,"size"=>no*5, "color"=>pie_colors_array[color_index]})
-
       @natural_language_json_pie.push({"label"=>lang.to_s,"value"=>no, "color"=>pie_colors_array[color_index]})
+      color_index += 1
+    end
+
+    people_count_hash.each do |people,no|
+      @people_count_json_cloud.push({"text"=>people.to_s,"size"=>no*5, "color"=>pie_colors_array[color_index]})
       color_index += 1
     end
 
@@ -140,7 +159,7 @@ class LandscapeController < ApplicationController
                                                   :backgroundColor => pie_colors_array,
                                                   :hoverBackgroundColor => pie_colors_array.reverse}] };
 
-    @natural_language_json_cloud = @natural_language_json_cloud.to_json.html_safe
+    @people_count_json_cloud = @people_count_json_cloud.to_json.html_safe
     @natural_language_json_pie = @natural_language_json_pie.to_json.html_safe
     @licenseProperty_json_pie = @licenseProperty_json_pie.to_json.html_safe
 
