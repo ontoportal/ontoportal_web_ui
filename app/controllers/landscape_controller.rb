@@ -10,6 +10,7 @@ class LandscapeController < ApplicationController
     color_index = 0
 
     # A hash with the language label and the number of time it appears in sub.naturalLanguage
+    groups_hash = {}
     natural_language_hash = {}
     licenseProperty_hash = {}
     prefLabelProperty_hash = {}
@@ -70,6 +71,15 @@ class LandscapeController < ApplicationController
         # Get number of ontologies for each format (for horizontal bar chart)
         ontologyFormatsCount[sub.hasOntologyLanguage] += 1
 
+        # Count number of ontologies for each group (bar chart)
+        ont.explore.groups.each do |group|
+          if groups_hash.has_key?(group.acronym.to_s)
+            groups_hash[group.acronym.to_s] += 1
+          else
+            groups_hash[group.acronym.to_s] = 1
+          end
+
+        end
       end
     end
 
@@ -124,6 +134,12 @@ class LandscapeController < ApplicationController
                        :backgroundColor => ["#669911", "#119966", "#66A2EB", "#FCCE56"],
                        :hoverBackgroundColor => ["#66A2EB", "#FCCE56", "#669911", "#119966"]}] };
 
+    # Format the groupOntologiesCount hash as the JSON needed to generate the chart
+    @groupCountChartJson = { :labels => groups_hash.keys,
+                                  :datasets => [{ :label => "Number of ontologies in a group", :data => groups_hash.values,
+                                                  :backgroundColor => pie_colors_array,
+                                                  :hoverBackgroundColor => pie_colors_array.reverse}] };
+
     @natural_language_json_cloud = @natural_language_json_cloud.to_json.html_safe
     @natural_language_json_pie = @natural_language_json_pie.to_json.html_safe
     @licenseProperty_json_pie = @licenseProperty_json_pie.to_json.html_safe
@@ -134,6 +150,7 @@ class LandscapeController < ApplicationController
     @definitionProperty_json_pie = @definitionProperty_json_pie.to_json.html_safe
     @authorProperty_json_pie = @authorProperty_json_pie.to_json.html_safe
     @ontologyFormatsChartJson = @ontologyFormatsChartJson.to_json.html_safe
+    @groupCountChartJson = @groupCountChartJson.to_json.html_safe
   end
 
 

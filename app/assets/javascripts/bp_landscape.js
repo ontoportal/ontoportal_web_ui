@@ -134,6 +134,19 @@ var ontologyFormatsChart = new Chart(ontologyFormatsContext, {
         stacked: true
       }]
     }
+  }
+});
 
+var groupCountContext = document.getElementById("groupsCanvas").getContext("2d");
+
+var groupCountChart = new Chart(groupCountContext, {
+  type: 'bar',
+  data: groupCountChartJson,
+  options: {
+    scales: {
+      yAxes: [{
+        stacked: true
+      }]
+    }
   }
 });

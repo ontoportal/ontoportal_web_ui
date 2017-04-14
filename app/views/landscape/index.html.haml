@@ -14,6 +14,9 @@
   %div{:style => "width: 50%;margin: 3em auto;"}
     %canvas#formatCanvas
 
+  %div{:style => "width: 50%;margin: 3em auto;"}
+    %canvas#groupsCanvas
+
   %hr
   %h1 Properties used
 
@@ -62,6 +65,7 @@
   var definitionPieJson = #{@definitionProperty_json_pie}
   var authorPieJson = #{@authorProperty_json_pie}
   var ontologyFormatsChartJson = #{@ontologyFormatsChartJson}
+  var groupCountChartJson = #{@groupCountChartJson}
 
 
 / This javascript needs to be called after pieJson and cloudJson have been set
