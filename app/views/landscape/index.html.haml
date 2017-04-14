@@ -18,14 +18,14 @@
       %h2 Ontologies by group
       %canvas#groupsCanvas
 
-  %hr
+  %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
   %h1 Properties used
 
   %div{:class => "row"}
     %div#naturalLanguagePieChartDiv{:class => "col-md-6"}
     %div#licensePieChartDiv{:class => "col-md-6"}
 
-  %hr
+  %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
 
   %div{:class => "row"}
     %div{:class => "col-md-3"}
@@ -41,11 +41,11 @@
 
   %div#cloudChart
 
-  %hr
+  %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
   %div
     %h1 Average metrics
 
-    %table.minimal.align-right{width: "30%"}
+    %table.minimal.align-right{width: "30%", style: "margin-bottom: 3em;"}
       %tbody
         - for metric in @metrics_average
           %tr
