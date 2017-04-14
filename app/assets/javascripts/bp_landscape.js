@@ -119,12 +119,9 @@ function draw(words) {
 
 
 // Horizontal bar charts for format (OWL, SKOS, UMLS)
+var ontologyFormatsContext = document.getElementById("formatCanvas").getContext("2d");
 
-console.log(ontologyFormatsChartJson);
-
-var MeSeContext = document.getElementById("formatCanvas").getContext("2d");
-
-var MeSeChart = new Chart(MeSeContext, {
+var ontologyFormatsChart = new Chart(ontologyFormatsContext, {
   type: 'horizontalBar',
   data: ontologyFormatsChartJson,
   options: {
@@ -136,23 +133,3 @@ var MeSeChart = new Chart(MeSeContext, {
 
   }
 });
-
-/*
-var MeSeChart = new Chart(MeSeContext, {
-  type: 'horizontalBar',
-  data: ontologyFormatsChartJson,
-  options: {
-    scales: {
-      xAxes: [{
-        ticks: {
-          min: 60
-        }
-      }],
-      yAxes: [{
-        stacked: true
-      }]
-    }
-
-  }
-});
-*/
