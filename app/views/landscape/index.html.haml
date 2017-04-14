@@ -1,4 +1,5 @@
 =javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"
+=javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"
 =javascript_include_tag "d3pie.min"
 =javascript_include_tag "d3.layout.cloud"
 - # Load bootstrap for this page from public/stylesheets
@@ -8,6 +9,10 @@
 - @title = "Landscape"
 %div{:style => "padding: 1em;", :align => "center"}
   %h1 Landscape
+
+  %h2 Format used
+
+  %canvas#formatCanvas
 
   %div#naturalLanguagePieChartDiv
 
@@ -22,7 +27,7 @@
     %div#definitionPropertyPieChartDiv{:style => "float: left; width: 50%;"}
     %div#authorPropertyPieChartDiv{:style => "float: right; width: 50%;"}
 
-  //%div#cloudChart
+  %div#cloudChart
 
   %hr
   %div
