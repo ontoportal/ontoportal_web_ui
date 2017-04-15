@@ -87,12 +87,15 @@ class LandscapeController < ApplicationController
         # hasContributor hasCreator contact(explore,name) curatedBy
         contributors_attr_list = [:hasContributor, :hasCreator]
         contributors_attr_list.each do |contributor|
-          contributor_label = sub.send(contributor.to_s)
+          contributor_label = sub.send(contributor.to_s).to_s
           if !contributor_label.nil?
-            if people_count_hash.has_key?(contributor_label)
-              people_count_hash[contributor_label] += 1
-            else
-              people_count_hash[contributor_label] = 1
+            contributors_split = contributor_label.split(",")
+            contributors_split.each do |contrib|
+              if people_count_hash.has_key?(contrib)
+                people_count_hash[contrib] += 1
+              else
+                people_count_hash[contrib] = 1
+              end
             end
           end
         end
@@ -123,8 +126,8 @@ class LandscapeController < ApplicationController
 
     color_index = 0
     people_count_hash.each do |people,no|
-      @people_count_json_cloud.push({"text"=>people.to_s,"size"=>no*5, "color"=>pie_colors_array[color_index]})
-      color_index += 1
+      colour = "%06x" % (rand * 0xffffff)
+      @people_count_json_cloud.push({"text"=>people.to_s,"size"=>no*5, "color"=>colour})
     end
 
     color_index = 0
