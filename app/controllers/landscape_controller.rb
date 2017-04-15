@@ -127,7 +127,7 @@ class LandscapeController < ApplicationController
     color_index = 0
     people_count_hash.each do |people,no|
       colour = "%06x" % (rand * 0xffffff)
-      @people_count_json_cloud.push({"text"=>people.to_s,"size"=>no*5, "color"=>colour})
+      @people_count_json_cloud.push({"text"=>people.to_s,"size"=>no*10})
     end
 
     color_index = 0

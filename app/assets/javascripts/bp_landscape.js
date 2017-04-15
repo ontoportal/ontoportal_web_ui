@@ -88,10 +88,160 @@ var definitionPie = createPie("definitionPropertyPieChartDiv", definitionPieJson
 var authorPie = createPie("authorPropertyPieChartDiv", authorPieJson, "Ontologies author properties", "author property URIs used for OWL ontologies");
 
 // Generate the tag cloud
-var color = d3.scale.linear()
-    .domain([0,1,2,3,4,5,6,10,15,20,100])
-    .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
 
+/* EN NOIR ET GRIS
+
+var color = d3.scale.linear()
+  .domain([0,1,2,3,4,5,6,10,15,20,100])
+  .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+
+d3.layout.cloud().size([800, 300])
+  .words(peopleCountJsonCloud)
+  .rotate(0)
+  .fontSize(function(d) { return d.size; })
+  .on("end", draw)
+  .start();
+
+function draw(words) {
+  d3.select("#cloudChart").append("svg")
+    .attr("width", 850)
+    .attr("height", 350)
+    .attr("class", "wordcloud")
+    .append("g")
+    // without the transform, words words would get cutoff to the left and top, they would
+    // appear outside of the SVG area
+    .attr("transform", "translate(320,200)")
+    .selectAll("text")
+    .data(words)
+    .enter().append("text")
+    .style("font-size", function(d) { return d.size + "px"; })
+    .style("fill", function(d, i) { return color(i); })
+    .attr("transform", function(d) {
+      return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+    })
+    .text(function(d) { return d.text; });
+}*/
+var fill = d3.scale.category20();
+d3.layout.cloud().size([300, 300])
+  .words(peopleCountJsonCloud)
+  .padding(5)
+  .rotate(function() { return ~~(Math.random() * 2); })
+  .font("Impact")
+  .fontSize(function(d) { return d.size; })
+  .on("end", draw)
+  .start();
+function draw(words) {
+  d3.select("#cloudChart").append("svg")
+    .attr("width", 300)
+    .attr("height", 300)
+    .append("g")
+    .attr("transform", "translate(150,150)")
+    .selectAll("text")
+    .data(words)
+    .enter().append("text")
+    .style("font-size", function(d) { return d.size + "px"; })
+    .style("font-family", "Impact")
+    .style("fill", function(d, i) { return fill(i); })
+    .attr("text-anchor", "middle")
+    .attr("transform", function(d) {
+      return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+    })
+    .text(function(d) { return d.text; });
+}
+/*
+var fill = d3.scale.category20();
+var data = [{word:"Hello",weight:20},{word:"World",weight:10},{word:"Normally",weight:25},{word:"You",weight:15},{word:"Want",weight:30},{word:"More",weight:12},{word:"Words",weight:8},{word:"But",weight:18},{word:"Who",weight:22},{word:"Cares",weight:27}];
+
+d3.layout.cloud().size([500, 500])
+  .words(peopleCountJsonCloud.map(function(d) {
+    return {text: d.word, size: d.weight};
+  }))
+  .padding(5)
+  .rotate(function() { return ~~(Math.random() * 2); })
+  .font("Impact")
+  .fontSize(function(d) { return d.size; })
+  .on("end", draw)
+  .start();
+
+function draw(words) {
+  d3.select("#cloudChart").append("svg")
+    .attr("width", 500)
+    .attr("height", 500)
+    .append("g")
+    .attr("transform", "translate(150,150)")
+    .selectAll("text")
+    .data(words)
+    .enter().append("text")
+    .style("font-size", function(d) { return d.size + "px"; })
+    .style("font-family", "Impact")
+    .style("fill", function(d, i) { return fill(i); })
+    .attr("text-anchor", "middle")
+    .attr("transform", function(d) {
+      return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+    })
+    .text(function(d) { return d.text; });
+}
+
+function drawUpdate(words){
+  //alert(JSON.stringify(words));   //shows me the added data
+
+  d3.select("body").selectAll("text")
+    .data(words.map(function(d) {
+      return {text: d.word, size: d.weight};
+    }))
+    .style("font-size", function(d) { return d.size + "px"; })
+    .style("font-family", "Impact")
+    .style("fill", function(d, i) { return fill(i); })
+    .attr("text-anchor", "middle")
+    .text(function(d) { return d.text; });
+}
+
+setInterval(function () {
+  var d_new = data;
+  d_new.push({word: "Mappy",weight:35});
+  drawUpdate(d_new);
+}, 1500);
+
+
+
+// Generate the word cloud (https://github.com/jasondavies/d3-cloud)
+/*var fill = d3.scale.category20();
+
+d3.layout.cloud().size([500, 500])
+  .words([
+    "Hello", "world", "normally", "you", "want", "more", "words",
+    "than", "this"].map(function(d) {
+    return {text: d, size: 10 + Math.random() * 90, test: "haha"};
+  }))
+  .padding(5)
+  .rotate(function() { return ~~(Math.random() * 2) * 90; })
+  .font("Impact")
+  .fontSize(function(d) { return d.size; })
+  .on("end", draw)
+  .start();
+
+//layout.start();
+
+function draw(words) {
+  d3.select("#cloudChart").append("svg")
+    .attr("width", 500)
+    .attr("height", 500)
+    .append("g")
+    .attr("transform", "translate(500,500)")
+    .selectAll("text")
+    .data(words)
+    .enter().append("text")
+    .style("font-size", function(d) { return d.size + "px"; })
+    .style("font-family", "Impact")
+    .style("fill", function(d, i) { return fill(i); })
+    .attr("text-anchor", "middle")
+    .attr("transform", function(d) {
+      return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+    })
+    .text(function(d) { return d.text; });
+}*/
+
+/*
 d3.layout.cloud().size([800, 300])
     .words(peopleCountJsonCloud)
     .rotate(0)
@@ -119,7 +269,7 @@ function draw(words) {
             return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
         })
         .text(function(d) { return d.text; });
-}
+}*/
 
 
 // Horizontal bar charts for format (OWL, SKOS, UMLS)
