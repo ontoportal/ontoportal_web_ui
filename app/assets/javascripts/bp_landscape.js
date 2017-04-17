@@ -51,14 +51,13 @@ var createPie = function(divName, json, title, subtitle) {
         },
         callbacks: {
           onMouseoverSegment: function (d) {
-            console.log(d);
             if (chartTooltipLocked == false) {
               d3.select("#chartTooltip")
                 .style("left", d3.event.pageX + "px")
                 .style("top", d3.event.pageY + "px")
                 .style("opacity", 1)
               d3.select("#chartTooltipValue")
-                .text(d.data.label);
+                .text(d.data.uri);
               $("#chartTooltip").show();
             }
           },
@@ -79,7 +78,7 @@ var createPie = function(divName, json, title, subtitle) {
                 .style("top", d3.event.pageY + "px")
                 .style("opacity", 1)
               d3.select("#chartTooltipValue")
-                .text(d.data.label);
+                .text(d.data.uri);
               $("#chartTooltip").show();
             }
           },
