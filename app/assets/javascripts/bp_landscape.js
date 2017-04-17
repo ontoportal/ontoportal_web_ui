@@ -87,16 +87,19 @@ var definitionPie = createPie("definitionPropertyPieChartDiv", definitionPieJson
 
 var authorPie = createPie("authorPropertyPieChartDiv", authorPieJson, "Ontologies author properties", "author property URIs used for OWL ontologies");
 
-// Generate the tag cloud
-
+// Generate the people tag cloud (from all contributors attributes)
 $(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
   $("#peopleCloudChart").jQCloud(peopleCountJsonCloud);
 });
 
+// Generate the organization tag cloud (from fundedBy, endorsedBy...), don't show if less than 5 words
 $(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
-  $("#orgCloudChart").jQCloud(orgCountJsonCloud);
+  if (Object.keys(orgCountJsonCloud).length > 5) {
+    $("#orgCloudDiv").show();
+    $("#orgCloudChart").jQCloud(orgCountJsonCloud);
+  }
 });
 
 
