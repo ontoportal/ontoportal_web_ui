@@ -14,6 +14,8 @@ function toggleDiv(divId)
   }
 }
 
+var chartTooltipLocked = false;
+
 // Creating a pie chart using d3pie.js
 // function to generate a pie chart given 4 simple params: the div class name (the html div where the pie chart will go)
 // the JSON containing the chart data. 2 strings for chart title and subtitle
@@ -46,6 +48,39 @@ var createPie = function(divName, json, title, subtitle) {
         "data": {
             "sortOrder": "value-desc",
             "content": json
+        },
+        callbacks: {
+          onMouseoverSegment: function (d) {
+            console.log(d);
+            if (chartTooltipLocked == false) {
+              d3.select("#chartTooltip")
+                .style("left", d3.event.pageX + "px")
+                .style("top", d3.event.pageY + "px")
+                .style("opacity", 1)
+              d3.select("#chartTooltipValue")
+                .text(d.data.label);
+              $("#chartTooltip").show();
+            }
+          },
+          onClickSegment: function(d) {
+            // TODO: it prevents beautiful click events
+            if (chartTooltipLocked == false) {
+              chartTooltipLocked = true;
+            } else {
+              chartTooltipLocked = false;
+              d3.select("#chartTooltip")
+                .style("left", d3.event.pageX + "px")
+                .style("top", d3.event.pageY + "px")
+                .style("opacity", 1)
+              d3.select("#chartTooltipValue")
+                .text(d.data.label);
+              $("#chartTooltip").show();
+            }
+            console.log(a);
+          },
+          onMouseoutSegment: function(info) {
+            //$("#chartTooltip").hide(); this avoid us to mouseover tooltip text
+          }
         },
         "labels": {
             "truncation": {
