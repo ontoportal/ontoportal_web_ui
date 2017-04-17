@@ -19,6 +19,7 @@ class LandscapeController < ApplicationController
     authorProperty_hash = {}
 
     people_count_hash = {}
+    people_count_emails = {}
 
     @metrics_average = [{:attr => "numberOfClasses", :label => "Number of classes", :array => []},
                         {:attr => "numberOfIndividuals", :label => "Number of individuals", :array => []},
@@ -99,6 +100,17 @@ class LandscapeController < ApplicationController
             end
           end
         end
+        sub.contact.each do |contact|
+          contributor_label = contact.name
+          if !contributor_label.nil?
+            if people_count_hash.has_key?(contributor_label)
+              people_count_hash[contributor_label] += 1
+            else
+              people_count_hash[contributor_label] = 1
+            end
+            people_count_emails[contributor_label] = contact.email if !contact.email.nil?
+          end
+        end
       end
     end
 
@@ -127,7 +139,11 @@ class LandscapeController < ApplicationController
     people_count_hash.each do |people,no|
       # Random color for each word in the cloud
       colour = "%06x" % (rand * 0xffffff)
-      @people_count_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};"}})
+      if people_count_emails[people.to_s].nil?
+        @people_count_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};"}})
+      else
+        @people_count_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};"}, "link" => "mailto:#{people_count_emails[people.to_s]}"})
+      end
     end
 
     color_index = 0
