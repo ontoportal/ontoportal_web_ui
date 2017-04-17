@@ -21,6 +21,8 @@ class LandscapeController < ApplicationController
     people_count_hash = {}
     people_count_emails = {}
 
+    org_count_hash = {}
+
     @metrics_average = [{:attr => "numberOfClasses", :label => "Number of classes", :array => []},
                         {:attr => "numberOfIndividuals", :label => "Number of individuals", :array => []},
                         {:attr => "numberOfProperties", :label => "Number of properties", :array => []},
@@ -111,6 +113,21 @@ class LandscapeController < ApplicationController
             people_count_emails[contributor_label] = contact.email if !contact.email.nil?
           end
         end
+
+        org_attr_list = [:fundedBy, :endorsedBy]
+        org_attr_list.each do |attr|
+          contributor_label = sub.send(attr.to_s).to_s
+          if !contributor_label.nil?
+            contributors_split = contributor_label.split(",")
+            contributors_split.each do |contrib|
+              if org_count_hash.has_key?(contrib)
+                org_count_hash[contrib] += 1
+              else
+                org_count_hash[contrib] = 1
+              end
+            end
+          end
+        end
       end
     end
 
@@ -123,6 +140,7 @@ class LandscapeController < ApplicationController
     @natural_language_json_pie = []
     # Get the different naturalLanguage of submissions to generate a tag cloud
     @people_count_json_cloud = []
+    @org_count_json_cloud = []
     # Generate the JSON to put natural languages in the pie chart
     @licenseProperty_json_pie = []
     @prefLabelProperty_json_pie = []
@@ -144,6 +162,12 @@ class LandscapeController < ApplicationController
       else
         @people_count_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};"}, "link" => "mailto:#{people_count_emails[people.to_s]}"})
       end
+    end
+
+    org_count_hash.each do |org,no|
+      # Random color for each word in the cloud
+      colour = "%06x" % (rand * 0xffffff)
+      @org_count_json_cloud.push({"text"=>org.to_s,"weight"=>no, "html" => {style: "color: ##{colour};"}})
     end
 
     color_index = 0
@@ -186,6 +210,7 @@ class LandscapeController < ApplicationController
                                                   :hoverBackgroundColor => pie_colors_array.reverse}] };
 
     @people_count_json_cloud = @people_count_json_cloud.to_json.html_safe
+    @org_count_json_cloud = @org_count_json_cloud.to_json.html_safe
     @natural_language_json_pie = @natural_language_json_pie.to_json.html_safe
     @licenseProperty_json_pie = @licenseProperty_json_pie.to_json.html_safe
 

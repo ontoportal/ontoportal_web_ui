@@ -42,7 +42,10 @@
   %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
 
   %h1 Most active people
-  %div#cloudChart{:style => "width: 550px; height: 350px; margin-top: 2em;"}
+  %div#peopleCloudChart{:style => "width: 550px; height: 350px; margin-top: 2em;"}
+
+  %h1 Most active organizations
+  %div#orgCloudChart{:style => "width: 550px; height: 350px; margin-top: 2em;"}
 
   %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
   %div
@@ -62,6 +65,7 @@
   var naturalLanguagePieJson = #{@natural_language_json_pie}
   // Get the data to generate the cloud chart for naturalLanguages
   var peopleCountJsonCloud = #{@people_count_json_cloud}
+  var orgCountJsonCloud = #{@org_count_json_cloud}
   // Get the data for the used properties pie charts
   var licensePieJson = #{@licenseProperty_json_pie}
   var prefLabelPieJson = #{@prefLabelProperty_json_pie}

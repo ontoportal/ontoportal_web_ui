@@ -91,9 +91,12 @@ var authorPie = createPie("authorPropertyPieChartDiv", authorPieJson, "Ontologie
 
 $(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
-  console.log("yeee");
-  console.log(peopleCountJsonCloud);
-  $("#cloudChart").jQCloud(peopleCountJsonCloud);
+  $("#peopleCloudChart").jQCloud(peopleCountJsonCloud);
+});
+
+$(function() {
+  // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
+  $("#orgCloudChart").jQCloud(orgCountJsonCloud);
 });
 
 
