@@ -164,16 +164,16 @@ class LandscapeController < ApplicationController
       # Random color for each word in the cloud
       colour = "%06x" % (rand * 0xffffff)
       if people_count_emails[people.to_s].nil?
-        @people_count_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};"}})
+        @people_count_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} mentions as a contributor."}})
       else
-        @people_count_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};"}, "link" => "mailto:#{people_count_emails[people.to_s]}"})
+        @people_count_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} mentions as a contributor."}, "link" => "mailto:#{people_count_emails[people.to_s]}"})
       end
     end
 
     org_count_hash.each do |org,no|
       # Random color for each word in the cloud
       colour = "%06x" % (rand * 0xffffff)
-      @org_count_json_cloud.push({"text"=>org.to_s,"weight"=>no, "html" => {style: "color: ##{colour};"}})
+      @org_count_json_cloud.push({"text"=>org.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} ontologies endorsed or funded."}})
     end
 
     color_index = 0
