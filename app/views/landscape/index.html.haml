@@ -25,19 +25,21 @@
     %div#naturalLanguagePieChartDiv{:class => "col-md-6"}
     %div#licensePieChartDiv{:class => "col-md-6"}
 
-  %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
+  %button#propertiesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-primary", :onclick => "toggleDiv('properties')"} More properties charts
 
-  %div{:class => "row"}
-    %div{:class => "col-md-3"}
-      %div#prefLabelPropertyPieChartDiv
-    %div{:class => "col-md-3"}
-      %div#synonymPropertyPieChartDiv
-
-    %div{:class => "col-md-3"}
-      %div#definitionPropertyPieChartDiv
-
-    %div{:class => "col-md-3"}
-      %div#authorPropertyPieChartDiv
+  %div#propertiesDiv{:class => "panel panel-primary", :style => "margin-top: 2em;"}
+    %div{:class => "panel-heading"}
+      %h3{:class => "panel-title"} Pie charts for properties used for the ontologies
+    %div{:class => "panel-body"}
+      %div{:class => "row"}
+        %div{:class => "col-md-3"}
+          %div#prefLabelPropertyPieChartDiv
+        %div{:class => "col-md-3"}
+          %div#synonymPropertyPieChartDiv
+        %div{:class => "col-md-3"}
+          %div#definitionPropertyPieChartDiv
+        %div{:class => "col-md-3"}
+          %div#authorPropertyPieChartDiv
 
   %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
 

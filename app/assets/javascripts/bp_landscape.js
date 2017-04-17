@@ -1,4 +1,19 @@
 
+/**
+ * To show/hide the simple metadata div
+ */
+function toggleDiv(divId)
+{
+  var e = document.getElementById(divId + "Div");
+  if (e.style.display == 'block') {
+    e.style.display = 'none';
+    document.getElementById(divId + "Btn").classList.remove("active");
+  } else {
+    e.style.display = 'block';
+    document.getElementById(divId + "Btn").classList.add("active");
+  }
+}
+
 // Creating a pie chart using d3pie.js
 // function to generate a pie chart given 4 simple params: the div class name (the html div where the pie chart will go)
 // the JSON containing the chart data. 2 strings for chart title and subtitle
@@ -131,3 +146,8 @@ var groupCountChart = new Chart(groupCountContext, {
     }
   }
 });
+
+// Hide more properties pie div on load to let the pie lib the time to get the parent div size (to size the pie chart)
+window.onload = function() {
+  $("#propertiesDiv").hide();
+};
