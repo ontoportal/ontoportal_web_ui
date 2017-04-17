@@ -162,7 +162,6 @@ $(function() {
 
 // Horizontal bar charts for format (OWL, SKOS, UMLS)
 var ontologyFormatsContext = document.getElementById("formatCanvas").getContext("2d");
-
 var ontologyFormatsChart = new Chart(ontologyFormatsContext, {
   type: 'horizontalBar',
   data: ontologyFormatsChartJson,
@@ -176,10 +175,22 @@ var ontologyFormatsChart = new Chart(ontologyFormatsContext, {
 });
 
 var groupCountContext = document.getElementById("groupsCanvas").getContext("2d");
-
 var groupCountChart = new Chart(groupCountContext, {
   type: 'bar',
   data: groupCountChartJson,
+  options: {
+    scales: {
+      yAxes: [{
+        stacked: true
+      }]
+    }
+  }
+});
+
+var sizeSlicesContext = document.getElementById("sizeSlicesCanvas").getContext("2d");
+var sizeSlicesChart = new Chart(sizeSlicesContext, {
+  type: 'bar',
+  data: sizeSlicesChartJson,
   options: {
     scales: {
       yAxes: [{

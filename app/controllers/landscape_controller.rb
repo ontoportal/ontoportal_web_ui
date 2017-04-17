@@ -1,3 +1,6 @@
+require 'action_view'
+include ActionView::Helpers::NumberHelper
+
 class LandscapeController < ApplicationController
   layout 'ontology'
 
@@ -8,8 +11,15 @@ class LandscapeController < ApplicationController
     # Array with color codes for the pie charts. iterate color_index to change color
     pie_colors_array = ["#2484c1", "#0c6197", "#4daa4b", "#90c469", "#daca61", "#e4a14b", "#e98125", "#cb2121", "#830909", "#923e99", "#ae83d5", "#bf273e", "#ce2aeb", "#bca44a", "#618d1b", "#1ee67b", "#b0ec44", "#a4a0c9", "#322849", "#86f71a", "#d1c87f", "#7d9058", "#44b9b0", "#7c37c0", "#cc9fb1", "#e65414", "#8b6834", "#248838"];
 
-    # A hash with the language label and the number of time it appears in sub.naturalLanguage
     groups_hash = {}
+    # A hash for counting ontologies in size ranges
+    size_slices_hash = {}
+    size_slices_hash["< 100"] = 0
+    size_slices_hash["< #{number_with_delimiter(1000, delimiter: " ")}"] = 0
+    size_slices_hash["< #{number_with_delimiter(10000, delimiter: " ")}"] = 0
+    size_slices_hash["< #{number_with_delimiter(100000, delimiter: " ")}"] = 0
+    size_slices_hash["100k+"] = 0
+
     natural_language_hash = {}
     licenseProperty_hash = {}
     formalityProperty_hash = {}
@@ -78,6 +88,25 @@ class LandscapeController < ApplicationController
         end
 
         get_metrics_for_average(sub)
+
+        # Count the number of classes (individuals for skos by ontologies) to get number of ontologies by slice of size
+        if sub.hasOntologyLanguage.eql?("SKOS")
+          ontology_size = sub.numberOfIndividuals
+        else
+          ontology_size = sub.numberOfClasses
+        end
+        if (!ontology_size.nil?)
+          if (ontology_size >= 100000)
+            size_slices_hash["100k+"] += 1
+          else
+            [100, 1000, 10000, 100000].each do |slice_size|
+              if (ontology_size < slice_size)
+                size_slices_hash["< #{number_with_delimiter(slice_size, delimiter: " ")}"] += 1
+                break;
+              end
+            end
+          end
+        end
 
         # Get number of ontologies for each format (for horizontal bar chart)
         ontologyFormatsCount[sub.hasOntologyLanguage] += 1
@@ -222,13 +251,19 @@ class LandscapeController < ApplicationController
     @ontologyFormatsChartJson = { :labels => ontologyFormatsCount.keys,
         :datasets => [{ :label => "Ontology count", :data => ontologyFormatsCount.values,
                        :backgroundColor => ["#669911", "#119966", "#66A2EB", "#FCCE56"],
-                       :hoverBackgroundColor => ["#66A2EB", "#FCCE56", "#669911", "#119966"]}] };
+                       :hoverBackgroundColor => ["#66A2EB", "#FCCE56", "#669911", "#119966"]}] }
 
     # Format the groupOntologiesCount hash as the JSON needed to generate the chart
     @groupCountChartJson = { :labels => groups_hash.keys,
                                   :datasets => [{ :label => "Number of ontologies in a group", :data => groups_hash.values,
                                                   :backgroundColor => pie_colors_array,
-                                                  :hoverBackgroundColor => pie_colors_array.reverse}] };
+                                                  :hoverBackgroundColor => pie_colors_array.reverse}] }
+
+    # Format the groupOntologiesCount hash as the JSON needed to generate the chart
+    @sizeSlicesChartJson = { :labels => size_slices_hash.keys,
+                             :datasets => [{ :label => "Number of ontologies with a class count in the range", :data => size_slices_hash.values,
+                                             :backgroundColor => pie_colors_array,
+                                             :hoverBackgroundColor => pie_colors_array.reverse}] }
 
     @people_count_json_cloud = @people_count_json_cloud.to_json.html_safe
     @org_count_json_cloud = @org_count_json_cloud.to_json.html_safe
@@ -243,6 +278,7 @@ class LandscapeController < ApplicationController
     @authorProperty_json_pie = @authorProperty_json_pie.to_json.html_safe
     @ontologyFormatsChartJson = @ontologyFormatsChartJson.to_json.html_safe
     @groupCountChartJson = @groupCountChartJson.to_json.html_safe
+    @sizeSlicesChartJson = @sizeSlicesChartJson.to_json.html_safe
   end
 
 
