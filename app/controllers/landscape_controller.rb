@@ -116,14 +116,20 @@ class LandscapeController < ApplicationController
 
         org_attr_list = [:fundedBy, :endorsedBy]
         org_attr_list.each do |attr|
-          contributor_label = sub.send(attr.to_s).to_s
-          if !contributor_label.nil?
-            contributors_split = contributor_label.split(",")
-            contributors_split.each do |contrib|
-              if org_count_hash.has_key?(contrib)
-                org_count_hash[contrib] += 1
-              else
-                org_count_hash[contrib] = 1
+          contributors_list = sub.send(attr.to_s)
+          if !contributors_list.kind_of?(Array)
+            contributors_list = [contributors_list]
+          end
+
+          contributors_list.each do |contributor_label|
+            if !contributor_label.nil? &&
+              contributors_split = contributor_label.split(",")
+              contributors_split.each do |contrib|
+                if org_count_hash.has_key?(contrib)
+                  org_count_hash[contrib] += 1
+                else
+                  org_count_hash[contrib] = 1
+                end
               end
             end
           end
