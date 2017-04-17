@@ -189,6 +189,18 @@ var groupCountChart = new Chart(groupCountContext, {
   }
 });
 
+// Hide tooltip when click outside of pie chart div
+$(document).mouseup(function (e)
+{
+  var container = $("#pieChartDiv");
+  if (!container.is(e.target) // if the target of the click isn't the container...
+    && container.has(e.target).length === 0) // ... nor a descendant of the container
+  {
+    chartTooltipLocked = false;
+    $("#chartTooltip").hide();
+  }
+});
+
 // Hide more properties pie div on load to let the pie lib the time to get the parent div size (to size the pie chart)
 window.onload = function() {
   $("#propertiesDiv").hide();
