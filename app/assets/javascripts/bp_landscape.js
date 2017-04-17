@@ -94,6 +94,8 @@ var naturalLanguagePie = createPie("naturalLanguagePieChartDiv", naturalLanguage
 
 var licensePie = createPie("licensePieChartDiv", licensePieJson, "Ontologies licenses", "Licenses used by the ontologies");
 
+var formalityPie = createPie("formalityPieChartDiv", formalityPieJson, "Ontologies formality levels", "Formality level of the ontologies");
+
 var prefLabelPie = createPie("prefLabelPropertyPieChartDiv", prefLabelPieJson, "Ontologies prefLabel properties", "prefLabel property URIs used for OWL ontologies");
 
 var synonymPie = createPie("synonymPropertyPieChartDiv", synonymPieJson, "Ontologies synonym properties", "synonym property URIs used for OWL ontologies");

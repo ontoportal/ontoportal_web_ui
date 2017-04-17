@@ -25,6 +25,8 @@
     %div#naturalLanguagePieChartDiv{:class => "col-md-6"}
     %div#licensePieChartDiv{:class => "col-md-6"}
 
+  %div#formalityPieChartDiv
+
   %button#propertiesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-primary", :onclick => "toggleDiv('properties')"} More properties charts
 
   %div#propertiesDiv{:class => "panel panel-primary", :style => "margin-top: 2em;"}
@@ -75,6 +77,8 @@
   var orgCountJsonCloud = #{@org_count_json_cloud}
   // Get the data for the used properties pie charts
   var licensePieJson = #{@licenseProperty_json_pie}
+  var formalityPieJson = #{@formalityProperty_json_pie}
+
   var prefLabelPieJson = #{@prefLabelProperty_json_pie}
   var synonymPieJson = #{@synonymProperty_json_pie}
   var definitionPieJson = #{@definitionProperty_json_pie}
