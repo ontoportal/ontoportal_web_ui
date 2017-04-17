@@ -86,7 +86,7 @@ class LandscapeController < ApplicationController
 
         # Get people that are mentioned as ontology actors (contact, contributors, creators, curator) to create a tag cloud
         # hasContributor hasCreator contact(explore,name) curatedBy
-        contributors_attr_list = [:hasContributor, :hasCreator]
+        contributors_attr_list = [:hasContributor, :hasCreator, :curatedBy]
         contributors_attr_list.each do |contributor|
           contributor_label = sub.send(contributor.to_s).to_s
           if !contributor_label.nil?
