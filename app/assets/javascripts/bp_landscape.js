@@ -96,7 +96,7 @@ $(function() {
 // Generate the organization tag cloud (from fundedBy, endorsedBy...), don't show if less than 5 words
 $(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
-  if (Object.keys(orgCountJsonCloud).length > 5) {
+  if (Object.keys(orgCountJsonCloud).length > 1) {
     $("#orgCloudDiv").show();
     $("#orgCloudChart").jQCloud(orgCountJsonCloud);
   }
