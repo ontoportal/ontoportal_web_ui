@@ -63,11 +63,17 @@ var createPie = function(divName, json, title, subtitle) {
             }
           },
           onClickSegment: function(d) {
-            // TODO: it prevents beautiful click events
-            if (chartTooltipLocked == false) {
-              chartTooltipLocked = true;
-            } else {
+            //dbIds: d.expanded? [] : d.data.dbIds
+            var wasLocked = chartTooltipLocked
+            if (d.expanded) {
+              dbIds = []
               chartTooltipLocked = false;
+            } else {
+              dbIds = d.data.dbIds
+              chartTooltipLocked = true;
+            }
+
+            if (wasLocked == true) {
               d3.select("#chartTooltip")
                 .style("left", d3.event.pageX + "px")
                 .style("top", d3.event.pageY + "px")
@@ -76,7 +82,6 @@ var createPie = function(divName, json, title, subtitle) {
                 .text(d.data.label);
               $("#chartTooltip").show();
             }
-            console.log(a);
           },
           onMouseoutSegment: function(info) {
             //$("#chartTooltip").hide(); this avoid us to mouseover tooltip text
