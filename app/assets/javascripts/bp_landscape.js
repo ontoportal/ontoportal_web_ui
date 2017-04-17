@@ -56,6 +56,7 @@ var createPie = function(divName, json, title, subtitle) {
                 .style("left", d3.event.pageX + "px")
                 .style("top", d3.event.pageY + "px")
                 .style("opacity", 1)
+                .style("z-index", 1)
               d3.select("#chartTooltipValue")
                 .text(d.data.uri);
               $("#chartTooltip").show();
