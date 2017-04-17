@@ -2,6 +2,7 @@
 =javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"
 =javascript_include_tag "d3pie.min"
 =javascript_include_tag "d3.layout.cloud"
+=javascript_include_tag "jqcloud-1.0.4.min"
 - # Load bootstrap for this page from public/stylesheets
 %link{:type => "text/css", :rel => "stylesheet", :href => "/stylesheets/bootstrap.css"}
 %link{:type => "text/css", :rel => "stylesheet", :href => "/stylesheets/bootstrap-theme.css"}
@@ -42,7 +43,7 @@
   %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
 
   %h1 Most active people
-  %div#cloudChart
+  %div#cloudChart{:style => "width: 550px; height: 350px;"}
 
   %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
   %div
