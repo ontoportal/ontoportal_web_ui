@@ -43,7 +43,7 @@ var createPie = function(divName, json, title, subtitle) {
         },
         "size": {
             "canvasWidth": document.getElementById(divName).offsetWidth,
-            "pieOuterRadius": "90%"
+            "pieOuterRadius": "50%"
         },
         "data": {
             "sortOrder": "value-desc",
@@ -93,7 +93,7 @@ var createPie = function(divName, json, title, subtitle) {
               "truncateLength": 40
             },
             "outer": {
-                "pieDistance": 32
+                "pieDistance": 15
             },
             "inner": {
                 "hideWhenLessThanPercentage": 3
