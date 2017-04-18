@@ -203,20 +203,16 @@ var sizeSlicesChart = new Chart(sizeSlicesContext, {
 buildNetwork(ontologyRelationsArray);
 
 function buildNetwork(ontologyRelationsArray) {
-  var nodes = new vis.DataSet([
-    {id: 1, label: "First node", color: '#FB7E81'}
-  ]);
+  var nodes = new vis.DataSet([]);
   // create an array with edges
   var edges = new vis.DataSet();
-  var propertyCount = 2; // To define nodes IDs
+  var propertyCount = 1; // To define nodes IDs
 
   // Hash with nodes id for each ontology URI
   var nodeIds = {};
 
-  console.log(ontologyRelationsArray);
   ontologyRelationsArray.forEach( function (relationHash)
   {
-    console.log(relationHash);
     // Don't create a new node if node exist already, just add a new edge
     if (nodeIds[relationHash["source"]] != null) {
       var sourceNodeNumber = nodeIds[relationHash["source"]];
@@ -256,7 +252,7 @@ function buildNetwork(ontologyRelationsArray) {
   };
   // Get height of div
   var networkHeight = document.getElementById("networkContainer").clientHeight.toString();
-  var options = {
+  /*var options = {
     autoResize: true,
     height: networkHeight,
     physics: {
@@ -266,13 +262,47 @@ function buildNetwork(ontologyRelationsArray) {
       },
       hierarchicalRepulsion: {
         centralGravity: 0.0,
-        springLength: 400,
+        springLength: 800,
         springConstant: 0.01,
         damping: 0.09,
         nodeDistance: 50
        },
        solver: 'hierarchicalRepulsion'
     }
+  };*/
+
+  var options = {
+    autoResize: true,
+    height: networkHeight,
+    edges:{
+      color:{inherit:'both'},
+      smooth:false
+    },
+    nodes: {
+      shape: "box"
+    },
+    physics: {
+      enabled: true,
+      /*barnesHut: {
+        avoidOverlap: 0.5
+      },*/
+      hierarchicalRepulsion: {
+        centralGravity: 0.0,
+        springLength: 500,
+        springConstant: 0.2,
+        damping: 1,
+        nodeDistance: 170
+      },
+      solver: 'hierarchicalRepulsion'
+    },
+    configure: {
+      enabled: true,
+      showButton: true
+    }
+    /*interaction:{
+      zoomView:false,
+      dragView: false
+    }*/
   };
 
   // initialize your network!
