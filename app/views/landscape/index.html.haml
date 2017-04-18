@@ -66,7 +66,8 @@
 
   %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
 
-  %div#ontologyNetwork
+  %div#networkContainer{:style => "height: 500px; width: 500px"}
+    %div#ontologyNetwork
 
   %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
   %div
@@ -90,6 +91,8 @@
   // Get the data for the used properties pie charts
   var licensePieJson = #{@licenseProperty_json_pie}
   var formalityPieJson = #{@formalityProperty_json_pie}
+
+  var ontologyRelationsArray = #{@ontology_relations_array}
 
   var prefLabelPieJson = #{@prefLabelProperty_json_pie}
   var synonymPieJson = #{@synonymProperty_json_pie}

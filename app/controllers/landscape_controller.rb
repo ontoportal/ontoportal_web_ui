@@ -34,6 +34,8 @@ class LandscapeController < ApplicationController
 
     org_count_hash = {}
 
+    @ontology_relations_array = []
+
     @metrics_average = [{:attr => "numberOfClasses", :label => "Number of classes", :array => []},
                         {:attr => "numberOfIndividuals", :label => "Number of individuals", :array => []},
                         {:attr => "numberOfProperties", :label => "Number of properties", :array => []},
@@ -169,6 +171,13 @@ class LandscapeController < ApplicationController
             end
           end
         end
+
+        # Get ontology relations
+        if !sub.ontologyRelatedTo.nil? && !sub.ontologyRelatedTo.empty?
+          sub.ontologyRelatedTo.each do |import|
+            @ontology_relations_array.push({:source => ont.id, :target=> import, :relation=> "omv:ontologyRelatedTo"})
+          end
+        end
       end
     end
 
@@ -270,6 +279,8 @@ class LandscapeController < ApplicationController
     @natural_language_json_pie = @natural_language_json_pie.to_json.html_safe
     @licenseProperty_json_pie = @licenseProperty_json_pie.to_json.html_safe
     @formalityProperty_json_pie = @formalityProperty_json_pie.to_json.html_safe
+
+    @ontology_relations_array = @ontology_relations_array.to_json.html_safe
 
     # used properties pie charts html safe formatting
     @prefLabelProperty_json_pie = @prefLabelProperty_json_pie.to_json.html_safe

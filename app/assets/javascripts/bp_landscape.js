@@ -200,136 +200,53 @@ var sizeSlicesChart = new Chart(sizeSlicesContext, {
   }
 });
 
+buildNetwork(ontologyRelationsArray);
 
-/**
- * Build the network of properties around an entity. Il utilise la div "ontologyNetwork"
- * @param {type} ontology
- * @param {type} entity
- * @returns {undefined}
- */
-/*function buildNetwork(ontology, entity, selectedLang, ontologies) {
-  // create an array with nodes
-  var label = getEntityLabelLang(entity, selectedLang);
+function buildNetwork(ontologyRelationsArray) {
   var nodes = new vis.DataSet([
-    {id: 1, label: label, color: '#FB7E81'}
+    {id: 1, label: "First node", color: '#FB7E81'}
   ]);
   // create an array with edges
   var edges = new vis.DataSet();
-  var propertyCount = 2; // init at 2 since the entity is 1
+  var propertyCount = 2; // To define nodes IDs
 
-  var orderedEntities = {};
-  // Iterate over the different properties (predicates) of an entity
-  // To get properties values grouped by property
-  Object.keys(entity).sort().forEach(function (key) {
-    if (key !== "id" && key !== "label" && key !== "$$hashKey") {
-      orderedEntities[key] = null;
-      // Iterate over the different values of the object of a predicate (the same property can point to different objects)
-      for (var valuesObject in entity[key]) {
-        if (typeof entity[key][valuesObject]["value"] !== "undefined") {
-          // If it is a literal then we concatenate them
-          if (orderedEntities[key] === null) {
-            orderedEntities[key] = entity[key][valuesObject]["value"];
-          } else {
-            // Limit the size of the object
-            if (orderedEntities[key].length < 70) {
-              orderedEntities[key] = orderedEntities[key] + " \n" + entity[key][valuesObject]["value"];
-            }
-          }
-        }
-      }
-    }
-  });
+  // Hash with nodes id for each ontology URI
   var nodeIds = {};
-  // Add each property and its value to the network
-  for (var attr in orderedEntities) {
+
+  console.log(ontologyRelationsArray);
+  ontologyRelationsArray.forEach( function (relationHash)
+  {
+    console.log(relationHash);
     // Don't create a new node if node exist already, just add a new edge
-    if (nodeIds[orderedEntities[attr]] != null) {
-      edges.add([
-        {from: 1, to: nodeIds[orderedEntities[attr]], label: attr, font: {align: 'horizontal'}}
-      ]);
-      var getLinkedProperties = false;
+    if (nodeIds[relationHash["source"]] != null) {
+      var sourceNodeNumber = nodeIds[relationHash["source"]];
     } else {
+      var sourceNodeNumber = propertyCount;
       nodes.add([
-        {id: propertyCount, label: orderedEntities[attr]}
+        {id: sourceNodeNumber, label: relationHash["source"]}
       ]);
-      var getLinkedProperties = true;
-      nodeIds[orderedEntities[attr]] = propertyCount;
-      if (entity[attr][0]["prefixedPredicate"] !== null) {
-        edges.add([
-          {from: 1, to: propertyCount, label: entity[attr][0]["prefixedPredicate"], font: {align: 'horizontal'}}
-        ]);
-      } else {
-        edges.add([
-          {from: 1, to: propertyCount, label: attr, font: {align: 'horizontal'}}
-        ]);
-      }
-      var entityCount = propertyCount;
+      nodeIds[relationHash["source"]] = propertyCount;
       propertyCount++;
     }
 
-    // If property is an URI we check if it has properties in our ontology
-    if (orderedEntities[attr] != null && orderedEntities[attr].startsWith("http")) {
-      if (ontology === "target") {
-        var ontoNumber = "ont2";
-      } else if (ontology === "source") {
-        var ontoNumber = "ont1";
-      }
-      //console.log(ontologies);
-
-      // Get the entity linked to the mapped concept from the ontology:
-      var linkedEntity = ontologies[ontoNumber]['entities'][orderedEntities[attr]];
-      var linkedEntityProperties = {};
-      // Iterate over the different properties (predicates) of an entity
-      // To get properties values grouped by property
-      if (linkedEntity != null && getLinkedProperties === true) {
-        Object.keys(linkedEntity).sort().forEach(function (key) {
-          if (key !== "id" && key !== "label" && key !== "$$hashKey") {
-            linkedEntityProperties[key] = null;
-            // Iterate over the different values of the object of a predicate (the same property can point to different objects)
-            for (var valuesObject in linkedEntity[key]) {
-              if (typeof linkedEntity[key][valuesObject]["value"] !== "undefined") {
-                // If it is a literal then we concatenate them
-                if (linkedEntityProperties[key] === null) {
-                  linkedEntityProperties[key] = linkedEntity[key][valuesObject]["value"];
-                } else {
-                  // Limit the size of the object
-                  if (linkedEntityProperties[key].length < 70) {
-                    linkedEntityProperties[key] = linkedEntityProperties[key] + " \n" + linkedEntity[key][valuesObject]["value"];
-                  }
-                }
-              }
-            }
-          }
-        });
-        // Add each property and its value to the network
-        for (var linkedAttr in linkedEntityProperties) {
-
-          // Don't create a new node if node exist already, just add a new edge
-          if (nodeIds[linkedEntityProperties[linkedAttr]] != null) {
-            var nodeNumber = nodeIds[linkedEntityProperties[linkedAttr]];
-          } else {
-            var nodeNumber = propertyCount;
-            nodes.add([
-              {id: nodeNumber, label: linkedEntityProperties[linkedAttr]}
-            ]);
-            nodeIds[linkedEntityProperties[linkedAttr]] = propertyCount;
-            propertyCount++;
-          }
-
-          // Create edge with prefixed predicate when possible
-          if (entity[linkedAttr] != null && entity[linkedAttr][0]["prefixedPredicate"] !== null) {
-            edges.add([
-              {from: entityCount, to: nodeNumber, label: entity[linkedAttr][0]["prefixedPredicate"], font: {align: 'horizontal'}}
-            ]);
-          } else {
-            edges.add([
-              {from: entityCount, to: nodeNumber, label: linkedAttr, font: {align: 'horizontal'}}
-            ]);
-          }
-        }
-      }
+    if (nodeIds[relationHash["target"]] != null) {
+      var targetNodeNumber = nodeIds[relationHash["target"]];
+    } else {
+      var targetNodeNumber = propertyCount;
+      nodes.add([
+        {id: targetNodeNumber, label: relationHash["target"]}
+      ]);
+      nodeIds[relationHash["target"]] = propertyCount;
+      propertyCount++;
     }
-  }
+
+    // Create edge with prefixed predicate when possible
+    edges.add([
+      {from: sourceNodeNumber, to: targetNodeNumber, label: relationHash["relation"], font: {align: 'horizontal'}}
+    ]);
+  });
+
+
   // create a network
   var container = document.getElementById("ontologyNetwork");
   // provide the data in the vis format
@@ -338,23 +255,23 @@ var sizeSlicesChart = new Chart(sizeSlicesContext, {
     edges: edges
   };
   // Get height of div
-  var networkHeight = document.getElementById(ontology + "Section").clientHeight.toString();
+  var networkHeight = document.getElementById("networkContainer").clientHeight.toString();
   var options = {
     autoResize: true,
     height: networkHeight,
     physics: {
       enabled: true,
-      /*barnesHut: {
-       avoidOverlap: 0.5
-       },
+      barnesHut: {
+        avoidOverlap: 0.5
+      },
       hierarchicalRepulsion: {
         centralGravity: 0.0,
         springLength: 400,
         springConstant: 0.01,
         damping: 0.09,
         nodeDistance: 50
-      },
-      solver: 'hierarchicalRepulsion'
+       },
+       solver: 'hierarchicalRepulsion'
     }
   };
 
@@ -362,9 +279,7 @@ var sizeSlicesChart = new Chart(sizeSlicesContext, {
   //console.log(data);
   var network = new vis.Network(container, data, options);
   network.fit();
-}*/
-
-
+}
 
 // Hide tooltip when click outside of pie chart div
 $(document).mouseup(function (e)
