@@ -252,24 +252,6 @@ function buildNetwork(ontologyRelationsArray) {
   };
   // Get height of div
   var networkHeight = document.getElementById("networkContainer").clientHeight.toString();
-  /*var options = {
-    autoResize: true,
-    height: networkHeight,
-    physics: {
-      enabled: true,
-      barnesHut: {
-        avoidOverlap: 0.5
-      },
-      hierarchicalRepulsion: {
-        centralGravity: 0.0,
-        springLength: 800,
-        springConstant: 0.01,
-        damping: 0.09,
-        nodeDistance: 50
-       },
-       solver: 'hierarchicalRepulsion'
-    }
-  };*/
 
   var options = {
     autoResize: true,
@@ -283,9 +265,14 @@ function buildNetwork(ontologyRelationsArray) {
     },
     physics: {
       enabled: true,
-      /*barnesHut: {
-        avoidOverlap: 0.5
-      },*/
+      barnesHut: {
+        gravitationalConstant: -2000,
+        centralGravity: 0.1,
+        springLength: 130,
+        springConstant: 0.01,
+        damping: 0.09,
+        avoidOverlap: 0
+      },
       hierarchicalRepulsion: {
         centralGravity: 0.0,
         springLength: 500,
@@ -293,20 +280,19 @@ function buildNetwork(ontologyRelationsArray) {
         damping: 1,
         nodeDistance: 170
       },
-      solver: 'hierarchicalRepulsion'
-    },
-    configure: {
+      solver: 'barnesHut'
+    }
+    /*configure: {
       enabled: true,
       showButton: true
     }
-    /*interaction:{
+    interaction:{
       zoomView:false,
       dragView: false
     }*/
   };
 
   // initialize your network!
-  //console.log(data);
   var network = new vis.Network(container, data, options);
   network.fit();
 }
