@@ -173,9 +173,17 @@ class LandscapeController < ApplicationController
         end
 
         # Get ontology relations
-        if !sub.ontologyRelatedTo.nil? && !sub.ontologyRelatedTo.empty?
-          sub.ontologyRelatedTo.each do |import|
-            @ontology_relations_array.push({:source => ont.id, :target=> import, :relation=> "omv:ontologyRelatedTo"})
+        ["omv:useImports", "omv:hasPriorVersion", "door:isAlignedTo", "door:ontologyRelatedTo", "omv:isBackwardCompatibleWith", "omv:isIncompatibleWith", "door:comesFromTheSameDomain", "door:similarTo",
+         "door:explanationEvolution", "voaf:generalizes", "door:hasDisparateModelling", "dct:hasPart", "voaf:usedBy", "schema:workTranslation", "schema:translationOfWork"].each do |relation_attr|
+          relation_values = sub.send(relation_attr.to_s.split(":")[1])
+          if !relation_values.nil? && !relation_values.empty?
+            if relation_values.kind_of?(Array)
+              sub.ontologyRelatedTo.each do |rel_value|
+                @ontology_relations_array.push({:source => ont.id, :target=> rel_value, :relation=> relation_attr.to_s})
+              end
+            else
+              @ontology_relations_array.push({:source => ont.id, :target=> relation_values, :relation=> relation_attr.to_s})
+            end
           end
         end
       end
