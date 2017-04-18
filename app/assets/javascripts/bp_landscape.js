@@ -256,6 +256,12 @@ function buildNetwork(ontologyRelationsArray) {
   var options = {
     autoResize: true,
     height: networkHeight,
+    groups:{
+      useDefaultGroups: true,
+      myGroupId:{
+        /*node options*/
+      }
+    },
     edges:{
       color:{inherit:'both'},
       smooth:false
@@ -266,14 +272,14 @@ function buildNetwork(ontologyRelationsArray) {
     physics: {
       enabled: true,
       barnesHut: {
-        gravitationalConstant: -2000,
+        gravitationalConstant: -1500,
         centralGravity: 0.1,
-        springLength: 130,
+        springLength: 100,
         springConstant: 0.01,
-        damping: 0.09,
-        avoidOverlap: 0
+        damping: 0.2,
+        avoidOverlap: 0.2
       },
-      hierarchicalRepulsion: {
+      hierarchicalRepulsion: { // not used atm
         centralGravity: 0.0,
         springLength: 500,
         springConstant: 0.2,
