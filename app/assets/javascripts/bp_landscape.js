@@ -274,17 +274,25 @@ function buildNetwork(ontologyRelationsArray) {
     },
     edges:{
       color:{inherit:'both'},
-      smooth:false
+      smooth: {
+        enabled: true,
+        type: "dynamic",
+        roundness: 0.5
+      }
     },
     nodes: {
       shape: "box"
     },
     physics: {
       enabled: true,
+      stabilization: {
+        onlyDynamicEdges: false,
+        fit: true
+      },
       barnesHut: {
         gravitationalConstant: -1500,
         centralGravity: 0.1,
-        springLength: 100,
+        springLength: 300,
         springConstant: 0.01,
         damping: 0.2,
         avoidOverlap: 0.2
