@@ -339,7 +339,7 @@ class LandscapeController < ApplicationController
     end
 
     # If attribute value property already in hash then we increment the count of the property in the hash
-    if property_hash.has_key?(attr_value)
+    if property_hash.has_key?(prefixed_attr_value)
       property_hash[prefixed_attr_value]["count"] += 1
     else
       property_hash[prefixed_attr_value] = {}
