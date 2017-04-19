@@ -211,36 +211,46 @@ function buildNetwork(ontologyRelationsArray) {
   // Hash with nodes id for each ontology URI
   var nodeIds = {};
 
-  ontologyRelationsArray.forEach( function (relationHash)
-  {
+  if (jQuery("#selected_relations").val() !== null) {
+    selected_relations = jQuery("#selected_relations").val()
+  }
+
+  // Iterate through all the ontology relations and add them to the network
+  for (var i = 0; i < ontologyRelationsArray.length; i++) {
+    // If relations have been selected for filtering then we don't show others relations
+    if (jQuery("#selected_relations").val() !== null) {
+      if (!selected_relations.includes(ontologyRelationsArray[i]["relation"])) {
+        continue;
+      }
+    }
     // Don't create a new node if node exist already, just add a new edge
-    if (nodeIds[relationHash["source"]] != null) {
-      var sourceNodeNumber = nodeIds[relationHash["source"]];
+    if (nodeIds[ontologyRelationsArray[i]["source"]] != null) {
+      var sourceNodeNumber = nodeIds[ontologyRelationsArray[i]["source"]];
     } else {
       var sourceNodeNumber = propertyCount;
       nodes.add([
-        {id: sourceNodeNumber, label: relationHash["source"]}
+        {id: sourceNodeNumber, label: ontologyRelationsArray[i]["source"]}
       ]);
-      nodeIds[relationHash["source"]] = propertyCount;
+      nodeIds[ontologyRelationsArray[i]["source"]] = propertyCount;
       propertyCount++;
     }
 
-    if (nodeIds[relationHash["target"]] != null) {
-      var targetNodeNumber = nodeIds[relationHash["target"]];
+    if (nodeIds[ontologyRelationsArray[i]["target"]] != null) {
+      var targetNodeNumber = nodeIds[ontologyRelationsArray[i]["target"]];
     } else {
       var targetNodeNumber = propertyCount;
       nodes.add([
-        {id: targetNodeNumber, label: relationHash["target"]}
+        {id: targetNodeNumber, label: ontologyRelationsArray[i]["target"]}
       ]);
-      nodeIds[relationHash["target"]] = propertyCount;
+      nodeIds[ontologyRelationsArray[i]["target"]] = propertyCount;
       propertyCount++;
     }
 
     // Create edge with prefixed predicate when possible
     edges.add([
-      {from: sourceNodeNumber, to: targetNodeNumber, label: relationHash["relation"], font: {align: 'horizontal'}}
+      {from: sourceNodeNumber, to: targetNodeNumber, label: ontologyRelationsArray[i]["relation"], font: {align: 'horizontal'}}
     ]);
-  });
+  }
 
 
   // create a network
