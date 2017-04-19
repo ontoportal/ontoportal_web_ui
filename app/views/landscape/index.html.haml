@@ -69,8 +69,8 @@
   %h1 Ontology relations network
   %p{:style => "margin-bottom: 1em;"} Relations between ontologies stored in the portal
   %div
-    = select_tag :selected_relations, options_for_select(@relations_array), :multiple => 'true', "data-placeholder".to_sym => "Type here to select UMLS semantic types", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text"
-    %button{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-primary", :onclick => "buildNetwork(ontologyRelationsArray)"} Refresh Network
+    = select_tag :selected_relations, options_for_select(@relations_array), :multiple => 'true', "data-placeholder".to_sym => "Filter relations", :class => "help_text"
+    %button{:type => "button", :class => "btn btn-primary", :onclick => "buildNetwork(ontologyRelationsArray)", :style => "margin-bottom: 1em;"} Refresh Network
   %div#networkContainer{:style => "height: 500px; width: 100%; border:1px solid #cecece;"}
     %div#ontologyNetwork
 
