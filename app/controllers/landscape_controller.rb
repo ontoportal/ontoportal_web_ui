@@ -173,8 +173,10 @@ class LandscapeController < ApplicationController
         end
 
         # Get ontology relations
-        ["omv:useImports", "omv:hasPriorVersion", "door:isAlignedTo", "door:ontologyRelatedTo", "omv:isBackwardCompatibleWith", "omv:isIncompatibleWith", "door:comesFromTheSameDomain", "door:similarTo",
-         "door:explanationEvolution", "voaf:generalizes", "door:hasDisparateModelling", "dct:hasPart", "voaf:usedBy", "schema:workTranslation", "schema:translationOfWork"].each do |relation_attr|
+        @relations_array = ["omv:useImports", "omv:hasPriorVersion", "door:isAlignedTo", "door:ontologyRelatedTo", "omv:isBackwardCompatibleWith", "omv:isIncompatibleWith", "door:comesFromTheSameDomain", "door:similarTo",
+         "door:explanationEvolution", "voaf:generalizes", "door:hasDisparateModelling", "dct:hasPart", "voaf:usedBy", "schema:workTranslation", "schema:translationOfWork"]
+
+        @relations_array.each do |relation_attr|
           relation_values = sub.send(relation_attr.to_s.split(":")[1])
           if !relation_values.nil? && !relation_values.empty?
             if relation_values.kind_of?(Array)
