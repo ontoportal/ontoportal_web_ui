@@ -149,12 +149,12 @@ $(function() {
 
 $(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
-  //$("#notesPeopleCloudChart").jQCloud(landscapeData["notesPeopleJsonCloud"]);
+  $("#notesPeopleCloudChart").jQCloud(landscapeData["notes_people_json_cloud"]);
 });
 
 $(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
-  //$("#notesOntologiesCloudChart").jQCloud(landscapeData["notesOntologiesJsonCloud"]);
+  $("#notesOntologiesCloudChart").jQCloud(landscapeData["notes_ontologies_json_cloud"]);
 });
 
 

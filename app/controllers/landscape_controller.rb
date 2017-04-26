@@ -32,6 +32,8 @@ class LandscapeController < ApplicationController
 
     people_count_hash = {}
     people_count_emails = {}
+    notes_people_count_hash = {}
+    notes_ontologies_count_hash = {}
 
     org_count_hash = {}
 
@@ -181,6 +183,32 @@ class LandscapeController < ApplicationController
           end
         end
 
+        # Get people that are mentioned as ontology actors (contact, contributors, creators, curator) to create a tag cloud
+        # hasContributor hasCreator contact(explore,name) curatedBy
+        notes_attr_list = [:notes, :reviews, :projects]
+        notes_attr_list.each do |note_attr|
+          notes_obj = ont.explore.send(note_attr.to_s)
+          if !notes_obj.nil?
+            notes_obj.each do |note|
+              users = note.creator
+              if !users.kind_of?(Array)
+                users = [users]
+              end
+              users.each do |user_id|
+                #user = LinkedData::Client::Models::User.find(user_id)
+                username = user_id.split('/').last
+                if notes_people_count_hash.has_key?(username)
+                  notes_people_count_hash[username] += 1
+                else
+                  notes_people_count_hash[username] = 1
+                end
+                #people_count_emails[user.username] = user.email if !user.email.nil?
+              end
+            end
+          end
+        end
+
+
         # Get ontology relations
         @relations_array = ["omv:useImports", "door:isAlignedTo", "door:ontologyRelatedTo", "omv:isBackwardCompatibleWith", "omv:isIncompatibleWith", "door:comesFromTheSameDomain", "door:similarTo",
          "door:explanationEvolution", "voaf:generalizes", "door:hasDisparateModelling", "dct:hasPart", "voaf:usedBy", "schema:workTranslation", "schema:translationOfWork"]
@@ -208,6 +236,8 @@ class LandscapeController < ApplicationController
     # Get the different people and organizations to generate a tag cloud
     people_count_json_cloud = []
     org_count_json_cloud = []
+    notes_ontologies_json_cloud = []
+    notes_people_json_cloud = []
 
     # Generate the JSON to put natural languages in the pie chart
     natural_language_json_pie = []
@@ -227,6 +257,19 @@ class LandscapeController < ApplicationController
       else
         people_count_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} mentions as a contributor."}, "link" => "mailto:#{people_count_emails[people.to_s]}"})
       end
+    end
+
+    notes_people_count_hash.each do |people,no|
+      # Random color for each word in the cloud
+      colour = "%06x" % (rand * 0xffffff)
+      notes_people_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} notes, reviews or projects."}})
+=begin
+      if people_count_emails[people.to_s].nil?
+        notes_people_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} notes, reviews or projects."}})
+      else
+        notes_people_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} notes, reviews or projects."}, "link" => "mailto:#{people_count_emails[people.to_s]}"})
+      end
+=end
     end
 
     org_count_hash.each do |org,no|
@@ -301,6 +344,8 @@ class LandscapeController < ApplicationController
     @landscape_data = {
         :people_count_json_cloud => people_count_json_cloud,
         :org_count_json_cloud => org_count_json_cloud,
+        :notes_ontologies_json_cloud => notes_ontologies_json_cloud,
+        :notes_people_json_cloud => notes_people_json_cloud,
         :natural_language_json_pie => natural_language_json_pie,
         :licenseProperty_json_pie => licenseProperty_json_pie,
         :formalityProperty_json_pie => formalityProperty_json_pie,
