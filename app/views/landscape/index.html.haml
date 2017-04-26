@@ -14,16 +14,20 @@
 
   %div{:class => "row"}
     %div{:class => "col-md-4"}
-      %h2 Format used
-      %canvas#formatCanvas
-
-    %div{:class => "col-md-4"}
       %h2 Ontologies by group
       %canvas#groupsCanvas
 
     %div{:class => "col-md-4"}
+      %h2 Ontologies by domain
+      %canvas#domainCanvas
+
+    %div{:class => "col-md-4"}
       %h2 Ontologies by size
       %canvas#sizeSlicesCanvas
+
+    %div{:class => "col-md-4"}
+      %h2 Format used
+      %canvas#formatCanvas
 
   %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
   %h1 Properties use
@@ -117,6 +121,7 @@
   var authorPieJson = #{@authorProperty_json_pie}
   var ontologyFormatsChartJson = #{@ontologyFormatsChartJson}
   var groupCountChartJson = #{@groupCountChartJson}
+  var domainCountChartJson = #{@domainCountChartJson}
   var sizeSlicesChartJson = #{@sizeSlicesChartJson}
 
 

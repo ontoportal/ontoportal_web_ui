@@ -174,6 +174,19 @@ var groupCountChart = new Chart(groupCountContext, {
   }
 });
 
+var domainCountContext = document.getElementById("domainCanvas").getContext("2d");
+var domainCountChart = new Chart(domainCountContext, {
+  type: 'bar',
+  data: domainCountChartJson,
+  options: {
+    scales: {
+      yAxes: [{
+        stacked: true
+      }]
+    }
+  }
+});
+
 var sizeSlicesContext = document.getElementById("sizeSlicesCanvas").getContext("2d");
 var sizeSlicesChart = new Chart(sizeSlicesContext, {
   type: 'bar',

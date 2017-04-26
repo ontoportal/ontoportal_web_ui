@@ -12,6 +12,7 @@ class LandscapeController < ApplicationController
     pie_colors_array = ["#2484c1", "#0c6197", "#4daa4b", "#90c469", "#daca61", "#e4a14b", "#e98125", "#cb2121", "#830909", "#923e99", "#ae83d5", "#bf273e", "#ce2aeb", "#bca44a", "#618d1b", "#1ee67b", "#b0ec44", "#a4a0c9", "#322849", "#86f71a", "#d1c87f", "#7d9058", "#44b9b0", "#7c37c0", "#cc9fb1", "#e65414", "#8b6834", "#248838"];
 
     groups_hash = {}
+    domains_hash = {}
     # A hash for counting ontologies in size ranges
     size_slices_hash = {}
     size_slices_hash["< 100"] = 0
@@ -120,7 +121,15 @@ class LandscapeController < ApplicationController
           else
             groups_hash[group.acronym.to_s] = 1
           end
+        end
 
+        # Count number of ontologies for each domain (bar chart)
+        ont.explore.categories.each do |domain|
+          if domains_hash.has_key?(domain.acronym.to_s)
+            domains_hash[domain.acronym.to_s] += 1
+          else
+            domains_hash[domain.acronym.to_s] = 1
+          end
         end
 
         # Get people that are mentioned as ontology actors (contact, contributors, creators, curator) to create a tag cloud
@@ -278,6 +287,11 @@ class LandscapeController < ApplicationController
                                                   :backgroundColor => pie_colors_array,
                                                   :hoverBackgroundColor => pie_colors_array.reverse}] }
 
+    @domainCountChartJson = { :labels => domains_hash.keys,
+                             :datasets => [{ :label => "Number of ontologies in each domain", :data => domains_hash.values,
+                                             :backgroundColor => pie_colors_array,
+                                             :hoverBackgroundColor => pie_colors_array.reverse}] }
+
     # Format the groupOntologiesCount hash as the JSON needed to generate the chart
     @sizeSlicesChartJson = { :labels => size_slices_hash.keys,
                              :datasets => [{ :label => "Number of ontologies with a class count in the given range", :data => size_slices_hash.values,
@@ -299,6 +313,7 @@ class LandscapeController < ApplicationController
     @authorProperty_json_pie = @authorProperty_json_pie.to_json.html_safe
     @ontologyFormatsChartJson = @ontologyFormatsChartJson.to_json.html_safe
     @groupCountChartJson = @groupCountChartJson.to_json.html_safe
+    @domainCountChartJson = @domainCountChartJson.to_json.html_safe
     @sizeSlicesChartJson = @sizeSlicesChartJson.to_json.html_safe
   end
 
