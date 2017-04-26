@@ -18,23 +18,9 @@ var chartTooltipLocked = false;
 
 // Creating a pie chart using d3pie.js
 // function to generate a pie chart given 4 simple params: the div class name (the html div where the pie chart will go)
-// the JSON containing the chart data. 2 strings for chart title and subtitle
+// the JSON containing the chart data. 2 strings for chart title and subtitle (not used anymore! Take too much spaces)
 var createPie = function(divName, json, title, subtitle) {
     new d3pie(divName, {
-        "header": {
-            "title": {
-                "text": title,
-                "fontSize": 22,
-                "font": "open sans"
-            },
-            "subtitle": {
-                "text": subtitle,
-                "color": "#999999",
-                "fontSize": 12,
-                "font": "open sans"
-            },
-            "titleSubtitlePadding": 9
-        },
         "footer": {
             "color": "#999999",
             "fontSize": 10,
@@ -43,6 +29,7 @@ var createPie = function(divName, json, title, subtitle) {
         },
         "size": {
             "canvasWidth": document.getElementById(divName).offsetWidth,
+            //"canvasHeight": 300,
             "pieOuterRadius": "50%"
         },
         "data": {

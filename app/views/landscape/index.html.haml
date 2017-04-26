@@ -30,10 +30,17 @@
   %p The proportion of properties usage among stored ontologies.
   %div#pieChartDiv
     %div{:class => "row"}
-      %div#naturalLanguagePieChartDiv{:class => "col-md-4"}
-      %div#licensePieChartDiv{:class => "col-md-4"}
-      %div#formalityPieChartDiv{:class => "col-md-4"}
+      %div{:class => "col-md-4"}
+        %h2 Ontologies natural languages
+        %div#naturalLanguagePieChartDiv
+      %div{:class => "col-md-4"}
+        %h2 Licenses used by the ontologies
+        %div#licensePieChartDiv
+      %div{:class => "col-md-4"}
+        %h2 Formality level of the ontologies
+        %div#formalityPieChartDiv
       %div#chartTooltip{:style => "width: auto; display: none;"}
+        %div#chartTooltip
         %span#chartTooltipValue none
 
     %button#propertiesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-primary", :onclick => "toggleDiv('properties')"} More properties charts
@@ -44,12 +51,16 @@
       %div{:class => "panel-body"}
         %div{:class => "row"}
           %div{:class => "col-md-3"}
+            %h2 prefLabel property URIs used for OWL ontologies
             %div#prefLabelPropertyPieChartDiv
           %div{:class => "col-md-3"}
+            %h2 synonym property URIs used for OWL ontologies
             %div#synonymPropertyPieChartDiv
           %div{:class => "col-md-3"}
+            %h2 definition property URIs used for OWL ontologies
             %div#definitionPropertyPieChartDiv
           %div{:class => "col-md-3"}
+            %h2 author property URIs used for OWL ontologies
             %div#authorPropertyPieChartDiv
 
   %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
