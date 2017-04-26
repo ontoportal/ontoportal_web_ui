@@ -87,7 +87,7 @@ var createPie = function(divName, json, groupSmall) {
                 "pieDistance": 15
             },
             "inner": {
-                "hideWhenLessThanPercentage": 3
+                "hideWhenLessThanPercentage": 5
             },
             "mainLabel": {
                 "fontSize": 11
