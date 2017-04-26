@@ -18,8 +18,8 @@ var chartTooltipLocked = false;
 
 // Creating a pie chart using d3pie.js
 // function to generate a pie chart given 4 simple params: the div class name (the html div where the pie chart will go)
-// the JSON containing the chart data. 2 strings for chart title and subtitle (not used anymore! Take too much spaces)
-var createPie = function(divName, json, title, subtitle) {
+// the JSON containing the chart data. groupSmall is a boolean to define if we want to group small values
+var createPie = function(divName, json, groupSmall) {
     new d3pie(divName, {
         "footer": {
             "color": "#999999",
@@ -34,6 +34,10 @@ var createPie = function(divName, json, title, subtitle) {
         },
         "data": {
             "sortOrder": "value-desc",
+            "smallSegmentGrouping": {
+              "enabled": groupSmall,
+              "value": 5
+            },
             "content": json
         },
         callbacks: {
@@ -117,19 +121,19 @@ var createPie = function(divName, json, title, subtitle) {
 }
 
 // To create a new pie chart: add "%div#prefLabelPieChartDiv" to html and use the createPie function
-var naturalLanguagePie = createPie("naturalLanguagePieChartDiv", naturalLanguagePieJson, "Ontologies natural languages", "Languages of the ontologies");
+var naturalLanguagePie = createPie("naturalLanguagePieChartDiv", naturalLanguagePieJson, true);
 
-var licensePie = createPie("licensePieChartDiv", licensePieJson, "Ontologies licenses", "Licenses used by the ontologies");
+var licensePie = createPie("licensePieChartDiv", licensePieJson, true);
 
-var formalityPie = createPie("formalityPieChartDiv", formalityPieJson, "Ontologies formality levels", "Formality level of the ontologies");
+var formalityPie = createPie("formalityPieChartDiv", formalityPieJson, true);
 
-var prefLabelPie = createPie("prefLabelPropertyPieChartDiv", prefLabelPieJson, "Ontologies prefLabel properties", "prefLabel property URIs used for OWL ontologies");
+var prefLabelPie = createPie("prefLabelPropertyPieChartDiv", prefLabelPieJson, false);
 
-var synonymPie = createPie("synonymPropertyPieChartDiv", synonymPieJson, "Ontologies synonym properties", "synonym property URIs used for OWL ontologies");
+var synonymPie = createPie("synonymPropertyPieChartDiv", synonymPieJson, false);
 
-var definitionPie = createPie("definitionPropertyPieChartDiv", definitionPieJson, "Ontologies definition properties", "definition property URIs used for OWL ontologies");
+var definitionPie = createPie("definitionPropertyPieChartDiv", definitionPieJson, false);
 
-var authorPie = createPie("authorPropertyPieChartDiv", authorPieJson, "Ontologies author properties", "author property URIs used for OWL ontologies");
+var authorPie = createPie("authorPropertyPieChartDiv", authorPieJson, false);
 
 // Generate the people tag cloud (from all contributors attributes)
 $(function() {
