@@ -150,6 +150,16 @@ $(function() {
   }
 });
 
+$(function() {
+  // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
+  $("#notesPeopleCloudChart").jQCloud(notesPeopleJsonCloud);
+});
+
+$(function() {
+  // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
+  $("#notesOntologiesCloudChart").jQCloud(notesOntologiesJsonCloud);
+});
+
 
 // Horizontal bar charts for format (OWL, SKOS, UMLS)
 var ontologyFormatsContext = document.getElementById("formatCanvas").getContext("2d");
