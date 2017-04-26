@@ -213,19 +213,22 @@ class LandscapeController < ApplicationController
         notes_ontologies_count_hash[ont.acronym] = notes_count
 
 
-        # Get ontology relations
+        # Get ontology relations between each other (ex: STY isAlignedTo GO)
         @relations_array = ["omv:useImports", "door:isAlignedTo", "door:ontologyRelatedTo", "omv:isBackwardCompatibleWith", "omv:isIncompatibleWith", "door:comesFromTheSameDomain", "door:similarTo",
          "door:explanationEvolution", "voaf:generalizes", "door:hasDisparateModelling", "dct:hasPart", "voaf:usedBy", "schema:workTranslation", "schema:translationOfWork"]
-
         @relations_array.each do |relation_attr|
           relation_values = sub.send(relation_attr.to_s.split(":")[1])
           if !relation_values.nil? && !relation_values.empty?
-            if relation_values.kind_of?(Array)
-              sub.ontologyRelatedTo.each do |rel_value|
-                ontology_relations_array.push({:source => ont.id, :target=> rel_value, :relation=> relation_attr.to_s})
+            if !relation_values.kind_of?(Array)
+              relation_values = [relation_values]
+            end
+            relation_values.each do |rel_value|
+              # Use acronym if ontology in the portal
+              target_ont = LinkedData::Client::Models::Ontology.find(rel_value)
+              if target_ont
+                rel_value = target_ont.acronym
               end
-            else
-              ontology_relations_array.push({:source => ont.id, :target=> relation_values, :relation=> relation_attr.to_s})
+              ontology_relations_array.push({:source => ont.acronym, :target=> rel_value, :relation=> relation_attr.to_s})
             end
           end
         end
