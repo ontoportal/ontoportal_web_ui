@@ -121,43 +121,40 @@ var createPie = function(divName, json, groupSmall) {
 }
 
 // To create a new pie chart: add "%div#prefLabelPieChartDiv" to html and use the createPie function
-var naturalLanguagePie = createPie("naturalLanguagePieChartDiv", naturalLanguagePieJson, true);
+var naturalLanguagePie = createPie("naturalLanguagePieChartDiv", landscapeData["natural_language_json_pie"], true);
 
-var licensePie = createPie("licensePieChartDiv", licensePieJson, true);
+var licensePie = createPie("licensePieChartDiv", landscapeData["licenseProperty_json_pie"], true);
 
-var formalityPie = createPie("formalityPieChartDiv", formalityPieJson, true);
+var formalityPie = createPie("formalityPieChartDiv", landscapeData["formalityProperty_json_pie"], true);
 
-var prefLabelPie = createPie("prefLabelPropertyPieChartDiv", prefLabelPieJson, false);
+var prefLabelPie = createPie("prefLabelPropertyPieChartDiv", landscapeData["prefLabelProperty_json_pie"], false);
 
-var synonymPie = createPie("synonymPropertyPieChartDiv", synonymPieJson, false);
+var synonymPie = createPie("synonymPropertyPieChartDiv", landscapeData["synonymProperty_json_pie"], false);
 
-var definitionPie = createPie("definitionPropertyPieChartDiv", definitionPieJson, false);
+var definitionPie = createPie("definitionPropertyPieChartDiv", landscapeData["definitionProperty_json_pie"], false);
 
-var authorPie = createPie("authorPropertyPieChartDiv", authorPieJson, false);
+var authorPie = createPie("authorPropertyPieChartDiv", landscapeData["authorProperty_json_pie"], false);
 
 // Generate the people tag cloud (from all contributors attributes)
 $(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
-  $("#peopleCloudChart").jQCloud(peopleCountJsonCloud);
+  $("#peopleCloudChart").jQCloud(landscapeData["people_count_json_cloud"]);
 });
 
 // Generate the organization tag cloud (from fundedBy, endorsedBy...), don't show if less than 5 words
 $(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
-  if (Object.keys(orgCountJsonCloud).length > 1) {
-    $("#orgCloudDiv").show();
-    $("#orgCloudChart").jQCloud(orgCountJsonCloud);
-  }
+    $("#orgCloudChart").jQCloud(landscapeData["org_count_json_cloud"]);
 });
 
 $(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
-  $("#notesPeopleCloudChart").jQCloud(notesPeopleJsonCloud);
+  //$("#notesPeopleCloudChart").jQCloud(landscapeData["notesPeopleJsonCloud"]);
 });
 
 $(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
-  $("#notesOntologiesCloudChart").jQCloud(notesOntologiesJsonCloud);
+  //$("#notesOntologiesCloudChart").jQCloud(landscapeData["notesOntologiesJsonCloud"]);
 });
 
 
@@ -165,7 +162,7 @@ $(function() {
 var ontologyFormatsContext = document.getElementById("formatCanvas").getContext("2d");
 var ontologyFormatsChart = new Chart(ontologyFormatsContext, {
   type: 'horizontalBar',
-  data: ontologyFormatsChartJson,
+  data: landscapeData["ontologyFormatsChartJson"],
   options: {
     scales: {
       yAxes: [{
@@ -178,7 +175,7 @@ var ontologyFormatsChart = new Chart(ontologyFormatsContext, {
 var groupCountContext = document.getElementById("groupsCanvas").getContext("2d");
 var groupCountChart = new Chart(groupCountContext, {
   type: 'bar',
-  data: groupCountChartJson,
+  data: landscapeData["groupCountChartJson"],
   options: {
     scales: {
       yAxes: [{
@@ -191,7 +188,7 @@ var groupCountChart = new Chart(groupCountContext, {
 var domainCountContext = document.getElementById("domainCanvas").getContext("2d");
 var domainCountChart = new Chart(domainCountContext, {
   type: 'bar',
-  data: domainCountChartJson,
+  data: landscapeData["domainCountChartJson"],
   options: {
     scales: {
       yAxes: [{
@@ -204,7 +201,7 @@ var domainCountChart = new Chart(domainCountContext, {
 var sizeSlicesContext = document.getElementById("sizeSlicesCanvas").getContext("2d");
 var sizeSlicesChart = new Chart(sizeSlicesContext, {
   type: 'bar',
-  data: sizeSlicesChartJson,
+  data: landscapeData["sizeSlicesChartJson"],
   options: {
     scales: {
       yAxes: [{
@@ -214,7 +211,7 @@ var sizeSlicesChart = new Chart(sizeSlicesContext, {
   }
 });
 
-buildNetwork(ontologyRelationsArray);
+buildNetwork(landscapeData["ontology_relations_array"]);
 
 function buildNetwork(ontologyRelationsArray) {
   var nodes = new vis.DataSet([]);
