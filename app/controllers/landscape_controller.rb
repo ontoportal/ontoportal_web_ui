@@ -183,6 +183,7 @@ class LandscapeController < ApplicationController
           end
         end
 
+        notes_count = 0
         # Get people that are mentioned as ontology actors (contact, contributors, creators, curator) to create a tag cloud
         # hasContributor hasCreator contact(explore,name) curatedBy
         notes_attr_list = [:notes, :reviews, :projects]
@@ -190,6 +191,7 @@ class LandscapeController < ApplicationController
           notes_obj = ont.explore.send(note_attr.to_s)
           if !notes_obj.nil?
             notes_obj.each do |note|
+              notes_count += 1
               users = note.creator
               if !users.kind_of?(Array)
                 users = [users]
@@ -207,6 +209,8 @@ class LandscapeController < ApplicationController
             end
           end
         end
+
+        notes_ontologies_count_hash[ont.acronym] = notes_count
 
 
         # Get ontology relations
@@ -263,13 +267,12 @@ class LandscapeController < ApplicationController
       # Random color for each word in the cloud
       colour = "%06x" % (rand * 0xffffff)
       notes_people_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} notes, reviews or projects."}})
-=begin
-      if people_count_emails[people.to_s].nil?
-        notes_people_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} notes, reviews or projects."}})
-      else
-        notes_people_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} notes, reviews or projects."}, "link" => "mailto:#{people_count_emails[people.to_s]}"})
-      end
-=end
+    end
+
+    notes_ontologies_count_hash.each do |onto,no|
+      # Random color for each word in the cloud
+      colour = "%06x" % (rand * 0xffffff)
+      notes_ontologies_json_cloud.push({"text"=>onto.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} notes, reviews or projects."}})
     end
 
     org_count_hash.each do |org,no|
