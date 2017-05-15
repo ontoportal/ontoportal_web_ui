@@ -37,6 +37,7 @@ var createPie = function(divName, json, groupSmall) {
             "smallSegmentGrouping": {
               "enabled": groupSmall,
               "value": 5
+              // To group small pie value as Other
             },
             "content": json
         },
