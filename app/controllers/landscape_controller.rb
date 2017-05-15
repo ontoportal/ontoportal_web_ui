@@ -24,6 +24,7 @@ class LandscapeController < ApplicationController
     natural_language_hash = {}
     licenseProperty_hash = {}
     formalityProperty_hash = {}
+    isOfTypeProperty_hash = {}
 
     prefLabelProperty_hash = {}
     synonymProperty_hash = {}
@@ -51,6 +52,8 @@ class LandscapeController < ApplicationController
                         {:attr => "numberOfAxioms", :label => "Number of axioms (triples)", :array => []}]
 
     ontologyFormatsCount = {"OWL" => 0, "SKOS" => 0, "UMLS" => 0, "OBO" => 0}
+    formalityLevelCount = {}
+    isOfTypeCount = {}
 
     # Iterate ontologies to get the submissions with all metadata
     @ontologies.each do |ont|
@@ -80,6 +83,8 @@ class LandscapeController < ApplicationController
         licenseProperty_hash = get_used_properties(sub.hasLicense, nil, licenseProperty_hash)
 
         formalityProperty_hash = get_used_properties(sub.hasFormalityLevel, nil, formalityProperty_hash)
+
+        isOfTypeProperty_hash = get_used_properties(sub.isOfType, nil, isOfTypeProperty_hash)
 
         # Get the prefLabelProperty used for OWL properties in a hash
         if sub.hasOntologyLanguage.eql?("OWL")
@@ -115,7 +120,23 @@ class LandscapeController < ApplicationController
 
         # Get number of ontologies for each format (for horizontal bar chart)
         ontologyFormatsCount[sub.hasOntologyLanguage] += 1
+=begin
+        if !sub.hasFormalityLevel.nil? && !sub.hasFormalityLevel.empty?
+          if formalityLevelCount.has_key?(sub.hasFormalityLevel.to_s)
+            formalityLevelCount[sub.hasFormalityLevel.to_s] += 1
+          else
+            formalityLevelCount[sub.hasFormalityLevel.to_s] = 1
+          end
+        end
 
+        if !sub.isOfType.nil? && !sub.isOfType.empty?
+          if isOfTypeCount.has_key?(sub.isOfType.to_s)
+            isOfTypeCount[sub.isOfType.to_s] += 1
+          else
+            isOfTypeCount[sub.isOfType.to_s] = 1
+          end
+        end
+=end
         # Count number of ontologies for each group (bar chart)
         ont.explore.groups.each do |group|
           if groups_hash.has_key?(group.acronym.to_s)
@@ -300,7 +321,13 @@ class LandscapeController < ApplicationController
     color_index = 0
     formalityProperty_hash.each do |formality_level,count_hash|
       formalityProperty_json_pie.push({"label"=>formality_level.to_s,"value"=>count_hash["count"], "color"=>pie_colors_array[color_index], "uri"=>count_hash["uri"]})
+      # Generate formalityLevel JSON used to get the bar charts
+      formalityLevelCount[formality_level.to_s] = count_hash["count"]
       color_index += 1
+    end
+
+    isOfTypeProperty_hash.each do |isOfType,count_hash|
+      isOfTypeCount[isOfType.to_s] = count_hash["count"]
     end
 
     color_index = 0
@@ -329,6 +356,16 @@ class LandscapeController < ApplicationController
         :datasets => [{ :label => "Number of ontologies using each format", :data => ontologyFormatsCount.values,
                        :backgroundColor => ["#669911", "#119966", "#66A2EB", "#FCCE56"],
                        :hoverBackgroundColor => ["#66A2EB", "#FCCE56", "#669911", "#119966"]}] }
+
+    isOfTypeChartJson = { :labels => isOfTypeCount.keys,
+                                 :datasets => [{ :label => "Number of ontologies of this type", :data => isOfTypeCount.values,
+                                                 :backgroundColor => pie_colors_array,
+                                                 :hoverBackgroundColor => pie_colors_array.reverse}] }
+
+    formalityLevelChartJson = { :labels => formalityLevelCount.keys,
+                          :datasets => [{ :label => "Number of ontologies of this formality level", :data => formalityLevelCount.values,
+                                          :backgroundColor => pie_colors_array,
+                                          :hoverBackgroundColor => pie_colors_array.reverse}] }
 
     # Format the groupOntologiesCount hash as the JSON needed to generate the chart
     groupCountChartJson = { :labels => groups_hash.keys,
@@ -361,6 +398,8 @@ class LandscapeController < ApplicationController
         :definitionProperty_json_pie => definitionProperty_json_pie,
         :authorProperty_json_pie => authorProperty_json_pie,
         :ontologyFormatsChartJson => ontologyFormatsChartJson,
+        :isOfTypeChartJson => isOfTypeChartJson,
+        :formalityLevelChartJson => formalityLevelChartJson,
         :groupCountChartJson => groupCountChartJson,
         :domainCountChartJson => domainCountChartJson,
         :sizeSlicesChartJson => sizeSlicesChartJson
