@@ -318,12 +318,9 @@ class LandscapeController < ApplicationController
       color_index += 1
     end
 
-    color_index = 0
     formalityProperty_hash.each do |formality_level,count_hash|
-      formalityProperty_json_pie.push({"label"=>formality_level.to_s,"value"=>count_hash["count"], "color"=>pie_colors_array[color_index], "uri"=>count_hash["uri"]})
       # Generate formalityLevel JSON used to get the bar charts
       formalityLevelCount[formality_level.to_s] = count_hash["count"]
-      color_index += 1
     end
 
     isOfTypeProperty_hash.each do |isOfType,count_hash|
@@ -391,7 +388,6 @@ class LandscapeController < ApplicationController
         :notes_people_json_cloud => notes_people_json_cloud,
         :natural_language_json_pie => natural_language_json_pie,
         :licenseProperty_json_pie => licenseProperty_json_pie,
-        :formalityProperty_json_pie => formalityProperty_json_pie,
         :ontology_relations_array => ontology_relations_array,
         :prefLabelProperty_json_pie => prefLabelProperty_json_pie,
         :synonymProperty_json_pie => synonymProperty_json_pie,

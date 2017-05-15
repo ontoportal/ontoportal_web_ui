@@ -51,7 +51,7 @@ var createPie = function(divName, json, groupSmall) {
                 .style("z-index", 1)
               d3.select("#chartTooltipValue")
                 .text(d.data.uri);
-              // Don't show tooltip when text is empty (for Others) 
+              // Don't show tooltip when text is empty (for Others)
               if (d.data.uri) {
                 $("#chartTooltip").show();
               }
@@ -133,8 +133,6 @@ var createPie = function(divName, json, groupSmall) {
 var naturalLanguagePie = createPie("naturalLanguagePieChartDiv", landscapeData["natural_language_json_pie"], true);
 
 var licensePie = createPie("licensePieChartDiv", landscapeData["licenseProperty_json_pie"], true);
-
-var formalityPie = createPie("formalityPieChartDiv", landscapeData["formalityProperty_json_pie"], true);
 
 var prefLabelPie = createPie("prefLabelPropertyPieChartDiv", landscapeData["prefLabelProperty_json_pie"], false);
 
