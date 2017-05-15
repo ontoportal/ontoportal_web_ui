@@ -51,7 +51,13 @@ var createPie = function(divName, json, groupSmall) {
                 .style("z-index", 1)
               d3.select("#chartTooltipValue")
                 .text(d.data.uri);
-              $("#chartTooltip").show();
+              // Don't show tooltip when text is empty (for Others) 
+              if (d.data.uri) {
+                $("#chartTooltip").show();
+              }
+            }
+            if (!d.data.uri) {
+              $("#chartTooltip").hide();
             }
           },
           onClickSegment: function(d) {
@@ -72,7 +78,9 @@ var createPie = function(divName, json, groupSmall) {
                 .style("opacity", 1)
               d3.select("#chartTooltipValue")
                 .text(d.data.uri);
-              $("#chartTooltip").show();
+              if (d.data.uri) {
+                $("#chartTooltip").show();
+              }
             }
           },
           onMouseoutSegment: function(info) {
