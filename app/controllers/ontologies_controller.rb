@@ -303,7 +303,7 @@ class OntologiesController < ApplicationController
     end
   end
 
-  # GET /ontologies/1
+  # GET /ontologies/ACRONYM
   # GET /ontologies/1.xml
   def show
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
@@ -370,6 +370,7 @@ class OntologiesController < ApplicationController
     render :partial => "submit_success", :layout => "ontology"
   end
 
+  # Main ontology description page (with metadata): /ontologies/ACRONYM
   def summary
     # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
