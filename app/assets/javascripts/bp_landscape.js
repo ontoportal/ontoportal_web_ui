@@ -166,6 +166,7 @@ $(function() {
 
 //console.log(landscapeData);
 
+// Creating bar charts using http://www.chartjs.org/docs/
 // Horizontal bar charts for format (OWL, SKOS, UMLS)
 var ontologyFormatsContext = document.getElementById("formatCanvas").getContext("2d");
 var ontologyFormatsChart = new Chart(ontologyFormatsContext, {

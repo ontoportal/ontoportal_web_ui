@@ -408,19 +408,22 @@ class LandscapeController < ApplicationController
 
     # Format the ontologyFormatsCount hash as the JSON needed to generate the chart
     ontologyFormatsChartJson = { :labels => ontologyFormatsCount.keys,
-        :datasets => [{ :label => "Number of ontologies using each format", :data => ontologyFormatsCount.values,
-                       :backgroundColor => ["#669911", "#119966", "#66A2EB", "#FCCE56"]}] }
+                                 :datasets => [{ :label => "Number of ontologies using each format",
+                                                 :data => ontologyFormatsCount.values,
+                                                 :backgroundColor => ["#669911", "#119966", "#66A2EB", "#FCCE56"]}] }
 
     isOfTypeChartJson = { :labels => isOfTypeCount.keys,
-                                 :datasets => [{ :label => "Number of ontologies of this type", :data => isOfTypeCount.values,
-                                                 :backgroundColor => pie_colors_array}] }
-
-    formalityLevelChartJson = { :labels => formalityLevelCount.keys,
-                          :datasets => [{ :label => "Number of ontologies of this formality level", :data => formalityLevelCount.values,
+                          :datasets => [{ :label => "Number of ontologies of this type",
+                                          :data => isOfTypeCount.values,
                                           :backgroundColor => pie_colors_array}] }
 
+    formalityLevelChartJson = { :labels => formalityLevelCount.keys,
+                                :datasets => [{ :label => "Number of ontologies of this formality level",
+                                                :data => formalityLevelCount.values,
+                                                :backgroundColor => pie_colors_array}] }
+
     dataCatalogChartJson = { :labels => dataCatalog_count_hash.keys,
-                                :datasets => [{ :label => "Number of ontologies of this formality level", :data => dataCatalog_count_hash.values,
+                             :datasets => [{ :label => "Number of ontologies of this formality level", :data => dataCatalog_count_hash.values,
                                                 :backgroundColor => pie_colors_array}] }
 
     # Format the groupOntologiesCount hash as the JSON needed to generate the chart
@@ -434,8 +437,9 @@ class LandscapeController < ApplicationController
 
     # Format the groupOntologiesCount hash as the JSON needed to generate the chart
     sizeSlicesChartJson = { :labels => size_slices_hash.keys,
-                             :datasets => [{ :label => "Number of ontologies with a class count in the given range", :data => size_slices_hash.values,
-                                             :backgroundColor => pie_colors_array}] }
+                            :datasets => [{ :label => "Number of ontologies with a class count in the given range",
+                                            :data => size_slices_hash.values,
+                                            :backgroundColor => pie_colors_array}] }
 
     @landscape_data = {
         :people_count_json_cloud => people_count_json_cloud,
