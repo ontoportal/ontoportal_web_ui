@@ -75,7 +75,7 @@ class LandscapeController < ApplicationController
     all_attributes = sub_attributes.concat(contributors_attr_list).concat(org_attr_list)
                          .concat(relations_attributes).concat(metrics_attributes).concat(pref_properties_attributes).join(",")
 
-    
+
     @submissions = LinkedData::Client::Models::OntologySubmission.all(include_status: "any", include_views: true, display_links: false, display_context: false, include: all_attributes)
 
     # Iterate ontologies to get the submissions with all metadata
@@ -144,23 +144,7 @@ class LandscapeController < ApplicationController
 
         # Get number of ontologies for each format (for horizontal bar chart)
         ontologyFormatsCount[sub.hasOntologyLanguage] += 1
-=begin
-        if !sub.hasFormalityLevel.nil? && !sub.hasFormalityLevel.empty?
-          if formalityLevelCount.has_key?(sub.hasFormalityLevel.to_s)
-            formalityLevelCount[sub.hasFormalityLevel.to_s] += 1
-          else
-            formalityLevelCount[sub.hasFormalityLevel.to_s] = 1
-          end
-        end
 
-        if !sub.isOfType.nil? && !sub.isOfType.empty?
-          if isOfTypeCount.has_key?(sub.isOfType.to_s)
-            isOfTypeCount[sub.isOfType.to_s] += 1
-          else
-            isOfTypeCount[sub.isOfType.to_s] = 1
-          end
-        end
-=end
         # Count number of ontologies for each group (bar chart)
         ont.group.each do |group|
           if groups_hash.has_key?(group.to_s.split("/")[-1])
