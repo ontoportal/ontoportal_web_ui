@@ -5,7 +5,7 @@ class LandscapeController < ApplicationController
   layout 'ontology'
 
   def index
-    @ontologies = LinkedData::Client::Models::Ontology.all(include_views: false)
+    #@ontologies = LinkedData::Client::Models::Ontology.all(include_views: false)
     #@submissions = LinkedData::Client::Models::OntologySubmission.all(values: params[:submission])
 
     # Array with color codes for the pie charts. iterate color_index to change color
@@ -55,9 +55,37 @@ class LandscapeController < ApplicationController
     formalityLevelCount = {}
     isOfTypeCount = {}
 
+    # Attributes to include. To avoid to get everything and make it faster
+    # They are also used to get the value of each property later in the controller
+    # TODO: define here the attributes you want to retrieve to create visualization
+
+    # Attributes that we need to retrieve to perform landscape
+    sub_attributes = [:submissionId, :ontology, :group, :hasDomain, :hasOntologyLanguage, :naturalLanguage, :hasLicense, :hasFormalityLevel, :isOfType, :contact, :name, :email]
+
+    pref_properties_attributes = [:prefLabelProperty, :synonymProperty, :definitionProperty, :authorProperty]
+
+    contributors_attr_list = [:hasContributor, :hasCreator, :curatedBy]
+    org_attr_list = [:fundedBy, :endorsedBy]
+    notes_attr_list = [:notes, :reviews, :projects]
+
+    @relations_array = ["omv:useImports", "door:isAlignedTo", "door:ontologyRelatedTo", "omv:isBackwardCompatibleWith", "omv:isIncompatibleWith", "door:comesFromTheSameDomain", "door:similarTo",
+                        "door:explanationEvolution", "voaf:generalizes", "door:hasDisparateModelling", "dct:hasPart", "voaf:usedBy", "schema:workTranslation", "schema:translationOfWork"]
+    # We need prefixes to display them, we remove them to call them in the include
+    relations_attributes = @relations_array.map {|r| r.to_s.split(":")[1]}
+    metrics_attributes = @metrics_average.map {|m| m[:attr]}
+
+    # Concat all attributes array and generate a string separated with comma for include param
+    all_attributes = sub_attributes.concat(notes_attr_list).concat(contributors_attr_list).concat(org_attr_list)
+                         .concat(relations_attributes).concat(metrics_attributes).concat(pref_properties_attributes).join(",")
+
+    puts all_attributes
+    #@submissions = LinkedData::Client::Models::OntologySubmission.all(include_status: "any", include_views: true, display_links: false, display_context: false, include: all_attributes)
+    @submissions = LinkedData::Client::Models::OntologySubmission.all(include_status: "any", include_views: true, include: all_attributes)
+
     # Iterate ontologies to get the submissions with all metadata
-    @ontologies.each do |ont|
-      sub = ont.explore.latest_submission
+    @submissions.each do |sub|
+      ont = sub.ontology
+      puts ont.acronym
 
       if !sub.nil?
 
@@ -157,7 +185,6 @@ class LandscapeController < ApplicationController
 
         # Get people that are mentioned as ontology actors (contact, contributors, creators, curator) to create a tag cloud
         # hasContributor hasCreator contact(explore,name) curatedBy
-        contributors_attr_list = [:hasContributor, :hasCreator, :curatedBy]
         contributors_attr_list.each do |contributor|
           contributor_label = sub.send(contributor.to_s).to_s
           if !contributor_label.nil?
@@ -183,7 +210,6 @@ class LandscapeController < ApplicationController
           end
         end
 
-        org_attr_list = [:fundedBy, :endorsedBy]
         org_attr_list.each do |attr|
           contributors_list = sub.send(attr.to_s)
           if !contributors_list.kind_of?(Array)
@@ -207,7 +233,6 @@ class LandscapeController < ApplicationController
         notes_count = 0
         # Get people that are mentioned as ontology actors (contact, contributors, creators, curator) to create a tag cloud
         # hasContributor hasCreator contact(explore,name) curatedBy
-        notes_attr_list = [:notes, :reviews, :projects]
         notes_attr_list.each do |note_attr|
           notes_obj = ont.explore.send(note_attr.to_s)
           if !notes_obj.nil?
@@ -235,8 +260,6 @@ class LandscapeController < ApplicationController
 
 
         # Get ontology relations between each other (ex: STY isAlignedTo GO)
-        @relations_array = ["omv:useImports", "door:isAlignedTo", "door:ontologyRelatedTo", "omv:isBackwardCompatibleWith", "omv:isIncompatibleWith", "door:comesFromTheSameDomain", "door:similarTo",
-         "door:explanationEvolution", "voaf:generalizes", "door:hasDisparateModelling", "dct:hasPart", "voaf:usedBy", "schema:workTranslation", "schema:translationOfWork"]
         @relations_array.each do |relation_attr|
           relation_values = sub.send(relation_attr.to_s.split(":")[1])
           if !relation_values.nil? && !relation_values.empty?
