@@ -166,19 +166,31 @@ $(function() {
 
 //console.log(landscapeData);
 
+// Generate the bar charts options by passing the tooltip callback JSON
+var barChartOptions = function(tooltip_callbacks = {}) {
+  return {
+    scales: {
+      yAxes: [{
+        stacked: true
+      }]
+    },
+    legend: {
+      display: false
+    },
+    tooltips: {
+      // put our own infos in the tooltip (see group_tooltip_callbacks)
+      callbacks: tooltip_callbacks
+    }
+  }
+}
+
 // Creating bar charts using http://www.chartjs.org/docs/
 // Horizontal bar charts for format (OWL, SKOS, UMLS)
 var ontologyFormatsContext = document.getElementById("formatCanvas").getContext("2d");
 var ontologyFormatsChart = new Chart(ontologyFormatsContext, {
   type: 'horizontalBar',
   data: landscapeData["ontologyFormatsChartJson"],
-  options: {
-    scales: {
-      yAxes: [{
-        stacked: true
-      }]
-    }
-  }
+  options: barChartOptions()
 });
 
 // Horizontal bar charts for ontologies types
@@ -186,13 +198,7 @@ var isOfTypeContext = document.getElementById("isOfTypeCanvas").getContext("2d")
 var isOfTypeChart = new Chart(isOfTypeContext, {
   type: 'horizontalBar',
   data: landscapeData["isOfTypeChartJson"],
-  options: {
-    scales: {
-      yAxes: [{
-        stacked: true
-      }]
-    }
-  }
+  options: barChartOptions()
 });
 
 // Vertical bar charts for ontologies formality levels
@@ -200,13 +206,7 @@ var formalityLevelContext = document.getElementById("formalityLevelCanvas").getC
 var formalityLevelChart = new Chart(formalityLevelContext, {
   type: 'bar',
   data: landscapeData["formalityLevelChartJson"],
-  options: {
-    scales: {
-      yAxes: [{
-        stacked: true
-      }]
-    }
-  }
+  options: barChartOptions()
 });
 
 // Vertical bar charts for ontologies formality levels
@@ -214,73 +214,58 @@ var dataCatalogContext = document.getElementById("dataCatalogCanvas").getContext
 var dataCatalogChart = new Chart(dataCatalogContext, {
   type: 'bar',
   data: landscapeData["dataCatalogChartJson"],
-  options: {
-    scales: {
-      yAxes: [{
-        stacked: true
-      }]
-    }
-  }
+  options: barChartOptions()
 });
 
-// http://stackoverflow.com/questions/25338141/chart-js-custom-tooltip-option
-var barChartOptions = {
-  scales: {
-    yAxes: [{
-      stacked: true
-    }]
+// Generate group bar chart
+var group_tooltip_callbacks = {
+  title: function (tooltipItem, data) {
+    var value = data.datasets[0].data[tooltipItem.index];
+    return landscapeData["groupsInfoHash"][tooltipItem[0].xLabel]["name"];
   },
-  legend: {
-    display: false
-  },
-  tooltips: {
-    // put groups info in the tooltip
-    callbacks: {
-      title: function(tooltipItem, data) {
-        var value = data.datasets[0].data[tooltipItem.index];
-        return landscapeData["groupsInfoHash"][tooltipItem[0].xLabel]["name"];
-      },
-      beforeBody: function(tooltipItem, data) {
-        var value = data.datasets[0].data[tooltipItem.index];
-        return landscapeData["groupsInfoHash"][tooltipItem[0].xLabel]["description"];
-      }
-    }
+  beforeBody: function (tooltipItem, data) {
+    var value = data.datasets[0].data[tooltipItem.index];
+    return landscapeData["groupsInfoHash"][tooltipItem[0].xLabel]["description"];
   }
-}
-
+};
 var groupCountContext = document.getElementById("groupsCanvas").getContext("2d");
 var groupCountChart = new Chart(groupCountContext, {
   type: 'bar',
   data: landscapeData["groupCountChartJson"],
-  options: barChartOptions
+  options: barChartOptions(group_tooltip_callbacks)
 });
 
+
+
+// Generate domain bar chart
+var domain_tooltip_callbacks = {
+  title: function (tooltipItem, data) {
+    var value = data.datasets[0].data[tooltipItem.index];
+    return landscapeData["domainsInfoHash"][tooltipItem[0].xLabel]["name"];
+  },
+  beforeBody: function (tooltipItem, data) {
+    var value = data.datasets[0].data[tooltipItem.index];
+    return landscapeData["domainsInfoHash"][tooltipItem[0].xLabel]["description"];
+  }
+};
 var domainCountContext = document.getElementById("domainCanvas").getContext("2d");
 var domainCountChart = new Chart(domainCountContext, {
   type: 'bar',
   data: landscapeData["domainCountChartJson"],
-  options: {
-    scales: {
-      yAxes: [{
-        stacked: true
-      }]
-    }
-  }
+  options: barChartOptions(domain_tooltip_callbacks)
 });
+
 
 var sizeSlicesContext = document.getElementById("sizeSlicesCanvas").getContext("2d");
 var sizeSlicesChart = new Chart(sizeSlicesContext, {
   type: 'bar',
   data: landscapeData["sizeSlicesChartJson"],
-  options: {
-    scales: {
-      yAxes: [{
-        stacked: true
-      }]
-    }
-  }
+  options: barChartOptions()
 });
 
+
+
+// Build the VIS network for ontologies relations: http://visjs.org/docs/network/
 buildNetwork(landscapeData["ontology_relations_array"]);
 
 function buildNetwork(ontologyRelationsArray) {
