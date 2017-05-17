@@ -194,19 +194,31 @@ var ontologyFormatsChart = new Chart(ontologyFormatsContext, {
 });
 
 // Horizontal bar charts for ontologies types
+// Replace the omv prefix for values (only that for isOfType, make it faster). Be careful it's on yLabel
+var ifOfTypeTooltipCallbacks = {
+  title: function (tooltipItem, data) {
+    return tooltipItem[0].yLabel.replace("omv:", "http://omv.ontoware.org/2005/05/ontology#");
+  }
+};
 var isOfTypeContext = document.getElementById("isOfTypeCanvas").getContext("2d");
 var isOfTypeChart = new Chart(isOfTypeContext, {
   type: 'horizontalBar',
   data: landscapeData["isOfTypeChartJson"],
-  options: barChartOptions()
+  options: barChartOptions(ifOfTypeTooltipCallbacks)
 });
 
 // Vertical bar charts for ontologies formality levels
+// Replace the nkos prefix for nkos values (only that for formality, make it faster)
+var formalityTooltipCallbacks = {
+  title: function (tooltipItem, data) {
+    return tooltipItem[0].xLabel.replace("nkos:", "http://w3id.org/nkos/nkostype#");
+  }
+};
 var formalityLevelContext = document.getElementById("formalityLevelCanvas").getContext("2d");
 var formalityLevelChart = new Chart(formalityLevelContext, {
   type: 'bar',
   data: landscapeData["formalityLevelChartJson"],
-  options: barChartOptions()
+  options: barChartOptions(formalityTooltipCallbacks)
 });
 
 // Vertical bar charts for ontologies formality levels
@@ -218,7 +230,7 @@ var dataCatalogChart = new Chart(dataCatalogContext, {
 });
 
 // Generate group bar chart
-var group_tooltip_callbacks = {
+var groupTooltipCallbacks = {
   title: function (tooltipItem, data) {
     var value = data.datasets[0].data[tooltipItem.index];
     return landscapeData["groupsInfoHash"][tooltipItem[0].xLabel]["name"];
@@ -232,13 +244,13 @@ var groupCountContext = document.getElementById("groupsCanvas").getContext("2d")
 var groupCountChart = new Chart(groupCountContext, {
   type: 'bar',
   data: landscapeData["groupCountChartJson"],
-  options: barChartOptions(group_tooltip_callbacks)
+  options: barChartOptions(groupTooltipCallbacks)
 });
 
 
 
 // Generate domain bar chart
-var domain_tooltip_callbacks = {
+var domainTooltipCallbacks = {
   title: function (tooltipItem, data) {
     var value = data.datasets[0].data[tooltipItem.index];
     return landscapeData["domainsInfoHash"][tooltipItem[0].xLabel]["name"];
@@ -252,7 +264,7 @@ var domainCountContext = document.getElementById("domainCanvas").getContext("2d"
 var domainCountChart = new Chart(domainCountContext, {
   type: 'bar',
   data: landscapeData["domainCountChartJson"],
-  options: barChartOptions(domain_tooltip_callbacks)
+  options: barChartOptions(domainTooltipCallbacks)
 });
 
 
