@@ -24,6 +24,7 @@ class LandscapeController < ApplicationController
     natural_language_hash = {}
     licenseProperty_hash = {}
     formalityProperty_hash = {}
+    dataCatalog_count_hash = {}
     isOfTypeProperty_hash = {}
 
     prefLabelProperty_hash = {}
@@ -39,6 +40,17 @@ class LandscapeController < ApplicationController
     ontology_relations_array = []
 
     ontologyFormatsCount = {"OWL" => 0, "SKOS" => 0, "UMLS" => 0, "OBO" => 0}
+
+    data_catalog_values = {"https://biosharing.org/" => "BioSharing",
+                           "http://aber-owl.net/ontology/" => "AberOWL",
+                           "http://vest.agrisemantics.org/content/" => "VEST Registry",
+                           "http://bioportal.bioontology.org/ontologies/" => "BioPortal",
+                           "http://www.ontobee.org/ontology/" => "Ontobee",
+                           "http://www.obofoundry.org/ontology/" => "The OBO Foundry",
+                           "http://www.ebi.ac.uk/ols/ontologies/" => "EBI Ontology Lookup"}
+
+    # Set all data_catalog count to 0
+    data_catalog_values.map {|uri,name| dataCatalog_count_hash[name] = 0}
 
     @metrics_average = [{:attr => "numberOfClasses", :label => "Number of classes", :array => []},
                         {:attr => "numberOfIndividuals", :label => "Number of individuals", :array => []},
@@ -56,7 +68,8 @@ class LandscapeController < ApplicationController
     # TODO: define here the attributes you want to retrieve to create visualization
 
     # Attributes that we need to retrieve to perform landscape
-    sub_attributes = [:submissionId, :ontology, :group, :hasDomain, :hasOntologyLanguage, :naturalLanguage, :hasLicense, :hasFormalityLevel, :isOfType, :contact, :name, :email]
+    sub_attributes = [:submissionId, :ontology, :group, :hasDomain, :hasOntologyLanguage, :naturalLanguage, :hasLicense, :hasFormalityLevel, :isOfType, :contact, :name, :email, :includedInDataCatalog]
+    # TODO: if too slow do a different call for includedInDataCatalog (array with a lot of different value, so it trigger the SPARQL default when we retrieve multiple attr with multiple values in the array)
 
     pref_properties_attributes = [:prefLabelProperty, :synonymProperty, :definitionProperty, :authorProperty]
 
@@ -104,6 +117,14 @@ class LandscapeController < ApplicationController
         licenseProperty_hash = get_used_properties(sub.hasLicense, nil, licenseProperty_hash)
 
         formalityProperty_hash = get_used_properties(sub.hasFormalityLevel, nil, formalityProperty_hash)
+
+        sub.includedInDataCatalog.each do |data_catalog|
+          data_catalog_values.each do |uri, name|
+            if data_catalog.start_with?(uri)
+              dataCatalog_count_hash[name] += 1
+            end
+          end
+        end
 
         isOfTypeProperty_hash = get_used_properties(sub.isOfType, nil, isOfTypeProperty_hash)
 
@@ -401,6 +422,11 @@ class LandscapeController < ApplicationController
                                           :backgroundColor => pie_colors_array,
                                           :hoverBackgroundColor => pie_colors_array.reverse}] }
 
+    dataCatalogChartJson = { :labels => dataCatalog_count_hash.keys,
+                                :datasets => [{ :label => "Number of ontologies of this formality level", :data => dataCatalog_count_hash.values,
+                                                :backgroundColor => pie_colors_array,
+                                                :hoverBackgroundColor => pie_colors_array.reverse}] }
+
     # Format the groupOntologiesCount hash as the JSON needed to generate the chart
     groupCountChartJson = { :labels => groups_hash.keys,
                                   :datasets => [{ :label => "Number of ontologies in each group", :data => groups_hash.values,
@@ -433,6 +459,7 @@ class LandscapeController < ApplicationController
         :ontologyFormatsChartJson => ontologyFormatsChartJson,
         :isOfTypeChartJson => isOfTypeChartJson,
         :formalityLevelChartJson => formalityLevelChartJson,
+        :dataCatalogChartJson => dataCatalogChartJson,
         :groupCountChartJson => groupCountChartJson,
         :domainCountChartJson => domainCountChartJson,
         :sizeSlicesChartJson => sizeSlicesChartJson

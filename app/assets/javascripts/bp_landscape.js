@@ -208,6 +208,20 @@ var formalityLevelChart = new Chart(formalityLevelContext, {
   }
 });
 
+// Vertical bar charts for ontologies formality levels
+var dataCatalogContext = document.getElementById("dataCatalogCanvas").getContext("2d");
+var dataCatalogChart = new Chart(dataCatalogContext, {
+  type: 'bar',
+  data: landscapeData["dataCatalogChartJson"],
+  options: {
+    scales: {
+      yAxes: [{
+        stacked: true
+      }]
+    }
+  }
+});
+
 var groupCountContext = document.getElementById("groupsCanvas").getContext("2d");
 var groupCountChart = new Chart(groupCountContext, {
   type: 'bar',
