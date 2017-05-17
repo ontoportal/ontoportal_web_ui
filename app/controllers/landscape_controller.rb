@@ -39,8 +39,6 @@ class LandscapeController < ApplicationController
     ontology_relations_array = []
 
     ontologyFormatsCount = {"OWL" => 0, "SKOS" => 0, "UMLS" => 0, "OBO" => 0}
-    formalityLevelCount = {}
-    isOfTypeCount = {}
 
     @metrics_average = [{:attr => "numberOfClasses", :label => "Number of classes", :array => []},
                         {:attr => "numberOfIndividuals", :label => "Number of individuals", :array => []},
@@ -320,7 +318,6 @@ class LandscapeController < ApplicationController
     # Generate the JSON to put natural languages in the pie chart
     natural_language_json_pie = []
     licenseProperty_json_pie = []
-    formalityProperty_json_pie = []
 
     prefLabelProperty_json_pie = []
     synonymProperty_json_pie = []
@@ -356,11 +353,13 @@ class LandscapeController < ApplicationController
       color_index += 1
     end
 
+    formalityLevelCount = {}
     formalityProperty_hash.each do |formality_level,count_hash|
       # Generate formalityLevel JSON used to get the bar charts
       formalityLevelCount[formality_level.to_s] = count_hash["count"]
     end
 
+    isOfTypeCount = {}
     isOfTypeProperty_hash.each do |isOfType,count_hash|
       isOfTypeCount[isOfType.to_s] = count_hash["count"]
     end
