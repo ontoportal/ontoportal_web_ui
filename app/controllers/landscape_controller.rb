@@ -285,7 +285,7 @@ class LandscapeController < ApplicationController
         total_count += hash_counts[:reviews]
       end
       if total_count > 0
-        notes_people_json_cloud.push({"text"=>people.to_s,"weight"=>hash_counts, "html" => {style: "color: ##{colour};", title: title_array.join(", ")}, "link" => hash_counts[:uri]})
+        notes_people_json_cloud.push({"text"=>people.to_s,"weight"=>total_count, "html" => {style: "color: ##{colour};", title: title_array.join(", ")}, "link" => hash_counts[:uri]})
       end
     end
 
