@@ -11,8 +11,8 @@ class LandscapeController < ApplicationController
     # Array with color codes for the pie charts. iterate color_index to change color
     pie_colors_array = ["#2484c1", "#0c6197", "#4daa4b", "#90c469", "#daca61", "#e4a14b", "#e98125", "#cb2121", "#830909", "#923e99", "#ae83d5", "#bf273e", "#ce2aeb", "#bca44a", "#618d1b", "#1ee67b", "#b0ec44", "#a4a0c9", "#322849", "#86f71a", "#d1c87f", "#7d9058", "#44b9b0", "#7c37c0", "#cc9fb1", "#e65414", "#8b6834", "#248838"];
 
-    groups_hash = {}
-    domains_hash = {}
+    groups_count_hash = {}
+    domains_count_hash = {}
     # A hash for counting ontologies in size ranges
     size_slices_hash = {}
     size_slices_hash["< 100"] = 0
@@ -165,19 +165,21 @@ class LandscapeController < ApplicationController
 
         # Count number of ontologies for each group (bar chart)
         ont.group.each do |group|
-          if groups_hash.has_key?(group.to_s.split("/")[-1])
-            groups_hash[group.to_s.split("/")[-1]] += 1
+          group_acro = group.to_s.split("/")[-1]
+          if groups_count_hash.has_key?(group_acro)
+            groups_count_hash[group_acro] += 1
           else
-            groups_hash[group.to_s.split("/")[-1]] = 1
+            groups_count_hash[group_acro] = 1
           end
         end
 
         # Count number of ontologies for each domain (bar chart)
         ont.hasDomain.each do |domain|
-          if domains_hash.has_key?(domain.to_s.split("/")[-1])
-            domains_hash[domain.to_s.split("/")[-1]] += 1
+          domain_acro = domain.to_s.split("/")[-1]
+          if domains_count_hash.has_key?(domain_acro)
+            domains_count_hash[domain_acro] += 1
           else
-            domains_hash[domain.to_s.split("/")[-1]] = 1
+            domains_count_hash[domain_acro] = 1
           end
         end
 
@@ -413,26 +415,27 @@ class LandscapeController < ApplicationController
                                                  :backgroundColor => ["#669911", "#119966", "#66A2EB", "#FCCE56"]}] }
 
     isOfTypeChartJson = { :labels => isOfTypeCount.keys,
-                          :datasets => [{ :label => "Number of ontologies of this type",
+                          :datasets => [{ :label => "Number of ontologies",
                                           :data => isOfTypeCount.values,
                                           :backgroundColor => pie_colors_array}] }
 
     formalityLevelChartJson = { :labels => formalityLevelCount.keys,
-                                :datasets => [{ :label => "Number of ontologies of this formality level",
+                                :datasets => [{ :label => "Number of ontologies",
                                                 :data => formalityLevelCount.values,
                                                 :backgroundColor => pie_colors_array}] }
 
     dataCatalogChartJson = { :labels => dataCatalog_count_hash.keys,
-                             :datasets => [{ :label => "Number of ontologies of this formality level", :data => dataCatalog_count_hash.values,
+                             :datasets => [{ :label => "Number of ontologies", :data => dataCatalog_count_hash.values,
                                                 :backgroundColor => pie_colors_array}] }
 
     # Format the groupOntologiesCount hash as the JSON needed to generate the chart
-    groupCountChartJson = { :labels => groups_hash.keys,
-                                  :datasets => [{ :label => "Number of ontologies in each group", :data => groups_hash.values,
+    #binding.pry
+    groupCountChartJson = { :labels => groups_count_hash.keys,
+                            :datasets => [{ :label => "Number of ontologies", :data => groups_count_hash.values,
                                                   :backgroundColor => pie_colors_array}] }
 
-    domainCountChartJson = { :labels => domains_hash.keys,
-                             :datasets => [{ :label => "Number of ontologies in each domain", :data => domains_hash.values,
+    domainCountChartJson = { :labels => domains_count_hash.keys,
+                             :datasets => [{ :label => "Number of ontologies", :data => domains_count_hash.values,
                                              :backgroundColor => pie_colors_array}] }
 
     # Format the groupOntologiesCount hash as the JSON needed to generate the chart
@@ -440,6 +443,30 @@ class LandscapeController < ApplicationController
                             :datasets => [{ :label => "Number of ontologies with a class count in the given range",
                                             :data => size_slices_hash.values,
                                             :backgroundColor => pie_colors_array}] }
+
+    # Also pass groups and hasDomain name to resolve it and better label of bar charts
+    groups = LinkedData::Client::Models::Group.all(include: "acronym,name,description")
+    domains = LinkedData::Client::Models::Category.all(include: "acronym,name,description")
+
+    groups_info_hash = {}
+    groups.each do |group|
+      groups_info_hash[group.acronym] = {}
+      groups_info_hash[group.acronym][:id] = group.id
+      groups_info_hash[group.acronym][:name] = group.name
+      groups_info_hash[group.acronym][:description] = []
+      # Slice the description in 6 words string to avoid too long sentence in the bar chart tooltip in js
+      group.description.split(" ").each_slice(6) {|slice| groups_info_hash[group.acronym][:description].push(slice.join(" ")) }
+    end
+
+    domains_info_hash = {}
+    domains.each do |domain|
+      domains_info_hash[domain.acronym] = {}
+      domains_info_hash[domain.acronym][:id] = domain.id
+      domains_info_hash[domain.acronym][:name] = domain.name
+      domains_info_hash[domain.acronym][:description] = []
+      # Slice the description in 6 words string to avoid too long sentence in the bar chart tooltip in js
+      domain.description.split(" ").each_slice(6) {|slice| domains_info_hash[domain.acronym][:description].push(slice.join(" ")) }
+    end
 
     @landscape_data = {
         :people_count_json_cloud => people_count_json_cloud,
@@ -458,7 +485,9 @@ class LandscapeController < ApplicationController
         :formalityLevelChartJson => formalityLevelChartJson,
         :dataCatalogChartJson => dataCatalogChartJson,
         :groupCountChartJson => groupCountChartJson,
+        :groupsInfoHash => groups_info_hash,
         :domainCountChartJson => domainCountChartJson,
+        :domainsInfoHash => domains_info_hash,
         :sizeSlicesChartJson => sizeSlicesChartJson
     }.to_json.html_safe
 

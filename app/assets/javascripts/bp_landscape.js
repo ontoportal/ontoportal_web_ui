@@ -223,17 +223,36 @@ var dataCatalogChart = new Chart(dataCatalogContext, {
   }
 });
 
+// http://stackoverflow.com/questions/25338141/chart-js-custom-tooltip-option
+var barChartOptions = {
+  scales: {
+    yAxes: [{
+      stacked: true
+    }]
+  },
+  legend: {
+    display: false
+  },
+  tooltips: {
+    // put groups info in the tooltip
+    callbacks: {
+      title: function(tooltipItem, data) {
+        var value = data.datasets[0].data[tooltipItem.index];
+        return landscapeData["groupsInfoHash"][tooltipItem[0].xLabel]["name"];
+      },
+      beforeBody: function(tooltipItem, data) {
+        var value = data.datasets[0].data[tooltipItem.index];
+        return landscapeData["groupsInfoHash"][tooltipItem[0].xLabel]["description"];
+      }
+    }
+  }
+}
+
 var groupCountContext = document.getElementById("groupsCanvas").getContext("2d");
 var groupCountChart = new Chart(groupCountContext, {
   type: 'bar',
   data: landscapeData["groupCountChartJson"],
-  options: {
-    scales: {
-      yAxes: [{
-        stacked: true
-      }]
-    }
-  }
+  options: barChartOptions
 });
 
 var domainCountContext = document.getElementById("domainCanvas").getContext("2d");
