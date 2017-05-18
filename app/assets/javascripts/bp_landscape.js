@@ -142,6 +142,12 @@ var definitionPie = createPie("definitionPropertyPieChartDiv", landscapeData["de
 
 var authorPie = createPie("authorPropertyPieChartDiv", landscapeData["authorProperty_json_pie"], false);
 
+// Generate the used engineering tools tag cloud
+$(function() {
+  // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
+  $("#toolCloudChart").jQCloud(landscapeData["engineering_tool_cloud_json"]);
+});
+
 // Generate the people tag cloud (from all contributors attributes)
 $(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
@@ -358,6 +364,7 @@ function buildNetwork(ontologyRelationsArray) {
       shape: "box"
     },
     physics: {
+      // http://visjs.org/docs/network/physics.html
       enabled: true,
       stabilization: {
         onlyDynamicEdges: false,
@@ -365,7 +372,7 @@ function buildNetwork(ontologyRelationsArray) {
       },
       barnesHut: {
         gravitationalConstant: -1500,
-        centralGravity: 0.1,
+        centralGravity: 0,
         springLength: 300,
         springConstant: 0.01,
         damping: 0.2,
