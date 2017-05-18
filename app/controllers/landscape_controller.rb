@@ -24,7 +24,6 @@ class LandscapeController < ApplicationController
     natural_language_hash = {}
     licenseProperty_hash = {}
     formalityProperty_hash = {}
-    dataCatalog_count_hash = {}
     isOfTypeProperty_hash = {}
 
     prefLabelProperty_hash = {}
@@ -51,6 +50,7 @@ class LandscapeController < ApplicationController
                            "http://www.ebi.ac.uk/ols/ontologies/" => "EBI Ontology Lookup"}
 
     # Set all data_catalog count to 0
+    dataCatalog_count_hash = {}
     data_catalog_values.map {|uri,name| dataCatalog_count_hash[name] = 0}
 
     @metrics_average = [{:attr => "numberOfClasses", :label => "Number of classes", :array => []},
@@ -64,34 +64,22 @@ class LandscapeController < ApplicationController
                         {:attr => "classesWithNoDefinition", :label => "Classes with no definition	", :array => []},
                         {:attr => "numberOfAxioms", :label => "Number of axioms (triples)", :array => []}]
 
+
+    # If needed: get the submission metadata from the REST API
+    #json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
+
     # Attributes to include. To avoid to get everything and make it faster
     # They are also used to get the value of each property later in the controller
     # TODO: define here the attributes you want to retrieve to create visualization
-
-    # Attributes that we need to retrieve to perform landscape
     sub_attributes = [:submissionId, :ontology, :group, :hasDomain, :hasOntologyLanguage, :naturalLanguage, :hasLicense,
-                      :hasFormalityLevel, :isOfType, :contact, :name, :email, :usedOntologyEngineeringTool,:includedInDataCatalog]
-    # TODO: if too slow do a different call for includedInDataCatalog (array with a lot of different value, so it trigger the SPARQL default when we retrieve multiple attr with multiple values in the array)
-
-
-    # Get the submission metadata from the REST API
-=begin
-    json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
-    json_metadata.each do |metadata|
-      if (metadata.attribute.eql?("usedOntologyEngineeringTool"))
-
-      end
-    end
-    binding.pry
-=end
+                      :hasFormalityLevel, :isOfType, :contact, :name, :email, :usedOntologyEngineeringTool]
 
     pref_properties_attributes = [:prefLabelProperty, :synonymProperty, :definitionProperty, :authorProperty]
-
     contributors_attr_list = [:hasContributor, :hasCreator, :curatedBy]
     org_attr_list = [:fundedBy, :endorsedBy]
-
     @relations_array = ["omv:useImports", "door:isAlignedTo", "door:ontologyRelatedTo", "omv:isBackwardCompatibleWith", "omv:isIncompatibleWith", "door:comesFromTheSameDomain", "door:similarTo",
                         "door:explanationEvolution", "voaf:generalizes", "door:hasDisparateModelling", "dct:hasPart", "voaf:usedBy", "schema:workTranslation", "schema:translationOfWork"]
+
     # We need prefixes to display them, we remove them to call them in the include
     relations_attributes = @relations_array.map {|r| r.to_s.split(":")[1]}
     metrics_attributes = @metrics_average.map {|m| m[:attr]}
@@ -101,6 +89,20 @@ class LandscapeController < ApplicationController
                          .concat(relations_attributes).concat(metrics_attributes).concat(pref_properties_attributes).join(",")
 
 
+    # Special treatment for includedInDataCatalog: arrays with a lot of different values, so it trigger the SPARQL default
+    # when we retrieve multiple attr with multiple values in the array, and make the request slower
+    data_catalog_submissions = LinkedData::Client::Models::OntologySubmission.all(include_status: "any", include_views: true, display_links: false, display_context: false, include: "includedInDataCatalog")
+    data_catalog_submissions.each do |catalog_sub|
+      catalog_sub.includedInDataCatalog.each do |data_catalog|
+        data_catalog_values.each do |uri, name|
+          if data_catalog.start_with?(uri)
+            dataCatalog_count_hash[name] += 1
+          end
+        end
+      end
+    end
+
+    # Get all latest submissions with the needed attributes (this request can be slow)
     @submissions = LinkedData::Client::Models::OntologySubmission.all(include_status: "any", include_views: true, display_links: false, display_context: false, include: all_attributes)
 
     # Iterate ontologies to get the submissions with all metadata
@@ -108,7 +110,6 @@ class LandscapeController < ApplicationController
       ont = sub.ontology
 
       if !sub.nil?
-
         # Get hash of natural language use
         if !sub.naturalLanguage.nil? && !sub.naturalLanguage.empty?
           sub.naturalLanguage.each do |sub_lang|
@@ -131,14 +132,6 @@ class LandscapeController < ApplicationController
         licenseProperty_hash = get_used_properties(sub.hasLicense, nil, licenseProperty_hash)
 
         formalityProperty_hash = get_used_properties(sub.hasFormalityLevel, nil, formalityProperty_hash)
-
-        sub.includedInDataCatalog.each do |data_catalog|
-          data_catalog_values.each do |uri, name|
-            if data_catalog.start_with?(uri)
-              dataCatalog_count_hash[name] += 1
-            end
-          end
-        end
 
         isOfTypeProperty_hash = get_used_properties(sub.isOfType, nil, isOfTypeProperty_hash)
 
