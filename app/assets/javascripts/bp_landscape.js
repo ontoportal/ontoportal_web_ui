@@ -232,11 +232,9 @@ var dataCatalogChart = new Chart(dataCatalogContext, {
 // Generate group bar chart
 var groupTooltipCallbacks = {
   title: function (tooltipItem, data) {
-    var value = data.datasets[0].data[tooltipItem.index];
     return landscapeData["groupsInfoHash"][tooltipItem[0].xLabel]["name"];
   },
   beforeBody: function (tooltipItem, data) {
-    var value = data.datasets[0].data[tooltipItem.index];
     return landscapeData["groupsInfoHash"][tooltipItem[0].xLabel]["description"];
   }
 };
@@ -252,11 +250,9 @@ var groupCountChart = new Chart(groupCountContext, {
 // Generate domain bar chart
 var domainTooltipCallbacks = {
   title: function (tooltipItem, data) {
-    var value = data.datasets[0].data[tooltipItem.index];
     return landscapeData["domainsInfoHash"][tooltipItem[0].xLabel]["name"];
   },
   beforeBody: function (tooltipItem, data) {
-    var value = data.datasets[0].data[tooltipItem.index];
     return landscapeData["domainsInfoHash"][tooltipItem[0].xLabel]["description"];
   }
 };
