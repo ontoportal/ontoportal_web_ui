@@ -34,6 +34,7 @@ class LandscapeController < ApplicationController
 
     people_count_hash = {}
     people_count_emails = {}
+    engineering_tool_count = {}
 
     org_count_hash = {}
 
@@ -68,8 +69,21 @@ class LandscapeController < ApplicationController
     # TODO: define here the attributes you want to retrieve to create visualization
 
     # Attributes that we need to retrieve to perform landscape
-    sub_attributes = [:submissionId, :ontology, :group, :hasDomain, :hasOntologyLanguage, :naturalLanguage, :hasLicense, :hasFormalityLevel, :isOfType, :contact, :name, :email, :includedInDataCatalog]
+    sub_attributes = [:submissionId, :ontology, :group, :hasDomain, :hasOntologyLanguage, :naturalLanguage, :hasLicense,
+                      :hasFormalityLevel, :isOfType, :contact, :name, :email, :usedOntologyEngineeringTool,:includedInDataCatalog]
     # TODO: if too slow do a different call for includedInDataCatalog (array with a lot of different value, so it trigger the SPARQL default when we retrieve multiple attr with multiple values in the array)
+
+
+    # Get the submission metadata from the REST API
+=begin
+    json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
+    json_metadata.each do |metadata|
+      if (metadata.attribute.eql?("usedOntologyEngineeringTool"))
+
+      end
+    end
+    binding.pry
+=end
 
     pref_properties_attributes = [:prefLabelProperty, :synonymProperty, :definitionProperty, :authorProperty]
 
@@ -181,6 +195,13 @@ class LandscapeController < ApplicationController
           else
             domains_count_hash[domain_acro] = 1
           end
+        end
+
+        # Get the count for usedOntologyEngineeringTool (to create a tag cloud)
+        if (engineering_tool_count.has_key?(sub.usedOntologyEngineeringTool))
+          engineering_tool_count[sub.usedOntologyEngineeringTool] += 1
+        else
+          engineering_tool_count[sub.usedOntologyEngineeringTool] = 1
         end
 
         # Get people that are mentioned as ontology actors (contact, contributors, creators, curator) to create a tag cloud
@@ -332,12 +353,6 @@ class LandscapeController < ApplicationController
       end
     end
 
-
-
-    # Get the different people and organizations to generate a tag cloud
-    people_count_json_cloud = []
-    org_count_json_cloud = []
-
     # Generate the JSON to put natural languages in the pie chart
     natural_language_json_pie = []
     licenseProperty_json_pie = []
@@ -347,6 +362,8 @@ class LandscapeController < ApplicationController
     definitionProperty_json_pie = []
     authorProperty_json_pie = []
 
+    # Get the different people and organizations to generate a tag cloud
+    people_count_json_cloud = []
     people_count_hash.each do |people,no|
       # Random color for each word in the cloud
       colour = "%06x" % (rand * 0xffffff)
@@ -357,10 +374,18 @@ class LandscapeController < ApplicationController
       end
     end
 
+    org_count_json_cloud = []
     org_count_hash.each do |org,no|
       # Random color for each word in the cloud
       colour = "%06x" % (rand * 0xffffff)
       org_count_json_cloud.push({"text"=>org.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} ontologies endorsed or funded."}})
+    end
+
+    engineering_tool_cloud_json = []
+    engineering_tool_count.each do |tool,count|
+      # Random color for each word in the cloud
+      colour = "%06x" % (rand * 0xffffff)
+      engineering_tool_cloud_json.push({"text"=>tool.to_s,"weight"=>count, "html" => {style: "color: ##{colour};", title: "Used to build #{count.to_s} ontologies."}})
     end
 
     # Push the results in hash formatted for the Javascript lib that will be displaying it
@@ -470,6 +495,7 @@ class LandscapeController < ApplicationController
     @landscape_data = {
         :people_count_json_cloud => people_count_json_cloud,
         :org_count_json_cloud => org_count_json_cloud,
+        :engineering_tool_cloud_json => engineering_tool_cloud_json,
         :notes_ontologies_json_cloud => notes_ontologies_json_cloud,
         :notes_people_json_cloud => notes_people_json_cloud,
         :natural_language_json_pie => natural_language_json_pie,
