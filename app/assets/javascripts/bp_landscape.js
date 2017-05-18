@@ -142,8 +142,6 @@ var definitionPie = createPie("definitionPropertyPieChartDiv", landscapeData["de
 
 var authorPie = createPie("authorPropertyPieChartDiv", landscapeData["authorProperty_json_pie"], false);
 
-console.log(landscapeData);
-
 // Generate the used engineering tools tag cloud
 $(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
