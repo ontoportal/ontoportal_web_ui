@@ -457,7 +457,14 @@ function annotatorFormatLink(param_string, format) {
     "tabDelimited": "CSV"
   };
   //var query = BP_CONFIG.rest_url + "/annotator?apikey=" + BP_CONFIG.apikey + "&" + param_string;
-  var query = BP_CONFIG.annotator_url + "?apikey=" + BP_CONFIG.apikey + "&" + param_string;
+  var query = BP_CONFIG.annotator_url + "?" + param_string;
+
+  if (jQuery(document).data().bp.user.apikey !== undefined) {
+    query += "&apikey=" + jQuery(document).data().bp.user.apikey;
+  } else {
+    query += "&apikey=" + BP_CONFIG.apikey;
+  }
+
   if (format !== 'json') {
     query += "&format=" + format;
   }
@@ -844,6 +851,8 @@ function display_annotations(data, params) {
   var query = BP_CONFIG.annotator_url + "?" + param_string + "&display_links=false&display_context=false";
   if (jQuery(document).data().bp.user.apikey !== undefined) {
     query += "&apikey=" + jQuery(document).data().bp.user.apikey;
+  } else {
+    query += "&apikey=" + BP_CONFIG.apikey;
   }
   var query_encoded = BP_CONFIG.annotator_url + "?" + encodeURIComponent(param_string);
   jQuery("#annotator_parameters").html("<a href=\"" + encodeURI(query) + "\" class=\"btn btn-info\" target=\"_blank\">Corresponding REST web service call</a>");
