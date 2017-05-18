@@ -18,7 +18,7 @@
     %div{:class => "panel-heading"}
       %h3{:class => "panel-title"} Groups and categories
     %div{:class => "panel-body"}
-      %div{:class => "row"}
+      %div{:class => "row", :style => "width: 80%;"}
         %div{:class => "col-md-6"}
           %h2 Ontologies by group
           %canvas#groupsCanvas
@@ -27,7 +27,7 @@
           %h2 Ontologies by category
           %canvas#domainCanvas
 
-      %div{:class => "row", :style => "margin-top: 3em;"}
+      %div{:class => "row", :style => "width: 80%; margin-top: 3em;"}
         %div{:class => "col-md-7"}
           %h2 Ontologies count in each data catalog
           %canvas#dataCatalogCanvas
