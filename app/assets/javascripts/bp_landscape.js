@@ -385,7 +385,10 @@ function buildNetwork(ontologyRelationsArray) {
     physics: {
       // http://visjs.org/docs/network/physics.html
       enabled: true,
+      // To stabilize faster, increase the minVelocity value
+      minVelocity: 1,
       stabilization: {
+        enabled: true,
         onlyDynamicEdges: false,
         fit: true
       },
