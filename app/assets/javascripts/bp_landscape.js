@@ -316,13 +316,23 @@ function buildNetwork(ontologyRelationsArray) {
       propertyCount++;
     }
 
+    // Create the target node if don't exist
     if (nodeIds[ontologyRelationsArray[i]["target"]] != null) {
       var targetNodeNumber = nodeIds[ontologyRelationsArray[i]["target"]];
     } else {
       var targetNodeNumber = propertyCount;
-      nodes.add([
-        {id: targetNodeNumber, label: ontologyRelationsArray[i]["target"]}
-      ]);
+      // If target node is an ontology from the portal then node in green
+      console.log(ontologyRelationsArray[i]);
+      if (ontologyRelationsArray[i]["targetInPortal"] == true) {
+        console.log("yeeeeah");
+        nodes.add([
+          {id: targetNodeNumber, label: ontologyRelationsArray[i]["target"], color: "#5cb85c"}
+        ]);
+      } else {
+        nodes.add([
+          {id: targetNodeNumber, label: ontologyRelationsArray[i]["target"]}
+        ]);
+      }
       nodeIds[ontologyRelationsArray[i]["target"]] = propertyCount;
       propertyCount++;
     }

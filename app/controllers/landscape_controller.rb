@@ -251,13 +251,20 @@ class LandscapeController < ApplicationController
             if !relation_values.kind_of?(Array)
               relation_values = [relation_values]
             end
-            relation_values.each do |rel_value|
-              # Use acronym if ontology in the portal
-              target_ont = LinkedData::Client::Models::Ontology.find(rel_value)
-              if target_ont
-                rel_value = target_ont.acronym
+            relation_values.each do |relation_value|
+              target_id = relation_value
+              target_in_portal = false
+              # if we find our portal URL in the ontology URL, then we just keep the ACRONYM to try to get the ontology.
+              if relation_value.include?($SITE_URL)
+                relation_value = relation_value.split('/').last
               end
-              ontology_relations_array.push({:source => ont.acronym, :target=> rel_value, :relation=> relation_attr.to_s})
+              # Use acronym to get ontology from the portal
+              target_ont = LinkedData::Client::Models::Ontology.find_by_acronym(relation_value).first
+              if target_ont
+                target_id = target_ont.acronym
+                target_in_portal = true
+              end
+              ontology_relations_array.push({:source => ont.acronym, :target=> target_id, :relation=> relation_attr.to_s, :targetInPortal=> target_in_portal})
             end
           end
         end
