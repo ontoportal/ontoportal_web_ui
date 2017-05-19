@@ -250,16 +250,28 @@ class LandscapeController < ApplicationController
           orgs_list.each do |orgs_comma_list|
             if !orgs_comma_list.nil? &&
               orgs_comma_split = orgs_comma_list.split(",")
-              orgs_comma_split.each do |org|
-                if org_count_hash.has_key?(org)
-                  org_count_hash[org][org_attr] += 1
+              orgs_comma_split.each do |org_str|
+                # TODO: handle badly formatted strings and URI
+                org_uri = nil
+                # Check if the organization is actually an URL
+                if org_str =~ /\A#{URI::regexp}\z/
+                  org_uri = org_str
+                  # Remove http, www and last / from URI
+                  org_str = org_str.sub("http://", "").sub("https://", "").sub("www.", "")
+                  org_str = org_str[0..-2] if org_str.last.eql?("/")
+
+                end
+
+                if org_count_hash.has_key?(org_str)
+                  org_count_hash[org_str][org_attr] += 1
                 else
                   # Create the contrinutor entry in the Hash and create the attr entries that will be incremented
-                  org_count_hash[org] = {}
+                  org_count_hash[org_str] = {}
                   org_attr_list.each do |create_org_attr|
-                    org_count_hash[org][create_org_attr] = 0
+                    org_count_hash[org_str][create_org_attr] = 0
                   end
-                  org_count_hash[org][org_attr] += 1
+                  org_count_hash[org_str][:uri] = org_uri if !org_uri.nil?
+                  org_count_hash[org_str][org_attr] += 1
                 end
               end
             end
@@ -435,7 +447,11 @@ class LandscapeController < ApplicationController
       title_str = "Contributions: #{title_array.join(", ")}"
 
       if total_count > 0
-        org_count_json_cloud.push({"text"=>org.to_s,"weight"=>total_count, "html" => {style: "color: ##{colour};", title: title_str}})
+        if hash_count.has_key?(:uri)
+          org_count_json_cloud.push({"text"=>org.to_s,"weight"=>total_count, "html" => {style: "color: ##{colour};", title: title_str}, "link" => "#{hash_count[:uri]}"})
+        else
+          org_count_json_cloud.push({"text"=>org.to_s,"weight"=>total_count, "html" => {style: "color: ##{colour};", title: title_str}})
+        end
       end
     end
 
