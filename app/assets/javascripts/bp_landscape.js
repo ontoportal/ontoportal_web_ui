@@ -400,7 +400,7 @@ function buildNetwork(ontologyRelationsArray) {
         damping: 0.2,
         avoidOverlap: 0.2
       },
-      hierarchicalRepulsion: { // not used atm
+      hierarchicalRepulsion: { // not used at the moment
         centralGravity: 0.0,
         springLength: 500,
         springConstant: 0.2,
