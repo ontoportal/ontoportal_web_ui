@@ -308,8 +308,9 @@ function buildNetwork(ontologyRelationsArray) {
       var sourceNodeNumber = nodeIds[ontologyRelationsArray[i]["source"]];
     } else {
       var sourceNodeNumber = propertyCount;
+      // If the node is the source it means it is from the Portal, so we colorate it in green
       nodes.add([
-        {id: sourceNodeNumber, label: ontologyRelationsArray[i]["source"]}
+        {id: sourceNodeNumber, label: ontologyRelationsArray[i]["source"], color: "#5cb85c"}
       ]);
       nodeIds[ontologyRelationsArray[i]["source"]] = propertyCount;
       propertyCount++;
