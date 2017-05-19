@@ -75,8 +75,12 @@ class LandscapeController < ApplicationController
                       :hasFormalityLevel, :isOfType, :contact, :name, :email, :usedOntologyEngineeringTool]
 
     pref_properties_attributes = [:prefLabelProperty, :synonymProperty, :definitionProperty, :authorProperty]
+
+    # Be careful, if you add attributes to those lists you will need to add them when generating the JSON for the tag clouds
+    # org_count_json_cloud and people_count_json_cloud
     contributors_attr_list = [:hasContributor, :hasCreator, :curatedBy]
     org_attr_list = [:fundedBy, :endorsedBy]
+
     @relations_array = ["omv:useImports", "door:isAlignedTo", "door:ontologyRelatedTo", "omv:isBackwardCompatibleWith", "omv:isIncompatibleWith", "door:comesFromTheSameDomain", "door:similarTo",
                         "door:explanationEvolution", "voaf:generalizes", "door:hasDisparateModelling", "dct:hasPart", "voaf:usedBy", "schema:workTranslation", "schema:translationOfWork"]
 
@@ -207,7 +211,7 @@ class LandscapeController < ApplicationController
               if people_count_hash.has_key?(contrib)
                 people_count_hash[contrib][contributor_attr] += 1
               else
-                # Create the contrinutor entry in the Hash and create the attr entries that will be incremented
+                # Create the contributor entry in the Hash and create the attr entries that will be incremented
                 people_count_hash[contrib] = {}
                 people_count_hash[contrib][:contact] = 0
                 contributors_attr_list.each do |create_contributor_attr|
@@ -236,20 +240,26 @@ class LandscapeController < ApplicationController
           end
         end
 
-        org_attr_list.each do |attr|
-          contributors_list = sub.send(attr.to_s)
-          if !contributors_list.kind_of?(Array)
-            contributors_list = [contributors_list]
+        org_attr_list.each do |org_attr|
+          # If the attribute object is not a list we make it a list of the single object we get
+          orgs_list = sub.send(org_attr.to_s)
+          if !orgs_list.kind_of?(Array)
+            orgs_list = [orgs_list]
           end
 
-          contributors_list.each do |contributor_label|
-            if !contributor_label.nil? &&
-              contributors_split = contributor_label.split(",")
-              contributors_split.each do |contrib|
-                if org_count_hash.has_key?(contrib)
-                  org_count_hash[contrib] += 1
+          orgs_list.each do |orgs_comma_list|
+            if !orgs_comma_list.nil? &&
+              orgs_comma_split = orgs_comma_list.split(",")
+              orgs_comma_split.each do |org|
+                if org_count_hash.has_key?(org)
+                  org_count_hash[org][org_attr] += 1
                 else
-                  org_count_hash[contrib] = 1
+                  # Create the contrinutor entry in the Hash and create the attr entries that will be incremented
+                  org_count_hash[org] = {}
+                  org_attr_list.each do |create_org_attr|
+                    org_count_hash[org][create_org_attr] = 0
+                  end
+                  org_count_hash[org][org_attr] += 1
                 end
               end
             end
@@ -409,10 +419,24 @@ class LandscapeController < ApplicationController
     end
 
     org_count_json_cloud = []
-    org_count_hash.each do |org,no|
+    org_count_hash.each do |org,hash_count|
       # Random color for each word in the cloud
       colour = "%06x" % (rand * 0xffffff)
-      org_count_json_cloud.push({"text"=>org.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} ontologies endorsed or funded."}})
+      title_array = []
+      total_count = 0
+      if hash_count[:fundedBy] > 0
+        title_array.push("funded #{hash_count[:fundedBy]} ontologies")
+        total_count += hash_count[:fundedBy]
+      end
+      if hash_count[:endorsedBy] > 0
+        title_array.push("endorsed #{hash_count[:endorsedBy]} ontologies")
+        total_count += hash_count[:endorsedBy]
+      end
+      title_str = "Contributions: #{title_array.join(", ")}"
+
+      if total_count > 0
+        org_count_json_cloud.push({"text"=>org.to_s,"weight"=>total_count, "html" => {style: "color: ##{colour};", title: title_str}})
+      end
     end
 
     engineering_tool_cloud_json = []
