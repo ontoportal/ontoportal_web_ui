@@ -199,15 +199,21 @@ class LandscapeController < ApplicationController
 
         # Get people that are mentioned as ontology actors (contact, contributors, creators, curator) to create a tag cloud
         # hasContributor hasCreator contact(explore,name) curatedBy
-        contributors_attr_list.each do |contributor|
-          contributor_label = sub.send(contributor.to_s).to_s
+        contributors_attr_list.each do |contributor_attr|
+          contributor_label = sub.send(contributor_attr.to_s).to_s
           if !contributor_label.nil?
             contributors_split = contributor_label.split(",")
             contributors_split.each do |contrib|
               if people_count_hash.has_key?(contrib)
-                people_count_hash[contrib] += 1
+                people_count_hash[contrib][contributor_attr] += 1
               else
-                people_count_hash[contrib] = 1
+                # Create the contrinutor entry in the Hash and create the attr entries that will be incremented
+                people_count_hash[contrib] = {}
+                people_count_hash[contrib][:contact] = 0
+                contributors_attr_list.each do |create_contributor_attr|
+                  people_count_hash[contrib][create_contributor_attr] = 0
+                end
+                people_count_hash[contrib][contributor_attr] += 1
               end
             end
           end
@@ -216,9 +222,15 @@ class LandscapeController < ApplicationController
           contributor_label = contact.name
           if !contributor_label.nil?
             if people_count_hash.has_key?(contributor_label)
-              people_count_hash[contributor_label] += 1
+              people_count_hash[contributor_label][:contact] += 1
             else
-              people_count_hash[contributor_label] = 1
+              # Create the contrinutor entry in the Hash and create the attr entries that will be incremented
+              people_count_hash[contributor_label] = {}
+              people_count_hash[contributor_label][:contact] = 0
+              contributors_attr_list.each do |create_contributor_attr|
+                people_count_hash[contributor_label][create_contributor_attr] = 0
+              end
+              people_count_hash[contributor_label][:contact] += 1
             end
             people_count_emails[contributor_label] = contact.email if !contact.email.nil?
           end
@@ -364,13 +376,35 @@ class LandscapeController < ApplicationController
 
     # Get the different people and organizations to generate a tag cloud
     people_count_json_cloud = []
-    people_count_hash.each do |people,no|
+    people_count_hash.each do |people,hash_count|
       # Random color for each word in the cloud
       colour = "%06x" % (rand * 0xffffff)
-      if people_count_emails[people.to_s].nil?
-        people_count_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} mentions as a contributor."}})
-      else
-        people_count_json_cloud.push({"text"=>people.to_s,"weight"=>no, "html" => {style: "color: ##{colour};", title: "#{no.to_s} mentions as a contributor."}, "link" => "mailto:#{people_count_emails[people.to_s]}"})
+      title_array = []
+      total_count = 0
+      if hash_count[:contact] > 0
+        title_array.push("#{hash_count[:contact]} as contact")
+        total_count += hash_count[:contact]
+      end
+      if hash_count[:hasContributor] > 0
+        title_array.push("#{hash_count[:hasContributor]} as contributor")
+        total_count += hash_count[:hasContributor]
+      end
+      if hash_count[:hasCreator] > 0
+        title_array.push("#{hash_count[:hasCreator]} as creator")
+        total_count += hash_count[:hasCreator]
+      end
+      if hash_count[:curatedBy] > 0
+        title_array.push("#{hash_count[:curatedBy]} as curator")
+        total_count += hash_count[:curatedBy]
+      end
+      title_str = "Contributions: #{title_array.join(", ")}"
+
+      if total_count > 0
+        if people_count_emails[people.to_s].nil?
+          people_count_json_cloud.push({"text"=>people.to_s,"weight"=>total_count, "html" => {style: "color: ##{colour};", title: title_str}})
+        else
+          people_count_json_cloud.push({"text"=>people.to_s,"weight"=>total_count, "html" => {style: "color: ##{colour};", title: title_str}, "link" => "mailto:#{people_count_emails[people.to_s]}"})
+        end
       end
     end
 
