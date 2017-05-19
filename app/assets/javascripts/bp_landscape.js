@@ -326,9 +326,7 @@ function buildNetwork(ontologyRelationsArray) {
     } else {
       var targetNodeNumber = propertyCount;
       // If target node is an ontology from the portal then node in green
-      console.log(ontologyRelationsArray[i]);
       if (ontologyRelationsArray[i]["targetInPortal"] == true) {
-        console.log("yeeeeah");
         nodes.add([
           {id: targetNodeNumber, label: ontologyRelationsArray[i]["target"], color: "#5cb85c"}
         ]);

@@ -421,7 +421,7 @@ class LandscapeController < ApplicationController
       end
       title_str = "Contributions: #{title_array.join(", ")}"
 
-      if total_count > 0
+      if total_count > 1
         if people_count_emails[people.to_s].nil?
           people_count_json_cloud.push({"text"=>people.to_s,"weight"=>total_count, "html" => {style: "color: ##{colour};", title: title_str}})
         else
@@ -446,7 +446,7 @@ class LandscapeController < ApplicationController
       end
       title_str = "Contributions: #{title_array.join(", ")}"
 
-      if total_count > 0
+      if total_count > 1
         if hash_count.has_key?(:uri)
           org_count_json_cloud.push({"text"=>org.to_s,"weight"=>total_count, "html" => {style: "color: ##{colour};", title: title_str}, "link" => "#{hash_count[:uri]}"})
         else
