@@ -278,8 +278,7 @@ var sizeSlicesChart = new Chart(sizeSlicesContext, {
 });
 
 
-var ontologyRelationsArray = landscapeData["ontology_relations_array"]
-
+var ontologyRelationsArray = landscapeData["ontology_relations_array"];
 buildNetwork(ontologyRelationsArray);
 
 /**
@@ -295,9 +294,16 @@ function buildNetwork(ontologyRelationsArray) {
   // Hash with nodes id for each ontology URI
   var nodeIds = {};
 
+  /* Get the relations that have been selected
   if (jQuery("#selected_relations").val() !== null) {
     selected_relations = jQuery("#selected_relations").val()
-  }
+  }*/
+
+  var selected_relations = [];
+  $("input[name='selectedRelations[]']:checked").each(function ()
+  {
+    selected_relations.push($(this).val());
+  });
 
   // Iterate through all the ontology relations and add them to the network
   for (var i = 0; i < ontologyRelationsArray.length; i++) {

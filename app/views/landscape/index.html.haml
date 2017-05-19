@@ -133,7 +133,11 @@
   %h1 Ontology relations network
   %p{:style => "margin-bottom: 1em;"} Relations between ontologies stored in the portal
   %div
-    = select_tag :selected_relations, options_for_select(@relations_array), :multiple => 'true', "data-placeholder".to_sym => "Filter relations", :class => "help_text"
+    - @relations_array.each do |relation|
+      = check_box_tag "selectedRelations[]", relation, true, :id => relation
+      = label_tag relation, relation
+    -# Using a select: = select_tag :selected_relations, options_for_select(@relations_array), :multiple => 'true', "data-placeholder".to_sym => "Filter relations", :class => "help_text"
+
     %button{:type => "button", :class => "btn btn-primary", :onclick => "buildNetwork(ontologyRelationsArray)", :style => "margin-bottom: 1em;"} Filter Network
   %div#networkContainer{:style => "height: 80vh; width: 100%; border:1px solid #cecece;"}
     %div#ontologyNetwork
