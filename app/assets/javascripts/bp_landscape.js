@@ -278,10 +278,14 @@ var sizeSlicesChart = new Chart(sizeSlicesContext, {
 });
 
 
+var ontologyRelationsArray = landscapeData["ontology_relations_array"]
 
-// Build the VIS network for ontologies relations: http://visjs.org/docs/network/
-buildNetwork(landscapeData["ontology_relations_array"]);
+buildNetwork(ontologyRelationsArray);
 
+/**
+ * Build the VIS network for ontologies relations: http://visjs.org/docs/network/
+ * @param ontologyRelationsArray
+ */
 function buildNetwork(ontologyRelationsArray) {
   var nodes = new vis.DataSet([]);
   // create an array with edges
