@@ -79,7 +79,7 @@ class LandscapeController < ApplicationController
     # Be careful, if you add attributes to those lists you will need to add them when generating the JSON for the tag clouds
     # org_count_json_cloud and people_count_json_cloud
     contributors_attr_list = [:hasContributor, :hasCreator, :curatedBy]
-    org_attr_list = [:fundedBy, :endorsedBy]
+    org_attr_list = [:fundedBy, :endorsedBy, :publisher]
 
     @relations_array = ["omv:useImports", "door:isAlignedTo", "door:ontologyRelatedTo", "omv:isBackwardCompatibleWith", "omv:isIncompatibleWith", "door:comesFromTheSameDomain", "door:similarTo",
                         "door:explanationEvolution", "voaf:generalizes", "door:hasDisparateModelling", "dct:hasPart", "voaf:usedBy", "schema:workTranslation", "schema:translationOfWork"]
