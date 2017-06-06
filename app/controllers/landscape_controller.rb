@@ -437,6 +437,10 @@ class LandscapeController < ApplicationController
       colour = "%06x" % (rand * 0xffffff)
       title_array = []
       total_count = 0
+      if hash_count[:publisher] > 0
+        title_array.push("published #{hash_count[:publisher]} ontologies")
+        total_count += hash_count[:publisher]
+      end
       if hash_count[:fundedBy] > 0
         title_array.push("funded #{hash_count[:fundedBy]} ontologies")
         total_count += hash_count[:fundedBy]
