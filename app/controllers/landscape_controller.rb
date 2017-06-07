@@ -50,10 +50,6 @@ class LandscapeController < ApplicationController
                            "http://www.obofoundry.org/ontology/" => "The OBO Foundry",
                            "http://www.ebi.ac.uk/ols/ontologies/" => "EBI Ontology Lookup"}
 
-    # Set all data_catalog count to 0
-    dataCatalog_count_hash = {}
-    data_catalog_values.map {|uri,name| dataCatalog_count_hash[name] = 0}
-
     @metrics_average = [{:attr => "numberOfClasses", :label => "Number of classes", :array => []},
                         {:attr => "numberOfIndividuals", :label => "Number of individuals", :array => []},
                         {:attr => "numberOfProperties", :label => "Number of properties", :array => []},
@@ -98,6 +94,12 @@ class LandscapeController < ApplicationController
     # Special treatment for includedInDataCatalog: arrays with a lot of different values, so it trigger the SPARQL default
     # when we retrieve multiple attr with multiple values in the array, and make the request slower
     data_catalog_submissions = LinkedData::Client::Models::OntologySubmission.all(include_status: "any", include_views: true, display_links: false, display_context: false, include: "includedInDataCatalog")
+
+    dataCatalog_count_hash = {}
+    # Add our Portal to the dataCatalog list
+    dataCatalog_count_hash[$ORG_SITE] = data_catalog_submissions.length
+    # Set all data_catalog count to 0
+    data_catalog_values.map {|uri,name| dataCatalog_count_hash[name] = 0}
     data_catalog_submissions.each do |catalog_sub|
       catalog_sub.includedInDataCatalog.each do |data_catalog|
         data_catalog_values.each do |uri, name|
