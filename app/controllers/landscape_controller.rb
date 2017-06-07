@@ -519,7 +519,7 @@ class LandscapeController < ApplicationController
     ontologyFormatsChartJson = { :labels => ontologyFormatsCount.keys,
                                  :datasets => [{ :label => "Number of ontologies using this format",
                                                  :data => ontologyFormatsCount.values,
-                                                 :backgroundColor => ["#669911", "#119966", "#66A2EB", "#FCCE56"]}] }
+                                                 :backgroundColor => pie_colors_array[3]}] }
 
     isOfTypeChartJson = { :labels => isOfTypeCount.keys,
                           :datasets => [{ :label => "Number of ontologies of this ontology type",
