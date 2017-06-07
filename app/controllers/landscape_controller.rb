@@ -524,31 +524,31 @@ class LandscapeController < ApplicationController
     isOfTypeChartJson = { :labels => isOfTypeCount.keys,
                           :datasets => [{ :label => "Number of ontologies of this ontology type",
                                           :data => isOfTypeCount.values,
-                                          :backgroundColor => pie_colors_array}] }
+                                          :backgroundColor => pie_colors_array[0]}] }
 
     formalityLevelChartJson = { :labels => formalityLevelCount.keys,
                                 :datasets => [{ :label => "Number of ontologies of this formality level",
                                                 :data => formalityLevelCount.values,
-                                                :backgroundColor => pie_colors_array}] }
+                                                :backgroundColor => pie_colors_array[2]}] }
 
     dataCatalogChartJson = { :labels => dataCatalog_count_hash.keys,
                              :datasets => [{ :label => "Number of ontologies in this catalog", :data => dataCatalog_count_hash.values,
-                                                :backgroundColor => pie_colors_array}] }
+                                                :backgroundColor => pie_colors_array[5]}] }
 
     # Format the groupOntologiesCount hash as the JSON needed to generate the chart
     groupCountChartJson = { :labels => groups_count_hash.keys,
                             :datasets => [{ :label => "Number of ontologies", :data => groups_count_hash.values,
-                                                  :backgroundColor => pie_colors_array}] }
+                                                  :backgroundColor => pie_colors_array[3]}] }
 
     domainCountChartJson = { :labels => domains_count_hash.keys,
                              :datasets => [{ :label => "Number of ontologies", :data => domains_count_hash.values,
-                                             :backgroundColor => pie_colors_array}] }
+                                             :backgroundColor => pie_colors_array[4]}] }
 
     # Format the groupOntologiesCount hash as the JSON needed to generate the chart
     sizeSlicesChartJson = { :labels => size_slices_hash.keys,
                             :datasets => [{ :label => "Number of ontologies with a class count in this range",
                                             :data => size_slices_hash.values,
-                                            :backgroundColor => pie_colors_array}] }
+                                            :backgroundColor => pie_colors_array[2]}] }
 
     # Also pass groups and hasDomain name to resolve it and better label of bar charts
     groups = LinkedData::Client::Models::Group.all(include: "acronym,name,description")
