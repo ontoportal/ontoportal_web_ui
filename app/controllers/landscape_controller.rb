@@ -45,6 +45,7 @@ class LandscapeController < ApplicationController
                            "http://aber-owl.net/ontology/" => "AberOWL",
                            "http://vest.agrisemantics.org/content/" => "VEST Registry",
                            "http://bioportal.bioontology.org/ontologies/" => "BioPortal",
+                           "https://bioportal.bioontology.org/ontologies/" => "BioPortal",
                            "http://www.ontobee.org/ontology/" => "Ontobee",
                            "http://www.obofoundry.org/ontology/" => "The OBO Foundry",
                            "http://www.ebi.ac.uk/ols/ontologies/" => "EBI Ontology Lookup"}
