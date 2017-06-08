@@ -68,10 +68,14 @@ class SubmissionsController < ApplicationController
     end
   end
 
+  # Called when form to "Edit submission" is submitted
   def edit
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
-    submissions = @ontology.explore.submissions
-    @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
+
+    #submissions = @ontology.explore.submissions
+    # Trying to get all submissions to get the latest. Useless and too long.
+    #@submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
+    @submission = @ontology.explore.latest_submission
 
     @ontologies_for_select = []
     LinkedData::Client::Models::Ontology.all.each do |onto|
