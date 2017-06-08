@@ -50,8 +50,8 @@ class SubmissionsController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
     # Update summaryOnly on ontology object
     @ontology.summaryOnly = @submission.isRemote.eql?("3")
-    @ontology.save
-    @submission_saved = @submission.save
+    @ontology.save(cache_refresh_all: false)
+    @submission_saved = @submission.save(cache_refresh_all: false)
     #@submission_saved = @submission.save(cache_refresh_all: false)
 
     if !@submission_saved || @submission_saved.errors
