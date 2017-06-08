@@ -93,8 +93,10 @@ class SubmissionsController < ApplicationController
     params[:submission][:contact] = params[:submission][:contact].values if !params[:submission][:contact].nil?
 
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
-    submissions = @ontology.explore.submissions
-    @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
+
+    #submissions = @ontology.explore.submissions
+    #@submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
+    @submission = @ontology.explore.latest_submission
 
     # Get the submission metadata from the REST API
     json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
@@ -123,8 +125,7 @@ class SubmissionsController < ApplicationController
     # Update summaryOnly on ontology object
     @ontology.summaryOnly = @submission.isRemote.eql?("3")
     @ontology.save
-    # TODO: really slow!
-    # Seems like we also have a "DalliError: Response error 3: Value too large" which means it is too big to be cached
+    # TODO: really slow!:
     error_response = @submission.update
 
     if error_response
