@@ -52,7 +52,6 @@ class SubmissionsController < ApplicationController
     @ontology.summaryOnly = @submission.isRemote.eql?("3")
     @ontology.save(cache_refresh_all: false)
     @submission_saved = @submission.save(cache_refresh_all: false)
-    #@submission_saved = @submission.save(cache_refresh_all: false)
 
     if !@submission_saved || @submission_saved.errors
       @errors = response_errors(@submission_saved) # see application_controller::response_errors
@@ -62,8 +61,6 @@ class SubmissionsController < ApplicationController
       else
         redirect_to "/ontologies/success/#{@ontology.acronym}"
       end
-      #Rails.logger.warn "ERRROR: #{@errors}"
-      # TODO: ERROR HERE
       render "new"
     else
       redirect_to "/ontologies/success/#{@ontology.acronym}"
@@ -122,12 +119,11 @@ class SubmissionsController < ApplicationController
     end
 
     @submission.update_from_params(params[:submission])
-    #binding.pry
 
     # Update summaryOnly on ontology object
     @ontology.summaryOnly = @submission.isRemote.eql?("3")
     @ontology.save
-    # TODO: really slow!:
+
     error_response = @submission.update(cache_refresh_all: false)
 
     if error_response
