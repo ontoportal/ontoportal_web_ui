@@ -5,9 +5,13 @@
         %a{:href => "#{@submission_latest.id}?display=all", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only",
         :style => "margin-bottom: 1em; margin-left: 1em;", :target => "_blank"}
           %span{:class => "ui-button-text"} Go to the REST API JSON entry
-        %button{:id => "getMetadataBackBtn", :href => "#", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only",
+        %span Get my metadata back:
+        %button{:id => "getMetadataBackNquadsBtn", :href => "#", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only",
         :style => "margin-bottom: 1em; margin-left: 1em;", :target => "_blank"}
-          %span{:class => "ui-button-text"} Get my metadata back
+          %span{:class => "ui-button-text"} Turtle
+        %button{:id => "getMetadataBackJsonldBtn", :href => "#", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only",
+        :style => "margin-bottom: 1em; margin-left: 1em;", :target => "_blank"}
+          %span{:class => "ui-button-text"} Json-LD
           -# Listener in bp_ontology_viewer.js.erb
       - else
         %a{:href => "#{@ontology.id}?display=all", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only",
