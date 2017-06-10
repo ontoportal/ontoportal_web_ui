@@ -71,6 +71,36 @@ module OntologiesHelper
                   end)
                 end
 
+              elsif (metadata.eql?("includedInDataCatalog"))
+                # Buttons for data catalogs
+                puts $DATA_CATALOG_VALUES
+                sub.send(metadata).each do |catalog|
+                  if !$DATA_CATALOG_VALUES[catalog].nil?
+
+                  end
+                end
+
+                html << content_tag(:div, {:class => "col-md-4"}) do
+                  concat(content_tag(:div, {:class => "panel panel-primary"}) do
+                    concat(content_tag(:div, {:class => "panel-heading"}) do
+                      concat(content_tag(:h3, "includedInDataCatalog", {:class => "panel-title"}))
+                    end)
+                    concat(content_tag(:div, {:class => "panel-body"}) do
+                      sub.send(metadata).each do |catalog|
+                        catalog_btn_label = catalog
+                        $DATA_CATALOG_VALUES.each do |cat_uri, cat_label|
+                          if catalog.start_with?(cat_uri)
+                            catalog_btn_label = cat_label
+                            break;
+                          end
+                        end
+                        concat(content_tag(:a, catalog_btn_label, {:class => "btn btn-primary",
+                                                                   :style => "margin-bottom: 1em; margin-right: 1em;", :href => catalog, :target => "_blank"}))
+                      end
+                    end)
+                  end)
+                end
+
               else
                 html << content_tag(:tr) do
                   if label.nil?
