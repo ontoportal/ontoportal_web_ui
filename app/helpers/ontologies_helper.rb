@@ -51,7 +51,7 @@ module OntologiesHelper
                     lang_codes << lang
                   end
                 end
-                html << content_tag(:div, {:class => "col-md-4"}) do
+                html << content_tag(:div, {:class => "col-md-2"}) do
                   concat(content_tag(:div, {:class => "panel panel-primary"}) do
                     concat(content_tag(:div, {:class => "panel-heading"}) do
                       concat(content_tag(:h3, "naturalLanguage", {:class => "panel-title"}))
