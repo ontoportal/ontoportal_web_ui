@@ -126,13 +126,24 @@ module OntologiesHelper
                   if (sub.send(metadata).start_with?("http://creativecommons.org/licenses") || sub.send(metadata).start_with?("https://creativecommons.org/licenses"))
                     concat(content_tag(:td) do
                       concat(content_tag(:a, {:rel => "license", :alt=>"Creative Commons License",
-                                              :href => sub.send(metadata), :target => "_blank", :style=>"border-width:0",
+                                              :href => sub.send(metadata), :target => "_blank", :style=>"border-width:0", :title => sub.send(metadata),
                                               :src=>"https://i.creativecommons.org/l/by/4.0/88x31.png"}) do
 
-                        concat(content_tag(:img, "",{:rel => "license", :alt=>"Creative Commons License",
+                        concat(content_tag(:img, "",{:rel => "license", :alt=>"Creative Commons License", :title => sub.send(metadata),
                                                      :style=>"border-width:0", :src=>"https://i.creativecommons.org/l/by/4.0/88x31.png"}))
                       end)
                     end)
+
+                elsif (sub.send(metadata).start_with?("http://opensource.org/licenses") || sub.send(metadata).start_with?("https://opensource.org/licenses"))
+                  concat(content_tag(:td) do
+                    concat(content_tag(:a, {:rel => "license", :alt=>"Open Source License",
+                                            :href => sub.send(metadata), :title => sub.send(metadata),:target => "_blank", :style=>"border-width:0;",
+                                            :src=>"https://opensource.org/files/osi_logo_bold_100X133_90ppi.png"}) do
+
+                      concat(content_tag(:img, "",{:rel => "license", :alt=>"Open Source License", :title => sub.send(metadata),
+                                                   :style=>"height: 80px; border-width:0;", :src=>"https://opensource.org/files/osi_logo_bold_100X133_90ppi.png"}))
+                    end)
+                  end)
 
                   else
                     concat(content_tag(:td) do
