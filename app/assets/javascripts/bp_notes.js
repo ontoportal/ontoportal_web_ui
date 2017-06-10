@@ -245,12 +245,17 @@ function commentButtons(id, type) {
     .attr("onclick","")
     .data("parent_id", id)
     .data("parent_type", type)
+    .attr("style", "margin-right: 1em;")
     .addClass("save")
+    .addClass("btn")
+    .addClass("btn-primary")
     .html("save");
   var button_cancel = jQuery("<button>")
     .attr("type","button")
     .attr("onclick","")
     .addClass("cancel")
+    .addClass("btn")
+    .addClass("btn-primary")
     .html("cancel");
   var span_status = jQuery("<span>")
     .addClass("reply_status")
