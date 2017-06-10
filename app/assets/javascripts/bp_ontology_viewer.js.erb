@@ -399,25 +399,36 @@ jQuery("#getMetadataBackBtn").click(function() {
         subMetadataHash[subMetadataArray[i]["attribute"]] = subMetadataArray[i];
       }
 
+      var jsonldObject = {}
       var subJson = jQuery(document).data().bp.submission_latest
       delete subJson["links"];
       var fullContext = subJson["context"];
       delete subJson["context"];
+      // delete released because it has no context
+      delete subJson["released"];
       // Remove null value from submission
       for (var attr in subJson) {
         if (subJson[attr] === null || subJson[attr] === undefined) {
           delete subJson[attr];
+          continue;
         } else if (subJson[attr] instanceof Array && subJson[attr].length < 1) {
           delete subJson[attr];
+          continue;
         }
 
         // Keep only metadata that have been extracted
         if (subMetadataHash[attr] != undefined && subMetadataHash[attr]["extracted"] !== true && attr !== "hasOntologyLanguage") {
           delete subJson[attr];
+          continue;
         }
         // Remove undefined metadata
         if (subMetadataHash[attr] === undefined) {
           delete subJson[attr];
+          continue;
+        }
+
+        if (fullContext[attr] !== undefined) {
+          jsonldObject[fullContext[attr]] = subJson[attr];
         }
       }
 
@@ -425,19 +436,37 @@ jQuery("#getMetadataBackBtn").click(function() {
       var context = {};
       for (var prop in subJson) {
         context[prop] = fullContext[prop];
-        if (context[prop] === undefined) {
-          context[prop] = "http://data.bioontology.org/metadata/" + prop;
-        }
       }
 
-      console.log(subJson);
+      console.log("jsonldObject final");
+      console.log(jsonldObject);
       console.log("context");
       console.log(context);
-      jsonld.toRDF(subJson, {format: 'application/nquads'}, function(err, nquads) {
+
+      jsonld.toRDF(jsonldObject, {format: 'application/nquads'}, function(err, nquads) {
+        console.log("nquads");
         console.log(err);
         console.log(nquads);
       });
-      
+
+      jsonld.normalize(jsonldObject, {
+        algorithm: 'URDNA2015',
+        format: 'application/nquads'
+      }, function(err, normalized) {
+        console.log("normalized");
+        console.log(normalized)
+        // normalized is a string that is a canonical representation of the document
+        // that can be used for hashing, comparison, etc.
+      });
+
+      // Generate proper jsonld
+      jsonld.compact(jsonldObject, context, function(err, compacted) {
+        console.log("compact jsonld");
+        console.log(JSON.stringify(compacted, null, 2));
+      });
+
+
+
       var element = document.createElement('a');
       element.setAttribute('href', 'data:application/rdf+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(subJson)));
       element.setAttribute('download', "metadata_back.json");
