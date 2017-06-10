@@ -30,11 +30,16 @@ module OntologiesHelper
 
     html = []
 
+    metadata_not_displayed = ["status", "description", "documentation", "publication", "homepage", "openSearchDescription", "dataDump"]
+
     begin
+
       metadata_list.each do |metadata, label|
         # Don't display documentation, publication, homepage, status and description, they are already in main details
-        if !metadata.eql?("status") && !metadata.eql?("description") && !metadata.eql?("documentation") && !metadata.eql?("publication") && !metadata.eql?("homepage")
+        if !metadata_not_displayed.include?(metadata)
           # different html build if list or single value
+
+          # METADATA ARRAY
           if sub.send(metadata).kind_of?(Array)
             if sub.send(metadata).any?
               if metadata.eql?("naturalLanguage")
@@ -126,6 +131,8 @@ module OntologiesHelper
               end
             end
           else
+
+            # SINGLE METADATA
             if !sub.send(metadata).nil?
               html << content_tag(:tr) do
                 if label.nil?
