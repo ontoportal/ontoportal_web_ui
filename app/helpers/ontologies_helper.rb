@@ -42,11 +42,12 @@ module OntologiesHelper
                 # UK is gb: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
                 lang_codes = []
                 sub.send(metadata).each do |lang|
-                  if lang.start_with?("http://lexvo.org")
-                    lang_codes << $LEXVO_TO_FLAG[lang]
-                  elsif (lang.eql?("en") || lang.eql?("eng"))
+                  puts lang
+                  if (lang.to_s.eql?("en") || lang.to_s.eql?("eng") || lang.to_s.eql?("http://lexvo.org/id/iso639-3/eng"))
                     # We consider en and eng as english
                     lang_codes << "gb"
+                  elsif lang.start_with?("http://lexvo.org")
+                    lang_codes << $LEXVO_TO_FLAG[lang]
                   else
                     lang_codes << lang
                   end
