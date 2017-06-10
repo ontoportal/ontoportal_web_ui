@@ -52,19 +52,21 @@ module OntologiesHelper
                     lang_codes << lang
                   end
                 end
-                html << content_tag(:div, {:class => "panel panel-primary"}) do
-                  concat(content_tag(:div, {:class => "panel-heading"}) do
-                    concat(content_tag(:h3, "naturalLanguage", {:class => "panel-title"}))
-                  end)
-                  concat(content_tag(:div, {:class => "panel-body"}) do
-                    concat(content_tag(:ul, {:class => "f32"}) do
-                      lang_codes.each do |lang_code|
-                        if lang_code.length == 2
-                          concat(content_tag(:li, "", {:class => "flag #{lang_code}", :style => "margin-right: 0.5em;"}))
-                        else
-                          concat(content_tag(:li, lang_code))
+                html << content_tag(:div, {:class => "col-md-4"}) do
+                  concat(content_tag(:div, {:class => "panel panel-primary"}) do
+                    concat(content_tag(:div, {:class => "panel-heading"}) do
+                      concat(content_tag(:h3, "naturalLanguage", {:class => "panel-title"}))
+                    end)
+                    concat(content_tag(:div, {:class => "panel-body"}) do
+                      concat(content_tag(:ul, {:class => "f32"}) do
+                        lang_codes.each do |lang_code|
+                          if lang_code.length == 2
+                            concat(content_tag(:li, "", {:class => "flag #{lang_code}", :style => "margin-right: 0.5em;"}))
+                          else
+                            concat(content_tag(:li, lang_code))
+                          end
                         end
-                      end
+                      end)
                     end)
                   end)
                 end
