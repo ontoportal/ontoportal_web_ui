@@ -42,7 +42,6 @@ module OntologiesHelper
                 # UK is gb: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
                 lang_codes = []
                 sub.send(metadata).each do |lang|
-                  puts lang
                   if (lang.to_s.eql?("en") || lang.to_s.eql?("eng") || lang.to_s.eql?("http://lexvo.org/id/iso639-3/eng"))
                     # We consider en and eng as english
                     lang_codes << "gb"
@@ -73,13 +72,6 @@ module OntologiesHelper
 
               elsif (metadata.eql?("includedInDataCatalog"))
                 # Buttons for data catalogs
-                puts $DATA_CATALOG_VALUES
-                sub.send(metadata).each do |catalog|
-                  if !$DATA_CATALOG_VALUES[catalog].nil?
-
-                  end
-                end
-
                 html << content_tag(:div, {:class => "col-md-4"}) do
                   concat(content_tag(:div, {:class => "panel panel-primary"}) do
                     concat(content_tag(:div, {:class => "panel-heading"}) do
@@ -129,11 +121,33 @@ module OntologiesHelper
                 else
                   concat(content_tag(:th, label))
                 end
-                if sub.send(metadata).to_s =~ /\A#{URI::regexp(['http', 'https'])}\z/
-                  # Don't create a link if it not an URI
-                  concat(content_tag(:td, raw("<a href=\"#{sub.send(metadata).to_s}\" target=\"_blank\">#{sub.send(metadata).to_s}</a>")))
+
+                if (metadata.eql?("hasLicense"))
+                  if (sub.send(metadata).start_with?("http://creativecommons.org/licenses") || sub.send(metadata).start_with?("https://creativecommons.org/licenses"))
+                    concat(content_tag(:td) do
+                      concat(content_tag(:a, {:rel => "license", :alt=>"Creative Commons License",
+                                              :href => sub.send(metadata), :target => "_blank", :style=>"border-width:0",
+                                              :src=>"https://i.creativecommons.org/l/by/4.0/88x31.png"}) do
+
+                        concat(content_tag(:img, "",{:rel => "license", :alt=>"Creative Commons License",
+                                                     :style=>"border-width:0", :src=>"https://i.creativecommons.org/l/by/4.0/88x31.png"}))
+                      end)
+                    end)
+
+                  else
+                    concat(content_tag(:td) do
+                      concat(content_tag(:a, sub.send(metadata), {:rel => "license", :href => sub.send(metadata), :target => "_blank"}))
+                    end)
+                  end
+
+
                 else
-                  concat(content_tag(:td, raw(sub.send(metadata).to_s)))
+                  if sub.send(metadata).to_s =~ /\A#{URI::regexp(['http', 'https'])}\z/
+                    # Don't create a link if it not an URI
+                    concat(content_tag(:td, raw("<a href=\"#{sub.send(metadata).to_s}\" target=\"_blank\">#{sub.send(metadata).to_s}</a>")))
+                  else
+                    concat(content_tag(:td, raw(sub.send(metadata).to_s)))
+                  end
                 end
               end
             end
