@@ -471,10 +471,9 @@ jQuery("#getMetadataBackBtn").click(function() {
       });
 
 
-
       var element = document.createElement('a');
       element.setAttribute('href', 'data:application/rdf+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(subJson)));
-      element.setAttribute('download', "metadata_back.json");
+      element.setAttribute('download', jQuery(document).data().bp.ontology.acronym + "_metadata.json");
 
       element.style.display = 'none';
       document.body.appendChild(element);
