@@ -400,21 +400,44 @@ jQuery("#getMetadataBackBtn").click(function() {
       }
 
       var subJson = jQuery(document).data().bp.submission_latest
+      delete subJson["links"];
+      var fullContext = subJson["context"];
+      delete subJson["context"];
       // Remove null value from submission
       for (var attr in subJson) {
-        if (subJson[attr] === null || subJson[attr] === undefined || subJson[attr] === []) {
+        if (subJson[attr] === null || subJson[attr] === undefined) {
           delete subJson[attr];
         } else if (subJson[attr] instanceof Array && subJson[attr].length < 1) {
           delete subJson[attr];
         }
+
         // Keep only metadata that have been extracted
         if (subMetadataHash[attr] != undefined && subMetadataHash[attr]["extracted"] !== true && attr !== "hasOntologyLanguage") {
           delete subJson[attr];
         }
+        // Remove undefined metadata
+        if (subMetadataHash[attr] === undefined) {
+          delete subJson[attr];
+        }
+      }
+
+      // In case no context provided (i.e.: released metadata)
+      var context = {};
+      for (var prop in subJson) {
+        context[prop] = fullContext[prop];
+        if (context[prop] === undefined) {
+          context[prop] = "http://data.bioontology.org/metadata/" + prop;
+        }
       }
 
       console.log(subJson);
-
+      console.log("context");
+      console.log(context);
+      jsonld.toRDF(subJson, {format: 'application/nquads'}, function(err, nquads) {
+        console.log(err);
+        console.log(nquads);
+      });
+      
       var element = document.createElement('a');
       element.setAttribute('href', 'data:application/rdf+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(subJson)));
       element.setAttribute('download', "metadata_back.json");
