@@ -100,14 +100,19 @@ module OntologiesHelper
                   else
                     concat(content_tag(:th, label))
                   end
-                  # Use metadata Array to make sure it is added to the html after naturalLanguage, data catalog...
+
                   metadata_array = []
                   sub.send(metadata).each do |metadata_value|
 
                     if metadata_value.to_s.start_with?("#{$REST_URL}/ontologies/")
                       # For URI that links to our ontologies we display a button with only the acronym. And redirect to the UI
                       # Warning! Redirection is done by removing "data." from the REST_URL. So might not work perfectly everywhere
-                      metadata_array.push("<a href=\"#{metadata_value.to_s.sub("data.", "")}\" class=\"btn btn-primary\" target=\"_blank\">#{metadata_value.to_s.split("/").last}</a>")
+                      if metadata_value.to_s.split("/").length < 6
+                        # for ontologies/ACRONYM we redirect to the UI url
+                        metadata_array.push("<a href=\"#{metadata_value.to_s.sub("data.", "")}\" class=\"btn btn-primary\" target=\"_blank\">#{metadata_value.to_s.split("/")[4..-1].join("/")}</a>")
+                      else
+                        metadata_array.push("<a href=\"#{metadata_value.to_s}\" class=\"btn btn-primary\" target=\"_blank\">#{metadata_value.to_s.split("/")[4..-1].join("/")}</a>")
+                      end
 
                     elsif metadata_value.to_s =~ /\A#{URI::regexp(['http', 'https'])}\z/
                       # Don't create a link if it not an URI
@@ -158,6 +163,21 @@ module OntologiesHelper
                     end)
                   end
 
+                elsif sub.send(metadata).start_with?("#{$REST_URL}/ontologies/")
+                  # For URI that links to our ontologies we display a button with only the acronym. And redirect to the UI
+                  # Warning! Redirection is done by removing "data." from the REST_URL. So might not work perfectly everywhere
+                  if sub.send(metadata).to_s.split("/").length < 6
+                    # for ontologies/ACRONYM we redirect to the UI url
+                    concat(content_tag(:td) do
+                      concat(content_tag(:a, sub.send(metadata).to_s.split("/")[4..-1].join("/"), {:class=>"btn btn-primary",
+                                                                                                   :href => sub.send(metadata).sub("data.", ""), :target => "_blank", :title => sub.send(metadata)}))
+                    end)
+                  else
+                    concat(content_tag(:td) do
+                      concat(content_tag(:a, sub.send(metadata).to_s.split("/")[4..-1].join("/"), {:class=>"btn btn-primary",
+                                                                                                   :href => sub.send(metadata), :target => "_blank", :title => sub.send(metadata)}))
+                    end)
+                  end
 
                 else
                   if sub.send(metadata).to_s =~ /\A#{URI::regexp(['http', 'https'])}\z/
