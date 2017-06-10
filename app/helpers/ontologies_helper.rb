@@ -29,6 +29,7 @@ module OntologiesHelper
     end
 
     html = []
+
     begin
       metadata_list.each do |metadata, label|
         # Don't display documentation, publication, homepage, status and description, they are already in main details
@@ -36,22 +37,80 @@ module OntologiesHelper
           # different html build if list or single value
           if sub.send(metadata).kind_of?(Array)
             if sub.send(metadata).any?
-              html << content_tag(:tr) do
-                if label.nil?
-                  concat(content_tag(:th, metadata.gsub(/(?=[A-Z])/, " ")))
-                else
-                  concat(content_tag(:th, label))
-                end
-                metadata_array = []
-                sub.send(metadata).each do |metadata_value|
-                  if metadata_value.to_s =~ /\A#{URI::regexp(['http', 'https'])}\z/
-                    # Don't create a link if it not an URI
-                    metadata_array.push("<a href=\"#{metadata_value.to_s}\" target=\"_blank\">#{metadata_value.to_s}</a>")
+              if metadata.eql?("naturalLanguage")
+                # Special treatment for naturalLanguage: we want the flags in a bootstrap box
+                # UK is gb: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+                lang_codes = []
+                sub.send(metadata).each do |lang|
+                  if (lang.to_s.eql?("en") || lang.to_s.eql?("eng") || lang.to_s.eql?("http://lexvo.org/id/iso639-3/eng"))
+                    # We consider en and eng as english
+                    lang_codes << "gb"
+                  elsif lang.start_with?("http://lexvo.org")
+                    lang_codes << $LEXVO_TO_FLAG[lang]
                   else
-                    metadata_array.push(metadata_value)
+                    lang_codes << lang
                   end
                 end
-                concat(content_tag(:td, raw(metadata_array.join(", "))))
+                html << content_tag(:div, {:class => "col-md-4"}) do
+                  concat(content_tag(:div, {:class => "panel panel-primary"}) do
+                    concat(content_tag(:div, {:class => "panel-heading"}) do
+                      concat(content_tag(:h3, "naturalLanguage", {:class => "panel-title"}))
+                    end)
+                    concat(content_tag(:div, {:class => "panel-body"}) do
+                      concat(content_tag(:ul, {:class => "f32"}) do
+                        lang_codes.each do |lang_code|
+                          if lang_code.length == 2
+                            concat(content_tag(:li, "", {:class => "flag #{lang_code}", :style => "margin-right: 0.5em;"}))
+                          else
+                            concat(content_tag(:li, lang_code))
+                          end
+                        end
+                      end)
+                    end)
+                  end)
+                end
+
+              elsif (metadata.eql?("includedInDataCatalog"))
+                # Buttons for data catalogs
+                html << content_tag(:div, {:class => "col-md-4"}) do
+                  concat(content_tag(:div, {:class => "panel panel-primary"}) do
+                    concat(content_tag(:div, {:class => "panel-heading"}) do
+                      concat(content_tag(:h3, "includedInDataCatalog", {:class => "panel-title"}))
+                    end)
+                    concat(content_tag(:div, {:class => "panel-body"}) do
+                      sub.send(metadata).each do |catalog|
+                        catalog_btn_label = catalog
+                        $DATA_CATALOG_VALUES.each do |cat_uri, cat_label|
+                          if catalog.start_with?(cat_uri)
+                            catalog_btn_label = cat_label
+                            break;
+                          end
+                        end
+                        concat(content_tag(:a, catalog_btn_label, {:class => "btn btn-primary",
+                                                                   :style => "margin-bottom: 1em; margin-right: 1em;", :href => catalog, :target => "_blank"}))
+                      end
+                    end)
+                  end)
+                end
+
+              else
+                html << content_tag(:tr) do
+                  if label.nil?
+                    concat(content_tag(:th, metadata.gsub(/(?=[A-Z])/, " ")))
+                  else
+                    concat(content_tag(:th, label))
+                  end
+                  metadata_array = []
+                  sub.send(metadata).each do |metadata_value|
+                    if metadata_value.to_s =~ /\A#{URI::regexp(['http', 'https'])}\z/
+                      # Don't create a link if it not an URI
+                      metadata_array.push("<a href=\"#{metadata_value.to_s}\" target=\"_blank\">#{metadata_value.to_s}</a>")
+                    else
+                      metadata_array.push(metadata_value)
+                    end
+                  end
+                  concat(content_tag(:td, raw(metadata_array.join(", "))))
+                end
               end
             end
           else
@@ -62,11 +121,33 @@ module OntologiesHelper
                 else
                   concat(content_tag(:th, label))
                 end
-                if sub.send(metadata).to_s =~ /\A#{URI::regexp(['http', 'https'])}\z/
-                  # Don't create a link if it not an URI
-                  concat(content_tag(:td, raw("<a href=\"#{sub.send(metadata).to_s}\" target=\"_blank\">#{sub.send(metadata).to_s}</a>")))
+
+                if (metadata.eql?("hasLicense"))
+                  if (sub.send(metadata).start_with?("http://creativecommons.org/licenses") || sub.send(metadata).start_with?("https://creativecommons.org/licenses"))
+                    concat(content_tag(:td) do
+                      concat(content_tag(:a, {:rel => "license", :alt=>"Creative Commons License",
+                                              :href => sub.send(metadata), :target => "_blank", :style=>"border-width:0",
+                                              :src=>"https://i.creativecommons.org/l/by/4.0/88x31.png"}) do
+
+                        concat(content_tag(:img, "",{:rel => "license", :alt=>"Creative Commons License",
+                                                     :style=>"border-width:0", :src=>"https://i.creativecommons.org/l/by/4.0/88x31.png"}))
+                      end)
+                    end)
+
+                  else
+                    concat(content_tag(:td) do
+                      concat(content_tag(:a, sub.send(metadata), {:rel => "license", :href => sub.send(metadata), :target => "_blank"}))
+                    end)
+                  end
+
+
                 else
-                  concat(content_tag(:td, raw(sub.send(metadata).to_s)))
+                  if sub.send(metadata).to_s =~ /\A#{URI::regexp(['http', 'https'])}\z/
+                    # Don't create a link if it not an URI
+                    concat(content_tag(:td, raw("<a href=\"#{sub.send(metadata).to_s}\" target=\"_blank\">#{sub.send(metadata).to_s}</a>")))
+                  else
+                    concat(content_tag(:td, raw(sub.send(metadata).to_s)))
+                  end
                 end
               end
             end
