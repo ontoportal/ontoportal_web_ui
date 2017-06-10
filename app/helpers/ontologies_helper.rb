@@ -38,7 +38,7 @@ module OntologiesHelper
           if sub.send(metadata).kind_of?(Array)
             if sub.send(metadata).any?
               if metadata.eql?("naturalLanguage")
-                # Special treatment for naturalLanguage: we want the flags
+                # Special treatment for naturalLanguage: we want the flags in a bootstrap box
                 # UK is gb: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
                 lang_codes = []
                 sub.send(metadata).each do |lang|
@@ -51,15 +51,21 @@ module OntologiesHelper
                     lang_codes << lang
                   end
                 end
-
-                html << content_tag(:ul, {:class => "f32"}) do
-                  lang_codes.each do |lang_code|
-                    if lang_code.length == 2
-                      concat(content_tag(:li, "", {:class => "flag #{lang_code}", :style => "margin-right: 0.5em;"}))
-                    else
-                      concat(content_tag(:li, lang_code))
-                    end
-                  end
+                html << content_tag(:div, {:class => "panel panel-primary"}) do
+                  concat(content_tag(:div, {:class => "panel-heading"}) do
+                    concat(content_tag(:h3, "naturalLanguage", {:class => "panel-title"}))
+                  end)
+                  concat(content_tag(:div, {:class => "panel-body"}) do
+                    concat(content_tag(:ul, {:class => "f32"}) do
+                      lang_codes.each do |lang_code|
+                        if lang_code.length == 2
+                          concat(content_tag(:li, "", {:class => "flag #{lang_code}", :style => "margin-right: 0.5em;"}))
+                        else
+                          concat(content_tag(:li, lang_code))
+                        end
+                      end
+                    end)
+                  end)
                 end
 
               else
