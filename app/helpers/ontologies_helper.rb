@@ -29,6 +29,7 @@ module OntologiesHelper
     end
 
     html = []
+
     begin
       metadata_list.each do |metadata, label|
         # Don't display documentation, publication, homepage, status and description, they are already in main details
@@ -36,22 +37,49 @@ module OntologiesHelper
           # different html build if list or single value
           if sub.send(metadata).kind_of?(Array)
             if sub.send(metadata).any?
-              html << content_tag(:tr) do
-                if label.nil?
-                  concat(content_tag(:th, metadata.gsub(/(?=[A-Z])/, " ")))
-                else
-                  concat(content_tag(:th, label))
-                end
-                metadata_array = []
-                sub.send(metadata).each do |metadata_value|
-                  if metadata_value.to_s =~ /\A#{URI::regexp(['http', 'https'])}\z/
-                    # Don't create a link if it not an URI
-                    metadata_array.push("<a href=\"#{metadata_value.to_s}\" target=\"_blank\">#{metadata_value.to_s}</a>")
+              if metadata.eql?("naturalLanguage")
+                # Special treatment for naturalLanguage: we want the flags
+                # UK is gb: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+                lang_codes = []
+                sub.send(metadata).each do |lang|
+                  if lang.start_with?("http://lexvo.org")
+                    lang_codes << $LEXVO_TO_FLAG[lang]
+                  elsif (lang.eql?("en") || lang.eql?("eng"))
+                    # We consider en and eng as english
+                    lang_codes << "gb"
                   else
-                    metadata_array.push(metadata_value)
+                    lang_codes << lang
                   end
                 end
-                concat(content_tag(:td, raw(metadata_array.join(", "))))
+
+                html << content_tag(:ul, {:class => "f32"}) do
+                  lang_codes.each do |lang_code|
+                    if lang_code.length == 2
+                      concat(content_tag(:li, "", {:class => "flag #{lang_code}", :style => "margin-right: 0.5em;"}))
+                    else
+                      concat(content_tag(:li, lang_code))
+                    end
+                  end
+                end
+
+              else
+                html << content_tag(:tr) do
+                  if label.nil?
+                    concat(content_tag(:th, metadata.gsub(/(?=[A-Z])/, " ")))
+                  else
+                    concat(content_tag(:th, label))
+                  end
+                  metadata_array = []
+                  sub.send(metadata).each do |metadata_value|
+                    if metadata_value.to_s =~ /\A#{URI::regexp(['http', 'https'])}\z/
+                      # Don't create a link if it not an URI
+                      metadata_array.push("<a href=\"#{metadata_value.to_s}\" target=\"_blank\">#{metadata_value.to_s}</a>")
+                    else
+                      metadata_array.push(metadata_value)
+                    end
+                  end
+                  concat(content_tag(:td, raw(metadata_array.join(", "))))
+                end
               end
             end
           else
