@@ -432,16 +432,21 @@ jQuery("#getMetadataBackBtn").click(function() {
         }
       }
 
-      // In case no context provided (i.e.: released metadata)
+      // Add id and type
+      jsonldObject["@id"] = subJson["URI"];
+      jsonldObject["@type"] = "http://www.w3.org/2002/07/owl#Ontology";
+
+      // Get only context from returned properties
       var context = {};
       for (var prop in subJson) {
         context[prop] = fullContext[prop];
       }
 
-      console.log("jsonldObject final");
-      console.log(jsonldObject);
       console.log("context");
       console.log(context);
+
+      console.log("jsonldObject final");
+      console.log(jsonldObject);
 
       jsonld.toRDF(jsonldObject, {format: 'application/nquads'}, function(err, nquads) {
         console.log("nquads");
