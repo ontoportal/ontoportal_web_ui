@@ -33,6 +33,6 @@
 //= require history/jquery.history
 //= require alertify
 //= require jquery.tooltip
-//= require Chart
+//= require Chart.min
 //= require select2
 
