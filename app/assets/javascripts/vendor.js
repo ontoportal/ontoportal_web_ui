@@ -19,7 +19,6 @@
 //= require fg.menu
 //= require jquery.tools.min
 //= require jquery.dataTables
-//= require datatables.formatted.number
 //= require dataTables.fixedHeader
 //= require chosen.jquery
 //= require ajax-chosen
@@ -34,6 +33,6 @@
 //= require history/jquery.history
 //= require alertify
 //= require jquery.tooltip
-//= require Chart
+//= require Chart.min
 //= require select2
 

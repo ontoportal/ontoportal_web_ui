@@ -14,17 +14,3 @@
         %td= truncate_with_more(resource['description'], :length => 100).html_safe
         %td{:style => "text-align: right;"}= number_with_delimiter(resource['count'], :delimiter => ",")
         %td= DateTime.parse(resource['updated']).strftime("%Y-%m-%d") rescue ""
-
-:javascript
-  jQuery(document).ready(function() {
-    jQuery("#resources_desc").dataTable({
-      "bPaginate": false,
-      "bFilter": false,
-      "aoData": [
-        { "sType": "html" },
-        { "bSortable": false },
-        { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] },
-        { "asSorting": [ "desc", "asc" ] }
-      ]
-    });
-  });

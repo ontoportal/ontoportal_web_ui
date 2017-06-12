@@ -103,11 +103,17 @@ class MappingsController < ApplicationController
     @concept_from ||= LinkedData::Client::Models::Class.new
     @concept_to ||= LinkedData::Client::Models::Class.new
 
-    if request.xhr? || params[:no_layout].eql?("true")
-      render :layout => false
-    else
-      render :layout => "ontology"
-    end
+    @mapping_relation_options = [
+      ["Identical (skos:exactMatch)", "http://www.w3.org/2004/02/skos/core#exactMatch"],
+      ["Similar (skos:closeMatch)",   "http://www.w3.org/2004/02/skos/core#closeMatch"],
+      ["Related (skos:relatedMatch)", "http://www.w3.org/2004/02/skos/core#relatedMatch"],
+      ["Broader (skos:broadMatch)",   "http://www.w3.org/2004/02/skos/core#broadMatch"],
+      ["Narrower (skos:narrowMatch)", "http://www.w3.org/2004/02/skos/core#narrowMatch"]
+    ]
+
+    respond_to do |format|
+      format.js
+    end    
   end
 
   # POST /mappings

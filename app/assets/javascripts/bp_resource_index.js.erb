@@ -48,6 +48,17 @@ jQuery(document).ready(function () {
     jQuery(this).parents("div.pagination").append('&nbsp;&nbsp; <span style="font-size: small; font-weight: normal;">loading</span> ' + '<%= image_tag("spinners/spinner_000000_16px.gif", style: "vertical-align: text-bottom;") %>');
   });
 
+  jQuery("#resources_desc").dataTable({
+    "paging": false,
+    "searching": false,
+    "columns": [
+      { "type": "html" },
+      { "orderable": false },
+      { "type": "num-fmt", "orderSequence": [ "desc", "asc"] },
+      { "orderSequence": [ "desc", "asc" ] }
+    ]
+  });
+
   function formattedCls(cls) {
     return "<span>" + cls.prefLabel + " (" + cls.ontologyName + ")</span>";
   }
@@ -443,13 +454,13 @@ function getSearchResults(success) {
       }
       jQuery("#initial_resources").hide();
       jQuery("#resource_table table").dataTable({
-        "bPaginate": false,
-        "bFilter"  : false,
-        "aoData"   : [
-          { "sType": "html" },
-          { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] },
-          { "sType": "percent", "asSorting": [ "desc", "asc"] },
-          { "sType": "html-formatted-num", "asSorting": [ "desc", "asc"] }
+        "paging": false,
+        "searching"  : false,
+        "columns"   : [
+          { "type": "html" },
+          { "type": "html-num-fmt", "orderSequence": [ "desc", "asc"] },
+          { "type": "num-fmt", "orderSequence": [ "desc", "asc"] },
+          { "type": "num-fmt", "orderSequence": [ "desc", "asc"] }
         ]
       });
       // Update result counts for resources with matches

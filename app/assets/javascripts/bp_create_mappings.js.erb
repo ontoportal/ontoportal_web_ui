@@ -1,4 +1,20 @@
+var observer = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutation) {
+    if (mutation.addedNodes.length > 0) {
+      var node = document.querySelector("#map_from");
+      if (node.value != "") {
+        getClassDetails(node);
+      }
+    } 
+  });    
+});
+
 jQuery(document).ready(function() {
+  var targetNode = document.querySelector(".createNewMappingModal, .modal-body");
+  if (targetNode != null) {
+    observer.observe(targetNode, { childList: true });
+  }
+
   jQuery(".ontology_picker_single").live("change", function(){
     var current_side = jQuery(this).attr("id").replace("_picker", "");
     jQuery("#" + current_side)[0].autocompleter.flushCache();
@@ -44,9 +60,6 @@ jQuery(document).ready(function() {
   jQuery.facebox.settings.loadingImage = "<%= asset_path("facebox/loading.gif") %>";
 
   jQuery('#mappings_content a[rel*=facebox]').facebox();
-
-  // Wire up popup for advanced options
-  create_mapping_advanced_options.init();
 
   jQuery("#create_mapping_button").live("click", bp_createMapping.create);
 });
@@ -193,22 +206,5 @@ var bp_createMapping = {
   reset: function() {
     jQuery("#create_mapping_error").html("");
   }
-}
-
-// Popup for advanced options
-var create_mapping_advanced_options = {
-  init: function() {
-    jQuery("#create_mapping_advanced").live("click", function(e){bp_popup_init(e)});
-    jQuery("#create_mapping_advanced_options").click(function(e){e.stopPropagation()});
-    this.cleanup();
-  },
-
-  cleanup: function() {
-    jQuery("html").click(bp_popup_cleanup);
-    jQuery(document).keyup(function(e) {
-      if (e.keyCode == 27) { bp_popup_cleanup(); } // esc
-    });
-  }
-
 }
 
