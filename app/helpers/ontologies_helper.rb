@@ -84,23 +84,6 @@ module OntologiesHelper
                     lang_codes << lang
                   end
                 end
-
-                html << content_tag(:tr) do
-                  concat(content_tag(:th, "Natural Language", " "))
-                  # Display naturalLanguage as flag
-                  concat(content_tag(:td) do
-                    concat(content_tag(:ul, {:class => "f32"}) do
-                      lang_codes.each do |lang_code|
-                        if lang_code.length == 2
-                          concat(content_tag(:li, "", {:class => "flag #{lang_code}", :style => "margin-right: 0.5em;"}))
-                        else
-                          concat(content_tag(:li, lang_code))
-                        end
-                      end
-                    end)
-                  end)
-                end
-
               else
                 html << content_tag(:tr) do
                   if label.nil?
@@ -143,7 +126,7 @@ module OntologiesHelper
                   concat(content_tag(:th, label))
                 end
                 if (metadata.to_s.eql?("hasLicense"))
-                  if (sub.send(metadata).start_with?("http://creativecommons.org/licenses") || sub.send(metadata).start_with?("https://creativecommons.org/licenses"))
+                  if (sub.send(metadata).to_s.start_with?("http://creativecommons.org/licenses") || sub.send(metadata).start_with?("https://creativecommons.org/licenses"))
                     concat(content_tag(:td) do
                       concat(content_tag(:a, {:rel => "license", :alt=>"Creative Commons License",
                                               :href => sub.send(metadata), :target => "_blank", :style=>"border-width:0", :title => sub.send(metadata),
@@ -154,22 +137,32 @@ module OntologiesHelper
                       end)
                     end)
 
-                elsif (sub.send(metadata).to_s.start_with?("http://opensource.org/licenses") || sub.send(metadata).start_with?("https://opensource.org/licenses"))
-                  concat(content_tag(:td) do
-                    concat(content_tag(:a, {:rel => "license", :alt=>"Open Source License",
-                                            :href => sub.send(metadata), :title => sub.send(metadata),:target => "_blank", :style=>"border-width:0;",
-                                            :src=>"https://opensource.org/files/osi_logo_bold_100X133_90ppi.png"}) do
+                  elsif (sub.send(metadata).to_s.start_with?("http://opensource.org/licenses") || sub.send(metadata).start_with?("https://opensource.org/licenses"))
+                    concat(content_tag(:td) do
+                      concat(content_tag(:a, {:rel => "license", :alt=>"Open Source License",
+                                              :href => sub.send(metadata), :title => sub.send(metadata),:target => "_blank", :style=>"border-width:0;",
+                                              :src=>"https://opensource.org/files/osi_logo_bold_100X133_90ppi.png"}) do
 
-                      concat(content_tag(:img, "",{:rel => "license", :alt=>"Open Source License", :title => sub.send(metadata),
-                                                   :style=>"height: 80px; border-width:0;", :src=>"https://opensource.org/files/osi_logo_bold_100X133_90ppi.png"}))
+                        concat(content_tag(:img, "",{:rel => "license", :alt=>"Open Source License", :title => sub.send(metadata),
+                                                     :style=>"height: 80px; border-width:0;", :src=>"https://opensource.org/files/osi_logo_bold_100X133_90ppi.png"}))
+                      end)
                     end)
-                  end)
 
                   else
                     concat(content_tag(:td) do
                       concat(content_tag(:a, sub.send(metadata), {:rel => "license", :href => sub.send(metadata), :target => "_blank"}))
                     end)
                   end
+
+                elsif (metadata.to_s.eql?("endpoint") && (sub.send(metadata).start_with?("http://sparql.") || sub.send(metadata).start_with?("https://sparql.")))
+                  concat(content_tag(:td) do
+                    concat(content_tag(:a, {:href => sub.send(metadata), :title => sub.send(metadata),
+                                            :target => "_blank", :style=>"border-width:0;"}) do
+
+                      concat(content_tag(:img, "",{:title => sub.send(metadata),
+                                                   :style=>"height: 80px; border-width:0;", :src=>"/images/sparql_logo.png"}))
+                    end)
+                  end)
 
                 elsif sub.send(metadata).to_s.start_with?("#{$REST_URL}/ontologies/")
                   # For URI that links to our ontologies we display a button with only the acronym. And redirect to the UI
