@@ -16,6 +16,33 @@ module OntologiesHelper
     html.join("")
   end
 
+  # Display data catalog metadata under visits (in _metadata.html.haml)
+  def display_data_catalog(sub)
+    if !sub.send("includedInDataCatalog").nil? && sub.send("includedInDataCatalog").any?
+      # Buttons for data catalogs
+      return content_tag(:div, {:class => "panel panel-primary", :style => "margin: 2em;"}) do
+        concat(content_tag(:div, {:class => "panel-heading"}) do
+          concat(content_tag(:h3, "includedInDataCatalog", {:class => "panel-title"}))
+        end)
+        concat(content_tag(:div, {:class => "panel-body"}) do
+          sub.send("includedInDataCatalog").each do |catalog|
+            catalog_btn_label = catalog
+            $DATA_CATALOG_VALUES.each do |cat_uri, cat_label|
+              if catalog.start_with?(cat_uri)
+                catalog_btn_label = cat_label
+                break;
+              end
+            end
+            concat(content_tag(:a, catalog_btn_label, {:class => "btn btn-primary",
+                                                       :style => "margin-bottom: 1em; margin-right: 1em;", :href => catalog, :target => "_blank"}))
+          end
+        end)
+      end
+    else
+      return ""
+    end
+  end
+
   # Add additional metadata as html for a submission
   def additional_metadata(sub)
     # Get the list of metadata attribute from the REST API
@@ -30,7 +57,7 @@ module OntologiesHelper
 
     html = []
 
-    metadata_not_displayed = ["status", "description", "documentation", "publication", "homepage", "openSearchDescription", "dataDump"]
+    metadata_not_displayed = ["status", "description", "documentation", "publication", "homepage", "openSearchDescription", "dataDump", "includedInDataCatalog"]
 
     begin
 
@@ -69,29 +96,6 @@ module OntologiesHelper
                         else
                           concat(content_tag(:li, lang_code))
                         end
-                      end
-                    end)
-                  end)
-                end
-
-              elsif (metadata.eql?("includedInDataCatalog"))
-                # Buttons for data catalogs
-                html << content_tag(:div, {:class => "col-md-4"}) do
-                  concat(content_tag(:div, {:class => "panel panel-primary"}) do
-                    concat(content_tag(:div, {:class => "panel-heading"}) do
-                      concat(content_tag(:h3, "includedInDataCatalog", {:class => "panel-title"}))
-                    end)
-                    concat(content_tag(:div, {:class => "panel-body"}) do
-                      sub.send(metadata).each do |catalog|
-                        catalog_btn_label = catalog
-                        $DATA_CATALOG_VALUES.each do |cat_uri, cat_label|
-                          if catalog.start_with?(cat_uri)
-                            catalog_btn_label = cat_label
-                            break;
-                          end
-                        end
-                        concat(content_tag(:a, catalog_btn_label, {:class => "btn btn-primary",
-                                                                   :style => "margin-bottom: 1em; margin-right: 1em;", :href => catalog, :target => "_blank"}))
                       end
                     end)
                   end)
