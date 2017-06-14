@@ -78,12 +78,29 @@ module OntologiesHelper
                   if (lang.to_s.eql?("en") || lang.to_s.eql?("eng") || lang.to_s.eql?("http://lexvo.org/id/iso639-3/eng"))
                     # We consider en and eng as english
                     lang_codes << "gb"
-                  elsif lang.start_with?("http://lexvo.org")
+                  elsif lang.to_s.start_with?("http://lexvo.org")
                     lang_codes << $LEXVO_TO_FLAG[lang]
                   else
                     lang_codes << lang
                   end
                 end
+
+                html << content_tag(:tr) do
+                  concat(content_tag(:th, "Natural Language", " "))
+                  # Display naturalLanguage as flag
+                  concat(content_tag(:td) do
+                    concat(content_tag(:ul, {:class => "f32"}) do
+                      lang_codes.each do |lang_code|
+                        if lang_code.length == 2
+                          concat(content_tag(:li, "", {:class => "flag #{lang_code}", :style => "margin-right: 0.5em;"}))
+                        else
+                          concat(content_tag(:li, lang_code))
+                        end
+                      end
+                    end)
+                  end)
+                end
+
               else
                 html << content_tag(:tr) do
                   if label.nil?
@@ -160,7 +177,7 @@ module OntologiesHelper
                                             :target => "_blank", :style=>"border-width:0;"}) do
 
                       concat(content_tag(:img, "",{:title => sub.send(metadata),
-                                                   :style=>"height: 80px; border-width:0;", :src=>"/images/sparql_logo.png"}))
+                                                   :style=>"height: 40px; border-width:0;", :src=>"/images/sparql_logo.png"}))
                     end)
                   end)
 
