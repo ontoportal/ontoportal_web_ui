@@ -46,6 +46,7 @@ module OntologiesHelper
                 # Special treatment for naturalLanguage: we want the flags in a bootstrap box
                 # UK is gb: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
                 lang_codes = []
+
                 sub.send(metadata).each do |lang|
                   if (lang.to_s.eql?("en") || lang.to_s.eql?("eng") || lang.to_s.eql?("http://lexvo.org/id/iso639-3/eng"))
                     # We consider en and eng as english
@@ -56,21 +57,19 @@ module OntologiesHelper
                     lang_codes << lang
                   end
                 end
-                html << content_tag(:div, {:class => "col-md-2"}) do
-                  concat(content_tag(:div, {:class => "panel panel-primary"}) do
-                    concat(content_tag(:div, {:class => "panel-heading"}) do
-                      concat(content_tag(:h3, "naturalLanguage", {:class => "panel-title"}))
-                    end)
-                    concat(content_tag(:div, {:class => "panel-body"}) do
-                      concat(content_tag(:ul, {:class => "f32"}) do
-                        lang_codes.each do |lang_code|
-                          if lang_code.length == 2
-                            concat(content_tag(:li, "", {:class => "flag #{lang_code}", :style => "margin-right: 0.5em;"}))
-                          else
-                            concat(content_tag(:li, lang_code))
-                          end
+
+                html << content_tag(:tr) do
+                  concat(content_tag(:th, "Natural Language", " "))
+                  # Display naturalLanguage as flag
+                  concat(content_tag(:td) do
+                    concat(content_tag(:ul, {:class => "f32"}) do
+                      lang_codes.each do |lang_code|
+                        if lang_code.length == 2
+                          concat(content_tag(:li, "", {:class => "flag #{lang_code}", :style => "margin-right: 0.5em;"}))
+                        else
+                          concat(content_tag(:li, lang_code))
                         end
-                      end)
+                      end
                     end)
                   end)
                 end
@@ -108,7 +107,6 @@ module OntologiesHelper
 
                   metadata_array = []
                   sub.send(metadata).each do |metadata_value|
-
                     if metadata_value.to_s.start_with?("#{$REST_URL}/ontologies/")
                       # For URI that links to our ontologies we display a button with only the acronym. And redirect to the UI
                       # Warning! Redirection is done by removing "data." from the REST_URL. So might not work perfectly everywhere
@@ -140,8 +138,7 @@ module OntologiesHelper
                 else
                   concat(content_tag(:th, label))
                 end
-
-                if (metadata.eql?("hasLicense"))
+                if (metadata.to_s.eql?("hasLicense"))
                   if (sub.send(metadata).start_with?("http://creativecommons.org/licenses") || sub.send(metadata).start_with?("https://creativecommons.org/licenses"))
                     concat(content_tag(:td) do
                       concat(content_tag(:a, {:rel => "license", :alt=>"Creative Commons License",
@@ -153,7 +150,7 @@ module OntologiesHelper
                       end)
                     end)
 
-                elsif (sub.send(metadata).start_with?("http://opensource.org/licenses") || sub.send(metadata).start_with?("https://opensource.org/licenses"))
+                elsif (sub.send(metadata).to_s.start_with?("http://opensource.org/licenses") || sub.send(metadata).start_with?("https://opensource.org/licenses"))
                   concat(content_tag(:td) do
                     concat(content_tag(:a, {:rel => "license", :alt=>"Open Source License",
                                             :href => sub.send(metadata), :title => sub.send(metadata),:target => "_blank", :style=>"border-width:0;",
@@ -170,7 +167,7 @@ module OntologiesHelper
                     end)
                   end
 
-                elsif sub.send(metadata).start_with?("#{$REST_URL}/ontologies/")
+                elsif sub.send(metadata).to_s.start_with?("#{$REST_URL}/ontologies/")
                   # For URI that links to our ontologies we display a button with only the acronym. And redirect to the UI
                   # Warning! Redirection is done by removing "data." from the REST_URL. So might not work perfectly everywhere
                   if sub.send(metadata).to_s.split("/").length < 6
