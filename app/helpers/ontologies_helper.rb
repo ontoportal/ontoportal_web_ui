@@ -43,6 +43,31 @@ module OntologiesHelper
     end
   end
 
+  # Display data catalog metadata under visits (in _metadata.html.haml)
+  def display_logo(sub)
+    logo_attributes = ["logo", "depiction"]
+    logo_html = ""
+    logo_attributes.each do |metadata|
+      if !sub.send(metadata).nil?
+        puts sub.send(metadata)
+        logo_html.concat(content_tag(:div, {:class => "panel panel-primary", :style => "margin: 2em;"}) do
+          concat(content_tag(:div, {:class => "panel-heading"}) do
+            concat(content_tag(:h3, metadata, {:class => "panel-title"}))
+          end)
+          concat(content_tag(:div, {:class => "panel-body"}) do
+            concat(content_tag(:a, {:href => sub.send(metadata), :title => sub.send(metadata),
+                             :target => "_blank", :style=>"border-width:0;"}) do
+
+              concat(content_tag(:img, "",{:title => sub.send(metadata),
+                                           :style=>"border-width:0;max-width: 100%;", :src=>sub.send(metadata).to_s}))
+            end)
+          end)
+        end)
+      end
+    end
+    return logo_html
+  end
+
   # Add additional metadata as html for a submission
   def additional_metadata(sub)
     # Get the list of metadata attribute from the REST API
@@ -57,7 +82,7 @@ module OntologiesHelper
 
     html = []
 
-    metadata_not_displayed = ["status", "description", "documentation", "publication", "homepage", "openSearchDescription", "dataDump", "includedInDataCatalog"]
+    metadata_not_displayed = ["status", "description", "documentation", "publication", "homepage", "openSearchDescription", "dataDump", "includedInDataCatalog", "logo", "depiction"]
 
     begin
 
@@ -78,12 +103,29 @@ module OntologiesHelper
                   if (lang.to_s.eql?("en") || lang.to_s.eql?("eng") || lang.to_s.eql?("http://lexvo.org/id/iso639-3/eng"))
                     # We consider en and eng as english
                     lang_codes << "gb"
-                  elsif lang.start_with?("http://lexvo.org")
+                  elsif lang.to_s.start_with?("http://lexvo.org")
                     lang_codes << $LEXVO_TO_FLAG[lang]
                   else
                     lang_codes << lang
                   end
                 end
+
+                html << content_tag(:tr) do
+                  concat(content_tag(:th, "Natural Language", " "))
+                  # Display naturalLanguage as flag
+                  concat(content_tag(:td) do
+                    concat(content_tag(:ul, {:class => "f32"}) do
+                      lang_codes.each do |lang_code|
+                        if lang_code.length == 2
+                          concat(content_tag(:li, "", {:class => "flag #{lang_code}", :style => "margin-right: 0.5em;"}))
+                        else
+                          concat(content_tag(:li, lang_code))
+                        end
+                      end
+                    end)
+                  end)
+                end
+
               else
                 html << content_tag(:tr) do
                   if label.nil?
@@ -160,7 +202,7 @@ module OntologiesHelper
                                             :target => "_blank", :style=>"border-width:0;"}) do
 
                       concat(content_tag(:img, "",{:title => sub.send(metadata),
-                                                   :style=>"height: 80px; border-width:0;", :src=>"/images/sparql_logo.png"}))
+                                                   :style=>"height: 40px; border-width:0;", :src=>"/images/sparql_logo.png"}))
                     end)
                   end)
 
