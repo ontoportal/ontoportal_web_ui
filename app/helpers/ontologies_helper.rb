@@ -171,6 +171,16 @@ module OntologiesHelper
                     end)
                   end
 
+                elsif metadata.eql?("logo") || metadata.eql?("depiction")
+                  concat(content_tag(:td) do
+                    concat(content_tag(:a, {:href => sub.send(metadata), :title => sub.send(metadata),
+                                            :target => "_blank", :style=>"border-width:0;"}) do
+
+                      concat(content_tag(:img, "",{:title => sub.send(metadata),
+                                                   :style=>"height: 100px; border-width:0;", :src=>sub.send(metadata).to_s}))
+                    end)
+                  end)
+
                 elsif (metadata.to_s.eql?("endpoint") && (sub.send(metadata).start_with?("http://sparql.") || sub.send(metadata).start_with?("https://sparql.")))
                   concat(content_tag(:td) do
                     concat(content_tag(:a, {:href => sub.send(metadata), :title => sub.send(metadata),
