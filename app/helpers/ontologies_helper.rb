@@ -43,6 +43,31 @@ module OntologiesHelper
     end
   end
 
+  # Display data catalog metadata under visits (in _metadata.html.haml)
+  def display_logo(sub)
+    logo_attributes = ["logo", "depiction"]
+    logo_html = ""
+    logo_attributes.each do |metadata|
+      if !sub.send(metadata).nil?
+        puts sub.send(metadata)
+        logo_html.concat(content_tag(:div, {:class => "panel panel-primary", :style => "margin: 2em;"}) do
+          concat(content_tag(:div, {:class => "panel-heading"}) do
+            concat(content_tag(:h3, metadata, {:class => "panel-title"}))
+          end)
+          concat(content_tag(:div, {:class => "panel-body"}) do
+            concat(content_tag(:a, {:href => sub.send(metadata), :title => sub.send(metadata),
+                             :target => "_blank", :style=>"border-width:0;"}) do
+
+              concat(content_tag(:img, "",{:title => sub.send(metadata),
+                                           :style=>"border-width:0;max-width: 100%;", :src=>sub.send(metadata).to_s}))
+            end)
+          end)
+        end)
+      end
+    end
+    return logo_html
+  end
+
   # Add additional metadata as html for a submission
   def additional_metadata(sub)
     # Get the list of metadata attribute from the REST API
@@ -57,7 +82,7 @@ module OntologiesHelper
 
     html = []
 
-    metadata_not_displayed = ["status", "description", "documentation", "publication", "homepage", "openSearchDescription", "dataDump", "includedInDataCatalog"]
+    metadata_not_displayed = ["status", "description", "documentation", "publication", "homepage", "openSearchDescription", "dataDump", "includedInDataCatalog", "logo", "depiction"]
 
     begin
 
@@ -170,16 +195,6 @@ module OntologiesHelper
                       concat(content_tag(:a, sub.send(metadata), {:rel => "license", :href => sub.send(metadata), :target => "_blank"}))
                     end)
                   end
-
-                elsif metadata.eql?("logo") || metadata.eql?("depiction")
-                  concat(content_tag(:td) do
-                    concat(content_tag(:a, {:href => sub.send(metadata), :title => sub.send(metadata),
-                                            :target => "_blank", :style=>"border-width:0;"}) do
-
-                      concat(content_tag(:img, "",{:title => sub.send(metadata),
-                                                   :style=>"height: 100px; border-width:0;", :src=>sub.send(metadata).to_s}))
-                    end)
-                  end)
 
                 elsif (metadata.to_s.eql?("endpoint") && (sub.send(metadata).start_with?("http://sparql.") || sub.send(metadata).start_with?("https://sparql.")))
                   concat(content_tag(:td) do
