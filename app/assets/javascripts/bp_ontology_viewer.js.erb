@@ -404,12 +404,15 @@ function downloadMetadata(format) {
 
       var jsonldObject = {}
       var subJson = jQuery.extend(true, {}, jQuery(document).data().bp.submission_latest);
+      var ontJson = jQuery(document).data().bp.ontology;
       var fullContext = jQuery(document).data().bp.submission_latest["context"];
+      // Special case for publication and released that don't have namespace (so value generated to undefined)
+      fullContext["publication"] = "http://omv.ontoware.org/2005/05/ontology#reference";
+      fullContext["released"] = "http://purl.org/dc/terms/date";
 
       delete subJson["links"];
       delete subJson["context"];
-      // delete released because it has no context
-      delete subJson["released"];
+      delete subJson["metrics"];
       // Remove null value from submission
       for (var attr in subJson) {
         if (subJson[attr] === null || subJson[attr] === undefined) {
@@ -419,10 +422,12 @@ function downloadMetadata(format) {
           delete subJson[attr];
           continue;
         }
-
         // Keep only metadata that have been extracted
         // TODO: CHANGE IT
-        if (subMetadataHash[attr] != undefined && subMetadataHash[attr]["extracted"] !== true && attr !== "hasOntologyLanguage") {
+        var metadata_in_rdf = ["acronym", "name","hasOntologyLanguage", "creationDate", "released"]
+        if (subMetadataHash[attr] != undefined && subMetadataHash[attr]["extracted"] !== true && subMetadataHash[attr]["display"] !== "metrics"
+          && !metadata_in_rdf.indexOf(attr)) {
+
           delete subJson[attr];
           continue;
         }
@@ -432,27 +437,26 @@ function downloadMetadata(format) {
           continue;
         }
 
-        if (fullContext[attr] !== undefined) {
+        // Special case for publication and released that don't have namespace (so value generated to undefined)
+        if (fullContext[attr] !== undefined || attr === "released" || attr === "publication") {
           jsonldObject[fullContext[attr]] = subJson[attr];
         }
       }
-
+      
       // Add id and type
       if (subJson["URI"] !== undefined) {
         jsonldObject["@id"] = subJson["URI"];
       } else {
-        jsonldObject["@id"] = jQuery(document).data().bp.ontology["id"];
+        jsonldObject["@id"] = ontJson["id"];
       }
       jsonldObject["@type"] = "http://www.w3.org/2002/07/owl#Ontology";
+
+      console.log(ontJson);
 
       // Get only context from returned properties
       var context = {};
       for (var prop in subJson) {
         context[prop] = fullContext[prop];
-        if (prop == "publication") {
-          // Special case for publication that don't have a namespace (so value generated to undefined)
-          context[prop] = "http://omv.ontoware.org/2005/05/ontology#reference";
-        }
         if (context[prop] == undefined) {
           // If property URI not defined then we create it with bioontology.org URI
           context[prop] = "http://data.bioontology.org/metadata/" + prop;
