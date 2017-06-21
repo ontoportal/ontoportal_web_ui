@@ -421,6 +421,7 @@ function downloadMetadata(format) {
         }
 
         // Keep only metadata that have been extracted
+        // TODO: CHANGE IT
         if (subMetadataHash[attr] != undefined && subMetadataHash[attr]["extracted"] !== true && attr !== "hasOntologyLanguage") {
           delete subJson[attr];
           continue;
@@ -439,6 +440,8 @@ function downloadMetadata(format) {
       // Add id and type
       if (subJson["URI"] !== undefined) {
         jsonldObject["@id"] = subJson["URI"];
+      } else {
+        jsonldObject["@id"] = jQuery(document).data().bp.ontology["id"];
       }
       jsonldObject["@type"] = "http://www.w3.org/2002/07/owl#Ontology";
 
