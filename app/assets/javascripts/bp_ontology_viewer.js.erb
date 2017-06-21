@@ -413,6 +413,18 @@ function downloadMetadata(format) {
       delete subJson["links"];
       delete subJson["context"];
       delete subJson["metrics"];
+
+      fullContext["group"] = "http://data.bioontology.org/metadata/Group";
+      subJson["group"] = ontJson["group"];
+      console.log(subJson["group"]);
+      // TODO: WHY group not in subJson HERE????!!!
+      console.log(subJson);
+      if (subJson["hasDomain"] == null) {
+        subJson["hasDomain"] = ontJson["hasDomain"];
+      } else {
+        subJson["hasDomain"] = subJson["hasDomain"].concat(ontJson["hasDomain"]);
+      }
+
       // Remove null value from submission
       for (var attr in subJson) {
         if (subJson[attr] === null || subJson[attr] === undefined) {
@@ -424,7 +436,7 @@ function downloadMetadata(format) {
         }
         // Keep only metadata that have been extracted
         // TODO: CHANGE IT
-        var metadata_in_rdf = ["acronym", "name","hasOntologyLanguage", "creationDate", "released"]
+        var metadata_in_rdf = ["acronym", "name","hasOntologyLanguage", "creationDate", "released", "group"]
         if (subMetadataHash[attr] != undefined && subMetadataHash[attr]["extracted"] !== true && subMetadataHash[attr]["display"] !== "metrics"
           && !metadata_in_rdf.indexOf(attr)) {
 
@@ -442,7 +454,7 @@ function downloadMetadata(format) {
           jsonldObject[fullContext[attr]] = subJson[attr];
         }
       }
-      
+
       // Add id and type
       if (subJson["URI"] !== undefined) {
         jsonldObject["@id"] = subJson["URI"];
@@ -500,3 +512,19 @@ jQuery("#getMetadataBackNquadsBtn").click(function(){
 jQuery("#getMetadataBackJsonldBtn").click(function(){
   downloadMetadata("jsonld")
 });
+
+/**
+ * A function for array to remove duplicates
+ * @returns {Array.<*>}
+ */
+Array.prototype.unique = function() {
+  var a = this.concat();
+  for(var i=0; i<a.length; ++i) {
+    for(var j=i+1; j<a.length; ++j) {
+      if(a[i] === a[j])
+        a.splice(j--, 1);
+    }
+  }
+
+  return a;
+};
