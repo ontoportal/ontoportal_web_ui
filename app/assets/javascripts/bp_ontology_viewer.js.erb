@@ -527,12 +527,20 @@ function generateRdfXml(jsonldObject, metadataDetails) {
     }
 
     // Check if the value is an URI using simple regex
-    if ((jsonldObject[attr_uri].toString().match(/https?:\/\//g) || []).length === 1 && jsonldObject[attr_uri].toString().indexOf(" ") === -1) {
-      xmlString = xmlString.concat(`
-    <` + prop + ` rdf:resource="` + jsonldObject[attr_uri] + `"/>`);
-    } else {
-      xmlString = xmlString.concat(`
+    var prop_values = jsonldObject[attr_uri];
+    if (!(prop_values instanceof Array)) {
+      prop_values = [prop_values];
+    }
+
+    for (var i in prop_values) {
+      var prop_value = prop_values[i];
+      if ((prop_value.toString().match(/https?:\/\//g) || []).length === 1 && prop_value.toString().indexOf(" ") === -1) {
+        xmlString = xmlString.concat(`
+    <` + prop + ` rdf:resource="` + prop_value + `"/>`);
+      } else {
+        xmlString = xmlString.concat(`
     <` + prop + `/>` + jsonldObject[attr_uri] + `<` + prop + `/>`);
+      }
     }
 
   }
