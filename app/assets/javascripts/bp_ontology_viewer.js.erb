@@ -485,9 +485,21 @@ function downloadMetadata(format) {
         jsonld.compact(jsonldObject, context, function (err, compacted) {
           generateDownloadFile(JSON.stringify(compacted, null, 2), "json");
         });
+      } else if (format === "xml") {
+        // Generate RDF/XML
+        generateDownloadFile(generateRdfXml(jsonldObject, context), "rdf");
       }
     }
   );
+}
+
+/**
+ * Generate the RDF/XML string from the jsonldObject
+ * @param jsonldObject
+ * @param context
+ */
+function generateRdfXml(jsonldObject, context) {
+  return "aaa";
 }
 
 /**
@@ -497,6 +509,7 @@ function downloadMetadata(format) {
  */
 function generateDownloadFile(content, fileExtension) {
   var element = document.createElement('a');
+  // TODO: change MIME type?
   element.setAttribute('href', 'data:application/rdf+json;charset=utf-8,' + encodeURIComponent(content));
   element.setAttribute('download', jQuery(document).data().bp.ontology.acronym + "_metadata." + fileExtension);
 
@@ -510,5 +523,8 @@ jQuery("#getMetadataBackNquadsBtn").click(function(){
   downloadMetadata("nquads");
 });
 jQuery("#getMetadataBackJsonldBtn").click(function(){
-  downloadMetadata("jsonld")
+  downloadMetadata("jsonld");
+});
+jQuery("#getMetadataBackXmlBtn").click(function(){
+  downloadMetadata("xml");
 });
