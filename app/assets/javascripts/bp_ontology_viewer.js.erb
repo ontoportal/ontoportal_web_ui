@@ -402,7 +402,8 @@ function downloadMetadata(format) {
         subMetadataHash[subMetadataArray[i]["attribute"]] = subMetadataArray[i];
       }
       var jsonldObject = {}
-      var added_props = []
+      var added_props = {}
+
       var subJson = jQuery.extend(true, {}, jQuery(document).data().bp.submission_latest);
       var ontJson = jQuery(document).data().bp.ontology;
       var fullContext = jQuery(document).data().bp.submission_latest["context"];
@@ -451,7 +452,11 @@ function downloadMetadata(format) {
 
         if (fullContext[attr] !== undefined) {
           // Add attr value to future jsonld object and keep track of the attr we added to build context
-          added_props.push(attr);
+          if (subMetadataHash[attr] != undefined) {
+            added_props[attr] = subMetadataHash[attr]["namespace"] + ":" + attr;
+          } else {
+            added_props[attr] = "bpm:" + attr;
+          }
           jsonldObject[fullContext[attr]] = subJson[attr];
         }
       }
@@ -466,8 +471,7 @@ function downloadMetadata(format) {
 
       // Get only context from returned properties
       var context = {};
-      for (var propIndex in added_props) {
-        prop = added_props[propIndex]
+      for (var prop in added_props) {
         context[prop] = fullContext[prop];
         if (context[prop] == undefined) {
           // If property URI not defined then we create it with bioontology.org URI
@@ -487,19 +491,57 @@ function downloadMetadata(format) {
         });
       } else if (format === "xml") {
         // Generate RDF/XML
-        generateDownloadFile(generateRdfXml(jsonldObject, context), "rdf");
+        generateDownloadFile(generateRdfXml(jsonldObject, subMetadataHash), "rdf");
       }
     }
   );
 }
 
 /**
- * Generate the RDF/XML string from the jsonldObject
+ * Generate the RDF/XML string from the jsonldObject and context. Do it manually since no good lib
  * @param jsonldObject
  * @param context
  */
-function generateRdfXml(jsonldObject, context) {
-  return "aaa";
+function generateRdfXml(jsonldObject, metadataDetails) {
+
+  // Get hash to resolve namespace
+  var resolveNamespace = jQuery(document).data().bp.config.resolve_namespace;
+
+  var xmlString = `<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:owl="http://www.w3.org/2002/07/owl#">
+  <rdf:Description rdf:about="` + jsonldObject["@id"] + `">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>`;
+
+  delete jsonldObject["@id"];
+  delete jsonldObject["@type"];
+
+  for (var prop in jsonldObject) {
+    var attr_uri = prop;
+    var attr = prop;
+    // Here we replace the full URI by namespace:attr
+    for (var ns in resolveNamespace) {
+      if (prop.indexOf(resolveNamespace[ns]) == 0) {
+        prop = prop.replace(resolveNamespace[ns], ns + ":");
+        attr = attr.replace(resolveNamespace[ns], "");
+        break;
+      }
+    }
+
+    // Check if the value is an URI using simple regex
+    if ((jsonldObject[attr_uri].toString().match(/https?:\/\//g) || []).length === 1 && jsonldObject[attr_uri].toString().indexOf(" ") === -1) {
+      xmlString = xmlString.concat(`
+    <` + prop + ` rdf:resource="` + jsonldObject[attr_uri] + `"/>`);
+    } else {
+      xmlString = xmlString.concat(`
+    <` + prop + `/>` + jsonldObject[attr_uri] + `<` + prop + `/>`);
+    }
+
+  }
+
+  xmlString = xmlString.concat(`
+  </rdf:Description>
+</rdf:RDF>`);
+
+  return xmlString;
 }
 
 /**
