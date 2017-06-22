@@ -401,56 +401,57 @@ function downloadMetadata(format) {
       for (var i = 0; i < subMetadataArray.length; i++) {
         subMetadataHash[subMetadataArray[i]["attribute"]] = subMetadataArray[i];
       }
-
       var jsonldObject = {}
+      var added_props = []
       var subJson = jQuery.extend(true, {}, jQuery(document).data().bp.submission_latest);
       var ontJson = jQuery(document).data().bp.ontology;
       var fullContext = jQuery(document).data().bp.submission_latest["context"];
-      // Special case for publication and released that don't have namespace (so value generated to undefined)
-      fullContext["publication"] = "http://omv.ontoware.org/2005/05/ontology#reference";
-      fullContext["released"] = "http://purl.org/dc/terms/date";
 
+      // Remove links, context and metrics from json
       delete subJson["links"];
       delete subJson["context"];
       delete subJson["metrics"];
 
-      fullContext["group"] = "http://data.bioontology.org/metadata/Group";
+      // Special case for publication and released that don't have namespace (so value generated to undefined)
+      fullContext["publication"] = "http://omv.ontoware.org/2005/05/ontology#reference";
+      fullContext["released"] = "http://purl.org/dc/terms/date";
+
+      // Add ontology properties to context and subJson
+      subJson["viewOf"] = ontJson["viewOf"];
+      fullContext["viewOf"] = "http://data.bioontology.org/metadata/viewOf";
+
       subJson["group"] = ontJson["group"];
-      console.log(subJson["group"]);
-      // TODO: WHY group not in subJson HERE????!!!
-      console.log(subJson);
+      fullContext["group"] = "http://data.bioontology.org/metadata/group";
       if (subJson["hasDomain"] == null) {
         subJson["hasDomain"] = ontJson["hasDomain"];
       } else {
-        subJson["hasDomain"] = subJson["hasDomain"].concat(ontJson["hasDomain"]);
+        subJson["hasDomain"] = subJson["hasDomain"].split(", ").concat(ontJson["hasDomain"]);
+        /* make the array unique:
+         var unique = arr.filter(function(elem, index, self) {
+         return index == self.indexOf(elem);
+         })
+         */
       }
 
-      // Remove null value from submission
+
+      // Don't add null value and empty arrays
       for (var attr in subJson) {
         if (subJson[attr] === null || subJson[attr] === undefined) {
-          delete subJson[attr];
           continue;
         } else if (subJson[attr] instanceof Array && subJson[attr].length < 1) {
-          delete subJson[attr];
           continue;
         }
-        // Keep only metadata that have been extracted
-        // TODO: CHANGE IT
-        var metadata_in_rdf = ["acronym", "name","hasOntologyLanguage", "creationDate", "released", "group"]
+        // Keep only metadata that have been extracted, are metrics or are in the metadata array below
+        var metadata_in_rdf = ["acronym", "name","hasOntologyLanguage", "creationDate", "released", "group", "viewOf"]
         if (subMetadataHash[attr] != undefined && subMetadataHash[attr]["extracted"] !== true && subMetadataHash[attr]["display"] !== "metrics"
           && !metadata_in_rdf.indexOf(attr)) {
 
-          delete subJson[attr];
-          continue;
-        }
-        // Remove undefined metadata
-        if (subMetadataHash[attr] === undefined) {
-          delete subJson[attr];
           continue;
         }
 
-        // Special case for publication and released that don't have namespace (so value generated to undefined)
-        if (fullContext[attr] !== undefined || attr === "released" || attr === "publication") {
+        if (fullContext[attr] !== undefined) {
+          // Add attr value to future jsonld object and keep track of the attr we added to build context
+          added_props.push(attr);
           jsonldObject[fullContext[attr]] = subJson[attr];
         }
       }
@@ -463,11 +464,10 @@ function downloadMetadata(format) {
       }
       jsonldObject["@type"] = "http://www.w3.org/2002/07/owl#Ontology";
 
-      console.log(ontJson);
-
       // Get only context from returned properties
       var context = {};
-      for (var prop in subJson) {
+      for (var propIndex in added_props) {
+        prop = added_props[propIndex]
         context[prop] = fullContext[prop];
         if (context[prop] == undefined) {
           // If property URI not defined then we create it with bioontology.org URI
@@ -512,19 +512,3 @@ jQuery("#getMetadataBackNquadsBtn").click(function(){
 jQuery("#getMetadataBackJsonldBtn").click(function(){
   downloadMetadata("jsonld")
 });
-
-/**
- * A function for array to remove duplicates
- * @returns {Array.<*>}
- */
-Array.prototype.unique = function() {
-  var a = this.concat();
-  for(var i=0; i<a.length; ++i) {
-    for(var j=i+1; j<a.length; ++j) {
-      if(a[i] === a[j])
-        a.splice(j--, 1);
-    }
-  }
-
-  return a;
-};
