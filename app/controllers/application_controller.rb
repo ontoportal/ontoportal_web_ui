@@ -143,7 +143,8 @@ class ApplicationController < ActionController::Base
         rest_url: LinkedData::Client.settings.rest_url,
         annotator_url: $ANNOTATOR_URL,
         biomixer_url: $BIOMIXER_URL,
-        interportal_hash: $INTERPORTAL_HASH
+        interportal_hash: $INTERPORTAL_HASH,
+        resolve_namespace: RESOLVE_NAMESPACE
     }
     config[:ncbo_slice] = @subdomain_filter[:acronym] if (@subdomain_filter[:active] && !@subdomain_filter[:acronym].empty?)
     config.to_json
