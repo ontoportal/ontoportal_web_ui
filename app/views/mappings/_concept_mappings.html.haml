@@ -10,9 +10,10 @@
   - else
     = link_to("Create New Mapping", |
               new_mapping_path(ontology_from: "#{@ontology.id}", conceptid_from: "#{@concept.id}"), |
+              id: "new_mapping_btn", |
               role: "button", |
               class: "btn btn-default", |
-              data: {toggle: "modal", target: "#createNewMappingModal"}, | 
+              data: {toggle: "modal", target: "#createNewMappingModal", concept_label: "#{@concept.prefLabel}"}, | 
               remote: "true")
 
     = link_to "Delete Selected Mappings", "javascript:void(0);", :onclick => "if (confirm('Really delete mappings? This cannot be undone.')) deleteMappings()", :id => "delete_mappings_button", :class => "btn btn-default", role: "button"

@@ -5,29 +5,17 @@
   var BP_INTERNAL_SEARCH_SERVER = "#{$UI_URL}";
 
 %div.row
-  %div.col-sm-6
+  %div.col-xs-12
     %div.form-group
-      %label{for: "map_from_picker"} Class 1
-      = render partial: "shared/ontology_picker_single", locals: { picker_id: "map_from_picker", selected: @ontology_from.acronym }
+      %label{for: "map_to_picker"} Target ontology or view
+      = select_tag("map_to_picker", options_for_select(onts_and_views_for_select()), class: "form-control")
     %div.form-group
-      = text_field_tag(:map_from, @concept_from.prefLabel, 
-                       class: "bp_internal_form_complete-#{ontology_from_id}-name search_autocomplete form-control", 
-                       placeholder: "Start typing to select a class", 
-                       data: { pref_label: @concept_from.prefLabel }) 
-      = hidden_field_tag :map_from_bioportal_full_id, @concept_from.id
-      = hidden_field_tag :map_from_bioportal_ontology_id, @ontology_from.acronym
-    %div.form-group 
-      %label{for: "map_from_concept_details_table"} Details
-      %div#map_from_concept_details_table.form-control
-  
-  %div.col-sm-6
-    %div.form-group
-      %label{for: "map_to_picker"} Class 2
-      = render partial: "shared/ontology_picker_single", locals: { picker_id: "map_to_picker", selected: @ontology_to.acronym }
-    %div.form-group
+      %label{for: "map_to"} Target class
       = text_field_tag(:map_to, @concept_to.label, class: "bp_internal_form_complete-#{ontology_to_id}-name search_autocomplete form-control", placeholder: "Start typing to select a class")
       = hidden_field_tag :map_to_bioportal_full_id, @concept_to.id
       = hidden_field_tag :map_to_bioportal_ontology_id, @ontology_to.acronym
+      = hidden_field_tag :map_from_bioportal_full_id, @concept_from.id
+      = hidden_field_tag :map_from_bioportal_ontology_id, @ontology_from.acronym
     %div.form-group
       %label{for: "map_to_concept_details_table"} Details
       %div#map_to_concept_details_table.form-control
@@ -53,3 +41,7 @@
 
 :javascript
   bp_internal_formComplete_setup_functions();
+
+  jQuery("#map_to_picker").select2({
+    dropdownParent: jQuery("#createNewMappingModal"),
+  });

@@ -96,6 +96,8 @@ jQuery(document).bind("tree_changed", updateMappingCount);
 // in turn, is set by /app/controllers/application_controller.check_delete_mapping_permission()
 function deleteMappings() {
   var mappingsToDelete = [], params;
+  var ontologyId = jQuery(document).data().bp.ont_viewer.ontology_id;
+  var conceptId = jQuery(document).data().bp.ont_viewer.concept_id;
 
   jQuery("#delete_mappings_error").html("");
   jQuery("#delete_mappings_spinner").show();
@@ -107,8 +109,8 @@ function deleteMappings() {
   params = {
     mappingids: mappingsToDelete.join(","),
     _method: "delete",
-    ontologyid: ontology_id,
-    conceptid: concept_id
+    ontologyid: ontologyId,
+    conceptid: conceptId
   };
 
   jQuery("#delete_mappings_error").html("");
@@ -119,17 +121,21 @@ function deleteMappings() {
     data: params,
 
     success: function(data){
-      var rowId;
       jQuery("#delete_mappings_spinner").hide();
-      for (map_id in data.success) {
-        rowId = data.success[map_id].replace(/.*\//, "");
-        jQuery("#" + rowId).html("").hide();
+
+      var i, rowId, len = data.success.length;
+      for (i=0; i<len; ++i) {
+        rowId = data.success[i].replace(/.*\//, "");
+        jQuery("#" + rowId).hide();
       }
-      for (map_id in data.error) {
+
+      len = data.error.length;
+      for (i=0; i<len; ++i) {
         jQuery("#delete_mappings_error").html("There was a problem deleting, please try again");
-        rowId = data.error[map_id].replace(/.*\//, "");
+        rowId = data.error[i].replace(/.*\//, "");
         jQuery("#" + rowId).css("border", "red solid");
       }
+
       jQuery("#mapping_count").html(jQuery("#mapping_details tbody tr:visible").size());
       jQuery.bioportal.ont_pages["mappings"].retrieve_and_publish();
       updateMappingDeletePermissions();
@@ -141,6 +147,4 @@ function deleteMappings() {
     }
   });
 }
-
-
 
