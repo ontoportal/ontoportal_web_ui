@@ -69,7 +69,7 @@ rec.getHighlightedTerms = function(data, rowNumber) {
     for (var j = 0; j < data[rowNumber].coverageResult.annotations.length; j++) {
         var from = data[rowNumber].coverageResult.annotations[j].from-1;
         var to = data[rowNumber].coverageResult.annotations[j].to;
-        var link = data[rowNumber].coverageResult.annotations[j].annotatedClass.links.ui;
+        var link = bp_cls_link(data[rowNumber].coverageResult.annotations[j].annotatedClass["@id"], data[rowNumber].ontologies[0].acronym);
         var term = inputText.substring(from, to);
         // Color selection - Single ontology
         if (data[rowNumber].ontologies.length == 1) {
@@ -233,8 +233,8 @@ rec.getRecommendations = function() {
                                 if (params.output_type == 2) {
                                     ontologyLinkStyle = 'style="color: ' + rec.colors[j] + '"';
                                 }
-                                row += '<a ' + ontologyLinkStyle + /*'title= "' + data[i].ontologies[j].name +*/ '" target="_blank" href=' + data[i].ontologies[j].links.ui + '>'
-                                + data[i].ontologies[j].acronym + '</a><br />'});
+                                var ontAcronym = data[i].ontologies[j].acronym;
+                                row += '<a ' + ontologyLinkStyle + '" target="_blank" href=' + bp_ont_link(ontAcronym) + '>' + ontAcronym + '</a><br />'});
 
                             row += "</td>";
                             row += 
