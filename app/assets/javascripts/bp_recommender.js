@@ -69,20 +69,22 @@ rec.getHighlightedTerms = function(data, rowNumber) {
     for (var j = 0; j < data[rowNumber].coverageResult.annotations.length; j++) {
         var from = data[rowNumber].coverageResult.annotations[j].from-1;
         var to = data[rowNumber].coverageResult.annotations[j].to;
-        var link = bp_cls_link(data[rowNumber].coverageResult.annotations[j].annotatedClass["@id"], data[rowNumber].ontologies[0].acronym);
         var term = inputText.substring(from, to);
+        var ontologyId = data[rowNumber].coverageResult.annotations[j].annotatedClass.links.ontology;
+        
         // Color selection - Single ontology
         if (data[rowNumber].ontologies.length == 1) {
             var color = rec.colors[0];
         }
         // Color selection - Set of ontologies
         else {
-            var ontologyId = data[rowNumber].coverageResult.annotations[j].annotatedClass.links.ontology;
             var index = ontologyIds.indexOf(ontologyId);
             var color = rec.colors[index];
         }
 
-        var replacement = '<a style="font-weight: bold; color:' + color + '" target="_blank" href=' + link + '>' + term + '</a>';
+        var clsId = data[rowNumber].coverageResult.annotations[j].annotatedClass["@id"];
+        var ontAcronym = ontologyId.slice(ontologyId.lastIndexOf("/") + 1);
+        var replacement = '<a style="font-weight: bold; color:' + color + '" target="_blank" href=' + bp_cls_link(clsId, ontAcronym) + '>' + term + '</a>';
 
         if (from>lastPosition) {
             newText+=inputText.substring(lastPosition, from);
