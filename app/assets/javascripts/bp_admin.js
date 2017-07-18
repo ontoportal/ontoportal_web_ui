@@ -329,7 +329,7 @@ DeleteSubmission.prototype.constructor = DeleteSubmission;
 
 DeleteSubmission.prototype.onSuccessAction = function(data, ontology, deferredObj) {
   jQuery.facebox({
-    ajax: BP_CONFIG.ui_url + "/admin/ontologies/" + ontology + "/submissions?time=" + new Date().getTime()
+    ajax: "/admin/ontologies/" + ontology + "/submissions?time=" + new Date().getTime()
   });
 };
 
@@ -425,7 +425,7 @@ function populateOntologyRows(data) {
   for (var acronym in ontologies) {
     var errorMessages = [];
     var ontology = ontologies[acronym];
-    var ontLink = "<a href='" + BP_CONFIG.ui_url + "/ontologies/" + acronym + "' target='_blank' style='" + (ontology["problem"] === true ? "color:red;" : "") + "'>" + acronym + "</a>";
+    var ontLink = "<a href='" + "/ontologies/" + acronym + "' target='_blank' style='" + (ontology["problem"] === true ? "color:red;" : "") + "'>" + acronym + "</a>";
     var bpLinks = '';
     var format = ontology["format"];
     var admin = ontology["administeredBy"];
@@ -433,7 +433,7 @@ function populateOntologyRows(data) {
     var ontologyDateCreated = parseReportDate(ontology["date_created"]);
 
     if (ontology["logFilePath"] != '') {
-      bpLinks += "<a href='" + BP_CONFIG.ui_url + "/admin/ontologies/" + acronym + "/log' target='_blank'>Log</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
+      bpLinks += "<a href='" + "/admin/ontologies/" + acronym + "/log' target='_blank'>Log</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
     }
     bpLinks += "<a href='" + BP_CONFIG.rest_url + "/ontologies/" + acronym + "?apikey=" + BP_CONFIG.apikey + "&userapikey: " + BP_CONFIG.userapikey + "' target='_blank'>REST</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
     bpLinks += "<a id='link_submissions_" + acronym + "' href='javascript:;' onclick='showSubmissions(event, \"" + acronym + "\")'>Submissions</a>";
@@ -516,7 +516,7 @@ function displayOntologies(data, ontology) {
   } else {
     ontTable = jQuery("#adminOntologies").DataTable({
       "ajax": {
-        "url": BP_CONFIG.ui_url + "/admin/ontologies_report",
+        "url": "/admin/ontologies_report",
         "contentType": "application/json",
         "dataSrc": function (json) {
           return populateOntologyRows(json);
@@ -622,7 +622,7 @@ function displayOntologies(data, ontology) {
 
 function showSubmissions(ev, acronym) {
   ev.preventDefault();
-  jQuery.facebox({ ajax: BP_CONFIG.ui_url + "/admin/ontologies/" + acronym + "/submissions" });
+  jQuery.facebox({ ajax: "/admin/ontologies/" + acronym + "/submissions" });
 }
 
 function showOntologiesToggleLinks(problemOnly) {
