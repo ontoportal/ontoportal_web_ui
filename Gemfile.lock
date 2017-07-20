@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 3ecd094615b84253cac0d81ccdc757b9d6743637
+  revision: f2a5b3ddef23b642ed8430517612c8f9d8ada91a
   branch: staging
   specs:
     ontologies_api_client (0.0.6)
@@ -59,6 +59,8 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    airbrussh (1.3.0)
+      sshkit (>= 1.6.1, != 1.7.0)
     arel (6.0.4)
     autoprefixer-rails (7.1.2.3)
       execjs
@@ -66,13 +68,16 @@ GEM
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
     builder (3.2.3)
-    capistrano (3.4.1)
+    capistrano (3.8.2)
+      airbrussh (>= 1.0.0)
       i18n
       rake (>= 10.0.0)
-      sshkit (~> 1.3)
+      sshkit (>= 1.9.0)
     capistrano-bundler (1.2.0)
       capistrano (~> 3.1)
       sshkit (~> 1.2)
+    capistrano-locally (0.2.4)
+      capistrano (~> 3.0)
     capistrano-passenger (0.2.0)
       capistrano (~> 3.0)
     capistrano-rails (1.1.8)
@@ -243,8 +248,9 @@ PLATFORMS
 
 DEPENDENCIES
   bootstrap-sass (~> 3.3.7)
-  capistrano (~> 3.4.1)
+  capistrano (~> 3.8.2)
   capistrano-bundler
+  capistrano-locally
   capistrano-passenger
   capistrano-rails (~> 1.1.0)
   chart-js-rails
@@ -283,4 +289,4 @@ DEPENDENCIES
   will_paginate (~> 3.0)
 
 BUNDLED WITH
-   1.13.7
+   1.15.1
