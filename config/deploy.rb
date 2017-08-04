@@ -61,8 +61,8 @@ namespace :deploy do
   #or get config from local directory if LOCAL_CONFIG_PATH env var is set 
   task :get_config do
      if defined?(PRIVATE_CONFIG_REPO)
+       TMP_CONFIG_PATH = "/tmp/#{SecureRandom.hex(15)}"
        on roles(:web) do
-          TMP_CONFIG_PATH = "/tmp/#{SecureRandom.hex(15)}"
           execute "git clone -q #{PRIVATE_CONFIG_REPO} #{TMP_CONFIG_PATH}"
           execute "rsync -av #{TMP_CONFIG_PATH}/#{fetch(:application)}/ #{release_path}/"
           execute "rm -rf #{TMP_CONFIG_PATH}"
