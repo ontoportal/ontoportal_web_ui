@@ -724,3 +724,22 @@ var currentPathArray = function() {
   }
   return cleanPath;
 }
+
+function pageUsesTreeView() {
+  var path = currentPathArray();
+
+  if (path[0] !== "ontologies") {
+    return false;
+  }
+
+  if ((path.length !== 2) || (path[1] === "new")) {
+    /*
+     * Some ontology pages don't use the tree view, e.g.:
+     * ontologies/BRO/edit
+     * ontologies/new
+     */
+    return false;
+  }
+
+  return true;
+}

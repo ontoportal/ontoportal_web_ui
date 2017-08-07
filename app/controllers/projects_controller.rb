@@ -26,8 +26,17 @@ class ProjectsController < ApplicationController
       redirect_to projects_path
       return
     end
+    
     @project = projects.first
-    @usedOntologies = @project.ontologyUsed || []
+    @ontologies_used = []
+    onts_used = @project.ontologyUsed
+    onts_used.each do |ont_used|
+      ont = LinkedData::Client::Models::Ontology.find(ont_used)
+      unless ont.nil?
+        @ontologies_used << Hash["name", ont.name, "acronym", ont.acronym]
+      end
+    end
+    @ontologies_used.sort_by!{ |o| o["name"].downcase }
   end
 
   # GET /projects/new

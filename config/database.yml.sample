@@ -40,3 +40,11 @@ production:
   username: bp_user
   password: bp_user!!!
   host: localhost
+
+appliance:
+  adapter: mysql
+  socket: /var/lib/mysql/mysql.sock
+  database: bioportal_ui_appliance
+  username: bp_user
+  password: bp_user!!!
+  host: localhost
