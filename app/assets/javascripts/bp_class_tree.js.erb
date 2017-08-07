@@ -184,11 +184,7 @@ function getTreeView() {
 // Get the treeview using ajax
 // We do this right after writing #sd_content to the dom to make sure it loads before other async portions of the page
 jQuery(document).ready(function(){
-  // Abort it not right page
-  var path = currentPathArray();
-  if (path[0] !== "ontologies" || (path[0] === "ontologies" && path.length !== 2)) {
-    return;
+  if (pageUsesTreeView()) {
+    getTreeView();
   }
-
-  getTreeView();
 });
