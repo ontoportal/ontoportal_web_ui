@@ -1,0 +1,15 @@
+-# Closing tag for <div id="bd"> that's opened in layouts/_notices.html.erb.
+-# TODO: Refactor our layouts so that we don't open HTML tags in one file and
+-# close them in another. This is confusing / difficult to read.
+</div>
+
+%footer.footer.footer-appliance
+  %div.container
+    %div.row
+      %div.col-xs-12
+        %ul.list-inline.text-center
+          %li #{$RELEASE_VERSION}
+          %i.fa.fa-ellipsis-v{aria: {hidden: true}}
+          %li= link_to("Powered by NCBO BioPortal", "https://bioportal.bioontology.org/", target: "_blank")
+
+
