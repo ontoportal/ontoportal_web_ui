@@ -10,7 +10,7 @@ html {
 }
 body {
   /* Margin bottom by footer height */
-  margin-bottom: 320px;
+  margin-bottom: body_margin_bottom();
 }
 .footer {
   position: absolute;
