@@ -1,6 +1,6 @@
 class ErrorsController < ApplicationController
 
-  layout 'ontology'
+  layout :determine_layout
 
   def not_found
     render status: 404

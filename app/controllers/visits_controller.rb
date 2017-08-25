@@ -1,6 +1,6 @@
 class VisitsController < ApplicationController
 
-  layout 'ontology'
+  layout :determine_layout
 
   def index
     @ontologies_views = LinkedData::Client::Models::Ontology.all(include_views: true)

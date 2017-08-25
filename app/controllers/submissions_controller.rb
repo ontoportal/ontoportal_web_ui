@@ -1,6 +1,6 @@
 class SubmissionsController < ApplicationController
 
-  layout 'ontology'
+  layout :determine_layout
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
 
   def new
