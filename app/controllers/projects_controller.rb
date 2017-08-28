@@ -2,7 +2,7 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.xml
 
-  layout 'ontology'
+  layout :determine_layout
 
   def index
     @projects = LinkedData::Client::Models::Project.all
