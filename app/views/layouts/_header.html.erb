@@ -6,8 +6,10 @@
 	<!-- Force IE to use latest rendering engine -->
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
 
-	<!-- Google Webmaster Tools verifications -->
-	<meta name="google-site-verification" content="IBxfKu6VbYH9atd5OLu2zXVD2ZRWi9SgMKTi8nvw3ks" />
+	<% unless Rails.env.appliance? %>
+    <!-- Google Webmaster Tools verifications -->
+  	<meta name="google-site-verification" content="IBxfKu6VbYH9atd5OLu2zXVD2ZRWi9SgMKTi8nvw3ks" />
+  <% end %>
 
 	<%= csrf_meta_tag %>
 
