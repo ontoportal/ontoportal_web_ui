@@ -23,8 +23,11 @@ jQuery(document).ready(function() {
   // Set the table width after it gets altered by jQuery DataTable
   jQuery("#projects").css("width","100%");
 
-  // Keep header at top of table even when scrolling
-  new FixedHeader(projectsTable);
+  if (jQuery("#projects").length) {
+    new jQuery.fn.dataTable.FixedHeader(projectsTable, {
+      header: true
+    });
+  }
 
   jQuery('#projects-help').click(function (event) {
     bpPopWindow(event);
