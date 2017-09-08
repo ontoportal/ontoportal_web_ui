@@ -38,8 +38,10 @@
   %p Description text
 %h1.tab_header Projects
 %p.tab_description
-  - intro_text = "Browse a selection of projects that use #{$SITE} resources"
-  = t('projects.intro').html_safe.nil? || t('projects.intro').html_safe.empty? ? "#{intro_text}  #{help_icon("/help#Projects_Tab")}".html_safe : t('projects.intro').html_safe
+  = t('projects.intro').html_safe
+  = link_to(help_path(anchor: "Projects_Tab"), id: "projects-help", aria: {label: "View projects help"}) do
+    %i.fa.fa-question-circle.fa-lg{aria: {hidden: "true"}, style: "margin-left: .5em"}
+
 %div{:style => "padding:10px;"}
   %span
     - if session[:user].nil?
