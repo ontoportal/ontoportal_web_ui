@@ -29,4 +29,5 @@
 //= require bp_recommender
 //= require bp_property_tree
 //= require bp_ont_chart
+//= require projects
 
