@@ -2,7 +2,9 @@
 
 %div#search_input
   %h1 Class Search
-  %p Search for a class in multiple ontologies  #{help_icon("/help#Search_Tab").html_safe}
+  %p 
+    = t('search.intro').html_safe 
+    = help_icon("/help#Search_Tab").html_safe
 
   = form_tag("/search", method: "post") do
     = text_field_tag("search_keywords", nil, placeholder: "Enter a class, e.g. Melanoma", style: "width: 426px; height: 20px; float: left; margin-right: 1em;")
