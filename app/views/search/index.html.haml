@@ -4,7 +4,8 @@
   %h1 Class Search
   %p 
     = t('search.intro').html_safe 
-    = help_icon("/help#Search_Tab").html_safe
+    = link_to(help_path(anchor: "Search_Tab"), id: "search-help", aria: {label: "View search help"}) do
+      %i.fa.fa-question-circle.fa-lg{aria: {hidden: "true"}, style: "margin-left: .5em"}
 
   = form_tag("/search", method: "post") do
     = text_field_tag("search_keywords", nil, placeholder: "Enter a class, e.g. Melanoma", style: "width: 426px; height: 20px; float: left; margin-right: 1em;")

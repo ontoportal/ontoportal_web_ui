@@ -4,7 +4,8 @@
   %h1 Search Resource Index
   %p
     = t('resource_index.intro').html_safe
-    = help_icon("/help#Resource_Index_Tab").html_safe
+    = link_to(help_path(anchor: "Resource_Index_Tab"), id: "resource-index-help", aria: {label: "View resource index help"}) do
+      %i.fa.fa-question-circle.fa-lg{aria: {hidden: "true"}, style: "margin-left: .5em"}
 
   %div{:style => "padding-bottom: 1em;"}
     %div{:style => "width: 432px;"}
