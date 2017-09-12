@@ -23,8 +23,9 @@
     %div{class: "col-md-12"}
       %div{class: "page-header text-center"}
         %h1
-          Welcome to BioPortal,
-          %small the world&rsquo;s most comprehensive repository of biomedical ontologies
+          = t("home.welcome").html_safe
+          %small
+            = t("home.tagline").html_safe
 
   %div.search{class: "row"}
     -# Search for a class across ontologies
