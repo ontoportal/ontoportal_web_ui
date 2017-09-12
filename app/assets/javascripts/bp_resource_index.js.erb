@@ -173,9 +173,7 @@ jQuery(document).ready(function () {
     }
   });
 
-  jQuery("#resource-index-help").click(function (event) {
-      bpPopWindow(event);
-  });
+  jQuery("#resource-index-help").on("click", bpPopWindow);
 });
 
 // Get parameters from the URL

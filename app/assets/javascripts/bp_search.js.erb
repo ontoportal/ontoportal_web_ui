@@ -214,9 +214,7 @@ jQuery(document).ready(function() {
         });
     });
 
-    jQuery("#search-help").click(function (event) {
-      bpPopWindow(event);
-    });
+    jQuery("#search-help").on("click", bpPopWindow);
 
     autoSearch();
 });
