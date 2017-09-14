@@ -36,4 +36,5 @@
     -# BioPortal-specific JavaScript
     = javascript_include_tag "application"
 
-    = render partial: "ga_tracking"
+    - unless $ANALYTICS_ID.nil? || $ANALYTICS_ID.empty?
+      = render partial: "ga_tracking"
