@@ -85,6 +85,8 @@ jQuery(document).ready(function(){
       loadMappings(selectedOnt);
     }
   });
+
+  jQuery("#mappings-help").on("click", bpPopWindow);
 });
 
 jQuery(document).bind("tree_changed", updateMappingCount);

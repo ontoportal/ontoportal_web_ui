@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   before_action :verify_owner, only: [:edit, :show]
   before_action :authorize_admin, only: [:index]
 
-  layout 'ontology'
+  layout :determine_layout
 
   # GET /users
   # GET /users.xml

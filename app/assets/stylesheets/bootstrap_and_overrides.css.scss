@@ -10,7 +10,7 @@ html {
 }
 body {
   /* Margin bottom by footer height */
-  margin-bottom: 320px;
+  margin-bottom: body_margin_bottom();
 }
 .footer {
   position: absolute;
@@ -71,4 +71,12 @@ body {
   .footer {
     height: 650px;
   }
+}
+
+/* Customized styles for appliance mode
+-------------------------------------------------- */
+.footer-appliance {
+  height: 60px;
+  background-color: #f5f5f5;
+  padding: 20px 0;
 }

@@ -1,6 +1,6 @@
 class LoginController < ApplicationController
 
-  layout 'ontology'
+  layout :determine_layout
 
   def index
     # Sets the redirect properties

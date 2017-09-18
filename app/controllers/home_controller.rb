@@ -1,5 +1,5 @@
 class HomeController < ApplicationController
-  layout 'ontology'
+  layout :determine_layout
 
   #RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "#{$REST_URL}/resource_index/", :limit => 10, :mode => :intersection}
 
@@ -144,7 +144,7 @@ class HomeController < ApplicationController
     projects = LinkedData::Client::Models::Project.all;
     @user_projects = projects.select {|p| p.creator.include? @user.id }
 
-    render :partial => "users/details", :layout => "ontology"
+    render partial: "users/details", layout: determine_layout()
   end
 
   def feedback_complete

@@ -648,4 +648,12 @@ class ApplicationController < ActionController::Base
     return recent_mappings
   end
 
+  def determine_layout
+    if Rails.env.appliance?
+      'appliance'
+    else
+      'ontology'
+    end
+  end
+
 end

@@ -487,9 +487,7 @@ jQuery(document).ready(function() {
   filter_matched_ontologies.init();
   filter_matched_classes.init();
 
-  jQuery('#annotator-help').click(function (event) {
-    bpPopWindow(event);
-  });
+  jQuery("#annotator-help").on("click", bpPopWindow);
 
   jQuery("#annotations_container").hide();
 }); // doc ready

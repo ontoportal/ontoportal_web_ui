@@ -159,4 +159,13 @@
         = yield
       - else
         = loading_spinner(true)
-= render :partial =>'layouts/footer'
+- if Rails.env.appliance?
+  = render partial: "footer_appliance"
+  = javascript_include_tag "application"
+  = render partial: "ga_tracking"
+- else
+  = render partial: "layouts/footer"
+
+
+
+

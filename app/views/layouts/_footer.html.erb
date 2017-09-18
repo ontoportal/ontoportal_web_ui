@@ -1,12 +1,4 @@
   </div>
-
-  <!-- TODO: Rethink how Virtual Appliance users can customize footer. -->
-  <!--   
-  <div style="padding:2em;text-align:center;background:#234979;color:white;clear:both;" id="footer_wrapper">
-    <%#t('home.footer').html_safe%>
-  </div>
-  -->
-
   </div>
 
   <footer class='footer'>
@@ -80,21 +72,8 @@
   </footer>
 
   <%=javascript_include_tag "application"%>
-
-  <% unless $ANALYTICS_ID.nil? || $ANALYTICS_ID.empty? %>
-    <script type="text/javascript">
-        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <script type="text/javascript">
-        try {
-            var pageTracker = _gat._getTracker("<%=$ANALYTICS_ID%>");
-            pageTracker._trackPageview();
-        }
-        catch (err) {
-        }
-    </script>
-  <%end%>
+  
+  <%= render partial: "ga_tracking" %>
 
 </body>
 </html>

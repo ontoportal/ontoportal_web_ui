@@ -358,7 +358,7 @@ class OntologiesController < ApplicationController
     @acronym = params[:id]
     # Force the list of ontologies to be fresh by adding a param with current time
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id], cache_invalidate: Time.now.to_i).first
-    render :partial => "submit_success", :layout => "ontology"
+    render partial: "submit_success", layout: determine_layout()
   end
 
   def summary
@@ -439,7 +439,7 @@ class OntologiesController < ApplicationController
     when 'index'
       'angular'
     else
-      'ontology'
+      Rails.env.appliance? ? 'appliance' : 'ontology'
     end
   end
 

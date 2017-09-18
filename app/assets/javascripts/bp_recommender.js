@@ -366,7 +366,5 @@ jQuery(document).ready(function() {
     $("#editButton").hide();
     rec.hideErrorMessages();
 
-    jQuery('#recommender-help').click(function (event) {
-      bpPopWindow(event);
-    });
+    jQuery('#recommender-help').on("click", bpPopWindow);
 });
