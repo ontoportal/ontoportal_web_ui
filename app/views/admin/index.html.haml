@@ -1,21 +1,11 @@
 - @title = "BioPortal Administration"
 #DescriptionDialog{:style => "display:none", :title => "admin description"}
-
-
-
-
 %h1.tab_header Administration Console
 %br
-
-
-%div#progress_message{:class => "alert-box progress"}
+%br
+%div#progress_message{:class => "alert-box progress_box"}
 %div#success_message{:class => "alert-box success"}
 %div#error_message{:class => "alert-box error"}
-
-
-
-
-
 %ul.admin_tabs.skin2
   %li
     %a.xl{:href => "#"}
@@ -23,14 +13,10 @@
   %li
     %a.xl{:href => "#"}
       Ontology Administration
-
-
-
-
 %div.admin_panes
   %div
     %br
-
+    %br
     %table.memcached_utilities{:style => "float:left;margin-left:8px;"}
       %tr
         %td{:valign => "top", :style => "white-space:nowrap;"}
@@ -46,24 +32,15 @@
         %td{:valign => "top", :style => "white-space:nowrap;"}
           %a#flush_http_cache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
             %span.ui-button-text{:style => "width:150px;"} Flush HTTP Cache
-
-
-
-
   %div
-
-
-    %p.tab_description{:style => "clear:both;"}
-
-      %table{:style => "float:left;margin-left:8px;"}
+    %br
+    .ontologies_list_container
+      %table{:style => "float:left;"}
         %tr
           %td{:style => "white-space:nowrap;"}
             Report generated on:&nbsp;&nbsp;
             %span.report_date_generated
             %a#refresh_report_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :style => "margin-left:11px;"}
               %span.ui-button-text{:class => "report_date_generated_button"}
-
-      .ontologies_list_container
-        %table#adminOntologies.zebra{:cellpadding => "0", :cellspacing => "0", :width => "100%"}
-
-
+      %p.tab_description{:style => "clear:both;"}
+      %table#adminOntologies.zebra{:cellpadding => "0", :cellspacing => "0", :width => "100%"}

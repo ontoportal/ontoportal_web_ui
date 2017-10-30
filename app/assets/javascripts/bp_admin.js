@@ -536,7 +536,7 @@ function displayOntologies(data, ontology) {
         }
         setDateGenerated(json);
         // Keep header at top of table even when scrolling
-        new jQuery.fn.dataTable.FixedHeader(ontTable);
+        // new jQuery.fn.dataTable.FixedHeader(ontTable);
       },
       "columnDefs": [
         {
