@@ -453,7 +453,7 @@ function populateOntologyRows(data) {
 }
 
 function isDateGeneratedSet(data) {
-  var dateRe = /^\d{2}\/\d{2}\/\d{4}\s\d{2}:\d{2}\w{2}$/i;
+  var dateRe = /^\d{2}\/\d{2}\/\d{4}\,\s\d{2}:\d{2}\s\w{2}$/i;
   return dateRe.test(data.report_date_generated);
 }
 
@@ -536,7 +536,7 @@ function displayOntologies(data, ontology) {
         }
         setDateGenerated(json);
         // Keep header at top of table even when scrolling
-        new jQuery.fn.dataTable.FixedHeader(ontTable);
+        // new jQuery.fn.dataTable.FixedHeader(ontTable);
       },
       "columnDefs": [
         {
@@ -724,4 +724,7 @@ jQuery(document).ready(function() {
   });
 
   // end: BUTTON onclick actions -----------------------------------
+
+
+  jQuery("ul.admin_tabs").tabs("div.admin_panes > div");
 });
