@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 60d192650125a93d97d7c92f9fe7340545fff294
+  revision: 764fc69c2162b65333ed8ef09a5137ddaa70f94a
   branch: staging
   specs:
     ontologies_api_client (0.0.6)
@@ -138,10 +138,11 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     lz4-ruby (0.3.3)
-    mail (2.6.6)
-      mime-types (>= 1.16, < 4)
+    mail (2.7.0)
+      mini_mime (>= 0.1.1)
     method_source (0.9.0)
     mime-types (2.99.3)
+    mini_mime (0.1.4)
     mini_portile2 (2.3.0)
     minitest (5.10.3)
     multi_json (1.12.2)
