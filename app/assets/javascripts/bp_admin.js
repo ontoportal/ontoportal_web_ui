@@ -57,9 +57,11 @@ AjaxAction.prototype.clearStatusMessages = function() {
   jQuery("#progress_message").hide();
   jQuery("#success_message").hide();
   jQuery("#error_message").hide();
+  jQuery("#info_message").hide();
   jQuery("#progress_message").html("");
   jQuery("#success_message").html("");
   jQuery("#error_message").html("");
+  jQuery("#info_message").html("");
 };
 
 AjaxAction.prototype.showProgressMessage = function() {
@@ -73,8 +75,8 @@ AjaxAction.prototype.showProgressMessage = function() {
   jQuery("#progress_message").show();
 };
 
-AjaxAction.prototype.showStatusMessages = function(success, errors, isAppendMode) {
-  _showStatusMessages(success, errors, isAppendMode);
+AjaxAction.prototype.showStatusMessages = function(success, errors, notices, isAppendMode) {
+  _showStatusMessages(success, errors, notices, isAppendMode);
 };
 
 AjaxAction.prototype.getSelectedOntologiesForDisplay = function() {
@@ -90,8 +92,9 @@ AjaxAction.prototype.getSelectedOntologiesForDisplay = function() {
 
 AjaxAction.prototype._ajaxCall = function() {
   var self = this;
-  var errors = [];
   var success = [];
+  var errors = [];
+  var notices = [];
   var promises = [];
   var params = jQuery.extend(true, {}, self.params);
   self.showProgressMessage();
@@ -133,13 +136,20 @@ AjaxAction.prototype._ajaxCall = function() {
             var suc = data.success.replace(reg, ',');
             success.push.apply(success, suc.split(","));
           }
+
+          if (data.notices) {
+            var notice = data.notices.replace(reg, ',');
+            notices.push.apply(notices, notice.split(","));
+          }
         }
-        self.showStatusMessages(success, errors, false);
+
+
+        self.showStatusMessages(success, errors, notices, false);
       },
       error: function(request, textStatus, errorThrown) {
         errorState = true;
         errors.push(request.status + ": " + errorThrown);
-        self.showStatusMessages(success, errors, false);
+        self.showStatusMessages(success, errors, notices, false);
       },
       complete: function(request, textStatus) {
         if (errorState || !self.isLongOperation) {
@@ -189,8 +199,8 @@ AjaxAction.prototype.onSuccessAction = function(data, ontology, deferredObj) {
     return;
   }
   var processId = data["process_id"];
-  var errors = [];
   var success = [];
+  var errors = [];
   var done = [];
   data.success = '';
   var start = new Date().getTime();
@@ -230,7 +240,7 @@ AjaxAction.prototype.onSuccessAction = function(data, ontology, deferredObj) {
             self.onSuccessActionLongOperation(data, ontology);
           }
           deferredObj.resolve();
-          self.showStatusMessages(success, errors, true);
+          self.showStatusMessages(success, errors, [], true);
         }
       },
       error: function(request, textStatus, errorThrown) {
@@ -241,7 +251,7 @@ AjaxAction.prototype.onSuccessAction = function(data, ontology, deferredObj) {
         clearInterval(timer);
         errors.push(request.status + ": " + errorThrown);
         deferredObj.resolve();
-        self.showStatusMessages(success, errors, true);
+        self.showStatusMessages(success, errors, [], true);
       }
     });
   }, 5000);
@@ -399,6 +409,65 @@ ProcessOntologies.act = function(action) {
   new ProcessOntologies(action).ajaxCall();
 };
 
+function UpdateCheck(forceCheck) {
+  params = {};
+
+  if (forceCheck) {
+    params["force_check"] = forceCheck;
+  }
+  AjaxAction.call(this, "GET", "CHECK FOR UPDATE", "update_info", false, params);
+  this.setConfirmMsg('');
+}
+
+UpdateCheck.prototype = Object.create(AjaxAction.prototype);
+UpdateCheck.prototype.constructor = UpdateCheck;
+
+UpdateCheck.prototype.onSuccessAction = function(data, ontology, deferredObj) {
+  var self = this;
+  delete data["success"];
+  updateInfo = data["update_info"];
+
+  if (updateInfo["update_check_enabled"]) {
+    if (updateInfo["update_available"]) {
+      // update found - show in all cases
+      data["notices"] = "Update available. You are running the version: " + updateInfo["current_version"] + ". Updated version: " + updateInfo["update_version"] + ". Last update check on: " + updateInfo["date_checked"] + ".";
+      data["notices"] += " Update notes: " + updateInfo["notes"];
+    } else if (self.params && self.params["force_check"]) {
+      // no update found, but user was checking explicitly - show message
+      data["notices"] = "No update available. You are running the latest version: " + updateInfo["current_version"] + ". Last update check on: " + updateInfo["date_checked"] + ".";
+    } else {
+      // no update found, and user wasn't checking,
+      // just a default check on page load - show nothing
+      delete data["notices"];
+    }
+  }
+};
+
+UpdateCheck.isUpdateCheckEnabled = false;
+UpdateCheck.act = function(forceCheck) {
+  if (UpdateCheck.isUpdateCheckEnabled) {
+    new UpdateCheck(forceCheck).ajaxCall();
+  } else {
+    jQuery.ajax({
+      url: "/admin/update_check_enabled",
+      success: function (data) {
+        if (data) {
+          jQuery("#update_check").show();
+          new UpdateCheck(forceCheck).ajaxCall();
+          UpdateCheck.isUpdateCheckEnabled = true;
+        } else {
+          jQuery("#update_check").hide();
+        }
+      },
+      error: function () {
+        console.log("An error occurred while performing a check for the latest version.");
+      }
+    });
+  }
+};
+
+// end: individual actions classes -----------------------
+
 function performActionOnOntologies() {
   var action = jQuery('#admin_action').val();
 
@@ -467,7 +536,7 @@ function setDateGenerated(data) {
   jQuery(".report_date_generated_button").text(buttonText).html();
 }
 
-function _showStatusMessages(success, errors, isAppendMode) {
+function _showStatusMessages(success, errors, notices, isAppendMode) {
   if (success.length > 0) {
     if (isAppendMode) {
       var appendStr = (jQuery.trim(jQuery('#success_message').html()).length) ? ", " : "";
@@ -486,6 +555,16 @@ function _showStatusMessages(success, errors, isAppendMode) {
       jQuery("#error_message").text(errors.join(", ")).html();
     }
     jQuery("#error_message").show();
+  }
+
+  if (notices.length > 0) {
+    if (isAppendMode) {
+      var appendStr = (jQuery.trim(jQuery('#info_message').html()).length) ? ", " : "";
+      jQuery("#info_message").append(appendStr + notices.join(", ")).html();
+    } else {
+      jQuery("#info_message").text(notices.join(", ")).html();
+    }
+    jQuery("#info_message").show();
   }
 }
 
@@ -532,7 +611,7 @@ function displayOntologies(data, ontology) {
       },
       "initComplete": function(settings, json) {
         if (json.errors && isDateGeneratedSet(data)) {
-          _showStatusMessages([], [json.errors], false);
+          _showStatusMessages([], [json.errors], [], false);
         }
         setDateGenerated(json);
         // Keep header at top of table even when scrolling
@@ -627,6 +706,7 @@ function showSubmissions(ev, acronym) {
 
 function showOntologiesToggleLinks(problemOnly) {
   var str = 'View Ontologies:&nbsp;&nbsp;&nbsp;&nbsp;';
+
   if (problemOnly) {
     str += '<a id="show_all_ontologies_action" href="javascript:;">All</a>&nbsp;&nbsp;|&nbsp;&nbsp;<strong>Problem Only</strong>';
   } else {
@@ -638,6 +718,7 @@ function showOntologiesToggleLinks(problemOnly) {
 jQuery(document).ready(function() {
   // display ontologies table on load
   displayOntologies({}, DUMMY_ONTOLOGY);
+  UpdateCheck.act();
 
   // make sure facebox window is empty before populating it
   // otherwise ajax requests stack up and you see more than
@@ -723,8 +804,13 @@ jQuery(document).ready(function() {
     RefreshReport.act();
   });
 
+  // onclick action for "Update Check" link
+  jQuery("#update_check_action").click(function() {
+    UpdateCheck.act(true);
+  });
+
   // end: BUTTON onclick actions -----------------------------------
 
-
+  // admin tabs
   jQuery("ul.admin_tabs").tabs("div.admin_panes > div");
 });

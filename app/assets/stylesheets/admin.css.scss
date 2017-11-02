@@ -82,14 +82,13 @@ table.dataTable tbody tr.selected {
   float: left;
   padding: 0 0 1em 0;
 }
-.success_message {
-  margin: 0 0 10px !important;
-}
 #success_message,
 #error_message,
-#progress_message {
+#progress_message,
+#info_message {
   display: none;
 }
+
 /* to fix facebox default sizing in chrome */
 #facebox .body {
   width: 375px !important;

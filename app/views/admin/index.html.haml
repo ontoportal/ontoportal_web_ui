@@ -1,11 +1,11 @@
 - @title = "BioPortal Administration"
-#DescriptionDialog{:style => "display:none", :title => "admin description"}
 %h1.tab_header Administration Console
 %br
 %br
 %div#progress_message{:class => "alert-box progress_box"}
 %div#success_message{:class => "alert-box success"}
 %div#error_message{:class => "alert-box error"}
+%div#info_message{:class => "alert-box notice"}
 %ul.admin_tabs.skin2
   %li
     %a.xl{:href => "#"}
@@ -16,8 +16,9 @@
 %div.admin_panes
   %div
     %br
+    %h2 Cache Management
     %br
-    %table.memcached_utilities{:style => "float:left;margin-left:8px;"}
+    %table.memcached_utilities{:style => "float:left;"}
       %tr
         %td{:valign => "top", :style => "white-space:nowrap;"}
           %a#flush_memcache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
@@ -32,6 +33,27 @@
         %td{:valign => "top", :style => "white-space:nowrap;"}
           %a#flush_http_cache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
             %span.ui-button-text{:style => "width:150px;"} Flush HTTP Cache
+
+
+
+    %span#update_check{:style => "display:none;"}
+      %p.tab_description{:style => "clear:both; margin-bottom: 30px;"}
+
+      %h2 Version Management
+      %br
+      %table.memcached_utilities{:style => "float:left;"}
+        %tr
+          %td{:valign => "top", :style => "white-space:nowrap;"}
+            %a#update_check_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
+              %span.ui-button-text{:style => "width:150px;"} Check for Update
+
+
+
+
+
+
+
+
   %div
     %br
     .ontologies_list_container

@@ -14,9 +14,41 @@ class AdminController < ApplicationController
     if session[:user].nil? || !session[:user].admin?
       redirect_to :controller => 'login', :action => 'index', :redirect => '/admin'
     else
-      response = _ontologies_report
+
+
+
+      # _ontologies_report
+
+
+
+
       render action: "index"
     end
+  end
+
+
+
+
+
+  def update_info
+    response = {update_info: Hash.new, errors: '', success: '', notices: ''}
+    json = LinkedData::Client::HTTP.get("#{ADMIN_URL}update_info", params, raw: true)
+
+    begin
+      update_info = JSON.parse(json)
+      response[:update_info] = update_info
+      response[:notices] = update_info["notes"] if update_info["notes"]
+      response[:success] = "Update info successfully retrieved"
+    rescue Exception => e
+      response[:errors] = "Problem retrieving update info - #{e.message}"
+    end
+    render :json => response
+  end
+
+
+  def update_check_enabled
+    enabled = LinkedData::Client::HTTP.get("#{ADMIN_URL}update_check_enabled", {}, raw: false)
+    render :json => enabled
   end
 
   def submissions
@@ -200,7 +232,6 @@ class AdminController < ApplicationController
     rescue Exception => e
       response[:errors] = "Problem retrieving ontologies report - #{e.message}"
     end
-    @data = response
     response
   end
 
