@@ -146,7 +146,7 @@ class UsersController < ApplicationController
         errors << "Please enter a valid phone number"
       end
     end
-    if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
+    if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
       errors << "Please enter an email address"
     end
     if !params[:email].eql?(params[:email_confirmation])
