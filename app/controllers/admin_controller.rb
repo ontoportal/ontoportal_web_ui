@@ -14,21 +14,9 @@ class AdminController < ApplicationController
     if session[:user].nil? || !session[:user].admin?
       redirect_to :controller => 'login', :action => 'index', :redirect => '/admin'
     else
-
-
-
-      # _ontologies_report
-
-
-
-
       render action: "index"
     end
   end
-
-
-
-
 
   def update_info
     response = {update_info: Hash.new, errors: '', success: '', notices: ''}
@@ -44,7 +32,6 @@ class AdminController < ApplicationController
     end
     render :json => response
   end
-
 
   def update_check_enabled
     enabled = LinkedData::Client::HTTP.get("#{ADMIN_URL}update_check_enabled", {}, raw: false)
