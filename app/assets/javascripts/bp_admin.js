@@ -40,6 +40,7 @@ var AjaxAction = function(httpMethod, operation, path, isLongOperation, params) 
   this.path = path;
   this.isLongOperation = isLongOperation;
   this.ontologies = [DUMMY_ONTOLOGY];
+  this.isProgressMessageEnabled = true;
 
   if (params["ontologies"]) {
     this.ontologies = params["ontologies"].split(",");
@@ -51,6 +52,10 @@ var AjaxAction = function(httpMethod, operation, path, isLongOperation, params) 
 
 AjaxAction.prototype.setConfirmMsg = function(msg) {
   this.confirmMsg = msg;
+};
+
+AjaxAction.prototype.setProgressMessageEnabled = function(isEnabled) {
+  this.isProgressMessageEnabled = isEnabled;
 };
 
 AjaxAction.prototype.clearStatusMessages = function() {
@@ -86,7 +91,6 @@ AjaxAction.prototype.getSelectedOntologiesForDisplay = function() {
     var ontMsg = this.ontologies.join(", ");
     msg = "<br style='margin-bottom:5px;'/><span style='color:red;font-weight:bold;'>" + ontMsg + "</span><br/>";
   }
-
   return msg;
 };
 
@@ -97,7 +101,10 @@ AjaxAction.prototype._ajaxCall = function() {
   var notices = [];
   var promises = [];
   var params = jQuery.extend(true, {}, self.params);
-  self.showProgressMessage();
+
+  if (self.isProgressMessageEnabled) {
+    self.showProgressMessage();
+  }
 
   // using javascript closure for passing index to asynchronous calls
   jQuery.each(self.ontologies, function(index, ontology) {
@@ -123,6 +130,7 @@ AjaxAction.prototype._ajaxCall = function() {
           errorState = true;
           var err = data.errors.replace(reg, ',');
           errors.push.apply(errors, err.split(","));
+          self.onErrorAction(errors);
 
           if (deferredObj.state() === "pending") {
             deferredObj.resolve();
@@ -142,13 +150,12 @@ AjaxAction.prototype._ajaxCall = function() {
             notices.push.apply(notices, notice.split(","));
           }
         }
-
-
         self.showStatusMessages(success, errors, notices, false);
       },
       error: function(request, textStatus, errorThrown) {
         errorState = true;
         errors.push(request.status + ": " + errorThrown);
+        self.onErrorAction(errors);
         self.showStatusMessages(success, errors, notices, false);
       },
       complete: function(request, textStatus) {
@@ -255,6 +262,10 @@ AjaxAction.prototype.onSuccessAction = function(data, ontology, deferredObj) {
       }
     });
   }, 5000);
+};
+
+AjaxAction.prototype.onErrorAction = function(errors) {
+  // nothing to do by default
 };
 
 AjaxAction.prototype.onSuccessActionLongOperation = function(data, ontology) {
@@ -410,12 +421,13 @@ ProcessOntologies.act = function(action) {
 };
 
 function UpdateCheck(forceCheck) {
-  params = {};
+  var params = {};
 
   if (forceCheck) {
     params["force_check"] = forceCheck;
   }
   AjaxAction.call(this, "GET", "CHECK FOR UPDATE", "update_info", false, params);
+  this.setProgressMessageEnabled(forceCheck);
   this.setConfirmMsg('');
 }
 
@@ -428,18 +440,48 @@ UpdateCheck.prototype.onSuccessAction = function(data, ontology, deferredObj) {
   updateInfo = data["update_info"];
 
   if (updateInfo["update_check_enabled"]) {
+    var lastCheck = "";
+
+    if (updateInfo["date_checked"]) {
+      var updateDate = parseReportDate(updateInfo["date_checked"]);
+
+      if (updateDate) {
+        lastCheck = "Last update check on: " + updateDate;
+      }
+    }
+
     if (updateInfo["update_available"]) {
       // update found - show in all cases
-      data["notices"] = "Update available. You are running the version: " + updateInfo["current_version"] + ". Updated version: " + updateInfo["update_version"] + ". Last update check on: " + updateInfo["date_checked"] + ".";
-      data["notices"] += " Update notes: " + updateInfo["notes"];
+      data["notices"] = "Update available. You are running the version: " + updateInfo["current_version"] + ". Updated version: " + updateInfo["update_version"] + ".";
+
+      if (lastCheck) {
+        data["notices"] += " " + lastCheck + ".";
+      }
+
+      if (updateInfo["notes"]) {
+        data["notices"] += " Update notes: " + updateInfo["notes"];
+      }
     } else if (self.params && self.params["force_check"]) {
       // no update found, but user was checking explicitly - show message
-      data["notices"] = "No update available. You are running the latest version: " + updateInfo["current_version"] + ". Last update check on: " + updateInfo["date_checked"] + ".";
+      data["notices"] = "No update available. You are running the latest version: " + updateInfo["current_version"] + ".";
+
+      if (lastCheck) {
+        data["notices"] += " " + lastCheck + ".";
+      }
     } else {
       // no update found, and user wasn't checking,
       // just a default check on page load - show nothing
       delete data["notices"];
     }
+  }
+};
+
+UpdateCheck.prototype.onErrorAction = function(errors) {
+  var self = this;
+
+  // hide errors unless user explicitly requested an update check
+  if (!self.params || !self.params["force_check"]) {
+    errors.length = 0;
   }
 };
 
@@ -799,12 +841,12 @@ jQuery(document).ready(function() {
     ClearHttpCache.act();
   });
 
-  // onclick action for "Refresh Report" link
+  // onclick action for "Refresh Report" button
   jQuery("#refresh_report_action").click(function() {
     RefreshReport.act();
   });
 
-  // onclick action for "Update Check" link
+  // onclick action for "Update Check" button
   jQuery("#update_check_action").click(function() {
     UpdateCheck.act(true);
   });

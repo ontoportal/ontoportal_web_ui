@@ -24,9 +24,14 @@ class AdminController < ApplicationController
 
     begin
       update_info = JSON.parse(json)
-      response[:update_info] = update_info
-      response[:notices] = update_info["notes"] if update_info["notes"]
-      response[:success] = "Update info successfully retrieved"
+
+      if update_info["error"]
+        response[:errors] = update_info["error"]
+      else
+        response[:update_info] = update_info
+        response[:notices] = update_info["notes"] if update_info["notes"]
+        response[:success] = "Update info successfully retrieved"
+      end
     rescue Exception => e
       response[:errors] = "Problem retrieving update info - #{e.message}"
     end
