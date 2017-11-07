@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 60d192650125a93d97d7c92f9fe7340545fff294
+  revision: 764fc69c2162b65333ed8ef09a5137ddaa70f94a
   branch: staging
   specs:
     ontologies_api_client (0.0.6)
@@ -121,7 +121,7 @@ GEM
       ruby_parser (~> 3.5)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (0.9.0)
+    i18n (0.9.1)
       concurrent-ruby (~> 1.0)
     iconv (1.0.4)
     jquery-rails (4.3.1)
@@ -225,7 +225,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sshkit (1.14.0)
+    sshkit (1.15.0)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     stackprof (0.2.10)
