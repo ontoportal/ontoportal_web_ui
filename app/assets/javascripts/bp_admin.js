@@ -757,7 +757,7 @@ function showOntologiesToggleLinks(problemOnly) {
   return str;
 }
 
-jQuery(document).ready(function() {
+jQuery(".admin.index").ready(function() {
   // display ontologies table on load
   displayOntologies({}, DUMMY_ONTOLOGY);
   UpdateCheck.act();
