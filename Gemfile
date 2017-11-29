@@ -70,4 +70,5 @@ group :development do
     # passenger reload
     gem 'capistrano-passenger', require: false
     gem 'html2haml'
+    gem 'i18n-debug'
 end

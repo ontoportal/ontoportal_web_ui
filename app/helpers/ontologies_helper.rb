@@ -32,12 +32,7 @@ module OntologiesHelper
   def download_link(submission, ontology = nil)
     ontology ||= @ontology
     if submission.ontology.summaryOnly
-      if submission.homepage.nil?
-        link = 'N/A'
-      else
-        uri = submission.homepage
-        link = "<a href='#{uri}'>Home Page</a>"
-      end
+      link = 'N/A - metadata only'
     else
       uri = submission.id + "/download?apikey=#{get_apikey}"
       link = "<a href='#{uri}'>#{submission.pretty_format}</a>"

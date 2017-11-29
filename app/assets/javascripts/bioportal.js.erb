@@ -750,20 +750,36 @@ var currentPathArray = function() {
 }
 
 function pageUsesTreeView() {
+  var usesTreeView = true;
   var path = currentPathArray();
 
   if (path[0] !== "ontologies") {
-    return false;
-  }
-
-  if ((path.length !== 2) || (path[1] === "new")) {
+    usesTreeView = false;
+  } else if ((path.length !== 2) || (path[1] === "new")) {
     /*
-     * Some ontology pages don't use the tree view, e.g.:
+     * Some ontology pages don't use class trees, e.g.:
      * ontologies/BRO/edit
      * ontologies/new
-     */
-    return false;
+     */  
+    usesTreeView = false;
+  } else {
+    // Metadata only ontologies don't have class trees.
+    var metadataOnly = jQuery(document).data().bp.ont_viewer.metadata_only;
+    if ((metadataOnly != null) && (metadataOnly === "true")) {
+      usesTreeView = false;
+    }
   }
 
-  return true;
+  return usesTreeView;
 }
+
+
+
+
+
+
+
+
+
+
+
