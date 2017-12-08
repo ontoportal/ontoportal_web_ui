@@ -1,0 +1,76 @@
+jQuery(function(){
+  jQuery("#datepicker").datepicker({
+    showOn: 'button',
+    buttonImage: "#{image_path('calendar.gif')}",
+    buttonImageOnly: true,
+    buttonText: 'Choose a release date',
+    dateFormat: 'yy-mm-dd'
+  });
+});
+
+// Show/hide location inputs
+function location_toggle(input_div) {
+  jQuery('.hidden_field').hide();
+  jQuery('.hidden_field input').attr("disabled", true);
+  jQuery('#' + input_div + " input").removeAttr("disabled");
+  jQuery('#' + input_div).show();
+}
+
+jQuery(document).ready(function(){
+  // Properly display the information for 'File Location' based on radio button
+  if (jQuery("#submission_isRemote_0").is(":checked")) {
+    location_toggle("upload");
+  }
+  if (jQuery("#submission_isRemote_1").is(":checked")) {
+    location_toggle("remote");
+  }
+  // Select default 'File Location' radio button
+  if (!jQuery("#submission_isRemote_0").is(":checked") && !jQuery("#submission_isRemote_1").is(":checked") && !jQuery("#submission_isRemote_2").is(":checked")) {
+    jQuery("#submission_isRemote_0").attr("checked", "checked")
+  }
+  // Handles showing/hiding options for a particular ontology format
+  jQuery("#submission_hasOntologyLanguage").change(ontologyFormatChange);
+  // Check to see if owl is selected, show options if so
+  ontologyFormatChange();
+  jQuery("#ontology_submission_form").validate();
+
+  jQuery('#add_contact_button').click(function(event) {
+    addContact();
+    event.preventDefault();
+  })
+});
+
+function ontologyFormatChange(format){
+  var selected = jQuery("#submission_hasOntologyLanguage option:selected");
+
+  switch(selected.val()){
+    case 'OWL':
+      jQuery(".format_options").optionsOut("fast");
+      jQuery("#owl_options").optionsIn("fast");
+      break;
+    default:
+      jQuery(".format_options").optionsOut("fast");
+  }
+}
+
+jQuery.fn.optionsIn = function(speed, easing, callback){
+  jQuery("#format_spacing").css("margin", "1em 0");
+  this.fadeIn(speed);
+};
+
+jQuery.fn.optionsOut = function(speed, easing, callback){
+  this.css("display", "none");
+  jQuery("#format_spacing").css("margin", "0");
+};
+
+function addContact() {
+  var contact = jQuery(jQuery("#contacts").children(".contact")[0]);
+  var newContact = jQuery(jQuery("<div>").html(contact.html()).addClass("contact"));
+  newContact.children("input").each(function(){
+    var index =  jQuery("#contacts").children(".contact").length;
+    var newId = jQuery(this).attr("id").replace(/0/g, index);
+    var newName = jQuery(this).attr("name").replace(/0/g, index);
+    jQuery(this).attr("id", newId).attr("name", newName).attr("value", "")
+  })
+  jQuery("#contacts").append(newContact);
+}
