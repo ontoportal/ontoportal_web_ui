@@ -9,7 +9,7 @@ function location_toggle(input_div) {
 jQuery(document).ready(function(){
   jQuery("#datepicker").datepicker({
     showOn: 'button',
-    buttonImage: "#{image_path('calendar.gif')}",
+    buttonImage: "<%= asset_path('calendar.gif') %>",
     buttonImageOnly: true,
     buttonText: 'Choose a release date',
     dateFormat: 'yy-mm-dd'
