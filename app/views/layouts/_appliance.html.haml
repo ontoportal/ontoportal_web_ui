@@ -24,7 +24,7 @@
       jQuery(document).data().bp.ont_viewer = {};
       jQuery(document).data().bp.ont_chart = {};
 
-  %body
+  %body{:class => "#{controller_name} #{action_name}"}
     = render partial: "layouts/topnav"
     
     %div.container-fluid

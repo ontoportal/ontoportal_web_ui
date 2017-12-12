@@ -30,4 +30,5 @@
 //= require bp_property_tree
 //= require bp_ont_chart
 //= require projects
+//= require submissions
 
