@@ -103,7 +103,8 @@
         Release Date
         %span.asterik *
       %td
-        = text_field :submission, :released, id: "datepicker", value: "#{ l(Date.parse(@submission.released), format: :year_month_day_concise) }", required: true
+        - release_date = @submission.released ? @submission.released : DateTime.now.to_s
+        = text_field :submission, :released, id: "datepicker", value: "#{ l(Date.parse(release_date), format: :year_month_day_concise) }", required: true
         %span{:style => "font-size: 90%; color: grey;"}
     %tr
       %th
