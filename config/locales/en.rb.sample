@@ -4,7 +4,8 @@
   en: {
     date: {
       formats: {
-        year_month_day_concise: '%Y-%m-%d'
+        year_month_day_concise: '%Y-%m-%d', # 2017-03-01
+        month_day_year: '%b %-d, %Y' # Mar 1, 2017
       } 
     },
 
