@@ -1,5 +1,10 @@
 - @title = "Add new ontology submission"
 
-%div{:style => "margin:10px;"}
-  = form_for :submission, url: {action: "create"}, :html => { :id => "ontology_submission_form", :multipart => true } do |f|
-    = render partial: "form", locals: {f: f}
+%div.container
+  %h2.text-center
+    Add new submission
+    - unless @submission.ontology.nil?
+      %small for #{@submission.ontology.acronym}
+  %p.lead.text-center * fields are required
+  = form_for :submission, url: {action: "create"}, html: {id: "ontology_submission_form", multipart: true, class: "form-horizontal"} do |f|
+    = render partial: "form", locals: {f: f, button_text: "Add submission"}

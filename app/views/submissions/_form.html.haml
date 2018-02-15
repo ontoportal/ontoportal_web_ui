@@ -1,195 +1,244 @@
-- button_text ||= "Add submission"
-- title_text ||= "Add New Submission"
-
 - unless @errors.nil?
-  .enable-lists{:style => "color:red;"}
-    %strong Errors On Form
-    %ul
-      - for error in @errors
-        %li
-          = error
-%div{:style => "width:500px"}
-  %span.asterik{:style => "float:right;"} * fields are required
-  %h1 #{title_text}
-  = hidden_field :submission, :ontology, value: @ontology.id
-  %table#new_ontology.form{style: "min-width: 800px;"}
-    %tr
-      %th
-        Description
-        %span.asterik *
-      %td
-        = text_area :submission, :description, rows: 5, value: @submission.description, :required => true
+  %div.form-group.form-group-lg
+    %div.col-sm-offset-2.col-sm-10.enable-lists{style: "color:red;"}
+      %strong Errors On Form
+      %ul
+        - for error in @errors
+          %li
+            = error          
 
-    %tr
-      %th
-        Format
-        %span.asterik *
-      %td
-        - ont_formats = [ "OBO", "OWL", "UMLS", "SKOS" ].sort
-        - selected = @submission.hasOntologyLanguage ? @submission.hasOntologyLanguage : "OWL"
-        = select("submission", "hasOntologyLanguage", ont_formats, { :selected => selected, :style => "width: 200px;", :required => true })
-        #format_spacing
-        %table#format_specific_options
-          %tbody#owl_options.format_options
-            %tr
-              %th
-                Prefered Name Property
-                %br/
-                %span.default_owl
-                  default:
-                  %a{:href => "http://www.w3.org/2004/02/skos/core#prefLabel", :target => "_blank"} http://www.w3.org/2004/02/skos/core#prefLabel
-              %td
-                = text_field :submission, :prefLabelProperty, :placeholder => 'use default', value: @submission.prefLabelProperty
-            %tr
-              %th
-                Synonym Property
-                %br/
-                %span.default_owl
-                  default:
-                  %a{:href => "http://www.w3.org/2004/02/skos/core#altLabel", :target => "_blank"} http://www.w3.org/2004/02/skos/core#altLabel
-              %td
-                = text_field :submission, :synonymProperty, :placeholder => 'use default', value: @submission.synonymProperty
-            %tr
-              %th
-                Definition Property
-                %br/
-                %span.default_owl
-                  default:
-                  %a{:href => "http://www.w3.org/2004/02/skos/core#definition", :target => "_blank"} http://www.w3.org/2004/02/skos/core#definition
-              %td
-                = text_field :submission, :definitionProperty, :placeholder => 'use default', value: @submission.definitionProperty
-            %tr
-              %th
-                Author Property
-                %br/
-                %span.default_owl
-                  default:
-                  %a{:href => "http://purl.org/dc/elements/1.1/creator", :target => "_blank"} http://purl.org/dc/elements/1.1/creator
-              %td
-                = text_field :submission, :authorProperty, :placeholder => 'use default', value: @submission.authorProperty
-            %tr{:style => "border-left: none;"}
-              %td{:colspan => "2", :style => "border-left: none; border-right: none; padding: 1.5em 0 .5em;"}
-                %b Determining Obsolete Classes
-                You can use the following two methods to identify obsolete classes in your ontology:
-                %br/
-                1. Designate a root ID for an obsolete branch.
-                %br/
-                2. Identify a property id that indicates obsolete status. The value must be set to "true".
-            %tr
-              %th
-                1. Root of obsolete branch (root is not obsolete)
-              %td
-                = text_field :submission, :obsoleteParent, value: @submission.obsoleteParent
-            %tr
-              %th
-                2. Property to check for obsolete status
-              %td
-                = text_field :submission, :obsoleteProperty, value: @submission.obsoleteProperty
-    %tr
-      %th
-        Version
-      %td
-        = text_field :submission, :version, value: @submission.version
-    %tr
-      %th
-        Status
-        %span.asterik *
-      %td
-        - selected_status = @submission.status ? @submission.status : "alpha"
-        - status_options = ["alpha", "beta", "production", "retired"]
-        = select :submission, :status, status_options, { :selected => selected_status, :required => true }
-    %tr
-      %th
-        Release Date
-        %span.asterik *
-      %td
-        - release_date = @submission.released ? @submission.released : DateTime.now.to_s
-        = text_field :submission, :released, id: "datepicker", value: "#{ l(Date.parse(release_date), format: :year_month_day_concise) }", required: true
-        %span{:style => "font-size: 90%; color: grey;"}
-    %tr
-      %th
-        Location
-        %span.asterik *
-      %td#location_options
-        - if !@masterFileOptions
-          - checked = @ontology.summaryOnly
-          = radio_button :submission, :isRemote, 3, :onclick=>"$('.hidden_field').hide();", checked: checked
-          Metadata Only
-          %br/
-          %span{:style => "font-size:11px;"}
-            (choose this option if you want users to search and view only the
-            %em metadata
-            for your ontology, but not its classes and properties)
-          %hr/
+= hidden_field :submission, :ontology, value: @ontology.id
 
-          - checked = !( @submission.pullLocation.nil? || @submission.pullLocation.empty? )
-          = radio_button :submission, :isRemote, 1, :onclick=>"location_toggle('remote');", checked: checked
-          Load from URL
-          %br/
-          %span{:style => "font-size:11px;"} (new versions loaded daily)
-          - display = (checked and "" or "display:none;")
-          %div.hidden_field#remote{style: display}
-            URL: #{text_field :submission, :pullLocation, :size => 100, value: @submission.pullLocation}
-          %hr/
+-# Description
+%div.form-group.form-group-lg
+  %label.col-sm-2.control-label{for: "submission_description"} 
+    Description
+    %span.asterik *
+  %div.col-sm-10
+    = text_area :submission, :description, rows: 5, value: @submission.description, required: true, class: "form-control"
 
-          - checked = (!@ontology.summaryOnly) && @submission.pullLocation.nil?
-          = radio_button :submission, :isRemote, 0, :onclick=>"location_toggle('upload');", checked: checked
-          Upload Local File
-          %br/
-          %span{:style => "font-size:11px;"} (choose a file on your local file system to upload)
-          - display = (checked and "" or "display:none;")
-          %div.hidden_field#upload{style: display}
-            #{f.file_field :filePath}
+-# Format
+%div.form-group.form-group-lg
+  %label.col-sm-2.control-label{for: "submission_hasOntologyLanguage"} 
+    Format
+    %span.asterik *
+  %div.col-sm-10
+    - ont_formats = ["OBO", "OWL", "UMLS", "SKOS"].sort
+    - selected = @submission.hasOntologyLanguage ? @submission.hasOntologyLanguage : "OWL"
+    -# TODO: Add/remove aria-describedby attribute for SKOS help text display
+    = select "submission", "hasOntologyLanguage", options_for_select(ont_formats, selected), {required: true}, {class: "form-control"}
+  %div.col-sm-offset-2.col-sm-10
+    %a#collapseOWLOptions{href: "#owl-options", role: "button", data: {toggle: "collapse"}, aria: {expanded: "false", controls: "owl-options"}, |
+    class: "btn btn-default btn-sm"} Show advanced OWL options |
+  %div.col-sm-offset-2.col-sm-10
+    %span#helpSkosFormat.help-block
+      SKOS vocabularies submitted to BioPortal must contain a minimum of one concept scheme and top concept assertion. |
+      Please refer to the NCBO wiki for a more <a href="https://www.bioontology.org/wiki/index.php/SKOSSupport", target="_blank">detailed explanation</a> |
+      with examples. |
 
-        - else
-          = radio_button :submission, :isRemote, 0, :onclick=>"location_toggle('upload');", checked: true
-          Upload Local File
-          %br/
-          %span{:style => "font-size:11px;"} (choose a file on your local file system to upload)
-          - display = (checked and "" or "display:none;")
-          %div#upload{style: display}
-            = f.file_field :filePath, required: true
-            = f.select("masterFileName", @masterFileOptions, { include_blank: "Select primary file from zip contents", required: true}, {style: "border-color: red;"})
+-# Optional property overrides for OWL ontologies
+%div#owl-options.collapse
+  %div.form-group.form-group-sm
+    %div.col-sm-offset-2.col-sm-10
+      %label Customize default property settings
 
-    %tr
-      %th
-        Contact
-        %span.asterik *
-      %td
-        %div#contacts
-          %div#contact_button{style: "float: right; margin-top -1em;"}
-            = button_to 'Add contact', '#', id: 'add_contact_button'
-          - if @submission.contact && @submission.contact.size > 0
-            - @submission.contact.each_with_index do |contact, i|
-              %div.contact
-                Name:&nbsp;
-                = text_field :submission, :"contact[#{i}][name]", value: contact["name"]
-                &nbsp;&nbsp;
-                Email:&nbsp;
-                = text_field :submission, :"contact[#{i}][email]", value: contact["email"]
-          - else
-            %div.contact
-              Name:&nbsp;
-              = text_field :submission, :"contact[0][name]", :required => true
-              %br
-              Email:&nbsp;
-              = text_field :submission, :"contact[0][email]", :required => true
+    -# Preferred name
+    %div.col-sm-offset-2.col-sm-10
+      %label.control-label{for: "submission_prefLabelProperty"} Preferred name
+    %div.col-sm-offset-2.col-sm-10
+      = text_field :submission, :prefLabelProperty, value: @submission.prefLabelProperty, class: "form-control", aria: {describedBy: "helpPreferredName"}
+    %div.col-sm-offset-2.col-sm-10
+      %span#helpPreferredName.help-block 
+        Enter a property ID, or leave blank to use the default setting: |
+        <a href="http://www.w3.org/2004/02/skos/core#prefLabel", target="_blank">http://www.w3.org/2004/02/skos/core#prefLabel</a>. |
+    
+    -# Synonym
+    %div.col-sm-offset-2.col-sm-10
+      %label.control-label{for: "submission_synonymProperty"} Synonym
+    %div.col-sm-offset-2.col-sm-10
+      = text_field :submission, :synonymProperty, value: @submission.synonymProperty, class: "form-control", aria: {describedBy: "helpSynonym"}
+    %div.col-sm-offset-2.col-sm-10
+      %span#helpSynonym.help-block
+        Enter a property ID, or leave blank to use the default setting: |
+        <a href="http://www.w3.org/2004/02/skos/core#altLabel", target="_blank">http://www.w3.org/2004/02/skos/core#altLabel</a>. |
+    
+    -# Definition
+    %div.col-sm-offset-2.col-sm-10
+      %label.control-label{for: "submission_definitionProperty"} Definition
+    %div.col-sm-offset-2.col-sm-10
+      = text_field :submission, :definitionProperty, value: @submission.definitionProperty, class: "form-control", aria: {describedBy: "helpDefinition"}
+    %div.col-sm-offset-2.col-sm-10
+      %span#helpDefinition.help-block
+        Enter a property ID, or leave blank to use the default setting: |
+        <a href="http://www.w3.org/2004/02/skos/core#definition", target: "_blank">http://www.w3.org/2004/02/skos/core#definition</a>. |
 
-    %tr
-      %th
-        Home Page
-      %td
-        = text_field :submission, :homepage, value: @submission.homepage
-    %tr
-      %th
-        Documentation Page
-      %td
-        = text_field :submission, :documentation, value: @submission.documentation
-    %tr
-      %th
-        Publications Page
-      %td
-        = text_field :submission, :publication, value: @submission.publication
-    %tr
-      %td{:align => "right", :colspan => "2"}
-        = submit_tag button_text
+    -# Author
+    %div.col-sm-offset-2.col-sm-10
+      %label.control-label{for: "submission_authorProperty"} Author
+    %div.col-sm-offset-2.col-sm-10
+      = text_field :submission, :authorProperty, value: @submission.authorProperty, class: "form-control", aria: {describedBy: "authorDefinition"}
+    %div.col-sm-offset-2.col-sm-10
+      %span#authorDefinition.help-block
+        Enter a property ID, or leave blank to use the default setting: |
+        <a href="http://purl.org/dc/elements/1.1/creator", target: "_blank">http://purl.org/dc/elements/1.1/creator</a>. |
+
+  -# Obsolete classes
+  %div.form-group.form-group-sm
+    %div.col-sm-offset-2.col-sm-10
+      %label Identify obsolete classes
+
+    -# Obsolete
+    %div.col-sm-offset-2.col-sm-10
+      %label.control-label{for: "submission_obsoleteProperty"} Obsolete property
+    %div.col-sm-offset-2.col-sm-10
+      = text_field :submission, :obsoleteProperty, value: @submission.obsoleteProperty, class: "form-control", aria: {describedBy: "obsoleteDefinition"}
+    %div.col-sm-offset-2.col-sm-10
+      %span#obsoleteDefinition.help-block Optionally enter a property ID that indicates obsolete status for ontology classes |
+        (the property value must be set to "true"). Note that by default, BioPortal checks for existence of the owl:deprecated property. |
+    %div.col-sm-offset-2.col-sm-10
+      %label.control-label{for: "submission_obsoleteParent"} Obsolete branch root
+    %div.col-sm-offset-2.col-sm-10
+      = text_field :submission, :obsoleteParent, value: @submission.obsoleteParent, class: "form-control", aria: {describedBy: "obsoleteParentDefinition"}
+    %div.col-sm-offset-2.col-sm-10
+      %span#obsoleteParentDefinition.help-block Optionally enter a class ID for the root of an obsolete branch. All classes in the branch will be marked as |
+        obsolete, with the exception of the root class. |
+
+-# Version
+%div.form-group.form-group-lg
+  %label.col-sm-2.control-label{for: "submission_version"} Version
+  %div.col-sm-10
+    = text_field :submission, :version, value: @submission.version, class: "form-control"
+
+-# Status
+%div.form-group.form-group-lg
+  %label.col-sm-2.control-label{for: "submission_status"} 
+    Status
+    %span.asterik *
+  %div.col-sm-10
+    - selected_status = @submission.status ? @submission.status : "alpha"
+    - status_options = ["alpha", "beta", "production", "retired"]
+    = select :submission, :status, status_options, {selected: selected_status, required: true}, class: "form-control"
+
+-# Release date
+%div.form-group.form-group-lg
+  %label.col-sm-2.control-label{for: "datepicker"} 
+    Release date
+    %span.asterik *
+  %div.col-sm-10
+    %div.input-group.input-group-lg
+      - release_date = @submission.released ? Date.parse(@submission.released) : Date.today
+      = text_field(:submission, :released, id: "datepicker", value: "#{l(release_date, format: :month_day_year)}", required: true, class: "form-control", readonly: "readonly")
+      %span.input-group-addon
+        %i{class: "fa fa-calendar fa-lg", aria: {hidden: "true"}}
+
+-# Location
+%div.form-group.form-group-lg
+  %label.col-sm-2.control-label
+    Location
+    %span.asterik *
+  %div.col-sm-10
+    - if !@masterFileOptions
+      - checked = @ontology.summaryOnly
+      = radio_button :submission, :isRemote, 3, :onclick=>"$('.hidden_field').hide();", checked: checked, aria: {describedBy: "metadataHelp"}
+      %label{for: "submission_isRemote_3"}
+        Metadata only
+      %span#metadataHelp.help-block Allow users to view and search your ontology metadata, but not its classes and properties.
+
+      - checked = !( @submission.pullLocation.nil? || @submission.pullLocation.empty? )
+      = radio_button :submission, :isRemote, 1, :onclick=>"location_toggle('remote');", checked: checked, aria: {describedBy: "loadFromURLHelp"}
+      %label{for: "submission_isRemote_1"}
+        Load from URL
+      %span#loadFromURLHelp.help-block New versions loaded on a nightly basis.
+      - display = (checked and "" or "display:none;")
+      %div.hidden_field#remote{style: display}
+        = text_field :submission, :pullLocation, value: @submission.pullLocation, class: "form-control"
+        %p.help-block Enter a URL, including the name of your ontology source file, e.g., http://www.example.com/my_ontology.owl.
+
+      - checked = (!@ontology.summaryOnly) && @submission.pullLocation.nil?
+      = radio_button :submission, :isRemote, 0, :onclick=>"location_toggle('upload');", checked: checked
+      %label{for: "submission_isRemote_0"}
+        Upload local file
+      - display = (checked and "" or "display:none;")
+      %div.hidden_field#upload{style: display}
+        = f.file_field :filePath
+    - else
+      -# TODO: Has this section of code actually been tested?
+      = radio_button :submission, :isRemote, 0, :onclick=>"location_toggle('upload');", checked: true
+      Upload Local File
+      %br/
+      %span{:style => "font-size:11px;"} (choose a file on your local file system to upload)
+      - display = (checked and "" or "display:none;")
+      %div#upload{style: display}
+        = f.file_field :filePath, required: true
+        = f.select("masterFileName", @masterFileOptions, { include_blank: "Select primary file from zip contents", required: true}, {style: "border-color: red;"})
+
+-# Contact(s)
+%div#contacts.form-group.form-group-lg
+  %label.col-sm-2.control-label
+    Contact
+    %span.asterik *
+  - if @submission.contact && @submission.contact.size > 0
+    - @submission.contact.each_with_index do |contact, i|
+      - if i == 0
+        %div.contact
+          %div.col-sm-10
+            %div.form-inline
+              %label Name
+              = text_field :submission, :"contact[#{i}][name]", value: contact["name"], required: true, class: "form-control"
+              %label Email
+              = text_field :submission, :"contact[#{i}][email]", value: contact["email"], required: true, class: "form-control"
+              %button.btn.btn-success.form-control.add-contact
+                %i{class: "fa fa-plus fa-lg", aria: {hidden: "true"}}
+      - else
+        -# Secondary contacts need to be offset by 2 columns, and have a delete button.
+        %div.contact
+          %div.col-sm-offset-2.col-sm-10
+            %div.form-inline
+              %label Name
+              = text_field :submission, :"contact[#{i}][name]", value: contact["name"], class: "form-control"
+              %label Email
+              = text_field :submission, :"contact[#{i}][email]", value: contact["email"], class: "form-control"
+              %button.btn.btn-success.form-control.add-contact
+                %i{class: "fa fa-plus fa-lg", aria: {hidden: "true"}}
+              %button.btn.btn-danger.form-control.remove-contact
+                %i{class: "fa fa-minus fa-lg", aria: {hidden: "true"}}
+  - else
+    %div.contact
+      %div.col-sm-10
+        %div.form-inline
+          %label Name:
+          = text_field :submission, :"contact[0][name]", required: true, class: "form-control"
+          %label Email:
+          = text_field :submission, :"contact[0][email]", required: true, class: "form-control"
+          %button.btn.btn-success.form-control.add-contact
+            %i{class: "fa fa-plus fa-lg", aria: {hidden: "true"}}      
+
+-# Home page
+%div.form-group.form-group-lg
+  %label.col-sm-2.control-label{for: "submission_homepage"} Homepage
+  %div.col-sm-10
+    = text_field :submission, :homepage, value: @submission.homepage, class: "form-control", aria: {describedBy: "homepageDefinition"}
+  %div.col-sm-offset-2.col-sm-10
+    %span#homepageDefinition.help-block Enter a URL for the main page of your ontology.
+
+-# Documentation page
+%div.form-group.form-group-lg
+  %label.col-sm-2.control-label{for: "submission_documentation"} Documentation
+  %div.col-sm-10
+    = text_field :submission, :documentation, value: @submission.documentation, class: "form-control", aria: {describedBy: "docsDefinition"}
+  %div.col-sm-offset-2.col-sm-10
+    %span#docsDefinition.help-block Enter a URL for a page that provides ontology documentation.
+
+-# Publications page
+%div.form-group.form-group-lg
+  %label.col-sm-2.control-label{for: "submission_publication"} Publications
+  %div.col-sm-10
+    = text_field :submission, :publication, value: @submission.publication, class: "form-control", aria: {describedBy: "pubsDefinition"}        
+  %div.col-sm-offset-2.col-sm-10
+    %span#pubsDefinition.help-block Enter a URL for a page that lists publications about your ontology.
+
+%div.form-group.form-group-lg
+  %div.col-sm-offset-2.col-sm-10
+    %div.form-inline
+      = submit_tag button_text, class: "btn btn-primary"
+      = link_to "Cancel", :back, class: "btn btn-primary"

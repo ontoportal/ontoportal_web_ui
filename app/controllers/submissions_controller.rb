@@ -44,6 +44,8 @@ class SubmissionsController < ApplicationController
     # Make the contacts an array
     params[:submission][:contact] = params[:submission][:contact].values
 
+    params[:submission][:contact].delete_if { |c| c[:name].empty? || c[:email].empty? }
+
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
     submissions = @ontology.explore.submissions
     @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
