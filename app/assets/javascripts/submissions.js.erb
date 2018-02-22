@@ -43,7 +43,23 @@ jQuery(document).ready(function(){
   jQuery("#contacts").on("click", ".add-contact", addContact);
   jQuery("#contacts").on("click", ".remove-contact", removeContact);
 
-  jQuery("#ontology_submission_form").validate();
+  jQuery("#ontology_submission_form").validate({
+    highlight: function(element) {
+      $(element).closest('.form-group').addClass('has-error');
+    },
+    unhighlight: function(element) {
+      $(element).closest('.form-group').removeClass('has-error');
+    },
+    errorElement: 'span',
+    errorClass: 'help-block error-help-block',
+    errorPlacement: function(error, element) {
+      if(element.parent('.input-group').length) {
+        error.insertAfter(element.parent());
+      } else {
+        error.insertAfter(element);
+      }
+    }  
+  });
 });
 
 function addContact(event) {
