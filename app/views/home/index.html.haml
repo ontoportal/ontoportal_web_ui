@@ -62,7 +62,7 @@
                 %ul
                   %li
                     = link_to("All", ontologies_path())
-                  - @groups.to_a.each do |group|
+                  - @groups.each do |group|
                     %li
                       = link_to(group[:name], ontologies_path(filter: "#{CGI.escape(group[:acronym])}"))
 
