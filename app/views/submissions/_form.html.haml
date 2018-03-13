@@ -184,9 +184,9 @@
           %div.col-sm-10
             %div.form-inline
               %label Name
-              = text_field :submission, :"contact[#{i}][name]", value: contact["name"], required: true, class: "form-control"
+              = text_field :submission, :"contact[#{i}][name]", value: contact["name"], class: "form-control"
               %label Email
-              = text_field :submission, :"contact[#{i}][email]", value: contact["email"], required: true, class: "form-control"
+              = text_field :submission, :"contact[#{i}][email]", value: contact["email"], class: "form-control"
               %button.btn.btn-success.form-control.add-contact
                 %i{class: "fa fa-plus fa-lg", aria: {hidden: "true"}}
       - else
@@ -207,9 +207,9 @@
       %div.col-sm-10
         %div.form-inline
           %label Name:
-          = text_field :submission, :"contact[0][name]", required: true, class: "form-control"
+          = text_field :submission, :"contact[0][name]", class: "form-control"
           %label Email:
-          = text_field :submission, :"contact[0][email]", required: true, class: "form-control"
+          = text_field :submission, :"contact[0][email]", class: "form-control"
           %button.btn.btn-success.form-control.add-contact
             %i{class: "fa fa-plus fa-lg", aria: {hidden: "true"}}      
 
