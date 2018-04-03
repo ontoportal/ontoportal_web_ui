@@ -7,7 +7,9 @@ class HomeController < ApplicationController
     @ontologies_views = LinkedData::Client::Models::Ontology.all(include_views: true)
     @ontologies = @ontologies_views.select {|o| !o.viewOf}
     @ontologies_hash = Hash[@ontologies_views.map {|o| [o.acronym, o]}]
+    
     @groups = LinkedData::Client::Models::Group.all
+    organize_groups
 
     # Calculate BioPortal summary statistics
     @ont_count = @ontologies.length
@@ -156,6 +158,21 @@ class HomeController < ApplicationController
   def validate_ontology_file
     response = LinkedData::Client::HTTP.post("/validate_ontology_file", ontology_file: params[:ontology_file])
     @process_id = response.process_id
+  end
+
+  private
+
+  # Dr. Musen wants 5 specific groups to appear first, sorted by order of importance.
+  # Ordering is documented in GitHub: https://github.com/ncbo/bioportal_web_ui/issues/15.
+  # All other groups come after, with agriculture in the last position.
+  def organize_groups
+    # Reference: https://lildude.co.uk/sort-an-array-of-strings-by-severity
+    acronyms = ["UMLS", "OBO_Foundry", "WHO-FIC", "CTSA", "caBIG"]
+    size = @groups.size
+    @groups.sort_by! { |g| acronyms.find_index(g.acronym[/(UMLS|OBO_Foundry|WHO-FIC|CTSA|caBIG)/]) || size }
+
+    others, agriculture = @groups.partition { |g| g.acronym != "CGIAR" }
+    @groups = others + agriculture
   end
 
 end

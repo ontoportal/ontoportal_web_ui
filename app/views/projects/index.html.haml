@@ -35,7 +35,7 @@
             %strong= link_to(project.name, project_path(project.acronym))
             %br/
             %span{:style => "font-size:75%; vertical-align:bottom;"}
-              = link_to("Home Page", project.homePage, :target => "_blank")
+              = link_to("Home Page", project.homePage, target: "_blank", rel: "nofollow")
               %span.ui-icon.ui-icon-extlink{:style => "display: inline-block; vertical-align: text-bottom;"}
               \&nbsp;&nbsp;
               - if session[:user] && (project.creator == session[:user].id || session[:user].admin?)

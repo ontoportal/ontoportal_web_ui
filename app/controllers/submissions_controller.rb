@@ -16,18 +16,22 @@ class SubmissionsController < ApplicationController
 
     @submission = LinkedData::Client::Models::OntologySubmission.new(values: params[:submission])
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
+    
     # Update summaryOnly on ontology object
     @ontology.summaryOnly = @submission.isRemote.eql?("3")
     @ontology.update
+    
     @submission_saved = @submission.save
     if !@submission_saved || @submission_saved.errors
       @errors = response_errors(@submission_saved) # see application_controller::response_errors
+    
       if @errors[:error][:uploadFilePath] && @errors[:error][:uploadFilePath].first[:options]
         @masterFileOptions = @errors[:error][:uploadFilePath].first[:options]
         @errors = ["Please select a main ontology file from your uploaded zip"]
-      else
-        redirect_to "/ontologies/success/#{@ontology.acronym}"
+      elsif @errors[:error][:contact]
+        @errors = ["Please enter a contact"]
       end
+    
       render "new"
     else
       redirect_to "/ontologies/success/#{@ontology.acronym}"
@@ -43,6 +47,8 @@ class SubmissionsController < ApplicationController
   def update
     # Make the contacts an array
     params[:submission][:contact] = params[:submission][:contact].values
+
+    params[:submission][:contact].delete_if { |c| c[:name].empty? || c[:email].empty? }
 
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
     submissions = @ontology.explore.submissions
