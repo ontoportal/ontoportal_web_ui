@@ -163,13 +163,16 @@ class HomeController < ApplicationController
   private
 
   # Dr. Musen wants 5 specific groups to appear first, sorted by order of importance.
-  # Order of importance is documented in this GitHub issue: https://github.com/ncbo/bioportal_web_ui/issues/15.
-  # All other groups should be appear at the end, with no particular ordering.   
+  # Ordering is documented in GitHub: https://github.com/ncbo/bioportal_web_ui/issues/15.
+  # All other groups come after, with agriculture in the last position.
   def organize_groups
     # Reference: https://lildude.co.uk/sort-an-array-of-strings-by-severity
     acronyms = ["UMLS", "OBO_Foundry", "WHO-FIC", "CTSA", "caBIG"]
     size = @groups.size
     @groups.sort_by! { |g| acronyms.find_index(g.acronym[/(UMLS|OBO_Foundry|WHO-FIC|CTSA|caBIG)/]) || size }
+
+    others, agriculture = @groups.partition { |g| g.acronym != "CGIAR" }
+    @groups = others + agriculture
   end
 
 end
