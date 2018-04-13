@@ -17,7 +17,7 @@
   %p
     %strong Home Page:
     - if @project.homePage
-      = link_to @project.homePage, @project.homePage
+      = link_to @project.homePage, @project.homePage, rel: "nofollow"
   %h2{:style => "padding-top: 1em;"} Ontologies Used
   - if @ontologies_used.empty?
     No ontologies are currently associated with this project
