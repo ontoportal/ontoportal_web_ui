@@ -12,7 +12,7 @@ gem 'uglifier', '>= 1.0.3'
 
 gem 'jquery-ui-rails'
 gem 'jquery-rails'
-gem 'bootstrap-sass', '~> 3.3.7'
+gem 'bootstrap', '~> 4.0.0'
 gem 'font-awesome-sass', '~> 4.7.0'
 gem 'chart-js-rails'
 gem 'select2-rails'
