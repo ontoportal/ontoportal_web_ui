@@ -64,7 +64,7 @@ GEM
     arel (6.0.4)
     autoprefixer-rails (8.3.0)
       execjs
-    bootstrap (4.0.0)
+    bootstrap (4.1.0)
       autoprefixer-rails (>= 6.0.3)
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
@@ -254,7 +254,7 @@ PLATFORMS
   x86_64-darwin-16
 
 DEPENDENCIES
-  bootstrap (~> 4.0.0)
+  bootstrap (~> 4.1.0)
   capistrano (~> 3.8.2)
   capistrano-bundler
   capistrano-locally
