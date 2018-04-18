@@ -11,6 +11,7 @@
 //= require jquery-migrate-1.3.0.min
 //= require jquery_ujs
 //= require jquery-ui
+//= require popper
 //= require bootstrap-sprockets
 //
 //= require jquery.blockUI
