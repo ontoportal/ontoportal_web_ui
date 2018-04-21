@@ -1514,45 +1514,6 @@ button.fg-button-menu, button.fg-button {
     padding-left: 10px;
 }
 
-
-/************************************
- * Top-right Nav Menu
- ************************************/
-
-#top_right_menu {
-  padding-top: .9em !important;
-}
-
-#top_right_menu .ui-state-default, #top_right_menu .ui-widget-content .ui-state-default, #top_right_menu .ui-widget-header .ui-state-default {
-  background: none;
-  border: none;
-  border-right: 1px solid #AED0EA;
-  color: white;
-}
-
-#top_right_menu .ui-state-active {
-  background: #3baae3 image-url('jquery-ui-1.8.1.custom/ui-bg_glass_50_3baae3_1x400.png') 50% 50% repeat-x;
-  font-weight: bold;
-  color: #ffffff;
-  border-right: 1px solid #3baae3;
-}
-
-#top_right_menu .ui-state-active .ui-icon {
-  background-image: image-url('jquery-ui-1.8.1.custom/ui-icons_ffffff_256x240.png') !important;
-}
-
-#top_right_menu .ui-state-default .ui-icon {
-  background-image: image-url('jquery-ui-1.8.1.custom/ui-icons_72a7cf_256x240.png');
-}
-
-#top_right_menu .ui-state-default a:hover, #top_right_menu .ui-widget-content .ui-state-default a:hover, #top_right_menu .ui-widget-header .ui-state-default a:hover {
-  color: gray;
-}
-
-.top_right_menu_last {
-  border: none !important;
-}
-
 /************************************
  * Browse Page
  ************************************/
@@ -1627,12 +1588,14 @@ button.fg-button-menu, button.fg-button {
 }
 
 /************************************
- * Topnav header
+ * Top navigation bar
  ************************************/
+#topNavLoginLink {
+  color: #C58612;
+}
 
-.bp_nav_link {
-  display: block;
-  height: 43px;
+.navbar-custom {
+  background-color: #234979;
 }
 
 .nav_text a {
@@ -1651,32 +1614,6 @@ button.fg-button-menu, button.fg-button {
 .nav_text_active a {
   color: lightGray !important;
 }
-
-/**
- * Ordering of these two class definitions needs to remain as-is for high-res images to work
- **/
-.nav_logo {
-  background: image-url('layout/nav_logo.png') no-repeat;
-  background-size: 126px 43px;
-  height: 43px;
-  width: 126px;
-  display: block;
-}
-@media (-webkit-min-device-pixel-ratio: 2),
-(-o-min-device-pixel-ratio: 2/1),
-(min--moz-device-pixel-ratio: 2),
-(min-device-pixel-ratio: 2),
-(min-resolution: 2dppx),
-(dpi: 196dpi) {
-    .nav_logo {
-        background: image-url('layout/nav_logo_hi_res.png') no-repeat;
-        background-size: 126px 43px;
-        height: 43px;
-        width: 126px;
-        display: block;
-    }
-}
-
 
 /************************************
  * Ontology picker
