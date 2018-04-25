@@ -32,53 +32,6 @@ function formatResultOntologySearch(value, data) {
   return value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>");
 }
 
-function jumpToValueResource(){
-  var cls = jQuery("#find_resource")[0].value;
-  var data = jQuery('body').data("resource_results");
-
-  if (data == null) {
-    // I'm doing a search
-    var search = confirm("Press OK to Search for resources using the concept, or Cancel to select a concept")
-    if (search) {
-      query = jQuery("#find_resource").val();
-      document.location="/resource_index";
-      return;
-    }
-  }
-
-  if (!!data) {
-    var concept_id = data[0];
-    var ontology_version_id = data[2];
-    var ontology_id = data[7];
-    var full_ontology_id = jQuery(document).data().bp.config.rest_url + "/ontologies/" + ontology_id;
-    window.location = "/resource_index/resources?classes[" + encodeURIComponent(full_ontology_id) + "]=" + encodeURIComponent(concept_id);
-    return;
-  }
-}
-
-function formatItemResource(value, data) {
-  jQuery('body').data("resource_results", null);
-  var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
-  var keywords = jQuery("#find_resource").val().replace(specials, "\\$&").split(' ').join('|');
-  var regex = new RegExp( '(' + keywords + ')', 'gi' );
-
-  // data[7] is the ontology_id, only included when searching multiple ontologies
-  if (data[6] == undefined) {
-    var result = value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + data[1] + ")</span>";
-  } else {
-    var result = value.replace(regex, "<b><span style='color:#006600;'>$1</span></b>") + " <span style='font-size:9px;color:blue;'>(" + data[1] + ")</span>" + "<span style='color:grey;font-size:7pt;'> from: " + data[6] + "</span>";
-  }
-
-  return result;
-}
-
-// We use this in conjunction with autocomplete because autocomplete
-// fails when there are multiple results with the same class name
-function selectResource(value, data) {
-  jQuery('body').data("resource_results", value.data);
-  jumpToValueResource();
-}
-
 // Sets a hidden form value that records the virtual id when a concept is chosen in the jump to
 // This is a workaround because the default autocomplete search method cannot distinguish between two
 // ontologies that have the same preferred name but different ids.
@@ -104,19 +57,6 @@ jQuery(document).ready(function() {
     delay: 1,
     showResult: formatResultOntologySearch,
     onItemSelect: selectFindOntology
-  });
-
-  jQuery("#find_resource").autocomplete({
-    selectFirst: true,
-    url: "/search/json_search/",
-    extraParams: { separator: "\n" },
-    cacheLength: 1,
-    maxCacheLength: 1,
-    matchSubset: 0,
-    minChars: 3,
-    maxItemsToShow: 20,
-    showResult: formatItemResource,
-    onItemSelect: selectResource
   });
 
   jQuery('ul.sf-menu').superfish({
