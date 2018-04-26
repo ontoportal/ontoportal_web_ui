@@ -14,14 +14,14 @@
     %a{:href => "#", :onclick => "close_message(); return false;", :style => "font-size: small; color: darkGray;"} [close]
 
 %div{class: "container", style: "padding-top: 15px; padding-bottom: 25px"}
-
-  %div{class: "row"}
-    %div{class: "col-md-12"}
-      %div{class: "page-header text-center"}
-        %h1
-          = t(".welcome").html_safe
-          %small
-            = t(".tagline").html_safe
+  
+  %div.row
+    %div.col
+      %div.px-3.py-3.pt-md-5.pb-mb-4.text-center
+        %h2
+          = t(".welcome")
+          %small.text-muted
+            = t(".tagline")
 
   %div.search{class: "row"}
     -# Search for a class across ontologies

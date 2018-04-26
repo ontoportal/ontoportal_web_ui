@@ -13,7 +13,7 @@
       index: {
         find_ontology_placeholder: 'Start entering ontology name, e.g. Cancer, then choose from list',
         query_placeholder: 'Enter a class, e.g. Melanoma',
-        tagline: 'the world&rsquo;s most comprehensive repository of biomedical ontologies',
+        tagline: "the world's most comprehensive repository of biomedical ontologies",
         title: 'Welcome to the ' + $ORG_SITE,
         welcome: 'Welcome to ' + $SITE + ','
       }
