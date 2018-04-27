@@ -11,7 +11,7 @@
 
     home: {
       index: {
-        find_ontology_placeholder: 'Start entering ontology name, e.g. Cancer, then choose from list',
+        find_ontology_placeholder: 'Start typing ontology name, then choose from list',
         query_placeholder: 'Enter a class, e.g. Melanoma',
         tagline: "the world's most comprehensive repository of biomedical ontologies",
         title: 'Welcome to the ' + $ORG_SITE,
