@@ -13,15 +13,15 @@
     \&nbsp;&nbsp;
     %a{:href => "#", :onclick => "close_message(); return false;", :style => "font-size: small; color: darkGray;"} [close]
 
-%div.container
+%div.container.pb-4.pb-md-5
   %div.row
     %div.col
-      %div.px-3.py-3.pt-md-5.pb-md-4.text-center
+      %div.px-2.py-2.pt-md-5.border-bottom.text-center
         %h2
           = t(".welcome")
           %small.text-muted
             = t(".tagline")
-  %div.row.search
+  %div.row.search.pt-4
     %div.col
       %div.card-deck
         -# Search for a class across ontologies
