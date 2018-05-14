@@ -277,10 +277,9 @@ rec.getRecommendations = function() {
                                     }
                                     // Terms covered
                                     var terms = rec.getHighlightedTerms(data, $rowNumber);
-                                    $("#inputTextHighlighted").empty();
-                                    $("#inputTextHighlighted").append(terms);
+                                    $("#inputTextHighlighted div.card-body").empty();
+                                    $("#inputTextHighlighted div.card-body").append(terms);
                                     $("#inputTextHighlighted").show();
-                                    $(this).parents(".row:first").css("background-color", "#e2ebf0");
                                 }
                                 // Avoids to uncheck the selected row
                                 else {
@@ -328,8 +327,8 @@ rec.checkFirst = function(data) {
     var terms = rec.getHighlightedTerms(data, 0);
     $("#chk0").prop("checked", true);
     $("#inputText").hide();
-    $("#inputTextHighlighted").empty();
-    $("#inputTextHighlighted").append(terms);
+    $("#inputTextHighlighted div.card-body").empty();
+    $("#inputTextHighlighted div.card-body").append(terms);
     $("#inputTextHighlighted").show();
     $("#chk0").parents(".row:first").css("background-color", "#e2ebf0");
 }
