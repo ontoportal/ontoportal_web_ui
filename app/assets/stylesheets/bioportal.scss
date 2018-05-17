@@ -1772,16 +1772,8 @@ div.additional_results_link {
   text-decoration: none;
 }
 
-#result_stats {
-  padding-bottom: 15px;
-  width: 800px;
-  color: gray;
-  text-align: right;
-}
-
 #search_results {
   display: none;
-  width: 800px;
 }
 
 #search_results_container {
@@ -1806,15 +1798,6 @@ div#search_categories_chzn .chzn-drop {
   color: gray;
   padding-bottom: 7px;
 }
-.search_options {
-  padding-left: 20px;
-}
-#advanced_options_container {
-  font-size: 85%;
-  clear: both;
-  text-align: right;
-  width: 432px;
-}
 #result_stats a {
   color: gray;
 }
@@ -1837,16 +1820,22 @@ div#search_categories_chzn .chzn-drop {
 }
 .definition {
   cursor: help;
-  border-bottom: thin dotted green;
-}
-#search_options label {
-  line-height: 1.5em;
 }
 .concept_uri {
   font-size: 9pt;
   color: gray;
 }
 
+#search_categories_chosen .chosen-container .chosen-container-multi {
+  width: 432px;
+}
+
+/* Prevents placeholder text in search input from being truncated.
+/* https://github.com/harvesthq/chosen/issues/2029#issuecomment-187442769 */
+#search_options #ontology_ontologyId_chosen .search-field:only-child,
+#search_options #ontology_ontologyId_chosen .search-field:only-child input {
+  width: 100% !important;
+}
 
 /************************************
  * Standardized BP Popups
