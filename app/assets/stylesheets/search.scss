@@ -58,6 +58,7 @@ span.class_def {
   margin: 2em;
   background-color: rgb(230,230,230);
 }
+
 .additional_cls_results {
   padding: 2em;
   margin: 2em;
@@ -73,6 +74,7 @@ span.class_def {
   margin-top: 2em;
   background-color: rgb(240,240,240);
 }
+
 .subordinate_ont_results_title {
   color: rgb(100,100,100);
   background: rgb(200,200,200);
@@ -118,30 +120,38 @@ div.additional_results_link {
 div#search_categories_chzn {
   width: 432px !important;
 }
+
 div#search_categories_chzn .chzn-choices input {
   font-style: oblique;
 }
+
 div#search_categories_chzn.chzn-container-active input {
   font-style: normal !important;
 }
+
 div#search_categories_chzn .chzn-drop {
   width: 432px !important;
 }
+
 #search_messages {
   font-style: oblique;
   color: gray;
   padding-bottom: 7px;
 }
+
 #result_stats a {
   color: gray;
 }
+
 #ontology_counts {
   display: none;
 }
+
 .popup_counts {
   float: right;
   display: none;
 }
+
 .ontology_counts_tooltip {
   background-color: #EEEEEE;
   border: 1px solid black;
@@ -152,9 +162,11 @@ div#search_categories_chzn .chzn-drop {
   z-index: 999;
   box-shadow: 3px 3px 7px gray;
 }
+
 .definition {
   cursor: help;
 }
+
 .concept_uri {
   font-size: 9pt;
   color: gray;
