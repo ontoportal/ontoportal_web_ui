@@ -1,19 +1,11 @@
-h2.text-center + p.lead.text-center {
-  margin-bottom: 40px;
-}
-
-div.col-sm-offset-2 > a#collapseOWLOptions {
-  margin-top: 5px;
-}
-
-div#contacts  div.contact div.col-sm-offset-2.col-sm-10 {
+div#contacts  div.contact.col-sm-10.offset-sm-2 {
 	margin-top: 5px;
 }
 
-div#contacts #add_contact_button {
-  margin-top: 7px;
+#contacts .contact label {
+	margin-bottom: 0;
 }
 
-div#remote input#submission_pullLocation {
-  margin-bottom: 10px;
+#submissionLocation small.form-text {
+  margin-bottom: 0.5em;
 }
