@@ -7,7 +7,7 @@
       -# = help_icon("http://www.bioontology.org/wiki/index.php/Ontology_Metrics", { :title => "View individual metrics definitions", :style => "margin-top: -7px;" })
       &nbsp;&nbsp;
       - if visits_data
-        %a{href: @ontology.links["analytics"] + "?apikey=#{get_apikey}&format=csv", style: "font-size: smaller;", target: "_blank"} Download as CSV
+        %a{href: @ontology.links["analytics"] + "?apikey=#{get_apikey}&format=csv", style: "font-size: large;", target: "_blank"} Download as CSV
     - if visits_data
       %div#visits_chart_container
         %canvas#visits_chart{style: "width: 100% !important; max-width: 600px; height: 300 !important;"}

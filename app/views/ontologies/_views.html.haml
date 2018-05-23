@@ -34,9 +34,9 @@
     %span{:style => "font-size: x-large; margin-right: 1.5em;"} Views
     - ont_id_esc = CGI.escape(@ontology.id)
     - if session[:user].nil?
-      %a{:href => "/login?redirect=#{URI.escape("/ontologies/new?ontology[viewOf]=#{ont_id_esc}", Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"} Create new view
+      %a{:href => "/login?redirect=#{URI.escape("/ontologies/new?ontology[viewOf]=#{ont_id_esc}", Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}", style: "font-size: large;"} Create new view
     - else
-      %a{:href => "/ontologies/new?ontology[viewOf]=#{ont_id_esc}"} Create new view
+      %a{:href => "/ontologies/new?ontology[viewOf]=#{ont_id_esc}", style: "font-size: large;"} Create new view
 
   %div{:style => "float:left;"}
     - if @views.empty? || @views.length < 1
@@ -54,7 +54,7 @@
             text-decoration: underline;
         }
 
-      %h4{:style => "margin-top: .5em;"}
+      %h6{:style => "margin-top: .5em;"}
         %a#expand_views{:href => "javascript:void(0);"} Expand All
         |
         %a#collapse_views{:href => "javascript:void(0);"} Collapse All
