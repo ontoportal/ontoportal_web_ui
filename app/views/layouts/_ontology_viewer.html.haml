@@ -66,99 +66,98 @@
         = submit_tag("Create Mapping", class: "btn btn-default", id: "create_mapping_button")
         %button{type: "button", class: "btn btn-default", "data-dismiss": "modal"} Close
 
-%div{:style => "padding: 1em 2em 0; background: #234979;"}
-  %div
-    %span{:style => "color: white; font-size: xx-large;"}
-      %a#ont_sum_link{:href => "/ontologies/#{@ontology.acronym}"}= @ontology.name
+%div
+  %span{:style => "color: white; font-size: xx-large;"}
+    %a#ont_sum_link{:href => "/ontologies/#{@ontology.acronym}"}= @ontology.name
 
-    :css
-      #nav_ontology {
-        padding-left: 2em;
-        font-family: 'Droid Sans', sans-serif;
-      }
-      #nav_ontology a {
-        color: white;
-        text-decoration: none;
-      }
-      #nav_ontology a:hover {
-        text-decoration: underline;
-      }
-      #nav_ontology li {
-        display: table-cell;
-        padding-right: 1em;
-      }
-      .ont_sum_link {
-        font-family: 'Droid Sans', sans-serif;
-      }
-    %div#nav_ontology
-      %ul
-        %li#summary_link.summary_link.nav_link
-          %a{"data-bp_ont_page" => "summary", :href => "/ontologies/#{@ontology.acronym}?p=summary"} Summary
-        - unless @ontology.summaryOnly
-          %li#classes_link.classes_link.nav_link
-            %a{"data-bp_ont_page" => "classes", :href => "/ontologies/#{@ontology.acronym}?p=classes"} Classes
-          %li#properties_link.properties_link.nav_link
-            %a{"data-bp_ont_page" => "properties", :href => "/ontologies/#{@ontology.acronym}?p=properties"} Properties
-        %li#notes_link.notes_link.nav_link
-          %a{"data-bp_ont_page" => "notes", :href => "/ontologies/#{@ontology.acronym}?p=notes"} Notes
-        - unless @ontology.summaryOnly
-          %li#mappings_link.mappings_link.nav_link
-            %a{"data-bp_ont_page" => "mappings", :href => "/ontologies/#{@ontology.acronym}?p=mappings"} Mappings
-          %li#widgets_link.widgets_link.nav_link
-            %a{"data-bp_ont_page" => "widgets", :href => "/ontologies/#{@ontology.acronym}?p=widgets"} Widgets
-        - if @ontology.admin?(session[:user])
+  :css
+    #nav_ontology {
+      padding-left: 2em;
+      font-family: 'Droid Sans', sans-serif;
+    }
+    #nav_ontology a {
+      color: white;
+      text-decoration: none;
+    }
+    #nav_ontology a:hover {
+      text-decoration: underline;
+    }
+    #nav_ontology li {
+      display: table-cell;
+      padding-right: 1em;
+    }
+    .ont_sum_link {
+      font-family: 'Droid Sans', sans-serif;
+    }
+  %div#nav_ontology
+    %ul
+      %li#summary_link.summary_link.nav_link
+        %a{"data-bp_ont_page" => "summary", :href => "/ontologies/#{@ontology.acronym}?p=summary"} Summary
+      - unless @ontology.summaryOnly
+        %li#classes_link.classes_link.nav_link
+          %a{"data-bp_ont_page" => "classes", :href => "/ontologies/#{@ontology.acronym}?p=classes"} Classes
+        %li#properties_link.properties_link.nav_link
+          %a{"data-bp_ont_page" => "properties", :href => "/ontologies/#{@ontology.acronym}?p=properties"} Properties
+      %li#notes_link.notes_link.nav_link
+        %a{"data-bp_ont_page" => "notes", :href => "/ontologies/#{@ontology.acronym}?p=notes"} Notes
+      - unless @ontology.summaryOnly
+        %li#mappings_link.mappings_link.nav_link
+          %a{"data-bp_ont_page" => "mappings", :href => "/ontologies/#{@ontology.acronym}?p=mappings"} Mappings
+        %li#widgets_link.widgets_link.nav_link
+          %a{"data-bp_ont_page" => "widgets", :href => "/ontologies/#{@ontology.acronym}?p=widgets"} Widgets
+      - if @ontology.admin?(session[:user])
+        %li
+          = link_to "Edit ontology information",  "/ontologies/#{@ontology.acronym}/edit"
+        %li
+          = link_to "Add submission", "/ontologies/#{@ontology.acronym}/submissions/new"
+        - unless @submission_latest.nil? || (@submission_latest.respond_to?(:status) && @submission_latest.status == 404)
           %li
-            = link_to "Edit ontology information",  "/ontologies/#{@ontology.acronym}/edit"
-          %li
-            = link_to "Add submission", "/ontologies/#{@ontology.acronym}/submissions/new"
-          - unless @submission_latest.nil? || (@submission_latest.respond_to?(:status) && @submission_latest.status == 404)
-            %li
-              = link_to "Edit submission information (#{@submission_latest.version})", "/ontologies/#{@ontology.acronym}/submissions/#{@submission_latest.submissionId}/edit"
+            = link_to "Edit submission information (#{@submission_latest.version})", "/ontologies/#{@ontology.acronym}/submissions/#{@submission_latest.submissionId}/edit"
 
-  %div{:style => "clear: both; margin-bottom: 1em;"}
-  #ontology_content{:style => "background: white;"}
-    #ont_classes_content.ontology_viewer_content.hidden
-      - if content_section.eql?("classes")
-        :javascript
-          jQuery("#ont_classes_content").removeClass("hidden");
-        = yield
-      - else
-        = loading_spinner(true)
-    #ont_properties_content.ontology_viewer_content.hidden
-      - if content_section.eql?("properties")
-        :javascript
-          jQuery("#ont_properties_content").removeClass("hidden");
-        = yield
-      - else
-        = loading_spinner(true)
-    #ont_summary_content.ontology_viewer_content.hidden
-      - if content_section.eql?("summary")
-        :javascript
-          jQuery("#ont_summary_content").removeClass("hidden");
-        = yield
-      - else
-        = loading_spinner(true)
-    #ont_mappings_content.ontology_viewer_content.hidden
-      - if content_section.eql?("mappings")
-        :javascript
-          jQuery("#ont_mappings_content").removeClass("hidden");
-        = yield
-      - else
-        = loading_spinner(true)
-    #ont_notes_content.ontology_viewer_content.hidden
-      - if content_section.eql?("notes")
-        :javascript
-          jQuery("#ont_notes_content").removeClass("hidden");
-        = yield
-      - else
-        = loading_spinner(true)
-    #ont_widgets_content.ontology_viewer_content.hidden
-      - if content_section.eql?("widgets")
-        :javascript
-          jQuery("#ont_widgets_content").removeClass("hidden");
-        = yield
-      - else
-        = loading_spinner(true)
+%div{:style => "clear: both; margin-bottom: 1em;"}
+#ontology_content{:style => "background: white;"}
+  #ont_classes_content.ontology_viewer_content.hidden
+    - if content_section.eql?("classes")
+      :javascript
+        jQuery("#ont_classes_content").removeClass("hidden");
+      = yield
+    - else
+      = loading_spinner(true)
+  #ont_properties_content.ontology_viewer_content.hidden
+    - if content_section.eql?("properties")
+      :javascript
+        jQuery("#ont_properties_content").removeClass("hidden");
+      = yield
+    - else
+      = loading_spinner(true)
+  #ont_summary_content.ontology_viewer_content.hidden
+    - if content_section.eql?("summary")
+      :javascript
+        jQuery("#ont_summary_content").removeClass("hidden");
+      = yield
+    - else
+      = loading_spinner(true)
+  #ont_mappings_content.ontology_viewer_content.hidden
+    - if content_section.eql?("mappings")
+      :javascript
+        jQuery("#ont_mappings_content").removeClass("hidden");
+      = yield
+    - else
+      = loading_spinner(true)
+  #ont_notes_content.ontology_viewer_content.hidden
+    - if content_section.eql?("notes")
+      :javascript
+        jQuery("#ont_notes_content").removeClass("hidden");
+      = yield
+    - else
+      = loading_spinner(true)
+  #ont_widgets_content.ontology_viewer_content.hidden
+    - if content_section.eql?("widgets")
+      :javascript
+        jQuery("#ont_widgets_content").removeClass("hidden");
+      = yield
+    - else
+      = loading_spinner(true)
 - if Rails.env.appliance?
   = render partial: "footer_appliance"
   = javascript_include_tag "application"
