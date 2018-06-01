@@ -194,17 +194,14 @@ function getConceptLinkEl(concept_id) {
 
 function showOntologyContent(content_section) {
   jQuery.bioportal.ont_pages[content_section].publish();
-  jQuery(".ontology_viewer_content").addClass("hidden");
-  jQuery("#ont_" + content_section + "_content").removeClass("hidden");
 }
 
 // Prevent the default behavior of clicking the ontology page links
 // Instead, fire some history events
 var nav_ont = function(link) {
-  var page = jQuery(link).attr("data-bp_ont_page");
+  var page = jQuery(link).attr("data-bp-ont-page");
   History.pushState({p:page}, jQuery.bioportal.ont_pages[page].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site, "?p=" + page);
 }
-
 
 jQuery(document).ready(function() {
   if (!pageUsesTreeView()) {
@@ -221,8 +218,8 @@ jQuery(document).ready(function() {
     : content_section_obj.page_name + " | " + org_site;
   document.title = title;
 
-  // Naviation buttons
-  jQuery(".nav_link a").live("click", function(e){
+  // Navigation buttons
+  jQuery("#navbar-ontology a").on("click", function(e){
     e.preventDefault();
     nav_ont(this);
   });
