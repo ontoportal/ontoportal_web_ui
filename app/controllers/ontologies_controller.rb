@@ -362,23 +362,28 @@ class OntologiesController < ApplicationController
     # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     not_found if @ontology.nil?
-    # Check to see if user is requesting RDF+XML, return the file from REST service if so
+    
+    # Check to see if user is requesting RDF+XML. If so, return the file from the REST service.
     if request.accept.to_s.eql?("application/ld+json") || request.accept.to_s.eql?("application/json")
       headers['Content-Type'] = request.accept.to_s
       render text: @ontology.to_jsonld
       return
     end
+    
     # Explore the ontology links
     @metrics = @ontology.explore.metrics rescue []
     @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created} || []
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
     @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
-    # retrieve submissions in descending submissionId order, should be reverse chronological order.
+    @views = @ontology.explore.views.sort {|a,b| a.acronym.downcase <=> b.acronym.downcase } || []
+    
+    # Retrieve submissions in descending submissionId order (should be reverse chronological order)
     @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
-    # Get the latest submission, not necessarily the latest 'ready' submission
+    
+    # Get the latest submission (not necessarily the latest 'ready' submission)
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
-    @views = @ontology.explore.views.sort {|a,b| a.acronym.downcase <=> b.acronym.downcase } || []
+    
     if request.xhr?
       render :partial => 'metadata', :layout => false
     else
