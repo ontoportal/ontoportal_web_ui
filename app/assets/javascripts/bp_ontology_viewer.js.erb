@@ -194,6 +194,7 @@ function getConceptLinkEl(concept_id) {
 
 function showOntologyContent(content_section) {
   jQuery.bioportal.ont_pages[content_section].publish();
+  jQuery("#ont-" + content_section + "-tab").tab("show");
 }
 
 // Prevent the default behavior of clicking the ontology page links
