@@ -230,6 +230,7 @@ jQuery(document).ready(function() {
   if (typeof jQuery.bioportal.ont_pages[content_section].init === 'function') {
     jQuery.bioportal.ont_pages[content_section].init(jQuery.bioportal.ont_pages[content_section]);
   }
+  jQuery("#ont-" + content_section + "-tab").tab("show");
 
   // Retrieve AJAX content if not already displayed
   if ($.QueryString["skip_ajax_tabs"] != 'true') {

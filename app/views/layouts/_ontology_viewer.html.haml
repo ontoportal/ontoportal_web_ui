@@ -87,8 +87,8 @@
         %ul.nav.nav-pills.card-header-pills{id: "navbar-ontology", role: "tablist"}
           %li.nav-item 
             = link_to("Summary", ontology_path(@ontology.acronym, p: "summary"), |
-                id: "ont-summary-tab", class: "nav-link active", role: "tab", data: {bp_ont_page: "summary", toggle: "tab", target: "#ont_summary_content"}, |
-                aria: {controls: "ont_summary_content", selected: "true"}) |
+                id: "ont-summary-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "summary", toggle: "tab", target: "#ont_summary_content"}, |
+                aria: {controls: "ont_summary_content", selected: "false"}) |
           %li.nav-item 
             = link_to("Classes", ontology_path(@ontology.acronym, p: "classes"), |
                 id: "ont-classes-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "classes", toggle: "tab", target: "#ont_classes_content"}, |
