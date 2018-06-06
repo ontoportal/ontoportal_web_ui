@@ -54,8 +54,9 @@
         // We need to get everything using AJAX
         content_section = null;
       } else {
-        showOntologyContent(content_section);
-        document.title = jQuery.bioportal.ont_pages[content_section].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site;
+        var pane = jQuery(document).data().bp.ont_viewer.content_section;
+        showOntologyContent(pane);
+        document.title = jQuery.bioportal.ont_pages[pane].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site;
       }
     }
   });
