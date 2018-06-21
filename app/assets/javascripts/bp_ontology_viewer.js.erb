@@ -273,7 +273,7 @@ jQuery(document).ready(function() {
       jQuery.bioportal.ont_pages["summary"].retrieve();
     }
 
-    if (content_section !== "mappings") {
+    if (content_section !== "mappings" && metadataOnly !== "true") {
       jQuery.bioportal.ont_pages["mappings"].retrieve();
     }
 
