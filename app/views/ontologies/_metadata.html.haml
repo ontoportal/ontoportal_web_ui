@@ -11,15 +11,16 @@
         %dt Visibility
         %dd= strip_links(visibility_link(@ontology))
        
-        %dt Links
-        - if $PURL_ENABLED && !@ontology.summaryOnly
-          %dd
-            %ul
-              %li= link_to("#{$SITE} PURL".strip, @ontology.purl, class: "card-link")
-              - unless @submission_latest.nil?
-                %li= link_to("Homepage", @submission_latest.homepage, target: "_blank") unless @submission_latest.homepage.nil?
-                %li= link_to("Documentation", @submission_latest.documentation, target: "_blank") unless @submission_latest.documentation.nil?
-                %li= link_to("Publications", @submission_latest.publication, target: "_blank") unless @submission_latest.publication.nil?
+        - unless @ontology.summaryOnly
+          %dt Links
+          - if $PURL_ENABLED
+            %dd
+              %ul
+                %li= link_to("#{$SITE} PURL".strip, @ontology.purl, class: "card-link")
+                - unless @submission_latest.nil?
+                  %li= link_to("Homepage", @submission_latest.homepage, target: "_blank") unless @submission_latest.homepage.nil?
+                  %li= link_to("Documentation", @submission_latest.documentation, target: "_blank") unless @submission_latest.documentation.nil?
+                  %li= link_to("Publications", @submission_latest.publication, target: "_blank") unless @submission_latest.publication.nil?
 
         - if @ontology.viewing_restricted?
           %dt Viewing restriction
