@@ -90,26 +90,28 @@
             = link_to("Summary", ontology_path(@ontology.acronym, p: "summary"), |
                 id: "ont-summary-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "summary", toggle: "tab", target: "#ont_summary_content"}, |
                 aria: {controls: "ont_summary_content", selected: "false"}) |
-          %li.nav-item 
-            = link_to("Classes", ontology_path(@ontology.acronym, p: "classes"), |
-                id: "ont-classes-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "classes", toggle: "tab", target: "#ont_classes_content"}, |
-                aria: {controls: "ont_classes_content", selected: "false"}) |
-          %li.nav-item 
-            = link_to("Properties", ontology_path(@ontology.acronym, p: "properties"), |
-                id: "ont-properties-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "properties", toggle: "tab", target: "#ont_properties_content"}, |
-                aria: {controls: "ont_properties_content", selected: "false"}) |
+          - unless @ontology.summaryOnly
+            %li.nav-item 
+              = link_to("Classes", ontology_path(@ontology.acronym, p: "classes"), |
+                  id: "ont-classes-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "classes", toggle: "tab", target: "#ont_classes_content"}, |
+                  aria: {controls: "ont_classes_content", selected: "false"}) |
+            %li.nav-item 
+              = link_to("Properties", ontology_path(@ontology.acronym, p: "properties"), |
+                  id: "ont-properties-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "properties", toggle: "tab", target: "#ont_properties_content"}, |
+                  aria: {controls: "ont_properties_content", selected: "false"}) |
           %li.nav-item 
             = link_to("Notes", ontology_path(@ontology.acronym, p: "notes"), |
                 id: "ont-notes-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "notes", toggle: "tab", target: "#ont_notes_content"}, |
                 aria: {controls: "ont_notes_content", selected: "false"}) |
-          %li.nav-item
-            = link_to("Mappings", ontology_path(@ontology.acronym, p: "mappings"), |
-                id: "ont-mappings-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "mappings", toggle: "tab", target: "#ont_mappings_content"}, |
-                aria: {controls: "ont_mappings_content", selected: "false"}) |
-          %li.nav-item 
-            = link_to("Widgets", ontology_path(@ontology.acronym, p: "widgets"), |
-                id: "ont-widgets-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "widgets", toggle: "tab", target: "#ont_widgets_content"}, |
-                aria: {controls: "ont_widgets_content", selected: "false"}) |
+          - unless @ontology.summaryOnly
+            %li.nav-item
+              = link_to("Mappings", ontology_path(@ontology.acronym, p: "mappings"), |
+                  id: "ont-mappings-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "mappings", toggle: "tab", target: "#ont_mappings_content"}, |
+                  aria: {controls: "ont_mappings_content", selected: "false"}) |
+            %li.nav-item 
+              = link_to("Widgets", ontology_path(@ontology.acronym, p: "widgets"), |
+                  id: "ont-widgets-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "widgets", toggle: "tab", target: "#ont_widgets_content"}, |
+                  aria: {controls: "ont_widgets_content", selected: "false"}) |
       %div.card-body
         -# Tab panes for displaying ontology content sections
         %div.tab-content{id: "ontology_content"}
