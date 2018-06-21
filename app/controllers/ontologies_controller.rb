@@ -308,8 +308,16 @@ class OntologiesController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     not_found if @ontology.nil?
 
+    # Retrieve submissions in descending submissionId order (should be reverse chronological order)
+    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
+    LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
+
     # Get the latest submission (not necessarily the latest 'ready' submission)
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
+
+    # Is the ontology downloadable?
+    restrict_downloads = $NOT_DOWNLOADABLE
+    @ont_restricted = restrict_downloads.include? @ontology.acronym
 
     # Fix parameters to only use known pages
     params[:p] = nil unless KNOWN_PAGES.include?(params[:p])
@@ -361,14 +369,9 @@ class OntologiesController < ApplicationController
     
     # Explore the ontology links
     @metrics = @ontology.explore.metrics rescue []
-    @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created} || []
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
     @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
     @views = @ontology.explore.views.sort {|a,b| a.acronym.downcase <=> b.acronym.downcase } || []
-    
-    # Retrieve submissions in descending submissionId order (should be reverse chronological order)
-    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
-    LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
     
     if request.xhr?
       render :partial => 'metadata', :layout => false

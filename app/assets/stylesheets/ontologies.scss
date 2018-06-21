@@ -1,0 +1,80 @@
+$ont-metadata-bg-color: #e2ebf0; 
+
+@media screen and (max-width: 992px) {
+  .ont-metadata-card {
+    margin-bottom: 15px;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .ont-metadata {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 15px;
+  }
+}
+
+.ont-metadata-card {
+  header {
+    background-color: $ont-metadata-bg-color;
+    padding: 15px 36px;
+  }
+
+  dt {
+    color: #737373;
+  }
+
+  dd {
+    font-size: .9em;
+    padding-left: 10px;
+  }
+
+  ul {
+    margin-bottom: 0;
+  }
+
+  li {
+    list-style: none;
+  }
+
+  thead tr th {
+    border-top: none;
+  }
+}
+
+.ont-details-card {
+  grid-column: 1 / span 2;
+}
+
+.ont-metrics-card {
+  grid-column: 3 / span 2;
+}
+
+.ont-subs-card {
+  grid-column: 1 / span 4;
+  grid-row: 2;
+}
+
+.ont-analytics-card {
+  grid-column: 1 / span 4;
+  grid-row: 4;
+}
+
+.ont-views-card {
+  grid-column: 3 / span 2;
+  grid-row: 3;
+}
+
+.ont-projects-card {
+  grid-column: 1 / span 2;
+  grid-row: 3;
+
+  ul li {
+    list-style-type: circle;
+    list-style-position: inside;
+  }
+}
+
+.ontologies.show div.card-body a.btn.btn-secondary.btn-sm i.fa.fa-lg {
+  margin-left: .5em;
+}

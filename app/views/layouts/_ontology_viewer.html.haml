@@ -59,21 +59,22 @@
         - if details_available
           %p.card-text
             = sanitize(sub.description)
-        - if !$PURL_ENABLED.nil? && $PURL_ENABLED && !@ontology.summaryOnly
-          = link_to("#{$SITE} PURL".strip, @ontology.purl, class: "card-link")
-        - if details_available
-          - unless sub.homepage.nil?
-            = link_to("Ontology homepage", sub.homepage, class: "card-link", target: "_blank")
-          - unless sub.documentation.nil?
-            = link_to("Documentation", sub.documentation, class: "card-link", target: "_blank")
-          - unless sub.publication.nil?
-            = link_to("Publications", sub.publication, class: "card-link", target: "_blank")
-      - if @ontology.admin?(session[:user])
-        %div.card-body
-          = link_to("Edit ontology details", edit_ontology_path(@ontology.acronym), class: "btn btn-secondary btn-sm")
-          = link_to("Add submission", new_ontology_submission_path(@ontology.acronym), class: "btn btn-secondary btn-sm")
+      %div.card-body
+        - unless (@ontology.summaryOnly || @ont_restricted || @submissions.empty?)
+          = link_to(@submissions.first.id + "/download?apikey=#{get_apikey}", class: "btn btn-secondary btn-sm") do
+            Download latest version
+            %i.fa.fa-lg.fa-arrow-circle-down
+        - if @ontology.admin?(session[:user])
+          = link_to(edit_ontology_path(@ontology.acronym), class: "btn btn-secondary btn-sm") do
+            Edit ontology details
+            %i.fa.fa-lg.fa-pencil-square
+          = link_to(new_ontology_submission_path(@ontology.acronym), class: "btn btn-secondary btn-sm") do
+            Add submission
+            %i.fa.fa-lg.fa-plus-circle
           - unless (@submission_latest.nil? || (@submission_latest.respond_to?(:status) && @submission_latest.status == 404))
-            = link_to("Edit latest submission (#{@submission_latest.version})", edit_ontology_submission_path(@ontology.acronym, @submission_latest.submissionId), class: "btn btn-secondary btn-sm")
+            = link_to(edit_ontology_submission_path(@ontology.acronym, @submission_latest.submissionId), class: "btn btn-secondary btn-sm") do
+              = "Edit latest submission (#{@submission_latest.version})"
+              %i.fa.fa-lg.fa-pencil-square
       - if (details_available && !sub.released.nil?)
         %div.card-footer.text-muted
           Last uploaded:
@@ -112,7 +113,7 @@
       %div.card-body
         -# Tab panes for displaying ontology content sections
         %div.tab-content{id: "ontology_content"}
-          %div.tab-pane.active{id: "ont_summary_content", role: "tabpanel", aria: {labelledby: "ont-summary-tab"}}
+          %div.tab-pane{id: "ont_summary_content", role: "tabpanel", aria: {labelledby: "ont-summary-tab"}}
             - if content_section.eql?("summary")
               = yield
           %div.tab-pane{id: "ont_classes_content", role: "tabpanel", aria: {labelledby: "ont-classes-tab"}}
