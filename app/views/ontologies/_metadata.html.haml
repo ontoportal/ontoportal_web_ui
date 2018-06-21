@@ -43,17 +43,18 @@
           %dd= @submission_latest.hasOntologyLanguage
           %dt Contact
           %dd= raw @submission_latest.contact.map {|c| [c.name, c.email].join(", ") if c.member?(:name) && c.member?(:email)}.join("<br/>")
-          - categories_hash = LinkedData::Client::Models::Category.all_to_hash
-          - categories = @ontology.hasDomain
-          - unless categories.empty?
-            %dt Categories
-            %dd= categories.map {|c| categories_hash[c].name}.sort.join(", ")
-          - groups_hash = LinkedData::Client::Models::Group.all_to_hash
-          - groups = @ontology.group
-          - unless groups.empty?
-            %dt Groups
-            %dd= groups.map {|g| groups_hash[g].name}.sort.join(", ")
-          = raw additional_details
+        
+        - categories_hash = LinkedData::Client::Models::Category.all_to_hash
+        - categories = @ontology.hasDomain
+        - unless categories.empty?
+          %dt Categories
+          %dd= categories.map {|c| categories_hash[c].name}.sort.join(", ")
+        - groups_hash = LinkedData::Client::Models::Group.all_to_hash
+        - groups = @ontology.group
+        - unless groups.empty?
+          %dt Groups
+          %dd= groups.map {|g| groups_hash[g].name}.sort.join(", ")
+        = raw additional_details
 
   -# Metrics pane
   %section.border.rounded.ont-metadata-card.ont-metrics-card
