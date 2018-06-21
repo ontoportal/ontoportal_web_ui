@@ -5,7 +5,8 @@
     date: {
       formats: {
         year_month_day_concise: '%Y-%m-%d', # 2017-03-01
-        month_day_year: '%b %-d, %Y' # Mar 1, 2017
+        month_day_year: '%b %-d, %Y', # Mar 1, 2017
+        monthfull_day_year: '%B %-d, %Y' # March 1, 2017
       } 
     },
 

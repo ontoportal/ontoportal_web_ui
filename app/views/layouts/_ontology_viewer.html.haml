@@ -78,7 +78,7 @@
       - if (details_available && !sub.released.nil?)
         %div.card-footer.text-muted
           Last uploaded:
-          = xmldatetime_to_date(sub.creationDate)
+          = l(Date.parse(sub.creationDate), format: :monthfull_day_year)
 
 %div.row.pb-2
   %div.col
