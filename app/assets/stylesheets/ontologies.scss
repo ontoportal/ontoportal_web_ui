@@ -1,5 +1,7 @@
 $ont-metadata-bg-color: #e2ebf0; 
 
+/* Summary pane */
+
 @media screen and (max-width: 992px) {
   .ont-metadata-card {
     margin-bottom: 15px;
@@ -77,4 +79,15 @@ $ont-metadata-bg-color: #e2ebf0;
 
 .ontologies.show div.card-body a.btn.btn-secondary.btn-sm i.fa.fa-lg {
   margin-left: .5em;
+}
+
+/* Properties pane */
+
+#propTree a {
+  font-family: "Myriad Pro","Myriad Web Pro","Myriad Web","Myriad","Trebuchet MS","Tahoma","Helvetica","Arial",sans-serif;
+  font: small/1.231 arial,helvetica,clean,sans-serif;
+}
+
+#ont_properties .container {
+  background: none !important;
 }
