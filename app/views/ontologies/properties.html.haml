@@ -1,83 +1,66 @@
-#ont_properties.bd_content.explore
-  .sidebar
-    %div#propTree
-
-    %div{style: "clear:both;"}
-
-  .container
-    #prop_contents
-    %div{style: "clear:both;"}
-
-%div{style: "clear: both;"}
+%div.ont-properties
+  %div#propTree
+  %div#prop_contents
 
 :plain
   <script id="property-details" type="text/x-handlebars-template">
-    <div style="padding: 1%; width: 98%;">
-      <table cellpadding="0" cellspacing="0" class="minimal concept_details" width="100%">
-        {{#if label}}
-          <tr>
-            <td class="label">
-              Labels
-            </td>
-            <td>
-              <p>
-                {{label}}&nbsp;
-              </p>
-            </td>
-          </tr>
-        {{/if}}
-        {{#if definition}}
-          <tr>
-            <td class="label">
-              Definitions
-            </td>
-            <td>
-              <p>
-                {{definition}}&nbsp;
-              </p>
-            </td>
-          </tr>
-        {{/if}}
+    <table cellpadding="0" cellspacing="0" class="minimal concept_details" width="98%">
+      {{#if label}}
         <tr>
-          <td class="label">ID</td>
+          <td class="label">
+            Labels
+          </td>
           <td>
             <p>
-              {{id}}&nbsp;
+              {{label}}&nbsp;
             </p>
           </td>
         </tr>
-        {{#if parents}}
-          <tr>
-            <td class="label">Parent</td>
-            <td>
-              <p>
-                {{parents}}&nbsp;
-              </p>
-            </td>
-          </tr>
-        {{/if}}
-      </table>
-    </div>
+      {{/if}}
+      {{#if definition}}
+        <tr>
+          <td class="label">
+            Definitions
+          </td>
+          <td>
+            <p>
+              {{definition}}&nbsp;
+            </p>
+          </td>
+        </tr>
+      {{/if}}
+      <tr>
+        <td class="label">ID</td>
+        <td>
+          <p>
+            {{id}}&nbsp;
+          </p>
+        </td>
+      </tr>
+      {{#if parents}}
+        <tr>
+          <td class="label">Parent</td>
+          <td>
+            <p>
+              {{parents}}&nbsp;
+            </p>
+          </td>
+        </tr>
+      {{/if}}
+    </table>
   </script>
 
 :javascript
   jQuery(document).data().bp.ontPropertiesTab = {};
 
   jQuery(document).data().bp.ontPropertiesTab.init = function() {
-    jQuery("#ont_properties").splitter({
-      sizeLeft: 400,
-      resizeToWidth: true
-    });
-
-    var content_width = jQuery("#ontology_content").width();
-    jQuery("#ont_properties").width(content_width);
-
     var source = jQuery("#property-details").html();
     var propDetailsTemp = Handlebars.compile(source);
 
     $("#propTree").NCBOPropertyTree({
       ontology: "#{@ontology.acronym}",
       ncboUIURL: jQuery(document).data().bp.config.ui_url,
+      width: "100%",
       onInit: function() {
         var ontPropTree = $("#propTree").data().NCBOPropertyTree;
         var data = $("#propTree").find("a:first").data();

@@ -88,6 +88,19 @@ $ont-metadata-bg-color: #e2ebf0;
   font: small/1.231 arial,helvetica,clean,sans-serif;
 }
 
-#ont_properties .container {
-  background: none !important;
+.ont-properties {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  grid-column-gap: 15px;
+}
+
+#propTree {
+  grid-column: 1;
+  overflow-x: auto;
+  white-space: nowrap;
+  border-right: 1px solid #ccc;
+}
+
+#prop_contents {
+  grid-column: 2;
 }
