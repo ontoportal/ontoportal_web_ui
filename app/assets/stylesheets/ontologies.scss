@@ -1,4 +1,15 @@
-$ont-metadata-bg-color: #e2ebf0; 
+$ont-metadata-bg-color: #e2ebf0;
+
+.ontologies.show .gutter {
+  background-color: rgba(0, 0, 0, 0.03);
+  background-repeat: no-repeat;
+  background-position: center;
+
+  &.gutter-horizontal {
+    cursor: col-resize;
+    background-image: image-url('split/vertical.png');
+  }
+}
 
 /* Summary pane */
 
@@ -89,18 +100,11 @@ $ont-metadata-bg-color: #e2ebf0;
 }
 
 .ont-properties {
-  display: grid;
-  grid-template-columns: 30% 70%;
-  grid-column-gap: 15px;
+  display: flex;
+  flex-direction: row;
 }
 
 #propTree {
-  grid-column: 1;
   overflow-x: auto;
   white-space: nowrap;
-  border-right: 1px solid #ccc;
-}
-
-#prop_contents {
-  grid-column: 2;
 }
