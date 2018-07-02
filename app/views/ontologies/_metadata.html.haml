@@ -148,6 +148,8 @@
     %div{style: "padding: 24px 36px;"}
       - if @projects.empty?
         %p.font-italic= "No projects using #{@ontology.acronym}"
+      - elsif @projects.size == 1
+        %p= link_to(@projects.first.name, project_path(@projects.first.acronym))
       - else
         %ul
           - for project in @projects
