@@ -239,6 +239,7 @@ h1 a:hover, h2 a:hover {
   border-top:1px solid #e9eaeb;
   padding-left:0;
 }
+
 .sidebar {
   float:left;
   width:25%;
@@ -248,18 +249,7 @@ h1 a:hover, h2 a:hover {
   height:600px;
   min-width:250px;
 }
-.sidebar #sd_hd {
-  background:#dadde0;
-  height:24px;
-  border-bottom:1px solid #bcc6d0;
-  display:block;
-  float:left;
-  width:100%;
-}
-.sidebar #sd_hd h2 {
-  padding:5px 0 0 25px;
-  font-weight:normal;
-}
+
 .sidebar #sd_content {
   display:block;
   overflow:auto;
