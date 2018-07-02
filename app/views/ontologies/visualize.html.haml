@@ -117,9 +117,6 @@
     %input{:name => "search[ontologies][]", :type => "hidden", :value => @ontology.acronym}/
     = hidden_field :search, :search_type, :value=>"contains"
     = hidden_field :search, :keyword, :value=>"",:id=>"search_keyword"
-  / Create mapping UI
-  #create_mapping{:style => "left: -99999px; position: absolute;"}
-    =# TODO_REV: Mappings support (create mapping) render :partial => '/mappings/new_form', :locals => { :ontology_from => @ontology.id, :concept_from => @concept.fullId }
 - else # found an error
   = "<div id=\"error\"><h2>#{@error}</h2></div>"
 
