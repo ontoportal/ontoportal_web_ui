@@ -8,10 +8,6 @@
         Jump To:
         %input#search_box{:size => "30", :type => "textbox"}/
         %input#jump_to_concept_id{:type => "hidden"}/
-        / TODO_REV: Flat ontology support
-        -# if @ontology.flat?
-        /  #flat_help{:style => "padding: 5px; background-color: #DADDE0; color: black;"}
-        /    This ontology cannot be displayed as a tree. You can use the "Jump To" field to search for and display classes.
       #sd_content.sd_max_height
         = loading_spinner(true)
       %div{:style => "clear:both;"}
