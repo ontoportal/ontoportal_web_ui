@@ -380,7 +380,6 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
   jQuery.bioportal.ont_pages = [];
 
   jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=classes&ajax=true" + jQuery(document).data().bp.ont_viewer.concept_param, "Problem retrieving classes", jQuery(document).data().bp.ont_viewer.ontology_name + jQuery(document).data().bp.ont_viewer.concept_name_title + " - Classes", "Classes", function() {
-    jQuery(document).data().bp.classesTab.classes_init();
     jQuery(document).data().bp.classesTab.search_box_init();
     setupNotesFacebox();
   });

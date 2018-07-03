@@ -80,25 +80,6 @@
     return obsolete_prefix + row0_markup + matchType + obsolete_suffix;
   }
 
-  jQuery(document).data().bp.classesTab.classes_init = function(){
-    Split(['div#bd_content .sidebar', 'div#bd_content .cls-info-container'], {
-      elementStyle: function (dimension, size, gutterSize) {
-        return {
-          'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
-        }
-      },
-      gutterStyle: function (dimension, gutterSize) {
-        return {
-          'flex-basis':  gutterSize + 'px'
-        }
-      },
-      gutterSize: 10,
-      direction: "horizontal",
-      sizes: [25, 75],
-      cursor: "col-resize"
-    })
-  }
-
   // The tab system
   jQuery(".tab").live("click", function(){
     var tabId = jQuery(this).children("a:first").attr("href").replace("#", "");
