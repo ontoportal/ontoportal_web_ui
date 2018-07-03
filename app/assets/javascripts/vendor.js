@@ -25,7 +25,6 @@
 //= require ajax-chosen
 //= require superfish
 //= require jquery.cookie
-//= require splitter
 //= require autocomplete
 //= require jquery.hoverIntent
 //= require jquery.simple.tree

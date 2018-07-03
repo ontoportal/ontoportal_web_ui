@@ -92,6 +92,18 @@ $ont-metadata-bg-color: #e2ebf0;
   margin-left: .5em;
 }
 
+/* Classes pane */
+
+div#bd_content {
+  display: flex;
+  flex-direction: row;
+}
+
+div#bd_content .sidebar {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
 /* Properties pane */
 
 #propTree a {

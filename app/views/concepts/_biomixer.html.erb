@@ -20,9 +20,8 @@ jQuery(document).data().bp.biomixer_fullscreen = {
 
 
 jQuery(document).data().bp.biomixer_fullscreen.toggle = function(toggle) {
-  jQuery("#nav_ontology")[toggle]();
   jQuery("#bd_content .sidebar")[toggle]();
-  jQuery("#bd_content .vsplitbar")[toggle]();
+  jQuery("#bd_content .gutter")[toggle]();
   jQuery("#bd_content .cls-info-container .tabs")[toggle]();
   jQuery(document).data().bp.biomixer_fullscreen.heights(toggle === 'show');
 }

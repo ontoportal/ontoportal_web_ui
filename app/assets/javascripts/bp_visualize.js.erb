@@ -81,25 +81,22 @@
   }
 
   jQuery(document).data().bp.classesTab.classes_init = function(){
-    // Override the side of the bd_content div to avoid problems with
-    // the window resizing, which can sometimes cause the right-hand content div to drop down
-    var bd_content_width = jQuery("#ontology_content").width();
-    jQuery("#bd_content").width(bd_content_width);
-
-    // Size the content window
-    var iframeHeight = jQuery(window).height() - jQuery("#bd_content .cls-info-container").offset().top - 110;
-    jQuery("#bd_content .cls-info-container").css("width", "100%").css("height", iframeHeight);
-    jQuery("#bd .bd_content .cls-info-container #contents").css("max-height", iframeHeight);
-    jQuery("#bd .sd_max_height").css("max-height", iframeHeight);
-
-    // Split bar
-    if (jQuery("#bd_content").find(".vsplitbar").length == 0) {
-      jQuery("#bd_content").splitter({
-        sizeLeft: 400,
-        resizeToWidth: true,
-        cookie: "vsplitbar_position"
-      });
-    }
+    Split(['div#bd_content .sidebar', 'div#bd_content .cls-info-container'], {
+      elementStyle: function (dimension, size, gutterSize) {
+        return {
+          'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
+        }
+      },
+      gutterStyle: function (dimension, gutterSize) {
+        return {
+          'flex-basis':  gutterSize + 'px'
+        }
+      },
+      gutterSize: 10,
+      direction: "horizontal",
+      sizes: [25, 75],
+      cursor: "col-resize"
+    })
   }
 
   // The tab system
