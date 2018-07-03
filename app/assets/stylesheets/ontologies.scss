@@ -104,6 +104,13 @@ div#bd_content .sidebar {
   white-space: nowrap;
 }
 
+input#search_box:focus {
+  border-color: #ced4da;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
 /* Properties pane */
 
 #propTree a {
