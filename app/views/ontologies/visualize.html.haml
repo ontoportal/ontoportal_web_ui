@@ -8,7 +8,7 @@
       %div#qsearch.input-group.pb-2
         %div.input-group-prepend
           %span.input-group-text Jump to:
-        = text_field_tag("search_box", nil, class: "form-control", aria: {label: "Jump to:"})
+        = text_field_tag("search_box", nil, class: "form-control rounded-right", aria: {label: "Jump to:"})
         = hidden_field_tag("jump_to_concept_id")
       -# Class tree
       %div#sd_content
