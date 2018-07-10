@@ -1,4 +1,5 @@
 $ont-metadata-bg-color: #e2ebf0;
+$widget-table-border-color: #EFEFEF;
 
 .ontologies.show .gutter {
   background-color: rgba(0, 0, 0, 0.03);
@@ -154,4 +155,26 @@ $ont-metadata-bg-color: #e2ebf0;
 #propTree {
   overflow-x: auto;
   white-space: nowrap;
+}
+
+/* Widgets pane */
+
+#widget_table {
+  td {
+    border: 1px solid $widget-table-border-color;
+    padding: 10px;
+    vertical-align: top;
+  }
+
+  th {
+    border: 1px solid $widget-table-border-color;
+    font-size: 15px;
+    font-weight: bold;
+    background-color: #f5fafa;
+    padding: 5px;
+  }
+}
+
+#widgets_content .card {
+  border: none;
 }
