@@ -140,6 +140,10 @@ $widget-table-border-color: #EFEFEF;
   overflow: auto;
 }
 
+#mappings_top.tab {
+  border-right: 1px solid #bcc6d0;
+}
+
 /* Properties pane */
 
 #propTree a {

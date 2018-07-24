@@ -100,9 +100,8 @@
             /    %li#resource_index_top{:onclick => "return false;"}
             /      %a{:href => "", :onclick => "return false;", :style => "color: gray;"} Resource Index
             - if $PURL_ENABLED
-              %span{:style => "float: right;"}
-                = link_to(@current_purl, id: "class_permalink", title: "Get a permanent link to this class", aria: {label: "Get a permanent link to this class"}) do
-                  %i{class: "fa fa-link", aria: {hidden: "true"}}
+              = link_to(@current_purl, id: "class_permalink", title: "Get a permanent link to this class", aria: {label: "Get a permanent link to this class"}) do
+                %i{class: "fa fa-link", aria: {hidden: "true"}}
         #contents
           #details_content.tab_container= render :partial =>'/concepts/details'
           #visualization_content.tab_container.not_visible= render :partial =>'/concepts/biomixer'
