@@ -1090,8 +1090,14 @@ button.fg-button-menu, button.fg-button {
 /************************************
  * Top navigation bar
  ************************************/
-#topNavLoginLink {
+.btn-bp-login {
   color: #C58612;
+  border-color: #C58612 !important;
+
+  &:hover {
+    color: #234979;
+    background-color: #C58612;
+  }
 }
 
 .navbar-custom {

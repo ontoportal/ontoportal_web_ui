@@ -24,7 +24,7 @@
     %ul.navbar-nav
       - if session[:user].nil?
         %li.nav-item
-          = link_to("Login", login_index_path(redirect: request.original_url), id: "topNavLoginLink", class: "nav-link")
+          = link_to("Login", login_index_path(redirect: request.original_url), class: "btn btn-bp-login mr-md-2")
       - else
         -# Account menu
         %li.nav-item.dropdown
