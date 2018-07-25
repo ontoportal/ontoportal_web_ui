@@ -49,6 +49,19 @@
         = submit_tag("Create Mapping", class: "btn btn-default", id: "create_mapping_button")
         %button{type: "button", class: "btn btn-default", "data-dismiss": "modal"} Close
 
+-# Modal dialog for getting a permanent link to a class (must reside in a top-level position in the document to display properly).
+%div#classPermalinkModal{class: "modal fade", tabindex: "-1", role: "dialog", aria: {labelledby: "classPermalinkLabel", hidden: "true"}}
+  %div.modal-dialog.modal-dialog-centered.modal-lg{role: "document"}
+    %div.modal-content
+      %div.modal-header
+        %h5#classPermalinkLabel.modal-title Permanent link to this class
+        %button.close{type: "button", "data-dismiss": "modal", "aria-label": "Close"}
+          %span{"aria-hidden": "true"} &times;
+      %div.modal-body
+        = text_field_tag("purl_input", nil, class: "form-control")
+      %div.modal-footer
+        %button.btn.btn-secondary{"data-dismiss": "modal"} Close
+
 -# A header of sorts to display ontology name and subset of details.
 %div.row.pt-md-4.pb-2
   %div.col

@@ -165,18 +165,13 @@
       }
     }
 
-    // Javascript for the permalink box
-    jQuery("#close_permalink").live("click", function(){
-      jQuery("#purl_link_container").hide();
-    });
+    jQuery("#classPermalinkModal").on("shown.bs.modal", function (e) {
+      var currentPurl = jQuery("a.class-permalink").data("current-purl");
+      jQuery("#purl_input").val(currentPurl);
+    })
 
-    jQuery("#class_permalink").live("click", function(e){
-      e.preventDefault();
-      jQuery("#purl_link_container").show();
-    });
-
-    jQuery("#purl_input").live("focus", function(){
-      this.select();
+    jQuery("#purl_input").on("click", function () {
+      jQuery(this).select();
     });
   });
 })(window);

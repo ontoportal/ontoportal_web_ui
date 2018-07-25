@@ -101,11 +101,10 @@ function nodeClicked(node_id) {
   setConcept(node_id);
 
   // Deal with permalink
-  jQuery("#purl_link_container").hide();
   var concept_uri = (node_id.indexOf("http://") == 0 || node_id.indexOf(encodeURIComponent("http://")) == 0 );
   var purl_anchor = concept_uri ? "?conceptid="+node_id : "/"+node_id;
   var selectedTab = jQuery("#bd_content div.tabs li.selected a").attr("href").slice(1);
-  jQuery("#purl_input").val(jQuery(document).data().bp.ont_viewer.purl_prefix + purl_anchor);
+  jQuery("a.class-permalink").data("current-purl", jQuery(document).data().bp.ont_viewer.purl_prefix + purl_anchor);
 
   if (getCache(node_id) != null) {
     var tabData = getCache(node_id);
