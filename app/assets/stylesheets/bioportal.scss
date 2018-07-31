@@ -242,10 +242,6 @@ h1 a:hover, h2 a:hover {
   border-left:1px solid #ccc;
 }
 
-#footer_wrapper a {
-  color: #F5FAFA;
-}
-
 /* Tables */
 
 .minimal {
@@ -1248,8 +1244,6 @@ p.tab_description {
   margin-bottom: 10px;
 }
 
-
-
 input.link_button, a.link_button {
   font-size: 10pt;
   padding: 0.25em 0.5em !important;
@@ -1289,14 +1283,6 @@ a.link_button > span.ui-button-text {
 }
 
 /************************************
- * Footnotes
- ************************************/
-div#footnotes_debug {
-  background-color: white;
-  padding: 1em 0;
-}
-
-/************************************
  * Truncate more/less
  ************************************/
 .truncated_less {
@@ -1318,7 +1304,6 @@ a.truncated_less, a.truncated_more {
   border: 1px solid white !important;
   background-color: white;
 }
-
 
 .chzn-container ul li input {
   font-style: oblique;
