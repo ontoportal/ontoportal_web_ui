@@ -76,7 +76,7 @@
         - unless (@ontology.summaryOnly || @ont_restricted || @submissions.empty?)
           = link_to(@submissions.first.id + "/download?apikey=#{get_apikey}", class: "btn btn-secondary btn-sm") do
             Download latest version
-            %i.fas.fa-lg.fa-file-download
+            %i.fas.fa-lg.fa-download
         - if @ontology.admin?(session[:user])
           = link_to(edit_ontology_path(@ontology.acronym), class: "btn btn-secondary btn-sm") do
             Edit ontology details
