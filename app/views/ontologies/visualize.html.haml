@@ -101,7 +101,7 @@
             /      %a{:href => "", :onclick => "return false;", :style => "color: gray;"} Resource Index
             - if $PURL_ENABLED
               = link_to("#classPermalinkModal", class: "class-permalink", title: "Get a permanent link to this class", aria: {label: "Get a permanent link to this class"}, data: {toggle: "modal", current_purl: "#{@current_purl}"}) do
-                %i{class: "fa fa-link", aria: {hidden: "true"}}
+                %i{class: "fas fa-link", aria: {hidden: "true"}}
         #contents
           #details_content.tab_container= render :partial =>'/concepts/details'
           #visualization_content.tab_container.not_visible= render :partial =>'/concepts/biomixer'

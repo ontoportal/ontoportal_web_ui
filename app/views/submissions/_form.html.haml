@@ -127,7 +127,7 @@
       = text_field(:submission, :released, id: "datepicker", value: "#{l(release_date, format: :month_day_year)}", required: true, class: "form-control", readonly: "readonly")
       %div.input-group-append
         %span.input-group-text
-          %i{class: "fa fa-calendar fa-lg", aria: {hidden: "true"}}
+          %i{class: "fas fa-calendar-alt fa-lg", aria: {hidden: "true"}}
 
 -# Location
 %div#submissionLocation.form-group.row
@@ -186,7 +186,7 @@
           %label Email
           = text_field :submission, :"contact[#{i}][email]", value: contact["email"], class: "form-control flex-grow-1 mx-2"
           %button.btn.btn-success.add-contact
-            %i{class: "fa fa-plus fa-lg", aria: {hidden: "true"}}
+            %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}
       - else
         -# TODO
         -# Secondary contacts need to be offset by 2 columns, and have a delete button.
@@ -196,9 +196,9 @@
           %label Email
           = text_field :submission, :"contact[#{i}][email]", value: contact["email"], class: "form-control flex-grow-1 mx-2"
           %button.btn.btn-success.add-contact
-            %i{class: "fa fa-plus fa-lg", aria: {hidden: "true"}}
+            %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}
           %button.btn.btn-danger.ml-1.remove-contact
-            %i{class: "fa fa-minus fa-lg", aria: {hidden: "true"}}
+            %i{class: "fas fa-minus fa-lg", aria: {hidden: "true"}}
   - else
     -# TODO
     %div.col-sm-10.d-flex.align-items-center.contact
@@ -207,7 +207,7 @@
       %label Email:
       = text_field :submission, :"contact[0][email]", class: "form-control flex-grow-1 mx-2"
       %button.btn.btn-success.add-contact
-        %i{class: "fa fa-plus fa-lg", aria: {hidden: "true"}}      
+        %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}      
 
 -# Home page
 %div.form-group.row

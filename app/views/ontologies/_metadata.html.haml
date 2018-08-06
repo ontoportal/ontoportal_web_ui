@@ -61,7 +61,7 @@
     %header.font-weight-bold 
       Metrics
       = link_to("http://www.bioontology.org/wiki/index.php/Ontology_Metrics", target: "_blank", aria: {label: "View individual metrics definitions"}, title: "View individual metrics definitions") do
-        %i.fa.fa-lg.fa-question-circle{aria: {hidden: "true"}, style: "margin-left: .25em"}
+        %i.fas.fa-lg.fa-question-circle{aria: {hidden: "true"}, style: "margin-left: .25em"}
     %div{style: "padding: 24px 36px;"}
       - if @metrics.nil? || (@metrics.is_a?(Array) && @metrics.empty?) || (@metrics.respond_to?(:status) && @metrics.status == 404)
         %p.font-italic= "We have not yet calculated metrics for #{@ontology.acronym}"
@@ -107,7 +107,7 @@
       Analytics
       - if visits_data
         = link_to(@ontology.links["analytics"] + "?apikey=#{get_apikey}&format=csv", aria: {label: "Download as CSV"}, title: "Download as CSV") do
-          %i.fa.fa-lg.fa-download{aria: {hidden: "true"}, style: "margin-left: .5em"}
+          %i.fas.fa-lg.fa-download{aria: {hidden: "true"}, style: "margin-left: .25em"}
     %div{style: "padding: 15px 15px;"}
       = render partial: "visits"
 

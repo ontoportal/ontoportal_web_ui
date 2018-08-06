@@ -34,7 +34,7 @@
                 = text_field_tag("query", nil, class: "form-control", placeholder: placeholder)
                 %div.input-group-append
                   = button_tag(type: "submit", class: "btn btn-primary", aria: {label: "Search for a class"}) do
-                    %i{class: "fa fa-search fa-lg", aria: {hidden: "true"}}              
+                    %i{class: "fas fa-search fa-lg", aria: {hidden: "true"}}              
               %a{:href => "/search?opt=advanced"} Advanced Search
         -# Search for an ontology
         %div.card
@@ -45,7 +45,7 @@
               = text_field_tag("ontology", nil, id: "find_ontology", class: "form-control", data: {ontologynames: @ontology_names}, placeholder: t(".find_ontology_placeholder"))
               %div.input-group-append
                 = button_tag(class: "btn btn-primary", onclick: "jumpToValueOntology()", aria: {label: "Find an ontology"}) do
-                  %i{class: "fa fa-search fa-lg", aria: {hidden: "true"}}
+                  %i{class: "fas fa-search fa-lg", aria: {hidden: "true"}}
             %ul.sf-menu.sf-vertical
               %li
                 = link_to("Browse Ontologies", "#", style: "white-space: nowrap; padding: 0px; background: #fff; border: 1px solid #fff;")

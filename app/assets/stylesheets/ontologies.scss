@@ -89,8 +89,10 @@ $widget-table-border-color: #EFEFEF;
   }
 }
 
-.ontologies.show div.card-body a.btn.btn-secondary.btn-sm i.fa.fa-lg {
-  margin-left: .5em;
+.ontologies.show {
+  i.fas.fa-lg, i.far.fa-lg {
+    margin-left: .5em;
+  }
 }
 
 /* Classes pane */

@@ -76,18 +76,18 @@
         - unless (@ontology.summaryOnly || @ont_restricted || @submissions.empty?)
           = link_to(@submissions.first.id + "/download?apikey=#{get_apikey}", class: "btn btn-secondary btn-sm") do
             Download latest version
-            %i.fa.fa-lg.fa-arrow-circle-down
+            %i.fas.fa-lg.fa-file-download
         - if @ontology.admin?(session[:user])
           = link_to(edit_ontology_path(@ontology.acronym), class: "btn btn-secondary btn-sm") do
             Edit ontology details
-            %i.fa.fa-lg.fa-pencil-square
+            %i.far.fa-lg.fa-edit
           = link_to(new_ontology_submission_path(@ontology.acronym), class: "btn btn-secondary btn-sm") do
             Add submission
-            %i.fa.fa-lg.fa-plus-circle
+            %i.fas.fa-lg.fa-plus-circle
           - unless (@submission_latest.nil? || (@submission_latest.respond_to?(:status) && @submission_latest.status == 404))
             = link_to(edit_ontology_submission_path(@ontology.acronym, @submission_latest.submissionId), class: "btn btn-secondary btn-sm") do
               = "Edit latest submission (#{@submission_latest.version})"
-              %i.fa.fa-lg.fa-pencil-square
+              %i.far.fa-lg.fa-edit
       - if (details_available && !sub.released.nil?)
         %div.card-footer.text-muted
           Last uploaded:
