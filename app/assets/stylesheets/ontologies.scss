@@ -1,5 +1,6 @@
 $ont-metadata-bg-color: #e2ebf0;
 $widget-table-border-color: #EFEFEF;
+$ont-show-bg-color: #e9ecef;
 
 .ontologies.show .gutter {
   background-color: rgba(0, 0, 0, 0.03);
@@ -10,6 +11,20 @@ $widget-table-border-color: #EFEFEF;
     cursor: col-resize;
     background-image: image-url('split/vertical.png');
   }
+}
+
+.ontologies.show {
+  i.fas.fa-lg, i.far.fa-lg {
+    margin-left: .5em;
+  }
+
+  #bd {
+    background-color: $ont-show-bg-color;
+  }
+}
+
+body.ontologies.show {
+  background-color: $ont-show-bg-color;
 }
 
 /* Summary pane */
@@ -86,12 +101,6 @@ $widget-table-border-color: #EFEFEF;
   ul li {
     list-style-type: circle;
     list-style-position: inside;
-  }
-}
-
-.ontologies.show {
-  i.fas.fa-lg, i.far.fa-lg {
-    margin-left: .5em;
   }
 }
 
