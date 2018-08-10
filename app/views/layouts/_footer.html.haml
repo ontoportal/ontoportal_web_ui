@@ -27,9 +27,15 @@
       %div.col-12.col-md
         %h6 CONNECT
         %ul.list-inline
-          %li.list-inline-item= link_to(raw(icon('fab', 'facebook-f', class: 'fa-2x')), 'https://www.facebook.com/National-Center-for-Biomedical-Ontology-127444774011153/', target: '_blank')
-          %li.list-inline-item= link_to(raw(icon('fab', 'twitter', class: 'fa-2x')), 'http://twitter.com/bioontology', target: '_blank')
-          %li.list-inline-item= link_to(raw(icon('fab', 'github', class: 'fa-2x')), 'http://github.com/ncbo', target: '_blank')
+          %li.list-inline-item
+            = link_to('https://www.facebook.com/National-Center-for-Biomedical-Ontology-127444774011153/', target: '_blank') do 
+              %i.fab.fa-2x.fa-facebook-f
+          %li.list-inline-item
+            = link_to('http://twitter.com/bioontology', target: '_blank') do
+              %i.fab.fa-2x.fa-twitter
+          %li.list-inline-item
+            = link_to('http://github.com/ncbo', target: '_blank') do
+              %i.fab.fa-2x.fa-github
     %div.row{style: "font-size: 0.9rem;"}
       %div.col
         The 

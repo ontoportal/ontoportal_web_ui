@@ -109,8 +109,6 @@ GEM
       multipart-post (>= 1.2, < 3)
     ffi (1.9.25)
     flamegraph (0.9.5)
-    font-awesome-sass (5.0.9)
-      sass (>= 3.2)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     haml (4.0.7)
@@ -240,7 +238,7 @@ GEM
     tilt (2.0.8)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    uglifier (4.1.17)
+    uglifier (4.1.18)
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
@@ -263,7 +261,6 @@ DEPENDENCIES
   cube-ruby
   dalli
   flamegraph
-  font-awesome-sass (< 5.0.13)
   haml (~> 4.0.0)
   html2haml
   i18n (~> 0)

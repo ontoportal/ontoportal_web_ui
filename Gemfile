@@ -13,7 +13,6 @@ gem 'uglifier', '>= 1.0.3'
 gem 'jquery-ui-rails'
 gem 'jquery-rails'
 gem 'bootstrap', '~> 4.1.0'
-gem 'font-awesome-sass', '< 5.0.13'
 gem 'chart-js-rails'
 gem 'select2-rails'
 
