@@ -5,8 +5,10 @@ module OntologiesHelper
     details = $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.acronym]
     html = []
     details.each do |title, value|
-      html << content_tag(:dt, title)
-      html << content_tag(:dd, raw(value))
+      html << content_tag(:tr) do
+        html << content_tag(:td, title)
+        html << content_tag(:td, raw(value))
+      end
     end
     html.join("")
   end

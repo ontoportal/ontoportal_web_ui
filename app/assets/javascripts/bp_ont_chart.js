@@ -24,7 +24,12 @@ jQuery(document).data().bp.ontChart.init = function() {
     var myLineChart = new Chart(ctx, {
       type: 'line',
       data: data,
-      options: { responsive: true }
+      options: { 
+        responsive: true,
+        legend: {
+          display: false
+        } 
+      }
     });
   }
 };

@@ -3,13 +3,13 @@
 - more_colspan = 4
 - more_colspan = 3 if @ont_restricted
 
-#versions_content.click_versions_collapse{style: "padding: 24px 36px;"}
-  %table#ontology_versions.table.table-striped
+%div.click_versions_collapse
+  %table#ontology_versions.table.table-sm.table-striped
     %thead
       %tr
         %th Version
-        %th Release Date
-        %th Upload Date
+        %th Released
+        %th Uploaded
         - unless @ont_restricted
           %th Downloads
     - begin

@@ -2,6 +2,14 @@ $ont-metadata-bg-color: #e2ebf0;
 $widget-table-border-color: #EFEFEF;
 $ont-show-bg-color: #e9ecef;
 
+.ontologies.show {
+  background-color: $ont-show-bg-color;
+
+  #bd {
+    background-color: $ont-show-bg-color;
+  }
+}
+
 .ontologies.show .gutter {
   background-color: rgba(0, 0, 0, 0.03);
   background-repeat: no-repeat;
@@ -13,21 +21,49 @@ $ont-show-bg-color: #e9ecef;
   }
 }
 
-.ontologies.show {
-  i.fas.fa-lg, i.far.fa-lg {
-    margin-left: .5em;
+.ont-info-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  
+  background-color: white;
+  padding: 0.75rem 1.25rem;
+
+  h4 {
+    margin-bottom: 0;
+    margin-right: 2rem;
+
+    a {
+      color: #343a40;
+    }
   }
 
-  #bd {
-    background-color: $ont-show-bg-color;
+  a {
+    color: #6c757d;
+ 
+    &:hover {
+      color: #0056b3;
+      text-decoration: none;
+    }
   }
 }
 
-body.ontologies.show {
-  background-color: $ont-show-bg-color;
+.ont-info-links {
+  a + a {
+    margin-left: 1rem;
+  }
 }
 
-/* Summary pane */
+@media screen and (max-width: 992px) {
+  .ont-info-links {
+    margin-top: 1rem;
+  }
+}
+
+/************************************
+ * Summary pane
+ ************************************/
 
 @media screen and (max-width: 992px) {
   .ont-metadata-card {
@@ -38,15 +74,38 @@ body.ontologies.show {
 @media screen and (min-width: 992px) {
   .ont-metadata {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-gap: 15px;
+    grid-row-gap: 16px;
+    grid-template-columns: 60% 40%;
+  }
+
+  .ont-details-card, .ont-subs-card, .ont-views-card {
+    margin-right: 16px;
+  }
+
+  .ont-metrics-card, .ont-analytics-card {
+    margin-bottom: 32px;
   }
 }
 
+.right-hand-content {
+  grid-column: 2;
+  grid-row: 1 / span 4;
+}
+
+.ont-section-toolbar {
+  display: flex;
+  align-items: baseline;
+}
+
 .ont-metadata-card {
+  font-size: 14px;
+
   header {
-    background-color: $ont-metadata-bg-color;
-    padding: 15px 36px;
+    font-size: 16px;
+  }
+
+  dl {
+    margin-top: 0.5rem;
   }
 
   dt {
@@ -57,54 +116,52 @@ body.ontologies.show {
     font-size: .9em;
     padding-left: 10px;
   }
-
-  ul {
-    margin-bottom: 0;
-  }
-
-  li {
-    list-style: none;
-  }
-
-  thead tr th {
-    border-top: none;
-  }
 }
 
 .ont-details-card {
-  grid-column: 1 / span 2;
+  grid-column: 1;
+  grid-row: 1;
+
+  td:nth-child(1) {
+    background-color: #e2ebf0;
+    white-space: nowrap;
+  }
 }
 
 .ont-metrics-card {
-  grid-column: 3 / span 2;
+  td:nth-child(1) {
+    background-color: #e2ebf0;
+  }
+
+  td:nth-child(2n) {
+    text-align: right;
+  }
 }
 
 .ont-subs-card {
-  grid-column: 1 / span 4;
+  grid-column: 1;
   grid-row: 2;
-}
 
-.ont-analytics-card {
-  grid-column: 1 / span 4;
-  grid-row: 4;
+  th {
+    color: #737373;
+  }
 }
 
 .ont-views-card {
-  grid-column: 3 / span 2;
+  grid-column: 1;
   grid-row: 3;
 }
 
 .ont-projects-card {
-  grid-column: 1 / span 2;
-  grid-row: 3;
-
-  ul li {
-    list-style-type: circle;
-    list-style-position: inside;
+  p {
+    margin-bottom: 0;
+    margin-top: 0.5rem;
   }
 }
 
-/* Classes pane */
+/************************************
+/* Classes pane
+************************************/
 
 #bd_content {
   display: flex;
@@ -155,7 +212,9 @@ body.ontologies.show {
   border-right: 1px solid #bcc6d0;
 }
 
-/* Properties pane */
+/************************************
+/* Properties pane
+************************************/
 
 #propTree a {
   font-family: "Myriad Pro","Myriad Web Pro","Myriad Web","Myriad","Trebuchet MS","Tahoma","Helvetica","Arial",sans-serif;
@@ -172,7 +231,9 @@ body.ontologies.show {
   white-space: nowrap;
 }
 
-/* Widgets pane */
+/************************************
+/* Widgets pane
+************************************/
 
 #widget_table {
   td {

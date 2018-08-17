@@ -63,35 +63,34 @@
         %button.btn.btn-secondary{"data-dismiss": "modal"} Close
 
 -# A header of sorts to display ontology name and subset of details.
-%div.row.pt-md-4.pb-2
+%div.row.pt-md-3.pb-md-2
   %div.col
-    %div.card
-      %h3.card-header
-        = @ontology.name
-      %div.card-body
-        - if details_available
-          %p.card-text
-            = sanitize(sub.description)
-      %div.card-body
+    %div.ont-info-bar.rounded
+      %div
+        %h4
+          = link_to(@ontology.name, ontology_path(@ontology.acronym))
+        %div
+          - if (details_available && !sub.released.nil?)
+            %span.text-muted
+              Last uploaded:
+              = l(Date.parse(sub.creationDate), format: :monthfull_day_year)
+      %div.ont-info-links
         - unless (@ontology.summaryOnly || @ont_restricted || @submissions.empty?)
-          = link_to(@submissions.first.id + "/download?apikey=#{get_apikey}", class: "btn btn-secondary btn-sm") do
-            Download latest version
-            %i.fas.fa-lg.fa-download
+          = link_to(@submissions.first.id + "/download?apikey=#{get_apikey}", "aria-label": "Download latest version", title: "Download latest version") do
+            %i.fas.fa-lg.fa-download{"aria-hidden": true}
+        - if details_available
+          - if $PURL_ENABLED
+            = link_to(@ontology.purl, "aria-label": "BioPortal PURL", title: "BioPortal PURL", target: "_blank") do
+              %i.fas.fa-lg.fa-link{"aria-hidden": true}
+          = link_to(sub.homepage, "aria-label": "Ontology home page", title: "Ontology home page", target: "_blank") do
+            %i.fas.fa-lg.fa-home{"aria-hidden": true}
+          = link_to(sub.documentation, "aria-label": "Ontology documentation", title: "Ontology documentation", target: "_blank") do
+            %i.fas.fa-lg.fa-book-reader{"aria-hidden": true}
+          = link_to(sub.publication, "aria-label": "Ontology publications", title: "Ontology publications", target: "_blank") do
+            %i.fas.fa-lg.fa-book{"aria-hidden": true}
         - if @ontology.admin?(session[:user])
-          = link_to(edit_ontology_path(@ontology.acronym), class: "btn btn-secondary btn-sm") do
-            Edit ontology details
-            %i.far.fa-lg.fa-edit
-          = link_to(new_ontology_submission_path(@ontology.acronym), class: "btn btn-secondary btn-sm") do
-            Add submission
-            %i.fas.fa-lg.fa-plus-circle
-          - unless (@submission_latest.nil? || (@submission_latest.respond_to?(:status) && @submission_latest.status == 404))
-            = link_to(edit_ontology_submission_path(@ontology.acronym, @submission_latest.submissionId), class: "btn btn-secondary btn-sm") do
-              = "Edit latest submission (#{@submission_latest.version})"
-              %i.far.fa-lg.fa-edit
-      - if (details_available && !sub.released.nil?)
-        %div.card-footer.text-muted
-          Last uploaded:
-          = l(Date.parse(sub.creationDate), format: :monthfull_day_year)
+          = link_to(edit_ontology_path(@ontology.acronym), "aria-label": "Edit ontology details", title: "Edit ontology details") do
+            %i.fas.fa-lg.fa-user-edit
 
 %div.row.pb-4
   %div.col
@@ -153,7 +152,3 @@
   = render partial: "ga_tracking"
 - else
   = render partial: "layouts/footer"
-
-
-
-
