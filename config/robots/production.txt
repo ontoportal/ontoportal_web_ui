@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /mappings
+Disallow: /*mappings
+Disallow: /projects/

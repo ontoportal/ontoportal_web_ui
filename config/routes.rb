@@ -52,6 +52,9 @@ BioportalWebUi::Application.routes.draw do
   # Analytics endpoint
   get '/analytics' => 'analytics#track'
 
+  # Robots.txt
+  get '/robots.txt' => 'robots#index'
+
   # Ontologies
   get '/ontologies/view/edit/:id' => 'ontologies#edit_view', :constraints => { :id => /[^\/?]+/ }
   get '/ontologies/view/new/:id' => 'ontologies#new_view'
