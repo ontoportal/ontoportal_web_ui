@@ -12,7 +12,7 @@ jQuery(document).ready(function(){
   });
   jQuery("#ui-datepicker-div").css("display", "none");
 
-  jQuery('.fa-calendar').on('click', function() {
+  jQuery('.fa-calendar-alt').on('click', function() {
     jQuery('#datepicker').datepicker('show');
   });
 
@@ -67,13 +67,14 @@ function addContact(event) {
 
   var contacts = document.querySelectorAll("div.contact");
   var newContact = contacts[0].cloneNode(true);
-  newContact.querySelector("div").classList.add("col-sm-offset-2");
+  newContact.classList.add("offset-sm-2");
 
   var removeButton = newContact.querySelector("button").cloneNode(true);
   removeButton.classList.replace("btn-success", "btn-danger");
   removeButton.classList.replace("add-contact", "remove-contact");
+  removeButton.classList.add("ml-1")
   removeButton.querySelector("i").classList.replace("fa-plus", "fa-minus");
-  newContact.querySelector(".form-inline").appendChild(removeButton);
+  newContact.appendChild(removeButton);
   
   var index = contacts.length;
   var inputs = newContact.getElementsByTagName("input");
@@ -100,9 +101,9 @@ function removeContact(event) {
   var target = event.target;
   var contact;
   if (target.matches("button.remove-contact")) {
-    contact = target.parentNode.parentNode.parentNode;
+    contact = target.parentNode;
   } else if (target.matches("i.fa-minus")) {
-    contact = target.parentNode.parentNode.parentNode.parentNode;
+    contact = target.parentNode.parentNode;
   }
 
   document.querySelector("#contacts").removeChild(contact);

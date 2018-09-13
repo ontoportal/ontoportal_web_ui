@@ -18,11 +18,18 @@ jQuery(document).data().bp.ontChart.init = function() {
   };
 
   var visits_chart = document.getElementById("visits_chart");
-  var ctx = visits_chart.getContext("2d");
+  if (visits_chart) {
+    var ctx = visits_chart.getContext("2d");
 
-  var myLineChart = new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: { responsive: true }
-  });
+    var myLineChart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: { 
+        responsive: true,
+        legend: {
+          display: false
+        } 
+      }
+    });
+  }
 };

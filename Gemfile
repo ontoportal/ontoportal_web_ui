@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.6'
+gem 'rails', '4.2.10'
 
 gem 'sass-rails', '~> 5.0'
 gem 'coffee-rails', '~> 4.1.0'
@@ -12,8 +12,7 @@ gem 'uglifier', '>= 1.0.3'
 
 gem 'jquery-ui-rails'
 gem 'jquery-rails'
-gem 'bootstrap-sass', '~> 3.3.7'
-gem 'font-awesome-sass', '~> 4.7.0'
+gem 'bootstrap', '~> 4.1.0'
 gem 'chart-js-rails'
 gem 'select2-rails'
 
@@ -30,7 +29,7 @@ gem "pry"
 gem "iconv"
 gem "recaptcha", "= 0.4.0"
 gem "rest-client", "~> 1.8.0"
-gem "mysql", "~> 2.9.1"
+gem "mysql2", "~> 0.4.0"
 gem "i18n", "~> 0"
 gem "haml", "~> 4.0.0"
 gem "will_paginate", "~> 3.0"
@@ -70,5 +69,5 @@ group :development do
     # passenger reload
     gem 'capistrano-passenger', require: false
     gem 'html2haml'
-    gem 'i18n-debug'
+    # gem 'i18n-debug'
 end

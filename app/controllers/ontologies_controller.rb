@@ -136,12 +136,6 @@ class OntologiesController < ApplicationController
 
   # GET /visualize/:ontology
   def classes
-    # Hack to make ontologyid and conceptid work in addition to id and ontology params
-    params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]
-    params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]
-    # Set the ontology we are viewing
-    # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     # Get the latest 'ready' submission, or fallback to any latest submission
     @submission = get_ontology_submission_ready(@ontology)  # application_controller
 
@@ -153,7 +147,7 @@ class OntologiesController < ApplicationController
       return
     end
 
-    # set the current PURL for this class
+    # Set the current PURL for this class
     @current_purl = @concept.purl if $PURL_ENABLED
 
     begin
@@ -193,10 +187,6 @@ class OntologiesController < ApplicationController
   end
 
   def properties
-    # Hack to make ontologyid and conceptid work in addition to id and ontology params
-    params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]
-    params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     if request.xhr?
       return render 'properties', :layout => false
     else
@@ -241,8 +231,6 @@ class OntologiesController < ApplicationController
   end
 
   def mappings
-    # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     counts = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}/mappings/statistics/ontologies/#{params[:id]}")
     @ontologies_mapping_count = []
     unless counts.nil?
@@ -278,8 +266,6 @@ class OntologiesController < ApplicationController
   end
 
   def notes
-    # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     # Get the latest 'ready' submission, or fallback to any latest submission
     @submission = get_ontology_submission_ready(@ontology)  # application_controller
     @notes = @ontology.explore.notes
@@ -320,6 +306,21 @@ class OntologiesController < ApplicationController
         return
       end
     end
+
+    # Note: find_by_acronym includes ontology views
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    not_found if @ontology.nil?
+
+    # Retrieve submissions in descending submissionId order (should be reverse chronological order)
+    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
+    LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
+
+    # Get the latest submission (not necessarily the latest 'ready' submission)
+    @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
+
+    # Is the ontology downloadable?
+    restrict_downloads = $NOT_DOWNLOADABLE
+    @ont_restricted = restrict_downloads.include? @ontology.acronym
 
     # Fix parameters to only use known pages
     params[:p] = nil unless KNOWN_PAGES.include?(params[:p])
@@ -362,26 +363,19 @@ class OntologiesController < ApplicationController
   end
 
   def summary
-    # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
-    not_found if @ontology.nil?
-    # Check to see if user is requesting RDF+XML, return the file from REST service if so
+    # Check to see if user is requesting RDF+XML. If so, return the file from the REST service.
     if request.accept.to_s.eql?("application/ld+json") || request.accept.to_s.eql?("application/json")
       headers['Content-Type'] = request.accept.to_s
       render text: @ontology.to_jsonld
       return
     end
+    
     # Explore the ontology links
     @metrics = @ontology.explore.metrics rescue []
-    @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created} || []
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
     @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
-    # retrieve submissions in descending submissionId order, should be reverse chronological order.
-    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
-    LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
-    # Get the latest submission, not necessarily the latest 'ready' submission
-    @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
     @views = @ontology.explore.views.sort {|a,b| a.acronym.downcase <=> b.acronym.downcase } || []
+    
     if request.xhr?
       render :partial => 'metadata', :layout => false
     else
@@ -423,8 +417,6 @@ class OntologiesController < ApplicationController
   end
 
   def widgets
-    # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     if request.xhr?
       render :partial => 'widgets', :layout => false
     else

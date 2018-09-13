@@ -4,7 +4,7 @@
 %p.tab_description
   = t('mappings.intro').html_safe
   = link_to(help_path(anchor: "Mappings_Tab"), id: "mappings-help", aria: {label: "View mappings help"}) do
-    %i.fa.fa-question-circle.fa-lg{aria: {hidden: "true"}, style: "margin-left: .5em"}
+    %i.fas.fa-question-circle.fa-lg{aria: {hidden: "true"}, style: "margin-left: .25em"}
 %p#mappings_select{:style => "font-size:15px;font-weight:bold;padding:10px;margin-bottom:0;"}
   - if @options.empty?
     No mappings available

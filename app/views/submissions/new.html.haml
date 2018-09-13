@@ -1,10 +1,9 @@
 - @title = "Add new ontology submission"
 
-%div.container
-  %h2.text-center
+%div.container.py-4.py-md-5
+  %h3.text-center.mb-4
     Add new submission
     - if !(@submission.ontology.nil? || (@submission.ontology.is_a? String))
-      %small for #{@submission.ontology.acronym}
-  %p.lead.text-center * fields are required
-  = form_for :submission, url: {action: "create"}, html: {id: "ontology_submission_form", multipart: true, class: "form-horizontal"} do |f|
+      %small.text-muted for #{@submission.ontology.acronym}
+  = form_for :submission, url: {action: "create"}, html: {id: "ontology_submission_form", multipart: true} do |f|
     = render partial: "form", locals: {f: f, button_text: "Add submission"}

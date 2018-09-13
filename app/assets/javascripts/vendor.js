@@ -11,6 +11,7 @@
 //= require jquery-migrate-1.3.0.min
 //= require jquery_ujs
 //= require jquery-ui
+//= require popper
 //= require bootstrap-sprockets
 //
 //= require jquery.blockUI
@@ -24,7 +25,6 @@
 //= require ajax-chosen
 //= require superfish
 //= require jquery.cookie
-//= require splitter
 //= require autocomplete
 //= require jquery.hoverIntent
 //= require jquery.simple.tree

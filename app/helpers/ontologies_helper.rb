@@ -6,8 +6,8 @@ module OntologiesHelper
     html = []
     details.each do |title, value|
       html << content_tag(:tr) do
-        concat(content_tag(:th, title))
-        concat(content_tag(:td, raw(value)))
+        html << content_tag(:td, title)
+        html << content_tag(:td, raw(value))
       end
     end
     html.join("")

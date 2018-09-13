@@ -27,6 +27,16 @@ class HomeController < ApplicationController
     @direct_annotations = @ri_stats[:total][:direct]
     @direct_expanded_annotations = @ri_stats[:total][:ancestors]
     @analytics = LinkedData::Client::Analytics.last_month
+
+    @ontology_names = @ontologies.map{ |ont| ["#{ont.name} (#{ont.acronym})", ont.acronym] }
+
+    @anal_ont_names = {}
+    @anal_ont_numbers = []
+    @analytics.onts[0..4].each do |visits|
+      ont = @ontologies_hash[visits[:ont].to_s]
+      @anal_ont_names[ont.acronym] = ont.name
+      @anal_ont_numbers << visits[:views]
+    end
   end
 
   def render_layout_partial
