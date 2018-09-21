@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   # Pull configuration parameters for REST connection.
   REST_URI = $REST_URL
   API_KEY = $API_KEY
-
+  PROXY_URI = $PROXY_URL
   REST_URI_BATCH = REST_URI + '/batch'
 
   # Note that STATS is a DIRECT CONNECTION to the JAVA-REST API
@@ -120,6 +120,7 @@ class ApplicationController < ActionController::Base
         apikey: LinkedData::Client.settings.apikey,
         userapikey: get_apikey,
         rest_url: LinkedData::Client.settings.rest_url,
+        proxy_url: $PROXY_URL,
         biomixer_url: $BIOMIXER_URL
     }
     config[:ncbo_slice] = @subdomain_filter[:acronym] if (@subdomain_filter[:active] && !@subdomain_filter[:acronym].empty?)

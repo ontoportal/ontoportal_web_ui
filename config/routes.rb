@@ -30,6 +30,8 @@ BioportalWebUi::Application.routes.draw do
 
   resources :annotator
 
+  resources :annotatorplus
+
   resources :virtual_appliance
 
   get '' => 'home#index'
