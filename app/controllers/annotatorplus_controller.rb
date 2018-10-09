@@ -5,7 +5,7 @@ class AnnotatorplusController < ApplicationController
   layout :determine_layout
 
   # REST_URI is defined in application_controller.rb
-  ANNOTATOR_URI = PROXY_URI + "/annotatorplus"
+  ANNOTATOR_URI = PROXY_URI + "/annotatorplus/"
 
   def index
     @semantic_types_for_select = []
