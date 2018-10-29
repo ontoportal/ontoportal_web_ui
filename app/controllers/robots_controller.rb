@@ -1,4 +1,4 @@
-Cass RobotsController < ApplicationController
+class RobotsController < ApplicationController
   def index
     # Slices (subdomains) should not be indexed
     if @subdomain_filter[:active]
