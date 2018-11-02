@@ -118,22 +118,6 @@ class HomeController < ApplicationController
     render :partial => "user_intention_survey", :layout => false
   end
 
-  def robots
-    if @subdomain_filter[:active]
-      robots = <<-EOF.gsub(/^\s+/, "")
-        User-agent: *\n
-        Disallow: /
-      EOF
-      render :text => robots, :content_type => 'text/plain'
-    else
-      robots = <<-EOF.gsub(/^\s+/, "")
-        User-Agent: *
-        Disallow:
-      EOF
-      render :text => robots, :content_type => 'text/plain'
-    end
-  end
-
   def site_config
     render json: bp_config_json
   end
