@@ -10,6 +10,13 @@
       } 
     },
 
+    layouts: {
+      footer: {
+        copyright_html: 'Copyright &copy; 2005‑2018, The Board of Trustees of Leland Stanford Junior University. All rights reserved.',
+        grant_html: 'The <strong>National Center for Biomedical Ontology</strong> was founded as one of the National Centers for Biomedical Computing, supported by the NHGRI, the NHLBI, and the NIH Common Fund under grant U54-HG004028.'
+      }
+    },
+
     home: {
       index: {
         find_ontology_placeholder: 'Start typing ontology name, then choose from list',

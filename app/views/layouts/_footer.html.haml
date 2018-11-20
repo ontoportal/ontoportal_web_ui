@@ -11,7 +11,7 @@
           %li= link_to('BioPortal REST API', 'http://data.bioontology.org/documentation', target: '_blank')
           %li= link_to('BioPortal Virtual Appliance', 'https://www.bioontology.org/wiki/index.php/Category:NCBO_Virtual_Appliance', target: '_blank')
           %li= link_to('NCBO Web Widgets', 'http://www.bioontology.org/wiki/index.php/NCBO_Widgets', target: '_blank')      
-      %div.col-6.col-md
+      %div.col-6.col-md.footer-support
         %h6 SUPPORT
         %ul.list-unstyled
           %li= link_to('Contact Us', feedback_path(location: encode_param(request.url)), class: 'pop_window')
@@ -36,13 +36,12 @@
           %li.list-inline-item
             = link_to('http://github.com/ncbo', target: '_blank') do
               %i.fab.fa-2x.fa-github
-    %div.row{style: "font-size: 0.9rem;"}
+    %div.row.legal-text
       %div.col
-        The 
-        %strong National Center for Biomedical Ontology 
-        was founded as one of the National Centers for Biomedical Computing, supported by the NHGRI, the NHLBI, and the NIH Common Fund under grant U54-HG004028.
-    %div.row.pt-2{style: "font-size: 0.9rem;"}
-      %div.col Copyright © 2005‑2018, The Board of Trustees of Leland Stanford Junior University. All rights reserved.
+        = t('.grant_html')
+    %div.row.pt-2.legal-text
+      %div.col
+        = t('.copyright_html')
     %div.row.pt-2
       %div.col
         %ul.list-inline
