@@ -10,6 +10,12 @@
       } 
     },
 
+    layouts: {
+      footer: {
+        copyright_html: 'Copyright &copy; 2005‑2018, The Board of Trustees of Leland Stanford Junior University. All rights reserved.' 
+      }
+    },
+
     home: {
       index: {
         find_ontology_placeholder: 'Start typing ontology name, then choose from list',
