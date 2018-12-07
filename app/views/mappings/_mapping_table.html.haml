@@ -18,7 +18,6 @@
       %th Mapping To
       %th Ontology
       %th Source
-      -#%th Linked Data
   - if @mappings.length < 1
     %tr
       %td{:class => 'delete_mappings_column', :style => "display: none;"}
@@ -26,36 +25,22 @@
 
   - @mappings.each do |map|
     - map.classes.each do |cls|
-      - if cls.id == @concept.id
-        - # process is likely 'same_uris'
-        - next if cls.links['ontology'] == @concept.links['ontology']
-      -# this is a different class or the same class in another ontology (for same_uri mappings).
+      - next if (cls.id == @concept.id) && (cls.links['ontology'] == @concept.links['ontology'])
+
       - ont = cls.explore.ontology
-      - next if ont.errors && ont.errors.collect {|e| e.include? "Access denied" }.any?
-      - begin
-        - ont_acronym = ont.acronym
-        - ont_name = ont.name
-        - ont_link = "/ontologies/#{ont_acronym}"
-        - ont_access = true
-      - rescue
-        - ont_access = false
-        -# Work around ontologies with access restrictions
-        -# ont_acronym = cls.links['ontology'].split('/').last
-        -# ont_name = ont_acronym  # no way to get the name here?
-        -# ont_link = ''  # no link to restricted ontologies
-      - if ont_access && ont_acronym
-        - map_id = map.id.to_s.split("/").last
-        %tr.human{:id => map_id}
-          %td{:class => 'delete_mappings_column', :style => "padding: 6px 12px;"}
-            - if map.id && !map.id.empty? && session[:user] && (session[:user].id.to_i == map.creator || session[:user].admin?)
-              = check_box_tag :delete_mapping_checkbox, map.id
-          %td
-            -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
-            = raw(get_link_for_cls_ajax(cls.id, ont_acronym))
-          %td
-            %a{:href => ont_link}= ont_name
-          %td
-            #{map.source} #{(map.process || {})[:source_name]}
+      - next if ont.errors && ont.errors.collect { |e| e.include? "Access denied" }.any?
+
+      - map_id = map.id.to_s.split("/").last
+      %tr.human{id: map_id}
+        %td{class: 'delete_mappings_column', style: "padding: 6px 12px;"}
+          - if map.id && !map.id.empty? && session[:user] && (session[:user].id.to_i == map.creator || session[:user].admin?)
+            = check_box_tag :delete_mapping_checkbox, map.id
+        %td
+          = raw(get_link_for_cls_ajax(cls.id, ont.acronym))
+        %td
+          %a{href: "/ontologies/#{ont.acronym}"}= ont.name
+        %td
+          #{map.source} #{(map.process || {})[:source_name]}
 
 :javascript
   jQuery(document).ready(function(){
