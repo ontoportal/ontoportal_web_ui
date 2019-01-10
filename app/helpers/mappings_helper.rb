@@ -26,4 +26,15 @@ module MappingsHelper
     return @onts_and_views_for_select
   end
 
+  def get_concept_mappings(concept)
+    mappings = concept.explore.mappings
+    # Remove mappings where the destination class exists in an ontology that the logged in user doesn't have permissions to view.
+    # Workaround for https://github.com/ncbo/ontologies_api/issues/52.
+    mappings.delete_if do |mapping|
+      mapping.classes.reject! { |cls| (cls.id == concept.id) && (cls.links['ontology'] == concept.links['ontology']) }
+      ont = mapping.classes[0].explore.ontology
+      ont.errors && ont.errors.grep(/Access denied/).any?
+    end
+  end
+
 end

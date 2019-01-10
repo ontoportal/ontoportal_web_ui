@@ -1,4 +1,5 @@
 class OntologiesController < ApplicationController
+  include MappingsHelper
 
   require "multi_json"
   require 'cgi'
@@ -143,7 +144,7 @@ class OntologiesController < ApplicationController
 
     unless @concept.id == "bp_fake_root"
       @notes = @concept.explore.notes
-      @mappings = @concept.explore.mappings
+      @mappings = get_concept_mappings(@concept)
       @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     end
     
@@ -340,16 +341,16 @@ class OntologiesController < ApplicationController
       return
     end
     
-    # Explore the ontology links
     @metrics = @ontology.explore.metrics rescue []
-    @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
+    @projects = @ontology.explore.projects.sort { |a,b| a.name.downcase <=> b.name.downcase } || []
     @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
-    @views = @ontology.explore.views.sort {|a,b| a.acronym.downcase <=> b.acronym.downcase } || []
+    @views = get_views(@ontology)
+    @view_decorators = @views.map{ |view| ViewDecorator.new(view, view_context) }
     
     if request.xhr?
-      render :partial => 'metadata', :layout => false
+      render partial: "metadata", layout: false
     else
-      render :partial => 'metadata', :layout => "ontology_viewer"
+      render partial: "metadata", layout: "ontology_viewer"
     end
   end
 
@@ -403,6 +404,12 @@ class OntologiesController < ApplicationController
     else
       Rails.env.appliance? ? 'appliance' : 'ontology'
     end
+  end
+
+  def get_views(ontology)
+    views = ontology.explore.views || []
+    views.select!{ |view| view.access?(session[:user]) }
+    views.sort{ |a,b| a.acronym.downcase <=> b.acronym.downcase }
   end
 
 end
