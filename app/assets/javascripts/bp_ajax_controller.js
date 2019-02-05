@@ -86,7 +86,7 @@ var ajax_process_ont = function() {
         linkA.text(ont_name);
         linkA.addClass('ajax-modified-ont'); // processed this one.
         // find and process any identical ontologies
-        jQuery( 'a[href="/ontologies/' + ontAcronym + '"]').each(function(i,e){
+        jQuery('a[href="/ontologies/' + data.acronym + '"]').each(function(i,e){
           var link = jQuery(this);
           if(! link.hasClass('ajax-modified-ont') ){
             link.removeClass('ont4ajax');   // processing this one.

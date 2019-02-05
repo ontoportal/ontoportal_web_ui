@@ -81,20 +81,9 @@
       - else
         %div.border-top
           %dl
-            - for view in @views
-              - next unless view.access?(session[:user])
-              %dt= link_to(view.name, ontology_path(view.acronym))
-              -# TODO: Can we put this code in the controller?
-              - view_submissions = view.explore.submissions.sort {|a,b| b.released <=> a.released } || [] rescue []
-              - view_sub_latest = view.explore.latest_submission({:include_status => 'ready'}) rescue view.explore.latest_submission({:include_status => 'ready', include: ""})
-              - view_sub_latest ||= view_submissions.first
-              - begin
-                - view_description = view_sub_latest.description
-              - rescue
-                - view_description = nil
-              - unless view_description.nil?
-                %dd
-                  %div= view_description
+            - @view_decorators.each do |view_decorator|
+              %dt= view_decorator.linked_name
+              %dd= view_decorator.description
       
   %div.right-hand-content
     

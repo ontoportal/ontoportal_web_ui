@@ -1,4 +1,5 @@
 class OntologiesController < ApplicationController
+  include MappingsHelper
 
   require "multi_json"
   require 'cgi'
@@ -134,55 +135,28 @@ class OntologiesController < ApplicationController
     render 'browse'
   end
 
-  # GET /visualize/:ontology
   def classes
-    # Get the latest 'ready' submission, or fallback to any latest submission
-    @submission = get_ontology_submission_ready(@ontology)  # application_controller
+    get_class(params)
 
-    get_class(params)   # application_controller::get_class
-
-    if request.accept.to_s.eql?("application/ld+json") || request.accept.to_s.eql?("application/json")
-      headers['Content-Type'] = request.accept.to_s
-      render text: @concept.to_jsonld
-      return
+    if ["application/ld+json", "application/json"].include?(request.accept)
+      render plain: @concept.to_jsonld, content_type: request.accept and return
     end
 
-    # Set the current PURL for this class
     @current_purl = @concept.purl if $PURL_ENABLED
+    @submission = get_ontology_submission_ready(@ontology)
 
-    begin
-      @mappings = @concept.explore.mappings
-    rescue Exception => e
-      msg = ''
-      if @concept.instance_of?(LinkedData::Client::Models::Class) &&
-          @ontology.instance_of?(LinkedData::Client::Models::Ontology)
-        msg = "Failed to explore mappings for #{@concept.id} in #{@ontology.id}"
-      end
-      LOG.add :error, msg + "\n" + e.message
-      @mappings = []
-    end
-    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
-
-    begin
+    unless @concept.id == "bp_fake_root"
       @notes = @concept.explore.notes
-    rescue Exception => e
-      msg = ''
-      if @concept.instance_of?(LinkedData::Client::Models::Class) &&
-          @ontology.instance_of?(LinkedData::Client::Models::Ontology)
-        msg = "Failed to explore notes for #{@concept.id} in #{@ontology.id}"
-      end
-      LOG.add :error, msg + "\n" + e.message
-      @notes = []
+      @mappings = get_concept_mappings(@concept)
+      @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     end
+    
+    update_tab(@ontology, @concept.id)
 
-    unless @concept.id.to_s.empty?
-      # Update the tab with the current concept
-      update_tab(@ontology,@concept.id)
-    end
     if request.xhr?
-      return render 'visualize', :layout => false
+      render "visualize", layout: false
     else
-      return render 'visualize', :layout => "ontology_viewer"
+      render "visualize", layout: "ontology_viewer"
     end
   end
 
@@ -370,16 +344,16 @@ class OntologiesController < ApplicationController
       return
     end
     
-    # Explore the ontology links
     @metrics = @ontology.explore.metrics rescue []
-    @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
+    @projects = @ontology.explore.projects.sort { |a,b| a.name.downcase <=> b.name.downcase } || []
     @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
-    @views = @ontology.explore.views.sort {|a,b| a.acronym.downcase <=> b.acronym.downcase } || []
+    @views = get_views(@ontology)
+    @view_decorators = @views.map{ |view| ViewDecorator.new(view, view_context) }
     
     if request.xhr?
-      render :partial => 'metadata', :layout => false
+      render partial: "metadata", layout: false
     else
-      render :partial => 'metadata', :layout => "ontology_viewer"
+      render partial: "metadata", layout: "ontology_viewer"
     end
   end
 
@@ -433,6 +407,12 @@ class OntologiesController < ApplicationController
     else
       Rails.env.appliance? ? 'appliance' : 'ontology'
     end
+  end
+
+  def get_views(ontology)
+    views = ontology.explore.views || []
+    views.select!{ |view| view.access?(session[:user]) }
+    views.sort{ |a,b| a.acronym.downcase <=> b.acronym.downcase }
   end
 
 end
