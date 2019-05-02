@@ -174,7 +174,7 @@ function requestTermFields(id, container) {
   appendTextArea("description", "Enter term description (required)", requestTermForm, true, 'Please enter a description for a new term');
 
   requestTermForm.append(jQuery("<span>").css("font-weight", "bold").css("margin", "5px 0 5px 0").html("Superclass: "));
-  requestTermForm.append(id + "<br/>");
+  requestTermForm.append(g_prefLabel + "<br/>");
 
   appendField("references", "Enter references - links that provide more info on the term", requestTermForm, false, 'Please enter references for a new term. References are any links (either URIs or URLs) that provide more information about the term.');
   appendTextArea("justification", "Enter justification for the term - the reason it should be added", requestTermForm, false, 'Please enter a justification. Justifications are notes provided by the submitter to justify the term; often this will not be necessary, since for most routine cases the label/description/position will be sufficient, but sometimes it may be necessary to justify why a new term is necessary.');
@@ -196,4 +196,6 @@ jQuery(document).ready(function() {
   clearStatusMessages();
   bindAddRequestTermClick();
   bindCancelRequestTermClick();
+
+
 });

@@ -7,3 +7,14 @@
     %div#ob_success_message{:class => "message-box success-msg", style: "display: none; clear: both;"}
     %div#ob_error_message{:class => "message-box error-msg", style: "display: none; clear: both;"}
   %div.request_term_form_div{style: "display: none; clear: both; padding-top: 1em;"}
+
+:javascript
+  var g_prefLabel;
+
+  jQuery(document).ready(function() {
+    g_prefLabel = '#{@concept.prefLabel({:use_html => false}).html_safe}';
+
+    if (!g_prefLabel) {
+      g_prefLabel = '#{@concept.id}';
+    }
+  });
