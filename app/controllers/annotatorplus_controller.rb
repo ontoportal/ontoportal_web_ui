@@ -26,6 +26,7 @@ class AnnotatorplusController < ApplicationController
     @semantic_groups_for_select.sort! {|a,b| a[0] <=> b[0]}
     @recognizers = parse_json(REST_URI + "/annotator/recognizers")
     @annotator_ontologies = LinkedData::Client::Models::Ontology.all
+    @annotator_ontologies.sort_by! { |ont| ont.name.strip.downcase }
   end
 
 

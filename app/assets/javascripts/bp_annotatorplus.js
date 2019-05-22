@@ -78,7 +78,7 @@ function get_annotations() {
   params.score_threshold = jQuery("#score_threshold").val();
   params.confidence_threshold = jQuery("#confidence_threshold").val();
 
- params.score = jQuery("#score").val();
+  params.score = jQuery("#score").val();
   if (params.score) {
     annotationsTable.fnSetColumnVis(BP_COLUMNS.score, true);
   } else {
@@ -447,7 +447,6 @@ jQuery.fn.dataTableExt.oApi.fnSortNeutral = function(oSettings) {
   oSettings.oApi._fnReDraw(oSettings);
 };
 
-
 function annotatorFormatLink(param_string, format) {
   "use strict";
   // TODO: Check whether 'text' and 'tabDelimited' could work.
@@ -465,7 +464,8 @@ function annotatorFormatLink(param_string, format) {
   if (format !== 'json') {
     query += "&format=" + format;
   }
-  var link = "<a href=\"" + encodeURI(query) + "\" class=\"btn btn-default btn-sm\" target=\"_blank\">" + format_map[format] + "</a>";
+  // var link = "<a href=\"" + encodeURI(query) + "\" class=\"btn btn-default btn-sm\" target=\"_blank\">" + format_map[format] + "</a>";
+  var link = "<a href=\"" + encodeURI(query) + "\" class = \"btn btn-outline-primary btn-sm\" target=\"_blank\">" + format_map[format] + "</a>";
   jQuery("#download_links_" + format.toLowerCase()).html(link);
 }
 
@@ -496,13 +496,27 @@ function generateParameters() {
 jQuery(document).ready(function() {
   "use strict";
   jQuery("#annotator_button").click(get_annotations);
-  jQuery("#semantic_types").chosen({
-    search_contains: true
+  
+  jQuery("#semantic_types").select2({
+    allowClear: true,
+    dropdownParent: jQuery(".annotatorplus form")
   });
-    jQuery("#semantic_groups").chosen({
-    search_contains: true
+
+  jQuery("#semantic_groups").select2({
+    allowClear: true,
+    dropdownParent: jQuery(".annotatorplus form")
   });
+
+  jQuery("#ontology_ontologyId").select2({
+    allowClear: true,
+    dropdownParent: jQuery(".annotatorplus form")
+  });
+
   jQuery("#insert_text_link").click(insertSampleText);
+
+  jQuery("#advancedOptionsLink").click(toggle_advanced_options);
+  jQuery("#advanced-options-container").hide();
+  
   // Init annotation table
   annotationsTable = jQuery("#annotations").dataTable({
     bPaginate: false,
@@ -561,7 +575,6 @@ jQuery(document).ready(function() {
 
   jQuery("#annotations_container").hide();
 }); // doc ready
-
 
 function get_link(uri, label) {
   "use strict";
@@ -732,7 +745,6 @@ function get_annotation_rows_from_raw(annotation, params) {
   return rows;
 }
 
-
 function update_annotations_table(rowsArray) {
   "use strict";
   var ontologies = {},
@@ -827,7 +839,6 @@ function update_annotations_table(rowsArray) {
     annotationsTable.fnSetColumnVis(2, false);
 }
 
-
 function display_annotations(data, params) {
   "use strict";
   var annotations = data.annotations;
@@ -851,7 +862,7 @@ function display_annotations(data, params) {
   var param_string = generateParameters(); // uses bp_last_param
   var query = BP_CONFIG.proxy_url + "/annotatorplus?" + param_string + "&display_links=false&display_context=false";
   var query_encoded = BP_CONFIG.proxy_url + "/annotatorplus?" + encodeURIComponent(param_string);
-  jQuery("#annotator_parameters").html("<a href=\"" + encodeURI(query) + "\" target=\"_blank\">Corresponding REST web service call</a>");
+  jQuery("#annotator_parameters").html("<a href=\"" + encodeURI(query) + "\" target=\"_blank\">corresponding REST API call</a>");
   jQuery("#annotator_parameters_encoded").html(query_encoded);
   // Add links for downloading results
   //annotatorFormatLink("tabDelimited");
@@ -867,6 +878,11 @@ function display_annotations(data, params) {
   }
 }
 
+function toggle_advanced_options() {
+  $("#advanced-options-container").toggle();
+  var text = $("#advanced-options-container").is(':visible') ? "Hide advanced options <<" : "Show advanced options >>";
+  $("#advancedOptionsLink").text(text);
+}
 
 // Creates an HTML form with a button that will POST to the annotator
 //function annotatorPostForm(format) {
