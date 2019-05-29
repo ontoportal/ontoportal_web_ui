@@ -16,6 +16,7 @@
 //= require bp_ontology_viewer
 //= require bp_reviews
 //= require bp_notes
+//= require bp_ontolobridge
 //= require bp_form_complete
 //= require bp_create_mappings
 //= require bp_analytics

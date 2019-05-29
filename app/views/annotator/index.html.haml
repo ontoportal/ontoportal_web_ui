@@ -3,9 +3,12 @@
 %head
   = javascript_include_tag "bp_annotator"
 
-%h2.mt-5 Annotator
+%div.mt-4
+  = t(".annotatorplus_html", annotatorplus_href: annotatorplus_path())
+
+%h2.mt-4 Annotator
 %p
-  = t('annotator.intro').html_safe
+  = t('.intro').html_safe
   = link_to(help_path(anchor: "Annotator_Tab"), id: "annotator-help", target: "_blank") do
     %i.fas.fa-question-circle.fa-lg{aria: {hidden: true}, style: "margin-left: .25em"}
 

@@ -4,6 +4,8 @@ BioportalWebUi::Application.routes.draw do
 
   resources :notes, constraints: { id: /.+/ }
 
+  resources :ontolobridge
+
   resources :projects
 
   resources :users, :path => :accounts, :requirements => { :id => /.+/ }

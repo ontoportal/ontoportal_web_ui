@@ -28,7 +28,10 @@
     },
 
     annotator: {
-      intro: 'Get annotations for biomedical text with classes from the ontologies'
+      index: {
+        intro: 'Get annotations for biomedical text with classes from the ontologies',
+        annotatorplus_html: '<em>Check out <a href="%{annotatorplus_href}">AnnotatorPlus</a> beta; a new version of the Annotator with added support for negation, and more!</em>'
+      }
     },
 
     recommender: {

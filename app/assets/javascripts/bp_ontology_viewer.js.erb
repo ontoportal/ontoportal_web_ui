@@ -359,9 +359,9 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
       } else {
         var _this = this;
         var publishRetry = setInterval(function() {
-          console.log("retrying!!! " + _this.retrieved)
+          // console.log("retrying!!! " + _this.retrieved)
           if (_this.retrieved) {
-            console.log("publishing!!!")
+            // console.log("publishing!!!")
             _this.publishAction();
             clearInterval(publishRetry);
           }
