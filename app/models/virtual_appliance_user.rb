@@ -1,2 +1,2 @@
-class VirtualApplianceUser < ActiveRecord::Base
+class VirtualApplianceUser < ApplicationRecord
 end
