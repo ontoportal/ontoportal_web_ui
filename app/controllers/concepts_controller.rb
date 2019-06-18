@@ -53,7 +53,7 @@ class ConceptsController < ApplicationController
     # TODO: NCBO-402 might be implemented here, but it throws off a lot of ajax result rendering.
     #cls_label = cls.prefLabel({:use_html => true}) || cls_id
     cls_label = cls.prefLabel || cls_id
-    render :text => cls_label
+    render plain: cls_label
   end
 
   def show_definition
