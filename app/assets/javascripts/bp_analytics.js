@@ -23,10 +23,11 @@ function Analytics() {
 
 function SearchAnalytics() {
   this.bindTracker = function() {
-    jQuery("#search_results_container div.class_link a").live("click", function(e){
+    jQuery(document).on("click", "#search_results_container div.class_link a", function(e) {
       e.preventDefault();
-      var href = jQuery(this).attr("href");
-      var params = new SearchAnalytics().linkInformation(this);
+      link = jQuery(e.target);
+      var href = link.attr("href");
+      var params = new SearchAnalytics().linkInformation(link);
       new Analytics().track("search", "result_clicked", params, function(){
         window.location.href = href;
       });
@@ -36,7 +37,6 @@ function SearchAnalytics() {
   this.linkInformation = function(link) {
     var info = {}, resultsIndex = 0;
     var ontologyPosition = jQuery("#search_results div.search_result").index(jQuery(link).closest(".search_result")) + 1;
-    link = jQuery(link);
 
     info.ontology_clicked = link.closest(".search_result").attr("data-bp_ont_id");
 
