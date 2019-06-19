@@ -38,7 +38,7 @@ function SearchAnalytics() {
     var ontologyPosition = jQuery("#search_results div.search_result").index(jQuery(link).closest(".search_result")) + 1;
     link = jQuery(link);
 
-    info.ontology_clicked = link.closest(".search_result").attr("data-bp_ontology_id");
+    info.ontology_clicked = link.closest(".search_result").attr("data-bp_ont_id");
 
     // Find out the position of the search result in the list
     if (link.closest(".additional_results").length === 0) {
@@ -55,7 +55,7 @@ function SearchAnalytics() {
       var results = jQuery("#search_results div.search_result");
       info.higher_ontologies = [];
       while (resultsIndex < ontologyPosition - 1) {
-        info.higher_ontologies.push(jQuery(results[resultsIndex]).attr("data-bp_ontology_id"));
+        info.higher_ontologies.push(jQuery(results[resultsIndex]).attr("data-bp_ont_id"));
         resultsIndex += 1;
       }
     }
