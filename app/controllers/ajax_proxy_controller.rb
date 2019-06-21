@@ -87,7 +87,7 @@ class AjaxProxyController < ApplicationController
         json
       end
     end
-    render({:content_type => "application/json", :text => response}.merge(options))
+    render({plain: response, content_type: "application/json"}.merge(options))
   end
 
 end
