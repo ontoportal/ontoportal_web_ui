@@ -1,3 +1,3 @@
-class Analytics < ActiveRecord::Base
+class Analytics < ApplicationRecord
   serialize :params
 end
