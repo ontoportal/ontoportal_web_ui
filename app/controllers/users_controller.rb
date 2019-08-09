@@ -147,11 +147,6 @@ class UsersController < ApplicationController
 
   def validate(params)
     errors=[]
-    if !params[:phone].nil? && params[:phone].length > 0
-      if  !params[:phone].match(/^(1\s*[-\/\.]?)?(\((\d{3})\)|(\d{3}))\s*[-\/\.]?\s*(\d{3})\s*[-\/\.]?\s*(\d{4})\s*(([xX]|[eE][xX][tT])\.?\s*(\d+))*$/i)
-        errors << "Please enter a valid phone number"
-      end
-    end
     if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
       errors << "Please enter an email address"
     end
