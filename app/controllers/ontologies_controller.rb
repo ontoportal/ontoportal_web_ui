@@ -170,7 +170,7 @@ class OntologiesController < ApplicationController
       redirect_to "/ontologies"
       return
     end
-    @ontology = LinkedData::Client::Models::Ontology.new(values: params[:ontology])
+    @ontology = LinkedData::Client::Models::Ontology.new(values: ontology_params)
     @ontology_saved = @ontology.save
     if !@ontology_saved || @ontology_saved.errors
       @categories = LinkedData::Client::Models::Category.all
@@ -224,13 +224,7 @@ class OntologiesController < ApplicationController
   end
 
   def new
-    if (params[:id].nil?)
-      @ontology = LinkedData::Client::Models::Ontology.new(values: params[:ontology])
-      @ontology.administeredBy = [session[:user].id]
-    else
-      # Note: find_by_acronym includes ontology views
-      @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    end
+    @ontology = LinkedData::Client::Models::Ontology.new
     @categories = LinkedData::Client::Models::Category.all
     @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
     @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
@@ -362,7 +356,7 @@ class OntologiesController < ApplicationController
     end
     # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym] || params[:id]).first
-    @ontology.update_from_params(params[:ontology])
+    @ontology.update_from_params(ontology_params)
     error_response = @ontology.update
     if error_response
       @categories = LinkedData::Client::Models::Category.all
@@ -396,6 +390,16 @@ class OntologiesController < ApplicationController
   end
 
   private
+
+  def ontology_params
+    p = params.require(:ontology).permit(:name, :acronym, { administeredBy:[] }, :viewingRestriction, { acl:[] },
+                                         { hasDomain:[] }, :isView, :viewOf, :subscribe_notifications)
+
+    p[:administeredBy].reject!(&:blank?)
+    p[:acl].reject!(&:blank?)
+    p[:hasDomain].reject!(&:blank?)
+    p.to_h
+  end
 
   def resolve_layout
     case action_name
