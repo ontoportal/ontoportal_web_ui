@@ -5,6 +5,7 @@ class SubscriptionsController < ApplicationController
     user_id = params[:user_id]
     u = LinkedData::Client::Models::User.find(user_id)
     raise Exception if u.nil?
+
     # Try to get the ontology linked data instance
     ontology_id = params[:ontology_id]
     if ontology_id.start_with? 'http'
@@ -13,6 +14,7 @@ class SubscriptionsController < ApplicationController
       ont = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_id).first
     end
     raise Exception if ont.nil?
+
     # Is this request to add or remove a subscription?
     subscribed = params[:subbed]  # string (not boolean)
     if subscribed.eql?("true")
@@ -24,6 +26,7 @@ class SubscriptionsController < ApplicationController
       subscription = {ontology: ont.acronym, notification_type: "NOTES"} #NOTIFICATION_TYPES[:notes]}
       u.subscription.push(subscription)
     end
+
     # Try to update the user instance and the session user.
     begin
       error_response = u.update
@@ -49,6 +52,7 @@ class SubscriptionsController < ApplicationController
     rescue
       updated_sub = false
     end
+
     render :json => { :updated_sub => updated_sub, :user_subscriptions => u.subscription }
   end
 
