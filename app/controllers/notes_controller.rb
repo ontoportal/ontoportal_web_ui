@@ -60,16 +60,16 @@ class NotesController < ApplicationController
   # POST /notes.xml
   def create
     if params[:type].eql?("reply")
-      note = LinkedData::Client::Models::Reply.new(values: params)
+      note = LinkedData::Client::Models::Reply.new(values: note_params)
     elsif params[:type].eql?("ontology")
       params[:relatedOntology] = [params.delete(:parent)]
-      note = LinkedData::Client::Models::Note.new(values: params)
+      note = LinkedData::Client::Models::Note.new(values: note_params)
     elsif params[:type].eql?("class")
       params[:relatedClass] = [params.delete(:parent)]
       params[:relatedOntology] = params[:relatedClass].map {|c| c["ontology"]}
-      note = LinkedData::Client::Models::Note.new(values: params)
+      note = LinkedData::Client::Models::Note.new(values: note_params)
     else
-      note = LinkedData::Client::Models::Note.new(values: params)
+      note = LinkedData::Client::Models::Note.new(values: note_params)
     end
 
     new_note = note.save
@@ -139,6 +139,16 @@ class NotesController < ApplicationController
   def clean_note_id(id)
     id = id.match(/\Ahttp:\/\w/) ? id.sub('http:/', 'http://') : id
     CGI.unescape(id)
+  end
+
+  private
+
+  def note_params
+    p = params.permit(:parent, :type, :subject, :body, :creator, { relatedClass:[:class, :ontology] }, { relatedOntology:[] },
+                      proposal: [:type, :reasonForChange, :classId, :label, { synonym:[] }, { definition:[] },
+                                 :parent, :newTarget, :oldTarget, { newRelationshipType:[] }, :propertyId,
+                                 :newValue, :oldValue])
+    p.to_h
   end
 
 end

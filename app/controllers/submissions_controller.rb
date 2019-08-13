@@ -14,7 +14,7 @@ class SubmissionsController < ApplicationController
     # Make the contacts an array
     params[:submission][:contact] = params[:submission][:contact].values
 
-    @submission = LinkedData::Client::Models::OntologySubmission.new(values: params[:submission])
+    @submission = LinkedData::Client::Models::OntologySubmission.new(values: submission_params)
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
     
     # Update summaryOnly on ontology object
@@ -24,14 +24,13 @@ class SubmissionsController < ApplicationController
     @submission_saved = @submission.save
     if !@submission_saved || @submission_saved.errors
       @errors = response_errors(@submission_saved) # see application_controller::response_errors
-    
-      if @errors[:error][:uploadFilePath] && @errors[:error][:uploadFilePath].first[:options]
-        @masterFileOptions = @errors[:error][:uploadFilePath].first[:options]
-        @errors = ["Please select a main ontology file from your uploaded zip"]
+
+      if @errors[:error][:uploadFilePath]
+        @errors = ["Please specify the location of your ontology"]
       elsif @errors[:error][:contact]
         @errors = ["Please enter a contact"]
       end
-    
+
       render "new"
     else
       redirect_to "/ontologies/success/#{@ontology.acronym}"
@@ -54,7 +53,7 @@ class SubmissionsController < ApplicationController
     submissions = @ontology.explore.submissions
     @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
 
-    @submission.update_from_params(params[:submission])
+    @submission.update_from_params(submission_params)
     # Update summaryOnly on ontology object
     @ontology.summaryOnly = @submission.isRemote.eql?("3")
     @ontology.update
@@ -65,6 +64,17 @@ class SubmissionsController < ApplicationController
     else
       redirect_to "/ontologies/#{@ontology.acronym}"
     end
+  end
+
+  private
+
+  def submission_params
+    p = params.require(:submission).permit(:ontology, :description, :hasOntologyLanguage, :prefLabelProperty,
+                                           :synonymProperty, :definitionProperty, :authorProperty, :obsoleteProperty,
+                                           :obsoleteParent, :version, :status, :released, :isRemote, :pullLocation,
+                                           :filePath, { contact:[:name, :email] }, :homepage, :documentation,
+                                           :publication)
+    p.to_h
   end
 
 end
