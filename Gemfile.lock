@@ -71,7 +71,7 @@ GEM
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
     builder (3.2.3)
-    capistrano (3.8.2)
+    capistrano (3.11.1)
       airbrussh (>= 1.0.0)
       i18n
       rake (>= 10.0.0)
@@ -82,7 +82,7 @@ GEM
       capistrano (~> 3.0)
     capistrano-passenger (0.2.0)
       capistrano (~> 3.0)
-    capistrano-rails (1.1.8)
+    capistrano-rails (1.4.0)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
     chart-js-rails (0.1.6)
@@ -254,11 +254,11 @@ PLATFORMS
 
 DEPENDENCIES
   bootstrap (~> 4.1.0)
-  capistrano (~> 3.8.2)
+  capistrano (~> 3.11)
   capistrano-bundler
   capistrano-locally
   capistrano-passenger
-  capistrano-rails (~> 1.1.0)
+  capistrano-rails (~> 1.4)
   chart-js-rails
   coffee-rails (~> 4.1.0)
   cube-ruby

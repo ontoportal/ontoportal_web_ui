@@ -58,16 +58,12 @@ group :staging, :production do
 end
 
 group :development do
-    #Capistrano
-    gem 'capistrano', '~> 3.8.2', require: false
-    #capistrano-locally required for deployments to localhost
-    gem 'capistrano-locally', require: false
-    # rails specific capistrano funcitons
-    gem 'capistrano-rails', '~> 1.1.0', require: false
-    # integrate bundler with capistrano
+    gem 'capistrano', '~> 3.11', require: false
+    gem 'capistrano-rails', '~> 1.4', require: false
     gem 'capistrano-bundler', require: false
-    # passenger reload
+    gem 'capistrano-locally', require: false
     gem 'capistrano-passenger', require: false
+
     gem 'html2haml'
     # gem 'i18n-debug'
 end
