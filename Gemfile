@@ -1,10 +1,9 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '5.0.7.2'
+gem 'rails', '5.1.7'
 
 gem 'sass-rails', '~> 5.0'
-gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '>= 1.0.3'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
@@ -30,7 +29,7 @@ gem "iconv"
 gem "recaptcha", "= 0.4.0"
 gem "rest-client", "~> 1.8.0"
 gem "mysql2", "~> 0.4.0"
-gem "i18n", "~> 0"
+gem "i18n"
 gem "haml", "~> 4.0.0"
 gem "will_paginate", "~> 3.0"
 gem "rdoc"
