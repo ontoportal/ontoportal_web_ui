@@ -1,4 +1,5 @@
 User-agent: *
-Disallow: /mappings
 Disallow: /*mappings
 Disallow: /projects/
+User-agent: SemrushBot*
+Disallow: /
