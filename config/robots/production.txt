@@ -2,5 +2,10 @@ User-agent: *
 Disallow: /*mappings
 Disallow: /projects/
 
+# SEMrushBot [ https://www.semrush.com/bot ] does *not* have consistent naming, i.e. SEMrushBot, SemrushBot. In
+# addition, there are multiple associated bots, i.e. SemrushBot-SA, SemrushBot-SI. User-agent-based wildcard [
+# https://developers.google.com/search/reference/robots_txt#order-of-precedence-for-user-agents ] is used liberally -
+# for brevity and future-proofing [ accounting for future associated bots ].
+User-agent: SEMrushBot*
 User-agent: SemrushBot*
 Disallow: /
