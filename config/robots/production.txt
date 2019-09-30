@@ -1,4 +1,6 @@
 User-agent: *
+# This will match '/mappings', as well - due to path value wildcards [
+# https://developers.google.com/search/reference/robots_txt#url-matching-based-on-path-values ].
 Disallow: /*mappings
 Disallow: /projects/
 
