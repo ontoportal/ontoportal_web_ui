@@ -1,5 +1,23 @@
 User-agent: *
 Disallow: /*mappings
+Disallow: /projects
 Disallow: /projects/
-User-agent: SemrushBot*
+Disallow: /login
+Dissalow: /virtual
+Dissalow: /visualize
+Dissalow: /resource_index
+Crawl-delay: 5
+
+User-agent: SemrushBot
 Disallow: /
+
+User-agent: SemrushBot-SA
+Disallow: /
+
+User-agent: SemrushBot-SI
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+
