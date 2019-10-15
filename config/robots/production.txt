@@ -3,9 +3,9 @@ Disallow: /*mappings
 Disallow: /projects
 Disallow: /projects/
 Disallow: /login
-Dissalow: /virtual
-Dissalow: /visualize
-Dissalow: /resource_index
+Disallow: /virtual
+Disallow: /visualize
+Disallow: /resource_index
 Crawl-delay: 5
 
 User-agent: SemrushBot
