@@ -1,0 +1,20 @@
+User-agent: *
+Disallow: /*mappings
+Disallow: /login
+Disallow: /virtual
+Disallow: /visualize
+Crawl-delay: 2
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: SemrushBot-SA
+Disallow: /
+
+User-agent: SemrushBot-SI
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+
