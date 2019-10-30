@@ -1,9 +1,9 @@
-%div{style: "width: 50%"}
-  %table#mapping_count_table.zebra{cellpadding: "0", cellspacing: "0", width: "100%"}
+%div
+  %table#mapping_count_table.zebra{cellpadding: "0", cellspacing: "0"}
     %thead
       %tr
         %th Ontology
-        %th{:style => "text-align: right;"} Mappings
+        %th Mappings
     %tbody
       - if @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
         %tr
@@ -13,6 +13,6 @@
         - for ontology in @ontologies_mapping_count
           - next if ontology["ontology"].viewOf
           %tr
-            %td{:style => "text-align: left;"}
+            %td
               %a.facebox{:href => "/mappings/show/#{@ontology_id}?target=#{ontology['ontology'].id}&height=600&width=800", :title => "Mappings for #{@ontology_label} to #{ontology['ontology'].name}"}= ontology['ontology'].name
-            %td.last{:style => "text-align: right;"}= number_with_delimiter(ontology['count'], delimiter: ",")
+            %td= number_with_delimiter(ontology['count'], delimiter: ",")

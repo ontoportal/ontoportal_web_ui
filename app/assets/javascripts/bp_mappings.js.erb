@@ -52,13 +52,17 @@ function loadMappings(value) {
         "info": false,
         "searching": false,
         "columns": [
-          null,
+          { 
+            "className": "text-left" 
+          },
           { 
             "type": "num-fmt",
-            "orderSequence": [ "desc", "asc" ]
+            "orderSequence": [ "desc", "asc" ],
+            "className": "text-right"
           }
         ]
       });
+      jQuery(".mappings.index a.facebox").facebox();
     });
   } else {
     jQuery('#mapping_load').hide();

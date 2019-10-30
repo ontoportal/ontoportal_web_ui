@@ -134,10 +134,6 @@ class ConceptsController < ApplicationController
     end
   end
 
-  def flexviz
-    render :partial => "flexviz", :layout => "partial"
-  end
-
   def biomixer
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     not_found if @ontology.nil?
