@@ -77,7 +77,7 @@ class SearchController < ApplicationController
       content_type = "application/javascript"
     end
 
-    render text: response, content_type: content_type
+    render plain: response, content_type: content_type
   end
 
 
