@@ -331,7 +331,7 @@ class OntologiesController < ApplicationController
     # Check to see if user is requesting RDF+XML. If so, return the file from the REST service.
     if request.accept.to_s.eql?("application/ld+json") || request.accept.to_s.eql?("application/json")
       headers['Content-Type'] = request.accept.to_s
-      render text: @ontology.to_jsonld
+      render plain: @ontology.to_jsonld
       return
     end
     

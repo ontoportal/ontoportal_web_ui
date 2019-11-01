@@ -86,7 +86,7 @@ class ApplicationController < ActionController::Base
 
   def not_found
     if request.xhr?
-      render text: "Error: load failed"
+      render plain: "Error: load failed"
       return
     end
     
