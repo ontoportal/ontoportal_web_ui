@@ -20,10 +20,10 @@
   %tr
     %th Re-enter Password:*
     %td= password_field :user, :password_confirmation, :autocomplete => "off"
-  - if ENV['USE_RECAPTCHA'] == 'true'
+  - if using_captcha?
     %tr
-      %th Please enter the following text:*
-      %td= recaptcha_tags :display => { "theme" => "clean" }
+      %th
+      %td= recaptcha_tags
   - unless $ANNOUNCE_LIST.nil? || $ANNOUNCE_LIST.empty?
     %tr
       %td{:colspan => "2", :style => "text-align: right;"}

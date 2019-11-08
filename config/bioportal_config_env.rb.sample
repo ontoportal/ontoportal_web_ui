@@ -99,8 +99,8 @@ $ERROR_EMAIL = "recipient@example.org"
 CalendarDateSelect.format = :american
 
 # reCAPTCHA
-# In order to use reCAPTCHA on the user account creation page:
-#    1. Obtain a key from reCAPTCHA: http://recaptcha.net
+# In order to use reCAPTCHA on the account creation and feedback submission pages:
+#    1. Obtain a reCAPTCHA v2 key from: https://www.google.com/recaptcha/admin
 #    2. Include the corresponding keys below (between the single quotes)
 #    3. Set the USE_RECAPTCHA option to 'true'
 ENV['USE_RECAPTCHA'] = 'false'

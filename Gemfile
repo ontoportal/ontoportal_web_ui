@@ -26,7 +26,7 @@ gem 'select2-rails'
 
 gem "pry"
 gem "iconv"
-gem "recaptcha", "= 0.4.0"
+gem "recaptcha", "~> 5.2"
 gem "rest-client", "~> 1.8.0"
 gem "mysql2", "~> 0.4.0"
 gem "i18n"
