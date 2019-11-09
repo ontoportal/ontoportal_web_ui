@@ -1,4 +1,4 @@
-- @title = t('.title')
+- @title = t(".title", organization: "#{$ORG_SITE}")
 
 - unless $FRONT_NOTICE.nil? || $FRONT_NOTICE.empty? || cookies[:front_page_notice_closed].eql?("true")
   :javascript
@@ -18,7 +18,7 @@
     %div.col
       %div.px-2.py-2.pt-md-5.border-bottom.text-center
         %h2
-          = t(".welcome")
+          = t(".welcome", site: "#{$SITE}")
           %small.text-muted
             = t(".tagline")
   %div.row.search.pt-4
