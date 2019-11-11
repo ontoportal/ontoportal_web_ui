@@ -45,24 +45,22 @@ gem 'thin'
 gem 'open_uri_redirections'
 gem 'nokogiri'
 
-# application monitoring
-gem 'newrelic_rpm'
-
 gem 'ontologies_api_client', :git => "https://github.com/ncbo/ontologies_api_ruby_client.git", branch: "staging"
 
 group :staging, :production do
+  # application monitoring
+  gem 'newrelic_rpm'
   #logs in json format, useful for shipping logs to logstash
-  gem 'rackstash', git: "https://github.com/planio-gmbh/rackstash.git"
-  gem 'logstash-logger'
+  # gem 'rackstash', git: "https://github.com/planio-gmbh/rackstash.git"
+  # gem 'logstash-logger'
 end
 
 group :development do
-    gem 'capistrano', '~> 3.11', require: false
-    gem 'capistrano-rails', '~> 1.4', require: false
-    gem 'capistrano-bundler', require: false
-    gem 'capistrano-locally', require: false
-    gem 'capistrano-passenger', require: false
-
-    gem 'html2haml'
-    # gem 'i18n-debug'
+  gem 'capistrano', '~> 3.11', require: false
+  gem 'capistrano-rails', '~> 1.4', require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano-locally', require: false
+  gem 'capistrano-passenger', require: false
+  gem 'html2haml'
+  # gem 'i18n-debug'
 end

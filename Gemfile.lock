@@ -12,15 +12,6 @@ GIT
       oj
       spawnling (= 2.1.5)
 
-GIT
-  remote: https://github.com/planio-gmbh/rackstash.git
-  revision: 0a7b1ca095ce1f761ca32dd3621978c55ef6582f
-  specs:
-    rackstash (0.1.0)
-      activesupport
-      logstash-event (< 1.2.0)
-      thor
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -126,9 +117,6 @@ GEM
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
     json (2.2.0)
-    logstash-event (1.1.5)
-    logstash-logger (0.3.0)
-      logstash-event
     loofah (2.3.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -267,7 +255,6 @@ DEPENDENCIES
   iconv
   jquery-rails
   jquery-ui-rails
-  logstash-logger
   multi_json
   mysql2 (~> 0.4.0)
   newrelic_rpm
@@ -277,7 +264,6 @@ DEPENDENCIES
   open_uri_redirections
   pry
   rack-mini-profiler
-  rackstash!
   rails (= 5.1.7)
   rails_autolink
   rdoc
