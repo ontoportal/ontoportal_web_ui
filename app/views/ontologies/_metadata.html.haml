@@ -129,7 +129,7 @@
     %section.ont-metadata-card.ont-analytics-card
       %div.ont-section-toolbar
         %header.pb-2.font-weight-bold Visits
-        - if visits_data
+        - if visits_data(@ontology)
           = link_to(@ontology.links["analytics"] + "?apikey=#{get_apikey}&format=csv", "aria-label": "Download as CSV", title: "Download as CSV") do
             %i.fas.fa-lg.fa-download{"aria-hidden": "true", style: "margin-left: 0.5rem"}
       = render partial: "visits"

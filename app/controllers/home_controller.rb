@@ -92,22 +92,21 @@ class HomeController < ApplicationController
     if params[:comment].nil? || params[:comment].empty?
       @errors << "Please include your comment"
     end
-    # verify_recaptcha is a method provided by the recaptcha plugin, returns true or false.
-    if ENV['USE_RECAPTCHA'] == 'true' && !session[:user]
+    if using_captcha? && !session[:user]
       if !verify_recaptcha
         @errors << "Please fill in the proper text from the supplied image"
       end
     end
 
     unless @errors.empty?
-      render :layout => feedback_layout
+      render layout: feedback_layout
       return
     end
 
     Notifier.feedback(params[:name],params[:email],params[:comment],params[:location]).deliver_now
 
     if params[:pop].eql?("true")
-      render :action => "feedback_complete", :layout => "popup"
+      render "feedback_complete", layout: "popup"
     else
       flash[:notice]="Feedback has been sent"
       redirect_to_home

@@ -19,17 +19,17 @@
       - submission_readyId = -1
     - @submissions.each_with_index do |sub, index|
       - hidden_row_class = index >= 5 ? "hidden_ont hidden_select" : ""
-      <tr #{cycle("class='#{hidden_row_class}'", "class='alt #{hidden_row_class}'")} class="#{hidden_row_class}">
-      %td
-        = raw status_link(sub, sub.submissionId==submission_readyId)
-      %td
-        = xmldatetime_to_date(sub.released) unless sub.released.nil?
-      %td
-        = xmldatetime_to_date(sub.creationDate)
-      - unless @ont_restricted
+      %tr{class: "#{hidden_row_class}"}
         %td
-          = raw download_link(sub)
+          = raw status_link(sub, sub.submissionId==submission_readyId)
+        %td
+          = xmldatetime_to_date(sub.released) unless sub.released.nil?
+        %td
+          = xmldatetime_to_date(sub.creationDate)
+        - unless @ont_restricted
+          %td
+            = raw download_link(sub)
     - if @submissions.length >= 5
       %tr
-        %td{colspan: more_colspan, style: "text-align: right; background-color: white;"}
+        %td{colspan: more_colspan, class: "show_more_subs"}
           %a#version_toggle{:href => ""} more...

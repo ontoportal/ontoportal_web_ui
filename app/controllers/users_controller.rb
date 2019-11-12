@@ -159,8 +159,7 @@ class UsersController < ApplicationController
     if !params[:password].eql?(params[:password_confirmation])
       errors << "Your Password and Password Confirmation do not match"
     end
-    # verify_recaptcha is a method provided by the recaptcha plugin, returns true or false.
-    if ENV['USE_RECAPTCHA'] == 'true'
+    if using_captcha?
       if !verify_recaptcha
         errors << "Please fill in the proper text from the supplied image"
       end

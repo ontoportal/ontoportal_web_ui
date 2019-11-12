@@ -64,10 +64,6 @@ class AjaxProxyController < ApplicationController
     render_json simple_ontology.to_json
   end
 
-  def recaptcha
-    render :partial => "recaptcha"
-  end
-
   def loading_spinner
     render :partial => "loading_spinner"
   end

@@ -9,6 +9,6 @@ class RobotsController < ApplicationController
     else
       robots = File.read(Rails.root + "config/robots/#{Rails.env}.txt")
     end
-    render text: robots, layout: false, content_type: 'text/plain'
+    render plain: robots
   end
 end
