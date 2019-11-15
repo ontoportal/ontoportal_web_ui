@@ -1,4 +1,4 @@
-class CreateWidgetLogs < ActiveRecord::Migration
+class CreateWidgetLogs < ActiveRecord::Migration[4.2]
   def self.up
     create_table "widget_logs", :force => true do |t|
       t.integer "count",                  :default => 0, :null => false

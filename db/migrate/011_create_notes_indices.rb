@@ -1,4 +1,4 @@
-class CreateNotesIndices < ActiveRecord::Migration
+class CreateNotesIndices < ActiveRecord::Migration[4.2]
   def self.up
     create_table "notes_indices" do |t|
       t.string   "note_id",                      :null => false

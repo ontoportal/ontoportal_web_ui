@@ -1,4 +1,4 @@
-class CreateMappings < ActiveRecord::Migration
+class CreateMappings < ActiveRecord::Migration[4.2]
   def self.up
     create_table :mappings do |t|
       t.integer :user_id,:source_ont,:destination_ont,:source_version_id,:destination_version_id
