@@ -1,4 +1,4 @@
-class ChangeMappingIdColumnType < ActiveRecord::Migration
+class ChangeMappingIdColumnType < ActiveRecord::Migration[4.2]
   def self.up
     change_column :margin_notes, :mapping_id, :string
   end

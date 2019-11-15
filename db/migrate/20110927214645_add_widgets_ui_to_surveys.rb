@@ -1,4 +1,4 @@
-class AddWidgetsUiToSurveys < ActiveRecord::Migration
+class AddWidgetsUiToSurveys < ActiveRecord::Migration[4.2]
   def self.up
     add_column :surveys, :widgets_ui, :boolean
   end

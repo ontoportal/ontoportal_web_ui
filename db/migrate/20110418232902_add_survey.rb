@@ -1,4 +1,4 @@
-class AddSurvey < ActiveRecord::Migration
+class AddSurvey < ActiveRecord::Migration[4.2]
   def self.up
     create_table "surveys" do |t|
       t.column "user_id", :integer
