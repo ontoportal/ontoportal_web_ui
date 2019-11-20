@@ -25,7 +25,14 @@ function SearchAnalytics() {
   this.bindTracker = function() {
     jQuery(document).on("click", "#search_results_container div.class_link a", function(e) {
       e.preventDefault();
-      link = jQuery(e.target);
+
+      var link;
+      if (e.target.nodeName == "SPAN") {
+        link = jQuery(e.target.parentElement);
+      } else {
+        link = jQuery(e.target);
+      }
+
       var href = link.attr("href");
       var params = new SearchAnalytics().linkInformation(link);
       new Analytics().track("search", "result_clicked", params, function(){
