@@ -97,18 +97,6 @@ class ConceptsController < ApplicationController
     render json: LinkedData::Client::Models::Property.properties_to_hash(@root.children)
   end
 
-  def virtual
-    if params[:ontology].to_i > 0
-      acronym = BPIDResolver.id_to_acronym(params[:ontology])
-      if acronym
-        redirect_new_api(true)
-        return
-      end
-    else
-      redirect_to "/ontologies/#{params[:ontology]}?p=classes&#{params_string_for_redirect(params, prefix: "")}", :status => :moved_permanently
-    end
-  end
-
   # Renders a details pane for a given ontology/concept
   def details
     not_found if params[:conceptid].nil? || params[:conceptid].empty?
