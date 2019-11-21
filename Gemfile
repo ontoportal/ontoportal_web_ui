@@ -61,6 +61,10 @@ group :development do
   gem 'capistrano-bundler', require: false
   gem 'capistrano-locally', require: false
   gem 'capistrano-passenger', require: false
+  gem 'capistrano-yarn', require: false
   gem 'html2haml'
+  # static code analysis
+  gem "brakeman", require: false
+  gem "rubocop", require: false
   # gem 'i18n-debug'
 end
