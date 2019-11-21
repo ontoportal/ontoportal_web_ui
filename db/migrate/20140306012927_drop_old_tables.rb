@@ -1,4 +1,4 @@
-class DropOldTables < ActiveRecord::Migration
+class DropOldTables < ActiveRecord::Migration[4.2]
   def self.up
     old_tables = [
       :custom_ontologies,

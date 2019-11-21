@@ -1,4 +1,4 @@
-class CreateTimeoutsTable < ActiveRecord::Migration
+class CreateTimeoutsTable < ActiveRecord::Migration[4.2]
   def self.up
     create_table :timeouts do |t|
       t.string    :path

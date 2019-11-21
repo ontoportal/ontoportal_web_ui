@@ -1,4 +1,4 @@
-class CreateUses < ActiveRecord::Migration
+class CreateUses < ActiveRecord::Migration[4.2]
   def self.up
     create_table :uses do |t|
       t.integer :project_id,:ontology_id

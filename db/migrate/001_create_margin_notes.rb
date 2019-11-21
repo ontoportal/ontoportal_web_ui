@@ -1,4 +1,4 @@
-class CreateMarginNotes < ActiveRecord::Migration
+class CreateMarginNotes < ActiveRecord::Migration[4.2]
   def self.up
     create_table :margin_notes do |t|
       t.integer :parent_id, :mapping_id, :note_type,:user_id, :ontology_id, :ontology_version_id

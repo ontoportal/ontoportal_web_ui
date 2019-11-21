@@ -1,4 +1,4 @@
-class CreateCustomOntologies < ActiveRecord::Migration
+class CreateCustomOntologies < ActiveRecord::Migration[4.2]
   def self.up
     create_table :custom_ontologies do |t|
       t.integer :user_id

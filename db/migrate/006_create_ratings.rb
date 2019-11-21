@@ -1,4 +1,4 @@
-class CreateRatings < ActiveRecord::Migration
+class CreateRatings < ActiveRecord::Migration[4.2]
   def self.up
     create_table :ratings do |t|
       t.integer :rating_type_id, :value, :review_id

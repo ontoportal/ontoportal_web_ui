@@ -156,15 +156,10 @@ Rails.application.routes.draw do
   get '/ajax/json_term' => 'redirect#index', :url => '/ajax/json_class'
 
   # Visualize
-  get '/visualize/virtual/:ontology' => 'concepts#virtual', :as => :virtual_visualize, :constraints => { :id => /[^\/?]+/, :conceptid => /[^\/?]+/ }
-  get '/visualize/virtual/:ontology/:id' => 'concepts#virtual', :as => :virtual_uri, :constraints => { :id => /[^\/?]+/ }
   get '/visualize/:ontology' => 'ontologies#visualize', :as => :visualize, :constraints => { :ontology => /[^\/?]+/ }
   get '/visualize/:ontology/:conceptid' => 'ontologies#visualize', :as => :uri, :constraints => { :ontology => /[^\/?]+/, :conceptid => /[^\/?]+/ }
   get '/visualize' => 'ontologies#visualize', :as => :visualize_concept, :constraints => { :ontology => /[^\/?]+/, :id => /[^\/?]+/, :ontologyid => /[^\/?]+/, :conceptid => /[^\/?]+/ }
 
   get '/exhibit/:ontology/:id' => 'concepts#exhibit'
 
-  # Virtual
-  get '/virtual/:ontology' => 'concepts#virtual', :as => :virtual_ont, :constraints => { :ontology => /[^\/?]+/ }
-  get '/virtual/:ontology/:conceptid' => 'concepts#virtual', :as => :virtual, :constraints => { :ontology => /[^\/?]+/, :conceptid => /[^\/?]+/ }
 end
