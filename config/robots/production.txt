@@ -6,6 +6,7 @@ Disallow: /login
 Disallow: /virtual
 Disallow: /visualize
 Disallow: /resource_index
+Dissalow: /feedback
 Crawl-delay: 5
 
 User-agent: SemrushBot
@@ -19,5 +20,6 @@ Disallow: /
 
 User-agent: MJ12bot
 Disallow: /
+
 
 
