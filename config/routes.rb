@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   resources :ontolobridge
 
-  resources :projects
+  resources :projects, constraints: { id: /[^\/]+/ }
 
   resources :users, :path => :accounts, :requirements => { :id => /.+/ }
 
