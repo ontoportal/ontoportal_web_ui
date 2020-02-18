@@ -69,8 +69,6 @@ function showRestrictionLicensed() {
 
 jQuery(document).ready(function() {
 
-  // jQuery(document).data().bp.acronyms = #{LinkedData::Client::Models::Ontology.all.map {|o| o.acronym}.to_json};
-
   // Wire up options for restriction how an ontology is viewed
   jQuery("#ontology_viewingRestriction").change(function(){
     var select = jQuery(this);
@@ -117,6 +115,7 @@ jQuery(document).ready(function() {
   });
 
   // Check acronym as you type
+  var acronyms = jQuery("#ontology_acronym").data("acronyms");
   jQuery("#ontology_acronym").on('input', function(e) {
     var $this = $(this);
     var errors = [];
@@ -134,7 +133,7 @@ jQuery(document).ready(function() {
       errors.push("Acronym must be sixteen characters or less");
     }
 
-    if (jQuery(document).data().bp.acronyms.indexOf($this.val()) !== -1) {
+    if (acronyms.indexOf($this.val()) > -1) {
       errors.push("Acronym already in use");
     }
 
