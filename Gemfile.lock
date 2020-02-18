@@ -135,7 +135,7 @@ GEM
     minitest (5.14.0)
     multi_json (1.14.1)
     multipart-post (2.1.1)
-    mysql2 (0.5.3)
+    mysql2 (0.5.2)
     net-scp (2.0.0)
       net-ssh (>= 2.6.5, < 6.0.0)
     net-ssh (5.2.0)
@@ -278,7 +278,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   multi_json
-  mysql2 (~> 0.5.0)
+  mysql2 (= 0.5.2)
   newrelic_rpm
   nokogiri
   oj
