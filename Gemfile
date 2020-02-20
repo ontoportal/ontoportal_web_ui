@@ -68,3 +68,7 @@ group :development do
   gem 'rubocop', require: false
   # gem 'i18n-debug'
 end
+
+group :test, :development do
+  gem 'rspec-rails'
+end
