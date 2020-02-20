@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150806211835) do
+ActiveRecord::Schema.define(version: 20200220191815) do
 
   create_table "analytics", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "segment"
@@ -21,6 +21,12 @@ ActiveRecord::Schema.define(version: 20150806211835) do
     t.text "params"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "licenses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.text "encrypted_key"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "timeouts", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
