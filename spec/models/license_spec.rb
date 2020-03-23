@@ -19,7 +19,7 @@ RSpec.describe License, type: :model do
   # Decryption of above variable: "841b4f58-02e1-4a66-9e27-191f15e16279;Microsoft Corporation;2021-02-14".
 
   it do "decrypts license data"
-    license = License.new(encrypted_key: encrypted_license_key)
+    license = License.create(encrypted_key: encrypted_license_key)
 
     expect(license.appliance_id).to eq("841b4f58-02e1-4a66-9e27-191f15e16279")
     expect(license.organization).to eq("Microsoft Corporation")
@@ -39,7 +39,7 @@ RSpec.describe License, type: :model do
   end
 
   it do "is in trial period"
-    license = License.new(encrypted_key: "trial", created_at: Time.current)
+    license = License.create(encrypted_key: "trial", created_at: Time.current)
     
     travel 15.days do
       expect(license.days_remaining).to be > 0
@@ -47,7 +47,7 @@ RSpec.describe License, type: :model do
   end
 
   it do "is out of trial after trial period"
-    license = License.new(encrypted_key: "trial", created_at: Time.current)
+    license = License.create(encrypted_key: "trial", created_at: Time.current)
 
     travel 31.days do
       expect(license.days_remaining).to eq(0)
@@ -55,7 +55,7 @@ RSpec.describe License, type: :model do
   end
 
   it do "calculates days remaining"
-    license = License.new(encrypted_key: encrypted_license_key)
+    license = License.create(encrypted_key: encrypted_license_key)
 
     travel_to(Date.parse("2021-01-15")) do
       expect(license.days_remaining).to eq(30)
