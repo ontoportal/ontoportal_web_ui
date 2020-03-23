@@ -4,7 +4,8 @@ class License < ApplicationRecord
 
   validates :encrypted_key, presence: true
 
-  after_initialize :decrypt
+  after_find :decrypt
+  after_commit :decrypt
 
   def is_trial?
     encrypted_key == 'trial'
