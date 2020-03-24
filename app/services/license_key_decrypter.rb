@@ -4,7 +4,6 @@ class LicenseKeyDecrypter < ApplicationService
     @license_key = license_key
   end
 
-  # TODO: Add exception handling
   def call
     encrypted_key, encrypted_data = @license_key.split('|').map{ |a| Base64.decode64(a) }
 

@@ -74,4 +74,47 @@ RSpec.describe License, type: :model do
     end
   end
 
+  describe "validation" do
+
+    let (:encrypted_license_key_with_missing_characters) { 
+      <<~HEREDOC
+        ds938nK0sdu8AzhtGefz0r7JTH97ncQfuokmwYLGHYbQF4CA1lWVHWwWoM/W\
+        lzvZlDSE/WSLvXKefOXk6+yrelKgUMcnLy1Q5o6E+jJW6uia77Ivv6Hxl445\
+        0kB8CeywyTTOQhROvQZ9NGsl5hpriNlaNlZHqo7gVtBZReoDypciUS+562On\
+        x+CiYKl18bCOD7LmlJCyGg662EUPX5gwGORxKYYs/+tQixQ49LTg8dI/XguK\
+        r/FIqUuz4erA73Le4Jn2C3dE2KjvS15DKIzwYL18oe+eONAPGj4JOredwk76\
+        jHGa5fHNAmoSOB3jF6sboQK8nG/LajuFEI+O6fWXUQ==\
+        |a6Bh755yqiviJBFm/XAMS/lA1hhYjR5SKrnQ5vb4/osMutu91j9Z/BSNIknD\
+        Ia5kNAhlV6Ie0UkjjMbRgAr471TdLFcy2fB05BwG14JU
+      HEREDOC
+    }  
+
+    it "blocks malformed keys" do
+      license = License.new(encrypted_key: encrypted_license_key_with_missing_characters)
+
+      license.valid?
+
+      expect(license).to be_invalid
+      expect(license.errors[:encrypted_key]).to include I18n.t("activerecord.errors.models.license.attributes.encrypted_key.invalid_license_key")
+    end
+
+    it "blocks invalid keys" do
+      license = License.create(encrypted_key: "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua")
+
+      license.valid?
+
+      expect(license).to be_invalid
+      expect(license.errors[:encrypted_key]).to include I18n.t("activerecord.errors.models.license.attributes.encrypted_key.invalid_license_key")
+    end
+
+    it "allows trial licenses" do
+      license = License.new(encrypted_key: "trial")
+
+      license.valid?
+
+      expect(license.errors).to be_empty
+    end
+
+  end
+
 end
