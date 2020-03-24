@@ -112,6 +112,16 @@ RSpec.describe License, type: :model do
 
       license.valid?
 
+      expect(license).to be_valid
+      expect(license.errors).to be_empty
+    end
+
+    it "allows valid keys" do
+      license = License.new(encrypted_key: encrypted_license_key)
+
+      license.valid?
+
+      expect(license).to be_valid
       expect(license.errors).to be_empty
     end
 
