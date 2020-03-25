@@ -11,6 +11,7 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require bioportal
+//= require admin/licenses
 //= require bp_class_tree
 //= require bp_ajax_controller
 //= require bp_ontology_viewer

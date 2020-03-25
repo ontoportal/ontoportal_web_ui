@@ -1,57 +1,85 @@
 - @title = "BioPortal Administration"
-%h1.tab_header Administration Console
-%br
-%br
-%div#progress_message{:class => "alert-box progress_box"}
-%div#success_message{:class => "alert-box success"}
-%div#error_message{:class => "alert-box error"}
-%div#info_message{:class => "alert-box notice"}
-%ul.admin_tabs.skin2
-  %li
-    %a.xl{:href => "#"}
-      Site Administration
-  %li
-    %a.xl{:href => "#"}
-      Ontology Administration
-%div.admin_panes
-  %div
-    %br
-    %h2 Cache Management
-    %br
-    %table.memcached_utilities
-      %tr
-        %td{:valign => "top", :style => "white-space:nowrap;"}
-          %a#flush_memcache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
-            %span.ui-button-text{:style => "width:150px;"} Flush UI Cache
-        %td{:valign => "top", :style => "white-space:nowrap;"}
-          %a#reset_memcache_connection_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
-            %span.ui-button-text{:style => "width:150px;"} Reset UI Cache Connection
-      %tr
-        %td{:valign => "top", :style => "white-space:nowrap;"}
-          %a#flush_goo_cache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
-            %span.ui-button-text{:style => "width:150px;"} Flush Goo Cache
-        %td{:valign => "top", :style => "white-space:nowrap;"}
-          %a#flush_http_cache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
-            %span.ui-button-text{:style => "width:150px;"} Flush HTTP Cache
-    %span#update_check{:style => "display:none;"}
-      %p.tab_description{:style => "clear:both; margin-bottom: 30px;"}
 
-      %h2 Version Management
-      %br
-      %table.memcached_utilities
-        %tr
-          %td{:valign => "top", :style => "white-space:nowrap;"}
-            %a#update_check_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
-              %span.ui-button-text{:style => "width:150px;"} Check for Update
-  %div
-    %br
-    .ontologies_list_container
-      %table{:style => "float:left;"}
-        %tr
-          %td{:style => "white-space:nowrap;"}
-            Report generated on:&nbsp;&nbsp;
-            %span.report_date_generated
-            %a#refresh_report_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :style => "margin-left:11px;"}
-              %span.ui-button-text{:class => "report_date_generated_button"}
-      %p.tab_description{:style => "clear:both;"}
-      %table#adminOntologies.zebra{:cellpadding => "0", :cellspacing => "0", :width => "100%"}
+%div.row
+  %div.col
+    %h3.my-4 Administration Console
+
+%div.row
+  %div.col-2
+    %div#progress_message{:class => "alert-box progress_box"}
+    %div#success_message{:class => "alert-box success"}
+    %div#error_message{:class => "alert-box error"}
+    %div#info_message{:class => "alert-box notice"}
+
+%div.row
+  %div.col
+
+    %ul.nav.nav-tabs{id: "admin-tabs", role: "tablist"}
+      %li.nav-item
+        =link_to("Site Administration", "#site-admin", id: "site-admin-tab", class: "nav-link active", role: "tab", data: { toggle: "tab" }, aria: { controls: "site-admin", selected: "true" })
+      %li.nav-item
+        =link_to("Ontology Administration", "#ontology-admin", id: "ontology-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab" }, aria: { controls: "ontology-admin", selected: "false" })
+      %li.nav-item
+        =link_to("Licensing", "#licensing", id: "licensing-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab", href: admin_licenses_path() }, aria: { controls: "licensing", selected: "false" })
+
+    %div#adminTabContent.tab-content
+
+      -# Site Administration tab
+      %div.tab-pane.active.show.fade{id: "site-admin", role: "tabpanel", aria: { labelledby: "site-admin-tab" }}
+        %h4.mt-3 Cache Management
+        %table.memcached_utilities
+          %tr
+            %td{:valign => "top", :style => "white-space:nowrap;"}
+              %a#flush_memcache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
+                %span.ui-button-text{:style => "width:150px;"} Flush UI Cache
+            %td{:valign => "top", :style => "white-space:nowrap;"}
+              %a#reset_memcache_connection_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
+                %span.ui-button-text{:style => "width:150px;"} Reset UI Cache Connection
+          %tr
+            %td{:valign => "top", :style => "white-space:nowrap;"}
+              %a#flush_goo_cache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
+                %span.ui-button-text{:style => "width:150px;"} Flush Goo Cache
+            %td{:valign => "top", :style => "white-space:nowrap;"}
+              %a#flush_http_cache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
+                %span.ui-button-text{:style => "width:150px;"} Flush HTTP Cache
+        %span#update_check{:style => "display:none;"}
+          %p.tab_description{:style => "clear:both; margin-bottom: 30px;"}
+
+          %h4 Version Management
+          %table.memcached_utilities
+            %tr
+              %td{:valign => "top", :style => "white-space:nowrap;"}
+                %a#update_check_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
+                  %span.ui-button-text{:style => "width:150px;"} Check for Update
+
+      -# Ontology Administration tab
+      %div.tab-pane.fade{id: "ontology-admin", role: "tabpanel", aria: { labelledby: "ontology-admin-tab" }}
+        %div.ontologies_list_container.mt-3
+          %table{:style => "float:left;"}
+            %tr
+              %td{:style => "white-space:nowrap;"}
+                Report generated on:&nbsp;&nbsp;
+                %span.report_date_generated
+                %a#refresh_report_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", :style => "margin-left:11px;"}
+                  %span.ui-button-text{:class => "report_date_generated_button"}
+          %p.tab_description{:style => "clear:both;"}
+          %table#adminOntologies.zebra{:cellpadding => "0", :cellspacing => "0", :width => "100%"}
+
+      -# Licensing tab
+      %div.tab-pane.fade{id: "licensing", role: "tabpanel", aria: { labelledby: "licensing-admin-tab" }}
+        %div#renew-license-notice
+
+        %table.table.table-sm.table-bordered.mt-5#license-table
+          %thead
+            %tr
+              %th{scope: "col"} Licensed to
+              %th{scope: "col"} Appliance ID
+              %th{scope: "col"} Valid till  
+              %th{scope: "col"} Days remaining
+          %tbody
+
+        %div.mb-5#renew-license-button
+          = link_to("Renew license", new_admin_license_path(), class: "btn btn-primary", role: "button", remote: "true")
+        
+        %div.mb-5#renew-license-form
+

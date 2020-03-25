@@ -8,6 +8,11 @@ en:
             encrypted_key:
               invalid_license_key: is an invalid license key
 
+  admin:
+    licenses:
+      create:
+        success: License successfully renewed!
+
   date:
     formats:
       year_month_day_concise: '%Y-%m-%d' # 2017-03-01
