@@ -9,3 +9,10 @@ div#notice_message {
     font-size: small; 
   }
 }
+
+.flash {
+  &.alert {
+    margin-top: 15px;
+  }
+}
+

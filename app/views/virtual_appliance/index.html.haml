@@ -21,9 +21,6 @@
   -if @user.admin?
     %div{:style => "margin: 2em 0 0; padding: 1em 1em; border: solid thin gray; background-color: lightGray;"}
       %h1{:style => "margin-bottom: 15px;"} Admin: Add Users
-      -unless flash[:admin_error].nil? || flash[:admin_error].empty?
-        %div{:style => 'color: red; padding: 4px; margin: 0 0 1em; background: white; border: thin solid darkGray;'}
-          = flash[:admin_error]
       =form_for :appliance_user do |f|
         = f.label :user_id, "Account Name: "
         = f.text_field :user_id

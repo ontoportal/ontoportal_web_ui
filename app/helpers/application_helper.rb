@@ -386,6 +386,18 @@ module ApplicationHelper
     #return DateTime.xmlschema( xml_date_time_str ).to_date.to_s
   end
 
+  def flash_class(level)
+    case level
+    when "notice" 
+      "alert alert-info"
+    when "success" 
+      "alert alert-success"
+    when "error"
+      "alert alert-danger"
+    when "alert" 
+      "alert alert-error"
+    end
+  end
 
   ###BEGIN ruby equivalent of JS code in bp_ajax_controller.
   ###Note: this code is used in concepts/_details partial.

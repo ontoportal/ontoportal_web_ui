@@ -1,6 +1,6 @@
 - flash.each do |key, value|
-  %div{:style => "margin: 13px; padding: 5px; border: 1px solid gray; font-size:14px; background-color: #ffffcc;"}
-    %p{:style => "text-align: left; margin-bottom: 0;", class: "flash flash-#{key}"}= value
+  %div{class: "flash #{flash_class(key)}", role: "alert"}
+    = value
 
 - do_not_display_subdomain_info_here = Set.new(["homeall_resources"])
 - if at_slice? && !do_not_display_subdomain_info_here.include?("#{controller.controller_name}#{controller.action_name}")
