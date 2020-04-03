@@ -1,13 +1,10 @@
 require 'cgi'
 
 class ConceptsController < ApplicationController
-  # GET /concepts
-  # GET /concepts.xml
+  include MappingsHelper
 
   layout 'ontology'
 
-  # GET /concepts/1
-  # GET /concepts/1.xml
   def show
     # Handle multiple methods of passing concept ids
     params[:id] = params[:id] ? params[:id] : params[:conceptid]
@@ -56,7 +53,7 @@ class ConceptsController < ApplicationController
     # TODO: NCBO-402 might be implemented here, but it throws off a lot of ajax result rendering.
     #cls_label = cls.prefLabel({:use_html => true}) || cls_id
     cls_label = cls.prefLabel || cls_id
-    render :text => cls_label
+    render plain: cls_label
   end
 
   def show_definition
@@ -100,18 +97,6 @@ class ConceptsController < ApplicationController
     render json: LinkedData::Client::Models::Property.properties_to_hash(@root.children)
   end
 
-  def virtual
-    if params[:ontology].to_i > 0
-      acronym = BPIDResolver.id_to_acronym(params[:ontology])
-      if acronym
-        redirect_new_api(true)
-        return
-      end
-    else
-      redirect_to "/ontologies/#{params[:ontology]}?p=classes&#{params_string_for_redirect(params, prefix: "")}", :status => :moved_permanently
-    end
-  end
-
   # Renders a details pane for a given ontology/concept
   def details
     not_found if params[:conceptid].nil? || params[:conceptid].empty?
@@ -135,10 +120,6 @@ class ConceptsController < ApplicationController
     else
       render :partial => "details"
     end
-  end
-
-  def flexviz
-    render :partial => "flexviz", :layout => "partial"
   end
 
   def biomixer
@@ -174,9 +155,8 @@ private
     build_tree
   end
 
-  # gathers the information for a node
   def gather_details
-    @mappings = @concept.explore.mappings
+    @mappings = get_concept_mappings(@concept)
     @notes = @concept.explore.notes
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node

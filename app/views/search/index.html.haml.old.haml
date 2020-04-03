@@ -1,0 +1,60 @@
+- @title = "Search"
+%div{:style => "padding: 1em;"}
+  #search_input{:style => "margin-bottom: 1em;"}
+    %h1 Class Search
+    %p
+      Search for a class in multiple ontologies  #{help_icon("/help#Search_Tab").html_safe}
+    = text_field :search, :keywords, :style => "width: 426px; height: 20px; float: left; margin-right: 1em;"
+    = button_to "Search", {}, :style => "font-size: 10pt !important; margin: -1.5px 0 0;", :id => "search_button", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all"
+    %span
+      %span#search_spinner{:style => "position: relative; left: 85px; display: none; padding: 4px;"}
+        \&nbsp;
+        %img{:src => asset_path('spinners/spinner_000000_16px.gif'), :style => "vertical-align: inherit;"}/
+    #advanced_options_container
+      %a#advanced_options{:href => "javascript:void(0);"}
+        %span#hide_advanced_options.not_visible> hide&nbsp;
+        advanced options
+    #search_options.not_visible{:style => "padding-top: .6em; clear: both; margin-bottom: 40px;"}
+      %h2{:style => "margin-bottom: 3px; font-size: 12pt; !important;"} Include in your search...
+      #include_options.search_options
+        = check_box :search, :include_properties
+        = label :search, :include_properties, "<span class='definition' title='Named association between two entities. Examples are &quot;definition&quot; (a relation between a class and some text) and &quot;part-of&quot; (a relation between two classes).'>Property</span> values</span>".html_safe
+        %br/
+        = check_box :search, :include_obsolete
+        = label :search, :include_obsolete, "<span class='definition' title='A class that the authors of the ontology have flagged as being obsolete and which they recommend that people not use. These classes are often left in ontologies (rather than removing them entirely) so that existing systems that depend on them will continue to function.'>Obsolete classes</span>".html_safe
+        %br/
+        /
+          Disable until we support non-production filtering on rest
+          = check_box :search, :include_non_production
+          = label :search, :include_non_production, "Non-production ontologies"
+          %br/
+        = check_box :search, :include_views
+        = label :search, :include_views, "Ontology views</a>".html_safe
+      %h2{:style => "margin: 10px 0 3px; font-size: 12pt; !important;"} Narrow your search to...
+      #remove_options.search_options
+        = check_box :search, :exact_match
+        = label :search, :exact_match, "Exact matches"
+        %br/
+        = check_box :search, :require_definition
+        = label :search, :require_definition, "Classes with definitions"
+        %br/
+        %br/
+        %h2{:style => "font-size: 10pt; !important; margin-bottom: 3px;"} Categories
+        = select :search, :categories, options_for_select(categories_for_select), { }, :style => "width: 432px", :multiple => 'true', "data-placeholder".to_sym => "Type here to select categories or leave blank to use all"
+        #ontology_picker_options{:style => "margin-top: 1em; position: relative; left: 2px;"}
+          = render :partial => "shared/ontology_picker", :locals => { :sel_text => "Ontologies" }
+  #search_results_container
+    #result_stats
+    #search_messages
+    #search_results
+#biomixer{:style => "display: none;"}
+/ Javascript at end to improve response time to user
+:javascript
+  // Hash of ontology id => name, acronym for lookup use via JS
+  jQuery(document).ready(function() {
+    jQuery(document).data().bp.ontologies = #{Hash[LinkedData::Client::Models::Ontology.all(include_views: true).map {|o| [o.id, {name: o.name, acronym: o.acronym}]}].to_json.html_safe}
+
+    if (jQuery("#search_keywords").val() !== "") {
+        performSearch();
+    }
+  });

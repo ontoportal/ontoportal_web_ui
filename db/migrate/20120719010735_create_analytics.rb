@@ -1,4 +1,4 @@
-class CreateAnalytics < ActiveRecord::Migration
+class CreateAnalytics < ActiveRecord::Migration[4.2]
   def self.up
     create_table :analytics do |t|
       t.string :segment

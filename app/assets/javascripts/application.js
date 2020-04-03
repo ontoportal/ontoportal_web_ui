@@ -16,6 +16,7 @@
 //= require bp_ontology_viewer
 //= require bp_reviews
 //= require bp_notes
+//= require bp_ontolobridge
 //= require bp_form_complete
 //= require bp_create_mappings
 //= require bp_analytics
@@ -28,6 +29,10 @@
 //= require bp_admin
 //= require bp_recommender
 //= require bp_property_tree
+//= require home
+//= require ontologies
+//= require projects
+//= require submissions
 //= require bp_ont_chart
 //= require bootstrap.min
 //= require tooltipster.bundle.min

@@ -1,0 +1,74 @@
+div#semanticTypes_chzn.chzn-container input.default {
+  font-style: oblique !important;
+}
+
+div#semanticTypes_chzn.chzn-container-active input.default {
+  font-style: normal !important;
+}
+
+div#annotations_filter, div#annotations_info {
+  display: none;
+}
+
+.result_count {
+  font-weight: bold;
+}
+
+#annotations th {
+	padding-right: 6px;
+}
+
+#annotations span[class="popup_container"] {
+  padding-left: 1.7em;
+}
+
+#annotator_parameters {
+  color: gray; 
+  font-weight: bold;
+}
+
+#annotations_container {
+  display: none; 
+  margin-top: 10px; 
+  margin-bottom: 25px;
+}
+
+#annotations_container #result_counts {
+  float: right; 
+  font-style: oblique; 
+  color: gray;
+}
+
+/* AnnotatorPlus */
+
+.annotatorplus {
+
+  #annotator-help > i.fa.fa-question-circle {
+    margin-left: .25em;
+    vertical-align: middle;
+  }
+
+  #download_links {
+    margin-top: 1.5em;
+  }
+
+  #annotator_parameters {
+    font-weight: normal;
+  }
+
+  .annotator_spinner {
+    display: none;
+    
+    img {
+      margin-left: 3px;
+      vertical-align: middle;
+    }
+  }
+
+  .annotator_error {
+    color: red;
+    font-style: italic;
+    margin-left: 3px;
+    vertical-align: middle;
+  }
+}

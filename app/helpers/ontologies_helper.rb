@@ -9,8 +9,8 @@ module OntologiesHelper
     html = []
     details.each do |title, value|
       html << content_tag(:tr) do
-        concat(content_tag(:th, title))
-        concat(content_tag(:td, raw(value)))
+        html << content_tag(:td, title)
+        html << content_tag(:td, raw(value))
       end
     end
     html.join("")
@@ -261,26 +261,26 @@ module OntologiesHelper
   # Creates a link based on the status of an ontology submission
   def download_link(submission, ontology = nil)
     ontology ||= @ontology
-    if ontology.summaryOnly
+    if submission.ontology.summaryOnly
       if submission.homepage.nil?
-        link = 'N/A'
+        link = 'N/A - metadata only'
       else
         uri = submission.homepage
         link = "<a href='#{uri}'>Home Page</a>"
       end
     else
       uri = submission.id + "/download?apikey=#{get_apikey}"
-      link = "<a href='#{uri}'>#{submission.pretty_format}</a>"
+      link = "<a href='#{uri}' 'rel='nofollow'>#{submission.pretty_format}</a>"
       latest = ontology.explore.latest_submission({:include_status => 'ready'})
       if latest && latest.submissionId == submission.submissionId
-        link += " | <a href='#{ontology.id}/download?apikey=#{get_apikey}&download_format=csv'>CSV</a>"
+        link += " | <a href='#{ontology.id}/download?apikey=#{get_apikey}&download_format=csv' rel='nofollow'>CSV</a>"
         if !latest.hasOntologyLanguage.eql?("UMLS")
-          link += " | <a href='#{ontology.id}/download?apikey=#{get_apikey}&download_format=rdf'>RDF/XML</a>"
+          link += " | <a href='#{ontology.id}/download?apikey=#{get_apikey}&download_format=rdf' rel='nofollow'>RDF/XML</a>"
         end
       end
       unless submission.diffFilePath.nil?
         uri = submission.id + "/download_diff?apikey=#{get_apikey}"
-        link = link + " | <a href='#{uri}'>Diff</a>"
+        link = link + " | <a href='#{uri} 'rel='nofollow'>Diff</a>"
       end
     end
     return link
@@ -365,6 +365,10 @@ module OntologiesHelper
       end
     end
     @visits_data = visits_data
+  end
+
+  def acronyms(ontologies)
+    ontologies.present? ? ontologies.map { |ont| ont.acronym } : []
   end
 
 end

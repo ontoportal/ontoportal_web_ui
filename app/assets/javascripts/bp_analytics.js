@@ -23,10 +23,18 @@ function Analytics() {
 
 function SearchAnalytics() {
   this.bindTracker = function() {
-    jQuery("#search_results_container div.class_link a").live("click", function(e){
+    jQuery(document).on("click", "#search_results_container div.class_link a", function(e) {
       e.preventDefault();
-      var href = jQuery(this).attr("href");
-      var params = new SearchAnalytics().linkInformation(this);
+
+      var link;
+      if (e.target.nodeName == "SPAN") {
+        link = jQuery(e.target.parentElement);
+      } else {
+        link = jQuery(e.target);
+      }
+
+      var href = link.attr("href");
+      var params = new SearchAnalytics().linkInformation(link);
       new Analytics().track("search", "result_clicked", params, function(){
         window.location.href = href;
       });
@@ -36,9 +44,8 @@ function SearchAnalytics() {
   this.linkInformation = function(link) {
     var info = {}, resultsIndex = 0;
     var ontologyPosition = jQuery("#search_results div.search_result").index(jQuery(link).closest(".search_result")) + 1;
-    link = jQuery(link);
 
-    info.ontology_clicked = link.closest(".search_result").attr("data-bp_ontology_id");
+    info.ontology_clicked = link.closest(".search_result").data("bp_ont_id");
 
     // Find out the position of the search result in the list
     if (link.closest(".additional_results").length === 0) {
@@ -55,19 +62,19 @@ function SearchAnalytics() {
       var results = jQuery("#search_results div.search_result");
       info.higher_ontologies = [];
       while (resultsIndex < ontologyPosition - 1) {
-        info.higher_ontologies.push(jQuery(results[resultsIndex]).attr("data-bp_ontology_id"));
+        info.higher_ontologies.push(jQuery(results[resultsIndex]).data("bp_ont_id"));
         resultsIndex += 1;
       }
     }
 
     // Concept id
-    info.concept_id = link.attr("data-bp_conceptid");
+    info.concept_id = link.data("bp_conceptid");
 
     // Search query
     info.query = jQuery("#search_keywords").val();
 
     // Exact match
-    info.exact_match = link.attr("data-exact_match");
+    info.exact_match = link.data("exact_match");
 
     return info;
   };

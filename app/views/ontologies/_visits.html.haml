@@ -1,31 +1,4 @@
-- months_to_show = 18
-#visits_content{:style => "margin: 2em 1em 0;"}
-  %div{:style => "clear:both;"}
-  %div{:style => "width: 100%;"}
-    %h2
-      %span{:style => "font-size: x-large;"} Visits
-      -# = help_icon("http://www.bioontology.org/wiki/index.php/Ontology_Metrics", { :title => "View individual metrics definitions", :style => "margin-top: -7px;" })
-      &nbsp;&nbsp;
-      - if visits_data
-        %a{href: @ontology.links["analytics"] + "?apikey=#{get_apikey}&format=csv", style: "font-size: smaller;", target: "_blank"} Download as CSV
-    - if visits_data
-      - if visits_data[:labels].length < months_to_show
-        - months_to_show = visits_data[:labels].length
-      %div#visits_chart_container
-        %canvas#visits_chart{style: "width: 100% !important; max-width: 600px; height: 300 !important;"}
-    - else
-      %h2{:style => "padding-left: 1em;"}
-        We are still collecting data for this ontology
-
-
-- if visits_data
-  :javascript
-    // Note duplicated code in bp_ont_chart due to Ajax loading
-    var numberWithCommas = function(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    };
-
-    jQuery(document).data().bp.ont_chart = {};
-    jQuery(document).data().bp.ont_chart.scaleLabel = "<%=' ' + numberWithCommas(value)%>";
-    jQuery(document).data().bp.ont_chart.visitsLabels = #{visits_data[:labels][1-months_to_show..-1].to_json};
-    jQuery(document).data().bp.ont_chart.visitsData = #{visits_data[:visits][1-months_to_show..-1].to_json};
+- if visits_data(@ontology)
+  %canvas#visits_chart{data: {labels: @visits_data[:labels].last(13), visits: @visits_data[:visits].last(13)}}
+- else
+  %p.font-italic= "We are still collecting data for #{@ontology.acronym}"

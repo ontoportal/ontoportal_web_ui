@@ -1,19 +1,4 @@
 - return "" if @ontology.metadata_only?
-- begin
-  - if @submissions.nil?
-    - submissions = @ontology.explore.submissions
-    - @submissions = submissions.sort {|a,b| b.submissionId <=> a.submissionId }
-- rescue
-  - @submissions = []
-:javascript
-  jQuery(document).ready(function(){
-    jQuery(".click_versions_collapse").click(function(){
-      var collapse = "#" + jQuery(this).parent().attr("id") + "_collapsible";
-      var icon = "#" + jQuery(this).parent().attr("id") + "_icon";
-      jQuery(icon).toggleClass("ui-icon-triangle-1-e");
-      jQuery(icon).toggleClass("ui-icon-triangle-1-s");
-      jQuery(collapse).toggle();
-    });
 
     jQuery("#version_toggle").click(function(event){
       event.preventDefault();
@@ -29,18 +14,17 @@
     });
 
   });
-- ont_restricted = $RESTRICTED_DOWNLOADS.include? @ontology.acronym if !$RESTRICTED_DOWNLOADS.nil?
 - more_colspan = 4
-- more_colspan = 3 if ont_restricted
-#versions_content.click_versions_collapse{:style => "padding-top: 1em;"}
-  %h2{:style => "font-size: x-large;"} Submissions
-  %table#ontology_versions.zebra{:cellpadding => "0", :cellspacing => "0", width: "100%"}
+- more_colspan = 3 if @ont_restricted
+
+%div.click_versions_collapse
+  %table#ontology_versions.table.table-sm.table-striped
     %thead
       %tr
-        %th Submission
-        %th Release Date
-        %th Upload Date
-        - unless ont_restricted
+        %th Version
+        %th Released
+        %th Uploaded
+        - unless @ont_restricted
           %th Downloads
     - begin
       - submission_ready = @ontology.explore.latest_submission({:include_status => 'ready'})
@@ -49,17 +33,17 @@
       - submission_readyId = -1
     - @submissions.each_with_index do |sub, index|
       - hidden_row_class = index >= 5 ? "hidden_ont hidden_select" : ""
-      <tr #{cycle("class='#{hidden_row_class}'", "class='alt #{hidden_row_class}'")} class="#{hidden_row_class}">
-      %td
-        = raw status_link(sub, @ontology, sub.submissionId==submission_readyId)
-      %td
-        = xmldatetime_to_date(sub.released) unless sub.released.nil?
-      %td
-        = xmldatetime_to_date(sub.creationDate) unless sub.creationDate.nil?
-      - unless ont_restricted
+      %tr{class: "#{hidden_row_class}"}
         %td
-          = raw download_link(sub)
+          = raw status_link(sub, @ontology, sub.submissionId==submission_readyId)
+        %td
+          = xmldatetime_to_date(sub.released) unless sub.released.nil?
+        %td
+          = xmldatetime_to_date(sub.creationDate) unless sub.creationDate.nil?
+        - unless @ont_restricted
+          %td
+            = raw download_link(sub)
     - if @submissions.length >= 5
       %tr
-        %td{:colspan => more_colspan, :style => "text-align: right;"}
+        %td{colspan: more_colspan, class: "show_more_subs"}
           %a#version_toggle{:href => ""} more...

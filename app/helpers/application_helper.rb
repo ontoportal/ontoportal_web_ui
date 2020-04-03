@@ -27,10 +27,6 @@ module ApplicationHelper
     end
   end
 
-  def using_captcha?
-    !ENV['USE_RECAPTCHA'].nil? && ENV['USE_RECAPTCHA'] == 'true'
-  end
-
   def encode_param(string)
     return URI.escape(string, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
   end

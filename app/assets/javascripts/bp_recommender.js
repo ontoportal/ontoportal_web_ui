@@ -3,10 +3,13 @@ var rec = { }
 rec.maxInputWords = 500;
 
 rec.showOrHideAdvancedOptions = function() {
-    $("#advancedOptions").toggle();
+  $("#advancedOptions").toggle();
+  var text = $("#advancedOptions").is(':visible') ? "Hide advanced options <<" : "Show advanced options >>";
+  $("#advancedOptionsLink").text(text);
 }
 
-rec.insertInput = function() {
+rec.insertInput = function(event) {
+    event.preventDefault();
     rec.prepareForRealInput();
     if ($("#radioItText").is(":checked")) {
         rec.insertSampleText()
@@ -18,7 +21,6 @@ rec.insertInput = function() {
 
 rec.defaultMessage = true;
 rec.prepareForRealInput = function() {
-    $("#inputText").removeClass()
     rec.emptyInput = false;
     if (rec.defaultMessage == true) {
         $("#inputText").val('');
@@ -30,9 +32,10 @@ rec.enableEdition = function() {
     $("#inputText").show();
     $("#inputTextHighlighted").hide();
     $("#resultsHeader").empty();
-    $("#results").empty();
+    $("#recommender-results").empty();
     $("#editButton").hide();
     $("#recommenderButton").show();
+    $("#insertInputLink").show();
     $("input[name=input_type]").attr("disabled",false);
 }
 
@@ -66,20 +69,22 @@ rec.getHighlightedTerms = function(data, rowNumber) {
     for (var j = 0; j < data[rowNumber].coverageResult.annotations.length; j++) {
         var from = data[rowNumber].coverageResult.annotations[j].from-1;
         var to = data[rowNumber].coverageResult.annotations[j].to;
-        var link = data[rowNumber].coverageResult.annotations[j].annotatedClass.links.ui;
         var term = inputText.substring(from, to);
+        var ontologyId = data[rowNumber].coverageResult.annotations[j].annotatedClass.links.ontology;
+        
         // Color selection - Single ontology
         if (data[rowNumber].ontologies.length == 1) {
             var color = rec.colors[0];
         }
         // Color selection - Set of ontologies
         else {
-            var ontologyId = data[rowNumber].coverageResult.annotations[j].annotatedClass.links.ontology;
             var index = ontologyIds.indexOf(ontologyId);
             var color = rec.colors[index];
         }
 
-        var replacement = '<a style="font-weight: bold; color:' + color + '" target="_blank" href=' + link + '>' + term + '</a>';
+        var clsId = data[rowNumber].coverageResult.annotations[j].annotatedClass["@id"];
+        var ontAcronym = ontologyId.slice(ontologyId.lastIndexOf("/") + 1);
+        var replacement = '<a style="font-weight: bold; color:' + color + '" target="_blank" href=' + bp_cls_link(clsId, ontAcronym) + '>' + term + '</a>';
 
         if (from>lastPosition) {
             newText+=inputText.substring(lastPosition, from);
@@ -185,7 +190,7 @@ rec.getRecommendations = function() {
                 $('.recommenderSpinner').hide();
                 if (data) {
                     if (data.length > 0) {
-                        $("#results").empty();
+                        $("#recommender-results").empty();
                         $("#resultsHeader").text("Recommended ontologies");
 
                         if (params.output_type == 1) {
@@ -194,19 +199,19 @@ rec.getRecommendations = function() {
                         else {
                             ontologyHeader = "Ontologies";
                         }
-                        var table = $('<table id="recommendations" class="zebra" border="1" style="display: inline-block; padding:0px" ></table>'); //create table
-                        var header = $("<tr><th>POS.</th>"
-                        + "<th>" + ontologyHeader +"</th>"
-                        + "<th>Final score</th>"
-                        + "<th title='To what extent does the ontology represent the input data? Depends on the number annotations found in the text.'>Coverage <br>score</th>"
-                        + "<th title='How well-known and trusted is the ontology by the biomedical community? Based on visit number and presence in UMLS.'>Acceptance <br>score</th>"
-                        + "<th title='How rich is the ontology representation for the input data? Based on number of properties (definition, synonyms...)'>Detail <br>score</th>"
-                        + "<th title='How specialized is the ontology to the domain of the input data? Little ontologies with a good coverage of the text get a better score than bigger ontologies with the same coverage.'>Specialization <br>score</th>"
-                        + "<th>Annotations</th>"
-                        + "<th>Highlight <br>annotations</th>"
-                        + "</th>");
+                        var table = $('<table id="recommendations" class="zebra" width="100%"></table>');
+                        var header = $('<thead><tr><th title="Position of the ontology in the ranking">POS.</th>'
+                        + '<th title="Ontology acronym">' + ontologyHeader + '</th>'
+                        + '<th title="Final recommendation score for the ontology. It represents the appropriateness of the ontology to describe the input data">Final score</th>'
+                        + '<th title="The coverage score represents the extent to what the ontology covers the input data">Coverage score</th>'
+                        + '<th title="The acceptance score represents how well known and trusted is the ontology by the biomedical community">Acceptance score</th>'
+                        + '<th title="The detail score represents the richness of the ontology representation for the input data">Detail score</th>'
+                        + '<th title="The specialization score represents the level of specialization of the ontology to the domain of the input data">Specialization score</th>'
+                        + '<th title="Number of annotations performed with the ontology for the input data">Annotations</th>'
+                        + '<th title="This columns makes it possible to highlight the annotations performed with each ontology" style="text-align: center">Highlight annotations</th>'
+                        + '</tr></thead>');
                         table.append(header);
-
+                        table.append('<tbody>');
                         for (var i = 0; i < data.length; i++) {
                             var position = i + 1;
                             // Terms covered
@@ -223,31 +228,34 @@ rec.getRecommendations = function() {
                             var detailScore = data[i].detailResult.normalizedScore * 100;
                             var specializationScore = data[i].specializationResult.normalizedScore * 100;
 
-                            var row = '<tr class="row"><td>' + position + '</td><td>';
+                            var row = '<tr><td>' + position + '</td><td>';
 
                             $.each(data[i].ontologies, function (j, item) {
-                                var ontologyLinkStyle = 1
+                                var ontologyLinkStyle = 1;
                                 if (params.output_type == 2) {
                                     ontologyLinkStyle = 'style="color: ' + rec.colors[j] + '"';
                                 }
-                                row += '<a ' + ontologyLinkStyle + /*'title= "' + data[i].ontologies[j].name +*/ '" target="_blank" href=' + data[i].ontologies[j].links.ui + '>'
-                                + data[i].ontologies[j].acronym + '</a><br />'});
+                                var ontAcronym = data[i].ontologies[j].acronym;
+                                row += '<a ' + ontologyLinkStyle + '" target="_blank" href=' + bp_ont_link(ontAcronym) + '>' + ontAcronym + '</a><br />'});
 
                             row += "</td>";
-                            row += '<td><div style="width:120px"><div style="text-align:left;width:' + finalScore.toFixed(0) + '%;color:#ccc;background-color:#338D0C;border-style:solid;border-width:1px;border-color:#338D0C">' + finalScore.toFixed(1) + '</div></div>' + '</td>'
-                            + '<td><div style="width:120px"><div style="text-align:left;width:' + coverageScore.toFixed(0) + '%;background-color:#8cabd6;border-style:solid;border-width:1px;border-color:#3e76b6">' + coverageScore.toFixed(1) + '</div></div>' + '</td>'
-                            + '<td><div style="width:120px"><div style="text-align:left;width:' + acceptanceScore.toFixed(0) + '%;background-color:#8cabd6;border-style:solid;border-width:1px;border-color:#3e76b6">' + acceptanceScore.toFixed(1) + '</div></div>' + '</td>'
-                            + '<td><div style="width:120px"><div style="text-align:left;width:' + detailScore.toFixed(0) + '%;background-color:#8cabd6;border-style:solid;border-width:1px;border-color:#3e76b6">' + detailScore.toFixed(1) + '</div></div>' + '</td>'
-                            + '<td><div style="width:120px"><div style="text-align:left;width:' + specializationScore.toFixed(0) + '%;background-color:#8cabd6;border-style:solid;border-width:1px;border-color:#3e76b6">' + specializationScore.toFixed(1) + '</div></div>' + '</td>'
+                            row += 
+                              '<td><div style="width:' + finalScore.toFixed(0) + '%;" class="final-score"><span class="score-number">' + finalScore.toFixed(1) + '</span></div></td>'
+                            + '<td><div style="width:' + coverageScore.toFixed(0) + '%;" class="result-scores"><span class="score-number">' + coverageScore.toFixed(1) + '</span></div></td>'
+                            + '<td><div style="width:' + acceptanceScore.toFixed(0) + '%;" class="result-scores"><span class="score-number">' + acceptanceScore.toFixed(1) + '</span></div></td>'
+                            + '<td><div style="width:' + detailScore.toFixed(0) + '%;" class="result-scores"><span class="score-number">' + detailScore.toFixed(1) + '</span></div></td>'
+                            + '<td><div style="width:' + specializationScore.toFixed(0) + '%;" class="result-scores"><span class="score-number">' + specializationScore.toFixed(1) + '</span></div></td>'
                             + '<td>' + data[i].coverageResult.annotations.length + '</td>'
                             + '<td>' + '<div style="text-align:center"><input style="vertical-align:middle" id="chk' + i + '" type="checkbox"/></div>'
                             + '</tr>';
                             table.append(row); // Append row to table
                         }
-                        $("#results").append(table); // Append table to your dom wherever you want
+                        table.append('</tbody>');
+                        $("#recommender-results").append(table); // Append table to your dom wherever you want
 
-                        // Hide get recommentations button
+                        // Hide "Get Recommendations" button
                         $("#recommenderButton").hide();
+                        $("#insertInputLink").hide();
                         // Show edit button
                         $("#editButton").show();
 
@@ -269,10 +277,9 @@ rec.getRecommendations = function() {
                                     }
                                     // Terms covered
                                     var terms = rec.getHighlightedTerms(data, $rowNumber);
-                                    $("#inputTextHighlighted").empty();
-                                    $("#inputTextHighlighted").append(terms);
+                                    $("#inputTextHighlighted div.card-body").empty();
+                                    $("#inputTextHighlighted div.card-body").append(terms);
                                     $("#inputTextHighlighted").show();
-                                    $(this).parents(".row:first").css("background-color", "#e2ebf0");
                                 }
                                 // Avoids to uncheck the selected row
                                 else {
@@ -284,6 +291,19 @@ rec.getRecommendations = function() {
                         $("#editButton").click( function(){
                             rec.enableEdition()
                         });
+
+                        // DataTable initialization
+                        jQuery("#recommendations").dataTable({
+                            paging: false,
+                            info: false,
+                            searching: false,
+                            order: [[ 0, "asc" ]],
+                            columnDefs: [ {
+                                targets: [ 2, 3, 4, 5, 6, 7 ],
+                                orderSequence: [ "desc", "asc" ]
+                            } ]
+                        });
+
                     }
                     else { // No results
                         if ($("#radioOtSets").is(":checked"))
@@ -307,8 +327,8 @@ rec.checkFirst = function(data) {
     var terms = rec.getHighlightedTerms(data, 0);
     $("#chk0").prop("checked", true);
     $("#inputText").hide();
-    $("#inputTextHighlighted").empty();
-    $("#inputTextHighlighted").append(terms);
+    $("#inputTextHighlighted div.card-body").empty();
+    $("#inputTextHighlighted div.card-body").append(terms);
     $("#inputTextHighlighted").show();
     $("#chk0").parents(".row:first").css("background-color", "#e2ebf0");
 }
@@ -344,4 +364,6 @@ jQuery(document).ready(function() {
     $(".recommenderSpinner").hide();
     $("#editButton").hide();
     rec.hideErrorMessages();
+
+    jQuery('#recommender-help').on("click", bpPopWindow);
 });

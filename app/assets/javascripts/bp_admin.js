@@ -30,7 +30,7 @@ function parseReportDate(dateStr) {
   var strHours = hours.toString();
   var strMonth = (Number(dateArr[3]) - 1).toString();
   var dateObj = new Date(dateArr[5], strMonth, dateArr[4], strHours, dateArr[8], "00", "00");
-  return dateObj.toLocaleString();
+  return dateObj.toLocaleString([], {month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit'});
 }
 
 var AjaxAction = function(httpMethod, operation, path, isLongOperation, params) {
@@ -40,6 +40,7 @@ var AjaxAction = function(httpMethod, operation, path, isLongOperation, params) 
   this.path = path;
   this.isLongOperation = isLongOperation;
   this.ontologies = [DUMMY_ONTOLOGY];
+  this.isProgressMessageEnabled = true;
 
   if (params["ontologies"]) {
     this.ontologies = params["ontologies"].split(",");
@@ -53,13 +54,19 @@ AjaxAction.prototype.setConfirmMsg = function(msg) {
   this.confirmMsg = msg;
 };
 
+AjaxAction.prototype.setProgressMessageEnabled = function(isEnabled) {
+  this.isProgressMessageEnabled = isEnabled;
+};
+
 AjaxAction.prototype.clearStatusMessages = function() {
   jQuery("#progress_message").hide();
   jQuery("#success_message").hide();
   jQuery("#error_message").hide();
+  jQuery("#info_message").hide();
   jQuery("#progress_message").html("");
   jQuery("#success_message").html("");
   jQuery("#error_message").html("");
+  jQuery("#info_message").html("");
 };
 
 AjaxAction.prototype.showProgressMessage = function() {
@@ -73,8 +80,8 @@ AjaxAction.prototype.showProgressMessage = function() {
   jQuery("#progress_message").show();
 };
 
-AjaxAction.prototype.showStatusMessages = function(success, errors, isAppendMode) {
-  _showStatusMessages(success, errors, isAppendMode);
+AjaxAction.prototype.showStatusMessages = function(success, errors, notices, isAppendMode) {
+  _showStatusMessages(success, errors, notices, isAppendMode);
 };
 
 AjaxAction.prototype.getSelectedOntologiesForDisplay = function() {
@@ -84,17 +91,20 @@ AjaxAction.prototype.getSelectedOntologiesForDisplay = function() {
     var ontMsg = this.ontologies.join(", ");
     msg = "<br style='margin-bottom:5px;'/><span style='color:red;font-weight:bold;'>" + ontMsg + "</span><br/>";
   }
-
   return msg;
 };
 
 AjaxAction.prototype._ajaxCall = function() {
   var self = this;
-  var errors = [];
   var success = [];
+  var errors = [];
+  var notices = [];
   var promises = [];
   var params = jQuery.extend(true, {}, self.params);
-  self.showProgressMessage();
+
+  if (self.isProgressMessageEnabled) {
+    self.showProgressMessage();
+  }
 
   // using javascript closure for passing index to asynchronous calls
   jQuery.each(self.ontologies, function(index, ontology) {
@@ -120,6 +130,7 @@ AjaxAction.prototype._ajaxCall = function() {
           errorState = true;
           var err = data.errors.replace(reg, ',');
           errors.push.apply(errors, err.split(","));
+          self.onErrorAction(errors);
 
           if (deferredObj.state() === "pending") {
             deferredObj.resolve();
@@ -133,13 +144,19 @@ AjaxAction.prototype._ajaxCall = function() {
             var suc = data.success.replace(reg, ',');
             success.push.apply(success, suc.split(","));
           }
+
+          if (data.notices) {
+            var notice = data.notices.replace(reg, ',');
+            notices.push.apply(notices, notice.split(","));
+          }
         }
-        self.showStatusMessages(success, errors, false);
+        self.showStatusMessages(success, errors, notices, false);
       },
       error: function(request, textStatus, errorThrown) {
         errorState = true;
         errors.push(request.status + ": " + errorThrown);
-        self.showStatusMessages(success, errors, false);
+        self.onErrorAction(errors);
+        self.showStatusMessages(success, errors, notices, false);
       },
       complete: function(request, textStatus) {
         if (errorState || !self.isLongOperation) {
@@ -189,8 +206,8 @@ AjaxAction.prototype.onSuccessAction = function(data, ontology, deferredObj) {
     return;
   }
   var processId = data["process_id"];
-  var errors = [];
   var success = [];
+  var errors = [];
   var done = [];
   data.success = '';
   var start = new Date().getTime();
@@ -230,7 +247,7 @@ AjaxAction.prototype.onSuccessAction = function(data, ontology, deferredObj) {
             self.onSuccessActionLongOperation(data, ontology);
           }
           deferredObj.resolve();
-          self.showStatusMessages(success, errors, true);
+          self.showStatusMessages(success, errors, [], true);
         }
       },
       error: function(request, textStatus, errorThrown) {
@@ -241,10 +258,14 @@ AjaxAction.prototype.onSuccessAction = function(data, ontology, deferredObj) {
         clearInterval(timer);
         errors.push(request.status + ": " + errorThrown);
         deferredObj.resolve();
-        self.showStatusMessages(success, errors, true);
+        self.showStatusMessages(success, errors, [], true);
       }
     });
   }, 5000);
+};
+
+AjaxAction.prototype.onErrorAction = function(errors) {
+  // nothing to do by default
 };
 
 AjaxAction.prototype.onSuccessActionLongOperation = function(data, ontology) {
@@ -329,7 +350,7 @@ DeleteSubmission.prototype.constructor = DeleteSubmission;
 
 DeleteSubmission.prototype.onSuccessAction = function(data, ontology, deferredObj) {
   jQuery.facebox({
-    ajax: BP_CONFIG.ui_url + "/admin/ontologies/" + ontology + "/submissions?time=" + new Date().getTime()
+    ajax: "/admin/ontologies/" + ontology + "/submissions?time=" + new Date().getTime()
   });
 };
 
@@ -399,6 +420,96 @@ ProcessOntologies.act = function(action) {
   new ProcessOntologies(action).ajaxCall();
 };
 
+function UpdateCheck(forceCheck) {
+  var params = {};
+
+  if (forceCheck) {
+    params["force_check"] = forceCheck;
+  }
+  AjaxAction.call(this, "GET", "CHECK FOR UPDATE", "update_info", false, params);
+  this.setProgressMessageEnabled(forceCheck);
+  this.setConfirmMsg('');
+}
+
+UpdateCheck.prototype = Object.create(AjaxAction.prototype);
+UpdateCheck.prototype.constructor = UpdateCheck;
+
+UpdateCheck.prototype.onSuccessAction = function(data, ontology, deferredObj) {
+  var self = this;
+  delete data["success"];
+  updateInfo = data["update_info"];
+
+  if (updateInfo["update_check_enabled"]) {
+    var lastCheck = "";
+
+    if (updateInfo["date_checked"]) {
+      var updateDate = parseReportDate(updateInfo["date_checked"]);
+
+      if (updateDate) {
+        lastCheck = "Last update check on: " + updateDate;
+      }
+    }
+
+    if (updateInfo["update_available"]) {
+      // update found - show in all cases
+      data["notices"] = "Update available. You are running the version: " + updateInfo["current_version"] + ". Updated version: " + updateInfo["update_version"] + ".";
+
+      if (lastCheck) {
+        data["notices"] += " " + lastCheck + ".";
+      }
+
+      if (updateInfo["notes"]) {
+        data["notices"] += " Update notes: " + updateInfo["notes"];
+      }
+    } else if (self.params && self.params["force_check"]) {
+      // no update found, but user was checking explicitly - show message
+      data["notices"] = "No update available. You are running the latest version: " + updateInfo["current_version"] + ".";
+
+      if (lastCheck) {
+        data["notices"] += " " + lastCheck + ".";
+      }
+    } else {
+      // no update found, and user wasn't checking,
+      // just a default check on page load - show nothing
+      delete data["notices"];
+    }
+  }
+};
+
+UpdateCheck.prototype.onErrorAction = function(errors) {
+  var self = this;
+
+  // hide errors unless user explicitly requested an update check
+  if (!self.params || !self.params["force_check"]) {
+    errors.length = 0;
+  }
+};
+
+UpdateCheck.isUpdateCheckEnabled = false;
+UpdateCheck.act = function(forceCheck) {
+  if (UpdateCheck.isUpdateCheckEnabled) {
+    new UpdateCheck(forceCheck).ajaxCall();
+  } else {
+    jQuery.ajax({
+      url: "/admin/update_check_enabled",
+      success: function (data) {
+        if (data) {
+          jQuery("#update_check").show();
+          new UpdateCheck(forceCheck).ajaxCall();
+          UpdateCheck.isUpdateCheckEnabled = true;
+        } else {
+          jQuery("#update_check").hide();
+        }
+      },
+      error: function () {
+        console.log("An error occurred while performing a check for the latest version.");
+      }
+    });
+  }
+};
+
+// end: individual actions classes -----------------------
+
 function performActionOnOntologies() {
   var action = jQuery('#admin_action').val();
 
@@ -420,19 +531,20 @@ function performActionOnOntologies() {
 function populateOntologyRows(data) {
   var ontologies = data.ontologies;
   var allRows = [];
-  var hideFields = ["format", "date_created", "report_date_updated", "errErrorStatus", "errMissingStatus", "problem", "logFilePath"];
+  var hideFields = ["format", "administeredBy", "date_created", "report_date_updated", "errErrorStatus", "errMissingStatus", "problem", "logFilePath"];
 
   for (var acronym in ontologies) {
     var errorMessages = [];
     var ontology = ontologies[acronym];
-    var ontLink = "<a href='" + BP_CONFIG.ui_url + "/ontologies/" + acronym + "' target='_blank' style='" + (ontology["problem"] === true ? "color:red;" : "") + "'>" + acronym + "</a>";
+    var ontLink = "<a href='" + "/ontologies/" + acronym + "' target='_blank' style='" + (ontology["problem"] === true ? "color:red;" : "") + "'>" + acronym + "</a>";
     var bpLinks = '';
     var format = ontology["format"];
+    var admin = ontology["administeredBy"];
     var reportDateUpdated = parseReportDate(ontology["report_date_updated"]);
     var ontologyDateCreated = parseReportDate(ontology["date_created"]);
 
     if (ontology["logFilePath"] != '') {
-      bpLinks += "<a href='" + BP_CONFIG.ui_url + "/admin/ontologies/" + acronym + "/log' target='_blank'>Log</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
+      bpLinks += "<a href='" + "/admin/ontologies/" + acronym + "/log' target='_blank'>Log</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
     }
     bpLinks += "<a href='" + BP_CONFIG.rest_url + "/ontologies/" + acronym + "?apikey=" + BP_CONFIG.apikey + "&userapikey: " + BP_CONFIG.userapikey + "' target='_blank'>REST</a>&nbsp;&nbsp;|&nbsp;&nbsp;";
     bpLinks += "<a id='link_submissions_" + acronym + "' href='javascript:;' onclick='showSubmissions(event, \"" + acronym + "\")'>Submissions</a>";
@@ -445,14 +557,14 @@ function populateOntologyRows(data) {
         errorMessages.push(ontology[k]);
       }
     }
-    var row = [ontLink, format, ontologyDateCreated, reportDateUpdated, bpLinks, errStatus, missingStatus, errorMessages.join("<br/>"), ontology["problem"]];
+    var row = [ontLink, admin.join("<br/>"), format, ontologyDateCreated, reportDateUpdated, bpLinks, errStatus, missingStatus, errorMessages.join("<br/>"), ontology["problem"]];
     allRows.push(row);
   }
   return allRows;
 }
 
 function isDateGeneratedSet(data) {
-  var dateRe = /^\d{2}\/\d{2}\/\d{4}\s\d{2}:\d{2}\w{2}$/i;
+  var dateRe = /^\d{2}\/\d{2}\/\d{4}\,\s\d{2}:\d{2}\s\w{2}$/i;
   return dateRe.test(data.report_date_generated);
 }
 
@@ -466,7 +578,7 @@ function setDateGenerated(data) {
   jQuery(".report_date_generated_button").text(buttonText).html();
 }
 
-function _showStatusMessages(success, errors, isAppendMode) {
+function _showStatusMessages(success, errors, notices, isAppendMode) {
   if (success.length > 0) {
     if (isAppendMode) {
       var appendStr = (jQuery.trim(jQuery('#success_message').html()).length) ? ", " : "";
@@ -485,6 +597,16 @@ function _showStatusMessages(success, errors, isAppendMode) {
       jQuery("#error_message").text(errors.join(", ")).html();
     }
     jQuery("#error_message").show();
+  }
+
+  if (notices.length > 0) {
+    if (isAppendMode) {
+      var appendStr = (jQuery.trim(jQuery('#info_message').html()).length) ? ", " : "";
+      jQuery("#info_message").append(appendStr + notices.join(", ")).html();
+    } else {
+      jQuery("#info_message").text(notices.join(", ")).html();
+    }
+    jQuery("#info_message").show();
   }
 }
 
@@ -515,7 +637,7 @@ function displayOntologies(data, ontology) {
   } else {
     ontTable = jQuery("#adminOntologies").DataTable({
       "ajax": {
-        "url": BP_CONFIG.ui_url + "/admin/ontologies_report",
+        "url": "/admin/ontologies_report",
         "contentType": "application/json",
         "dataSrc": function (json) {
           return populateOntologyRows(json);
@@ -531,11 +653,11 @@ function displayOntologies(data, ontology) {
       },
       "initComplete": function(settings, json) {
         if (json.errors && isDateGeneratedSet(data)) {
-          _showStatusMessages([], [json.errors], false);
+          _showStatusMessages([], [json.errors], [], false);
         }
         setDateGenerated(json);
         // Keep header at top of table even when scrolling
-        new jQuery.fn.dataTable.FixedHeader(ontTable);
+        // new jQuery.fn.dataTable.FixedHeader(ontTable);
       },
       "columnDefs": [
         {
@@ -547,49 +669,55 @@ function displayOntologies(data, ontology) {
         {
           "targets": 1,
           "searchable": true,
-          "title": "Format",
-          "width": "55px"
+          "title": "Admin",
+          "width": "160px"
         },
         {
           "targets": 2,
           "searchable": true,
-          "title": "Date Created",
-          "type": "date",
-          "width": "127px"
+          "title": "Format",
+          "width": "55px"
         },
         {
           "targets": 3,
           "searchable": true,
-          "title": "Report Date",
+          "title": "Date Created",
           "type": "date",
-          "width": "127px"
+          "width": "170px"
         },
         {
           "targets": 4,
+          "searchable": true,
+          "title": "Report Date",
+          "type": "date",
+          "width": "170px"
+        },
+        {
+          "targets": 5,
           "searchable": false,
           "orderable": false,
           "title": "URL",
           "width": "140px"
         },
         {
-          "targets": 5,
+          "targets": 6,
           "searchable": true,
           "title": "Error Status",
           "width": "130px"
         },
         {
-          "targets": 6,
+          "targets": 7,
           "searchable": true,
           "title": "Missing Status",
           "width": "130px"
         },
         {
-          "targets": 7,
+          "targets": 8,
           "searchable": true,
           "title": "Issues"
         },
         {
-          "targets": 8,
+          "targets": 9,
           "searchable": true,
           "visible": false
         }
@@ -615,11 +743,12 @@ function displayOntologies(data, ontology) {
 
 function showSubmissions(ev, acronym) {
   ev.preventDefault();
-  jQuery.facebox({ ajax: BP_CONFIG.ui_url + "/admin/ontologies/" + acronym + "/submissions" });
+  jQuery.facebox({ ajax: "/admin/ontologies/" + acronym + "/submissions" });
 }
 
 function showOntologiesToggleLinks(problemOnly) {
   var str = 'View Ontologies:&nbsp;&nbsp;&nbsp;&nbsp;';
+
   if (problemOnly) {
     str += '<a id="show_all_ontologies_action" href="javascript:;">All</a>&nbsp;&nbsp;|&nbsp;&nbsp;<strong>Problem Only</strong>';
   } else {
@@ -628,9 +757,10 @@ function showOntologiesToggleLinks(problemOnly) {
   return str;
 }
 
-jQuery(document).ready(function() {
+jQuery(".admin.index").ready(function() {
   // display ontologies table on load
   displayOntologies({}, DUMMY_ONTOLOGY);
+  UpdateCheck.act();
 
   // make sure facebox window is empty before populating it
   // otherwise ajax requests stack up and you see more than
@@ -711,10 +841,18 @@ jQuery(document).ready(function() {
     ClearHttpCache.act();
   });
 
-  // onclick action for "Refresh Report" link
+  // onclick action for "Refresh Report" button
   jQuery("#refresh_report_action").click(function() {
     RefreshReport.act();
   });
 
+  // onclick action for "Update Check" button
+  jQuery("#update_check_action").click(function() {
+    UpdateCheck.act(true);
+  });
+
   // end: BUTTON onclick actions -----------------------------------
+
+  // admin tabs
+  jQuery("ul.admin_tabs").tabs("div.admin_panes > div");
 });

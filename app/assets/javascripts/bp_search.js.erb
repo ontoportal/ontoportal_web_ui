@@ -127,7 +127,8 @@ function findOntologyOwnerOfClass(clsID, ontAcronyms) {
 jQuery(document).ready(function() {
     // Wire advanced search categories
     jQuery("#search_categories").chosen({
-        search_contains: true
+        search_contains: true,
+        width: "432px"
     });
     /* Comment it because it is changing the button value to nothing (and it is a param for chosen, don't seems useful for button)
     jQuery("#search_button").button({
@@ -140,13 +141,10 @@ jQuery(document).ready(function() {
         ajax_process_halt();
     });
 
+    jQuery("#search_spinner").hide();
+
     // Put cursor in search box by default
     jQuery("#search_keywords").focus();
-
-    // Show/hide on refresh
-    if (advancedOptionsSelected()) {
-        jQuery("#search_options").removeClass("not_visible");
-    }
 
     jQuery("#search_select_ontologies").change(function() {
         if (jQuery(this).is(":checked")) {
@@ -154,18 +152,14 @@ jQuery(document).ready(function() {
         } else {
             jQuery("#ontology_picker_options").addClass("not_visible");
             jQuery("#ontology_ontologyId").val("");
-            jQuery("#ontology_ontologyId").trigger("liszt:updated");
+            jQuery("#ontology_ontologyId").trigger("chosen:updated");
         }
     });
 
     jQuery("#search_results a.additional_ont_results_link").live("click", showAdditionalOntResults);
     jQuery("#search_results a.additional_cls_results_link").live("click", showAdditionalClsResults);
 
-    // Show advanced options
-    jQuery("#advanced_options").click(function(event) {
-        jQuery("#search_options").toggleClass("not_visible");
-        jQuery("#hide_advanced_options").toggleClass("not_visible");
-    });
+    jQuery("#advanced_options").on('click', toggleAdvancedSearchOptions);
 
     // Events to run whenever search results are updated (mainly counts)
     jQuery(document).live("search_results_updated", function() {
@@ -214,6 +208,8 @@ jQuery(document).ready(function() {
             div: '#biomixer'
         });
     });
+
+    jQuery("#search-help").on("click", bpPopWindow);
 
     autoSearch();
 });
@@ -266,22 +262,17 @@ function autoSearch() {
             ontologyIds = params.ontologies || params.ontologyids || "";
             ontologyIds = ontologyIds.split(",");
             jQuery("#ontology_ontologyId").val(ontologyIds);
-            jQuery("#ontology_ontologyId").trigger("liszt:updated");
+            jQuery("#ontology_ontologyId").trigger("chosen:updated");
         }
 
         if (params.hasOwnProperty("categories")) {
             categories = params.categories || "";
             categories = categories.split(",");
             jQuery("#search_categories").val(categories);
-            jQuery("#search_categories").trigger("liszt:updated");
+            jQuery("#search_categories").trigger("chosen:updated");
         }
 
       performSearch();
-    }
-
-    // Show/hide on refresh
-    if (advancedOptionsSelected()) {
-      jQuery("#search_options").removeClass("not_visible");
     }
 }
 
@@ -730,7 +721,7 @@ function formatSearchResults(aggOntologyResults) {
         subordinateOntTitle.addClass("subordinate_ont_results_title");
         subordinateOntTitle.addClass("search_result_link");
         subordinateOntTitle.attr("data-bp_ont", ontAcronym);
-        subordinateOntTitle.text("Additional References from other Ontologies");
+        subordinateOntTitle.text("Reuses in other ontologies");
         subOntResults.append(subordinateOntTitle);
         jQuery(aggOntologyResults.sub_ont).each(function() {
             subOntResults.append(formatSearchResults(this));
@@ -1030,3 +1021,19 @@ function definitionDiv(res, defClass) {
 function determineHTTPS(url) {
     return url.replace("http:", ('https:' == document.location.protocol ? 'https:' : 'http:'));
 }
+
+function toggleAdvancedSearchOptions() {
+    var elem = jQuery("#advanced_options");
+    var searchOptions = jQuery("#search_options");
+    
+    if (elem.text() == elem.data("text-swap")) {
+        elem.text(elem.data("text-original"));
+        searchOptions.hide();
+    } else {
+        elem.data("text-original", elem.text());
+        elem.text(elem.data("text-swap"));
+        searchOptions.show();
+    }
+}
+
+

@@ -20,8 +20,9 @@ function setCacheCurrent() {
   currentData[1] = jQuery('#details_content').html();
   currentData[2] = jQuery('#notes_content').html();
   currentData[3] = jQuery('#mappings_content').html();
-  currentData[5] = jQuery('#note_count').html();
-  currentData[6] = jQuery('#mapping_count').html();
+  currentData[4] = jQuery('#request_term_content').html();
+  currentData[6] = jQuery('#note_count').html();
+  currentData[7] = jQuery('#mapping_count').html();
   setCache(getConcept(), currentData);
 }
 
@@ -101,11 +102,10 @@ function nodeClicked(node_id) {
   setConcept(node_id);
 
   // Deal with permalink
-  jQuery("#purl_link_container").hide();
   var concept_uri = (node_id.indexOf("http://") == 0 || node_id.indexOf(encodeURIComponent("http://")) == 0 );
   var purl_anchor = concept_uri ? "?conceptid="+node_id : "/"+node_id;
   var selectedTab = jQuery("#bd_content div.tabs li.selected a").attr("href").slice(1);
-  jQuery("#purl_input").val(jQuery(document).data().bp.ont_viewer.purl_prefix + purl_anchor);
+  jQuery("a.class-permalink").data("current-purl", jQuery(document).data().bp.ont_viewer.purl_prefix + purl_anchor);
 
   if (getCache(node_id) != null) {
     var tabData = getCache(node_id);
@@ -119,8 +119,9 @@ function nodeClicked(node_id) {
     jQuery('#details_content').html(tabData[1]);
     jQuery('#notes_content').html(tabData[2]);
     jQuery('#mappings_content').html(tabData[3]);
-    jQuery('#note_count').html(tabData[5]);
-    jQuery('#mapping_count').html(tabData[6]);
+    jQuery('#request_term_content').html(tabData[4]);
+    jQuery('#note_count').html(tabData[6]);
+    jQuery('#mapping_count').html(tabData[7]);
     jQuery('#restlink_top').html("<a href='" + jQuery(document).data().bp.config.rest_url + "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id
         + "/classes/" + node_id + "' style='margin-bottom: 1em; margin-left: 1em;' target='_blank'>Access Class JSON</a>");
 
@@ -140,8 +141,9 @@ function nodeClicked(node_id) {
         jQuery('#details_content').html(tabData[1]);
         jQuery('#notes_content').html(tabData[2]);
         jQuery('#mappings_content').html(tabData[3]);
-        jQuery('#note_count').html(tabData[5]);
-        jQuery('#mapping_count').html(tabData[6]);
+        jQuery('#request_term_content').html(tabData[4]);
+        jQuery('#note_count').html(tabData[6]);
+        jQuery('#mapping_count').html(tabData[7]);
         jQuery('#restlink_top').html("<a href='" + jQuery(document).data().bp.config.rest_url + "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id
             + "/classes/" + node_id + "' style='margin-bottom: 1em; margin-left: 1em;' target='_blank'>Access Class JSON</a>");
 
@@ -155,16 +157,33 @@ function nodeClicked(node_id) {
       }
     );
   }
-
 }
 
 // Keep trying to put the tree view content in place (looks for #sd_content)
+var classesPaneSplitter;
 function placeTreeView(treeHTML) {
   if (jQuery("#sd_content").length == 0) {
     setTimeout(function(){placeTreeView(treeHTML)}, 500);
   } else {
     document.getElementById("sd_content").innerHTML = treeHTML;
     initClassTree();
+
+    classesPaneSplitter = Split(['div#bd_content .sidebar', 'div#bd_content .cls-info-container'], {
+      elementStyle: function (dimension, size, gutterSize) {
+        return {
+          'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
+        }
+      },
+      gutterStyle: function (dimension, gutterSize) {
+        return {
+          'flex-basis':  gutterSize + 'px'
+        }
+      },
+      gutterSize: 10,
+      direction: "horizontal",
+      sizes: [30, 70],
+      cursor: "col-resize"
+    })
   }
 }
 
@@ -188,11 +207,7 @@ function getTreeView() {
 // Get the treeview using ajax
 // We do this right after writing #sd_content to the dom to make sure it loads before other async portions of the page
 jQuery(document).ready(function(){
-  // Abort it not right page
-  var path = currentPathArray();
-  if (path[0] !== "ontologies" || (path[0] === "ontologies" && path.length !== 2)) {
-    return;
+  if (pageUsesTreeView()) {
+    getTreeView();
   }
-
-  getTreeView();
 });

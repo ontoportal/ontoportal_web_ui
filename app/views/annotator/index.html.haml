@@ -1,155 +1,123 @@
 - @title = "Annotator"
-- # Load bootstrap for this page from public/stylesheets
-%link{:type => "text/css", :rel => "stylesheet", :href => "/stylesheets/bootstrap.css"}
-%link{:type => "text/css", :rel => "stylesheet", :href => "/stylesheets/bootstrap-theme.css"}
 
-%div{:style => "padding: 2em;"}
-  %h1{:style => "margin-top: 0px"} Annotator
-  %p
-    = t('home.annotate.intro').html_safe.nil? || t('home.annotate.intro').html_safe.empty? ? "Get annotations for biomedical text with concepts from the ontologies #{help_icon("/help#Annotator_Tab")}".html_safe : t('home.annotate.intro').html_safe
-  %div{:style => "padding-bottom: 1em;"}
-    %div{:style => "width: 60%;"}
-      - textarea_title = "Enter or paste text to be annotated"
-      = text_area :annotation, :text, :title => textarea_title, :rows => 15, :style => "box-shadow: 0 0 3px gray; padding: 5px; width: 100%; max-width: 100%;", :class => "help_text"
-    %a#insert_text_link{:href => "javascript:void(0);", :style => "font-size: 8pt; text-decoration: none; margin-bottom: 1em;"} insert sample text
-    %div
-      %div{:class => "panel panel-success", :style => "width: 460px; display: inline-block;"}
-        %div{:class => "panel-heading"}
-          %h3{:class => "panel-title"} Ontology filters
-        %div{:class => "panel-body"}
-          = render :partial => "shared/ontology_picker", :locals => { :custom_ontologies => @annotator_ontologies }
-          - if @sem_type_ont
-            %br/
-            %b Select UMLS Semantic Types
-            = help_icon("/ontologies/STY", {:title => "Browse the UMLS Semantic Network in the #{$ORG_SITE}"}).html_safe
-            %br/
-            = select_tag :semantic_types, options_for_select(@semantic_types_for_select), :multiple => 'true', "data-placeholder".to_sym => "Type here to select UMLS semantic types", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text"
-            %br/
-            %br/
-            %b Select UMLS Semantic Groups
-            = help_icon("https://semanticnetwork.nlm.nih.gov/", {:title => "See the Semantic network website"}).html_safe
-            %br/
-            = select_tag :semantic_groups, options_for_select(@semantic_groups_for_select), :multiple => 'true', "data-placeholder".to_sym => "Type here to select UMLS semantic groups", :style => "margin-bottom: 15px; width: 433px;", :class => "help_text"
-            %br/
+%head
+  = javascript_include_tag "bp_annotator"
 
-      %div{:class => "panel panel-warning", :style => "width: 17em; display: inline-block; vertical-align: top; height: 256px;"}
-        %div{:class => "panel-heading"}
-          %h3{:class => "panel-title"} Matching parameters
-        %div{:class => "panel-body"}
-          = check_box_tag :longest_only, :all, false, :id => "longest_only"
-          = label_tag :longest_only, "Match Longest Only", :style => "margin-right: 3em;"
-          %br
-          = check_box_tag :whole_word_only, :all, false, :id => "whole_word_only"
-          = label_tag :whole_word_only, "Match Partial Words", :style => "margin-right: 3em;"
-          %br
-          = check_box_tag :expand_mappings, :all, false, :id => "expand_mappings"
-          = label_tag :expand_mappings, "Include Mappings", :style => "margin-right: 3em;", :style => "margin-right: 3em;"
-          %br
-          = check_box_tag :exclude_numbers, :all, false, :id => "exclude_numbers"
-          = label_tag :exclude_numbers, "Exclude Numbers", :style => "margin-right: 3em;"
-          %br
-          = check_box_tag :exclude_synonyms, :all, false, :id => "exclude_synonyms"
-          = label_tag :exclude_synonyms, "Exclude Synonyms"
-          -#%hr{:style => "margin: 0.5em auto;"}
-          -#= check_box_tag :lemmatize, :all, false, :id => "lemmatize"
-          -#= label_tag :lemmatize, "Lemmatize (beta)"
+%div.mt-4
+  = t(".annotatorplus_html", annotatorplus_href: annotatorplus_path())
 
-      %div{:class => "panel panel-success", :style => "width: 17em; display: inline-block; vertical-align: top; height: 256px;"}
-        %div{:class => "panel-heading"}
-          %h3{:class => "panel-title"} NegEx / ConText
-        %div{:class => "panel-body"}
-          %p{title: "Detect if a concept has been negated (affirmed, negated, possible)", style: "margin-top: 40px;"}
-            = check_box_tag :negation, :all, false, :id => "negation"
-            = label_tag :negation, "Detect negation"
-            = help_icon("/annotator", {:title => "Detect if a concept has been negated (affirmed, negated, possible)"}).html_safe
-          %p{title: "Detect when the annotated concept occurred (recent, historical, hypothetical)"}
-            = check_box_tag :temporality, :all, false, :id => "temporality"
-            = label_tag :temporality, "Detect temporality"
-            = help_icon("/annotator", {:title => "Detect when the annotated concept occurred (recent, historical, hypothetical)"}).html_safe
+%h2.mt-4 Annotator
+%p
+  = t('.intro').html_safe
+  = link_to(help_path(anchor: "Annotator_Tab"), id: "annotator-help", target: "_blank") do
+    %i.fas.fa-question-circle.fa-lg{aria: {hidden: true}, style: "margin-left: .25em"}
 
-    %div
-      %b Include Ancestors Up To Level:
-      - options = [["None", 0], *(1..10).map {|i| [i, i]}, ["All", 999]]
-      = select_tag :class_hierarchy_max_level, options_for_select(options, 0), style: "width: 7em; display: inline; margin-left: 0.5em;", class: "form-control"
-      %b{:style => "margin-left: 3em;"} Include Score:
-      - options = [["None", ""], ["Old", "old"], ["cvalue", "cvalue"], ["cvalueh", "cvalueh"]]
-      = select_tag :score, options_for_select(options, 0), style: "width: 7em; display: inline; margin-left: 0.5em;", class: "form-control"
-    - if @recognizers.length > 1
-      %p
-        %b Entity Recognizer:
-        &nbsp;&nbsp;
-        - default_recognizer = @recognizers.include?("mgrep") ? "mgrep" : @recognizers.first
-        = select_tag :recognizer, options_for_select(@recognizers.map {|r| [r,r]}, default_recognizer)
+%form{style: "margin-bottom: 25px"}
+  %div.form-group
+    = text_area_tag("annotation_text", nil, rows: 15, class: "form-control", placeholder: "Enter or paste text to be annotated", aria: {describedby: "inputTextHelpBlock"})
+    %small#inputTextHelpBlock.form-text
+      %a#insert_text_link{href: "javascript:void(0);"} insert sample text
 
+  %div.form-check.form-check-inline
+    = check_box_tag("longest_only", "all", false, class: "form-check-input")
+    %label.form-check-label{for: "longest_only"} Match longest only
+  %div.form-check.form-check-inline
+    = check_box_tag("whole_word_only", "all", false, class: "form-check-input")
+    %label.form-check-label{for: "whole_word_only"} Match partial words
+  %div.form-check.form-check-inline
+    = check_box_tag("mappings", "all", false, id: "mappings_all", class: "form-check-input")
+    %label.form-check-label{for: "mappings_all"} Include mappings
+  %div.form-check.form-check-inline
+    = check_box_tag("exclude_numbers", "all", false, class: "form-check-input")
+    %label.form-check-label{for: "exclude_numbers"} Exclude numbers
+  %div.form-check.form-check-inline
+    = check_box_tag("exclude_synonyms", "all", false, class: "form-check-input")
+    %label.form-check-label{for: "exclude_synonyms"} Exclude synonyms
 
-    %div{style: "margin-top: 30px;"}
-      / annotator_button calls 'get_annotations' in bp_annotator.js
-      %input#annotator_button{:class => "btn btn-primary", :type => "button", :value => "Get Annotations"}/
-      %span.annotator_spinner{:style => "display: none;"}
-        %img{:src => asset_path('spinners/spinner_000000_16px.gif'), :style => "vertical-align: middle;"}/
-      %span#annotator_error.annotator_error{:style => "color: red; vertical-align: middle; margin-left: 3px;"}
-#annotations_container{:style => "display: none; padding: 0 13px; margin: 0 0 2em;"}
-  #result_counts{:style => "float: right; font-style: oblique; color: gray;"}
-  %h2{:style => "margin-bottom: 0;"}
-    Annotations
-  #filter_list{:style => "font-size: 9pt; color: gray; display: none; clear: both; margin: -15px 0 5px"}
-    %span#filter_title> Results are filtered by:
-    \&nbsp;
-    %span#filter_names
-  #results_error{:style => "color: red; margin-bottom: 7px;"}
-  %table#annotations.zebra{:style => "display: inline-block; min-width: 700px; width: 100%;"}
-    %thead
-      %tr
-        %th{:style => "padding-right: 6px;", :title => "Class"}
-          Class
-          %span.popup_container{:style => "padding-left: 1.7em;"}
-            %span.bp_popup_link_container
-              %a#filter_classes.bp_popup_link{:href => "javascript:void(0);"} filter
-          #classes_filter_list.bp_popup_list{:style => "display: none;"}
-        %th{:style => "padding-right: 6px", :title => "Ontology"}
-          Ontology
-          %span.popup_container{:style => "padding-left: 1.7em;"}
-            %span.bp_popup_link_container
-              %a#filter_ontologies.bp_popup_link{:href => "javascript:void(0);"} filter
-          #ontology_filter_list.bp_popup_list{:style => "display: none;"}
-        %th{:style => "padding-right: 6px; min-width: 85px;", :title => "Type", class: "match_type"}
-          Type
-          %span.popup_container{:style => "padding-left: 1.7em;"}
-            %span.bp_popup_link_container
-              %a#filter_match_type.bp_popup_link{:href => "javascript:void(0);"} filter
-          #match_type_filter_list.bp_popup_list{:style => "display: none;"}
-        %th UMLS Sem Type
-        %th{class: "match_context"} Context
-        %th{:style => "padding-right: 6px;", :title => "Matched Class"}
-          Matched Class
-          %span.popup_container{:style => "padding-left: 1.7em;"}
-            %span.bp_popup_link_container
-              %a#filter_matched_classes.bp_popup_link{:href => "javascript:void(0);"} filter
-          #matched_classes_filter_list.bp_popup_list{:style => "display: none;"}
-        %th{:style => "padding-right: 6px; min-width: 200px;", :title => "Matched Ontology"}
-          Matched Ontology
-          %span.popup_container{:style => "padding-left: 1.7em;"}
-            %span.bp_popup_link_container
-              %a#filter_matched_ontologies.bp_popup_link{:href => "javascript:void(0);"} filter
-          #matched_ontology_filter_list.bp_popup_list{:style => "display: none;"}
-        %th Score
-        %th Negation
-        %th Experiencer
-        %th Temporality
-    %tbody
-  #download_links{:style => "margin-top: 1.5em;"}
-    %p
-      %span{:style => "padding: 0 3px 0 0;"}>
-        %b Format Results As:
-        %span#download_links_tabdelimited.link_button.ui_button
-        %span#download_links_json.link_button.ui_button
-        %span#download_links_rdf.link_button.ui_button
-        %span#download_links_text.link_button.ui_button
-      %span#download_links_xml.link_button.ui_button
-    %span{:style => "font-size: 8pt;"}
-      To reproduce these results:
-      %br/
-      %span#annotator_parameters{:style => "color: gray; font-weight: bold;"}
-      %br/
-      Additional parameters are documented at
-      \#{link_to 'Annotator Web Service', "#{$REST_URL}/documentation#nav_annotator", :target => "_blank"}
+  %div.form-group.pt-4
+    = render partial: "shared/ontology_picker", locals: { :custom_ontologies => @annotator_ontologies }
+  
+  - if @sem_type_ont
+    %div.form-group
+      %label{for: "semantic_types"} Select UMLS semantic types
+      = select_tag("semantic_types", options_for_select(@semantic_types_for_select), multiple: "true", data: {placeholder: "Start typing to select UMLS semantic types"}, class: "form-control", style: "width: 432px")
+
+  %div.form-group
+    %label{for: "class_hierarchy_max_level"} Include ancestors up to level
+    - options = [["none", 0], *(1..10).map {|i| [i, i]}, ["all", 999]]
+    = select_tag("class_hierarchy_max_level", options_for_select(options, 0), class: "form-control", style: "width: 432px")
+
+  - if @recognizers.length > 1
+    %div.form-group
+      %label{for: "recognizer"} Entity recognizer
+      - default_recognizer = @recognizers.include?("mgrep") ? "mgrep" : @recognizers.first
+      = select_tag("recognizer", options_for_select(@recognizers.map {|r| [r,r]}, default_recognizer), class: "form-control", style: "width: 432px")
+
+  / annotator_button calls 'get_annotations' in bp_annotator.js
+  %input#annotator_button{type: "button", value: "Get Annotations", class: "btn btn-primary"}/
+  %span.annotator_spinner{style: "display: none;"}
+    %img{src: asset_path('spinners/spinner_000000_16px.gif'), style: "vertical-align: middle;"}/
+  %span#annotator_error.annotator_error{style: "color: red; vertical-align: middle; margin-left: 3px;"}
+
+%div.row
+  %div.col
+    #annotations_container
+      #result_counts
+      %h2{:style => "margin-bottom: 0;"}
+        Annotations
+      #filter_list{:style => "font-size: 9pt; color: gray; display: none; clear: both; margin: -15px 0 5px"}
+        %span#filter_title> Results are filtered by:
+        \&nbsp;
+        %span#filter_names
+      #results_error{:style => "color: red; margin-bottom: 7px;"}
+      %table#annotations.zebra{:style => "min-width: 700px; width: 100%;"}
+        %thead
+          %tr
+            %th
+              Class
+              %span.popup_container
+                %span.bp_popup_link_container
+                  %a#filter_classes.bp_popup_link{:href => "javascript:void(0);"} filter
+                %div#classes_filter_list.bp_popup_list
+            %th
+              Ontology
+              %span.popup_container
+                %span.bp_popup_link_container
+                  %a#filter_ontologies.bp_popup_link{:href => "javascript:void(0);"} filter
+                %div#ontology_filter_list.bp_popup_list
+            %th{class: "match_type"}
+              Type
+              %span.popup_container
+                %span.bp_popup_link_container
+                  %a#filter_match_type.bp_popup_link{:href => "javascript:void(0);"} filter
+                %div#match_type_filter_list.bp_popup_list
+            %th UMLS Sem Type
+            %th{class: "match_context"} Context
+            %th
+              Matched Class
+              %span.popup_container
+                %span.bp_popup_link_container
+                  %a#filter_matched_classes.bp_popup_link{:href => "javascript:void(0);"} filter
+                %div#matched_classes_filter_list.bp_popup_list
+            %th
+              Matched Ontology
+              %span.popup_container
+                %span.bp_popup_link_container
+                  %a#filter_matched_ontologies.bp_popup_link{:href => "javascript:void(0);"} filter
+                %div#matched_ontology_filter_list.bp_popup_list
+        %tbody
+      #download_links{:style => "margin-top: 1.5em;"}
+        %p
+          %span{:style => "padding: 0 3px 0 0;"}>
+            %b Format results as:
+            %span#download_links_tabdelimited.link_button.ui_button
+            %span#download_links_json.link_button.ui_button
+            %span#download_links_text.link_button.ui_button
+          %span#download_links_xml.link_button.ui_button
+        %span{:style => "font-size: smaller;"}
+          To reproduce these results:
+          %br/
+          %span#annotator_parameters
+          %br/
+          Additional parameters are documented at
+          \#{link_to 'Annotator Web Service', "#{$REST_URL}/documentation#nav_annotator", :target => "_blank"}

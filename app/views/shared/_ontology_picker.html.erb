@@ -3,12 +3,12 @@
 <%init_ontology_picker(custom_ontologies, selected_ontologies)%>
 <%form_object ||= :ontology%>
 <%form_attribute ||= "ontologyId"%>
-<%sel_text ||= "Select Ontologies"%>
+<%sel_text ||= "Select ontologies"%>
 <%@select_id = "#{form_object}_#{form_attribute}"%>
 
 <script type="text/javascript">
 jQuery(window).ready(function(){
-  jQuery("#<%=@select_id%>").chosen({search_contains: true});
+  jQuery("#<%=@select_id%>").chosen({search_contains: true, width: '100%'});
 
   // Unbind the click handler from the ontology list
   jQuery("#<%=@select_id%>_chzn").bind("focus", hideChosenResults);
@@ -35,7 +35,7 @@ var hideChosenResults = function(){
   </h2>
 
   <div id="<%=@select_id%>_container">
-    <%=select form_object, form_attribute, options_for_select(@onts_for_select, selected_ontologies), { }, :multiple => 'true', "data-placeholder".to_sym => "Type here to select ontologies or leave blank to use all", :style => "width: 432px;" %>
+    <%=select form_object, form_attribute, options_for_select(@onts_for_select, selected_ontologies), { }, :multiple => 'true', "data-placeholder".to_sym => "Start typing to select ontologies or leave blank to use all", :style => "width: 432px;" %>
   </div>
 
   <div style="float: right; font-size: smaller;">

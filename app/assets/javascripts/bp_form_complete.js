@@ -5,7 +5,7 @@ var BP_INTERNAL_FORM_COMPLETE_LOADED = true;
 
 // Set the defaults if they haven't been set yet
 if (typeof BP_INTERNAL_SEARCH_SERVER === 'undefined') {
-  var BP_INTERNAL_SEARCH_SERVER = "http://bioportal.bioontology.org";
+  var BP_INTERNAL_SEARCH_SERVER = jQuery(document).data().bp.config.ui_url;
 }
 if (typeof BP_INTERNAL_SITE === 'undefined') {
   var BP_INTERNAL_SITE = "BioPortal";

@@ -1,0 +1,198 @@
+/* message boxes */
+.alert-box {
+  color: #555;
+  border-radius: 5px;
+  font-family: Tahoma, Geneva, Arial, sans-serif;
+  font-size: 11px;
+  padding: 10px 11px 10px 36px;
+  margin-bottom: 30px;
+}
+
+.alert-box span {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.error {
+  background: #ffecec image-url("error.png") no-repeat 10px 50%;
+  border: 1px solid #f5aca6;
+}
+
+.success {
+  background: #e9ffd9 image-url("success.png") no-repeat 10px 50%;
+  border: 1px solid #a6ca8a;
+}
+
+.warning {
+  background: #fff8c4 image-url("warning.png") no-repeat 10px 50%;
+  border: 1px solid #f2c779;
+}
+
+.notice {
+  background:#e3f7fc image-url("notice.png") no-repeat 10px 50%;
+  border:1px solid #8ed9f6;
+}
+
+.progress_box {
+  background: #f5f5f5 image-url("spinners/spinner_000000_16px.gif") no-repeat 10px 50%;
+  border: 1px solid #8ed9f6;
+}
+/* end: message boxes */
+
+.memcached_utilities td {
+  padding: .5em;
+}
+
+#adminOntologies {
+  clear: both;
+}
+
+table.dataTable tbody tr.selected {
+  background-color: #D7E3EA;
+}
+
+.ontologies_list_container {
+  width: 90%;
+  padding: 1em;
+}
+
+/* Datatables */
+.ontologies_list_container {
+  clear: both;
+}
+
+.ontologies_list_container .dataTables_length {
+  float: left;
+  padding: 1em 0;
+}
+
+.ontologies_list_container .dataTables_filter {
+  float: right;
+  padding-top: 3px;
+}
+
+.ontologies_list_container .dataTables_filter input {
+  width: 200px;
+}
+
+.ontologies_list_container .dataTables_info {
+  text-align: center;
+  padding: .5em;
+}
+
+.ontologies_list_container .dataTables_paginate {
+  text-align: center;
+}
+
+.ontologies_list_container .dataTables_paginate .paginate_button {
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0 .5em;
+}
+
+.ontologies_list_container .dataTables_paginate .paginate_button:hover {
+  text-decoration: none;
+}
+
+.ontologies_list_container .first, .ontologies_list_container .previous, .ontologies_list_container .next, .ontologies_list_container .last {
+  padding: 0 .5em;
+}
+
+.ontology_nav {
+  float: left;
+  padding: 0 0 1em 0;
+}
+
+#success_message,
+#error_message,
+#progress_message,
+#info_message {
+  display: none;
+}
+
+/* to fix facebox default sizing in chrome */
+#facebox .body {
+  width: 375px !important;
+}
+
+.zebra td {
+  padding: 8px 12px 8px 12px !important;
+}
+
+.missing_term {
+  color: red;
+}
+
+/* ########## TABS ########## */
+/* root element for tabs  */
+ul.admin_tabs {
+  list-style:none;
+  margin:0 !important;
+  padding:0;
+  border-bottom:1px solid #666;
+  height:30px;
+}
+
+/* single tab */
+ul.admin_tabs li {
+  float:left;
+  text-indent:0;
+  padding:0;
+  margin:0 !important;
+  list-style-image:none !important;
+}
+
+/* link inside the tab. uses a background image */
+ul.admin_tabs a {
+  background: image-url("blue.png") no-repeat -420px 0;
+  font-size:14px;
+  display:block;
+  height: 30px;
+  line-height:30px;
+  width: 13 4px;
+  text-align:center;
+  text-decoration:none;
+  color:#333;
+  padding:0px;
+  margin:0px;
+  position:relative;
+  top:1px;
+}
+
+ul.admin_tabs a:active {
+  outline:none;
+}
+
+/* when mouse enters the tab move the background image */
+ul.admin_tabs a:hover {
+  background-position: -420px -31px;
+  color:#fff;
+}
+
+/* active tab uses a class name "current". its highlight is also done by moving the background image. */
+ul.admin_tabs a.current, ul.admin_tabs a.current:hover, ul.admin_tabs li.current a {
+  background-position: -420px -62px;
+  cursor:default !important;
+  color:#000 !important;
+}
+
+/* Different widths for tabs: use a class name: w1, w2, w3 or w2 */
+/* width 1 */
+ul.admin_tabs a.s { background-position: -553px 0; width:81px; }
+ul.admin_tabs a.s:hover { background-position: -553px -31px; }
+ul.admin_tabs a.s.current  { background-position: -553px -62px; }
+
+/* width 2 */
+ul.admin_tabs a.l { background-position: -248px -0px; width:174px; }
+ul.admin_tabs a.l:hover { background-position: -248px -31px; }
+ul.admin_tabs a.l.current { background-position: -248px -62px; }
+
+/* width 3 */
+ul.admin_tabs a.xl { background-position: 0 -0px; width:248px; }
+ul.admin_tabs a.xl:hover { background-position: 0 -31px; }
+ul.admin_tabs a.xl.current { background-position: 0 -62px; }
+
+/* initially all panes are hidden */
+.admin_panes .admin_pane {
+  display:none;
+}

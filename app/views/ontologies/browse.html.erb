@@ -10,8 +10,8 @@
 <main class="grid-container" role="main" style="margin-bottom: 1em; margin-top: 1em;" ng-cloak>
   <h1 style="font-size: 3em;">Browse</h1>
   <p>
-    <%intro_text = "Browse the library of ontologies"%>
-    <%= t('ontologies.intro').html_safe.nil? || t('ontologies.intro').html_safe.empty? ? "#{intro_text}  #{help_icon("/help#Browse_Tab")}".html_safe : t('ontologies.intro').html_safe%>
+    <%= t('ontologies.intro').html_safe %>
+    <%= help_icon("/help#Browse_Tab", id: "ontology-browser-help").html_safe %>
   </p>
 
   <div ng-controller="OntologyList">
@@ -289,7 +289,7 @@
 </main>
 
 <!-- JS at end (before footer) -->
-<%=render partial: 'layouts/footer_js'%>
+<%= javascript_include_tag "application" %>
 
 <script>
   jQuery(document).data().bp.ontologies = <%=MultiJson.dump(@ontologies[0..19]).html_safe%>;

@@ -1,4 +1,5 @@
 class OntologiesController < ApplicationController
+  include MappingsHelper
 
   require "multi_json"
   require 'cgi'
@@ -146,69 +147,32 @@ class OntologiesController < ApplicationController
     render 'browse'
   end
 
-  # GET /visualize/:ontology
   def classes
-    # Hack to make ontologyid and conceptid work in addition to id and ontology params
-    params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]
-    params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]
-    # Set the ontology we are viewing
-    # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    # Get the latest 'ready' submission, or fallback to any latest submission
-    @submission = get_ontology_submission_ready(@ontology)  # application_controller
+    get_class(params)
 
-    get_class(params)   # application_controller::get_class
-
-    if request.accept.to_s.eql?("application/ld+json") || request.accept.to_s.eql?("application/json")
-      headers['Content-Type'] = request.accept.to_s
-      render text: @concept.to_jsonld
-      return
+    if ["application/ld+json", "application/json"].include?(request.accept)
+      render plain: @concept.to_jsonld, content_type: request.accept and return
     end
 
-    # set the current PURL for this class
     @current_purl = @concept.purl if $PURL_ENABLED
+    @submission = get_ontology_submission_ready(@ontology)
 
-    begin
-      @mappings = @concept.explore.mappings
-    rescue Exception => e
-      msg = ''
-      if @concept.instance_of?(LinkedData::Client::Models::Class) &&
-          @ontology.instance_of?(LinkedData::Client::Models::Ontology)
-        msg = "Failed to explore mappings for #{@concept.id} in #{@ontology.id}"
-      end
-      LOG.add :error, msg + "\n" + e.message
-      @mappings = []
-    end
-    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
-
-    begin
+    unless @concept.id == "bp_fake_root"
       @notes = @concept.explore.notes
-    rescue Exception => e
-      msg = ''
-      if @concept.instance_of?(LinkedData::Client::Models::Class) &&
-          @ontology.instance_of?(LinkedData::Client::Models::Ontology)
-        msg = "Failed to explore notes for #{@concept.id} in #{@ontology.id}"
-      end
-      LOG.add :error, msg + "\n" + e.message
-      @notes = []
+      @mappings = get_concept_mappings(@concept)
+      @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     end
+    
+    update_tab(@ontology, @concept.id)
 
-    unless @concept.id.to_s.empty?
-      # Update the tab with the current concept
-      update_tab(@ontology,@concept.id)
-    end
     if request.xhr?
-      return render 'visualize', :layout => false
+      render "visualize", layout: false
     else
-      return render 'visualize', :layout => "ontology_viewer"
+      render "visualize", layout: "ontology_viewer"
     end
   end
 
   def properties
-    # Hack to make ontologyid and conceptid work in addition to id and ontology params
-    params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]
-    params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     if request.xhr?
       return render 'properties', :layout => false
     else
@@ -221,7 +185,7 @@ class OntologiesController < ApplicationController
       redirect_to "/ontologies"
       return
     end
-    @ontology = LinkedData::Client::Models::Ontology.new(values: params[:ontology])
+    @ontology = LinkedData::Client::Models::Ontology.new(values: ontology_params)
     @ontology_saved = @ontology.save
     if !@ontology_saved || @ontology_saved.errors
       @categories = LinkedData::Client::Models::Category.all
@@ -254,8 +218,6 @@ class OntologiesController < ApplicationController
   end
 
   def mappings
-    # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     counts = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}/mappings/statistics/ontologies/#{params[:id]}")
     @ontologies_mapping_count = []
     unless counts.nil?
@@ -289,13 +251,8 @@ class OntologiesController < ApplicationController
   end
 
   def new
-    if (params[:id].nil?)
-      @ontology = LinkedData::Client::Models::Ontology.new(values: params[:ontology])
-      @ontology.administeredBy = [session[:user].id]
-    else
-      # Note: find_by_acronym includes ontology views
-      @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    end
+    @ontology = LinkedData::Client::Models::Ontology.new
+    @ontologies =  LinkedData::Client::Models::Ontology.all(include: "acronym", include_views: true, display_links: false, display_context: false)
     @categories = LinkedData::Client::Models::Category.all
     @groups = LinkedData::Client::Models::Group.all
     @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
@@ -303,8 +260,6 @@ class OntologiesController < ApplicationController
   end
 
   def notes
-    # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     # Get the latest 'ready' submission, or fallback to any latest submission
     @submission = get_ontology_submission_ready(@ontology)  # application_controller
     @notes = @ontology.explore.notes
@@ -352,6 +307,21 @@ class OntologiesController < ApplicationController
       end
     end
 
+    # Note: find_by_acronym includes ontology views
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    not_found if @ontology.nil?
+
+    # Retrieve submissions in descending submissionId order (should be reverse chronological order)
+    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
+    LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
+
+    # Get the latest submission (not necessarily the latest 'ready' submission)
+    @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
+
+    # Is the ontology downloadable?
+    restrict_downloads = $NOT_DOWNLOADABLE
+    @ont_restricted = restrict_downloads.include? @ontology.acronym
+
     # Fix parameters to only use known pages
     params[:p] = nil unless KNOWN_PAGES.include?(params[:p])
 
@@ -389,7 +359,7 @@ class OntologiesController < ApplicationController
     @acronym = params[:id]
     # Force the list of ontologies to be fresh by adding a param with current time
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id], cache_invalidate: Time.now.to_i).first
-    render :partial => "submit_success", :layout => "ontology"
+    render partial: "submit_success", layout: determine_layout()
   end
 
   # Main ontology description page (with metadata): /ontologies/ACRONYM
@@ -398,12 +368,13 @@ class OntologiesController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     not_found if @ontology.nil?
     # Check to see if user is requesting json-ld, return the file from REST service if so
+
     if request.accept.to_s.eql?("application/ld+json") || request.accept.to_s.eql?("application/json")
       headers['Content-Type'] = request.accept.to_s
-      render text: @ontology.to_jsonld
+      render plain: @ontology.to_jsonld
       return
     end
-    # Explore the ontology links
+    
     @metrics = @ontology.explore.metrics rescue []
     @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created} || []
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
@@ -414,11 +385,12 @@ class OntologiesController < ApplicationController
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
     # Get the latest submission, not necessarily the latest 'ready' submission
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
-    @views = @ontology.explore.views.sort {|a,b| a.acronym.downcase <=> b.acronym.downcase } || []
+    @views = get_views(@ontology)
+    @view_decorators = @views.map{ |view| ViewDecorator.new(view, view_context) }
     if request.xhr?
-      render :partial => 'metadata', :layout => false
+      render partial: "metadata", layout: false
     else
-      render :partial => 'metadata', :layout => "ontology_viewer"
+      render partial: "metadata", layout: "ontology_viewer"
     end
   end
 
@@ -430,7 +402,7 @@ class OntologiesController < ApplicationController
     end
     # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym] || params[:id]).first
-    @ontology.update_from_params(params[:ontology])
+    @ontology.update_from_params(ontology_params)
     error_response = @ontology.update
     if error_response
       @categories = LinkedData::Client::Models::Category.all
@@ -456,8 +428,6 @@ class OntologiesController < ApplicationController
   end
 
   def widgets
-    # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     if request.xhr?
       render :partial => 'widgets', :layout => false
     else
@@ -467,13 +437,29 @@ class OntologiesController < ApplicationController
 
   private
 
+  def ontology_params
+    p = params.require(:ontology).permit(:name, :acronym, { administeredBy:[] }, :viewingRestriction, { acl:[] },
+                                         { hasDomain:[] }, :isView, :viewOf, :subscribe_notifications)
+
+    p[:administeredBy].reject!(&:blank?)
+    p[:acl].reject!(&:blank?)
+    p[:hasDomain].reject!(&:blank?)
+    p.to_h
+  end
+
   def resolve_layout
     case action_name
     when 'index'
       'angular'
     else
-      'ontology'
+      Rails.env.appliance? ? 'appliance' : 'ontology'
     end
+  end
+
+  def get_views(ontology)
+    views = ontology.explore.views || []
+    views.select!{ |view| view.access?(session[:user]) }
+    views.sort{ |a,b| a.acronym.downcase <=> b.acronym.downcase }
   end
 
 end

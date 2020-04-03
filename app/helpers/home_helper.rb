@@ -1,5 +1,6 @@
-require 'hpricot'
 require 'open-uri'
+require 'open_uri_redirections'
+require 'nokogiri'
 
 module HomeHelper
 
@@ -8,8 +9,8 @@ module HomeHelper
 
     help_text = Rails.cache.read("help_text")
     if help_text.nil?
-      help_page = Hpricot(open($WIKI_HELP_PAGE))
-      help_text = (help_page/"//*[@id='bodyContent']").inner_html
+      doc = Nokogiri::HTML(open($WIKI_HELP_PAGE, :allow_redirections => :all))
+      help_text = doc.xpath("//*[@id='bodyContent']").inner_html
       Rails.cache.write("help_text", help_text, expires_in: 60*60)
     end
 

@@ -4,7 +4,7 @@ class SearchController < ApplicationController
 
   skip_before_action :verify_authenticity_token
 
-  layout 'ontology'
+  layout :determine_layout
 
   def index
     @search_query = params[:query].nil? ? params[:q] : params[:query]
@@ -77,7 +77,7 @@ class SearchController < ApplicationController
       content_type = "application/javascript"
     end
 
-    render text: response, content_type: content_type
+    render plain: response, content_type: content_type
   end
 
 

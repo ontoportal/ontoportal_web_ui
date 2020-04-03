@@ -80,28 +80,6 @@
     return obsolete_prefix + row0_markup + matchType + obsolete_suffix;
   }
 
-  jQuery(document).data().bp.classesTab.classes_init = function(){
-    // Override the side of the bd_content div to avoid problems with
-    // the window resizing, which can sometimes cause the right-hand content div to drop down
-    var bd_content_width = jQuery("#ontology_content").width();
-    jQuery("#bd_content").width(bd_content_width);
-
-    // Size the content window
-    var iframeHeight = jQuery(window).height() - jQuery("#bd_content .clsContainer").offset().top - 110;
-    jQuery("#bd_content .clsContainer").css("width", "100%").css("height", iframeHeight);
-    jQuery("#bd .bd_content .clsContainer #contents").css("max-height", iframeHeight);
-    jQuery("#bd .sd_max_height").css("max-height", iframeHeight);
-
-    // Split bar
-    if (jQuery("#bd_content").find(".vsplitbar").length == 0) {
-      jQuery("#bd_content").splitter({
-        sizeLeft: 400,
-        resizeToWidth: true,
-        cookie: "vsplitbar_position"
-      });
-    }
-  }
-
   // The tab system
   jQuery(".tab").live("click", function(){
     var tabId = jQuery(this).children("a:first").attr("href").replace("#", "");
@@ -153,7 +131,6 @@
     if (jQuery("#search_box").bioportal_autocomplete) {
       jQuery("#search_box").bioportal_autocomplete("/search/json_search/"+jQuery(document).data().bp.ontology.acronym, {
         extraParams: { objecttypes: "class" },
-        width: "400px",
         selectFirst: true,
         lineSeparator: "~!~",
         matchSubset: 0,
@@ -188,18 +165,13 @@
       }
     }
 
-    // Javascript for the permalink box
-    jQuery("#close_permalink").live("click", function(){
-      jQuery("#purl_link_container").hide();
-    });
+    jQuery("#classPermalinkModal").on("shown.bs.modal", function (e) {
+      var currentPurl = jQuery("a.class-permalink").data("current-purl");
+      jQuery("#purl_input").val(currentPurl);
+    })
 
-    jQuery("#class_permalink").live("click", function(e){
-      e.preventDefault();
-      jQuery("#purl_link_container").show();
-    });
-
-    jQuery("#purl_input").live("focus", function(){
-      this.select();
+    jQuery("#purl_input").on("click", function () {
+      jQuery(this).select();
     });
   });
 })(window);

@@ -130,7 +130,7 @@
       - else
         %p{:style => "padding-left: 7px;"} You haven't picked any ontologies yet
   #custom_ontologies_picker{:style => "left: -9999px; position: absolute;"}
-    = form_tag "/accounts/#{@user.username}/custom_ontologies" do
+    = form_tag custom_ontologies_path(url_encode(@user.username)) do
       - selected = @user.customOntology.map {|o| LinkedData::Client::Models::Ontology.get(o).acronym}
       - locals = { :custom_ontologies => @all_ontologies, :selected_ontologies => selected, :sel_text => "Select Custom Ontologies" }
       = render :partial => "shared/ontology_picker", :locals => locals

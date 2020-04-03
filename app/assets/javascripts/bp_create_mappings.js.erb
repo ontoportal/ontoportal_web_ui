@@ -1,16 +1,24 @@
+var observer = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutation) {
+    if (mutation.addedNodes.length > 0) {
+      var elem = document.querySelector("#map_to_picker");
+      if (elem != null) {
+        resetAutocompleter(elem.options[elem.selectedIndex].value);
+      } 
+    } 
+  });    
+});
+
 jQuery(document).ready(function() {
 
-  jQuery(".ontology_picker_single").live("change", function(){
-    var current_side = jQuery(this).attr("id").replace("_picker", "");
-    jQuery("#" + current_side)[0].autocompleter.flushCache();
-    jQuery("#" + current_side)[0].autocompleter.getOptions().width = 450;
+  var targetNode = document.querySelector(".createNewMappingModal, .modal-body");
+  if (targetNode != null) {
+    observer.observe(targetNode, { childList: true });
+  }
 
-    // Set the autocompleter ontology value
-    jQuery("#" + current_side)[0].autocompleter.getExtraParams()["id"] = jQuery(this).val();
-
-    if (jQuery(this).val() == "") {
-      jQuery("#" + current_side + "_bioportal_ontology_id").val("");
-    }
+  jQuery("body").on("change", "#map_to_picker", function(e) {
+    resetAutocompleter(jQuery(this).val());
+    jQuery("#map_to_concept_details_table").html("");
   });
 
   jQuery("input.search_autocomplete").live("autocomplete_selected", function(){
@@ -47,9 +55,13 @@ jQuery(document).ready(function() {
     }
   });
 
-    // Reset mapping UI when tree changes or loaded from ajax
+  // TODO: Can we get rid of calls to deprecated "live" method?
+
+  // Reset mapping UI when tree changes or loaded from ajax
   jQuery(document).live("tree_changed", resetMappingUIWithFacebox);
   jQuery(document).live("classes_tab_visible", resetMappingUI);
+
+  // TODO: Do we still need facebox stuff?
 
   // Details/visualize link to show details pane and visualize flexviz
   jQuery.facebox.settings.closeImage = "<%= asset_path("facebox/closelabel.png") %>";
@@ -62,6 +74,20 @@ jQuery(document).ready(function() {
 
   jQuery("#create_mapping_button").live("click", bp_createMapping.create);
   jQuery("#create_external_mapping_button").live("click", bp_createExternalMapping.create);
+
+  /*
+   * Customize the title of the modal dialog for creating new mappings based 
+   * on which class is selected in the class tree.
+   */
+  $('#createNewMappingModal').on('shown.bs.modal', function(e) {
+    var conceptLabel = jQuery("#new_mapping_btn").data("concept-label");
+    jQuery("h4#createNewMappingLabel").text("Create new mapping for: " + conceptLabel);
+  })
+
+  $('#createNewMappingModal').on('hidden.bs.modal', function(e) {
+    jQuery("#map_to_concept_details").html("");
+    jQuery("#create_mapping_success_messages").html("");
+  })
 });
 
 // Also in bp_mappings.js
@@ -88,14 +114,18 @@ function updateMappingDeletePermissions() {
   jQuery("input[name='delete_mapping_checkbox']").prop('checked', false);
 }
 
-
 function getClassDetails(input) {
-  var current_id = jQuery(input).attr("id");
-  var current_ont_id = jQuery("#" + current_id + "_bioportal_ontology_id").val();
-  var current_concept_id = jQuery("#" + current_id + "_bioportal_full_id").val();
-  jQuery("#" + current_id + "_concept_details_table").html('<%= image_tag("spinners/spinner_000000_16px.gif", style: "padding: 5px;") %>');
-  jQuery("#" + current_id + "_concept_details_table").load("/ajax/class_details?ontology=" + encodeURIComponent(current_ont_id) + "&styled=false&conceptid=" + encodeURIComponent(current_concept_id));
-  jQuery("#" + current_id + "_concept_details").show();
+  var current_ont_id = jQuery("#map_to_bioportal_ontology_id").val();
+  var current_concept_id = jQuery("#map_to_bioportal_full_id").val();
+  jQuery("#map_to_concept_details_table").html('<%= image_tag("spinners/spinner_000000_16px.gif", style: "padding: 5px;") %>');
+  jQuery("#map_to_concept_details_table").load("/ajax/class_details?ontology=" + encodeURIComponent(current_ont_id) + "&styled=false&conceptid=" + encodeURIComponent(current_concept_id));
+}
+
+function resetAutocompleter(ontologyId) {
+  var input = jQuery("#map_to");
+  input[0].autocompleter.flushCache();
+  input[0].autocompleter.getExtraParams()["id"] = ontologyId;
+  input.val("");
 }
 
 function resetMappingUIWithFacebox() {
@@ -104,13 +134,10 @@ function resetMappingUIWithFacebox() {
 }
 
 function resetMappingUI() {
-  // Set the map from side to the new class from the tree
-  jQuery("#map_from").val(jQuery.trim(jQuery("#sd_content a.active").text()));
+  // Set map_from to the new class from the tree
   jQuery("#map_from_bioportal_full_id").val(jQuery("#sd_content a.active").attr("id"));
-  getClassDetails(document.getElementById("map_from"));
-  // Clear the map to side
-  jQuery("#map_to_concept_details").hide();
-  // Clear mapping created messages
+
+  jQuery("#map_to_concept_details").html("");
   jQuery("#create_mapping_success_messages").html("");
   jQuery("a.link_button, input.link_button").button();
   updateMappingDeletePermissions();
@@ -164,9 +191,12 @@ var bp_createMapping = {
   },
 
   success: function(data) {
+    var ontology_id = jQuery("#map_from_bioportal_ontology_id").val();
+    var source_class_id = jQuery("#map_from_bioportal_full_id").val();
+
     jQuery("#create_mapping_spinner").hide();
     jQuery("#create_mapping_success_messages").prepend(jQuery("<div/>").addClass("success_message").html(
-        "Mapping from <b>" + jQuery("#map_from").val() + "</b> to <b>" + jQuery("#map_to").val() + "</b> was created"
+        "Mapping from <b>" + jQuery("#new_mapping_btn").data("concept-label") + "</b> to <b>" + jQuery("#map_to").val() + "</b> was created"
     ));
 
     // If we have a concept mapping table, update it with new mappings
@@ -176,9 +206,6 @@ var bp_createMapping = {
         jQuery("#mapping_count").html(jQuery("#mapping_details tbody tr:visible").size());
       });
     }
-
-    // Clear the map to side
-    jQuery("#map_to_concept_details").hide();
 
     jQuery.bioportal.ont_pages["mappings"].retrieve_and_publish();
     updateMappingDeletePermissions();
@@ -194,19 +221,13 @@ var bp_createMapping = {
   },
 
   validate: function() {
-    var concept_from_input = jQuery("#map_from");
     var concept_to_input = jQuery("#map_to");
     var error = jQuery("#create_mapping_error");
     var errors = ["<b>Problem creating mapping:</b>"];
     var errored = false;
 
-    if (concept_from_input.val() == "" || concept_from_input.val() == concept_from_input.attr("title")) {
-      errors.push("Please select class to map from");
-      errored = true;
-    }
-
     if (concept_to_input.val() == "" || concept_to_input.val() == concept_to_input.attr("title")) {
-      errors.push("Please select class to map to");
+      errors.push("Please select a target class");
       errored = true;
     }
 

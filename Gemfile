@@ -1,20 +1,20 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.1'
+gem 'rails', '5.1.7'
 
 gem 'sass-rails', '~> 5.0'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '>= 4.2.0'
-
-# Uncomment this line to compile assets on the CentOS server (it needs a java runtime)
 # See https://github.com/rails/execjs#readme for more supported runtimes
-gem 'therubyracer', platforms: :ruby
-
+# gem 'therubyracer', platforms: :ruby
 # gem 'duktape'
 
 gem 'jquery-ui-rails'
 gem 'jquery-rails'
+gem 'bootstrap', '~> 4.1.0'
+gem 'chart-js-rails'
+gem 'select2-rails'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
@@ -27,12 +27,11 @@ gem 'jquery-rails'
 
 gem "pry"
 gem "iconv"
-gem "hpricot", "~> 0.8.6"
-gem "recaptcha", "= 0.4.0"
+gem "recaptcha", "~> 5.2"
 gem "rest-client", "~> 1.8.0"
-gem "mysql", "~> 2.9.1"
-gem "i18n", "~> 0"
-gem "haml", "~> 4.0.0"
+gem "mysql2", "0.5.2"
+gem "i18n"
+gem "haml", "~> 5.1"
 gem "will_paginate", "~> 3.0"
 gem "rdoc"
 gem "rack-mini-profiler"
@@ -44,25 +43,29 @@ gem 'multi_json'
 gem 'rails_autolink'
 gem 'dalli'
 gem 'thin'
-
-# application monitoring
-gem 'newrelic_rpm'
+gem 'open_uri_redirections'
+gem 'nokogiri'
 
 gem 'ontologies_api_client', :git => "https://github.com/sifrproject/ontologies_api_ruby_client.git", branch: "lirmm"
 
 group :staging, :production do
+  # application monitoring
+  gem 'newrelic_rpm'
   #logs in json format, useful for shipping logs to logstash
-  gem 'rackstash', git: "https://github.com/planio-gmbh/rackstash.git"
-  gem 'logstash-logger'
+  # gem 'rackstash', git: "https://github.com/planio-gmbh/rackstash.git"
+  # gem 'logstash-logger'
 end
 
 group :development do
-    #Capistrano
-    gem 'capistrano', '~> 3.4.1', require: false
-    # rails specific capistrano funcitons
-    gem 'capistrano-rails', '~> 1.1.0', require: false
-    # integrate bundler with capistrano
-    gem 'capistrano-bundler', require: false
-    # passenger reload
-    gem 'capistrano-passenger', require: false
+  gem 'capistrano', '~> 3.11', require: false
+  gem 'capistrano-rails', '~> 1.4', require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano-locally', require: false
+  gem 'capistrano-passenger', require: false
+  gem 'capistrano-yarn', require: false
+  gem 'html2haml'
+  # static code analysis
+  gem "brakeman", require: false
+  gem "rubocop", require: false
+  # gem 'i18n-debug'
 end

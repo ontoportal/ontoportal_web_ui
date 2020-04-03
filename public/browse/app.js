@@ -188,9 +188,7 @@ var app = angular.module('FacetedBrowsing.OntologyList', ['checklist-model', 'ng
   // Default values for facets that aren't definied on the ontologies
   $scope.types = {
     ontology: {sort: 1, id: "ontology"},
-    ontology_view: {sort: 2, id: "ontology_view"},
-    CIMI_model: {sort: 3, id: "CIMI_model"},
-    NLM_value_set: {sort: 4, id: "NLM_value_set"}
+    ontology_view: {sort: 2, id: "ontology_view"}
   };
   $scope.artifacts = ["notes", "reviews", "projects", "summary_only"];
 

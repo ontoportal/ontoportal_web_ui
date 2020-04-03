@@ -1,4 +1,4 @@
-class EventItems < ActiveRecord::Migration
+class EventItems < ActiveRecord::Migration[4.2]
   def self.up
     change_column(:event_items, :event_type_id, :string, :limit => 255)
   end

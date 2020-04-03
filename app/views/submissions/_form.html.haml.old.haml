@@ -1,0 +1,779 @@
+- button_text ||= "Add submission"
+- title_text ||= "Add New Submission"
+- # Load bootstrap for this page from public/stylesheets
+%link{:type => "text/css", :rel => "stylesheet", :href => "/stylesheets/bootstrap.css"}
+%link{:type => "text/css", :rel => "stylesheet", :href => "/stylesheets/bootstrap-theme.css"}
+
+:javascript
+  jQuery(function(){
+    jQuery(".datepicker").datepicker({
+      showOn: 'button',
+      buttonImage: "#{image_path('calendar.gif')}",
+      buttonImageOnly: true,
+      buttonText: 'Choose a release date',
+      dateFormat: 'yy-mm-dd'
+    });
+  });
+
+  // Show/hide location inputs
+  function location_toggle(input_div) {
+    jQuery('.hidden_field').hide();
+    jQuery('.hidden_field input').attr("disabled", true);
+    jQuery('#' + input_div + " input").removeAttr("disabled");
+    jQuery('#' + input_div).show();
+  }
+
+  jQuery(document).ready(function(){
+    // Properly display the information for 'File Location' based on radio button
+    if (jQuery("#submission_isRemote_0").is(":checked")) {
+      location_toggle("upload");
+    }
+    if (jQuery("#submission_isRemote_1").is(":checked")) {
+      location_toggle("remote");
+    }
+    // Select default 'File Location' radio button
+    if (!jQuery("#submission_isRemote_0").is(":checked") && !jQuery("#submission_isRemote_1").is(":checked") && !jQuery("#submission_isRemote_2").is(":checked")) {
+      jQuery("#submission_isRemote_0").attr("checked", "checked")
+    }
+    // Handles showing/hiding options for a particular ontology format
+    jQuery("#submission_hasOntologyLanguage").change(ontologyFormatChange);
+    // Check to see if owl is selected, show options if so
+    ontologyFormatChange();
+    jQuery("#ontology_submission_form").validate();
+
+    jQuery('#add_contact_button').click(function(event) {
+      addContact();
+      event.preventDefault();
+    })
+  });
+
+  function ontologyFormatChange(format){
+    var selected = jQuery("#submission_hasOntologyLanguage option:selected");
+
+    switch(selected.val()){
+      case 'OWL':
+        jQuery(".format_options").optionsOut("fast");
+        jQuery("#owl_options").optionsIn("fast");
+        break;
+      case 'SKOS':
+        jQuery(".format_options").optionsOut("fast");
+        jQuery("#skos_options").optionsIn("fast");
+        break;
+      case 'OBO':
+        jQuery(".format_options").optionsOut("fast");
+        jQuery("#obo_options").optionsIn("fast");
+        break;
+      case 'UMLS':
+        jQuery(".format_options").optionsOut("fast");
+        jQuery("#umls_options").optionsIn("fast");
+        break;
+      default:
+        jQuery(".format_options").optionsOut("fast");
+    }
+  }
+
+  jQuery.fn.optionsIn = function(speed, easing, callback){
+    jQuery("#format_spacing").css("margin", "1em 0");
+    this.fadeIn(speed);
+  };
+
+  jQuery.fn.optionsOut = function(speed, easing, callback){
+    this.css("display", "none");
+    jQuery("#format_spacing").css("margin", "0");
+  };
+
+  function addContact() {
+    var contact = jQuery(jQuery("#contacts").children(".contact")[0]);
+    var newContact = jQuery(jQuery("<div>").html(contact.html()).addClass("contact"));
+    newContact.children("input").each(function(){
+      var index =  jQuery("#contacts").children(".contact").length;
+      var newId = jQuery(this).attr("id").replace(/0/g, index);
+      var newName = jQuery(this).attr("name").replace(/0/g, index);
+      jQuery(this).attr("id", newId).attr("name", newName).attr("value", "")
+    })
+    jQuery("#contacts").append(newContact);
+  }
+
+- unless @errors.nil?
+  .enable-lists{:style => "color:red;"}
+    %strong Errors On Form
+    %ul
+      - for error in @errors
+        %li
+          = error
+
+%div#editMetadataDiv
+  %div{:style => "width: 50%;margin: 3em auto;"}
+    %h1{:style => "text-align: center;"} #{title_text}
+    %p{:style => "text-align: center;"}
+      To understand the ontologies metadata:
+      %a{:href => "https://github.com/agroportal/documentation/wiki/Ontology-metadata", :target => "_blank"} see the Wiki
+    %div{:style => "text-align: center;"}
+      %span.asterik * fields are required
+      %br
+      %span.extractedAsterix * metadata that can be extracted from the ontology
+
+    = hidden_field :submission, :ontology, value: @ontology.id
+    %table#new_ontology.form{style: "min-width: 800px;"}
+
+      %tr
+        %th
+          Format
+          %span.asterik *
+        %td
+          - ont_formats = [ "OBO", "OWL", "UMLS", "SKOS" ].sort
+          - selected = @submission.hasOntologyLanguage ? @submission.hasOntologyLanguage : "OWL"
+          = select("submission", "hasOntologyLanguage", ont_formats, { :selected => selected, :style => "width: 200px;", :required => true}, {:class => "form-control"})
+          #format_spacing
+          %table#format_specific_options
+            %tbody#skos_options.format_options
+              %tr{:style => "border-left: none;"}
+                %td{:colspan => "2", :style => "border-left: none; border-right: none; border-bottom: none; border-top: none; padding: 0em 0em 0.5em 0em;"}
+                  Classes are defined by the rdf:type <b>skos:Concept</b>
+                  %br/
+                  Hierarchical relations between concepts are defined by the <b>skos:broader</b> property only.
+                  %br/
+                  The root concept of the concept tree is defined by <b>skos:hasTopConcept</b>.
+            %tbody#umls_options.format_options
+              %tr{:style => "border-left: none;"}
+                %td{:colspan => "2", :style => "border-left: none; border-right: none; border-bottom: none; border-top: none; padding: 0em 0em 0.5em 0em;"}
+                  To process ontologies translated from
+                  = link_to "UMLS", "https://www.nlm.nih.gov/research/umls/"
+                  using
+                  = link_to "umls2rdf", "https://github.com/ncbo/umls2rdf"
+            %tbody#obo_options.format_options
+              %tr{:style => "border-left: none;"}
+                %td{:colspan => "2", :style => "border-left: none; border-right: none; border-bottom: none; border-top: none; padding: 0em 0em 0.5em 0em;"}
+                  Ontologies using the
+                  = link_to "OBO", "http://www.obofoundry.org"
+                  format.
+            %tbody#owl_options.format_options
+              %tr{:style => "border-left: none;"}
+                %td{:colspan => "2", :style => "border-top: none; border-left: none; border-right: none; border-bottom: none; border-top: none; padding: 0em 0em 0.5em 0em;"}
+                  Classes are defined by the rdf:type <b>owl:Class</b>
+                  %br/
+                  Hierarchical relations between classes are defined by the <b>rdfs:subClassOf</b> property.
+                  %br/
+                  The root concept of the concept tree is <b>owl:Thing</b>
+              %tr
+                %th
+                  Preferred Name Property
+                  %br/
+                  %span.default_owl
+                    default:
+                    %a{:href => "http://www.w3.org/2004/02/skos/core#prefLabel", :target => "_blank"} http://www.w3.org/2004/02/skos/core#prefLabel
+                %td
+                  = text_field :submission, :prefLabelProperty, :placeholder => 'use default', value: @submission.prefLabelProperty
+              %tr
+                %th
+                  Synonym Property
+                  %br/
+                  %span.default_owl
+                    default:
+                    %a{:href => "http://www.w3.org/2004/02/skos/core#altLabel", :target => "_blank"} http://www.w3.org/2004/02/skos/core#altLabel
+                %td
+                  = text_field :submission, :synonymProperty, :placeholder => 'use default', value: @submission.synonymProperty
+              %tr
+                %th
+                  Definition Property
+                  %br/
+                  %span.default_owl
+                    default:
+                    %a{:href => "http://www.w3.org/2004/02/skos/core#definition", :target => "_blank"} http://www.w3.org/2004/02/skos/core#definition
+                %td
+                  = text_field :submission, :definitionProperty, :placeholder => 'use default', value: @submission.definitionProperty
+              %tr
+                %th
+                  Author Property
+                  %br/
+                  %span.default_owl
+                    default:
+                    %a{:href => "http://purl.org/dc/elements/1.1/creator", :target => "_blank"} http://purl.org/dc/elements/1.1/creator
+                %td
+                  = text_field :submission, :authorProperty, :placeholder => 'use default', value: @submission.authorProperty
+              %tr{:style => "border-left: none;"}
+                %td{:colspan => "2", :style => "border-left: none; border-right: none; padding: 1.5em 0 .5em;"}
+                  %b Determining Obsolete Classes
+                  You can use the following two methods to identify obsolete classes in your ontology:
+                  %br/
+                  1. Designate a root ID for an obsolete branch.
+                  %br/
+                  2. Identify a property id that indicates obsolete status. The value must be set to "true".
+              %tr
+                %th
+                  1. Root of obsolete branch (root is not obsolete)
+                %td
+                  = text_field :submission, :obsoleteParent, value: @submission.obsoleteParent
+              %tr
+                %th
+                  2. Property to check for obsolete status
+                %td
+                  = text_field :submission, :obsoleteProperty, value: @submission.obsoleteProperty
+      %tr
+        %th
+          Location
+          %span.asterik *
+        %td#location_options
+          - if !@masterFileOptions
+            - checked = @ontology.summaryOnly
+            = radio_button :submission, :isRemote, 3, :onclick=>"$('.hidden_field').hide();", checked: checked
+            Metadata Only
+            %br/
+            %span{:style => "font-size:11px;"}
+              (choose this option if you want users to search and view only the
+              %em metadata
+              for your ontology, but not its classes and properties)
+            %hr/
+
+            - checked = !( @submission.pullLocation.nil? || @submission.pullLocation.empty? )
+            = radio_button :submission, :isRemote, 1, :onclick=>"location_toggle('remote');", checked: checked
+            Load from URL
+            %br/
+            %span{:style => "font-size:11px;"} (new versions loaded daily)
+            - display = (checked and "" or "display:none;")
+            %div.hidden_field#remote{style: display}
+              URL: #{text_field :submission, :pullLocation, :size => 100, value: @submission.pullLocation}
+            %hr/
+
+            - checked = (!@ontology.summaryOnly) && @submission.pullLocation.nil?
+            = radio_button :submission, :isRemote, 0, :onclick=>"location_toggle('upload');", checked: checked
+            Upload Local File
+            %br/
+            %span{:style => "font-size:11px;"} (choose a file on your local file system to upload)
+            - display = (checked and "" or "display:none;")
+            %div.hidden_field#upload{style: display}
+              #{f.file_field :filePath}
+
+          - else
+            = radio_button :submission, :isRemote, 0, :onclick=>"location_toggle('upload');", checked: true
+            Upload Local File
+            %br/
+            %span{:style => "font-size:11px;"} (choose a file on your local file system to upload)
+            - display = (checked and "" or "display:none;")
+            %div#upload{style: display}
+              = f.file_field :filePath, required: true
+              = f.select("masterFileName", @masterFileOptions, { include_blank: "Select primary file from zip contents", required: true}, {style: "border-color: red;"})
+
+  %div{:class => "row", style: "width: 50%; margin: 0 auto;"}
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Key properties
+      %div{:class => "panel-body"}
+
+        %div
+          %div.col-md-3
+            -# generate_attribute functions are defined in submissions_helper.rb
+            = generate_attribute_label("URI")
+          %div.col-md-9
+            = raw generate_attribute_input("URI")
+
+        %div
+          %div.col-md-3
+            = generate_attribute_label("status")
+            %span.asterik *
+          %div.col-md-9
+            - selected_status = @submission.status ? @submission.status : "alpha"
+            - status_options = ["alpha", "beta", "production", "retired"]
+            = select :submission, :status, status_options, { :selected => selected_status, :required => true}, {:class => "form-control"}
+
+        %div
+          %div.col-md-3
+            = generate_attribute_label("deprecated")
+          %div.col-md-9
+            = raw generate_attribute_input("deprecated")
+
+        %div
+          %div.col-md-3
+            = generate_attribute_label("version")
+          %div.col-md-9
+            = raw generate_attribute_input("version")
+
+        %div
+          %div.col-md-3
+            = generate_attribute_label("hasOntologySyntax")
+          %div.col-md-9
+            = generate_attribute_input("hasOntologySyntax")
+            %p
+              Properties taken from
+              = link_to "W3C URIs for file format", "https://www.w3.org/ns/formats/", target: "_blank"
+
+        %div
+          %div.col-md-3
+            = generate_attribute_label("hasFormalityLevel")
+          %div.col-md-9
+            = generate_attribute_input("hasFormalityLevel")
+            %p
+              Properties taken from
+              = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
+
+        %div
+          %div.col-md-3
+            = generate_attribute_label("isOfType")
+          %div.col-md-9
+            = generate_attribute_input("isOfType")
+
+        %div
+          %div.col-md-3
+            = generate_attribute_label("naturalLanguage")
+          %div.col-md-9
+            = generate_attribute_input("naturalLanguage")
+            %p
+              Consider using a
+              = link_to "Lexvo URI", "http://www.lexvo.org", target: "_blank"
+              with ISO639-3 code
+              %br
+              e.g.: http://lexvo.org/id/iso639-3/eng
+
+
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Description
+      %div{:class => "panel-body"}
+        %div
+          = generate_attribute_label("description")
+          %span.asterik *
+          %br
+          = text_area :submission, :description, rows: 5, value: @submission.description, :required => true
+
+        %div{:style => "text-align: center;"}
+          %button#detailsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('details')"} More details
+
+        %div#detailsDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} Detailed description
+          %div{:class => "panel-body"}
+            %div
+              = generate_attribute_label("abstract")
+              %br
+              = raw generate_attribute_input("abstract")
+            %div
+              = generate_attribute_label("notes")
+              %br
+              = raw generate_attribute_input("notes")
+            %div
+              = generate_attribute_label("keywords")
+              = raw generate_attribute_input("keywords")
+            %div
+              = generate_attribute_label("alternative")
+              = raw generate_attribute_input("alternative")
+            %div
+              = generate_attribute_label("identifier")
+              = raw generate_attribute_input("identifier")
+
+        %div
+          = generate_attribute_label("homepage")
+          = raw generate_attribute_input("homepage")
+        %div
+          = generate_attribute_label("documentation")
+          = raw generate_attribute_input("documentation")
+        %div
+          = generate_attribute_label("publication")
+          = raw generate_attribute_input("publication")
+        %div
+          = generate_attribute_label("usedOntologyEngineeringTool")
+          = raw generate_attribute_input("usedOntologyEngineeringTool")
+
+        %div{:class => "row", :style => "text-align: center;"}
+          %div{:class => "col-md-3"}
+            %button#usageBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('usage', 'description')"} Define usage
+
+          %div{:class => "col-md-3"}
+            %button#methodologyBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('methodology', 'description')"} More methodology information
+
+          %div{:class => "col-md-3"}
+            %button#linksBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('links', 'description')"} More links
+
+          %div{:class => "col-md-3"}
+            %button#imagesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success descriptionBtn", :onclick => "toggleDiv('images', 'description')"} Add images
+
+        %div#linksDiv{:class => "panel panel-info descriptionPanels", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} More links
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "links"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
+
+        %div#methodologyDiv{:class => "panel panel-info descriptionPanels", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} Methodology information
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "methodology"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
+
+        %div#usageDiv{:class => "panel panel-info descriptionPanels", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} Define usage
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "usage"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
+
+        %div#imagesDiv{:class => "panel panel-info descriptionPanels", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} Ontology images
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "images"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
+
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Dates
+      %div{:class => "panel-body"}
+        %div.row
+          %div.col-md-3
+            = generate_attribute_label("released")
+            %span.asterik *
+          %div.col-md-9
+            = text_field :submission, :released, :class => "datepicker", value: "#{@submission.released}", :required => true
+          %span{:style => "font-size: 90%; color: grey;"}
+        %div.row
+          %div.col-md-3
+            = generate_attribute_label("modificationDate")
+          %div.col-md-9
+            = raw generate_attribute_input("modificationDate")
+
+        %div{:style => "text-align: center;"}
+          %button#datesBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('dates')"} More dates
+
+        %div#datesDiv{:class => "panel panel-info", :style => "margin-top: 2em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} More dates
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "dates"
+                %div.row
+                  %div.col-md-3
+                    = generate_attribute_label(attr["attribute"])
+                  %div.col-md-9
+                    = raw generate_attribute_input(attr["attribute"])
+                %br
+
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Licenses
+      %div{:class => "panel-body"}
+        %div
+          = generate_attribute_label("hasLicense")
+          = raw generate_attribute_input("hasLicense")
+          %p
+            Consider using a
+            = link_to "URI to describe your License", "http://rdflicense.appspot.com", target: "_blank"
+            %br
+            Consider using
+            = link_to "INRIA licentia", "http://licentia.inria.fr/", target: "_blank"
+            to choose your license
+
+        %div{:style => "text-align: center;"}
+          %button#licenseBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('license')"} More licensing information
+
+        %div#licenseDiv{:class => "panel panel-info", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} Licensing information
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "license"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
+
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Community
+      %div{:class => "panel-body"}
+        %label Contact
+        %span.asterik *
+        %div#contacts
+          %div#contact_button{style: "float: right; margin-top -1em;"}
+            = button_to 'Add contact', '#', id: 'add_contact_button', class: "btn btn-info"
+          - if @submission.contact
+            - @submission.contact.each_with_index do |contact, i|
+              %div.contact
+                Name:&nbsp;
+                = text_field :submission, :"contact[#{i}][name]", value: contact["name"]
+                %br
+                Email:&nbsp;
+                = text_field :submission, :"contact[#{i}][email]", value: contact["email"]
+          - else
+            %div.contact
+              Name:&nbsp;
+              = text_field :submission, :"contact[0][name]", :required => true
+              %br
+              Email:&nbsp;
+              = text_field :submission, :"contact[0][email]", :required => true
+
+        %div
+          = generate_attribute_label("hasContributor")
+          = raw generate_attribute_input("hasContributor")
+        %div
+          = generate_attribute_label("hasCreator")
+          = raw generate_attribute_input("hasCreator")
+
+        %div{:class => "row", :style => "text-align: center;"}
+          %div{:class => "col-md-6"}
+            %button#communityBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success commupleBtn", :onclick => "toggleDiv('community', 'commuple')"} More community informations
+
+          %div{:class => "col-md-6"}
+            %button#peopleBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success commupleBtn", :onclick => "toggleDiv('people', 'commuple')"} More people informations
+
+        %div#communityDiv{:class => "panel panel-info commuplePanels", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} More community informations
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "community"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
+
+        %div#peopleDiv{:class => "panel panel-info commuplePanels", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} More people informations
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "people"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
+
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Ontology relations
+      %div{:class => "panel-body"}
+        %div
+          = generate_attribute_label("useImports")
+          = raw generate_attribute_input("useImports")
+
+        %div
+          = generate_attribute_label("hasPriorVersion")
+          = raw generate_attribute_input("hasPriorVersion")
+
+        %div{:class => "row"}
+          %div{:class => "col-md-3"}
+            = generate_attribute_label("isAlignedTo")
+          %div{:class => "col-md-9"}
+            = raw generate_attribute_input("isAlignedTo")
+          %br
+
+        %div{:class => "row"}
+          %div{:class => "col-md-3"}
+            = generate_attribute_label("ontologyRelatedTo")
+          %div{:class => "col-md-9"}
+            = raw generate_attribute_input("ontologyRelatedTo")
+          %br
+
+
+        %div{:style => "text-align: center;"}
+          %button#relationsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success", :onclick => "toggleDiv('relations')"} More relations
+
+        %div#relationsDiv{:class => "panel panel-info", :style => "margin-top: 2em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} More relations
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql?("relations")
+                %div{:class => "row"}
+                  %div{:class => "col-md-3"}
+                    = generate_attribute_label(attr["attribute"])
+                  %div{:class => "col-md-9"}
+                    = raw generate_attribute_input(attr["attribute"])
+                  %br
+
+    %div{:class => "panel panel-primary"}
+      %div{:class => "panel-heading"}
+        %h3{:class => "panel-title"} Ontology content
+      %div{:class => "panel-body"}
+        %div
+          = generate_attribute_label("preferredNamespacePrefix")
+          = raw generate_attribute_input("preferredNamespacePrefix")
+        %div
+          = generate_attribute_label("preferredNamespaceUri")
+          = raw generate_attribute_input("preferredNamespaceUri")
+
+        %div{:class => "row", :style => "text-align: center;"}
+          %div{:class => "col-md-6"}
+            %button#contentBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success ontocontentBtn", :onclick => "toggleDiv('content', 'ontocontent')"} More content informations
+
+          %div{:class => "col-md-6"}
+            %button#metricsBtn{:style => "margin-top: 1em;", :type => "button", :class => "btn btn-success ontocontentBtn", :onclick => "toggleDiv('metrics', 'ontocontent')"} More metrics informations
+
+        %div#contentDiv{:class => "panel panel-info ontocontentPanels", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} More content informations
+          %div{:class => "panel-body"}
+            - for attr in @metadata
+              - if attr["display"].eql? "content"
+                = generate_attribute_label(attr["attribute"])
+                = raw generate_attribute_input(attr["attribute"])
+                %br
+
+        %div#metricsDiv{:class => "panel panel-info ontocontentPanels", :style => "margin-top: 1em;display: none;"}
+          %div{:class => "panel-heading"}
+            %h3{:class => "panel-title"} More metrics informations
+          %div{:class => "panel-body"}
+            %p
+              Metrics are automatically computed by the Portal using the OWLAPI (except the number of entities and number of axioms)
+            - for attr in @metadata
+              - if attr["display"].eql? "metrics"
+                %div{:class => "row", :style => "margin-bottom: 0.5em;"}
+                  %div{:class => "col-md-3"}
+                    = generate_attribute_label(attr["attribute"])
+                  %div{:class => "col-md-9"}
+                    = raw generate_attribute_input(attr["attribute"])
+                  %br
+
+
+  %div{:style => "text-align: center;"}
+    = submit_tag button_text, {:style => "margin-top: 2em;margin-bottom: 2em;", :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
+
+:javascript
+
+  $(function() {
+    $('#submission_hasLicense').change(function() {
+      if ($('#submission_hasLicense').val() == "other") {
+        $('#submission_licenseText').val("");
+        $('#submission_licenseText').show();
+      } else {
+        $('#submission_licenseText').val($('#submission_hasLicense').val());
+        $('#submission_licenseText').hide();
+      }
+    });
+    $('#submission_usedOntologyEngineeringTool').change(function() {
+      if ($('#submission_usedOntologyEngineeringTool').val() == "other") {
+        $('#submission_ontologyToolText').val("");
+        $('#submission_ontologyToolText').show();
+      } else {
+        $('#submission_ontologyToolText').val($('#submission_usedOntologyEngineeringTool').val());
+        $('#submission_ontologyToolText').hide();
+      }
+    });
+    $('#naturalLanguageSelect').change(function() {
+      if ($('#naturalLanguageSelect').val() == "other") {
+        $('#submission_naturalLanguage').val("");
+        $('#submission_naturalLanguage').show();
+      } else {
+        $('#submission_naturalLanguage').val($('#naturalLanguageSelect').val());
+        $('#submission_naturalLanguage').hide();
+      }
+    });
+  })
+
+  /**
+   * To add a new input when btn clicked. Using the given attribute to get elements id
+   */
+  function addInput(attr, inputType)
+  {
+    var container = document.createElement("div");
+    container.innerHTML = '<input type="' + inputType + '" name="submission[' + attr + '][]" id="submission_' + attr + '" style="margin-bottom: 0.3em;"><br>';
+    document.getElementById(attr + 'Div').appendChild(container);
+  }
+
+  /**
+   * To add a new value to selectDropdown when btn clicked
+   */
+  function addValueToSelect(attr)
+  {
+    if(jQuery('#add_' + attr).val()) {
+      var newOption = jQuery('#add_' + attr).val();
+      var selectedOptions = jQuery('#select_' + attr).val();
+      jQuery('#select_' + attr).append(jQuery('<option>', {
+        value: newOption,
+        text: newOption
+      }));
+      if (selectedOptions.constructor === Array) {
+        selectedOptions.push(newOption);
+      } else {
+        selectedOptions = newOption;
+      }
+      jQuery('#select_' + attr).val(selectedOptions)
+      jQuery('#add_' + attr).val("");
+      jQuery('#btnAdd' + attr).hide();
+      jQuery('#add_' + attr).hide();
+    }
+  }
+
+  /**
+   * To add a new value to selectDropdown when btn clicked
+   */
+  function addOntoToSelect(attr)
+  {
+    if(jQuery('#add_' + attr).val()) {
+      var newOption = jQuery('#add_' + attr).val();
+      var selectedOptions = jQuery('#select_' + attr).val();
+      jQuery('#select_' + attr).append(jQuery('<option>', {
+        value: newOption,
+        text: newOption
+      }));
+      if (selectedOptions === null) {
+        selectedOptions = [];
+        selectedOptions.push(newOption);
+      } else if (selectedOptions.constructor === Array) {
+        selectedOptions.push(newOption);
+      } else {
+        selectedOptions = newOption;
+      }
+      jQuery('#select_' + attr).val(selectedOptions)
+      jQuery('#select_' + attr).trigger("liszt:updated");
+      jQuery('#add_' + attr).val("");
+    }
+  }
+
+  /**
+   * To show/hide the simple metadata div
+   */
+  function toggleDiv(divId, panelGroup = "none")
+  {
+    var e = document.getElementById(divId + "Div");
+    if (e.style.display == 'block') {
+      e.style.display = 'none';
+      document.getElementById(divId + "Btn").classList.remove("active");
+    } else {
+      if (panelGroup === "description") {
+        // if panel chosen isPart of description, close the others
+        jQuery(".descriptionPanels").css("display", "none");
+        jQuery(".descriptionBtn").removeClass("active");
+      } else if (panelGroup === "commuple") {
+        jQuery(".commuplePanels").css("display", "none");
+        jQuery(".commupleBtn").removeClass("active");
+      } else if (panelGroup === "ontocontent") {
+        jQuery(".ontocontentPanels").css("display", "none");
+        jQuery(".ontocontentBtn").removeClass("active");
+      }
+
+      e.style.display = 'block';
+      document.getElementById(divId + "Btn").classList.add("active");
+    }
+  }
+
+  /**
+   * For Multiple select
+   */
+  jQuery(document).ready(function() {
+    "use strict";
+    jQuery("#naturalLanguageSelect").chosen({
+      search_contains: true
+    });
+    jQuery(".selectOntology").chosen({
+      search_contains: true
+    });
+
+    $('.tooltip').tooltipster({
+      interactive: true,
+      position: "right",
+      contentAsHTML: true,
+      animation: 'fade',
+      delay: 200,
+      theme: 'tooltipster-light',
+      trigger: 'hover'
+    });
+  });

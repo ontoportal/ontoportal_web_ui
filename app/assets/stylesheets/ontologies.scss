@@ -1,0 +1,261 @@
+$ont-metadata-bg-color: #e2ebf0;
+$widget-table-border-color: #EFEFEF;
+$ont-show-bg-color: #e9ecef;
+
+.ontologies.show {
+  background-color: $ont-show-bg-color;
+
+  #bd {
+    background-color: $ont-show-bg-color;
+  }
+}
+
+.ontologies.show .gutter {
+  background-color: rgba(0, 0, 0, 0.03);
+  background-repeat: no-repeat;
+  background-position: center;
+
+  &.gutter-horizontal {
+    cursor: col-resize;
+    background-image: image-url('split/vertical.png');
+  }
+}
+
+.ont-info-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  
+  background-color: white;
+  padding: 0.75rem 1.25rem;
+
+  h4 {
+    margin-bottom: 0;
+    margin-right: 2rem;
+
+    a {
+      color: #343a40;
+    }
+  }
+
+  a {
+    color: #6c757d;
+ 
+    &:hover {
+      color: #0056b3;
+      text-decoration: none;
+    }
+  }
+}
+
+.ont-info-links {
+  a + a {
+    margin-left: 1rem;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .ont-info-links {
+    margin-top: 1rem;
+  }
+}
+
+/************************************
+ * Summary pane
+ ************************************/
+
+@media screen and (max-width: 992px) {
+  .ont-metadata-card {
+    margin-bottom: 15px;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .ont-metadata {
+    display: grid;
+    grid-row-gap: 16px;
+    grid-template-columns: 60% 40%;
+  }
+
+  .ont-details-card, .ont-subs-card, .ont-views-card {
+    margin-right: 16px;
+  }
+
+  .ont-metrics-card, .ont-analytics-card {
+    margin-bottom: 32px;
+  }
+}
+
+.right-hand-content {
+  grid-column: 2;
+  grid-row: 1 / span 4;
+}
+
+.ont-section-toolbar {
+  display: flex;
+  align-items: baseline;
+}
+
+.ont-metadata-card {
+  font-size: 14px;
+
+  header {
+    font-size: 16px;
+  }
+
+  dl {
+    margin-top: 0.5rem;
+  }
+
+  dt {
+    color: #737373;
+  }
+
+  dd {
+    font-size: .9em;
+    padding-left: 10px;
+  }
+}
+
+.ont-details-card {
+  grid-column: 1;
+  grid-row: 1;
+
+  td:nth-child(1) {
+    background-color: #e2ebf0;
+    white-space: nowrap;
+  }
+}
+
+.ont-metrics-card {
+  td:nth-child(1) {
+    background-color: #e2ebf0;
+  }
+
+  td:nth-child(2n) {
+    text-align: right;
+  }
+}
+
+.ont-subs-card {
+  grid-column: 1;
+  grid-row: 2;
+
+  th {
+    color: #737373;
+  }
+}
+
+.ont-views-card {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.ont-projects-card {
+  p {
+    margin-bottom: 0;
+    margin-top: 0.5rem;
+  }
+}
+
+#ontology_versions td.show_more_subs {
+  text-align: right; 
+  background-color: white;
+}
+
+/************************************
+/* Classes pane
+************************************/
+
+#bd_content {
+  display: flex;
+  flex-direction: row;
+}
+
+#bd_content .sidebar {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+#search_box:focus {
+  border-color: #ced4da;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+#bd .bd_content .cls-info-container .tabs {
+  height: 24px;
+  float: left;
+}
+
+#bd .bd_content .cls-info-container .tabs ul {
+  margin: 0;
+  float: left;
+}
+
+#bd .bd_content .cls-info-container .tabs li {
+  margin: 0;
+}
+
+#bd .bd_content .cls-info-container .tabs li.first {
+  padding-left: 0;
+}
+
+#bd .bd_content .cls-info-container .tabs a {
+  padding: 0 15px 0 15px;
+}
+
+#bd .bd_content .cls-info-container #contents {
+  float: left;
+  width: 100%;
+  overflow: auto;
+}
+
+#mappings_top.tab {
+  border-right: 1px solid #bcc6d0;
+}
+
+/************************************
+/* Properties pane
+************************************/
+
+#propTree a {
+  font-family: "Myriad Pro","Myriad Web Pro","Myriad Web","Myriad","Trebuchet MS","Tahoma","Helvetica","Arial",sans-serif;
+  font: small/1.231 arial,helvetica,clean,sans-serif;
+}
+
+.ont-properties {
+  display: flex;
+  flex-direction: row;
+}
+
+#propTree {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/************************************
+/* Widgets pane
+************************************/
+
+#widget_table {
+  td {
+    border: 1px solid $widget-table-border-color;
+    padding: 10px;
+    vertical-align: top;
+  }
+
+  th {
+    border: 1px solid $widget-table-border-color;
+    font-size: 15px;
+    font-weight: bold;
+    background-color: #f5fafa;
+    padding: 5px;
+  }
+}
+
+#widgets_content .card {
+  border: none;
+}

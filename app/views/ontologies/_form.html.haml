@@ -165,7 +165,7 @@
       %span.asterik *
     %td
       - acronym_enabled = @ontology.acronym.nil? || ! @errors.nil?
-      = f.text_field :acronym, value: @ontology.acronym, :disabled => ! acronym_enabled
+      = f.text_field(:acronym, value: @ontology.acronym, :disabled => ! acronym_enabled, data: { acronyms: acronyms(@ontologies) })
       %ul#acronym_errors.enable-lists{style: "color: red; padding: 3px;"}
   %tr
     %th

@@ -64,10 +64,6 @@ class AjaxProxyController < ApplicationController
     render_json simple_ontology.to_json
   end
 
-  def recaptcha
-    render :partial => "recaptcha"
-  end
-
   def loading_spinner
     render :partial => "loading_spinner"
   end
@@ -87,7 +83,7 @@ class AjaxProxyController < ApplicationController
         json
       end
     end
-    render({:content_type => "application/json", :text => response}.merge(options))
+    render({plain: response, content_type: "application/json"}.merge(options))
   end
 
 end

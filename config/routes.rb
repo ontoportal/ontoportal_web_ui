@@ -1,10 +1,12 @@
-BioportalWebUi::Application.routes.draw do
+Rails.application.routes.draw do
 
   root :to => 'home#index'
 
   resources :notes, constraints: { id: /.+/ }
 
-  resources :projects
+  resources :ontolobridge
+
+  resources :projects, constraints: { id: /[^\/]+/ }
 
   resources :users, :path => :accounts, :requirements => { :id => /.+/ }
 
@@ -29,11 +31,9 @@ BioportalWebUi::Application.routes.draw do
 
   resources :recommender
 
-  resources :recommender_v1
-
   resources :annotator
 
-  #resources :landscape
+  resources :annotatorplus
 
   resources :virtual_appliance
 
@@ -44,11 +44,11 @@ BioportalWebUi::Application.routes.draw do
   get '/account' => 'home#account'
   get '/help' => 'home#help'
   get '/about' => 'home#about'
-  get '/robots.txt' => 'home#robots'
   get '/site_config' => 'home#site_config'
   get '/validate_ontology_file' => 'home#validate_ontology_file_show'
   match '/validate_ontology_file' => 'home#validate_ontology_file', via: [:get, :post]
   get '/layout_partial/:partial' => 'home#render_layout_partial'
+  match '/visits', to: 'visits#index', via: :get
 
   # Error pages
   match "/404", to: "errors#not_found", via: :all
@@ -56,6 +56,9 @@ BioportalWebUi::Application.routes.draw do
 
   # Analytics endpoint
   get '/analytics' => 'analytics#track'
+
+  # Robots.txt
+  get '/robots.txt' => 'robots#index'
 
   # Ontologies
   get '/ontologies/view/edit/:id' => 'ontologies#edit_view', :constraints => { :id => /[^\/?]+/ }
@@ -86,7 +89,6 @@ BioportalWebUi::Application.routes.draw do
   get '/ajax/json_ontology' => 'ajax_proxy#json_ontology'
   get '/ajax/json_class' => 'ajax_proxy#json_class'
   get '/ajax/jsonp' => 'ajax_proxy#jsonp'
-  get '/ajax/recaptcha' => 'ajax_proxy#recaptcha'
   get '/ajax/loading_spinner' => 'ajax_proxy#loading_spinner'
   get '/ajax/notes/delete' => 'notes#destroy'
   get '/ajax/notes/concept_list' => 'notes#show_concept_list'
@@ -132,6 +134,8 @@ BioportalWebUi::Application.routes.draw do
   match '/admin/ontologies/:acronym/submissions/:id' => 'admin#delete_submission', via: [:delete]
   match '/admin/ontologies/:acronym/submissions' => 'admin#submissions', via: [:get]
   match '/admin/ontologies/:acronym/log' => 'admin#parse_log', via: [:get]
+  match '/admin/update_info' => 'admin#update_info', via: [:get]
+  match '/admin/update_check_enabled' => 'admin#update_check_enabled', via: [:get]
 
   ###########################################################################################################
   # Install the default route as the lowest priority.
@@ -155,16 +159,10 @@ BioportalWebUi::Application.routes.draw do
   get '/ajax/json_term' => 'redirect#index', :url => '/ajax/json_class'
 
   # Visualize
-  get '/visualize/virtual/:ontology' => 'concepts#virtual', :as => :virtual_visualize, :constraints => { :id => /[^\/?]+/, :conceptid => /[^\/?]+/ }
-  get '/visualize/virtual/:ontology/:id' => 'concepts#virtual', :as => :virtual_uri, :constraints => { :id => /[^\/?]+/ }
   get '/visualize/:ontology' => 'ontologies#visualize', :as => :visualize, :constraints => { :ontology => /[^\/?]+/ }
   get '/visualize/:ontology/:conceptid' => 'ontologies#visualize', :as => :uri, :constraints => { :ontology => /[^\/?]+/, :conceptid => /[^\/?]+/ }
   get '/visualize' => 'ontologies#visualize', :as => :visualize_concept, :constraints => { :ontology => /[^\/?]+/, :id => /[^\/?]+/, :ontologyid => /[^\/?]+/, :conceptid => /[^\/?]+/ }
 
-  get '/flexviz/:ontologyid' => 'concepts#flexviz', :as => :flexviz, :constraints => { :ontologyid => /[^\/?]+/ }
   get '/exhibit/:ontology/:id' => 'concepts#exhibit'
 
-  # Virtual
-  get '/virtual/:ontology' => 'concepts#virtual', :as => :virtual_ont, :constraints => { :ontology => /[^\/?]+/ }
-  get '/virtual/:ontology/:conceptid' => 'concepts#virtual', :as => :virtual, :constraints => { :ontology => /[^\/?]+/, :conceptid => /[^\/?]+/ }
 end

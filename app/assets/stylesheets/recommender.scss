@@ -1,0 +1,34 @@
+.optionsBox {
+  margin-top: 15px;
+}
+
+#inputTextHighlighted {
+  display:none;
+  background-color: #e2ebf0;
+}
+
+.generalError, .invalidMaxOntError, .invalidWeightsError, .notTextError, .sumWeightsError, .rangeWeightsError, .maxOntologiesError, .inputSizeError {
+  display: none;
+  color: red;
+}
+
+#resultsDisplay {
+  background-color: white !important;
+  margin-bottom: 35px;
+}
+
+.result-scores {
+  background-color: #8cabd6;
+  border: 1px solid #3e76b6;
+}
+
+.final-score {
+  color: #ccc;
+  background-color: #234979;
+  border: 1px solid #234979;
+}
+
+.score-number {
+  margin-left: 3px;
+}
+

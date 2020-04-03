@@ -1,25 +1,13 @@
 - content_section = (params[:p]) ? params[:p] : "summary"
 - concept_title = @concept.nil? ? "" : " - #{@concept.prefLabel} - Classes"
 - @title = "#{@ontology.name}#{concept_title}"
-= render :partial =>'layouts/header'
-/[if gt IE 7]
-  <style>
-  \#admin_ontology .ui-icon-triangle-1-s {
-  margin-top: -16px;
-  }
-  </style>
-/[if IE 7]
-  <style>
-  \#admin_ontology .ui-icon-triangle-1-s {
-  margin-top: -16px;
-  }
 
-  \#nav_ontology {
-  position: absolute;
-  padding-top: .5em;
-  vertical-align: top !important;
-  }
-  </style>
+- sub = @submission_latest
+- details_available = true
+- if sub.nil? || (sub.respond_to?(:status) && sub.status == 404)
+  - details_available = false
+
+= render :partial =>'layouts/header'
 
 :javascript
   // Set the background color for this page only
@@ -53,100 +41,121 @@
   jQuery(document).data().bp.ont_viewer.concept_name_title = (jQuery(document).data().bp.ont_viewer.concept_name == "") ?
       "" : " - " + jQuery(document).data().bp.ont_viewer.concept_name;
 
+-# Modal dialog for creating a new mapping (must reside in a top-level position in the document to display properly).
+%div#createNewMappingModal{class: "modal fade", tabindex: "-1", role: "dialog", "aria-labelledby": "createNewMappingLabel"}
+  %div.modal-dialog.modal-lg{role: "document"}
+    %div.modal-content
+      %div.modal-header
+        %button.close{type: "button", "data-dismiss": "modal", "aria-label": "Close"}
+          %span{"aria-hidden": "true"} &times;
+        %h4#createNewMappingLabel.modal-title
+      %div.createNewMappingModalBody.modal-body
+      %div.modal-footer
+        = submit_tag("Create Mapping", class: "btn btn-default", id: "create_mapping_button")
+        %button{type: "button", class: "btn btn-default", "data-dismiss": "modal"} Close
 
-%div{:style => "padding: 1em 2em 0; background: #338D0C;"}
-  %div
-    %span{:style => "color: white; font-size: xx-large;"}
-      %a#ont_sum_link{:href => "/ontologies/#{@ontology.acronym}"}= @ontology.name
+-# Modal dialog for getting a permanent link to a class (must reside in a top-level position in the document to display properly).
+%div#classPermalinkModal{class: "modal fade", tabindex: "-1", role: "dialog", aria: {labelledby: "classPermalinkLabel", hidden: "true"}}
+  %div.modal-dialog.modal-dialog-centered.modal-lg{role: "document"}
+    %div.modal-content
+      %div.modal-header
+        %h5#classPermalinkLabel.modal-title Permanent link to this class
+        %button.close{type: "button", "data-dismiss": "modal", "aria-label": "Close"}
+          %span{"aria-hidden": "true"} &times;
+      %div.modal-body
+        = text_field_tag("purl_input", nil, class: "form-control")
+      %div.modal-footer
+        %button.btn.btn-secondary{"data-dismiss": "modal"} Close
 
-    :css
-      #nav_ontology {
-        padding-left: 2em;
-        font-family: 'Droid Sans', sans-serif;
-      }
-      #nav_ontology a {
-        color: white;
-        text-decoration: none;
-      }
-      #nav_ontology a:hover {
-        text-decoration: underline;
-      }
-      #nav_ontology li {
-        display: table-cell;
-        padding-right: 1em;
-      }
-      .ont_sum_link {
-        font-family: 'Droid Sans', sans-serif;
-      }
-    %div#nav_ontology
-      %ul
-        %li#summary_link.summary_link.nav_link
-          %a{"data-bp_ont_page" => "summary", :href => "/ontologies/#{@ontology.acronym}?p=summary"} Summary
-        - unless @ontology.summaryOnly
-          -# %li#classes_link.classes_link.nav_link to not reload the page (but reloading avoid details position bug)
-          %li#classes_link.classes_link
-            %a{"data-bp_ont_page" => "classes", :href => "/ontologies/#{@ontology.acronym}?p=classes"} Classes
-          %li#properties_link.properties_link.nav_link
-            %a{"data-bp_ont_page" => "properties", :href => "/ontologies/#{@ontology.acronym}?p=properties"} Properties
-        %li#notes_link.notes_link.nav_link
-          %a{"data-bp_ont_page" => "notes", :href => "/ontologies/#{@ontology.acronym}?p=notes"} Notes
-        - unless @ontology.summaryOnly
-          %li#mappings_link.mappings_link.nav_link
-            %a{"data-bp_ont_page" => "mappings", :href => "/ontologies/#{@ontology.acronym}?p=mappings"} Mappings
-          %li#widgets_link.widgets_link.nav_link
-            %a{"data-bp_ont_page" => "widgets", :href => "/ontologies/#{@ontology.acronym}?p=widgets"} Widgets
+-# A header of sorts to display ontology name and subset of details.
+%div.row.pt-md-3.pb-md-2
+  %div.col
+    %div.ont-info-bar.rounded
+      %div
+        %h4
+          = link_to(@ontology.name, ontology_path(@ontology.acronym))
+        %div
+          - if (details_available && !sub.released.nil?)
+            %span.text-muted
+              Last uploaded:
+              = l(Date.parse(sub.creationDate), format: :monthfull_day_year)
+      %div.ont-info-links
+        - unless (@ontology.summaryOnly || @ont_restricted || @submissions.empty?)
+          = link_to(@submissions.first.id + "/download?apikey=#{get_apikey}", "aria-label": "Download latest version", title: "Download latest version") do
+            %i.fas.fa-lg.fa-download{"aria-hidden": true}
+        - if details_available
+          - if $PURL_ENABLED
+            = link_to(@ontology.purl, "aria-label": "BioPortal PURL", title: "BioPortal PURL", target: "_blank") do
+              %i.fas.fa-lg.fa-link{"aria-hidden": true}
+          = link_to(sub.homepage, "aria-label": "Ontology home page", title: "Ontology home page", target: "_blank") do
+            %i.fas.fa-lg.fa-home{"aria-hidden": true}
+          - unless sub.documentation.nil?
+            = link_to(sub.documentation, "aria-label": "Ontology documentation", title: "Ontology documentation", target: "_blank") do
+              %i.fas.fa-lg.fa-book-reader{"aria-hidden": true}
+          - unless sub.publication.nil?
+            = link_to(sub.publication, "aria-label": "Ontology publications", title: "Ontology publications", target: "_blank") do
+              %i.fas.fa-lg.fa-book{"aria-hidden": true}
         - if @ontology.admin?(session[:user])
-          %li
-            = link_to "Edit ontology information",  "/ontologies/#{@ontology.acronym}/edit"
-          %li
-            = link_to "Add submission", "/ontologies/#{@ontology.acronym}/submissions/new"
-          - unless @submission_latest.nil? || (@submission_latest.respond_to?(:status) && @submission_latest.status == 404)
-            %li
-              = link_to "Edit submission information (#{@submission_latest.version})", "/ontologies/#{@ontology.acronym}/submissions/#{@submission_latest.submissionId}/edit"
+          = link_to(edit_ontology_path(@ontology.acronym), "aria-label": "Edit ontology details", title: "Edit ontology details") do
+            %i.fas.fa-lg.fa-user-edit
 
-  %div{:style => "clear: both; margin-bottom: 1em;"}
-  #ontology_content{:style => "background: white;"}
-    #ont_classes_content.ontology_viewer_content.hidden
-      - if content_section.eql?("classes")
-        :javascript
-          jQuery("#ont_classes_content").removeClass("hidden");
-        = yield
-      - else
-        = loading_spinner(true)
-    #ont_properties_content.ontology_viewer_content.hidden
-      - if content_section.eql?("properties")
-        :javascript
-          jQuery("#ont_properties_content").removeClass("hidden");
-        = yield
-      - else
-        = loading_spinner(true)
-    #ont_summary_content.ontology_viewer_content.hidden
-      - if content_section.eql?("summary")
-        :javascript
-          jQuery("#ont_summary_content").removeClass("hidden");
-        = yield
-      - else
-        = loading_spinner(true)
-    #ont_mappings_content.ontology_viewer_content.hidden
-      - if content_section.eql?("mappings")
-        :javascript
-          jQuery("#ont_mappings_content").removeClass("hidden");
-        = yield
-      - else
-        = loading_spinner(true)
-    #ont_notes_content.ontology_viewer_content.hidden
-      - if content_section.eql?("notes")
-        :javascript
-          jQuery("#ont_notes_content").removeClass("hidden");
-        = yield
-      - else
-        = loading_spinner(true)
-    #ont_widgets_content.ontology_viewer_content.hidden
-      - if content_section.eql?("widgets")
-        :javascript
-          jQuery("#ont_widgets_content").removeClass("hidden");
-        = yield
-      - else
-        = loading_spinner(true)
-= render :partial =>'layouts/footer_js'
-= render :partial =>'layouts/footer'
+%div.row.pb-4
+  %div.col
+    %div.card
+      %div.card-header
+        -# Tabbed navigation bar for ontology content sections
+        %ul.nav.nav-tabs.card-header-tabs{id: "navbar-ontology", role: "tablist"}
+          %li.nav-item 
+            = link_to("Summary", ontology_path(@ontology.acronym, p: "summary"), |
+                id: "ont-summary-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "summary", toggle: "tab", target: "#ont_summary_content"}, |
+                aria: {controls: "ont_summary_content", selected: "false"}) |
+          - unless @ontology.summaryOnly
+            %li.nav-item 
+              = link_to("Classes", ontology_path(@ontology.acronym, p: "classes"), |
+                  id: "ont-classes-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "classes", toggle: "tab", target: "#ont_classes_content"}, |
+                  aria: {controls: "ont_classes_content", selected: "false"}) |
+            %li.nav-item 
+              = link_to("Properties", ontology_path(@ontology.acronym, p: "properties"), |
+                  id: "ont-properties-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "properties", toggle: "tab", target: "#ont_properties_content"}, |
+                  aria: {controls: "ont_properties_content", selected: "false"}) |
+          %li.nav-item 
+            = link_to("Notes", ontology_path(@ontology.acronym, p: "notes"), |
+                id: "ont-notes-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "notes", toggle: "tab", target: "#ont_notes_content"}, |
+                aria: {controls: "ont_notes_content", selected: "false"}) |
+          - unless @ontology.summaryOnly
+            %li.nav-item
+              = link_to("Mappings", ontology_path(@ontology.acronym, p: "mappings"), |
+                  id: "ont-mappings-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "mappings", toggle: "tab", target: "#ont_mappings_content"}, |
+                  aria: {controls: "ont_mappings_content", selected: "false"}) |
+            %li.nav-item 
+              = link_to("Widgets", ontology_path(@ontology.acronym, p: "widgets"), |
+                  id: "ont-widgets-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "widgets", toggle: "tab", target: "#ont_widgets_content"}, |
+                  aria: {controls: "ont_widgets_content", selected: "false"}) |
+      %div.card-body
+        -# Tab panes for displaying ontology content sections
+        %div.tab-content{id: "ontology_content"}
+          %div.tab-pane{id: "ont_summary_content", role: "tabpanel", aria: {labelledby: "ont-summary-tab"}}
+            - if content_section.eql?("summary")
+              = yield
+          %div.tab-pane{id: "ont_classes_content", role: "tabpanel", aria: {labelledby: "ont-classes-tab"}}
+            - if content_section.eql?("classes")
+              = yield
+          %div.tab-pane{id: "ont_properties_content", role: "tabpanel", aria: {labelledby: "ont-properties-tab"}}
+            - if content_section.eql?("properties")
+              = yield
+          %div.tab-pane{id: "ont_notes_content", role: "tabpanel", aria: {labelledby: "ont-notes-tab"}}
+            - if content_section.eql?("notes")
+              = yield
+          %div.tab-pane{id: "ont_mappings_content", role: "tabpanel", aria: {labelledby: "ont-mappings-tab"}}
+            - if content_section.eql?("mappings")
+              = yield
+          %div.tab-pane{id: "ont_widgets_content", role: "tabpanel", aria: {labelledby: "ont-widgets-tab"}}
+            - if content_section.eql?("widgets")
+              = yield
+
+- if Rails.env.appliance?
+  = render partial: "footer_appliance"
+  = javascript_include_tag "application"
+  = render partial: "ga_tracking"
+- else
+  = render partial: "layouts/footer"

@@ -17,9 +17,9 @@
 development:
   adapter: mysql
   encoding: utf8
-  database: bioportal_ui_development
-  username: user
-  password: password
+  database: bioportal_ui
+  username: bp_user
+  password: bp_user!!!
   host: localhost
 
 # Warning: The database defined as 'test' will be erased and
@@ -28,15 +28,23 @@ development:
 test:
   adapter: mysql
   encoding: utf8
-  database: bioportal_ui_test
-  username: user
-  password: password
+  database: bioportal_ui
+  username: bp_user
+  password: bp_user!!!
   socket: localhost
 
 production:
   adapter: mysql
   socket: /var/lib/mysql/mysql.sock
-  database: bioportal_ui_production
-  username: user
-  password: password
+  database: bioportal_ui
+  username: bp_user
+  password: bp_user!!!
+  host: localhost
+
+appliance:
+  adapter: mysql
+  socket: /var/lib/mysql/mysql.sock
+  database: bioportal_ui_appliance
+  username: bp_user
+  password: bp_user!!!
   host: localhost

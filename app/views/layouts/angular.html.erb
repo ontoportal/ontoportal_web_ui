@@ -1,6 +1,7 @@
 <% raise ArgumentError, "@app_name variable must be set to use the Angular layout" unless @app_name%>
 <% raise ArgumentError, "@base_path variable must be set to use the Angular layout" unless @base_path%>
 <% @base_path = "/#{@base_path}/".gsub(/\/{2,}/, "/") %> <!-- Make sure path has start and trailing slash -->
+<% appliance_mode = Rails.env.appliance? %>
 
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html lang="en" ng-app="<%=@app_name%>" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -18,10 +19,31 @@
   <link rel="stylesheet" href="lib/html5-boilerplate/css/main.css">
   <link rel="stylesheet" href="app.css">
 
-  <%=render partial: 'layouts/head_common'%>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+  <% unless appliance_mode %>
+    <meta name="google-site-verification" content="IBxfKu6VbYH9atd5OLu2zXVD2ZRWi9SgMKTi8nvw3ks" />
+  <% end %>
+  <%= csrf_meta_tag %>
+  <title><%if @title.nil?%><%=$ORG_SITE%><%else%><%="#{@title} | #{$ORG_SITE}"%><%end%></title>
+  <link rel="shortcut icon" href="/fav.ico" type="image/x-icon" />
+  <link href='//fonts.googleapis.com/css?family=Droid+Sans:400' rel='stylesheet' type='text/css'>
+  <%= stylesheet_link_tag "https://use.fontawesome.com/releases/v5.2.0/css/all.css", integrity: "sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ", crossorigin: "anonymous" %>
+  <%= stylesheet_link_tag "application" %>
 </head>
-<body>
-  <%=render partial: 'layouts/common_js'%>
+<body class="<%= controller_name %> <%= action_name %>">
+  <%=javascript_include_tag "vendor"%>
+  <%=javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"%>
+  <%=javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1/Chart.min.js"%>
+  <%=javascript_include_tag "//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"%>
+  <%=javascript_include_tag "//unpkg.com/split.js/dist/split.min.js"%>
+  <script>
+    jQuery(document).data({bp: {config: <%=bp_config_json.html_safe%>, user: <%=(session[:user] || {}).to_hash.to_json.html_safe%>}});
+    jQuery(document).data().bp.ontology = <%=@ontology.to_json.html_safe%> || {};
+    jQuery(document).data().bp.submission_latest = <%=@submission_latest.to_json.html_safe%> || {};
+    jQuery(document).data().bp.ont_viewer = {};
+    jQuery(document).data().bp.ont_chart = {};
+  </script>
   <%=render partial: 'layouts/topnav'%>
   <%=render partial: 'layouts/notices'%>
 
@@ -44,4 +66,10 @@
   <script src="checklist-model.js"></script>
   <script src="app.js"></script>
 
-  <%=render partial: 'layouts/footer'%>
+  <% if appliance_mode %>
+    <%= render partial: "footer_appliance" %>
+    <%= javascript_include_tag "application" %>
+    <%= render partial: "ga_tracking" %>    
+  <% else %>
+    <%= render partial: 'layouts/footer' %>
+  <% end %>

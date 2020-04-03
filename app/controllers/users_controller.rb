@@ -1,10 +1,9 @@
-
 class UsersController < ApplicationController
   before_action :unescape_id, only: [:edit, :show, :update]
   before_action :verify_owner, only: [:edit, :show]
   before_action :authorize_admin, only: [:index]
 
-  layout 'ontology'
+  layout :determine_layout
 
   # GET /users
   # GET /users.xml
@@ -42,8 +41,8 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.xml
   def create
-    @errors = validate(params[:user])
-    @user = LinkedData::Client::Models::User.new(values: params[:user])
+    @errors = validate(user_params)
+    @user = LinkedData::Client::Models::User.new(values: user_params)
 
     if @errors.size < 1
       @user_saved = @user.save
@@ -69,7 +68,7 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.xml
   def update
-    @errors = validate_update(params[:user])
+    @errors = validate_update(user_params)
     if @errors.size < 1
       @user = LinkedData::Client::Models::User.find(params[:id])
       @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
@@ -77,7 +76,7 @@ class UsersController < ApplicationController
       if params[:user][:password]
         error_response = @user.update(values: {password: params[:user][:password]})
       else
-        @user.update_from_params(params[:user])
+        @user.update_from_params(user_params)
         error_response = @user.update
       end
 
@@ -87,7 +86,7 @@ class UsersController < ApplicationController
         render :action => "edit"
       else
         flash[:notice] = 'Account was successfully updated'
-        session[:user].update_from_params(params[:user])
+        session[:user].update_from_params(user_params)
         redirect_to user_path(@user.username)
       end
     else
@@ -100,6 +99,7 @@ class UsersController < ApplicationController
     @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
 
     custom_ontologies = params[:ontology] ? params[:ontology][:ontologyId] : []
+    custom_ontologies.reject!(&:blank?)
     @user.update_from_params(customOntology: custom_ontologies)
     error_response = @user.update
 
@@ -118,6 +118,12 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def user_params
+    p = params.require(:user).permit(:firstName, :lastName, :username, :email, :email_confirmation, :password,
+                                     :password_confirmation, :register_mail_list)
+    p.to_h
+  end
 
   def unescape_id
     params[:id] = CGI.unescape(params[:id])
@@ -141,12 +147,7 @@ class UsersController < ApplicationController
 
   def validate(params)
     errors=[]
-    if !params[:phone].nil? && params[:phone].length > 0
-      if  !params[:phone].match(/^(1\s*[-\/\.]?)?(\((\d{3})\)|(\d{3}))\s*[-\/\.]?\s*(\d{3})\s*[-\/\.]?\s*(\d{4})\s*(([xX]|[eE][xX][tT])\.?\s*(\d+))*$/i)
-        errors << "Please enter a valid phone number"
-      end
-    end
-    if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
+    if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
       errors << "Please enter an email address"
     end
     if !params[:email].eql?(params[:email_confirmation])
@@ -158,8 +159,7 @@ class UsersController < ApplicationController
     if !params[:password].eql?(params[:password_confirmation])
       errors << "Your Password and Password Confirmation do not match"
     end
-    # verify_recaptcha is a method provided by the recaptcha plugin, returns true or false.
-    if ENV['USE_RECAPTCHA'] == 'true'
+    if using_captcha?
       if !verify_recaptcha
         errors << "Please fill in the proper text from the supplied image"
       end

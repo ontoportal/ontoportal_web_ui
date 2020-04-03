@@ -17,12 +17,11 @@
   %p
     %strong Home Page:
     - if @project.homePage
-      = link_to @project.homePage, @project.homePage
+      = link_to @project.homePage, @project.homePage, rel: "nofollow"
   %h2{:style => "padding-top: 1em;"} Ontologies Used
-  - if @usedOntologies.empty?
+  - if @ontologies_used.empty?
     No ontologies are currently associated with this project
   %table.zebra{:cellpadding => "0", :cellspacing => "0", :width => "70%"}
     %ul
-      - for ontology_id in @usedOntologies
-        - ontology = LinkedData::Client::Models::Ontology.find(ontology_id)
-        %li= link_to ontology.name, ontology_path(ontology.acronym)
+      - for ontology in @ontologies_used
+        %li= link_to(ontology["name"], ontology_path(ontology["acronym"]))

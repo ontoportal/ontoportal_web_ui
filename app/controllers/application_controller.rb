@@ -14,11 +14,23 @@ require 'ontologies_api_client'
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
-  helper_method :bp_config_json # export this method to helpers
+  helper_method :bp_config_json, :using_captcha?
 
   # Pull configuration parameters for REST connection.
   REST_URI = $REST_URL
   API_KEY = $API_KEY
+  PROXY_URI = $PROXY_URL
+  REST_URI_BATCH = REST_URI + '/batch'
+
+  # Note that STATS is a DIRECT CONNECTION to the JAVA-REST API
+  RI_STATS_URI = 'http://rest.bioontology.org/resource_index/statistics/all'
+
+  # Rails.cache expiration
+  EXPIRY_RI_STATS = 60 * 60 * 24       # 24:00 hours
+  EXPIRY_RI_ONTOLOGIES = 60 * 60 * 24  # 24:00 hours
+  EXPIRY_SEMANTIC_TYPES = 60 * 60 * 24 # 24:00 hours
+  EXPIRY_RECENT_MAPPINGS = 60 * 60     #  1:00 hours
+  EXPIRY_ONTOLOGY_SIMPLIFIED = 60 * 1  #  0:01 minute
 
   $DATA_CATALOG_VALUES = {"https://biosharing.org/" => "BioSharing",
                          "http://aber-owl.net/ontology/" => "AberOWL",
@@ -40,18 +52,6 @@ class ApplicationController < ActionController::Base
                        :wdrs => "http://www.w3.org/2007/05/powder-s#", :cito => "http://purl.org/spar/cito/", :pav => "http://purl.org/pav/", :nkos => "http://w3id.org/nkos/nkostype#",
                        :oboInOwl => "http://www.geneontology.org/formats/oboInOwl#", :idot => "http://identifiers.org/idot/", :sd => "http://www.w3.org/ns/sparql-service-description#",
                        :cclicense => "http://creativecommons.org/licenses/"}
-
-  REST_URI_BATCH = REST_URI + '/batch'
-
-  # Note that STATS is a DIRECT CONNECTION to the JAVA-REST API
-  RI_STATS_URI = 'http://rest.bioontology.org/resource_index/statistics/all'
-
-  # Rails.cache expiration
-  EXPIRY_RI_STATS = 60 * 60 * 24       # 24:00 hours
-  EXPIRY_RI_ONTOLOGIES = 60 * 60 * 24  # 24:00 hours
-  EXPIRY_SEMANTIC_TYPES = 60 * 60 * 24 # 24:00 hours
-  EXPIRY_RECENT_MAPPINGS = 60 * 60     #  1:00 hours
-  EXPIRY_ONTOLOGY_SIMPLIFIED = 60 * 1  #  0:01 minute
 
 
   if !$EMAIL_EXCEPTIONS.nil? && $EMAIL_EXCEPTIONS == true
@@ -107,7 +107,7 @@ class ApplicationController < ActionController::Base
 
   def not_found
     if request.xhr?
-      render text: "Error: load failed"
+      render plain: "Error: load failed"
       return
     end
     
@@ -141,6 +141,8 @@ class ApplicationController < ActionController::Base
         apikey: LinkedData::Client.settings.apikey,
         userapikey: get_apikey,
         rest_url: LinkedData::Client.settings.rest_url,
+        proxy_url: $PROXY_URL,
+        biomixer_url: $BIOMIXER_URL
         annotator_url: $ANNOTATOR_URL,
         biomixer_url: $BIOMIXER_URL,
         interportal_hash: $INTERPORTAL_HASH,
@@ -644,6 +646,9 @@ class ApplicationController < ActionController::Base
     response
   end
 
+  # Get the latest manual mappings
+  # All mapping classes are bidirectional.
+  # Each class in the list maps to all other classes in the list.
   def get_recent_mappings
     recent_mappings = {
         :mappings => [],
@@ -667,6 +672,14 @@ class ApplicationController < ActionController::Base
       # leave recent mappings empty.
     end
     return recent_mappings
+  end
+
+  def determine_layout
+    if Rails.env.appliance?
+      'appliance'
+    else
+      'ontology'
+    end
   end
 
 end

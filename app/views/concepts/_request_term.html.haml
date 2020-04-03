@@ -1,0 +1,20 @@
+.notes_list_container
+  .add_request_term{style: "float: left; margin-right: 1em;"}
+    - if session[:user].nil?
+      = link_to "Request New Term", login_index_path, style: "font-size: .9em;"
+    - else
+      = link_to "Request New Term", "javascript:void(0);", class: "add_request_term", style: "font-size: .9em;", data: { parent_id: "#{@concept.id}", parent_type: "class" }
+    %div#ob_success_message{:class => "message-box success-msg", style: "display: none; clear: both;"}
+    %div#ob_error_message{:class => "message-box error-msg", style: "display: none; clear: both;"}
+  %div.request_term_form_div{style: "display: none; clear: both; padding-top: 1em;"}
+
+:javascript
+  var g_prefLabel;
+
+  jQuery(document).ready(function() {
+    g_prefLabel = '#{@concept.prefLabel({:use_html => false}).html_safe}';
+
+    if (!g_prefLabel) {
+      g_prefLabel = '#{@concept.id}';
+    }
+  });

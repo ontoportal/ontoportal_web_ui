@@ -1,6 +1,6 @@
 
 class AdminController < ApplicationController
-  layout 'ontology'
+  layout :determine_layout
   before_action :cache_setup
 
   DEBUG_BLACKLIST = [:"$,", :$ADDITIONAL_ONTOLOGY_DETAILS, :$rdebug_state, :$PROGRAM_NAME, :$LOADED_FEATURES, :$KCODE, :$-i, :$rails_rake_task, :$$, :$gems_build_rake_task, :$daemons_stop_proc, :$VERBOSE, :$DAEMONS_ARGV, :$daemons_sigterm, :$DEBUG_BEFORE, :$stdout, :$-0, :$-l, :$-I, :$DEBUG, :$', :$gems_rake_task, :$_, :$CODERAY_DEBUG, :$-F, :$", :$0, :$=, :$FILENAME, :$?, :$!, :$rdebug_in_irb, :$-K, :$TESTING, :$fileutils_rb_have_lchmod, :$EMAIL_EXCEPTIONS, :$binding, :$-v, :$>, :$SAFE, :$/, :$fileutils_rb_have_lchown, :$-p, :$-W, :$:, :$__dbg_interface, :$stderr, :$\, :$&, :$<, :$debug, :$;, :$~, :$-a, :$DEBUG_RDOC, :$CGI_ENV, :$LOAD_PATH, :$-d, :$*, :$., :$-w, :$+, :$@, :$`, :$stdin, :$1, :$2, :$3, :$4, :$5, :$6, :$7, :$8, :$9]
@@ -14,9 +14,33 @@ class AdminController < ApplicationController
     if session[:user].nil? || !session[:user].admin?
       redirect_to :controller => 'login', :action => 'index', :redirect => '/admin'
     else
-      response = _ontologies_report
       render action: "index"
     end
+  end
+
+  def update_info
+    response = {update_info: Hash.new, errors: '', success: '', notices: ''}
+    json = LinkedData::Client::HTTP.get("#{ADMIN_URL}update_info", params, raw: true)
+
+    begin
+      update_info = JSON.parse(json)
+
+      if update_info["error"]
+        response[:errors] = update_info["error"]
+      else
+        response[:update_info] = update_info
+        response[:notices] = update_info["notes"] if update_info["notes"]
+        response[:success] = "Update info successfully retrieved"
+      end
+    rescue Exception => e
+      response[:errors] = "Problem retrieving update info - #{e.message}"
+    end
+    render :json => response
+  end
+
+  def update_check_enabled
+    enabled = LinkedData::Client::HTTP.get("#{ADMIN_URL}update_check_enabled", {}, raw: false)
+    render :json => enabled
   end
 
   def submissions
@@ -41,7 +65,7 @@ class AdminController < ApplicationController
 
     if ontology
       full_log_file_path = ontology[:logFilePath]
-      @log_file_path = /#{params["acronym"]}\/\d+\/[a-zA-Z0-9-_]+\.log$/.match(full_log_file_path)
+      @log_file_path = /#{params["acronym"]}\/\d+\/[-a-zA-Z0-9_]+\.log$/.match(full_log_file_path)
     else
       @parse_log = "No record exists for ontology #{params["acronym"]}"
       @log_file_path = "None"
@@ -200,7 +224,6 @@ class AdminController < ApplicationController
     rescue Exception => e
       response[:errors] = "Problem retrieving ontologies report - #{e.message}"
     end
-    @data = response
     response
   end
 

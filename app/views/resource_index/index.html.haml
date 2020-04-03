@@ -3,8 +3,9 @@
 %div{:style => "padding: 1em;"}
   %h1 Search Resource Index
   %p
-    - intro_text = "Search biomedical resources"
-    = t('home.resources.intro').html_safe.nil? || t('home.resources.intro').html_safe.empty? ? "#{intro_text}  #{help_icon("/help#Resource_Index_Tab")}".html_safe : t('home.resources.intro').html_safe
+    = t('resource_index.intro').html_safe
+    = link_to(help_path(anchor: "Resource_Index_Tab"), id: "resource-index-help", aria: {label: "View resource index help"}) do
+      %i.fas.fa-question-circle.fa-lg{aria: {hidden: "true"}, style: "margin-left: .25em"}
 
   %div{:style => "padding-bottom: 1em;"}
     %div{:style => "width: 432px;"}
@@ -12,11 +13,7 @@
         %input#resource_index_button.link_button{:type => "button", :value => "Search Resource Index"}
         %span#resource_index_spinner{:style => "display: none;"}
           %img{:src => asset_path('spinners/spinner_000000_16px.gif'), :style => "vertical-align: text-bottom;"}
-      - textarea_title = "Start typing to find classes to search the index with"
-      = select_tag :resource_index_classes, "",        |
-          :multiple => 'true',                         |
-          'data-placeholder'.to_sym => textarea_title, |
-          :style => 'width: 432px;'                    |
+      = select_tag("resource_index_classes", nil, multiple: true, style: "width: 432px;")
       #advanced_options_container
         %a#resource_index_advanced_options{:href => "javascript:void(0);"}
           %span#hide_advanced_options.not_visible> hide&nbsp;

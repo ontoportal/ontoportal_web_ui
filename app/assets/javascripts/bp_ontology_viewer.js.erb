@@ -9,8 +9,7 @@
   // History.debug.enable = true;
 
   // Abort it not right page
-  var path = currentPathArray();
-  if (path[0] !== "ontologies" || (path[0] === "ontologies" && path.length !== 2)) {
+  if (!pageUsesTreeView()) {
     return;
   }
 
@@ -55,8 +54,9 @@
         // We need to get everything using AJAX
         content_section = null;
       } else {
-        showOntologyContent(content_section);
-        document.title = jQuery.bioportal.ont_pages[content_section].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site;
+        var pane = jQuery(document).data().bp.ont_viewer.content_section;
+        showOntologyContent(pane);
+        document.title = jQuery.bioportal.ont_pages[pane].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site;
       }
     }
   });
@@ -195,38 +195,58 @@ function getConceptLinkEl(concept_id) {
 
 function showOntologyContent(content_section) {
   jQuery.bioportal.ont_pages[content_section].publish();
-  jQuery(".ontology_viewer_content").addClass("hidden");
-  jQuery("#ont_" + content_section + "_content").removeClass("hidden");
+  jQuery("#ont-" + content_section + "-tab").tab("show");
 }
 
 // Prevent the default behavior of clicking the ontology page links
 // Instead, fire some history events
 var nav_ont = function(link) {
-  var page = jQuery(link).attr("data-bp_ont_page");
+  var page = jQuery(link).attr("data-bp-ont-page");
   History.pushState({p:page}, jQuery.bioportal.ont_pages[page].page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site, "?p=" + page);
 }
 
-
 jQuery(document).ready(function() {
-  var path = currentPathArray();
-  if (path[0] !== "ontologies" || (path[0] === "ontologies" && path.length !== 2)) {
-    return;
+  var metadata_only = jQuery(document).data().bp.ont_viewer.metadata_only;
+  if (!pageUsesTreeView()) {
+    if (metadata_only === undefined || metadata_only === 'false') {
+      return;
+    }
   }
 
   // Set appropriate title
   var content_section = jQuery(document).data().bp.ont_viewer.content_section || "";
   var ontology_name = jQuery(document).data().bp.ont_viewer.ontology_name;
   var org_site = jQuery(document).data().bp.ont_viewer.org_site;
-  var metadata_only = jQuery(document).data().bp.ont_viewer.metadata_only;
   var content_section_obj = jQuery.bioportal.ont_pages[content_section] || {};
   var title = (content_section == null) ? ontology_name + " | " + org_site
     : content_section_obj.page_name + " | " + org_site;
   document.title = title;
 
-  // Naviation buttons
-  jQuery(".nav_link a").live("click", function(e){
+  // Navigation buttons
+  jQuery("#navbar-ontology a").on("click", function(e){
     e.preventDefault();
     nav_ont(this);
+  });
+
+  jQuery(".click_versions_collapse").click(function(){
+    var collapse = "#" + jQuery(this).parent().attr("id") + "_collapsible";
+    var icon = "#" + jQuery(this).parent().attr("id") + "_icon";
+    jQuery(icon).toggleClass("ui-icon-triangle-1-e");
+    jQuery(icon).toggleClass("ui-icon-triangle-1-s");
+    jQuery(collapse).toggle();
+  });
+
+  jQuery("#version_toggle").click(function(event){
+    event.preventDefault();
+    jQuery("#ontology_versions tr.hidden_select").toggleClass("hidden_ont");
+  });
+
+  jQuery("#version_toggle").toggle(
+    function() {
+      jQuery(this).text("less...");
+    },
+    function() {
+      jQuery(this).text("more...");
   });
 
   // Set up the JS version of the active content section
@@ -235,14 +255,17 @@ jQuery(document).ready(function() {
   if (typeof jQuery.bioportal.ont_pages[content_section].init === 'function') {
     jQuery.bioportal.ont_pages[content_section].init(jQuery.bioportal.ont_pages[content_section]);
   }
+  jQuery("#ont-" + content_section + "-tab").tab("show");
 
   // Retrieve AJAX content if not already displayed
   if ($.QueryString["skip_ajax_tabs"] != 'true') {
-    if (content_section !== "classes" && metadata_only != true) {
+    var metadataOnly = metadata_only.toLowerCase().trim();
+
+    if (content_section !== "classes" && metadataOnly !== "true") {
       jQuery.bioportal.ont_pages["classes"].retrieve();
     }
 
-    if (content_section !== "properties" && metadata_only !== true) {
+    if (content_section !== "properties" && metadataOnly !== "true") {
       jQuery.bioportal.ont_pages["properties"].retrieve();
     }
 
@@ -250,7 +273,7 @@ jQuery(document).ready(function() {
       jQuery.bioportal.ont_pages["summary"].retrieve();
     }
 
-    if (content_section !== "mappings") {
+    if (content_section !== "mappings" && metadataOnly !== "true") {
       jQuery.bioportal.ont_pages["mappings"].retrieve();
     }
 
@@ -258,7 +281,7 @@ jQuery(document).ready(function() {
       jQuery.bioportal.ont_pages["notes"].retrieve();
     }
 
-    if (content_section !== "widgets" && metadata_only !== true) {
+    if (content_section !== "widgets" && metadataOnly !== "true") {
       jQuery.bioportal.ont_pages["widgets"].retrieve();
     }
   }
@@ -367,13 +390,7 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
     jQuery(document).data().bp.ontPropertiesTab.init();
   });
 
-  jQuery.bioportal.ont_pages["summary"] = new jQuery.bioportal.OntologyPage("summary", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=summary&ajax=true", "Problem retrieving summary", jQuery(document).data().bp.ont_viewer.ontology_name + " - Summary", "Summary", function() {
-    try {
-      jQuery(document).data().bp.ontChart.init();
-    } catch (err) {
-      console.log("No ontology visits data to display");
-    }
-  });
+  jQuery.bioportal.ont_pages["summary"] = new jQuery.bioportal.OntologyPage("summary", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=summary&ajax=true", "Problem retrieving summary", jQuery(document).data().bp.ont_viewer.ontology_name + " - Summary", "Summary");
 
   jQuery.bioportal.ont_pages["mappings"] = new jQuery.bioportal.OntologyPage("mappings", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=mappings&ajax=true", "Problem retrieving mappings", jQuery(document).data().bp.ont_viewer.ontology_name + " - Mappings", "Mappings", function() {
     jQuery(".facebox").facebox();

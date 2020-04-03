@@ -1,5 +1,5 @@
 class RecommenderController < ApplicationController
-  layout 'ontology'
+  layout :determine_layout
 
   # REST_URI is defined in application_controller.rb
   RECOMMENDER_URI = "/recommender"

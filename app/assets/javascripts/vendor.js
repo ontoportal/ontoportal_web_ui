@@ -11,6 +11,8 @@
 //= require jquery-migrate-1.3.0.min
 //= require jquery_ujs
 //= require jquery-ui
+//= require popper
+//= require bootstrap-sprockets
 //
 //= require jquery.blockUI
 //= require facebox
@@ -18,13 +20,11 @@
 //= require fg.menu
 //= require jquery.tools.min
 //= require jquery.dataTables
-//= require datatables.formatted.number
 //= require dataTables.fixedHeader
 //= require chosen.jquery
 //= require ajax-chosen
 //= require superfish
 //= require jquery.cookie
-//= require splitter
 //= require autocomplete
 //= require jquery.hoverIntent
 //= require jquery.simple.tree
@@ -33,4 +33,7 @@
 //= require history/jquery.history
 //= require alertify
 //= require jquery.tooltip
+//= require Chart.min
+//= require select2 
+//= require jquery.readyselector
 

@@ -2,7 +2,7 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.xml
 
-  layout 'ontology'
+  layout :determine_layout
 
   def index
     @projects = LinkedData::Client::Models::Project.all
@@ -26,8 +26,17 @@ class ProjectsController < ApplicationController
       redirect_to projects_path
       return
     end
+    
     @project = projects.first
-    @usedOntologies = @project.ontologyUsed || []
+    @ontologies_used = []
+    onts_used = @project.ontologyUsed
+    onts_used.each do |ont_used|
+      ont = LinkedData::Client::Models::Ontology.find(ont_used)
+      unless ont.nil?
+        @ontologies_used << Hash["name", ont.name, "acronym", ont.acronym]
+      end
+    end
+    @ontologies_used.sort_by!{ |o| o["name"].downcase }
   end
 
   # GET /projects/new
@@ -65,7 +74,7 @@ class ProjectsController < ApplicationController
       return
     end
 
-    @project = LinkedData::Client::Models::Project.new(values: params[:project])
+    @project = LinkedData::Client::Models::Project.new(values: project_params)
     @project_saved = @project.save
     
     # Project successfully created.
@@ -83,7 +92,7 @@ class ProjectsController < ApplicationController
       @errors = response_errors(@project_saved)
     end
 
-    @project = LinkedData::Client::Models::Project.new(values: params[:project])
+    @project = LinkedData::Client::Models::Project.new(values: project_params)
     @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
     @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
     render action: "new"
@@ -103,7 +112,7 @@ class ProjectsController < ApplicationController
       return
     end
     @project = projects.first
-    @project.update_from_params(params[:project])
+    @project.update_from_params(project_params)
     error_response = @project.update
     if error_response
       @errors = response_errors(error_response)
@@ -141,8 +150,15 @@ class ProjectsController < ApplicationController
 
   end
 
-
   private
+
+  def project_params
+    p = params.require(:project).permit(:name, :acronym, :institution, :contacts, { creator:[] }, :homePage,
+                                        :description, { ontologyUsed:[] })
+    p[:creator].reject!(&:blank?)
+    p[:ontologyUsed].reject!(&:blank?)
+    p.to_h
+  end
 
   def flash_error(msg)
     html = ''.html_safe
@@ -150,6 +166,5 @@ class ProjectsController < ApplicationController
     html << msg
     html << '</span>'.html_safe
   end
-
 
 end

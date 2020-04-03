@@ -1,54 +1,60 @@
 - @title = "Search"
-%div{:style => "padding: 1em;"}
-  #search_input{:style => "margin-bottom: 1em;"}
-    %h1 Class Search
-    %p
-      Search for a class in multiple ontologies  #{help_icon("/help#Search_Tab").html_safe}
-    = text_field :search, :keywords, :style => "width: 426px; height: 20px; float: left; margin-right: 1em;"
-    = button_to "Search", {}, :style => "font-size: 10pt !important; margin: -1.5px 0 0;", :id => "search_button", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all"
-    %span
-      %span#search_spinner{:style => "position: relative; left: 85px; display: none; padding: 4px;"}
-        \&nbsp;
-        %img{:src => asset_path('spinners/spinner_000000_16px.gif'), :style => "vertical-align: inherit;"}/
-    #advanced_options_container
-      %a#advanced_options{:href => "javascript:void(0);"}
-        %span#hide_advanced_options.not_visible> hide&nbsp;
-        advanced options
-    #search_options.not_visible{:style => "padding-top: .6em; clear: both; margin-bottom: 40px;"}
-      %h2{:style => "margin-bottom: 3px; font-size: 12pt; !important;"} Include in your search...
-      #include_options.search_options
-        = check_box :search, :include_properties
-        = label :search, :include_properties, "<span class='definition' title='Named association between two entities. Examples are &quot;definition&quot; (a relation between a class and some text) and &quot;part-of&quot; (a relation between two classes).'>Property</span> values</span>".html_safe
-        %br/
-        = check_box :search, :include_obsolete
-        = label :search, :include_obsolete, "<span class='definition' title='A class that the authors of the ontology have flagged as being obsolete and which they recommend that people not use. These classes are often left in ontologies (rather than removing them entirely) so that existing systems that depend on them will continue to function.'>Obsolete classes</span>".html_safe
-        %br/
-        /
-          Disable until we support non-production filtering on rest
-          = check_box :search, :include_non_production
-          = label :search, :include_non_production, "Non-production ontologies"
-          %br/
-        = check_box :search, :include_views
-        = label :search, :include_views, "Ontology views</a>".html_safe
-      %h2{:style => "margin: 10px 0 3px; font-size: 12pt; !important;"} Narrow your search to...
-      #remove_options.search_options
-        = check_box :search, :exact_match
-        = label :search, :exact_match, "Exact matches"
-        %br/
-        = check_box :search, :require_definition
-        = label :search, :require_definition, "Classes with definitions"
-        %br/
-        %br/
-        %h2{:style => "font-size: 10pt; !important; margin-bottom: 3px;"} Categories
-        = select :search, :categories, options_for_select(categories_for_select), { }, :style => "width: 432px", :multiple => 'true', "data-placeholder".to_sym => "Type here to select categories or leave blank to use all"
-        #ontology_picker_options{:style => "margin-top: 1em; position: relative; left: 2px;"}
-          = render :partial => "shared/ontology_picker", :locals => { :sel_text => "Ontologies" }
-  #search_results_container
-    #result_stats
-    #search_messages
-    #search_results
-#biomixer{:style => "display: none;"}
-/ Javascript at end to improve response time to user
+
+%div.container.mt-5
+  %h1.display-4 
+    Class Search
+
+  = form_tag("/search", method: "post") do
+    %div.form-group
+      = text_field_tag("search_keywords", nil, class: "form-control", aria: {describedby: "classSearchHelpBlock"})
+      %small#classSearchHelpBlock.form-text.text-muted
+        = t(".search_keywords_placeholder")
+        = link_to("help", help_path(anchor: "Search_Tab"), id: "search-help", aria: {label: "View search documentation"}, class: "float-right")
+    %div.form-group
+      = link_to("Show advanced options", "javascript:void(0)", id: "advanced_options", data: {text_swap: "Hide advanced options"}, class: "form-text")
+
+    -# Advanced search options
+    %div#search_options{style: "display: none;"}
+      %div.form-group.row
+        %div.col-sm-2 Include in search:
+        %div.col-sm-10
+          %div.form-check
+            = check_box(:search, :include_properties, class: "form-check-input")
+            = label(:search, :include_properties, "Property values", class: "form-check-label definition", title: t(".property_definition"))
+          %div.form-check
+            = check_box(:search, :include_obsolete, class: "form-check-input")
+            = label(:search, :include_obsolete, "Obsolete classes", class: "form-check-label definition", title: t(".obsolete_definition"))
+          %div.form-check
+            = check_box(:search, :include_views, class: "form-check-input")
+            = label(:search, :include_views, "Ontology views", class: "form-check-label")
+      %div.form-group.row
+        %div.col-sm-2 Narrow search to:
+        %div.col-sm-10
+          %div.form-check
+            = check_box(:search, :exact_match, class: "form-check-input")
+            = label(:search, :exact_match, "Exact matches", class: "form-check-label")
+          %div.form-check
+            = check_box(:search, :require_definition, class: "form-check-input")
+            = label(:search, :require_definition, "Classes with definitions", class: "form-check-label")
+      %div.form-group
+        %h6{style: "font-size: 10pt !important"} Categories
+        = select(:search, :categories, options_for_select(categories_for_select), {}, style: "width: 432px", multiple: "true", data: {placeholder: t(".categories_placeholder")})
+      %div.form-group.mb-5
+        = render :partial => "shared/ontology_picker", locals: {sel_text: "Ontologies"}
+
+    = button_tag("Search", id: "search_button", class: "btn btn-primary")
+    = content_tag(:span, id: "search_spinner") do
+      %img{src: asset_path('spinners/spinner_000000_16px.gif'), style: "vertical-align: middle;"}
+
+  -# Search results
+  %div.row.mt-4#search_results_container
+    %div.col
+      #result_stats
+      #search_messages
+      #search_results
+
+%div#biomixer{style: "display: none;"}
+
 :javascript
   // Hash of ontology id => name, acronym for lookup use via JS
   jQuery(document).ready(function() {

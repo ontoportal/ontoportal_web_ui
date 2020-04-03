@@ -495,16 +495,40 @@ function BP_queryString() {
 
 function bpPopWindow(e) {
   e.preventDefault();
+
   var url = jQuery(e.currentTarget).attr("href");
   var pop = (url.match(/\?/) != null) ? "&pop=true" : "?pop=true";
+  var popWidth = 800;
+  var popHeight = 600;
+
+  if (typeof e.data !== "undefined") {
+    if (e.data.hasOwnProperty('w')) {
+      popWidth = e.data.w;
+    }
+    if (e.data.hasOwnProperty('h')) {
+      popHeight = e.data.h;
+    }
+  }
 
   // Make sure to insert the query string before the hash
   url = (url.match(/#/) != null) ? [url.slice(0, url.indexOf("#")), pop, url.slice(url.indexOf("#"))].join('') : url + pop;
 
-  newwindow = window.open(url,'bp_popup_window','height=700,width=800,resizable=yes,scrollbars=yes,toolbar=no,status=no');
-  if (window.focus) {newwindow.focus()};
+  // Fixes dual-screen position                         Most browsers       Firefox
+  var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : window.screenX;
+  var dualScreenTop = window.screenTop   != undefined ? window.screenTop  : window.screenY;
+
+  var width = window.innerWidth ? window.innerWidth : (document.documentElement.clientWidth ? document.documentElement.clientWidth : window.screen.width);
+  var height = window.innerHeight ? window.innerHeight : (document.documentElement.clientHeight ? document.documentElement.clientHeight : window.screen.height);
+
+  var left = ((width / 2) - (popWidth / 2)) + dualScreenLeft;
+  var top = ((height / 2) - (popHeight / 2)) + dualScreenTop;
+
+  var newWindow = window.open(url, 'bp_popup_window', 'scrollbars=yes, width=' + popWidth + ', height=' + popHeight + ', top=' + top + ', left=' + left);
+  if (window.focus) {
+    newWindow.focus()
+  };
 }
-jQuery("#top_right_menu").on("click", "a.pop_window", { link: this }, bpPopWindow)
+jQuery("div.footer-support, div.dropdown-menu.dropdown-menu-right").on("click", "a.pop_window", { w: "800", h: "600" }, bpPopWindow)
 
 /**************************************************************
  * Standardized BP modal popups
@@ -729,3 +753,38 @@ var currentPathArray = function() {
   }
   return cleanPath;
 }
+
+function pageUsesTreeView() {
+  var usesTreeView = true;
+  var path = currentPathArray();
+
+  if (path[0] !== "ontologies") {
+    usesTreeView = false;
+  } else if ((path.length !== 2) || (path[1] === "new")) {
+    /*
+     * Some ontology pages don't use class trees, e.g.:
+     * ontologies/BRO/edit
+     * ontologies/new
+     */  
+    usesTreeView = false;
+  } else {
+    // Metadata only ontologies don't have class trees.
+    var metadataOnly = jQuery(document).data().bp.ont_viewer.metadata_only;
+    if ((metadataOnly != null) && (metadataOnly === "true")) {
+      usesTreeView = false;
+    }
+  }
+
+  return usesTreeView;
+}
+
+
+
+
+
+
+
+
+
+
+

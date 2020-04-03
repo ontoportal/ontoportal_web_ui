@@ -17,10 +17,9 @@ rerun.txt
 pickle-email-*.html
 config/bioportal_config*.rb
 config/database.yml
-config/bioportal_config_*.rb
 config/deploy/*
 config/locales/en.rb
-config/bioportal_config.rb
+config/secrets.yml
 **.DS_Store
 /public/**/cache/**
 /public/umls/*

@@ -2,7 +2,7 @@ require 'json'
 require 'cgi'
 
 class AnnotatorController < ApplicationController
-  layout 'ontology'
+  layout :determine_layout
 
   # REST_URI is defined in application_controller.rb
   #ANNOTATOR_URI = REST_URI + "/annotator"
