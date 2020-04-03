@@ -127,4 +127,16 @@ RSpec.describe License, type: :model do
 
   end
 
+  describe ".current_license" do
+
+    it "should return the latest license" do
+      new_license = License.create(encrypted_key: encrypted_license_key, created_at: Time.now + 1.day)
+      newer_license = License.create(encrypted_key: encrypted_license_key, created_at: Time.now + 2.days)
+
+      expect(License.current_license.count).to eql(1)
+      expect(License.current_license.first).to eql(newer_license)
+    end
+
+  end
+
 end

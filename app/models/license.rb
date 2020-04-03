@@ -7,6 +7,8 @@ class License < ApplicationRecord
   after_find :decrypt
   after_commit :decrypt
 
+  scope :current_license, -> { order(created_at: :desc).limit(1) }
+
   def is_trial?
     encrypted_key == 'trial'
   end
