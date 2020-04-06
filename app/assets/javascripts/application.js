@@ -33,6 +33,5 @@
 //= require ontologies
 //= require projects
 //= require submissions
-//= require bp_ont_chart
 //= require bootstrap.min
 //= require tooltipster.bundle.min
