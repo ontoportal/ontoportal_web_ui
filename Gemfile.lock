@@ -1,7 +1,7 @@
 GIT
-  remote: https://github.com/ncbo/ontologies_api_ruby_client.git
+  remote: https://github.com/sifrproject/ontologies_api_ruby_client.git
   revision: 3dd2edb0dd06dfdcca8829240c2a775ae790f04f
-  branch: staging
+  branch: lirmm
   specs:
     ontologies_api_client (1.0.0)
       activesupport (~> 5.1.7)
@@ -296,7 +296,7 @@ DEPENDENCIES
   select2-rails
   stackprof
   thin
-  uglifier (>= 1.0.3)
+  uglifier (>= 4.2.0)
   will_paginate (~> 3.0)
 
 BUNDLED WITH
