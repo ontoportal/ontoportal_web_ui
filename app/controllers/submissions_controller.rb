@@ -1,12 +1,7 @@
 class SubmissionsController < ApplicationController
 
-<<<<<<< HEAD
-  layout 'ontology'
-  before_action :authorize_and_redirect, :only=>[:edit, :update, :create, :new]
-=======
   layout :determine_layout
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
->>>>>>> fa32c2b620cdc8e626739a67cde7cac7ebdda1d5
 
   # When getting "Add submission" form to display
   def new
@@ -30,7 +25,6 @@ class SubmissionsController < ApplicationController
     # Make the contacts an array
     params[:submission][:contact] = params[:submission][:contact].values
 
-<<<<<<< HEAD
     # Get the submission metadata from the REST API
     json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
     @metadata = json_metadata
@@ -52,23 +46,6 @@ class SubmissionsController < ApplicationController
       end
     end
 
-    @submission = LinkedData::Client::Models::OntologySubmission.new(values: params[:submission])
-    @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
-    # Update summaryOnly on ontology object
-    @ontology.summaryOnly = @submission.isRemote.eql?("3")
-    @ontology.save(cache_refresh_all: false)
-    @submission_saved = @submission.save(cache_refresh_all: false)
-
-    if !@submission_saved || @submission_saved.errors
-      @errors = response_errors(@submission_saved) # see application_controller::response_errors
-      if @errors[:error].is_a?(Hash)
-        if @errors[:error][:uploadFilePath] && @errors[:error][:uploadFilePath].first[:options]
-          @masterFileOptions = @errors[:error][:uploadFilePath].first[:options]
-          @errors = ["Please select a main ontology file from your uploaded zip"]
-        else
-          redirect_to "/ontologies/success/#{@ontology.acronym}"
-        end
-=======
     @submission = LinkedData::Client::Models::OntologySubmission.new(values: submission_params)
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
     
@@ -84,7 +61,6 @@ class SubmissionsController < ApplicationController
         @errors = ["Please specify the location of your ontology"]
       elsif @errors[:error][:contact]
         @errors = ["Please enter a contact"]
->>>>>>> fa32c2b620cdc8e626739a67cde7cac7ebdda1d5
       end
 
       render "new"
@@ -120,7 +96,6 @@ class SubmissionsController < ApplicationController
     params[:submission][:contact].delete_if { |c| c[:name].empty? || c[:email].empty? }
 
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
-<<<<<<< HEAD
 
     #submissions = @ontology.explore.submissions
     #@submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
@@ -146,12 +121,6 @@ class SubmissionsController < ApplicationController
         end
       end
     end
-
-    @submission.update_from_params(params[:submission])
-=======
-    submissions = @ontology.explore.submissions
-    @submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
->>>>>>> fa32c2b620cdc8e626739a67cde7cac7ebdda1d5
 
     @submission.update_from_params(submission_params)
     # Update summaryOnly on ontology object
