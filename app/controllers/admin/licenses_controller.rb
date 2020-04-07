@@ -1,7 +1,7 @@
 class Admin::LicensesController < ApplicationController
 
   def index
-    @licenses = License.all.order("created_at DESC")
+    @licenses = License.current_license
     respond_to :js
   end
 

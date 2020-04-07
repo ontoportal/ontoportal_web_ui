@@ -1,4 +1,4 @@
 jQuery("#renew-license-notice").html('<%= j render partial: "notice" %>');
 jQuery("#renew-license-form form").remove();
 jQuery("#renew-license-button").show();
-jQuery("<%= j render @license %>").appendTo("#license-table > tbody");
+jQuery("#license-table > tbody").html("<%= j render @license %>")
