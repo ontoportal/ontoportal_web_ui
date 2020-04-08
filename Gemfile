@@ -46,7 +46,7 @@ gem 'thin'
 gem 'open_uri_redirections'
 gem 'nokogiri'
 
-gem 'ontologies_api_client', :git => "https://github.com/sifrproject/ontologies_api_ruby_client.git", branch: "lirmm"
+gem 'ontologies_api_client', :git => "https://github.com/sifrproject/ontologies_api_ruby_client.git", branch: "virtual-appliance-3.0-merge"
 
 group :staging, :production do
   # application monitoring
