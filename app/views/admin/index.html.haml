@@ -26,31 +26,31 @@
 
       -# Site Administration tab
       %div.tab-pane.active.show.fade{id: "site-admin", role: "tabpanel", aria: { labelledby: "site-admin-tab" }}
-        %h4.mt-3 Cache Management
-        %table.memcached_utilities
-          %tr
-            %td{:valign => "top", :style => "white-space:nowrap;"}
-              %a#flush_memcache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
-                %span.ui-button-text{:style => "width:150px;"} Flush UI Cache
-            %td{:valign => "top", :style => "white-space:nowrap;"}
-              %a#reset_memcache_connection_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
-                %span.ui-button-text{:style => "width:150px;"} Reset UI Cache Connection
-          %tr
-            %td{:valign => "top", :style => "white-space:nowrap;"}
-              %a#flush_goo_cache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
-                %span.ui-button-text{:style => "width:150px;"} Flush Goo Cache
-            %td{:valign => "top", :style => "white-space:nowrap;"}
-              %a#flush_http_cache_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
-                %span.ui-button-text{:style => "width:150px;"} Flush HTTP Cache
-        %span#update_check{:style => "display:none;"}
-          %p.tab_description{:style => "clear:both; margin-bottom: 30px;"}
+        
+        -# Clear caches
+        %div#site-admin-clear-caches.my-5
+          %div.site-admin-page-header
+            CACHE MANAGEMENT
+          %dive.site-admin-page-section
+            = link_to("Flush UI cache", "#", id: "flush_memcache_action", class: "btn btn-outline-secondary btn-sm admin-action-item",  role: "button")
+            = link_to("Reset UI cache connection", "#", id: "reset_memcache_connection_action", class: "btn btn-outline-secondary btn-sm admin-action-item",  role: "button")
+            = link_to("Flush GOO cache", "#", id: "flush_goo_cache_action", class: "btn btn-outline-secondary btn-sm admin-action-item",  role: "button")
+            = link_to("Flush HTTP cache", "#", id: "flush_http_cache_action", class: "btn btn-outline-secondary btn-sm",  role: "button")
+        
+        -# Check for updates
+        %div#site-admin-update-check.mb-5
+          %div.site-admin-page-header 
+            VERSION MANAGEMENT
+          %dive.site-admin-page-section
+            = link_to("Check for updates", "#", id: "update_check_action", class: "btn btn-outline-secondary btn-sm",  role: "button")
 
-          %h4 Version Management
-          %table.memcached_utilities
-            %tr
-              %td{:valign => "top", :style => "white-space:nowrap;"}
-                %a#update_check_action{:href => "javascript:;", :class => "link_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"}
-                  %span.ui-button-text{:style => "width:150px;"} Check for Update
+        -# View appliance ID
+        %div#site-admin-appliance-id.mb-5
+          %div.site-admin-page-header
+            APPLIANCE ID
+          %dive.site-admin-page-section
+            %div#appliance-id
+              %span
 
       -# Ontology Administration tab
       %div.tab-pane.fade{id: "ontology-admin", role: "tabpanel", aria: { labelledby: "ontology-admin-tab" }}
