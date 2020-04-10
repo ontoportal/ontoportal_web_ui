@@ -21,7 +21,7 @@ en:
 
   layouts:
     footer:
-      copyright_html: Copyright &copy; 2005‑2019, The Board of Trustees of Leland Stanford Junior University. All rights reserved.
+      copyright_html: Copyright &copy; 2005‑2020, The Board of Trustees of Leland Stanford Junior University. All rights reserved.
       grant_html: >
         The <strong>National Center for Biomedical Ontology</strong> was founded as one of the National Centers for Biomedical 
         Computing, supported by the NHGRI, the NHLBI, and the NIH Common Fund under grant U54-HG004028.
@@ -34,7 +34,7 @@ en:
         <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> to obtain a license.
       license_expired: >
         We're sorry, but the license for this OntoPortal installation has expired. If you are the owner of this OntoPortal installation, 
-        please visit <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> to renew your license. 
+        please visit <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> to renew your license.
       license_trial:
         one:
           This installation of the OntoPortal Appliance is a trial license, which will expire in 1 day.
