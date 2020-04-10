@@ -25,6 +25,21 @@ en:
       grant_html: >
         The <strong>National Center for Biomedical Ontology</strong> was founded as one of the National Centers for Biomedical 
         Computing, supported by the NHGRI, the NHLBI, and the NIH Common Fund under grant U54-HG004028.
+    notices:
+      license_contact: >
+        For more information, email <a href="mailto:support@ontoportal.org">support@ontoportal.org</a> or 
+        visit <a href="https://ontoportal.org/licensing" target="_blank">https://ontoportal.org/licensing</a>.
+      license_obtain: >
+        If you are the owner of this OntoPortal installation, you can visit 
+        <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> to obtain a license.
+      license_expired: >
+        We're sorry, but the license for this OntoPortal installation has expired. If you are the owner of this OntoPortal installation, 
+        please visit <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> to renew your license. 
+      license_trial:
+        one:
+          This installation of the OntoPortal Appliance is a trial license, which will expire in 1 day.
+        other:
+          This installation of the OntoPortal Appliance is a trial license, which will expire in %{count} days.
 
   home:
     index:
