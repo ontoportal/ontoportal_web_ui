@@ -29,7 +29,7 @@ set :deploy_to, "/srv/rails/#{fetch(:application)}"
 
 # Default value for linked_dirs is []
 #set :linked_dirs, %w{bin log tmp/pids tmp/cache public/system public/assets config/locales}
-set :linked_dirs, %w{bin log tmp/pids tmp/cache public/system public/assets}
+set :linked_dirs, %w{log tmp/pids tmp/cache public/system public/assets}
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
