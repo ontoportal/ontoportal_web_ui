@@ -7,15 +7,16 @@
   %div.container
     %div.row
       %div.col
-        %ul.list-inline
-          %li.list-inline-item #{$RELEASE_VERSION}
-          %li.list-inline-item
-            %i.fas.fa-ellipsis-v{"aria-hidden": "true"}
-          %li.list-inline-item
-            = link_to("Powered by NCBO BioPortal", "https://bioportal.bioontology.org/", target: "_blank")
-          %li.list-inline-item
-            %i.fas.fa-ellipsis-v{"aria-hidden": "true"}
-          %li.list-inline-item
-            = link_to("Projects", projects_path())
+        %div.d-flex
+          %ul.list-inline.mx-auto.justify-content-center
+            %li.list-inline-item #{$RELEASE_VERSION}
+            %li.list-inline-item
+              %i.fas.fa-ellipsis-v{"aria-hidden": "true"}
+            %li.list-inline-item
+              = link_to("Powered by NCBO BioPortal", "https://bioportal.bioontology.org/", target: "_blank")
+            %li.list-inline-item
+              %i.fas.fa-ellipsis-v{"aria-hidden": "true"}
+            %li.list-inline-item
+              = link_to("Projects", projects_path())
 
 
