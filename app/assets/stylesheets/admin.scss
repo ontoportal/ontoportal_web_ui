@@ -39,10 +39,6 @@
 }
 /* end: message boxes */
 
-.memcached_utilities td {
-  padding: .5em;
-}
-
 #adminOntologies {
   clear: both;
 }
@@ -123,76 +119,24 @@ table.dataTable tbody tr.selected {
   color: red;
 }
 
-/* ########## TABS ########## */
-/* root element for tabs  */
-ul.admin_tabs {
-  list-style:none;
-  margin:0 !important;
-  padding:0;
-  border-bottom:1px solid #666;
-  height:30px;
+#site-admin-appliance-id, #site-admin-update-check {
+  display: none;
 }
 
-/* single tab */
-ul.admin_tabs li {
-  float:left;
-  text-indent:0;
-  padding:0;
-  margin:0 !important;
-  list-style-image:none !important;
+.site-admin-page-header {
+  background-color: #f7f9fa;
+  color: #637282;
+  display: flex;
+  font-weight: 500;
+  justify-content: flex-start;
+  padding: 8px;
 }
 
-/* link inside the tab. uses a background image */
-ul.admin_tabs a {
-  background: image-url("blue.png") no-repeat -420px 0;
-  font-size:14px;
-  display:block;
-  height: 30px;
-  line-height:30px;
-  width: 13 4px;
-  text-align:center;
-  text-decoration:none;
-  color:#333;
-  padding:0px;
-  margin:0px;
-  position:relative;
-  top:1px;
-}
+.site-admin-page-section {
+  display: flex;
+  margin-top: 15px;
 
-ul.admin_tabs a:active {
-  outline:none;
-}
-
-/* when mouse enters the tab move the background image */
-ul.admin_tabs a:hover {
-  background-position: -420px -31px;
-  color:#fff;
-}
-
-/* active tab uses a class name "current". its highlight is also done by moving the background image. */
-ul.admin_tabs a.current, ul.admin_tabs a.current:hover, ul.admin_tabs li.current a {
-  background-position: -420px -62px;
-  cursor:default !important;
-  color:#000 !important;
-}
-
-/* Different widths for tabs: use a class name: w1, w2, w3 or w2 */
-/* width 1 */
-ul.admin_tabs a.s { background-position: -553px 0; width:81px; }
-ul.admin_tabs a.s:hover { background-position: -553px -31px; }
-ul.admin_tabs a.s.current  { background-position: -553px -62px; }
-
-/* width 2 */
-ul.admin_tabs a.l { background-position: -248px -0px; width:174px; }
-ul.admin_tabs a.l:hover { background-position: -248px -31px; }
-ul.admin_tabs a.l.current { background-position: -248px -62px; }
-
-/* width 3 */
-ul.admin_tabs a.xl { background-position: 0 -0px; width:248px; }
-ul.admin_tabs a.xl:hover { background-position: 0 -31px; }
-ul.admin_tabs a.xl.current { background-position: 0 -62px; }
-
-/* initially all panes are hidden */
-.admin_panes .admin_pane {
-  display:none;
+  .admin-action-item {
+    margin-right: 8px;
+  }
 }

@@ -473,6 +473,10 @@ UpdateCheck.prototype.onSuccessAction = function(data, ontology, deferredObj) {
       // just a default check on page load - show nothing
       delete data["notices"];
     }
+
+    if (updateInfo.hasOwnProperty("appliance_id")) {
+      jQuery("#appliance-id span").text(updateInfo["appliance_id"])
+    }
   }
 };
 
@@ -495,10 +499,10 @@ UpdateCheck.act = function(forceCheck) {
       success: function (data) {
         if (data) {
           jQuery("#update_check").show();
+          jQuery("#site-admin-appliance-id").show();
+          jQuery("#site-admin-update-check").show();
           new UpdateCheck(forceCheck).ajaxCall();
           UpdateCheck.isUpdateCheckEnabled = true;
-        } else {
-          jQuery("#update_check").hide();
         }
       },
       error: function () {
@@ -852,7 +856,4 @@ jQuery(".admin.index").ready(function() {
   });
 
   // end: BUTTON onclick actions -----------------------------------
-
-  // admin tabs
-  jQuery("ul.admin_tabs").tabs("div.admin_panes > div");
 });

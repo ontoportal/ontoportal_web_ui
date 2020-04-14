@@ -1,0 +1,14 @@
+div#notice_message {
+  margin-top: 1rem;
+
+  a {
+    color: #A9A9A9;
+  }
+}
+
+.flash {
+  &.alert {
+    margin-top: 1rem;
+  }
+}
+

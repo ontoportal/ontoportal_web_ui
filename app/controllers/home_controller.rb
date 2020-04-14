@@ -139,7 +139,7 @@ class HomeController < ApplicationController
     projects = LinkedData::Client::Models::Project.all;
     @user_projects = projects.select {|p| p.creator.include? @user.id }
 
-    render partial: "users/details", layout: determine_layout()
+    render "users/show"
   end
 
   def feedback_complete

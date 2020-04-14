@@ -14,7 +14,7 @@ require 'ontologies_api_client'
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
-  helper_method :bp_config_json, :using_captcha?
+  helper_method :bp_config_json, :current_license, :using_captcha?
 
   # Pull configuration parameters for REST connection.
   REST_URI = $REST_URL
@@ -32,6 +32,7 @@ class ApplicationController < ActionController::Base
   EXPIRY_RECENT_MAPPINGS = 60 * 60     #  1:00 hours
   EXPIRY_ONTOLOGY_SIMPLIFIED = 60 * 1  #  0:01 minute
 
+  $trial_license_initialized = false
 
   if !$EMAIL_EXCEPTIONS.nil? && $EMAIL_EXCEPTIONS == true
     include ExceptionNotifiable
@@ -40,7 +41,7 @@ class ApplicationController < ActionController::Base
   # See ActionController::RequestForgeryProtection for details
   protect_from_forgery
 
-  before_action :set_global_thread_values, :domain_ontology_set, :authorize_miniprofiler, :clean_empty_strings_from_params_arrays
+  before_action :set_global_thread_values, :domain_ontology_set, :authorize_miniprofiler, :clean_empty_strings_from_params_arrays, :init_trial_license
 
   def set_global_thread_values
     Thread.current[:session] = session
@@ -654,6 +655,19 @@ class ApplicationController < ActionController::Base
       'appliance'
     else
       'ontology'
+    end
+  end
+
+  def current_license
+    @current_license = License.current_license.first
+  end
+
+  def init_trial_license
+    unless $trial_license_initialized
+      unless License.where(encrypted_key: 'trial').exists?
+        License.create(encrypted_key: 'trial', created_at: Time.current)
+      end
+      $trial_license_initialized = true
     end
   end
 
