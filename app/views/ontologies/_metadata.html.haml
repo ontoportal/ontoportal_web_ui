@@ -53,10 +53,10 @@
 
 
   -# Additional Metadata pane
-  %section.ont-metadata-card.ont-details-card
+  %section.ont-metadata-card.ont-additional-metadata-card
     %header.pb-2.font-weight-bold Additional Metadata
     %table.table.table-sm
-      = raw additional_metadata(sub)
+      = raw additional_metadata(@submission_latest)
 
   -# Submissions pane
   %section.ont-metadata-card.ont-subs-card
@@ -94,24 +94,24 @@
       
   %div.right-hand-content
     
-    -# Links pane
+    -# Misc links pane
+    %section.ont-metadata-card.ont-links-card
+      %a{:href => "#{(@submission_latest || @ontology).id}?display=all", :class => "btn btn-primary",
+      :style => "margin-top: 1em; margin-left: 1em;"} Go to the REST API JSON entry
+    
+    -# Metadata links pane
     %section.ont-metadata-card.ont-links-card
       %div.ont-section-toolbar
-        %header.pb-2.font-weight-bold Links
-        - if !@submission_latest.nil?
-          %a{:href => "#{@submission_latest.id}?display=all", :class => "btn btn-primary",
-          :style => "margin-top: 1em; margin-left: 1em;"} Go to the REST API JSON entry
-          %h2{:style => "margin-left: 1em;"} Get my metadata back
-          %button{:id => "getMetadataBackNquadsBtn", :class => "btn btn-primary",
-          :style => "margin-bottom: 1em; margin-left: 1em;"} N-Triple
-          %button{:id => "getMetadataBackJsonldBtn", :class => "btn btn-primary",
-          :style => "margin-bottom: 1em; margin-left: 1em;"} Json-LD
-          %button{:id => "getMetadataBackXmlBtn", :class => "btn btn-primary",
-          :style => "margin-bottom: 1em; margin-left: 1em;"} RDF/XML
-          -# Listener in bp_ontology_viewer.js.erb
-        - else
-          %a{:href => "#{@ontology.id}?display=all", :class => "btn btn-primary",
-          :style => "margin-top: 1em; margin-left: 1em;"} Go to the REST API JSON entry
+        %header.pb-2.font-weight-bold Get my metadata back
+        %div
+          - unless @submission_latest.nil?
+            %button{:id => "getMetadataBackNquadsBtn", :class => "btn btn-primary",
+            :style => "margin-bottom: 1em; margin-left: 1em;"} N-Triple
+            %button{:id => "getMetadataBackJsonldBtn", :class => "btn btn-primary",
+            :style => "margin-bottom: 1em; margin-left: 1em;"} Json-LD
+            %button{:id => "getMetadataBackXmlBtn", :class => "btn btn-primary",
+            :style => "margin-bottom: 1em; margin-left: 1em;"} RDF/XML
+            -# Listener in bp_ontology_viewer.js.erb
     
     -# Metrics pane
     %section.ont-metadata-card.ont-metrics-card
