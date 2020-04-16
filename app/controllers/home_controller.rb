@@ -27,7 +27,7 @@ class HomeController < ApplicationController
             :ont_name => ont.name
         }
         @last_notes.push note
-        break if @last_notes.length >= NOTES_RECENT_MAX  # 5
+        break if @last_notes.length >= [$HOME_LATEST_NOTES_COUNT.to_i, 5].max
       end
     end
     # Get the latest manual mappings
