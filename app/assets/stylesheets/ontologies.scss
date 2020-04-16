@@ -128,6 +128,16 @@ $ont-show-bg-color: #e9ecef;
   }
 }
 
+.ont-additional-metadata-card {
+  grid-column: 1;
+  grid-row: 2;
+
+  td:nth-child(1) {
+    background-color: #e2ebf0;
+    white-space: nowrap;
+  }
+}
+
 .ont-metrics-card {
   td:nth-child(1) {
     background-color: #e2ebf0;
@@ -140,7 +150,7 @@ $ont-show-bg-color: #e9ecef;
 
 .ont-subs-card {
   grid-column: 1;
-  grid-row: 2;
+  grid-row: 3;
 
   th {
     color: #737373;
@@ -149,7 +159,7 @@ $ont-show-bg-color: #e9ecef;
 
 .ont-views-card {
   grid-column: 1;
-  grid-row: 3;
+  grid-row: 4;
 }
 
 .ont-projects-card {

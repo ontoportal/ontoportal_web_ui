@@ -948,6 +948,11 @@ button.fg-button-menu, button.fg-button {
 /************************************
  * Top navigation bar
  ************************************/
+.navbar-brand {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
 .btn-bp-login {
   color: #C58612;
   border-color: #C58612 !important;
@@ -960,6 +965,8 @@ button.fg-button-menu, button.fg-button {
 
 .navbar-custom {
   background-color: #338D0C;
+  /*background: image-url('layout/header_bg.png') repeat-x;*/
+  padding: 0px 0px 0px 0px !important;
 }
 
 .nav_text a {
