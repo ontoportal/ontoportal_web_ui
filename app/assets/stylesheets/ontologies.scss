@@ -78,11 +78,11 @@ $ont-show-bg-color: #e9ecef;
     grid-template-columns: 60% 40%;
   }
 
-  .ont-details-card, .ont-subs-card, .ont-views-card {
+  .ont-details-card, .ont-subs-card, .ont-views-card, .ont-additional-metadata-card {
     margin-right: 16px;
   }
 
-  .ont-metrics-card, .ont-analytics-card {
+  .ont-links-card, .ont-metadatalinks-card, .ont-included-in-data-catalog-card, .ont-logo-depiction-card, .ont-metrics-card, .ont-analytics-card {
     margin-bottom: 32px;
   }
 }
@@ -146,6 +146,11 @@ $ont-show-bg-color: #e9ecef;
   td:nth-child(2n) {
     text-align: right;
   }
+}
+
+.ont-included-in-data-catalog-card a.btn {
+  margin-right: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 .ont-subs-card {

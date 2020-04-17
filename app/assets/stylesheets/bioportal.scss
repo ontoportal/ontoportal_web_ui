@@ -946,16 +946,39 @@ button.fg-button-menu, button.fg-button {
 }
 
 /************************************
+ * Nav tabs
+ ************************************/
+
+.nav-tabs .nav-link {
+  color: #999 !important
+}
+.nav-tabs .nav-link.active {
+  color: #338D0C !important
+}
+
+/************************************
  * Top navigation bar
  ************************************/
-.navbar-brand {
+.navbar-brand, .navbar-brand img {
   margin: 0px !important;
   padding: 0px !important;
+  max-height: 75px;
+}
+
+.navbar-brand img {
+  margin-right: 10px !important;
+}
+
+.navbar-nav .nav-link {
+  color: #fff !important;
+}
+.navbar-nav .nav-link:hover {
+  color: rgba(255, 255, 255, 0.5) !important;
 }
 
 .btn-bp-login {
-  color: #C58612;
-  border-color: #C58612 !important;
+  color: #fff;
+  border-color: #fff !important;
 
   &:hover {
     color: #338D0C;
@@ -965,7 +988,7 @@ button.fg-button-menu, button.fg-button {
 
 .navbar-custom {
   background-color: #338D0C;
-  /*background: image-url('layout/header_bg.png') repeat-x;*/
+  background: image-url('layout/header_bg.png') repeat-x;
   padding: 0px 0px 0px 0px !important;
 }
 

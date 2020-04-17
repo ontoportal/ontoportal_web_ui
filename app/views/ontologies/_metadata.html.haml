@@ -96,22 +96,20 @@
     
     -# Misc links pane
     %section.ont-metadata-card.ont-links-card
-      %a{:href => "#{(@submission_latest || @ontology).id}?display=all", :class => "btn btn-primary",
-      :style => "margin-top: 1em; margin-left: 1em;"} Go to the REST API JSON entry
+      %div.ont-section-toolbar
+        %header.pb-2.font-weight-bold Links
+      %a{:href => "#{(@submission_latest || @ontology).id}?display=all", :target => '_blank', :class => "btn btn-primary"} Go to the REST API JSON entry
     
     -# Metadata links pane
-    %section.ont-metadata-card.ont-links-card
+    %section.ont-metadata-card.ont-metadatalinks-card
       %div.ont-section-toolbar
         %header.pb-2.font-weight-bold Get my metadata back
-        %div
-          - unless @submission_latest.nil?
-            %button{:id => "getMetadataBackNquadsBtn", :class => "btn btn-primary",
-            :style => "margin-bottom: 1em; margin-left: 1em;"} N-Triple
-            %button{:id => "getMetadataBackJsonldBtn", :class => "btn btn-primary",
-            :style => "margin-bottom: 1em; margin-left: 1em;"} Json-LD
-            %button{:id => "getMetadataBackXmlBtn", :class => "btn btn-primary",
-            :style => "margin-bottom: 1em; margin-left: 1em;"} RDF/XML
-            -# Listener in bp_ontology_viewer.js.erb
+      %div
+        - unless @submission_latest.nil?
+          %button{:id => "getMetadataBackNquadsBtn", :class => "btn btn-primary"} N-Triple
+          %button{:id => "getMetadataBackJsonldBtn", :class => "btn btn-primary"} Json-LD
+          %button{:id => "getMetadataBackXmlBtn", :class => "btn btn-primary"} RDF/XML
+          -# Listener in bp_ontology_viewer.js.erb
     
     -# Metrics pane
     %section.ont-metadata-card.ont-metrics-card
@@ -161,16 +159,10 @@
       = render partial: "visits"
 
     -# Included in data catalog pane
-    %section.ont-metadata-card.ont-included-in-data-catalog-card
-      %div.ont-section-toolbar
-        %header.pb-2.font-weight-bold includedInDataCatalog
-      = raw display_data_catalog(@submission_latest)
+    = raw display_data_catalog(@submission_latest)
 
     -# Logo & depiction
-    %section.ont-metadata-card.ont-logo-card
-      %div.ont-section-toolbar
-        %header.pb-2.font-weight-bold Depiction
-      = raw display_logo(@submission_latest)
+    = raw display_logo(@submission_latest)
 
     -# Projects pane
     %section.ont-metadata-card.ont-projects-card

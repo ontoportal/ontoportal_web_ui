@@ -20,11 +20,11 @@ module OntologiesHelper
   def display_data_catalog(sub)
     if !sub.send("includedInDataCatalog").nil? && sub.send("includedInDataCatalog").any?
       # Buttons for data catalogs
-      return content_tag(:div, {:class => "panel panel-primary", :style => "margin: 2em;"}) do
-        concat(content_tag(:div, {:class => "panel-heading"}) do
-          concat(content_tag(:h3, "includedInDataCatalog", {:class => "panel-title"}))
+      return content_tag(:section, {:class => "ont-metadata-card ont-included-in-data-catalog-card"}) do
+        concat(content_tag(:div, {:class => "ont-section-toolbar"}) do
+          concat(content_tag(:header, "includedInDataCatalog", {:class => "pb-2 font-weight-bold"}))
         end)
-        concat(content_tag(:div, {:class => "panel-body"}) do
+        concat(content_tag(:div, {:class => ""}) do
           sub.send("includedInDataCatalog").each do |catalog|
             catalog_btn_label = catalog
             $DATA_CATALOG_VALUES.each do |cat_uri, cat_label|
@@ -33,8 +33,7 @@ module OntologiesHelper
                 break;
               end
             end
-            concat(content_tag(:a, catalog_btn_label, {:class => "btn btn-primary",
-                                                       :style => "margin-bottom: 1em; margin-right: 1em;", :href => catalog, :target => "_blank"}))
+            concat(content_tag(:a, catalog_btn_label, {:class => "btn btn-primary", :href => catalog, :target => "_blank"}))
           end
         end)
       end
@@ -50,11 +49,11 @@ module OntologiesHelper
     logo_attributes.each do |metadata|
       if !sub.send(metadata).nil?
         puts sub.send(metadata)
-        logo_html.concat(content_tag(:div, {:class => "panel panel-primary", :style => "margin: 2em;"}) do
-          concat(content_tag(:div, {:class => "panel-heading"}) do
-            concat(content_tag(:h3, metadata, {:class => "panel-title"}))
+        logo_html.concat(content_tag(:section, {:class => "ont-metadata-card ont-logo-depiction-card"}) do
+          concat(content_tag(:div, {:class => "ont-section-toolbar"}) do
+            concat(content_tag(:header, metadata.capitalize, {:class => "pb-2 font-weight-bold"}))
           end)
-          concat(content_tag(:div, {:class => "panel-body"}) do
+          concat(content_tag(:div, {:class => ""}) do
             concat(content_tag(:a, {:href => sub.send(metadata), :title => sub.send(metadata),
                              :target => "_blank", :style=>"border-width:0;"}) do
 
@@ -261,7 +260,7 @@ module OntologiesHelper
   # Creates a link based on the status of an ontology submission
   def download_link(submission, ontology = nil)
     ontology ||= @ontology
-    if submission.ontology.summaryOnly
+    if ontology.summaryOnly
       if submission.homepage.nil?
         link = 'N/A - metadata only'
       else
