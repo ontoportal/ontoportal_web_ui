@@ -378,10 +378,7 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
   // Setup AJAX page objects
   jQuery.bioportal.ont_pages = [];
 
-  jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=classes&ajax=true" + jQuery(document).data().bp.ont_viewer.concept_param,
-      "Problem retrieving classes, check if the tree root concepts are properly extracted: <a href='" + jQuery(document).data().bp.config.rest_url + "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "/classes/roots'>" + jQuery(document).data().bp.config.rest_url + "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "/classes/roots</a>",
-      jQuery(document).data().bp.ont_viewer.ontology_name + jQuery(document).data().bp.ont_viewer.concept_name_title + " - Classes", "Classes", function() {
-    jQuery(document).data().bp.classesTab.classes_init();
+  jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=classes&ajax=true" + jQuery(document).data().bp.ont_viewer.concept_param, "Problem retrieving classes", jQuery(document).data().bp.ont_viewer.ontology_name + jQuery(document).data().bp.ont_viewer.concept_name_title + " - Classes", "Classes", function() {
     jQuery(document).data().bp.classesTab.search_box_init();
     setupNotesFacebox();
   });
