@@ -1,0 +1,38 @@
+- if Rails.env.appliance?
+  = license_notification(current_license())
+
+- flash.each do |key, value|
+  %div{class: "flash #{flash_class(key)}", role: "alert"}
+    = value
+
+- do_not_display_subdomain_info_here = Set.new(["homeall_resources"])
+- if at_slice? && !do_not_display_subdomain_info_here.include?("#{controller.controller_name}#{controller.action_name}")
+  .subdomain_info{:style => "margin: 13px; padding: 5px; border: 1px solid gray; font-size:14px; background-color: #ffffcc;"}
+    %p{:style => "text-align: left; margin-bottom: 0;"}
+      - query_string = request.query_string.empty? ? "" : "?#{request.query_string}"
+      You are viewing the
+      %b= @subdomain_filter[:name]
+      %a.pop_window{:href => "help?pop=true#slice_definition", :target => "_blank"}
+        = $SITE
+        Slice
+      at
+      = succeed "." do
+        %b= request.host
+      = $SITE
+      = succeed "." do
+        %a{:href => "#{$UI_URL}#{request.path}#{query_string}"} visit the full site
+#site-notice
+  - message_name = ""
+  - unless $SITE_NOTICE.nil? || $SITE_NOTICE.empty?
+    - $SITE_NOTICE.each_key { |k| message_name = k }
+    - unless cookies[message_name.to_sym].eql?("true")
+      :javascript
+        function close_message(){
+          var exdate = new Date();
+          exdate.setDate(exdate.getDate() + 365);
+          document.cookie="#{message_name}=true; expires="+exdate.toGMTString();
+          jQuery("#notice_message").hide();
+        }
+      %div#notice_message{class: "alert alert-info", role: "alert"}
+        = $SITE_NOTICE[message_name.to_sym]
+        %a{href: "#", onclick: "close_message(); return false;", class: "float-right"} [close]

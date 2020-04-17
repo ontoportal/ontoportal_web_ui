@@ -28,9 +28,8 @@ class VirtualApplianceController < ApplicationController
     user = LinkedData::Client::Models::User.find_by_username(params[:appliance_user][:user_id]).first
 
     if user.nil?
-      flash[:admin_error] = "Problem adding account <b>#{params[:appliance_user][:user_id]}</b>, account does not exist"
-      redirect_to :action => 'index'
-      return
+      flash[:error] = "Problem adding account <strong>#{params[:appliance_user][:user_id]}</strong>: account does not exist".html_safe
+      redirect_to action: 'index' and return
     end
 
     @new_user = VirtualApplianceUser.where(user_id: user.id)

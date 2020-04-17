@@ -27,6 +27,10 @@ Rails.application.routes.draw do
 
   resources :admin, :only => [:index]
 
+  namespace :admin do
+    resources :licenses, only: [:index, :create, :new]
+  end
+
   resources :subscriptions
 
   resources :recommender

@@ -63,10 +63,10 @@ class LoginController < ApplicationController
       old_user = session[:user]
       session[:user] = session[:admin_user]
       session.delete(:admin_user)
-      flash[:notice] = "Logged out <b>#{old_user.username}</b>, returned to <b>#{session[:user].username}</b>"
+      flash[:success] = "Logged out <b>#{old_user.username}</b>, returned to <b>#{session[:user].username}</b>".html_safe
     else
       session[:user] = nil
-      flash[:notice] = "Logged out"
+      flash[:success] = "You have successfully logged out"
     end
     redirect_to request.referer || "/"
   end
@@ -79,9 +79,9 @@ class LoginController < ApplicationController
     username = params[:user][:account_name]
     email = params[:user][:email]
     resp = LinkedData::Client::HTTP.post("/users/create_reset_password_token", {username: username, email: email})
+
     if resp.nil?
-      flash[:notice] = "Please check your email for a message with reset instructions"
-      redirect_to "/login"
+      redirect_to login_index_path, notice: "Please check your email for a message with reset instructions"
     else
       flash[:notice] = resp.errors.first + ". Please try again."
       redirect_to "/lost_pass"
@@ -109,8 +109,8 @@ class LoginController < ApplicationController
     return unless user
     session[:user] = user
     custom_ontologies_text = session[:user].customOntology && !session[:user].customOntology.empty? ? "The display is now based on your <a href='/account#custom_ontology_set'>Custom Ontology Set</a>." : ""
-    notice = "Welcome <b>" + user.username.to_s + "</b>. " + custom_ontologies_text
-    flash[:notice] = notice.html_safe
+    notice = "Welcome <b>" + user.username.to_s + "</b>! " + custom_ontologies_text
+    flash[:success] = notice.html_safe
   end
 
   def validate(params)
