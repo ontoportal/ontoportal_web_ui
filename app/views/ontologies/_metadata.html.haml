@@ -106,6 +106,7 @@
         %header.pb-2.font-weight-bold Get my metadata back
       %div
         - unless @submission_latest.nil?
+          =javascript_include_tag "jsonld"
           %button{:id => "getMetadataBackNquadsBtn", :class => "btn btn-primary"} N-Triple
           %button{:id => "getMetadataBackJsonldBtn", :class => "btn btn-primary"} Json-LD
           %button{:id => "getMetadataBackXmlBtn", :class => "btn btn-primary"} RDF/XML
