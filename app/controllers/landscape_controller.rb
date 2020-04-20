@@ -2,7 +2,7 @@ require 'action_view'
 include ActionView::Helpers::NumberHelper
 
 class LandscapeController < ApplicationController
-  layout 'ontology'
+  layout :determine_layout
 
   def index
     #@ontologies = LinkedData::Client::Models::Ontology.all(include_views: false)

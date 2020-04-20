@@ -143,29 +143,21 @@ var definitionPie = createPie("definitionPropertyPieChartDiv", landscapeData["de
 var authorPie = createPie("authorPropertyPieChartDiv", landscapeData["authorProperty_json_pie"], false);
 
 // Generate the used engineering tools tag cloud
-$(function() {
+$(document).ready(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
   $("#toolCloudChart").jQCloud(landscapeData["engineering_tool_cloud_json"]);
-});
 
-// Generate the people tag cloud (from all contributors attributes)
-$(function() {
+  // Generate the people tag cloud (from all contributors attributes)
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
   $("#peopleCloudChart").jQCloud(landscapeData["people_count_json_cloud"]);
-});
 
-// Generate the organization tag cloud (from fundedBy, endorsedBy...), don't show if less than 5 words
-$(function() {
+  // Generate the organization tag cloud (from fundedBy, endorsedBy...), don't show if less than 5 words
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
-    $("#orgCloudChart").jQCloud(landscapeData["org_count_json_cloud"]);
-});
+  $("#orgCloudChart").jQCloud(landscapeData["org_count_json_cloud"]);
 
-$(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
   $("#notesPeopleCloudChart").jQCloud(landscapeData["notes_people_json_cloud"]);
-});
 
-$(function() {
   // When DOM is ready, select the container element and call the jQCloud method, passing the array of words as the first argument.
   $("#notesOntologiesCloudChart").jQCloud(landscapeData["notes_ontologies_json_cloud"]);
 });
