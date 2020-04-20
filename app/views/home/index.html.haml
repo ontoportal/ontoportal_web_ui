@@ -77,23 +77,6 @@
               %div.d-flex.justify-content-between.align-items-center
                 %span Classes
                 %span= number_with_delimiter(@cls_count, :delimiter => ",")
-            -unless Rails.env.appliance?
-              %li.list-group-item
-                %div.d-flex.justify-content-between.align-items-center
-                  %span Resources Indexed
-                  %span= number_with_delimiter(@ri_resources, :delimiter => ",")
-              %li.list-group-item
-                %div.d-flex.justify-content-between.align-items-center
-                  %span Indexed Records
-                  %span= number_with_delimiter(@ri_record_count, :delimiter => ",")
-              %li.list-group-item
-                %div.d-flex.justify-content-between.align-items-center
-                  %span Direct Annotations
-                  %span= number_with_delimiter(@direct_annotations, :delimiter => ",")
-              %li.list-group-item
-                %div.d-flex.justify-content-between.align-items-center
-                  %span Direct Plus Expanded Annotations
-                  %span= number_with_delimiter(@direct_expanded_annotations, :delimiter => ",")
   %div.row.pt-3.extra
     %div.col
       %div.card-deck
