@@ -2,7 +2,7 @@ class License < ApplicationRecord
 
   attr_reader :appliance_id, :organization, :expiry_date
 
-  validates :encrypted_key, presence: true, encrypted_key: true
+  validates :encrypted_key, presence: true, encrypted_key: true, virtual_appliance_id: true
 
   after_find :decrypt
   after_commit :decrypt
