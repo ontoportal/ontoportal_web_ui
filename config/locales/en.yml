@@ -7,6 +7,8 @@ en:
           attributes:
             encrypted_key:
               invalid_license_key: is an invalid license key
+              no_appliance_id_for_comparison: couldn't be validated. Unable to retrieve virtual appliance ID.
+              appliance_id_mismatch: is an appliance ID mismatch
 
   admin:
     licenses:
