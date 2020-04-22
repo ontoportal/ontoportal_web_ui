@@ -68,6 +68,23 @@
           ontPropTree.selectClass(data.id);
           data.id = decodeURIComponent(data.id);
           jQuery("#prop_contents").html(propDetailsTemp(data));
+
+          Split(['#propTree', '#prop_contents'], {
+            elementStyle: function (dimension, size, gutterSize) {
+              return {
+                'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
+              }
+            },
+            gutterStyle: function (dimension, gutterSize) {
+              return {
+                'flex-basis':  gutterSize + 'px'
+              }
+            },
+            gutterSize: 10,
+            direction: "horizontal",
+            sizes: [25, 75],
+            cursor: "col-resize"
+          })  
         }
       }
     }).on("afterSelect", function (e, classId, label, node) {
@@ -75,21 +92,4 @@
       data.id = decodeURIComponent(data.id);
       jQuery("#prop_contents").html(propDetailsTemp(data));
     });
-
-    Split(['#propTree', '#prop_contents'], {
-      elementStyle: function (dimension, size, gutterSize) {
-        return {
-          'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
-        }
-      },
-      gutterStyle: function (dimension, gutterSize) {
-        return {
-          'flex-basis':  gutterSize + 'px'
-        }
-      },
-      gutterSize: 10,
-      direction: "horizontal",
-      sizes: [25, 75],
-      cursor: "col-resize"
-    })  
   }
