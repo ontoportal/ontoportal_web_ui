@@ -14,7 +14,7 @@
 # definition into the server list. The second argument
 # something that quacks like a hash can be used to set
 # extended properties on the server.
-server 'localhost', roles: %w{web db}
+server 'localhost', roles: %w{app db}
 
 # you can set custom ssh options
 # it's possible to pass any option but you need to keep in mind that net/ssh understand limited list of options
@@ -39,8 +39,8 @@ server 'localhost', roles: %w{web db}
 # setting per server overrides global ssh_options
 #
 
-NCBO_BRANCH = ENV.include?('NCBO_BRANCH') ? ENV['NCBO_BRANCH'] : 'master'
-set :branch, "#{NCBO_BRANCH}"
+BRANCH = ENV.include?('BRANCH') ? ENV['BRANCH'] : 'master'
+set :branch, "#{BRANCH}"
 
 set :deploy_to, "/srv/ontoportal/#{fetch(:application)}"
 
