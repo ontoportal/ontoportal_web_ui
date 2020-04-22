@@ -64,7 +64,7 @@
       onInit: function() {
         var ontPropTree = $("#propTree").data().NCBOPropertyTree;
         var data = $("#propTree").find("a:first").data();
-        if (data !== null) {
+        if (data) {
           ontPropTree.selectClass(data.id);
           data.id = decodeURIComponent(data.id);
           jQuery("#prop_contents").html(propDetailsTemp(data));
