@@ -77,6 +77,18 @@
               %div.d-flex.justify-content-between.align-items-center
                 %span Classes
                 %span= number_with_delimiter(@cls_count, :delimiter => ",")
+            %li.list-group-item
+              %div.d-flex.justify-content-between.align-items-center
+                %span Individuals
+                %span= number_with_delimiter(@individuals_count, :delimiter => ",")
+            %li.list-group-item
+              %div.d-flex.justify-content-between.align-items-center
+                %span Projects
+                %span= LinkedData::Client::Models::Project.all.length
+            %li.list-group-item
+              %div.d-flex.justify-content-between.align-items-center
+                %span Users
+                %span= LinkedData::Client::Models::User.all.length
   %div.row.pt-3.extra
     %div.col
       %div.card-deck
