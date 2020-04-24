@@ -62,7 +62,15 @@ footer.footer .list-inline-item:not(:last-child) {
   padding: 20px 0;
 }
 
+a {
+  color: #215B04 !important;
+}
+a i {
+  color: #31B404;
+}
+
 .btn-primary {
-  background-color: #338D0C !important;
-  border-color: #338D0C !important;
+  background-color: #31B404 !important;
+  border-color: #31B404 !important;
+  color: #fff !important;
 }

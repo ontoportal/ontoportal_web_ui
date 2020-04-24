@@ -4,8 +4,57 @@
 %footer.footer.pt-4.mt-5
   %div.container
     %div.row
+      %div.col-6.col-md
+        %h6 PRODUCTS
+        %ul.list-unstyled
+          %li= link_to('AgroPortal Virtual Appliance', 'https://www.bioontology.org/wiki/index.php/Category:NCBO_Virtual_Appliance', target: '_blank')
+          %li= link_to('NCBO Web Widgets', 'http://www.bioontology.org/wiki/index.php/NCBO_Widgets', target: '_blank')
+      %div.col-6.col-md.footer-support
+        %h6 SUPPORT
+        %ul.list-unstyled
+          %li= link_to('Contact Us', feedback_path(location: encode_param(request.url)), class: 'pop_window')
+          %li= link_to('Documentation', 'http://data.agroportal.lirmm.fr/documentation', target: '_blank')
+          %li= link_to('NCBO Wiki', 'https://www.bioontology.org/wiki/', target: '_blank')
+      %div.col-6.col-md
+        %h6 ABOUT
+        %ul.list-unstyled
+          %li= link_to('About Us', about_path)
+          %li= link_to(raw('D2KAB project'), 'http://d2kab.mystrikingly.com', target: '_blank')
+          %li= link_to('Team', 'https://github.com/orgs/agroportal/people', target: '_blank')
       %div.col-12.col-md
-        = t('home.footer')
+        %h6 CONNECT
+        %ul.list-inline
+          %li.list-inline-item
+            = link_to('http://data.agroportal.lirmm.fr', class: 'logo connect', target: '_blank') do 
+              = image_tag '/assets/layout/footer/api_logo.png'
+          %li.list-inline-item
+            = link_to('http://sparql.agroportal.lirmm.fr/test/', class: 'logo connect', target: '_blank') do 
+              = image_tag '/assets/layout/footer/sparql_logo.png'
+          %li.list-inline-item
+            = link_to('https://twitter.com/lagroportal?lang=en', target: '_blank') do
+              %i.fab.fa-2x.fa-twitter
+          %li.list-inline-item
+            = link_to('https://github.com/agroportal', target: '_blank') do
+              %i.fab.fa-2x.fa-github
+    %div.row.legal-text
+      %div.col
+        = t('.grant_html')
+    %div.row.pt-2.legal-text
+      %div.col
+        = t('.copyright_html')
+    %div.row.pt-2
+      %div.col
+        %ul.list-inline
+          %li.list-inline-item
+            = link_to('CITE US', 'https://dx.doi.org/10.1016/j.compag.2017.10.012', target: '_blank')
+          %li.list-inline-item
+            %i.fas.fa-ellipsis-v{"aria-hidden" => "true"}
+          %li.list-inline-item
+            = link_to('PRIVACY POLICY', 'http://www.bioontology.org/privacy.html',  target: '_blank')
+          %li.list-inline-item
+            %i.fas.fa-ellipsis-v{"aria-hidden" => "true"}
+          %li.list-inline-item
+            = link_to('TERMS', 'http://www.bioontology.org/terms.html', target: '_blank')
 
 = javascript_include_tag "application"
 = render partial: "ga_tracking"
