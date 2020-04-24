@@ -36,7 +36,11 @@ set :linked_dirs, %w{log tmp/pids tmp/cache public/system public/assets}
 
 # Default value for keep_releases is 5
 set :keep_releases, 5
-set :bundle_flags, '--without development test --deployment' 
+set :bundle_flags, '--without development test --deployment'
+
+# Defaults to [:web]
+set :assets_roles, [:web, :app]
+set :keep_assets, 3
 
 # If you want to restart using `touch tmp/restart.txt`, add this to your config/deploy.rb:
 
