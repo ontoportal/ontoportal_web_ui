@@ -9,8 +9,17 @@ div.logos {
 }
 
 div.logos img {
-  max-height: 100px;
+  max-height: 75px;
   margin: 5px;
+  opacity: 0.8;
+  
+  &:hover {
+    opacity: 1;
+  }
+}
+
+div.logos.other-portals img {
+  border-radius: 10px;
 }
 
 div.logos a {
@@ -20,7 +29,7 @@ div.logos a {
 @media only screen and (max-width: 992px) {
   
   div.logos img {
-    max-height: 70px !important;
+    max-height: 50px !important;
   }
   
 }

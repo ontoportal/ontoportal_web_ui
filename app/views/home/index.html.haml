@@ -124,6 +124,22 @@
               %li.list-group-item
                 = link_to slice_name, slice_link
   - logos_root_folder = '/assets/logos'
+  %div.row.pt-3.misc
+    %div.col
+      %div.card-deck
+        %div.card
+          %div.card-header Agroportal Metrics
+          %div.metrics
+            = image_tag '/assets/home/agroportal_metrics.png', style: 'width: 100%'
+        %div.card
+          %div.card-header Other repositories in the OntoPortal Alliance
+          %div.logos.other-portals
+            - logos_folder = [logos_root_folder, :ontoportal_alliance].join('/')
+            %ul.list-group.list-group-flush
+              %li.list-group-item
+                = link_to(image_tag([logos_folder, 'bioportal_logo.png'].join('/')), "http://bioportal.lirmm.fr", target: '_blank')
+              %li.list-group-item
+                = link_to(image_tag([logos_folder, 'ecoportal_logo.png'].join('/')), "http://ecoportal.lifewatchitaly.eu", target: '_blank')
   %div.row.pt-3.supported-by
     %div.col
       %div.card-deck
