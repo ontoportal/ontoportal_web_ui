@@ -123,14 +123,14 @@
               - slice_link = "http://#{slice.acronym}.#{$UI_URL.sub("http://", "")}"
               %li.list-group-item
                 = link_to slice_name, slice_link
-  - logos_root_folder = '/assets/logos'
+  - logos_root_folder = 'logos'
   %div.row.pt-3.misc
     %div.col
       %div.card-deck
         %div.card
           %div.card-header Agroportal Metrics
           %div.metrics
-            = image_tag '/assets/home/agroportal_metrics.png', style: 'width: 100%'
+            = image_tag 'home/agroportal_metrics.png', style: 'width: 100%'
         %div.card
           %div.card-header Other repositories in the OntoPortal Alliance
           %div.logos.other-portals
