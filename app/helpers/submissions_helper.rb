@@ -7,9 +7,9 @@ module SubmissionsHelper
     label_html = ''.html_safe
 
     if !attr["label"].nil?
-      label_html << label_tag("submission_#{attr_label}", attr["label"])
+      label_html << label_tag("submission_#{attr_label}", attr["label"], { class: 'form-label' })
     else
-      label_html << label_tag("submission_#{attr_label}", attr_label.underscore.humanize)
+      label_html << label_tag("submission_#{attr_label}", attr_label.underscore.humanize, { class: 'form-label' })
     end
 
     if !attr["extracted"].nil? && attr["extracted"] == true
@@ -58,7 +58,7 @@ module SubmissionsHelper
       text_field(:submission, attr["attribute"].to_s.to_sym, :class => "datepicker", value: "#{date_value}")
 
     elsif attr["enforce"].include?("textarea")
-      text_area(:submission, attr["attribute"].to_s.to_sym, rows: 3, value: @submission.send(attr["attribute"]))
+      text_area(:submission, attr["attribute"].to_s.to_sym, rows: 3, value: @submission.send(attr["attribute"]), class: 'metadataInput form-control')
 
     # Create select dropdown when there are enforcedValues for the attr. But also let the user enter its own value if Other selected
     elsif !attr["enforcedValues"].nil?
@@ -82,10 +82,10 @@ module SubmissionsHelper
                                  "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology")
 
         input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;width: 16em;", :placeholder => "Or provide the value",
-                                     :onkeydown => "if (event.keyCode == 13) { addOntoToSelect('#{attr["attribute"]}'); return false;}")
+                                     :onkeydown => "if (event.keyCode == 13) { addOntoToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control')
 
         input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;vertical-align: baseline;",
-                                 :type => "button", :class => "btn btn-info btn-sm", :onclick => "addOntoToSelect('#{attr["attribute"]}')")
+                                 :type => "button", :class => "btn btn-primary btn-sm", :onclick => "addOntoToSelect('#{attr["attribute"]}')")
 
       else
 
@@ -100,13 +100,13 @@ module SubmissionsHelper
 
         # Button and field to add new value (that are not in the select). Show when other is selected
         input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;width: 16em;display: none;", :placeholder => "Or provide the value",
-                                     :onkeydown => "if (event.keyCode == 13) { addValueToSelect('#{attr["attribute"]}'); return false;}")
+                                     :onkeydown => "if (event.keyCode == 13) { addValueToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control')
 
         input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;display: none;vertical-align: baseline;",
-                                 :type => "button", :class => "btn btn-info btn-sm", :onclick => "addValueToSelect('#{attr["attribute"]}')")
+                                 :type => "button", :class => "btn btn-primary btn-sm", :onclick => "addValueToSelect('#{attr["attribute"]}')", :class => 'metadataInput form-control')
 
         # To show/hide textbox when other option is selected or not
-        input_html << javascript_tag("$(function() {
+        input_html << javascript_tag("$(document).ready(function() {
             $('#select_#{attr["attribute"]}').change(function() {
               if ($('#select_#{attr["attribute"]}').val() == 'other') {
                 $('#add_#{attr["attribute"].to_s}').val("");
@@ -153,11 +153,11 @@ module SubmissionsHelper
       # Button and field to add new value (not in the select)
       input_html << tag(:br)
 
-      input_html << text_field_tag("add_#{attr["attribute"]}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em;",
-                                   :placeholder => "Ontology outside of the Portal", :onkeydown => "if (event.keyCode == 13) { addOntoToSelect('#{attr["attribute"]}'); return false;}")
+      input_html << text_field_tag("add_#{attr["attribute"]}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em; display: inline",
+                                   :placeholder => "Ontology outside of the Portal", :onkeydown => "if (event.keyCode == 13) { addOntoToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control')
 
       input_html << button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;",
-                               :type => "button", :class => "btn btn-info btn-sm", :onclick => "addOntoToSelect('#{attr["attribute"]}')")
+                               :type => "button", :class => "btn btn-primary btn-sm", :onclick => "addOntoToSelect('#{attr["attribute"]}')")
 
       return input_html
 
@@ -170,13 +170,13 @@ module SubmissionsHelper
 
       if attr["enforce"].include?("list")
         input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;margin-left: 0.5em;",
-                                 :type => "button", :class => "btn btn-info btn-sm", :onclick => "addInput('#{attr["attribute"]}', 'url')")
-        input_html << url_field_tag("submission[#{attr["attribute"].to_s}][]", uri_value[0], :id => attr["attribute"].to_s, class: "metadataInput")
+                                 :type => "button", :class => "btn btn-primary btn-sm", :onclick => "addInput('#{attr["attribute"]}', 'url')")
+        input_html << url_field_tag("submission[#{attr["attribute"].to_s}][]", uri_value[0], :id => attr["attribute"].to_s, class: "metadataInput form-control")
         # Add field if list of URI
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
           @submission.send(attr["attribute"]).each_with_index do |metadata_val, index|
             if index != 0
-              input_html << url_field_tag("submission[#{attr["attribute"].to_s}][]", metadata_val, :id => "submission_#{attr["attribute"].to_s}", class: "metadataInput")
+              input_html << url_field_tag("submission[#{attr["attribute"].to_s}][]", metadata_val, :id => "submission_#{attr["attribute"].to_s}", class: "metadataInput form-control")
             end
           end
         end
@@ -184,7 +184,7 @@ module SubmissionsHelper
 
       else
         # if single value
-        input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: uri_value, class: "metadataInput")
+        input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: uri_value, class: "metadataInput form-control")
       end
       return input_html
 
@@ -197,18 +197,18 @@ module SubmissionsHelper
 
       if attr["enforce"].include?("list")
         input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;",
-                                 :type => "button", :class => "btn btn-info btn-sm", :onclick => "addInput('#{attr["attribute"]}', 'text')")
+                                 :type => "button", :class => "btn btn-primary btn-sm", :onclick => "addInput('#{attr["attribute"]}', 'text')")
         firstVal = ""
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
           firstVal = @submission.send(attr["attribute"])[0]
         end
-        input_html << text_field_tag("submission[#{attr["attribute"].to_s}][]", firstVal, :id => attr["attribute"].to_s, class: "metadataInput")
+        input_html << text_field_tag("submission[#{attr["attribute"].to_s}][]", firstVal, :id => attr["attribute"].to_s, class: "metadataInput form-control")
 
         # Add field if list of metadata
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
           @submission.send(attr["attribute"]).each_with_index do |metadata_val, index|
             if index != 0
-              input_html << text_field_tag("submission[#{attr["attribute"].to_s}][]", metadata_val, :id => "submission_#{attr["attribute"].to_s}", class: "metadataInput")
+              input_html << text_field_tag("submission[#{attr["attribute"].to_s}][]", metadata_val, :id => "submission_#{attr["attribute"].to_s}", class: "metadataInput form-control")
             end
           end
         end
@@ -219,9 +219,9 @@ module SubmissionsHelper
         # if single value text
         # TODO: For some reason @submission.send("URI") FAILS... I don't know why... so I need to call it manually
         if attr["attribute"].to_s.eql?("URI")
-          input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.URI,class: "metadataInput")
+          input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.URI, class: "metadataInput form-control")
         else
-          input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"]), class: "metadataInput")
+          input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"]), class: "metadataInput form-control")
         end
       end
       return input_html
