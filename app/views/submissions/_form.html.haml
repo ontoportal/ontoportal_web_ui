@@ -29,11 +29,6 @@
     // Check to see if owl is selected, show options if so
     ontologyFormatChange();
     jQuery("#ontology_submission_form").validate();
-
-    jQuery('#add_contact_button').click(function(event) {
-      addContact();
-      event.preventDefault();
-    })
   });
   
   // Show/hide location inputs
@@ -78,18 +73,6 @@
     this.css("display", "none");
     jQuery("#format_spacing").css("margin", "0");
   };
-  
-  function addContact() {
-    var contact = jQuery(jQuery("#contacts").children(".contact")[0]);
-    var newContact = jQuery(jQuery("<div>").html(contact.html()).addClass("contact"));
-    newContact.children("input").each(function(){
-      var index =  jQuery("#contacts").children(".contact").length;
-      var newId = jQuery(this).attr("id").replace(/0/g, index);
-      var newName = jQuery(this).attr("name").replace(/0/g, index);
-      jQuery(this).attr("id", newId).attr("name", newName).attr("value", "")
-    })
-    jQuery("#contacts").append(newContact);
-  }
 
 - unless @errors.nil?
   %div.form-group.row
@@ -366,8 +349,8 @@
 %div#community.mt-4
   %div.card
     %div.card-header.bg-success
-      %a.card-link{'data-toggle'=>'collapse', :href=>'#contacts'} Contacts
-    %div#contacts.collapse.show{'data-parent'=>"#community"}
+      %a.card-link{'data-toggle'=>'collapse', :href=>'#contacts-panel'} Contacts
+    %div#contacts-panel.collapse.show{'data-parent'=>"#community"}
       %div.card-body
         -# Contact(s)
         %div#contacts.form-group.row
