@@ -33,4 +33,4 @@
 //= require ontologies
 //= require projects
 //= require submissions
-
+//= require tooltipster.bundle.min

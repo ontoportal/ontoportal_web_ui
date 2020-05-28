@@ -69,8 +69,15 @@ a i {
   color: #31B404;
 }
 
-.btn-primary {
+.btn-info, .btn-outline-primary:hover, .btn-primary {
   background-color: #31B404 !important;
   border-color: #31B404 !important;
   color: #fff !important;
+}
+
+.bg-success {
+  background-color: #EFFFEF !important;
+}
+.card-header.bg-success {
+  font-weight: bold;
 }

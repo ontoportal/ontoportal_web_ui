@@ -1130,6 +1130,17 @@ a.help_link {
   margin-left: .5em;
 }
 
+a.tooltip_link {
+  font-size: 20px;
+  float: right;
+  cursor: help;
+}
+
+a.tooltip_link:hover {
+  background-color: #EFFFEF !important;
+  border-radius: 999px;
+}
+
 h1.tab_header {
   padding: 10px 0 0 13px;
   margin-bottom: 0;

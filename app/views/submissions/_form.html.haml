@@ -113,7 +113,7 @@
 = hidden_field :submission, :ontology, value: @ontology.id
 
 %div.card.mt-4
-  %div.card-header General
+  %div.card-header.bg-success General
   %div.card-body
     %div.card-text
       -# Format
@@ -271,16 +271,16 @@
               = f.select("masterFileName", @masterFileOptions, { include_blank: "Select primary file from zip contents", required: true}, {style: "border-color: red;"})
 
 %div.card.mt-4
-  %div.card-header Key properties
+  %div.card-header.bg-success Key properties
   %div.card-body
     %div.card-text
-      %div.row
+      %div.form-group.row
         %div.col-md-3
           -# generate_attribute functions are defined in submissions_helper.rb
           = generate_attribute_label("URI")
         %div.col-md-9
           = raw generate_attribute_input("URI")
-      %div.row
+      %div.form-group.row
         %div.col-md-3
           = generate_attribute_label("status")
           %span.asterik *
@@ -288,17 +288,17 @@
           - selected_status = @submission.status ? @submission.status : "alpha"
           - status_options = ["alpha", "beta", "production", "retired"]
           = select :submission, :status, status_options, { :selected => selected_status, :required => true}, {:class => "form-control"}
-      %div.row
+      %div.form-group.row
         %div.col-md-3
           = generate_attribute_label("deprecated")
         %div.col-md-9
           = raw generate_attribute_input("deprecated")
-      %div.row
+      %div.form-group.row
         %div.col-md-3
           = generate_attribute_label("version")
         %div.col-md-9
           = raw generate_attribute_input("version")
-      %div.row
+      %div.form-group.row
         %div.col-md-3
           = generate_attribute_label("hasOntologySyntax")
         %div.col-md-9
@@ -306,7 +306,7 @@
           %p
             Properties taken from
             = link_to "W3C URIs for file format", "https://www.w3.org/ns/formats/", target: "_blank"
-      %div.row
+      %div.form-group.row
         %div.col-md-3
           = generate_attribute_label("hasFormalityLevel")
         %div.col-md-9
@@ -314,12 +314,12 @@
           %p
             Properties taken from
             = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
-      %div.row
+      %div.form-group.row
         %div.col-md-3
           = generate_attribute_label("isOfType")
         %div.col-md-9
           = generate_attribute_input("isOfType")
-      %div.row
+      %div.form-group.row
         %div.col-md-3
           = generate_attribute_label("naturalLanguage")
         %div.col-md-9
@@ -332,7 +332,7 @@
             e.g.: http://lexvo.org/id/iso639-3/eng
 
 %div.card.mt-4
-  %div.card-header Description
+  %div.card-header.bg-success Description
   %div.card-body
     %div.card-text
       -# Description
@@ -365,7 +365,7 @@
 
 %div#community.mt-4
   %div.card
-    %div.card-header
+    %div.card-header.bg-success
       %a.card-link{'data-toggle'=>'collapse', :href=>'#contacts'} Contacts
     %div#contacts.collapse.show{'data-parent'=>"#community"}
       %div.card-body
@@ -443,7 +443,7 @@
 
 %div#ontology-relations-more.mt-4
   %div.card
-    %div.card-header
+    %div.card-header.bg-success
       %a.card-link{'data-toggle'=>'collapse', :href=>'#ontology-relations'} Ontology relations
     %div#ontology-relations.collapse.show{'data-parent'=>"#ontology-relations-more"}
       %div.card-body
@@ -482,7 +482,7 @@
 
 %div#ontology-content-metrics.mt-4
   %div.card
-    %div.card-header
+    %div.card-header.bg-success
       %a.card-link{'data-toggle'=>'collapse', :href=>'#ontology-content'} Ontology content
     %div#ontology-content.collapse.show{'data-parent'=>"#ontology-content-metrics"}
       %div.card-body
@@ -558,19 +558,18 @@
       search_contains: true
     });
     jQuery(".selectOntology").chosen({
+      width: '100%',
       search_contains: true
     });
-    /*
-    $('.tooltip').tooltipster({
+    $('.tooltip_link').tooltipster({
       interactive: true,
       position: "right",
       contentAsHTML: true,
       animation: 'fade',
       delay: 200,
-      theme: 'tooltipster-light',
+      theme: 'tooltipster-shadow',
       trigger: 'hover'
     });
-    */
   })
 
   /**

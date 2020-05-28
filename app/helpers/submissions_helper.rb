@@ -35,7 +35,7 @@ module SubmissionsHelper
       help_text << "&lt;br&gt;&lt;br&gt;#{attr["helpText"]}"
     end
 
-    label_html << help_tooltip(help_text, {:id => "tooltip#{attr["attribute"]}", :style => "opacity: inherit; display: inline;position: initial;margin-right: 0.5em;"}).html_safe
+    label_html << help_tooltip(help_text, {:id => "tooltip#{attr["attribute"]}"}).html_safe
     return label_html
   end
 
@@ -81,7 +81,7 @@ module SubmissionsHelper
         input_html << select_tag("submission[#{attr_label}][]", options_for_select(select_values, metadata_values), :multiple => 'true',
                                  "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology")
 
-        input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;width: 16em;", :placeholder => "Or provide the value",
+        input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-right: 1em;width: 16em;", :placeholder => "Or provide the value",
                                      :onkeydown => "if (event.keyCode == 13) { addOntoToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control')
 
         input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;vertical-align: baseline;",
@@ -99,7 +99,7 @@ module SubmissionsHelper
         input_html << select("submission", attr["attribute"], select_values, { :selected => metadata_values}, {:class => "form-control", :id => "select_#{attr["attribute"]}", :style=> "margin-bottom: 1em;"})
 
         # Button and field to add new value (that are not in the select). Show when other is selected
-        input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-left: 1em; margin-right: 1em;width: 16em;display: none;", :placeholder => "Or provide the value",
+        input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-right: 1em;width: 16em;display: none;", :placeholder => "Or provide the value",
                                      :onkeydown => "if (event.keyCode == 13) { addValueToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control')
 
         input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;display: none;vertical-align: baseline;",
@@ -153,7 +153,7 @@ module SubmissionsHelper
       # Button and field to add new value (not in the select)
       input_html << tag(:br)
 
-      input_html << text_field_tag("add_#{attr["attribute"]}", nil, :style => "margin-left: 1em; margin-right: 1em;vertical-align: super;width: 16em; display: inline",
+      input_html << text_field_tag("add_#{attr["attribute"]}", nil, :style => "margin-right: 1em;vertical-align: super;width: 16em; display: inline",
                                    :placeholder => "Ontology outside of the Portal", :onkeydown => "if (event.keyCode == 13) { addOntoToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control')
 
       input_html << button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;",
