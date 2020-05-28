@@ -63,7 +63,8 @@ function get_annotations() {
   ajax_process_halt();
 
   var params = {},
-    ont_select = jQuery("#ontology_ontologyId");
+    ont_select = jQuery("#ontology_ontologyId"),
+    mappings = [];
 
   params.text = jQuery("#annotation_text").val();
   params.ontologies = (ont_select.val() === null) ? [] : ont_select.val();
@@ -75,11 +76,11 @@ function get_annotations() {
   params.ncbo_slice = (("ncbo_slice" in BP_CONFIG) ? BP_CONFIG.ncbo_slice : '');
 
   params.negation = jQuery("#negation").is(':checked');
-  //params.experiencer = jQuery("#experiencer").is(':checked');
+  params.experiencer = jQuery("#experiencer").is(':checked');
   params.temporality = jQuery("#temporality").is(':checked');
 
-  //params.lemmatize = jQuery("#lemmatize").is(':checked');
-  params.lemmatize = false;
+  params.score_threshold = jQuery("#score_threshold").val();
+  params.confidence_threshold = jQuery("#confidence_threshold").val();
 
   params.score = jQuery("#score").val();
   if (params.score) {
@@ -119,6 +120,11 @@ function get_annotations() {
   //if (jQuery("#wholeWordOnly:checked").val() !== undefined) {
   //  params.wholeWordOnly = jQuery("#wholeWordOnly:checked").val();
   //}
+
+  jQuery("[name='mappings']:checked").each(function() {
+    mappings.push(jQuery(this).val());
+  });
+  params.mappings = mappings;
 
   if (jQuery("#semantic_types").val() !== null) {
     params.semantic_types = jQuery("#semantic_types").val();
@@ -458,7 +464,9 @@ function annotatorFormatLink(param_string, format) {
     "rdf": "RDF",
     "xml": "XML",
     "text": "Text",
-    "tabDelimited": "CSV"
+    "tabDelimited": "CSV",
+    "quaero": "QUAERO",
+    "brat": "BRAT"
   };
   //var query = BP_CONFIG.rest_url + "/annotator?apikey=" + BP_CONFIG.apikey + "&" + param_string;
   var query = BP_CONFIG.annotator_url + "?" + param_string;
@@ -472,7 +480,8 @@ function annotatorFormatLink(param_string, format) {
   if (format !== 'json') {
     query += "&format=" + format;
   }
-  var link = "<a href=\"" + encodeURI(query) + "\" class=\"btn btn-default btn-sm\" target=\"_blank\">" + format_map[format] + "</a>";
+  // var link = "<a href=\"" + encodeURI(query) + "\" class=\"btn btn-default btn-sm\" target=\"_blank\">" + format_map[format] + "</a>";
+  var link = "<a href=\"" + encodeURI(query) + "\" class = \"btn btn-outline-primary btn-sm\" target=\"_blank\">" + format_map[format] + "</a>";
   jQuery("#download_links_" + format.toLowerCase()).html(link);
 }
 
@@ -503,13 +512,26 @@ function generateParameters() {
 jQuery(document).ready(function() {
   "use strict";
   jQuery("#annotator_button").click(get_annotations);
-  jQuery("#semantic_types").chosen({
-    search_contains: true
+  
+  jQuery("#semantic_types").select2({
+    allowClear: true,
+    dropdownParent: jQuery(".annotator form")
   });
-  jQuery("#semantic_groups").chosen({
-    search_contains: true
+
+  jQuery("#semantic_groups").select2({
+    allowClear: true,
+    dropdownParent: jQuery(".annotator form")
+  });
+
+  jQuery("#ontology_ontologyId").select2({
+    allowClear: true,
+    dropdownParent: jQuery(".annotator form")
   });
   jQuery("#insert_text_link").click(insertSampleText);
+
+  jQuery("#advancedOptionsLink").click(toggle_advanced_options);
+  jQuery("#advanced-options-container").hide();
+  
   // Init annotation table
   annotationsTable = jQuery("#annotations").dataTable({
     bPaginate: false,
@@ -866,13 +888,12 @@ function display_annotations(data, params) {
   jQuery("#annotator_parameters").html("<a href=\"" + encodeURI(query) + "\" class=\"btn btn-info\" target=\"_blank\">Corresponding REST web service call</a>");
   jQuery("#annotator_parameters_encoded").html(query_encoded);
   // Add links for downloading results
+  //annotatorFormatLink("tabDelimited");
   annotatorFormatLink(param_string, "json");
-  //annotatorFormatLink(param_string, "xml");
-  //TODO: make RDF format works with score
-  jQuery("#download_links_rdf").html("");
-  if (params.score === "") {
-    annotatorFormatLink(param_string, "rdf");
-  }
+  annotatorFormatLink(param_string, "xml");
+  annotatorFormatLink(param_string, "brat");
+  annotatorFormatLink(param_string, "quaero");
+  annotatorFormatLink(param_string, "rdf");
 
   if (params.raw !== undefined && params.raw === true) {
     // Initiate ajax calls to resolve class ID to prefLabel and ontology acronym to name.
@@ -880,7 +901,11 @@ function display_annotations(data, params) {
   }
 }
 
-
+function toggle_advanced_options() {
+  $("#advanced-options-container").toggle();
+  var text = $("#advanced-options-container").is(':visible') ? "Hide advanced options <<" : "Show advanced options >>";
+  $("#advancedOptionsLink").text(text);
+}
 
 // Creates an HTML form with a button that will POST to the annotator
 //function annotatorPostForm(format) {
