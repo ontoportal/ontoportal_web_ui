@@ -78,6 +78,7 @@ module OntologiesHelper
         metadata_list[metadata["attribute"]] = metadata["label"]
       end
     end
+    metadata_list = metadata_list.sort
 
     html = []
 
@@ -110,7 +111,7 @@ module OntologiesHelper
                 end
 
                 html << content_tag(:tr) do
-                  concat(content_tag(:th, "Natural Language", " "))
+                  concat(content_tag(:td, "Natural Language", " "))
                   # Display naturalLanguage as flag
                   concat(content_tag(:td) do
                     concat(content_tag(:ul, {:class => "f32"}) do
@@ -128,9 +129,9 @@ module OntologiesHelper
               else
                 html << content_tag(:tr) do
                   if label.nil?
-                    concat(content_tag(:th, metadata.gsub(/(?=[A-Z])/, " ")))
+                    concat(content_tag(:td, metadata.gsub(/(?=[A-Z])/, " ")))
                   else
-                    concat(content_tag(:th, label))
+                    concat(content_tag(:td, label))
                   end
 
                   metadata_array = []
@@ -162,9 +163,9 @@ module OntologiesHelper
             if !sub.send(metadata).nil?
               html << content_tag(:tr) do
                 if label.nil?
-                  concat(content_tag(:th, metadata.gsub(/(?=[A-Z])/, " ")))
+                  concat(content_tag(:td, metadata.gsub(/(?=[A-Z])/, " ")))
                 else
-                  concat(content_tag(:th, label))
+                  concat(content_tag(:td, label))
                 end
                 if (metadata.to_s.eql?("hasLicense"))
                   if (sub.send(metadata).to_s.start_with?("http://creativecommons.org/licenses") || sub.send(metadata).start_with?("https://creativecommons.org/licenses"))
@@ -200,8 +201,7 @@ module OntologiesHelper
                     concat(content_tag(:a, {:href => sub.send(metadata), :title => sub.send(metadata),
                                             :target => "_blank", :style=>"border-width:0;"}) do
 
-                      concat(content_tag(:img, "",{:title => sub.send(metadata),
-                                                   :style=>"height: 40px; border-width:0;", :src=>"/images/sparql_logo.png"}))
+                      concat(image_tag('logos/sparql_logo.png', title: sub.send(metadata), class: 'logo'))
                     end)
                   end)
 

@@ -135,6 +135,12 @@ $ont-show-bg-color: #e9ecef;
   td:nth-child(1) {
     background-color: #e2ebf0;
     white-space: nowrap;
+    text-transform: capitalize;
+  }
+  
+  .logo {
+    height: 40px;
+    border-width: 0px;
   }
 }
 
