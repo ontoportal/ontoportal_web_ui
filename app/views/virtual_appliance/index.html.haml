@@ -1,22 +1,24 @@
--@title = "NCBO Virtual Appliance Download"
+-@title = "OntoPortal Virtual Appliance Download"
 
 %div{:style => "padding: 13px; max-width: 800px;", :class => "enable-lists"}
-  %h1 NCBO Virtual Appliance Download
-  -if @virtual_appliance_access == false
-    %p Please contact support@bioontology.org for access to the NCBO Virtual Appliance
-  -else
-    %p The NCBO Virtual Appliance image contains a pre-installed, pre-configured version of commonly-used open source NCBO software running on a Linux operating system. The image was created using VMWare and is available for download at the links below.
-    %p The following software is included on the image:
+  %h1 OntoPortal Virtual Appliance Download
+  %p OntoPortal Virtual Appliance distribution contains a pre-installed, pre-configured version of commonly-used open source NCBO software running on a Linux operating system.
+  %p The following software is included on the image:
+  %ul
+    %li Ontologies API (REST service)
+    %li Annotator
+    %li Recommender
+    %li BioPortal Web User Interface (including ontology visualization, widgets, and Annotator UI)
+  %p Please see our <a href="https://ontoportal.github.io/administration/steps/getting_started/"> documentation</a> for more information on working with the Appliance.
+  %h2 Download Latest OntoPortal
+  %ul
+    %li Version 3.0.1 <a href="https://www.bioontology.org/ontoportal-appliance/ontoportal_appliance-vmware-3.0.1.ova"> OVA</a> | <a href="https://ontoportal.github.io/administration/steps/getting_started/#amazon-aws-ami"> Amazon EC2</a>
+
+  -if @virtual_appliance_access == true
+    %h3 Archives
+    %p The OntoPortal 2.5 Virtual Appliance is not longer offered for new users. This archival distribution is available only as a backup for those who registered for the Appliance before June 2020
     %ul
-      %li Ontologies API (REST service)
-      %li Annotator
-      %li Recommender
-      %li BioPortal Web User Interface (including ontology visualization, widgets, and Annotator UI)
-    %p Please see our <a href="http://www.bioontology.org/wiki/index.php/Category:NCBO_Virtual_Appliance"> documentation</a> for more information on working with the Appliance.
-    %h2 Download
-    %ul
-      %li Version 2.5 <a href="http://www.bioontology.org/ontoportal-appliance/ontoportal-2.5.zip"> OVF</a> |
-      %li Version 2.4 <a href="http://www.bioontology.org/ontoportal-appliance/ncbo-appliance-2.4.zip"> OVF</a> | <a target="_blank" href="http://www.bioontology.org/wiki/index.php/Virtual_Appliance_FAQ#How_can_I_use_the_Appliance_on_Amazon_EC2.3F">Amazon EC2</a>
+      %li Version 2.5 <a href="http://www.bioontology.org/ontoportal-appliance/ontoportal-2.5.zip"> OVF</a>
 
 
   -if @user.admin?
