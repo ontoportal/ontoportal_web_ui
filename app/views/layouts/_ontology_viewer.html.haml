@@ -150,9 +150,4 @@
               - if content_section.eql?("widgets")
                 = yield
 
-- if Rails.env.appliance?
-  = render partial: "footer_appliance"
-  = javascript_include_tag "application"
-  = render partial: "ga_tracking"
-- else
-  = render partial: "layouts/footer"
+= render partial: "layouts/footer"
