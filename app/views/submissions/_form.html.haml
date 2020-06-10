@@ -3,14 +3,6 @@
 :javascript
   $(document).ready(function() {
     
-    jQuery(".datepicker").datepicker({
-      showOn: 'button',
-      buttonImage: "#{image_path('calendar.gif')}",
-      buttonImageOnly: true,
-      buttonText: 'Choose a release date',
-      dateFormat: 'yy-mm-dd'
-    });
-    
     // Properly display the information for 'File Location' based on radio button
     if (jQuery("#submission_isRemote_0").is(":checked")) {
       location_toggle("upload");
@@ -91,7 +83,7 @@
     %div{:style => "text-align: center;"}
       %span.asterik * fields are required
       %br
-      %span.extractedAsterix * metadata that can be extracted from the ontology
+      = extractable_metadatum_tooltip({ text: 'Metadata that can be extracted from the ontology' })
 
 = hidden_field :submission, :ontology, value: @ontology.id
 
@@ -200,13 +192,13 @@
 
       -# Release date
       %div.form-group.row
-        %label.col-sm-2.col-form-label{for: "datepicker"} 
+        %label.col-sm-2.col-form-label{for: "release_date"}
           Release date
           %span.asterik *
         %div.col-sm-10
           %div.input-group
             - release_date = @submission.released ? Date.parse(@submission.released) : Date.today
-            = text_field(:submission, :released, id: "datepicker", value: "#{l(release_date, format: :month_day_year)}", required: true, class: "form-control", readonly: "readonly")
+            = text_field(:submission, :released, id: "release_date", value: "#{l(release_date, format: :month_day_year)}", required: true, class: "form-control", readonly: "readonly")
             %div.input-group-append
               %span.input-group-text
                 %i{class: "fas fa-calendar-alt fa-lg", aria: {hidden: "true"}}
@@ -266,7 +258,6 @@
       %div.form-group.row
         %div.col-md-3
           = generate_attribute_label("status")
-          %span.asterik *
         %div.col-md-9
           - selected_status = @submission.status ? @submission.status : "alpha"
           - status_options = ["alpha", "beta", "production", "retired"]
@@ -314,37 +305,155 @@
             %br
             e.g.: http://lexvo.org/id/iso639-3/eng
 
-%div.card.mt-4
-  %div.card-header.bg-success Description
-  %div.card-body
-    %div.card-text
-      -# Description
-      %div.form-group.row
-        %label.col-sm-2.col-form-label{for: "submission_description"} 
-          Description
-          %span.asterik *
-        %div.col-sm-10
-          = text_area :submission, :description, rows: 5, value: @submission.description, required: true, class: "form-control"
-      -# Home page
-      %div.form-group.row
-        %label.col-sm-2.col-form-label{for: "submission_homepage"} Homepage
-        %div.col-sm-10
-          = text_field :submission, :homepage, value: @submission.homepage, class: "form-control", aria: {describedBy: "homepageHelpBlock"}
-          %small.form-text.text-muted#homepageHelpBlock Enter a URL for the main page of your ontology.
+%div#description-card.card.mt-4
+  %div.card
+    %div.card-header.bg-success
+      %a.card-link{'data-toggle'=>'collapse', :href=>'#description'} Description
+    %div#description.show{'data-parent'=>"#description-card"}
+      %div.card-body
+        -# Description
+        %div.form-group.row
+          %label.col-sm-3.col-form-label{for: "submission_description"}
+            Description
+            %span.asterik *
+          %div.col-sm-9
+            = text_area :submission, :description, rows: 5, value: @submission.description, required: true, class: "form-control"
+        -# Home page
+        %div.form-group.row
+          %label.col-sm-3.col-form-label{for: "submission_homepage"} Homepage
+          %div.col-sm-9
+            = text_field :submission, :homepage, value: @submission.homepage, class: "form-control", aria: {describedBy: "homepageHelpBlock"}
+            %small.form-text.text-muted#homepageHelpBlock Enter a URL for the main page of your ontology.
 
-      -# Documentation page
-      %div.form-group.row
-        %label.col-sm-2.col-form-label{for: "submission_documentation"} Documentation
-        %div.col-sm-10
-          = text_field :submission, :documentation, value: @submission.documentation, class: "form-control", aria: {describedBy: "docsHelpBlock"}
-          %small.form-text.text-muted#docsHelpBlock Enter a URL for a page that provides ontology documentation.
+        -# Documentation page
+        %div.form-group.row
+          %label.col-sm-3.col-form-label{for: "submission_documentation"} Documentation
+          %div.col-sm-9
+            = text_field :submission, :documentation, value: @submission.documentation, class: "form-control", aria: {describedBy: "docsHelpBlock"}
+            %small.form-text.text-muted#docsHelpBlock Enter a URL for a page that provides ontology documentation.
 
-      -# Publications page
-      %div.form-group.row
-        %label.col-sm-2.col-form-label{for: "submission_publication"} Publications
-        %div.col-sm-10
-          = text_field :submission, :publication, value: @submission.publication, class: "form-control", aria: {describedBy: "pubsHelpBlock"}        
-          %small.form-text.text-muted#pubsHelpBlock Enter a URL for a page that lists publications about your ontology.
+        -# Publications page
+        %div.form-group.row
+          %label.col-sm-3.col-form-label{for: "submission_publication"} Publications
+          %div.col-sm-9
+            = text_field :submission, :publication, value: @submission.publication, class: "form-control", aria: {describedBy: "pubsHelpBlock"}        
+            %small.form-text.text-muted#pubsHelpBlock Enter a URL for a page that lists publications about your ontology.
+  %div.card
+    %div.card-header
+      %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-description-details'}  More description details
+    %div#more-description-details.collapse{'data-parent'=>"#description-card"}
+      %div.card-body
+        - for attr_name in ['abstract', 'notes', 'keywords', 'alternative', 'identifier']
+          %div.form-group.row
+            %div.col-sm-3
+              = generate_attribute_label(attr_name)
+            %div.col-sm-9
+              = generate_attribute_input(attr_name)
+  %div.card
+    %div.card-header
+      %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#define-usage'} Define usage
+    %div#define-usage.collapse{'data-parent'=>"#description-card"}
+      %div.card-body
+        - for attr in @metadata.select { |m| m['display'] == 'usage' }
+          %div.form-group.row
+            %div.col-sm-3
+              = generate_attribute_label(attr["attribute"])
+            %div.col-sm-9
+              = generate_attribute_input(attr["attribute"])
+  %div.card
+    %div.card-header
+      %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-methodology-information'} More methodology information
+    %div#more-methodology-information.collapse{'data-parent'=>"#description-card"}
+      %div.card-body
+        - for attr in @metadata.select { |m| m['display'] == 'methodology' }
+          %div.form-group.row
+            %div.col-sm-3
+              = generate_attribute_label(attr["attribute"])
+            %div.col-sm-9
+              = generate_attribute_input(attr["attribute"])
+  %div.card
+    %div.card-header
+      %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-links'} More links
+    %div#more-links.collapse{'data-parent'=>"#description-card"}
+      %div.card-body
+        - for attr in @metadata.select { |m| m['display'] == 'links' }
+          %div.form-group.row
+            %div.col-sm-3
+              = generate_attribute_label(attr["attribute"])
+            %div.col-sm-9
+              = generate_attribute_input(attr["attribute"])
+  %div.card
+    %div.card-header
+      %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#ontology-images'} Ontology images
+    %div#ontology-images.collapse{'data-parent'=>"#description-card"}
+      %div.card-body
+        -# More description details
+        - for attr in @metadata.select { |m| m['display'] == 'images' }
+          %div.form-group.row
+            %div.col-sm-3
+              = generate_attribute_label(attr["attribute"])
+            %div.col-sm-9
+              = generate_attribute_input(attr["attribute"])
+
+%div#ontology-dates-card.mt-4
+  %div.card
+    %div.card-header.bg-success
+      %a.card-link{'data-toggle'=>'collapse', :href=>'#ontology-dates'} Dates
+    %div#ontology-dates.collapse.show{'data-parent'=>"#ontology-dates-card"}
+      %div.card-body
+        %div.form-group.row
+          %div.col-md-3
+            = generate_attribute_label('released')
+          %div.col-md-9
+            = raw generate_attribute_input('released')
+        %div.form-group.row
+          %div.col-md-3
+            = generate_attribute_label('modificationDate')
+          %div.col-md-9
+            = raw generate_attribute_input('modificationDate')
+  %div.card
+    %div.card-header
+      %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-dates'} More dates
+    %div#more-dates.collapse{'data-parent'=>"#ontology-dates-card"}
+      %div.card-body
+        - for attr in @metadata.select { |m| m['display'] == 'dates' }
+          %div.form-group.row
+            %div.col-md-3
+              = generate_attribute_label(attr["attribute"])
+            %div.col-md-9
+              = raw generate_attribute_input(attr["attribute"])
+
+%div#licenses-card.card.mt-4
+  %div.card
+    %div.card-header.bg-success
+      %a.card-link{'data-toggle'=>'collapse', :href=>'#licenses'} Licenses
+    %div#licenses.collapse.show{'data-parent'=>"#licenses-card"}
+      %div.card-body
+        %div.form-group.row
+          %div.col-sm-3
+            = generate_attribute_label("hasLicense")
+          %div.col-sm-9
+            = raw generate_attribute_input("hasLicense")
+        %div.form-group.row
+          %div.col-sm-12
+            %p
+              Consider using a
+              = link_to "URI to describe your License", "http://rdflicense.appspot.com", target: "_blank"
+            %p
+              Consider using
+              = link_to "INRIA licentia", "http://licentia.inria.fr/", target: "_blank"
+              to choose your license
+  %div.card
+    %div.card-header
+      %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-licensing-info'}  More licensing information
+    %div#more-licensing-info.collapse{'data-parent'=>"#licenses"}
+      %div.card-body
+        - for attr in @metadata.select { |m| m['display'] == 'license' }
+          %div.form-group.row
+            %div.col-sm-3
+              = generate_attribute_label(attr["attribute"])
+            %div.col-sm-9
+              = generate_attribute_input(attr["attribute"])
 
 %div#community.mt-4
   %div.card
@@ -401,7 +510,7 @@
             = raw generate_attribute_input("hasCreator")
   %div.card
     %div.card-header
-      %a.card-link{'data-toggle'=>'collapse', :href=>'#more-community-info'}  More community information
+      %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-community-info'}  More community information
     %div#more-community-info.collapse{'data-parent'=>"#community"}
       %div.card-body
         - for attr in @metadata
@@ -413,7 +522,7 @@
                 = raw generate_attribute_input(attr["attribute"])
   %div.card
     %div.card-header
-      %a.card-link{'data-toggle'=>'collapse', :href=>'#more-people-info'}  More people information
+      %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-people-info'}  More people information
     %div#more-people-info.collapse{'data-parent'=>"#community"}
       %div.card-body
         - for attr in @metadata
@@ -452,7 +561,7 @@
             = raw generate_attribute_input("ontologyRelatedTo")
   %div.card
     %div.card-header
-      %a.card-link{'data-toggle'=>'collapse', :href=>'#more-relations'}  More relations
+      %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-relations'}  More relations
     %div#more-relations.collapse{'data-parent'=>"#ontology-relations-more"}
       %div.card-body
         - for attr in @metadata
@@ -481,11 +590,23 @@
             = raw generate_attribute_input("preferredNamespaceUri")
   %div.card
     %div.card-header
-      %a.card-link{'data-toggle'=>'collapse', :href=>'#more-informations'}  More content informations
+      %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-informations'}  More content informations
     %div#more-informations.collapse{'data-parent'=>"#ontology-content-metrics"}
       %div.card-body
         - for attr in @metadata
           - if attr["display"].eql? "content"
+            %div.form-group.row
+              %div.col-sm-3
+                = generate_attribute_label(attr["attribute"])
+              %div.col-sm-9
+                = raw generate_attribute_input(attr["attribute"])
+  %div.card
+    %div.card-header
+      %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-metrics-informations'}  More metrics informations
+    %div#more-metrics-informations.collapse{'data-parent'=>"#ontology-content-metrics"}
+      %div.card-body
+        - for attr in @metadata.select { |m| m['display'] == 'metrics' }
+          - if attr["display"].eql? "metrics"
             %div.form-group.row
               %div.col-sm-3
                 = generate_attribute_label(attr["attribute"])
@@ -544,7 +665,7 @@
       width: '100%',
       search_contains: true
     });
-    $('.tooltip_link').tooltipster({
+    $('.tooltip_link[title][title!=""]').tooltipster({
       interactive: true,
       position: "right",
       contentAsHTML: true,

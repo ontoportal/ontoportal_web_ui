@@ -1,19 +1,21 @@
 module SubmissionsHelper
+  
+  def extractable_metadatum_tooltip(options = {})
+    help_tooltip(options[:content], {}, 'fas fa-file-export', 'extractable-metadatum', options[:text]).html_safe
+  end
 
   # Generate the HTML label for every attributes
   def generate_attribute_label(attr_label)
     # Get the attribute hash corresponding to the given attribute
     attr = @metadata.select{ |attr_hash| attr_hash["attribute"].to_s.eql?(attr_label) }.first
-    label_html = ''.html_safe
+    label_html = if !attr["extracted"].nil? && attr["extracted"] == true
+      extractable_metadatum_tooltip({ content: 'Extractable metadatum' })
+    end.to_s.html_safe
 
     if !attr["label"].nil?
       label_html << label_tag("submission_#{attr_label}", attr["label"], { class: 'form-label' })
     else
       label_html << label_tag("submission_#{attr_label}", attr_label.underscore.humanize, { class: 'form-label' })
-    end
-
-    if !attr["extracted"].nil? && attr["extracted"] == true
-      label_html << content_tag(:span, '*', class: "extractedAsterix")
     end
 
     # Generate tooltip
@@ -47,15 +49,23 @@ module SubmissionsHelper
     attr = @metadata.select{ |attr_hash| attr_hash["attribute"].to_s.eql?(attr_label) }.first
 
     if attr["enforce"].include?("integer")
-      number_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"])
+      number_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"]), class: 'metadataInput form-control'
 
     elsif attr["enforce"].include?("date_time")
-      if @submission.send(attr["attribute"]).nil?
-        date_value = nil
-      else
-        date_value = DateTime.parse(@submission.send(attr["attribute"])).to_date.to_s
+      field_id = [:submission, attr["attribute"].to_s].join('_')
+      date_value = @submission.send(attr["attribute"]).presence
+      date_value &&= l(Date.parse(date_value), format: :month_day_year)
+      
+      content_tag(:div, class: 'input-group') do
+        [
+          text_field(:submission, attr["attribute"].to_s.to_sym, value: date_value, id: field_id, class: "form-control datepicker"),
+          content_tag(:div, class: 'input-group-append') do
+            content_tag(:span, class: 'input-group-text datepicker-btn', onclick: "$('##{field_id}').datepicker('show')") do
+              content_tag(:i, '', class: 'fas fa-calendar-alt fa-l')
+            end
+          end
+        ].join.html_safe
       end
-      text_field(:submission, attr["attribute"].to_s.to_sym, :class => "datepicker", value: "#{date_value}")
 
     elsif attr["enforce"].include?("textarea")
       text_area(:submission, attr["attribute"].to_s.to_sym, rows: 3, value: @submission.send(attr["attribute"]), class: 'metadataInput form-control')

@@ -1141,6 +1141,20 @@ a.tooltip_link:hover {
   border-radius: 999px;
 }
 
+a.tooltip_link.extractable-metadatum {
+  float: none !important;
+}
+a.tooltip_link.extractable-metadatum i {
+  margin: 0px 5px 0px 0px;
+}
+a.tooltip_link.extractable-metadatum,
+a.tooltip_link.extractable-metadatum * {
+  font-size: 16px;
+}
+.datepicker-btn {
+  cursor: pointer;
+}
+
 h1.tab_header {
   padding: 10px 0 0 13px;
   margin-bottom: 0;

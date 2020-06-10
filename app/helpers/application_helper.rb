@@ -213,13 +213,13 @@ module ApplicationHelper
   end
 
   # Create a popup button with a ? inside to display help when hovered
-  def help_tooltip(content, html_attribs = {}, icon = 'fas fa-question-circle')
+  def help_tooltip(content, html_attribs = {}, icon = 'fas fa-question-circle', css_class = nil, text = nil)
     html_attribs["title"] = content
     attribs = []
     html_attribs.each {|k,v| attribs << "#{k.to_s}='#{v}'"}
     return <<-BLOCK
-          <a class='pop_window tooltip_link' #{attribs.join(" ")}>
-            <i class="#{icon}"></i>
+          <a class='pop_window tooltip_link #{[css_class].flatten.compact.join(' ')}' #{attribs.join(" ")}>
+            <i class="#{icon}"></i> #{text}
           </a>
     BLOCK
   end

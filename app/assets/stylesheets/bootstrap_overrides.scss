@@ -81,3 +81,15 @@ a i {
 .card-header.bg-success {
   font-weight: bold;
 }
+
+#ontology_submission_form .card-link:before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f078";
+  display: inline-block;
+  margin-right: 5px;
+  vertical-align: middle;
+  font-weight:900;
+}
+#ontology_submission_form .card-link.collapsed:before {
+  content: "\f054";
+}
