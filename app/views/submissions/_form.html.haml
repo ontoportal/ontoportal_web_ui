@@ -68,7 +68,7 @@
 
 - unless @errors.nil?
   %div.form-group.row
-    %div.col-sm-10.offset-sm-2.enable-lists{style: "color:red;"}
+    %div.col-sm-8.offset-sm-2.enable-lists{style: "color:red;"}
       %strong Errors On Form
       %ul
         - for error in @errors
@@ -93,10 +93,10 @@
     %div.card-text
       -# Format
       %div.form-group.row
-        %label.col-sm-2.col-form-label{for: "submission_hasOntologyLanguage"} 
+        %label.col-sm-4.col-form-label{for: "submission_hasOntologyLanguage"}
           Format
           %span.asterik *
-        %div.col-sm-10
+        %div.col-sm-8
           - ont_formats = ["OBO", "OWL", "UMLS", "SKOS"].sort
           - selected = @submission.hasOntologyLanguage ? @submission.hasOntologyLanguage : "OWL"
           -# TODO: Add/remove aria-describedby attribute for SKOS help text display
@@ -107,19 +107,19 @@
             with examples. |
 
       %div.form-group.row
-        %div.col-sm-10.offset-sm-2
+        %div.col-sm-8.offset-sm-4
           %a#collapseOWLOptions{href: "#owl-options", role: "button", data: {toggle: "collapse"}, aria: {expanded: "false", controls: "owl-options"}, |
           class: "btn btn-outline-secondary btn-sm"} Show advanced OWL options |
 
       -# Optional property overrides for OWL ontologies
       %div#owl-options.collapse
         %div.form-group.row
-          %div.col-sm-10.offset-sm-2
+          %div.col-sm-8.offset-sm-2
             %label Customize default property settings
 
         -# Preferred name
         %div.form-group.row
-          %div.col-sm-10.offset-sm-2
+          %div.col-sm-8.offset-sm-2
             %label{for: "submission_prefLabelProperty"} Preferred name
             = text_field :submission, :prefLabelProperty, value: @submission.prefLabelProperty, class: "form-control form-control-sm", aria: {describedBy: "preferredNameHelpBlock"}
             %small.form-text.text-muted#preferredNameHelpBlock 
@@ -128,7 +128,7 @@
   
         -# Synonym
         %div.form-group.row
-          %div.col-sm-10.offset-sm-2
+          %div.col-sm-8.offset-sm-2
             %label{for: "submission_synonymProperty"} Synonym
             = text_field :submission, :synonymProperty, value: @submission.synonymProperty, class: "form-control form-control-sm", aria: {describedBy: "synonymHelpBlock"}
             %small.form-text.text-muted#synonymHelpBlock
@@ -137,7 +137,7 @@
   
         -# Definition
         %div.form-group.row
-          %div.col-sm-10.offset-sm-2
+          %div.col-sm-8.offset-sm-2
             %label{for: "submission_definitionProperty"} Definition
             = text_field :submission, :definitionProperty, value: @submission.definitionProperty, class: "form-control form-control-sm", aria: {describedBy: "definitionHelpBlock"}
             %small.form-text.text-muted#definitionHelpBlock
@@ -146,7 +146,7 @@
 
         -# Author
         %div.form-group.row
-          %div.col-sm-10.offset-sm-2
+          %div.col-sm-8.offset-sm-2
             %label{for: "submission_authorProperty"} Author
             = text_field :submission, :authorProperty, value: @submission.authorProperty, class: "form-control form-control-sm", aria: {describedBy: "authorHelpBlock"}
             %small.form-text.text-muted#authorHelpBlock
@@ -155,11 +155,11 @@
 
         -# Obsolete classes
         %div.form-group.row
-          %div.col-sm-10.offset-sm-2
+          %div.col-sm-8.offset-sm-2
             %label Identify obsolete classes
 
         %div.form-group.row 
-          %div.col-sm-10.offset-sm-2
+          %div.col-sm-8.offset-sm-2
             %label{for: "submission_obsoleteProperty"} Obsolete property
             = text_field :submission, :obsoleteProperty, value: @submission.obsoleteProperty, class: "form-control form-control-sm", aria: {describedBy: "obsoleteHelpBlock"}
             %small.form-text.text-muted#obsoleteHelpBlock 
@@ -167,7 +167,7 @@
               (the property value must be set to "true"). Note that by default, BioPortal checks for existence of the owl:deprecated property. |
 
         %div.form-group.row
-          %div.col-sm-10.offset-sm-2
+          %div.col-sm-8.offset-sm-2
             %label{for: "submission_obsoleteParent"} Obsolete branch root
             = text_field :submission, :obsoleteParent, value: @submission.obsoleteParent, class: "form-control form-control-sm", aria: {describedBy: "obsoleteRootHelpBlock"}
             %small.form-text.text-muted#obsoleteRootHelpBlock 
@@ -176,26 +176,26 @@
 
       -# Version
       %div.form-group.row
-        %label.col-sm-2.col-form-label{for: "submission_version"} Version
-        %div.col-sm-10
+        %label.col-sm-4.col-form-label{for: "submission_version"} Version
+        %div.col-sm-8
           = text_field :submission, :version, value: @submission.version, class: "form-control"
 
       -# Status
       %div.form-group.row
-        %label.col-sm-2.col-form-lable{for: "submission_status"} 
+        %label.col-sm-4.col-form-lable{for: "submission_status"} 
           Status
           %span.asterik *
-        %div.col-sm-10
+        %div.col-sm-8
           - selected_status = @submission.status ? @submission.status : "alpha"
           - status_options = ["alpha", "beta", "production", "retired"]
           = select :submission, :status, status_options, {selected: selected_status, required: true}, class: "form-control"
 
       -# Release date
       %div.form-group.row
-        %label.col-sm-2.col-form-label{for: "release_date"}
+        %label.col-sm-4.col-form-label{for: "release_date"}
           Release date
           %span.asterik *
-        %div.col-sm-10
+        %div.col-sm-8
           %div.input-group
             - release_date = @submission.released ? Date.parse(@submission.released) : Date.today
             = text_field(:submission, :released, id: "release_date", value: "#{l(release_date, format: :month_day_year)}", required: true, class: "form-control", readonly: "readonly")
@@ -205,10 +205,10 @@
 
       -# Location
       %div#submissionLocation.form-group.row
-        %label.col-sm-2.col-form-label.pt-0
+        %label.col-sm-4.col-form-label.pt-0
           Location
           %span.asterik *
-        %div.col-sm-10
+        %div.col-sm-8
           - if !@masterFileOptions
             %div.form-check
               - checked = @ontology.summaryOnly
@@ -250,53 +250,53 @@
   %div.card-body
     %div.card-text
       %div.form-group.row
-        %div.col-md-3
+        %div.col-sm-4
           -# generate_attribute functions are defined in submissions_helper.rb
           = generate_attribute_label("URI")
-        %div.col-md-9
+        %div.col-sm-8
           = raw generate_attribute_input("URI")
       %div.form-group.row
-        %div.col-md-3
+        %div.col-sm-4
           = generate_attribute_label("status")
-        %div.col-md-9
+        %div.col-sm-8
           - selected_status = @submission.status ? @submission.status : "alpha"
           - status_options = ["alpha", "beta", "production", "retired"]
           = select :submission, :status, status_options, { :selected => selected_status, :required => true}, {:class => "form-control"}
       %div.form-group.row
-        %div.col-md-3
+        %div.col-sm-4
           = generate_attribute_label("deprecated")
-        %div.col-md-9
+        %div.col-sm-8
           = raw generate_attribute_input("deprecated")
       %div.form-group.row
-        %div.col-md-3
+        %div.col-sm-4
           = generate_attribute_label("version")
-        %div.col-md-9
+        %div.col-sm-8
           = raw generate_attribute_input("version")
       %div.form-group.row
-        %div.col-md-3
+        %div.col-sm-4
           = generate_attribute_label("hasOntologySyntax")
-        %div.col-md-9
+        %div.col-sm-8
           = generate_attribute_input("hasOntologySyntax")
           %p
             Properties taken from
             = link_to "W3C URIs for file format", "https://www.w3.org/ns/formats/", target: "_blank"
       %div.form-group.row
-        %div.col-md-3
+        %div.col-sm-4
           = generate_attribute_label("hasFormalityLevel")
-        %div.col-md-9
+        %div.col-sm-8
           = generate_attribute_input("hasFormalityLevel")
           %p
             Properties taken from
             = link_to "DCMI KOS type vocabularies", "http://wiki.dublincore.org/index.php/NKOS_Vocabularies#KOS_Types_Vocabulary", target: "_blank"
       %div.form-group.row
-        %div.col-md-3
+        %div.col-sm-4
           = generate_attribute_label("isOfType")
-        %div.col-md-9
+        %div.col-sm-8
           = generate_attribute_input("isOfType")
       %div.form-group.row
-        %div.col-md-3
+        %div.col-sm-4
           = generate_attribute_label("naturalLanguage")
-        %div.col-md-9
+        %div.col-sm-8
           = generate_attribute_input("naturalLanguage")
           %p
             Consider using a
@@ -313,29 +313,29 @@
       %div.card-body
         -# Description
         %div.form-group.row
-          %label.col-sm-3.col-form-label{for: "submission_description"}
+          %label.col-sm-4.col-form-label{for: "submission_description"}
             Description
             %span.asterik *
-          %div.col-sm-9
+          %div.col-sm-8
             = text_area :submission, :description, rows: 5, value: @submission.description, required: true, class: "form-control"
         -# Home page
         %div.form-group.row
-          %label.col-sm-3.col-form-label{for: "submission_homepage"} Homepage
-          %div.col-sm-9
+          %label.col-sm-4.col-form-label{for: "submission_homepage"} Homepage
+          %div.col-sm-8
             = text_field :submission, :homepage, value: @submission.homepage, class: "form-control", aria: {describedBy: "homepageHelpBlock"}
             %small.form-text.text-muted#homepageHelpBlock Enter a URL for the main page of your ontology.
 
         -# Documentation page
         %div.form-group.row
-          %label.col-sm-3.col-form-label{for: "submission_documentation"} Documentation
-          %div.col-sm-9
+          %label.col-sm-4.col-form-label{for: "submission_documentation"} Documentation
+          %div.col-sm-8
             = text_field :submission, :documentation, value: @submission.documentation, class: "form-control", aria: {describedBy: "docsHelpBlock"}
             %small.form-text.text-muted#docsHelpBlock Enter a URL for a page that provides ontology documentation.
 
         -# Publications page
         %div.form-group.row
-          %label.col-sm-3.col-form-label{for: "submission_publication"} Publications
-          %div.col-sm-9
+          %label.col-sm-4.col-form-label{for: "submission_publication"} Publications
+          %div.col-sm-8
             = text_field :submission, :publication, value: @submission.publication, class: "form-control", aria: {describedBy: "pubsHelpBlock"}        
             %small.form-text.text-muted#pubsHelpBlock Enter a URL for a page that lists publications about your ontology.
   %div.card
@@ -345,9 +345,9 @@
       %div.card-body
         - for attr_name in ['abstract', 'notes', 'keywords', 'alternative', 'identifier']
           %div.form-group.row
-            %div.col-sm-3
+            %div.col-sm-4
               = generate_attribute_label(attr_name)
-            %div.col-sm-9
+            %div.col-sm-8
               = generate_attribute_input(attr_name)
   %div.card
     %div.card-header
@@ -356,9 +356,9 @@
       %div.card-body
         - for attr in @metadata.select { |m| m['display'] == 'usage' }
           %div.form-group.row
-            %div.col-sm-3
+            %div.col-sm-4
               = generate_attribute_label(attr["attribute"])
-            %div.col-sm-9
+            %div.col-sm-8
               = generate_attribute_input(attr["attribute"])
   %div.card
     %div.card-header
@@ -367,9 +367,9 @@
       %div.card-body
         - for attr in @metadata.select { |m| m['display'] == 'methodology' }
           %div.form-group.row
-            %div.col-sm-3
+            %div.col-sm-4
               = generate_attribute_label(attr["attribute"])
-            %div.col-sm-9
+            %div.col-sm-8
               = generate_attribute_input(attr["attribute"])
   %div.card
     %div.card-header
@@ -378,9 +378,9 @@
       %div.card-body
         - for attr in @metadata.select { |m| m['display'] == 'links' }
           %div.form-group.row
-            %div.col-sm-3
+            %div.col-sm-4
               = generate_attribute_label(attr["attribute"])
-            %div.col-sm-9
+            %div.col-sm-8
               = generate_attribute_input(attr["attribute"])
   %div.card
     %div.card-header
@@ -390,9 +390,9 @@
         -# More description details
         - for attr in @metadata.select { |m| m['display'] == 'images' }
           %div.form-group.row
-            %div.col-sm-3
+            %div.col-sm-4
               = generate_attribute_label(attr["attribute"])
-            %div.col-sm-9
+            %div.col-sm-8
               = generate_attribute_input(attr["attribute"])
 
 %div#ontology-dates-card.mt-4
@@ -402,14 +402,14 @@
     %div#ontology-dates.collapse.show{'data-parent'=>"#ontology-dates-card"}
       %div.card-body
         %div.form-group.row
-          %div.col-md-3
+          %div.col-sm-4
             = generate_attribute_label('released')
-          %div.col-md-9
+          %div.col-sm-8
             = raw generate_attribute_input('released')
         %div.form-group.row
-          %div.col-md-3
+          %div.col-sm-4
             = generate_attribute_label('modificationDate')
-          %div.col-md-9
+          %div.col-sm-8
             = raw generate_attribute_input('modificationDate')
   %div.card
     %div.card-header
@@ -418,9 +418,9 @@
       %div.card-body
         - for attr in @metadata.select { |m| m['display'] == 'dates' }
           %div.form-group.row
-            %div.col-md-3
+            %div.col-sm-4
               = generate_attribute_label(attr["attribute"])
-            %div.col-md-9
+            %div.col-sm-8
               = raw generate_attribute_input(attr["attribute"])
 
 %div#licenses-card.card.mt-4
@@ -430,9 +430,9 @@
     %div#licenses.collapse.show{'data-parent'=>"#licenses-card"}
       %div.card-body
         %div.form-group.row
-          %div.col-sm-3
+          %div.col-sm-4
             = generate_attribute_label("hasLicense")
-          %div.col-sm-9
+          %div.col-sm-8
             = raw generate_attribute_input("hasLicense")
         %div.form-group.row
           %div.col-sm-12
@@ -450,9 +450,9 @@
       %div.card-body
         - for attr in @metadata.select { |m| m['display'] == 'license' }
           %div.form-group.row
-            %div.col-sm-3
+            %div.col-sm-4
               = generate_attribute_label(attr["attribute"])
-            %div.col-sm-9
+            %div.col-sm-8
               = generate_attribute_input(attr["attribute"])
 
 %div#community.mt-4
@@ -463,14 +463,14 @@
       %div.card-body
         -# Contact(s)
         %div#contacts.form-group.row
-          %label.col-sm-2.col-form-label
+          %label.col-sm-4.col-form-label
             Contact
             %span.asterik *
           - if @submission.contact && @submission.contact.size > 0
             - @submission.contact.each_with_index do |contact, i|
               - if i == 0
                 -# Contact div
-                %div.col-sm-10.d-flex.align-items-center.contact
+                %div.col-sm-8.d-flex.align-items-center.contact
                   %label Name
                   = text_field :submission, :"contact[#{i}][name]", value: contact["name"], class: "form-control flex-grow-1 mx-2"
                   %label Email
@@ -480,7 +480,7 @@
               - else
                 -# TODO
                 -# Secondary contacts need to be offset by 2 columns, and have a delete button.
-                %div.col-sm-10.d-flex.align-items-center.offset-sm-2.contact
+                %div.col-sm-8.d-flex.align-items-center.offset-sm-2.contact
                   %label Name
                   = text_field :submission, :"contact[#{i}][name]", value: contact["name"], class: "form-control flex-grow-1 mx-2"
                   %label Email
@@ -491,7 +491,7 @@
                     %i{class: "fas fa-minus fa-lg", aria: {hidden: "true"}}
           - else
             -# TODO
-            %div.col-sm-10.d-flex.align-items-center.contact
+            %div.col-sm-8.d-flex.align-items-center.contact
               %label Name:
               = text_field :submission, :"contact[0][name]", class: "form-control flex-grow-1 mx-2"
               %label Email:
@@ -499,39 +499,37 @@
               %button.btn.btn-success.add-contact
                 %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}
         %div.form-group.row
-          %div.col-sm-2
+          %div.col-sm-4
             = generate_attribute_label("hasContributor")
-          %div.col-sm-10
+          %div.col-sm-8
             = raw generate_attribute_input("hasContributor")
         %div.form-group.row
-          %div.col-sm-2
+          %div.col-sm-4
             = generate_attribute_label("hasCreator")
-          %div.col-sm-10
+          %div.col-sm-8
             = raw generate_attribute_input("hasCreator")
   %div.card
     %div.card-header
       %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-community-info'}  More community information
     %div#more-community-info.collapse{'data-parent'=>"#community"}
       %div.card-body
-        - for attr in @metadata
-          - if attr["display"].eql? "community"
-            %div.form-group.row
-              %div.col-sm-2
-                = generate_attribute_label(attr["attribute"])
-              %div.col-sm-10
-                = raw generate_attribute_input(attr["attribute"])
+        - for attr in @metadata.select { |m| m['display'] == 'community' }
+          %div.form-group.row
+            %div.col-sm-4
+              = generate_attribute_label(attr["attribute"])
+            %div.col-sm-8
+              = raw generate_attribute_input(attr["attribute"])
   %div.card
     %div.card-header
       %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-people-info'}  More people information
     %div#more-people-info.collapse{'data-parent'=>"#community"}
       %div.card-body
-        - for attr in @metadata
-          - if attr["display"].eql? "people"
-            %div.form-group.row
-              %div.col-sm-2
-                = generate_attribute_label(attr["attribute"])
-              %div.col-sm-10
-                = raw generate_attribute_input(attr["attribute"])
+        - for attr in @metadata.select { |m| m['display'] == 'people' }
+          %div.form-group.row
+            %div.col-sm-4
+              = generate_attribute_label(attr["attribute"])
+            %div.col-sm-8
+              = raw generate_attribute_input(attr["attribute"])
 
 %div#ontology-relations-more.mt-4
   %div.card
@@ -540,24 +538,24 @@
     %div#ontology-relations.collapse.show{'data-parent'=>"#ontology-relations-more"}
       %div.card-body
         %div.form-group.row
-          %div.col-sm-3
+          %div.col-sm-4
             = generate_attribute_label("useImports")
-          %div.col-sm-9
+          %div.col-sm-8
             = raw generate_attribute_input("useImports")
         %div.form-group.row
-          %div.col-sm-3
+          %div.col-sm-4
             = generate_attribute_label("hasPriorVersion")
-          %div.col-sm-9
+          %div.col-sm-8
             = raw generate_attribute_input("hasPriorVersion")
         %div.form-group.row
-          %div.col-sm-3
+          %div.col-sm-4
             = generate_attribute_label("isAlignedTo")
-          %div.col-sm-9
+          %div.col-sm-8
             = raw generate_attribute_input("isAlignedTo")
         %div.form-group.row
-          %div.col-sm-3
+          %div.col-sm-4
             = generate_attribute_label("ontologyRelatedTo")
-          %div.col-sm-9
+          %div.col-sm-8
             = raw generate_attribute_input("ontologyRelatedTo")
   %div.card
     %div.card-header
@@ -567,9 +565,9 @@
         - for attr in @metadata
           - if attr["display"].eql?("relations")
             %div.form-group.row
-              %div.col-sm-3
+              %div.col-sm-4
                 = generate_attribute_label(attr["attribute"])
-              %div.col-sm-9
+              %div.col-sm-8
                 = raw generate_attribute_input(attr["attribute"])
 
 %div#ontology-content-metrics.mt-4
@@ -579,49 +577,47 @@
     %div#ontology-content.collapse.show{'data-parent'=>"#ontology-content-metrics"}
       %div.card-body
         %div.form-group.row
-          %div.col-sm-3
+          %div.col-sm-4
             = generate_attribute_label("preferredNamespacePrefix")
-          %div.col-sm-9
+          %div.col-sm-8
             = raw generate_attribute_input("preferredNamespacePrefix")
         %div.form-group.row
-          %div.col-sm-3
+          %div.col-sm-4
             = generate_attribute_label("preferredNamespaceUri")
-          %div.col-sm-9
+          %div.col-sm-8
             = raw generate_attribute_input("preferredNamespaceUri")
   %div.card
     %div.card-header
       %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-informations'}  More content informations
     %div#more-informations.collapse{'data-parent'=>"#ontology-content-metrics"}
       %div.card-body
-        - for attr in @metadata
-          - if attr["display"].eql? "content"
-            %div.form-group.row
-              %div.col-sm-3
-                = generate_attribute_label(attr["attribute"])
-              %div.col-sm-9
-                = raw generate_attribute_input(attr["attribute"])
+        - for attr in @metadata.select { |m| m['display'] == 'content' }
+          %div.form-group.row
+            %div.col-sm-4
+              = generate_attribute_label(attr["attribute"])
+            %div.col-sm-8
+              = raw generate_attribute_input(attr["attribute"])
   %div.card
     %div.card-header
       %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-metrics-informations'}  More metrics informations
     %div#more-metrics-informations.collapse{'data-parent'=>"#ontology-content-metrics"}
       %div.card-body
         - for attr in @metadata.select { |m| m['display'] == 'metrics' }
-          - if attr["display"].eql? "metrics"
-            %div.form-group.row
-              %div.col-sm-3
-                = generate_attribute_label(attr["attribute"])
-              %div.col-sm-9
-                = raw generate_attribute_input(attr["attribute"])
+          %div.form-group.row
+            %div.col-sm-4
+              = generate_attribute_label(attr["attribute"])
+            %div.col-sm-8
+              = raw generate_attribute_input(attr["attribute"])
 
 %div.form-group.row
-  %div.col-sm-10.offset-sm-2
-    %label.col-form-label.font-italic * Fields marked with an asterisk are required.  
+  %div.col-12.text-center
+    %label.col-form-label.font-italic.asterik * Fields marked with an asterisk are required.  
 
 %div.form-group.row
-  %div.col-sm-10.offset-sm-2
-    %div.form-inline
-      = submit_tag button_text, class: "btn btn-primary mr-sm-2"
-      = link_to "Cancel", :back, class: "btn btn-primary"
+  %div.col-6
+    = submit_tag button_text, class: "btn btn-primary"
+  %div.col-6.text-right
+    = link_to "Cancel", :back, class: "btn btn-warning"
 
 :javascript
 
@@ -682,7 +678,7 @@
   function addInput(attr, inputType)
   {
     var container = document.createElement("div");
-    container.innerHTML = '<input type="' + inputType + '" name="submission[' + attr + '][]" id="submission_' + attr + '" style="margin-bottom: 0.3em;" class="form-control"><br>';
+    container.innerHTML = '<input type="' + inputType + '" name="submission[' + attr + '][]" id="submission_' + attr + '" class="form-control">';
     document.getElementById(attr + 'Div').appendChild(container);
   }
 

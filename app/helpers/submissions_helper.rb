@@ -94,8 +94,8 @@ module SubmissionsHelper
         input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-right: 1em;width: 16em;", :placeholder => "Or provide the value",
                                      :onkeydown => "if (event.keyCode == 13) { addOntoToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control')
 
-        input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;vertical-align: baseline;",
-                                 :type => "button", :class => "btn btn-primary btn-sm", :onclick => "addOntoToSelect('#{attr["attribute"]}')")
+        input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}",
+                                 :type => "button", :class => "btn btn-primary btn-sm add-value-btn", :onclick => "addOntoToSelect('#{attr["attribute"]}')")
 
       else
 
@@ -112,8 +112,8 @@ module SubmissionsHelper
         input_html << text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-right: 1em;width: 16em;display: none;", :placeholder => "Or provide the value",
                                      :onkeydown => "if (event.keyCode == 13) { addValueToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control')
 
-        input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;display: none;vertical-align: baseline;",
-                                 :type => "button", :class => "btn btn-primary btn-sm", :onclick => "addValueToSelect('#{attr["attribute"]}')", :class => 'metadataInput form-control')
+        input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}",
+                                 :type => "button", :class => "btn btn-primary btn-sm add-value-btn", :onclick => "addValueToSelect('#{attr["attribute"]}')", :class => 'metadataInput form-control')
 
         # To show/hide textbox when other option is selected or not
         input_html << javascript_tag("$(document).ready(function() {
@@ -179,8 +179,8 @@ module SubmissionsHelper
       end
 
       if attr["enforce"].include?("list")
-        input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;margin-left: 0.5em;",
-                                 :type => "button", :class => "btn btn-primary btn-sm", :onclick => "addInput('#{attr["attribute"]}', 'url')")
+        input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}",
+                                 :type => "button", :class => "btn btn-primary btn-sm add-value-btn", :onclick => "addInput('#{attr["attribute"]}', 'url')")
         input_html << url_field_tag("submission[#{attr["attribute"].to_s}][]", uri_value[0], :id => attr["attribute"].to_s, class: "metadataInput form-control")
         # Add field if list of URI
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
@@ -206,8 +206,8 @@ module SubmissionsHelper
       # If input a simple text
 
       if attr["enforce"].include?("list")
-        input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}", :style => "margin-bottom: 0.5em;margin-top: 0.5em;",
-                                 :type => "button", :class => "btn btn-primary btn-sm", :onclick => "addInput('#{attr["attribute"]}', 'text')")
+        input_html << button_tag("Add new value", :id => "add#{attr["attribute"]}",
+                                 :type => "button", :class => "btn btn-primary btn-sm add-value-btn", :onclick => "addInput('#{attr["attribute"]}', 'text')")
         firstVal = ""
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
           firstVal = @submission.send(attr["attribute"])[0]
