@@ -72,7 +72,7 @@
   padding:6px 0 0 5px;
 }
 .tabs li.selected {
-  background:#31B404;
+  background:#234979;
   border-top:1px solid #8ca0b9;
   height:23px;
 }
@@ -133,7 +133,7 @@
   padding: .6em .8em;
 }
 .minimal tbody tr:hover td {
-  color: #31B404;
+  color: #234979;
   background: #f5fafa;
   border-bottom: 1px solid #ccc;
 }
@@ -208,7 +208,7 @@ table.align-right th:nth-child(2) {
 .zebra th {
   white-space:nowrap;
   font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-  color: #31B404;
+  color: #234979;
   border-left: 1px solid #C1DAD7;
   border-right: 1px solid #C1DAD7;
   border-bottom: 1px solid #C1DAD7;
@@ -221,7 +221,7 @@ table.align-right th:nth-child(2) {
 }
 .zebra tbody th {
   font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-  color: #31B404;
+  color: #234979;
   border-left: 1px solid #C1DAD7;
   border-right: 1px solid #C1DAD7;
   border-bottom: 1px solid #C1DAD7;
@@ -273,7 +273,7 @@ table.align-right th:nth-child(2) {
 .form th {
   white-space:nowrap;
   font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-  color: #31B404;
+  color: #234979;
   border-left: 1px solid #C1DAD7;
   border-right: 1px solid #C1DAD7;
   border-bottom: 1px solid #C1DAD7;
@@ -324,12 +324,12 @@ table.align-right th:nth-child(2) {
 
 .notetype {
   font:12px bold "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-  color: #31B404;
+  color: #234979;
 }
 .header {
   cursor:pointer;
   font:11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-  color: #31B404;
+  color: #234979;
   border-left: 1px solid #C1DAD7;
   border-right: 1px solid #C1DAD7;
   border-bottom: 1px solid #C1DAD7;
@@ -367,7 +367,7 @@ table.align-right th:nth-child(2) {
 .resources th {
   white-space:nowrap;
   font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-  color: #31B404;
+  color: #234979;
   border-left: 1px solid #C1DAD7;
   border-right: 1px solid #C1DAD7;
   border-bottom: 1px solid #C1DAD7;
@@ -379,7 +379,7 @@ table.align-right th:nth-child(2) {
 }
 .resources tbody th {
   font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-  color: #31B404;
+  color: #234979;
   border-left: 1px solid #C1DAD7;
   border-right: 1px solid #C1DAD7;
   border-bottom: 1px solid #C1DAD7;
@@ -427,7 +427,7 @@ table.align-right th:nth-child(2) {
 tr.mainresource td {
   cursor:pointer;
   font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-  color: #31B404;
+  color: #234979;
   border-left: 1px solid #C1DAD7;
   border-right: 1px solid #C1DAD7;
   border-bottom: 1px solid #C1DAD7;
@@ -439,7 +439,7 @@ tr.mainresource td {
 
 /* Ratings */
 .star_ratings{
-    color: #31B404;
+    color: #234979;
     border: 1px solid #C1DAD7;
     background: #e2ebf0;
     width:300px;
@@ -457,7 +457,7 @@ tr.mainresource td {
   cursor:pointer;
   font-weight:bold;
   font:14px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-  color: #31B404;
+  color: #234979;
   border-left: 1px solid #C1DAD7;
   border-right: 1px solid #C1DAD7;
   border-bottom: 1px solid #C1DAD7;
@@ -918,11 +918,11 @@ button.fg-button-menu, button.fg-button {
 }
 
 .too_many_children_override {
-  color: #31B404 !important;
+  color: #234979 !important;
 }
 
 .too_many_children_override:hover {
-  color: #31B404 !important;
+  color: #234979 !important;
   text-decoration: underline !important;
 }
 
@@ -946,54 +946,20 @@ button.fg-button-menu, button.fg-button {
 }
 
 /************************************
- * Nav tabs
- ************************************/
-
-.nav-tabs .nav-link {
-  color: #999 !important
-}
-.nav-tabs .nav-link.active {
-  color: #31B404 !important
-}
-
-/************************************
  * Top navigation bar
  ************************************/
- 
-.navbar-brand .site-name {
-  color: #fff;
-  font-size: 24px;
-  font-weight: bold;
-  margin-left: 5px !important;
-  display: inline;
-  line-height: 55px;
-}
-
-.navbar-nav .nav-link {
-  color: rgba(255, 255, 255, 0.7) !important;
-  
-  &:hover {
-    color: rgba(255, 255, 255, 1.0) !important;
-  }
-}
-
-.navbar-nav i {
-  color: #fff;
-}
-
 .btn-bp-login {
-  color: #31B404;
-  background-color: #fff;
-  border-color: #fff !important;
+  color: #C58612;
+  border-color: #C58612 !important;
 
   &:hover {
-    color: #31B404;
-    background-color: #EFFFEF;
+    color: #234979;
+    background-color: #C58612;
   }
 }
 
 .navbar-custom {
-  background-color: #31B404;
+  background-color: #234979;
 }
 
 .nav_text a {
@@ -1128,32 +1094,6 @@ a.help_link {
   display: inline-block;
   vertical-align: middle;
   margin-left: .5em;
-}
-
-a.tooltip_link {
-  font-size: 20px;
-  float: right;
-  cursor: help;
-}
-
-a.tooltip_link:hover {
-  background-color: #EFFFEF !important;
-  border-radius: 999px;
-}
-
-a.tooltip_link.extractable-metadatum {
-  float: none !important;
-}
-a.tooltip_link.extractable-metadatum i {
-  margin: 0px 5px 0px 0px;
-  color: #aaa;
-}
-a.tooltip_link.extractable-metadatum,
-a.tooltip_link.extractable-metadatum * {
-  font-size: 16px;
-}
-.datepicker-btn {
-  cursor: pointer;
 }
 
 h1.tab_header {

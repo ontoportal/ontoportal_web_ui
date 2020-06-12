@@ -78,11 +78,11 @@ $ont-show-bg-color: #e9ecef;
     grid-template-columns: 60% 40%;
   }
 
-  .ont-details-card, .ont-subs-card, .ont-views-card, .ont-additional-metadata-card {
+  .ont-details-card, .ont-subs-card, .ont-views-card {
     margin-right: 16px;
   }
 
-  .ont-links-card, .ont-metadatalinks-card, .ont-included-in-data-catalog-card, .ont-logo-depiction-card, .ont-metrics-card, .ont-analytics-card {
+  .ont-metrics-card, .ont-analytics-card {
     margin-bottom: 32px;
   }
 }
@@ -128,22 +128,6 @@ $ont-show-bg-color: #e9ecef;
   }
 }
 
-.ont-additional-metadata-card {
-  grid-column: 1;
-  grid-row: 2;
-
-  td:nth-child(1) {
-    background-color: #e2ebf0;
-    white-space: nowrap;
-    text-transform: capitalize;
-  }
-  
-  .logo {
-    height: 40px;
-    border-width: 0px;
-  }
-}
-
 .ont-metrics-card {
   td:nth-child(1) {
     background-color: #e2ebf0;
@@ -154,14 +138,9 @@ $ont-show-bg-color: #e9ecef;
   }
 }
 
-.ont-included-in-data-catalog-card a.btn {
-  margin-right: 0.5em;
-  margin-bottom: 0.5em;
-}
-
 .ont-subs-card {
   grid-column: 1;
-  grid-row: 3;
+  grid-row: 2;
 
   th {
     color: #737373;
@@ -170,7 +149,7 @@ $ont-show-bg-color: #e9ecef;
 
 .ont-views-card {
   grid-column: 1;
-  grid-row: 4;
+  grid-row: 3;
 }
 
 .ont-projects-card {

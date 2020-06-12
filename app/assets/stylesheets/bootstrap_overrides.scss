@@ -6,7 +6,7 @@ html {
   min-height: 100%;
 }
 body {
-  /*margin-bottom: body_margin_bottom();*/ /* Margin bottom by footer height */
+  margin-bottom: body_margin_bottom(); /* Margin bottom by footer height */
 }
 .footer {
   position: absolute;
@@ -60,41 +60,4 @@ footer.footer .list-inline-item:not(:last-child) {
   height: 60px; /* Set the fixed height of the footer here */
   background-color: #f5f5f5;
   padding: 20px 0;
-}
-
-a {
-  color: #215B04 !important;
-}
-a i {
-  color: #31B404;
-}
-
-.btn-info, .btn-outline-primary:hover, .btn-primary {
-  background-color: #31B404 !important;
-  border-color: #31B404 !important;
-  color: #fff !important;
-}
-
-.bg-success {
-  background-color: #EFFFEF !important;
-}
-.card-header.bg-success {
-  font-weight: bold;
-}
-
-#ontology_submission_form .card-link:before {
-  font-family: "Font Awesome 5 Free";
-  content: "\f078";
-  display: inline-block;
-  margin-right: 5px;
-  vertical-align: middle;
-  font-weight:900;
-}
-#ontology_submission_form .card-link.collapsed:before {
-  content: "\f054";
-}
-#ontology_submission_form .add-value-btn {
-  margin-bottom: 0.5em;
-  margin-top: 0.0em;
-  margin-left: 0.0em;
 }
