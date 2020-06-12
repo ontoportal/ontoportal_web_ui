@@ -338,6 +338,13 @@
           %div.col-sm-8
             = text_field :submission, :publication, value: @submission.publication, class: "form-control", aria: {describedBy: "pubsHelpBlock"}        
             %small.form-text.text-muted#pubsHelpBlock Enter a URL for a page that lists publications about your ontology.
+
+        -# Used ontology engineering tool
+        %div.form-group.row
+          %div.col-sm-4
+            = generate_attribute_label("usedOntologyEngineeringTool")
+          %div.col-sm-8
+            = raw generate_attribute_input("usedOntologyEngineeringTool")
   %div.card
     %div.card-header
       %a.card-link.collapsed{'data-toggle'=>'collapse', :href=>'#more-description-details'}  More description details
@@ -622,25 +629,6 @@
 :javascript
 
   $(document).ready(function() {
-    
-    $('#submission_usedOntologyEngineeringTool').change(function() {
-      if ($('#submission_usedOntologyEngineeringTool').val() == "other") {
-        $('#submission_ontologyToolText').val("");
-        $('#submission_ontologyToolText').show();
-      } else {
-        $('#submission_ontologyToolText').val($('#submission_usedOntologyEngineeringTool').val());
-        $('#submission_ontologyToolText').hide();
-      }
-    });
-    $('#naturalLanguageSelect').change(function() {
-      if ($('#naturalLanguageSelect').val() == "other") {
-        $('#submission_naturalLanguage').val("");
-        $('#submission_naturalLanguage').show();
-      } else {
-        $('#submission_naturalLanguage').val($('#naturalLanguageSelect').val());
-        $('#submission_naturalLanguage').hide();
-      }
-    });
 
     /**
      * For Multiple select
