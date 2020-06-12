@@ -622,15 +622,7 @@
 :javascript
 
   $(document).ready(function() {
-    $('#submission_hasLicense').change(function() {
-      if ($('#submission_hasLicense').val() == "other") {
-        $('#submission_licenseText').val("");
-        $('#submission_licenseText').show();
-      } else {
-        $('#submission_licenseText').val($('#submission_hasLicense').val());
-        $('#submission_licenseText').hide();
-      }
-    });
+    
     $('#submission_usedOntologyEngineeringTool').change(function() {
       if ($('#submission_usedOntologyEngineeringTool').val() == "other") {
         $('#submission_ontologyToolText').val("");
@@ -756,5 +748,16 @@
 
       e.style.display = 'block';
       document.getElementById(divId + "Btn").classList.add("active");
+    }
+  }
+
+  function toggleOtherValue(attr) {
+    if ($('#select_' + attr).val() == 'other') {
+      $('#add_' + attr).val("");
+      $('#btnAdd' + attr).show();
+      $('#add_' + attr).show();
+    } else {
+      $('#btnAdd' + attr).hide();
+      $('#add_' + attr).hide();
     }
   }

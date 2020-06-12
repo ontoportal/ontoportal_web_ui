@@ -113,22 +113,15 @@ module SubmissionsHelper
                                      :onkeydown => "if (event.keyCode == 13) { addValueToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control')
 
         input_html << button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}",
-                                 :type => "button", :class => "btn btn-primary btn-sm add-value-btn", :onclick => "addValueToSelect('#{attr["attribute"]}')", :class => 'metadataInput form-control')
+                                 :type => "button", :class => "btn btn-primary btn-sm add-value-btn", :onclick => "addValueToSelect('#{attr["attribute"]}')")
 
         # To show/hide textbox when other option is selected or not
         input_html << javascript_tag("$(document).ready(function() {
             $('#select_#{attr["attribute"]}').change(function() {
-              if ($('#select_#{attr["attribute"]}').val() == 'other') {
-                $('#add_#{attr["attribute"].to_s}').val("");
-                $('#btnAdd#{attr["attribute"]}').show();
-                $('#add_#{attr["attribute"].to_s}').show();
-              } else {
-                $('#btnAdd#{attr["attribute"]}').hide();
-                $('#add_#{attr["attribute"].to_s}').hide();
-              }
+              toggleOtherValue('#{attr["attribute"].to_s}');
             });
+            toggleOtherValue('#{attr["attribute"].to_s}');
           })")
-
       end
 
 
