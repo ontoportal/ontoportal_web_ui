@@ -5,7 +5,7 @@ class OntologiesController < ApplicationController
   require 'cgi'
 
   helper :concepts
-  layout :resolve_layout
+  layout :determine_layout
 
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
 
@@ -405,12 +405,12 @@ class OntologiesController < ApplicationController
     p.to_h
   end
 
-  def resolve_layout
+  def determine_layout
     case action_name
     when 'index'
       'angular'
     else
-      Rails.env.appliance? ? 'appliance' : 'ontology'
+      super
     end
   end
 
