@@ -1,55 +1,58 @@
 @import "../lirmm/**/*";
 
+$color-primary: #31B404;
+$color-secondary: #EFFFEF;
+
 .tabs li.selected {
-  background:#31B404;
+  background: $color-primary;
 }
 .minimal tbody tr:hover td {
-  color: #31B404;
+  color: $color-primary;
 }
 .zebra th {
-  color: #31B404;
+  color: $color-primary;
 }
 .zebra tbody th {
-  color: #31B404;
+  color: $color-primary;
 }
 .form th {
-  color: #31B404;
+  color: $color-primary;
 }
 .notetype {
-  color: #31B404;
+  color: $color-primary;
 }
 .header {
-  color: #31B404;
+  color: $color-primary;
 }
 .resources th {
-  color: #31B404;
+  color: $color-primary;
 }
 .resources tbody th {
-  color: #31B404;
+  color: $color-primary;
 }
 tr.mainresource td {
-  color: #31B404;
+  color: $color-primary;
 }
 .star_ratings {
-  color: #31B404;
+  color: $color-primary;
 }
 .pheader {
-  color: #31B404;
+  color: $color-primary;
 }
 .too_many_children_override {
-  color: #31B404 !important;
+  color: $color-primary !important;
 }
 .too_many_children_override:hover {
-  color: #31B404 !important;
+  color: $color-primary !important;
 }
 .sf-menu ul {
 	width: 25em !important;
 }
 .sf-menu li {
-	background:	#EFFFEF !important;
+	background:	$color-secondary !important;
 }
 .sf-menu a, .sf-menu a:visited  { /* visited pseudo selector so IE6 applies text colour*/
-	color: #31B404 !important;
+	color: $color-primary !important;
 }
 
 /************************************
@@ -61,7 +64,7 @@ tr.mainresource td {
 }
 
 .nav-tabs .nav-link.active {
-  color: #31B404 !important
+  color: $color-primary !important
 }
  
 .navbar-brand .site-name {
@@ -86,18 +89,18 @@ tr.mainresource td {
 }
 
 .btn-bp-login {
-  color: #31B404;
+  color: $color-primary;
   background-color: #fff;
   border-color: #fff !important;
 
   &:hover {
-    color: #31B404;
-    background-color: #EFFFEF;
+    color: $color-primary;
+    background-color: $color-secondary;
   }
 }
 
 .navbar-custom {
-  background-color: #31B404;
+  background-color: $color-primary;
 }
 
 /************************************
@@ -111,7 +114,7 @@ a.tooltip_link {
 }
 
 a.tooltip_link:hover {
-  background-color: #EFFFEF !important;
+  background-color: $color-secondary !important;
   border-radius: 999px;
 }
 
@@ -181,7 +184,7 @@ div.logos a {
  * FOOTER
 ************************************/
 footer, .footer {
-  background-color: #EFFFEF !important;
+  background-color: $color-secondary !important;
   position: relative !important;
 }
 
