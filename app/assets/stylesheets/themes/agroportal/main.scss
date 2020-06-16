@@ -42,6 +42,15 @@ tr.mainresource td {
 .too_many_children_override:hover {
   color: #31B404 !important;
 }
+.sf-menu ul {
+	width: 25em !important;
+}
+.sf-menu li {
+	background:	#EFFFEF !important;
+}
+.sf-menu a, .sf-menu a:visited  { /* visited pseudo selector so IE6 applies text colour*/
+	color: #31B404 !important;
+}
 
 /************************************
  * NAV
