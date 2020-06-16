@@ -44,4 +44,6 @@
 @import "bootstrap";
 @import "bootstrap_overrides";
 
-@import "themes/<%= $UI_THEME.to_s.strip.parameterize.presence || :ontoportal %>/**/*";
+<% if (ui_theme = $UI_THEME.to_s.parameterize).present? && File.exists?(Rails.root.join('app', 'assets', 'stylesheets', 'themes', ui_theme)) %>
+  @import "themes/<%= ui_theme %>/**/*";
+<% end %>
