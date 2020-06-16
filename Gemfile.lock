@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/sifrproject/ontologies_api_ruby_client.git
-  revision: 4d65287d004d0665d8ab640d610bc859a2cac8eb
+  revision: 06f75968f7119812d87bc585b545378da0e851ee
   branch: virtual-appliance-3.0-merge
   specs:
     ontologies_api_client (1.0.0)
