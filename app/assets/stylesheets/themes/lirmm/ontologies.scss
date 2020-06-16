@@ -9,15 +9,19 @@
   }
 }
 
-.ont-additional-metadata-card {
-  grid-column: 1;
-  grid-row: 2;
-
+.ont-metadata-card {
+  
   td:nth-child(1) {
-    background-color: #e2ebf0;
+    background-color: #f0f0f0;
     white-space: nowrap;
     text-transform: capitalize;
   }
+  
+}
+
+.ont-additional-metadata-card {
+  grid-column: 1;
+  grid-row: 2;
   
   .logo {
     height: 40px;

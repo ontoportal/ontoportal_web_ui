@@ -3,20 +3,20 @@ body {
 }
 
 a {
-  color: #215B04 !important;
+  color: $color-links !important;
 }
 a i {
-  color: #31B404;
+  color: $color-primary;
 }
 
 .btn-info, .btn-outline-primary:hover, .btn-primary {
-  background-color: #31B404 !important;
-  border-color: #31B404 !important;
+  background-color: $color-primary !important;
+  border-color: $color-primary !important;
   color: #fff !important;
 }
 
 .bg-success {
-  background-color: #EFFFEF !important;
+  background-color: $color-secondary !important;
 }
 .card-header.bg-success {
   font-weight: bold;
@@ -28,7 +28,7 @@ a i {
   display: inline-block;
   margin-right: 5px;
   vertical-align: middle;
-  font-weight:900;
+  font-weight: 900;
 }
 #ontology_submission_form .card-link.collapsed:before {
   content: "\f054";
