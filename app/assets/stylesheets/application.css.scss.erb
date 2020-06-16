@@ -44,4 +44,4 @@
 @import "bootstrap";
 @import "bootstrap_overrides";
 
-@import "themes/<%= $UI_THEME || ENV['UI_THEME'] || :bioportal %>/**/*";
+@import "themes/<%= $UI_THEME.to_s.strip.parameterize.presence || :ontoportal %>/**/*";
