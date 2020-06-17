@@ -160,8 +160,15 @@ class SubmissionsController < ApplicationController
       :publication
     ]
     
-    attributes += (json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))).collect do |m|
-      m["attribute"].to_sym
+    JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}"))).each do |m|
+      
+      m_attr = m["attribute"].to_sym
+      
+      attributes << if m["enforce"].include?("list")
+        { m_attr => [] }
+      else
+        m_attr
+      end
     end
     
     p = params.require(:submission).permit(attributes.uniq)
