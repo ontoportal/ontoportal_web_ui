@@ -128,8 +128,6 @@ class SubmissionsController < ApplicationController
     @ontology.update
     error_response = @submission.update
 
-    error_response = @submission.update(cache_refresh_all: false)
-
     if error_response
       @errors = response_errors(error_response) # see application_controller::response_errors
     else
@@ -140,11 +138,33 @@ class SubmissionsController < ApplicationController
   private
 
   def submission_params
-    p = params.require(:submission).permit(:ontology, :description, :hasOntologyLanguage, :prefLabelProperty,
-                                           :synonymProperty, :definitionProperty, :authorProperty, :obsoleteProperty,
-                                           :obsoleteParent, :version, :status, :released, :isRemote, :pullLocation,
-                                           :filePath, { contact:[:name, :email] }, :homepage, :documentation,
-                                           :publication)
+    attributes = [
+      :ontology,
+      :description,
+      :hasOntologyLanguage,
+      :prefLabelProperty,
+      :synonymProperty,
+      :definitionProperty,
+      :authorProperty,
+      :obsoleteProperty,
+      :obsoleteParent,
+      :version,
+      :status,
+      :released,
+      :isRemote,
+      :pullLocation,
+      :filePath,
+      { contact:[:name, :email] },
+      :homepage,
+      :documentation,
+      :publication
+    ]
+    
+    attributes += (json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))).collect do |m|
+      m["attribute"].to_sym
+    end
+    
+    p = params.require(:submission).permit(attributes)
     p.to_h
   end
 
