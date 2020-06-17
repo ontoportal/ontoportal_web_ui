@@ -164,7 +164,7 @@ class SubmissionsController < ApplicationController
       m["attribute"].to_sym
     end
     
-    p = params.require(:submission).permit(attributes)
+    p = params.require(:submission).permit(attributes.uniq)
     p.to_h
   end
 
