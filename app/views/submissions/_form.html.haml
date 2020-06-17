@@ -190,19 +190,6 @@
           - status_options = ["alpha", "beta", "production", "retired"]
           = select :submission, :status, status_options, {selected: selected_status, required: true}, class: "form-control"
 
-      -# Release date
-      %div.form-group.row
-        %label.col-sm-4.col-form-label{for: "release_date"}
-          Release date
-          %span.asterik *
-        %div.col-sm-8
-          %div.input-group
-            - release_date = @submission.released ? Date.parse(@submission.released) : Date.today
-            = text_field(:submission, :released, id: "release_date", value: "#{l(release_date, format: :month_day_year)}", required: true, class: "form-control", readonly: "readonly")
-            %div.input-group-append
-              %span.input-group-text
-                %i{class: "fas fa-calendar-alt fa-lg", aria: {hidden: "true"}}
-
       -# Location
       %div#submissionLocation.form-group.row
         %label.col-sm-4.col-form-label.pt-0
