@@ -23,7 +23,6 @@
 //= require dataTables.fixedHeader
 //= require chosen.jquery
 //= require ajax-chosen
-//= require superfish
 //= require jquery.cookie
 //= require autocomplete
 //= require jquery.hoverIntent
