@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
   resources :margin_notes
 
-  resources :concepts, constraints: { id: /[^\/]+/ }
+  resources :concepts
 
   resources :ontologies do
     resources :submissions
