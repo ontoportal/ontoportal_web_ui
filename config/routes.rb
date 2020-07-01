@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
   resources :margin_notes
 
-  resources :concepts, constraints: { id: /[^\/]+/ }
+  resources :concepts
 
   resources :ontologies do
     resources :submissions
@@ -71,8 +71,8 @@ Rails.application.routes.draw do
   match '/ontologies/:acronym/submissions/:id' => 'submissions#update', via: [:get, :post]
   get '/ontologies/:ontology_id/submissions/new' => 'submissions#new', :ontology_id => /.+/
   match '/ontologies/:ontology_id/submissions' => 'submissions#create', :ontology_id => /.+/, via: [:get, :post]
-  get '/ontologies/:acronym/classes/:purl_conceptid' => 'ontologies#show', :purl_conceptid => 'root'
-  get '/ontologies/:acronym/:purl_conceptid' => 'ontologies#show'
+  get '/ontologies/:acronym/classes/:purl_conceptid', to: 'ontologies#show', constraints: { purl_conceptid: /[^\/]+/ }
+  get '/ontologies/:acronym/:purl_conceptid', to: 'ontologies#show', constraints: { purl_conceptid: /[^\/]+/ }
 
   # Analytics
   get '/analytics/:action' => 'analytics#(?-mix:search_result_clicked|user_intention_surveys)'
