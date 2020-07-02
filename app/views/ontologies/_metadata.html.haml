@@ -56,7 +56,7 @@
   %section.ont-metadata-card.ont-additional-metadata-card
     %header.pb-2.font-weight-bold Additional Metadata
     %table.table.table-sm
-      = raw additional_metadata(@submission_latest)
+      = raw additional_metadata(@submission_latest) unless @submission_latest.nil?
 
   -# Submissions pane
   %section.ont-metadata-card.ont-subs-card
@@ -160,10 +160,10 @@
       = render partial: "visits"
 
     -# Included in data catalog pane
-    = raw display_data_catalog(@submission_latest)
+    = raw display_data_catalog(@submission_latest) unless @submission_latest.nil?
 
     -# Logo & depiction
-    = raw display_logo(@submission_latest)
+    = raw display_logo(@submission_latest) unless @submission_latest.nil?
 
     -# Projects pane
     %section.ont-metadata-card.ont-projects-card
