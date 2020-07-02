@@ -42,7 +42,7 @@ module SubmissionsHelper
   end
 
   # Generate the HTML input for every attributes.
-  def generate_attribute_input(attr_label)
+  def generate_attribute_input(attr_label, options = {})
     input_html = ''.html_safe
 
     # Get the attribute hash corresponding to the given attribute
@@ -54,7 +54,9 @@ module SubmissionsHelper
     elsif attr["enforce"].include?("date_time")
       field_id = [:submission, attr["attribute"].to_s].join('_')
       date_value = @submission.send(attr["attribute"]).presence
-      date_value &&= l(Date.parse(date_value), format: :month_day_year)
+      date_value &&= Date.parse(date_value)
+      date_value ||= options[:default]
+      date_value &&= l(date_value, format: :month_day_year)
       
       content_tag(:div, class: 'input-group') do
         [

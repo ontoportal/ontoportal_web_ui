@@ -53,6 +53,14 @@ tr.mainresource td {
 .sf-menu a, .sf-menu a:visited  { /* visited pseudo selector so IE6 applies text colour*/
 	color: $color-links !important;
 }
+.error {
+  text-indent: 25px;
+  background-position: 5px 50%;
+}
+textarea.error {
+  text-indent: 0px !important;
+  background: none !important;
+}
 
 /************************************
  * NAV

@@ -399,7 +399,7 @@
           %div.col-sm-4
             = generate_attribute_label('released')
           %div.col-sm-8
-            = raw generate_attribute_input('released')
+            = raw generate_attribute_input('released', default: Date.today)
         %div.form-group.row
           %div.col-sm-4
             = generate_attribute_label('modificationDate')
