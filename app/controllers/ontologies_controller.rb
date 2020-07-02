@@ -49,8 +49,7 @@ class OntologiesController < ApplicationController
     @development = Rails.env.development?
 
     # We could get naturalLanguages, isOfType and formalityLevels from the API, but for performance we are storing it in config/bioportal_config_production.rb
-    #json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
-    #@metadata = json_metadata
+    #@metadata = submission_metadata
 
     # The attributes used when retrieving the submission. We are not retrieving all attributes to be faster
     browse_attributes = "ontology,acronym,submissionStatus,description,pullLocation,creationDate,released,name,naturalLanguage,hasOntologyLanguage,hasFormalityLevel,isOfType,contact"

@@ -70,7 +70,7 @@ module OntologiesHelper
   # Add additional metadata as html for a submission
   def additional_metadata(sub)
     # Get the list of metadata attribute from the REST API
-    json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
+    json_metadata = submission_metadata
     metadata_list = {}
     # Get extracted metadata and put them in a hash with their label, if one, as value
     json_metadata.each do |metadata|

@@ -695,5 +695,11 @@ class ApplicationController < ActionController::Base
       $trial_license_initialized = true
     end
   end
+  
+  # Get the submission metadata from the REST API.
+  def submission_metadata
+    @metadata ||= JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
+  end
+  helper_method :submission_metadata
 
 end

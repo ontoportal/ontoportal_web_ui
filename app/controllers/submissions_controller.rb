@@ -2,6 +2,7 @@ class SubmissionsController < ApplicationController
 
   layout :determine_layout
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
+  before_action :submission_metadata, only: [:create, :edit, :new, :update]
 
   # When getting "Add submission" form to display
   def new
@@ -9,10 +10,6 @@ class SubmissionsController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first unless @ontology
     @submission = @ontology.explore.latest_submission
     @submission ||= LinkedData::Client::Models::OntologySubmission.new
-
-    # Get the submission metadata from the REST API
-    json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
-    @metadata = json_metadata
   end
 
   # Called when form to "Add submission" is submitted
@@ -20,9 +17,6 @@ class SubmissionsController < ApplicationController
     # Make the contacts an array
     params[:submission][:contact] = params[:submission][:contact].values
 
-    # Get the submission metadata from the REST API
-    json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
-    @metadata = json_metadata
     # Convert metadata that needs to be integer to int
     @metadata.map do |hash|
       if hash["enforce"].include?("integer")
@@ -72,10 +66,6 @@ class SubmissionsController < ApplicationController
     # Trying to get all submissions to get the latest. Useless and too long.
     #@submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
     @submission = @ontology.explore.latest_submission
-
-    # Get the submission metadata from the REST API
-    json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
-    @metadata = json_metadata
   end
 
   # When editing a submission (called when submit "Edit submission information" form)
@@ -91,9 +81,6 @@ class SubmissionsController < ApplicationController
     #@submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
     @submission = @ontology.explore.latest_submission
 
-    # Get the submission metadata from the REST API
-    json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
-    @metadata = json_metadata
     # Convert metadata that needs to be integer to int
     @metadata.map do |hash|
       if hash["enforce"].include?("integer")
@@ -150,7 +137,7 @@ class SubmissionsController < ApplicationController
       :publication
     ]
     
-    JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}"))).each do |m|
+    @metadata.each do |m|
       
       m_attr = m["attribute"].to_sym
       

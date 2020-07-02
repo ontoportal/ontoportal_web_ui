@@ -52,10 +52,6 @@ class LandscapeController < ApplicationController
                         {:attr => "classesWithNoDefinition", :label => "Classes with no definition	", :array => []},
                         {:attr => "numberOfAxioms", :label => "Number of axioms (triples)", :array => []}]
 
-
-    # If needed: get the submission metadata from the REST API
-    #json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
-
     # Attributes to include. To avoid to get everything and make it faster
     # They are also used to get the value of each property later in the controller
     # TODO: define here the attributes you want to retrieve to create visualization
