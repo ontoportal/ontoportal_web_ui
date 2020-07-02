@@ -132,7 +132,7 @@ module SubmissionsHelper
 
     elsif attr["enforce"].include?("isOntology")
       metadata_values = @submission.send(attr["attribute"])
-      select_values = @ontologies_for_select.dup
+      select_values = ontologies_for_select.dup
       # Add in the select ontologies that are not in the portal but are in the values
       if metadata_values.kind_of?(Array)
         metadata_values.map do |metadata|
@@ -232,5 +232,13 @@ module SubmissionsHelper
       return input_html
     end
   end
-
+  
+  def ontologies_for_select
+    
+    @ontologies_for_select ||= LinkedData::Client::Models::Ontology.all.collect do |onto|
+      ["#{onto.name} (#{onto.acronym})", onto.id]
+    end
+    
+  end
+  
 end

@@ -10,11 +10,6 @@ class SubmissionsController < ApplicationController
     @submission = @ontology.explore.latest_submission
     @submission ||= LinkedData::Client::Models::OntologySubmission.new
 
-    @ontologies_for_select = []
-    LinkedData::Client::Models::Ontology.all.each do |onto|
-      @ontologies_for_select << ["#{onto.name} (#{onto.acronym})", onto.id]
-    end
-
     # Get the submission metadata from the REST API
     json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
     @metadata = json_metadata
@@ -77,11 +72,6 @@ class SubmissionsController < ApplicationController
     # Trying to get all submissions to get the latest. Useless and too long.
     #@submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
     @submission = @ontology.explore.latest_submission
-
-    @ontologies_for_select = []
-    LinkedData::Client::Models::Ontology.all.each do |onto|
-      @ontologies_for_select << ["#{onto.name} (#{onto.acronym})", onto.id]
-    end
 
     # Get the submission metadata from the REST API
     json_metadata = JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
