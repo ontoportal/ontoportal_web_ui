@@ -47,15 +47,14 @@
               %div.input-group-append
                 = button_tag(class: "btn btn-primary", onclick: "jumpToValueOntology()", aria: {label: "Find an ontology"}) do
                   %i{class: "fas fa-search fa-lg", aria: {hidden: "true"}}
-            %ul.sf-menu.sf-vertical
-              %li
-                = link_to("Browse Ontologies", "#", style: "white-space: nowrap; padding: 0px; background: #fff; border: 1px solid #fff;")
-                %ul
-                  %li
-                    = link_to("All", ontologies_path())
-                  - @groups.each do |group|
-                    %li
-                      = link_to(group[:name], ontologies_path(filter: "#{CGI.escape(group[:acronym])}"))
+            %div.dropdown
+              = button_tag("Browse Ontologies", type: "button", id: "ontologyGroupsDropdown", class: "btn btn-info dropdown-toggle", data: {toggle: "dropdown", offset: "0,10"}, aria: {haspopup: "true", expanded: "false"})
+              %div.dropdown-menu{"aria-labelledby": "ontologyGroupsDropdown"}
+                = link_to("All", ontologies_path(), class: "dropdown-item")
+                %div.dropdown-divider
+                %h6.dropdown-header Browse by group
+                - @groups.each do |group|
+                  = link_to(group[:name], ontologies_path(filter: group[:acronym]), class: "dropdown-item")
   %div.row.pt-3.statistics
     %div.col
       %div.card-deck
