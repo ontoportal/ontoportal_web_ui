@@ -9,7 +9,7 @@
     = time_ago_in_words(DateTime.parse(@notes.created))
     ago
   - if @notes.body && !@notes.body.empty?
-    %div.note_body= @notes.body
+    %div.note_body= simple_format(@notes.body)
   - if @notes.proposal
     %div.proposal
       %h3 Proposal Details
