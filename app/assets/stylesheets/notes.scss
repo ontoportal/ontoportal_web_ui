@@ -119,7 +119,8 @@ textarea.create_note_inputs {
 }
 
 .note_title {
-  font-size: 16pt;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .note_status {
@@ -135,16 +136,9 @@ textarea.create_note_inputs {
   font-size: 12pt;
 }
 
-.discussion h3 {
-  font-size: 18px;
-}
-
-.discussion .reply {
-  padding: 1em 0 .5em;
-}
-
-.discussion .reply .reply {
-  padding-left: 3.5em;
+.ontologies.show div#facebox div.discussion {
+  padding-top: 1em;
+  padding-left: 1.5em;
 }
 
 .reply_author {
@@ -196,11 +190,6 @@ textarea.reply_body {
 .proposal th, .proposal td, .proposal tr {
   border: none !important;
   background-color: inherit !important;
-}
-
-.proposal th, .proposal td, .proposal tr {
-  padding: .2em .5em;
-  vertical-align: top;
 }
 
 .proposal th {
@@ -395,4 +384,10 @@ textarea.reply_body {
 
 .notes_delete {
   display: none;
+}
+
+.archived_note {
+  color: grey;
+  font-size: 14px;
+  font-style: italic;
 }
