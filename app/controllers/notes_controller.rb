@@ -2,9 +2,6 @@ class NotesController < ApplicationController
 
   layout 'ontology'
 
-
-  # GET /notes/1
-  # GET /notes/1.xml
   def show
     # Some application servers (apache, nginx) mangle encoded slashes, check for that here
     id = clean_note_id(params[:id])
@@ -22,8 +19,6 @@ class NotesController < ApplicationController
     end
   end
 
-  # GET /notes/virtual/1
-  # GET /notes/virtual/1.xml
   def virtual_show
     note_id = params[:noteid]
     concept_id = params[:conceptid]
@@ -56,8 +51,6 @@ class NotesController < ApplicationController
     end
   end
 
-  # POST /notes
-  # POST /notes.xml
   def create
     if params[:type].eql?("reply")
       note = LinkedData::Client::Models::Reply.new(values: note_params)
@@ -84,8 +77,6 @@ class NotesController < ApplicationController
     end
   end
 
-  # DELETE /notes/1
-  # DELETE /notes/1.xml
   def destroy
     note_ids = params[:noteids].kind_of?(String) ? params[:noteids].split(",") : params[:noteids]
 
@@ -107,8 +98,6 @@ class NotesController < ApplicationController
     render :json => { :success => successes, :error => errors }
   end
 
-  # POST /notes
-  # POST /notes.xml
   def archive
     ontology = DataAccess.getLatestOntology(params[:ontology_virtual_id])
 
@@ -124,17 +113,12 @@ class NotesController < ApplicationController
     end
   end
 
-  ################
-  ## REDIRECTS
-  ################
-
   def show_concept_list
     params[:p] = "classes"
     params[:t] = "notes"
     redirect_new_api
   end
 
-  ##
   # Sometimes note ids come from the params with a bad prefix
   def clean_note_id(id)
     id = id.match(/\Ahttp:\/\w/) ? id.sub('http:/', 'http://') : id
