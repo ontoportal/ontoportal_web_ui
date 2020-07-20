@@ -3,7 +3,6 @@ class NotesController < ApplicationController
   layout 'ontology'
 
   def show
-    # Some application servers (apache, nginx) mangle encoded slashes, check for that here
     id = clean_note_id(params[:id])
 
     @notes = LinkedData::Client::Models::Note.get(id, include_threads: true)
@@ -27,7 +26,7 @@ class NotesController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_acronym).first
 
     if note_id
-      id = clean_note_id(params[:noteid])
+      id = clean_note_id(note_id)
       @notes = LinkedData::Client::Models::Note.get(id, include_threads: true)
     elsif concept_id
       @notes = @ontology.explore.single_class(concept_id).explore.notes
@@ -119,12 +118,6 @@ class NotesController < ApplicationController
     redirect_new_api
   end
 
-  # Sometimes note ids come from the params with a bad prefix
-  def clean_note_id(id)
-    id = id.match(/\Ahttp:\/\w/) ? id.sub('http:/', 'http://') : id
-    CGI.unescape(id)
-  end
-
   private
 
   def note_params
@@ -133,6 +126,12 @@ class NotesController < ApplicationController
                                  :parent, :newTarget, :oldTarget, { newRelationshipType:[] }, :propertyId,
                                  :newValue, :oldValue])
     p.to_h
+  end
+
+  # Fix noteid parameters with bad prefixes (some application servers, e.g., Apache, NGINX, mangle encoded slashes).
+  def clean_note_id(id)
+    id = id.match(/\Ahttp:\/\w/) ? id.sub('http:/', 'http://') : id
+    CGI.unescape(id)
   end
 
 end
