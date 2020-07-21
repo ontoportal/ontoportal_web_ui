@@ -5,7 +5,7 @@ class NotesController < ApplicationController
   def show
     id = clean_note_id(params[:id])
 
-    @notes = LinkedData::Client::Models::Note.get(id, include_threads: true)
+    @note = LinkedData::Client::Models::Note.get(id, include_threads: true)
     @ontology = (@notes.explore.relatedOntology || []).first
 
     if request.xhr?
@@ -27,7 +27,8 @@ class NotesController < ApplicationController
 
     if note_id
       id = clean_note_id(note_id)
-      @notes = LinkedData::Client::Models::Note.get(id, include_threads: true)
+      @note = LinkedData::Client::Models::Note.get(id, include_threads: true)
+      @note_decorator = NoteDecorator.new(@note, view_context)
     elsif concept_id
       @notes = @ontology.explore.single_class(concept_id).explore.notes
       @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
@@ -41,12 +42,12 @@ class NotesController < ApplicationController
     end
 
     if request.xhr?
-      render :partial => 'thread'
+      render partial: 'thread'
       return
     end
 
     respond_to do |format|
-      format.html { render :template => 'notes/show' }
+      format.html { render :show }
     end
   end
 

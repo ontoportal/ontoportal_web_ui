@@ -11,7 +11,7 @@ module NotesHelper
       reply_html = <<-html
         <div class="reply">
           <div class="reply_author">
-            <b>#{get_username(reply.creator)}</b> #{time_ago_in_words(DateTime.parse(@notes.created))} ago
+            <b>#{get_username(reply.creator)}</b> #{time_ago_in_words(DateTime.parse(@note.created))} ago
           </div>
           <div class="reply_body">
             #{sanitize reply.body, tags: NOTES_TAGS}<br/>
