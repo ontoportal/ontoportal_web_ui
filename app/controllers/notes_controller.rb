@@ -2,14 +2,10 @@ class NotesController < ApplicationController
 
   layout 'ontology'
 
-
-  # GET /notes/1
-  # GET /notes/1.xml
   def show
-    # Some application servers (apache, nginx) mangle encoded slashes, check for that here
     id = clean_note_id(params[:id])
 
-    @notes = LinkedData::Client::Models::Note.get(id, include_threads: true)
+    @note = LinkedData::Client::Models::Note.get(id, include_threads: true)
     @ontology = (@notes.explore.relatedOntology || []).first
 
     if request.xhr?
@@ -22,8 +18,6 @@ class NotesController < ApplicationController
     end
   end
 
-  # GET /notes/virtual/1
-  # GET /notes/virtual/1.xml
   def virtual_show
     note_id = params[:noteid]
     concept_id = params[:conceptid]
@@ -32,8 +26,9 @@ class NotesController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_acronym).first
 
     if note_id
-      id = clean_note_id(params[:noteid])
-      @notes = LinkedData::Client::Models::Note.get(id, include_threads: true)
+      id = clean_note_id(note_id)
+      @note = LinkedData::Client::Models::Note.get(id, include_threads: true)
+      @note_decorator = NoteDecorator.new(@note, view_context)
     elsif concept_id
       @notes = @ontology.explore.single_class(concept_id).explore.notes
       @note_link = "/notes/virtual/#{@ontology.ontologyId}/?noteid="
@@ -47,17 +42,15 @@ class NotesController < ApplicationController
     end
 
     if request.xhr?
-      render :partial => 'thread'
+      render partial: 'thread'
       return
     end
 
     respond_to do |format|
-      format.html { render :template => 'notes/show' }
+      format.html { render :show }
     end
   end
 
-  # POST /notes
-  # POST /notes.xml
   def create
     if params[:type].eql?("reply")
       note = LinkedData::Client::Models::Reply.new(values: note_params)
@@ -84,8 +77,6 @@ class NotesController < ApplicationController
     end
   end
 
-  # DELETE /notes/1
-  # DELETE /notes/1.xml
   def destroy
     note_ids = params[:noteids].kind_of?(String) ? params[:noteids].split(",") : params[:noteids]
 
@@ -107,8 +98,6 @@ class NotesController < ApplicationController
     render :json => { :success => successes, :error => errors }
   end
 
-  # POST /notes
-  # POST /notes.xml
   def archive
     ontology = DataAccess.getLatestOntology(params[:ontology_virtual_id])
 
@@ -124,21 +113,10 @@ class NotesController < ApplicationController
     end
   end
 
-  ################
-  ## REDIRECTS
-  ################
-
   def show_concept_list
     params[:p] = "classes"
     params[:t] = "notes"
     redirect_new_api
-  end
-
-  ##
-  # Sometimes note ids come from the params with a bad prefix
-  def clean_note_id(id)
-    id = id.match(/\Ahttp:\/\w/) ? id.sub('http:/', 'http://') : id
-    CGI.unescape(id)
   end
 
   private
@@ -149,6 +127,12 @@ class NotesController < ApplicationController
                                  :parent, :newTarget, :oldTarget, { newRelationshipType:[] }, :propertyId,
                                  :newValue, :oldValue])
     p.to_h
+  end
+
+  # Fix noteid parameters with bad prefixes (some application servers, e.g., Apache, NGINX, mangle encoded slashes).
+  def clean_note_id(id)
+    id = id.match(/\Ahttp:\/\w/) ? id.sub('http:/', 'http://') : id
+    CGI.unescape(id)
   end
 
 end

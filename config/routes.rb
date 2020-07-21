@@ -77,11 +77,9 @@ Rails.application.routes.draw do
   # Analytics
   get '/analytics/:action' => 'analytics#(?-mix:search_result_clicked|user_intention_surveys)'
 
-  # New Notes
-  get 'ontologies/:ontology/notes/:noteid' => 'notes#virtual_show', :as => :note_virtual, :noteid => /.+/
-  get 'notes/ajax/single/:ontology' => 'notes#show_single', :as => :note_ajax_single
-  get 'notes/ajax/single_list/:ontology' => 'notes#show_single_list', :as => :note_ajax_single_list
-
+  # Notes
+  get 'ontologies/:ontology/notes/:noteid', to: 'notes#virtual_show', as: :note_virtual, noteid: /.+/
+  
   # Ajax
   get '/ajax/' => 'ajax_proxy#get', :as => :ajax
   get '/ajax_concepts/:ontology/' => 'concepts#show', :constraints => { :id => /[^\/?]+/ }

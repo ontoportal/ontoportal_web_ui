@@ -1,26 +1,25 @@
-%div.note{style: "max-width: 850px;"}
-  %span.note_title
-    = @notes.subject
-  - if @notes.archived
-    %span{:style => "color: grey; font-size: 12pt;"} archived
+%div.note
+
+  %div
+    = @note_decorator.title
+    = @note_decorator.status
+
   %div
     submitted by
-    %span.note_author= get_username(@notes.creator)
-    = time_ago_in_words(DateTime.parse(@notes.created))
-    ago
-  - if @notes.body && !@notes.body.empty?
-    %div.note_body= @notes.body
-  - if @notes.proposal
-    %div.proposal
-      %h3 Proposal Details
-      =proposal_html(@notes).html_safe
+    = @note_decorator.author
+    = @note_decorator.created_date
+
+  = @note_decorator.body_content
+  = @note_decorator.proposal_content
+
   %div.reply
     %div.reply_meta
       - if session[:user].nil?
         = link_to "reply", login_index_path
       - else
-        = link_to "reply", "#reply", class: "reply_reply", data: { parent_id: "#{@notes.id}", parent_type: "reply" }
-    - if @notes.reply && !@notes.reply.empty?
-      %div.discussion{style: "padding: 1em 0 0 1.5em;"}
+        = @note_decorator.reply_link
+
+    - if @note.reply && !@note.reply.empty?
+      %div.discussion
         %div.discussion_container
-          = recurse_replies(@notes.reply).html_safe
+          = recurse_replies(@note.reply).html_safe
