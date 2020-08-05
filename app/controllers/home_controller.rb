@@ -1,8 +1,6 @@
 class HomeController < ApplicationController
   layout :determine_layout
 
-  #RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "#{$REST_URL}/resource_index/", :limit => 10, :mode => :intersection}
-
   def index
     @ontologies_views = LinkedData::Client::Models::Ontology.all(include_views: true)
     @ontologies = @ontologies_views.select {|o| !o.viewOf}
@@ -14,18 +12,6 @@ class HomeController < ApplicationController
     # Calculate BioPortal summary statistics
     @ont_count = @ontologies.length
     @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes.to_i}.sum
-    begin
-      @resources = LinkedData::Client::ResourceIndex.resources # application_controller
-      @ri_resources = @resources.length
-      @ri_record_count = @resources.map {|r| r.count}.sum
-    rescue
-      @resources = []
-      @ri_resources = 0
-      @ri_record_count = 0
-    end
-    @ri_stats = LinkedData::Client::ResourceIndex.annotation_counts
-    @direct_annotations = @ri_stats[:total][:direct]
-    @direct_expanded_annotations = @ri_stats[:total][:ancestors]
     @analytics = LinkedData::Client::Analytics.last_month
 
     @ontology_names = @ontologies.map{ |ont| ["#{ont.name} (#{ont.acronym})", ont.acronym] }

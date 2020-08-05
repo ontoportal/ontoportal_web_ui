@@ -105,16 +105,6 @@ Rails.application.routes.draw do
   get '/login_as/:login_as' => 'login#login_as'
   post '/login/send_pass', to: 'login#send_pass'
 
-  # Resource Index
-  get '/res_details/:id' => 'resources#details', :as => :obr_details
-  get '/resources/:ontology/:id' => 'resources#show', :as => :obr
-  get '/respage/' => 'resources#page', :as => :obrpage
-  get '/resource_index/resources' => 'resource_index#index'
-  get '/resource_index/resources/:resource_id' => 'resource_index#index'
-  match '/resource_index/:action', to: 'resource_index#(?-mix:element_annotations|results_paginate|resources_table)', via: [:get, :post]
-  get '/resource_index/search_classes' => 'resource_index#search_classes'
-  resources :resource_index
-
   # History
   get '/tab/remove/:ontology' => 'history#remove', :as => :remove_tab
   get '/tab/update/:ontology/:concept' => 'history#update', :as => :update_tab
@@ -148,8 +138,6 @@ Rails.application.routes.draw do
 
   # Redirects from old URL locations
   get '/annotate' => 'redirect#index', :url => '/annotator'
-  get '/all_resources' => 'redirect#index', :url => '/resources'
-  get '/resources' => 'redirect#index', :url => '/resource_index'
   get '/visconcepts/:ontology/' => 'redirect#index', :url => '/visualize/'
   get '/ajax/terms/label' => 'redirect#index', :url => '/ajax/classes/label'
   get '/ajax/terms/definition' => 'redirect#index', :url => '/ajax/classes/definition'

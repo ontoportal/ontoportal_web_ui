@@ -23,7 +23,6 @@
 //= require bp_analytics
 //= require bp_user_intention_survey
 //= require bp_search
-//= require bp_resource_index
 //= require bp_mappings
 //= require bp_visualize
 //= require bp_admin
