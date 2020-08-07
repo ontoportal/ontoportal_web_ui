@@ -63,6 +63,7 @@ group :development do
   gem 'capistrano-rails', '~> 1.4', require: false
   gem 'capistrano-yarn', require: false
   gem 'html2haml'
+  gem 'listen'
   # static code analysis
   gem 'brakeman', require: false
   gem 'rubocop', require: false
