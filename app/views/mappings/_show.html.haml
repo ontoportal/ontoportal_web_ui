@@ -12,10 +12,11 @@
         - for map in @mappings
           %tr
             - cls = map.classes.shift
+            - is_internal_link = cls.links["self"].to_s.start_with?(LinkedData::Client.settings.rest_url) || ($LOCAL_IP.present? && cls.links["self"].to_s.include?($LOCAL_IP))
             %td
-              - if cls.links["self"].to_s.start_with?(LinkedData::Client.settings.rest_url)
+              - if is_internal_link
                 // Check if it is an internal, interportal or external mapping
-                #{link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>".html_safe, :controller => 'visualize', :action => 'virtual', :id => cls.explore.ontology.acronym, :conceptid => cls.id}
+                = link_to("#{cls.id}<span href='/ajax/classes/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>".html_safe, ontology_path(cls.explore.ontology.acronym, p: "classes", conceptid: cls.id))
                 //#{raw(get_link_for_cls_ajax(cls.id, cls.explore.ontology.acronym))} // Other way to do it, slower
               - elsif cls.links.has_key?("ui")
                 #{raw(get_link_for_interportal_cls_ajax(cls))}
@@ -24,8 +25,8 @@
                 #{raw("<a href='#{cls.links["self"]}' target='_blank'>#{get_link_for_external_cls(cls.id)}</a>")}
             - cls = map.classes.shift
             %td
-              - if cls.links["self"].to_s.start_with?(LinkedData::Client.settings.rest_url)
-                #{link_to "#{cls.id}<span href='/ajax/classes/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>".html_safe, :controller => 'visualize', :action => 'virtual', :id => cls.explore.ontology.acronym, :conceptid => cls.id}
+              - if is_internal_link
+                = link_to("#{cls.id}<span href='/ajax/classes/label?ontology=#{cls.links["ontology"]}&concept=#{CGI.escape(cls.id)}' class='get_via_ajax'></span>".html_safe, ontology_path(cls.explore.ontology.acronym, p: "classes", conceptid: cls.id))
                 //#{raw(get_link_for_cls_ajax(cls.id, cls.explore.ontology.acronym))} // Other way to do it, slower
               - elsif cls.links.has_key?("ui")
                 #{raw(get_link_for_interportal_cls_ajax(cls))}
