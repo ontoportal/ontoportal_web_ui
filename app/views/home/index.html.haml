@@ -122,45 +122,13 @@
               - slice_link = "http://#{slice.acronym}.#{$UI_URL.sub("http://", "")}"
               %li.list-group-item
                 = link_to slice_name, slice_link
-  - logos_root_folder = 'logos'
-  %div.row.pt-3.misc
-    %div.col
-      %div.card-deck
-        %div.card
-          %div.card-header Agroportal Metrics
-          %div.metrics
-            = image_tag 'home/agroportal_metrics.png', style: 'width: 100%'
-        %div.card
-          %div.card-header Other repositories in the OntoPortal Alliance
-          %div.logos.other-portals
-            - logos_folder = [logos_root_folder, :ontoportal_alliance].join('/')
-            %ul.list-group.list-group-flush
-              %li.list-group-item
-                = link_to(image_tag([logos_folder, 'bioportal_logo.png'].join('/')), "http://bioportal.lirmm.fr", target: '_blank')
-              %li.list-group-item
-                = link_to(image_tag([logos_folder, 'ecoportal_logo.png'].join('/')), "http://ecoportal.lifewatchitaly.eu", target: '_blank')
-  %div.row.pt-3.supported-by
-    %div.col
-      %div.card-deck
-        %div.card
-          %div.card-header Supported by
-          %div.logos.supports
-            - logos_folder = [logos_root_folder, :supports].join('/')
-            = link_to(image_tag([logos_folder, 'numev_logo.png'].join('/')), "http://www.lirmm.fr/numev", target: '_blank')
-            = link_to(image_tag([logos_folder, 'ibc_logo.jpg'].join('/')), "http://www.ibc-montpellier.fr", target: '_blank')
-            = link_to(image_tag([logos_folder, 'agropolisfondation_logo.png'].join('/')), "https://www.agropolis-fondation.fr/?lang=en", target: '_blank')
-            = link_to(image_tag([logos_folder, 'anr_logo.png'].join('/')), "https://anr.fr/en", target: '_blank')
-            = link_to(image_tag([logos_folder, 'msca_eu_logo.jpg'].join('/')), "https://ec.europa.eu/programmes/horizon2020/en/h2020-section/marie-sklodowska-curie-actions", target: '_blank')
-  %div.row.pt-3.collaboration
-    %div.col
-      %div.card-deck
-        %div.card
-          %div.card-header With the collaboration of
-          %div.logos.collaboration
-            - logos_folder = [logos_root_folder, :collaboration].join('/')
-            = link_to(image_tag([logos_folder, 'd2kab_logo.png'].join('/')), "http://d2kab.mystrikingly.com", target: '_blank')
-            = link_to(image_tag([logos_folder, 'lirmm_logo.png'].join('/')), "http://www.lirmm.fr", target: '_blank')
-            = link_to(image_tag([logos_folder, 'cnrs_logo.jpg'].join('/')), "http://www.cnrs.fr/en", target: '_blank')
-            = link_to(image_tag([logos_folder, 'inrae_logo.jpg'].join('/')), "https://www.inrae.fr/en", target: '_blank')
-            = link_to(image_tag([logos_folder, 'um_logo.png'].join('/')), "https://www.umontpellier.fr/en", target: '_blank')
-            = link_to(image_tag([logos_folder, 'stanford-university_logo.png'].join('/')), "https://www.stanford.edu", target: '_blank')
+
+  - $HOME_PAGE_LOGOS.to_a.each do |home_page_logos_row|
+    %div.row.pt-3
+      %div.col
+        %div.card-deck
+          %div.card
+            %div.card-header= home_page_logos_row[:title]
+            %div.logos
+              - home_page_logos_row[:links].to_a.each do |logo|
+                = link_to(image_tag(logo[:img_src]), logo[:url], target: logo[:target])
