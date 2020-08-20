@@ -4,7 +4,7 @@
 %footer.footer.pt-4.mt-5
   %div.container
     %div.row
-      - $FOOTER_LINKS[:top].to_a.each do |footer_links_block|
+      - $FOOTER_LINKS.to_h[:top].to_a.each do |footer_links_block|
         %div.col-6.col-md
           %h6= footer_links_block[:column_header]
           %ul.list-unstyled
@@ -24,7 +24,7 @@
       %div.col
         = t('.grant_html', site: $SITE)
     %div.row.pt-2
-      - $FOOTER_LINKS[:bottom].to_a.each do |footer_links_block|
+      - $FOOTER_LINKS.to_h[:bottom].to_a.each do |footer_links_block|
         %div.col-6.col-md
           - if footer_links_block[:column_header].present?
             %h6= footer_links_block[:column_header]
