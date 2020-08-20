@@ -4,49 +4,46 @@
 %footer.footer.pt-4.mt-5
   %div.container
     %div.row
-      %div.col-6.col-md
-        %h6 PRODUCTS
-        %ul.list-unstyled
-          %li= link_to('OntoPortal', 'https://www.bioontology.org/wiki/index.php/Category:NCBO_Virtual_Appliance', target: '_blank')
-          %li= link_to('NCBO Web Widgets', 'http://www.bioontology.org/wiki/index.php/NCBO_Widgets', target: '_blank')
-          %li
-            = link_to('http://data.agroportal.lirmm.fr', class: 'logo connect', target: '_blank') do 
-              = image_tag 'layout/footer/api_logo.png'
-            = link_to('http://sparql.agroportal.lirmm.fr/test/', class: 'logo connect', target: '_blank') do 
-              = image_tag 'logos/sparql_logo.png'
-      %div.col-6.col-md.footer-support
-        %h6 SUPPORT
-        %ul.list-unstyled
-          %li= link_to('Contact Us', feedback_path(location: encode_param(request.url)), class: 'pop_window')
-          %li= link_to('Documentation', 'http://data.agroportal.lirmm.fr/documentation', target: '_blank')
-          %li= link_to('NCBO Wiki', 'https://www.bioontology.org/wiki/', target: '_blank')
-      %div.col-6.col-md
-        %h6 ABOUT
-        %ul.list-unstyled
-          %li= link_to('About Us', about_path)
-          %li= link_to(raw('D2KAB project'), 'http://d2kab.mystrikingly.com', target: '_blank')
-          %li= link_to('Team', 'https://github.com/orgs/agroportal/people', target: '_blank')
-      %div.col-12.col-md
-        %h6 CONNECT
-        %ul.list-inline
-          %li.list-inline-item
-            = link_to('https://twitter.com/lagroportal?lang=en', target: '_blank') do
-              %i.fab.fa-2x.fa-twitter
-          %li.list-inline-item
-            = link_to('https://github.com/agroportal', target: '_blank') do
-              %i.fab.fa-2x.fa-github
+      - $FOOTER_LINKS[:top].to_a.each do |footer_links_block|
+        %div.col-6.col-md
+          %h6= footer_links_block[:column_header]
+          %ul.list-unstyled
+            - footer_links_block[:links].each do |footer_links_row|
+              %li
+                - footer_links_row.each do |footer_link|
+                  = link_to(footer_link[:url], target: footer_link[:target], style: 'text-decoration: none') do
+                    - if footer_link[:text].present?
+                      = raw(footer_link[:text])
+                    - else
+                      - if footer_link[:img_src].present?
+                        = image_tag footer_link[:img_src]
+                      - else
+                        - if footer_link[:icon].present?
+                          = content_tag(:i, '', class: footer_link[:icon])
     %div.row.legal-text
       %div.col
-        = t('.grant_html')
+        = t('.grant_html', site: $SITE)
     %div.row.pt-2
-      %div.col
-        %ul.list-inline
-          %li.list-inline-item
-            = link_to('CITE US', 'https://dx.doi.org/10.1016/j.compag.2017.10.012', target: '_blank')
-          %li.list-inline-item
-            %i.fas.fa-ellipsis-v{"aria-hidden" => "true"}
-          %li.list-inline-item
-            = link_to('PRIVACY POLICY & TERMS', 'http://www.bioontology.org/privacy.html',  target: '_blank')
+      - $FOOTER_LINKS[:bottom].to_a.each do |footer_links_block|
+        %div.col-6.col-md
+          - if footer_links_block[:column_header].present?
+            %h6= footer_links_block[:column_header]
+          %ul.list-inline
+            - footer_links_block[:links].each do |footer_links_row|
+              - footer_links_row.each_with_index do |footer_link, i|
+                %li.list-inline-item
+                  = link_to(footer_link[:url], target: footer_link[:target]) do
+                    - if footer_link[:text].present?
+                      = raw(footer_link[:text])
+                    - else
+                      - if footer_link[:img_src].present?
+                        = image_tag footer_link[:img_src]
+                      - else
+                        - if footer_link[:icon].present?
+                          = content_tag(:i, '', class: footer_link[:icon])
+                - unless i >= footer_links_row.size - 1
+                  %li.list-inline-item
+                    = raw(footer_links_block[:separator])
 
 = javascript_include_tag "application"
 = render partial: "ga_tracking"
