@@ -188,6 +188,24 @@ div.logos a {
 }
 
 /************************************
+ * ABOUT PAGE
+************************************/
+
+.about {
+  h2 {
+    font-size: 150% !important;
+    padding-bottom: .17em;
+    border-bottom: 1px solid #AAAAAA;
+    font-weight: normal !important;
+    width: auto !important;
+  }
+  
+  p {
+    text-align: justify;
+  }
+}
+
+/************************************
  * FOOTER
 ************************************/
 footer, .footer {
