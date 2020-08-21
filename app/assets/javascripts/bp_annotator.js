@@ -2,7 +2,11 @@ var
   bp_last_params = null,
   annotationsTable = null,
   annotator_ontologies = null;
-
+  docUrl = document.URL.replace(/\/$/, ""),
+  last_slash_index = docUrl.lastIndexOf("/"),
+  annotatorUrl = '/' + docUrl.substr(last_slash_index+1),
+  isNcboAnnotatorPlus = annotatorUrl == '/ncbo_annotatorplus';
+  
 // Note: the configuration is in config/bioportal_config.rb.
 var BP_CONFIG = jQuery(document).data().bp.config;
 
@@ -16,7 +20,8 @@ var BP_COLUMNS = {
   score: 7,
   negation: 8,
   experiencer: 9,
-  temporality: 10
+  temporality: 10,
+  certainty: 11
 };
 
 var CONCEPT_MAP = {
@@ -34,7 +39,13 @@ function set_last_params(params) {
 function insertSampleText(event) {
   "use strict";
   event.preventDefault();
-  var text = "Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.";
+  var text = '';
+  if(isNcboAnnotatorPlus) {
+    text = "Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.";
+  }
+  else {
+    text = "Le patient n’a aucun signe de mélanome, bien que son père a des antécédents de cancer de la peau.";
+  }
   jQuery("#annotation_text").focus();
   jQuery("#annotation_text").val(text);
 }
@@ -75,9 +86,7 @@ function get_annotations() {
   params.expand_mappings = jQuery("#expand_mappings").is(':checked');
   params.ncbo_slice = (("ncbo_slice" in BP_CONFIG) ? BP_CONFIG.ncbo_slice : '');
 
-  params.negation = jQuery("#negation").is(':checked');
-  params.experiencer = jQuery("#experiencer").is(':checked');
-  params.temporality = jQuery("#temporality").is(':checked');
+  params.fast_context = jQuery("#fast_context").is(':checked');
 
   params.score_threshold = jQuery("#score_threshold").val();
   params.confidence_threshold = jQuery("#confidence_threshold").val();
@@ -88,21 +97,11 @@ function get_annotations() {
   } else {
     annotationsTable.fnSetColumnVis(BP_COLUMNS.score, false);
   }
-  if (params.negation) {
-    annotationsTable.fnSetColumnVis(BP_COLUMNS.negation, true);
-  } else {
-    annotationsTable.fnSetColumnVis(BP_COLUMNS.negation, false);
-  }
-  if (params.experiencer) {
-    annotationsTable.fnSetColumnVis(BP_COLUMNS.experiencer, true);
-  } else {
-    annotationsTable.fnSetColumnVis(BP_COLUMNS.experiencer, false);
-  }
-  if (params.temporality) {
-    annotationsTable.fnSetColumnVis(BP_COLUMNS.temporality, true);
-  } else {
-    annotationsTable.fnSetColumnVis(BP_COLUMNS.temporality, false);
-  }
+  
+  annotationsTable.fnSetColumnVis(BP_COLUMNS.negation, params.fast_context);
+  annotationsTable.fnSetColumnVis(BP_COLUMNS.experiencer, params.fast_context);
+  annotationsTable.fnSetColumnVis(BP_COLUMNS.temporality, params.fast_context);
+  annotationsTable.fnSetColumnVis(BP_COLUMNS.certainty, params.fast_context);
 
   var maxLevel = parseInt(jQuery("#class_hierarchy_max_level").val());
   if (maxLevel > 0) {
@@ -147,7 +146,7 @@ function get_annotations() {
 
   jQuery.ajax({
     type: "POST",
-    url: "/annotator", // Call back to the UI annotation_controller::create method
+    url: annotatorUrl, // Call back to the UI annotation_controller::create method
     data: params,
     dataType: "json",
     success: function(data) {
@@ -469,12 +468,17 @@ function annotatorFormatLink(param_string, format) {
     "brat": "BRAT"
   };
   //var query = BP_CONFIG.rest_url + "/annotator?apikey=" + BP_CONFIG.apikey + "&" + param_string;
-  var query = BP_CONFIG.annotator_url + "?" + param_string;
-
-  if (jQuery(document).data().bp.user.apikey !== undefined) {
-    query += "&apikey=" + jQuery(document).data().bp.user.apikey;
-  } else {
-    query += "&apikey=" + BP_CONFIG.apikey;
+  var query = '';
+  if(isNcboAnnotatorPlus) {
+    query = BP_CONFIG.ncbo_annotator_url + "?" + param_string + "&apikey=" + BP_CONFIG.ncbo_apikey;
+  }
+  else {
+    query = BP_CONFIG.annotator_url + "?" + param_string;
+    if (jQuery(document).data().bp.user.apikey !== undefined) {
+      query += "&apikey=" + jQuery(document).data().bp.user.apikey;
+    } else {
+      query += "&apikey=" + BP_CONFIG.apikey;
+    }
   }
 
   if (format !== 'json') {
@@ -578,6 +582,10 @@ jQuery(document).ready(function() {
       // Temporality column
       "sWidth": "5%",
       "bVisible": false
+    }, {
+      // Certainty column
+      "sWidth": "5%",
+      "bVisible": false
     }]
   });
   filter_ontologies.init();
@@ -613,22 +621,38 @@ function get_class_details(cls) {
 function get_class_details_from_raw(cls) {
   var
     ont_acronym = cls.links.ontology.replace(/.*\//, ''),
-    ont_name = annotator_ontologies[cls.links.ontology].name,
+    //ont_name = annotator_ontologies[cls.links.ontology].name,
+    ont_name = undefined,
     ont_rel_ui = '/ontologies/' + ont_acronym,
     ont_link = null;
-  if (ont_name === undefined) {
-    ont_link = get_link_for_ont_ajax(ont_acronym);
-  } else {
-    ont_link = get_link(ont_rel_ui, ont_name); // no ajax required!
-  }
+  
   var
     cls_rel_ui = cls.links.ui.replace(/^.*\/\/[^\/]+/, ''),
     cls_label = cls.prefLabel,
     cls_link = null;
-  if (cls_label === undefined) {
-    cls_link = get_link_for_cls_ajax(cls['@id'], ont_acronym);
+  
+  if (isNcboAnnotatorPlus) {
+    ont_link = get_link(cls.links.ontology, ont_acronym);
+    ont_rel_ui = ont_link;
+    cls_link = get_link(cls.links.ui, cls_label);
+    cls_rel_ui = cls_link;
   } else {
-    cls_link = get_link(cls_rel_ui, cls_label); // no ajax required!
+    try {
+      ont_name = annotator_ontologies[cls.links.ontology].name;
+    }
+    catch (e) {
+      ont_name = undefined;
+    }
+    if (ont_name === undefined) {
+      ont_link = get_link_for_ont_ajax(ont_acronym);
+    } else {
+      ont_link = get_link(ont_rel_ui, ont_name); // no ajax required!
+    }
+    if (cls_label === undefined) {
+      cls_link = get_link_for_cls_ajax(cls['@id'], ont_acronym);
+    } else {
+      cls_link = get_link(cls_rel_ui, cls_label); // no ajax required!
+    }
   }
   return class_details = {
     cls_rel_ui: cls_rel_ui,
@@ -705,7 +729,7 @@ function get_annotation_score(cls) {
 }
 
 /**
- * Set context value (negation, temporality or experienced) to empty string to avoid useless dataTable warning
+ * Set context value (negation, temporality, experienced or certainty) to empty string to avoid useless dataTable warning
  * @param context
  * @returns {*}
  */
@@ -738,14 +762,14 @@ function get_annotation_rows_from_raw(annotation, params) {
     jQuery.each(annotation.annotations, function(i, a) {
       text_markup = get_text_markup(params.text, a.from, a.to);
       match_type = match_type_translation[a.matchType.toLowerCase()] || 'direct';
-      cells = [cls.cls_link, cls.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, get_annotation_score(annotation), get_context_value(a.negationContext), get_context_value(a.experiencerContext), get_context_value(a.temporalityContext)];
+      cells = [cls.cls_link, cls.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, get_annotation_score(annotation), get_context_value(a.negationContext), get_context_value(a.experiencerContext), get_context_value(a.temporalityContext), get_context_value(a.certaintyContext)];
       rows.push(cells);
       // Add rows for any classes in the hierarchy.
       match_type = 'ancestor';
       var h_c = null;
       jQuery.each(annotation.hierarchy, function(i, h) {
         h_c = get_class_details_from_raw(h.annotatedClass);
-        cells = [h_c.cls_link, h_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, get_annotation_score(h), get_context_value(a.negationContext), get_context_value(a.experiencerContext), get_context_value(a.temporalityContext)];
+        cells = [h_c.cls_link, h_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, get_annotation_score(h), get_context_value(a.negationContext), get_context_value(a.experiencerContext), get_context_value(a.temporalityContext), get_context_value(a.certaintyContext)];
         rows.push(cells);
       }); // hierarchy loop
       // Add rows for any classes in the mappings. Note the ont_link will be different.
@@ -753,7 +777,7 @@ function get_annotation_rows_from_raw(annotation, params) {
       var m_c = null;
       jQuery.each(annotation.mappings, function(i, m) {
         m_c = get_class_details_from_raw(m.annotatedClass);
-        cells = [m_c.cls_link, m_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, get_annotation_score(m), get_context_value(a.negationContext), get_context_value(a.experiencerContext), get_context_value(a.temporalityContext)];
+        cells = [m_c.cls_link, m_c.ont_link, match_type, cls.semantic_types, text_markup, cls.cls_link, cls.ont_link, get_annotation_score(m), get_context_value(a.negationContext), get_context_value(a.experiencerContext), get_context_value(a.temporalityContext), get_context_value(a.certaintyContext)];
         rows.push(cells);
       }); // mappings loop
     }); // annotations loop
@@ -878,13 +902,22 @@ function display_annotations(data, params) {
   update_annotations_table(all_rows);
   // Generate parameters for list at bottom of page
   var param_string = generateParameters(); // uses bp_last_param
-  var query = BP_CONFIG.annotator_url + "?" + param_string + "&display_links=false&display_context=false";
-  if (jQuery(document).data().bp.user.apikey !== undefined) {
-    query += "&apikey=" + jQuery(document).data().bp.user.apikey;
-  } else {
-    query += "&apikey=" + BP_CONFIG.apikey;
+  var query = '';
+  var query_encoded = '';
+  
+  if (isNcboAnnotatorPlus) {
+    query = BP_CONFIG.ncbo_annotator_url + "?" + param_string + "&display_links=false&display_context=false" + "&apikey=" + BP_CONFIG.ncbo_apikey;;
+    query_encoded = BP_CONFIG.ncbo_annotator_url + "?" + encodeURIComponent(param_string);
   }
-  var query_encoded = BP_CONFIG.annotator_url + "?" + encodeURIComponent(param_string);
+  else {
+    query = BP_CONFIG.annotator_url + "?" + param_string + "&display_links=false&display_context=false";
+    if (jQuery(document).data().bp.user.apikey !== undefined) {
+      query += "&apikey=" + jQuery(document).data().bp.user.apikey;
+    } else {
+      query += "&apikey=" + BP_CONFIG.apikey;
+    }
+    query_encoded = BP_CONFIG.annotator_url + "?" + encodeURIComponent(param_string);
+  }
   jQuery("#annotator_parameters").html("<a href=\"" + encodeURI(query) + "\" class=\"btn btn-info\" target=\"_blank\">Corresponding REST web service call</a>");
   jQuery("#annotator_parameters_encoded").html(query_encoded);
   // Add links for downloading results

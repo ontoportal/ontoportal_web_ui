@@ -15,6 +15,9 @@
         = link_to("Recommender", recommender_index_path(), class: "nav-link")
       %li.nav-item
         = link_to("Annotator", annotator_index_path(), class: "nav-link")
+      - if $NCBO_ANNOTATORPLUS_ENABLED == true
+        %li.nav-item
+          = link_to("NCBO Annotator+", '/ncbo_annotatorplus', class: "nav-link")
       %li.nav-item
         = link_to("Projects", projects_path(), class: "nav-link")
       %li.nav-item

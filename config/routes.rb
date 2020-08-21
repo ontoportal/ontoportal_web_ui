@@ -39,6 +39,8 @@ Rails.application.routes.draw do
 
   resources :annotatorplus
 
+  resources :ncbo_annotatorplus
+
   resources :virtual_appliance
 
   get '' => 'home#index'

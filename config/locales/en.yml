@@ -113,6 +113,16 @@ en:
       intro: Get annotations for biomedical text with classes from the ontologies
       annotatorplus_html: <em>Check out <a href="%{annotatorplus_href}">AnnotatorPlus</a> beta; a new version of the Annotator with added support for negation, and more!</em>
 
+  nbco_annotatosplus:
+    index:
+      intro: >
+        The NCBO Annotator+ is a proxy calling the NCBO Annotator Web service on the NCBO BioPortal.
+        <br/><br/>
+        Tchechmedjiev, A., Abdaoui, A., Emonet, V., Melzi, S., Jonnagaddala, J., & Jonquet, C. (2018). <a href="https://doi.org/10.1093/bioinformatics/bty009" target="_blank">Enhanced functionalities for annotating and indexing clinical text with the NCBO Annotator+</a>. Bioinformatics, 34(11), 1962-1965.
+        </br><br/>
+        If using the API, please provide a valid NCBO BioPortal apikey and hit the service at <a href="http://services.bioportal.lirmm.fr/ncbo_annotatorplus">http://services.bioportal.lirmm.fr/ncbo_annotatorplus</a></br>
+        Text submitted to the NCBO Annotator+ must be in English.
+
   recommender:
     intro: Get recommendations for the most relevant ontologies based on an excerpt from a biomedical text or a list of keywords
 
