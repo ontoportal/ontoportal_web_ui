@@ -46,7 +46,7 @@ gem 'stackprof', require: false
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
 
-gem 'ontologies_api_client', :git => "https://github.com/sifrproject/ontologies_api_ruby_client.git", branch: "virtual-appliance-3.0-merge"
+gem 'ontologies_api_client', :git => "https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git", branch: "virtual-appliance-3.0-merge"
 
 group :staging, :production do
   # application monitoring
