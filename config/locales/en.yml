@@ -112,6 +112,7 @@ en:
     index:
       intro: Get annotations for biomedical text with classes from the ontologies
       annotatorplus_html: <em>Check out <a href="%{annotatorplus_href}">AnnotatorPlus</a> beta; a new version of the Annotator with added support for negation, and more!</em>
+      sample_text: Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.
 
   nbco_annotatosplus:
     index:
@@ -122,6 +123,7 @@ en:
         </br><br/>
         If using the API, please provide a valid NCBO BioPortal apikey and hit the service at <a href="http://services.bioportal.lirmm.fr/ncbo_annotatorplus">http://services.bioportal.lirmm.fr/ncbo_annotatorplus</a></br>
         Text submitted to the NCBO Annotator+ must be in English.
+      sample_text: Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.
 
   recommender:
     intro: Get recommendations for the most relevant ontologies based on an excerpt from a biomedical text or a list of keywords

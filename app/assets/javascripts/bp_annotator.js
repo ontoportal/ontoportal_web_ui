@@ -39,15 +39,8 @@ function set_last_params(params) {
 function insertSampleText(event) {
   "use strict";
   event.preventDefault();
-  var text = '';
-  if(isNcboAnnotatorPlus) {
-    text = "Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.";
-  }
-  else {
-    text = "Le patient n’a aucun signe de mélanome, bien que son père a des antécédents de cancer de la peau.";
-  }
   jQuery("#annotation_text").focus();
-  jQuery("#annotation_text").val(text);
+  jQuery("#annotation_text").val(jQuery("#annotation_sample_text").val());
 }
 
 /**
