@@ -79,7 +79,7 @@ function get_annotations() {
   params.expand_mappings = jQuery("#expand_mappings").is(':checked');
   params.ncbo_slice = (("ncbo_slice" in BP_CONFIG) ? BP_CONFIG.ncbo_slice : '');
 
-  params.fast_context = jQuery("#fast_context").is(':checked');
+  params.negation = params.experiencer = params.temporality = params.certainty = params.fast_context = jQuery("#fast_context").is(':checked');
 
   params.score_threshold = jQuery("#score_threshold").val();
   params.confidence_threshold = jQuery("#confidence_threshold").val();

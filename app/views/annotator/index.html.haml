@@ -91,19 +91,9 @@
 
           %div.form-group
             %div.custom-control.custom-checkbox
-              = check_box_tag("negation", :all, false, class: "custom-control-input")
-              %label.custom-control-label{for: "negation"} Detect negation  
-              %small#negationHelp.form-text.text-muted Detect if a concept has been negated (affirmed, negated, possible)
-
-            %div.custom-control.custom-checkbox
-              = check_box_tag("experiencer", :all, false, class: "custom-control-input")
-              %label.custom-control-label{for: "experiencer"} Detect experiencer
-              %small#experiencerHelp.form-text.text-muted Detect who experienced the each identified concept (patient, other)
-
-            %div.custom-control.custom-checkbox
-              = check_box_tag("temporality", :all, false, class: "custom-control-input")
-              %label.custom-control-label{for: "temporality"} Detect temporality
-              %small#temporalityHelp.form-text.text-muted Detect when the annotated concept occurred (recent, historical, hypothetical)
+              = check_box_tag("fast_context", :all, false, class: "custom-control-input")
+              %label.custom-control-label{for: "fast_context"} FastContext
+              %small#fast_contextnHelp.form-text.text-muted= t('annotator.index.fast_context.tooltip')
 
         %div.my-4
           = button_tag("Get annotations", type: "button", id: "annotator_button", class: "btn btn-primary btn-lg")
@@ -160,6 +150,7 @@
               %th Negation
               %th Experiencer
               %th Temporality
+              %th Certainty
           %tbody
         %div.my-3
           %b Format results as:
