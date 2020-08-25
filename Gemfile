@@ -46,7 +46,7 @@ gem 'stackprof', require: false
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
 
-gem 'ontologies_api_client', :git => "https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git", branch: "virtual-appliance-3.0-merge"
+gem 'ontologies_api_client', :git => "https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git", ref: '06acd69234ef30f7b87a5ccb6375d403d1752a54' # Temporary fix : gemspec issue on activesupport since version update (https://github.com/ncbo/ontologies_api_ruby_client/commit/8eddc9506582f9740e77abf76bc4f2a2e244846c)
 
 group :staging, :production do
   # application monitoring
