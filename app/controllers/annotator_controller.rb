@@ -52,6 +52,8 @@ class AnnotatorController < ApplicationController
                 :exclude_synonyms => params[:exclude_synonyms] ||= "false",  # service default is false
                 :fast_context => params[:fast_context] ||= "false",  # service default is false
                 :score => params[:score],
+                :score_threshold => params[:score_threshold] ||=-1,
+                :confidence_threshold => params[:confidence_threshold] ||=-1,
                 :lemmatize => params[:lemmatize] ||= "false",
                 :ncbo_slice => params[:ncbo_slice] || ''
     }
@@ -65,6 +67,8 @@ class AnnotatorController < ApplicationController
     query += "&expand_class_hierarchy=true" if options[:class_hierarchy_max_level] > 0
     query += "&class_hierarchy_max_level=" + options[:class_hierarchy_max_level].to_s if options[:class_hierarchy_max_level] > 0
     query += "&score=" + options[:score] unless options[:score] == ""
+    query += "&score_threshold=" + options[:score_threshold] unless options[:score] == "" or options[:score_threshold]==-1
+    query += "&confidence_threshold=" + options[:confidence_threshold] unless options[:score] == "" or options[:confidence_threshold]==-1
     query += "&fast_context=" + options[:fast_context] unless options[:fast_context].empty?
     query += "&ontologies=" + CGI.escape(options[:ontologies].join(',')) unless options[:ontologies].empty?
     query += "&semantic_types=" + options[:semantic_types].join(',') unless options[:semantic_types].empty?
