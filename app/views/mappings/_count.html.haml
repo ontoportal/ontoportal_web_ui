@@ -11,8 +11,8 @@
           %td &nbsp;
       - else
         - for ontology in @ontologies_mapping_count
-          - next if ontology["ontology"].viewOf
+          - next if ontology["ontology"][:viewOf]
           %tr
             %td
-              %a.facebox{:href => "/mappings/show/#{@ontology_id}?target=#{ontology['ontology'].id}&height=600&width=800", :title => "Mappings for #{@ontology_label} to #{ontology['ontology'].name}"}= ontology['ontology'].name
+              %a.facebox{:href => "/mappings/show/#{@ontology_id}?target=#{ontology['ontology'][:id]}&height=600&width=800", :title => "Mappings for #{@ontology_label} to #{ontology['ontology'][:name]}"}= ontology['ontology'][:name]
             %td= number_with_delimiter(ontology['count'], delimiter: ",")

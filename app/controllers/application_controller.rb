@@ -32,6 +32,27 @@ class ApplicationController < ActionController::Base
   EXPIRY_RECENT_MAPPINGS = 60 * 60     #  1:00 hours
   EXPIRY_ONTOLOGY_SIMPLIFIED = 60 * 1  #  0:01 minute
 
+  $DATA_CATALOG_VALUES = {"https://biosharing.org/" => "BioSharing",
+                         "http://aber-owl.net/ontology/" => "AberOWL",
+                         "http://vest.agrisemantics.org/content/" => "VEST Registry",
+                         "http://bioportal.bioontology.org/ontologies/" => "BioPortal",
+                         "https://bioportal.bioontology.org/ontologies/" => "BioPortal",
+                         "http://www.ontobee.org/ontology/" => "Ontobee",
+                         "http://www.obofoundry.org/ontology/" => "The OBO Foundry",
+                         "http://www.ebi.ac.uk/ols/ontologies/" => "EBI Ontology Lookup"}
+
+  RESOLVE_NAMESPACE = {:omv => "http://omv.ontoware.org/2005/05/ontology#", :skos => "http://www.w3.org/2004/02/skos/core#", :owl => "http://www.w3.org/2002/07/owl#",
+                       :rdf => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", :rdfs => "http://www.w3.org/2000/01/rdf-schema#", :metadata => "http://data.bioontology.org/metadata/",
+                       :metadata_def => "http://data.bioontology.org/metadata/def/", :dc => "http://purl.org/dc/elements/1.1/", :xsd => "http://www.w3.org/2001/XMLSchema#",
+                       :oboinowl_gen => "http://www.geneontology.org/formats/oboInOwl#", :obo_purl => "http://purl.obolibrary.org/obo/",
+                       :umls => "http://bioportal.bioontology.org/ontologies/umls/", :door => "http://kannel.open.ac.uk/ontology#", :dct => "http://purl.org/dc/terms/",
+                       :void => "http://rdfs.org/ns/void#", :foaf => "http://xmlns.com/foaf/0.1/", :vann => "http://purl.org/vocab/vann/", :adms => "http://www.w3.org/ns/adms#",
+                       :voaf => "http://purl.org/vocommons/voaf#", :dcat => "http://www.w3.org/ns/dcat#", :mod => "http://www.isibang.ac.in/ns/mod#", :prov => "http://www.w3.org/ns/prov#",
+                       :cc => "http://creativecommons.org/ns#", :schema => "http://schema.org/", :doap => "http://usefulinc.com/ns/doap#", :bibo => "http://purl.org/ontology/bibo/",
+                       :wdrs => "http://www.w3.org/2007/05/powder-s#", :cito => "http://purl.org/spar/cito/", :pav => "http://purl.org/pav/", :nkos => "http://w3id.org/nkos/nkostype#",
+                       :oboInOwl => "http://www.geneontology.org/formats/oboInOwl#", :idot => "http://identifiers.org/idot/", :sd => "http://www.w3.org/ns/sparql-service-description#",
+                       :cclicense => "http://creativecommons.org/licenses/"}
+
   $trial_license_initialized = false
 
   if !$EMAIL_EXCEPTIONS.nil? && $EMAIL_EXCEPTIONS == true
@@ -122,7 +143,13 @@ class ApplicationController < ActionController::Base
         userapikey: get_apikey,
         rest_url: LinkedData::Client.settings.rest_url,
         proxy_url: $PROXY_URL,
-        biomixer_url: $BIOMIXER_URL
+        biomixer_url: $BIOMIXER_URL,
+        annotator_url: $ANNOTATOR_URL,
+        biomixer_url: $BIOMIXER_URL,
+        ncbo_annotator_url: $NCBO_ANNOTATOR_URL,
+        ncbo_apikey: $NCBO_API_KEY,
+        interportal_hash: $INTERPORTAL_HASH,
+        resolve_namespace: RESOLVE_NAMESPACE
     }
     config[:ncbo_slice] = @subdomain_filter[:acronym] if (@subdomain_filter[:active] && !@subdomain_filter[:acronym].empty?)
     config.to_json
@@ -670,5 +697,11 @@ class ApplicationController < ActionController::Base
       $trial_license_initialized = true
     end
   end
+  
+  # Get the submission metadata from the REST API.
+  def submission_metadata
+    @metadata ||= JSON.parse(Net::HTTP.get(URI.parse("#{REST_URI}/submission_metadata?apikey=#{API_KEY}")))
+  end
+  helper_method :submission_metadata
 
 end

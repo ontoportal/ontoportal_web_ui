@@ -1,0 +1,43 @@
+@media screen and (min-width: 992px) {
+
+  .ont-additional-metadata-card {
+    margin-right: 16px;
+  }
+
+  .ont-links-card, .ont-metadatalinks-card, .ont-included-in-data-catalog-card, .ont-logo-depiction-card {
+    margin-bottom: 32px;
+  }
+}
+
+.ont-metadata-card {
+  
+  td:nth-child(1) {
+    background-color: #f0f0f0;
+    white-space: nowrap;
+    text-transform: capitalize;
+  }
+  
+}
+
+.ont-additional-metadata-card {
+  grid-column: 1;
+  grid-row: 2;
+  
+  .logo {
+    height: 40px;
+    border-width: 0px;
+  }
+}
+
+.ont-included-in-data-catalog-card a.btn {
+  margin-right: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.ont-subs-card {
+  grid-row: 3;
+}
+
+.ont-views-card {
+  grid-row: 4;
+}

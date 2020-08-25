@@ -17,7 +17,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="lib/html5-boilerplate/css/normalize.css">
   <link rel="stylesheet" href="lib/html5-boilerplate/css/main.css">
-  <link rel="stylesheet" href="app.css">
 
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
@@ -68,13 +67,7 @@
   <script src="checklist-model.js"></script>
   <script src="app.js"></script>
 
-  <% if appliance_mode %>
-    <%= render partial: "footer_appliance" %>
-    <%= javascript_include_tag "application" %>
-    <%= render partial: "ga_tracking" %>    
-  <% else %>
-    <%= render partial: 'layouts/footer' %>
-  <% end %>
+  <%= render partial: 'layouts/footer' %>
 
 </body>
 </html>

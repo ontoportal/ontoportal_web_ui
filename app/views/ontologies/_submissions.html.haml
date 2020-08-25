@@ -1,5 +1,20 @@
 - return "" if @ontology.metadata_only?
 
+:javascript
+  jQuery("#version_toggle").click(function(event){
+    event.preventDefault();
+    jQuery("#ontology_versions tr.hidden_select").toggleClass("hidden_ont");
+  });
+
+  jQuery("#version_toggle").toggle(
+    function() {
+      jQuery(this).text("less...");
+    },
+    function() {
+      jQuery(this).text("more...");
+    }
+  );
+
 - more_colspan = 4
 - more_colspan = 3 if @ont_restricted
 
@@ -15,20 +30,20 @@
     - begin
       - submission_ready = @ontology.explore.latest_submission({:include_status => 'ready'})
       - submission_readyId = submission_ready.submissionId unless submission_ready.nil?
-    - rescue
+      - rescue
       - submission_readyId = -1
     - @submissions.each_with_index do |sub, index|
       - hidden_row_class = index >= 5 ? "hidden_ont hidden_select" : ""
       %tr{class: "#{hidden_row_class}"}
         %td
-          = raw status_link(sub, sub.submissionId==submission_readyId)
+          = raw status_link(sub, @ontology, sub.submissionId==submission_readyId)
         %td
           = xmldatetime_to_date(sub.released) unless sub.released.nil?
         %td
-          = xmldatetime_to_date(sub.creationDate)
+          = xmldatetime_to_date(sub.creationDate) unless sub.creationDate.nil?
         - unless @ont_restricted
           %td
-            = raw download_link(sub)
+            = raw download_link(sub, @ontology)
     - if @submissions.length >= 5
       %tr
         %td{colspan: more_colspan, class: "show_more_subs"}

@@ -1,7 +1,7 @@
 GIT
-  remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 54adc52e0d35e77aa915f34e7a2c02ea738a0ba0
-  branch: staging
+  remote: https://github.com/sifrproject/ontologies_api_ruby_client.git
+  revision: 9833ae968d01be72db87a2efd99391cb6e6d8c8a
+  branch: virtual-appliance-3.0-merge
   specs:
     ontologies_api_client (1.0.0)
       activesupport (~> 5.1.7)
@@ -122,7 +122,7 @@ GEM
       ruby_parser (~> 3.5)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (1.8.3)
+    i18n (1.8.4)
       concurrent-ruby (~> 1.0)
     iconv (1.0.8)
     jquery-rails (4.4.0)
@@ -234,7 +234,7 @@ GEM
       rubocop-ast (>= 0.1.0, < 1.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (0.1.0)
+    rubocop-ast (0.2.0)
       parser (>= 2.7.0.1)
     ruby-progressbar (1.10.1)
     ruby_parser (3.14.2)
@@ -289,7 +289,6 @@ GEM
 
 PLATFORMS
   ruby
-  x86_64-darwin-17
 
 DEPENDENCIES
   bootstrap (~> 4.1.0)
@@ -331,7 +330,7 @@ DEPENDENCIES
   select2-rails
   stackprof
   thin
-  uglifier (>= 1.0.3)
+  uglifier (>= 4.2.0)
   will_paginate (~> 3.0)
 
 BUNDLED WITH

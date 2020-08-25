@@ -6,6 +6,7 @@
 
 %div.row
   %div.col-xs-12
+  
     %div.form-group
       %label{for: "map_to_picker"} Target ontology or view
       = select_tag("map_to_picker", options_for_select(onts_and_views_for_select()), class: "form-control")
@@ -31,7 +32,43 @@
     %div.form-group
       %label{for: "mapping_relation"} Mapping relation type
       = select("mapping", "relation", options_for_select(@mapping_relation_options, @mapping_relation_options.first), {}, class: "form-control")
-    
+
+%div.row
+  %div.col-xs-12
+    %div.form-group
+  #mapping_options{:style => "margin: 13px; clear: both;"}
+    = text_area(:mapping, :comment, :class => "", :placeholder => "Comment", :style => "padding: 3px; height: 3.2em; width: 100%;")
+    %br/
+    %div{:style => "height: 50px; width: 100%;"}
+      = submit_tag "Create Mapping", :class => "link_button", :style => "margin-top: 10px;", :id => "create_mapping_button"
+      %span.popup_container{:style => "padding-left: 1.7em; margin-top: 15px;"}
+        %span.bp_popup_link_container
+          %a#create_mapping_advanced.bp_popup_link{:href => "javascript:void(0);"} advanced options
+        #create_mapping_advanced_options.bp_popup_mapping_list{:style => "display: none;"}
+          %label
+            %input{:type => "checkbox", :name => "mapping_relations", :value => "http://www.w3.org/2004/02/skos/core#exactMatch", :checked => "checked"} Identical (skos:exactMatch)
+          %br/
+          %label
+            %input{:type => "checkbox", :name => "mapping_relations", :value => "http://www.w3.org/2004/02/skos/core#closeMatch"} Similar (skos:closeMatch)
+          %br/
+          %label
+            %input{:type => "checkbox", :name => "mapping_relations", :value => "http://www.w3.org/2004/02/skos/core#relatedMatch"} Related (skos:relatedMatch)
+          %br/
+          %label
+            %input{:type => "checkbox", :name => "mapping_relations", :value => "http://www.w3.org/2004/02/skos/core#broadMatch"} Broader (skos:broadMatch)
+          %br/
+          %label
+            %input{:type => "checkbox", :name => "mapping_relations", :value => "http://www.w3.org/2004/02/skos/core#narrowMatch"} Narrower (skos:narrowMatch)
+          %br/
+          %label
+            %input{:type => "checkbox", :name => "mapping_relations", :value => "http://purl.org/linguistics/gold/translation"} Translation (gold:translation)
+          %br/
+          %label
+            %input{:type => "checkbox", :name => "mapping_relations", :value => "http://purl.org/linguistics/gold/freeTranslation"} Free Translation (gold:freeTranslation)
+          %br/
+          Other:&nbsp;
+          = text_field_tag :relation_text_box, nil, placeholder: 'Enter the relation URI', :style => "margin-top: 5px; width: 230px; "
+
 %div.row
   %div.col-xs-12
     %span#create_mapping_spinner

@@ -4,7 +4,8 @@ source 'https://rubygems.org'
 gem 'rails', '5.1.7'
 
 gem 'sass-rails', '~> 5.0'
-gem 'uglifier', '>= 1.0.3'
+#gem 'coffee-rails', '~> 4.1.0'
+gem 'uglifier', '>= 4.2.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 # gem 'duktape'
@@ -45,7 +46,7 @@ gem 'stackprof', require: false
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
 
-gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', branch: 'staging'
+gem 'ontologies_api_client', :git => "https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git", branch: "virtual-appliance-3.0-merge"
 
 group :staging, :production do
   # application monitoring

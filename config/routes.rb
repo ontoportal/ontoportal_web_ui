@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
   resources :reviews
 
+  get '/mappings/new_external' => 'mappings#new_external'
   resources :mappings
 
   resources :margin_notes
@@ -38,6 +39,8 @@ Rails.application.routes.draw do
 
   resources :annotatorplus
 
+  resources :ncbo_annotatorplus
+
   resources :virtual_appliance
 
   get '' => 'home#index'
@@ -46,6 +49,7 @@ Rails.application.routes.draw do
   match '/feedback', to: 'home#feedback', via: [:get, :post]
   get '/account' => 'home#account'
   get '/help' => 'home#help'
+  get '/about' => 'home#about'
   get '/site_config' => 'home#site_config'
   get '/validate_ontology_file' => 'home#validate_ontology_file_show'
   match '/validate_ontology_file' => 'home#validate_ontology_file', via: [:get, :post]
@@ -73,6 +77,7 @@ Rails.application.routes.draw do
   match '/ontologies/:ontology_id/submissions' => 'submissions#create', :ontology_id => /.+/, via: [:get, :post]
   get '/ontologies/:acronym/classes/:purl_conceptid', to: 'ontologies#show', constraints: { purl_conceptid: /[^\/]+/ }
   get '/ontologies/:acronym/:purl_conceptid', to: 'ontologies#show', constraints: { purl_conceptid: /[^\/]+/ }
+  match '/ontologies/:acronym/submissions/:id/edit_metadata' => 'submissions#edit_metadata', via: [:get, :post]
 
   # Analytics
   get '/analytics/:action' => 'analytics#(?-mix:search_result_clicked|user_intention_surveys)'

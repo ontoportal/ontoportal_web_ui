@@ -1,6 +1,124 @@
 - button_text ||= "Create ontology"
 - title_text ||= "Submit New Ontology"
 
+:javascript
+  function hideAllRestrictions() {
+    jQuery(".viewing_restriction_disabled").attr("disabled", true);
+    jQuery("div.viewing_restriction_types").addClass("hidden");
+  }
+
+  function showRestrictionPrivate() {
+    jQuery("#ontology_acl").removeAttr("disabled");
+    jQuery("#viewingRestrictionsPrivate").removeClass("hidden");
+  }
+
+  function showRestrictionLicensed() {
+    jQuery("#ontology_licenseInformation").removeAttr("disabled");
+    jQuery("#viewingRestrictionsLicensed").removeClass("hidden");
+  }
+
+  jQuery(document).data().bp.acronyms = #{LinkedData::Client::Models::Ontology.all.map {|o| o.acronym}.to_json};
+
+  jQuery(document).ready(function(){
+    // Wire up options for restriction how an ontology is viewed
+    jQuery("#ontology_viewingRestriction").change(function(){
+      var select = jQuery(this);
+      if (select.val() == "private") {
+        hideAllRestrictions()
+        showRestrictionPrivate();
+      } else if (select.val() == "licensed") {
+        hideAllRestrictions();
+        showRestrictionLicensed();
+      } else if (select.val() == "public") {
+        hideAllRestrictions();
+      }
+    });
+
+    // Make sure you can see the account select if the select list has private selected
+    if (jQuery("#ontology_viewingRestriction").val() == "private") {
+      showRestrictionPrivate();
+    } else if (jQuery("#ontology_viewingRestriction").val() == "licensed") {
+      showRestrictionLicensed();
+    }
+
+    jQuery("#ontology_isView").live("click", function(){
+      console.log(jQuery("#ontology_isView").is(":checked"))
+      if (jQuery("#ontology_isView").is(":checked")) {
+        jQuery("#ontology_viewOf").removeAttr('disabled').trigger("liszt:updated");
+      } else {
+        jQuery("#ontology_viewOf").attr('disabled', true).trigger("liszt:updated");
+      }
+    });
+
+    // Wire up chosen selectors
+    jQuery("#ontology_administeredBy").chosen();
+    jQuery("#ontology_acl").chosen();
+    jQuery("#ontology_hasDomain").chosen();
+    jQuery("#ontology_group").chosen();
+
+    // Make acronym upcase as you type
+    jQuery("#ontology_acronym").on('input', function(e) {
+      var input = $(this);
+      var start = input[0].selectionStart;
+      $(this).val(function (_, val) {
+        return val.toUpperCase();
+      });
+      input[0].selectionStart = input[0].selectionEnd = start;
+    });
+
+    // Check acronym as you type
+    jQuery("#ontology_acronym").on('input', function(e) {
+      var $this = $(this);
+      var errors = [];
+      var errorHTML = "";
+
+      if ($this.val().match("^[^a-z^A-Z]{1}")) {
+        errors.push("Acronym must start with a letter");
+      }
+
+      if ($this.val().match("[^-_0-9a-zA-Z]")) {
+        errors.push("Acronym must only contain the folowing characters: -, _, letters, and numbers");
+      }
+
+      if ($this.val().match(".{17,}")) {
+        errors.push("Acronym must be sixteen characters or less");
+      }
+
+      if (jQuery(document).data().bp.acronyms.indexOf($this.val()) !== -1) {
+        errors.push("Acronym already in use");
+      }
+
+      if (errors.length > 0) {
+        errorHTML = "<li>" + errors.join("</li><li>") + "</li>";
+      }
+
+      jQuery("#acronym_errors").html(errorHTML);
+    });
+
+    jQuery("#ontologyForm").validate({
+      errorClass: "ontologyFormError",
+      errorElement: "div",
+      rules: {
+        "ontology[name]": "required",
+        "ontology[acronym]": "required",
+      },
+      messages: {
+        "ontology[name]": "Please enter a name",
+        "ontology[acronym]": "Please enter an acronym",
+      },
+    });
+
+    $('.tooltip').tooltipster({
+      interactive: true,
+      position: "right",
+      contentAsHTML: true,
+      animation: 'fade',
+      delay: 200,
+      theme: 'tooltipster-light',
+      trigger: 'hover'
+    });
+  });
+
 :css
   div.ontologyFormError {
     color: red;
@@ -58,6 +176,8 @@
   %tr
     %th
       Viewing Restrictions
+      - viewing_help = "&lt;strong&gt;Public ontologies&lt;/strong&gt; will be accessible to everyone via UI and API. Download can be desactivated on demand.&lt;br&gt; &lt;strong&gt;Private ontologies&lt;/strong&gt; are only accessible via UI and API to logged users listed explicitly."
+      = help_tooltip(viewing_help, {:id => "viewing_tooltip", :style => "opacity: inherit; display: inline;position: initial;margin-right: 0.5em;"}).html_safe
     %td
       - view_restiction_options = [["Public", "public"], ["Private", "private"]]
       - selected = @ontology.private? ? "private" : ""
@@ -81,6 +201,14 @@
       - cat_select = @categories.sort{|a,b| a.name <=> b.name}.map{|c| [c.name, c.id]}
       = f.hidden_field(:hasDomain, {value: "", id: "ontology_hasDomain_empty_select_hack", name: "ontology[hasDomain][]"})
       = f.select(:hasDomain, cat_select, {selected: @ontology.hasDomain}, {multiple: true, :"data-placeholder" => "Select category (domain)"})
+
+  %tr
+    %th
+      Groups:
+    %td
+      - group_select = @groups.sort{|a,b| a.name <=> b.name}.map{|c| [c.name, c.id]}
+      = f.hidden_field(:group, {value: "", id: "ontology_group_empty_select_hack", name: "ontology[group][]"})
+      = f.select(:group, group_select, {selected: @ontology.group}, {multiple: true, :"data-placeholder" => "Select group"})
 
   %tr
     %th

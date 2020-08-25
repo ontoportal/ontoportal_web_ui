@@ -51,6 +51,13 @@
           %td= groups.map {|g| groups_hash[g].name}.sort.join(", ")
       = raw additional_details
 
+
+  -# Additional Metadata pane
+  %section.ont-metadata-card.ont-additional-metadata-card
+    %header.pb-2.font-weight-bold Additional Metadata
+    %table.table.table-sm
+      = raw additional_metadata(@submission_latest) unless @submission_latest.nil?
+
   -# Submissions pane
   %section.ont-metadata-card.ont-subs-card
     %div.ont-section-toolbar
@@ -86,6 +93,24 @@
               %dd= view_decorator.description
       
   %div.right-hand-content
+    
+    -# Misc links pane
+    %section.ont-metadata-card.ont-links-card
+      %div.ont-section-toolbar
+        %header.pb-2.font-weight-bold Links
+      %a{:href => "#{(@submission_latest || @ontology).id}?display=all", :target => '_blank', :class => "btn btn-primary"} Go to the REST API JSON entry
+    
+    -# Metadata links pane
+    %section.ont-metadata-card.ont-metadatalinks-card
+      %div.ont-section-toolbar
+        %header.pb-2.font-weight-bold Get my metadata back
+      %div
+        - unless @submission_latest.nil?
+          =javascript_include_tag "jsonld"
+          %button{:id => "getMetadataBackNquadsBtn", :class => "btn btn-primary"} N-Triple
+          %button{:id => "getMetadataBackJsonldBtn", :class => "btn btn-primary"} Json-LD
+          %button{:id => "getMetadataBackXmlBtn", :class => "btn btn-primary"} RDF/XML
+          -# Listener in bp_ontology_viewer.js.erb
     
     -# Metrics pane
     %section.ont-metadata-card.ont-metrics-card
@@ -134,6 +159,12 @@
             %i.fas.fa-lg.fa-download{"aria-hidden": "true", style: "margin-left: 0.5rem"}
       = render partial: "visits"
 
+    -# Included in data catalog pane
+    = raw display_data_catalog(@submission_latest) unless @submission_latest.nil?
+
+    -# Logo & depiction
+    = raw display_logo(@submission_latest) unless @submission_latest.nil?
+
     -# Projects pane
     %section.ont-metadata-card.ont-projects-card
       %div.ont-section-toolbar
@@ -146,4 +177,3 @@
         %div.border-top
           - for project in @projects
             %p= link_to(project.name, project_path(project.acronym))
-

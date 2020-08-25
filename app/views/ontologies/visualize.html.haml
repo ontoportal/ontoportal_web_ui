@@ -100,6 +100,8 @@
                 Class Mappings (
                 %span#mapping_count=  #TODO_REV: Support mapping counts for concepts @concept.mapping_count
                 )
+            %li#restlink_top.tab
+              %a{:href => "#{@ontology.id}/classes/", :style => "margin-bottom: 1em; margin-left: 1em;", :target => "_blank"} Access Class JSON
           - if @enable_ontolobridge
             %li#request_term_top.tab
               %a{:href => "#request_term"}
