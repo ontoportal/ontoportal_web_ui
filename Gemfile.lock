@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/argerim/select2-rails.git
+  revision: f9b2de031b819488f9d37e37f9038e0107971ff8
+  tag: v4.0.7
+  specs:
+    select2-rails (4.0.7)
+
+GIT
   remote: https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git
   revision: 06acd69234ef30f7b87a5ccb6375d403d1752a54
   ref: 06acd69234ef30f7b87a5ccb6375d403d1752a54
@@ -252,7 +259,6 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    select2-rails (4.0.13)
     sexp_processor (4.15.0)
     spawnling (2.1.5)
     sprockets (3.7.2)
@@ -329,7 +335,7 @@ DEPENDENCIES
   rspec-rails
   rubocop
   sass-rails (~> 5.0)
-  select2-rails
+  select2-rails!
   stackprof
   thin
   uglifier (>= 4.2.0)

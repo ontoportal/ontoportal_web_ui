@@ -14,7 +14,7 @@ gem 'bootstrap', '~> 4.1.0'
 gem 'chart-js-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'select2-rails'
+gem 'select2-rails', git: 'https://github.com/argerim/select2-rails.git', tag: 'v4.0.7'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
