@@ -5,6 +5,9 @@
 .tabs li.selected {
   background: $color-primary;
 }
+.tabs li.selected a {
+  color: #fff !important;
+}
 .minimal tbody tr:hover td {
   color: $color-primary;
 }

@@ -172,7 +172,9 @@ class MappingsController < ApplicationController
       ["Similar (skos:closeMatch)",   "http://www.w3.org/2004/02/skos/core#closeMatch"],
       ["Related (skos:relatedMatch)", "http://www.w3.org/2004/02/skos/core#relatedMatch"],
       ["Broader (skos:broadMatch)",   "http://www.w3.org/2004/02/skos/core#broadMatch"],
-      ["Narrower (skos:narrowMatch)", "http://www.w3.org/2004/02/skos/core#narrowMatch"]
+      ["Narrower (skos:narrowMatch)", "http://www.w3.org/2004/02/skos/core#narrowMatch"],
+      ["Translation (gold:translation)", "http://purl.org/linguistics/gold/translation"],
+      ["Free Translation (gold:freeTranslation)", "http://purl.org/linguistics/gold/freeTranslation"]
     ]
 
     respond_to do |format|
@@ -197,10 +199,8 @@ class MappingsController < ApplicationController
     @concept_from ||= LinkedData::Client::Models::Class.new
     @concept_to ||= LinkedData::Client::Models::Class.new
 
-    if request.xhr? || params[:no_layout].eql?("true")
-      render :layout => false
-    else
-      render :layout => "ontology"
+    respond_to do |format|
+      format.js
     end
   end
 

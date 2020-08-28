@@ -41,3 +41,15 @@
 .ont-views-card {
   grid-row: 4;
 }
+
+#createNewMappingModal {
+  
+  .modal-header {
+    display: initial !important;
+  }
+  
+  .modal-body {
+    padding: 2rem !important;
+  }
+
+}
