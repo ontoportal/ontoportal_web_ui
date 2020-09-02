@@ -15,9 +15,6 @@
         = link_to("Recommender", recommender_index_path(), class: "nav-link")
       %li.nav-item
         = link_to("Mappings", mappings_path(), class: "nav-link")
-      - unless Rails.env.appliance?
-        %li.nav-item
-          = link_to("Resource Index", resource_index_index_path(), class: "nav-link")
       -if (!session[:user].nil? && session[:user].admin?)
         %li.nav-item
           = link_to("Admin", admin_index_path(), class: "nav-link")
