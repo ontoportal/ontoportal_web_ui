@@ -22,9 +22,6 @@ class ApplicationController < ActionController::Base
   PROXY_URI = $PROXY_URL
   REST_URI_BATCH = REST_URI + '/batch'
 
-  # Note that STATS is a DIRECT CONNECTION to the JAVA-REST API
-  RI_STATS_URI = 'http://rest.bioontology.org/resource_index/statistics/all'
-
   # Rails.cache expiration
   EXPIRY_RI_STATS = 60 * 60 * 24       # 24:00 hours
   EXPIRY_RI_ONTOLOGIES = 60 * 60 * 24  # 24:00 hours

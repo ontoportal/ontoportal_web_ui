@@ -39,9 +39,6 @@
             %li#request_term_top{:onclick => "return false;"}
               %a{:href => "#request_term", :onclick => "return false;", :style => "color: gray;"}
                 New Term Requests
-          - unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED
-            %li#resource_index_top{:onclick => "return false;"}
-              %a{:href => "", :onclick => "return false;", :style => "color: gray;"} Class Resources
         #non_fake_tabs.tabs{:style => "display: none;"}
           %ul
             %li#details_top.selected.tab.first
@@ -65,21 +62,13 @@
             %li#request_term_top.tab
               %a{:href => "#request_term"}
                 New Term Requests
-          - unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED
-            - if !@ontology.isView.eql?('true')
-              %li#resource_index_top.tab{:onclick => "callTab('resource_index','/resource_index/resources_table?conceptids=#{@ontology.ontologyId}/#{CGI.escape(@concept.id)}');"}
-                %a{:alt => "callTab('resource_index','/resource_index/resources_table?conceptids=#{@ontology.ontologyId}/#{CGI.escape(@concept.id)}')", :href => "#resource_index"} Class Resources
-          - if @ontology.isView=='true'
-            %li#resource_index_top{:onclick => "return false;"}
-              %a{:href => "", :onclick => "return false;", :style => "color: gray;"} Resource Index
         #contents
           #details_content.tab_container
-            %div{:style => "padding: 100px 0; font-size: larger; font-weight: bold; text-align: center;"} Use the "Jump To" to find a class and display Details, Visualization, Notes, Mappings, and Resources
+            %div{:style => "padding: 100px 0; font-size: larger; font-weight: bold; text-align: center;"} Use the "Jump To" to find a class and display details, visualization, notes, and mappings
           #visualization_content.tab_container.not_visible
           #notes_content.tab_container.not_visible
           #mappings_content.tab_container.not_visible
           #request_term_content.tab_container.not_visible
-          #resource_index_content.tab_container.not_visible.resource_index_embed
     - else
       .cls-info-container
         .tabs
@@ -106,13 +95,6 @@
             %li#request_term_top.tab
               %a{:href => "#request_term"}
                 New Term Requests
-            /- unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED
-            /  - if !@ontology.isView.eql?('true')
-            /    %li#resource_index_top.tab{:onclick => "callTab('resource_index','/resource_index/resources_table?conceptids=#{@ontology.ontologyId}/#{CGI.escape(@concept.id)}');"}
-            /      %a{:alt => "callTab('resource_index','/resource_index/resources_table?conceptids=#{@ontology.ontologyId}/#{CGI.escape(@concept.id)}')", :href => "#resource_index"} Class Resources
-            /  - else
-            /    %li#resource_index_top{:onclick => "return false;"}
-            /      %a{:href => "", :onclick => "return false;", :style => "color: gray;"} Resource Index
           - if $PURL_ENABLED
             = link_to("#classPermalinkModal", class: "class-permalink", title: "Get a permanent link to this class", aria: {label: "Get a permanent link to this class"}, data: {toggle: "modal", current_purl: "#{@current_purl}"}) do
               %i{class: "fas fa-link", aria: {hidden: "true"}}
@@ -123,8 +105,6 @@
           #mappings_content.tab_container.not_visible= render :partial => '/mappings/concept_mappings'
           - if @enable_ontolobridge
             #request_term_content.tab_container.not_visible= render :partial =>'/concepts/request_term'
-          - unless !$RESOURCE_INDEX_DISABLED.nil? && $RESOURCE_INDEX_DISABLED
-            #resource_index_content.tab_container.not_visible.resource_index_embed
   - form_for(:search, :url => {:controller =>'search',:action=>'fetch_results'},:html=>{:id=>'search_form'}) do |f|
     %input{:name => "search[ontologies][]", :type => "hidden", :value => @ontology.acronym}/
     = hidden_field :search, :search_type, :value=>"contains"

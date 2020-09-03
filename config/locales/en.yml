@@ -150,5 +150,3 @@ en:
   mappings:
     intro: Browse mappings between classes in different ontologies
 
-  resource_index:
-    intro: Search biomedical resources

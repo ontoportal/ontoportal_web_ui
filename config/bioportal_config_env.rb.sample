@@ -40,9 +40,6 @@ $PURL_PREFIX = "http://purl.bioontology.org/ontology"
 # If your BioPortal installation includes Annotator set this to false
 $ANNOTATOR_DISABLED = false
 
-# If your BioPortal installation includes Resource Index set this to false
-$RESOURCE_INDEX_DISABLED = true
-
 # Unique string representing the UI's id for use with the BioPortal Core
 $API_KEY = ""
 

@@ -1,8 +1,6 @@
 class HomeController < ApplicationController
   layout :determine_layout
 
-  #RI_OPTIONS = {:apikey => $API_KEY, :resource_index_location => "#{$REST_URL}/resource_index/", :limit => 10, :mode => :intersection}
-
   def index
     @ontologies_views = LinkedData::Client::Models::Ontology.all(include_views: true)
     @ontologies = @ontologies_views.select {|o| !o.viewOf}
