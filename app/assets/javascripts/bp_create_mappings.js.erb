@@ -73,7 +73,6 @@ jQuery(document).ready(function() {
   create_mapping_advanced_options.init();
 
   jQuery("#create_mapping_button").live("click", bp_createMapping.create);
-  jQuery("#create_external_mapping_button").live("click", bp_createExternalMapping.create);
 
   /*
    * Customize the title of the modal dialog for creating new mappings based 
@@ -115,10 +114,20 @@ function updateMappingDeletePermissions() {
 }
 
 function getClassDetails(input) {
-  var current_ont_id = jQuery("#map_to_bioportal_ontology_id").val();
-  var current_concept_id = jQuery("#map_to_bioportal_full_id").val();
-  jQuery("#map_to_concept_details_table").html('<%= image_tag("spinners/spinner_000000_16px.gif", style: "padding: 5px;") %>');
-  jQuery("#map_to_concept_details_table").load("/ajax/class_details?ontology=" + encodeURIComponent(current_ont_id) + "&styled=false&conceptid=" + encodeURIComponent(current_concept_id));
+  var current_ont_id = null;
+  var current_concept_id = null;
+  if(jQuery('#external_mapping').val() == 'true') {
+    current_ont_id = jQuery("#map_from_bioportal_ontology_id").val();
+    current_concept_id = jQuery("#map_from_bioportal_full_id").val();
+    map_to_concept_details_table_id = '#map_from_concept_details_table';
+  }
+  else {
+    current_ont_id = jQuery("#map_to_bioportal_ontology_id").val();
+    current_concept_id = jQuery("#map_to_bioportal_full_id").val();
+    map_to_concept_details_table_id = '#map_to_concept_details_table';
+  }
+  jQuery(map_to_concept_details_table_id).html('<%= image_tag("spinners/spinner_000000_16px.gif", style: "padding: 5px;") %>');
+  jQuery(map_to_concept_details_table_id).load("/ajax/class_details?ontology=" + encodeURIComponent(current_ont_id) + "&styled=false&conceptid=" + encodeURIComponent(current_concept_id));
 }
 
 function resetAutocompleter(ontologyId) {
@@ -145,6 +154,12 @@ function resetMappingUI() {
 
 var bp_createMapping = {
   create: function() {
+    
+    if(jQuery('#external_mapping').val() == 'true') {
+      bp_createExternalMapping.create();
+      return;
+    }
+    
     bp_createMapping.reset();
 
     jQuery("#create_mapping_spinner").show();
@@ -301,6 +316,7 @@ var bp_createExternalMapping = {
         jQuery("#create_mapping_spinner").show();
         var errored = bp_createExternalMapping.validate();
 
+        /*
         var relation_array = new Array();
         jQuery.each(jQuery("input[name='mapping_relations']:checked"), function() {
             relation_array.push(jQuery(this).val());
@@ -309,6 +325,7 @@ var bp_createExternalMapping = {
         if (jQuery("#relation_text_box").val() != "") {
             relation_array.push(jQuery("#relation_text_box").val());
         }
+        */
 
         if (errored) {
             jQuery("#create_mapping_spinner").hide();
@@ -323,6 +340,7 @@ var bp_createExternalMapping = {
             var concept_from_id = jQuery("#map_from_bioportal_full_id");
             var concept_to_id = jQuery("#map_to_interportal_class");
             var mapping_comment = jQuery("#mapping_comment");
+            var mapping_relation = jQuery("#mapping_relation");
             var mapping_bidirectional = jQuery("#mapping_bidirectional").is(":checked");
         } else {
             var ontology_from = jQuery("#map_from_bioportal_ontology_id");
@@ -330,6 +348,7 @@ var bp_createExternalMapping = {
             var concept_from_id = jQuery("#map_from_bioportal_full_id");
             var concept_to_id = jQuery("#map_to_external_class");
             var mapping_comment = jQuery("#mapping_comment");
+            var mapping_relation = jQuery("#mapping_relation");
             var mapping_bidirectional = jQuery("#mapping_bidirectional").is(":checked");
         }
 
@@ -340,7 +359,7 @@ var bp_createExternalMapping = {
             map_from_bioportal_full_id: concept_from_id.val(),
             map_to_bioportal_full_id: concept_to_id.val(),
             mapping_comment: mapping_comment.val(),
-            mapping_relation: relation_array,
+            mapping_relation: mapping_relation.val(),
             mapping_bidirectional: mapping_bidirectional
         };
 
