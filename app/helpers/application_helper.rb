@@ -264,7 +264,7 @@ module ApplicationHelper
       # ont.acronym instead of ont.ontology.acronym
       # ont.name instead of ont.ontology.name
       # ont.id instead of ont.ontology.id
-      # TODO: resource index and annotator pass in 'custom_ontologies' to the ontologies parameter.
+      # TODO: annotator passes in 'custom_ontologies' to the ontologies parameter.
       next if ( ont.acronym.nil? or ont.acronym.empty? )
       acronym = ont.acronym
       name = ont.name

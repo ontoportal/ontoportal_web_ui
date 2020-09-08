@@ -108,25 +108,6 @@
     }
   });
 
-  function callTab(tab_name, url) {
-      if (getCache(getConcept() + tab_name) != null) {
-            document.getElementById(tab_name + "_content").innerHTML=getCache(getConcept() + tab_name);
-      } else {
-        jQuery("#" + tab_name + "_content").html('<h1><img src="<%= asset_path("jquery.simple.tree/spinner.gif") %>" /> Loading Resources...</h1>');
-        jQuery.get(url.replace("@ontology@",getOntology()).replace("@concept@",encodeURIComponent(getConcept())),function(data){
-          jQuery("#" + tab_name + "_content").html(data);
-          jQuery("#" + tab_name + "_content").append(
-            jQuery("<input type='hidden'/>")
-              .attr("id", "resource_index_classes")
-              .val([jQuery(document.body).data("ont_id")+"/"+encodeURIComponent(getConcept())])
-          );
-          setCache(getConcept() + tab_name,data);
-          jQuery.unblockUI();
-          tb_init('a.thickbox, area.thickbox, input.thickbox');
-        });
-      }
-  }
-
   jQuery(document).data().bp.classesTab.search_box_init = function(){
     if (jQuery("#search_box").bioportal_autocomplete) {
       jQuery("#search_box").bioportal_autocomplete("/search/json_search/"+jQuery(document).data().bp.ontology.acronym, {

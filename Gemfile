@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '5.1.7'
+gem 'rails', '5.2.4.3'
 
 gem 'sass-rails', '~> 5.0'
 #gem 'coffee-rails', '~> 4.1.0'
@@ -46,7 +46,7 @@ gem 'stackprof', require: false
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
 
-gem 'ontologies_api_client', :git => "https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git", ref: '06acd69234ef30f7b87a5ccb6375d403d1752a54' # Temporary fix : gemspec issue on activesupport since version update (https://github.com/ncbo/ontologies_api_ruby_client/commit/8eddc9506582f9740e77abf76bc4f2a2e244846c)
+gem 'ontologies_api_client', :git => "https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git", :branch => 'virtual-appliance-3.0-merge'
 
 group :staging, :production do
   # application monitoring
@@ -64,6 +64,7 @@ group :development do
   gem 'capistrano-rails', '~> 1.4', require: false
   gem 'capistrano-yarn', require: false
   gem 'html2haml'
+  gem 'listen'
   # static code analysis
   gem 'brakeman', require: false
   gem 'rubocop', require: false
