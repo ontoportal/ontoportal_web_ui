@@ -16,10 +16,9 @@ function bindRequestTermSaveClick() {
   var success = "";
   var error = "";
   var user = jQuery(document).data().bp.user;
-  var parent_id = jQuery(this).data("parent_id");
   var ontology_id = jQuery(document).data().bp.ont_viewer.ontology_id;
   var params = jQuery("#request_term_form").serialize();
-  params += "&superclass=" + parent_id + "&ontology=" + ontology_id + "&email=" + user["email"]
+  params += "&ontology=" + ontology_id + "&email=" + user["email"]
 
   if (user["firstName"] && user["lastName"]) {
     params += "&submitter=" + user["firstName"] + " " + user["lastName"];
@@ -85,11 +84,10 @@ function showStatusMessages(success, error) {
   }
 }
 
-function requestTermButtons(id) {
+function requestTermButtons() {
   var button_submit = jQuery("<button>")
     .attr("type", "submit")
     .attr("onclick", "")
-    .data("parent_id", id)
     .addClass("save")
     .css("margin-right", "20px")
     .css("padding", "2px 8px")
@@ -180,8 +178,9 @@ function requestTermFields(id, container) {
   appendTextArea("justification", "Enter justification for the term - the reason it should be added", requestTermForm, false, 'Please enter a justification. Justifications are notes provided by the submitter to justify the term; often this will not be necessary, since for most routine cases the label/description/position will be sufficient, but sometimes it may be necessary to justify why a new term is necessary.');
 
   requestTermForm.append(jQuery("<input>").attr("type", "checkbox").attr("name", "notification_request").attr("id", "notification_request").css("height", "15px")).append("&nbsp;&nbsp;");
+  requestTermForm.append(jQuery("<input>").attr("type", "hidden").attr("name", "superclass").attr("id", "superclass").attr("value", id));
   requestTermForm.append(jQuery("<label>").attr("for", "notification_request").attr("id", "notification_request").css("margin", "0 0 10px 0").append("Email submitter when there is a status change"));
-  requestTermForm.append(jQuery("<div>").addClass("proposal_buttons").append(requestTermButtons(id)));
+  requestTermForm.append(jQuery("<div>").addClass("proposal_buttons").append(requestTermButtons()));
 
   container.append(requestTermForm);
 
@@ -196,6 +195,4 @@ jQuery(document).ready(function() {
   clearStatusMessages();
   bindAddRequestTermClick();
   bindCancelRequestTermClick();
-
-
 });

@@ -8,7 +8,8 @@
       document.cookie="front_page_notice_closed=true; expires="+exdate.toGMTString();
       jQuery("#notice_message").hide();
     }
-    %p#notice_message{:style => "padding: 10px; margin: 10px; border:1px solid #EFEFEF; background-color: #F9F9F9;"}
+
+  %p#notice_message{:style => "padding: 10px; margin: 10px; border:1px solid #EFEFEF; background-color: #F9F9F9;"}
     = $FRONT_NOTICE
     \&nbsp;&nbsp;
     %a{:href => "#", :onclick => "close_message(); return false;", :style => "font-size: small; color: darkGray;"} [close]
@@ -75,20 +76,59 @@
               %div.d-flex.justify-content-between.align-items-center
                 %span Classes
                 %span= number_with_delimiter(@cls_count, :delimiter => ",")
-            -unless Rails.env.appliance?
+            %li.list-group-item
+              %div.d-flex.justify-content-between.align-items-center
+                %span Individuals
+                %span= number_with_delimiter(@individuals_count, :delimiter => ",")
+            %li.list-group-item
+              %div.d-flex.justify-content-between.align-items-center
+                %span Projects
+                %span= LinkedData::Client::Models::Project.all.length
+            %li.list-group-item
+              %div.d-flex.justify-content-between.align-items-center
+                %span Users
+                %span= LinkedData::Client::Models::User.all.length
+  %div.row.pt-3.extra
+    %div.col
+      %div.card-deck
+        -# Latest Notes
+        %div.card
+          %div.card-header Latest Notes
+          %ul.list-group.list-group-flush
+            - if @last_notes.nil? || @last_notes.empty?
               %li.list-group-item
-                %div.d-flex.justify-content-between.align-items-center
-                  %span Resources Indexed
-                  %span= number_with_delimiter(@ri_resources, :delimiter => ",")
+                %span No recent notes have been submitted
+            - else
+              - for note in @last_notes
+                %li.list-group-item
+                  - begin
+                    = link_to "#{note[:subject]} (#{note[:ont_name]})", note_path(CGI.escape(note[:id]))
+                    %br/
+                    %span{:style => "color: #AAAAAA"}
+                      = "#{time_ago_in_words(note[:created])} ago"
+                      by #{note[:author]}
+                    - if note[:body]
+                      %p
+                        = truncate(strip_tags(note[:body]), :length => 100)
+                        \&nbsp;
+                  - rescue
+        -# Slices
+        %div.card
+          %div.card-header Slices
+          %ul.list-group.list-group-flush
+            - LinkedData::Client::Models::Slice.all.each_with_index do |slice, index|
+              - break if index == 10
+              - slice_name = "#{slice.name} (#{slice.acronym})"
+              - slice_link = "http://#{slice.acronym}.#{$UI_URL.sub("http://", "")}"
               %li.list-group-item
-                %div.d-flex.justify-content-between.align-items-center
-                  %span Indexed Records
-                  %span= number_with_delimiter(@ri_record_count, :delimiter => ",")
-              %li.list-group-item
-                %div.d-flex.justify-content-between.align-items-center
-                  %span Direct Annotations
-                  %span= number_with_delimiter(@direct_annotations, :delimiter => ",")
-              %li.list-group-item
-                %div.d-flex.justify-content-between.align-items-center
-                  %span Direct Plus Expanded Annotations
-                  %span= number_with_delimiter(@direct_expanded_annotations, :delimiter => ",")
+                = link_to slice_name, slice_link
+
+  - $HOME_PAGE_LOGOS.to_a.each do |home_page_logos_row|
+    %div.row.pt-3
+      %div.col
+        %div.card-deck
+          %div.card
+            %div.card-header= home_page_logos_row[:title]
+            %div.logos
+              - home_page_logos_row[:links].to_a.each do |logo|
+                = link_to(image_tag(logo[:img_src]), logo[:url], target: logo[:target])

@@ -7,14 +7,12 @@ function location_toggle(input_div) {
 }
 
 jQuery(document).ready(function(){
-  jQuery("#datepicker").datepicker({
-    dateFormat: "M d, yy",
+  jQuery(".datepicker").each(function() {
+    $(this).datepicker({
+      dateFormat: "M d, yy",
+    });
   });
   jQuery("#ui-datepicker-div").css("display", "none");
-
-  jQuery('.fa-calendar-alt').on('click', function() {
-    jQuery('#datepicker').datepicker('show');
-  });
 
   // Properly display the information for 'File Location' based on radio button
   if (jQuery("#submission_isRemote_0").is(":checked")) {

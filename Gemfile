@@ -1,10 +1,11 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '5.1.7'
+gem 'rails', '5.2.4.3'
 
 gem 'sass-rails', '~> 5.0'
-gem 'uglifier', '>= 1.0.3'
+#gem 'coffee-rails', '~> 4.1.0'
+gem 'uglifier', '>= 4.2.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 # gem 'duktape'
@@ -13,7 +14,7 @@ gem 'bootstrap', '~> 4.1.0'
 gem 'chart-js-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'select2-rails'
+gem 'select2-rails', git: 'https://github.com/argerim/select2-rails.git', tag: 'v4.0.7'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
@@ -45,7 +46,7 @@ gem 'stackprof', require: false
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
 
-gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', branch: 'staging'
+gem 'ontologies_api_client', :git => "https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git", :branch => 'virtual-appliance-3.0-merge'
 
 group :staging, :production do
   # application monitoring
@@ -63,6 +64,7 @@ group :development do
   gem 'capistrano-rails', '~> 1.4', require: false
   gem 'capistrano-yarn', require: false
   gem 'html2haml'
+  gem 'listen'
   # static code analysis
   gem 'brakeman', require: false
   gem 'rubocop', require: false
