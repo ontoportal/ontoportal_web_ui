@@ -112,16 +112,17 @@
                         = truncate(strip_tags(note[:body]), :length => 100)
                         \&nbsp;
                   - rescue
-        -# Slices
-        %div.card
-          %div.card-header Slices
-          %ul.list-group.list-group-flush
-            - LinkedData::Client::Models::Slice.all.each_with_index do |slice, index|
-              - break if index == 10
-              - slice_name = "#{slice.name} (#{slice.acronym})"
-              - slice_link = "http://#{slice.acronym}.#{$UI_URL.sub("http://", "")}"
-              %li.list-group-item
-                = link_to slice_name, slice_link
+        - if !$ENABLE_SLICES.nil? && $ENABLE_SLICES == true && !at_slice?
+          -# Slices
+          %div.card
+            %div.card-header Slices
+            %ul.list-group.list-group-flush
+              - LinkedData::Client::Models::Slice.all.each_with_index do |slice, index|
+                - break if index == 10
+                - slice_name = "#{slice.name} (#{slice.acronym})"
+                - slice_link = "http://#{slice.acronym}.#{$UI_URL.sub("http://", "")}"
+                %li.list-group-item
+                  = link_to slice_name, slice_link
 
   - $HOME_PAGE_LOGOS.to_a.each do |home_page_logos_row|
     %div.row.pt-3
