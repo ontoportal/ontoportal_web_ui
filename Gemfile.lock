@@ -7,8 +7,8 @@ GIT
 
 GIT
   remote: https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git
-  revision: fae8ec2c6bfcb3a8b9b1a7aa861ee1e9e62f7d47
-  branch: virtual-appliance-3.0-merge
+  revision: 036d7ef2645cd405414a6c2d5e334c8b76500238
+  branch: master
   specs:
     ontologies_api_client (2.0.1)
       activesupport (~> 5.2.4.3)
@@ -75,7 +75,7 @@ GEM
       autoprefixer-rails (>= 6.0.3)
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
-    brakeman (4.9.0)
+    brakeman (4.9.1)
     builder (3.2.4)
     capistrano (3.14.1)
       airbrussh (>= 1.0.0)
@@ -168,10 +168,10 @@ GEM
     net-ssh (6.1.0)
     netrc (0.11.0)
     newrelic_rpm (6.12.0.367)
-    nio4r (2.5.2)
+    nio4r (2.5.3)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
-    oj (3.10.13)
+    oj (3.10.14)
     open_uri_redirections (0.2.1)
     parallel (1.19.2)
     parser (2.7.1.4)
