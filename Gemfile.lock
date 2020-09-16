@@ -182,6 +182,8 @@ GEM
       method_source (~> 1.0)
     public_suffix (4.0.6)
     rack (2.2.3)
+    rack-accept (0.4.5)
+      rack (>= 0.4)
     rack-mini-profiler (2.0.4)
       rack (>= 1.2.0)
     rack-test (1.1.0)
@@ -289,6 +291,11 @@ GEM
     thor (1.0.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
+    turnout (2.5.0)
+      i18n (>= 0.7, < 2)
+      rack (>= 1.3, < 3)
+      rack-accept (~> 0.4)
+      tilt (>= 1.4, < 3)
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     uglifier (4.2.0)
@@ -348,6 +355,7 @@ DEPENDENCIES
   select2-rails!
   stackprof
   thin
+  turnout
   uglifier (>= 4.2.0)
   will_paginate (~> 3.0)
 

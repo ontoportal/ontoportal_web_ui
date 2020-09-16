@@ -44,6 +44,7 @@ gem 'recaptcha', '~> 5.2'
 gem 'rest-client', '~> 1.8.0'
 gem 'stackprof', require: false
 gem 'thin'
+gem 'turnout'
 gem 'will_paginate', '~> 3.0'
 
 gem 'ontologies_api_client', :git => "https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git", :branch => 'master'
