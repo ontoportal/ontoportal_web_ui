@@ -33,6 +33,6 @@
           document.cookie="#{message_name}=true; expires="+exdate.toGMTString();
           jQuery("#notice_message").hide();
         }
-      %div#notice_message{class: "alert alert-info", role: "alert"}
-        = $SITE_NOTICE[message_name.to_sym]
-        %a{href: "#", onclick: "close_message(); return false;", class: "float-right"} [close]
+      = tag.div(id: "notice_message", class: %w(alert alert-info), role: "alert") do
+        %div= raw($SITE_NOTICE[message_name])
+        %a{href: "#", onclick: "close_message(); return false;", class: "pl-3"} [close]
