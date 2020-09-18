@@ -1,4 +1,7 @@
 @media screen and (min-width: 992px) {
+  .ont-metadata {
+    grid-template-columns: 70% 30% !important;
+  }
 
   .ont-additional-metadata-card {
     margin-right: 16px;
@@ -13,7 +16,7 @@
   
   td:nth-child(1) {
     background-color: #f0f0f0;
-    white-space: nowrap;
+    white-space: normal !important;
     text-transform: capitalize;
   }
   
