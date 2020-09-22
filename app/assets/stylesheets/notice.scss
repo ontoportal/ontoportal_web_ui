@@ -1,7 +1,9 @@
 div#notice_message {
+  display: flex;
+  justify-content: space-between;
   margin-top: 1rem;
 
-  a {
+  > a {
     color: #A9A9A9;
   }
 }
