@@ -279,6 +279,15 @@ class OntologiesController < ApplicationController
     # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     not_found if @ontology.nil?
+    
+    # Handle the case where an ontology is converted to summary only. 
+    # See: https://github.com/ncbo/bioportal_web_ui/issues/133.
+    if @ontology.summaryOnly && params[:p].present?
+      pages = KNOWN_PAGES - ["summary", "notes"]
+      if pages.include?(params[:p])
+        redirect_to(ontology_path(params[:ontology]), status: :temporary_redirect) and return
+      end
+    end
 
     # Retrieve submissions in descending submissionId order (should be reverse chronological order)
     @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
