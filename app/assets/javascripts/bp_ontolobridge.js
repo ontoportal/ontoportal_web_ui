@@ -12,6 +12,90 @@ function bindCancelRequestTermClick() {
   });
 }
 
+function bindNewTermInstructionsFocus() {
+  jQuery("#new_term_instructions").live("focus", function() {
+    jQuery("#new_term_instructions_submit").show();
+    jQuery("#new_term_instructions_cancel").show();
+  });
+}
+
+function bindNewTermInstructionsSubmit() {
+  jQuery("#new_term_instructions_submit").live("click", function() {
+    saveNewTermInstructions();
+  });
+}
+
+function bindNewTermInstructionsCancel() {
+  jQuery("#new_term_instructions_cancel").live("click", function() {
+    var oldVal = jQuery("#new_term_instructions_old").val().trim();
+    var curVal = jQuery('#new_term_instructions').html().trim();
+
+    if (oldVal != curVal) {
+      if (confirm('Are you sure you want to discard your changes?')) {
+        jQuery('#new_term_instructions').html(oldVal);
+        hideButtons();
+      }
+    } else {
+      hideButtons();
+    }
+  });
+}
+
+function preventNewTermInstructionsFormSubmit() {
+  jQuery("#new_term_instructions_form").submit(function(e) {
+    e.preventDefault(e);
+  });
+}
+
+function clearProgressMessage() {
+  jQuery("#progress_message").hide();
+  jQuery("#progress_message").html("");
+};
+
+function showProgressMessage() {
+  clearProgressMessage();
+  var msg = "Saving...";
+  jQuery("#progress_message").text(msg).html();
+  jQuery("#progress_message").show();
+}
+
+function saveNewTermInstructions() {
+  var params = jQuery('#new_term_instructions_form').serialize();
+  var newInstructions = jQuery('#new_term_instructions').html().trim();
+  params += '&new_term_instructions=' + newInstructions;
+  showProgressMessage();
+
+  jQuery.ajax({
+    type: "POST",
+    url: "/ontolobridge/save_new_term_instructions",
+    dataType: "json",
+    data: params,
+    success: function(data) {
+      var status = data[1];
+
+      if (status && status >= 400 || data[0]['error'].length) {
+        showStatusMessages('new_term_instructions', '', data[0]['error']);
+      } else {
+        jQuery("#new_term_instructions_old").val(newInstructions);
+        showStatusMessages('new_term_instructions', data[0]["success"], '');
+        setTimeout(function() { clearStatusMessages('new_term_instructions'); }, 5000);
+      }
+    },
+    error: function(request, textStatus, errorThrown) {
+      showStatusMessages('new_term_instructions', '', errorThrown);
+    },
+    complete: function(request, textStatus) {
+      clearProgressMessage();
+      hideButtons();
+    }
+  });
+}
+
+function hideButtons() {
+  jQuery("#new_term_instructions_submit").hide();
+  jQuery("#new_term_instructions_cancel").hide();
+}
+
 function bindRequestTermSaveClick() {
   var success = "";
   var error = "";
@@ -33,7 +117,7 @@ function bindRequestTermSaveClick() {
       var status = data[1];
 
       if (status && status >= 400) {
-        showStatusMessages(null, data[0]["error"]);
+        showStatusMessages('ob', '', data[0]["error"]);
       } else {
         var msg = "<strong>A new term request has been submitted successfully:</strong><br/><br/>";
         var button = jQuery(".request_term_form_div .save");
@@ -42,13 +126,12 @@ function bindRequestTermSaveClick() {
         for (var i in data[0]) {
           msg += i + ": " + data[0][i] + "<br/>";
         }
-
-        showStatusMessages(msg, error);
+        showStatusMessages('ob', msg, error);
       }
     },
     error: function(request, textStatus, errorThrown) {
       error = "The following error has occurred: " + errorThrown + ". Please try again.";
-      showStatusMessages(success, error);
+      showStatusMessages('ob', success, error);
     }
   });
 }
@@ -58,29 +141,28 @@ function removeRequestTermBox(button) {
 }
 
 function addRequestTermBox(id, type, button) {
-  clearStatusMessages();
-
+  clearStatusMessages('ob');
   var formContainer = jQuery(button).parents(".notes_list_container").children(".request_term_form_div");
   requestTermFields(id, formContainer);
   formContainer.show();
 }
 
-function clearStatusMessages() {
-  jQuery("#ob_success_message").hide();
-  jQuery("#ob_error_message").hide();
-  jQuery("#ob_success_message").html("");
-  jQuery("#ob_error_message").html("");
+function clearStatusMessages(prefix) {
+  jQuery('#' + prefix + '_success_message').hide();
+  jQuery('#' + prefix + '_error_message').hide();
+  jQuery('#' + prefix + '_success_message').html("");
+  jQuery('#' + prefix + '_error_message').html("");
 }
 
-function showStatusMessages(success, error) {
+function showStatusMessages(prefix, success, error) {
   if (success.length > 0) {
-    jQuery("#ob_success_message").html(success);
-    jQuery("#ob_success_message").show();
+    jQuery('#' + prefix + '_success_message').html(success);
+    jQuery('#' + prefix + '_success_message').show();
   }
 
   if (error.length > 0) {
-    jQuery("#ob_error_message").text(error).html();
-    jQuery("#ob_error_message").show();
+    jQuery('#' + prefix + '_error_message').text(error).html();
+    jQuery('#' + prefix + '_error_message').show();
   }
 }
 
@@ -128,7 +210,6 @@ function appendTextArea(id, placeholder, div, isRequired, invalidMessage) {
     txtArea.prop('required', true);
     txtArea.attr("class", "req");
   }
-
   div.append(txtArea);
   div.append("<br/>");
 }
@@ -192,7 +273,13 @@ function requestTermFields(id, container) {
 }
 
 jQuery(document).ready(function() {
-  clearStatusMessages();
+  clearStatusMessages('ob');
+  clearStatusMessages('new_term_instructions');
   bindAddRequestTermClick();
   bindCancelRequestTermClick();
+
+  preventNewTermInstructionsFormSubmit();
+  bindNewTermInstructionsSubmit();
+  bindNewTermInstructionsCancel();
+  bindNewTermInstructionsFocus();
 });

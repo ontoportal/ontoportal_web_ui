@@ -87,6 +87,12 @@ en:
   ontologies:
     intro: Browse the library of ontologies
 
+  concepts:
+    request_term:
+      new_term_instructions: >
+        <p>Please click on 'Request New Term' link to submit your new term request</p>
+        <p>Please be sure to specify an accurate term description and the label</p>
+
   mappings:
     intro: Browse mappings between classes in different ontologies
 

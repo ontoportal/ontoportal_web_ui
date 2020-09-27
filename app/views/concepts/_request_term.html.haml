@@ -4,6 +4,39 @@
       = link_to "Request New Term", login_index_path, style: "font-size: .9em;"
     - else
       = link_to "Request New Term", "javascript:void(0);", class: "add_request_term", style: "font-size: .9em;", data: { parent_id: "#{@concept.id}", parent_type: "class" }
+
+
+
+
+    - if @ontology.admin?(session[:user])
+      %p
+        The text below is displayed to the user as the instructions on how to request new terms for your ontology.
+        You can edit this text by clicking anywhere inside it. Click 'Submit Changes' when done editing or 'Cancel' to discard your changes.
+
+      %div#new_term_instructions_container{style: 'clear:both'}
+        %div#new_term_instructions_success_message{:class => "message-box success-msg", style: "display: none; clear: both;"}
+        %div#new_term_instructions_error_message{:class => "message-box error-msg", style: "display: none; clear: both;"}
+        %form#new_term_instructions_form
+          = hidden_field nil, :acronym, value: @ontology.acronym
+          = hidden_field nil, :new_term_instructions_old, value: @ob_instructions.html_safe
+          %div#new_term_instructions{contenteditable: "true"}
+            = @ob_instructions.html_safe
+          %button#new_term_instructions_submit{class: "btn", title: "Submit Changes", alt: "Submit Changes", style: 'display:none'}
+            Submit Changes
+          %button#new_term_instructions_cancel{class: "btn", title: "Cancel", alt: "Cancel", style: 'display:none'}
+            Cancel
+          %div#progress_message{style: 'display:none; clear: both;'}
+
+
+
+
+    - else
+      %div
+        = @ob_instructions.html_safe
+
+
+
+
     %div#ob_success_message{:class => "message-box success-msg", style: "display: none; clear: both;"}
     %div#ob_error_message{:class => "message-box error-msg", style: "display: none; clear: both;"}
   %div.request_term_form_div{style: "display: none; clear: both; padding-top: 1em;"}

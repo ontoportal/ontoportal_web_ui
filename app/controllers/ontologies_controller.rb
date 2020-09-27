@@ -277,6 +277,8 @@ class OntologiesController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     not_found if @ontology.nil?
 
+    @ob_instructions = ontolobridge_instructions_template(@ontology)
+
     # Retrieve submissions in descending submissionId order (should be reverse chronological order)
     @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
@@ -319,6 +321,11 @@ class OntologiesController < ApplicationController
         self.summary
         return
     end
+  end
+
+  def ontolobridge_instructions_template(ontology)
+    ont_data = Ontology.find_by(acronym: ontology.acronym)
+    ont_data.nil? || ont_data.new_term_instructions.empty? ? t('concepts.request_term.new_term_instructions') : ont_data.new_term_instructions
   end
 
   def submit_success
