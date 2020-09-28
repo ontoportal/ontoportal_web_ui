@@ -1,3 +1,5 @@
+
+
 function bindAddRequestTermClick() {
   jQuery("a.add_request_term").live('click', function(){
     var id = jQuery(this).attr("data-parent-id");
@@ -12,8 +14,14 @@ function bindCancelRequestTermClick() {
   });
 }
 
-function bindNewTermInstructionsFocus() {
-  jQuery("#new_term_instructions").live("focus", function() {
+function bindNewTermInstructionsClick() {
+  jQuery("#new_term_instructions").live("click", function() {
+
+
+    console.log("focusing");
+    jQuery(this).trumbowyg();
+
+
     jQuery("#new_term_instructions_submit").show();
     jQuery("#new_term_instructions_cancel").show();
   });
@@ -32,10 +40,20 @@ function bindNewTermInstructionsCancel() {
 
     if (oldVal != curVal) {
       if (confirm('Are you sure you want to discard your changes?')) {
+
+        jQuery('#new_term_instructions').trumbowyg('destroy');
+
+
+
         jQuery('#new_term_instructions').html(oldVal);
+
         hideButtons();
       }
     } else {
+
+      jQuery('#new_term_instructions').trumbowyg('destroy');
+
+
       hideButtons();
     }
   });
@@ -76,6 +94,7 @@ function saveNewTermInstructions() {
       if (status && status >= 400 || data[0]['error'].length) {
         showStatusMessages('new_term_instructions', '', data[0]['error']);
       } else {
+        jQuery('#new_term_instructions').trumbowyg('destroy');
         jQuery("#new_term_instructions_old").val(newInstructions);
         showStatusMessages('new_term_instructions', data[0]["success"], '');
         setTimeout(function() { clearStatusMessages('new_term_instructions'); }, 5000);
@@ -281,5 +300,5 @@ jQuery(document).ready(function() {
   preventNewTermInstructionsFormSubmit();
   bindNewTermInstructionsSubmit();
   bindNewTermInstructionsCancel();
-  bindNewTermInstructionsFocus();
+  bindNewTermInstructionsClick();
 });
