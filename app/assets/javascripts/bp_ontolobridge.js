@@ -1,5 +1,3 @@
-
-
 function bindAddRequestTermClick() {
   jQuery("a.add_request_term").live('click', function(){
     var id = jQuery(this).attr("data-parent-id");
@@ -16,12 +14,22 @@ function bindCancelRequestTermClick() {
 
 function bindNewTermInstructionsClick() {
   jQuery("#new_term_instructions").live("click", function() {
-
-
-    console.log("focusing");
-    jQuery(this).trumbowyg();
-
-
+    jQuery(this).trumbowyg({
+      btns: [
+        ['viewHTML'],
+        ['undo', 'redo'], // Only supported in Blink browsers
+        ['formatting'],
+        ['strong', 'em', 'del'],
+        ['superscript', 'subscript'],
+        ['link'],
+        ['insertImage'],
+        ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+        ['unorderedList', 'orderedList'],
+        ['horizontalRule'],
+        ['removeformat'],
+        ['fullscreen']
+      ]
+    });
     jQuery("#new_term_instructions_submit").show();
     jQuery("#new_term_instructions_cancel").show();
   });
@@ -40,20 +48,12 @@ function bindNewTermInstructionsCancel() {
 
     if (oldVal != curVal) {
       if (confirm('Are you sure you want to discard your changes?')) {
-
         jQuery('#new_term_instructions').trumbowyg('destroy');
-
-
-
         jQuery('#new_term_instructions').html(oldVal);
-
         hideButtons();
       }
     } else {
-
       jQuery('#new_term_instructions').trumbowyg('destroy');
-
-
       hideButtons();
     }
   });
@@ -92,16 +92,16 @@ function saveNewTermInstructions() {
       var status = data[1];
 
       if (status && status >= 400 || data[0]['error'].length) {
-        showStatusMessages('new_term_instructions', '', data[0]['error']);
+        showStatusMessages('', data[0]['error']);
       } else {
         jQuery('#new_term_instructions').trumbowyg('destroy');
         jQuery("#new_term_instructions_old").val(newInstructions);
-        showStatusMessages('new_term_instructions', data[0]["success"], '');
-        setTimeout(function() { clearStatusMessages('new_term_instructions'); }, 5000);
+        showStatusMessages(data[0]["success"], '');
+        setTimeout(function() { clearStatusMessages(); }, 5000);
       }
     },
     error: function(request, textStatus, errorThrown) {
-      showStatusMessages('new_term_instructions', '', errorThrown);
+      showStatusMessages('', errorThrown);
     },
     complete: function(request, textStatus) {
       clearProgressMessage();
@@ -136,7 +136,7 @@ function bindRequestTermSaveClick() {
       var status = data[1];
 
       if (status && status >= 400) {
-        showStatusMessages('ob', '', data[0]["error"]);
+        showStatusMessages('', data[0]["error"]);
       } else {
         var msg = "<strong>A new term request has been submitted successfully:</strong><br/><br/>";
         var button = jQuery(".request_term_form_div .save");
@@ -145,12 +145,12 @@ function bindRequestTermSaveClick() {
         for (var i in data[0]) {
           msg += i + ": " + data[0][i] + "<br/>";
         }
-        showStatusMessages('ob', msg, error);
+        showStatusMessages(msg, error);
       }
     },
     error: function(request, textStatus, errorThrown) {
       error = "The following error has occurred: " + errorThrown + ". Please try again.";
-      showStatusMessages('ob', success, error);
+      showStatusMessages(success, error);
     }
   });
 }
@@ -160,44 +160,44 @@ function removeRequestTermBox(button) {
 }
 
 function addRequestTermBox(id, type, button) {
-  clearStatusMessages('ob');
+  clearStatusMessages();
   var formContainer = jQuery(button).parents(".notes_list_container").children(".request_term_form_div");
   requestTermFields(id, formContainer);
   formContainer.show();
 }
 
-function clearStatusMessages(prefix) {
-  jQuery('#' + prefix + '_success_message').hide();
-  jQuery('#' + prefix + '_error_message').hide();
-  jQuery('#' + prefix + '_success_message').html("");
-  jQuery('#' + prefix + '_error_message').html("");
+function clearStatusMessages() {
+  jQuery("#ob_success_message").hide();
+  jQuery("#ob_error_message").hide();
+  jQuery("#ob_success_message").html("");
+  jQuery("#ob_error_message").html("");
 }
 
-function showStatusMessages(prefix, success, error) {
+function showStatusMessages(success, error) {
   if (success.length > 0) {
-    jQuery('#' + prefix + '_success_message').html(success);
-    jQuery('#' + prefix + '_success_message').show();
+    jQuery("#ob_success_message").html(success);
+    jQuery("#ob_success_message").show();
   }
 
   if (error.length > 0) {
-    jQuery('#' + prefix + '_error_message').text(error).html();
-    jQuery('#' + prefix + '_error_message').show();
+    jQuery("#ob_error_message").text(error).html();
+    jQuery("#ob_error_message").show();
   }
 }
 
 function requestTermButtons() {
   var button_submit = jQuery("<button>")
+    .attr("class", "btn")
     .attr("type", "submit")
     .attr("onclick", "")
     .addClass("save")
-    .css("margin-right", "20px")
-    .css("padding", "2px 8px")
+    .css("margin-right", "5px")
     .html("Submit");
   var button_cancel = jQuery("<button>")
+    .attr("class", "btn")
     .attr("type", "button")
     .attr("onclick", "")
     .addClass("cancel")
-    .css("padding", "2px 8px")
     .html("Cancel");
   return button_submit.add(button_cancel);
 }
@@ -259,7 +259,6 @@ function appendField(id, text, div, isRequired, invalidMessage) {
     ipt.prop('required', true);
     ipt.attr("class", "req");
   }
-
   div.append(ipt);
   div.append("<br/>");
 }
@@ -292,8 +291,7 @@ function requestTermFields(id, container) {
 }
 
 jQuery(document).ready(function() {
-  clearStatusMessages('ob');
-  clearStatusMessages('new_term_instructions');
+  clearStatusMessages();
   bindAddRequestTermClick();
   bindCancelRequestTermClick();
 
