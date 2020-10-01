@@ -8,7 +8,7 @@
     %div.col
       %h2.mt-3 Annotator
       %p
-        = t('annotator.index.intro', organization: $ORG).html_safe
+        = t('annotator.index.intro', site: $SITE).html_safe
         = link_to(help_path(anchor: "Annotator_Tab"), id: "annotator-help", target: "_blank") do
           %i.fa.fa-question-circle.fa-lg{"aria-hidden": "true"}
 
@@ -63,29 +63,29 @@
               %small#selectSemanticGroupsHelpBlock.form-text.text-muted Start typing to select UMLS semantic groups or leave blank to use all
 
           %div.form-group
-            %label{for: "class_hierarchy_max_level"} Include ancestors up to level:
+            %label{for: "class_hierarchy_max_level"} Include ancestors up to level
             - options = [["none", 0], *(1..10).map {|i| [i, i]}, ["all", 999]]
             = select_tag("class_hierarchy_max_level", options_for_select(options, 0), class: "form-control")
 
           %div.form-group
-            %label{for: "score"} Include score:
+            %label{for: "score"} Include score
             - options = [["none", ""], ["old", "old"], ["cvalue", "cvalue"], ["cvalueh", "cvalueh"]]
             = select_tag(:score, options_for_select(options, 0), class: "form-control", "aria-describedby": "includeScoreHelpBlock")
             %small#includeScoreHelpBlock.form-text.text-muted Score annotations following the previous 2009 NCBO measure (old) or the C-Value measure (cvalue). If hierarchy expansion is used, then prefer cvalueh. 
 
           %div.form-group
-            %label{for: "score_threshold"} Filter by score threshold:
+            %label{for: "score_threshold"} Filter by score threshold
             = number_field_tag(:score_threshold, 0, id: "score_threshold", class: "form-control", "aria-describedby": "scoreThresholdHelpBlock")
             %small#scoreThresholdHelpBlock.form-text.text-muted Specify the minimum score value for annotations 
 
           %div.form-group
-            %label{for: "confidence_threshold"} Filter confidence threshold:
+            %label{for: "confidence_threshold"} Filter confidence threshold
             = number_field_tag(:confidence_threshold, 0, min: 0, max: 100, id: "confidence_threshold", class: "form-control", "aria-describedby": "confidenceThresholdHelpBlock")
             %small#confidenceThresholdHelpBlock.form-text.text-muted Specify the minimum position in the scoring distribution (between 1 and 100)
 
           - if @recognizers.length > 1
             %div.form-group
-              %label{for: "recognizer"} Entity recognizer:
+              %label{for: "recognizer"} Entity recognizer
               - default_recognizer = @recognizers.include?("mgrep") ? "mgrep" : @recognizers.first
               = select_tag("recognizer", options_for_select(@recognizers.map {|r| [r, r]}, default_recognizer), class: "form-control")
 
@@ -107,7 +107,7 @@
         #result_counts
         %h4 Annotations
         #filter_list{:style => "font-size: 9pt; color: gray; display: none; clear: both; margin: -15px 0 5px"}
-          %span#filter_title> Results are filtered by:
+          %span#filter_title> Results are filtered by
           \&nbsp;
           %span#filter_names
         #results_error{:style => "color: red; margin-bottom: 7px;"}
@@ -153,7 +153,7 @@
               %th Certainty
           %tbody
         %div.my-3
-          %b Format results as:
+          %b Format results as
         %div.my-3
           %span#download_links_tabdelimited.link_button.ui_button
           %span#download_links_json.link_button.ui_button

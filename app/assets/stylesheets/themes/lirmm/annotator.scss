@@ -1,5 +1,8 @@
 .annotator, .ncbo_annotatorplus {
 
+  #annotator-help {
+    display: none;
+  }
   #annotator-help > i.fa.fa-question-circle {
     margin-left: .25em;
     vertical-align: middle;
