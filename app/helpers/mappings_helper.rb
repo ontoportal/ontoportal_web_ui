@@ -167,8 +167,13 @@ module MappingsHelper
     # Workaround for https://github.com/ncbo/ontologies_api/issues/52.
     mappings.delete_if do |mapping|
       mapping.classes.reject! { |cls| (cls.id == concept.id) && (cls.links['ontology'] == concept.links['ontology']) }
-      ont = mapping.classes[0].explore.ontology
-      ont.errors && ont.errors.grep(/Access denied/).any?
+      begin
+        ont = mapping.classes[0].explore.ontology
+        ont.errors && ont.errors.grep(/Access denied/).any?
+      rescue => e
+        Rails.logger.warn "Mapping issue with '#{mapping.inspect}' : #{e.message}"
+        false
+      end
     end
   end
 
