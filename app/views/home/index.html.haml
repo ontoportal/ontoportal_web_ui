@@ -125,11 +125,12 @@
                   = link_to slice_name, slice_link
 
   - $HOME_PAGE_LOGOS.to_a.each do |home_page_logos_row|
-    %div.row.pt-3
-      %div.col
-        %div.card-deck
-          %div.card
-            %div.card-header= home_page_logos_row[:title]
-            %div.logos
-              - home_page_logos_row[:links].to_a.each do |logo|
-                = link_to(image_tag(logo[:img_src]), logo[:url], target: logo[:target])
+    - unless home_page_logos_row[:links].to_a.empty?
+      %div.row.pt-3
+        %div.col
+          %div.card-deck
+            %div.card
+              %div.card-header= home_page_logos_row[:title]
+              %div.logos
+                - home_page_logos_row[:links].to_a.each do |logo|
+                  = link_to(image_tag(logo[:img_src]), logo[:url], target: logo[:target])
