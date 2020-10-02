@@ -8,7 +8,7 @@ GIT
 GIT
   remote: https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git
   revision: 036d7ef2645cd405414a6c2d5e334c8b76500238
-  branch: master
+  branch: ncbo_merge_master
   specs:
     ontologies_api_client (2.0.1)
       activesupport (~> 5.2.4.3)
