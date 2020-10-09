@@ -10,17 +10,17 @@
       %p
         %em
           The text below is displayed to the user as the instructions on how to request new terms for your ontology.
-          You can change this text for #{@ontology.acronym} ontology by clicking anywhere inside the text to bring up the editing dialog.
-          Click 'Submit Changes' when done editing or 'Cancel' to discard your changes.
+          You can change this text for #{@ontology.acronym} ontology by clicking anywhere on the existing text to bring up the editing dialog.
+          Click 'Submit Changes' to save or 'Cancel' to discard your changes.
       %div#new_term_instructions_container{style: 'clear: both;'}
         %form#new_term_instructions_form
           = hidden_field nil, :acronym, value: @ontology.acronym
           = hidden_field nil, :new_term_instructions_old, value: @ob_instructions.html_safe
-          %div#new_term_instructions{contenteditable: "true"}
+          %div#new_term_instructions
             = @ob_instructions.html_safe
-          %button#new_term_instructions_submit{class: "btn", title: "Submit Changes", alt: "Submit Changes", style: 'display: none;'}
+          %button#new_term_instructions_submit{class: "btn", type: "button", title: "Submit Changes", alt: "Submit Changes", style: 'display: none;'}
             Submit Changes
-          %button#new_term_instructions_cancel{class: "btn", title: "Cancel", alt: "Cancel", style: 'display: none;'}
+          %button#new_term_instructions_cancel{class: "btn", type: "button", title: "Cancel", alt: "Cancel", style: 'display: none;'}
             Cancel
           %span#progress_message{style: 'display: none; margin-left: 20px;'}
     - else
