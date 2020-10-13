@@ -16,6 +16,8 @@ class ConceptsController < ApplicationController
 
     # Note that find_by_acronym includes views by default
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    @ob_instructions = helpers.ontolobridge_instructions_template(@ontology)
+
     if request.xhr?
       display = params[:callback].eql?('load') ? {full: true} : {display: "prefLabel"}
       @concept = @ontology.explore.single_class(display, params[:id])

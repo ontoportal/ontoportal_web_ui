@@ -12,6 +12,109 @@ function bindCancelRequestTermClick() {
   });
 }
 
+function bindNewTermInstructionsClick() {
+  jQuery("#new_term_instructions").live("click", function() {
+    jQuery(this).trumbowyg({
+      btns: [
+        ['viewHTML'],
+        ['undo', 'redo'], // Only supported in Blink browsers
+        ['formatting'],
+        ['strong', 'em', 'del'],
+        ['superscript', 'subscript'],
+        ['link'],
+        ['insertImage'],
+        ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+        ['unorderedList', 'orderedList'],
+        ['horizontalRule'],
+        ['removeformat'],
+        ['fullscreen']
+      ]
+    });
+    jQuery("#new_term_instructions_submit").show();
+    jQuery("#new_term_instructions_cancel").show();
+  });
+}
+
+function bindNewTermInstructionsSubmit() {
+  jQuery("#new_term_instructions_submit").live("click", function() {
+    saveNewTermInstructions();
+  });
+}
+
+function bindNewTermInstructionsCancel() {
+  jQuery("#new_term_instructions_cancel").live("click", function() {
+    var oldVal = jQuery("#new_term_instructions_old").val().trim();
+    var curVal = jQuery('#new_term_instructions').html().trim();
+
+    if (oldVal != curVal) {
+      if (confirm('Are you sure you want to discard your changes?')) {
+        jQuery('#new_term_instructions').trumbowyg('destroy');
+        jQuery('#new_term_instructions').html(oldVal);
+        hideButtons();
+      }
+    } else {
+      jQuery('#new_term_instructions').trumbowyg('destroy');
+      hideButtons();
+    }
+  });
+}
+
+function preventNewTermInstructionsFormSubmit() {
+  jQuery("#new_term_instructions_form").submit(function(e) {
+    e.preventDefault(e);
+  });
+}
+
+function clearProgressMessage() {
+  jQuery("#progress_message").hide();
+  jQuery("#progress_message").html("");
+};
+
+function showProgressMessage() {
+  clearProgressMessage();
+  var msg = "Saving...";
+  jQuery("#progress_message").text(msg).html();
+  jQuery("#progress_message").show();
+}
+
+function saveNewTermInstructions() {
+  var params = jQuery('#new_term_instructions_form').serialize();
+  var newInstructions = jQuery('#new_term_instructions').html().trim();
+  params += '&new_term_instructions=' + newInstructions;
+  showProgressMessage();
+
+  jQuery.ajax({
+    type: "POST",
+    url: "/ontolobridge/save_new_term_instructions",
+    dataType: "json",
+    data: params,
+    success: function(data) {
+      var status = data[1];
+
+      if (status && status >= 400 || data[0]['error'].length) {
+        showStatusMessages('', data[0]['error']);
+      } else {
+        jQuery('#new_term_instructions').trumbowyg('destroy');
+        jQuery("#new_term_instructions_old").val(newInstructions);
+        showStatusMessages(data[0]["success"], '');
+        setTimeout(function() { clearStatusMessages(); }, 5000);
+      }
+    },
+    error: function(request, textStatus, errorThrown) {
+      showStatusMessages('', errorThrown);
+    },
+    complete: function(request, textStatus) {
+      clearProgressMessage();
+      hideButtons();
+    }
+  });
+}
+
+function hideButtons() {
+  jQuery("#new_term_instructions_submit").hide();
+  jQuery("#new_term_instructions_cancel").hide();
+}
+
 function bindRequestTermSaveClick() {
   var success = "";
   var error = "";
@@ -33,7 +136,7 @@ function bindRequestTermSaveClick() {
       var status = data[1];
 
       if (status && status >= 400) {
-        showStatusMessages(null, data[0]["error"]);
+        showStatusMessages('', data[0]["error"]);
       } else {
         var msg = "<strong>A new term request has been submitted successfully:</strong><br/><br/>";
         var button = jQuery(".request_term_form_div .save");
@@ -42,7 +145,6 @@ function bindRequestTermSaveClick() {
         for (var i in data[0]) {
           msg += i + ": " + data[0][i] + "<br/>";
         }
-
         showStatusMessages(msg, error);
       }
     },
@@ -59,7 +161,6 @@ function removeRequestTermBox(button) {
 
 function addRequestTermBox(id, type, button) {
   clearStatusMessages();
-
   var formContainer = jQuery(button).parents(".notes_list_container").children(".request_term_form_div");
   requestTermFields(id, formContainer);
   formContainer.show();
@@ -86,17 +187,17 @@ function showStatusMessages(success, error) {
 
 function requestTermButtons() {
   var button_submit = jQuery("<button>")
+    .attr("class", "btn")
     .attr("type", "submit")
     .attr("onclick", "")
     .addClass("save")
-    .css("margin-right", "20px")
-    .css("padding", "2px 8px")
+    .css("margin-right", "5px")
     .html("Submit");
   var button_cancel = jQuery("<button>")
+    .attr("class", "btn")
     .attr("type", "button")
     .attr("onclick", "")
     .addClass("cancel")
-    .css("padding", "2px 8px")
     .html("Cancel");
   return button_submit.add(button_cancel);
 }
@@ -128,7 +229,6 @@ function appendTextArea(id, placeholder, div, isRequired, invalidMessage) {
     txtArea.prop('required', true);
     txtArea.attr("class", "req");
   }
-
   div.append(txtArea);
   div.append("<br/>");
 }
@@ -159,7 +259,6 @@ function appendField(id, text, div, isRequired, invalidMessage) {
     ipt.prop('required', true);
     ipt.attr("class", "req");
   }
-
   div.append(ipt);
   div.append("<br/>");
 }
@@ -195,4 +294,9 @@ jQuery(document).ready(function() {
   clearStatusMessages();
   bindAddRequestTermClick();
   bindCancelRequestTermClick();
+
+  preventNewTermInstructionsFormSubmit();
+  bindNewTermInstructionsSubmit();
+  bindNewTermInstructionsCancel();
+  bindNewTermInstructionsClick();
 });

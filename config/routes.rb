@@ -4,7 +4,9 @@ Rails.application.routes.draw do
 
   resources :notes, constraints: { id: /.+/ }
 
-  resources :ontolobridge
+  resources :ontolobridge do
+    post :save_new_term_instructions, on: :collection
+  end
 
   resources :projects, constraints: { id: /[^\/]+/ }
 
@@ -125,6 +127,10 @@ Rails.application.routes.draw do
   match '/admin/ontologies/:acronym/log' => 'admin#parse_log', via: [:get]
   match '/admin/update_info' => 'admin#update_info', via: [:get]
   match '/admin/update_check_enabled' => 'admin#update_check_enabled', via: [:get]
+
+
+  # Ontolobridge
+  # post '/ontolobridge/:save_new_term_instructions' => 'ontolobridge#save_new_term_instructions'
 
   ###########################################################################################################
   # Install the default route as the lowest priority.
