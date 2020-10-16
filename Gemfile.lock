@@ -348,7 +348,7 @@ DEPENDENCIES
   rails_autolink
   rdoc
   recaptcha (~> 5.2)
-  rest-client (~> 1.8.0)
+  rest-client
   rspec-rails
   rubocop
   sass-rails (~> 5.0)
