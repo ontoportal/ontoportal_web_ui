@@ -61,7 +61,7 @@ body.ontologies.index {
   border-radius: 3px;
 }
 .facet_disabled {
-  color: gray;
+  color: #ddd;
 }
 .checkbox_list {
   max-height: 200px;
@@ -69,11 +69,22 @@ body.ontologies.index {
   padding-left: 1px;
 }
 .checkbox_list > span {
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  width: 200px;
   display: block;
+}
+.checkbox_list > span > label {
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  width: 75%;
+  margin: 0px;
+  
+  /* SOLUTION 1 */
+  /*
+  display: inline;
+  */
+  
+  /* SOLUTION 2 */
+  white-space: nowrap;
+  margin-bottom: -7px;
 }
 #sorting {
 }
