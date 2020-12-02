@@ -1,14 +1,13 @@
 function bindAddRequestTermClick() {
   jQuery("a.add_request_term").live('click', function(){
     var id = jQuery(this).attr("data-parent-id");
-    var type = jQuery(this).attr("data-parent-type");
-    addRequestTermBox(id, type, this);
+    addRequestTermBox(id);
   });
 }
 
 function bindCancelRequestTermClick() {
   jQuery(".request_term_form_div .cancel").live('click', function() {
-    removeRequestTermBox(this);
+    removeRequestTermBox();
   });
 }
 
@@ -139,8 +138,7 @@ function bindRequestTermSaveClick() {
         showStatusMessages('', data[0]["error"]);
       } else {
         var msg = "<strong>A new term request has been submitted successfully:</strong><br/><br/>";
-        var button = jQuery(".request_term_form_div .save");
-        removeRequestTermBox(button);
+        removeRequestTermBox();
 
         for (var i in data[0]) {
           msg += i + ": " + data[0][i] + "<br/>";
@@ -155,15 +153,35 @@ function bindRequestTermSaveClick() {
   });
 }
 
-function removeRequestTermBox(button) {
-  jQuery(button).closest(".request_term_form_div").html("");
+function removeRequestTermBox() {
+  jQuery(".request_term_form_div").html("");
 }
 
-function addRequestTermBox(id, type, button) {
+function addRequestTermBox(id) {
   clearStatusMessages();
-  var formContainer = jQuery(button).parents(".notes_list_container").children(".request_term_form_div");
-  requestTermFields(id, formContainer);
+  var formContainer = jQuery(".request_term_form_div");
+  var requestTermForm = requestTermFields(id, formContainer);
+  var formID = requestTermForm.attr('id');
+  var isPopulated = window.localStorage.getItem(formID + '_populated');
+
+  if (isPopulated) {
+    for (var key in window.localStorage) {
+      if (key.startsWith(formID)) {
+        var elemID = key.replace(formID + '_', '');
+        var elem = jQuery('#' + formID + ' #' + elemID);
+
+        if (elem.attr('type') === "checkbox") {
+          elem.prop("checked", true);
+        } else if (elem.length > 0) {
+          var val = window.localStorage.getItem(key);
+          elem.val(val);
+        }
+        window.localStorage.removeItem(key);
+      }
+    }
+  }
   formContainer.show();
+  jQuery("#label").focus();
 }
 
 function clearStatusMessages() {
@@ -288,13 +306,37 @@ function requestTermFields(id, container) {
     bindRequestTermSaveClick();
     return false;
   });
+
+  return requestTermForm;
+}
+
+function obTriggerNewTermRequestFormSave() {
+  var ont = jQuery(document).data().bp.ontology;
+  var ob_onts = jQuery(document).data().bp.ontolobridge_ontologies;
+
+  // Execute only if ontology is Ontolobridge-enabled
+  if (Object.entries(ont).length > 0 && ob_onts && ob_onts.length > 0 && ob_onts.includes(ont["acronym"])) {
+    var formName = 'request_term_form';
+
+    jQuery("#" + formName + " input, #" + formName + " textarea").each(function() {
+      var input = jQuery(this);
+      var val = input.val().trim();
+
+      if (input.attr('type') === "checkbox" && input.prop('checked') === true) {
+        window.localStorage.setItem(formName + '_' + input.attr('name'), 'checkbox_checked');
+        window.localStorage.setItem(formName + '_populated', true);
+      } else if (input.attr('type') !== "hidden" && input.attr('type') !== "checkbox" && val) {
+        window.localStorage.setItem(formName + '_' + input.attr('name'), val);
+        window.localStorage.setItem(formName + '_populated', true);
+      }
+    });
+  }
 }
 
 jQuery(document).ready(function() {
   clearStatusMessages();
   bindAddRequestTermClick();
   bindCancelRequestTermClick();
-
   preventNewTermInstructionsFormSubmit();
   bindNewTermInstructionsSubmit();
   bindNewTermInstructionsCancel();
