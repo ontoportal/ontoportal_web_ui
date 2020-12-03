@@ -64,23 +64,26 @@ function preventNewTermInstructionsFormSubmit() {
   });
 }
 
-function clearProgressMessage() {
-  jQuery("#progress_message").hide();
-  jQuery("#progress_message").html("");
-};
+function clearProgressMessage(parentContainerID) {
+  var progMsgElem = jQuery("#" + parentContainerID + " #progress_message");
+  progMsgElem.hide();
+  progMsgElem.html("");
+}
 
-function showProgressMessage() {
-  clearProgressMessage();
+function showProgressMessage(parentContainerID) {
+  clearProgressMessage(parentContainerID);
   var msg = "Saving...";
-  jQuery("#progress_message").text(msg).html();
-  jQuery("#progress_message").show();
+  var progMsgElem = jQuery("#" + parentContainerID + " #progress_message");
+  progMsgElem.text(msg).html();
+  progMsgElem.show();
 }
 
 function saveNewTermInstructions() {
   var params = jQuery('#new_term_instructions_form').serialize();
   var newInstructions = jQuery('#new_term_instructions').html().trim();
   params += '&new_term_instructions=' + newInstructions;
-  showProgressMessage();
+  var parentContainerID = 'new_term_instructions_container';
+  showProgressMessage(parentContainerID);
 
   jQuery.ajax({
     type: "POST",
@@ -103,7 +106,7 @@ function saveNewTermInstructions() {
       showStatusMessages('', errorThrown);
     },
     complete: function(request, textStatus) {
-      clearProgressMessage();
+      clearProgressMessage(parentContainerID);
       hideButtons();
     }
   });
@@ -125,6 +128,9 @@ function bindRequestTermSaveClick() {
   if (user["firstName"] && user["lastName"]) {
     params += "&submitter=" + user["firstName"] + " " + user["lastName"];
   }
+
+  var parentContainerID = 'proposal_buttons';
+  showProgressMessage(parentContainerID);
 
   jQuery.ajax({
     type: "POST",
@@ -149,6 +155,9 @@ function bindRequestTermSaveClick() {
     error: function(request, textStatus, errorThrown) {
       error = "The following error has occurred: " + errorThrown + ". Please try again.";
       showStatusMessages(success, error);
+    },
+    complete: function(request, textStatus) {
+      clearProgressMessage(parentContainerID);
     }
   });
 }
@@ -204,20 +213,24 @@ function showStatusMessages(success, error) {
 }
 
 function requestTermButtons() {
-  var button_submit = jQuery("<button>")
+  var buttonSubmit = jQuery("<button>")
     .attr("class", "btn")
     .attr("type", "submit")
     .attr("onclick", "")
     .addClass("save")
     .css("margin-right", "5px")
     .html("Submit");
-  var button_cancel = jQuery("<button>")
+  var buttonCancel = jQuery("<button>")
     .attr("class", "btn")
     .attr("type", "button")
     .attr("onclick", "")
     .addClass("cancel")
     .html("Cancel");
-  return button_submit.add(button_cancel);
+  var progressMessage = jQuery("<span>")
+    .attr("id", "progress_message")
+    .css("display", "none")
+    .css("margin-left", "20px");
+  return buttonSubmit.add(buttonCancel).add(progressMessage);
 }
 
 function appendTextArea(id, placeholder, div, isRequired, invalidMessage) {
@@ -297,8 +310,7 @@ function requestTermFields(id, container) {
   requestTermForm.append(jQuery("<input>").attr("type", "checkbox").attr("name", "notification_request").attr("id", "notification_request").css("height", "15px")).append("&nbsp;&nbsp;");
   requestTermForm.append(jQuery("<input>").attr("type", "hidden").attr("name", "superclass").attr("id", "superclass").attr("value", id));
   requestTermForm.append(jQuery("<label>").attr("for", "notification_request").attr("id", "notification_request").css("margin", "0 0 10px 0").append("Email submitter when there is a status change"));
-  requestTermForm.append(jQuery("<div>").addClass("proposal_buttons").append(requestTermButtons()));
-
+  requestTermForm.append(jQuery("<div>").attr("id", "proposal_buttons").append(requestTermButtons()));
   container.append(requestTermForm);
 
   requestTermForm.submit(function(e) {
