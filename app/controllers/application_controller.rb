@@ -647,6 +647,24 @@ class ApplicationController < ActionController::Base
     return recent_mappings
   end
 
+  def total_mapping_count
+    total_count = 0
+    
+    begin
+      stats = LinkedData::Client::HTTP.get("#{REST_URI}/mappings/statistics/ontologies")
+      unless stats.blank?
+        stats = stats.to_h.compact
+        # Some of the mapping counts are erroneously stored as strings
+        stats.transform_values!(&:to_i)
+        total_count = stats.values.sum
+      end
+    rescue
+      LOG.add :error, e.message
+    end
+    
+    return total_count
+  end
+
   def determine_layout
     if Rails.env.appliance?
       'appliance'

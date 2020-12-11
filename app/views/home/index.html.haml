@@ -70,9 +70,17 @@
             %li.list-group-item 
               %div.d-flex.justify-content-between.align-items-center
                 %span Ontologies
-                %span= @ont_count
+                %span= number_with_delimiter(@ont_count)
             %li.list-group-item
               %div.d-flex.justify-content-between.align-items-center
                 %span Classes
-                %span= number_with_delimiter(@cls_count, :delimiter => ",")
+                %span= number_with_delimiter(@cls_count)
+            %li.list-group-item
+              %div.d-flex.justify-content-between.align-items-center
+                %span Properties
+                %span= number_with_delimiter(@prop_count)
+            %li.list-group-item
+              %div.d-flex.justify-content-between.align-items-center
+                %span Mappings
+                %span= number_with_delimiter(@map_count)
 

@@ -12,6 +12,8 @@ class HomeController < ApplicationController
     # Calculate BioPortal summary statistics
     @ont_count = @ontologies.length
     @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes.to_i}.sum
+    @prop_count = 36286
+    @map_count = total_mapping_count
     @analytics = LinkedData::Client::Analytics.last_month
 
     @ontology_names = @ontologies.map{ |ont| ["#{ont.name} (#{ont.acronym})", ont.acronym] }
