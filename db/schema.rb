@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(version: 2020_09_21_120918) do
     t.integer "ontology_id"
     t.text "concept_id"
     t.text "params"
-    t.datetime "created"
+    t.timestamp "created"
   end
 
   create_table "virtual_appliance_users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
