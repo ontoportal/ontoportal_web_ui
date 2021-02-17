@@ -1,9 +1,11 @@
 User-agent: *
 Disallow: /*mappings
+Disallow: /projects/
 Disallow: /login
 Disallow: /virtual
 Disallow: /visualize
-Crawl-delay: 2
+Disallow: /feedback
+Crawl-delay: 10
 
 User-agent: SemrushBot
 Disallow: /
@@ -17,4 +19,11 @@ Disallow: /
 User-agent: MJ12bot
 Disallow: /
 
+User-agent: BLEXBot
+Disallow: /
 
+User-agent: AhrefsBot
+Disallow: /
+
+User agent: MTRobot
+Disallow: /
