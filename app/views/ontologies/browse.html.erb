@@ -209,7 +209,7 @@
         <div class="badges grid-25 grid-parent" ng-if="ontology.submission !== null && ontology.class_count > 0">
           <a href="/ontologies/{{ontology.acronym}}?p=classes">
             <div class="grid-33 badge_grid">
-              <div class="badge">
+              <div class="ontology_badge">
                 <div class="badge_title">classes</div>
                 <div class="badge_count">{{ontology.class_count_formatted}}</div>
               </div>
@@ -218,7 +218,7 @@
 
           <a href="/ontologies/{{ontology.acronym}}#projects_content">
             <div class="grid-33 badge_grid" ng-if="ontology.projects.length > 0">
-              <div class="badge">
+              <div class="ontology_badge">
                 <div class="badge_title">projects</div>
                 <div class="badge_count">{{ontology.projects.length}}</div>
               </div>
@@ -227,7 +227,7 @@
 
           <a href="/ontologies/{{ontology.acronym}}?p=notes">
             <div class="grid-33 badge_grid" ng-if="ontology.notes.length > 0">
-              <div class="badge">
+              <div class="ontology_badge">
                 <div class="badge_title">notes</div>
                 <div class="badge_count">{{ontology.notes.length}}</div>
               </div>
