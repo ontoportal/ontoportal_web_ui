@@ -160,9 +160,7 @@
 
       <div class="ontology grid-parent clearfix" ng-repeat="ontology in ontologies | orderBy:ontology_sort_order" ng-if="ontology.show">
         <div class="grid-75">
-          <div ng-if="ontology.type == 'ontology_view'" class="ontology_view_badge" title="This ontology is a view of {{ontology.viewOfOnt.name}}">
-            <a href="/ontologies/{{ontology.viewOfOnt.acronym}}">VIEW</a>
-          </div>
+          <div ng-if="ontology.type == 'ontology_view'" class="ontology_view_badge" title="This ontology is a view of {{ontology.viewOfOnt.name}}">VIEW</div>
           <h2 style="font-size: 1.5em;">
             <a href="/ontologies/{{ontology.acronym}}">
               <span ng-if="debug">{{$index}} </span>
