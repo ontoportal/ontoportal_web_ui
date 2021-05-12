@@ -30,8 +30,8 @@
     %h2 Subscriptions
     %table
       - @user.subscription.each do |subscription|
-        - ont = subscription[:ontology].split('/').last # ensure we get the acronym
-        - type = subscription[:notification_type].downcase
+        - ont = (!subscription[:ontology].nil? ? subscription[:ontology].split('/').last: nil) # ensure we get the acronym
+        - type = (!subscription[:notification_type].nil? ? subscription[:notification_type].downcase : nil)
         %tr{:style => "padding: 5px;"}
           %td{:style => "padding: 5px;"}
             %a{:href => "/ontologies/#{ont}"}= ont
@@ -61,7 +61,7 @@
       - @admin_ontologies.each do |ont|
         %li
           %a{:href => "/ontologies/#{ont.acronym}"}= ont.name
-    %br/
+    %br
 
   :javascript
     jQuery(document).ready(function(){

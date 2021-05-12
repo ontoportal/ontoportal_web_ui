@@ -142,7 +142,6 @@ class ApplicationController < ActionController::Base
         proxy_url: $PROXY_URL,
         biomixer_url: $BIOMIXER_URL,
         annotator_url: $ANNOTATOR_URL,
-        biomixer_url: $BIOMIXER_URL,
         ncbo_annotator_url: $NCBO_ANNOTATOR_URL,
         ncbo_apikey: $NCBO_API_KEY,
         interportal_hash: $INTERPORTAL_HASH,

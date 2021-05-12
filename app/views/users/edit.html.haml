@@ -62,8 +62,44 @@
 
     //ondomready
     jQuery(function () {
-      listFilter(jQuery("#select_ontologies"), jQuery("#ont_list"));
+
+
+      //ajax call to make a user an admin
+      jQuery('#makeAdmin').click(function () {
+      alertify.confirm('Are you sure to make this user administrator', (e) => {
+        if (e) {
+              jQuery.ajax({
+                  method: 'GET',
+                  url: '/admin/users/'+ '#{@user.username}' +'/make_admin',
+                  data: [],
+                  dataType: "json",
+                  success: (data, msg) => {
+                    let link = jQuery('#makeAdmin')
+                    console.log(link)
+                    if(!link.hasClass('admin')){
+                        link.html('Remove admin privileges')
+                        link.addClass('admin')
+                        console.log('remove admin')
+
+                    }else {
+                        link.html('Grant admin privileges')
+                        link.removeClass('admin')
+                        console.log('add admin')
+                    }
+                    console.log(link.classes)
+                    console.log('success')
+                  },
+                  error: function(request, textStatus, errorThrown) {
+                    console.log('error')
+                  },
+                  complete: function(request, textStatus) {
+
+                  }
+              })
+       }});
+      })
     });
+
   }(jQuery));
 %div{:style => "padding: 1em;"}
   = form_for(:user, :url => user_path(@user.username), :html => { :id => "user_info", :method => :put }) do |f|
@@ -107,10 +143,19 @@
           %td
             = password_field :user, :password_confirmation
             &nbsp;&nbsp;
+
       %tr
         %td{:align => "left", :colspan => "2"}
-          = submit_tag "Update", :class=>"greenbtn"
+          = submit_tag "Update", :class=>"greenbtn btn btn-outline-secondary btn-sm "
           \&nbsp;&nbsp;&nbsp;&nbsp;
+          -# TODO Grant administrative privileges to a BioPortal user UI
+          - if session[:user].admin?
+            %a#makeAdmin{:class=>"btn btn-outline-secondary btn-sm" +  (@user.admin? ? ' admin' : ''), :role=>"button" ,:href=>"#"}
+              - if !@user.admin?
+                Grant admin privileges
+              - else
+                Remove admin privileges
           - unless params[:password].eql?("true")
             = link_to "Change Password", edit_user_path(CGI.escape(session[:user].username), password: true)
+
     %br/
