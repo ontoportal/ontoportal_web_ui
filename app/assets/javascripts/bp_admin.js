@@ -882,6 +882,7 @@ function populateUserRows(data) {
         let actions = [
             '<a href="/accounts/'+ user['username'] +'"  class="mx-1">Detail</a>' ,
             '<a href="javascript:;" class="delete-user mx-1">Delete</a>',
+            '<a href="/login_as/'+ username +'" class="mx-1">Login as</a>',
 
         ]
         let row = [firstname, lastname, username, email , roles , id , created , actions.join('|')];
@@ -930,52 +931,45 @@ function displayUsers(data) {
                     "targets": 0,
                     "searchable": true,
                     "title": "First Name",
-                    "width": "160px"
                 },
                 {
                     "targets": 1,
                     "searchable": true,
                     "title": "Last Name",
-                    "width": "160px"
                 },
                 {
                     "targets": 2,
                     "searchable": true,
                     "title": "Username",
-                    "width": "55px"
                 },
                 {
                     "targets": 3,
                     "searchable": true,
                     "title": "Email",
-                    "width": "170px"
                 },
                 {
                     "targets": 4,
                     "searchable": true,
                     "title": "Roles",
-                    "width": "170px"
                 },
                 {
                     "targets": 5,
                     "searchable": true,
                     "orderable": false,
                     "title": "Id",
-                    "width": "140px"
                 },
                 {
                     "targets": 6,
                     "searchable": true,
                     "orderable": true,
                     "title": "Created at",
-                    "width": "140px"
                 },
                 {
                     "targets": 7,
                     "searchable": false,
                     "orderable": false,
                     "title": "Actions",
-                    "width": "170px"
+                    "width": "210px"
                 }
             ],
             "autoWidth": false,
@@ -989,6 +983,7 @@ function displayUsers(data) {
             "paging": true,
             "pageLength": 100,
             "ordering": true,
+            "responsive": true,
             "stripeClasses": ["", "alt"],
         });
     }
@@ -1042,6 +1037,5 @@ DeleteUsers.prototype.ajaxCall = function (username){
     });
 }
 DeleteUsers.act = function(user) {
-    console.log('act' + user)
     new DeleteUsers(user).ajaxCall(user);
 };
