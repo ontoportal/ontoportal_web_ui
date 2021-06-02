@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200220191815) do
+ActiveRecord::Schema.define(version: 2020_02_20_191815) do
 
-  create_table "analytics", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "analytics", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "segment"
     t.string "action"
     t.string "bp_slice"
@@ -23,13 +23,13 @@ ActiveRecord::Schema.define(version: 20200220191815) do
     t.datetime "updated_at"
   end
 
-  create_table "licenses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "licenses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.text "encrypted_key"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "timeouts", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "timeouts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "path"
     t.integer "ontology_id"
     t.text "concept_id"
@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 20200220191815) do
     t.timestamp "created"
   end
 
-  create_table "virtual_appliance_users", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "virtual_appliance_users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"

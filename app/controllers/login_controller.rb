@@ -21,12 +21,12 @@ class LoginController < ApplicationController
       logged_in_user = LinkedData::Client::Models::User.authenticate(params[:user][:username], params[:user][:password])
       if logged_in_user && !logged_in_user.errors
         login(logged_in_user)
-
         redirect = "/"
 
         if session[:redirect]
           redirect = CGI.unescape(session[:redirect])
         end
+
 
         redirect_to redirect
       else
@@ -54,7 +54,8 @@ class LoginController < ApplicationController
       session[:user].apikey = session[:admin_user].apikey
     end
 
-    redirect_to request.referer rescue redirect_to "/"
+    #redirect_to request.referer rescue redirect_to "/"
+    redirect_to "/"
   end
 
   # logs out a user

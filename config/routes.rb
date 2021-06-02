@@ -130,6 +130,7 @@ Rails.application.routes.draw do
   match '/admin/ontologies/:acronym/log' => 'admin#parse_log', via: [:get]
   match '/admin/update_info' => 'admin#update_info', via: [:get]
   match '/admin/update_check_enabled' => 'admin#update_check_enabled', via: [:get]
+  match '/admin/users' => 'admin#users', via: [:get]
 
   ###########################################################################################################
   # Install the default route as the lowest priority.
