@@ -131,7 +131,6 @@ Rails.application.routes.draw do
   match '/admin/update_info' => 'admin#update_info', via: [:get]
   match '/admin/update_check_enabled' => 'admin#update_check_enabled', via: [:get]
   match '/admin/users' => 'admin#users', via: [:get]
-  match '/admin/users/:user/make_admin' => 'admin#make_admin', via: [:get]
 
   ###########################################################################################################
   # Install the default route as the lowest priority.

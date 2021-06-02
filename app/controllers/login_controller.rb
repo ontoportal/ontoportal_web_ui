@@ -54,7 +54,8 @@ class LoginController < ApplicationController
       session[:user].apikey = session[:admin_user].apikey
     end
 
-    redirect_to request.referer rescue redirect_to "/"
+    #redirect_to request.referer rescue redirect_to "/"
+    redirect_to "/"
   end
 
   # logs out a user

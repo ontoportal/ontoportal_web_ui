@@ -87,7 +87,13 @@ class UsersController < ApplicationController
       if params[:user][:password]
         error_response = @user.update(values: { password: params[:user][:password] })
       else
-        @user.update_from_params(user_params)
+        user_roles = @user.role
+
+        if @user.admin? != (params[:user][:admin].to_i == 1)
+          user_roles = update_role(@user)
+        end
+
+        @user.update_from_params(user_params.merge!(role: user_roles))
         error_response = @user.update
       end
 
@@ -97,7 +103,10 @@ class UsersController < ApplicationController
         render action: "edit"
       else
         flash[:notice] = 'Account was successfully updated'
-        session[:user].update_from_params(user_params)
+        #TODO test if not same users to update
+        if session[:user].username == @user.username
+          session[:user].update_from_params(user_params)
+        end
         redirect_to user_path(@user.username)
       end
     else
@@ -205,5 +214,20 @@ class UsersController < ApplicationController
     end
 
     return errors
+  end
+
+  def update_role(user)
+    user_roles = user.role
+
+    if session[:user].admin?
+      user_roles = user_roles.dup
+      if user.admin?
+        user_roles.map!{ |role| role == "ADMINISTRATOR" ? "LIBRARIAN" : role}
+      else
+        user_roles.map!{ |role| role == "LIBRARIAN" ? "ADMINISTRATOR" : role}
+      end
+    end
+
+    user_roles
   end
 end
