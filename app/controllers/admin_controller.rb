@@ -206,29 +206,6 @@ class AdminController < ApplicationController
     render :json => response
   end
 
-  def make_admin
-    ## TODO Grant administrative privileges to a BioPortal user, not done yet cause the api client does not have the roles model
-    user = LinkedData::Client::Models::User.find(params[:user])
-    user = LinkedData::Client::Models::User.find_by_username(params[:user]).first if @user.nil?
-    response = {errors: '', success: ''}
-    if session[:user].admin?
-      user_roles = user.role
-      user_roles = user_roles.dup
-
-      if user.admin?
-        user_roles.delete('ADMINISTRATOR')
-      else
-        user_roles << 'ADMINISTRATOR'
-      end
-
-      user.valid?
-      user.update(values:{role: user_roles})
-      response[:success] << 'Updated successfully '
-    else
-      response[:errors] << 'Not admin'
-    end
-    render :json => response
-  end
 
   private
 
