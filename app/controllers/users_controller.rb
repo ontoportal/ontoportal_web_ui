@@ -11,16 +11,27 @@ class UsersController < ApplicationController
     @users = LinkedData::Client::Models::User.all
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @users.to_xml }
+      format.xml { render xml: @users.to_xml }
     end
   end
 
   # GET /users/1
   # GET /users/1.xml
   def show
-    @user = LinkedData::Client::Models::User.find(session[:user].id)
+    @user = if session[:user].admin? && params.has_key?(:id)
+              LinkedData::Client::Models::User.find_by_username(params[:id]).first
+            else
+              LinkedData::Client::Models::User.find(session[:user].id)
+            end
     @all_ontologies = LinkedData::Client::Models::Ontology.all(ignore_custom_ontologies: true)
     @user_ontologies = @user.customOntology
+
+    ## Copied from home controller , account action
+    onts = LinkedData::Client::Models::Ontology.all;
+    @admin_ontologies = onts.select {|o| o.administeredBy.include? @user.id }
+
+    projects = LinkedData::Client::Models::Project.all;
+    @user_projects = projects.select {|p| p.creator.include? @user.id }
   end
 
   # GET /users/new
@@ -49,7 +60,7 @@ class UsersController < ApplicationController
       if @user_saved.errors
         @errors = response_errors(@user_saved)
         # @errors = {acronym: "Username already exists, please use another"} if @user_saved.status == 409
-        render :action => "new"
+        render action: "new"
       else
         # Attempt to register user to list
         if params[:user][:register_mail_list]
@@ -61,7 +72,7 @@ class UsersController < ApplicationController
         redirect_to_browse
       end
     else
-      render :action => "new"
+      render action: "new"
     end
   end
 
@@ -74,24 +85,49 @@ class UsersController < ApplicationController
       @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
 
       if params[:user][:password]
-        error_response = @user.update(values: {password: params[:user][:password]})
+        error_response = @user.update(values: { password: params[:user][:password] })
       else
-        @user.update_from_params(user_params)
+        user_roles = @user.role
+
+        if @user.admin? != (params[:user][:admin].to_i == 1)
+          user_roles = update_role(@user)
+        end
+
+        @user.update_from_params(user_params.merge!(role: user_roles))
         error_response = @user.update
       end
 
       if error_response
         @errors = response_errors(error_response)
         # @errors = {acronym: "Username already exists, please use another"} if error_response.status == 409
-        render :action => "edit"
+        render action: "edit"
       else
         flash[:notice] = 'Account was successfully updated'
-        session[:user].update_from_params(user_params)
+        #TODO test if not same users to update
+        if session[:user].username == @user.username
+          session[:user].update_from_params(user_params)
+        end
         redirect_to user_path(@user.username)
       end
     else
-      render :action => "edit"
+      render action: "edit"
     end
+  end
+
+  # DELETE /users/1
+  def destroy
+    response = {errors: '', success: ''}
+    @user = LinkedData::Client::Models::User.find(params[:id])
+    @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
+    if(session[:user].admin?)
+      @user.delete
+      response[:success] << 'User deleted successfully '
+
+    else
+      response[:errors] << 'Not permitted '
+    end
+
+    render json: response
   end
 
   def custom_ontologies
@@ -108,11 +144,11 @@ class UsersController < ApplicationController
     else
       updated_user = LinkedData::Client::Models::User.find(@user.id)
       session[:user].update_from_params(customOntology: updated_user.customOntology)
-      if updated_user.customOntology.empty?
-        flash[:notice] = 'Custom Ontologies were cleared'
-      else
-        flash[:notice] = 'Custom Ontologies were saved'
-      end
+      flash[:notice] = if updated_user.customOntology.empty?
+                         'Custom Ontologies were cleared'
+                       else
+                         'Custom Ontologies were saved'
+                       end
     end
     redirect_to user_path(@user.username)
   end
@@ -132,7 +168,7 @@ class UsersController < ApplicationController
   def verify_owner
     return if current_user_admin?
     if session[:user].nil? || (!session[:user].id.eql?(params[:id]) && !session[:user].username.eql?(params[:id]))
-      redirect_to :controller => 'login', :action => 'index', :redirect => "/accounts/#{params[:id]}"
+      redirect_to controller: 'login', action: 'index', redirect: "/accounts/#{params[:id]}"
     end
   end
 
@@ -146,8 +182,8 @@ class UsersController < ApplicationController
   end
 
   def validate(params)
-    errors=[]
-    if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
+    errors = []
+    if params[:email].nil? || params[:email].length < 1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
       errors << "Please enter an email address"
     end
     if !params[:email].eql?(params[:email_confirmation])
@@ -169,8 +205,8 @@ class UsersController < ApplicationController
   end
 
   def validate_update(params)
-    errors=[]
-    if params[:email].nil? || params[:email].length <1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
+    errors = []
+    if params[:email].nil? || params[:email].length < 1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
       errors << "Please enter an email address"
     end
     if !params[:password].eql?(params[:password_confirmation])
@@ -178,5 +214,20 @@ class UsersController < ApplicationController
     end
 
     return errors
+  end
+
+  def update_role(user)
+    user_roles = user.role
+
+    if session[:user].admin?
+      user_roles = user_roles.dup
+      if user.admin?
+        user_roles.map!{ |role| role == "ADMINISTRATOR" ? "LIBRARIAN" : role}
+      else
+        user_roles.map!{ |role| role == "LIBRARIAN" ? "ADMINISTRATOR" : role}
+      end
+    end
+
+    user_roles
   end
 end

@@ -175,8 +175,11 @@ function clearStatusMessages() {
 
 function showStatusMessages(success, error) {
   if (success.length > 0) {
-    jQuery("#ob_success_message").html(success);
-    jQuery("#ob_success_message").show();
+      let ob = jQuery("#ob_success_message")
+      console.log('show ob message')
+      console.log(ob)
+      ob.html(success);
+      ob.show();
   }
 
   if (error.length > 0) {

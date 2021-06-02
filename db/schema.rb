@@ -10,6 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema.define(version: 2020_09_21_120918) do
 
   create_table "analytics", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -22,6 +23,7 @@ ActiveRecord::Schema.define(version: 2020_09_21_120918) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
 
   create_table "licenses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "encrypted_key"
