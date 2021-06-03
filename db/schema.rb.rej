@@ -1,36 +1,44 @@
 diff a/db/schema.rb b/db/schema.rb	(rejected hunks)
-@@ -10,9 +10,9 @@
+@@ -10,10 +10,9 @@
  #
  # It's strongly recommended that you check this file into your version control system.
  
-ActiveRecord::Schema.define(version: 20200220191815) do
-
+-
+ ActiveRecord::Schema.define(version: 2020_09_21_120918) do
  
-  create_table "analytics", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-
+  create_table "analytics", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
      t.string "segment"
      t.string "action"
      t.string "bp_slice"
-@@ -23,13 +23,13 @@ ActiveRecord::Schema.define(version: 20200220191815) do
+@@ -24,14 +23,13 @@ ActiveRecord::Schema.define(version: 2020_09_21_120918) do
      t.datetime "updated_at"
    end
  
-  create_table "licenses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+
+  create_table "licenses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
      t.text "encrypted_key"
      t.datetime "created_at", null: false
      t.datetime "updated_at", null: false
    end
  
-  create_table "timeouts", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "ontologies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+
+     t.string "acronym", null: false
+     t.text "new_term_instructions"
+     t.text "custom_message"
+@@ -40,15 +38,15 @@ ActiveRecord::Schema.define(version: 2020_09_21_120918) do
+     t.index ["acronym"], name: "index_ontologies_on_acronym", unique: true
+   end
+ 
+  create_table "timeouts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
      t.string "path"
      t.integer "ontology_id"
      t.text "concept_id"
-@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 20200220191815) do
-     t.timestamp "created"
+     t.text "params"
+     t.datetime "created"
    end
- 
-  create_table "virtual_appliance_users", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
 
+  create_table "virtual_appliance_users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
      t.string "user_id"
      t.datetime "created_at"
      t.datetime "updated_at"
