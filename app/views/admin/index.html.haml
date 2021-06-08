@@ -21,7 +21,8 @@
         =link_to("Ontology Administration", "#ontology-admin", id: "ontology-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab" }, aria: { controls: "ontology-admin", selected: "false" })
       %li.nav-item
         =link_to("Licensing", "#licensing", id: "licensing-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab", href: admin_licenses_path() }, aria: { controls: "licensing", selected: "false" })
-
+      %li.nav-item
+        =link_to("Users", "#users", id: "users-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab", href: users_path() }, aria: { controls: "users", selected: "false" })
     %div#adminTabContent.tab-content
 
       -# Site Administration tab
@@ -39,7 +40,7 @@
         
         -# Check for updates
         %div#site-admin-update-check.mb-5
-          %div.site-admin-page-header 
+          %div.site-admin-page-header
             VERSION MANAGEMENT
           %dive.site-admin-page-section
             = link_to("Check for updates", "#", id: "update_check_action", class: "btn btn-outline-secondary btn-sm",  role: "button")
@@ -80,6 +81,10 @@
 
         %div.mb-5#renew-license-button
           = link_to("Renew license", new_admin_license_path(), class: "btn btn-primary", role: "button", remote: "true")
-        
+
         %div.mb-5#renew-license-form
 
+      -# Users tab
+      %div.tab-pane.fade{id: "users", role: "tabpanel", aria: { labelledby: "users-admin-tab" }}
+        %div.ontologies_list_container.mt-3
+          %table#adminUsers.zebra{:cellpadding => "0", :cellspacing => "0", :width => "100%"}

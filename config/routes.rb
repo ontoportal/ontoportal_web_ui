@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  root :to => 'home#index'
+  root to: 'home#index'
 
   resources :notes, constraints: { id: /.+/ }
 
@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   resources :projects, constraints: { id: /[^\/]+/ }
 
-  resources :users, :path => :accounts, :requirements => { :id => /.+/ }
+  resources :users, path: :accounts, requirements: { id: /.+/ }, constraints: { id: /[0-z\.]+/ }
 
   resources :reviews
 
@@ -26,7 +26,7 @@ Rails.application.routes.draw do
 
   resources :login
 
-  resources :admin, :only => [:index]
+  resources :admin, only: [:index]
 
   namespace :admin do
     resources :licenses, only: [:index, :create, :new]
@@ -65,7 +65,7 @@ Rails.application.routes.draw do
   get '/robots.txt' => 'robots#index'
 
   # Ontologies
-  get '/ontologies/view/edit/:id' => 'ontologies#edit_view', :constraints => { :id => /[^\/?]+/ }
+  get '/ontologies/view/edit/:id' => 'ontologies#edit_view', :constraints => { id: /[^\/?]+/ }
   get '/ontologies/view/new/:id' => 'ontologies#new_view'
   get '/ontologies/virtual/:ontology' => 'ontologies#virtual', :as => :ontology_virtual
   get '/ontologies/success/:id' => 'ontologies#submit_success'
@@ -84,7 +84,7 @@ Rails.application.routes.draw do
   
   # Ajax
   get '/ajax/' => 'ajax_proxy#get', :as => :ajax
-  get '/ajax_concepts/:ontology/' => 'concepts#show', :constraints => { :id => /[^\/?]+/ }
+  get '/ajax_concepts/:ontology/' => 'concepts#show', :constraints => { id: /[^\/?]+/ }
   get '/ajax/class_details' => 'concepts#details'
   get '/ajax/mappings/get_concept_table' => 'mappings#get_concept_table'
   get '/ajax/json_ontology' => 'ajax_proxy#json_ontology'
@@ -104,7 +104,7 @@ Rails.application.routes.draw do
   get '/lost_pass' => 'login#lost_password'
   get '/reset_password' => 'login#reset_password'
   post '/accounts/:id/custom_ontologies' => 'users#custom_ontologies', :as => :custom_ontologies
-  get '/login_as/:login_as' => 'login#login_as'
+  get '/login_as/:login_as' => 'login#login_as' , constraints: { login_as: /[0-z\.]+/ }
   post '/login/send_pass', to: 'login#send_pass'
 
   # History
@@ -152,9 +152,9 @@ Rails.application.routes.draw do
   get '/ajax/json_term' => 'redirect#index', :url => '/ajax/json_class'
 
   # Visualize
-  get '/visualize/:ontology' => 'ontologies#visualize', :as => :visualize, :constraints => { :ontology => /[^\/?]+/ }
-  get '/visualize/:ontology/:conceptid' => 'ontologies#visualize', :as => :uri, :constraints => { :ontology => /[^\/?]+/, :conceptid => /[^\/?]+/ }
-  get '/visualize' => 'ontologies#visualize', :as => :visualize_concept, :constraints => { :ontology => /[^\/?]+/, :id => /[^\/?]+/, :ontologyid => /[^\/?]+/, :conceptid => /[^\/?]+/ }
+  get '/visualize/:ontology' => 'ontologies#visualize', :as => :visualize, :constraints => { ontology: /[^\/?]+/ }
+  get '/visualize/:ontology/:conceptid' => 'ontologies#visualize', :as => :uri, :constraints => { ontology: /[^\/?]+/, conceptid: /[^\/?]+/ }
+  get '/visualize' => 'ontologies#visualize', :as => :visualize_concept, :constraints => { ontology: /[^\/?]+/, id: /[^\/?]+/, ontologyid: /[^\/?]+/, conceptid: /[^\/?]+/ }
 
   get '/exhibit/:ontology/:id' => 'concepts#exhibit'
 
