@@ -1,8 +1,0 @@
-diff a/app/views/layouts/_topnav.html.haml b/app/views/layouts/_topnav.html.haml	(rejected hunks)
-@@ -53,4 +53,4 @@
-           %h6.dropdown-header Documentation
-           = link_to("Help", "#{$WIKI_HELP_PAGE}", target: "_blank", class: "dropdown-item")
-           = link_to("Release Notes", "#{$RELEASE_NOTES}", target: "_blank", class: "dropdown-item")
--          = link_to("Publications", $PUBLICATIONS_URL, target: "_blank", class: "dropdown-item")
-\ No newline at end of file
-+          = link_to("Publications", $PUBLICATIONS_URL, target: "_blank", class: "dropdown-item")
