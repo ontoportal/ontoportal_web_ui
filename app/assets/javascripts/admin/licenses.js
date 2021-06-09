@@ -8,10 +8,9 @@ jQuery(".admin.index").ready(function() {
         url: href,
         success: function(data){},
         error: function(data){}
-      })
+      });
     }
-  })
-
+  });
 });
 
 
