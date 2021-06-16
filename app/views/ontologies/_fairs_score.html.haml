@@ -1,0 +1,16 @@
+- if fair_scores_data
+  %div.btn.btn-primary.w-100
+    Total score : #{@fair_scores_data[:score]} ( #{@fair_scores_data[:normalizedScore]} / 100 )
+  %div
+    %canvas#ont-fair-criteria-scores-canvas{style:"display: block; box-sizing: border-box" ,
+    data: {labels: @fair_scores_data[:criteria][:labels], scores: @fair_scores_data[:criteria][:normalizedScores]}}
+  %div
+    %canvas#ont-fair-scores-canvas{style:"display: block; box-sizing: border-box" ,
+    data: {
+            labels: @fair_scores_data[:principles][:labels],
+            scores: @fair_scores_data[:principles][:normalizedScores],
+            maxCredits: @fair_scores_data[:principles][:maxCredits],
+            portalMaxCredits: @fair_scores_data[:principles][:portalMaxCredits]
+    }}
+- else
+  %p.font-italic= "We are still collecting data for #{@ontology.acronym}"

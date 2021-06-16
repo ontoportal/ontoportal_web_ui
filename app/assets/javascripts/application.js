@@ -25,7 +25,6 @@
 //= require bp_search
 //= require bp_mappings
 //= require bp_visualize
-//= require admin/users
 //= require bp_admin
 //= require bp_recommender
 //= require bp_property_tree

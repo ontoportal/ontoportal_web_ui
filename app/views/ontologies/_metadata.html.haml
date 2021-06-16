@@ -1,5 +1,5 @@
-%div.ont-metadata
 
+%div.ont-metadata
   -# Details pane
   %section.ont-metadata-card.ont-details-card
     %header.pb-2.font-weight-bold Details
@@ -91,7 +91,7 @@
             - @view_decorators.each do |view_decorator|
               %dt= view_decorator.linked_name
               %dd= view_decorator.description
-      
+
   %div.right-hand-content
     
     -# Misc links pane
@@ -111,7 +111,13 @@
           %button{:id => "getMetadataBackJsonldBtn", :class => "btn btn-primary"} Json-LD
           %button{:id => "getMetadataBackXmlBtn", :class => "btn btn-primary"} RDF/XML
           -# Listener in bp_ontology_viewer.js.erb
-    
+    -# Fair score pane
+    %section.ont-metadata-card.ont-fair-score-card
+      %div.ont-section-toolbar
+        %header.pb-2.font-weight-bold Fair score
+        = link_to("https://github.com/agroportal/fairness", target: "_blank", "aria-label": "View fair scores definitions", title: "View fair scores definitions") do
+          %i.fas.fa-lg.fa-question-circle{"aria-hidden": "true", style: "margin-left: 0.5rem"}
+      = render partial: "fairs_score"
     -# Metrics pane
     %section.ont-metadata-card.ont-metrics-card
       %div.ont-section-toolbar
