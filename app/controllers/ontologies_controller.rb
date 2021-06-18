@@ -397,6 +397,7 @@ display_links: false, display_context: false)
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
     @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
 
+    LOG.add(:info , "Call to fairness module : #{$FAIRNESS_URL}/?portal=#{$HOSTNAME.split('.')[0]}&ontologies=#{@ontology.acronym}")
     @fair_scores = MultiJson.load(
        Faraday.get("#{$FAIRNESS_URL}/?portal=#{$HOSTNAME.split('.')[0]}&ontologies=#{@ontology.acronym}").body)["ontologies"][@ontology.acronym]
 
