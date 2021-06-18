@@ -1,0 +1,54 @@
+- if fair_scores_data
+  %h1
+    Fair score details
+  %div
+    %div
+      - @fair_scores_data[:criteria][:labels].each_with_index  do |label , index|
+        %div.card.my-2
+          %div.card-header
+            %h2.criterion-score-container
+              = label
+              %div.progress.criterion-score-progress-bar
+                %div.progress-bar{style:"width:#{@fair_scores_data[:criteria][:scores][index]}%"}
+                  #{@fair_scores_data[:criteria][:scores][index]} %
+                - not_obtained_score =  get_not_obtained_score(@fair_scores_data[:criteria][:scores][index],
+                                                                          @fair_scores_data[:criteria][:portalMaxCredits][index],
+                                                                           @fair_scores_data[:criteria][:maxCredits][index])
+                %div.progress-bar.bg-warning{style:"width:#{not_obtained_score}%"}
+                  #{not_obtained_score} %
+                - score_rest = 100 - not_obtained_score - @fair_scores_data[:criteria][:scores][index]
+                %div.progress-bar.bg-danger{style:"width:#{score_rest}%"}
+                  #{score_rest} %
+          %div.card-body
+            %table.table.table-bordered
+              %tr
+                %th
+                  Questions
+                %th
+                  Test result
+                %th
+                  Explication
+
+              - @fair_scores_data[:criteria][:questions][index].each do |question|
+                %tr
+                  %td
+                    #{question[0]} : #{question[1]["question"]}
+                  %td
+                    %div.btn{class:"#{(if question[1]["score"] > 0
+                                          question[1]["score"] == question[1]["maxCredits"] ? 'btn-success' : 'btn-warning'
+                                       else
+                                          'btn-danger'
+                                       end)}"}
+                      -if question[1]["score"] > 0
+                        #{question[1]["score"] == question[1]["maxCredits"] ? 'Success' : 'Average'}
+                      -else
+                        Fail
+                      %span.badge.badge-pill.badge-light
+                        = question[1]["score"]
+                  %td
+                    = question[1]["explication"]
+
+
+
+
+

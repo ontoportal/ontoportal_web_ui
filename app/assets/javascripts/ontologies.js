@@ -6,13 +6,6 @@ jQuery('#ont_summary_content ').ready(function (){
     console.log("changed")
 })
 
-/*jQuery('.ontologies.show').ready(function () {
-    showFairCriteriaScoreChart()
-    showFairScoreChart()
-    showVisitsChat()
-});
-*/
-/* Ontology creation & editing */
 
 function hideAllRestrictions() {
     jQuery(".viewing_restriction_disabled").attr("disabled", true);

@@ -103,6 +103,7 @@ Rails.application.routes.draw do
   get '/ajax/classes/treeview' => 'concepts#show_tree'
   get '/ajax/properties/tree' => 'concepts#property_tree'
   get '/ajax/biomixer' => 'concepts#biomixer'
+  get '/ajax/fair_score' => 'fair_score#details'
 
   # User
   get '/logout' => 'login#destroy', :as => :logout

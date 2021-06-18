@@ -1,6 +1,14 @@
-- if fair_scores_data
-  %div.btn.btn-primary.w-100
-    Total score : #{@fair_scores_data[:score]} ( #{@fair_scores_data[:normalizedScore]} / 100 )
+:javascript
+  jQuery(document).ready(function($) {
+    jQuery('a[rel*=facebox]').facebox()
+  })
+
+- if @fair_scores_data
+  %a.btn.btn-primary.w-100{href: "/ajax/fair_score?ontology=#{@ontology.acronym}" , rel:"facebox[.fair_score_details_pop]"}
+    %span
+      Total score : #{@fair_scores_data[:score]} ( #{@fair_scores_data[:normalizedScore]} / 100 )
+    %span.badge.badge-light
+      details
   %div
     %canvas#ont-fair-criteria-scores-canvas{style:"display: block; box-sizing: border-box" ,
     data: {labels: @fair_scores_data[:criteria][:labels], scores: @fair_scores_data[:criteria][:normalizedScores]}}
@@ -14,3 +22,6 @@
     }}
 - else
   %p.font-italic= "We are still collecting data for #{@ontology.acronym}"
+
+
+

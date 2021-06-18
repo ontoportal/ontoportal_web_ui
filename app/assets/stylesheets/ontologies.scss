@@ -164,6 +164,27 @@ $ont-show-bg-color: #e9ecef;
   background-color: white;
 }
 
+.fair_score_details_pop {
+  overflow: auto;
+  width: 850px !important;
+  max-height: 100vh;
+  display: block !important;
+  .test-result{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+}
+
+.criterion-score-container{
+  display: flex;
+  align-items: center;
+  .criterion-score-progress-bar{
+    flex-grow: 1;
+    height: 40px;
+    margin-left: 40px;
+  }
+}
 /************************************
 /* Classes pane
 ************************************/

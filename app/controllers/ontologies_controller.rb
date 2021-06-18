@@ -37,8 +37,10 @@ class OntologiesController < ApplicationController
     end
   end
 
+  include FairScoreHelpers
   include ActionView::Helpers::NumberHelper
   include OntologiesHelper
+
   def index
     @app_name = "FacetedBrowsing"
     @app_dir = "/browse"
@@ -398,7 +400,7 @@ display_links: false, display_context: false)
     @fair_scores = MultiJson.load(
        Faraday.get("#{$FAIRNESS_URL}/?portal=#{$HOSTNAME.split('.')[0]}&ontologies=#{@ontology.acronym}").body)["ontologies"][@ontology.acronym]
 
-
+    fair_scores_data
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
     # Only include metadata that we need for all other ontologies (faster)
     @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,submissionStatus,hasOntologyLanguage,version"}).sort {|a,b|
