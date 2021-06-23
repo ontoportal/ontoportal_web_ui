@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '5.2.4.3'
+gem 'rails', '5.2.6'
 
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.0.3'
@@ -45,7 +45,7 @@ gem 'stackprof', require: false
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
 
-gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', branch: 'master'
+gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.0.2'
 
 group :staging, :production do
   # application monitoring
