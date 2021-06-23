@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   resources :projects, constraints: { id: /[^\/]+/ }
 
-  resources :users, path: :accounts, requirements: { id: /.+/ }, constraints: { id: /[0-z\.]+/ }
+  resources :users, path: :accounts, requirements: { id: /.+/ }, constraints: { id: /[0-z\.\-\%]+/ }
 
   resources :reviews
 
