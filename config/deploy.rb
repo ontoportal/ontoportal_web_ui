@@ -1,5 +1,3 @@
-#lock '3.7.1'
-
 set :application, 'bioportal_web_ui'
 
 set :repo_url, "https://github.com/ncbo/#{fetch(:application)}.git"
@@ -36,7 +34,8 @@ set :linked_dirs, %w{log tmp/pids tmp/cache public/system public/assets}
 
 # Default value for keep_releases is 5
 set :keep_releases, 5
-set :bundle_flags, '--without development test --deployment'
+set :bundle_without, 'development:test'
+set :bundle_config, { deployment: true }
 
 # Defaults to [:web]
 set :assets_roles, [:web, :app]
@@ -51,7 +50,7 @@ set :passenger_restart_with_touch, true
 # and use `passenger-config restart-app` if it is available in that version.
 
 namespace :deploy do
-  desc 'display remote system env vars' 
+  desc 'display remote system env vars'
   task :show_remote_env do
     on roles(:all) do
       remote_env = capture("env")
@@ -64,7 +63,7 @@ namespace :deploy do
   # or get config from local directory if LOCAL_CONFIG_PATH env var is set
   task :get_config do
     if defined?(PRIVATE_CONFIG_REPO)
-      TMP_CONFIG_PATH = "/tmp/#{SecureRandom.hex(15)}"
+      TMP_CONFIG_PATH = "/tmp/#{SecureRandom.hex(15)}".freeze
       on roles(:app) do
         execute "git clone -q #{PRIVATE_CONFIG_REPO} #{TMP_CONFIG_PATH}"
         execute "rsync -av #{TMP_CONFIG_PATH}/#{fetch(:application)}/ #{release_path}/"
@@ -96,5 +95,4 @@ namespace :deploy do
       # end
     end
   end
-
 end
