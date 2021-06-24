@@ -1013,7 +1013,7 @@ DeleteUsers.prototype._ajaxCall =  function (username)  {
         data: [],
         dataType: "json",
         success: (data, msg) => {
-            success.push('Users deleted successfully')
+            success.push('"' + username + '" user successfully deleted')
             this.onSuccessAction(username)
             _showStatusMessages(success, errors, notices, false);
         },
