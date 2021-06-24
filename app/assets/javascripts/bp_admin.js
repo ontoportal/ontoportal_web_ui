@@ -992,8 +992,8 @@ function displayUsers(data) {
 }
 
 function DeleteUsers(user) {
-    AjaxAction.call(this, "DELETE", "USERS DELETION", "accounts/"+user, false);
-    this.setConfirmMsg("You are about to delete the following user: '" + user + "' <b>This action CAN NOT be undone!!! Are you sure?</b>");
+  AjaxAction.call(this, "DELETE", "USERS DELETION", "accounts/"+user, false);
+  this.setConfirmMsg('Permanently delete "' + user +'"?');
 }
 
 DeleteUsers.prototype = Object.create(AjaxAction.prototype);
