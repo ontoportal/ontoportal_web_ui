@@ -821,10 +821,11 @@ jQuery(".admin.index").ready(function() {
       jQuery(this).toggleClass('selected');
     }
   });
-    jQuery('#adminUsers').on('click', '.delete-user', function(event) {
-        DeleteUsers.act(jQuery(this).parents('tr').first()[0].id.split('_').pop())
 
-    });
+  jQuery('#adminUsers').on('click', '.delete-user', function(event) {
+    DeleteUsers.act(this.dataset.accountName);
+  });
+
   // BUTTON onclick actions ---------------------------------------
 
   // onclick action for "Go" button for performing an action on a set of ontologies
@@ -881,7 +882,7 @@ function populateUserRows(data) {
         let created = user['created']
         let actions = [
             '<a href="/accounts/'+ user['username'] +'"  class="mx-1">Detail</a>' ,
-            '<a href="javascript:;" class="delete-user mx-1">Delete</a>',
+            '<a href="javascript:;" class="delete-user mx-1" data-account-name="' + username + '">Delete</a>',
             '<a href="/login_as/'+ username +'" class="mx-1">Login as</a>',
 
         ]
