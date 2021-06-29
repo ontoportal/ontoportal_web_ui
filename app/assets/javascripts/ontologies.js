@@ -135,7 +135,7 @@ function showFairCriteriaScoreChart() {
         data: data,
         options: {
             title: {
-                display: true,
+                display: false,
                 text: 'FAIRness Wheel'
             },
             legend: {
@@ -195,10 +195,10 @@ function showFairScoreChart() {
                     return Math.round(((x -  portalMaxCredits[i]) / maxCredits[i]) * 100)
                 }),
                 fill: true,
-                backgroundColor: 'rgba(255, 111, 96, 0.2)',
-                borderColor: 'rgba(255, 111, 96, 1)',
-                pointBorderColor: 'rgba(255, 111, 96, 1)',
-                pointBackgroundColor: 'rgba(255, 111, 96, 1)'
+                backgroundColor: 'rgba(176, 190, 197, 0.2)',
+                borderColor: 'rgba(176, 190, 197, 1)',
+                pointBorderColor: 'rgba(176, 190, 197, 1)',
+                pointBackgroundColor: 'rgba(176, 190, 197, 1)'
             }
         ]
     };
@@ -207,7 +207,7 @@ function showFairScoreChart() {
         data: data,
         options: {
             title: {
-                display: true,
+                display: false,
                 text: 'FAIRness Scores'
             },
             elements: {

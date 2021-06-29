@@ -397,11 +397,12 @@ display_links: false, display_context: false)
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
     @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
 
-    LOG.add(:info , "Call to fairness module : #{$FAIRNESS_URL}/?portal=#{$HOSTNAME.split('.')[0]}&ontologies=#{@ontology.acronym}")
+    # call to fairness assessment backend
     @fair_scores = MultiJson.load(
        Faraday.get("#{$FAIRNESS_URL}/?portal=#{$HOSTNAME.split('.')[0]}&ontologies=#{@ontology.acronym}").body)["ontologies"][@ontology.acronym]
 
     fair_scores_data
+
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
     # Only include metadata that we need for all other ontologies (faster)
     @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,submissionStatus,hasOntologyLanguage,version"}).sort {|a,b|
