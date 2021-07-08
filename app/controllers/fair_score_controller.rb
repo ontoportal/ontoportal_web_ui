@@ -1,13 +1,11 @@
 class FairScoreController < ApplicationController
 
-  helper FairScoreHelpers
-
+  helper FairScoreHelper
+  include FairScoreHelper
   def details
     not_found if params[:ontology].nil? || params[:ontology].empty?
-    ontology = params[:ontology]
-
-    @fair_scores = MultiJson.load(
-      Faraday.get("#{$FAIRNESS_URL}/?portal=#{$HOSTNAME.split('.')[0]}&ontologies=#{ontology}").body)["ontologies"][ontology]
+    @ontology = params[:ontology]
+    @fair_scores_data = create_fair_scores_data(get_fair_score(@ontology))
     render partial: 'details'
   end
 end

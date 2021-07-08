@@ -5,6 +5,8 @@ class OntologiesController < ApplicationController
   require 'cgi'
 
   helper :concepts
+  helper :fair_score
+
   layout :determine_layout
 
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
@@ -12,6 +14,7 @@ class OntologiesController < ApplicationController
   KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties"])
   EXTERNAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/ExternalMappings"
   INTERPORTAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/InterportalMappings"
+
 
   # GET /ontologies
   # GET /ontologies.xml
@@ -37,7 +40,7 @@ class OntologiesController < ApplicationController
     end
   end
 
-  include FairScoreHelpers
+  include FairScoreHelper
   include ActionView::Helpers::NumberHelper
   include OntologiesHelper
 
@@ -78,7 +81,7 @@ display_context: false, include: browse_attributes)
     metrics_hash = get_metrics_hash
 
     @formats = Set.new
-
+    @fair_scores =
     @ontologies = []
     ontologies.each do |ont|
       o = {}
@@ -397,11 +400,8 @@ display_links: false, display_context: false)
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
     @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
 
-    # call to fairness assessment backend
-    @fair_scores = MultiJson.load(
-       Faraday.get("#{$FAIRNESS_URL}/?portal=#{$HOSTNAME.split('.')[0]}&ontologies=#{@ontology.acronym}").body)["ontologies"][@ontology.acronym]
-
-    fair_scores_data
+    #Call to fairness assesment service
+    @fair_scores_data = create_fair_scores_data(get_fair_score(@ontology.acronym))
 
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
     # Only include metadata that we need for all other ontologies (faster)

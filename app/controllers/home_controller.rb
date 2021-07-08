@@ -66,6 +66,8 @@ class HomeController < ApplicationController
       @anal_ont_names[ont.acronym] = ont.name
       @anal_ont_numbers << visits[:views]
     end
+
+
   end
 
   def render_layout_partial

@@ -6,7 +6,7 @@
 - if @fair_scores_data
   %a.btn.btn-primary.w-100{href: "/ajax/fair_score?ontology=#{@ontology.acronym}" , rel:"facebox[.fair_score_details_pop]"}
     %span
-      Total score : #{@fair_scores_data[:score]} ( #{@fair_scores_data[:normalizedScore]} / 100 )
+      Total score : #{@fair_scores_data[:score]} ( #{@fair_scores_data[:normalizedScore]}% )
     %span.badge.badge-light
       details
   %div
