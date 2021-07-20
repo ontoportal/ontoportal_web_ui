@@ -9,16 +9,18 @@
             %h2.criterion-score-container
               = label
               %div.progress.criterion-score-progress-bar
-                %div.progress-bar.bg-obtained_color{style:"width:#{@fair_scores_data[:criteria][:scores][index]}%"}
-                  #{@fair_scores_data[:criteria][:scores][index]} %
+                %div.progress-bar.bg-obtained_color{style:"width:#{@fair_scores_data[:criteria][:normalizedScores][index]}%"}
+                  #{@fair_scores_data[:criteria][:normalizedScores][index].round()}% (#{@fair_scores_data[:criteria][:scores][index]})
                 - not_obtained_score =  get_not_obtained_score(@fair_scores_data[:criteria][:scores][index],
-                                                                          @fair_scores_data[:criteria][:portalMaxCredits][index],
-                                                                           @fair_scores_data[:criteria][:maxCredits][index])
-                %div.progress-bar.bg-not-obtained_color{style:"width:#{not_obtained_score}%"}
-                  #{not_obtained_score} %
-                - score_rest = 100 - not_obtained_score - @fair_scores_data[:criteria][:scores][index]
-                %div.progress-bar.bg-non-applicable_color{style:"width:#{score_rest}%"}
-                  #{score_rest} %
+                                                                          @fair_scores_data[:criteria][:portalMaxCredits][index])
+
+                - not_obtained_score_normalized = ((not_obtained_score /  @fair_scores_data[:criteria][:maxCredits][index]) * 100).round()
+                %div.progress-bar.bg-not-obtained_color{style:"width:#{not_obtained_score_normalized}%"}
+                  #{not_obtained_score_normalized}% (#{not_obtained_score})
+                - score_rest = @fair_scores_data[:criteria][:maxCredits][index] - @fair_scores_data[:criteria][:portalMaxCredits][index]
+                - score_rest_normalized = ((score_rest /   @fair_scores_data[:criteria][:maxCredits][index] ) * 100 ).round()
+                %div.progress-bar.bg-non-applicable_color{style:"width:#{score_rest_normalized}%"}
+                  #{score_rest_normalized}% (#{score_rest})
           %div.card-body
             %table.table.table-bordered
               %tr

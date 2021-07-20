@@ -93,7 +93,9 @@
       %div.card.mb-3
         %div.card-header
           Average FAIR Score
-          %span.badge.badge-primary
+          = link_to("https://github.com/agroportal/fairness", target: "_blank", "aria-label": "View fair scores definitions", title: "View fair scores definitions") do
+            %i.fas.fa-lg.fa-question-circle{"aria-hidden": "true", style: "margin-left: 0.5rem"}
+          %h2.badge.badge-secondary.p-2
             %span#fair-score
             %span#fair-normalized-score
         %div.card-body
@@ -104,6 +106,8 @@
             %div.row.statistics_container#fair-score-charts-container
               %div.col
                 = render partial: "shared/fair_score_radar" , locals: {data: nil }
+                %a.btn.btn-link{href:"/landscape#landscape_fair_statistics"}
+                  See details
               %div.col
                 = render partial: "shared/fair_score_bars", locals: {data: nil}
   %div.row.pt-3.extra

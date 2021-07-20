@@ -1,3 +1,22 @@
+
+function round(val , base = 1){
+    return Math.floor( val * 100 * base) / 100
+}
+function getObtainedNotObtainedNA(scoresIn, portalMax , max , normalize = true){
+    const delimiter = (val) => (normalize ? val : 1)
+    const notObtained = portalMax.map((x,i) => {
+        return round((x - scoresIn[i]) / delimiter(max[i]) ,(normalize ? 100 : 1))
+    })
+    const na = max.map((x,i) => {
+        return round((x - portalMax[i]) / delimiter(max[i]), (normalize ? 100 : 1))
+    })
+
+    const scores  = scoresIn.map((x, i ) => {
+        return round(x / delimiter(max[i]), (normalize ? 100 : 1))
+    })
+    return {scores , notObtained , na}
+}
+
 class FairScoreChartContainer{
     constructor(fairChartsContainerId , charts) {
         this.fairChartsContainer = jQuery("#"+fairChartsContainerId)
@@ -125,9 +144,10 @@ class FairScorePrincipleBar extends  FairScoreChart{
         return new Chart(this.fairScoreChartCanvas, config);
     }
     getFairScoreDataSet(){
-        const scores = this.fairScoreChartCanvas.data('scores')
+
         const maxCredits = this.fairScoreChartCanvas.data('maxCredits')
         const portalMaxCredits = this.fairScoreChartCanvas.data('portalMaxCredits')
+        const {scores, notObtained , na } = getObtainedNotObtainedNA( this.fairScoreChartCanvas.data('scores') , portalMaxCredits , maxCredits )
         return [
             {
                 label: 'Obtained score',
@@ -140,9 +160,7 @@ class FairScorePrincipleBar extends  FairScoreChart{
             },
             {
                 label: 'Not obtained score',
-                data: portalMaxCredits.map((x,i) => {
-                    return Math.round((x  / maxCredits[i]) * 100) - scores[i]
-                }),
+                data: notObtained,
                 fill: true,
                 backgroundColor: 'rgba(251, 192, 45, 0.2)',
                 borderColor: 'rgba(251, 192, 45, 1)',
@@ -151,9 +169,7 @@ class FairScorePrincipleBar extends  FairScoreChart{
             },
             {
                 label: 'N/A score',
-                data: maxCredits.map((x,i) => {
-                    return Math.round(((x -  portalMaxCredits[i]) / maxCredits[i]) * 100)
-                }),
+                data: na,
                 fill: true,
                 backgroundColor: 'rgba(176, 190, 197, 0.2)',
                 borderColor: 'rgba(176, 190, 197, 1)',
@@ -274,7 +290,8 @@ class FairScoreCriteriaRadar extends FairScoreChart{
                     custom: this.customTooltips(),
                     callbacks: {
                         label: function (tooltipItem, data) {
-                            return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                            let scores =jQuery(this._chart.canvas).data("scores")
+                            return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + "% (" + scores[tooltipItem.index] + ")";
                         },
 
                     }
@@ -286,18 +303,18 @@ class FairScoreCriteriaRadar extends FairScoreChart{
     }
 
     getFairScoreDataSet() {
-        const scores = this.fairScoreChartCanvas.data('scores')
-       return [
-            {
-                label: 'Fair score',
-                data: scores,
-                fill: true,
-                backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                borderColor: 'rgba(151, 187, 205, 1)',
-                pointBorderColor: 'rgba(151, 187, 205, 1)',
-                pointBackgroundColor: 'rgba(151, 187, 205, 1)'
-            }
-        ]
+        const scores = this.fairScoreChartCanvas.data('normalizedScores')
+           return [
+                {
+                    label: 'Fair score',
+                    data: scores,
+                    fill: true,
+                    backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                    borderColor: 'rgba(151, 187, 205, 1)',
+                    pointBorderColor: 'rgba(151, 187, 205, 1)',
+                    pointBackgroundColor: 'rgba(151, 187, 205, 1)'
+                }
+            ]
     }
 
 
@@ -361,6 +378,7 @@ class FairScoreCriteriaBar extends  FairScoreChart{
                     let style = 'background:' + colors.backgroundColor;
                     style += '; border-color:' + colors.borderColor;
                     style += '; border-width: 2px';
+                    style += '; flex-grow: 1';
                     innerHtml += '<span class="btn card-subtitle m-2 text-muted" style="'+ style+'">' + body + '</span>';
                 });
 
@@ -368,9 +386,10 @@ class FairScoreCriteriaBar extends  FairScoreChart{
 
 
                 for (const [key, value] of Object.entries(questions[tooltipModel.dataPoints[0].index])) {
-                    let count = (value.state.success + value.state.average)
+                    let count = (value.state ? (value.state.success + value.state.average) : value.score === value.maxCredits )
+                    let _class = count > 0  ? (  value.score === value.maxCredits ) ? 'badge-primary' : 'badge-info' : 'badge-danger'
                     innerHtml+='<li class="list-group-item">'+
-                        '<span class="badge badge-success ">'+Math.round((count / resourceCount) * 100)+'% ('+count+') </span>'
+                        '<span class="badge '+_class+'">'+round((count / resourceCount) * 100)+'% ('+count+') </span>'
                         +' responded successfully to '+
                         '<span class="font-italic">"'+ value.question+' "</span></li>'
                 }
@@ -445,7 +464,19 @@ class FairScoreCriteriaBar extends  FairScoreChart{
                     mode: 'index',
                     position: 'nearest',
                     intersect: false,
-                    custom: this.customTooltips()
+                    custom: this.customTooltips(),
+                    callbacks: {
+                        label: function (tooltipItem, data) {
+                            const canvas = jQuery(this._chart.canvas)
+                            const max = canvas.data('maxCredits')
+                            const scores = canvas.data('scores')
+                            const portalMax = canvas.data("portalMaxCredits")
+                            console.log(data.datasets)
+                            return data.datasets[tooltipItem.datasetIndex].label +': '+
+                                data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + '% (' +
+                                Object.values(getObtainedNotObtainedNA(scores ,portalMax , max , false))[tooltipItem.datasetIndex][tooltipItem.index]+') '
+                        }
+                    }
                 }
 
             }
@@ -454,13 +485,13 @@ class FairScoreCriteriaBar extends  FairScoreChart{
         return new Chart(this.fairScoreChartCanvas, config);
     }
     getFairScoreDataSet(){
-        const scores = this.fairScoreChartCanvas.data('scores')
         const maxCredits = this.fairScoreChartCanvas.data('maxCredits')
         const portalMaxCredits = this.fairScoreChartCanvas.data('portalMaxCredits')
+        const {scores , notObtained , na } = getObtainedNotObtainedNA(this.fairScoreChartCanvas.data('scores'), portalMaxCredits ,maxCredits , true)
         return [
             {
                 label: 'Obtained score',
-                data: scores,
+                data: scores ,
                 fill: true,
                 backgroundColor: 'rgba(102, 187, 106, 0.2)',
                 borderColor: 'rgba(102, 187, 106, 1)',
@@ -469,9 +500,7 @@ class FairScoreCriteriaBar extends  FairScoreChart{
             },
             {
                 label: 'Not obtained score',
-                data: portalMaxCredits.map((x,i) => {
-                    return Math.round((x  / maxCredits[i]) * 100) - scores[i]
-                }),
+                data:  notObtained,
                 fill: true,
                 backgroundColor: 'rgba(251, 192, 45, 0.2)',
                 borderColor: 'rgba(251, 192, 45, 1)',
@@ -480,9 +509,7 @@ class FairScoreCriteriaBar extends  FairScoreChart{
             },
             {
                 label: 'N/A score',
-                data: maxCredits.map((x,i) => {
-                    return Math.round(((x -  portalMaxCredits[i]) / maxCredits[i]) * 100)
-                }),
+                data: na,
                 fill: true,
                 backgroundColor: 'rgba(176, 190, 197, 0.2)',
                 borderColor: 'rgba(176, 190, 197, 1)',
