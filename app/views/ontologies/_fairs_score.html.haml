@@ -4,22 +4,16 @@
   })
 
 - if @fair_scores_data
-  %a.btn.btn-primary.w-100{href: "/ajax/fair_score?ontology=#{@ontology.acronym}" , rel:"facebox[.fair_score_details_pop]"}
+  %a.btn.btn-primary.w-100{href: "/ajax/fair_score/html/?ontologies=#{@ontology.acronym}" , rel:"facebox[.fair_score_details_pop]"}
     %span
       Total score : #{@fair_scores_data[:score]} ( #{@fair_scores_data[:normalizedScore]}% )
     %span.badge.badge-light
       details
-  %div
-    %canvas#ont-fair-criteria-scores-canvas{style:"display: block; box-sizing: border-box" ,
-    data: {labels: @fair_scores_data[:criteria][:labels], scores: @fair_scores_data[:criteria][:normalizedScores]}}
-  %div
-    %canvas#ont-fair-scores-canvas{style:"display: block; box-sizing: border-box" ,
-    data: {
-            labels: @fair_scores_data[:principles][:labels],
-            scores: @fair_scores_data[:principles][:normalizedScores],
-            maxCredits: @fair_scores_data[:principles][:maxCredits],
-            portalMaxCredits: @fair_scores_data[:principles][:portalMaxCredits]
-    }}
+  %div.statistics_container
+    %div
+      = render partial: "shared/fair_score_radar" , locals: {data: @fair_scores_data}
+    %div
+      = render partial: "shared/fair_score_bars" , locals: {data: @fair_scores_data}
 - else
   %p.font-italic= "We are still collecting data for #{@ontology.acronym}"
 

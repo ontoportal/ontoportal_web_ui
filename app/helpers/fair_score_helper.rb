@@ -1,26 +1,27 @@
 module FairScoreHelper
 
-  def load_fair_score_all()
-    @fair_scores_all = MultiJson.load(
-      Faraday.get("#{$FAIRNESS_URL}/?portal=#{$HOSTNAME.split('.')[0]}&ontologies=all&combined=true").body)
+
+  def get_fairness_json(ontologies_acronyms)
+      MultiJson.load(Faraday.get("#{$FAIRNESS_URL}/?portal=#{$HOSTNAME.split('.')[0]}&ontologies=#{ontologies_acronyms}&combined=true").body)
   end
 
-  def get_fair_score(ontology_acronym)
-
-    @fair_scores_all ||= MultiJson.load(
-      Faraday.get("#{$FAIRNESS_URL}/?portal=#{$HOSTNAME.split('.')[0]}&ontologies=#{ontology_acronym}&combined=true").body)
-
-    @fair_scores_all["ontologies"][ontology_acronym]
+  def get_fair_score(ontologies_acronyms)
+    get_fairness_json(ontologies_acronyms)["ontologies"]
   end
 
-  def create_fair_scores_data(fair_scores)
+  def get_fair_combined_score(ontologies_acronyms)
+    get_fairness_json(ontologies_acronyms)["combinedScores"]
+  end
+
+  def create_fair_scores_data(fair_scores , count = nil)
     return nil if fair_scores.nil?
 
     fair_scores_data = {}
     fair_scores_data[:principles] = {labels:[] , scores:[] , normalizedScores: [] , maxCredits: [] , portalMaxCredits: []}
-    fair_scores_data[:criteria] = { labels:[] , scores:[] , normalizedScores: [] , portalMaxCredits: [], questions: [] ,maxCredits: []}
+    fair_scores_data[:criteria] = { labels:[] , scores:[] , normalizedScores: [] , portalMaxCredits: [], questions: [] ,maxCredits: [] , descriptions: []}
     fair_scores_data[:score] = fair_scores["score"]
     fair_scores_data[:normalizedScore] = fair_scores["normalizedScore"]
+    fair_scores_data[:resourceCount] = count unless  count.nil?
 
     fair_scores.to_h.reject { |k,v| !(v.is_a? Hash) }.each do |key ,principle|
 
@@ -32,6 +33,7 @@ module FairScoreHelper
 
       principle.to_h.reject { |k,v| !(v.is_a? Hash)  }.each do  |key , criterion|
         fair_scores_data[:criteria][:labels] << key
+        fair_scores_data[:criteria][:descriptions] << criterion["label"]
         fair_scores_data[:criteria][:scores] << criterion["score"]
         fair_scores_data[:criteria][:normalizedScores] << criterion["normalizedScore"]
         fair_scores_data[:criteria][:questions] << criterion["results"]

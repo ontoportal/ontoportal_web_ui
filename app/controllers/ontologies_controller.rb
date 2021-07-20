@@ -81,7 +81,8 @@ display_context: false, include: browse_attributes)
     metrics_hash = get_metrics_hash
 
     @formats = Set.new
-    @fair_scores =
+    #get fairscores of all ontologies
+    @fair_scores = get_fair_score("all")
     @ontologies = []
     ontologies.each do |ont|
       o = {}
@@ -113,6 +114,8 @@ display_context: false, include: browse_attributes)
       o[:acronym]          = ont.acronym
       o[:projects]         = ont.projects
       o[:notes]            = ont.notes
+      o[:fairScore]            = @fair_scores[ont.acronym]["score"]
+      o[:normalizedFairScore]  = @fair_scores[ont.acronym]["normalizedScore"]
 
       o[:viewOfOnt] = {
         name: ontologies_hash[ont.viewOf].name,
@@ -149,6 +152,7 @@ display_context: false, include: browse_attributes)
     end
 
     @ontologies.sort! {|a,b| b[:popularity] <=> a[:popularity]}
+
 
     render 'browse'
   end
@@ -401,7 +405,7 @@ display_links: false, display_context: false)
     @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
 
     #Call to fairness assesment service
-    @fair_scores_data = create_fair_scores_data(get_fair_score(@ontology.acronym))
+    @fair_scores_data = create_fair_scores_data(get_fair_score(@ontology.acronym).values.first)
 
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
     # Only include metadata that we need for all other ontologies (faster)

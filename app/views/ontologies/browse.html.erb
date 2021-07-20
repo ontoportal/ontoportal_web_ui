@@ -186,6 +186,7 @@
             <!-- <option value="ratings">Rating</option> -->
             <option value="-creationDate">Upload Date</option>
             <option value="-released">Release Date</option>
+            <option value="-fairScore">Fair score</option>
             <option value="-search_rank" ng-show="searchText.length > 0">Search Rank</option>
           </select>
         </div>
@@ -245,7 +246,19 @@
           <span ng-hide="ontology.submission">No submissions available</span>
         </div>
 
+
+
         <div class="badges grid-25 grid-parent" ng-if="ontology.submission !== null && ontology.class_count > 0">
+
+          <div>
+            <div class="grid-33 badge_grid" ng-if="ontology.fairScore"  >
+              <div class="badge" title="{{ontology.normalizedFairScore}}%">
+                <div class="badge_title">fair score</div>
+                <div class="badge_count">{{ontology.fairScore}}</div>
+              </div>
+            </div>
+          </div>
+
           <a href="/ontologies/{{ontology.acronym}}?p=classes" ng-if="ontology.format !== 'SKOS'">
             <div class="grid-33 badge_grid">
               <div class="badge">
