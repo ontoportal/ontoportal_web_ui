@@ -117,7 +117,8 @@
         %header.pb-2.font-weight-bold Fair score
         = link_to("https://github.com/agroportal/fairness", target: "_blank", "aria-label": "View fair scores definitions", title: "View fair scores definitions") do
           %i.fas.fa-lg.fa-question-circle{"aria-hidden": "true", style: "margin-left: 0.5rem"}
-      = render partial: "fairs_score"
+      %div#fair-score-charts-container
+        = render partial: "fairs_score"
     -# Metrics pane
     %section.ont-metadata-card.ont-metrics-card
       %div.ont-section-toolbar
@@ -157,7 +158,7 @@
             %td= number_with_delimiter(@metrics.classesWithNoDefinition)
 
     -# Visits pane
-    %section.ont-metadata-card.ont-analytics-card
+    %section.ont-metadata-card.ont-analytics-card.statistics_container
       %div.ont-section-toolbar
         %header.pb-2.font-weight-bold Visits
         - if visits_data(@ontology)

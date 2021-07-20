@@ -86,7 +86,7 @@ Rails.application.routes.draw do
 
   # Notes
   get 'ontologies/:ontology/notes/:noteid', to: 'notes#virtual_show', as: :note_virtual, noteid: /.+/
-  
+
   # Ajax
   get '/ajax/' => 'ajax_proxy#get', :as => :ajax
   get '/ajax_concepts/:ontology/' => 'concepts#show', :constraints => { id: /[^\/?]+/ }
@@ -103,7 +103,8 @@ Rails.application.routes.draw do
   get '/ajax/classes/treeview' => 'concepts#show_tree'
   get '/ajax/properties/tree' => 'concepts#property_tree'
   get '/ajax/biomixer' => 'concepts#biomixer'
-  get '/ajax/fair_score' => 'fair_score#details'
+  get '/ajax/fair_score/html' => 'fair_score#details_html'
+  get '/ajax/fair_score/json' => 'fair_score#details_json'
 
   # User
   get '/logout' => 'login#destroy', :as => :logout

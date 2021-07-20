@@ -30,6 +30,7 @@
 //= require bp_property_tree
 //= require home
 //= require ontologies
+//= require fair_score
 //= require projects
 //= require submissions
 //= require tooltipster.bundle.min
