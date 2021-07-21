@@ -56,7 +56,6 @@ class FairScoreChartContainer{
 
     }
     showLoader(){
-        console.log("show loader")
         this.fairChartsContainer.hide()
         this.fairSpinner.show()
     }
@@ -389,8 +388,8 @@ class FairScoreCriteriaBar extends  FairScoreChart{
 
 
                 for (const [key, value] of Object.entries(questions[tooltipModel.dataPoints[0].index])) {
-                    let count = (value.state ? (value.state.success + value.state.average) : value.score === value.maxCredits )
-                    let _class = count > 0  ? (  value.score === value.maxCredits ) ? 'badge-primary' : 'badge-info' : 'badge-danger'
+                    let count = (value.state ? (value.state.success + value.state.average) : (value.score === value.maxCredits ? 1: 0) )
+                    let _class = count > 0  ? ((  value.score === value.maxCredits || count === resourceCount) ? 'badge-primary' : 'badge-info') : 'badge-danger'
                     innerHtml+='<li class="list-group-item">'+
                         '<span class="badge '+_class+'">'+round((count / resourceCount) * 100)+'% ('+count+') </span>'
                         +' responded successfully to '+
@@ -474,7 +473,7 @@ class FairScoreCriteriaBar extends  FairScoreChart{
                             const max = canvas.data('maxCredits')
                             const scores = canvas.data('scores')
                             const portalMax = canvas.data("portalMaxCredits")
-                            console.log(data.datasets)
+
                             return data.datasets[tooltipItem.datasetIndex].label +': '+
                                 data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + '% (' +
                                 Object.values(getObtainedNotObtainedNA(scores ,portalMax , max , false))[tooltipItem.datasetIndex][tooltipItem.index]+') '
@@ -545,14 +544,14 @@ class FairScoreCriteriaBar extends  FairScoreChart{
 /*
     For landscape
  */
-jQuery('#landscape_fair_statistics').ready(()=> {
+jQuery('#fairness_assessment').ready(()=> {
     let fairCriteriaBars = new FairScoreCriteriaBar('ont-fair-scores-criteria-bars-canvas')
     let fairContainer = new FairScoreChartContainer('fair-score-charts-container' , [fairCriteriaBars])
     let ontologies = jQuery("#ontology_ontologyId");
 
     fairContainer.getFairScoreData("all")
     ontologies.change( (e) => {
-        console.log( ontologies.val())
+
         if(ontologies.val() !== null){
             fairContainer.getFairScoreData(ontologies.val().join(','))
         } else if(ontologies.val() === null){
@@ -577,8 +576,6 @@ jQuery('.statistics_container').ready( function (e) {
 
     fairContainer.getFairScoreData("all")
     ontologies.change( (e) => {
-            console.log("ontologies changed")
-            console.log( ontologies.val())
             if(ontologies.val() !== null){
                 fairContainer.getFairScoreData(ontologies.val().join(','))
             } else if(ontologies.val() === null){

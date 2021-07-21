@@ -1,3 +1,4 @@
+$color-warning : #ffc107;
 body.ontologies.index {
 
 .grid-container {
@@ -199,5 +200,20 @@ body.ontologies.index {
 .badge:hover .badge_count {
   background-color: rgba(220, 235, 255, 0.79);
 }
+  .badge-fair{
+    .badge{
+      border-color: $color-warning;
+      .badge_title {
+        background-color: $color-warning;
+      }
+      .badge_count {
+        color: $color-warning;
+      }
 
+      &:hover .badge_count{
+        background-color: $color-warning;
+        color: white;
+      }
+    }
+  }
 }

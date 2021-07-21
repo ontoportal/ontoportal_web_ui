@@ -1,10 +1,13 @@
 :javascript
   jQuery(document).ready(function($) {
     jQuery('a[rel*=facebox]').facebox()
+    if(window.location.href.includes("#fair-details")){
+      jQuery('#fair-details').click()
+    }
   })
 
 - if @fair_scores_data
-  %a.btn.btn-primary.w-100{href: "/ajax/fair_score/html/?ontologies=#{@ontology.acronym}" , rel:"facebox[.fair_score_details_pop]"}
+  %a#fair-details.btn.btn-primary.w-100{href: "/ajax/fair_score/html/?ontologies=#{@ontology.acronym}" , rel:"facebox[.fair_score_details_pop]"}
     %span
       Total score : #{@fair_scores_data[:score]} ( #{@fair_scores_data[:normalizedScore]}% )
     %span.badge.badge-light

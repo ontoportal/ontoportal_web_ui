@@ -177,12 +177,10 @@ $ont-show-bg-color: #e9ecef;
 }
 
 .criterion-score-container{
-  display: flex;
-  align-items: center;
   .criterion-score-progress-bar{
     flex-grow: 1;
     height: 40px;
-    margin-left: 40px;
+    margin-top: 10px;
   }
 }
 /************************************

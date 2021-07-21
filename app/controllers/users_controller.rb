@@ -18,12 +18,19 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
+    logger.info "try to find #{params[:id]}"
     @user = if session[:user].admin? && params.has_key?(:id)
-              LinkedData::Client::Models::User.find_by_username(params[:id]).first
+              LinkedData::Client::Models::User.find_by_username(params[:id] , {display: "all"}).first
             else
               LinkedData::Client::Models::User.find(session[:user].id)
             end
+    not_found if @user.nil?
+
     @all_ontologies = LinkedData::Client::Models::Ontology.all(ignore_custom_ontologies: true)
+
+    logger.info 'user show'
+    logger.info @user.bring_remaining
+    logger.info @user
     @user_ontologies = @user.customOntology
 
     ## Copied from home controller , account action
@@ -103,7 +110,7 @@ class UsersController < ApplicationController
         render action: "edit"
       else
         flash[:notice] = 'Account was successfully updated'
-        #TODO test if not same users to update
+
         if session[:user].username == @user.username
           session[:user].update_from_params(user_params)
         end
