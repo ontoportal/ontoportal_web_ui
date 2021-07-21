@@ -5,7 +5,9 @@ gem 'rails', '5.2.4.3'
 
 gem 'sass-rails', '~> 5.0'
 #gem 'coffee-rails', '~> 4.1.0'
-gem 'uglifier', '>= 4.2.0'
+#gem 'uglifier', '>= 4.2.0'
+#terser for minifying js es6 (not done correctly by uglifier)
+gem 'terser', '~> 1.1', '>= 1.1.5'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 # gem 'duktape'

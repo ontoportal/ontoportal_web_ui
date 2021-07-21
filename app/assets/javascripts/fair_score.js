@@ -66,6 +66,7 @@ class FairScoreChartContainer{
     }
 
 }
+
 class FairScoreChart{
     constructor(fairCanvasId , dataField) {
         this.dataField = dataField
@@ -96,6 +97,7 @@ class FairScoreChart{
     }
 
 }
+
 class FairScorePrincipleBar extends  FairScoreChart{
 
     constructor(fairCanvasId) {
@@ -179,6 +181,7 @@ class FairScorePrincipleBar extends  FairScoreChart{
         ]
     }
 }
+
 class FairScoreCriteriaRadar extends FairScoreChart{
 
     constructor(fairCanvasId) {
@@ -585,5 +588,6 @@ jQuery('.statistics_container').ready( function (e) {
     })
     return false
 })
+
 
 
