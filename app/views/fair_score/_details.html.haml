@@ -40,6 +40,7 @@
                   - if @fair_scores_data[:criteria][:normalizedScores][index] > 0
                     %div.progress-bar.bg-obtained_color{style:"width:#{@fair_scores_data[:criteria][:normalizedScores][index]}%"}
                       #{@fair_scores_data[:criteria][:normalizedScores][index].round()}% (#{@fair_scores_data[:criteria][:scores][index]})
+
                   - not_obtained_score = get_not_obtained_score(@fair_scores_data , index)
                   - not_obtained_score_normalized = get_not_obtained_score_normalized(@fair_scores_data , index)
                   - score_rest = get_rest_score(@fair_scores_data , index)

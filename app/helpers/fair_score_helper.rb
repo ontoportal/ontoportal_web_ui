@@ -49,22 +49,21 @@ module FairScoreHelper
   end
 
   def get_not_obtained_score(fair_scores_data, index)
-      fair_scores_data[:criteria][:scores][index] - fair_scores_data[:criteria][:portalMaxCredits][index]
+      fair_scores_data[:criteria][:portalMaxCredits][index] - fair_scores_data[:criteria][:scores][index]
   end
 
   def get_not_obtained_score_normalized(fair_scores_data, index)
     score_rest = get_rest_score(fair_scores_data,index)
     not_obtained_score = get_not_obtained_score(fair_scores_data , index)
 
-    if  not_obtained_score > 0 && score_rest > 0
-        not_obtained_score_normalized = ((not_obtained_score /  fair_scores_data[:criteria][:maxCredits][index]) * 100).round()
-    elsif score_rest == 0
-        not_obtained_score_normalized = 100 - fair_scores_data[:criteria][:normalizedScores][index]
+    if  not_obtained_score.positive? && score_rest.positive?
+      ((not_obtained_score / fair_scores_data[:criteria][:maxCredits][index]) * 100).round()
+    elsif score_rest.zero?
+        100 - fair_scores_data[:criteria][:normalizedScores][index]
     else
-        not_obtained_score_normalized = 0
+         0
     end
 
-    not_obtained_score_normalized
   end
 
   def get_rest_score(fair_scores_data, index)
@@ -76,7 +75,7 @@ module FairScoreHelper
     not_obtained_score_normalized = get_not_obtained_score_normalized(fair_scores_data , index)
 
     if score_rest.positive?
-      100 - not_obtained_score_normalized - @fair_scores_data[:criteria][:normalizedScores][index]
+      100 - not_obtained_score_normalized - fair_scores_data[:criteria][:normalizedScores][index]
     else
       0
     end
