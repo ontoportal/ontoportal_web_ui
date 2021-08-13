@@ -30,7 +30,7 @@ class FairScoreChartContainer{
 
     ajaxCall(ontologies){
         return new Promise( (resolve  ,reject) => {
-            $.getJSON( "/ajax/fair_score/json/?ontologies="+ontologies, (data) => {
+            $.get( "/ajax/fair_score/json/?ontologies="+ontologies, (data) => {
                 if(data) {
                     resolve(data)
                 }else {
@@ -42,6 +42,7 @@ class FairScoreChartContainer{
     getFairScoreData(ontologies) {
         if(this.fairChartsContainer){
             this.showLoader();
+
             this.ajaxCall(ontologies).then(data => {
                 this.hideLoader()
                 this.charts.forEach( x => x.setFairScoreData(data))
@@ -50,6 +51,8 @@ class FairScoreChartContainer{
 
                 if(this.fairNormalizedScoreSpan)
                     this.fairNormalizedScoreSpan.html('('+data.normalizedScore+"%)")
+            }).catch(err => {
+                console.log(err)
             })
         }
 
@@ -145,7 +148,6 @@ class FairScorePrincipleBar extends  FairScoreChart{
         return new Chart(this.fairScoreChartCanvas, config);
     }
     getFairScoreDataSet(){
-
         const maxCredits = this.fairScoreChartCanvas.data('maxCredits')
         const portalMaxCredits = this.fairScoreChartCanvas.data('portalMaxCredits')
         const {scores, notObtained , na } = getObtainedNotObtainedNA( this.fairScoreChartCanvas.data('scores') , portalMaxCredits , maxCredits )
@@ -565,9 +567,9 @@ jQuery('#fairness_assessment').ready(()=> {
 
 
 /*
-    For the home and summary
+    For the home
  */
-jQuery('.statistics_container').ready( function (e) {
+jQuery('#fair-home').ready( function (e) {
 
     let fairScoreBar = new FairScorePrincipleBar( 'ont-fair-scores-canvas')
     let fairScoreRadar = new FairScoreCriteriaRadar(  'ont-fair-criteria-scores-canvas')
@@ -583,6 +585,20 @@ jQuery('.statistics_container').ready( function (e) {
             }
         e.preventDefault()
     })
+    return false
+})
+
+/*
+    For the summary
+ */
+jQuery('#fair-score-charts-container').ready( function (e) {
+
+    let fairScoreBar = new FairScorePrincipleBar( 'ont-fair-scores-canvas')
+    let fairScoreRadar = new FairScoreCriteriaRadar(  'ont-fair-criteria-scores-canvas')
+    let fairContainer = new FairScoreChartContainer('fair-score-charts-container' , [   fairScoreRadar , fairScoreBar])
+
+    fairContainer.getFairScoreData(window.location.pathname.split('/')[2])
+
     return false
 })
 

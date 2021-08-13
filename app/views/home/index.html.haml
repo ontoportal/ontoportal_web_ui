@@ -55,7 +55,7 @@
                 %h6.dropdown-header Browse by group
                 - @groups.each do |group|
                   = link_to(group[:name], ontologies_path(filter: group[:acronym]), class: "dropdown-item")
-  %div.row.pt-3.statistics.statistics_container
+  %div.row.pt-3.statistics
     %div.col
       %div.card-deck
         -# Ontology visits
@@ -88,7 +88,7 @@
               %div.d-flex.justify-content-between.align-items-center
                 %span Users
                 %span= LinkedData::Client::Models::User.all.length
-  %div.row.mt-3
+  %div#fair-home.row.mt-3
     %div.col
       %div.card.mb-3
         %div.card-header
@@ -103,7 +103,7 @@
             %div.row#detailedFilter
               = render :partial => "shared/ontology_picker", locals: {sel_text: ""}
           %div.mt-2.text-center{style: "min-height: 260px"}
-            %div.row.statistics_container#fair-score-charts-container
+            %div.row#fair-score-charts-container
               %div.col
                 = render partial: "shared/fair_score_radar" , locals: {data: nil }
                 %a.btn.btn-link{href:"/landscape#fairness_assessment"}

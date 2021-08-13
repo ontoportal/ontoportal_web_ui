@@ -20,7 +20,7 @@ class FairScoreController < ApplicationController
 
     if ontologies.include? ","
       @fair_scores_data = create_fair_scores_data(get_fair_combined_score(ontologies), ontologies.split(',').length)
-    elsif ontologies.eql? "all"
+    elsif ontologies.eql?"all"
       @fair_scores_data = create_fair_scores_data(get_fair_combined_score(ontologies), get_fair_score(ontologies).keys.length)
     else
       @fair_scores_data = create_fair_scores_data(get_fair_score(ontologies).values.first ,1)

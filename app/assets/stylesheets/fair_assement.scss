@@ -98,3 +98,29 @@ $non_applicable_color :  rgba(176, 190, 197, 0.4);
   width: 1rem;
   height: 1rem;
 }
+
+
+.fair_score_details_pop {
+  overflow: hidden;
+  width: 1200px !important;
+  max-height: 80vh;
+  display: block !important;
+
+  .test-result{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+}
+
+.criterion-score-container{
+  .criterion-score-progress-bar{
+    flex-grow: 1;
+    height: 40px;
+    margin-top: 10px;
+  }
+}
+
+.nav-link.active{
+  color: white !important;
+}
