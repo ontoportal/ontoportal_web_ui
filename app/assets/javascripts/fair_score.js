@@ -393,7 +393,7 @@ class FairScoreCriteriaBar extends  FairScoreChart{
                     let count = (value.state ? (value.state.success + value.state.average) : (value.score === value.maxCredits ? 1: 0) )
                     let _class = count > 0  ? ((  value.score === value.maxCredits || count === resourceCount) ? 'badge-primary' : 'badge-info') : 'badge-danger'
                     innerHtml+='<li class="list-group-item">'+
-                        '<span class="badge '+_class+'">'+round((count / resourceCount) * 100)+'% ('+count+') </span>'
+                        '<strong>'+round((count / resourceCount) * 100)+'% ('+count+') </strong>'
                         +' responded successfully to '+
                         '<span class="font-italic">"'+ value.question+' "</span></li>'
                 }
@@ -590,8 +590,8 @@ jQuery('#fair-home').ready( function (e) {
 
 /*
     For the summary
- */
-jQuery('#fair-score-charts-container').ready( function (e) {
+*/
+jQuery('#fair-summary').ready( function (e) {
 
     let fairScoreBar = new FairScorePrincipleBar( 'ont-fair-scores-canvas')
     let fairScoreRadar = new FairScoreCriteriaRadar(  'ont-fair-criteria-scores-canvas')
@@ -601,6 +601,5 @@ jQuery('#fair-score-charts-container').ready( function (e) {
 
     return false
 })
-
 
 

@@ -112,7 +112,7 @@
           %button{:id => "getMetadataBackXmlBtn", :class => "btn btn-primary"} RDF/XML
           -# Listener in bp_ontology_viewer.js.erb
     -# Fair score pane
-    %section.ont-metadata-card.ont-fair-score-card
+    %section.ont-metadata-card.ont-fair-score-card#fair-summary
       %div.ont-section-toolbar
         %header.pb-2.font-weight-bold FAIR score
         = link_to("https://github.com/agroportal/fairness", target: "_blank", "aria-label": "View fair scores definitions", title: "View fair scores definitions") do

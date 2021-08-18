@@ -20,7 +20,7 @@
     %div.row
       %div.col-3.navbar.navbar-light.bg-light{id:"fair-navbar" ,style:"overflow: scroll;height: 70vh;position: relative;"}
         %h1
-          FAIR principles details
+          FAIRness assessment questions
         %nav.nav.nav-pills.flex-column
           - @fair_scores_data[:criteria][:labels].each_with_index  do |label , index|
             %a.nav-link{href:"#"+label}
