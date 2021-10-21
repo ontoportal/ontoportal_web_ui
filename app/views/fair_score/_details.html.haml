@@ -102,11 +102,16 @@
                           %div.card.p-3{style:"font-size:18px"}
                             %div.d-flex.flex-wrap
                               - question[1]["properties"].each do |key, value|
-                                %div.badge.my-2.mx-1{class:(["", 'null', '[]'].include?(value) ? "badge-danger" : "badge-success") ,style:"white-space:normal"}
+                                %div.badge.my-2.mx-1{class:(['', 'null', '[]',nil].include?(value) ? "badge-danger" : "badge-success") ,style:"white-space:normal"}
                                   %span
                                     = key
                                   %span.badge.badge-light{style:"white-space:normal"}
-                                    #{value}
+                                    - if value == nil
+                                      not found
+                                    -elsif value == "" || value == "[]"
+                                      null
+                                    - else
+                                      #{value}
 
 
 
