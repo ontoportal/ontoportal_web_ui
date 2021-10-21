@@ -20,17 +20,18 @@ function getObtainedNotObtainedNA(scoresIn, portalMax , max , normalize = true){
 class FairScoreChartContainer{
     constructor(fairChartsContainerId , charts) {
         this.fairChartsContainer = jQuery("#"+fairChartsContainerId)
-
         this.fairAverageScoreSpan = jQuery("#fair-score-average")
 
         this.fairMinScoreSpan = jQuery("#fair-score-min")
-
 
         this.fairMaxScoreSpan = jQuery("#fair-score-max")
 
 
         this.fairMedianScoreSpan = jQuery("#fair-score-median")
 
+
+        this.requestLink = jQuery("#fairness-service-url")
+        this.requestHrefBase = (this.requestLink != null ?this.requestLink.attr("href") : "")
 
         this.fairSpinner = jQuery("<div id='fair-spinner-container' class='w-100 text-center'> <div class='spinner-grow'></div> </div>")
         this.fairChartsContainer.before(this.fairSpinner)
@@ -52,7 +53,7 @@ class FairScoreChartContainer{
     getFairScoreData(ontologies) {
         if(this.fairChartsContainer){
             this.showLoader();
-
+            this.#updateLink(ontologies)
             this.ajaxCall(ontologies).then(data => {
                 this.hideLoader()
                 this.charts.forEach( x => x.setFairScoreData(data))
@@ -73,6 +74,16 @@ class FairScoreChartContainer{
         this.fairChartsContainer.show()
     }
 
+    #updateLink(ontologies){
+        console.log("update ontologies link")
+        console.log(ontologies)
+        console.log(this.requestLink)
+        if(this.requestLink){
+            this.requestLink.attr("href" , this.requestHrefBase + "&ontologies=" + ontologies
+                + (ontologies==="all" || ontologies.includes(",") ? "&combined": ""))
+
+        }
+    }
     #fillScoreSpans(data){
 
         if(this.fairAverageScoreSpan){
@@ -595,7 +606,6 @@ jQuery('#fairness_assessment').ready(()=> {
 
     fairContainer.getFairScoreData("all")
     ontologies.change( (e) => {
-
         if(ontologies.val() !== null){
             fairContainer.getFairScoreData(ontologies.val().join(','))
         } else if(ontologies.val() === null){

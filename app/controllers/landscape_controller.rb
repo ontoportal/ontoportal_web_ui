@@ -3,7 +3,7 @@ include ActionView::Helpers::NumberHelper
 
 class LandscapeController < ApplicationController
   layout :determine_layout
-
+  helper FairScoreHelper
   include FairScoreHelper
 
   def index

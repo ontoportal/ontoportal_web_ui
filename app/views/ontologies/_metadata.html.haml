@@ -114,9 +114,8 @@
     -# Fair score pane
     %section.ont-metadata-card.ont-fair-score-card#fair-summary
       %div.ont-section-toolbar
-        %header.pb-2.font-weight-bold FAIR score
-        = link_to("https://github.com/agroportal/fairness", target: "_blank", "aria-label": "View fair scores definitions", title: "View fair scores definitions") do
-          %i.fas.fa-lg.fa-question-circle{"aria-hidden": "true", style: "margin-left: 0.5rem"}
+        %header.pb-2.font-weight-bold
+          = render partial: "fair_score/fair_service_header"
       %div#fair-score-charts-container
         = render partial: "fairs_score"
     -# Metrics pane

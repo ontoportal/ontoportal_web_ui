@@ -1,8 +1,11 @@
 module FairScoreHelper
 
 
+  def get_fairness_service_url()
+    "#{$FAIRNESS_URL}?portal=#{$HOSTNAME.split('.')[0]}"
+  end
   def get_fairness_json(ontologies_acronyms)
-    MultiJson.load(Faraday.get("#{$FAIRNESS_URL}/?portal=#{$HOSTNAME.split('.')[0]}&ontologies=#{ontologies_acronyms}&combined=true").body.force_encoding('ISO-8859-1').encode('UTF-8'))
+    MultiJson.load(Faraday.get(get_fairness_service_url + "&ontologies=#{ontologies_acronyms}&combined=true").body.force_encoding('ISO-8859-1').encode('UTF-8'))
   end
 
   def get_fair_score(ontologies_acronyms)
