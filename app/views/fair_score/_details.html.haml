@@ -80,11 +80,13 @@
                         %span.badge.badge-pill.badge-success{style:"white-space:normal;font-size:14px"}
                           #{question[1]["explanation"]}
                     %div
-                      %button.btn.btn-outline-primary{'data-toggle':"collapse" ,'data-target':"#collapse-credits-"+question[0]}
-                        See possible credits
-                      -if question[1]["properties"]
-                        %button.btn.btn-outline-primary{'data-toggle':"collapse" ,'data-target':"#collapse-properties-"+question[0]}
-                          See metadata used properties
+                      -if !not_implemented?(question[1]) && !default_score?(question[1])
+                        -if question[1]["points"]
+                          %button.btn.btn-outline-primary{'data-toggle':"collapse" ,'data-target':"#collapse-credits-"+question[0]}
+                            See possible credits
+                        -if question[1]["properties"]
+                          %button.btn.btn-outline-primary{'data-toggle':"collapse" ,'data-target':"#collapse-properties-"+question[0]}
+                            See metadata used properties
                     %div.mt-2
                       %div.collapse{id:"collapse-credits-"+question[0]}
                         %div.card.p-3
