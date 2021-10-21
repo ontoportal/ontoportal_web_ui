@@ -143,23 +143,7 @@
 
   %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
   %div#fairness_assessment.p-2
-    %h1 FAIRness assessment
-    %div.card.mb-3
-      %div.card-header
-        Average FAIR Score
-        %span.badge.badge-primary
-          %span#fair-score
-          %span#fair-normalized-score
-        %div.p-3
-          %div.row#detailedFilter
-            = render :partial => "shared/ontology_picker", locals: {sel_text: ""}
-      %div.card-body
-        %div#fair-score-charts-container.row
-          %div.col
-            %span.text-secondary.mt-4
-              hover on a principle to see details
-            = render partial: "fair_score_criteria_bars" , locals: {data: nil }
-          %div#chartjs-tooltip-container.col{style: "height :700px ; position: relative"}
+    = render partial: "fair_score_landscape"
 
   %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
   %div

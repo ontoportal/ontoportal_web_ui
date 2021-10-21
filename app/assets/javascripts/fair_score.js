@@ -20,8 +20,18 @@ function getObtainedNotObtainedNA(scoresIn, portalMax , max , normalize = true){
 class FairScoreChartContainer{
     constructor(fairChartsContainerId , charts) {
         this.fairChartsContainer = jQuery("#"+fairChartsContainerId)
-        this.fairScoreSpan = jQuery("#fair-score")
-        this.fairNormalizedScoreSpan = jQuery("#fair-normalized-score")
+
+        this.fairAverageScoreSpan = jQuery("#fair-score-average")
+
+        this.fairMinScoreSpan = jQuery("#fair-score-min")
+
+
+        this.fairMaxScoreSpan = jQuery("#fair-score-max")
+
+
+        this.fairMedianScoreSpan = jQuery("#fair-score-median")
+
+
         this.fairSpinner = jQuery("<div id='fair-spinner-container' class='w-100 text-center'> <div class='spinner-grow'></div> </div>")
         this.fairChartsContainer.before(this.fairSpinner)
         this.charts = charts
@@ -46,11 +56,7 @@ class FairScoreChartContainer{
             this.ajaxCall(ontologies).then(data => {
                 this.hideLoader()
                 this.charts.forEach( x => x.setFairScoreData(data))
-                if(this.fairScoreSpan)
-                    this.fairScoreSpan.html(data.score)
-
-                if(this.fairNormalizedScoreSpan)
-                    this.fairNormalizedScoreSpan.html('('+data.normalizedScore+"%)")
+                this.#fillScoreSpans(data)
             }).catch(err => {
                 console.log(err)
             })
@@ -67,6 +73,42 @@ class FairScoreChartContainer{
         this.fairChartsContainer.show()
     }
 
+    #fillScoreSpans(data){
+
+        if(this.fairAverageScoreSpan){
+            this.fairAverageScoreSpan.html(data.score +" "+'('+data.normalizedScore+"%)")
+        }
+
+        if(data.resourceCount > 1){
+            if(this.fairMinScoreSpan){
+                this.fairMinScoreSpan.parent().parent().show()
+                this.fairMinScoreSpan.html(data.minScore +" "+'('+(round(data.minScore/data.maxCredits)*100)+"%)")
+            }
+
+            if(this.fairMaxScoreSpan){
+                this.fairMaxScoreSpan.parent().parent().show()
+                this.fairMaxScoreSpan.html(data.maxScore +" "+'('+(round(data.maxScore/data.maxCredits)*100)+"%)")
+            }
+
+            if(this.fairMedianScoreSpan){
+                this.fairMedianScoreSpan.parent().parent().show()
+                this.fairMedianScoreSpan.html(data.medianScore+" "+'('+(round(data.medianScore/data.maxCredits)*100)+"%)")
+            }
+        }else {
+            if(this.fairMinScoreSpan){
+                this.fairMinScoreSpan.parent().parent().hide()
+
+            }
+
+            if(this.fairMaxScoreSpan)
+                this.fairMaxScoreSpan.parent().parent().hide()
+
+            if(this.fairMedianScoreSpan)
+                this.fairMedianScoreSpan.parent().parent().hide()
+        }
+
+
+    }
 }
 
 class FairScoreChart{

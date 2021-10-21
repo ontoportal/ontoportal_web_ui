@@ -1,0 +1,37 @@
+%h2
+  FAIRness assessment
+  %div.card.mb-3
+    %div.card-header
+      FAIR Scores
+      = link_to("https://github.com/agroportal/fairness", target: "_blank", "aria-label": "View fair scores definitions", title: "View fair scores definitions") do
+        %i.fas.fa-lg.fa-question-circle{"aria-hidden": "true", style: "margin-left: 0.5rem"}
+      %span.p-2.badge.badge-secondary
+        Average
+        %span.badge.badge-light
+          %span#fair-score-average
+            0 (0%)
+      %span.p-2.badge.badge-secondary
+        Min
+        %span.badge.badge-light
+          %span#fair-score-min
+            0 (0%)
+      %span.p-2.badge.badge-secondary
+        Max
+        %span.badge.badge-light
+          %span#fair-score-max
+            0 (0%)
+      %span.p-2.badge.badge-secondary
+        Median
+        %span.badge.badge-light
+          %span#fair-score-median
+            0 (0%)
+      %div.p-3
+        %div.row#detailedFilter
+          = render :partial => "shared/ontology_picker", locals: {sel_text: ""}
+    %div.card-body
+      %div#fair-score-charts-container.row
+        %div.col
+          %span.text-secondary.mt-4
+            hover on a principle to see details
+          = render partial: "fair_score_criteria_bars" , locals: {data: nil }
+        %div#chartjs-tooltip-container.col{style: "height :700px ; position: relative"}

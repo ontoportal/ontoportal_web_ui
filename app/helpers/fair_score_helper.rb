@@ -23,6 +23,10 @@ module FairScoreHelper
     fair_scores_data[:criteria] = { labels:[] , scores:[] , normalizedScores: [] , portalMaxCredits: [], questions: [] ,maxCredits: [] , descriptions: []}
     fair_scores_data[:score] = fair_scores["score"].to_f.round(2)
     fair_scores_data[:normalizedScore] = fair_scores["normalizedScore"].to_f.round(2)
+    fair_scores_data[:minScore] = fair_scores["minScore"].to_f.round(2)
+    fair_scores_data[:maxScore] = fair_scores["maxScore"].to_f.round(2)
+    fair_scores_data[:medianScore] = fair_scores["medianScore"].to_f.round(2)
+    fair_scores_data[:maxCredits] = fair_scores["maxCredits"].to_i
     fair_scores_data[:resourceCount] = count unless  count.nil?
 
     fair_scores.to_h.reject { |k,v| !(v.is_a? Hash) }.each do |key ,principle|

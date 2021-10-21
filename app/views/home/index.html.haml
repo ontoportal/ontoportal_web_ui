@@ -89,27 +89,7 @@
                 %span Users
                 %span= LinkedData::Client::Models::User.all.length
   %div#fair-home.row.mt-3
-    %div.col
-      %div.card.mb-3
-        %div.card-header
-          Average FAIR Score
-          = link_to("https://github.com/agroportal/fairness", target: "_blank", "aria-label": "View fair scores definitions", title: "View fair scores definitions") do
-            %i.fas.fa-lg.fa-question-circle{"aria-hidden": "true", style: "margin-left: 0.5rem"}
-          %h2.badge.badge-secondary.p-2
-            %span#fair-score
-            %span#fair-normalized-score
-        %div.card-body
-          %div.p-3
-            %div.row#detailedFilter
-              = render :partial => "shared/ontology_picker", locals: {sel_text: ""}
-          %div.mt-2.text-center{style: "min-height: 260px"}
-            %div.row#fair-score-charts-container
-              %div.col
-                = render partial: "shared/fair_score_radar" , locals: {data: nil }
-                %a.btn.btn-link{href:"/landscape#fairness_assessment"}
-                  See details
-              %div.col
-                = render partial: "shared/fair_score_bars", locals: {data: nil}
+    = render partial: "fair_score_home"
   %div.row.pt-3.extra
     %div.col
       %div.card-deck
