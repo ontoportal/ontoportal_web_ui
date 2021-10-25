@@ -75,9 +75,6 @@ class FairScoreChartContainer{
     }
 
     #updateLink(ontologies){
-        console.log("update ontologies link")
-        console.log(ontologies)
-        console.log(this.requestLink)
         if(this.requestLink){
             this.requestLink.attr("href" , this.requestHrefBase + "&ontologies=" + ontologies
                 + (ontologies==="all" || ontologies.includes(",") ? "&combined": ""))
