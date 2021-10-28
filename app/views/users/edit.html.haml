@@ -31,11 +31,7 @@
         event.preventDefault()
         let admin_checkbox = jQuery('input[id=user_admin]')
         if(admin_checkbox.attr('checked') && !admin_checkbox.hasClass('admin')){
-<<<<<<< HEAD
-          alertify.confirm('Are you sure to make this user administrator', (e) => {
-=======
           alertify.confirm('Are you sure you want to make this user an admin?', (e) => {
->>>>>>> upstream/master
             if(e){
               this.submit()
             }else {
@@ -43,11 +39,7 @@
             }
           })
         } else if (!admin_checkbox.attr('checked') && admin_checkbox.hasClass('admin')){
-<<<<<<< HEAD
-          alertify.confirm('Are you sure to revoke this user administrator privileges',  (e) => {
-=======
           alertify.confirm('Are you sure you want to revoke admin privileges for this user?',  (e) => {
->>>>>>> upstream/master
             if(e){
               this.submit()
             }else {
