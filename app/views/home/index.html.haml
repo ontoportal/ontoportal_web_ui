@@ -71,10 +71,11 @@
             %li.list-group-item
               %div.d-flex.justify-content-between.align-items-center
                 %span Ontologies
-                %span= @ont_count
+                %span= number_with_delimiter(@ont_count)
             %li.list-group-item
               %div.d-flex.justify-content-between.align-items-center
                 %span Classes
+<<<<<<< HEAD
                 %span= number_with_delimiter(@cls_count, :delimiter => ",")
             %li.list-group-item
               %div.d-flex.justify-content-between.align-items-center
@@ -125,6 +126,17 @@
                 - slice_link = "http://#{slice.acronym}.#{$UI_URL.sub("http://", "")}"
                 %li.list-group-item
                   = link_to slice_name, slice_link
+=======
+                %span= number_with_delimiter(@cls_count)
+            %li.list-group-item
+              %div.d-flex.justify-content-between.align-items-center
+                %span Properties
+                %span= number_with_delimiter(@prop_count)
+            %li.list-group-item
+              %div.d-flex.justify-content-between.align-items-center
+                %span Mappings
+                %span= number_with_delimiter(@map_count)
+>>>>>>> upstream/master
 
   - $HOME_PAGE_LOGOS.to_a.each do |home_page_logos_row|
     - unless home_page_logos_row[:links].to_a.empty?

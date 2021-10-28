@@ -43,6 +43,7 @@ class HomeController < ApplicationController
     # Calculate BioPortal summary statistics
     @ont_count = @ontologies.length
     @cls_count = LinkedData::Client::Models::Metrics.all.map {|m| m.classes.to_i}.sum
+<<<<<<< HEAD
     @individuals_count = LinkedData::Client::Models::Metrics.all.map {|m| m.individuals.to_i}.sum
     if $RESOURCE_INDEX_DISABLED == false
       begin
@@ -58,6 +59,10 @@ class HomeController < ApplicationController
       @direct_annotations = @ri_stats[:total][:direct]
       @direct_expanded_annotations = @ri_stats[:total][:ancestors]
     end
+=======
+    @prop_count = 36286
+    @map_count = total_mapping_count
+>>>>>>> upstream/master
     @analytics = LinkedData::Client::Analytics.last_month
 
     @ontology_names = @ontologies.map{ |ont| ["#{ont.name} (#{ont.acronym})", ont.acronym] }

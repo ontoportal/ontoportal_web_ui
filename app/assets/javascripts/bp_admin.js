@@ -824,7 +824,14 @@ jQuery(".admin.index").ready(function() {
     jQuery('#adminUsers').on('click', '.delete-user', function(event) {
         DeleteUsers.act(jQuery(this).parents('tr').first()[0].id.split('_').pop())
 
+<<<<<<< HEAD
     });
+=======
+  jQuery('#adminUsers').on('click', '.delete-user', function(event) {
+    DeleteUsers.act(this.dataset.accountName);
+  });
+
+>>>>>>> upstream/master
   // BUTTON onclick actions ---------------------------------------
 
   // onclick action for "Go" button for performing an action on a set of ontologies
@@ -881,7 +888,11 @@ function populateUserRows(data) {
         let created = user['created']
         let actions = [
             '<a href="/accounts/'+ user['username'] +'"  class="mx-1">Detail</a>' ,
+<<<<<<< HEAD
             '<a href="javascript:;" class="delete-user mx-1">Delete</a>',
+=======
+            '<a href="javascript:;" class="delete-user mx-1" data-account-name="' + username + '">Delete</a>',
+>>>>>>> upstream/master
             '<a href="/login_as/'+ username +'" class="mx-1">Login as</a>',
 
         ]
@@ -991,8 +1002,13 @@ function displayUsers(data) {
 }
 
 function DeleteUsers(user) {
+<<<<<<< HEAD
     AjaxAction.call(this, "DELETE", "USERS DELETION", "accounts/"+user, false);
     this.setConfirmMsg("You are about to delete the following user: '" + user + "' <b>This action CAN NOT be undone!!! Are you sure?</b>");
+=======
+  AjaxAction.call(this, "DELETE", "USERS DELETION", "accounts/"+user, false);
+  this.setConfirmMsg('Permanently delete "' + user +'"?');
+>>>>>>> upstream/master
 }
 
 DeleteUsers.prototype = Object.create(AjaxAction.prototype);
@@ -1012,7 +1028,11 @@ DeleteUsers.prototype._ajaxCall =  function (username)  {
         data: [],
         dataType: "json",
         success: (data, msg) => {
+<<<<<<< HEAD
             success.push('Users deleted successfully')
+=======
+            success.push('"' + username + '" user successfully deleted')
+>>>>>>> upstream/master
             this.onSuccessAction(username)
             _showStatusMessages(success, errors, notices, false);
         },

@@ -18,6 +18,7 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
+<<<<<<< HEAD
     logger.info "try to find #{params[:id]}"
     @user = if session[:user].admin? && params.has_key?(:id)
               LinkedData::Client::Models::User.find_by_username(params[:id] , {display: "all"}).first
@@ -26,6 +27,13 @@ class UsersController < ApplicationController
             end
     not_found if @user.nil?
 
+=======
+    @user = if session[:user].admin? && params.has_key?(:id)
+              LinkedData::Client::Models::User.find_by_username(params[:id]).first
+            else
+              LinkedData::Client::Models::User.find(session[:user].id)
+            end
+>>>>>>> upstream/master
     @all_ontologies = LinkedData::Client::Models::Ontology.all(ignore_custom_ontologies: true)
 
     logger.info 'user show'
@@ -110,7 +118,11 @@ class UsersController < ApplicationController
         render action: "edit"
       else
         flash[:notice] = 'Account was successfully updated'
+<<<<<<< HEAD
 
+=======
+        #TODO test if not same users to update
+>>>>>>> upstream/master
         if session[:user].username == @user.username
           session[:user].update_from_params(user_params)
         end
@@ -118,7 +130,26 @@ class UsersController < ApplicationController
       end
     else
       render action: "edit"
+<<<<<<< HEAD
     end
+  end
+
+  # DELETE /users/1
+  def destroy
+    response = {errors: '', success: ''}
+    @user = LinkedData::Client::Models::User.find(params[:id])
+    @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
+    if(session[:user].admin?)
+      @user.delete
+      response[:success] << 'User deleted successfully '
+
+    else
+      response[:errors] << 'Not permitted '
+=======
+>>>>>>> upstream/master
+    end
+
+    render json: response
   end
 
   # DELETE /users/1
@@ -164,7 +195,7 @@ class UsersController < ApplicationController
 
   def user_params
     p = params.require(:user).permit(:firstName, :lastName, :username, :email, :email_confirmation, :password,
-                                     :password_confirmation, :register_mail_list)
+                                     :password_confirmation, :register_mail_list, :admin)
     p.to_h
   end
 

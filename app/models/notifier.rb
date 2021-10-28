@@ -32,6 +32,8 @@ class Notifier < ActionMailer::Base
     @email = email
     @comment = comment
     @location = location
+    logger.info ActionMailer::Base.smtp_settings
+    logger.info ActionMailer::Base.delivery_method
 
     mail(:to => "#{$SUPPORT_EMAIL}, #{email}",
          :from => "#{$NOTIFICATION_EMAIL}",

@@ -16,6 +16,7 @@
       %div.col
         = t('.grant_html', site: $SITE)
     %div.row.pt-2
+<<<<<<< HEAD
       - $FOOTER_LINKS.to_h[:bottom].to_a.each do |footer_links_block|
         %div.col-6.col-md
           - if footer_links_block[:column_header].present?
@@ -28,6 +29,20 @@
                 - unless i >= footer_links_row.size - 1
                   %li.list-inline-item
                     = raw(footer_links_block[:separator])
+=======
+      %div.col
+        %ul.list-inline
+          %li.list-inline-item
+            = link_to('CITE US', 'https://www.bioontology.org/wiki/index.php/BioPortal_Help#How_to_cite_NCBO_and_BioPortal', target: '_blank')
+          %li.list-inline-item
+            %i.fas.fa-ellipsis-v{"aria-hidden" => "true"}
+          %li.list-inline-item
+            = link_to('PRIVACY POLICY', 'https://www.bioontology.org/privacy/',  target: '_blank')
+          %li.list-inline-item
+            %i.fas.fa-ellipsis-v{"aria-hidden" => "true"}
+          %li.list-inline-item
+            = link_to('TERMS', 'https://www.bioontology.org/terms/', target: '_blank')
+>>>>>>> upstream/master
 
 = javascript_include_tag "application"
 = render partial: "ga_tracking"

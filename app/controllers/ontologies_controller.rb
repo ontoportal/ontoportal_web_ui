@@ -117,10 +117,14 @@ display_context: false, include: browse_attributes)
       o[:fairScore]            = @fair_scores[ont.acronym]["score"]
       o[:normalizedFairScore]  = @fair_scores[ont.acronym]["normalizedScore"]
 
-      o[:viewOfOnt] = {
-        name: ontologies_hash[ont.viewOf].name,
-        acronym: ontologies_hash[ont.viewOf].acronym
-      } if o[:type].eql?("ontology_view")
+      if o[:type].eql?("ontology_view")
+        unless ontologies_hash[ont.viewOf].blank?
+          o[:viewOfOnt] = {
+            name: ontologies_hash[ont.viewOf].name,
+            acronym: ontologies_hash[ont.viewOf].acronym
+          }
+        end
+      end
 
       o[:artifacts] = []
       o[:artifacts] << "notes" if ont.notes.length > 0
