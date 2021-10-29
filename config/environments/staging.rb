@@ -78,8 +78,7 @@ BioportalWebUi::Application.configure do
   require Rails.root.join('config', "bioportal_config_#{Rails.env}.rb")
 
   # memcache setup
-  # https://github.com/mperham/dalli#usage-with-rails-3x-and-4x
-  config.cache_store = :mem_cache_store, nil, { :namespace => 'bioportal_web_ui', :expires_in => 1.day, :value_max_bytes => 5*1024*1024 }
+  config.cache_store = :mem_cache_store, { :namespace => 'bioportal_web_ui', :expires_in => 1.day, :value_max_bytes => 5*1024*1024 }
 
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
