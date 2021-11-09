@@ -114,8 +114,14 @@ display_context: false, include: browse_attributes)
       o[:acronym]          = ont.acronym
       o[:projects]         = ont.projects
       o[:notes]            = ont.notes
-      o[:fairScore]            = @fair_scores[ont.acronym]["score"]
-      o[:normalizedFairScore]  = @fair_scores[ont.acronym]["normalizedScore"]
+
+      if !@fair_scores[ont.acronym].nil?
+        o[:fairScore]            = @fair_scores[ont.acronym]["score"]
+        o[:normalizedFairScore]  = @fair_scores[ont.acronym]["normalizedScore"]
+      elsif
+        o[:fairScore]            = 0
+        o[:normalizedFairScore]  = 0
+      end
 
       if o[:type].eql?("ontology_view")
         unless ontologies_hash[ont.viewOf].blank?
