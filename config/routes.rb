@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   resources :projects, constraints: { id: /[^\/]+/ }
 
-  resources :users, path: :accounts, requirements: { id: /.+/ }, constraints: { id: /[0-z\.\-\%]+/ }
+  resources :users, path: :accounts, constraints: { id: /[\d\w\.\-\%\+ ]+/ }
 
   resources :reviews
 
@@ -104,7 +104,7 @@ Rails.application.routes.draw do
   get '/lost_pass' => 'login#lost_password'
   get '/reset_password' => 'login#reset_password'
   post '/accounts/:id/custom_ontologies' => 'users#custom_ontologies', :as => :custom_ontologies
-  get '/login_as/:login_as' => 'login#login_as' , constraints: { login_as: /[0-z\.]+/ }
+  get '/login_as/:login_as' => 'login#login_as' , constraints: { login_as:  /[\d\w\.\-\%\+ ]+/ }
   post '/login/send_pass', to: 'login#send_pass'
 
   # History
