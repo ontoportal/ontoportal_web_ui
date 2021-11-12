@@ -140,6 +140,6 @@
           = submit_tag "Update", :class=>"greenbtn btn btn-outline-secondary btn-sm "
           \&nbsp;&nbsp;&nbsp;&nbsp;
           - unless params[:password].eql?("true")
-            = link_to "Change Password", edit_user_path(CGI.escape(@user.username), password: true)
+            = link_to "Change Password", edit_user_path(@user.username, password: true)
             -# use @user.username unstead of sessions
     %br/
