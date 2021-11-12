@@ -103,7 +103,7 @@ class UsersController < ApplicationController
         render action: "edit"
       else
         flash[:notice] = 'Account was successfully updated'
-        #TODO test if not same users to update
+
         if session[:user].username == @user.username
           session[:user].update_from_params(user_params)
         end
