@@ -15,8 +15,8 @@
       %th Account Name:
       %td= @user.username
     %tr
-      %td{:colspan => "2", :style => "text-align: right;"}
-        = link_to "Edit Information", "/accounts/#{CGI.escape(@user.username)}/edit"
+      %td{colspan: "2", style: "text-align: right;"}
+        = link_to "Edit Information", edit_user_path(url_encode(@user.username))
   %br/
   %span{style: "font-size: large; font-weight: bold;"}
     API Key
