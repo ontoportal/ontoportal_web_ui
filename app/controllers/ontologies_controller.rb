@@ -82,7 +82,9 @@ display_context: false, include: browse_attributes)
 
     @formats = Set.new
     #get fairscores of all ontologies
-    @fair_scores = get_fair_score("all")
+    @fair_scores = is_fairness_service_enabled? ?
+                     get_fair_score("all") : nil;
+
     @ontologies = []
     ontologies.each do |ont|
       o = {}
@@ -115,11 +117,11 @@ display_context: false, include: browse_attributes)
       o[:projects]         = ont.projects
       o[:notes]            = ont.notes
 
-      if !@fair_scores[ont.acronym].nil?
+      if !@fair_scores.nil? && !@fair_scores[ont.acronym].nil?
         o[:fairScore]            = @fair_scores[ont.acronym]["score"]
         o[:normalizedFairScore]  = @fair_scores[ont.acronym]["normalizedScore"]
-      elsif
-        o[:fairScore]            = 0
+      else
+        o[:fairScore]            = nil
         o[:normalizedFairScore]  = 0
       end
 
@@ -414,8 +416,12 @@ display_links: false, display_context: false)
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
     @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
 
-    #Call to fairness assesment service
-    @fair_scores_data = create_fair_scores_data(get_fair_score(@ontology.acronym).values.first)
+    #Call to fairness assessment service
+
+
+    tmp = is_fairness_service_enabled? ? get_fair_score(@ontology.acronym) : nil
+    @fair_scores_data = create_fair_scores_data(tmp.values.first) unless tmp.nil?
+
 
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
     # Only include metadata that we need for all other ontologies (faster)

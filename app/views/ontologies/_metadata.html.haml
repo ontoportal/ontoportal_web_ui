@@ -112,12 +112,14 @@
           %button{:id => "getMetadataBackXmlBtn", :class => "btn btn-primary"} RDF/XML
           -# Listener in bp_ontology_viewer.js.erb
     -# Fair score pane
-    %section.ont-metadata-card.ont-fair-score-card#fair-summary
-      %div.ont-section-toolbar
-        %header.pb-2.font-weight-bold
-          = render partial: "fair_score/fair_service_header"
-      %div#fair-score-charts-container
-        = render partial: "fairs_score"
+    - if is_fairness_service_enabled?
+      %section.ont-metadata-card.ont-fair-score-card#fair-summary
+        %div.ont-section-toolbar
+          %header.pb-2.font-weight-bold
+            = render partial: "fair_score/fair_service_header"
+        %div#fair-score-charts-container
+          = render partial: "fairs_score"
+
     -# Metrics pane
     %section.ont-metadata-card.ont-metrics-card
       %div.ont-section-toolbar

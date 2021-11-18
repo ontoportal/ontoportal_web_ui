@@ -248,8 +248,8 @@
 
         <div class="badges grid-25 grid-parent" ng-if="ontology.submission !== null && ontology.class_count > 0">
 
-          <a href="/ontologies/{{ontology.acronym}}#fair-details">
-            <div class="grid-33 badge_grid badge-fair" ng-if="ontology.fairScore"  >
+          <a href="/ontologies/{{ontology.acronym}}#fair-details" ng-if="ontology.fairScore !==null">
+            <div class="grid-33 badge_grid badge-fair">
               <div class="badge" title="{{ontology.normalizedFairScore}}%">
                 <div class="badge_title">FAIR score</div>
                 <div class="badge_count">{{ontology.fairScore}}</div>
