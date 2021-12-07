@@ -36,7 +36,7 @@ function parseReportDate(dateStr) {
   return dateObj.toLocaleString([], {month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit'});
 }
 
-let AjaxAction = function(httpMethod, operation, path, isLongOperation, params) {
+var AjaxAction = function(httpMethod, operation, path, isLongOperation, params) {
   params = params || {};
   this.httpMethod = httpMethod;
   this.operation = operation;
