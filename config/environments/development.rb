@@ -59,7 +59,7 @@ Rails.application.configure do
 
   # Add custom data attributes to sanitize allowed list
   config.action_view.sanitized_allowed_attributes = ['id', 'class', 'style', 'data-cls', 'data-ont']
-  
+
   config.file_watcher = ActiveSupport::FileUpdateChecker
 
   # Include BioPortal-specific configuration options
