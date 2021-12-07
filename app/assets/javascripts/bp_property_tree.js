@@ -165,9 +165,13 @@
         $.ajax({
           type: "GET",
           url: url,
-          data: {apikey: OPTIONS.apikey, include: "prefLabel,hasChildren", no_context: true},
+          data: {
+            apikey: OPTIONS.apikey, 
+            include: "prefLabel,hasChildren", 
+            no_context: true
+          },
           crossDomain: true,
-          contentType: 'json',
+          contentType: 'application/json',
           timeout: OPTIONS.timeout,
           success: function(response) {
             var nodes = obj.formatNodes(response.collection)
@@ -279,8 +283,12 @@
       ROOT.html($("<span>").html("Loading...").css("font-size", "smaller"));
       $.ajax({
         url: obj.determineHTTPS(OPTIONS.ncboUIURL) + "/ajax/properties/tree",
-        data: {apikey: OPTIONS.apikey, ontology: OPTIONS.ontology, no_context: true},
-        contentType: 'json',
+        data: {
+          apikey: OPTIONS.apikey, 
+          ontology: OPTIONS.ontology, 
+          no_context: true
+        },
+        contentType: 'application/json',
         crossDomain: true,
         success: function(roots) {
           if (roots.length > 0) {
@@ -296,6 +304,10 @@
           }
 
           if (typeof OPTIONS.onInit === 'function') { OPTIONS.onInit(); }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(`NCBOPropertyTree error: ${textStatus} : ${errorThrown}`);
+          ROOT.html($("<span>").html(`Problem retrieving properties: ${errorThrown}`).css("font-size", "smaller")); 
         }
       });
     };
