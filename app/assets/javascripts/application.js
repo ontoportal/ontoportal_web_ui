@@ -29,8 +29,9 @@
 //= require bp_recommender
 //= require bp_property_tree
 //= require home
-//= require ontologies
 //= require fair_score
+//= require ontologies_instances
+//= require ontologies
 //= require projects
 //= require submissions
 //= require tooltipster.bundle.min
