@@ -5,6 +5,7 @@
   "description": "A starter project for AngularJS",
   "repository": "https://github.com/angular/angular-seed",
   "license": "MIT",
+  "type": "module",
   "devDependencies": {
     "karma": "~0.10",
     "protractor": "^1.1.1",

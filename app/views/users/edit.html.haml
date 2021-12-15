@@ -23,9 +23,33 @@
         "user[password_confirmation]": {
           required: true,
           equalTo: "#user_password",
-        },
+        }
       }
-    });
+    })
+
+    jQuery('#user_info').on('submit', function (event) {
+        event.preventDefault()
+        let admin_checkbox = jQuery('input[id=user_admin]')
+        if(admin_checkbox.attr('checked') && !admin_checkbox.hasClass('admin')){
+          alertify.confirm('Are you sure you want to make this user an admin?', (e) => {
+            if(e){
+              this.submit()
+            }else {
+              jQuery('input[type="submit"]').prop('disabled',false)
+            }
+          })
+        } else if (!admin_checkbox.attr('checked') && admin_checkbox.hasClass('admin')){
+          alertify.confirm('Are you sure you want to revoke admin privileges for this user?',  (e) => {
+            if(e){
+              this.submit()
+            }else {
+              jQuery('input[type="submit"]').prop('disabled',false)
+            }
+          })
+        }else {
+          this.submit()
+        }
+      })
   });
 
   (function (jQuery) {
@@ -58,13 +82,10 @@
           jQuery(this).change();
       });
     }
+  })
 
 
-    //ondomready
-    jQuery(function () {
-      listFilter(jQuery("#select_ontologies"), jQuery("#ont_list"));
-    });
-  }(jQuery));
+
 %div{:style => "padding: 1em;"}
   = form_for(:user, :url => user_path(@user.username), :html => { :id => "user_info", :method => :put }) do |f|
     - unless @errors.nil?
@@ -88,7 +109,13 @@
             Email Address *
           %td
             = text_field :user, :email, value: @user.email
-            \&nbsp;&nbsp;
+        - if session[:user].admin?
+          %tr
+            %th
+              Grant admin privileges
+            %td
+              = check_box :user, :admin?, { class: (@user.admin? ? 'admin' : '') }
+        \&nbsp;&nbsp;
         = hidden_field :user, :username, value: @user.username
       - else
         = hidden_field :user, :username, value: @user.username
@@ -107,10 +134,12 @@
           %td
             = password_field :user, :password_confirmation
             &nbsp;&nbsp;
+
       %tr
         %td{:align => "left", :colspan => "2"}
-          = submit_tag "Update", :class=>"greenbtn"
+          = submit_tag "Update", :class=>"greenbtn btn btn-outline-secondary btn-sm "
           \&nbsp;&nbsp;&nbsp;&nbsp;
           - unless params[:password].eql?("true")
-            = link_to "Change Password", edit_user_path(CGI.escape(session[:user].username), password: true)
+            = link_to "Change Password", edit_user_path(@user.username, password: true)
+            -# use @user.username unstead of sessions
     %br/

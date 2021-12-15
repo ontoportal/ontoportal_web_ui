@@ -1,6 +1,6 @@
 - @title = "Account Information"
 
-%div{:style => "padding: 1em;"}
+%div{style: "padding: 1em;"}
   %table.form
     %tr
       %th.top First Name:
@@ -15,13 +15,13 @@
       %th Account Name:
       %td= @user.username
     %tr
-      %td{:colspan => "2", :style => "text-align: right;"}
-        %a{:href => "/accounts/#{CGI.escape(@user.username)}/edit"} Edit Information
+      %td{colspan: "2", style: "text-align: right;"}
+        = link_to "Edit Information", edit_user_path(url_encode(@user.username))
   %br/
-  %span{:style => "font-size: large; font-weight: bold;"}
+  %span{style: "font-size: large; font-weight: bold;"}
     API Key
-    %span{:style => "font-weight: normal; padding-left: 1em; font-size: x-small; color: gray;"} Your API Key can be used to access the NCBO API (REST) Services
-  %p{:style => "padding: .5em 0 0 1em;"}
+    %span{style: "font-weight: normal; padding-left: 1em; font-size: x-small; color: gray;"} Your API Key can be used to access the NCBO API (REST) Services
+  %p{style: "padding: .5em 0 0 1em;"}
     = session[:user].apikey
   %br/
 
@@ -30,38 +30,38 @@
     %h2 Subscriptions
     %table
       - @user.subscription.each do |subscription|
-        - ont = subscription[:ontology].split('/').last # ensure we get the acronym
-        - type = subscription[:notification_type].downcase
-        %tr{:style => "padding: 5px;"}
-          %td{:style => "padding: 5px;"}
-            %a{:href => "/ontologies/#{ont}"}= ont
-          %td{:style => "padding: 5px;"}
+        - ont = (!subscription[:ontology].nil? ? subscription[:ontology].split('/').last: nil) # ensure we get the acronym
+        - type = (!subscription[:notification_type].nil? ? subscription[:notification_type].downcase : nil)
+        %tr{style: "padding: 5px;"}
+          %td{style: "padding: 5px;"}
+            %a{href: "/ontologies/#{ont}"}= ont
+          %td{style: "padding: 5px;"}
             - if type == "notes"
-              %a{:href => "/ontologies/#{ont}?p=notes"}= type
+              %a{href: "/ontologies/#{ont}?p=notes"}= type
             - else
               = type
-          %td{:style => "padding: 5px;"}
-            .subscribe_to_ontology{:style => "float: left;"}
+          %td{style: "padding: 5px;"}
+            .subscribe_to_ontology{style: "float: left;"}
               = raw subscribe_ontology_button(ont, @user)
     %br/
 
   - unless @user_projects.nil? || @user_projects.empty?
-    %h2#user_projects{:style => "font-size: large;"}
+    %h2#user_projects{style: "font-size: large;"}
       Projects Created
-    %ul{:style => "padding-left: 1em;"}
+    %ul{style: "padding-left: 1em;"}
       - @user_projects.each do |project|
         %li
-          %a{:href => "/projects/#{project.acronym}"}= project.name
+          %a{href: "/projects/#{project.acronym}"}= project.name
     %br/
 
   - unless @admin_ontologies.nil? || @admin_ontologies.empty?
-    %h2#admin_ontologies{:style => "font-size: large;"}
+    %h2#admin_ontologies{style: "font-size: large;"}
       Submitted Ontologies
-    %ul{:style => "padding-left: 1em;"}
+    %ul{style: "padding-left: 1em;"}
       - @admin_ontologies.each do |ont|
         %li
-          %a{:href => "/ontologies/#{ont.acronym}"}= ont.name
-    %br/
+          %a{href: "/ontologies/#{ont.acronym}"}= ont.name
+    %br
 
   :javascript
     jQuery(document).ready(function(){
@@ -104,16 +104,16 @@
       jQuery("#custom_ontologies").hide();
     }
 
-  %h2#custom_ontology_set{:style => "font-size: large;"}
+  %h2#custom_ontology_set{style: "font-size: large;"}
     Custom Ontology Set
   #custom_ontologies.enable-lists
     - if at_slice?
-      %p{:style => "padding-left: 7px; font-size: 10pt; margin: -3px 0 7px;"}
+      %p{style: "padding-left: 7px; font-size: 10pt; margin: -3px 0 7px;"}
         Please
-        %a{:href => "#{$UI_URL}/account"} visit the main site
+        %a{href: "#{$UI_URL}/account"} visit the main site
         to modify your Custom Ontology Set.
     - else
-      %p{:style => "padding-left: 7px; font-size: 9pt; color: gray; margin: -3px 0 7px;"}
+      %p{style: "padding-left: 7px; font-size: 9pt; color: gray; margin: -3px 0 7px;"}
         %b
           Customize your #{$SITE} display:
         Pick the ontologies that you want to see and #{$SITE} will hide all other ontologies. <br/>
@@ -121,8 +121,8 @@
           Note:
         this feature works only when you are logged in.
       %p
-        %span{:style => "font-weight: normal; font-size: 9pt; padding-left: 7px;"}
-          %a#edit_custom_ontologies{:href => "javascript:void(0);"} select ontologies
+        %span{style: "font-weight: normal; font-size: 9pt; padding-left: 7px;"}
+          %a#edit_custom_ontologies{href: "javascript:void(0);"} select ontologies
       - if @user_ontologies && !@user_ontologies.empty?
         %ul
           - @user_ontologies.each do |ont|
@@ -130,10 +130,10 @@
             %li
               #{ont.name} (#{ont.acronym})
       - else
-        %p{:style => "padding-left: 7px;"} You haven't picked any ontologies yet
-  #custom_ontologies_picker{:style => "left: -9999px; position: absolute;"}
+        %p{style: "padding-left: 7px;"} You haven't picked any ontologies yet
+  #custom_ontologies_picker{style: "left: -9999px; position: absolute;"}
     = form_tag custom_ontologies_path(url_encode(@user.username)) do
       - selected = @user.customOntology.map {|o| LinkedData::Client::Models::Ontology.get(o).acronym}
-      - locals = { :custom_ontologies => @all_ontologies, :selected_ontologies => selected, :sel_text => "Select Custom Ontologies" }
-      = render :partial => "shared/ontology_picker", :locals => locals
-      = submit_tag "Save Custom Ontologies", :class => "link_button"
+      - locals = { custom_ontologies: @all_ontologies, selected_ontologies: selected, sel_text: "Select Custom Ontologies" }
+      = render partial: "shared/ontology_picker", locals: locals
+      = submit_tag "Save Custom Ontologies", class: "link_button"

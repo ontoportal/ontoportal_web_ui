@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '5.2.4.3'
+gem 'rails', '5.2.6'
 
 gem 'sass-rails', '~> 5.0'
 #gem 'coffee-rails', '~> 4.1.0'
@@ -14,7 +14,7 @@ gem 'bootstrap', '~> 4.1.0'
 gem 'chart-js-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'select2-rails', git: 'https://github.com/argerim/select2-rails.git', tag: 'v4.0.7'
+gem 'select2-rails'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
@@ -47,7 +47,8 @@ gem 'thin'
 gem 'turnout'
 gem 'will_paginate', '~> 3.0'
 
-gem 'ontologies_api_client', :git => "https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git", :branch => 'ncbo_merge_master'
+gem 'ontologies_api_client', git: "https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git", tag: "v2.0.2-merged"
+
 
 group :staging, :production do
   # application monitoring

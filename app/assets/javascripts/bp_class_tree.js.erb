@@ -33,7 +33,7 @@ function resetNotesTable() {
 function insertNotesTable(aData) {
   jQuery(".notes_table_container").append(jQuery("#notes_list_table_clone").clone());
   jQuery(".notes_table_container #notes_list_table_clone").attr("id", "notes_list_table");
-  wireTableWithData(jQuery("#notes_list_table"), aData);
+//  wireTableWithData(jQuery("#notes_list_table"), aData);
 }
 
 var simpleTreeCollection;
@@ -86,7 +86,6 @@ function initClassTree() {
   });
 };
 
-
 function nodeClicked(node_id) {
   // Get current html and store data in cache (to account for changes since the cache was retrieved)
   setCacheCurrent();
@@ -94,7 +93,7 @@ function nodeClicked(node_id) {
   // Reset notesTable for next node
   notesTable = null;
 
-  if(node_id == 0){
+  if (node_id == 0) {
     alert("Sorry, we cannot display all the classes at this level in the hierarchy because there are too many of them. Please select another class or use the Search to find a specific concept in this ontology");
     return;
   }
@@ -102,14 +101,18 @@ function nodeClicked(node_id) {
   setConcept(node_id);
 
   // Deal with permalink
-  var concept_uri = (node_id.indexOf("http://") == 0 || node_id.indexOf(encodeURIComponent("http://")) == 0 );
+  var concept_uri = (node_id.indexOf("http://") == 0 || node_id.indexOf(encodeURIComponent("http://")) == 0);
   var purl_anchor = concept_uri ? "?conceptid="+node_id : "/"+node_id;
   var selectedTab = jQuery("#bd_content div.tabs li.selected a").attr("href").slice(1);
   jQuery("a.class-permalink").data("current-purl", jQuery(document).data().bp.ont_viewer.purl_prefix + purl_anchor);
 
+  // Ontolobridge Request New Term save of form values when jumping between terms
+  if (typeof obTriggerNewTermRequestFormSave === "function") {
+    obTriggerNewTermRequestFormSave();
+  }
+
   if (getCache(node_id) != null) {
     var tabData = getCache(node_id);
-    var loc;
 
     // Make the clicked node active
     jQuery("a.active").removeClass("active");
@@ -134,7 +137,6 @@ function nodeClicked(node_id) {
     jQuery.get('/ajax_concepts/'+jQuery(document).data().bp.ont_viewer.ontology_id+'/?conceptid='+node_id+'&callback=load',
       function(data){
         var tabData = data.split("|||");
-        var loc;
 
         // the tabs
         jQuery('#visualization_content').html(tabData[0]);
