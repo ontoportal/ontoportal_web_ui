@@ -68,7 +68,10 @@ $MULTIPLE_RECOGNIZERS = false
 $RESTRICTED_DOWNLOADS = ["MDRFRE", "WHO-ARTFRE", "MSHFRE", "CIM-10"]
 
 # Ontolobridge endpoint url
-$ONTOLOBRIDGE_BASE_URL = "http://dev3.ccs.miami.edu:8080/ontolobridge/REST"
+$ONTOLOBRIDGE_BASE_URL = "https://ontolobridge.ccs.miami.edu/api-test/requests"
+
+# Ontolobridge authentication token
+$ONTOLOBRIDGE_AUTHENTICATION_TOKEN = "Token Uq2pae73ktMtmgjUgtnhEOuHxr9sZeuK"
 
 # Ontologies for which to enable the new term request (Ontolobridge) tab
 $NEW_TERM_REQUEST_ONTOLOGIES = []

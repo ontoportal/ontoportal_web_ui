@@ -71,7 +71,7 @@
             %li.list-group-item 
               %div.d-flex.justify-content-between.align-items-center
                 %span Ontologies
-                %span= @ont_count
+                %span= number_with_delimiter(@ont_count)
             %li.list-group-item
               %div.d-flex.justify-content-between.align-items-center
                 %span Classes

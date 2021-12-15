@@ -1,4 +1,3 @@
-
 class AdminController < ApplicationController
   layout :determine_layout
   before_action :cache_setup
@@ -6,11 +5,13 @@ class AdminController < ApplicationController
   DEBUG_BLACKLIST = [:"$,", :$ADDITIONAL_ONTOLOGY_DETAILS, :$rdebug_state, :$PROGRAM_NAME, :$LOADED_FEATURES, :$KCODE, :$-i, :$rails_rake_task, :$$, :$gems_build_rake_task, :$daemons_stop_proc, :$VERBOSE, :$DAEMONS_ARGV, :$daemons_sigterm, :$DEBUG_BEFORE, :$stdout, :$-0, :$-l, :$-I, :$DEBUG, :$', :$gems_rake_task, :$_, :$CODERAY_DEBUG, :$-F, :$", :$0, :$=, :$FILENAME, :$?, :$!, :$rdebug_in_irb, :$-K, :$TESTING, :$fileutils_rb_have_lchmod, :$EMAIL_EXCEPTIONS, :$binding, :$-v, :$>, :$SAFE, :$/, :$fileutils_rb_have_lchown, :$-p, :$-W, :$:, :$__dbg_interface, :$stderr, :$\, :$&, :$<, :$debug, :$;, :$~, :$-a, :$DEBUG_RDOC, :$CGI_ENV, :$LOAD_PATH, :$-d, :$*, :$., :$-w, :$+, :$@, :$`, :$stdin, :$1, :$2, :$3, :$4, :$5, :$6, :$7, :$8, :$9]
   ADMIN_URL = "#{LinkedData::Client.settings.rest_url}/admin/"
   ONTOLOGIES_URL = "#{ADMIN_URL}ontologies_report"
+  USERS_URL = "#{LinkedData::Client.settings.rest_url}/users"
   ONTOLOGY_URL = lambda { |acronym| "#{ADMIN_URL}ontologies/#{acronym}" }
   PARSE_LOG_URL = lambda { |acronym| "#{ONTOLOGY_URL.call(acronym)}/log" }
   REPORT_NEVER_GENERATED = "NEVER GENERATED"
 
   def index
+    @users = LinkedData::Client::Models::User.all
     if session[:user].nil? || !session[:user].admin?
       redirect_to :controller => 'login', :action => 'index', :redirect => '/admin'
     else
@@ -200,6 +201,12 @@ class AdminController < ApplicationController
     render :json => response
   end
 
+  def users
+    response = _users
+    render :json => response
+  end
+
+
   private
 
   def cache_setup
@@ -285,6 +292,20 @@ class AdminController < ApplicationController
       response[:errors] = response[:errors][0...-2] unless response[:errors].empty?
     end
     render :json => response
+  end
+
+  def _users
+    response = {users: Hash.new , errors: '', success: ''}
+    start = Time.now
+    begin
+      response[:users] = JSON.parse(LinkedData::Client::HTTP.get(USERS_URL, {include: 'all'}, raw: true))
+
+      response[:success] = "users successfully retrieved in  #{Time.now - start}s"
+    LOG.add :debug, "Users - retrieved #{response[:users].length} users in #{Time.now - start}s"
+    rescue Exception => e
+      response[:errors] = "Problem retrieving users  - #{e.message}"
+    end
+    response
   end
 
 end

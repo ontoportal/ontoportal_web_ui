@@ -29,7 +29,7 @@
     - if session[:user].nil?
       = link_to "Request New Term", login_index_path, style: "font-size: .9em;"
     - else
-      = link_to "Request New Term", "javascript:void(0);", class: "add_request_term", style: "font-size: .9em;", data: { parent_id: "#{@concept.id}", parent_type: "class" }
+      = link_to "Request New Term", "javascript:void(0);", class: "add_request_term", style: "font-size: .9em;", data: { parent_id: "#{@concept.id}" }
   %div.request_term_form_div{style: "display: none; clear: both; padding-top: 1em;"}
 
 :javascript
@@ -40,5 +40,10 @@
 
     if (!g_prefLabel) {
       g_prefLabel = '#{@concept.id}';
+    }
+    var isPopulated = window.localStorage.getItem('request_term_form_populated');
+
+    if (isPopulated) {
+      addRequestTermBox("#{@concept.id}");
     }
   });

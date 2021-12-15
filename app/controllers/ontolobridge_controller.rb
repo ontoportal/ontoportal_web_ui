@@ -27,7 +27,8 @@ class OntolobridgeController < ApplicationController
         end
       }
 
-      response_raw = RestClient.post("#{$ONTOLOBRIDGE_BASE_URL}#{endpoint}", h_params)
+      headers = {'Authorization' => $ONTOLOBRIDGE_AUTHENTICATION_TOKEN}
+      response_raw = RestClient.post("#{$ONTOLOBRIDGE_BASE_URL}#{endpoint}", h_params, headers)
       code = response_raw.code
       response.merge!(MultiJson.load(response_raw))
     rescue RestClient::BadRequest => e

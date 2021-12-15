@@ -1,14 +1,13 @@
 function bindAddRequestTermClick() {
   jQuery("a.add_request_term").live('click', function(){
     var id = jQuery(this).attr("data-parent-id");
-    var type = jQuery(this).attr("data-parent-type");
-    addRequestTermBox(id, type, this);
+    addRequestTermBox(id);
   });
 }
 
 function bindCancelRequestTermClick() {
   jQuery(".request_term_form_div .cancel").live('click', function() {
-    removeRequestTermBox(this);
+    removeRequestTermBox();
   });
 }
 
@@ -65,23 +64,26 @@ function preventNewTermInstructionsFormSubmit() {
   });
 }
 
-function clearProgressMessage() {
-  jQuery("#progress_message").hide();
-  jQuery("#progress_message").html("");
-};
+function clearProgressMessage(parentContainerID) {
+  var progMsgElem = jQuery("#" + parentContainerID + " #progress_message");
+  progMsgElem.hide();
+  progMsgElem.html("");
+}
 
-function showProgressMessage() {
-  clearProgressMessage();
+function showProgressMessage(parentContainerID) {
+  clearProgressMessage(parentContainerID);
   var msg = "Saving...";
-  jQuery("#progress_message").text(msg).html();
-  jQuery("#progress_message").show();
+  var progMsgElem = jQuery("#" + parentContainerID + " #progress_message");
+  progMsgElem.text(msg).html();
+  progMsgElem.show();
 }
 
 function saveNewTermInstructions() {
   var params = jQuery('#new_term_instructions_form').serialize();
   var newInstructions = jQuery('#new_term_instructions').html().trim();
   params += '&new_term_instructions=' + newInstructions;
-  showProgressMessage();
+  var parentContainerID = 'new_term_instructions_container';
+  showProgressMessage(parentContainerID);
 
   jQuery.ajax({
     type: "POST",
@@ -104,7 +106,7 @@ function saveNewTermInstructions() {
       showStatusMessages('', errorThrown);
     },
     complete: function(request, textStatus) {
-      clearProgressMessage();
+      clearProgressMessage(parentContainerID);
       hideButtons();
     }
   });
@@ -127,6 +129,9 @@ function bindRequestTermSaveClick() {
     params += "&submitter=" + user["firstName"] + " " + user["lastName"];
   }
 
+  var parentContainerID = 'proposal_buttons';
+  showProgressMessage(parentContainerID);
+
   jQuery.ajax({
     type: "POST",
     url: "/ontolobridge",
@@ -139,8 +144,7 @@ function bindRequestTermSaveClick() {
         showStatusMessages('', data[0]["error"]);
       } else {
         var msg = "<strong>A new term request has been submitted successfully:</strong><br/><br/>";
-        var button = jQuery(".request_term_form_div .save");
-        removeRequestTermBox(button);
+        removeRequestTermBox();
 
         for (var i in data[0]) {
           msg += i + ": " + data[0][i] + "<br/>";
@@ -151,19 +155,42 @@ function bindRequestTermSaveClick() {
     error: function(request, textStatus, errorThrown) {
       error = "The following error has occurred: " + errorThrown + ". Please try again.";
       showStatusMessages(success, error);
+    },
+    complete: function(request, textStatus) {
+      clearProgressMessage(parentContainerID);
     }
   });
 }
 
-function removeRequestTermBox(button) {
-  jQuery(button).closest(".request_term_form_div").html("");
+function removeRequestTermBox() {
+  jQuery(".request_term_form_div").html("");
 }
 
-function addRequestTermBox(id, type, button) {
+function addRequestTermBox(id) {
   clearStatusMessages();
-  var formContainer = jQuery(button).parents(".notes_list_container").children(".request_term_form_div");
-  requestTermFields(id, formContainer);
+  var formContainer = jQuery(".request_term_form_div");
+  var requestTermForm = requestTermFields(id, formContainer);
+  var formID = requestTermForm.attr('id');
+  var isPopulated = window.localStorage.getItem(formID + '_populated');
+
+  if (isPopulated) {
+    for (var key in window.localStorage) {
+      if (key.startsWith(formID)) {
+        var elemID = key.replace(formID + '_', '');
+        var elem = jQuery('#' + formID + ' #' + elemID);
+
+        if (elem.attr('type') === "checkbox") {
+          elem.prop("checked", true);
+        } else if (elem.length > 0) {
+          var val = window.localStorage.getItem(key);
+          elem.val(val);
+        }
+        window.localStorage.removeItem(key);
+      }
+    }
+  }
   formContainer.show();
+  jQuery("#label").focus();
 }
 
 function clearStatusMessages() {
@@ -175,8 +202,11 @@ function clearStatusMessages() {
 
 function showStatusMessages(success, error) {
   if (success.length > 0) {
-    jQuery("#ob_success_message").html(success);
-    jQuery("#ob_success_message").show();
+      let ob = jQuery("#ob_success_message")
+      console.log('show ob message')
+      console.log(ob)
+      ob.html(success);
+      ob.show();
   }
 
   if (error.length > 0) {
@@ -186,20 +216,24 @@ function showStatusMessages(success, error) {
 }
 
 function requestTermButtons() {
-  var button_submit = jQuery("<button>")
+  var buttonSubmit = jQuery("<button>")
     .attr("class", "btn")
     .attr("type", "submit")
     .attr("onclick", "")
     .addClass("save")
     .css("margin-right", "5px")
     .html("Submit");
-  var button_cancel = jQuery("<button>")
+  var buttonCancel = jQuery("<button>")
     .attr("class", "btn")
     .attr("type", "button")
     .attr("onclick", "")
     .addClass("cancel")
     .html("Cancel");
-  return button_submit.add(button_cancel);
+  var progressMessage = jQuery("<span>")
+    .attr("id", "progress_message")
+    .css("display", "none")
+    .css("margin-left", "20px");
+  return buttonSubmit.add(buttonCancel).add(progressMessage);
 }
 
 function appendTextArea(id, placeholder, div, isRequired, invalidMessage) {
@@ -279,8 +313,7 @@ function requestTermFields(id, container) {
   requestTermForm.append(jQuery("<input>").attr("type", "checkbox").attr("name", "notification_request").attr("id", "notification_request").css("height", "15px")).append("&nbsp;&nbsp;");
   requestTermForm.append(jQuery("<input>").attr("type", "hidden").attr("name", "superclass").attr("id", "superclass").attr("value", id));
   requestTermForm.append(jQuery("<label>").attr("for", "notification_request").attr("id", "notification_request").css("margin", "0 0 10px 0").append("Email submitter when there is a status change"));
-  requestTermForm.append(jQuery("<div>").addClass("proposal_buttons").append(requestTermButtons()));
-
+  requestTermForm.append(jQuery("<div>").attr("id", "proposal_buttons").append(requestTermButtons()));
   container.append(requestTermForm);
 
   requestTermForm.submit(function(e) {
@@ -288,13 +321,37 @@ function requestTermFields(id, container) {
     bindRequestTermSaveClick();
     return false;
   });
+
+  return requestTermForm;
+}
+
+function obTriggerNewTermRequestFormSave() {
+  var ont = jQuery(document).data().bp.ontology;
+  var ob_onts = jQuery(document).data().bp.ontolobridge_ontologies;
+
+  // Execute only if ontology is Ontolobridge-enabled
+  if (Object.entries(ont).length > 0 && ob_onts && ob_onts.length > 0 && ob_onts.includes(ont["acronym"])) {
+    var formName = 'request_term_form';
+
+    jQuery("#" + formName + " input, #" + formName + " textarea").each(function() {
+      var input = jQuery(this);
+      var val = input.val().trim();
+
+      if (input.attr('type') === "checkbox" && input.prop('checked') === true) {
+        window.localStorage.setItem(formName + '_' + input.attr('name'), 'checkbox_checked');
+        window.localStorage.setItem(formName + '_populated', true);
+      } else if (input.attr('type') !== "hidden" && input.attr('type') !== "checkbox" && val) {
+        window.localStorage.setItem(formName + '_' + input.attr('name'), val);
+        window.localStorage.setItem(formName + '_populated', true);
+      }
+    });
+  }
 }
 
 jQuery(document).ready(function() {
   clearStatusMessages();
   bindAddRequestTermClick();
   bindCancelRequestTermClick();
-
   preventNewTermInstructionsFormSubmit();
   bindNewTermInstructionsSubmit();
   bindNewTermInstructionsCancel();
