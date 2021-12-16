@@ -5,6 +5,8 @@ class OntologiesController < ApplicationController
   require 'cgi'
 
   helper :concepts
+  helper :fair_score
+
   layout :determine_layout
 
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
@@ -12,6 +14,7 @@ class OntologiesController < ApplicationController
   KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties"])
   EXTERNAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/ExternalMappings"
   INTERPORTAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/InterportalMappings"
+
 
   # GET /ontologies
   # GET /ontologies.xml
@@ -37,13 +40,16 @@ class OntologiesController < ApplicationController
     end
   end
 
+  include FairScoreHelper
   include ActionView::Helpers::NumberHelper
   include OntologiesHelper
+
   def index
     @app_name = "FacetedBrowsing"
     @app_dir = "/browse"
     @base_path = @app_dir
-    ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params + ",viewOf", include_views: true, display_context: false)
+    ontologies = LinkedData::Client::Models::Ontology.all(
+include: LinkedData::Client::Models::Ontology.include_params + ",viewOf", include_views: true, display_context: false)
     ontologies_hash = Hash[ontologies.map {|o| [o.id, o] }]
     @admin = session[:user] ? session[:user].admin? : false
     @development = Rails.env.development?
@@ -53,7 +59,8 @@ class OntologiesController < ApplicationController
 
     # The attributes used when retrieving the submission. We are not retrieving all attributes to be faster
     browse_attributes = "ontology,acronym,submissionStatus,description,pullLocation,creationDate,released,name,naturalLanguage,hasOntologyLanguage,hasFormalityLevel,isOfType,contact"
-    submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true, display_links: false, display_context: false, include: browse_attributes)
+    submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true, display_links: false, 
+display_context: false, include: browse_attributes)
     submissions_map = Hash[submissions.map {|sub| [sub.ontology.acronym, sub] }]
 
     @categories = LinkedData::Client::Models::Category.all(display_links: false, display_context: false)
@@ -74,6 +81,9 @@ class OntologiesController < ApplicationController
     metrics_hash = get_metrics_hash
 
     @formats = Set.new
+    #get fairscores of all ontologies
+    @fair_scores = is_fairness_service_enabled? ?
+                     get_fair_score("all") : nil;
 
     @ontologies = []
     ontologies.each do |ont|
@@ -106,6 +116,14 @@ class OntologiesController < ApplicationController
       o[:acronym]          = ont.acronym
       o[:projects]         = ont.projects
       o[:notes]            = ont.notes
+
+      if !@fair_scores.nil? && !@fair_scores[ont.acronym].nil?
+        o[:fairScore]            = @fair_scores[ont.acronym]["score"]
+        o[:normalizedFairScore]  = @fair_scores[ont.acronym]["normalizedScore"]
+      else
+        o[:fairScore]            = nil
+        o[:normalizedFairScore]  = 0
+      end
 
       if o[:type].eql?("ontology_view")
         unless ontologies_hash[ont.viewOf].blank?
@@ -147,6 +165,7 @@ class OntologiesController < ApplicationController
 
     @ontologies.sort! {|a,b| b[:popularity] <=> a[:popularity]}
 
+
     render 'browse'
   end
 
@@ -165,7 +184,7 @@ class OntologiesController < ApplicationController
       @mappings = get_concept_mappings(@concept)
       @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     end
-    
+
     update_tab(@ontology, @concept.id)
 
     if request.xhr?
@@ -235,14 +254,16 @@ class OntologiesController < ApplicationController
             onto_info = {:id => acronym.to_s, :name => "External Mappings", :viewOf => nil}
             @ontologies_mapping_count << {'ontology' => onto_info, 'count' => count}
           elsif acronym.to_s.start_with?(INTERPORTAL_MAPPINGS_GRAPH)
-            onto_info = {:id => acronym.to_s, :name => "Interportal Mappings - #{acronym.to_s.split("/")[-1].upcase}", :viewOf => nil}
+            onto_info = {:id => acronym.to_s, :name => "Interportal Mappings - #{acronym.to_s.split("/")[-1].upcase}", 
+:viewOf => nil}
             @ontologies_mapping_count << {'ontology' => onto_info, 'count' => count}
           end
         end
         next unless ontology
         @ontologies_mapping_count << {'ontology' => onto_info, 'count' => count}
       end
-      @ontologies_mapping_count.sort! {|a,b| a['ontology'][:name].downcase <=> b['ontology'][:name].downcase } unless @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
+      @ontologies_mapping_count.sort! {|a,b|
+ a['ontology'][:name].downcase <=> b['ontology'][:name].downcase } unless @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
     end
     @ontology_id = @ontology.acronym
     @ontology_label = @ontology.name
@@ -255,7 +276,8 @@ class OntologiesController < ApplicationController
 
   def new
     @ontology = LinkedData::Client::Models::Ontology.new
-    @ontologies =  LinkedData::Client::Models::Ontology.all(include: "acronym", include_views: true, display_links: false, display_context: false)
+    @ontologies =  LinkedData::Client::Models::Ontology.all(include: "acronym", include_views: true, 
+display_links: false, display_context: false)
     @categories = LinkedData::Client::Models::Category.all
     @groups = LinkedData::Client::Models::Group.all
     @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
@@ -313,8 +335,8 @@ class OntologiesController < ApplicationController
     # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     not_found if @ontology.nil?
-    
-    # Handle the case where an ontology is converted to summary only. 
+
+    # Handle the case where an ontology is converted to summary only.
     # See: https://github.com/ncbo/bioportal_web_ui/issues/133.
     if @ontology.summaryOnly && params[:p].present?
       pages = KNOWN_PAGES - ["summary", "notes"]
@@ -388,14 +410,23 @@ class OntologiesController < ApplicationController
       render plain: @ontology.to_jsonld
       return
     end
-    
+
     @metrics = @ontology.explore.metrics rescue []
     @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created} || []
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
     @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
+
+    #Call to fairness assessment service
+
+
+    tmp = is_fairness_service_enabled? ? get_fair_score(@ontology.acronym) : nil
+    @fair_scores_data = create_fair_scores_data(tmp.values.first) unless tmp.nil?
+
+
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
     # Only include metadata that we need for all other ontologies (faster)
-    @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,submissionStatus,hasOntologyLanguage,version"}).sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
+    @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,submissionStatus,hasOntologyLanguage,version"}).sort {|a,b|
+ b.submissionId.to_i <=> a.submissionId.to_i } || []
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
     # Get the latest submission, not necessarily the latest 'ready' submission
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")

@@ -1,6 +1,9 @@
 class HomeController < ApplicationController
   layout :determine_layout
 
+
+  include FairScoreHelper
+
   def index
     @ontologies_views = LinkedData::Client::Models::Ontology.all(include_views: true)
     @ontologies = @ontologies_views.select {|o| !o.viewOf}
@@ -70,6 +73,8 @@ class HomeController < ApplicationController
       @anal_ont_names[ont.acronym] = ont.name
       @anal_ont_numbers << visits[:views]
     end
+
+
   end
 
   def render_layout_partial

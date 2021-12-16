@@ -366,6 +366,8 @@ module OntologiesHelper
     @visits_data = visits_data
   end
 
+
+
   def acronyms(ontologies)
     ontologies.present? ? ontologies.map { |ont| ont.acronym } : []
   end

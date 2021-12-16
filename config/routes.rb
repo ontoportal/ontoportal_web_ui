@@ -71,7 +71,12 @@ Rails.application.routes.draw do
   # Ontologies
   get '/ontologies/view/edit/:id' => 'ontologies#edit_view', :constraints => { id: /[^\/?]+/ }
   get '/ontologies/view/new/:id' => 'ontologies#new_view'
-  get '/ontologies/virtual/:ontology' => 'ontologies#virtual', :as => :ontology_virtual
+  get '/ontologies/virtual/:ontology
+
+
+
+
+' => 'ontologies#virtual', :as => :ontology_virtual
   get '/ontologies/success/:id' => 'ontologies#submit_success'
   match '/ontologies/:acronym' => 'ontologies#update', via: [:get, :post]
   match '/ontologies/:acronym/submissions/:id' => 'submissions#update', via: [:get, :post]
@@ -86,7 +91,7 @@ Rails.application.routes.draw do
 
   # Notes
   get 'ontologies/:ontology/notes/:noteid', to: 'notes#virtual_show', as: :note_virtual, noteid: /.+/
-  
+
   # Ajax
   get '/ajax/' => 'ajax_proxy#get', :as => :ajax
   get '/ajax_concepts/:ontology/' => 'concepts#show', :constraints => { id: /[^\/?]+/ }
@@ -103,6 +108,8 @@ Rails.application.routes.draw do
   get '/ajax/classes/treeview' => 'concepts#show_tree'
   get '/ajax/properties/tree' => 'concepts#property_tree'
   get '/ajax/biomixer' => 'concepts#biomixer'
+  get '/ajax/fair_score/html' => 'fair_score#details_html'
+  get '/ajax/fair_score/json' => 'fair_score#details_json'
 
   # User
   get '/logout' => 'login#destroy', :as => :logout
@@ -132,6 +139,7 @@ Rails.application.routes.draw do
   match '/admin/ontologies/:acronym/log' => 'admin#parse_log', via: [:get]
   match '/admin/update_info' => 'admin#update_info', via: [:get]
   match '/admin/update_check_enabled' => 'admin#update_check_enabled', via: [:get]
+  match '/admin/users' => 'admin#users', via: [:get]
 
 
   # Ontolobridge

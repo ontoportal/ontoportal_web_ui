@@ -23,7 +23,12 @@ class UsersController < ApplicationController
             else
               LinkedData::Client::Models::User.find(session[:user].id)
             end
+
     @all_ontologies = LinkedData::Client::Models::Ontology.all(ignore_custom_ontologies: true)
+
+    logger.info 'user show'
+    logger.info @user.bring_remaining
+    logger.info @user
     @user_ontologies = @user.customOntology
 
     ## Copied from home controller , account action

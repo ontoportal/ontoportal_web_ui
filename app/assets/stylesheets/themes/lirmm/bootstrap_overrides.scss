@@ -9,12 +9,15 @@ a i {
   color: $color-primary;
 }
 
-.btn-info, .btn-outline-primary:hover, .btn-primary {
+.btn-info, .btn-outline-primary:hover, .btn-primary ,  .nav-pills .nav-link.active{
   background-color: $color-primary !important;
   border-color: $color-primary !important;
   color: #fff !important;
 }
-
+.btn-outline-primary{
+  border-color: $color-primary !important;
+  color:  $color-primary !important;
+}
 .btn-danger {
   color: #fff !important;
 }
