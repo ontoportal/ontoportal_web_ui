@@ -166,26 +166,16 @@ body.ontologies.index {
   font-size: 11px;
 }
 .badge_grid {
+  padding-bottom: 10px;
   float: right !important;
 }
-.badge {
-  border-radius: 5px;
-  text-align: center;
-  max-width: 60px;
-  height: 45px;
-  max-height: 45px;
-  border: solid $color-primary thin;
-}
-.badge:hover {
-  /*box-shadow: 0px 0px 10px 5px rgba(25, 25, 25, .5);*/
-  cursor: pointer;
-  /*border: none;*/
-}
+
 .badge_title {
   border-radius: 4px 4px 0 0;
   font-size: 12px;
   color: white;
   background-color: $color-primary;
+
 }
 .badge_count {
   border-radius: 0 0 4px 4px;
@@ -193,14 +183,14 @@ body.ontologies.index {
   font-size: 1.1em;
   font-weight: bold;
   color: $color-primary;
+  overflow-wrap: break-word;
 }
-.badge:hover .badge_count {
-  background-color: rgba(220, 235, 255, 0.79);
-}
+
+
   .ontology_badge {
     border-radius: 5px;
     text-align: center;
-    max-width: 60px;
+    max-width: 120px;
     height: 45px;
     max-height: 45px;
     border: solid $color-primary thin;
@@ -213,6 +203,23 @@ body.ontologies.index {
 
   .ontology_badge:hover .badge_count {
     background-color: rgba(220, 235, 255, 0.79);
+  }
+
+  .badge-fair{
+    .ontology_badge{
+      border-color: $color-warning;
+      .badge_title {
+        background-color: $color-warning;
+      }
+      .badge_count {
+        color: $color-warning;
+      }
+
+      &:hover .badge_count{
+        background-color: $color-warning;
+        color: white;
+      }
+    }
   }
 
 }
