@@ -112,7 +112,7 @@ Rails.application.routes.draw do
   get '/ajax/fair_score/json' => 'fair_score#details_json'
   get '/ajax/:ontology/instances' => 'instances#index_by_ontology'
   get '/ajax/:ontology/classes/:class/instances' => 'instances#index_by_class', :constraints => { class: /[^\/?]+/ }
-  get '/ajax/:ontology/instances/:instance' => 'instances#show', :constraints => { instance: /[0-z\.\-\%\*]+/ }
+  get '/ajax/:ontology/instances/:instance' => 'instances#show', :constraints => { instance: /[\d\w\.\-\%\*\+\(\)]+/ }
 
   # User
   get '/logout' => 'login#destroy', :as => :logout

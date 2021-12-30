@@ -24,6 +24,7 @@
 
     if (typeof state.data.p !== 'undefined') {
       if (state.data.p == "classes") {
+        InstancesHelper.setConceptId("root") // reset the conecpt id of instances if was set
         displayTree(state.data);
       }
       showOntologyContent(state.data.p);
@@ -76,7 +77,7 @@ function displayTree(data) {
   var ontology_version_id = jQuery(document).data().bp.ont_viewer.ontology_version_id;
   var ontology_name = jQuery(document).data().bp.ont_viewer.ontology_name;
   var org_site = jQuery(document).data().bp.ont_viewer.org_site;
-  var concept_id = jQuery(document).data().bp.ont_viewer.concept_id;
+  var concept_id = getClassesConceptId();
   var content_section = jQuery(document).data().bp.ont_viewer.content_section;
   var concept_param = jQuery(document).data().bp.ont_viewer.concept_param;
   var concept_name = jQuery(document).data().bp.ont_viewer.concept_name;
@@ -96,7 +97,6 @@ function displayTree(data) {
 
   }
   else {
-
     var new_concept_param = (typeof new_concept_id === 'undefined') ? "" : "&conceptid=" + new_concept_id;
 
     if (typeof new_concept_id !== 'undefined') {
