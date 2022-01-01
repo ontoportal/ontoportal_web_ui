@@ -181,7 +181,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (8.2.0)
     nio4r (2.5.8)
-    nokogiri (1.12.5-x86_64-darwin)
+    nokogiri (1.12.5-x86_64-linux)
       racc (~> 1.4)
     oj (3.13.10)
     open_uri_redirections (0.2.1)
@@ -332,7 +332,7 @@ GEM
       nokogiri (~> 1.8)
 
 PLATFORMS
-  x86_64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   bootstrap (~> 4.1.0)
