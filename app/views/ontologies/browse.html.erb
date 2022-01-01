@@ -214,10 +214,10 @@
             </div>
           </a>
 
-          <a href="/ontologies/{{ontology.acronym}}?p=classes" ng-if="ontology.individual_count > 0 && ontology.format === 'SKOS'">
+          <a href="/ontologies/{{ontology.acronym}}?p=classes" ng-if="ontology.individual_count > 0 ">
             <div class="grid-50 badge_grid">
               <div class="ontology_badge">
-                <div class="badge_title">concepts</div>
+                <div class="badge_title">{{ontology.format === 'SKOS' ? "concepts" : "individuals"}}</div>
                 <div class="badge_count">{{ontology.individual_count_formatted}}</div>
               </div>
             </div>
@@ -247,8 +247,7 @@
   </div>
 </main>
 
-<!-- JS at end (before footer) -->
-<%= javascript_include_tag "application" %>
+
 
 <script>
   jQuery(document).data().bp.ontologies = <%=MultiJson.dump(@ontologies[0..19]).html_safe%>;
