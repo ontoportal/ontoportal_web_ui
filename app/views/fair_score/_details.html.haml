@@ -1,6 +1,5 @@
 :javascript
   let scrollY = window.getScrollTop()
-  console.log("init scroll: " + scrollY )
   $(document).ready(function(){
     $("#fair-details-content").scrollspy({
         target: "#fair-navbar",
@@ -9,7 +8,6 @@
 
     $("#fair-details-content").on('activate.bs.scrollspy', function (e) {
       window.scrollTo(0,scrollY)
-      console.log("move scroll: " + window.scrollY)
     })
 
   });
@@ -82,13 +80,13 @@
                     %div
                       -if !not_implemented?(question[1]) && !default_score?(question[1])
                         -if question[1]["points"]
-                          %button.btn.btn-outline-primary{'data-toggle':"collapse" ,'data-target':"#collapse-credits-"+question[0]}
+                          %button.btn.btn-outline-primary{'data-toggle':"collapse" ,'data-target':"#collapse-credits-"+get_name_with_out_dot(question[0])}
                             See possible credits
                         -if question[1]["properties"]
-                          %button.btn.btn-outline-primary{'data-toggle':"collapse" ,'data-target':"#collapse-properties-"+question[0]}
+                          %button.btn.btn-outline-primary{'data-toggle':"collapse" ,'data-target':"#collapse-properties-"+get_name_with_out_dot(question[0])}
                             See metadata used properties
                     %div.mt-2
-                      %div.collapse{id:"collapse-credits-"+question[0]}
+                      %div.collapse{id:"collapse-credits-"+get_name_with_out_dot(question[0])}
                         %div.card.p-3
                           - question[1]["points"].each do |point|
                             %ul.list-group.list-group-flush
@@ -98,7 +96,7 @@
                                 %span.badge.badge-pill.badge-primary
                                   = point["score"]
                       -if question[1]["properties"]
-                        %div.collapse{id:"collapse-properties-"+question[0]}
+                        %div.collapse{id:"collapse-properties-"+get_name_with_out_dot(question[0])}
                           %div.card.p-3{style:"font-size:18px"}
                             %div.d-flex.flex-wrap
                               - question[1]["properties"].each do |key, value|
