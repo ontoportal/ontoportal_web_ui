@@ -51,8 +51,6 @@ class FairScoreChartContainer{
                     reject("error")
                 }
             }).fail(function(err) {
-                console.log("failed")
-                console.log(err)
                 reject("error")
             })
         })
@@ -67,7 +65,6 @@ class FairScoreChartContainer{
                 this.charts.forEach( x => x.setFairScoreData(data))
                 this.#fillScoreSpans(data)
             }).catch(err => {
-                console.log(err)
                 this.hideLoader()
                 this.showMsgError()
             })
