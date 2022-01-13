@@ -37,6 +37,7 @@ class OntologiesController < ApplicationController
     end
   end
 
+  include InstancesHelper
   include ActionView::Helpers::NumberHelper
   include OntologiesHelper
   def index
@@ -151,7 +152,15 @@ class OntologiesController < ApplicationController
   end
 
   def classes
+    @instance_details, type = get_instance_and_type(params)
+
+
+    unless @instance_details.empty? || type.nil? || conceptid_param_exist?(params)
+      params[:conceptid] = type # set class id from the type of the specified instance id
+    end
+
     get_class(params)
+    @instances_concept_id = get_concept_id(params, @concept, @root)
 
     if ['application/ld+json', 'application/json'].include?(request.accept)
       render plain: @concept.to_jsonld, content_type: request.accept and return
@@ -166,14 +175,6 @@ class OntologiesController < ApplicationController
     end
     
     update_tab(@ontology, @concept.id)
-
-    # getting the original concept id in case we are getting the root concept
-    @instances_concept_id = (
-      if params[:conceptid].nil? || params[:conceptid].empty? || params[:conceptid].eql?('root')
-        @root.children.first.id
-      else
-        @concept.nil? ? '' : @concept.id
-      end)
 
     if request.xhr?
       render 'visualize', layout: false
