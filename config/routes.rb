@@ -78,7 +78,7 @@ Rails.application.routes.draw do
   get '/ontologies/:ontology_id/submissions/new' => 'submissions#new', :ontology_id => /.+/
   match '/ontologies/:ontology_id/submissions' => 'submissions#create', :ontology_id => /.+/, via: [:get, :post]
   get '/ontologies/:acronym/classes/:purl_conceptid', to: 'ontologies#show', constraints: { purl_conceptid: /[^\/]+/ }
-  get '/ontologies/:acronym/:purl_conceptid', to: 'ontologies#show', constraints: { purl_conceptid: /[^\/]+/ }
+  get '/ontologies/:acronym/: f', to: 'ontologies#show', constraints: { purl_conceptid: /[^\/]+/ }
   match '/ontologies/:acronym/submissions/:id/edit_metadata' => 'submissions#edit_metadata', via: [:get, :post]
 
   # Analytics
@@ -104,8 +104,8 @@ Rails.application.routes.draw do
   get '/ajax/properties/tree' => 'concepts#property_tree'
   get '/ajax/biomixer' => 'concepts#biomixer'
   get '/ajax/:ontology/instances' => 'instances#index_by_ontology'
-  get '/ajax/:ontology/classes/:class/instances' => 'instances#index_by_class', :constraints => { class: /[^\/?]+/ }
-  get '/ajax/:ontology/instances/:instance' => 'instances#show', :constraints => { instance: /[\d\w\.\-\%\*\+\(\)]+/ }
+  get '/ajax/:ontology/classes/:conceptid/instances' => 'instances#index_by_class', :constraints => { conceptid: /[^\/?]+/ }
+  get '/ajax/:ontology/instances/:instanceid' => 'instances#show', :constraints => { instanceid: /[\d\w\.\-\%\*\+\(\)]+/ }
 
   # User
   get '/logout' => 'login#destroy', :as => :logout
