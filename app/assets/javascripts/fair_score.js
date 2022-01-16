@@ -458,11 +458,10 @@ class FairScoreCriteriaBar extends  FairScoreChart{
 
                 for (const [key, value] of Object.entries(questions[tooltipModel.dataPoints[0].index])) {
                     let count = (value.state ? (value.state.success + value.state.average) : (value.score === value.maxCredits ? 1: 0) )
-                    let _class = count > 0  ? ((  value.score === value.maxCredits || count === resourceCount) ? 'badge-primary' : 'badge-info') : 'badge-danger'
-                    innerHtml+='<li class="list-group-item">'+
-                        '<strong>'+round((count / resourceCount) * 100)+'% ('+count+') </strong>'
-                        +' responded successfully to '+
-                        '<span class="font-italic">"'+ value.question+' "</span></li>'
+                    innerHtml+=`<li class="list-group-item">
+                        <strong>${round((count / resourceCount) * 100)} % (${count}) </strong>
+                        responded successfully to <strong>${key}: </strong>
+                        <span class="font-italic">"${value.question}"</span></li>`
                 }
                 innerHtml += '</ul></div>';
 
