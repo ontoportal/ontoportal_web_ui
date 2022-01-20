@@ -476,7 +476,7 @@ class FairScoreCriteriaBar extends  FairScoreChart{
                     let count = (value.state ? (value.state.success + value.state.average) : (value.score === value.maxCredits ? 1: 0) )
                     innerHtml+=`<li class="list-group-item">
                         <strong>${printScore(count,round((count / resourceCount) * 100))}</strong>
-                        responded successfully to <strong>${key}: </strong>
+                        responded successfully to: <strong>${key}: </strong>
                         <span class="font-italic">"${value.question}"</span></li>`
                 }
                 innerHtml += '</ul></div>';
