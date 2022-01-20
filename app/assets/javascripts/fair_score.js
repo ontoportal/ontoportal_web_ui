@@ -17,11 +17,15 @@ function getObtainedNotObtainedNA(scoresIn, portalMax , max , normalize = true){
     return {scores , notObtained , na}
 }
 
+function printScore(score, normalizedScore){
+    return score +" "+'('+normalizedScore+"%)"
+}
+
+
 class FairScoreChartContainer{
     constructor(fairChartsContainerId , charts) {
         this.fairChartsContainer = jQuery("#"+fairChartsContainerId)
         this.fairAverageScoreSpan = jQuery("#fair-score-average")
-
         this.fairMinScoreSpan = jQuery("#fair-score-min")
 
         this.fairMaxScoreSpan = jQuery("#fair-score-max")
@@ -101,38 +105,34 @@ class FairScoreChartContainer{
     #fillScoreSpans(data){
 
         if(this.fairAverageScoreSpan){
-            this.fairAverageScoreSpan.html(data.score +" "+'('+data.normalizedScore+"%)")
+            this.fairAverageScoreSpan.html(printScore(Math.ceil(data.score),data.normalizedScore))
         }
 
         if(data.resourceCount > 1){
-            if(this.fairMinScoreSpan){
-                this.fairMinScoreSpan.parent().parent().show()
-                this.fairMinScoreSpan.html(data.minScore +" "+'('+(round(data.minScore/data.maxCredits)*100)+"%)")
-            }
+            this.#showScoreLabel(this.fairMinScoreSpan, data.minScore, data.maxCredits)
+            this.#showScoreLabel(this.fairMaxScoreSpan, data.maxScore, data.maxCredits)
+            this.#showScoreLabel(this.fairMedianScoreSpan, data.medianScore, data.maxCredits)
 
-            if(this.fairMaxScoreSpan){
-                this.fairMaxScoreSpan.parent().parent().show()
-                this.fairMaxScoreSpan.html(data.maxScore +" "+'('+(round(data.maxScore/data.maxCredits)*100)+"%)")
-            }
-
-            if(this.fairMedianScoreSpan){
-                this.fairMedianScoreSpan.parent().parent().show()
-                this.fairMedianScoreSpan.html(data.medianScore+" "+'('+(round(data.medianScore/data.maxCredits)*100)+"%)")
-            }
         }else {
-            if(this.fairMinScoreSpan){
-                this.fairMinScoreSpan.parent().parent().hide()
-
-            }
-
-            if(this.fairMaxScoreSpan)
-                this.fairMaxScoreSpan.parent().parent().hide()
-
-            if(this.fairMedianScoreSpan)
-                this.fairMedianScoreSpan.parent().parent().hide()
+            this.#hideScoreLabel((this.fairMinScoreSpan))
+            this.#hideScoreLabel((this.fairMaxScoreSpan))
+            this.#hideScoreLabel((this.fairMedianScoreSpan))
         }
 
 
+    }
+
+    #showScoreLabel(elem, score , maxCredits){
+        if(elem){
+            elem.parent().parent().show()
+            elem.html(printScore(Math.ceil(score),round(score/maxCredits)*100))
+        }
+
+    }
+
+    #hideScoreLabel(elem){
+        if(elem)
+            elem.parent().parent().hide()
     }
 }
 
