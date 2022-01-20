@@ -208,6 +208,21 @@ class FairScorePrincipleBar extends  FairScoreChart{
                             beginAtZero: true
                         }
                     }]
+                },
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItem, data) {
+                            let score =jQuery(this._chart.canvas).data("scores")[tooltipItem.index]
+                            let maxScore =jQuery(this._chart.canvas).data("maxCredits")[tooltipItem.index]
+                            let portalMaxScore =jQuery(this._chart.canvas).data("portalMaxCredits")[tooltipItem.index]
+
+                            let normalizedScore = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]
+                            let na = maxScore - portalMaxScore
+                            let notObtained = portalMaxScore - score
+                            return  printScore([score, notObtained, na][tooltipItem.datasetIndex], normalizedScore)
+                        },
+
+                    }
                 }
             }
         }
@@ -287,7 +302,6 @@ class FairScoreCriteriaRadar extends FairScoreChart{
             function getBody(bodyItem) {
                 return bodyItem.lines;
             }
-
             // Set Text
             if (tooltipModel.body) {
                 let titleLines = tooltipModel.title || [];
@@ -362,7 +376,9 @@ class FairScoreCriteriaRadar extends FairScoreChart{
                     callbacks: {
                         label: function (tooltipItem, data) {
                             let scores =jQuery(this._chart.canvas).data("scores")
-                            return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + "% (" + scores[tooltipItem.index] + ")";
+                            let normalizedScore = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]
+                            let score = scores[tooltipItem.index]
+                            return  printScore(score, normalizedScore)
                         },
 
                     }
@@ -459,7 +475,7 @@ class FairScoreCriteriaBar extends  FairScoreChart{
                 for (const [key, value] of Object.entries(questions[tooltipModel.dataPoints[0].index])) {
                     let count = (value.state ? (value.state.success + value.state.average) : (value.score === value.maxCredits ? 1: 0) )
                     innerHtml+=`<li class="list-group-item">
-                        <strong>${round((count / resourceCount) * 100)} % (${count}) </strong>
+                        <strong>${printScore(count,round((count / resourceCount) * 100))}</strong>
                         responded successfully to <strong>${key}: </strong>
                         <span class="font-italic">"${value.question}"</span></li>`
                 }
@@ -542,9 +558,12 @@ class FairScoreCriteriaBar extends  FairScoreChart{
                             const scores = canvas.data('scores')
                             const portalMax = canvas.data("portalMaxCredits")
 
-                            return data.datasets[tooltipItem.datasetIndex].label +': '+
-                                data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + '% (' +
-                                Object.values(getObtainedNotObtainedNA(scores ,portalMax , max , false))[tooltipItem.datasetIndex][tooltipItem.index]+') '
+                            const label  = data.datasets[tooltipItem.datasetIndex].label
+                            const score =   data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]
+                            const normalizedScore =Object.values(getObtainedNotObtainedNA(scores ,portalMax , max , false))[tooltipItem.datasetIndex][tooltipItem.index]
+
+                            return  label +': '+ printScore(score, normalizedScore)
+
                         }
                     }
                 }

@@ -37,7 +37,7 @@
                 %div.progress.criterion-score-progress-bar
                   - if @fair_scores_data[:criteria][:normalizedScores][index] > 0
                     %div.progress-bar.bg-obtained_color{style:"width:#{@fair_scores_data[:criteria][:normalizedScores][index]}%"}
-                      #{@fair_scores_data[:criteria][:normalizedScores][index].round()}% (#{@fair_scores_data[:criteria][:scores][index]})
+                      #{@fair_scores_data[:criteria][:scores][index]} (#{@fair_scores_data[:criteria][:normalizedScores][index].round()}%)
 
                   - not_obtained_score = get_not_obtained_score(@fair_scores_data , index)
                   - not_obtained_score_normalized = get_not_obtained_score_normalized(@fair_scores_data , index)
@@ -47,10 +47,10 @@
 
                   -if not_obtained_score_normalized > 0
                     %div.progress-bar.bg-not-obtained_color{style:"width:#{not_obtained_score_normalized}%"}
-                      #{not_obtained_score_normalized}% (#{not_obtained_score})
+                      #{not_obtained_score} (#{not_obtained_score_normalized}%)
                   - if score_rest_normalized > 0
                     %div.progress-bar.bg-non-applicable_color{style:"width:#{score_rest_normalized}%"}
-                      #{score_rest_normalized}% (#{score_rest})
+                      #{score_rest} (#{score_rest_normalized}%)
             %div.card-body
               - @fair_scores_data[:criteria][:questions][index].each do |question|
                 %div.card.m-3{id:question[0]}
