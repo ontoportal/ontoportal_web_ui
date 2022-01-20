@@ -1,0 +1,25 @@
+:javascript
+  $("##{id}").ready(function() {
+    const ontology_acronym = "#{@ontology.acronym}"
+    const concept_id = "#{@instances_concept_id}"
+
+    // render the instances data table
+    const inst = InstancesTable.mount("##{id}" , ontology_acronym , concept_id)
+
+    //print the instance count append to the tab title
+    if(concept_id){
+       inst.dataTable.on("xhr" ,  () => {
+          $("#instances_count").text(inst.dataTable.ajax.json()["table"]["totalCount"])
+      })
+    }
+
+  })
+
+%div.ontologies_list_container.mt-3
+  %table.zebra{id: id,style:"width:100%; position:relative"}
+
+
+
+
+
+

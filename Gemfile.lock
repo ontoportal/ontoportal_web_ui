@@ -175,6 +175,8 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (8.3.0)
     nio4r (2.5.8)
+    nokogiri (1.13.1-x86_64-darwin)
+      racc (~> 1.4)
     nokogiri (1.13.1-x86_64-linux)
       racc (~> 1.4)
     oj (3.13.11)
@@ -298,6 +300,8 @@ GEM
     stackprof (0.2.17)
     stringio (3.0.1)
     temple (0.8.2)
+    terser (1.1.8)
+      execjs (>= 0.3.0, < 3)
     thin (1.8.1)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0, >= 1.0.4)
@@ -312,8 +316,6 @@ GEM
       tilt (>= 1.4, < 3)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
-    uglifier (4.2.0)
-      execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8)
@@ -326,6 +328,7 @@ GEM
       nokogiri (~> 1.8)
 
 PLATFORMS
+  x86_64-darwin-21
   x86_64-linux
 
 DEPENDENCIES
@@ -368,9 +371,9 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   select2-rails
   stackprof
+  terser (~> 1.1, >= 1.1.1)
   thin
   turnout
-  uglifier (>= 4.2.0)
   will_paginate (~> 3.0)
 
 BUNDLED WITH

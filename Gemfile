@@ -5,7 +5,7 @@ gem 'rails', '5.2.6'
 
 gem 'sass-rails', '~> 5.0'
 #gem 'coffee-rails', '~> 4.1.0'
-gem 'uglifier', '>= 4.2.0'
+gem 'terser', '~> 1.1', '>= 1.1.1'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 # gem 'duktape'
