@@ -465,7 +465,7 @@ class FairScoreCriteriaBar extends  FairScoreChart{
                     let style = 'background:' + colors.backgroundColor;
                     style += '; border-color:' + colors.borderColor;
                     style += '; border-width: 2px';
-                    style += '; flex-grow: 1';
+                    style += '; width: 100%';
                     innerHtml += '<span class="btn card-subtitle m-2 text-muted" style="'+ style+'">' + body + '</span>';
                 });
 
