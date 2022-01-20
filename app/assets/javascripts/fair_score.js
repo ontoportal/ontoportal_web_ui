@@ -17,11 +17,15 @@ function getObtainedNotObtainedNA(scoresIn, portalMax , max , normalize = true){
     return {scores , notObtained , na}
 }
 
+function printScore(score, normalizedScore){
+    return score +" "+'('+normalizedScore+"%)"
+}
+
+
 class FairScoreChartContainer{
     constructor(fairChartsContainerId , charts) {
         this.fairChartsContainer = jQuery("#"+fairChartsContainerId)
         this.fairAverageScoreSpan = jQuery("#fair-score-average")
-
         this.fairMinScoreSpan = jQuery("#fair-score-min")
 
         this.fairMaxScoreSpan = jQuery("#fair-score-max")
@@ -101,38 +105,34 @@ class FairScoreChartContainer{
     #fillScoreSpans(data){
 
         if(this.fairAverageScoreSpan){
-            this.fairAverageScoreSpan.html(data.score +" "+'('+data.normalizedScore+"%)")
+            this.fairAverageScoreSpan.html(printScore(Math.ceil(data.score),data.normalizedScore))
         }
 
         if(data.resourceCount > 1){
-            if(this.fairMinScoreSpan){
-                this.fairMinScoreSpan.parent().parent().show()
-                this.fairMinScoreSpan.html(data.minScore +" "+'('+(round(data.minScore/data.maxCredits)*100)+"%)")
-            }
+            this.#showScoreLabel(this.fairMinScoreSpan, data.minScore, data.maxCredits)
+            this.#showScoreLabel(this.fairMaxScoreSpan, data.maxScore, data.maxCredits)
+            this.#showScoreLabel(this.fairMedianScoreSpan, data.medianScore, data.maxCredits)
 
-            if(this.fairMaxScoreSpan){
-                this.fairMaxScoreSpan.parent().parent().show()
-                this.fairMaxScoreSpan.html(data.maxScore +" "+'('+(round(data.maxScore/data.maxCredits)*100)+"%)")
-            }
-
-            if(this.fairMedianScoreSpan){
-                this.fairMedianScoreSpan.parent().parent().show()
-                this.fairMedianScoreSpan.html(data.medianScore+" "+'('+(round(data.medianScore/data.maxCredits)*100)+"%)")
-            }
         }else {
-            if(this.fairMinScoreSpan){
-                this.fairMinScoreSpan.parent().parent().hide()
-
-            }
-
-            if(this.fairMaxScoreSpan)
-                this.fairMaxScoreSpan.parent().parent().hide()
-
-            if(this.fairMedianScoreSpan)
-                this.fairMedianScoreSpan.parent().parent().hide()
+            this.#hideScoreLabel((this.fairMinScoreSpan))
+            this.#hideScoreLabel((this.fairMaxScoreSpan))
+            this.#hideScoreLabel((this.fairMedianScoreSpan))
         }
 
 
+    }
+
+    #showScoreLabel(elem, score , maxCredits){
+        if(elem){
+            elem.parent().parent().show()
+            elem.html(printScore(Math.ceil(score),round(score/maxCredits)*100))
+        }
+
+    }
+
+    #hideScoreLabel(elem){
+        if(elem)
+            elem.parent().parent().hide()
     }
 }
 
@@ -208,6 +208,21 @@ class FairScorePrincipleBar extends  FairScoreChart{
                             beginAtZero: true
                         }
                     }]
+                },
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItem, data) {
+                            let score =jQuery(this._chart.canvas).data("scores")[tooltipItem.index]
+                            let maxScore =jQuery(this._chart.canvas).data("maxCredits")[tooltipItem.index]
+                            let portalMaxScore =jQuery(this._chart.canvas).data("portalMaxCredits")[tooltipItem.index]
+
+                            let normalizedScore = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]
+                            let na = maxScore - portalMaxScore
+                            let notObtained = portalMaxScore - score
+                            return  printScore([score, notObtained, na][tooltipItem.datasetIndex], normalizedScore)
+                        },
+
+                    }
                 }
             }
         }
@@ -287,7 +302,6 @@ class FairScoreCriteriaRadar extends FairScoreChart{
             function getBody(bodyItem) {
                 return bodyItem.lines;
             }
-
             // Set Text
             if (tooltipModel.body) {
                 let titleLines = tooltipModel.title || [];
@@ -362,7 +376,9 @@ class FairScoreCriteriaRadar extends FairScoreChart{
                     callbacks: {
                         label: function (tooltipItem, data) {
                             let scores =jQuery(this._chart.canvas).data("scores")
-                            return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + "% (" + scores[tooltipItem.index] + ")";
+                            let normalizedScore = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]
+                            let score = scores[tooltipItem.index]
+                            return  printScore(score, normalizedScore)
                         },
 
                     }
@@ -449,7 +465,7 @@ class FairScoreCriteriaBar extends  FairScoreChart{
                     let style = 'background:' + colors.backgroundColor;
                     style += '; border-color:' + colors.borderColor;
                     style += '; border-width: 2px';
-                    style += '; flex-grow: 1';
+                    style += '; width: 100%';
                     innerHtml += '<span class="btn card-subtitle m-2 text-muted" style="'+ style+'">' + body + '</span>';
                 });
 
@@ -459,8 +475,8 @@ class FairScoreCriteriaBar extends  FairScoreChart{
                 for (const [key, value] of Object.entries(questions[tooltipModel.dataPoints[0].index])) {
                     let count = (value.state ? (value.state.success + value.state.average) : (value.score === value.maxCredits ? 1: 0) )
                     innerHtml+=`<li class="list-group-item">
-                        <strong>${round((count / resourceCount) * 100)} % (${count}) </strong>
-                        responded successfully to <strong>${key}: </strong>
+                        <strong>${printScore(count,round((count / resourceCount) * 100))}</strong>
+                        responded successfully to: <strong>${key}: </strong>
                         <span class="font-italic">"${value.question}"</span></li>`
                 }
                 innerHtml += '</ul></div>';
@@ -542,9 +558,12 @@ class FairScoreCriteriaBar extends  FairScoreChart{
                             const scores = canvas.data('scores')
                             const portalMax = canvas.data("portalMaxCredits")
 
-                            return data.datasets[tooltipItem.datasetIndex].label +': '+
-                                data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] + '% (' +
-                                Object.values(getObtainedNotObtainedNA(scores ,portalMax , max , false))[tooltipItem.datasetIndex][tooltipItem.index]+') '
+                            const label  = data.datasets[tooltipItem.datasetIndex].label
+                            const score =   data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]
+                            const normalizedScore =Object.values(getObtainedNotObtainedNA(scores ,portalMax , max , false))[tooltipItem.datasetIndex][tooltipItem.index]
+
+                            return  label +': '+ printScore(score, normalizedScore)
+
                         }
                     }
                 }
