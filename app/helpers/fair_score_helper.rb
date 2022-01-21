@@ -105,5 +105,9 @@ module FairScoreHelper
   def get_name_with_out_dot(question)
     question.to_s.gsub(/\./,"")
   end
+
+  def print_score(score)
+    number_with_precision(score, precision: 2, strip_insignificant_zeros: true)
+  end
 end
 
