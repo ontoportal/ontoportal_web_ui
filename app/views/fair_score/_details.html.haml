@@ -21,11 +21,11 @@
           FAIRness assessment questions
         %nav.nav.nav-pills.flex-column
           - @fair_scores_data[:criteria][:labels].each_with_index  do |label , index|
-            %a.nav-link{href:"#"+label}
+            %a.nav-link{href:"#"+get_name_with_out_dot(label)}
               =label
             %nav.nav.pills.flex-column
               - @fair_scores_data[:criteria][:questions][index].each do |question|
-                %a.nav-link.my-1.ml-3.text-dark{href:"#"+question[0]}
+                %a.nav-link.my-1.ml-3.text-dark{href:"#"+get_name_with_out_dot(question[0])}
                   =question[0]
       %div.col-9#fair-details-content{style:"overflow: scroll;height: 70vh;"}
         %div.alert.alert-light
@@ -36,7 +36,7 @@
           %div
             This ontology repository implements #{mod_link} but does not necessity encode a metadata with the same properties (#{submission_link})
         - @fair_scores_data[:criteria][:labels].each_with_index  do |label , index|
-          %div.my-3.border{id:label}
+          %div.my-3.border{id:get_name_with_out_dot(label)}
             %div.py-3.px-4
               %h5.criterion-score-container
                 %div
@@ -60,7 +60,7 @@
                       #{score_rest} (#{score_rest_normalized}%)
             %div.card-body
               - @fair_scores_data[:criteria][:questions][index].each do |question|
-                %div.card.m-3{id:question[0]}
+                %div.card.m-3{id:get_name_with_out_dot(question[0])}
                   %div.card-body
                     %div.card-title.d-flex.justify-content-between
                       %h6.mr-2

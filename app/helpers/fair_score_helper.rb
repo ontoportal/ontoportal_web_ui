@@ -102,8 +102,8 @@ module FairScoreHelper
     (properties.nil? || properties.empty?) && score.positive?
   end
 
-  def get_name_with_out_dot(question)
-    question.to_s.gsub(/\./,"")
+  def get_name_with_out_dot(name)
+    name.to_s.gsub(/\./,"")
   end
 
   def print_score(score)
