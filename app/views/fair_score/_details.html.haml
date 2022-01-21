@@ -69,7 +69,7 @@
                                            end
                                            )}"}
                           %span.badge.badge-pill.badge-light
-                            #{question[1]["score"]} / #{question[1]["maxCredits"]}
+                            #{ print_score(question[1]["score"])} / #{print_score(question[1]["maxCredits"])}
                     %div.mb-3
                       -if not_implemented?(question[1])
                         %span.badge.badge-pill.badge-danger{style:"white-space:normal;font-size:14px"}
