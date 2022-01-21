@@ -28,6 +28,13 @@
                 %a.nav-link.my-1.ml-3.text-dark{href:"#"+question[0]}
                   =question[0]
       %div.col-9#fair-details-content{style:"overflow: scroll;height: 70vh;"}
+        %div.alert.alert-light
+          - mod_link =link_to "MOD1.4", "https://github.com/sifrproject/MOD-Ontology"
+          - submission_link =link_to "see the used properties",@rest_uri, target: "_blank"
+          %div
+            Metadata properties listed in the following are picked from #{mod_link}.
+          %div
+            This ontology repository implements #{mod_link} but does not necessity encode a metadata with the same properties (#{submission_link})
         - @fair_scores_data[:criteria][:labels].each_with_index  do |label , index|
           %div.my-3.border{id:label}
             %div.py-3.px-4
