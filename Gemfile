@@ -10,7 +10,7 @@ gem 'uglifier', '>= 4.2.0'
 # gem 'therubyracer', platforms: :ruby
 # gem 'duktape'
 
-gem 'bootstrap', '~> 4.1.0'
+gem 'bootstrap', '~> 4.2.0'
 gem 'chart-js-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
