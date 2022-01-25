@@ -49,7 +49,7 @@ gem 'thin'
 gem 'turnout'
 gem 'will_paginate', '~> 3.0'
 
-gem 'ontologies_api_client', :git => "https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git", :branch => 'ncbo_merge_master'
+gem 'ontologies_api_client', :git => "https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git", tag:"v2.0.2-merged"
 
 
 group :staging, :production do
