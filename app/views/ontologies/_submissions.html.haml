@@ -24,6 +24,7 @@
       %tr
         %th Version
         %th Released
+        %th Modified
         %th Uploaded
         - unless @ont_restricted
           %th Downloads
@@ -39,6 +40,8 @@
           = raw status_link(sub, @ontology, sub.submissionId==submission_readyId)
         %td
           = xmldatetime_to_date(sub.released) unless sub.released.nil?
+        %td
+          = xmldatetime_to_date(sub.modificationDate) unless sub.modificationDate.nil?
         %td
           = xmldatetime_to_date(sub.creationDate) unless sub.creationDate.nil?
         - unless @ont_restricted
