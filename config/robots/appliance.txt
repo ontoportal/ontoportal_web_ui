@@ -9,6 +9,7 @@ Disallow: /virtual
 Disallow: /visualize
 Disallow: /resource_index
 Disallow: /feedback
+Disallow: /ajax
 Crawl-delay: 5
 
 User-agent: SemrushBot
