@@ -9,11 +9,11 @@ class OntologiesController < ApplicationController
 
   layout :determine_layout
 
-  before_action :authorize_and_redirect, only: [:edit,:update,:create,:new]
-
-  KNOWN_PAGES = Set.new(['terms', 'classes', 'mappings', 'notes', 'widgets', 'summary', 'properties' ,'instances'])
-  EXTERNAL_MAPPINGS_GRAPH = 'http://data.bioontology.org/metadata/ExternalMappings'
-  INTERPORTAL_MAPPINGS_GRAPH = 'http://data.bioontology.org/metadata/InterportalMappings'
+  before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
+  before_action :submission_metadata, only: [:show]
+  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties"])
+  EXTERNAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/ExternalMappings"
+  INTERPORTAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/InterportalMappings"
 
 
   # GET /ontologies
