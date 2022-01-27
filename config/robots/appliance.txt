@@ -10,6 +10,8 @@ Disallow: /visualize
 Disallow: /resource_index
 Disallow: /feedback
 Disallow: /ajax
+Disallow: /javascripts
+Disalow: /widgets
 Crawl-delay: 5
 
 User-agent: SemrushBot
@@ -30,5 +32,10 @@ Disallow: /
 User-agent: AhrefsBot
 Disallow: /
 
+
 User agent: MTRobot
 Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
