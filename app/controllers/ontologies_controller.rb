@@ -9,7 +9,7 @@ class OntologiesController < ApplicationController
 
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
   before_action :submission_metadata, only: [:show]
-  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties"])
+  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties" ,"instances"])
   EXTERNAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/ExternalMappings"
   INTERPORTAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/InterportalMappings"
 
@@ -273,6 +273,17 @@ class OntologiesController < ApplicationController
     end
   end
 
+<<<<<<< Updated upstream
+=======
+  def instances
+    puts 'print instances'
+    if request.xhr?
+      render partial: 'instances', locals: { id: 'instances-data-table'}, layout: false
+    else
+      render partial: 'instances', locals: { id: 'instances-data-table'}, layout: 'ontology_viewer'
+    end
+  end
+>>>>>>> Stashed changes
   # GET /ontologies/ACRONYM
   # GET /ontologies/1.xml
   def show
