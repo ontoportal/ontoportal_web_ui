@@ -1,5 +1,5 @@
-%div.ont-metadata
 
+%div.ont-metadata
   -# Details pane
   %section.ont-metadata-card.ont-details-card
     %header.pb-2.font-weight-bold Details
@@ -91,7 +91,7 @@
             - @view_decorators.each do |view_decorator|
               %dt= view_decorator.linked_name
               %dd= view_decorator.description
-      
+
   %div.right-hand-content
     
     -# Misc links pane
@@ -111,7 +111,15 @@
           %button{:id => "getMetadataBackJsonldBtn", :class => "btn btn-primary"} Json-LD
           %button{:id => "getMetadataBackXmlBtn", :class => "btn btn-primary"} RDF/XML
           -# Listener in bp_ontology_viewer.js.erb
-    
+    -# Fair score pane
+    - if is_fairness_service_enabled?
+      %section.ont-metadata-card.ont-fair-score-card#fair-summary
+        %div.ont-section-toolbar
+          %header.pb-2.font-weight-bold
+            = render partial: "fair_score/fair_service_header"
+        %div#fair-score-charts-container
+          = render partial: "fairs_score"
+
     -# Metrics pane
     %section.ont-metadata-card.ont-metrics-card
       %div.ont-section-toolbar
@@ -151,7 +159,7 @@
             %td= number_with_delimiter(@metrics.classesWithNoDefinition)
 
     -# Visits pane
-    %section.ont-metadata-card.ont-analytics-card
+    %section.ont-metadata-card.ont-analytics-card.statistics_container
       %div.ont-section-toolbar
         %header.pb-2.font-weight-bold Visits
         - if visits_data(@ontology)

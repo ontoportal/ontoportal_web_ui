@@ -27,7 +27,6 @@
         InstancesHelper.setConceptId("root") // reset the conecpt id of instances if was set
         displayTree(state.data);
       }
-
       showOntologyContent(state.data.p);
     } else if (typeof state.url !== 'undefined') {
       if (window.location.hash != "") {
@@ -381,8 +380,11 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
   };
 };
 
+
+
+
+// Setup AJAX page objects
 (function(window,undefined) {
-  // Setup AJAX page objects
   jQuery.bioportal.ont_pages = [];
 
   jQuery.bioportal.ont_pages["classes"] = new jQuery.bioportal.OntologyPage("classes", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=classes&ajax=true" + jQuery(document).data().bp.ont_viewer.concept_param, "Problem retrieving classes", jQuery(document).data().bp.ont_viewer.ontology_name + jQuery(document).data().bp.ont_viewer.concept_name_title + " - Classes", "Classes", function() {
@@ -410,6 +412,8 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
 
   jQuery.bioportal.ont_pages["widgets"] = new jQuery.bioportal.OntologyPage("widgets", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=widgets&ajax=true", "Problem retrieving widgets", jQuery(document).data().bp.ont_viewer.ontology_name + " - Widgets", "Widgets");
 })(window);
+
+
 
 /**
  * Format submission metadata to be downloaded

@@ -48,7 +48,6 @@ Rails.application.configure do
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
   config.assets.debug = true
-
   # Suppress logger output for asset requests.
   config.assets.quiet = true
 
@@ -60,7 +59,7 @@ Rails.application.configure do
 
   # Add custom data attributes to sanitize allowed list
   config.action_view.sanitized_allowed_attributes = ['id', 'class', 'style', 'data-cls', 'data-ont']
-  
+
   config.file_watcher = ActiveSupport::FileUpdateChecker
 
   # Include BioPortal-specific configuration options

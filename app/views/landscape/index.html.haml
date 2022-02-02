@@ -1,5 +1,4 @@
 =javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"
-=javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"
 =javascript_include_tag "d3pie.min"
 =javascript_include_tag "jqcloud-1.0.4.min"
 =javascript_include_tag "vis.min"
@@ -100,7 +99,7 @@
       %div{:class => "row"}
         %div{:class => "col-md-6"}
           %h1 Most active people
-          %p Most mentionned people as contact, creator, contributor, curator.
+          %p Most mentioned people as contact, creator, contributor, curator.
           %div#peopleCloudChart{:style => "width: 100%; height: 350px; margin-top: 2em; border-right: 1px solid #ccc;"}
         %div{:class => "col-md-6"}
           %h1 Most active organizations
@@ -142,10 +141,16 @@
       %div#networkContainer{:style => "height: 80vh; width: 100%; border:1px solid #cecece;"}
         %div#ontologyNetwork
 
+  -if is_fairness_service_enabled?
+    %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
+    %h1
+      Ontology FAIRness Evaluator (O’FAIRe)
+    %div#fairness_assessment.p-2
+      = render partial: "fair_score_landscape"
+
   %hr{:style => "margin-top: 5em; margin-bottom: 5em;"}
   %div
     %h1 Average metrics
-
     %table.minimal.align-right{width: "30%", style: "margin-bottom: 3em;"}
       %tbody
         - for metric in @metrics_average

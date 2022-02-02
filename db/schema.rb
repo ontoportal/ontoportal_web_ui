@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2020_09_21_120918) do
 
-  create_table "analytics", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "analytics", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "segment"
     t.string "action"
     t.string "bp_slice"
@@ -23,13 +23,13 @@ ActiveRecord::Schema.define(version: 2020_09_21_120918) do
     t.datetime "updated_at"
   end
 
-  create_table "licenses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "licenses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.text "encrypted_key"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "ontologies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "ontologies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "acronym", null: false
     t.text "new_term_instructions"
     t.text "custom_message"
@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 2020_09_21_120918) do
     t.index ["acronym"], name: "index_ontologies_on_acronym", unique: true
   end
 
-  create_table "timeouts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "timeouts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "path"
     t.integer "ontology_id"
     t.text "concept_id"
@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 2020_09_21_120918) do
     t.timestamp "created"
   end
 
-  create_table "virtual_appliance_users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "virtual_appliance_users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"

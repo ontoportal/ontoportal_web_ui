@@ -35,7 +35,7 @@
                 = text_field_tag("query", nil, class: "form-control", placeholder: placeholder)
                 %div.input-group-append
                   = button_tag(type: "submit", class: "btn btn-primary", aria: {label: "Search for a class"}) do
-                    %i{class: "fas fa-search fa-lg", aria: {hidden: "true"}}              
+                    %i{class: "fas fa-search fa-lg", aria: {hidden: "true"}}
               %a{:href => "/search?opt=advanced"} Advanced Search
         -# Search for an ontology
         %div.card
@@ -68,7 +68,7 @@
         %div.card
           %div.card-header #{$SITE} Statistics #{"in full #{$SITE}" if at_slice?}
           %ul.list-group.list-group-flush
-            %li.list-group-item 
+            %li.list-group-item
               %div.d-flex.justify-content-between.align-items-center
                 %span Ontologies
                 %span= number_with_delimiter(@ont_count)
@@ -88,6 +88,9 @@
               %div.d-flex.justify-content-between.align-items-center
                 %span Users
                 %span= LinkedData::Client::Models::User.all.length
+  - if is_fairness_service_enabled?
+    %div#fair-home.row.mt-3
+      = render partial: "fair_score_home"
   %div.row.pt-3.extra
     %div.col
       %div.card-deck
@@ -123,6 +126,8 @@
                 - slice_link = "http://#{slice.acronym}.#{$UI_URL.sub("http://", "")}"
                 %li.list-group-item
                   = link_to slice_name, slice_link
+
+
 
   - $HOME_PAGE_LOGOS.to_a.each do |home_page_logos_row|
     - unless home_page_logos_row[:links].to_a.empty?

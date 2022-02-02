@@ -29,6 +29,7 @@ class ApplicationController < ActionController::Base
   EXPIRY_RECENT_MAPPINGS = 60 * 60     #  1:00 hours
   EXPIRY_ONTOLOGY_SIMPLIFIED = 60 * 1  #  0:01 minute
 
+
   $DATA_CATALOG_VALUES = {"https://biosharing.org/" => "BioSharing",
                          "http://aber-owl.net/ontology/" => "AberOWL",
                          "http://vest.agrisemantics.org/content/" => "VEST Registry",
@@ -60,6 +61,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   before_action :set_global_thread_values, :domain_ontology_set, :authorize_miniprofiler, :clean_empty_strings_from_params_arrays, :init_trial_license
+
+
 
   def set_global_thread_values
     Thread.current[:session] = session
@@ -142,7 +145,6 @@ class ApplicationController < ActionController::Base
         proxy_url: $PROXY_URL,
         biomixer_url: $BIOMIXER_URL,
         annotator_url: $ANNOTATOR_URL,
-        biomixer_url: $BIOMIXER_URL,
         ncbo_annotator_url: $NCBO_ANNOTATOR_URL,
         ncbo_apikey: $NCBO_API_KEY,
         interportal_hash: $INTERPORTAL_HASH,

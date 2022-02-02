@@ -22,7 +22,7 @@ class AnnotatorController < ApplicationController
     end 
     @semantic_types_for_select.sort! {|a,b| a[0] <=> b[0]}
     @semantic_groups_for_select.sort! {|a,b| a[0] <=> b[0]}
-    if !$MULTIPLE_RECOGNIZERS.nil? && $MULTIPLE_RECOGNIZERS = true
+    if !$MULTIPLE_RECOGNIZERS.nil? && $MULTIPLE_RECOGNIZERS == true
       # Get recognizers from ontologies_api only if asked
       @recognizers = parse_json(REST_URI + "/annotator/recognizers")
     else

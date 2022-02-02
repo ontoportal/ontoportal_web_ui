@@ -360,7 +360,7 @@ module ApplicationHelper
     # TODO: modify/copy CSS for subscribe_to_notes => subscribe_to_ontology
     spinner = '<span class="subscribe_spinner" style="display: none;">' + image_tag("spinners/spinner_000000_16px.gif", style: "vertical-align: text-bottom;") + '</span>'
     error = "<span style='color: red;' class='subscribe_error'></span>"
-    return "<a href='javascript:void(0);' class='subscribe_to_ontology link_button' #{params}>#{sub_text}</a> #{spinner} #{error}"
+    return "<a href='javascript:void(0);' class='subscribe_to_ontology btn btn-primary' #{params}>#{sub_text}</a> #{spinner} #{error}"
   end
 
   def subscribed_to_ontology?(ontology_acronym, user)

@@ -376,7 +376,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   select2-rails
   stackprof
-  terser (~> 1.1, >= 1.1.1)
+  terser (~> 1.1, >= 1.1.5)
   thin
   turnout
   will_paginate (~> 3.0)

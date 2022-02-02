@@ -34,6 +34,7 @@
 //= require_tree ./helpers/instances
 //= require_tree ./components/instances
 //= require ontologies
+//= require fair_score
 //= require projects
 //= require submissions
 //= require tooltipster.bundle.min
