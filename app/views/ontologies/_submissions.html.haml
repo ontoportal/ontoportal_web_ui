@@ -15,6 +15,20 @@
     }
   );
 
+  $(document).ready(function() {
+
+    $('.tooltip_link[title][title!=""]').tooltipster({
+      interactive: true,
+      position: "right",
+      contentAsHTML: true,
+      animation: 'fade',
+      delay: 200,
+      theme: 'tooltipster-shadow',
+      trigger: 'hover'
+    });
+  })
+
+
 - more_colspan = 4
 - more_colspan = 3 if @ont_restricted
 
@@ -22,11 +36,15 @@
   %table#ontology_versions.table.table-sm.table-striped
     %thead
       %tr
-        %th Version
-        %th Released
-        %th Uploaded
+        %th.align-middle Version
+        %th
+          = generate_attribute_text("released", "Released")
+        %th
+          = generate_attribute_text("modificationDate", "Modified")
+        %th
+          = generate_attribute_text("creationDate", "Uploaded")
         - unless @ont_restricted
-          %th Downloads
+          %th.align-middle Downloads
     - begin
       - submission_ready = @ontology.explore.latest_submission({:include_status => 'ready'})
       - submission_readyId = submission_ready.submissionId unless submission_ready.nil?
@@ -39,6 +57,8 @@
           = raw status_link(sub, @ontology, sub.submissionId==submission_readyId)
         %td
           = xmldatetime_to_date(sub.released) unless sub.released.nil?
+        %td
+          = xmldatetime_to_date(sub.modificationDate) unless sub.modificationDate.nil?
         %td
           = xmldatetime_to_date(sub.creationDate) unless sub.creationDate.nil?
         - unless @ont_restricted

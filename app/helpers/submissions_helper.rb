@@ -4,21 +4,13 @@ module SubmissionsHelper
     help_tooltip(options[:content], {}, 'fas fa-file-export', 'extractable-metadatum', options[:text]).html_safe
   end
 
-  # Generate the HTML label for every attributes
-  def generate_attribute_label(attr_label)
-    # Get the attribute hash corresponding to the given attribute
-    attr = @metadata.select{ |attr_hash| attr_hash["attribute"].to_s.eql?(attr_label) }.first
-    label_html = if !attr["extracted"].nil? && attr["extracted"] == true
-      extractable_metadatum_tooltip({ content: 'Extractable metadatum' })
-    end.to_s.html_safe
 
-    if !attr["label"].nil?
-      label_html << label_tag("submission_#{attr_label}", attr["label"], { class: 'form-label' })
-    else
-      label_html << label_tag("submission_#{attr_label}", attr_label.underscore.humanize, { class: 'form-label' })
-    end
+  def attribute_infos(attr_label)
+    @metadata.select{ |attr_hash| attr_hash["attribute"].to_s.eql?(attr_label) }.first
+  end
 
-    # Generate tooltip
+  def attribute_help_text(attr)
+
     if !attr["namespace"].nil?
       help_text = "&lt;strong&gt;#{attr["namespace"]}:#{attr["attribute"]}&lt;/strong&gt;"
     else
@@ -36,9 +28,26 @@ module SubmissionsHelper
     if (attr["helpText"] != nil)
       help_text << "&lt;br&gt;&lt;br&gt;#{attr["helpText"]}"
     end
+    help_text
+  end
+  # Generate the HTML label for every attributes
+  def generate_attribute_label(attr_label)
+    # Get the attribute hash corresponding to the given attribute
+    attr = attribute_infos(attr_label)
+    label_html = if !attr["extracted"].nil? && attr["extracted"] == true
+      extractable_metadatum_tooltip({ content: 'Extractable metadatum' })
+    end.to_s.html_safe
 
+    if !attr["label"].nil?
+      label_html << label_tag("submission_#{attr_label}", attr["label"], { class: 'form-label' })
+    else
+      label_html << label_tag("submission_#{attr_label}", attr_label.underscore.humanize, { class: 'form-label' })
+    end
+
+    # Generate tooltip
+    help_text = attribute_help_text(attr)
     label_html << help_tooltip(help_text, {:id => "tooltip#{attr["attribute"]}"}).html_safe
-    return label_html
+    label_html
   end
 
   # Generate the HTML input for every attributes.
@@ -232,7 +241,17 @@ module SubmissionsHelper
       return input_html
     end
   end
-  
+
+
+  def generate_attribute_text(attr_label , label)
+    attr = attribute_infos(attr_label)
+    label_html = "<div class='d-flex align-items-center'><span class='mr-1'>#{label}</span><span>"
+    # Generate tooltip
+    help_text = attribute_help_text(attr)
+    label_html << help_tooltip(help_text, {:id => "tooltip#{attr["attribute"]}"} ).html_safe
+    label_html << '</span></div>'
+    label_html.html_safe
+  end
   def ontologies_for_select
     
     @ontologies_for_select ||= LinkedData::Client::Models::Ontology.all.collect do |onto|

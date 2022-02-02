@@ -7,11 +7,11 @@ class OntologiesController < ApplicationController
   helper :concepts
   layout :determine_layout
 
-  before_action :authorize_and_redirect, only: [:edit,:update,:create,:new]
-
-  KNOWN_PAGES = Set.new(['terms', 'classes', 'mappings', 'notes', 'widgets', 'summary', 'properties' ,'instances'])
-  EXTERNAL_MAPPINGS_GRAPH = 'http://data.bioontology.org/metadata/ExternalMappings'
-  INTERPORTAL_MAPPINGS_GRAPH = 'http://data.bioontology.org/metadata/InterportalMappings'
+  before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
+  before_action :submission_metadata, only: [:show]
+  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties" ,"instances"])
+  EXTERNAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/ExternalMappings"
+  INTERPORTAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/InterportalMappings"
 
   # GET /ontologies
   # GET /ontologies.xml
@@ -413,7 +413,7 @@ class OntologiesController < ApplicationController
     @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
     # Only include metadata that we need for all other ontologies (faster)
-    @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,submissionStatus,hasOntologyLanguage,version"}).sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
+    @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,modificationDate,submissionStatus,hasOntologyLanguage,version"}).sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
     # Get the latest submission, not necessarily the latest 'ready' submission
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: '')
