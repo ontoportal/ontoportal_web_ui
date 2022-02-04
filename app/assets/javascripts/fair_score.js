@@ -105,7 +105,7 @@ class FairScoreChartContainer{
     #fillScoreSpans(data){
 
         if(this.fairAverageScoreSpan){
-            this.fairAverageScoreSpan.html(printScore(Math.ceil(data.score),data.normalizedScore))
+            this.fairAverageScoreSpan.html(printScore(data.score,data.normalizedScore))
         }
 
         if(data.resourceCount > 1){
@@ -125,7 +125,7 @@ class FairScoreChartContainer{
     #showScoreLabel(elem, score , maxCredits){
         if(elem){
             elem.parent().parent().show()
-            elem.html(printScore(Math.ceil(score),round(score/maxCredits)*100))
+            elem.html(printScore(score,round(score/maxCredits , 100)))
         }
 
     }
