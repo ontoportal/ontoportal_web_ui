@@ -83,8 +83,7 @@ display_context: false, include: browse_attributes)
 
     @formats = Set.new
     #get fairscores of all ontologies
-    @fair_scores = is_fairness_service_enabled? ?
-                     get_fair_score('all') : nil;
+    @fair_scores = fairness_service_enabled? ? get_fair_score('all') : nil;
 
     @ontologies = []
     ontologies.each do |ont|
@@ -435,9 +434,7 @@ display_links: false, display_context: false)
     @analytics = LinkedData::Client::HTTP.get(@ontology.links['analytics'])
 
     #Call to fairness assessment service
-
-
-    tmp = is_fairness_service_enabled? ? get_fair_score(@ontology.acronym) : nil
+    tmp = fairness_service_enabled? ? get_fair_score(@ontology.acronym) : nil
     @fair_scores_data = create_fair_scores_data(tmp.values.first) unless tmp.nil?
 
 
