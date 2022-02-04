@@ -247,7 +247,7 @@
 
 
 
-        <div class="badges grid-25 grid-parent" ng-if="ontology.submission !== null && ontology.class_count > 0">
+        <div class="badges grid-25 grid-parent" ng-if="ontology.submission !== null">
 
           <a href="/ontologies/{{ontology.acronym}}#fair-details" ng-if="ontology.fairScore !==null">
             <div class="grid-50 badge_grid badge-fair">
@@ -258,7 +258,7 @@
             </div>
           </a>
 
-          <a href="/ontologies/{{ontology.acronym}}?p=classes" ng-if="ontology.format !== 'SKOS'">
+          <a href="/ontologies/{{ontology.acronym}}?p=classes" ng-if="ontology.format !== 'SKOS' && ontology.class_count > 0">
             <div class="grid-50 badge_grid">
               <div class="ontology_badge">
                 <div class="badge_title">classes</div>
