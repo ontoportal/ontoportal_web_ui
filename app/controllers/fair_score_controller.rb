@@ -25,7 +25,7 @@ class FairScoreController < ApplicationController
         @fair_scores_data = create_fair_scores_data(tmp['combinedScores'], tmp['ontologies'].keys.length)
       else
         @rest_uri = "#{REST_URI}/ontologies/#{@ontologies}/latest_submission?display=all"
-        @fair_scores_data = create_fair_scores_data(get_fair_score(@ontologies).values.first,1)
+        @fair_scores_data = create_fair_scores_data(get_fair_score(@ontologies).values.first, 1)
       end
     rescue NameError
       raise StandardError, 'Error: load failed'

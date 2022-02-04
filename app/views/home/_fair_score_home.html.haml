@@ -30,9 +30,9 @@
           = render :partial => "shared/ontology_picker", locals: {sel_text: ""}
       %div.mt-2.text-center{style: "min-height: 260px"}
         %div.row#fair-score-charts-container
-          %div.col
+          %div.col-md-6.col-sm
             = render partial: "shared/fair_score_radar" , locals: {data: nil }
             %a.btn.btn-link{href:"/landscape#fairness_assessment"}
               See details
-          %div.col
+          %div.col-md-6.col-sm
             = render partial: "shared/fair_score_bars", locals: {data: nil}

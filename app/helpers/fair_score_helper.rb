@@ -1,55 +1,61 @@
 module FairScoreHelper
 
-  def is_fairness_service_enabled?
-    ! $FAIRNESS_DISABLED
-  end
-  def get_fairness_service_url
-    "#{$FAIRNESS_URL}?portal=#{$HOSTNAME.split('.')[0]}"
-  end
-  def get_fairness_json(ontologies_acronyms)
-    MultiJson.load(Faraday.get(get_fairness_service_url + "&ontologies=#{ontologies_acronyms}&combined=true").body.force_encoding('ISO-8859-1').encode('UTF-8'))
-  end
-  
-  def get_fair_score(ontologies_acronyms)
-    get_fairness_json(ontologies_acronyms)["ontologies"]
+  def user_apikey
+    session[:user].nil? ? '' : session[:user].apikey
   end
 
-  def get_fair_combined_score(ontologies_acronyms)
-    get_fairness_json(ontologies_acronyms)["combinedScores"]
+  def fairness_service_enabled?
+    !$FAIRNESS_DISABLED
   end
 
-  def create_fair_scores_data(fair_scores , count = nil)
+  def get_fairness_service_url(apikey = user_apikey)
+    "#{$FAIRNESS_URL}?portal=#{$HOSTNAME.split('.')[0]}#{apikey.nil? || apikey.empty? ? '' : "&apikey=#{apikey}"}"
+  end
+  def get_fairness_json(ontologies_acronyms, apikey = user_apikey)
+    MultiJson.load(Faraday.get(get_fairness_service_url(apikey) + "&ontologies=#{ontologies_acronyms}&combined").body.force_encoding('ISO-8859-1').encode('UTF-8'))
+  end
+
+  def get_fair_score(ontologies_acronyms, apikey = user_apikey)
+    get_fairness_json(ontologies_acronyms, apikey)['ontologies']
+  end
+
+  def get_fair_combined_score(ontologies_acronyms, apikey = user_apikey)
+    get_fairness_json(ontologies_acronyms, apikey)['combinedScores']
+  end
+
+
+  def create_fair_scores_data(fair_scores, count = nil)
     return nil if fair_scores.nil?
 
     fair_scores_data = {}
     fair_scores_data[:principles] = {labels:[] , scores:[] , normalizedScores: [] , maxCredits: [] , portalMaxCredits: []}
     fair_scores_data[:criteria] = { labels:[] , scores:[] , normalizedScores: [] , portalMaxCredits: [], questions: [] ,maxCredits: [] , descriptions: []}
-    fair_scores_data[:score] = fair_scores["score"].to_f.round(2)
-    fair_scores_data[:normalizedScore] = fair_scores["normalizedScore"].to_f.round(2)
-    fair_scores_data[:minScore] = fair_scores["minScore"].to_f.round(2)
-    fair_scores_data[:maxScore] = fair_scores["maxScore"].to_f.round(2)
-    fair_scores_data[:medianScore] = fair_scores["medianScore"].to_f.round(2)
-    fair_scores_data[:maxCredits] = fair_scores["maxCredits"].to_i
+    fair_scores_data[:score] = fair_scores['score'].to_f.round(2)
+    fair_scores_data[:normalizedScore] = fair_scores['normalizedScore'].to_f.round(2)
+    fair_scores_data[:minScore] = fair_scores['minScore'].to_f.round(2)
+    fair_scores_data[:maxScore] = fair_scores['maxScore'].to_f.round(2)
+    fair_scores_data[:medianScore] = fair_scores['medianScore'].to_f.round(2)
+    fair_scores_data[:maxCredits] = fair_scores['maxCredits'].to_i
     fair_scores_data[:resourceCount] = count unless  count.nil?
 
-    fair_scores.to_h.reject { |k,v| !(v.is_a? Hash) }.each do |key ,principle|
+    fair_scores.to_h.select { |k,v| (v.is_a? Hash) }.each do |key, principle|
 
       fair_scores_data[:principles][:labels] << key
-      fair_scores_data[:principles][:scores] << (principle["score"].to_f.round(2))
-      fair_scores_data[:principles][:normalizedScores] << (principle["normalizedScore"].to_f.round(2))
-      fair_scores_data[:principles][:maxCredits] << principle["maxCredits"]
-      fair_scores_data[:principles][:portalMaxCredits] << principle["portalMaxCredits"]
+      fair_scores_data[:principles][:scores] << (principle['score'].to_f.round(2))
+      fair_scores_data[:principles][:normalizedScores] << (principle['normalizedScore'].to_f.round(2))
+      fair_scores_data[:principles][:maxCredits] << principle['maxCredits']
+      fair_scores_data[:principles][:portalMaxCredits] << principle['portalMaxCredits']
 
-      principle.to_h.reject { |k,v| !(v.is_a? Hash)  }.each do  |key , criterion|
+      principle.to_h.select { |k,v| (v.is_a? Hash)  }.each do  |key , criterion|
         fair_scores_data[:criteria][:labels] << key
-        fair_scores_data[:criteria][:descriptions] << criterion["label"]
-        fair_scores_data[:criteria][:scores] << (criterion["score"].to_f.round(2))
-        fair_scores_data[:criteria][:normalizedScores] << (criterion["normalizedScore"].to_f.round(2))
+        fair_scores_data[:criteria][:descriptions] << criterion['label']
+        fair_scores_data[:criteria][:scores] << (criterion['score'].to_f.round(2))
+        fair_scores_data[:criteria][:normalizedScores] << (criterion['normalizedScore'].to_f.round(2))
 
-        fair_scores_data[:criteria][:questions] << criterion["results"]
+        fair_scores_data[:criteria][:questions] << criterion['results']
 
-        fair_scores_data[:criteria][:maxCredits] << criterion["maxCredits"]
-        fair_scores_data[:criteria][:portalMaxCredits] << criterion["portalMaxCredits"]
+        fair_scores_data[:criteria][:maxCredits] << criterion['maxCredits']
+        fair_scores_data[:criteria][:portalMaxCredits] << criterion['portalMaxCredits']
       end
     end
     fair_scores_data
@@ -90,20 +96,20 @@ module FairScoreHelper
   end
 
   def not_implemented?(question)
-    properties = question["properties"]
-    score = question ["score"]
+    properties = question['properties']
+    score = question ['score']
     (properties.nil? || properties.empty?) && score.zero?
   end
 
   def default_score?(question)
-    properties = question["properties"]
-    score = question ["score"]
+    properties = question['properties']
+    score = question ['score']
 
     (properties.nil? || properties.empty?) && score.positive?
   end
 
   def get_name_with_out_dot(name)
-    name.to_s.gsub(/\./,"")
+    name.to_s.gsub(/\./,'')
   end
 
   def print_score(score)

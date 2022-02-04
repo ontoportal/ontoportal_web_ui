@@ -88,7 +88,7 @@
               %div.d-flex.justify-content-between.align-items-center
                 %span Users
                 %span= LinkedData::Client::Models::User.all.length
-  - if is_fairness_service_enabled?
+  - if fairness_service_enabled?
     %div#fair-home.row.mt-3
       = render partial: "fair_score_home"
   %div.row.pt-3.extra
