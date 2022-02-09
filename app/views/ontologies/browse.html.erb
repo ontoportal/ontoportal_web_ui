@@ -142,7 +142,9 @@
           <label for="sort_order">Sort:</label>
           <select ng-model="ontology_sort_order">
             <option value="-popularity" selected="selected">Popular</option>
-            <option value="-class_count">Size</option>
+            <option value="name">Name</option>
+            <option value="-class_count">Classes count</option>
+            <option value="-individual_count">Instances/Concepts count</option>
             <option value="-project_count">Projects</option>
             <option value="-note_count">Notes</option>
             <!-- <option value="ratings">Rating</option> -->
@@ -206,7 +208,7 @@
 
         <div class="badges grid-25 grid-parent" ng-if="ontology.submission !== null && ontology.class_count > 0">
           <a href="/ontologies/{{ontology.acronym}}?p=classes" ng-if="ontology.format !== 'SKOS'">
-            <div class="grid-33 badge_grid">
+            <div class="grid-50 badge_grid">
               <div class="ontology_badge">
                 <div class="badge_title">classes</div>
                 <div class="badge_count">{{ontology.class_count_formatted}}</div>
@@ -214,17 +216,17 @@
             </div>
           </a>
 
-          <a href="/ontologies/{{ontology.acronym}}?p=classes" ng-if="ontology.individual_count > 0 && ontology.format === 'SKOS'">
-            <div class="grid-33 badge_grid">
-              <div class="badge">
-                <div class="badge_title">concepts</div>
+          <a href="/ontologies/{{ontology.acronym}}?p=classes" ng-if="ontology.individual_count > 0 ">
+            <div class="grid-50 badge_grid">
+              <div class="ontology_badge">
+                <div class="badge_title">{{ontology.format === 'SKOS' ? "concepts" : "instances"}}</div>
                 <div class="badge_count">{{ontology.individual_count_formatted}}</div>
               </div>
             </div>
           </a>
 
           <a href="/ontologies/{{ontology.acronym}}#projects_content">
-            <div class="grid-33 badge_grid" ng-if="ontology.projects.length > 0">
+            <div class="grid-50 badge_grid" ng-if="ontology.projects.length > 0">
               <div class="ontology_badge">
                 <div class="badge_title">projects</div>
                 <div class="badge_count">{{ontology.projects.length}}</div>
@@ -233,7 +235,7 @@
           </a>
 
           <a href="/ontologies/{{ontology.acronym}}?p=notes">
-            <div class="grid-33 badge_grid" ng-if="ontology.notes.length > 0">
+            <div class="grid-50 badge_grid" ng-if="ontology.notes.length > 0">
               <div class="ontology_badge">
                 <div class="badge_title">notes</div>
                 <div class="badge_count">{{ontology.notes.length}}</div>
@@ -247,8 +249,7 @@
   </div>
 </main>
 
-<!-- JS at end (before footer) -->
-<%= javascript_include_tag "application" %>
+
 
 <script>
   jQuery(document).data().bp.ontologies = <%=MultiJson.dump(@ontologies[0..19]).html_safe%>;
