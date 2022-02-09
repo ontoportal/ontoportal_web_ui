@@ -23,7 +23,7 @@ Rails.application.routes.draw do
 
   resources :ontologies do
     resources :submissions
-    get 'instances/:instance_id', to: 'instances#show', constraints: { instance_id: /[\d\w\.\-\%\*\+\(\)]+/ }
+    get 'instances/:instance_id', to: 'instances#show', constraints: { instance_id: /[^\/?]+/ }
   end
 
   resources :login
@@ -113,7 +113,6 @@ Rails.application.routes.draw do
   get '/ajax/fair_score/json' => 'fair_score#details_json'
   get '/ajax/:ontology/instances' => 'instances#index_by_ontology'
   get '/ajax/:ontology/classes/:conceptid/instances' => 'instances#index_by_class', :constraints => { conceptid: /[^\/?]+/ }
-  get '/ajax/:ontology/instances/:instanceid' => 'instances#show', :constraints => { instanceid: /[\d\w\.\-\%\*\+\(\)]+/ }
 
   # User
   get '/logout' => 'login#destroy', :as => :logout
