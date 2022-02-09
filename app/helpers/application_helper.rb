@@ -459,7 +459,7 @@ module ApplicationHelper
   def extract_label_from(uri)
     label = uri.to_s
     index = label.index('#')
-    if index > -1
+    if !index.nil?
       label = label[(index + 1) , uri.length-1]
     else
       index = label.rindex('/')
