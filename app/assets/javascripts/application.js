@@ -29,10 +29,10 @@
 //= require bp_recommender
 //= require bp_property_tree
 //= require home
+//= require fair_score
 //= require_tree ./helpers
 //= require_tree ./components
 //= require ontologies
-//= require fair_score
 //= require projects
 //= require submissions
 //= require tooltipster.bundle.min

@@ -175,6 +175,8 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (8.4.0)
     nio4r (2.5.8)
+    nokogiri (1.13.1-x86_64-darwin)
+      racc (~> 1.4)
     nokogiri (1.13.1-x86_64-linux)
       racc (~> 1.4)
     oj (3.13.11)
@@ -334,6 +336,7 @@ GEM
       nokogiri (~> 1.8)
 
 PLATFORMS
+  x86_64-darwin-21
   x86_64-linux
 
 DEPENDENCIES
@@ -376,7 +379,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   select2-rails
   stackprof
-  terser (~> 1.1, >= 1.1.5)
+  terser (~> 1.1, >= 1.1.1)
   thin
   turnout
   will_paginate (~> 3.0)

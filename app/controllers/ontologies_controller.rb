@@ -50,7 +50,7 @@ class OntologiesController < ApplicationController
     @app_dir = '/browse'
     @base_path = @app_dir
     ontologies = LinkedData::Client::Models::Ontology.all(
-include: LinkedData::Client::Models::Ontology.include_params + ",viewOf", include_views: true, display_context: false)
+include: LinkedData::Client::Models::Ontology.include_params + ',viewOf', include_views: true, display_context: false)
     ontologies_hash = Hash[ontologies.map {|o| [o.id, o] }]
     @admin = session[:user] ? session[:user].admin? : false
     @development = Rails.env.development?
@@ -59,7 +59,7 @@ include: LinkedData::Client::Models::Ontology.include_params + ",viewOf", includ
     #@metadata = submission_metadata
 
     # The attributes used when retrieving the submission. We are not retrieving all attributes to be faster
-    browse_attributes = "ontology,acronym,submissionStatus,description,pullLocation,creationDate,released,name,naturalLanguage,hasOntologyLanguage,hasFormalityLevel,isOfType,contact"
+    browse_attributes = 'ontology,acronym,submissionStatus,description,pullLocation,creationDate,released,name,naturalLanguage,hasOntologyLanguage,hasFormalityLevel,isOfType,contact'
     submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true, display_links: false, 
 display_context: false, include: browse_attributes)
     submissions_map = Hash[submissions.map {|sub| [sub.ontology.acronym, sub] }]
@@ -118,14 +118,14 @@ display_context: false, include: browse_attributes)
       o[:notes]            = ont.notes
 
       if !@fair_scores.nil? && !@fair_scores[ont.acronym].nil?
-        o[:fairScore]            = @fair_scores[ont.acronym]["score"]
-        o[:normalizedFairScore]  = @fair_scores[ont.acronym]["normalizedScore"]
+        o[:fairScore]            = @fair_scores[ont.acronym]['score']
+        o[:normalizedFairScore]  = @fair_scores[ont.acronym]['normalizedScore']
       else
         o[:fairScore]            = nil
         o[:normalizedFairScore]  = 0
       end
 
-      if o[:type].eql?("ontology_view")
+      if o[:type].eql?('ontology_view')
         unless ontologies_hash[ont.viewOf].blank?
           o[:viewOfOnt] = {
             name: ontologies_hash[ont.viewOf].name,
@@ -261,9 +261,9 @@ display_context: false, include: browse_attributes)
             onto_info = { id: acronym.to_s, name: 'External Mappings', viewOf: nil }
             @ontologies_mapping_count << { 'ontology' => onto_info, 'count' => count }
           elsif acronym.to_s.start_with?(INTERPORTAL_MAPPINGS_GRAPH)
-            onto_info = {:id => acronym.to_s, :name => "Interportal Mappings - #{acronym.to_s.split("/")[-1].upcase}", 
-:viewOf => nil}
-            @ontologies_mapping_count << {'ontology' => onto_info, 'count' => count}
+            onto_info = { id: acronym.to_s, name: "Interportal Mappings - #{acronym.to_s.split("/")[-1].upcase}", 
+viewOf: nil }
+            @ontologies_mapping_count << { 'ontology' => onto_info, 'count' => count }
           end
         end
         next unless ontology
@@ -283,7 +283,7 @@ display_context: false, include: browse_attributes)
 
   def new
     @ontology = LinkedData::Client::Models::Ontology.new
-    @ontologies =  LinkedData::Client::Models::Ontology.all(include: "acronym", include_views: true, 
+    @ontologies = LinkedData::Client::Models::Ontology.all(include: 'acronym', include_views: true, 
 display_links: false, display_context: false)
     @categories = LinkedData::Client::Models::Category.all
     @groups = LinkedData::Client::Models::Group.all
@@ -431,7 +431,7 @@ display_links: false, display_context: false)
     @metrics = @ontology.explore.metrics rescue []
     @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created} || []
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
-    @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
+    @analytics = LinkedData::Client::HTTP.get(@ontology.links['analytics'])
 
     #Call to fairness assessment service
     tmp = fairness_service_enabled? ? get_fair_score(@ontology.acronym) : nil
