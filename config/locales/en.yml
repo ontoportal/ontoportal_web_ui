@@ -68,32 +68,32 @@ en:
       month_day_year: '%b %-d, %Y' # Mar 1, 2017
       monthfull_day_year: '%B %-d, %Y' # March 1, 2017
 
-  layouts:
-    footer:
-      copyright_html: Copyright &copy; 2005‑2021, The Board of Trustees of Leland Stanford Junior University. All rights reserved.
-      grant_html: >
-        <strong>%{site}</strong> is currently being developed within French <a href="http://www.d2kab.org">ANR D2KAB project</a>  (<a href="http://www.agence-nationale-recherche.fr/Projet-ANR-18-CE23-0017">ANR-18-CE23-0017</a>). It also receives or received support from <a href="http://www.lirmm.fr/sifr">ANR SIFR project</a> (<a href="https://anr.fr/Projet-ANR-12-JS02-0010">ANR-12-JS02-0010</a>), European Union <a href="http://www.lirmm.fr/sifr">H2020-MSCA SIFRm project</a> (<a href="https://cordis.europa.eu/project/id/701771">No 701771</a>), the <a href="https://www.lirmm.fr/numev/">NUMEV Labex</a> (ANR-10-LABX-20), the <ahref="http://www.ibc-montpellier.fr/">IBC of Montpellier project</a> (ANR-11-BINF0002), the <a href="https://www.agropolis-fondation.fr/The-LabEx-AGRO?lang=en">Agro Labex</a> (ANR-10-LABX-0001) as well as from University of Montpellier and the CNRS.
-    notices:
-      license_contact: >
-        For more information, email <a href="mailto:support@ontoportal.org">support@ontoportal.org</a> or 
-        visit <a href="https://ontoportal.org/licensing" target="_blank">https://ontoportal.org/licensing</a>.
-      license_obtain: >
-        If you are the owner of this OntoPortal installation, you can visit 
-        <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> to obtain a license.
-      license_expired: >
-        We're sorry, but the license for this OntoPortal installation has expired. If you are the owner of this OntoPortal installation, 
-        please visit <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> to renew your license.
-      license_trial:
-        one:
-          This installation of the OntoPortal Appliance is a trial license, which will expire in 1 day.
-        other:
-          This installation of the OntoPortal Appliance is a trial license, which will expire in %{count} days.
+  #layouts:
+    #footer:
+      #copyright_html: Copyright &copy; 2005‑2021, The Board of Trustees of Leland Stanford Junior University. All rights reserved.
+      #grant_html: >
+        #<strong>%{site}</strong> is currently being developed within French <a href="http://www.d2kab.org">ANR D2KAB project</a>  (<a href="http://www.agence-nationale-recherche.fr/Projet-ANR-18-CE23-0017">ANR-18-CE23-0017</a>). It also receives or received support from <a href="http://www.lirmm.fr/sifr">ANR SIFR project</a> (<a href="https://anr.fr/Projet-ANR-12-JS02-0010">ANR-12-JS02-0010</a>), European Union <a href="http://www.lirmm.fr/sifr">H2020-MSCA SIFRm project</a> (<a href="https://cordis.europa.eu/project/id/701771">No 701771</a>), the <a href="https://www.lirmm.fr/numev/">NUMEV Labex</a> (ANR-10-LABX-20), the <ahref="http://www.ibc-montpellier.fr/">IBC of Montpellier project</a> (ANR-11-BINF0002), the <a href="https://www.agropolis-fondation.fr/The-LabEx-AGRO?lang=en">Agro Labex</a> (ANR-10-LABX-0001) as well as from University of Montpellier and the CNRS.
+    #notices:
+      #license_contact: >
+        #For more information, email <a href="mailto:support@ontoportal.org">support@ontoportal.org</a> or
+        #visit <a href="https://ontoportal.org/licensing" target="_blank">https://ontoportal.org/licensing</a>.
+      #license_obtain: >
+        #If you are the owner of this OntoPortal installation, you can visit
+        #<a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> to obtain a license.
+      #license_expired: >
+        #We're sorry, but the license for this OntoPortal installation has expired. If you are the owner of this OntoPortal installation,
+        #please visit <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> to renew your license.
+      #license_trial:
+        #one:
+          #This installation of the OntoPortal Appliance is a trial license, which will expire in 1 day.
+        #other:
+          #This installation of the OntoPortal Appliance is a trial license, which will expire in %{count} days.
 
   home:
     index:
       find_ontology_placeholder: Start typing ontology name, then choose from list
       query_placeholder: Enter a class, e.g. Melanoma
-      tagline: the world's most comprehensive repository of biomedical ontologies
+      tagline: a common ontology portal for industry and related domains
       title: Welcome to the %{organization} 
       welcome: Welcome to %{site},
     help:

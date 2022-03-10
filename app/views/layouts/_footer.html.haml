@@ -1,34 +1,62 @@
+
 </div>
 </div>
 
 %footer.footer.pt-4.mt-5
   %div.container
     %div.row
-      - $FOOTER_LINKS.to_h[:top].to_a.each do |footer_links_block|
-        %div.col-6.col-md
-          %h6= footer_links_block[:column_header]
-          %ul.list-unstyled
-            - footer_links_block[:links].each do |footer_links_row|
-              %li
-                - footer_links_row.each do |footer_link|
-                  = render_footer_link footer_link
+      %div.col-6.col-md
+        %h6 PRODUCTS
+        %ul.list-unstyled
+          %li= link_to('BioPortal', root_path())
+          %li= link_to('BioPortal REST API', 'http://data.bioontology.org/documentation', target: '_blank')
+          %li= link_to('BioPortal Virtual Appliance', 'https://www.bioontology.org/wiki/index.php/Category:NCBO_Virtual_Appliance', target: '_blank')
+          %li= link_to('NCBO Web Widgets', 'http://www.bioontology.org/wiki/index.php/NCBO_Widgets', target: '_blank')
+      %div.col-6.col-md.footer-support
+        %h6 SUPPORT
+        %ul.list-unstyled
+          %li= link_to('Contact Us', feedback_path(location: encode_param(request.url)), class: 'pop_window')
+          %li= link_to('Documentation', 'https://www.bioontology.org/wiki/index.php/BioPortal_Help', target: '_blank')
+          %li= link_to('NCBO Wiki', 'https://www.bioontology.org/wiki/', target: '_blank')
+      %div.col-6.col-md
+        %h6 ABOUT
+        %ul.list-unstyled
+          %li= link_to('About Us', 'https://www.bioontology.org/about-ncbo', target: '_blank')
+          %li= link_to(raw('Mission & Vision'), 'https://www.bioontology.org/mission', target: '_blank')
+          %li= link_to('Team', 'https://www.bioontology.org/project-team', target: '_blank')
+          %li= link_to('Projects', projects_path())
+      %div.col-12.col-md
+        %h6 CONNECT
+        %ul.list-inline
+          %li.list-inline-item
+            = link_to('https://www.facebook.com/National-Center-for-Biomedical-Ontology-127444774011153/', target: '_blank') do
+              %i.fab.fa-2x.fa-facebook-f
+          %li.list-inline-item
+            = link_to('http://twitter.com/bioontology', target: '_blank') do
+              %i.fab.fa-2x.fa-twitter
+          %li.list-inline-item
+            = link_to('http://github.com/ncbo', target: '_blank') do
+              %i.fab.fa-2x.fa-github
     %div.row.legal-text
       %div.col
-        = t('.grant_html', site: $SITE)
-    %div.row.pt-2
-      - $FOOTER_LINKS.to_h[:bottom].to_a.each do |footer_links_block|
-        %div.col-6.col-md
-          - if footer_links_block[:column_header].present?
-            %h6= footer_links_block[:column_header]
-          %ul.list-inline
-            - footer_links_block[:links].each do |footer_links_row|
-              - footer_links_row.each_with_index do |footer_link, i|
-                %li.list-inline-item
-                  = render_footer_link footer_link
-                - unless i >= footer_links_row.size - 1
-                  %li.list-inline-item
-                    = raw(footer_links_block[:separator])
-
+        = t('.grant_html')
+    %div.row.pt-2.legal-text
+      %div.col
+        = t('.copyright_html')
+    -#%div.row.pt-2
+    -#  %div.col
+    -#    %ul.list-inline
+    -#      %li.list-inline-item
+    -#        = link_to('CITE US', 'https://www.bioontology.org/wiki/index.php/BioPortal_Help#How_to_cite_NCBO_and_BioPortal', target: '_blank')
+    -#      %li.list-inline-item
+    -#        %i.fas.fa-ellipsis-v{"aria-hidden" => "true"}
+    -#      %li.list-inline-item
+    -#        = link_to('PRIVACY POLICY', 'https://www.bioontology.org/privacy/',  target: '_blank')
+    -#      %li.list-inline-item
+    -#        %i.fas.fa-ellipsis-v{"aria-hidden" => "true"}
+    -#      %li.list-inline-item
+    -#        = link_to('TERMS', 'https://www.bioontology.org/terms/', target: '_blank')
 
 = javascript_include_tag "application"
 = render partial: "ga_tracking"
+

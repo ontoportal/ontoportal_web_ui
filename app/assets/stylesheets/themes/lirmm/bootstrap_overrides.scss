@@ -10,7 +10,7 @@ a i {
 }
 
 .btn-info, .btn-outline-primary:hover, .btn-primary ,  .nav-pills .nav-link.active{
-  background-color: $color-primary !important;
+  background: $button_background_color !important;
   border-color: $color-primary !important;
   color: #fff !important;
 }
