@@ -8,8 +8,8 @@
       %div.col-6.col-md
         %h6 PRODUCTS
         %ul.list-unstyled
-          %li= link_to('BioPortal', root_path())
-          %li= link_to('BioPortal REST API', 'http://data.bioontology.org/documentation', target: '_blank')
+          %li= link_to('IndustryPortal', root_path())
+          %li= link_to('IndustryPortal REST API', 'http://data.bioontology.org/documentation', target: '_blank')
           %li= link_to('BioPortal Virtual Appliance', 'https://www.bioontology.org/wiki/index.php/Category:NCBO_Virtual_Appliance', target: '_blank')
           %li= link_to('NCBO Web Widgets', 'http://www.bioontology.org/wiki/index.php/NCBO_Widgets', target: '_blank')
       %div.col-6.col-md.footer-support
@@ -35,14 +35,14 @@
             = link_to('http://twitter.com/bioontology', target: '_blank') do
               %i.fab.fa-2x.fa-twitter
           %li.list-inline-item
-            = link_to('http://github.com/ncbo', target: '_blank') do
+            = link_to('https://github.com/IndustryPortal', target: '_blank') do
               %i.fab.fa-2x.fa-github
-    %div.row.legal-text
-      %div.col
-        = t('.grant_html')
-    %div.row.pt-2.legal-text
-      %div.col
-        = t('.copyright_html')
+    -#%div.row.legal-text
+    -#  %div.col
+    -#    = t('.grant_html')
+    -#%div.row.pt-2.legal-text
+    -#  %div.col
+    -#    = t('.copyright_html')
     -#%div.row.pt-2
     -#  %div.col
     -#    %ul.list-inline
