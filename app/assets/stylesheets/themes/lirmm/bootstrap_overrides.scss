@@ -5,19 +5,23 @@ body {
 a {
   color: $color-links !important;
 }
+
 a i {
   color: $color-primary;
 }
 
-.btn-info, .btn-outline-primary:hover, .btn-primary ,  .nav-pills .nav-link.active{
+
+.btn-info, .btn-outline-primary:hover, .btn-primary, .nav-pills .nav-link.active {
   background: $button_background_color !important;
   border-color: $color-primary !important;
   color: #fff !important;
 }
-.btn-outline-primary{
+
+.btn-outline-primary {
   border-color: $color-primary !important;
-  color:  $color-primary !important;
+  color: $color-primary !important;
 }
+
 .btn-danger {
   color: #fff !important;
 }
@@ -25,6 +29,7 @@ a i {
 .bg-success {
   background-color: $color-secondary !important;
 }
+
 .card-header.bg-success {
   font-weight: bold;
 }
@@ -37,11 +42,17 @@ a i {
   vertical-align: middle;
   font-weight: 900;
 }
+
 #ontology_submission_form .card-link.collapsed:before {
   content: "\f054";
 }
+
 #ontology_submission_form .add-value-btn {
   margin-bottom: 0.5em;
   margin-top: 0.0em;
   margin-left: 0.0em;
+}
+
+#team-member-link {
+  color: white;
 }

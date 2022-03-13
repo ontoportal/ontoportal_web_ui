@@ -174,4 +174,8 @@ Rails.application.routes.draw do
 
   get '/exhibit/:ontology/:id' => 'concepts#exhibit'
 
+
+  #Team page
+  get '/team', to:'team#index'
+
 end
