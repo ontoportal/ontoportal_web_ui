@@ -1,34 +1,34 @@
-<%@title = "Login"%>
+<% @title = "Login" %>
 
-<%= form_for(:user, :url => {:controller => 'login',:action=>'create'}) do |f| %>
-<%unless @errors.nil?%>
-<div style="color:red;">
-Errors On Form
-<ul>
+<%= form_for(:user, :url => { :controller => 'login', :action => 'create' }) do |f| %>
+  <% unless @errors.nil? %>
+    <div style="color:red;">
+      Errors On Form
+      <ul>
 
-<%for error in @errors%>
-<li><%=error%></li>
-<%end%>
+        <% for error in @errors %>
+          <li><%= error %></li>
+        <% end %>
 
-</ul>
-</div>
-<%end%>
-<center>
-  <table class="form mt-5" width="400px" style="margin-top:30px">
-    <tr>
-      <th nowrap align="right" >Account Name:</th>
-      <td class="top"><%= text_field 'user', 'username', :size => 25 %></td>
-    </tr>
-    <tr>
-      <th nowrap align="right" >Password:</th>
-      <td><%= password_field 'user','password', :size => 25, :autocomplete => "off" %></td>
-    </tr>
-    <tr>
-      <td style="text-align: center;" colspan="2"><%= submit_tag "Login",class:"btn btn-success text-center btn-block my-3" %></td>
-    </tr>
-  </table>
-  <span style="font-size:1.2em;">Not Registered Yet?  <%=link_to "Sign Up", new_user_path%></span><br><br>
-  <span style="font-size:1.2em;"><%=link_to "Lost Password", '/lost_pass'%></span><br><br>
-</center>
-
+      </ul>
+    </div>
+  <% end %>
+  <center style="margin-bottom: 250px">
+    <table class="form mt-5" width="400px" style="margin-top:30px">
+      <tr>
+        <th nowrap align="right">Account Name:</th>
+        <td class="top"><%= text_field 'user', 'username', :size => 25 %></td>
+      </tr>
+      <tr>
+        <th nowrap align="right">Password:</th>
+        <td><%= password_field 'user', 'password', :size => 25, :autocomplete => "off" %></td>
+      </tr>
+      <tr>
+        <td style="text-align: center;" colspan="2"><%= submit_tag "Login", class: "btn btn-secondary text-center btn-block my-3" %></td>
+      </tr>
+    </table>
+    <span style="font-size:1.2em;">Not Registered Yet?  <%= link_to "Sign Up", new_user_path %></span><br><br>
+    <span style="font-size:1.2em;"><%= link_to "Lost Password", '/lost_pass' %></span><br><br>
+  </center>
 <% end %>
+
