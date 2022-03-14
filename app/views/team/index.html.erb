@@ -1,14 +1,17 @@
 <div class="container text-center my-5">
-  <h1>Our Team Members</h1>
+  <h1>Project Team</h1>
   <ul>
     <% @members.each do |m| %>
       <li class="jumbotron d-inline-block mx-2 team-member-container col-5">
         <h3 class="team-member-name mb-2"><%= m[:name] %></h3>
         <img class="team-member-avatar mb-2" src="<%= image_path(m[:avatar]) %>" alt="Member: <%= m[:name] %>">
         <p class="team-member-description"><%= m[:description] %></p>
-        <a href="<%= m[:link] %>" target="_blank">
-          <button class="btn btn-success team-member-link">See more</button>
-        </a>
+        <div>
+          <a href="<%= m[:link] %>" target="_blank">
+            <button class="btn btn-success team-member-link">See more</button>
+          </a>
+          <a href="mailto:<%=m[:email] %>" target="_blank"><h6 class="btn btn-warning my-0">Contact</h6></a>
+        </div>
       </li>
     <% end %>
   </ul>
