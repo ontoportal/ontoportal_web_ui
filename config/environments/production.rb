@@ -57,7 +57,7 @@ Rails.application.configure do
   config.log_tags = [ :request_id ]
 
   # Use a different cache store in production.
-  # config.cache_store = :mem_cache_store
+  config.cache_store = :mem_cache_store, ENV["MEMCACHE_SERVERS"] || "localhost:11211", { namespace: 'bioportal_web_ui', expires_in: 1.day }
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
@@ -86,10 +86,6 @@ Rails.application.configure do
   # Include the BioPortal-specific configuration options
   require Rails.root.join('config', "bioportal_config_#{Rails.env}.rb")
   
-  # memcache setup
-  # https://github.com/mperham/dalli#usage-with-rails-3x-and-4x
-  config.cache_store = :dalli_store, nil, { :namespace => 'bioportal_web_ui', :expires_in => 1.day, :value_max_bytes => 5*1024*1024 }
-
   # Add custom data attributes to sanitize allowed list
   config.action_view.sanitized_allowed_attributes = ['id', 'class', 'style', 'data-cls', 'data-ont']
 

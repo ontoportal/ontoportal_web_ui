@@ -51,8 +51,8 @@ BioportalWebUi::Application.configure do
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
 
   # Use a different cache store in production.
-  # config.cache_store = :mem_cache_store
-
+  config.cache_store = :mem_cache_store, ENV["MEMCACHE_SERVERS"] || "localhost:11211", { :namespace => 'bioportal_web_ui', :expires_in => 1.day }
+  
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = 'http://assets.example.com'
 
@@ -73,13 +73,8 @@ BioportalWebUi::Application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-
   # Include the BioPortal-specific configuration options
   require Rails.root.join('config', "bioportal_config_#{Rails.env}.rb")
-
-  # memcache setup
-  # https://github.com/mperham/dalli#usage-with-rails-3x-and-4x
-  config.cache_store = :dalli_store, nil, { :namespace => 'bioportal_web_ui', :expires_in => 1.day }
 
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
