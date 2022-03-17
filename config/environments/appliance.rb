@@ -21,6 +21,7 @@ BioportalWebUi::Application.configure do
   # config.action_dispatch.rack_cache = true
 
   # Compress JavaScripts and CSS.
+  #config.assets.js_compressor = Uglifier.new(harmony: true)
   config.assets.js_compressor = :terser
   # config.assets.css_compressor = :sass
 
@@ -78,7 +79,7 @@ BioportalWebUi::Application.configure do
   require Rails.root.join('config', "bioportal_config_#{Rails.env}.rb")
 
   # memcache setup
-  config.cache_store = ActiveSupport::Cache::MemCacheStore.new('localhost', namespace: 'BioPortal' , expires_in: 1.day)
+  config.cache_store = :mem_cache_store, { :namespace => 'bioportal_web_ui', :expires_in => 1.day }
 
 
   # Disable serving static files from the `/public` folder by default since

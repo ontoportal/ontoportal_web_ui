@@ -279,7 +279,7 @@ module OntologiesHelper
       end
       unless submission.diffFilePath.nil?
         uri = submission.id + "/download_diff?apikey=#{get_apikey}"
-        link = link + " | <a href='#{uri} 'rel='nofollow'>Diff</a>"
+        link = link + " | <a href='#{uri} 'rel='nofollow'>DIFF</a>"
       end
     end
     return link
