@@ -26,16 +26,14 @@ Disallow: /
 User-agent: MJ12bot
 Disallow: /
 
-User-agent: BLEXBot
-Disallow: /
-
 User-agent: AhrefsBot
-Disallow: /
-
-
-User agent: MTRobot
 Disallow: /
 
 User-agent: DataForSeoBot
 Disallow: /
+User-agent: BLEXBot
+Disallow: /
+User agent: MTRobot
+Disallow: /
+
 
