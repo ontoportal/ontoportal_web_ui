@@ -43,8 +43,9 @@ production:
 
 appliance:
   adapter: mysql2
+  encoding: utf8
   socket: /var/lib/mysql/mysql.sock
-  database: bioportal_ui_appliance
-  username: bp_user
-  password: bp_user!!!
+  database: bioportal_web_ui_appliance
+  username: bp_ui_appliance
+  password: aYT5pe7T6eEDYJgT
   host: localhost
