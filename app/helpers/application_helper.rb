@@ -219,7 +219,7 @@ module ApplicationHelper
     html_attribs.each {|k,v| attribs << "#{k.to_s}='#{v}'"}
     return <<-BLOCK
           <a class='pop_window tooltip_link #{[css_class].flatten.compact.join(' ')}' #{attribs.join(" ")}>
-            <i class="#{icon}"></i> #{text}
+            <i class="#{icon} d-flex"></i> #{text}
           </a>
     BLOCK
   end
