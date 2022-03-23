@@ -46,3 +46,6 @@ docker-compose.yml
 docker-sync.yml
 .docker-sync/daemon.log
 .docker-sync/daemon.pid
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
