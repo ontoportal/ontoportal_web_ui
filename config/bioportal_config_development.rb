@@ -192,7 +192,7 @@ $TEAM_MEMBERS = [
     name: "Hedi Karry, PhD",
     role: "",
     link: "https://orcid.org/0000-0002-9652-5164",
-    avatar: 'team/hedi_avatar.jpeg',
+    avatar: 'https://github.com/IndustryPortal/bioportal_web_ui/blob/master/app/assets/images/team/hedi_avatar.jpg?raw=true',
     description: "Professor in informatics",
     email: "mkarray@enit.fr"
   },
@@ -200,7 +200,7 @@ $TEAM_MEMBERS = [
     name: "Emna Amdouni,  PhD",
     role: "",
     link: "https://orcid.org/0000-0002-2930-5938",
-    avatar: 'team/emna_avatar.jpeg',
+    avatar: 'https://github.com/IndustryPortal/bioportal_web_ui/blob/master/app/assets/images/team/emna_avatar.jpg?raw=true',
     description: "Associate Researcher",
     email: "emna.amdouni@enit.fr"
   },
@@ -208,7 +208,7 @@ $TEAM_MEMBERS = [
     name: "Abdel Ouadoud Rasmi, MS",
     role: "",
     link: "https://github.com/rasmi-aw",
-    avatar: 'team/abdelwadoud_avatar.jpeg',
+    avatar: 'https://github.com/IndustryPortal/bioportal_web_ui/blob/master/app/assets/images/team/abdelwadoud_avatar.jpeg?raw=true',
     description: "Software Engineer",
     email: "abdelouadoudrasmi@gmail.com"
   },
@@ -216,7 +216,7 @@ $TEAM_MEMBERS = [
     name: "Arkopaul Sarkar, PhD",
     role: "",
     link: "https://orcid.org/0000-0002-8967-7813",
-    avatar: 'team/arko_avatar.jpeg',
+    avatar: 'https://github.com/IndustryPortal/bioportal_web_ui/blob/master/app/assets/images/team/arko_avatar.jpg?raw=true',
     description: "Associate Researcher",
     email: "arkopaul.sarkar@enit.fr"
   }
