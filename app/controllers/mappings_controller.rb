@@ -1,6 +1,8 @@
 require 'cgi'
+
 class MappingsController < ApplicationController
   include ActionView::Helpers::NumberHelper
+  include MappingStatistics
 
   layout :determine_layout
   before_action :authorize_and_redirect, :only=>[:create,:new,:destroy]
@@ -39,21 +41,8 @@ class MappingsController < ApplicationController
 
   def count
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
-
-    counts = LinkedData::Client::HTTP.get("#{MAPPINGS_URL}/statistics/ontologies/#{params[:id]}")
-    @ontologies_mapping_count = []
-    counts.members.each do |acronym|
-      count = counts[acronym]
-      ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym.to_s).first
-      next unless ontology
-      @ontologies_mapping_count << {'ontology' => ontology, 'count' => count}
-    end
-    @ontologies_mapping_count.sort! {|a,b| a['ontology'].name.downcase <=> b['ontology'].name.downcase } unless @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
-
-    @ontology_id = @ontology.acronym
-    @ontology_label = @ontology.name
-
-    render :partial => 'count'
+    @mapping_counts = mapping_counts(@ontology.acronym)
+    render partial: 'count'
   end
 
   def show
