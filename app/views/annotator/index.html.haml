@@ -94,7 +94,11 @@
               = check_box_tag("fast_context", :all, false, class: "custom-control-input")
               %label.custom-control-label{for: "fast_context"} FastContext
               %small#fast_contextnHelp.form-text.text-muted= t('annotator.index.fast_context.tooltip')
-
+          %div.form-group
+            %div.custom-control.custom-checkbox
+              = check_box_tag("lemmatize", false, false, class: "custom-control-input")
+              %label.custom-control-label{for: "lemmatize"} Lemmatize
+              %small#lemmatize.form-text.text-muted Enable Lemmatize to lemmatize the submitted text and use a lemmatized dictionary for the annotations
         %div.my-4
           = button_tag("Get annotations", type: "button", id: "annotator_button", class: "btn btn-primary btn-lg")
           %span.annotator_spinner
