@@ -228,8 +228,6 @@ class OntologiesController < ApplicationController
   end
 
   def notes
-    # Get the latest 'ready' submission, or fallback to any latest submission
-    @submission = get_ontology_submission_ready(@ontology)  # application_controller
     @notes = @ontology.explore.notes
     @notes_deletable = false
     # TODO_REV: Handle notes deletion
