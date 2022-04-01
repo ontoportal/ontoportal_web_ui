@@ -79,6 +79,6 @@
                 = note.proposal ? get_note_type_text(note.proposal.type) : "Comment"
               %td
                 - if note.relatedClass && note.relatedClass.length > 0
-                  %a{href: "/ontologies/#{@ontology.acronym}?p=classes&conceptid=#{CGI.escape(note.relatedClass.first)}"}= @ontology.explore.single_class(note.relatedClass.first).prefLabel
+                  %a{href: "/ontologies/#{@ontology.acronym}?p=classes&conceptid=#{CGI.escape(note.relatedClass.first)}"}= note.relatedClass.first
               %td
                 = DateTime.parse(note.created).strftime("%Y-%m-%d")
