@@ -32,18 +32,8 @@
         - if map.id && !map.id.empty? && session[:user] && (session[:user].id.to_i == map.creator || session[:user].admin?)
           = check_box_tag :delete_mapping_checkbox, map.id
       %td
-        = raw(get_link_for_cls_ajax(cls.id, ont_acronym))
+        = link_to cls.id, ontology_path(id: ont_acronym, p: 'classes', conceptid: cls.id)
       %td
-        = raw(get_link_for_ont_ajax(ont_acronym))
+        = link_to ont_acronym, ontology_path(ont_acronym)
       %td
         #{map.source} #{(map.process || {})[:source_name]}
-
-:javascript
-  jQuery(document).ready(function(){
-    // Ajax globals and functions are in  "/javascripts/bp_ajax_controller.js"
-    // Note: bind any 'responsive elements' to the ajax_proces_halt() function, e.g.
-    // jQuery("#facebox a.close").click(function(event){ ajax_process_halt(); });
-    // Initiate ajax calls to resolve class ID to prefLabel.
-    ajax_process_init();  // see bp_ajax_controller.js
-  })
-
