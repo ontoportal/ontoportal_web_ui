@@ -1,5 +1,6 @@
 class OntologiesController < ApplicationController
   include MappingsHelper
+  include MappingStatistics
 
   require "multi_json"
   require 'cgi'
@@ -209,24 +210,12 @@ class OntologiesController < ApplicationController
   end
 
   def mappings
-    counts = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}/mappings/statistics/ontologies/#{params[:id]}")
-    @ontologies_mapping_count = []
-    unless counts.nil?
-      counts.members.each do |acronym|
-        count = counts[acronym]
-        # Note: find_by_acronym includes ontology views
-        ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym.to_s).first
-        next unless ontology
-        @ontologies_mapping_count << {'ontology' => ontology, 'count' => count}
-      end
-      @ontologies_mapping_count.sort! {|a,b| a['ontology'].name.downcase <=> b['ontology'].name.downcase } unless @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
-    end
-    @ontology_id = @ontology.acronym
-    @ontology_label = @ontology.name
+    @mapping_counts = mapping_counts(@ontology.acronym)
+
     if request.xhr?
-      render :partial => 'mappings', :layout => false
+      render partial: 'mappings', layout: false
     else
-      render :partial => 'mappings', :layout => "ontology_viewer"
+      render partial: 'mappings', layout: 'ontology_viewer'
     end
   end
 
@@ -239,8 +228,6 @@ class OntologiesController < ApplicationController
   end
 
   def notes
-    # Get the latest 'ready' submission, or fallback to any latest submission
-    @submission = get_ontology_submission_ready(@ontology)  # application_controller
     @notes = @ontology.explore.notes
     @notes_deletable = false
     # TODO_REV: Handle notes deletion
