@@ -358,7 +358,6 @@ DEPENDENCIES
   multi_json
   mysql2 (= 0.5.2)
   newrelic_rpm
-  nokogiri
   oj
   ontologies_api_client!
   open_uri_redirections
