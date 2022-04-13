@@ -7,7 +7,7 @@
       %div.col-6.col-md
         %h6 PRODUCTS
         %ul.list-unstyled
-          %li= link_to('BioPortal', root_path())
+          %li= link_to('BioPortal', root_path)
           %li= link_to('BioPortal REST API', Rails.configuration.settings.links[:rest_api], target: '_blank')
           %li= link_to('BioPortal Virtual Appliance', Rails.configuration.settings.links[:virtual_appliance], target: '_blank')
           %li= link_to('NCBO Web Widgets', Rails.configuration.settings.links[:widgets], target: '_blank')      
@@ -23,7 +23,7 @@
           %li= link_to('About Us', Rails.configuration.settings.links[:about], target: '_blank')
           %li= link_to(raw('Mission & Vision'), Rails.configuration.settings.links[:mission], target: '_blank')
           %li= link_to('Team', Rails.configuration.settings.links[:team], target: '_blank')
-          %li= link_to('Projects', projects_path())
+          %li= link_to('Projects', projects_path)
       %div.col-12.col-md
         %h6 CONNECT
         %ul.list-inline

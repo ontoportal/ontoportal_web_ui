@@ -1,23 +1,23 @@
 %nav.navbar.navbar-expand-lg.navbar-dark.navbar-custom
-  = link_to(image_tag("logos/bioportal-logo.png"), root_path(), class: "navbar-brand")
+  = link_to(image_tag("logos/bioportal-logo.png"), root_path, class: "navbar-brand")
   = button_tag(type: "button", class: "navbar-toggler", data: {toggle: "collapse", target: "#topNavigationToggler"}, aria: {controls: "topNavigationToggler", expanded: "false", label: "Toggle navigation"}) do
     %span.navbar-toggler-icon
 
   %div#topNavigationToggler.navbar-collapse.collapse.justify-content-between
     %ul.navbar-nav
       %li.nav-item
-        = link_to("Ontologies", ontologies_path(), class: "nav-link")
+        = link_to("Ontologies", ontologies_path, class: "nav-link")
       %li.nav-item
         = link_to("Search", "/search", class: "nav-link")
       %li.nav-item
-        = link_to("Annotator", annotator_index_path(), class: "nav-link")
+        = link_to("Annotator", annotator_index_path, class: "nav-link")
       %li.nav-item
-        = link_to("Recommender", recommender_index_path(), class: "nav-link")
+        = link_to("Recommender", recommender_index_path, class: "nav-link")
       %li.nav-item
-        = link_to("Mappings", mappings_path(), class: "nav-link")
-      -if (!session[:user].nil? && session[:user].admin?)
+        = link_to("Mappings", mappings_path, class: "nav-link")
+      -if session[:user].present? && session[:user].admin?
         %li.nav-item
-          = link_to("Admin", admin_index_path(), class: "nav-link")
+          = link_to("Admin", admin_index_path, class: "nav-link")
     %ul.navbar-nav
       - if session[:user].nil?
         %li.nav-item
@@ -35,7 +35,7 @@
               - for ont in session[:ontologies]
                 = link_to(ont.ontology_name, "/ontologies/#{ont.ontology_acronym}/?p=classes&conceptid=#{CGI.escape(ont.concept)}", class: "dropdown-item")
               %div.dropdown-divider
-            = link_to("Logout", logout_path(), class: "dropdown-item")            
+            = link_to("Logout", logout_path, class: "dropdown-item")
       -# Support menu
       %li.nav-item.dropdown
         = link_to("#", id: "supportMenuDropdownLink", class: "nav-link dropdown-toggle", role: "button", data: {toggle: "dropdown"}, aria: {haspopup: "true", expanded: "false"}) do
