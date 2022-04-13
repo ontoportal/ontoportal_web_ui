@@ -18,5 +18,7 @@ module BioportalWebUi
 
     # Serve error pages from the Rails app itself, instead of using static error pages in /public.
     config.exceptions_app = self.routes
+
+    config.settings = config_for(:settings)
   end
 end

@@ -8,33 +8,33 @@
         %h6 PRODUCTS
         %ul.list-unstyled
           %li= link_to('BioPortal', root_path())
-          %li= link_to('BioPortal REST API', 'http://data.bioontology.org/documentation', target: '_blank')
-          %li= link_to('BioPortal Virtual Appliance', 'https://www.bioontology.org/wiki/index.php/Category:NCBO_Virtual_Appliance', target: '_blank')
-          %li= link_to('NCBO Web Widgets', 'http://www.bioontology.org/wiki/index.php/NCBO_Widgets', target: '_blank')      
+          %li= link_to('BioPortal REST API', Rails.configuration.settings.links[:rest_api], target: '_blank')
+          %li= link_to('BioPortal Virtual Appliance', Rails.configuration.settings.links[:virtual_appliance], target: '_blank')
+          %li= link_to('NCBO Web Widgets', Rails.configuration.settings.links[:widgets], target: '_blank')      
       %div.col-6.col-md.footer-support
         %h6 SUPPORT
         %ul.list-unstyled
           %li= link_to('Contact Us', feedback_path(location: encode_param(request.url)), class: 'pop_window')
-          %li= link_to('Documentation', 'https://www.bioontology.org/wiki/index.php/BioPortal_Help', target: '_blank')
-          %li= link_to('NCBO Wiki', 'https://www.bioontology.org/wiki/', target: '_blank')
+          %li= link_to('Documentation', Rails.configuration.settings.links[:help], target: '_blank')
+          %li= link_to('NCBO Wiki', Rails.configuration.settings.links[:wiki], target: '_blank')
       %div.col-6.col-md
         %h6 ABOUT
         %ul.list-unstyled
-          %li= link_to('About Us', 'https://www.bioontology.org/about-ncbo', target: '_blank')
-          %li= link_to(raw('Mission & Vision'), 'https://www.bioontology.org/mission', target: '_blank')
-          %li= link_to('Team', 'https://www.bioontology.org/project-team', target: '_blank')
+          %li= link_to('About Us', Rails.configuration.settings.links[:about], target: '_blank')
+          %li= link_to(raw('Mission & Vision'), Rails.configuration.settings.links[:mission], target: '_blank')
+          %li= link_to('Team', Rails.configuration.settings.links[:team], target: '_blank')
           %li= link_to('Projects', projects_path())
       %div.col-12.col-md
         %h6 CONNECT
         %ul.list-inline
           %li.list-inline-item
-            = link_to('https://www.facebook.com/National-Center-for-Biomedical-Ontology-127444774011153/', target: '_blank') do 
+            = link_to(Rails.configuration.settings.links[:facebook], target: '_blank') do 
               %i.fab.fa-2x.fa-facebook-f
           %li.list-inline-item
-            = link_to('http://twitter.com/bioontology', target: '_blank') do
+            = link_to(Rails.configuration.settings.links[:twitter], target: '_blank') do
               %i.fab.fa-2x.fa-twitter
           %li.list-inline-item
-            = link_to('http://github.com/ncbo', target: '_blank') do
+            = link_to(Rails.configuration.settings.links[:github], target: '_blank') do
               %i.fab.fa-2x.fa-github
     %div.row.legal-text
       %div.col
@@ -46,15 +46,15 @@
       %div.col
         %ul.list-inline
           %li.list-inline-item
-            = link_to('CITE US', 'https://www.bioontology.org/wiki/index.php/BioPortal_Help#How_to_cite_NCBO_and_BioPortal', target: '_blank')
+            = link_to('CITE US', Rails.configuration.settings.links[:cite], target: '_blank')
           %li.list-inline-item
             %i.fas.fa-ellipsis-v{"aria-hidden" => "true"}
           %li.list-inline-item
-            = link_to('PRIVACY POLICY', 'https://www.bioontology.org/privacy/',  target: '_blank')
+            = link_to('PRIVACY POLICY', Rails.configuration.settings.links[:privacy_policy],  target: '_blank')
           %li.list-inline-item
             %i.fas.fa-ellipsis-v{"aria-hidden" => "true"}
           %li.list-inline-item
-            = link_to('TERMS', 'https://www.bioontology.org/terms/', target: '_blank')
+            = link_to('TERMS', Rails.configuration.settings.links[:terms], target: '_blank')
 
 = javascript_include_tag "application"
 = render partial: "ga_tracking"
