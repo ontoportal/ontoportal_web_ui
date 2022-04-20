@@ -181,6 +181,11 @@ $HOME_PAGE_LOGOS = [
         img_src: 'logos/collaboration/lirmm_logo.png',
         url: 'https://www.lirmm.fr',
         target: '_blank',
+      },
+      {
+        img_src: 'logos/collaboration/pics-lgp.png',
+        url: 'https://github.com/PICS-LGP',
+        target: '_blank',
       }
     ]
   }
