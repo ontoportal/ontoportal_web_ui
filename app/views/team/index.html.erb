@@ -26,16 +26,18 @@
   </ul>
   <script>
       <!--Copies the email value into clipboard-->
-      function copyToClipBoard(email) {
+      async function copyToClipBoard(email) {
           /* Get the text field */
           var proEmail = document.getElementById("pro_email");
 
           /* Copy the text inside the text field */
-          if (proEmail != null)
-              navigator.clipboard.writeText(email);
+          if (proEmail != null) {
 
-          /* Alert the copied text */
-          alert("Copied member E-mail: " + email);
+              await navigator.clipboard.writeText(email)
+                  .then(() => alert("Copied member E-mail: " + email));
+              /* Alert the copied text */
+
+          }
       }
   </script>
 </div>
