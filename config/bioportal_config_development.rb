@@ -212,8 +212,8 @@ $TEAM_MEMBERS = [
     link: "https://github.com/rasmi-aw",
     avatar: 'https://github.com/IndustryPortal/bioportal_web_ui/blob/master/app/assets/images/team/abdelwadoud_avatar.jpeg?raw=true',
     description: "Software Engineer",
-    email: "abdelouadoudrasmi@gmail.com",
-    isEmailPro: false
+    email: "a.rasmi@esi-sba.dz",
+    isEmailPro: true
   },
   {
     name: "Arkopaul Sarkar, PhD",
