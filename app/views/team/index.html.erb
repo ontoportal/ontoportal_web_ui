@@ -2,7 +2,7 @@
   <h1>Project Team</h1>
   <ul>
     <% @members.each do |m| %>
-      <li class="jumbotron d-inline-block mx-2 team-member-container col-5">
+      <li class="jumbotron d-inline-block mx-2 team-member-container col-5" style="min-height: 500px;">
         <h3 class="team-member-name mb-2"><%= m[:name] %></h3>
         <img class="team-member-avatar mb-2" src="<%= m[:avatar] %>" alt="Member: <%= m[:name] %>">
         <p class="team-member-description"><%= m[:description] %></p>
@@ -12,7 +12,30 @@
           </a>
           <a href="mailto:<%= m[:email] %>" target="_blank"><h6 class="btn btn-warning my-0">Contact</h6></a>
         </div>
+        <!--Show only Pro emails-->
+        <% if m[:isEmailPro] %>
+          <h6 id="pro_email" class="btn btn-light mt-2" onclick="copyToClipBoard('<%= m[:email] %>')"><%= m[:email] %></h6>
+        <% end %>
+
+        <% if !m[:isEmailPro] %>
+          <h6 id="pro_email" class="btn btn-light mt-2" onclick="copyToClipBoard('<%= m[:email] %>')">Personal Email</h6>
+        <% end %>
+
       </li>
     <% end %>
   </ul>
+  <script>
+      <!--Copies the email value into clipboard-->
+      function copyToClipBoard(email) {
+          /* Get the text field */
+          var proEmail = document.getElementById("pro_email");
+
+          /* Copy the text inside the text field */
+          if (proEmail != null)
+              navigator.clipboard.writeText(email);
+
+          /* Alert the copied text */
+          alert("Copied member E-mail: " + email);
+      }
+  </script>
 </div>
