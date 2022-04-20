@@ -191,7 +191,7 @@ $TEAM_MEMBERS = [
   {
     name: "Hedi Karry, PhD",
     role: "",
-    link: "https://orcid.org/0000-0002-9652-5164",
+    link: "https://fr.linkedin.com/in/hkarray",
     avatar: 'https://github.com/IndustryPortal/bioportal_web_ui/blob/master/app/assets/images/team/hedi_avatar.jpg?raw=true',
     description: "Professor in informatics",
     email: "mkarray@enit.fr"
