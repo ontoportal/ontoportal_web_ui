@@ -183,7 +183,7 @@ $HOME_PAGE_LOGOS = [
         target: '_blank',
       },
       {
-        img_src: 'logos/collaboration/pics-lgp.png',
+        img_src: 'https://raw.githubusercontent.com/IndustryPortal/bioportal_web_ui/24e0ba99777d40cc97b0bfa60e73df607d58a302/app/assets/images/logos/collaboration/pics-lgp.png',
         url: 'https://github.com/PICS-LGP',
         target: '_blank',
       }
