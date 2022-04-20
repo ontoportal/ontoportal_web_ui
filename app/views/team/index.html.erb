@@ -24,39 +24,54 @@
       </li>
     <% end %>
   </ul>
-  <script>
-      <!--Copies the email value into clipboard-->
-      async function copyToClipBoard(email) {
-          /* Get the text field */
-          var proEmail = document.getElementById("pro_email");
 
-          /* Copy the text inside the text field */
-          if (proEmail != null) {
-
-              if (navigator.clipboard && window.isSecureContext) {
-                  // navigator clipboard api method'
-                  navigator.clipboard.writeText(email);
-                  alert("Copied member E-mail: " + email);
-
-              } else {
-                  // text area method
-                  let textArea = document.createElement("textarea");
-                  textArea.value = email;
-                  // make the textarea out of viewport
-                  textArea.style.position = "fixed";
-                  textArea.style.left = "-999999px";
-                  textArea.style.top = "-999999px";
-                  document.body.appendChild(textArea);
-                  textArea.focus();
-                  textArea.select();
-                  return new Promise((res, rej) => {
-                      // here the magic happens
-                      document.execCommand('copy') ? res() : rej();
-                      textArea.remove();
-                      alert("Copied member E-mail: " + email);
-                  });
-              }
-          }
-      }
-  </script>
 </div>
+
+<!--Contributors part-->
+<h3 class="my-2">Contributors</h3>
+<% if @contributors.empty? %>
+  <p>ongoing...</p>
+<% else %>
+  <ul id="contributors" class="mx-2">
+    <% @contributors.each do |c| %>
+      <li><strong><%= c[:full_name] %></strong>,  <%= c[:position] %> at "<%= c[:works_at] %>"</li>
+    <% end %>
+  </ul>
+<% end %>
+
+
+<script>
+    <!--Copies the email value into clipboard-->
+    async function copyToClipBoard(email) {
+        /* Get the text field */
+        var proEmail = document.getElementById("pro_email");
+
+        /* Copy the text inside the text field */
+        if (proEmail != null) {
+
+            if (navigator.clipboard && window.isSecureContext) {
+                // navigator clipboard api method'
+                navigator.clipboard.writeText(email);
+                alert("Copied member E-mail: " + email);
+
+            } else {
+                // text area method
+                let textArea = document.createElement("textarea");
+                textArea.value = email;
+                // make the textarea out of viewport
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                return new Promise((res, rej) => {
+                    // here the magic happens
+                    document.execCommand('copy') ? res() : rej();
+                    textArea.remove();
+                    alert("Copied member E-mail: " + email);
+                });
+            }
+        }
+    }
+</script>

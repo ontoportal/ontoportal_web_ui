@@ -231,5 +231,18 @@ $TEAM_MEMBERS = [
   }
 ]
 
+$CONTRIBUTORS = [
+  # {
+  #   full_name: "",
+  #   position: "",
+  #   works_at: ""
+  # },
+  # {
+  #   full_name: "AbdelOuadoud Rasmi",
+  #   position: "MS of CS",
+  #   works_at: "Esi Sba"
+  # },
+]
+
 #Changing app theme to make it look just like
 $UI_THEME = :industryportal
