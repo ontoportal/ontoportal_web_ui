@@ -155,7 +155,8 @@ $HOSTNAME = "industryportal.enit.fr"
 #Coloaboration and support
 $HOME_PAGE_LOGOS = [
   {
-    title: 'Supported by',
+    prefix: "Supported by: ",
+    title: 'OntoCommons is an H2020 CSA project dedicated to the standardisation of data documentation across all domains related to materials and manufacturing.  ',
     links: [
       {
         img_src: 'logos/supports/ontocommons-logo.png',
@@ -177,14 +178,15 @@ $HOME_PAGE_LOGOS = [
       #   url: 'https://www.lgp.enit.fr/',
       #   target: '_blank',
       # },
-      {
-        img_src: 'logos/collaboration/lirmm_logo.png',
-        url: 'https://www.lirmm.fr',
-        target: '_blank',
-      },
+
       {
         img_src: 'https://raw.githubusercontent.com/IndustryPortal/bioportal_web_ui/24e0ba99777d40cc97b0bfa60e73df607d58a302/app/assets/images/logos/collaboration/pics-lgp.png',
         url: 'https://github.com/PICS-LGP',
+        target: '_blank',
+      },
+      {
+        img_src: 'logos/collaboration/lirmm_logo.png',
+        url: 'https://www.lirmm.fr',
         target: '_blank',
       }
     ]
