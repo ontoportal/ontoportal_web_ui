@@ -33,6 +33,15 @@
           %li.list-inline-item
             = link_to('https://github.com/IndustryPortal', target: '_blank') do
               %i.fab.fa-2x.fa-github
+    %div.row.mt-3{:style =>" font-size:1.2em; "}
+      %img.my-auto{src:asset_path("logos/union-logo.png"),style: "min-height:1.2em;" }
+      %p.text-dark.my-auto.ml-2
+        %strong IndustryPortal
+        %span has received funding from the European Union’s Horizon H2020
+        %br
+        %span research and innovation programme under grant agreement (No 958371).
+
+
     -#%div.row.legal-text
     -#  %div.col
     -#    = t('.grant_html')
