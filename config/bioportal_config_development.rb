@@ -155,8 +155,7 @@ $HOSTNAME = "industryportal.enit.fr"
 #Coloaboration and support
 $HOME_PAGE_LOGOS = [
   {
-    prefix: "Supported by: ",
-    title: 'OntoCommons is an H2020 CSA project dedicated to the standardisation of data documentation across all domains related to materials and manufacturing.  ',
+    title: 'Supported by: OntoCommons is an H2020 CSA project dedicated to the standardisation of data documentation across all domains related to materials and manufacturing.  ',
     links: [
       {
         img_src: 'logos/supports/ontocommons-logo.png',
