@@ -233,16 +233,16 @@ $TEAM_MEMBERS = [
 ]
 
 $CONTRIBUTORS = [
-  # {
-  #   full_name: "",
-  #   position: "",
-  #   works_at: ""
-  # },
-  # {
-  #   full_name: "AbdelOuadoud Rasmi",
-  #   position: "MS of CS",
-  #   works_at: "Esi Sba"
-  # },
+  {
+    full_name: "Clément Jonquet",
+    position: "PhD (Senior Researcher – INRAE (MISTEA). Associate Researcher",
+    works_at: "University of Montpellier (LIRMM))- France"
+  },
+  {
+    full_name: "Syphax Bouazzouni",
+    position: "Research engineer",
+    works_at: "University of Montpellier (LIRMM)- France"
+  },
 ]
 
 #Changing app theme to make it look just like

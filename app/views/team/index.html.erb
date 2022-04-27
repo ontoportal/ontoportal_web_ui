@@ -32,9 +32,9 @@
 <% if @contributors.empty? %>
   <p>ongoing...</p>
 <% else %>
-  <ul id="contributors" class="mx-2">
+  <ul id="contributors" class="mx-2" style="list-style-type: none;">
     <% @contributors.each do |c| %>
-      <li><strong><%= c[:full_name] %></strong>,  <%= c[:position] %> at "<%= c[:works_at] %>"</li>
+      <li>- <strong><%= c[:full_name] %></strong>,  <%= c[:position] %> at <%= c[:works_at] %></li>
     <% end %>
   </ul>
 <% end %>
