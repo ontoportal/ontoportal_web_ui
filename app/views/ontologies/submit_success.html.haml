@@ -1,6 +1,5 @@
-%div{:style => "padding: 2em;"}
-  %h1 Ontology Submitted Successfully
-  %br/
+%div.p-4
+  %h2.pb-3 Ontology submitted successfully!
   -if @ontology.metadata_only?
     %p Thank you for submitting your ontology to #{$SITE}.
     %p Users can now see your ontology in our ontology list but they cannot explore or search it. To enable exploring and searching, please upload a full version of your ontology.
