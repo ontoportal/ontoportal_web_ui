@@ -174,10 +174,10 @@ class OntologiesController < ApplicationController
   end
 
   def create
-    if params['commit'] == 'Cancel'
-      redirect_to "/ontologies"
-      return
+    if params[:commit].eql? 'Cancel'
+      redirect_to ontologies_path and return
     end
+
     @ontology = LinkedData::Client::Models::Ontology.new(values: ontology_params)
     @ontology_saved = @ontology.save
     if !@ontology_saved || @ontology_saved.errors
