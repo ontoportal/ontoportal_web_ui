@@ -182,10 +182,10 @@ class OntologiesController < ApplicationController
     @ontology_saved = @ontology.save
     if !@ontology_saved || @ontology_saved.errors
       @categories = LinkedData::Client::Models::Category.all
-      @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
-      @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
+      @user_select_list = LinkedData::Client::Models::User.all.map { |u| [u.username, u.id] }
+      @user_select_list.sort! { |a, b| a[1].downcase <=> b[1].downcase }
       @errors = response_errors(@ontology_saved)
-      render "new"
+      render 'new'
     else
       if @ontology_saved.summaryOnly
         redirect_to "/ontologies/success/#{@ontology.acronym}"
