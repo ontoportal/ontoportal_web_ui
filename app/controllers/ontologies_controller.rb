@@ -190,7 +190,7 @@ class OntologiesController < ApplicationController
       if @ontology_saved.summaryOnly
         redirect_to "/ontologies/success/#{@ontology.acronym}"
       else
-        redirect_to new_ontology_submission_url(ontology_id: @ontology.acronym)
+        redirect_to new_ontology_submission_path(@ontology.acronym)
       end
     end
   end
