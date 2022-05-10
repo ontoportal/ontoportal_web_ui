@@ -185,13 +185,8 @@ class OntologiesController < ApplicationController
       @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
       @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
       @errors = response_errors(@ontology_saved)
-      #@errors = {acronym: "Acronym already exists, please use another"} if @ontology_saved.status == 409
       render "new"
     else
-      # TODO_REV: Enable subscriptions
-      # if params["ontology"]["subscribe_notifications"].eql?("1")
-      #  DataAccess.createUserSubscriptions(@ontology.administeredBy, @ontology.ontologyId, NOTIFICATION_TYPES[:all])
-      # end
       if @ontology_saved.summaryOnly
         redirect_to "/ontologies/success/#{@ontology.acronym}"
       else
