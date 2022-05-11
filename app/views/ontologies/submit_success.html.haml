@@ -12,7 +12,9 @@
       %p Thank you for submitting your ontology view to #{$SITE}.
     -else
       %p Thank you for submitting your ontology to #{$SITE}.
-    %p We will now put your ontology in the queue to be processed. Please keep in mind that it may take up to several hours before #{$SITE} users will be able to explore and search your ontology.
+    %p
+      We will now put your ontology in the queue to be processed. Please keep in mind that it may take up to several
+      hours before #{$SITE} users will be able to explore and search your ontology.
     %p
       When your ontology is ready for viewing, it will be available here:
       = link_to ontology_url(@ontology.acronym), ontology_path(@ontology.acronym)
