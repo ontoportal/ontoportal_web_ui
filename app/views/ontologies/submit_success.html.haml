@@ -1,8 +1,12 @@
 %div.p-4
   %h2.pb-3 Ontology submitted successfully!
-  -if @ontology.metadata_only?
-    %p Thank you for submitting your ontology to #{$SITE}.
-    %p Users can now see your ontology in our ontology list but they cannot explore or search it. To enable exploring and searching, please upload a full version of your ontology.
+  -if @ontology.summaryOnly
+    %p Thank you for submitting your metadata-only ontology to #{$SITE}.
+    %p
+      Users can now see
+      = link_to "your ontology", ontology_path(@ontology.acronym)
+      in our ontology list but they cannot explore or search it. To enable exploring and searching,
+      please upload a full version of your ontology.
   -else
     -if @ontology.viewOf
       %p Thank you for submitting your ontology view to #{$SITE}.
