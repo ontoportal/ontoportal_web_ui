@@ -51,9 +51,6 @@ BioportalWebUi::Application.configure do
   # Use a different logger for distributed setups.
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
 
-  # Use a different cache store in production.
-  # config.cache_store = :mem_cache_store
-
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = 'http://assets.example.com'
 
@@ -74,12 +71,11 @@ BioportalWebUi::Application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-
   # Include the BioPortal-specific configuration options
   require Rails.root.join('config', "bioportal_config_#{Rails.env}.rb")
 
-  # memcache setup
-  config.cache_store = :mem_cache_store, { :namespace => 'bioportal_web_ui', :expires_in => 1.day }
+  # Use a different cache store in the appliance.
+  config.cache_store = :mem_cache_store, ENV["MEMCACHE_SERVERS"] || "localhost:11211", { :namespace => 'bioportal_web_ui', :expires_in => 1.day }
 
 
   # Disable serving static files from the `/public` folder by default since

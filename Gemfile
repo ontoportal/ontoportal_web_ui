@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '5.2.6'
+gem 'rails', '6.0.4.1'
 
 gem 'sass-rails', '~> 5.0'
 #gem 'coffee-rails', '~> 4.1.0'
@@ -34,9 +34,9 @@ gem 'i18n'
 gem 'iconv'
 gem 'multi_json'
 gem 'mysql2', '0.5.2'
-gem 'nokogiri'
 gem 'oj'
 gem 'open_uri_redirections'
+gem 'psych', '< 4'
 gem 'pry'
 gem 'rack-mini-profiler'
 gem 'rails_autolink'
@@ -48,7 +48,7 @@ gem 'thin'
 gem 'turnout'
 gem 'will_paginate', '~> 3.0'
 
-gem 'ontologies_api_client', git: "https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git", tag: "v2.0.2-merged"
+gem 'ontologies_api_client', git: 'https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git'
 
 
 group :staging, :production do
