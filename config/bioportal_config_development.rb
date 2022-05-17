@@ -51,7 +51,7 @@ $RESOURCE_INDEX_DISABLED = true
 
 # Unique string representing the UI's id for use with the BioPortal Core
 #$API_KEY ||= '1de0a270-29c5-4dda-b043-7c3580628cd5'
-$API_KEY ||= '019adb70-1d64-41b7-8f6e-8f7e5eb54942'
+$API_KEY ||= ''
 # Max number of children to return when rendering a tree view
 $MAX_CHILDREN = 2500
 
@@ -149,7 +149,7 @@ $ORG_SITE = ($ORG.nil? || $ORG.empty?) ? $SITE : "#{$ORG} #{$SITE}"
 
 #Fairness including config
 $FAIRNESS_DISABLED = false
-$FAIRNESS_URL = "http://services.industryportal.enit.fr/fairness/?portal=agroportal"
+$FAIRNESS_URL = "http://services.industryportal.enit.fr/fair/?portal=indutryportal"
 $HOSTNAME = "industryportal.enit.fr"
 
 #Coloaboration and support
