@@ -133,7 +133,7 @@ GEM
       faraday (~> 2.0.0.alpha.pre.2)
     faraday-multipart (1.0.3)
       multipart-post (>= 1.2, < 3)
-    faraday-net_http (2.0.2)
+    faraday-net_http (2.0.3)
     ffi (1.15.5)
     flamegraph (0.9.5)
     globalid (1.0.0)
@@ -185,7 +185,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (8.7.0)
     nio4r (2.5.8)
-    nokogiri (1.13.6-x86_64-darwin)
+    nokogiri (1.13.6-x86_64-linux)
       racc (~> 1.4)
     oj (3.13.11)
     open_uri_redirections (0.2.1)
@@ -344,7 +344,7 @@ GEM
     zeitwerk (2.5.4)
 
 PLATFORMS
-  x86_64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   bootstrap (~> 4.2.0)
@@ -392,4 +392,4 @@ DEPENDENCIES
   will_paginate (~> 3.0)
 
 BUNDLED WITH
-   2.3.7
+   2.3.4
