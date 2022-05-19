@@ -1,0 +1,25 @@
+@bioportal_agent requests:
+
+**<%= acronym %> term (ID and label)**
+<%= pref_label %> (`<%= path_info %>`)
+
+**Synonym to be added**
+<%= synonym %>
+
+
+**Synonym subtype: ie, broad/exact/narrow/related**
+<% subtypes.each do |subtype| %>
+  * <%= subtype %>
+<% end %>
+
+**Database cross reference for the synonym** such as PubMed ID (in the format PMID:XXXXXX) or a cross-reference to another ontology, like OMIM or Orphanet.
+<% dbxrefs.each do |dbxref| %>
+  * `<%= dbxref %>`
+<% end %>
+
+**Your nano-attribution (ORCID)**
+If you don't have an ORCID, you can sign up for one [here](https://orcid.org/)
+<%= orcid %>
+
+
+This request comes from BioPortal user: <%= username %>
