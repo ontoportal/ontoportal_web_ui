@@ -1,0 +1,23 @@
+development:
+  ontologies:
+    - CL
+    - GO
+    - MONDO
+    - UBERON
+
+staging:
+  ontologies:
+    - CL
+    - GO
+    - MONDO
+    - UBERON
+
+production:
+  ontologies:
+    - CL
+    - GO
+    - MONDO
+    - UBERON
+
+appliance:
+  ontologies: null
