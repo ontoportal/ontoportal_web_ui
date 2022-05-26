@@ -9,7 +9,7 @@ module KGCL
       KGCL::Operations::REMOVE_SYNONYM => RemoveSynonymContent
     }.freeze
 
-    def self.generate(params)
+    def self.call(params)
       operation = params[:operation]
       raise ArgumentError, "Invalid KGCL operation: #{operation}" unless RENDERERS.key?(operation)
 

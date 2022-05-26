@@ -22,7 +22,7 @@ RSpec.describe KGCL::IssueContentGenerator do
       This request comes from BioPortal user: Daenerys Targaryen
     HEREDOC
 
-    content = KGCL::IssueContentGenerator.generate(params)
+    content = KGCL::IssueContentGenerator.call(params)
     expect(content[:title]).to eq(title)
     expect(content[:body]).to eq(body)
   end
@@ -46,7 +46,7 @@ RSpec.describe KGCL::IssueContentGenerator do
       This request comes from BioPortal user: Sansa Stark
     HEREDOC
 
-    content = KGCL::IssueContentGenerator.generate(params)
+    content = KGCL::IssueContentGenerator.call(params)
     expect(content[:title]).to eq(title)
     expect(content[:body]).to eq(body)
   end
@@ -54,6 +54,6 @@ RSpec.describe KGCL::IssueContentGenerator do
   it 'raises an error for invalid KGCL operations' do
     params = { operation: 'bogus operation' }
     msg = 'Invalid KGCL operation: bogus operation'
-    expect { KGCL::IssueContentGenerator.generate(params) }.to raise_error(ArgumentError, msg)
+    expect { KGCL::IssueContentGenerator.call(params) }.to raise_error(ArgumentError, msg)
   end
 end
