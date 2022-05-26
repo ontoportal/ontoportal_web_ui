@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../template_renderer'
+
 class NewSynonymContent
   attr_reader :params
 
@@ -12,15 +14,12 @@ class NewSynonymContent
   end
 
   def render
-    b = binding
-
-    template = File.read("#{Rails.root}/app/lib/kgcl/templates/new_synonym_title.erb")
-    title = ERB.new(template, trim_mode: '%<>').result b
-
-    template = File.read("#{Rails.root}/app/lib/kgcl/templates/new_synonym_body.erb")
-    body = ERB.new(template, trim_mode: '<>').result b
-
-    { title: title, body: body }
+    tr = TemplateRenderer.new(
+      title_template: 'new_synonym_title.erb',
+      body_template: 'new_synonym_body.erb',
+      bind_klass: self
+    )
+    tr.render
   end
 
   def comment
@@ -29,6 +28,10 @@ class NewSynonymContent
 
   def curie
     @params[:curie]
+  end
+
+  def get_binding
+    binding
   end
 
   def pref_label

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../template_renderer'
+
 class RemoveSynonymContent
   attr_reader :params
 
@@ -8,15 +10,12 @@ class RemoveSynonymContent
   end
 
   def render
-    b = binding
-
-    template = File.read("#{Rails.root}/app/lib/kgcl/templates/remove_synonym_title.erb")
-    title = ERB.new(template, trim_mode: '%<>').result b
-
-    template = File.read("#{Rails.root}/app/lib/kgcl/templates/remove_synonym_body.erb")
-    body = ERB.new(template, trim_mode: '<>').result b
-
-    { title: title, body: body }
+    tr = TemplateRenderer.new(
+      title_template: 'remove_synonym_title.erb',
+      body_template: 'remove_synonym_body.erb',
+      bind_klass: self
+    )
+    tr.render
   end
 
   def comment
@@ -25,6 +24,10 @@ class RemoveSynonymContent
 
   def curie
     @params[:curie]
+  end
+
+  def get_binding
+    binding
   end
 
   def pref_label
