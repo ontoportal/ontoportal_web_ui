@@ -13,22 +13,22 @@ class NewSynonymContent
 
   def render
     b = binding
-    title = ERB.new('Add synonym: <%= pref_label %>', trim_mode: '%<>').result b
+
+    template = File.read("#{Rails.root}/app/lib/kgcl/templates/new_synonym_title.erb")
+    title = ERB.new(template, trim_mode: '%<>').result b
+
     template = File.read("#{Rails.root}/app/lib/kgcl/templates/new_synonym_body.erb")
     body = ERB.new(template, trim_mode: '<>').result b
+
     { title: title, body: body }
   end
 
-  def dbxrefs
-    @params[:dbxrefs]
+  def comment
+    @params[:comment]
   end
 
-  def orcid
-    @params[:orcid]
-  end
-
-  def path_info
-    @params[:path_info]
+  def curie
+    @params[:curie]
   end
 
   def pref_label
@@ -37,10 +37,6 @@ class NewSynonymContent
 
   def synonym
     @params[:synonym]
-  end
-
-  def subtypes
-    @params[:subtypes]
   end
 
   def username

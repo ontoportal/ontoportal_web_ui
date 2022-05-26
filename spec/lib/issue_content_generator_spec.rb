@@ -6,39 +6,18 @@ RSpec.describe KGCL::IssueContentGenerator do
   it 'generates issue content for new synonym change requests' do
     params = {
       operation: KGCL::Operations::NEW_SYNONYM,
-      pref_label: 'PSMNSW',
-      path_info: 'MONDO_0013494',
-      dbxrefs: %w[SCTID:804955009 OMOP:377535],
-      acronym: 'MONDO',
-      orcid: 'https://orcid.org/0000-0002-8169-9049',
-      synonym: 'Broad',
-      subtypes: ['sleep walking disorder', 'sleepwalking disorder', 'sleep walking', 'somnambulism'],
+      synonym: 'taste-bud cell',
+      pref_label: 'taste receptor cell',
+      curie: 'CL:0000209',
+      comment: 'I really, really want to have this new synonym added!',
       username: 'Daenerys Targaryen'
     }
 
-    title = 'Add synonym: PSMNSW'
+    title = 'New synonym "taste-bud cell" for taste receptor cell (CL:0000209)'
     body = <<~HEREDOC.chomp
-      @bioportal_agent requests:
+      `new synonym "taste-bud cell" for CL:0000209`
 
-      **MONDO term (ID and label)**
-      PSMNSW (`MONDO_0013494`)
-
-      **Synonym to be added**
-      Broad
-
-      **Synonym subtype: ie, broad/exact/narrow/related**
-        * sleep walking disorder
-        * sleepwalking disorder
-        * sleep walking
-        * somnambulism
-
-      **Database cross reference for the synonym** such as PubMed ID (in the format PMID:XXXXXX) or a cross-reference to another ontology, like OMIM or Orphanet.
-        * `SCTID:804955009`
-        * `OMOP:377535`
-
-      **Your nano-attribution (ORCID)**
-      If you don't have an ORCID, you can sign up for one [here](https://orcid.org/)
-      https://orcid.org/0000-0002-8169-9049
+      Comment: I really, really want to have this new synonym added!
 
       This request comes from BioPortal user: Daenerys Targaryen
     HEREDOC
