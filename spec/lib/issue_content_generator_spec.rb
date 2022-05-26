@@ -53,16 +53,16 @@ RSpec.describe KGCL::IssueContentGenerator do
       operation: KGCL::Operations::REMOVE_SYNONYM,
       synonym: 'Gus deficiency',
       pref_label: 'mucopolysaccharidosis type 7',
-      path_info: 'MONDO_0009662',
+      curie: 'MONDO:0009662',
       comment: "I don't think this is correct!",
       username: 'Sansa Stark'
     }
 
-    title = 'Remove synonym "Gus deficiency" from mucopolysaccharidosis type 7 (MONDO_0009662)'
+    title = 'Remove synonym "Gus deficiency" from mucopolysaccharidosis type 7 (MONDO:0009662)'
     body = <<~HEREDOC.chomp
-      @bioportal_agent requests:
+      `remove synonym "Gus deficiency" from MONDO:0009662`
 
-      * `remove synonym "Gus deficiency" from MONDO_0009662`, comments: I don't think this is correct!
+      Comment: I don't think this is correct!
 
       This request comes from BioPortal user: Sansa Stark
     HEREDOC

@@ -23,8 +23,8 @@ class RemoveSynonymContent
     @params[:comment]
   end
 
-  def path_info
-    @params[:path_info]
+  def curie
+    @params[:curie]
   end
 
   def pref_label
