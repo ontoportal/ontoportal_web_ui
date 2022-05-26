@@ -9,10 +9,6 @@ class NewSynonymContent
     @params = params
   end
 
-  def acronym
-    @params[:acronym]
-  end
-
   def render
     tr = TemplateRenderer.new(
       title_template: 'new_synonym_title.erb',
