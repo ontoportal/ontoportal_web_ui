@@ -12,7 +12,7 @@
       %li.nav-item
         = link_to("Mappings", mappings_path(), class: "nav-link")
       %li.nav-item
-        = link_to("Recommender", recommender_index_path(), class: "nav-link")
+        = link_to("Recommender", recommender_index_path, class: "nav-link")
       %li.nav-item
         = link_to("Annotator", annotator_index_path(), class: "nav-link")
       - if $NCBO_ANNOTATORPLUS_ENABLED == true
@@ -24,7 +24,7 @@
         = link_to("Landscape", '/landscape', class: "nav-link")
       -if (!session[:user].nil? && session[:user].admin?)
         %li.nav-item
-          = link_to("Admin", admin_index_path(), class: "nav-link")
+          = link_to("Admin", admin_index_path, class: "nav-link")
     %ul.navbar-nav
       - if session[:user].nil?
         %li.nav-item
@@ -42,7 +42,7 @@
               - for ont in session[:ontologies]
                 = link_to(ont.ontology_name, "/ontologies/#{ont.ontology_acronym}/?p=classes&conceptid=#{CGI.escape(ont.concept)}", class: "dropdown-item")
               %div.dropdown-divider
-            = link_to("Logout", logout_path(), class: "dropdown-item")            
+            = link_to("Logout", logout_path, class: "dropdown-item")
       -# Support menu
       %li.nav-item.dropdown
         = link_to("#", id: "supportMenuDropdownLink", class: "nav-link dropdown-toggle", role: "button", data: {toggle: "dropdown"}, aria: {haspopup: "true", expanded: "false"}) do

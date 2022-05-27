@@ -1,6 +1,7 @@
 require 'csv'
 
 class AnalyticsController < ApplicationController
+
   def track
     entry = Analytics.new
     entry.segment = params[:segment]
@@ -10,7 +11,7 @@ class AnalyticsController < ApplicationController
     entry.user = session[:user].nil? ? nil : session[:user].id
     entry.params = params.except(:segment, :analytics_action, :action, :controller)
     entry.save
-    render :text => ""
+    head :ok
   end
 
   def search_result_clicked

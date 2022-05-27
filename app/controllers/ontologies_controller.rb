@@ -1,5 +1,11 @@
 class OntologiesController < ApplicationController
   include MappingsHelper
+  include FairScoreHelper
+  include InstancesHelper
+  include ActionView::Helpers::NumberHelper
+  include OntologiesHelper
+  include SchemesHelper
+  include MappingStatistics
 
   require 'multi_json'
   require 'cgi'
@@ -210,28 +216,23 @@ display_context: false, include: browse_attributes)
   end
 
   def create
-    if params['commit'] == 'Cancel'
-      redirect_to '/ontologies'
-      return
+    if params[:commit].eql? 'Cancel'
+      redirect_to ontologies_path and return
     end
+
     @ontology = LinkedData::Client::Models::Ontology.new(values: ontology_params)
     @ontology_saved = @ontology.save
     if !@ontology_saved || @ontology_saved.errors
       @categories = LinkedData::Client::Models::Category.all
-      @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
-      @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
+      @user_select_list = LinkedData::Client::Models::User.all.map { |u| [u.username, u.id] }
+      @user_select_list.sort! { |a, b| a[1].downcase <=> b[1].downcase }
       @errors = response_errors(@ontology_saved)
-      #@errors = {acronym: "Acronym already exists, please use another"} if @ontology_saved.status == 409
       render 'new'
     else
-      # TODO_REV: Enable subscriptions
-      # if params["ontology"]["subscribe_notifications"].eql?("1")
-      #  DataAccess.createUserSubscriptions(@ontology.administeredBy, @ontology.ontologyId, NOTIFICATION_TYPES[:all])
-      # end
       if @ontology_saved.summaryOnly
         redirect_to "/ontologies/success/#{@ontology.acronym}"
       else
-        redirect_to new_ontology_submission_url(ontology_id: @ontology.acronym)
+        redirect_to new_ontology_submission_path(@ontology.acronym)
       end
     end
   end
@@ -247,33 +248,8 @@ display_context: false, include: browse_attributes)
   end
 
   def mappings
-    counts = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}/mappings/statistics/ontologies/#{params[:id]}")
-    @ontologies_mapping_count = []
-    unless counts.nil?
-      counts.members.each do |acronym|
-        count = counts[acronym]
-        # Note: find_by_acronym includes ontology views
-        ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym.to_s).first
-        if ontology
-          onto_info = { id: ontology.id, name: ontology.name, viewOf: ontology.viewOf }
-        else
-          if acronym.to_s.start_with?(EXTERNAL_MAPPINGS_GRAPH)
-            onto_info = { id: acronym.to_s, name: 'External Mappings', viewOf: nil }
-            @ontologies_mapping_count << { 'ontology' => onto_info, 'count' => count }
-          elsif acronym.to_s.start_with?(INTERPORTAL_MAPPINGS_GRAPH)
-            onto_info = { id: acronym.to_s, name: "Interportal Mappings - #{acronym.to_s.split("/")[-1].upcase}", 
-viewOf: nil }
-            @ontologies_mapping_count << { 'ontology' => onto_info, 'count' => count }
-          end
-        end
-        next unless ontology
-        @ontologies_mapping_count << { 'ontology' => onto_info, 'count' => count }
-      end
-      @ontologies_mapping_count.sort! {|a,b|
- a['ontology'][:name].downcase <=> b['ontology'][:name].downcase } unless @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
-    end
-    @ontology_id = @ontology.acronym
-    @ontology_label = @ontology.name
+    @mapping_counts = mapping_counts(@ontology.acronym || params[:id])
+
     if request.xhr?
       render partial: 'mappings', layout: false
     else
@@ -292,8 +268,6 @@ display_links: false, display_context: false)
   end
 
   def notes
-    # Get the latest 'ready' submission, or fallback to any latest submission
-    @submission = get_ontology_submission_ready(@ontology) # application_controller
     @notes = @ontology.explore.notes
     @notes_deletable = false
     # TODO_REV: Handle notes deletion
@@ -409,9 +383,7 @@ display_links: false, display_context: false)
   end
 
   def submit_success
-    @acronym = params[:id]
-    # Force the list of ontologies to be fresh by adding a param with current time
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id], cache_invalidate: Time.now.to_i).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     render 'submit_success'
   end
 

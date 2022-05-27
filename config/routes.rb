@@ -63,21 +63,17 @@ Rails.application.routes.draw do
   match "/404", to: "errors#not_found", via: :all
   match "/500", to: "errors#internal_server_error", via: :all
 
-  # Analytics endpoint
-  get '/analytics' => 'analytics#track'
-
+  # Analytics
+  match 'analytics', to: 'analytics#track', via: [:post] 
+  
   # Robots.txt
   get '/robots.txt' => 'robots#index'
 
   # Ontologies
   get '/ontologies/view/edit/:id' => 'ontologies#edit_view', :constraints => { id: /[^\/?]+/ }
   get '/ontologies/view/new/:id' => 'ontologies#new_view'
-  get '/ontologies/virtual/:ontology
-
-
-
-
-' => 'ontologies#virtual', :as => :ontology_virtual
+  
+  get '/ontologies/virtual/:ontology' => 'ontologies#virtual', :as => :ontology_virtual
   get '/ontologies/success/:id' => 'ontologies#submit_success'
   match '/ontologies/:acronym' => 'ontologies#update', via: [:get, :post]
   match '/ontologies/:acronym/submissions/:id' => 'submissions#update', via: [:get, :post]
