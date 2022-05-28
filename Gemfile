@@ -4,6 +4,8 @@ source 'https://rubygems.org'
 gem 'rails', '7.0.3'
 
 gem 'jsbundling-rails'
+gem 'stimulus-rails'
+
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.0.3'
 # See https://github.com/rails/execjs#readme for more supported runtimes
