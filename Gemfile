@@ -5,8 +5,9 @@ gem 'rails', '7.0.3'
 
 gem 'jsbundling-rails'
 
-gem 'sass-rails', '~> 5.0'
+gem 'sassc-rails' #sass-rails replacent
 gem 'terser' #ugilifer replacent
+
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 # gem 'duktape'
