@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../template_renderer'
-
 class RemoveSynonymContent
   attr_reader :params
 
@@ -10,7 +8,7 @@ class RemoveSynonymContent
   end
 
   def render
-    tr = TemplateRenderer.new(
+    tr = KGCL::TemplateRenderer.new(
       title_template: 'remove_synonym_title.erb',
       body_template: 'remove_synonym_body.erb',
       bind_klass: self

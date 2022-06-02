@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../template_renderer'
-
 class NewSynonymContent
   attr_reader :params
 
@@ -10,7 +8,7 @@ class NewSynonymContent
   end
 
   def render
-    tr = TemplateRenderer.new(
+    tr = KGCL::TemplateRenderer.new(
       title_template: 'new_synonym_title.erb',
       body_template: 'new_synonym_body.erb',
       bind_klass: self
