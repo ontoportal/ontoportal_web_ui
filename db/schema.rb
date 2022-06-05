@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_21_120918) do
+ActiveRecord::Schema.define(version: 2022_06_05_155916) do
 
   create_table "analytics", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "segment"
@@ -27,6 +27,13 @@ ActiveRecord::Schema.define(version: 2020_09_21_120918) do
     t.text "encrypted_key"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "logs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.string "user"
+    t.string "ontology"
+    t.float "rating"
+    t.timestamp "time"
   end
 
   create_table "ontologies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
