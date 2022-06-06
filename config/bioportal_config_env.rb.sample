@@ -98,11 +98,14 @@ CalendarDateSelect.format = :american
 # reCAPTCHA
 # In order to use reCAPTCHA on the account creation and feedback submission pages:
 #    1. Obtain a reCAPTCHA v2 key from: https://www.google.com/recaptcha/admin
-#    2. Include the corresponding keys below (between the single quotes)
+#    2. Put the site and secret keys in the encrypted credentials file:
+#
+#       recaptcha:
+#         site_key: your_site_key
+#         secret_key: your_secret_key
+#
 #    3. Set the USE_RECAPTCHA option to 'true'
 ENV['USE_RECAPTCHA'] = 'false'
-ENV['RECAPTCHA_PUBLIC_KEY']  = ''
-ENV['RECAPTCHA_PRIVATE_KEY'] = ''
 
 # Memcached servers
 ENV['MEMCACHE_SERVERS'] = 'localhost'
