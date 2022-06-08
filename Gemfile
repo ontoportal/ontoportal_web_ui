@@ -1,12 +1,13 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '6.1.5.1'
+gem 'rails', '7.0.3'
 
-gem 'sass-rails', '~> 5.0'
-#gem 'coffee-rails', '~> 4.1.0'
-#gem 'uglifier', '>= 4.2.0'
-gem 'terser', '~> 1.1', '>= 1.1.1'
+gem 'jsbundling-rails'
+
+gem 'sassc-rails' #sass-rails replacent
+gem 'terser' #ugilifer replacent
+
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 # gem 'duktape'
@@ -17,14 +18,35 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'select2-rails'
 
+
+# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
+gem 'sprockets-rails'
+
+
+# Use the Puma web server [https://github.com/puma/puma]
+gem 'puma', '~> 5.0'
+
+# Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
+gem 'importmap-rails'
+
+# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
+gem 'turbo-rails'
+
+# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
+gem 'stimulus-rails'
+
+# Build JSON APIs with ease [https://github.com/rails/jbuilder]
+#gem "jbuilder"
+
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ]
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
-# To use Jbuilder templates for JSON
-# gem 'jbuilder'
+# Reduces boot times through caching; required in config/boot.rb
 
-# To use debugger
-# gem 'debugger'
+gem 'bootsnap', require: false
 
 gem 'cube-ruby', require: 'cube'
 gem 'dalli'
@@ -48,7 +70,7 @@ gem 'thin'
 gem 'turnout'
 gem 'will_paginate', '~> 3.0'
 
-gem 'ontologies_api_client', git: 'https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git', branch: 'development'
+gem 'ontologies_api_client', github: 'ontoportal-lirmm/ontologies_api_ruby_client', branch: 'development'
 
 
 group :staging, :production do
@@ -72,6 +94,11 @@ group :development do
   gem 'brakeman', require: false
   gem 'rubocop', require: false
   # gem 'i18n-debug'
+  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  gem 'debug', platforms: %i[ mri mingw x64_mingw ]
+
+  # Use console on exceptions pages [https://github.com/rails/web-console]
+  gem 'web-console'
 end
 
 group :test, :development do
@@ -79,5 +106,8 @@ group :test, :development do
 end
 
 group :test do
+  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem 'capybara'
+  gem 'selenium-webdriver'
+  gem 'webdrivers'
 end

@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_30_230915) do
-
+ActiveRecord::Schema[7.0].define(version: 2021_11_30_230915) do
   create_table "analytics", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "segment"
     t.string "action"
@@ -19,22 +18,22 @@ ActiveRecord::Schema.define(version: 2021_11_30_230915) do
     t.string "ip"
     t.integer "user"
     t.text "params"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "licenses", charset: "utf8mb3", force: :cascade do |t|
     t.text "encrypted_key"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "ontologies", charset: "utf8mb3", force: :cascade do |t|
     t.string "acronym", null: false
     t.text "new_term_instructions"
     t.text "custom_message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["acronym"], name: "index_ontologies_on_acronym", unique: true
   end
 
@@ -48,8 +47,8 @@ ActiveRecord::Schema.define(version: 2021_11_30_230915) do
 
   create_table "virtual_appliance_users", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
 end
