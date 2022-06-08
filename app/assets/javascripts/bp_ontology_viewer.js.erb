@@ -285,6 +285,10 @@ jQuery(document).ready(function() {
 
     if (content_section !== "instances" && metadataOnly !== "true") {
           jQuery.bioportal.ont_pages["instances"].retrieve();
+    }
+
+      if (content_section !== "schemes" && metadataOnly !== "true") {
+          jQuery.bioportal.ont_pages["schemes"].retrieve();
       }
 
     if (content_section !== "widgets" && metadataOnly !== "true") {
@@ -407,7 +411,8 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
     jQuery("#ont_notes_content .link_button").button();
   });
 
-  jQuery.bioportal.ont_pages["instances"] = new jQuery.bioportal.OntologyPage("instances", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=instances&ajax=true", "Problem retrieving widgets", jQuery(document).data().bp.ont_viewer.ontology_name + " - Instances", "Instances");
+    jQuery.bioportal.ont_pages["instances"] = new jQuery.bioportal.OntologyPage("instances", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=instances&ajax=true", "Problem retrieving widgets", jQuery(document).data().bp.ont_viewer.ontology_name + " - Instances", "Instances");
+    jQuery.bioportal.ont_pages["schemes"] = new jQuery.bioportal.OntologyPage("schemes", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=schemes&ajax=true", "Problem retrieving widgets", jQuery(document).data().bp.ont_viewer.ontology_name + " - Schemes", "Schemes");
 
 
   jQuery.bioportal.ont_pages["widgets"] = new jQuery.bioportal.OntologyPage("widgets", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=widgets&ajax=true", "Problem retrieving widgets", jQuery(document).data().bp.ont_viewer.ontology_name + " - Widgets", "Widgets");

@@ -143,9 +143,14 @@
             %div.tab-pane{id: "ont_properties_content", role: "tabpanel", aria: {labelledby: "ont-properties-tab"}}
               - if content_section.eql?("properties")
                 = yield
-            %div.tab-pane{id: "ont_instances_content", role: "tabpanel", aria: {labelledby: "ont-instances-tab"}}
-              - if content_section.eql?("instances")
-                = yield
+            - if @submission_latest.hasOntologyLanguage === 'SKOS'
+              %div.tab-pane{id: "ont_schemes_content", role: "tabpanel", aria: {labelledby: "ont-schemes-tab"}}
+                - if content_section.eql?("schemes")
+                  = yield
+            - else
+              %div.tab-pane{id: "ont_instances_content", role: "tabpanel", aria: {labelledby: "ont-instances-tab"}}
+                - if content_section.eql?("instances")
+                  = yield
             %div.tab-pane{id: "ont_notes_content", role: "tabpanel", aria: {labelledby: "ont-notes-tab"}}
               - if content_section.eql?("notes")
                 = yield

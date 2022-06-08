@@ -1,0 +1,65 @@
+%div.ont-schemes
+  %div#schemesTree
+    %ul.ncboTree
+      %li.root
+        %ul
+          - schemes_labels,selected_label = get_schemes_labels(@schemes, @submission_latest.URI)
+          - schemes_labels.sort_by{|s| [s[0]]}.each do  |s|
+            %li.line
+              &nbsp
+            %li.doc
+              %a.text{id: s[1], href: "javascript:void(0)"}
+                = s[0]
+  %div#scheme_contents.pl-3
+    Loading...
+
+:javascript
+
+  $( document ).ready(function() {
+      const content = document.querySelector("#scheme_contents")
+      let activeElem = null
+      Split(['#schemesTree', '#scheme_contents'], {
+                elementStyle: function (dimension, size, gutterSize) {
+                  return {
+                    'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
+                  }
+                },
+                gutterStyle: function (dimension, gutterSize) {
+                  return {
+                    'flex-basis':  gutterSize + 'px'
+                  }
+                },
+                gutterSize: 10,
+                direction: "horizontal",
+                sizes: [25, 75],
+                cursor: "col-resize"
+      })
+      tree = document.querySelectorAll("#schemesTree a")
+
+      tree.forEach(x => x.addEventListener('click', (e) => {
+        if(activeElem){
+          activeElem.classList.remove('active')
+        }
+        activeElem = e.currentTarget
+        ontology_id = jQuery(document).data().bp.ont_viewer.ontology_id
+        content.innerHTML  = "Loading..."
+
+        fetch(`/ontologies/${ontology_id}/schemes/${encodeURIComponent(activeElem.id)}`)
+        .then((response) => {
+          return response.text();
+        })
+        .then((body) => {
+          content.innerHTML  = body
+          ajax_process_cls_init()
+        })
+        activeElem.classList.add('active')
+      }))
+
+      let firstElement = tree[0]
+
+      if(firstElement){
+        firstElement.click()
+      }
+  })
+
+

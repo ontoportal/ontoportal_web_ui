@@ -268,3 +268,24 @@ $ont-show-bg-color: #e9ecef;
   margin-left: 15px;
   margin-right: 15px;
 }
+
+/************************************
+/* Schemes pane
+************************************/
+
+#schemesTree {
+  overflow-x: auto;
+  white-space: nowrap;
+  min-width: 10%;
+  a {
+    font-family: "Myriad Pro", "Myriad Web Pro", "Myriad Web", "Myriad", "Trebuchet MS", "Tahoma", "Helvetica", "Arial", sans-serif;
+    font: small/1.231 arial, helvetica, clean, sans-serif;
+  }
+}
+
+.ont-schemes {
+  display: flex;
+  flex-direction: row;
+}
+
+
