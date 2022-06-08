@@ -6,7 +6,17 @@
     if(data && Object.keys(data).length !== 0){
       $.facebox({ajax: `/ontologies/${ontology_acronym}/instances/${encodeURIComponent(data["@id"])}`})
     }
-
+    let schemes_select =  jQuery("#schemes_select")
+    schemes_select.chosen({width: '100%'})
+    schemes_select.chosen().change((e) => {
+      let ids = Array.from(e.currentTarget.selectedOptions).map(x => x.value)
+      if(ids.length === 0){
+         document.getElementById("sd_content").innerHTML = "Please select a scheme to display"
+      }else {
+        showLoader()
+        getTreeView(ids)
+      }
+    })
   })
 
 
@@ -18,6 +28,14 @@
   %div.tooltip
   %div#bd_content.bd_content.explore
     %div.sidebar.d-flex.flex-column.pr-2
+      - if @submission.hasOntologyLanguage === 'SKOS'
+        %div#schemes.d-flex.pb-2
+          %div.input-group-prepend
+            %span.input-group-text Schemes
+          %div.flex-grow-1
+            - schemes_labels,selected_label = get_schemes_labels(@schemes, @submission.URI)
+            = select(:schemes,nil, schemes_labels, {selected: selected_label},{multiple: true, id: "schemes_select", class:"form-control"})
+            = hidden_field(:schemes_value,nil, {value: selected_label, id: "schemes_select_empty_select_hack", name: "schemes"})
       -# Search box for class tree
       %div#qsearch.input-group.pb-2
         %div.input-group-prepend
@@ -25,8 +43,10 @@
         = text_field_tag("search_box", nil, class: "form-control rounded-right", aria: {label: "Jump to:"})
         = hidden_field_tag("jump_to_concept_id")
       -# Class tree
-      %div#sd_content
+      %div#class-tree-loader
         = loading_spinner(true)
+      %div#sd_content
+
     - if @concept.id.eql?("bp_fake_root")
       / When we have an ontology with a flat hierarchy, we initially disable the tabs because we don't have a class to display
       .cls-info-container
