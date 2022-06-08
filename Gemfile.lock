@@ -227,7 +227,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (8.8.0)
     nio4r (2.5.8)
-    nokogiri (1.13.6-x86_64-darwin)
+    nokogiri (1.13.6-x86_64-linux)
       racc (~> 1.4)
     oj (3.13.14)
     open_uri_redirections (0.2.1)
@@ -402,7 +402,7 @@ GEM
     zeitwerk (2.5.4)
 
 PLATFORMS
-  x86_64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   bootsnap
