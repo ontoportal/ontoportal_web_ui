@@ -31,4 +31,7 @@ module SchemesHelper
     [schemes_labels, selected_label]
   end
 
+  def concept_label_to_show(submission: @submission_latest)
+    submission.hasOntologyLanguage == 'SKOS' ? 'Concepts' : 'Classes'
+  end
 end

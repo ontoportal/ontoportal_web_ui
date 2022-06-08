@@ -14,6 +14,7 @@
   - @title = "#{@ontology.name} - #{@concept.prefLabel}"
   - @new_term_request_ontologies
   - @enable_ontolobridge = !$NEW_TERM_REQUEST_ONTOLOGIES.nil? && $NEW_TERM_REQUEST_ONTOLOGIES.include?(@ontology.acronym)
+  - concept_name =  concept_label_to_show(submission: @submission)
   %div.tooltip
   %div#bd_content.bd_content.explore
     %div.sidebar.d-flex.flex-column.pr-2
@@ -49,8 +50,9 @@
                   %span#note_count
                   )
             %li#mappings_top{:onclick => "return false;"}
+
               %a{:href => "#mappings", :onclick => "return false;", :style => "color: gray;"}
-                Class Mappings (
+                #{concept_name} Mappings (
                 %span#mapping_count= #TODO_REV: Support mapping counts for concepts @concept.mapping_count
                 )
           - if @enable_ontolobridge
@@ -73,7 +75,7 @@
                   )
             %li#mappings_top.tab
               %a{:href => "#mappings"}
-                Class Mappings (
+                #{concept_name} Mappings (
                 %span#mapping_count>= @concept.mapping_count
                 )
           - if @enable_ontolobridge
@@ -112,11 +114,11 @@
                   )
             %li#mappings_top.tab
               %a{:href => "#mappings"}
-                Class Mappings (
+                #{concept_name} Mappings (
                 %span#mapping_count=  #TODO_REV: Support mapping counts for concepts @concept.mapping_count
                 )
             %li#restlink_top.tab
-              %a{:href => "#{@ontology.id}/classes/", :style => "margin-bottom: 1em; margin-left: 1em;", :target => "_blank"} Access Class JSON
+              %a{:href => "#{@ontology.id}/classes/", :style => "margin-bottom: 1em; margin-left: 1em;", :target => "_blank"} Access #{concept_name} JSON
           - if @enable_ontolobridge
             %li#request_term_top.tab
               %a{:href => "#request_term"}

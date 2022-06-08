@@ -108,7 +108,7 @@
                 aria: {controls: "ont_summary_content", selected: "false"})
             - unless @ontology.summaryOnly
               %li.nav-item
-                - concept_name =  @submission_latest.hasOntologyLanguage === 'SKOS' ? "Concepts" : "Classes"
+                - concept_name =  concept_label_to_show
                 = link_to(concept_name, ontology_path(@ontology.acronym, p: "classes"),
                   id: "ont-classes-tab", class: "nav-link", role: "tab", data: {bp_ont_page: "classes", toggle: "tab", target: "#ont_classes_content"},
                   aria: {controls: "ont_classes_content", selected: "false"})
