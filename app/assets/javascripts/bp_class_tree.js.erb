@@ -247,7 +247,10 @@ function showLoader() {
     document.getElementById("sd_content").innerHTML = ""
 }
 function hideLoader() {
-    document.getElementById("class-tree-loader").classList.add("hidden")
+    let loader =  document.getElementById("class-tree-loader")
+    if(loader){
+      loader.classList.add("hidden")
+    }
 }
 
 // Get the treeview using ajax
