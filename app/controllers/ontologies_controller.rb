@@ -17,7 +17,7 @@ class OntologiesController < ApplicationController
 
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
   before_action :submission_metadata, only: [:show]
-  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties" ,"instances"])
+  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties" ,"instances", "schemes"])
   EXTERNAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/ExternalMappings"
   INTERPORTAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/InterportalMappings"
 
@@ -176,22 +176,26 @@ display_context: false, include: browse_attributes)
   end
 
   def classes
-    @instance_details, type = get_instance_and_type(params[:instanceid])
+    @submission = get_ontology_submission_ready(@ontology)
+    get_class(params)
 
-
-    unless @instance_details.empty? || type.nil? || concept_id_param_exist?(params)
-      params[:conceptid] = type # set class id from the type of the specified instance id
+    if @submission.hasOntologyLanguage === 'SKOS'
+      @schemes =  get_schemes(@ontology.acronym)
+    else
+      @instance_details, type = get_instance_and_type(params[:instanceid])
+      unless @instance_details.empty? || type.nil? || concept_id_param_exist?(params)
+        params[:conceptid] = type # set class id from the type of the specified instance id
+      end
+      @instances_concept_id = get_concept_id(params, @concept, @root)
     end
 
-    get_class(params)
-    @instances_concept_id = get_concept_id(params, @concept, @root)
 
     if ['application/ld+json', 'application/json'].include?(request.accept)
       render plain: @concept.to_jsonld, content_type: request.accept and return
     end
 
     @current_purl = @concept.purl if $PURL_ENABLED
-    @submission = get_ontology_submission_ready(@ontology)
+
     unless @concept.id == 'bp_fake_root'
       @notes = @concept.explore.notes
       @mappings = get_concept_mappings(@concept)
@@ -287,6 +291,16 @@ display_links: false, display_context: false)
       render partial: 'instances', locals: { id: 'instances-data-table'}, layout: 'ontology_viewer'
     end
   end
+
+  def schemes
+    @schemes =  get_schemes(@ontology.acronym)
+    if request.xhr?
+      render partial: 'schemes', layout: false
+    else
+      render partial: 'schemes', layout: 'ontology_viewer'
+    end
+  end
+
   # GET /ontologies/ACRONYM
   # GET /ontologies/1.xml
   def show
@@ -375,6 +389,9 @@ display_links: false, display_context: false)
         return
       when 'instances'
         self.instances
+        return
+      when 'schemes'
+        self.schemes
         return
       else
         self.summary

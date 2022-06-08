@@ -58,7 +58,6 @@ function initClassTree() {
       node.parent().children(".expansion_error").remove();
     }
   });
-
   setConcept(getClassesConceptId());
   setOntology(jQuery(document).data().bp.ont_viewer.ontology_id);
   jQuery("#sd_content").scrollTo(jQuery('a.active'));
@@ -204,31 +203,57 @@ function placeTreeView(treeHTML) {
  * the section url if the section is "classes"
  * @returns {*|string}
  */
-function getClassesConceptId(default_concept_id = "root"){
-    const ont_viewer_data =  jQuery(document).data().bp.ont_viewer
+function getClassesConceptId(default_concept_id = "root") {
+    const ont_viewer_data = jQuery(document).data().bp.ont_viewer
     return ont_viewer_data.content_section === "classes" ? ont_viewer_data.concept_id : default_concept_id
 }
+
+function buildTreeVewURL(ontology_id, concept_id = 'root', scheme_ids = null) {
+    let url = "/ajax/classes/treeview"
+    let params = new URLSearchParams()
+
+    params.append('ontology', ontology_id)
+
+
+    params.append('conceptid', concept_id)
+    if (scheme_ids) {
+        params.append('concept_schemes', Array.from(scheme_ids).join(','))
+    }
+    return url + "?" + params.toString()
+
+}
 // Retrieve the tree view using ajax
-function getTreeView() {
-  jQuery.ajax({
-    url: "/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&conceptid="+encodeURIComponent(getClassesConceptId()),
-    success: function(data) {
-      placeTreeView(data);
-    },
-    error: function(data) {
-      jQuery.get("/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&conceptid=root", function(data){
-        var rootTree = "<div class='tree_error'>Displaying the path to this class has taken too long. You can browse classes below.</div>" + data;
-        placeTreeView(rootTree);
-      });
-    },
-    timeout: 15000
-  });
+function getTreeView(scheme_ids = null) {
+    const concept_id = scheme_ids ? 'root' : getClassesConceptId()
+    jQuery.ajax({
+        url: buildTreeVewURL(jQuery(document).data().bp.ont_viewer.ontology_id, concept_id, scheme_ids),
+        success: function (data) {
+            placeTreeView(data);
+            hideLoader()
+        },
+        error: function (data) {
+            jQuery.get(buildTreeVewURL(jQuery(document).data().bp.ont_viewer.ontology_id), function (data) {
+                var rootTree = "<div class='tree_error'>Displaying the path to this class has taken too long. You can browse classes below.</div>" + data;
+                placeTreeView(rootTree);
+                hideLoader()
+            });
+        },
+        timeout: 15000
+    });
+}
+
+function showLoader() {
+    document.getElementById("class-tree-loader").classList.remove("hidden")
+    document.getElementById("sd_content").innerHTML = ""
+}
+function hideLoader() {
+    document.getElementById("class-tree-loader").classList.add("hidden")
 }
 
 // Get the treeview using ajax
 // We do this right after writing #sd_content to the dom to make sure it loads before other async portions of the page
-jQuery(document).ready(function(){
-  if (pageUsesTreeView()) {
-    getTreeView();
-  }
+jQuery(document).ready(function () {
+    if (pageUsesTreeView()) {
+        getTreeView();
+    }
 });

@@ -6,7 +6,17 @@
     if(data && Object.keys(data).length !== 0){
       $.facebox({ajax: `/ontologies/${ontology_acronym}/instances/${encodeURIComponent(data["@id"])}`})
     }
-
+    let schemes_select =  jQuery("#schemes_select")
+    schemes_select.chosen({width: '100%'})
+    schemes_select.chosen().change((e) => {
+      let ids = Array.from(e.currentTarget.selectedOptions).map(x => x.value)
+      if(ids.length === 0){
+         document.getElementById("sd_content").innerHTML = "Please select a scheme to display"
+      }else {
+        showLoader()
+        getTreeView(ids)
+      }
+    })
   })
 
 
@@ -14,9 +24,18 @@
   - @title = "#{@ontology.name} - #{@concept.prefLabel}"
   - @new_term_request_ontologies
   - @enable_ontolobridge = !$NEW_TERM_REQUEST_ONTOLOGIES.nil? && $NEW_TERM_REQUEST_ONTOLOGIES.include?(@ontology.acronym)
+  - concept_name =  concept_label_to_show(submission: @submission)
   %div.tooltip
   %div#bd_content.bd_content.explore
     %div.sidebar.d-flex.flex-column.pr-2
+      - if @submission.hasOntologyLanguage === 'SKOS'
+        %div#schemes.d-flex.pb-2
+          %div.input-group-prepend
+            %span.input-group-text Schemes
+          %div.flex-grow-1
+            - schemes_labels,selected_label = get_schemes_labels(@schemes, @submission.URI)
+            = select(:schemes,nil, schemes_labels, {selected: selected_label},{multiple: true, id: "schemes_select", class:"form-control"})
+            = hidden_field(:schemes_value,nil, {value: selected_label, id: "schemes_select_empty_select_hack", name: "schemes"})
       -# Search box for class tree
       %div#qsearch.input-group.pb-2
         %div.input-group-prepend
@@ -24,8 +43,10 @@
         = text_field_tag("search_box", nil, class: "form-control rounded-right", aria: {label: "Jump to:"})
         = hidden_field_tag("jump_to_concept_id")
       -# Class tree
-      %div#sd_content
+      %div#class-tree-loader
         = loading_spinner(true)
+      %div#sd_content
+
     - if @concept.id.eql?("bp_fake_root")
       / When we have an ontology with a flat hierarchy, we initially disable the tabs because we don't have a class to display
       .cls-info-container
@@ -33,11 +54,12 @@
           %ul
             %li#details_top.selected.first{:onclick => "return false;"}
               %a{:href => "#details", :onclick => "return false;", :style => "color: gray;"} Details
-            %li#instances_top{:onclick => "return false;"}
-              %a{:href => "#instances", :onclick => "return false;", :style => "color: gray;"}
-                Instances (
-                %span#instances_count= 0
-                )
+            - unless @submission.hasOntologyLanguage === 'SKOS'
+              %li#instances_top{:onclick => "return false;"}
+                %a{:href => "#instances", :onclick => "return false;", :style => "color: gray;"}
+                  Instances (
+                  %span#instances_count= 0
+                  )
             %li#visualization_top{:onclick => "return false;"}
               %a{:href => "#visualization", :onclick => "return false;", :style => "color: gray;"} Visualization
             %li#notes_top{:onclick => "return false;"}
@@ -48,8 +70,9 @@
                   %span#note_count
                   )
             %li#mappings_top{:onclick => "return false;"}
+
               %a{:href => "#mappings", :onclick => "return false;", :style => "color: gray;"}
-                Class Mappings (
+                #{concept_name} Mappings (
                 %span#mapping_count= #TODO_REV: Support mapping counts for concepts @concept.mapping_count
                 )
           - if @enable_ontolobridge
@@ -72,7 +95,7 @@
                   )
             %li#mappings_top.tab
               %a{:href => "#mappings"}
-                Class Mappings (
+                #{concept_name} Mappings (
                 %span#mapping_count>= @concept.mapping_count
                 )
           - if @enable_ontolobridge
@@ -82,7 +105,8 @@
         #contents
           #details_content.tab_container
             %div{:style => "padding: 100px 0; font-size: larger; font-weight: bold; text-align: center;"} Use the "Jump To" to find a class and display details, visualization, notes, and mappings
-          #instances_content.tab_container.not_visible= render :partial =>'instances' , locals: {id: "class-instances-data-table"}
+          - unless @submission.hasOntologyLanguage === 'SKOS'
+            #instances_content.tab_container.not_visible= render :partial =>'instances' , locals: {id: "class-instances-data-table"}
           #visualization_content.tab_container.not_visible
           #notes_content.tab_container.not_visible
           #mappings_content.tab_container.not_visible
@@ -93,11 +117,12 @@
           %ul
             %li#details_top.selected.tab.first
               %a{:href => "#details"} Details
-            %li#instances_top.tab
-              %a{:href => "#instances"}
-                Instances (
-                %span#instances_count= 0
-                )
+            - unless @submission.hasOntologyLanguage === 'SKOS'
+              %li#instances_top.tab
+                %a{:href => "#instances"}
+                  Instances (
+                  %span#instances_count= 0
+                  )
             %li#visualization_top.tab
               %a{:href => "#visualization"} Visualization
             %li#notes_top.tab
@@ -109,11 +134,11 @@
                   )
             %li#mappings_top.tab
               %a{:href => "#mappings"}
-                Class Mappings (
+                #{concept_name} Mappings (
                 %span#mapping_count=  #TODO_REV: Support mapping counts for concepts @concept.mapping_count
                 )
             %li#restlink_top.tab
-              %a{:href => "#{@ontology.id}/classes/", :style => "margin-bottom: 1em; margin-left: 1em;", :target => "_blank"} Access Class JSON
+              %a{:href => "#{@ontology.id}/classes/", :style => "margin-bottom: 1em; margin-left: 1em;", :target => "_blank"} Access #{concept_name} JSON
           - if @enable_ontolobridge
             %li#request_term_top.tab
               %a{:href => "#request_term"}
@@ -123,7 +148,8 @@
               %i{class: "fas fa-link", aria: {hidden: "true"}}
         #contents
           #details_content.tab_container= render :partial =>'/concepts/details'
-          #instances_content.tab_container.not_visible= render :partial =>'instances' , locals: {id: "class-instances-data-table"}
+          - unless @submission.hasOntologyLanguage === 'SKOS'
+            #instances_content.tab_container.not_visible= render :partial =>'instances' , locals: {id: "class-instances-data-table"}
           #visualization_content.tab_container.not_visible= render :partial =>'/concepts/biomixer'
           #notes_content.tab_container.not_visible= render :partial =>'/notes/list'
           #mappings_content.tab_container.not_visible= render :partial => '/mappings/concept_mappings'
