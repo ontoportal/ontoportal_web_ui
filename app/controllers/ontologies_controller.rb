@@ -205,8 +205,8 @@ class OntologiesController < ApplicationController
   end
 
   def mappings
-    @mapping_counts = mapping_counts(@ontology.acronym)
-
+    @ontology_acronym = @ontology.acronym || params[:id]
+    @mapping_counts = mapping_counts(@ontology_acronym)
     if request.xhr?
       render partial: 'mappings', layout: false
     else
