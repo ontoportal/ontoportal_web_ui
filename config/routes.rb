@@ -105,6 +105,7 @@ Rails.application.routes.draw do
   get '/ajax/classes/definition' => 'concepts#show_definition'
   get '/ajax/classes/treeview' => 'concepts#show_tree'
   get '/ajax/properties/tree' => 'concepts#property_tree'
+  get 'ajax/:ontology_id/schemes/:scheme_id/show_label', to: "schemes#show_label", constraints: { scheme_id: /[^\/?]+/ }
   get '/ajax/biomixer' => 'concepts#biomixer'
   get '/ajax/fair_score/html' => 'fair_score#details_html'
   get '/ajax/fair_score/json' => 'fair_score#details_json'

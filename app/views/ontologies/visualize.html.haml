@@ -29,13 +29,17 @@
   %div#bd_content.bd_content.explore
     %div.sidebar.d-flex.flex-column.pr-2
       - if @submission.hasOntologyLanguage === 'SKOS'
+        - if @submission.URI.nil? || @submission.URI.empty?
+          %div.alert.alert-warning.mx-2.text-wrap
+            no main scheme defined in the attribute URI
         %div#schemes.d-flex.pb-2
           %div.input-group-prepend
             %span.input-group-text Schemes
           %div.flex-grow-1
             - schemes_labels,selected_label = get_schemes_labels(@schemes, @submission.URI)
-            = select(:schemes,nil, schemes_labels, {selected: selected_label},{multiple: true, id: "schemes_select", class:"form-control"})
-            = hidden_field(:schemes_value,nil, {value: selected_label, id: "schemes_select_empty_select_hack", name: "schemes"})
+            - schemes_labels.map!{ |s| s["prefLabel"]}
+            = select(:schemes,nil, schemes_labels, {selected: selected_label["prefLabel"]},{multiple: true, id: "schemes_select", class:"form-control"})
+            = hidden_field(:schemes_value,nil, {value: selected_label["prefLabel"], id: "schemes_select_empty_select_hack", name: "schemes"})
       -# Search box for class tree
       %div#qsearch.input-group.pb-2
         %div.input-group-prepend
