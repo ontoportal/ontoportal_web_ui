@@ -15,19 +15,28 @@ module SchemesHelper
   end
 
   def get_scheme_label(scheme)
-    (scheme["prefLabel"] || extract_label_from(scheme["@id"])).html_safe
+    if scheme['prefLabel'].nil? || scheme['prefLabel'].empty?
+      extract_label_from(scheme['@id']).html_safe
+    else
+      scheme['prefLabel']
+    end
   end
 
   def get_schemes_labels(schemes, main_uri)
-    schemes_labels = schemes.collect do |x|
-      id = x["@id"]
-      label = get_scheme_label(x)
-      label = "#{label} (main)" if id.eql? main_uri
-      [label,id]
-    end
-    selected = schemes.select { |x| x["@id"] == main_uri }.first
-    selected_label = selected.nil? ? nil : [get_scheme_label(selected), selected["@id"]]
 
+    selected_label = nil
+    schemes_labels = []
+    schemes.each do  |x|
+      id = x['@id']
+      label = get_scheme_label(x)
+      if id.eql? main_uri
+        label = "#{label} (main)" unless label.empty?
+        selected_label = { 'prefLabel' => label, '@id' => id }
+        schemes_labels.unshift selected_label
+      else
+        schemes_labels.append( { 'prefLabel' => label, '@id' => id })
+      end
+    end
     [schemes_labels, selected_label]
   end
 
