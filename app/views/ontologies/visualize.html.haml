@@ -29,6 +29,9 @@
   %div#bd_content.bd_content.explore
     %div.sidebar.d-flex.flex-column.pr-2
       - if @submission.hasOntologyLanguage === 'SKOS'
+        - if @submission.URI.nil? || @submission.URI.empty?
+          %div.alert.alert-warning.mx-2.text-wrap
+            no main scheme defined in the attribute URI
         %div#schemes.d-flex.pb-2
           %div.input-group-prepend
             %span.input-group-text Schemes
