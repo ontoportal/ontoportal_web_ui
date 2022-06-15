@@ -50,7 +50,7 @@
             %li#mappings_top{:onclick => "return false;"}
               %a{:href => "#mappings", :onclick => "return false;", :style => "color: gray;"}
                 Class Mappings (
-                %span#mapping_count= #TODO_REV: Support mapping counts for concepts @concept.mapping_count
+                %span#mapping_count= @mappings.size
                 )
           - if @enable_ontolobridge
             %li#request_term_top{:onclick => "return false;"}
@@ -73,7 +73,7 @@
             %li#mappings_top.tab
               %a{:href => "#mappings"}
                 Class Mappings (
-                %span#mapping_count>= @concept.mapping_count
+                %span#mapping_count= @mappings.size
                 )
           - if @enable_ontolobridge
             %li#request_term_top.tab
@@ -110,7 +110,7 @@
             %li#mappings_top.tab
               %a{:href => "#mappings"}
                 Class Mappings (
-                %span#mapping_count=  #TODO_REV: Support mapping counts for concepts @concept.mapping_count
+                %span#mapping_count=  @mappings.size
                 )
             %li#restlink_top.tab
               %a{:href => "#{@ontology.id}/classes/", :style => "margin-bottom: 1em; margin-left: 1em;", :target => "_blank"} Access Class JSON
