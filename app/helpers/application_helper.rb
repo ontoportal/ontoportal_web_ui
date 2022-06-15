@@ -424,6 +424,9 @@ module ApplicationHelper
   def bp_class_link(cls_id, ont_acronym)
     return "#{bp_ont_link(ont_acronym)}?p=classes&conceptid=#{URI.escape(cls_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
   end
+  def bp_scheme_link(scheme_id, ont_acronym)
+    return "#{bp_ont_link(ont_acronym)}?p=schemes&schemeid=#{URI.escape(scheme_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+  end
   def get_link_for_cls_ajax(cls_id, ont_acronym, target=nil)
     # Note: bp_ajax_controller.ajax_process_cls will try to resolve class labels.
     # Uses 'http' as a more generic attempt to resolve class labels than .include? ont_acronym; the
@@ -443,11 +446,17 @@ module ApplicationHelper
       return auto_link(cls_id, :all, :target => '_blank')
     end
   end
+
   def get_link_for_ont_ajax(ont_acronym)
     # ajax call will replace the acronym with an ontology name (triggered by class='ont4ajax')
     href_ont = " href='#{bp_ont_link(ont_acronym)}' "
     data_ont = " data-ont='#{ont_acronym}' "
     return "<a class='ont4ajax' #{data_ont} #{href_ont}>#{ont_acronym}</a>"
+  end
+
+  def get_link_for_scheme_ajax(scheme, ont_acronym, target='_blank')
+    # ajax call will replace the URI with the scheme prefLabel  (triggered by class='scheme4ajax')
+    link_to scheme, bp_scheme_link(scheme, ont_acronym), {class: 'scheme4ajax', id: scheme, target:  target, data: {ont: ont_acronym} }
   end
   ###END ruby equivalent of JS code in bp_ajax_controller.
 

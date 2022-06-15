@@ -31,13 +31,16 @@
     - keys = concept_properties.keys
     - top_keys=["description", "comment"]
     - bottom_keys=["disjoint", "subclass", "is_a", "has_part"]
+    - scheme_keys =["is in scheme" , "is top concept in scheme", "topConceptOf" , "inScheme"]
     - top_set=[]
     - bottom_set=[]
     - leftover=[]
+    - scheme_set=[]
     - for key in keys
       - key = key.to_s
       - top=false
       - bottom=false
+      - scheme=false
       - top_keys.each do |top_key|
         - if key.downcase.include?(top_key)
           - top_set << key
@@ -46,8 +49,13 @@
         - if key.downcase.include?(bottom_key)
           - bottom_set << key
           - bottom=true
-      - if !top && !bottom
+      - scheme_keys.each do |scheme_key|
+        - if key.downcase.include?(scheme_key)
+          - scheme_set << key
+          - scheme=true
+      - if !top && !bottom && !scheme
         - leftover << key
+
     - leftover.sort! {|x,y| x.downcase <=> y.downcase }
 
     -# TOP set of properties
@@ -84,6 +92,21 @@
             - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank') }
             = "<p>#{sanitize(ajax_links.join('</p><p>'))}</p>".html_safe
             -# auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
+
+    -# Scheme set of properties
+    - for key in scheme_set
+      - key = key.to_s
+      - next if exclude_relation?(key)
+      - if concept_properties[key]
+        - data = concept_properties[key]
+        - full_key = data[:key]
+        - values = data[:values]
+        %tr
+          %td{nowrap: ""}= "#{remove_owl_notation(key)}"
+          %td
+            - ajax_links = values.map {|v| get_link_for_scheme_ajax(v, @ontology.acronym, '_blank') }
+            = "<p>#{ajax_links.join('</p><p>')}</p>".html_safe
+
 
     -# BOTTOM set of properties
     - for key in bottom_set
