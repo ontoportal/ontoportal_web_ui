@@ -457,13 +457,13 @@ module ApplicationHelper
   end
 
   def extract_label_from(uri)
-    label = uri.to_s
+    label = uri.to_s.chomp('/').chomp('#')
     index = label.index('#')
     if !index.nil?
       label = label[(index + 1) , uri.length-1]
     else
       index = label.rindex('/')
-      label = label[(index + 1), uri.length-1]  if index > -1
+      label = label[(index + 1), uri.length-1]  if index > -1 && index < (uri.length - 1)
     end
     label
   end
