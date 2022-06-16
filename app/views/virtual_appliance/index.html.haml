@@ -43,15 +43,11 @@
       %table#user_table.zebra{style: "border: thin lightGray solid; background-color: white;"}
         %thead
           %tr
-            %th Username
-            %th Name
-            %th Email
+            %th BioPortal User ID
         %tbody
-        -@users_with_access.compact.each do |user|
+        -@va_users.each do |u|
           %tr
-            %td= user.username
-            %td= (user.firstName.to_s + " " + user.lastName.to_s).strip
-            %td= user.email
+            %td= link_to nil, u.user_id, target: '_blank'
 
 :javascript
 
