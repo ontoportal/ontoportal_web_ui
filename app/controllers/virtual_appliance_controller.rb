@@ -12,7 +12,7 @@ class VirtualApplianceController < ApplicationController
       @virtual_appliance_access = true
     end
 
-    @va_users = VirtualApplianceUser.all
+    @va_users = VirtualApplianceUser.order(:user_id)
   end
 
   def create
