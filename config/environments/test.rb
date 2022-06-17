@@ -45,4 +45,7 @@ Rails.application.configure do
 
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
+
+  # Include the BioPortal-specific configuration options
+  require Rails.root.join('config', "bioportal_config_#{Rails.env}.rb")
 end
