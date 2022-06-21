@@ -32,10 +32,14 @@ module SchemesHelper
       if id.eql? main_uri
         label = "#{label} (main)" unless label.empty?
         selected_label = { 'prefLabel' => label, '@id' => id }
-        schemes_labels.unshift selected_label
       else
         schemes_labels.append( { 'prefLabel' => label, '@id' => id })
       end
+    end
+    schemes_labels.sort_by! { |s|  s['prefLabel']}
+
+    if selected_label
+      schemes_labels.unshift selected_label
     end
     [schemes_labels, selected_label]
   end
