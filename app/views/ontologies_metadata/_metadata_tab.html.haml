@@ -1,0 +1,12 @@
+%div.container.mt-5
+  %div
+    = form_tag("/result", method: "post", data: { turbo: true } ,form: {data: {turbo_frame: 'metadata'}}) do 
+      %div.form-group{style: "width:432px"}
+        = render :partial => "shared/ontology_picker", locals: {sel_text: "Ontologies", selected_ontologies: @ontologies_ids}
+      %div.form-group
+        %h6{style: "font-size: 10pt !important"} Metadata
+        = select(:search, :metadata, options_for_select(metadata_for_select, :selected => @metadata_sel), {},style: "width: 432px", multiple: "true")
+      %div.form-group
+        %button{:type => "submit", :class=> "btn btn-primary"}
+          Get my metadata
+

@@ -1,0 +1,20 @@
+:css
+  .required {
+    color: black;
+  }
+  table.form {
+  	width: auto;
+  }
+  table.form td {
+  	width: 450px;
+  }
+
+- @title = "Editing Metadata"
+%h1{:style => "padding: 10px;"}
+  Editing Metadata
+= form_for(:submission, url: ontologies_metadatum_path(@ontology.acronym), html: {method: :put}) do |f|
+  = render partial: 'form', locals: { f: f }    
+  %p{:style => "padding: 10px;"}
+    = submit_tag "Cancel"
+    = f.submit "Update Metadata", :class => "blueButton"
+

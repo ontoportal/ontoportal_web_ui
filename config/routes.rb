@@ -47,6 +47,10 @@ Rails.application.routes.draw do
 
   resources :virtual_appliance
 
+  # resource for metadata ontologies
+  resources  :ontologies_metadata 
+  post '/result', to: 'ontologies_metadata#result'
+
   get '' => 'home#index'
 
   # Top-level pages
@@ -142,7 +146,6 @@ Rails.application.routes.draw do
   match '/admin/update_check_enabled' => 'admin#update_check_enabled', via: [:get]
   match '/admin/users' => 'admin#users', via: [:get]
 
-
   # Ontolobridge
   # post '/ontolobridge/:save_new_term_instructions' => 'ontolobridge#save_new_term_instructions'
 
@@ -171,5 +174,5 @@ Rails.application.routes.draw do
   get '/visualize' => 'ontologies#visualize', :as => :visualize_concept, :constraints => { ontology: /[^\/?]+/, id: /[^\/?]+/, ontologyid: /[^\/?]+/, conceptid: /[^\/?]+/ }
 
   get '/exhibit/:ontology/:id' => 'concepts#exhibit'
-
+   
 end

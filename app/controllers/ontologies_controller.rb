@@ -252,8 +252,8 @@ display_context: false, include: browse_attributes)
   end
 
   def mappings
-    @ontology_acronym = @ontology.acronym || params[:id]
-    @mapping_counts = mapping_counts(@ontology_acronym)
+    @mapping_counts = mapping_counts(@ontology.acronym || params[:id])
+
     if request.xhr?
       render partial: 'mappings', layout: false
     else

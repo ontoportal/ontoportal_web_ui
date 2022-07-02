@@ -29,6 +29,28 @@ class AdminController < ApplicationController
     end
   end
 
+=begin
+  def result_metadata
+    @users = LinkedData::Client::Models::User.all
+    if session[:user].nil? || !session[:user].admin?
+      redirect_to :controller => 'login', :action => 'index', :redirect => '/admin'
+    else
+      @ontologies_ids = params[:ontology][:ontologyId].drop(1)
+      @metadata_sel = params[:search][:metadata].drop(1)
+      @ontologies = []
+      @submissions = []
+      @ontologies_ids.each do |data|
+          @ontologies << LinkedData::Client::Models::Ontology.all.detect {|e| e.acronym == data}
+          @submissions << LinkedData::Client::Models::OntologySubmission.all.detect {|e| e.ontology.acronym == data}
+      end
+      if @ontologies.empty?
+          @ontologies = LinkedData::Client::Models::Ontology.all.sort_by {|e| e.name}
+          @submissions = LinkedData::Client::Models::OntologySubmission.all.sort_by {|e| e.ontology.name}
+      end    
+      render "index"    
+    end
+  end 
+=end
   def update_info
     response = {update_info: Hash.new, errors: '', success: '', notices: ''}
     json = LinkedData::Client::HTTP.get("#{ADMIN_URL}update_info", params, raw: true)
@@ -215,7 +237,7 @@ class AdminController < ApplicationController
     response = _users
     render :json => response
   end
-
+  
 
   private
 
