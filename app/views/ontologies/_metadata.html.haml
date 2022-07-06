@@ -112,7 +112,8 @@
           %button{:id => "getMetadataBackXmlBtn", :class => "btn btn-primary"} RDF/XML
           -# Listener in bp_ontology_viewer.js.erb
     -# Fair score pane
-    - if fairness_service_enabled?
+    -# TODO temporary hide  fairness_service for AGROVOC after there demand
+    - if fairness_service_enabled? && @ontology.acronym != 'AGROVOC'
       %section.ont-metadata-card.ont-fair-score-card#fair-summary
         %div.ont-section-toolbar
           %header.pb-2.font-weight-bold
