@@ -1,20 +1,29 @@
-= turbo_frame_tag "metadata" do  
-  - length = (@metadata_sel.length) 
-  %table.zebra{:cellpadding => "0", :cellspacing => "0"}
-    %col
-    %colgroup{:span=>"1"}
-    %tr
-      %td{:rowspan=>"1"}
-      %td{:rowspan=>"1"}
-      %th{:colspan=>length, :scope=>"colgroup", style:'text-align:center;'} Metadata
-    %tr
-      %th{style:'text-align:center;'} Acronyms
-      %th{style:'text-align:center;'} Ontologies
-      - @metadata_sel.each do |meta|
-        %td{style:'text-align:center;'}= meta
-      - (0..@ontologies.length - 1).each do |n|       
+= turbo_frame_tag "metadata" do
+  = form_with(url: "/edit", method: :post, local: true, data: { turbo: true} ,form: {data: {turbo_frame: 'editmodal'}}) do |form|  
+    %table.table{:cellpadding => "0", :cellspacing => "0"}
+      %col
+      %colgroup{:span=>"1"}
+      %thead
         %tr
-          %td{style:'text-align:center;'}= @ontologies[n].acronym
-          %td{style:'text-align:center;'}= @ontologies[n].name
+          %th{:rowspan=>"1", :scope=>"col"} Ontology
+          %th{:colspan=>@metadata_sel.length, :scope=>"col", style:'text-align:center;'} Metadata
+      %tbody
+        %tr
+          %th{:scope=>"row"} 
           - @metadata_sel.each do |meta|
-            %td{style:'text-align:center;'}= @submissions[n].instance_values[meta.to_s]  
+            %th
+              = check_box_tag('selected_metadata[]', meta, false)
+              = meta
+          - (0..@ontologies.length - 1).each do |n|       
+            %tr
+              %th{:scope=>"row"}
+                //%input{ :type=>"checkbox", :name=>"acronym",:value=> @ontologies[n].acronym }
+                //%label{:for=>"acronymes"}= @ontologies[n].acronym 
+                = check_box_tag('selected_acronyms[]', @ontologies[n].acronym, false)
+                %a{:href=> "ontologies/" + @ontologies[n].acronym, :title=>@ontologies[n].name, :style=>"background-color:#FFFFFF;color:#000000;text-decoration:none" }
+                  = @ontologies[n].acronym
+    
+              //%td{style:'text-align:center;', :type=>"checkbox" }= @ontologies[n].acronym
+              - @metadata_sel.each do |meta|
+                %td= @submissions[n].instance_values[meta.to_s]  
+    = form.submit('Edit metadata')          

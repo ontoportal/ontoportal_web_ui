@@ -2,3 +2,6 @@
 import { Turbo } from "@hotwired/turbo-rails"
 Turbo.session.drive = false
 import "./controllers"
+import * as bootstrap from "bootstrap"
+
+window.bootstrap = bootstrap
