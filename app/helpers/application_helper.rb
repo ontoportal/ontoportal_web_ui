@@ -322,6 +322,7 @@ module ApplicationHelper
     submission_metadata.each do |data|
       @metadata_for_select << data["attribute"]
     end
+    @metadata_for_select.sort! 
   end    
 
 

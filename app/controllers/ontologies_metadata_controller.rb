@@ -19,20 +19,30 @@ class OntologiesMetadataController < ApplicationController
             if @ontologies.empty?
                 @ontologies = LinkedData::Client::Models::Ontology.all.sort_by {|e| e.name}
                 @submissions = LinkedData::Client::Models::OntologySubmission.all.sort_by {|e| e.ontology.name}
-            end 
+            end
+            
             respond_to do |format|
                 format.html { redirect_to admin_index_path, notice: "Greaaat." }
-                format.turbo_stream
+                format.turbo_stream { render turbo_stream: turbo_stream.append("choices", partial: "ontologies_metadata/result") }
             end          
         end    
     end
     
     def edit
+        @selected_ontologies_to_edit = params[:selected_acronyms]
+        @selected_metadata_to_edit = params[:selected_metadata]
+        @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(@selected_ontologies_to_edit[0])
+        @submission = LinkedData::Client::Models::OntologySubmission.all.detect {|e| e.ontology.acronym == @ontology[0].acronym}
+        respond_to do |format|
+            format.html { redirect_to admin_index_path, notice: "Greaaat." }
+            format.turbo_stream { render turbo_stream: turbo_stream.replace("editmodal", partial: "ontologies_metadata/form_edit") }
+        end
+        # @selected_ontologies_edit = @ontologies.where(acronym: params[:ontologies_acronymes])
         #@ontologies = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id])
         #@ontology = @ontologies.first
-        @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
+        #@ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
         #@submission = @ontology.explore.latest_submission
-        @submission = LinkedData::Client::Models::OntologySubmission.all.detect {|e| e.ontology.acronym == @ontology.instance_values["acronym"]}
+        #@submission = LinkedData::Client::Models::OntologySubmission.all.detect {|e| e.ontology.acronym == @ontology.instance_values["acronym"]}
     end    
 
     def update

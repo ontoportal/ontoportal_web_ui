@@ -95,4 +95,7 @@
       %div.tab-pane.fade{id: "ontologies_metadata", role: "tabpanel", aria: { labelledby: "ontologies_metadata-admin-tab" }}
         = turbo_frame_tag "choices" do
           = render partial: 'ontologies_metadata/metadata_tab'
-        = turbo_frame_tag "metadata"  
+        = turbo_frame_tag "metadata"
+        = turbo_frame_tag "editmodal"
+ 
+
