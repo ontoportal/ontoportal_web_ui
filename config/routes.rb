@@ -50,7 +50,8 @@ Rails.application.routes.draw do
   # resource for metadata ontologies
   resources  :ontologies_metadata 
   post '/result', to: 'ontologies_metadata#result'
-
+  post '/edit', to: 'ontologies_metadata#edit'
+  
   get '' => 'home#index'
 
   # Top-level pages
