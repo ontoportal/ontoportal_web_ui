@@ -1,6 +1,6 @@
 %div.container.mt-5
   %div
-    = form_tag("/result", method: "post", data: { turbo: true } ,form: {data: {turbo_frame: 'metadata'}}) do 
+    = form_tag("/result", method: "post", data: { turbo: true }) do 
       %div.form-group{style: "width:432px"}
         = render :partial => "shared/ontology_picker", locals: {sel_text: "Ontologies", selected_ontologies: @ontologies_ids}
       %div.form-group

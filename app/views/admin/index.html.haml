@@ -24,7 +24,7 @@
       %li.nav-item
         =link_to("Users", "#users", id: "users-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab", href: users_path() }, aria: { controls: "users", selected: "false" })
       %li.nav-item
-        =link_to("Ontologies Metadata", "#ontologies_metadata", id: "ontologies_metadata-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab"}, aria: { controls: "ontologies_metadata", selected: "false" })   
+        =link_to("Ontologies Metadata", "#ontologies_metadata_curator", id: "ontologies_metadata_curator-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab"}, aria: { controls: "ontologies_metadata_curator", selected: "false" })   
     %div#adminTabContent.tab-content
 
       -# Site Administration tab
@@ -92,10 +92,10 @@
           %table#adminUsers.zebra{:cellpadding => "0", :cellspacing => "0", :width => "100%"}
       
       -# metadata tab
-      %div.tab-pane.fade{id: "ontologies_metadata", role: "tabpanel", aria: { labelledby: "ontologies_metadata-admin-tab" }}
+      %div.tab-pane.fade{id: "ontologies_metadata_curator", role: "tabpanel", aria: { labelledby: "ontologies_metadata_curator-admin-tab" }}
         = turbo_frame_tag "choices" do
-          = render partial: 'ontologies_metadata/metadata_tab'
-        = turbo_frame_tag "metadata"
+          = render partial: 'ontologies_metadata_curator/metadata_tab'
+        -#= turbo_frame_tag "metadata"
         = turbo_frame_tag "editmodal"
  
 

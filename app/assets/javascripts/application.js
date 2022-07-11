@@ -28,6 +28,7 @@
 //= require bp_admin
 //= require bp_recommender
 //= require bp_property_tree
+//= require bp_metadata
 //= require home
 //= require fair_score
 //= require_tree ./helpers
@@ -42,4 +43,4 @@ customElements.define('data-table-loader', DataTableLoader );
 customElements.define('data-table', DataTable );
 customElements.define('instances-table', InstancesTable );
 
-
+  

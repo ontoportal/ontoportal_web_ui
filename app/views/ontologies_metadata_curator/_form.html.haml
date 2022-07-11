@@ -1,0 +1,10 @@
+%h3 
+  Selected Ontologies
+  %br
+  -@selected_ontologies_to_edit.each do |ontology|
+    %div.horiz= ontology 
+  %table.form
+    - @selected_metadata_to_edit.each do |meta|
+      %tr
+        %th= meta
+        %td.top= text_field :submission, meta, value: @submission.instance_values[meta.to_s]

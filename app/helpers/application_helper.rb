@@ -312,19 +312,6 @@ module ApplicationHelper
     @groups_for_js = @groups_map.to_json
   end
 
-  def metadata_for_select
-    get_metadata
-    return @metadata_for_select
-  end 
-
-  def get_metadata
-    @metadata_for_select = []
-    submission_metadata.each do |data|
-      @metadata_for_select << data["attribute"]
-    end
-    @metadata_for_select.sort! 
-  end    
-
 
   def ontologies_to_acronyms(ontologyIDs)
     acronyms = []

@@ -1,8 +1,0 @@
-%div{:style => "padding:10px"}
-%table.form
-    - i = 0
-    - metadata_for_select.each do |meta|
-        %tr
-            %th= meta
-            %td.top= text_field :submission, meta, value: @submission.instance_values[meta.to_s], :class => "required", :tabindex => i
-        - i = i + 1

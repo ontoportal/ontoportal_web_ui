@@ -48,10 +48,12 @@ Rails.application.routes.draw do
   resources :virtual_appliance
 
   # resource for metadata ontologies
-  resources  :ontologies_metadata 
-  post '/result', to: 'ontologies_metadata#result'
-  post '/edit', to: 'ontologies_metadata#edit'
-  
+  resources :ontologies_metadata_curator do 
+    post '/result', to: 'ontologies_metadata_curator#result'
+    post '/edit', to: 'ontologies_metadata_curator#edit'
+    put '/update', to: 'ontologies_metadata_curator#update'
+  end
+    
   get '' => 'home#index'
 
   # Top-level pages
