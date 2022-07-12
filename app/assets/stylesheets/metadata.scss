@@ -5,3 +5,14 @@
 .horiz{
     display: inline-block; 
 }
+
+.metadataTable {
+    padding: 25px;
+    border-collapse: separate!important;
+}
+
+.editBtn {
+    bottom: 50%;
+    left:10%;
+    position: absolute;
+}
