@@ -1,28 +1,45 @@
+
 = turbo_frame_tag "metadata" do
-  = form_tag("/ontologies_metadata_curator/:ontologies_metadata_curator_id/edit", method: "post", local: true, data: { turbo: true}) do   
+  = form_tag("/ontologies_metadata_curator/:ontologies_metadata_curator_id/edit", method: "post", local: true, data: { turbo: true}) do
     %button.editBtn{:type => "submit", :class=> "btn btn-primary"}
       Edit my Metadata
-    %table.table.metadataTable{:cellpadding => "0", :cellspacing => "0"}
-      %col
-      %colgroup{:span=>"1"}
-      %thead
-        %tr
-          %th{:rowspan=>"1", :scope=>"col"} Ontology
-          %th{:colspan=>@metadata_sel.length, :scope=>"col", style:'text-align:center;'} Metadata
-      %tbody
-        %tr
-          %th{:scope=>"row"} 
-          - @metadata_sel.each do |meta|
-            %th
-              = check_box_tag('selected_metadata[]', meta, false)
-              = meta
-          - (0..@ontologies.length - 1).each do |n|       
-            %tr
-              %th{:scope=>"row"}
-                = check_box_tag('selected_acronyms[]', @ontologies[n].acronym, false)
-                %a{:href=> "ontologies/" + @ontologies[n].acronym, :title=>@ontologies[n].name, :style=>"background-color:#FFFFFF;color:#000000;text-decoration:none" }
-                  = @ontologies[n].acronym
-    
-              - @metadata_sel.each do |meta|
-                %td= @submissions[n].instance_values[meta.to_s]  
-         
+    %div.table-container  
+      %table.table.metadataTable{:cellpadding => "0", :cellspacing => "0"}
+        %col
+        %colgroup{:span=>"1"}
+        %thead
+          %tr
+            %th{:rowspan=>"1", :scope=>"col"} Ontology
+            %th{:colspan=>@metadata_sel.length, :scope=>"col"} Metadata
+        %tbody
+          %tr
+            %th{:scope=>"row"} 
+            - @metadata_sel.each do |meta|
+              %th
+                = check_box_tag('selected_metadata[]', meta, false)
+                = meta
+            - (0..@ontologies.length - 1).each do |n|       
+              %tr
+                %th{:scope=>"row"}
+                  = check_box_tag('selected_acronyms[]', @ontologies[n].acronym, false)
+                  %a{:href=> "ontologies/" + @ontologies[n].acronym, :title=>@ontologies[n].name, :style=>"background-color:#FFFFFF;color:#000000;text-decoration:none" }
+                    = @ontologies[n].acronym
+                - listToshow = ["designedForOntologyTask", "comesFromTheSameDomain", "endorsedBy", "includedInDataCatalog", "isAlignedTo", "isBackwardCompatibleWith", "isIncompatibleWith", "metadataVoc", "missingImports", "naturalLanguage", "ontologyRelatedTo", "similarTo", "submissionStatus", "useImports", "usedBy"]
+                - @metadata_sel.each do |meta|
+                  - if meta == "contact"
+                    %td
+                      %li
+                        name:
+                        = @submissions[n].instance_values[meta.to_s].first.name
+                      %li
+                        email:
+                        = @submissions[n].instance_values[meta.to_s].first.email
+                  - elsif listToshow.include? meta
+                    %td
+                      - @submissions[n].instance_values[meta.to_s].each do |task|
+                        %li= task 
+                  - else
+                    %td= @submissions[n].instance_values[meta.to_s]  
+
+
+
