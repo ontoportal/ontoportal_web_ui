@@ -1,6 +1,5 @@
 - @title = t(".title", organization: "#{$ORG_SITE}")
 
-    
 - unless $FRONT_NOTICE.nil? || $FRONT_NOTICE.empty? || cookies[:front_page_notice_closed].eql?("true")
   :javascript
     function close_message(){

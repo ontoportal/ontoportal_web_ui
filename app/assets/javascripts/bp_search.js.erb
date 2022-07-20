@@ -130,6 +130,10 @@ jQuery(document).ready(function() {
         search_contains: true,
         width: "432px"
     });
+    jQuery("#search_metadata").chosen({
+        search_contains: true,
+        width: "432px"
+    });
     /* Comment it because it is changing the button value to nothing (and it is a param for chosen, don't seems useful for button)
     jQuery("#search_button").button({
         search_contains: true
@@ -220,7 +224,8 @@ function autoSearch() {
     var params = BP_queryString(),
         query = null,
         ontologyIds = null,
-        categories = null;
+        categories = null,
+        metadata = null;
 
     if (params.hasOwnProperty("query") || params.hasOwnProperty("q")) {
         query = params.query || params.q;
@@ -271,6 +276,12 @@ function autoSearch() {
             jQuery("#search_categories").val(categories);
             jQuery("#search_categories").trigger("chosen:updated");
         }
+        if (params.hasOwnProperty("metadata")) {
+            metadata = params.metadata || "";
+            metadata = metadata.split(",");
+            jQuery("#search_metadata").val(metadata);
+            jQuery("#search_metadata").trigger("chosen:updated");
+        }
 
       performSearch();
     }
@@ -293,6 +304,7 @@ function currentSearchParams() {
     params.require_definition = jQuery("#search_require_definition").is(":checked");
     params.exact_match = jQuery("#search_exact_match").is(":checked");
     params.categories = jQuery("#search_categories").val() || "";
+    params.metadata = jQuery("#search_metadata").val() || "";
     return params;
 }
 
@@ -326,6 +338,7 @@ function performSearch() {
         includeOnlyDefinitions = jQuery("#search_require_definition").is(":checked"),
         exactMatch = jQuery("#search_exact_match").is(":checked"),
         categories = jQuery("#search_categories").val() || "",
+        metadata = jQuery("#search_metadata").val() || "";
 
     // Set the list of search words to be blacklisted for the ontology ownership algorithm
     blacklistSearchWordsArr = query.split(/\s+/);
@@ -343,6 +356,7 @@ function performSearch() {
             require_definition: includeOnlyDefinitions,
             exact_match: exactMatch,
             categories: categories,
+            metadata: metadata,
             ontologies: onts,
             pagesize: 150,
             apikey: jQuery(document).data().bp.config.apikey,
@@ -906,6 +920,9 @@ function advancedOptionsSelected() {
         },
         function() {
             return jQuery("#search_categories").val() !== null && (jQuery("#search_categories").val() || []).length > 0;
+        },
+        function() {
+            return jQuery("#search_metadata").val() !== null && (jQuery("#search_metadata").val() || []).length > 0;
         },
         function() {
             return jQuery("#ontology_ontologyId").val() !== null && (jQuery("#ontology_ontologyId").val() || []).length > 0;
