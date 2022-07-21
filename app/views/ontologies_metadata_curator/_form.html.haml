@@ -2,9 +2,39 @@
   Selected Ontologies
   %br
   -@selected_ontologies_to_edit.each do |ontology|
-    %div.horiz= ontology 
+    %div.horiz= ontology   
   %table.form
     - @selected_metadata_to_edit.each do |meta|
       %tr
-        %th= meta
-        %td.top= text_field :submission, meta, value: @submission.instance_values[meta.to_s]
+        - if meta == "contact"
+          - @submission.contact.each_with_index do |contact, i|
+            %th= meta
+            - if i == 0
+              %td
+                %table.form.contact
+                  %tr
+                    %th Name
+                    %td= text_field :submission, :"contact[#{0}][name]", value: contact["name"], class: "form-control flex-grow-1 mx-2"
+                  %tr
+                    %th Email
+                    %td= text_field :submission, :"contact[#{0}][email]", value: contact["email"], class: "form-control flex-grow-1 mx-2"  
+                  %button.btn.btn-success.add-contact{"data-action"=> "click->modal#addContact"}
+                    %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}
+            - else
+              %td
+                %table.form.contact
+                  %tr
+                    %th Name
+                    %td= text_field :submission, :"contact[#{i}][name]", value: contact["name"], class: "form-control flex-grow-1 mx-2"
+                  %tr  
+                    %th Email
+                    %td= text_field :submission, :"contact[#{i}][email]", value: contact["email"], class: "form-control flex-grow-1 mx-2"
+                  %button.btn.btn-success.add-contact
+                    %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}
+                  %button.btn.btn-danger.ml-1.remove-contact
+                    %i{class: "fas fa-minus fa-lg", aria: {hidden: "true"}} 
+        - else
+          %th= generate_attribute_label(meta)
+          %td= generate_attribute_input(meta) 
+        //%td.top= text_field :submission, meta, value: ""
+  

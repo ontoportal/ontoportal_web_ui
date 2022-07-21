@@ -1,10 +1,9 @@
-= turbo_frame_tag "editmodal" do
-  -#= tag.div :div, data: { controller: "modal", modal_target: "modal", action: "click@window->modal#closeBackground", style: "padding: 30px;"} do   
-  .modal.fade{"aria-hidden" => "true", "aria-labelledby" => "exampleModalLabel", "data-controller" => "modal" ,role: "dialog", tabindex: "-1"}
+= turbo_frame_tag "edition_metadata_form" do
+  .modal.fade{"aria-hidden" => "true", "aria-labelledby" => "exampleModalLabel", "data-controller" => "modal" , "data-action"=>"change->modal#toggleOtherValue modal#multipleSelect", "data-attribut"=>@selected_metadata_to_edit, role: "dialog", tabindex: "-1"}
     .modal-dialog{role: "document"}
       .modal-content
         .modal-header
-          %h5.modal-title Modal title
+          %h5.modal-title Edition of metadata
           %button.close{"aria-label" => "Close", "data-bs-dismiss" => "modal", type: "button"}
             %span{"aria-hidden" => "true"} ×
         .modal-body
@@ -13,4 +12,4 @@
             %button{"data-bs-dismiss" => "modal", type: "button", :class=> "btn btn-primary"} Close
             %button{:type => "submit", :class=> "btn btn-primary"} Save changes
 
-  
+
