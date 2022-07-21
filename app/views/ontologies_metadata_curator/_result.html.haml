@@ -1,5 +1,5 @@
 
-= turbo_frame_tag "metadata" do
+= turbo_frame_tag "metadata_table" do
   = form_tag("/ontologies_metadata_curator/:ontologies_metadata_curator_id/edit", method: "post", local: true, data: { turbo: true}) do
     %button.editBtn{:type => "submit", :class=> "btn btn-primary"}
       Edit my Metadata
