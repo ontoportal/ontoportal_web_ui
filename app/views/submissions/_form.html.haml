@@ -1,5 +1,3 @@
-
-
 :javascript
   $(document).ready(function() {
     
@@ -615,89 +613,6 @@
 
 :javascript
 
-  $(document).ready(function() {
-
-    /**
-     * For Multiple select
-     */
-    "use strict";
-    jQuery("#naturalLanguageSelect").chosen({
-      search_contains: true
-    });
-    jQuery(".selectOntology").chosen({
-      width: '100%',
-      search_contains: true
-    });
-    $('.tooltip_link[title][title!=""]').tooltipster({
-      interactive: true,
-      position: "right",
-      contentAsHTML: true,
-      animation: 'fade',
-      delay: 200,
-      theme: 'tooltipster-shadow',
-      trigger: 'hover'
-    });
-  })
-
-  /**
-   * To add a new input when btn clicked. Using the given attribute to get elements id
-   */
-  function addInput(attr, inputType)
-  {
-    var container = document.createElement("div");
-    container.innerHTML = '<input type="' + inputType + '" name="submission[' + attr + '][]" id="submission_' + attr + '" class="form-control">';
-    document.getElementById(attr + 'Div').appendChild(container);
-  }
-
-  /**
-   * To add a new value to selectDropdown when btn clicked
-   */
-  function addValueToSelect(attr)
-  {
-    if(jQuery('#add_' + attr).val()) {
-      var newOption = jQuery('#add_' + attr).val();
-      var selectedOptions = jQuery('#select_' + attr).val();
-      jQuery('#select_' + attr).append(jQuery('<option>', {
-        value: newOption,
-        text: newOption
-      }));
-      if (selectedOptions.constructor === Array) {
-        selectedOptions.push(newOption);
-      } else {
-        selectedOptions = newOption;
-      }
-      jQuery('#select_' + attr).val(selectedOptions)
-      jQuery('#add_' + attr).val("");
-      jQuery('#btnAdd' + attr).hide();
-      jQuery('#add_' + attr).hide();
-    }
-  }
-
-  /**
-   * To add a new value to selectDropdown when btn clicked
-   */
-  function addOntoToSelect(attr)
-  {
-    if(jQuery('#add_' + attr).val()) {
-      var newOption = jQuery('#add_' + attr).val();
-      var selectedOptions = jQuery('#select_' + attr).val();
-      jQuery('#select_' + attr).append(jQuery('<option>', {
-        value: newOption,
-        text: newOption
-      }));
-      if (selectedOptions === null) {
-        selectedOptions = [];
-        selectedOptions.push(newOption);
-      } else if (selectedOptions.constructor === Array) {
-        selectedOptions.push(newOption);
-      } else {
-        selectedOptions = newOption;
-      }
-      jQuery('#select_' + attr).val(selectedOptions)
-      jQuery('#select_' + attr).trigger("chosen:updated");
-      jQuery('#add_' + attr).val("");
-    }
-  }
 
   /**
    * To show/hide the simple metadata div
@@ -726,13 +641,3 @@
     }
   }
 
-  function toggleOtherValue(attr) {
-    if ($('#select_' + attr).val() == 'other') {
-      $('#add_' + attr).val("");
-      $('#btnAdd' + attr).show();
-      $('#add_' + attr).show();
-    } else {
-      $('#btnAdd' + attr).hide();
-      $('#add_' + attr).hide();
-    }
-  }

@@ -7,12 +7,6 @@ function location_toggle(input_div) {
 }
 
 jQuery(document).ready(function(){
-  jQuery(".datepicker").each(function() {
-    $(this).datepicker({
-      dateFormat: "M d, yy",
-    });
-  });
-  jQuery("#ui-datepicker-div").css("display", "none");
 
   // Properly display the information for 'File Location' based on radio button
   if (jQuery("#submission_isRemote_0").is(":checked")) {
@@ -65,8 +59,8 @@ function addContact(event) {
 
   var contacts = document.querySelectorAll("div.contact");
   var newContact = contacts[0].cloneNode(true);
-  newContact.classList.add("offset-sm-2");
 
+  newContact.classList.add("offset-sm-2");
   var removeButton = newContact.querySelector("button").cloneNode(true);
   removeButton.classList.replace("btn-success", "btn-danger");
   removeButton.classList.replace("add-contact", "remove-contact");
@@ -103,7 +97,6 @@ function removeContact(event) {
   } else if (target.matches("i.fa-minus")) {
     contact = target.parentNode.parentNode;
   }
-
   document.querySelector("#contacts").removeChild(contact);
 }
 

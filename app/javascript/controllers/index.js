@@ -6,7 +6,18 @@ import { application } from "./application"
 import ModalController from "./modal_controller.js"
 
 import HelloController from "./hello_controller.js"
+import TestController from "./test_controller.js"
+import SelectController from "./select_controller.js"
+import AddNewValuesController from "./addNewValues_controller.js"
+import Contact from "./contact_controller.js"
+import Flatpickr from "stimulus-flatpickr";
+
+import 'flatpickr/dist/themes/dark.css';
 
 application.register("hello", HelloController)
 application.register("modal", ModalController)
-
+application.register("test", TestController)
+application.register("select", SelectController)
+application.register("addNewValues", AddNewValuesController)
+application.register("contact", Contact)
+application.register("flatpickr", Flatpickr);
