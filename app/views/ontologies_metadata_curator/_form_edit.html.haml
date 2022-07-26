@@ -1,6 +1,6 @@
 = turbo_frame_tag "edition_metadata_form" do
-  .modal.fade{"aria-hidden" => "true", "aria-labelledby" => "exampleModalLabel", "data-controller" => "modal" , "data-action"=>"change->modal#toggleOtherValue modal#multipleSelect", "data-attribut"=>@selected_metadata_to_edit, role: "dialog", tabindex: "-1"}
-    .modal-dialog{role: "document"}
+  .modal.fade{"aria-hidden" => "true", "aria-labelledby" => "exampleModalLabel", "data-controller" => "modal", role: "dialog", tabindex: "-1"}
+    .modal-dialog{role: "document", :class=> "modal-lg"}
       .modal-content
         .modal-header
           %h5.modal-title Edition of metadata
