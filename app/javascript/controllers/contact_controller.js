@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
     addContact(event) {
         event.preventDefault();
-        var btn = document.querySelector("td.Btn")
+        var btn = document.querySelector("#contacts")
         var contacts = document.querySelectorAll("table.contact");
         var newContact = contacts[0].cloneNode(true);
         var removeButton = btn.querySelector("button").cloneNode(true);
@@ -42,7 +42,7 @@ export default class extends Controller {
         } else if (target.matches("i.fa-minus")) {
         contact = target.parentNode.parentNode;
         }
-        document.querySelector("#contacts").getElementsByTagName("td")[0].removeChild(contact)
+        document.querySelector("#contacts").removeChild(contact)
     }
     
       

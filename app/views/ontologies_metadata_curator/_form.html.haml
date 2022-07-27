@@ -7,13 +7,13 @@
   %br     
   %table.form.editTable
     - @selected_metadata_to_edit.each do |meta|
-      %tr#contacts
+      %tr
         - if meta == "contact"
           - if @submission.contact && @submission.contact.size > 0
             - @submission.contact.each_with_index do |contact, i|
               %th= meta
               - if i == 0
-                %td.Btn
+                %td#contacts
                   %table.form.contact
                     %tr
                       %th Name
@@ -24,7 +24,7 @@
                     %button.btn.btn-success.add-contact{:data=> {controller: "contact", action:"click->contact#addContact"}}
                       %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}
               - else
-                %td
+                %td#contacts
                   %table.form.contact
                     %tr
                       %th Name
@@ -37,7 +37,7 @@
                     %button.btn.btn-danger.ml-1.remove-contact{:data=> {controller: "contact", action:"click->contact#removeContact"}}
                       %i{class: "fas fa-minus fa-lg", aria: {hidden: "true"}}
           - else
-            %td.Btn
+            %td#contacts
               %table.form.contact
                 %tr
                   %th Name
