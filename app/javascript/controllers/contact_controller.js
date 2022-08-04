@@ -1,19 +1,19 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
+  
+
     addContact(event) {
         event.preventDefault();
-        var btn = document.querySelector("#contacts")
-        var contacts = document.querySelectorAll("table.contact");
+        var contacts = document.querySelectorAll("div.contact");
         var newContact = contacts[0].cloneNode(true);
-        var removeButton = btn.querySelector("button").cloneNode(true);
+        var removeButton = newContact.querySelector("button").cloneNode(true);
         removeButton.classList.replace("btn-success", "btn-danger");
         removeButton.classList.replace("add-contact", "remove-contact");
         removeButton.dataset.action = "click->contact#removeContact"
         removeButton.classList.add("ml-1")
         removeButton.querySelector("i").classList.replace("fa-plus", "fa-minus");
         newContact.appendChild(removeButton);
-        
         var index = contacts.length;
         var inputs = newContact.getElementsByTagName("input");
         for (var i = 0; i < inputs.length; i++) {
@@ -38,12 +38,13 @@ export default class extends Controller {
         var target = event.target;
         var contact;
         if (target.matches("button.remove-contact")) {
-        contact = target.parentNode;
+          console.log("hi")
+          contact = target.parentNode;
         } else if (target.matches("i.fa-minus")) {
+          console.log("hello")
         contact = target.parentNode.parentNode;
         }
-        document.querySelector("#contacts").removeChild(contact)
+        document.querySelector("#contacts").removeChild(contact);
     }
     
-      
 }

@@ -217,18 +217,6 @@
               %label.form-check-label{for: "submission_isRemote_0"} 
                 Upload local file
               - display = (checked and "" or "display:none;")
-              %div.hidden_field#upload{style: display}
-                = f.file_field(:filePath, class: "mt-2")
-          - else
-            -# TODO: Has this section of code actually been tested?
-            = radio_button :submission, :isRemote, 0, :onclick=>"location_toggle('upload');", checked: true
-            Upload Local File
-            %br/
-            %span{:style => "font-size:11px;"} (choose a file on your local file system to upload)
-            - display = (checked and "" or "display:none;")
-            %div#upload{style: display}
-              = f.file_field :filePath, required: true
-              = f.select("masterFileName", @masterFileOptions, { include_blank: "Select primary file from zip contents", required: true}, {style: "border-color: red;"})
 
 %div.card.mt-4
   %div.card-header.bg-success Key properties
@@ -467,7 +455,7 @@
                   = text_field :submission, :"contact[#{i}][name]", value: contact["name"], class: "form-control flex-grow-1 mx-2"
                   %label Email
                   = text_field :submission, :"contact[#{i}][email]", value: contact["email"], class: "form-control flex-grow-1 mx-2"
-                  %button.btn.btn-success.add-contact
+                  %button.btn.btn-success{:data=> {controller: "contact", action:"click->contact#addContact"}}
                     %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}
               - else
                 -# TODO
@@ -477,9 +465,9 @@
                   = text_field :submission, :"contact[#{i}][name]", value: contact["name"], class: "form-control flex-grow-1 mx-2"
                   %label Email
                   = text_field :submission, :"contact[#{i}][email]", value: contact["email"], class: "form-control flex-grow-1 mx-2"
-                  %button.btn.btn-success.add-contact
+                  %button.btn.btn-success{:data=> {controller: "contact", action:"click->contact#addContact"}}
                     %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}
-                  %button.btn.btn-danger.ml-1.remove-contact
+                  %button.btn.btn-danger.ml-1{:data=> {controller: "contact", action:"click->contact#removeContact"}}
                     %i{class: "fas fa-minus fa-lg", aria: {hidden: "true"}}
           - else
             -# TODO
@@ -488,7 +476,7 @@
               = text_field :submission, :"contact[0][name]", class: "form-control flex-grow-1 mx-2"
               %label Email:
               = text_field :submission, :"contact[0][email]", class: "form-control flex-grow-1 mx-2"
-              %button.btn.btn-success.add-contact
+              %button.btn.btn-success{:data=> {controller: "contact", action:"click->contact#addContact"}}
                 %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}
         %div.form-group.row
           %div.col-sm-4

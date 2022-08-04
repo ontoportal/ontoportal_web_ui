@@ -15,16 +15,12 @@ export default class extends Controller {
   disconnect(){
     this.modal.hide()
   }
-    
- 
 
-  changeDate(){
-    console.log("mouad is")
-    jQuery(".datepicker").each(function() {
-      $(this).datepicker({
-        dateFormat: "M d, yy",
-      });
-    });
-    console.log("hi")
+  showNewContent(event){
+    let frame = document.querySelector('turbo-frame#metadata_by_ontology')
+    frame.src = "ontologies_metadata_curator/show_metadata_by_ontology/" + event.target.value
+    frame.reload()
   }
-}
+
+    
+ }

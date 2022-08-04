@@ -62,14 +62,10 @@ module SubmissionsHelper
 
     elsif attr["enforce"].include?("date_time")
       field_id = [:submission, attr["attribute"].to_s].join('_')
-      date_value = @submission.send(attr["attribute"]).presence
-      date_value &&= Date.parse(date_value)
-      date_value ||= options[:default]
-      date_value &&= l(date_value, format: :month_day_year)
-      
+      date_value = @submission.send(attr["attribute"]).presence      
       content_tag(:div, class: 'input-group') do
         [
-          text_field(:submission, attr["attribute"].to_s.to_sym, value: date_value, id: field_id, :data=> {controller: "flatpickr", flatpickr_date_format: "Y-m-d", flatpickr_min_date: Time.zone.now})
+          text_field(:submission, attr["attribute"].to_s.to_sym, value: date_value, id: field_id, :data=> {controller: "flatpickr", flatpickr_date_format: "Y-m-d"})
         ].join.html_safe
       end
 
@@ -147,11 +143,11 @@ module SubmissionsHelper
 
       if attr["enforce"].include?("list")
         input_html << select_tag("submission[#{attr_label}][]", options_for_select(select_values, metadata_values), :multiple => 'true',
-            "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology")
+            "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :data=> {controller: "select" , action: "select#multipleSelect", attribut: @selected_metadata_to_edit})
 
       else
         input_html << select_tag("submission[#{attr_label}]", options_for_select(select_values, metadata_values), "data-placeholder".to_sym => "Select ontology",
-                   :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :include_blank => true)
+                   :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :include_blank => true, :data=> {controller: "select" , action: "select#multipleSelect", attribut: @selected_metadata_to_edit})
       end
       # Button and field to add new value (not in the select)
 

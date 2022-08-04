@@ -1,9 +1,7 @@
-
-
 = turbo_frame_tag "metadata_table" do
   = form_tag("/ontologies_metadata_curator/:ontologies_metadata_curator_id/edit", method: "post", local: true, data: { turbo: true}) do
     %button.editBtn{:type => "submit", :class=> "btn btn-primary"}
-      Edit Metadata
+      Edit Metadata  
     %div.table-container  
       %table.table.metadataTable{:cellpadding => "0", :cellspacing => "0"}
         %col
@@ -22,7 +20,7 @@
             - (0..@ontologies.length - 1).each do |n|       
               %tr
                 %th{:scope=>"row"}
-                  = check_box_tag('selected_acronyms[]', @ontologies[n].acronym, false)
+                  = check_box_tag('selected_acronyms[]',@ontologies[n].acronym, false)
                   %a{:href=> "ontologies/" + @ontologies[n].acronym, :title=>@ontologies[n].name, :style=>"background-color:#FFFFFF;color:#000000;text-decoration:none" }
                     = @ontologies[n].acronym
                 - listToshow = ["designedForOntologyTask", "comesFromTheSameDomain", "endorsedBy", "includedInDataCatalog", "isAlignedTo", "isBackwardCompatibleWith", "isIncompatibleWith", "metadataVoc", "missingImports", "naturalLanguage", "ontologyRelatedTo", "similarTo", "submissionStatus", "useImports", "usedBy"]
@@ -39,6 +37,8 @@
                     %td
                       - @submissions[n].instance_values[meta.to_s].each do |task|
                         %li= task 
+                  - elsif meta == "ontology"
+                    %td= @submissions[n].ontology.acronym
                   - else
                     %td= @submissions[n].instance_values[meta.to_s]  
 

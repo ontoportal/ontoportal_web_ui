@@ -1,0 +1,48 @@
+= turbo_frame_tag("metadata_by_ontology") do
+  %table.form.editTable
+    - @selected_metadata_to_edit.each do |meta|
+      %tr
+        - if meta == "contact"
+          - if @submission.contact && @submission.contact.size > 0
+            - @submission.contact.each_with_index do |contact, i|
+              %th= meta
+              - if i == 0
+                %td#contacts
+                  %div.col-sm-8.d-flex.align-items-center.contact
+                    %label Name
+                    = text_field :submission, :"contact[#{0}][name]", value: contact["name"], class: "form-control flex-grow-1 mx-2"
+                    %label Email
+                    = text_field :submission, :"contact[#{0}][email]", value: contact["email"], class: "form-control flex-grow-1 mx-2"  
+                    %button.btn.btn-success.add-contact{:data=> {controller: "contact", action:"click->contact#addContact"}}
+                      %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}
+              - else
+                %td#contacts
+                  %div.col-sm-8.d-flex.align-items-center.contact
+                    %label Name
+                    = text_field :submission, :"contact[#{i}][name]", value: contact["name"], class: "form-control flex-grow-1 mx-2"
+                    %label Email
+                    = text_field :submission, :"contact[#{i}][email]", value: contact["email"], class: "form-control flex-grow-1 mx-2" 
+                    %button.btn.btn-success.add-contact{:data=> {controller: "contact", action:"click->contact#addContact"}}
+                      %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}
+                    %button.btn.btn-danger.ml-1.remove-contact{:data=> {controller: "contact", action:"click->contact#removeContact"}}
+                      %i{class: "fas fa-minus fa-lg", aria: {hidden: "true"}}
+          - else
+            %td#contacts
+              %div.col-sm-8.d-flex.align-items-center.contact
+                %label Name
+                = text_field :submission, :"contact[#{0}][name]", value: contact["name"], class: "form-control flex-grow-1 mx-2"
+                %label Email
+                = text_field :submission, :"contact[#{0}][email]", value: contact["email"], class: "form-control flex-grow-1 mx-2"   
+                %button.btn.btn-success.add-contact{:data=> {controller: "contact", action:"click->contact#addContact"}}
+                  %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}        
+        - elsif meta == "description"
+          %th Description
+          %td= text_area :submission, :description, rows: 5, value: @submission.description, required: true, class: "form-control" 
+        - elsif meta == "ontology"
+          %th Ontology
+          %td= text_field :submission, :ontology, value: @submission.ontology.acronym, required: true, class: "form-control"
+        - else
+          %th= generate_attribute_label(meta)
+          %td= generate_attribute_input(meta) 
+        
+

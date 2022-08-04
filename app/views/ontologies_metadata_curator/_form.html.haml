@@ -1,57 +1,23 @@
-%h3
-  Selected Ontologies
-  %br
-  %div
-    -@selected_ontologies_to_edit.each do |ontology|
-      %div.horiz.badge.badge-secondary= ontology    
-  %br     
-  %table.form.editTable
-    - @selected_metadata_to_edit.each do |meta|
-      %tr
-        - if meta == "contact"
-          - if @submission.contact && @submission.contact.size > 0
-            - @submission.contact.each_with_index do |contact, i|
-              %th= meta
-              - if i == 0
-                %td#contacts
-                  %table.form.contact
-                    %tr
-                      %th Name
-                      %td= text_field :submission, :"contact[#{0}][name]", value: contact["name"], class: "form-control flex-grow-1 mx-2"
-                    %tr
-                      %th Email
-                      %td= text_field :submission, :"contact[#{0}][email]", value: contact["email"], class: "form-control flex-grow-1 mx-2"  
-                    %button.btn.btn-success.add-contact{:data=> {controller: "contact", action:"click->contact#addContact"}}
-                      %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}
-              - else
-                %td#contacts
-                  %table.form.contact
-                    %tr
-                      %th Name
-                      %td= text_field :submission, :"contact[#{i}][name]", value: contact["name"], class: "form-control flex-grow-1 mx-2"
-                    %tr  
-                      %th Email
-                      %td= text_field :submission, :"contact[#{i}][email]", value: contact["email"], class: "form-control flex-grow-1 mx-2"
-                    %button.btn.btn-success.add-contact{:data=> {controller: "contact", action:"click->contact#addContact"}}
-                      %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}
-                    %button.btn.btn-danger.ml-1.remove-contact{:data=> {controller: "contact", action:"click->contact#removeContact"}}
-                      %i{class: "fas fa-minus fa-lg", aria: {hidden: "true"}}
-          - else
-            %td#contacts
-              %table.form.contact
-                %tr
-                  %th Name
-                  %td= text_field :submission, :"contact[#{0}][name]", value: contact["name"], class: "form-control flex-grow-1 mx-2"
-                %tr
-                  %th Email
-                  %td= text_field :submission, :"contact[#{0}][email]", value: contact["email"], class: "form-control flex-grow-1 mx-2"  
-                %button.btn.btn-success.add-contact{:data=> {controller: "contact", action:"click->contact#addContact"}}
-                  %i{class: "fas fa-plus fa-lg", aria: {hidden: "true"}}        
-        - elsif meta == "description"
-          %th Description
-          %td= text_area :submission, :description, rows: 5, value: @submission.description, required: true, class: "form-control" 
-        - else
-          %th= generate_attribute_label(meta)
-          %td= generate_attribute_input(meta) 
-        
-  
+%h5{style: "font-size: 10pt !important"} Choose an ontology
+= select(:search, :ont, options_for_select(@selected_ontologies_to_edit), {},style: "width: 432px", data: {controller: "modal",action: "change->modal#showNewContent"})
+%br
+%ul#mychangeTab.nav.nav-tabs{role: "tablist"}
+  %li.nav-item
+    %a#ChangeForAll-tab.nav-link.active{"aria-controls" => "ChangeForAll", "aria-selected" => "true", "data-toggle" => "tab", href: "#ChangeForAll", role: "tab"} Change for all
+  %li.nav-item
+    %a#ChangeForEach-tab.nav-link{"aria-controls" => "ChangeForEach", "aria-selected" => "false", "data-toggle" => "tab", href: "#ChangeForEach", role: "tab"} Change for each
+%br
+
+#myTabContent.tab-content
+  #ChangeForAll.tab-pane.show.active{"aria-labelledby" => "home-tab", role: "tabpanel"} 
+    = @check
+
+  #ChangeForEach.tab-pane{"aria-labelledby" => "profile-tab", role: "tabpanel"}
+    = @check
+
+= turbo_frame_tag("metadata_by_ontology", src: "ontologies_metadata_curator/show_metadata_by_ontology/" + @ontology.acronym, loading: :lazy) do
+  .text-center
+    .spinner-border{role: "status"}
+      %span.sr-only Loading...
+
+= submit_tag button_text, class: "btn btn-primary"   
