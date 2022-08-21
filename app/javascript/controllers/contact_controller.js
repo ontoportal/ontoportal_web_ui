@@ -2,11 +2,11 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   
-
+    static targets = ["contactName", "contactEmail", "currentContact", "contacts"]
     addContact(event) {
         event.preventDefault();
         var contacts = document.querySelectorAll("div.contact");
-        var newContact = contacts[0].cloneNode(true);
+        var newContact = this.currentContactTarget.cloneNode(true);
         var removeButton = newContact.querySelector("button").cloneNode(true);
         removeButton.classList.replace("btn-success", "btn-danger");
         removeButton.classList.replace("add-contact", "remove-contact");
@@ -14,23 +14,11 @@ export default class extends Controller {
         removeButton.classList.add("ml-1")
         removeButton.querySelector("i").classList.replace("fa-plus", "fa-minus");
         newContact.appendChild(removeButton);
-        var index = contacts.length;
-        var inputs = newContact.getElementsByTagName("input");
-        for (var i = 0; i < inputs.length; i++) {
-          var input = inputs[i];
-      
-          var id = input.getAttribute("id").replace(/0/g, index);
-          input.setAttribute("id", id);
-      
-          var name = input.getAttribute("name").replace(/0/g, index);
-          input.setAttribute("name", name);
-          
-          input.setAttribute("value", "");
-      
-          input.removeAttribute("required");
+        var inputs = newContact.getElementsByTagName('input')
+        for (let index = 0; index < inputs.length; index++) {
+          inputs[index].value = ''      
         }
-      
-        contacts[index - 1].insertAdjacentElement('afterend', newContact);
+        this.contactsTarget.appendChild(newContact);
       }
 
     removeContact(event) {
@@ -38,13 +26,11 @@ export default class extends Controller {
         var target = event.target;
         var contact;
         if (target.matches("button.remove-contact")) {
-          console.log("hi")
           contact = target.parentNode;
         } else if (target.matches("i.fa-minus")) {
-          console.log("hello")
-        contact = target.parentNode.parentNode;
+          contact = target.parentNode.parentNode;
         }
-        document.querySelector("#contacts").removeChild(contact);
+        this.contactsTarget.removeChild(contact);
     }
     
 }
