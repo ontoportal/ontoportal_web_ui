@@ -53,24 +53,24 @@ module SubmissionsHelper
   # Generate the HTML input for every attributes.
   def generate_attribute_input(attr_label, options = {})
     input_html = ''.html_safe
-
+    
     # Get the attribute hash corresponding to the given attribute
     attr = @metadata.select{ |attr_hash| attr_hash["attribute"].to_s.eql?(attr_label) }.first
-
+    
     if attr["enforce"].include?("integer")
-      number_field :submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"]), class: 'metadataInput form-control'
+      number_field "submission[#{@ontology.acronym}_onto_#{@submission.submissionId}]", attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"]), class: 'metadataInput form-control'
 
     elsif attr["enforce"].include?("date_time")
-      field_id = [:submission, attr["attribute"].to_s].join('_')
+      field_id = [:submission, attr["attribute"].to_s, @ontology.acronym].join('_')
       date_value = @submission.send(attr["attribute"]).presence      
       content_tag(:div, class: 'input-group') do
         [
-          text_field(:submission, attr["attribute"].to_s.to_sym, value: date_value, id: field_id, :data=> {controller: "flatpickr", flatpickr_date_format: "Y-m-d"})
+          text_field("submission[#{@ontology.acronym}_onto_#{@submission.submissionId}]", attr["attribute"].to_s.to_sym, value: date_value, id: field_id, :data=> {controller: "flatpickr", flatpickr_date_format: "Y-m-d"})
         ].join.html_safe
       end
 
     elsif attr["enforce"].include?("textarea")
-      text_area(:submission, attr["attribute"].to_s.to_sym, rows: 3, value: @submission.send(attr["attribute"]), class: 'metadataInput form-control')
+      text_area("submission[#{@ontology.acronym}_#{@submission.submissionId}]", attr["attribute"].to_s.to_sym , rows: 3, value: @submission.send(attr["attribute"]), class: 'metadataInput form-control')
 
     # Create select dropdown when there are enforcedValues for the attr. But also let the user enter its own value if Other selected
     elsif !attr["enforcedValues"].nil?
@@ -90,13 +90,13 @@ module SubmissionsHelper
       end
 
       if attr["enforce"].include?("list")
-        input_html << content_tag(:div, "data-controller" => "addNewValues", "data-attribut"=>attr["attribute"]) do
-          concat select_tag("submission[#{attr_label}][]", options_for_select(select_values, metadata_values), :multiple => 'true',
-          "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :data=> {controller: "select" , action: "select#multipleSelect", attribut: @selected_metadata_to_edit})
-          concat text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-right: 1em;width: 16em;display: inline;", :placeholder => "Or provide the value",
-          :onkeydown => "if (event.keyCode == 13) { addValueToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control')
-          concat button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}",
-          :type => "button", :class => "btn btn-primary btn-sm add-value-btn","data-action"=>"click->addNewValues#addOntoToSelect")
+        input_html << content_tag(:div, "data-controller" => "select", "data-attribut"=>attr["attribute"] + "_" + @ontology.acronym) do
+          concat select_tag("submission[#{@ontology.acronym}_onto_#{@submission.submissionId}][#{attr["attribute"]}]", options_for_select(select_values, metadata_values), :multiple => 'true',
+          "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}_#{@ontology.acronym}", :class => "selectOntology", :data=> {action: "select#multipleSelect", attribut: @selected_metadata_to_edit, "select-target": "selectedOntologies"})
+          concat text_field_tag("add_#{attr["attribute"].to_s}_#{@ontology.acronym}", nil, :style => "margin-right: 1em;width: 16em;display: inline;", :placeholder => "Or provide the value",
+          :onkeydown => "if (event.keyCode == 13) { addValueToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control', "data-select-target"=> "inputOntoField")
+          concat button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}_#{@ontology.acronym}",
+          :type => "button", :class => "btn btn-primary btn-sm add-value-btn","data-action"=>"click->select#addOntoToSelect")
         end  
 
       else
@@ -109,14 +109,14 @@ module SubmissionsHelper
         end
 
         
-        input_html << select("submission", attr["attribute"], select_values, { :selected => metadata_values}, {:class => "form-control", :id => "select_#{attr["attribute"]}", :style=> "margin-bottom: 1em;", :data=> {controller: "select" , action: "select#toggleOtherValue", attribut: @selected_metadata_to_edit, check: attr["attribute"]}})
 
         # Button and field to add new value (that are not in the select). Show when other is selected
-        input_html << content_tag(:div, :data=> {controller: "addNewValues", attribut: attr["attribute"]}) do
-          concat text_field_tag("add_#{attr["attribute"].to_s}", nil, :style => "margin-right: 1em;width: 16em;display: none;", :placeholder => "Or provide the value",
-          :onkeydown => "if (event.keyCode == 13) { addValueToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control')
-          concat button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}",
-          :type => "button", :class => "btn btn-primary btn-sm add-value-btn", "data-action"=>"click->addNewValues#addValueToSelect", :style => "display: none;")
+        input_html << content_tag(:div, :data=> {controller: "select ", attribut: attr["attribute"] + "_" + @ontology.acronym}) do
+          concat select_tag("submission[#{@ontology.acronym}_onto_#{@submission.submissionId}][#{attr["attribute"]}]", options_for_select(select_values, metadata_values), {:class => "form-control", :id => "select_#{attr["attribute"]}_#{@ontology.acronym}", :style=> "margin-bottom: 1em;", :data=> {action: "select#toggleOtherValue", attribut: @selected_metadata_to_edit, check: attr["attribute"] + "_" + @ontology.acronym, "select-target": "selectedValues"}})
+          concat text_field_tag("add_#{attr["attribute"].to_s}_#{@ontology.acronym}", nil, :style => "margin-right: 1em;width: 16em;display: none;", :placeholder => "Or provide the value",
+          :onkeydown => "if (event.keyCode == 13) { addValueToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control', "data-select-target"=> "inputValueField")
+          concat button_tag("Add new value", :id => "btnAdd#{attr["attribute"]}_#{@ontology.acronym}",
+          :type => "button", :class => "btn btn-primary btn-sm add-value-btn", "data-action"=>"click->select#addValueToSelect","data-select-target": "btnValuefield",:style => "display: none;")
         end
       end
 
@@ -140,24 +140,19 @@ module SubmissionsHelper
           select_values << metadata_values
         end
       end
-
-      if attr["enforce"].include?("list")
-        input_html << select_tag("submission[#{attr_label}][]", options_for_select(select_values, metadata_values), :multiple => 'true',
-            "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :data=> {controller: "select" , action: "select#multipleSelect", attribut: @selected_metadata_to_edit})
-
-      else
-        input_html << select_tag("submission[#{attr_label}]", options_for_select(select_values, metadata_values), "data-placeholder".to_sym => "Select ontology",
-                   :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}", :class => "selectOntology", :include_blank => true, :data=> {controller: "select" , action: "select#multipleSelect", attribut: @selected_metadata_to_edit})
-      end
-      # Button and field to add new value (not in the select)
-
-      input_html << tag(:br)
-
-      input_html << content_tag(:div, "data-controller" => "addNewValues", "data-attribut"=>attr["attribute"]) do
-        concat text_field_tag("add_#{attr["attribute"]}", nil, :style => "margin-right: 1em;vertical-align: super;width: 16em; display: inline",
-                                   :placeholder => "Ontology outside of the Portal", :onkeydown => "if (event.keyCode == 13) { addOntoToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control')
-        concat button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}", :style => "margin-bottom: 2em;margin-top: 1em;",
-                          :type => "button", :class => "btn btn-primary btn-sm", "data-action"=>"click->addNewValues#addOntoToSelect")
+      input_html << content_tag(:div, "data-controller" => "select", "data-attribut"=>attr["attribute"] + "_" + @ontology.acronym) do
+        if attr["enforce"].include?("list")
+          concat select_tag("submission[#{@ontology.acronym}_onto_#{@submission.submissionId}][#{attr["attribute"]}]", options_for_select(select_values, metadata_values), :multiple => 'true',
+          "data-placeholder".to_sym => "Select ontologies", :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}_#{@ontology.acronym}", :class => "selectOntology", :data=> {action: "select#multipleSelect", attribut: @selected_metadata_to_edit, "select-target": "selectedOntologies"})
+        else
+          concat select_tag("submission[#{@ontology.acronym}_onto_#{@submission.submissionId}][#{attr["attribute"]}]", options_for_select(select_values, metadata_values), "data-placeholder".to_sym => "Select ontology",
+          :style => "margin-bottom: 15px; width: 100%;", :id => "select_#{attr["attribute"]}_#{@ontology.acronym}", :class => "selectOntology", :data=> {action: "select#multipleSelect", attribut: @selected_metadata_to_edit, "select-target": "selectedOntologies"})
+        end  
+        concat tag(:br)
+        concat text_field_tag("add_#{attr["attribute"]}_#{@ontology.acronym}", nil, :style => "margin-right: 1em;vertical-align: super;width: 16em; display: inline",
+                                   :placeholder => "Ontology outside of the Portal", :onkeydown => "if (event.keyCode == 13) { addOntoToSelect('#{attr["attribute"]}'); return false;}", :class => 'metadataInput form-control', "data-select-target": "inputOntoField")
+        concat button_tag("Add new ontology", :id => "btnAdd#{attr["attribute"]}#{@ontology.acronym}", :style => "margin-bottom: 2em;margin-top: 1em;",
+                          :type => "button", :class => "btn btn-primary btn-sm", "data-action"=>"click->select#addOntoToSelect")
       end
       return input_html
 
@@ -169,24 +164,23 @@ module SubmissionsHelper
       end
 
       if attr["enforce"].include?("list")
-        input_html << content_tag(:div, "data-controller" => "addNewValues", "data-attribut"=>attr["attribute"], "data-inputType"=>"url") do
-          concat button_tag("Add new value", :id => "add#{attr["attribute"]}",
-                    :type => "button", :class => "btn btn-primary btn-sm add-value-btn", "data-action"=>"click->addNewValues#addInput")
-          concat url_field_tag("submission[#{attr["attribute"].to_s}][]", uri_value[0], :id => attr["attribute"].to_s, class: "metadataInput form-control")
+        input_html << content_tag(:div, "data-controller" => "select", "data-attribut"=>attr["attribute"] + "_" + @ontology.acronym, "data-inputtype"=>"url", "data-select-target" => "input") do
+          concat button_tag("Add new value", :id => "add#{attr["attribute"]}_#{@ontology.acronym}",
+                    :type => "button", :class => "btn btn-primary btn-sm add-value-btn", "data-action"=>"click->select#addInput")
+          concat url_field_tag("submission[#{@ontology.acronym}_onto_#{@submission.submissionId}][]", uri_value[0], :id => attr["attribute"].to_s + "_" + @ontology.acronym, class: "metadataInput form-control")
         end
         # Add field if list of URI
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
           @submission.send(attr["attribute"]).each_with_index do |metadata_val, index|
             if index != 0
-              input_html << url_field_tag("submission[#{attr["attribute"].to_s}][]", metadata_val, :id => "submission_#{attr["attribute"].to_s}", class: "metadataInput form-control")
+              input_html << url_field_tag("submission[#{@ontology.acronym}_onto_#{@submission.submissionId}][]", metadata_val, :id => "submission_#{attr["attribute"].to_s}" + "_" + @ontology.acronym, class: "metadataInput form-control")
             end
           end
         end
         input_html << content_tag(:div, "", id: "#{attr["attribute"]}Div")
-
       else
         # if single value
-        input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: uri_value, class: "metadataInput form-control")
+        input_html << text_field("submission[#{@ontology.acronym}_onto_#{@submission.submissionId}]", attr["attribute"].to_s.to_sym, value: uri_value, class: "metadataInput form-control")    
       end
       return input_html
 
@@ -210,30 +204,30 @@ module SubmissionsHelper
           firstVal = @submission.send(attr["attribute"])[0]
         end
 
-        input_html << content_tag(:div, "data-controller" => "addNewValues", "data-attribut"=>attr["attribute"], "data-inputType"=>"text") do
-          concat button_tag("Add new value", :id => "add#{attr["attribute"]}",
-                                 :type => "button", :class => "btn btn-primary btn-sm add-value-btn", "data-action"=>"click->addNewValues#addInput")
-          concat text_field_tag("submission[#{attr["attribute"].to_s}][]", firstVal, :id => attr["attribute"].to_s, class: "metadataInput form-control")
+        input_html << content_tag(:div, "data-controller" => "select", "data-attribut"=>attr["attribute"] + "_" + @ontology.acronym , "data-inputtype"=>"text", "data-select-target" => "input") do
+          concat button_tag("Add new value", :id => "add#{attr["attribute"]}_#{@ontology.acronym}",
+                                 :type => "button", :class => "btn btn-primary btn-sm add-value-btn", "data-action"=>"click->select#addInput")
+          concat text_field_tag("submission[#{@ontology.acronym}_onto_#{@submission.submissionId}][]", firstVal, :id => attr["attribute"].to_s + "_" + @ontology.acronym, class: "metadataInput form-control")
         end  
 
         # Add field if list of metadata
         if !@submission.send(attr["attribute"]).nil? && @submission.send(attr["attribute"]).any?
           @submission.send(attr["attribute"]).each_with_index do |metadata_val, index|
             if index != 0
-              input_html << text_field_tag("submission[#{attr["attribute"].to_s}][]", metadata_val, :id => "submission_#{attr["attribute"].to_s}", class: "metadataInput form-control")
+              input_html << text_field_tag("submission[#{@ontology.acronym}_onto_#{@submission.submissionId}][]", metadata_val, :id => "submission_#{attr["attribute"].to_s}_#{@ontology.acronym}", class: "metadataInput form-control")
             end
           end
         end
 
-        input_html << content_tag(:div, "", id: "#{attr["attribute"]}Div")
+        input_html << content_tag(:div, "", id: "#{attr["attribute"]}_#{@ontology.acronym}Div")
 
       else
         # if single value text
         # TODO: For some reason @submission.send("URI") FAILS... I don't know why... so I need to call it manually
         if attr["attribute"].to_s.eql?("URI")
-          input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.URI, class: "metadataInput form-control")
+          input_html << text_field("submission[#{@ontology.acronym}_onto_#{@submission.submissionId}]", attr["attribute"].to_s.to_sym, value: @submission.URI, class: "metadataInput form-control")
         else
-          input_html << text_field(:submission, attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"]), class: "metadataInput form-control")
+          input_html << text_field("submission[#{@ontology.acronym}_onto_#{@submission.submissionId}]", attr["attribute"].to_s.to_sym, value: @submission.send(attr["attribute"]), class: "metadataInput form-control")
         end
       end
       return input_html

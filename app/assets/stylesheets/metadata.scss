@@ -15,13 +15,17 @@
     width: 100%;
 }
 
-.jrab{
-    display: flex;
-    overflow-x: auto;
-}
 .editBtn {
-    top : 110px;
-    left: 1100px;
+    cursor:pointer;
+    text-align: center;
+    padding: 10px 10px;
+    border-radius: 4px;
+    height: 39px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    top : 107px;
+    left: 1200px;
     position: absolute;
 }
 
@@ -46,4 +50,6 @@
     overflow-x: auto;
 }
 
-
+.savebtn{
+    margin-top: 20px;
+}

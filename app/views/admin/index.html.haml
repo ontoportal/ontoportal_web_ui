@@ -24,7 +24,7 @@
       %li.nav-item
         =link_to("Users", "#users", id: "users-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab", href: users_path() }, aria: { controls: "users", selected: "false" })
       %li.nav-item
-        =link_to("Ontologies Metadata", "#ontologies_metadata_curator", id: "ontologies_metadata_curator-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab"}, aria: { controls: "ontologies_metadata_curator", selected: "false" })   
+        =link_to("Metadata Administration", "#ontologies_metadata_curator", id: "ontologies_metadata_curator-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab"}, aria: { controls: "ontologies_metadata_curator", selected: "false" })   
     %div#adminTabContent.tab-content
 
       -# Site Administration tab
@@ -94,7 +94,12 @@
       -# metadata tab
       %div.tab-pane.fade{id: "ontologies_metadata_curator", role: "tabpanel", aria: { labelledby: "ontologies_metadata_curator-admin-tab" }}
         = turbo_frame_tag "selection_metadata_form" do
-          = render partial: 'ontologies_metadata_curator/metadata_tab'
+          = render partial: 'ontologies_metadata_curator/metadata_tab' 
+          %div#metadataTableloader{:style => "display: none"}
+            .text-center
+              .spinner-border{role: "status"}
+                %span.sr-only Loading...       
         = turbo_frame_tag "edition_metadata_form"
 
 
+  

@@ -1,5 +1,8 @@
-%h5{style: "font-size: 10pt !important"} Choose an ontology
-= select(:search, :ont, options_for_select(@selected_ontologies_to_edit), {},style: "width: 432px", data: {controller: "modal",action: "change->modal#showNewContent"})
+-#%h5{style: "font-size: 10pt !important"} Choose an ontology
+-#%p
+  -#= select("submission", 'ontologies',options_for_select(@selected_ontologies_to_edit), :class => "selectOntology")
+  -#= select('search', 'ontologies', @selected_ontologies_to_edit,{"data-placeholder".to_sym => "Select an Ontology", autocomplete: "off"})
+  = select(:search, :ont, options_for_select(@selected_ontologies_to_edit), {},style: "width: 432px", data: {controller: "modal",action: "change->modal#showNewContent"})
 %br
 %ul#mychangeTab.nav.nav-tabs{role: "tablist"}
   %li.nav-item
@@ -9,15 +12,46 @@
 %br
 
 #myTabContent.tab-content
-  #ChangeForAll.tab-pane.show.active{"aria-labelledby" => "home-tab", role: "tabpanel"} 
-    = @check
-
+  #ChangeForAll.tab-pane.show.active{"aria-labelledby" => "home-tab", role: "tabpanel"}
+    %h4{style: "font-size: 10pt !important"} Grab an ontology to get its metadata content
+    %p
+      = select(:search, :ont, options_for_select(@selected_ontologies_to_edit), {},style: "width: 432px", data: {controller: "modal",action: "change->modal#showNewContent"})
+    = form_for :submission, url: "/ontologies_metadata_curator/:ontologies_metadata_curator_id/update", html: {method: :put}, data: { turbo: true} do   
+      = hidden_field :check, :value => "all"
+      = turbo_frame_tag("metadata_by_ontology", src: "ontologies_metadata_curator/show_metadata_by_ontology/" + @ontology.acronym, loading: :lazy, data: { turbo: true, controller: "test"}) do
+        .text-center
+          .spinner-border{role: "status"}
+            %span.sr-only Loading...
+      = submit_tag button_text, class: "btn btn-primary savebtn"         
+    
+  
   #ChangeForEach.tab-pane{"aria-labelledby" => "profile-tab", role: "tabpanel"}
-    = @check
+    = form_for :submission, url: "/ontologies_metadata_curator/:ontologies_metadata_curator_id/update", html: {method: :put}, data: { turbo: true} do
+      = hidden_field :check, :value => "each"
+      %ul#pills-tab.nav.nav-pills.mb-3{role: "tablist"} 
+        %li.nav-item
+          %a.nav-link.active{:id => "pills-"+ @selected_ontologies_to_edit[0]+"-tab","aria-controls" => "pills-"+ @selected_ontologies_to_edit[0], "aria-selected" => "true", "data-toggle" => "pill", href: "#pills-" + @selected_ontologies_to_edit[0], role: "tab"}= @selected_ontologies_to_edit[0]
+        - (1..@selected_ontologies_to_edit.length - 1).each do |i|
+          %li.nav-item
+            %a.nav-link{:id => "pills-"+ @selected_ontologies_to_edit[i]+"-tab","aria-controls" => "pills-"+ @selected_ontologies_to_edit[i], "aria-selected" => "false", "data-toggle" => "pill", href: "#pills-" + @selected_ontologies_to_edit[i], role: "tab"}= @selected_ontologies_to_edit[i] 
+      #pills-tabContent.tab-content
+        .tab-pane.show.active{:id => "pills-"+ @selected_ontologies_to_edit[0], "aria-labelledby" => "pills-"+ @selected_ontologies_to_edit[0] +"-tab", role: "tabpanel"}
+          = turbo_frame_tag("metadata_by_ontology", src: "ontologies_metadata_curator/show_metadata_by_ontology/" + @selected_ontologies_to_edit[0], loading: :lazy) do
+            .text-center
+              .spinner-border{role: "status"}
+                %span.sr-only Loading...
+        - (1..@selected_ontologies_to_edit.length - 1).each do |i|
+          .tab-pane{:id => "pills-"+ @selected_ontologies_to_edit[i],"aria-labelledby" => "pills-"+@selected_ontologies_to_edit[i]+"-tab", role: "tabpanel"} 
+            = turbo_frame_tag("metadata_by_ontology", src: "ontologies_metadata_curator/show_metadata_by_ontology/" + @selected_ontologies_to_edit[i], loading: :lazy) do
+              .text-center
+                .spinner-border{role: "status"}
+                  %span.sr-only Loading...
+      = submit_tag button_text, class: "btn btn-primary savebtn"         
+      %br      
 
-= turbo_frame_tag("metadata_by_ontology", src: "ontologies_metadata_curator/show_metadata_by_ontology/" + @ontology.acronym, loading: :lazy) do
-  .text-center
-    .spinner-border{role: "status"}
-      %span.sr-only Loading...
-
-= submit_tag button_text, class: "btn btn-primary"   
+:javascript
+  $('a[data-toggle="pill"]').on('shown.bs.pill', function (e) {
+    console.log(e.target) // newly activated tab
+    e.relatedTarget // previous active tab
+  })
+ 

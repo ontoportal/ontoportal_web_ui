@@ -1,46 +1,59 @@
-= turbo_frame_tag "metadata_table" do
+= turbo_frame_tag("metadata_table") do
   = form_tag("/ontologies_metadata_curator/:ontologies_metadata_curator_id/edit", method: "post", local: true, data: { turbo: true}) do
-    %button.editBtn{:type => "submit", :class=> "btn btn-primary"}
-      Edit Metadata  
-    %div.table-container  
-      %table.table.metadataTable{:cellpadding => "0", :cellspacing => "0"}
+    %button{:type => "submit", :class=> "editBtn "}
+      Edit metadata values
+    %div.table-container{:data=> {controller: "loaders"}} 
+      %table.table.metadataTable.table-bordered{:cellpadding => "0", :cellspacing => "0"}
         %col
         %colgroup{:span=>"1"}
         %thead
-          %tr
-            %th{:rowspan=>"1", :scope=>"col"} Ontology
-            %th{:colspan=>@metadata_sel.length, :scope=>"col"} Metadata
+          %tr.table-primary
+            %th{:rowspan=>"1", :scope=>"col"} Ontologies
+            %th{:colspan=>@metadata_sel.length, :scope=>"col"} 
         %tbody
-          %tr
+          %tr.table-active
             %th{:scope=>"row"} 
             - @metadata_sel.each do |meta|
               %th
-                = check_box_tag('selected_metadata[]', meta, false)
-                = meta
+                = check_box_tag('selected_metadata[]', meta, false, :id => meta)
+                %label{for: meta}= meta
             - (0..@ontologies.length - 1).each do |n|       
               %tr
                 %th{:scope=>"row"}
                   = check_box_tag('selected_acronyms[]',@ontologies[n].acronym, false)
                   %a{:href=> "ontologies/" + @ontologies[n].acronym, :title=>@ontologies[n].name, :style=>"background-color:#FFFFFF;color:#000000;text-decoration:none" }
                     = @ontologies[n].acronym
-                - listToshow = ["designedForOntologyTask", "comesFromTheSameDomain", "endorsedBy", "includedInDataCatalog", "isAlignedTo", "isBackwardCompatibleWith", "isIncompatibleWith", "metadataVoc", "missingImports", "naturalLanguage", "ontologyRelatedTo", "similarTo", "submissionStatus", "useImports", "usedBy"]
                 - @metadata_sel.each do |meta|
                   - if meta == "contact"
+                    %td= raw @submissions[n].contact.map {|c| [c.name, c.email].join(", ") if c.member?(:name) && c.member?(:email)}.join("<br/>")
+                  - elsif meta == "naturalLanguage"
+                    - lang_codes = []
                     %td
-                      %li
-                        name:
-                        = @submissions[n].instance_values[meta.to_s].first.name
-                      %li
-                        email:
-                        = @submissions[n].instance_values[meta.to_s].first.email
-                  - elsif listToshow.include? meta
-                    %td
-                      - @submissions[n].instance_values[meta.to_s].each do |task|
-                        %li= task 
+                      - @submissions[n].send(meta).each do |lang|
+                        - if (lang.to_s.eql?("en") || lang.to_s.eql?("eng") || lang.to_s.eql?("http://lexvo.org/id/iso639-3/eng"))
+                          - lang_codes << "gb"
+                        - elsif lang.to_s.start_with?("http://lexvo.org")
+                          - lang_codes << $LEXVO_TO_FLAG[lang]
+                        - else
+                          - lang_codes << lang
+                      %ul{:class => "f32"}
+                        - lang_codes.each do |lang_code|
+                          %li{:class => "flag " + lang_code, :style => "margin-right: 0.5em;"}
+                        
+
                   - elsif meta == "ontology"
                     %td= @submissions[n].ontology.acronym
                   - else
-                    %td= @submissions[n].instance_values[meta.to_s]  
-
-
-
+                    - if @submissions[n].instance_values[meta.to_s].class == String && @submissions[n].instance_values[meta.to_s][0..3] == "http"
+                      %td
+                        %a{:href=> ""+ @submissions[n].instance_values[meta.to_s] +""}= @submissions[n].instance_values[meta.to_s]
+                    - else
+                      %td= @submissions[n].instance_values[meta.to_s]  
+  
+-#lang_codes.each do |lang_code|
+                        if lang_code.length == 2
+                          concat(content_tag(:li, "", {:class => "flag #{lang_code}", :style => "margin-right: 0.5em;"}))
+                        else
+                          concat(content_tag(:li, lang_code))
+                        end
+                      end
