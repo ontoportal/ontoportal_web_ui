@@ -149,7 +149,13 @@ class SubmissionsController < ApplicationController
     end
 
     p = params.require(:submission).permit(attributes.uniq)
-    p.to_h
+    p.to_h.transform_values do |v|
+      if v.is_a? Array
+        v.reject(&:empty?)
+      else
+        v
+      end
+    end
   end
 
 end
