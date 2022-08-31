@@ -75,4 +75,37 @@ module ConceptsHelper
     return properties_data
   end
 
+  def add_synonym_button
+    return unless change_requests_enabled?(@ontology.acronym)
+
+    if session[:user].nil?
+      link_to(login_index_path(redirect: concept_redirect_path), role: "button", class: "btn btn-link", aria: {label: "Add a synonym"}) do
+        content_tag(:i, "", class: "fas fa-plus-circle fa-lg", aria: {hidden: "true"}).html_safe
+      end
+    else
+      link_to('#', role: "button", class: "btn btn-link", aria: {label: "Add a synonym"}) do
+        content_tag(:i, "", class: "fas fa-plus-circle fa-lg", aria: {hidden: "true"}).html_safe
+      end
+    end
+  end
+
+  def remove_synonym_button
+    return unless change_requests_enabled?(@ontology.acronym)
+
+    if session[:user].nil?
+      link_to(login_index_path(redirect: concept_redirect_path), role: "button", class: "btn btn-link", aria: {label: "Remove a synonym"}) do
+        content_tag(:i, "", class: "fas fa-minus-circle fa-lg", aria: {hidden: "true"}).html_safe
+      end
+    else
+      link_to('#', role: "button", class: "btn btn-link", aria: {label: "Remove a synonym"}) do
+        content_tag(:i, "", class: "fas fa-minus-circle fa-lg", aria: {hidden: "true"}).html_safe
+      end
+    end
+  end
+
+  private
+
+  def concept_redirect_path
+    ontology_path(@ontology.acronym, p: 'classes', conceptid: @concept.id)
+  end
 end
