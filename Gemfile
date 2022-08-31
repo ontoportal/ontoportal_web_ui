@@ -63,7 +63,7 @@ gem 'pry'
 gem 'rack-mini-profiler'
 gem 'rails_autolink'
 gem 'rdoc'
-gem 'recaptcha', '~> 5.2'
+gem 'recaptcha', '~> 5.9.0'
 gem 'rest-client'
 gem 'stackprof', require: false
 gem 'thin'

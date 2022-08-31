@@ -53,8 +53,8 @@ Rails.application.configure do
   config.active_support.disallowed_deprecation_warnings = []
 
   # Raises error for missing translations.
-  # config.i18n.raise_on_missing_translations = true
+  # config.action_view.raise_on_missing_translations = true
 
-  # Annotate rendered view with file names.
-  # config.action_view.annotate_rendered_view_with_filenames = true
+  # Include the BioPortal-specific configuration options
+  require Rails.root.join('config', "bioportal_config_#{Rails.env}.rb")
 end
