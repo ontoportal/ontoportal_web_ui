@@ -133,4 +133,8 @@ module OntologiesHelper
     ontologies.present? ? ontologies.map { |ont| ont.acronym } : []
   end
 
+  def change_requests_enabled?(ontology_acronym)
+    return false unless Rails.configuration.change_request[:ontologies].present?
+    Rails.configuration.change_request[:ontologies].include? ontology_acronym.to_sym
+  end
 end
