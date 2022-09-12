@@ -79,12 +79,20 @@ module ConceptsHelper
     return unless change_requests_enabled?(@ontology.acronym)
 
     if session[:user].nil?
-      link_to(login_index_path(redirect: concept_redirect_path), role: "button", class: "btn btn-link", aria: {label: "Add a synonym"}) do
-        content_tag(:i, "", class: "fas fa-plus-circle fa-lg", aria: {hidden: "true"}).html_safe
+      link_to(login_index_path(redirect: concept_redirect_path), 
+              role: 'button',
+              class: 'btn btn-link',
+              aria: { label: 'Create synonym' }) do
+        content_tag(:i, '', class: 'fas fa-plus-circle fa-lg', aria: { hidden: 'true' }).html_safe
       end
     else
-      link_to('#', role: "button", class: "btn btn-link", aria: {label: "Add a synonym"}) do
-        content_tag(:i, "", class: "fas fa-plus-circle fa-lg", aria: {hidden: "true"}).html_safe
+      link_to(nil,
+              role: 'button',
+              id: 'createSynonymButton',
+              class: 'btn btn-link',
+              aria: { label: 'Create synonym' },
+              data: { toggle: 'modal', target: '#createSynonymModal', concept_label: @concept.prefLabel }) do
+        content_tag(:i, '', class: 'fas fa-plus-circle fa-lg', aria: { hidden: 'true' }).html_safe
       end
     end
   end
@@ -101,6 +109,11 @@ module ConceptsHelper
         content_tag(:i, "", class: "fas fa-minus-circle fa-lg", aria: {hidden: "true"}).html_safe
       end
     end
+  end
+
+  def synonym_type_select
+    options = [%w[exact exact], %w[narrow narrow], %w[broad broad], %w[related related]]
+    select_tag('createSynonymTypeSelect', options_for_select(options, 0), class: 'form-control')
   end
 
   private
