@@ -32,10 +32,6 @@ class HomeController < ApplicationController
     render partial: "layouts/#{partial}"
   end
 
-  def release
-    redirect_to :controller => 'home', :action => 'help'
-  end
-
   def help
     # Show the header/footer or not
     layout = params[:pop].eql?("true") ? "popup" : "ontology"
