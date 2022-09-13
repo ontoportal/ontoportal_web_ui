@@ -38,14 +38,6 @@ class HomeController < ApplicationController
     render :layout => layout
   end
 
-  def recommender
-
-  end
-
-  def annotate
-
-  end
-
   def all_resources
     @conceptid = params[:conceptid]
     @ontologyid = params[:ontologyid]
