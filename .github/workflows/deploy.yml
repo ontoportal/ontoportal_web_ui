@@ -13,6 +13,7 @@
 # DEPLOY_ENC_KEY - key for decrypting deploymnet ssh key residing in config/
 # this SSH key is used for accessing jump host, UI nodes, and private github repo.
 
+name: Capistrano Deployment
 # Controls when the action will run.
 on:
   push:
@@ -51,9 +52,6 @@ jobs:
 
         USER_INPUT_ENVIRONMENT=${{ inputs.environment }}
         echo "TARGET=${USER_INPUT_ENVIRONMENT:-staging}" >> $GITHUB_ENV
-    - name: check env vars
-      run: |
-        echo  "deploying ${{ env.BRANCH }} branch/tag to ${{ env.TARGET }} environment using ${{ env.PRIVATE_CONFIG_REPO }} private repo"
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
