@@ -112,7 +112,6 @@ ENV['MEMCACHE_SERVERS'] = 'localhost'
 
 # Custom BioPortal logging
 require 'log'
-$REMOTE_LOGGING = false
 
 ##
 # Flex Options
