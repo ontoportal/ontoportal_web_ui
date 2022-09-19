@@ -327,9 +327,9 @@ function subscribeToNotes(button) {
       jQuery("a.subscribe_to_notes").attr("data-bp_is_subbed", subbedVal);
 
       // Change button text
-      var txt = jQuery("a.subscribe_to_notes span.ui-button-text").html();
+      var txt = jQuery("a.subscribe_to_notes").html();
       var newButtonText = txt.match("Unsubscribe") ? txt.replace("Unsubscribe", "Subscribe") : txt.replace("Subscribe", "Unsubscribe");
-      jQuery("a.subscribe_to_notes span.ui-button-text").html(newButtonText);
+      jQuery("a.subscribe_to_notes").html(newButtonText);
     },
     error: function(data) {
       jQuery(".notes_subscribe_spinner").hide();

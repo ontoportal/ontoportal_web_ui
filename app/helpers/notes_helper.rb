@@ -137,6 +137,7 @@ module NotesHelper
       return sanitize("<a href='/login?redirect=#{request.url}' style='font-size: .9em;' class='link_button subscribe_to_notes'>Subscribe to notes emails</a>")
     end
     # Init subscribe button parameters.
+    user = LinkedData::Client::Models::User.find(session[:user].id)
     sub_text = "Subscribe"
     params = "data-bp_ontology_id='#{ontology_id}' data-bp_is_subbed='false' data-bp_user_id='#{user.id}'"
     begin
