@@ -82,3 +82,24 @@
                   %a{href: "/ontologies/#{@ontology.acronym}?p=classes&conceptid=#{CGI.escape(note.relatedClass.first)}"}= note.relatedClass.first
               %td
                 = DateTime.parse(note.created).strftime("%Y-%m-%d")
+:javascript
+  jQuery(".ontologies.show").ready(function(){
+    setupNotesFacebox()
+    setupNotesFaceboxSizing();
+    bindAddCommentClick();
+    bindAddProposalClick();
+    bindProposalChange();
+    bindReplyClick();
+    bindReplyCancelClick();
+    bindReplySaveClick();
+
+    jQuery("a.subscribe_to_notes").live("click", function(){
+      subscribeToNotes(this);
+    });
+
+    jQuery("#hide_archived_ont").click(function(){
+      hideOrUnhideArchivedOntNotes();
+    });
+
+    wireOntTable(jQuery("#ontology_notes_list"));
+  });
