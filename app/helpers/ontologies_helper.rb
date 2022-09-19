@@ -150,4 +150,15 @@ module OntologiesHelper
   def ontology_viewer_page_name(ontology_name, concept_name_title , page)
     ontology_name + concept_name_title + " - #{page.capitalize}"
   end
+
+  def visits_chart_dataset(visits_data)
+    [{
+       label: 'Visits',
+       data: visits_data,
+       backgroundColor: 'rgba(151, 187, 205, 0.2)',
+       borderColor: 'rgba(151, 187, 205, 1)',
+       pointBorderColor: 'rgba(151, 187, 205, 1)',
+       pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+     }].to_json
+  end
 end
