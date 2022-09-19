@@ -133,4 +133,21 @@ module OntologiesHelper
     ontologies.present? ? ontologies.map { |ont| ont.acronym } : []
   end
 
+  def current_section
+    (params[:p]) ? params[:p] : 'summary'
+  end
+
+  def selected_section?(section_title)
+    current_section.eql?(section_title)
+  end
+
+  def lazy_load_section(section_title, &block)
+    render layout: 'ontologies/lazy_load_content',
+           locals: { current_section: current_section, section_title: section_title },
+           &block
+  end
+
+  def ontology_viewer_page_name(ontology_name, concept_name_title , page)
+    ontology_name + concept_name_title + " - #{page.capitalize}"
+  end
 end
