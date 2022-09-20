@@ -168,10 +168,12 @@ module ApplicationHelper
       li_id = child.id.eql?("bp_fake_root") ? "bp_fake_root" : short_uuid
 
       if child.id.eql?("bp_fake_root")
-        string << "<li class='active' id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='#' #{active_style}>#{child.prefLabel}</a></li>"
+        name = ontology_viewer_page_name('', child.prefLabel, 'Classes')
+        string << "<li class='active' id='#{li_id}'><a id='#{CGI.escape(child.id)}' data-bp-ont-page-name='#{name}' href='#' #{active_style}>#{child.prefLabel}</a></li>"
       else
         icons = child.relation_icon(node)
-        string << "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{child.prefLabel({use_html: true})}</a> #{icons}"
+        name = ontology_viewer_page_name(child.explore.ontology.acronym, child.prefLabel, 'Classes')
+        string << "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' data-bp-ont-page-name='#{name}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{child.prefLabel({ use_html: true })}</a> #{icons}"
         if child.hasChildren && !child.expanded?
           string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children'>ajax_class</a></li></ul>"
         elsif child.expanded?
@@ -438,6 +440,9 @@ module ApplicationHelper
     return "<a class='ont4ajax' #{data_ont} #{href_ont}>#{ont_acronym}</a>"
   end
   ###END ruby equivalent of JS code in bp_ajax_controller.
+  def ontology_viewer_page_name(ontology_name, concept_name_title , page)
+    ontology_name + concept_name_title + " - #{page.capitalize}"
+  end
 
 
 end

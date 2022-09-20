@@ -147,9 +147,6 @@ module OntologiesHelper
            &block
   end
 
-  def ontology_viewer_page_name(ontology_name, concept_name_title , page)
-    ontology_name + concept_name_title + " - #{page.capitalize}"
-  end
 
   def visits_chart_dataset(visits_data)
     [{

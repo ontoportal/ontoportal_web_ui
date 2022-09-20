@@ -110,3 +110,10 @@
       = hidden_field :search, :keyword, :value=>"",:id=>"search_keyword"
   - else # found an error
     = "<div id=\"error\"><h2>#{@error}</h2></div>"
+
+  :javascript
+    jQuery(document).ready(function () {
+      if (pageUsesTreeView()) {
+         getTreeView();
+      }
+    });
