@@ -52,47 +52,50 @@
     </script>
 
   :javascript
-    jQuery(document).data().bp.ontPropertiesTab = {};
+    $(document).ready(function(){
+        jQuery(document).data().bp.ontPropertiesTab = {};
 
-    jQuery(document).data().bp.ontPropertiesTab.init = function() {
-      var source = jQuery("#property-details").html();
-      var propDetailsTemp = Handlebars.compile(source);
+        jQuery(document).data().bp.ontPropertiesTab.init = function() {
+          var source = jQuery("#property-details").html();
+          var propDetailsTemp = Handlebars.compile(source);
 
-      $("#propTree").NCBOPropertyTree({
-        ontology: "#{@ontology.acronym}",
-        ncboUIURL: jQuery(document).data().bp.config.ui_url,
-        width: "100%",
-        onInit: function() {
-          var ontPropTree = $("#propTree").data().NCBOPropertyTree;
-          var data = $("#propTree").find("a:first").data();
-          if (data) {
-            ontPropTree.selectClass(data.id);
+          $("#propTree").NCBOPropertyTree({
+            ontology: "#{@ontology.acronym}",
+            ncboUIURL: jQuery(document).data().bp.config.ui_url,
+            width: "100%",
+            onInit: function() {
+              var ontPropTree = $("#propTree").data().NCBOPropertyTree;
+              var data = $("#propTree").find("a:first").data();
+              if (data) {
+                ontPropTree.selectClass(data.id);
+                data.id = decodeURIComponent(data.id);
+                jQuery("#prop_contents").html(propDetailsTemp(data));
+
+                Split(['#propTree', '#prop_contents'], {
+                  elementStyle: function (dimension, size, gutterSize) {
+                    return {
+                      'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
+                    }
+                  },
+                  gutterStyle: function (dimension, gutterSize) {
+                    return {
+                      'flex-basis':  gutterSize + 'px'
+                    }
+                  },
+                  gutterSize: 10,
+                  direction: "horizontal",
+                  sizes: [25, 75],
+                  cursor: "col-resize"
+                })
+              }
+            }
+          }).on("afterSelect", function (e, classId, label, node) {
+            var data = node.data();
             data.id = decodeURIComponent(data.id);
             jQuery("#prop_contents").html(propDetailsTemp(data));
-
-            Split(['#propTree', '#prop_contents'], {
-              elementStyle: function (dimension, size, gutterSize) {
-                return {
-                  'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
-                }
-              },
-              gutterStyle: function (dimension, gutterSize) {
-                return {
-                  'flex-basis':  gutterSize + 'px'
-                }
-              },
-              gutterSize: 10,
-              direction: "horizontal",
-              sizes: [25, 75],
-              cursor: "col-resize"
-            })
-          }
+          });
         }
-      }).on("afterSelect", function (e, classId, label, node) {
-        var data = node.data();
-        data.id = decodeURIComponent(data.id);
-        jQuery("#prop_contents").html(propDetailsTemp(data));
-      });
-    }
 
-    jQuery(document).data().bp.ontPropertiesTab.init();
+        jQuery(document).data().bp.ontPropertiesTab.init();
+
+    })
