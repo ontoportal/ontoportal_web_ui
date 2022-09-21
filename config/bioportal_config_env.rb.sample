@@ -17,13 +17,10 @@ $PURL_ENABLED = false
 # The PURL URL generation algorithm can be altered in app/models/ontology_wrapper.rb
 $PURL_PREFIX = "http://purl.bioontology.org/ontology"
 
-# If your BioPortal installation includes Annotator set this to false
-$ANNOTATOR_DISABLED = true
-
-# Unique string representing the UI's id for use with the BioPortal Core
+# Unique string representing the UI's id for use with the BioPortal API
 $API_KEY = ""
 
-# REST core service address
+# BioPortal API service address
 $REST_URL = "http://example.org:8080/"
 
 # Ontolobridge endpoint url
