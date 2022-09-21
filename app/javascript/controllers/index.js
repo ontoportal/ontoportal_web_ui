@@ -4,12 +4,18 @@
 
 import { application } from "./application"
 
-import HelloController from "./hello_controller.js"
+import ClassSearchAutoCompleteController from "./class_search_auto_complete_controller"
+application.register("class-search", ClassSearchAutoCompleteController)
+
 import ContainerSplitterController from "./container_splitter_controller"
 application.register("container-splitter", ContainerSplitterController)
 application.register("hello", HelloController)
 
 import LoadChartController from "./load_chart_controller"
 application.register("load-chart", LoadChartController)
+
+import OntoportalAutocompleteController from "./ontoportal_autocomplete_controller"
+application.register("ontoportal-autocomplete", OntoportalAutocompleteController)
+
 import SimpleTreeController from "./simple_tree_controller"
 application.register("simple-tree", SimpleTreeController)

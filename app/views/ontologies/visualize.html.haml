@@ -10,7 +10,9 @@
         %div#qsearch.input-group.pb-2
           %div.input-group-prepend
             %span.input-group-text Jump to:
-          = text_field_tag("search_box", nil, class: "form-control rounded-right", aria: {label: "Jump to:"})
+          = text_field_tag("search_box", nil, class: "form-control rounded-right", aria: {label: "Jump to:"},
+          data: {controller: 'class-search', 'class-search-ontology-acronym-value': @ontology.acronym,
+                 'class-search-spinner-src-value': asset_path("jquery.simple.tree/spinner.gif")})
           = hidden_field_tag("jump_to_concept_id")
         -# Class tree
         %div#sd_content
@@ -18,7 +20,6 @@
             = loading_spinner(true)
       %div#concept_content.w-100{data:{'container-splitter-target': 'container'}}
         = render partial: 'concepts/show'
-
 
     - form_for(:search, :url => {:controller =>'search',:action=>'fetch_results'},:html=>{:id=>'search_form'}) do |f|
       %input{:name => "search[ontologies][]", :type => "hidden", :value => @ontology.acronym}/
@@ -28,9 +29,6 @@
     = "<div id=\"error\"><h2>#{@error}</h2></div>"
 
   :javascript
-    jQuery(document).ready(function () {
-      jQuery(document).data().bp.classesTab.search_box_init();
-    });
 
 
 
