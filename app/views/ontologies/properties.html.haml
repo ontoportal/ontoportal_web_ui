@@ -1,7 +1,7 @@
 = turbo_frame_tag 'properties' do
-  %div.ont-properties
-    %div#propTree
-    %div#prop_contents.pl-3
+  %div.ont-properties{data:{controller: 'container-splitter'}}
+    %div#propTree{data:{'container-splitter-target': 'container'}}
+    %div#prop_contents.pl-3{data:{'container-splitter-target': 'container'}}
 
   :plain
     <script id="property-details" type="text/x-handlebars-template">
@@ -70,23 +70,6 @@
                 ontPropTree.selectClass(data.id);
                 data.id = decodeURIComponent(data.id);
                 jQuery("#prop_contents").html(propDetailsTemp(data));
-
-                Split(['#propTree', '#prop_contents'], {
-                  elementStyle: function (dimension, size, gutterSize) {
-                    return {
-                      'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
-                    }
-                  },
-                  gutterStyle: function (dimension, gutterSize) {
-                    return {
-                      'flex-basis':  gutterSize + 'px'
-                    }
-                  },
-                  gutterSize: 10,
-                  direction: "horizontal",
-                  sizes: [25, 75],
-                  cursor: "col-resize"
-                })
               }
             }
           }).on("afterSelect", function (e, classId, label, node) {

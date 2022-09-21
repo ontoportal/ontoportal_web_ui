@@ -5,6 +5,8 @@
 import { application } from "./application"
 
 import HelloController from "./hello_controller.js"
+import ContainerSplitterController from "./container_splitter_controller"
+application.register("container-splitter", ContainerSplitterController)
 application.register("hello", HelloController)
 
 import LoadChartController from "./load_chart_controller"

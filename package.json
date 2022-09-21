@@ -9,6 +9,7 @@
     "bootstrap-icons": "^1.8.1",
     "esbuild": "^0.14.41",
     "sass": "^1.49.9"
+    "split.js": "^1.6.5",
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds",

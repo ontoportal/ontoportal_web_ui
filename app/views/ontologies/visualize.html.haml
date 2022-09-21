@@ -4,8 +4,8 @@
     - @new_term_request_ontologies
     - @enable_ontolobridge = !$NEW_TERM_REQUEST_ONTOLOGIES.nil? && $NEW_TERM_REQUEST_ONTOLOGIES.include?(@ontology.acronym)
     %div.tooltip
-    %div#bd_content.bd_content.explore
-      %div.sidebar.d-flex.flex-column.pr-2
+    %div#bd_content.bd_content.explore{data:{controller: 'container-splitter'}}
+      %div.sidebar.d-flex.flex-column.pr-2{data:{'container-splitter-target': 'container'}}
         -# Search box for class tree
         %div#qsearch.input-group.pb-2
           %div.input-group-prepend
@@ -15,7 +15,7 @@
         -# Class tree
         %div#sd_content
           = loading_spinner(true)
-      %div#concept_content.w-100
+      %div#concept_content.w-100{data:{'container-splitter-target': 'container'}}
         = render partial: 'concepts/show'
 
 
