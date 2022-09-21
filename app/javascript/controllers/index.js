@@ -11,3 +11,5 @@ application.register("hello", HelloController)
 
 import LoadChartController from "./load_chart_controller"
 application.register("load-chart", LoadChartController)
+import SimpleTreeController from "./simple_tree_controller"
+application.register("simple-tree", SimpleTreeController)

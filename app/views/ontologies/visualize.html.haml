@@ -14,7 +14,8 @@
           = hidden_field_tag("jump_to_concept_id")
         -# Class tree
         %div#sd_content
-          = loading_spinner(true)
+          = turbo_frame_tag 'concepts_tree_view' , src: "/ajax/classes/treeview?ontology=#{@ontology.acronym}&conceptid=#{escape(@concept.id)}" do
+            = loading_spinner(true)
       %div#concept_content.w-100{data:{'container-splitter-target': 'container'}}
         = render partial: 'concepts/show'
 
@@ -28,10 +29,7 @@
 
   :javascript
     jQuery(document).ready(function () {
-      if (pageUsesTreeView()) {
-         getTreeView();
-      }
-       jQuery(document).data().bp.classesTab.search_box_init();
+      jQuery(document).data().bp.classesTab.search_box_init();
     });
 
 
