@@ -15,10 +15,10 @@
                  'class-search-spinner-src-value': asset_path("jquery.simple.tree/spinner.gif")})
           = hidden_field_tag("jump_to_concept_id")
         -# Class tree
-        %div#sd_content
+        %div#sd_content.card.p-1
           = turbo_frame_tag 'concepts_tree_view' , src: "/ajax/classes/treeview?ontology=#{@ontology.acronym}&conceptid=#{escape(@concept.id)}" do
             = loading_spinner(true)
-      %div#concept_content.w-100{data:{'container-splitter-target': 'container'}}
+      %div#concept_content.d-flex.flex-column.card.p-1.ml-2{data:{'container-splitter-target': 'container'}}
         = render partial: 'concepts/show'
 
     - form_for(:search, :url => {:controller =>'search',:action=>'fetch_results'},:html=>{:id=>'search_form'}) do |f|
