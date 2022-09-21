@@ -1,0 +1,47 @@
+= turbo_frame_tag 'concept_show' do
+  %div.hide-if-loading
+    / When we have an ontology with a flat hierarchy, we initially disable the tabs because we don't have a class to display
+    - if @concept.id.eql?("bp_fake_root")
+      %div{:style => "padding: 100px 0; font-size: larger; font-weight: bold; text-align: center;"}
+        Use the "Jump To" to find a class and display details, visualization, notes, and mappings
+    - else
+      .cls-info-container
+        .tabs
+          %ul
+            %li#details_top.selected.tab.first
+              %a{:href => "#details"} Details
+            %li#visualization_top.tab
+              %a{:href => "#visualization"} Visualization
+            %li#notes_top.tab
+              %a{:href => "#notes"}
+                Notes
+                %span#note_count_wrapper
+                  (
+                  %span#note_count= @notes.length
+                  )
+            %li#mappings_top.tab
+              %a{:href => "#mappings"}
+                Class Mappings (
+                %span#mapping_count= @mappings.size
+                )
+          - if @enable_ontolobridge
+            %li#request_term_top.tab
+              %a{:href => "#request_term"}
+                New Term Requests
+          - if $PURL_ENABLED
+            = link_to("#classPermalinkModal", class: "class-permalink", title: "Get a permanent link to this class", aria: {label: "Get a permanent link to this class"}, data: {toggle: "modal", current_purl: "#{@current_purl}"}) do
+              %i{class: "fas fa-link", aria: {hidden: "true"}}
+        #contents
+          #details_content.tab_container
+            = render :partial =>'/concepts/details'
+          #visualization_content.tab_container.not_visible
+            = render :partial =>'/concepts/biomixer'
+          #notes_content.tab_container.not_visible
+            = render :partial =>'/notes/list'
+          #mappings_content.tab_container.not_visible
+            = render :partial => '/mappings/concept_mappings'
+          - if @enable_ontolobridge
+            #request_term_content.tab_container.not_visible
+              = render :partial =>'/concepts/request_term'
+%div.show-if-loading
+  loading...
