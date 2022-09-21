@@ -1,175 +1,3 @@
-// History and navigation management
-(function(window,undefined) {
-    // Establish Variables
-    try {
-        var History = window.History;
-    } catch (e) {
-        console.log("History.js failed to load");
-    }
-    // History.debug.enable = true;
-
-    // Abort it not right page
-    if (!pageUsesTreeView()) {
-        return;
-    }
-
-    // Bind to State Change
-    History.Adapter.bind(window, 'statechange', function() {
-        const state = History.getState();
-
-        jQuery(document).trigger("ont_view_change");
-
-        if (typeof state.data.p !== 'undefined' && state.data.p === "classes") {
-            displayTree(state.data);
-        }
-    });
-})(window);
-
-
-
-
-function getConceptLinkEl(concept_id) {
-    // Escape special chars so jQuery selector doesn't break, see:
-    // http://docs.jquery.com/Frequently_Asked_Questions#How_do_I_select_an_element_by_an_ID_that_has_characters_used_in_CSS_notation.3F
-    var el_new_concept_link = document.getElementById(concept_id);
-    return jQuery(el_new_concept_link);
-}
-
-
-// Handles display of the tree depending on parameters
-function displayTree(data) {
-    jQuery(document).trigger("classes_tab_visible");
-
-    const new_concept_id = data.conceptid;
-    const new_concept_link = getConceptLinkEl(new_concept_id);
-    const { ontology_id, ontology_name, org_site} = jQuery(document).data().bp.ont_viewer;
-
-    const concept_label = ( new_concept_link== null) ? "" : " - " + getConceptLinkEl(new_concept_id).text();
-    const page_name = ontology_name + concept_label + " - Classes"
-    const document_title =  page_name + " | " + org_site
-
-    let {concept_id} = jQuery(document).data().bp.ont_viewer;
-
-    // Check to see if we're actually loading a new concept or just displaying the one we already loaded previously
-    if (typeof new_concept_id === 'undefined' || new_concept_id === concept_id) {
-
-        if (concept_id !== "") {
-            History.replaceState({
-                p: "classes",
-                conceptid: concept_id
-            }, document_title , "?p=classes" + "&conceptid=" + concept_id);
-        }
-        jQuery.unblockUI();
-    } else {
-        if (typeof new_concept_id !== 'undefined') {
-
-            if (typeof data.suid !== 'undefined' && data.suid === "jump_to") {
-                jQuery.blockUI({
-                    message: '<h1><img src="<%= asset_path("jquery.simple.tree/spinner.gif") %>" /> Loading Class...</h1>',
-                    showOverlay: false
-                });
-
-                if (data.flat === true) {
-                    // We have a flat ontology, so we'll replace existing information in the UI and add the new class to the list
-
-                    // Remove fake root node if it exists
-                    if (jQuery("li#bp_fake_root").length) {
-                        jQuery("li#bp_fake_root").remove();
-                        jQuery("#non_fake_tabs").show();
-                        jQuery("#fake_tabs").hide();
-                    }
-
-                    // If the concept is already visible and in cache, then just switch to it
-                    if (getCache(data.conceptid) == null) {
-                        const list = jQuery("div#sd_content ul.simpleTree li.root ul");
-
-                        // Remove existing classes
-                        list.children().remove();
-
-                        // Add new class
-                        jQuery(list).append('<li id="' + data.conceptid + '"><a href="/ontologies/' + ontology_id + '/?p=classes&conceptid=' + data.conceptid + '">' + data.label + '</a></li>');
-
-                        // Configure tree
-                        jQuery(list).children(".line").remove();
-                        jQuery(list).children(".line-last").remove();
-                        simpleTreeCollection.get(0).setTreeNodes(list);
-
-                        // Simulate node click
-                        nodeClicked(data.conceptid);
-
-                        // Make "clicked" node active
-                        jQuery("a.active").removeClass("active");
-                        getConceptLinkEl(new_concept_id).children("a").addClass("active");
-
-                        // Clear the search box
-                        jQuery("#search_box").val("");
-                    } else {
-                        nodeClicked(data.conceptid);
-
-                        // Clear the search box
-                        jQuery("#search_box").val("");
-                    }
-                }
-            } else {
-                jQuery.blockUI({
-                    message: '<h1><img src="<%= asset_path("jquery.simple.tree/spinner.gif") %>" /> Loading Class...</h1>',
-                    showOverlay: false
-                });
-                if (document.getElementById(new_concept_id) !== null) {
-                    // We have a visible node that's been clicked, get the details for that node
-                    nodeClicked(new_concept_id);
-                } else {
-                    // Get a new copy of the tree because our concept isn't visible
-                    // This could be due to using the forward/back button
-                    // TODO
-                }
-            }
-
-            document.title = document_title;
-        }
-
-    }
-}
-
-
-function wrapupTabChange(selectedTab) {
-  jQuery.unblockUI();
-  tb_init('a.thickbox, area.thickbox, input.thickbox');
-  jQuery(document).trigger("visualize_tab_change", [{tabType: selectedTab}]);
-  jQuery(document).trigger("tree_changed");
-}
-
-function setCacheCurrent() {
-  var currentData = [];
-
-  // Store notes table data
-  if (typeof notesTable !== 'undefined' && notesTable !== null && notesTable.length !== 0) {
-    currentData["notes_table_data"] = notesTable.fnGetData();
-  }
-
-  // Reset the table
-  resetNotesTable();
-
-  currentData[0] = jQuery('#visualization_content').html();
-  currentData[1] = jQuery('#details_content').html();
-  currentData[2] = jQuery('#notes_content').html();
-  currentData[3] = jQuery('#mappings_content').html();
-  currentData[4] = jQuery('#request_term_content').html();
-  currentData[6] = jQuery('#note_count').html();
-  currentData[7] = jQuery('#mapping_count').html();
-  setCache(getConcept(), currentData);
-}
-
-function resetNotesTable() {
-  jQuery(".notes_table_container div[class^=dataTables_]").remove();
-}
-
-function insertNotesTable(aData) {
-  jQuery(".notes_table_container").append(jQuery("#notes_list_table_clone").clone());
-  jQuery(".notes_table_container #notes_list_table_clone").attr("id", "notes_list_table");
-//  wireTableWithData(jQuery("#notes_list_table"), aData);
-}
-
 var simpleTreeCollection;
 function initClassTree() {
     simpleTreeCollection = jQuery('.simpleTree').simpleTree({
@@ -179,10 +7,13 @@ function initClassTree() {
         timeout: 20000,
         afterClick: function (node) {
             const page_name = $(node.context).attr("data-bp-ont-page-name")
+            const conf = jQuery(document).data().bp.ont_viewer
+            const concept_id = jQuery(node).children("a").attr("id")
             History.pushState({
-                p: "classes",
-                conceptid: jQuery(node).children("a").attr("id")
-            }, page_name + " | " + jQuery(document).data().bp.ont_viewer.org_site, jQuery(node).children("a").attr("href"));
+                    p: "classes",
+                    conceptid: concept_id
+                }, page_name + " | " + conf.org_site,
+                '?p=classes&conceptid=' + concept_id)
         },
         afterAjaxError: function (node) {
             simpleTreeCollection[0].option.animate = false;
@@ -200,9 +31,6 @@ function initClassTree() {
   setConcept(jQuery(document).data().bp.ont_viewer.concept_id);
   setOntology(jQuery(document).data().bp.ont_viewer.ontology_id);
   jQuery("#sd_content").scrollTo(jQuery('a.active'));
-
-  // Set the cache for the first concept we retrieved
-  setCacheCurrent();
 
   // Setup the "Get all classes" link for times when the children is greater than our max
   jQuery(".too_many_children_override").live('click', function(event) {
@@ -224,71 +52,6 @@ function initClassTree() {
   });
 };
 
-function nodeClicked(node_id) {
-  // Get current html and store data in cache (to account for changes since the cache was retrieved)
-  setCacheCurrent();
-
-  // Reset notesTable for next node
-  notesTable = null;
-
-  if (node_id == 0) {
-    alert("Sorry, we cannot display all the classes at this level in the hierarchy because there are too many of them. Please select another class or use the Search to find a specific concept in this ontology");
-    return;
-  }
-
-  setConcept(node_id);
-
-  // Deal with permalink
-  var concept_uri = (node_id.indexOf("http://") == 0 || node_id.indexOf(encodeURIComponent("http://")) == 0);
-  var purl_anchor = concept_uri ? "?conceptid="+node_id : "/"+node_id;
-  var selectedTab = jQuery("#bd_content div.tabs li.selected a").attr("href").slice(1);
-  jQuery("a.class-permalink").data("current-purl", jQuery(document).data().bp.ont_viewer.purl_prefix + purl_anchor);
-
-  // Ontolobridge Request New Term save of form values when jumping between terms
-  if (typeof obTriggerNewTermRequestFormSave === "function") {
-    obTriggerNewTermRequestFormSave();
-  }
-
-  if (getCache(node_id) != null) {
-    var tabData = getCache(node_id);
-
-    // Make the clicked node active
-    jQuery("a.active").removeClass("active");
-    jQuery(document.getElementById(node_id)).addClass("active");
-
-    jQuery('#visualization_content').html(tabData[0]);
-    jQuery('#details_content').html(tabData[1]);
-    jQuery('#notes_content').html(tabData[2]);
-    jQuery('#mappings_content').html(tabData[3]);
-    jQuery('#request_term_content').html(tabData[4]);
-    jQuery('#note_count').html(tabData[6]);
-    jQuery('#mapping_count').html(tabData[7]);
-
-    // Insert notes table
-    insertNotesTable(tabData["notes_table_data"]);
-
-    wrapupTabChange(selectedTab);
-  } else {
-    jQuery.blockUI({ message: '<h1>' + '<%= image_tag src="jquery.simple.tree/spinner.gif" %>' + ' Loading Class...</h1>', showOverlay: false });
-    jQuery.get('/ajax_concepts/'+jQuery(document).data().bp.ont_viewer.ontology_id+'/?conceptid='+node_id+'&callback=load',
-      function(data){
-        var tabData = data.split("|||");
-
-        // the tabs
-        jQuery('#visualization_content').html(tabData[0]);
-        jQuery('#details_content').html(tabData[1]);
-        jQuery('#notes_content').html(tabData[2]);
-        jQuery('#mappings_content').html(tabData[3]);
-        jQuery('#request_term_content').html(tabData[4]);
-        jQuery('#note_count').html(tabData[6]);
-        jQuery('#mapping_count').html(tabData[7]);
-
-        setCache(node_id,tabData);
-        wrapupTabChange(selectedTab);
-      }
-    );
-  }
-}
 
 // Keep trying to put the tree view content in place (looks for #sd_content)
 var classesPaneSplitter;
@@ -299,7 +62,7 @@ function placeTreeView(treeHTML) {
     document.getElementById("sd_content").innerHTML = treeHTML;
     initClassTree();
 
-    classesPaneSplitter = Split(['div#bd_content .sidebar', 'div#bd_content .cls-info-container'], {
+    classesPaneSplitter = Split(['div#bd_content .sidebar', 'div#bd_content div#concept_content'], {
       elementStyle: function (dimension, size, gutterSize) {
         return {
           'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
