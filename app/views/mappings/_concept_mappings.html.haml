@@ -8,13 +8,13 @@
   - if session[:user].nil?
     = link_to "Create New Mapping", "/login?redirect=/ontologies/#{@ontology.acronym}/?p=classes&t=mappings&conceptid=#{CGI.escape(@concept.id)}", :method => :get, :class => "link_button"
   - else
-    = link_to("Create New Mapping", |
-              new_mapping_path(ontology_from: "#{@ontology.id}", conceptid_from: "#{@concept.id}"), |
-              id: "new_mapping_btn", |
-              role: "button", |
-              class: "btn btn-default", |
-              data: {toggle: "modal", target: "#createNewMappingModal", concept_label: "#{@concept.prefLabel}"}, | 
-              remote: "true")
+    = link_to_modal("Create New Mapping",
+              new_mapping_path(ontology_from: "#{@ontology.id}", conceptid_from: "#{@concept.id}"),
+              id: "new_mapping_btn",
+              role: "button",
+              class: "btn btn-default",
+              data: { modal_title_value: "Create a new mapping for #{@concept.prefLabel}" },
+              )
 
     = link_to "Delete Selected Mappings", "javascript:void(0);", :onclick => "if (confirm('Really delete mappings? This cannot be undone.')) deleteMappings()", :id => "delete_mappings_button", :class => "btn btn-default", role: "button"
     %span#delete_mappings_spinner{:style => "display: none;"}= loading_spinner(false, true)
