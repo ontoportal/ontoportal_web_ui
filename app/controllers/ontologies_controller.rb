@@ -286,9 +286,9 @@ display_links: false, display_context: false)
 
   def instances
     if request.xhr?
-      render partial: 'instances', locals: { id: 'instances-data-table'}, layout: false
+      render partial: 'instances/instances', locals: { id: 'instances-data-table'}, layout: false
     else
-      render partial: 'instances', locals: { id: 'instances-data-table'}, layout: 'ontology_viewer'
+      render partial: 'instances/instances', locals: { id: 'instances-data-table'}, layout: 'ontology_viewer'
     end
   end
 
