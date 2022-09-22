@@ -12,7 +12,6 @@
 //
 //= require bioportal
 //= require admin/licenses
-//= require bp_class_tree
 //= require bp_ajax_controller
 //= require bp_ontology_viewer
 //= require bp_reviews
@@ -24,7 +23,6 @@
 //= require bp_user_intention_survey
 //= require bp_search
 //= require bp_mappings
-//= require bp_visualize
 //= require bp_admin
 //= require bp_recommender
 //= require bp_property_tree

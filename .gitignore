@@ -51,3 +51,11 @@ docker-sync.yml
 !/app/assets/builds/.keep
 
 /node_modules
+
+# Encryption keys
+/config/master.key
+/config/credentials/development.key
+/config/credentials/test.key
+/config/credentials/staging.key
+/config/credentials/appliance.key
+
