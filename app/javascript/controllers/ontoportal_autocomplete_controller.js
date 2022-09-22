@@ -1,5 +1,4 @@
 import {Controller} from "@hotwired/stimulus"
-import {useDispatch} from 'stimulus-use'
 import {useBioportalAutoComplete} from "../mixins/useBioportalAutoComplete";
 // Connects to data-controller="ontoportal-autocomplete"
 export default class extends Controller {
