@@ -18,3 +18,6 @@ application.register("ontoportal-autocomplete", OntoportalAutocompleteController
 
 import SimpleTreeController from "./simple_tree_controller"
 application.register("simple-tree", SimpleTreeController)
+
+import ShowModalController from "./show_modal_controller"
+application.register("modal", ShowModalController)

@@ -450,5 +450,13 @@ module ApplicationHelper
     ontology_name + concept_name_title + " - #{page.capitalize}"
   end
 
+  def link_to_modal(name, options = nil, html_options = nil, &block)
 
+    html_options[:data].merge!({
+                                 controller: 'modal', turbo: true,
+                                 turbo_frame: 'application_modal_content',
+                                 action: 'click->modal#show'
+                               })
+    link_to(name, options, html_options, &block)
+  end
 end
