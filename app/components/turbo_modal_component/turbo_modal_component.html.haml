@@ -1,0 +1,14 @@
+%div.modal{id: @id, 'data-controller':"turbo-modal"}
+  %div.modal-dialog.modal-lg
+    %div.modal-content
+      %div.modal-header
+        %h5.modal-title
+          = @title
+        %button.close{type:'button', data: { action: "turbo-modal#hide" }}
+          %span &times;
+      %div.modal-body
+        = turbo_frame_tag 'application_modal_content', data: { 'turbo-modal-target': 'content'} do
+          = content
+        %div.show-if-loading
+          loading
+
