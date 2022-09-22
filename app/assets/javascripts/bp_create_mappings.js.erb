@@ -61,32 +61,11 @@ jQuery(document).ready(function() {
   jQuery(document).live("tree_changed", resetMappingUIWithFacebox);
   jQuery(document).live("classes_tab_visible", resetMappingUI);
 
-  // TODO: Do we still need facebox stuff?
-
-  // Details/visualize link to show details pane and visualize flexviz
-  jQuery.facebox.settings.closeImage = "<%= asset_path("facebox/closelabel.png") %>";
-  jQuery.facebox.settings.loadingImage = "<%= asset_path("facebox/loading.gif") %>";
-
-  jQuery('#mappings_content a[rel*=facebox]').facebox();
 
   // Wire up popup for advanced options
   create_mapping_advanced_options.init();
 
   jQuery("#create_mapping_button").live("click", bp_createMapping.create);
-
-  /*
-   * Customize the title of the modal dialog for creating new mappings based 
-   * on which class is selected in the class tree.
-   */
-  $('#createNewMappingModal').on('shown.bs.modal', function(e) {
-    var conceptLabel = jQuery("#new_mapping_btn").data("concept-label");
-    jQuery("h4#createNewMappingLabel").text("Create new mapping for: " + conceptLabel);
-  })
-
-  $('#createNewMappingModal').on('hidden.bs.modal', function(e) {
-    jQuery("#map_to_concept_details").html("");
-    jQuery("#create_mapping_success_messages").html("");
-  })
 });
 
 // Also in bp_mappings.js
@@ -213,7 +192,7 @@ var bp_createMapping = {
 
     jQuery("#create_mapping_spinner").hide();
     jQuery("#create_mapping_success_messages").prepend(jQuery("<div/>").addClass("success_message").html(
-        "Mapping from <b>" + jQuery("#new_mapping_btn").data("concept-label") + "</b> to <b>" + jQuery("#map_to").val() + "</b> was created"
+        "Mapping created"
     ));
 
     // If we have a concept mapping table, update it with new mappings

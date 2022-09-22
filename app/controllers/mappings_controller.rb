@@ -146,7 +146,7 @@ class MappingsController < ApplicationController
     ]
 
     respond_to do |format|
-      format.js
+      format.html
     end    
   end
 
@@ -178,7 +178,7 @@ class MappingsController < ApplicationController
     ]
 
     respond_to do |format|
-      format.js
+      format.html
     end
   end
 

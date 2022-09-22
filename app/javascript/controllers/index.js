@@ -18,3 +18,9 @@ application.register("metadata-downloader", MetadataDownloaderController)
 
 import SimpleTreeController from "./simple_tree_controller"
 application.register("simple-tree", SimpleTreeController)
+
+import ShowModalController from "./show_modal_controller"
+application.register("modal", ShowModalController)
+
+import TurboModalController from "../../components/turbo_modal_component/turbo_modal_component_controller"
+application.register("turbo-modal", TurboModalController)
