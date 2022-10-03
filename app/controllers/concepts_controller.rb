@@ -95,8 +95,8 @@ class ConceptsController < ApplicationController
     if @ontology.nil?
       not_found
     else 
-      get_class(params)   # application_controller
-      render :partial => "ontologies/treeview"
+      get_class(params) #application_controller
+      render partial: 'ontologies/treeview'
     end
   end
 
