@@ -50,7 +50,7 @@ module SchemesHelper
 
   def section_name(section)
     if section.eql?('classes')
-      concept_label_to_show
+      concept_label_to_show(submission: @submission_latest || @submission)
     else
       section.capitalize
     end
