@@ -6,6 +6,7 @@
     %div.tooltip
     %div#bd_content.bd_content.explore{data:{controller: 'container-splitter'}}
       %div.sidebar.d-flex.flex-column.pr-2{data:{'container-splitter-target': 'container'}}
+        = render partial: 'scheme_picker'
         -# Search box for class tree
         %div#qsearch.input-group.pb-2
           %div.input-group-prepend
@@ -47,17 +48,12 @@
           }else {
             let url = "/ajax/classes/treeview"
             let params = new URLSearchParams()
-
+            frame.innerHTML = ""
             params.append('ontology', ontology_acronym)
             params.append('conceptid', 'root')
             params.append('concept_schemes', Array.from(ids).join(','))
 
             frame.src =  url + "?" + params.toString()
-          if(ids.length === 0){
-            document.getElementById("sd_content").innerHTML = "Please select a scheme to display"
-          }else {
-            showLoader()
-            getTreeView(ids)
           }
         })
       })
