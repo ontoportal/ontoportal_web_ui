@@ -55,5 +55,9 @@ module SchemesHelper
       section.capitalize
     end
   end
+
+  def scheme_path(scheme_id = '')
+    "/ontologies/#{@ontology.acronym}/schemes/show_scheme?id=#{escape(scheme_id)}"
+  end
 end
 
