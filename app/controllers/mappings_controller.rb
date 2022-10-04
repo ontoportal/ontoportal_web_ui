@@ -59,6 +59,25 @@ class MappingsController < ApplicationController
     render partial: 'count'
   end
 
+  def loader
+    @example_code = [{
+                       "classes": ["http://bioontology.org/ontologies/BiomedicalResourceOntology.owl#Image_Algorithm",
+                                   "http://purl.org/incf/ontology/Computational_Neurosciences/cno_alpha.owl#cno_0000202"],
+
+                       "name": 'This is the mappings produced to test the bulk load',
+                       "source": 'https://w3id.org/semapv/LexicalMatching',
+                       "comment": 'mock data',
+                       "relation": [
+                         'http://www.w3.org/2002/07/owl#subClassOf'
+                       ],
+                       "subject_source_id": 'http://bioontology.org/ontologies/BiomedicalResources.owl',
+                       "object_source_id": 'http://purl.org/incf/ontology/Computational_Neurosciences/cno_alpha.owl',
+                       "source_name": 'https://w3id.org/sssom/mapping/tests/data/basic.tsv',
+                       "source_contact_info": 'orcid:1234,orcid:5678',
+                       "date": '2020-05-30'
+                     }]
+    render partial: 'mappings/bulk_loader/loader'
+  end
   def show
     page = params[:page] || 1
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first

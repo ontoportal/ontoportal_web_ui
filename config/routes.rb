@@ -14,7 +14,7 @@ Rails.application.routes.draw do
 
   resources :reviews
 
-  get '/mappings/new_external' => 'mappings#new_external'
+  get '/mappings/loader' , to: 'mappings#loader'
   resources :mappings
 
   resources :margin_notes
