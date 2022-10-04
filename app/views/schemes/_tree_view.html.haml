@@ -1,5 +1,5 @@
 - schemes_labels, main_scheme_label = get_schemes_labels(@schemes, @submission_latest.URI)
-- selected_scheme_id = params[:scheme_id].nil? ? main_scheme_label&["@id"] : CGI.unescape(params[:scheme_id])
+- selected_scheme_id = params[:scheme_id].nil? && !main_scheme_label.nil? ? main_scheme_label["@id"] : CGI.unescape(params[:scheme_id] || '')
 - if schemes_labels.empty?
   %div
     no schemes detected
@@ -12,7 +12,7 @@
     %ul.simpleTree{data:{controller: 'simple-tree', 'simple-tree-p-value': 'schemes', 'simple-tree-filter-key-value': 'scheme_id'}}
       %li.root
         %ul
-          %li{class: selected_scheme_id.eql?(main_scheme_label["@id"]) ? nil : 'open'}
+          %li.open
             - unless main_scheme_label.nil?
               %a{id: main_scheme_label["@id"],
                href: scheme_path(main_scheme_label["@id"]),

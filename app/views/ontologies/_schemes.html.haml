@@ -3,29 +3,11 @@
     %div#schemesTree{data:{'container-splitter-target': 'container'}}
       = render partial: 'schemes/tree_view'
     %div#scheme_contents.pl-3{data:{'container-splitter-target': 'container'}}
-      = turbo_frame_tag 'scheme'
+      = turbo_frame_tag 'scheme' do
+        - if @scheme
+          = render partial: 'schemes/scheme', locals: {scheme: @scheme}
       %div.show-if-loading.align-self-center.my-auto
         = loading_spinner(true)
 
-  :javascript
-    $( document ).ready(function() {
-        let activeElem = null
-     
-        const tree = document.querySelectorAll("#schemesTree a")
-
-        tree.forEach(x => x.addEventListener('click', (e) => {
-          if(activeElem){
-            activeElem.classList.remove('active')
-          }
-          activeElem = e.currentTarget
-          activeElem.classList.add('active')
-        }))
-
-        let active = document.querySelectorAll("#schemesTree a.active")[0]
-        if (active){
-          activeElem = active
-          active.click()
-        }
-    })
 
 

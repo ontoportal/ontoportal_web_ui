@@ -293,7 +293,10 @@ display_links: false, display_context: false)
   end
 
   def schemes
-    @schemes =  get_schemes(@ontology.acronym)
+    @schemes = get_schemes(@ontology.acronym)
+    scheme_id = params[:scheme_id] || @submission_latest.URI || nil
+    @scheme = get_scheme(@ontology.acronym, scheme_id) if scheme_id
+
     if request.xhr?
       render partial: 'schemes', layout: false
     else
