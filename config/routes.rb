@@ -16,6 +16,7 @@ Rails.application.routes.draw do
 
   get '/mappings/loader' , to: 'mappings#loader'
   post '/mappings/loader', to: 'mappings#loader_process'
+  delete 'mappings/:id', to: 'mappings#destroy', constraints: { id: /.+/ }
   resources :mappings
 
   resources :margin_notes

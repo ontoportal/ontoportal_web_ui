@@ -2,6 +2,7 @@ require 'cgi'
 
 class MappingsController < ApplicationController
   include ActionView::Helpers::NumberHelper
+  include TurboHelper
   include MappingStatistics
 
   layout :determine_layout
@@ -253,20 +254,31 @@ class MappingsController < ApplicationController
   end
 
   def destroy
-    errors = []
-    successes = []
-    mapping_ids = params[:mappingids].split(",")
-    mapping_ids.each do |map_id|
-      begin
-        map_uri = "#{MAPPINGS_URL}/#{CGI.escape(map_id)}"
-        result = LinkedData::Client::HTTP.delete(map_uri)
-        raise Exception if !result.nil? #&& result["errorCode"]
-        successes << map_id
-      rescue Exception => e
-        errors << map_id
-      end
+    error = nil
+    success_text = ''
+    map_id = params[:id].gsub(':/', '://')
+    map_uri = "#{MAPPINGS_URL}/#{CGI.escape(map_id)}"
+    result = LinkedData::Client::HTTP.delete(map_uri)
+    if result.status == 204
+      success_text = "#{map_id} deleted successfully"
+    else
+      error = result.body
     end
-    render :json => { :success => successes, :error => errors }
+    respond_to do |format|
+      format.turbo_stream do
+        if error.nil?
+          render turbo_stream: [
+            alert(type: 'success') { success_text },
+            turbo_stream.remove(map_id.split('/').last)
+          ]
+
+        else
+          render alert(type: 'danger') { error }
+        end
+      end
+      format.html { render json: { success: success_text, error: error } }
+    end
+
   end
 
 end
