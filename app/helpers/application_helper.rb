@@ -187,11 +187,11 @@ module ApplicationHelper
     open = child.expanded? ? "class='open'" : ''
     icons = child.relation_icon(node)
     href = ontology_acronym.blank? ? '#' :  "/ontologies/#{child.explore.ontology.acronym}/concepts/?id=#{CGI.escape(child.id)}"
-    "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' data-bp-ont-page-name='#{page_name}' data-turbo=true data-turbo-frame='concept_show' href='#{href}' #{active_style}> #{child.prefLabel({ use_html: true })}</a> #{icons}"
+    "<li #{open} id='#{li_id}'><a id='#{child.id}' data-bp-ont-page-name='#{page_name}' data-turbo=true data-turbo-frame='concept_show' href='#{href}' #{active_style}> #{child.prefLabel({ use_html: true })}</a> #{icons}"
   end
 
   def tree_link_to_children(li_id:, child:)
-    "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children'>ajax_class</a></li></ul>"
+    "<ul class='ajax'><li id='#{li_id}'><a id='#{child.id}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children'>ajax_class</a></li></ul>"
   end
 
   def loading_spinner(padding = false, include_text = true)
