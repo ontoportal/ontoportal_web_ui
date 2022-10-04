@@ -1137,7 +1137,7 @@ a.truncated_less, a.truncated_more {
   color: white;
 }
 
-turbo-frame[busy] .hide-if-loading, turbo-frame ~ .show-if-loading {
+turbo-frame[busy] .hide-if-loading, .show-if-loading {
   display: none;
 }
 turbo-frame[busy] ~ .show-if-loading {

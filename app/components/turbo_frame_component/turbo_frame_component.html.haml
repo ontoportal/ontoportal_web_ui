@@ -1,0 +1,6 @@
+= turbo_frame_tag @id, src: @src do
+  %div.hide-if-loading
+    = content
+%div.show-if-loading.my-auto.mx-auto
+  %div.p-3
+    = render partial: 'shared/ui-component/loader'
