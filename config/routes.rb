@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   resources :reviews
 
   get '/mappings/loader' , to: 'mappings#loader'
+  post '/mappings/loader', to: 'mappings#loader_process'
   resources :mappings
 
   resources :margin_notes

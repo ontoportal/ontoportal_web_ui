@@ -78,6 +78,23 @@ class MappingsController < ApplicationController
                      }]
     render partial: 'mappings/bulk_loader/loader'
   end
+
+  def loader_process
+    response = LinkedData::Client::HTTP.post('/mappings/load', file: params[:file])
+    errors = response.errors
+    errors = errors.to_h.except(:links, :context) if errors
+
+    created = response.created
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace('file_loader_result',
+                                                  partial: 'mappings/bulk_loader/loaded_mappings',
+                                                  locals: { errors: errors, created: created })
+      end
+      format.html { redirect_to mappings_path }
+    end
+  end
+
   def show
     page = params[:page] || 1
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
