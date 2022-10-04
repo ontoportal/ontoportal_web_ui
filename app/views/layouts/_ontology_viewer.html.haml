@@ -94,7 +94,7 @@
             - sections.each do |section|
               - if show_section?(section)
                 %li.nav-item
-                  = link_to(section.capitalize , ontology_path(@ontology.acronym, p: section),
+                  = link_to(section_name(section) , ontology_path(@ontology.acronym, p: section),
                         id: "ont-#{section}-tab", class: "nav-link #{selected_section?(section) ? 'active show' : ''}",
                         data: {toggle: "tab", target: "#ont_#{section}_content", 'bp-ont-page': section ,
                         'bp-ont-page-name': ontology_viewer_page_name(@ontology.name, @concept&.prefLabel || '', section) })

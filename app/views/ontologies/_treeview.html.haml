@@ -1,6 +1,6 @@
 = turbo_frame_tag 'concepts_tree_view' do
-  #tree_wrapper
-    %ul.simpleTree{data:{controller: 'simple-tree'}}
+  #tree_wrapper.hide-if-loading
+    %ul.simpleTree{data:{controller: 'simple-tree', 'simple-tree-p-value': 'classes', 'simple-tree-filter-key-value': 'conceptid'}}
       %li.root
         %ul
           = draw_tree(@root, @concept.id)  # application_helper::draw_tree

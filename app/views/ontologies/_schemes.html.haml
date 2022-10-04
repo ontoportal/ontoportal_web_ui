@@ -1,69 +1,13 @@
 = turbo_frame_tag 'schemes' do
   %div.ont-schemes{data:{controller: 'container-splitter'}}
-    - schemes_labels,main_scheme_label = get_schemes_labels(@schemes, @submission_latest.URI)
-    - selected_scheme_id = params[:schemeid]
-    - main_scheme_active_class = selected_scheme_id.nil? || selected_scheme_id.empty? || selected_scheme_id.eql?(main_scheme_label["@id"]) ? "active" : nil
     %div#schemesTree{data:{'container-splitter-target': 'container'}}
-      - if schemes_labels.empty?
-        %div
-          no schemes detected
-      - else
-        %ul.ncboTree
-          %li.root
-            %ul
-              %li.line
-                &nbsp
-              %li
-                - if @submission_latest.URI.nil? || @submission_latest.URI.empty?
-                  %div.alert.alert-warning.mx-2.text-wrap
-                    no main scheme defined in the attribute URI
-                - elsif !schemes_labels.nil?
-                  %a.text.font-weight-bold{id: main_scheme_label["@id"], href: "javascript:void(0)", class: main_scheme_active_class}
-                    = get_scheme_label(main_scheme_label)
-                %ul
-                  - schemes_labels.sort_by{|s| [s["prefLabel"]]}.each do  |s|
-                    - if main_scheme_label.nil? || s["prefLabel"] != main_scheme_label["prefLabel"]
-                      %li.doc
-                        %a.text{id: s["@id"], href: "javascript:void(0)", class: main_scheme_active_class.nil? && selected_scheme_id.eql?(s["@id"]) ? "active" : nil }
-                          = get_scheme_label(s)
+      = render partial: 'schemes/tree_view'
     %div#scheme_contents.pl-3{data:{'container-splitter-target': 'container'}}
-      Loading...
+      = turbo_frame_tag 'scheme' do
+        - if @scheme
+          = render partial: 'schemes/scheme', locals: {scheme: @scheme}
+      %div.show-if-loading.align-self-center.my-auto
+        = loading_spinner(true)
 
-  :javascript
-
-    $( document ).ready(function() {
-        const content = document.querySelector("#scheme_contents")
-        let activeElem = null
-     
-        const tree = document.querySelectorAll("#schemesTree a")
-
-        tree.forEach(x => x.addEventListener('click', (e) => {
-          if(activeElem){
-            activeElem.classList.remove('active')
-          }
-          activeElem = e.currentTarget
-          ontology_id = jQuery(document).data().bp.ont_viewer.ontology_id
-          content.innerHTML  = "Loading..."
-
-          fetch(`/ontologies/${ontology_id}/schemes/${encodeURIComponent(activeElem.id)}`)
-          .then((response) => {
-            return response.text();
-          })
-          .then((body) => {
-            content.innerHTML  = body
-            ajax_process_cls_init()
-          })
-          activeElem.classList.add('active')
-        }))
-
-        let active = document.querySelectorAll("#schemesTree a.active")[0]
-
-        if (active){
-          activeElem = active
-
-          active.click()
-        }
-
-    })
 
 

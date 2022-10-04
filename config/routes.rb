@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   resources :ontologies do
     resources :submissions
     get 'instances/:instance_id', to: 'instances#show', constraints: { instance_id: /[^\/?]+/ }
-    get 'schemes/:scheme_id', to: "schemes#show", constraints: { scheme_id: /[^\/?]+/ }
+    get 'schemes/show_scheme', to: 'schemes#show'
   end
 
   resources :login
