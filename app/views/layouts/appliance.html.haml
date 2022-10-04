@@ -29,6 +29,7 @@
     
     %div.container-fluid
       = render partial: "layouts/notices"
+      = render TurboModalComponent.new(id: 'application_modal')
       = yield
 
     = render partial: "layouts/footer"
