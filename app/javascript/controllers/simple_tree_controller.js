@@ -1,7 +1,13 @@
 import {Controller} from "@hotwired/stimulus"
 import {useSimpleTree} from "../mixins/useSimpleTree";
 
+// Connects to data-controller="simple-tree"
 export default class extends Controller {
+    static values = {
+        p: String,
+        filterKey: String
+    }
+
     connect() {
         this.simpleTreeCollection = useSimpleTree(this.element,
             this.#afterClick.bind(this),
@@ -12,8 +18,8 @@ export default class extends Controller {
         this.#onClickTooManyChildrenInit()
     }
 
-    #onClickTooManyChildrenInit(){
-        jQuery(".too_many_children_override").live('click', (event) =>  {
+    #onClickTooManyChildrenInit() {
+        jQuery(".too_many_children_override").live('click', (event) => {
             event.preventDefault();
             let result = jQuery(event.target).closest("ul");
             result.html("<img src='/images/tree/spinner.gif'>");
@@ -35,11 +41,13 @@ export default class extends Controller {
         const page_name = $(node.context).attr("data-bp-ont-page-name")
         const conf = jQuery(document).data().bp.ont_viewer
         const concept_id = jQuery(node).children("a").attr("id")
-        History.pushState({
-                p: "classes",
-                conceptid: concept_id
-            }, page_name + " | " + conf.org_site,
-            '?p=classes&conceptid=' + concept_id)
+        const data = {
+            p: this.pValue,
+            [this.filterKeyValue]: concept_id
+        }
+        const params = new URLSearchParams(data)
+
+        History.pushState(data, page_name + " | " + conf.org_site, `?${params}`)
     }
 
     #afterAjaxError(node) {
