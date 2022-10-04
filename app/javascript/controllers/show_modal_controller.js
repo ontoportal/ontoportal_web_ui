@@ -6,6 +6,7 @@ export default class extends Controller {
     static values = {
         targetModal: {type: String, default: '#application_modal'},
         title: String,
+        size: String,
     }
 
 
@@ -13,6 +14,7 @@ export default class extends Controller {
         this.modal = new UseModal()
         this.boundHide = this.hide.bind(this)
         this.modal.onClose(this.element,  this.boundHide)
+        this.setSize()
     }
 
     disconnect() {
@@ -47,6 +49,18 @@ export default class extends Controller {
         let titleElem = this.modalTitle
         if(titleElem){
             titleElem.innerHTML = this.titleValue
+        }
+    }
+
+    setSize() {
+        const target = this.targetModalElement
+        const newSize = this.sizeValue
+        if (target && newSize){
+            const modalContainer = target.firstElementChild
+            const classes = modalContainer.classList
+            const oldSize = classes.item(classes.length - 1)
+            modalContainer.classList.remove(oldSize)
+            modalContainer.classList.add(newSize)
         }
     }
 }
