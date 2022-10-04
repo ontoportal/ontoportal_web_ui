@@ -1137,6 +1137,15 @@ a.truncated_less, a.truncated_more {
   color: white;
 }
 
+.empty-state {
+  display: none;
+
+  &:only-child {
+    display: revert;
+  }
+
+}
+
 turbo-frame[busy] .hide-if-loading, .show-if-loading {
   display: none;
 }
