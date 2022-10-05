@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   get 'mappings/count/:id', to: 'mappings#count', constraints: { id: /.+/ }
   get 'mappings/show_mappings', to: 'mappings#show_mappings'
   resources :mappings
+  get 'mappings/:id', to: 'mappings#show', constraints: { id: /.+/ }
 
   resources :margin_notes
 

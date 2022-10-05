@@ -97,7 +97,6 @@ class MappingsController < ApplicationController
     @mapping = LinkedData::Client::Models::Mapping.find(params[:id])
     not_found if @mapping.nil? || @mapping.errors
     mapping_form(mapping: @mapping)
-    binding.pry
     respond_to do |format|
       format.html { render 'mappings/edit', layout: false }
     end
