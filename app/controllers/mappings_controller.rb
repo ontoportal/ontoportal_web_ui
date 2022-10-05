@@ -98,6 +98,17 @@ class MappingsController < ApplicationController
   end
 
   def show
+    @mapping = LinkedData::Client::Models::Mapping.find(params[:id])
+    not_found if @mapping.nil? || @mapping.errors
+    mapping_form(mapping: @mapping)
+    binding.pry
+    respond_to do |format|
+      format.html { render 'mappings/edit', layout: false }
+    end
+
+  end
+
+  def show_mappings
     page = params[:page] || 1
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     @target_ontology = LinkedData::Client::Models::Ontology.find(params[:target])
