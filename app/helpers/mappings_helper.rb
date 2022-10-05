@@ -163,6 +163,41 @@ module MappingsHelper
   def inter_portal_mapping?(cls)
     !internal_mapping?(cls) && cls.links.has_key?("ui")
   end
+
+  def get_mappings_target_params
+    mapping_type = params[:mapping_type]
+    external = true
+    case mapping_type
+    when 'interportal'
+      ontology_to = "#{params[:map_to_interportal]}/ontologies/#{params[:map_to_interportal_ontology]}"
+      concept_to_id = params[:map_to_interportal_class]
+    when 'external'
+      ontology_to = params[:map_to_external_ontology]
+      concept_to_id = params[:map_to_external_class]
+    else
+      ontology_to = params[:map_to_bioportal_ontology_id]
+      concept_to_id = params[:map_to_bioportal_full_id]
+      external = false
+    end
+    [ontology_to, concept_to_id, external]
+  end
+
+  def get_mappings_target
+    ontology_to, concept_to_id, external_mapping = get_mappings_target_params
+    target = ''
+    if external_mapping
+      target_ontology = ontology_to
+      target = concept_to_id
+    else
+      target_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_to).first
+      if target_ontology
+        target = target_ontology.explore.single_class(concept_to_id).id
+        target_ontology = target_ontology.id
+      end
+    end
+    [target_ontology, target, external_mapping]
+  end
+
   def type?(type)
     @mapping_type.nil? && type.eql?('internal') ||  @mapping_type.eql?(type)
   end

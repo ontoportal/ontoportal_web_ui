@@ -9,15 +9,13 @@ class MappingsController < ApplicationController
   layout :determine_layout
   before_action :authorize_and_redirect, only: [:create, :new, :destroy]
 
-
-
   EXTERNAL_URL_PARAM_STR = "mappings:external"
   INTERPORTAL_URL_PARAM_STR = "interportal:"
 
   INTERPORTAL_HASH = $INTERPORTAL_HASH ||= {}
 
   def index
-    ontology_list = LinkedData::Client::Models::Ontology.all.select {|o| !o.summaryOnly}
+    ontology_list = LinkedData::Client::Models::Ontology.all.select { |o| !o.summaryOnly }
     ontologies_mapping_count = LinkedData::Client::HTTP.get("#{MAPPINGS_URL}/statistics/ontologies")
     ontologies_hash = {}
     ontology_list.each do |ontology|
@@ -30,25 +28,23 @@ class MappingsController < ApplicationController
     # end
 
     @options = {}
-    if ontologies_mapping_count
-      ontologies_mapping_count.members.each do |ontology_acronym|
-        # Adding external and interportal mappings to the dropdown list
-        if ontology_acronym.to_s == EXTERNAL_MAPPINGS_GRAPH
-          mapping_count = ontologies_mapping_count[ontology_acronym.to_s] || 0
-          select_text = "External Mappings (#{number_with_delimiter(mapping_count, delimiter: ',')})" if mapping_count >= 0
-          ontology_acronym = EXTERNAL_URL_PARAM_STR
-        elsif ontology_acronym.to_s.start_with?(INTERPORTAL_MAPPINGS_GRAPH)
-          mapping_count = ontologies_mapping_count[ontology_acronym.to_s] || 0
-          select_text = "Interportal Mappings - #{ontology_acronym.to_s.split("/")[-1].upcase} (#{number_with_delimiter(mapping_count, delimiter: ',')})" if mapping_count >= 0
-          ontology_acronym = INTERPORTAL_URL_PARAM_STR + ontology_acronym.to_s.split("/")[-1]
-        else
-          ontology = ontologies_hash[ontology_acronym.to_s]
-          mapping_count = ontologies_mapping_count[ontology_acronym] || 0
-          next unless ontology && mapping_count > 0
-          select_text = "#{ontology.name} - #{ontology.acronym} (#{number_with_delimiter(mapping_count, delimiter: ',')})"
-        end
-        @options[select_text] = ontology_acronym
+    ontologies_mapping_count&.members&.each do |ontology_acronym|
+      # Adding external and interportal mappings to the dropdown list
+      if ontology_acronym.to_s == EXTERNAL_MAPPINGS_GRAPH
+        mapping_count = ontologies_mapping_count[ontology_acronym.to_s] || 0
+        select_text = "External Mappings (#{number_with_delimiter(mapping_count, delimiter: ',')})" if mapping_count >= 0
+        ontology_acronym = EXTERNAL_URL_PARAM_STR
+      elsif ontology_acronym.to_s.start_with?(INTERPORTAL_MAPPINGS_GRAPH)
+        mapping_count = ontologies_mapping_count[ontology_acronym.to_s] || 0
+        select_text = "Interportal Mappings - #{ontology_acronym.to_s.split("/")[-1].upcase} (#{number_with_delimiter(mapping_count, delimiter: ',')})" if mapping_count >= 0
+        ontology_acronym = INTERPORTAL_URL_PARAM_STR + ontology_acronym.to_s.split("/")[-1]
+      else
+        ontology = ontologies_hash[ontology_acronym.to_s]
+        mapping_count = ontologies_mapping_count[ontology_acronym] || 0
+        next unless ontology && mapping_count > 0
+        select_text = "#{ontology.name} - #{ontology.acronym} (#{number_with_delimiter(mapping_count, delimiter: ',')})"
       end
+      @options[select_text] = ontology_acronym
     end
 
     @options = @options.sort
@@ -182,35 +178,46 @@ class MappingsController < ApplicationController
   # POST /mappings
   # POST /mappings.xml
   def create
-    if params.has_key?(:mapping_type)
-      # Means its an external or interportal mapping
-      target_ontology = params[:map_to_bioportal_ontology_id]
-      target = params[:map_to_bioportal_full_id]
-    else
-      # Means it's a regular internal mapping
-      target_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_to_bioportal_ontology_id]).first
-      target = target_ontology.explore.single_class(params[:map_to_bioportal_full_id]).id
-      target_ontology = target_ontology.id
-    end
+
+    target_ontology, target, external_mapping = get_mappings_target
+
     source_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_from_bioportal_ontology_id]).first
     source = source_ontology.explore.single_class(params[:map_from_bioportal_full_id])
     values = {
-      classes: {
-        source.id => source_ontology.id,
-        target => target_ontology
-      },
+      classes: [
+        source.id,
+        target
+      ],
+      subject_source_id: source_ontology.id,
+      object_source_id: target_ontology,
       creator: session[:user].id,
-      relation: params[:mapping_relation],
-      comment: params[:mapping_comment]
+      external_mapping: external_mapping,
+      relation: Array(params[:mapping][:relation]),
+      name: '',
+      comment: params[:mapping][:comment]
     }
     @mapping = LinkedData::Client::Models::Mapping.new(values: values)
+    @concept = source
+
     @mapping_saved = @mapping.save
-    if @mapping_saved.errors
-      render text: @mapping_saved.errors[0], status: :bad_request
-    else
-      @delete_mapping_permission = check_delete_mapping_permission(@mapping_saved)
-      render :json => @mapping_saved
+
+    respond_to do |format|
+      format.turbo_stream do
+        if @mapping_saved.errors
+          render turbo_stream: alert(type: 'error') { @mapping_saved.errors.to_s }
+
+        else
+          @delete_mapping_permission = check_delete_mapping_permission(@mapping_saved)
+          mapping = LinkedData::Client::Models::Mapping.find(@mapping_saved.id)
+          render turbo_stream: [ alert(type: 'success') { 'Mapping created' },
+                                 turbo_stream.prepend('concept_mappings_table_content', partial: 'show_line',
+                                                     locals: { map: mapping, concept: source })
+          ]
+        end
+      end
+
     end
+
   end
 
   def destroy
