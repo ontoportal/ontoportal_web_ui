@@ -173,61 +173,9 @@ class MappingsController < ApplicationController
   end
 
   def new
-    @ontology_from = LinkedData::Client::Models::Ontology.find(params[:ontology_from])
-    @ontology_to = LinkedData::Client::Models::Ontology.find(params[:ontology_to])
-    @concept_from = @ontology_from.explore.single_class({full: true}, params[:conceptid_from]) if @ontology_from
-    @concept_to = @ontology_to.explore.single_class({full: true}, params[:conceptid_to]) if @ontology_to
-
-    # Defaults just in case nothing gets provided
-    @ontology_from ||= LinkedData::Client::Models::Ontology.new
-    @ontology_to ||= LinkedData::Client::Models::Ontology.new
-    @concept_from ||= LinkedData::Client::Models::Class.new
-    @concept_to ||= LinkedData::Client::Models::Class.new
-
-    @mapping_relation_options = [
-      ["Identical (skos:exactMatch)", "http://www.w3.org/2004/02/skos/core#exactMatch"],
-      ["Similar (skos:closeMatch)",   "http://www.w3.org/2004/02/skos/core#closeMatch"],
-      ["Related (skos:relatedMatch)", "http://www.w3.org/2004/02/skos/core#relatedMatch"],
-      ["Broader (skos:broadMatch)",   "http://www.w3.org/2004/02/skos/core#broadMatch"],
-      ["Narrower (skos:narrowMatch)", "http://www.w3.org/2004/02/skos/core#narrowMatch"],
-      ["Translation (gold:translation)", "http://purl.org/linguistics/gold/translation"],
-      ["Free Translation (gold:freeTranslation)", "http://purl.org/linguistics/gold/freeTranslation"]
-    ]
-
+    mapping_form
     respond_to do |format|
-      format.html
-    end    
-  end
-
-  def new_external
-    @ontology_from = LinkedData::Client::Models::Ontology.find(params[:ontology_from])
-    @ontology_to = LinkedData::Client::Models::Ontology.find(params[:ontology_to])
-    @concept_from = @ontology_from.explore.single_class({full: true}, params[:conceptid_from]) if @ontology_from
-    @concept_to = @ontology_to.explore.single_class({full: true}, params[:conceptid_to]) if @ontology_to
-
-    @interportal_options = []
-    INTERPORTAL_HASH.each do |key, value|
-      @interportal_options.push([key, key])
-    end
-
-    # Defaults just in case nothing gets provided
-    @ontology_from ||= LinkedData::Client::Models::Ontology.new
-    @ontology_to ||= LinkedData::Client::Models::Ontology.new
-    @concept_from ||= LinkedData::Client::Models::Class.new
-    @concept_to ||= LinkedData::Client::Models::Class.new
-
-    @mapping_relation_options = [
-      ["Identical (skos:exactMatch)", "http://www.w3.org/2004/02/skos/core#exactMatch"],
-      ["Similar (skos:closeMatch)",   "http://www.w3.org/2004/02/skos/core#closeMatch"],
-      ["Related (skos:relatedMatch)", "http://www.w3.org/2004/02/skos/core#relatedMatch"],
-      ["Broader (skos:broadMatch)",   "http://www.w3.org/2004/02/skos/core#broadMatch"],
-      ["Narrower (skos:narrowMatch)", "http://www.w3.org/2004/02/skos/core#narrowMatch"],
-      ["Translation (gold:translation)", "http://purl.org/linguistics/gold/translation"],
-      ["Free Translation (gold:freeTranslation)", "http://purl.org/linguistics/gold/freeTranslation"]
-    ]
-
-    respond_to do |format|
-      format.html
+      format.html { render action: 'new', layout: false }
     end
   end
 
@@ -291,6 +239,56 @@ class MappingsController < ApplicationController
       format.html { render json: { success: success_text, error: error } }
     end
 
+  end
+
+  private
+
+  def mapping_form(mapping: nil)
+    if mapping
+      mapping.classes.each do |cls|
+        if cls.id.eql?(params[:conceptid_from])
+          @concept_from = cls
+          @ontology_from = cls.explore.ontology
+        else
+          @concept_to = cls
+          if inter_portal_mapping?(@concept_to)
+            @mapping_type = 'interportal'
+          elsif internal_mapping?(@concept_to)
+            @mapping_type = 'internal'
+          else
+            @mapping_type = 'external'
+          end
+        end
+      end
+    else
+      @ontology_from = LinkedData::Client::Models::Ontology.find(params[:ontology_from])
+      @ontology_to = LinkedData::Client::Models::Ontology.find(params[:ontology_to])
+      @concept_from = @ontology_from.explore.single_class({ full: true }, params[:conceptid_from]) if @ontology_from
+      @concept_to = @ontology_to.explore.single_class({ full: true }, params[:conceptid_to]) if @ontology_to
+    end
+
+    @interportal_options = []
+    INTERPORTAL_HASH.each do |key, value|
+      @interportal_options.push([key, value['api']])
+    end
+
+    # Defaults just in case nothing gets provided
+    @ontology_from ||= LinkedData::Client::Models::Ontology.new
+    @ontology_to ||= LinkedData::Client::Models::Ontology.new
+    @concept_from ||= LinkedData::Client::Models::Class.new
+    @concept_to ||= LinkedData::Client::Models::Class.new
+
+    @mapping_relation_options = [
+      ["Identical (skos:exactMatch)", "http://www.w3.org/2004/02/skos/core#exactMatch"],
+      ["Similar (skos:closeMatch)", "http://www.w3.org/2004/02/skos/core#closeMatch"],
+      ["Related (skos:relatedMatch)", "http://www.w3.org/2004/02/skos/core#relatedMatch"],
+      ["Broader (skos:broadMatch)", "http://www.w3.org/2004/02/skos/core#broadMatch"],
+      ["Narrower (skos:narrowMatch)", "http://www.w3.org/2004/02/skos/core#narrowMatch"],
+      ["Translation (gold:translation)", "http://purl.org/linguistics/gold/translation"],
+      ["Free Translation (gold:freeTranslation)", "http://purl.org/linguistics/gold/freeTranslation"]
+    ]
+    @mapping_comment = mapping.nil? ? '' : mapping.process.comment
+    @selected_relation = mapping.nil? ? @mapping_relation_options.first : mapping.process.relation.first
   end
 
 end

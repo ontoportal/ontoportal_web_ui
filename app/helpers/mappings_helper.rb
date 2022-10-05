@@ -163,4 +163,7 @@ module MappingsHelper
   def inter_portal_mapping?(cls)
     !internal_mapping?(cls) && cls.links.has_key?("ui")
   end
+  def type?(type)
+    @mapping_type.nil? && type.eql?('internal') ||  @mapping_type.eql?(type)
+  end
 end

@@ -4,42 +4,40 @@
 :javascript
   var BP_INTERNAL_SEARCH_SERVER = "#{$UI_URL}";
 
-%div#createNewMappingModal
-  %span#create_mapping_spinner
+%div
+  %span#create_mapping_spinner.card.p-3.text-center
     = loading_spinner
-  #create_mapping_error
-  #create_mapping_success_messages
 
+  = render_alerts_container
 
-  %div.form-group
-    %label{for: "map_to_picker"} Target ontology or view
-    = select_tag("map_to_picker", options_for_select(onts_and_views_for_select()), class: "form-control")
-  %div.form-group
-    %label{for: "map_to"} Target class
-    = text_field_tag(:map_to, @concept_to.label, class: "bp_internal_form_complete-#{ontology_to_id}-name search_autocomplete form-control", placeholder: "Start typing to select a class")
+  = form_with url: '/mappings', method: 'post', data:{turbo: true} do
     = hidden_field_tag :map_to_bioportal_full_id, @concept_to.id
     = hidden_field_tag :map_to_bioportal_ontology_id, @ontology_to.acronym
     = hidden_field_tag :map_from_bioportal_full_id, @concept_from.id
     = hidden_field_tag :map_from_bioportal_ontology_id, @ontology_from.acronym
-  %div.form-group
-    %label{for: "map_to_concept_details_table"} Details
-    %div#map_to_concept_details_table.form-control
+
+    %div.form-group
+      %label{for: "map_to"} Source class
+      - from_name = :map_from
+      - if @concept_from
+        = text_field_tag(from_name, @concept_from.id, class: "form-control", disabled: true)
+      - else
+        = render partial: 'shared/concept_picker', locals: {name: from_name, concept_label: @concept_from.id, ontology_acronym: @ontology_from.acronym, include_definition: false}
+    = render partial: "mapping_type_selector", locals: {ontology_to_id: ontology_to_id, interportal_options: @interportal_options, concept_to: @concept_to}
 
 
-  %div.form-group
-    %label{for: "mapping_comment"} Comment
-    = text_area(:mapping, :comment, rows: 5, class: "form-control")
+    %div.form-group
+      %label{for: "mapping_comment"} Comment
+      = text_area_tag('mapping[comment]',@mapping_comment, rows: 5, class: "form-control")
+    %div.form-group
+      %label{for: "mapping_relation"} Mapping relation type
+      = select("mapping", "relation", options_for_select(@mapping_relation_options, @selected_relation), {}, class: "form-control")
 
-
-  %div.form-group
-    %label{for: "mapping_relation"} Mapping relation type
-    = select("mapping", "relation", options_for_select(@mapping_relation_options, @mapping_relation_options.first), {}, class: "form-control")
-
-  %div.form-group
-    = submit_tag "Save" , class:'btn btn-success btn-block', id: 'create_mapping_button'
+    %div.form-group
+      = submit_tag "Save" , class:'btn btn-success btn-block'
 
 :javascript
   bp_internal_formComplete_setup_functions();
   jQuery("#map_to_picker").select2({
-    dropdownParent: jQuery("#createNewMappingModal"),
+    dropdownParent: jQuery("#createNewMappingModal")
   });
