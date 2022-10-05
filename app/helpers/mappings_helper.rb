@@ -26,7 +26,7 @@ module MappingsHelper
   end
 
   # a little method that returns true if the URIs array contain a gold:translation or gold:freeTranslation
-  def is_translation(relation_array)
+  def translation?(relation_array)
     if relation_array.kind_of?(Array)
       relation_array.map!(&:downcase)
       if relation_array.include? "http://purl.org/linguistics/gold/translation"
@@ -48,7 +48,7 @@ module MappingsHelper
     return uri
   end
 
-  def get_link_for_cls_ajax(cls_id, ont_acronym, target=nil)
+  def get_link_for_cls_ajax(cls_id, ont_acronym, target = nil)
     # Note: bp_ajax_controller.ajax_process_cls will try to resolve class labels.
     # Uses 'http' as a more generic attempt to resolve class labels than .include? ont_acronym; the
     # bp_ajax_controller.ajax_process_cls will try to resolve class labels and
@@ -70,53 +70,27 @@ module MappingsHelper
 
   # method to get (using http) prefLabel for interportal classes
   # Using bp_ajax_controller.ajax_process_interportal_cls will try to resolve class labels.
-  def get_link_for_interportal_cls_ajax(cls)
-    interportal_acro = get_interportal_acronym(cls.links["ui"])
-    if interportal_acro
-      href_cls = " href='#{cls.links["ui"]}' "
-      data_cls = " data-cls='#{cls.links["self"]}?apikey=' "
-      portal_cls = " portal-cls='#{interportal_acro}' "
-      return "<a class='interportalcls4ajax' #{data_cls} #{portal_cls} #{href_cls} target='_blank'>#{cls.id}</a>"
-    else
-      href_cls = " href='#{cls.links["ui"]}' "
-      return "<a #{href_cls} target='_blank'>#{cls.id}</a>"
-    end
-
-=begin
-    # to use the /ajax/classes/label system
-    # but the bioportal target need to answer with a 'Access-Control-Allow-Origin' header
+  def ajax_to_inter_portal_cls(cls)
+    inter_portal_acronym = get_inter_portal_acronym(cls.links["ui"])
     href_cls = " href='#{cls.links["ui"]}' "
-    portal_url = cls.links["ui"].split("/")[0..-3].join("/")
-    cls_ont = cls.links["ontology"].split("/")[-1]
-    data_cls = " data-cls='#{portal_url}/ajax/classes/label?ontology=#{cls_ont}&concept=#{URI.escape(cls.id)}'"
-    return "<a class='interportalcls4ajax' #{data_cls} #{href_cls} target='_blank'>#{cls.id}</a>"
-=end
+    if inter_portal_acronym
+      data_cls = " data-cls='#{cls.links["self"]}?apikey=' "
+      portal_cls = " portal-cls='#{inter_portal_acronym}' "
+      raw("<a class='interportalcls4ajax' #{data_cls} #{portal_cls} #{href_cls} target='_blank'>#{cls.id}</a>")
+    else
+      raw("<a #{href_cls} target='_blank'>#{cls.id}</a>")
+    end
 
   end
 
-  def get_link_for_cls_ajax(cls_id, ont_acronym, target=nil)
-    # Note: bp_ajax_controller.ajax_process_cls will try to resolve class labels.
-    # Uses 'http' as a more generic attempt to resolve class labels than .include? ont_acronym; the
-    # bp_ajax_controller.ajax_process_cls will try to resolve class labels and
-    # otherwise remove the UNIQUE_SPLIT_STR and the ont_acronym.
-    if target.nil?
-      target = ""
-    else
-      target = " target='#{target}' "
-    end
-    if cls_id.start_with? 'http://'
-      href_cls = " href='#{bp_class_link(cls_id, ont_acronym)}' "
-      data_cls = " data-cls='#{cls_id}' "
-      data_ont = " data-ont='#{ont_acronym}' "
-      return "<a class='cls4ajax' #{data_ont} #{data_cls} #{href_cls} #{target}>#{cls_id}</a>"
-    else
-      return auto_link(cls_id, :all, :target => '_blank')
-    end
+  def ajax_to_internal_cls(cls)
+    link_to("#{cls.id}<span href='/ajax/classes/label?ontology=#{cls.links["ontology"]}&concept=#{escape(cls.id)}' class='get_via_ajax'></span>".html_safe,
+            ontology_path(cls.explore.ontology.acronym, p: 'classes', conceptid: cls.id))
   end
 
   # to get the apikey from the interportal instance of the interportal class.
   # The best way to know from which interportal instance the class came is to compare the UI url
-  def get_interportal_acronym(class_ui_url)
+  def get_inter_portal_acronym(class_ui_url)
     if !INTERPORTAL_HASH.nil?
       INTERPORTAL_HASH.each do |key, value|
         if class_ui_url.start_with?(value["ui"])
@@ -129,7 +103,7 @@ module MappingsHelper
   end
 
   # method to extract the prefLabel from the external class URI
-  def get_link_for_external_cls(class_uri)
+  def get_label_for_external_cls(class_uri)
     if class_uri.include? "#"
       prefLabel = class_uri.split("#")[-1]
     else
@@ -138,13 +112,18 @@ module MappingsHelper
     return prefLabel
   end
 
-  # Replace the interportal mapping ontology URI (that link to the API) by the link to the ontology in the UI
-  def get_interportal_ui_link(uri, process_name)
+  def ajax_to_external_cls(cls)
+    raw("<a href='#{cls.links['self']}' target='_blank'>#{get_label_for_external_cls(cls.id)}</a>")
+  end
+
+  # Replace the inter_portal mapping ontology URI (that link to the API) by the link to the ontology in the UI
+  def get_inter_portal_ui_link(uri, process_name)
+    process_name  = '' if process_name.nil?
     interportal_acronym = process_name.split(" ")[2]
     if interportal_acronym.nil? || interportal_acronym.empty?
-      return uri
+       uri
     else
-      return uri.sub!(INTERPORTAL_HASH[interportal_acronym]["api"], INTERPORTAL_HASH[interportal_acronym]["ui"])
+       uri.sub!(INTERPORTAL_HASH[interportal_acronym]["api"], INTERPORTAL_HASH[interportal_acronym]["ui"])
     end
   end
 
@@ -157,7 +136,7 @@ module MappingsHelper
       ont_display_name = "#{ont.name.strip} (#{ont_acronym})"
       @onts_and_views_for_select << [ont_display_name, ont_acronym]
     end
-    @onts_and_views_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+    @onts_and_views_for_select.sort! { |a, b| a[0].downcase <=> b[0].downcase }
     return @onts_and_views_for_select
   end
 
@@ -166,7 +145,7 @@ module MappingsHelper
     # Remove mappings where the destination class exists in an ontology that the logged in user doesn't have permissions to view.
     # Workaround for https://github.com/ncbo/ontologies_api/issues/52.
     mappings.delete_if do |mapping|
-      mapping.classes.reject! { |cls| (cls.id == concept.id) && (cls.links['ontology'] == concept.links['ontology']) }
+      #mapping.classes.reject! { |cls| (cls.id == concept.id) && (cls.links['ontology'] == concept.links['ontology']) }
       begin
         ont = mapping.classes[0].explore.ontology
         ont.errors && ont.errors.grep(/Access denied/).any?
@@ -177,4 +156,11 @@ module MappingsHelper
     end
   end
 
+  def internal_mapping?(cls)
+    cls.links['self'].to_s.start_with?(LinkedData::Client.settings.rest_url) || ($LOCAL_IP.present? && cls.links['self'].to_s.include?($LOCAL_IP))
+  end
+
+  def inter_portal_mapping?(cls)
+    !internal_mapping?(cls) && cls.links.has_key?("ui")
+  end
 end

@@ -4,9 +4,10 @@ class MappingsController < ApplicationController
   include ActionView::Helpers::NumberHelper
   include TurboHelper
   include MappingStatistics
-
+  include MappingsHelper
+  include TurboHelper
   layout :determine_layout
-  before_action :authorize_and_redirect, :only=>[:create,:new,:destroy]
+  before_action :authorize_and_redirect, only: [:create, :new, :destroy]
 
 
 
@@ -128,7 +129,7 @@ class MappingsController < ApplicationController
 
     ontologies = [ontology_acronym, target_acronym]
 
-    @mapping_pages = LinkedData::Client::HTTP.get(MAPPINGS_URL, {page: page, ontologies: ontologies.join(",")})
+    @mapping_pages = LinkedData::Client::HTTP.get("#{MAPPINGS_URL}", { page: page, ontologies: ontologies.join(',') })
     @mappings = @mapping_pages.collection
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
@@ -143,21 +144,21 @@ class MappingsController < ApplicationController
 
     # This converts the mappings into an object that can be used with the pagination plugin
     @page_results = WillPaginate::Collection.create(@mapping_pages.page, @mapping_pages.collection.length, total_results) do |pager|
-       pager.replace(@mapping_pages.collection)
+      pager.replace(@mapping_pages.collection)
     end
 
-    render :partial => 'show'
+    render partial: 'show'
   end
 
   def get_concept_table
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontologyid]).first
-    @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+    @concept = @ontology.explore.single_class({ full: true }, params[:conceptid])
 
     @mappings = @concept.explore.mappings
 
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
-    render :partial => "mapping_table"
+    render partial: "mapping_table"
   end
 
   def new
