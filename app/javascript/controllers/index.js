@@ -24,3 +24,6 @@ application.register("modal", ShowModalController)
 
 import TurboModalController from "../../components/turbo_modal_component/turbo_modal_component_controller"
 application.register("turbo-modal", TurboModalController)
+
+import FormAutoCompleteController from "./form_auto_complete_controller"
+application.register("form-auto-complete", FormAutoCompleteController)
