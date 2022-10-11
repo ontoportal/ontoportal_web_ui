@@ -129,6 +129,9 @@ export default class extends Controller {
         jQuery(`input[name="${input_name}_bioportal_ontology_id"]`).val(li.extra[2]);
         jQuery(`input[name="${input_name}_bioportal_full_id"]`).val(li.extra[3]);
         jQuery(`input[name="${input_name}_bioportal_preferred_name"]`).val(li.extra[4]);
+        this.#emitOnSelect()
     }
+    #emitOnSelect(){
+        this.element.dispatchEvent( new Event('selected'))
     }
 }
