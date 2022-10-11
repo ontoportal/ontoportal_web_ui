@@ -10,7 +10,7 @@
 
   = render_alerts_container
 
-  = form_with url: '/mappings', method: 'post', data:{turbo: true} do
+  = form_with url: form_url, method: 'post', data:{turbo: true} do
     = hidden_field_tag :map_to_bioportal_full_id, @concept_to.id
     = hidden_field_tag :map_to_bioportal_ontology_id, @ontology_to.acronym
     = hidden_field_tag :map_from_bioportal_full_id, @concept_from.id
