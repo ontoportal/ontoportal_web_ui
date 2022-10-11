@@ -94,8 +94,7 @@ class MappingsController < ApplicationController
   end
 
   def show
-    @mapping = LinkedData::Client::Models::Mapping.find(params[:id])
-    not_found if @mapping.nil? || @mapping.errors
+    @mapping = request_mapping
     mapping_form(mapping: @mapping)
     respond_to do |format|
       format.html { render 'mappings/edit', layout: false }
@@ -163,8 +162,7 @@ class MappingsController < ApplicationController
     @mappings = @concept.explore.mappings
 
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
-
-    render partial: "mapping_table"
+    render partial: 'mappings/concept_mappings'
   end
 
   def new
@@ -177,43 +175,30 @@ class MappingsController < ApplicationController
   # POST /mappings
   # POST /mappings.xml
   def create
-
-    target_ontology, target, external_mapping = get_mappings_target
-
-    source_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_from_bioportal_ontology_id]).first
-    source = source_ontology.explore.single_class(params[:map_from_bioportal_full_id])
-    values = {
-      classes: [
-        source.id,
-        target
-      ],
-      subject_source_id: source_ontology.id,
-      object_source_id: target_ontology,
-      creator: session[:user].id,
-      external_mapping: external_mapping,
-      relation: Array(params[:mapping][:relation]),
-      name: '',
-      comment: params[:mapping][:comment]
-    }
-    @mapping = LinkedData::Client::Models::Mapping.new(values: values)
-    @concept = source
-
-    @mapping_saved = @mapping.save
+    values, @concept = mapping_form_values
+    errors = valid_values?(values)
+    if errors.empty?
+      @mapping, = LinkedData::Client::Models::Mapping.new(values: values)
+      @mapping_saved = @mapping.save
+      errors << @mapping_saved.errors if @mapping_saved.errors
+    end
 
     respond_to do |format|
       format.turbo_stream do
-        if @mapping_saved.errors
-          render turbo_stream: alert(type: 'error') { @mapping_saved.errors.to_s }
-
+        if !errors.empty?
+          render turbo_stream: alert_error { JSON.pretty_generate errors }
         else
           @delete_mapping_permission = check_delete_mapping_permission(@mapping_saved)
           mapping = LinkedData::Client::Models::Mapping.find(@mapping_saved.id)
-          render turbo_stream: [ alert(type: 'success') { 'Mapping created' },
-                                 turbo_stream.prepend('concept_mappings_table_content', partial: 'show_line',
-                                                     locals: { map: mapping, concept: source })
+          render turbo_stream: [
+            alert(type: 'success') { 'Mapping created' },
+            prepend('concept_mappings_table_content', partial: 'show_line', locals: { map: mapping, concept: @concept })
           ]
         end
       end
+    end
+  end
+
   def update
     values, @concept = mapping_form_values
     @mapping = request_mapping
@@ -235,7 +220,6 @@ class MappingsController < ApplicationController
           )
         end
       end
-
     end
 
   end
