@@ -13,6 +13,22 @@ module TurboHelper
     end
   end
 
+  def alert_error(&block)
+    alert(type:'danger', &block)
+  end
+  def alert_success(&block)
+    alert(type:'success', &block)
+  end
+  def prepend(id, options, &block)
+    turbo_stream.prepend(id, options, &block)
+  end
+  def replace(id, options = {}, &block)
+    turbo_stream.replace(id, options, &block)
+  end
+  def render_turbo_stream(*streams)
+    render turbo_stream: streams
+  end
+
   def render_alerts_container(controller_class = nil)
     render AlertsContainerComponent.new(id: alerts_container_id(controller_class&.controller_name))
   end
