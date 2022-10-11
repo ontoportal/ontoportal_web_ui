@@ -27,7 +27,6 @@ export default class extends Controller {
             result_width += 200;
         }
 
-
         jQuery(this.element).bp_autocomplete(BP_INTERNAL_SEARCH_SERVER + "/search/json_search/", {
             extraParams: this.extra_params,
             lineSeparator: "~!~",
@@ -46,16 +45,16 @@ export default class extends Controller {
 
         const inputName = jQuery(this.element).attr('name');
         if (document.getElementById(inputName + "_bioportal_concept_id") == null)
-            html += `<input type='hidden' id='${inputName}_bioportal_concept_id'>`;
+            html += `<input type='hidden' name='${inputName}_bioportal_concept_id' id='${inputName}_bioportal_concept_id'>`;
 
         if (document.getElementById(inputName + "_bioportal_ontology_id") == null)
-            html += `<input type='hidden' id='${inputName}_bioportal_ontology_id'>`;
+            html += `<input type='hidden' name='${inputName}_bioportal_ontology_id' id='${inputName}_bioportal_ontology_id'>`;
 
         if (document.getElementById(inputName + "_bioportal_full_id") == null)
-            html += `<input type='hidden' id='${inputName}_bioportal_full_id'>`;
+            html += `<input type='hidden' name='${inputName}_bioportal_full_id' id='${inputName}_bioportal_full_id'>`;
 
         if (document.getElementById(inputName + "_bioportal_preferred_name") == null)
-            html += `<input type='hidden' id='${inputName}_bioportal_preferred_name'>`;
+            html += `<input type='hidden' name='${inputName}_bioportal_preferred_name' id='${inputName}_bioportal_preferred_name'>`;
 
         jQuery(this.element).after(html);
     }
@@ -126,9 +125,10 @@ export default class extends Controller {
         }
 
         const input_name = jQuery(input).attr('name')
-        jQuery("#" + input_name + "_bioportal_concept_id").val(li.extra[0]);
-        jQuery("#" + input_name + "_bioportal_ontology_id").val(li.extra[2]);
-        jQuery("#" + input_name + "_bioportal_full_id").val(li.extra[3]);
-        jQuery("#" + input_name + "_bioportal_preferred_name").val(li.extra[4]);
+        jQuery(`input[name="${input_name}_bioportal_concept_id"]`).val(li.extra[0]);
+        jQuery(`input[name="${input_name}_bioportal_ontology_id"]`).val(li.extra[2]);
+        jQuery(`input[name="${input_name}_bioportal_full_id"]`).val(li.extra[3]);
+        jQuery(`input[name="${input_name}_bioportal_preferred_name"]`).val(li.extra[4]);
+    }
     }
 }
