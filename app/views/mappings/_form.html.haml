@@ -1,6 +1,3 @@
-- ontology_from_id = @ontology_from.acronym.nil? ? "all" : @ontology_from.acronym
-- ontology_to_id = @ontology_to.acronym.nil? ? "all" : @ontology_to.acronym
-
 :javascript
   var BP_INTERNAL_SEARCH_SERVER = "#{$UI_URL}";
 
@@ -11,21 +8,28 @@
   = render_alerts_container
 
   = form_with url: form_url, method: 'post', data:{turbo: true} do
-    = hidden_field_tag :map_to_bioportal_full_id, @concept_to.id
-    = hidden_field_tag :map_to_bioportal_ontology_id, @ontology_to.acronym
-    = hidden_field_tag :map_from_bioportal_full_id, @concept_from.id
     = hidden_field_tag :map_from_bioportal_ontology_id, @ontology_from.acronym
-
     %div.form-group
       %label{for: "map_to"} Source class
-      - from_name = :map_from
+      - from_name = :map_from_bioportal_full_id
       - if @concept_from
-        = text_field_tag(from_name, @concept_from.id, class: "form-control", disabled: true)
+        = text_field_tag('', @concept_from.id, class: "form-control", disabled: true)
+        = hidden_field_tag from_name, @concept_from.id
       - else
-        = render partial: 'shared/concept_picker', locals: {name: from_name, concept_label: @concept_from.id, ontology_acronym: @ontology_from.acronym, include_definition: false}
-    = render partial: "mapping_type_selector", locals: {ontology_to_id: ontology_to_id, interportal_options: @interportal_options, concept_to: @concept_to}
+        = render partial: 'shared/concept_picker', locals: {name: from_name, concept_id: @concept_from.id, ontology_acronym: @ontology_from.acronym, include_definition: false}
+    = render partial: "mapping_type_selector", locals: {interportal_options: @interportal_options, concept_to: @concept_to}
 
+    %hr.w-100
 
+    %div.form-group
+      %label{for: "mapping_name"} Mapping description (name)
+      = text_field_tag('mapping[name]',@mapping_name, class: "form-control")
+    %div.form-group
+      %label{for: "mapping_source_contact_info"} Contact info
+      = text_field_tag('mapping[source_contact_info]',@mapping_source_contact_info, class: "form-control")
+    %div.form-group
+      %label{for: "mapping_source_name"} Source name (Mapping set id)
+      = text_field_tag('mapping[source_name]',@mapping_source_name, class: "form-control")
     %div.form-group
       %label{for: "mapping_comment"} Comment
       = text_area_tag('mapping[comment]',@mapping_comment, rows: 5, class: "form-control")
