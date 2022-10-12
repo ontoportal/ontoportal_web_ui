@@ -18,7 +18,6 @@
 //= require bp_notes
 //= require bp_ontolobridge
 //= require bp_form_complete
-//= require bp_create_mappings
 //= require bp_analytics
 //= require bp_user_intention_survey
 //= require bp_search
@@ -34,7 +33,6 @@
 //= require projects
 //= require submissions
 //= require tooltipster.bundle.min
-
 //= require application_esbuild
 customElements.define('data-table-loader', DataTableLoader );
 customElements.define('data-table', DataTable );

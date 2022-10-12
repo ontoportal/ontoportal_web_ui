@@ -40,8 +40,3 @@
     %div.form-group
       = submit_tag "Save" , class:'btn btn-success btn-block'
 
-:javascript
-  bp_internal_formComplete_setup_functions();
-  jQuery("#map_to_picker").select2({
-    dropdownParent: jQuery("#createNewMappingModal")
-  });
