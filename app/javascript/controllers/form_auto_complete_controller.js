@@ -1,4 +1,5 @@
 import {Controller} from "@hotwired/stimulus"
+import {useBioportalAutoComplete} from "../mixins/useBioportalAutoComplete";
 
 // Connects to data-controller="form-auto-complete"
 export default class extends Controller {
@@ -26,20 +27,21 @@ export default class extends Controller {
         if (this.includeDefinitionValue) {
             result_width += 200;
         }
-
-        jQuery(this.element).bp_autocomplete(BP_INTERNAL_SEARCH_SERVER + "/search/json_search/", {
-            extraParams: this.extra_params,
-            lineSeparator: "~!~",
-            matchSubset: 0,
-            mustMatch: true,
-            sortRestuls: false,
-            minChars: 3,
-            maxItemsToShow: 20,
-            cacheLength: -1,
-            width: result_width,
-            onItemSelect: this.onSelect.bind(this) ,
-            formatItem: this.formatItem.bind(this)
-        });
+        jQuery(document).ready(() => {
+            useBioportalAutoComplete(this.element, BP_INTERNAL_SEARCH_SERVER + "/search/json_search/", {
+                extraParams: this.extra_params,
+                lineSeparator: "~!~",
+                matchSubset: 0,
+                mustMatch: true,
+                sortRestuls: false,
+                minChars: 3,
+                maxItemsToShow: 20,
+                cacheLength: -1,
+                width: result_width,
+                onItemSelect: this.onSelect.bind(this),
+                formatItem: this.formatItem.bind(this)
+            })
+        })
 
         let html = "";
 
@@ -131,7 +133,8 @@ export default class extends Controller {
         jQuery(`input[name="${input_name}_bioportal_preferred_name"]`).val(li.extra[4]);
         this.#emitOnSelect()
     }
-    #emitOnSelect(){
-        this.element.dispatchEvent( new Event('selected'))
+
+    #emitOnSelect() {
+        this.element.dispatchEvent(new Event('selected'))
     }
 }
