@@ -16,9 +16,12 @@ Rails.application.routes.draw do
 
   get '/mappings/loader' , to: 'mappings#loader'
   post '/mappings/loader', to: 'mappings#loader_process'
-  delete 'mappings/:id', to: 'mappings#destroy', constraints: { id: /.+/ }
   get 'mappings/count/:id', to: 'mappings#count', constraints: { id: /.+/ }
   get 'mappings/show_mappings', to: 'mappings#show_mappings'
+  get 'mappings/new', to: 'mappings#new'
+  get 'mappings/:id', to: 'mappings#show', constraints: { id: /.+/ }
+  post 'mappings/:id', to: 'mappings#update', constraints: { id: /.+/ }
+  delete 'mappings/:id', to: 'mappings#destroy', constraints: { id: /.+/ }
   resources :mappings
   get 'mappings/:id', to: 'mappings#show', constraints: { id: /.+/ }
 

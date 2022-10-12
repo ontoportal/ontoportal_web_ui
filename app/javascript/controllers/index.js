@@ -5,7 +5,7 @@
 import { application } from "./application"
 
 import ClassSearchAutoCompleteController from "./class_search_auto_complete_controller"
-application.register("class-search-auto-complete", ClassSearchAutoCompleteController)
+application.register("class-search", ClassSearchAutoCompleteController)
 
 import ContainerSplitterController from "./container_splitter_controller"
 application.register("container-splitter", ContainerSplitterController)

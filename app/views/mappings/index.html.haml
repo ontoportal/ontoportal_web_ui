@@ -6,19 +6,8 @@
     = link_to_modal "Upload mappings" , "/mappings/loader", class: "btn btn-primary btn-block",
        data: { modal_title_value: "Mappings bulk load", modal_size_value: 'modal-xl'}
   %hr.my-3.w-100
-  %div.card.mt-2
-    %div.card-header
-      = t('mappings.intro').html_safe
-      = link_to(Rails.configuration.settings.links[:mappings], id: "mappings-help", "aria-label": "View mappings help") do
-        %i.fas.fa-question-circle.fa-lg{"aria-hidden": "true"}
+    #accordionExample.accordion
+      = render partial: 'ontology_mappings'
+      = render partial: 'concept_mappings_selector'
 
-    %div.card-body.p-2
-      %div#mappings_select
-        - if @options.empty?
-          No mappings available
-        - else
-          = select('search', 'ontologies', @options, {:include_blank => ""},{:onchange=>"loadMappings(this.value);", "data-placeholder".to_sym => "Select an Ontology", autocomplete: "off"})
-          #mapping_load
-            %img{src: asset_path("jquery.simple.tree/spinner.gif")}/
-            Loading mappings...
-          #mappingCount
+

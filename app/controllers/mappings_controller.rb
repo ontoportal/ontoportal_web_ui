@@ -94,8 +94,7 @@ class MappingsController < ApplicationController
   end
 
   def show
-    @mapping = LinkedData::Client::Models::Mapping.find(params[:id])
-    not_found if @mapping.nil? || @mapping.errors
+    @mapping = request_mapping
     mapping_form(mapping: @mapping)
     respond_to do |format|
       format.html { render 'mappings/edit', layout: false }
@@ -163,8 +162,7 @@ class MappingsController < ApplicationController
     @mappings = @concept.explore.mappings
 
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
-
-    render partial: "mapping_table"
+    render partial: 'mappings/concept_mappings'
   end
 
   def new
@@ -177,44 +175,51 @@ class MappingsController < ApplicationController
   # POST /mappings
   # POST /mappings.xml
   def create
-
-    target_ontology, target, external_mapping = get_mappings_target
-
-    source_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_from_bioportal_ontology_id]).first
-    source = source_ontology.explore.single_class(params[:map_from_bioportal_full_id])
-    values = {
-      classes: [
-        source.id,
-        target
-      ],
-      subject_source_id: source_ontology.id,
-      object_source_id: target_ontology,
-      creator: session[:user].id,
-      external_mapping: external_mapping,
-      relation: Array(params[:mapping][:relation]),
-      name: '',
-      comment: params[:mapping][:comment]
-    }
-    @mapping = LinkedData::Client::Models::Mapping.new(values: values)
-    @concept = source
-
-    @mapping_saved = @mapping.save
+    values, @concept = mapping_form_values
+    errors = valid_values?(values)
+    if errors.empty?
+      @mapping, = LinkedData::Client::Models::Mapping.new(values: values)
+      @mapping_saved = @mapping.save
+      errors << @mapping_saved.errors if @mapping_saved.errors
+    end
 
     respond_to do |format|
       format.turbo_stream do
-        if @mapping_saved.errors
-          render turbo_stream: alert(type: 'error') { @mapping_saved.errors.to_s }
-
+        if !errors.empty?
+          render turbo_stream: alert_error { JSON.pretty_generate errors }
         else
           @delete_mapping_permission = check_delete_mapping_permission(@mapping_saved)
           mapping = LinkedData::Client::Models::Mapping.find(@mapping_saved.id)
-          render turbo_stream: [ alert(type: 'success') { 'Mapping created' },
-                                 turbo_stream.prepend('concept_mappings_table_content', partial: 'show_line',
-                                                     locals: { map: mapping, concept: source })
+          render turbo_stream: [
+            alert(type: 'success') { 'Mapping created' },
+            prepend('concept_mappings_table_content', partial: 'show_line', locals: { map: mapping, concept: @concept })
           ]
         end
       end
+    end
+  end
 
+  def update
+    values, @concept = mapping_form_values
+    @mapping = request_mapping
+    errors = valid_values?(values)
+    if errors.empty?
+      map_uri = "#{MAPPINGS_URL}/#{@mapping.id.split('/').last}"
+      response = LinkedData::Client::HTTP.patch(map_uri, values)
+      errors <<  response.body if response.status != 204
+    end
+
+    respond_to do |format|
+      format.turbo_stream do
+        if !errors.empty? || @mapping.nil?
+          render_turbo_stream(alert_error { JSON.pretty_generate errors })
+        else
+          render_turbo_stream(
+            alert_success { 'Mapping updated' },
+            replace(@mapping.id.split('/').last, partial: 'show_line', locals: { map: request_mapping, concept: @concept })
+          )
+        end
+      end
     end
 
   end
@@ -257,20 +262,26 @@ class MappingsController < ApplicationController
           @ontology_from = cls.explore.ontology
         else
           @concept_to = cls
-          if inter_portal_mapping?(@concept_to)
-            @mapping_type = 'interportal'
-          elsif internal_mapping?(@concept_to)
-            @mapping_type = 'internal'
-          else
-            @mapping_type = 'external'
-          end
+          @mapping_type = if inter_portal_mapping?(@concept_to)
+                            'interportal'
+                          elsif internal_mapping?(@concept_to)
+                            'internal'
+                          else
+                            'external'
+                          end
+          set_mapping_target(concept_to_id: @concept_to.id, ontology_to: @concept_to.links['ontology'],
+                             mapping_type: @mapping_type)
         end
       end
     else
+      mapping = LinkedData::Client::Models::Mapping.new
       @ontology_from = LinkedData::Client::Models::Ontology.find(params[:ontology_from])
       @ontology_to = LinkedData::Client::Models::Ontology.find(params[:ontology_to])
       @concept_from = @ontology_from.explore.single_class({ full: true }, params[:conceptid_from]) if @ontology_from
-      @concept_to = @ontology_to.explore.single_class({ full: true }, params[:conceptid_to]) if @ontology_to
+      if @ontology_to
+       @concept_to = @ontology_to.explore.single_class({ full: true }, params[:conceptid_to])
+       @map_to_bioportal_ontology_id = @ontology_to.id
+      end
     end
 
     @interportal_options = []
@@ -278,11 +289,6 @@ class MappingsController < ApplicationController
       @interportal_options.push([key, value['api']])
     end
 
-    # Defaults just in case nothing gets provided
-    @ontology_from ||= LinkedData::Client::Models::Ontology.new
-    @ontology_to ||= LinkedData::Client::Models::Ontology.new
-    @concept_from ||= LinkedData::Client::Models::Class.new
-    @concept_to ||= LinkedData::Client::Models::Class.new
 
     @mapping_relation_options = [
       ["Identical (skos:exactMatch)", "http://www.w3.org/2004/02/skos/core#exactMatch"],
@@ -293,8 +299,48 @@ class MappingsController < ApplicationController
       ["Translation (gold:translation)", "http://purl.org/linguistics/gold/translation"],
       ["Free Translation (gold:freeTranslation)", "http://purl.org/linguistics/gold/freeTranslation"]
     ]
-    @mapping_comment = mapping.nil? ? '' : mapping.process.comment
-    @selected_relation = mapping.nil? ? @mapping_relation_options.first : mapping.process.relation.first
+    @mapping_name = mapping.process&.name
+    @mapping_comment = mapping.process&.comment
+    @mapping_source_name = mapping.process&.source_name
+    @mapping_source_contact_info = mapping.process&.source_contact_info
+    @mapping_source = mapping.process&.source
+    @selected_relation = mapping.process.nil? ? @mapping_relation_options.first : mapping.process.relation.first
   end
 
+  def mapping_form_values
+    target_ontology, target, external_mapping = get_mappings_target
+    source_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:map_from_bioportal_ontology_id]).first
+    source = source_ontology.explore.single_class(params[:map_from_bioportal_full_id])
+    values = {
+      classes: [
+        source.id,
+        target
+      ],
+      subject_source_id: source_ontology.id,
+      object_source_id: target_ontology,
+      creator: session[:user].id,
+      external_mapping: external_mapping,
+      relation: Array(params[:mapping][:relation]),
+      source_contact_info: params[:mapping][:source_contact_info],
+      source_name: params[:mapping][:source_name],
+      name: params[:mapping][:name],
+      comment: params[:mapping][:comment]
+    }
+
+    [values, source]
+  end
+
+  def request_mapping
+    mapping = LinkedData::Client::Models::Mapping.find(params[:id])
+    not_found if mapping.nil? || mapping.errors
+    mapping
+  end
+
+  def valid_values?(values)
+    errors = []
+    if values[:classes].reject(&:blank?).size != 2
+      errors << 'Source and target concepts need to be specified'
+    end
+    errors
+  end
 end

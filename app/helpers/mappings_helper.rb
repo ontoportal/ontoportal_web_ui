@@ -9,12 +9,12 @@ module MappingsHelper
 
   # Used to replace the full URI by the prefixed URI
   RELATIONSHIP_PREFIX = {
-      "http://www.w3.org/2004/02/skos/core#" => "skos:",
-      "http://www.w3.org/2000/01/rdf-schema#" => "rdfs:",
-      "http://www.w3.org/2002/07/owl#" => "owl:",
-      "http://www.w3.org/1999/02/22-rdf-syntax-ns#" => "rdf:",
-      "http://purl.org/linguistics/gold/" => "gold:",
-      "http://lemon-model.net/lemon#" => "lemon:"
+    "http://www.w3.org/2004/02/skos/core#" => "skos:",
+    "http://www.w3.org/2000/01/rdf-schema#" => "rdfs:",
+    "http://www.w3.org/2002/07/owl#" => "owl:",
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#" => "rdf:",
+    "http://purl.org/linguistics/gold/" => "gold:",
+    "http://lemon-model.net/lemon#" => "lemon:"
   }
 
   INTERPORTAL_HASH = $INTERPORTAL_HASH
@@ -118,12 +118,12 @@ module MappingsHelper
 
   # Replace the inter_portal mapping ontology URI (that link to the API) by the link to the ontology in the UI
   def get_inter_portal_ui_link(uri, process_name)
-    process_name  = '' if process_name.nil?
+    process_name = '' if process_name.nil?
     interportal_acronym = process_name.split(" ")[2]
     if interportal_acronym.nil? || interportal_acronym.empty?
-       uri
+      uri
     else
-       uri.sub!(INTERPORTAL_HASH[interportal_acronym]["api"], INTERPORTAL_HASH[interportal_acronym]["ui"])
+      uri.sub!(INTERPORTAL_HASH[interportal_acronym]["api"], INTERPORTAL_HASH[interportal_acronym]["ui"])
     end
   end
 
@@ -165,7 +165,7 @@ module MappingsHelper
   end
 
   def get_mappings_target_params
-    mapping_type = params[:mapping_type]
+    mapping_type = Array(params[:mapping_type]).first
     external = true
     case mapping_type
     when 'interportal'
@@ -182,6 +182,20 @@ module MappingsHelper
     [ontology_to, concept_to_id, external]
   end
 
+  def set_mapping_target(concept_to_id:, ontology_to:, mapping_type: )
+    case mapping_type
+    when 'interportal'
+      @map_to_interportal, @map_to_interportal_ontology = ontology_to.match(%r{(.*)/ontologies/(.*)}).to_a[1..]
+      @map_to_interportal_class = concept_to_id
+    when 'external'
+      @map_to_external_ontology = ontology_to
+      @map_to_external_class = concept_to_id
+    else
+      @map_to_bioportal_ontology_id = ontology_to
+      @map_to_bioportal_full_id = concept_to_id
+    end
+  end
+
   def get_mappings_target
     ontology_to, concept_to_id, external_mapping = get_mappings_target_params
     target = ''
@@ -189,7 +203,11 @@ module MappingsHelper
       target_ontology = ontology_to
       target = concept_to_id
     else
-      target_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_to).first
+      if helpers.uri?(ontology_to)
+        target_ontology = LinkedData::Client::Models::Ontology.find(ontology_to)
+      else
+        target_ontology = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_to).first
+      end
       if target_ontology
         target = target_ontology.explore.single_class(concept_to_id).id
         target_ontology = target_ontology.id
@@ -199,6 +217,6 @@ module MappingsHelper
   end
 
   def type?(type)
-    @mapping_type.nil? && type.eql?('internal') ||  @mapping_type.eql?(type)
+    @mapping_type.nil? && type.eql?('internal') || @mapping_type.eql?(type)
   end
 end
