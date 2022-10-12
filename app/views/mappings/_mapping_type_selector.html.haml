@@ -35,6 +35,7 @@
       %div.form-group
         %label{for: "map_to_concept_details_table"} Details
         %div#map_to_concept_details_table.form-control
+          = render TurboFrameComponent.new(id:'concept_details')
     %div#interportal_form.mapping_form{style: "display: #{type?('interportal') ? 'block':'none'}"}
       %div.form-group
         %label{for: :map_to_interportal} InterPortal
@@ -56,8 +57,19 @@
         = text_field_tag :map_to_external_class, @map_to_external_class, placeholder: 'Enter the class URI', class: "form-control", disabled: disabled
 
 :javascript
-    jQuery(".mapping_radio").live("click", function() {
-    var mapping_type = jQuery(this).data('target')
-    jQuery("div.mapping_form").hide()
-    jQuery(mapping_type).show()
-  });
+    jQuery(document).ready(() => {
+       const picker_name  = 'map_to'
+       const concept_details_frame = document.getElementById('concept_details')
+       jQuery(".mapping_radio").live("click", function() {
+        var mapping_type = jQuery(this).data('target')
+        jQuery("div.mapping_form").hide()
+        jQuery(mapping_type).show()
+       })
+       jQuery(`input[name='${picker_name}']`).on('selected', () => {
+          if(concept_details_frame){
+            const ontology_id = $(`input[name="${picker_name}_bioportal_ontology_id"]`).val()
+            const concept_id = $(`input[name="${picker_name}_bioportal_concept_id"]`).val()
+            concept_details_frame.src = "/ajax/class_details?ontology=" + encodeURIComponent(ontology_id) + "&styled=false&conceptid=" + encodeURIComponent(concept_id)
+          }
+        })
+    })

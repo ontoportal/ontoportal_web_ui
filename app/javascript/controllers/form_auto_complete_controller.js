@@ -89,7 +89,7 @@ export default class extends Controller {
             const result_def = row[7];
 
             if (BP_include_definitions) {
-                result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 75) + "</div>"
+                result += "<div class='result_definition'>" + this.#truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 75) + "</div>"
             }
 
             result += "<div class='result_class' style='width: " + class_name_width + ";'>" + result_class.replace(regex, "<b><span class='result_class_highlight'>$1</span></b>") + "</div>";
@@ -103,10 +103,10 @@ export default class extends Controller {
             result += "<div class='result_class' style='width: " + class_name_width + ";'>" + result_class.replace(regex, "<b><span class='result_class_highlight'>$1</span></b>") + "</div>"
 
             if (BP_include_definitions) {
-                result += "<div class='result_definition'>" + truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 75) + "</div>"
+                result += "<div class='result_definition'>" + this.#truncateText(decodeURIComponent(result_def.replace(/\+/g, " ")), 75) + "</div>"
             }
 
-            result += "<div>" + " <div class='result_type'>" + result_type + "</div><div class='result_ontology' style='overflow: hidden;'>" + truncateText(result_ont, 35) + "</div></div>";
+            result += "<div>" + " <div class='result_type'>" + result_type + "</div><div class='result_ontology' style='overflow: hidden;'>" + this.#truncateText(result_ont, 35) + "</div></div>";
         }
         return result;
     }
@@ -136,5 +136,36 @@ export default class extends Controller {
 
     #emitOnSelect() {
         this.element.dispatchEvent(new Event('selected'))
+    }
+
+
+    #truncateText(text, max_length) {
+        if (typeof max_length === 'undefined' || max_length == "") {
+            max_length = 70;
+        }
+
+        var more = '...';
+
+        var content_length = $.trim(text).length;
+        if (content_length <= max_length)
+            return text;  // bail early if not overlong
+
+        var actual_max_length = max_length - more.length;
+        var truncated_node = jQuery("<div>");
+        var full_node = jQuery("<div>").html(text).hide();
+
+        text = text.replace(/^ /, '');  // node had trailing whitespace.
+
+        var text_short = text.slice(0, max_length);
+
+        // Ensure HTML entities are encoded
+        // http://debuggable.com/posts/encode-html-entities-with-jquery:480f4dd6-13cc-4ce9-8071-4710cbdd56cb
+        text_short = $('<div/>').text(text_short).html();
+
+        var other_text = text.slice(max_length, text.length);
+
+        text_short += "<span class='expand_icon'><b>"+more+"</b></span>";
+        text_short += "<span class='long_text'>" + other_text + "</span>";
+        return text_short;
     }
 }
