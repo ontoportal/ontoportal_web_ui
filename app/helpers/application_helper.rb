@@ -151,29 +151,25 @@ module ApplicationHelper
     if node.children.nil? || node.children.length < 1
       return string # unchanged
     end
-    node.children.sort! {|a,b| (a.prefLabel || a.id).downcase <=> (b.prefLabel || b.id).downcase}
+    node.children.sort! { |a, b| (a.prefLabel || a.id).downcase <=> (b.prefLabel || b.id).downcase }
     for child in node.children
       if child.id.eql?(id)
-        active_style="class='active'"
+        active_style = "class='active'"
       else
         active_style = ""
-      end
-      if child.expanded?
-        open = "class='open'"
-      else
-        open = ""
       end
 
       # This fake root will be present at the root of "flat" ontologies, we need to keep the id intact
       li_id = child.id.eql?("bp_fake_root") ? "bp_fake_root" : short_uuid
 
       if child.id.eql?("bp_fake_root")
-        string << "<li class='active' id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='#' #{active_style}>#{child.prefLabel}</a></li>"
+        string << tree_link_to_concept(li_id: li_id, child: child, ontology_acronym: '',
+                                       active_style: active_style, node: node)
       else
-        icons = child.relation_icon(node)
-        string << "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}' #{active_style}> #{child.prefLabel({use_html: true})}</a> #{icons}"
+        string << tree_link_to_concept(li_id: li_id, child: child, ontology_acronym: child.explore.ontology.acronym,
+                            active_style: active_style, node: node)
         if child.hasChildren && !child.expanded?
-          string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children'>ajax_class</a></li></ul>"
+          string << tree_link_to_children(li_id: li_id, child: child)
         elsif child.expanded?
           string << "<ul>"
           build_tree(child, string, id)
@@ -184,6 +180,18 @@ module ApplicationHelper
     end
 
     string
+  end
+
+  def tree_link_to_concept(li_id:, child:, ontology_acronym:, active_style:, node:)
+    page_name = ontology_viewer_page_name(ontology_acronym, child.prefLabel, 'Classes')
+    open = child.expanded? ? "class='open'" : ''
+    icons = child.relation_icon(node)
+    href = ontology_acronym.blank? ? '#' :  "/ontologies/#{child.explore.ontology.acronym}/concepts/?id=#{CGI.escape(child.id)}"
+    "<li #{open} id='#{li_id}'><a id='#{child.id}' data-bp-ont-page-name='#{page_name}' data-turbo=true data-turbo-frame='concept_show' href='#{href}' #{active_style}> #{child.prefLabel({ use_html: true })}</a> #{icons}"
+  end
+
+  def tree_link_to_children(li_id:, child:)
+    "<ul class='ajax'><li id='#{li_id}'><a id='#{child.id}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children'>ajax_class</a></li></ul>"
   end
 
   def loading_spinner(padding = false, include_text = true)
@@ -424,6 +432,9 @@ module ApplicationHelper
   def bp_class_link(cls_id, ont_acronym)
     return "#{bp_ont_link(ont_acronym)}?p=classes&conceptid=#{URI.escape(cls_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
   end
+  def bp_scheme_link(scheme_id, ont_acronym)
+    return "#{bp_ont_link(ont_acronym)}?p=schemes&schemeid=#{URI.escape(scheme_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+  end
   def get_link_for_cls_ajax(cls_id, ont_acronym, target=nil)
     # Note: bp_ajax_controller.ajax_process_cls will try to resolve class labels.
     # Uses 'http' as a more generic attempt to resolve class labels than .include? ont_acronym; the
@@ -443,27 +454,44 @@ module ApplicationHelper
       return auto_link(cls_id, :all, :target => '_blank')
     end
   end
+
   def get_link_for_ont_ajax(ont_acronym)
     # ajax call will replace the acronym with an ontology name (triggered by class='ont4ajax')
     href_ont = " href='#{bp_ont_link(ont_acronym)}' "
     data_ont = " data-ont='#{ont_acronym}' "
     return "<a class='ont4ajax' #{data_ont} #{href_ont}>#{ont_acronym}</a>"
   end
+
+  def get_link_for_scheme_ajax(scheme, ont_acronym, target='_blank')
+    # ajax call will replace the URI with the scheme prefLabel  (triggered by class='scheme4ajax')
+    link_to scheme, bp_scheme_link(scheme, ont_acronym), {class: 'scheme4ajax', id: scheme, target:  target, data: {ont: ont_acronym} }
+  end
   ###END ruby equivalent of JS code in bp_ajax_controller.
+  def ontology_viewer_page_name(ontology_name, concept_name_title , page)
+    ontology_name + " | " +concept_name_title + " - #{page.capitalize}"
+  end
 
+  def link_to_modal(name, options = nil, html_options = nil, &block)
 
+    html_options[:data].merge!({
+                                 controller: 'modal', turbo: true,
+                                 turbo_frame: 'application_modal_content',
+                                 action: 'click->modal#show'
+                               })
+    link_to(name, options, html_options, &block)
+  end
   def uri?(url)
     url =~ /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/
   end
 
   def extract_label_from(uri)
-    label = uri.to_s
+    label = uri.to_s.chomp('/').chomp('#')
     index = label.index('#')
     if !index.nil?
       label = label[(index + 1) , uri.length-1]
     else
       index = label.rindex('/')
-      label = label[(index + 1), uri.length-1]  if index > -1
+      label = label[(index + 1), uri.length-1]  if index > -1 && index < (uri.length - 1)
     end
     label
   end

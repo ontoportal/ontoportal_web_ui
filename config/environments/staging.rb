@@ -14,6 +14,10 @@ BioportalWebUi::Application.configure do
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
 
+  # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
+  # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
+  config.require_master_key = true
+
   # Enable Rack::Cache to put a simple HTTP cache in front of your application
   # Add `rack-cache` to your Gemfile before enabling this.
   # For large-scale production use, consider using a caching reverse proxy like
@@ -21,7 +25,7 @@ BioportalWebUi::Application.configure do
   # config.action_dispatch.rack_cache = true
 
   # Compress JavaScripts and CSS.
-  config.assets.js_compressor = Uglifier.new(harmony: true)
+  config.assets.js_compressor = :terser
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.

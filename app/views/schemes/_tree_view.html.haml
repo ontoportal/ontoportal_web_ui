@@ -1,0 +1,29 @@
+- schemes_labels, main_scheme_label = get_schemes_labels(@schemes, @submission_latest.URI)
+- selected_scheme_id = params[:scheme_id].nil? && !main_scheme_label.nil? ? main_scheme_label["@id"] : CGI.unescape(params[:scheme_id] || '')
+- if schemes_labels.empty?
+  %div
+    no schemes detected
+- else
+  - if main_scheme_label.nil?
+    %div
+      %div.alert.alert-warning.mx-2.text-wrap
+        no main scheme defined in the attribute URI
+  %div
+    %ul.simpleTree{data:{controller: 'simple-tree', 'simple-tree-p-value': 'schemes', 'simple-tree-filter-key-value': 'scheme_id'}}
+      %li.root
+        %ul
+          %li.open
+            - unless main_scheme_label.nil?
+              %a{id: main_scheme_label["@id"],
+               href: scheme_path(main_scheme_label["@id"]),
+               data: { turbo: "true", 'turbo-frame': 'scheme'},
+               class: selected_scheme_id.eql?(main_scheme_label["@id"]) ? "active" : nil }
+                = get_scheme_label(main_scheme_label)
+            %ul
+              - schemes_labels.sort_by{|s| [s["prefLabel"]]}.each do  |s|
+                - if main_scheme_label.nil? || s["prefLabel"] != main_scheme_label["prefLabel"]
+                  %li.doc
+                    %a{id: s["@id"], href: scheme_path(s["@id"]),
+                    data: { turbo: "true", 'turbo-frame': 'scheme'},
+                    class: selected_scheme_id.eql?(s["@id"]) ? "active" : nil }
+                      = get_scheme_label(s)

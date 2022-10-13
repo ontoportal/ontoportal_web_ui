@@ -21,6 +21,7 @@ function get_link_for_ont_ajax(ont_acronym) {
 
 var
   ajax_process_cls_interval = null,
+  ajax_process_scheme_interval = null,
   ajax_process_interportal_cls_interval = null,
   ajax_process_ont_interval = null,
   ajax_process_timeout = 20, // Timeout after 20 sec.
@@ -192,7 +193,6 @@ var ajax_process_cls = function() {
     }
   });
 };
-
 
 // **************************************************************************************
 // INTERPORTAL CLASS LABELS
