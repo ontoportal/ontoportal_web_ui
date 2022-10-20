@@ -6,13 +6,13 @@ test:
 development:
   ontologies:
     CL:
-      repository: 'obophenotype/cell-ontology'
+      repository: 'jvendetti/bioportal-nigms-u24'
     GO:
-      repository: 'geneontology/go-ontology'
+      repository: 'jvendetti/bioportal-nigms-u24'
     MONDO:
-      repository: 'monarch-initiative/mondo'
+      repository: 'jvendetti/bioportal-nigms-u24'
     UBERON:
-      repository: 'obophenotype/uberon'
+      repository: 'jvendetti/bioportal-nigms-u24'
 
 staging:
   ontologies:
