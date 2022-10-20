@@ -88,23 +88,21 @@
     %div.col
       %div.card
         %div.card-header
-          - sections  = %w[summary classes properties instances notes mappings widgets]
+          - sections = sections_to_show
           -# Tabbed navigation bar for ontology content sections
           %ul.nav.nav-tabs.card-header-tabs{id: "navbar-ontology", role: "tablist"}
             - sections.each do |section|
-              - if show_section?(section)
-                %li.nav-item
-                  = link_to(section_name(section) , ontology_path(@ontology.acronym, p: section),
+              %li.nav-item
+                = link_to(section_name(section) , ontology_path(@ontology.acronym, p: section),
                         id: "ont-#{section}-tab", class: "nav-link #{selected_section?(section) ? 'active show' : ''}",
                         data: {toggle: "tab", target: "#ont_#{section}_content", 'bp-ont-page': section ,
                         'bp-ont-page-name': ontology_viewer_page_name(@ontology.name, @concept&.prefLabel || '', section) })
         %div.card-body
           %div.tab-content
             - sections.each do |section|
-              - if show_section?(section)
-                %div.tab-pane{id: "ont_#{section}_content", class: selected_section?(section) ? 'active show' : ''}
-                  = lazy_load_section(section) do
-                    = yield
+              %div.tab-pane{id: "ont_#{section}_content", class: selected_section?(section) ? 'active show' : ''}
+                = lazy_load_section(section) do
+                  = yield
 
   = render partial: "layouts/footer"
 

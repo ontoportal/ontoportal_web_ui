@@ -395,16 +395,14 @@ module OntologiesHelper
      }].to_json
   end
 
-  def show_section?(section)
-    if @ontology.summaryOnly
-      section.eql?('summary')
-    elsif section.eql?('schemes')
-      @submission_latest.hasOntologyLanguage == 'SKOS'
-    elsif section.eql?('instances')
-      @submission_latest.hasOntologyLanguage != 'SKOS'
-    else
-      true
+  def sections_to_show
+    sections = ['summary']
+
+    unless @ontology.summaryOnly || @submission_latest.nil?
+      sections += %w[classes properties notes mappings]
+      sections += %w[instances] if @submission_latest.hasOntologyLanguage != 'SKOS'
     end
+    sections
   end
 end
 
