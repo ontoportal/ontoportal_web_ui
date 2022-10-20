@@ -139,12 +139,11 @@ module ApplicationHelper
     end
   end
 
-  def draw_tree(root, id = nil, type = "Menu")
-    if id.nil?
-      id = root.children.first.id
-    end
+  def draw_tree(root, id = nil, concept_schemes = [])
+    id = root.children.first.id if id.nil?
+
     # TODO: handle tree view for obsolete classes, e.g. 'http://purl.obolibrary.org/obo/GO_0030400'
-    raw build_tree(root, "", id)  # returns a string, representing nested list items
+    raw build_tree(root, '', id, concept_schemes: concept_schemes)
   end
 
   def build_tree(node, string, id)
@@ -186,8 +185,17 @@ module ApplicationHelper
     page_name = ontology_viewer_page_name(ontology_acronym, child.prefLabel, 'Classes')
     open = child.expanded? ? "class='open'" : ''
     icons = child.relation_icon(node)
-    href = ontology_acronym.blank? ? '#' :  "/ontologies/#{child.explore.ontology.acronym}/concepts/?id=#{CGI.escape(child.id)}"
-    "<li #{open} id='#{li_id}'><a id='#{child.id}' data-bp-ont-page-name='#{page_name}' data-turbo=true data-turbo-frame='concept_show' href='#{href}' #{active_style}> #{child.prefLabel({ use_html: true })}</a> #{icons}"
+    muted_style = child.isInScheme&.empty? ? 'text-muted' : ''
+    href = ontology_acronym.blank? ? '#' : "/ontologies/#{child.explore.ontology.acronym}/concepts/?id=#{CGI.escape(child.id)}"
+    link = <<-eos
+        <a id='#{child.id}' data-bp-ont-page-name='#{page_name}' 
+           data-turbo=true data-turbo-frame='concept_show' href='#{href}' 
+            class='#{muted_style} #{active_style}'> 
+            #{child.prefLabel({ use_html: true })}
+        </a>
+    eos
+
+    "<li #{open} id='#{li_id}'>#{link} #{icons}"
   end
 
   def tree_link_to_children(li_id:, child:)
