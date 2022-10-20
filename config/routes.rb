@@ -34,6 +34,7 @@ Rails.application.routes.draw do
     resources :submissions
     get 'instances/:instance_id', to: 'instances#show', constraints: { instance_id: /[^\/?]+/ }
     get 'schemes/show_scheme', to: 'schemes#show'
+    get 'collections/show'
   end
 
   resources :login
@@ -113,6 +114,7 @@ Rails.application.routes.draw do
   get '/ajax/classes/label' => 'concepts#show_label'
   get '/ajax/classes/definition' => 'concepts#show_definition'
   get '/ajax/classes/treeview' => 'concepts#show_tree'
+  get '/ajax/classes/list' => 'collections#show_members'
   get '/ajax/properties/tree' => 'concepts#property_tree'
   get 'ajax/:ontology_id/schemes/:scheme_id/show_label', to: "schemes#show_label", constraints: { scheme_id: /[^\/?]+/ }
   get '/ajax/biomixer' => 'concepts#biomixer'

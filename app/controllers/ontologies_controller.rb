@@ -5,6 +5,7 @@ class OntologiesController < ApplicationController
   include ActionView::Helpers::NumberHelper
   include OntologiesHelper
   include SchemesHelper
+  include CollectionsHelper
   include MappingStatistics
 
   require 'multi_json'
@@ -17,7 +18,7 @@ class OntologiesController < ApplicationController
 
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
   before_action :submission_metadata, only: [:show]
-  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties" ,"instances", "schemes"])
+  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties" ,"instances", "schemes", "collections"])
   EXTERNAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/ExternalMappings"
   INTERPORTAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/InterportalMappings"
 
@@ -181,6 +182,7 @@ display_context: false, include: browse_attributes)
 
     if @submission.hasOntologyLanguage === 'SKOS'
       @schemes =  get_schemes(@ontology.acronym)
+      @collections = get_collections(@ontology.acronym)
     else
       @instance_details, type = get_instance_and_type(params[:instanceid])
       unless @instance_details.empty? || type.nil? || concept_id_param_exist?(params)
@@ -304,6 +306,18 @@ display_links: false, display_context: false)
     end
   end
 
+  def collections
+    @collections = get_collections(@ontology.acronym)
+    collection_id = params[:collection_id]
+    @collection = get_collection(@ontology.acronym, collection_id) if collection_id
+
+    if request.xhr?
+      render partial: 'ontologies/sections/collections', layout: false
+    else
+      render partial: 'ontologies/sections/collections', layout: 'ontology_viewer'
+    end
+  end
+
   # GET /ontologies/ACRONYM
   # GET /ontologies/1.xml
   def show
@@ -387,7 +401,8 @@ display_links: false, display_context: false)
         self.instances
       when 'schemes'
         self.schemes
-        return
+      when 'collections'
+        self.collections
       else
         self.summary
     end
