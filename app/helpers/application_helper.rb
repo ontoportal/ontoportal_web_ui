@@ -146,42 +146,38 @@ module ApplicationHelper
     raw build_tree(root, '', id, concept_schemes: concept_schemes)
   end
 
-  def build_tree(node, string, id)
-    if node.children.nil? || node.children.length < 1
-      return string # unchanged
-    end
+  def build_tree(node, string, id, concept_schemes: [])
+
+    return string if node.children.nil? || node.children.empty?
+
     node.children.sort! { |a, b| (a.prefLabel || a.id).downcase <=> (b.prefLabel || b.id).downcase }
-    for child in node.children
-      if child.id.eql?(id)
-        active_style = "class='active'"
-      else
-        active_style = ""
-      end
+    node.children.each do |child|
+      active_style = child.id.eql?(id) ? "active" : ''
 
       # This fake root will be present at the root of "flat" ontologies, we need to keep the id intact
-      li_id = child.id.eql?("bp_fake_root") ? "bp_fake_root" : short_uuid
 
-      if child.id.eql?("bp_fake_root")
-        string << tree_link_to_concept(li_id: li_id, child: child, ontology_acronym: '',
+
+      if child.id.eql?('bp_fake_root')
+        string << tree_link_to_concept(child: child, ontology_acronym: '',
                                        active_style: active_style, node: node)
       else
-        string << tree_link_to_concept(li_id: li_id, child: child, ontology_acronym: child.explore.ontology.acronym,
-                            active_style: active_style, node: node)
+        string << tree_link_to_concept(child: child, ontology_acronym: child.explore.ontology.acronym,
+                                       active_style: active_style, node: node)
         if child.hasChildren && !child.expanded?
-          string << tree_link_to_children(li_id: li_id, child: child)
+          string << tree_link_to_children(child: child, concept_schemes: concept_schemes)
         elsif child.expanded?
-          string << "<ul>"
-          build_tree(child, string, id)
-          string << "</ul>"
+          string << '<ul>'
+          build_tree(child, string, id, concept_schemes: concept_schemes)
+          string << '</ul>'
         end
-        string << "</li>"
+        string << '</li>'
       end
     end
-
     string
   end
 
-  def tree_link_to_concept(li_id:, child:, ontology_acronym:, active_style:, node:)
+  def tree_link_to_concept(child:, ontology_acronym:, active_style:, node:)
+    li_id = child.id.eql?('bp_fake_root') ? 'bp_fake_root' : short_uuid
     page_name = ontology_viewer_page_name(ontology_acronym, child.prefLabel, 'Classes')
     open = child.expanded? ? "class='open'" : ''
     icons = child.relation_icon(node)
@@ -198,8 +194,11 @@ module ApplicationHelper
     "<li #{open} id='#{li_id}'>#{link} #{icons}"
   end
 
-  def tree_link_to_children(li_id:, child:)
-    "<ul class='ajax'><li id='#{li_id}'><a id='#{child.id}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children'>ajax_class</a></li></ul>"
+  def tree_link_to_children(child:, concept_schemes: [])
+    li_id = child.id.eql?('bp_fake_root') ? 'bp_fake_root' : short_uuid
+    concept_schemes = concept_schemes.map{|x| CGI.escape(x)}.join(',')
+    link = "<a id='#{child.id}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&concept_schemes=#{concept_schemes}&callback=children'>ajax_class</a>"
+    "<ul class='ajax'><li id='#{li_id}'>#{link}</li></ul>"
   end
 
   def loading_spinner(padding = false, include_text = true)
