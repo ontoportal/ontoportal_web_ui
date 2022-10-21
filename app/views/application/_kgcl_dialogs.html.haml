@@ -1,25 +1,4 @@
--# Boostrap modal dialogs for ontology change requests
+-# Boostrap modal dialog for ontology change requests
   (must reside in a top-level position in the document to display properly)
 
--# Create synonym dialog
-%div{class: 'modal fade', id: 'createSynonymModal', tabindex: '-1', role: 'dialog', 'aria-labelledby': 'createSynonymModalLabel', 'aria-hidden': 'true'}
-  %div{class: 'modal-dialog modal-dialog-centered modal-lg', role: 'document'}
-    %div{class: 'modal-content'}
-      %div{class: 'modal-header'}
-        %h5{class: 'modal-title', id: 'createSynonymModalLabel'}
-        %button{type: 'button', class: 'close', 'data-dismiss': 'modal', 'aria-label': 'Close'}
-          %span{'aria-hidden': 'true'} &times;
-      %div{class: 'modal-body'}
-        %form
-          %div{class: 'form-group'}
-            %label{for: 'createSynonymLabelInput'} Label
-            %input{type: 'text', class: 'form-control', id: 'createSynonymLabelInput'}
-          %div{class: 'form-group'}
-            %label{for: 'createSynonymTypeSelect'} Type
-            = synonym_type_select
-          %div{class: 'form-group'}
-            %label{for: 'createSynonymCommentTextarea'} Comment
-            %textarea{class: 'form-control', id: 'createSynonymCommentTextarea', rows: 5}
-      %div{class: 'modal-footer'}
-        %button{type: 'button', class: 'btn btn-secondary', 'data-dismiss': 'modal'} Close
-        %button{type: 'button', class: 'btn btn-primary', 'data-dismiss': 'modal'} Submit
+%div{class: 'modal', id: 'changeRequestModal', tabindex: '-1', role: 'dialog', 'aria-labelledby': 'changeRequestModalLabel', 'aria-hidden': 'true'}

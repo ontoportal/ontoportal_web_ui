@@ -86,12 +86,13 @@ module ConceptsHelper
         content_tag(:i, '', class: 'fas fa-plus-circle fa-lg', aria: { hidden: 'true' }).html_safe
       end
     else
-      link_to(nil,
+      link_to(change_requests_create_synonym_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
+                                                  ont_acronym: @ontology.acronym),
               role: 'button',
-              id: 'createSynonymButton',
               class: 'btn btn-link',
               aria: { label: 'Create synonym' },
-              data: { toggle: 'modal', target: '#createSynonymModal', concept_label: @concept.prefLabel }) do
+              data: { toggle: 'modal', target: '#changeRequestModal' },
+              remote: 'true') do
         content_tag(:i, '', class: 'fas fa-plus-circle fa-lg', aria: { hidden: 'true' }).html_safe
       end
     end
@@ -111,9 +112,9 @@ module ConceptsHelper
     end
   end
 
-  def synonym_type_select
+  def synonym_qualifier_select(form)
     options = [%w[exact exact], %w[narrow narrow], %w[broad broad], %w[related related]]
-    select_tag('createSynonymTypeSelect', options_for_select(options, 0), class: 'form-control')
+    form.select :qualifier, options_for_select(options, 0), {}, { class: 'form-control' }
   end
 
   private

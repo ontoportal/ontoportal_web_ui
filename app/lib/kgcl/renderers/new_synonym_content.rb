@@ -27,23 +27,27 @@ class NewSynonymContent
   end
 
   def comment
-    @params[:comment]
+    @params[:create_synonym][:comment]
   end
 
-  def curie
-    @params[:curie]
+  def concept_id
+    @params[:concept_id]
+  end
+
+  def concept_label
+    @params[:concept_label]
   end
 
   def get_binding
     binding
   end
 
-  def pref_label
-    @params[:pref_label]
+  def qualifier
+    @params[:create_synonym][:qualifier]
   end
 
-  def synonym
-    @params[:synonym]
+  def synonym_label
+    @params[:create_synonym][:preferred_label]
   end
 
   def username

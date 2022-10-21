@@ -6,18 +6,17 @@ RSpec.describe KGCL::IssueContentGenerator do
   it 'generates issue content for new synonym change requests' do
     params = {
       operation: KGCL::Operations::NEW_SYNONYM,
-      synonym: 'taste-bud cell',
-      pref_label: 'taste receptor cell',
-      curie: 'CL:0000209',
-      comment: 'I really, really want to have this new synonym added!',
-      username: 'Daenerys Targaryen'
+      concept_id: 'CL:0000209',
+      concept_label: 'taste receptor cell',
+      username: 'Daenerys Targaryen',
+      create_synonym: { preferred_label: 'taste-bud cell', qualifier: 'exact', comment: 'Please add this!' }
     }
 
-    title = 'New synonym "taste-bud cell" for taste receptor cell (CL:0000209)'
+    title = "Add synonym 'taste-bud cell' for taste receptor cell"
     body = <<~HEREDOC.chomp
-      `new synonym "taste-bud cell" for CL:0000209`
+      create exact synonym 'taste-bud cell' for CL:0000209
 
-      Comment: I really, really want to have this new synonym added!
+      Comment: Please add this!
 
       This request comes from BioPortal user: Daenerys Targaryen
     HEREDOC
