@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import ChosenController from "./chosen_controller"
+application.register("chosen", ChosenController)
+
 import ClassSearchAutoCompleteController from "./class_search_auto_complete_controller"
 application.register("class-search", ClassSearchAutoCompleteController)
 
