@@ -176,20 +176,19 @@ module ApplicationHelper
     string
   end
 
-  def tree_link_to_concept(child:, ontology_acronym:, active_style:, node:)
+  def tree_link_to_concept(child:, ontology_acronym:, active_style:, node: nil)
     li_id = child.id.eql?('bp_fake_root') ? 'bp_fake_root' : short_uuid
-    page_name = ontology_viewer_page_name(ontology_acronym, child.prefLabel, 'Classes')
     open = child.expanded? ? "class='open'" : ''
     icons = child.relation_icon(node)
     muted_style = child.isInScheme&.empty? ? 'text-muted' : ''
     href = ontology_acronym.blank? ? '#' : "/ontologies/#{child.explore.ontology.acronym}/concepts/?id=#{CGI.escape(child.id)}"
-    link = <<-eos
-        <a id='#{child.id}' data-bp-ont-page-name='#{page_name}' 
+    link = <<-EOS
+        <a id='#{child.id}' data-conceptid='#{child.id}'
            data-turbo=true data-turbo-frame='concept_show' href='#{href}' 
-            class='#{muted_style} #{active_style}'> 
+            class='#{muted_style} #{active_style}'>
             #{child.prefLabel({ use_html: true })}
         </a>
-    eos
+    EOS
 
     "<li #{open} id='#{li_id}'>#{link} #{icons}"
   end
