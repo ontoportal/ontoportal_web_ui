@@ -461,12 +461,14 @@ display_links: false, display_context: false)
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym] || params[:id]).first
     @ontology.update_from_params(ontology_params)
     error_response = @ontology.update
-    if error_response
+    if error_response && (error_response.status != 204)
       @categories = LinkedData::Client::Models::Category.all
       @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
       @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
       @errors = response_errors(error_response)
       @errors = { acronym: 'Acronym already exists, please use another' } if error_response.status == 409
+      flash[:error] = @errors
+      redirect_to "/ontologies/#{@ontology.acronym}/edit"
     else
       # TODO_REV: Enable subscriptions
       # if params["ontology"]["subscribe_notifications"].eql?("1")
