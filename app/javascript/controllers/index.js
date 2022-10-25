@@ -19,11 +19,14 @@ application.register("load-chart", LoadChartController)
 import MetadataDownloaderController from "./metadata_downloader_controller"
 application.register("metadata-downloader", MetadataDownloaderController)
 
+import ShowModalController from "./show_modal_controller"
+application.register("modal", ShowModalController)
+
 import SimpleTreeController from "./simple_tree_controller"
 application.register("simple-tree", SimpleTreeController)
 
-import ShowModalController from "./show_modal_controller"
-application.register("modal", ShowModalController)
+import SkosCollectionColorsController from "./skos_collection_colors_controller"
+application.register("skos-collection-colors", SkosCollectionColorsController)
 
 import TurboModalController from "../../components/turbo_modal_component/turbo_modal_component_controller"
 application.register("turbo-modal", TurboModalController)
