@@ -52,16 +52,13 @@ export default class extends Controller {
     }
 
     #afterClick(node) {
-        const page_name = $(node.context).attr("data-bp-ont-page-name")
-        const conf = jQuery(document).data().bp.ont_viewer
-        const concept_id = jQuery(node).children("a").attr("id")
-        const data = {
-            p: this.pValue,
-            [this.filterKeyValue]: concept_id
-        }
-        const params = new URLSearchParams(data)
+        this.element.dispatchEvent(new CustomEvent('clicked', {
+            detail: {
+                node: node,
+                data: {...node.context.dataset}
 
-        History.pushState(data, page_name + " | " + conf.org_site, `?${params}`)
+            }
+        }))
     }
 
     #afterAjaxError(node) {

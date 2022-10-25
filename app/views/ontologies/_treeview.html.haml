@@ -1,11 +1,10 @@
 = turbo_frame_tag 'concepts_tree_view' do
   #tree_wrapper.hide-if-loading
-    %ul.simpleTree{data:{controller: 'simple-tree', 'simple-tree-p-value': 'classes', 'simple-tree-filter-key-value': 'conceptid'}}
+    %ul.simpleTree{data:{controller: 'simple-tree history',
+                        'simple-tree': { 'auto-click-value': "#{autoCLick}" },
+                        action: 'clicked->history#updateURL'}}
       %li.root
         %ul
           = draw_tree(@root, @concept.id)  # application_helper::draw_tree
 
-  :javascript
-    jQuery(document).ready(function () {
-      jQuery("#sd_content").scrollTo(jQuery('a.active'));
-    })
+
