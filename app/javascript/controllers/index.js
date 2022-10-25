@@ -10,6 +10,9 @@ application.register("class-search", ClassSearchAutoCompleteController)
 import ContainerSplitterController from "./container_splitter_controller"
 application.register("container-splitter", ContainerSplitterController)
 
+import HistoryController from "./history_controller"
+application.register("history", HistoryController)
+
 import LoadChartController from "./load_chart_controller"
 application.register("load-chart", LoadChartController)
 
