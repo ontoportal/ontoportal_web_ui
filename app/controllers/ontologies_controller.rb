@@ -180,9 +180,9 @@ display_context: false, include: browse_attributes)
     @submission = get_ontology_submission_ready(@ontology)
     get_class(params)
 
-    if @submission.hasOntologyLanguage === 'SKOS'
+    if @submission.hasOntologyLanguage == 'SKOS'
       @schemes =  get_schemes(@ontology.acronym)
-      @collections = get_collections(@ontology.acronym)
+      @collections = get_collections(@ontology.acronym, add_colors: true)
     else
       @instance_details, type = get_instance_and_type(params[:instanceid])
       unless @instance_details.empty? || type.nil? || concept_id_param_exist?(params)
