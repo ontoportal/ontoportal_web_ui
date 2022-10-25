@@ -5,8 +5,6 @@ test:
 
 development:
   ontologies:
-    CL:
-      repository: 'jvendetti/bioportal-nigms-u24'
     GO:
       repository: 'jvendetti/bioportal-nigms-u24'
     MONDO:
@@ -16,8 +14,6 @@ development:
 
 staging:
   ontologies:
-    CL:
-      repository: 'obophenotype/cell-ontology'
     GO:
       repository: 'geneontology/go-ontology'
     MONDO:
@@ -27,8 +23,6 @@ staging:
 
 production:
   ontologies:
-    CL:
-      repository: 'obophenotype/cell-ontology'
     GO:
       repository: 'geneontology/go-ontology'
     MONDO:
