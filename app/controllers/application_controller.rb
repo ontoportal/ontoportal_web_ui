@@ -416,7 +416,7 @@ class ApplicationController < ActionController::Base
       if ignore_concept_param
         # get the top level nodes for the root
         # TODO_REV: Support views? Replace old view call: @ontology.top_level_classes(view)
-        roots = @ontology.explore.roots(concept_scheme: params[:concept_schemes])
+        roots = @ontology.explore.roots(concept_schemes: params[:concept_schemes])
         if roots.nil? || roots.empty?
           LOG.add :debug, "Missing roots for #{@ontology.acronym}"
           not_found
@@ -442,9 +442,9 @@ class ApplicationController < ActionController::Base
         end
 
         # Create the tree
-        rootNode = @concept.explore.tree(include: "prefLabel,hasChildren,obsolete", concept_scheme: params[:concept_schemes])
+        rootNode = @concept.explore.tree(include: "prefLabel,hasChildren,obsolete", concept_schemes: params[:concept_schemes])
         if rootNode.nil? || rootNode.empty?
-          roots = @ontology.explore.roots(concept_scheme: params[:concept_schemes])
+          roots = @ontology.explore.roots(concept_schemes: params[:concept_schemes])
           if roots.nil? || roots.empty?
             LOG.add :debug, "Missing roots for #{@ontology.acronym}"
             not_found

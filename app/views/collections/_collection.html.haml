@@ -1,0 +1,18 @@
+= turbo_frame_tag 'collection' do
+  = render layout: 'shared/resource_show',
+          locals: {top_keys: %w[created modified comment note],
+          bottom_keys: ['member'], properties: collection.properties } do
+    %tr
+      %td.label
+        ID
+      %td
+        %p
+          = collection["@id"]
+    %tr
+      %td{nowrap: ""} Preferred Name
+      %td
+        %p= get_collection_label(collection)
+    %tr
+      %td{nowrap: ""} Members count
+      %td
+        %p= collection["memberCount"]

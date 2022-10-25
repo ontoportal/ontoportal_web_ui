@@ -9,14 +9,14 @@
       %div.alert.alert-warning.mx-2.text-wrap
         no main scheme defined in the attribute URI
   %div
-    %ul.simpleTree{data:{controller: 'simple-tree', 'simple-tree-p-value': 'schemes', 'simple-tree-filter-key-value': 'scheme_id'}}
+    %ul.simpleTree{data:{controller: 'simple-tree history', action: 'clicked->history#updateURL'}}
       %li.root
         %ul
           %li.open
             - unless main_scheme_label.nil?
               %a{id: main_scheme_label["@id"],
                href: scheme_path(main_scheme_label["@id"]),
-               data: { turbo: "true", 'turbo-frame': 'scheme'},
+               data: { turbo: "true", 'turbo-frame': 'scheme', schemeid: main_scheme_label["@id"]},
                class: selected_scheme_id.eql?(main_scheme_label["@id"]) ? "active" : nil }
                 = get_scheme_label(main_scheme_label)
             %ul
@@ -24,6 +24,6 @@
                 - if main_scheme_label.nil? || s["prefLabel"] != main_scheme_label["prefLabel"]
                   %li.doc
                     %a{id: s["@id"], href: scheme_path(s["@id"]),
-                    data: { turbo: "true", 'turbo-frame': 'scheme'},
+                    data: { turbo: "true", 'turbo-frame': 'scheme', schemeid: s["@id"]},
                     class: selected_scheme_id.eql?(s["@id"]) ? "active" : nil }
                       = get_scheme_label(s)

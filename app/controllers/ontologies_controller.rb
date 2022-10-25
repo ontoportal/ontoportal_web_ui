@@ -5,6 +5,7 @@ class OntologiesController < ApplicationController
   include ActionView::Helpers::NumberHelper
   include OntologiesHelper
   include SchemesHelper
+  include CollectionsHelper
   include MappingStatistics
 
   require 'multi_json'
@@ -17,7 +18,7 @@ class OntologiesController < ApplicationController
 
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
   before_action :submission_metadata, only: [:show]
-  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties" ,"instances", "schemes"])
+  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties" ,"instances", "schemes", "collections"])
   EXTERNAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/ExternalMappings"
   INTERPORTAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/InterportalMappings"
 
@@ -179,8 +180,9 @@ display_context: false, include: browse_attributes)
     @submission = get_ontology_submission_ready(@ontology)
     get_class(params)
 
-    if @submission.hasOntologyLanguage === 'SKOS'
+    if @submission.hasOntologyLanguage == 'SKOS'
       @schemes =  get_schemes(@ontology.acronym)
+      @collections = get_collections(@ontology.acronym, add_colors: true)
     else
       @instance_details, type = get_instance_and_type(params[:instanceid])
       unless @instance_details.empty? || type.nil? || concept_id_param_exist?(params)
@@ -205,17 +207,17 @@ display_context: false, include: browse_attributes)
     update_tab(@ontology, @concept.id)
 
     if request.xhr?
-      render 'visualize', layout: false
+      render 'ontologies/sections/visualize', layout: false
     else
-      render 'visualize', layout: 'ontology_viewer'
+      render 'ontologies/sections/visualize', layout: 'ontology_viewer'
     end
   end
 
   def properties
     if request.xhr?
-      return render 'properties', layout: false
+      return render 'ontologies/sections/properties', layout: false
     else
-      return render 'properties', layout: 'ontology_viewer'
+      return render 'ontologies/sections/properties', layout: 'ontology_viewer'
     end
   end
 
@@ -255,9 +257,9 @@ display_context: false, include: browse_attributes)
     @ontology_acronym = @ontology.acronym || params[:id]
     @mapping_counts = mapping_counts(@ontology_acronym)
     if request.xhr?
-      render partial: 'mappings', layout: false
+      render partial: 'ontologies/sections/mappings', layout: false
     else
-      render partial: 'mappings', layout: 'ontology_viewer'
+      render partial: 'ontologies/sections/mappings', layout: 'ontology_viewer'
     end
   end
 
@@ -278,9 +280,9 @@ display_links: false, display_context: false)
     # @notes.each {|n| @notes_deletable = true if n.deletable?(session[:user])} if @notes.kind_of?(Array)
     @note_link = "/ontologies/#{@ontology.acronym}/notes/"
     if request.xhr?
-      render partial: 'notes', layout: false
+      render partial: 'ontologies/sections/notes', layout: false
     else
-      render partial: 'notes', layout: 'ontology_viewer'
+      render partial: 'ontologies/sections/notes', layout: 'ontology_viewer'
     end
   end
 
@@ -298,9 +300,21 @@ display_links: false, display_context: false)
     @scheme = get_scheme(@ontology.acronym, scheme_id) if scheme_id
 
     if request.xhr?
-      render partial: 'schemes', layout: false
+      render partial: 'ontologies/sections/schemes', layout: false
     else
-      render partial: 'schemes', layout: 'ontology_viewer'
+      render partial: 'ontologies/sections/schemes', layout: 'ontology_viewer'
+    end
+  end
+
+  def collections
+    @collections = get_collections(@ontology.acronym)
+    collection_id = params[:collection_id]
+    @collection = get_collection(@ontology.acronym, collection_id) if collection_id
+
+    if request.xhr?
+      render partial: 'ontologies/sections/collections', layout: false
+    else
+      render partial: 'ontologies/sections/collections', layout: 'ontology_viewer'
     end
   end
 
@@ -371,34 +385,26 @@ display_links: false, display_context: false)
       when 'terms'
         params[:p] = 'classes'
         redirect_to "/ontologies/#{params[:ontology]}#{params_string_for_redirect(params)}", status: :moved_permanently
-        return
       when 'classes'
         self.classes #rescue self.summary
-        return
       when 'mappings'
         self.mappings #rescue self.summary
-        return
       when 'notes'
         self.notes #rescue self.summary
-        return
       when 'widgets'
         self.widgets #rescue self.summary
-        return
       when 'properties'
         self.properties #rescue self.summary
-        return
       when 'summary'
         self.summary
-        return
       when 'instances'
         self.instances
-        return
       when 'schemes'
         self.schemes
-        return
+      when 'collections'
+        self.collections
       else
         self.summary
-        return
     end
   end
 
@@ -439,9 +445,9 @@ display_links: false, display_context: false)
     @views = get_views(@ontology)
     @view_decorators = @views.map{ |view| ViewDecorator.new(view, view_context) }
     if request.xhr?
-      render partial: 'metadata', layout: false
+      render partial: 'ontologies/sections/metadata', layout: false
     else
-      render partial: 'metadata', layout: 'ontology_viewer'
+      render partial: 'ontologies/sections/metadata', layout: 'ontology_viewer'
     end
   end
 
@@ -455,12 +461,14 @@ display_links: false, display_context: false)
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym] || params[:id]).first
     @ontology.update_from_params(ontology_params)
     error_response = @ontology.update
-    if error_response
+    if error_response && (error_response.status != 204)
       @categories = LinkedData::Client::Models::Category.all
       @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
       @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
       @errors = response_errors(error_response)
       @errors = { acronym: 'Acronym already exists, please use another' } if error_response.status == 409
+      flash[:error] = @errors
+      redirect_to "/ontologies/#{@ontology.acronym}/edit"
     else
       # TODO_REV: Enable subscriptions
       # if params["ontology"]["subscribe_notifications"].eql?("1")
@@ -480,11 +488,12 @@ display_links: false, display_context: false)
 
   def widgets
     if request.xhr?
-      render partial: 'widgets', layout: false
+      render partial: 'ontologies/sections/widgets', layout: false
     else
-      render partial: 'widgets', layout: 'ontology_viewer'
+      render partial: 'ontologies/sections/widgets', layout: 'ontology_viewer'
     end
   end
+
 
   private
 

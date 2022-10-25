@@ -1,0 +1,13 @@
+= turbo_frame_tag 'collections' do
+  %div.ont-schemes{data:{controller: 'container-splitter'}}
+    %div#schemesTree{data:{'container-splitter-target': 'container'}}
+      = render partial: 'collections/list_view'
+    %div#scheme_contents.pl-3{data:{'container-splitter-target': 'container'}}
+      = turbo_frame_tag 'collection' do
+        - if @collection
+          = render partial: 'collections/collection', locals: {collection: @collection}
+      %div.show-if-loading.align-self-center.my-auto
+        = loading_spinner(true)
+
+
+

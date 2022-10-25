@@ -10,7 +10,7 @@
         %ul.nav.nav-tabs.tabs
           %li#details_top.nav-item
             %a.nav-link.active.py-1{:href => "#details" , data:{toggle: 'tab', target: '#details_content'}} Details
-          - unless @submission.hasOntologyLanguage === 'SKOS'
+          - unless skos?
             %li#instances_top.nav-item
               %a.nav-link.py-1{:href => "#instances" , data:{toggle: 'tab', target: '#instances_content'}}
                 Instances
@@ -43,7 +43,7 @@
         #contents.tab-content
           #details_content.tab-pane.active.show
             = render :partial =>'/concepts/details'
-          - unless @submission.hasOntologyLanguage === 'SKOS'
+          - unless skos?
             #instances_content.tab-pane
               = render :partial =>'instances/instances' , locals: {id: "class-instances-data-table"}
           #visualization_content.tab-pane
@@ -55,7 +55,7 @@
           - if @enable_ontolobridge
             #request_term_content.tab-pane
               = render :partial =>'/concepts/request_term'
-%div.show-if-loading.align-self-center.my-auto
+%div.show-if-loading.align-self-center{style: 'margin-top: 30%'}
   loading...
 :javascript
   jQuery(document).ready(function(){

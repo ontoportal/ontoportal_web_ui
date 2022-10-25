@@ -1,0 +1,17 @@
+%div{data:{controller: 'skos-collection-colors',
+    'skos-collection-colors': {'collections-color-select-target-value': 'collection-color-filter'}}}
+  %div.pb-2
+    %div.mb-1
+      = render partial: 'ontologies/concepts_browsers/jump_to', locals: {id: "#concepts-tree-filter"}
+    - if skos?
+      %div#concepts-tree-filter.collapse.card.p-2
+        = render partial: 'ontologies/concepts_browsers/scheme_picker'
+        = render partial: 'ontologies/concepts_browsers/collections_picker',
+                       locals: {multiple: true, id: 'collection-color-filter',
+                       data: {action: 'changed->skos-collection-colors#updateCollectionTags' ,
+                        'chosen-enable-colors-value': 'true'}}
+  -# Class tree
+  %div#sd_content.card.p-1.py-3
+    = turbo_frame_tag 'concepts_tree_view' , src: "/ajax/classes/treeview?ontology=#{@ontology.acronym}&conceptid=#{escape(@concept.id)}&concept_schemes=#{params[:concept_schemes]}&auto_click=false"
+    %div.show-if-loading.align-self-center.my-auto
+      = loading_spinner(true)

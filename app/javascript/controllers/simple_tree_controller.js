@@ -3,9 +3,9 @@ import {useSimpleTree} from "../mixins/useSimpleTree";
 
 // Connects to data-controller="simple-tree"
 export default class extends Controller {
+
     static values = {
-        p: String,
-        filterKey: String
+        autoClick: {type: Boolean, default: false}
     }
 
     connect() {
@@ -14,6 +14,20 @@ export default class extends Controller {
             this.#afterAjaxError.bind(this),
             this.#beforeAjax.bind(this)
         )
+
+
+        this.simpleTreeCollection.ready(() => {
+            let activeElem = this.element.querySelector('a.active')
+            if (activeElem) {
+                $(this.element).scrollTo($(activeElem))
+
+                if (this.autoClickValue) {
+                    activeElem.click()
+                }
+            }
+
+
+        })
 
         this.#onClickTooManyChildrenInit()
     }
@@ -38,16 +52,13 @@ export default class extends Controller {
     }
 
     #afterClick(node) {
-        const page_name = $(node.context).attr("data-bp-ont-page-name")
-        const conf = jQuery(document).data().bp.ont_viewer
-        const concept_id = jQuery(node).children("a").attr("id")
-        const data = {
-            p: this.pValue,
-            [this.filterKeyValue]: concept_id
-        }
-        const params = new URLSearchParams(data)
+        this.element.dispatchEvent(new CustomEvent('clicked', {
+            detail: {
+                node: node,
+                data: {...node.context.dataset}
 
-        History.pushState(data, page_name + " | " + conf.org_site, `?${params}`)
+            }
+        }))
     }
 
     #afterAjaxError(node) {

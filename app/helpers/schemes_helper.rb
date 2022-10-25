@@ -45,7 +45,7 @@ module SchemesHelper
   end
 
   def concept_label_to_show(submission: @submission_latest)
-    submission.hasOntologyLanguage == 'SKOS' ? 'Concepts' : 'Classes'
+    submission&.hasOntologyLanguage == 'SKOS' ? 'Concepts' : 'Classes'
   end
 
   def section_name(section)
@@ -58,6 +58,17 @@ module SchemesHelper
 
   def scheme_path(scheme_id = '')
     "/ontologies/#{@ontology.acronym}/schemes/show_scheme?id=#{escape(scheme_id)}"
+  end
+
+  def no_main_scheme?
+    @submission.URI.nil? || @submission.URI.empty?
+  end
+
+  def schemes_data
+    schemes_labels, main_scheme = get_schemes_labels(@schemes,@submission.URI)
+    selected_scheme = @schemes.select{ |s| params[:concept_schemes]&.split(',')&.include?(s['@id']) }
+    selected_scheme = selected_scheme.empty? ? [main_scheme] : selected_scheme
+    [schemes_labels, main_scheme, selected_scheme]
   end
 end
 
