@@ -3,9 +3,9 @@ import {useSimpleTree} from "../mixins/useSimpleTree";
 
 // Connects to data-controller="simple-tree"
 export default class extends Controller {
+
     static values = {
-        p: String,
-        filterKey: String
+        autoClick: {type: Boolean, default: false}
     }
 
     connect() {
@@ -14,6 +14,20 @@ export default class extends Controller {
             this.#afterAjaxError.bind(this),
             this.#beforeAjax.bind(this)
         )
+
+
+        this.simpleTreeCollection.ready(() => {
+            let activeElem = this.element.querySelector('a.active')
+            if (activeElem) {
+                $(this.element).scrollTo($(activeElem))
+
+                if (this.autoClickValue) {
+                    activeElem.click()
+                }
+            }
+
+
+        })
 
         this.#onClickTooManyChildrenInit()
     }

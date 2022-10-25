@@ -96,7 +96,7 @@ class ConceptsController < ApplicationController
       not_found
     else 
       get_class(params) #application_controller
-      render partial: 'ontologies/treeview'
+      render partial: 'ontologies/treeview', locals: { autoCLick: params[:auto_click] || true }
     end
   end
 
