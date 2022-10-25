@@ -503,4 +503,8 @@ module ApplicationHelper
     label
   end
 
+  def skos?
+    submission = @submission || @submission_latest
+    submission&.hasOntologyLanguage === 'SKOS'
+  end
 end

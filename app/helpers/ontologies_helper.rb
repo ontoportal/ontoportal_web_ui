@@ -400,8 +400,8 @@ module OntologiesHelper
 
     unless @ontology.summaryOnly
       sections += %w[classes properties notes mappings]
-      sections += %w[schemes collections] if @submission_latest.hasOntologyLanguage == 'SKOS'
-      sections += %w[instances] if @submission_latest.hasOntologyLanguage != 'SKOS'
+      sections += %w[schemes collections] if skos?
+      sections += %w[instances] unless skos?
     end
     sections
   end
