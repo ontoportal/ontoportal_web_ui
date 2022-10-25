@@ -21,7 +21,7 @@ class CollectionsController < ApplicationController
     if @ontology.nil?
       not_found
     else
-      render partial: 'ontologies/listview'
+      render partial: 'concepts/list'
     end
   end
 

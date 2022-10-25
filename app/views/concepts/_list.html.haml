@@ -1,0 +1,12 @@
+= turbo_frame_tag 'concepts_list_view' do
+  #tree_wrapper.hide-if-loading
+    %div
+      %ul.simpleTree{data:{controller: 'simple-tree history','simple-tree': { 'auto-click-value': "true" }, action: 'clicked->history#updateURL'}}
+        %li.root
+          %ul
+            - concepts = @concepts.sort_by{|concept| [concept.prefLabel]}
+            = raw tree_link_to_concept(child: concepts.shift, ontology_acronym: @ontology.acronym, active_style: 'active')
+            - concepts.each do  |concept|
+              = raw tree_link_to_concept(child: concept, ontology_acronym: @ontology.acronym, active_style: '')
+
+
