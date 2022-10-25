@@ -26,6 +26,12 @@
 .tabs li.selected a {
   color: #fff !important;
 }
+
+.tabs a.active {
+  background-color: $color-primary !important;
+  color:#fff !important;
+}
+
 .minimal tbody tr:hover td {
   color: $color-primary;
 }
