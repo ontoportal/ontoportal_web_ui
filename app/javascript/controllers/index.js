@@ -30,6 +30,8 @@ application.register("skos-collection-colors", SkosCollectionColorsController)
 
 import TurboModalController from "../../components/turbo_modal_component/turbo_modal_component_controller"
 application.register("turbo-modal", TurboModalController)
+import TurboFrameController from "./turbo_frame_controller"
+application.register("turbo-frame", TurboFrameController)
 
 import FormAutoCompleteController from "./form_auto_complete_controller"
 application.register("form-auto-complete", FormAutoCompleteController)
