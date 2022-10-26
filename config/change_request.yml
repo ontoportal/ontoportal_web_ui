@@ -6,20 +6,20 @@ test:
 development:
   ontologies:
     GO:
-      repository: 'jvendetti/bioportal-nigms-u24'
+      repository: 'hrshdhgd/go-ontology'
     MONDO:
-      repository: 'jvendetti/bioportal-nigms-u24'
+      repository: 'hrshdhgd/mondo'
     UBERON:
-      repository: 'jvendetti/bioportal-nigms-u24'
+      repository: 'hrshdhgd/uberon'
 
 staging:
   ontologies:
     GO:
-      repository: 'geneontology/go-ontology'
+      repository: 'hrshdhgd/go-ontology'
     MONDO:
-      repository: 'monarch-initiative/mondo'
+      repository: 'hrshdhgd/mondo'
     UBERON:
-      repository: 'obophenotype/uberon'
+      repository: 'hrshdhgd/uberon'
 
 production:
   ontologies:
