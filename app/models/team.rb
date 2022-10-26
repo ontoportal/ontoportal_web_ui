@@ -5,5 +5,11 @@ class Team
     list = $TEAM_MEMBERS.to_a
     return list
   end
+
+  def self.contributors
+    list = $CONTRIBUTORS.to_a
+    return list
+  end
+
 end
 

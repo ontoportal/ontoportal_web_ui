@@ -3,5 +3,6 @@ class TeamController < ApplicationController
 
   def index
     @members = Team.members
+    @contributors = Team.contributors
   end
 end

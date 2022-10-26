@@ -1,4 +1,3 @@
-
 </div>
 </div>
 
@@ -16,7 +15,7 @@
         %h6 SUPPORT
         %ul.list-unstyled
           %li= link_to('Contact Us', feedback_path(location: encode_param(request.url)), class: 'pop_window')
-          %li= link_to('Documentation', 'https://www.bioontology.org/wiki/index.php/BioPortal_Help', target: '_blank')
+          %li= link_to('Documentation', 'https://industryportal.github.io/', target: '_blank')
           %li= link_to('NCBO Wiki', 'https://www.bioontology.org/wiki/', target: '_blank')
       %div.col-6.col-md
         %h6 ABOUT
@@ -29,14 +28,20 @@
         %h6 CONNECT
         %ul.list-inline
           %li.list-inline-item
-            = link_to('https://www.facebook.com/National-Center-for-Biomedical-Ontology-127444774011153/', target: '_blank') do
-              %i.fab.fa-2x.fa-facebook-f
-          %li.list-inline-item
             = link_to('http://twitter.com/bioontology', target: '_blank') do
               %i.fab.fa-2x.fa-twitter
           %li.list-inline-item
             = link_to('https://github.com/IndustryPortal', target: '_blank') do
               %i.fab.fa-2x.fa-github
+    %div.row.mt-3{:style =>" font-size:1.2em; "}
+      %img.my-auto{src:asset_path("logos/union-logo.png"),style: "min-height:1.2em;" }
+      %p.text-dark.my-auto.ml-2
+        %strong IndustryPortal
+        %span has received funding from the European Union’s Horizon H2020
+        %br
+        %span research and innovation programme under grant agreement (No 958371).
+
+
     -#%div.row.legal-text
     -#  %div.col
     -#    = t('.grant_html')
