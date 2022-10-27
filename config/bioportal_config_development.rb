@@ -94,11 +94,11 @@ $CLIENT_REQUEST_CACHING = true
 $EMAIL_EXCEPTIONS = false
 
 # Email settings
-ActionMailer::Base.smtp_settings = {
-  address: '', # smtp server address, ex: smtp.example.org
-  port: 25, # smtp server port
-  domain: '' # fqdn of rails server, ex: rails.example.org
-}
+# ActionMailer::Base.smtp_settings = {
+#   address: 'partage.enit.fr', # smtp server address, ex: smtp.example.org
+#   port: 25, # smtp server port
+#   domain: 'partage.enit.fr' # fqdn of rails server, ex: rails.example.org
+# }
 
 # Announcements mailman mailing list REQUEST address, EX: list-request@lists.example.org
 # NOTE: You must use the REQUEST address for the mailing list. ONLY WORKS WITH MAILMAN LISTS.
