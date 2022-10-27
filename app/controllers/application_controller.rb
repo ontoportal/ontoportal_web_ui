@@ -253,7 +253,7 @@ class ApplicationController < ActionController::Base
       @error = "Please provide an ontology id or concept id with an ontology id."
       return
     end
-    acronym = BPIDResolver.id_to_acronym(params[:ontology])
+    acronym = BpidResolver.id_to_acronym(params[:ontology])
     not_found unless acronym
     if class_view
       @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym).first
@@ -267,7 +267,7 @@ class ApplicationController < ActionController::Base
   def params_cleanup_new_api
     params = @_params
     if params[:ontology] && params[:ontology].to_i > 0
-      params[:ontology] = BPIDResolver.id_to_acronym(params[:ontology])
+      params[:ontology] = BpidResolver.id_to_acronym(params[:ontology])
     end
 
     params
@@ -380,7 +380,7 @@ class ApplicationController < ActionController::Base
   end
 
   def using_captcha?
-    !ENV['USE_RECAPTCHA'].nil? && ENV['USE_RECAPTCHA'] == 'true'
+    ENV['USE_RECAPTCHA'].present? && ENV['USE_RECAPTCHA'] == 'true'
   end
 
   def get_class(params)
@@ -421,7 +421,6 @@ class ApplicationController < ActionController::Base
           LOG.add :debug, "Missing roots for #{@ontology.acronym}"
           not_found
         end
-
         @root = LinkedData::Client::Models::Class.new(read_only: true)
         @root.children = roots.sort{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
 

@@ -6,12 +6,12 @@
 .notes_list_container
   .add_comment{style: "float: left; margin-right: 1em;"}
     - if session[:user].nil?
-      = link_to "Add comment", login_index_path, class: "link_button btn btn-primary", style: "font-size: .9em", data: { parent_id: "#{@ontology.id}", parent_type: "ontology" }
+      = link_to "Add comment", login_index_path(redirect: request.url), class: "link_button", style: "font-size: .9em", data: { parent_id: "#{@ontology.id}", parent_type: "ontology" }
     - else
       = link_to "Add comment", "javascript:void(0);", class: "add_comment btn btn-primary", style: "font-size: .9em", data: { parent_id: "#{@ontology.id}", parent_type: "ontology" }
   .add_proposal{style: "float: left; margin-right: 1em;"}
     - if session[:user].nil?
-      = link_to "Add proposal", login_index_path, class: "link_button btn btn-primary", style: "font-size: .9em", data: { parent_id: "#{@ontology.id}", parent_type: "ontology" }
+      = link_to "Add proposal", login_index_path(redirect: request.url), class: "link_button", style: "font-size: .9em", data: { parent_id: "#{@ontology.id}", parent_type: "ontology" }
     - else
       = link_to "Add proposal", "javascript:void(0);", class: "add_proposal link_button btn btn-primary", style: "font-size: .9em", data: { parent_id: "#{@ontology.id}", parent_type: "ontology" }
   .subscribe_to_notes{:style => "float: left;"}
@@ -74,78 +74,32 @@
               %td
                 = note.archived || "false"
               %td
-                = get_username(note.creator)
+                = note.creator.split('/')[-1]
               %td
                 = note.proposal ? get_note_type_text(note.proposal.type) : "Comment"
               %td
                 - if note.relatedClass && note.relatedClass.length > 0
-                  %a{href: "/ontologies/#{@ontology.acronym}?p=classes&conceptid=#{CGI.escape(note.relatedClass.first)}"}= @ontology.explore.single_class(note.relatedClass.first).prefLabel
+                  %a{href: "/ontologies/#{@ontology.acronym}?p=classes&conceptid=#{CGI.escape(note.relatedClass.first)}"}= note.relatedClass.first
               %td
                 = DateTime.parse(note.created).strftime("%Y-%m-%d")
-  / render :partial => 'notes/add', :locals => { :applies_to => applies_to, :applies_to_type => applies_to_type, :action => "ont_list_" }
-/ Handle JS at the bottom of the page
 :javascript
-  // Global data
-  var ontNotesTable;
-  var bp_notesDeletable = #{@notes_deletable.to_json};
+  jQuery(".ontologies.show").ready(function(){
+    setupNotesFacebox()
+    setupNotesFaceboxSizing();
+    bindAddCommentClick();
+    bindAddProposalClick();
+    bindProposalChange();
+    bindReplyClick();
+    bindReplyCancelClick();
+    bindReplySaveClick();
 
-  // Data needed in the external JS file stored in the body 'cache'
-  jQuery.data(document.body, "ontology_id", "#{@ontology.acronym}");
-
-  var ont_columns = { archived: 3, date: 7, subjectSort: 2 };
-
-  // This will wire up a table with the dataTables config.
-  // Needs to stay inline because IE won't recognize it in an external file.
-  function wireOntTable(ontNotesTableNew) {
-    // Wire up table if it hasn't been done yet
-    ontNotesTable = ontNotesTableNew;
-    ontNotesTable.dataTable({
-      "iDisplayLength": 50,
-      "sPaginationType": "full_numbers",
-      "aaSorting": [[ont_columns.date, 'desc']],
-      "aoColumns": [
-         { "bVisible": false }, // Delete
-         { "iDataSort": ont_columns.subjectSort }, // Subject link
-         { "bVisible": false }, // Subject for sort
-         { "bVisible": false }, // Archived for filter
-         null, // Author
-         null, // Type
-         null, // Target
-         null // Created
-      ],
-      "fnDrawCallback": function(){
-        // TODO_REV: Enable notes delete
-        // showDeleteInfo();
-      },
-      "fnInitComplete": function(){
-        // TODO_REV: Enable notes delete
-        // showDeleteInfo();
-      }
+    jQuery("a.subscribe_to_notes").live("click", function(){
+      subscribeToNotes(this);
     });
-
-    // Important! Table is somehow getting set to zero width. Reset here.
-    jQuery(ontNotesTable).css("width", "100%");
-
-    ontNotesTable.fnFilter('false', ont_columns.archived);
-  }
-
-  function hideOrUnhideArchivedOntNotes() {
-      if (jQuery("#hide_archived_ont:checked").val() !== undefined) {
-        // Checked
-        ontNotesTable.fnFilter('false', ont_columns.archived);
-      } else {
-        // Unchecked
-        ontNotesTable.fnFilter('', ont_columns.archived, true, false);
-      }
-  }
-
-  jQuery(document).ready(function(){
-    // Enable datatable
-    wireOntTable(jQuery("#ontology_notes_list"));
-
 
     jQuery("#hide_archived_ont").click(function(){
       hideOrUnhideArchivedOntNotes();
     });
 
+    wireOntTable(jQuery("#ontology_notes_list"));
   });

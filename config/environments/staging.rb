@@ -14,6 +14,10 @@ BioportalWebUi::Application.configure do
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
 
+  # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
+  # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
+  config.require_master_key = true
+
   # Enable Rack::Cache to put a simple HTTP cache in front of your application
   # Add `rack-cache` to your Gemfile before enabling this.
   # For large-scale production use, consider using a caching reverse proxy like
@@ -21,7 +25,7 @@ BioportalWebUi::Application.configure do
   # config.action_dispatch.rack_cache = true
 
   # Compress JavaScripts and CSS.
-  config.assets.js_compressor = Uglifier.new(harmony: true)
+  config.assets.js_compressor = :terser
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -50,9 +54,6 @@ BioportalWebUi::Application.configure do
   # Use a different logger for distributed setups.
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
 
-  # Use a different cache store in production.
-  # config.cache_store = :mem_cache_store
-
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = 'http://assets.example.com'
 
@@ -73,12 +74,11 @@ BioportalWebUi::Application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-
   # Include the BioPortal-specific configuration options
   require Rails.root.join('config', "bioportal_config_#{Rails.env}.rb")
 
-  # memcache setup
-  config.cache_store = :mem_cache_store, { :namespace => 'bioportal_web_ui', :expires_in => 1.day, :value_max_bytes => 5*1024*1024 }
+  # Use a different cache store in staging.
+  config.cache_store = :mem_cache_store, ENV["MEMCACHE_SERVERS"] || "localhost:11211", { namespace: 'bioportal_web_ui', expires_in: 1.day }
 
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.

@@ -1,7 +1,4 @@
-/* Ontology viewing */
-jQuery('.statistics_container').ready(function (){
-    showVisitsChat()
-})
+/* Ontology creation & editing */
 
 
 function hideAllRestrictions() {
@@ -55,6 +52,7 @@ jQuery(document).ready(function () {
     jQuery("#ontology_administeredBy").chosen({width: '100%'});
     jQuery("#ontology_acl").chosen({width: '100%'});
     jQuery("#ontology_hasDomain").chosen({width: '100%'});
+    jQuery("#ontology_group").chosen({width: '100%'});
 
     // Make acronym upcase as you type
     jQuery("#ontology_acronym").on('input', function (e) {

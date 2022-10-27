@@ -1,18 +1,24 @@
-%div{:style => "padding: 2em;"}
-  %h1 Ontology Submitted Successfully
-  %br/
-  -if @ontology.metadata_only?
-    %p Thank you for submitting your ontology to #{$SITE}.
-    %p Users can now see your ontology in our ontology list but they cannot explore or search it. To enable exploring and searching, please upload a full version of your ontology.
+%div.p-4
+  %h2.pb-3 Ontology submitted successfully!
+  -if @ontology.summaryOnly
+    %p Thank you for submitting your metadata-only ontology to #{$SITE}.
+    %p
+      Users can now see
+      = link_to "your ontology", ontology_path(@ontology.acronym)
+      in our ontology list but they cannot explore or search it. To enable exploring and searching,
+      please upload a full version of your ontology.
   -else
     -if @ontology.viewOf
       %p Thank you for submitting your ontology view to #{$SITE}.
     -else
       %p Thank you for submitting your ontology to #{$SITE}.
-    %p We will now put your ontology in the queue to be processed. Please keep in mind that it may take up to several hours before #{$SITE} users will be able to explore and search your ontology.
+    %p
+      We will now put your ontology in the queue to be processed. Please keep in mind that it may take up to several
+      hours before #{$SITE} users will be able to explore and search your ontology.
     %p
       When your ontology is ready for viewing, it will be available here:
-      %br/
-      %a{:href => "#{$UI_URL}/ontologies/#{@acronym}"} #{$UI_URL}/ontologies/#{@ontology.acronym}
-    %p If you have any questions or problems, please email the #{$SITE} support team at <a href="mailto:#{$SUPPORT_EMAIL}">#{$SUPPORT_EMAIL}</a>
+      = link_to ontology_url(@ontology.acronym), ontology_path(@ontology.acronym)
+    %p
+      If you have any questions or problems, please email the #{$SITE} support team at:
+      = mail_to "#{$SUPPORT_EMAIL}", "#{$SUPPORT_EMAIL}"
 

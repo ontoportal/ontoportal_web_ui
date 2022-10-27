@@ -1,5 +1,6 @@
 <%=render partial: 'layouts/header'%>
   <div id="bd">
+    <%= render TurboModalComponent.new(id: 'application_modal')%>
 	 <%=yield%>
   </div>
 <%=render partial: 'layouts/footer'%>

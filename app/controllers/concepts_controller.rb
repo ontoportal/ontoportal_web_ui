@@ -5,6 +5,28 @@ class ConceptsController < ApplicationController
   include ConceptsHelper
   layout 'ontology'
 
+  def show_concept
+    params[:id] = params[:id] ? params[:id] : params[:conceptid]
+
+    if params[:id].nil? || params[:id].empty?
+      render :text => "Error: You must provide a valid concept id"
+      return
+    end
+
+    # Note that find_by_acronym includes views by default
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
+    not_found if @ontology.nil?
+
+    @submission = get_ontology_submission_ready(@ontology)
+    @ob_instructions = helpers.ontolobridge_instructions_template(@ontology)
+    @concept = @ontology.explore.single_class({full: true}, params[:id])
+    @instances_concept_id = @concept.id
+
+    not_found if @concept.nil?
+    gather_details
+    render :partial => 'show'
+  end
+
   def show
     # Handle multiple methods of passing concept ids
     params[:id] = params[:id] ? params[:id] : params[:conceptid]
@@ -73,8 +95,8 @@ class ConceptsController < ApplicationController
     if @ontology.nil?
       not_found
     else 
-      get_class(params)   # application_controller
-      render :partial => "ontologies/treeview"
+      get_class(params) #application_controller
+      render partial: 'ontologies/treeview'
     end
   end
 

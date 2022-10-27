@@ -1,16 +1,6 @@
-jQuery(document).ready(function(){
-  setupNotesFaceboxSizing();
-  bindAddCommentClick();
-  bindAddProposalClick();
-  bindProposalChange();
-  bindReplyClick();
-  bindReplyCancelClick();
-  bindReplySaveClick();
-  // Wire up subscriptions button activity
-  jQuery("a.subscribe_to_notes").live("click", function(){
-    subscribeToNotes(this);
-  });
-});
+var ontNotesTable;
+var ont_columns = { archived: 3, date: 7, subjectSort: 2 };
+
 
 NOTES_PROPOSAL_TYPES = {
   "ProposalNewClass": "New Class Proposal",
@@ -29,7 +19,7 @@ function setupNotesFacebox() {
       jQuery(this).facebox();
       jQuery(this).data().faceboxInit = true;
     }
-  });;
+  })
 }
 
 function setupNotesFaceboxSizing() {
@@ -109,17 +99,6 @@ function bindReplySaveClick() {
   });
 }
 
-function validateReply(button) {
-
-}
-
-function validateNote(button) {
-
-}
-
-function validateProposal(button) {
-
-}
 
 var displayError = function(button) {
   jQuery(button).parent().children(".reply_status").html("Error, please try again");
@@ -364,4 +343,36 @@ function subscribeToNotes(button) {
   });
 }
 
+function hideOrUnhideArchivedOntNotes() {
+  if (jQuery("#hide_archived_ont:checked").val() !== undefined) {
+    // Checked
+    ontNotesTable.fnFilter('false', ont_columns.archived);
+  } else {
+    // Unchecked
+    ontNotesTable.fnFilter('', ont_columns.archived, true, false);
+  }
+}
 
+function wireOntTable(ontNotesTableNew) {
+  jQuery.data(document.body, "ontology_id", "#{@ontology.acronym}");
+
+  ontNotesTable = ontNotesTableNew;
+  ontNotesTable.dataTable({
+    "iDisplayLength": 50,
+    "sPaginationType": "full_numbers",
+    "aaSorting": [[ont_columns.date, 'desc']],
+    "aoColumns": [
+      { "bVisible": false }, // Delete
+      { "iDataSort": ont_columns.subjectSort }, // Subject link
+      { "bVisible": false }, // Subject for sort
+      { "bVisible": false }, // Archived for filter
+      null, // Author
+      null, // Type
+      null, // Target
+      null // Created
+    ],
+  });
+  // Important! Table is somehow getting set to zero width. Reset here.
+  jQuery(ontNotesTable).css("width", "100%");
+  ontNotesTable.fnFilter('false', ont_columns.archived);
+}

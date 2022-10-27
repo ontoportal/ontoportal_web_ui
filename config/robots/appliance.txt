@@ -31,3 +31,9 @@ Disallow: /
 
 User-agent: DataForSeoBot
 Disallow: /
+User-agent: BLEXBot
+Disallow: /
+User agent: MTRobot
+Disallow: /
+
+

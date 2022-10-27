@@ -1,5 +1,10 @@
 class OntologiesController < ApplicationController
   include MappingsHelper
+  include FairScoreHelper
+  include InstancesHelper
+  include ActionView::Helpers::NumberHelper
+  include OntologiesHelper
+  include MappingStatistics
 
   require 'multi_json'
   require 'cgi'
@@ -50,7 +55,7 @@ class OntologiesController < ApplicationController
     @app_dir = '/browse'
     @base_path = @app_dir
     ontologies = LinkedData::Client::Models::Ontology.all(
-include: LinkedData::Client::Models::Ontology.include_params + ",viewOf", include_views: true, display_context: false)
+include: LinkedData::Client::Models::Ontology.include_params + ',viewOf', include_views: true, display_context: false)
     ontologies_hash = Hash[ontologies.map {|o| [o.id, o] }]
     @admin = session[:user] ? session[:user].admin? : false
     @development = Rails.env.development?
@@ -59,7 +64,7 @@ include: LinkedData::Client::Models::Ontology.include_params + ",viewOf", includ
     #@metadata = submission_metadata
 
     # The attributes used when retrieving the submission. We are not retrieving all attributes to be faster
-    browse_attributes = "ontology,acronym,submissionStatus,description,pullLocation,creationDate,released,name,naturalLanguage,hasOntologyLanguage,hasFormalityLevel,isOfType,contact"
+    browse_attributes = 'ontology,acronym,submissionStatus,description,pullLocation,creationDate,released,name,naturalLanguage,hasOntologyLanguage,hasFormalityLevel,isOfType,contact'
     submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true, display_links: false, 
 display_context: false, include: browse_attributes)
     submissions_map = Hash[submissions.map {|sub| [sub.ontology.acronym, sub] }]
@@ -118,14 +123,14 @@ display_context: false, include: browse_attributes)
       o[:notes]            = ont.notes
 
       if !@fair_scores.nil? && !@fair_scores[ont.acronym].nil?
-        o[:fairScore]            = @fair_scores[ont.acronym]["score"]
-        o[:normalizedFairScore]  = @fair_scores[ont.acronym]["normalizedScore"]
+        o[:fairScore]            = @fair_scores[ont.acronym]['score']
+        o[:normalizedFairScore]  = @fair_scores[ont.acronym]['normalizedScore']
       else
         o[:fairScore]            = nil
         o[:normalizedFairScore]  = 0
       end
 
-      if o[:type].eql?("ontology_view")
+      if o[:type].eql?('ontology_view')
         unless ontologies_hash[ont.viewOf].blank?
           o[:viewOfOnt] = {
             name: ontologies_hash[ont.viewOf].name,
@@ -210,28 +215,23 @@ display_context: false, include: browse_attributes)
   end
 
   def create
-    if params['commit'] == 'Cancel'
-      redirect_to '/ontologies'
-      return
+    if params[:commit].eql? 'Cancel'
+      redirect_to ontologies_path and return
     end
+
     @ontology = LinkedData::Client::Models::Ontology.new(values: ontology_params)
     @ontology_saved = @ontology.save
     if !@ontology_saved || @ontology_saved.errors
       @categories = LinkedData::Client::Models::Category.all
-      @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
-      @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
+      @user_select_list = LinkedData::Client::Models::User.all.map { |u| [u.username, u.id] }
+      @user_select_list.sort! { |a, b| a[1].downcase <=> b[1].downcase }
       @errors = response_errors(@ontology_saved)
-      #@errors = {acronym: "Acronym already exists, please use another"} if @ontology_saved.status == 409
       render 'new'
     else
-      # TODO_REV: Enable subscriptions
-      # if params["ontology"]["subscribe_notifications"].eql?("1")
-      #  DataAccess.createUserSubscriptions(@ontology.administeredBy, @ontology.ontologyId, NOTIFICATION_TYPES[:all])
-      # end
       if @ontology_saved.summaryOnly
         redirect_to "/ontologies/success/#{@ontology.acronym}"
       else
-        redirect_to new_ontology_submission_url(ontology_id: @ontology.acronym)
+        redirect_to new_ontology_submission_path(@ontology.acronym)
       end
     end
   end
@@ -247,33 +247,8 @@ display_context: false, include: browse_attributes)
   end
 
   def mappings
-    counts = LinkedData::Client::HTTP.get("#{LinkedData::Client.settings.rest_url}/mappings/statistics/ontologies/#{params[:id]}")
-    @ontologies_mapping_count = []
-    unless counts.nil?
-      counts.members.each do |acronym|
-        count = counts[acronym]
-        # Note: find_by_acronym includes ontology views
-        ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym.to_s).first
-        if ontology
-          onto_info = { id: ontology.id, name: ontology.name, viewOf: ontology.viewOf }
-        else
-          if acronym.to_s.start_with?(EXTERNAL_MAPPINGS_GRAPH)
-            onto_info = { id: acronym.to_s, name: 'External Mappings', viewOf: nil }
-            @ontologies_mapping_count << { 'ontology' => onto_info, 'count' => count }
-          elsif acronym.to_s.start_with?(INTERPORTAL_MAPPINGS_GRAPH)
-            onto_info = {:id => acronym.to_s, :name => "Interportal Mappings - #{acronym.to_s.split("/")[-1].upcase}", 
-:viewOf => nil}
-            @ontologies_mapping_count << {'ontology' => onto_info, 'count' => count}
-          end
-        end
-        next unless ontology
-        @ontologies_mapping_count << { 'ontology' => onto_info, 'count' => count }
-      end
-      @ontologies_mapping_count.sort! {|a,b|
- a['ontology'][:name].downcase <=> b['ontology'][:name].downcase } unless @ontologies_mapping_count.nil? || @ontologies_mapping_count.length == 0
-    end
-    @ontology_id = @ontology.acronym
-    @ontology_label = @ontology.name
+    @ontology_acronym = @ontology.acronym || params[:id]
+    @mapping_counts = mapping_counts(@ontology_acronym)
     if request.xhr?
       render partial: 'mappings', layout: false
     else
@@ -283,7 +258,7 @@ display_context: false, include: browse_attributes)
 
   def new
     @ontology = LinkedData::Client::Models::Ontology.new
-    @ontologies =  LinkedData::Client::Models::Ontology.all(include: "acronym", include_views: true, 
+    @ontologies = LinkedData::Client::Models::Ontology.all(include: 'acronym', include_views: true, 
 display_links: false, display_context: false)
     @categories = LinkedData::Client::Models::Category.all
     @groups = LinkedData::Client::Models::Group.all
@@ -292,8 +267,6 @@ display_links: false, display_context: false)
   end
 
   def notes
-    # Get the latest 'ready' submission, or fallback to any latest submission
-    @submission = get_ontology_submission_ready(@ontology) # application_controller
     @notes = @ontology.explore.notes
     @notes_deletable = false
     # TODO_REV: Handle notes deletion
@@ -308,11 +281,13 @@ display_links: false, display_context: false)
 
   def instances
     if request.xhr?
-      render partial: 'instances', locals: { id: 'instances-data-table'}, layout: false
+      render partial: 'instances/instances', locals: { id: 'instances-data-table'}, layout: false
     else
-      render partial: 'instances', locals: { id: 'instances-data-table'}, layout: 'ontology_viewer'
+      render partial: 'instances/instances', locals: { id: 'instances-data-table'}, layout: 'ontology_viewer'
     end
   end
+
+
   # GET /ontologies/ACRONYM
   # GET /ontologies/1.xml
   def show
@@ -409,9 +384,7 @@ display_links: false, display_context: false)
   end
 
   def submit_success
-    @acronym = params[:id]
-    # Force the list of ontologies to be fresh by adding a param with current time
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id], cache_invalidate: Time.now.to_i).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     render 'submit_success'
   end
 
@@ -431,7 +404,7 @@ display_links: false, display_context: false)
     @metrics = @ontology.explore.metrics rescue []
     @reviews = @ontology.explore.reviews.sort {|a,b| b.created <=> a.created} || []
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
-    @analytics = LinkedData::Client::HTTP.get(@ontology.links["analytics"])
+    @analytics = LinkedData::Client::HTTP.get(@ontology.links['analytics'])
 
     #Call to fairness assessment service
     tmp = fairness_service_enabled? ? get_fair_score(@ontology.acronym) : nil
@@ -440,7 +413,7 @@ display_links: false, display_context: false)
 
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
     # Only include metadata that we need for all other ontologies (faster)
-    @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,modificationDate,submissionStatus,hasOntologyLanguage,version"}).sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
+    @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,modificationDate,submissionStatus,hasOntologyLanguage,version,diffFilePath"}).sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
     # Get the latest submission, not necessarily the latest 'ready' submission
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: '')
@@ -463,12 +436,14 @@ display_links: false, display_context: false)
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym] || params[:id]).first
     @ontology.update_from_params(ontology_params)
     error_response = @ontology.update
-    if error_response
+    if error_response && (error_response.status != 204)
       @categories = LinkedData::Client::Models::Category.all
       @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
       @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
       @errors = response_errors(error_response)
       @errors = { acronym: 'Acronym already exists, please use another' } if error_response.status == 409
+      flash[:error] = @errors
+      redirect_to "/ontologies/#{@ontology.acronym}/edit"
     else
       # TODO_REV: Enable subscriptions
       # if params["ontology"]["subscribe_notifications"].eql?("1")
@@ -498,11 +473,12 @@ display_links: false, display_context: false)
 
   def ontology_params
     p = params.require(:ontology).permit(:name, :acronym, { administeredBy:[] }, :viewingRestriction, { acl:[] },
-                                         { hasDomain:[] }, :isView, :viewOf, :subscribe_notifications)
+                                         { hasDomain:[] }, :isView, :viewOf, :subscribe_notifications, {group:[]})
 
     p[:administeredBy].reject!(&:blank?)
     p[:acl].reject!(&:blank?)
     p[:hasDomain].reject!(&:blank?)
+    p[:group].reject!(&:blank?)
     p.to_h
   end
 
