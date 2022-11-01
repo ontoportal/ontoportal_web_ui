@@ -19,6 +19,9 @@ application.register("form-auto-complete", FormAutoCompleteController)
 import HistoryController from "./history_controller"
 application.register("history", HistoryController)
 
+import LabelAjaxController from "./label_ajax_controller"
+application.register("label-ajax", LabelAjaxController)
+
 import LoadChartController from "./load_chart_controller"
 application.register("load-chart", LoadChartController)
 
@@ -29,7 +32,7 @@ import OntoportalAutocompleteController from "./ontoportal_autocomplete_controll
 application.register("ontoportal-autocomplete", OntoportalAutocompleteController)
 
 import ShowModalController from "./show_modal_controller"
-application.register("modal", ShowModalController)
+application.register("show-modal", ShowModalController)
 
 import SimpleTreeController from "./simple_tree_controller"
 application.register("simple-tree", SimpleTreeController)

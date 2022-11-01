@@ -1,18 +1,21 @@
 = turbo_frame_tag 'collection' do
-  = render layout: 'shared/resource_show',
-          locals: {top_keys: %w[created modified comment note],
-          bottom_keys: ['member'], properties: collection.properties } do
-    %tr
-      %td.label
-        ID
-      %td
-        %p
-          = collection["@id"]
-    %tr
-      %td{nowrap: ""} Preferred Name
-      %td
-        %p= get_collection_label(collection)
-    %tr
-      %td{nowrap: ""} Members count
-      %td
-        %p= collection["memberCount"]
+  = render ConceptDetailsComponent.new(id:'collection-label', acronym: @ontology.acronym,
+                properties: collection.properties,
+                top_keys: %w[created modified comment note],
+                bottom_keys: [],
+                exclude_keys: %w[member]) do |c|
+    = c.header do
+      %tr
+        %td.label
+          ID
+        %td
+          %p
+            = collection["@id"]
+      %tr
+        %td{nowrap: ""} Preferred Name
+        %td
+          %p= get_collection_label(collection)
+      %tr
+        %td{nowrap: ""} Members count
+        %td
+          %p= collection["memberCount"]

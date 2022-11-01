@@ -1,30 +1,51 @@
 = turbo_frame_tag 'concept_details' do
-  = render layout: 'shared/resource_show',
-          locals: {top_keys: %w[description comment],
+  - schemes_keys = %w[inScheme hasTopConcept topConceptOf]
+  - label_xl_set = %w[skos-xl#prefLabel skos-xl#altLabel skos-xl#hiddenLabel]
+  = render ConceptDetailsComponent.new(id:'concept-details', acronym: @ontology.acronym,
+              properties: @concept.properties,
+              top_keys: %w[description comment],
               bottom_keys: %w[disjoint subclass is_a has_part],
-              scheme_keys: ["is in scheme" , "is top concept in scheme", "topConceptOf" , "inScheme"],
-              properties: @concept.properties } do
-    %tr
-      %td{nowrap: ""} Preferred Name
-      %td
-        %p= @concept.prefLabel({:use_html => true}).html_safe
-    - unless @concept.synonym.nil? || @concept.synonym.empty?
+              exclude_keys: schemes_keys + label_xl_set) do |c|
+    - c.header do
       %tr
-        %td{nowrap: ""} Synonyms
+        %td{nowrap: ""} Preferred Name
         %td
-          - for synonym in @concept.synonym
-            %p= synonym
-    - unless @concept.definition.nil? || @concept.definition.empty?
-      %tr
-        %td{nowrap: ""} Definitions
-        %td
-          %p= @concept.definition.join(" ")
-    %tr
-      %td{nowrap: ""} ID
-      %td
-        %p= @concept.id
-    - if @concept.obsolete?
-      %tr
-        %td{nowrap: ""} Obsolete
-        %td
-          %p true
+          %p= @concept.prefLabel({:use_html => true}).html_safe
+      - unless @concept.synonym.nil? || @concept.synonym.empty?
+        %tr
+          %td{nowrap: ""} Synonyms
+          %td
+            - for synonym in @concept.synonym
+              %p= synonym
+      - unless @concept.definition.nil? || @concept.definition.empty?
+        %tr
+          %td{nowrap: ""} Definitions
+          %td
+            %p= @concept.definition.join(" ")
+        %tr
+          %td{nowrap: ""} ID
+          %td
+            %p= @concept.id
+      - if @concept.obsolete?
+        %tr
+          %td{nowrap: ""} Obsolete
+          %td
+            %p true
+      - if skos?
+        - unless @concept.inCollection.nil?  || @concept.inCollection.empty?
+          %tr
+            %td{nowrap: ""} In Collections
+            %td
+              %p= @concept.inCollection&.join(',')
+
+    - scheme_set = c.properties_set_by_keys(schemes_keys, c.concept_properties)
+    - label_xl_set = c.properties_set_by_keys(label_xl_set, c.concept_properties)
+    - c.section do
+      = c.render_properties(scheme_set, c.concept_properties) do |v|
+        - get_link_for_scheme_ajax(v, @ontology.acronym, '_blank')
+    - c.section do
+      = c.render_properties(label_xl_set, c.concept_properties) do |v|
+        - get_link_for_label_xl_ajax(v, @ontology.acronym, @concept.id)
+
+
+
