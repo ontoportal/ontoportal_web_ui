@@ -29,7 +29,7 @@ import OntoportalAutocompleteController from "./ontoportal_autocomplete_controll
 application.register("ontoportal-autocomplete", OntoportalAutocompleteController)
 
 import ShowModalController from "./show_modal_controller"
-application.register("modal", ShowModalController)
+application.register("show-modal", ShowModalController)
 
 import SimpleTreeController from "./simple_tree_controller"
 application.register("simple-tree", SimpleTreeController)

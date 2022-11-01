@@ -50,6 +50,6 @@
                 mapping_path(map_id, {conceptid_from: @concept.id}),
                 role: "button",
                 class: "btn btn-link",
-                data: { modal_title_value: "Edit mapping for #{@concept.prefLabel}" },
+                data: { show_modal_title_value: "Edit mapping for #{@concept.prefLabel}" },
                 )
         = button_to "Delete", CGI.unescape(mapping_path(map.id)), method: :delete, class:'btn btn-link',  form: {data: { turbo: true, turbo_confirm: "Are you sure?", turbo_frame: '_top'}}
