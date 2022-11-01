@@ -43,6 +43,15 @@ module CollectionsHelper
     [collections_labels, selected_label]
   end
 
+  def no_collections?
+    @collections.nil? || @collections.empty?
+  end
+
+  def no_collections_alert
+    render AlertMessageComponent.new(id: 'collection-empty-info') do
+      "#{@ontology.acronym} does not contain collections (skos:Collection)"
+    end
+  end
 
   def collection_path(collection_id = '')
     "/ontologies/#{@ontology.acronym}/collections/show?id=#{escape(collection_id)}"
