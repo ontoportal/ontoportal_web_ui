@@ -10,10 +10,16 @@ function bp_cls_link(cls_id, ont_acronym){
 }
 function get_link_for_cls_ajax(cls_id, ont_acronym) {
   // ajax call will replace the class label using data attributes (triggered by class='cls4ajax')
-  var data_cls = " data-cls='" + cls_id + "' ";
-  var data_ont = " data-ont='" + ont_acronym + "' ";
-  return "<a class='cls4ajax'" + data_cls + data_ont + "href='" + bp_cls_link(cls_id, ont_acronym) + "'>" + cls_id + "</a>";
+    let ajax_uri = '/ajax/classes/label'
+    let data_cls = `data-label-ajax-cls-id-value='${cls_id}' `
+    let data_ont = `data-label-ajax-ontology-acronym-value='${ont_acronym}'`
+    let data_ajax_uri = `data-label-ajax-ajax-uri-value='${ajax_uri}' `
+
+    let data = `data-controller='label-ajax' ${data_ont} ${data_cls} ${data_ajax_uri}`
+
+    return `<a  ${data} href="${bp_cls_link(cls_id, ont_acronym)}">${cls_id}</a>`
 }
+
 function get_link_for_ont_ajax(ont_acronym) {
   var data_ont = " data-ont='" + ont_acronym + "' ";
   return "<a class='ont4ajax'" + data_ont + "href='" + bp_ont_link(ont_acronym) + "'>" + ont_acronym + "</a>";
