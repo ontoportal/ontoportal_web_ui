@@ -1,20 +1,22 @@
 - if skos?
-  - if no_main_scheme?
-    %div.alert.alert-warning.mx-2.text-wrap
-      no main scheme defined in the URI attribute
-  - schemes_labels, main_scheme, selected_scheme = schemes_data
-  - if selected_scheme || main_scheme
+  - if no_schemes?
+    = no_schemes_alert
+  - else
+    - schemes_labels, main_scheme, selected_scheme = schemes_data
+    - if no_main_scheme? || main_scheme.nil?
+      = no_main_scheme_alert
+
     #schemes.form-group{data:{controller: 'turbo-frame history',
-        'turbo-frame': {
-          'url-value': "/ajax/classes/treeview?ontology=#{@ontology.acronym}&conceptid=root",
-          'frame-id-value': "concepts_tree_view",
-          'place-holder-value': "Please select a scheme to display"
-          }}}
+            'turbo-frame': {
+              'url-value': "/ajax/classes/treeview?ontology=#{@ontology.acronym}&conceptid=root",
+              'frame-id-value': "concepts_tree_view",
+              'place-holder-value': "Please select a scheme to display"
+              }}}
       %label{:for => "schemes_select"} Schemes
       %div
         = select_tag(:concept_schemes,
-               options_for_select(schemes_labels.map{|s| [s["prefLabel"], s["@id"]]}, selected_scheme.map{|x| x["@id"]} ),
-                {multiple: true, id: "schemes_select",
-                data:{controller:'chosen', 'chosen-name-value': :concept_schemes,
-                action: 'changed->history#updateURL changed->turbo-frame#updateFrame'}})
+                     options_for_select(schemes_labels.map{|s| [s["prefLabel"], s["@id"]]}, selected_scheme.compact.map{|x| x["@id"]} ),
+                      {multiple: true, id: "schemes_select",
+                      data:{controller:'chosen', 'chosen-name-value': :concept_schemes,
+                      action: 'changed->history#updateURL changed->turbo-frame#updateFrame'}})
 
