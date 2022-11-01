@@ -467,8 +467,8 @@ module ApplicationHelper
   def label_ajax_link(link, cls_id, ont_acronym, ajax_uri, cls_url, target = '')
     href_cls = " href='#{link}'"
     data = label_ajax_data(cls_id, ont_acronym, ajax_uri, cls_url)
-
-    "<a data-controller='label-ajax' #{data} #{href_cls} #{target}>#{cls_id}</a>"
+    style = 'btn btn-sm btn-light'
+    "<a data-controller='label-ajax' class='#{style}' #{data} #{href_cls} #{target}>#{cls_id}</a>"
   end
 
   def get_link_for_cls_ajax(cls_id, ont_acronym, target = nil)
@@ -494,7 +494,7 @@ module ApplicationHelper
   def get_link_for_scheme_ajax(scheme, ont_acronym, target = '_blank')
     link = bp_scheme_link(scheme, ont_acronym)
     ajax_url = '/ajax/schemes/label'
-    scheme_url = "#{ont_acronym}?p=schemes&schemeid=#{CGI.escape(scheme)}"
+    scheme_url = "?p=schemes&schemeid=#{CGI.escape(scheme)}"
     label_ajax_link(link, scheme, ont_acronym, ajax_url, scheme_url, target)
   end
 
@@ -505,9 +505,7 @@ module ApplicationHelper
     data = label_ajax_data_h(label_xl, ont_acronym, ajax_uri, label_xl_url)
     data[:data][:controller] = 'label-ajax'
 
-    link_to_modal(cls_id, link, {data: data[:data] , class: 'btn btn-sm btn-light'}) do
-      cls_id + "<i class='fas fa-external-link-alt'></i>".html_safe
-    end
+    link_to_modal(cls_id, link, {data: data[:data] , class: 'btn btn-sm btn-light'})
   end
 
   ###END ruby equivalent of JS code in bp_ajax_controller.
