@@ -26,22 +26,17 @@ function get_link_for_ont_ajax(ont_acronym) {
 }
 
 var
-  ajax_process_cls_interval = null,
-  ajax_process_scheme_interval = null,
   ajax_process_interportal_cls_interval = null,
   ajax_process_ont_interval = null,
   ajax_process_timeout = 20, // Timeout after 20 sec.
   ajax_process_timing = 250; // It takes about 250 msec to resolve a class ID to a prefLabel
 
 var ajax_process_init = function () {
-  ajax_process_cls_init();
   ajax_process_ont_init();
   ajax_process_interportal_cls_init();
-  ajax_process_scheme_init();
 };
 
 var ajax_process_halt = function () {
-  ajax_process_cls_halt();
   ajax_process_ont_halt();
   ajax_process_interportal_cls_halt();
 };
@@ -125,7 +120,6 @@ var ajax_cls_array = [];
 
 var ajax_process_cls_init = function() {
   ajax_cls_array = jQuery("a.cls4ajax").toArray();
-  ajax_process_cls_interval = window.setInterval(ajax_process_cls, ajax_process_timing);
 };
 
 var ajax_process_cls_halt = function () {
@@ -137,139 +131,6 @@ var ajax_process_cls_halt = function () {
   //jQuery("a.cls4ajax").removeClass('cls4ajax');
   //jQuery("a.ajax-modified-cls").removeClass('ajax-modified-cls');
 };
-
-var ajax_process_cls = function() {
-  // Check on whether to stop the ajax process
-  if( ajax_cls_array.length === 0 ){
-    ajax_process_cls_halt();
-    return true;
-  }
-  // Note: If we don't query every time, using the array should be faster; it
-  //       means the ajax_process_init must be called after all the elements
-  //       are created because they will not be detected in a dynamic iteration.
-  //var linkA = jQuery("a.cls4ajax").first();
-  var linkA = ajax_cls_array.shift();
-  if(linkA === undefined){
-    return true;
-  }
-  linkA = jQuery(linkA);
-  if(linkA.hasClass('ajax-modified-cls') ){
-    // How did we get here? It should not have the cls4ajax class!
-    linkA.removeClass('cls4ajax');
-    return true; // processing or processed this one already.
-  }
-  linkA.removeClass('cls4ajax'); // processing this one.
-  var unique_id = linkA.attr('href');
-
-
-  // TODO: retrieve 'data-cls' and 'data-ont' attributes.
-
-  var cls_id = linkA.attr('data-cls');
-  var ont_acronym = linkA.attr('data-ont');
-  var ont_uri = "/ontologies/" + ont_acronym;
-  var cls_uri = ont_uri + "?p=classes&conceptid=" + encodeURIComponent(cls_id);
-  var ajax_uri = "/ajax/classes/label?ontology=" + ont_acronym + "&concept=" + encodeURIComponent(cls_id);
-  jQuery.ajax({
-    url: ajax_uri,
-    timeout: ajax_process_timeout * 1000,
-    success: function(data){
-      data = data.trim();
-      if (typeof data !== "undefined" && data.length > 0 && data.indexOf("http") !== 0) {
-        var cls_name = data;
-        linkA.html(cls_name);
-        linkA.attr('href', cls_uri);
-        linkA.addClass('ajax-modified-cls');
-        // find and process any identical classes (low probability)
-        jQuery( 'a[href="' + unique_id + '"]').each(function(i,e){
-          var link = jQuery(this);
-          if(! link.hasClass('ajax-modified-cls') ){
-            link.removeClass('cls4ajax');   // processing this one.
-            link.html(cls_name);
-            link.attr('href', cls_uri);
-            link.addClass('ajax-modified-cls'); // processed this one.
-          }
-        });
-      } else {
-        // remove the unique_id separator and the ontology acronym from the href
-        linkA.attr('href', cls_id);  // it may not be an ontology class, don't use the cls_uri
-        linkA.addClass('ajax-modified-cls');
-      }
-    },
-    error: function(data){
-      linkA.addClass('ajax-error'); // processed this one.
-    }
-  });
-};
-
-
-// Schemes Labels
-var ajax_scheme_array = [];
-
-var ajax_process_scheme_init = function() {
-    ajax_scheme_array = jQuery("a.scheme4ajax").toArray();
-    ajax_process_scheme_interval = window.setInterval(ajax_process_scheme, ajax_process_timing);
-};
-
-var ajax_process_scheme_halt = function () {
-    ajax_scheme_array = [];
-    window.clearInterval(ajax_process_scheme_interval); // stop the ajax process
-    // Note: might leave faulty href links, but it usually means moving on to entirely different content
-    //       so it's not likely those links will be available for interaction.
-    // clear all the classes and ontologies to be resolved by ajax
-    //jQuery("a.cls4ajax").removeClass('cls4ajax');
-    //jQuery("a.ajax-modified-cls").removeClass('ajax-modified-cls');
-};
-
-var ajax_process_scheme = function() {
-    // Check on whether to stop the ajax process
-    if( ajax_scheme_array.length === 0 ){
-        ajax_process_scheme_halt();
-        return true;
-    }
-
-    var linkA = ajax_scheme_array.shift();
-    if(linkA === undefined){
-        return true;
-    }
-    linkA = jQuery(linkA);
-    if(linkA.hasClass('ajax-modified-scheme') ){
-        // How did we get here? It should not have the cls4ajax class!
-        linkA.removeClass('scheme4ajax');
-        return true; // processing or processed this one already.
-    }
-    linkA.removeClass('scheme4ajax'); // processing this one.
-    const unique_id = linkA.attr('id');
-    const ont_acronym = linkA.attr('data-ont')
-    const ajax_uri = `/ajax/${ont_acronym}/schemes/${encodeURIComponent(unique_id)}/show_label`;
-    jQuery.ajax({
-        url: ajax_uri,
-        timeout: ajax_process_timeout * 1000,
-        success: function(data){
-            data = data.trim();
-            if (typeof data !== "undefined" && data.length > 0 && data.indexOf("http") !== 0) {
-                var cls_name = data;
-                linkA.html(cls_name);
-                linkA.addClass('ajax-modified-scheme');
-                // find and process any identical classes (low probability)
-                jQuery( 'a[id="' + unique_id + '"]').each(function(i,e){
-                    var link = jQuery(this);
-                    if(! link.hasClass('ajax-modified-scheme') ){
-                        link.removeClass('scheme4ajax');   // processing this one.
-                        link.html(cls_name);
-                        link.addClass('ajax-modified-scheme'); // processed this one.
-                    }
-                });
-            } else {
-                // remove the unique_id separator and the ontology acronym from the href
-                linkA.addClass('ajax-modified-scheme');
-            }
-        },
-        error: function(data){
-            linkA.addClass('ajax-error'); // processed this one.
-        }
-    });
-};
-
 
 
 // **************************************************************************************
