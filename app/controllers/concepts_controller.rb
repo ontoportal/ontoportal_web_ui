@@ -60,7 +60,7 @@ class ConceptsController < ApplicationController
   end
 
   def show_label
-    cls_id = params[:concept]   # cls_id should be a full URI
+    cls_id = params[:concept] || params[:id]  # cls_id should be a full URI
     ont_id = params[:ontology]  # ont_id could be a full URI or an acronym
 
     if ont_id.to_i > 0

@@ -444,23 +444,43 @@ module ApplicationHelper
   def bp_scheme_link(scheme_id, ont_acronym)
     return "#{bp_ont_link(ont_acronym)}?p=schemes&schemeid=#{URI.escape(scheme_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
   end
-  def get_link_for_cls_ajax(cls_id, ont_acronym, target=nil)
-    # Note: bp_ajax_controller.ajax_process_cls will try to resolve class labels.
-    # Uses 'http' as a more generic attempt to resolve class labels than .include? ont_acronym; the
-    # bp_ajax_controller.ajax_process_cls will try to resolve class labels and
-    # otherwise remove the UNIQUE_SPLIT_STR and the ont_acronym.
-    if target.nil?
-      target = ""
+
+  def bp_label_xl_link(label_xl_id, ont_acronym)
+    return "#{bp_ont_link(ont_acronym)}/?label_xl_id=#{URI.escape(label_xl_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+  end
+
+  def label_ajax_data_h(cls_id, ont_acronym, ajax_uri, cls_url)
+    { data:
+        {
+          'label-ajax-cls-id-value': cls_id,
+          'label-ajax-ontology-acronym-value': ont_acronym,
+          'label-ajax-ajax-url-value': ajax_uri,
+          'label-ajax-cls-id-url-value': cls_url
+        }
+    }
+  end
+
+  def label_ajax_data(cls_id, ont_acronym, ajax_uri, cls_url)
+    tag.attributes label_ajax_data_h(cls_id, ont_acronym, ajax_uri, cls_url)
+  end
+
+  def label_ajax_link(link, cls_id, ont_acronym, ajax_uri, cls_url, target = '')
+    href_cls = " href='#{link}'"
+    data = label_ajax_data(cls_id, ont_acronym, ajax_uri, cls_url)
+
+    "<a data-controller='label-ajax' #{data} #{href_cls} #{target}>#{cls_id}</a>"
+  end
+
+  def get_link_for_cls_ajax(cls_id, ont_acronym, target = nil)
+    target = target.nil? ? '' : " target='#{target}' "
+
+    if cls_id.start_with?('http://') || cls_id.start_with?('https://')
+      link = bp_class_link(cls_id, ont_acronym)
+      ajax_url = '/ajax/classes/label'
+      cls_url = "#{ont_acronym}?p=classes&conceptid=#{CGI.escape(cls_id)}"
+      label_ajax_link(link, cls_id, ont_acronym, ajax_url , cls_url ,target)
     else
-      target = " target='#{target}' "
-    end
-    if cls_id.start_with? 'http://'
-      href_cls = " href='#{bp_class_link(cls_id, ont_acronym)}' "
-      data_cls = " data-cls='#{cls_id}' "
-      data_ont = " data-ont='#{ont_acronym}' "
-      return "<a class='cls4ajax' #{data_ont} #{data_cls} #{href_cls} #{target}>#{cls_id}</a>"
-    else
-      return auto_link(cls_id, :all, :target => '_blank')
+      auto_link(cls_id, :all, target: '_blank')
     end
   end
 
