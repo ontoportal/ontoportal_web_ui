@@ -497,6 +497,19 @@ module ApplicationHelper
     scheme_url = "#{ont_acronym}?p=schemes&schemeid=#{CGI.escape(scheme)}"
     label_ajax_link(link, scheme, ont_acronym, ajax_url, scheme_url, target)
   end
+
+  def get_link_for_label_xl_ajax(label_xl, ont_acronym, cls_id)
+    link = label_xl
+    ajax_uri = "/ajax/label_xl/label?cls_id=#{CGI.escape(cls_id)}"
+    label_xl_url = "/ajax/label_xl/?id=#{CGI.escape(label_xl)}&ontology=#{ont_acronym}&cls_id=#{CGI.escape(cls_id)}"
+    data = label_ajax_data_h(label_xl, ont_acronym, ajax_uri, label_xl_url)
+    data[:data][:controller] = 'label-ajax'
+
+    link_to_modal(cls_id, link, {data: data[:data] , class: 'btn btn-sm btn-light'}) do
+      cls_id + "<i class='fas fa-external-link-alt'></i>".html_safe
+    end
+  end
+
   ###END ruby equivalent of JS code in bp_ajax_controller.
   def ontology_viewer_page_name(ontology_name, concept_name_title , page)
     ontology_name + " | " +concept_name_title + " - #{page.capitalize}"
@@ -504,13 +517,22 @@ module ApplicationHelper
 
   def link_to_modal(name, options = nil, html_options = nil, &block)
 
-    html_options[:data].merge!({
-                                 controller: 'modal', turbo: true,
-                                 turbo_frame: 'application_modal_content',
-                                 action: 'click->modal#show'
-                               })
-    link_to(name, options, html_options, &block)
+    new_data = {
+      controller: 'show-modal', turbo: true,
+      turbo_frame: 'application_modal_content',
+      action: 'click->show-modal#show'
+    }
+
+    html_options[:data].merge!(new_data) do |_, old, new|
+      "#{old} #{new}"
+    end
+    if name.nil?
+      link_to(options, html_options, &block)
+    else
+      link_to(name, options, html_options)
+    end
   end
+
   def uri?(url)
     url =~ /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/
   end
