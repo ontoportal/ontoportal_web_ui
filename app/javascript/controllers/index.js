@@ -19,6 +19,9 @@ application.register("form-auto-complete", FormAutoCompleteController)
 import HistoryController from "./history_controller"
 application.register("history", HistoryController)
 
+import LabelAjaxController from "./label_ajax_controller"
+application.register("label-ajax", LabelAjaxController)
+
 import LoadChartController from "./load_chart_controller"
 application.register("load-chart", LoadChartController)
 
