@@ -10,7 +10,7 @@ class LabelXlController < ApplicationController
     label_xl_label = label_xl ? label_xl['literalForm'] : nil
     label_xl_label = params[:id] if label_xl_label.nil? || label_xl_label.empty?
 
-    render plain: label_xl_label + "<i class='fas fa-external-link-alt mx-1'></i>"
+    render LabelLinkComponent.inline(params[:id], label_xl_label)
   end
 
   private
