@@ -491,9 +491,11 @@ module ApplicationHelper
     return "<a class='ont4ajax' #{data_ont} #{href_ont}>#{ont_acronym}</a>"
   end
 
-  def get_link_for_scheme_ajax(scheme, ont_acronym, target='_blank')
-    # ajax call will replace the URI with the scheme prefLabel  (triggered by class='scheme4ajax')
-    link_to scheme, bp_scheme_link(scheme, ont_acronym), {class: 'scheme4ajax', id: scheme, target:  target, data: {ont: ont_acronym} }
+  def get_link_for_scheme_ajax(scheme, ont_acronym, target = '_blank')
+    link = bp_scheme_link(scheme, ont_acronym)
+    ajax_url = '/ajax/schemes/label'
+    scheme_url = "#{ont_acronym}?p=schemes&schemeid=#{CGI.escape(scheme)}"
+    label_ajax_link(link, scheme, ont_acronym, ajax_url, scheme_url, target)
   end
   ###END ruby equivalent of JS code in bp_ajax_controller.
   def ontology_viewer_page_name(ontology_name, concept_name_title , page)

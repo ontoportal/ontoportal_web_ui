@@ -19,6 +19,7 @@ class SchemesController < ApplicationController
 
   def get_request_scheme
     params[:id] = params[:id] ? params[:id] : params[:scheme_id]
+    params[:ontology_id] = params[:ontology_id] ? params[:ontology_id] : params[:ontology]
 
     if params[:id].nil? || params[:id].empty?
       render :text => "Error: You must provide a valid scheme id"
