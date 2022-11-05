@@ -14,7 +14,13 @@ class ChangeRequestsController < ApplicationController
 
   def create
     content = KGCL::IssueContentGenerator.call(params)
-    IssueCreatorService.call(params[:ont_acronym], content[:title], content[:body])
-    head :ok
+    @issue = IssueCreatorService.call(params[:ont_acronym], content[:title], content[:body])
+    if @issue['id'].present?
+      flash.now.notice = helpers.change_request_success_message
+    end
+
+    respond_to do |format|
+      format.js
+    end
   end
 end
