@@ -228,6 +228,8 @@ GEM
     nokogiri (1.13.9)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
+    nokogiri (1.13.9-x86_64-linux)
+      racc (~> 1.4)
     oj (3.13.23)
     open_uri_redirections (0.2.1)
     parallel (1.22.1)
@@ -408,6 +410,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   bootsnap
