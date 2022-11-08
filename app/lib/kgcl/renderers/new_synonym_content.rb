@@ -38,6 +38,10 @@ class NewSynonymContent
     @params[:concept_label]
   end
 
+  def curie
+    @params[:curie]
+  end
+
   def get_binding
     binding
   end
