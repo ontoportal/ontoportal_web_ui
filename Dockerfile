@@ -8,14 +8,11 @@ ARG GID=1000
 RUN apk add --no-cache \
     build-base \
     libxml2-dev \
-    libxslt-dev\
-    gcompat \
-    vips-dev \
+    libxslt-dev \
     mariadb-dev \
     git \
-    tzdata \
-    file \
     nodejs \
+    tzdata \
     yarn \
   && addgroup --gid ${GID} ruby \
   && adduser  -u ${UID} -G ruby -D  ruby \
@@ -39,10 +36,10 @@ ENV RAILS_ENV="${RAILS_ENV}" \
 COPY --chown=ruby:ruby Gemfile* ./
 RUN bundle install --jobs "$(nproc)"
 
+
+RUN echo "--modules-folder /node_modules" > .yarnrc
 COPY --chown=ruby:ruby package.json *yarn* ./
 RUN yarn install
-
-COPY --chown=ruby:ruby . .
 
 ENTRYPOINT ["/app/bin/docker-entrypoint-web"]
 
