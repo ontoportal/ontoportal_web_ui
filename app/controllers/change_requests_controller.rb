@@ -29,9 +29,7 @@ class ChangeRequestsController < ApplicationController
 
     content = KGCL::IssueContentGenerator.call(params)
     @issue = IssueCreatorService.call(params[:ont_acronym], content[:title], content[:body])
-    if @issue['id'].present?
-      flash.now.notice = helpers.change_request_success_message
-    end
+    flash.now.notice = helpers.change_request_success_message if @issue['id'].present?
 
     respond_to do |format|
       format.js
