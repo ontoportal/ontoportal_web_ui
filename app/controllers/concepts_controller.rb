@@ -101,6 +101,30 @@ class ConceptsController < ApplicationController
     end
   end
 
+  def show_date_sorted_list
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    if @ontology.nil?
+      not_found
+    else
+      page = params[:page]
+      @last_date = params[:last_date]
+      auto_click = page.to_s.eql?('1')
+      params = { page: page }
+      if @last_date
+        params.merge!(last_date: @last_date)
+        @last_date = Date.parse(@last_date)
+      end
+
+
+      @page = LinkedData::Client::HTTP.get("/ontologies/#{@ontology.acronym}/classes/sorted_by_date", params)
+      @concepts = @page.collection
+      @concepts_year_month = concepts_to_years_months(@concepts)
+
+      render partial: 'concepts/date_sorted_list', locals: { auto_click: auto_click }
+    end
+
+  end
+
   def property_tree
     if params[:ontology].to_i > 0
       params_cleanup_new_api()
@@ -187,5 +211,12 @@ private
     @root.children = rootNode unless rootNode.nil?
   end
 
+  def concepts_to_years_months(concepts)
+    return unless concepts || concepts.nil?
 
+    concepts.group_by { |c| concept_date(c).year }
+            .transform_values do |items|
+      items.group_by { |c| concept_date(c).strftime('%B') }
+    end
+  end
 end

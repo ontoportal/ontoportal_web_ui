@@ -115,6 +115,7 @@ Rails.application.routes.draw do
   get '/ajax/classes/definition' => 'concepts#show_definition'
   get '/ajax/classes/treeview' => 'concepts#show_tree'
   get '/ajax/classes/list' => 'collections#show_members'
+  get '/ajax/classes/date_sorted_list' => 'concepts#show_date_sorted_list'
   get '/ajax/properties/tree' => 'concepts#property_tree'
   get 'ajax/schemes/label', to: "schemes#show_label"
   get 'ajax/label_xl/label', to: "label_xl#show_label"
