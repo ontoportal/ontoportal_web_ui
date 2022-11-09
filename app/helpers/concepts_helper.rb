@@ -32,4 +32,50 @@ module ConceptsHelper
   def concept_date(concept)
     Date.parse(concept.modified || concept.created)
   end
+
+  def sorted_by_date_url(page = 1, last_concept = nil)
+    out = "/ajax/classes/date_sorted_list?ontology=#{@ontology.acronym}&page=#{page}"
+    out += "&last_date=#{concept_date(last_concept)}" if last_concept
+    out
+  end
+
+  def same_period?(year, month, date)
+    return  false if date.nil?
+    date = Date.parse(date.to_s)
+    year.eql?(date.year) && month.eql?(date.strftime('%B'))
+  end
+
+  def concepts_li_list(concepts)
+    out = ''
+    concepts.each do  |concept|
+      out += tree_link_to_concept(child: concept, ontology_acronym: @ontology.acronym, active_style: '')
+    end
+    out
+  end
+
+  def render_concepts_by_dates
+    first_year, first_month_concepts = @concepts_year_month.shift
+    first_month, first_concepts = first_month_concepts.shift
+    out = ''
+    if same_period?(first_year, first_month, @last_date)
+      out += "<ul>#{concepts_li_list(first_concepts)}</ul>"
+    else
+      tmp = {}
+      tmp[first_month] = first_concepts
+      first_month_concepts = tmp.merge(first_month_concepts)
+    end
+    tmp = {}
+    tmp[first_year] = first_month_concepts
+    @concepts_year_month = tmp.merge(@concepts_year_month)
+
+    @concepts_year_month.each do | year, month_concepts|
+      month_concepts.each do |month , concepts|
+        out += "<ul> #{month + ' ' + year.to_s}"
+        out += concepts_li_list(concepts)
+        out += "</ul>"
+      end
+    end
+
+    raw out
+  end
 end
