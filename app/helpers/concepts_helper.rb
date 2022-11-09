@@ -27,4 +27,9 @@ module ConceptsHelper
       root.children.first.id
     end
   end
+
+
+  def concept_date(concept)
+    Date.parse(concept.modified || concept.created)
+  end
 end
