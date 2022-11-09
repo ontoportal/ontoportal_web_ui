@@ -7,9 +7,7 @@ class ChangeRequestsController < ApplicationController
     @ont_acronym = params[:ont_acronym]
     @username = session[:user].username
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 
   def create
@@ -31,8 +29,6 @@ class ChangeRequestsController < ApplicationController
     @issue = IssueCreatorService.call(params[:ont_acronym], content[:title], content[:body])
     flash.now.notice = helpers.change_request_success_message if @issue['id'].present?
 
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
 end
