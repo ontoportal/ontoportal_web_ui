@@ -6,15 +6,19 @@ RSpec.describe KGCL::IssueContentGenerator do
   it 'generates issue content for new synonym change requests' do
     params = {
       operation: KGCL::Operations::NEW_SYNONYM,
-      concept_id: 'CL:0000209',
+      curie: 'CL:0000209',
       concept_label: 'taste receptor cell',
       username: 'Daenerys Targaryen',
       create_synonym: { preferred_label: 'taste-bud cell', qualifier: 'exact', comment: 'Please add this!' }
     }
 
-    title = "Add synonym 'taste-bud cell' for taste receptor cell"
+    title = "Proposal: add synonym 'taste-bud cell' for taste receptor cell"
     body = <<~HEREDOC.chomp
-      create exact synonym 'taste-bud cell' for CL:0000209
+      ## Hey ontobot! apply:
+
+      * create exact synonym 'taste-bud cell' for CL:0000209
+
+      ---
 
       Comment: Please add this!
 
