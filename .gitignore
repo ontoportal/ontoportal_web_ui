@@ -40,9 +40,7 @@ nohup.out
 config/newrelic.yml
 node_modules
 .env
-Dockerfile
 config/site_config.rb
-docker-compose.yml
 docker-sync.yml
 .docker-sync/daemon.log
 .docker-sync/daemon.pid
