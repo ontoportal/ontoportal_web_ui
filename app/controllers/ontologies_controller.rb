@@ -182,7 +182,7 @@ display_context: false, include: browse_attributes)
 
     if @submission.hasOntologyLanguage == 'SKOS'
       @schemes =  get_schemes(@ontology)
-      @collections = get_collections(@ontology.acronym, add_colors: true)
+      @collections = get_collections(@ontology, add_colors: true)
     else
       @instance_details, type = get_instance_and_type(params[:instanceid])
       unless @instance_details.empty? || type.nil? || concept_id_param_exist?(params)
@@ -307,9 +307,9 @@ display_links: false, display_context: false)
   end
 
   def collections
-    @collections = get_collections(@ontology.acronym)
+    @collections = get_collections(@ontology)
     collection_id = params[:collection_id]
-    @collection = get_collection(@ontology.acronym, collection_id) if collection_id
+    @collection = get_collection(@ontology, collection_id) if collection_id
 
     if request.xhr?
       render partial: 'ontologies/sections/collections', layout: false

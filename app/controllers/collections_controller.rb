@@ -36,6 +36,6 @@ class CollectionsController < ApplicationController
     end
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
     not_found if @ontology.nil?
-    get_collection(@ontology.acronym, params[:id])
+    get_collection(@ontology, params[:id])
   end
 end
