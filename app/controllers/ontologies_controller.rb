@@ -181,7 +181,7 @@ display_context: false, include: browse_attributes)
     get_class(params)
 
     if @submission.hasOntologyLanguage == 'SKOS'
-      @schemes =  get_schemes(@ontology.acronym)
+      @schemes =  get_schemes(@ontology)
       @collections = get_collections(@ontology.acronym, add_colors: true)
     else
       @instance_details, type = get_instance_and_type(params[:instanceid])
@@ -295,9 +295,9 @@ display_links: false, display_context: false)
   end
 
   def schemes
-    @schemes = get_schemes(@ontology.acronym)
+    @schemes = get_schemes(@ontology)
     scheme_id = params[:scheme_id] || @submission_latest.URI || nil
-    @scheme = get_scheme(@ontology.acronym, scheme_id) if scheme_id
+    @scheme = get_scheme(@ontology, scheme_id) if scheme_id
 
     if request.xhr?
       render partial: 'ontologies/sections/schemes', layout: false
