@@ -37,6 +37,10 @@
             %td{nowrap: ""} In Collections
             %td
               %p= @concept.inCollection&.join(',')
+      %tr
+        %td{nowrap: ""} Type
+        %td
+          %p= @concept.type
 
     - scheme_set = c.properties_set_by_keys(schemes_keys, c.concept_properties)
     - label_xl_set = c.properties_set_by_keys(label_xl_set, c.concept_properties)

@@ -11,7 +11,7 @@
     = turbo_frame_tag "concepts_date_sorted_list_view-page-#{@page.nextPage}",
                        loading: :lazy, src: sorted_by_date_url(@page.nextPage, @concepts.last) do
       Loading ...
-  - else
+  - elsif @page.page == 1
     %div.text-wrap
       = render AlertMessageComponent.new(id: 'concepts_date_sorted_list_view_alert') do
         The Classes/Concepts didn't define <strong>creation</strong> or <strong>modifications</strong> dates with dcterms

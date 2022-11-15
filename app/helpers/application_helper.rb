@@ -477,7 +477,7 @@ module ApplicationHelper
     if cls_id.start_with?('http://') || cls_id.start_with?('https://')
       link = bp_class_link(cls_id, ont_acronym)
       ajax_url = '/ajax/classes/label'
-      cls_url = "#{ont_acronym}?p=classes&conceptid=#{CGI.escape(cls_id)}"
+      cls_url = "?p=classes&conceptid=#{CGI.escape(cls_id)}"
       label_ajax_link(link, cls_id, ont_acronym, ajax_url , cls_url ,target)
     else
       auto_link(cls_id, :all, target: '_blank')
