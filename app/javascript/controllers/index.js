@@ -45,3 +45,6 @@ application.register("tooltip", TooltipController)
 
 import TurboFrameController from "./turbo_frame_controller"
 application.register("turbo-frame", TurboFrameController)
+
+import TurboFrameErrorController from "./turbo_frame_error_controller"
+application.register("turbo-frame-error", TurboFrameErrorController)
