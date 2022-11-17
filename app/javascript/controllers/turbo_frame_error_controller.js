@@ -27,8 +27,11 @@ export default class extends Turbo_frame_controller {
     let styles = el.getElementsByTagName('style')
     Array.from(styles).forEach(e => el.removeChild(e))
 
-    let body = el.getElementsByTagName('body').item(0)
-    this.errorMessageTarget.firstElementChild.appendChild(body ? body : el)
+    let body = el.querySelector('h1')
+    let div = document.createElement('div')
+    div.className ="text-center"
+    div.innerHTML = (body ? body.innerText : el.innerHTML)
+    this.errorMessageTarget.firstElementChild.appendChild(div)
     $(this.errorMessageTarget).show()
   }
 
