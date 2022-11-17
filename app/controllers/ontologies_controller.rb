@@ -353,7 +353,7 @@ display_links: false, display_context: false)
 
     # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    not_found if @ontology.nil?
+    ontology_not_found(params[:ontology]) if @ontology.nil?
 
     # Handle the case where an ontology is converted to summary only.
     # See: https://github.com/ncbo/bioportal_web_ui/issues/133.
@@ -417,7 +417,7 @@ display_links: false, display_context: false)
   def summary
     # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
-    not_found if @ontology.nil?
+    ontology_not_found(params[:id]) if @ontology.nil?
     # Check to see if user is requesting json-ld, return the file from REST service if so
 
     if request.accept.to_s.eql?('application/ld+json') || request.accept.to_s.eql?('application/json')
