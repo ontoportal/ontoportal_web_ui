@@ -102,7 +102,7 @@
             - sections.each do |section|
               %div.tab-pane{id: "ont_#{section}_content", class: selected_section?(section) ? 'active show' : ''}
                 = lazy_load_section(section) do
-                  = yield
+                  - yield
 
 - if Rails.env.appliance?
   = render partial: "footer_appliance"
