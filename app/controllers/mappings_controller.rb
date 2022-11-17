@@ -332,7 +332,7 @@ class MappingsController < ApplicationController
 
   def request_mapping
     mapping = LinkedData::Client::Models::Mapping.find(params[:id])
-    not_found if mapping.nil? || mapping.errors
+    not_found("Mapping #{params[:id]} not found") if mapping.nil? || mapping.errors
     mapping
   end
 
