@@ -379,9 +379,11 @@ module OntologiesHelper
   end
 
   def lazy_load_section(section_title, &block)
-    render layout: 'ontologies/lazy_load_content',
-           locals: { current_section: current_section, section_title: section_title },
-           &block
+    if current_section.eql?(section_title)
+      block.call
+    else
+      render TurboFrameComponent.new(id: section_title, src: "/ontologies/#{@ontology.acronym}?p=#{section_title}")
+    end
   end
 
   def visits_chart_dataset(visits_data)
