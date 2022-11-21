@@ -109,14 +109,18 @@ class ConceptsController < ApplicationController
       page = params[:page]
       @last_date = params[:last_date]
       auto_click = page.to_s.eql?('1')
-      params = { page: page }
+      params = {
+        page: page,
+        sortby:'modified,created',
+        order:'desc,desc',
+        display: 'prefLabel,modified,created'
+      }
       if @last_date
         params.merge!(last_date: @last_date)
         @last_date = Date.parse(@last_date)
       end
 
-
-      @page = LinkedData::Client::HTTP.get("/ontologies/#{@ontology.acronym}/classes/sorted_by_date", params)
+      @page = @ontology.explore.classes(params)
       @concepts = @page.collection
       @concepts_year_month = concepts_to_years_months(@concepts)
 
