@@ -32,11 +32,11 @@
           %td
             %p true
       - if skos?
-        - unless @concept.inCollection.nil?  || @concept.inCollection.empty?
+        - unless @concept.memberOf.nil?  || @concept.memberOf.empty?
           %tr
             %td{nowrap: ""} In Collections
             %td
-              %p= @concept.inCollection&.join(',')
+              %p= @concept.memberOf&.join(',')
 
     - scheme_set = c.properties_set_by_keys(schemes_keys, c.concept_properties)
     - label_xl_set = c.properties_set_by_keys(label_xl_set, c.concept_properties)
