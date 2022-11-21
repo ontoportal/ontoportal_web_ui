@@ -12,6 +12,6 @@
                    locals: {multiple: false, id: 'collections_select',
                    data: {action: 'changed->turbo-frame#updateFrame'}}
 
-  %div#sd_content.card.p-1.h-100
+  %div#sd_content.card.p-1{style: 'overflow-y: scroll; height: 60vh;'}
     = render TurboFrameComponent.new(id: 'concepts_list_view', data: {'turbo-frame-target': 'frame'}) do
       Please select a collection to display
