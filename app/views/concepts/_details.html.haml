@@ -32,11 +32,11 @@
           %td
             %p true
       - if skos?
-        - unless @concept.inCollection.nil?  || @concept.inCollection.empty?
+        - unless @concept.memberOf.nil?  || @concept.memberOf.empty?
           %tr
             %td{nowrap: ""} In Collections
             %td
-              %p= @concept.inCollection&.join(',')
+              %p= @concept.memberOf&.join(',')
       %tr
         %td{nowrap: ""} Type
         %td
