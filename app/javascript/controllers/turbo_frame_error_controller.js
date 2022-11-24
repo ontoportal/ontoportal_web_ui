@@ -14,10 +14,15 @@ export default class extends Turbo_frame_controller {
     if (!response.succeeded) {
       response = response.response.clone()
       response.text().then(text => {
+          this.#hideContent()
           this.#displayError(text)
       })
 
     }
+  }
+
+  #hideContent(){
+    $(this.frameTarget.firstElementChild).hide()
   }
 
   #displayError(error){
