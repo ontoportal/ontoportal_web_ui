@@ -22,6 +22,9 @@ application.register("history", HistoryController)
 import LabelAjaxController from "./label_ajax_controller"
 application.register("label-ajax", LabelAjaxController)
 
+import LabelsAjaxContainerController from "./labels_ajax_container_controller"
+application.register("labels-ajax-container", LabelsAjaxContainerController)
+
 import LoadChartController from "./load_chart_controller"
 application.register("load-chart", LoadChartController)
 
