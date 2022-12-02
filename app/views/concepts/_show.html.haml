@@ -27,8 +27,9 @@
         %li#mappings_top.nav-item
           %a.nav-link.py-1{:href => "#mappings", data:{toggle: 'tab', target: '#mappings_content'}}
             #{concept_label_to_show(submission: @submission)} Mappings (
-            %span#mapping_count= @mappings.size
+            %span#mapping_count= 'loading'
             )
+
         %li#restlink_top.nav-item
           %a.nav-link.py-1{:href => "#{@ontology.id}/classes/#{escape(@concept.id)}", :style => "margin-bottom: 1em; margin-left: 1em;", :target => "_blank"} Access #{concept_label_to_show(submission: @submission)} JSON
         - if @enable_ontolobridge
@@ -49,7 +50,8 @@
         #notes_content.tab-pane
           = render :partial =>'/notes/list'
         #mappings_content.tab-pane
-          = render :partial => '/mappings/concept_mappings'
+          = render TurboFrameComponent.new(id:'concept_mappings',
+           src:"/ajax/mappings/get_concept_table?ontologyid=#{@ontology.acronym}&conceptid=#{@concept.id}")
         - if @enable_ontolobridge
           #request_term_content.tab-pane
             = render :partial =>'/concepts/request_term'

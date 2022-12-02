@@ -202,9 +202,7 @@ private
   end
 
   def gather_details
-    @mappings = get_concept_mappings(@concept)
     @notes = @concept.explore.notes
-    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
   end
 
