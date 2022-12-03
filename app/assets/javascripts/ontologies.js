@@ -1,7 +1,4 @@
-/* Ontology viewing */
-jQuery('.statistics_container').ready(function (){
-    showVisitsChat()
-})
+/* Ontology creation & editing */
 
 
 function hideAllRestrictions() {

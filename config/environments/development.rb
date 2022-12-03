@@ -60,13 +60,14 @@ Rails.application.configure do
   config.assets.quiet = true
 
   # memcache setup
-  config.cache_store = ActiveSupport::Cache::MemCacheStore.new('localhost', namespace: 'BioPortal')
+  config.cache_store = ActiveSupport::Cache::MemCacheStore.new('cache:11211', namespace: 'BioPortal')
 
   # Silence cache output
   config.cache_store.logger = Logger.new("/dev/null") if config.cache_store.respond_to?(:logger)
 
   # Add custom data attributes to sanitize allowed list
   config.action_view.sanitized_allowed_attributes = ['id', 'class', 'style', 'data-cls', 'data-ont']
+  config.view_component.generate.sidecar = true
 
   config.file_watcher = ActiveSupport::FileUpdateChecker
 

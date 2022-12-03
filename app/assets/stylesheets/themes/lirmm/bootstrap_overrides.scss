@@ -25,6 +25,10 @@ a i {
 .bg-success {
   background-color: $color-secondary !important;
 }
+
+.btn-link {
+  color:  $color-primary !important;
+}
 .card-header.bg-success {
   font-weight: bold;
 }

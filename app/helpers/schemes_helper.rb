@@ -1,17 +1,11 @@
 module SchemesHelper
 
-  def schemes_namespace(ontology_acronym)
-    "/ontologies/#{ontology_acronym}/schemes"
+  def get_schemes(ontology)
+    ontology.explore.schemes
   end
 
-  def get_schemes(ontology_acronym)
-    LinkedData::Client::HTTP
-      .get(schemes_namespace(ontology_acronym))
-  end
-
-  def get_scheme(ontology_acronym, scheme_uri)
-    LinkedData::Client::HTTP
-      .get("#{schemes_namespace(ontology_acronym)}/#{CGI.escape(scheme_uri)}", { include: 'all' })
+  def get_scheme(ontology, scheme_uri)
+    ontology.explore.schemes({ include: 'all' }, scheme_uri)
   end
 
   def get_scheme_label(scheme)
@@ -45,6 +39,64 @@ module SchemesHelper
   end
 
   def concept_label_to_show(submission: @submission_latest)
-    submission.hasOntologyLanguage == 'SKOS' ? 'Concepts' : 'Classes'
+    submission&.hasOntologyLanguage == 'SKOS' ? 'Concepts' : 'Classes'
+  end
+
+  def section_name(section)
+    if section.eql?('classes')
+      concept_label_to_show(submission: @submission_latest || @submission)
+    else
+      section.capitalize
+    end
+  end
+
+  def scheme_path(scheme_id = '')
+    "/ontologies/#{@ontology.acronym}/schemes/show_scheme?id=#{escape(scheme_id)}"
+  end
+
+  def no_main_scheme?
+    @submission.URI.nil? || @submission.URI.empty?
+  end
+
+  def no_schemes?
+    @schemes.nil? || @schemes.empty?
+  end
+
+  def no_main_scheme_alert
+    render AlertMessageComponent.new(id: 'main-scheme-empty-info') do
+      'no main scheme defined in the URI attribute'
+    end
+  end
+  def no_schemes_alert
+    render AlertMessageComponent.new(id: 'schemes-empty-info') do
+      "#{@ontology.acronym} does not contain schemes (skos:ConceptScheme)"
+    end
+  end
+
+  def schemes_data
+    schemes_labels, main_scheme = get_schemes_labels(@schemes,@submission.URI)
+    selected_scheme = @schemes.select{ |s| params[:concept_schemes]&.split(',')&.include?(s['@id']) }
+    selected_scheme = selected_scheme.empty? ? [main_scheme] : selected_scheme
+    [schemes_labels, main_scheme, selected_scheme]
+  end
+
+  def tree_link_to_schemes(schemes_labels, main_scheme_label, selected_scheme_id)
+    out = ''
+    schemes_labels.sort_by { |s| [s['prefLabel']] }.each do |s|
+      next unless main_scheme_label.nil? || s['prefLabel'] != main_scheme_label['prefLabel']
+
+      li = <<-EOS
+        <li class="doc">
+          <a id="#{s['@id']}" href="#{scheme_path(s['@id'])}" 
+            data-turbo="true" data-turbo-frame="scheme" data-schemeid="#{s['@id']}"
+            class="#{selected_scheme_id.eql?(s['@id']) ? 'active' : nil}">
+              #{get_scheme_label(s)}
+          </a>
+        </li>
+      EOS
+      out << li
+    end
+    out
   end
 end
+

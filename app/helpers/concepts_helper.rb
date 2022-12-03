@@ -1,84 +1,11 @@
 module ConceptsHelper
 
-  def exclude_relation?(relation_to_check, ontology = nil)
-    excluded_relations = [ "type", "rdf:type", "[R]", "SuperClass", "InstanceCount" ]
 
-    # Show or hide property based on the property and ontology settings
-    if ontology
-      # TODO_REV: Handle obsolete classes
-      # Hide owl:deprecated if a user has set class or property based obsolete checking
-      # if !ontology.obsoleteParent.nil? && relation_to_check.include?("owl:deprecated") || !ontology.obsoleteProperty.nil? && relation_to_check.include?("owl:deprecated")
-      #   return true
-      # end
-    end
-
-    excluded_relations.each do |relation|
-      return true if relation_to_check.include?(relation)
-    end
-    return false
-  end
-
-  def concept_properties2hash(properties)
-    # NOTE: example properties
-    #
-    #properties
-    #=> #<struct
-    #  http://www.w3.org/2000/01/rdf-schema#label=
-    #    [#<struct
-    #      object="Etiological thing",
-    #      string="Etiological thing",
-    #      links=nil,
-    #      context=nil>],
-    #  http://stagedata.bioontology.org/metadata/def/prefLabel=
-    #    [#<struct
-    #      object="Etiological thing",
-    #      string="Etiological thing",
-    #      datatype="http://www.w3.org/2001/XMLSchema#string",
-    #      links=nil,
-    #      context=nil>],
-    #  http://www.w3.org/2000/01/rdf-schema#comment=
-    #    [#<struct  object="AD444", string="AD444", links=nil, context=nil>],
-    #  http://scai.fraunhofer.de/NDDUO#Synonym=
-    #    [#<struct  object="Etiology", string="Etiology", links=nil, context=nil>],
-    #  http://www.w3.org/2000/01/rdf-schema#subClassOf=
-    #    ["http://www.w3.org/2002/07/owl#Thing"],
-    #  http://www.w3.org/1999/02/22-rdf-syntax-ns#type=
-    #    ["http://www.w3.org/2002/07/owl#Class"],
-    #  links=nil,
-    #  context=nil>
-    properties_data = {}
-    keys = properties.members  # keys is an array of symbols
-    for key in keys
-      next if properties[key].nil?  # ignore :context and :links when nil.
-      # Shorten the key into a simple label
-      k = key.to_s if key.kind_of?(Symbol)
-      k ||= key
-      if k.start_with?("http")
-        label = LinkedData::Client::HTTP.get("/ontologies/#{@ontology.acronym}/properties/#{CGI.escape(k)}/label").label rescue ""
-        if label.nil? || label.empty?
-          k = k.gsub(/.*#/,'')  # greedy regex replace everything up to last '#'
-          k = k.gsub(/.*\//,'') # greedy regex replace everything up to last '/'
-          # That might take care of nearly everything to be shortened.
-          label = k
-        end
-      end
-      begin
-        # Try to simplify the property values, when they are a struct.
-        values = properties[key].map {|v| v.string }
-      rescue
-        # Each value is probably a simple datatype already.
-        values = properties[key]
-      end
-      data = { :key => key, :values => values }
-      properties_data[label] = data
-    end
-    return properties_data
-  end
 
   def concept_label(ont_id,cls_id)
     @ontology = LinkedData::Client::Models::Ontology.find(ont_id)
     @ontology ||= LinkedData::Client::Models::Ontology.find_by_acronym(ont_id).first
-    not_found unless @ontology
+    ontology_not_found(ont_id) unless @ontology
     # Retrieve a class prefLabel or return the class ID (URI)
     # - mappings may contain class URIs that are not in bioportal (e.g. obo-xrefs)
     cls = @ontology.explore.single_class(cls_id)
@@ -99,5 +26,56 @@ module ConceptsHelper
     elsif !root.children.first.nil?
       root.children.first.id
     end
+  end
+
+
+  def concept_date(concept)
+    Date.parse(concept.modified || concept.created)
+  end
+
+  def sorted_by_date_url(page = 1, last_concept = nil)
+    out = "/ajax/classes/date_sorted_list?ontology=#{@ontology.acronym}&page=#{page}"
+    out += "&last_date=#{concept_date(last_concept)}" if last_concept
+    out
+  end
+
+  def same_period?(year, month, date)
+    return  false if date.nil?
+    date = Date.parse(date.to_s)
+    year.eql?(date.year) && month.eql?(date.strftime('%B'))
+  end
+
+  def concepts_li_list(concepts)
+    out = ''
+    concepts.each do  |concept|
+      out += tree_link_to_concept(child: concept, ontology_acronym: @ontology.acronym, active_style: '')
+    end
+    out
+  end
+
+  def render_concepts_by_dates
+    first_year, first_month_concepts = @concepts_year_month.shift
+    first_month, first_concepts = first_month_concepts.shift
+    out = ''
+    if same_period?(first_year, first_month, @last_date)
+      out += "<ul>#{concepts_li_list(first_concepts)}</ul>"
+    else
+      tmp = {}
+      tmp[first_month] = first_concepts
+      first_month_concepts = tmp.merge(first_month_concepts)
+    end
+    tmp = {}
+    tmp[first_year] = first_month_concepts
+    @concepts_year_month = tmp.merge(@concepts_year_month)
+
+    @concepts_year_month.each do | year, month_concepts|
+      month_concepts.each do |month , concepts|
+        out += "<ul> #{month + ' ' + year.to_s}"
+        out += concepts_li_list(concepts)
+        out += "</ul>"
+      end
+    end
+
+    raw out
   end
 end

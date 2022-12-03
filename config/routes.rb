@@ -14,17 +14,27 @@ Rails.application.routes.draw do
 
   resources :reviews
 
-  get '/mappings/new_external' => 'mappings#new_external'
+  get '/mappings/loader' , to: 'mappings#loader'
+  post '/mappings/loader', to: 'mappings#loader_process'
+  get 'mappings/count/:id', to: 'mappings#count', constraints: { id: /.+/ }
+  get 'mappings/show_mappings', to: 'mappings#show_mappings'
+  get 'mappings/new', to: 'mappings#new'
+  get 'mappings/:id', to: 'mappings#show', constraints: { id: /.+/ }
+  post 'mappings/:id', to: 'mappings#update', constraints: { id: /.+/ }
+  delete 'mappings/:id', to: 'mappings#destroy', constraints: { id: /.+/ }
   resources :mappings
+  get 'mappings/:id', to: 'mappings#show', constraints: { id: /.+/ }
 
   resources :margin_notes
 
   resources :concepts
 
+  get 'ontologies/:ontology_id/concepts', to: 'concepts#show_concept'
   resources :ontologies do
     resources :submissions
     get 'instances/:instance_id', to: 'instances#show', constraints: { instance_id: /[^\/?]+/ }
-    get 'schemes/:scheme_id', to: "schemes#show", constraints: { scheme_id: /[^\/?]+/ }
+    get 'schemes/show_scheme', to: 'schemes#show'
+    get 'collections/show'
   end
 
   resources :login
@@ -48,7 +58,7 @@ Rails.application.routes.draw do
   resources :virtual_appliance
 
   # resource for metadata ontologies
-  resources :ontologies_metadata_curator do 
+  scope :ontologies_metadata_curator do
     post '/result', to: 'ontologies_metadata_curator#result'
     post '/edit', to: 'ontologies_metadata_curator#edit'
     put '/update', to: 'ontologies_metadata_curator#update'
@@ -111,8 +121,12 @@ Rails.application.routes.draw do
   get '/ajax/classes/label' => 'concepts#show_label'
   get '/ajax/classes/definition' => 'concepts#show_definition'
   get '/ajax/classes/treeview' => 'concepts#show_tree'
+  get '/ajax/classes/list' => 'collections#show_members'
+  get '/ajax/classes/date_sorted_list' => 'concepts#show_date_sorted_list'
   get '/ajax/properties/tree' => 'concepts#property_tree'
-  get 'ajax/:ontology_id/schemes/:scheme_id/show_label', to: "schemes#show_label", constraints: { scheme_id: /[^\/?]+/ }
+  get 'ajax/schemes/label', to: "schemes#show_label"
+  get 'ajax/label_xl/label', to: "label_xl#show_label"
+  get 'ajax/label_xl', to: "label_xl#show"
   get '/ajax/biomixer' => 'concepts#biomixer'
   get '/ajax/fair_score/html' => 'fair_score#details_html'
   get '/ajax/fair_score/json' => 'fair_score#details_json'

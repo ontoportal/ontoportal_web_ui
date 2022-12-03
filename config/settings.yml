@@ -5,6 +5,7 @@ shared:
     facebook: 'https://www.facebook.com/National-Center-for-Biomedical-Ontology-127444774011153/'
     github: 'http://github.com/ncbo'
     help: 'https://www.bioontology.org/wiki/BioPortal_Help'
+    metrics: 'https://www.bioontology.org/wiki/Ontology_Metrics'
     mission: 'https://www.bioontology.org/about-us/#mission'
     privacy_policy: 'https://www.bioontology.org/privacy/'
     rest_api: 'http://data.bioontology.org/documentation'
@@ -14,6 +15,7 @@ shared:
     virtual_appliance: 'https://ontoportal.github.io/administration/'
     widgets: 'http://www.bioontology.org/wiki/NCBO_Widgets'
     wiki: 'https://www.bioontology.org/wiki/'
+    mappings: 'https://www.bioontology.org/wiki/BioPortal_Help#Mappings_Tab'
 
 development:
   links:
