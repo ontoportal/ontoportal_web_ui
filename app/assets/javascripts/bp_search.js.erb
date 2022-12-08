@@ -126,14 +126,6 @@ function findOntologyOwnerOfClass(clsID, ontAcronyms) {
 
 jQuery(document).ready(function() {
     // Wire advanced search categories
-    jQuery("#search_categories").chosen({
-        search_contains: true,
-        width: "432px"
-    });
-    jQuery("#search_metadata").chosen({
-        search_contains: true,
-        width: "432px"
-    });
     /* Comment it because it is changing the button value to nothing (and it is a param for chosen, don't seems useful for button)
     jQuery("#search_button").button({
         search_contains: true

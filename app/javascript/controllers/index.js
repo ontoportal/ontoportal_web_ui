@@ -3,14 +3,13 @@
 // ./bin/rails generate stimulus controllerName
 
 import { application } from "./application"
-import ModalController from "./modal_controller.js"
 
 import ChosenController from "./chosen_controller"
 application.register("chosen", ChosenController)
-import SelectController from "./select_controller.js"
-import Contact from "./contact_controller.js"
-import Loaders from "./loaders_controller.js"
-import Flatpickr from "stimulus-flatpickr";
+
+
+import Flatpickr from "stimulus-flatpickr"
+
 
 import ClassSearchAutoCompleteController from "./class_search_auto_complete_controller"
 application.register("class-search-auto-complete", ClassSearchAutoCompleteController)
@@ -57,10 +56,3 @@ application.register("turbo-frame", TurboFrameController)
 import TurboFrameErrorController from "./turbo_frame_error_controller"
 application.register("turbo-frame-error", TurboFrameErrorController)
 
-import 'flatpickr/dist/themes/dark.css';
-
-application.register("modal", ModalController)
-application.register("select", SelectController)
-application.register("contact", Contact)
-application.register("loaders", Loaders)
-application.register("flatpickr", Flatpickr);
