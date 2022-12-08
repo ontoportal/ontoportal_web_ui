@@ -4,22 +4,23 @@ require 'rails_helper'
 
 RSpec.describe IssueCreatorService do
   describe '#call' do
-    let(:title) { 'test issue' }
-    let(:body_text) { 'lorem ipsum dolor sit amet' }
-    let(:issue) { IssueCreatorService.call('STY', title, body_text) }
-
     it 'creates an issue' do
+      params = { ont_acronym: 'STY', content: { title: 'test issue', body: 'lorem ipsum dolor sit amet' } }
+      issue = IssueCreatorService.call(params)
+
       expect(issue).to have_key('id')
       expect(issue['id']).not_to be_empty
       expect(issue).to have_key('createdAt')
       expect(issue['createdAt']).not_to be_empty
-      expect(issue['title']).to eq title
-      expect(issue['bodyText']).to eq body_text
+      expect(issue['title']).to eq params[:content][:title]
+      expect(issue['bodyText']).to eq params[:content][:body]
     end
 
     context 'when a query fails' do
+      params = { ont_acronym: 'STY', content: { title: nil, body: 'lorem ipsum dolor sit amet' } }
+
       it 'raises an error' do
-        expect { IssueCreatorService.call('STY', nil, body_text) }.to raise_error IssueCreatorService::QueryError
+        expect { IssueCreatorService.call(params) }.to raise_error IssueCreatorService::QueryError
       end
     end
   end
