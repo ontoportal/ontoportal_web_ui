@@ -11,24 +11,27 @@ class ChangeRequestsController < ApplicationController
   end
 
   def create
-    ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ont_acronym]).first
-    query_string = { display: 'notation,prefixIRI', display_links: false, display_context: false }
-    concept = ontology.explore.single_class(query_string, params[:concept_id])
-
-    # TODO: use a more standardized approach for CURIE generation
-    params[:curie] =
-      if concept.notation
-        concept.notation
-      elsif concept.prefixIRI
-        concept.prefixIRI
-      else
-        params[:concept_id]
-      end
-
+    params[:curie] = generate_curie(params[:ont_acronym], params[:concept_id])
     content = KGCL::IssueContentGenerator.call(params)
     @issue = IssueCreatorService.call(params[:ont_acronym], content[:title], content[:body])
     flash.now.notice = helpers.change_request_success_message if @issue['id'].present?
 
     respond_to :js
+  end
+
+  private
+
+  def generate_curie(ont_acronym, concept_id)
+    ontology = LinkedData::Client::Models::Ontology.find_by_acronym(ont_acronym).first
+    query_string = { display: 'notation,prefixIRI', display_links: false, display_context: false }
+    concept = ontology.explore.single_class(query_string, concept_id)
+
+    if concept.notation
+      concept.notation
+    elsif concept.prefixIRI
+      concept.prefixIRI
+    else
+      concept_id
+    end
   end
 end
