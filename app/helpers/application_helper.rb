@@ -235,7 +235,7 @@ module ApplicationHelper
     attribs = []
     html_attribs.each {|k,v| attribs << "#{k.to_s}='#{v}'"}
     return <<-BLOCK
-          <a class='pop_window tooltip_link #{[css_class].flatten.compact.join(' ')}' #{attribs.join(" ")}>
+          <a data-controller='tooltip' class='pop_window tooltip_link d-inline-block #{[css_class].flatten.compact.join(' ')}' #{attribs.join(" ")}>
             <i class="#{icon} d-flex"></i> #{text}
           </a>
     BLOCK
