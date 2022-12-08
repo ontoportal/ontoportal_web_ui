@@ -29,10 +29,10 @@ class IssueCreatorService < ApplicationService
     }
   GRAPHQL
 
-  def initialize(ont_acronym, title, body)
-    @title = title
-    @body = body
-    @repo = Rails.configuration.change_request.dig(:ontologies, ont_acronym.to_sym, :repository)
+  def initialize(params)
+    @title = params[:content][:title]
+    @body = params[:content][:body]
+    @repo = Rails.configuration.change_request.dig(:ontologies, params[:ont_acronym].to_sym, :repository)
   end
 
   def call

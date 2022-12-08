@@ -12,8 +12,8 @@ class ChangeRequestsController < ApplicationController
 
   def create
     params[:curie] = generate_curie(params[:ont_acronym], params[:concept_id])
-    content = KGCL::IssueContentGenerator.call(params)
-    @issue = IssueCreatorService.call(params[:ont_acronym], content[:title], content[:body])
+    params[:content] = KGCL::IssueContentGenerator.call(params)
+    @issue = IssueCreatorService.call(params)
     flash.now.notice = helpers.change_request_success_message if @issue['id'].present?
 
     respond_to :js
