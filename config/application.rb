@@ -19,6 +19,9 @@ module BioportalWebUi
     # Serve error pages from the Rails app itself, instead of using static error pages in /public.
     config.exceptions_app = self.routes
 
-    config.settings = config_for(:settings)
+    config.settings = config_for :settings
+
+    # Initialize configuration for KGCL change request functionality.
+    config.change_request = config_for :change_request
   end
 end

@@ -141,6 +141,10 @@ GEM
     flamegraph (0.9.5)
     globalid (1.0.0)
       activesupport (>= 5.0)
+    graphql (2.0.9)
+    graphql-client (0.18.0)
+      activesupport (>= 3.0)
+      graphql
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt
@@ -353,6 +357,7 @@ DEPENDENCIES
   dalli
   ed25519 (>= 1.2, < 2.0)
   flamegraph
+  graphql-client
   haml (~> 5.1)
   html2haml
   i18n
