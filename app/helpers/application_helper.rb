@@ -449,6 +449,9 @@ module ApplicationHelper
     return "#{bp_ont_link(ont_acronym)}/?label_xl_id=#{URI.escape(label_xl_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
   end
 
+  def bp_collection_link(collection_id, ont_acronym)
+    "#{bp_ont_link(ont_acronym)}?p=collection&collectionid=#{URI.escape(collection_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+  end
   def label_ajax_data_h(cls_id, ont_acronym, ajax_uri, cls_url)
     { data:
         {
@@ -497,6 +500,14 @@ module ApplicationHelper
     scheme_url = "?p=schemes&schemeid=#{CGI.escape(scheme)}"
     label_ajax_link(link, scheme, ont_acronym, ajax_url, scheme_url, target)
   end
+
+  def get_link_for_collection_ajax(collection, ont_acronym, target = '_blank')
+    link = bp_collection_link(collection, ont_acronym)
+    ajax_url = '/ajax/collections/label'
+    collection_url = "?p=collections&collectionid=#{CGI.escape(collection)}"
+    label_ajax_link(link, collection, ont_acronym, ajax_url, collection_url, target)
+  end
+
 
   def get_link_for_label_xl_ajax(label_xl, ont_acronym, cls_id)
     link = label_xl
