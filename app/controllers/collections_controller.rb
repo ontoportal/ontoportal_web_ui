@@ -17,7 +17,10 @@ class CollectionsController < ApplicationController
   def show_members
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     @collection = get_request_collection
-    @concepts = @collection.member
+    page = params[:page] || '1'
+    @auto_click = page.to_s.eql?('1')
+    @page = @collection.explore.members({page: page})
+    @concepts = @page.collection
     if @ontology.nil?
       not_found
     else
