@@ -5,13 +5,12 @@ class CollectionsController < ApplicationController
   end
 
   def show_label
+    collection_label = ''
     collection  = get_request_collection
     collection_label =  collection['prefLabel'] if collection
-    if collection_label.nil? || collection_label.empty?
-      collection_label = params[:id]
-    end
+    collection_label = params[:id]  if collection_label.nil? || collection_label.empty?
 
-    render plain: collection_label
+    render LabelLinkComponent.inline(params[:id], collection_label)
   end
 
   def show_members
@@ -37,7 +36,7 @@ class CollectionsController < ApplicationController
       render plain: 'Error: You must provide a valid collection id'
       return
     end
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id] || params[:ontology]).first
     not_found if @ontology.nil?
     get_collection(@ontology.acronym, params[:id])
   end
