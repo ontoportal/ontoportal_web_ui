@@ -1,11 +1,11 @@
 = turbo_frame_tag 'concept_details' do
-  - schemes_keys = %w[inScheme hasTopConcept topConceptOf]
+  - schemes_keys = %w[hasTopConcept topConceptOf]
   - label_xl_set = %w[skos-xl#prefLabel skos-xl#altLabel skos-xl#hiddenLabel]
   = render ConceptDetailsComponent.new(id:'concept-details', acronym: @ontology.acronym,
               properties: @concept.properties,
               top_keys: %w[description comment],
               bottom_keys: %w[disjoint subclass is_a has_part],
-              exclude_keys: schemes_keys + label_xl_set) do |c|
+              exclude_keys: schemes_keys + label_xl_set + ['inScheme']) do |c|
     - c.header do
       %tr
         %td{nowrap: ""} Preferred Name
