@@ -27,4 +27,7 @@ module ConceptsHelper
       root.children.first.id
     end
   end
+  def concept_list_url(page = 1, collection_id, acronym)
+    "/ajax/classes/list?ontology_id=#{acronym}&collection_id=#{collection_id}&page=#{page}"
+  end
 end
