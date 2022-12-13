@@ -30,7 +30,8 @@ module ConceptsHelper
 
 
   def concept_date(concept)
-    Date.parse(concept.modified || concept.created)
+    date = concept.modified || concept.created
+    Date.parse(date) if date
   end
 
   def sorted_by_date_url(page = 1, last_concept = nil)
@@ -52,6 +53,7 @@ module ConceptsHelper
     end
     out
   end
+
 
   def render_concepts_by_dates
     first_year, first_month_concepts = @concepts_year_month.shift

@@ -121,7 +121,7 @@ class ConceptsController < ApplicationController
       end
 
       @page = @ontology.explore.classes(params)
-      @concepts = @page.collection
+      @concepts = filter_concept_with_no_date(@page.collection)
       @concepts_year_month = concepts_to_years_months(@concepts)
 
       render partial: 'concepts/date_sorted_list', locals: { auto_click: auto_click }
@@ -211,6 +211,10 @@ private
     rootNode = @concept.explore.tree(include: "prefLabel,hasChildren,obsolete,subClassOf")
     @root = LinkedData::Client::Models::Class.new(read_only: true)
     @root.children = rootNode unless rootNode.nil?
+  end
+
+  def filter_concept_with_no_date(concepts)
+    concepts.filter { |c| !concept_date(c).nil?}
   end
 
   def concepts_to_years_months(concepts)
