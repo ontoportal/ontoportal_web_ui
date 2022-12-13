@@ -34,9 +34,22 @@
       - if skos?
         - unless @concept.memberOf.nil?  || @concept.memberOf.empty?
           %tr
-            %td{nowrap: ""} In Collections
+            %td{nowrap: ""} Member of
             %td
-              %p= @concept.memberOf&.join(',')
+              %div.my-1
+                - @concept.memberOf.each do |v|
+                  = raw get_link_for_collection_ajax(v, @ontology.acronym, '_blank')
+        - unless @concept.inScheme.nil?  || @concept.inScheme.empty?
+          %tr
+            %td{nowrap: ""} In Schemes
+            %td
+              %div.my-1
+                - @concept.inScheme.each do |v|
+                  = raw get_link_for_scheme_ajax(v, @ontology.acronym, '_blank')
+      %tr
+        %td{nowrap: ""} Type
+        %td
+          %p= @concept.type
 
     - scheme_set = c.properties_set_by_keys(schemes_keys, c.concept_properties)
     - label_xl_set = c.properties_set_by_keys(label_xl_set, c.concept_properties)
