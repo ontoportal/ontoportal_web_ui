@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-# Generate GitHub issue content for a create synonym change request
-#
-# The change request is described using the Knowledge Graph Change Language grammar, e.g.:
-#
-#   create synonym 'Haematopoietic tissue' for 'Bone marrow stucture'
-#   create synonym 'Haematopoietic tissue' @en for 'Bone marrow stucture'
-#   create exact synonym 'Haematopoietic tissue' for 'Bone marrow stucture'
-#
-# @see https://github.com/INCATools/kgcl KGCL documentation
-#
 module KGCL
   module Renderers
+    # Generate GitHub issue content for a create synonym change request
+    #
+    # The change request is described using the Knowledge Graph Change Language grammar, e.g.:
+    #
+    #   create synonym 'Haematopoietic tissue' for 'Bone marrow stucture'
+    #   create synonym 'Haematopoietic tissue' @en for 'Bone marrow stucture'
+    #   create exact synonym 'Haematopoietic tissue' for 'Bone marrow stucture'
+    #
+    # @see https://github.com/INCATools/kgcl KGCL documentation
+    #
     class NewSynonymContent
       attr_reader :params
 
