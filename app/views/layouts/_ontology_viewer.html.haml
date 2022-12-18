@@ -106,11 +106,6 @@
                 = lazy_load_section(section) do
                   - yield
 
-- if Rails.env.appliance?
-  = render partial: "footer_appliance"
-  = javascript_include_tag "application", "data-turbo-track": "reload"
-  = render partial: "ga_tracking"
-- else
   = render partial: "layouts/footer"
 
 </body>

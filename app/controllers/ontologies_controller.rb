@@ -177,8 +177,7 @@ display_context: false, include: browse_attributes)
   end
 
   def classes
-    @submission = get_ontology_submission_ready(@ontology)
-    get_class(params)
+    @instance_details, type = get_instance_and_type(params[:instanceid])
 
     if @submission.hasOntologyLanguage == 'SKOS'
       @schemes =  get_schemes(@ontology)
@@ -191,13 +190,15 @@ display_context: false, include: browse_attributes)
       @instances_concept_id = get_concept_id(params, @concept, @root)
     end
 
+    get_class(params)
+    @instances_concept_id = get_concept_id(params, @concept, @root)
 
     if ['application/ld+json', 'application/json'].include?(request.accept)
       render plain: @concept.to_jsonld, content_type: request.accept and return
     end
 
     @current_purl = @concept.purl if $PURL_ENABLED
-
+    @submission = get_ontology_submission_ready(@ontology)
     unless @concept.id == 'bp_fake_root'
       @notes = @concept.explore.notes
     end
