@@ -54,14 +54,19 @@ jQuery(document).ready(function () {
     jQuery("#ontology_hasDomain").chosen({width: '100%'});
     jQuery("#ontology_group").chosen({width: '100%'});
 
-    // Make acronym upcase as you type
-    jQuery("#ontology_acronym").on('input', function (e) {
-        var input = $(this);
-        var start = input[0].selectionStart;
-        $(this).val(function (_, val) {
-            return val.toUpperCase();
-        });
-        input[0].selectionStart = input[0].selectionEnd = start;
+  jQuery('#ontology-browse-help').on('click', bpPopWindow);
+
+  // Wire up chosen selectors
+  jQuery("#ontology_administeredBy").chosen({width: '100%'});
+  jQuery("#ontology_acl").chosen({width: '100%'});
+  jQuery("#ontology_hasDomain").chosen({width: '100%'});
+
+  // Make acronym upcase as you type
+  jQuery("#ontology_acronym").on('input', function(e) {
+    var input = $(this);
+    var start = input[0].selectionStart;
+    $(this).val(function (_, val) {
+      return val.toUpperCase();
     });
 
     // Check acronym as you type

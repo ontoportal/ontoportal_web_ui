@@ -51,6 +51,7 @@ gem 'bootsnap', require: false
 gem 'cube-ruby', require: 'cube'
 gem 'dalli'
 gem 'flamegraph'
+gem 'graphql-client'
 gem 'haml', '~> 5.1'
 gem 'i18n'
 gem 'iconv'
@@ -83,12 +84,15 @@ group :staging, :production do
 end
 
 group :development do
+   # Capistrano Deployment
+  gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0', require: false # https://github.com/miloserdow/capistrano-deploy/issues/42
   gem 'capistrano', '~> 3.11', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-locally', require: false
   gem 'capistrano-passenger', require: false
   gem 'capistrano-rails', '~> 1.4', require: false
   gem 'capistrano-yarn', require: false
+  gem 'ed25519', '>= 1.2', '< 2.0', require: false # https://github.com/miloserdow/capistrano-deploy/issues/42
   gem 'html2haml'
   gem 'listen'
   # static code analysis

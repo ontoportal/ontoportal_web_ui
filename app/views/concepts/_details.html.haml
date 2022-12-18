@@ -21,6 +21,10 @@
           %td
             - for synonym in @concept.synonym
               %p= synonym
+          %td
+            %div.synonym-change-request
+              = add_synonym_button
+              = remove_synonym_button
       - unless @concept.definition.nil? || @concept.definition.empty?
         %tr
           %td{nowrap: ""} Definitions
@@ -59,6 +63,3 @@
     - c.section do
       = c.render_properties(label_xl_set, c.concept_properties) do |v|
         - get_link_for_label_xl_ajax(v, @ontology.acronym, @concept.id)
-
-
-
