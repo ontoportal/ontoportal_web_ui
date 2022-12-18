@@ -139,59 +139,68 @@ module ApplicationHelper
     end
   end
 
-  def draw_tree(root, id = nil, type = "Menu")
-    if id.nil?
-      id = root.children.first.id
-    end
+  def draw_tree(root, id = nil, concept_schemes = [])
+    id = root.children.first.id if id.nil?
+
     # TODO: handle tree view for obsolete classes, e.g. 'http://purl.obolibrary.org/obo/GO_0030400'
-    raw build_tree(root, "", id)  # returns a string, representing nested list items
+    raw build_tree(root, '', id, concept_schemes: concept_schemes)
   end
 
-  def build_tree(node, string, id)
-    if node.children.nil? || node.children.length < 1
-      return string # unchanged
-    end
+  def build_tree(node, string, id, concept_schemes: [])
+
+    return string if node.children.nil? || node.children.empty?
+
     node.children.sort! { |a, b| (a.prefLabel || a.id).downcase <=> (b.prefLabel || b.id).downcase }
-    for child in node.children
-      if child.id.eql?(id)
-        active_style = "class='active'"
-      else
-        active_style = ""
-      end
+    node.children.each do |child|
+      active_style = child.id.eql?(id) ? "active" : ''
 
       # This fake root will be present at the root of "flat" ontologies, we need to keep the id intact
-      li_id = child.id.eql?("bp_fake_root") ? "bp_fake_root" : short_uuid
 
-      if child.id.eql?("bp_fake_root")
-        string << tree_link_to_concept(li_id: li_id, child: child, ontology_acronym: '',
+
+      if child.id.eql?('bp_fake_root')
+        string << tree_link_to_concept(child: child, ontology_acronym: '',
                                        active_style: active_style, node: node)
       else
-        string << tree_link_to_concept(li_id: li_id, child: child, ontology_acronym: child.explore.ontology.acronym,
-                            active_style: active_style, node: node)
+        string << tree_link_to_concept(child: child, ontology_acronym: child.explore.ontology.acronym,
+                                       active_style: active_style, node: node)
         if child.hasChildren && !child.expanded?
-          string << tree_link_to_children(li_id: li_id, child: child)
+          string << tree_link_to_children(child: child, concept_schemes: concept_schemes)
         elsif child.expanded?
-          string << "<ul>"
-          build_tree(child, string, id)
-          string << "</ul>"
+          string << '<ul>'
+          build_tree(child, string, id, concept_schemes: concept_schemes)
+          string << '</ul>'
         end
-        string << "</li>"
+        string << '</li>'
       end
     end
-
     string
   end
 
-  def tree_link_to_concept(li_id:, child:, ontology_acronym:, active_style:, node:)
-    page_name = ontology_viewer_page_name(ontology_acronym, child.prefLabel, 'Classes')
+  def tree_link_to_concept(child:, ontology_acronym:, active_style:, node: nil)
+    li_id = child.id.eql?('bp_fake_root') ? 'bp_fake_root' : short_uuid
     open = child.expanded? ? "class='open'" : ''
     icons = child.relation_icon(node)
-    href = ontology_acronym.blank? ? '#' :  "/ontologies/#{child.explore.ontology.acronym}/concepts/?id=#{CGI.escape(child.id)}"
-    "<li #{open} id='#{li_id}'><a id='#{child.id}' data-bp-ont-page-name='#{page_name}' data-turbo=true data-turbo-frame='concept_show' href='#{href}' #{active_style}> #{child.prefLabel({ use_html: true })}</a> #{icons}"
+    muted_style = child.isInActiveScheme&.empty? ? 'text-muted' : ''
+    href = ontology_acronym.blank? ? '#' : "/ontologies/#{child.explore.ontology.acronym}/concepts/?id=#{CGI.escape(child.id)}"
+    link = <<-EOS
+        <a id='#{child.id}' data-conceptid='#{child.id}'
+           data-turbo=true data-turbo-frame='concept_show' href='#{href}' 
+           data-collections-value='#{child.memberOf || []}'
+           data-active-collections-value='#{child.isInActiveCollection || []}'
+           data-skos-collection-colors-target='collection'
+            class='#{muted_style} #{active_style}'>
+            #{child.prefLabel ? child.prefLabel({ use_html: true }) : child.id}
+        </a>
+    EOS
+
+    "<li #{open} id='#{li_id}'>#{link} #{icons}"
   end
 
-  def tree_link_to_children(li_id:, child:)
-    "<ul class='ajax'><li id='#{li_id}'><a id='#{child.id}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children'>ajax_class</a></li></ul>"
+  def tree_link_to_children(child:, concept_schemes: [])
+    li_id = child.id.eql?('bp_fake_root') ? 'bp_fake_root' : short_uuid
+    concept_schemes = concept_schemes.map{|x| CGI.escape(x)}.join(',')
+    link = "<a id='#{child.id}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&concept_schemes=#{concept_schemes}&callback=children'>ajax_class</a>"
+    "<ul class='ajax'><li id='#{li_id}'>#{link}</li></ul>"
   end
 
   def loading_spinner(padding = false, include_text = true)
@@ -412,16 +421,13 @@ module ApplicationHelper
   end
 
   def flash_class(level)
-    case level
-    when "notice" 
-      "alert alert-info"
-    when "success" 
-      "alert alert-success"
-    when "error"
-      "alert alert-danger"
-    when "alert" 
-      "alert alert-error"
-    end
+    bootstrap_alert_class = {
+      'notice' => 'alert-info',
+      'success' => 'alert-success',
+      'error' => 'alert-danger',
+      'alert' => 'alert-danger'
+    }
+    bootstrap_alert_class[level]
   end
 
   ###BEGIN ruby equivalent of JS code in bp_ajax_controller.
@@ -435,23 +441,46 @@ module ApplicationHelper
   def bp_scheme_link(scheme_id, ont_acronym)
     return "#{bp_ont_link(ont_acronym)}?p=schemes&schemeid=#{URI.escape(scheme_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
   end
-  def get_link_for_cls_ajax(cls_id, ont_acronym, target=nil)
-    # Note: bp_ajax_controller.ajax_process_cls will try to resolve class labels.
-    # Uses 'http' as a more generic attempt to resolve class labels than .include? ont_acronym; the
-    # bp_ajax_controller.ajax_process_cls will try to resolve class labels and
-    # otherwise remove the UNIQUE_SPLIT_STR and the ont_acronym.
-    if target.nil?
-      target = ""
+
+  def bp_label_xl_link(label_xl_id, ont_acronym)
+    return "#{bp_ont_link(ont_acronym)}/?label_xl_id=#{URI.escape(label_xl_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+  end
+
+  def bp_collection_link(collection_id, ont_acronym)
+    "#{bp_ont_link(ont_acronym)}?p=collection&collectionid=#{URI.escape(collection_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+  end
+  def label_ajax_data_h(cls_id, ont_acronym, ajax_uri, cls_url)
+    { data:
+        {
+          'label-ajax-cls-id-value': cls_id,
+          'label-ajax-ontology-acronym-value': ont_acronym,
+          'label-ajax-ajax-url-value': ajax_uri,
+          'label-ajax-cls-id-url-value': cls_url
+        }
+    }
+  end
+
+  def label_ajax_data(cls_id, ont_acronym, ajax_uri, cls_url)
+    tag.attributes label_ajax_data_h(cls_id, ont_acronym, ajax_uri, cls_url)
+  end
+
+  def label_ajax_link(link, cls_id, ont_acronym, ajax_uri, cls_url, target = '')
+    href_cls = " href='#{link}'"
+    data = label_ajax_data(cls_id, ont_acronym, ajax_uri, cls_url)
+    style = 'btn btn-sm btn-light'
+    "<a data-controller='label-ajax' class='#{style}' #{data} #{href_cls} #{target}>#{cls_id}</a>"
+  end
+
+  def get_link_for_cls_ajax(cls_id, ont_acronym, target = nil)
+    target = target.nil? ? '' : " target='#{target}' "
+
+    if cls_id.start_with?('http://') || cls_id.start_with?('https://')
+      link = bp_class_link(cls_id, ont_acronym)
+      ajax_url = '/ajax/classes/label'
+      cls_url = "?p=classes&conceptid=#{CGI.escape(cls_id)}"
+      label_ajax_link(link, cls_id, ont_acronym, ajax_url , cls_url ,target)
     else
-      target = " target='#{target}' "
-    end
-    if cls_id.start_with? 'http://'
-      href_cls = " href='#{bp_class_link(cls_id, ont_acronym)}' "
-      data_cls = " data-cls='#{cls_id}' "
-      data_ont = " data-ont='#{ont_acronym}' "
-      return "<a class='cls4ajax' #{data_ont} #{data_cls} #{href_cls} #{target}>#{cls_id}</a>"
-    else
-      return auto_link(cls_id, :all, :target => '_blank')
+      auto_link(cls_id, :all, target: '_blank')
     end
   end
 
@@ -462,10 +491,31 @@ module ApplicationHelper
     return "<a class='ont4ajax' #{data_ont} #{href_ont}>#{ont_acronym}</a>"
   end
 
-  def get_link_for_scheme_ajax(scheme, ont_acronym, target='_blank')
-    # ajax call will replace the URI with the scheme prefLabel  (triggered by class='scheme4ajax')
-    link_to scheme, bp_scheme_link(scheme, ont_acronym), {class: 'scheme4ajax', id: scheme, target:  target, data: {ont: ont_acronym} }
+  def get_link_for_scheme_ajax(scheme, ont_acronym, target = '_blank')
+    link = bp_scheme_link(scheme, ont_acronym)
+    ajax_url = '/ajax/schemes/label'
+    scheme_url = "?p=schemes&schemeid=#{CGI.escape(scheme)}"
+    label_ajax_link(link, scheme, ont_acronym, ajax_url, scheme_url, target)
   end
+
+  def get_link_for_collection_ajax(collection, ont_acronym, target = '_blank')
+    link = bp_collection_link(collection, ont_acronym)
+    ajax_url = '/ajax/collections/label'
+    collection_url = "?p=collections&collectionid=#{CGI.escape(collection)}"
+    label_ajax_link(link, collection, ont_acronym, ajax_url, collection_url, target)
+  end
+
+
+  def get_link_for_label_xl_ajax(label_xl, ont_acronym, cls_id)
+    link = label_xl
+    ajax_uri = "/ajax/label_xl/label?cls_id=#{CGI.escape(cls_id)}"
+    label_xl_url = "/ajax/label_xl/?id=#{CGI.escape(label_xl)}&ontology=#{ont_acronym}&cls_id=#{CGI.escape(cls_id)}"
+    data = label_ajax_data_h(label_xl, ont_acronym, ajax_uri, label_xl_url)
+    data[:data][:controller] = 'label-ajax'
+
+    link_to_modal(cls_id, link, {data: data[:data] , class: 'btn btn-sm btn-light'})
+  end
+
   ###END ruby equivalent of JS code in bp_ajax_controller.
   def ontology_viewer_page_name(ontology_name, concept_name_title , page)
     ontology_name + " | " +concept_name_title + " - #{page.capitalize}"
@@ -473,13 +523,22 @@ module ApplicationHelper
 
   def link_to_modal(name, options = nil, html_options = nil, &block)
 
-    html_options[:data].merge!({
-                                 controller: 'modal', turbo: true,
-                                 turbo_frame: 'application_modal_content',
-                                 action: 'click->modal#show'
-                               })
-    link_to(name, options, html_options, &block)
+    new_data = {
+      controller: 'show-modal', turbo: true,
+      turbo_frame: 'application_modal_content',
+      action: 'click->show-modal#show'
+    }
+
+    html_options[:data].merge!(new_data) do |_, old, new|
+      "#{old} #{new}"
+    end
+    if name.nil?
+      link_to(options, html_options, &block)
+    else
+      link_to(name, options, html_options)
+    end
   end
+
   def uri?(url)
     url =~ /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/
   end
@@ -496,4 +555,8 @@ module ApplicationHelper
     label
   end
 
+  def skos?
+    submission = @submission || @submission_latest
+    submission&.hasOntologyLanguage === 'SKOS'
+  end
 end

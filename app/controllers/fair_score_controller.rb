@@ -3,27 +3,19 @@ class FairScoreController < ApplicationController
   helper FairScoreHelper
   include FairScoreHelper
   def details_html
-    begin
-      get_fair
-      render partial: 'details'
-    rescue => e
-      render plain: e.message
-    end
+    get_fair
+    render partial: 'details'
   end
 
   def details_json
-    begin
-      get_fair
-      render json: @fair_scores_data
-    rescue => e
-      render plain: e.message
-    end
+    get_fair
+    render json: @fair_scores_data
   end
 
   private
 
   def get_fair
-    not_found if params[:ontologies].nil? || params[:ontologies].empty?
+    ontology_not_found('') if params[:ontologies].nil? || params[:ontologies].empty?
     @ontologies = params[:ontologies]
     begin
       if @ontologies.include? ','

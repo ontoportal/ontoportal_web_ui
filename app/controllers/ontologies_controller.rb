@@ -4,6 +4,8 @@ class OntologiesController < ApplicationController
   include InstancesHelper
   include ActionView::Helpers::NumberHelper
   include OntologiesHelper
+  include SchemesHelper
+  include CollectionsHelper
   include MappingStatistics
 
   require 'multi_json'
@@ -16,40 +18,12 @@ class OntologiesController < ApplicationController
 
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
   before_action :submission_metadata, only: [:show]
-  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties" ,"instances"])
+  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties" ,"instances", "schemes", "collections"])
   EXTERNAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/ExternalMappings"
   INTERPORTAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/InterportalMappings"
 
 
   # GET /ontologies
-  # GET /ontologies.xml
-  def index_old
-    @ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params)
-    @submissions = LinkedData::Client::Models::OntologySubmission.all
-    @submissions_map = Hash[@submissions.map {|sub| [sub.ontology.acronym, sub] }]
-    @categories = LinkedData::Client::Models::Category.all
-    @groups = LinkedData::Client::Models::Group.all
-
-    # Count the number of classes in each ontology
-    metrics_hash = get_metrics_hash
-    @class_counts = {}
-    @ontologies.each do |o|
-      @class_counts[o.id] = metrics_hash[o.id].classes if metrics_hash[o.id]
-      @class_counts[o.id] ||= 0
-    end
-
-    @mapping_counts = {}
-    @note_counts = {}
-    respond_to do |format|
-      format.html # index.rhtml
-    end
-  end
-
-  include FairScoreHelper
-  include InstancesHelper
-  include ActionView::Helpers::NumberHelper
-  include OntologiesHelper
-
   def index
     @app_name = 'FacetedBrowsing'
     @app_dir = '/browse'
@@ -175,42 +149,45 @@ display_context: false, include: browse_attributes)
   end
 
   def classes
-    @instance_details, type = get_instance_and_type(params[:instanceid])
+    @submission = get_ontology_submission_ready(@ontology)
+    get_class(params)
 
-
-    unless @instance_details.empty? || type.nil? || concept_id_param_exist?(params)
-      params[:conceptid] = type # set class id from the type of the specified instance id
+    if @submission.hasOntologyLanguage == 'SKOS'
+      @schemes =  get_schemes(@ontology)
+      @collections = get_collections(@ontology, add_colors: true)
+    else
+      @instance_details, type = get_instance_and_type(params[:instanceid])
+      unless @instance_details.empty? || type.nil? || concept_id_param_exist?(params)
+        params[:conceptid] = type # set class id from the type of the specified instance id
+      end
+      @instances_concept_id = get_concept_id(params, @concept, @root)
     end
 
-    get_class(params)
-    @instances_concept_id = get_concept_id(params, @concept, @root)
 
     if ['application/ld+json', 'application/json'].include?(request.accept)
       render plain: @concept.to_jsonld, content_type: request.accept and return
     end
 
     @current_purl = @concept.purl if $PURL_ENABLED
-    @submission = get_ontology_submission_ready(@ontology)
+
     unless @concept.id == 'bp_fake_root'
       @notes = @concept.explore.notes
-      @mappings = get_concept_mappings(@concept)
-      @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     end
 
     update_tab(@ontology, @concept.id)
 
     if request.xhr?
-      render 'visualize', layout: false
+      render 'ontologies/sections/visualize', layout: false
     else
-      render 'visualize', layout: 'ontology_viewer'
+      render 'ontologies/sections/visualize', layout: 'ontology_viewer'
     end
   end
 
   def properties
     if request.xhr?
-      return render 'properties', layout: false
+      return render 'ontologies/sections/properties', layout: false
     else
-      return render 'properties', layout: 'ontology_viewer'
+      return render 'ontologies/sections/properties', layout: 'ontology_viewer'
     end
   end
 
@@ -250,9 +227,9 @@ display_context: false, include: browse_attributes)
     @ontology_acronym = @ontology.acronym || params[:id]
     @mapping_counts = mapping_counts(@ontology_acronym)
     if request.xhr?
-      render partial: 'mappings', layout: false
+      render partial: 'ontologies/sections/mappings', layout: false
     else
-      render partial: 'mappings', layout: 'ontology_viewer'
+      render partial: 'ontologies/sections/mappings', layout: 'ontology_viewer'
     end
   end
 
@@ -273,9 +250,9 @@ display_links: false, display_context: false)
     # @notes.each {|n| @notes_deletable = true if n.deletable?(session[:user])} if @notes.kind_of?(Array)
     @note_link = "/ontologies/#{@ontology.acronym}/notes/"
     if request.xhr?
-      render partial: 'notes', layout: false
+      render partial: 'ontologies/sections/notes', layout: false
     else
-      render partial: 'notes', layout: 'ontology_viewer'
+      render partial: 'ontologies/sections/notes', layout: 'ontology_viewer'
     end
   end
 
@@ -287,6 +264,29 @@ display_links: false, display_context: false)
     end
   end
 
+  def schemes
+    @schemes = get_schemes(@ontology)
+    scheme_id = params[:scheme_id] || @submission_latest.URI || nil
+    @scheme = get_scheme(@ontology, scheme_id) if scheme_id
+
+    if request.xhr?
+      render partial: 'ontologies/sections/schemes', layout: false
+    else
+      render partial: 'ontologies/sections/schemes', layout: 'ontology_viewer'
+    end
+  end
+
+  def collections
+    @collections = get_collections(@ontology)
+    collection_id = params[:collection_id]
+    @collection = get_collection(@ontology, collection_id) if collection_id
+
+    if request.xhr?
+      render partial: 'ontologies/sections/collections', layout: false
+    else
+      render partial: 'ontologies/sections/collections', layout: 'ontology_viewer'
+    end
+  end
 
   # GET /ontologies/ACRONYM
   # GET /ontologies/1.xml
@@ -323,7 +323,7 @@ display_links: false, display_context: false)
 
     # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    not_found if @ontology.nil?
+    ontology_not_found(params[:ontology]) if @ontology.nil?
 
     # Handle the case where an ontology is converted to summary only.
     # See: https://github.com/ncbo/bioportal_web_ui/issues/133.
@@ -355,31 +355,26 @@ display_links: false, display_context: false)
       when 'terms'
         params[:p] = 'classes'
         redirect_to "/ontologies/#{params[:ontology]}#{params_string_for_redirect(params)}", status: :moved_permanently
-        return
       when 'classes'
         self.classes #rescue self.summary
-        return
       when 'mappings'
         self.mappings #rescue self.summary
-        return
       when 'notes'
         self.notes #rescue self.summary
-        return
       when 'widgets'
         self.widgets #rescue self.summary
-        return
       when 'properties'
         self.properties #rescue self.summary
-        return
       when 'summary'
         self.summary
-        return
       when 'instances'
         self.instances
-        return
+      when 'schemes'
+        self.schemes
+      when 'collections'
+        self.collections
       else
         self.summary
-        return
     end
   end
 
@@ -392,7 +387,7 @@ display_links: false, display_context: false)
   def summary
     # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
-    not_found if @ontology.nil?
+    ontology_not_found(params[:id]) if @ontology.nil?
     # Check to see if user is requesting json-ld, return the file from REST service if so
 
     if request.accept.to_s.eql?('application/ld+json') || request.accept.to_s.eql?('application/json')
@@ -413,16 +408,17 @@ display_links: false, display_context: false)
 
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
     # Only include metadata that we need for all other ontologies (faster)
-    @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,modificationDate,submissionStatus,hasOntologyLanguage,version,diffFilePath"}).sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
+    @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,modificationDate,submissionStatus,hasOntologyLanguage,version,diffFilePath,ontology"})
+                            .sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
     # Get the latest submission, not necessarily the latest 'ready' submission
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: '')
     @views = get_views(@ontology)
     @view_decorators = @views.map{ |view| ViewDecorator.new(view, view_context) }
     if request.xhr?
-      render partial: 'metadata', layout: false
+      render partial: 'ontologies/sections/metadata', layout: false
     else
-      render partial: 'metadata', layout: 'ontology_viewer'
+      render partial: 'ontologies/sections/metadata', layout: 'ontology_viewer'
     end
   end
 
@@ -463,11 +459,12 @@ display_links: false, display_context: false)
 
   def widgets
     if request.xhr?
-      render partial: 'widgets', layout: false
+      render partial: 'ontologies/sections/widgets', layout: false
     else
-      render partial: 'widgets', layout: 'ontology_viewer'
+      render partial: 'ontologies/sections/widgets', layout: 'ontology_viewer'
     end
   end
+
 
   private
 
