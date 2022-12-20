@@ -3,21 +3,13 @@ class FairScoreController < ApplicationController
   helper FairScoreHelper
   include FairScoreHelper
   def details_html
-    begin
-      get_fair
-      render partial: 'details'
-    rescue => e
-      render plain: e.message
-    end
+    get_fair
+    render partial: 'details'
   end
 
   def details_json
-    begin
-      get_fair
-      render json: @fair_scores_data
-    rescue => e
-      render plain: e.message
-    end
+    get_fair
+    render json: @fair_scores_data
   end
 
   private

@@ -63,11 +63,13 @@ jQuery(document).ready(function () {
 
   // Make acronym upcase as you type
   jQuery("#ontology_acronym").on('input', function(e) {
-    var input = $(this);
-    var start = input[0].selectionStart;
-    $(this).val(function (_, val) {
-      return val.toUpperCase();
-    });
+      var input = $(this);
+      var start = input[0].selectionStart;
+      $(this).val(function (_, val) {
+          return val.toUpperCase();
+      });
+      input[0].selectionStart = input[0].selectionEnd = start
+  })
 
     // Check acronym as you type
     var acronyms = jQuery("#ontology_acronym").data("acronyms");

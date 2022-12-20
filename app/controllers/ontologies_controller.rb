@@ -24,34 +24,6 @@ class OntologiesController < ApplicationController
 
 
   # GET /ontologies
-  # GET /ontologies.xml
-  def index_old
-    @ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params)
-    @submissions = LinkedData::Client::Models::OntologySubmission.all
-    @submissions_map = Hash[@submissions.map {|sub| [sub.ontology.acronym, sub] }]
-    @categories = LinkedData::Client::Models::Category.all
-    @groups = LinkedData::Client::Models::Group.all
-
-    # Count the number of classes in each ontology
-    metrics_hash = get_metrics_hash
-    @class_counts = {}
-    @ontologies.each do |o|
-      @class_counts[o.id] = metrics_hash[o.id].classes if metrics_hash[o.id]
-      @class_counts[o.id] ||= 0
-    end
-
-    @mapping_counts = {}
-    @note_counts = {}
-    respond_to do |format|
-      format.html # index.rhtml
-    end
-  end
-
-  include FairScoreHelper
-  include InstancesHelper
-  include ActionView::Helpers::NumberHelper
-  include OntologiesHelper
-
   def index
     @app_name = 'FacetedBrowsing'
     @app_dir = '/browse'
@@ -177,7 +149,8 @@ display_context: false, include: browse_attributes)
   end
 
   def classes
-    @instance_details, type = get_instance_and_type(params[:instanceid])
+    @submission = get_ontology_submission_ready(@ontology)
+    get_class(params)
 
     if @submission.hasOntologyLanguage == 'SKOS'
       @schemes =  get_schemes(@ontology)
@@ -190,15 +163,13 @@ display_context: false, include: browse_attributes)
       @instances_concept_id = get_concept_id(params, @concept, @root)
     end
 
-    get_class(params)
-    @instances_concept_id = get_concept_id(params, @concept, @root)
 
     if ['application/ld+json', 'application/json'].include?(request.accept)
       render plain: @concept.to_jsonld, content_type: request.accept and return
     end
 
     @current_purl = @concept.purl if $PURL_ENABLED
-    @submission = get_ontology_submission_ready(@ontology)
+
     unless @concept.id == 'bp_fake_root'
       @notes = @concept.explore.notes
     end
@@ -437,7 +408,8 @@ display_links: false, display_context: false)
 
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
     # Only include metadata that we need for all other ontologies (faster)
-    @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,modificationDate,submissionStatus,hasOntologyLanguage,version,diffFilePath"}).sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
+    @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,modificationDate,submissionStatus,hasOntologyLanguage,version,diffFilePath,ontology"})
+                            .sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
     # Get the latest submission, not necessarily the latest 'ready' submission
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: '')

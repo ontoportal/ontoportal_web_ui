@@ -1,8 +1,4 @@
-# frozen_string_literal: true
-
 module OntologiesHelper
-  def additional_details
-    return '' if $ADDITIONAL_ONTOLOGY_DETAILS.nil? || $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.acronym].nil?
 
   REST_URI = $REST_URL
   API_KEY = $API_KEY
