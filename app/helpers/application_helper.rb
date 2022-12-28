@@ -551,6 +551,19 @@ module ApplicationHelper
       link_to(name, options, html_options)
     end
   end
+  def submit_to_modal(name, html_options = nil, &block)
+    new_data = {
+      controller: 'show-modal', turbo: true,
+      turbo_frame: 'application_modal_content',
+      action: 'click->show-modal#show'
+    }
+
+    html_options[:data].merge!(new_data) do |_, old, new|
+      "#{old} #{new}"
+    end
+
+    submit_tag(name || "save", html_options)
+  end
 
   def uri?(url)
     url =~ /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/
