@@ -48,11 +48,11 @@ class Notifier < ActionMailer::Base
     end
   end
 
-  def unregister_for_announce_list(user)
+  def unregister_for_announce_list(email)
     unless $ANNOUNCE_LIST.nil? || $ANNOUNCE_LIST.empty?
       if $ANNOUNCE_LIST_SERVICE.upcase.eql? "SYMPA"
         mail(:to => $ANNOUNCE_SERVICE_HOST, 
-          :from => @user.email, 
+          :from => email, 
           :subject => "unsubscribe #{$ANNOUNCE_LIST}")    
       end   
     end
