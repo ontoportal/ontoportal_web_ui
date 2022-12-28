@@ -4,29 +4,14 @@
   });
 
 
-  function ontologyFormatChange(format){
-    var selected = jQuery("#submission_hasOntologyLanguage option:selected");
-
-    switch(selected.val()){
-      case 'OWL':
-        jQuery(".format_options").optionsOut("fast");
-        jQuery("#owl_options").optionsIn("fast");
-        break;
-      case 'SKOS':
-        jQuery(".format_options").optionsOut("fast");
-        jQuery("#skos_options").optionsIn("fast");
-        break;
-      case 'OBO':
-        jQuery(".format_options").optionsOut("fast");
-        jQuery("#obo_options").optionsIn("fast");
-        break;
-      case 'UMLS':
-        jQuery(".format_options").optionsOut("fast");
-        jQuery("#umls_options").optionsIn("fast");
-        break;
-      default:
-        jQuery(".format_options").optionsOut("fast");
-    }
+  function onMetadataChange(){
+    let frame = document.getElementById('metadata_by_ontology')
+    let properties = document.getElementById('search_metadata')
+    let required = document.getElementById('filter-required-only')
+    let showSection = document.getElementById('show-section')
+    let selectedProperties = Array.from(properties.selectedOptions).map(({ value }) => value).join(',')
+    frame.src = "?properties=" + selectedProperties + "&required=" + required.checked + "&show_sections=" + showSection.checked
+  }
 
 - unless @errors.nil?
   %div.form-group.row
@@ -47,20 +32,21 @@
       %br
       = extractable_metadatum_tooltip({ text: 'Metadata that can be extracted from the ontology' , content: "Extractable metadatum"})
 
-= hidden_field :submission, :ontology, value: @ontology.id
+= hidden_field object_name, :ontology, value: @ontology.id
+= hidden_field object_name, :id, value: @submission.submissionId
 
-%div.card.mt-4
-  %div.card-header.bg-success General
-  %div.card-body
-    %div.card-text
-      -# Format
-      %div.form-group.row
-        %label.col-sm-4.col-form-label{for: "submission_hasOntologyLanguage"}
-          Format
-          %span.asterik *
-        %div.col-sm-8
-          - ont_formats = ["OBO", "OWL", "UMLS", "SKOS"].sort
-          - selected = @submission.hasOntologyLanguage ? @submission.hasOntologyLanguage : "OWL"
+%div.d-flex.align-items-center.justify-content-between{onchange: "onMetadataChange()"}
+  %div.w-75.mt-3
+    = render MetadataSelectorComponent.new(label: 'Filter properties to show', values: submission_editable_properties , selected:  nil, inline: true)
+  %div
+    %div.custom-control.custom-switch
+      = check_box_tag "filter-required-only", "required-only", false, class: 'custom-control-input'
+      %label.custom-control-label{for: "filter-required-only"}
+        Required only
+    %div.custom-control.custom-switch
+      = check_box_tag "show-section", "show-section", true, class: 'custom-control-input'
+      %label.custom-control-label{for: "show-section"}
+        Show by sections
 
 = render partial: 'form_content', locals: {id: 'metadata_by_ontology'}
 
