@@ -1,15 +1,20 @@
-%div.mt-5
-  %div
-    = form_tag("/ontologies_metadata_curator/:ontologies_metadata_curator_id/result", method: "post", data: { turbo: true}) do      
-      .ro
-        %div.form-group{style: "width:432px"}
-          = render :partial => "shared/ontology_picker", locals: {sel_text: "Ontologies", selected_ontologies: @ontologies_ids}
-        %div.metasel.form-group
-          %h6{style: "font-size: 10pt !important"} Metadata Properties
-          = select(:search, :metadata, options_for_select(metadata_for_select, :selected => @metadata_sel), {},style: "width: 432px", multiple: "true")
-        %div.metabtn.form-group
-          %button{:type => "submit", :class=> "btn btn-primary", :data => {controller: "loaders", action: "click->loaders#showLoader"}}
+%div.mt-5.d-flex
+  %div.mx-auto.w-75
+    = form_tag("/ontologies_metadata_curator/result", method: "post", data: { turbo: true, turbo_frame: 'selection_metadata_form'}) do
+      %div.d-flex.align-items-center.mb-5
+        %div.w-50.mx-1
+          = render FormGroupComponent.new(label:' Ontologies', inline: false) do
+            = render :partial => "shared/ontology_picker", locals: {sel_text: '', selected_ontologies: @ontologies_ids}
+        %div.w-25.mx-1
+          = render MetadataSelectorComponent.new(label: 'Metadata Properties', values: metadata_for_select , selected:  @metadata_sel)
+        %div.mt-3
+          %button{:type => "submit", :class=> "btn btn-primary"}
             Get metadata values
+        %div.mt-3
+          = turbo_frame_tag "edit_metadata_btn"
 
+= render TurboFrameComponent.new(id: 'selection_metadata_form') do
+  %div.alert.alert-light.text-center
+    selected "ontologies" and the metadata properties to show then click on "Get data values"
 
 

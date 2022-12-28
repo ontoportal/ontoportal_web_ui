@@ -93,13 +93,8 @@
       
       -# metadata tab
       %div.tab-pane.fade{id: "ontologies_metadata_curator", role: "tabpanel", aria: { labelledby: "ontologies_metadata_curator-admin-tab" }}
-        = turbo_frame_tag "selection_metadata_form" do
-          = render partial: 'ontologies_metadata_curator/metadata_tab' 
-          %div#metadataTableloader{:style => "display: none"}
-            .text-center
-              .spinner-border{role: "status"}
-                %span.sr-only Loading...       
-        = turbo_frame_tag "edition_metadata_form"
+        = render partial: 'ontologies_metadata_curator/metadata_tab'
+
 
 
   
