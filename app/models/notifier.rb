@@ -38,11 +38,13 @@ class Notifier < ActionMailer::Base
          :subject => "[#{$SITE}] Feedback from #{name}")
   end
 
-  def register_for_announce_list(email)
+  def register_for_announce_list(user)
     unless $ANNOUNCE_LIST.nil? || $ANNOUNCE_LIST.empty?
-      recipients "#{$ANNOUNCE_LIST}"
-      from "#{$ADMIN_EMAIL}"
-      subject "subscribe address=#{email}"
+      if $ANNOUNCE_LIST_SERVICE.upcase.eql? "SYMPA"
+        mail(:to => $ANNOUNCE_SERVICE_HOST, 
+          :from => @user.email, 
+          :subject => "subscribe #{$ANNOUNCE_LIST} #{user.firstName} #{user.lastName}")    
+      end   
     end
   end
 
