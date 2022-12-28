@@ -10,6 +10,7 @@ application.register("chosen", ChosenController)
 
 import Flatpickr from "stimulus-flatpickr"
 
+application.register("flatpickr", Flatpickr);
 import ClassSearchAutoCompleteController from "./class_search_auto_complete_controller"
 application.register("class-search-auto-complete", ClassSearchAutoCompleteController)
 
