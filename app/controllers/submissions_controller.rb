@@ -1,5 +1,5 @@
 class SubmissionsController < ApplicationController
-
+  include SubmissionsHelper
   layout :determine_layout
   before_action :authorize_and_redirect, :only => [:edit, :update, :create, :new]
   before_action :submission_metadata, only: [:create, :edit, :new, :update]
@@ -60,12 +60,9 @@ class SubmissionsController < ApplicationController
 
   # Called when form to "Edit submission" is submitted
   def edit
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
-
-    #submissions = @ontology.explore.submissions
-    # Trying to get all submissions to get the latest. Useless and too long.
-    #@submission = submissions.select {|o| o.submissionId == params["id"].to_i}.first
-    @submission = @ontology.explore.latest_submission
+    latest_submission_attributes params[:ontology_id], params[:properties]&.split(','), required: params[:required]&.eql?('true'),
+                                 show_sections: params[:show_sections]&.eql?('false'),
+                                 inline_save: params[:inline_save]&.eql?('true')
   end
 
   # When editing a submission (called when submit "Edit submission information" form)

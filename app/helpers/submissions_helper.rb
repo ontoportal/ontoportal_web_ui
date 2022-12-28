@@ -7,7 +7,7 @@ module SubmissionsHelper
     "submission[#{acronym}_#{submission_id}]#{attribute.capitalize}_from_group_input"
   end
 
-  def get_submission_attributes(acronym, attributes, required: false, show_sections: false, inline_save: false)
+  def latest_submission_attributes(acronym, attributes, required: false, show_sections: false, inline_save: false)
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym).first
     @selected_attributes = attributes
     @required_only = required
