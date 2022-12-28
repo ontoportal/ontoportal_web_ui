@@ -11,6 +11,8 @@ application.register("chosen", ChosenController)
 import Flatpickr from "stimulus-flatpickr"
 
 application.register("flatpickr", Flatpickr);
+import NestedForm from 'stimulus-rails-nested-form'
+application.register('nested-form', NestedForm)
 import ClassSearchAutoCompleteController from "./class_search_auto_complete_controller"
 application.register("class-search-auto-complete", ClassSearchAutoCompleteController)
 
