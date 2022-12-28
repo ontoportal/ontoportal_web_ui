@@ -185,6 +185,14 @@ class ApplicationController < ActionController::Base
     errors
   end
 
+  def response_success?(response)
+    !response.nil? && ((response.status && response.status < 400) || !response.errors)
+  end
+
+  def response_error?(response)
+    !response_success?(response)
+  end
+
   def struct_to_hash(struct)
     hash = {}
     struct.members.each do |attr|
