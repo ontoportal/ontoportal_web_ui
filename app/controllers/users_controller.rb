@@ -57,7 +57,7 @@ class UsersController < ApplicationController
 
     if @errors.size < 1
       @user_saved = @user.save
-      if @user_saved.errors
+      if response_error?(@user_saved)
         @errors = response_errors(@user_saved)
         # @errors = {acronym: "Username already exists, please use another"} if @user_saved.status == 409
         render action: "new"
@@ -97,7 +97,7 @@ class UsersController < ApplicationController
         error_response = @user.update
       end
 
-      if error_response
+      if response_error?(error_response)
         @errors = response_errors(error_response)
         # @errors = {acronym: "Username already exists, please use another"} if error_response.status == 409
         render action: "edit"

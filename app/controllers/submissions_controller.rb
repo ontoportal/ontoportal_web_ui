@@ -22,7 +22,7 @@ class SubmissionsController < ApplicationController
     @ontology.update
     
     @submission_saved = @submission.save
-    if !@submission_saved || @submission_saved.errors
+    if response_error?(@submission_saved)
       @errors = response_errors(@submission_saved) # see application_controller::response_errors
 
       if @errors[:error][:uploadFilePath]
@@ -58,8 +58,7 @@ class SubmissionsController < ApplicationController
     @ontology.summaryOnly = @submission.isRemote.eql?("3")
     @ontology.update
     error_response = @submission.update
-
-    if error_response
+    if response_error?(error_response)
       @errors = response_errors(error_response) # see application_controller::response_errors
     else
       redirect_to "/ontologies/#{@ontology.acronym}"
