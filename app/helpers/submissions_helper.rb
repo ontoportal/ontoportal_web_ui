@@ -138,7 +138,8 @@ module SubmissionsHelper
       :isAlignedTo,
       :ontologyRelatedTo,
       :preferredNamespacePrefix,
-      :preferredNamespaceUri
+      :preferredNamespaceUri,
+      :naturalLanguage
     ]
 
     sections.each do |d|

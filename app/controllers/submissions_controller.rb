@@ -78,7 +78,7 @@ class SubmissionsController < ApplicationController
       if params[:attribute]
         render_submission_attribute(params[:attribute])
       else
-        redirect_to  || "/ontologies/#{@ontology.acronym}"
+        redirect_to "/ontologies/#{@ontology.acronym}"
       end
     end
 
@@ -117,12 +117,7 @@ class SubmissionsController < ApplicationController
     # Update summaryOnly on ontology object
     @ontology.summaryOnly = @submission.isRemote.eql?('3')
     @ontology.update
-    error_response = @submission.update(cache_refresh_all: false)
-    if response_error?(error_response)
-      @errors = response_errors(error_response) # see application_controller::response_errors
-    else
-      redirect_to "/ontologies/#{@ontology.acronym}"
-    end
+    @submission.update(cache_refresh_all: false)
   end
 
   def submission_params(params)
