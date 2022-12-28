@@ -1,17 +1,6 @@
-= turbo_frame_tag "concepts_date_sorted_list_view-page-#{@page.page}"  do
-  - if @concepts && !@concepts.empty?
-    #tree_wrapper_date_sorted.hide-if-loading
-      %div
-        %ul.simpleTree{data:{controller: 'simple-tree history','simple-tree': { 'auto-click-value': auto_click }, action: 'clicked->history#updateURL'}}
-          %li.root
-            %ul
-              = render_concepts_by_dates
-
-
-    = turbo_frame_tag "concepts_date_sorted_list_view-page-#{@page.nextPage}",
-                       loading: :lazy, src: sorted_by_date_url(@page.nextPage, @concepts.last) do
-      Loading ...
-  - elsif @page.page == 1
-    %div.text-wrap
-      = render AlertMessageComponent.new(id: 'concepts_date_sorted_list_view_alert') do
-        The Classes/Concepts didn't define <strong>creation</strong> or <strong>modifications</strong> dates with dcterms
+= render InfiniteScrollComponent.new(id: 'concepts_date_sorted_list',
+                                    collection: @concepts, next_url: sorted_by_date_url(@page.nextPage, @concepts.last),
+                                    current_page: @page.page, next_page: @page.nextPage) do |c|
+  = render_concepts_by_dates
+  - c.error do
+    The Classes/Concepts didn't define <strong>creation</strong> or <strong>modifications</strong> dates with dcterms

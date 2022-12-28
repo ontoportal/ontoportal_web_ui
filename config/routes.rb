@@ -57,6 +57,9 @@ Rails.application.routes.draw do
 
   resources :virtual_appliance
 
+  get 'change_requests/create_synonym'
+  match 'change_requests', to: 'change_requests#create', via: :post
+
   # resource for metadata ontologies
   scope :ontologies_metadata_curator do
     post '/result', to: 'ontologies_metadata_curator#result'
@@ -125,6 +128,7 @@ Rails.application.routes.draw do
   get '/ajax/classes/date_sorted_list' => 'concepts#show_date_sorted_list'
   get '/ajax/properties/tree' => 'concepts#property_tree'
   get 'ajax/schemes/label', to: "schemes#show_label"
+  get 'ajax/collections/label', to: "collections#show_label"
   get 'ajax/label_xl/label', to: "label_xl#show_label"
   get 'ajax/label_xl', to: "label_xl#show"
   get '/ajax/biomixer' => 'concepts#biomixer'

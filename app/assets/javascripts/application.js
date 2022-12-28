@@ -25,6 +25,7 @@
 //= require bp_admin
 //= require bp_recommender
 //= require bp_property_tree
+//= require concepts
 //= require home
 //= require fair_score
 //= require_tree ./helpers

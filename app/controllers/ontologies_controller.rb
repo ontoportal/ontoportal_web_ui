@@ -24,34 +24,6 @@ class OntologiesController < ApplicationController
 
 
   # GET /ontologies
-  # GET /ontologies.xml
-  def index_old
-    @ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params)
-    @submissions = LinkedData::Client::Models::OntologySubmission.all
-    @submissions_map = Hash[@submissions.map {|sub| [sub.ontology.acronym, sub] }]
-    @categories = LinkedData::Client::Models::Category.all
-    @groups = LinkedData::Client::Models::Group.all
-
-    # Count the number of classes in each ontology
-    metrics_hash = get_metrics_hash
-    @class_counts = {}
-    @ontologies.each do |o|
-      @class_counts[o.id] = metrics_hash[o.id].classes if metrics_hash[o.id]
-      @class_counts[o.id] ||= 0
-    end
-
-    @mapping_counts = {}
-    @note_counts = {}
-    respond_to do |format|
-      format.html # index.rhtml
-    end
-  end
-
-  include FairScoreHelper
-  include InstancesHelper
-  include ActionView::Helpers::NumberHelper
-  include OntologiesHelper
-
   def index
     @app_name = 'FacetedBrowsing'
     @app_dir = '/browse'
@@ -226,7 +198,7 @@ display_context: false, include: browse_attributes)
 
     @ontology = LinkedData::Client::Models::Ontology.new(values: ontology_params)
     @ontology_saved = @ontology.save
-    if !@ontology_saved || @ontology_saved.errors
+    if response_error?(@ontology_saved)
       @categories = LinkedData::Client::Models::Category.all
       @user_select_list = LinkedData::Client::Models::User.all.map { |u| [u.username, u.id] }
       @user_select_list.sort! { |a, b| a[1].downcase <=> b[1].downcase }
@@ -436,7 +408,8 @@ display_links: false, display_context: false)
 
     # retrieve submissions in descending submissionId order, should be reverse chronological order.
     # Only include metadata that we need for all other ontologies (faster)
-    @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,modificationDate,submissionStatus,hasOntologyLanguage,version,diffFilePath"}).sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
+    @submissions = @ontology.explore.submissions({include: "submissionId,creationDate,released,modificationDate,submissionStatus,hasOntologyLanguage,version,diffFilePath,ontology"})
+                            .sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
     # Get the latest submission, not necessarily the latest 'ready' submission
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: '')
@@ -459,7 +432,7 @@ display_links: false, display_context: false)
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym] || params[:id]).first
     @ontology.update_from_params(ontology_params)
     error_response = @ontology.update
-    if error_response && (error_response.status != 204)
+    if response_error?(error_response)
       @categories = LinkedData::Client::Models::Category.all
       @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
       @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}

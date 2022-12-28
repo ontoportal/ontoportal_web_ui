@@ -52,7 +52,7 @@
           = render :partial =>'/notes/list'
         #mappings_content.tab-pane
           = render TurboFrameComponent.new(id:'concept_mappings',
-           src:"/ajax/mappings/get_concept_table?ontologyid=#{@ontology.acronym}&conceptid=#{@concept.id}")
+           src:"/ajax/mappings/get_concept_table?ontologyid=#{@ontology.acronym}&conceptid=#{CGI.escape(@concept.id)}")
         - if @enable_ontolobridge
           #request_term_content.tab-pane
             = render :partial =>'/concepts/request_term'

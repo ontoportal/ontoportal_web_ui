@@ -10,7 +10,6 @@ application.register("chosen", ChosenController)
 
 import Flatpickr from "stimulus-flatpickr"
 
-
 import ClassSearchAutoCompleteController from "./class_search_auto_complete_controller"
 application.register("class-search-auto-complete", ClassSearchAutoCompleteController)
 
@@ -55,4 +54,3 @@ application.register("turbo-frame", TurboFrameController)
 
 import TurboFrameErrorController from "./turbo_frame_error_controller"
 application.register("turbo-frame-error", TurboFrameErrorController)
-

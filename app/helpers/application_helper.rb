@@ -434,16 +434,13 @@ module ApplicationHelper
   end
 
   def flash_class(level)
-    case level
-    when "notice" 
-      "alert alert-info"
-    when "success" 
-      "alert alert-success"
-    when "error"
-      "alert alert-danger"
-    when "alert" 
-      "alert alert-error"
-    end
+    bootstrap_alert_class = {
+      'notice' => 'alert-info',
+      'success' => 'alert-success',
+      'error' => 'alert-danger',
+      'alert' => 'alert-danger'
+    }
+    bootstrap_alert_class[level]
   end
 
   ###BEGIN ruby equivalent of JS code in bp_ajax_controller.
@@ -462,6 +459,9 @@ module ApplicationHelper
     return "#{bp_ont_link(ont_acronym)}/?label_xl_id=#{URI.escape(label_xl_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
   end
 
+  def bp_collection_link(collection_id, ont_acronym)
+    "#{bp_ont_link(ont_acronym)}?p=collection&collectionid=#{URI.escape(collection_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+  end
   def label_ajax_data_h(cls_id, ont_acronym, ajax_uri, cls_url)
     { data:
         {
@@ -511,6 +511,14 @@ module ApplicationHelper
     label_ajax_link(link, scheme, ont_acronym, ajax_url, scheme_url, target)
   end
 
+  def get_link_for_collection_ajax(collection, ont_acronym, target = '_blank')
+    link = bp_collection_link(collection, ont_acronym)
+    ajax_url = '/ajax/collections/label'
+    collection_url = "?p=collections&collectionid=#{CGI.escape(collection)}"
+    label_ajax_link(link, collection, ont_acronym, ajax_url, collection_url, target)
+  end
+
+
   def get_link_for_label_xl_ajax(label_xl, ont_acronym, cls_id)
     link = label_xl
     ajax_uri = "/ajax/label_xl/label?cls_id=#{CGI.escape(cls_id)}"
@@ -544,19 +552,6 @@ module ApplicationHelper
     end
   end
 
-  def submit_to_modal(name, html_options = nil, &block)
-    new_data = {
-      controller: 'show-modal', turbo: true,
-      turbo_frame: 'application_modal_content',
-      action: 'click->show-modal#show'
-    }
-
-    html_options[:data].merge!(new_data) do |_, old, new|
-      "#{old} #{new}"
-    end
-
-    submit_tag(name || "save", html_options)
-  end
   def uri?(url)
     url =~ /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/
   end

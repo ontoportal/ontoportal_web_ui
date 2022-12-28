@@ -215,7 +215,7 @@ class AdminController < ApplicationController
         if submission
           error_response = submission.delete
 
-          if error_response
+          if response_error?(error_response)
             errors = response_errors(error_response) # see application_controller::response_errors
             _process_errors(errors, response, true)
           else
@@ -307,7 +307,7 @@ class AdminController < ApplicationController
           if ontology
             error_response = self.send(process_proc, ontology, params)
 
-            if error_response
+            if response_error?(error_response)
               errors = response_errors(error_response) # see application_controller::response_errors
               _process_errors(errors, response, false)
             else
