@@ -60,6 +60,13 @@ Rails.application.routes.draw do
   get 'change_requests/create_synonym'
   match 'change_requests', to: 'change_requests#create', via: :post
 
+  # resource for metadata ontologies
+  scope :ontologies_metadata_curator do
+    post '/result', to: 'ontologies_metadata_curator#result'
+    post '/edit', to: 'ontologies_metadata_curator#edit'
+    put '/update', to: 'ontologies_metadata_curator#update'
+  end
+    
   get '' => 'home#index'
 
   # Top-level pages
@@ -160,7 +167,6 @@ Rails.application.routes.draw do
   match '/admin/update_check_enabled' => 'admin#update_check_enabled', via: [:get]
   match '/admin/users' => 'admin#users', via: [:get]
 
-
   # Ontolobridge
   # post '/ontolobridge/:save_new_term_instructions' => 'ontolobridge#save_new_term_instructions'
 
@@ -189,5 +195,5 @@ Rails.application.routes.draw do
   get '/visualize' => 'ontologies#visualize', :as => :visualize_concept, :constraints => { ontology: /[^\/?]+/, id: /[^\/?]+/, ontologyid: /[^\/?]+/, conceptid: /[^\/?]+/ }
 
   get '/exhibit/:ontology/:id' => 'concepts#exhibit'
-
+   
 end

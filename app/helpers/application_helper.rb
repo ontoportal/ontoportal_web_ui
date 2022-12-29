@@ -235,7 +235,7 @@ module ApplicationHelper
     attribs = []
     html_attribs.each {|k,v| attribs << "#{k.to_s}='#{v}'"}
     return <<-BLOCK
-          <a class='pop_window tooltip_link #{[css_class].flatten.compact.join(' ')}' #{attribs.join(" ")}>
+          <a data-controller='tooltip' class='pop_window tooltip_link d-inline-block #{[css_class].flatten.compact.join(' ')}' #{attribs.join(" ")}>
             <i class="#{icon} d-flex"></i> #{text}
           </a>
     BLOCK
@@ -328,6 +328,19 @@ module ApplicationHelper
     @groups_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
     @groups_for_js = @groups_map.to_json
   end
+
+  def metadata_for_select
+    get_metadata
+    return @metadata_for_select
+  end 
+
+  def get_metadata
+    @metadata_for_select = []
+    submission_metadata.each do |data|
+      @metadata_for_select << data["attribute"]
+    end
+  end    
+
 
   def ontologies_to_acronyms(ontologyIDs)
     acronyms = []
@@ -537,6 +550,19 @@ module ApplicationHelper
     else
       link_to(name, options, html_options)
     end
+  end
+  def submit_to_modal(name, html_options = nil, &block)
+    new_data = {
+      controller: 'show-modal', turbo: true,
+      turbo_frame: 'application_modal_content',
+      action: 'click->show-modal#show'
+    }
+
+    html_options[:data].merge!(new_data) do |_, old, new|
+      "#{old} #{new}"
+    end
+
+    submit_tag(name || "save", html_options)
   end
 
   def uri?(url)

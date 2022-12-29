@@ -1,0 +1,14 @@
+= turbo_frame_tag("edition_metadata_form") do
+  .modal.fade{"aria-hidden" => "true", "aria-labelledby" => "exampleModalLabel", "data-controller" => "modal", role: "dialog", tabindex: "-1"}
+    .modal-dialog{role: "document", :class=> "modal-lg"}
+      .modal-content
+        .modal-header
+          %h5.modal-title Edition of metadata
+          %button.close{"aria-label" => "Close", "data-bs-dismiss" => "modal", type: "button"}
+            %span{"aria-hidden" => "true"} ×
+        .modal-body
+          = form_for :submission, url: "/ontologies_metadata_curator/:ontologies_metadata_curator_id/update", html: {method: :put} do 
+            = render partial: 'form', locals: {button_text: "Save changes"}
+            %button{"data-bs-dismiss" => "modal", type: "button", :class=> "btn btn-primary"} Close
+
+
