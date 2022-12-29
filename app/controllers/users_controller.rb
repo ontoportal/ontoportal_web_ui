@@ -121,15 +121,23 @@ class UsersController < ApplicationController
 
   def subscribe
     @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first
-    Notifier.register_for_announce_list(user).deliver rescue nil
-    flash[:success] = "You have subscribe successfully"
+    begin
+      Notifier.register_for_announce_list(@user).deliver   
+      flash[:success] = "You have subscribe successfully"
+    rescue => exception
+      flash[:error] = "Something went wrong ..."
+    end
     redirect_to '/account'
   end
 
   def un_subscribe
     @email = params[:email] 
-    Notifier.unregister_for_announce_list(@email).deliver rescue nil
-    flash[:success] = "You have un-subscribe successfully"
+    begin
+      Notifier.unregister_for_announce_list(@email).deliver  
+      flash[:success] = "You have unsubscribe successfully"
+    rescue => exception
+      flash[:error] = "Something went wrong ..."
+    end
     redirect_to '/account'
   end
 
