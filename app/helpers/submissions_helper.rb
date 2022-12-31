@@ -226,17 +226,20 @@ module SubmissionsHelper
     help_text
   end
   # Generate the HTML label for every attributes
-  def generate_attribute_label(attr_label)
+  def generate_attribute_label(attr_label, label_tag_sym: :label)
     # Get the attribute hash corresponding to the given attribute
     attr = attribute_infos(attr_label)
     label_html = if !attr["extracted"].nil? && attr["extracted"] == true
       extractable_metadatum_tooltip({ content: 'Extractable metadatum' })
     end.to_s.html_safe
 
-    if !attr["label"].nil?
-      label_html << label_tag("submission_#{attr_label}", attr["label"], { class: 'form-label' })
+
+    label = attr["label"].nil? ? attr_label.underscore.humanize : attr["label"]
+
+    if label_tag_sym.eql? :label
+      label_html << label_tag("submission_#{attr_label}", label , { class: 'form-label' })
     else
-      label_html << label_tag("submission_#{attr_label}", attr_label.underscore.humanize, { class: 'form-label' })
+      label_html << content_tag(label_tag_sym, label, {class: 'form-label'})
     end
 
     # Generate tooltip
