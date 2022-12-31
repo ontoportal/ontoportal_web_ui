@@ -1,4 +1,6 @@
 = render TurboFrameComponent.new(id:id) do
+  = hidden_field object_name, :ontology, value: acronym
+  = hidden_field object_name, :id, value: submissionId
   %div#general-card.mt-4
     = metadata_section('general', 'General', collapsed: false) do
       = attribute_container('format', required: true, equivalent: format_equivalent) do
