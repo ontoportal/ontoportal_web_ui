@@ -71,48 +71,39 @@ class OntologiesMetadataCuratorController < ApplicationController
     render partial: "ontologies_metadata_curator/form_edit"
   end
 
-    def update
-        @selected_ontologies_to_edit = session[:passed_variable2]
-        # Convert metadata that needs to be integer to int
-        params[:submission].keys.each_index do |i|
-            params[:submission].values[i][:contact] = params[:submission].values[i][:contact].values if !params[:submission].values[i][:contact].nil?
-            @metadata.map do |hash|
-                if hash["enforce"].include?("integer")
-                    if !params[:submission].values[i][hash["attribute"]].nil? && !params[:submission].values[i][hash["attribute"]].eql?("")
-                        params[:submission].values[i][hash["attribute"].to_s.to_sym] = Integer(params[:submission].values[i][hash["attribute"].to_s.to_sym])
-                    end
-                end
-                if hash["enforce"].include?("boolean") && !params[:submission].values[i][hash["attribute"]].nil?
-                    if params[:submission].values[i][hash["attribute"]].eql?("true")
-                        params[:submission].values[i][hash["attribute"].to_s.to_sym] = true
-                    elsif params[:submission].values[i][hash["attribute"]].eql?("false")
-                        params[:submission].values[i][hash["attribute"].to_s.to_sym] = false
-                    else
-                        params[:submission][hash["attribute"].to_s.to_sym] = nil
-                    end
-                end
-            end
-        end
-        if params[:check].keys[0].include? "each"
-            params[:submission].keys.each_with_index do |ontology, i|
-                onto = ontology[/(.*?)_onto/,1]
-                params[:submission].values[i][:ontology] = onto
-                update_ontology(onto, metadata_params[i])
-            end 
-        else
-            @selected_ontologies_to_edit.each do |ontology|
-                params[:submission].values[0][:ontology] = ontology
-                update_ontology(ontology, metadata_params[0])
-            end               
-        end        
+  def update
+    @change_all = !params[:change_all].nil?
+    @selected_ontologies = params[:selected_ontologies].map { |x| x.split(' / ') }
+    @active_ontology = params[:active_ontology].split(' / ')
+    error_responses = []
+    active_submission_data = params["submission"][@active_ontology[0] + "_" + @active_ontology[1]]
 
-        respond_to do |format| 
-            format.turbo_stream { render turbo_stream: turbo_stream.update("edition_metadata_form", partial: "ontologies_metadata_curator/form_edit") }
-            format.html { redirect_to admin_index_path, notice: "Post was successfully updated." }   
-        end
+    @selected_ontologies.each do |onto, sub_i|
+      new_data =  @change_all ? active_submission_data : params["submission"][onto + "_" + sub_i]
 
+      new_data[:ontology] = onto
+      new_data[:id] = sub_i
+      error_responses << update_submission(new_data) if new_data
     end
-    
+
+    errors = nil
+    if error_responses.compact.any? { |x| x.status != 204 }
+      errors = error_responses.map { |error_response| response_errors(OpenStruct.new(JSON.parse(error_response.body, symbolize_names: true))) }
+    end
+
+    respond_to do |format|
+      format.turbo_stream do
+        if errors
+          render_turbo_stream alert_error { errors.map { |e| e[:error] }.join(',') }
+        else
+          render_turbo_stream alert_success { "Submissions were successfully updated" }
+        end
+      end
+    end
+  end
+
+  private
+
   def append_submission(ontology, submission)
     sub = submission
     return if sub.nil?
