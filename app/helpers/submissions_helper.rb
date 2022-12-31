@@ -7,14 +7,18 @@ module SubmissionsHelper
     "submission[#{acronym}_#{submission_id}]#{attribute.capitalize}_from_group_input"
   end
 
-  def latest_submission_attributes(acronym, attributes, required: false, show_sections: false, inline_save: false)
+  def display_submission_attributes(acronym, attributes, submissionId: nil, required: false, show_sections: false, inline_save: false)
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym).first
     @selected_attributes = attributes
     @required_only = required
-    @hide_sections = show_sections
+    @hide_sections = !show_sections
     @inline_save = inline_save
     display_properties = @selected_attributes && !@selected_attributes.empty? ? (@selected_attributes + [:ontology, :submissionId]).join(',') : 'all'
-    @submission = @ontology.explore.latest_submission({ display: display_properties })
+    if submissionId
+      @submission = @ontology.explore.submissions({ display: display_properties }, submissionId)
+    else
+      @submission = @ontology.explore.latest_submission({ display: display_properties })
+    end
   end
 
   def metadata_section(id, label, collapsed: true, parent_id: nil, &block)

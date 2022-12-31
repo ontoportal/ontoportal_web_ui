@@ -35,9 +35,9 @@ class SubmissionsController < ApplicationController
 
   # Called when form to "Edit submission" is submitted
   def edit
-    latest_submission_attributes params[:ontology_id], params[:properties]&.split(','), required: params[:required]&.eql?('true'),
-                                 show_sections: params[:show_sections]&.eql?('false'),
-                                 inline_save: params[:inline_save]&.eql?('true')
+    display_submission_attributes params[:ontology_id], params[:properties]&.split(','), required: params[:required]&.eql?('true'),
+                                  show_sections: params[:show_sections]&.eql?('false'),
+                                  inline_save: params[:inline_save]&.eql?('true')
   end
 
   # When editing a submission (called when submit "Edit submission information" form)
