@@ -5,7 +5,7 @@
         = @errors.map{|e| e[:error]}.join(',')
 %div
   - if attribute == "contact"
-    = raw submission.contact.map {|c| [c.name, c.email].join(", ") if c.member?(:name) && c.member?(:email)}.join("<br/>")
+    = raw submission.contact.map {|c| [c["name"], c["email"]].join(", ") if c.member?(:name) && c.member?(:email)}.join("<br/>")
   - elsif attribute == "naturalLanguage"
     - lang_codes = []
     - submission.send(attribute).each do |lang|
