@@ -30,7 +30,7 @@ export default class extends Controller {
             let newOption = this.inputValueFieldTarget.value;
             this.#addNewOption(newOption)
             this.#selectNewOption(newOption)
-            if (!this.multipleValue){
+            if (!this.multipleValue) {
                 this.#hideOtherValueField()
             }
         }
@@ -38,10 +38,35 @@ export default class extends Controller {
 
 
     initMultipleSelect() {
+        this.#addEmptyOption()
         useChosen(this.selectedValuesTarget, {
             width: '100%',
-            search_contains: true
+            search_contains: true,
+        }, (event) => {
+            let selected = event.target.selectedOptions
+            if (selected.length === 0) {
+                this.#selectEmptyOption()
+            } else {
+                this.#unSelectEmptyOption()
+            }
         })
+    }
+
+    #selectEmptyOption() {
+        this.emptyOption.selected = true
+        this.emptyOption.disabled = false
+    }
+
+    #unSelectEmptyOption() {
+        this.emptyOption.selected = false
+        this.emptyOption.disabled = true
+    }
+
+    #addEmptyOption() {
+        this.emptyOption = document.createElement("option")
+        this.emptyOption.innerHTML = ''
+        this.emptyOption.value = ''
+        this.selectedValuesTarget.prepend(this.emptyOption)
     }
 
     #selectNewOption(newOption) {
