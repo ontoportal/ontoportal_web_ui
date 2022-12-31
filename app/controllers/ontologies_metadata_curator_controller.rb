@@ -40,29 +40,27 @@ class OntologiesMetadataCuratorController < ApplicationController
     end
   end
 
-    def show_metadata_by_ontology
-        @acronym = params[:id]
-        @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(@acronym).first
-        @submission = @ontology.explore.latest_submission
-        @selected_metadata_to_edit = session[:passed_variable1]
-        @selected_ontologies_to_edit = session[:passed_variable2]
+  def show_metadata_by_ontology
+    @acronym = params[:ontology]
+    inline_save = params[:inline_save] && params[:inline_save].eql?('true')
+    display_submission_attributes(@acronym, params[:properties]&.split(','),
+                                  submissionId: params[:submission_id],
+                                  show_sections: false, inline_save: inline_save)
+    render partial: 'submissions/form_content', locals: { id: params[:form_id] || '', acronym: @acronym, submissionId: params[:submission_id] }
+  end
+
+
+  def edit
+
+    if params[:selected_acronyms].nil? ||  params[:selected_metadata].nil?
+      render_turbo_stream alert_error(id: 'application_modal_content') {"Select in the table submissions (rows) and metadata properties (columns) to start the bulk edit"}
+      return
     end
-    
-    def edit
-        @selected_ontologies_to_edit = params[:selected_acronyms]
-        @selected_metadata_to_edit = params[:selected_metadata]
-        session[:passed_variable1] = @selected_metadata_to_edit
-        session[:passed_variable2] = @selected_ontologies_to_edit
-        @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(@selected_ontologies_to_edit[0]).first
-        @submissions = []
-        @selected_ontologies_to_edit.each do |data|
-            @submissions << LinkedData::Client::Models::Ontology.find_by_acronym(data).first.explore.latest_submission
-        end    
-        respond_to do |format|
-            format.html { redirect_to admin_index_path}
-            format.turbo_stream { render turbo_stream: turbo_stream.append("edition_metadata_form", partial: "ontologies_metadata_curator/form_edit") }
-        end 
-    end    
+
+    @selected_ontologies = params[:selected_acronyms].map { |x| x.split(' / ') }
+    @selected_metadata = params[:selected_metadata]
+    render partial: "ontologies_metadata_curator/form_edit"
+  end
 
     def update
         @selected_ontologies_to_edit = session[:passed_variable2]
