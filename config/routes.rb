@@ -65,6 +65,7 @@ Rails.application.routes.draw do
     post '/result', to: 'ontologies_metadata_curator#result'
     post '/edit', to: 'ontologies_metadata_curator#edit'
     put '/update', to: 'ontologies_metadata_curator#update'
+    get '/:ontology/submissions/:submission_id/attributes/:attribute', to: 'ontologies_metadata_curator#show_metadata_value'
   end
     
   get '' => 'home#index'

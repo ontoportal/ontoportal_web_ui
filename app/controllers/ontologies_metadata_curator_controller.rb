@@ -49,6 +49,15 @@ class OntologiesMetadataCuratorController < ApplicationController
     render partial: 'submissions/form_content', locals: { id: params[:form_id] || '', acronym: @acronym, submissionId: params[:submission_id] }
   end
 
+  def show_metadata_value
+    acronym = params[:ontology]
+    attribute = params[:attribute]
+    submission_id = params[:submission_id]
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym).first
+    @submission = @ontology.explore.submissions({ display: attribute + ",submissionId" }, submission_id)
+
+    render_submission_attribute(attribute)
+  end
 
   def edit
 
