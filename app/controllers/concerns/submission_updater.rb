@@ -65,15 +65,16 @@ module SubmissionUpdater
       m_attr = m["attribute"].to_sym
 
       attributes << if m["enforce"].include?("list")
-                      { m_attr => [] }
+                      { m_attr => {} }
                     else
                       m_attr
                     end
     end
-
     p = params.permit(attributes.uniq)
     p.to_h.transform_values do |v|
-      if v.is_a? Array
+      if v.is_a? Hash
+        v.values.reject(&:empty?)
+      elsif v.is_a? Array
         v.reject(&:empty?)
       else
         v
