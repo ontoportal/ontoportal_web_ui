@@ -159,6 +159,30 @@ class UsersController < ApplicationController
     redirect_to user_path(@user.username)
   end
 
+  
+  def subscribe
+    @user = LinkedData::Client::Models::User.find_by_username(params[:username]).first
+    begin
+      SubscribeMailer.register_for_announce_list(@user.email,@user.firstName,@user.lastName).deliver   
+      flash[:success] = "You have subscribe successfully"
+    rescue => exception
+      flash[:error] = "Something went wrong ..."
+    end
+    redirect_to '/account'
+  end
+
+  def un_subscribe
+    @email = params[:email] 
+    begin
+      SubscribeMailer.unregister_for_announce_list(@email).deliver  
+      flash[:success] = "You have unsubscribe successfully"
+    rescue => exception
+      flash[:error] = "Something went wrong ..."
+    end
+    redirect_to '/account'
+  end
+
+
   private
 
   def user_params
@@ -235,28 +259,6 @@ class UsersController < ApplicationController
     end
 
     user_roles
-  end
-
-  def subscribe
-    @user = LinkedData::Client::Models::User.find_by_username(params[:username]).first
-    begin
-      SubscribeMailer.register_for_announce_list(@user.email,@user.firstName,@user.lastName).deliver   
-      flash[:success] = "You have subscribe successfully"
-    rescue => exception
-      flash[:error] = "Something went wrong ..."
-    end
-    redirect_to '/account'
-  end
-
-  def un_subscribe
-    @email = params[:email] 
-    begin
-      SubscribeMailer.unregister_for_announce_list(@email).deliver  
-      flash[:success] = "You have unsubscribe successfully"
-    rescue => exception
-      flash[:error] = "Something went wrong ..."
-    end
-    redirect_to '/account'
   end
 
 end
