@@ -35,12 +35,12 @@ ENV RAILS_ENV="${RAILS_ENV}" \
 
 COPY --chown=ruby:ruby Gemfile* ./
 RUN bundle install --jobs "$(nproc)"
+RUN gem install rails
 
 
 RUN echo "--modules-folder /node_modules" > .yarnrc
 COPY --chown=ruby:ruby package.json *yarn* ./
 RUN yarn install
-RUN gem install rails
 
 # ENTRYPOINT ["/app/bin/docker-entrypoint-web"]
 
