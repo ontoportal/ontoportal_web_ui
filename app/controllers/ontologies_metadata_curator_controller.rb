@@ -66,15 +66,15 @@ class OntologiesMetadataCuratorController < ApplicationController
       return
     end
 
-    @selected_ontologies = params[:selected_acronyms].map { |x| x.split(' / ') }
+    @selected_ontologies = params[:selected_acronyms].map { |x| ontology_and_submission_id(x) }
     @selected_metadata = params[:selected_metadata]
     render partial: "ontologies_metadata_curator/form_edit"
   end
 
   def update
     @change_all = !params[:change_all].nil?
-    @selected_ontologies = params[:selected_ontologies].map { |x| x.split(' / ') }
-    @active_ontology = params[:active_ontology].split(' / ')
+    @selected_ontologies = params[:selected_ontologies].map { |x| ontology_and_submission_id(x) }
+    @active_ontology = ontology_and_submission_id(params[:active_ontology])
     error_responses = []
     active_submission_data = params["submission"][@active_ontology[0] + "_" + @active_ontology[1]]
 
@@ -103,6 +103,10 @@ class OntologiesMetadataCuratorController < ApplicationController
   end
 
   private
+
+  def ontology_and_submission_id(value)
+    value.split(' / ')
+  end
 
   def append_submission(ontology, submission)
     sub = submission

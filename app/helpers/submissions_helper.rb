@@ -1,5 +1,9 @@
 module SubmissionsHelper
 
+  def ontology_submission_id_label(acronym, submission_id)
+    [acronym, submission_id].join(' / ')
+  end
+
   def render_submission_attribute(attribute, submission = @submission, ontology = @ontology)
     render partial: 'ontologies_metadata_curator/attribute_inline_editable', locals: { attribute: attribute, submission: submission, ontology: ontology }
   end
