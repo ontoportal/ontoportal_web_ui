@@ -1,20 +1,33 @@
 module SubmissionsHelper
 
+  def ontology_submission_id_label(acronym, submission_id)
+    [acronym, submission_id].join(' / ')
+  end
+
   def render_submission_attribute(attribute, submission = @submission, ontology = @ontology)
     render partial: 'ontologies_metadata_curator/attribute_inline_editable', locals: { attribute: attribute, submission: submission, ontology: ontology }
   end
+
+  def render_submission_attribute_inline(attribute, submission = @submission, acronym)
+    render partial:"ontologies_metadata_curator/attribute_inline", locals:{attribute: attribute, submission: submission, acronym: acronym}
+  end
+
   def attribute_input_frame_id(acronym, submission_id, attribute)
     "submission[#{acronym}_#{submission_id}]#{attribute.capitalize}_from_group_input"
   end
 
-  def latest_submission_attributes(acronym, attributes, required: false, show_sections: false, inline_save: false)
+  def display_submission_attributes(acronym, attributes, submissionId: nil, required: false, show_sections: false, inline_save: false)
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym).first
     @selected_attributes = attributes
     @required_only = required
-    @hide_sections = show_sections
+    @hide_sections = !show_sections
     @inline_save = inline_save
     display_properties = @selected_attributes && !@selected_attributes.empty? ? (@selected_attributes + [:ontology, :submissionId]).join(',') : 'all'
-    @submission = @ontology.explore.latest_submission({ display: display_properties })
+    if submissionId
+      @submission = @ontology.explore.submissions({ display: display_properties }, submissionId)
+    else
+      @submission = @ontology.explore.latest_submission({ display: display_properties })
+    end
   end
 
   def metadata_section(id, label, collapsed: true, parent_id: nil, &block)
@@ -217,17 +230,20 @@ module SubmissionsHelper
     help_text
   end
   # Generate the HTML label for every attributes
-  def generate_attribute_label(attr_label)
+  def generate_attribute_label(attr_label, label_tag_sym: :label)
     # Get the attribute hash corresponding to the given attribute
     attr = attribute_infos(attr_label)
     label_html = if !attr["extracted"].nil? && attr["extracted"] == true
       extractable_metadatum_tooltip({ content: 'Extractable metadatum' })
     end.to_s.html_safe
 
-    if !attr["label"].nil?
-      label_html << label_tag("submission_#{attr_label}", attr["label"], { class: 'form-label' })
+
+    label = attr["label"].nil? ? attr_label.underscore.humanize : attr["label"]
+
+    if label_tag_sym.eql? :label
+      label_html << label_tag("submission_#{attr_label}", label , { class: 'form-label' })
     else
-      label_html << label_tag("submission_#{attr_label}", attr_label.underscore.humanize, { class: 'form-label' })
+      label_html << content_tag(label_tag_sym, label, {class: 'form-label'})
     end
 
     # Generate tooltip

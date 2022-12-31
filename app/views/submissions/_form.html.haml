@@ -31,19 +31,14 @@
       %br
       = extractable_metadatum_tooltip({ text: 'Metadata that can be extracted from the ontology' , content: "Extractable metadatum"})
 
-= hidden_field object_name, :ontology, value: @ontology.id
-= hidden_field object_name, :id, value: @submission.submissionId
-
 %div.d-flex.align-items-center.justify-content-between{onchange: "onMetadataChange()"}
   %div.w-75.mt-3
     = render MetadataSelectorComponent.new(label: 'Filter properties to show', values: submission_editable_properties , selected:  nil, inline: true)
   %div
-    %div.custom-control.custom-switch
-      = check_box_tag "filter-required-only", "required-only", false, class: 'custom-control-input'
-      %label.custom-control-label{for: "filter-required-only"}
-        Required only
+    = render SwitchInputComponent.new(id:"filter-required-only", name: "required-only", label: "Required only")
 
-= render partial: 'form_content', locals: {id: 'metadata_by_ontology'}
+
+= render partial: 'form_content', locals: {id: 'metadata_by_ontology', acronym: @ontology.acronym, submissionId: @submission.submissionId}
 
 %div.form-group.row
   %div.col-12.text-center
