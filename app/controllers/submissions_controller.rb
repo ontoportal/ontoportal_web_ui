@@ -35,7 +35,8 @@ class SubmissionsController < ApplicationController
 
   # Called when form to "Edit submission" is submitted
   def edit
-    display_submission_attributes params[:ontology_id], params[:properties]&.split(','), required: params[:required]&.eql?('true'),
+    display_submission_attributes params[:ontology_id], params[:properties]&.split(','), submissionId: params[:id],
+                                  required: params[:required]&.eql?('true'),
                                   show_sections: params[:show_sections].nil? || params[:show_sections].eql?('true'),
                                   inline_save: params[:inline_save]&.eql?('true')
   end
@@ -43,12 +44,12 @@ class SubmissionsController < ApplicationController
   # When editing a submission (called when submit "Edit submission information" form)
   def update
     error_responses = []
-    _, submission_params =  params[:submission].each.first
+    _, submission_params = params[:submission].each.first
 
     error_responses << update_submission(submission_params)
 
     if error_responses.compact.any? { |x| x.status != 204 }
-      @errors = error_responses.map { |error_response| response_errors(OpenStruct.new(JSON.parse(error_response.body, symbolize_names: true))) }
+      @errors = error_responses.map { |error_response| response_errors(error_response) }
     end
 
     if params[:attribute]

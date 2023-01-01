@@ -206,7 +206,14 @@ class ApplicationController < ActionController::Base
     file_exists
   end
 
+  def parse_response_body(response)
+    return nil if response.nil?
+    
+    OpenStruct.new(JSON.parse(response.body, symbolize_names: true))
+  end
+
   def response_errors(error_struct)
+    error_struct = parse_response_body(error_struct)
     errors = {error: "There was an error, please try again"}
     return errors unless error_struct
     return errors unless error_struct.respond_to?(:errors)

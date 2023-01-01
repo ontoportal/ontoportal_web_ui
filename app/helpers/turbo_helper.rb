@@ -25,6 +25,10 @@ module TurboHelper
   def replace(id, options = {}, &block)
     turbo_stream.replace(id, options, &block)
   end
+
+  def remove(id)
+    turbo_stream.remove(id)
+  end
   def render_turbo_stream(*streams)
     render turbo_stream: streams
   end
