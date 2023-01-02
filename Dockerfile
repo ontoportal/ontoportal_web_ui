@@ -42,8 +42,8 @@ RUN echo "--modules-folder /node_modules" > .yarnrc
 COPY --chown=ruby:ruby package.json *yarn* ./
 RUN yarn install
 
-# ENTRYPOINT ["/app/bin/docker-entrypoint-web"]
+ENTRYPOINT ["/app/bin/docker-entrypoint-web"]
 
 EXPOSE 3000
 
-CMD ["/bin/bash"]
+CMD ["sh"]
