@@ -22,7 +22,8 @@ module SubmissionsHelper
     @required_only = required
     @hide_sections = !show_sections
     @inline_save = inline_save
-    display_properties = @selected_attributes && !@selected_attributes.empty? ? (@selected_attributes + [:ontology, :submissionId]).join(',') : 'all'
+
+    display_properties = @selected_attributes && !@selected_attributes.empty? ? (equivalent_properties(@selected_attributes) + [:ontology, :submissionId]).join(',') : 'all'
     if submissionId
       @submission = @ontology.explore.submissions({ display: display_properties }, submissionId)
     else
