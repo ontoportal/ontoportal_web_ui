@@ -10,7 +10,15 @@
       %div.d-flex.justify-content-between.align-items-center
         %div.d-flex.justify-content-between
           %div
-            = render_submission_attribute_inline(attribute, submission, acronym)
+            - equivalents = equivalent_properties(attribute)
+            - equivalents.each do |attr|
+              %div.d-flex
+                - if equivalents.size > 1
+                  %span= "#{attr}: "
+                %div
+                  = render_submission_attribute_inline(attr.to_s, submission, acronym)
+
+
           %div
             %a.btn.btn-sm.btn-light{href: "ontologies_metadata_curator/#{ontology.acronym}/submissions/#{submission_id}?properties=#{attribute}&inline_save=true", data: {turbo: true}}
               %i.far.fa-edit
