@@ -175,30 +175,6 @@ module SubmissionsHelper
     end
   end
 
-  def submission_attributes(list: false)
-    [
-      :ontology,
-      :description,
-      :hasOntologyLanguage,
-      :prefLabelProperty,
-      :synonymProperty,
-      :definitionProperty,
-      :authorProperty,
-      :obsoleteProperty,
-      :obsoleteParent,
-      :version,
-      :status,
-      :released,
-      :isRemote,
-      :pullLocation,
-      :filePath,
-      list ? :contact : { contact: [:name, :email] },
-      :homepage,
-      :documentation,
-      :publication
-    ]
-  end
-
   def extractable_metadatum_tooltip(options = {})
     help_tooltip(options[:content], {}, 'fas fa-file-export', 'extractable-metadatum', options[:text]).html_safe
   end
