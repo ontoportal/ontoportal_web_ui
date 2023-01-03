@@ -15,8 +15,10 @@ class SubscribeMailer < ApplicationMailer
           if $ANNOUNCE_LIST_SERVICE.upcase.eql? "SYMPA"
             mail(:to => $ANNOUNCE_SERVICE_HOST, 
               :from => email, 
-              :subject => "unsubscribe #{$ANNOUNCE_LIST}")    
-          end   
+              :subject => "unsubscribe #{$ANNOUNCE_LIST}",
+              :body => "")    
+
+            end   
         end
       end
     

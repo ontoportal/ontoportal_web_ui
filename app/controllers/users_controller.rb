@@ -162,28 +162,26 @@ class UsersController < ApplicationController
   
   def subscribe
     @user = LinkedData::Client::Models::User.find_by_username(params[:username]).first
-    begin
-      SubscribeMailer.register_for_announce_list(@user.email,@user.firstName,@user.lastName).deliver   
-      flash[:success] = "You have subscribe successfully"
-    rescue => exception
-      flash[:error] = "Something went wrong ..."
-    end
-    redirect_to '/account'
+    deliver "subscribe", SubscribeMailer.register_for_announce_list(@user.email,@user.firstName,@user.lastName)
   end
 
   def un_subscribe
     @email = params[:email] 
+    deliver "un_subscribe", SubscribeMailer.unregister_for_announce_list(@email)
+  end
+
+  
+  private
+
+  def deliver(action,job)
     begin
-      SubscribeMailer.unregister_for_announce_list(@email).deliver  
-      flash[:success] = "You have unsubscribe successfully"
+      job.deliver
+      flash[:success] = "You have #{action} successfully"
     rescue => exception
       flash[:error] = "Something went wrong ..."
     end
     redirect_to '/account'
   end
-
-
-  private
 
   def user_params
     p = params.require(:user).permit(:firstName, :lastName, :username, :email, :email_confirmation, :password,
