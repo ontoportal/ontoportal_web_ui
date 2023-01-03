@@ -44,8 +44,8 @@ module SubmissionsHelper
     end
   end
 
-  def attribute_container(attr, required: false, equivalent: [], &block)
-    if show_attribute?(attr, required, equivalent: equivalent)
+  def attribute_container(attr, required: false, &block)
+    if show_attribute?(attr, required)
       content_tag(:div) do
         capture(&block)
       end
@@ -56,12 +56,12 @@ module SubmissionsHelper
     !@inline_save.nil? && @inline_save
   end
 
-  def selected_attribute?(attr, equivalent)
-    @selected_attributes.nil? || @selected_attributes.empty? || @selected_attributes.include?(attr.to_s) || !(@selected_attributes & equivalent).empty?
+  def selected_attribute?(attr)
+    @selected_attributes.nil? || @selected_attributes.empty? || @selected_attributes.include?(attr.to_s) || equivalent_properties(@selected_attributes).include?(attr.to_s)
   end
 
-  def show_attribute?(attr, required, equivalent: [])
-    selected = selected_attribute?(attr, equivalent)
+  def show_attribute?(attr, required)
+    selected = selected_attribute?(attr)
     required_only = @required_only && required || !@required_only
     selected && required_only
   end
@@ -78,6 +78,7 @@ module SubmissionsHelper
   def cancel_link(acronym: @ontology.acronym, submission_id: @submission.submissionId, attribute:)
     "/ontologies_metadata_curator/#{acronym}/submissions/#{submission_id}/attributes/#{attribute}"
   end
+
   def cancel_button(href)
     content_tag :div do
       link_to(href, { data: { turbo: true, controller: 'tooltip', turbo_frame: '_self' }, title: 'Cancel', class: 'btn btn-sm btn-light mx-1' }) do
@@ -86,8 +87,8 @@ module SubmissionsHelper
     end
   end
 
-  def attribute_form_group_container(attr, label: '', required: false, equivalent: [], &block)
-    attribute_container(attr, required: required, equivalent: equivalent) do
+  def attribute_form_group_container(attr, label: '', required: false, &block)
+    attribute_container(attr, required: required) do
       render FormGroupComponent.new(object: @submission, name: object_name, method: attr, label: label, required: required) do |c|
         if inline_save?
           c.submit do
@@ -230,14 +231,17 @@ module SubmissionsHelper
     end
     help_text
   end
+
   # Generate the HTML label for every attributes
   def generate_attribute_label(attr_label, label_tag_sym: :label)
     # Get the attribute hash corresponding to the given attribute
     attr = attribute_infos(attr_label)
-    label_html = if !attr["extracted"].nil? && attr["extracted"] == true
-      extractable_metadatum_tooltip({ content: 'Extractable metadatum' })
-    end.to_s.html_safe
 
+    return attr_label if attr.nil?
+
+    label_html = if !attr["extracted"].nil? && attr["extracted"] == true
+                   extractable_metadatum_tooltip({ content: 'Extractable metadatum' })
+                 end.to_s.html_safe
 
     label = attr["label"].nil? ? attr_label.underscore.humanize : attr["label"]
 
