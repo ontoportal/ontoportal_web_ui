@@ -128,12 +128,29 @@ module SubmissionsHelper
     %w[hasOntologyLanguage prefLabelProperty synonymProperty definitionProperty authorProperty obsoleteProperty obsoleteParent]
   end
 
-  def submission_editable_properties
+  def location_equivalent
+    %w[summaryOnly pullLocation]
+  end
+
+  def equivalent_property(attr)
+    equivalents = submission_properties
+
+    found = equivalents.select { |x| x.is_a?(Array) && x[0].eql?(attr.to_sym) }
+    found.empty? ?  attr.to_sym: found.first[1]
+  end
+
+  def equivalent_properties(attr_labels)
+    labels = Array(attr_labels)
+
+    labels.map { |x| equivalent_property(x) }.flatten
+  end
+
+  def submission_properties
     out = [
-      ["Format", format_equivalent.join(',')],
+      [:format, format_equivalent],
+      [:location, location_equivalent],
       :version,
       :status,
-      :location,
       :description,
       :homepage,
       :documentation,
@@ -157,22 +174,29 @@ module SubmissionsHelper
 
     sections.each do |d|
       submission_metadata.select { |m| m['display'] == d[2] }.each { |attr|
-        out << attr["attribute"]
+        out << attr["attribute"].to_sym
       }
     end
 
     displays = %w[dates license community people relations content metrics]
     submission_metadata.select { |m| displays.include?(m['display']) }.each { |attr|
-      out << attr["attribute"]
+      out << attr["attribute"].to_sym
     }
+    out.uniq
+  end
 
-    out.map do |x|
+  def submission_editable_properties
+
+    properties = submission_properties
+
+    properties.map do |x|
       if x.is_a? Array
-        x
+        [x[0].to_s.underscore.humanize, x[0]]
       else
         [x.to_s.underscore.humanize, x]
       end
     end
+
   end
 
   def extractable_metadatum_tooltip(options = {})
