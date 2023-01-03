@@ -22,7 +22,8 @@ module SubmissionsHelper
     @required_only = required
     @hide_sections = !show_sections
     @inline_save = inline_save
-    display_properties = @selected_attributes && !@selected_attributes.empty? ? (@selected_attributes + [:ontology, :submissionId]).join(',') : 'all'
+
+    display_properties = @selected_attributes && !@selected_attributes.empty? ? (equivalent_properties(@selected_attributes) + [:ontology, :submissionId]).join(',') : 'all'
     if submissionId
       @submission = @ontology.explore.submissions({ display: display_properties }, submissionId)
     else
@@ -43,8 +44,8 @@ module SubmissionsHelper
     end
   end
 
-  def attribute_container(attr, required: false, equivalent: [], &block)
-    if show_attribute?(attr, required, equivalent: equivalent)
+  def attribute_container(attr, required: false, &block)
+    if show_attribute?(attr, required)
       content_tag(:div) do
         capture(&block)
       end
@@ -55,12 +56,12 @@ module SubmissionsHelper
     !@inline_save.nil? && @inline_save
   end
 
-  def selected_attribute?(attr, equivalent)
-    @selected_attributes.nil? || @selected_attributes.empty? || @selected_attributes.include?(attr.to_s) || !(@selected_attributes & equivalent).empty?
+  def selected_attribute?(attr)
+    @selected_attributes.nil? || @selected_attributes.empty? || @selected_attributes.include?(attr.to_s) || equivalent_properties(@selected_attributes).include?(attr.to_s)
   end
 
-  def show_attribute?(attr, required, equivalent: [])
-    selected = selected_attribute?(attr, equivalent)
+  def show_attribute?(attr, required)
+    selected = selected_attribute?(attr)
     required_only = @required_only && required || !@required_only
     selected && required_only
   end
@@ -77,6 +78,7 @@ module SubmissionsHelper
   def cancel_link(acronym: @ontology.acronym, submission_id: @submission.submissionId, attribute:)
     "/ontologies_metadata_curator/#{acronym}/submissions/#{submission_id}/attributes/#{attribute}"
   end
+
   def cancel_button(href)
     content_tag :div do
       link_to(href, { data: { turbo: true, controller: 'tooltip', turbo_frame: '_self' }, title: 'Cancel', class: 'btn btn-sm btn-light mx-1' }) do
@@ -85,8 +87,8 @@ module SubmissionsHelper
     end
   end
 
-  def attribute_form_group_container(attr, label: '', required: false, equivalent: [], &block)
-    attribute_container(attr, required: required, equivalent: equivalent) do
+  def attribute_form_group_container(attr, label: '', required: false, &block)
+    attribute_container(attr, required: required) do
       render FormGroupComponent.new(object: @submission, name: object_name, method: attr, label: label, required: required) do |c|
         if inline_save?
           c.submit do
@@ -128,12 +130,29 @@ module SubmissionsHelper
     %w[hasOntologyLanguage prefLabelProperty synonymProperty definitionProperty authorProperty obsoleteProperty obsoleteParent]
   end
 
-  def submission_editable_properties
+  def location_equivalent
+    %w[summaryOnly pullLocation]
+  end
+
+  def equivalent_property(attr)
+    equivalents = submission_properties
+
+    found = equivalents.select { |x| x.is_a?(Array) && x[0].eql?(attr.to_sym) }
+    found.empty? ?  attr.to_sym: found.first[1]
+  end
+
+  def equivalent_properties(attr_labels)
+    labels = Array(attr_labels)
+
+    labels.map { |x| equivalent_property(x) }.flatten
+  end
+
+  def submission_properties
     out = [
-      ["Format", format_equivalent.join(',')],
+      [:format, format_equivalent],
+      [:location, location_equivalent],
       :version,
       :status,
-      :location,
       :description,
       :homepage,
       :documentation,
@@ -157,46 +176,29 @@ module SubmissionsHelper
 
     sections.each do |d|
       submission_metadata.select { |m| m['display'] == d[2] }.each { |attr|
-        out << attr["attribute"]
+        out << attr["attribute"].to_sym
       }
     end
 
     displays = %w[dates license community people relations content metrics]
     submission_metadata.select { |m| displays.include?(m['display']) }.each { |attr|
-      out << attr["attribute"]
+      out << attr["attribute"].to_sym
     }
+    out.uniq
+  end
 
-    out.map do |x|
+  def submission_editable_properties
+
+    properties = submission_properties
+
+    properties.map do |x|
       if x.is_a? Array
-        x
+        [x[0].to_s.underscore.humanize, x[0]]
       else
         [x.to_s.underscore.humanize, x]
       end
     end
-  end
 
-  def submission_attributes(list: false)
-    [
-      :ontology,
-      :description,
-      :hasOntologyLanguage,
-      :prefLabelProperty,
-      :synonymProperty,
-      :definitionProperty,
-      :authorProperty,
-      :obsoleteProperty,
-      :obsoleteParent,
-      :version,
-      :status,
-      :released,
-      :isRemote,
-      :pullLocation,
-      :filePath,
-      list ? :contact : { contact: [:name, :email] },
-      :homepage,
-      :documentation,
-      :publication
-    ]
   end
 
   def extractable_metadatum_tooltip(options = {})
@@ -229,14 +231,17 @@ module SubmissionsHelper
     end
     help_text
   end
+
   # Generate the HTML label for every attributes
   def generate_attribute_label(attr_label, label_tag_sym: :label)
     # Get the attribute hash corresponding to the given attribute
     attr = attribute_infos(attr_label)
-    label_html = if !attr["extracted"].nil? && attr["extracted"] == true
-      extractable_metadatum_tooltip({ content: 'Extractable metadatum' })
-    end.to_s.html_safe
 
+    return attr_label if attr.nil?
+
+    label_html = if !attr["extracted"].nil? && attr["extracted"] == true
+                   extractable_metadatum_tooltip({ content: 'Extractable metadatum' })
+                 end.to_s.html_safe
 
     label = attr["label"].nil? ? attr_label.underscore.humanize : attr["label"]
 

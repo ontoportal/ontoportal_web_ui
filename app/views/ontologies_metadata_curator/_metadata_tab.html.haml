@@ -7,7 +7,7 @@
             = render :partial => "shared/ontology_picker", locals: {sel_text: '', selected_ontologies: @ontologies_ids}
       %div.d-flex.align-items-center.mb-5
         %div.mx-1{style: 'width: 65%'}
-          = render MetadataSelectorComponent.new(label: 'Metadata Properties', values: metadata_for_select , selected:  @metadata_sel)
+          = render MetadataSelectorComponent.new(label: 'Metadata Properties', values: submission_editable_properties , selected:  @metadata_sel)
         %div.mx-1.mt-3{style: 'width: 15%'}
           = render SwitchInputComponent.new(id:"show_submissions", name: "show_submissions", label: "Include all submissions")
         %div.mt-3.flex-shrink-0

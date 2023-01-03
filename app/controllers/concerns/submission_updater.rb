@@ -58,7 +58,27 @@ module SubmissionUpdater
 
 
   def submission_params(params)
-    attributes = helpers.submission_attributes
+    attributes = [
+      :ontology,
+      :description,
+      :hasOntologyLanguage,
+      :prefLabelProperty,
+      :synonymProperty,
+      :definitionProperty,
+      :authorProperty,
+      :obsoleteProperty,
+      :obsoleteParent,
+      :version,
+      :status,
+      :released,
+      :isRemote,
+      :pullLocation,
+      :filePath,
+      { contact: [:name, :email] },
+      :homepage,
+      :documentation,
+      :publication
+    ]
 
     @metadata.each do |m|
 
