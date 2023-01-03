@@ -10,7 +10,6 @@ class OntologiesMetadataCuratorController < ApplicationController
     @show_submissions = !params[:show_submissions].nil?
     @ontologies = []
     @submissions = []
-
     if @ontologies_ids.nil? || @ontologies_ids.empty?
       @ontologies = LinkedData::Client::Models::Ontology.all
     else
@@ -19,7 +18,7 @@ class OntologiesMetadataCuratorController < ApplicationController
       end
     end
 
-    display_attribute = @metadata_sel + %w[submissionId]
+    display_attribute = equivalent_properties(@metadata_sel) + %w[submissionId]
     @ontologies.each do |ont|
       if @show_submissions
         submissions = ont.explore.submissions({ include: display_attribute.join(',') })
