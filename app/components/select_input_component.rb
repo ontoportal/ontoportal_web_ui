@@ -12,6 +12,10 @@ class SelectInputComponent < ViewComponent::Base
   end
 
   def options_values
-    options_for_select(@selected, @values)
+    if @selected.nil? || @selected.empty?
+      @selected = 0
+      @values.unshift('')
+    end
+    options_for_select(@values, @selected)
   end
 end
