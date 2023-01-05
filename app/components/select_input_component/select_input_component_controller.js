@@ -11,10 +11,8 @@ export default class extends Controller {
     static targets = ["btnValueField", "inputValueField", "selectedValues"]
 
     connect() {
-        if (this.multipleValue) {
-            this.initMultipleSelect()
-            this.#displayOtherValueField()
-        }
+        this.initMultipleSelect()
+        this.#displayOtherValueField()
     }
 
     toggleOtherValue() {
@@ -42,12 +40,15 @@ export default class extends Controller {
         useChosen(this.selectedValuesTarget, {
             width: '100%',
             search_contains: true,
+            allow_single_deselect: !this.multipleValue,
         }, (event) => {
-            let selected = event.target.selectedOptions
-            if (selected.length === 0) {
-                this.#selectEmptyOption()
-            } else {
-                this.#unSelectEmptyOption()
+            if(this.multipleValue){
+                let selected = event.target.selectedOptions
+                if (selected.length === 0) {
+                    this.#selectEmptyOption()
+                } else {
+                    this.#unSelectEmptyOption()
+                }
             }
         })
     }
