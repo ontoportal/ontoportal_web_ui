@@ -85,7 +85,7 @@ module SubmissionUpdater
       m_attr = m["attribute"].to_sym
 
       attributes << if m["enforce"].include?("list")
-                      { m_attr => {} }
+                      [{ m_attr => {} }, { m_attr => []}]
                     else
                       m_attr
                     end

@@ -288,7 +288,7 @@ module SubmissionsHelper
 
   def generate_select_input(attr, name, select_values, metadata_values, multiple: false)
     id = attr["attribute"].to_s + "_" + @ontology.acronym
-    render SelectInputComponent.new(id: id, name: name, values: metadata_values, selected: select_values, multiple: multiple)
+    render SelectInputComponent.new(id: id, name: name, values: select_values , selected: metadata_values , multiple: multiple)
   end
 
   def generate_list_field_input(attr, name, values, field_func)
