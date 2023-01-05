@@ -87,7 +87,7 @@ class OntologiesMetadataCuratorController < ApplicationController
 
     errors = nil
     if error_responses.compact.any? { |x| x.status != 204 }
-      errors = error_responses.map { |error_response| response_errors(OpenStruct.new(JSON.parse(error_response.body, symbolize_names: true))) }
+      errors = error_responses.map { |error_response| response_errors(error_response) }
     end
 
     respond_to do |format|

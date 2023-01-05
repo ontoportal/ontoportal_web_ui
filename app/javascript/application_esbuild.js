@@ -7,3 +7,12 @@ import "./controllers"
 import "./component_controllers"
 
 
+Turbo.setConfirmMethod((message) => {
+    return new Promise((resolve, reject) => {
+        alertify.confirm(message, (e) => {
+            resolve(e)
+        })
+    })
+})
+
+
