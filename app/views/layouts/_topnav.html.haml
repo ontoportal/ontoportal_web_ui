@@ -22,6 +22,8 @@
         = link_to("Projects", projects_path(), class: "nav-link")
       %li.nav-item
         = link_to("Landscape", '/landscape', class: "nav-link")
+        %li.nav-item
+        = link_to("Souslesens", 'http://souslesens.enit.fr', class: "nav-link")
       %li.nav-item
         = link_to("Team", team_path, class: "nav-link")
       -if (!session[:user].nil? && session[:user].admin?)
