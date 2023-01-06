@@ -412,6 +412,7 @@ module OntologiesHelper
       sections += %w[classes properties notes mappings]
       sections += %w[schemes collections] if skos?
       sections += %w[instances] unless skos?
+      sections += %w[widgets]
     end
     sections
   end
