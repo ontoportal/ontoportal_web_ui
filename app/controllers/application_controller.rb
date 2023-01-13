@@ -208,19 +208,22 @@ class ApplicationController < ActionController::Base
 
   def parse_response_body(response)
     return nil if response.nil?
-    
-    OpenStruct.new(JSON.parse(response.body, symbolize_names: true))
+    if response.errors
+      response
+    else
+      OpenStruct.new(JSON.parse(response.body, symbolize_names: true))
+    end
   end
 
-  def response_errors(error_struct)
-    error_struct = parse_response_body(error_struct)
+  def response_errors(error_response)
+    error_struct = parse_response_body(error_response)
+
     errors = {error: "There was an error, please try again"}
     return errors unless error_struct
     return errors unless error_struct.respond_to?(:errors)
     errors = {}
-    error_struct.errors.each {|e| ""}
     error_struct.errors.each do |error|
-      if error.is_a?(Struct)
+      if error.is_a?(OpenStruct) || error.is_a?(Struct)
         errors.merge!(struct_to_hash(error))
       else
         errors[:error] = error
