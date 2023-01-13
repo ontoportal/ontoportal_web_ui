@@ -143,7 +143,7 @@ GEM
     erubi (1.12.0)
     erubis (2.7.0)
     eventmachine (1.2.7)
-    excon (0.97.0)
+    excon (0.97.1)
     execjs (2.8.1)
     faraday (2.0.1)
       faraday-net_http (~> 2.0)
@@ -198,7 +198,7 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     lz4-ruby (0.3.3)
-    mail (2.8.0)
+    mail (2.8.0.1)
       mini_mime (>= 0.1.1)
       net-imap
       net-pop
@@ -235,7 +235,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (8.15.0)
     nio4r (2.5.8)
-    nokogiri (1.13.10-x86_64-linux)
+    nokogiri (1.14.0-x86_64-linux)
       racc (~> 1.4)
     oj (3.13.23)
     open_uri_redirections (0.2.1)
@@ -393,7 +393,7 @@ GEM
     unf_ext (0.0.8.2)
     unicode-display_width (2.4.2)
     uri (0.12.0)
-    view_component (2.80.0)
+    view_component (2.82.0)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
       method_source (~> 1.0)
@@ -482,4 +482,4 @@ DEPENDENCIES
   will_paginate (~> 3.0)
 
 BUNDLED WITH
-   2.3.14
+   2.3.15
