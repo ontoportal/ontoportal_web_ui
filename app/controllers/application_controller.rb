@@ -217,6 +217,7 @@ class ApplicationController < ActionController::Base
 
   def response_errors(error_response)
     error_struct = parse_response_body(error_response)
+
     errors = {error: "There was an error, please try again"}
     return errors unless error_struct
     return errors unless error_struct.respond_to?(:errors)

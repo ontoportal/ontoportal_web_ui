@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git
-  revision: fe929a4dd156920d60ecde9e8f9ef30a2cf5088e
-  branch: master
+  revision: 0c8cd2b377d88b66a979664d5b16e5068b6d4548
+  branch: development
   specs:
     ontologies_api_client (2.2.0)
       activesupport
@@ -218,6 +218,8 @@ GEM
     net-ftp (0.2.0)
       net-protocol
       time
+    net-http (0.3.2)
+      uri
     net-imap (0.3.4)
       date
       net-protocol
@@ -390,6 +392,7 @@ GEM
       unf_ext
     unf_ext (0.0.8.2)
     unicode-display_width (2.4.2)
+    uri (0.12.0)
     view_component (2.82.0)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
@@ -446,6 +449,7 @@ DEPENDENCIES
   multi_json
   mysql2 (= 0.5.3)
   net-ftp (~> 0.2.0)
+  net-http
   newrelic_rpm
   oj
   ontologies_api_client!
@@ -478,4 +482,4 @@ DEPENDENCIES
   will_paginate (~> 3.0)
 
 BUNDLED WITH
-   2.3.23
+   2.3.15

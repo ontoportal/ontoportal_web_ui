@@ -1,7 +1,4 @@
-class Notifier < ActionMailer::Base
-  def signup(user)
-
-  end
+class Notifier < ApplicationMailer
 
   def lost_password(user, password)
     # Email header info MUST be added here
@@ -38,13 +35,8 @@ class Notifier < ActionMailer::Base
          :subject => "[#{$SITE}] Feedback from #{name}")
   end
 
-  def register_for_announce_list(email)
-    unless $ANNOUNCE_LIST.nil? || $ANNOUNCE_LIST.empty?
-      recipients "#{$ANNOUNCE_LIST}"
-      from "#{$ADMIN_EMAIL}"
-      subject "subscribe address=#{email}"
-    end
-  end
+  def signup(user)
 
+  end
 
 end
