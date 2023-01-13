@@ -28,7 +28,7 @@ module ApplicationHelper
   end
 
   def encode_param(string)
-    return URI.escape(string, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+    CGI.escape(string)
   end
 
   def escape(string)
@@ -436,18 +436,18 @@ module ApplicationHelper
     return "/ontologies/#{ont_acronym}"
   end
   def bp_class_link(cls_id, ont_acronym)
-    return "#{bp_ont_link(ont_acronym)}?p=classes&conceptid=#{URI.escape(cls_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+    return "#{bp_ont_link(ont_acronym)}?p=classes&conceptid=#{escape(cls_id)}"
   end
   def bp_scheme_link(scheme_id, ont_acronym)
-    return "#{bp_ont_link(ont_acronym)}?p=schemes&schemeid=#{URI.escape(scheme_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+    return "#{bp_ont_link(ont_acronym)}?p=schemes&schemeid=#{escape(scheme_id)}"
   end
 
   def bp_label_xl_link(label_xl_id, ont_acronym)
-    return "#{bp_ont_link(ont_acronym)}/?label_xl_id=#{URI.escape(label_xl_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+    return "#{bp_ont_link(ont_acronym)}/?label_xl_id=#{escape(label_xl_id)}"
   end
 
   def bp_collection_link(collection_id, ont_acronym)
-    "#{bp_ont_link(ont_acronym)}?p=collection&collectionid=#{URI.escape(collection_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+    "#{bp_ont_link(ont_acronym)}?p=collection&collectionid=#{escape(collection_id)}"
   end
   def label_ajax_data_h(cls_id, ont_acronym, ajax_uri, cls_url)
     { data:
