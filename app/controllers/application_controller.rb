@@ -232,7 +232,7 @@ class ApplicationController < ActionController::Base
   end
 
   def response_success?(response)
-    !response.nil? && ((response.status && response.status < 400) || !response.errors)
+    !response.nil? && ((response.status && response.status.to_i < 400) || !response.errors)
   end
 
   def response_error?(response)
