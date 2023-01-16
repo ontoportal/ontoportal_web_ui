@@ -24,10 +24,9 @@ class SubmissionsController < ApplicationController
     @submission_saved = @submission.save
     if response_error?(@submission_saved)
       @errors = response_errors(@submission_saved) # see application_controller::response_errors
-
-      if @errors[:error] && @errors[:error][:uploadFilePath]
+      if @errors && @errors[:uploadFilePath]
         @errors = ["Please specify the location of your ontology"]
-      elsif @errors[:error] && @errors[:error][:contact]
+      elsif @errors && @errors[:contact]
         @errors = ["Please enter a contact"]
       end
 
