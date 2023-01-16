@@ -244,7 +244,7 @@ class ApplicationController < ActionController::Base
     hash = {}
     struct.members.each do |attr|
       next if [:links, :context].include?(attr)
-      if struct[attr].is_a?(Struct)
+      if struct[attr].is_a?(Struct) || struct[attr].is_a?(OpenStruct)
         hash[attr] = struct_to_hash(struct[attr])
       else
         hash[attr] = struct[attr]
