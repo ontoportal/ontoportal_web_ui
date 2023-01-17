@@ -331,7 +331,11 @@ module SubmissionsHelper
   end
 
   def attribute_values(attr)
-    @submission.send(attr["attribute"])
+    begin
+      @submission.send(attr["attribute"])
+    rescue
+      nil
+    end
   end
 
   # Generate the HTML input for every attributes.
