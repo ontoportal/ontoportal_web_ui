@@ -17,8 +17,9 @@ class SubmissionsController < ApplicationController
   # Called when form to "Add submission" is submitted
   def create
     # Make the contacts an array
-    _, submission_params =  params[:submission].each.first
-
+    _, submission_params = params[:submission].each.first
+    @required_only = !params['required-only'].nil?
+    @filters_disabled = true
     @submission_saved = save_submission(submission_params)
     if response_error?(@submission_saved)
       @errors = response_errors(@submission_saved) # see application_controller::response_errors
@@ -47,7 +48,9 @@ class SubmissionsController < ApplicationController
   def update
     error_responses = []
     _, submission_params = params[:submission].each.first
-
+    @required_only = !params['required-only'].nil?
+    @filters_disabled = true
+    
     error_responses << update_submission(submission_params)
 
     if error_responses.compact.any? { |x| x.status != 204 }
