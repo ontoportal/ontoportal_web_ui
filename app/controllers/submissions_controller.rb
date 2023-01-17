@@ -6,10 +6,12 @@ class SubmissionsController < ApplicationController
 
   # When getting "Add submission" form to display
   def new
+    @required_only = params[:required].nil? || !params[:required]&.eql?('false')
     @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params[:ontology_id])) rescue nil
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first unless @ontology
     @submission = @ontology.explore.latest_submission
     @submission ||= LinkedData::Client::Models::OntologySubmission.new
+    @submission.id = nil
   end
 
   # Called when form to "Add submission" is submitted
