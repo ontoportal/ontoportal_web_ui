@@ -1,7 +1,10 @@
 module SubmissionsHelper
 
   def ontology_submission_id_label(acronym, submission_id)
-    [acronym, submission_id].join(' / ')
+    [acronym, submission_id].join('#')
+  end
+  def ontology_and_submission_id(value)
+    value.split('#')
   end
 
   def render_submission_attribute(attribute, submission = @submission, ontology = @ontology)
