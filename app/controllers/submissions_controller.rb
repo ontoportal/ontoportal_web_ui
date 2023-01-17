@@ -6,17 +6,20 @@ class SubmissionsController < ApplicationController
 
   # When getting "Add submission" form to display
   def new
+    @required_only = params[:required].nil? || !params[:required]&.eql?('false')
     @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params[:ontology_id])) rescue nil
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first unless @ontology
     @submission = @ontology.explore.latest_submission
     @submission ||= LinkedData::Client::Models::OntologySubmission.new
+    @submission.id = nil
   end
 
   # Called when form to "Add submission" is submitted
   def create
     # Make the contacts an array
-    _, submission_params =  params[:submission].each.first
-
+    _, submission_params = params[:submission].each.first
+    @required_only = !params['required-only'].nil?
+    @filters_disabled = true
     @submission_saved = save_submission(submission_params)
     if response_error?(@submission_saved)
       @errors = response_errors(@submission_saved) # see application_controller::response_errors
@@ -44,7 +47,9 @@ class SubmissionsController < ApplicationController
   def update
     error_responses = []
     _, submission_params = params[:submission].each.first
-
+    @required_only = !params['required-only'].nil?
+    @filters_disabled = true
+    
     error_responses << update_submission(submission_params)
 
     if error_responses.compact.any? { |x| x.status != 204 }

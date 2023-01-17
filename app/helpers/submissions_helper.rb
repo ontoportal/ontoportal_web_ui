@@ -331,7 +331,11 @@ module SubmissionsHelper
   end
 
   def attribute_values(attr)
-    @submission.send(attr["attribute"])
+    begin
+      @submission.send(attr["attribute"])
+    rescue
+      nil
+    end
   end
 
   # Generate the HTML input for every attributes.
@@ -412,7 +416,7 @@ module SubmissionsHelper
   end
 
   def form_group_attribute(attr, options = {}, &block)
-    attribute_form_group_container(attr) do |c|
+    attribute_form_group_container(attr, required: !options[:required].nil?) do |c|
       c.label do
         generate_attribute_label(attr)
       end
