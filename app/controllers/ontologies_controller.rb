@@ -180,7 +180,7 @@ class OntologiesController < ApplicationController
 
     @ontology = LinkedData::Client::Models::Ontology.new(values: ontology_params)
     @ontology_saved = @ontology.save
-    if !@ontology_saved || @ontology_saved.errors
+    if response_error?(@ontology_saved)
       @categories = LinkedData::Client::Models::Category.all
       @user_select_list = LinkedData::Client::Models::User.all.map { |u| [u.username, u.id] }
       @user_select_list.sort! { |a, b| a[1].downcase <=> b[1].downcase }
@@ -357,7 +357,7 @@ class OntologiesController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym] || params[:id]).first
     @ontology.update_from_params(ontology_params)
     error_response = @ontology.update
-    if error_response
+    if response_error?(error_response)
       @categories = LinkedData::Client::Models::Category.all
       @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
       @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}

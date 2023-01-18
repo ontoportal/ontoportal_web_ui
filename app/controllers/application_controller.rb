@@ -169,14 +169,24 @@ class ApplicationController < ActionController::Base
     file_exists
   end
 
+  def parse_response_body(response)
+    return nil if response.nil?
+
+    if response.respond_to?(:errors) && response.errors
+      response
+    else
+      OpenStruct.new(JSON.parse(response.body, symbolize_names: true))
+    end
+  end
+
   def response_errors(error_struct)
+    error_struct = parse_response_body(error_struct)
     errors = {error: "There was an error, please try again"}
     return errors unless error_struct
     return errors unless error_struct.respond_to?(:errors)
     errors = {}
-    error_struct.errors.each {|e| ""}
     error_struct.errors.each do |error|
-      if error.is_a?(Struct)
+      if error.is_a?(OpenStruct) || error.is_a?(Struct)
         errors.merge!(struct_to_hash(error))
       else
         errors[:error] = error
@@ -185,11 +195,25 @@ class ApplicationController < ActionController::Base
     errors
   end
 
+  def response_success?(response)
+    return false if response.nil?
+
+    if response.respond_to?(:status) && response.status
+        response.status.to_i < 400
+    else
+      !(response.respond_to?(:errors) && response.errors)
+    end
+  end
+
+  def response_error?(response)
+    !response_success?(response)
+  end
+
   def struct_to_hash(struct)
     hash = {}
     struct.members.each do |attr|
       next if [:links, :context].include?(attr)
-      if struct[attr].is_a?(Struct)
+      if struct[attr].is_a?(Struct) || struct[attr].is_a?(OpenStruct)
         hash[attr] = struct_to_hash(struct[attr])
       else
         hash[attr] = struct[attr]
