@@ -171,7 +171,8 @@ class ApplicationController < ActionController::Base
 
   def parse_response_body(response)
     return nil if response.nil?
-    if response.errors
+
+    if response.respond_to?(:errors) && response.errors
       response
     else
       OpenStruct.new(JSON.parse(response.body, symbolize_names: true))
@@ -195,7 +196,13 @@ class ApplicationController < ActionController::Base
   end
 
   def response_success?(response)
-    !response.nil? && ((response.status && response.status.to_i < 400) || !response.errors)
+    return false if response.nil?
+
+    if response.respond_to?(:status) && response.status
+        response.status.to_i < 400
+    else
+      !(response.respond_to?(:errors) && response.errors)
+    end
   end
 
   def response_error?(response)
