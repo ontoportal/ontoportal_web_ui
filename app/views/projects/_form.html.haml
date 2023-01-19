@@ -52,7 +52,7 @@
         %br/
         %span.default_owl
           Example:
-          %a{:href => "http://en.wikipedia.org/wiki/SNOMED_CT", :target => "_blank"} http://en.wikipedia.org/wiki/SNOMED_CT
+          %a{href: 'https://en.wikipedia.org/wiki/SNOMED_CT', target: '_blank'} https://en.wikipedia.org/wiki/SNOMED_CT
       %td
         = text_field(:project, :homePage, value: @project.homePage, class: 'required url',
                      tabindex: 5, required: 'true')
