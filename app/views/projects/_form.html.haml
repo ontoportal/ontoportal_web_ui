@@ -29,11 +29,14 @@
   %table.form
     %tr
       %th Name: *
-      %td.top= text_field :project, :name, value: @project.name, :class => "required", :tabindex => 1
+      %td.top
+        = text_field(:project, :name, value: @project.name, class: 'required', tabindex: 1, required: 'true')
     %tr
       - disabled = @project.id ? "disabled" : nil
       %th Acronym: *
-      %td.top= text_field :project, :acronym, value: @project.acronym, :class => "required", :tabindex => 1, disabled: disabled
+      %td.top
+        = text_field(:project, :acronym, value: @project.acronym, class: 'required', tabindex: 1,
+                     disabled: disabled, required: 'true')
     %tr
       %th Institution:
       %td= text_field :project, :institution, value: @project.institution, :tabindex => 2
@@ -50,10 +53,14 @@
         %span.default_owl
           Example:
           %a{:href => "http://en.wikipedia.org/wiki/SNOMED_CT", :target => "_blank"} http://en.wikipedia.org/wiki/SNOMED_CT
-      %td= text_field :project, :homePage, value: @project.homePage, :class => "required url", :tabindex => 5
+      %td
+        = text_field(:project, :homePage, value: @project.homePage, class: 'required url',
+                     tabindex: 5, required: 'true')
     %tr
-      %th Description:*
-      %td= text_area :project, :description, value: @project.description, :rows=>6, :class=>"required", :tabindex => 6
+      %th Description: *
+      %td
+        = text_area(:project, :description, value: @project.description, rows: 6, class: 'required',
+                    tabindex: 6, required: 'true')
   %div#ontology_picker_project{style: "padding-top: 2em;"}
     - selected_ontologies = @project.ontologyUsed && @project.ontologyUsed.map {|id| id.split('/').last } || []
     - locals = { sel_text: "Select Ontologies Used", selected_ontologies: selected_ontologies, form_object: :project, form_attribute: "ontologyUsed" }
