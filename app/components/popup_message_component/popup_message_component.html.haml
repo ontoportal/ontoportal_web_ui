@@ -1,0 +1,8 @@
+.popup-message-container
+  .popup-message-card
+    .popup-message-icon
+      %img{:src => "#{asset_path(@icon)}"}/
+    %p.popup-message-text
+      = @message
+    %a.popup-message-button{:href => "/"}
+      = @button_text
