@@ -16,8 +16,6 @@ Rails.application.routes.draw do
 
   resources :mappings
 
-  resources :margin_notes
-
   resources :concepts
 
   resources :ontologies do
