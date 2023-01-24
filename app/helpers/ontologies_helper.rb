@@ -75,6 +75,18 @@ module OntologiesHelper
     version_link + status_text
   end
 
+  def new_view_link
+    if session[:user].nil?
+      link_to(login_index_path(redirect: new_ontology_path), { 'aria-label': 'Create view', title: 'Create view' }) do
+        content_tag(:i, '', class: 'fas fa-lg fa-plus-circle', aria: { hidden: 'true' }).html_safe
+      end
+    else
+      link_to(new_ontology_path, { 'aria-label': 'Create view', title: 'Create view' }) do
+        content_tag(:i, '', class: 'fas fa-lg fa-plus-circle', aria: { hidden: 'true' }).html_safe
+      end
+    end
+  end
+
   def submission_status2string(sub)
     # Massage the submission status into a UI string
     # submission status values, from:

@@ -406,9 +406,11 @@ module ApplicationHelper
   def bp_ont_link(ont_acronym)
     return "/ontologies/#{ont_acronym}"
   end
+
   def bp_class_link(cls_id, ont_acronym)
-    return "#{bp_ont_link(ont_acronym)}?p=classes&conceptid=#{URI.escape(cls_id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+    ontology_path(id: ont_acronym, p: 'classes', conceptid: cls_id)
   end
+
   def get_link_for_cls_ajax(cls_id, ont_acronym, target=nil)
     # Note: bp_ajax_controller.ajax_process_cls will try to resolve class labels.
     # Uses 'http' as a more generic attempt to resolve class labels than .include? ont_acronym; the
