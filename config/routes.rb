@@ -1,5 +1,6 @@
-Rails.application.routes.draw do
+# frozen_string_literal: true
 
+Rails.application.routes.draw do
   root to: 'home#index'
 
   resources :notes, constraints: { id: /.+/ }
@@ -60,12 +61,12 @@ Rails.application.routes.draw do
   match '/visits', to: 'visits#index', via: :get
 
   # Error pages
-  match "/404", to: "errors#not_found", via: :all
-  match "/500", to: "errors#internal_server_error", via: :all
+  match '/404', to: 'errors#not_found', via: :all
+  match '/500', to: 'errors#internal_server_error', via: :all
 
   # Analytics
-  match 'analytics', to: 'analytics#track', via: [:post] 
-  
+  match 'analytics', to: 'analytics#track', via: [:post]
+
   # Robots.txt
   get '/robots.txt' => 'robots#index'
 
@@ -84,7 +85,7 @@ Rails.application.routes.draw do
 
   # Notes
   get 'ontologies/:ontology/notes/:noteid', to: 'notes#virtual_show', as: :note_virtual, noteid: /.+/
-  
+
   # Ajax
   get '/ajax/' => 'ajax_proxy#get', :as => :ajax
   get '/ajax_concepts/:ontology/' => 'concepts#show', :constraints => { id: /[^\/?]+/ }
@@ -107,7 +108,7 @@ Rails.application.routes.draw do
   get '/lost_pass' => 'login#lost_password'
   get '/reset_password' => 'login#reset_password'
   post '/accounts/:id/custom_ontologies' => 'users#custom_ontologies', :as => :custom_ontologies
-  get '/login_as/:login_as' => 'login#login_as' , constraints: { login_as:  /[\d\w\.\-\%\+ ]+/ }
+  get '/login_as/:login_as' => 'login#login_as', constraints: { login_as:  /[\d\w\.\-\%\+ ]+/ }
   post '/login/send_pass', to: 'login#send_pass'
 
   # Search
@@ -157,5 +158,4 @@ Rails.application.routes.draw do
   get '/visualize/:ontology' => 'ontologies#visualize', :as => :visualize, :constraints => { ontology: /[^\/?]+/ }
   get '/visualize/:ontology/:conceptid' => 'ontologies#visualize', :as => :uri, :constraints => { ontology: /[^\/?]+/, conceptid: /[^\/?]+/ }
   get '/visualize' => 'ontologies#visualize', :as => :visualize_concept, :constraints => { ontology: /[^\/?]+/, id: /[^\/?]+/, ontologyid: /[^\/?]+/, conceptid: /[^\/?]+/ }
-
 end
