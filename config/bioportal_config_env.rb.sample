@@ -105,7 +105,6 @@ ENV['MEMCACHE_SERVERS'] = 'localhost'
 
 # Custom BioPortal logging
 require 'log'
-$REMOTE_LOGGING = false
 
 # URL where BioMixer GWT app is located
 $BIOMIXER_URL = 'http://biomixer.bioontology.org'
