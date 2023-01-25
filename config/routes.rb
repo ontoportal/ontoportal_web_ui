@@ -122,19 +122,19 @@ Rails.application.routes.draw do
 
   # Admin
   get '/admin/users', to: 'admin#users'
-  match '/admin/clearcache' => 'admin#clearcache', via: [:post]
-  match '/admin/resetcache' => 'admin#resetcache', via: [:post]
-  match '/admin/clear_goo_cache' => 'admin#clear_goo_cache', via: [:post]
-  match '/admin/clear_http_cache' => 'admin#clear_http_cache', via: [:post]
-  match '/admin/ontologies_report' => 'admin#ontologies_report', via: [:get]
-  match '/admin/refresh_ontologies_report' => 'admin#refresh_ontologies_report', via: [:post]
-  match '/admin/ontologies' => 'admin#delete_ontologies', via: [:delete]
-  match '/admin/ontologies' => 'admin#process_ontologies', via: [:put]
-  match '/admin/ontologies/:acronym/submissions/:id' => 'admin#delete_submission', via: [:delete]
-  match '/admin/ontologies/:acronym/submissions' => 'admin#submissions', via: [:get]
-  match '/admin/ontologies/:acronym/log' => 'admin#parse_log', via: [:get]
-  match '/admin/update_info' => 'admin#update_info', via: [:get]
-  match '/admin/update_check_enabled' => 'admin#update_check_enabled', via: [:get]
+  post '/admin/clearcache', to: 'admin#clearcache'
+  post '/admin/resetcache', to: 'admin#resetcache'
+  post '/admin/clear_goo_cache', to: 'admin#clear_goo_cache'
+  post '/admin/clear_http_cache', to: 'admin#clear_http_cache'
+  get '/admin/ontologies_report', to: 'admin#ontologies_report'
+  post '/admin/refresh_ontologies_report', to: 'admin#refresh_ontologies_report'
+  delete '/admin/ontologies', to: 'admin#delete_ontologies'
+  put '/admin/ontologies', to: 'admin#process_ontologies'
+  delete '/admin/ontologies/:acronym/submissions/:id', to: 'admin#delete_submission'
+  get '/admin/ontologies/:acronym/submissions', to: 'admin#submissions'
+  get '/admin/ontologies/:acronym/log', to: 'admin#parse_log'
+  get '/admin/update_info', to: 'admin#update_info'
+  get '/admin/update_check_enabled', to: 'admin#update_check_enabled'
 
   # Ontolobridge
   # post '/ontolobridge/:save_new_term_instructions' => 'ontolobridge#save_new_term_instructions'
