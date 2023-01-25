@@ -14,7 +14,11 @@ Rails.application.routes.draw do
 
   resources :reviews
 
-  resources :mappings
+  resources :mappings do
+    member do
+      get 'count'
+    end
+  end
 
   resources :concepts
 
@@ -106,6 +110,10 @@ Rails.application.routes.draw do
   get '/login_as/:login_as' => 'login#login_as' , constraints: { login_as:  /[\d\w\.\-\%\+ ]+/ }
   post '/login/send_pass', to: 'login#send_pass'
 
+  # Search
+  get 'search', to: 'search#index'
+  get 'search/json_search(/:id)', to: 'search#json_search'
+
   # History
   get '/tab/remove/:ontology' => 'history#remove', :as => :remove_tab
   get '/tab/update/:ontology/:concept' => 'history#update', :as => :update_tab
@@ -113,6 +121,7 @@ Rails.application.routes.draw do
   get 'jambalaya/:ontology/:id' => 'visual#jam', :as => :jam
 
   # Admin
+  get '/admin/users', to: 'admin#users'
   match '/admin/clearcache' => 'admin#clearcache', via: [:post]
   match '/admin/resetcache' => 'admin#resetcache', via: [:post]
   match '/admin/clear_goo_cache' => 'admin#clear_goo_cache', via: [:post]
@@ -127,14 +136,8 @@ Rails.application.routes.draw do
   match '/admin/update_info' => 'admin#update_info', via: [:get]
   match '/admin/update_check_enabled' => 'admin#update_check_enabled', via: [:get]
 
-
   # Ontolobridge
   # post '/ontolobridge/:save_new_term_instructions' => 'ontolobridge#save_new_term_instructions'
-
-  ###########################################################################################################
-  # Install the default route as the lowest priority.
-  get '/:controller(/:action(/:id))'
-  ###########################################################################################################
 
   #####
   ## OLD ROUTES

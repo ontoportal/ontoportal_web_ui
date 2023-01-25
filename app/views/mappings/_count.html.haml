@@ -12,5 +12,8 @@
       - for mapping_count in @mapping_counts
         %tr
           %td
-            %a.facebox{href: "/mappings/show/#{@ontology.acronym}?target=#{mapping_count[:target_ontology].id}&height=600&width=800"}= mapping_count[:target_ontology].name
-          %td= number_with_delimiter(mapping_count[:count], delimiter: ',')
+            = link_to(mapping_count[:target_ontology][:name],
+                      mapping_path(id: @ontology.acronym, target: mapping_count[:target_ontology][:id]),
+                      class: 'facebox')
+          %td
+            = number_with_delimiter(mapping_count[:count], delimiter: ',')
