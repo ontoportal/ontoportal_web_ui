@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -40,8 +42,8 @@ gem 'net-http'
 
 gem 'oj'
 gem 'open_uri_redirections'
-gem 'psych', '< 4'
 gem 'pry'
+gem 'psych', '< 4'
 gem 'rack-mini-profiler'
 gem 'rails_autolink'
 gem 'rdoc'
@@ -62,7 +64,7 @@ group :staging, :production do
 end
 
 group :development do
-   # Capistrano Deployment
+  # Capistrano Deployment
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0', require: false # https://github.com/miloserdow/capistrano-deploy/issues/42
   gem 'capistrano', '~> 3.11', require: false
   gem 'capistrano-bundler', require: false
