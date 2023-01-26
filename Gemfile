@@ -46,7 +46,7 @@ gem 'stackprof', require: false
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
 
-gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.2.0'
+gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.2.1'
 
 group :staging, :production do
   # application monitoring

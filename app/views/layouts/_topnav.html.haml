@@ -8,7 +8,7 @@
       %li.nav-item
         = link_to("Ontologies", ontologies_path, class: "nav-link")
       %li.nav-item
-        = link_to("Search", "/search", class: "nav-link")
+        = link_to("Search", search_path, class: "nav-link")
       %li.nav-item
         = link_to("Annotator", annotator_index_path, class: "nav-link")
       %li.nav-item
@@ -41,7 +41,7 @@
         = link_to("#", id: "supportMenuDropdownLink", class: "nav-link dropdown-toggle", role: "button", data: {toggle: "dropdown"}, aria: {haspopup: "true", expanded: "false"}) do
           Support
         %div.dropdown-menu.dropdown-menu-right{aria: {labelledby: "supportMenuDropdownLink"}}
-          = link_to("Submit Feedback", feedback_path(location: encode_param(request.url)), id: "submitFeedbackMenuItem", class: "dropdown-item pop_window")
+          = link_to("Submit Feedback", feedback_path, id: "submitFeedbackMenuItem", class: "dropdown-item pop_window")
           %div.dropdown-divider
           %h6.dropdown-header Documentation
           = link_to("Help", Rails.configuration.settings.links[:help], target: "_blank", class: "dropdown-item")

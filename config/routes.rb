@@ -1,5 +1,6 @@
-Rails.application.routes.draw do
+# frozen_string_literal: true
 
+Rails.application.routes.draw do
   root to: 'home#index'
 
   resources :notes, constraints: { id: /.+/ }
@@ -14,9 +15,11 @@ Rails.application.routes.draw do
 
   resources :reviews
 
-  resources :mappings
-
-  resources :margin_notes
+  resources :mappings do
+    member do
+      get 'count'
+    end
+  end
 
   resources :concepts
 
@@ -58,12 +61,12 @@ Rails.application.routes.draw do
   match '/visits', to: 'visits#index', via: :get
 
   # Error pages
-  match "/404", to: "errors#not_found", via: :all
-  match "/500", to: "errors#internal_server_error", via: :all
+  match '/404', to: 'errors#not_found', via: :all
+  match '/500', to: 'errors#internal_server_error', via: :all
 
   # Analytics
-  match 'analytics', to: 'analytics#track', via: [:post] 
-  
+  match 'analytics', to: 'analytics#track', via: [:post]
+
   # Robots.txt
   get '/robots.txt' => 'robots#index'
 
@@ -82,7 +85,7 @@ Rails.application.routes.draw do
 
   # Notes
   get 'ontologies/:ontology/notes/:noteid', to: 'notes#virtual_show', as: :note_virtual, noteid: /.+/
-  
+
   # Ajax
   get '/ajax/' => 'ajax_proxy#get', :as => :ajax
   get '/ajax_concepts/:ontology/' => 'concepts#show', :constraints => { id: /[^\/?]+/ }
@@ -105,8 +108,12 @@ Rails.application.routes.draw do
   get '/lost_pass' => 'login#lost_password'
   get '/reset_password' => 'login#reset_password'
   post '/accounts/:id/custom_ontologies' => 'users#custom_ontologies', :as => :custom_ontologies
-  get '/login_as/:login_as' => 'login#login_as' , constraints: { login_as:  /[\d\w\.\-\%\+ ]+/ }
+  get '/login_as/:login_as' => 'login#login_as', constraints: { login_as:  /[\d\w\.\-\%\+ ]+/ }
   post '/login/send_pass', to: 'login#send_pass'
+
+  # Search
+  get 'search', to: 'search#index'
+  get 'search/json_search(/:id)', to: 'search#json_search'
 
   # History
   get '/tab/remove/:ontology' => 'history#remove', :as => :remove_tab
@@ -115,28 +122,23 @@ Rails.application.routes.draw do
   get 'jambalaya/:ontology/:id' => 'visual#jam', :as => :jam
 
   # Admin
-  match '/admin/clearcache' => 'admin#clearcache', via: [:post]
-  match '/admin/resetcache' => 'admin#resetcache', via: [:post]
-  match '/admin/clear_goo_cache' => 'admin#clear_goo_cache', via: [:post]
-  match '/admin/clear_http_cache' => 'admin#clear_http_cache', via: [:post]
-  match '/admin/ontologies_report' => 'admin#ontologies_report', via: [:get]
-  match '/admin/refresh_ontologies_report' => 'admin#refresh_ontologies_report', via: [:post]
-  match '/admin/ontologies' => 'admin#delete_ontologies', via: [:delete]
-  match '/admin/ontologies' => 'admin#process_ontologies', via: [:put]
-  match '/admin/ontologies/:acronym/submissions/:id' => 'admin#delete_submission', via: [:delete]
-  match '/admin/ontologies/:acronym/submissions' => 'admin#submissions', via: [:get]
-  match '/admin/ontologies/:acronym/log' => 'admin#parse_log', via: [:get]
-  match '/admin/update_info' => 'admin#update_info', via: [:get]
-  match '/admin/update_check_enabled' => 'admin#update_check_enabled', via: [:get]
-
+  get '/admin/users', to: 'admin#users'
+  post '/admin/clearcache', to: 'admin#clearcache'
+  post '/admin/resetcache', to: 'admin#resetcache'
+  post '/admin/clear_goo_cache', to: 'admin#clear_goo_cache'
+  post '/admin/clear_http_cache', to: 'admin#clear_http_cache'
+  get '/admin/ontologies_report', to: 'admin#ontologies_report'
+  post '/admin/refresh_ontologies_report', to: 'admin#refresh_ontologies_report'
+  delete '/admin/ontologies', to: 'admin#delete_ontologies'
+  put '/admin/ontologies', to: 'admin#process_ontologies'
+  delete '/admin/ontologies/:acronym/submissions/:id', to: 'admin#delete_submission'
+  get '/admin/ontologies/:acronym/submissions', to: 'admin#submissions'
+  get '/admin/ontologies/:acronym/log', to: 'admin#parse_log'
+  get '/admin/update_info', to: 'admin#update_info'
+  get '/admin/update_check_enabled', to: 'admin#update_check_enabled'
 
   # Ontolobridge
   # post '/ontolobridge/:save_new_term_instructions' => 'ontolobridge#save_new_term_instructions'
-
-  ###########################################################################################################
-  # Install the default route as the lowest priority.
-  get '/:controller(/:action(/:id))'
-  ###########################################################################################################
 
   #####
   ## OLD ROUTES
@@ -156,7 +158,4 @@ Rails.application.routes.draw do
   get '/visualize/:ontology' => 'ontologies#visualize', :as => :visualize, :constraints => { ontology: /[^\/?]+/ }
   get '/visualize/:ontology/:conceptid' => 'ontologies#visualize', :as => :uri, :constraints => { ontology: /[^\/?]+/, conceptid: /[^\/?]+/ }
   get '/visualize' => 'ontologies#visualize', :as => :visualize_concept, :constraints => { ontology: /[^\/?]+/, id: /[^\/?]+/, ontologyid: /[^\/?]+/, conceptid: /[^\/?]+/ }
-
-  get '/exhibit/:ontology/:id' => 'concepts#exhibit'
-
 end

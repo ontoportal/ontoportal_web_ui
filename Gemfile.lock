@@ -1,10 +1,11 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: ca18863efae65813db46adfce632cc73e325a9a8
-  tag: v2.2.0
+  revision: 20e49180fb49b2c52e3694f920aa98f753f1942e
+  tag: v2.2.1
   specs:
-    ontologies_api_client (2.2.0)
+    ontologies_api_client (2.2.1)
       activesupport (= 6.1.5.1)
+      addressable (~> 2.8)
       excon
       faraday
       faraday-excon (~> 2.0.0)
@@ -131,7 +132,7 @@ GEM
     erubi (1.11.0)
     erubis (2.7.0)
     eventmachine (1.2.7)
-    excon (0.95.0)
+    excon (0.97.1)
     execjs (2.8.1)
     faraday (2.0.1)
       faraday-net_http (~> 2.0)
@@ -144,7 +145,7 @@ GEM
     faraday-net_http (2.1.0)
     ffi (1.15.5)
     flamegraph (0.9.5)
-    globalid (1.0.0)
+    globalid (1.0.1)
       activesupport (>= 5.0)
     graphql (2.0.15)
     graphql-client (0.18.0)
@@ -190,7 +191,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2022.0105)
     mini_mime (1.1.2)
-    minitest (5.16.3)
+    minitest (5.17.0)
     multi_json (1.15.0)
     multipart-post (2.2.3)
     mysql2 (0.5.2)
@@ -225,7 +226,7 @@ GEM
     psych (3.3.4)
     public_suffix (5.0.1)
     racc (1.6.1)
-    rack (2.2.4)
+    rack (2.2.6.2)
     rack-mini-profiler (3.0.0)
       rack (>= 1.2.0)
     rack-test (2.0.2)

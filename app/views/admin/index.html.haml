@@ -22,7 +22,7 @@
       %li.nav-item
         =link_to("Licensing", "#licensing", id: "licensing-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab", href: admin_licenses_path() }, aria: { controls: "licensing", selected: "false" })
       %li.nav-item
-        =link_to("Users", "#users", id: "users-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab", href: users_path() }, aria: { controls: "users", selected: "false" })
+        =link_to("Users", "#users", id: "users-admin-tab", class: "nav-link", role: "tab", data: { toggle: "tab" }, aria: { controls: "users", selected: "false" })
     %div#adminTabContent.tab-content
 
       -# Site Administration tab
