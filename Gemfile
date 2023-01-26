@@ -33,6 +33,11 @@ gem 'i18n'
 gem 'iconv'
 gem 'multi_json'
 gem 'mysql2', '0.5.2'
+
+# We might be able to remove this dependency after moving to Ruby 3.
+# https://github.com/ruby/net-imap/issues/16#issuecomment-803086765
+gem 'net-http'
+
 gem 'oj'
 gem 'open_uri_redirections'
 gem 'psych', '< 4'
