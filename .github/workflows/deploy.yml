@@ -52,7 +52,9 @@ jobs:
 
         USER_INPUT_ENVIRONMENT=${{ inputs.environment }}
         echo "TARGET=${USER_INPUT_ENVIRONMENT:-staging}" >> $GITHUB_ENV
-        echo  "====>> deploying $BRANCH branch/tag to $TARGET environment"
+    - name: provide info on deployment branch/target
+      run: |     
+       echo  "deploying ${BRANCH} branch/tag to ${TARGET} environment"
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
