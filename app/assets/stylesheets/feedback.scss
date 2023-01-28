@@ -29,7 +29,7 @@
     margin: auto;
     margin-bottom: 17px;
     margin-top: 3px;
-    border: 0.5px solid #76A7CC;
+    border: 0.5px solid var(--primary-color);
     border-radius: 5px;
 }
 .feedback-input-title{
@@ -54,7 +54,7 @@
     resize: none;
 }
 .feedback-input:focus{
-    border: 1px solid #76A7CC;
+    border: 1px solid var(--primary-color);
 }
 .feedback-button{
     margin-top: 10px;
@@ -62,12 +62,12 @@
    font-size: 16px;
    color: white;
    padding: 17px;
-   background-color: #76A7CC;
+   background-color: var(--primary-color);
    border: none;
    border-radius: 9px;
 }
 .feedback-button:hover{
-    background-color: #6B96B7;
+    background-color: var(--hover-color);
     cursor: pointer;
 }
 .feedback-check-icon{
@@ -104,8 +104,8 @@
 
 }
 .feedback-checks div label input[type="checkbox"]:checked ~ span{
-    border: 1px solid #76A7CC;
-    color: #76A7CC;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
 }
 
 .feedback-checks div label input[type="checkbox"]:checked ~ span .feedback-check-icon{
