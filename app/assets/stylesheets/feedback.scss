@@ -1,9 +1,3 @@
-
-.feedback-page-container{
-    display: flex;
-    justify-content: center;
-    padding: 30px;
-}
 .feedback-email{
     font-size: 12px;
     color: #666666;
@@ -25,7 +19,6 @@
     font-weight: 600;
     color: black;
 }
-
 .feedback-title{
     font-size: 18px;
     text-align: center;
@@ -39,8 +32,6 @@
     border: 0.5px solid #76A7CC;
     border-radius: 5px;
 }
-
-
 .feedback-input-title{
     font-size: 12px;
     color: #666666;
@@ -65,8 +56,6 @@
 .feedback-input:focus{
     border: 1px solid #76A7CC;
 }
-
-
 .feedback-button{
     margin-top: 10px;
    width: 363px;
@@ -76,15 +65,11 @@
    background-color: #76A7CC;
    border: none;
    border-radius: 9px;
-
 }
-
 .feedback-button:hover{
     background-color: #6B96B7;
     cursor: pointer;
 }
-
-
 .feedback-check-icon{
     margin-left: 6px;
     margin-right: 6px;
