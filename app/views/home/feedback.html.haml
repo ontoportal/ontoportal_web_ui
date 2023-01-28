@@ -1,7 +1,10 @@
+- if params[:pop].eql?("true")
+  - pop = true
 = form_tag('/feedback') do
   -# Simulate form_for by providing a hidden field to check for submission
   = hidden_field_tag 'sim_submit', 'true'
-  .feedback-page-container
+  = hidden_field_tag("pop", pop)
+  .d-flex.justify-content-center.m-3
     .feedback-form
       .feedback-title-container
         %h2.feedback-title
@@ -42,25 +45,25 @@
       .feedback-checks
         %div
           %label{:for => "feedback-bug-check"}
-            %input#feedback-bug-check{:type => "checkbox"}/
+            %input#feedback-bug-check{:name => "bug", :type => "checkbox", :value => "Bug"}/
             %span
               %img.feedback-check-icon{:src => "#{asset_path('check.svg')}"}/
               Bug
         %div
           %label{:for => "feedback-proposition-check"}
-            %input#feedback-proposition-check{:type => "checkbox"}/
+            %input#feedback-proposition-check{:name => "proposition", :type => "checkbox", :value => "Proposition"}/
             %span
               %img.feedback-check-icon{:src => "#{asset_path('check.svg')}"}/
               Proposition
         %div
           %label{:for => "feedback-question-check"}
-            %input#feedback-question-check{:type => "checkbox"}/
+            %input#feedback-question-check{:name => "question", :type => "checkbox", :value => "Question"}/
             %span
               %img.feedback-check-icon{:src => "#{asset_path('check.svg')}"}/
               Question
         %div
           %label{:for => "feedback-ontologysubmissionrequest-check"}
-            %input#feedback-ontologysubmissionrequest-check{:type => "checkbox"}/
+            %input#feedback-ontologysubmissionrequest-check{:name => "ontology-submissions-request", :type => "checkbox", :value => "Ontology submissions request"}/
             %span
               %img.feedback-check-icon{:src => "#{asset_path('check.svg')}"}/
               Ontology submissions request
