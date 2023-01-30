@@ -1,0 +1,13 @@
+.d-flex.justify-content-center.m-4
+  .card-message-card
+    .d-flex.justify-content-center.mb-4
+      %img{:src => "#{asset_path(@icon)}"}/
+    %p.card-message-text
+      = @message
+    - case @type
+    - when "success"
+      %a.card-message-button.card-message-button-success{:href => "/"}
+        = @button_text
+    - when "failure"
+      %a.card-message-button.card-message-button-failure{:href => "/"}
+        = @button_text
