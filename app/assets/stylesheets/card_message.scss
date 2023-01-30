@@ -4,6 +4,12 @@
     box-shadow: rgba(0, 0, 0, 0.05) 0px 20px 50px;
     border-radius: 14px;
 }
+.card-message-title{
+    font-size: 19px;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
 .card-message-text{
     text-align: center;
     width: 310px;
@@ -27,4 +33,8 @@
 .card-message-button-failure{
     color: #EE404C !important;
     border: 1px solid #EE404C;
+}
+.card-message-has-title{
+    color: #666666;
+    font-weight: 400;
 }
