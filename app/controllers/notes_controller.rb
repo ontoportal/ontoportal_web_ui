@@ -1,5 +1,5 @@
 class NotesController < ApplicationController
-
+  include TurboHelper
   layout 'ontology'
 
   def show
@@ -12,10 +12,12 @@ class NotesController < ApplicationController
       render :partial => 'thread'
       return
     end
+  end
 
-    respond_to do |format|
-      format.html { render :template => 'notes/show' }
-    end
+  def new_comment
+    render partial: 'new_comment', locals: { parent_id: params[:parent_id], type: params[:parent_type],
+                                             user_id: session[:user].id, ontology_id: params[:ontology_id] }
+  end
   end
 
   def virtual_show
