@@ -119,24 +119,28 @@ class NotesController < ApplicationController
   end
 
   def destroy
-    note_ids = params[:noteids].kind_of?(String) ? params[:noteids].split(",") : params[:noteids]
+    note_id = params[:noteid]
+    note = LinkedData::Client::Models::Note.get(note_id)
+    response = {}
+    if note
+      note.delete
 
-    ontology = DataAccess.getOntology(params[:ontologyid])
-
-    errors = []
-    successes = []
-    note_ids.each do |note_id|
-      begin
-        result = DataAccess.deleteNote(note_id, ontology.ontologyId, params[:concept_id])
-        raise Exception if !result.nil? && result["errorCode"]
-      rescue Exception => e
-        errors << note_id
-        next
+      if note.errors
+        response[:errors] = note.errors
+      else
+        response[:success] = "Note #{note_id}  was deleted successfully"
       end
-      successes << note_id
+    else
+      response[:errors] = "Note #{note_id}  was not found in the system"
+    end
+    parent_type = params[:parent_type]
+    alerts_container_id = "notes_#{parent_type}_list_table_alerts"
+    if response[:errors]
+      render_turbo_stream alert_error(id: alerts_container_id) { response[:errors].join(',').to_s }
+    else
+      render_turbo_stream(alert_success(id: alerts_container_id) { response[:success] }, remove("#{note_id}_tr_#{parent_type}"))
     end
 
-    render :json => { :success => successes, :error => errors }
   end
 
   def archive
