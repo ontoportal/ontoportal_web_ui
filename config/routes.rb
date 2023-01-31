@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   root to: 'home#index'
 
   get '/notes/new_comment', to: 'notes#new_comment'
+  get '/notes/new_proposal', to: 'notes#new_proposal'
   resources :notes, constraints: { id: /.+/ }
 
   resources :ontolobridge do

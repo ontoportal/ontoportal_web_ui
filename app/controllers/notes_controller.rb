@@ -1,6 +1,11 @@
 class NotesController < ApplicationController
   include TurboHelper
   layout 'ontology'
+  NOTES_PROPOSAL_TYPES = {
+    ProposalNewClass: "New Class Proposal",
+    ProposalChangeHierarchy: "New Relationship Proposal",
+    ProposalChangeProperty: "Change Property Value Proposal"
+  }
 
   def show
     id = clean_note_id(params[:id])
@@ -18,6 +23,12 @@ class NotesController < ApplicationController
     render partial: 'new_comment', locals: { parent_id: params[:parent_id], type: params[:parent_type],
                                              user_id: session[:user].id, ontology_id: params[:ontology_id] }
   end
+
+  def new_proposal
+    types = NOTES_PROPOSAL_TYPES.map { |x, y| [y, x.to_s] }
+    render partial: 'new_proposal', locals: { parent_id: params[:parent_id], type: params[:proposal_type],
+                                              parent_type: params[:parent_type], user_id: session[:user].id,
+                                              ontology_id: params[:ontology_id], types: types }
   end
 
   def virtual_show
