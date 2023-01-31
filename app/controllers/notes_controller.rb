@@ -71,26 +71,50 @@ class NotesController < ApplicationController
   def create
     if params[:type].eql?("reply")
       note = LinkedData::Client::Models::Reply.new(values: note_params)
-    elsif params[:type].eql?("ontology")
-      params[:relatedOntology] = [params.delete(:parent)]
-      note = LinkedData::Client::Models::Note.new(values: note_params)
-    elsif params[:type].eql?("class")
-      params[:relatedClass] = [params.delete(:parent)]
-      params[:relatedOntology] = params[:relatedClass].map {|c| c["ontology"]}
-      note = LinkedData::Client::Models::Note.new(values: note_params)
+      new_note = note.save
+      success_message = ''
+      locals =  { note: new_note, parent_id: params[:parent]}
+      partial = 'notes/reply/reply'
+      container_id = "#{params[:parent]}_thread_replay_container"
+      alerts_container_id = "#{params[:parent]}_reply"
     else
+      if params[:proposal]
+        cast_to_list = [:synonym, :definition, :newRelationshipType]
+        cast_to_list.each do |property|
+          params[:proposal][property] = params[:proposal][property].split(',') if params[:proposal][property]
+        end
+        params[:subject] = "#{NOTES_PROPOSAL_TYPES[params[:proposal][:type].to_sym]}: #{params[:proposal][:reasonForChange]}"
+      end
+
+      if params[:type].eql?("ontology")
+        params[:relatedOntology] = [params.delete(:parent)]
+
+      elsif params[:type].eql?("class")
+        related_class = params.delete(:parent)
+        ontology_id = params.delete(:ontology_id)
+        params[:relatedClass] = [{ ontology: ontology_id, class: related_class }]
+        params[:relatedOntology] = [ontology_id]
+      end
+
       note = LinkedData::Client::Models::Note.new(values: note_params)
+      new_note = note.save
+      parent_type = params[:type].eql?("ontology") ? 'ontology' : 'class'
+      ontology_acronym = new_note.relatedOntology.first.split('/').last
+      success_message = 'New comment added successfully'
+      locals =  { note: new_note, ontology_acronym: ontology_acronym, parent_type: parent_type }
+      partial = 'notes/note_line'
+      container_id = "#{parent_type}_notes_table_content"
+      alerts_container_id = nil
     end
 
-    new_note = note.save
 
     if new_note.errors
-      render :json => new_note.errors, :status => 500
-      return
-    end
+      render_turbo_stream alert_error(id: alerts_container_id) { response_errors(new_note).to_s }
+    else
+      streams = [prepend(container_id, partial: partial, locals: locals)]
+      streams.unshift(alert_success { success_message }) unless params[:type].eql?("reply")
 
-    unless new_note.nil?
-      render :json => new_note.to_hash.to_json
+      render_turbo_stream *streams
     end
   end
 
