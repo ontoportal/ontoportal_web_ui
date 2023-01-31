@@ -46,10 +46,8 @@ class NotesController < ApplicationController
       return
     end
 
-    respond_to do |format|
-      format.html { render :show }
+    render 'notes/show'
     end
-  end
 
   def create
     if params[:type].eql?("reply")
