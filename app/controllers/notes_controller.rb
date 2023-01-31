@@ -65,7 +65,7 @@ class NotesController < ApplicationController
       return
     end
 
-    render 'notes/show'
+    render 'notes/show', layout: false
     end
 
   def create
