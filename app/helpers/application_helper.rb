@@ -363,34 +363,7 @@ module ApplicationHelper
     output = "<span class='more_less_container'><span class='truncated_more'>#{truncate(text, :length => length, :omission => trailing_text)}" + more + "</span>"
   end
 
-  def subscribe_ontology_button(ontology_id, user = nil)
-    user = session[:user] if user.nil?
-    if user.nil?
-      # subscribe button must redirect to login
-      return sanitize("<a href='/login?redirect=#{request.url}' style='font-size: .9em;' class='subscribe_to_ontology'>Subscribe</a>")
-    end
-    # Init subscribe button parameters.
-    sub_text = "Subscribe"
-    params = "data-bp_ontology_id='#{ontology_id}' data-bp_is_subbed='false' data-bp_user_id='#{user.id}'"
-    begin
-      # Try to create an intelligent subscribe button.
-      if ontology_id.start_with? 'http'
-        ont = LinkedData::Client::Models::Ontology.find(ontology_id)
-      else
-        ont = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_id).first
-      end
-      subscribed = subscribed_to_ontology?(ont.acronym, user)  # application_helper
-      sub_text = subscribed ? "Unsubscribe" : "Subscribe"
-      params = "data-bp_ontology_id='#{ont.acronym}' data-bp_is_subbed='#{subscribed}' data-bp_user_id='#{user.id}'"
-    rescue
-      # pass, fallback init done above begin block to scope parameters beyond the begin/rescue block
-    end
-    # TODO: modify/copy CSS for notes_sub_error => subscribe_error
-    # TODO: modify/copy CSS for subscribe_to_notes => subscribe_to_ontology
-    spinner = '<span class="subscribe_spinner" style="display: none;">' + image_tag("spinners/spinner_000000_16px.gif", style: "vertical-align: text-bottom;") + '</span>'
-    error = "<span style='color: red;' class='subscribe_error'></span>"
-    return "<a href='javascript:void(0);' class='subscribe_to_ontology btn btn-primary' #{params}>#{sub_text}</a> #{spinner} #{error}"
-  end
+ 
   def subscribe_button(ontology_id)
     if session[:user].nil?
       return link_to 'Subscribe to notes emails', "/login?redirect=#{request.url}", {style:'font-size: .9em;', class:'link_button'}
