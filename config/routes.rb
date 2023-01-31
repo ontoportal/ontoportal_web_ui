@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   get '/notes/new_comment', to: 'notes#new_comment'
   get '/notes/new_proposal', to: 'notes#new_proposal'
+  get '/notes/new_reply', to: 'notes#new_reply'
   resources :notes, constraints: { id: /.+/ }
 
   resources :ontolobridge do

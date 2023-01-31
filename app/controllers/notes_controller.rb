@@ -31,6 +31,12 @@ class NotesController < ApplicationController
                                               ontology_id: params[:ontology_id], types: types }
   end
 
+  def new_reply
+    render 'notes/reply/new', locals: { frame_id: "#{params[:parent_id]}_new_reply",
+                                           parent_id: params[:parent_id], type: 'reply',
+                                           user_id: session[:user].id }
+  end
+
   def virtual_show
     note_id = params[:noteid]
     concept_id = params[:conceptid]
