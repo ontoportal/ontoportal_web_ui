@@ -118,6 +118,7 @@ Rails.application.routes.draw do
 
   # Notes
   get 'ontologies/:ontology/notes/:noteid', to: 'notes#virtual_show', as: :note_virtual, noteid: /.+/
+  get 'ontologies/:ontology/notes', to: 'notes#virtual_show'
 
   # Ajax
   get '/ajax/' => 'ajax_proxy#get', :as => :ajax
