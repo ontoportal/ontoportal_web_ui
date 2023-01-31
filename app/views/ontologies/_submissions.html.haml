@@ -1,21 +1,5 @@
 - return "" if @ontology.metadata_only?
 
-:javascript
-  jQuery("#version_toggle").click(function(event){
-    event.preventDefault();
-    jQuery("#ontology_versions tr.hidden_select").toggleClass("hidden_ont");
-  });
-
-  jQuery("#version_toggle").toggle(
-    function() {
-      jQuery(this).text("less...");
-    },
-    function() {
-      jQuery(this).text("more...");
-    }
-  );
-
-
 
 - more_colspan = 7
 - more_colspan = 6 if @ont_restricted
