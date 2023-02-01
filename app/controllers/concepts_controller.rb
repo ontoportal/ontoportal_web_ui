@@ -1,5 +1,3 @@
-require 'cgi'
-
 class ConceptsController < ApplicationController
   include MappingsHelper
 
