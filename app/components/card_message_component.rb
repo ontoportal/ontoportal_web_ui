@@ -1,16 +1,26 @@
 class CardMessageComponent < ViewComponent::Base
-    def initialize(title: ,message:, button_text:, type:)
-        #if title == "no-title" then the component has no title
-        #if button_text == "no-button" then the component has no button
+    def initialize(title: nil ,message:, button_text: nil, type:)
         @title = title
         @message = message
         @button_text = button_text
         @type = type
-        case type
+
+    end
+
+    def no_title?
+        @title.nil?
+    end
+
+    def no_button?
+        @button_text.nil?
+    end
+
+    def icon
+        case @type
         when "success"
-            @icon = "green-check.svg"
+            "green-check.svg"
         when "failure"
-            @icon = "red-warning.svg"
+            "red-warning.svg"
         end
     end
 end
