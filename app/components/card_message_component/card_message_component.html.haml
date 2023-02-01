@@ -1,16 +1,16 @@
 .d-flex.justify-content-center.m-4
   .card-message-card
     .d-flex.justify-content-center.mb-4
-      %img{:src => "#{asset_path(@icon)}"}/
-    - if not @title=="no-title"
+      %img{:src => "#{asset_path(icon)}"}/
+    - if no_title?
+      %p.card-message-text
+        = @message
+    - else
       %h2.card-message-title
         = @title
       %p.card-message-text.card-message-has-title
         = @message
-    - else
-      %p.card-message-text
-        = @message
-    - if not @button_text=="no-button"
+    - unless no_button?
       - case @type
       - when "success"
         %a.card-message-button.card-message-button-success{:href => "/"}
