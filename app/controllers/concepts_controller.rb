@@ -24,15 +24,7 @@ class ConceptsController < ApplicationController
       not_found if @concept.nil?
       show_ajax_request # process an ajax call
     else
-      # Get the latest 'ready' submission, or fallback to any latest submission
-      # TODO: change the logic here if the fallback will crash the visualization
-      @submission = get_ontology_submission_ready(@ontology)  # application_controller
-
-      @concept = @ontology.explore.single_class({full: true}, params[:id])
-      not_found if @concept.nil?
-
-      show_uri_request # process a full call
-      render :file => '/ontologies/visualize', :use_full_path => true, :layout => 'ontology'
+      render plain: 'Non-AJAX requests are not accepted at this URL', status: :forbidden
     end
   end
 
@@ -151,25 +143,10 @@ private
     end
   end
 
-  # gathers the full set of data for a node
-  def show_uri_request
-    gather_details
-    build_tree
-  end
-
   def gather_details
     @mappings = get_concept_mappings(@concept)
     @notes = @concept.explore.notes
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
   end
-
-  def build_tree
-    # find path to root
-    rootNode = @concept.explore.tree(include: "prefLabel,hasChildren,obsolete,subClassOf")
-    @root = LinkedData::Client::Models::Class.new(read_only: true)
-    @root.children = rootNode unless rootNode.nil?
-  end
-
-
 end
