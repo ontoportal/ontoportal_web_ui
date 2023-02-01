@@ -363,6 +363,7 @@ module ApplicationHelper
     output = "<span class='more_less_container'><span class='truncated_more'>#{truncate(text, :length => length, :omission => trailing_text)}" + more + "</span>"
   end
 
+
   def add_comment_button(parent_id, parent_type)
     if session[:user].nil?
       link_to "Add comment",  login_index_path(redirect: request.url), class: "link_button"
@@ -388,6 +389,18 @@ module ApplicationHelper
       link_to_modal "Add proposal", notes_new_proposal_path(parent_id: parent_id, parent_type: parent_type, ontology_id: @ontology.acronym),
                     class: "add_proposal btn btn-primary", data: { show_modal_title_value: "Add a new proposal"}
     end
+  end
+ 
+  def subscribe_button(ontology_id)
+    if session[:user].nil?
+      return link_to 'Subscribe to notes emails', "/login?redirect=#{request.url}", {style:'font-size: .9em;', class:'link_button'}
+    end
+
+    user = LinkedData::Client::Models::User.find(session[:user].id)
+    ontology_acronym = ontology_id.split('/').last
+    subscribed = subscribed_to_ontology?(ontology_acronym, user)
+
+    render OntologySubscribeButtonComponent.new(ontology_id: ontology_id, subscribed: subscribed, user_id: user.id)
   end
 
   def subscribed_to_ontology?(ontology_acronym, user)
