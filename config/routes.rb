@@ -2,6 +2,10 @@ Rails.application.routes.draw do
 
   root to: 'home#index'
 
+  get '/notes/new_comment', to: 'notes#new_comment'
+  get '/notes/new_proposal', to: 'notes#new_proposal'
+  get '/notes/new_reply', to: 'notes#new_reply'
+  delete '/notes', to: 'notes#destroy'
   resources :notes, constraints: { id: /.+/ }
 
   resources :ontolobridge do
@@ -114,6 +118,7 @@ Rails.application.routes.draw do
 
   # Notes
   get 'ontologies/:ontology/notes/:noteid', to: 'notes#virtual_show', as: :note_virtual, noteid: /.+/
+  get 'ontologies/:ontology/notes', to: 'notes#virtual_show'
 
   # Ajax
   get '/ajax/' => 'ajax_proxy#get', :as => :ajax

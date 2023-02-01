@@ -363,6 +363,33 @@ module ApplicationHelper
     output = "<span class='more_less_container'><span class='truncated_more'>#{truncate(text, :length => length, :omission => trailing_text)}" + more + "</span>"
   end
 
+
+  def add_comment_button(parent_id, parent_type)
+    if session[:user].nil?
+      link_to "Add comment",  login_index_path(redirect: request.url), class: "link_button"
+    else
+      link_to_modal "Add comment", notes_new_comment_path(parent_id: parent_id, parent_type: parent_type, ontology_id: @ontology.acronym),
+                    class: "add_comment btn btn-primary", data: { show_modal_title_value: "Add a new comment"}
+    end
+  end
+
+  def add_reply_button(parent_id)
+    if session[:user].nil?
+      link_to "Reply", login_index_path, 'data-turbo': false
+    else
+      link_to 'Reply', notes_new_reply_path(parent_id: parent_id ), "data-turbo-frame": "#{parent_id}_new_reply"
+    end
+  end
+
+
+  def add_proposal_button(parent_id, parent_type)
+    if session[:user].nil?
+        link_to "Add proposal",  login_index_path(redirect: request.url), class: "link_button"
+    else
+      link_to_modal "Add proposal", notes_new_proposal_path(parent_id: parent_id, parent_type: parent_type, ontology_id: @ontology.acronym),
+                    class: "add_proposal btn btn-primary", data: { show_modal_title_value: "Add a new proposal"}
+    end
+  end
  
   def subscribe_button(ontology_id)
     if session[:user].nil?
