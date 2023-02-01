@@ -120,17 +120,17 @@ class HomeController < ApplicationController
     end
 
     @tags = []
-    if not params[:bug].nil? || params[:bug].empty?
+    unless params[:bug].nil? || params[:bug].empty?
       @tags << "Bug"
     end
-    if not params[:proposition].nil? || params[:proposition].empty?
+    unless params[:proposition].nil? || params[:proposition].empty?
       @tags << "Proposition"
     end
-    if not params[:question].nil? || params[:question].empty?
+    unless params[:question].nil? || params[:question].empty?
       @tags << "Question"
     end
-    if not params[:bug].nil? || params[:bug].empty?
-      @tags << "ontology-submissions-request"
+    unless params[:ontology_submissions_request].nil? || params[:bug].empty?
+      @tags << "Ontology submissions request"
     end
 
     @errors = []
