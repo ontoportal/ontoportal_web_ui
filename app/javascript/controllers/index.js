@@ -43,9 +43,6 @@ application.register("simple-tree", SimpleTreeController)
 import SkosCollectionColorsController from "./skos_collection_colors_controller"
 application.register("skos-collection-colors", SkosCollectionColorsController)
 
-import SubscribeNotesController from "./subscribe_notes_controller"
-application.register("subscribe-notes", SubscribeNotesController)
-
 import TooltipController from "./tooltip_controller"
 application.register("tooltip", TooltipController)
 
