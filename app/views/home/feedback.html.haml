@@ -1,5 +1,11 @@
 - if params[:pop].eql?("true")
   - pop = true
+- unless @errors.nil?
+  %div{:style => "color:red;margin-bottom:1em;"}
+    Errors On Form
+    %ul
+      - for error in @errors
+        %li= error
 = form_tag('/feedback') do
   -# Simulate form_for by providing a hidden field to check for submission
   = hidden_field_tag 'sim_submit', 'true'
@@ -10,7 +16,7 @@
         %h2.feedback-title
           Leave your feedback
         %hr#feedback-title-line/
-      - if not session[:user].nil?
+      - unless session[:user].nil?
         %p.feedback-text
           Hi
           %font 
@@ -63,7 +69,7 @@
               Question
         %div
           %label{:for => "feedback-ontologysubmissionrequest-check"}
-            %input#feedback-ontologysubmissionrequest-check{:name => "ontology-submissions-request", :type => "checkbox", :value => "Ontology submissions request"}/
+            %input#feedback-ontologysubmissionrequest-check{:name => "ontology_submissions_request", :type => "checkbox", :value => "Ontology submissions request"}/
             %span
               %img.feedback-check-icon{:src => "#{asset_path('check.svg')}"}/
               Ontology submissions request
