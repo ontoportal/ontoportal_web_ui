@@ -35,6 +35,10 @@ module ApplicationHelper
     CGI.escape(string)
   end
 
+  def unescape(string)
+    CGI.unescape(string)
+  end
+
   def clean(string)
     string = string.gsub("\"",'\'')
     return string.gsub("\n",'')
