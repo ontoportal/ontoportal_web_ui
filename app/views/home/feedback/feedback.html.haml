@@ -40,7 +40,7 @@
       %p.feedback-input-title
         Error/Proposition page URL
         %font.register-optional (optional)
-      %input.feedback-input{:name => "location", :type => "text", :value => unescape(params[:location])}
+      %input.feedback-input{:name => "location", :type => "text", :value => unescape(params[:location] || '')}
       %p.feedback-input-title
         Feedback
         %font{:color => "red"} *
