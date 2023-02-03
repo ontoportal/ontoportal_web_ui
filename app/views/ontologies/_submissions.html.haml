@@ -1,30 +1,16 @@
 - return "" if @ontology.metadata_only?
 
-:javascript
-  jQuery("#version_toggle").click(function(event){
-    event.preventDefault();
-    jQuery("#ontology_versions tr.hidden_select").toggleClass("hidden_ont");
-  });
 
-  jQuery("#version_toggle").toggle(
-    function() {
-      jQuery(this).text("less...");
-    },
-    function() {
-      jQuery(this).text("more...");
-    }
-  );
-
-
-
-- more_colspan = 6
-- more_colspan = 5 if @ont_restricted
+- more_colspan = 7
+- more_colspan = 6 if @ont_restricted
 
 %div.click_versions_collapse
   = render_alerts_container(AdminController)
   %table#ontology_versions.table.table-sm.table-striped
     %thead
       %tr
+        - if @ontology.admin?(session[:user])
+          %th.align-middle ID
         %th.align-middle Version
         %th
           = generate_attribute_text("released", "Released")
@@ -45,6 +31,9 @@
     - @submissions.each_with_index do |sub, index|
       - hidden_row_class = index >= 5 ? "hidden_ont hidden_select" : ""
       %tr{class: "#{hidden_row_class}", id: "submission_#{sub.submissionId}"}
+        - if @ontology.admin?(session[:user])
+          %td
+            =  sub.submissionId
         %td
           = raw status_link(sub, sub.submissionId==submission_readyId)
         %td
@@ -59,7 +48,7 @@
         - if @ontology.admin?(session[:user])
           %td
             %div.d-flex
-              %a.btn.btn-sm.btn-link{:href => "#{@ontology.acronym}/submissions/#{sub.submissionId}/edit"}
+              %a.btn.btn-sm.btn-link{:href => "/ontologies/#{@ontology.acronym}/submissions/#{sub.submissionId}/edit"}
                 %span Edit
               - unless index.zero?
                 - alert_text = "Are you sure you want to delete submission <span style='color:red;font-weight:bold;'>" + sub.submissionId.to_s + "</span> for ontology <span style='color:red;font-weight:bold;'>" + @ontology.acronym + "</span>?<br/><b>This action CAN NOT be undone!!!</b>"

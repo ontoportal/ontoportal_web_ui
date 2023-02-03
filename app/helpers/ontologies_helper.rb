@@ -297,7 +297,7 @@ module OntologiesHelper
 
   # Creates a link based on the status of an ontology submission
   def status_link(submission, latest = false, target = '')
-    version_text = submission.version.nil? || submission.version.length == 0 ? 'unknown' : submission.version
+    version_text = submission.version.nil? || submission.version.to_s.length == 0 ? 'unknown' : submission.version.to_s
     status_text = " <span class='ontology_submission_status'>" + submission_status2string(submission) + '</span>'
     if submission.ontology.summaryOnly || latest == false
       version_link = version_text
@@ -390,7 +390,7 @@ module OntologiesHelper
     if current_section.eql?(section_title)
       block.call
     else
-      render TurboFrameComponent.new(id: section_title, src: "/ontologies/#{@ontology.acronym}?p=#{section_title}")
+      render TurboFrameComponent.new(id: section_title, src: "/ontologies/#{@ontology.acronym}?p=#{section_title}", target: '_top')
     end
   end
 
