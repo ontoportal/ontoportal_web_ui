@@ -89,7 +89,7 @@ class HomeController < ApplicationController
     # If sim_submit is nil, we know the form hasn't been submitted and we should
     # bypass form processing.
     if params[:sim_submit].nil?
-      render layout: feedback_layout
+      render 'home/feedback/feedback', layout: feedback_layout
       return
     end
 
@@ -125,14 +125,14 @@ class HomeController < ApplicationController
     end
 
     unless @errors.empty?
-      render layout: feedback_layout
+      render render 'home/feedback/feedback', layout: feedback_layout
       return
     end
 
-    Notifier.feedback(params[:name], params[:email], params[:comment], params[:location]).deliver_now
+    Notifier.feedback(params[:name], params[:email], params[:comment], params[:location], @tags).deliver_later
 
     if params[:pop].eql?('true')
-      render 'feedback_complete', layout: 'popup'
+      render 'home/feedback/feedback_complete', layout: 'popup'
     else
       flash[:notice] = 'Feedback has been sent'
       redirect_to_home
