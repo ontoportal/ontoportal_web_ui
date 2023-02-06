@@ -81,7 +81,7 @@
                 Last uploaded:
                 = l(Date.parse(sub.creationDate), format: :monthfull_day_year)
         %div.ont-info-links
-          - unless (@ontology.summaryOnly || @ont_restricted)
+          - unless (@ontology.summaryOnly || @ont_restricted || @submission_latest.nil?)
             = link_to(@submission_latest.id + "/download?apikey=#{get_apikey}", "aria-label": "Download latest version", title: "Download latest version") do
               %i.fas.fa-lg.fa-download{"aria-hidden": true}
           - if details_available
