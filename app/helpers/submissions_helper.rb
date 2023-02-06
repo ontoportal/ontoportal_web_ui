@@ -358,7 +358,7 @@ module SubmissionsHelper
       if input_type?(attr, "list")
         input_html << generate_select_input(attr, name, select_values, metadata_values, multiple: true)
       else
-        select_values << ["None", ""]
+        select_values << ["", ""]
         select_values << %w[Other other]
 
         metadata_values = "" if metadata_values.nil?
