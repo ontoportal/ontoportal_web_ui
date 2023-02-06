@@ -315,14 +315,11 @@ module SubmissionsHelper
     generate_list_field_input(attr, name, values, :text_field_tag)
   end
 
-  def generate_boolean_input(attr)
-    content_tag(:div, class: "custom-control custom-switch") do
+  def generate_boolean_input(attr, name)
       value = attribute_values(attr)
-      options = { :type => 'checkbox', :class => "custom-control-input", :id => "customSwitch2" }
-      options[:checked] = 'checked' if value
-      concat content_tag(:input, nil, options)
-      concat label_tag("", "", { class: 'custom-control-label', for: "customSwitch2" })
-    end
+    value = value.to_s unless value.nil?
+
+    render SwitchInputComponent.new(id: name, name:  name, label: "", checked: value.eql?('true') , value: value, boolean_switch: true)
   end
 
   def input_type?(attr, type)
@@ -383,7 +380,7 @@ module SubmissionsHelper
       end
       return input_html
     elsif input_type?(attr, "boolean")
-      input_html << generate_boolean_input(attr)
+      input_html << generate_boolean_input(attr, name)
     else
       # If input a simple text
       values = attribute_values(attr) || ['']
