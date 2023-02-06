@@ -360,6 +360,10 @@ class ApplicationController < ActionController::Base
     session[:user] && session[:user].admin?
   end
 
+  def ontology_restricted?(acronym)
+    restrict_downloads = $NOT_DOWNLOADABLE
+    restrict_downloads.include? acronym
+  end
   # updates the 'history' tab with the current selected concept
   def update_tab(ontology, concept)
     array = session[:ontologies] || []

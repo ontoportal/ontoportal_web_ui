@@ -345,8 +345,7 @@ display_links: false, display_context: false)
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: '')
 
     # Is the ontology downloadable?
-    restrict_downloads = $NOT_DOWNLOADABLE
-    @ont_restricted = restrict_downloads.include? @ontology.acronym
+    @ont_restricted = ontology_restricted?(@ontology.acronym)
 
     # Fix parameters to only use known pages
     params[:p] = nil unless KNOWN_PAGES.include?(params[:p])
