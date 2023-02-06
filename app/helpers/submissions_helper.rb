@@ -351,7 +351,7 @@ module SubmissionsHelper
       if input_type?(attr, "list")
         input_html << generate_url_input(attr, name, uri_values)
       else
-        input_html << text_field(object_name, attr["attribute"].to_s.to_sym, value: uri_values.first, class: "metadataInput form-control")
+        input_html << text_field(object_name, attr["attribute"].to_s.to_sym, value: Array(uri_values).first, class: "metadataInput form-control")
       end
       return input_html
     elsif input_type?(attr, "boolean")
