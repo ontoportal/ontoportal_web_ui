@@ -49,6 +49,11 @@
               %tr
                 %td Groups
                 %td= groups.map {|g| groups_hash[g].name}.sort.join(", ")
+          - if @ontology.admin?(session[:user])
+            %tr
+              %td Pull URL
+              %td
+                = link_to @submission_latest.pullLocation, @submission_latest.pullLocation
           = raw additional_details
 
     = render partial: 'additional_metadata'
