@@ -292,6 +292,7 @@ display_links: false, display_context: false)
   # GET /ontologies/ACRONYM
   # GET /ontologies/1.xml
   def show
+
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]
     params[:ontology] = params[:ontology].nil? ? params[:id] : params[:ontology]
@@ -335,11 +336,7 @@ display_links: false, display_context: false)
       end
     end
 
-    @ob_instructions = helpers.ontolobridge_instructions_template(@ontology)
-
-    # Retrieve submissions in descending submissionId order (should be reverse chronological order)
-    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
-    LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
+    #@ob_instructions = helpers.ontolobridge_instructions_template(@ontology)
 
     # Get the latest submission (not necessarily the latest 'ready' submission)
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: '')
@@ -376,6 +373,7 @@ display_links: false, display_context: false)
       else
         self.summary
     end
+
   end
 
   def submit_success
