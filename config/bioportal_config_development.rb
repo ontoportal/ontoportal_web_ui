@@ -229,6 +229,15 @@ $TEAM_MEMBERS = [
     description: "Associate Researcher",
     email: "arkopaul.sarkar@enit.fr",
     isEmailPro: true
+  },
+  {
+    name: "Bouchemel Nasreddine, MS",
+    role: "",
+    link: "https://github.com/Bouchemel-Nasreddine",
+    avatar: 'https://github.com/IndustryPortal/bioportal_web_ui/blob/master/app/assets/images/team/nasreddine_avatar.jpeg?raw=true',
+    description: "Software Engineer",
+    email: "kn_bouchemel@esi.dz",
+    isEmailPro: true
   }
 ]
 
