@@ -6,7 +6,6 @@ class ConceptsController < ApplicationController
   layout 'ontology'
 
   def show
-    # Handle multiple methods of passing concept ids
     params[:id] = params[:id] || params[:conceptid]
 
     if params[:id].nil? || params[:id].empty?
@@ -14,7 +13,7 @@ class ConceptsController < ApplicationController
       return
     end
 
-    # Note that find_by_acronym includes views by default
+    # find_by_acronym includes views by default
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     @ob_instructions = helpers.ontolobridge_instructions_template(@ontology)
 
@@ -22,15 +21,15 @@ class ConceptsController < ApplicationController
       display = params[:callback].eql?('load') ? { full: true } : { display: 'prefLabel' }
       @concept = @ontology.explore.single_class(display, params[:id])
       not_found if @concept.nil?
-      show_ajax_request # process an ajax call
+      show_ajax_request
     else
       render plain: 'Non-AJAX requests are not accepted at this URL', status: :forbidden
     end
   end
 
   def show_label
-    cls_id = params[:concept]   # cls_id should be a full URI
-    ont_id = params[:ontology]  # ont_id could be a full URI or an acronym
+    cls_id = params[:concept]
+    ont_id = params[:ontology]
     if ont_id.to_i.positive?
       params_cleanup_new_api
       stop_words = %w[controller action]
@@ -76,7 +75,7 @@ class ConceptsController < ApplicationController
     if @ontology.nil?
       not_found
     else
-      get_class(params) # application_controller
+      get_class(params)
       render partial: 'ontologies/treeview'
     end
   end
@@ -95,7 +94,6 @@ class ConceptsController < ApplicationController
     render json: LinkedData::Client::Models::Property.properties_to_hash(@root.children)
   end
 
-  # Renders a details pane for a given ontology/concept
   def details
     not_found if params[:conceptid].nil? || params[:conceptid].empty?
 
