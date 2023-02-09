@@ -51,7 +51,7 @@ jobs:
         # via shell parameter expansion
         # https://dev.to/mrmike/github-action-handling-input-default-value-5f2g
         USER_INPUT_BRANCH=${{ inputs.branch }}
-        echo "BRANCH=${USER_INPUT_BRANCH:-master}" >> $GITHUB_ENV
+        echo "BRANCH=${USER_INPUT_BRANCH:github.head_ref:-master}" >> $GITHUB_ENV
 
         USER_INPUT_ENVIRONMENT=${{ inputs.environment }}
         echo "TARGET=${USER_INPUT_ENVIRONMENT:-staging}" >> $GITHUB_ENV
