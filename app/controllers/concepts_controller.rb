@@ -133,7 +133,7 @@ class ConceptsController < ApplicationController
 
   private
 
-  # Retrieve data for a concept or a concept's children, depending on the value of the :callback parameter.
+  # Load data for a concept or retrieve a concept's children, depending on the value of the :callback parameter.
   # Children are retrieved for drawing ontology class trees.
   def show_ajax_request
     case params[:callback]
