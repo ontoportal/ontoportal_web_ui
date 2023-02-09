@@ -8,7 +8,7 @@ class ConceptsController < ApplicationController
   def show
     params[:id] = params[:id] || params[:conceptid]
 
-    if params[:id].nil? || params[:id].empty?
+    if params[:id].blank?
       render text: 'Error: You must provide a valid concept id'
       return
     end
@@ -95,7 +95,7 @@ class ConceptsController < ApplicationController
   end
 
   def details
-    not_found if params[:conceptid].nil? || params[:conceptid].empty?
+    not_found if params[:conceptid].blank?
 
     if params[:ontology].to_i.positive?
       orig_id = params[:ontology]
