@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ConceptsController < ApplicationController
   include MappingsHelper
 
@@ -5,10 +7,10 @@ class ConceptsController < ApplicationController
 
   def show
     # Handle multiple methods of passing concept ids
-    params[:id] = params[:id] ? params[:id] : params[:conceptid]
+    params[:id] = params[:id] || params[:conceptid]
 
     if params[:id].nil? || params[:id].empty?
-      render :text => "Error: You must provide a valid concept id"
+      render text: 'Error: You must provide a valid concept id'
       return
     end
 
@@ -17,7 +19,7 @@ class ConceptsController < ApplicationController
     @ob_instructions = helpers.ontolobridge_instructions_template(@ontology)
 
     if request.xhr?
-      display = params[:callback].eql?('load') ? {full: true} : {display: "prefLabel"}
+      display = params[:callback].eql?('load') ? { full: true } : { display: 'prefLabel' }
       @concept = @ontology.explore.single_class(display, params[:id])
       not_found if @concept.nil?
       show_ajax_request # process an ajax call
@@ -29,10 +31,11 @@ class ConceptsController < ApplicationController
   def show_label
     cls_id = params[:concept]   # cls_id should be a full URI
     ont_id = params[:ontology]  # ont_id could be a full URI or an acronym
-    if ont_id.to_i > 0
-      params_cleanup_new_api()
-      stop_words = ["controller", "action"]
-      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
+    if ont_id.to_i.positive?
+      params_cleanup_new_api
+      stop_words = %w[controller action]
+      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}",
+                  status: :moved_permanently
       return
     end
     @ontology = LinkedData::Client::Models::Ontology.find(ont_id)
@@ -43,44 +46,47 @@ class ConceptsController < ApplicationController
     cls = @ontology.explore.single_class(cls_id)
     # TODO: log any cls.errors
     # TODO: NCBO-402 might be implemented here, but it throws off a lot of ajax result rendering.
-    #cls_label = cls.prefLabel({:use_html => true}) || cls_id
+    # cls_label = cls.prefLabel({:use_html => true}) || cls_id
     cls_label = cls.prefLabel || cls_id
     render plain: cls_label
   end
 
   def show_definition
-    if params[:ontology].to_i > 0
-      params_cleanup_new_api()
-      stop_words = ["controller", "action"]
-      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
+    if params[:ontology].to_i.positive?
+      params_cleanup_new_api
+      stop_words = %w[controller action]
+      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}",
+                  status: :moved_permanently
       return
     end
     @ontology = LinkedData::Client::Models::Ontology.find(params[:ontology])
     cls = @ontology.explore.single_class(params[:concept])
-    render :text => cls.definition
+    render text: cls.definition
   end
 
   def show_tree
-    if params[:ontology].to_i > 0
-      params_cleanup_new_api()
-      stop_words = ["controller", "action"]
-      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
+    if params[:ontology].to_i.positive?
+      params_cleanup_new_api
+      stop_words = %w[controller action]
+      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}",
+                  status: :moved_permanently
       return
     end
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     if @ontology.nil?
       not_found
-    else 
-      get_class(params)   # application_controller
-      render :partial => "ontologies/treeview"
+    else
+      get_class(params) # application_controller
+      render partial: 'ontologies/treeview'
     end
   end
 
   def property_tree
-    if params[:ontology].to_i > 0
-      params_cleanup_new_api()
-      stop_words = ["controller", "action"]
-      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}", :status => :moved_permanently
+    if params[:ontology].to_i.positive?
+      params_cleanup_new_api
+      stop_words = %w[controller action]
+      redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: stop_words)}",
+                  status: :moved_permanently
       return
     end
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
@@ -93,24 +99,25 @@ class ConceptsController < ApplicationController
   def details
     not_found if params[:conceptid].nil? || params[:conceptid].empty?
 
-    if params[:ontology].to_i > 0
+    if params[:ontology].to_i.positive?
       orig_id = params[:ontology]
-      params_cleanup_new_api()
-      options = {stop_words: ["controller", "action", "id"]}
-      redirect_to "#{request.path.sub(orig_id, params[:ontology])}#{params_string_for_redirect(params, options)}", :status => :moved_permanently
+      params_cleanup_new_api
+      options = { stop_words: %w[controller action id] }
+      redirect_to "#{request.path.sub(orig_id, params[:ontology])}#{params_string_for_redirect(params, options)}",
+                  status: :moved_permanently
       return
     end
 
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     not_found if @ontology.nil?
 
-    @concept = @ontology.explore.single_class({full: true}, CGI.unescape(params[:conceptid]))
+    @concept = @ontology.explore.single_class({ full: true }, CGI.unescape(params[:conceptid]))
     not_found if @concept.nil?
 
-    if params[:styled].eql?("true")
-      render :partial => "details", :layout => "partial"
+    if params[:styled].eql?('true')
+      render partial: 'details', layout: 'partial'
     else
-      render :partial => "details"
+      render partial: 'details'
     end
   end
 
@@ -118,26 +125,25 @@ class ConceptsController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     not_found if @ontology.nil?
 
-    @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+    @concept = @ontology.explore.single_class({ full: true }, params[:conceptid])
     not_found if @concept.nil?
 
     @immediate_load = true
 
-    render partial: "biomixer", layout: false
+    render partial: 'biomixer', layout: false
   end
 
-# PRIVATE -----------------------------------------
-private
+  private
 
   def show_ajax_request
     case params[:callback]
     when 'load' # Load pulls in all the details of a node
       gather_details
-      render :partial => 'load'
+      render partial: 'load'
     when 'children' # Children is called only for drawing the tree
       @children = @concept.explore.children(pagesize: 750).collection || []
-      @children.sort!{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase} unless @children.empty?
-      render :partial => 'child_nodes'
+      @children.sort! { |x, y| (x.prefLabel || '').downcase <=> (y.prefLabel || '').downcase } unless @children.empty?
+      render partial: 'child_nodes'
     end
   end
 
@@ -145,6 +151,6 @@ private
     @mappings = get_concept_mappings(@concept)
     @notes = @concept.explore.notes
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
-    update_tab(@ontology, @concept.id) #updates the 'history' tab with the current node
+    update_tab(@ontology, @concept.id) # updates the 'history' tab with the current node
   end
 end
