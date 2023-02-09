@@ -142,7 +142,7 @@ class ConceptsController < ApplicationController
       render partial: 'load'
     when 'children'
       @children = @concept.explore.children(pagesize: 750).collection || []
-      @children.sort! { |x, y| (x.prefLabel || '').downcase <=> (y.prefLabel || '').downcase } unless @children.empty?
+      @children.sort! { |x, y| (x.prefLabel || '').downcase <=> (y.prefLabel || '').downcase }
       render partial: 'child_nodes'
     end
   end
