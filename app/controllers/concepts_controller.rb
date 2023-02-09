@@ -133,12 +133,14 @@ class ConceptsController < ApplicationController
 
   private
 
+  # Retrieve data for a concept or a concept's children, depending on the value of the :callback parameter.
+  # Children are retrieved for drawing ontology class trees.
   def show_ajax_request
     case params[:callback]
-    when 'load' # Load pulls in all the details of a node
+    when 'load'
       gather_details
       render partial: 'load'
-    when 'children' # Children is called only for drawing the tree
+    when 'children'
       @children = @concept.explore.children(pagesize: 750).collection || []
       @children.sort! { |x, y| (x.prefLabel || '').downcase <=> (y.prefLabel || '').downcase } unless @children.empty?
       render partial: 'child_nodes'
