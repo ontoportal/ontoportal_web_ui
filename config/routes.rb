@@ -119,8 +119,6 @@ Rails.application.routes.draw do
   get '/tab/remove/:ontology' => 'history#remove', :as => :remove_tab
   get '/tab/update/:ontology/:concept' => 'history#update', :as => :update_tab
 
-  get 'jambalaya/:ontology/:id' => 'visual#jam', :as => :jam
-
   # Admin
   get '/admin/users', to: 'admin#users'
   post '/admin/clearcache', to: 'admin#clearcache'
