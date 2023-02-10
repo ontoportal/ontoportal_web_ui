@@ -376,10 +376,6 @@ class OntologiesController < ApplicationController
     redirect_new_api
   end
 
-  def visualize
-    redirect_new_api(true)
-  end
-
   def widgets
     if request.xhr?
       render :partial => 'widgets', :layout => false
