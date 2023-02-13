@@ -314,21 +314,19 @@ class ApplicationController < ActionController::Base
   end
 
   def update_tab(ontology, concept)
-    array = session[:ontologies] || []
+    onts = session[:ontologies] || []
     found = false
-    for item in array
-      if item.ontology_id.eql?(ontology.id)
-        item.concept=concept
-        found=true
+    onts.each do |ont|
+      if ont.ontology_id.eql? ontology.id
+        ont.concept = concept
+        found = true
       end
     end
 
-    unless found
-      array << History.new(ontology.id, ontology.name, ontology.acronym, concept)
-    end
+    onts << History.new(ontology.id, ontology.name, ontology.acronym, concept) unless found
 
     # The "Recently Viewed" menu item displays the contents of session[:ontologies]
-    session[:ontologies]=array
+    session[:ontologies] = onts
   end
 
   def check_delete_mapping_permission(mappings)
