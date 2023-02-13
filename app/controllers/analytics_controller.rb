@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'csv'
 
 class AnalyticsController < ApplicationController
-
   def track
     entry = Analytics.new
     entry.segment = params[:segment]
@@ -15,35 +16,35 @@ class AnalyticsController < ApplicationController
   end
 
   def search_result_clicked
-    clicks = Analytics.where(:segment => "search", :action => "result_clicked").all
-    rows = [["query", "position_clicked", "ontology_clicked", "higher_rated_ontologies", "additional_result", "exact_match", "concept_id", "time", "user", "bp_slice", "ip_address"]]
+    clicks = Analytics.where(segment: 'search', action: 'result_clicked').all
+    rows = [%w[query position_clicked ontology_clicked higher_rated_ontologies additional_result exact_match concept_id time user bp_slice ip_address]]
     clicks.each do |click|
       next if click.params.empty?
+
       rows << [
-        click.params["query"].delete("\t"),
-        click.params["position"],
-        click.params["ontology_clicked"],
-        click.params["higher_ontologies"].nil? ? "" : click.params["higher_ontologies"].join(";"),
-        click.params["additional_result"],
-        click.params["exact_match"],
-        click.params["concept_id"],
-        click.created_at,
-        click.user,
+        click.params['query'].delete("\t"),
+        click.params['position'],
+        click.params['ontology_clicked'],
+        click.params['higher_ontologies'].nil? ? '' : click.params['higher_ontologies'].join(';'),
+        click.params['additional_result'],
+        click.params['exact_match'],
+        click.params['concept_id'],
+        click.created_at.to_formatted_s,
+        click.user.to_s,
         click.bp_slice,
         click.ip
       ]
     end
-    respond_with_csv_file(rows, "search_result_clicked")
+    respond_with_csv_file(rows, 'search_result_clicked')
   end
 
   private
 
-  def respond_with_csv_file(rows, filename = "output")
+  def respond_with_csv_file(rows, filename = 'output')
     output = ''
     rows.each do |row|
       output << row.to_csv.force_encoding('UTF-8')
     end
-    send_data output, :type => 'text/csv', :disposition => "attachment; filename=#{filename}.csv"
+    send_data output, type: 'text/csv', disposition: "attachment; filename=#{filename}.csv"
   end
-
 end
