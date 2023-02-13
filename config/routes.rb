@@ -113,10 +113,6 @@ Rails.application.routes.draw do
   get 'search', to: 'search#index'
   get 'search/json_search(/:id)', to: 'search#json_search'
 
-  # History
-  get '/tab/remove/:ontology' => 'history#remove', :as => :remove_tab
-  get '/tab/update/:ontology/:concept' => 'history#update', :as => :update_tab
-
   # Admin
   get '/admin/users', to: 'admin#users'
   post '/admin/clearcache', to: 'admin#clearcache'

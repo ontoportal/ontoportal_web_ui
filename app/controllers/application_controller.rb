@@ -230,16 +230,6 @@ class ApplicationController < ActionController::Base
     redirect_to "/"
   end
 
-  def redirect_to_history # Redirects to the correct tab through the history system
-    if session[:redirect].nil?
-      redirect_to_home
-    else
-      tab = find_tab(session[:redirect][:ontology])
-      session[:redirect]=nil
-      redirect_to uri_url(:ontology=>tab.ontology_id,:conceptid=>tab.concept)
-    end
-  end
-
   def redirect_new_api(class_view = false)
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:ontology] = params[:ontology].nil? ? params[:ontologyid] : params[:ontology]
@@ -323,7 +313,6 @@ class ApplicationController < ActionController::Base
     session[:user] && session[:user].admin?
   end
 
-  # updates the 'history' tab with the current selected concept
   def update_tab(ontology, concept)
     array = session[:ontologies] || []
     found = false
@@ -338,25 +327,8 @@ class ApplicationController < ActionController::Base
       array << History.new(ontology.id, ontology.name, ontology.acronym, concept)
     end
 
+    # The "Recently Viewed" menu item displays the contents of session[:ontologies]
     session[:ontologies]=array
-  end
-
-  # Removes a 'history' tab
-  def remove_tab(ontology_id)
-    array = session[:ontologies]
-    array.delete(find_tab(ontology_id))
-    session[:ontologies]=array
-  end
-
-  # Returns a specific 'history' tab
-  def find_tab(ontology_id)
-    array = session[:ontologies]
-    for item in array
-      if item.ontology_id.eql?(ontology_id)
-        return item
-      end
-    end
-    return nil
   end
 
   def check_delete_mapping_permission(mappings)
