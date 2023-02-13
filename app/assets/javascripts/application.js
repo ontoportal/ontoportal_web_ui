@@ -21,7 +21,6 @@
 //= require bp_form_complete
 //= require bp_create_mappings
 //= require bp_analytics
-//= require bp_user_intention_survey
 //= require bp_search
 //= require bp_mappings
 //= require bp_visualize

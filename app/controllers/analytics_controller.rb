@@ -36,23 +36,6 @@ class AnalyticsController < ApplicationController
     respond_with_csv_file(rows, "search_result_clicked")
   end
 
-  def user_intention_surveys
-    surveys = Analytics.where(:segment => "users", :action => "intention_survey").all
-    rows = [["page", "response", "email", "time", "user", "bp_slice", "ip_address"]]
-    surveys.each do |survey|
-      rows << [
-        survey.params["page"],
-        survey.params["intention_response"],
-        survey.params["contest_email"],
-        survey.created_at,
-        survey.user,
-        survey.bp_slice,
-        survey.ip
-      ]
-    end
-    respond_with_csv_file(rows, "user_intention_survey")
-  end
-
   private
 
   def respond_with_csv_file(rows, filename = "output")

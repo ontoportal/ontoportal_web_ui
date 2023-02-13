@@ -65,7 +65,8 @@ Rails.application.routes.draw do
   match '/500', to: 'errors#internal_server_error', via: :all
 
   # Analytics
-  match 'analytics', to: 'analytics#track', via: [:post]
+  get 'analytics/search_result_clicked', to: 'analytics#search_result_clicked'
+  post 'analytics', to: 'analytics#track'
 
   # Robots.txt
   get '/robots.txt' => 'robots#index'
@@ -79,9 +80,6 @@ Rails.application.routes.draw do
   match '/ontologies/:ontology_id/submissions' => 'submissions#create', :ontology_id => /.+/, via: [:get, :post]
   get '/ontologies/:acronym/classes/:purl_conceptid', to: 'ontologies#show', constraints: { purl_conceptid: /[^\/]+/ }
   get '/ontologies/:acronym/:purl_conceptid', to: 'ontologies#show', constraints: { purl_conceptid: /[^\/]+/ }
-
-  # Analytics
-  get '/analytics/:action' => 'analytics#(?-mix:search_result_clicked|user_intention_surveys)'
 
   # Notes
   get 'ontologies/:ontology/notes/:noteid', to: 'notes#virtual_show', as: :note_virtual, noteid: /.+/
