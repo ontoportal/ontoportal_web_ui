@@ -41,7 +41,7 @@ class AnalyticsController < ApplicationController
   private
 
   def respond_with_csv_file(rows, filename = 'output')
-    output = ''
+    output = String.new('')
     rows.each do |row|
       output << row.to_csv.force_encoding('UTF-8')
     end
