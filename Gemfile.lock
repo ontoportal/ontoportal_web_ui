@@ -450,7 +450,6 @@ DEPENDENCIES
   rest-client
   rspec-rails
   rubocop
-  sassc-rails
   select2-rails
   selenium-webdriver
   sprockets-rails
