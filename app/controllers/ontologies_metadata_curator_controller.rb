@@ -33,9 +33,12 @@ class OntologiesMetadataCuratorController < ApplicationController
       format.turbo_stream { render turbo_stream: [
         replace("selection_metadata_form", partial: "ontologies_metadata_curator/metadata_table"),
         replace('edit_metadata_btn') do
-          helpers.button_tag("Start bulk edit", onclick: 'showEditForm(event)', class: "btn btn-outline-primary mx-1 w-100")
+          "
+           #{helpers.button_tag("Start bulk edit", onclick: 'showEditForm(event)', class: "btn btn-outline-primary mx-1 w-100")}
+           #{raw helpers.help_tooltip('To use the bulk edit select in the table submissions (the rows) and metadata properties (the columns) for which you want to edit')}
+          ".html_safe
         end
-      ] }
+      ]}
     end
   end
 
