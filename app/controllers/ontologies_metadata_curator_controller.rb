@@ -31,7 +31,7 @@ class OntologiesMetadataCuratorController < ApplicationController
     respond_to do |format|
       format.html { redirect_to admin_index_path }
       format.turbo_stream { render turbo_stream: [
-        replace("selection_metadata_form", partial: "ontologies_metadata_curator/result"),
+        replace("selection_metadata_form", partial: "ontologies_metadata_curator/metadata_table"),
         replace('edit_metadata_btn') do
           helpers.button_tag("Start bulk edit", onclick: 'showEditForm(event)', class: "btn btn-outline-primary mx-1 w-100")
         end
