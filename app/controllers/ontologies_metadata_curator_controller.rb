@@ -72,7 +72,6 @@ class OntologiesMetadataCuratorController < ApplicationController
   end
 
   def update
-    @change_all = !params[:change_all].nil?
     @selected_ontologies = params[:selected_ontologies].map { |x| ontology_and_submission_id(x) }
     @active_ontology = ontology_and_submission_id(params[:active_ontology])
     @all_metadata = params[:all_metadata]&.split
@@ -81,8 +80,7 @@ class OntologiesMetadataCuratorController < ApplicationController
     active_submission_data = params['submission']["#{@active_ontology[0]}_#{@active_ontology[1]}"]
 
     @selected_ontologies.each do |onto, sub_i|
-      new_data = @change_all ? active_submission_data : params['submission']["#{onto}_#{sub_i}"]
-
+      new_data = active_submission_data
       new_data[:ontology] = onto
       new_data[:id] = sub_i
       error_responses << update_submission(new_data) if new_data
