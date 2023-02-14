@@ -19,6 +19,7 @@
 
     = form_for :submission, url: "/ontologies_metadata_curator/update", html: {method: :put}, data: { turbo: true} do
       = hidden_field_tag :active_ontology, ontology_submission_id_label(*@selected_ontologies.first), id: 'active_ontology'
+      = hidden_field_tag :all_metadata, @all_metadata
       %div.d-flex.justify-content-between
         %ul#ontologies-pills-tab.nav.nav-pills.mb-3
           - @selected_ontologies.each_with_index do |value, index|
