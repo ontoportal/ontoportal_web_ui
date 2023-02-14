@@ -234,7 +234,7 @@ $TEAM_MEMBERS = [
     name: "Bouchemel Nasreddine, MS",
     role: "",
     link: "https://github.com/Bouchemel-Nasreddine",
-    avatar: 'https://github.com/IndustryPortal/bioportal_web_ui/blob/master/app/assets/images/team/nasreddine_avatar.jpeg?raw=true',
+    avatar: 'https://github.com/IndustryPortal/bioportal_web_ui/blob/master/app/assets/images/team/nasreddine_avatar.jpg?raw=true',
     description: "Software Engineer",
     email: "kn_bouchemel@esi.dz",
     isEmailPro: true

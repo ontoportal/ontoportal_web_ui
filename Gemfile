@@ -89,6 +89,7 @@ group :development do
   gem 'capistrano-passenger', require: false
   gem 'capistrano-rails', '~> 1.4', require: false
   gem 'capistrano-yarn', require: false
+  gem 'capistrano-rvm'
   gem 'html2haml'
   gem 'listen'
   # static code analysis
