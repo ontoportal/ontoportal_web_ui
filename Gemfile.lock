@@ -368,6 +368,8 @@ GEM
     stimulus-rails (1.2.1)
       railties (>= 6.0.0)
     temple (0.9.1)
+    terser (1.1.13)
+      execjs (>= 0.3.0, < 3)
     thin (1.8.1)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0, >= 1.0.4)
@@ -386,8 +388,6 @@ GEM
       tilt (>= 1.4, < 3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    uglifier (4.2.0)
-      execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
@@ -467,11 +467,11 @@ DEPENDENCIES
   sprockets-rails
   stackprof
   stimulus-rails
+  terser
   thin
   turbo-rails
   turnout
   tzinfo-data
-  uglifier (>= 1.0.3)
   view_component (~> 2.72)
   web-console
   webdrivers
