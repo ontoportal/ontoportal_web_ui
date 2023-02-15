@@ -12,7 +12,9 @@ module FairScoreHelper
     "#{$FAIRNESS_URL}#{apikey.nil? || apikey.empty? ? '' : "&apikey=#{apikey}"}"
   end
   def get_fairness_json(ontologies_acronyms, apikey = user_apikey)
-    MultiJson.load(Faraday.get(get_fairness_service_url(apikey) + "&ontologies=#{ontologies_acronyms}&combined").body.force_encoding('ISO-8859-1').encode('UTF-8'))
+    response = Faraday.get(get_fairness_service_url(apikey) + "&ontologies=#{ontologies_acronyms}&combined").body.force_encoding('ISO-8859-1').encode('UTF-8')
+    puts response
+    MultiJson.load(response)
   end
 
   def get_fair_score(ontologies_acronyms, apikey = user_apikey)
