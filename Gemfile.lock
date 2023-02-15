@@ -445,6 +445,7 @@ DEPENDENCIES
   rack-mini-profiler
   rails (= 7.0.3)
   rails_autolink
+  rake (= 13.0.6)
   rdoc
   recaptcha (~> 5.9.0)
   rest-client

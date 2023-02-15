@@ -5,6 +5,8 @@ gem 'rails', '7.0.3'
 
 gem 'jsbundling-rails'
 
+gem 'rake', '13.0.6'
+
 gem 'sassc-rails' #sass-rails replacent
 gem 'terser' #ugilifer replacent
 #gem 'sass-rails', '~> 5.0'
