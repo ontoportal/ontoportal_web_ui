@@ -5,9 +5,9 @@ gem 'rails', '7.0.3'
 
 gem 'jsbundling-rails'
 
-gem 'sassc-rails' #sass-rails replacent
+#gem 'sassc-rails' #sass-rails replacent
 #gem 'terser' #ugilifer replacent
-#gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.0.3'
 
 # See https://github.com/rails/execjs#readme for more supported runtimes
