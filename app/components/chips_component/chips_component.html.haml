@@ -1,0 +1,7 @@
+.chips-container
+  %div
+    %label{:for => "chips-#{@name}-check"}
+      %input{:id => "chips-#{@name}-check", :name => @name, :type => "checkbox", :value => @value}/
+      %span
+        %img.chips-check-icon{:src => "#{asset_path('check.svg')}"}/
+        = @value
