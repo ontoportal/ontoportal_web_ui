@@ -184,9 +184,19 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    p = params.require(:user).permit(:firstName, :lastName, :username, :email, :email_confirmation, :password,
+    params[:user]["orcidId"] = extract_id_from_url(params[:user]["orcidId"], 'orcid.org')
+    params[:user]["githubId"] = extract_id_from_url(params[:user]["githubId"], 'github.com')
+    p = params.require(:user).permit(:firstName, :lastName, :username, :orcidId, :githubId, :email, :email_confirmation, :password,
                                      :password_confirmation, :register_mail_list, :admin)
     p.to_h
+  end
+  
+  def extract_id_from_url(url, pattern)
+    if url.include? (pattern)
+      url.split('/').last 
+    else
+      url
+    end
   end
 
   def unescape_id
@@ -213,9 +223,6 @@ class UsersController < ApplicationController
     errors = []
     if params[:email].nil? || params[:email].length < 1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
       errors << "Please enter an email address"
-    end
-    if !params[:email].eql?(params[:email_confirmation])
-      errors << "Your Email and Email Confirmation do not match"
     end
     if params[:password].nil? || params[:password].length < 1
       errors << "Please enter a password"
