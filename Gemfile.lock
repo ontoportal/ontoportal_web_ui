@@ -131,7 +131,7 @@ GEM
     crass (1.0.6)
     cube-ruby (0.0.3)
     daemons (1.4.1)
-    dalli (3.2.3)
+    dalli (3.2.4)
     date (3.3.3)
     debug (1.7.1)
       irb (>= 1.5.0)
