@@ -46,7 +46,7 @@
               %a.account-page-subscribe-button{:href =>'javascript:window.location.href = "/users/subscribe/" + "'+@user.username+'"'}
                 Unsubscribe
             - else
-              %a.account-page-subscribe-button{:href => 'javascript:window.location.href = "/users/un-subscribe/" + "'+@user.username+'"'}
+              %a.account-page-subscribe-button{:href => 'mailto:... &subject=... &body=....'}
                 Subscribe
         .account-page-card
           .account-page-card-container
@@ -112,5 +112,4 @@
               %img{:src => "#{asset_path("empty-box.svg")}"}/
               %p You didn't upload any ontology yet
               %a.account-page-upload-ontology-button{href: "/ontologies/new"} Upload ontology
-
 
