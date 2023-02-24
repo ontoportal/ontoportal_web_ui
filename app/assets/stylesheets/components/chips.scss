@@ -1,6 +1,9 @@
 .chips-container div{
     margin-right: 10px;
 }
+.chips-container svg path{
+    fill: var(--primary-color);
+}
 .chips-check-icon{
     margin-left: 6px;
     margin-right: 6px;
@@ -33,3 +36,4 @@
 .chips-container div label input[type="checkbox"]:checked ~ span .chips-check-icon{
     display:unset;
 }
+
