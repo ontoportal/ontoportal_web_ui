@@ -8,10 +8,7 @@
           .account-page-personal-informations-title-bar
             %h4.account-page-card-title Personal information
             %a.account-page-rounded-button{:href => edit_user_path(url_encode(@user.username))}
-              / SVG: Edit icon
-              %svg{fill: "none", height: "18", viewbox: "0 0 18 18", width: "18", xmlns: "http://www.w3.org/2000/svg"}
-                %path{d: "M11.116 3.00525L1.21212 12.9098C1.16229 12.9598 1.12632 13.0229 1.10918 13.0907L0.0114342 17.4969C-0.0214026 17.6295 0.0175733 17.7705 0.11437 17.8673C0.187611 17.9406 0.287406 17.9811 0.389486 17.9811C0.420752 17.9811 0.452733 17.9773 0.483856 17.9694L4.88999 16.8715C4.95866 16.8544 5.02105 16.8186 5.07087 16.7687L14.9756 6.86486L11.116 3.00525Z", fill: "#31B404"}
-                %path{d: "M17.4292 1.65482L16.3267 0.552355C15.5899 -0.184475 14.3057 -0.183761 13.5697 0.552355L12.2192 1.9028L16.0787 5.76227L17.4292 4.41182C17.7972 4.04391 17.9999 3.55421 17.9999 3.03339C17.9999 2.51257 17.7972 2.02287 17.4292 1.65482Z", fill: "#31B404"}
+              = render partial: "shared/svgs/edit_icon"
           .account-page-info-column
             %p.title First name:
             %p.info
@@ -41,7 +38,7 @@
             .account-page-card-sub-container
               %h4.account-page-card-title Mailing list subscription
               %p.account-page-card-desc AgroPortal announcements email list
-            - subscribed = true
+            - subscribed = false
             - if subscribed 
               %a.account-page-subscribe-button{:href =>'javascript:window.location.href = "/users/subscribe/" + "'+@user.username+'"'}
                 Unsubscribe
@@ -56,23 +53,15 @@
               %p.apikey
                 = session[:user].apikey
             %a{:href => "javascript:navigator.clipboard.writeText('"+session[:user].apikey+"');"}
-              / SVG: Copy icon
-              %svg{fill: "none", height: "27", viewbox: "0 0 23 27", width: "23", xmlns: "http://www.w3.org/2000/svg"}
-                %path{d: "M14.0245 26.4965H4.14008C1.85719 26.4965 0 24.6393 0 22.3564V8.33191C0 6.04902 1.85719 4.19183 4.14008 4.19183H14.0245C16.3074 4.19183 18.1646 6.04902 18.1646 8.33191V22.3564C18.1646 24.6393 16.3074 26.4965 14.0245 26.4965ZM4.14008 6.26187C2.99871 6.26187 2.07004 7.19055 2.07004 8.33191V22.3564C2.07004 23.4978 2.99871 24.4265 4.14008 24.4265H14.0245C15.1659 24.4265 16.0946 23.4978 16.0946 22.3564V8.33191C16.0946 7.19055 15.1659 6.26187 14.0245 6.26187H4.14008ZM22.3047 19.7689V4.14008C22.3047 1.85719 20.4475 0 18.1646 0H6.67588C6.10419 0 5.64086 0.463327 5.64086 1.03502C5.64086 1.60671 6.10419 2.07004 6.67588 2.07004H18.1646C19.306 2.07004 20.2346 2.99871 20.2346 4.14008V19.7689C20.2346 20.3406 20.698 20.8039 21.2697 20.8039C21.8414 20.8039 22.3047 20.3406 22.3047 19.7689Z", fill: "#43D112"}
+              = render partial: "shared/svgs/copy_icon"
         .account-page-api-documentation-link
           %a{href: "https://data.bioportal.lirmm.fr/documentation", target: "_blank"}
             API documentation
-            / SVG: External link icon
-            %svg{fill: "none", height: "12", viewbox: "0 0 12 12", width: "12", xmlns: "http://www.w3.org/2000/svg"}
-              %path{d: "M8.66665 12H1.99999C1.46573 12 0.963502 11.7919 0.585767 11.4142C0.208033 11.0364 0 10.5342 0 9.99999V3.33333C0 2.7991 0.208057 2.29687 0.585791 1.91913C0.963525 1.5414 1.46576 1.33334 2.00001 1.33334H4.66667C5.03488 1.33334 5.33334 1.6318 5.33334 2.00001C5.33334 2.36822 5.03488 2.66668 4.66667 2.66668H1.99999C1.8219 2.66668 1.65451 2.73603 1.52861 2.86193C1.40272 2.98783 1.33334 3.15524 1.33334 3.33333V9.99999C1.33334 10.1781 1.40269 10.3455 1.52861 10.4714C1.65451 10.5973 1.8219 10.6667 1.99999 10.6667H8.66662C8.84471 10.6667 9.0121 10.5973 9.13802 10.4714C9.26392 10.3455 9.33327 10.1781 9.33327 9.99996V7.33333C9.33327 6.96512 9.63175 6.66668 9.99996 6.66668C10.3682 6.66668 10.6667 6.96514 10.6667 7.33333V9.99999C10.6667 10.5342 10.4586 11.0364 10.0808 11.4142C9.70309 11.7919 9.20083 12 8.66665 12ZM4.66667 7.99998C4.49604 7.99998 4.32543 7.93491 4.19527 7.80473C3.93493 7.54439 3.93493 7.12225 4.19527 6.86191L9.72381 1.33334H7.33333C6.96512 1.33334 6.66668 1.03488 6.66668 0.666671C6.66668 0.298461 6.96512 0 7.33333 0H11.3333C11.4255 0 11.5133 0.0187237 11.5932 0.0525614C11.6678 0.0840936 11.7378 0.129785 11.799 0.189659L11.7991 0.189705C11.7995 0.190148 11.8 0.190567 11.8004 0.19101C11.8005 0.191126 11.8007 0.191266 11.8008 0.191382C11.8011 0.191708 11.8015 0.192058 11.8018 0.192407C11.802 0.19264 11.8022 0.192849 11.8025 0.193082C11.8027 0.193338 11.803 0.193618 11.8032 0.193827C11.8037 0.194293 11.8042 0.194782 11.8047 0.195271C11.8051 0.195737 11.8056 0.196249 11.8061 0.196715C11.8064 0.196948 11.8066 0.197251 11.8068 0.19746C11.8071 0.197693 11.8073 0.197903 11.8075 0.198136C11.8079 0.198485 11.8082 0.198811 11.8085 0.199184C11.8086 0.199277 11.8088 0.19944 11.8089 0.199556C11.8093 0.199999 11.8098 0.200441 11.8102 0.200884L11.8102 0.20093C11.8701 0.262225 11.9158 0.332229 11.9473 0.406751C11.9812 0.48663 11.9999 0.574426 11.9999 0.666647V4.66665C11.9999 5.03486 11.7014 5.33332 11.3332 5.33332C10.965 5.33332 10.6666 5.03486 10.6666 4.66665V2.27616L5.13795 7.80475C5.00789 7.93493 4.83728 7.99998 4.66667 7.99998Z", fill: "#31B404"}
+            = render partial: "shared/svgs/external_link_icon"
         .account-page-card
           %h4.account-page-card-title Custom ontology set
           %p.account-page-card-desc Customize your AgroPortal display: Pick the ontologies that you want to see on AgroPortal will hide all other ontologies.
-          .account-page-select-ontology-set-button
-            %p Select ontologies
-            / SVG: Arrow down icon
-            %svg{fill: "none", height: "7", viewbox: "0 0 11 7", width: "11", xmlns: "http://www.w3.org/2000/svg"}
-              %path{d: "M10.4694 0H0.530591C0.0602731 0 -0.179323 0.567931 0.157886 0.90514L5.12728 5.87454C5.33138 6.07864 5.66859 6.07864 5.87278 5.87454L10.8422 0.90514C11.1793 0.567931 10.9397 0 10.4694 0Z", fill: "#31B404"}
+          /here we select the ontologies
           %p.account-page-card-desc Note: This feature works only when you are logged in.
       .account-page-second-row
         - unless @user.subscription.nil? || @user.subscription.empty?
@@ -105,7 +94,6 @@
             - @user_projects.each do |project|
               .account-page-submitted-ontology
                 %a{href: "/ontologies/#{ont.acronym}"}= project.name
-        - # we show this card just in case the user does not have any uploaded ontology
         - if no_ontologies
           .account-page-card
             .account-page-no-ontology
