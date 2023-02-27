@@ -138,7 +138,7 @@
           Confirm password
           %font{:color => "red"} *
         = password_field :user, :password_confirmation, class: "register-input-long"
-        %br
+      %br
       %input.register-button{:type => "submit", :value => "Save", :name => "Update"}/
       - unless params[:password].eql?("true")
         .change-password
