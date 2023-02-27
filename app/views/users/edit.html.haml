@@ -1,44 +1,51 @@
-.d-flex.justify-content-center
-  .register-form
-    .d-flex.justify-content-between
-      %a{:href => "javascript:javascript:history.go(-1)"}
-        %img.lost-password-arrowback{:src => "#{asset_path("arrow-back.svg")}"}
-      .register-title-container
-        %h2.register-title
-          Edit personal information
-        %hr#register-title-line/
-      %div
-    .register-double-input
-      .register-first-input
-        %p.register-input-title
-          First name
-          %font{:color => "red"} *
-        = text_field :user, :firstName, value: @user.firstName, class: "register-input-short"
-      %div
-        %p.register-input-title
-          Last name
-          %font{:color => "red"} *
-        = text_field :user, :lastName, value: @user.lastName, class: "register-input-short"
-    %p.register-input-title
-      Username
-      %font{:color => "red"} *
-    = text_field :user, :username, value: @user.username, class: "register-input-long"
-    %p.register-input-title
-      Email
-      %font{:color => "red"} *
-    = text_field :user, :email, value: @user.email, class: "register-input-long"
-    %p.register-input-title
-      ORCID ID
-      %font.register-optional (optional)
-    %img.register-input-icon{:src => "#{asset_path("orcid.svg")}"}/
-    = text_field :user, :orcidId, value: @user.orcidId, class: "register-input-long register-input-with-icon"
-    %p.register-input-title
-      Github ID
-      %font.register-optional (optional)
-    %img.register-input-icon{:src => "#{asset_path("github-icon.svg")}"}/
-    = text_field :user, :githubId, value: @user.githubId, class: "register-input-long register-input-with-icon no-margin"
-    %br
-    %input.register-button{:type => "submit", :value => "Save"}/
-    .change-password
-      %a{:href => "#"}
-        Change password
+= form_for(:user, :url => user_path(@user.username), :html => { :id => "user_info", :method => :put }) do |f|
+  - unless @errors.nil?
+    .enable-lists{:style => "color: red; padding: 1em;"}
+      Errors creating your account:
+      %ul
+        - for error in @errors
+          %li= error
+  .d-flex.justify-content-center
+    .register-form
+      .d-flex.justify-content-between
+        %a{:href => "javascript:javascript:history.go(-1)"}
+          %img.lost-password-arrowback{:src => "#{asset_path("arrow-back.svg")}"}
+        .register-title-container
+          %h2.register-title
+            Edit personal information
+          %hr#register-title-line/
+        %div
+      .register-double-input
+        .register-first-input
+          %p.register-input-title
+            First name
+            %font{:color => "red"} *
+          = text_field :user, :firstName, value: @user.firstName, class: "register-input-short"
+        %div
+          %p.register-input-title
+            Last name
+            %font{:color => "red"} *
+          = text_field :user, :lastName, value: @user.lastName, class: "register-input-short"
+      %p.register-input-title
+        Username
+        %font{:color => "red"} *
+      = text_field :user, :username, value: @user.username, class: "register-input-long"
+      %p.register-input-title
+        Email
+        %font{:color => "red"} *
+      = text_field :user, :email, value: @user.email, class: "register-input-long"
+      %p.register-input-title
+        ORCID ID
+        %font.register-optional (optional)
+      %img.register-input-icon{:src => "#{asset_path("orcid.svg")}"}/
+      = text_field :user, :orcidId, value: @user.orcidId, class: "register-input-long register-input-with-icon"
+      %p.register-input-title
+        Github ID
+        %font.register-optional (optional)
+      %img.register-input-icon{:src => "#{asset_path("github-icon.svg")}"}/
+      = text_field :user, :githubId, value: @user.githubId, class: "register-input-long register-input-with-icon no-margin"
+      %br
+      %input.register-button{:type => "submit", :value => "Save", :name => "Update"}/
+      .change-password
+        %a{:href => "/change_password"}
+          Change password
