@@ -142,7 +142,7 @@ class UsersController < ApplicationController
     custom_ontologies = params[:ontology] ? params[:ontology][:ontologyId] : []
     custom_ontologies.reject!(&:blank?)
     @user.update_from_params(customOntology: custom_ontologies)
-    error_response = @user.update
+    error_response = !@user.update
 
     if error_response
       flash[:notice] = 'Error saving Custom Ontologies, please try again'
