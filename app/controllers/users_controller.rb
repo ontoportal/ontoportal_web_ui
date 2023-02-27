@@ -253,7 +253,7 @@ class UsersController < ApplicationController
     if params[:username].nil? || params[:username].length < 1
       errors << "Last name field is required"
     end
-    if (!params[:orcidId].match(/^\d{4}+(-\d{4})+$/)) || (params[:orcidId].length != 19)
+    if ((!params[:orcidId].match(/^\d{4}+(-\d{4})+$/)) || (params[:orcidId].length != 19)) && !(params[:orcidId].nil? || params[:orcidId].length < 1)
       errors << "Please enter a valide orcide id"
     end
     if !params[:password].eql?(params[:password_confirmation])
