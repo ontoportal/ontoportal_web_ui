@@ -192,7 +192,7 @@ class UsersController < ApplicationController
   end
   
   def extract_id_from_url(url, pattern)
-    if url.include? (pattern)
+    if url && url.include?(pattern)
       url.split('/').last 
     else
       url
@@ -242,8 +242,18 @@ class UsersController < ApplicationController
   def validate_update(params)
     errors = []
     if params[:email].nil? || params[:email].length < 1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
-      errors << "Please enter an email address"
+      errors << "Please enter a valid email adresse"
     end
+    if params[:firstName].nil? || params[:firstName].length < 1
+      errors << "First name field is required"
+    end
+    if params[:lastName].nil? || params[:lastName].length < 1
+      errors << "Last name field is required"
+    end
+    if params[:username].nil? || params[:username].length < 1
+      errors << "Last name field is required"
+    end
+
     if !params[:password].eql?(params[:password_confirmation])
       errors << "Your Password and Password Confirmation do not match"
     end
