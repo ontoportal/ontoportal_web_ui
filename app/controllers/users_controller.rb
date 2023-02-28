@@ -5,15 +5,6 @@ class UsersController < ApplicationController
   before_action :authorize_admin, only: [:index,:subscribe, :un_subscribe]
   layout :determine_layout
 
-  # GET /users
-  # GET /users.xml
-  def index
-    @users = LinkedData::Client::Models::User.all
-    respond_to do |format|
-      format.html
-      format.xml { render xml: @users.to_xml }
-    end
-  end
 
   # GET /users/1
   # GET /users/1.xml
