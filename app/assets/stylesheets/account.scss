@@ -163,9 +163,14 @@ svg path{
     color: #666666 !important;
     font-weight: 400;
 }
-.account-page-subscription div .unsubscribe{
+.account-page-subscription div .subscribe_to_notes{
     color: #EB4335 !important;
-    font-weight: 400;
+    font-weight: 400 !important;
+    border: unset !important;
+    background-color: unset !important;
+    vertical-align: top;
+    padding: unset !important;
+    box-shadow: unset !important;
 }
 .account-page-submitted-ontology{
     margin-top: 10px;
