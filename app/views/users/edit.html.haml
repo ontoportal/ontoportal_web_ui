@@ -3,20 +3,6 @@
   /* refer to input fields by name for rules */
   /* refer to input fields by id for equalTo */
   jQuery(document).ready(function() {
-    jQuery("#user_info").validate({
-      rules: {
-        "user[email]": {
-          required: true,
-          email: true,
-        },
-        "user[password]": "required",
-        "user[password_confirmation]": {
-          required: true,
-          equalTo: "#user_password",
-        }
-      }
-    })
-
     jQuery('#user_info').on('submit', function (event) {
         event.preventDefault()
         let admin_checkbox = jQuery('input[id=user_admin]')
@@ -130,7 +116,7 @@
         = hidden_field :user, :lastName, value: @user.lastName
         = hidden_field :user, :email, value: @user.email
         %p.register-input-title
-          Password
+          New password
           %font{:color => "red"} *
         = password_field :user, :password, class: "register-input-long"
 
