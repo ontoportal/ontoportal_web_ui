@@ -19,7 +19,7 @@
 }
 
 .account-page-second-row{
-    width: 584px;
+    width: 566px;
 }
 
 #account-page-title-line{
@@ -188,4 +188,28 @@ svg path{
     margin-top: 14px;
     display: flex;
     justify-content: center;
+}
+@media only screen and (max-width: 1200px) {
+    .account-page-first-row{
+        width: 47vw;
+        margin-right: 20px;
+    }
+    
+    .account-page-second-row{
+        width: 47vw;
+    }
+}
+
+@media only screen and (max-width: 950px) {
+    .account-page-first-row{
+        width: 80vw;
+        margin-right: 20px;
+    }
+    
+    .account-page-second-row{
+        width: 80vw;
+    }
+    .account-page-sub-container{
+        display:block;
+    }
 }
