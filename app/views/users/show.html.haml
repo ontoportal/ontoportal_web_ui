@@ -118,7 +118,7 @@
             %h4.account-page-card-title Projects Created
             - @user_projects.each do |project|
               .account-page-submitted-ontology
-                %a{href: "/ontologies/#{ont.acronym}"}= project.name
+                %a{href: "/ontologies/#{project.acronym}"}= project.name
         - if no_ontologies
           .account-page-card
             .account-page-no-ontology
