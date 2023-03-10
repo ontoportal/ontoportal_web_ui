@@ -59,6 +59,7 @@ class SubmissionsController < ApplicationController
     error_response = @submission.update
     if response_error?(error_response)
       @errors = response_errors(error_response) # see application_controller::response_errors
+      render 'edit'
     else
       redirect_to "/ontologies/#{@ontology.acronym}"
     end
