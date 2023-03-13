@@ -40,10 +40,10 @@
               %p.account-page-card-desc AgroPortal announcements email list
             - subscribed = false
             - if subscribed 
-              %a.account-page-subscribe-button{:href =>'javascript:window.location.href = "/users/subscribe/" + "'+@user.username+'"'}
+              %a.account-page-subscribe-button{:href =>"mailto:#{$ANNOUNCE_SERVICE_HOST}?Subject=unsubscribe%20#{$ANNOUNCE_LIST}"}
                 Unsubscribe
             - else
-              %a.account-page-subscribe-button{:href => 'mailto:... &subject=... &body=....'}
+              %a.account-page-subscribe-button{:href => "mailto:#{$ANNOUNCE_SERVICE_HOST}?Subject=subscribe%20#{$ANNOUNCE_LIST}%20#{@user.firstName}%20#{@user.lastName}"}
                 Subscribe
         .account-page-card
           .account-page-card-container
