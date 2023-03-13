@@ -109,16 +109,18 @@
           - no_ontologies = false
           .account-page-card
             %h4.account-page-card-title Submitted ontologies
-            - @admin_ontologies.each do |ont|
-              .account-page-submitted-ontology
-                %a{href: "/ontologies/#{ont.acronym}"}= ont.name
+            .account-page-small-cards-container
+              - @admin_ontologies.each do |ont|
+                .account-page-submitted-ontology
+                  %a{href: "/ontologies/#{ont.acronym}"}= ont.name
         - unless @user_projects.nil? || @user_projects.empty?
           - no_ontologies = false
           .account-page-card
             %h4.account-page-card-title Projects Created
-            - @user_projects.each do |project|
-              .account-page-submitted-ontology
-                %a{href: "/ontologies/#{ont.acronym}"}= project.name
+            .account-page-small-cards-container
+              - @user_projects.each do |project|
+                .account-page-submitted-ontology
+                  %a{href: "/projects/#{project.acronym}"}= project.name
         - if no_ontologies
           .account-page-card
             .account-page-no-ontology
