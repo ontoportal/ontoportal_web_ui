@@ -6,7 +6,9 @@
 
 %div{:style => "padding: 1%; width: 98%"}
   - if session[:user].nil?
-    = link_to "Create New Mapping", "/login?redirect=/ontologies/#{@ontology.acronym}/?p=classes&t=mappings&conceptid=#{CGI.escape(@concept.id)}", :method => :get, :class => "link_button"
+    = link_to('Create mapping', |
+              login_index_path(redirect: ontology_path(@ontology.acronym, p: 'classes', conceptid: @concept.id, t: 'mappings')), |
+              class: 'btn btn-primary') |
   - else
     = link_to("Create mapping", |
               new_mapping_path(ontology_from: "#{@ontology.id}", conceptid_from: "#{@concept.id}"), |
