@@ -17,7 +17,7 @@ shared:
     team: 'https://www.bioontology.org/about-us/#team'
     terms: 'https://www.bioontology.org/terms/'
     twitter: 'http://twitter.com/bioontology'
-    virtual_appliance: 'https://ontoportal.github.io/administration/'
+    virtual_appliance: 'https://ontoportal.github.io/documentation/administration'
     widgets: 'http://www.bioontology.org/wiki/NCBO_Widgets'
     wiki: 'https://www.bioontology.org/wiki/'
 
