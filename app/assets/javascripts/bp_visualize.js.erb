@@ -112,25 +112,9 @@
   }
 
   jQuery(document).ready(function(){
-    // Tab auto-select based on parameter "t"
-    var urlFragment, paramsList, splitParam, content,
-        url = document.URL,
-        params = {};
-
-    if (url.indexOf("?") > 0) {
-      urlFragment = url.split("?");
-      paramsList = urlFragment[1].split("&");
-
-      for (param in paramsList) {
-        splitParam = paramsList[param].split("=");
-
-        if (splitParam.length > 1)
-          params[splitParam[0]] = splitParam[1].split("#")[0];
-      }
-
-      if (params !== "undefined" && "t" in params) {
-        showClassesTab(params["t"]);
-      }
+    let searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has('t')) {
+      showClassesTab(searchParams.get('t'));
     }
 
     jQuery("#classPermalinkModal").on("shown.bs.modal", function (e) {
