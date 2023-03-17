@@ -340,6 +340,10 @@ display_links: false, display_context: false)
 
     # Get the latest submission (not necessarily the latest 'ready' submission)
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: '')
+    
+    submission_lang = get_submission_languages(@submission_latest.naturalLanguage)
+
+    @submission_lang_options = transform_langs_to_select_options(submission_lang)
 
     # Is the ontology downloadable?
     @ont_restricted = ontology_restricted?(@ontology.acronym)
@@ -459,6 +463,17 @@ display_links: false, display_context: false)
 
   private
 
+
+  def get_submission_languages(submission_natural_language = [])
+    submission_natural_language.map do |natural_language|
+      natural_language[/iso639-3\/(\w+)/, 1]
+    end.compact
+  end  
+
+  def transform_langs_to_select_options(langs = [])
+    langs.map { |lang| [lang.upcase, lang.slice(0, 2).upcase] }
+  end
+  
   def ontology_params
     p = params.require(:ontology).permit(:name, :acronym, { administeredBy:[] }, :viewingRestriction, { acl:[] },
                                          { hasDomain:[] }, :isView, :viewOf, :subscribe_notifications, {group:[]})
