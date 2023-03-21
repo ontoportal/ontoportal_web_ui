@@ -94,13 +94,14 @@
               = link_to(sub.documentation, "aria-label": "Ontology documentation", title: "Ontology documentation", target: "_blank") do
                 %i.fas.fa-lg.fa-book-reader{"aria-hidden": true}
             - unless sub.publication.nil?
-              = link_to(sub.publication, "aria-label": "Ontology publications", title: "Ontology publications", target: "_blank") do
-                %i.fas.fa-lg.fa-book{"aria-hidden": true}
+              - sub.publication.each do |pub|
+                = link_to(pub, "aria-label": "Ontology publications", title: "Ontology publications", target: "_blank") do
+                  %i.fas.fa-lg.fa-book{"aria-hidden": true}
           - if @ontology.admin?(session[:user])
             = link_to(edit_ontology_path(@ontology.acronym), "aria-label": "Edit ontology details", title: "Edit ontology details") do
               %i.fas.fa-lg.fa-user-edit
 
-  %div.row.pb-4
+  %div.row.pb-4{ data: { controller: "history turbo-frame",  action: "lang_changed->history#updateURL lang_changed->turbo-frame#updateFrame", "turbo-frame-url-value": "/ontologies/INRAETHES/?p=classes"}}
     %div.col
       %div.card
         %div.card-header
@@ -114,7 +115,7 @@
                           id: "ont-#{section}-tab", class: "nav-link #{selected_section?(section) ? 'active show' : ''}",
                           data: {toggle: "tab", target: "#ont_#{section}_content", 'bp-ont-page': section ,
                           'bp-ont-page-name': ontology_viewer_page_name(@ontology.name, @concept&.prefLabel || '', section) })
-            = select_tag :category, options_for_select(@submission_lang_options), data: { controller: "langs" }, id: "category-select", style: "background-color: #f2f2f2; color: #333; font-size: 14px; padding: 2px 6px 2px 6px; border: 1px solid #ccc; border-radius: 4px;outline: none;"
+            = select_tag :category, options_for_select(@submission_lang_options), data: { controller: "language-change", action: "change->language-change#onChange"}, id: "category-select", style: "background-color: #f2f2f2; color: #333; font-size: 14px; padding: 2px 6px 2px 6px; border: 1px solid #ccc; border-radius: 4px;outline: none;"
        
         %div.card-body
           %div.tab-content

@@ -28,8 +28,7 @@ class OntologiesController < ApplicationController
     @app_name = 'FacetedBrowsing'
     @app_dir = '/browse'
     @base_path = @app_dir
-    ontologies = LinkedData::Client::Models::Ontology.all(
-include: LinkedData::Client::Models::Ontology.include_params + ',viewOf', include_views: true, display_context: false)
+    ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params + ',viewOf', include_views: true, display_context: false)
     ontologies_hash = Hash[ontologies.map {|o| [o.id, o] }]
     @admin = session[:user] ? session[:user].admin? : false
     @development = Rails.env.development?
@@ -39,8 +38,7 @@ include: LinkedData::Client::Models::Ontology.include_params + ',viewOf', includ
 
     # The attributes used when retrieving the submission. We are not retrieving all attributes to be faster
     browse_attributes = 'ontology,acronym,submissionStatus,description,pullLocation,creationDate,released,name,naturalLanguage,hasOntologyLanguage,hasFormalityLevel,isOfType,contact'
-    submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true, display_links: false,
-display_context: false, include: browse_attributes)
+    submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true, display_links: false,display_context: false, include: browse_attributes)
     submissions_map = Hash[submissions.map {|sub| [sub.ontology.acronym, sub] }]
 
     @categories = LinkedData::Client::Models::Category.all(display_links: false, display_context: false)
@@ -236,8 +234,7 @@ display_context: false, include: browse_attributes)
 
   def new
     @ontology = LinkedData::Client::Models::Ontology.new
-    @ontologies = LinkedData::Client::Models::Ontology.all(include: 'acronym', include_views: true,
-display_links: false, display_context: false)
+    @ontologies = LinkedData::Client::Models::Ontology.all(include: 'acronym', include_views: true,display_links: false, display_context: false)
     @categories = LinkedData::Client::Models::Category.all
     @groups = LinkedData::Client::Models::Group.all
     @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
@@ -343,7 +340,7 @@ display_links: false, display_context: false)
     
     submission_lang = get_submission_languages(@submission_latest.naturalLanguage)
 
-    @submission_lang_options = transform_langs_to_select_options(submission_lang)
+    @submission_lang_options = transform_langs_to_select_options(submission_lang)    
 
     # Is the ontology downloadable?
     @ont_restricted = ontology_restricted?(@ontology.acronym)
@@ -465,13 +462,11 @@ display_links: false, display_context: false)
 
 
   def get_submission_languages(submission_natural_language = [])
-    submission_natural_language.map do |natural_language|
-      natural_language[/iso639-3\/(\w+)/, 1]
-    end.compact
+    submission_natural_language.map { |natural_language| natural_language["iso639"] && natural_language.split('/').last }.compact
   end  
 
   def transform_langs_to_select_options(langs = [])
-    langs.map { |lang| [lang.upcase, lang.slice(0, 2).upcase] }
+    langs.map { |lang| [lang.upcase, lang.slice(0, 2)] }
   end
   
   def ontology_params

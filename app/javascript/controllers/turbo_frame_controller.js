@@ -19,7 +19,9 @@ export default class extends Controller {
         if (values.filter(x => x.length !== 0).length === 0) {
             this.frame.innerHTML = this.placeHolderValue
         } else {
+            debugger
             this.frame.innerHTML = ""
+            // this.urlValue = this.urlValue || window.location.href;
             this.urlValue = new HistoryService().getUpdatedURL(this.urlValue, newData);
             this.frame.src = this.urlValue
         }

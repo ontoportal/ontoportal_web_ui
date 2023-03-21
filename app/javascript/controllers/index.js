@@ -25,6 +25,9 @@ application.register("label-ajax", LabelAjaxController)
 import LabelsAjaxContainerController from "./labels_ajax_container_controller"
 application.register("labels-ajax-container", LabelsAjaxContainerController)
 
+import LanguageChangeController from "./language_change_controller"
+application.register("language-change", LanguageChangeController)
+
 import LoadChartController from "./load_chart_controller"
 application.register("load-chart", LoadChartController)
 
