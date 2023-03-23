@@ -1,11 +1,11 @@
-import {Controller} from "@hotwired/stimulus"
-import {HistoryService} from "../mixins/useHistory";
+import { Controller } from "@hotwired/stimulus"
+import { HistoryService } from "../mixins/useHistory";
 
 // Connects to data-controller="turbo-frame"
 export default class extends Controller {
     static values = {
         url: String,
-        placeHolder: {type: String, default: 'Nothing loaded'},
+        placeHolder: { type: String, default: 'Nothing loaded' },
     }
     static targets = ['frame']
 
@@ -14,15 +14,21 @@ export default class extends Controller {
     }
 
     updateFrame(event) {
-        const newData = event.detail.data
-        const values = Object.entries(newData)[0][1]
-        if (values.filter(x => x.length !== 0).length === 0) {
+        const { data } = event.detail
+        const values = Object.values(data)
+
+        // remove null and empty values
+        values.filter((value) => value !== "" || value !== null)
+
+        if (values.length === 0) {
             this.frame.innerHTML = this.placeHolderValue
         } else {
-            debugger
             this.frame.innerHTML = ""
-            // this.urlValue = this.urlValue || window.location.href;
-            this.urlValue = new HistoryService().getUpdatedURL(this.urlValue, newData);
+
+            this.urlValue ||= window.location.pathname + window.location.search;
+
+            this.urlValue = new HistoryService().getUpdatedURL(this.urlValue, data);
+
             this.frame.src = this.urlValue
         }
     }

@@ -1,5 +1,8 @@
 export class HistoryService {
 
+    unWantedData = ['turbo', 'controller', 'target', 'value']
+
+
     constructor() {
         this.history = History
     }
@@ -20,27 +23,32 @@ export class HistoryService {
     }
 
     getUpdatedURL(currentUrl, newData) {
-        const url = new URL(currentUrl, document.location.origin)
-        const urlParams = url.searchParams
-        this.#updateURLFromState(urlParams, this.getState())
 
+        const base = document.location.origin
+        const url = new URL(currentUrl, base)
+        
+        this.#updateURLFromState(url.searchParams, this.getState())
+        
+        const wantedData = this.#filterUnwantedData(newData, this.unWantedData);
 
-        this.#filterUnwantedData(newData).forEach(([updatedParam, newValue]) => {
+        wantedData.forEach(([updatedParam, newValue]) => {
+
+            if (newValue === null) {
+                url.searchParams.delete(updatedParam)
+            } else {
                 newValue = Array.isArray(newValue) ? newValue : [newValue]
-                if (newValue !== null && Array.from(newValue).length > 0) {
-                    urlParams.set(updatedParam, newValue.join(','))
-                }
-            })
-
+                url.searchParams.set(updatedParam, newValue.join(','))
+            }
+        });
+        
         return url.pathname + url.search
     }
 
-    #filterUnwantedData(newData){
-        const unWantedData = ['turbo', 'controller', 'target', 'value']
-        return Object.entries(newData).filter(([key]) =>  unWantedData.filter(x => key.toLowerCase().includes(x)).length === 0)
+    #filterUnwantedData(data, unWantedData) {
+        return Object.entries(data).filter(([key]) => !unWantedData.some(uw => key.toLowerCase().includes(uw.toLowerCase())))
     }
-    #initStateFromUrl(currentUrl) {
 
+    #initStateFromUrl(currentUrl) {
         const url = new URL(currentUrl, document.location.origin)
         const urlParams = url.searchParams
         const oldState = this.getState().data

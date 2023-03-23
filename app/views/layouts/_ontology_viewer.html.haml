@@ -101,7 +101,7 @@
             = link_to(edit_ontology_path(@ontology.acronym), "aria-label": "Edit ontology details", title: "Edit ontology details") do
               %i.fas.fa-lg.fa-user-edit
 
-  %div.row.pb-4{ data: { controller: "history turbo-frame",  action: "lang_changed->history#updateURL lang_changed->turbo-frame#updateFrame", "turbo-frame-url-value": "/ontologies/INRAETHES/?p=classes"}}
+  %div.row.pb-4{ data: { controller: "history turbo-frame",  action: " lang_changed->history#updateURL lang_changed->turbo-frame#updateFrame"}}
     %div.col
       %div.card
         %div.card-header
