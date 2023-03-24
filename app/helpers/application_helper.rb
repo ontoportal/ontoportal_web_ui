@@ -35,6 +35,10 @@ module ApplicationHelper
     CGI.escape(string)
   end
 
+  def unescape(string)
+    CGI.unescape(string)
+  end
+
   def clean(string)
     string = string.gsub("\"",'\'')
     return string.gsub("\n",'')
@@ -156,7 +160,6 @@ module ApplicationHelper
 
       # This fake root will be present at the root of "flat" ontologies, we need to keep the id intact
 
-
       if child.id.eql?('bp_fake_root')
         string << tree_link_to_concept(child: child, ontology_acronym: '',
                                        active_style: active_style, node: node)
@@ -235,7 +238,7 @@ module ApplicationHelper
     attribs = []
     html_attribs.each {|k,v| attribs << "#{k.to_s}='#{v}'"}
     return <<-BLOCK
-          <a class='pop_window tooltip_link #{[css_class].flatten.compact.join(' ')}' #{attribs.join(" ")}>
+          <a data-controller='tooltip' class='pop_window tooltip_link d-inline-block #{[css_class].flatten.compact.join(' ')}' #{attribs.join(" ")}>
             <i class="#{icon} d-flex"></i> #{text}
           </a>
     BLOCK
@@ -329,6 +332,19 @@ module ApplicationHelper
     @groups_for_js = @groups_map.to_json
   end
 
+  def metadata_for_select
+    get_metadata
+    return @metadata_for_select
+  end 
+
+  def get_metadata
+    @metadata_for_select = []
+    submission_metadata.each do |data|
+      @metadata_for_select << data["attribute"]
+    end
+  end    
+
+
   def ontologies_to_acronyms(ontologyIDs)
     acronyms = []
     ontologyIDs.each do |id|
@@ -351,33 +367,44 @@ module ApplicationHelper
     output = "<span class='more_less_container'><span class='truncated_more'>#{truncate(text, :length => length, :omission => trailing_text)}" + more + "</span>"
   end
 
-  def subscribe_ontology_button(ontology_id, user = nil)
-    user = session[:user] if user.nil?
-    if user.nil?
-      # subscribe button must redirect to login
-      return sanitize("<a href='/login?redirect=#{request.url}' style='font-size: .9em;' class='subscribe_to_ontology'>Subscribe</a>")
+
+  def add_comment_button(parent_id, parent_type)
+    if session[:user].nil?
+      link_to "Add comment",  login_index_path(redirect: request.url), class: "link_button"
+    else
+      link_to_modal "Add comment", notes_new_comment_path(parent_id: parent_id, parent_type: parent_type, ontology_id: @ontology.acronym),
+                    class: "add_comment btn btn-primary", data: { show_modal_title_value: "Add a new comment"}
     end
-    # Init subscribe button parameters.
-    sub_text = "Subscribe"
-    params = "data-bp_ontology_id='#{ontology_id}' data-bp_is_subbed='false' data-bp_user_id='#{user.id}'"
-    begin
-      # Try to create an intelligent subscribe button.
-      if ontology_id.start_with? 'http'
-        ont = LinkedData::Client::Models::Ontology.find(ontology_id)
-      else
-        ont = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_id).first
-      end
-      subscribed = subscribed_to_ontology?(ont.acronym, user)  # application_helper
-      sub_text = subscribed ? "Unsubscribe" : "Subscribe"
-      params = "data-bp_ontology_id='#{ont.acronym}' data-bp_is_subbed='#{subscribed}' data-bp_user_id='#{user.id}'"
-    rescue
-      # pass, fallback init done above begin block to scope parameters beyond the begin/rescue block
+  end
+
+  def add_reply_button(parent_id)
+    if session[:user].nil?
+      link_to "Reply", login_index_path, 'data-turbo': false
+    else
+      link_to 'Reply', notes_new_reply_path(parent_id: parent_id ), "data-turbo-frame": "#{parent_id}_new_reply"
     end
-    # TODO: modify/copy CSS for notes_sub_error => subscribe_error
-    # TODO: modify/copy CSS for subscribe_to_notes => subscribe_to_ontology
-    spinner = '<span class="subscribe_spinner" style="display: none;">' + image_tag("spinners/spinner_000000_16px.gif", style: "vertical-align: text-bottom;") + '</span>'
-    error = "<span style='color: red;' class='subscribe_error'></span>"
-    return "<a href='javascript:void(0);' class='subscribe_to_ontology btn btn-primary' #{params}>#{sub_text}</a> #{spinner} #{error}"
+  end
+
+
+  def add_proposal_button(parent_id, parent_type)
+    if session[:user].nil?
+        link_to "Add proposal",  login_index_path(redirect: request.url), class: "link_button"
+    else
+      link_to_modal "Add proposal", notes_new_proposal_path(parent_id: parent_id, parent_type: parent_type, ontology_id: @ontology.acronym),
+                    class: "add_proposal btn btn-primary", data: { show_modal_title_value: "Add a new proposal"}
+    end
+  end
+ 
+  def subscribe_button(ontology_id)
+    if session[:user].nil?
+      return link_to 'Subscribe to notes emails', "/login?redirect=#{request.url}", {style:'font-size: .9em;', class:'link_button'}
+    end
+
+    user = LinkedData::Client::Models::User.find(session[:user].id)
+    ontology_acronym = ontology_id.split('/').last
+    subscribed = subscribed_to_ontology?(ontology_acronym, user)
+
+    render OntologySubscribeButtonComponent.new(ontology_id: ontology_id, subscribed: subscribed, user_id: user.id)
   end
 
   def subscribed_to_ontology?(ontology_acronym, user)
@@ -435,9 +462,11 @@ module ApplicationHelper
   def bp_ont_link(ont_acronym)
     return "/ontologies/#{ont_acronym}"
   end
+
   def bp_class_link(cls_id, ont_acronym)
     return "#{bp_ont_link(ont_acronym)}?p=classes&conceptid=#{escape(cls_id)}"
   end
+
   def bp_scheme_link(scheme_id, ont_acronym)
     return "#{bp_ont_link(ont_acronym)}?p=schemes&schemeid=#{escape(scheme_id)}"
   end
@@ -449,6 +478,7 @@ module ApplicationHelper
   def bp_collection_link(collection_id, ont_acronym)
     "#{bp_ont_link(ont_acronym)}?p=collection&collectionid=#{escape(collection_id)}"
   end
+
   def label_ajax_data_h(cls_id, ont_acronym, ajax_uri, cls_url)
     { data:
         {
@@ -537,6 +567,19 @@ module ApplicationHelper
     else
       link_to(name, options, html_options)
     end
+  end
+  def submit_to_modal(name, html_options = nil, &block)
+    new_data = {
+      controller: 'show-modal', turbo: true,
+      turbo_frame: 'application_modal_content',
+      action: 'click->show-modal#show'
+    }
+
+    html_options[:data].merge!(new_data) do |_, old, new|
+      "#{old} #{new}"
+    end
+
+    submit_tag(name || "save", html_options)
   end
 
   def uri?(url)
