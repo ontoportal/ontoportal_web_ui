@@ -1,19 +1,18 @@
 import { Controller } from "@hotwired/stimulus"
+import { showLoader } from "../mixins/showLoader";
 
-// Connects to data-controller="language-change"
 export default class extends Controller {
 
-  onChange() {
+  static targets = ["sections"]
 
-    this.element.dispatchEvent(new CustomEvent('lang_changed', {
-      bubbles: true,
-      cancelable: true,
-      detail: {
-        data: {
-          language: [this.element.value]
-        }
-      }
-    }));
 
+  onChange(event) {
+    showLoader(this.sectionsTarget);
+   
+    const url = new URL(window.location.href);
+    url.searchParams.set('language', event.target.value);
+
+    Turbo.visit(url.toString());
   }
+
 }

@@ -101,27 +101,28 @@
             = link_to(edit_ontology_path(@ontology.acronym), "aria-label": "Edit ontology details", title: "Edit ontology details") do
               %i.fas.fa-lg.fa-user-edit
 
-  %div.row.pb-4{ data: { controller: "history turbo-frame",  action: " lang_changed->history#updateURL lang_changed->turbo-frame#updateFrame"}}
-    %div.col
-      %div.card
-        %div.card-header
-          - sections = sections_to_show
-          -# Tabbed navigation bar for ontology content sections
-          %div{style: "display: flex; justify-content: space-between;"}
-            %ul.nav.nav-tabs.card-header-tabs{id: "navbar-ontology", role: "tablist"}
+  = turbo_frame_tag 'sections', data: { controller: "language-change"}  do 
+    %div.row.pb-4
+      %div.col
+        %div.card
+          %div.card-header
+            - sections = sections_to_show
+            -# Tabbed navigation bar for ontology content sections
+            %div{style: "display: flex; justify-content: space-between;"}
+              %ul.nav.nav-tabs.card-header-tabs{id: "navbar-ontology", role: "tablist"}
+                - sections.each do |section|
+                  %li.nav-item
+                    = link_to(section_name(section) , ontology_path(@ontology.acronym, p: section),
+                            id: "ont-#{section}-tab", class: "nav-link #{selected_section?(section) ? 'active show' : ''}",
+                            data: {toggle: "tab", target: "#ont_#{section}_content", 'bp-ont-page': section ,
+                            'bp-ont-page-name': ontology_viewer_page_name(@ontology.name, @concept&.prefLabel || '', section) })
+              = select_tag :category, options_for_select(@submission_lang_options), data: { action: "change->language-change#onChange"}, id: "category-select", style: "background-color: #f2f2f2; color: #333; font-size: 14px; padding: 2px 6px 2px 6px; border: 1px solid #ccc; border-radius: 4px;outline: none;"
+              -# = link_to "Download", "/ontologies/INRAETHES/?p=classes&language=EN", class: "btn btn-primary btn-sm", style: "margin-left: 10px;"
+          %div.card-body
+            %div.tab-content{"data-target": "language-change.sections"}
               - sections.each do |section|
-                %li.nav-item
-                  = link_to(section_name(section) , ontology_path(@ontology.acronym, p: section),
-                          id: "ont-#{section}-tab", class: "nav-link #{selected_section?(section) ? 'active show' : ''}",
-                          data: {toggle: "tab", target: "#ont_#{section}_content", 'bp-ont-page': section ,
-                          'bp-ont-page-name': ontology_viewer_page_name(@ontology.name, @concept&.prefLabel || '', section) })
-            = select_tag :category, options_for_select(@submission_lang_options), data: { controller: "language-change", action: "change->language-change#onChange"}, id: "category-select", style: "background-color: #f2f2f2; color: #333; font-size: 14px; padding: 2px 6px 2px 6px; border: 1px solid #ccc; border-radius: 4px;outline: none;"
-       
-        %div.card-body
-          %div.tab-content
-            - sections.each do |section|
-              %div.tab-pane{id: "ont_#{section}_content", class: selected_section?(section) ? 'active show' : ''}
-                = lazy_load_section(section) { yield }
+                %div.tab-pane{id: "ont_#{section}_content", class: selected_section?(section) ? 'active show' : ''}
+                  = lazy_load_section(section) { yield }
 
 
   = render partial: "layouts/footer"
