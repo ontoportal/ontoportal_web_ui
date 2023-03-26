@@ -429,12 +429,6 @@ module OntologiesHelper
     options_for_select(submission_lang)
   end
 
-  def request_lang
-    lang = params[:language] || params[:lang]
-    lang&.upcase
-  end
-
-
   private
 
   def submission_languages(submission = @submission)

@@ -758,6 +758,10 @@ class ApplicationController < ActionController::Base
   end
   helper_method :submission_metadata
 
+
+  def request_lang
+    helpers.request_lang
+  end
   private
   def not_found_record(exception)
     @error_message = exception.message

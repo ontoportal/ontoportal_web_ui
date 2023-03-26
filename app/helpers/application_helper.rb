@@ -602,4 +602,9 @@ module ApplicationHelper
     submission = @submission || @submission_latest
     submission&.hasOntologyLanguage === 'SKOS'
   end
+
+  def request_lang
+    lang = params[:language] || params[:lang]
+    lang&.upcase
+  end
 end
