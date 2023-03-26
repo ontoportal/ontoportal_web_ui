@@ -607,6 +607,7 @@ module ApplicationHelper
 
   def request_lang
     lang = params[:language] || params[:lang]
-    lang&.upcase
+    lang = 'EN' unless lang
+    lang.upcase
   end
 end
