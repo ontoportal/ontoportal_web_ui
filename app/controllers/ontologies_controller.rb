@@ -151,8 +151,8 @@ class OntologiesController < ApplicationController
     get_class(params)
 
     if @submission.hasOntologyLanguage == 'SKOS'
-      @schemes =  get_schemes(@ontology)
-      @collections = get_collections(@ontology, add_colors: true)
+      @schemes =  get_schemes(params, @ontology)
+      @collections = get_collections(params, @ontology, add_colors: true)
     else
       @instance_details, type = get_instance_and_type(params[:instanceid])
       unless @instance_details.empty? || type.nil? || concept_id_param_exist?(params)
@@ -263,9 +263,9 @@ class OntologiesController < ApplicationController
   end
 
   def schemes
-    @schemes = get_schemes(@ontology)
+    @schemes = get_schemes(params, @ontology)
     scheme_id = params[:scheme_id] || @submission_latest.URI || nil
-    @scheme = get_scheme(@ontology, scheme_id) if scheme_id
+    @scheme = get_scheme(params, @ontology, scheme_id) if scheme_id
 
     if request.xhr?
       render partial: 'ontologies/sections/schemes', layout: false
@@ -275,9 +275,9 @@ class OntologiesController < ApplicationController
   end
 
   def collections
-    @collections = get_collections(@ontology)
+    @collections = get_collections(params, @ontology)
     collection_id = params[:collection_id]
-    @collection = get_collection(@ontology, collection_id) if collection_id
+    @collection = get_collection(params, @ontology, collection_id) if collection_id
 
     if request.xhr?
       render partial: 'ontologies/sections/collections', layout: false
@@ -289,6 +289,7 @@ class OntologiesController < ApplicationController
   # GET /ontologies/ACRONYM
   # GET /ontologies/1.xml
   def show
+    
 
     # Hack to make ontologyid and conceptid work in addition to id and ontology params
     params[:id] = params[:id].nil? ? params[:ontologyid] : params[:id]

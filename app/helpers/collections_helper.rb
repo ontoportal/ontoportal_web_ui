@@ -1,14 +1,16 @@
 module CollectionsHelper
 
 
-  def get_collections(ontology, add_colors: false)
-    collections = ontology.explore.collections
+  def get_collections(params, ontology, add_colors: false)
+    lang = params[:language]&.upcase&.to_sym
+    collections = ontology.explore.collections({ include: 'all', lang: lang })
     generate_collections_colors(collections) if add_colors
     collections
   end
 
-  def get_collection(ontology, collection_uri)
-    ontology.explore.collections({ include: 'all' },collection_uri)
+  def get_collection(params, ontology, collection_uri)
+    lang = params[:language]&.upcase&.to_sym
+    ontology.explore.collections({ include: 'all', lang: lang},collection_uri)
   end
 
   def get_collection_label(collection)
