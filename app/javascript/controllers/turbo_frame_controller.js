@@ -18,17 +18,13 @@ export default class extends Controller {
         const values = Object.values(data)
 
         // remove null and empty values
-        values.filter((value) => value !== "" || value !== null)
+        values.filter((value) => value !== "" || value !== undefined)
 
         if (values.length === 0) {
             this.frame.innerHTML = this.placeHolderValue
         } else {
             this.frame.innerHTML = ""
-
-            this.urlValue ||= window.location.pathname + window.location.search;
-
-            this.urlValue = new HistoryService().getUpdatedURL(this.urlValue, data);
-
+            this.urlValue = new HistoryService().getUpdatedURL(this.urlValue, data)
             this.frame.src = this.urlValue
         }
     }
