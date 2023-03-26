@@ -112,7 +112,8 @@ class ConceptsController < ApplicationController
         page: page,
         sortby:'modified,created',
         order:'desc,desc',
-        display: 'prefLabel,modified,created'
+        display: 'prefLabel,modified,created',
+        language: request_lang
       }
       if @last_date
         params.merge!(last_date: @last_date)
