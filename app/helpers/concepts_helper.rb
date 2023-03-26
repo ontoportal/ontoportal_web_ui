@@ -32,7 +32,7 @@ module ConceptsHelper
     ontology_not_found(ont_id) unless @ontology
     # Retrieve a class prefLabel or return the class ID (URI)
     # - mappings may contain class URIs that are not in bioportal (e.g. obo-xrefs)
-    cls = @ontology.explore.single_class(cls_id)
+    cls = @ontology.explore.single_class({language: request_lang, include: 'prefLabel'}, cls_id)
     # TODO: log any cls.errors
     # TODO: NCBO-402 might be implemented here, but it throws off a lot of ajax result rendering.
     #cls_label = cls.prefLabel({:use_html => true}) || cls_id
