@@ -416,5 +416,29 @@ module OntologiesHelper
     end
     sections
   end
+
+
+  def languages_options(submission =  @submission)
+    current_lang = request_lang
+    submission_lang = submission_languages(submission)
+    # Transform each language into a select option
+    submission_lang = submission_lang.map do |lang|
+      lang = lang.split('/').last.upcase
+      [lang, lang, { selected: lang.eql?(current_lang) }]
+    end
+    options_for_select(submission_lang)
+  end
+
+  def request_lang
+    lang = params[:language] || params[:lang]
+    lang&.upcase
+  end
+
+
+  private
+
+  def submission_languages(submission = @submission)
+    submission.naturalLanguage.map { |natural_language| natural_language["iso639"] && natural_language.split('/').last }.compact
+  end
 end
 

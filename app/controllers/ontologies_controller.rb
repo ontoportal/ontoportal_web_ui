@@ -337,11 +337,6 @@ class OntologiesController < ApplicationController
 
     # Get the latest submission (not necessarily the latest 'ready' submission)
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: '')
-    
-    submission_lang = get_submission_languages(@submission_latest.naturalLanguage)
-
-    @submission_lang_options = transform_langs_to_select_options(submission_lang, params[:language])    
-
     # Is the ontology downloadable?
     @ont_restricted = ontology_restricted?(@ontology.acronym)
 
@@ -461,24 +456,9 @@ class OntologiesController < ApplicationController
   private
 
 
-  def get_submission_languages(submission_natural_language = [])
-    submission_natural_language.map { |natural_language| natural_language["iso639"] && natural_language.split('/').last }.compact
-  end  
 
-  def transform_langs_to_select_options(langs = [], current_lang = nil)
-    # Transform each language into a select option
-    options = langs.map do |lang|
-      lang = lang.split('/').last
-      [lang.capitalize, lang.upcase, { selected: lang.casecmp(current_lang) == 0 }]
-    end
-  
-    # If none of the languages are marked as default, mark "All" as default
-    options.unshift(['All', nil, { selected: options.none? { |option| option[2][:selected] } }]) 
-  
-    options
-  end
-  
-  
+
+
   def ontology_params
     p = params.require(:ontology).permit(:name, :acronym, { administeredBy:[] }, :viewingRestriction, { acl:[] },
                                          { hasDomain:[] }, :isView, :viewOf, :subscribe_notifications, {group:[]})
