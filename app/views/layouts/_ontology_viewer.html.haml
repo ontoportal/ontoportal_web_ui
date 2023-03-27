@@ -48,19 +48,16 @@
   %div.row.pb-4{data: {controller: 'ontology-viewer-tabs', 'ontology-viewer-tabs-language-sections-value': ontology_data_sections }}
     %div.col
       %div.card
-        %div.card-header
+        %div.card-header{style: 'padding-bottom: 3px'}
           - sections = sections_to_show
-          -# Tabbed navigation bar for ontology content sections
           %div{style: "display: flex; justify-content: space-between;"}
             %ul.nav.nav-tabs.card-header-tabs{id: "navbar-ontology", role: "tablist"}
               - sections.each do |section|
                 %li.nav-item
-                  = link_to(section_name(section) , ontology_path(@ontology.acronym, p: section),
-                          id: "ont-#{section}-tab", class: "nav-link #{selected_section?(section) ? 'active show' : ''}",
-                          data: {toggle: "tab", target: "#ont_#{section}_content", 'bp-ont-page': section ,
-                          'bp-ont-page-name': ontology_viewer_page_name(@ontology.name, @concept&.prefLabel || '', section) })
-            = select_tag :category, options_for_select(@submission_lang_options), data: { controller: "language-change", action: "change->language-change#onChange"}, id: "category-select", style: "background-color: #f2f2f2; color: #333; font-size: 14px; padding: 2px 6px 2px 6px; border: 1px solid #ccc; border-radius: 4px;outline: none;"
-       
+                  = link_to_section(section)
+            %div
+              = select_tag :language_selector, languages_options, class: 'custom-select', disabled: !ontology_data_section?,
+                    data: {'ontology-viewer-tabs-target': 'languageSelector'}
         %div.card-body
           %div.tab-content
             - sections.each do |section|
