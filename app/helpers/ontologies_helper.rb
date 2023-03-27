@@ -2,7 +2,7 @@ module OntologiesHelper
 
   REST_URI = $REST_URL
   API_KEY = $API_KEY
-  LANGUAGE_FILTERABLE_SECTIONS  = ['classes', 'schemes', 'collections']
+  LANGUAGE_FILTERABLE_SECTIONS  = %w[classes schemes collections instances]
 
 
 
@@ -397,8 +397,12 @@ module OntologiesHelper
     current_section.eql?(section_title)
   end
 
-  def allowed_to_show_language_filter?(section)
-    LANGUAGE_FILTERABLE_SECTIONS.include?(section)
+  def ontology_data_sections
+    LANGUAGE_FILTERABLE_SECTIONS
+  end
+
+  def ontology_data_section?(section_title = current_section)
+    ontology_data_sections.include?(section_title)
   end
 
   def lazy_load_section(section_title, &block)
