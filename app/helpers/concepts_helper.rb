@@ -50,7 +50,7 @@ module ConceptsHelper
   end
 
   def sorted_by_date_url(page = 1, last_concept = nil)
-    out = "/ajax/classes/date_sorted_list?ontology=#{@ontology.acronym}&page=#{page}"
+    out = "/ajax/classes/date_sorted_list?ontology=#{@ontology.acronym}&page=#{page}&language=#{request_lang}"
     out += "&last_date=#{concept_date(last_concept)}" if last_concept
     out
   end
