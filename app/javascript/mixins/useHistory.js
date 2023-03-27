@@ -15,24 +15,25 @@ export class HistoryService {
         return this.history.getState()
     }
 
-
     updateHistory(currentUrl, newData) {
-        const state = this.#initStateFromUrl(currentUrl)
-        const newUrl = this.getUpdatedURL(currentUrl, newData, state)
-        this.pushState(state, state.title, newUrl)
+        const newUrl = this.getUpdatedURL(currentUrl, newData)
+        const newState = this.#initStateFromUrl(newUrl)
+        this.pushState(newState, newState.title, newUrl)
     }
 
     getUpdatedURL(currentUrl, newData) {
-
         const base = document.location.origin
         const url = new URL(currentUrl, base)
-        
-        this.#updateURLFromState(url.searchParams, this.getState())
-        
+
+        this.#updateURLFromState(url.searchParams, this.getState().data)
+        this.#addNewDataToUrl(url, newData)
+        return url.pathname + url.search
+    }
+
+    #addNewDataToUrl(url, newData) {
         const wantedData = this.#filterUnwantedData(newData, this.unWantedData);
 
         wantedData.forEach(([updatedParam, newValue]) => {
-
             if (newValue === null) {
                 url.searchParams.delete(updatedParam)
             } else {
@@ -40,8 +41,6 @@ export class HistoryService {
                 url.searchParams.set(updatedParam, newValue.join(','))
             }
         });
-        
-        return url.pathname + url.search
     }
 
     #filterUnwantedData(data, unWantedData) {
@@ -51,26 +50,17 @@ export class HistoryService {
     #initStateFromUrl(currentUrl) {
         const url = new URL(currentUrl, document.location.origin)
         const urlParams = url.searchParams
-        const oldState = this.getState().data
-        let newState = oldState
-        let oldValue = null
+        let newState = this.getState().data
         urlParams.forEach((newVal, key) => {
-            oldValue = oldState[key]
-            if (oldValue === undefined) {
-                newState[key] = newVal
-            }
+            newState[key] = newVal
         })
         return newState
     }
 
     #updateURLFromState(urlParams, state) {
-        let oldValue = null
-        urlParams.forEach((newVal, key) => {
-            oldValue = state[key]
-            if (oldValue !== undefined && oldValue !== newVal) {
-                urlParams.set(key, newVal)
-            } else if (oldValue !== undefined) {
-                state[key] = newVal
+        Object.entries(state).forEach(([key, val]) => {
+            if (key !== 'p'){
+                urlParams.set(key, val)
             }
         })
     }
