@@ -47,21 +47,21 @@
 
   %div.row.pb-4{data: {controller: 'ontology-viewer-tabs', 'ontology-viewer-tabs-language-sections-value': ontology_data_sections }}
     %div.col
+      - sections = sections_to_show
       %div.card
         %div.card-header{style: 'padding-bottom: 3px'}
-          - sections = sections_to_show
           %div{style: "display: flex; justify-content: space-between;"}
             %ul.nav.nav-tabs.card-header-tabs{id: "navbar-ontology", role: "tablist"}
               - sections.each do |section|
                 %li.nav-item
                   = link_to_section(section)
             %div
-              = select_tag :language_selector, languages_options, class: 'custom-select', disabled: !ontology_data_section?,
-                    data: {'ontology-viewer-tabs-target': 'languageSelector'}
+              = language_selector_tag(:language_selector)
         %div.card-body
           %div.tab-content
             - sections.each do |section|
-              %div.tab-pane{id: "ont_#{section}_content", class: selected_section?(section) ? 'active show' : ''}
+              %div.tab-pane{id: "ont_#{section}_content", class: selected_section?(section) ? 'active show' : '', data: section_data(section)}
+                = language_selector_hidden_tag(section) if ontology_data_section?(section)
                 = lazy_load_section(section) { yield }
 
 
