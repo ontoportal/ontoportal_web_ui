@@ -2,10 +2,6 @@
 - concept_title = @concept.nil? ? "" : " - #{@concept.prefLabel} - Classes"
 - @title = "#{@ontology.name}#{concept_title}"
 
-- sub = @submission_latest
-- details_available = true
-- if sub.nil? || (sub.respond_to?(:status) && sub.status == 404)
-  - details_available = false
 
 = render :partial =>'layouts/header'
 %div#bd
@@ -53,53 +49,13 @@
 
   = render TurboModalComponent.new(id: 'application_modal')
 
-  -# Modal dialog for getting a permanent link to a class (must reside in a top-level position in the document to display properly).
-  %div#classPermalinkModal{class: "modal fade", tabindex: "-1", role: "dialog", aria: {labelledby: "classPermalinkLabel", hidden: "true"}}
-    %div.modal-dialog.modal-dialog-centered.modal-lg{role: "document"}
-      %div.modal-content
-        %div.modal-header
-          %h5#classPermalinkLabel.modal-title Permanent link to this class
-          %button.close{type: "button", "data-dismiss": "modal", "aria-label": "Close"}
-            %span{"aria-hidden": "true"} &times;
-        %div.modal-body
-          = text_field_tag("purl_input", nil, class: "form-control")
-        %div.modal-footer
-          %button.btn.btn-secondary{"data-dismiss": "modal"} Close
+  = render partial: 'concepts/perma_link_modal'
 
   = render partial: 'kgcl_dialogs'
 
-  -# A header of sorts to display ontology name and subset of details.
   %div.row.pt-md-3.pb-md-2
     %div.col
-      %div.ont-info-bar.rounded
-        %div
-          %h4
-            = link_to(@ontology.name, ontology_path(@ontology.acronym))
-          %div
-            - if (details_available && !sub.released.nil?)
-              %span.text-muted
-                Last uploaded:
-                = l(Date.parse(sub.creationDate), format: :monthfull_day_year)
-        %div.ont-info-links
-          - unless (@ontology.summaryOnly || @ont_restricted || @submission_latest.nil?)
-            = link_to(@submission_latest.id + "/download?apikey=#{get_apikey}", "aria-label": "Download latest version", title: "Download latest version") do
-              %i.fas.fa-lg.fa-download{"aria-hidden": true}
-          - if details_available
-            - if $PURL_ENABLED
-              = link_to(@ontology.purl, "aria-label": "BioPortal PURL", title: "BioPortal PURL", target: "_blank") do
-                %i.fas.fa-lg.fa-link{"aria-hidden": true}
-            = link_to(sub.homepage, "aria-label": "Ontology home page", title: "Ontology home page", target: "_blank") do
-              %i.fas.fa-lg.fa-home{"aria-hidden": true}
-            - unless sub.documentation.nil?
-              = link_to(sub.documentation, "aria-label": "Ontology documentation", title: "Ontology documentation", target: "_blank") do
-                %i.fas.fa-lg.fa-book-reader{"aria-hidden": true}
-            - unless sub.publication.nil?
-              - sub.publication.each do |pub|
-                = link_to(pub, "aria-label": "Ontology publications", title: "Ontology publications", target: "_blank") do
-                  %i.fas.fa-lg.fa-book{"aria-hidden": true}
-          - if @ontology.admin?(session[:user])
-            = link_to(edit_ontology_path(@ontology.acronym), "aria-label": "Edit ontology details", title: "Edit ontology details") do
-              %i.fas.fa-lg.fa-user-edit
+      = render partial: 'layouts/ontology_viewer/header'
 
   %div.row.pb-4{ data: { controller: "history turbo-frame",  action: " lang_changed->history#updateURL lang_changed->turbo-frame#updateFrame"}}
     %div.col
