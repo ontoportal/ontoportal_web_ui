@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 // Connects to data-controller="language-change"
 export default class extends Controller {
 
-  onChange() {
+  dispatchLangChangeEvent() {
 
     this.element.dispatchEvent(new CustomEvent('lang_changed', {
       bubbles: true,
