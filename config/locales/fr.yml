@@ -1,18 +1,18 @@
-en:
+fr:
   
-  _browse: "Browse"
-  _search: "Search"
+  _browse: "Parcourir"
+  _search: "Rechercher"
   _mappings: "Mappings"
-  _recommender: "Recommender"
-  _annotator: "Annotator"
+  _recommender: "Recommandateur"
+  _annotator: "Annotateur"
   _ncbo_annotator_plus: "NCBO Annotator+"
-  _projects: "Projects"
-  _landscape: "Landscape"
-  _login: "Login"
-  _account_setting: "Account Settings"
-  submit_feedback: "Submit Feedback"
-  _help: "Help"
-  _release_notes: "Release Notes"
+  _projects: "Projets"
+  _landscape: "Paysage"
+  _login: "Se connecter"
+  _account_setting: "Paramètres du compte"
+  submit_feedback: "Envoyer un commentaire"
+  _help: "Aide"
+  _release_notes: "Notes de version"
   _publications: "Publications"
   
   about: >
