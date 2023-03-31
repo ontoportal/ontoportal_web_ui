@@ -20,24 +20,17 @@ class ApplicationController < ActionController::Base
     I18n.locale = cookies[:locale] || detect_locale
   end
 
-  def detect_locale
-    
-    binding.pry
-    
+  def detect_locale    
     # Parse the Accept-Language header and split it into an array of language codes
     languages = request.headers['Accept-Language']&.split(',')
-
-    language_locale_map = {
-      'en' => :en,
-      'fr' => :fr
-    }
+    supported_languages = I18n.available_locales
 
     languages.each do |language|
       # Extract the language code from the language string
-      language_code = language.split(';').first
+      language_code = language.split(';').first.downcase.to_sym
 
-      # If the language code is in our map, return the corresponding locale
-      return language_locale_map[language_code] if language_locale_map[language_code]
+      # If the language code is in our , return the corresponding locale
+      return language_code if supported_languages.include?(language_code)
     end
     
     return I18n.default_locale 

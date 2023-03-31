@@ -1,16 +1,16 @@
 class LanguageController < ApplicationController
 
 
-    def set_locale()
-        language = params[:language] 
+    def set_locale
+        language = params[:language].strip.downcase.to_sym
+        supported_languages = I18n.available_locales
 
         if language
-            if I18n.available_locales.include?(language.to_sym)
+            if supported_languages.include?(language)
                  cookies.permanent[:locale] = language
             else
                 # in case we want to show a message if the language is not available
-                flash.now[:notice] =
-                    "#{language} translation not available"
+                flash.now[:notice] = "#{language} translation not available"
                 logger.error flash.now[:notice]
             end
         end
