@@ -1,6 +1,6 @@
 class LanguageController < ApplicationController
 
-
+    # set locale to the language selected by the user
     def set_locale
         language = params[:language].strip.downcase.to_sym
         supported_languages = I18n.available_locales

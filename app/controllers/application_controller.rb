@@ -13,24 +13,22 @@ require 'ontologies_api_client'
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
- 
+  
   before_action :set_locale
 
+  # Sets the locale based on the locale cookie or the value returned by detect_locale.
   def set_locale    
     I18n.locale = cookies[:locale] || detect_locale
     cookies[:locale] = I18n.locale if cookies[:locale].nil?
   end
 
+  # Returns detedted locale based on the Accept-Language header of the request or the default locale if none is found.
   def detect_locale    
-    # Parse the Accept-Language header and split it into an array of language codes
     languages = request.headers['Accept-Language']&.split(',')
     supported_languages = I18n.available_locales
 
     languages.each do |language|
-      # Extract the language code from the language string
       language_code = language.split(/[-;]/).first.downcase.to_sym
-
-      # If the language code is in our , return the corresponding locale
       return language_code if supported_languages.include?(language_code)
     end
     
