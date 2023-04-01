@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
 
   def set_locale    
     I18n.locale = cookies[:locale] || detect_locale
+    cookies[:locale] = I18n.locale if cookies[:locale].nil?
   end
 
   def detect_locale    
@@ -27,7 +28,7 @@ class ApplicationController < ActionController::Base
 
     languages.each do |language|
       # Extract the language code from the language string
-      language_code = language.split(';').first.downcase.to_sym
+      language_code = language.split(/[-;]/).first.downcase.to_sym
 
       # If the language code is in our , return the corresponding locale
       return language_code if supported_languages.include?(language_code)
