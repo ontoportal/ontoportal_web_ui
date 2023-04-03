@@ -45,9 +45,6 @@ Rails.application.routes.draw do
 
   resources :virtual_appliance
 
-  get 'change_requests/create_synonym'
-  match 'change_requests', to: 'change_requests#create', via: :post
-
   # Top-level pages
   match '/feedback', to: 'home#feedback', via: [:get, :post]
   get '/account' => 'home#account'
@@ -78,6 +75,11 @@ Rails.application.routes.draw do
   match '/ontologies/:ontology_id/submissions' => 'submissions#create', :ontology_id => /.+/, via: [:get, :post]
   get '/ontologies/:acronym/classes/:purl_conceptid', to: 'ontologies#show', constraints: { purl_conceptid: /[^\/]+/ }
   get '/ontologies/:acronym/:purl_conceptid', to: 'ontologies#show', constraints: { purl_conceptid: /[^\/]+/ }
+
+  # Ontology change requests
+  get 'change_requests/create_synonym'
+  get 'change_requests/remove_synonym'
+  match 'change_requests', to: 'change_requests#create', via: :post
 
   # Notes
   get 'ontologies/:ontology/notes/:noteid', to: 'notes#virtual_show', as: :note_virtual, noteid: /.+/
