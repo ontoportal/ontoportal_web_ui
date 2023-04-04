@@ -27,10 +27,10 @@
           = link_to(t(:_admin), admin_index_path, class: "nav-link")
     %ul.navbar-nav
       %li.nav-item{ style: "margin-right: 10px;" }
-        %select#language-select.form-control{ data: { controller: "language-change", action: "change->language-change#setLocale"} }
-          %option{value: "en"} English
-          %option{value: "fr"} Français
-      
+        %select#language-select.form-control{ data: { controller: "platform-language", action: "change->platform-language#handleLangChanged" } }
+          %option{ value: "en" } English
+          %option{ value: "fr" } Français
+   
       - if session[:user].nil?
         %li.nav-item
           = link_to(t(:_login), login_index_path(redirect: request.original_url), class: "btn btn-bp-login mr-md-2")

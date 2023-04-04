@@ -3,14 +3,11 @@ import { Turbo } from "@hotwired/turbo-rails";
 import { getCookie } from "../mixins/cookie";
 
 // Connects to data-controller="language-change"
+// This controller is used to change the language of the Concepts, Schemes and Collections
 export default class extends Controller {
 
-  connect() {
-    const locale = getCookie('locale');
-    document.querySelector(`#language-select option[value="${locale}"]`)?.selected = true;
-  }
-
   dispatchLangChangeEvent() {
+    debugger
     this.element.dispatchEvent(new CustomEvent('lang_changed', {
       bubbles: true,
       cancelable: true,
@@ -22,9 +19,4 @@ export default class extends Controller {
     }));
   }
 
-  setLocale(event) {
-    const userPreferedLanguage = event.target.value;
-    Turbo.visit(`/locale/${userPreferedLanguage}`);
-  }
-  
 }
