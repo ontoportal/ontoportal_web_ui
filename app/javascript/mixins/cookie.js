@@ -1,5 +1,6 @@
 export const getCookie = (name) => {
-    document.cookie.replace(/(?:(?:^|.*;\s*)${name}\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+    const cookieValue = document.cookie.match('(^|[^;]+)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return cookieValue ? cookieValue.pop() : '';
 }
 
 export const setCookie = (name, value, days) => {

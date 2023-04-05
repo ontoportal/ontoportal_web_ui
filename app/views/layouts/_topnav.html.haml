@@ -28,7 +28,7 @@
     %ul.navbar-nav
       %li.nav-item{ style: "margin-right: 10px;" }
         %select#language-select.form-control{ data: { controller: "platform-language", action: "change->platform-language#handleLangChanged" } }
-          %option{ value: "en" } English
+          %option{ value: "en" } English 
           %option{ value: "fr" } Français
    
       - if session[:user].nil?

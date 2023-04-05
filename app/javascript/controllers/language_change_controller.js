@@ -1,6 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import { Turbo } from "@hotwired/turbo-rails";
-import { getCookie } from "../mixins/cookie";
 
 // Connects to data-controller="language-change"
 // This controller is used to change the language of the Concepts, Schemes and Collections
