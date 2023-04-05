@@ -6,9 +6,9 @@ module KGCL
     #
     # The change request is described using the Knowledge Graph Change Language grammar, e.g.:
     #
-    #   create synonym 'Haematopoietic tissue' for 'Bone marrow stucture'
-    #   create synonym 'Haematopoietic tissue' @en for 'Bone marrow stucture'
-    #   create exact synonym 'Haematopoietic tissue' for 'Bone marrow stucture'
+    #   create synonym 'single organism process' for 'GO:0008150'
+    #   create synonym 'single organism process' @en for 'GO:0008150'
+    #   create exact synonym 'single organism process' for 'GO:0008150'
     #
     # @see https://github.com/INCATools/kgcl KGCL documentation
     #
