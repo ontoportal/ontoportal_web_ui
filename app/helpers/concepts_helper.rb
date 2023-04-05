@@ -104,16 +104,21 @@ module ConceptsHelper
   def remove_synonym_button
     return unless change_requests_enabled?(@ontology.acronym)
 
-    if session[:user].nil?
+    if @concept.synonym.blank?
+      tag.a role: 'button', class: 'btn btn-link disabled', aria: { disabled: true } do
+        tag.i class: 'fas fa-minus-circle fa-lg', aria: { hidden: true }
+      end
+    elsif session[:user].nil?
       link_to(login_index_path(redirect: concept_redirect_path),
-              role: 'button',
-              class: 'btn btn-link',
-              aria: { label: 'Remove a synonym' }) do
-        content_tag(:i, '', class: 'fas fa-minus-circle fa-lg', aria: { hidden: 'true' }).html_safe
+              role: 'button', class: 'btn btn-link', aria: { label: 'Remove synonym' }) do
+        tag.i class: 'fas fa-minus-circle fa-lg', aria: { hidden: true }
       end
     else
-      link_to('#', role: 'button', class: 'btn btn-link', aria: { label: 'Remove a synonym' }) do
-        content_tag(:i, '', class: 'fas fa-minus-circle fa-lg', aria: { hidden: 'true' }).html_safe
+      link_to(change_requests_remove_synonym_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
+                                                  ont_acronym: @ontology.acronym, concept_synonyms: @concept.synonym),
+              role: 'button', class: 'btn btn-link', aria: { label: 'Remove synonym' },
+              data: { toggle: 'modal', target: '#changeRequestModal' }, remote: 'true') do
+        tag.i class: 'fas fa-minus-circle fa-lg', aria: { hidden: 'true' }
       end
     end
   end

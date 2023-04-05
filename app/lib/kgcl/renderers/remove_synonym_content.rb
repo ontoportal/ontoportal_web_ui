@@ -2,6 +2,15 @@
 
 module KGCL
   module Renderers
+    # Generate GitHub issue content for a remove synonym change request
+    #
+    # The change request is formally described using the Knowledge Graph Change Language grammar, e.g.:
+    #
+    #   remove synonym 'terminal specialization' for GO:0044292
+    #   remove synonym 'terminal specialization' @en for GO:0044292
+    #
+    # @see https://github.com/INCATools/kgcl KGCL documentation
+    #
     class RemoveSynonymContent
       attr_reader :params
 
@@ -19,7 +28,11 @@ module KGCL
       end
 
       def comment
-        @params[:comment]
+        @params[:remove_synonym][:comment]
+      end
+
+      def concept_label
+        @params[:concept_label]
       end
 
       def curie
@@ -30,12 +43,8 @@ module KGCL
         binding
       end
 
-      def pref_label
-        @params[:pref_label]
-      end
-
-      def synonym
-        @params[:synonym]
+      def synonym_label
+        @params[:remove_synonym][:synonym]
       end
 
       def username

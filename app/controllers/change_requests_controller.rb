@@ -10,6 +10,16 @@ class ChangeRequestsController < ApplicationController
     respond_to :js
   end
 
+  def remove_synonym
+    @concept_id = params[:concept_id]
+    @concept_label = params[:concept_label]
+    @concept_synonyms = params[:concept_synonyms].sort! { |a, b| a.downcase <=> b.downcase }
+    @ont_acronym = params[:ont_acronym]
+    @username = session[:user].username
+
+    respond_to :js
+  end
+
   def create
     params[:curie] = generate_curie(params[:ont_acronym], params[:concept_id])
     params[:content] = KGCL::IssueContentGenerator.call(params)
