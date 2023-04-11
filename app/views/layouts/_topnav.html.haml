@@ -6,25 +6,25 @@
   %div#topNavigationToggler.navbar-collapse.collapse.justify-content-between
     %ul.navbar-nav
       %li.nav-item
-        = link_to(t(:_browse), ontologies_path(), class: "nav-link")
+        = link_to(t('header.browse'), ontologies_path(), class: "nav-link")
       %li.nav-item
-        = link_to(t(:_search), "/search", class: "nav-link")
+        = link_to(t('header.search'), "/search", class: "nav-link")
       %li.nav-item
-        = link_to(t(:_mappings), mappings_path(), class: "nav-link")
+        = link_to(t('header.mappings'), mappings_path(), class: "nav-link")
       %li.nav-item
-        = link_to(t(:_recommender), recommender_index_path, class: "nav-link")
+        = link_to(t('header.recommender'), recommender_index_path, class: "nav-link")
       %li.nav-item
-        = link_to(t(:_annotator), annotator_index_path(), class: "nav-link")
+        = link_to(t('header.annotator'), annotator_index_path(), class: "nav-link")
       - if $NCBO_ANNOTATORPLUS_ENABLED == true
         %li.nav-item
-          = link_to(t(:_ncbo_annotator_plus), '/ncbo_annotatorplus', class: "nav-link")
+          = link_to(t('header.ncbo_annotator_plus'), '/ncbo_annotatorplus', class: "nav-link")
       %li.nav-item
-        = link_to(t(:_projects), projects_path(), class: "nav-link")
+        = link_to(t('header.projects'), projects_path(), class: "nav-link")
       %li.nav-item
-        = link_to(t(:_landscape), '/landscape', class: "nav-link")
+        = link_to(t('header.landscape'), '/landscape', class: "nav-link")
       -if (!session[:user].nil? && session[:user].admin?)
         %li.nav-item
-          = link_to(t(:_admin), admin_index_path, class: "nav-link")
+          = link_to(t('header.admin'), admin_index_path, class: "nav-link")
     %ul.navbar-nav
       %li.nav-item{ style: "margin-right: 10px;" }
         %select#language-select.form-control{ data: { controller: "platform-language", action: "change->platform-language#handleLangChanged" } }

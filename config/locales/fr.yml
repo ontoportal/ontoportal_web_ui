@@ -1,185 +1,196 @@
 fr:
-  
-  _browse: "Parcourir"
-  _search: "Rechercher"
-  _mappings: "Mappings"
-  _recommender: "Recommandateur"
-  _annotator: "Annotateur"
-  _ncbo_annotator_plus: "NCBO Annotator+"
-  _projects: "Projets"
-  _landscape: "Paysage"
-  _login: "Se connecter"
-  _account_setting: "Paramètres du compte"
-  submit_feedback: "Envoyer un commentaire"
-  _help: "Aide"
-  _release_notes: "Notes de version"
-  _publications: "Publications"
-  
+  header:
+    browse: "Parcourir"
+    search: "Rechercher"
+    mappings: "Mappings"
+    recommender: "Recommender"
+    annotator: "Annotateur"
+    ncbo_annotator_plus: "NCBO Annotator+"
+    projects: "Projets"
+    landscape: "Paysage"
+    login: "Se connecter"
+    account_setting: "Paramètres du compte"
+    submit_feedback: "Envoyer un commentaire"
+    help: "Aide"
+    release_notes: "Notes de version"
+    publications: "Publications"
+
+  footer:
+    products: "Produits"
+
+  main:
+    find_ontology: "Trouver une ontologie"
+    search_class: "Rechercher une classe"
+    welcome_to: "Bienvenue sur"
+    comprehensive_repository: "le référentiel d'ontologies biomédicales le plus complet au monde"
+    advanced_search: "Recherche avancée"
+    statistics: "Statistiques"
+    ontology_visits: "Visites d'ontologie"
+    fair_scores: "Scores FAIR"
+    clear_selection: "Effacer la sélection"
+    slices: "Tranches"
+    latest_notes: "Dernières notes"
+    supported_by: "Pris en charge par"
+    collaboration_with: "Avec la collaboration de"
+    average: "Moyenne"
+    min: "Min"
+    max: "Max"
+    median: "Médiane"
+
   about: >
-      <div class='about p-2'>
-      <h2>Abstract</h2>
-      <p>
-      Many vocabularies and ontologies are produced to represent and annotate agronomic data. Therefore, there is a need of
-      a common platform to identify, host and use them in agro-informatics application. The AgroPortal project aims to offer
-      a reference ontology repository for agronomy, reusing the NCBO BioPortal technology. The scientific outcomes and the
-      experience of the biomedical domain are thus exploited and transposed in the agronomy domain, including plants, food,
-      environment and possibly animal sciences. We offer an ontology portal which features ontology hosting, search, versioning,
-      visualization, comment, recommendation, enables semantic annotation, as well as storing and exploiting ontology alignments.
-      All of these within a fully semantic web compliant infrastructure. The AgroPortal specifically pays attention to respect the
-      requirements of the agronomic community in terms of ontology formats (e.g., SKOS, trait dictionaries) or supported features.
-      AgroPortal project is based on five driving agronomic use cases which participate in the design and orientation of the platform.
-      AgroPortal already offers a robust and stable reference repository highly valuable for the agronomic domain.
-      </p>
-      <h2>Use cases</h2>
-      <ul class="bulletlist m-3">
-      <li class="bulletlist"><a href="http://www.agrold.org">IBC Rice Genomics & AgroLD project</a> (P. Larmande): Data integration and knowledge management related to rice</li>
-      <li class="bulletlist"><a href="https://www.rd-alliance.org/groups/wheat-data-interoperability-wg.html">RDA Wheat Data Interoperability working group</a> (E. Dzalé-Yeumo): Common framework for publishing wheat data</li>
-      <li class="bulletlist"><a href="http://lovinra.inra.fr">LovInra : INRA Linked Open Vocabularies</a> (S. Aubin): Vocabularies produced by INRA scientists</li>
-      <li class="bulletlist"><a href="http://www.cropontology.org">Crop Ontology project</a> (E. Arnaud): Ontologies for describing crop germplasm & traits</li>
-      <li class="bulletlist"><a href="http://vest.agrisemantics.org">GODAN global map of agri-food data standards</a> (V. Pesce): VEST/AgroPortal MAP of standards</li>
-      </ul>
-      <br>
-      <h2>New features</h2>
-      <p>
-      See the <a href="https://github.com/agroportal/documentation/wiki/Release-notes">release notes</a>
-      </p>
-      <br>
-      <h2>Partners</h2>
-      <p>The National Center For Biomedical Ontology (NCBO), Institut de Recherche pour le Développement (IRD), Research Data Alliance (RDA),
-      Bioversity International, Food & Agriculture Organization (FAO), Global Open Data for Agriculture & Nutrition (Godan Action), Institut National de la Recherche Agronomique (INRA)</p>
-      <h2>Acknowledgments</h2>
-      <p>The AgroPortal is partly achieved within the Semantic Indexing of French biomedical Resources (<a href="www.lirmm.fr/sifr">SIFR</a>) project
-      that received funding from the EU H2020 research and innovation programme under the Marie Sklodowska-Curie (grant 701771)
-      and the French National Research Agency (grant ANR-12-JS02-01001), the NUMEV Labex (grant ANR-10-LABX-20),
-      the Computational Biology Institute of Montpellier (grant ANR-11-BINF-0002) as well as by University of Montpellier and the CNRS.
-      We also thank the National Center for Biomedical Ontologies for help and time spent with us in deploying the AgroPortal.</p>
-      <h2>Team</h2>
-      To contact us: firstname.lastname@lirmm.fr
-      <ul class="bulletlist m-3">
-      <li class="bulletlist"><b>Clément Jonquet</b>, researcher at LIRMM (Univ. of Montpellier, France), main investigator of the AgroPortal project</li>
-      <li class="bulletlist"><b>Anne Toulet</b>, researcher at LIRMM (Univ. of Montpellier, France)</li>
-      <li class="bulletlist"><b>Vincent Emonet</b>, engineer at LIRMM (Univ. of Montpellier, France)</li>
-      </ul>
-      </div>
-  
+    <div class='about p-2'>
+    <h2>Résumé</h2>
+    <p>
+    De nombreux vocabulaires et ontologies sont produits pour représenter et annoter les données agronomiques. Il est donc nécessaire de disposer d'une plateforme commune pour les identifier, les héberger et les utiliser dans les applications d'agro-informatique. Le projet AgroPortal vise à offrir un référentiel d'ontologies de référence pour l'agronomie, en réutilisant la technologie NCBO BioPortal. Les résultats scientifiques et l'expérience du domaine biomédical sont ainsi exploités et transposés dans le domaine de l'agronomie, comprenant les plantes, l'alimentation, l'environnement et éventuellement les sciences animales. Nous proposons un portail d'ontologies qui offre l'hébergement d'ontologies, la recherche, la versioning, la visualisation, le commentaire, la recommandation, permet l'annotation sémantique, ainsi que le stockage et l'exploitation d'alignements d'ontologies. Tout cela dans une infrastructure totalement conforme au web sémantique. Le projet AgroPortal accorde une attention particulière au respect des exigences de la communauté agronomique en termes de formats d'ontologies (par exemple, SKOS, dictionnaires de traits) ou de fonctionnalités prises en charge. Le projet AgroPortal est basé sur cinq cas d'utilisation agronomique qui participent à la conception et à l'orientation de la plateforme. AgroPortal offre déjà un référentiel de référence robuste et stable, d'une grande valeur pour le domaine de l'agronomie.
+    </p>
+    <h2>Use cases</h2>
+    <ul class="bulletlist m-3">
+    <li class="bulletlist"><a href="http://www.agrold.org">Projet IBC Rice Genomics & AgroLD</a> (P. Larmande): Data integration and knowledge management related to rice</li>
+    <li class="bulletlist"><a href="https://www.rd-alliance.org/groups/wheat-data-interoperability-wg.html">Groupe de travail RDA Wheat Data Interoperability</a> (E. Dzalé-Yeumo) : Cadre commun de publication des données blé</li>
+    <li class="bulletlist"><a href="http://lovinra.inra.fr">LovInra : Vocabulaires Ouverts Liés Inra</a> (S. Aubin) : Vocabulaires produits par des scientifiques de l'INRA</li>
+    <li class="bulletlist"><a href="http://www.cropontology.org">Projet Crop Ontology</a> (E. Arnaud) : Ontologies pour décrire le germoplasme et les caractères des cultures</li>
+    <li class="bulletlist"><a href="http://vest.agrisemantics.org">GODAN carte mondiale des normes de données agroalimentaires</a> (V. Pesce) : VEST/AgroPortal MAP of standards</li>
+    </ul>
+    <br>
+    <h2>Nouvelles fonctionnalités</h2>
+    <p>
+    See the <a href="https://github.com/agroportal/documentation/wiki/Release-notes">notes de version</a>
+    </p>
+    <br>
+    <h2>Les partenaires</h2>
+    <p>Le Centre National d'Ontologie Biomédicale (NCBO), l'Institut de Recherche pour le Développement (IRD), Research Data Alliance (RDA),
+     Bioversity International, Food & Agriculture Organization (FAO), Global Open Data for Agriculture & Nutrition (Godan Action), Institut National de la Recherche Agronomique (INRA)</p>
+    <h2>remerciements</h2>
+    <p>L'AgroPortail est en partie réalisé dans le cadre du projet d'Indexation Sémantique des Ressources Biomédicales Françaises (<a href="www.lirmm.fr/sifr">SIFR</a>)
+     qui ont reçu un financement du programme de recherche et d'innovation H2020 de l'UE dans le cadre de Marie Sklodowska-Curie (subvention 701771)
+     et l'Agence Nationale de la Recherche (bourse ANR-12-JS02-01001), le Labex NUMEV (bourse ANR-10-LABX-20),
+     l'Institut de Biologie Computationnelle de Montpellier (bourse ANR-11-BINF-0002) ainsi que par l'Université de Montpellier et le CNRS.
+     Nous remercions également le Centre National des Ontologies Biomédicales pour son aide et le temps passé avec nous dans le déploiement de l'AgroPortail.</p>
+    <h2>Équipe</h2>
+    Pour nous contacter: firstname.lastname@lirmm.fr
+    <ul class="bulletlist m-3">
+    <li class="bulletlist"><b>Clément Jonquet</b>,chercheur au LIRMM (Univ. de Montpellier, France), investigateur principal du projet AgroPortal</li>
+    <li class="bulletlist"><b>Anne Toulet</b>, chercheuse au LIRMM (Univ. de Montpellier, France)</li>
+    <li class="bulletlist"><b>Vincent Emonet</b>, ingénieur au LIRMM (Univ. de Montpellier, France)</li>
+    </ul>
+    </div>
+
   activerecord:
     errors:
       models:
         license:
           attributes:
             encrypted_key:
-              invalid_license_key: is an invalid license key
-              no_appliance_id_for_comparison: couldn't be validated. Unable to retrieve virtual appliance ID.
-              appliance_id_mismatch: is an appliance ID mismatch
+              invalid_license_key: est une clé de licence invalide
+              no_appliance_id_for_comparison: n'a pas pu être validé. Impossible de récupérer l'ID de l'appliance virtuelle.
+              appliance_id_mismatch: est une non-concordance d'ID d'appliance
 
   admin:
     licenses:
       create:
-        success: License successfully renewed!
+        success: Licence renouvelée avec succès !
 
   date:
     formats:
-      year_month_day_concise: '%Y-%m-%d' # 2017-03-01
-      month_day_year: '%b %-d, %Y' # Mar 1, 2017
-      monthfull_day_year: '%B %-d, %Y' # March 1, 2017
+      year_month_day_concise: "%Y-%m-%d" # 2017-03-01
+      month_day_year: "%b %-d, %Y" # Mar 1, 2017
+      monthfull_day_year: "%B %-d, %Y" # March 1, 2017
 
   layouts:
     footer:
-      copyright_html: Copyright &copy; 2005‑2022, The Board of Trustees of Leland Stanford Junior University. All rights reserved.
+      copyright_html: Droit d'auteur &copie; 2005‑2022, Conseil d'administration de l'Université Leland Stanford Junior. Tous les droits sont réservés.
       grant_html: >
-        <strong>%{site}</strong> is currently being developed within French <a href="http://www.d2kab.org">ANR D2KAB project</a>  (<a href="http://www.agence-nationale-recherche.fr/Projet-ANR-18-CE23-0017">ANR-18-CE23-0017</a>). It also receives or received support from <a href="http://www.lirmm.fr/sifr">ANR SIFR project</a> (<a href="https://anr.fr/Projet-ANR-12-JS02-0010">ANR-12-JS02-0010</a>), European Union <a href="http://www.lirmm.fr/sifr">H2020-MSCA SIFRm project</a> (<a href="https://cordis.europa.eu/project/id/701771">No 701771</a>), the <a href="https://www.lirmm.fr/numev/">NUMEV Labex</a> (ANR-10-LABX-20), the <ahref="http://www.ibc-montpellier.fr/">IBC of Montpellier project</a> (ANR-11-BINF0002), the <a href="https://www.agropolis-fondation.fr/The-LabEx-AGRO?lang=en">Agro Labex</a> (ANR-10-LABX-0001) as well as from University of Montpellier and the CNRS.
+        <strong>%{site}</strong> est actuellement développé dans le cadre du <a href="http://www.d2kab.org">projet ANR D2KAB</a> (<a href="http:// www.agence-nationale-recherche.fr/Projet-ANR-18-CE23-0017">ANR-18-CE23-0017</a>). Il reçoit ou a également reçu le soutien du <a href="http://www.lirmm.fr/sifr">projet ANR SIFR</a> (<a href="https://anr.fr/Projet-ANR- 12-JS02-0010">ANR-12-JS02-0010</a>), Union Européenne <a href="http://www.lirmm.fr/sifr">Projet H2020-MSCA SIFRm</a> ( <a href="https://cordis.europa.eu/project/id/701771">N° 701771</a>), le <a href="https://www.lirmm.fr/numev/"> Labex NUMEV</a> (ANR-10-LABX-20), le <ahref="http://www.ibc-montpellier.fr/">projet IBC de Montpellier</a> (ANR-11-BINF0002) , l'<a href="https://www.agropolis-fondation.fr/The-LabEx-AGRO?lang=fr">Agro Labex</a> (ANR-10-LABX-0001) ainsi que de l'Université de Montpellier et du CNRS.
     notices:
       license_contact: >
-        For more information, email <a href="mailto:support@ontoportal.org">support@ontoportal.org</a> or 
-        visit <a href="https://ontoportal.org/licensing" target="_blank">https://ontoportal.org/licensing</a>.
+        Pour plus d'informations, envoyez un e-mail à <a href="mailto:support@ontoportal.org">support@ontoportal.org</a> ou
+          visitez <a href="https://ontoportal.org/licensing" target="_blank">https://ontoportal.org/licensing</a>.
       license_obtain: >
-        If you are the owner of this OntoPortal installation, you can visit 
-        <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> to obtain a license.
+        Si vous êtes le propriétaire de cette installation OntoPortal, vous pouvez visiter
+          <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> pour obtenir une licence.
       license_expired: >
-        We're sorry, but the license for this OntoPortal installation has expired. If you are the owner of this OntoPortal installation, 
-        please visit <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> to renew your license.
+        Nous sommes désolés, mais la licence pour cette installation d'OntoPortal a expiré. Si vous êtes le propriétaire de cette installation OntoPortal,
+         veuillez visiter <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> pour renouveler votre licence.
       license_trial:
-        one:
-          This installation of the OntoPortal Appliance is a trial license, which will expire in 1 day.
-        other:
-          This installation of the OntoPortal Appliance is a trial license, which will expire in %{count} days.
+        one: Cette installation de l'appliance OntoPortal est une licence d'essai, qui expirera dans 1 jour.
+        other: Cette installation de l'appliance OntoPortal est une licence d'essai, qui expirera dans %{count} jours.
 
   home:
     index:
-      find_ontology_placeholder: Start typing ontology name, then choose from list
-      query_placeholder: Enter a class, e.g. Melanoma
-      tagline: the world's most comprehensive repository of biomedical ontologies
-      title: Welcome to the %{organization} 
-      welcome: Welcome to %{site},
+      find_ontology_placeholder: Commencez à taper le nom de l'ontologie, puis choisissez dans
+      query_placeholder: Entrez une classe, par exemple Melanoma
+      tagline: le référentiel d'ontologies biomédicales le plus complet au monde
+      title: Bienvenue à la %{organization}
+      welcome: Bienvenue à la %{site},
     help:
-      welcome: Welcome to the National Center for Biomedical Ontology’s %{site}. %{site} is a web-based application for accessing and sharing biomedical ontologies.
+      welcome: Bienvenue à la le %{site} du Centre national d'ontologie biomédicale. %{site} est une application Web permettant d'accéder et de partager des ontologies biomédicales.
       getting_started: >
-        %{site} allows users to browse, upload, download, search, comment on, and create mappings for ontologies.
+       %{site} permet aux utilisateurs de parcourir, charger, télécharger, rechercher, commenter et créer des mappages pour les ontologies.
       browse: >
-        Users can browse and explore individual ontologies by navigating either a tree structure or an animated graphical view. Users can also view mappings and 
-        ontology metadata, and download ontologies. Additionally, users who are signed in may submit a new ontology to the library.
-      rest_examples_html: View documentation and examples of the <a href="http://data.bioontology.org/documentation" target="_blank">%{site} REST API</a>.
+       Les utilisateurs peuvent parcourir et explorer des ontologies individuelles en naviguant soit dans une structure arborescente, soit dans une vue graphique animée. Les utilisateurs peuvent également afficher les mappages et
+         métadonnées d'ontologie et téléchargement d'ontologies. De plus, les utilisateurs connectés peuvent soumettre une nouvelle ontologie à la bibliothèque.
+      rest_examples_html : affichez la documentation et des exemples de l'<a href="http://data.bioontology.org/documentation" target="_blank">%{site} API REST</a>.
       announce_list_html: >
-        To receive notices of new releases or site outages, please subscribe to the 
-        <a href="https://mailman.stanford.edu/mailman/listinfo/bioontology-support" target="_blank">bioontology-support list</a>.
+        Pour recevoir des avis de nouvelles versions ou de pannes de site, veuillez vous abonner au
+        <a href="https://mailman.stanford.edu/mailman/listinfo/bioontology-support" target="_blank">liste de support bioontologie</a>.
 
   annotator:
     index:
-      intro: Get annotations for biomedical text with classes from the ontologies
-      annotatorplus_html: <em>Check out <a href="%{annotatorplus_href}">AnnotatorPlus</a> beta; a new version of the Annotator with added support for negation, and more!</em>
+      intro: Obtenez des annotations pour le texte biomédical avec des classes des ontologies
+      annotatorplus_html: <em>Consultez la version bêta d'<a href="%{annotatorplus_href}">AnnotatorPlus</a> ; une nouvelle version de l'Annotator avec un support supplémentaire pour la négation, et plus encore !</em>
       fast_context:
-        tooltip: "Enable FastContext to detect : if a concept has been negated (affirmed, negated), who experienced the found concept (patient, other), when the annotated concept occurred (recent, historical, hypothetical), and/or if the annotated concept is uncertain (certain, uncertain)."
-      sample_text: Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.
+        tooltip: "Activer FastContext pour détecter : si un concept a été nié (affirmé, nié), qui a vécu le concept trouvé (patient, autre), quand le concept annoté s'est produit (récent, historique, hypothétique), et/ou si le concept annoté est incertain (certain, incertain)."
+      sample_text: Le mélanome est une tumeur maligne des mélanocytes qui se trouvent principalement dans la peau mais aussi dans l'intestin et l'œil.
 
   nbco_annotatosplus:
     index:
       intro: >
-        The NCBO Annotator+ is a proxy calling the NCBO Annotator Web service on the NCBO BioPortal.
-        <br/><br/>
-        Tchechmedjiev, A., Abdaoui, A., Emonet, V., Melzi, S., Jonnagaddala, J., & Jonquet, C. (2018). <a href="https://doi.org/10.1093/bioinformatics/bty009" target="_blank">Enhanced functionalities for annotating and indexing clinical text with the NCBO Annotator+</a>. Bioinformatics, 34(11), 1962-1965.
-        </br><br/>
-        If using the API, please provide a valid NCBO BioPortal apikey and hit the service at <a href="http://services.bioportal.lirmm.fr/ncbo_annotatorplus">http://services.bioportal.lirmm.fr/ncbo_annotatorplus</a></br>
-        Text submitted to the NCBO Annotator+ must be in English.
-      sample_text: Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.
+       Le NCBO Annotator+ est un proxy appelant le service Web NCBO Annotator sur le NCBO BioPortal.
+         <br/><br/>
+         Tchechmedjiev, A., Abdaoui, A., Emonet, V., Melzi, S., Jonnagaddala, J., & Jonquet, C. (2018). <a href="https://doi.org/10.1093/bioinformatics/bty009" target="_blank">Fonctionnalités améliorées pour annoter et indexer le texte clinique avec NCBO Annotator+</a>. Bioinformatique, 34(11), 1962-1965.
+         </br><br/>
+         Si vous utilisez l'API, veuillez fournir une clé API NCBO BioPortal valide et accéder au service sur <a href="http://services.bioportal.lirmm.fr/ncbo_annotatorplus">http://services.bioportal.lirmm.fr/ncbo_annotatorplus </a></br>
+         Le texte soumis au NCBO Annotator+ doit être en anglais.
+      sample_text: Le mélanome est une tumeur maligne des mélanocytes qui se trouvent principalement dans la peau mais aussi dans l'intestin et l'œil.
 
   recommender:
-    intro: Get recommendations for the most relevant ontologies based on an excerpt from a biomedical text or a list of keywords
+    intro: Obtenez des recommandations pour les ontologies les plus pertinentes à partir d'un extrait d'un texte biomédical ou d'une liste de mots-clés
 
   search:
     index:
-      intro: Search for a class in multiple ontologies
-      search_keywords_placeholder: Enter a class, e.g. Melanoma
-      categories_placeholder: Start typing to select categories or leave blank to use all
-      property_definition: Named association between two entities. Examples are "definition" (a relation between a class and some text) and "part-of" (a relation between two classes).
+      intro: Rechercher une classe dans plusieurs ontologies
+      search_keywords_placeholder: Entrez une classe, par ex. Mélanome
+      categories_placeholder: Commencez à taper pour sélectionner des catégories ou laissez vide pour tout utiliser
+      property_definition: Association nommée entre deux entités. Les exemples sont "définition" (une relation entre une classe et du texte) et "partie de" (une relation entre deux classes).
       obsolete_definition: >
-        A class that the authors of the ontology have flagged as being obsolete and which they recommend that people not use. These classes 
-        are often left in ontologies (rather than removing them entirely) so that existing systems that depend on them will continue to function.
+         Une classe que les auteurs de l'ontologie ont signalée comme étant obsolète et qu'ils recommandent de ne pas utiliser. Ces cours
+         sont souvent laissés dans des ontologies (plutôt que de les supprimer entièrement) afin que les systèmes existants qui en dépendent continuent à fonctionner.
 
   projects:
     index:
-      intro: Browse a selection of projects that use %{site} resources
+      intro: Parcourez une sélection de projets qui utilisent les ressources %{site}
 
   ontologies:
-    intro: Browse the library of ontologies
+    intro: Parcourir la bibliothèque d'ontologies
 
   concepts:
     request_term:
       new_term_instructions: >
-        <p>This ontology integrates with OntoloBridge, allowing community users to suggest additions to the public ontology. Complete the template below to submit a term request directly to the ontology maintainer.</p>
-        <blockquote>
-          <p>Term Label (required)<br>Suggested term name. If a term can be described with multiple synonyms, only list the preferred name here.</p>
-        </blockquote>
-        <blockquote>
-          <p>Term description (required)<br>A brief definition, description, or usage of your suggested term.   Additional term synonyms may be listed in this section.</p>
-        </blockquote>
-        <blockquote>
-          <p>Superclass (required)<br>The parent term of the suggested term. The parent term should be an existing entry of the current ontology. The superclass can be selected directly from Bioportal's Classes tree viewer.</p>
-        </blockquote>
-        <blockquote>
-          <p>References (optional)<br>Provide evidence for the existence of the requested term such as Pubmed IDs of papers or links to other resources that describe the term.</p>
-        </blockquote>
-        <blockquote>
-          <p>Justification (optional)<br>Provide any additional information about the requested term here.</p>
-        </blockquote>
+       <p>Cette ontologie s'intègre à OntoloBridge, permettant aux utilisateurs de la communauté de suggérer des ajouts à l'ontologie publique. Remplissez le modèle ci-dessous pour soumettre une demande de terme directement au responsable de l'ontologie.</p>
+         <blockquote>
+           <p>Libellé du terme (obligatoire)<br>Nom du terme suggéré. Si un terme peut être décrit avec plusieurs synonymes, n'indiquez ici que le nom préféré.</p>
+         </blockquote>
+         <blockquote>
+           <p>Description du terme (obligatoire)<br>Une brève définition, description ou utilisation du terme suggéré. Des synonymes de termes supplémentaires peuvent être répertoriés dans cette section.</p>
+         </blockquote>
+         <blockquote>
+           <p>Superclasse (obligatoire)<br>Le terme parent du terme suggéré. Le terme parent doit être une entrée existante de l'ontologie actuelle. La superclasse peut être sélectionnée directement à partir de l'arborescence des classes de Bioportal.</p>
+         </blockquote>
+         <blockquote>
+           <p>Références (facultatif)<br>Fournissez des preuves de l'existence du terme demandé, telles que les identifiants Pubmed des articles ou des liens vers d'autres ressources décrivant le terme.</p>
+         </blockquote>
+         <blockquote>
+           <p>Justification (facultatif)<br>Fournissez ici toute information supplémentaire sur le terme demandé.</p>
+         </blockquote>
   mappings:
-    intro: Browse mappings between classes in different ontologies
+    intro: Parcourir les mappages entre les classes dans différentes ontologies
