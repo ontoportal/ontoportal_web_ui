@@ -16,6 +16,6 @@ export default class extends Controller {
 
   handleLangChanged(event) {
     const userPreferedLanguage = event.target.value;
-    Turbo.visit(`/locale/${userPreferedLanguage}`);
+    Turbo.visit(`/locale/${userPreferedLanguage}`, { action: "replace" });
   }
 }

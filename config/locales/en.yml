@@ -1,4 +1,21 @@
 en:
+
+  all : "All"
+  see_details: "See details" 
+  view_fair_scores_definitions: "View fair scores definitions"
+  get_json_version: "Get the json version"
+  select_ontologies: "Start typing to select ontologies or leave blank to use all"
+  clear_selection: "Clear selection"
+  select_from_list: "Select from list"
+  more: "More"
+  statistics: "Statistics"
+  average: "Average"
+  min: "Min"
+  max: "Max"
+  median: "Median"
+  slices: "Slices"
+ 
+
   header:
     browse: "Browse"
     search: "Search"
@@ -21,21 +38,21 @@ en:
   main:
     find_ontology: "Find an ontology"
     search_class: "Search for a class"
-    welcome_to: "Welcome to"
+    browse_by_group: "Browse by group"
+    browse_ontologies: "Browse Ontologies"
     comprehensive_repository: "the world's most comprehensive repository of biomedical ontologies"
     advanced_search: "Advanced Search"
-    statistics: "Statistics"
     ontology_visits: "Ontology Visits"
     fair_scores: "FAIR Scores"
     clear_selection: "Clear Selection"
-    slices: "Slices"
     latest_notes: "Latest Notes"
-    supported_by: "Supported by"
-    collaboration_with: "With the collaboration of"
-    average: "Average"
-    min: "Min"
-    max: "Max"
-    median: "Median"
+    ontologies: "Ontologies"
+    classes: "Classes"
+    individuals: "Individuals"
+    projects: "Projects"
+    users: "Users"
+    no_recent_notes: "No recent notes have been submitted"
+    
 
 
 

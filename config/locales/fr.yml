@@ -1,4 +1,20 @@
 fr:
+
+  all : "Tout"
+  see_details: "Voir les détails"
+  view_fair_scores_definitions: "View fair scores definitions"
+  get_json_version: "Get the json version"
+  select_ontologies: "Commencez à taper pour sélectionner des ontologies ou laissez vide pour toutes les utiliser"
+  clear_selection: "Effacer la sélection"
+  select_from_list: "Sélectionner dans la liste"
+  more: "Plus"
+  statistics: "Statistiques"
+  average: "Moyenne"
+  min: "Min"
+  max: "Max"
+  median: "Médiane"
+  slices: "Tranches"
+
   header:
     browse: "Parcourir"
     search: "Rechercher"
@@ -21,21 +37,21 @@ fr:
   main:
     find_ontology: "Trouver une ontologie"
     search_class: "Rechercher une classe"
-    welcome_to: "Bienvenue sur"
+    browse_by_group: "Parcourir par groupe"
+    browse_ontologies: "Parcourir les ontologies"
     comprehensive_repository: "le référentiel d'ontologies biomédicales le plus complet au monde"
     advanced_search: "Recherche avancée"
-    statistics: "Statistiques"
     ontology_visits: "Visites d'ontologie"
     fair_scores: "Scores FAIR"
     clear_selection: "Effacer la sélection"
-    slices: "Tranches"
     latest_notes: "Dernières notes"
-    supported_by: "Pris en charge par"
-    collaboration_with: "Avec la collaboration de"
-    average: "Moyenne"
-    min: "Min"
-    max: "Max"
-    median: "Médiane"
+    ontologies: "Ontologies"
+    classes: "Des classes"
+    individuals: "Personnes"
+    projects: "Projets"
+    users: "Utilisateurs"
+    no_recent_notes: "Aucune note récente n'a été soumise"
+    
 
   about: >
     <div class='about p-2'>
