@@ -15,7 +15,23 @@ en:
   median: "Median"
   slices: "Slices"
   help: "Help"
- 
+
+  class: "Class"
+  filter: "Filter"
+  ontology: "Ontology"
+  type: "Type"
+  context: "Context"
+  umls_sem_type: "UMLS Sem Type"
+  matched_class: "Matched Class"
+  matched_ontology: "Matched Ontology"
+  score: "Score"
+  negation: "Negation"
+  experiencer: "Experiencer"
+  temporality: "Temporality"
+  certainty: "Certainty"
+  format_results: "Format results as "
+  reproduce_results : "Reproduce these results using the "
+  additional_parameters: "Additional parameters explained at "
 
   header:
     browse: "Browse"
@@ -53,7 +69,12 @@ en:
     projects: "Projects"
     users: "Users"
     no_recent_notes: "No recent notes have been submitted"
-    
+  
+  shared: 
+    show_advanced_options: "Show advanced options"
+    insert_sample_text: "Insert sample text"
+    umls_semantic: "UMLS semantic"
+   
 
   search_page:
     title: "Search"
@@ -64,7 +85,36 @@ en:
     include_in_search: "Include in search"
     narrow_search_to: "Narrow search to"
     categories: "Categories"
-    
+
+  annotator_page:
+    title: "Annotator"
+    get_annotator: "Get Annotations"
+    filters:
+      match_longest_only: "Match longest only"
+      match_partial_words: "Match partial words"
+      include_mappings: "Include mappings"
+      exclude_numbers: "Exclude numbers"
+      exclude_synonyms: "Exclude synonyms"
+      max_hierarchy_level: "Include ancestors up to level"
+      score: "Include score"
+      score_help: "Score annotations following the previous 2009 NCBO measure (old) or Score annotations following the C-Value measure (cvalue) or Score annotations following the C-Value measure with hierarchy expansion (cvalueh)"
+      score_threshold: "Filter by score threshold"
+      score_threshold_help: "Specify the minimum score value for annotations "
+      confidence_threshold: "Filter confidence threshold"
+      confidence_threshold_help: "Specify the minimum position in the scoring distribution (between 1 and 100)"
+      recognizer: "Entity recognizer"
+    start_typing_to_select: "Start typing to select %{type} or leave blank to use all"
+    select: "Select %{name}"
+    enter_or_paste_text: "Enter or paste text to be annotated"
+    fast_context: "FastContext"
+    lemmatize: "Lemmatize"
+    annotations_result: "Annotations"
+    results_filtered_by: "Results are filtered by"
+  
+
+    umls:
+      semantic_types: "UMLS semantic types"
+      semantic_groups: "UMLS semantic groups"
 
 
 
@@ -186,6 +236,8 @@ en:
       annotatorplus_html: <em>Check out <a href="%{annotatorplus_href}">AnnotatorPlus</a> beta; a new version of the Annotator with added support for negation, and more!</em>
       fast_context:
         tooltip: "Enable FastContext to detect : if a concept has been negated (affirmed, negated), who experienced the found concept (patient, other), when the annotated concept occurred (recent, historical, hypothetical), and/or if the annotated concept is uncertain (certain, uncertain)."
+      lemmatize: 
+        tooltip: "Enable Lemmatize to lemmatize the submitted text and use a lemmatized dictionary for the annotations"
       sample_text: Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.
 
   nbco_annotatosplus:

@@ -16,6 +16,23 @@ fr:
   slices: "Tranches"
   help: "Aide"
 
+  class: "Classe"
+  filter : "Filtre"
+  ontology: "Ontologie"
+  type: "Tapez"
+  context: "Contexte"
+  umls_sem_type: "Type Sem UMLS"
+  matched_ontology: "ontologie correspondante"
+  matched_class: "Classe correspondante"
+  score: "Score"
+  negation: "négation"
+  experiencer: "Experiencer"
+  temporality : "Temporalité"
+  certainty : "Certitude"
+  format_results: "Formater les résultats en "
+  reproduce_results : "Reproduisez ces résultats en utilisant le "
+  additional_parameters: "Paramètres supplémentaires expliqués à "
+
   header:
     browse: "Parcourir"
     search: "Rechercher"
@@ -53,6 +70,11 @@ fr:
     users: "Utilisateurs"
     no_recent_notes: "Aucune note récente n'a été soumise"
     
+  
+  shared: 
+    show_advanced_options : "Afficher les options avancées"
+    insert_sample_text : "Insérer un exemple de texte"
+    umls_semantic : "sémantique UMLS"
 
 
   search_page:
@@ -65,6 +87,35 @@ fr:
     narrow_search_to: "Réduire la recherche à"
     categories: "Catégories"
 
+  annotator_page:
+    title: "Annotateur"
+    get_annotator: "Obtenir les annotations"
+    filters:
+      match_longest_only: "Correspond le plus long uniquement"
+      match_partial_words: "Reconnaître des mots partiels"
+      include_mappings: "Inclure les mappages"
+      exclude_numbers: "Exclure des numéros"
+      exclude_synonyms: "Exclure les synonymes"
+      max_hierarchy_level: "Inclure les ancêtres jusqu'au niveau"
+      score: "Inclure le score"
+      score_help: "Annotations de score suivant la mesure NCBO 2009 précédente (ancienne) ou Annotations de score suivant la mesure C-Value (cvalue) ou Annotations de score suivant la mesure C-Value avec expansion de la hiérarchie (cvalueh)"
+      score_threshold: "Filtrer par seuil de score"
+      score_threshold_help: "Spécifier la valeur de score minimum pour les annotations"
+      confidence_threshold: "Seuil de confiance du filtre"
+      confidence_threshold_help: "Spécifiez la position minimale dans la distribution des scores (entre 1 et 100)"
+      recognizer de reconnaissance : "outil de reconnaissance d'entité"
+    start_typing_to_select: "Commencez à taper pour sélectionner %{type} ou laissez vide pour tout utiliser"
+    select: "Sélectionnez %{name}"
+    enter_or_paste_text: "Entrer ou coller le texte à annoter"
+    fast_context: "FastContext"
+    lemmatize: "Lemmatiser"
+    annotations_result: "Annotations"
+    results_filtered_by: "Les résultats sont filtrés par"
+  
+
+    umls:
+      semantic_types: "Types sémantiques UMLS"
+      semantic_groups: "Groupes sémantiques UMLS"
 
 
 
@@ -171,6 +222,8 @@ fr:
       annotatorplus_html: <em>Consultez la version bêta d'<a href="%{annotatorplus_href}">AnnotatorPlus</a> ; une nouvelle version de l'Annotator avec un support supplémentaire pour la négation, et plus encore !</em>
       fast_context:
         tooltip: "Activer FastContext pour détecter : si un concept a été nié (affirmé, nié), qui a vécu le concept trouvé (patient, autre), quand le concept annoté s'est produit (récent, historique, hypothétique), et/ou si le concept annoté est incertain (certain, incertain)."
+      lemmatize: 
+        tooltip: "Activez Lemmatize pour lemmatiser le texte soumis et utiliser un dictionnaire lemmatisé pour les annotations"
       sample_text: Le mélanome est une tumeur maligne des mélanocytes qui se trouvent principalement dans la peau mais aussi dans l'intestin et l'œil.
 
   nbco_annotatosplus:
