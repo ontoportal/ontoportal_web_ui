@@ -14,6 +14,7 @@ en:
   max: "Max"
   median: "Median"
   slices: "Slices"
+  help: "Help"
  
 
   header:
@@ -53,6 +54,18 @@ en:
     users: "Users"
     no_recent_notes: "No recent notes have been submitted"
     
+
+  search_page:
+    title: "Search"
+    class_search: "Class Search"
+    show_advanced_options: "Show advanced options"
+    hide_advanced_options: "Hide advanced options"
+    view_search_documentation: "View search documentation"
+    include_in_search: "Include in search"
+    narrow_search_to: "Narrow search to"
+    categories: "Categories"
+    
+
 
 
 

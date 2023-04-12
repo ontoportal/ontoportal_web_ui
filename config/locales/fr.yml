@@ -14,6 +14,7 @@ fr:
   max: "Max"
   median: "Médiane"
   slices: "Tranches"
+  help: "Aide"
 
   header:
     browse: "Parcourir"
@@ -52,6 +53,20 @@ fr:
     users: "Utilisateurs"
     no_recent_notes: "Aucune note récente n'a été soumise"
     
+
+
+  search_page:
+    title: "Rechercher"
+    class_search: "Recherche de classe"
+    show_advanced_options: "Afficher les options avancées"
+    hide_advanced_options: "Masquer les options avancées"
+    view_search_documentation: "Voir la documentation de recherche"
+    include_in_search: "Inclure dans la recherche"
+    narrow_search_to: "Réduire la recherche à"
+    categories: "Catégories"
+
+
+
 
   about: >
     <div class='about p-2'>
