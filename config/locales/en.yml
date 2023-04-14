@@ -19,6 +19,7 @@ en:
   class: "Class"
   filter: "Filter"
   ontology: "Ontology"
+
   type: "Type"
   context: "Context"
   umls_sem_type: "UMLS Sem Type"
@@ -32,6 +33,23 @@ en:
   format_results: "Format results as "
   reproduce_results : "Reproduce these results using the "
   additional_parameters: "Additional parameters explained at "
+
+  input: "Input"
+  text: "Text"
+  keywords: "Keywords"
+  keywords_separated_by_commas: "Keywords separated by commas"
+  output: "Output"
+  ontology_sets: "Ontology sets"
+  insert_sample_input: "Insert sample input"
+  weights_configuration: "Weights configuration"
+  coverage: "Coverage"
+  acceptance: "Acceptance"
+  knowledge_detail: "Knowledge detail"
+  specialization: "Specialization"
+  max_ontologies_per_set: "Maximum ontologies per set"
+  paste_input_text: "Paste a paragraph of text or some keywords to use in calculating ontology recommendations"
+  get_recommendations: "Get Recommendations"
+  select_ontologies_list: "Select Ontologies"
 
   header:
     browse: "Browse"
@@ -118,7 +136,20 @@ en:
 
 
 
-
+  recommender_page:
+    title: "recommender"
+    ontology_recommender: "Ontology Recommender"
+    ontology_recommendation_input: "Please paste a paragraph of text or some keywords to use in calculating ontology recommendations."
+    weight_sum_greater_than_zero: "The sum of the weights must be greater than zero"
+    weights_greater_than_zero: "All the weights must be greater or equal to zero"
+    valid_numeric_weights: "All the weights must be valid numeric values"
+    valid_integer_max_ontologies_per_set: "The maximum ontologies per set must be a valid integer value"
+    valid_max_ontologies_per_set_range: "The maximum ontologies per set must be a number between 2 and 4"
+    recommendation_error: "Problem getting recommendations, please try again"
+    no_recommendations: "No recommendations found"
+    no_sets_recommended: "There are no ontology sets recommended for the input provided. Please try the 'Ontologies' output."
+    text_length_limit: "Please use less than 500 words. If you need to annotate larger pieces of text you can use the Recommender Web Service"
+  
 
 
 
@@ -269,6 +300,7 @@ en:
       intro: Browse a selection of projects that use %{site} resources
 
   ontologies:
+    self: "Ontologies"
     intro: Browse the library of ontologies
 
   concepts:

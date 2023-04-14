@@ -19,7 +19,9 @@ fr:
   class: "Classe"
   filter : "Filtre"
   ontology: "Ontologie"
-  type: "Tapez"
+  
+  
+  type: "Type"
   context: "Contexte"
   umls_sem_type: "Type Sem UMLS"
   matched_ontology: "ontologie correspondante"
@@ -32,6 +34,24 @@ fr:
   format_results: "Formater les résultats en "
   reproduce_results : "Reproduisez ces résultats en utilisant le "
   additional_parameters: "Paramètres supplémentaires expliqués à "
+
+    
+  input: "Entrée"
+  text: "Texte"
+  keywords: "Mots-clés"
+  keywords_separated_by_commas: "Mots-clés séparés par des virgules"
+  output: "Sortie"
+  ontology_sets: "Ensembles d'ontologies"
+  insert_sample_input: "Insérer une entrée d'exemple"
+  weights_configuration: "Configuration des poids"
+  coverage: "Couverture"
+  acceptance: "Acceptation"
+  knowledge_detail: "Détail de la connaissance"
+  specialization: "Spécialisation"
+  max_ontologies_per_set: "Nombre maximum d'ontologies par ensemble"
+  paste_input_text: "Collez un paragraphe de texte ou des mots-clés à utiliser dans le calcul des recommandations d'ontologie"
+  get_recommendations: "Obtenir des recommandations"
+  select_ontologies_list: "Sélectionnez les ontologies"
 
   header:
     browse: "Parcourir"
@@ -118,6 +138,19 @@ fr:
       semantic_groups: "Groupes sémantiques UMLS"
 
 
+  recommender_page:
+    title: "recommandeur"
+    ontology_recommender: "Recommandeur d'ontologie"
+    ontology_recommendation_input: "Veuillez coller un paragraphe de texte ou quelques mots-clés pour calculer les recommandations d'ontologie."
+    weight_sum_greater_than_zero: "La somme des poids doit être supérieure à zéro"
+    weights_greater_than_zero: "Tous les poids doivent être supérieurs ou égaux à zéro"
+    valid_numeric_weights: "Tous les poids doivent être des valeurs numériques valides"
+    valid_integer_max_ontologies_per_set: "Le nombre maximum d'ontologies par ensemble doit être une valeur entière valide"
+    valid_max_ontologies_per_set_range: "Le nombre maximum d'ontologies par ensemble doit être un nombre entre 2 et 4"
+    recommendation_error: "Problème lors de la récupération des recommandations, veuillez réessayer"
+    no_recommendations: "Aucune recommandation trouvée"
+    no_sets_recommended: "Il n'y a pas d'ensembles d'ontologies recommandés pour l'entrée fournie. Veuillez essayer la sortie 'Ontologies'."
+    text_length_limit: "Veuillez utiliser moins de 500 mots. Si vous devez annoter de plus grands morceaux de texte, vous pouvez utiliser le service web de recommandation."
 
   about: >
     <div class='about p-2'>
@@ -255,6 +288,7 @@ fr:
       intro: Parcourez une sélection de projets qui utilisent les ressources %{site}
 
   ontologies:
+    self: "Ontologies"
     intro: Parcourir la bibliothèque d'ontologies
 
   concepts:
