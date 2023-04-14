@@ -310,5 +310,14 @@ fr:
          <blockquote>
            <p>Justification (facultatif)<br>Fournissez ici toute information supplémentaire sur le terme demandé.</p>
          </blockquote>
+    
   mappings:
-    intro: Parcourir les mappages entre les classes dans différentes ontologies
+    title: "Correspondances"
+    upload_mappings: "Télécharger les correspondances"
+    mappings_bulk_load: "Chargement en masse des correspondances"
+    intro: "Parcourir les correspondances entre les classes de différentes ontologies"
+    no_mappings_available: "Aucune correspondance disponible"
+    loading_mappings: "Chargement des correspondances en cours..."  
+    find_mappings: "Trouver les correspondances d'une classe / concept"
+    view_mappings_help: "View mappings help"
+    select_class: "Commencez à taper pour sélectionner une classe"

@@ -149,9 +149,6 @@ en:
     no_recommendations: "No recommendations found"
     no_sets_recommended: "There are no ontology sets recommended for the input provided. Please try the 'Ontologies' output."
     text_length_limit: "Please use less than 500 words. If you need to annotate larger pieces of text you can use the Recommender Web Service"
-  
-
-
 
     
 
@@ -322,5 +319,9 @@ en:
         <blockquote>
           <p>Justification (optional)<br>Provide any additional information about the requested term here.</p>
         </blockquote>
+  
   mappings:
+    title: "Mappings"
+    upload_mappings: "Upload Mappings"
+    mappings_bulk_load: "Mappings Bulk Load"
     intro: Browse mappings between classes in different ontologies
