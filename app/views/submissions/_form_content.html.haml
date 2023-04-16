@@ -15,6 +15,8 @@
 
       = attribute_form_group_container('location', required: true) do
         = render partial: 'submissions/submission_location_form'
+      = attribute_form_group_container('identifier', required: true) do
+        = render partial: 'submissions/submission_identifier_form'
 
     %div#key-properties-card.mt-4
       = metadata_section('key-properties', 'Key properties', collapsed: false) do
@@ -64,7 +66,7 @@
         = form_group_attribute("usedOntologyEngineeringTool")
 
       = metadata_section('more-description-details', 'More description details', parent_id: "description-card") do
-        - for attr_name in %w[abstract notes keywords alternative identifier]
+        - for attr_name in %w[abstract notes keywords alternative]
           = form_group_attribute(attr_name)
 
       - data = sections
