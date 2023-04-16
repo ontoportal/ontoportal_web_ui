@@ -179,7 +179,8 @@ Rails.application.routes.draw do
   match '/admin/update_info' => 'admin#update_info', via: [:get]
   match '/admin/update_check_enabled' => 'admin#update_check_enabled', via: [:get]
   match '/admin/users' => 'admin#users', via: [:get]
-
+  match '/admin/doi_requests_list' => 'admin#doi_requests_list', via: [:get]
+  match '/admin/doi_requests' => 'admin#process_doi_requests', via: [:put]
   # Ontolobridge
   # post '/ontolobridge/:save_new_term_instructions' => 'ontolobridge#save_new_term_instructions'
 
