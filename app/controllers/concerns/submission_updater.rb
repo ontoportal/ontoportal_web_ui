@@ -78,6 +78,7 @@ module SubmissionUpdater
       :homepage,
       :documentation,
       :publication
+      :identifier, :identifierType, :is_doi_requested,
     ]
 
     @metadata.each do |m|
