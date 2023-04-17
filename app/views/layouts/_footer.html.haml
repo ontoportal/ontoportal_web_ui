@@ -7,11 +7,16 @@
   %footer
     - footerlinks = $FOOTER_LINKS[I18n.locale] || $FOOTER_LINKS[:en]
     .footer-header
-      %img{:src => "#{asset_path("logos/agroportal-logo.svg")}"}
-        .footer-social-media-links
-          - footerlinks[:social].each do |link|
-            %a{:href => link[:link], :target => "_blank"}
-              %img{:src => "#{asset_path(link[:logo])}"}/
+      .footer-logo
+        %img{:src => "#{asset_path("logos/ontoportal.svg")}"}
+        - logo = $UI_THEME.to_s.capitalize
+        - logo.sub! 'portal' , 'Portal'
+        %p
+          = logo
+      .footer-social-media-links
+        - footerlinks[:social].each do |link|
+          %a{:href => link[:link], :target => "_blank"}
+            %img{:src => "#{asset_path(link[:logo])}"}/
     .footer-nav-links
       - footerlinks[:links].each do |footerlink|
         %div
