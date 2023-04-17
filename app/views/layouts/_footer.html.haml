@@ -1,33 +1,28 @@
 </div>
 </div>
 
-%footer.footer.pt-4.mt-5
-  %div.container
-    %div.row
-      - $FOOTER_LINKS.to_h[:top].to_a.each do |footer_links_block|
-        %div.col-6.col-md
-          %h6= footer_links_block[:column_header]
-          %ul.list-unstyled
-            - footer_links_block[:links].each do |footer_links_row|
-              %li
-                - footer_links_row.each do |footer_link|
-                  = render_footer_link footer_link
-    %div.row.legal-text
-      %div.col
-        = t('.grant_html', site: $SITE)
-    %div.row.pt-2
-      - $FOOTER_LINKS.to_h[:bottom].to_a.each do |footer_links_block|
-        %div.col-6.col-md
-          - if footer_links_block[:column_header].present?
-            %h6= footer_links_block[:column_header]
-          %ul.list-inline
-            - footer_links_block[:links].each do |footer_links_row|
-              - footer_links_row.each_with_index do |footer_link, i|
-                %li.list-inline-item
-                  = render_footer_link footer_link
-                - unless i >= footer_links_row.size - 1
-                  %li.list-inline-item
-                    = raw(footer_links_block[:separator])
+%br
+%br/
+.footer-container
+  %footer
+    - footerlinks = $FOOTER_LINKS[I18n.locale] || $FOOTER_LINKS[:en]
+    .footer-header
+      %img{:src => "#{asset_path("logos/agroportal-logo.svg")}"}
+        .footer-social-media-links
+          - footerlinks[:social].each do |link|
+            %a{:href => link[:link], :target => "_blank"}
+              %img{:src => "#{asset_path(link[:logo])}"}/
+    .footer-nav-links
+      - footerlinks[:links].each do |footerlink|
+        %div
+          %h2
+            = footerlink[:title]
+          %div
+            - footerlink[:items].each do |item|
+              %a{:href => item[:link], :target => "_blank"}
+                = item[:title]
+          
+
 
 
 = javascript_include_tag "application"
