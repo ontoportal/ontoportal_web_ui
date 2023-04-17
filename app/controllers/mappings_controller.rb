@@ -46,11 +46,14 @@ class MappingsController < ApplicationController
   end
 
   def show
-    page = params[:page] || 1
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
-    @target_ontology = LinkedData::Client::Models::Ontology.find(params[:target])
-    ontologies = [@ontology.acronym, @target_ontology.acronym]
+    not_found if @ontology.nil?
 
+    @target_ontology = LinkedData::Client::Models::Ontology.find(params[:target])
+    not_found if @target_ontology.nil?
+
+    page = params[:page] || 1
+    ontologies = [@ontology.acronym, @target_ontology.acronym]
     @mapping_pages = LinkedData::Client::HTTP.get(MAPPINGS_URL, {page: page, ontologies: ontologies.join(",")})
     @mappings = @mapping_pages.collection
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
