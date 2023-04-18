@@ -1,6 +1,10 @@
 class ChipsComponentPreview < ViewComponent::Preview
-    def default
-        render(ChipsComponent.new(name:"bug", value: "Bug"))
+
+    # @param name text
+    # @param value text
+    
+    def default(name: "name", value: "value")
+        render(ChipsComponent.new(name: name, value: value))
     end
   
   end
