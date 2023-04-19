@@ -49,8 +49,16 @@ class HomeController < ApplicationController
     @prop_count = 36286
     @map_count = total_mapping_count
     @analytics = LinkedData::Client::Analytics.last_month
-
+    @projects_count = LinkedData::Client::Models::Project.all.length
+    @users_count = LinkedData::Client::Models::User.all.length
     @ontology_names = @ontologies.map { |ont| ["#{ont.name} (#{ont.acronym})", ont.acronym] }
+    @upload_benifits = [
+      "Discover new insights and connections by exploring other ontologies in the repository.",
+      "Contribute to the growth and development of your domain by adding new concepts and categories.",
+      "Use version control to manage the changes to your ontology over time and collaborate with other users.",
+      "Get feedback and suggestions from other users who can review and comment on your ontology.",
+      "Get the FAIR score and metrics for your ontology."
+    ]
 
     @anal_ont_names = {}
     @anal_ont_numbers = []
