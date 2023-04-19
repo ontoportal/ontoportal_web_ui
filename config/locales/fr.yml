@@ -1,5 +1,122 @@
 fr:
 
+  
+  
+  ######################################################## NCBO ANNOTAROR PLUS #######################################################
+  ####################################################################################################################################
+
+  nbco_annotatosplus:
+    
+    score_help: "Annotations de score suivant la mesure NCBO 2009 précédente (ancienne) ou Annotations de score suivant la mesure C-Value (cvalue) ou Annotations de score suivant la mesure C-Value avec expansion de la hiérarchie (cvalueh)"
+    start_typing_to_select: "Commencez à taper pour sélectionner %{type} ou laissez vide pour tout utiliser"
+    include_ancestors_up_to_level: "Inclure les ancêtres jusqu'au niveau"
+    include_score: "Inclure le score"
+    
+    recognizer: "Reconnaissance d'entité"
+    
+    enter_paste_text_to_annotate: "Entrez ou collez le texte à annoter :"
+
+    show_advanced_options : "Afficher les options avancées"
+    insert_sample_text : "Insérer un exemple de texte"
+    match_longest_only: "Correspondance la plus longue seulement"
+    match_partial_words: "Correspondance de mots partiels"
+    include_mappings: "Inclure les correspondances"
+    exclude_numbers: "Exclure les nombres"
+    exclude_synonyms: "Exclure les synonymes"
+    select_ontologies: "Commencez à taper pour sélectionner des ontologies ou laissez vide pour utiliser toutes les ontologies"
+    select_ontologies_list: "Sélectionnez les ontologies"
+   
+    umls:
+      semantic : "sémantique UMLS"
+      semantic_types: "Types sémantiques UMLS"
+      semantic_groups: "Groupes sémantiques UMLS"
+
+    select: "Sélectionnez %{name}"
+
+    fast_context:
+        title: "FastContext"
+        help: "Activer FastContext pour détecter : si un concept a été nié (affirmé, nié), qui a vécu le concept trouvé (patient, autre), quand le concept annoté s'est produit (récent, historique, hypothétique), et/ou si le concept annoté est incertain (certain, incertain)."
+    
+    annotations: "Annotations"
+    
+    filters:
+      by: 
+        filter: "Filtrer"
+        title: "Les résultats sont filtrés par"
+        class: "Classe"
+        ontology: "Ontologie"
+        match_type: "Type"
+        match_context: "Contexte"
+        matched_class: "Classe associée"
+        matched_ontology: "Ontologie associée"
+        umls_sem_type: "Type sémantique UMLS"
+
+        score: "Score"
+        negation: "Négation"
+        experiencer: "Expérience"
+        temporality: "Temporalité"
+        certainty: "Certitude"
+
+      additional_parameters_explained_at: "Des paramètres supplémentaires sont expliqués à la page :"
+      format_results_as: "Formater les résultats en tant que :"
+      reproduce_results_using: "Reproduire ces résultats en utilisant le"
+      match_longest_only: "Correspond le plus long uniquement"
+      match_partial_words: "Reconnaître des mots partiels"
+      include_mappings: "Inclure les mappages"
+      exclude_numbers: "Exclure des numéros"
+      exclude_synonyms: "Exclure les synonymes"
+      max_hierarchy_level: "Inclure les ancêtres jusqu'au niveau"
+      score: "Inclure le score"
+      score_help: "Annotations de score suivant la mesure NCBO 2009 précédente (ancienne) ou Annotations de score suivant la mesure C-Value (cvalue) ou Annotations de score suivant la mesure C-Value avec expansion de la hiérarchie (cvalueh)"
+      score_threshold: "Filtrer par seuil de score"
+      score_threshold_help: "Spécifier la valeur de score minimum pour les annotations"
+      confidence_threshold: "Seuil de confiance du filtre"
+      confidence_threshold_help: "Spécifiez la position minimale dans la distribution des scores (entre 1 et 100)"
+      recognizer de reconnaissance : "outil de reconnaissance d'entité"
+    
+    index:
+      title: "NCBO Annotator +"
+      intro: >
+       Le NCBO Annotator+ est un proxy appelant le service Web NCBO Annotator sur le NCBO BioPortal.
+         <br/><br/>
+         Tchechmedjiev, A., Abdaoui, A., Emonet, V., Melzi, S., Jonnagaddala, J., & Jonquet, C. (2018). <a href="https://doi.org/10.1093/bioinformatics/bty009" target="_blank">Fonctionnalités améliorées pour annoter et indexer le texte clinique avec NCBO Annotator+</a>. Bioinformatique, 34(11), 1962-1965.
+         </br><br/>
+         Si vous utilisez l'API, veuillez fournir une clé API NCBO BioPortal valide et accéder au service sur <a href="http://services.bioportal.lirmm.fr/ncbo_annotatorplus">http://services.bioportal.lirmm.fr/ncbo_annotatorplus </a></br>
+         Le texte soumis au NCBO Annotator+ doit être en anglais.
+      sample_text: Le mélanome est une tumeur maligne des mélanocytes qui se trouvent principalement dans la peau mais aussi dans l'intestin et l'œil.
+
+  ####################################################################################################################################
+
+  ######################################################## SEARCH ####################################################################
+  ####################################################################################################################################
+  
+  search:
+    title: "Rechercher"
+    class_search: "Recherche de classe"
+    show_advanced_options: "Afficher les options avancées"
+    hide_advanced_options: "Masquer les options avancées"
+    view_search_documentation: "Voir la documentation de recherche"
+    include_in_search: "Inclure dans la recherche"
+    narrow_search_to: "Réduire la recherche à"
+    categories: "Catégories"
+    property_values: "Valeurs de propriété"
+    obsolete_classes: "Classes obsolètes"
+    ontology_views: "Vues d'ontologie"
+    exact_matches: " Correspondances Exactes"
+    classes_with_definitions: "Classes avec Définitions"
+    ontologies: "Ontologies"
+    index:
+      intro: Rechercher une classe dans plusieurs ontologies
+      search_keywords_placeholder: Entrez une classe, par ex. Mélanome
+      categories_placeholder: Commencez à taper pour sélectionner des catégories ou laissez vide pour tout utiliser
+      property_definition: Association nommée entre deux entités. Les exemples sont "définition" (une relation entre une classe et du texte) et "partie de" (une relation entre deux classes).
+      obsolete_definition: >
+         Une classe que les auteurs de l'ontologie ont signalée comme étant obsolète et qu'ils recommandent de ne pas utiliser. Ces cours
+         sont souvent laissés dans des ontologies (plutôt que de les supprimer entièrement) afin que les systèmes existants qui en dépendent continuent à fonctionner.
+  
+  ####################################################################################################################################
+
+
   all : "Tout"
   see_details: "Voir les détails"
   view_fair_scores_definitions: "View fair scores definitions"
@@ -15,6 +132,7 @@ fr:
   median: "Médiane"
   slices: "Tranches"
   help: "Aide"
+  or: "Ou"
 
   class: "Classe"
   filter : "Filtre"
@@ -53,6 +171,7 @@ fr:
   get_recommendations: "Obtenir des recommandations"
   select_ontologies_list: "Sélectionnez les ontologies"
 
+  
   header:
     browse: "Parcourir"
     search: "Rechercher"
@@ -94,6 +213,11 @@ fr:
   shared: 
     show_advanced_options : "Afficher les options avancées"
     insert_sample_text : "Insérer un exemple de texte"
+    match_longest_only: "Correspondance la plus longue seulement"
+    match_partial_words: "Correspondance de mots partiels"
+    include_mappings: "Inclure les correspondances"
+    exclude_numbers: "Exclure les nombres"
+    select_ontologies: "Commencez à taper pour sélectionner des ontologies ou laissez vide pour utiliser toutes les ontologies"
     umls_semantic : "sémantique UMLS"
 
 
@@ -259,29 +383,10 @@ fr:
         tooltip: "Activez Lemmatize pour lemmatiser le texte soumis et utiliser un dictionnaire lemmatisé pour les annotations"
       sample_text: Le mélanome est une tumeur maligne des mélanocytes qui se trouvent principalement dans la peau mais aussi dans l'intestin et l'œil.
 
-  nbco_annotatosplus:
-    index:
-      intro: >
-       Le NCBO Annotator+ est un proxy appelant le service Web NCBO Annotator sur le NCBO BioPortal.
-         <br/><br/>
-         Tchechmedjiev, A., Abdaoui, A., Emonet, V., Melzi, S., Jonnagaddala, J., & Jonquet, C. (2018). <a href="https://doi.org/10.1093/bioinformatics/bty009" target="_blank">Fonctionnalités améliorées pour annoter et indexer le texte clinique avec NCBO Annotator+</a>. Bioinformatique, 34(11), 1962-1965.
-         </br><br/>
-         Si vous utilisez l'API, veuillez fournir une clé API NCBO BioPortal valide et accéder au service sur <a href="http://services.bioportal.lirmm.fr/ncbo_annotatorplus">http://services.bioportal.lirmm.fr/ncbo_annotatorplus </a></br>
-         Le texte soumis au NCBO Annotator+ doit être en anglais.
-      sample_text: Le mélanome est une tumeur maligne des mélanocytes qui se trouvent principalement dans la peau mais aussi dans l'intestin et l'œil.
-
   recommender:
     intro: Obtenez des recommandations pour les ontologies les plus pertinentes à partir d'un extrait d'un texte biomédical ou d'une liste de mots-clés
 
-  search:
-    index:
-      intro: Rechercher une classe dans plusieurs ontologies
-      search_keywords_placeholder: Entrez une classe, par ex. Mélanome
-      categories_placeholder: Commencez à taper pour sélectionner des catégories ou laissez vide pour tout utiliser
-      property_definition: Association nommée entre deux entités. Les exemples sont "définition" (une relation entre une classe et du texte) et "partie de" (une relation entre deux classes).
-      obsolete_definition: >
-         Une classe que les auteurs de l'ontologie ont signalée comme étant obsolète et qu'ils recommandent de ne pas utiliser. Ces cours
-         sont souvent laissés dans des ontologies (plutôt que de les supprimer entièrement) afin que les systèmes existants qui en dépendent continuent à fonctionner.
+  
 
   projects:
     index:
@@ -321,3 +426,10 @@ fr:
     find_mappings: "Trouver les correspondances d'une classe / concept"
     view_mappings_help: "View mappings help"
     select_class: "Commencez à taper pour sélectionner une classe"
+    select_ontologies: "Commencez à taper pour sélectionner des ontologies ou laissez vide pour utiliser toutes les ontologies"
+    select_semantic_types: "Sélectionnez les types sémantiques UMLS"
+    select_semantic_types_help: "Commencez à taper pour sélectionner les types sémantiques UMLS ou laissez vide pour utiliser tous les types"
+    select_semantic_groups: "Sélectionnez les groupes sémantiques UMLS"
+    select_semantic_groups_help: "Commencez à taper pour sélectionner les groupes sémantiques UMLS ou laissez vide pour utiliser tous les groupes"
+    include_ancestors_up_to_level: "Inclure les ancêtres jusqu'au niveau"
+    include_score: "Inclure le score"
