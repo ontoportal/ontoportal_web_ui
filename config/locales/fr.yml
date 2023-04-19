@@ -116,6 +116,37 @@ fr:
   
   ####################################################################################################################################
 
+  ######################################################## PROJECTS ##################################################################
+  ####################################################################################################################################
+  
+  projects:
+    
+    title: "Liste de projets" 
+    project_description: "Description du projet"
+    description_text: "Texte de description"
+    view_projects_help: "Aide à la visualisation des projets"
+    create_new_project: Créer un nouveau projet
+
+    self: Projets
+    description: Description
+    contacts: Contacts
+    institutions: Institutions
+    ontologies: "Ontologies"
+    creator: "Utilisateur"
+    created: "Créé"
+    home_page: Page d'accueil
+    edit: Modifier
+    delete_admin_only: Supprimer (administrateur seulement)
+    delete_confirm: Êtes-vous sûr(e) ?
+
+    index:
+      intro: Parcourez une sélection de projets qui utilisent les ressources %{site}
+
+  ####################################################################################################################################
+
+
+
+
 
   all : "Tout"
   see_details: "Voir les détails"
@@ -220,16 +251,6 @@ fr:
     select_ontologies: "Commencez à taper pour sélectionner des ontologies ou laissez vide pour utiliser toutes les ontologies"
     umls_semantic : "sémantique UMLS"
 
-
-  search_page:
-    title: "Rechercher"
-    class_search: "Recherche de classe"
-    show_advanced_options: "Afficher les options avancées"
-    hide_advanced_options: "Masquer les options avancées"
-    view_search_documentation: "Voir la documentation de recherche"
-    include_in_search: "Inclure dans la recherche"
-    narrow_search_to: "Réduire la recherche à"
-    categories: "Catégories"
 
   annotator_page:
     title: "Annotateur"
@@ -388,10 +409,7 @@ fr:
 
   
 
-  projects:
-    index:
-      intro: Parcourez une sélection de projets qui utilisent les ressources %{site}
-
+  
   ontologies:
     self: "Ontologies"
     intro: Parcourir la bibliothèque d'ontologies
