@@ -145,10 +145,68 @@ fr:
   ####################################################################################################################################
 
 
+  ####################################################### LANDSCAPE ##################################################################
+  ####################################################################################################################################
+  
+  landscape:
+    
+    title: "%{site} Paysage" 
+    intro: Visualiser les données récupérées à partir des ontologies stockées dans le portail
+    groups_and_categories: Groupes et catégories
+    ontologies_by : "Ontologies par %{type}"
+    ontologies_count_by_catalog: Nombre d'ontologies dans chaque catalogue de données
+    properties_use: Utilisation des propriétés
+    properties_usage_proportion: The proportion of properties usage among stored ontologies
+    ontologies_languages: Langues naturelles des ontologies
+    ontologies_licenses: Licences utilisées par les ontologies
+    ontology_tools: Outils les plus utilisés pour construire des ontologies
+    
+    more_properties_charts: Plus de graphiques de propriétés
+    ontology_properties_pie_charts: Graphiques circulaires pour les propriétés utilisées dans les ontologies
+    owl_ontology_preflabel_uris: URIs de propriétés prefLabel utilisées pour les ontologies OWL
+    owl_ontology_synonym_uris: URIs de propriétés synonymes utilisées pour les ontologies OWL
+    owl_ontology_definition_uris: URIs de propriétés de définition utilisées pour les ontologies OWL
+    owl_ontology_author_uris: URIs de propriétés d'auteur utilisées pour les ontologies OWL
+   
+    ontology_types: Types d'ontologie
+    ontology_formality_levels: Niveaux de formalité des ontologies
+    ontologies_formats: Format utilisé
+
+    ontologies_contributors: Contributeurs au développement d'ontologies
+
+    most_active_people: Les personnes les plus actives
+    most_mentioned_people: Les personnes les plus mentionnées en tant que contact, créateur, contributeur ou conservateur
+
+    most_active_organizations: Les organisations les plus actives
+    funding_endorsing_organizations: Les organisations qui financent et soutiennent le plus grand nombre d'ontologies
+
+    ontologies_activity_on: "Activité des ontologies sur %{site}"
+    most_active_people_as_reviewer: "Les personnes les plus actives en tant que relecteurs"
+    most_mentioned_people_as_reviewer: Personnes ayant publié des notes, des avis et des projets
+    most_active_ontologies: "Ontologies les plus actives"
+    ontologies_with_notes_reviews_projects: "Ontologies avec des notes, des critiques et des projets"
+
+
+    ontology_relations_network: "Réseau de relations ontologiques"
+    relations_between_stored_ontologies: "Relations entre les ontologies stockées sur le portail"
+
+    filter_network: "Filtrer le réseau"
+
+    ontology_fairness_evaluator: "Évaluateur de conformité FAIR des ontologies (O’FAIRe)"
+    average_metrics: "Métriques moyennes"
+
+
+    group: Groupe
+    category: Catégorie
+    size: Taille
+
+  ###################################################################################################################################
+
 
 
 
   all : "Tout"
+  none: "aucune"
   see_details: "Voir les détails"
   view_fair_scores_definitions: "View fair scores definitions"
   get_json_version: "Get the json version"
