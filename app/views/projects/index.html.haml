@@ -43,7 +43,7 @@
                 / TODO_REV: Enable delete project for admins
               - if current_user_admin?
                 &nbsp;&nbsp;
-                = link_to(t("projects.delete_admin_only"), project_path(project.acronym), :method => :delete, :confirm => t("projects.are_you_sure"))
+                = link_to(t("projects.delete_admin_only"), project_path(project.acronym), :method => :delete, :confirm => t("projects.delete_confirm"))
           / Project description (may be truncated with a dialog)
           %td{:style => "vertical-align:top;", :width => "50%"}
             - if ! project.description.nil?
