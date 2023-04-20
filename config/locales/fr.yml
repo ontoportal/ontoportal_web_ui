@@ -1,9 +1,5 @@
 fr:
 
-
-  ######################################################## NCBO ANNOTAROR PLUS #######################################################
-  ####################################################################################################################################
-
   nbco_annotatosplus:
     score_help: "Annotations de score suivant la mesure NCBO 2009 précédente (ancienne) ou Annotations de score suivant la mesure C-Value (cvalue) ou Annotations de score suivant la mesure C-Value avec expansion de la hiérarchie (cvalueh)"
     start_typing_to_select: "Commencez à taper pour sélectionner %{type} ou laissez vide pour tout utiliser"
@@ -83,11 +79,6 @@ fr:
           Le texte soumis au NCBO Annotator+ doit être en anglais.
       sample_text: Le mélanome est une tumeur maligne des mélanocytes qui se trouvent principalement dans la peau mais aussi dans l'intestin et l'œil.
 
-  ####################################################################################################################################
-
-  ######################################################## SEARCH ####################################################################
-  ####################################################################################################################################
-
   search:
     title: "Rechercher"
     class_search: "Recherche de classe"
@@ -112,11 +103,6 @@ fr:
         Une classe que les auteurs de l'ontologie ont signalée comme étant obsolète et qu'ils recommandent de ne pas utiliser. Ces cours
         sont souvent laissés dans des ontologies (plutôt que de les supprimer entièrement) afin que les systèmes existants qui en dépendent continuent à fonctionner.
 
-  ####################################################################################################################################
-
-  ######################################################## PROJECTS ##################################################################
-  ####################################################################################################################################
-
   projects:
     title: "Liste de projets"
     project_description: "Description du projet"
@@ -138,11 +124,6 @@ fr:
 
     index:
       intro: Parcourez une sélection de projets qui utilisent les ressources %{site}
-
-  ####################################################################################################################################
-
-  ####################################################### LANDSCAPE ##################################################################
-  ####################################################################################################################################
 
   landscape:
     title: "%{site} Paysage"
@@ -193,11 +174,6 @@ fr:
     category: Catégorie
     size: Taille
 
-  ###################################################################################################################################
-
-  ####################################################### HOME #######################################################################
-  ####################################################################################################################################
-
   home:
     find_ontology: "Trouver une ontologie"
     search_class: "Rechercher une classe"
@@ -234,11 +210,6 @@ fr:
         Pour recevoir des avis de nouvelles versions ou de pannes de site, veuillez vous abonner au
         <a href="https://mailman.stanford.edu/mailman/listinfo/bioontology-support" target="_blank">liste de support bioontologie</a>.
 
-  ###################################################################################################################################
-
-  ####################################################### RECOMMENDER ################################################################
-  ####################################################################################################################################
-
   recommender:
     intro: Obtenez des recommandations pour les ontologies les plus pertinentes à partir d'un extrait d'un texte biomédical ou d'une liste de mots-clés
     title: "recommandeur"
@@ -253,11 +224,6 @@ fr:
     no_recommendations: "Aucune recommandation trouvée"
     no_sets_recommended: "Il n'y a pas d'ensembles d'ontologies recommandés pour l'entrée fournie. Veuillez essayer la sortie 'Ontologies'."
     text_length_limit: "Veuillez utiliser moins de 500 mots. Si vous devez annoter de plus grands morceaux de texte, vous pouvez utiliser le service web de recommandation."
-
-  ###################################################################################################################################
-
-  ####################################################### MAPPINGS ################################################################
-  ####################################################################################################################################
 
   mappings:
     title: "Correspondances"
@@ -276,11 +242,6 @@ fr:
     select_semantic_groups_help: "Commencez à taper pour sélectionner les groupes sémantiques UMLS ou laissez vide pour utiliser tous les groupes"
     include_ancestors_up_to_level: "Inclure les ancêtres jusqu'au niveau"
     include_score: "Inclure le score"
-
-  ###################################################################################################################################
- 
-  ####################################################### ANNOTATOR ################################################################
-  ####################################################################################################################################
 
   annotator:
     title: "Annotateur"
@@ -319,11 +280,6 @@ fr:
         tooltip: "Activez Lemmatize pour lemmatiser le texte soumis et utiliser un dictionnaire lemmatisé pour les annotations"
       sample_text: Le mélanome est une tumeur maligne des mélanocytes qui se trouvent principalement dans la peau mais aussi dans l'intestin et l'œil.
 
-  ###################################################################################################################################
-
-  ####################################################### LAYOUT ################################################################
-  ####################################################################################################################################
-
   layout:
     header:
       browse: "Parcourir"
@@ -359,63 +315,7 @@ fr:
         one: Cette installation de l'appliance OntoPortal est une licence d'essai, qui expirera dans 1 jour.
         other: Cette installation de l'appliance OntoPortal est une licence d'essai, qui expirera dans %{count} jours.
 
-  ###################################################################################################################################
-
-
-
-  all: "Tout"
-  none: "aucune"
-  keywords: "Mots-clés"
-  keywords_separated_by_commas: "Mots-clés séparés par des virgules"
-  see_details: "Voir les détails"
-  view_fair_scores_definitions: "View fair scores definitions"
-  get_json_version: "Get the json version"
-  select_ontologies: "Commencez à taper pour sélectionner des ontologies ou laissez vide pour toutes les utiliser"
-  clear_selection: "Effacer la sélection"
-  select_from_list: "Sélectionner dans la liste"
-  more: "Plus"
-  statistics: "Statistiques"
-  average: "Moyenne"
-  min: "Min"
-  max: "Max"
-  median: "Médiane"
-  slices: "Tranches"
-  help: "Aide"
-  or: "Ou"
-  show_advanced_options: "Afficher les options avancées"
-  insert_sample_text: "Insérer un exemple de texte"
-  class: "Classe"
-  filter: "Filtre"
-  ontology: "Ontologie"
-  type: "Type"
-  context: "Contexte"
-  umls_sem_type: "Type Sem UMLS"
-  matched_ontology: "ontologie correspondante"
-  matched_class: "Classe correspondante"
-  score: "Score"
-  negation: "négation"
-  experiencer: "Experiencer"
-  temporality: "Temporalité"
-  certainty: "Certitude"
-  format_results: "Formater les résultats en "
-  reproduce_results: "Reproduisez ces résultats en utilisant le "
-  additional_parameters: "Paramètres supplémentaires expliqués à "
-  input: "Entrée"
-  text: "Texte"
-  output: "Sortie"
-  ontology_sets: "Ensembles d'ontologies"
-  insert_sample_input: "Insérer une entrée d'exemple"
-  weights_configuration: "Configuration des poids"
-  coverage: "Couverture"
-  acceptance: "Acceptation"
-  knowledge_detail: "Détail de la connaissance"
-  specialization: "Spécialisation"
-  max_ontologies_per_set: "Nombre maximum d'ontologies par ensemble"
-  paste_input_text: "Collez un paragraphe de texte ou des mots-clés à utiliser dans le calcul des recommandations d'ontologie"
-  get_recommendations: "Obtenir des recommandations"
-  select_ontologies_list: "Sélectionnez les ontologies"
-
-  # OTHER
+  # Other
 
   about: >
     <div class='about p-2'>
@@ -478,7 +378,16 @@ fr:
   
   ontologies:
     self: "Ontologies"
+    loading: Chargement des ontologies
     intro: Parcourir la bibliothèque d'ontologies
+    please_wait: S'il vous plaît, attendez..
+    browse: Explorer
+    welcome_admin: Bienvenue admin
+    admin_help: Cette couleur indique les fonctionnalités réservées aux administrateurs
+    debug_info: Informations de débogage
+    submit_new_ontology: Soumettre une nouvelle ontologie
+    entry_type: Type d'entrée
+    uploaded_in_the_last: Téléchargé dans les derniers
 
   concepts:
     request_term:
@@ -499,5 +408,94 @@ fr:
           <blockquote>
             <p>Justification (facultatif)<br>Fournissez ici toute information supplémentaire sur le terme demandé.</p>
           </blockquote>
+
+  # Generale
+  showing: Affichage
+  of: de
+  sort: Trier
+  popular: Populaire
+  name: Nom
+  classes_count: Nombre de classes
+  instances_concepts_count: Nombre d'instances/concepts
+  notes: Notes
+  upload_date: Date de téléchargement
+  release_date: Date de publication
+  fair_score: Score FAIR
+  search_rank: Classement de recherche
+  no_matches: Aucune correspondance !
+  uploaded: Téléchargé
+  view_of: Vue de
+  view: Vue
+  summary_only: Résumé seulement
+  groups: Groupes
+  categories: Catégories
+  admins: Administrateurs
+  status: Statut
+  no_submissions_available: Aucune soumission disponible
+  classes: classes
+
+  category: Catégorie
+  group: Groupe
+  format: Format
+  ontology_content: Contenu de l'ontologie
+  natural_language: Langage naturel
+  formality_levels: Niveaux de formalité
+  is_of_type: Est du type
+  missing_status: Statut manquant
+  types: Types
+  artifacts: Artéfacts
+  formats: Formats
+  selected_ontologies: Ontologies sélectionnées
+  all: "Tout"
+  none: "aucune"
+  keywords: "Mots-clés"
+  keywords_separated_by_commas: "Mots-clés séparés par des virgules"
+  see_details: "Voir les détails"
+  view_fair_scores_definitions: "View fair scores definitions"
+  get_json_version: "Get the json version"
+  select_ontologies: "Commencez à taper pour sélectionner des ontologies ou laissez vide pour toutes les utiliser"
+  clear_selection: "Effacer la sélection"
+  select_from_list: "Sélectionner dans la liste"
+  more: "Plus"
+  statistics: "Statistiques"
+  average: "Moyenne"
+  min: "Min"
+  max: "Max"
+  median: "Médiane"
+  slices: "Tranches"
+  help: "Aide"
+  or: "Ou"
+  show_advanced_options: "Afficher les options avancées"
+  insert_sample_text: "Insérer un exemple de texte"
+  class: "Classe"
+  filter: "Filtre"
+  ontology: "Ontologie"
+  type: "Type"
+  context: "Contexte"
+  umls_sem_type: "Type Sem UMLS"
+  matched_ontology: "ontologie correspondante"
+  matched_class: "Classe correspondante"
+  score: "Score"
+  negation: "négation"
+  experiencer: "Experiencer"
+  temporality: "Temporalité"
+  certainty: "Certitude"
+  format_results: "Formater les résultats en "
+  reproduce_results: "Reproduisez ces résultats en utilisant le "
+  additional_parameters: "Paramètres supplémentaires expliqués à "
+  input: "Entrée"
+  text: "Texte"
+  output: "Sortie"
+  ontology_sets: "Ensembles d'ontologies"
+  insert_sample_input: "Insérer une entrée d'exemple"
+  weights_configuration: "Configuration des poids"
+  coverage: "Couverture"
+  acceptance: "Acceptation"
+  knowledge_detail: "Détail de la connaissance"
+  specialization: "Spécialisation"
+  max_ontologies_per_set: "Nombre maximum d'ontologies par ensemble"
+  paste_input_text: "Collez un paragraphe de texte ou des mots-clés à utiliser dans le calcul des recommandations d'ontologie"
+  get_recommendations: "Obtenir des recommandations"
+  select_ontologies_list: "Sélectionnez les ontologies"
 
   
