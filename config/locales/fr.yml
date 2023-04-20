@@ -1,23 +1,21 @@
 fr:
 
-  
-  
+
   ######################################################## NCBO ANNOTAROR PLUS #######################################################
   ####################################################################################################################################
 
   nbco_annotatosplus:
-    
     score_help: "Annotations de score suivant la mesure NCBO 2009 précédente (ancienne) ou Annotations de score suivant la mesure C-Value (cvalue) ou Annotations de score suivant la mesure C-Value avec expansion de la hiérarchie (cvalueh)"
     start_typing_to_select: "Commencez à taper pour sélectionner %{type} ou laissez vide pour tout utiliser"
     include_ancestors_up_to_level: "Inclure les ancêtres jusqu'au niveau"
     include_score: "Inclure le score"
-    
+
     recognizer: "Reconnaissance d'entité"
-    
+
     enter_paste_text_to_annotate: "Entrez ou collez le texte à annoter :"
 
-    show_advanced_options : "Afficher les options avancées"
-    insert_sample_text : "Insérer un exemple de texte"
+    show_advanced_options: "Afficher les options avancées"
+    insert_sample_text: "Insérer un exemple de texte"
     match_longest_only: "Correspondance la plus longue seulement"
     match_partial_words: "Correspondance de mots partiels"
     include_mappings: "Inclure les correspondances"
@@ -25,22 +23,22 @@ fr:
     exclude_synonyms: "Exclure les synonymes"
     select_ontologies: "Commencez à taper pour sélectionner des ontologies ou laissez vide pour utiliser toutes les ontologies"
     select_ontologies_list: "Sélectionnez les ontologies"
-   
+
     umls:
-      semantic : "sémantique UMLS"
+      semantic: "sémantique UMLS"
       semantic_types: "Types sémantiques UMLS"
       semantic_groups: "Groupes sémantiques UMLS"
 
     select: "Sélectionnez %{name}"
 
     fast_context:
-        title: "FastContext"
-        help: "Activer FastContext pour détecter : si un concept a été nié (affirmé, nié), qui a vécu le concept trouvé (patient, autre), quand le concept annoté s'est produit (récent, historique, hypothétique), et/ou si le concept annoté est incertain (certain, incertain)."
-    
+      title: "FastContext"
+      help: "Activer FastContext pour détecter : si un concept a été nié (affirmé, nié), qui a vécu le concept trouvé (patient, autre), quand le concept annoté s'est produit (récent, historique, hypothétique), et/ou si le concept annoté est incertain (certain, incertain)."
+
     annotations: "Annotations"
-    
+
     filters:
-      by: 
+      by:
         filter: "Filtrer"
         title: "Les résultats sont filtrés par"
         class: "Classe"
@@ -72,24 +70,24 @@ fr:
       score_threshold_help: "Spécifier la valeur de score minimum pour les annotations"
       confidence_threshold: "Seuil de confiance du filtre"
       confidence_threshold_help: "Spécifiez la position minimale dans la distribution des scores (entre 1 et 100)"
-      recognizer de reconnaissance : "outil de reconnaissance d'entité"
-    
+      recognizer de reconnaissance: "outil de reconnaissance d'entité"
+
     index:
       title: "NCBO Annotator +"
       intro: >
-       Le NCBO Annotator+ est un proxy appelant le service Web NCBO Annotator sur le NCBO BioPortal.
-         <br/><br/>
-         Tchechmedjiev, A., Abdaoui, A., Emonet, V., Melzi, S., Jonnagaddala, J., & Jonquet, C. (2018). <a href="https://doi.org/10.1093/bioinformatics/bty009" target="_blank">Fonctionnalités améliorées pour annoter et indexer le texte clinique avec NCBO Annotator+</a>. Bioinformatique, 34(11), 1962-1965.
-         </br><br/>
-         Si vous utilisez l'API, veuillez fournir une clé API NCBO BioPortal valide et accéder au service sur <a href="http://services.bioportal.lirmm.fr/ncbo_annotatorplus">http://services.bioportal.lirmm.fr/ncbo_annotatorplus </a></br>
-         Le texte soumis au NCBO Annotator+ doit être en anglais.
+        Le NCBO Annotator+ est un proxy appelant le service Web NCBO Annotator sur le NCBO BioPortal.
+          <br/><br/>
+          Tchechmedjiev, A., Abdaoui, A., Emonet, V., Melzi, S., Jonnagaddala, J., & Jonquet, C. (2018). <a href="https://doi.org/10.1093/bioinformatics/bty009" target="_blank">Fonctionnalités améliorées pour annoter et indexer le texte clinique avec NCBO Annotator+</a>. Bioinformatique, 34(11), 1962-1965.
+          </br><br/>
+          Si vous utilisez l'API, veuillez fournir une clé API NCBO BioPortal valide et accéder au service sur <a href="http://services.bioportal.lirmm.fr/ncbo_annotatorplus">http://services.bioportal.lirmm.fr/ncbo_annotatorplus </a></br>
+          Le texte soumis au NCBO Annotator+ doit être en anglais.
       sample_text: Le mélanome est une tumeur maligne des mélanocytes qui se trouvent principalement dans la peau mais aussi dans l'intestin et l'œil.
 
   ####################################################################################################################################
 
   ######################################################## SEARCH ####################################################################
   ####################################################################################################################################
-  
+
   search:
     title: "Rechercher"
     class_search: "Recherche de classe"
@@ -111,17 +109,16 @@ fr:
       categories_placeholder: Commencez à taper pour sélectionner des catégories ou laissez vide pour tout utiliser
       property_definition: Association nommée entre deux entités. Les exemples sont "définition" (une relation entre une classe et du texte) et "partie de" (une relation entre deux classes).
       obsolete_definition: >
-         Une classe que les auteurs de l'ontologie ont signalée comme étant obsolète et qu'ils recommandent de ne pas utiliser. Ces cours
-         sont souvent laissés dans des ontologies (plutôt que de les supprimer entièrement) afin que les systèmes existants qui en dépendent continuent à fonctionner.
-  
+        Une classe que les auteurs de l'ontologie ont signalée comme étant obsolète et qu'ils recommandent de ne pas utiliser. Ces cours
+        sont souvent laissés dans des ontologies (plutôt que de les supprimer entièrement) afin que les systèmes existants qui en dépendent continuent à fonctionner.
+
   ####################################################################################################################################
 
   ######################################################## PROJECTS ##################################################################
   ####################################################################################################################################
-  
+
   projects:
-    
-    title: "Liste de projets" 
+    title: "Liste de projets"
     project_description: "Description du projet"
     description_text: "Texte de description"
     view_projects_help: "Aide à la visualisation des projets"
@@ -144,30 +141,28 @@ fr:
 
   ####################################################################################################################################
 
-
   ####################################################### LANDSCAPE ##################################################################
   ####################################################################################################################################
-  
+
   landscape:
-    
-    title: "%{site} Paysage" 
+    title: "%{site} Paysage"
     intro: Visualiser les données récupérées à partir des ontologies stockées dans le portail
     groups_and_categories: Groupes et catégories
-    ontologies_by : "Ontologies par %{type}"
+    ontologies_by: "Ontologies par %{type}"
     ontologies_count_by_catalog: Nombre d'ontologies dans chaque catalogue de données
     properties_use: Utilisation des propriétés
     properties_usage_proportion: The proportion of properties usage among stored ontologies
     ontologies_languages: Langues naturelles des ontologies
     ontologies_licenses: Licences utilisées par les ontologies
     ontology_tools: Outils les plus utilisés pour construire des ontologies
-    
+
     more_properties_charts: Plus de graphiques de propriétés
     ontology_properties_pie_charts: Graphiques circulaires pour les propriétés utilisées dans les ontologies
     owl_ontology_preflabel_uris: URIs de propriétés prefLabel utilisées pour les ontologies OWL
     owl_ontology_synonym_uris: URIs de propriétés synonymes utilisées pour les ontologies OWL
     owl_ontology_definition_uris: URIs de propriétés de définition utilisées pour les ontologies OWL
     owl_ontology_author_uris: URIs de propriétés d'auteur utilisées pour les ontologies OWL
-   
+
     ontology_types: Types d'ontologie
     ontology_formality_levels: Niveaux de formalité des ontologies
     ontologies_formats: Format utilisé
@@ -186,7 +181,6 @@ fr:
     most_active_ontologies: "Ontologies les plus actives"
     ontologies_with_notes_reviews_projects: "Ontologies avec des notes, des critiques et des projets"
 
-
     ontology_relations_network: "Réseau de relations ontologiques"
     relations_between_stored_ontologies: "Relations entre les ontologies stockées sur le portail"
 
@@ -195,92 +189,16 @@ fr:
     ontology_fairness_evaluator: "Évaluateur de conformité FAIR des ontologies (O’FAIRe)"
     average_metrics: "Métriques moyennes"
 
-
     group: Groupe
     category: Catégorie
     size: Taille
 
   ###################################################################################################################################
 
+  ####################################################### HOME #######################################################################
+  ####################################################################################################################################
 
-
-
-  all : "Tout"
-  none: "aucune"
-  see_details: "Voir les détails"
-  view_fair_scores_definitions: "View fair scores definitions"
-  get_json_version: "Get the json version"
-  select_ontologies: "Commencez à taper pour sélectionner des ontologies ou laissez vide pour toutes les utiliser"
-  clear_selection: "Effacer la sélection"
-  select_from_list: "Sélectionner dans la liste"
-  more: "Plus"
-  statistics: "Statistiques"
-  average: "Moyenne"
-  min: "Min"
-  max: "Max"
-  median: "Médiane"
-  slices: "Tranches"
-  help: "Aide"
-  or: "Ou"
-
-  class: "Classe"
-  filter : "Filtre"
-  ontology: "Ontologie"
-  
-  
-  type: "Type"
-  context: "Contexte"
-  umls_sem_type: "Type Sem UMLS"
-  matched_ontology: "ontologie correspondante"
-  matched_class: "Classe correspondante"
-  score: "Score"
-  negation: "négation"
-  experiencer: "Experiencer"
-  temporality : "Temporalité"
-  certainty : "Certitude"
-  format_results: "Formater les résultats en "
-  reproduce_results : "Reproduisez ces résultats en utilisant le "
-  additional_parameters: "Paramètres supplémentaires expliqués à "
-
-    
-  input: "Entrée"
-  text: "Texte"
-  keywords: "Mots-clés"
-  keywords_separated_by_commas: "Mots-clés séparés par des virgules"
-  output: "Sortie"
-  ontology_sets: "Ensembles d'ontologies"
-  insert_sample_input: "Insérer une entrée d'exemple"
-  weights_configuration: "Configuration des poids"
-  coverage: "Couverture"
-  acceptance: "Acceptation"
-  knowledge_detail: "Détail de la connaissance"
-  specialization: "Spécialisation"
-  max_ontologies_per_set: "Nombre maximum d'ontologies par ensemble"
-  paste_input_text: "Collez un paragraphe de texte ou des mots-clés à utiliser dans le calcul des recommandations d'ontologie"
-  get_recommendations: "Obtenir des recommandations"
-  select_ontologies_list: "Sélectionnez les ontologies"
-
-  
-  header:
-    browse: "Parcourir"
-    search: "Rechercher"
-    mappings: "Mappings"
-    recommender: "Recommender"
-    annotator: "Annotateur"
-    ncbo_annotator_plus: "NCBO Annotator+"
-    projects: "Projets"
-    landscape: "Paysage"
-    login: "Se connecter"
-    account_setting: "Paramètres du compte"
-    submit_feedback: "Envoyer un commentaire"
-    help: "Aide"
-    release_notes: "Notes de version"
-    publications: "Publications"
-
-  footer:
-    products: "Produits"
-
-  main:
+  home:
     find_ontology: "Trouver une ontologie"
     search_class: "Rechercher une classe"
     browse_by_group: "Parcourir par groupe"
@@ -297,20 +215,74 @@ fr:
     projects: "Projets"
     users: "Utilisateurs"
     no_recent_notes: "Aucune note récente n'a été soumise"
-    
-  
-  shared: 
-    show_advanced_options : "Afficher les options avancées"
-    insert_sample_text : "Insérer un exemple de texte"
-    match_longest_only: "Correspondance la plus longue seulement"
-    match_partial_words: "Correspondance de mots partiels"
-    include_mappings: "Inclure les correspondances"
-    exclude_numbers: "Exclure les nombres"
+
+    index:
+      find_ontology_placeholder: Commencez à taper le nom de l'ontologie, puis choisissez dans
+      query_placeholder: Entrez une classe, par exemple Melanoma
+      tagline: le référentiel d'ontologies biomédicales le plus complet au monde
+      title: Bienvenue à la %{organization}
+      welcome: Bienvenue à la %{site},
+    help:
+      welcome: Bienvenue à la le %{site} du Centre national d'ontologie biomédicale. %{site} est une application Web permettant d'accéder et de partager des ontologies biomédicales.
+      getting_started: >
+        %{site} permet aux utilisateurs de parcourir, charger, télécharger, rechercher, commenter et créer des mappages pour les ontologies.
+      browse: >
+        Les utilisateurs peuvent parcourir et explorer des ontologies individuelles en naviguant soit dans une structure arborescente, soit dans une vue graphique animée. Les utilisateurs peuvent également afficher les mappages et
+          métadonnées d'ontologie et téléchargement d'ontologies. De plus, les utilisateurs connectés peuvent soumettre une nouvelle ontologie à la bibliothèque.
+      rest_examples_html: affichez la documentation et des exemples de l'<a href="http://data.bioontology.org/documentation" target="_blank">%{site} API REST</a>.
+      announce_list_html: >
+        Pour recevoir des avis de nouvelles versions ou de pannes de site, veuillez vous abonner au
+        <a href="https://mailman.stanford.edu/mailman/listinfo/bioontology-support" target="_blank">liste de support bioontologie</a>.
+
+  ###################################################################################################################################
+
+  ####################################################### RECOMMENDER ################################################################
+  ####################################################################################################################################
+
+  recommender:
+    intro: Obtenez des recommandations pour les ontologies les plus pertinentes à partir d'un extrait d'un texte biomédical ou d'une liste de mots-clés
+    title: "recommandeur"
+    ontology_recommender: "Recommandeur d'ontologie"
+    ontology_recommendation_input: "Veuillez coller un paragraphe de texte ou quelques mots-clés pour calculer les recommandations d'ontologie."
+    weight_sum_greater_than_zero: "La somme des poids doit être supérieure à zéro"
+    weights_greater_than_zero: "Tous les poids doivent être supérieurs ou égaux à zéro"
+    valid_numeric_weights: "Tous les poids doivent être des valeurs numériques valides"
+    valid_integer_max_ontologies_per_set: "Le nombre maximum d'ontologies par ensemble doit être une valeur entière valide"
+    valid_max_ontologies_per_set_range: "Le nombre maximum d'ontologies par ensemble doit être un nombre entre 2 et 4"
+    recommendation_error: "Problème lors de la récupération des recommandations, veuillez réessayer"
+    no_recommendations: "Aucune recommandation trouvée"
+    no_sets_recommended: "Il n'y a pas d'ensembles d'ontologies recommandés pour l'entrée fournie. Veuillez essayer la sortie 'Ontologies'."
+    text_length_limit: "Veuillez utiliser moins de 500 mots. Si vous devez annoter de plus grands morceaux de texte, vous pouvez utiliser le service web de recommandation."
+
+  ###################################################################################################################################
+
+  ####################################################### MAPPINGS ################################################################
+  ####################################################################################################################################
+
+  mappings:
+    title: "Correspondances"
+    upload_mappings: "Télécharger les correspondances"
+    mappings_bulk_load: "Chargement en masse des correspondances"
+    intro: "Parcourir les correspondances entre les classes de différentes ontologies"
+    no_mappings_available: "Aucune correspondance disponible"
+    loading_mappings: "Chargement des correspondances en cours..."
+    find_mappings: "Trouver les correspondances d'une classe / concept"
+    view_mappings_help: "View mappings help"
+    select_class: "Commencez à taper pour sélectionner une classe"
     select_ontologies: "Commencez à taper pour sélectionner des ontologies ou laissez vide pour utiliser toutes les ontologies"
-    umls_semantic : "sémantique UMLS"
+    select_semantic_types: "Sélectionnez les types sémantiques UMLS"
+    select_semantic_types_help: "Commencez à taper pour sélectionner les types sémantiques UMLS ou laissez vide pour utiliser tous les types"
+    select_semantic_groups: "Sélectionnez les groupes sémantiques UMLS"
+    select_semantic_groups_help: "Commencez à taper pour sélectionner les groupes sémantiques UMLS ou laissez vide pour utiliser tous les groupes"
+    include_ancestors_up_to_level: "Inclure les ancêtres jusqu'au niveau"
+    include_score: "Inclure le score"
 
+  ###################################################################################################################################
+ 
+  ####################################################### ANNOTATOR ################################################################
+  ####################################################################################################################################
 
-  annotator_page:
+  annotator:
     title: "Annotateur"
     get_annotator: "Obtenir les annotations"
     filters:
@@ -326,7 +298,7 @@ fr:
       score_threshold_help: "Spécifier la valeur de score minimum pour les annotations"
       confidence_threshold: "Seuil de confiance du filtre"
       confidence_threshold_help: "Spécifiez la position minimale dans la distribution des scores (entre 1 et 100)"
-      recognizer de reconnaissance : "outil de reconnaissance d'entité"
+      recognizer de reconnaissance: "outil de reconnaissance d'entité"
     start_typing_to_select: "Commencez à taper pour sélectionner %{type} ou laissez vide pour tout utiliser"
     select: "Sélectionnez %{name}"
     enter_or_paste_text: "Entrer ou coller le texte à annoter"
@@ -334,26 +306,116 @@ fr:
     lemmatize: "Lemmatiser"
     annotations_result: "Annotations"
     results_filtered_by: "Les résultats sont filtrés par"
-  
 
     umls:
       semantic_types: "Types sémantiques UMLS"
       semantic_groups: "Groupes sémantiques UMLS"
+    index:
+      intro: Obtenez des annotations pour le texte biomédical avec des classes des ontologies
+      annotatorplus_html: <em>Consultez la version bêta d'<a href="%{annotatorplus_href}">AnnotatorPlus</a> ; une nouvelle version de l'Annotator avec un support supplémentaire pour la négation, et plus encore !</em>
+      fast_context:
+        tooltip: "Activer FastContext pour détecter : si un concept a été nié (affirmé, nié), qui a vécu le concept trouvé (patient, autre), quand le concept annoté s'est produit (récent, historique, hypothétique), et/ou si le concept annoté est incertain (certain, incertain)."
+      lemmatize:
+        tooltip: "Activez Lemmatize pour lemmatiser le texte soumis et utiliser un dictionnaire lemmatisé pour les annotations"
+      sample_text: Le mélanome est une tumeur maligne des mélanocytes qui se trouvent principalement dans la peau mais aussi dans l'intestin et l'œil.
+
+  ###################################################################################################################################
+
+  ####################################################### LAYOUT ################################################################
+  ####################################################################################################################################
+
+  layout:
+    header:
+      browse: "Parcourir"
+      search: "Rechercher"
+      mappings: "Mappings"
+      recommender: "Recommender"
+      annotator: "Annotateur"
+      ncbo_annotator_plus: "NCBO Annotator+"
+      projects: "Projets"
+      landscape: "Paysage"
+      login: "Se connecter"
+      account_setting: "Paramètres du compte"
+      submit_feedback: "Envoyer un commentaire"
+      help: "Aide"
+      release_notes: "Notes de version"
+      publications: "Publications"
+    footer:
+      products: "Produits"
+      copyright_html: Droit d'auteur &copie; 2005‑2022, Conseil d'administration de l'Université Leland Stanford Junior. Tous les droits sont réservés.
+      grant_html: >
+        <strong>%{site}</strong> est actuellement développé dans le cadre du <a href="http://www.d2kab.org">projet ANR D2KAB</a> (<a href="http:// www.agence-nationale-recherche.fr/Projet-ANR-18-CE23-0017">ANR-18-CE23-0017</a>). Il reçoit ou a également reçu le soutien du <a href="http://www.lirmm.fr/sifr">projet ANR SIFR</a> (<a href="https://anr.fr/Projet-ANR- 12-JS02-0010">ANR-12-JS02-0010</a>), Union Européenne <a href="http://www.lirmm.fr/sifr">Projet H2020-MSCA SIFRm</a> ( <a href="https://cordis.europa.eu/project/id/701771">N° 701771</a>), le <a href="https://www.lirmm.fr/numev/"> Labex NUMEV</a> (ANR-10-LABX-20), le <ahref="http://www.ibc-montpellier.fr/">projet IBC de Montpellier</a> (ANR-11-BINF0002) , l'<a href="https://www.agropolis-fondation.fr/The-LabEx-AGRO?lang=fr">Agro Labex</a> (ANR-10-LABX-0001) ainsi que de l'Université de Montpellier et du CNRS.
+    notices:
+      license_contact: >
+        Pour plus d'informations, envoyez un e-mail à <a href="mailto:support@ontoportal.org">support@ontoportal.org</a> ou
+          visitez <a href="https://ontoportal.org/licensing" target="_blank">https://ontoportal.org/licensing</a>.
+      license_obtain: >
+        Si vous êtes le propriétaire de cette installation OntoPortal, vous pouvez visiter
+          <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> pour obtenir une licence.
+      license_expired: >
+        Nous sommes désolés, mais la licence pour cette installation d'OntoPortal a expiré. Si vous êtes le propriétaire de cette installation OntoPortal,
+         veuillez visiter <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> pour renouveler votre licence.
+      license_trial:
+        one: Cette installation de l'appliance OntoPortal est une licence d'essai, qui expirera dans 1 jour.
+        other: Cette installation de l'appliance OntoPortal est une licence d'essai, qui expirera dans %{count} jours.
+
+  ###################################################################################################################################
 
 
-  recommender_page:
-    title: "recommandeur"
-    ontology_recommender: "Recommandeur d'ontologie"
-    ontology_recommendation_input: "Veuillez coller un paragraphe de texte ou quelques mots-clés pour calculer les recommandations d'ontologie."
-    weight_sum_greater_than_zero: "La somme des poids doit être supérieure à zéro"
-    weights_greater_than_zero: "Tous les poids doivent être supérieurs ou égaux à zéro"
-    valid_numeric_weights: "Tous les poids doivent être des valeurs numériques valides"
-    valid_integer_max_ontologies_per_set: "Le nombre maximum d'ontologies par ensemble doit être une valeur entière valide"
-    valid_max_ontologies_per_set_range: "Le nombre maximum d'ontologies par ensemble doit être un nombre entre 2 et 4"
-    recommendation_error: "Problème lors de la récupération des recommandations, veuillez réessayer"
-    no_recommendations: "Aucune recommandation trouvée"
-    no_sets_recommended: "Il n'y a pas d'ensembles d'ontologies recommandés pour l'entrée fournie. Veuillez essayer la sortie 'Ontologies'."
-    text_length_limit: "Veuillez utiliser moins de 500 mots. Si vous devez annoter de plus grands morceaux de texte, vous pouvez utiliser le service web de recommandation."
+
+  all: "Tout"
+  none: "aucune"
+  keywords: "Mots-clés"
+  keywords_separated_by_commas: "Mots-clés séparés par des virgules"
+  see_details: "Voir les détails"
+  view_fair_scores_definitions: "View fair scores definitions"
+  get_json_version: "Get the json version"
+  select_ontologies: "Commencez à taper pour sélectionner des ontologies ou laissez vide pour toutes les utiliser"
+  clear_selection: "Effacer la sélection"
+  select_from_list: "Sélectionner dans la liste"
+  more: "Plus"
+  statistics: "Statistiques"
+  average: "Moyenne"
+  min: "Min"
+  max: "Max"
+  median: "Médiane"
+  slices: "Tranches"
+  help: "Aide"
+  or: "Ou"
+  show_advanced_options: "Afficher les options avancées"
+  insert_sample_text: "Insérer un exemple de texte"
+  class: "Classe"
+  filter: "Filtre"
+  ontology: "Ontologie"
+  type: "Type"
+  context: "Contexte"
+  umls_sem_type: "Type Sem UMLS"
+  matched_ontology: "ontologie correspondante"
+  matched_class: "Classe correspondante"
+  score: "Score"
+  negation: "négation"
+  experiencer: "Experiencer"
+  temporality: "Temporalité"
+  certainty: "Certitude"
+  format_results: "Formater les résultats en "
+  reproduce_results: "Reproduisez ces résultats en utilisant le "
+  additional_parameters: "Paramètres supplémentaires expliqués à "
+  input: "Entrée"
+  text: "Texte"
+  output: "Sortie"
+  ontology_sets: "Ensembles d'ontologies"
+  insert_sample_input: "Insérer une entrée d'exemple"
+  weights_configuration: "Configuration des poids"
+  coverage: "Couverture"
+  acceptance: "Acceptation"
+  knowledge_detail: "Détail de la connaissance"
+  specialization: "Spécialisation"
+  max_ontologies_per_set: "Nombre maximum d'ontologies par ensemble"
+  paste_input_text: "Collez un paragraphe de texte ou des mots-clés à utiliser dans le calcul des recommandations d'ontologie"
+  get_recommendations: "Obtenir des recommandations"
+  select_ontologies_list: "Sélectionnez les ontologies"
+
+  # OTHER
 
   about: >
     <div class='about p-2'>
@@ -413,60 +475,6 @@ fr:
       year_month_day_concise: "%Y-%m-%d" # 2017-03-01
       month_day_year: "%b %-d, %Y" # Mar 1, 2017
       monthfull_day_year: "%B %-d, %Y" # March 1, 2017
-
-  layouts:
-    footer:
-      copyright_html: Droit d'auteur &copie; 2005‑2022, Conseil d'administration de l'Université Leland Stanford Junior. Tous les droits sont réservés.
-      grant_html: >
-        <strong>%{site}</strong> est actuellement développé dans le cadre du <a href="http://www.d2kab.org">projet ANR D2KAB</a> (<a href="http:// www.agence-nationale-recherche.fr/Projet-ANR-18-CE23-0017">ANR-18-CE23-0017</a>). Il reçoit ou a également reçu le soutien du <a href="http://www.lirmm.fr/sifr">projet ANR SIFR</a> (<a href="https://anr.fr/Projet-ANR- 12-JS02-0010">ANR-12-JS02-0010</a>), Union Européenne <a href="http://www.lirmm.fr/sifr">Projet H2020-MSCA SIFRm</a> ( <a href="https://cordis.europa.eu/project/id/701771">N° 701771</a>), le <a href="https://www.lirmm.fr/numev/"> Labex NUMEV</a> (ANR-10-LABX-20), le <ahref="http://www.ibc-montpellier.fr/">projet IBC de Montpellier</a> (ANR-11-BINF0002) , l'<a href="https://www.agropolis-fondation.fr/The-LabEx-AGRO?lang=fr">Agro Labex</a> (ANR-10-LABX-0001) ainsi que de l'Université de Montpellier et du CNRS.
-    notices:
-      license_contact: >
-        Pour plus d'informations, envoyez un e-mail à <a href="mailto:support@ontoportal.org">support@ontoportal.org</a> ou
-          visitez <a href="https://ontoportal.org/licensing" target="_blank">https://ontoportal.org/licensing</a>.
-      license_obtain: >
-        Si vous êtes le propriétaire de cette installation OntoPortal, vous pouvez visiter
-          <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> pour obtenir une licence.
-      license_expired: >
-        Nous sommes désolés, mais la licence pour cette installation d'OntoPortal a expiré. Si vous êtes le propriétaire de cette installation OntoPortal,
-         veuillez visiter <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> pour renouveler votre licence.
-      license_trial:
-        one: Cette installation de l'appliance OntoPortal est une licence d'essai, qui expirera dans 1 jour.
-        other: Cette installation de l'appliance OntoPortal est une licence d'essai, qui expirera dans %{count} jours.
-
-  home:
-    index:
-      find_ontology_placeholder: Commencez à taper le nom de l'ontologie, puis choisissez dans
-      query_placeholder: Entrez une classe, par exemple Melanoma
-      tagline: le référentiel d'ontologies biomédicales le plus complet au monde
-      title: Bienvenue à la %{organization}
-      welcome: Bienvenue à la %{site},
-    help:
-      welcome: Bienvenue à la le %{site} du Centre national d'ontologie biomédicale. %{site} est une application Web permettant d'accéder et de partager des ontologies biomédicales.
-      getting_started: >
-       %{site} permet aux utilisateurs de parcourir, charger, télécharger, rechercher, commenter et créer des mappages pour les ontologies.
-      browse: >
-       Les utilisateurs peuvent parcourir et explorer des ontologies individuelles en naviguant soit dans une structure arborescente, soit dans une vue graphique animée. Les utilisateurs peuvent également afficher les mappages et
-         métadonnées d'ontologie et téléchargement d'ontologies. De plus, les utilisateurs connectés peuvent soumettre une nouvelle ontologie à la bibliothèque.
-      rest_examples_html : affichez la documentation et des exemples de l'<a href="http://data.bioontology.org/documentation" target="_blank">%{site} API REST</a>.
-      announce_list_html: >
-        Pour recevoir des avis de nouvelles versions ou de pannes de site, veuillez vous abonner au
-        <a href="https://mailman.stanford.edu/mailman/listinfo/bioontology-support" target="_blank">liste de support bioontologie</a>.
-
-  annotator:
-    index:
-      intro: Obtenez des annotations pour le texte biomédical avec des classes des ontologies
-      annotatorplus_html: <em>Consultez la version bêta d'<a href="%{annotatorplus_href}">AnnotatorPlus</a> ; une nouvelle version de l'Annotator avec un support supplémentaire pour la négation, et plus encore !</em>
-      fast_context:
-        tooltip: "Activer FastContext pour détecter : si un concept a été nié (affirmé, nié), qui a vécu le concept trouvé (patient, autre), quand le concept annoté s'est produit (récent, historique, hypothétique), et/ou si le concept annoté est incertain (certain, incertain)."
-      lemmatize: 
-        tooltip: "Activez Lemmatize pour lemmatiser le texte soumis et utiliser un dictionnaire lemmatisé pour les annotations"
-      sample_text: Le mélanome est une tumeur maligne des mélanocytes qui se trouvent principalement dans la peau mais aussi dans l'intestin et l'œil.
-
-  recommender:
-    intro: Obtenez des recommandations pour les ontologies les plus pertinentes à partir d'un extrait d'un texte biomédical ou d'une liste de mots-clés
-
-  
-
   
   ontologies:
     self: "Ontologies"
@@ -475,37 +483,21 @@ fr:
   concepts:
     request_term:
       new_term_instructions: >
-       <p>Cette ontologie s'intègre à OntoloBridge, permettant aux utilisateurs de la communauté de suggérer des ajouts à l'ontologie publique. Remplissez le modèle ci-dessous pour soumettre une demande de terme directement au responsable de l'ontologie.</p>
-         <blockquote>
-           <p>Libellé du terme (obligatoire)<br>Nom du terme suggéré. Si un terme peut être décrit avec plusieurs synonymes, n'indiquez ici que le nom préféré.</p>
-         </blockquote>
-         <blockquote>
-           <p>Description du terme (obligatoire)<br>Une brève définition, description ou utilisation du terme suggéré. Des synonymes de termes supplémentaires peuvent être répertoriés dans cette section.</p>
-         </blockquote>
-         <blockquote>
-           <p>Superclasse (obligatoire)<br>Le terme parent du terme suggéré. Le terme parent doit être une entrée existante de l'ontologie actuelle. La superclasse peut être sélectionnée directement à partir de l'arborescence des classes de Bioportal.</p>
-         </blockquote>
-         <blockquote>
-           <p>Références (facultatif)<br>Fournissez des preuves de l'existence du terme demandé, telles que les identifiants Pubmed des articles ou des liens vers d'autres ressources décrivant le terme.</p>
-         </blockquote>
-         <blockquote>
-           <p>Justification (facultatif)<br>Fournissez ici toute information supplémentaire sur le terme demandé.</p>
-         </blockquote>
-    
-  mappings:
-    title: "Correspondances"
-    upload_mappings: "Télécharger les correspondances"
-    mappings_bulk_load: "Chargement en masse des correspondances"
-    intro: "Parcourir les correspondances entre les classes de différentes ontologies"
-    no_mappings_available: "Aucune correspondance disponible"
-    loading_mappings: "Chargement des correspondances en cours..."  
-    find_mappings: "Trouver les correspondances d'une classe / concept"
-    view_mappings_help: "View mappings help"
-    select_class: "Commencez à taper pour sélectionner une classe"
-    select_ontologies: "Commencez à taper pour sélectionner des ontologies ou laissez vide pour utiliser toutes les ontologies"
-    select_semantic_types: "Sélectionnez les types sémantiques UMLS"
-    select_semantic_types_help: "Commencez à taper pour sélectionner les types sémantiques UMLS ou laissez vide pour utiliser tous les types"
-    select_semantic_groups: "Sélectionnez les groupes sémantiques UMLS"
-    select_semantic_groups_help: "Commencez à taper pour sélectionner les groupes sémantiques UMLS ou laissez vide pour utiliser tous les groupes"
-    include_ancestors_up_to_level: "Inclure les ancêtres jusqu'au niveau"
-    include_score: "Inclure le score"
+        <p>Cette ontologie s'intègre à OntoloBridge, permettant aux utilisateurs de la communauté de suggérer des ajouts à l'ontologie publique. Remplissez le modèle ci-dessous pour soumettre une demande de terme directement au responsable de l'ontologie.</p>
+          <blockquote>
+            <p>Libellé du terme (obligatoire)<br>Nom du terme suggéré. Si un terme peut être décrit avec plusieurs synonymes, n'indiquez ici que le nom préféré.</p>
+          </blockquote>
+          <blockquote>
+            <p>Description du terme (obligatoire)<br>Une brève définition, description ou utilisation du terme suggéré. Des synonymes de termes supplémentaires peuvent être répertoriés dans cette section.</p>
+          </blockquote>
+          <blockquote>
+            <p>Superclasse (obligatoire)<br>Le terme parent du terme suggéré. Le terme parent doit être une entrée existante de l'ontologie actuelle. La superclasse peut être sélectionnée directement à partir de l'arborescence des classes de Bioportal.</p>
+          </blockquote>
+          <blockquote>
+            <p>Références (facultatif)<br>Fournissez des preuves de l'existence du terme demandé, telles que les identifiants Pubmed des articles ou des liens vers d'autres ressources décrivant le terme.</p>
+          </blockquote>
+          <blockquote>
+            <p>Justification (facultatif)<br>Fournissez ici toute information supplémentaire sur le terme demandé.</p>
+          </blockquote>
+
+  

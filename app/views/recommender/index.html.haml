@@ -1,6 +1,6 @@
-- @title=  t('recommender_page.title')
+- @title=  t('recommender.title')
 
-%h2.mt-5= t('recommender_page.ontology_recommender')
+%h2.mt-5= t('recommender.ontology_recommender')
 %p
   = t('recommender.intro').html_safe
   = link_to(Rails.configuration.settings.links[:help_recommender], id: "recommender-help",
@@ -37,7 +37,7 @@
     %small#inputTextHelpBlock.form-text
       %a#insertInputLink{href: "javascript:void(0);"}= t('insert_sample_text')
 
-  %a#advancedOptionsLink{:href => "javascript:void(0);"}= t('shared.show_advanced_options') + " >>"
+  %a#advancedOptionsLink{:href => "javascript:void(0);"}= t('show_advanced_options') + " >>"
 
   -# Advanced options
   %div#advancedOptions.optionsBox
@@ -74,34 +74,34 @@
 %div.row#recommenderErrorsDisplay.mb-4
   %div.col
     %span.notTextError
-      = t('recommender_page.ontology_recommendation_input')
+      = t('recommender.ontology_recommendation_input')
       %br/
     %span.sumWeightsError
-      = t('recommender_page.weight_sum_greater_than_zero')
+      = t('recommender.weight_sum_greater_than_zero')
       %br/
     %span.rangeWeightsError
-      = t('recommender_page.weights_greater_than_zero')
+      = t('recommender.weights_greater_than_zero')
       %br/
     %span.invalidWeightsError
-      = t('recommender_page.valid_numeric_weights')
+      = t('recommender.valid_numeric_weights')
       %br/
     %span.invalidMaxOntError
-      = t('recommender_page.valid_integer_max_ontologies_per_set')
+      = t('recommender.valid_integer_max_ontologies_per_set')
       %br/
     %span.maxOntologiesError
-      = t('recommender_page.valid_max_ontologies_per_set_range')
+      = t('recommender.valid_max_ontologies_per_set_range')
       %br/
     %span.generalError
-      = t('recommender_page.recommendation_error')
+      = t('recommender.recommendation_error')
       %br/
     %span#noResults
-      = t('recommender_page.no_recommendations')
+      = t('recommender.no_recommendations')
       %br/
     %span#noResultsSets
-      = t('recommender_page.no_sets_recommended')
+      = t('recommender.no_sets_recommended')
       %br/
     %span.inputSizeError
-      = t('recommender_page.text_length_limit')
+      = t('recommender.text_length_limit')
 
 %div.row#resultsDisplay
   %div.col

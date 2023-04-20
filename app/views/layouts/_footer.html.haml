@@ -14,7 +14,7 @@
                   = render_footer_link footer_link
     %div.row.legal-text
       %div.col
-        = t('.grant_html', site: $SITE)
+        = t('layouts.footer.grant_html', site: $SITE)
     %div.row.pt-2
       - $FOOTER_LINKS.to_h[:bottom].to_a.each do |footer_links_block|
         %div.col-6.col-md
