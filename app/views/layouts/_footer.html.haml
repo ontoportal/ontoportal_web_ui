@@ -5,7 +5,6 @@
 %br/
 .footer-container
   %footer
-    - footerlinks = $FOOTER_LINKS[I18n.locale] || $FOOTER_LINKS[:en]
     .footer-header
       .footer-logo
         %img{:src => "#{asset_path("logos/ontoportal.svg")}"}
@@ -14,18 +13,18 @@
         %p
           = logo
       .footer-social-media-links
-        - footerlinks[:social].each do |link|
+        - $FOOTER_LINKS[:social].each do |link|
           %a{:href => link[:link], :target => "_blank"}
             %img{:src => "#{asset_path(link[:logo])}"}/
     .footer-nav-links
-      - footerlinks[:links].each do |footerlink|
+      - $FOOTER_LINKS[:sections].keys.each do |section|
         %div
           %h2
-            = footerlink[:title]
+            = t("layout.footer."+section)
           %div
-            - footerlink[:items].each do |item|
-              %a{:href => item[:link], :target => "_blank"}
-                = item[:title]
+            - $FOOTER_LINKS[:sections][section].keys.each do |item|
+              %a{:href => $FOOTER_LINKS[:sections][section][item], :target => "_blank"}
+                = t("layout.footer."+section)
           
 
 
