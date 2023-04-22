@@ -280,6 +280,53 @@ fr:
         tooltip: "Activez Lemmatize pour lemmatiser le texte soumis et utiliser un dictionnaire lemmatisé pour les annotations"
       sample_text: Le mélanome est une tumeur maligne des mélanocytes qui se trouvent principalement dans la peau mais aussi dans l'intestin et l'œil.
 
+  ontology_details:
+    metadata:
+      details: "Détails"
+      acronym: "Acronym"
+      visibility: "Visibilité"
+      viewing_restriction: "Restriction de visualisation"
+      view_of_ontology: "Vue de l'ontologie"
+      description: "Description"
+      status: "Statut"
+      format: "Format"
+      contact: "Contact"
+      categories: "Catégories"
+      groups: "Groupes"
+      pull_url: "URL de pull"
+      submissions: "Soumissions"
+      links: "Liens"
+      add_submission: "Ajouter une soumission"
+      views_of: "Vues de"
+      create_new_view: "Créer une nouvelle vue"
+      no_views_of: "Aucune vue de %{name} disponible"
+      go_to_rest_api_json_entry: "Accéder à l'entrée JSON de l'API REST"
+      get_my_metadata_back: "Récupérer mes métadonnées"
+      n_triple: "N-Triple"
+      json_ld: "JSON-LD"
+      rdf_xml: "RDF/XML"
+      view_individual_metrics_definitions: "Voir les définitions de métriques individuelles"
+      metrics: "Métriques"
+      metrics_not_calculated_yet: "Nous n'avons pas encore calculé de métriques pour"
+      classes: "Classes"
+      individuals: "Individus"
+      properties: "Propriétés"
+      max_depth: "Profondeur maximale"
+      max_children: "Nombre maximum d'enfants"
+      avg_children: "Nombre moyen d'enfants"
+      single_child_classes: "Classes avec un seul enfant"
+      many_children_classes: "Classes avec plus de 25 enfants"
+      no_definition_classes: "Classes sans définition"
+      visits: "Visites"
+      download_as_csv: "Télécharger en CSV"
+      projects_using: "Projets utilisant"
+      no_projects_using: "Aucun projet n'utilise"
+      create_new_project: "Créer un nouveau projet"
+      additional_metadata: "Métadonnées supplémentaires"
+
+
+
+  
   layout:
     header:
       browse: "Parcourir"
