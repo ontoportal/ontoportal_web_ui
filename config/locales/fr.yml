@@ -324,6 +324,18 @@ fr:
       create_new_project: "Créer un nouveau projet"
       additional_metadata: "Métadonnées supplémentaires"
 
+    concept: 
+      no_preferred_name_for_selected_language: "Pas de nom préféré pour la langue sélectionnée."
+      preferred_name: "Nom préféré"
+      id: "Identifiant"
+      synonyms: "Synonymes"
+      definitions: "Définitions"
+      obsolete: "Obsolète"
+      member_of: "Membre de"
+      in_schemes: "Dans les schémas"
+      type: "Type"
+      no_value_for_selected_language: "Pas de valeur pour la langue sélectionnée."
+
 
 
   

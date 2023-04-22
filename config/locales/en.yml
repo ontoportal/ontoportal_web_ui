@@ -314,6 +314,18 @@ en:
        no_projects_using: "No projects are using"
        create_new_project: "Create a new project"
        additional_metadata: "Additional Metadata"
+
+     concept:
+       no_preferred_name_for_selected_language: "No preferred name for selected language."
+       preferred_name: "Preferred name"
+       id: "ID"
+       synonyms: "Synonyms"
+       definitions: "Definitions"
+       obsolete: "Obsolete"
+       member_of: "Member of"
+       in_schemes: "In Schemes"
+       type: "Type"
+       no_value_for_selected_language: "No value for selected language."
   
   layout:
      header:

@@ -35,7 +35,7 @@ class ConceptDetailsComponent < ViewComponent::Base
         end
       end
 
-      displayed_text = ajax_links.length > 0 ? ajax_links.join('</p><p>') : 'No value for the selected language.'
+      displayed_text = ajax_links.length > 0 ? ajax_links.join('</p><p>') : t('ontology_details.concept.no_value_for_selected_language')
 
       line = <<-EOS
               <tr>

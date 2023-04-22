@@ -8,20 +8,20 @@
               exclude_keys: schemes_keys + label_xl_set + ['inScheme']) do |c|
     - c.header do
       %tr
-        %td{nowrap: ""} ID
+        %td{nowrap: ""}= t('ontology_details.concept.id')
         %td
           %p= @concept.id
       %tr
-        %td{nowrap: ""} Preferred Name
+        %td{nowrap: ""}= t('ontology_details.concept.preferred_name')
         %td
           - if @concept.prefLabel().nil?
-            %p No preferred name for the selected language.
+            %p= t('ontology_details.concept.no_preferred_name_for_selected_language')
           - else
             %p= @concept.prefLabel({:use_html => true}).html_safe
 
       - unless @concept.synonym.nil? || @concept.synonym.empty?
         %tr
-          %td{nowrap: ""} Synonyms
+          %td{nowrap: ""}= t('ontology_details.concept.synonyms')
           %td
             - for synonym in @concept.synonym
               %p= synonym
@@ -31,31 +31,31 @@
               = remove_synonym_button
       - unless @concept.definition.nil? || @concept.definition.empty?
         %tr
-          %td{nowrap: ""} Definitions
+          %td{nowrap: ""}= t('ontology_details.concept.definitions')
           %td
             %p= @concept.definition.join(" ")
       - if @concept.obsolete?
         %tr
-          %td{nowrap: ""} Obsolete
+          %td{nowrap: ""}= t('ontology_details.concept.obsolete')
           %td
             %p true
       - if skos?
         - unless @concept.memberOf.nil?  || @concept.memberOf.empty?
           %tr
-            %td{nowrap: ""} Member of
+            %td{nowrap: ""}= t('ontology_details.concept.member_of')
             %td
               %div.my-1
                 - @concept.memberOf.each do |v|
                   = raw get_link_for_collection_ajax(v, @ontology.acronym, '_blank')
         - unless @concept.inScheme.nil?  || @concept.inScheme.empty?
           %tr
-            %td{nowrap: ""} In Schemes
+            %td{nowrap: ""}= t('ontology_details.concept.in_schemes')
             %td
               %div.my-1
                 - @concept.inScheme.each do |v|
                   = raw get_link_for_scheme_ajax(v, @ontology.acronym, '_blank')
       %tr
-        %td{nowrap: ""} Type
+        %td{nowrap: ""}= t('ontology_details.concept.type')
         %td
           %p= @concept.type
 
