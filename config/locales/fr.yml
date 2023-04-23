@@ -1,5 +1,4 @@
 fr:
-
   nbco_annotatosplus:
     score_help: "Annotations de score suivant la mesure NCBO 2009 précédente (ancienne) ou Annotations de score suivant la mesure C-Value (cvalue) ou Annotations de score suivant la mesure C-Value avec expansion de la hiérarchie (cvalueh)"
     start_typing_to_select: "Commencez à taper pour sélectionner %{type} ou laissez vide pour tout utiliser"
@@ -324,9 +323,6 @@ fr:
       create_new_project: "Créer un nouveau projet"
       additional_metadata: "Métadonnées supplémentaires"
 
-
-
-  
   layout:
     header:
       browse: "Parcourir"
@@ -344,7 +340,24 @@ fr:
       release_notes: "Notes de version"
       publications: "Publications"
     footer:
-      products: "Produits"
+      products: Produits
+      ontoportal: OntoPortal
+      release_notes: Notes de version
+      api: API
+      sparql: SPARQL
+      support: Support
+      contact_us: Nous contacter
+      wiki: Wiki
+      documentation: Documentation
+      agreements: Accords
+      terms: Conditions d'utilisation
+      privacy_policy: Politique de confidentialité
+      cite_us: Nous citer
+      acknowledgments: Remerciements
+      about: À propos
+      about_us: À propos de nous
+      projects: Projets
+      team: Équipe
       copyright_html: Droit d'auteur &copie; 2005‑2022, Conseil d'administration de l'Université Leland Stanford Junior. Tous les droits sont réservés.
       grant_html: >
         <strong>%{site}</strong> est actuellement développé dans le cadre du <a href="http://www.d2kab.org">projet ANR D2KAB</a> (<a href="http:// www.agence-nationale-recherche.fr/Projet-ANR-18-CE23-0017">ANR-18-CE23-0017</a>). Il reçoit ou a également reçu le soutien du <a href="http://www.lirmm.fr/sifr">projet ANR SIFR</a> (<a href="https://anr.fr/Projet-ANR- 12-JS02-0010">ANR-12-JS02-0010</a>), Union Européenne <a href="http://www.lirmm.fr/sifr">Projet H2020-MSCA SIFRm</a> ( <a href="https://cordis.europa.eu/project/id/701771">N° 701771</a>), le <a href="https://www.lirmm.fr/numev/"> Labex NUMEV</a> (ANR-10-LABX-20), le <ahref="http://www.ibc-montpellier.fr/">projet IBC de Montpellier</a> (ANR-11-BINF0002) , l'<a href="https://www.agropolis-fondation.fr/The-LabEx-AGRO?lang=fr">Agro Labex</a> (ANR-10-LABX-0001) ainsi que de l'Université de Montpellier et du CNRS.
@@ -422,7 +435,7 @@ fr:
       year_month_day_concise: "%Y-%m-%d" # 2017-03-01
       month_day_year: "%b %-d, %Y" # Mar 1, 2017
       monthfull_day_year: "%B %-d, %Y" # March 1, 2017
-  
+
   ontologies:
     self: "Ontologies"
     loading: Chargement des ontologies
@@ -544,5 +557,3 @@ fr:
   paste_input_text: "Collez un paragraphe de texte ou des mots-clés à utiliser dans le calcul des recommandations d'ontologie"
   get_recommendations: "Obtenir des recommandations"
   select_ontologies_list: "Sélectionnez les ontologies"
-
-  
