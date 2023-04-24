@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ChangeRequestsController < ApplicationController
+  before_action :require_login, except: [:create]
+
   def create_synonym
     @concept_label = params[:concept_label]
     @concept_id = params[:concept_id]
@@ -42,6 +44,16 @@ class ChangeRequestsController < ApplicationController
       concept.prefixIRI
     else
       concept_id
+    end
+  end
+
+  def require_login
+    if session[:user].blank?
+      # TODO: Can this implementation be improved? For discussion:
+      #   https://stackoverflow.com/a/18681807
+      #   https://stackoverflow.com/a/10607511
+      #   https://stackoverflow.com/a/51275445
+      render js: "window.location.href='#{login_index_path}'"
     end
   end
 end

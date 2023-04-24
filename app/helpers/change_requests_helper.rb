@@ -13,23 +13,14 @@ module ChangeRequestsHelper
   def add_synonym_button
     return unless change_requests_enabled?(@ontology.acronym)
 
-    if session[:user].nil?
-      link_to(login_index_path(redirect: concept_redirect_path),
-              role: 'button',
-              class: 'btn btn-link',
-              aria: { label: 'Create synonym' }) do
-        content_tag(:i, '', class: 'fas fa-plus-circle fa-lg', aria: { hidden: 'true' }).html_safe
-      end
-    else
-      link_to(change_requests_create_synonym_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
-                                                  ont_acronym: @ontology.acronym),
-              role: 'button',
-              class: 'btn btn-link',
-              aria: { label: 'Create synonym' },
-              data: { toggle: 'modal', target: '#changeRequestModal' },
-              remote: 'true') do
-        content_tag(:i, '', class: 'fas fa-plus-circle fa-lg', aria: { hidden: 'true' }).html_safe
-      end
+    link_to(change_requests_create_synonym_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
+                                                ont_acronym: @ontology.acronym),
+            role: 'button',
+            class: 'btn btn-link',
+            aria: { label: 'Create synonym' },
+            data: { toggle: 'modal', target: '#changeRequestModal' },
+            remote: 'true') do
+      content_tag(:i, '', class: 'fas fa-plus-circle fa-lg', aria: { hidden: 'true' }).html_safe
     end
   end
 
@@ -38,11 +29,6 @@ module ChangeRequestsHelper
 
     if @concept.synonym.blank?
       tag.a role: 'button', class: 'btn btn-link disabled', aria: { disabled: true } do
-        tag.i class: 'fas fa-minus-circle fa-lg', aria: { hidden: true }
-      end
-    elsif session[:user].nil?
-      link_to(login_index_path(redirect: concept_redirect_path),
-              role: 'button', class: 'btn btn-link', aria: { label: 'Remove synonym' }) do
         tag.i class: 'fas fa-minus-circle fa-lg', aria: { hidden: true }
       end
     else
@@ -58,11 +44,5 @@ module ChangeRequestsHelper
   def synonym_qualifier_select(form)
     options = [%w[exact exact], %w[narrow narrow], %w[broad broad], %w[related related]]
     form.select :qualifier, options_for_select(options, 0), {}, { class: 'form-control' }
-  end
-
-  private
-
-  def concept_redirect_path
-    ontology_path(@ontology.acronym, p: 'classes', conceptid: @concept.id)
   end
 end
