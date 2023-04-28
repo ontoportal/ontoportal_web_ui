@@ -602,4 +602,8 @@ module ApplicationHelper
     submission = @submission || @submission_latest
     submission&.hasOntologyLanguage === 'SKOS'
   end
+
+  def current_page?(path)
+    request.path == path ? true : false
+  end
 end
