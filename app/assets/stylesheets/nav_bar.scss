@@ -19,31 +19,41 @@ nav{
 .nav-logo p{
     margin-left: 10px;
     color: white;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
+    margin-bottom: 0;
 }
-nav > ul {
+.nav-items{
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+    width: 85%;
+}
+.nav-items > ul {
     display: flex;
     list-style: none;
     margin-bottom: 0;
 }
 
-nav > ul > li {
+.nav-items > ul > li {
     margin-left: 20px;
 }
 
-nav > ul > li > a {
+.nav-items > ul > li > a {
     color: white !important;
-    
-    font-size: 14px;
+    font-size: 15px;
     opacity: 60%;
     font-weight: 300;
+    transition: opacity 0.2s ease-in-out;
 }
-nav > ul > li > a.active{
+.nav-items > ul > li > a:hover{
+    opacity: 100%;
+}
+.nav-items > ul > li > a.active{
     opacity: 100%;
     font-weight: 500;
 }
-nav > input {
+.nav-items > input {
     height: 33px;
     width: 228px;
     outline: none;
@@ -55,25 +65,81 @@ nav > input {
     font-size: 14px;
     padding: 0 10px;
 }
-nav > input:focus{
+.nav-items > input:focus{
     opacity: 100%;
 }
-.nav-language{
-    background-color: #47BD1F;
-    height: 33px;
-    width: 79px;
-    border-radius: 5px;
+.nav-items > input::placeholder{
+    color: white;
+    opacity: 60%;
 }
-nav > a{
-    text-decoration: none;
+.nav-items > input::-ms-input-placeholder{
+    color: white;
+    opacity: 60%;
+}
+.nav-language{
+    background-color: transparent;
+    width: 47px;
+    color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+
+}
+.nav-language option{
+    background-color: white;
+    color: black;
+}
+.nav-items > a{
     padding: 3px 34px;
     border: 1px solid white;
     border-radius: 5px;
-    color: white;
+    color: white !important;
+    transition: background-color 0.2s ease-in-out;
 }
-.nav-support{
-    background-color: #47BD1F;
-    height: 33px;
-    width: 65px;
-    border-radius: 5px;
+.nav-items > a:hover{
+    background-color: rgba(255, 255, 255, 0.1);
 }
+
+nav .menu-btn i{
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    display: none;
+}
+nav input[type="checkbox"]{
+    display: none;
+}
+
+.nav-link{
+    color: white !important;
+    padding: 0 !important;
+}
+
+@media (max-width: 1200px){
+    nav .menu-btn i{
+        display: block;
+    }
+    #nav-menu:checked ~ .menu-btn i:before{
+        content: "\f00d";
+    }
+    
+
+    #nav-menu:checked ~ nav{
+        display:block;
+        background-color: blue;
+    }
+    #nav-menu:checked ~ ul{
+        display: block;
+    }
+    .nav-items{
+        display: none;
+    }
+    #nav-menu:checked ~ .nav-items{
+        display: block;
+        height: 100vh;
+        background-color: var(--primary-color);
+    }
+    
+
+}
+
