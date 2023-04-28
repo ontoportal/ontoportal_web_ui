@@ -78,6 +78,7 @@ Rails.application.routes.draw do
 
   # Ontology change requests
   get 'change_requests/create_synonym'
+  get 'change_requests/node_obsoletion'
   get 'change_requests/remove_synonym'
   match 'change_requests', to: 'change_requests#create', via: :post
 

@@ -1,0 +1,11 @@
+= form_with scope: :node_obsoletion, url: change_requests_path, local: false, class: 'mb-5' do |f|
+  = hidden_field_tag 'concept_id', @concept_id
+  = hidden_field_tag 'concept_label', @concept_label
+  = hidden_field_tag 'ont_acronym', @ont_acronym
+  = hidden_field_tag 'username', @username
+  = hidden_field_tag 'operation', KGCL::Operations::NODE_OBSOLETION
+  %div.form-group
+    = f.label :comment, "Proposal: obsolete '#{@concept_label}'", for: 'node_obsoletion_comment'
+    = f.text_area :comment, rows: 5, class: 'form-control'
+    %small.form-text.text-muted Optionally enter a comment describing the reason for obsoletion
+  = submit_tag 'Submit', id: 'node_obsoletion_button', class: 'btn btn-primary'

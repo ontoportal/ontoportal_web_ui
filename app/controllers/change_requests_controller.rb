@@ -3,6 +3,15 @@
 class ChangeRequestsController < ApplicationController
   before_action :require_login, except: [:create]
 
+  def node_obsoletion
+    @concept_label = params[:concept_label]
+    @concept_id = params[:concept_id]
+    @ont_acronym = params[:ont_acronym]
+    @username = session[:user].username
+
+    respond_to :js
+  end
+
   def create_synonym
     @concept_label = params[:concept_label]
     @concept_id = params[:concept_id]
