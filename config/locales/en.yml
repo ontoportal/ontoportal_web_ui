@@ -317,6 +317,8 @@ en:
 
      concept:
        no_preferred_name_for_selected_language: "No preferred name for selected language."
+       no_synonym_name_for_selected_language: "No Synonym for selected language."
+       no_definitions_for_selected_language: "No Definitions for selected language."
        preferred_name: "Preferred name"
        id: "ID"
        synonyms: "Synonyms"

@@ -326,6 +326,8 @@ fr:
 
     concept: 
       no_preferred_name_for_selected_language: "Pas de nom préféré pour la langue sélectionnée."
+      no_synonym_name_for_selected_language : "Aucun synonyme pour la langue sélectionnée."
+      no_definitions_for_selected_language : "Aucune définition pour la langue sélectionnée."
       preferred_name: "Nom préféré"
       id: "Identifiant"
       synonyms: "Synonymes"
