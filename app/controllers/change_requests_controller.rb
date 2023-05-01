@@ -57,12 +57,12 @@ class ChangeRequestsController < ApplicationController
   end
 
   def require_login
-    if session[:user].blank?
-      # TODO: Can this implementation be improved? For discussion:
-      #   https://stackoverflow.com/a/18681807
-      #   https://stackoverflow.com/a/10607511
-      #   https://stackoverflow.com/a/51275445
-      render js: "window.location.href='#{login_index_path}'"
-    end
+    return unless session[:user].blank?
+
+    # TODO: Can this implementation be improved? For discussion:
+    #   https://stackoverflow.com/a/18681807
+    #   https://stackoverflow.com/a/10607511
+    #   https://stackoverflow.com/a/51275445
+    render js: "window.location.href='#{login_index_path}'"
   end
 end
