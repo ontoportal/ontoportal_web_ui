@@ -17,7 +17,7 @@ class VirtualApplianceIdValidator < ActiveModel::EachValidator
     response = JSON.parse(
       LinkedData::Client::HTTP.get(LinkedData::Client.settings.rest_url + "/admin/update_info", {}, raw: true)
     )
-    if response["error"]
+    if response['appliance_id'].blank?
       record.errors.add(attribute, :no_appliance_id_for_comparison)
       return false
     end
