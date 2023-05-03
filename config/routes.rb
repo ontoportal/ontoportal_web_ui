@@ -180,6 +180,8 @@ Rails.application.routes.draw do
 
   get '/exhibit/:ontology/:id' => 'concepts#exhibit'
 
+  #Souslesens page
+  get '/souslesens', to:'souslesens#index'
 
   #Team page
   get '/team', to:'team#index'
