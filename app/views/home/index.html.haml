@@ -21,17 +21,17 @@
       %img{:src => asset_path("home-random-bubbles.svg")}/
     .home-bubble.home-bubble-one
       %h5
-        = @anal_ont_names.keys[0]
+        = @anal_ont_names[0]
       %p 
         = @anal_ont_numbers[0].to_s + " visits"
     .home-bubble.home-bubble-two
       %h5
-        = @anal_ont_names.keys[1]
+        = @anal_ont_names[1]
       %p 
         = @anal_ont_numbers[1].to_s + " visits"
     .home-bubble.home-bubble-three
       %h5
-        = @anal_ont_names.keys[2]
+        = @anal_ont_names[2]
       %p 
         = @anal_ont_numbers[2].to_s + " visits"
     %a.home-bubble.home-bubble-four{:href => "/visits"}
@@ -49,7 +49,7 @@
     %p Uploading an ontology is a way of sharing your domain knowledge with others.
     %p By uploading your ontology to agroportal, you can:
     .home-upload-benifits
-      - @upload_benifits.each do |benifit|
+      - @upload_benefits.each do |benifit|
         %div
           %img{:src => asset_path("check-outlined.svg")}/
           %p
