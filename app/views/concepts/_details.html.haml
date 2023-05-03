@@ -25,7 +25,7 @@
         %td{nowrap: ""}= t('ontology_details.concept.preferred_name')
         %td
           - if @concept.prefLabel().nil?
-            %p.warning= t('ontology_details.concept.no_preferred_name_for_selected_language')
+            = render(CardMessageComponent.new(message: t('ontology_details.concept.no_preferred_name_for_selected_language',  type: "failure")))
           - else
             %p= @concept.prefLabel({:use_html => true}).html_safe
 
@@ -39,22 +39,14 @@
             %div.synonym-change-request
               = add_synonym_button
               = remove_synonym_button
-      - else
-        %tr
-          %td{nowrap: ""}= t('ontology_details.concept.synonyms')
-          %td
-            %p.warning= t('ontology_details.concept.no_synonyms_for_selected_language') 
+      
       
       - unless @concept.definition.nil? || @concept.definition.empty?
         %tr
           %td{nowrap: ""}= t('ontology_details.concept.definitions')
           %td
             %p= @concept.definition.join(" ")
-      - else
-        %tr
-          %td{nowrap: ""}= t('ontology_details.concept.definitions')
-          %td
-            %p.warning= t('ontology_details.concept.no_definitions_for_selected_language')
+     
       
       - if @concept.obsolete?
         %tr

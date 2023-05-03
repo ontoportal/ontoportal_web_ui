@@ -35,14 +35,12 @@ class ConceptDetailsComponent < ViewComponent::Base
         end
       end
 
-      displayed_text = ajax_links.length > 0 ? ajax_links.join('</p><p>') : "<p style='background-color: #ffeaa7;color: #d63031;padding: 10px; border: 1px solid #d63031' >#{t('ontology_details.concept.no_value_for_selected_language')}</p>"
-
       line = <<-EOS
               <tr>
                 <td nowrap= "" style="width:30%" >
                     <span title=#{url} data-controller="tooltip">#{remove_owl_notation(key)}</span>
                 </td>
-                <td>#{"<p>#{displayed_text}</p>".html_safe}</td>
+                <td>#{"<p>#{ ajax_links.join('</p><p>') }</p>".html_safe}</td>
               </tr>
       EOS
       out += line
