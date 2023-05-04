@@ -133,6 +133,12 @@ AjaxAction.prototype._ajaxCall = function() {
           errorState = true;
           var err = data.errors.replace(reg, ',');
           errors.push.apply(errors, err.split(","));
+
+          if (self.path === 'update_info') {
+            // Note the appliance ID, regardless of error status
+            errors.appliance_id = data.update_info.appliance_id
+          }
+
           self.onErrorAction(errors);
 
           if (deferredObj.state() === "pending") {
@@ -490,6 +496,9 @@ UpdateCheck.prototype.onErrorAction = function(errors) {
   if (!self.params || !self.params["force_check"]) {
     errors.length = 0;
   }
+
+  // Always show the appliance ID, even when update checking fails
+  document.querySelector('#appliance-id span').textContent = errors['appliance_id'];
 };
 
 UpdateCheck.isUpdateCheckEnabled = false;
