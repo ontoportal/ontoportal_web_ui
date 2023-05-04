@@ -150,7 +150,7 @@ class AdminController < ApplicationController
       else
         response = response_json
 
-        if params['ontologies'].nil? || params['ontologies'].empty?
+        if params['ontologies'].blank?
           response[:success] = 'Refresh of ontologies report started successfully'
         else
           ontologies = params['ontologies'].split(',').map { |o| o.strip }
@@ -263,7 +263,7 @@ class AdminController < ApplicationController
   def _process_ontologies(success_keyword, error_keyword, process_proc)
     response = { errors: '', success: '' }
 
-    if params['ontologies'].nil? || params['ontologies'].empty?
+    if params['ontologies'].blank?
       response[:errors] = "No ontologies parameter passed. Syntax: ?ontologies=ONT1,ONT2,...,ONTN"
     else
       ontologies = params['ontologies'].split(',').map { |o| o.strip }
