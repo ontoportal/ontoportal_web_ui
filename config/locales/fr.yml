@@ -190,7 +190,8 @@ fr:
     projects: "Projets"
     users: "Utilisateurs"
     no_recent_notes: "Aucune note récente n'a été soumise"
-
+    supported_by: "Avec le soutien de"
+    with_collaboration: "Avec la collaboration de"
     index:
       find_ontology_placeholder: Commencez à taper le nom de l'ontologie, puis choisissez dans
       query_placeholder: Entrez une classe, par exemple Melanoma

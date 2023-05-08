@@ -179,6 +179,8 @@ en:
     projects: "Projects"
     users: "Users"
     no_recent_notes: "No recent notes were submitted"
+    supported_by: "Supported by"
+    with_collaboration: "With the collaboration of"
     index:
       find_ontology_placeholder: Start typing the ontology name, then choose from
       query_placeholder: Enter a class, eg Melanoma
