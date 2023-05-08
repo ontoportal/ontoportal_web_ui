@@ -33,7 +33,7 @@ class Admin::CategoriesController < ApplicationController
     begin
       category = LinkedData::Client::Models::Category.new(values: category_params)
       category_saved = category.save
-      if category_saved && category_saved.errors
+      if response_error?(category_saved)
         response[:errors] = response_errors(category_saved)
       else
         response[:success] = "category successfully created in  #{Time.now - start}s"
@@ -52,7 +52,8 @@ class Admin::CategoriesController < ApplicationController
       category = LinkedData::Client::Models::Category.find_by_acronym(params[:id]).first
       category.update_from_params(category_params)
       category_update = category.update
-      if category_update && category_update.errors
+
+      if response_error?(category_update)
         response[:errors] = response_errors(category_update)
       else
         response[:success] = "category successfully updated in  #{Time.now - start}s"
@@ -70,7 +71,7 @@ class Admin::CategoriesController < ApplicationController
       category = LinkedData::Client::Models::Category.find_by_acronym(params[:id]).first
       error_response = category.delete
 
-      if error_response
+      if response_error?(error_response)
         response[:errors] = response_errors(error_response)
       else
         response[:success] = "category successfully deleted in  #{Time.now - start}s"

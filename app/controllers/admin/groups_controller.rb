@@ -33,7 +33,7 @@ class Admin::GroupsController < ApplicationController
     begin
       group = LinkedData::Client::Models::Group.new(values: group_params)
       group_saved = group.save
-      if group_saved && group_saved.errors
+      if response_error?(group_saved)
         response[:errors] = response_errors(group_saved)
       else
         response[:success] = "group successfully created in  #{Time.now - start}s"
@@ -52,7 +52,7 @@ class Admin::GroupsController < ApplicationController
       group = LinkedData::Client::Models::Group.find_by_acronym(params[:id]).first
       group.update_from_params(group_params)
       group_updated = group.update
-      if group_updated && group_updated.errors
+      if response_error?(group_updated)
         response[:errors] = response_errors(group_updated)
       else
         response[:success] = "group successfully updated in  #{Time.now - start}s"
@@ -70,7 +70,7 @@ class Admin::GroupsController < ApplicationController
       group = LinkedData::Client::Models::Group.find_by_acronym(params[:id]).first
       error_response = group.delete
 
-      if error_response
+      if response_error?(error_response)
         response[:errors] = response_errors(error_response)
       else
         response[:success] = "group successfully deleted in  #{Time.now - start}s"
