@@ -281,9 +281,22 @@ fr:
       sample_text: Le mélanome est une tumeur maligne des mélanocytes qui se trouvent principalement dans la peau mais aussi dans l'intestin et l'œil.
 
   ontology_details:
+    header:
+      last_uploaded: "Dernière mise à jour:"
+    sections:
+      summary: "Résumé"
+      concepts: "Concepts"
+      classes: "Classes"
+      properties: "Propriétés"
+      notes: "Notes"
+      mappings: "Mappings"
+      schemes: "Schemes"
+      collections: "Collections"
+      widgets: "Widgets"
+
     metadata:
       details: "Détails"
-      acronym: "Acronym"
+      acronym: "Acronyme"
       visibility: "Visibilité"
       viewing_restriction: "Restriction de visualisation"
       view_of_ontology: "Vue de l'ontologie"
@@ -435,7 +448,7 @@ fr:
     formats:
       year_month_day_concise: "%Y-%m-%d" # 2017-03-01
       month_day_year: "%b %-d, %Y" # Mar 1, 2017
-      monthfull_day_year: "%B %-d, %Y" # March 1, 2017
+      monthfull_day_year: "%-d %B %Y" # March 1, 2017
 
   ontologies:
     self: "Ontologies"

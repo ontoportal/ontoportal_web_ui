@@ -270,6 +270,18 @@ en:
       sample_text: Melanoma is a malignant tumor of melanocytes found mainly in the skin but also in the intestine and the eye.
 
   ontology_details:
+    header:
+      last_uploaded: "Last uploaded:"
+    sections:
+      summary: "Summary"
+      concepts: "Concepts"
+      classes: "Classes"
+      properties: "Properties"
+      notes: "Notes"
+      mappings: "Mappings"
+      schemes: "Schemes"
+      collections: "Collections"
+      widgets: "Widgets"
     metadata:
       details: "Details"
       acronym: "Acronym"
