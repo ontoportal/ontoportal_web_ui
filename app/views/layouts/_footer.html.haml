@@ -17,14 +17,14 @@
           %a{:href => link[:link], :target => "_blank"}
             %img{:src => "#{asset_path(link[:logo])}"}/
     .footer-nav-links
-      - $FOOTER_LINKS[:sections].keys.each do |section|
+      - $FOOTER_LINKS[:sections].each do |key, section_links|
         %div
           %h2
-            = t("layout.footer."+section)
+            = t("layout.footer."+key.to_s)
           %div
-            - $FOOTER_LINKS[:sections][section].keys.each do |item|
-              %a{:href => $FOOTER_LINKS[:sections][section][item], :target => "_blank"}
-                = t("layout.footer."+section)
+            - section_links.each do |section , link|
+              %a{:href => link, :target => "_blank"}
+                = t("layout.footer."+section.to_s)
           
 
 
