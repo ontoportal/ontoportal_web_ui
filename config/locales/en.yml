@@ -5,59 +5,24 @@ en:
     include_ancestors_up_to_level: "Include ancestors up to level"
     include_score: "Include score"
 
-  date:
-    formats:
-      year_month_day_concise: '%Y-%m-%d' # 2017-03-01
-      month_day_year: '%b %-d, %Y' # Mar 1, 2017
-      monthfull_day_year: '%B %-d, %Y' # March 1, 2017
+    recognizer: "Entity recognition"
 
-  layouts:
-    footer:
-      copyright_html: Copyright &copy; 2005‑2022, The Board of Trustees of Leland Stanford Junior University. All rights reserved.
-      grant_html: >
-        <strong>%{site}</strong> is currently being developed within French <a href="http://www.d2kab.org">ANR D2KAB project</a>  (<a href="http://www.agence-nationale-recherche.fr/Projet-ANR-18-CE23-0017">ANR-18-CE23-0017</a>). It also receives or received support from <a href="http://www.lirmm.fr/sifr">ANR SIFR project</a> (<a href="https://anr.fr/Projet-ANR-12-JS02-0010">ANR-12-JS02-0010</a>), European Union <a href="http://www.lirmm.fr/sifr">H2020-MSCA SIFRm project</a> (<a href="https://cordis.europa.eu/project/id/701771">No 701771</a>), the <a href="https://www.lirmm.fr/numev/">NUMEV Labex</a> (ANR-10-LABX-20), the <ahref="http://www.ibc-montpellier.fr/">IBC of Montpellier project</a> (ANR-11-BINF0002), the <a href="https://www.agropolis-fondation.fr/The-LabEx-AGRO?lang=en">Agro Labex</a> (ANR-10-LABX-0001) as well as from University of Montpellier and the CNRS.
-    notices:
-      license_contact: >
-        For more information, email <a href="mailto:support@ontoportal.org">support@ontoportal.org</a> or 
-        visit <a href="https://ontoportal.org/licensing" target="_blank">https://ontoportal.org/licensing</a>.
-      license_obtain: >
-        If you are the owner of this OntoPortal installation, you can visit 
-        <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> to obtain a license.
-      license_expired: >
-        We're sorry, but the license for this OntoPortal installation has expired. If you are the owner of this OntoPortal installation, 
-        please visit <a href="https://license.ontoportal.org" target="_blank">https://license.ontoportal.org</a> to renew your license.
-      license_trial:
-        one:
-          This installation of the OntoPortal Appliance is a trial license, which will expire in 1 day.
-        other:
-          This installation of the OntoPortal Appliance is a trial license, which will expire in %{count} days.
+    enter_paste_text_to_annotate: "Enter or paste the text to annotate:"
 
-  home:
-    index:
-      find_ontology_placeholder: Start typing ontology name, then choose from list
-      query_placeholder: Enter a class, e.g. Melanoma
-      tagline: the world's most comprehensive repository of biomedical ontologies
-      title: Welcome to the %{organization} 
-      welcome: Welcome to %{site},
-    help:
-      welcome: Welcome to the National Center for Biomedical Ontology’s %{site}. %{site} is a web-based application for accessing and sharing biomedical ontologies.
-      getting_started: >
-        %{site} allows users to browse, upload, download, search, comment on, and create mappings for ontologies.
-      browse: >
-        Users can browse and explore individual ontologies by navigating either a tree structure or an animated graphical view. Users can also view mappings and 
-        ontology metadata, and download ontologies. Additionally, users who are signed in may submit a new ontology to the library.
-      rest_examples_html: View documentation and examples of the <a href="http://data.bioontology.org/documentation" target="_blank">%{site} REST API</a>.
-      announce_list_html: >
-        To receive notices of new releases or site outages, please subscribe to the 
-        <a href="https://mailman.stanford.edu/mailman/listinfo/bioontology-support" target="_blank">bioontology-support list</a>.
+    show_advanced_options: "Show advanced options"
+    insert_sample_text: "Insert sample text"
+    match_longest_only: "Match longest only"
+    match_partial_words: "Match partial words"
+    include_mappings: "Include mappings"
+    exclude_numbers: "Exclude numbers"
+    exclude_synonyms: "Exclude synonyms"
+    select_ontologies: "Start typing to select ontologies or leave blank to use all ontologies"
+    select_ontologies_list: "Select ontologies"
 
-  annotator:
-    index:
-      intro: Get annotations for biomedical text with classes from the ontologies
-      annotatorplus_html: <em>Check out <a href="%{annotatorplus_href}">AnnotatorPlus</a> beta; a new version of the Annotator with added support for negation, and more!</em>
-      fast_context:
-        tooltip: "Enable FastContext to detect : if a concept has been negated (affirmed, negated), who experienced the found concept (patient, other), when the annotated concept occurred (recent, historical, hypothetical), and/or if the annotated concept is uncertain (certain, uncertain)."
-      sample_text: Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.
+    umls:
+      semantic: "UMLS Semantic"
+      semantic_types: "UMLS Semantic Types"
+      semantic_groups: "UMLS Semantic Groups"
 
     select: "Select %{name}"
 
@@ -102,31 +67,61 @@ en:
       entity_recognizer: "entity recognition tool"
 
     index:
+      title: "NCBO Annotator +"
       intro: >
-        The NCBO Annotator+ is a proxy calling the NCBO Annotator Web service on the NCBO BioPortal.
-        <br/><br/>
-        Tchechmedjiev, A., Abdaoui, A., Emonet, V., Melzi, S., Jonnagaddala, J., & Jonquet, C. (2018). <a href="https://doi.org/10.1093/bioinformatics/bty009" target="_blank">Enhanced functionalities for annotating and indexing clinical text with the NCBO Annotator+</a>. Bioinformatics, 34(11), 1962-1965.
-        </br><br/>
-        If using the API, please provide a valid NCBO BioPortal apikey and hit the service at <a href="http://services.bioportal.lirmm.fr/ncbo_annotatorplus">http://services.bioportal.lirmm.fr/ncbo_annotatorplus</a></br>
-        Text submitted to the NCBO Annotator+ must be in English.
-      sample_text: Melanoma is a malignant tumor of melanocytes which are found predominantly in skin but also in the bowel and the eye.
-
-  recommender:
-    intro: Get recommendations for the most relevant ontologies based on an excerpt from a biomedical text or a list of keywords
+        The NCBO Annotator+ is a proxy calling the NCBO Annotator web service on the NCBO BioPortal.
+           <br/><br/>
+           Tchechmedjiev, A., Abdaoui, A., Emonet, V., Melzi, S., Jonnagaddala, J., & Jonquet, C. (2018). <a href="https://doi.org/10.1093/bioinformatics/bty009" target="_blank">Enhanced features for annotating and indexing clinical text with NCBO Annotator+</a>. Bioinformatics, 34(11), 1962-1965.
+           </br><br/>
+           If you are using the API, please provide a valid NCBO BioPortal API key and access the service at <a href="http://services.bioportal.lirmm.fr/ncbo_annotatorplus">http://services.bioportal.lirmm. en/ncbo_annotatorplus </a></br>
+           Text submitted to NCBO Annotator+ must be in English.
+      sample_text: Melanoma is a malignant tumor of melanocytes found mainly in the skin but also in the intestine and the eye.
 
   search:
+    title: "Search"
+    class_search: "Class Search"
+    show_advanced_options: "Show Advanced Options"
+    hide_advanced_options: "Hide Advanced Options"
+    view_search_documentation: "View Search Documentation"
+    include_in_search: "Include in Search"
+    narrow_search_to: "Narrow Search to"
+    categories: "Categories"
+    property_values: "Property Values"
+    obsolete_classes: "Obsolete Classes"
+    ontology_views: "Ontology Views"
+    exact_matches: "Exact Matches"
+    classes_with_definitions: "Classes with Definitions"
+    ontologies: "Ontologies"
     index:
-      intro: Search for a class in multiple ontologies
-      search_keywords_placeholder: Enter a class, e.g. Melanoma
-      categories_placeholder: Start typing to select categories or leave blank to use all
-      property_definition: Named association between two entities. Examples are "definition" (a relation between a class and some text) and "part-of" (a relation between two classes).
+      intro: "Search for a class across multiple ontologies"
+      search_keywords_placeholder: "Enter a class, e.g. Melanoma"
+      categories_placeholder: "Start typing to select categories or leave blank to use all"
+      property_definition: "A named association between two entities. Examples are 'definition' (a relationship between a class and text) and 'part of' (a relationship between two classes)."
       obsolete_definition: >
-        A class that the authors of the ontology have flagged as being obsolete and which they recommend that people not use. These classes 
-        are often left in ontologies (rather than removing them entirely) so that existing systems that depend on them will continue to function.
+        A class that the ontology authors have flagged as obsolete and recommend not to use. These classes are often left in ontologies (rather than being deleted entirely) so that existing systems that depend on them continue to function."
 
   projects:
+    projects:
+    title: "Projects List"
+    project_description: "Project Description"
+    description_text: "Description Text"
+    view_projects_help: "View Projects Help"
+    create_new_project: "Create New Project"
+
+    self: "Projects"
+    description: "Description"
+    contacts: "Contacts"
+    institutions: "Institutions"
+    ontologies: "Ontologies"
+    creator: "User"
+    created: "Created"
+    home_page: "Home Page"
+    edit: "Edit"
+    delete_admin_only: "Delete (admin only)"
+    delete_confirm: "Are you sure?"
+
     index:
-      intro: Browse a selection of projects that use %{site} resources
+      intro: "Browse a selection of projects that use %{site} resources"
 
   landscape:
     title: "%{site} Landscape"
@@ -184,6 +179,8 @@ en:
     projects: "Projects"
     users: "Users"
     no_recent_notes: "No recent notes were submitted"
+    supported_by: "Supported by"
+    with_collaboration: "With the collaboration of"
     index:
       find_ontology_placeholder: Start typing the ontology name, then choose from
       query_placeholder: Enter a class, eg Melanoma
@@ -273,6 +270,18 @@ en:
       sample_text: Melanoma is a malignant tumor of melanocytes found mainly in the skin but also in the intestine and the eye.
 
   ontology_details:
+    header:
+      last_uploaded: "Last uploaded:"
+    sections:
+      summary: "Summary"
+      concepts: "Concepts"
+      classes: "Classes"
+      properties: "Properties"
+      notes: "Notes"
+      mappings: "Mappings"
+      schemes: "Schemes"
+      collections: "Collections"
+      widgets: "Widgets"
     metadata:
       details: "Details"
       acronym: "Acronym"
