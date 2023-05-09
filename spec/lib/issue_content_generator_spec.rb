@@ -33,16 +33,19 @@ RSpec.describe KGCL::IssueContentGenerator do
   it 'generates issue content for remove synonym change requests' do
     params = {
       operation: KGCL::Operations::REMOVE_SYNONYM,
-      synonym: 'Gus deficiency',
-      pref_label: 'mucopolysaccharidosis type 7',
       curie: 'MONDO:0009662',
-      comment: "I don't think this is correct!",
-      username: 'Sansa Stark'
+      concept_label: 'mucopolysaccharidosis type 7',
+      username: 'Sansa Stark',
+      remove_synonym: { synonym: 'Gus deficiency', comment: "I don't think this is correct!" }
     }
 
-    title = 'Remove synonym "Gus deficiency" from mucopolysaccharidosis type 7 (MONDO:0009662)'
+    title = "Proposal: remove synonym 'Gus deficiency' for mucopolysaccharidosis type 7"
     body = <<~HEREDOC.chomp
-      `remove synonym "Gus deficiency" from MONDO:0009662`
+      ## Hey ontobot! apply:
+
+      * remove synonym 'Gus deficiency' for MONDO:0009662
+
+      ---
 
       Comment: I don't think this is correct!
 
