@@ -16,7 +16,7 @@
 
     .bar {
       background: var(--primary-color);
-      right: 12px;
+      right: 0;
     }
 
     label.on-toggle-input-label {
@@ -80,7 +80,7 @@
 
   .bar {
     position: absolute;
-    right: 63%;
+    right: 50%;
     top: 50%;
     transform: translateY(-50%);
     background: #fff;
