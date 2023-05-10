@@ -16,7 +16,7 @@ class OntologiesController < ApplicationController
 
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
   before_action :submission_metadata, only: [:show]
-  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties" ,"instances"])
+  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties" ,"instances", "souslesens"])
   EXTERNAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/ExternalMappings"
   INTERPORTAL_MAPPINGS_GRAPH = "http://data.bioontology.org/metadata/InterportalMappings"
 
@@ -49,6 +49,7 @@ class OntologiesController < ApplicationController
   include InstancesHelper
   include ActionView::Helpers::NumberHelper
   include OntologiesHelper
+
 
   def index
     @app_name = 'FacetedBrowsing'
@@ -287,6 +288,13 @@ display_links: false, display_context: false)
     end
   end
 
+  def souslesens
+    if request.xhr?
+      render partial: 'ontologies/souslesens', locals: { apikey: get_apikey }, layout: false
+    else
+      render partial: 'ontologies/souslesens', locals: { apikey: get_apikey },layout: 'ontology_viewer'
+    end
+  end  
 
   # GET /ontologies/ACRONYM
   # GET /ontologies/1.xml
@@ -376,6 +384,9 @@ display_links: false, display_context: false)
         return
       when 'instances'
         self.instances
+        return
+      when 'souslesens'
+        self.souslesens
         return
       else
         self.summary

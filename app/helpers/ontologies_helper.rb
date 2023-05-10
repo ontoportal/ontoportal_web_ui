@@ -401,6 +401,7 @@ module OntologiesHelper
     unless @ontology.summaryOnly || @submission_latest.nil?
       sections += %w[classes properties notes mappings]
       sections += %w[instances] if @submission_latest.hasOntologyLanguage != 'SKOS'
+      sections += %w[souslesens]
     end
     sections
   end
