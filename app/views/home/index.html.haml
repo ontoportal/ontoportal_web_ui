@@ -21,17 +21,17 @@
       %img{:src => asset_path("home-random-bubbles.svg")}/
     .home-bubble.home-bubble-one
       %h5
-        = @anal_ont_names.keys[0]
+        = @anal_ont_names[0]
       %p 
         = @anal_ont_numbers[0].to_s + " visits"
     .home-bubble.home-bubble-two
       %h5
-        = @anal_ont_names.keys[1]
+        = @anal_ont_names[1]
       %p 
         = @anal_ont_numbers[1].to_s + " visits"
     .home-bubble.home-bubble-three
       %h5
-        = @anal_ont_names.keys[2]
+        = @anal_ont_names[2]
       %p 
         = @anal_ont_numbers[2].to_s + " visits"
     %a.home-bubble.home-bubble-four{:href => "/visits"}
@@ -48,6 +48,11 @@
           %div
             %img{src: asset_path("loop.svg")}/
             %p Search ontology content
+        %a.home-search-ontology-content#home-search-ontologies{href: "#"}
+          %p#seached-ontologies
+          %div
+            %img{src: asset_path("loop.svg")}/
+            %p See all
 .home-body-container
   .home-section
     %h4 Wanna upload an ontology?
@@ -55,11 +60,11 @@
     %p Uploading an ontology is a way of sharing your domain knowledge with others.
     %p By uploading your ontology to agroportal, you can:
     .home-upload-benifits
-      - @upload_benifits.each do |benifit|
+      - @upload_benefits.each do |benefit|
         %div
           %img{:src => asset_path("check-outlined.svg")}/
           %p
-            = benifit
+            = benefit
     - if session[:user].nil?
       %a.home-upload-ontology-button{:href => "/login?redirect=/ontologies/new"}
         %svg{:fill => "none", :height => "14", :viewbox => "0 0 15 14", :width => "15", :xmlns => "http://www.w3.org/2000/svg"}
@@ -75,18 +80,15 @@
     %hr.home-section-line/
     .home-card
       %form{action: "/annotator_recommender_form", method: "post"}
-        %textarea.home-recommendations-and-annotations{rows: "6" , placeholder: "Paste a paragraph or some keywords to be recommended/annotated ...", name: "text"}
-        %input.hide{type: "submit", name: "submit_button" ,value: "annotator", id: "annotator_submit"}/
-        %input.hide{type: "submit" , name: "submit_button" ,value: "recommender", id: "recommender_submit"}/
+        %textarea.home-recommendations-and-annotations{rows: "6" , placeholder: "Paste a paragraph of text or some keywords ...", name: "text"}
+        %input.hide{type: "submit", name: "submit_button" ,value: "annotator", id: "annotator_submit"}
+        %input.hide{type: "submit" , name: "submit_button" ,value: "recommender", id: "recommender_submit"}
         .home-services-buttons
-          .home-get-recommendations{onclick: "submitRecommender()"}
-            %p Get recommendations
+          %div{style: 'width: 29%; height: 50px;'}
+            = render ToggleInputComponent.new(first_option: ['annotator-option','annotator', 'Annotatation'], second_option: ['recommender-option','recommender', 'Recommendations'])
+          .home-get-service.ml-1{onclick: "submitService()"}
             %svg{:fill => "none", :height => "16", :viewbox => "0 0 15 16", :width => "15", :xmlns => "http://www.w3.org/2000/svg"}
               %path{:d => "M2.61197 15.6472C1.16948 16.4746 0 15.7968 0 14.1344V1.86672C0 0.202676 1.16948 -0.474289 2.61197 0.352365L13.3345 6.50169C14.7775 7.32941 14.7775 8.67046 13.3345 9.49799L2.61197 15.6472Z", :fill => "#31B404"}
-          .home-services-buttons
-            .home-get-annotations{onclick: "submitAnnotator()"}
-              %p Get annotations
-              %img{:src => asset_path("play-white.svg")}/
   .home-section
     .home-section-sub-sections-container
       .home-sub-section-left
@@ -173,15 +175,24 @@
         %img{src: asset_path("logos/collaboration/stanford.png")}/
         %img{src: asset_path("logos/collaboration/inrae.png")}/
 
-  
+
 
 :javascript
+  function submitService(){
+    const firstOption=  document.getElementById("annotator-option")
+    const secondOption =  document.getElementById("recommender-option")
+    let selected = firstOption.checked ? firstOption : secondOption
+    document.getElementById(`${selected.name}_submit`).click()
+  }
+
   var ontologies = #{raw(@ontology_names.to_json)};
   
   const input = document.getElementById("home-search");
   const dropdown = document.getElementById("home-search-drop-down");
   const ontology = document.getElementById("seached-ontology");
+  const searchedOntologies = document.getElementById("seached-ontologies");
   const searchOntologyContent = document.getElementById("home-search-ontology-content")
+  const homeSearchOntologies = document.getElementById("home-search-ontologies")
   let breaker = 0;
   
 
@@ -220,7 +231,9 @@
       if (inputValue.length > 0) {
           
           ontology.innerHTML = inputValue;
+          searchedOntologies.innerHTML = inputValue;
           searchOntologyContent.href = "/search?query="+inputValue;
+          homeSearchOntologies.href = "/ontologies?search="+inputValue;
           dropdown.innerHTML = ""
           breaker = 0
           for (var i = 0; i < ontologies.length; i++) {
@@ -258,6 +271,7 @@
               
 
           });
+          dropdown.appendChild(homeSearchOntologies);
           dropdown.appendChild(searchOntologyContent);
           dropdown.style.display = "block";
           input.classList.add("home-dropdown-active");

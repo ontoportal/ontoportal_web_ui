@@ -274,22 +274,18 @@ i.fa.fa-caret-square-o-down {
   margin-right: 20px;
   margin-bottom: 0;
 }
-.home-get-recommendations{
+.home-get-service{
   cursor: pointer;
   color: var(--primary-color);
   display: flex;
-  width: fit-content;
-  height: fit-content;
   align-items: center;
-  padding: 15px 20px;
-  border-radius: 8px;
-  border: 1px solid var(--primary-color);
-  
+  justify-content: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  border: solid var(--primary-color);
 }
-.home-get-recommendations p{
-  margin-right: 20px;
-  margin-bottom: 0;
-}
+
 .hide{
   display: none;
 }
@@ -378,6 +374,9 @@ i.fa.fa-caret-square-o-down {
   box-shadow: none !important;
 }
 #seached-ontology{
+  margin-bottom: 0;
+}
+#seached-ontologies{
   margin-bottom: 0;
 }
 
