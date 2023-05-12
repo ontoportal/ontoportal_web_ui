@@ -104,7 +104,7 @@ i.fa.fa-caret-square-o-down {
   color: white;
 }
 
-.home-header-title p{
+.home-header-title > p{
   font-size: 20px;
   font-weight: 400;
   color: white;
@@ -233,7 +233,7 @@ i.fa.fa-caret-square-o-down {
   align-items: center;
   width: 193px;
   padding: 15px 25px;
-  border: 1px solid var(--primary-color);;
+  border: 1px solid var(--primary-color);
   border-radius: 8px;
   font-size: 15px;
 }
@@ -310,7 +310,7 @@ i.fa.fa-caret-square-o-down {
 }
 .home-fair-scores{
   height: 349px;
-  
+  padding-top: 35px;
 }
 .home-twitter-news{
   
@@ -319,11 +319,16 @@ i.fa.fa-caret-square-o-down {
   text-decoration: none;
  
 }
+.home-fair-details{
+  margin-right: 25px !important;
+}
 .home-fair-scores div{
   display: flex;
   justify-content: flex-end;
   align-items: center;
   margin-right: 20px;
+  margin-left: 27px;
+  margin-bottom: 14px;
   color: var(--primary-color);
 }
 .home-fair-scores div p{
