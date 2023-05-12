@@ -1,13 +1,3 @@
-%style
-  :css
-    .warning {
-      background-color: #ffeaa7; /* set the background color to a light yellow */
-      color: #d63031; /* set the text color to a dark red */
-      padding: 10px; /* add some padding around the text */
-      border: 1px solid #d63031; /* add a border around the text */
-    }
-
-
 = turbo_frame_tag 'concept_details' do
   - schemes_keys = %w[hasTopConcept topConceptOf]
   - label_xl_set = %w[skos-xl#prefLabel skos-xl#altLabel skos-xl#hiddenLabel]
@@ -25,7 +15,7 @@
         %td{nowrap: ""}= t('ontology_details.concept.preferred_name')
         %td
           - if @concept.prefLabel().nil?
-            = render(CardMessageComponent.new(message: t('ontology_details.concept.no_preferred_name_for_selected_language',  type: "failure")))
+            = render(AlertMessageComponent.new(message: t('ontology_details.concept.no_preferred_name_for_selected_language',  type: "warning", closeable: false)))
           - else
             %p= @concept.prefLabel({:use_html => true}).html_safe
 
