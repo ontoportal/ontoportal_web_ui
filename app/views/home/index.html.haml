@@ -163,22 +163,24 @@
               = number_with_delimiter(@users_count, :delimiter => ",")
             %p Users
   .home-section
-    .home-section-sub-sections-container
-      .home-sub-section-left
-        %h4 Supported by
+    .home-statistics-container
+      .home-support-title
+        %p Supported by
         %hr.home-section-line/
-        .home-card.home-logos
-          %img{:src => asset_path("logos/supports/numev.png")}/
-          %img{:src => asset_path("logos/supports/anr.png")}/
-          %img{:src => asset_path("logos/supports/eu.png")}/
-      .home-sub-section-right
-        %h4 With the colaboration of
+      .home-support-items
+        %img{src: asset_path("logos/supports/numev.png")}/
+        %img{src: asset_path("logos/supports/anr.png")}/
+        %img{src: asset_path("logos/supports/eu.png")}/
+      .home-support-title
+        %p With the collaboration of
         %hr.home-section-line/
-        .home-card.home-logos
-          %img{:src => asset_path("logos/collaboration/d2kab.png")}/
-          %img{:src => asset_path("logos/collaboration/lirmm.png")}/
-          %img{:src => asset_path("logos/collaboration/stanford.png")}/
-          %img{:src => asset_path("logos/collaboration/inrae.png")}/
+      .home-support-items
+        %img{src: asset_path("logos/collaboration/d2kab.png")}/
+        %img{src: asset_path("logos/collaboration/lirmm.png")}/
+        %img{src: asset_path("logos/collaboration/stanford.png")}/
+        %img{src: asset_path("logos/collaboration/inrae.png")}/
+
+
 
 :javascript
   function submitAnnotator(){
