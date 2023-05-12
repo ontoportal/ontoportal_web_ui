@@ -41,7 +41,18 @@
     .home-header-title
       %h4 Welcome to AgroPortal
       %p The home of vocabularies and ontologies in agronomy and related fields.
-      %input{:name => "search", :placeholder => "Ex: Agrovoc ...", :type => "text"}/
+      %input#home-search{:name => "search", :placeholder => "Ex: Agrovoc ...", :type => "text"}/
+      #home-search-drop-down
+        %a.home-search-ontology-content#home-search-ontology-content{href: "#"}
+          %p#seached-ontology
+          %div
+            %img{src: asset_path("loop.svg")}/
+            %p Search ontology content
+        %a.home-search-ontology-content#home-search-ontologies{href: "#"}
+          %p#seached-ontologies
+          %div
+            %img{src: asset_path("loop.svg")}/
+            %p See all
 .home-body-container
   .home-section
     %h4 Wanna upload an ontology?
