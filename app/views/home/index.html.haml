@@ -60,11 +60,11 @@
     %p Uploading an ontology is a way of sharing your domain knowledge with others.
     %p By uploading your ontology to agroportal, you can:
     .home-upload-benifits
-      - @upload_benifits.each do |benifit|
+      - @upload_benefits.each do |benefit|
         %div
           %img{:src => asset_path("check-outlined.svg")}/
           %p
-            = benifit
+            = benefit
     - if session[:user].nil?
       %a.home-upload-ontology-button{:href => "/login?redirect=/ontologies/new"}
         %svg{:fill => "none", :height => "14", :viewbox => "0 0 15 14", :width => "15", :xmlns => "http://www.w3.org/2000/svg"}
