@@ -15,7 +15,7 @@
         %td{nowrap: ""}= t('ontology_details.concept.preferred_name')
         %td
           - if @concept.prefLabel().nil?
-            = render(AlertMessageComponent.new(message: t('ontology_details.concept.no_preferred_name_for_selected_language',  type: "warning", closeable: false)))
+            = render(AlertMessageComponent.new(message: t('ontology_details.concept.no_preferred_name_for_selected_language'),  type: "warning", closeable: false))
           - else
             %p= @concept.prefLabel({:use_html => true}).html_safe
 
