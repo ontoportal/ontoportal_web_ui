@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   root to: 'home#index'
 
-  get 'locale/:language', to: 'language#set_locale'
+  get 'locale/:language', to: 'language#set_locale_language'
 
   get '/notes/new_comment', to: 'notes#new_comment'
   get '/notes/new_proposal', to: 'notes#new_proposal'
@@ -52,6 +52,8 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :licenses, only: [:index, :create, :new]
+    resources :groups, only: [:index, :create, :new, :edit, :update, :destroy]
+    resources :categories, only: [:index, :create, :new, :edit, :update, :destroy]
   end
 
   resources :subscriptions
@@ -209,6 +211,9 @@ Rails.application.routes.draw do
   get '/visualize' => 'ontologies#visualize', :as => :visualize_concept, :constraints => { ontology: /[^\/?]+/, id: /[^\/?]+/, ontologyid: /[^\/?]+/, conceptid: /[^\/?]+/ }
 
   get '/exhibit/:ontology/:id' => 'concepts#exhibit'
-  
-  mount Lookbook::Engine, at: "/lookbook"
+
+  if Rails.env.development?
+    mount Lookbook::Engine, at: "/lookbook"
+  end
+
 end
