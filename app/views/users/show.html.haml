@@ -112,7 +112,7 @@
             .account-page-small-cards-container
               - @admin_ontologies.each do |ont|
                 .account-page-submitted-ontology
-                  %a{href: "/ontologies/#{ont.acronym}"}= ont.name
+                  %a{href: "/ontologies/#{ont.acronym}"}= ont.acronym
         - unless @user_projects.nil? || @user_projects.empty?
           - no_ontologies = false
           .account-page-card
