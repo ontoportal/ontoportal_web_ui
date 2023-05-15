@@ -3,7 +3,7 @@
     justify-content: center;
     background-color: var(--primary-color);
 }
-nav{
+.top-nav{
     display: flex !important;
     justify-content: space-between;
     background-color: var(--primary-color);
@@ -100,13 +100,13 @@ nav{
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-nav .menu-btn i{
+.top-nav .menu-btn i{
     color: #fff;
     font-size: 22px;
     cursor: pointer;
     display: none;
 }
-nav input[type="checkbox"]{
+.top-nav input[type="checkbox"]{
     display: none;
 }
 
@@ -116,7 +116,7 @@ nav input[type="checkbox"]{
 }
 
 @media (max-width: 1200px){
-    nav .menu-btn i{
+    .top-nav .menu-btn i{
         display: block;
     }
     #nav-menu:checked ~ .menu-btn i:before{
@@ -124,7 +124,7 @@ nav input[type="checkbox"]{
     }
     
 
-    #nav-menu:checked ~ nav{
+    #nav-menu:checked ~ .top-nav{
         display:block;
         background-color: blue;
     }

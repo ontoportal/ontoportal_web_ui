@@ -604,6 +604,6 @@ module ApplicationHelper
   end
 
   def current_page?(path)
-    request.path == path ? true : false
+    request.path.eql?(path)
   end
 end
