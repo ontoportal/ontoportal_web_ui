@@ -84,7 +84,7 @@ group :staging, :production, :appliance do
 end
 
 group :development do
-   # Capistrano Deployment
+  # Capistrano Deployment
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0', require: false # https://github.com/miloserdow/capistrano-deploy/issues/42
   gem 'capistrano', '~> 3.11', require: false
   gem 'capistrano-bundler', require: false
@@ -104,6 +104,7 @@ group :development do
 
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'web-console'
+  gem "lookbook", '~> 1.5.5'
 end
 
 group :test, :development do
