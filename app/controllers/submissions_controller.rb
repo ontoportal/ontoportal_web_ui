@@ -21,7 +21,7 @@ class SubmissionsController < ApplicationController
     @ontology.summaryOnly = @submission.isRemote.eql?("3")
     @ontology.update
     
-    @submission_saved = @submission.save
+    @submission_saved = @submission.save(cache_refresh_all: false)
     if response_error?(@submission_saved)
       @errors = response_errors(@submission_saved) # see application_controller::response_errors
       if @errors && @errors[:uploadFilePath]
@@ -56,7 +56,7 @@ class SubmissionsController < ApplicationController
     # Update summaryOnly on ontology object
     @ontology.summaryOnly = @submission.isRemote.eql?("3")
     @ontology.update
-    error_response = @submission.update
+    error_response = @submission.update(cache_refresh_all: false)
     if response_error?(error_response)
       @errors = response_errors(error_response) # see application_controller::response_errors
       render 'edit'
