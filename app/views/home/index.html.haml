@@ -168,17 +168,16 @@
         %p Supported by
         %hr.home-section-line/
       .home-support-items
-        %img{src: asset_path("logos/supports/numev.png")}/
-        %img{src: asset_path("logos/supports/anr.png")}/
-        %img{src: asset_path("logos/supports/eu.png")}/
+        - $HOME_PAGE_LOGOS[:supported_by].each do |logo|
+          %a{href:logo[:url], target: "_blanc"}
+            %img{src: asset_path(logo[:img_src])}
       .home-support-title
         %p With the collaboration of
         %hr.home-section-line/
       .home-support-items
-        %img{src: asset_path("logos/collaboration/d2kab.png")}/
-        %img{src: asset_path("logos/collaboration/lirmm.png")}/
-        %img{src: asset_path("logos/collaboration/stanford.png")}/
-        %img{src: asset_path("logos/collaboration/inrae.png")}/
+        - $HOME_PAGE_LOGOS[:with_the_collaboration_of].each do |logo|
+          %a{href:logo[:url], target: "_blanc"}
+            %img{src: asset_path(logo[:img_src])}
 
 
 

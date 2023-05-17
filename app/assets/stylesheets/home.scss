@@ -404,8 +404,13 @@ i.fa.fa-caret-square-o-down {
 .home-support-items  > *:not(:first-child){
   margin-left: 40px;
 }
-.home-support-items img{
+.home-support-items a{
   margin-bottom: 40px;
+  opacity: 85%;
+  transition: opacity 0.3s ease;
+}
+.home-support-items a:hover{
+  opacity: 100%;
 }
 .home-result-type{
   font-weight: 300;
