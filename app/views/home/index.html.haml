@@ -189,3 +189,104 @@
     document.getElementById("recommender_submit").click()
   }
 
+
+  function scrollDown(currentScroll) {
+    const startPosition = window.pageYOffset;
+    const distance = 300 - currentScroll;
+    const duration = 1000;
+    let start = null;
+
+    function scrollAnimation(timestamp) {
+      if (!start) start = timestamp;
+      const progress = timestamp - start;
+      const scrollPosition = startPosition + easeInOutCubic(progress, 0, distance, duration);
+      window.scrollTo(0, scrollPosition);
+      if (progress < duration) {
+        window.requestAnimationFrame(scrollAnimation);
+      }
+    }
+
+    function easeInOutCubic(t, b, c, d) {
+      t /= d / 2;
+      if (t < 1) return c / 2 * t * t * t + b;
+      t -= 2;
+      return c / 2 * (t * t * t + 2) + b;
+    }
+
+    window.requestAnimationFrame(scrollAnimation);
+  }
+
+  
+  
+  
+  input.addEventListener("input", function() {
+      let results_list = []
+      const inputValue = input.value.trim();
+      if (inputValue.length > 0) {
+          
+          ontology.innerHTML = inputValue;
+          searchedOntologies.innerHTML = inputValue;
+          searchOntologyContent.href = "/search?query="+inputValue;
+          homeSearchOntologies.href = "/ontologies?search="+inputValue;
+          dropdown.innerHTML = ""
+          breaker = 0
+          for (var i = 0; i < ontologies.length; i++) {
+            if (breaker == 4){
+              break;
+            }
+            // Get the current item from the ontologies array
+            var item = ontologies[i];
+
+            // Check if the item contains the substring
+            if (item[0].toLowerCase().includes(inputValue.toLowerCase()) || item[1].toLowerCase().includes(inputValue.toLowerCase())) {
+              results_list.push(item);
+              breaker = breaker + 1
+            }
+          }
+          
+          results_list.forEach(function(item) {
+              const link = document.createElement("a");
+              link.href = "/ontologies/"+item[1];
+              link.className = "home-search-ontology-content";
+
+              const p1 = document.createElement("p");
+              p1.id = "seached-ontology";
+              p1.className = "home-searched-ontology";
+              p1.textContent = item[0]+" "+"("+item[1]+")";
+
+              const p2 = document.createElement("p");
+              p2.className = "home-result-type";
+              p2.textContent = "Ontology";
+
+              link.appendChild(p1);
+              link.appendChild(p2);
+
+              dropdown.appendChild(link);
+              
+
+          });
+          dropdown.appendChild(homeSearchOntologies);
+          dropdown.appendChild(searchOntologyContent);
+          dropdown.style.display = "block";
+          input.classList.add("home-dropdown-active");
+
+          if (window.scrollY < 300) {
+            scrollDown(window.scrollY);
+          }
+          
+          
+      } else {
+          dropdown.style.display = "none";
+          input.classList.remove("home-dropdown-active");
+      }
+      });
+  dropdown.addEventListener("mousedown", function(event) {
+      event.preventDefault(); // prevent the blur event from firing
+  });
+
+  input.addEventListener("blur", function() {
+      
+      dropdown.style.display = "none";
+      input.classList.remove("home-dropdown-active");
+  });
+  
