@@ -59,11 +59,6 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    if params['commit'] == 'Cancel'
-      redirect_to projects_path
-      return
-    end
-
     @project = LinkedData::Client::Models::Project.new(values: project_params)
     @project_saved = @project.save
 
@@ -89,10 +84,6 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    if params['commit'] == 'Cancel'
-      redirect_to projects_path
-      return
-    end
     projects = LinkedData::Client::Models::Project.find_by_acronym(params[:id])
     if projects.nil? || projects.empty?
       flash[:notice] = flash_error("Project not found: #{params[:id]}")
