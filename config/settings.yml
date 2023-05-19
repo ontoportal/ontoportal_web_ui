@@ -8,6 +8,7 @@ shared:
     help_annotator: 'https://www.bioontology.org/wiki/BioPortal_Help#Annotator_Tab'
     help_mappings: 'https://www.bioontology.org/wiki/BioPortal_Help#Mappings_Tab'
     help_ontology_browse: 'https://www.bioontology.org/wiki/BioPortal_Help#Browse_Tab'
+    help_projects: 'https://www.bioontology.org/wiki/BioPortal_Help#Projects_Tab'
     help_recommender: 'https://www.bioontology.org/wiki/BioPortal_Help#Recommender_Tab'
     help_search: 'https://www.bioontology.org/wiki/BioPortal_Help#Search_Tab'
     metrics: 'https://www.bioontology.org/wiki/Ontology_Metrics'
