@@ -19,7 +19,7 @@ class ProjectsController < ApplicationController
   def show
     projects = LinkedData::Client::Models::Project.find_by_acronym(params[:id])
     if projects.blank?
-      flash[:notice] = flash_error("Project not found: #{params[:id]}")
+      flash.alert = "Project not found: #{params[:id]}"
       redirect_to projects_path
       return
     end
@@ -47,7 +47,7 @@ class ProjectsController < ApplicationController
   def edit
     projects = LinkedData::Client::Models::Project.find_by_acronym(params[:id])
     if projects.blank?
-      flash[:notice] = flash_error("Project not found: #{params[:id]}")
+      flash.alert = "Project not found: #{params[:id]}"
       redirect_to projects_path
       return
     end
@@ -86,7 +86,7 @@ class ProjectsController < ApplicationController
   def update
     projects = LinkedData::Client::Models::Project.find_by_acronym(params[:id])
     if projects.blank?
-      flash[:notice] = flash_error("Project not found: #{params[:id]}")
+      flash.alert = "Project not found: #{params[:id]}"
       redirect_to projects_path
       return
     end
@@ -109,7 +109,7 @@ class ProjectsController < ApplicationController
   def destroy
     projects = LinkedData::Client::Models::Project.find_by_acronym(params[:id])
     if projects.blank?
-      flash[:notice] = flash_error("Project not found: #{params[:id]}")
+      flash.alert = "Project not found: #{params[:id]}"
       redirect_to projects_path
       return
     end
@@ -139,12 +139,5 @@ class ProjectsController < ApplicationController
     p[:creator].reject!(&:blank?)
     p[:ontologyUsed].reject!(&:blank?)
     p.to_h
-  end
-
-  def flash_error(msg)
-    html = ''.html_safe
-    html << '<span style=color:red;>'.html_safe
-    html << msg
-    html << '</span>'.html_safe
   end
 end
