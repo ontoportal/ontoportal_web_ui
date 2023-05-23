@@ -1,21 +1,22 @@
 .nav-container
   %nav.top-nav
-    %a.nav-logo{href: "/"}
-      %img{:src => asset_path("logo-white.svg")}/
-      %p AgroPortal
-    %input#nav-menu{:type => "checkbox"}/
-    %label.menu-btn{:for => "nav-menu"}
-      %i.fas.fa-bars
+    .nav-responsiveness-container
+      %a.nav-logo{href: "/"}
+        %img{:src => asset_path("logo-white.svg")}/
+        %p AgroPortal
+      %input#nav-menu{:type => "checkbox"}/
+      %label.menu-btn{:for => "nav-menu"}
+        %i.fas.fa-bars
     - navitems = [["/ontologies", "Browse"],["/mappings", "Mappings"],["/recommender", "Recommender"],["/annotator", "Annotator"], ["/landscape", "Landscape"]]
     .nav-items
-      %ul
+      %ul.top-nav-ul
         - navitems.each do |navItem|
-          %li
+          %li.nav-ul-li
             %a{href: navItem[0], class: ("active" if current_page?(navItem[0]))} #{navItem[1]}
             
-      %input{:placeholder => "Search AgroPortal ...", :type => "text"}/
+      %input.nav-input{:placeholder => "Search AgroPortal ...", :type => "text"}/
       
-      %a{:href => "/login"} Login
+      %a.nav-a{:href => "/login"} Login
 
       %select.nav-language
         %option{:value => "EN"}
@@ -23,12 +24,26 @@
         %option{:value => "FR"}
           FR
       .dropdown
-        = link_to("#", id: "supportMenuDropdownLink", class: "nav-link dropdown-toggle", role: "button", data: {toggle: "dropdown"}, aria: {haspopup: "true", expanded: "false"}) do
+        = link_to("#", id: "supportMenuDropdownLink", class: "nav-link dropdown-toggle supportMenuDropdownLink", role: "button", data: {toggle: "dropdown"}, aria: {haspopup: "true", expanded: "false"}) do
           Support
         %div.dropdown-menu.dropdown-menu-right{aria: {labelledby: "supportMenuDropdownLink"}}
-          = link_to("Submit Feedback", feedback_path(location: encode_param(request.url)), id: "submitFeedbackMenuItem", class: "dropdown-item pop_window")
+          = link_to(t(:submit_feedback), feedback_path(location: encode_param(request.url)), id: "submitFeedbackMenuItem", class: "dropdown-item pop_window")
           %div.dropdown-divider
           %h6.dropdown-header Documentation
-          = link_to("Help", "#{$WIKI_HELP_PAGE}", target: "_blank", class: "dropdown-item")
-          = link_to("Release Notes", "#{$RELEASE_NOTES}", target: "_blank", class: "dropdown-item")
-          = link_to("Publications", $PUBLICATIONS_URL, target: "_blank", class: "dropdown-item")
+          = link_to(t(:_help), "#{$WIKI_HELP_PAGE}", target: "_blank", class: "dropdown-item")
+          = link_to(t(:_release_notes), "#{$RELEASE_NOTES}", target: "_blank", class: "dropdown-item")
+          = link_to(t(:_publications), $PUBLICATIONS_URL, target: "_blank", class: "dropdown-item")
+:javascript
+  let checkbox = document.getElementById('nav-menu');
+  let divs = document.querySelectorAll('.top-nav, .top-nav-ul, .nav-items, .nav-ul-li, .nav-input, .nav-a, .nav-language, .supportMenuDropdownLink');
+  checkbox.addEventListener('change', function() {
+  if (this.checked) {
+  divs.forEach(function(div) {
+  div.classList.add('show-responsive');
+  });
+  } else {
+  divs.forEach(function(div) {
+  div.classList.remove('show-responsive');
+  });
+  }
+  });

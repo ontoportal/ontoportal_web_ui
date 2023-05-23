@@ -614,4 +614,8 @@ module ApplicationHelper
     lang = 'EN' unless lang
     lang.upcase
   end
+
+  def current_page?(path)
+    request.path == path ? true : false
+  end
 end
