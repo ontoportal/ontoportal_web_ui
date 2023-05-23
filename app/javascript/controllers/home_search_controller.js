@@ -59,12 +59,14 @@ export default class extends Controller {
 
   #searchInput() {
     let results_list = []
+    const class_search_path = "/search?query="
+    const browse_search_path = "/ontologies?search="
     const inputValue = this.input.value.trim();
     if (inputValue.length > 0) {
         this.ontology.innerHTML = inputValue;
         this.searchedOntologies.innerHTML = inputValue;
-        this.searchOntologyContent.href = "/search?query="+inputValue;
-        this.homeSearchOntologies.href = "/ontologies?search="+inputValue;
+        this.searchOntologyContent.href = class_search_path+inputValue;
+        this.homeSearchOntologies.href = browse_search_path+inputValue;
         this.dropDown.innerHTML = ""
         let breaker = 0
         for (var i = 0; i < this.ontologies.length; i++) {
