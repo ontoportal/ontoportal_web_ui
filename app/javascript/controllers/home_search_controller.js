@@ -14,20 +14,18 @@ export default class extends Controller {
     this.searchedOntologies = this.searchedOntologiesTarget
     this.searchOntologyContent = this.searchOntologyContentTarget
     this.homeSearchOntologies = this.homeSearchOntologiesTarget
-    
-    this.input.addEventListener("input",()=>{
+  }
+
+  search(){
       this.#searchInput()
-    } );
-    this.dropDown.addEventListener("mousedown", function(event) {
-        event.preventDefault(); // prevent the blur event from firing
-    });
+  }
 
-    this.input.addEventListener("blur", function() {
-        
-        this.dropDown.style.display = "none";
-        this.input.classList.remove("home-dropdown-active");
-    });
-
+  prevent(event){
+    event.preventDefault();
+  }
+  blur(){
+    this.dropDown.style.display = "none";
+    this.input.classList.remove("home-dropdown-active");
   }
 
   
