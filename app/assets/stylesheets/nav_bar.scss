@@ -12,6 +12,10 @@
     padding: 8px 50px;
     width: 1280px;
 }
+.nav-responsiveness-container{
+    display: flex;
+    justify-content: space-between;
+}
 .nav-logo{
     display: flex;
     align-items: center;
@@ -122,24 +126,36 @@
     #nav-menu:checked ~ .menu-btn i:before{
         content: "\f00d";
     }
-    
-
-    #nav-menu:checked ~ .top-nav{
-        display:block;
-        background-color: blue;
-    }
-    #nav-menu:checked ~ ul{
-        display: block;
-    }
     .nav-items{
         display: none;
     }
-    #nav-menu:checked ~ .nav-items{
-        display: block;
-        height: 100vh;
-        background-color: var(--primary-color);
+    .menu-btn{
+        position: absolute;
+        right: 40px;
     }
-    
 
 }
+.top-nav.show-responsive {
+    display: block !important;
+    background-color: var(--primary-color);
+    height: unset;
+}
 
+.top-nav-ul.show-responsive {
+    display: block;
+}
+
+.nav-items.show-responsive {
+    flex-direction: column;
+    width: unset;
+    display: flex;
+    align-items: flex-start;
+}
+
+.show-responsive {
+    margin: 15px 0 !important;
+}
+
+.supportMenuDropdownLink.show-responsive {
+    margin-bottom: 15px;
+}
