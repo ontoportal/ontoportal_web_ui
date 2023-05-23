@@ -13,6 +13,29 @@ require 'ontologies_api_client'
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  
+  before_action :set_locale
+
+  # Sets the locale based on the locale cookie or the value returned by detect_locale.
+  def set_locale    
+    I18n.locale = cookies[:locale] || detect_locale
+    cookies.permanent[:locale] = I18n.locale if cookies[:locale].nil?
+  end
+
+  # Returns detedted locale based on the Accept-Language header of the request or the default locale if none is found.
+  def detect_locale    
+    languages = request.headers['Accept-Language']&.split(',')
+    supported_languages = I18n.available_locales
+
+    languages.each do |language|
+      language_code = language.split(/[-;]/).first.downcase.to_sym
+      return language_code if supported_languages.include?(language_code)
+    end
+    
+    return I18n.default_locale 
+  end
+  
+
   helper :all # include all helpers, all the time
   helper_method :bp_config_json, :current_license, :using_captcha?
   rescue_from ActiveRecord::RecordNotFound, with: :not_found_record
@@ -233,7 +256,7 @@ class ApplicationController < ActionController::Base
   end
 
   def response_success?(response)
-    return false if response.nil?
+    return true if response.nil?
 
     if response.respond_to?(:status) && response.status
         response.status.to_i < 400
@@ -421,6 +444,8 @@ class ApplicationController < ActionController::Base
 
   def get_class(params)
 
+    lang = request_lang
+    
     if @ontology.flat?
 
       ignore_concept_param = params[:conceptid].nil? ||
@@ -437,7 +462,7 @@ class ApplicationController < ActionController::Base
         @concept.children = []
       else
         # Display only the requested class in the tree
-        @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+        @concept = @ontology.explore.single_class({full: true, lang: lang }, params[:conceptid])
         @concept.children = []
       end
       @root = LinkedData::Client::Models::Class.new
@@ -446,13 +471,14 @@ class ApplicationController < ActionController::Base
     else
 
       # not ignoring 'bp_fake_root' here
+      include = 'prefLabel,hasChildren,obsolete'
       ignore_concept_param = params[:conceptid].nil? ||
           params[:conceptid].empty? ||
           params[:conceptid].eql?("root")
       if ignore_concept_param
         # get the top level nodes for the root
         # TODO_REV: Support views? Replace old view call: @ontology.top_level_classes(view)
-        roots = @ontology.explore.roots(concept_schemes: params[:concept_schemes])
+        roots = @ontology.explore.roots(concept_schemes: params[:concept_schemes], lang: lang, include: include)
         if roots.nil? || roots.empty?
           LOG.add :debug, "Missing roots for #{@ontology.acronym}"
           not_found("Missing roots for #{@ontology.acronym}")
@@ -463,7 +489,7 @@ class ApplicationController < ActionController::Base
         # get the initial concept to display
         root_child = @root.children.first
 
-        @concept = root_child.explore.self(full: true)
+        @concept = root_child.explore.self(full: true, lang: lang)
         # Some ontologies have "too many children" at their root. These will not process and are handled here.
         if @concept.nil?
           LOG.add :debug, "Missing class #{root_child.links.self}"
@@ -471,16 +497,16 @@ class ApplicationController < ActionController::Base
         end
       else
         # if the id is coming from a param, use that to get concept
-        @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+        @concept = @ontology.explore.single_class({full: true, lang: lang}, params[:conceptid])
         if @concept.nil? || @concept.errors
           LOG.add :debug, "Missing class #{@ontology.acronym} / #{params[:conceptid]}"
           not_found("Missing class #{@ontology.acronym} / #{params[:conceptid]}")
         end
 
         # Create the tree
-        rootNode = @concept.explore.tree(include: "prefLabel,hasChildren,obsolete", concept_schemes: params[:concept_schemes])
+        rootNode = @concept.explore.tree(include: include, concept_schemes: params[:concept_schemes], lang: lang)
         if rootNode.nil? || rootNode.empty?
-          roots = @ontology.explore.roots(concept_schemes: params[:concept_schemes])
+          roots = @ontology.explore.roots(concept_schemes: params[:concept_schemes], lang: lang, include: include)
           if roots.nil? || roots.empty?
             LOG.add :debug, "Missing roots for #{@ontology.acronym}"
             not_found("Missing roots for #{@ontology.acronym}")
@@ -756,6 +782,10 @@ class ApplicationController < ActionController::Base
   end
   helper_method :submission_metadata
 
+
+  def request_lang
+    helpers.request_lang
+  end
   private
   def not_found_record(exception)
     @error_message = exception.message
