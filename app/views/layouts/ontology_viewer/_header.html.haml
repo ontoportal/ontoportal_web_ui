@@ -22,10 +22,20 @@
         .ontology-details-licence
           %div CC-BY IGO 3.0
           = inline_svg_tag "open-popup.svg"
-      .ontology-details-last-update
-        %img{src: asset_path("update.svg")}/
-        %div 
-          = "Last update on "+last_update_date
+      - if (details_available && !sub.released.nil?)
+        .ontology-details-last-update
+          %img{src: asset_path("update.svg")}/
+          %div 
+            = "Last update on "+last_update_date
     .ontology-details-header-right-container
-      = inline_svg_tag "eye.svg"
-      %div Watch (12)
+      - if @ontology.admin?(session[:user])
+        %a.ontology-details-edit-button{href: edit_ontology_path(@ontology.acronym)}
+          = inline_svg_tag "edit.svg"
+      - if session[:user].nil?
+        %a.ontology-details-watch-button{href: "/login?redirect=/watch-lorem-ipsum"}
+          = inline_svg_tag "eye.svg"
+          %div Watch (12)
+      - else 
+        %a.ontology-details-watch-button{href: "/watch-lorem-ipsum"}
+          = inline_svg_tag "eye.svg"
+          %div Watch (12)
