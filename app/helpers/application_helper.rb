@@ -615,7 +615,4 @@ module ApplicationHelper
     lang.upcase
   end
 
-  def current_page?(path)
-    request.path == path ? true : false
-  end
 end
