@@ -615,4 +615,13 @@ module ApplicationHelper
     lang.upcase
   end
 
+  def portal_name
+    name = $UI_THEME.to_s.capitalize
+    name.sub! 'portal' , 'Portal'
+  end
+
+  def navitems
+    items = [["/ontologies", "Browse"],["/mappings", "Mappings"],["/recommender", "Recommender"],["/annotator", "Annotator"], ["/landscape", "Landscape"]]
+  end
+
 end
