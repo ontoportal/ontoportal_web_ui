@@ -79,8 +79,8 @@
     .home-card
       %form{action: "/annotator_recommender_form", method: "post"}
         %textarea.home-recommendations-and-annotations{rows: "6" , placeholder: "Paste a paragraph of text or some keywords ...", name: "text"}
-        %input.hide{type: "submit", name: "submit_button" ,value: "annotator", id: "annotator_submit"}/
-        %input.hide{type: "submit" , name: "submit_button" ,value: "recommender", id: "recommender_submit"}/
+        %input.d-none{type: "submit", name: "submit_button" ,value: "annotator", id: "annotator_submit"}/
+        %input.d-none{type: "submit" , name: "submit_button" ,value: "recommender", id: "recommender_submit"}/
         .home-services-buttons
           .home-get-recommendations{onclick: "submitRecommender()"}
             %p Get recommendations
