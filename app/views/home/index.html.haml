@@ -39,8 +39,10 @@
 
   .home-header-title-container{'data-controller': "home-search", 'data-home-search-ontologies-value': raw(@ontology_names.to_json)}
     .home-header-title
-      %h4 Welcome to AgroPortal
-      %p The home of vocabularies and ontologies in agronomy and related fields.
+      %h4 
+        = $WESBITE_TITLE[$UI_THEME]
+      %p
+        = $WEBSITE_SUB_TITLE[$UI_THEME]
       %input#home-search{:name => "search", :placeholder => "Ex: Agrovoc ...", :type => "text", 'data-home-search-target': 'input', 'data-action': 'input->home-search#search blur->home-search#blur'}
       #home-search-drop-down{'data-home-search-target': 'dropDown', 'data-action': 'mousedown->home-search#prevent'}
         %a.home-search-ontology-content#home-search-ontology-content{href: "#", 'data-home-search-target': 'searchOntologyContent'}
@@ -74,7 +76,8 @@
         = inline_svg_tag "upload.svg", class: "home-upload-icon"
         upload ontology
   .home-section
-    %h4 Agroportal services
+    %h4
+      = portal_name+" services"
     %hr.home-section-line/
     .home-card
       %form{action: "/annotator_recommender_form", method: "post"}
@@ -113,7 +116,8 @@
     .home-statistics-container
       .home-agroportal-figures
         = inline_svg_tag "ontoportal-icon.svg"
-        %p AgroPortal in figures:
+        %p 
+          = portal_name+" in figures:"
       .home-statistics
         .home-statistics-item
           %hr/
