@@ -8,12 +8,12 @@
   :javascript
     // Javascript History HTML5 API
     if ( typeof JSON === 'undefined' ) {
-      var
-        url = '/javascripts/history/json2.js',
-        scriptEl = document.createElement('script');
-      scriptEl.type = 'text/javascript';
-      scriptEl.src = url;
-      document.body.appendChild(scriptEl);
+    var
+    url = '/javascripts/history/json2.js',
+    scriptEl = document.createElement('script');
+    scriptEl.type = 'text/javascript';
+    scriptEl.src = url;
+    document.body.appendChild(scriptEl);
     }
 
     // Ontology viewer vars
@@ -30,7 +30,7 @@
     jQuery(document).data().bp.ont_viewer.current_purl = "#{@current_purl}";
     jQuery(document).data().bp.ont_viewer.purl_prefix = "#{($PURL_ENABLED ? $PURL_PREFIX+"/"+@ontology.acronym : '')}";
     jQuery(document).data().bp.ont_viewer.concept_name_title = (jQuery(document).data().bp.ont_viewer.concept_name == "") ?
-        "" : " - " + jQuery(document).data().bp.ont_viewer.concept_name;
+    "" : " - " + jQuery(document).data().bp.ont_viewer.concept_name;
 
 
 
@@ -41,7 +41,7 @@
 
   = render partial: 'kgcl_dialogs'
 
-  %div.row.pt-md-3.pb-md-2
+  %div.row.pt-md-3.pb-md-2{style: "background-color:white;"}
     %div.col
       = render partial: 'layouts/ontology_viewer/header'
 
