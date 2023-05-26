@@ -22,12 +22,11 @@ class SubmissionsController < ApplicationController
     @ontology.update
     
     @submission_saved = @submission.save
-    if !@submission_saved || @submission_saved.errors
+    if response_error?(@submission_saved)
       @errors = response_errors(@submission_saved) # see application_controller::response_errors
-
-      if @errors[:error][:uploadFilePath]
+      if @errors && @errors[:uploadFilePath]
         @errors = ["Please specify the location of your ontology"]
-      elsif @errors[:error][:contact]
+      elsif @errors && @errors[:contact]
         @errors = ["Please enter a contact"]
       end
 
@@ -58,9 +57,9 @@ class SubmissionsController < ApplicationController
     @ontology.summaryOnly = @submission.isRemote.eql?("3")
     @ontology.update
     error_response = @submission.update
-
-    if error_response
+    if response_error?(error_response)
       @errors = response_errors(error_response) # see application_controller::response_errors
+      render 'edit'
     else
       redirect_to "/ontologies/#{@ontology.acronym}"
     end

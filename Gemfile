@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '6.0.4.1'
+gem 'rails', '6.1.5.1'
 
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.0.3'
@@ -27,6 +29,7 @@ gem 'select2-rails'
 gem 'cube-ruby', require: 'cube'
 gem 'dalli'
 gem 'flamegraph'
+gem 'graphql-client'
 gem 'haml', '~> 5.1'
 gem 'i18n'
 gem 'iconv'
@@ -34,8 +37,8 @@ gem 'multi_json'
 gem 'mysql2', '0.5.2'
 gem 'oj'
 gem 'open_uri_redirections'
-gem 'psych', '< 4'
 gem 'pry'
+gem 'psych', '< 4'
 gem 'rack-mini-profiler'
 gem 'rails_autolink'
 gem 'rdoc'
@@ -45,7 +48,7 @@ gem 'stackprof', require: false
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
 
-gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.1.0'
+gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.2.1'
 
 group :staging, :production do
   # application monitoring
@@ -56,7 +59,7 @@ group :staging, :production do
 end
 
 group :development do
-   # Capistrano Deployment
+  # Capistrano Deployment
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0', require: false # https://github.com/miloserdow/capistrano-deploy/issues/42
   gem 'capistrano', '~> 3.11', require: false
   gem 'capistrano-bundler', require: false

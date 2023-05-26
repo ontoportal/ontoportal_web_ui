@@ -14,7 +14,7 @@
       %div.col-6.col-md.footer-support
         %h6 SUPPORT
         %ul.list-unstyled
-          %li= link_to('Contact Us', feedback_path(location: encode_param(request.url)), class: 'pop_window')
+          %li= link_to('Contact Us', feedback_path, class: 'pop_window')
           %li= link_to('Documentation', Rails.configuration.settings.links[:help], target: '_blank')
           %li= link_to('NCBO Wiki', Rails.configuration.settings.links[:wiki], target: '_blank')
       %div.col-6.col-md

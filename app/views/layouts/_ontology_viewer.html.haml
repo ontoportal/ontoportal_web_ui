@@ -43,9 +43,9 @@
     %div.modal-dialog.modal-lg{role: "document"}
       %div.modal-content
         %div.modal-header
+          %h4#createNewMappingLabel.modal-title
           %button.close{type: "button", "data-dismiss": "modal", "aria-label": "Close"}
             %span{"aria-hidden": "true"} &times;
-          %h4#createNewMappingLabel.modal-title
         %div.createNewMappingModalBody.modal-body
         %div.modal-footer
           = submit_tag("Create Mapping", class: "btn btn-default", id: "create_mapping_button")
@@ -63,6 +63,8 @@
           = text_field_tag("purl_input", nil, class: "form-control")
         %div.modal-footer
           %button.btn.btn-secondary{"data-dismiss": "modal"} Close
+
+  = render partial: 'kgcl_dialogs'
 
   -# A header of sorts to display ontology name and subset of details.
   %div.row.pt-md-3.pb-md-2
