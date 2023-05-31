@@ -115,7 +115,7 @@ export default class extends Controller {
           let p1 = document.createElement("p");
           p1.id = "seached-ontology";
           p1.className = "home-searched-ontology";
-          p1.textContent = item[0]+" "+"("+item[1]+")";
+          p1.textContent = item[0];
 
           let p2 = document.createElement("p");
           p2.className = "home-result-type";
@@ -131,10 +131,11 @@ export default class extends Controller {
       this.dropDown.appendChild(this.searchOntologyContent);
       this.dropDown.style.display = "block";
       this.input.classList.add("home-dropdown-active");
-
-      if (window.scrollY < 300) {
+      if ((window.scrollY < 300) && (!this.input.className.includes("nav-input"))) {
         this.#scrollDown(window.scrollY);
       }
+
+
        
         
         
