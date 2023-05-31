@@ -37,7 +37,7 @@
     %a.home-bubble.home-bubble-four{:href => "/visits"}
       %h5 ...
 
-  .home-header-title-container{'data-controller': "home-search", 'data-home-search-ontologies-value': raw(@ontology_names.to_json)}
+  .home-header-title-container{'data-controller': "home-search"}
     .home-header-title
       %h4 
         = $WESBITE_TITLE[$UI_THEME]
@@ -54,7 +54,7 @@
           %p#seached-ontologies{'data-home-search-target': 'searchedOntologies'}
           %div
             %img{src: asset_path("loop.svg")}/
-            %p See all
+            %p See all ontologies
 .home-body-container
   .home-section
     %h4 Wanna upload an ontology?
@@ -74,7 +74,7 @@
     - else
       %a.home-upload-ontology-button{:href => "/ontologies/new"}
         = inline_svg_tag "upload.svg", class: "home-upload-icon"
-        upload ontology
+        Upload ontology
   .home-section
     %h4
       = portal_name+" services"
