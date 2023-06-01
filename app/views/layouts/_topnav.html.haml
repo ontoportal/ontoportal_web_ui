@@ -32,19 +32,21 @@
               %p See all ontologies
 
 
-      %a.nav-a{:href => "/login"} Login
-      %select.nav-language
-        %option{:value => "EN"}
-          EN
-        %option{:value => "FR"}
-          FR
-      .dropdown
-        = link_to("#", id: "supportMenuDropdownLink", class: "nav-link dropdown-toggle supportMenuDropdownLink", role: "button", data: {toggle: "dropdown"}, aria: {haspopup: "true", expanded: "false"}) do
-          Support
-        %div.dropdown-menu.dropdown-menu-right{aria: {labelledby: "supportMenuDropdownLink"}}
-          = link_to(t(:submit_feedback), feedback_path(location: encode_param(request.url)), id: "submitFeedbackMenuItem", class: "dropdown-item pop_window")
-          %div.dropdown-divider
-          %h6.dropdown-header Documentation
-          = link_to(t(:_help), "#{$WIKI_HELP_PAGE}", target: "_blank", class: "dropdown-item")
-          = link_to(t(:_release_notes), "#{$RELEASE_NOTES}", target: "_blank", class: "dropdown-item")
-          = link_to(t(:_publications), $PUBLICATIONS_URL, target: "_blank", class: "dropdown-item")
+      = render DropdownButtonComponent.new(css_class:'text-white') do |d|
+        - d.header do
+          = link_to("#", id: "supportMenuDropdownLink", class: "nav-link supportMenuDropdownLink", role: "button") do
+            Support
+        - d.with_section(divide: false) do |s|
+          - s.item do
+            = link_to(t(:submit_feedback), feedback_path(location: encode_param(request.url)), id: "submitFeedbackMenuItem", class: "pop_window")
+        - d.with_section do |s|
+          - s.header do
+            Documentation
+          - s.item do
+            = link_to(t(:_help), "#{$WIKI_HELP_PAGE}", target: "_blank")
+          - s.item do
+            = link_to(t(:_release_notes), "#{$RELEASE_NOTES}", target: "_blank")
+          - s.item do
+            = link_to(t(:_publications), $PUBLICATIONS_URL, target: "_blank")
+
+
