@@ -254,10 +254,12 @@ GEM
       net-protocol
     net-ssh (7.1.0)
     netrc (0.11.0)
-    newrelic_rpm (9.2.2)
-    nio4r (2.5.9)
-    nokogiri (1.14.3)
+    newrelic_rpm (9.0.0)
+    nio4r (2.5.8)
+    nokogiri (1.14.2)
       mini_portile2 (~> 2.8.0)
+      racc (~> 1.4)
+    nokogiri (1.14.2-x86_64-linux)
       racc (~> 1.4)
     oj (3.14.3)
     open_uri_redirections (0.2.1)
@@ -322,8 +324,8 @@ GEM
     recaptcha (5.9.0)
       json
     redcarpet (3.6.0)
-    regexp_parser (2.8.0)
-    reline (0.3.3)
+    regexp_parser (2.7.0)
+    reline (0.3.2)
       io-console (~> 0.5)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -331,8 +333,8 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.2.5)
-    rouge (4.1.0)
-    rspec-core (3.12.2)
+    rouge (4.1.1)
+    rspec-core (3.12.1)
       rspec-support (~> 3.12.0)
     rspec-expectations (3.12.3)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -443,10 +445,11 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.34)
-    zeitwerk (2.6.8)
+    zeitwerk (2.6.7)
 
 PLATFORMS
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   bcrypt_pbkdf (>= 1.0, < 2.0)
