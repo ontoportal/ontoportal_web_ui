@@ -19,18 +19,21 @@
       - else
         .nav-search-container{'data-controller': "home-search"}
           %input.nav-input{:placeholder => "Search in "+portal_name+" ...", :type => "text", :name => "search", 'data-home-search-target': 'input', 'data-action': 'input->home-search#search blur->home-search#blur'}
-        #home-search-drop-down.nav-search-drop-down{'data-home-search-target': 'dropDown', 'data-action': 'mousedown->home-search#prevent'}
-          %a.home-search-ontology-content#home-search-ontology-content{href: "#", 'data-home-search-target': 'searchOntologyContent'}
-            %p#seached-ontology{'data-home-search-target': 'ontology'}
-            %div
-              %img{src: asset_path("loop.svg")}/
-              %p Search ontology content
-          %a.home-search-ontology-content#home-search-ontologies{href: "#", 'data-home-search-target': 'homeSearchOntologies'}
-            %p#seached-ontologies{'data-home-search-target': 'searchedOntologies'}
-            %div
-              %img{src: asset_path("loop.svg")}/
-              %p See all ontologies
+          #home-search-drop-down.nav-search-drop-down{'data-home-search-target': 'dropDown', 'data-action': 'mousedown->home-search#prevent'}
+            %a.home-search-ontology-content#home-search-ontology-content{href: "#", 'data-home-search-target': 'searchOntologyContent'}
+              %p#seached-ontology{'data-home-search-target': 'ontology'}
+              %div
+                %img{src: asset_path("loop.svg")}/
+                %p Search ontology content
+            %a.home-search-ontology-content#home-search-ontologies{href: "#", 'data-home-search-target': 'homeSearchOntologies'}
+              %p#seached-ontologies{'data-home-search-target': 'searchedOntologies'}
+              %div
+                %img{src: asset_path("loop.svg")}/
+                %p See all ontologies
+      %a.nav-a{:href => "/login"} Login
 
+      = select_tag('language', options_for_select([['EN','en'],['FR','fr']]), id: 'language-select', class: 'nav-language',
+            data: { controller: "platform-language", action: "change->platform-language#handleLangChanged" })
 
       = render DropdownButtonComponent.new(css_class:'text-white') do |d|
         - d.header do
