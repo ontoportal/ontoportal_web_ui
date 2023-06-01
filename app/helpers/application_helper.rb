@@ -193,7 +193,7 @@ module ApplicationHelper
            data-active-collections-value='#{child.isInActiveCollection || []}'
            data-skos-collection-colors-target='collection'
             class='#{muted_style} #{active_style}'>
-            #{child.prefLabel ? child.prefLabel({ use_html: true }) : child.id}
+            #{child.prefLabel ? child.prefLabel({ use_html: true }) : child.id.split('/').last}
         </a>
     EOS
 
@@ -615,7 +615,18 @@ module ApplicationHelper
     lang.upcase
   end
 
-  def current_page?(path)
-    request.path == path ? true : false
+  def portal_name
+    name = $UI_THEME.to_s.capitalize
+    name.sub! 'portal' , 'Portal'
   end
+
+  def navitems
+    items = [["/ontologies", "Browse"],["/mappings", "Mappings"],["/recommender", "Recommender"],["/annotator", "Annotator"], ["/landscape", "Landscape"]]
+  end
+
+end
+
+def portal_name
+    name = $UI_THEME.to_s.capitalize
+    name.sub! 'portal' , 'Portal'
 end
