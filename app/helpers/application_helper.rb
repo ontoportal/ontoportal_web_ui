@@ -616,17 +616,11 @@ module ApplicationHelper
   end
 
   def portal_name
-    name = $UI_THEME.to_s.capitalize
-    name.sub! 'portal' , 'Portal'
+    $SITE
   end
 
   def navitems
     items = [["/ontologies", "Browse"],["/mappings", "Mappings"],["/recommender", "Recommender"],["/annotator", "Annotator"], ["/landscape", "Landscape"]]
   end
 
-end
-
-def portal_name
-    name = $UI_THEME.to_s.capitalize
-    name.sub! 'portal' , 'Portal'
 end
