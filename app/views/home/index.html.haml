@@ -39,7 +39,7 @@
 
   .home-header-title-container{'data-controller': "home-search"}
     .home-header-title
-      %h4
+      %h4 
         = t('.welcome', site: $SITE)
       %p
         = t('.tagline')
@@ -60,7 +60,7 @@
     %h4 Wanna upload an ontology?
     %hr.home-section-line/
     %p Uploading an ontology is a way of sharing your domain knowledge with others.
-    %p By uploading your ontology to agroportal, you can:
+    %p By uploading your ontology to #{$SITE}, you can:
     .home-upload-benifits
       - @upload_benefits.each do |benefit|
         %div
