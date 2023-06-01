@@ -39,11 +39,11 @@
 
   .home-header-title-container{'data-controller': "home-search"}
     .home-header-title
-      %h4 
-        = $WESBITE_TITLE[$UI_THEME]
+      %h4
+        = t('.welcome', site: $SITE)
       %p
-        = $WEBSITE_SUB_TITLE[$UI_THEME]
-      %input#home-search{:name => "search", :placeholder => "Ex: Agrovoc ...", :type => "text", 'data-home-search-target': 'input', 'data-action': 'input->home-search#search blur->home-search#blur'}
+        = t('.tagline')
+      %input#home-search{:name => "search", :placeholder => "Search for an ontology or concept (Ex: Agrovoc ...)", :type => "text", 'data-home-search-target': 'input', 'data-action': 'input->home-search#search blur->home-search#blur'}
       #home-search-drop-down{'data-home-search-target': 'dropDown', 'data-action': 'mousedown->home-search#prevent'}
         %a.home-search-ontology-content#home-search-ontology-content{href: "#", 'data-home-search-target': 'searchOntologyContent'}
           %p#seached-ontology{'data-home-search-target': 'ontology'}
