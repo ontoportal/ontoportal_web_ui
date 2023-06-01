@@ -8,13 +8,17 @@
       %input#nav-menu{:type => "checkbox", 'data-topnav-responsiveness-target': 'navMenu'}
       %label.menu-btn{:for => "nav-menu"}
         %i.fas.fa-bars
-    .nav-items{'data-controller': "home-search"}
+    .nav-items
       %ul.top-nav-ul
         - navitems.each do |navItem|
           %li.nav-ul-li
             %a{href: navItem[0], class: ("active" if current_page?(navItem[0]))} #{navItem[1]}
-      .nav-search-container
-        %input.nav-input{:placeholder => "Search "+portal_name+" ...", :type => "text", :name => "search", 'data-home-search-target': 'input', 'data-action': 'input->home-search#search blur->home-search#blur'}
+      - if current_page?('/')
+        .nav-search-container{style:'visibility: hidden'}
+          %input
+      - else
+        .nav-search-container{'data-controller': "home-search"}
+          %input.nav-input{:placeholder => "Search in "+portal_name+" ...", :type => "text", :name => "search", 'data-home-search-target': 'input', 'data-action': 'input->home-search#search blur->home-search#blur'}
         #home-search-drop-down.nav-search-drop-down{'data-home-search-target': 'dropDown', 'data-action': 'mousedown->home-search#prevent'}
           %a.home-search-ontology-content#home-search-ontology-content{href: "#", 'data-home-search-target': 'searchOntologyContent'}
             %p#seached-ontology{'data-home-search-target': 'ontology'}
