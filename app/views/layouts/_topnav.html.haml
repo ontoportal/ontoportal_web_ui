@@ -1,11 +1,11 @@
-.nav-container
+.nav-container{data: {controller:"topnav-responsiveness"}}
   %nav.top-nav
     .nav-responsiveness-container
       %a.nav-logo{href: "/"}
         %img{:src => asset_path("logo-white.svg")}/
         %p
           = portal_name
-      %input#nav-menu{:type => "checkbox"}/
+      %input#nav-menu{:type => "checkbox", 'data-topnav-responsiveness-target': 'navMenu'}
       %label.menu-btn{:for => "nav-menu"}
         %i.fas.fa-bars
     .nav-items{'data-controller': "home-search"}
@@ -44,17 +44,3 @@
           = link_to(t(:_help), "#{$WIKI_HELP_PAGE}", target: "_blank", class: "dropdown-item")
           = link_to(t(:_release_notes), "#{$RELEASE_NOTES}", target: "_blank", class: "dropdown-item")
           = link_to(t(:_publications), $PUBLICATIONS_URL, target: "_blank", class: "dropdown-item")
-:javascript
-  let checkbox = document.getElementById('nav-menu');
-  let divs = document.querySelectorAll('.top-nav, .top-nav-ul, .nav-items, .nav-ul-li, .nav-input, .nav-a, .nav-language, .supportMenuDropdownLink');
-  checkbox.addEventListener('change', function() {
-  if (this.checked) {
-  divs.forEach(function(div) {
-  div.classList.add('show-responsive');
-  });
-  } else {
-  divs.forEach(function(div) {
-  div.classList.remove('show-responsive');
-  });
-  }
-  });
