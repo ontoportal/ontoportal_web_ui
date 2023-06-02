@@ -477,6 +477,11 @@ module OntologiesHelper
     options_for_select(submission_lang)
   end
 
+
+  def count_subscriptions(ontology_id)
+    users = LinkedData::Client::Models::User.all(include: 'subscription', display_context: false, display_links: false )
+    users.select{ |u| u.subscription.find{ |s| s.ontology.eql?(ontology_id)} }.count
+  end
   private
 
   def submission_languages(submission = @submission)

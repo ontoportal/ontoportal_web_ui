@@ -31,7 +31,4 @@
       - if @ontology.admin?(session[:user])
         %a.ontology-details-edit-button{href: edit_ontology_path(@ontology.acronym)}
           = inline_svg_tag "edit.svg"
-      - link = session[:user].nil?  ? "/login?redirect=/watch-lorem-ipsum" : "/watch-lorem-ipsum"
-      %a.ontology-details-watch-button{href: link}
-        = inline_svg_tag "eye.svg"
-        %div Watch (12)
+      = subscribe_button(@ontology.id)

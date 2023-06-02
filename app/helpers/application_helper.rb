@@ -405,8 +405,9 @@ module ApplicationHelper
     user = LinkedData::Client::Models::User.find(session[:user].id)
     ontology_acronym = ontology_id.split('/').last
     subscribed = subscribed_to_ontology?(ontology_acronym, user)
-
-    render OntologySubscribeButtonComponent.new(ontology_id: ontology_id, subscribed: subscribed, user_id: user.id)
+    count = count_subscriptions(ontology_id)
+    link = session[:user].nil?  ? "/login" : "javascript:void(0);"
+    render OntologySubscribeButtonComponent.new(ontology_id: ontology_id, subscribed: subscribed, user_id: user.id, count: count, link: link)
   end
 
   def subscribed_to_ontology?(ontology_acronym, user)
