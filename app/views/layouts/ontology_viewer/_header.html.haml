@@ -11,9 +11,9 @@
     %div 
       = @ontology.acronym
   .ontology-details-header-sub-container
-    .ontology-details-header-left-container
+    .ontology-details-header-left-container{style:'width: 80%'}
       .ontology-details-name-bar
-        %div
+        %div{style:'max-width: 60%'}
           = @ontology.name
           %span 
             = "("+ @ontology.acronym+")"
@@ -26,6 +26,7 @@
           %div 
             = t('ontology_details.header.last_uploaded')
             = l(Date.parse(sub.creationDate), format: :monthfull_day_year)
+    .ontology-details-header-right-container.justify-content-end{style: 'min-width: 20%;'}
       - if @ontology.admin?(session[:user])
         %a.ontology-details-edit-button{href: edit_ontology_path(@ontology.acronym)}
           = inline_svg_tag "edit.svg"
