@@ -398,16 +398,21 @@ module ApplicationHelper
   end
  
   def subscribe_button(ontology_id)
+    ontology_acronym = ontology_id.split('/').last
+
     if session[:user].nil?
-      return link_to 'Subscribe to notes emails', "/login?redirect=#{request.url}", {style:'font-size: .9em;', class:'link_button'}
+      link = "/login?redirect=#{request.url}"
+      subscribed = false
+      user_id = nil
+    else
+      user = LinkedData::Client::Models::User.find(session[:user].id)
+      subscribed = subscribed_to_ontology?(ontology_acronym, user)
+      link = "javascript:void(0);"
+      user_id = user.id
     end
 
-    user = LinkedData::Client::Models::User.find(session[:user].id)
-    ontology_acronym = ontology_id.split('/').last
-    subscribed = subscribed_to_ontology?(ontology_acronym, user)
     count = count_subscriptions(ontology_id)
-    link = session[:user].nil?  ? "/login" : "javascript:void(0);"
-    render OntologySubscribeButtonComponent.new(ontology_id: ontology_id, subscribed: subscribed, user_id: user.id, count: count, link: link)
+    render OntologySubscribeButtonComponent.new(ontology_id: ontology_id, subscribed: subscribed, user_id: user_id, count: count, link: link)
   end
 
   def subscribed_to_ontology?(ontology_acronym, user)
