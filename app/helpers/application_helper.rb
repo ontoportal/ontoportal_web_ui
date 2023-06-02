@@ -610,4 +610,8 @@ module ApplicationHelper
     lang = 'EN' unless lang
     lang.upcase
   end
+
+  def attribute_enforced_values(attr)
+    submission_metadata.select {|x| x['@id'][attr]}.first['enforcedValues']
+  end
 end

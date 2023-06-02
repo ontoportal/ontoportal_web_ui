@@ -8,22 +8,23 @@
   .ontology-details-path
     %a{href: "/ontologies"} ontologies
     %img{src: asset_path("arrow-right-outlined.svg")}/
-    %div 
+    %div
       = @ontology.acronym
   .ontology-details-header-sub-container
     .ontology-details-header-left-container{style:'width: 80%'}
       .ontology-details-name-bar
         %div{style:'max-width: 60%'}
           = @ontology.name
-          %span 
+          %span
             = "("+ @ontology.acronym+")"
         .ontology-details-licence
-          %div CC-BY IGO 3.0
+          %div
+            = attribute_enforced_values('hasLicense')[sub.hasLicense] || sub.hasLicense
           = inline_svg_tag "open-popup.svg"
       - if (details_available && !sub.released.nil?)
         .ontology-details-last-update
           %img{src: asset_path("update.svg")}/
-          %div 
+          %div
             = t('ontology_details.header.last_uploaded')
             = l(Date.parse(sub.creationDate), format: :monthfull_day_year)
     .ontology-details-header-right-container.justify-content-end{style: 'min-width: 20%;'}
@@ -32,5 +33,5 @@
           = inline_svg_tag "edit.svg"
       - link = session[:user].nil?  ? "/login?redirect=/watch-lorem-ipsum" : "/watch-lorem-ipsum"
       %a.ontology-details-watch-button{href: link}
-          = inline_svg_tag "eye.svg"
-          %div Watch (12)
+        = inline_svg_tag "eye.svg"
+        %div Watch (12)
