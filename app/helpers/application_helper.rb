@@ -193,7 +193,7 @@ module ApplicationHelper
            data-active-collections-value='#{child.isInActiveCollection || []}'
            data-skos-collection-colors-target='collection'
             class='#{muted_style} #{active_style}'>
-            #{child.prefLabel ? child.prefLabel({ use_html: true }) : child.id}
+            #{child.prefLabel ? child.prefLabel({ use_html: true }) : child.id.split('/').last}
         </a>
     EOS
 
@@ -605,12 +605,25 @@ module ApplicationHelper
     submission = @submission || @submission_latest
     submission&.hasOntologyLanguage === 'SKOS'
   end
+  
+  def current_page?(path)
+    request.path.eql?(path)
+  end   
 
   def request_lang
     lang = params[:language] || params[:lang]
     lang = 'EN' unless lang
     lang.upcase
   end
+
+  def portal_name
+    $SITE
+  end
+
+  def navitems
+    items = [["/ontologies", "Browse"],["/mappings", "Mappings"],["/recommender", "Recommender"],["/annotator", "Annotator"], ["/landscape", "Landscape"]]
+  end
+
 
   def attribute_enforced_values(attr)
     submission_metadata.select {|x| x['@id'][attr]}.first['enforcedValues']
