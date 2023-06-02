@@ -2,8 +2,6 @@
 - details_available = true
 - if sub.nil? || (sub.respond_to?(:status) && sub.status == 404)
   - details_available = false
-- date = DateTime.parse(@submission_latest.modificationDate)
-- last_update_date = date.strftime("%B %d, %Y")
 
 -# A header of sorts to display ontology name and subset of details.
 .ontology-details-header-container
@@ -26,8 +24,8 @@
         .ontology-details-last-update
           %img{src: asset_path("update.svg")}/
           %div 
-            = "Last update on "+last_update_date
-    .ontology-details-header-right-container
+            = t('ontology_details.header.last_uploaded')
+            = l(Date.parse(sub.creationDate), format: :monthfull_day_year)
       - if @ontology.admin?(session[:user])
         %a.ontology-details-edit-button{href: edit_ontology_path(@ontology.acronym)}
           = inline_svg_tag "edit.svg"
