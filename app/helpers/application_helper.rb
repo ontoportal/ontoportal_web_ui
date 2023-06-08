@@ -193,7 +193,7 @@ module ApplicationHelper
            data-active-collections-value='#{child.isInActiveCollection || []}'
            data-skos-collection-colors-target='collection'
             class='#{muted_style} #{active_style}'>
-            #{child.prefLabel ? child.prefLabel({ use_html: true }) : child.id}
+            #{child.prefLabel ? child.prefLabel({ use_html: true }) : child.id.split('/').last}
         </a>
     EOS
 
@@ -604,12 +604,17 @@ module ApplicationHelper
     submission = @submission || @submission_latest
     submission&.hasOntologyLanguage === 'SKOS'
   end
+  
+  def current_page?(path)
+    request.path.eql?(path)
+  end   
 
   def request_lang
     lang = params[:language] || params[:lang]
     lang = 'EN' unless lang
     lang.upcase
   end
+
   def bp_config_json
     # For config settings, see
     # config/bioportal_config.rb
@@ -634,4 +639,15 @@ module ApplicationHelper
     config[:ncbo_slice] = @subdomain_filter[:acronym] if (@subdomain_filter[:active] && !@subdomain_filter[:acronym].empty?)
     config.to_json
   end
+
+
+  def portal_name
+    $SITE
+  end
+
+  def navitems
+    items = [["/ontologies", "Browse"],["/mappings", "Mappings"],["/recommender", "Recommender"],["/annotator", "Annotator"], ["/landscape", "Landscape"]]
+  end
+
+
 end
