@@ -1,7 +1,10 @@
+-# TODO: Refactor our layouts so that we don't open HTML tags in one file and
+-# close them in another. This is confusing / difficult to read.
 </div>
 </div>
+</main>
 
-%footer.footer.pt-4.mt-5
+%footer.footer.mt-auto.py-4
   %div.container
     %div.row
       %div.col-6.col-md
@@ -10,7 +13,7 @@
           %li= link_to('BioPortal', root_path)
           %li= link_to('BioPortal REST API', Rails.configuration.settings.links[:rest_api], target: '_blank')
           %li= link_to('BioPortal Virtual Appliance', Rails.configuration.settings.links[:virtual_appliance], target: '_blank')
-          %li= link_to('NCBO Web Widgets', Rails.configuration.settings.links[:widgets], target: '_blank')      
+          %li= link_to('NCBO Web Widgets', Rails.configuration.settings.links[:widgets], target: '_blank')
       %div.col-6.col-md.footer-support
         %h6 SUPPORT
         %ul.list-unstyled
@@ -28,7 +31,7 @@
         %h6 CONNECT
         %ul.list-inline
           %li.list-inline-item
-            = link_to(Rails.configuration.settings.links[:facebook], target: '_blank') do 
+            = link_to(Rails.configuration.settings.links[:facebook], target: '_blank') do
               %i.fab.fa-2x.fa-facebook-f
           %li.list-inline-item
             = link_to(Rails.configuration.settings.links[:twitter], target: '_blank') do
