@@ -390,7 +390,17 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
 
   jQuery.bioportal.ont_pages["summary"] = new jQuery.bioportal.OntologyPage("summary", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=summary&ajax=true", "Problem retrieving summary", jQuery(document).data().bp.ont_viewer.ontology_name + " - Summary", "Summary");
 
-  jQuery.bioportal.ont_pages["mappings"] = new jQuery.bioportal.OntologyPage("mappings", "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=mappings&ajax=true", "Problem retrieving mappings", jQuery(document).data().bp.ont_viewer.ontology_name + " - Mappings", "Mappings", function() {
+  jQuery.bioportal.ont_pages["mappings"] = new jQuery.bioportal.OntologyPage("mappings",
+    "/ontologies/" + jQuery(document).data().bp.ont_viewer.ontology_id + "?p=mappings&ajax=true",
+    "Problem retrieving mappings", jQuery(document).data().bp.ont_viewer.ontology_name + " - Mappings",
+    "Mappings", function() {
+    if (! $.fn.DataTable.isDataTable('#ontology_content #mapping_count_table')) {
+      jQuery('#ontology_content #mapping_count_table').DataTable({
+        'order': [[1, 'desc'], [0, 'asc']],
+        'paging': false,
+        'searching': false
+      });
+    }
     jQuery(".facebox").facebox();
   });
 

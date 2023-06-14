@@ -196,7 +196,7 @@ class ApplicationController < ActionController::Base
   end
 
   def response_success?(response)
-    return false if response.nil?
+    return true if response.nil?
 
     if response.respond_to?(:status) && response.status
         response.status.to_i < 400
@@ -228,16 +228,6 @@ class ApplicationController < ActionController::Base
 
   def redirect_to_home # Redirect to Home Page
     redirect_to "/"
-  end
-
-  def redirect_to_history # Redirects to the correct tab through the history system
-    if session[:redirect].nil?
-      redirect_to_home
-    else
-      tab = find_tab(session[:redirect][:ontology])
-      session[:redirect]=nil
-      redirect_to uri_url(:ontology=>tab.ontology_id,:conceptid=>tab.concept)
-    end
   end
 
   def redirect_new_api(class_view = false)
@@ -323,40 +313,20 @@ class ApplicationController < ActionController::Base
     session[:user] && session[:user].admin?
   end
 
-  # updates the 'history' tab with the current selected concept
   def update_tab(ontology, concept)
-    array = session[:ontologies] || []
+    onts = session[:ontologies] || []
     found = false
-    for item in array
-      if item.ontology_id.eql?(ontology.id)
-        item.concept=concept
-        found=true
+    onts.each do |ont|
+      if ont.ontology_id.eql? ontology.id
+        ont.concept = concept
+        found = true
       end
     end
 
-    unless found
-      array << History.new(ontology.id, ontology.name, ontology.acronym, concept)
-    end
+    onts << History.new(ontology.id, ontology.name, ontology.acronym, concept) unless found
 
-    session[:ontologies]=array
-  end
-
-  # Removes a 'history' tab
-  def remove_tab(ontology_id)
-    array = session[:ontologies]
-    array.delete(find_tab(ontology_id))
-    session[:ontologies]=array
-  end
-
-  # Returns a specific 'history' tab
-  def find_tab(ontology_id)
-    array = session[:ontologies]
-    for item in array
-      if item.ontology_id.eql?(ontology_id)
-        return item
-      end
-    end
-    return nil
+    # The "Recently Viewed" menu item displays the contents of session[:ontologies]
+    session[:ontologies] = onts
   end
 
   def check_delete_mapping_permission(mappings)

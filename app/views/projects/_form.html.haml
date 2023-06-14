@@ -65,3 +65,7 @@
     - selected_ontologies = @project.ontologyUsed && @project.ontologyUsed.map {|id| id.split('/').last } || []
     - locals = { sel_text: "Select Ontologies Used", selected_ontologies: selected_ontologies, form_object: :project, form_attribute: "ontologyUsed" }
     = render :partial => "shared/ontology_picker", locals: locals
+
+  %div.py-4
+    = f.submit button_text, class: 'btn btn-primary'
+    = link_to 'Cancel', :back, class: 'btn btn-primary'

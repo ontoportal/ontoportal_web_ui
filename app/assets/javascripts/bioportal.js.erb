@@ -357,29 +357,6 @@ function ajaxForm(form, target, callback) {
   return false;
 }
 
-function update_tab(ontology,concept){
-
-
-          jQuery.get("/tab/update/"+ontology+"/"+concept)
-
-
-}
-
-
-function remove_tab(link,ontology,redirect){
-
-      jQuery.get("/tab/remove/"+ontology,function(){
-            if(redirect){
-              window.location="/ontologies"
-            }else{
-              jQuery("#tab"+ontology).remove()
-
-            }
-
-      })
-
-}
-
 function selectTab(id,tab){
     nav = document.getElementById(id);
     for(var x=0; x<nav.childNodes.length; x++){

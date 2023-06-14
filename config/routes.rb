@@ -45,11 +45,6 @@ Rails.application.routes.draw do
 
   resources :virtual_appliance
 
-  get 'change_requests/create_synonym'
-  match 'change_requests', to: 'change_requests#create', via: :post
-
-  get '' => 'home#index'
-
   # Top-level pages
   match '/feedback', to: 'home#feedback', via: [:get, :post]
   get '/account' => 'home#account'
@@ -65,7 +60,8 @@ Rails.application.routes.draw do
   match '/500', to: 'errors#internal_server_error', via: :all
 
   # Analytics
-  match 'analytics', to: 'analytics#track', via: [:post]
+  get 'analytics/search_result_clicked', to: 'analytics#search_result_clicked'
+  post 'analytics', to: 'analytics#track'
 
   # Robots.txt
   get '/robots.txt' => 'robots#index'
@@ -80,8 +76,11 @@ Rails.application.routes.draw do
   get '/ontologies/:acronym/classes/:purl_conceptid', to: 'ontologies#show', constraints: { purl_conceptid: /[^\/]+/ }
   get '/ontologies/:acronym/:purl_conceptid', to: 'ontologies#show', constraints: { purl_conceptid: /[^\/]+/ }
 
-  # Analytics
-  get '/analytics/:action' => 'analytics#(?-mix:search_result_clicked|user_intention_surveys)'
+  # Ontology change requests
+  get 'change_requests/create_synonym'
+  get 'change_requests/node_obsoletion'
+  get 'change_requests/remove_synonym'
+  match 'change_requests', to: 'change_requests#create', via: :post
 
   # Notes
   get 'ontologies/:ontology/notes/:noteid', to: 'notes#virtual_show', as: :note_virtual, noteid: /.+/
@@ -115,12 +114,6 @@ Rails.application.routes.draw do
   get 'search', to: 'search#index'
   get 'search/json_search(/:id)', to: 'search#json_search'
 
-  # History
-  get '/tab/remove/:ontology' => 'history#remove', :as => :remove_tab
-  get '/tab/update/:ontology/:concept' => 'history#update', :as => :update_tab
-
-  get 'jambalaya/:ontology/:id' => 'visual#jam', :as => :jam
-
   # Admin
   get '/admin/users', to: 'admin#users'
   post '/admin/clearcache', to: 'admin#clearcache'
@@ -139,23 +132,4 @@ Rails.application.routes.draw do
 
   # Ontolobridge
   # post '/ontolobridge/:save_new_term_instructions' => 'ontolobridge#save_new_term_instructions'
-
-  #####
-  ## OLD ROUTES
-  ## All of these should redirect to new addresses in the controller method or using the redirect controller
-  #####
-
-  # Redirects from old URL locations
-  get '/annotate' => 'redirect#index', :url => '/annotator'
-  get '/visconcepts/:ontology/' => 'redirect#index', :url => '/visualize/'
-  get '/ajax/terms/label' => 'redirect#index', :url => '/ajax/classes/label'
-  get '/ajax/terms/definition' => 'redirect#index', :url => '/ajax/classes/definition'
-  get '/ajax/terms/treeview' => 'redirect#index', :url => '/ajax/classes/treeview'
-  get '/ajax/term_details/:ontology' => 'redirect#index', :url => '/ajax/class_details'
-  get '/ajax/json_term' => 'redirect#index', :url => '/ajax/json_class'
-
-  # Visualize
-  get '/visualize/:ontology' => 'ontologies#visualize', :as => :visualize, :constraints => { ontology: /[^\/?]+/ }
-  get '/visualize/:ontology/:conceptid' => 'ontologies#visualize', :as => :uri, :constraints => { ontology: /[^\/?]+/, conceptid: /[^\/?]+/ }
-  get '/visualize' => 'ontologies#visualize', :as => :visualize_concept, :constraints => { ontology: /[^\/?]+/, id: /[^\/?]+/, ontologyid: /[^\/?]+/, conceptid: /[^\/?]+/ }
 end

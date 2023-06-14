@@ -1,9 +1,30 @@
 # frozen_string_literal: true
 
 class ChangeRequestsController < ApplicationController
+  before_action :require_login, except: [:create]
+
+  def node_obsoletion
+    @concept_label = params[:concept_label]
+    @concept_id = params[:concept_id]
+    @ont_acronym = params[:ont_acronym]
+    @username = session[:user].username
+
+    respond_to :js
+  end
+
   def create_synonym
     @concept_label = params[:concept_label]
     @concept_id = params[:concept_id]
+    @ont_acronym = params[:ont_acronym]
+    @username = session[:user].username
+
+    respond_to :js
+  end
+
+  def remove_synonym
+    @concept_id = params[:concept_id]
+    @concept_label = params[:concept_label]
+    @concept_synonyms = params[:concept_synonyms].sort! { |a, b| a.downcase <=> b.downcase }
     @ont_acronym = params[:ont_acronym]
     @username = session[:user].username
 
@@ -33,5 +54,15 @@ class ChangeRequestsController < ApplicationController
     else
       concept_id
     end
+  end
+
+  def require_login
+    return unless session[:user].blank?
+
+    # TODO: Can this implementation be improved? For discussion:
+    #   https://stackoverflow.com/a/18681807
+    #   https://stackoverflow.com/a/10607511
+    #   https://stackoverflow.com/a/51275445
+    render js: "window.location.href='#{login_index_path}'"
   end
 end
