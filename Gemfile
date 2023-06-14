@@ -72,6 +72,7 @@ gem 'thin'
 gem 'view_component', '~> 2.72'
 gem 'turnout'
 gem 'will_paginate', '~> 3.0'
+gem 'inline_svg'
 
 gem 'ontologies_api_client', git: 'https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git', branch: 'development'
 
@@ -122,3 +123,4 @@ end
 
 gem "net-ftp", "~> 0.2.0", require: false
 gem "net-http"
+gem 'inline_svg'
