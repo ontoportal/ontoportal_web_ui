@@ -29,11 +29,7 @@
         %tr
           %td{nowrap: ""} Definitions
           %td
-            - @concept.definition.each do |definition|
-              - if definition.is_a?(String)
-                %p= definition
-              - elsif definition.respond_to?(:uri) && definition.uri
-                %p= definition.uri
+            = dispaly_complex_text(@concept.definition)
       - if @concept.obsolete?
         %tr
           %td{nowrap: ""} Obsolete
