@@ -4,14 +4,15 @@ require 'csv'
 
 class AnalyticsController < ApplicationController
   def track
-    entry = Analytics.new
-    entry.segment = params[:segment]
-    entry.action = params[:analytics_action]
-    entry.bp_slice = @subdomain_filter[:active] ? @subdomain_filter[:acronym] : nil
-    entry.ip = request.remote_ip
-    entry.user = session[:user].nil? ? nil : session[:user].id
-    entry.params = params.except(:segment, :analytics_action, :action, :controller)
-    entry.save
+    params = analytic_params
+    Analytics.create do |a|
+      a.segment = params[:segment]
+      a.action = params[:analytics_action]
+      a.bp_slice = @subdomain_filter[:active] ? @subdomain_filter[:acronym] : nil
+      a.ip = request.remote_ip
+      a.user = session[:user].nil? ? nil : session[:user].id
+      a.params = params.except(:segment, :analytics_action)
+    end
     head :ok
   end
 
@@ -39,6 +40,11 @@ class AnalyticsController < ApplicationController
   end
 
   private
+
+  def analytic_params
+    params.permit(:segment, :analytics_action, :query, :concept_id, :additional_result, :position,
+                  { higher_ontologies: [] }, :ontology_clicked)
+  end
 
   def respond_with_csv_file(rows, filename = 'output')
     output = String.new('')
