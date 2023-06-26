@@ -17,9 +17,14 @@ class AnalyticsController < ApplicationController
   end
 
   def search_result_clicked
-    clicks = Analytics.where(segment: 'search', action: 'result_clicked').all
-    rows = populate_csv(clicks)
-    respond_with_csv_file(rows, 'search_result_clicks')
+    if current_user_admin?
+      clicks = Analytics.where(segment: 'search', action: 'result_clicked').all
+      rows = populate_csv(clicks)
+      respond_with_csv_file(rows, 'search_result_clicks')
+    else
+      render status: :unauthorized,
+             json: { error: 'You are not authorized to access this resource. Please log in as an administrator.' }
+    end
   end
 
   private
