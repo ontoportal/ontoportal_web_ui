@@ -18,25 +18,8 @@ class AnalyticsController < ApplicationController
 
   def search_result_clicked
     clicks = Analytics.where(segment: 'search', action: 'result_clicked').all
-    rows = [%w[query position_clicked ontology_clicked higher_rated_ontologies additional_result exact_match concept_id time user bp_slice ip_address]]
-    clicks.each do |click|
-      next if click.params.empty?
-
-      rows << [
-        click.params['query'].delete("\t"),
-        click.params['position'],
-        click.params['ontology_clicked'],
-        click.params['higher_ontologies'].nil? ? '' : click.params['higher_ontologies'].join(';'),
-        click.params['additional_result'],
-        click.params['exact_match'],
-        click.params['concept_id'],
-        click.created_at.to_formatted_s,
-        click.user.to_s,
-        click.bp_slice,
-        click.ip
-      ]
-    end
-    respond_with_csv_file(rows, 'search_result_clicked')
+    rows = populate_csv(clicks)
+    respond_with_csv_file(rows, 'search_result_clicks')
   end
 
   private
@@ -44,6 +27,34 @@ class AnalyticsController < ApplicationController
   def analytic_params
     params.permit(:segment, :analytics_action, :query, :concept_id, :additional_result, :position,
                   { higher_ontologies: [] }, :ontology_clicked)
+  end
+
+  def populate_csv(clicks)
+    rows = []
+    rows << %w[
+      query position_clicked ontology_clicked higher_rated_ontologies additional_result exact_match
+      concept_id time user bp_slice ip_address
+    ] # header row
+
+    clicks.each do |click|
+      next if click.params.empty?
+
+      params = click.params
+      rows << [
+        params['query'].delete('\t'),
+        params['position'],
+        params['ontology_clicked'],
+        params['higher_ontologies'].nil? ? '' : click.params['higher_ontologies'].join(';'),
+        params['additional_result'],
+        params['exact_match'],
+        params['concept_id'],
+        click.created_at.to_formatted_s,
+        click.user.to_s,
+        click.bp_slice,
+        click.ip
+      ]
+    end
+    rows
   end
 
   def respond_with_csv_file(rows, filename = 'output')
