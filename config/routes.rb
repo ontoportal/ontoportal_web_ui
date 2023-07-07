@@ -154,6 +154,7 @@ Rails.application.routes.draw do
   get '/ajax/:ontology/instances' => 'instances#index_by_ontology'
   get '/ajax/:ontology/classes/:conceptid/instances' => 'instances#index_by_class', :constraints => { conceptid: /[^\/?]+/ }
   get '/ajax/ontologies' , to:"ontologies#ajax_ontologies"
+  get '/ajax/agents' , to:"agents#ajax_agents"
 
   # User
   get '/logout' => 'login#destroy', :as => :logout
