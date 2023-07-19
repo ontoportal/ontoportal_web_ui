@@ -18,7 +18,8 @@
       %tr
         %td{nowrap: ""} Members count
         %td
-          %p= collection["memberCount"]
+          %a{href: "/ontologies/" + @ontology.acronym + "/?p=classes&sub_menu=concepts-list-tab&concept_collections=" + collection["@id"], target: '_blank'}
+            %p= collection["memberCount"]
       %tr
         %td.label
           Type
