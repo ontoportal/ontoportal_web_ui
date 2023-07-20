@@ -10,10 +10,6 @@ export default class extends Controller {
 
     connect() {
         useChosen(this.element, {width: '100%', allow_single_deselect: true}, this.#onChange.bind(this))
-        if (this.element.name=="collections" && this.element.value ){
-            var event = new Event('change');
-            this.element.dispatchEvent(event);
-        }  
     }
 
     #onChange(event) {

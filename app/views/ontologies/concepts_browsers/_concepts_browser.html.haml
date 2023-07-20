@@ -16,10 +16,3 @@
       = render partial: 'ontologies/concepts_browsers/concepts_list'
   #concepts-date-sort-container.tab-pane.fade
     = render partial: 'ontologies/concepts_browsers/concepts_date_sort'
-
-:javascript
-  jQuery(document).ready(function(){
-    const urlParams = new URLSearchParams(window.location.search);
-    const getSubMenu = urlParams.get('sub_menu'); 
-    $('#'+getSubMenu).click()
-  })
