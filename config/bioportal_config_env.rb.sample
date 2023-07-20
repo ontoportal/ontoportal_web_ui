@@ -10,13 +10,6 @@ $SITE = "BioPortal"
 # The URL for the BioPortal Rails UI (this application)
 $UI_URL = "http://bioportal.bioontology.org"
 
-# If you are running a PURL server to provide URLs for ontologies in your BioPortal instance, enable this option
-$PURL_ENABLED = false
-
-# The PURL URL is generated using this prefix + the abbreviation for an ontology.
-# The PURL URL generation algorithm can be altered in app/models/ontology_wrapper.rb
-$PURL_PREFIX = "http://purl.bioontology.org/ontology"
-
 # Unique string representing the UI's id for use with the BioPortal API
 $API_KEY = ""
 
