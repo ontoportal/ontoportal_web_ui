@@ -1,0 +1,12 @@
+.tabs-container
+  .tab-items.nav-tabs.nav
+    - items.each do |item|
+      %div{data: { toggle: 'tab', target: item.target}, class: item.active_class}
+        = item
+        %hr
+
+.tab-content
+  - item_contents.each_with_index do |item_content, index|
+    %div.tab-pane{id: items[index].target_id, class: items[index].active_class}
+      = item_content
+
