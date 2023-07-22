@@ -17,7 +17,7 @@ class TabItemComponent < ViewComponent::Base
   end
 
   def item_id
-    @title.parameterize.underscore
+    id.parameterize.underscore
   end
 
   def target_id
@@ -28,12 +28,19 @@ class TabItemComponent < ViewComponent::Base
     "##{target_id}"
   end
 
+  def id
+    @title
+  end
+  def title
+    @title.humanize
+  end
+
   def active_class
     selected_item? ? 'active show' : ''
   end
 
   def call
-    link_to(@title.humanize, "#hello", id: "#{item_id}_tab")
+    link_to(title, @path, id: "#{item_id}_tab")
   end
 
 end
