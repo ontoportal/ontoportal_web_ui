@@ -25,9 +25,6 @@ class TabItemComponent < ViewComponent::Base
     "#{item_id}_content"
   end
 
-  def target
-    "##{target_id}"
-  end
 
   def id
     @title || @id

@@ -5,9 +5,12 @@
         = item
         - unless @pill
           %hr
+  - if pinned_right?
+    %div.d-flex
+      = pinned_right
 
 .tab-content
   - item_contents.each_with_index do |item_content, index|
-    %div.tab-pane{id: items[index].target_id, class: items[index].active_class}
+    %div.tab-pane{id: item_content_id(items[index]), class: items[index].active_class}
       = item_content
 
