@@ -5,6 +5,14 @@
   - else
     = render TabsContainerComponent.new(pill: true) do |c|
 
+      - c.pinned_right do
+        - if $PURL_ENABLED
+          %div.mx-1
+            = link_to("#classPermalinkModal", class: "class-permalink nav-link", title: "Get a permanent link to this class", aria: {label: "Get a permanent link to this class"}, data: {toggle: "modal", current_purl: "#{@current_purl}"}) do
+              %i{class: "fas fa-link", aria: {hidden: "true"}}
+        %div
+          = render RoundedButtonComponent.new(link: "#{@ontology.id}/classes/#{escape(@concept.id)}?display=all&apikey=#{get_apikey}", target:'_blank')
+
       - c.item(title: 'Details', path: '#details', selected: true)
 
       - unless skos?
