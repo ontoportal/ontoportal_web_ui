@@ -1,9 +1,10 @@
-.tabs-container{data: {controller:'tabs-container'}}
-  .tab-items.nav-tabs.nav
+%div{data: {controller:'tabs-container'}, class: container_class}
+  .tab-items.nav
     - items.each do |item|
-      %div{data:  tabs_container_data(item), class: item.active_class}
+      %div{data:  tabs_container_data(item), class: item.active_class + ' nav-item'}
         = item
-        %hr
+        - unless @pill
+          %hr
 
 .tab-content
   - item_contents.each_with_index do |item_content, index|

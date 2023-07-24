@@ -4,10 +4,16 @@ class TabsContainerComponent < ViewComponent::Base
 
   renders_many :items, TabItemComponent
   renders_many :item_contents
+  renders_one :pinned_right
 
-  def initialize(url_parameter: nil)
+  def initialize(url_parameter: nil, pill: false)
     super
     @url_parameter = url_parameter
+    @pill = pill
+  end
+
+  def container_class
+    @pill ? 'pill-tabs-container' : 'tabs-container'
   end
 
   def tabs_container_data(item)
@@ -20,5 +26,4 @@ class TabsContainerComponent < ViewComponent::Base
       action: 'click->tabs-container#selectTab'
     }
   end
-
 end

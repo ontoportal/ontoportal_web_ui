@@ -4,8 +4,9 @@ class TabItemComponent < ViewComponent::Base
 
   include ActionView::Helpers::UrlHelper
 
-  def initialize(title:, path:, page_name: '', selected: false)
+  def initialize(id: nil, title: nil, path: nil, page_name: '', selected: false)
     super
+    @id = id
     @title = title
     @path = path
     @page_name = page_name
@@ -29,10 +30,11 @@ class TabItemComponent < ViewComponent::Base
   end
 
   def id
-    @title
+    @title || @id
   end
+
   def title
-    @title.humanize
+    @title&.humanize
   end
 
   def active_class
@@ -40,7 +42,13 @@ class TabItemComponent < ViewComponent::Base
   end
 
   def call
-    link_to(title, @path, id: "#{item_id}_tab")
+    if title && !title.empty?
+      link_to(title, @path, id: "#{item_id}_tab", class: "#{active_class} tab-link")
+    else
+      link_to(@path, id: "#{item_id}_tab", class: "#{active_class} tab-link") do
+        content
+      end
+    end
   end
 
 end
