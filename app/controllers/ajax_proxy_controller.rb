@@ -14,28 +14,6 @@ class AjaxProxyController < ApplicationController
 
   end
 
-  def jsonp
-    if params[:apikey].nil? || params[:apikey].empty?
-      render_json '{ "error": "Must supply apikey" }'
-      return
-    end
-
-    if params[:path].nil? || params[:path].empty?
-      render_json '{ "error": "Must supply path" }'
-      return
-    end
-
-    url = URI.parse($LEGACY_REST_URL + params[:path])
-    url.port = $REST_PORT.to_i
-    full_path = (url.query.blank?) ? url.path : "#{url.path}?#{url.query}"
-    full_path = full_path.include?("?") ? full_path + "&apikey=#{params[:apikey]}&userapikey=#{params[:userapikey]}" : full_path + "?apikey=#{params[:apikey]}&userapikey=#{params[:userapikey]}"
-    http = Net::HTTP.new(url.host, url.port)
-    headers = { "Accept" => "application/json" }
-    res = http.get(full_path, headers)
-    response = res.code.to_i >= 400 ? { :status => res.code.to_i, :body => res.body }.to_json : res.body
-    render_json response, {:status => 200}
-  end
-
   def json_class
     not_found if params[:conceptid].nil? || params[:conceptid].empty?
     params[:ontology] ||= params[:ontologyid]

@@ -92,7 +92,6 @@ Rails.application.routes.draw do
   get '/ajax/mappings/get_concept_table' => 'mappings#get_concept_table'
   get '/ajax/json_ontology' => 'ajax_proxy#json_ontology'
   get '/ajax/json_class' => 'ajax_proxy#json_class'
-  get '/ajax/jsonp' => 'ajax_proxy#jsonp'
   get '/ajax/loading_spinner' => 'ajax_proxy#loading_spinner'
   get '/ajax/notes/delete' => 'notes#destroy'
   get '/ajax/notes/concept_list' => 'notes#show_concept_list'
