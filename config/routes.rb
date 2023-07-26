@@ -13,8 +13,6 @@ Rails.application.routes.draw do
 
   resources :users, path: :accounts, constraints: { id: /[\d\w\.\-\%\+ ]+/ }
 
-  resources :reviews
-
   resources :mappings do
     member do
       get 'count'
