@@ -33,8 +33,7 @@
     jQuery(document).data().bp.ont_viewer.concept_param = "#{"conceptid=\#{params[:conceptid]}" unless params[:conceptid].nil? || params[:conceptid].empty?}";
     jQuery(document).data().bp.ont_viewer.concept_name = "#{@concept.prefLabel unless @concept.nil?}";
     jQuery(document).data().bp.ont_viewer.metadata_only = "#{@ontology.summaryOnly}";
-    jQuery(document).data().bp.ont_viewer.current_purl = "#{@current_purl}";
-    jQuery(document).data().bp.ont_viewer.purl_prefix = "#{($PURL_ENABLED ? $PURL_PREFIX+"/"+@ontology.acronym : '')}";
+    jQuery(document).data().bp.ont_viewer.purl_prefix = "#{(Rails.configuration.settings.purl[:enabled] ? Rails.configuration.settings.purl[:prefix]+"/"+@ontology.acronym : '')}";
     jQuery(document).data().bp.ont_viewer.concept_name_title = (jQuery(document).data().bp.ont_viewer.concept_name == "") ?
         "" : " - " + jQuery(document).data().bp.ont_viewer.concept_name;
 
@@ -56,7 +55,7 @@
     %div.modal-dialog.modal-dialog-centered.modal-lg{role: "document"}
       %div.modal-content
         %div.modal-header
-          %h5#classPermalinkLabel.modal-title Permanent link to this class
+          %h5#classPermalinkLabel.modal-title Link to this page
           %button.close{type: "button", "data-dismiss": "modal", "aria-label": "Close"}
             %span{"aria-hidden": "true"} &times;
         %div.modal-body
@@ -83,7 +82,7 @@
             = link_to(@submissions.first.id + "/download?apikey=#{get_apikey}", "aria-label": "Download latest version", title: "Download latest version") do
               %i.fas.fa-lg.fa-download{"aria-hidden": true}
           - if details_available
-            - if $PURL_ENABLED
+            - if Rails.configuration.settings.purl[:enabled]
               = link_to(@ontology.purl, "aria-label": "BioPortal PURL", title: "BioPortal PURL", target: "_blank") do
                 %i.fas.fa-lg.fa-link{"aria-hidden": true}
             = link_to(sub.homepage, "aria-label": "Ontology home page", title: "Ontology home page", target: "_blank") do
@@ -156,7 +155,6 @@
   </main>
   = render partial: "footer_appliance"
   = javascript_include_tag "application"
-  = render partial: "ga_tracking"
 - else
   = render partial: "layouts/footer"
 

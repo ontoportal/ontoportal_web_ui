@@ -9,6 +9,7 @@
 <!--[if IE 8]>         <html lang="en" ng-app="<%=@app_name%>" class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html lang="en" ng-app="<%=@app_name%>" class="no-js h-100"> <!--<![endif]-->
 <head>
+  <%= render partial: "ga_tracking" %>
   <!-- Angular doesn't work well in sub-directories, this provides a base path that everything is relative to (HTML and Angular alike) -->
   <base href="<%=@base_path%>">
 
@@ -71,7 +72,6 @@
   <% if appliance_mode %>
     <%= render partial: "footer_appliance" %>
     <%= javascript_include_tag "application" %>
-    <%= render partial: "ga_tracking" %>    
   <% else %>
     <%= render partial: 'layouts/footer' %>
   <% end %>
