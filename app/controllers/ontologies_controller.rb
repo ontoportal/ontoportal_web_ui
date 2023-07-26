@@ -147,7 +147,7 @@ class OntologiesController < ApplicationController
       render plain: @concept.to_jsonld, content_type: request.accept and return
     end
 
-    @current_purl = @concept.purl if $PURL_ENABLED
+    @current_purl = @concept.purl if Rails.configuration.settings.purl[:enabled]
     @submission = get_ontology_submission_ready(@ontology)
 
     unless @concept.id == "bp_fake_root"
