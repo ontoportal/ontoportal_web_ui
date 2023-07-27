@@ -1,0 +1,23 @@
+- if @type == "submit"
+    %button-container{onclick: "displaySecondaryAnimation()"}
+        %input.secondary-button{:name => @name, :type => "submit", :value => @value, id: "secondary-button", oncklick: @onclick}/
+- else
+    %button-container{onclick: "displaySecondaryAnimation()"}
+        .secondary-button{:name => @name, id: "secondary-button", oncklick: @onclick}
+            = @value
+
+.animation-container#secondary-loading-animation
+    .lds-ellipsis-secondary
+        %div
+        %div
+        %div
+        %div
+
+:javascript
+    const button = document.getElementById("secondary-button")
+    const loading = document.getElementById("secondary-loading-animation")
+    function displaySecondaryAnimation(){
+        console.log("working")
+        button.style.display = 'none';
+        loading.style.display = 'flex';
+    }
