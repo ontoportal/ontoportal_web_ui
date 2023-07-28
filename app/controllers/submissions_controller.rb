@@ -45,7 +45,8 @@ class SubmissionsController < ApplicationController
         @errors = ["Please enter a contact"]
       end
 
-      render "new"
+      reset_agent_attributes
+      render 'new', status: 422
     else
       redirect_to "/ontologies/success/#{@ontology.acronym}"
     end
@@ -82,6 +83,19 @@ class SubmissionsController < ApplicationController
       redirect_to "/ontologies/#{@ontology.acronym}"
     end
 
+  end
+
+  private
+
+  def reset_agent_attributes
+    helpers.agent_attributes.each do |attr|
+      current_val = @submission.send(attr)
+      new_values = Array(current_val).map { |x| LinkedData::Client::Models::Agent.find(x) }
+
+      new_values = new_values.first unless current_val.is_a?(Array)
+
+      @submission.send("#{attr}=", new_values)
+    end
   end
 
 end
