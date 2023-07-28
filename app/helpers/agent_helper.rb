@@ -33,8 +33,10 @@ module AgentHelper
   end
 
   def agent_id(agent)
-    agent_id = agent.id
-    agent_id ? agent.id.split('/').last : ''
+    return  if agent.nil?
+
+    agent_id = agent.is_a?(String) ? agent : agent.id
+    agent_id ? agent_id.split('/').last : ''
   end
 
   def link_to_agent_edit_modal(agent, parent_id = nil)
@@ -54,13 +56,37 @@ module AgentHelper
     agent.agentType.eql?('organization')
   end
 
-  def display_identifiers(identifiers)
-    Array(identifiers).map { |i| "#{i["schemaAgency"]}:#{i["notation"]}" }.join(', ')
+  def identifier_link(link, link_to: true)
+    if link_to
+      link_to(link, link, target: '_blank')
+    else
+      link
+    end
+
   end
 
-  def display_agent(agent)
-    agent.name + '(' + display_identifiers(agent.identifiers) + ')'
+  def display_identifiers(identifiers, link: true)
+    schemes_urls = { ORCID: 'https://orcid.org/', ISNI: 'https://isni.org/', ROR: 'https://ror.org/', GRID: 'https://www.grid.ac/' }
+    Array(identifiers).map do |i|
+      if i["schemaAgency"]
+        schema_agency, notation = [i["schemaAgency"], i["notation"]]
+      else
+        schema_agency, notation = (i["id"] || i["@id"]).split('Identifiers/').last.delete(' ').split(':')
+      end
+      value = "#{schemes_urls[schema_agency.to_sym]}#{notation}"
+      identifier_link(value, link_to: link)
+    end.join(', ')
   end
+
+  def display_agent(agent, link: true)
+    out = agent.name.to_s.humanize
+    identifiers = display_identifiers(agent.identifiers, link: link)
+    out = "#{out} (#{identifiers})" unless identifiers.empty?
+    affiliations = agent.affiliations.map { |a| display_agent(a, link: link) }.join(', ')
+    out = "#{out} (affiliations: #{affiliations})" unless affiliations.empty?
+    out
+  end
+
   def agent_field_name(name, name_prefix = '')
     name_prefix&.empty? ? name : "#{name_prefix}[#{name}]"
   end
