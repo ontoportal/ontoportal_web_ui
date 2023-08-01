@@ -1,9 +1,10 @@
+
 - if @type == "submit"
-    %button-container{onclick: "displayAnimation()"}
-        %input.primary-button{:name => @name, :type => "submit", :value => @value, id: "primary-button", oncklick: @onclick}/
+    .button-container{onclick: "displayAnimation()"}
+        %input{:name => @name, :type => "submit", :value => @value, id: "primary-button", oncklick: @onclick, class: "#{@variant}-button"}/
 - else
-    %button-container
-        .primary-button{:name => @name, onclick: "displayAnimation()", id: "primary-button", oncklick: @onclick}
+    .button-container
+        %div{:name => @name, onclick: "displayAnimation()", id: "primary-button", oncklick: @onclick, class: "#{@variant}-button"}
             = @value
 
 .animation-container#loading-animation
