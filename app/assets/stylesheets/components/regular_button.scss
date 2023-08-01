@@ -1,3 +1,21 @@
+.primary-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: white;
+    height: 60px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 9px;
+    transition: background-color ease 0.3s;
+}
+.primary-button:hover {
+    background-color: var(--hover-color);
+    cursor: pointer;
+}
+
 .secondary-button {
     width: 100%;
     display: flex;
@@ -18,11 +36,11 @@
 }
 
 
-.animation-container {
+.animation-container{
     width: 100%;
     height: 60px;
     font-size: 16px;
-    background-color: var(--primary-color);
+    background-color: var(--hover-color);
     border: none;
     border-radius: 9px;
     justify-content: center;
@@ -30,8 +48,7 @@
     display: none;
 
 }
-
-.lds-ellipsis-secondary {
+.lds-ellipsis {
     display: inline-block;
     position: relative;
     margin-top: 50px;
@@ -40,7 +57,7 @@
     transform: scale(0.7);
 }
 
-.lds-ellipsis-secondary div {
+.lds-ellipsis div {
     position: absolute;
     width: 13px;
     height: 13px;
@@ -49,27 +66,27 @@
     animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 
-.lds-ellipsis-secondary div:nth-child(1) {
+.lds-ellipsis div:nth-child(1) {
     left: 8px;
-    animation: lds-ellipsis-secondary1 0.6s infinite;
+    animation: lds-ellipsis1 0.6s infinite;
 }
 
-.lds-ellipsis-secondary div:nth-child(2) {
+.lds-ellipsis div:nth-child(2) {
     left: 8px;
-    animation: lds-ellipsis-secondary2 0.6s infinite;
+    animation: lds-ellipsis2 0.6s infinite;
 }
 
-.lds-ellipsis-secondary div:nth-child(3) {
+.lds-ellipsis div:nth-child(3) {
     left: 32px;
-    animation: lds-ellipsis-secondary2 0.6s infinite;
+    animation: lds-ellipsis2 0.6s infinite;
 }
 
-.lds-ellipsis-secondary div:nth-child(4) {
+.lds-ellipsis div:nth-child(4) {
     left: 56px;
-    animation: lds-ellipsis-secondary3 0.6s infinite;
+    animation: lds-ellipsis3 0.6s infinite;
 }
 
-@keyframes lds-ellipsis-secondary1 {
+@keyframes lds-ellipsis1 {
     0% {
         transform: scale(0);
     }
@@ -79,7 +96,7 @@
     }
 }
 
-@keyframes lds-ellipsis-secondary3 {
+@keyframes lds-ellipsis3 {
     0% {
         transform: scale(1);
     }
@@ -89,7 +106,7 @@
     }
 }
 
-@keyframes lds-ellipsis-secondary2 {
+@keyframes lds-ellipsis2 {
     0% {
         transform: translate(0, 0);
     }
