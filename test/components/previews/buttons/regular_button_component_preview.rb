@@ -5,14 +5,14 @@ class Buttons::RegularButtonComponentPreview < ViewComponent::Preview
 
   def primary
     def primary()
-      render Buttons::RegularButtonComponent.new(value: "Login", name: "login", type: "submit", variant: "primary")
+      render Buttons::RegularButtonComponent.new(value: "Login", name: "login", type: "link", variant: "primary", href: "https://www.google.com")
     end
   end
 
   
   def secondary
     def secondary()
-      render Buttons::RegularButtonComponent.new(value: "Login", name: "login", type: "submit", variant: "secondary")
+      render Buttons::RegularButtonComponent.new(value: "Login", name: "login", type: "link", variant: "secondary",href: "https://www.google.com")
     end
   end
 

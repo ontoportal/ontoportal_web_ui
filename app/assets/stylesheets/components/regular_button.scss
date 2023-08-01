@@ -9,7 +9,7 @@
 }
 
 .primary-button {
-    color: white;
+    color: white !important;
     background-color: var(--primary-color);
     border: none;
     transition: background-color ease 0.3s;
@@ -35,7 +35,7 @@
 .secondary-button:hover {
     background-color: var(--primary-color);
     cursor: pointer;
-    color: white;
+    color: white !important;
     .secondary-button-icon path {
         fill: white;
     }
