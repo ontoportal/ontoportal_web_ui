@@ -29,6 +29,10 @@ module ApplicationHelper
     end
   end
 
+  def omniauth_providers_info
+    $OMNIAUTH_PROVIDERS
+  end
+
   def isOwner?(id)
     unless session[:user].nil?
       if session[:user].admin?
