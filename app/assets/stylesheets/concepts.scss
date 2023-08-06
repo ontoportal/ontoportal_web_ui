@@ -14,7 +14,7 @@
   }
 
   a.btn.btn-link {
-    padding: 0;  
+    padding: 0;
   }
 }
 
@@ -55,7 +55,7 @@ div.synonym-change-request button {
   justify-content: space-between;
   align-items: center;
 }
-.concepts-tabs{ 
+.concepts-tabs{
   display: flex;
   justify-content: space-between;
   width: 589px;
@@ -101,7 +101,7 @@ div.synonym-change-request button {
   border-collapse: collapse;
   width: 100%;
   border-spacing: 0;
-  
+
 }
 .concepts-content td{
   padding: 12px 24px;
@@ -130,7 +130,7 @@ div.synonym-change-request button {
   margin-top: 20px;
   border-radius: 5px;
   border: 1px solid #DFDFDF;
-  
+
 }
 .concepts-raw-title{
   display: flex;
@@ -144,6 +144,14 @@ div.synonym-change-request button {
 .concepts-raw-title div{
   padding: 10px 0px;
 }
+
 #details_content{
-  margin-top: 15px;
+  border: none !important;
 }
+
+#details_content .card{
+  border-top: none !important;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+

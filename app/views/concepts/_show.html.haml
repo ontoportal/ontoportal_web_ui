@@ -3,7 +3,7 @@
     %div{:style => "padding: 100px 0; font-size: larger; font-weight: bold; text-align: center;"}
       Use the "Jump To" to find a class and display details, visualization, notes, and mappings
   - else
-    = render TabsContainerComponent.new(pill: true) do |c|
+    = render TabsContainerComponent.new(type:'outline') do |c|
 
       - c.pinned_right do
         - if $PURL_ENABLED
