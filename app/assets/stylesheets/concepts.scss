@@ -155,3 +155,23 @@ div.synonym-change-request button {
   border-top-right-radius: 0;
 }
 
+#concept_browser{
+  .outline-tabs .tab-items{
+    width: 100%;
+  }
+  .outline-tabs .tab-items .nav-item {
+    flex: 1;
+  }
+  .outline-tabs .tab-items .nav-item a {
+    display: flex;
+    justify-content: center;
+    svg path {
+      fill: #5e5e5e !important;
+    }
+  }
+  .outline-tabs .tab-items .nav-item.active a {
+    svg path {
+      fill: var(--primary-color) !important;
+    }
+  }
+}

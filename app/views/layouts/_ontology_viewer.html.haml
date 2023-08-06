@@ -41,12 +41,12 @@
 
   = render partial: 'kgcl_dialogs'
 
-  %div.row.pt-md-3.pb-md-2.p-2
-    %div.col
+  %div.pt-md-3.pb-md-2.p-2
+    %div
       = render partial: 'layouts/ontology_viewer/header'
 
-  %div.row.pb-4.p-2.bg-white{data: {controller: 'ontology-viewer-tabs', 'ontology-viewer-tabs-language-sections-value': ontology_data_sections }}
-    %div.col
+  %div.pb-4.p-2.bg-white{data: {controller: 'ontology-viewer-tabs', 'ontology-viewer-tabs-language-sections-value': ontology_data_sections }}
+    %div
       - sections = sections_to_show
       %div.ontologies-tabs-container{data:{action: 'tab-selected->ontology-viewer-tabs#updateLanguageSelector'}}
         = render TabsContainerComponent.new(id: 'ontology_viewer', url_parameter: 'p') do |t|
