@@ -33,6 +33,14 @@ module ApplicationHelper
     $OMNIAUTH_PROVIDERS
   end
 
+  def omniauth_provider_info(strategy)
+    omniauth_providers_info.select {|k,v| v[:strategy].eql?(strategy.to_sym)}
+  end
+
+  def omniauth_token_provider(strategy)
+    omniauth_provider_info(strategy).keys.first
+  end
+
   def isOwner?(id)
     unless session[:user].nil?
       if session[:user].admin?
