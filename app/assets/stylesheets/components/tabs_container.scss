@@ -18,7 +18,6 @@
   display: flex;
   margin: 0;
   position: relative;
-  padding: 0 50px;
 }
 
 .tabs-container .tab-items div {
@@ -47,7 +46,6 @@
 
 .tabs-container .tab-items .active {
   font-weight: 500;
-  color: black;
   opacity: 100%;
 }
 

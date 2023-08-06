@@ -6,15 +6,24 @@ class TabsContainerComponent < ViewComponent::Base
   renders_many :item_contents
   renders_one :pinned_right
 
-  def initialize(id: '', url_parameter: nil, pill: false)
+  def initialize(id: '', url_parameter: nil, type: 'primary')
     super
     @url_parameter = url_parameter
-    @pill = pill
+    @type = type
     @id = id
   end
 
   def container_class
-    @pill ? 'pill-tabs-container' : 'tabs-container'
+    case @type
+    when 'primary'
+      'tabs-container'
+    when 'outline'
+      'tabs-container outline-tabs'
+    when 'pill'
+      'pill-tabs-container'
+    else
+      'tabs-container'
+    end
   end
 
   def item_target(item)
