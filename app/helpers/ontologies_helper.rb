@@ -525,6 +525,15 @@ module OntologiesHelper
     users = LinkedData::Client::Models::User.all(include: 'subscription', display_context: false, display_links: false )
     users.select{ |u| u.subscription.find{ |s| s.ontology.eql?(ontology_id)} }.count
   end
+
+  def ontology_edit_button
+    return unless  @ontology.admin?(session[:user])
+    render RoundedButtonComponent.new(link:   edit_ontology_path(@ontology.acronym), icon: 'edit.svg', size: 'medium')
+  end
+
+  def submission_json_button
+    render RoundedButtonComponent.new(link:  "#{(@submission_latest || @ontology).id}?display=all", target: '_blank', size: 'medium')
+  end
   private
 
   def submission_languages(submission = @submission)
