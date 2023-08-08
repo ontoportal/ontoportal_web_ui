@@ -16,11 +16,11 @@
           %span
             = "("+ @ontology.acronym+")"
         - unless sub.hasLicense.nil?
-          .ontology-details-licence
-            %div
-              = link_to_modal(nil, "/ajax/submission/show_licenses/#{@ontology.acronym}",data: { show_modal_title_value: "More licenses", show_modal_size_value: 'modal-xl' }) do
-                = attribute_enforced_values('hasLicense')[sub.hasLicense] || sub.hasLicense
-                = inline_svg_tag "icons/popup-link.svg"
+          = render ChipButtonComponent.new(class: 'chip_button_small') do
+            = link_to_modal(nil, "/ajax/submission/show_licenses/#{@ontology.acronym}",data: { show_modal_title_value: "More licenses", show_modal_size_value: 'modal-xl' }) do
+              = attribute_enforced_values('hasLicense')[sub.hasLicense] || sub.hasLicense
+              = inline_svg_tag "icons/popup-link.svg"
+
       - unless sub.creationDate.nil?
         .ontology-details-last-update
           %img{src: asset_path("update.svg")}/
