@@ -656,5 +656,7 @@ module ApplicationHelper
     items = [["/ontologies", "Browse"],["/mappings", "Mappings"],["/recommender", "Recommender"],["/annotator", "Annotator"], ["/landscape", "Landscape"]]
   end
 
-
+  def attribute_enforced_values(attr)
+    submission_metadata.select {|x| x['@id'][attr]}.first['enforcedValues']
+  end
 end
