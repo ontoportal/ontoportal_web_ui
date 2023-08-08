@@ -20,15 +20,15 @@
         - unless sub.hasLicense.nil?
           .ontology-details-licence
             %div
-              - value = attribute_enforced_values('hasLicense')[sub.hasLicense] || sub.hasLicense
-              = link_to_modal(value, "/ajax/submission/show_licenses/#{@ontology.acronym}",data: { show_modal_title_value: "More licenses", show_modal_size_value: 'modal-xl' })
-            = inline_svg_tag "icons/popup-link.svg"
-      - if (details_available && !sub.released.nil?)
+              = link_to_modal(nil, "/ajax/submission/show_licenses/#{@ontology.acronym}",data: { show_modal_title_value: "More licenses", show_modal_size_value: 'modal-xl' }) do
+                = attribute_enforced_values('hasLicense')[sub.hasLicense] || sub.hasLicense
+                = inline_svg_tag "icons/popup-link.svg"
+      - if details_available && !sub.creationDate.nil?
         .ontology-details-last-update
           %img{src: asset_path("update.svg")}/
           %div
             = t('ontology_details.header.last_uploaded')
-            = l(Date.parse(sub.creationDate), format: :monthfull_day_year)
+            = render DateTimeFieldComponent.new(value: sub.creationDate)
     .ontology-details-header-right-container.justify-content-end{style: 'min-width: 20%;'}
       %a.mx-1.ontology-details-edit-button{href: "#{(@submission_latest || @ontology).id}?display=all", :target => '_blank'}
         = inline_svg_tag "json.svg"
