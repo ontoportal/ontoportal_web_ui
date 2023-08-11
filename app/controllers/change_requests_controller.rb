@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ChangeRequestsController < ApplicationController
-  before_action :require_login, except: [:create]
+  before_action :require_login
 
   def node_obsoletion
     @concept_label = params[:concept_label]
