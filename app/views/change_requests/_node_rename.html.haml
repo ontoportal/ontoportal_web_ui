@@ -1,0 +1,20 @@
+= form_with scope: :node_rename, url: change_requests_path, local: false, class: 'mb-5' do |f|
+  = hidden_field_tag 'concept_id', @concept_id
+  = hidden_field_tag 'concept_label', @concept_label
+  = hidden_field_tag 'ont_acronym', @ont_acronym
+  = hidden_field_tag 'username', @username
+  = hidden_field_tag 'operation', KGCL::Operations::NODE_RENAME
+  %div.form-group
+    = f.label "Proposal: rename '#{@concept_label}'", class: 'lead'
+  %div.form-group
+    = f.label :new_preferred_name, 'Preferred name'
+    = f.text_field(:new_preferred_name, class: 'form-control', 'aria-describedby': 'newPreferredNameHelpBlock',
+                   required: 'true')
+    = tag.small 'Enter the new preferred name', id: 'newPreferredNameHelpBlock', class: 'form-text text-muted'
+  %div.form-group
+    = f.label :comment, 'Comment'
+    = f.text_area :comment, rows: '5', class: 'form-control', 'aria-describedby': 'nodeRenameCommentHelpBlock'
+    = tag.small('Optionally enter a comment giving a reason for the rename', class: 'form-text text-muted',
+                id: 'nodeRenameCommentHelpBlock')
+  = submit_tag 'Submit', id: 'node_rename_button', class: 'btn btn-primary'
+  = tag.button 'Cancel', type: 'button', id: 'cancel_kgcl_proposal', class: 'btn btn-primary'
