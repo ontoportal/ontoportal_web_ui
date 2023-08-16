@@ -7,8 +7,7 @@
     height: 60px;
     border-radius: 9px;
 }
-
-.regular-button.slim {
+.regular-button.slim{
     border-radius: 5px;
     height: 42px;
 }
@@ -19,7 +18,6 @@
     border: none;
     transition: background-color ease 0.3s;
 }
-
 .primary-button:focus {
     outline: none;
 }
@@ -29,13 +27,12 @@
     cursor: pointer;
 }
 
-.primary-button.disabled-button {
+.primary-button.disabled-button{
     background-color: #a3a3a3;
 }
-
 .primary-button.disabled-button:hover {
     background-color: #a3a3a3;
-    cursor: default;
+    cursor:default;
 }
 
 .danger-button.primary-button {
@@ -90,12 +87,10 @@
     color: #F24C3D !important;
     border: 1px solid #F24C3D;
 }
-
 .secondary-button.danger-button:hover {
     background-color: #F24C3D !important;
     color: white !important;
 }
-
 .secondary-button.warning-button {
     color: #F2BE22 !important;
     border: 1px solid #F2BE22;
@@ -106,7 +101,7 @@
     color: white !important;
 }
 
-.left-button-icon {
+.left-button-icon{
     margin-right: 10px;
 }
 
@@ -134,17 +129,14 @@
     align-items: center;
     display: none;
 }
-
 .animation-container.slim {
     border-radius: 5px;
     height: 42px;
 }
-
-.animation-container.danger-button {
+.animation-container.danger-button{
     background-color: #d74639 !important;
 }
-
-.animation-container.warning-button {
+.animation-container.warning-button{
     background-color: #dcac1d !important;
 }
 
