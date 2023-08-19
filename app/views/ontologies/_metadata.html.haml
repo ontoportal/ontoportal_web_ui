@@ -19,7 +19,7 @@
           %td View of ontology
           %td
             - ont_parent_acronym = @ontology.viewOf.split('/').last
-            - if $PURL_ENABLED
+            - if Rails.configuration.settings.purl[:enabled]
               - ont_url = @ontology.purl.sub(@ontology.acronym, ont_parent_acronym)
             - else
               - ont_url = @ontology.links['ui'].sub(@ontology.acronym, ont_parent_acronym)
