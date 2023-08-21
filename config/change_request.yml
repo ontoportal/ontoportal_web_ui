@@ -15,11 +15,11 @@ development:
 staging:
   ontologies:
     GO:
-      repository: 'geneontology/go-ontology'
+      repository: 'hrshdhgd/go-ontology'
     MONDO:
-      repository: 'monarch-initiative/mondo'
+      repository: 'hrshdhgd/mondo'
     UBERON:
-      repository: 'obophenotype/uberon'
+      repository: 'hrshdhgd/uberon'
 
 production:
   ontologies:
