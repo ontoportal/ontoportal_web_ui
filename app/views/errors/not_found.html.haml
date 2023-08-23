@@ -4,9 +4,9 @@
         Page not found
     .buttons.d-flex.justify-content-center.mt-3
         %div{style: "width: 216px;"}
-            = render Buttons::RegularButtonComponent.new(value: "Go to home", name: "home", type: "link", variant: "secondary", href: "/")
+            = render Buttons::RegularButtonComponent.new(id:'Home-button', value: "Go home", variant: "secondary", href: "/") 
         %div{style: "width: 216px; margin-left: 22px"}
-            = render Buttons::RegularButtonComponent.new(value: "Send a feedback", name: "feedback", type: "link", variant: "primary", href: "/")
+            = render Buttons::RegularButtonComponent.new(id:"feedback-button" ,value: "Send a feedback", variant: "primary", href: "/feedback")
 
 
 
