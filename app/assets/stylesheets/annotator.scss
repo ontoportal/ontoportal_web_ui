@@ -6,6 +6,10 @@ div#semanticTypes_chzn.chzn-container-active input.default {
   font-style: normal !important;
 }
 
+select#semantic_types + .chosen-container {
+  display: block;
+}
+
 div#annotations_filter, div#annotations_info {
   display: none;
 }
