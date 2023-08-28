@@ -14,97 +14,110 @@
 %div.row
   %div.col
     %form
-      %div.form-group
-        = text_area_tag("annotation_text", nil, rows: 10, class: "form-control", placeholder: "Enter or paste text to be annotated", "aria-describedby": "annotateTextHelpBlock")
-        %small#annotateTextHelpBlock.form-text
-          %a#insert_text_link{href: "javascript:void(0);"} insert sample text
+      %div.mb-3
+        = text_area_tag("annotation_text", nil, rows: 10, class: "form-control",
+                        placeholder: "Enter or paste text to be annotated", "aria-describedby": "annotateTextHelpBlock")
+        %div#annotateTextHelpBlock.form-text
+          %a#insert_text_link{href: "javascript:void(0);", class: 'link-secondary'} insert sample text
 
-      %a#advancedOptionsLink{:href => "javascript:void(0);"} Show advanced options >>
+      %div.mb-4
+        %a#advancedOptionsLink{href: "javascript:void(0);"} Show advanced options >>
 
-      %div#advanced-options-container.mt-4
-        %div.form-group
-          %div.custom-control.custom-checkbox.custom-control-inline
-            = check_box_tag("longest_only", "all", false, class: "custom-control-input")
-            %label.custom-control-label{for: "longest_only"} Match longest only
+      %div#advanced-options-container
+        %div.mb-3
+          %div.form-check.form-check-inline
+            = check_box_tag("longest_only", "all", false, class: "form-check-input")
+            %label.form-check-label{for: "longest_only"} Match longest only
 
-          %div.custom-control.custom-checkbox.custom-control-inline
-            = check_box_tag("whole_word_only", "all", false, class: "custom-control-input")
-            %label.custom-control-label{for: "whole_word_only"} Match partial words
+          %div.form-check.form-check-inline
+            = check_box_tag("whole_word_only", "all", false, class: "form-check-input")
+            %label.form-check-label{for: "whole_word_only"} Match partial words
 
-          %div.custom-control.custom-checkbox.custom-control-inline
-            = check_box_tag("mappings", "all", false, id: "mappings_all", class: "custom-control-input")
-            %label.custom-control-label{for: "mappings_all"} Include mappings
+          %div.form-check.form-check-inline
+            = check_box_tag("mappings", "all", false, id: "mappings_all", class: "form-check-input")
+            %label.form-check-label{for: "mappings_all"} Include mappings
 
-          %div.custom-control.custom-checkbox.custom-control-inline
-            = check_box_tag("exclude_numbers", "all", false, class: "custom-control-input")
-            %label.custom-control-label{for: "exclude_numbers"} Exclude numbers
+          %div.form-check.form-check-inline
+            = check_box_tag("exclude_numbers", "all", false, class: "form-check-input")
+            %label.form-check-label{for: "exclude_numbers"} Exclude numbers
 
-          %div.custom-control.custom-checkbox.custom-control-inline
-            = check_box_tag("exclude_synonyms", "all", false, class: "custom-control-input")
-            %label.custom-control-label{for: "exclude_synonyms"} Exclude synonyms
+          %div.form-check.form-check-inline
+            = check_box_tag("exclude_synonyms", "all", false, class: "form-check-input")
+            %label.form-check-label{for: "exclude_synonyms"} Exclude synonyms
 
-        %div.form-group
-          %label{for: "ontology_ontologyId"} Select ontologies
+        %div.mb-3
+          %label.form-label{for: "ontology_ontologyId"} Select ontologies
           = select_tag("ontology_ontologyId", options_from_collection_for_select(@annotator_ontologies, :acronym, lambda { |ont| "#{ont.name} (#{ont.acronym})" }), |
-              multiple: true, class: "form-control", "aria-describedby": "selectOntologiesHelpBlock") |
-          %small#selectOntologiesHelpBlock.form-text.text-muted Start typing to select ontologies or leave blank to use all
+              multiple: true, class: "form-select", "aria-describedby": "selectOntologiesHelpBlock") |
+          %div#selectOntologiesHelpBlock.form-text Start typing to select ontologies or leave blank to use all
 
         - if @sem_type_ont
-          %div.form-group
-            %label{for: "semantic_types"} Select UMLS semantic types
-            = select_tag("semantic_types", options_for_select(@semantic_types_for_select), multiple: "true", class: "form-control", "aria-describedby": "selectSemanticTypesHelpBlock")
-            %small#selectSemanticTypesHelpBlock.form-text.text-muted Start typing to select UMLS semantic types or leave blank to use all
+          %div.mb-3
+            %label.form-label{for: "semantic_types"} Select UMLS semantic types
+            = select_tag("semantic_types", options_for_select(@semantic_types_for_select), multiple: "true",
+                         class: "form-select", "aria-describedby": "selectSemanticTypesHelpBlock")
+            %div#selectSemanticTypesHelpBlock.form-text
+              Start typing to select UMLS semantic types or leave blank to use all
 
-          %div.form-group
-            %label{for: "semantic_groups"} Select UMLS semantic groups
-            = select_tag("semantic_groups", options_for_select(@semantic_groups_for_select), multiple: "true", class: "form-control", "aria-describedby": "selectSemanticGroupsHelpBlock")
-            %small#selectSemanticGroupsHelpBlock.form-text.text-muted Start typing to select UMLS semantic groups or leave blank to use all
+          %div.mb-3
+            %label.form-label{for: "semantic_groups"} Select UMLS semantic groups
+            = select_tag("semantic_groups", options_for_select(@semantic_groups_for_select), multiple: "true",
+                         class: "form-select", "aria-describedby": "selectSemanticGroupsHelpBlock")
+            %div#selectSemanticGroupsHelpBlock.form-text
+              Start typing to select UMLS semantic groups or leave blank to use all
 
-        %div.form-group
-          %label{for: "class_hierarchy_max_level"} Include ancestors up to level:
+        %div.mb-3
+          %label.form-label{for: "class_hierarchy_max_level"} Include ancestors up to level:
           - options = [["none", 0], *(1..10).map {|i| [i, i]}, ["all", 999]]
-          = select_tag("class_hierarchy_max_level", options_for_select(options, 0), class: "form-control")
+          = select_tag("class_hierarchy_max_level", options_for_select(options, 0), class: "form-select")
 
-        %div.form-group
-          %label{for: "score"} Include score:
+        %div.mb-3
+          %label.form-label{for: "score"} Include score:
           - options = [["none", ""], ["old", "old"], ["cvalue", "cvalue"], ["cvalueh", "cvalueh"]]
-          = select_tag(:score, options_for_select(options, 0), class: "form-control", "aria-describedby": "includeScoreHelpBlock")
-          %small#includeScoreHelpBlock.form-text.text-muted Score annotations following the previous 2009 NCBO measure (old) or the C-Value measure (cvalue). If hierarchy expansion is used, then prefer cvalueh.
+          = select_tag(:score, options_for_select(options, 0), class: "form-select",
+                       "aria-describedby": "includeScoreHelpBlock")
+          %div#includeScoreHelpBlock.form-text
+            Score annotations following the previous 2009 NCBO measure (old) or the C-Value measure (cvalue). If
+            hierarchy expansion is used, then prefer cvalueh.
 
-        %div.form-group
-          %label{for: "score_threshold"} Filter by score threshold:
-          = number_field_tag(:score_threshold, 0, id: "score_threshold", class: "form-control", "aria-describedby": "scoreThresholdHelpBlock")
-          %small#scoreThresholdHelpBlock.form-text.text-muted Specify the minimum score value for annotations
+        %div.mb-3
+          %label.form-label{for: "score_threshold"} Filter by score threshold:
+          = number_field_tag(:score_threshold, 0, id: "score_threshold", class: "form-control",
+                             "aria-describedby": "scoreThresholdHelpBlock")
+          %div#scoreThresholdHelpBlock.form-text Specify the minimum score value for annotations
 
-        %div.form-group
-          %label{for: "confidence_threshold"} Filter confidence threshold:
-          = number_field_tag(:confidence_threshold, 0, min: 0, max: 100, id: "confidence_threshold", class: "form-control", "aria-describedby": "confidenceThresholdHelpBlock")
-          %small#confidenceThresholdHelpBlock.form-text.text-muted Specify the minimum position in the scoring distribution (between 1 and 100)
+        %div.mb-3
+          %label.form-label{for: "confidence_threshold"} Filter confidence threshold:
+          = number_field_tag(:confidence_threshold, 0, min: 0, max: 100, id: "confidence_threshold",
+                             class: "form-control", "aria-describedby": "confidenceThresholdHelpBlock")
+          %div#confidenceThresholdHelpBlock.form-text
+            Specify the minimum position in the scoring distribution (between 1 and 100)
 
         - if @recognizers.length > 1
-          %div.form-group
-            %label{for: "recognizer"} Entity recognizer:
+          %div.mb-3
+            %label.form-label{for: "recognizer"} Entity recognizer:
             - default_recognizer = @recognizers.include?("mgrep") ? "mgrep" : @recognizers.first
-            = select_tag("recognizer", options_for_select(@recognizers.map {|r| [r, r]}, default_recognizer), class: "form-control")
+            = select_tag("recognizer", options_for_select(@recognizers.map {|r| [r, r]}, default_recognizer),
+                         class: "form-select")
 
-        %div.form-group
-          %div.custom-control.custom-checkbox
-            = check_box_tag("negation", :all, false, class: "custom-control-input")
-            %label.custom-control-label{for: "negation"} Detect negation
-            %small#negationHelp.form-text.text-muted Detect if a concept has been negated (affirmed, negated, possible)
+        %div.mb-3
+          %div.form-check
+            = check_box_tag("negation", :all, false, class: "form-check-input")
+            %label.form-check-label{for: "negation"} Detect negation
+            %div#negationHelp.form-text Detect if a concept has been negated (affirmed, negated, possible)
 
-          %div.custom-control.custom-checkbox
-            = check_box_tag("experiencer", :all, false, class: "custom-control-input")
-            %label.custom-control-label{for: "experiencer"} Detect experiencer
-            %small#experiencerHelp.form-text.text-muted Detect who experienced the each identified concept (patient, other)
+          %div.form-check
+            = check_box_tag("experiencer", :all, false, class: "form-check-input")
+            %label.form-check-label{for: "experiencer"} Detect experiencer
+            %div#experiencerHelp.form-text Detect who experienced the each identified concept (patient, other)
 
-          %div.custom-control.custom-checkbox
-            = check_box_tag("temporality", :all, false, class: "custom-control-input")
-            %label.custom-control-label{for: "temporality"} Detect temporality
-            %small#temporalityHelp.form-text.text-muted Detect when the annotated concept occurred (recent, historical, hypothetical)
+          %div.form-check
+            = check_box_tag("temporality", :all, false, class: "form-check-input")
+            %label.form-check-label{for: "temporality"} Detect temporality
+            %div#temporalityHelp.form-text Detect when the annotated concept occurred (recent, historical, hypothetical)
 
-      %div.my-4
-        = button_tag("Get annotations", type: "button", id: "annotator_button", class: "btn btn-primary btn-lg")
+      %div.mb-4
+        = tag.input(value: 'Get annotations', type: "button", id: "annotator_button", class: "btn btn-primary")
         %span.annotator_spinner
           %img{src: asset_path('spinners/spinner_000000_16px.gif')}/
         %span#annotator_error.annotator_error
