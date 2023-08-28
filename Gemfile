@@ -44,6 +44,7 @@ gem 'rails_autolink'
 gem 'rdoc'
 gem 'recaptcha', '~> 5.9.0'
 gem 'rest-client'
+gem 'rexml', '~> 3'
 gem 'stackprof', require: false
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
