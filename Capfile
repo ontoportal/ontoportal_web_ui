@@ -24,6 +24,6 @@ install_plugin Capistrano::SCM::Git
 #require 'capistrano/rails/migrations'
 require 'capistrano/rails'
 require 'capistrano/locally'
-
+require 'capistrano/yarn'
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
 Dir.glob('lib/capistrano/tasks/*.cap').each { |r| import r }

@@ -68,6 +68,7 @@ group :development do
   gem 'capistrano-locally', require: false
   gem 'capistrano-passenger', require: false
   gem 'capistrano-rails', '~> 1.4', require: false
+  gem 'capistrano-yarn', require: false
   gem 'ed25519', '>= 1.2', '< 2.0', require: false # https://github.com/miloserdow/capistrano-deploy/issues/42
   gem 'html2haml'
   gem 'listen'
