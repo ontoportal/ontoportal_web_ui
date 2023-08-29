@@ -25,15 +25,34 @@ shared:
 development:
   links:
     release_notes: 'https://github.com/ncbo/bioportal_web_ui/releases'
+  purl:
+    enabled: true
+    host: 'purl.bioontology.org'
+    prefix: 'https://purl.bioontology.org/ontology'
 
 staging:
   links:
     release_notes: 'https://github.com/ncbo/bioportal_web_ui/releases'
+  purl:
+    enabled: true
+    host: 'stagepurl.bioontology.org'
+    prefix: 'https://stagepurl.bioontology.org/ontology'
 
 production:
   links:
     release_notes: 'https://github.com/ncbo/bioportal_web_ui/releases'
+  purl:
+    enabled: true
+    host: 'purl.bioontology.org'
+    prefix: 'https://purl.bioontology.org/ontology'
 
 appliance:
   links:
     release_notes: 'https://www.bioontology.org/wiki/BioPortal_Virtual_Appliance_Release_Notes'
+  purl:
+    # Set enabled to true if you're running a PURL server to provide PURLs for ontologies and concepts
+    # in your OntoPortal instance
+    enabled: false
+    host: 'purl.example.org'
+    # PURL URLs are generated using the prefix + the ontology acronym
+    prefix: 'https://purl.example.org/ontology'

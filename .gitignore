@@ -39,10 +39,8 @@ config/newrelic.yml
 
 node_modules
 
-# Encryption keys
-/config/master.key
+# Ignore keys for decrypting credentials
 /config/credentials/development.key
 /config/credentials/test.key
 /config/credentials/staging.key
-/config/credentials/appliance.key
-
+/config/credentials/production.key
