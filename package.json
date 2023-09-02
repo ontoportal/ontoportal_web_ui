@@ -15,6 +15,7 @@
     "vis-data": "^7.1.6",
     "vis-network": "^9.1.6",
     "vis-util": "^5.0.3",
+    "tippy.js": "^6.3.7",
     "tom-select": "^2.2.2"
   },
   "scripts": {
