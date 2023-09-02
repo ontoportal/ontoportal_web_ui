@@ -7,6 +7,7 @@ class OntologiesController < ApplicationController
   include SchemesHelper, ConceptsHelper
   include CollectionsHelper
   include MappingStatistics
+  include OntologyUpdater
 
   require 'multi_json'
   require 'cgi'
@@ -195,36 +196,33 @@ class OntologiesController < ApplicationController
   end
 
   def create
-    if params[:commit].eql? 'Cancel'
-      redirect_to ontologies_path and return
+    @ontology = ontology_from_params.save
+
+    if response_error?(@ontology)
+      show_new_errors(@ontology)
+      return
     end
 
-    @ontology = LinkedData::Client::Models::Ontology.new(values: ontology_params)
-    @ontology_saved = @ontology.save
-    if response_error?(@ontology_saved)
-      @categories = LinkedData::Client::Models::Category.all
-      @groups = LinkedData::Client::Models::Group.all(display_links: false, display_context: false)
-      @user_select_list = LinkedData::Client::Models::User.all.map { |u| [u.username, u.id] }
-      @user_select_list.sort! { |a, b| a[1].downcase <=> b[1].downcase }
-      @errors = response_errors(@ontology_saved)
-      render 'new'
+    @submission = save_submission(new_submission_hash)
+
+    if response_error?(@submission)
+      @ontology.delete
+      show_new_errors(@submission)
     else
-      if @ontology_saved.summaryOnly
-        redirect_to "/ontologies/success/#{@ontology.acronym}"
-      else
-        redirect_to new_ontology_submission_path(@ontology.acronym)
-      end
+      redirect_to "/ontologies/success/#{@ontology.acronym}"
     end
   end
 
   def edit
-    # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
-    @categories = LinkedData::Client::Models::Category.all
-    @groups = LinkedData::Client::Models::Group.all
-    @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
-    @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
+
+    submission = @ontology.explore.latest_submission(include: 'submissionId')
+    if submission
+      redirect_to edit_ontology_submission_path(@ontology.acronym, submission.submissionId)
+    else
+      redirect_to new_ontology_submission_path(@ontology.acronym)
+    end
   end
 
   def mappings
@@ -239,7 +237,8 @@ class OntologiesController < ApplicationController
 
   def new
     @ontology = LinkedData::Client::Models::Ontology.new
-    @ontologies = LinkedData::Client::Models::Ontology.all(include: 'acronym', include_views: true,display_links: false, display_context: false)
+    @submission = LinkedData::Client::Models::OntologySubmission.new
+    @ontologies = LinkedData::Client::Models::Ontology.all(include: 'acronym', include_views: true, display_links: false, display_context: false)
     @categories = LinkedData::Client::Models::Category.all
     @groups = LinkedData::Client::Models::Group.all
     @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
@@ -385,7 +384,6 @@ class OntologiesController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first if @ontology.nil?
     ontology_not_found(params[:id]) if @ontology.nil?
     # Check to see if user is requesting json-ld, return the file from REST service if so
-
     if request.accept.to_s.eql?('application/ld+json') || request.accept.to_s.eql?('application/json')
       headers['Content-Type'] = request.accept.to_s
       render plain: @ontology.to_jsonld
@@ -397,13 +395,23 @@ class OntologiesController < ApplicationController
     @projects = @ontology.explore.projects.sort {|a,b| a.name.downcase <=> b.name.downcase } || []
     @analytics = LinkedData::Client::HTTP.get(@ontology.links['analytics'])
 
-    #Call to fairness assessment service
+    # Call to fairness assessment service
     tmp = fairness_service_enabled? ? get_fair_score(@ontology.acronym) : nil
     @fair_scores_data = create_fair_scores_data(tmp.values.first) unless tmp.nil?
 
     @views = get_views(@ontology)
-    @view_decorators = @views.map{ |view| ViewDecorator.new(view, view_context) }
+    @view_decorators = @views.map { |view| ViewDecorator.new(view, view_context) }
+    @ontology_relations_data = ontology_relations_data
 
+    category_attributes = submission_metadata.group_by{|x| x['category']}.transform_values{|x| x.map{|attr| attr['attribute']} }
+
+    @methodology_properties = properties_hash_values(category_attributes["methodology"])
+    @agents_properties = properties_hash_values(category_attributes["people"].without('wasGeneratedBy', 'wasInvalidatedBy') + [:hasCreator, :hasContributor, :translator, :publisher, :copyrightHolder])
+    @dates_properties = properties_hash_values(category_attributes["dates"] + [:creationDate, :modificationDate, :released])
+    @links_properties = properties_hash_values(category_attributes["links"].without('includedInDataCatalog') +[:wasGeneratedBy, :wasInvalidatedBy] )
+    @identifiers = properties_hash_values( [:URI, :versionIRI, :identifier])
+    @projects_properties = properties_hash_values(category_attributes["usage"].without('hasDomain') + [:audience, :includedInDataCatalog])
+    @ontology_icon_links = [%w[summary/download dataDump], %w[summary/homepage homepage], %w[summary/documentation documentation], %w[icons/github repository], %w[summary/sparql endpoint]]
     if request.xhr?
       render partial: 'ontologies/sections/metadata', layout: false
     else
@@ -411,33 +419,6 @@ class OntologiesController < ApplicationController
     end
   end
 
-  def update
-    if params['commit'] == 'Cancel'
-      acronym = params['id']
-      redirect_to "/ontologies/#{acronym}"
-      return
-    end
-    # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym] || params[:id]).first
-    @ontology.update_from_params(ontology_params)
-    @ontology.viewOf = nil if @ontology.isView.eql? "0"
-    error_response = @ontology.update
-    if response_error?(error_response)
-      @categories = LinkedData::Client::Models::Category.all
-      @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
-      @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
-      @errors = response_errors(error_response)
-      @errors = { acronym: 'Acronym already exists, please use another' } if error_response.status == 409
-      flash[:error] = @errors
-      redirect_to "/ontologies/#{@ontology.acronym}/edit"
-    else
-      # TODO_REV: Enable subscriptions
-      # if params["ontology"]["subscribe_notifications"].eql?("1")
-      #  DataAccess.createUserSubscriptions(@ontology.administeredBy, @ontology.ontologyId, NOTIFICATION_TYPES[:all])
-      # end
-      redirect_to "/ontologies/#{@ontology.acronym}"
-    end
-  end
 
   def virtual
     redirect_new_api
@@ -455,8 +436,16 @@ class OntologiesController < ApplicationController
     end
   end
   
+
+  def show_additional_metadata
+    @metadata = submission_metadata
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
+    @submission_latest = @ontology.explore.latest_submission(include: 'all', display_context: false, display_links: false)
+    render partial: 'ontologies/sections/additional_metadata'
+  end
+
   def show_licenses
-    
+
     @metadata = submission_metadata
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     @licenses= ["hasLicense","morePermissions","copyrightHolder"]
@@ -464,32 +453,96 @@ class OntologiesController < ApplicationController
     render partial: 'ontologies/sections/licenses'
   end
   def ajax_ontologies
-   
-    
+
+
     render json: LinkedData::Client::Models::Ontology.all(include_views: true,
-       display: 'acronym,name', display_links: false, display_context: false)
+                                                          display: 'acronym,name', display_links: false, display_context: false)
   end
+
+ 
+
+  def metrics_evolution
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
+    key = params[:metrics_key]
+    ontology_not_found(params[:ontology_id]) if @ontology.nil?
+
+    # Retrieve submissions in descending submissionId order (should be reverse chronological order)
+    @submissions = @ontology.explore.submissions({ include: "metrics" })
+                            .sort { |a, b| a.submissionId.to_i <=> b.submissionId.to_i  }.reverse || []
+
+    metrics = @submissions.map { |s| s.metrics }
+
+    data = {
+      key => metrics.map { |m| m[key] }
+    }
+
+    render partial: 'ontologies/sections/metadata/metrics_evolution_graph', locals: { data: data }
+  end
+
   private
-
-
-
-
-
-  def ontology_params
-    p = params.require(:ontology).permit(:name, :acronym, { administeredBy:[] }, :viewingRestriction, { acl:[] },
-                                         { hasDomain:[] }, :isView, :viewOf, :subscribe_notifications, {group:[]})
-
-    p[:administeredBy].reject!(&:blank?)
-    p[:acl].reject!(&:blank?)
-    p[:hasDomain].reject!(&:blank?)
-    p[:group].reject!(&:blank?)
-    p.to_h
-  end
-  
   def get_views(ontology)
     views = ontology.explore.views || []
     views.select!{ |view| view.access?(session[:user]) }
     views.sort{ |a,b| a.acronym.downcase <=> b.acronym.downcase }
+  end
+
+  def ontology_relations_data(sub = @submission_latest)
+    ontology_relations_array = []
+    @relations_array = ["omv:useImports", "door:isAlignedTo", "door:ontologyRelatedTo", "omv:isBackwardCompatibleWith", "omv:isIncompatibleWith", "door:comesFromTheSameDomain", "door:similarTo",
+                        "door:explanationEvolution", "voaf:generalizes", "door:hasDisparateModelling", "dct:hasPart", "voaf:usedBy", "schema:workTranslation", "schema:translationOfWork"]
+
+    return  if sub.nil?
+
+    ont = sub.ontology
+    # Get ontology relations between each other (ex: STY isAlignedTo GO)
+    @relations_array.each do |relation_attr|
+      relation_values = sub.send(relation_attr.to_s.split(':')[1])
+      next if relation_values.nil? || relation_values.empty?
+
+      relation_values = [relation_values] unless relation_values.kind_of?(Array)
+
+      relation_values.each do |relation_value|
+        next if relation_value.eql?(ont.acronym)
+
+        target_id = relation_value
+        target_in_portal = false
+        # if we find our portal URL in the ontology URL, then we just keep the ACRONYM to try to get the ontology.
+          relation_value = relation_value.split('/').last if relation_value.include?($UI_URL)
+
+        # Use acronym to get ontology from the portal
+        target_ont = LinkedData::Client::Models::Ontology.find_by_acronym(relation_value).first
+        if target_ont
+          target_id = target_ont.acronym
+          target_in_portal = true
+        end
+
+        ontology_relations_array.push({ source: ont.acronym, target: target_id, relation: relation_attr.to_s, targetInPortal: target_in_portal })
+      end
+    end
+
+    ontology_relations_array
+  end
+  def properties_hash_values(properties, sub = @submission_latest)
+    return {} if sub.nil?
+
+    properties.map { |x| [x.to_s, sub.send(x.to_s)] }.to_h
+  end
+
+  def get_metrics_hash
+    metrics_hash = {}
+    # TODO: Metrics do not return for views on the backend, need to enable include_views param there
+    @metrics = LinkedData::Client::Models::Metrics.all(include_views: true)
+    @metrics.each {|m| metrics_hash[m.links['ontology']] = m }
+    return metrics_hash
+  end
+
+  def determine_layout
+    case action_name
+    when 'index'
+      'angular'
+    else
+      super
+    end
   end
 
 end

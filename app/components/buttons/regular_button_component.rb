@@ -16,7 +16,7 @@ class Buttons::RegularButtonComponent < ViewComponent::Base
   def button_label
     hide_icon_left = icon_left == nil ? "hide" : " "
     hide_icon_right = icon_right == nil ? "hide" : " "
-    content_tag(:span, icon_left, class: "#{@variant}-button-icon left-button-icon #{hide_icon_left}") + @value + content_tag(:span, icon_right, class: "#{@variant}-button-icon right-button-icon #{hide_icon_right}")
+    content_tag(:span, icon_left, class: "#{@variant}-button-icon left-button-icon #{hide_icon_left}") + content_tag(:div, @value)  + content_tag(:span, icon_right, class: "#{@variant}-button-icon right-button-icon #{hide_icon_right}")
   end
 
   def button_elem
@@ -25,7 +25,7 @@ class Buttons::RegularButtonComponent < ViewComponent::Base
     warning_class = @color == "warning" ? "warning-button " : " "
     disabled_class = @state == "disabled" ? "disabled-button " : " "
     class_style = "#{@variant}-button regular-button " + danger_class + warning_class + disabled_class + slim_class
-    on_click_event =  load_animation? ?  "displayAnimation(this)" : ''
+    on_click_event =  load_animation? ?  "displayAnimation(this, '#{@id}-loading-animation')" : ''
 
     if link?
       link_to(@href, class: class_style, onclick: on_click_event, id: @id) do
