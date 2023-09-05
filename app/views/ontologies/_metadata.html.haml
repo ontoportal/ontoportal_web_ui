@@ -54,7 +54,7 @@
   -# Submissions pane
   %section.ont-metadata-card.ont-subs-card
     %div.ont-section-toolbar
-      %header.pb-2.font-weight-bold Submissions
+      %header.pb-2.fw-bold Submissions
       - if @ontology.admin?(session[:user])
         = link_to(new_ontology_submission_path(@ontology.acronym), "aria-label": "Add submission", title: "Add submission") do
           %i.fas.fa-lg.fa-plus-circle{"aria-hidden": "true", style: "margin-left: 0.75rem;"}
