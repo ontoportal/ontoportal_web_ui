@@ -51,8 +51,8 @@ $ont-show-bg-color: #e9ecef;
 }
 
 .ont-info-links {
-  a + a {
-    margin-left: 1rem;
+  a:hover {
+    color: var(--bs-btn-hover-color);
   }
 }
 
