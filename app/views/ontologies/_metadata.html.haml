@@ -2,7 +2,7 @@
 
   -# Details pane
   %section.ont-metadata-card.ont-details-card
-    %header.pb-2.font-weight-bold Details
+    %header.pb-2.fw-bold Details
     %table.table.table-sm
       %tr
         %td Acronym
@@ -67,7 +67,7 @@
   - unless @ontology.view?
     %section.ont-metadata-card.ont-views-card
       %div.ont-section-toolbar
-        %header.pb-2.font-weight-bold= "Views of #{@ontology.acronym}"
+        %header.pb-2.fw-bold= "Views of #{@ontology.acronym}"
         = new_view_link
       - if @views.empty?
         %p.font-italic= "No views of #{@ontology.acronym} available"
@@ -83,7 +83,7 @@
     -# Metrics pane
     %section.ont-metadata-card.ont-metrics-card
       %div.ont-section-toolbar
-        %header.pb-2.font-weight-bold Metrics
+        %header.pb-2.fw-bold Metrics
         = link_to(Rails.configuration.settings.links[:metrics], target: "_blank", "aria-label": "View individual metrics definitions", title: "View individual metrics definitions") do
           %i.fas.fa-lg.fa-question-circle{"aria-hidden": "true", style: "margin-left: 0.5rem"}
       - if @metrics.nil? || (@metrics.is_a?(Array) && @metrics.empty?) || (@metrics.respond_to?(:status) && @metrics.status == 404)
@@ -121,7 +121,7 @@
     -# Visits pane
     %section.ont-metadata-card.ont-analytics-card
       %div.ont-section-toolbar
-        %header.pb-2.font-weight-bold Visits
+        %header.pb-2.fw-bold Visits
         - if visits_data(@ontology)
           = link_to(@ontology.links["analytics"] + "?apikey=#{get_apikey}&format=csv", "aria-label": "Download as CSV", title: "Download as CSV") do
             %i.fas.fa-lg.fa-download{"aria-hidden": "true", style: "margin-left: 0.5rem"}
@@ -130,7 +130,7 @@
     -# Projects pane
     %section.ont-metadata-card.ont-projects-card
       %div.ont-section-toolbar
-        %header.pb-2.font-weight-bold= "Projects using #{@ontology.acronym}"
+        %header.pb-2.fw-bold= "Projects using #{@ontology.acronym}"
         = link_to(new_project_path(), "aria-label": "Create new project", title: "Create new project") do
           %i.fas.fa-lg.fa-plus-circle{"aria-hidden": "true", style: "margin-left: 0.5rem"}
       - if @projects.empty?
