@@ -4,7 +4,7 @@
   %section.ont-metadata-card.ont-details-card
     %header.pb-2.fw-bold Details
     %table.table.table-sm
-      %tr
+      %tr.border-top
         %td Acronym
         %td= @ontology.acronym
       %tr
@@ -90,7 +90,7 @@
         %p.font-italic= "We have not yet calculated metrics for #{@ontology.acronym}"
       - else
         %table.table.table-sm
-          %tr
+          %tr.border-top
             %td Classes
             %td{style: "text-align: right"}= number_with_delimiter(@metrics.classes)
           %tr
