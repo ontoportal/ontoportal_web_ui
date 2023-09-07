@@ -5,9 +5,9 @@
 
   - if change_requests_enabled?(@ontology.acronym)
     %div#addProposalDropdownDiv{class: 'd-flex flex-row-reverse'}
-      %div.btn-group.dropleft
+      %div.btn-group.dropstart
         = button_tag('Add a proposal', id: 'addProposalDropdown', class: 'btn btn-sm btn-primary dropdown-toggle',
-                     type: 'button', 'data-toggle': 'dropdown',  'aria-haspopup': 'true', 'aria-expanded': 'false')
+                     type: 'button', 'data-bs-toggle': 'dropdown',  'aria-haspopup': 'true', 'aria-expanded': 'false')
         %div.dropdown-menu{'aria-labelledby': 'addProposalDropdown'}
           = link_to('Deepen class', '#', class: 'dropdown-item disabled')
           = link_to('Delete class', '#', class: 'dropdown-item disabled')
