@@ -96,7 +96,7 @@
           - if Rails.configuration.settings.purl[:enabled]
             = link_to("#classPermalinkModal", class: "class-permalink", title: "Get a link to this page",
                       aria: {label: "Get a link to this page"},
-                      data: {toggle: "modal", current_purl: "#{@current_purl}"}) do
+                      data: {"bs-toggle": "modal", current_purl: "#{@current_purl}"}) do
               %i{class: "fas fa-link", aria: {hidden: "true"}}
         #contents
           #details_content.tab_container= render :partial =>'/concepts/details'
