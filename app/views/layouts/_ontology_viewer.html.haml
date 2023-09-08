@@ -46,8 +46,8 @@
           %button.btn-close{type: "button", "data-bs-dismiss": "modal", "aria-label": "Close"}
         %div.createNewMappingModalBody.modal-body
         %div.modal-footer
-          = submit_tag("Create Mapping", class: "btn btn-default", id: "create_mapping_button")
-          %button{type: "button", class: "btn btn-default", "data-bs-dismiss": "modal"} Close
+          %button{type: "button", class: "btn btn-secondary", "data-bs-dismiss": "modal"} Close
+          = submit_tag("Create Mapping", class: "btn btn-primary", id: "create_mapping_button")
 
   -# Modal dialog for getting a permanent link to a class (must reside in a top-level position in the document to display properly).
   %div#classPermalinkModal{class: "modal fade", tabindex: "-1", aria: {labelledby: "classPermalinkLabel", hidden: "true"}}
