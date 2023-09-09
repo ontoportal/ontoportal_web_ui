@@ -14,8 +14,11 @@
           = link_to('Obsolete class',
                     change_requests_node_obsoletion_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
                                                          ont_acronym: @ontology.acronym),
-                    class: 'dropdown-item change-request-item', remote: 'true')
-          = link_to('Rename class', '#', class: 'dropdown-item disabled')
+                    class: 'dropdown-item', remote: 'true')
+          = link_to('Rename class',
+                    change_requests_node_rename_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
+                                                     ont_acronym: @ontology.acronym),
+                    class: 'dropdown-item', remote: 'true')
     %div#addProposalFormDiv
 
   %table.minimal.concept_details{cellpadding: "0", cellspacing: "0", width: "100%"}

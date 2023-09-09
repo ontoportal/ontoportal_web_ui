@@ -1,0 +1,13 @@
+// TODO: Remove this line in favor of a data attribute when we upgrade to Bootstrap 5
+jQuery('#addProposalDropdown').dropdown('toggle');
+
+let forms = document.getElementById('addProposalFormDiv').getElementsByTagName('form');
+if (forms.length === 0) {
+  document.getElementById('addProposalFormDiv')
+    .insertAdjacentHTML('afterbegin', '<%= j render 'change_requests/node_rename' %>');
+}
+
+let button = document.getElementById('cancel_kgcl_proposal');
+button.addEventListener('click', () => {
+  document.getElementById('addProposalFormDiv').innerHTML = '';
+});
