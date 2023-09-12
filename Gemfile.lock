@@ -79,17 +79,18 @@ GEM
       zeitwerk (~> 2.3)
     addressable (2.8.5)
       public_suffix (>= 2.0.2, < 6.0)
-    airbrussh (1.4.1)
+    airbrussh (1.4.2)
       sshkit (>= 1.6.1, != 1.7.0)
     ast (2.4.2)
     autoprefixer-rails (10.4.13.0)
       execjs (~> 2)
+    base64 (0.1.1)
     bcrypt_pbkdf (1.1.0)
     bootstrap (4.1.3)
       autoprefixer-rails (>= 6.0.3)
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
-    brakeman (5.4.1)
+    brakeman (6.0.1)
     builder (3.2.4)
     capistrano (3.17.3)
       airbrussh (>= 1.0.0)
@@ -105,6 +106,9 @@ GEM
     capistrano-rails (1.6.3)
       capistrano (~> 3.1)
       capistrano-bundler (>= 1.1, < 3)
+    capistrano-rbenv (2.2.0)
+      capistrano (~> 3.1)
+      sshkit (~> 1.3)
     capistrano-yarn (2.0.2)
       capistrano (~> 3.0)
     capybara (3.39.2)
@@ -132,7 +136,7 @@ GEM
     erubi (1.12.0)
     erubis (2.7.0)
     eventmachine (1.2.7)
-    excon (0.100.0)
+    excon (0.102.0)
     execjs (2.8.1)
     faraday (2.7.10)
       faraday-net_http (>= 2.0, < 3.1)
@@ -147,7 +151,7 @@ GEM
     flamegraph (0.9.5)
     globalid (1.1.0)
       activesupport (>= 5.0)
-    graphql (2.0.25)
+    graphql (2.0.26)
     graphql-client (0.18.0)
       activesupport (>= 3.0)
       graphql
@@ -188,14 +192,14 @@ GEM
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
-    mime-types (3.5.0)
+    mime-types (3.5.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2023.0218.1)
-    mini_mime (1.1.2)
+    mime-types-data (3.2023.0808)
+    mini_mime (1.1.5)
     minitest (5.19.0)
     multi_json (1.15.0)
     multipart-post (2.3.0)
-    mysql2 (0.5.2)
+    mysql2 (0.5.5)
     net-imap (0.3.7)
       date
       net-protocol
@@ -209,13 +213,15 @@ GEM
       net-protocol
     net-ssh (7.2.0)
     netrc (0.11.0)
-    newrelic_rpm (9.3.1)
+    newrelic_rpm (9.4.2)
     nio4r (2.5.9)
-    nokogiri (1.15.3-x86_64-darwin)
+    nokogiri (1.15.4-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.15.3-x86_64-linux)
+    nokogiri (1.15.4-x86_64-darwin)
       racc (~> 1.4)
-    oj (3.15.1)
+    nokogiri (1.15.4-x86_64-linux)
+      racc (~> 1.4)
+    oj (3.16.0)
     open_uri_redirections (0.2.1)
     parallel (1.23.0)
     parser (3.2.2.3)
@@ -297,7 +303,8 @@ GEM
       rspec-mocks (~> 3.12)
       rspec-support (~> 3.12)
     rspec-support (3.12.1)
-    rubocop (1.55.1)
+    rubocop (1.56.2)
+      base64 (~> 0.1.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -364,6 +371,7 @@ GEM
     zeitwerk (2.6.11)
 
 PLATFORMS
+  arm64-darwin-22
   x86_64-darwin-21
   x86_64-linux
 
@@ -371,11 +379,12 @@ DEPENDENCIES
   bcrypt_pbkdf (>= 1.0, < 2.0)
   bootstrap (~> 4.1.0)
   brakeman
-  capistrano (~> 3.11)
+  capistrano (~> 3.17)
   capistrano-bundler
   capistrano-locally
   capistrano-passenger
   capistrano-rails (~> 1.4)
+  capistrano-rbenv
   capistrano-yarn
   capybara
   chart-js-rails
@@ -392,7 +401,7 @@ DEPENDENCIES
   jquery-ui-rails
   listen
   multi_json
-  mysql2 (= 0.5.2)
+  mysql2 (= 0.5.5)
   newrelic_rpm
   oj
   ontologies_api_client!
@@ -405,6 +414,7 @@ DEPENDENCIES
   rdoc
   recaptcha (~> 5.9.0)
   rest-client
+  rexml (~> 3)
   rspec-rails
   rubocop
   sass-rails (~> 5.0)
@@ -415,4 +425,4 @@ DEPENDENCIES
   will_paginate (~> 3.0)
 
 BUNDLED WITH
-   2.3.22
+   2.4.18
