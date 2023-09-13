@@ -14,9 +14,7 @@
       - query_string = request.query_string.empty? ? "" : "?#{request.query_string}"
       You are viewing the
       %b= @subdomain_filter[:name]
-      %a.pop_window{:href => "help?pop=true#slice_definition", :target => "_blank"}
-        = $SITE
-        Slice
+      = link_to("#{$SITE} slice", Rails.configuration.settings.links[:help_slice], target: '_blank')
       at
       = succeed "." do
         %b= request.host
