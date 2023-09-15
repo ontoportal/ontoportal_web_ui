@@ -34,7 +34,7 @@ gem 'haml', '~> 5.1'
 gem 'i18n'
 gem 'iconv'
 gem 'multi_json'
-gem 'mysql2', '0.5.2'
+gem 'mysql2', '0.5.5'
 gem 'oj'
 gem 'open_uri_redirections'
 gem 'pry'
@@ -44,6 +44,7 @@ gem 'rails_autolink'
 gem 'rdoc'
 gem 'recaptcha', '~> 5.9.0'
 gem 'rest-client'
+gem 'rexml', '~> 3'
 gem 'stackprof', require: false
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
@@ -61,8 +62,9 @@ end
 group :development do
   # Capistrano Deployment
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0', require: false # https://github.com/miloserdow/capistrano-deploy/issues/42
-  gem 'capistrano', '~> 3.11', require: false
+  gem 'capistrano', '~> 3.17', require: false
   gem 'capistrano-bundler', require: false
+  gem 'capistrano-rbenv', require: false
   gem 'capistrano-locally', require: false
   gem 'capistrano-passenger', require: false
   gem 'capistrano-rails', '~> 1.4', require: false
