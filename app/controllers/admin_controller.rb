@@ -189,16 +189,16 @@ class AdminController < ApplicationController
             errors = response_errors(error_response) # see application_controller::response_errors
             _process_errors(errors, response, true)
           else
-            response[:success] << "Submission #{params["id"]} for ontology #{ont} was deleted successfully"
+            response[:success] += "Submission #{params["id"]} for ontology #{ont} was deleted successfully"
           end
         else
-          response[:errors] << "Submission #{params["id"]} for ontology #{ont} was not found in the system"
+          response[:errors] += "Submission #{params["id"]} for ontology #{ont} was not found in the system"
         end
       else
-        response[:errors] << "Ontology #{ont} was not found in the system"
+        response[:errors] += "Ontology #{ont} was not found in the system"
       end
     rescue StandardError => e
-      response[:errors] << "Problem deleting submission #{params["id"]} for ontology #{ont} - #{e.class}: #{e.message}"
+      response[:errors] += "Problem deleting submission #{params["id"]} for ontology #{ont} - #{e.class}: #{e.message}"
     end
     render json: response
   end
@@ -239,14 +239,14 @@ class AdminController < ApplicationController
     if errors.is_a?(Hash)
       errors.each do |_, v|
         if v.is_a?(Array)
-          response[:errors] << v.join(', ')
-          response[:errors] << ', '
+          response[:errors] += v.join(', ')
+          response[:errors] += ', '
         else
-          response[:errors] << "#{v}, "
+          response[:errors] += "#{v}, "
         end
       end
     elsif errors.is_a?(Array)
-      errors.each { |err| response[:errors] << "#{err}, " }
+      errors.each { |err| response[:errors] += "#{err}, " }
     end
     response[:errors] = response[:errors][0...-2] if remove_trailing_comma
   end
@@ -278,10 +278,10 @@ class AdminController < ApplicationController
               errors = response_errors(error_response) # see application_controller::response_errors
               _process_errors(errors, response, false)
             else
-              response[:success] << "Ontology #{ont} #{success_keyword} successfully, "
+              response[:success] += "Ontology #{ont} #{success_keyword} successfully, "
             end
           else
-            response[:errors] << "Ontology #{ont} was not found in the system, "
+            response[:errors] += "Ontology #{ont} was not found in the system, "
           end
         rescue StandardError => e
           response[:errors] += "Problem #{error_keyword} ontology #{ont} - #{e.class}: #{e.message}, "
