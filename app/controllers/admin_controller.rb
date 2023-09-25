@@ -251,7 +251,7 @@ class AdminController < ApplicationController
     response[:errors] = response[:errors][0...-2] if remove_trailing_comma
   end
 
-  def _delete_ontology(ontology)
+  def _delete_ontology(ontology, _params)
     error_response = ontology.delete
     error_response
   end
