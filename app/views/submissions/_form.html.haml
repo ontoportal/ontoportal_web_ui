@@ -4,8 +4,14 @@
       %strong Errors On Form
       %ul
         - for error in @errors
-          %li
-            = error          
+          - if error.is_a? Array
+            %ul
+              - error[1].each do |key, message|
+                %li
+                  = message
+          - else
+            %li
+              = error
 
 = hidden_field :submission, :ontology, value: @ontology.id
 
