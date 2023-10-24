@@ -39,6 +39,15 @@ div#mappingCount {
 
 #mapping_count_table {
   width: 100%;
+
+  tbody > tr :nth-child(1) {
+    a {
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 /* Create New Mapping dialog */
