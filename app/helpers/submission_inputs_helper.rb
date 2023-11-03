@@ -198,9 +198,8 @@ module SubmissionInputsHelper
 
   # @param attr_key string
   def attr_label(attr_key, label = nil, attr_metadata: nil, show_tooltip: true)
-    data = SubmissionMetadataInput.new(attribute_key: attr_key.to_s, attr_metadata: attr_metadata)
-    return attr_key.humanize if data.nil?
 
+    data = SubmissionMetadataInput.new(attribute_key: attr_key.to_s, attr_metadata: attr_metadata)
     if show_tooltip
       attr_header_label(data, label, show_tooltip: show_tooltip)
     else
