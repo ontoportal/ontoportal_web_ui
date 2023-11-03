@@ -57,11 +57,10 @@
           %img{:src => asset_path("check-outlined.svg")}/
           %p
             = benefit
-    - link = session[:user].nil? ? "/login?redirect=/ontologies/new" :  "/ontologies/new"
-    %a.home-upload-ontology-button{:href => link , class: "home-upload-icon"}  
-      = inline_svg_tag "upload.svg", class:"home-upload-icon"
-      = t('home.ontology_upload_button')
- 
+
+    %div.home-upload-ontology-button
+      = upload_ontology_button
+
   .home-section
     %h4
       = t('home.recommender_annotator')
