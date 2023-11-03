@@ -57,6 +57,8 @@ module SubmissionInputsHelper
     elsif enforce_values?(attr)
       if attr.type?('list')
         generate_select_input(attr, multiple: true)
+      elsif attr.type?('boolean')
+        generate_boolean_input(attr)
       else
         generate_select_input(attr)
       end
@@ -141,7 +143,7 @@ module SubmissionInputsHelper
         select_input(label: "Visibility", name: "ontology[viewingRestriction]", values: %w[public private], selected: ontology.viewingRestriction )
       end
       content_tag(:div, class: 'upload-ontology-input-field-container') do
-        select_input(label: "Add or remove accounts that are allowed to view classes in this ontology using the account name", name: "ontology[acl]", values: @user_select_list, selected: ontology.acl, multiple: true)
+        select_input(label: "Add or remove accounts that are allowed to see this ontology in #{portal_name}.", name: "ontology[acl]", values: @user_select_list, selected: ontology.acl, multiple: true)
       end
     end
   end
@@ -150,7 +152,7 @@ module SubmissionInputsHelper
     render Layout::RevealComponent.new(init_show: ontology.view?) do |c|
       c.button do
         content_tag(:span, class: 'd-flex') do
-          switch_input(id: 'ontology_isView', name: 'ontology[isView]', label: 'Is this ontology a view of another ontology?', checked: ontology.view?)
+          switch_input(id: 'ontology_isView', name: 'ontology[isView]', label: 'Is this ontology a view of another ontology?', checked: ontology.view?, style: 'font-size: 14px;')
         end
       end
 
@@ -167,7 +169,7 @@ module SubmissionInputsHelper
 
       render NestedFormInputsComponent.new(object_name: 'contact', default_empty_row: true) do |c|
         c.header do
-          content_tag(:div, "#{name} name", class: 'w-50') + content_tag(:div, "#{name} email", class: 'w-50')
+          content_tag(:div, "#{name} Name", class: 'w-50') + content_tag(:div, "#{name} Email", class: 'w-50')
         end
 
         c.template do
@@ -312,7 +314,7 @@ module SubmissionInputsHelper
     value = value.to_s unless value.nil?
     name = attr.name
     content_tag(:div, class: 'd-flex') do
-      switch_input(id: name, name: name, label: attr_header_label(attr), checked: value.eql?('true'), value: value, boolean_switch: true)
+      switch_input(id: name, name: name, label: attr_header_label(attr), checked: value.eql?('true'), value: value, boolean_switch: true, style: 'font-size: 14px;')
     end
   end
 
