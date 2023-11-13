@@ -43,6 +43,6 @@ module ChangeRequestsHelper
 
   def synonym_qualifier_select(form)
     options = [%w[exact exact], %w[narrow narrow], %w[broad broad], %w[related related]]
-    form.select :qualifier, options_for_select(options, 0), {}, { class: 'form-control' }
+    form.select :qualifier, options_for_select(options, 0), {}, { class: 'form-select' }
   end
 end

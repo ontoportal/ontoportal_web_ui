@@ -9,11 +9,11 @@
   = hidden_field_tag 'username', @username
   = hidden_field_tag 'operation', KGCL::Operations::REMOVE_SYNONYM
   %div{class: 'modal-body'}
-    %div{class: 'form-group'}
-      %label{for: 'remove_synonym_synonym'} Synonyms
-      = f.select :synonym, options_for_select(@concept_synonyms, 0), {}, { class: 'form-control' }
-    %div{class: 'form-group'}
-      = f.label :comment, 'Comment'
+    %div.mb-3
+      %label{for: 'remove_synonym_synonym', class: 'form-label'} Synonyms
+      = f.select :synonym, options_for_select(@concept_synonyms, 0), {}, { class: 'form-select' }
+    %div.mb-3
+      = f.label :comment, 'Comment', class: 'form-label'
       = f.text_area :comment, rows: 5, class: 'form-control'
   %div{class: 'modal-footer'}
     %button{type: 'button', class: 'btn btn-secondary', 'data-bs-dismiss': 'modal'} Close
