@@ -221,6 +221,15 @@ $ont-show-bg-color: #e9ecef;
   float: left;
   width: 100%;
   overflow: auto;
+
+  #details_content, #mappings_content {
+    a {
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 #mappings_top.tab {
