@@ -6,7 +6,7 @@ source 'https://rubygems.org'
 gem 'rails', '6.1.7.3'
 
 gem 'sass-rails', '~> 5.0'
-gem 'uglifier', '>= 1.0.3'
+gem 'terser'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 # gem 'duktape'
