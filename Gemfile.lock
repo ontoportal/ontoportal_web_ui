@@ -152,7 +152,7 @@ GEM
     flamegraph (0.9.5)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    graphql (2.1.0)
+    graphql (2.0.27)
     graphql-client (0.18.0)
       activesupport (>= 3.0)
       graphql
@@ -401,6 +401,7 @@ DEPENDENCIES
   dalli
   ed25519 (>= 1.2, < 2.0)
   flamegraph
+  graphql (~> 2.0.27)
   graphql-client
   haml (~> 5.1)
   html2haml

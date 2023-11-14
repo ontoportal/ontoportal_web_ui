@@ -29,6 +29,8 @@ gem 'select2-rails'
 gem 'cube-ruby', require: 'cube'
 gem 'dalli'
 gem 'flamegraph'
+# Version 2.1 breaks graphql-client. See: https://github.com/github/graphql-client/issues/310.
+gem 'graphql', '~> 2.0.27'
 gem 'graphql-client'
 gem 'haml', '~> 5.1'
 gem 'i18n'
