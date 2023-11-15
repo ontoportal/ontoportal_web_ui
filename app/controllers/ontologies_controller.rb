@@ -104,6 +104,7 @@ class OntologiesController < ApplicationController
   end
 
   def properties
+    @acronym = @ontology.acronym
     if request.xhr?
       return render 'ontologies/sections/properties', layout: false
     else
