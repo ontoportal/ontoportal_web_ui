@@ -84,7 +84,7 @@ GEM
     ast (2.4.2)
     autoprefixer-rails (10.4.15.0)
       execjs (~> 2)
-    base64 (0.1.1)
+    base64 (0.1.0)
     bcrypt_pbkdf (1.1.0)
     bootstrap (5.2.3)
       autoprefixer-rails (>= 9.1.0)
@@ -225,7 +225,7 @@ GEM
     oj (3.16.1)
     open_uri_redirections (0.2.1)
     parallel (1.23.0)
-    parser (3.2.2.3)
+    parser (3.2.2.4)
       ast (~> 2.4.1)
       racc
     popper_js (2.11.8)
@@ -304,12 +304,11 @@ GEM
       rspec-mocks (~> 3.12)
       rspec-support (~> 3.12)
     rspec-support (3.12.1)
-    rubocop (1.56.3)
-      base64 (~> 0.1.1)
+    rubocop (1.57.2)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
-      parser (>= 3.2.2.3)
+      parser (>= 3.2.2.4)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
@@ -385,6 +384,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  base64 (= 0.1.0)
   bcrypt_pbkdf (>= 1.0, < 2.0)
   bootstrap (~> 5.2.3)
   brakeman

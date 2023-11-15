@@ -26,6 +26,7 @@ gem 'select2-rails'
 # To use debugger
 # gem 'debugger'
 
+gem 'base64', '0.1.0'
 gem 'cube-ruby', require: 'cube'
 gem 'dalli'
 gem 'flamegraph'
