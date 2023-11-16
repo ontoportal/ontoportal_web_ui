@@ -82,14 +82,14 @@ GEM
     airbrussh (1.4.2)
       sshkit (>= 1.6.1, != 1.7.0)
     ast (2.4.2)
-    autoprefixer-rails (10.4.13.0)
+    autoprefixer-rails (10.4.15.0)
       execjs (~> 2)
-    base64 (0.1.1)
+    base64 (0.1.0)
     bcrypt_pbkdf (1.1.0)
-    bootstrap (4.1.3)
-      autoprefixer-rails (>= 6.0.3)
-      popper_js (>= 1.12.9, < 2)
-      sass (>= 3.5.2)
+    bootstrap (5.2.3)
+      autoprefixer-rails (>= 9.1.0)
+      popper_js (>= 2.11.6, < 3)
+      sassc-rails (>= 2.0.0)
     brakeman (6.0.1)
     builder (3.2.4)
     capistrano (3.17.3)
@@ -136,9 +136,10 @@ GEM
     erubi (1.12.0)
     erubis (2.7.0)
     eventmachine (1.2.7)
-    excon (0.102.0)
-    execjs (2.8.1)
-    faraday (2.7.10)
+    excon (0.103.0)
+    execjs (2.9.0)
+    faraday (2.7.11)
+      base64
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-excon (2.1.0)
@@ -149,9 +150,9 @@ GEM
     faraday-net_http (3.0.2)
     ffi (1.15.5)
     flamegraph (0.9.5)
-    globalid (1.1.0)
-      activesupport (>= 5.0)
-    graphql (2.0.26)
+    globalid (1.2.1)
+      activesupport (>= 6.1)
+    graphql (2.0.27)
     graphql-client (0.18.0)
       activesupport (>= 3.0)
       graphql
@@ -196,7 +197,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2023.0808)
     mini_mime (1.1.5)
-    minitest (5.19.0)
+    minitest (5.20.0)
     multi_json (1.15.0)
     multipart-post (2.3.0)
     mysql2 (0.5.5)
@@ -213,7 +214,7 @@ GEM
       net-protocol
     net-ssh (7.2.0)
     netrc (0.11.0)
-    newrelic_rpm (9.4.2)
+    newrelic_rpm (9.5.0)
     nio4r (2.5.9)
     nokogiri (1.15.4-arm64-darwin)
       racc (~> 1.4)
@@ -221,13 +222,13 @@ GEM
       racc (~> 1.4)
     nokogiri (1.15.4-x86_64-linux)
       racc (~> 1.4)
-    oj (3.16.0)
+    oj (3.16.1)
     open_uri_redirections (0.2.1)
     parallel (1.23.0)
-    parser (3.2.2.3)
+    parser (3.2.2.4)
       ast (~> 2.4.1)
       racc
-    popper_js (1.16.1)
+    popper_js (2.11.8)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -303,12 +304,11 @@ GEM
       rspec-mocks (~> 3.12)
       rspec-support (~> 3.12)
     rspec-support (3.12.1)
-    rubocop (1.56.2)
-      base64 (~> 0.1.1)
+    rubocop (1.57.2)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
-      parser (>= 3.2.2.3)
+      parser (>= 3.2.2.4)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
@@ -332,6 +332,14 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    sassc (2.4.0)
+      ffi (~> 1.9)
+    sassc-rails (2.1.2)
+      railties (>= 4.0.0)
+      sassc (>= 2.0)
+      sprockets (> 3.0)
+      sprockets-rails
+      tilt
     select2-rails (4.0.13)
     sexp_processor (4.17.0)
     spawnling (2.1.5)
@@ -347,17 +355,17 @@ GEM
       net-ssh (>= 2.8.0)
     stackprof (0.2.25)
     temple (0.10.2)
+    terser (1.1.19)
+      execjs (>= 0.3.0, < 3)
     thin (1.8.2)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0, >= 1.0.4)
       rack (>= 1, < 3)
     thor (1.2.2)
-    tilt (2.2.0)
+    tilt (2.3.0)
     timeout (0.4.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    uglifier (4.2.0)
-      execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
@@ -376,8 +384,9 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  base64 (= 0.1.0)
   bcrypt_pbkdf (>= 1.0, < 2.0)
-  bootstrap (~> 4.1.0)
+  bootstrap (~> 5.2.3)
   brakeman
   capistrano (~> 3.17)
   capistrano-bundler
@@ -392,6 +401,7 @@ DEPENDENCIES
   dalli
   ed25519 (>= 1.2, < 2.0)
   flamegraph
+  graphql (~> 2.0.27)
   graphql-client
   haml (~> 5.1)
   html2haml
@@ -420,9 +430,9 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   select2-rails
   stackprof
+  terser
   thin
-  uglifier (>= 1.0.3)
   will_paginate (~> 3.0)
 
 BUNDLED WITH
-   2.4.18
+   2.4.19
