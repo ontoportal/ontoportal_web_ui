@@ -117,6 +117,7 @@ group :development do
   gem 'web-console'
   gem 'i18n-tasks'
   gem 'deepl-rb'
+  gem 'letter_opener_web', '~> 2.0'
 end
 
 group :test, :development do
