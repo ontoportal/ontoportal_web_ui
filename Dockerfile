@@ -29,8 +29,9 @@ ENV RAILS_LOG_TO_STDOUT="1" \
     BUNDLE_PATH=/usr/local/bundle \
     BUNDLE_WITHOUT="${BUNDLE_WITHOUT}"
 
-RUN gem update --system --no-document && \
-    gem install -N bundler
+# fix for ruby v2.7.8 only
+RUN gem install uri -v 0.12.2 --no-document
+
 COPY Gemfile* .
 RUN bundle install
 

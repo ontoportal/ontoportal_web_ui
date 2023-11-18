@@ -13,9 +13,22 @@ jobs:
   push_to_registry:
     name: Push Docker branch image to Docker Hub
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [ linux/amd64, linux/arm64 ]
+
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: |
+            /tmp/.buildx-cache
+          key: docker-${{ runner.os }}-${{ hashFiles('**/Dockerfile') }}
+          restore-keys: |
+            docker-${{ runner.os }}-
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -39,9 +52,9 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ matrix.platform }}
           build-args: |
-            RUBY_VERSION=2.7
+            RUBY_VERSION=2.7.8
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
