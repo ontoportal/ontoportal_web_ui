@@ -46,10 +46,8 @@
               %i.fas.fa-search.fa-lg{'aria-hidden': 'true'}
           %div.dropdown
             %div.btn-group
-              %button{type: 'button', class: 'btn btn-info'} Browse ontologies
-              %button{type: 'button', class: 'btn btn-info dropdown-toggle dropdown-toggle-split',
-                      'data-bs-toggle': 'dropdown', 'aria-expanded': false}
-                %span.visually-hidden Toggle browse ontologies dropdown
+              = tag.button('Browse ontologies', class: 'btn btn-outline-primary dropdown-toggle', type: 'button',
+                           'data-bs-toggle': 'dropdown', 'aria-expanded': 'false')
               %ul.dropdown-menu
                 = link_to('All', ontologies_path, class: 'dropdown-item')
                 %li
