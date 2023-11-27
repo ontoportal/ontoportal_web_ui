@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get '/notes/new_reply', to: 'notes#new_reply'
   delete '/notes', to: 'notes#destroy'
   resources :notes, constraints: { id: /.+/ }
+  get 'agents/show_search', to: 'agents#show_search'
   get 'agents/:id/usages', to: 'agents#agent_usages', constraints: { id: /.+/ }
   post 'agents/:id/usages', to: 'agents#update_agent_usages', constraints: { id: /.+/ }
   resources :agents, constraints: { id: /.+/ }
@@ -52,6 +53,7 @@ Rails.application.routes.draw do
     get 'instances/:instance_id', to: 'instances#show', constraints: { instance_id: /[^\/?]+/ }
     get 'schemes/show_scheme', to: 'schemes#show'
     get 'collections/show'
+    get 'metrics'
     get 'metrics_evolution'
   end
 

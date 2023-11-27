@@ -52,6 +52,23 @@ module AgentHelper
     end
   end
 
+
+  def link_to_search_agent(id, parent_id , name_prefix, agent_type, deletable)
+    link_to("/agents/show_search?id=#{id}&parent_id=#{parent_id}&agent_type=#{agent_type}&deletable=#{deletable}&name_prefix=#{name_prefix}", class: 'btn btn-sm btn-light') do
+      inline_svg_tag "x.svg", width: "25", height: "25"
+    end
+  end
+
+  def agent_search_input(id, agent_type, parent_id: , name_prefix:, deletable: false)
+    render TurboFrameComponent.new(id: agent_id_frame_id(id, parent_id)) do
+      render AgentSearchInputComponent.new(id: id, agent_type: agent_type,
+                                           name_prefix: name_prefix,
+                                           parent_id: parent_id, deletable: deletable,
+                                           edit_on_modal: false)
+    end
+  end
+
+
   def affiliation?(agent)
     agent.agentType.eql?('organization')
   end
@@ -83,7 +100,7 @@ module AgentHelper
 
     out = agent.name.to_s
     identifiers = display_identifiers(agent.identifiers, link: link)
-    out = "#{out} (#{identifiers})" unless identifiers.empty?
+    out = "#{out} ( #{identifiers} )" unless identifiers.empty?
     affiliations = Array(agent.affiliations).map { |a| display_agent(a, link: link) }.join(', ')
     out = "#{out} (affiliations: #{affiliations})" unless affiliations.empty?
     out

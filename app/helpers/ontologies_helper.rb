@@ -5,6 +5,21 @@ module OntologiesHelper
   API_KEY = $API_KEY
   LANGUAGE_FILTERABLE_SECTIONS = %w[classes schemes collections instances]
 
+
+  def ontology_retired?(submission)
+    submission[:status].to_s.eql?('retired') || submission[:deprecated].to_s.eql?('true')
+  end
+
+  def ontology_retired_badge(submission, small: false, clickable: true)
+    return if submission.nil? || !ontology_retired?(submission)
+
+    style = "text-white bg-danger #{small && 'chip_button_small'}"
+    render ChipButtonComponent.new(class:  style, text: "Retired", type: clickable ? 'clickable' : 'static')
+  end
+
+  def private_ontology_icon(is_private)
+    raw(content_tag(:i, '', class: 'fas fa-key', title: "Private Ontology")) if is_private
+  end
   def browse_filter_section_label(key)
     labels = {
       hasFormalityLevel: 'Formality levels',
@@ -124,7 +139,7 @@ module OntologiesHelper
   end
 
   def link?(string)
-    string.start_with?('http://') || string.start_with?('https://')
+    string.to_s.start_with?('http://') || string.to_s.start_with?('https://')
   end
 
   def mappings_link(ontology, count)
@@ -226,7 +241,13 @@ module OntologiesHelper
   def show_category_name(domain)
     acronym = domain.split('/').last.upcase
     category = LinkedData::Client::Models::Category.find_by_acronym(acronym).first
-    category ? category.name : acronym
+    category ? category.name : acronym.titleize
+  end
+
+  def show_group_name(domain)
+    acronym = domain.split('/').last.upcase
+    category = LinkedData::Client::Models::Group.find_by_acronym(acronym).first
+    category ? category.name : acronym.titleize
   end
 
   def show_group_name(domain)
@@ -305,7 +326,9 @@ module OntologiesHelper
     if current_section.eql?(section_title)
       block.call
     else
-      render TurboFrameComponent.new(id: section_title, src: "/ontologies/#{@ontology.acronym}?p=#{section_title}", target: '_top', data: { "turbo-frame-target": "frame" })
+      render TurboFrameComponent.new(id: section_title, src: "/ontologies/#{@ontology.acronym}?p=#{section_title}",
+                                     loading: Rails.env.development?  ? "lazy" : "eager",
+                                     target: '_top', data: { "turbo-frame-target": "frame" })
     end
   end
 
@@ -443,13 +466,25 @@ module OntologiesHelper
   end
 
   def ontology_icon_links(links, submission_latest)
-    links.map do |icon, attr|
+    links.map do |icon, attr, label|
       value = submission_latest.nil? ? nil : submission_latest.send(attr)
 
-      link_options = { style: "text-decoration: none; width: 30px; height: 30px" }
-      link_options[:class] = 'disabled-icon' if value.nil?
+      link_options = {
+        style: "text-decoration: none; width: 30px; height: 30px"
+      }
 
-      link_to(inline_svg("#{icon}.svg"), Array(value).first || '', link_options)
+      if Array(value).empty?
+        link_options[:class] = 'disabled-icon'
+        link_options[:disabled] = 'disabled'
+        title = label
+      else
+        title = label + '<br>' + link_to(Array(value).first)
+      end
+
+      content_tag(:span, data: {controller:"tooltip" } , title:  title) do
+        link_to(inline_svg("#{icon}.svg", width: "32", height: '32'),
+                Array(value).first || '', link_options)
+      end
     end.join.html_safe
   end
 
@@ -516,9 +551,50 @@ module OntologiesHelper
   end
 
   def submission_json_button
-    render RoundedButtonComponent.new(link: "#{(@submission_latest || @ontology).id}?display=all", target: '_blank', size: 'medium')
+    render RoundedButtonComponent.new(link: "#{(@submission_latest || @ontology).id}?display=all",
+                                      target: '_blank',
+                                      size: 'medium',
+                                      title: 'Go to API')
   end
 
+
+  def projects_field(projects, ontology_acronym = @ontology.acronym)
+    render FieldContainerComponent.new do |f|
+      f.label do
+        concat "Projects using #{ontology_acronym}"
+        concat new_element_link('Create new project', new_project_path)
+      end
+
+      if projects.empty?
+        empty_state_message("No projects using #{ontology_acronym}")
+      else
+        horizontal_list_container(projects) do |project|
+           render ChipButtonComponent.new(url: project_path(project.acronym), text: project.name, type: "clickable")
+        end
+      end
+    end
+  end
+  def ontology_import_code(submission = @submission_latest )
+    prefix = submission.preferredNamespacePrefix
+    namespace= submission.preferredNamespaceUri || submission.URI
+    return if prefix.blank? && namespace.blank?
+
+    render ChipButtonComponent.new do
+      concat content_tag(:span , "@prefix ", style: 'color: #FA7070')
+      concat content_tag(:span , "#{prefix}: ", style: 'color: var(--primary-color);font-weight: 700;')
+      concat content_tag(:span , "<#{namespace}>", style: 'color:#9999a9;')
+    end
+  end
+  def metadata_vocabulary_display(vocabularies)
+    vocabularies_data = attribute_enforced_values('metadataVoc')
+    horizontal_list_container(vocabularies) do |voc|
+      label = vocabularies_data[voc] || voc
+      label =  content_tag(:span, data: {controller:'tooltip'}, title: "Go to: #{link_to(voc)}") do
+        render(ExternalLinkTextComponent.new(text: label))
+      end
+      render ChipButtonComponent.new(url: voc, text: label, type: 'clickable')
+    end
+  end
 
   def summary_only?
     @ontology&.summaryOnly || @submission&.isRemote&.eql?('3')

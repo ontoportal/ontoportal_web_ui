@@ -319,13 +319,22 @@ class OntologiesController < ApplicationController
       ["#{helpers.attr_label(attr, attr_metadata: helpers.attr_metadata(attr), show_tooltip: false)}(#{relation})",
        relation]
     end
-    @methodology_properties = properties_hash_values(category_attributes["methodology"])
+    @config_properties = properties_hash_values([:obsoleteParent] + category_attributes["object description properties"])
+    @methodology_properties = properties_hash_values(category_attributes["methodology"] + [:toDoList, :notes])
     @agents_properties = properties_hash_values(category_attributes["persons and organizations"])
     @dates_properties = properties_hash_values(category_attributes["dates"], custom_labels: {released: "Initially created On"})
-    @links_properties = properties_hash_values(category_attributes["links"])
-    @identifiers = properties_hash_values([:URI, :versionIRI, :identifier])
-    @projects_properties = properties_hash_values(category_attributes["usage"])
-    @ontology_icon_links = [%w[summary/download dataDump], %w[summary/homepage homepage], %w[summary/documentation documentation], %w[icons/github repository], %w[summary/sparql endpoint]]
+    @links_properties = properties_hash_values(category_attributes["links"] + [:associatedMedia, :bugDatabase, :mailingList, :uriRegexPattern])
+    @identifiers = properties_hash_values([:URI, :versionIRI, :identifier, :exampleIdentifier])
+    @projects_properties = properties_hash_values(category_attributes["usage"] + [:award])
+    @ontology_icon_links = [%w[summary/download dataDump],
+                            %w[summary/homepage homepage],
+                            %w[summary/documentation documentation],
+                            %w[icons/github repository],
+                            %w[summary/sparql endpoint],
+                            %w[icons/publication publication]]
+    @ontology_icon_links.each do |icon|
+      icon << helpers.attr_label(icon[1], attr_metadata: helpers.attr_metadata(icon[1]), show_tooltip: false)
+    end
     if request.xhr?
       render partial: 'ontologies/sections/metadata', layout: false
     else
@@ -362,7 +371,7 @@ class OntologiesController < ApplicationController
 
     @metadata = submission_metadata
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
-    @licenses= ["hasLicense","morePermissions","copyrightHolder"]
+    @licenses= %w[hasLicense morePermissions copyrightHolder useGuidelines]
     @submission_latest = @ontology.explore.latest_submission(include: @licenses.join(","))
     render partial: 'ontologies/sections/licenses'
   end
@@ -374,6 +383,12 @@ class OntologiesController < ApplicationController
   end
 
  
+
+  def metrics
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
+    @metrics = @ontology.explore.metrics(display_context: false, display_links: false)
+    render partial: 'ontologies/sections/metrics'
+  end
 
   def metrics_evolution
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first

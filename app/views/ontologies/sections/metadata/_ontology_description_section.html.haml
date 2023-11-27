@@ -3,19 +3,51 @@
   = render Layout::ListComponent.new do |l|
     - l.row do
       .d-flex.align-items-center
-        .description_text
-          = render TextAreaFieldComponent.new(value: @submission_latest&.description)
+        %div
+          - if @submission_latest&.abstract.blank?
+            .creation_text
+              = render TextAreaFieldComponent.new(value: @submission_latest&.description)
+          - else
+            = render FieldContainerComponent.new(label: 'Abstract') do
+              .creation_text
+                = render TextAreaFieldComponent.new(value: @submission_latest&.abstract)
+            = render FieldContainerComponent.new(label: 'Description') do
+              .creation_text
+                = render TextAreaFieldComponent.new(value: @submission_latest&.description)
+
         - unless @submission_latest&.logo.nil?
           = image_tag(@submission_latest&.logo, class: 'description_img', width: '145px')
+
+
     - l.row do
-      %span.creation_text
+      %div.creation_text
         - if @submission_latest&.released
           Initial release occurred on
           %span.date_creation_text= l(Date.parse(@submission_latest.released), format: :monthfull_day_year) + '.'
         - if @submission_latest&.contact
           For additional information, reach out
-          %span.creator_text
-            = display_contact(@submission_latest.contact)
+          %span.date_creation_text
+            #{display_contact(@submission_latest.contact)}.
+
+        - alt_labels = (Array(@submission_latest&.alternative) + Array(@submission_latest&.hiddenLabel))
+        - unless alt_labels.empty?
+          %div.creation_text
+            Alternatively it can  also be named
+            %span.date_creation_text
+              = alt_labels.length > 1 ? "#{alt_labels[0..-2].join(', ')} or #{alt_labels.last}." : "#{alt_labels.first}."
+      - unless @submission_latest.nil? || @submission_latest.hasLicense.nil?
+        %div.creation_text
+          %span
+            - code = ontology_import_code
+            #{code && "Import #{code} in your resource to start using it.".html_safe } This resource is under
+          %span.date_creation_text
+            #{attribute_enforced_values('hasLicense')[@submission_latest.hasLicense] || @submission_latest.hasLicense}
+          %span
+            license,
+          = link_to_modal("see access details", "/ajax/submission/show_licenses/#{@ontology.acronym}",data: { show_modal_title_value: "Additionnal license a access rights information", show_modal_size_value: 'modal-xl' })
+          %span
+            for more information.
+
 
     - unless Array(@submission_latest&.naturalLanguage).empty?
       - l.row do
@@ -23,11 +55,19 @@
           = horizontal_list_container(Array(@submission_latest&.naturalLanguage)) do |v|
             = render LanguageFieldComponent.new(value: v)
 
-    - if @ontology.admin?(session[:user]) && @submission_latest&.pullLocation
+    - unless Array(@submission_latest&.metadataVoc).empty?
       - l.row do
-        = render FieldContainerComponent.new(label: 'Pull location') do
-          = horizontal_list_container([@submission_latest&.pullLocation]) do |v|
-            = render LinkFieldComponent.new(value: v)
+        = render FieldContainerComponent.new(label: 'Used Metadata vocabularies') do
+          = metadata_vocabulary_display(@submission_latest&.metadataVoc)
+
+
+    - if  @submission_latest&.pullLocation
+      - l.row do
+        = admin_block(class_css: '') do
+          = render FieldContainerComponent.new(label: 'Pull location') do
+            = horizontal_list_container([@submission_latest&.pullLocation]) do |v|
+              %span.admin-background
+                = render LinkFieldComponent.new(value: v)
     - unless  Array(@submission_latest&.keywords).empty? && Array(@submission_latest&.keyClasses).empty?
       - l.row do
         = render FieldContainerComponent.new(label: 'Keywords and classes') do
@@ -38,11 +78,11 @@
               = raw get_link_for_cls_ajax(v, @ontology.acronym, '_blank')
             - else
               = render ChipButtonComponent.new(text: v, type: "static")
-
-    - unless Array(@ontology.hasDomain).empty?
+    - domains = Array(@ontology&.hasDomain) + Array(@submission_latest&.hasDomain)
+    - unless domains.empty?
       - l.row do
         = render FieldContainerComponent.new(label: 'Categories and subjects') do
-          = horizontal_list_container(@ontology.hasDomain) do |v|
+          = horizontal_list_container(domains.uniq) do |v|
             = render ChipButtonComponent.new(text: show_category_name(v), type: "static")
     - unless Array(@ontology.group).empty?
       - l.row do

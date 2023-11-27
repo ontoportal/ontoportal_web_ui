@@ -7,6 +7,25 @@ $widget-table-border-color: #EFEFEF;
     color: var(--admin-color) !important;
   }
 }
+
+.admin-border {
+  .dropdown-container{
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+.custom-container {
+  padding: 1rem;
+  background-color: #2c3e50; /* Dark gray */
+  border-radius: 0.25rem;
+}
+/* Code block styles */
+.custom-code {
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem; /* 14px */
+  color: #fff;
+}
 .ontologies.show .gutter {
   background-repeat: no-repeat;
   background-position: center;

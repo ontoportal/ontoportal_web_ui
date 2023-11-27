@@ -40,8 +40,8 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: | 
-            agroportal/ontologies_api
-            ghcr.io/agroportal/ontoloportal_web_ui
+            agroportal/ontoportal_web_ui
+            ghcr.io/${{ github.repository }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
