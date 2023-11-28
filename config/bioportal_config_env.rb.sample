@@ -249,3 +249,10 @@ $FOOTER_LINKS = {
 }
 
 $UI_THEME = ENV['UI_THEME'] || 'ontoportal'
+
+$HOSTNAME = ENV['API_URL']
+if $HOSTNAME
+  $HOSTNAME = ENV['API_URL'].split('data.').last
+  # add custom stage server configuration if needed (e.g bioportal_config_development_stageportal.lirmm.fr)
+  require_relative "bioportal_config_development_#{$HOSTNAME}" if File.exist?("config/bioportal_config_development_#{$HOSTNAME}")
+end
