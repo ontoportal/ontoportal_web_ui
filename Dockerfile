@@ -37,7 +37,7 @@ RUN bundle install
 
 RUN echo "--modules-folder /node_modules" > .yarnrc
 COPY package.json *yarn* ./
-RUN yarn install && yarn build
+RUN yarn install
 
 COPY . .
 

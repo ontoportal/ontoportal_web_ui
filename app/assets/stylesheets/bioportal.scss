@@ -49,6 +49,32 @@ body{
 
 }
 
+.disabled-link{
+  color: #888888 !important;
+  span{
+    opacity: 0.6;
+  }
+  a {
+    color: #888888 !important;
+  }
+  svg path{
+    fill: #888888 !important;
+  }
+}
+.text-truncate-scroll{
+  overflow: scroll;
+  white-space: nowrap;
+}
+
+
+.bg-warning-light{
+  background-color: var(--bg-warning-light-color) !important;
+}
+
+.bg-danger-light{
+  background-color: var(--bg-danger-light-color) !important;
+}
+
 @keyframes gradient {
   0% {
     background-position: 0% 50%;
