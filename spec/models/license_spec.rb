@@ -4,6 +4,21 @@ RSpec.describe License, type: :model do
 
   include ActiveSupport::Testing::TimeHelpers
 
+  before(:all) do
+    @stage_server_appliance_id = 'dd212a7c-29fd-4142-8353-f59a19a79738'
+
+    response = JSON.parse(
+      LinkedData::Client::HTTP.get('https://stagedata.bioontology.org/admin/update_info', {}, raw: true)
+    )
+    unless response['appliance_id'].eql?(@stage_server_appliance_id)
+      puts "\nStaging server appliance ID has changed from %s to %s." % [@stage_server_appliance_id,
+                                                                         response['appliance_id']]
+      puts 'Test license generated with the old appliance ID will no longer validate.'
+      puts "Stopping test suite...\n\n"
+      exit
+    end
+  end
+
   # Decryption of below variable: "841b4f58-02e1-4a66-9e27-191f15e16279;Microsoft Corporation;2021-02-14".
   let (:encrypted_license_key) { 
     <<~HEREDOC
