@@ -1,0 +1,25 @@
+.ontology-viewer{
+  svg path {
+    fill: var(--primary-color);
+  }
+}
+.ontologies-tabs-container {
+  & > .tabs-container {
+    justify-content: center;
+  }
+
+  & > .tabs-container > div {
+    width: 1248px;
+    padding: 0 50px;
+  }
+
+  & > .tab-content {
+    display: flex;
+    justify-content: center;
+
+    & > .tab-pane {
+      width: 1248px;
+      padding: 0 50px;
+    }
+  }
+}

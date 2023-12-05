@@ -1,4 +1,4 @@
-.chips-container div{
+.chips-container > div{
     margin-right: 10px;
 }
 
@@ -11,6 +11,7 @@
     display: none;
 }
 
+
 .chips-container div label{
     cursor: pointer;
 }
@@ -19,7 +20,8 @@
 }
 .chips-container div label > span{
     position: relative;
-    display: inline-block;
+    display: flex;
+    align-items: center;
     background:white;
     border: 0.5px solid #BDBDBD;
     color: #a7a7a7;

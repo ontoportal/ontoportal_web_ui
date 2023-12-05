@@ -8,7 +8,6 @@ export default function useTooltip(elem, params) {
         animation: 'fade',
         content: content,
         allowHTML: true,
-        placement: 'top',
         maxWidth: '400', ...params
     })
 }

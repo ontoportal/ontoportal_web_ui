@@ -1,0 +1,6 @@
+- if @type == "static"
+  %span.chip_button_container{@html_options}
+    = @text || content
+- else
+  %span.chip_button_container_clickable{@html_options}
+    = @text || content

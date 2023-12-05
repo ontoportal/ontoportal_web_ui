@@ -2,9 +2,10 @@
 
 class ConceptDetailsComponent < ViewComponent::Base
   include ApplicationHelper
+  include MultiLanguagesHelper
 
-  renders_one :header
-  renders_many :sections
+  renders_one :header, TableComponent
+  renders_many :sections, TableRowComponent
 
   attr_reader :concept_properties
 
@@ -19,8 +20,20 @@ class ConceptDetailsComponent < ViewComponent::Base
     @concept_properties = concept_properties2hash(@properties) if @properties
   end
 
-  def render_properties(properties_set, ontology_acronym, &block)
-    out = ''
+  def add_sections(keys, &block)
+    scheme_set = properties_set_by_keys(keys, prefix_properties(concept_properties))
+    rows = row_hash_properties(scheme_set, concept_properties, &block)
+
+    rows.each do |row|
+      section do |table_row|
+        table_row.create(*row)
+      end
+    end
+
+  end
+
+  def row_hash_properties(properties_set, ontology_acronym, &block)
+    out = []
     properties_set&.each do |key, data|
       next if exclude_relation?(key) || !data[:values]
 
@@ -31,21 +44,20 @@ class ConceptDetailsComponent < ViewComponent::Base
         if block_given?
           block.call(v)
         else
-          get_link_for_cls_ajax(v, ontology_acronym, '_blank')
+          if v.is_a?(String)
+            get_link_for_cls_ajax(v, ontology_acronym, '_blank')
+          else
+            display_in_multiple_languages([v].to_h)
+          end
         end
-      end
+      end if values.is_a?(Array)
 
-      line = <<-EOS
-              <tr>
-                <td nowrap= "" style="width:30%" >
-                    <span title=#{url} data-controller="tooltip">#{remove_owl_notation(key)}</span>
-                </td>
-                <td>#{"<p>#{ajax_links.join('</p><p>')}</p>".html_safe}</td>
-              </tr>
-      EOS
-      out += line
+      out << [
+        { th: "<span title=#{url} data-controller='tooltip'>#{remove_owl_notation(key)}</span>".html_safe },
+        { td: "<div class='d-flex flex-wrap'> #{"<p class='mx-1'>#{ajax_links&.join('</p><p class="mx-1">')}"}</div>".html_safe }
+      ]
     end
-    raw out
+    out
   end
 
   def properties_set_by_keys(keys, concept_properties, exclude_keys = [])
@@ -64,10 +76,11 @@ class ConceptDetailsComponent < ViewComponent::Base
   end
 
   private
+
   def concept_properties2hash(properties)
     # NOTE: example properties
     #
-    #properties
+    # properties
     #=> #<struct
     #  http://www.w3.org/2000/01/rdf-schema#label=
     #    [#<struct
@@ -112,7 +125,11 @@ class ConceptDetailsComponent < ViewComponent::Base
       end
       begin
         # Try to simplify the property values, when they are a struct.
-        values = properties[key].map { |v| v.string }
+        if properties[key].is_a?(OpenStruct)
+          values = language_hash(properties[key])
+        else
+          values = properties[key].map { |v| v.string }
+        end
       rescue
         # Each value is probably a simple datatype already.
         values = properties[key]
@@ -124,7 +141,7 @@ class ConceptDetailsComponent < ViewComponent::Base
   end
 
   def exclude_relation?(relation_to_check, ontology = nil)
-    excluded_relations = [ "type", "rdf:type", "[R]", "SuperClass", "InstanceCount" ]
+    excluded_relations = ["type", "rdf:type", "[R]", "SuperClass", "InstanceCount"]
 
     # Show or hide property based on the property and ontology settings
     if ontology
@@ -136,7 +153,7 @@ class ConceptDetailsComponent < ViewComponent::Base
     end
 
     excluded_relations.each do |relation|
-      return true if relation_to_check.include?(relation)
+      return true if relation_to_check.is_a?(Array) && relation_to_check.include?(relation)
     end
     return false
   end
