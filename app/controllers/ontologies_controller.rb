@@ -323,7 +323,7 @@ class OntologiesController < ApplicationController
     @methodology_properties = properties_hash_values(category_attributes["methodology"])
     @agents_properties = properties_hash_values(category_attributes["persons and organizations"])
     @dates_properties = properties_hash_values(category_attributes["dates"])
-    @links_properties = properties_hash_values(category_attributes["links"])
+    @links_properties = properties_hash_values([:isFormatOf, :hasFormat, :source, :includedInDataCatalog])
     @content_properties = properties_hash_values(category_attributes["content"])
     @community_properties = properties_hash_values(category_attributes["community"] + [:notes])
     @identifiers = properties_hash_values([:URI, :versionIRI, :identifier])
@@ -333,7 +333,9 @@ class OntologiesController < ApplicationController
                             %w[summary/documentation documentation],
                             %w[icons/github repository],
                             %w[summary/sparql endpoint],
-                            %w[icons/publication publication]]
+                            %w[icons/publication publication],
+                            %w[icons/searching_database openSearchDescription]
+    ]
     @ontology_icon_links.each do |icon|
       icon << helpers.attr_label(icon[1], attr_metadata: helpers.attr_metadata(icon[1]), show_tooltip: false)
     end
