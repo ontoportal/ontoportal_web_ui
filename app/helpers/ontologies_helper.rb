@@ -13,7 +13,7 @@ module OntologiesHelper
     return if submission.nil?
 
     no_license = submission.hasLicense.blank?
-    render ChipButtonComponent.new(class: "chip_button_small #{no_license && 'disabled-link'}", type: no_license ? 'static' : 'clickable') do
+    render ChipButtonComponent.new(class: "text-nowrap chip_button_small #{no_license && 'disabled-link'}", type: no_license ? 'static' : 'clickable') do
       if no_license
         content_tag(:span) do
           content_tag(:span, "No license", class: "mx-1") + inline_svg_tag('icons/law.svg', width: "15px")
@@ -418,7 +418,7 @@ module OntologiesHelper
           message = "The ontology is processing. Sections such as #{ontology_data_sections.join(', ')} will be available once processing is complete."
         end
       end
-      render Display::AlertComponent.new(message: message, type: type) if type
+      render Display::AlertComponent.new(message: message, type: type, button: Buttons::RegularButtonComponent.new(id:'regular-button', value: "Contact support", variant: "primary", href: "/feedback", color: type, size: "slim")) if type
     end
   end
 
@@ -624,11 +624,15 @@ module OntologiesHelper
       concat content_tag(:span , "<#{namespace}>", style: 'color:#9999a9;')
     end
   end
+
   def metadata_vocabulary_display(vocabularies)
     vocabularies_data = attribute_enforced_values('metadataVoc')
     horizontal_list_container(vocabularies) do |voc|
-      label = vocabularies_data[voc] || voc
-      label =  content_tag(:span, data: {controller:'tooltip'}, title: "Go to: #{link_to(voc)}") do
+      tooltip = vocabularies_data[voc] || nil
+      tooltip = "#{tooltip} (#{link_to(voc)})" if tooltip
+      label = prefix_property_url(voc, nil) || voc
+
+      label =  content_tag(:span, data: {controller:'tooltip'}, title: tooltip) do
         render(ExternalLinkTextComponent.new(text: label))
       end
       render ChipButtonComponent.new(url: voc, text: label, type: 'clickable')
