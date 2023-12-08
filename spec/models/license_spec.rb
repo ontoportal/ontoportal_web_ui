@@ -5,7 +5,7 @@ RSpec.describe License, type: :model do
   include ActiveSupport::Testing::TimeHelpers
 
   before(:all) do
-    @stage_server_appliance_id = 'dd212a7c-29fd-4142-8353-f59a19a79738'
+    @stage_server_appliance_id = '75872ccc-5019-4733-ac34-01ca7b8bcb3f'
 
     response = JSON.parse(
       LinkedData::Client::HTTP.get('https://stagedata.bioontology.org/admin/update_info', {}, raw: true)
@@ -38,29 +38,31 @@ RSpec.describe License, type: :model do
   # 
   # Staging license server: https://license.stage.ontoportal.org
   # Staging BioPortal instance: https://stage.bioontology.org/
-  # License information for this encrypted key: https://license.stage.ontoportal.org/licenses/1077
+  # License information for this encrypted key: https://license.stage.ontoportal.org/licenses/1078
   #
-  # Decryption of below variable: "dd212a7c-29fd-4142-8353-f59a19a79738;BMIR;2021-04-20"
+  # Decryption of below variable:
+  #   "75872ccc-5019-4733-ac34-01ca7b8bcb3f;Stanford Center for Biomedical Informatics;2021-04-21"
   #
   let (:encrypted_license_key_staging_env) {
     <<~HEREDOC
-      WtlzkakMaAKx7NwyuHRnCDVSMQszaEtv7jNiVgBcg9kQeNS69ToFp9Nhvb8F
-      AANaHtSibb6InYemQABpq+sONg9cp4+pfCTAh5ETmyF8GPrWiwv8DZstMRUO
-      IL0ws37nFZON8kYyFvWguiqL6U55r6ghaiCpI1tdfelujF4uThMbSQYI+gcN
-      UdElYm3lO2HNtEdSQ6Z3JeVZ7DtTGcGW9xKVOd1Nefoq+oDwRZ+z2JyMLtfK
-      xckDRKxzAKBhV43DS64dPXz9xAJwbLTWsGVofwN/1BTQRwimS8V4/Tc0vjha
-      2H5KyOVIGu1XNfEnIJ0Rbh9SiHflmT0T7JTNFIivNA==
-      |Sf6udPHZJB3CSRQBRw8CjB4nHEspfpg4fM7NwStIfXhfiDx0W0P0+9NiQkIh
-      0VlkhKD3ev0hnSDi/x/GazByvg==
+      bx93dtaUF/SzXgIcAQHtKowDdTil4pO1lU/bL49+5yN9VfE4qweEdEm7/BXH
+      MFEhIyhdegGBeTFgMuxjQeBlcl1IGPIgHg3RDaUDEu6Kp0TSBfPLhaUgmf0s
+      aeBkhmOpJ/hvHtOXRe8Vcy1003um7d0Lb5OCDPMq1GIONm5MUa8syJkftOoY
+      ERJGlFWReWYgaPYua6opvn0kzu/kNKRFO8bqcuRfyrWNchxeHUwj1ayGiXmT
+      eym1jcD6Vzzd4DmvfP7z7a+u7xJjXKFGyy885mfX7TcSMuD1pQko4DRTfrCJ
+      g/jNgRpOdoMvCXt/B1zPwY9vV/pBw0mOpanjWAjC7g==
+      |I7SRc0ymvXcB7yQJ+6radcth3h2NKYtvzYfohP4yHck4qn69oK3mvl5TvJ+R
+      OTJe7jgOUk6hQ8vn3yozG+9nFwsp6vgHgGSiah5UBAsqlFB4uRxcMM4ZM4iD
+      6X+O75eZ
     HEREDOC
   }
 
   it do "decrypts license data"
     license = License.create(encrypted_key: encrypted_license_key_staging_env)
 
-    expect(license.appliance_id).to eq("dd212a7c-29fd-4142-8353-f59a19a79738")
-    expect(license.organization).to eq("BMIR")
-    expect(license.expiry_date).to eq(Date.parse("2021-04-20"))
+    expect(license.appliance_id).to eq(@stage_server_appliance_id)
+    expect(license.organization).to eq("Stanford Center for Biomedical Informatics")
+    expect(license.expiry_date).to eq(Date.parse("2021-04-21"))
   end
 
   it do "is a trial license"
@@ -94,15 +96,15 @@ RSpec.describe License, type: :model do
   it do "calculates days remaining"
     license = License.create(encrypted_key: encrypted_license_key_staging_env)
 
-    travel_to(Date.parse("2021-03-21")) do
+    travel_to(Date.parse("2021-03-22")) do
       expect(license.days_remaining).to eq(30)
     end
 
-    travel_to(Date.parse("2021-04-19")) do
+    travel_to(Date.parse("2021-04-20")) do
       expect(license.days_remaining).to eq(1)
     end
 
-    travel_to(Date.parse("2021-04-20")) do
+    travel_to(Date.parse("2021-04-21")) do
       expect(license.days_remaining).to eq(0)
     end
 
