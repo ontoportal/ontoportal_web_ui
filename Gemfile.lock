@@ -108,6 +108,8 @@ GEM
       popper_js (>= 1.14.3, < 2)
       sassc-rails (>= 2.0.0)
     brakeman (5.4.1)
+    bugsnag (6.26.0)
+      concurrent-ruby (~> 1.0)
     builder (3.2.4)
     capistrano (3.18.0)
       airbrussh (>= 1.0.0)
@@ -288,7 +290,7 @@ GEM
     net-ftp (0.2.0)
       net-protocol
       time
-    net-http (0.4.0)
+    net-http (0.3.2)
       uri
     net-imap (0.4.7)
       date
@@ -556,6 +558,7 @@ DEPENDENCIES
   bootsnap
   bootstrap (~> 4.2.0)
   brakeman
+  bugsnag (~> 6.26)
   capistrano (~> 3.11)
   capistrano-bundler
   capistrano-locally
