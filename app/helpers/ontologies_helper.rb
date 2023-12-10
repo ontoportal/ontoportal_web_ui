@@ -1,13 +1,61 @@
+require 'iso-639'
 module OntologiesHelper
 
   REST_URI = $REST_URL
   API_KEY = $API_KEY
   LANGUAGE_FILTERABLE_SECTIONS = %w[classes schemes collections instances]
 
+
+  def ontology_retired?(submission)
+    submission[:status].to_s.eql?('retired') || submission[:deprecated].to_s.eql?('true')
+  end
+  def ontology_license_badge(acronym, submission = @submission_latest)
+    return if submission.nil?
+
+    no_license = submission.hasLicense.blank?
+    render ChipButtonComponent.new(class: "text-nowrap chip_button_small #{no_license && 'disabled-link'}", type: no_license ? 'static' : 'clickable') do
+      if no_license
+        content_tag(:span) do
+          content_tag(:span, "No license", class: "mx-1") + inline_svg_tag('icons/law.svg', width: "15px")
+        end
+      else
+        link_to_modal(nil, "/ajax/submission/show_licenses/#{acronym}",data: { show_modal_title_value: "Additional license a access rights information"}) do
+          content_tag(:span, "View license", class: "mx-1") + inline_svg_tag('icons/law.svg')
+        end
+      end
+
+    end
+  end
+  def ontology_retired_badge(submission, small: false, clickable: true)
+    return if submission.nil? || !ontology_retired?(submission)
+    text_color = submission[:status].to_s.eql?('retired') ? 'text-danger bg-danger-light' : 'text-warning bg-warning-light'
+    text_content = submission[:status].to_s.eql?('retired') ?  'Retired' : 'Deprecated'
+    style = "#{text_color} #{small && 'chip_button_small'}"
+    render ChipButtonComponent.new(class:  "#{style} mr-1", text: text_content, type: clickable ? 'clickable' : 'static')
+  end
+
+  def ontology_alternative_names(submission = @submission_latest)
+    alt_labels = (Array(submission&.alternative) + Array(submission&.hiddenLabel))
+    return unless alt_labels.present?
+
+    content_tag(:div, class: 'creation_text') do
+      concat("It can also be referred to as ")
+      concat(content_tag(:span, class: 'date_creation_text') do
+        if alt_labels.length > 1
+          concat("#{alt_labels[0..-2].join(', ')} or #{alt_labels.last}.")
+        else
+          concat("#{alt_labels.first}.")
+        end
+      end)
+    end
+  end
+  def private_ontology_icon(is_private)
+    raw(content_tag(:i, '', class: 'fas fa-key', title: "Private Ontology")) if is_private
+  end
   def browse_filter_section_label(key)
     labels = {
       hasFormalityLevel: 'Formality levels',
-      isOfType: 'Generic Types',
+      isOfType: 'Ontology types',
       naturalLanguage: 'Natural languages'
     }
 
@@ -58,229 +106,30 @@ module OntologiesHelper
   end
 
   # Display data catalog metadata under visits (in _metadata.html.haml)
-  def display_data_catalog(sub)
-    if !sub.send("includedInDataCatalog").nil? && sub.send("includedInDataCatalog").any?
+  def display_data_catalog(value)
+    if !value.nil? && value.any?
       # Buttons for data catalogs
-      return content_tag(:section, { :class => "ont-metadata-card ont-included-in-data-catalog-card" }) do
-        concat(content_tag(:div, { :class => "ont-section-toolbar" }) do
-          concat(content_tag(:header, "includedInDataCatalog", { :class => "pb-2 font-weight-bold" }))
-        end)
-        concat(content_tag(:div, { :class => "" }) do
-          sub.send("includedInDataCatalog").each do |catalog|
-            catalog_btn_label = catalog
-            $DATA_CATALOG_VALUES.each do |cat_uri, cat_label|
-              if catalog[cat_uri]
-                catalog_btn_label = cat_label
-                break
-              end
-            end
-            concat(content_tag(:a, catalog_btn_label, { :class => "btn btn-primary", :href => catalog, :target => "_blank" }))
-          end
-        end)
+      content_tag(:div, { :class => "" }) do
+
       end
     else
-       ""
+      ""
     end
   end
 
-  # Display data catalog metadata under visits (in _metadata.html.haml)
-  def display_logo(sub)
-    logo_attributes = ["logo", "depiction"]
-    logo_html = ""
-    logo_attributes.each do |metadata|
-      if !sub.send(metadata).nil?
-        puts sub.send(metadata)
-        logo_html.concat(content_tag(:section, { :class => "ont-metadata-card ont-logo-depiction-card" }) do
-          concat(content_tag(:div, { :class => "ont-section-toolbar" }) do
-            concat(content_tag(:header, metadata.capitalize, { :class => "pb-2 font-weight-bold" }))
-          end)
-          concat(content_tag(:div, { :class => "" }) do
-            concat(content_tag(:a, { :href => sub.send(metadata), :title => sub.send(metadata),
-                                     :target => "_blank", :style => "border-width:0;" }) do
-
-              concat(content_tag(:img, "", { :title => sub.send(metadata),
-                                             :style => "border-width:0;max-width: 100%;", :src => sub.send(metadata).to_s }))
-            end)
-          end)
-        end)
-      end
-    end
-    return logo_html
+  def agent?(sub_metadata, attr)
+    metadata = sub_metadata.select { |x| x['@id'][attr] }.first
+    metadata && Array(metadata['enforce']).include?('Agent')
   end
 
-  # Add additional metadata as html for a submission
-  def additional_metadata(sub)
-    # Get the list of metadata attribute from the REST API
-    json_metadata = submission_metadata
-    metadata_list = {}
-    # Get extracted metadata and put them in a hash with their label, if one, as value
-    json_metadata.each do |metadata|
-      if metadata["extracted"] == true
-        metadata_list[metadata["attribute"]] = metadata["label"]
-      end
-    end
-    metadata_list = metadata_list.sort
+  def display_contact(contacts)
+    contacts.map do |c|
+      next unless c.member?(:name) && c.member?(:email)
 
-    html = []
-
-    metadata_not_displayed = ["status", "description", "documentation", "publication", "homepage", "openSearchDescription", "dataDump", "includedInDataCatalog", "logo", "depiction"]
-
-    begin
-
-      metadata_list.each do |metadata, label|
-        # Don't display documentation, publication, homepage, status and description, they are already in main details
-        if !metadata_not_displayed.include?(metadata)
-          # different html build if list or single value
-
-          # METADATA ARRAY
-          if sub.send(metadata).kind_of?(Array)
-            if sub.send(metadata).any?
-              if metadata.eql?("naturalLanguage")
-                # Special treatment for naturalLanguage: we want the flags in a bootstrap box
-                # UK is gb: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
-                lang_codes = []
-
-                sub.send(metadata).each do |lang|
-                  if (lang.to_s.eql?("en") || lang.to_s.eql?("eng") || lang.to_s.eql?("http://lexvo.org/id/iso639-3/eng"))
-                    # We consider en and eng as english
-                    lang_codes << "gb"
-                  elsif lang.to_s.start_with?("http://lexvo.org")
-                    lang_codes << $LEXVO_TO_FLAG[lang]
-                  else
-                    lang_codes << lang
-                  end
-                end
-
-                html << content_tag(:tr) do
-                  concat(content_tag(:td, "Natural Language", " "))
-                  # Display naturalLanguage as flag
-                  concat(content_tag(:td) do
-                    concat(content_tag(:ul, { :class => "f32" }) do
-                      lang_codes.each do |lang_code|
-                        if lang_code.length == 2
-                          concat(content_tag(:li, "", { :class => "flag #{lang_code}", :style => "margin-right: 0.5em;" }))
-                        else
-                          concat(content_tag(:li, lang_code))
-                        end
-                      end
-                    end)
-                  end)
-                end
-
-              else
-                html << content_tag(:tr) do
-                  if label.nil?
-                    concat(content_tag(:td, metadata.gsub(/(?=[A-Z])/, " ")))
-                  else
-                    concat(content_tag(:td, label))
-                  end
-
-                  metadata_array = []
-                  sub.send(metadata).each do |metadata_value|
-                    if metadata_value.to_s.start_with?("#{$REST_URL}/ontologies/")
-                      # For URI that links to our ontologies we display a button with only the acronym. And redirect to the UI
-                      # Warning! Redirection is done by removing "data." from the REST_URL. So might not work perfectly everywhere
-                      if metadata_value.to_s.split("/").length < 6
-                        # for ontologies/ACRONYM we redirect to the UI url
-                        metadata_array.push("<a href=\"#{metadata_value.to_s.sub("data.", "")}\" class=\"btn btn-primary\" target=\"_blank\">#{metadata_value.to_s.split("/")[4..-1].join("/")}</a>")
-                      else
-                        metadata_array.push("<a href=\"#{metadata_value.to_s}\" class=\"btn btn-primary\" target=\"_blank\">#{metadata_value.to_s.split("/")[4..-1].join("/")}</a>")
-                      end
-
-                    elsif metadata_value.to_s =~ /\A#{URI::regexp(['http', 'https'])}\z/
-                      # Don't create a link if it not an URI
-                      metadata_array.push("<a href=\"#{metadata_value.to_s}\" target=\"_blank\">#{metadata_value.to_s}</a>")
-                    else
-                      metadata_array.push(metadata_value)
-                    end
-                  end
-                  concat(content_tag(:td, raw(metadata_array.join(", "))))
-                end
-              end
-            end
-          else
-
-            # SINGLE METADATA
-            if !sub.send(metadata).nil?
-              html << content_tag(:tr) do
-                if label.nil?
-                  concat(content_tag(:td, metadata.gsub(/(?=[A-Z])/, " ")))
-                else
-                  concat(content_tag(:td, label))
-                end
-                if (metadata.to_s.eql?("hasLicense"))
-                  if (sub.send(metadata).to_s.start_with?("http://creativecommons.org/licenses") || sub.send(metadata).start_with?("https://creativecommons.org/licenses"))
-                    concat(content_tag(:td) do
-                      concat(content_tag(:a, { :rel => "license", :alt => "Creative Commons License",
-                                               :href => sub.send(metadata), :target => "_blank", :style => "border-width:0", :title => sub.send(metadata),
-                                               :src => "https://i.creativecommons.org/l/by/4.0/88x31.png" }) do
-
-                        concat(content_tag(:img, "", { :rel => "license", :alt => "Creative Commons License", :title => sub.send(metadata),
-                                                       :style => "border-width:0", :src => "https://i.creativecommons.org/l/by/4.0/88x31.png" }))
-                      end)
-                    end)
-
-                  elsif (sub.send(metadata).to_s.start_with?("http://opensource.org/licenses") || sub.send(metadata).start_with?("https://opensource.org/licenses"))
-                    concat(content_tag(:td) do
-                      concat(content_tag(:a, { :rel => "license", :alt => "Open Source License",
-                                               :href => sub.send(metadata), :title => sub.send(metadata), :target => "_blank", :style => "border-width:0;",
-                                               :src => "https://opensource.org/files/osi_logo_bold_100X133_90ppi.png" }) do
-
-                        concat(content_tag(:img, "", { :rel => "license", :alt => "Open Source License", :title => sub.send(metadata),
-                                                       :style => "height: 80px; border-width:0;", :src => "https://opensource.org/files/osi_logo_bold_100X133_90ppi.png" }))
-                      end)
-                    end)
-
-                  else
-                    concat(content_tag(:td) do
-                      concat(content_tag(:a, sub.send(metadata), { :rel => "license", :href => sub.send(metadata), :target => "_blank" }))
-                    end)
-                  end
-
-                elsif (metadata.to_s.eql?("endpoint") && (sub.send(metadata).start_with?("http://sparql.") || sub.send(metadata).start_with?("https://sparql.")))
-                  concat(content_tag(:td) do
-                    concat(content_tag(:a, { :href => sub.send(metadata), :title => sub.send(metadata),
-                                             :target => "_blank", :style => "border-width:0;" }) do
-
-                      concat(image_tag('logos/sparql_logo.png', title: sub.send(metadata), class: 'logo'))
-                    end)
-                  end)
-
-                elsif sub.send(metadata).to_s.start_with?("#{$REST_URL}/ontologies/")
-                  # For URI that links to our ontologies we display a button with only the acronym. And redirect to the UI
-                  # Warning! Redirection is done by removing "data." from the REST_URL. So might not work perfectly everywhere
-                  if sub.send(metadata).to_s.split("/").length < 6
-                    # for ontologies/ACRONYM we redirect to the UI url
-                    concat(content_tag(:td) do
-                      concat(content_tag(:a, sub.send(metadata).to_s.split("/")[4..-1].join("/"), { :class => "btn btn-primary",
-                                                                                                    :href => sub.send(metadata).sub("data.", ""), :target => "_blank", :title => sub.send(metadata) }))
-                    end)
-                  else
-                    concat(content_tag(:td) do
-                      concat(content_tag(:a, sub.send(metadata).to_s.split("/")[4..-1].join("/"), { :class => "btn btn-primary",
-                                                                                                    :href => sub.send(metadata), :target => "_blank", :title => sub.send(metadata) }))
-                    end)
-                  end
-
-                else
-                  if sub.send(metadata).to_s =~ /\A#{URI::regexp(['http', 'https'])}\z/
-                    # Don't create a link if it not an URI
-                    concat(content_tag(:td, raw("<a href=\"#{sub.send(metadata).to_s}\" target=\"_blank\">#{sub.send(metadata).to_s}</a>")))
-                  else
-                    concat(content_tag(:td, raw(sub.send(metadata).to_s)))
-                  end
-                end
-              end
-            end
-          end
-        end
-      end
-    rescue => e
-      LOG.add :debug, "Unable to retrieve additional ontology metadata"
-      LOG.add :debug, "error: #{e}"
-      LOG.add :debug, "error message: #{e.message}"
-    end
-    html.join("")
+      formatted_name = c[:name].titleize
+      formatted_email = c[:email].downcase
+      "<span class='date_creation_text'>#{formatted_name}</span> (#{formatted_email})"
+    end&.join(" and ")
   end
 
   def count_links(ont_acronym, page_name = 'summary', count = 0)
@@ -301,29 +150,34 @@ module OntologiesHelper
   # Creates a link based on the status of an ontology submission
   def download_link(submission, ontology = nil)
     ontology ||= @ontology
+    links = []
     if ontology.summaryOnly
       if submission.homepage.nil?
-        link = 'N/A - metadata only'
+        links << { href: '', label: 'N/A - metadata only' }
       else
         uri = submission.homepage
-        link = "<a href='#{uri}'>Home Page</a>"
+        links << { href: uri, label: 'Home Page' }
       end
     else
       uri = submission.id + "/download?apikey=#{get_apikey}"
-      link = "<a href='#{uri}' 'rel='nofollow'>#{submission.pretty_format}</a>"
+      links << { href: uri, label: submission.pretty_format }
       latest = ontology.explore.latest_submission({ include_status: 'ready' })
       if latest && latest.submissionId == submission.submissionId
-        link += " | <a href='#{ontology.id}/download?apikey=#{get_apikey}&download_format=csv' rel='nofollow'>CSV</a>"
+        links << { href: "#{ontology.id}/download?apikey=#{get_apikey}&download_format=csv", label: "CSV" }
         if !latest.hasOntologyLanguage.eql?('UMLS')
-          link += " | <a href='#{ontology.id}/download?apikey=#{get_apikey}&download_format=rdf' rel='nofollow'>RDF/XML</a>"
+          links << { href: "#{ontology.id}/download?apikey=#{get_apikey}&download_format=rdf", label: "RDF/XML" }
         end
       end
       unless submission.diffFilePath.nil?
         uri = submission.id + "/download_diff?apikey=#{get_apikey}"
-        link = link + " | <a href='#{uri} 'rel='nofollow'>DIFF</a>"
+        links << { href: uri, label: "DIFF" }
       end
     end
-    link
+    links
+  end
+
+  def link?(string)
+    string.to_s.start_with?('http://') || string.to_s.start_with?('https://')
   end
 
   def mappings_link(ontology, count)
@@ -348,8 +202,10 @@ module OntologiesHelper
     version_link + status_text
   end
 
-  def submission_status2string(sub)
-    return '' if sub.submissionStatus.nil?
+
+  def submission_status2string(data)
+    return '' if data[:submissionStatus].nil?
+
     # Massage the submission status into a UI string
     # submission status values, from:
     # https://github.com/ncbo/ontologies_linked_data/blob/master/lib/ontologies_linked_data/models/submission_status.rb
@@ -357,7 +213,7 @@ module OntologiesHelper
     # Strip the URI prefix from the status codes (works even if they are not URIs)
     # The order of the codes must be assumed to be random, it is not an entirely
     # predictable sequence of ontology processing stages.
-    codes = sub.submissionStatus.map { |s| s.split('/').last }
+    codes = data[:submissionStatus].map { |s| s.split('/').last }
     errors = codes.select { |c| c.start_with? 'ERROR' }.map { |c| c.gsub("_", " ").split(/(\W)/).map(&:capitalize).join }.compact
     status = []
     status.push('Parsed') if (codes.include? 'RDF') && (codes.include? 'RDF_LABELS')
@@ -373,6 +229,38 @@ module OntologiesHelper
     '(' + status.join(', ') + ')'
   end
 
+  def status_string(data)
+    return '' unless data.present? && data[:submissionStatus].present?
+
+    submission_status2string(data)
+  end
+
+  def submission_status_ok?(status)
+    status.include?('Parsed') && !status.include?('Error')
+  end
+
+  def submission_status_error?(status)
+    !status.include?('Parsed') && status.include?('Error')
+  end
+
+  def submission_status_warning?(status)
+    status.include?('Parsed') && status.include?('Error')
+  end
+
+  def submission_status_icons(status)
+    if submission_status_ok?(status)
+      "success-icon.svg"
+    elsif submission_status_error?(status)
+      'error-icon.svg'
+    elsif status == '(Archived)'
+      'archive.svg'
+    elsif submission_status_warning?(status)
+      "alert-triangle.svg"
+    else
+      "info.svg"
+    end
+  end
+
   # Link for private/public/licensed ontologies
   def visibility_link(ontology)
     ont_url = "/ontologies/#{ontology.acronym}" # 'ontology' is NOT a submission here
@@ -386,6 +274,24 @@ module OntologiesHelper
       link_name = 'Licensed'
     end
     "<a href='#{ont_url}/?p=#{page_name}'>#{link_name}</a>"
+  end
+
+  def show_category_name(domain)
+    acronym = domain.split('/').last.upcase
+    category = LinkedData::Client::Models::Category.find_by_acronym(acronym).first
+    category ? category.name : acronym.titleize
+  end
+
+  def show_group_name(domain)
+    acronym = domain.split('/').last.upcase
+    category = LinkedData::Client::Models::Group.find_by_acronym(acronym).first
+    category ? category.name : acronym.titleize
+  end
+
+  def show_group_name(domain)
+    acronym = domain.split('/').last.upcase
+    category = LinkedData::Client::Models::Group.find_by_acronym(acronym).first
+    category ? category.name : acronym
   end
 
   def visits_data(ontology = nil)
@@ -425,6 +331,14 @@ module OntologiesHelper
     (params[:p]) ? params[:p] : 'summary'
   end
 
+  def link_to_section(section_title)
+    link_to(section_name(section_title), ontology_path(@ontology.acronym, p: section_title),
+            id: "ont-#{section_title}-tab", class: "nav-link #{selected_section?(section_title) ? 'active show' : ''}",
+            data: { action: 'click->ontology-viewer-tabs#selectTab',
+                    toggle: "tab", target: "#ont_#{section_title}_content", 'bp-ont-page': section_title,
+                    'bp-ont-page-name': ontology_viewer_page_name(@ontology.name, @concept&.prefLabel || '', section_title) })
+  end
+
   def selected_section?(section_title)
     current_section.eql?(section_title)
   end
@@ -450,7 +364,9 @@ module OntologiesHelper
     if current_section.eql?(section_title)
       block.call
     else
-      render TurboFrameComponent.new(id: section_title, src: "/ontologies/#{@ontology.acronym}?p=#{section_title}", target: '_top', data: { "turbo-frame-target": "frame" })
+      render TurboFrameComponent.new(id: section_title, src: "/ontologies/#{@ontology.acronym}?p=#{section_title}",
+                                     loading: Rails.env.development?  ? "lazy" : "eager",
+                                     target: '_top', data: { "turbo-frame-target": "frame" })
     end
   end
 
@@ -465,17 +381,47 @@ module OntologiesHelper
      }].to_json
   end
 
+  def submission_ready?(submission)
+    Array(submission&.submissionStatus).include?('RDF')
+  end
+
   def sections_to_show
     sections = ['summary']
 
-    unless @ontology.summaryOnly || @submission_latest.nil?
-      sections += %w[classes properties notes mappings]
+    if !@ontology.summaryOnly && submission_ready?(@submission_latest)
+      sections += ['classes']
+      sections += %w[properties]
       sections += %w[schemes collections] if skos?
       sections += %w[instances] unless skos?
-      sections += %w[widgets]
+      sections += %w[notes mappings widgets]
     end
     sections
   end
+
+  def not_ready_submission_alert(ontology: @ontology, submission: @submission)
+    if ontology.admin?(session[:user])
+      status = status_string(submission)
+      type = nil
+      message = nil
+      if submission_status_error?(status)
+        type = 'danger'
+        message = "The ontology processing failed, with the current statuses: #{status}"
+      elsif submission_status_warning?(status)
+        message = "The ontology parsing succeeded, but some processing steps failed, here are the current statuses: #{status}"
+        type = 'warning'
+
+      elsif !submission_ready?(submission)
+        type = 'info'
+        if submission.nil?
+          message = "Upload an ontology. Sections such as #{ontology_data_sections.join(', ')} will be available once done."
+        else
+          message = "The ontology is processing. Sections such as #{ontology_data_sections.join(', ')} will be available once processing is complete."
+        end
+      end
+      render Display::AlertComponent.new(message: message, type: type, button: Buttons::RegularButtonComponent.new(id:'regular-button', value: "Contact support", variant: "primary", href: "/feedback", color: type, size: "slim")) if type
+    end
+  end
+
   def dispaly_complex_text(definitions)
     html = ""
     definitions.each do |definition|
@@ -486,6 +432,211 @@ module OntologiesHelper
       end
     end
     return html.html_safe
+  end
+
+  def edit_sub_languages_button(ontology = @ontology, submission = @submission_latest)
+    return unless ontology.admin?(session[:user])
+
+    link = edit_ontology_submission_path(ontology.acronym, submission.submissionId, properties: 'naturalLanguage', container_id: 'application_modal_content')
+    link_to_modal(nil,  link, class: "btn", id:'fair-details-link',
+                  data: { show_modal_title_value: "Edit natural languages of #{ontology.acronym}", show_modal_size_value: 'modal-md' }) do
+      render ChipButtonComponent.new(type: 'clickable', class: 'admin-background chip_button_small' ) do
+        ("Click here to edit available languages" + content_tag(:i, "", class: "fas fa-lg fa-edit")).html_safe
+      end
+    end
+  end
+  def language_selector_tag(name)
+    content_language_selector(id: name, name: name)
+  end
+
+  def language_selector_hidden_tag(section)
+    hidden_field_tag "language_selector_hidden_#{section}", '',
+                     data: { controller: "language-change", 'language-change-section-value': section, action: "change->language-change#dispatchLangChangeEvent" }
+  end
+
+
+
+  def display_complex_text(definitions)
+    html = ""
+    definitions.each do |definition|
+      if definition.is_a?(String)
+        html += '<p class="prefLabel">' + definition + '</p>'
+      elsif definition.respond_to?(:uri) && definition.uri
+        html += render LinkFieldComponent.new(value: definition.uri)
+      else
+        html += display_in_multiple_languages(definition)
+      end
+    end
+    return html.html_safe
+  end
+
+  def new_view_path(ont_id)
+    ont_id_esc = CGI.escape(ont_id)
+    if session[:user].nil?
+      "/login?redirect=#{escape("/ontologies/new?ontology[viewOf]=#{ont_id_esc}")}"
+    else
+      "/ontologies/new?ontology[viewOf]=#{ont_id_esc}"
+    end
+  end
+
+  def new_element_link(title, link)
+    if session[:user].nil?
+      link = "/login?redirect=#{link}"
+    end
+
+    link_to(link, title: title, class: "mx-1") do
+      inline_svg_tag("icons/plus.svg", width: '15px', height: '15px')
+    end
+  end
+
+  def ontology_icon_links(links, submission_latest)
+    links.map do |icon, attr, label|
+      value = submission_latest.nil? ? nil : submission_latest.send(attr)
+
+      link_options = {
+        style: "text-decoration: none; width: 30px; height: 30px"
+      }
+
+      if Array(value).empty?
+        link_options[:class] = 'disabled-icon'
+        link_options[:disabled] = 'disabled'
+        title = label
+      else
+        title = label + '<br>' + link_to(Array(value).first)
+      end
+
+      content_tag(:span, data: {controller:"tooltip" } , title:  title) do
+        link_to(inline_svg("#{icon}.svg", width: "32", height: '32'),
+                Array(value).first || '', link_options)
+      end
+    end.join.html_safe
+  end
+
+  def ontology_depiction_card
+    return if Array(@submission_latest&.depiction).empty?
+
+    render Layout::CardComponent.new do
+      list_container(@submission_latest.depiction) do |depiction_url|
+        render Display::ImageComponent.new(src: depiction_url)
+      end
+    end
+  end
+
+  def metadata_formats_buttons
+    render SummarySectionComponent.new(title: 'Download metadata (profile/syntax)', show_card: false) do
+      content_tag :div, data: { controller: 'metadata-downloader' } do
+        horizontal_list_container([
+                                    ['NQuads', 'MOD/n-triple'],
+                                    ['JsonLd', 'MOD/json-ld'],
+                                    ['XML', 'MOD/rdf-xml']
+                                  ]) do |format, label|
+          render ChipButtonComponent.new(type: 'clickable', 'data-action': "click->metadata-downloader#download#{format}") do
+            concat content_tag(:span, label)
+            concat content_tag(:span, inline_svg("summary/download.svg", width: '15px', height: '15px'))
+          end
+        end
+      end
+    end
+
+  end
+
+  def count_subscriptions(ontology_id)
+    users = LinkedData::Client::Models::User.all(include: 'subscription', display_context: false, display_links: false)
+    users.select { |u| u.subscription.find { |s| s.ontology.eql?(ontology_id) } }.count
+  end
+
+  def new_submission_button
+    return unless @ontology.admin?(session[:user])
+    render RoundedButtonComponent.new(link: new_ontology_submission_path(@ontology.acronym), icon: 'icons/plus.svg',
+                                      size: 'medium', title: 'Add new submission')
+  end
+
+  def ontology_edit_button
+    return unless @ontology.admin?(session[:user])
+    render RoundedButtonComponent.new(link: edit_ontology_path(@ontology.acronym), icon: 'edit.svg',
+                                      size: 'medium',
+                                      title: 'Edit metadata')
+  end
+
+  def upload_ontology_button
+    if session[:user].nil?
+      render Buttons::RegularButtonComponent.new(id: "upload-ontology-button", value: t('home.ontology_upload_button'), variant: "secondary", state: "regular", href: "/login?redirect=/ontologies/new") do |btn|
+        btn.icon_left do
+          inline_svg_tag "upload.svg"
+        end
+      end
+    else
+      render Buttons::RegularButtonComponent.new(id: "upload-ontology-button", value: t('home.ontology_upload_button'), variant: "secondary", state: "regular", href: new_ontology_path) do |btn|
+        btn.icon_left do
+          inline_svg_tag "upload.svg"
+        end
+      end
+    end
+  end
+
+  def submission_json_button
+    render RoundedButtonComponent.new(link: "#{(@submission_latest || @ontology).id}?display=all",
+                                      target: '_blank',
+                                      size: 'medium',
+                                      title: 'Go to API')
+  end
+
+
+  def projects_field(projects, ontology_acronym = @ontology.acronym)
+    render FieldContainerComponent.new do |f|
+      f.label do
+        concat "Projects using #{ontology_acronym}"
+        concat new_element_link('Create new project', new_project_path)
+      end
+
+      if projects.empty?
+        empty_state_message("No projects using #{ontology_acronym}")
+      else
+        horizontal_list_container(projects) do |project|
+          render ChipButtonComponent.new(url: project_path(project.acronym), text: project.name, type: "clickable")
+        end
+      end
+    end
+  end
+  def ontology_import_code(submission = @submission_latest )
+    # TODO remove or reuse somewhere elese
+    prefix = submission.preferredNamespacePrefix
+    namespace= submission.preferredNamespaceUri || submission.URI
+    return if prefix.blank? && namespace.blank?
+
+    render ChipButtonComponent.new do
+      concat content_tag(:span , "@prefix ", style: 'color: #FA7070')
+      concat content_tag(:span , "#{prefix}: ", style: 'color: var(--primary-color);font-weight: 700;')
+      concat content_tag(:span , "<#{namespace}>", style: 'color:#9999a9;')
+    end
+  end
+
+  def metadata_vocabulary_display(vocabularies)
+    vocabularies_data = attribute_enforced_values('metadataVoc')
+    horizontal_list_container(vocabularies) do |voc|
+      tooltip = vocabularies_data[voc] || nil
+      tooltip = "#{tooltip} (#{link_to(voc)})" if tooltip
+      label = prefix_property_url(voc, nil) || voc
+
+      label =  content_tag(:span, data: {controller:'tooltip'}, title: tooltip) do
+        render(ExternalLinkTextComponent.new(text: label))
+      end
+      render ChipButtonComponent.new(url: voc, text: label, type: 'clickable')
+    end
+  end
+
+  def summary_only?
+    @ontology&.summaryOnly || @submission&.isRemote&.eql?('3')
+  end
+
+  def ontology_pull_location?
+    !(@submission.pullLocation.nil? || @submission.pullLocation.empty?)
+  end
+
+  private
+
+  def submission_languages(submission = @submission)
+    Array(submission&.naturalLanguage).map { |natural_language| natural_language["iso639"] && natural_language.split('/').last }.compact
   end
 end
 

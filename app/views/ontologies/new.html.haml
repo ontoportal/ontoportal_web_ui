@@ -1,5 +1,59 @@
 - @title = "Submit New Ontology"
 
 %div{:style => "margin:10px;"}
-  = form_for :ontology, url: {action: "create"}, html: {id: "ontologyForm"} do |f|
-    = render partial: "form", locals: {f: f}
+  = form_for :ontology, url: {action: "create"}, html: {id: "ontologyForm", multipart: true} do
+    .upload-ontology-container
+      %div{style: 'width: 589px'}
+        = error_message_alert
+        .upload-ontology-card
+          .upload-ontology-center
+            .d-flex.justify-content-between
+              %a{:href => "javascript:javascript:history.go(-1)"}
+                %img.lost-password-arrowback{:src => "#{asset_path("arrow-back.svg")}"}
+              .register-title-container
+                %h2.register-title
+                  = @is_update_ontology ? "Add new submisison for ontology #{@ontology.acronym}" : "Submit new ontology" 
+                %hr#register-title-line/
+              %div
+            .upload-ontology-progress
+              = render Layout::ProgressPagesComponent.new(pages_title: ['Details', 'General information', 'Dates and contacts']) do |c|
+                - c.page do
+                  = render partial: 'ontologies/form'
+                - c.page do
+                  .upload-ontology-desc
+                    = metadata_help_link
+                  .upload-ontology-input-field-container
+                    = attribute_input('URI', label: 'URI')
+                  .upload-ontology-input-field-container
+                    = attribute_input('description', long_text: true)
+                  - if @is_update_ontology
+                    .upload-ontology-input-field-container{id: "submissionnotes_from_group_input"}
+                      = attribute_input("notes", label: 'Change notes')
+                  .upload-ontology-field-container
+                    = render Layout::RevealComponent.new(init_show: @submission.hasOntologyLanguage&.eql?('SKOS'), show_condition: 'SKOS') do |c|
+                      - c.button do
+                        = attribute_input("hasOntologyLanguage")
+                      .upload-ontology-desc
+                        %div
+                          SKOS vocabularies submitted to BioPortal must contain a minimum of one concept scheme and top concept assertion. Please
+                          refer to the NCBO wiki for a more
+                          = link_to ExternalLinkTextComponent.new(text: 'detailed explanation').call, "#seethewiki"
+                          with examples.
+                  .upload-ontology-field-container.mt-3
+                    = render Layout::RevealComponent.new(init_show: @submission.status&.eql?('retired'), show_condition: 'retired') do |c|
+                      - c.button do
+                        = attribute_input("status")
+                      .upload-ontology-field-container
+                        - @submission.valid = nil unless @submission.status&.eql?('retired')
+                        = attribute_input("valid")
+                  .upload-ontology-field-container
+                    = render partial: 'ontologies/submission_location_form'
+
+                - c.page do
+                  .upload-ontology-input-field-container
+                    - if @is_update_ontology
+                      = attribute_input('modificationDate', label: 'Modification date', max_date: Date.today)
+                    - else
+                      = attribute_input('released',  label: 'Date of original creation',  max_date: Date.today)
+                  .upload-ontology-contact{id: "submissioncontact_from_group_input"}
+                    = contact_input(show_help: false)

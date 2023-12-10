@@ -7,71 +7,41 @@ class HomeController < ApplicationController
   include FairScoreHelper
 
   def index
-    @ontologies_views = LinkedData::Client::Models::Ontology.all(include_views: true)
-    @ontologies = @ontologies_views.select {|o| !o.viewOf}
-    @ontologies_hash = Hash[@ontologies_views.map {|o| [o.acronym, o]}]
-    @groups = LinkedData::Client::Models::Group.all
-    @notes = LinkedData::Client::Models::Note.all
-    @last_notes = []
-    unless @notes.empty?
-      @notes.sort! {|a,b| b.created <=> a.created }
-      @notes[0..20].each do |n|
-        ont_uri = n.relatedOntology.first
-        ont = LinkedData::Client::Models::Ontology.find(ont_uri)
-        next if ont.nil?
-        username = n.creator.split("/").last
-        note = {
-            :uri => n.links['ui'],
-            :id => n.id,
-            :subject => n.subject,
-            :body => n.body,
-            :created => n.created,
-            :author => username,
-            :ont_name => ont.name
-        }
-        @last_notes.push note
-        break if @last_notes.length >= [$HOME_LATEST_NOTES_COUNT.to_i, 5].max
-      end
-    end
-    # Get the latest manual mappings
-    # All mapping classes are bidirectional.
-    # Each class in the list maps to all other classes in the list.
-    if $DISPLAY_RECENT.nil? || $DISPLAY_RECENT == true
-      @recent_mappings = get_recent_mappings  # application_controller
-    end
-    
-    organize_groups
-
+    @analytics =  helpers.ontologies_analytics
     # Calculate BioPortal summary statistics
-    @ont_count = @ontologies.length
-    @cls_count = LinkedData::Client::Models::Metrics.all.map { |m| m.classes.to_i }.sum
-    @individuals_count = LinkedData::Client::Models::Metrics.all.map {|m| m.individuals.to_i}.sum
-    @prop_count = 36286
-    @map_count = total_mapping_count
-    @analytics = LinkedData::Client::Analytics.last_month
-
-    @ontology_names = @ontologies.map { |ont| ["#{ont.name} (#{ont.acronym})", ont.acronym] }
-
-    @anal_ont_names = {}
-    @anal_ont_numbers = []
-    @analytics.onts[0..4].each do |visits|
-      ont = @ontologies_hash[visits[:ont].to_s]
-      @anal_ont_names[ont.acronym] = ont.name
-      @anal_ont_numbers << visits[:views]
+    @ont_count = @analytics.keys.size
+    metrics = LinkedData::Client::Models::Metrics.all
+    metrics = metrics.each_with_object(Hash.new(0)) do |h, sum|
+      h.to_hash.slice(:classes, :properties, :individuals).each { |k, v| sum[k] += v }
     end
 
+    @cls_count = metrics[:classes]
+    @individuals_count = metrics[:individuals]
+    @prop_count = metrics[:properties]
+    @map_count = total_mapping_count
+    @projects_count = LinkedData::Client::Models::Project.all.length
+    @users_count = LinkedData::Client::Models::User.all.length
+
+    @upload_benefits = [
+      t('home.benefit1'),
+      t('home.benefit2'),
+      t('home.benefit3'), 
+      t('home.benefit4'),
+      t('home.benefit5')
+    ]
+
+    @anal_ont_names = []
+    @anal_ont_numbers = []
+    @analytics.sort_by{|ont, count| -count}[0..4].each do |ont, count|
+      @anal_ont_names << ont
+      @anal_ont_numbers << count
+    end
 
   end
 
   def render_layout_partial
     partial = params[:partial]
     render partial: "layouts/#{partial}"
-  end
-
-  def help
-    # Show the header/footer or not
-    layout = params[:pop].eql?('true') ? 'popup' : 'ontology'
-    render layout: layout
   end
 
   def all_resources
@@ -125,7 +95,7 @@ class HomeController < ApplicationController
     end
 
     unless @errors.empty?
-      render render 'home/feedback/feedback', layout: feedback_layout
+      render 'home/feedback/feedback', layout: feedback_layout
       return
     end
 
@@ -175,6 +145,14 @@ class HomeController < ApplicationController
   def validate_ontology_file
     response = LinkedData::Client::HTTP.post('/validate_ontology_file', ontology_file: params[:ontology_file])
     @process_id = response.process_id
+  end
+
+  def annotator_recommender_form
+    if params[:submit_button] == "annotator"
+      redirect_to "/annotator?text=#{params[:text]}"
+    elsif params[:submit_button] == "recommender"
+      redirect_to "/recommender?text=#{params[:text]}"
+    end
   end
 
   private

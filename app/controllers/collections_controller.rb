@@ -10,7 +10,7 @@ class CollectionsController < ApplicationController
     collection_label =  collection['prefLabel'] if collection
     collection_label = params[:id]  if collection_label.nil? || collection_label.empty?
 
-    render LabelLinkComponent.inline(params[:id], collection_label)
+    render LabelLinkComponent.inline(params[:id], helpers.main_language_label(collection_label))
   end
 
   def show_members
@@ -18,7 +18,7 @@ class CollectionsController < ApplicationController
     @collection = get_request_collection
     page = params[:page] || '1'
     @auto_click = page.to_s.eql?('1')
-    @page = @collection.explore.members({page: page})
+    @page = @collection.explore.members({page: page, language: request_lang})
     @concepts = @page.collection
     if @ontology.nil?
       ontology_not_found params[:ontology]

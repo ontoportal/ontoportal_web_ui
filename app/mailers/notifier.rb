@@ -6,7 +6,7 @@ class Notifier < ApplicationMailer
     @current_user = current_user
     @request_ip = request_ip
     @current_url = current_url
-
+  
     mail(to: "#{$SUPPORT_EMAIL}", from: "#{$SUPPORT_EMAIL}",
         subject: "[#{$SITE}] Exception Mailer: #{@error_message}")
   end
@@ -21,10 +21,6 @@ class Notifier < ApplicationMailer
     mail(:to => "#{$SUPPORT_EMAIL}, #{email}",
          :from => "#{$SUPPORT_EMAIL}",
          :subject => "[#{$SITE}] Feedback from #{name}")
-  end
-
-  def signup(user)
-
   end
 
 end

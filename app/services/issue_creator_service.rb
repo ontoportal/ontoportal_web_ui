@@ -18,7 +18,7 @@ class IssueCreatorService < ApplicationService
         id
       }
     }
-  GRAPHQL
+    GRAPHQL
 
     createIssueMutation = GitHub::Client.parse <<-'GRAPHQL'
     mutation ($repositoryId: ID!, $title: String!, $body: String) {
