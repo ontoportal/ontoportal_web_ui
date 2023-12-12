@@ -132,10 +132,11 @@ module NotesHelper
 
   def subscribe_button(ontology_id)
     user = session[:user]
+
     if user.nil?
-      # subscribe button must redirect to login
-      return sanitize("<a href='/login?redirect=#{request.url}' style='font-size: .9em;' class='link_button subscribe_to_notes'>Subscribe to notes emails</a>")
+      return link_to('Subscribe to notes emails', login_index_path, class: 'link_button')
     end
+
     # Init subscribe button parameters.
     sub_text = "Subscribe"
     params = "data-bp_ontology_id='#{ontology_id}' data-bp_is_subbed='false' data-bp_user_id='#{user.id}'"
