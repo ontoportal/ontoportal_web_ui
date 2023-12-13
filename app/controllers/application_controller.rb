@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
 
   unless Rails.env.development? || Rails.env.test?
     rescue_from ActiveRecord::RecordNotFound, with: :not_found_record
-    rescue_from StandardError, with: :internal_server_error
+    #rescue_from StandardError, with: :internal_server_error
   end
 
   # Pull configuration parameters for REST connection.
