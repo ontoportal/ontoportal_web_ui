@@ -341,13 +341,14 @@ function subscribeToNotes(button) {
   var ontologyId = jQuery(button).attr("data-bp_ontology_id");
   var isSubbed = jQuery(button).attr("data-bp_is_subbed");
   var userId = jQuery(button).attr("data-bp_user_id");
+  let encodedUserId = encodeURIComponent(userId);
 
   jQuery(".notes_sub_error").html("");
   jQuery(".notes_subscribe_spinner").show();
 
   jQuery.ajax({
     type: "POST",
-    url: "/subscriptions?user_id="+userId+"&ontology_id="+ontologyId+"&subbed="+isSubbed,
+    url: `/subscriptions?user_id=${encodedUserId}&ontology_id=${ontologyId}&subbed=${isSubbed}`,
     dataType: "json",
     success: function(data) {
       jQuery(".notes_subscribe_spinner").hide();
