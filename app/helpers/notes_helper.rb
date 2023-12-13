@@ -148,14 +148,14 @@ module NotesHelper
         ont = LinkedData::Client::Models::Ontology.find_by_acronym(ontology_id).first
       end
       subscribed = subscribed_to_ontology?(ont.acronym, user)  # application_helper
-      sub_text = subscribed ? "Unsubscribe" : "Subscribe"
+      sub_text = subscribed ? "Unsubscribe from" : "Subscribe to"
       params = "data-bp_ontology_id='#{ont.acronym}' data-bp_is_subbed='#{subscribed}' data-bp_user_id='#{user.id}'"
     rescue
       # pass, fallback init done above begin block to scope parameters beyond the begin/rescue block
     end
     spinner = '<span class="notes_subscribe_spinner" style="display: none;">' + image_tag("spinners/spinner_000000_16px.gif", style: "vertical-align: text-bottom;") + '</span>'
     error = "<span style='color: red;' class='notes_sub_error'></span>"
-    return "<a href='javascript:void(0);' class='subscribe_to_notes link_button' #{params}>#{sub_text} to notes emails</a> #{spinner} #{error}".html_safe
+    return "<a href='javascript:void(0);' class='subscribe_to_notes link_button' #{params}>#{sub_text} notes emails</a> #{spinner} #{error}".html_safe
   end
 
   def delete_button

@@ -357,10 +357,17 @@ function subscribeToNotes(button) {
       var subbedVal = (isSubbed == "true") ? "false" : "true";
       jQuery("a.subscribe_to_notes").attr("data-bp_is_subbed", subbedVal);
 
-      // Change button text
-      var txt = jQuery("a.subscribe_to_notes span.ui-button-text").html();
-      var newButtonText = txt.match("Unsubscribe") ? txt.replace("Unsubscribe", "Subscribe") : txt.replace("Subscribe", "Unsubscribe");
-      jQuery("a.subscribe_to_notes span.ui-button-text").html(newButtonText);
+      /*
+       * Update link text.
+       * Note that there are two links that allow users to subscribe/unsubscribe from notes emails. Given any ontology,
+       * one link is located on the top-level Notes tab, and the other link is located on the Notes sub-tab on the
+       * right-hand side of the Classes tab. Both links are handled by the subscriptions controller, and the text of
+       * both should be updated on success.
+       */
+      const matches = document.querySelectorAll('a.subscribe_to_notes');
+      matches.forEach(match => {
+        match.textContent = (subbedVal === 'true') ? 'Unsubscribe from notes emails' : 'Subscribe to notes emails';
+      });
     },
     error: function(data) {
       jQuery(".notes_subscribe_spinner").hide();
