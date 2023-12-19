@@ -1,5 +1,7 @@
-PATH
-  remote: /Users/vendetti/Development/GitHub/ncbo/ontologies_api_ruby_client
+GIT
+  remote: https://github.com/ncbo/ontologies_api_ruby_client.git
+  revision: 05bd4d1fc84070d75629c3013f0d7d0c0ea468ec
+  branch: refactor/activesupport-upgrade
   specs:
     ontologies_api_client (2.2.4)
       activesupport (= 7.0.8)
@@ -139,7 +141,7 @@ GEM
     erubi (1.12.0)
     erubis (2.7.0)
     eventmachine (1.2.7)
-    excon (0.105.0)
+    excon (0.108.0)
     execjs (2.9.1)
     faraday (2.7.12)
       base64
