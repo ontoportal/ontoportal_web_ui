@@ -283,7 +283,7 @@ class LandscapeController < ApplicationController
               target_id = relation_value
               target_in_portal = false
               # if we find our portal URL in the ontology URL, then we just keep the ACRONYM to try to get the ontology.
-              if relation_value.include?($UI_URL)
+              if relation_value.include?(helpers.portal_name)
                 relation_value = relation_value.split('/').last
               end
               # Use acronym to get ontology from the portal
