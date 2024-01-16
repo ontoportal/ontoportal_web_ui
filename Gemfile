@@ -6,12 +6,12 @@ source 'https://rubygems.org'
 gem 'rails', '6.1.7.3'
 
 gem 'sass-rails', '~> 5.0'
-gem 'uglifier', '>= 1.0.3'
+gem 'terser'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 # gem 'duktape'
 
-gem 'bootstrap', '~> 4.1.0'
+gem 'bootstrap', '~> 5.2.3'
 gem 'chart-js-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
@@ -26,9 +26,12 @@ gem 'select2-rails'
 # To use debugger
 # gem 'debugger'
 
+gem 'base64', '0.1.0'
 gem 'cube-ruby', require: 'cube'
 gem 'dalli'
 gem 'flamegraph'
+# Version 2.1 breaks graphql-client. See: https://github.com/github/graphql-client/issues/310.
+gem 'graphql', '~> 2.0.27'
 gem 'graphql-client'
 gem 'haml', '~> 5.1'
 gem 'i18n'
