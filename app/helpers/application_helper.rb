@@ -276,15 +276,16 @@ module ApplicationHelper
   end
 
   def subscribed_to_ontology?(ontology_acronym, user)
-    user.bring(:subscription) if user.subscription.nil?
-    # user.subscription is an array of subscriptions like {ontology: ontology_id, notification_type: "NOTES"}
-    return false if user.subscription.nil? or user.subscription.empty?
-    user.subscription.each do |sub|
-      #sub = {ontology: ontology_acronym, notification_type: "NOTES"}
-      sub_ont_acronym = sub[:ontology].split('/').last # make sure we get the acronym, even if it's a full URI
-      return true if sub_ont_acronym == ontology_acronym
-    end
-    return false
+    return false if user.subscription.blank?
+
+    # In some cases this method is called with user objects that don't have the :ontology attribute loaded on
+    # the associated subscription objects. Calling find is the only way (?) to ensure that we get a user where the
+    # :ontology attribute is loaded for all subscriptions.
+    ontology_attributes_missing = user.subscription.any? { |sub| sub[:ontology].nil? }
+    user = LinkedData::Client::Models::User.find(user.id) if ontology_attributes_missing
+
+    sub = user.subscription.select { |sub| sub[:ontology].split('/').last.eql? ontology_acronym }
+    sub.length.positive? ? 'true' : 'false'
   end
 
   def ontolobridge_instructions_template(ontology)
