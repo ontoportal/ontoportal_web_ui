@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '7.0.8'
 
-gem 'sass-rails', '~> 5.0'
+gem 'sassc-rails'
 gem 'terser'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
