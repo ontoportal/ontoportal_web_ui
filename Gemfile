@@ -5,6 +5,9 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '7.0.8'
 
+# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
+gem 'sprockets-rails', require: 'sprockets/railtie'
+
 gem 'sassc-rails'
 gem 'terser'
 # See https://github.com/rails/execjs#readme for more supported runtimes
