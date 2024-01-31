@@ -8,6 +8,9 @@ gem 'rails', '7.0.8'
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails', require: 'sprockets/railtie'
 
+# Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
+gem 'jsbundling-rails', '~> 1.3'
+
 gem 'sassc-rails'
 gem 'terser'
 # See https://github.com/rails/execjs#readme for more supported runtimes
