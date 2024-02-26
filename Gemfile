@@ -11,6 +11,12 @@ gem 'sprockets-rails', require: 'sprockets/railtie'
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 gem 'jsbundling-rails', '~> 1.3'
 
+# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
+gem "turbo-rails"
+
+# Use Redis for Action Cable
+gem "redis", "~> 4.0"
+
 gem 'sassc-rails'
 gem 'terser'
 # See https://github.com/rails/execjs#readme for more supported runtimes

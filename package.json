@@ -2,6 +2,7 @@
   "name": "app",
   "private": true,
   "dependencies": {
+    "@hotwired/turbo-rails": "^8.0.3",
     "esbuild": "^0.20.0"
   },
   "scripts": {
