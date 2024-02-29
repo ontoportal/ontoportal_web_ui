@@ -14,6 +14,9 @@ gem 'jsbundling-rails', '~> 1.3'
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
 
+# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
+gem 'stimulus-rails'
+
 # Use Redis for Action Cable
 gem "redis", "~> 4.0"
 
