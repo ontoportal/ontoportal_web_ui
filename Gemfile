@@ -12,13 +12,13 @@ gem 'sprockets-rails', require: 'sprockets/railtie'
 gem 'jsbundling-rails', '~> 1.3'
 
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem "turbo-rails"
+gem 'turbo-rails'
 
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem 'stimulus-rails'
 
 # Use Redis for Action Cable
-gem "redis", "~> 4.0"
+gem 'redis', '~> 4.0'
 
 gem 'sassc-rails'
 gem 'terser'
@@ -82,10 +82,10 @@ group :development do
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0', require: false # https://github.com/miloserdow/capistrano-deploy/issues/42
   gem 'capistrano', '~> 3.17', require: false
   gem 'capistrano-bundler', require: false
-  gem 'capistrano-rbenv', require: false
   gem 'capistrano-locally', require: false
   gem 'capistrano-passenger', require: false
   gem 'capistrano-rails', '~> 1.4', require: false
+  gem 'capistrano-rbenv', require: false
   gem 'capistrano-yarn', require: false
   gem 'ed25519', '>= 1.2', '< 2.0', require: false # https://github.com/miloserdow/capistrano-deploy/issues/42
   gem 'html2haml'
