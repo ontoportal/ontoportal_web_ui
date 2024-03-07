@@ -61,6 +61,7 @@ gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2
 gem 'open_uri_redirections'
 gem 'pry'
 gem 'psych', '< 4'
+gem 'rack-mini-profiler'
 gem 'rails_autolink'
 gem 'rdoc'
 gem 'recaptcha', '~> 5.9.0'
@@ -103,10 +104,6 @@ end
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri mingw x64_mingw]
-
-  # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
-  gem 'rack-mini-profiler'
-
   gem 'rspec-rails'
 end
 
