@@ -1018,7 +1018,7 @@ DeleteUsers.prototype._ajaxCall =  function (username)  {
     let notices = [];
     jQuery.ajax({
         method: 'DELETE',
-        url: 'accounts/'+username,
+        url: `accounts/${encodeURIComponent(username)}`,
         data: [],
         dataType: "json",
         success: (data, msg) => {
