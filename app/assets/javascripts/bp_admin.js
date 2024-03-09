@@ -892,7 +892,7 @@ function populateUserRows(data) {
         let actions = [
             '<a href="/accounts/'+ user['username'] +'"  class="mx-1">Detail</a>' ,
             '<a href="javascript:;" class="delete-user mx-1" data-account-name="' + username + '">Delete</a>',
-            '<a href="/login_as/'+ username +'" class="mx-1">Login as</a>',
+            '<a href="/login_as/'+ encodeURIComponent(username) +'" class="mx-1">Login as</a>',
 
         ]
         let row = [firstname, lastname, username, email , roles , id , created , actions.join('|')];
