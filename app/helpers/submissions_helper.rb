@@ -14,4 +14,12 @@ module SubmissionsHelper
   def acronym_from_params_muted
     tag.small "for #{params[:ontology_id]}", class: 'text-muted'
   end
+
+  def natural_language_selector(submission)
+    options = Rails.application.config.language_codes.invert.sort
+    selected = submission.naturalLanguage
+    select(:submission, :naturalLanguage, options_for_select(options, selected),
+           { include_blank: true },
+           { multiple: true, class: 'form-select', 'aria-describedby': 'languageHelpBlock' })
+  end
 end
