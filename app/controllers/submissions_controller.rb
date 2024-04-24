@@ -21,6 +21,7 @@ class SubmissionsController < ApplicationController
   def create
     # Make the contacts an array
     params[:submission][:contact] = params[:submission][:contact].values
+    params[:submission][:naturalLanguage].compact_blank!
 
     @submission = LinkedData::Client::Models::OntologySubmission.new(values: submission_params)
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
@@ -53,8 +54,8 @@ class SubmissionsController < ApplicationController
   def update
     # Make the contacts an array
     params[:submission][:contact] = params[:submission][:contact].values
-
     params[:submission][:contact].delete_if { |c| c[:name].empty? || c[:email].empty? }
+    params[:submission][:naturalLanguage].compact_blank!
 
     @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
     submissions = @ontology.explore.submissions
@@ -80,7 +81,7 @@ class SubmissionsController < ApplicationController
                                            :synonymProperty, :definitionProperty, :authorProperty, :obsoleteProperty,
                                            :obsoleteParent, :version, :status, :released, :isRemote, :pullLocation,
                                            :filePath, { contact: [:name, :email] }, :homepage, :documentation,
-                                           :publication)
+                                           :publication, naturalLanguage: [])
     p.to_h
   end
 end
