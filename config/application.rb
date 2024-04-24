@@ -31,8 +31,5 @@ module BioportalWebUi
 
     # Initialize configuration for KGCL change request functionality.
     config.change_request = config_for :change_request
-
-    # ISO 639-1 language codes
-    config.language_codes = config_for :language_codes
   end
 end
