@@ -16,9 +16,14 @@ module SubmissionsHelper
   end
 
   def natural_language_selector(submission)
-    options = Rails.application.config.language_codes.invert.sort
+    language_codes = ISO_639::ISO_639_1.map do |code|
+      #  Get the alpha-2 code and English name
+      code.slice(2, 2).reverse
+    end
+    language_codes.sort! { |a, b| a.first.downcase <=> b.first.downcase }
+
     selected = submission.naturalLanguage
-    select(:submission, :naturalLanguage, options_for_select(options, selected),
+    select(:submission, :naturalLanguage, options_for_select(language_codes, selected),
            { include_blank: true },
            { multiple: true, class: 'form-select', 'aria-describedby': 'languageHelpBlock' })
   end
