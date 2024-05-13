@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
   before_action :unescape_id, only: [:edit, :show, :update]
   before_action :verify_owner, only: [:edit, :show]
@@ -23,11 +25,11 @@ class UsersController < ApplicationController
     @user_ontologies = @user.customOntology
 
     ## Copied from home controller , account action
-    onts = LinkedData::Client::Models::Ontology.all;
-    @admin_ontologies = onts.select {|o| o.administeredBy.include? @user.id }
+    onts = LinkedData::Client::Models::Ontology.all
+    @admin_ontologies = onts.select { |o| o.administeredBy.include? @user.id }
 
-    projects = LinkedData::Client::Models::Project.all;
-    @user_projects = projects.select {|p| p.creator.include? @user.id }
+    projects = LinkedData::Client::Models::Project.all
+    @user_projects = projects.select { |p| p.creator.include? @user.id }
   end
 
   def new
@@ -38,7 +40,7 @@ class UsersController < ApplicationController
     @user = LinkedData::Client::Models::User.find(params[:id])
     @user ||= LinkedData::Client::Models::User.find_by_username(params[:id]).first
 
-    if (params[:password].eql?("true"))
+    if (params[:password].eql?('true'))
       @user.validate_password = true
     end
   end
@@ -47,7 +49,7 @@ class UsersController < ApplicationController
     @errors = validate(user_params)
     @user = LinkedData::Client::Models::User.new(values: user_params)
 
-    if @errors.size < 1
+    if @errors.empty?
       @user_saved = @user.save
       if response_error?(@user_saved)
         @errors = response_errors(@user_saved)
@@ -67,7 +69,7 @@ class UsersController < ApplicationController
     @user = LinkedData::Client::Models::User.find(params[:id])
     @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
     @errors = validate_update(user_params)
-    if @errors.size < 1
+    if @errors.empty?
 
       if params[:user][:password]
         error_response = @user.update(values: { password: params[:user][:password] })
@@ -85,7 +87,7 @@ class UsersController < ApplicationController
       if response_error?(error_response)
         @errors = response_errors(error_response)
         # @errors = {acronym: "Username already exists, please use another"} if error_response.status == 409
-        render action: "edit"
+        render 'edit'
       else
         flash[:notice] = 'Account was successfully updated'
 
@@ -95,15 +97,15 @@ class UsersController < ApplicationController
         redirect_to user_path(@user.username)
       end
     else
-      render action: "edit"
+      render 'edit'
     end
   end
 
   def destroy
-    response = {errors: '', success: ''}
+    response = { errors: String.new(''), success: String.new('') }
     @user = LinkedData::Client::Models::User.find(params[:id])
     @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
-    if(session[:user].admin?)
+    if session[:user].admin?
       @user.delete
       response[:success] << 'User deleted successfully '
 
@@ -150,44 +152,46 @@ class UsersController < ApplicationController
 
   def verify_owner
     return if current_user_admin?
+
     if session[:user].nil? || (!session[:user].id.eql?(params[:id]) && !session[:user].username.eql?(params[:id]))
       redirect_to controller: 'login', action: 'index', redirect: "/accounts/#{params[:id]}"
     end
   end
 
   def get_ontology_list(ont_hash)
-    return "" if ont_hash.nil?
+    return '' if ont_hash.nil?
+
     ontologies = []
     ont_hash.each do |ont, checked|
       ontologies << ont if checked.to_i == 1
     end
-    ontologies.join(";")
+    ontologies.join(';')
   end
 
   def validate(params)
     errors = []
     if params[:email].length < 1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
-      errors << "invalid email address"
+      errors << 'invalid email address'
     end
     if using_captcha?
       if !verify_recaptcha
-        errors << "reCAPTCHA verification failed, please try again"
+        errors << 'reCAPTCHA verification failed, please try again'
       end
     end
 
-    return errors
+    errors
   end
 
   def validate_update(params)
     errors = []
     if params[:email].nil? || params[:email].length < 1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
-      errors << "Please enter an email address"
+      errors << 'Please enter an email address'
     end
     if !params[:password].eql?(params[:password_confirmation])
-      errors << "Your Password and Password Confirmation do not match"
+      errors << 'Your Password and Password Confirmation do not match'
     end
 
-    return errors
+    errors
   end
 
   def update_role(user)
@@ -196,9 +200,9 @@ class UsersController < ApplicationController
     if session[:user].admin?
       user_roles = user_roles.dup
       if user.admin?
-        user_roles.map!{ |role| role == "ADMINISTRATOR" ? "LIBRARIAN" : role}
+        user_roles.map! { |role| role == 'ADMINISTRATOR' ? 'LIBRARIAN' : role }
       else
-        user_roles.map!{ |role| role == "LIBRARIAN" ? "ADMINISTRATOR" : role}
+        user_roles.map! { |role| role == 'LIBRARIAN' ? 'ADMINISTRATOR' : role }
       end
     end
 
