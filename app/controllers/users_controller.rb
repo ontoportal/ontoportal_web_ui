@@ -60,19 +60,14 @@ class UsersController < ApplicationController
       if response_error?(@user_saved)
         @errors = response_errors(@user_saved)
         # @errors = {acronym: "Username already exists, please use another"} if @user_saved.status == 409
-        render action: "new"
+        render 'new'
       else
-        # Attempt to register user to list
-        if params[:user][:register_mail_list]
-          Notifier.register_for_announce_list(@user.email).deliver rescue nil
-        end
-
         flash[:notice] = 'Account was successfully created'
         session[:user] = LinkedData::Client::Models::User.authenticate(@user.username, @user.password)
         redirect_to_browse
       end
     else
-      render action: "new"
+      render 'new'
     end
   end
 
@@ -156,8 +151,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    p = params.require(:user).permit(:firstName, :lastName, :username, :email, :email_confirmation, :password,
-                                     :password_confirmation, :register_mail_list, :admin)
+    p = params.require(:user).permit(:firstName, :lastName, :username, :email, :password, :admin)
     p.to_h
   end
 
@@ -183,21 +177,12 @@ class UsersController < ApplicationController
 
   def validate(params)
     errors = []
-    if params[:email].nil? || params[:email].length < 1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
-      errors << "Please enter an email address"
-    end
-    if !params[:email].eql?(params[:email_confirmation])
-      errors << "Your Email and Email Confirmation do not match"
-    end
-    if params[:password].nil? || params[:password].length < 1
-      errors << "Please enter a password"
-    end
-    if !params[:password].eql?(params[:password_confirmation])
-      errors << "Your Password and Password Confirmation do not match"
+    if params[:email].length < 1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
+      errors << "invalid email address"
     end
     if using_captcha?
       if !verify_recaptcha
-        errors << "Please fill in the proper text from the supplied image"
+        errors << "reCAPTCHA verification failed, please try again"
       end
     end
 
