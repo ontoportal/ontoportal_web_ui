@@ -5,8 +5,6 @@ class UsersController < ApplicationController
 
   layout :determine_layout
 
-  # GET /users
-  # GET /users.xml
   def index
     @users = LinkedData::Client::Models::User.all
     respond_to do |format|
@@ -15,8 +13,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # GET /users/1
-  # GET /users/1.xml
   def show
     @user = if session[:user].admin? && params.has_key?(:id)
               LinkedData::Client::Models::User.find_by_username(params[:id]).first
@@ -34,12 +30,10 @@ class UsersController < ApplicationController
     @user_projects = projects.select {|p| p.creator.include? @user.id }
   end
 
-  # GET /users/new
   def new
     @user = LinkedData::Client::Models::User.new
   end
 
-  # GET /users/1;edit
   def edit
     @user = LinkedData::Client::Models::User.find(params[:id])
     @user ||= LinkedData::Client::Models::User.find_by_username(params[:id]).first
@@ -49,8 +43,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # POST /users
-  # POST /users.xml
   def create
     @errors = validate(user_params)
     @user = LinkedData::Client::Models::User.new(values: user_params)
@@ -71,8 +63,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # PUT /users/1
-  # PUT /users/1.xml
   def update
     @user = LinkedData::Client::Models::User.find(params[:id])
     @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
@@ -109,7 +99,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # DELETE /users/1
   def destroy
     response = {errors: '', success: ''}
     @user = LinkedData::Client::Models::User.find(params[:id])
