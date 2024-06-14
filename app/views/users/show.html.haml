@@ -15,6 +15,12 @@
       %th Account Name:
       %td= @user.username
     %tr
+      %th GitHub username:
+      %td= @user.githubId
+    %tr
+      %th ORCID iD:
+      %td= @user.orcidId
+    %tr
       %td{colspan: "2", style: "text-align: right;"}
         = link_to "Edit Information", edit_user_path(url_encode(@user.username))
   %br/
