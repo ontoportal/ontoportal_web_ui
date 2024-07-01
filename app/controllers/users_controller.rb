@@ -24,12 +24,16 @@ class UsersController < ApplicationController
     @all_ontologies = LinkedData::Client::Models::Ontology.all(ignore_custom_ontologies: true)
     @user_ontologies = @user.customOntology
 
-    ## Copied from home controller , account action
-    onts = LinkedData::Client::Models::Ontology.all
-    @admin_ontologies = onts.select { |o| o.administeredBy.include? @user.id }
+    # Copied from home controller, account action
+    @admin_ontologies = LinkedData::Client::Models::Ontology.where do |o|
+      o.administeredBy.include? @user.id
+    end
+    @admin_ontologies.sort! { |a, b| a.name.downcase <=> b.name.downcase }
 
-    projects = LinkedData::Client::Models::Project.all
-    @user_projects = projects.select { |p| p.creator.include? @user.id }
+    @user_projects = LinkedData::Client::Models::Project.where do |p|
+      p.creator.include? @user.id
+    end
+    @user_projects.sort! { |a, b| a.name.downcase <=> b.name.downcase }
   end
 
   def new
@@ -40,7 +44,7 @@ class UsersController < ApplicationController
     @user = LinkedData::Client::Models::User.find(params[:id])
     @user ||= LinkedData::Client::Models::User.find_by_username(params[:id]).first
 
-    if (params[:password].eql?('true'))
+    if params[:password].eql? 'true'
       @user.validate_password = true
     end
   end
@@ -89,7 +93,7 @@ class UsersController < ApplicationController
         # @errors = {acronym: "Username already exists, please use another"} if error_response.status == 409
         render 'edit'
       else
-        flash[:notice] = 'Account was successfully updated'
+        flash[:notice] = 'Account successfully updated!'
 
         if session[:user].username == @user.username
           session[:user].update_from_params(user_params)
@@ -142,7 +146,8 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    p = params.require(:user).permit(:firstName, :lastName, :username, :email, :password, :admin)
+    p = params.require(:user).permit(:firstName, :lastName, :username, :email, :password, :password_confirmation,
+                                     :admin, :githubId, :orcidId)
     p.to_h
   end
 
@@ -184,11 +189,11 @@ class UsersController < ApplicationController
 
   def validate_update(params)
     errors = []
-    if params[:email].nil? || params[:email].length < 1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
-      errors << 'Please enter an email address'
+    if params[:email].length < 1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
+      errors << 'invalid email address'
     end
     if !params[:password].eql?(params[:password_confirmation])
-      errors << 'Your Password and Password Confirmation do not match'
+      errors << 'Your password and password confirmation do not match'
     end
 
     errors

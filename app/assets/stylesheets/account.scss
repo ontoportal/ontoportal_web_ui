@@ -28,3 +28,26 @@
 .form-signup .enable-lists {
   color: red;
 }
+
+.edit-user-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  form {
+    width: 100%;
+    max-width: 640px;
+    padding: 15px;
+    margin: 0 auto;
+  }
+}
+
+.account-info {
+  a {
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}
