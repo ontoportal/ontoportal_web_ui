@@ -95,9 +95,8 @@ class LoginController < ApplicationController
     token = params[:tk]
     @user = LinkedData::Client::HTTP.post("/users/reset_password", {username: username, email: email, token: token})
     if @user.is_a?(LinkedData::Client::Models::User)
-      @user.validate_password = true
       login(@user)
-      render "users/edit"
+      render 'passwords/edit'
     else
       flash[:notice] = @user.errors.first + ". Please reset your password again."
       redirect_to "/lost_pass"
