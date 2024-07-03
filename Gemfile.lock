@@ -179,7 +179,6 @@ GEM
       domain_name (~> 0.5)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
-    iconv (1.0.8)
     io-console (0.7.2)
     irb (1.12.0)
       rdoc
@@ -394,6 +393,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  arm64-darwin-23
   x86_64-darwin-21
   x86_64-linux
 
@@ -422,7 +422,6 @@ DEPENDENCIES
   haml (~> 5.1)
   html2haml
   i18n
-  iconv
   iso-639 (~> 0.3.6)
   jquery-rails
   jquery-ui-rails
