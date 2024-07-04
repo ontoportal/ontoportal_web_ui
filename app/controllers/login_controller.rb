@@ -31,10 +31,10 @@ class LoginController < ApplicationController
         redirect_to redirect
       else
         @errors << 'Invalid account name/password combination'
-        render action: 'index'
+        render 'index'
       end
     else
-      render action: 'index'
+      render 'index'
     end
   end
 
