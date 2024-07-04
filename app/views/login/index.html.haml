@@ -1,34 +1,23 @@
-<%@title = "Login"%>
-
-<%= form_for(:user, :url => {:controller => 'login',:action=>'create'}) do |f| %>
-<%unless @errors.nil?%>
-<div style="color:red;">
-Errors On Form
-<ul>
-
-<%for error in @errors%>
-<li><%=error%></li>
-<%end%>
-
-</ul>
-</div>
-<%end%>
-<center>
-  <table class="form" width="400px" style="margin-top:30px">
-    <tr>
-      <th nowrap align="right" >Account Name:</th>
-      <td class="top"><%= text_field 'user', 'username', :size => 25 %></td>
-    </tr>
-    <tr>
-      <th nowrap align="right" >Password:</th>
-      <td><%= password_field 'user','password', :size => 25, :autocomplete => "off" %></td>
-    </tr>
-    <tr>
-      <td colspan="2" align="right"><%= submit_tag "Login"%></td>
-    </tr>
-  </table>
-  <span style="font-size:1.2em;">Not Registered Yet?  <%=link_to "Sign Up", new_user_path%></span><br><br>
-  <span style="font-size:1.2em;"><%=link_to "Lost Password", '/lost_pass'%></span><br><br>
-</center>
-
-<% end %>
+- @title = "Login"
+= form_for(:user, :url => {:controller => 'login',:action=>'create'}) do |f|
+  - unless @errors.nil?
+    %div{:style => "color:red;"}
+      Errors On Form
+      %ul
+        - for error in @errors
+          %li= error
+  %center
+    %table.form{:style => "margin-top:30px", :width => "400px"}
+      %tr
+        %th{:align => "right", :nowrap => "nowrap"} Account Name:
+        %td.top= text_field 'user', 'username', :size => 25
+      %tr
+        %th{:align => "right", :nowrap => "nowrap"} Password:
+        %td= password_field 'user','password', :size => 25, :autocomplete => "off"
+      %tr
+        %td{:align => "right", :colspan => "2"}= submit_tag "Login"
+    %span{:style => "font-size:1.2em;"}
+      Not Registered Yet?  #{link_to "Sign Up", new_user_path}
+    %br/
+    %br/
+    %span{:style => "font-size:1.2em;"}= link_to "Lost Password", '/lost_pass'
