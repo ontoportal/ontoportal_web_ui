@@ -1,5 +1,6 @@
 - @title = "Login"
-= form_for(:user, :url => {:controller => 'login',:action=>'create'}) do |f|
+
+= form_with scope: :user, url: login_index_path, method: :post do |f|
   - unless @errors.nil?
     %div{:style => "color:red;"}
       Errors On Form
@@ -10,10 +11,10 @@
     %table.form{:style => "margin-top:30px", :width => "400px"}
       %tr
         %th{:align => "right", :nowrap => "nowrap"} Account Name:
-        %td.top= text_field 'user', 'username', :size => 25
+        %td.top= f.text_field :username, :size => 25
       %tr
         %th{:align => "right", :nowrap => "nowrap"} Password:
-        %td= password_field 'user','password', :size => 25, :autocomplete => "off"
+        %td= f.password_field :password, :size => 25, :autocomplete => "off"
       %tr
         %td{:align => "right", :colspan => "2"}= submit_tag "Login"
     %span{:style => "font-size:1.2em;"}
