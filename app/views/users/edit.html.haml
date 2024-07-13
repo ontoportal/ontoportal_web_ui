@@ -34,56 +34,37 @@
           %ul
             - for error in @errors
               %li= error
-      - if @user.validate_password.blank?
-        %h2.mb-4 Edit account
-        %div.mb-3
-          = f.label :firstName, 'First name', class: 'form-label'
-          = f.text_field :firstName, class: 'form-control', required: 'true'
-        %div.mb-3
-          = f.label :lastName, 'Last name', class: 'form-label'
-          = f.text_field :lastName, class: 'form-control'
-        %div.mb-3
-          = f.label :username, class: 'form-label'
-          = f.text_field :username, class: 'form-control', disabled: 'true'
-        %div.mb-3
-          = f.label :email, 'Email address', class: 'form-label'
-          = f.email_field :email, class: 'form-control', required: 'true'
-        %div.mb-3
-          = f.label :githubId, 'GitHub username', class: 'form-label'
-          = f.text_field :githubId, class: 'form-control', 'aria-describedby': 'githubUsernameHelp',
-                                    pattern: '[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}',
-                                    title: 'Characters: only alphanumeric and single hyphens. Length: 1-39'
-          %div.form-text{id: 'githubUsernameHelp'}
-            User handle on GitHub, for example: 'octocat'
-        %div.mb-3
-          = f.label :orcidId, 'ORCID iD', class: 'form-label'
-          = f.text_field :orcidId, class: 'form-control', 'aria-describedby': 'orcidHelp',
-                                   pattern: '\d{4}-\d{4}-\d{4}-\d{4}', title: 'Format: XXXX-XXXX-XXXX-XXXX'
-          %div.form-text{id: 'orcidHelp'}
-            16-digit ORCID, for example: 0000-1234-5678-9101
-        - if session[:user].admin?
-          %div.form-check.mb-3
-            = f.check_box :admin?, class: (@user.admin? ? 'admin form-check-input' : 'form-check-input')
-            = f.label :admin, 'Grant admin privileges', class: 'form-check-label'
-        %div.mb-5
-          = submit_tag('Update', class: 'btn btn-primary me-1')
-          = link_to 'Cancel', user_path(@user.username), class: 'btn btn-primary'
-      - else
-        %h3{class: 'pb-2 mb-3 border-bottom'}
-          Password
-        = tag.p("Change the password for account: #{@user.username}", class: 'text-muted')
-        = hidden_field :user, :firstName, value: @user.firstName
-        = hidden_field :user, :lastName, value: @user.lastName
-        = hidden_field :user, :username, value: @user.username
-        = hidden_field :user, :email, value: @user.email
-        = hidden_field :user, :githubId, value: @user.githubId
-        = hidden_field :user, :orcidId, value: @user.orcidId
-        %div.mb-3
-          = f.label :password, 'New password', class: 'form-label'
-          = f.password_field :password, class: 'form-control', required: 'true'
-        %div.mb-4
-          = f.label :password_confirmation, 'Confirm new password', class: 'form-label'
-          = f.password_field :password_confirmation, class: 'form-control', required: 'true'
-        %div
-          = submit_tag('Change password', class: 'btn btn-primary me-1')
-          = link_to 'Cancel', user_path(@user.username), class: 'btn btn-primary'
+
+      %h2.mb-4 Edit account
+      %div.mb-3
+        = f.label :firstName, 'First name', class: 'form-label'
+        = f.text_field :firstName, class: 'form-control', required: 'true'
+      %div.mb-3
+        = f.label :lastName, 'Last name', class: 'form-label'
+        = f.text_field :lastName, class: 'form-control'
+      %div.mb-3
+        = f.label :username, class: 'form-label'
+        = f.text_field :username, class: 'form-control', disabled: 'true'
+      %div.mb-3
+        = f.label :email, 'Email address', class: 'form-label'
+        = f.email_field :email, class: 'form-control', required: 'true'
+      %div.mb-3
+        = f.label :githubId, 'GitHub username', class: 'form-label'
+        = f.text_field :githubId, class: 'form-control', 'aria-describedby': 'githubUsernameHelp',
+                                  pattern: '[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}',
+                                  title: 'Characters: only alphanumeric and single hyphens. Length: 1-39'
+        %div.form-text{id: 'githubUsernameHelp'}
+          User handle on GitHub, for example: 'octocat'
+      %div.mb-3
+        = f.label :orcidId, 'ORCID iD', class: 'form-label'
+        = f.text_field :orcidId, class: 'form-control', 'aria-describedby': 'orcidHelp',
+                                 pattern: '\d{4}-\d{4}-\d{4}-\d{4}', title: 'Format: XXXX-XXXX-XXXX-XXXX'
+        %div.form-text{id: 'orcidHelp'}
+          16-digit ORCID, for example: 0000-1234-5678-9101
+      - if session[:user].admin?
+        %div.form-check.mb-3
+          = f.check_box :admin?, class: (@user.admin? ? 'admin form-check-input' : 'form-check-input')
+          = f.label :admin, 'Grant admin privileges', class: 'form-check-label'
+      %div.mb-5
+        = submit_tag('Update', class: 'btn btn-primary me-1')
+        = link_to 'Cancel', user_path(@user.username), class: 'btn btn-primary'

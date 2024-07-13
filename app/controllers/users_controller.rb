@@ -43,10 +43,6 @@ class UsersController < ApplicationController
   def edit
     @user = LinkedData::Client::Models::User.find(params[:id])
     @user ||= LinkedData::Client::Models::User.find_by_username(params[:id]).first
-
-    if params[:password].eql? 'true'
-      @user.validate_password = true
-    end
   end
 
   def create
@@ -72,21 +68,17 @@ class UsersController < ApplicationController
   def update
     @user = LinkedData::Client::Models::User.find(params[:id])
     @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
+
     @errors = validate_update(user_params)
     if @errors.empty?
+      user_roles = @user.role
 
-      if params[:user][:password]
-        error_response = @user.update(values: { password: params[:user][:password] })
-      else
-        user_roles = @user.role
-
-        if @user.admin? != (params[:user][:admin].to_i == 1)
-          user_roles = update_role(@user)
-        end
-
-        @user.update_from_params(user_params.merge!(role: user_roles))
-        error_response = @user.update
+      if @user.admin? != (params[:user][:admin].to_i == 1)
+        user_roles = update_role(@user)
       end
+
+      @user.update_from_params(user_params.merge!(role: user_roles))
+      error_response = @user.update
 
       if response_error?(error_response)
         @errors = response_errors(error_response)
@@ -192,10 +184,6 @@ class UsersController < ApplicationController
     if params[:email].length < 1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)
       errors << 'invalid email address'
     end
-    if !params[:password].eql?(params[:password_confirmation])
-      errors << 'Your password and password confirmation do not match'
-    end
-
     errors
   end
 
