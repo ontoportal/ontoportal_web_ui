@@ -134,6 +134,13 @@ class OntologiesController < ApplicationController
   def classes
     get_class(params)
 
+
+
+    # binding.pry
+
+
+
+
     if ["application/ld+json", "application/json"].include?(request.accept)
       render plain: @concept.to_jsonld, content_type: request.accept and return
     end

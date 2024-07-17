@@ -53,7 +53,6 @@ gem 'graphql', '~> 2.0.27'
 gem 'graphql-client'
 gem 'haml', '~> 5.1'
 gem 'i18n'
-gem 'iconv'
 gem 'iso-639', '~> 0.3.6'
 gem 'multi_json'
 gem 'mysql2', '0.5.5'
@@ -72,6 +71,17 @@ gem 'stackprof', require: false
 gem 'terser'
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
+
+
+
+
+gem 'net-ftp'
+gem 'flag-icons-rails', '~> 3.4'
+gem 'inline_svg'
+
+
+
+
 
 group :staging, :production do
   # Application monitoring

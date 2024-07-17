@@ -66,6 +66,15 @@
 function displayTree(data) {
   jQuery(document).trigger("classes_tab_visible");
 
+
+
+
+
+
+
+
+
+
   var new_concept_id = data.conceptid;
   var new_concept_link = getConceptLinkEl(new_concept_id);
   var concept_label;
@@ -82,6 +91,10 @@ function displayTree(data) {
   var metadata_only = jQuery(document).data().bp.ont_viewer.metadata_only;
   var purl_prefix = jQuery(document).data().bp.ont_viewer.purl_prefix;
   var concept_name_title = jQuery(document).data().bp.ont_viewer.concept_name_title;
+
+
+  var lang = jQuery(document).data().bp.lang;
+
 
   // Check to see if we're actually loading a new concept or just displaying the one we already loaded previously
   if (typeof new_concept_id === 'undefined' || new_concept_id == concept_id) {
@@ -122,7 +135,9 @@ function displayTree(data) {
           }
 
           // If the concept is already visible and in cache, then just switch to it
-          if (getCache(data.conceptid) == null) {
+//          if (getCache(data.conceptid) == null) {
+
+
             var list = jQuery("div#sd_content ul.simpleTree li.root ul");
 
             // Remove existing classes
@@ -137,7 +152,7 @@ function displayTree(data) {
             simpleTreeCollection.get(0).setTreeNodes(list);
 
             // Simulate node click
-            nodeClicked(data.conceptid);
+            nodeClicked(data.conceptid, lang);
 
             // Make "clicked" node active
             jQuery("a.active").removeClass("active");
@@ -146,22 +161,28 @@ function displayTree(data) {
             // Clear the search box
             jQuery("#search_box").val("");
           } else {
-            nodeClicked(data.conceptid);
+            nodeClicked(data.conceptid, lang);
 
             // Clear the search box
             jQuery("#search_box").val("");
           }
-        } else {
-          // Are we jumping into the ontology? If so, get the whole tree
-          jQuery.bioportal.ont_pages["classes"].retrieve_and_publish();
-          getConceptLinkEl(new_concept_id)
-        }
+
+
+
+//        } else {
+//          // Are we jumping into the ontology? If so, get the whole tree
+//          jQuery.bioportal.ont_pages["classes"].retrieve_and_publish();
+//          getConceptLinkEl(new_concept_id)
+//        }
+
+
+
       } else {
         jQuery.blockUI({ message: '<h1><img src="<%= asset_path("jquery.simple.tree/spinner.gif") %>" /> Loading Class...</h1>', showOverlay: false });
         if (document.getElementById(new_concept_id) !== null) {
           // We have a visible node that's been clicked, get the details for that node
           jQuery.bioportal.ont_pages["classes"].published = true;
-          nodeClicked(new_concept_id);
+          nodeClicked(new_concept_id, lang);
         } else {
           // Get a new copy of the tree because our concept isn't visible
           // This could be due to using the forward/back button

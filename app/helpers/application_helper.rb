@@ -72,9 +72,23 @@ module ApplicationHelper
   end
 
   def build_tree(node, string, id)
+
+
+
+
+    # binding.pry
+
+
+
+
+
     if node.children.nil? || node.children.length < 1
       return string # unchanged
     end
+
+
+
+
     node.children.sort! {|a,b| (a.prefLabel || a.id).downcase <=> (b.prefLabel || b.id).downcase}
     for child in node.children
       if child.id.eql?(id)

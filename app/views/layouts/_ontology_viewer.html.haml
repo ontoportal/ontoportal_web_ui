@@ -36,6 +36,7 @@
     jQuery(document).data().bp.ont_viewer.purl_prefix = "#{(Rails.configuration.settings.purl[:enabled] ? Rails.configuration.settings.purl[:prefix]+"/"+@ontology.acronym : '')}";
     jQuery(document).data().bp.ont_viewer.concept_name_title = (jQuery(document).data().bp.ont_viewer.concept_name == "") ?
         "" : " - " + jQuery(document).data().bp.ont_viewer.concept_name;
+    jQuery(document).data().bp.ont_viewer.lang = "#{request_lang}";
 
   -# Modal dialog for creating a new mapping (must reside in a top-level position in the document to display properly).
   %div#createNewMappingModal{class: "modal fade", tabindex: "-1", "aria-labelledby": "createNewMappingLabel"}
@@ -139,6 +140,18 @@
                           class: "nav-link", type: 'button', role: "tab",
                           data: {bp_ont_page: "widgets", "bs-toggle": "tab", "bs-target": "#ont_widgets_content"},
                           aria: {controls: "ont_widgets_content", selected: "false"})
+
+
+
+
+              %li{class: 'nav-item', role: 'presentation'}
+                = language_selector_tag(:content_language)
+                = flag_icon(lang_code("en"))
+
+
+
+
+
         %div.card-body
           -# Tab panes for displaying ontology content sections
           %div.tab-content{id: "ontology_content"}
@@ -160,6 +173,20 @@
             %div.tab-pane{id: "ont_widgets_content", role: "tabpanel", aria: {labelledby: "ont-widgets-tab"}}
               - if content_section.eql?("widgets")
                 = yield
+
+
+
+
+
+
+
+            -# %div.tab-pane{id: "ont_languages_content", role: "tabpanel", aria: {labelledby: "ont-languages-tab"}}
+            -#   = language_selector_hidden_tag("Classes")
+
+
+
+
+
 
 - if Rails.env.appliance?
   </main>

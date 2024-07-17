@@ -3,3 +3,6 @@
 // ./bin/rails generate stimulus controllerName
 
 import { application } from "./application"
+
+import LanguageChangeController from "./language_change_controller"
+application.register("language-change", LanguageChangeController)

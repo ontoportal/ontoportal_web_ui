@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
 module OntologiesHelper
+
+
+
+
+  # LANGUAGE_FILTERABLE_SECTIONS = %w[classes properties].freeze
+
+
+
+
+
+
   def additional_details
     return '' if $ADDITIONAL_ONTOLOGY_DETAILS.nil? || $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.acronym].nil?
 
@@ -158,4 +169,89 @@ module OntologiesHelper
 
     Rails.configuration.change_request[:ontologies].include? ontology_acronym.to_sym
   end
+
+
+
+
+
+
+
+  # def current_section
+  #   (params[:p]) ? params[:p] : 'summary'
+  # end
+  #
+  # def ontology_data_sections
+  #   LANGUAGE_FILTERABLE_SECTIONS
+  # end
+  #
+  # def ontology_data_section?(section_title = current_section)
+  #   ontology_data_sections.include?(section_title)
+  # end
+
+
+
+
+  def edit_sub_languages_button(ontology = @ontology, submission = @submission_latest)
+    return unless ontology.admin?(session[:user])
+
+    link = edit_ontology_submission_path(ontology.acronym, submission&.submissionId || '', properties: 'naturalLanguage', container_id: 'application_modal_content')
+    link_to_modal(nil,  link, class: "btn", id:'fair-details-link',
+                  data: { show_modal_title_value: t('ontologies.edit_natural_languages', acronym: ontology.acronym), show_modal_size_value: 'modal-md' }) do
+
+
+      render ChipButtonComponent.new(type: 'clickable', class: 'admin-background chip_button_small' ) do
+        (t('ontologies.edit_available_languages') + content_tag(:i, "", class: "fas fa-lg fa-edit")).html_safe
+      end
+
+
+
+    end
+  end
+
+
+
+
+
+
+
+
+
+
+
+  def language_selector_tag(name)
+    content_language_selector(id: name, name: name)
+  end
+
+
+  # def language_selector_hidden_tag(section)
+  #   hidden_field_tag "language_selector_hidden_#{section}", '',
+  #                    data: { controller: "language-change", 'language-change-section-value': section, action: "change->language-change#dispatchLangChangeEvent" }
+  # end
+
+
+
+
+
+
+
+
+  def submission_languages(submission = @submission)
+
+    # binding.pry
+
+    Array(submission&.naturalLanguage).map { |natural_language| natural_language.split('/').last }.compact
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
 end
