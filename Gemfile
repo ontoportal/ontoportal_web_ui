@@ -57,9 +57,7 @@ gem 'iso-639', '~> 0.3.6'
 gem 'multi_json'
 gem 'mysql2', '0.5.5'
 gem 'oj'
-
-gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', branch: 'develop'
-
+gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.3.0'
 gem 'open_uri_redirections'
 gem 'pry'
 gem 'psych', '< 4'
