@@ -349,125 +349,10 @@ class ApplicationController < ActionController::Base
     ENV['USE_RECAPTCHA'].present? && ENV['USE_RECAPTCHA'] == 'true'
   end
 
-
-
-
-
-
-
-
-
-
-  # def get_class1(params)
-  #
-  #   lang = request_lang
-  #
-  #   if @ontology.flat?
-  #
-  #     ignore_concept_param = params[:conceptid].nil? ||
-  #       params[:conceptid].empty? ||
-  #       params[:conceptid].eql?("root") ||
-  #       params[:conceptid].eql?("bp_fake_root")
-  #     if ignore_concept_param
-  #       # Don't display any classes in the tree
-  #       @concept = LinkedData::Client::Models::Class.new
-  #       @concept.prefLabel = t('application.search_for_class')
-  #       @concept.obsolete = false
-  #       @concept.id = "bp_fake_root"
-  #       @concept.properties = {}
-  #       @concept.children = []
-  #     else
-  #       # Display only the requested class in the tree
-  #       @concept = @ontology.explore.single_class({full: true, lang: lang }, params[:conceptid])
-  #       @concept.children = []
-  #     end
-  #     @root = LinkedData::Client::Models::Class.new
-  #     @root.children = [@concept]
-  #
-  #   else
-  #
-  #     # not ignoring 'bp_fake_root' here
-  #     include = 'prefLabel,hasChildren,obsolete'
-  #     ignore_concept_param = params[:conceptid].nil? ||
-  #       params[:conceptid].empty? ||
-  #       params[:conceptid].eql?("root")
-  #     if ignore_concept_param
-  #       # get the top level nodes for the root
-  #       # TODO_REV: Support views? Replace old view call: @ontology.top_level_classes(view)
-  #       @roots = @ontology.explore.roots(concept_schemes: params[:concept_schemes]) rescue nil
-  #
-  #       if @roots.nil? || response_error?(@roots) || @roots.compact&.empty?
-  #         LOG.add :debug, t('application.missing_roots_for_ontology', acronym: @ontology.acronym)
-  #         classes = @ontology.explore.classes.collection
-  #         @concept = classes.first.explore.self(full: true) if classes&.first
-  #         return
-  #       end
-  #
-  #       @root = LinkedData::Client::Models::Class.new(read_only: true)
-  #       @root.children = @roots.sort{|x,y| (x&.prefLabel || "").downcase <=> (y&.prefLabel || "").downcase}
-  #
-  #       # get the initial concept to display
-  #       root_child = @root.children&.first
-  #       not_found(t('application.missing_roots')) if root_child.nil?
-  #
-  #       @concept = root_child.explore.self(full: true, lang: lang)
-  #       # Some ontologies have "too many children" at their root. These will not process and are handled here.
-  #       if @concept.nil?
-  #         LOG.add :debug, t('application.missing_class', root_child: root_child.links.self)
-  #         not_found(t('application.missing_class', root_child: root_child.links.self))
-  #       end
-  #     else
-  #       # if the id is coming from a param, use that to get concept
-  #       @concept = @ontology.explore.single_class({full: true, lang: lang}, params[:conceptid])
-  #       if @concept.nil? || @concept.errors
-  #         LOG.add :debug, t('application.missing_class_ontology', acronym: @ontology.acronym, concept_id: params[:conceptid])
-  #         not_found(t('application.missing_class_ontology', acronym: @ontology.acronym, concept_id: params[:conceptid]))
-  #       end
-  #
-  #       # Create the tree
-  #       rootNode = @concept.explore.tree(include: include, concept_schemes: params[:concept_schemes], lang: lang)
-  #       if rootNode.nil? || rootNode.empty?
-  #         @roots = @ontology.explore.roots(concept_schemes: params[:concept_schemes])
-  #         if @roots.nil? || response_error?(@roots) || @roots.compact&.empty?
-  #           LOG.add :debug, t('application.missing_roots_for_ontology', acronym: @ontology.acronym)
-  #           @concept = @ontology.explore.classes.collection.first.explore.self(full: true)
-  #           return
-  #         end
-  #         if @roots.any? {|c| c.id == @concept.id}
-  #           rootNode = @roots
-  #         else
-  #           rootNode = [@concept]
-  #         end
-  #       end
-  #       @root = LinkedData::Client::Models::Class.new(read_only: true)
-  #       @root.children = rootNode.sort{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
-  #     end
-  #   end
-  #
-  #   @concept
-  # end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   def get_class(params)
     lang = request_lang
 
     if @ontology.flat?
-
       ignore_concept_param = params[:conceptid].nil? ||
           params[:conceptid].empty? ||
           params[:conceptid].eql?("root") ||
@@ -487,9 +372,7 @@ class ApplicationController < ActionController::Base
       end
       @root = LinkedData::Client::Models::Class.new
       @root.children = [@concept]
-
     else
-
       # not ignoring 'bp_fake_root' here
       ignore_concept_param = params[:conceptid].nil? ||
           params[:conceptid].empty? ||
@@ -510,8 +393,8 @@ class ApplicationController < ActionController::Base
 
         # get the initial concept to display
         root_child = @root.children.first
-
         @concept = root_child.explore.self(full: true, lang: lang)
+
         # Some ontologies have "too many children" at their root. These will not process and are handled here.
         if @concept.nil?
           LOG.add :debug, "Missing class #{root_child.links.self}"
@@ -528,7 +411,6 @@ class ApplicationController < ActionController::Base
         # Create the tree
         rootNode = @concept.explore.tree(include: "prefLabel,hasChildren,obsolete", lang: lang)
 
-
         if rootNode.nil? || rootNode.empty?
           roots = @ontology.explore.roots
           if roots.nil? || roots.empty?
@@ -541,35 +423,10 @@ class ApplicationController < ActionController::Base
             rootNode = [@concept]
           end
         end
-
-
-
-
-
-        # binding.pry
-
-
-
-
         @root = LinkedData::Client::Models::Class.new(read_only: true)
         @root.children = rootNode.sort{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
-
-
-
-
-        # binding.pry
-
-
-
-
       end
     end
-
-
-
-    # binding.pry
-
-
     @concept
   end
 

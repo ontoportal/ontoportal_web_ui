@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 115cf36f54f73eb10c503147f54bb6f6672d3d99
-  tag: v2.2.5
+  revision: 6b9cea10f4e461610a7b2f6115098e1d0d259c5a
+  branch: develop
   specs:
     ontologies_api_client (2.2.5)
       activesupport (= 7.0.8)
@@ -150,10 +150,11 @@ GEM
     erubi (1.13.0)
     erubis (2.7.0)
     eventmachine (1.2.7)
-    excon (0.110.0)
+    excon (0.111.0)
     execjs (2.9.1)
-    faraday (2.9.2)
+    faraday (2.10.0)
       faraday-net_http (>= 2.0, < 3.2)
+      logger
     faraday-excon (2.1.0)
       excon (>= 0.27.4)
       faraday (~> 2.0)
@@ -191,7 +192,7 @@ GEM
       activesupport (>= 3.0)
       nokogiri (>= 1.6)
     io-console (0.7.2)
-    irb (1.13.2)
+    irb (1.14.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     iso-639 (0.3.6)
@@ -208,6 +209,7 @@ GEM
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
+    logger (1.6.0)
     loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -261,7 +263,7 @@ GEM
       bigdecimal (>= 3.0)
     open_uri_redirections (0.2.1)
     parallel (1.25.1)
-    parser (3.3.3.0)
+    parser (3.3.4.0)
       ast (~> 2.4.1)
       racc
     popper_js (2.11.8)
@@ -325,7 +327,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rexml (3.3.1)
+    rexml (3.3.2)
       strscan
     rspec-core (3.13.0)
       rspec-support (~> 3.13.0)
@@ -344,13 +346,13 @@ GEM
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
     rspec-support (3.13.1)
-    rubocop (1.64.1)
+    rubocop (1.65.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.8, < 3.0)
+      regexp_parser (>= 2.4, < 3.0)
       rexml (>= 3.2.5, < 4.0)
       rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
@@ -358,7 +360,7 @@ GEM
     rubocop-ast (1.31.3)
       parser (>= 3.3.1.0)
     ruby-progressbar (1.13.0)
-    ruby_parser (3.21.0)
+    ruby_parser (3.21.1)
       racc (~> 1.5)
       sexp_processor (~> 4.16)
     sass-rails (6.0.0)
@@ -372,7 +374,7 @@ GEM
       sprockets-rails
       tilt
     select2-rails (4.0.13)
-    sexp_processor (4.17.1)
+    sexp_processor (4.17.2)
     spawnling (2.1.5)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)

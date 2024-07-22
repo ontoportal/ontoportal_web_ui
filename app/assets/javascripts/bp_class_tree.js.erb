@@ -86,19 +86,6 @@ function initClassTree() {
   });
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 function nodeClicked(node_id, lang = "en") {
   // Get current html and store data in cache (to account for changes since the cache was retrieved)
   setCacheCurrent();
@@ -201,7 +188,7 @@ function getTreeView(lang = "en") {
       placeTreeView(data);
     },
     error: function(data) {
-        jQuery.get("/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&lang=" + lang + "&conceptid=root", function(data){
+        jQuery.get("/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&lang=" + lang + "&conceptid=root", function(data) {
         var rootTree = "<div class='tree_error'>Displaying the path to this class has taken too long. You can browse classes below.</div>" + data;
         placeTreeView(rootTree);
       });
