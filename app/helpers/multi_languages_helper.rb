@@ -96,7 +96,7 @@ module MultiLanguagesHelper
   def content_language_selector(id: 'content_language', name: 'content_language')
     languages, selected = content_languages
     select_tag(name, options_for_select(languages, selected || 'all'), class: "form-select",
-               data: { controller: "language-change", 'language-change-section-value': "classes", action: "change->language-change#dispatchLangChangeEvent" }) unless languages&.empty?
+               data: { controller: "language-change", 'language-change-section-value': "classes", action: "change->language-change#dispatchLangChangeEvent" }) if languages&.length > 1
   end
 
   def content_languages(submission = @submission || @submission_latest)
