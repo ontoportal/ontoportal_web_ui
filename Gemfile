@@ -71,17 +71,9 @@ gem 'stackprof', require: false
 gem 'terser'
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
-
-
-
-
 gem 'net-ftp'
 gem 'flag-icons-rails', '~> 3.4'
 gem 'inline_svg'
-
-
-
-
 
 group :staging, :production do
   # Application monitoring

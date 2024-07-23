@@ -306,7 +306,6 @@ jQuery.bioportal.OntologyPage = function(id, location_path, error_string, page_n
   this.published = false;
   this.retrieved = false;
   this.init = init || null;
-  this.is_data_section = jQuery(document).data().bp.ont_viewer.lang_sections.includes(id);
 
   this.retrieve = function(){
     jQuery.ajax({
