@@ -3,3 +3,6 @@
 // ./bin/rails generate stimulus controllerName
 
 import { application } from "./application"
+
+import ClipboardController from "./clipboard_controller"
+application.register("clipboard", ClipboardController)
