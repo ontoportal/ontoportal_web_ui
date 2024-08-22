@@ -38,9 +38,7 @@ module ApplicationHelper
   end
 
   def get_username(user_id)
-    user = LinkedData::Client::Models::User.find(user_id)
-    username = user.nil? ? user_id : user.username
-    username
+    user_id.split('/').last
   end
 
   def current_user_admin?
