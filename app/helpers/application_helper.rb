@@ -323,7 +323,8 @@ module ApplicationHelper
       'notice' => 'alert-info',
       'success' => 'alert-success',
       'error' => 'alert-danger',
-      'alert' => 'alert-danger'
+      'alert' => 'alert-danger',
+      'warning' => 'alert-warning'
     }
     bootstrap_alert_class[level]
   end
