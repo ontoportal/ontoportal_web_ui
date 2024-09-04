@@ -349,8 +349,34 @@ class ApplicationController < ActionController::Base
     ENV['USE_RECAPTCHA'].present? && ENV['USE_RECAPTCHA'] == 'true'
   end
 
+
+
+
+
+
+
+
+
   def get_class(params)
     lang = request_lang
+
+
+
+
+
+
+
+    all_lang = submission_languages
+    lang = all_lang[0] if all_lang.length === 1
+
+
+
+
+
+
+
+
+
 
     if @ontology.flat?
       ignore_concept_param = params[:conceptid].nil? ||
@@ -381,7 +407,7 @@ class ApplicationController < ActionController::Base
       if ignore_concept_param
         # get the top level nodes for the root
         # TODO_REV: Support views? Replace old view call: @ontology.top_level_classes(view)
-        roots = @ontology.explore.roots
+        roots = @ontology.explore.roots(lang: lang)
 
         if roots.nil? || roots.empty?
           LOG.add :debug, "Missing roots for #{@ontology.acronym}"
@@ -412,11 +438,13 @@ class ApplicationController < ActionController::Base
         rootNode = @concept.explore.tree(include: "prefLabel,hasChildren,obsolete", lang: lang)
 
         if rootNode.nil? || rootNode.empty?
-          roots = @ontology.explore.roots
+          roots = @ontology.explore.roots(lang: lang)
+
           if roots.nil? || roots.empty?
             LOG.add :debug, "Missing roots for #{@ontology.acronym}"
             not_found
           end
+
           if roots.any? {|c| c.id == @concept.id}
             rootNode = roots
           else
@@ -429,6 +457,18 @@ class ApplicationController < ActionController::Base
     end
     @concept
   end
+
+
+
+
+
+
+
+
+
+
+
+
 
   def get_metrics_hash
     metrics_hash = {}
@@ -679,6 +719,11 @@ class ApplicationController < ActionController::Base
 
   def request_lang
     helpers.request_lang
+  end
+
+  def submission_languages(submission = nil)
+    submission = get_ontology_submission_ready(@ontology) unless submission
+    helpers.submission_languages(submission)
   end
 
 end

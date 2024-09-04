@@ -128,12 +128,12 @@ function nodeClicked(node_id, lang = "en") {
 
     // Insert notes table
     insertNotesTable(tabData["notes_table_data"]);
-
     wrapupTabChange(selectedTab);
   } else {
     jQuery.blockUI({ message: '<h1>' + '<%= image_tag src="jquery.simple.tree/spinner.gif" %>' + ' Loading Class...</h1>', showOverlay: false });
-    jQuery.get('/ajax_concepts/'+jQuery(document).data().bp.ont_viewer.ontology_id+'/?conceptid='+node_id+'&lang=' + lang + '&callback=load',
-      function(data){
+    var ajaxUrl = '/ajax_concepts/'+jQuery(document).data().bp.ont_viewer.ontology_id+'/?conceptid='+node_id+'&lang=' + lang + '&callback=load'
+    jQuery.get(ajaxUrl,
+      function(data) {
         var tabData = data.split("|||");
 
         // the tabs
@@ -182,13 +182,15 @@ function placeTreeView(treeHTML) {
 
 // Retrieve the tree view using ajax
 function getTreeView(lang = "en") {
+  var url = "/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&lang=" + lang + "&conceptid="+encodeURIComponent(jQuery(document).data().bp.ont_viewer.concept_id);
   jQuery.ajax({
-    url: "/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&lang=" + lang + "&conceptid="+encodeURIComponent(jQuery(document).data().bp.ont_viewer.concept_id),
+    url: url,
     success: function(data) {
       placeTreeView(data);
     },
     error: function(data) {
-        jQuery.get("/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&lang=" + lang + "&conceptid=root", function(data) {
+        var url = "/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&lang=" + lang + "&conceptid=root";
+        jQuery.get(url, function(data) {
         var rootTree = "<div class='tree_error'>Displaying the path to this class has taken too long. You can browse classes below.</div>" + data;
         placeTreeView(rootTree);
       });

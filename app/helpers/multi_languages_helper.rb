@@ -120,7 +120,7 @@ module MultiLanguagesHelper
   def request_lang
     lang = params[:language] || params[:lang]
     lang = portal_lang unless lang
-    lang.upcase
+    lang
   end
 
   def lang_code(code_in)

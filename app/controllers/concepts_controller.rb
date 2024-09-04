@@ -29,27 +29,7 @@ class ConceptsController < ApplicationController
     end
   end
 
-
-
-
-
-
-
-
-
-
-
   def show_label
-
-
-
-
-    # binding.pry
-
-
-
-
-
     @ontology = LinkedData::Client::Models::Ontology.find(params[:ontology])
     @ontology ||= LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     not_found unless @ontology
@@ -69,58 +49,15 @@ class ConceptsController < ApplicationController
     render text: cls.definition
   end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   def show_tree
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     if @ontology.nil?
       not_found
     else
-
-
       get_class(params)
-
-
-
-
-      # binding.pry
-
-
-
-
-
       render partial: 'ontologies/treeview'
     end
   end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   def property_tree
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
@@ -167,10 +104,6 @@ class ConceptsController < ApplicationController
 
   private
 
-
-
-
-
   # Load data for a concept or retrieve a concept's children, depending on the value of the :callback parameter.
   # Children are retrieved for drawing ontology class trees.
   def show_ajax_request
@@ -185,18 +118,11 @@ class ConceptsController < ApplicationController
     end
   end
 
-
-
-
-
-
-
-
-
   def gather_details
     @mappings = get_concept_mappings(@concept)
     @notes = @concept.explore.notes
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     update_tab(@ontology, @concept.id)
   end
+
 end
