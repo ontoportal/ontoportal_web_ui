@@ -360,24 +360,6 @@ class ApplicationController < ActionController::Base
   def get_class(params)
     lang = request_lang
 
-
-
-
-
-
-
-    all_lang = submission_languages
-    lang = all_lang[0] if all_lang.length === 1
-
-
-
-
-
-
-
-
-
-
     if @ontology.flat?
       ignore_concept_param = params[:conceptid].nil? ||
           params[:conceptid].empty? ||
