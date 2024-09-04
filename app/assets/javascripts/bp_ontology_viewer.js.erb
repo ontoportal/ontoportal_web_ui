@@ -82,7 +82,7 @@ function displayTree(data) {
   var metadata_only = jQuery(document).data().bp.ont_viewer.metadata_only;
   var purl_prefix = jQuery(document).data().bp.ont_viewer.purl_prefix;
   var concept_name_title = jQuery(document).data().bp.ont_viewer.concept_name_title;
-  var lang = jQuery(document).data().bp.lang;
+  var lang = jQuery(document).data().bp.ont_viewer.lang;
 
   // Check to see if we're actually loading a new concept or just displaying the one we already loaded previously
   if (typeof new_concept_id === 'undefined' || new_concept_id == concept_id) {

@@ -7,11 +7,11 @@ export default class extends Controller {
   connect() {
     // can be used for debugging
     // console.log(this.element.value);
-    jQuery(document).data().bp.lang = this.element.value;
+    jQuery(document).data().bp.ont_viewer.lang = this.element.value;
   }
 
   dispatchLangChangeEvent() {
-    jQuery(document).data().bp.lang = this.element.value;
+    jQuery(document).data().bp.ont_viewer.lang = this.element.value;
 
     var url = window.location.href;
     url = this.removeURLParameter(url, 'lang');
