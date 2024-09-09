@@ -98,7 +98,10 @@
   jQuery(document).data().bp.classesTab.search_box_init = function(){
     if (jQuery("#search_box").bioportal_autocomplete) {
       jQuery("#search_box").bioportal_autocomplete("/search/json_search/"+jQuery(document).data().bp.ontology.acronym, {
-        extraParams: { objecttypes: "class" },
+        extraParams: {
+            objecttypes: "class",
+            lang: jQuery(document).data().bp.ont_viewer.lang
+        },
         selectFirst: true,
         lineSeparator: "~!~",
         matchSubset: 0,
