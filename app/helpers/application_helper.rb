@@ -63,15 +63,15 @@ module ApplicationHelper
     end
   end
 
-  def draw_tree(root, id = nil, type = "Menu")
+  def draw_tree(root, id = nil, type = "Menu", submission)
     if id.nil?
       id = root.children.first.id
     end
     # TODO: handle tree view for obsolete classes, e.g. 'http://purl.obolibrary.org/obo/GO_0030400'
-    raw build_tree(root, "", id)  # returns a string, representing nested list items
+    raw build_tree(root, "", id, submission)  # returns a string, representing nested list items
   end
 
-  def build_tree(node, string, id)
+  def build_tree(node, string, id, submission)
     if node.children.nil? || node.children.length < 1
       return string # unchanged
     end
@@ -96,13 +96,13 @@ module ApplicationHelper
         string << "<li class='active' id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='#' #{active_style}>#{child.prefLabel}</a></li>"
       else
         icons = child.relation_icon(node)
-        string << "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}&lang=#{request_lang}' #{active_style}> #{child.prefLabel({use_html: true})}</a> #{icons}"
+        string << "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}&lang=#{request_lang(submission)}' #{active_style}> #{child.prefLabel({use_html: true})}</a> #{icons}"
 
         if child.hasChildren && !child.expanded?
-          string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&lang=#{request_lang}'>ajax_class</a></li></ul>"
+          string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&lang=#{request_lang(submission)}'>ajax_class</a></li></ul>"
         elsif child.expanded?
           string << "<ul>"
-          build_tree(child, string, id)
+          build_tree(child, string, id, submission)
           string << "</ul>"
         end
         string << "</li>"
@@ -365,6 +365,5 @@ module ApplicationHelper
     return "<a class='ont4ajax' #{data_ont} #{href_ont}>#{ont_acronym}</a>"
   end
   ###END ruby equivalent of JS code in bp_ajax_controller.
-
 
 end

@@ -132,14 +132,14 @@ class OntologiesController < ApplicationController
   end
 
   def classes
-    get_class(params)
+    @submission = get_ontology_submission_ready(@ontology)
+    get_class(params, @submission)
 
     if ["application/ld+json", "application/json"].include?(request.accept)
       render plain: @concept.to_jsonld, content_type: request.accept and return
     end
 
     @current_purl = @concept.purl if Rails.configuration.settings.purl[:enabled]
-    @submission = get_ontology_submission_ready(@ontology)
 
     unless @concept.id == "bp_fake_root"
       @notes = @concept.explore.notes

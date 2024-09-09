@@ -100,7 +100,7 @@ module MultiLanguagesHelper
   end
 
   def content_languages(submission = @submission || @submission_latest)
-    current_lang = request_lang.downcase
+    current_lang = request_lang(submission).downcase
     submission_lang = submission_languages(submission)
     # Transform each language into a select option
     submission_lang = submission_lang.map do |lang|
@@ -117,8 +117,9 @@ module MultiLanguagesHelper
     session[:locale] || 'en'
   end
 
-  def request_lang
+  def request_lang(submission = @submission || @submission_latest)
     lang = params[:language] || params[:lang]
+    lang = submission_languages(submission)&.first unless lang
     lang = portal_lang unless lang
     lang
   end

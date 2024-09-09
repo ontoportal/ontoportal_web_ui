@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'iso-639'
 
 module OntologiesHelper
 
@@ -180,6 +181,15 @@ module OntologiesHelper
 
   def submission_languages(submission = @submission)
     Array(submission&.naturalLanguage).map { |natural_language| natural_language.split('/').last }.compact
+  end
+
+  def abbreviations_to_languages(abbreviations)
+    # Use iso-639 gem to convert language codes to their English names
+    languages = abbreviations.map do |abbr|
+      language = ISO_639.find_by_code(abbr) || ISO_639.find_by_english_name(abbr)
+      language ? language.english_name : abbr
+    end
+    languages.sort
   end
 
 end

@@ -349,16 +349,8 @@ class ApplicationController < ActionController::Base
     ENV['USE_RECAPTCHA'].present? && ENV['USE_RECAPTCHA'] == 'true'
   end
 
-
-
-
-
-
-
-
-
-  def get_class(params)
-    lang = request_lang
+  def get_class(params, submission)
+    lang = helpers.request_lang(submission)
 
     if @ontology.flat?
       ignore_concept_param = params[:conceptid].nil? ||
@@ -697,15 +689,6 @@ class ApplicationController < ActionController::Base
       end
       $trial_license_initialized = true
     end
-  end
-
-  def request_lang
-    helpers.request_lang
-  end
-
-  def submission_languages(submission = nil)
-    submission = get_ontology_submission_ready(@ontology) unless submission
-    helpers.submission_languages(submission)
   end
 
 end

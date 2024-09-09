@@ -36,7 +36,7 @@
     jQuery(document).data().bp.ont_viewer.purl_prefix = "#{(Rails.configuration.settings.purl[:enabled] ? Rails.configuration.settings.purl[:prefix]+"/"+@ontology.acronym : '')}";
     jQuery(document).data().bp.ont_viewer.concept_name_title = (jQuery(document).data().bp.ont_viewer.concept_name == "") ?
         "" : " - " + jQuery(document).data().bp.ont_viewer.concept_name;
-    jQuery(document).data().bp.ont_viewer.lang = "#{request_lang}";
+    jQuery(document).data().bp.ont_viewer.lang = "#{request_lang(sub)}";
     jQuery(document).data().bp.ont_viewer.lang_sections = #{ontology_data_sections.to_json.html_safe};
 
   -# Modal dialog for creating a new mapping (must reside in a top-level position in the document to display properly).

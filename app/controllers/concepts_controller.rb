@@ -16,14 +16,15 @@ class ConceptsController < ApplicationController
 
     # find_by_acronym includes views by default
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    @submission = get_ontology_submission_ready(@ontology)
     @ob_instructions = helpers.ontolobridge_instructions_template(@ontology)
 
     if request.xhr?
       display = params[:callback].eql?('load') ? { full: true } : { display: 'prefLabel' }
-      display[:language] = request_lang
+      display[:language] = helpers.request_lang(@submission)
       @concept = @ontology.explore.single_class(display, params[:id])
       not_found if @concept.nil?
-      show_ajax_request
+      show_ajax_request(@submission)
     else
       render plain: 'Non-AJAX requests are not accepted at this URL', status: :forbidden
     end
@@ -54,7 +55,8 @@ class ConceptsController < ApplicationController
     if @ontology.nil?
       not_found
     else
-      get_class(params)
+      @submission = get_ontology_submission_ready(@ontology)
+      get_class(params, @submission)
       render partial: 'ontologies/treeview'
     end
   end
@@ -106,13 +108,13 @@ class ConceptsController < ApplicationController
 
   # Load data for a concept or retrieve a concept's children, depending on the value of the :callback parameter.
   # Children are retrieved for drawing ontology class trees.
-  def show_ajax_request
+  def show_ajax_request(submission)
     case params[:callback]
     when 'load'
       gather_details
       render partial: 'load'
     when 'children'
-      @children = @concept.explore.children(pagesize: 750, language: request_lang).collection || []
+      @children = @concept.explore.children(pagesize: 750, language: helpers.request_lang(submission)).collection || []
       @children.sort! { |x, y| (x.prefLabel || '').downcase <=> (y.prefLabel || '').downcase }
       render partial: 'child_nodes'
     end
