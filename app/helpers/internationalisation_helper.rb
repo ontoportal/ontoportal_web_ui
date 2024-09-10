@@ -36,8 +36,8 @@ module InternationalisationHelper
     end
   end
 
-  def t(*args, **kwargs)
-    InternationalisationHelper.t(*args, **kwargs)
-  end
+  # def t(*args, **kwargs)
+  #   InternationalisationHelper.t(*args, **kwargs)
+  # end
 
 end
