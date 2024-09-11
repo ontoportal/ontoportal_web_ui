@@ -4,5 +4,9 @@
 
 import { application } from "./application"
 
+import LanguageChangeController from "./language_change_controller"
+application.register("language-change", LanguageChangeController)
+
 import ClipboardController from "./clipboard_controller"
 application.register("clipboard", ClipboardController)
+

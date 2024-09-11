@@ -243,7 +243,8 @@ class ApplicationController < ActionController::Base
     not_found unless acronym
     if class_view
       @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym).first
-      concept = get_class(params).first.to_s
+      @submission = get_ontology_submission_ready(@ontology)
+      concept = get_class(params, @submission).first.to_s
       redirect_to "/ontologies/#{acronym}?p=classes#{params_string_for_redirect(params, prefix: "&")}", :status => :moved_permanently
     else
       redirect_to "/ontologies/#{acronym}#{params_string_for_redirect(params)}", :status => :moved_permanently
@@ -349,10 +350,10 @@ class ApplicationController < ActionController::Base
     ENV['USE_RECAPTCHA'].present? && ENV['USE_RECAPTCHA'] == 'true'
   end
 
-  def get_class(params)
+  def get_class(params, submission)
+    lang = helpers.request_lang(submission)
 
     if @ontology.flat?
-
       ignore_concept_param = params[:conceptid].nil? ||
           params[:conceptid].empty? ||
           params[:conceptid].eql?("root") ||
@@ -367,34 +368,37 @@ class ApplicationController < ActionController::Base
         @concept.children = []
       else
         # Display only the requested class in the tree
-        @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+        @concept = @ontology.explore.single_class({full: true, lang: lang}, params[:conceptid])
         @concept.children = []
       end
       @root = LinkedData::Client::Models::Class.new
       @root.children = [@concept]
-
     else
-
       # not ignoring 'bp_fake_root' here
       ignore_concept_param = params[:conceptid].nil? ||
           params[:conceptid].empty? ||
           params[:conceptid].eql?("root")
+
       if ignore_concept_param
         # get the top level nodes for the root
         # TODO_REV: Support views? Replace old view call: @ontology.top_level_classes(view)
-        roots = @ontology.explore.roots
+        roots = @ontology.explore.roots(lang: lang)
+
         if roots.nil? || roots.empty?
           LOG.add :debug, "Missing roots for #{@ontology.acronym}"
           not_found
         end
 
         @root = LinkedData::Client::Models::Class.new(read_only: true)
-        @root.children = roots.sort{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
+        @root.children = roots.sort{|x,y|
+          x.prefLabel = helpers.link_last_part(x.id) if x.prefLabel.to_s.empty?
+          y.prefLabel = helpers.link_last_part(y.id) if y.prefLabel.to_s.empty?
+          (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
 
         # get the initial concept to display
         root_child = @root.children.first
+        @concept = root_child.explore.self(full: true, lang: lang)
 
-        @concept = root_child.explore.self(full: true)
         # Some ontologies have "too many children" at their root. These will not process and are handled here.
         if @concept.nil?
           LOG.add :debug, "Missing class #{root_child.links.self}"
@@ -402,20 +406,23 @@ class ApplicationController < ActionController::Base
         end
       else
         # if the id is coming from a param, use that to get concept
-        @concept = @ontology.explore.single_class({full: true}, params[:conceptid])
+        @concept = @ontology.explore.single_class({full: true, lang: lang}, params[:conceptid])
         if @concept.nil? || @concept.errors
           LOG.add :debug, "Missing class #{@ontology.acronym} / #{params[:conceptid]}"
           not_found
         end
 
         # Create the tree
-        rootNode = @concept.explore.tree(include: "prefLabel,hasChildren,obsolete")
+        rootNode = @concept.explore.tree(include: "prefLabel,hasChildren,obsolete", lang: lang)
+
         if rootNode.nil? || rootNode.empty?
-          roots = @ontology.explore.roots
+          roots = @ontology.explore.roots(lang: lang)
+
           if roots.nil? || roots.empty?
             LOG.add :debug, "Missing roots for #{@ontology.acronym}"
             not_found
           end
+
           if roots.any? {|c| c.id == @concept.id}
             rootNode = roots
           else
@@ -423,10 +430,12 @@ class ApplicationController < ActionController::Base
           end
         end
         @root = LinkedData::Client::Models::Class.new(read_only: true)
-        @root.children = rootNode.sort{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
+        @root.children = rootNode.sort{|x,y|
+          x.prefLabel = helpers.link_last_part(x.id) if x.prefLabel.to_s.empty?
+          y.prefLabel = helpers.link_last_part(y.id) if y.prefLabel.to_s.empty?
+          (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
       end
     end
-
     @concept
   end
 

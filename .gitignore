@@ -42,6 +42,7 @@ node_modules
 /config/credentials/test.key
 /config/credentials/staging.key
 /config/credentials/production.key
+/config/credentials/appliance.key
 
 /app/assets/builds/*
 !/app/assets/builds/.keep

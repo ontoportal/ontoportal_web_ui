@@ -1,6 +1,10 @@
 # frozen_string_literal: true
+require 'iso-639'
 
 module OntologiesHelper
+
+  LANGUAGE_FILTERABLE_SECTIONS = %w[classes properties].freeze
+
   def additional_details
     return '' if $ADDITIONAL_ONTOLOGY_DETAILS.nil? || $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.acronym].nil?
 
@@ -158,4 +162,34 @@ module OntologiesHelper
 
     Rails.configuration.change_request[:ontologies].include? ontology_acronym.to_sym
   end
+
+  def current_section
+    (params[:p]) ? params[:p] : 'summary'
+  end
+
+  def ontology_data_sections
+    LANGUAGE_FILTERABLE_SECTIONS
+  end
+
+  def ontology_data_section?(section_title = current_section)
+    ontology_data_sections.include?(section_title)
+  end
+
+  def language_selector_tag(name)
+    content_language_selector(id: name, name: name)
+  end
+
+  def submission_languages(submission = @submission)
+    Array(submission&.naturalLanguage).map { |natural_language| natural_language.split('/').last }.compact
+  end
+
+  def abbreviations_to_languages(abbreviations)
+    # Use iso-639 gem to convert language codes to their English names
+    languages = abbreviations.map do |abbr|
+      language = ISO_639.find_by_code(abbr) || ISO_639.find_by_english_name(abbr)
+      language ? language.english_name : abbr
+    end
+    languages.sort
+  end
+
 end
