@@ -36,11 +36,7 @@
   var g_prefLabel;
 
   jQuery(document).ready(function() {
-    g_prefLabel = '#{@concept.prefLabel({:use_html => false}).html_safe}';
-
-    if (!g_prefLabel) {
-      g_prefLabel = '#{@concept.id}';
-    }
+    g_prefLabel = '#{@concept.prefLabel({:use_html => false}).to_s.empty? ? @concept.id : @concept.prefLabel({:use_html => false}).html_safe}';
     var isPopulated = window.localStorage.getItem('request_term_form_populated');
 
     if (isPopulated) {

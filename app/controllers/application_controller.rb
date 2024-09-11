@@ -243,7 +243,8 @@ class ApplicationController < ActionController::Base
     not_found unless acronym
     if class_view
       @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym).first
-      concept = get_class(params).first.to_s
+      @submission = get_ontology_submission_ready(@ontology)
+      concept = get_class(params, @submission).first.to_s
       redirect_to "/ontologies/#{acronym}?p=classes#{params_string_for_redirect(params, prefix: "&")}", :status => :moved_permanently
     else
       redirect_to "/ontologies/#{acronym}#{params_string_for_redirect(params)}", :status => :moved_permanently
@@ -389,7 +390,10 @@ class ApplicationController < ActionController::Base
         end
 
         @root = LinkedData::Client::Models::Class.new(read_only: true)
-        @root.children = roots.sort{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
+        @root.children = roots.sort{|x,y|
+          x.prefLabel = helpers.link_last_part(x.id) if x.prefLabel.to_s.empty?
+          y.prefLabel = helpers.link_last_part(y.id) if y.prefLabel.to_s.empty?
+          (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
 
         # get the initial concept to display
         root_child = @root.children.first
@@ -426,23 +430,14 @@ class ApplicationController < ActionController::Base
           end
         end
         @root = LinkedData::Client::Models::Class.new(read_only: true)
-        @root.children = rootNode.sort{|x,y| (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
+        @root.children = rootNode.sort{|x,y|
+          x.prefLabel = helpers.link_last_part(x.id) if x.prefLabel.to_s.empty?
+          y.prefLabel = helpers.link_last_part(y.id) if y.prefLabel.to_s.empty?
+          (x.prefLabel || "").downcase <=> (y.prefLabel || "").downcase}
       end
     end
     @concept
   end
-
-
-
-
-
-
-
-
-
-
-
-
 
   def get_metrics_hash
     metrics_hash = {}

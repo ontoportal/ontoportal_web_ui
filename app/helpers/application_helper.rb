@@ -92,17 +92,11 @@ module ApplicationHelper
       # This fake root will be present at the root of "flat" ontologies, we need to keep the id intact
       li_id = child.id.eql?("bp_fake_root") ? "bp_fake_root" : short_uuid
 
-      # if child.prefLabel && !child.prefLabel.empty?
-        pref_label = child.prefLabel({use_html: true})
-      # else
-      #   pref_label = child.id
-      # end
-
       if child.id.eql?("bp_fake_root")
         string << "<li class='active' id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='#' #{active_style}>#{child.prefLabel}</a></li>"
       else
         icons = child.relation_icon(node)
-        string << "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}&lang=#{request_lang(submission)}' #{active_style}> #{pref_label}</a> #{icons}"
+        string << "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}&lang=#{request_lang(submission)}' #{active_style}> #{child.prefLabel({use_html: true})}</a> #{icons}"
 
         if child.hasChildren && !child.expanded?
           string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&lang=#{request_lang(submission)}'>ajax_class</a></li></ul>"
@@ -242,6 +236,16 @@ module ApplicationHelper
 
   def at_slice?
     !@subdomain_filter.nil? && !@subdomain_filter[:active].nil? && @subdomain_filter[:active] == true
+  end
+
+  def link_last_part(url)
+    return "" if url.nil?
+
+    if url.include?('#')
+      url.split('#').last
+    else
+      url.split('/').last
+    end
   end
 
   def truncate_with_more(text, options = {})
