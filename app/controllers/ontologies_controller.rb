@@ -188,7 +188,7 @@ class OntologiesController < ApplicationController
 
   def edit
     # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id], include: 'all').first
     redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
     @categories = LinkedData::Client::Models::Category.all
     @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
@@ -254,9 +254,9 @@ class OntologiesController < ApplicationController
     end
 
     # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology], include: 'all').first
     not_found if @ontology.nil?
-    
+
     # Handle the case where an ontology is converted to summary only. 
     # See: https://github.com/ncbo/bioportal_web_ui/issues/133.
     if @ontology.summaryOnly && params[:p].present?
@@ -313,7 +313,7 @@ class OntologiesController < ApplicationController
   end
 
   def submit_success
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id], include: 'all').first
     render 'submit_success'
   end
 
@@ -345,9 +345,9 @@ class OntologiesController < ApplicationController
       return
     end
     # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym] || params[:id]).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     @ontology.update_from_params(ontology_params)
-    error_response = @ontology.update
+    error_response = @ontology.update(cache_refresh_all: false)
     if response_error?(error_response)
       @categories = LinkedData::Client::Models::Category.all
       @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}

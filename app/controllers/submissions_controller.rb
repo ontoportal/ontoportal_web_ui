@@ -5,15 +5,8 @@ class SubmissionsController < ApplicationController
   before_action :authorize_and_redirect, only: [:edit, :update, :create, :new]
 
   def new
-    begin
-      # REVIEW: do we really need this double attempt to locate an ontology? I think find_by_acronym (below) should
-      #    be sufficient. It's not evident that we call the new method with a full URI anymore.
-      @ontology = LinkedData::Client::Models::Ontology.get(CGI.unescape(params[:ontology_id]))
-    rescue MultiJson::ParseError
-      nil
-    end
-
-    @ontology ||= LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
+    # NOTE: find_by_acronym includes ontology views
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
     @submission = @ontology.explore.latest_submission
     @submission ||= LinkedData::Client::Models::OntologySubmission.new
   end

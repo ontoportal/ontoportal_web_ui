@@ -16,11 +16,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = if session[:user].admin? && params.has_key?(:id)
-              LinkedData::Client::Models::User.find_by_username(params[:id]).first
-            else
-              LinkedData::Client::Models::User.find(session[:user].id)
-            end
+    @user = LinkedData::Client::Models::User.get(params[:id], include: 'all')
     @all_ontologies = LinkedData::Client::Models::Ontology.all(ignore_custom_ontologies: true)
     @user_ontologies = @user.customOntology
 
@@ -41,8 +37,7 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = LinkedData::Client::Models::User.find(params[:id])
-    @user ||= LinkedData::Client::Models::User.find_by_username(params[:id]).first
+    @user = LinkedData::Client::Models::User.get(params[:id], include: 'all')
   end
 
   def create
@@ -58,7 +53,7 @@ class UsersController < ApplicationController
       else
         flash[:notice] = 'Account was successfully created'
         session[:user] = LinkedData::Client::Models::User.authenticate(@user.username, @user.password)
-        redirect_to_browse
+        redirect_to user_path(@user.username)
       end
     else
       render 'new'
@@ -66,8 +61,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = LinkedData::Client::Models::User.find(params[:id])
-    @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
+    @user = LinkedData::Client::Models::User.get(params[:id], include: 'all')
 
     @errors = validate_update(user_params)
     if @errors.empty?
@@ -78,7 +72,7 @@ class UsersController < ApplicationController
       end
 
       @user.update_from_params(user_params.merge!(role: user_roles))
-      error_response = @user.update
+      error_response = @user.update(cache_refresh_all: false)
 
       if response_error?(error_response)
         @errors = response_errors(error_response)
@@ -99,12 +93,10 @@ class UsersController < ApplicationController
 
   def destroy
     response = { errors: String.new(''), success: String.new('') }
-    @user = LinkedData::Client::Models::User.find(params[:id])
-    @user = LinkedData::Client::Models::User.find_by_username(params[:id]).first if @user.nil?
+    @user = LinkedData::Client::Models::User.get(params[:id])
     if session[:user].admin?
       @user.delete
       response[:success] << 'User deleted successfully '
-
     else
       response[:errors] << 'Not permitted '
     end
